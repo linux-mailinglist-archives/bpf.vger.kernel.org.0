@@ -2,83 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 327621459C6
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2020 17:24:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD58145A4E
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2020 17:54:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725933AbgAVQYt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jan 2020 11:24:49 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:38449 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725802AbgAVQYs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jan 2020 11:24:48 -0500
-Received: by mail-ot1-f67.google.com with SMTP id z9so6804570oth.5
-        for <bpf@vger.kernel.org>; Wed, 22 Jan 2020 08:24:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wKJ1wdIY+1Iqqfq4AvdC8Smm58oqdgvRBFYZjh3bwWM=;
-        b=C1YkUKcINiY7sOCra+lVShtzg5HU8YYk/ZrM79CX6X/oH9TGRcU5nWsuEihLsExKSS
-         q7KlWcfhQU2DJ0C2up5MqV9mfO8F+AZ24+42LnbdJjw3/KVHm4Npmy4X4krwlyFCmsa0
-         YJZY9BNC3E+yZPUHtyU9O35YtIVjSNLvwdRrE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wKJ1wdIY+1Iqqfq4AvdC8Smm58oqdgvRBFYZjh3bwWM=;
-        b=WQrR8qfV1QTgGrHAG5DYibNJ07xWgwwby/AHXjj5UaQFMSsdeWKxz/VkIuk+H28MiT
-         dXf2mgy37TQD+3FtEPVj3W4eCIE1b2jjXGOwnEGeUrufiG4lbrqCwwG+0bpMcSFODcCA
-         7TAd+4Ghcakk96TiUQy0omhslk4fSQoLBKHcW7brRND5yfBD1gFW0pdjfAkZyajNBeDY
-         LvGvRWM71X7FC8y/bxXzVKJzEF09UCNK31tZI8ZuEota70jUiccGe1EYROziNan5cyEy
-         CguwRqsUivngZx7VeRONf9/V7tifnAOUiEUPZAkPPwLtxRlJ9N/Qs6jRxAwfsw3ISz6T
-         Su6Q==
-X-Gm-Message-State: APjAAAXdqw8RcwWzdN41bMSWryfiDXjQhcaRWJjXKRVFHYqlxa1jATEM
-        Q4uwuFACOT7p2OY7QD5x/jjY2G/uDJzEQ92u8EPQIw==
-X-Google-Smtp-Source: APXvYqw5VLMDedY5e7MNRBOXAVIFA2nX12M2xsuqSym2mSMxUddnyE21MEY8R9uCz6o8HIkUFKyK049z1NZ4E3zANOw=
-X-Received: by 2002:a9d:24e8:: with SMTP id z95mr8083116ota.5.1579710287820;
- Wed, 22 Jan 2020 08:24:47 -0800 (PST)
-MIME-Version: 1.0
-References: <20200122130549.832236-1-jakub@cloudflare.com> <20200122130549.832236-7-jakub@cloudflare.com>
-In-Reply-To: <20200122130549.832236-7-jakub@cloudflare.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 22 Jan 2020 16:24:36 +0000
-Message-ID: <CACAyw9_bbZQD604YTJTM7G9rGgON6buoL11zzu0YW_pAa2U0AA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 06/12] bpf, sockmap: Don't set up sockmap
- progs for listening sockets
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        id S1726442AbgAVQyd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jan 2020 11:54:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725802AbgAVQyd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jan 2020 11:54:33 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CB0A21569;
+        Wed, 22 Jan 2020 16:54:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1579712072;
+        bh=mx+redtQzWmHCWsQ3WGM+eVOVVPg++rcY3qMRQLWuQw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=eNaKdzifcvURTJfoaboy5eTRTDWi0uaE8ycchff0qcNqPRWHkOsq79miUlZuhEl5i
+         xQYKaDcV4OC/WHwaNHji1SiVzk2Wz0fIwavWF1IFET3i3w2ngjIN5F2Is3bAVjIm/f
+         Xcko2vpiba3ZzFQZwHar9Xkk1XyfJFS82sgzLm8c=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 3F1113520A91; Wed, 22 Jan 2020 08:54:32 -0800 (PST)
+Date:   Wed, 22 Jan 2020 08:54:32 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>, joel@joelfernandes.org,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
+Subject: Re: [RFT PATCH 04/13] kprobes: Make optimizer delay to 1 second
+Message-ID: <20200122165432.GH2935@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <157918584866.29301.6941815715391411338.stgit@devnote2>
+ <157918589199.29301.4419459150054220408.stgit@devnote2>
+ <20200121192905.0f001c61@gandalf.local.home>
+ <20200122162317.0299cf722dd618147d97e89c@kernel.org>
+ <20200122071115.28e3c763@gandalf.local.home>
+ <20200122221240.cef447446785f46862fee97a@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200122221240.cef447446785f46862fee97a@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 22 Jan 2020 at 13:06, Jakub Sitnicki <jakub@cloudflare.com> wrote:
-> @@ -352,7 +376,15 @@ static int sock_map_update_common(struct bpf_map *map, u32 idx,
->         if (!link)
->                 return -ENOMEM;
->
-> -       ret = sock_map_link(map, &stab->progs, sk);
-> +       /* Only established or almost established sockets leaving
-> +        * SYN_RECV state need to hold refs to parser/verdict progs
-> +        * and have their sk_data_ready and sk_write_space callbacks
-> +        * overridden.
-> +        */
-> +       if (sk->sk_state == TCP_LISTEN)
-> +               ret = sock_map_link_no_progs(map, sk);
-> +       else
-> +               ret = sock_map_link(map, &stab->progs, sk);
+On Wed, Jan 22, 2020 at 10:12:40PM +0900, Masami Hiramatsu wrote:
+> On Wed, 22 Jan 2020 07:11:15 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > On Wed, 22 Jan 2020 16:23:17 +0900
+> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > 
+> > > On Tue, 21 Jan 2020 19:29:05 -0500
+> > > Steven Rostedt <rostedt@goodmis.org> wrote:
+> > > 
+> > > > On Thu, 16 Jan 2020 23:44:52 +0900
+> > > > Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > > >   
+> > > > > Since the 5 jiffies delay for the optimizer is too
+> > > > > short to wait for other probes, make it longer,
+> > > > > like 1 second.  
+> > > > 
+> > > > Hi Masami,
+> > > > 
+> > > > Can you explain more *why* 5 jiffies is too short.  
+> > > 
+> > > Yes, I had introduced this 5 jiffies delay for multiple probe registration
+> > > and unregistration like systemtap, which will use array-based interface to
+> > > register/unregister. In that case, 5 jiffies will be enough for the delay
+> > > to wait for other kprobe registration/unregsitration.
+> > > 
+> > > However, since perf and ftrace register/unregister probes one-by-one with
+> > > RCU synchronization interval, the optimizer will be started before
+> > > finishing to register/unregister all probes.
+> > > And the optimizer locks kprobe_mutex a while -- RCU-tasks synchronization.
+> > > Since the kprobe_mutex is also involved in disabling kprobes, this also
+> > > stops probe-event disabling.
+> > > 
+> > > Maybe 5 jiffies is enough for adding/removing a few probe events, but
+> > > not enough for dozens of probe events.
+> > > 
+> > 
+> > Perhaps we should have a mechanism that can detect new probes being
+> > added, and just continue to delay the optimization, instead of having
+> > some arbitrary delay.
+> 
+> Yes, that is what [03/13] does :) 
+> Anyway, it seems that the RCU-synchronization takes more than 5 jiffies.
+> And in that case, [03/13] still doesn't work. That's why I added this patch
+> after that.
 
-Could you use sock_map_redirect_okay from the previous patch here
-instead of checking for TCP_LISTEN?
+If the RCU synchronization is synchronize_rcu_tasks(), then yes, it
+will often take way more than 5 jiffies.  If it is synchronize_rcu(),
+5 jiffies would not be unusual, especially on larger systems.
+But in the case of synchronize_rcu(), one option is to instead use
+synchronize_rcu_expedited().  It is not clear that this last is really
+justified in this case, but figured it might be worth mentioning.
 
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+							Thanx, Paul
