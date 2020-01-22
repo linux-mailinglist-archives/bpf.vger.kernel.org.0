@@ -2,78 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F174F145ABF
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2020 18:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D578E145B57
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2020 19:07:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728981AbgAVRYE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jan 2020 12:24:04 -0500
-Received: from www62.your-server.de ([213.133.104.62]:50054 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725802AbgAVRYE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jan 2020 12:24:04 -0500
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iuJjW-0004We-30; Wed, 22 Jan 2020 18:24:02 +0100
-Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-3.fritz.box)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iuJjV-000RE1-PV; Wed, 22 Jan 2020 18:24:01 +0100
-Subject: Re: [PATCH v2] bpf: btf: Always output invariant hit in pahole DWARF
- to BTF transform
-To:     Chris Down <chris@chrisdown.name>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Andrii Nakryiko <andriin@fb.com>,
+        id S1726780AbgAVSHr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jan 2020 13:07:47 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:37519 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726227AbgAVSHr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jan 2020 13:07:47 -0500
+Received: by mail-lf1-f65.google.com with SMTP id b15so313981lfc.4
+        for <bpf@vger.kernel.org>; Wed, 22 Jan 2020 10:07:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=RiWPRMMIW94oOn3WcniI4UvcBxmCL6rmBgal4r7HtqI=;
+        b=sJRp0psxE/jQSgHKovsMY4pAqhyarBtkzftC+GFTxUUo6oQ6K6yYzyQGejwhgaBE/+
+         Xdys35Sk7dRH1c+FIdwggMGiIEKhFKZ/sGvbf6Y9WmvnxTohTC4PZsEZP88StDENQTHA
+         ha9um3tk95yL0iKOUgOsqfnN6/fz9svGoBtIg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=RiWPRMMIW94oOn3WcniI4UvcBxmCL6rmBgal4r7HtqI=;
+        b=spglSZvkcaXXRwTvSsTrhrmMdbPxs7QH7nCpFbtSgnExMkvABWaeiiOq2MhgnOm/E8
+         +hiOzJvATRfFt2O7Rj2KDqidj+9qy+vQdxCAUaAcr1eIgOaLz0LNnL513QT7+huK03ht
+         mQODy1FYcO2uu9ncafrmDXxcasSaYjJbfLURjxtzAPGs74R+dXpa85szBQTGMWGLm7tq
+         4nR6aB0cIJv4QIyWN0/sDYNdvqpR7GZlIWUX5IuBAgUNkzIEydq9SmgE0Jd/LylGY3IA
+         ZBIzx0H8V0DKSpIH9F1aEOzFSHvEbXP2S2mYMgArzhnJVuaMYuPYAJcBAn7KK0jWS7sL
+         ayhA==
+X-Gm-Message-State: APjAAAV2aNbzktTrCAqzO35zEHJiI3nu83U3NlRvvIC/Z6jwLqEOLuep
+        PgEgZsxGIYEC9UAl6Vt+Hs23DPEbj2+JWA==
+X-Google-Smtp-Source: APXvYqyyNqzdDNqIMEP1+8DKo3ma4T4KgZ8SkoCZW0CxF5Wo1h36FdAhduXA1kPxYEeDZR6RmCraBQ==
+X-Received: by 2002:a19:7401:: with SMTP id v1mr2502943lfe.129.1579716465041;
+        Wed, 22 Jan 2020 10:07:45 -0800 (PST)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id f8sm3895313lfc.22.2020.01.22.10.07.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jan 2020 10:07:44 -0800 (PST)
+References: <20200122130549.832236-1-jakub@cloudflare.com> <20200122130549.832236-7-jakub@cloudflare.com> <CACAyw9_bbZQD604YTJTM7G9rGgON6buoL11zzu0YW_pAa2U0AA@mail.gmail.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         John Fastabend <john.fastabend@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-References: <20200122000110.GA310073@chrisdown.name>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <fcea8bd9-2bea-ddb2-449e-8640e772c487@iogearbox.net>
-Date:   Wed, 22 Jan 2020 18:24:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Martin Lau <kafai@fb.com>
+Subject: Re: [PATCH bpf-next v3 06/12] bpf, sockmap: Don't set up sockmap progs for listening sockets
+In-reply-to: <CACAyw9_bbZQD604YTJTM7G9rGgON6buoL11zzu0YW_pAa2U0AA@mail.gmail.com>
+Date:   Wed, 22 Jan 2020 19:07:43 +0100
+Message-ID: <87zhefqs9c.fsf@cloudflare.com>
 MIME-Version: 1.0
-In-Reply-To: <20200122000110.GA310073@chrisdown.name>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25703/Wed Jan 22 12:37:53 2020)
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/22/20 1:01 AM, Chris Down wrote:
-> When trying to compile with CONFIG_DEBUG_INFO_BTF enabled, I got this
-> error:
-> 
->      % make -s
->      Failed to generate BTF for vmlinux
->      Try to disable CONFIG_DEBUG_INFO_BTF
->      make[3]: *** [vmlinux] Error 1
-> 
-> Compiling again without -s shows the true error (that pahole is
-> missing), but since this is fatal, we should show the error
-> unconditionally on stderr as well, not silence it using the `info`
-> function. With this patch:
-> 
->      % make -s
->      BTF: .tmp_vmlinux.btf: pahole (pahole) is not available
->      Failed to generate BTF for vmlinux
->      Try to disable CONFIG_DEBUG_INFO_BTF
->      make[3]: *** [vmlinux] Error 1
-> 
-> Signed-off-by: Chris Down <chris@chrisdown.name>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Andrii Nakryiko <andriin@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: bpf@vger.kernel.org
-> Cc: kernel-team@fb.com
+On Wed, Jan 22, 2020 at 05:24 PM CET, Lorenz Bauer wrote:
+> On Wed, 22 Jan 2020 at 13:06, Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>> @@ -352,7 +376,15 @@ static int sock_map_update_common(struct bpf_map *map, u32 idx,
+>>         if (!link)
+>>                 return -ENOMEM;
+>>
+>> -       ret = sock_map_link(map, &stab->progs, sk);
+>> +       /* Only established or almost established sockets leaving
+>> +        * SYN_RECV state need to hold refs to parser/verdict progs
+>> +        * and have their sk_data_ready and sk_write_space callbacks
+>> +        * overridden.
+>> +        */
+>> +       if (sk->sk_state == TCP_LISTEN)
+>> +               ret = sock_map_link_no_progs(map, sk);
+>> +       else
+>> +               ret = sock_map_link(map, &stab->progs, sk);
+>
+> Could you use sock_map_redirect_okay from the previous patch here
+> instead of checking for TCP_LISTEN?
 
-Applied, thanks!
+Makes sense. Queuing it for next iteration if more things pile up.
+
+To give the rest of reviewers some context - Lorenz started looking at
+adding bare-bones support for UDP to sockmap. Bare-bones meaning that
+UDP sockets could be inserted/deleted into/from sockmap, but not spliced
+with sockmap.
+
+Being consistent about how we check if a socket can be used for splicing
+will make extending it for UDP easier.
+
+Thanks,
+-jkbs
