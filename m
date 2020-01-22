@@ -2,239 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE4B145D0D
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2020 21:23:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5910B145D2E
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2020 21:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729110AbgAVUXc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jan 2020 15:23:32 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:51427 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725827AbgAVUXc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 22 Jan 2020 15:23:32 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 536A95241;
-        Wed, 22 Jan 2020 15:23:31 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 22 Jan 2020 15:23:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=B6/8oJXsr9XZS
-        S6XJye1iDWSNpgFZi8UWgVVOMbMvTc=; b=McQIShDLeZfG5oCqRtyZq9lvRPT92
-        4sifD80vPNg5EPVENCk4mkHBYiWv9GRhYivRLJ1VYb0ZNPxF/3hM4Rl94HyPuXaO
-        votXT42SgPT5Br13B8JK6XQEuJFjW7jERWukc021RM9G/0eA1a7a9LttfbtH0wx6
-        qi0FjHpfA8jwh4EpQ7uC084cRfz91ZMp4VWFDCR5Ifdd5DADLI7eSHQxdXEDdpzW
-        RN2moyhwMl/v6wB/4oUuXWEvjPYrugkOQa/UHgYjtJ4uthzpOKy8Aju/r1JuN6iL
-        QB4QgGQJCC6RHKE/K98vnffp9knxOHZkD9bz2yJ7A8oBcwZ5OFbw6HvXg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=B6/8oJXsr9XZSS6XJye1iDWSNpgFZi8UWgVVOMbMvTc=; b=sS9LuZ1r
-        qrgwEkFDJODQW3NFxGIJ55RxVKYXPBrkzu43evJiAXoLf4y5q93pfAfFTpsXPmKe
-        OI0cJk4DmfdLX1zmsV2dL9b4gWuCQ9PR1iFoOSjkcm4jcApq/OQHxZsgrTEaO+Bf
-        5x2SZjj4A8vG8Xsxni2AvDiuoeRMbJcQUXQMb4tES45wFRxIvc96OFPiS7r7SzbG
-        Y7DP02ujE93o8aF9HmmOvdaGIG+RuNP4gDbO5HykDizunbgxkZfL+snsQEZJnn1/
-        ZNQ7oXlbirV65IBL6cjj5Js2aSDONi5VVX8wsBsNsjB3quP4LMvjP31lkDA9XrCj
-        Y3Q5+4mwINRzPA==
-X-ME-Sender: <xms:Q68oXsfuz41UO51eBzcauzcUZwRRdW5Y7Fs1ofKoY1hru5gT-1XdVw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrvddtgddufeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
-    fufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegu
-    gihusegugihuuhhurdighiiiqeenucfkphepudelledrvddtuddrieegrddvnecuvehluh
-    hsthgvrhfuihiivgepvdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhu
-    uhdrgiihii
-X-ME-Proxy: <xmx:Q68oXidqqIQbjF15uLw4LGqS1bLG08-r_1ZiR39XJEjrPCd75qu52Q>
-    <xmx:Q68oXogpszpRv2dipAEub8wPEfjTuvv3fU5iJN7ZaecO5CMmA3tKWw>
-    <xmx:Q68oXmTo9z1yXZ3HCV7X88poDbH35HG_bDtUH0gv1hKjMEGCMu-35w>
-    <xmx:Q68oXiMbzsgNiM2eFFfFSnzg_XeWGGWNOQlcq_WsEXzNMpyai0BgVg>
-Received: from dlxu-fedora-R90QNFJV.thefacebook.com (unknown [199.201.64.2])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 3497A3280063;
-        Wed, 22 Jan 2020 15:23:29 -0500 (EST)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, peterz@infradead.org, mingo@redhat.com,
-        acme@kernel.org
-Subject: [PATCH v2 bpf-next 3/3] selftests/bpf: add bpf_perf_prog_read_branches() selftest
-Date:   Wed, 22 Jan 2020 12:22:20 -0800
-Message-Id: <20200122202220.21335-4-dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200122202220.21335-1-dxu@dxuuu.xyz>
-References: <20200122202220.21335-1-dxu@dxuuu.xyz>
+        id S1726911AbgAVUgb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jan 2020 15:36:31 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:54298 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726227AbgAVUgb (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 22 Jan 2020 15:36:31 -0500
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00MKa5SA016501;
+        Wed, 22 Jan 2020 12:36:15 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=RAGT54VHtmM/8jKHkUBjipZp2j+toX1pqGorQ6epoGo=;
+ b=mCMdZlyMHcu6lEP8X4Km1ewJpl8Ir0XLxZ5okI+W4lLPtHI/MOJGbD/1FjhWYSNSwb7Y
+ zyrm/znm+T/r1JczBPZm55lmfXjAi16GGCP4vYF6DHC1B1510+aiOwb/X1HJ/xyaaGaD
+ Vk6H3uCjiJnLL3G2QGLT21cyHOUIT25YZHI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2xp7375spt-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 22 Jan 2020 12:36:14 -0800
+Received: from NAM04-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 22 Jan 2020 12:35:43 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oGYF1+tUYzEObOZISsMoZgkOIKXrFHEfVPPdo8yiL+e8ma6kk9+6CYhuGmlc6YYOLRoajhcga9D/tS8Vpo+WCZmEbaEcYFqn6qjMaiOvkHfSAB0B3caF70u1LcErGJ0ruOBOd+MuVKyzjCSxisYLqdUpblmtjJRArxS5bqe38byIaeYQb8K0qgJBiLkMZf7snGaJHDfBWF+yLyoUBfgQ9oSwZSJ0i04Kg6WN7db5iAEjwS9aJNqABWaNYEP1IPcHtcSSdJC584dZpG3dHYYzGBl4jpl2Y8LjFj6bhkOr8LpdnAKbhBeEkr1c4yO3vzqU80jt4QU4ZKRu5F/D4lD5lw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RAGT54VHtmM/8jKHkUBjipZp2j+toX1pqGorQ6epoGo=;
+ b=ErCxIJ29OEA+9JA6pQQmdouI07NhMaDFGPBiLkC4t1A1d0MsjtBhFNiIDUw+ZwpFXE7LdYTvOXjw8Z7gSoQS7wKZ02mkiv+gcHENZlguFNKuO9KIkbvYO39g9rfo8+bwZBWdTKS7mMIEKudWc3rB19KBwEvfipSG5BvGb4M4xKlcxj7kkOo+lA3LT2UItH7AtwoEwKooCvTEBLgHrMacJ1OSF/+5y34Bklslhn3rnqsFtl1frFFk+Hq+RZRgTsKH+ML1jeScp3LcZov4DrxqPR4xBZ9FbHbh9GbNxI5LwnP6WTx1Sa/vc2xqr8bgTpIdUVsUsbWyDyxcX1/63lZmCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RAGT54VHtmM/8jKHkUBjipZp2j+toX1pqGorQ6epoGo=;
+ b=cQ9XeRjWdQ/czN5/3x0wC7V/790Jg387VXgGSPbHGKY6PMDSZ/6US03AY46ppU/QSfGU0/CTTtGs7AzRO13gTlepvUdag1+J/f7XAnVYDOl0aLKr0W1vceSaSidgbsCCvjiGxkMicsdSs/z46mbgq/el1lP5w6kzRZqi52oP25c=
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
+ MN2PR15MB2861.namprd15.prod.outlook.com (20.178.252.27) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2644.23; Wed, 22 Jan 2020 20:35:42 +0000
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2644.027; Wed, 22 Jan 2020
+ 20:35:42 +0000
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:180::ccdf) by MWHPR21CA0055.namprd21.prod.outlook.com (2603:10b6:300:db::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2686.10 via Frontend Transport; Wed, 22 Jan 2020 20:35:41 +0000
+From:   Martin Lau <kafai@fb.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "kernel-team@cloudflare.com" <kernel-team@cloudflare.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "John Fastabend" <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: Re: [PATCH bpf-next v3 04/12] tcp_bpf: Don't let child socket inherit
+ parent protocol ops on copy
+Thread-Topic: [PATCH bpf-next v3 04/12] tcp_bpf: Don't let child socket
+ inherit parent protocol ops on copy
+Thread-Index: AQHV0SSzVvei0U2SmUOkYWUbN4Vfbaf3JLkA
+Date:   Wed, 22 Jan 2020 20:35:42 +0000
+Message-ID: <20200122203538.juspsqgwki7rn45q@kafai-mbp.dhcp.thefacebook.com>
+References: <20200122130549.832236-1-jakub@cloudflare.com>
+ <20200122130549.832236-5-jakub@cloudflare.com>
+In-Reply-To: <20200122130549.832236-5-jakub@cloudflare.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR21CA0055.namprd21.prod.outlook.com
+ (2603:10b6:300:db::17) To MN2PR15MB3213.namprd15.prod.outlook.com
+ (2603:10b6:208:3d::12)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:180::ccdf]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 81a1555c-b211-4923-f454-08d79f7aa66b
+x-ms-traffictypediagnostic: MN2PR15MB2861:
+x-microsoft-antispam-prvs: <MN2PR15MB2861527779DA824476288FEFD50C0@MN2PR15MB2861.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 029097202E
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(366004)(396003)(346002)(376002)(136003)(189003)(199004)(81156014)(66556008)(81166006)(8676002)(64756008)(1076003)(66476007)(71200400001)(66946007)(2906002)(66446008)(316002)(478600001)(6916009)(86362001)(16526019)(54906003)(4326008)(6506007)(5660300002)(55016002)(8936002)(9686003)(7696005)(52116002)(186003);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB2861;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Fy7DZWPyniHD5mZdMq9jf6BkBrB78VH/mkMkM6TcfqFPgCTjNhglqacrCo7fRWla1Kxt5XSZh+78kzNJ/n0yuondveXtMhLuh9eHy3fJX6zla0Fq8BquftEIYnqXxS0xunEthg131wLaRE8OrO4aU1qOYWHftLGGFmiIlnI20AikFiQDoiANvA+er/9qyamojG7wmD8puJeZxLJMq1Entn9hWecyD4gThxBVFMRHsuaRNT/SoQHUnZxMRLOefacVJ4dc7c+R90fQPQFC40RojetkbQR1qKuZKP1akabXX5CBkhMxvWaaNlcE4+SJVjF5q22dMb83BG2KFPxHOadJSzC6cQkPlYPVDGRtLcdts71T0EMCDf4+H3LmVSnxCqHzyWpuBzS6P4sc6IavRyKvS3ktKWLkw2anZKXFDInARZaKcry2KtAnRxd8MzyvAdGT
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <4C146817E5E88348BB093D451BD7EF20@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-Network-Message-Id: 81a1555c-b211-4923-f454-08d79f7aa66b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2020 20:35:42.5162
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0xQ2QrkHGtLjyK7RmnpfLdI2cU+G7kT+KXUnfxy++zInd9l8QZG+q/7FprkzttjH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2861
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-22_08:2020-01-22,2020-01-22 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ impostorscore=0 suspectscore=0 phishscore=0 mlxlogscore=932
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 spamscore=0
+ bulkscore=0 clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-1910280000 definitions=main-2001220175
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- .../selftests/bpf/prog_tests/perf_branches.c  | 106 ++++++++++++++++++
- .../selftests/bpf/progs/test_perf_branches.c  |  39 +++++++
- 2 files changed, 145 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_branches.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_perf_branches.c
+On Wed, Jan 22, 2020 at 02:05:41PM +0100, Jakub Sitnicki wrote:
+> Prepare for cloning listening sockets that have their protocol callbacks
+> overridden by sk_msg. Child sockets must not inherit parent callbacks tha=
+t
+> access state stored in sk_user_data owned by the parent.
+>=20
+> Restore the child socket protocol callbacks before it gets hashed and any
+> of the callbacks can get invoked.
+>=20
+> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+> ---
+>  include/net/tcp.h        |  7 +++++++
+>  net/ipv4/tcp_bpf.c       | 13 +++++++++++++
+>  net/ipv4/tcp_minisocks.c |  2 ++
+>  3 files changed, 22 insertions(+)
+>=20
+> diff --git a/include/net/tcp.h b/include/net/tcp.h
+> index 9dd975be7fdf..ac205d31e4ad 100644
+> --- a/include/net/tcp.h
+> +++ b/include/net/tcp.h
+> @@ -2181,6 +2181,13 @@ int tcp_bpf_recvmsg(struct sock *sk, struct msghdr=
+ *msg, size_t len,
+>  		    int nonblock, int flags, int *addr_len);
+>  int __tcp_bpf_recvmsg(struct sock *sk, struct sk_psock *psock,
+>  		      struct msghdr *msg, int len, int flags);
+> +#ifdef CONFIG_NET_SOCK_MSG
+> +void tcp_bpf_clone(const struct sock *sk, struct sock *child);
+nit.  "struct sock *child" vs ...
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/perf_branches.c b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
-new file mode 100644
-index 000000000000..1d8c3bf3ab39
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
-@@ -0,0 +1,106 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+#include <pthread.h>
-+#include <sched.h>
-+#include <sys/socket.h>
-+#include <test_progs.h>
-+#include "libbpf_internal.h"
-+
-+static void on_sample(void *ctx, int cpu, void *data, __u32 size)
-+{
-+	int pbe_size = sizeof(struct perf_branch_entry);
-+	int ret = *(int *)data, duration = 0;
-+
-+	// It's hard to validate the contents of the branch entries b/c it
-+	// would require some kind of disassembler and also encoding the
-+	// valid jump instructions for supported architectures. So just check
-+	// the easy stuff for now.
-+	CHECK(ret < 0, "read_branches", "err %d\n", ret);
-+	CHECK(ret % pbe_size != 0, "read_branches",
-+	      "bytes written=%d not multiple of struct size=%d\n",
-+	      ret, pbe_size);
-+
-+	*(int *)ctx = 1;
-+}
-+
-+void test_perf_branches(void)
-+{
-+	int err, prog_fd, i, pfd = -1, duration = 0, ok = 0;
-+	const char *file = "./test_perf_branches.o";
-+	const char *prog_name = "perf_event";
-+	struct perf_buffer_opts pb_opts = {};
-+	struct perf_event_attr attr = {};
-+	struct bpf_map *perf_buf_map;
-+	struct bpf_program *prog;
-+	struct bpf_object *obj;
-+	struct perf_buffer *pb;
-+	struct bpf_link *link;
-+	volatile int j = 0;
-+	cpu_set_t cpu_set;
-+
-+	/* load program */
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_PERF_EVENT, &obj, &prog_fd);
-+	if (CHECK(err, "obj_load", "err %d errno %d\n", err, errno)) {
-+		obj = NULL;
-+		goto out_close;
-+	}
-+
-+	prog = bpf_object__find_program_by_title(obj, prog_name);
-+	if (CHECK(!prog, "find_probe", "prog '%s' not found\n", prog_name))
-+		goto out_close;
-+
-+	/* load map */
-+	perf_buf_map = bpf_object__find_map_by_name(obj, "perf_buf_map");
-+	if (CHECK(!perf_buf_map, "find_perf_buf_map", "not found\n"))
-+		goto out_close;
-+
-+	/* create perf event */
-+	attr.size = sizeof(attr);
-+	attr.type = PERF_TYPE_HARDWARE;
-+	attr.config = PERF_COUNT_HW_CPU_CYCLES;
-+	attr.freq = 1;
-+	attr.sample_freq = 4000;
-+	attr.sample_type = PERF_SAMPLE_BRANCH_STACK;
-+	attr.branch_sample_type = PERF_SAMPLE_BRANCH_USER | PERF_SAMPLE_BRANCH_ANY;
-+	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
-+	if (CHECK(pfd < 0, "perf_event_open", "err %d\n", pfd))
-+		goto out_close;
-+
-+	/* attach perf_event */
-+	link = bpf_program__attach_perf_event(prog, pfd);
-+	if (CHECK(IS_ERR(link), "attach_perf_event", "err %ld\n", PTR_ERR(link)))
-+		goto out_close_perf;
-+
-+	/* set up perf buffer */
-+	pb_opts.sample_cb = on_sample;
-+	pb_opts.ctx = &ok;
-+	pb = perf_buffer__new(bpf_map__fd(perf_buf_map), 1, &pb_opts);
-+	if (CHECK(IS_ERR(pb), "perf_buf__new", "err %ld\n", PTR_ERR(pb)))
-+		goto out_detach;
-+
-+	/* generate some branches on cpu 0 */
-+	CPU_ZERO(&cpu_set);
-+	CPU_SET(0, &cpu_set);
-+	err = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set), &cpu_set);
-+	if (err && CHECK(err, "set_affinity", "cpu #0, err %d\n", err))
-+		goto out_free_pb;
-+	for (i = 0; i < 1000000; ++i)
-+		++j;
-+
-+	/* read perf buffer */
-+	err = perf_buffer__poll(pb, 500);
-+	if (CHECK(err < 0, "perf_buffer__poll", "err %d\n", err))
-+		goto out_free_pb;
-+
-+	if(CHECK(!ok, "ok", "not ok\n"))
-+		goto out_free_pb;
-+
-+out_free_pb:
-+	perf_buffer__free(pb);
-+out_detach:
-+	bpf_link__destroy(link);
-+out_close_perf:
-+	close(pfd);
-+out_close:
-+	bpf_object__close(obj);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_perf_branches.c b/tools/testing/selftests/bpf/progs/test_perf_branches.c
-new file mode 100644
-index 000000000000..c210065e21c8
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_perf_branches.c
-@@ -0,0 +1,39 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2019 Facebook
-+
-+#include <linux/ptrace.h>
-+#include <linux/bpf.h>
-+#include "bpf_helpers.h"
-+#include "bpf_trace_helpers.h"
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-+	__uint(key_size, sizeof(int));
-+	__uint(value_size, sizeof(int));
-+} perf_buf_map SEC(".maps");
-+
-+struct fake_perf_branch_entry {
-+	__u64 _a;
-+	__u64 _b;
-+	__u64 _c;
-+};
-+
-+SEC("perf_event")
-+int perf_branches(void *ctx)
-+{
-+	int ret;
-+	struct fake_perf_branch_entry entries[4];
-+
-+	ret = bpf_perf_prog_read_branches(ctx,
-+					  entries,
-+					  sizeof(entries));
-+	/* ignore spurious events */
-+	if (!ret)
-+		return 1;
-+
-+	bpf_perf_event_output(ctx, &perf_buf_map, BPF_F_CURRENT_CPU,
-+			      &ret, sizeof(ret));
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.21.1
+> +#else
+> +static inline void tcp_bpf_clone(const struct sock *sk, struct sock *chi=
+ld)
+> +{
+> +}
+> +#endif
+> =20
+>  /* Call BPF_SOCK_OPS program that returns an int. If the return value
+>   * is < 0, then the BPF op failed (for example if the loaded BPF
+> diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+> index 4f25aba44ead..16060e0893a1 100644
+> --- a/net/ipv4/tcp_bpf.c
+> +++ b/net/ipv4/tcp_bpf.c
+> @@ -582,6 +582,19 @@ static void tcp_bpf_close(struct sock *sk, long time=
+out)
+>  	saved_close(sk, timeout);
+>  }
+> =20
+> +/* If a child got cloned from a listening socket that had tcp_bpf
+> + * protocol callbacks installed, we need to restore the callbacks to
+> + * the default ones because the child does not inherit the psock state
+> + * that tcp_bpf callbacks expect.
+> + */
+> +void tcp_bpf_clone(const struct sock *sk, struct sock *newsk)
+"struct sock *newsk" here.
 
+Could be a follow-up.
+
+Other than that,
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+
+> +{
+> +	struct proto *prot =3D newsk->sk_prot;
+> +
+> +	if (prot->unhash =3D=3D tcp_bpf_unhash)
+> +		newsk->sk_prot =3D sk->sk_prot_creator;
+> +}
+> +
