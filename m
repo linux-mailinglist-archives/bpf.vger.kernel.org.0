@@ -2,72 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 513D2144A00
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2020 03:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E3E144BD9
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2020 07:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727817AbgAVCp5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jan 2020 21:45:57 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:39154 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727141AbgAVCp5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jan 2020 21:45:57 -0500
-Received: by mail-lj1-f194.google.com with SMTP id o11so4751746ljc.6;
-        Tue, 21 Jan 2020 18:45:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7LFWN2WUWKvDDimd9jmFQDhkOBo+JNf9WTQ4koPwnCE=;
-        b=LdhBJKN3y1rQbbLCpaGYom17Zdd4Eu6UzRYW8v9CjzywX6584VlwZF6JgHN36lJ/mt
-         HwveNE0/lcQoFhlU1jzIXaSENZvIjYiqKjT1Fgee33JCnEJ1MWeANn8IpLQkAkDavQoC
-         GWdODCv5AU87OmodDZaH+bnbRe3aGJPulrKcy/8AQ7hQCAToFQMgYdOCRHfRs3pFJOyj
-         Whcti5inXvEiUB8cBzHrpwLrMFj2e0vpytV2DDM1fnYOhmmDGJzRHIXeYiynjpaZQO7k
-         9KVAKbMteWJaNFU1q+fYx9OKXGDjcxtVv7WTVlnajDuP0HIEUNt1/WKDhhN7WhWZZ1Om
-         wOuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7LFWN2WUWKvDDimd9jmFQDhkOBo+JNf9WTQ4koPwnCE=;
-        b=fu/TapOQYxL1vgxvYYMlkq6naP8KMTAWhre6usvZkKlZYBGW4G57wwTUXtCP9iAjUC
-         pHBrN9SkKKUBCR6CUfsoqgbxxW5ENMmep4ceWnYwefO7qBV21yzxMNXzhiNMLx6XVhQs
-         7Fmfh2vQkI60KvvRMMMHgCp6qXQdVVzTr5x5mlfBNekTuGVXUXsZLoKFDTxCsWJoFGBR
-         /dUqCZSIV5O3YgxUP6AmCj4Vr9IxEdMEWsf3YJfTpu0uxUzXVodS671Pg+TOEsnmJuyV
-         Xz8KSEpsQTq/ZNr/Wx+T0UQ4O/IK8RVTnDeFUXT/v49vdipEkDP0Nime48V1IwjDcs1r
-         k14A==
-X-Gm-Message-State: APjAAAXo3TiRGuSyPy/RRosSL0ome5H60enGgqLbdHPbf0f9aCRHrt4H
-        vLpbi5uWwiVou2VCDQCn0jo85QG4DkydzAznZaw=
-X-Google-Smtp-Source: APXvYqxdRV1b6Rhgd3930aoAIy8bcjOeKovNqjij9JHsaR6hGeNcgeva/eklMDKQfLQxa9znUPV5xW5oHvTJwWmvxa8=
-X-Received: by 2002:a2e:b55c:: with SMTP id a28mr17753082ljn.260.1579661155077;
- Tue, 21 Jan 2020 18:45:55 -0800 (PST)
-MIME-Version: 1.0
-References: <20200122024138.3385590-1-ast@kernel.org>
-In-Reply-To: <20200122024138.3385590-1-ast@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 21 Jan 2020 18:45:43 -0800
-Message-ID: <CAADnVQ+HdfXVHnEBMkqbtE2fm2drd+4b8otrJR+Qkqb3_3OGdQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Fix error path under memory pressure
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+        id S1726078AbgAVGmE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jan 2020 01:42:04 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:13846 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726081AbgAVGmE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 22 Jan 2020 01:42:04 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00M6ditV026462
+        for <bpf@vger.kernel.org>; Tue, 21 Jan 2020 22:42:02 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=K5W4ZYysKPs9X0/w3Q/NZdUH+IJdmsuBPP507CnHIpQ=;
+ b=Y4wYlaT0BBLZLICRnPJyi9Rnp7n0034uhvv6yiMkjWQGxXP2aoKbzUKKed2zoK4tmDTm
+ Hcz7QBjNZQF4Y0w/qEXiaVz8XAcXnB4B0mFMbEhmYMyHvrPertbioJBptv9U3KIjuRvv
+ ilCMsLkCXh3OSzi4vTbuxmhCKSb8qYHyNRs= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 2xnwtvn19t-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 21 Jan 2020 22:42:02 -0800
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 21 Jan 2020 22:42:00 -0800
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id 49BF72944F3E; Tue, 21 Jan 2020 22:41:52 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        David Miller <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf-next 0/3] bpf: tcp: Add bpf_cubic example
+Date:   Tue, 21 Jan 2020 22:41:52 -0800
+Message-ID: <20200122064152.1833564-1-kafai@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-17_05:2020-01-16,2020-01-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 mlxscore=0
+ adultscore=0 clxscore=1015 suspectscore=1 priorityscore=1501 phishscore=0
+ impostorscore=0 malwarescore=0 spamscore=0 mlxlogscore=872
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001220059
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 21, 2020 at 6:42 PM Alexei Starovoitov <ast@kernel.org> wrote:
->
-> Restore the 'if (env->cur_state)' check that was incorrectly removed during
-> code move. Under memory pressure env->cur_state can be freed and zeroed inside
-> do_check(). Hence the check is necessary.
->
-> Fixes: 51c39bb1d5d1 ("bpf: Introduce function-by-function verification")
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+This set adds bpf_cubic.c example.  It was separated from the
+earlier BPF STRUCT_OPS series.  Some highlights since the
+last post:
 
-Forgot to add:
-Reported-by: syzbot+b296579ba5015704d9fa@syzkaller.appspotmail.com
+1. It is based on EricD recent fixes to the kernel tcp_cubic. [1]
+2. The bpf jiffies reading helper is inlined by the verifier.
+   Different from the earlier version, it only reads jiffies alone
+   and does not do usecs/jiffies conversion.
+3. The bpf .kconfig map is used to read CONFIG_HZ.
 
-Daniel, pls add while applying.
+[1]: https://patchwork.ozlabs.org/cover/1215066/
+
+v2:
+- Move inlining to fixup_bpf_calls() in patch 1. (Daniel)
+- It is inlined for 64 BITS_PER_LONG and jit_requested
+  as the map_gen_lookup().  Other cases could be
+  considered together with map_gen_lookup() if needed.
+- Use usec resolution in bictcp_update() calculation in patch 3.
+  usecs_to_jiffies() is then removed().  (Eric)
+
+Martin KaFai Lau (3):
+  bpf: Add BPF_FUNC_jiffies64
+  bpf: Sync uapi bpf.h to tools/
+  bpf: tcp: Add bpf_cubic example
+
+ include/linux/bpf.h                           |   1 +
+ include/uapi/linux/bpf.h                      |   9 +-
+ kernel/bpf/core.c                             |   1 +
+ kernel/bpf/helpers.c                          |  12 +
+ kernel/bpf/verifier.c                         |  24 +
+ net/core/filter.c                             |   2 +
+ tools/include/uapi/linux/bpf.h                |   9 +-
+ tools/testing/selftests/bpf/bpf_tcp_helpers.h |  16 +
+ .../selftests/bpf/prog_tests/bpf_tcp_ca.c     |  25 +
+ tools/testing/selftests/bpf/progs/bpf_cubic.c | 544 ++++++++++++++++++
+ 10 files changed, 641 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_cubic.c
+
+-- 
+2.17.1
+
