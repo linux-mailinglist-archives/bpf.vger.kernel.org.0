@@ -2,142 +2,343 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07847147022
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2020 18:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF985147034
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2020 18:59:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728842AbgAWR5G (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jan 2020 12:57:06 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:12716 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728760AbgAWR5F (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 23 Jan 2020 12:57:05 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00NHukcF009571;
-        Thu, 23 Jan 2020 09:56:49 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=JFvD0shaGY2HvJ7Gqrji+2IYQLtSoq+CHdYPM+wq1rQ=;
- b=A1IhVSZtA8sd/ywtaND8CULVSrLii0Iiios0z9e8tM3S58fpZEiUYNkokcfBjwXuZDec
- gAtcpsfFGypJ2vie5pa9JBKjCZ2dPVtKjknKrJyWggQKZOH5UNDAeTCZmUrNPZzymfN/
- ZIKNjeij/7SaLLVJLVUI09z4TKylJ8UWnP8= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 2xqc881a54-13
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 23 Jan 2020 09:56:49 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 23 Jan 2020 09:56:48 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QGI5Gz2mXN5HyWQ8uFKRocY5z0vLWMQDgZtxBlo6s+obY9+TTP9fqc26qsCAjI3xjtCOwHRUOg/OmtBolzNtja9Inzlv8XD6eKSxBMa1B00pt4oPlrFpfdvonIcRAZcJ4rumPTlEJpz6fEP9dQLrJi0YgDWvqlepPOlXtI5bFa+6i4adMMS35yxvfK7WNy84/zOtj9q88z2Gu27FQndgSR2AwpTyMPqYc668k4ljOJzc328mjC7EoS8N4GYS7aQ7EZirSgJLF5NNxWyWoB21MO09QyFVBIiPYBHUabXxYv4PchMkDXoJkMJvNhx7wTXf5dVMNBdfgFk1LbOxfX7BIg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JFvD0shaGY2HvJ7Gqrji+2IYQLtSoq+CHdYPM+wq1rQ=;
- b=n3GP0RlT9Fshv9Okg4oveQUvMuzQnEOBVKfB6MDnvI/gVswcgxaJjQGdbVLpWQbX4dbncTqlyUJlvJ6t0xoHNMwQxD7AOYTeGir5HZYj65/COR051wgr6o98d2knUSjT2lULmHrSr2IcQJhPZsvD/2DugixtNXHVB10kut1c2JSSkkO3pAnsB5ZdosaEqSsP/P9DEfU33ae+zlqwvNgmqf0LCN/GEF/QyL8NL+nFRt8glWAw+lTMdchb1XwBIVMEToGtf/Mcobg8mcBDxPAyfgLO7tthjLtUPRS3avr4+A3fVAiLLExfSwzk7F1rak0UdqvdWCwPqoP6ate28+AHmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JFvD0shaGY2HvJ7Gqrji+2IYQLtSoq+CHdYPM+wq1rQ=;
- b=bfwm8n350p2bucIrwFhQCbpH7GMf/sWL+fsP+BzQdEBdVLkEULAopdjhDChKD5ibBmaTpwJkAZ+EJm28tkldIMAgcIcCwUxgI3Z8j5gic2hY09i60fg6XoyqoqYVcC3stsTOD/k9/18VPIHUVj+L0Ashfi5RCdg4En5lg0COOhE=
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
- MN2PR15MB2719.namprd15.prod.outlook.com (20.179.146.160) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2644.23; Thu, 23 Jan 2020 17:56:47 +0000
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2644.027; Thu, 23 Jan 2020
- 17:56:47 +0000
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:200::2:d66d) by CO2PR18CA0045.namprd18.prod.outlook.com (2603:10b6:104:2::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2665.20 via Frontend Transport; Thu, 23 Jan 2020 17:56:46 +0000
-From:   Martin Lau <kafai@fb.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-CC:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>, "Yonghong Song" <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf 4/4] selftests: bpf: reset global state between
- reuseport test runs
-Thread-Topic: [PATCH bpf 4/4] selftests: bpf: reset global state between
- reuseport test runs
-Thread-Index: AQHV0g6SqqQcnu2MV0ypmzGJv4yvkaf4iNUA
-Date:   Thu, 23 Jan 2020 17:56:47 +0000
-Message-ID: <20200123175644.x3j7jhl5owi34fdo@kafai-mbp.dhcp.thefacebook.com>
-References: <20200123165934.9584-1-lmb@cloudflare.com>
- <20200123165934.9584-5-lmb@cloudflare.com>
-In-Reply-To: <20200123165934.9584-5-lmb@cloudflare.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: CO2PR18CA0045.namprd18.prod.outlook.com
- (2603:10b6:104:2::13) To MN2PR15MB3213.namprd15.prod.outlook.com
- (2603:10b6:208:3d::12)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::2:d66d]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a64cff7e-a7b2-4861-06bd-08d7a02d9da2
-x-ms-traffictypediagnostic: MN2PR15MB2719:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR15MB27191905A2F83AC95DE0B941D50F0@MN2PR15MB2719.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-forefront-prvs: 029174C036
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(136003)(376002)(39860400002)(366004)(346002)(189003)(199004)(9686003)(186003)(6506007)(52116002)(16526019)(2906002)(4326008)(7696005)(55016002)(86362001)(4744005)(5660300002)(66476007)(66556008)(64756008)(66946007)(1076003)(66446008)(81166006)(81156014)(8676002)(8936002)(6916009)(54906003)(478600001)(316002)(71200400001);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB2719;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: LCrlu9bZA5ID+161CfQRBUBTJrVhvjYvGPutXunDJ0LuFLDqA/WzmHq0WEZOEC+3xV710JRm8o8AU8SruEojDKWVINTwkFBF4NMaU64ISoTzgPELr04kgUjMCwIc6Ky67LjxiSzw473RASu1Hf3EcY3v4lXSU9nWv4QcVaXT9KGa786irsQ38UTZEp1qxaHAGJc5u1hxHT94i7w0tavOTbrYRCyoj6dKzuT9XLrT0Ebnc3Bi05bcZlantGIdM4Zvm8kYx/ZjUmoQOcN8g7Nb1NgIfgYUI/kn5JEmHC7U25Di7R9Iqx20iSUtkoR10aEpvWM0cRoxxTNX7TvlnHwp5lt++ZHmtbqlruZD1ozwwOeePfYk+8L+pHTFhH6kB0HIQ/J6tzQAVYb1GEqQ7+zgTRtYhLoqXDStyQHPfpSVmAkmk1MeI5hrltdrEOHBlOV/
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <501BAC2656A9BD4B9D7F9D55BC72CCD5@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1728931AbgAWR7t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jan 2020 12:59:49 -0500
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:44320 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728665AbgAWR7t (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jan 2020 12:59:49 -0500
+Received: by mail-wr1-f68.google.com with SMTP id q10so4109152wrm.11
+        for <bpf@vger.kernel.org>; Thu, 23 Jan 2020 09:59:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=iR3jr3L61KPYRB1VPXCrOLzc7KLrPfoT5IhUgDxXQ34=;
+        b=lPJ+8BtHsdYnwKpSbc/mDntsZlU+WGUXk7nZZyQV3XxeGLntofMWOckXOUGSybSYFA
+         MLnZ08HTwdnVPd1+0rdlQSOu0GwSL6GGfIe2QWHLh08YH58O7K8ccLzaj9YWjji/oKm+
+         eiGhb+7BJGEP78a6SlpKW8Bq1YDBKgN2RCp7Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=iR3jr3L61KPYRB1VPXCrOLzc7KLrPfoT5IhUgDxXQ34=;
+        b=MXohIV/K0AHb33x6+GwDyLQ2u7lFe06Aph1DlqDU7wkv2xLRNjYcP1qSSerzypaUq8
+         mmtLODpkGSfbYP+RkDhnEu/tJZ77MxXP/9w+YsxDO8IpIJJKbhmBHIsez6WKosTqce27
+         8coDTezn4DNgQp4IvOSKxdIqbbWFgz7xNVBnoD8uLk6Dt3f/NNkxe/Z0qYx00qxNj1pn
+         aIKx0e1vhRrNcug68fmwq2SV/PQMkC3ZYsFwgraqZ+nxIXH12Gs5loXNMIRcjZLm52dM
+         3SlfYSg2Mgt11TRG8VGmxr+mqUyXwuAKp9/1XNx1ay3x2WOjfoy8X3oPK4OosfIVVoDw
+         tTDg==
+X-Gm-Message-State: APjAAAXyY9bhQdm315Xaly9vAy83+Si22qBFYY1kOE18GI2u/ltwn2+L
+        LISQObU75WLiT3qOvSJ5Djmnzg==
+X-Google-Smtp-Source: APXvYqyC3aaTCy/sFh2lsm+1ppLBehSwgqiWTfMK4nw3Kxn1CKcUTZqGmjeqy4tLyDhHYPnaSRFCrg==
+X-Received: by 2002:adf:ee45:: with SMTP id w5mr19078835wro.352.1579802384594;
+        Thu, 23 Jan 2020 09:59:44 -0800 (PST)
+Received: from google.com ([2a00:79e0:42:204:8a21:ba0c:bb42:75ec])
+        by smtp.gmail.com with ESMTPSA id m7sm3950205wrr.40.2020.01.23.09.59.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jan 2020 09:59:44 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Thu, 23 Jan 2020 18:59:42 +0100
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     KP Singh <kpsingh@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 04/10] bpf: lsm: Add mutable hooks list for
+ the BPF LSM
+Message-ID: <20200123175942.GA131348@google.com>
+References: <20200123152440.28956-1-kpsingh@chromium.org>
+ <20200123152440.28956-5-kpsingh@chromium.org>
+ <29157a88-7049-906e-fe92-b7a1e2183c6b@schaufler-ca.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: a64cff7e-a7b2-4861-06bd-08d7a02d9da2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jan 2020 17:56:47.6877
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /3DhYisfttcQUHTL2uzzM1g1UqWyD+prGxpofRMT8w/OQCyuToQQSwoQnknYlbOp
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2719
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-01-23_11:2020-01-23,2020-01-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=861
- spamscore=0 priorityscore=1501 impostorscore=0 suspectscore=0 phishscore=0
- adultscore=0 lowpriorityscore=0 mlxscore=0 malwarescore=0 bulkscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-2001230139
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <29157a88-7049-906e-fe92-b7a1e2183c6b@schaufler-ca.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 23, 2020 at 04:59:33PM +0000, Lorenz Bauer wrote:
-> Currently, there is a lot of false positives if a single reuseport test
-> fails. This is because expected_results and the result map are not cleare=
-d.
-Ah, right.  An earlier test failure has ripple effect on the following test=
-s.
+On 23-Jan 09:03, Casey Schaufler wrote:
+> On 1/23/2020 7:24 AM, KP Singh wrote:
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > - The list of hooks registered by an LSM is currently immutable as they
+> >   are declared with __lsm_ro_after_init and they are attached to a
+> >   security_hook_heads struct.
+> > - For the BPF LSM we need to de/register the hooks at runtime. Making
+> >   the existing security_hook_heads mutable broadens an
+> >   attack vector, so a separate security_hook_heads is added for only
+> >   those that ~must~ be mutable.
+> > - These mutable hooks are run only after all the static hooks have
+> >   successfully executed.
+> >
+> > This is based on the ideas discussed in:
+> >
+> >   https://lore.kernel.org/lkml/20180408065916.GA2832@ircssh-2.c.rugged-nimbus-611.internal
+> >
+> > Reviewed-by: Brendan Jackman <jackmanb@google.com>
+> > Reviewed-by: Florent Revest <revest@google.com>
+> > Reviewed-by: Thomas Garnier <thgarnie@google.com>
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+> > ---
+> >  MAINTAINERS             |  1 +
+> >  include/linux/bpf_lsm.h | 72 +++++++++++++++++++++++++++++++++++++++++
+> >  security/bpf/Kconfig    |  1 +
+> >  security/bpf/Makefile   |  2 +-
+> >  security/bpf/hooks.c    | 20 ++++++++++++
+> >  security/bpf/lsm.c      |  7 ++++
+> >  security/security.c     | 25 +++++++-------
+> >  7 files changed, 116 insertions(+), 12 deletions(-)
+> >  create mode 100644 include/linux/bpf_lsm.h
+> >  create mode 100644 security/bpf/hooks.c
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index e2b7f76a1a70..c606b3d89992 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -3209,6 +3209,7 @@ L:	linux-security-module@vger.kernel.org
+> >  L:	bpf@vger.kernel.org
+> >  S:	Maintained
+> >  F:	security/bpf/
+> > +F:	include/linux/bpf_lsm.h
+> >  
+> >  BROADCOM B44 10/100 ETHERNET DRIVER
+> >  M:	Michael Chan <michael.chan@broadcom.com>
+> > diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
+> > new file mode 100644
+> > index 000000000000..57c20b2cd2f4
+> > --- /dev/null
+> > +++ b/include/linux/bpf_lsm.h
+> > @@ -0,0 +1,72 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +
+> > +/*
+> > + * Copyright 2019 Google LLC.
+> > + */
+> > +
+> > +#ifndef _LINUX_BPF_LSM_H
+> > +#define _LINUX_BPF_LSM_H
+> > +
+> > +#include <linux/bpf.h>
+> > +#include <linux/lsm_hooks.h>
+> > +
+> > +#ifdef CONFIG_SECURITY_BPF
+> > +
+> > +/* Mutable hooks defined at runtime and executed after all the statically
+> > + * defined LSM hooks.
+> > + */
+> > +extern struct security_hook_heads bpf_lsm_hook_heads;
+> > +
+> > +int bpf_lsm_srcu_read_lock(void);
+> > +void bpf_lsm_srcu_read_unlock(int idx);
+> > +
+> > +#define CALL_BPF_LSM_VOID_HOOKS(FUNC, ...)			\
+> > +	do {							\
+> > +		struct security_hook_list *P;			\
+> > +		int _idx;					\
+> > +								\
+> > +		if (hlist_empty(&bpf_lsm_hook_heads.FUNC))	\
+> > +			break;					\
+> > +								\
+> > +		_idx = bpf_lsm_srcu_read_lock();		\
+> > +		hlist_for_each_entry(P, &bpf_lsm_hook_heads.FUNC, list) \
+> > +			P->hook.FUNC(__VA_ARGS__);		\
+> > +		bpf_lsm_srcu_read_unlock(_idx);			\
+> > +	} while (0)
+> > +
+> > +#define CALL_BPF_LSM_INT_HOOKS(FUNC, ...) ({			\
+> > +	int _ret = 0;						\
+> > +	do {							\
+> > +		struct security_hook_list *P;			\
+> > +		int _idx;					\
+> > +								\
+> > +		if (hlist_empty(&bpf_lsm_hook_heads.FUNC))	\
+> > +			break;					\
+> > +								\
+> > +		_idx = bpf_lsm_srcu_read_lock();		\
+> > +								\
+> > +		hlist_for_each_entry(P,				\
+> > +			&bpf_lsm_hook_heads.FUNC, list) {	\
+> > +			_ret = P->hook.FUNC(__VA_ARGS__);		\
+> > +			if (_ret && IS_ENABLED(CONFIG_SECURITY_BPF_ENFORCE)) \
+> > +				break;				\
+> > +		}						\
+> > +		bpf_lsm_srcu_read_unlock(_idx);			\
+> > +	} while (0);						\
+> > +	IS_ENABLED(CONFIG_SECURITY_BPF_ENFORCE) ? _ret : 0;	\
+> > +})
+> > +
+> > +#else /* !CONFIG_SECURITY_BPF */
+> > +
+> > +#define CALL_BPF_LSM_INT_HOOKS(FUNC, ...) (0)
+> > +#define CALL_BPF_LSM_VOID_HOOKS(...)
+> > +
+> > +static inline int bpf_lsm_srcu_read_lock(void)
+> > +{
+> > +	return 0;
+> > +}
+> > +static inline void bpf_lsm_srcu_read_unlock(int idx) {}
+> > +
+> > +#endif /* CONFIG_SECURITY_BPF */
+> > +
+> > +#endif /* _LINUX_BPF_LSM_H */
+> > diff --git a/security/bpf/Kconfig b/security/bpf/Kconfig
+> > index a5f6c67ae526..595e4ad597ae 100644
+> > --- a/security/bpf/Kconfig
+> > +++ b/security/bpf/Kconfig
+> > @@ -6,6 +6,7 @@ config SECURITY_BPF
+> >  	bool "BPF-based MAC and audit policy"
+> >  	depends on SECURITY
+> >  	depends on BPF_SYSCALL
+> > +	depends on SRCU
+> >  	help
+> >  	  This enables instrumentation of the security hooks with
+> >  	  eBPF programs.
+> > diff --git a/security/bpf/Makefile b/security/bpf/Makefile
+> > index c78a8a056e7e..c526927c337d 100644
+> > --- a/security/bpf/Makefile
+> > +++ b/security/bpf/Makefile
+> > @@ -2,4 +2,4 @@
+> >  #
+> >  # Copyright 2019 Google LLC.
+> >  
+> > -obj-$(CONFIG_SECURITY_BPF) := lsm.o ops.o
+> > +obj-$(CONFIG_SECURITY_BPF) := lsm.o ops.o hooks.o
+> > diff --git a/security/bpf/hooks.c b/security/bpf/hooks.c
+> > new file mode 100644
+> > index 000000000000..b123d9cb4cd4
+> > --- /dev/null
+> > +++ b/security/bpf/hooks.c
+> > @@ -0,0 +1,20 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +/*
+> > + * Copyright 2019 Google LLC.
+> > + */
+> > +
+> > +#include <linux/bpf_lsm.h>
+> > +#include <linux/srcu.h>
+> > +
+> > +DEFINE_STATIC_SRCU(security_hook_srcu);
+> > +
+> > +int bpf_lsm_srcu_read_lock(void)
+> > +{
+> > +	return srcu_read_lock(&security_hook_srcu);
+> > +}
+> > +
+> > +void bpf_lsm_srcu_read_unlock(int idx)
+> > +{
+> > +	return srcu_read_unlock(&security_hook_srcu, idx);
+> > +}
+> > diff --git a/security/bpf/lsm.c b/security/bpf/lsm.c
+> > index dc9ac03c7aa0..a25a068e1781 100644
+> > --- a/security/bpf/lsm.c
+> > +++ b/security/bpf/lsm.c
+> > @@ -4,6 +4,7 @@
+> >   * Copyright 2019 Google LLC.
+> >   */
+> >  
+> > +#include <linux/bpf_lsm.h>
+> >  #include <linux/lsm_hooks.h>
+> >  
+> >  /* This is only for internal hooks, always statically shipped as part of the
+> > @@ -12,6 +13,12 @@
+> >   */
+> >  static struct security_hook_list bpf_lsm_hooks[] __lsm_ro_after_init = {};
+> >  
+> > +/* Security hooks registered dynamically by the BPF LSM and must be accessed
+> > + * by holding bpf_lsm_srcu_read_lock and bpf_lsm_srcu_read_unlock. The mutable
+> > + * hooks dynamically allocated by the BPF LSM are appeneded here.
+> > + */
+> > +struct security_hook_heads bpf_lsm_hook_heads;
+> > +
+> >  static int __init bpf_lsm_init(void)
+> >  {
+> >  	security_add_hooks(bpf_lsm_hooks, ARRAY_SIZE(bpf_lsm_hooks), "bpf");
+> > diff --git a/security/security.c b/security/security.c
+> > index 30a8aa700557..95a46ca25dcd 100644
+> > --- a/security/security.c
+> > +++ b/security/security.c
+> > @@ -27,6 +27,7 @@
+> >  #include <linux/backing-dev.h>
+> >  #include <linux/string.h>
+> >  #include <linux/msg.h>
+> > +#include <linux/bpf_lsm.h>
+> >  #include <net/flow.h>
+> >  
+> >  #define MAX_LSM_EVM_XATTR	2
+> > @@ -657,20 +658,22 @@ static void __init lsm_early_task(struct task_struct *task)
+> >  								\
+> >  		hlist_for_each_entry(P, &security_hook_heads.FUNC, list) \
+> >  			P->hook.FUNC(__VA_ARGS__);		\
+> > +		CALL_BPF_LSM_VOID_HOOKS(FUNC, __VA_ARGS__);	\
+> 
+> I'm sorry if I wasn't clear on the v2 review.
+> This does not belong in the infrastructure. You should be
+> doing all the bpf_lsm hook processing in you module.
+> bpf_lsm_task_alloc() should loop though all the bpf
+> task_alloc hooks if they have to be handled differently
+> from "normal" LSM hooks.
 
-I notice another embarrassing typo.  Can you also make this change in this =
-fix?
+The BPF LSM does not define static hooks (the ones registered to
+security_hook_heads in security.c with __lsm_ro_after_init) for each
+LSM hook. If it tries to do that one ends with what was in v1:
 
--static enum result expected_results[NR_RESULTS];
-+static __u32 expected_results[NR_RESULTS];
+  https://lore.kernel.org/bpf/20191220154208.15895-7-kpsingh@chromium.org
 
->=20
-> Zero both after individual test runs, which fixes the mentioned false
-> positives.
-Thanks for the fix!
+This gets quite ugly (security/bpf/hooks.h from v1) and was noted by
+the BPF maintainers:
 
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+  https://lore.kernel.org/bpf/20191222012722.gdqhppxpfmqfqbld@ast-mbp.dhcp.thefacebook.com/
+
+As I mentioned, some of the ideas we used here are based on:
+
+  https://lore.kernel.org/lkml/20180408065916.GA2832@ircssh-2.c.rugged-nimbus-611.internal
+
+Which gave each LSM the ability to add mutable hooks at runtime. If
+you prefer we can make this generic and allow the LSMs to register
+mutable hooks with the BPF LSM be the only LSM that uses it (and
+enforce it with a whitelist).
+
+Would this generic approach be something you would consider better
+than just calling the BPF mutable hooks directly?
+
+- KP
+
+> 
+> >  	} while (0)
+> >  
+> > -#define call_int_hook(FUNC, IRC, ...) ({			\
+> > -	int RC = IRC;						\
+> > -	do {							\
+> > -		struct security_hook_list *P;			\
+> > -								\
+> > +#define call_int_hook(FUNC, IRC, ...) ({				\
+> > +	int RC = IRC;							\
+> > +	do {								\
+> > +		struct security_hook_list *P;				\
+> >  		hlist_for_each_entry(P, &security_hook_heads.FUNC, list) { \
+> > -			RC = P->hook.FUNC(__VA_ARGS__);		\
+> > -			if (RC != 0)				\
+> > -				break;				\
+> > -		}						\
+> > -	} while (0);						\
+> > -	RC;							\
+> > +			RC = P->hook.FUNC(__VA_ARGS__);			\
+> > +			if (RC != 0)					\
+> > +				break;					\
+> > +		}							\
+> > +		if (RC == 0)						\
+> > +			RC = CALL_BPF_LSM_INT_HOOKS(FUNC, __VA_ARGS__);	\
+> > +	} while (0);							\
+> > +	RC;								\
+> >  })
+> >  
+> >  /* Security operations */
