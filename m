@@ -2,162 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C8E146197
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2020 06:39:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3031461E6
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2020 07:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725989AbgAWFjc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jan 2020 00:39:32 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:41497 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbgAWFjc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jan 2020 00:39:32 -0500
-Received: by mail-pg1-f196.google.com with SMTP id x8so779044pgk.8;
-        Wed, 22 Jan 2020 21:39:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=522Me73twh2nTYCu4hIkEamQ+hvQqmKh9bh03C17Xgg=;
-        b=biECtVc3WF7mpVNb+rOtM9ClESkGxqr3sPZxfkJXyVFFCz2PuyrsZumnWXHcxWFEkv
-         PiWdXpD+QVyh5RwykXpvo/y9y5ozaEgLY9CWRAo+I/YV7+63njkmfn/H4Vlvix2PEL3h
-         rt1oCzyhMrF1MHd5LQxlN3yqZsMDWwWPiJNnQa4yy6ypzQbNfHr4hUQku+OjfTfLcrqB
-         6qdhuMqAeZVa4NtCa/nR7OuTvDoVTV6gUCdY0QBw/Zdv3O5vB0UjrG0OzUJNBxyhJqZx
-         ylg39RWYArBduTmQdfeILP5Fw+TyqG8E5G6uoKY+YJSOK94zqCEY3DraD4LFdmLO21aa
-         AhhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=522Me73twh2nTYCu4hIkEamQ+hvQqmKh9bh03C17Xgg=;
-        b=pO9L/bIT0cMn1aQIKV86ouuHwrFcK3ARAgQ25UE0/eqvQgZYxYqkxbk55yxIJfhsoV
-         vs/dI5eQw/HkxzPnpe6dHyfddZoD1EhWTtGykFr2oGV/ujjlwEJsRvLcvqJoROUba3YV
-         JNUqoI55t9Te7KzW6dSl8xTFow2FHVkqnnvLlwRrgqR1zYPgQaS6X4ADtWpfBglZ7GyF
-         ScsijHJ/0+kQBndJb80nBSPsTJwQ5ESkn4klDrIt9ZMwnUuvWF/9ixFDluftsxdSg3+3
-         PxXVo8Mb0KVbzNd/DaQKja61iufx9MLn18W/7UQ1WS2N5QPSqccpQ9JwXj3f/hMXnJhb
-         rmmA==
-X-Gm-Message-State: APjAAAUOVG1a58o0QJKAvfPIHk+vzPN9ClcAn6lgJLAnFVbOh9EgYzz/
-        /RlFESjudt1SzC8bDB63qwncjoYp
-X-Google-Smtp-Source: APXvYqwvYftf6cYBhtE6CDjxHWZ49NFhmJOGdHzSWMM/8zK4aWYWOaWtHe6orEcvdndyPYRDaJilMg==
-X-Received: by 2002:a63:ea4b:: with SMTP id l11mr2087578pgk.357.1579757971574;
-        Wed, 22 Jan 2020 21:39:31 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id b126sm927914pga.19.2020.01.22.21.39.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jan 2020 21:39:30 -0800 (PST)
-Date:   Wed, 22 Jan 2020 21:39:21 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, songliubraving@fb.com, yhs@fb.com,
-        andriin@fb.com
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, peterz@infradead.org, mingo@redhat.com,
-        acme@kernel.org
-Message-ID: <5e293189e298d_1bc42ab516c865b8a1@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200122202220.21335-2-dxu@dxuuu.xyz>
-References: <20200122202220.21335-1-dxu@dxuuu.xyz>
- <20200122202220.21335-2-dxu@dxuuu.xyz>
-Subject: RE: [PATCH v2 bpf-next 1/3] bpf: Add bpf_perf_prog_read_branches()
- helper
+        id S1726442AbgAWGNe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jan 2020 01:13:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57356 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725938AbgAWGNe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jan 2020 01:13:34 -0500
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3611F24655;
+        Thu, 23 Jan 2020 06:13:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1579760014;
+        bh=HgwXTG7/lJmoAGRVP88B5zaZHvQNCymL2+iVP33OqMQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ex0JaWa4OWOF+IKz1tBJ8l/tTXPp21JrNC5XYh4u24KYHeHf+5ZPuLW36/VI8IdeW
+         PwkV2CJqwI6V3Lyn3ZrTgDcYziqxmt0l75rfQ/DtD3rQQrKeMmIea6amfj0+h8doHq
+         FgCGYODIBR1HDnQODYbeaUXAezYDXYgwlVO+Ko4I=
+Date:   Thu, 23 Jan 2020 15:13:28 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     paulmck@kernel.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>, joel@joelfernandes.org,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [RFT PATCH 04/13] kprobes: Make optimizer delay to 1 second
+Message-Id: <20200123151328.f977525ea447da3b7fe4256d@kernel.org>
+In-Reply-To: <20200123022647.GO2935@paulmck-ThinkPad-P72>
+References: <157918584866.29301.6941815715391411338.stgit@devnote2>
+        <157918589199.29301.4419459150054220408.stgit@devnote2>
+        <20200121192905.0f001c61@gandalf.local.home>
+        <20200122162317.0299cf722dd618147d97e89c@kernel.org>
+        <20200122071115.28e3c763@gandalf.local.home>
+        <20200122221240.cef447446785f46862fee97a@kernel.org>
+        <20200122165432.GH2935@paulmck-ThinkPad-P72>
+        <20200123103334.6e1821625643d007297ecf94@kernel.org>
+        <20200123022647.GO2935@paulmck-ThinkPad-P72>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Xu wrote:
-> Branch records are a CPU feature that can be configured to record
-> certain branches that are taken during code execution. This data is
-> particularly interesting for profile guided optimizations. perf has had
-> branch record support for a while but the data collection can be a bit
-> coarse grained.
-> 
-> We (Facebook) have seen in experiments that associating metadata with
-> branch records can improve results (after postprocessing). We generally
-> use bpf_probe_read_*() to get metadata out of userspace. That's why bpf
-> support for branch records is useful.
-> 
-> Aside from this particular use case, having branch data available to bpf
-> progs can be useful to get stack traces out of userspace applications
-> that omit frame pointers.
-> 
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
->  include/uapi/linux/bpf.h | 13 ++++++++++++-
->  kernel/trace/bpf_trace.c | 31 +++++++++++++++++++++++++++++++
->  2 files changed, 43 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 033d90a2282d..7350c5be6158 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -2885,6 +2885,16 @@ union bpf_attr {
->   *		**-EPERM** if no permission to send the *sig*.
->   *
->   *		**-EAGAIN** if bpf program can try again.
-> + *
-> + * int bpf_perf_prog_read_branches(struct bpf_perf_event_data *ctx, void *buf, u32 buf_size)
-> + * 	Description
-> + * 		For en eBPF program attached to a perf event, retrieve the
-> + * 		branch records (struct perf_branch_entry) associated to *ctx*
-> + * 		and store it in	the buffer pointed by *buf* up to size
-> + * 		*buf_size* bytes.
+On Wed, 22 Jan 2020 18:26:47 -0800
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-It seems extra bytes in buf will be cleared. The number of bytes
-copied is returned so I don't see any reason to clear the extra bytes I would
-just let the BPF program do this if they care. But it should be noted in
-the description at least.
-
-> + * 	Return
-> + *		On success, number of bytes written to *buf*. On error, a
-> + *		negative value.
->   */
->  #define __BPF_FUNC_MAPPER(FN)		\
->  	FN(unspec),			\
-> @@ -3004,7 +3014,8 @@ union bpf_attr {
->  	FN(probe_read_user_str),	\
->  	FN(probe_read_kernel_str),	\
->  	FN(tcp_send_ack),		\
-> -	FN(send_signal_thread),
-> +	FN(send_signal_thread),		\
-> +	FN(perf_prog_read_branches),
->  
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
->   * function eBPF program intends to call
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 19e793aa441a..24c51272a1f7 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1028,6 +1028,35 @@ static const struct bpf_func_proto bpf_perf_prog_read_value_proto = {
->           .arg3_type      = ARG_CONST_SIZE,
->  };
->  
-> +BPF_CALL_3(bpf_perf_prog_read_branches, struct bpf_perf_event_data_kern *, ctx,
-> +	   void *, buf, u32, size)
-> +{
-> +	struct perf_branch_stack *br_stack = ctx->data->br_stack;
-> +	u32 to_copy = 0, to_clear = size;
-> +	int err = -EINVAL;
-> +
-> +	if (unlikely(!br_stack))
-> +		goto clear;
-> +
-> +	to_copy = min_t(u32, br_stack->nr * sizeof(struct perf_branch_entry), size);
-> +	to_clear -= to_copy;
-> +
-> +	memcpy(buf, br_stack->entries, to_copy);
-> +	err = to_copy;
-> +clear:
-> +	memset(buf + to_copy, 0, to_clear);
-
-Here, why do this at all? If the user cares they can clear the bytes
-directly from the BPF program. I suspect its probably going to be
-wasted work in most cases. If its needed for some reason provide 
-a comment with it.
-
-> +	return err;
-> +}
-
+> > Anyway, without this update, I added a printk to count optimizer
+> > queue-length and found that all optimizer call with a single kprobe
+> > on the quenes. I think this depends on the machine, but as far as
+> > I tested on 8-threads qemu x86, shows this result...
+> > 
+> > Probes: 256 kprobe_events
+> > Enable events
+> > real	0m 0.02s
+> > user	0m 0.00s
+> > sys	0m 0.02s
+> > [   17.730548] Queue-update: 180, skipped, Total Queued: 180
+> > [   17.739445] Queue-update: 1, go, Total Queued: 180
+> > Disable events
 [...]
+> > [   41.135594] Queue-update: 1, go, Total Queued: 1
+> > real	0m 21.40s
+> > user	0m 0.00s
+> > sys	0m 0.04s
+> 
+> So 21.4s/256 = 84 milliseconds per event disable, correct?
+
+Actually, it seems only 172 probes are on the unoptimized list, so
+the number will be a bit different.
+
+Anyway, that above elapsed time is including non-batch optimizer
+working time as below.
+
+(1) start looping on probe events
+  (2) disabling-kprobe
+    (2.1) wait kprobe_mutex if optimizer is running
+    (2.2) if the kprobe is on optimized kprobe, queue it to unoptimizing
+          list and kick optimizer with 5 jiffies delay
+  (4) unlink enabled event
+  (5) wait synchronize_rcu()
+  (6) optimizer start optimization before finishing (5)
+(7) goto (1)
+
+I think the disabling performance issue came from (6) (and (2.1)).
+Thus, if we change (2.2) to 1 HZ jiffies, the optimizer will start
+after some loops are done. (and the optimizer detects "active"
+queuing, postpone the process)
+
+> 
+> It might be worth trying synchronize_rcu_expedited() just as an experiment
+> to see if it speeds things up significantly.
+
+Would you mean replacing synchronize_rcu() in disabling loop, or
+replacing synchronize_rcu_tasks() in optimizer?
+
+I think that is not a root cause of this behavior, since if we
+make the optimizer delay to 1 sec, it seems enough for making
+it a batch operation. See below, this is the result with patched
+kernel (1 HZ delay).
+
+Probes: 256 kprobe_events
+Enable events
+real	0m 0.07s
+user	0m 0.00s
+sys	0m 0.07s
+[   19.191181] Queue-update: 180, skipped, Total Queued: 180
+Disable events
+[   20.214966] Queue-update: 1, go, Total Queued: 172
+[   21.302924] Queue-update: 86, skipped, Total Queued: 86
+real	0m 2.11s
+user	0m 0.00s
+sys	0m 0.03s
+[   22.327173] Queue-update: 87, skipped, Total Queued: 172
+[   23.350933] Queue-update: 1, go, Total Queued: 172
+Remove events
+real	0m 2.13s
+user	0m 0.02s
+sys	0m 0.02s
+
+As you can see, the optimizer ran outside of the disabling loop.
+In that case, it is OK to synchronize RCU tasks in the optimizer
+because it just runs *once* per multiple probe events.
+
+From above result, 86 probes are disabled per 1 sec delay.
+Each probe disabling took 11-12 msec in average. So 
+(HZ / 10) can also be good. (But note that the optimizer
+will retry to run each time until the disabling loop is
+finished.)
+
+BTW, testing kernel was build with HZ=1000, if HZ=250 or HZ=100,
+the result will be different in the current code. So I think
+we should use HZ-based delay instead of fixed number.
+
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
