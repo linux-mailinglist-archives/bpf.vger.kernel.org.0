@@ -2,46 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE531465E8
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2020 11:41:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA31514663F
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2020 12:00:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726026AbgAWKlj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jan 2020 05:41:39 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:42296 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726103AbgAWKlj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jan 2020 05:41:39 -0500
-Received: by mail-wr1-f66.google.com with SMTP id q6so2473964wro.9
-        for <bpf@vger.kernel.org>; Thu, 23 Jan 2020 02:41:38 -0800 (PST)
+        id S1726191AbgAWK7u (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jan 2020 05:59:50 -0500
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:34726 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726780AbgAWK7t (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jan 2020 05:59:49 -0500
+Received: by mail-wr1-f68.google.com with SMTP id t2so2601687wrr.1
+        for <bpf@vger.kernel.org>; Thu, 23 Jan 2020 02:59:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=references:user-agent:from:to:cc:subject:in-reply-to:date
          :message-id:mime-version;
-        bh=PCF4Ub7exwZ2F4VQkOoMVUGSJpY9e7zHhZ/DswOikH0=;
-        b=zF8bcZxXCVeqCsjx9Osb08zuuFzMDrSNCOo34vPNCnfGbIYSRi2yqAQBqYYrZo98DZ
-         1C0rjIk6I7LefkMgrbR7AVAtVOoYaEXB5TuVS7h1cf1X6FwBbVsHee/HpOk3Lq5+ZY5z
-         gptyf3FluRVzG6km5SXaLqdIPDMcgHD8ZTuhs=
+        bh=FJwE81HpA84lwzOusct7pS7KFJL6gUrNtfHJutZ9uzk=;
+        b=LmlbEG15fxTH+EZCc4MvonGzBsLLALHaHWY63qyFwRjj1CmatoUXajjC9WE+SS0Oj/
+         ZgXmAKPPVNDwxSGHjxesqkmABZZhxlG64rZ2DfDlcgY9cV8fPg+TCz1YbVHutgtyQbHj
+         aEkgX7r1ryj1R7Mx6229GJXWiiikvKby6+lfo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:references:user-agent:from:to:cc:subject
          :in-reply-to:date:message-id:mime-version;
-        bh=PCF4Ub7exwZ2F4VQkOoMVUGSJpY9e7zHhZ/DswOikH0=;
-        b=bf3RQWPe7XfzhkiiCAMNeJgrpvH0oQDlYGdCnCMslmjk53k7G9AMK2XhEu3syPMt+5
-         d1T5xMLDtiUmG+cwpA6DuDLiup9Jrj0/OuHbdV9bOpWOqw21ufGrhrUc8HLdb/olufap
-         ro081O3cLyGZTMISWhGJa+N2yHAR8Vcw1f701it8UVmueBKtFPdw1Sm+21d8/JRcD9oi
-         /KD3IcPcFIVmXkqLGaIVkSwtrCiUyM0uBhboeAx4M9de8dzxLNa0c3Ss/OO8mS6mOuve
-         bH/8R3F9sga+xwfacKpTmgcoylPeGCxMUj5T2qzoVtY9j7ZQe/w+oLwqsINGv8F9xkby
-         Iqjw==
-X-Gm-Message-State: APjAAAUNxZRo/5SRDDxt8lOjGCSOypK/jJ9EmwLguQuQ1s2gzPSEyoiJ
-        D27/hGV38UD3jR5mFxw7yOgKqw==
-X-Google-Smtp-Source: APXvYqyLUB6STuJK4xcei+2wB3vfmhWn5Bjei0w4teATXp+ke7w3+vFT80bx833CA/gqVvbv8Btuqw==
-X-Received: by 2002:adf:c54e:: with SMTP id s14mr16202347wrf.385.1579776097381;
-        Thu, 23 Jan 2020 02:41:37 -0800 (PST)
+        bh=FJwE81HpA84lwzOusct7pS7KFJL6gUrNtfHJutZ9uzk=;
+        b=Rzjh4Zvw0TwmRpc0ScXojGIMslsvTmCWJYUlqNc/MUiZ2gb31WOb+dZ46PV9jZ19VJ
+         DVi/dbLzM/52BO+GrS2xBpQ75DGitmdhNLCGuik6rWy3wfnhefHTHZHQTDFPFNUJf8qg
+         gMw+TpLdPfQZDspNghDISunMM1mNob47ukzo4ronObQyMWiR1XCzoWCslscdklL/sFrS
+         kpx9j2il0GWuvh/3Nc2NR/DcTSuZPWtHjBNDGobELESiOi3ttGpiK9GMvPHyPTTnFsTt
+         A+s7Vp2Dj2Ql14iiKzmUQI9gZOLsvonNYMbR8LbX39n/FM7+Abvl8xddO21UpjU+Xrz5
+         HufA==
+X-Gm-Message-State: APjAAAX/IPrJubJbaijsXcIzS7y0tej6PWIMqZF4zWIBWhfsJE1kVf0x
+        PLYO6GsOriOiiF3I9S+DVxDUbw==
+X-Google-Smtp-Source: APXvYqxid25417v8hQ2sSme55LT5quaEd6yJ7JAaEFNKzPFWdKDJTNYVrrOW7hWgUg8CafqZZ+3aeQ==
+X-Received: by 2002:adf:9c8f:: with SMTP id d15mr17712629wre.390.1579777187279;
+        Thu, 23 Jan 2020 02:59:47 -0800 (PST)
 Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id w17sm2414153wrt.89.2020.01.23.02.41.36
+        by smtp.gmail.com with ESMTPSA id z8sm2539183wrq.22.2020.01.23.02.59.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jan 2020 02:41:36 -0800 (PST)
-References: <20200122130549.832236-1-jakub@cloudflare.com> <20200122130549.832236-6-jakub@cloudflare.com> <20200122205157.b7ljnymrumplfahk@kafai-mbp.dhcp.thefacebook.com>
+        Thu, 23 Jan 2020 02:59:46 -0800 (PST)
+References: <20200122130549.832236-1-jakub@cloudflare.com> <20200122130549.832236-11-jakub@cloudflare.com> <20200122225351.hajnt4u7au24mj5g@kafai-mbp.dhcp.thefacebook.com>
 User-agent: mu4e 1.1.0; emacs 26.3
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     Martin Lau <kafai@fb.com>
@@ -52,10 +52,10 @@ Cc:     "bpf\@vger.kernel.org" <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         "John Fastabend" <john.fastabend@gmail.com>,
         Lorenz Bauer <lmb@cloudflare.com>
-Subject: Re: [PATCH bpf-next v3 05/12] bpf, sockmap: Allow inserting listening TCP sockets into sockmap
-In-reply-to: <20200122205157.b7ljnymrumplfahk@kafai-mbp.dhcp.thefacebook.com>
-Date:   Thu, 23 Jan 2020 11:41:36 +0100
-Message-ID: <877e1i315r.fsf@cloudflare.com>
+Subject: Re: [PATCH bpf-next v3 10/12] net: Generate reuseport group ID on group creation
+In-reply-to: <20200122225351.hajnt4u7au24mj5g@kafai-mbp.dhcp.thefacebook.com>
+Date:   Thu, 23 Jan 2020 11:59:46 +0100
+Message-ID: <875zh230bh.fsf@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
@@ -63,23 +63,89 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 22, 2020 at 09:52 PM CET, Martin Lau wrote:
-> On Wed, Jan 22, 2020 at 02:05:42PM +0100, Jakub Sitnicki wrote:
->> In order for sockmap type to become a generic collection for storing TCP
->> sockets we need to loosen the checks during map update, while tightening
->> the checks in redirect helpers.
->>
->> Currently sockmap requires the TCP socket to be in established state (or
->> transitioning out of SYN_RECV into established state when done from BPF),
-> If I read the SYN_RECV changes correctly,
-> does it mean BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB currently not work?
+On Wed, Jan 22, 2020 at 11:53 PM CET, Martin Lau wrote:
+> On Wed, Jan 22, 2020 at 02:05:47PM +0100, Jakub Sitnicki wrote:
+>> Commit 736b46027eb4 ("net: Add ID (if needed) to sock_reuseport and expose
+>> reuseport_lock") has introduced lazy generation of reuseport group IDs that
+>> survive group resize.
+>> 
+>> By comparing the identifier we check if BPF reuseport program is not trying
+>> to select a socket from a BPF map that belongs to a different reuseport
+>> group than the one the packet is for.
+>> 
+>> Because SOCKARRAY used to be the only BPF map type that can be used with
+>> reuseport BPF, it was possible to delay the generation of reuseport group
+>> ID until a socket from the group was inserted into BPF map for the first
+>> time.
+>> 
+>> Now that SOCKMAP can be used with reuseport BPF we have two options, either
+>> generate the reuseport ID on map update, like SOCKARRAY does, or allocate
+>> an ID from the start when reuseport group gets created.
+>> 
+>> This patch goes the latter approach to keep SOCKMAP free of calls into
+>> reuseport code. This streamlines the reuseport_id access as its lifetime
+>> now matches the longevity of reuseport object.
+>> 
+>> The cost of this simplification, however, is that we allocate reuseport IDs
+>> for all SO_REUSEPORT users. Even those that don't use SOCKARRAY in their
+>> setups. With the way identifiers are currently generated, we can have at
+>> most S32_MAX reuseport groups, which hopefully is sufficient.
+> Not sure if it would be a concern.  I think it is good as is.
+> For TCP, that would mean billion different ip:port listening socks
+> in inet_hashinfo.
+>
+> If it came to that, another idea is to use a 64bit reuseport_id which
+> practically won't wrap around.  It could use the very first sk->sk_cookie
+> as the reuseport_id.  All the ida logic will go away also in the expense
+> of +4 bytes.
 
-It works because before this series we didn't have sk_state checks in
-bpf_sock_{hash,map}_update helpers.
+Thanks for the idea. I'll add it to the patch description.
 
-It was a surprise to find out that BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB
-happens when socket is still in SYN_RECV state, though.
+>
+>> 
+>> Another change is that we now always call into SOCKARRAY logic to unlink
+>> the socket from the map when unhashing or closing the socket. Previously we
+>> did it only when at least one socket from the group was in a BPF map.
+>> 
+>> It is worth noting that this doesn't conflict with SOCKMAP tear-down in
+>> case a socket is in a SOCKMAP and belongs to a reuseport group. SOCKMAP
+>> tear-down happens first:
+>> 
+>>   prot->unhash
+>>   `- tcp_bpf_unhash
+>>      |- tcp_bpf_remove
+>>      |  `- while (sk_psock_link_pop(psock))
+>>      |     `- sk_psock_unlink
+>>      |        `- sock_map_delete_from_link
+>>      |           `- __sock_map_delete
+>>      |              `- sock_map_unref
+>>      |                 `- sk_psock_put
+>>      |                    `- sk_psock_drop
+>>      |                       `- rcu_assign_sk_user_data(sk, NULL)
+>>      `- inet_unhash
+>>         `- reuseport_detach_sock
+>>            `- bpf_sk_reuseport_detach
+>>               `- WRITE_ONCE(sk->sk_user_data, NULL)
+> Thanks for the details.
+>
+> [ ... ]
+>
+>> @@ -200,12 +189,10 @@ void reuseport_detach_sock(struct sock *sk)
+>>  	reuse = rcu_dereference_protected(sk->sk_reuseport_cb,
+>>  					  lockdep_is_held(&reuseport_lock));
+>>  
+>> -	/* At least one of the sk in this reuseport group is added to
+>> -	 * a bpf map.  Notify the bpf side.  The bpf map logic will
+>> -	 * remove the sk if it is indeed added to a bpf map.
+>> +	/* Notify the bpf side. The sk may be added to bpf map. The
+>> +	 * bpf map logic will remove the sk from the map if indeed.
+> s/indeed/needed/ ?
+>
+> I think it will be good to have a few words here like, that is needed
+> by sockarray but not necessary for sockmap which has its own ->unhash
+> to remove itself from the map.
 
-Fortunately selftests/bpf/test_sockmap tests cover it.
 
--jkbs
+Yeah, I didn't do it justice. Will expand the comment.
+
+[...]
