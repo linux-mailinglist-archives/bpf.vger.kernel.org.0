@@ -2,41 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84926147317
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2020 22:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 845DB14731B
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2020 22:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729537AbgAWVXl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jan 2020 16:23:41 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:35833 "EHLO
+        id S1729543AbgAWVXt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jan 2020 16:23:49 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:44453 "EHLO
         new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729508AbgAWVXk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 23 Jan 2020 16:23:40 -0500
+        by vger.kernel.org with ESMTP id S1728765AbgAWVXl (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 23 Jan 2020 16:23:41 -0500
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 2FB604765;
-        Thu, 23 Jan 2020 16:23:39 -0500 (EST)
+        by mailnew.nyi.internal (Postfix) with ESMTP id 9B82A5F91;
+        Thu, 23 Jan 2020 16:23:40 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 23 Jan 2020 16:23:39 -0500
+  by compute4.internal (MEProxy); Thu, 23 Jan 2020 16:23:40 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=1pOY6NnXuTrtO
-        rNBPH2A+RlZvbQQ49qUow5adELd1XU=; b=bIkCNs2sMGQHoDxOjQQ/GYS9JH1+R
-        fL7+0fvIaS634Kpn3S0JK2jsNncgQ4/cvwz4VrF/NHRMpIrPXhAPB0lLv3a0iCRG
-        XLt6HYZtD0YRlg5Hl0n+IfpJVbwxGf1VMEbPOYRGbJCXBqDyUsmBroSuuw+ffAb3
-        G51JUnlliTZGidl7RCOY8ZZea6f2IsQsCrA+pTDE5a3kbEwX7o2WsXFyjHevNCjX
-        2A1T1btS4DEflrNrjJokE/KWe4LvGqW6/VZ+3h3oX54Ukk1V/kjqC7XTW2G3A6n2
-        tzl0npEaq92Ao46xdhwu0fFifIvznRkGcBN6ysDOPeLJGtOsMt9aIhggw==
+        :mime-version:content-transfer-encoding; s=fm2; bh=i2TbaaLRbCuDS
+        5CihmwELlkML+zGJC6EN5XnNvRO3WY=; b=BmcQl186+HHoH0Gc6tj0f2bHqulnA
+        o13G5rDPgIg8yUEvyinOXBnrnQktIHKXMU9vzaujM6BeWpG/BghQv2bPl+L4VoM2
+        eFLg3sFHrdRdFYcmLiIaF8s9RmJjrl0DfmgI/hqnn+AZQWphvPoPnQtVR8a2/Z8O
+        Wf899bJkjtH8oeFkv67N9U2CSgYzUE8lQZ2TVs9buT4o9OFYk/17bw4A17ybKBkp
+        bJju5rZgr8vLteVBBCjpijU9nBw/G/XA/wHX/MF1XZwsKxaBZXxn3PIRFfpOBMYN
+        etLuSXpS3IJ/vrFVXx1kxJtQX7bVFFJpQs8J/0/3US+vOEnN+27ncaAuw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=1pOY6NnXuTrtOrNBPH2A+RlZvbQQ49qUow5adELd1XU=; b=UgcTrf8/
-        LPmX82x0/micOOnkGzWYbcyTU7I1E1cH4xbJN0u7H1XDZGWo5JRJmiwrrcr0Wzj5
-        0CXSlNEjl3LK+WAQx+AlwFj++MOiNGWYLOWCgUrHu4UoaWaT+j4vJ7AIDcdAC8f6
-        fdah3MrupbPwHO735zWDv5F8avg+3usJW4kiMVbBASTSG/0MdHApE6SPaGXJ/qQW
-        jRcu9g0Ui0B1Dkwnd/QUxCNmZjVIW4yxy0Rn9hGZd+kNbpY6NbxCWgyvIquJTouK
-        HNLxdWni/23GUjWIiYXt9GvktahhEQQI5LAfV31Y2gh24pMiFERQVkge+KUv7ePM
-        qa4wYhCoEmTXWg==
-X-ME-Sender: <xms:2w4qXkgH8LRrMjVxJQUN20lIIyjtVMsW5kr4e_WGBiDq71p3AWM3Ow>
+        fm1; bh=i2TbaaLRbCuDS5CihmwELlkML+zGJC6EN5XnNvRO3WY=; b=NYWc3pN9
+        GCDQoQoAiu5AwTwk2oN3HZ/yuhYEOHs3bTUKDQ5TeWAWoiKU1BBBdE0mWL0to4o8
+        2c3y6eBNm6D3XYouCYfj/Hh3NeevNSIXI8k++MTAwvhAizZ8mPcWeGwr0RGASW5W
+        vuBEoWp/QuGnYRDUn/MYoBSq0QMGf0XTpbYx3CleN1dWqEbiGCrRbuClzfyZtNFD
+        eS60/jzZPTI8dSQqeDUXUPcYomUVd5g7rgcyjwn2o3YV/UkaehAffyYp0cT103/z
+        PydzRQndcbc+8npMt9iIUA393FX1ghoofKHH6Gt3pQZAxbHISz1DRNMUXAxcnDeg
+        HBAOcUKglln/Tg==
+X-ME-Sender: <xms:3A4qXmLhrsyAx6N-_869faNiwUxAXs6OFaNhwKMH1zwkkVT1y4L_Lw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrvddvgdelvdcutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephffvuf
@@ -44,22 +44,22 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrvddvgdelvdcutefuodetggdote
     uhesugiguhhuuhdrgiihiieqnecukfhppeduleelrddvtddurdeigedrudefheenucevlh
     hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihu
     uhhurdighiii
-X-ME-Proxy: <xmx:2w4qXs3mVXvdT-LSpHn7gt-NQEdqZjWVtK6gLrSvrA2Cc3RnRWxKRg>
-    <xmx:2w4qXur6Hck9-rEHZW0R5FYzU_LmkDg6Yncg4DXnvsmLPZk5zs2INg>
-    <xmx:2w4qXh1q8jMwzDL3nUGpMKmCsjbg_93uK1zqbCppkLKeUuLR_5keFw>
-    <xmx:2w4qXo4ciK6OoiKFrDgZrcDPihY4-X89hQAdSaTbNVP2SZBCsxeovA>
+X-ME-Proxy: <xmx:3A4qXib4cKgwBEPTaPhHeSWSrgrgvzGS8tMXrk6YzUNMHUEnah5BkQ>
+    <xmx:3A4qXhu5vq9tgHSe4IeW71aDg-irovLu4hvVVvGZHBrSDgS1q4Ccwg>
+    <xmx:3A4qXvsbZky1OzTelpkwP1KE1cweoMztidZJu5I6BgQtkBICLSgzsQ>
+    <xmx:3A4qXna1eMZAb76yBrVBxi0nZ_4UuZonF57hubU5lIcNvuXduY5yHw>
 Received: from dlxu-fedora-R90QNFJV.thefacebook.com (unknown [199.201.64.135])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BB0883060ACE;
-        Thu, 23 Jan 2020 16:23:37 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 301283060AA8;
+        Thu, 23 Jan 2020 16:23:39 -0500 (EST)
 From:   Daniel Xu <dxu@dxuuu.xyz>
 To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         songliubraving@fb.com, yhs@fb.com, andriin@fb.com
 Cc:     Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
         kernel-team@fb.com, peterz@infradead.org, mingo@redhat.com,
         acme@kernel.org
-Subject: [PATCH v3 bpf-next 1/3] bpf: Add bpf_perf_prog_read_branches() helper
-Date:   Thu, 23 Jan 2020 13:23:10 -0800
-Message-Id: <20200123212312.3963-2-dxu@dxuuu.xyz>
+Subject: [PATCH v3 bpf-next 2/3] tools/bpf: Sync uapi header bpf.h
+Date:   Thu, 23 Jan 2020 13:23:11 -0800
+Message-Id: <20200123212312.3963-3-dxu@dxuuu.xyz>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200123212312.3963-1-dxu@dxuuu.xyz>
 References: <20200123212312.3963-1-dxu@dxuuu.xyz>
@@ -70,31 +70,15 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Branch records are a CPU feature that can be configured to record
-certain branches that are taken during code execution. This data is
-particularly interesting for profile guided optimizations. perf has had
-branch record support for a while but the data collection can be a bit
-coarse grained.
-
-We (Facebook) have seen in experiments that associating metadata with
-branch records can improve results (after postprocessing). We generally
-use bpf_probe_read_*() to get metadata out of userspace. That's why bpf
-support for branch records is useful.
-
-Aside from this particular use case, having branch data available to bpf
-progs can be useful to get stack traces out of userspace applications
-that omit frame pointers.
-
 Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 ---
- include/uapi/linux/bpf.h | 15 ++++++++++++++-
- kernel/trace/bpf_trace.c | 31 +++++++++++++++++++++++++++++++
- 2 files changed, 45 insertions(+), 1 deletion(-)
+ tools/include/uapi/linux/bpf.h | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
 index f1d74a2bd234..50c580c8a201 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
 @@ -2892,6 +2892,18 @@ union bpf_attr {
   *		Obtain the 64bit jiffies
   *	Return
@@ -124,55 +108,6 @@ index f1d74a2bd234..50c580c8a201 100644
  
  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
   * function eBPF program intends to call
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 19e793aa441a..24c51272a1f7 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1028,6 +1028,35 @@ static const struct bpf_func_proto bpf_perf_prog_read_value_proto = {
-          .arg3_type      = ARG_CONST_SIZE,
- };
- 
-+BPF_CALL_3(bpf_perf_prog_read_branches, struct bpf_perf_event_data_kern *, ctx,
-+	   void *, buf, u32, size)
-+{
-+	struct perf_branch_stack *br_stack = ctx->data->br_stack;
-+	u32 to_copy = 0, to_clear = size;
-+	int err = -EINVAL;
-+
-+	if (unlikely(!br_stack))
-+		goto clear;
-+
-+	to_copy = min_t(u32, br_stack->nr * sizeof(struct perf_branch_entry), size);
-+	to_clear -= to_copy;
-+
-+	memcpy(buf, br_stack->entries, to_copy);
-+	err = to_copy;
-+clear:
-+	memset(buf + to_copy, 0, to_clear);
-+	return err;
-+}
-+
-+static const struct bpf_func_proto bpf_perf_prog_read_branches_proto = {
-+         .func           = bpf_perf_prog_read_branches,
-+         .gpl_only       = true,
-+         .ret_type       = RET_INTEGER,
-+         .arg1_type      = ARG_PTR_TO_CTX,
-+         .arg2_type      = ARG_PTR_TO_UNINIT_MEM,
-+         .arg3_type      = ARG_CONST_SIZE,
-+};
-+
- static const struct bpf_func_proto *
- pe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- {
-@@ -1040,6 +1069,8 @@ pe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_get_stack_proto_tp;
- 	case BPF_FUNC_perf_prog_read_value:
- 		return &bpf_perf_prog_read_value_proto;
-+	case BPF_FUNC_perf_prog_read_branches:
-+		return &bpf_perf_prog_read_branches_proto;
- 	default:
- 		return tracing_func_proto(func_id, prog);
- 	}
 -- 
 2.21.1
 
