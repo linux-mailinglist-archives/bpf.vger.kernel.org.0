@@ -2,211 +2,468 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA4C147500
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 00:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E06147508
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 00:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729388AbgAWXtX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jan 2020 18:49:23 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:3640 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728665AbgAWXtX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 23 Jan 2020 18:49:23 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00NNjIjs030124;
-        Thu, 23 Jan 2020 15:48:57 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=3wEr0kwihbN/aSGgJSnfBgm5cyEkqu8AW4+PTqneJSo=;
- b=C7rlh2yj29K0HiEAQ6cI/Yf76kmNxgSLoQortaXvNpOHmKIvRREkiuiQO6HqkU1i1ypY
- uMg9RRkwjZea8FUDnlE7nh5XdgOODCeuPU0RV9PwDXngQkxc863nG9K6usHz9955lk4Q
- c6UnMcTifMgu5n9WSFkivpw2coRxIKQEfQ0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 2xq49c4ggv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 23 Jan 2020 15:48:56 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 23 Jan 2020 15:48:56 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CGswrgQIBE/jXI4QdzGMAmVmwTTjyjxL2O5CdW5gAYgslwjp8L7KvWO//xyQM6J9rGKFctpbnomNK0/oEpsJe0MDeWWmRmOAmiKNmRAXshDiUtty1cfXgKMjTJWMYrpFFK5DuwQxdMTW3mueV0utmgpJEMapADhmG952sA4lczESwy+NleqGUv82ysqZxwqTirXCfrigAqy3QNNzGibPx3AhTkIbthGP+cd8Rkhn2ociqGhdx3nzpKLZWPqF/F0WEEQdINn4TKBWfQC9rWJJaFgQPMjTEJvwWpuKKtr/g0dH/7t/UFCT1msnvKCI7oUoy4I9j6S3+cI3E5VKze5vgA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3wEr0kwihbN/aSGgJSnfBgm5cyEkqu8AW4+PTqneJSo=;
- b=TLrqCyTkjqwW5OKe2B1PEs3IL0RNVMrOGAtnYiAw/hzAuVqA/ufPLz8QowazkWpTQUFfqokHZXxBGdv8aOZcN3WsoCWv2uljHso7y3LZCvs8PMboypS1Spimu7CqURuoL7F0wxrgrHgCeUTZbQ95mlOCIojlt7dG3r308CsJRePU1dBS1m7UOV8OfMeWXKz1d41sQWoRmckajtrd4oyTkLjRktzYkrYdjgqpnXvIB24enk0i9bEyemXK5SIbGFR80kbQNKHT6QljG4nXCDCHzFTAj/wimXfLhSiietQSd4hfVnEymxHRR3ndHIUDrQV5ay+sD57rLHG1Bx4a0sLRBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3wEr0kwihbN/aSGgJSnfBgm5cyEkqu8AW4+PTqneJSo=;
- b=NJCTaxa+OzX4eSIFN8+qB0VD3fQJQS//laeWfScuMOUex3vNpk91EqoaX4P4g+zCzsFcRApxOm9jmL2LjPWd2LpSDu64IKnS/bvIWH6ukVDFIg/oJ2ZHGbQyXQbNI2WiuCd+wPw/bU8Wg1yn2ztV7XkSnSbIk0bwh9p2N+zGIeE=
-Received: from DM6PR15MB3001.namprd15.prod.outlook.com (20.178.231.16) by
- DM6PR15MB2730.namprd15.prod.outlook.com (20.179.164.74) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2644.18; Thu, 23 Jan 2020 23:48:55 +0000
-Received: from DM6PR15MB3001.namprd15.prod.outlook.com
- ([fe80::1d74:b392:183e:c8c2]) by DM6PR15MB3001.namprd15.prod.outlook.com
- ([fe80::1d74:b392:183e:c8c2%6]) with mapi id 15.20.2644.028; Thu, 23 Jan 2020
- 23:48:55 +0000
-Received: from macbook-pro-52.dhcp.thefacebook.com (2620:10d:c090:200::3:d9ea) by MWHPR22CA0012.namprd22.prod.outlook.com (2603:10b6:300:ef::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2665.20 via Frontend Transport; Thu, 23 Jan 2020 23:48:53 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Daniel Xu <dxu@dxuuu.xyz>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "acme@kernel.org" <acme@kernel.org>
-Subject: Re: [PATCH v3 bpf-next 1/3] bpf: Add bpf_perf_prog_read_branches()
- helper
-Thread-Topic: [PATCH v3 bpf-next 1/3] bpf: Add bpf_perf_prog_read_branches()
- helper
-Thread-Index: AQHV0jNjlQny4mUlfUCZG6n7Skv20qf46uqA
-Date:   Thu, 23 Jan 2020 23:48:55 +0000
-Message-ID: <5f8e2ffd-9368-cb0c-9591-c6b7ecb8edb0@fb.com>
-References: <20200123212312.3963-1-dxu@dxuuu.xyz>
- <20200123212312.3963-2-dxu@dxuuu.xyz>
-In-Reply-To: <20200123212312.3963-2-dxu@dxuuu.xyz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR22CA0012.namprd22.prod.outlook.com
- (2603:10b6:300:ef::22) To DM6PR15MB3001.namprd15.prod.outlook.com
- (2603:10b6:5:13c::16)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::3:d9ea]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: de68e52f-1817-45fc-1326-08d7a05ece7f
-x-ms-traffictypediagnostic: DM6PR15MB2730:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR15MB273073A9C0EF7705BC721AB4D30F0@DM6PR15MB2730.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 029174C036
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(376002)(346002)(39860400002)(396003)(366004)(199004)(189003)(66446008)(478600001)(5660300002)(81156014)(8676002)(64756008)(81166006)(53546011)(8936002)(66476007)(66556008)(31686004)(36756003)(6506007)(52116002)(110136005)(54906003)(2906002)(316002)(4326008)(86362001)(31696002)(71200400001)(66946007)(2616005)(186003)(6512007)(6636002)(6486002)(16526019);DIR:OUT;SFP:1102;SCL:1;SRVR:DM6PR15MB2730;H:DM6PR15MB3001.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: DlwhomCMoh1GCIxlTYA/4DAwvZ7ZpcwXCCIHMW5WSvnwBk3acX8roCqVyuret4ALqBE474n/YB6u2jkEC1qtS3LxR9QUwPvLtvV3fc0HsETfCHoyoyGMumqfJIpScQk1wZCZubCFBy08Etbw0paNhl0zuWDHf/KYOySOf78CFtuK9bUTrOId3K4xdRoL8MRbGEEd0chwGY8ESLOlIuZspO0GiBMNsXWrHYGWeAtZoNO6KzFC+7MSwDPdhnKg3k0tR9SMygMvxfpsEv7gEGOfP4ubW27jdHFcXv7DECDJAYh2NzB7J3lNS25oGJzed3q+1vvKW1lXG1cLFh2QxKm6Kww+q0H/W1sE74WdGtML+zGpRZBy2wul0VTHdkRAb9hoa268xAmxI1kDyI5fgz4Sb0slLeQeZ00dePl2Nz2CJXD11UQUsg9QPqkkOpLquyzr
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D9FCA0C026767C4B9028EDED55D86991@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1729616AbgAWXuh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jan 2020 18:50:37 -0500
+Received: from sonic305-28.consmr.mail.ne1.yahoo.com ([66.163.185.154]:37810
+        "EHLO sonic305-28.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730052AbgAWXuh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 23 Jan 2020 18:50:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1579823434; bh=AZ8XDyA8mdEEn6XXq23Kda3A5Cp88RgAxBGpvcWOyjc=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=ebcEk/n+QoAm0tfRFhruj74ZYSfn9Jlm0cJFDarKhyA6pVoFyEjZBisKXPMnGObLTMZy8jDJ0FpLRhx7dKXpQdgccuvQnIq/l+dtQf32mzql0nKjLJXuwCiktVilX4cvfCzTzu3uhzxdfdjXHt4LkCFjvaj1gB8GDy49NfkDniRI7Y9DQRgYa36sBsvfxxtxXA0dCZU9+A+nIoGj+20HO7lFLpjfm1TSUn0dTwL7hRpvMli719UsyLkN+IJMwABZV2kc4zawNBcW/bLeS6vfiXnUzSNa1AmWXF7wMFu9TzGNDxnJB4P4v57Xf8LBdzCJcqwfIrSDBYlb71IJJuH6uQ==
+X-YMail-OSG: wvHAuNEVM1lTpTsTNsOq3HIQthREXq.Ulhxaq8ZDS80bdkbitVb8GS8ZgWyptlj
+ WCVGzESMIUBD1jWJ9.THjBIBdR8Mn5kSAVM71HbqAju42dzuswUb_XTsMavtbkH3i0OxFi33Ky2w
+ xcLIASK8SolyDzRaEmS3Qd6jboqQ8wwT7jFNFwHwoYm5gnTIs6c7AflGXHXzyc8Iexmi5gPWH_2Y
+ 2d3jolZ1TipP5x64PcHHWFTGYkeZ2N.Xkwjr4rzKBGNHWmgrL75fQJ0dGT.jtxfSWxx5jp.H.Ih_
+ KpwuJQOejyKN7JRZ9gOIg7WU86.xH6BMTQoxFf03ldK_buT8ucajKR4n3WFcOBUX1mukOVjQJdMC
+ gg5Iykm7zjGGItSVk5vDarq2nUKz7DIoT4L88a0u7ePwekHTjLFFpowQX31JB4RVMZb8XuOCm6Du
+ ZxAsxZMRiD6y82tn4QTWR.kH.6nq9J.C8aQh4iycmsSZuCDtHjp6EemeR4fFB6uinGVSF5GaqVC3
+ B0wUrMFDyhtxm8E1sVx4k5r2bYspwQ5nZgP6nj9WfQg9qDpxZpWTzVV0Le88n.Bd6Qe6EibdmVZ.
+ XWgI2EvYJynuBCCvPqjs9SAw88OFr12lCKuCcr6BG4DPv9.z.9.wdaeTlxYh5niUMKOJm3kfhk09
+ Nv3II_VoXsGbOBY6pqVM2KYopj3YnJGY.GSmUsxWqvZNDUHeDn0UkKb43kF08Ofz0irc7Qfxa8Eg
+ PbeapZJkgeBgk0iIdlyJtFwh5dbO5qRPfCTMx14HVBjlhA.OgDom7NSxXye2pOFs2j2i0mPNcHv2
+ rYRmxYb7CL9kHOuM.ZWpPWS1vw1sSHBFiTeb7qik.cB2KYU1e5gm5TCeOR.8c3BCHq5i64yFr4d_
+ k2pos_DSUKzCmDmgA5cYQ1qcVItEYFdsZ10yTQP.kryGkzC1PMcH1rZ9nLmoUHbcTXyPCdN5YxSE
+ l_jfwq6Jj4c7Zjkm3xgTMkG3Ed.gh5SCoE0UV4VWZ9qtxOq3siGKDj9tPqudXeSNbHddqw0Ew0gF
+ dCsH96UaJL0JbvyAk4xhlRsaqJgfI7zph2BnHA9veDWZAutzUFTvM752fjBuIW9_2SEcDj.5Fvp1
+ s.FnTjsLU2tdXCp.TP9BHcno.4wWsPZfBwaq6AmK8Sloy47gc.XjGySmlXJT0XKAEeacE6t1HMU5
+ kGziQK8u3mP7YfjrCdAF81Z0ydDyjb0.VWAEZaJ5DCQp8.Ex2OH6lLwzbcfivWh0vRdzFGnXDaPe
+ WXB.UaHsJJDQQqkg97pzZQmjXPV2bgUWwWihksm__6mlP9sVRQku1A8QXaQGEKWg_sEHJgIu5ZxJ
+ JY68taYNz7G7DbqpGqHybuEZp4QYcyZaHGLtUe80q.amScxpJcmNw.oD7to5Rn8mJb0kBabHy_Un
+ YkLdPKPxs03wZBllVYAA_ekhXy0qkiW2nqNdEdLgZthXMkTMB5Q--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.ne1.yahoo.com with HTTP; Thu, 23 Jan 2020 23:50:34 +0000
+Received: by smtp420.mail.gq1.yahoo.com (Oath Hermes SMTP Server) with ESMTPA ID 9cc78e19df46886fe420010c17c38cf2;
+          Thu, 23 Jan 2020 23:50:30 +0000 (UTC)
+Subject: Re: [PATCH bpf-next v3 04/10] bpf: lsm: Add mutable hooks list for
+ the BPF LSM
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>, bpf@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20200123152440.28956-1-kpsingh@chromium.org>
+ <20200123152440.28956-5-kpsingh@chromium.org>
+ <29157a88-7049-906e-fe92-b7a1e2183c6b@schaufler-ca.com>
+ <20200123175942.GA131348@google.com>
+ <5004b3f4-ca5b-a546-4e87-b852cc248079@schaufler-ca.com>
+ <20200123222436.GA1598@chromium.org>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Autocrypt: addr=casey@schaufler-ca.com; keydata=
+ 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
+ abzjfg==
+Message-ID: <f571b719-e11f-416e-4232-f99036e38f15@schaufler-ca.com>
+Date:   Thu, 23 Jan 2020 15:50:30 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: de68e52f-1817-45fc-1326-08d7a05ece7f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jan 2020 23:48:55.0547
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: KLpJI9Bpxu88cpZ6pD2oiB1Ikr6dP1MG2Z9DIjnX/2gzSsKaRn8iKArQ+ufMIPW7
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2730
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-01-23_13:2020-01-23,2020-01-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- impostorscore=0 phishscore=0 mlxscore=0 spamscore=0 suspectscore=0
- clxscore=1011 lowpriorityscore=0 malwarescore=0 bulkscore=0 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-2001230177
-X-FB-Internal: deliver
+In-Reply-To: <20200123222436.GA1598@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Mailer: WebService/1.1.14873 hermes Apache-HttpAsyncClient/4.1.4 (Java/1.8.0_181)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDEvMjMvMjAgMToyMyBQTSwgRGFuaWVsIFh1IHdyb3RlOg0KPiBCcmFuY2ggcmVjb3Jk
-cyBhcmUgYSBDUFUgZmVhdHVyZSB0aGF0IGNhbiBiZSBjb25maWd1cmVkIHRvIHJlY29yZA0KPiBj
-ZXJ0YWluIGJyYW5jaGVzIHRoYXQgYXJlIHRha2VuIGR1cmluZyBjb2RlIGV4ZWN1dGlvbi4gVGhp
-cyBkYXRhIGlzDQo+IHBhcnRpY3VsYXJseSBpbnRlcmVzdGluZyBmb3IgcHJvZmlsZSBndWlkZWQg
-b3B0aW1pemF0aW9ucy4gcGVyZiBoYXMgaGFkDQo+IGJyYW5jaCByZWNvcmQgc3VwcG9ydCBmb3Ig
-YSB3aGlsZSBidXQgdGhlIGRhdGEgY29sbGVjdGlvbiBjYW4gYmUgYSBiaXQNCj4gY29hcnNlIGdy
-YWluZWQuDQo+IA0KPiBXZSAoRmFjZWJvb2spIGhhdmUgc2VlbiBpbiBleHBlcmltZW50cyB0aGF0
-IGFzc29jaWF0aW5nIG1ldGFkYXRhIHdpdGgNCj4gYnJhbmNoIHJlY29yZHMgY2FuIGltcHJvdmUg
-cmVzdWx0cyAoYWZ0ZXIgcG9zdHByb2Nlc3NpbmcpLiBXZSBnZW5lcmFsbHkNCj4gdXNlIGJwZl9w
-cm9iZV9yZWFkXyooKSB0byBnZXQgbWV0YWRhdGEgb3V0IG9mIHVzZXJzcGFjZS4gVGhhdCdzIHdo
-eSBicGYNCj4gc3VwcG9ydCBmb3IgYnJhbmNoIHJlY29yZHMgaXMgdXNlZnVsLg0KPiANCj4gQXNp
-ZGUgZnJvbSB0aGlzIHBhcnRpY3VsYXIgdXNlIGNhc2UsIGhhdmluZyBicmFuY2ggZGF0YSBhdmFp
-bGFibGUgdG8gYnBmDQo+IHByb2dzIGNhbiBiZSB1c2VmdWwgdG8gZ2V0IHN0YWNrIHRyYWNlcyBv
-dXQgb2YgdXNlcnNwYWNlIGFwcGxpY2F0aW9ucw0KPiB0aGF0IG9taXQgZnJhbWUgcG9pbnRlcnMu
-DQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgWHUgPGR4dUBkeHV1dS54eXo+DQo+IC0tLQ0K
-PiAgIGluY2x1ZGUvdWFwaS9saW51eC9icGYuaCB8IDE1ICsrKysrKysrKysrKysrLQ0KPiAgIGtl
-cm5lbC90cmFjZS9icGZfdHJhY2UuYyB8IDMxICsrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysNCj4gICAyIGZpbGVzIGNoYW5nZWQsIDQ1IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkN
-Cj4gDQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL3VhcGkvbGludXgvYnBmLmggYi9pbmNsdWRlL3Vh
-cGkvbGludXgvYnBmLmgNCj4gaW5kZXggZjFkNzRhMmJkMjM0Li41MGM1ODBjOGEyMDEgMTAwNjQ0
-DQo+IC0tLSBhL2luY2x1ZGUvdWFwaS9saW51eC9icGYuaA0KPiArKysgYi9pbmNsdWRlL3VhcGkv
-bGludXgvYnBmLmgNCj4gQEAgLTI4OTIsNiArMjg5MiwxOCBAQCB1bmlvbiBicGZfYXR0ciB7DQo+
-ICAgICoJCU9idGFpbiB0aGUgNjRiaXQgamlmZmllcw0KPiAgICAqCVJldHVybg0KPiAgICAqCQlU
-aGUgNjQgYml0IGppZmZpZXMNCj4gKyAqDQo+ICsgKiBpbnQgYnBmX3BlcmZfcHJvZ19yZWFkX2Jy
-YW5jaGVzKHN0cnVjdCBicGZfcGVyZl9ldmVudF9kYXRhICpjdHgsIHZvaWQgKmJ1ZiwgdTMyIGJ1
-Zl9zaXplKQ0KPiArICoJRGVzY3JpcHRpb24NCj4gKyAqCQlGb3IgZW4gZUJQRiBwcm9ncmFtIGF0
-dGFjaGVkIHRvIGEgcGVyZiBldmVudCwgcmV0cmlldmUgdGhlDQoNCmVuID0+IGFuDQoNCj4gKyAq
-CQlicmFuY2ggcmVjb3JkcyAoc3RydWN0IHBlcmZfYnJhbmNoX2VudHJ5KSBhc3NvY2lhdGVkIHRv
-ICpjdHgqDQo+ICsgKgkJYW5kIHN0b3JlIGl0IGluCXRoZSBidWZmZXIgcG9pbnRlZCBieSAqYnVm
-KiB1cCB0byBzaXplDQo+ICsgKgkJKmJ1Zl9zaXplKiBieXRlcy4NCj4gKyAqDQo+ICsgKgkJQW55
-IHVudXNlZCBwYXJ0cyBvZiAqYnVmKiB3aWxsIGJlIGZpbGxlZCB3aXRoIHplcm9zLg0KPiArICoJ
-UmV0dXJuDQo+ICsgKgkJT24gc3VjY2VzcywgbnVtYmVyIG9mIGJ5dGVzIHdyaXR0ZW4gdG8gKmJ1
-ZiouIE9uIGVycm9yLCBhDQo+ICsgKgkJbmVnYXRpdmUgdmFsdWUuDQo+ICAgICovDQo+ICAgI2Rl
-ZmluZSBfX0JQRl9GVU5DX01BUFBFUihGTikJCVwNCj4gICAJRk4odW5zcGVjKSwJCQlcDQo+IEBA
-IC0zMDEyLDcgKzMwMjQsOCBAQCB1bmlvbiBicGZfYXR0ciB7DQo+ICAgCUZOKHByb2JlX3JlYWRf
-a2VybmVsX3N0ciksCVwNCj4gICAJRk4odGNwX3NlbmRfYWNrKSwJCVwNCj4gICAJRk4oc2VuZF9z
-aWduYWxfdGhyZWFkKSwJCVwNCj4gLQlGTihqaWZmaWVzNjQpLA0KPiArCUZOKGppZmZpZXM2NCks
-CQkJXA0KPiArCUZOKHBlcmZfcHJvZ19yZWFkX2JyYW5jaGVzKSwNCj4gICANCj4gICAvKiBpbnRl
-Z2VyIHZhbHVlIGluICdpbW0nIGZpZWxkIG9mIEJQRl9DQUxMIGluc3RydWN0aW9uIHNlbGVjdHMg
-d2hpY2ggaGVscGVyDQo+ICAgICogZnVuY3Rpb24gZUJQRiBwcm9ncmFtIGludGVuZHMgdG8gY2Fs
-bA0KPiBkaWZmIC0tZ2l0IGEva2VybmVsL3RyYWNlL2JwZl90cmFjZS5jIGIva2VybmVsL3RyYWNl
-L2JwZl90cmFjZS5jDQo+IGluZGV4IDE5ZTc5M2FhNDQxYS4uMjRjNTEyNzJhMWY3IDEwMDY0NA0K
-PiAtLS0gYS9rZXJuZWwvdHJhY2UvYnBmX3RyYWNlLmMNCj4gKysrIGIva2VybmVsL3RyYWNlL2Jw
-Zl90cmFjZS5jDQo+IEBAIC0xMDI4LDYgKzEwMjgsMzUgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBi
-cGZfZnVuY19wcm90byBicGZfcGVyZl9wcm9nX3JlYWRfdmFsdWVfcHJvdG8gPSB7DQo+ICAgICAg
-ICAgICAgLmFyZzNfdHlwZSAgICAgID0gQVJHX0NPTlNUX1NJWkUsDQo+ICAgfTsNCj4gICANCj4g
-K0JQRl9DQUxMXzMoYnBmX3BlcmZfcHJvZ19yZWFkX2JyYW5jaGVzLCBzdHJ1Y3QgYnBmX3BlcmZf
-ZXZlbnRfZGF0YV9rZXJuICosIGN0eCwNCj4gKwkgICB2b2lkICosIGJ1ZiwgdTMyLCBzaXplKQ0K
-PiArew0KPiArCXN0cnVjdCBwZXJmX2JyYW5jaF9zdGFjayAqYnJfc3RhY2sgPSBjdHgtPmRhdGEt
-PmJyX3N0YWNrOw0KPiArCXUzMiB0b19jb3B5ID0gMCwgdG9fY2xlYXIgPSBzaXplOw0KPiArCWlu
-dCBlcnIgPSAtRUlOVkFMOw0KPiArDQo+ICsJaWYgKHVubGlrZWx5KCFicl9zdGFjaykpDQo+ICsJ
-CWdvdG8gY2xlYXI7DQo+ICsNCj4gKwl0b19jb3B5ID0gbWluX3QodTMyLCBicl9zdGFjay0+bnIg
-KiBzaXplb2Yoc3RydWN0IHBlcmZfYnJhbmNoX2VudHJ5KSwgc2l6ZSk7DQo+ICsJdG9fY2xlYXIg
-LT0gdG9fY29weTsNCj4gKw0KPiArCW1lbWNweShidWYsIGJyX3N0YWNrLT5lbnRyaWVzLCB0b19j
-b3B5KTsNCj4gKwllcnIgPSB0b19jb3B5Ow0KPiArY2xlYXI6DQo+ICsJbWVtc2V0KGJ1ZiArIHRv
-X2NvcHksIDAsIHRvX2NsZWFyKTsNCj4gKwlyZXR1cm4gZXJyOw0KDQpJZiBzaXplIDwgdTMyLCBi
-cl9zdGFjay0+bnIgKiBzaXplb2Yoc3RydWN0IHBlcmZfYnJhbmNoX2VudHJ5KSwNCnVzZXIgaGFz
-IG5vIHdheSB0byBrbm93IHdoZXRoZXIgc29tZSBlbnRyaWVzIGFyZSBub3QgY29waWVkIGV4Y2Vw
-dA0KcmVwZWF0ZWQgdHJ5aW5nIGxhcmdlciBidWZmZXJzIHVudGlsIHRoZSByZXR1cm4gdmFsdWUg
-aXMgc21hbGxlcg0KdGhhbiBpbnB1dCBidWZmZXIgc2l6ZS4NCg0KSSB0aGluayByZXR1cm5pbmcg
-dGhlIGV4cGVjdGVkIGJ1ZmZlciBzaXplIHRvIHVzZXJzIHNob3VsZCBiZSBhIGdvb2QgDQp0aGlu
-Zz8gV2UgbWF5IG5vdCBoYXZlIG1hbGxvYyB0b2RheSBpbiBicGYsIGJ1dCBmdXR1cmUgbWFsbG9j
-IHRoaW5nIA0Kc2hvdWxkIGhlbHAgaW4gdGhpcyBjYXNlLg0KDQpJbiB1c2VyIHNwYWNlLCB1c2Vy
-IG1heSBoYXZlIGEgZml4ZWQgYnVmZmVyLCByZXBlYXRlZCBgcmVhZGAgc2hvdWxkDQpyZWFkIGFs
-bCB2YWx1ZXMuDQoNClVzaW5nIGJwZl9wcm9iZV9yZWFkKCksIHJlcGVhdGVkIHJlYWQgd2l0aCBh
-ZGp1c3RlZCBzb3VyY2UgcG9pbnRlcg0KY2FuIGFsc28gcmVhZCBhbGwgYnVmZmVycy4NCg0KT25l
-IHBvc3NpYmxlIGRlc2lnbiBpcyB0byBhZGQgYSBmbGFnIHRvIHRoZSBmdW5jdGlvbiwgZS5nLiwg
-aWYNCmZsYWcgPT0gR0VUX0JSX1NUQUNLX05SLCByZXR1cm4gYnJfc3RhY2stPm5yIGluIGJ1Zi9z
-aXplLg0KaWYgZmxhZyA9PSBHRVRfQlJfU1RBQ0ssIHJldHVybiBicl9zdGFjay0+ZW50cmllcyBp
-biBidWYvc2l6ZS4NCg0KV2hhdCBkbyB5b3UgdGhpbms/DQoNCg0KPiArfQ0KPiArDQo+ICtzdGF0
-aWMgY29uc3Qgc3RydWN0IGJwZl9mdW5jX3Byb3RvIGJwZl9wZXJmX3Byb2dfcmVhZF9icmFuY2hl
-c19wcm90byA9IHsNCj4gKyAgICAgICAgIC5mdW5jICAgICAgICAgICA9IGJwZl9wZXJmX3Byb2df
-cmVhZF9icmFuY2hlcywNCj4gKyAgICAgICAgIC5ncGxfb25seSAgICAgICA9IHRydWUsDQo+ICsg
-ICAgICAgICAucmV0X3R5cGUgICAgICAgPSBSRVRfSU5URUdFUiwNCj4gKyAgICAgICAgIC5hcmcx
-X3R5cGUgICAgICA9IEFSR19QVFJfVE9fQ1RYLA0KPiArICAgICAgICAgLmFyZzJfdHlwZSAgICAg
-ID0gQVJHX1BUUl9UT19VTklOSVRfTUVNLA0KPiArICAgICAgICAgLmFyZzNfdHlwZSAgICAgID0g
-QVJHX0NPTlNUX1NJWkUsDQo+ICt9Ow0KPiArDQo+ICAgc3RhdGljIGNvbnN0IHN0cnVjdCBicGZf
-ZnVuY19wcm90byAqDQo+ICAgcGVfcHJvZ19mdW5jX3Byb3RvKGVudW0gYnBmX2Z1bmNfaWQgZnVu
-Y19pZCwgY29uc3Qgc3RydWN0IGJwZl9wcm9nICpwcm9nKQ0KPiAgIHsNCj4gQEAgLTEwNDAsNiAr
-MTA2OSw4IEBAIHBlX3Byb2dfZnVuY19wcm90byhlbnVtIGJwZl9mdW5jX2lkIGZ1bmNfaWQsIGNv
-bnN0IHN0cnVjdCBicGZfcHJvZyAqcHJvZykNCj4gICAJCXJldHVybiAmYnBmX2dldF9zdGFja19w
-cm90b190cDsNCj4gICAJY2FzZSBCUEZfRlVOQ19wZXJmX3Byb2dfcmVhZF92YWx1ZToNCj4gICAJ
-CXJldHVybiAmYnBmX3BlcmZfcHJvZ19yZWFkX3ZhbHVlX3Byb3RvOw0KPiArCWNhc2UgQlBGX0ZV
-TkNfcGVyZl9wcm9nX3JlYWRfYnJhbmNoZXM6DQo+ICsJCXJldHVybiAmYnBmX3BlcmZfcHJvZ19y
-ZWFkX2JyYW5jaGVzX3Byb3RvOw0KPiAgIAlkZWZhdWx0Og0KPiAgIAkJcmV0dXJuIHRyYWNpbmdf
-ZnVuY19wcm90byhmdW5jX2lkLCBwcm9nKTsNCj4gICAJfQ0KPiANCg==
+On 1/23/2020 2:24 PM, KP Singh wrote:
+> On 23-Jan 11:09, Casey Schaufler wrote:
+>> On 1/23/2020 9:59 AM, KP Singh wrote:
+>>> On 23-Jan 09:03, Casey Schaufler wrote:
+>>>> On 1/23/2020 7:24 AM, KP Singh wrote:
+>>>>> From: KP Singh <kpsingh@google.com>
+>>>>>
+>>>>> - The list of hooks registered by an LSM is currently immutable as =
+they
+>>>>>   are declared with __lsm_ro_after_init and they are attached to a
+>>>>>   security_hook_heads struct.
+>>>>> - For the BPF LSM we need to de/register the hooks at runtime. Maki=
+ng
+>>>>>   the existing security_hook_heads mutable broadens an
+>>>>>   attack vector, so a separate security_hook_heads is added for onl=
+y
+>>>>>   those that ~must~ be mutable.
+>>>>> - These mutable hooks are run only after all the static hooks have
+>>>>>   successfully executed.
+>>>>>
+>>>>> This is based on the ideas discussed in:
+>>>>>
+>>>>>   https://lore.kernel.org/lkml/20180408065916.GA2832@ircssh-2.c.rug=
+ged-nimbus-611.internal
+>>>>>
+>>>>> Reviewed-by: Brendan Jackman <jackmanb@google.com>
+>>>>> Reviewed-by: Florent Revest <revest@google.com>
+>>>>> Reviewed-by: Thomas Garnier <thgarnie@google.com>
+>>>>> Signed-off-by: KP Singh <kpsingh@google.com>
+>>>>> ---
+>>>>>  MAINTAINERS             |  1 +
+>>>>>  include/linux/bpf_lsm.h | 72 +++++++++++++++++++++++++++++++++++++=
+++++
+>>>>>  security/bpf/Kconfig    |  1 +
+>>>>>  security/bpf/Makefile   |  2 +-
+>>>>>  security/bpf/hooks.c    | 20 ++++++++++++
+>>>>>  security/bpf/lsm.c      |  7 ++++
+>>>>>  security/security.c     | 25 +++++++-------
+>>>>>  7 files changed, 116 insertions(+), 12 deletions(-)
+>>>>>  create mode 100644 include/linux/bpf_lsm.h
+>>>>>  create mode 100644 security/bpf/hooks.c
+>>>>>
+>>>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>>>> index e2b7f76a1a70..c606b3d89992 100644
+>>>>> --- a/MAINTAINERS
+>>>>> +++ b/MAINTAINERS
+>>>>> @@ -3209,6 +3209,7 @@ L:	linux-security-module@vger.kernel.org
+>>>>>  L:	bpf@vger.kernel.org
+>>>>>  S:	Maintained
+>>>>>  F:	security/bpf/
+>>>>> +F:	include/linux/bpf_lsm.h
+>>>>> =20
+>>>>>  BROADCOM B44 10/100 ETHERNET DRIVER
+>>>>>  M:	Michael Chan <michael.chan@broadcom.com>
+>>>>> diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
+>>>>> new file mode 100644
+>>>>> index 000000000000..57c20b2cd2f4
+>>>>> --- /dev/null
+>>>>> +++ b/include/linux/bpf_lsm.h
+>>>>> @@ -0,0 +1,72 @@
+>>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>>> +
+>>>>> +/*
+>>>>> + * Copyright 2019 Google LLC.
+>>>>> + */
+>>>>> +
+>>>>> +#ifndef _LINUX_BPF_LSM_H
+>>>>> +#define _LINUX_BPF_LSM_H
+>>>>> +
+>>>>> +#include <linux/bpf.h>
+>>>>> +#include <linux/lsm_hooks.h>
+>>>>> +
+>>>>> +#ifdef CONFIG_SECURITY_BPF
+>>>>> +
+>>>>> +/* Mutable hooks defined at runtime and executed after all the sta=
+tically
+>>>>> + * defined LSM hooks.
+>>>>> + */
+>>>>> +extern struct security_hook_heads bpf_lsm_hook_heads;
+>>>>> +
+>>>>> +int bpf_lsm_srcu_read_lock(void);
+>>>>> +void bpf_lsm_srcu_read_unlock(int idx);
+>>>>> +
+>>>>> +#define CALL_BPF_LSM_VOID_HOOKS(FUNC, ...)			\
+>>>>> +	do {							\
+>>>>> +		struct security_hook_list *P;			\
+>>>>> +		int _idx;					\
+>>>>> +								\
+>>>>> +		if (hlist_empty(&bpf_lsm_hook_heads.FUNC))	\
+>>>>> +			break;					\
+>>>>> +								\
+>>>>> +		_idx =3D bpf_lsm_srcu_read_lock();		\
+>>>>> +		hlist_for_each_entry(P, &bpf_lsm_hook_heads.FUNC, list) \
+>>>>> +			P->hook.FUNC(__VA_ARGS__);		\
+>>>>> +		bpf_lsm_srcu_read_unlock(_idx);			\
+>>>>> +	} while (0)
+>>>>> +
+>>>>> +#define CALL_BPF_LSM_INT_HOOKS(FUNC, ...) ({			\
+>>>>> +	int _ret =3D 0;						\
+>>>>> +	do {							\
+>>>>> +		struct security_hook_list *P;			\
+>>>>> +		int _idx;					\
+>>>>> +								\
+>>>>> +		if (hlist_empty(&bpf_lsm_hook_heads.FUNC))	\
+>>>>> +			break;					\
+>>>>> +								\
+>>>>> +		_idx =3D bpf_lsm_srcu_read_lock();		\
+>>>>> +								\
+>>>>> +		hlist_for_each_entry(P,				\
+>>>>> +			&bpf_lsm_hook_heads.FUNC, list) {	\
+>>>>> +			_ret =3D P->hook.FUNC(__VA_ARGS__);		\
+>>>>> +			if (_ret && IS_ENABLED(CONFIG_SECURITY_BPF_ENFORCE)) \
+>>>>> +				break;				\
+>>>>> +		}						\
+>>>>> +		bpf_lsm_srcu_read_unlock(_idx);			\
+>>>>> +	} while (0);						\
+>>>>> +	IS_ENABLED(CONFIG_SECURITY_BPF_ENFORCE) ? _ret : 0;	\
+>>>>> +})
+>>>>> +
+>>>>> +#else /* !CONFIG_SECURITY_BPF */
+>>>>> +
+>>>>> +#define CALL_BPF_LSM_INT_HOOKS(FUNC, ...) (0)
+>>>>> +#define CALL_BPF_LSM_VOID_HOOKS(...)
+>>>>> +
+>>>>> +static inline int bpf_lsm_srcu_read_lock(void)
+>>>>> +{
+>>>>> +	return 0;
+>>>>> +}
+>>>>> +static inline void bpf_lsm_srcu_read_unlock(int idx) {}
+>>>>> +
+>>>>> +#endif /* CONFIG_SECURITY_BPF */
+>>>>> +
+>>>>> +#endif /* _LINUX_BPF_LSM_H */
+>>>>> diff --git a/security/bpf/Kconfig b/security/bpf/Kconfig
+>>>>> index a5f6c67ae526..595e4ad597ae 100644
+>>>>> --- a/security/bpf/Kconfig
+>>>>> +++ b/security/bpf/Kconfig
+>>>>> @@ -6,6 +6,7 @@ config SECURITY_BPF
+>>>>>  	bool "BPF-based MAC and audit policy"
+>>>>>  	depends on SECURITY
+>>>>>  	depends on BPF_SYSCALL
+>>>>> +	depends on SRCU
+>>>>>  	help
+>>>>>  	  This enables instrumentation of the security hooks with
+>>>>>  	  eBPF programs.
+>>>>> diff --git a/security/bpf/Makefile b/security/bpf/Makefile
+>>>>> index c78a8a056e7e..c526927c337d 100644
+>>>>> --- a/security/bpf/Makefile
+>>>>> +++ b/security/bpf/Makefile
+>>>>> @@ -2,4 +2,4 @@
+>>>>>  #
+>>>>>  # Copyright 2019 Google LLC.
+>>>>> =20
+>>>>> -obj-$(CONFIG_SECURITY_BPF) :=3D lsm.o ops.o
+>>>>> +obj-$(CONFIG_SECURITY_BPF) :=3D lsm.o ops.o hooks.o
+>>>>> diff --git a/security/bpf/hooks.c b/security/bpf/hooks.c
+>>>>> new file mode 100644
+>>>>> index 000000000000..b123d9cb4cd4
+>>>>> --- /dev/null
+>>>>> +++ b/security/bpf/hooks.c
+>>>>> @@ -0,0 +1,20 @@
+>>>>> +// SPDX-License-Identifier: GPL-2.0
+>>>>> +
+>>>>> +/*
+>>>>> + * Copyright 2019 Google LLC.
+>>>>> + */
+>>>>> +
+>>>>> +#include <linux/bpf_lsm.h>
+>>>>> +#include <linux/srcu.h>
+>>>>> +
+>>>>> +DEFINE_STATIC_SRCU(security_hook_srcu);
+>>>>> +
+>>>>> +int bpf_lsm_srcu_read_lock(void)
+>>>>> +{
+>>>>> +	return srcu_read_lock(&security_hook_srcu);
+>>>>> +}
+>>>>> +
+>>>>> +void bpf_lsm_srcu_read_unlock(int idx)
+>>>>> +{
+>>>>> +	return srcu_read_unlock(&security_hook_srcu, idx);
+>>>>> +}
+>>>>> diff --git a/security/bpf/lsm.c b/security/bpf/lsm.c
+>>>>> index dc9ac03c7aa0..a25a068e1781 100644
+>>>>> --- a/security/bpf/lsm.c
+>>>>> +++ b/security/bpf/lsm.c
+>>>>> @@ -4,6 +4,7 @@
+>>>>>   * Copyright 2019 Google LLC.
+>>>>>   */
+>>>>> =20
+>>>>> +#include <linux/bpf_lsm.h>
+>>>>>  #include <linux/lsm_hooks.h>
+>>>>> =20
+>>>>>  /* This is only for internal hooks, always statically shipped as p=
+art of the
+>>>>> @@ -12,6 +13,12 @@
+>>>>>   */
+>>>>>  static struct security_hook_list bpf_lsm_hooks[] __lsm_ro_after_in=
+it =3D {};
+>>>>> =20
+>>>>> +/* Security hooks registered dynamically by the BPF LSM and must b=
+e accessed
+>>>>> + * by holding bpf_lsm_srcu_read_lock and bpf_lsm_srcu_read_unlock.=
+ The mutable
+>>>>> + * hooks dynamically allocated by the BPF LSM are appeneded here.
+>>>>> + */
+>>>>> +struct security_hook_heads bpf_lsm_hook_heads;
+>>>>> +
+>>>>>  static int __init bpf_lsm_init(void)
+>>>>>  {
+>>>>>  	security_add_hooks(bpf_lsm_hooks, ARRAY_SIZE(bpf_lsm_hooks), "bpf=
+");
+>>>>> diff --git a/security/security.c b/security/security.c
+>>>>> index 30a8aa700557..95a46ca25dcd 100644
+>>>>> --- a/security/security.c
+>>>>> +++ b/security/security.c
+>>>>> @@ -27,6 +27,7 @@
+>>>>>  #include <linux/backing-dev.h>
+>>>>>  #include <linux/string.h>
+>>>>>  #include <linux/msg.h>
+>>>>> +#include <linux/bpf_lsm.h>
+>>>>>  #include <net/flow.h>
+>>>>> =20
+>>>>>  #define MAX_LSM_EVM_XATTR	2
+>>>>> @@ -657,20 +658,22 @@ static void __init lsm_early_task(struct task=
+_struct *task)
+>>>>>  								\
+>>>>>  		hlist_for_each_entry(P, &security_hook_heads.FUNC, list) \
+>>>>>  			P->hook.FUNC(__VA_ARGS__);		\
+>>>>> +		CALL_BPF_LSM_VOID_HOOKS(FUNC, __VA_ARGS__);	\
+>>>> I'm sorry if I wasn't clear on the v2 review.
+>>>> This does not belong in the infrastructure. You should be
+>>>> doing all the bpf_lsm hook processing in you module.
+>>>> bpf_lsm_task_alloc() should loop though all the bpf
+>>>> task_alloc hooks if they have to be handled differently
+>>>> from "normal" LSM hooks.
+>>> The BPF LSM does not define static hooks (the ones registered to
+>>> security_hook_heads in security.c with __lsm_ro_after_init) for each
+>>> LSM hook. If it tries to do that one ends with what was in v1:
+>>>
+>>>   https://lore.kernel.org/bpf/20191220154208.15895-7-kpsingh@chromium=
+=2Eorg
+>>>
+>>> This gets quite ugly (security/bpf/hooks.h from v1) and was noted by
+>>> the BPF maintainers:
+>>>
+>>>   https://lore.kernel.org/bpf/20191222012722.gdqhppxpfmqfqbld@ast-mbp=
+=2Edhcp.thefacebook.com/
+>>>
+>>> As I mentioned, some of the ideas we used here are based on:
+>>>
+>>>   https://lore.kernel.org/lkml/20180408065916.GA2832@ircssh-2.c.rugge=
+d-nimbus-611.internal
+>>>
+>>> Which gave each LSM the ability to add mutable hooks at runtime. If
+>>> you prefer we can make this generic and allow the LSMs to register
+>>> mutable hooks with the BPF LSM be the only LSM that uses it (and
+>>> enforce it with a whitelist).
+>>>
+>>> Would this generic approach be something you would consider better
+>>> than just calling the BPF mutable hooks directly?
+>> What I think makes sense is for the BPF LSM to have a hook
+>> for each of the interfaces and for that hook to handle the
+>> mutable list for the interface. If BPF not included there
+>> will be no mutable hooks.=20
+>>
+>> Yes, your v1 got this right.
+> BPF LSM does provide mutable LSM hooks and it ends up being simpler
+> to implement/maintain when they are treated as such.
+
+If you want to put mutable hook handling in the infrastructure
+you need to make it general mutable hook handling as opposed to
+BPF hook handling. I don't know if that would be acceptable for
+all the reasons called out about dynamic module loading.
+
+>
+>  The other approaches which we have considered are:
+>
+> - Using macro magic to allocate static hook bodies which call eBPF
+>   programs as implemented in v1. This entails maintaining a
+>   separate list of LSM hooks in the BPF LSM which is evident from the
+>   giant security/bpf/include/hooks.h in:
+>
+>   https://lore.kernel.org/bpf/20191220154208.15895-7-kpsingh@chromium.o=
+rg
+
+I haven't put much though into how you might make that cleaner,
+but I don't see how you can expect any approach to turn out
+smaller than or less ugly than security.c.
+
+>
+> - Another approach one can think of is to allocate all the trampoline
+>   images (one page each) at __init and update these images to invoke
+>   BPF programs when they are attached.
+>
+> Both these approaches seem to suffer from the downside of doing more
+> work when it's not really needed (i.e. doing prep work for hooks which
+> have no eBPF programs attached) and they appear to to mask the fact
+> that what the BPF LSM provides is actually mutable LSM hooks by
+> allocating static wrappers around mutable callbacks.
+
+That's a "feature" of the LSM infrastructure. If you're not using a hook
+you just don't provide one. It is a artifact of your intent of providing
+a general extension that requires you provide a hook which may do nothing=
+
+for every interface.
+
+>
+> Are there other downsides apart from the fact we have an explicit call
+> to the mutable hooks in the LSM code? (Note that we want to have these
+> mutable hooks run after all the static LSM hooks so ordering
+> would still end up being LSM_ORDER_LAST)
+
+My intention when I suggested using LSM_ORDER_LAST was to
+remove the explicit calls to BPF in the infrastructure.
+
+>
+> It would be great to hear the maintainers' perspective based on the
+> trade-offs involved with the different approaches discussed.
+
+Please bear in mind that the maintainer (James Morris) didn't
+develop the hook list scheme.
+
+> We are happy to adapt our approach based on the consensus we reach
+> here.
+>
+> - KP
+>
+>>> - KP
+>>>
+>>>>>  	} while (0)
+>>>>> =20
+>>>>> -#define call_int_hook(FUNC, IRC, ...) ({			\
+>>>>> -	int RC =3D IRC;						\
+>>>>> -	do {							\
+>>>>> -		struct security_hook_list *P;			\
+>>>>> -								\
+>>>>> +#define call_int_hook(FUNC, IRC, ...) ({				\
+>>>>> +	int RC =3D IRC;							\
+>>>>> +	do {								\
+>>>>> +		struct security_hook_list *P;				\
+>>>>>  		hlist_for_each_entry(P, &security_hook_heads.FUNC, list) { \
+>>>>> -			RC =3D P->hook.FUNC(__VA_ARGS__);		\
+>>>>> -			if (RC !=3D 0)				\
+>>>>> -				break;				\
+>>>>> -		}						\
+>>>>> -	} while (0);						\
+>>>>> -	RC;							\
+>>>>> +			RC =3D P->hook.FUNC(__VA_ARGS__);			\
+>>>>> +			if (RC !=3D 0)					\
+>>>>> +				break;					\
+>>>>> +		}							\
+>>>>> +		if (RC =3D=3D 0)						\
+>>>>> +			RC =3D CALL_BPF_LSM_INT_HOOKS(FUNC, __VA_ARGS__);	\
+>>>>> +	} while (0);							\
+>>>>> +	RC;								\
+>>>>>  })
+>>>>> =20
+>>>>>  /* Security operations */
+
