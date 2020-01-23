@@ -2,150 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA31514663F
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2020 12:00:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E26C146781
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2020 13:05:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726191AbgAWK7u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jan 2020 05:59:50 -0500
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:34726 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726780AbgAWK7t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jan 2020 05:59:49 -0500
-Received: by mail-wr1-f68.google.com with SMTP id t2so2601687wrr.1
-        for <bpf@vger.kernel.org>; Thu, 23 Jan 2020 02:59:48 -0800 (PST)
+        id S1726780AbgAWMFw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jan 2020 07:05:52 -0500
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:43306 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726026AbgAWMFw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jan 2020 07:05:52 -0500
+Received: by mail-pf1-f195.google.com with SMTP id x6so1438447pfo.10;
+        Thu, 23 Jan 2020 04:05:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=FJwE81HpA84lwzOusct7pS7KFJL6gUrNtfHJutZ9uzk=;
-        b=LmlbEG15fxTH+EZCc4MvonGzBsLLALHaHWY63qyFwRjj1CmatoUXajjC9WE+SS0Oj/
-         ZgXmAKPPVNDwxSGHjxesqkmABZZhxlG64rZ2DfDlcgY9cV8fPg+TCz1YbVHutgtyQbHj
-         aEkgX7r1ryj1R7Mx6229GJXWiiikvKby6+lfo=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CqY9YB2wAiI/Wp57Yy4bkMwCyRsVGvnd5+giEA8fZSk=;
+        b=pkl7+p+1Dr0758k+BCjkzs4ph/iqSiSuLUHgd/o8DCTfZPM1Xa0HUXTPlF7BDRUC4P
+         MO4SZ7wblivWzi/UgguYV0RSwHelwC6Zs71MY4RsjjHDBGvvoQhXHyaEgn3xwGmx6Laj
+         HSZTs/TaoMqLoG5tkLHtAMM7whbKuvEhl+iIABEFWkuknY9qMLd5eVd9EQQirj5kv3wY
+         k0tAGHXKlzbNIHNO8YMEGWfzfvvmwVZ/Q1SNJUOi1DQoOUpWDXQoXDq7DslZcDbhSPZm
+         F7dm1bZzKHYKG+rMTiRTxHzo+avb44OE8E1qsbFsN+44v22bINxc/DUSfnS4obhHPd5H
+         A2Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=FJwE81HpA84lwzOusct7pS7KFJL6gUrNtfHJutZ9uzk=;
-        b=Rzjh4Zvw0TwmRpc0ScXojGIMslsvTmCWJYUlqNc/MUiZ2gb31WOb+dZ46PV9jZ19VJ
-         DVi/dbLzM/52BO+GrS2xBpQ75DGitmdhNLCGuik6rWy3wfnhefHTHZHQTDFPFNUJf8qg
-         gMw+TpLdPfQZDspNghDISunMM1mNob47ukzo4ronObQyMWiR1XCzoWCslscdklL/sFrS
-         kpx9j2il0GWuvh/3Nc2NR/DcTSuZPWtHjBNDGobELESiOi3ttGpiK9GMvPHyPTTnFsTt
-         A+s7Vp2Dj2Ql14iiKzmUQI9gZOLsvonNYMbR8LbX39n/FM7+Abvl8xddO21UpjU+Xrz5
-         HufA==
-X-Gm-Message-State: APjAAAX/IPrJubJbaijsXcIzS7y0tej6PWIMqZF4zWIBWhfsJE1kVf0x
-        PLYO6GsOriOiiF3I9S+DVxDUbw==
-X-Google-Smtp-Source: APXvYqxid25417v8hQ2sSme55LT5quaEd6yJ7JAaEFNKzPFWdKDJTNYVrrOW7hWgUg8CafqZZ+3aeQ==
-X-Received: by 2002:adf:9c8f:: with SMTP id d15mr17712629wre.390.1579777187279;
-        Thu, 23 Jan 2020 02:59:47 -0800 (PST)
-Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id z8sm2539183wrq.22.2020.01.23.02.59.46
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CqY9YB2wAiI/Wp57Yy4bkMwCyRsVGvnd5+giEA8fZSk=;
+        b=JJhDjdkaFYdAzX28DVAVRms45BYMQ61kgrfFALli2HyDOb40IAolF810Rr5dk7hCUI
+         xhsCy03alWg9q0N/0+dO+a5yzjdw3b5K1w1sBW07rnmuSi8sMeBwIiipb2uqQF2Wcp5w
+         FbwcbyuqDsBQ6csWoQ/t/zHR8QWm07Mmc6WgjGuSQ77rlu6BllE+UW4+d9gRrXfSnrr9
+         ShEdbruddKJugkdsgGpRj38zzUS9cMNRX9Hn4gVywri7HqvQcMA9g26ar49JUxX1VJId
+         HAYkX+XPhU8oveULLwWO3VZqPIJ4fLWl3pI7CiHb/cSwpPvM/FjqWuKwj1PHln7r8XZN
+         zhEg==
+X-Gm-Message-State: APjAAAWUaEBq+vTE1qfNj0OVisgtoiyLvsvLagHyeQrsKkMO48p2FNU4
+        CD7KOBOFAX3NEdv+RLq+lXQ=
+X-Google-Smtp-Source: APXvYqyyH5J0GupMgirTs+5mSj6AqYDWZ14SFy5qG7Ze2gsIZwMDdoS6reaTPzuQVkr8hVKTy8aekw==
+X-Received: by 2002:a63:e954:: with SMTP id q20mr3792032pgj.204.1579781151245;
+        Thu, 23 Jan 2020 04:05:51 -0800 (PST)
+Received: from localhost.localdomain ([103.211.17.138])
+        by smtp.googlemail.com with ESMTPSA id x18sm2643381pfr.26.2020.01.23.04.05.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jan 2020 02:59:46 -0800 (PST)
-References: <20200122130549.832236-1-jakub@cloudflare.com> <20200122130549.832236-11-jakub@cloudflare.com> <20200122225351.hajnt4u7au24mj5g@kafai-mbp.dhcp.thefacebook.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Martin Lau <kafai@fb.com>
-Cc:     "bpf\@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kernel-team\@cloudflare.com" <kernel-team@cloudflare.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Thu, 23 Jan 2020 04:05:50 -0800 (PST)
+From:   Amol Grover <frextrite@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: Re: [PATCH bpf-next v3 10/12] net: Generate reuseport group ID on group creation
-In-reply-to: <20200122225351.hajnt4u7au24mj5g@kafai-mbp.dhcp.thefacebook.com>
-Date:   Thu, 23 Jan 2020 11:59:46 +0100
-Message-ID: <875zh230bh.fsf@cloudflare.com>
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Amol Grover <frextrite@gmail.com>
+Subject: [PATCH] bpf: devmap: Pass lockdep expression to RCU lists
+Date:   Thu, 23 Jan 2020 17:34:38 +0530
+Message-Id: <20200123120437.26506-1-frextrite@gmail.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 22, 2020 at 11:53 PM CET, Martin Lau wrote:
-> On Wed, Jan 22, 2020 at 02:05:47PM +0100, Jakub Sitnicki wrote:
->> Commit 736b46027eb4 ("net: Add ID (if needed) to sock_reuseport and expose
->> reuseport_lock") has introduced lazy generation of reuseport group IDs that
->> survive group resize.
->> 
->> By comparing the identifier we check if BPF reuseport program is not trying
->> to select a socket from a BPF map that belongs to a different reuseport
->> group than the one the packet is for.
->> 
->> Because SOCKARRAY used to be the only BPF map type that can be used with
->> reuseport BPF, it was possible to delay the generation of reuseport group
->> ID until a socket from the group was inserted into BPF map for the first
->> time.
->> 
->> Now that SOCKMAP can be used with reuseport BPF we have two options, either
->> generate the reuseport ID on map update, like SOCKARRAY does, or allocate
->> an ID from the start when reuseport group gets created.
->> 
->> This patch goes the latter approach to keep SOCKMAP free of calls into
->> reuseport code. This streamlines the reuseport_id access as its lifetime
->> now matches the longevity of reuseport object.
->> 
->> The cost of this simplification, however, is that we allocate reuseport IDs
->> for all SO_REUSEPORT users. Even those that don't use SOCKARRAY in their
->> setups. With the way identifiers are currently generated, we can have at
->> most S32_MAX reuseport groups, which hopefully is sufficient.
-> Not sure if it would be a concern.  I think it is good as is.
-> For TCP, that would mean billion different ip:port listening socks
-> in inet_hashinfo.
->
-> If it came to that, another idea is to use a 64bit reuseport_id which
-> practically won't wrap around.  It could use the very first sk->sk_cookie
-> as the reuseport_id.  All the ida logic will go away also in the expense
-> of +4 bytes.
+head is traversed using hlist_for_each_entry_rcu outside an
+RCU read-side critical section but under the protection
+of dtab->index_lock.
 
-Thanks for the idea. I'll add it to the patch description.
+Hence, add corresponding lockdep expression to silence false-positive
+lockdep warnings, and harden RCU lists.
 
->
->> 
->> Another change is that we now always call into SOCKARRAY logic to unlink
->> the socket from the map when unhashing or closing the socket. Previously we
->> did it only when at least one socket from the group was in a BPF map.
->> 
->> It is worth noting that this doesn't conflict with SOCKMAP tear-down in
->> case a socket is in a SOCKMAP and belongs to a reuseport group. SOCKMAP
->> tear-down happens first:
->> 
->>   prot->unhash
->>   `- tcp_bpf_unhash
->>      |- tcp_bpf_remove
->>      |  `- while (sk_psock_link_pop(psock))
->>      |     `- sk_psock_unlink
->>      |        `- sock_map_delete_from_link
->>      |           `- __sock_map_delete
->>      |              `- sock_map_unref
->>      |                 `- sk_psock_put
->>      |                    `- sk_psock_drop
->>      |                       `- rcu_assign_sk_user_data(sk, NULL)
->>      `- inet_unhash
->>         `- reuseport_detach_sock
->>            `- bpf_sk_reuseport_detach
->>               `- WRITE_ONCE(sk->sk_user_data, NULL)
-> Thanks for the details.
->
-> [ ... ]
->
->> @@ -200,12 +189,10 @@ void reuseport_detach_sock(struct sock *sk)
->>  	reuse = rcu_dereference_protected(sk->sk_reuseport_cb,
->>  					  lockdep_is_held(&reuseport_lock));
->>  
->> -	/* At least one of the sk in this reuseport group is added to
->> -	 * a bpf map.  Notify the bpf side.  The bpf map logic will
->> -	 * remove the sk if it is indeed added to a bpf map.
->> +	/* Notify the bpf side. The sk may be added to bpf map. The
->> +	 * bpf map logic will remove the sk from the map if indeed.
-> s/indeed/needed/ ?
->
-> I think it will be good to have a few words here like, that is needed
-> by sockarray but not necessary for sockmap which has its own ->unhash
-> to remove itself from the map.
+Signed-off-by: Amol Grover <frextrite@gmail.com>
+---
+ kernel/bpf/devmap.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+index 3d3d61b5985b..b4b6b77f309c 100644
+--- a/kernel/bpf/devmap.c
++++ b/kernel/bpf/devmap.c
+@@ -293,7 +293,8 @@ struct bpf_dtab_netdev *__dev_map_hash_lookup_elem(struct bpf_map *map, u32 key)
+ 	struct hlist_head *head = dev_map_index_hash(dtab, key);
+ 	struct bpf_dtab_netdev *dev;
+ 
+-	hlist_for_each_entry_rcu(dev, head, index_hlist)
++	hlist_for_each_entry_rcu(dev, head, index_hlist,
++				 lockdep_is_held(&dtab->index_lock))
+ 		if (dev->idx == key)
+ 			return dev;
+ 
+-- 
+2.24.1
 
-Yeah, I didn't do it justice. Will expand the comment.
-
-[...]
