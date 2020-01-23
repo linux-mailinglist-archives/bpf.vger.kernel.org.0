@@ -2,120 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F426146F3B
-	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2020 18:10:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E96D146F5A
+	for <lists+bpf@lfdr.de>; Thu, 23 Jan 2020 18:16:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728205AbgAWRKf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jan 2020 12:10:35 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:38688 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726792AbgAWRKf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jan 2020 12:10:35 -0500
-Received: by mail-pf1-f196.google.com with SMTP id x185so1827376pfc.5;
-        Thu, 23 Jan 2020 09:10:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=dwJyEOh0uaEFN8hvYa0cHHjOAWxYFsxMT7IvzzrReQI=;
-        b=Q+0rToUtIGpg7FyoIxscNn0/RvwL4rrUkiWJ2n9IN6HO9n6C92QHkv3PBUv041aJYu
-         mhN6B7xMAbD4MEjZ1KErr52A1355A4yLo/jrh+8OMVJFVMi9N0uLTD/xzth/Z5XXNuiH
-         pj+n1GxZR1N3JjT3luH+GnzF2OUyJBJmFx5VrQKzi9Ku6ijV1k5R+Y/ABzn0msWOLa+S
-         AQacTj99pd98x2EEzNLKNNTDAMGCRkI+Gv35q69dZGeHCyFII22FwqTtXv7huPFQjZyg
-         jdx/c+WMlH/0fkCS9kzBPsMPYl9tBQWnKxG6GkXVV0lrMwCKApfi2RA6gkvJfIEXwxRF
-         Q0wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=dwJyEOh0uaEFN8hvYa0cHHjOAWxYFsxMT7IvzzrReQI=;
-        b=IfVfTarMOEKIxuHAZY9w7aVD0yPfbQRXh7wbNXIWR4UCgHDCLG+nsSwovf1gkNNQpE
-         qelNpfBlzJNHSHVW4ktpWtlmJiuiotJk9Za783xvE5QGFPNOQB8OXa9D0UQEIjoRN/Z+
-         wrcKvDbjYA8AfCU0vheiJPtsLom+8OLGzdUT7Ebyd20EUoVtnCfTvh8DuUJ3Bm6B7584
-         Ge1LYWB8//bvmEGbV11hlU0A1qVoU+XD1KMoFZjljzoJpQUCZ+44nTLYr/p+gsajvFZG
-         RWkRVKmQ3zfcehcqvd1ZgaeqBMm2LGpA8wrovtJLyaW5dQSjZrx4lTaeYoJ+m+JXBHE5
-         fR/A==
-X-Gm-Message-State: APjAAAUHe+WnyxfkUhrSUOCybaVW5m2+WcxWTOSu6NHc4/lng2h7cwQV
-        VfwX4E/km9YO4nT+nS0V7sE=
-X-Google-Smtp-Source: APXvYqzsPgVtLCqC7XrdMEUUv9WDoR31GK4BL6XC9b4+BRA3q1+quhAdIpoKGpQQi5I2/2vFliqsPg==
-X-Received: by 2002:a63:780d:: with SMTP id t13mr4718336pgc.82.1579799434594;
-        Thu, 23 Jan 2020 09:10:34 -0800 (PST)
-Received: from workstation-portable ([103.211.17.138])
-        by smtp.gmail.com with ESMTPSA id bo19sm3405156pjb.25.2020.01.23.09.10.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jan 2020 09:10:34 -0800 (PST)
-Date:   Thu, 23 Jan 2020 22:40:25 +0530
-From:   Amol Grover <frextrite@gmail.com>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH] bpf: devmap: Pass lockdep expression to RCU lists
-Message-ID: <20200123171025.GB4484@workstation-portable>
-References: <20200123120437.26506-1-frextrite@gmail.com>
- <20200123143725.036140e7@carbon>
- <87a76e9tn8.fsf@toke.dk>
+        id S1729205AbgAWRQd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jan 2020 12:16:33 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:64498 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728731AbgAWRQc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 23 Jan 2020 12:16:32 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00NH8eQA000441;
+        Thu, 23 Jan 2020 09:16:18 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=39vetacuAforZk3W+3gRyQFZuI0sX037sOEZQwB4roY=;
+ b=TwaUUSakuw1ccW0MJ+ixLvwmoIUOlotBLnG5rP+ibxadZkAuWutV1pg1Q3J2oVdtgYkE
+ Wq+QZNeQWBKbWETtvHZGdjYazO+LY2wYrn6XmHP/23DJQeislEtiHErxSFbptTvE3hip
+ jc7QiQ2FnGjOrPbpIaby8WQKrWE5hDUqd2Y= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2xpr4ke2d7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 23 Jan 2020 09:16:18 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 23 Jan 2020 09:16:17 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Td+6jsvrap4VdaOvca3Dtk+67FKPHlXMJv3CJDIofQb/sq1+tY4X2tE/lTGgHsqQ/26gAPjerPQpzgr8eQhMtUBFDPuygCwDkORLfjQjkpbsQthyzYMyom4RKejYgb/jSZ/WgCpm6kEE/DeHJgXSm6Bb/etek8koQqJQagWykX+ixD1jI/uL4X5cJ/8FMcQzfY/n85KUZidCxanmodMpRXGNf1rQXeY2sYqqEwMf0K3w7eLGsElGv8Y7RLdr8pBq4PtZoJDSNsBqzcwDwJ9tWUk8YPqM2gPVKjFEsHD9RlxQbicjFA4FoLbSSUQml7tCYg9kIvOLx3GdQsh0+BLXHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=39vetacuAforZk3W+3gRyQFZuI0sX037sOEZQwB4roY=;
+ b=FbYWIS3XWEeLCr/JSVJI32HmNAcomrPgKfPlYRZEsRD1h7u3JBoI/WQ4V2DAtThkyIl473chXEaFBeX3XJbppTw/deDLyI5OSjqE2G9ojul0kaGhr9sPImja0V/b8zQfY9EnyUnVvFMPhXNzC2qWOd/wjVeZR+CF018+fDsOkoPeUk0ibHxTQK/kWxdBsU6hEcclvMGGzBpwvQDmhAWbt+WIiLbLmc5f/cBEiwnD79NiOuhnocRvRbZ4pm+U6BH3KePNm6+iMrVmJ/4ZlgRYeOu4fXu6DW2yxTt3XS5N5x8AWI462TBqDRIG0waQgeK1758QkuWSbBH4w6uQahoyyw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=39vetacuAforZk3W+3gRyQFZuI0sX037sOEZQwB4roY=;
+ b=NUy+7rALW9zj649FYkOTzkWfcstHUt1q0ldWio8AI5SmraEy8rX23W6VwEUhkmKUVMvhzozTRce/qKuW8nndVGaV8IxdNBC+GtlUhqonVsg96pCCd7ioXMFER2XMblm9DQUdjkDwEJIPODpiRP1+PziDe8WZvpXorjLxqPsdoLo=
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
+ MN2PR15MB3311.namprd15.prod.outlook.com (20.179.23.88) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2644.19; Thu, 23 Jan 2020 17:16:16 +0000
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2644.027; Thu, 23 Jan 2020
+ 17:16:16 +0000
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:200::2:d66d) by CO2PR04CA0058.namprd04.prod.outlook.com (2603:10b6:102:1::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2644.19 via Frontend Transport; Thu, 23 Jan 2020 17:16:14 +0000
+From:   Martin Lau <kafai@fb.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+CC:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>, "Yonghong Song" <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf 2/4] selftests: bpf: ignore RST packets for reuseport
+ tests
+Thread-Topic: [PATCH bpf 2/4] selftests: bpf: ignore RST packets for reuseport
+ tests
+Thread-Index: AQHV0g6NwgtJo3iSuUOeG+lkP8Lweqf4fYEA
+Date:   Thu, 23 Jan 2020 17:16:16 +0000
+Message-ID: <20200123171612.stdwtlpqibkydz2s@kafai-mbp.dhcp.thefacebook.com>
+References: <20200123165934.9584-1-lmb@cloudflare.com>
+ <20200123165934.9584-3-lmb@cloudflare.com>
+In-Reply-To: <20200123165934.9584-3-lmb@cloudflare.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: CO2PR04CA0058.namprd04.prod.outlook.com
+ (2603:10b6:102:1::26) To MN2PR15MB3213.namprd15.prod.outlook.com
+ (2603:10b6:208:3d::12)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::2:d66d]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fe21180c-3d8b-4811-28d5-08d7a027f4bc
+x-ms-traffictypediagnostic: MN2PR15MB3311:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR15MB33119E72CED3C530C16F895ED50F0@MN2PR15MB3311.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:820;
+x-forefront-prvs: 029174C036
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(376002)(346002)(396003)(366004)(39860400002)(199004)(189003)(1076003)(4744005)(2906002)(86362001)(6916009)(54906003)(9686003)(7696005)(52116002)(55016002)(5660300002)(6506007)(478600001)(4326008)(8936002)(316002)(81156014)(81166006)(8676002)(66946007)(71200400001)(16526019)(64756008)(186003)(66446008)(66556008)(66476007);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB3311;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: h9sZqhlDdh03cRqb+VWUtIKerG4A04sFM6hhnhJz9Of8Hm04m7JrL7VlA+WD2ZFsqhuFPz75yGia10L3auufwJjzixBISbqz4PrJRBr34kRs9RZMjG29JGu4bphl9/aN14wAdNKMaA5FW+4SRIpQWTJ5XuSEFIku9i+u0TDe+W66SM6yI/CB7S3x82VeiogAuHLI3dnF0jSOjdlxVbpF0fBtEOv47I5I7lcfi/3pL9yP8zY6utdRNEKdpn7vvLVkfI0WCqxPqvEDB39tO3lTWV3Phlg609YpquMkrut74Fm4pWjTzx95dhJNScR7AmXWiktQQCWAPToRSiCNGBv5Mvi4bRhI4yGnk5Euue+lnzgI0HTR2Ns2t+VvSsUegkyiWG1w0a2Rotd6vrEWjyn132tF7ojwTrxGsXTrmv1ztJMl39zPpNq1OjcX+T3r3j3U
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <6D75503A71A72A41AA7EF4EC3FF92E32@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87a76e9tn8.fsf@toke.dk>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+X-MS-Exchange-CrossTenant-Network-Message-Id: fe21180c-3d8b-4811-28d5-08d7a027f4bc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jan 2020 17:16:16.7954
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PJ1ST79cX6QlYsF9ucsTC/NuYXRh3YOSoDv3U50qZIVkllYKr84PWVUEdwU8WBPm
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3311
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-23_10:2020-01-23,2020-01-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 mlxscore=0
+ phishscore=0 priorityscore=1501 spamscore=0 clxscore=1011 impostorscore=0
+ malwarescore=0 mlxlogscore=661 lowpriorityscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001230134
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 23, 2020 at 02:42:03PM +0100, Toke Høiland-Jørgensen wrote:
-> Jesper Dangaard Brouer <brouer@redhat.com> writes:
-> 
-> > On Thu, 23 Jan 2020 17:34:38 +0530
-> > Amol Grover <frextrite@gmail.com> wrote:
-> >
-> >> head is traversed using hlist_for_each_entry_rcu outside an
-> >> RCU read-side critical section but under the protection
-> >> of dtab->index_lock.
-> >
-> > We do hold the lock in update and delete cases, but not in the lookup
-> > cases.  Is it then still okay to add the lockdep_is_held() annotation?
-> 
-> I concluded 'yes' from the comment on hlist_for_each_entry_rcu():
-> 
-> The lockdep condition gets passed to this:
-> 
-> #define __list_check_rcu(dummy, cond, extra...)				\
-> 	({								\
-> 	check_arg_count_one(extra);					\
-> 	RCU_LOCKDEP_WARN(!cond && !rcu_read_lock_any_held(),		\
-> 			 "RCU-list traversed in non-reader section!");	\
-> 	 })
-> 
-> 
-> so that seems fine :)
-> 
-
-Yes, adding a lockdep expression will be okay. This is because an
-implicit check is done to check if list_for_each_entry_rcu() is
-traversed under RCU read-side critical section. In case the traversal is
-outside RCU read-side critical section, the lockdep expression makes
-sure the traversal is done under the mentioned lock.
-
-Thanks
-Amol
-
-> -Toke
-> 
+On Thu, Jan 23, 2020 at 04:59:31PM +0000, Lorenz Bauer wrote:
+> The reuseport tests currently suffer from a race condition: RST
+> packets count towards DROP_ERR_SKB_DATA, since they don't contain
+> a valid struct cmd. Tests will spuriously fail depending on whether
+> check_results is called before or after the RST is processed.
+>=20
+> Exit the BPF program early if FIN is set.
+Make sense.
+Is it a RST or FIN?  The earlier commit message said RST.
