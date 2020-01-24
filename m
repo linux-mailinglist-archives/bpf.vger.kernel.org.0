@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C89B147DCD
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 11:12:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F14147E85
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 11:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389006AbgAXKDU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jan 2020 05:03:20 -0500
-Received: from www62.your-server.de ([213.133.104.62]:50726 "EHLO
+        id S1731453AbgAXKL1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jan 2020 05:11:27 -0500
+Received: from www62.your-server.de ([213.133.104.62]:52746 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388865AbgAXKDU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Jan 2020 05:03:20 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
+        with ESMTP id S2387697AbgAXKL1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Jan 2020 05:11:27 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1iuvo6-0000Fe-7H; Fri, 24 Jan 2020 11:03:18 +0100
+        id 1iuvvx-0000xF-4G; Fri, 24 Jan 2020 11:11:25 +0100
 Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-3.fritz.box)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1iuvo5-000BoA-Uc; Fri, 24 Jan 2020 11:03:17 +0100
-Subject: Re: [PATCH 1/1] map_seq_next should increase position index
-To:     Vasily Averin <vvs@virtuozzo.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-References: <d6e2df39-919e-8d37-0668-5c4bbf19f278@virtuozzo.com>
+        id 1iuvvw-000UdM-S6; Fri, 24 Jan 2020 11:11:24 +0100
+Subject: Re: [PATCH bpf-next] selftests/bpf: initialize duration variable
+ before using
+To:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org,
+        John Sperbeck <jsperbeck@google.com>
+References: <20200123235144.93610-1-sdf@google.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <be6d3c0d-c9e6-d6f0-ac07-0467480e77d6@iogearbox.net>
-Date:   Fri, 24 Jan 2020 11:03:17 +0100
+Message-ID: <d1c43289-e79d-1d89-f9e9-84acfed772d7@iogearbox.net>
+Date:   Fri, 24 Jan 2020 11:11:24 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <d6e2df39-919e-8d37-0668-5c4bbf19f278@virtuozzo.com>
+In-Reply-To: <20200123235144.93610-1-sdf@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -45,57 +45,25 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/24/20 7:17 AM, Vasily Averin wrote:
-> if seq_file .next fuction does not change position index,
-> read after some lseek can generate unexpected output.
+On 1/24/20 12:51 AM, Stanislav Fomichev wrote:
+> From: John Sperbeck <jsperbeck@google.com>
 > 
-> https://bugzilla.kernel.org/show_bug.cgi?id=206283
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> ---
->   kernel/bpf/inode.c | 1 +
->   1 file changed, 1 insertion(+)
+> The 'duration' variable is referenced in the CHECK() macro, and there are
+> some uses of the macro before 'duration' is set.  The clang compiler
+> (validly) complains about this.
 > 
-> diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-> index ecf42be..9008a20 100644
-> --- a/kernel/bpf/inode.c
-> +++ b/kernel/bpf/inode.c
-> @@ -196,6 +196,7 @@ static void *map_seq_next(struct seq_file *m, void *v, loff_t *pos)
->   	void *key = map_iter(m)->key;
->   	void *prev_key;
->   
-> +	(*pos)++;
->   	if (map_iter(m)->done)
->   		return NULL;
->   
+> Sample error:
 > 
+> .../selftests/bpf/prog_tests/fexit_test.c:23:6: warning: variable 'duration' is uninitialized when used here [-Wuninitialized]
+>          if (CHECK(err, "prog_load sched cls", "err %d errno %d\n", err, errno))
+>              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> .../selftests/bpf/test_progs.h:134:25: note: expanded from macro 'CHECK'
+>          if (CHECK(err, "prog_load sched cls", "err %d errno %d\n", err, errno))
+>              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>          _CHECK(condition, tag, duration, format)
+>                                 ^~~~~~~~
+> 
+> Signed-off-by: John Sperbeck <jsperbeck@google.com>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
 
-Hm, how did you test this change? Please elaborate, since in map_seq_next()
-we do increment position index:
-
-static void *map_seq_next(struct seq_file *m, void *v, loff_t *pos)
-{
-         struct bpf_map *map = seq_file_to_map(m);
-         void *key = map_iter(m)->key;
-         void *prev_key;
-
-         if (map_iter(m)->done)
-                 return NULL;
-
-         if (unlikely(v == SEQ_START_TOKEN))
-                 prev_key = NULL;
-         else
-                 prev_key = key;
-
-         if (map->ops->map_get_next_key(map, prev_key, key)) {
-                 map_iter(m)->done = true;
-                 return NULL;
-         }
-
-         ++(*pos);                    <------------ here
-         return key;
-}
-
-With your change we'd increment twice. What is missing here?
-
-Thanks,
-Daniel
+Applied, thanks!
