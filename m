@@ -2,68 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B8276147A64
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 10:32:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC6A147CA5
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 10:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgAXJcd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jan 2020 04:32:33 -0500
-Received: from www62.your-server.de ([213.133.104.62]:45784 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725821AbgAXJcd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Jan 2020 04:32:33 -0500
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iuvKG-0006Dq-UV; Fri, 24 Jan 2020 10:32:29 +0100
-Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-3.fritz.box)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iuvKG-000Bp8-I2; Fri, 24 Jan 2020 10:32:28 +0100
-Subject: Re: [PATCH bpf 2/4] selftests: bpf: ignore RST packets for reuseport
- tests
-To:     Lorenz Bauer <lmb@cloudflare.com>, Martin Lau <kafai@fb.com>
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200123165934.9584-1-lmb@cloudflare.com>
- <20200123165934.9584-3-lmb@cloudflare.com>
- <20200123215348.zql3d5xpg2if7v6q@kafai-mbp.dhcp.thefacebook.com>
- <CACAyw9_OGBbsXepTcp=1frEHB7Q2cD9BVXTbgt7Ci_eFyV2Egg@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <d5d230bd-6d62-3bb4-f663-8cec751b38a4@iogearbox.net>
-Date:   Fri, 24 Jan 2020 10:32:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S2388266AbgAXJxc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jan 2020 04:53:32 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:24667 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2388276AbgAXJxb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Jan 2020 04:53:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579859611;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K4t1ejswvOE8YpSGKPzSa4YPCF/SE/Nt+MqgosBi2Qk=;
+        b=XI21VxhIGwSyepACeyH5nb+9+uif9aipIvSLxlvMjGczWq4E0aF46BgY296xAGXMe6xxUf
+        Maq7DD7xHp1EGIsfH5vHWQ3iCOtRSYWYoKlzy3Ml3kABb9f0lK28bdCRaD3WDvV8wwT3lC
+        cRHvilrL1a34SlcmUPhYeAyGHe7oNoU=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-301-MKwuqPpzMAyL0uTFOsX9yw-1; Fri, 24 Jan 2020 04:53:28 -0500
+X-MC-Unique: MKwuqPpzMAyL0uTFOsX9yw-1
+Received: by mail-lj1-f200.google.com with SMTP id t11so498282ljo.13
+        for <bpf@vger.kernel.org>; Fri, 24 Jan 2020 01:53:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=K4t1ejswvOE8YpSGKPzSa4YPCF/SE/Nt+MqgosBi2Qk=;
+        b=eJW7WKGMGqZ0TAbGdaZONLme3b/8piVlucmW3rYT3XCVDf5wJacrcdacOdyAm4+Mq/
+         CxAehzvuLKwKWhvgh0KZCv7WJV7znb0ZocGET69X6b4aoWAfb0ZTOf1CAjgKZNmRMFK9
+         6nB/c170ddPJrQCXl/AVo89mzyjXAad+Ws5GuMzggWh7CbI9mRsG/EgJ0TZE+5PEU/WC
+         fWAvR8JC2JGNtR6aX5aj3digRxIphJHr6O/qTyP3qDTNkvTxmOtp65M8w3zWBUTy1v7c
+         W+cNZgbUXeLlqUH+m3CtHeJaDEp39xDiYIbEBp5R31hA5dOjy/JA6co0UlQLts7JFf2h
+         UemQ==
+X-Gm-Message-State: APjAAAVrse14HF6892O6RXVGQqLjnT9eTRnK2LaTAcDxMFVx5lIhISgb
+        D3x6vyymKAuU1Jz2MI0HahEfqDj8JywZx6RrguVoVXo2S+XZmP5Ib7+UKSN7fPi6FMPhn55oiCb
+        oX7QP7UIwGUoT
+X-Received: by 2002:a19:7401:: with SMTP id v1mr1007725lfe.129.1579859606821;
+        Fri, 24 Jan 2020 01:53:26 -0800 (PST)
+X-Google-Smtp-Source: APXvYqwQhJNQcaaDcM834fVbk7QurTLRj5MsyegI59sBDkZiVOmXuoqHNrXEWKdwQ6zpuD/sqWaBBQ==
+X-Received: by 2002:a19:7401:: with SMTP id v1mr1007721lfe.129.1579859606635;
+        Fri, 24 Jan 2020 01:53:26 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id q10sm2776696ljj.60.2020.01.24.01.53.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jan 2020 01:53:25 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 622D1180073; Fri, 24 Jan 2020 10:53:25 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: improve bpftool changes detection
+In-Reply-To: <20200124054148.2455060-1-andriin@fb.com>
+References: <20200124054148.2455060-1-andriin@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 24 Jan 2020 10:53:25 +0100
+Message-ID: <87wo9hgoyy.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <CACAyw9_OGBbsXepTcp=1frEHB7Q2cD9BVXTbgt7Ci_eFyV2Egg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25704/Thu Jan 23 12:37:43 2020)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/24/20 10:00 AM, Lorenz Bauer wrote:
-> On Thu, 23 Jan 2020 at 21:54, Martin Lau <kafai@fb.com> wrote:
->>
->> btw, it needs a Fixes tag.
->>
->> Patch 4 and Patch 1 also need a Fixes tag.
-> 
-> This makes me wonder, should these go via bpf or bpf-next? Do I have
-> to split the series then?
+Andrii Nakryiko <andriin@fb.com> writes:
 
-Lets do all of these for bpf-next since timing is very close before v5.5 release.
-If needed, we can later have them picked up for 5.5 stable.
+> Detect when bpftool source code changes and trigger rebuild within
+> selftests/bpf Makefile. Also fix few small formatting problems.
+>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
-Thanks,
-Daniel
+Thanks for taking care of this!
+
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+
