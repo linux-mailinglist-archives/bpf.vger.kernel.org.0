@@ -2,293 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C526149004
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 22:17:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D03D14900C
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 22:20:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387444AbgAXVRZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jan 2020 16:17:25 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:33541 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387436AbgAXVRY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 24 Jan 2020 16:17:24 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 34EB96ED3;
-        Fri, 24 Jan 2020 16:17:24 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 24 Jan 2020 16:17:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=Hdjj2f7GL7mXR
-        XrLkPhEpfZGgTfws9l4BcxNMa7aa5g=; b=p+BmpU5xnEgekAB+vu1B7c1llSEUx
-        8VLMxLUQq4PHtl2BCmncQnGKrhl06lRcygbMTXcwQIhHgyAVgw/Fvf6EhvLM/IYv
-        lLssNz6p+/VXbaj1tj0CH7vk/hX8YFz056oHR0DMK5roRiJnJJ5wHJ8HUKa5EWfY
-        TSSZcpPcUFvzXcTWyFPo5nluCwM5NOqGTqImFvhRYj/tvDyFCdtECaTE6q9kO+tx
-        9XSZBJ/FJ5NJSUKnUxs3FK/TMp/KBuicMBOUQEukayCiGbYjWtgZVUDiLIV+FyDt
-        VS6EbtN/SLuNbm/8hRp++gQOlzES1/c2kSUa55Cyqj5h9vRV4TuCgvOtg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=Hdjj2f7GL7mXRXrLkPhEpfZGgTfws9l4BcxNMa7aa5g=; b=FiB294UC
-        TmlgumkXAD1D+OI2PoyzLd3hbaoj9JlWKmQAzJqR58124OVe1AOPDmjhLNb/OMNq
-        DHjWY5CClaREHGasQ1DvCd/qgVWCLphGQ1MznZq4zIff41V1GGvSujcV4glyMDoC
-        79UqX9Z77ntdVM3dj34QaWFsUEQH1nxUZ504NiaqU3d++AVBdP2e/fUtwYHvnWE8
-        kvDNCInmWjiuPnyLII/HZx9vJ0t2qU6aQJ0DskejMVnKCOPwqCiNAPbr+pGLop4l
-        ceDr269pOYIkEUYLB8X8nEmGuHM0d8kMynZ8WjNWGfTI9SFNbviDzbQVVLuX30XW
-        kD54JPiangDppQ==
-X-ME-Sender: <xms:5F4rXufaK0ykMu3yqLJAt2GhnARVbyD51vAZSZzCgMcJXTh6z_OCdg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrvdehgdduvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephffvuf
-    ffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougig
-    uhesugiguhhuuhdrgiihiieqnecukfhppeduleelrddvtddurdeigedrgeenucevlhhush
-    htvghrufhiiigvpedvnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhu
-    rdighiii
-X-ME-Proxy: <xmx:5F4rXvN-eldXtZV6bUtNHmaGKjXozs_OE6YHoO0yKOu57iC4pp5WUA>
-    <xmx:5F4rXkhtJH083itIzMFxEBIp_Tz_mCaNMvvE8lWDanD2cUoYhIv5ow>
-    <xmx:5F4rXq1FMQqdNbgqfqgUjYplB6UPyCOGc31atwJKBavRZvxkWNzN_A>
-    <xmx:5F4rXqeLUFL2bquHg200MRdiKCFKxQ3n2zpB6Hj0CNqad38lY8kfBg>
-Received: from dlxu-fedora-R90QNFJV.thefacebook.com (prnvpn05.thefacebook.com [199.201.64.4])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 96C273062B0E;
-        Fri, 24 Jan 2020 16:17:22 -0500 (EST)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, peterz@infradead.org, mingo@redhat.com,
-        acme@kernel.org
-Subject: [PATCH v4 bpf-next 3/3] selftests/bpf: add bpf_perf_prog_read_branches() selftest
-Date:   Fri, 24 Jan 2020 13:17:05 -0800
-Message-Id: <20200124211705.24759-4-dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200124211705.24759-1-dxu@dxuuu.xyz>
-References: <20200124211705.24759-1-dxu@dxuuu.xyz>
+        id S1729683AbgAXVUU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jan 2020 16:20:20 -0500
+Received: from www62.your-server.de ([213.133.104.62]:46698 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729604AbgAXVUU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Jan 2020 16:20:20 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iv6NC-0007Hv-4z; Fri, 24 Jan 2020 22:20:14 +0100
+Received: from [178.197.248.48] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iv6NB-000IWv-Ry; Fri, 24 Jan 2020 22:20:13 +0100
+Subject: Re: [Potential Spoof] [PATCH bpf-next] libbpf: improve handling of
+ failed CO-RE relocations
+To:     Martin Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Kernel Team <Kernel-team@fb.com>
+References: <20200124053837.2434679-1-andriin@fb.com>
+ <20200124072054.2kr25erckbclkwgv@kafai-mbp.dhcp.thefacebook.com>
+ <CAEf4BzbM7s8JWM8bPq=JdFX-ujkbYUifD7hNUQOGSJpJ7x5NJw@mail.gmail.com>
+ <20200124201241.722pbppudaiw4cz4@kafai-mbp.dhcp.thefacebook.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <379ee6c3-9de1-f552-406d-11fd8216c96b@iogearbox.net>
+Date:   Fri, 24 Jan 2020 22:20:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200124201241.722pbppudaiw4cz4@kafai-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25705/Fri Jan 24 12:39:10 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a selftest to test:
+On 1/24/20 9:12 PM, Martin Lau wrote:
+> On Fri, Jan 24, 2020 at 10:30:12AM -0800, Andrii Nakryiko wrote:
+>> On Thu, Jan 23, 2020 at 11:21 PM Martin Lau <kafai@fb.com> wrote:
+>>> On Thu, Jan 23, 2020 at 09:38:37PM -0800, Andrii Nakryiko wrote:
+>>>> Previously, if libbpf failed to resolve CO-RE relocation for some
+>>>> instructions, it would either return error immediately, or, if
+>>>> .relaxed_core_relocs option was set, would replace relocatable offset/imm part
+>>>> of an instruction with a bogus value (-1). Neither approach is good, because
+>>>> there are many possible scenarios where relocation is expected to fail (e.g.,
+>>>> when some field knowingly can be missing on specific kernel versions). On the
+>>>> other hand, replacing offset with invalid one can hide programmer errors, if
+>>>> this relocation failue wasn't anticipated.
+>>>>
+>>>> This patch deprecates .relaxed_core_relocs option and changes the approach to
+>>>> always replacing instruction, for which relocation failed, with invalid BPF
+>>>> helper call instruction. For cases where this is expected, BPF program should
+>>>> already ensure that that instruction is unreachable, in which case this
+>>>> invalid instruction is going to be silently ignored. But if instruction wasn't
+>>>> guarded, BPF program will be rejected at verification step with verifier log
+>>>> pointing precisely to the place in assembly where the problem is.
+>>>>
+>>>> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+>>>> ---
+>>>>   tools/lib/bpf/libbpf.c | 95 +++++++++++++++++++++++++-----------------
+>>>>   tools/lib/bpf/libbpf.h |  6 ++-
+>>>>   2 files changed, 61 insertions(+), 40 deletions(-)
+>>>>
+>>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>>>> index ae34b681ae82..39f1b7633a7c 100644
+>>>> --- a/tools/lib/bpf/libbpf.c
+>>>> +++ b/tools/lib/bpf/libbpf.c
+>>>> @@ -345,7 +345,6 @@ struct bpf_object {
+>>>>
+>>>>        bool loaded;
+>>>>        bool has_pseudo_calls;
+>>>> -     bool relaxed_core_relocs;
+>>>>
+>>>>        /*
+>>>>         * Information when doing elf related work. Only valid if fd
+>>>> @@ -4238,25 +4237,38 @@ static int bpf_core_calc_field_relo(const struct bpf_program *prog,
+>>>>    */
+>>>>   static int bpf_core_reloc_insn(struct bpf_program *prog,
+>>>>                               const struct bpf_field_reloc *relo,
+>>>> +                            int relo_idx,
+>>>>                               const struct bpf_core_spec *local_spec,
+>>>>                               const struct bpf_core_spec *targ_spec)
+>>>>   {
+>>>> -     bool failed = false, validate = true;
+>>>>        __u32 orig_val, new_val;
+>>>>        struct bpf_insn *insn;
+>>>> +     bool validate = true;
+>>>>        int insn_idx, err;
+>>>>        __u8 class;
+>>>>
+>>>>        if (relo->insn_off % sizeof(struct bpf_insn))
+>>>>                return -EINVAL;
+>>>>        insn_idx = relo->insn_off / sizeof(struct bpf_insn);
+>>>> +     insn = &prog->insns[insn_idx];
+>>>> +     class = BPF_CLASS(insn->code);
+>>>>
+>>>>        if (relo->kind == BPF_FIELD_EXISTS) {
+>>>>                orig_val = 1; /* can't generate EXISTS relo w/o local field */
+>>>>                new_val = targ_spec ? 1 : 0;
+>>>>        } else if (!targ_spec) {
+>>>> -             failed = true;
+>>>> -             new_val = (__u32)-1;
+>>>> +             pr_debug("prog '%s': relo #%d: substituting insn #%d w/ invalid insn\n",
+>>>> +                      bpf_program__title(prog, false), relo_idx, insn_idx);
+>>>> +             insn->code = BPF_JMP | BPF_CALL;
+>>>> +             insn->dst_reg = 0;
+>>>> +             insn->src_reg = 0;
+>>>> +             insn->off = 0;
+>>>> +             /* if this instruction is reachable (not a dead code),
+>>>> +              * verifier will complain with the following message:
+>>>> +              * invalid func unknown#195896080
+>>>> +              */
+>>>> +             insn->imm = 195896080; /* => 0xbad2310 => "bad relo" */
+>>> Should this value become a binded contract in uapi/bpf.h so
+>>> that the verifier can print a more meaningful name than "unknown#195896080"?
+>>
+>> It feels a bit premature to fix this in kernel. It's one of many ways
+>> we can do this, e.g., alternative would be using invalid opcode
+>> altogether. It's not yet clear what's the best way to report this from
+>> kernel. Maybe in the future verifier will have some better way to
+>> pinpoint where and what problem there is in user's program through
+>> some more structured approach than current free-form log.
+>>
+>> So what I'm trying to say is that we should probably get a bit more
+>> experience using these features first and understand what
+>> kernel/userspace interface should be for reporting issues like this,
+>> before setting anything in stone in verifier. For now, this
+>> "unknown#195896080" should be a pretty unique search term :)
+> Sure.  I think this value will never be used for real in the life time.
+> I was mostly worry this message will be confusing.  May be the loader
+> could be improved to catch this and interpret it in a more meaningful
+> way.
 
-* default bpf_perf_prog_read_branches() behavior
-* BPF_F_GET_BR_SIZE flag behavior
-* using helper to write to stack
-* using helper to write to map
-
-Tested by running:
-
-    # ./test_progs -t perf_branches
-    #27 perf_branches:OK
-    Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- .../selftests/bpf/prog_tests/perf_branches.c  | 112 ++++++++++++++++++
- .../selftests/bpf/progs/test_perf_branches.c  |  74 ++++++++++++
- 2 files changed, 186 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_branches.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_perf_branches.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/perf_branches.c b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
-new file mode 100644
-index 000000000000..54a982a6c513
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
-@@ -0,0 +1,112 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+#include <pthread.h>
-+#include <sched.h>
-+#include <sys/socket.h>
-+#include <test_progs.h>
-+#include "bpf/libbpf_internal.h"
-+#include "test_perf_branches.skel.h"
-+
-+struct output {
-+	int required_size;
-+	int written_stack;
-+	int written_map;
-+};
-+
-+static void on_sample(void *ctx, int cpu, void *data, __u32 size)
-+{
-+	int pbe_size = sizeof(struct perf_branch_entry);
-+	int required_size = ((struct output *)data)->required_size;
-+	int written_stack = ((struct output *)data)->written_stack;
-+	int written_map = ((struct output *)data)->written_map;
-+	int duration = 0;
-+
-+	/*
-+	 * It's hard to validate the contents of the branch entries b/c it
-+	 * would require some kind of disassembler and also encoding the
-+	 * valid jump instructions for supported architectures. So just check
-+	 * the easy stuff for now.
-+	 */
-+	CHECK(required_size <= 0, "read_branches_size", "err %d\n", required_size);
-+	CHECK(written_stack < 0, "read_branches_stack", "err %d\n", written_stack);
-+	CHECK(written_stack % pbe_size != 0, "read_branches_stack",
-+	      "stack bytes written=%d not multiple of struct size=%d\n",
-+	      written_stack, pbe_size);
-+	CHECK(written_map < 0, "read_branches_map", "err %d\n", written_map);
-+	CHECK(written_map % pbe_size != 0, "read_branches_map",
-+	      "map bytes written=%d not multiple of struct size=%d\n",
-+	      written_map, pbe_size);
-+	CHECK(written_map < written_stack, "read_branches_size",
-+	      "written_map=%d < written_stack=%d\n", written_map, written_stack);
-+
-+	*(int *)ctx = 1;
-+}
-+
-+void test_perf_branches(void)
-+{
-+	int err, i, pfd = -1, duration = 0, ok = 0;
-+	struct perf_buffer_opts pb_opts = {};
-+	struct perf_event_attr attr = {};
-+	struct perf_buffer *pb;
-+	struct bpf_link *link;
-+	volatile int j = 0;
-+	cpu_set_t cpu_set;
-+
-+
-+	struct test_perf_branches *skel;
-+	skel = test_perf_branches__open_and_load();
-+	if (CHECK(!skel, "test_perf_branches_load",
-+		  "perf_branches skeleton failed\n"))
-+		goto out_destroy;
-+
-+	/* create perf event */
-+	attr.size = sizeof(attr);
-+	attr.type = PERF_TYPE_HARDWARE;
-+	attr.config = PERF_COUNT_HW_CPU_CYCLES;
-+	attr.freq = 1;
-+	attr.sample_freq = 4000;
-+	attr.sample_type = PERF_SAMPLE_BRANCH_STACK;
-+	attr.branch_sample_type = PERF_SAMPLE_BRANCH_USER | PERF_SAMPLE_BRANCH_ANY;
-+	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
-+	if (CHECK(pfd < 0, "perf_event_open", "err %d\n", pfd))
-+		goto out_destroy;
-+
-+	/* attach perf_event */
-+	link = bpf_program__attach_perf_event(skel->progs.perf_branches, pfd);
-+	if (CHECK(IS_ERR(link), "attach_perf_event", "err %ld\n", PTR_ERR(link)))
-+		goto out_close_perf;
-+
-+	/* set up perf buffer */
-+	pb_opts.sample_cb = on_sample;
-+	pb_opts.ctx = &ok;
-+	pb = perf_buffer__new(bpf_map__fd(skel->maps.perf_buf_map), 1, &pb_opts);
-+	if (CHECK(IS_ERR(pb), "perf_buf__new", "err %ld\n", PTR_ERR(pb)))
-+		goto out_detach;
-+
-+	/* generate some branches on cpu 0 */
-+	CPU_ZERO(&cpu_set);
-+	CPU_SET(0, &cpu_set);
-+	err = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set), &cpu_set);
-+	if (CHECK(err, "set_affinity", "cpu #0, err %d\n", err))
-+		goto out_free_pb;
-+	/* spin the loop for a while (random high number) */
-+	for (i = 0; i < 1000000; ++i)
-+		++j;
-+
-+	/* read perf buffer */
-+	err = perf_buffer__poll(pb, 500);
-+	if (CHECK(err < 0, "perf_buffer__poll", "err %d\n", err))
-+		goto out_free_pb;
-+
-+	if (CHECK(!ok, "ok", "not ok\n"))
-+		goto out_free_pb;
-+
-+out_free_pb:
-+	perf_buffer__free(pb);
-+out_detach:
-+	bpf_link__destroy(link);
-+out_close_perf:
-+	close(pfd);
-+out_destroy:
-+	test_perf_branches__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_perf_branches.c b/tools/testing/selftests/bpf/progs/test_perf_branches.c
-new file mode 100644
-index 000000000000..6811ad5839e7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_perf_branches.c
-@@ -0,0 +1,74 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2019 Facebook
-+
-+#include <stddef.h>
-+#include <linux/ptrace.h>
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_trace_helpers.h"
-+
-+struct fake_perf_branch_entry {
-+	__u64 _a;
-+	__u64 _b;
-+	__u64 _c;
-+};
-+
-+struct output {
-+	int required_size;
-+	int written_stack;
-+	int written_map;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-+	__uint(key_size, sizeof(int));
-+	__uint(value_size, sizeof(int));
-+} perf_buf_map SEC(".maps");
-+
-+typedef struct fake_perf_branch_entry fpbe_t[30];
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, fpbe_t);
-+} scratch_map SEC(".maps");
-+
-+SEC("perf_event")
-+int perf_branches(void *ctx)
-+{
-+	struct fake_perf_branch_entry entries[4] = {0};
-+	struct output output = {0};
-+	__u32 key = 0, *value;
-+
-+	/* write to stack */
-+	output.written_stack =
-+		bpf_perf_prog_read_branches(ctx, entries,
-+					    sizeof(entries), 0);
-+	/* ignore spurious events */
-+	if (!output.written_stack)
-+		return 1;
-+
-+	/* get required size */
-+	output.required_size =
-+		bpf_perf_prog_read_branches(ctx, NULL, 0, BPF_F_GET_BR_SIZE);
-+
-+	/* write to map */
-+	value = bpf_map_lookup_elem(&scratch_map, &key);
-+	if (value)
-+		output.written_map =
-+			bpf_perf_prog_read_branches(ctx,
-+						    value,
-+						    30 * sizeof(struct fake_perf_branch_entry),
-+						    0);
-+
-+	/* ignore spurious events */
-+	if (!output.written_map)
-+		return 1;
-+
-+	bpf_perf_event_output(ctx, &perf_buf_map, BPF_F_CURRENT_CPU,
-+			      &output, sizeof(output));
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.21.1
-
+Agree with both of you that we might want to find a better error reporting
+mechanism here in future, but can be done on top of this. Applied, thanks!
