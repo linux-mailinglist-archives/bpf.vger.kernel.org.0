@@ -2,88 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C7F149117
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 23:41:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05401149200
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2020 00:26:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725821AbgAXWlv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jan 2020 17:41:51 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:7136 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729094AbgAXWlv (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 24 Jan 2020 17:41:51 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00OMec2Y011871
-        for <bpf@vger.kernel.org>; Fri, 24 Jan 2020 14:41:50 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=lzs5mIRs2O578Kk3zJOnIF9ediUWwofM0vCgrnTwOqA=;
- b=IQx5Zdtsh/ZtYD0xufGvvjPZbo2ZbZBSWfRJfo5yCJQ8r59S0KlcGNA67AHnxDwS86G/
- vIkBF47MvrvIb/zEm3k7CPUxlmeIOTwfYo7GrSiKLRrFUJRC8oHmosDCAEYAzs20VeqR
- sArzCapMJMhXCMlp2N7/uD2lsNkJGUqf5zw= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 2xr664h0jk-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 24 Jan 2020 14:41:50 -0800
-Received: from intmgw003.06.prn3.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 24 Jan 2020 14:41:49 -0800
-Received: by dev082.prn2.facebook.com (Postfix, from userid 572249)
-        id EDA343711F06; Fri, 24 Jan 2020 14:41:47 -0800 (PST)
-Smtp-Origin-Hostprefix: dev
-From:   Andrey Ignatov <rdna@fb.com>
-Smtp-Origin-Hostname: dev082.prn2.facebook.com
-To:     <bpf@vger.kernel.org>
-CC:     Andrey Ignatov <rdna@fb.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH bpf-next] tools/bpf: Allow overriding llvm tools for runqslower
-Date:   Fri, 24 Jan 2020 14:41:42 -0800
-Message-ID: <20200124224142.1833678-1-rdna@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S2387406AbgAXX0T (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jan 2020 18:26:19 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:44132 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387404AbgAXX0T (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Jan 2020 18:26:19 -0500
+Received: by mail-qt1-f195.google.com with SMTP id w8so2884072qts.11
+        for <bpf@vger.kernel.org>; Fri, 24 Jan 2020 15:26:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RTAEwgRWvbu8ydTGqLXuTo/hhOVQds5P6lPcrWETvtY=;
+        b=IWEBxLvZi3GyTervxZy76zyVc2eEDl6+8Ns3NVs87NA7WsVzUIu4RL/LZcPKxP2Rrm
+         N/g1lm4vUiPhbG8iw5UMhqy/GRWDsmlTQCvRgvh1k1OM/aTzMDrbXD4fGtKu2YT8kHjI
+         8yWYcM2F6LTTWG4e6o25mcGoMBTx3bW9P0eS7bsfGvFPDMZQQpR8AAcNmXWnJxQLakJL
+         p+iUahyTy6UoPOj37kB7TQGuQYIdHNgBrxGt3Zwtop3my+SlkcoHtWdQFU9z6HfggsiN
+         jzuyyACW+z4pA7j8XV9tg/zzWq4+o5b6siDBAAZIVcVZLblReGxO3Zoo/lymVoxfwiqs
+         NAyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RTAEwgRWvbu8ydTGqLXuTo/hhOVQds5P6lPcrWETvtY=;
+        b=dhBdP8KOHtJebT2Z8AKCQCg7DuQPxyYNJxH0KfdJjG8+e0hCBNU+giQwwKpSjR0UMI
+         3kFLQ5tQFzrypIPzxBzRmBLElGK9dUIYjRbP/EAaPLyPNMV143wHT83OmoyROUdWCXEu
+         UGhCOAXEpsX+jr2II2rDfO79EkKMWaTog6XcplgALQq70U6ixZJ/p3IwK0TBFFK2ICTC
+         o9qVx4iaQnlCq0L2xJv5kE0XSt91CwT4PFaMAl5xWxFwUpSuB68JzpxZKvrcjGTPqR94
+         y1tJXvEwes1eyi6FR07jn21mMbVLzAM89rcSqLHsd6Xe1AqyGwu8DA7Klw6COEm4+FQb
+         hQcg==
+X-Gm-Message-State: APjAAAWFmMSX8QE2G0uzU4ChP/T4ol97OIU53mefjpxfunAaHIM4oXF1
+        8cplAjdnwKMkIguOFB6npECyQrveNqb+jw9bQV8=
+X-Google-Smtp-Source: APXvYqyF/tPeEZNwoGAuSruLZzkV1WJl6RdGnFI+H62yluMTG0z0vSBk14y30+SuG4ZjDkHncd42H0W1YJgCvcqR0ac=
+X-Received: by 2002:ac8:4050:: with SMTP id j16mr4876235qtl.171.1579908377957;
+ Fri, 24 Jan 2020 15:26:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-01-24_08:2020-01-24,2020-01-24 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- mlxlogscore=566 priorityscore=1501 spamscore=0 lowpriorityscore=0
- suspectscore=13 clxscore=1015 phishscore=0 bulkscore=0 mlxscore=0
- impostorscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1911200001 definitions=main-2001240184
-X-FB-Internal: deliver
+References: <20200124224142.1833678-1-rdna@fb.com>
+In-Reply-To: <20200124224142.1833678-1-rdna@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 24 Jan 2020 15:26:05 -0800
+Message-ID: <CAEf4BzYZMwDAu-4=UXUBE8NbhXnRnsWWc9Z4mypU0zDb3m6TSg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] tools/bpf: Allow overriding llvm tools for runqslower
+To:     Andrey Ignatov <rdna@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-tools/testing/selftests/bpf/Makefile supports overriding clang, llc and
-other tools so that custom ones can be used instead of those from PATH.
-It's convinient and heavily used by some users.
+On Fri, Jan 24, 2020 at 2:42 PM Andrey Ignatov <rdna@fb.com> wrote:
+>
+> tools/testing/selftests/bpf/Makefile supports overriding clang, llc and
+> other tools so that custom ones can be used instead of those from PATH.
+> It's convinient and heavily used by some users.
+>
+> Apply same rules to runqslower/Makefile.
+>
+> Signed-off-by: Andrey Ignatov <rdna@fb.com>
+> ---
 
-Apply same rules to runqslower/Makefile.
+Thanks!
 
-Signed-off-by: Andrey Ignatov <rdna@fb.com>
----
- tools/bpf/runqslower/Makefile | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
-index faf5418609ea..0c021352beed 100644
---- a/tools/bpf/runqslower/Makefile
-+++ b/tools/bpf/runqslower/Makefile
-@@ -1,8 +1,8 @@
- # SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
- OUTPUT := .output
--CLANG := clang
--LLC := llc
--LLVM_STRIP := llvm-strip
-+CLANG ?= clang
-+LLC ?= llc
-+LLVM_STRIP ?= llvm-strip
- DEFAULT_BPFTOOL := $(OUTPUT)/sbin/bpftool
- BPFTOOL ?= $(DEFAULT_BPFTOOL)
- LIBBPF_SRC := $(abspath ../../lib/bpf)
--- 
-2.17.1
-
+>  tools/bpf/runqslower/Makefile | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
+> index faf5418609ea..0c021352beed 100644
+> --- a/tools/bpf/runqslower/Makefile
+> +++ b/tools/bpf/runqslower/Makefile
+> @@ -1,8 +1,8 @@
+>  # SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+>  OUTPUT := .output
+> -CLANG := clang
+> -LLC := llc
+> -LLVM_STRIP := llvm-strip
+> +CLANG ?= clang
+> +LLC ?= llc
+> +LLVM_STRIP ?= llvm-strip
+>  DEFAULT_BPFTOOL := $(OUTPUT)/sbin/bpftool
+>  BPFTOOL ?= $(DEFAULT_BPFTOOL)
+>  LIBBPF_SRC := $(abspath ../../lib/bpf)
+> --
+> 2.17.1
+>
