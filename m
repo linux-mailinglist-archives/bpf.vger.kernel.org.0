@@ -2,151 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D03D14900C
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 22:20:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADBAA149015
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 22:25:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729683AbgAXVUU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jan 2020 16:20:20 -0500
-Received: from www62.your-server.de ([213.133.104.62]:46698 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729604AbgAXVUU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Jan 2020 16:20:20 -0500
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iv6NC-0007Hv-4z; Fri, 24 Jan 2020 22:20:14 +0100
-Received: from [178.197.248.48] (helo=pc-9.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iv6NB-000IWv-Ry; Fri, 24 Jan 2020 22:20:13 +0100
-Subject: Re: [Potential Spoof] [PATCH bpf-next] libbpf: improve handling of
- failed CO-RE relocations
-To:     Martin Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Kernel Team <Kernel-team@fb.com>
-References: <20200124053837.2434679-1-andriin@fb.com>
- <20200124072054.2kr25erckbclkwgv@kafai-mbp.dhcp.thefacebook.com>
- <CAEf4BzbM7s8JWM8bPq=JdFX-ujkbYUifD7hNUQOGSJpJ7x5NJw@mail.gmail.com>
- <20200124201241.722pbppudaiw4cz4@kafai-mbp.dhcp.thefacebook.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <379ee6c3-9de1-f552-406d-11fd8216c96b@iogearbox.net>
-Date:   Fri, 24 Jan 2020 22:20:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <20200124201241.722pbppudaiw4cz4@kafai-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1725955AbgAXVZl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jan 2020 16:25:41 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:47342 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725747AbgAXVZl (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 24 Jan 2020 16:25:41 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 00OLNBaf012113;
+        Fri, 24 Jan 2020 13:25:38 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-id :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=8bPwUIldTl2etCaVErCjnL+rAZoQ9/rn4rwb4xfARMU=;
+ b=jMJrYhj7tn7AxuryUehaH3BWwyZPryTFSBCdi5JT9jISSlu7uQb/FVm75slsKuR3x5Wq
+ POtPyJJvRS+DQl84XhfAiyP8kIJHtm9d63zy5XeLDTx4CbA8NIePmkDtE73KnbCqOs2S
+ 5rFbtoe0u740m80FT2svpB6NHI5I5ny+NyA= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 2xr63a8pem-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 24 Jan 2020 13:25:38 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Fri, 24 Jan 2020 13:25:37 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S4BSTaOBQM8PyKfl3mzlQ637+8iYPLeuyQMZF7HnJ1UAJtltu8NU/s1aB/N1P/FlPLLvkKpRYqKKKQkO++R1HF2nXCMY5fY+hzV4FRoiOdTtv+pDs2NDQXMfz3CPFTk0JLOTyagaES5F/or9CkNkZrToyrZnRHgfFwL0lR832PqaWsVL79x41yh2xHDYU5nQdGQiEg6KlyQvrFlameNDM+oTPyQnI7fF4NK3j8vKd5iWpLbWRfnx9mXSmz1zwQ4bJvpDBsT7dS389DtQt83m6tSLY3XJedgMoe8TMr18haQlF+YEjmgA4YsNRGtbxl4GItBPbL0NTQ5x0KBTnbE+dA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8bPwUIldTl2etCaVErCjnL+rAZoQ9/rn4rwb4xfARMU=;
+ b=H5qAxf0xncT3g9vgRRhlS1LeEeRo0b1noHnUjsNeb8A+DNxsnpPhnz7d/e05rjSixHEOYZijtju+pJcNB+akS5IW8KTr0qb9LhFZWDDfTQdVaijseM2zbYgSRcLlfiot3NuaT/y9QUBld8VTc3ryOWOXsLV32HomQZ1idehncjfYNk9oGThthHPP7wjDwewXHCWlCO4U7t0hcBQ0cTvD25MNwC8v8b0NTZlP4xZvJ3KbGV52joGeOFxsKty2oH9aF5/8mJYPYMGukym8MuUqrUiLQSVVDVDc6sN2lkplyKPE/eRWgApshkJdE0mYCO8SursPKqMLT7F9Cliz9wizSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8bPwUIldTl2etCaVErCjnL+rAZoQ9/rn4rwb4xfARMU=;
+ b=PK6B5X1fPLqNjz12rT82ay3Sy48/BPpoc8u4UrZvLG0zjrcA0BNomEnHds0us7zxKj3myYhVche2QDxmyVmTB6A7yX3lErYE048DaLLToJCzAVeBLRhFeLH1Wqhq9HrXYfyQdYGZJG1zYg4U5nDZhkhl+81xFlZtF5gGnejln2s=
+Received: from BYAPR15MB3029.namprd15.prod.outlook.com (20.178.238.208) by
+ BYAPR15MB3303.namprd15.prod.outlook.com (20.179.59.32) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2665.21; Fri, 24 Jan 2020 21:25:22 +0000
+Received: from BYAPR15MB3029.namprd15.prod.outlook.com
+ ([fe80::3541:85d8:c4c8:760d]) by BYAPR15MB3029.namprd15.prod.outlook.com
+ ([fe80::3541:85d8:c4c8:760d%3]) with mapi id 15.20.2665.017; Fri, 24 Jan 2020
+ 21:25:22 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     "lsf-pc@lists.linux-foundation.org" 
+        <lsf-pc@lists.linux-foundation.org>, bpf <bpf@vger.kernel.org>
+CC:     linux-kernel <linux-kernel@vger.kernel.org>
+Subject: [LSF/MM/BPF TOPIC] ls+cat based debugging for BPF 
+Thread-Topic: [LSF/MM/BPF TOPIC] ls+cat based debugging for BPF 
+Thread-Index: AQHV0vzJAHvUmDTCaE+/nrClRclyqQ==
+Date:   Fri, 24 Jan 2020 21:25:22 +0000
+Message-ID: <A8AB5F56-7233-40AD-9C49-2348B708557B@fb.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25705/Fri Jan 24 12:39:10 2020)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.40.2.2.4)
+x-originating-ip: [2620:10d:c090:200::3:f503]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fc0a86f9-f832-4bb5-5b24-08d7a113eb94
+x-ms-traffictypediagnostic: BYAPR15MB3303:
+x-microsoft-antispam-prvs: <BYAPR15MB330382BAC61DAC31B785BCA8B30E0@BYAPR15MB3303.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 02929ECF07
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(346002)(376002)(136003)(39860400002)(366004)(199004)(189003)(4743002)(110136005)(8936002)(4326008)(8676002)(81156014)(316002)(81166006)(36756003)(33656002)(6512007)(6506007)(86362001)(478600001)(2616005)(186003)(6486002)(66556008)(4744005)(2906002)(5660300002)(66476007)(66446008)(64756008)(71200400001)(76116006)(91956017)(66946007);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3303;H:BYAPR15MB3029.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: q43wA1csceVzZshCJZXShxwZyH2Z4ph/L5VASHNtPRVa98jIHSOX5ouZXMD3o2Qy5Q0LzquwnpJKZqe0xaRMUw5HlOlOt3fINPhEy40l7bC/JuUrv0rVIh54PlV1wtxxemROtIvu1GOdC51ZYupEBmrbAMDZLaTNAImN7ZHQbWa0pv39rXLhClZ4TwOjRX5g3fuxdw+rukuuJXiuPCygCn1xu/u7Ao3wsXpEt+TC9gMCkoYgEU3pUpBOc2PaB4IoNQaWhuu+G9prEN4l7samOFkczGrTvJ9Uh1PQdWUYmrk/hUVz6alS7y3Vd4p7hsITlM3tiO5K8bxNjs64sAyKsw/iznoldR1UgT6du6sWIDlF0/9w7fmAIFYaTOgcUp4VXiSfa9E0OBtngrhrMZIQLcnjF84DRGlz8J0IQvnr/i3cfc2vFkf8GSITIOVKbKlw
+x-ms-exchange-antispam-messagedata: uys5K7tt48SLYBdSL1OQ7XUHCBVhZSdevb3snTgwbXmBcSASfN+iz8Y4hWv4q2pREh6du8d13/WRg7Tzu6RWQooJ1sKLnMGy1UwCgsuahSRKeIhJzdk4BYtg9PxTNaJcYna93zw6lq0D4oUHoPG3lDAIWVeY1O+oUSIz4PkVskLu1UxPwZ5utS5xZtnBd33g
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <0E8E382F1A6B704CAA77760EF1906D79@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc0a86f9-f832-4bb5-5b24-08d7a113eb94
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jan 2020 21:25:22.3374
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LN5pqBXBO430Usb4RSkvaVzanZWD15KkohSLZbBDXWNsr1Mx6xSN1HOsg6Ul/zcJV3CoiAFrDxbFGRvcZo2AgA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3303
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-24_07:2020-01-24,2020-01-24 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ suspectscore=0 clxscore=1011 impostorscore=0 spamscore=0 mlxlogscore=588
+ adultscore=0 malwarescore=0 bulkscore=0 mlxscore=0 priorityscore=1501
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1911200001 definitions=main-2001240175
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/24/20 9:12 PM, Martin Lau wrote:
-> On Fri, Jan 24, 2020 at 10:30:12AM -0800, Andrii Nakryiko wrote:
->> On Thu, Jan 23, 2020 at 11:21 PM Martin Lau <kafai@fb.com> wrote:
->>> On Thu, Jan 23, 2020 at 09:38:37PM -0800, Andrii Nakryiko wrote:
->>>> Previously, if libbpf failed to resolve CO-RE relocation for some
->>>> instructions, it would either return error immediately, or, if
->>>> .relaxed_core_relocs option was set, would replace relocatable offset/imm part
->>>> of an instruction with a bogus value (-1). Neither approach is good, because
->>>> there are many possible scenarios where relocation is expected to fail (e.g.,
->>>> when some field knowingly can be missing on specific kernel versions). On the
->>>> other hand, replacing offset with invalid one can hide programmer errors, if
->>>> this relocation failue wasn't anticipated.
->>>>
->>>> This patch deprecates .relaxed_core_relocs option and changes the approach to
->>>> always replacing instruction, for which relocation failed, with invalid BPF
->>>> helper call instruction. For cases where this is expected, BPF program should
->>>> already ensure that that instruction is unreachable, in which case this
->>>> invalid instruction is going to be silently ignored. But if instruction wasn't
->>>> guarded, BPF program will be rejected at verification step with verifier log
->>>> pointing precisely to the place in assembly where the problem is.
->>>>
->>>> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->>>> ---
->>>>   tools/lib/bpf/libbpf.c | 95 +++++++++++++++++++++++++-----------------
->>>>   tools/lib/bpf/libbpf.h |  6 ++-
->>>>   2 files changed, 61 insertions(+), 40 deletions(-)
->>>>
->>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->>>> index ae34b681ae82..39f1b7633a7c 100644
->>>> --- a/tools/lib/bpf/libbpf.c
->>>> +++ b/tools/lib/bpf/libbpf.c
->>>> @@ -345,7 +345,6 @@ struct bpf_object {
->>>>
->>>>        bool loaded;
->>>>        bool has_pseudo_calls;
->>>> -     bool relaxed_core_relocs;
->>>>
->>>>        /*
->>>>         * Information when doing elf related work. Only valid if fd
->>>> @@ -4238,25 +4237,38 @@ static int bpf_core_calc_field_relo(const struct bpf_program *prog,
->>>>    */
->>>>   static int bpf_core_reloc_insn(struct bpf_program *prog,
->>>>                               const struct bpf_field_reloc *relo,
->>>> +                            int relo_idx,
->>>>                               const struct bpf_core_spec *local_spec,
->>>>                               const struct bpf_core_spec *targ_spec)
->>>>   {
->>>> -     bool failed = false, validate = true;
->>>>        __u32 orig_val, new_val;
->>>>        struct bpf_insn *insn;
->>>> +     bool validate = true;
->>>>        int insn_idx, err;
->>>>        __u8 class;
->>>>
->>>>        if (relo->insn_off % sizeof(struct bpf_insn))
->>>>                return -EINVAL;
->>>>        insn_idx = relo->insn_off / sizeof(struct bpf_insn);
->>>> +     insn = &prog->insns[insn_idx];
->>>> +     class = BPF_CLASS(insn->code);
->>>>
->>>>        if (relo->kind == BPF_FIELD_EXISTS) {
->>>>                orig_val = 1; /* can't generate EXISTS relo w/o local field */
->>>>                new_val = targ_spec ? 1 : 0;
->>>>        } else if (!targ_spec) {
->>>> -             failed = true;
->>>> -             new_val = (__u32)-1;
->>>> +             pr_debug("prog '%s': relo #%d: substituting insn #%d w/ invalid insn\n",
->>>> +                      bpf_program__title(prog, false), relo_idx, insn_idx);
->>>> +             insn->code = BPF_JMP | BPF_CALL;
->>>> +             insn->dst_reg = 0;
->>>> +             insn->src_reg = 0;
->>>> +             insn->off = 0;
->>>> +             /* if this instruction is reachable (not a dead code),
->>>> +              * verifier will complain with the following message:
->>>> +              * invalid func unknown#195896080
->>>> +              */
->>>> +             insn->imm = 195896080; /* => 0xbad2310 => "bad relo" */
->>> Should this value become a binded contract in uapi/bpf.h so
->>> that the verifier can print a more meaningful name than "unknown#195896080"?
->>
->> It feels a bit premature to fix this in kernel. It's one of many ways
->> we can do this, e.g., alternative would be using invalid opcode
->> altogether. It's not yet clear what's the best way to report this from
->> kernel. Maybe in the future verifier will have some better way to
->> pinpoint where and what problem there is in user's program through
->> some more structured approach than current free-form log.
->>
->> So what I'm trying to say is that we should probably get a bit more
->> experience using these features first and understand what
->> kernel/userspace interface should be for reporting issues like this,
->> before setting anything in stone in verifier. For now, this
->> "unknown#195896080" should be a pretty unique search term :)
-> Sure.  I think this value will never be used for real in the life time.
-> I was mostly worry this message will be confusing.  May be the loader
-> could be improved to catch this and interpret it in a more meaningful
-> way.
+ls+cat based debugging for BPF
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
 
-Agree with both of you that we might want to find a better error reporting
-mechanism here in future, but can be done on top of this. Applied, thanks!
+Currently, users monitor/debug BPF programs and maps via sys_bpf(). This
+approach is different to the habit of some system admins, who do these
+works via ls+cat in sysfs. In this LSF/MM/BPF, we would like to discuss
+whether/how to enable similar debugging interface for BPF programs and=20
+maps. Specifically, we can discuss:
+
+  1) What inforamtions to show in sysfs/bpffs;
+  2) Granularity to enable/disable these information;
+  3) Will there be any overhead? If so, how much overhead is acceptable.
+
+These discussions should save us a lot of time over emails.=20
+
+I will share a prototype of this before LSF/MM/BPF.
+
+Thanks,
+Song
