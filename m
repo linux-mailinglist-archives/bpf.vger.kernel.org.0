@@ -2,188 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 950EC1486B5
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 15:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C159D148959
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 15:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388945AbgAXOQM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jan 2020 09:16:12 -0500
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:35421 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387927AbgAXOQM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Jan 2020 09:16:12 -0500
-Received: by mail-pj1-f66.google.com with SMTP id q39so805662pjc.0
-        for <bpf@vger.kernel.org>; Fri, 24 Jan 2020 06:16:11 -0800 (PST)
+        id S2391770AbgAXOTd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jan 2020 09:19:33 -0500
+Received: from mail-wr1-f52.google.com ([209.85.221.52]:34419 "EHLO
+        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391701AbgAXOTb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Jan 2020 09:19:31 -0500
+Received: by mail-wr1-f52.google.com with SMTP id t2so2191562wrr.1;
+        Fri, 24 Jan 2020 06:19:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ASOtb96BI6lTR6mu+ywHC0FfQOfd7+/ZeIlUMSQ1MgU=;
-        b=kmOyBuxl6PiajDWOBlWoRTw9yCno28+dJhqCOaiVgt6OckuzVAlVVZRw10RbyxwIBa
-         uzMgDELMRyNUlNoW+CptCJeZidIZIYqFTEpTEhkuNiGGPZE/WdP8i3rmgFINfGzlkZdo
-         sLYYApupXDdvLWAGmDrqQIwwialBjxVF2Ry8Q=
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:autocrypt:message-id:date:user-agent
+         :mime-version;
+        bh=9IdvFKBgHlNKMFuTIp4yFKU8c0Hp1QIXC5BzDAkguRo=;
+        b=IBP6TxWNkQL9ptXI0JWsAVzjTjnhh5h9B0xJDRfmqwZRgJP7lxciNaSp5IjOQpoE2H
+         WZ/ZqiSdPk1wbR2L8sfNTG6T1PPG7G/BrUQM6DUhq7NVvr7kxE6eUB9HkCVoTF4vVECD
+         vJXDXLBOMQddymi5Ak/I9sCeKPt0eC8y9I6nK9dyiacRfZ6RwTHNYC3L3DHGV/CTMy6X
+         AwTjmj5lz/0wAuqZA++IL6vMSEh2wDjxcPAeI5wDL1pX1de9h06hrg91rSMOV4RE9Ss/
+         oF2rR3VVFOouBjo9Zd22Hx2sxIEL9jfLCAJeqHdkmggk5fvvLe0OsCKR3EVz6UoOn05x
+         eiCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ASOtb96BI6lTR6mu+ywHC0FfQOfd7+/ZeIlUMSQ1MgU=;
-        b=SOurJ6ZDSuD+xjjsxFRDxwE47Bkfiw8zeiKr5lWEky2vdfSAb5hJfMAC/vIlKqtgMy
-         S4zz5QoBtu+rXL35vmIOVhsN9rU37MNJI8smny9jqFomFq+rFUblDtxsiqlbkApk1u7f
-         Hj8VlNQ7o1efx6y9d5BQcki4ZsRk955dkwl3R6jjDLLrA7cy4Kt05txyjqWhutg77Kpw
-         3/6aR20hnw0UyttzmmJmKDDGYKay/8rH1CfsxUTL5QqSvczvaAX9zlrOm5p3xcEeXOKd
-         X2tgu4P2uvFGBbGDfr6fnuMz64qFFtDUVZXLvtOefFAPZVZP9gg2DgEgPOwVrfVdXpy3
-         sQOQ==
-X-Gm-Message-State: APjAAAUFNgTrBl3G0c+m9yzDYo7eq1wKc5K32tpdnXTUcJJrNPFsdrf2
-        f76RBMZ2K7G4eVE3rf6r98NpdQ==
-X-Google-Smtp-Source: APXvYqwNRhkmJ4mbSYJLO0PmKxo+8nA6r5QBn7/anONeoROTjVfQayIadlHpsoWWf7cq2t4MlfwYcQ==
-X-Received: by 2002:a17:90a:2203:: with SMTP id c3mr3394823pje.68.1579875371008;
-        Fri, 24 Jan 2020 06:16:11 -0800 (PST)
-Received: from chromium.org ([2601:647:4903:8020:88e3:d812:557:e2e5])
-        by smtp.gmail.com with ESMTPSA id v8sm6549623pff.151.2020.01.24.06.16.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jan 2020 06:16:10 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Fri, 24 Jan 2020 06:16:00 -0800
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
-        Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@google.com>,
-        Thomas Garnier <thgarnie@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Garnier <thgarnie@chromium.org>,
-        Michael Halcrow <mhalcrow@google.com>,
-        Paul Turner <pjt@google.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Jann Horn <jannh@google.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Christian Brauner <christian@brauner.io>,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Andrey Ignatov <rdna@fb.com>, Joe Stringer <joe@wand.net.nz>
-Subject: Re: [PATCH bpf-next v3 08/10] tools/libbpf: Add support for
- BPF_PROG_TYPE_LSM
-Message-ID: <20200124141600.GB21334@chromium.org>
-References: <20200123152440.28956-1-kpsingh@chromium.org>
- <20200123152440.28956-9-kpsingh@chromium.org>
- <CAEf4BzZ7gmCTzxw4f=fp=j2_buBQ3rV8m3qWH8s-ySY6sGVPzw@mail.gmail.com>
+        h=x-gm-message-state:to:cc:from:subject:autocrypt:message-id:date
+         :user-agent:mime-version;
+        bh=9IdvFKBgHlNKMFuTIp4yFKU8c0Hp1QIXC5BzDAkguRo=;
+        b=qgL7XkdZCtEVTCYC/3kHNpb/Ht7QasJ6N7/5ub+pERP/bDB3BsIuT9C/l/xbHVDpQ9
+         6+SehaJZHjF6F7t3sGk43990yK+Hiey1+NuDPfmd0QsOjQ5648lMW3Km/1k66xl6ACEv
+         ns7OrZWyaKk0RBWsjIGFmGXZxEe5ECBKBMKqpYMd8lUZ1dT+CaGMIDcRdpT2ZLpx5GFH
+         hI9JnPfLigqU5CfjCfrHTagx7EGnOyAU6kIabxdTX/WGEUgEXgZpkYndTIIzqoeQrWo6
+         NcobeVIO7cU8HbAgiBAg/mXevWzXQvdqqckA4NJ7Y0axzhg+I8MlKh5ielFseNEGs9G/
+         KrUg==
+X-Gm-Message-State: APjAAAWMuY4Ul1uT3MOA8rYjBTfdlhEtxsMf2KfOn8FxkPtTPdiJKtAf
+        zSzJcvAGxDdn5e5MHQKA6kcTcT3D
+X-Google-Smtp-Source: APXvYqysF6wDSLSLIQ/e7/IHb3oPUWoOjZwXbvpN07LcycFUAjW5Hjr2+1gp5QyVehWYKN3Ps0bQhQ==
+X-Received: by 2002:a5d:5487:: with SMTP id h7mr4637023wrv.18.1579875568274;
+        Fri, 24 Jan 2020 06:19:28 -0800 (PST)
+Received: from [192.168.43.234] ([109.126.145.157])
+        by smtp.gmail.com with ESMTPSA id 18sm6520787wmf.1.2020.01.24.06.19.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Jan 2020 06:19:27 -0800 (PST)
+To:     lsf-pc@lists.linux-foundation.org
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring <io-uring@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: [LSF/MM/BPF TOPIC] programmable IO control flow with io_uring and BPF
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Message-ID: <e25f7a09-96b2-2288-4777-9f728a8b2c23@gmail.com>
+Date:   Fri, 24 Jan 2020 17:18:51 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZ7gmCTzxw4f=fp=j2_buBQ3rV8m3qWH8s-ySY6sGVPzw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="0LV8n20qL5EK3u7w5gCE2tBF4ac0MbLrp"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> On Thu, Jan 23, 2020 at 7:25 AM KP Singh <kpsingh@chromium.org> wrote:
-> >
-> > From: KP Singh <kpsingh@google.com>
-> >
-> > * Add functionality in libbpf to attach eBPF program to LSM hooks
-> > * Lookup the index of the LSM hook in security_hook_heads and pass it in
-> >   attr->lsm_hook_idx
-> >
-> > Signed-off-by: KP Singh <kpsingh@google.com>
-> > Reviewed-by: Brendan Jackman <jackmanb@google.com>
-> > Reviewed-by: Florent Revest <revest@google.com>
-> > Reviewed-by: Thomas Garnier <thgarnie@google.com>
-> > ---
-> 
-> Looks good, but see few nits below.
-> 
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--0LV8n20qL5EK3u7w5gCE2tBF4ac0MbLrp
+Content-Type: multipart/mixed; boundary="rHfM5TTORUYfRdCkqQS3U5Fn1pICpC3yH";
+ protected-headers="v1"
+From: Pavel Begunkov <asml.silence@gmail.com>
+To: lsf-pc@lists.linux-foundation.org
+Cc: Jens Axboe <axboe@kernel.dk>, io-uring <io-uring@vger.kernel.org>,
+ linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org
+Message-ID: <e25f7a09-96b2-2288-4777-9f728a8b2c23@gmail.com>
+Subject: [LSF/MM/BPF TOPIC] programmable IO control flow with io_uring and BPF
 
-Thanks!
+--rHfM5TTORUYfRdCkqQS3U5Fn1pICpC3yH
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> >  tools/lib/bpf/bpf.c      |   6 ++-
-> >  tools/lib/bpf/bpf.h      |   1 +
-> >  tools/lib/bpf/libbpf.c   | 104 +++++++++++++++++++++++++++++++++++++--
-> >  tools/lib/bpf/libbpf.h   |   4 ++
-> >  tools/lib/bpf/libbpf.map |   3 ++
-> >  5 files changed, 114 insertions(+), 4 deletions(-)
-> >
-> 
-> [...]
-> 
-> > @@ -5084,6 +5099,8 @@ __bpf_object__open(const char *path, const void *obj_buf, size_t obj_buf_sz,
-> >                 if (prog->type != BPF_PROG_TYPE_UNSPEC)
-> >                         continue;
-> >
-> > +
-> > +
-> 
-> why these extra lines?
+Apart from concurrent IO execution, io_uring allows to issue a sequence
+of operations, a.k.a links, where requests are executed sequentially one
+after another. If an "error" happened, the rest of the link will be
+cancelled.
 
-Ah this might have crept in my latest rebase. Will remove these.
+The problem is what to consider an "error". For example, if we
+read less bytes than have been asked for, the link will be cancelled.
+It's necessary to play safe here, but this implies a lot of overhead if
+that isn't the desired behaviour. The user would need to reap all
+cancelled requests, analyse the state, resubmit them and suffer from
+context switches and all in-kernel preparation work. And there are
+dozens of possibly desirable patterns, so it's just not viable to
+hard-code them into the kernel.
 
-> 
-> >                 err = libbpf_prog_type_by_name(prog->section_name, &prog_type,
-> >                                                &attach_type);
-> >                 if (err == -ESRCH)
-> > @@ -6160,6 +6177,7 @@ bool bpf_program__is_##NAME(const struct bpf_program *prog)       \
-> >  }                                                              \
-> >
-> >  BPF_PROG_TYPE_FNS(socket_filter, BPF_PROG_TYPE_SOCKET_FILTER);
-> > +BPF_PROG_TYPE_FNS(lsm, BPF_PROG_TYPE_LSM);
-> >  BPF_PROG_TYPE_FNS(kprobe, BPF_PROG_TYPE_KPROBE);
-> >  BPF_PROG_TYPE_FNS(sched_cls, BPF_PROG_TYPE_SCHED_CLS);
-> >  BPF_PROG_TYPE_FNS(sched_act, BPF_PROG_TYPE_SCHED_ACT);
-> > @@ -6226,6 +6244,8 @@ static struct bpf_link *attach_raw_tp(const struct bpf_sec_def *sec,
-> >                                       struct bpf_program *prog);
-> >  static struct bpf_link *attach_trace(const struct bpf_sec_def *sec,
-> >                                      struct bpf_program *prog);
-> > +static struct bpf_link *attach_lsm(const struct bpf_sec_def *sec,
-> > +                                  struct bpf_program *prog);
-> >
-> >  struct bpf_sec_def {
-> >         const char *sec;
-> > @@ -6272,6 +6292,9 @@ static const struct bpf_sec_def section_defs[] = {
-> >         SEC_DEF("freplace/", EXT,
-> >                 .is_attach_btf = true,
-> >                 .attach_fn = attach_trace),
-> > +       SEC_DEF("lsm/", LSM,
-> > +               .expected_attach_type = BPF_LSM_MAC,
-> 
-> curious, will there be non-MAC LSM programs? if yes, how they are
-> going to be different and which prefix will we use then?
+The other problem is to keep in running even when a request depends on
+a result of the previous one. It could be simple passing return code or
+something more fancy, like reading from the userspace.
 
-One can think BPF_LSM_AUDIT programs which will only be used to log
-information from the LSM hooks and not enforce a policy. Currently,
-one can sort of do that by disabling CONFIG_SECURITY_BPF_ENFORCE but
-that's an all or none hammer.
+And that's where BPF will be extremely useful. It will control the flow
+and do steering.
 
-> 
-> > +               .attach_fn = attach_lsm),
-> >         BPF_PROG_SEC("xdp",                     BPF_PROG_TYPE_XDP),
-> >         BPF_PROG_SEC("perf_event",              BPF_PROG_TYPE_PERF_EVENT),
-> >         BPF_PROG_SEC("lwt_in",                  BPF_PROG_TYPE_LWT_IN),
-> > @@ -6533,6 +6556,44 @@ static int bpf_object__collect_struct_ops_map_reloc(struct bpf_object *obj,
-> >         return -EINVAL;
-> >  }
-> >
-> > +static __s32 find_lsm_hook_idx(struct bpf_program *prog)
-> 
-> nit: I'd stick to int for return result, we barely ever use __s32 in libbpf.c
+The concept is to be able run a BPF program after a request's
+completion, taking the request's state, and doing some of the following:
+1. drop a link/request
+2. issue new requests
+3. link/unlink requests
+4. do fast calculations / accumulate data
+5. emit information to the userspace (e.g. via ring's CQ)
 
-Sure. Changed to int.
+With that, it will be possible to have almost context-switch-less IO,
+and that's really tempting considering how fast current devices are.
 
-- KP
+What to discuss:
+1. use cases
+2. control flow for non-privileged users (e.g. allowing some popular
+   pre-registered patterns)
+3. what input the program needs (e.g. last request's
+   io_uring_cqe) and how to pass it.
+4. whether we need notification via CQ for each cancelled/requested
+   request, because sometimes they only add noise
+5. BPF access to user data (e.g. allow to read only registered buffers)
+6. implementation details. E.g.
+   - how to ask to run BPF (e.g. with a new opcode)
+   - having global BPF, bound to an io_uring instance or mixed
+   - program state and how to register
+   - rework notion of draining and sequencing
+   - live-lock avoidance (e.g. double check io_uring shut-down code)
 
-> 
-> [...]
+
+--=20
+Pavel Begunkov
+
+
+--rHfM5TTORUYfRdCkqQS3U5Fn1pICpC3yH--
+
+--0LV8n20qL5EK3u7w5gCE2tBF4ac0MbLrp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE+6JuPTjTbx479o3OWt5b1Glr+6UFAl4q/MsACgkQWt5b1Glr
++6UA2w//V5C2WFhXICVCY+8EzfRtlfmBW9dKejAbl/L/7YjDlzrFlO1SidaEw81x
+RyVQNzH1WMomxHmePO0KHdbAr4UlN5Rzx0B/hWAg93wUStYSvX5qhJ6he96wNxpm
+QltbgoiEhBfTu8C2ouM2tneY0AEg1T76Y4TNsbVhk2EOzVVlCCAPGK0SdaIUMIH1
+A79CBZPcoFf8Q1Uiy+4xKSgVaTVjVXOTOn6j7ECweHamHuISWkxbYX9t27S/g3f4
+O01TNPSJOqoqsD0O7WpTawZZ8+qek89Pq5Q2WUKT90ncvprA6H0PvL5tBMPtMtK5
+Eg1a3QIkjQLL/HmXxyS9QYbzpE9JT8pP9JabL+U45GJUc9AK7MwDglkALidoOYNY
+1dilgS844sS5GB5JrhuooBFQQzBiTVRM70D8b4xDAyJUr3qE0dlbee4ar0SwKNlI
+fZrXO60EgHbL2jADkHSduuRVSpeGu6upRbadDgu4mVwXgytEVDX2Jo0LiQDT3jzE
+RxFxEOyARQ5J0DoPsyjDHhCKIfsxwXcp+kVRPG4axhUkQcYVRpkhkKe8YIGUVRX4
+SHjkFTTgnxPhZlNk3zijLNI18m+/pw33OfnfhDxUMy9Tma/E6cDwbznbjkL1Obhb
+4413QGRZtXZzVhNxY/tOmTZt0CCs2En0533zuVZDyKA8/TWGN5U=
+=jWNI
+-----END PGP SIGNATURE-----
+
+--0LV8n20qL5EK3u7w5gCE2tBF4ac0MbLrp--
