@@ -2,88 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C27148F39
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 21:19:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37309148F56
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 21:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392066AbgAXUTI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jan 2020 15:19:08 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:16802 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387535AbgAXUTH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 24 Jan 2020 15:19:07 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 00OKJ5An015443
-        for <bpf@vger.kernel.org>; Fri, 24 Jan 2020 12:19:06 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=0md6ZpKHsYxQIdHh5seR7GQxOsXFrOjGlHCjyjawdjU=;
- b=OYZYp7amGlevSJ+fFCHj5WXfDfEBnKJE185RD/GlJJvDAJ5Xx6HZe6Xs5bqTrvzh2aUh
- TexfwUcMHVoGf1ltC0Tudgsf1ANTlzvsle3E3bI2ANhifqUsCg4gzUCQA6NskrvQw4ku
- fwWPFYqywvXY3JB0J6HSMVZArOdMheE8RUw= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 2xr63a8dtr-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 24 Jan 2020 12:19:06 -0800
-Received: from intmgw004.06.prn3.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 24 Jan 2020 12:18:54 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 21A792EC1AD1; Fri, 24 Jan 2020 12:18:49 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>, <williampsmith@fb.com>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] libbpf: fix realloc usage in bpf_core_find_cands
-Date:   Fri, 24 Jan 2020 12:18:46 -0800
-Message-ID: <20200124201847.212528-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S2388985AbgAXU1W (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jan 2020 15:27:22 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:55307 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387548AbgAXU1W (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 24 Jan 2020 15:27:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579897640;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Pn41gsoJ7Prz9D2Chq8+4st2brwhG+QxzipNPoNENGo=;
+        b=Yz4cEh0PgDvTWOJdtDqemBvpf5qGCQeaiEdLHTyCgaNbg9sSVcPLLs3sh0nlIVQ1EzBZKd
+        zN1Skc7S3LqpT7tdEGbJSjrq46ONHTXH2kwxlfKfKFLQx+l6cQgKI855ywj20bIbaHE7Eq
+        nAj98Luc4EyorPgW69R92J3nJMzIr0s=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-428-7GrZkKZFMZajbzR8COVUjg-1; Fri, 24 Jan 2020 15:27:18 -0500
+X-MC-Unique: 7GrZkKZFMZajbzR8COVUjg-1
+Received: by mail-lf1-f72.google.com with SMTP id v19so609927lfg.2
+        for <bpf@vger.kernel.org>; Fri, 24 Jan 2020 12:27:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=Pn41gsoJ7Prz9D2Chq8+4st2brwhG+QxzipNPoNENGo=;
+        b=LP3AdcMLRg76a+BsQgBQ+qzHRvIXAhbsWe06ltY6A7gITKArYPEdSz64a4ECBsTvz+
+         xPNSO8wdOrJn915AmOSwMrFVvXSs3//iwormz1l+oFrbCIi5Ai6SDqQOh2ybdlmKXvq8
+         x47gD/yDNh1Go8Rc4YdCZI4z2IEtFp3xyHTFcoHZhuSvKJU5YU1BzphkE81ijqeXXdhB
+         rdTmGJzlQ6twWdfWksaBFB9z5cW0rLGy8hna2Ph1j63xo0rqHDrhsf5m7jasYIRTW9ul
+         RO1Lr9Biq2OVr1zAK3SgDu/xCBhQB4IctFlPvn54E6Uu8C+gUw+fgBNbPGAuF27Itb3k
+         uXTg==
+X-Gm-Message-State: APjAAAXsoIcJ2GikbIjccj73q2ciW2lmKqrvVo6n9KsbSbijKDmOmVBZ
+        nR3EvrIijsrRyKmcX5fD00SkMCp+9gh2BotaVSl91PrB0ZP9mn20yb4X3xNM3Ks5NI05hHcE+2D
+        BygEZdunP10TM
+X-Received: by 2002:ac2:515b:: with SMTP id q27mr2115407lfd.119.1579897633633;
+        Fri, 24 Jan 2020 12:27:13 -0800 (PST)
+X-Google-Smtp-Source: APXvYqx9hrO0z4pTMXfCFGI/ExgfB5vQ/R1c2J8bnz5equSvHLWgIR8YUpPBbv8gpOUT2OWeI+Wb0Q==
+X-Received: by 2002:ac2:515b:: with SMTP id q27mr2115388lfd.119.1579897633361;
+        Fri, 24 Jan 2020 12:27:13 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id q26sm3308753lfp.85.2020.01.24.12.27.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jan 2020 12:27:12 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 476A5180073; Fri, 24 Jan 2020 21:27:11 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Palmer Dabbelt <palmerdabbelt@google.com>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        kernel-team@android.com, Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: Re: [PATCH] selftests/bpf: Elide a check for LLVM versions that can't compile it
+In-Reply-To: <20200124180839.185837-1-palmerdabbelt@google.com>
+References: <20200124180839.185837-1-palmerdabbelt@google.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 24 Jan 2020 21:27:11 +0100
+Message-ID: <87ftg4fvmo.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-01-24_06:2020-01-24,2020-01-24 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- suspectscore=8 clxscore=1015 impostorscore=0 spamscore=0 mlxlogscore=755
- adultscore=0 malwarescore=0 bulkscore=0 mlxscore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1911200001 definitions=main-2001240167
-X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix bug requesting invalid size of reallocated array when constructing CO-RE
-relocation candidate list. This can cause problems if there are many potential
-candidates and a very fine-grained memory allocator bucket sizes are used.
+Palmer Dabbelt <palmerdabbelt@google.com> writes:
 
-Fixes: ddc7c3042614 ("libbpf: implement BPF CO-RE offset relocation algorithm")
-Reported-by: William Smith <williampsmith@fb.com>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/lib/bpf/libbpf.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> The current stable LLVM BPF backend fails to compile the BPF selftests
+> due to a compiler bug.  The bug has been fixed in trunk, but that fix
+> hasn't landed in the binary packages I'm using yet (Fedora arm64).
+> Without this workaround the tests don't compile for me.
+>
+> This patch triggers a preprocessor warning on LLVM versions that
+> definitely have the bug.  The test may be conservative (ie, I'm not sure
+> if 9.1 will have the fix), but it should at least make the current set
+> of stable releases work together.
+>
+> See https://reviews.llvm.org/D69438 for more information on the fix.  I
+> obtained the workaround from
+> https://lore.kernel.org/linux-kselftest/aed8eda7-df20-069b-ea14-f06628984566@gmail.com/T/
+>
+> Fixes: 20a9ad2e7136 ("selftests/bpf: add CO-RE relocs array tests")
+> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index ae34b681ae82..b581cb52ee5c 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -3870,7 +3870,9 @@ static struct ids_vec *bpf_core_find_cands(const struct btf *local_btf,
- 		if (strncmp(local_name, targ_name, local_essent_len) == 0) {
- 			pr_debug("[%d] %s: found candidate [%d] %s\n",
- 				 local_type_id, local_name, i, targ_name);
--			new_ids = realloc(cand_ids->data, cand_ids->len + 1);
-+			new_ids = reallocarray(cand_ids->data,
-+					       cand_ids->len + 1,
-+					       sizeof(*cand_ids->data));
- 			if (!new_ids) {
- 				err = -ENOMEM;
- 				goto err_out;
--- 
-2.17.1
+Having to depend on the latest trunk llvm to compile the selftests is
+definitely unfortunate. I believe there are some tests that won't work
+at all without trunk llvm (the fentry/fexit stuff comes to mind;
+although I'm not sure if they'll fail to compile, just fail to run?).
+Could we extend this type of checking to any such case?
+
+-Toke
 
