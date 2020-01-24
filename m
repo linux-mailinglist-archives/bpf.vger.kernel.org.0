@@ -2,80 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A71F2147CB8
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 10:54:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C89B147DCD
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 11:12:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388342AbgAXJyF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jan 2020 04:54:05 -0500
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:36743 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2388339AbgAXJyE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 24 Jan 2020 04:54:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579859643;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kj9LFbCnEWlNmUswLahnvJmujUVg7he2BqdXZV1Y5Fk=;
-        b=eNg6tnSD2+Zi/9b0BEzWAjUoSOSWUn9Y9rrVEyPtXapuwzDwCkzIyPDjF5sxMoFnO52pUA
-        F20MVeNS1pES4riqQ17btby9RR1zCvAu/nhRtUbsuDfXn7WkN+ISbCFxUsg4PXKgxFOv4W
-        FeV4L+g78kQZKSqlrP50CuJIjGfa7Ps=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-193-oSdFGQASN1WYfvWyf5V2Ow-1; Fri, 24 Jan 2020 04:54:02 -0500
-X-MC-Unique: oSdFGQASN1WYfvWyf5V2Ow-1
-Received: by mail-lj1-f198.google.com with SMTP id z2so496726ljh.16
-        for <bpf@vger.kernel.org>; Fri, 24 Jan 2020 01:54:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=kj9LFbCnEWlNmUswLahnvJmujUVg7he2BqdXZV1Y5Fk=;
-        b=l+ETbKnHAurQ2p9/EMSlxEI9phA/ORWQJK5XVa8oUt+RqTWt4jxvbdniD9sD6pNp8S
-         NIrJDblcTCKMJgzcnPqD3ulCHmbjzFk9k9M09BMtF2bS5P3NYmtQeEZfnKyqQ0avqjeS
-         V4YsBbd32mq5sMBQwd4tmCbOG0IfHFk0byb/0eZrIaPVgeKlftei+rGkdahEkLKj0LAv
-         VdQ1dnXqb+vROlaTQ9mvJc+Ulr0EPc2GqQMB3JRikKIjASggK5ckj+hJsDZIvBwQgd89
-         lrNIEB1z0yV92EAfubB4N+5d4AKgdFDM/5XmKAejVvEIP+Ku34UK7kvV3YrvA8GDMppg
-         0qTg==
-X-Gm-Message-State: APjAAAXitexKDkgzjC74ULrWQkbBp8Nrr+sRSQnWp/hllfWcx14JiW+Z
-        ywKwF+zheGvxMSkIV2Bqzl97KdsdEHtuOIVfVVEi2f6ZtOCnSYPcNdVa6DwZMXTIppbyZ18APaX
-        F/2h4hH3GcV4J
-X-Received: by 2002:a2e:87ca:: with SMTP id v10mr1635759ljj.253.1579859640859;
-        Fri, 24 Jan 2020 01:54:00 -0800 (PST)
-X-Google-Smtp-Source: APXvYqzftReY65v+672gLoSlrbrdhqxQDfkSaIpLZLXpA465IVjPRlYrI26vbajFIoCoQGQMUjPZng==
-X-Received: by 2002:a2e:87ca:: with SMTP id v10mr1635752ljj.253.1579859640716;
-        Fri, 24 Jan 2020 01:54:00 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([85.204.121.218])
-        by smtp.gmail.com with ESMTPSA id i1sm2743068lji.71.2020.01.24.01.53.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jan 2020 01:54:00 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 705BF180073; Fri, 24 Jan 2020 10:53:59 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
-Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
+        id S2389006AbgAXKDU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jan 2020 05:03:20 -0500
+Received: from www62.your-server.de ([213.133.104.62]:50726 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388865AbgAXKDU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Jan 2020 05:03:20 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iuvo6-0000Fe-7H; Fri, 24 Jan 2020 11:03:18 +0100
+Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-3.fritz.box)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iuvo5-000BoA-Uc; Fri, 24 Jan 2020 11:03:17 +0100
+Subject: Re: [PATCH 1/1] map_seq_next should increase position index
+To:     Vasily Averin <vvs@virtuozzo.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH bpf-next] bpftool: print function linkage in BTF dump
-In-Reply-To: <20200124054317.2459436-1-andriin@fb.com>
-References: <20200124054317.2459436-1-andriin@fb.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 24 Jan 2020 10:53:59 +0100
-Message-ID: <87tv4lgoy0.fsf@toke.dk>
+References: <d6e2df39-919e-8d37-0668-5c4bbf19f278@virtuozzo.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <be6d3c0d-c9e6-d6f0-ac07-0467480e77d6@iogearbox.net>
+Date:   Fri, 24 Jan 2020 11:03:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <d6e2df39-919e-8d37-0668-5c4bbf19f278@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25704/Thu Jan 23 12:37:43 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andriin@fb.com> writes:
+On 1/24/20 7:17 AM, Vasily Averin wrote:
+> if seq_file .next fuction does not change position index,
+> read after some lseek can generate unexpected output.
+> 
+> https://bugzilla.kernel.org/show_bug.cgi?id=206283
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> ---
+>   kernel/bpf/inode.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+> index ecf42be..9008a20 100644
+> --- a/kernel/bpf/inode.c
+> +++ b/kernel/bpf/inode.c
+> @@ -196,6 +196,7 @@ static void *map_seq_next(struct seq_file *m, void *v, loff_t *pos)
+>   	void *key = map_iter(m)->key;
+>   	void *prev_key;
+>   
+> +	(*pos)++;
+>   	if (map_iter(m)->done)
+>   		return NULL;
+>   
+> 
 
-> Add printing out BTF_KIND_FUNC's linkage.
->
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Hm, how did you test this change? Please elaborate, since in map_seq_next()
+we do increment position index:
 
-Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+static void *map_seq_next(struct seq_file *m, void *v, loff_t *pos)
+{
+         struct bpf_map *map = seq_file_to_map(m);
+         void *key = map_iter(m)->key;
+         void *prev_key;
 
+         if (map_iter(m)->done)
+                 return NULL;
+
+         if (unlikely(v == SEQ_START_TOKEN))
+                 prev_key = NULL;
+         else
+                 prev_key = key;
+
+         if (map->ops->map_get_next_key(map, prev_key, key)) {
+                 map_iter(m)->done = true;
+                 return NULL;
+         }
+
+         ++(*pos);                    <------------ here
+         return key;
+}
+
+With your change we'd increment twice. What is missing here?
+
+Thanks,
+Daniel
