@@ -2,124 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C2A1478C6
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 08:03:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8987A1478D3
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 08:10:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730656AbgAXHDg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jan 2020 02:03:36 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:41202 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726275AbgAXHDf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 24 Jan 2020 02:03:35 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00O73MSK014349;
-        Thu, 23 Jan 2020 23:03:23 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=yryOsSghsTT0rm8ZoPYfFwUhcmrZyGodMicIYMo1Zbs=;
- b=MV53Ib2FF1c4IqcTWPtSgC0rFHwobmkQcoXwCK6MxJ4Y9TxwNTHkX8As+o4l/dgUscih
- zd9lcmdWl/VKyjxWAVUfUvbGkDXa903DQcZ15YHmKLN8JftT0JXaofM86Fqv87s05prr
- Jv3xaVHX2ReybmFIBBAesOsq+bJ5SlqRCvM= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 2xq49c5sdx-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 23 Jan 2020 23:03:22 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 23 Jan 2020 23:03:02 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f585tnr3ZVJuwEwzedp36KlwpxGzFjJsQhseCCaiQmenmMwiyWiInUCvPosxqDIfCW6ajY6TmjE5ozys/ifqpR3lnfiSW3xIGuxsHDgNQq8EsZsy8ogsVJoz6qX1BO2Dmk7LBQaIVTm8W3neyEl0Zx3m0N2KqHvbfCnTPVpU2k9NTDWbNW2d7hmrR+1gK3zVqvU5YoKs61rjmJsz8gj9JddwQhK3fX2HUQxzRCEacaMpQ/NuALjBIyPkp/LGpBs5FrCouasxt1qK+ezpIhPnx+zsb9/mwsdNi0WzHu2phahzBIVYHOFMX1iuOSmJwMqN6axI23Mh/Je4k4uOsgJLvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yryOsSghsTT0rm8ZoPYfFwUhcmrZyGodMicIYMo1Zbs=;
- b=TwMXBaWnf6a5nxxuDSUN8CAwTERPyQyn299DjHSL5nvhH7E9fBUMiUjlX7IXvIaJkdSqFlDuG0afTav++zMtdnM7K4G3ZsXxwgOJsvfrfRvLTxvco871qHyJdTIA4YvZA9j7SkuFM4mSA9LSnqZsWxAZvWB85r46kYf/fEN348NmatYDjh6+m2n5rX0VPwOPsaeDD9r/EVwehxVAe6Ok1Gccb559Zh3FApSZGowpDX/cr/PKj7yf5waPyZdcLYLgcChrt9Nd+APtE9pBY8sjiJZUY/ibHTV18X96JOqST4R4f+AkJYRzLrriU7c21HL6INiGwIZD0ArID25Y4UxNWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yryOsSghsTT0rm8ZoPYfFwUhcmrZyGodMicIYMo1Zbs=;
- b=KMdkK4W//zKlxUv52UfvGaJnJqy4jxX9KES25KK3sE7vdKD+LQ+n8dc5pjYk0bEmb934mQCjObOh9RMEY8nbMdHLXctypIg554asZLY3k0/84kXA7PVAJu+04VF9Dpif9f0FpJslGoNbYkZyO4d9fzcGm6uUq73cdbSALDWjSI8=
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
- MN2PR15MB2893.namprd15.prod.outlook.com (20.178.250.161) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2644.20; Fri, 24 Jan 2020 07:03:00 +0000
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2644.028; Fri, 24 Jan 2020
- 07:03:00 +0000
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:180::d6ea) by MW2PR2101CA0007.namprd21.prod.outlook.com (2603:10b6:302:1::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2686.10 via Frontend Transport; Fri, 24 Jan 2020 07:02:59 +0000
-From:   Martin Lau <kafai@fb.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [Potential Spoof] [PATCH bpf-next] selftests/bpf: improve bpftool
- changes detection
-Thread-Topic: [Potential Spoof] [PATCH bpf-next] selftests/bpf: improve
- bpftool changes detection
-Thread-Index: AQHV0nkG2i4DXA7ZV0K0SyfAVmoLC6f5Y6kA
-Date:   Fri, 24 Jan 2020 07:03:00 +0000
-Message-ID: <20200124070256.wdxgfx2gnxnhdfyw@kafai-mbp.dhcp.thefacebook.com>
-References: <20200124054148.2455060-1-andriin@fb.com>
-In-Reply-To: <20200124054148.2455060-1-andriin@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MW2PR2101CA0007.namprd21.prod.outlook.com
- (2603:10b6:302:1::20) To MN2PR15MB3213.namprd15.prod.outlook.com
- (2603:10b6:208:3d::12)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::d6ea]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 07d13b26-b63e-4965-9e4e-08d7a09b72c1
-x-ms-traffictypediagnostic: MN2PR15MB2893:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR15MB28937CE2E2BB223B0643BEE7D50E0@MN2PR15MB2893.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:2803;
-x-forefront-prvs: 02929ECF07
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(346002)(136003)(376002)(366004)(396003)(189003)(199004)(64756008)(66446008)(66476007)(66946007)(8676002)(66556008)(6666004)(2906002)(478600001)(16526019)(5660300002)(81166006)(1076003)(81156014)(8936002)(6506007)(7696005)(52116002)(71200400001)(55016002)(186003)(6636002)(9686003)(316002)(558084003)(6862004)(4326008)(54906003)(86362001);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB2893;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Z55jVMnx5HTNbwZZPA2ZFejiHmJTbgr7u/wnehApGBCxFwzRFeYMVukLNUEDCq9jvJssGtvOsbds4I+WABstVSRxHMEW0eggjVKQ9AcVIA0JgMPIWXPRzPeRl+R4IxV6+zMAbVJeFsHLxgZdtpEbcx+DYCK803RGVs09uvUEyp811Rl6KbcAcKJSVmTxZerDuEkHk4lb/VDSTDRn3xfVufs2S+lrXDO8Og6LdhP46esUC/gV+JY50vQrgj2n3K6KMMKHdIjxPkru0EC7e226MDs9U290iBvgult/wvBNpu9nUC4ySGI3rYtSOfe6lFXan5TrlrG/zQFsjqNHmzAcPmHgNCh7cOE5ntRY9OiQ+o4wSr9oSH+A2yCQa1MQ0lIXd4ubkgqREFmG2rFDsaHuSrGFqN18ghpC7TjSSFTVW/DoTiT2MCbJr+ftlxfdpHER
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <BDA31CB05F34A5499399CCC123C478E3@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726080AbgAXHK5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jan 2020 02:10:57 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:42159 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725817AbgAXHK5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Jan 2020 02:10:57 -0500
+Received: by mail-pg1-f196.google.com with SMTP id s64so538303pgb.9
+        for <bpf@vger.kernel.org>; Thu, 23 Jan 2020 23:10:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=YHPrZknP3aSvwBkLZpZhgDzuWSkvih7tjHMfkkf3BWQ=;
+        b=dvlxQFE/c7t4VYANjXgi1oSTOuyFdC68jp2ivGKCnhDIL5qL77vzjVKVzWmLHKNwWE
+         rdIrBFT5WBpJtwVtfIPPAtss5yuaOfEO2PpP7PvCx5v2yI1/b+vRSVgIknYq6xEUFx/I
+         QGjxl/lYr+VHzBWj6TxOvIb19etguv5ORiYmkBSnAW9Ar/qu0vav1jFC8OitaLSS7ae4
+         bpSPn0W+JhBBHLRTy8nyvS3xgQQ4kBFzYTudzwaVahm5+VdnMABKqYretv0xrM68CArl
+         Hytvw/lSx1aGcrIOBTVeTdVwiCBxwGp1qJkpRzj55jixPg3PYP5eBfTXlmjpXwwmYCmD
+         3wDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=YHPrZknP3aSvwBkLZpZhgDzuWSkvih7tjHMfkkf3BWQ=;
+        b=kbvv+3BSY7jLNZSZD26XyybPe4FLoQTdHTqme6GtNzw83by0iFQtIZK8MTEda89t85
+         H4nawxrjW4cA62C5M9cjagAsCIwgH6uy8l6K5TobNMsiiLBLpQ1QmFJO2m3rRlhNozmH
+         0FGCCCP3s/uJAj0TqebCdJguQvMpQnWNP4WJV57MqrdrZLZOkk4BoGpPhHPF5FyX9QL6
+         UKAsC8uEKArWv23jt6RMWtbxRFSQw9LhGgR2grG3T5UdZm/Jkp3jvISpBkL3gRGoP546
+         h5PGt7tjIiPLpN/a4nsZ36m3vskjkSXWgJkkGlsJSIBO8jPdmU0CQ3N2i6NGQpcBJEya
+         8dhA==
+X-Gm-Message-State: APjAAAWtzMTrYX0p/KgdDkIwmyP56/qGhwd9y48Us7ScOEM6sHVmfkRT
+        T5o5VSTfGC1slY6nwCMloZw=
+X-Google-Smtp-Source: APXvYqxI7zP8yKs4/VmJw528yxrYHkxb75+yg4WHlhV5UWqBJqLPXbDg/w3BXpVgxmkRaQRVmBAEYw==
+X-Received: by 2002:a62:83c5:: with SMTP id h188mr2035886pfe.0.1579849856672;
+        Thu, 23 Jan 2020 23:10:56 -0800 (PST)
+Received: from [127.0.1.1] ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id f81sm4746924pfa.118.2020.01.23.23.10.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jan 2020 23:10:56 -0800 (PST)
+Subject: [bpf PATCH] bpf: verifier,
+ do_refine_retval_range may clamp umin to 0 incorrectly
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     yhs@fb.com, john.fastabend@gmail.com, ast@kernel.org,
+        daniel@iogearbox.net
+Date:   Thu, 23 Jan 2020 23:10:42 -0800
+Message-ID: <157984984270.18622.13529102486040865869.stgit@john-XPS-13-9370>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 07d13b26-b63e-4965-9e4e-08d7a09b72c1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jan 2020 07:03:00.2890
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: aFQVm/X3JIpawtvcDReExh66Cl1eDXpNN/OruRJn0y22N3XZ0DkxEz8MxuKh8eFW
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2893
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-01-24_01:2020-01-24,2020-01-24 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=654
- impostorscore=0 phishscore=0 mlxscore=0 spamscore=0 suspectscore=0
- clxscore=1015 lowpriorityscore=0 malwarescore=0 bulkscore=0 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-2001240057
-X-FB-Internal: deliver
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 23, 2020 at 09:41:48PM -0800, Andrii Nakryiko wrote:
-> Detect when bpftool source code changes and trigger rebuild within
-> selftests/bpf Makefile. Also fix few small formatting problems.
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+do_refine_retval_range() is called to refine return values from specified
+helpers, probe_read_str and get_stack at the moment, the reasoning is
+because both have a max value as part of their input arguments and
+because the helper ensure the return value will not be larger than this
+we can set umax and smax values of the return register, r0.
+
+However, the return value is a signed integer so setting umax is incorrect
+It leads to further confusion when the do_refine_retval_range() then calls,
+__reg_deduce_bounds() which will see a umax value as meaning the value is
+unsigned and then assuming it is unsigned set the smin = umin which in this
+case results in 'smin = 0' and an 'smax = X' where X is the input argument
+from the helper call.
+
+Here are the comments from _reg_deduce_bounds() on why this would be safe
+to do.
+
+ /* Learn sign from unsigned bounds.  Signed bounds cross the sign
+  * boundary, so we must be careful.
+  */
+ if ((s64)reg->umax_value >= 0) {
+	/* Positive.  We can't learn anything from the smin, but smax
+	 * is positive, hence safe.
+	 */
+	reg->smin_value = reg->umin_value;
+	reg->smax_value = reg->umax_value = min_t(u64, reg->smax_value,
+						  reg->umax_value);
+
+But now we incorrectly have a return value with type int with the
+signed bounds (0,X). Suppose the return value is negative, which is
+possible the we have the verifier and reality out of sync. Among other
+things this may result in any error handling code being falsely detected
+as dead-code and removed. For instance the example below shows using
+bpf_probe_read_str() causes the error path to be identified as dead
+code and removed.
+
+>From the 'llvm-object -S' dump,
+
+ r2 = 100
+ call 45
+ if r0 s< 0 goto +4
+ r4 = *(u32 *)(r7 + 0)
+
+But from dump xlate
+
+  (b7) r2 = 100
+  (85) call bpf_probe_read_compat_str#-96768
+  (61) r4 = *(u32 *)(r7 +0)  <-- dropped if goto
+
+Due to verifier state after call being
+
+ R0=inv(id=0,umax_value=100,var_off=(0x0; 0x7f))
+
+To fix omit setting the umax value because its not safe. The only
+actual bounds we know is the smax. This results in the correct bounds
+(SMIN, X) where X is the max length from the helper. After this the
+new verifier state looks like the following after call 45.
+
+R0=inv(id=0,smax_value=100)
+
+Then xlated version no longer removed dead code giving the expected
+result,
+
+  (b7) r2 = 100
+  (85) call bpf_probe_read_compat_str#-96768
+  (c5) if r0 s< 0x0 goto pc+4
+  (61) r4 = *(u32 *)(r7 +0)
+
+Note, bpf_probe_read_* calls are root only so we wont hit this case
+with non-root bpf users.
+
+Fixes: 849fa50662fbc ("bpf: verifier, refine bounds may clamp umin to 0 incorrectly")
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+---
+ kernel/bpf/verifier.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 7d530ce8719d..9f310db68073 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -228,7 +228,6 @@ struct bpf_call_arg_meta {
+ 	int regno;
+ 	int access_size;
+ 	s64 msize_smax_value;
+-	u64 msize_umax_value;
+ 	int ref_obj_id;
+ 	int func_id;
+ 	u32 btf_id;
+@@ -3573,7 +3572,6 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 regno,
+ 		 * to refine return values.
+ 		 */
+ 		meta->msize_smax_value = reg->smax_value;
+-		meta->msize_umax_value = reg->umax_value;
+ 
+ 		/* The register is SCALAR_VALUE; the access check
+ 		 * happens using its boundaries.
+@@ -4078,9 +4076,9 @@ static void do_refine_retval_range(struct bpf_reg_state *regs, int ret_type,
+ 		return;
+ 
+ 	ret_reg->smax_value = meta->msize_smax_value;
+-	ret_reg->umax_value = meta->msize_umax_value;
+ 	__reg_deduce_bounds(ret_reg);
+ 	__reg_bound_offset(ret_reg);
++	__update_reg_bounds(ret_reg);
+ }
+ 
+ static int
+
