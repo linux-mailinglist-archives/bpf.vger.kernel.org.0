@@ -2,419 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B346147707
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 03:55:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B741E147711
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 04:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730487AbgAXCzr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jan 2020 21:55:47 -0500
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:42747 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730486AbgAXCzp (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 23 Jan 2020 21:55:45 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id F3ADE6DF;
-        Thu, 23 Jan 2020 21:55:42 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 23 Jan 2020 21:55:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        content-transfer-encoding:content-type:in-reply-to:date:cc
-        :subject:from:to:message-id; s=fm2; bh=8KvXRfgyt/iAa39KQDQu2IPIR
-        o+jPaA8e8YdSenhf/c=; b=vBYyoNYSgkcffYCRUVkpCsRtCWVD4kHjiyjWxTHmq
-        kvzTdFxbIMO1Sb50ZzSkXLFIG7TOqyVjV2sp5CDoHBbv9YEYixj14RvSNoHNN1PX
-        d1I2pNJI50ZNQmxDN2gRPuFPjYarfYvlnECMwANrVXtYmcBfxkuRndxJ9rXxM0Qa
-        WyY9huAcdHqPlVOfvwj/rTxW/dGFVqVlOWrW5td8+lJNmUT7L3zKdhOoWfuSdWta
-        3GMaKJeVEt+guJstAVxkL/Zs6NP6J9Vg8lOszhHZp5PnmkBnS41oshcc0nBCWxa5
-        wsR84MDAlaS8fMX543x2/CdN3RThR09FOfCuKL3MOmNSg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=8KvXRf
-        gyt/iAa39KQDQu2IPIRo+jPaA8e8YdSenhf/c=; b=ykWzSQ1put4dAEgnYdQAPT
-        cB4/cSSvmHq1sgwQLoWMXjPrsxH8gwF3T99MC2n+DlwDtd4wHBYQVXbAgL9n+sVd
-        Ch2NjMe5U3d+QJRiSX05pvdjuC440YBLFMJzzhkER2E7JVsqtGRXgxouU53MTVfl
-        5/BSt7X/8GjUGyP/67Om+emS7yQnO0mPchOwxzjOHz9dEoIVOrW1UivPUNfWqm3H
-        tJGpgbPjP6XVtWadRgE+w3021wnFj7h7OTRywuUr67dhykwPp2MYW+pykaNy/ZgP
-        fkyAfiJzWEV8N0J4g0vOCu16bWLjRMN02x2b6roZMLuFpai+4Rlzu2W211eUaIOQ
-        ==
-X-ME-Sender: <xms:rlwqXo-A_-CFO5L7FSwaoOZKPAgZMYNx8XfToOso51wL-ZxtvI7pow>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrvdefgddvvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
-    hrlhcuvffnffculdejtddmnecujfgurhepgfgtjgffuffhvffksehtqhertddttdejnecu
-    hfhrohhmpedfffgrnhhivghlucgiuhdfuceougiguhesugiguhhuuhdrgiihiieqnecukf
-    hppeduleelrddvtddurdeigedrudefheenucevlhhushhtvghrufhiiigvpedtnecurfgr
-    rhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:rlwqXoDMRRWtb2B5eWsYVHLJ01zTOeZQ6HjFqiDsnP1o-KObcrKZKQ>
-    <xmx:rlwqXgqCOJRAj7fQEazrMrkISxdNfyIUJI0LQ6vIGGmrXPHTGGN4Tg>
-    <xmx:rlwqXih_PtYrNk7G1phxsijTQz2kPXBFXatnYQoGJC6mKhDiG51CWg>
-    <xmx:rlwqXm7BRERLT6sxKkd3yKs5U-mghJOuYfdUvmssgslC9jebJULFhLaZHrg>
-Received: from localhost (unknown [199.201.64.135])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B6FAA3060AF2;
-        Thu, 23 Jan 2020 21:55:40 -0500 (EST)
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Originaldate: Thu Jan 23, 2020 at 11:20 PM
-Originalfrom: "Martin Lau" <kafai@fb.com>
-Original: =?utf-8?q?On_Thu,_Jan_23,_2020_at_01:23:12PM_-0800,_Daniel_Xu_wrote:=0D?=
- =?utf-8?q?=0A>_Signed-off-by:_Daniel_Xu_<dxu@dxuuu.xyz>=0D=0APlease_put_s?=
- =?utf-8?q?ome_details_to_avoid_empty_commit_message.=0D=0ASame_for_patch_?=
- =?utf-8?q?2.=0D=0A=0D=0A>_---=0D=0A>__.../selftests/bpf/prog=5Ftests/perf?=
- =?utf-8?q?=5Fbranches.c__|_106_++++++++++++++++++=0D=0A>__.../selftests/b?=
- =?utf-8?q?pf/progs/test=5Fperf=5Fbranches.c__|__39_+++++++=0D=0A>__2_file?=
- =?utf-8?q?s_changed,_145_insertions(+)=0D=0A>__create_mode_100644_tools/t?=
- =?utf-8?q?esting/selftests/bpf/prog=5Ftests/perf=5Fbranches.c=0D=0A>__cre?=
- =?utf-8?q?ate_mode_100644_tools/testing/selftests/bpf/progs/test=5Fperf?=
- =?utf-8?q?=5Fbranches.c=0D=0A>_=0D=0A>_diff_--git_a/tools/testing/selftes?=
- =?utf-8?q?ts/bpf/prog=5Ftests/perf=5Fbranches.c_b/tools/testing/selftests?=
- =?utf-8?q?/bpf/prog=5Ftests/perf=5Fbranches.c=0D=0A>_new_file_mode_100644?=
- =?utf-8?q?=0D=0A>_index_000000000000..f8d7356a6507=0D=0A>_---_/dev/null?=
- =?utf-8?q?=0D=0A>_+++_b/tools/testing/selftests/bpf/prog=5Ftests/perf=5Fb?=
- =?utf-8?q?ranches.c=0D=0A>_@@_-0,0_+1,106_@@=0D=0A>_+//_SPDX-License-Iden?=
- =?utf-8?q?tifier:_GPL-2.0=0D=0A>_+#define_=5FGNU=5FSOURCE=0D=0A>_+#includ?=
- =?utf-8?q?e_<pthread.h>=0D=0A>_+#include_<sched.h>=0D=0A>_+#include_<sys/?=
- =?utf-8?q?socket.h>=0D=0A>_+#include_<test=5Fprogs.h>=0D=0A>_+#include_"b?=
- =?utf-8?q?pf/libbpf=5Finternal.h"=0D=0A>_+=0D=0A>_+static_void_on=5Fsampl?=
- =?utf-8?q?e(void_*ctx,_int_cpu,_void_*data,_=5F=5Fu32_size)=0D=0A>_+{=0D?=
- =?utf-8?q?=0A>_+=09int_pbe=5Fsize_=3D_sizeof(struct_perf=5Fbranch=5Fentry?=
- =?utf-8?q?);=0D=0A>_+=09int_ret_=3D_*(int_*)data,_duration_=3D_0;=0D=0A>_?=
- =?utf-8?q?+=0D=0A>_+=09//_It's_hard_to_validate_the_contents_of_the_branc?=
- =?utf-8?q?h_entries_b/c_it=0D=0A>_+=09//_would_require_some_kind_of_disas?=
- =?utf-8?q?sembler_and_also_encoding_the=0D=0A>_+=09//_valid_jump_instruct?=
- =?utf-8?q?ions_for_supported_architectures._So_just_check=0D=0A>_+=09//_t?=
- =?utf-8?q?he_easy_stuff_for_now.=0D=0A/*_..._*/_comment_style=0D=0A=0D=0A?=
- =?utf-8?q?>_+=09CHECK(ret_<_0,_"read=5Fbranches",_"err_%d\n",_ret);=0D=0A?=
- =?utf-8?q?>_+=09CHECK(ret_%_pbe=5Fsize_!=3D_0,_"read=5Fbranches",=0D=0A>_?=
- =?utf-8?q?+=09______"bytes_written=3D%d_not_multiple_of_struct_size=3D%d\?=
- =?utf-8?q?n",=0D=0A>_+=09______ret,_pbe=5Fsize);=0D=0A>_+=0D=0A>_+=09*(in?=
- =?utf-8?q?t_*)ctx_=3D_1;=0D=0A>_+}=0D=0A>_+=0D=0A>_+void_test=5Fperf=5Fbr?=
- =?utf-8?q?anches(void)=0D=0A>_+{=0D=0A>_+=09int_err,_prog=5Ffd,_i,_pfd_?=
- =?utf-8?q?=3D_-1,_duration_=3D_0,_ok_=3D_0;=0D=0A>_+=09const_char_*file_?=
- =?utf-8?q?=3D_"./test=5Fperf=5Fbranches.o";=0D=0A>_+=09const_char_*prog?=
- =?utf-8?q?=5Fname_=3D_"perf=5Fevent";=0D=0A>_+=09struct_perf=5Fbuffer=5Fo?=
- =?utf-8?q?pts_pb=5Fopts_=3D_{};=0D=0A>_+=09struct_perf=5Fevent=5Fattr_att?=
- =?utf-8?q?r_=3D_{};=0D=0A>_+=09struct_bpf=5Fmap_*perf=5Fbuf=5Fmap;=0D=0A>?=
- =?utf-8?q?_+=09struct_bpf=5Fprogram_*prog;=0D=0A>_+=09struct_bpf=5Fobject?=
- =?utf-8?q?_*obj;=0D=0A>_+=09struct_perf=5Fbuffer_*pb;=0D=0A>_+=09struct_b?=
- =?utf-8?q?pf=5Flink_*link;=0D=0A>_+=09volatile_int_j_=3D_0;=0D=0A>_+=09cp?=
- =?utf-8?q?u=5Fset=5Ft_cpu=5Fset;=0D=0A>_+=0D=0A>_+=09/*_load_program_*/?=
- =?utf-8?q?=0D=0A>_+=09err_=3D_bpf=5Fprog=5Fload(file,_BPF=5FPROG=5FTYPE?=
- =?utf-8?q?=5FPERF=5FEVENT,_&obj,_&prog=5Ffd);=0D=0A>_+=09if_(CHECK(err,_"?=
- =?utf-8?q?obj=5Fload",_"err_%d_errno_%d\n",_err,_errno))_{=0D=0A>_+=09=09?=
- =?utf-8?q?obj_=3D_NULL;=0D=0A>_+=09=09goto_out=5Fclose;=0D=0A>_+=09}=0D?=
- =?utf-8?q?=0A>_+=0D=0A>_+=09prog_=3D_bpf=5Fobject=5F=5Ffind=5Fprogram=5Fb?=
- =?utf-8?q?y=5Ftitle(obj,_prog=5Fname);=0D=0A>_+=09if_(CHECK(!prog,_"find?=
- =?utf-8?q?=5Fprobe",_"prog_'%s'_not_found\n",_prog=5Fname))=0D=0A>_+=09?=
- =?utf-8?q?=09goto_out=5Fclose;=0D=0A>_+=0D=0A>_+=09/*_load_map_*/=0D=0A>_?=
- =?utf-8?q?+=09perf=5Fbuf=5Fmap_=3D_bpf=5Fobject=5F=5Ffind=5Fmap=5Fby=5Fna?=
- =?utf-8?q?me(obj,_"perf=5Fbuf=5Fmap");=0D=0A>_+=09if_(CHECK(!perf=5Fbuf?=
- =?utf-8?q?=5Fmap,_"find=5Fperf=5Fbuf=5Fmap",_"not_found\n"))=0D=0A>_+=09?=
- =?utf-8?q?=09goto_out=5Fclose;=0D=0AUsing_skel_may_be_able_to_cut_some_li?=
- =?utf-8?q?nes.=0D=0A=0D=0A>_+=0D=0A>_+=09/*_create_perf_event_*/=0D=0A>_+?=
- =?utf-8?q?=09attr.size_=3D_sizeof(attr);=0D=0A>_+=09attr.type_=3D_PERF=5F?=
- =?utf-8?q?TYPE=5FHARDWARE;=0D=0A>_+=09attr.config_=3D_PERF=5FCOUNT=5FHW?=
- =?utf-8?q?=5FCPU=5FCYCLES;=0D=0A>_+=09attr.freq_=3D_1;=0D=0A>_+=09attr.sa?=
- =?utf-8?q?mple=5Ffreq_=3D_4000;=0D=0A>_+=09attr.sample=5Ftype_=3D_PERF=5F?=
- =?utf-8?q?SAMPLE=5FBRANCH=5FSTACK;=0D=0A>_+=09attr.branch=5Fsample=5Ftype?=
- =?utf-8?q?_=3D_PERF=5FSAMPLE=5FBRANCH=5FUSER_|_PERF=5FSAMPLE=5FBRANCH=5FA?=
- =?utf-8?q?NY;=0D=0A>_+=09pfd_=3D_syscall(=5F=5FNR=5Fperf=5Fevent=5Fopen,_?=
- =?utf-8?q?&attr,_-1,_0,_-1,_PERF=5FFLAG=5FFD=5FCLOEXEC);=0D=0A>_+=09if_(C?=
- =?utf-8?q?HECK(pfd_<_0,_"perf=5Fevent=5Fopen",_"err_%d\n",_pfd))=0D=0A>_+?=
- =?utf-8?q?=09=09goto_out=5Fclose;=0D=0A>_+=0D=0A>_+=09/*_attach_perf=5Fev?=
- =?utf-8?q?ent_*/=0D=0A>_+=09link_=3D_bpf=5Fprogram=5F=5Fattach=5Fperf=5Fe?=
- =?utf-8?q?vent(prog,_pfd);=0D=0A>_+=09if_(CHECK(IS=5FERR(link),_"attach?=
- =?utf-8?q?=5Fperf=5Fevent",_"err_%ld\n",_PTR=5FERR(link)))=0D=0A>_+=09=09?=
- =?utf-8?q?goto_out=5Fclose=5Fperf;=0D=0A>_+=0D=0A>_+=09/*_set_up_perf_buf?=
- =?utf-8?q?fer_*/=0D=0A>_+=09pb=5Fopts.sample=5Fcb_=3D_on=5Fsample;=0D=0A>?=
- =?utf-8?q?_+=09pb=5Fopts.ctx_=3D_&ok;=0D=0A>_+=09pb_=3D_perf=5Fbuffer=5F?=
- =?utf-8?q?=5Fnew(bpf=5Fmap=5F=5Ffd(perf=5Fbuf=5Fmap),_1,_&pb=5Fopts);=0D?=
- =?utf-8?q?=0A>_+=09if_(CHECK(IS=5FERR(pb),_"perf=5Fbuf=5F=5Fnew",_"err_%l?=
- =?utf-8?q?d\n",_PTR=5FERR(pb)))=0D=0A>_+=09=09goto_out=5Fdetach;=0D=0A>_+?=
- =?utf-8?q?=0D=0A>_+=09/*_generate_some_branches_on_cpu_0_*/=0D=0A>_+=09CP?=
- =?utf-8?q?U=5FZERO(&cpu=5Fset);=0D=0A>_+=09CPU=5FSET(0,_&cpu=5Fset);=0D?=
- =?utf-8?q?=0A>_+=09err_=3D_pthread=5Fsetaffinity=5Fnp(pthread=5Fself(),_s?=
- =?utf-8?q?izeof(cpu=5Fset),_&cpu=5Fset);=0D=0A>_+=09if_(err_&&_CHECK(err,?=
- =?utf-8?q?_"set=5Faffinity",_"cpu_#0,_err_%d\n",_err))=0D=0A'err_&&'_seem?=
- =?utf-8?q?s_unnecessary.=0D=0A=0D=0A>_+=09=09goto_out=5Ffree=5Fpb;=0D=0A>?=
- =?utf-8?q?_+=09for_(i_=3D_0;_i_<_1000000;_++i)=0D=0AMay_be_some_comments_?=
- =?utf-8?q?on_1000000=3F=0D=0A=0D=0A>_+=09=09++j;=0D=0A>_+=0D=0A>_+=09/*_r?=
- =?utf-8?q?ead_perf_buffer_*/=0D=0A>_+=09err_=3D_perf=5Fbuffer=5F=5Fpoll(p?=
- =?utf-8?q?b,_500);=0D=0A>_+=09if_(CHECK(err_<_0,_"perf=5Fbuffer=5F=5Fpoll?=
- =?utf-8?q?",_"err_%d\n",_err))=0D=0A>_+=09=09goto_out=5Ffree=5Fpb;=0D=0A>?=
- =?utf-8?q?_+=0D=0A>_+=09if_(CHECK(!ok,_"ok",_"not_ok\n"))=0D=0A>_+=09=09g?=
- =?utf-8?q?oto_out=5Ffree=5Fpb;=0D=0A>_+=0D=0A>_+out=5Ffree=5Fpb:=0D=0A>_+?=
- =?utf-8?q?=09perf=5Fbuffer=5F=5Ffree(pb);=0D=0A>_+out=5Fdetach:=0D=0A>_+?=
- =?utf-8?q?=09bpf=5Flink=5F=5Fdestroy(link);=0D=0A>_+out=5Fclose=5Fperf:?=
- =?utf-8?q?=0D=0A>_+=09close(pfd);=0D=0A>_+out=5Fclose:=0D=0A>_+=09bpf=5Fo?=
- =?utf-8?q?bject=5F=5Fclose(obj);=0D=0A>_+}=0D=0A>_diff_--git_a/tools/test?=
- =?utf-8?q?ing/selftests/bpf/progs/test=5Fperf=5Fbranches.c_b/tools/testin?=
- =?utf-8?q?g/selftests/bpf/progs/test=5Fperf=5Fbranches.c=0D=0A>_new_file_?=
- =?utf-8?q?mode_100644=0D=0A>_index_000000000000..d818079c7778=0D=0A>_---_?=
- =?utf-8?q?/dev/null=0D=0A>_+++_b/tools/testing/selftests/bpf/progs/test?=
- =?utf-8?q?=5Fperf=5Fbranches.c=0D=0A>_@@_-0,0_+1,39_@@=0D=0A>_+//_SPDX-Li?=
- =?utf-8?q?cense-Identifier:_GPL-2.0=0D=0A>_+//_Copyright_(c)_2019_Faceboo?=
- =?utf-8?q?k=0D=0A>_+=0D=0A>_+#include_<linux/ptrace.h>=0D=0A>_+#include_<?=
- =?utf-8?q?linux/bpf.h>=0D=0A>_+#include_<bpf/bpf=5Fhelpers.h>=0D=0A>_+#in?=
- =?utf-8?q?clude_"bpf=5Ftrace=5Fhelpers.h"=0D=0A>_+=0D=0A>_+struct_{=0D=0A?=
- =?utf-8?q?>_+=09=5F=5Fuint(type,_BPF=5FMAP=5FTYPE=5FPERF=5FEVENT=5FARRAY)?=
- =?utf-8?q?;=0D=0A>_+=09=5F=5Fuint(key=5Fsize,_sizeof(int));=0D=0A>_+=09?=
- =?utf-8?q?=5F=5Fuint(value=5Fsize,_sizeof(int));=0D=0A>_+}_perf=5Fbuf=5Fm?=
- =?utf-8?q?ap_SEC(".maps");=0D=0A>_+=0D=0A>_+struct_fake=5Fperf=5Fbranch?=
- =?utf-8?q?=5Fentry_{=0D=0A>_+=09=5F=5Fu64_=5Fa;=0D=0A>_+=09=5F=5Fu64_=5Fb?=
- =?utf-8?q?;=0D=0A>_+=09=5F=5Fu64_=5Fc;=0D=0A>_+};=0D=0A>_+=0D=0A>_+SEC("p?=
- =?utf-8?q?erf=5Fevent")=0D=0A>_+int_perf=5Fbranches(void_*ctx)=0D=0A>_+{?=
- =?utf-8?q?=0D=0A>_+=09int_ret;=0D=0A>_+=09struct_fake=5Fperf=5Fbranch=5Fe?=
- =?utf-8?q?ntry_entries[4];=0D=0ATry_to_keep_the_reverse_xmas_tree.=0D=0A?=
- =?utf-8?q?=0D=0A>_+=0D=0A>_+=09ret_=3D_bpf=5Fperf=5Fprog=5Fread=5Fbranche?=
- =?utf-8?q?s(ctx,=0D=0A>_+=09=09=09=09=09__entries,=0D=0A>_+=09=09=09=09?=
- =?utf-8?q?=09__sizeof(entries));=0D=0A>_+=09/*_ignore_spurious_events_*/?=
- =?utf-8?q?=0D=0A>_+=09if_(!ret)=0D=0ACheck_for_-ve_also=3F=0D=0A=0D=0A>_+?=
- =?utf-8?q?=09=09return_1;=0D=0A>_+=0D=0A>_+=09bpf=5Fperf=5Fevent=5Foutput?=
- =?utf-8?q?(ctx,_&perf=5Fbuf=5Fmap,_BPF=5FF=5FCURRENT=5FCPU,=0D=0A>_+=09?=
- =?utf-8?q?=09=09______&ret,_sizeof(ret));=0D=0A>_+=09return_0;=0D=0A>_+}?=
- =?utf-8?q?=0D=0A>_+=0D=0A>_+char_=5Flicense[]_SEC("license")_=3D_"GPL";?=
- =?utf-8?q?=0D=0A>_--_=0D=0A>_2.21.1=0D=0A>_=0D=0A?=
-In-Reply-To: <20200123232040.dqsswmoltc3rlqhm@kafai-mbp.dhcp.thefacebook.com>
-Date:   Thu, 23 Jan 2020 18:55:39 -0800
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "Song Liu" <songliubraving@fb.com>, "Yonghong Song" <yhs@fb.com>,
-        "Andrii Nakryiko" <andriin@fb.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Kernel Team" <Kernel-team@fb.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "acme@kernel.org" <acme@kernel.org>
-Subject: Re: [PATCH v3 bpf-next 3/3] selftests/bpf: add
- bpf_perf_prog_read_branches() selftest
-From:   "Daniel Xu" <dxu@dxuuu.xyz>
-To:     "Martin Lau" <kafai@fb.com>
-Message-Id: <C03OLSCKAFRL.39222EWVHYB6F@dlxu-fedora-R90QNFJV>
+        id S1730620AbgAXDGe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jan 2020 22:06:34 -0500
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:42815 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730614AbgAXDGd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jan 2020 22:06:33 -0500
+Received: by mail-pg1-f195.google.com with SMTP id s64so259793pgb.9
+        for <bpf@vger.kernel.org>; Thu, 23 Jan 2020 19:06:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=g93JSk6IypPNZz8Djm23mdPQGcTkT9fWce84jIWBUaY=;
+        b=LsYDMbaMSvtHm9AdjQ9JQcMCuXQNQKMLxYNoA/V1h8zdLbmRVCQfWNlV8Sbtf271Sw
+         w/LvxWsd629uu/z8NrLLxAcdr7QOrfTCwDKjPWcYjjTD1tAOc4SiCsbbQIMkEDjTgdPM
+         fmDnG+1Ss5tXa4k/p4Qn2KGkqsmHPVXK4f2FD5O/kUCrtq1L6Inz3dWkYXBfxt2XjQ1o
+         ZGw1Q/dahM37mEzm7jLIJgZb7ONv5eAz0+oxYZOoOtGS6GBBV1I3Ptw9a4rRruLhCZiB
+         x0BNHZ9YhYnDYa45vXU2MKW8RzylD4zgDMF37aan+Rw7PZ1AH/4Ied9QDHsRITs4J6kO
+         V5zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=g93JSk6IypPNZz8Djm23mdPQGcTkT9fWce84jIWBUaY=;
+        b=F0Gbb/EJvWF6j4w58ghVdVFH02q/uw0q2/DYdQjS2C5OYA9Dkam3jxc9dFmY5uyK+w
+         KegZ1wtTkHK8l+0tLqerAZMWTCGPj0guNKVc3TKvfnoMrKix9OAoOWdh0YAMOAmIrNMj
+         4SvrOPY81Pp7y3PxfV6xzkmHqhsPQdBos32omAxuku2vSPXQ0HxHbsGrBTyAX/87ZOlt
+         0NtfDTtSJUOXKeQgl8yKc22eKSCsx0SHtRTgLHbb6kccHOX7RC8ib+O3hn5LGAeQFWys
+         XMlQ4S5ZtF3ccGnGd7ywJ4rcnwSOJ6FLB0CdwlcUvYLiYV1ldQfYvHiQSowtwXFuk+WI
+         ETsA==
+X-Gm-Message-State: APjAAAWWdUu8fRlcAzgUbW4XBJh6FydF1wfpoRXqaUBZUVDhph1cijXa
+        fg+Zo3qTuU5eD+KteRo4uYM=
+X-Google-Smtp-Source: APXvYqwqL1SS6CLtzJvtWK2aq3o3Q2iY57JSqai7mpVQcI79KNlYnqaqY9f0cCabWoQakJP03YkYOg==
+X-Received: by 2002:a63:cf08:: with SMTP id j8mr1683407pgg.292.1579835192866;
+        Thu, 23 Jan 2020 19:06:32 -0800 (PST)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id z5sm4429975pfq.3.2020.01.23.19.06.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jan 2020 19:06:32 -0800 (PST)
+Date:   Thu, 23 Jan 2020 19:06:24 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
+Message-ID: <5e2a5f30b9e8e_2162aec864c25b448@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200123191815.1364372-1-yhs@fb.com>
+References: <20200123191815.1364298-1-yhs@fb.com>
+ <20200123191815.1364372-1-yhs@fb.com>
+Subject: RE: [PATCH bpf-next 1/2] bpf: improve verifier handling for 32bit
+ signed compare operations
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu Jan 23, 2020 at 11:20 PM, Martin Lau wrote:
-> On Thu, Jan 23, 2020 at 01:23:12PM -0800, Daniel Xu wrote:
-> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> Please put some details to avoid empty commit message.
-> Same for patch 2.
+Yonghong Song wrote:
+> Commit b7a0d65d80a0 ("bpf, testing: Workaround a verifier failure
+> for test_progs") worked around a verifier failure where the
+> register is copied to another later refined register, but the
+> original register is used after refinement. Another similar example is
+>   https://lore.kernel.org/netdev/871019a0-71f8-c26d-0ae8-c7fd8c8867fc@fb.com/
+> 
+> LLVM commit https://reviews.llvm.org/D72787 added a phase
 
-Ok.
->
->=20
-> > ---
-> >  .../selftests/bpf/prog_tests/perf_branches.c  | 106 ++++++++++++++++++
-> >  .../selftests/bpf/progs/test_perf_branches.c  |  39 +++++++
-> >  2 files changed, 145 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_branche=
-s.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_perf_branche=
-s.c
-> >=20
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/perf_branches.c b/t=
-ools/testing/selftests/bpf/prog_tests/perf_branches.c
-> > new file mode 100644
-> > index 000000000000..f8d7356a6507
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
-> > @@ -0,0 +1,106 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#define _GNU_SOURCE
-> > +#include <pthread.h>
-> > +#include <sched.h>
-> > +#include <sys/socket.h>
-> > +#include <test_progs.h>
-> > +#include "bpf/libbpf_internal.h"
-> > +
-> > +static void on_sample(void *ctx, int cpu, void *data, __u32 size)
-> > +{
-> > +	int pbe_size =3D sizeof(struct perf_branch_entry);
-> > +	int ret =3D *(int *)data, duration =3D 0;
-> > +
-> > +	// It's hard to validate the contents of the branch entries b/c it
-> > +	// would require some kind of disassembler and also encoding the
-> > +	// valid jump instructions for supported architectures. So just check
-> > +	// the easy stuff for now.
-> /* ... */ comment style
+FWIW I was going to try and see if we could refine the bounds by
+walking parents chain. But that is an experiment tbd.
 
-Whoops, sorry.
+> to adjust optimization such that the original register is
+> directly refined and used later. Another issue exposed by
+> the llvm is verifier cannot handle the following code:
+>   call bpf_strtoul
+>   if w0 s< 1 then ...
+>   if w0 s> 7 then ...
+>   ... use w0 ...
+> 
+> Unfortunately, the verifier is not able to handle the above
+> code well and will reject it.
+>   call bpf_strtoul
+>     R0_w=inv(id=0) R8=invP0
+>   if w0 s< 0x1 goto pc-22
+>     R0_w=inv(id=0) R8=invP0
+>   if w0 s> 0x7 goto pc-23
+>     R0=inv(id=0) R8=invP0
+>   w0 += w8
+>     R0_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R8=invP0
+> 
+> After "w0 += w8", we got a very conservative R0 value, which
+> later on caused verifier rejection.
+> 
+> This patch added two register states, s32_min_value and s32_max_value,
+> to bpf_reg_state. These two states capture the signed 32bit
+> min/max values refined due to 32bit signed sle/slt/sge/sgt comparisons.
+>   1. whenever refined s32_min_value, s32_max_value is captured, reg->var_off
+>      will be refined if possible.
+>   2. For any ALU32 operation where the dst_reg will have upper 32bit cleared,
+>      if s32_min_value >= 0 and s32_max_value has been narrowed due to previous
+>      signed compare operation, the dst_reg as an input can ignore upper 32bit values,
+>      this may produce better output dst_reg value range.
 
->
->=20
-> > +	CHECK(ret < 0, "read_branches", "err %d\n", ret);
-> > +	CHECK(ret % pbe_size !=3D 0, "read_branches",
-> > +	      "bytes written=3D%d not multiple of struct size=3D%d\n",
-> > +	      ret, pbe_size);
-> > +
-> > +	*(int *)ctx =3D 1;
-> > +}
-> > +
-> > +void test_perf_branches(void)
-> > +{
-> > +	int err, prog_fd, i, pfd =3D -1, duration =3D 0, ok =3D 0;
-> > +	const char *file =3D "./test_perf_branches.o";
-> > +	const char *prog_name =3D "perf_event";
-> > +	struct perf_buffer_opts pb_opts =3D {};
-> > +	struct perf_event_attr attr =3D {};
-> > +	struct bpf_map *perf_buf_map;
-> > +	struct bpf_program *prog;
-> > +	struct bpf_object *obj;
-> > +	struct perf_buffer *pb;
-> > +	struct bpf_link *link;
-> > +	volatile int j =3D 0;
-> > +	cpu_set_t cpu_set;
-> > +
-> > +	/* load program */
-> > +	err =3D bpf_prog_load(file, BPF_PROG_TYPE_PERF_EVENT, &obj, &prog_fd)=
-;
-> > +	if (CHECK(err, "obj_load", "err %d errno %d\n", err, errno)) {
-> > +		obj =3D NULL;
-> > +		goto out_close;
-> > +	}
-> > +
-> > +	prog =3D bpf_object__find_program_by_title(obj, prog_name);
-> > +	if (CHECK(!prog, "find_probe", "prog '%s' not found\n", prog_name))
-> > +		goto out_close;
-> > +
-> > +	/* load map */
-> > +	perf_buf_map =3D bpf_object__find_map_by_name(obj, "perf_buf_map");
-> > +	if (CHECK(!perf_buf_map, "find_perf_buf_map", "not found\n"))
-> > +		goto out_close;
-> Using skel may be able to cut some lines.
+Can you comment a bit more on the s32_min_value < 0 case? Regardless of the
+s32_{min|max}_value the result should be zero extended and smin_value=0. This
+is enforced by verifier_zext(), an aside but I think we should just remove
+verifier_zext its not very useful if all jits have to comply imo.
 
-Ok, will take a look.
+If smin_value=0 && s32_max_value>=0 then we should be safe to propagate s32_max_value
+into smax_Value as well.
 
->
->=20
-> > +
-> > +	/* create perf event */
-> > +	attr.size =3D sizeof(attr);
-> > +	attr.type =3D PERF_TYPE_HARDWARE;
-> > +	attr.config =3D PERF_COUNT_HW_CPU_CYCLES;
-> > +	attr.freq =3D 1;
-> > +	attr.sample_freq =3D 4000;
-> > +	attr.sample_type =3D PERF_SAMPLE_BRANCH_STACK;
-> > +	attr.branch_sample_type =3D PERF_SAMPLE_BRANCH_USER | PERF_SAMPLE_BRA=
-NCH_ANY;
-> > +	pfd =3D syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_=
-CLOEXEC);
-> > +	if (CHECK(pfd < 0, "perf_event_open", "err %d\n", pfd))
-> > +		goto out_close;
-> > +
-> > +	/* attach perf_event */
-> > +	link =3D bpf_program__attach_perf_event(prog, pfd);
-> > +	if (CHECK(IS_ERR(link), "attach_perf_event", "err %ld\n", PTR_ERR(lin=
-k)))
-> > +		goto out_close_perf;
-> > +
-> > +	/* set up perf buffer */
-> > +	pb_opts.sample_cb =3D on_sample;
-> > +	pb_opts.ctx =3D &ok;
-> > +	pb =3D perf_buffer__new(bpf_map__fd(perf_buf_map), 1, &pb_opts);
-> > +	if (CHECK(IS_ERR(pb), "perf_buf__new", "err %ld\n", PTR_ERR(pb)))
-> > +		goto out_detach;
-> > +
-> > +	/* generate some branches on cpu 0 */
-> > +	CPU_ZERO(&cpu_set);
-> > +	CPU_SET(0, &cpu_set);
-> > +	err =3D pthread_setaffinity_np(pthread_self(), sizeof(cpu_set), &cpu_=
-set);
-> > +	if (err && CHECK(err, "set_affinity", "cpu #0, err %d\n", err))
-> 'err &&' seems unnecessary.
+>   3. s32_min_value and s32_max_value is reset if the corresponding register
+>      is redefined.
+> 
+> The following shows the new register states for the above example.
+>   call bpf_strtoul
+>     R0_w=inv(id=0) R8=invP0
+>   if w0 s< 0x1 goto pc-22
+>     R0_w=inv(id=0,smax_value=9223372034707292159,umax_value=18446744071562067967,
+>              s32_min_value=1,var_off=(0x0; 0xffffffff7fffffff))
+>     R8=invP0
+>   if w0 s> 0x7 goto pc-23
+>     R0=inv(id=0,smax_value=9223372032559808519,umax_value=18446744069414584327,
+>            s32_min_value=1,s32_max_value=7,var_off=(0x0; 0xffffffff00000007))
+>     R8=invP0
+>   w0 += w8
+>     R0_w=inv(id=0,umax_value=7,var_off=(0x0; 0x7)) R8=invP0
 
-Will remove.
+And we should also have smin_value=0?
 
->
->=20
-> > +		goto out_free_pb;
-> > +	for (i =3D 0; i < 1000000; ++i)
-> May be some comments on 1000000?
->
->=20
-> > +		++j;
-> > +
-> > +	/* read perf buffer */
-> > +	err =3D perf_buffer__poll(pb, 500);
-> > +	if (CHECK(err < 0, "perf_buffer__poll", "err %d\n", err))
-> > +		goto out_free_pb;
-> > +
-> > +	if (CHECK(!ok, "ok", "not ok\n"))
-> > +		goto out_free_pb;
-> > +
-> > +out_free_pb:
-> > +	perf_buffer__free(pb);
-> > +out_detach:
-> > +	bpf_link__destroy(link);
-> > +out_close_perf:
-> > +	close(pfd);
-> > +out_close:
-> > +	bpf_object__close(obj);
-> > +}
-> > diff --git a/tools/testing/selftests/bpf/progs/test_perf_branches.c b/t=
-ools/testing/selftests/bpf/progs/test_perf_branches.c
-> > new file mode 100644
-> > index 000000000000..d818079c7778
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/test_perf_branches.c
-> > @@ -0,0 +1,39 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +// Copyright (c) 2019 Facebook
-> > +
-> > +#include <linux/ptrace.h>
-> > +#include <linux/bpf.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +#include "bpf_trace_helpers.h"
-> > +
-> > +struct {
-> > +	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-> > +	__uint(key_size, sizeof(int));
-> > +	__uint(value_size, sizeof(int));
-> > +} perf_buf_map SEC(".maps");
-> > +
-> > +struct fake_perf_branch_entry {
-> > +	__u64 _a;
-> > +	__u64 _b;
-> > +	__u64 _c;
-> > +};
-> > +
-> > +SEC("perf_event")
-> > +int perf_branches(void *ctx)
-> > +{
-> > +	int ret;
-> > +	struct fake_perf_branch_entry entries[4];
-> Try to keep the reverse xmas tree.
->
->=20
-> > +
-> > +	ret =3D bpf_perf_prog_read_branches(ctx,
-> > +					  entries,
-> > +					  sizeof(entries));
-> > +	/* ignore spurious events */
-> > +	if (!ret)
-> Check for -ve also?
+> 
+> With the above LLVM patch and this commit, the original
+> workaround in Commit b7a0d65d80a0 is not needed any more.
+> 
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  include/linux/bpf_verifier.h |  2 +
+>  kernel/bpf/verifier.c        | 73 +++++++++++++++++++++++++++++++-----
+>  2 files changed, 65 insertions(+), 10 deletions(-)
+> 
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index 5406e6e96585..d5694308466d 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -123,6 +123,8 @@ struct bpf_reg_state {
+>  	s64 smax_value; /* maximum possible (s64)value */
+>  	u64 umin_value; /* minimum possible (u64)value */
+>  	u64 umax_value; /* maximum possible (u64)value */
+> +	s32 s32_min_value; /* minimum possible (s32)value */
+> +	s32 s32_max_value; /* maximum possible (s32)value */
+>  	/* parentage chain for liveness checking */
+>  	struct bpf_reg_state *parent;
+>  	/* Inside the callee two registers can be both PTR_TO_STACK like
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 1cc945daa9c8..c5d6835c38db 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -543,6 +543,14 @@ static void print_verifier_state(struct bpf_verifier_env *env,
+>  				if (reg->umax_value != U64_MAX)
+>  					verbose(env, ",umax_value=%llu",
+>  						(unsigned long long)reg->umax_value);
+> +				if (reg->s32_min_value != reg->umin_value &&
+> +				    reg->s32_min_value != S32_MIN)
+> +					verbose(env, ",s32_min_value=%d",
+> +						(int)reg->s32_min_value);
+> +				if (reg->s32_max_value != reg->umax_value &&
+> +				    reg->s32_max_value != S32_MAX)
+> +					verbose(env, ",s32_max_value=%d",
+> +						(int)reg->s32_max_value);
+>  				if (!tnum_is_unknown(reg->var_off)) {
+>  					char tn_buf[48];
+>  
+> @@ -923,6 +931,10 @@ static void __mark_reg_known(struct bpf_reg_state *reg, u64 imm)
+>  	reg->smax_value = (s64)imm;
+>  	reg->umin_value = imm;
+>  	reg->umax_value = imm;
+> +
+> +	/* no need to be precise, just reset s32_{min,max}_value */
+> +	reg->s32_min_value = S32_MIN;
+> +	reg->s32_max_value = S32_MAX;
 
-Assuming that means negative, no. Sometimes there aren't any branch
-events stored. That's ok and we want to ignore that. If there's an error
-(negative), we should pass that up to the selftest in userspace and fail
-the test.
+If its known it would make more sense to me to set the min/max value vs this
+shortcut. Otherwise we wont have bounds to compare against on a JMP32.
 
->
->=20
-> > +		return 1;
-> > +
-> > +	bpf_perf_event_output(ctx, &perf_buf_map, BPF_F_CURRENT_CPU,
-> > +			      &ret, sizeof(ret));
-> > +	return 0;
-> > +}
-> > +
-> > +char _license[] SEC("license") =3D "GPL";
-> > --=20
-> > 2.21.1
-> >=20
->
->=20
->
->=20
+>  }
 
+Still thinking through the rest, but figured it would be worth kicking the
+couple comments above out.. I'm trying to understand if the coerce_reg_size()
+can be made a bit cleaner.
+
+Thanks,
+John
