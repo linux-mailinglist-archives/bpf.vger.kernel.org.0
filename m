@@ -2,198 +2,280 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B741E147711
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 04:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38681147836
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 06:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730620AbgAXDGe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jan 2020 22:06:34 -0500
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:42815 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730614AbgAXDGd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jan 2020 22:06:33 -0500
-Received: by mail-pg1-f195.google.com with SMTP id s64so259793pgb.9
-        for <bpf@vger.kernel.org>; Thu, 23 Jan 2020 19:06:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=g93JSk6IypPNZz8Djm23mdPQGcTkT9fWce84jIWBUaY=;
-        b=LsYDMbaMSvtHm9AdjQ9JQcMCuXQNQKMLxYNoA/V1h8zdLbmRVCQfWNlV8Sbtf271Sw
-         w/LvxWsd629uu/z8NrLLxAcdr7QOrfTCwDKjPWcYjjTD1tAOc4SiCsbbQIMkEDjTgdPM
-         fmDnG+1Ss5tXa4k/p4Qn2KGkqsmHPVXK4f2FD5O/kUCrtq1L6Inz3dWkYXBfxt2XjQ1o
-         ZGw1Q/dahM37mEzm7jLIJgZb7ONv5eAz0+oxYZOoOtGS6GBBV1I3Ptw9a4rRruLhCZiB
-         x0BNHZ9YhYnDYa45vXU2MKW8RzylD4zgDMF37aan+Rw7PZ1AH/4Ied9QDHsRITs4J6kO
-         V5zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=g93JSk6IypPNZz8Djm23mdPQGcTkT9fWce84jIWBUaY=;
-        b=F0Gbb/EJvWF6j4w58ghVdVFH02q/uw0q2/DYdQjS2C5OYA9Dkam3jxc9dFmY5uyK+w
-         KegZ1wtTkHK8l+0tLqerAZMWTCGPj0guNKVc3TKvfnoMrKix9OAoOWdh0YAMOAmIrNMj
-         4SvrOPY81Pp7y3PxfV6xzkmHqhsPQdBos32omAxuku2vSPXQ0HxHbsGrBTyAX/87ZOlt
-         0NtfDTtSJUOXKeQgl8yKc22eKSCsx0SHtRTgLHbb6kccHOX7RC8ib+O3hn5LGAeQFWys
-         XMlQ4S5ZtF3ccGnGd7ywJ4rcnwSOJ6FLB0CdwlcUvYLiYV1ldQfYvHiQSowtwXFuk+WI
-         ETsA==
-X-Gm-Message-State: APjAAAWWdUu8fRlcAzgUbW4XBJh6FydF1wfpoRXqaUBZUVDhph1cijXa
-        fg+Zo3qTuU5eD+KteRo4uYM=
-X-Google-Smtp-Source: APXvYqwqL1SS6CLtzJvtWK2aq3o3Q2iY57JSqai7mpVQcI79KNlYnqaqY9f0cCabWoQakJP03YkYOg==
-X-Received: by 2002:a63:cf08:: with SMTP id j8mr1683407pgg.292.1579835192866;
-        Thu, 23 Jan 2020 19:06:32 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id z5sm4429975pfq.3.2020.01.23.19.06.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jan 2020 19:06:32 -0800 (PST)
-Date:   Thu, 23 Jan 2020 19:06:24 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-Message-ID: <5e2a5f30b9e8e_2162aec864c25b448@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200123191815.1364372-1-yhs@fb.com>
-References: <20200123191815.1364298-1-yhs@fb.com>
- <20200123191815.1364372-1-yhs@fb.com>
-Subject: RE: [PATCH bpf-next 1/2] bpf: improve verifier handling for 32bit
- signed compare operations
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1730376AbgAXFip (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jan 2020 00:38:45 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:63032 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730375AbgAXFip (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 24 Jan 2020 00:38:45 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00O5XWei006909
+        for <bpf@vger.kernel.org>; Thu, 23 Jan 2020 21:38:43 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=gpKitsC2svcScWSg6sdiyrsGYyJimxgu7wVCzGxaDJA=;
+ b=ILD5YIft3i4QkbJcbaDQQsP8wf8pvlvqn6qOrOp+edEgYo4AECHVqab6q83mtsdz3xT3
+ twylAo39r+kfXfHhJx8k/pqX0p1vgrAfjL//5dF2epzGRavrrcxaMc3PuPNM2I9RU45j
+ 5AspdJ5YWRC5m9rB/pGAj7jzNxawAIX2Tpg= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 2xqgc5tgpe-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 23 Jan 2020 21:38:43 -0800
+Received: from intmgw001.03.ash8.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 23 Jan 2020 21:38:42 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id A38542EC1D8F; Thu, 23 Jan 2020 21:38:39 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] libbpf: improve handling of failed CO-RE relocations
+Date:   Thu, 23 Jan 2020 21:38:37 -0800
+Message-ID: <20200124053837.2434679-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-24_01:2020-01-23,2020-01-24 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ adultscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0 spamscore=0
+ bulkscore=0 impostorscore=0 priorityscore=1501 phishscore=0 suspectscore=8
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001240043
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Yonghong Song wrote:
-> Commit b7a0d65d80a0 ("bpf, testing: Workaround a verifier failure
-> for test_progs") worked around a verifier failure where the
-> register is copied to another later refined register, but the
-> original register is used after refinement. Another similar example is
->   https://lore.kernel.org/netdev/871019a0-71f8-c26d-0ae8-c7fd8c8867fc@fb.com/
-> 
-> LLVM commit https://reviews.llvm.org/D72787 added a phase
+Previously, if libbpf failed to resolve CO-RE relocation for some
+instructions, it would either return error immediately, or, if
+.relaxed_core_relocs option was set, would replace relocatable offset/imm part
+of an instruction with a bogus value (-1). Neither approach is good, because
+there are many possible scenarios where relocation is expected to fail (e.g.,
+when some field knowingly can be missing on specific kernel versions). On the
+other hand, replacing offset with invalid one can hide programmer errors, if
+this relocation failue wasn't anticipated.
 
-FWIW I was going to try and see if we could refine the bounds by
-walking parents chain. But that is an experiment tbd.
+This patch deprecates .relaxed_core_relocs option and changes the approach to
+always replacing instruction, for which relocation failed, with invalid BPF
+helper call instruction. For cases where this is expected, BPF program should
+already ensure that that instruction is unreachable, in which case this
+invalid instruction is going to be silently ignored. But if instruction wasn't
+guarded, BPF program will be rejected at verification step with verifier log
+pointing precisely to the place in assembly where the problem is.
 
-> to adjust optimization such that the original register is
-> directly refined and used later. Another issue exposed by
-> the llvm is verifier cannot handle the following code:
->   call bpf_strtoul
->   if w0 s< 1 then ...
->   if w0 s> 7 then ...
->   ... use w0 ...
-> 
-> Unfortunately, the verifier is not able to handle the above
-> code well and will reject it.
->   call bpf_strtoul
->     R0_w=inv(id=0) R8=invP0
->   if w0 s< 0x1 goto pc-22
->     R0_w=inv(id=0) R8=invP0
->   if w0 s> 0x7 goto pc-23
->     R0=inv(id=0) R8=invP0
->   w0 += w8
->     R0_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R8=invP0
-> 
-> After "w0 += w8", we got a very conservative R0 value, which
-> later on caused verifier rejection.
-> 
-> This patch added two register states, s32_min_value and s32_max_value,
-> to bpf_reg_state. These two states capture the signed 32bit
-> min/max values refined due to 32bit signed sle/slt/sge/sgt comparisons.
->   1. whenever refined s32_min_value, s32_max_value is captured, reg->var_off
->      will be refined if possible.
->   2. For any ALU32 operation where the dst_reg will have upper 32bit cleared,
->      if s32_min_value >= 0 and s32_max_value has been narrowed due to previous
->      signed compare operation, the dst_reg as an input can ignore upper 32bit values,
->      this may produce better output dst_reg value range.
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/lib/bpf/libbpf.c | 95 +++++++++++++++++++++++++-----------------
+ tools/lib/bpf/libbpf.h |  6 ++-
+ 2 files changed, 61 insertions(+), 40 deletions(-)
 
-Can you comment a bit more on the s32_min_value < 0 case? Regardless of the
-s32_{min|max}_value the result should be zero extended and smin_value=0. This
-is enforced by verifier_zext(), an aside but I think we should just remove
-verifier_zext its not very useful if all jits have to comply imo.
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index ae34b681ae82..39f1b7633a7c 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -345,7 +345,6 @@ struct bpf_object {
+ 
+ 	bool loaded;
+ 	bool has_pseudo_calls;
+-	bool relaxed_core_relocs;
+ 
+ 	/*
+ 	 * Information when doing elf related work. Only valid if fd
+@@ -4238,25 +4237,38 @@ static int bpf_core_calc_field_relo(const struct bpf_program *prog,
+  */
+ static int bpf_core_reloc_insn(struct bpf_program *prog,
+ 			       const struct bpf_field_reloc *relo,
++			       int relo_idx,
+ 			       const struct bpf_core_spec *local_spec,
+ 			       const struct bpf_core_spec *targ_spec)
+ {
+-	bool failed = false, validate = true;
+ 	__u32 orig_val, new_val;
+ 	struct bpf_insn *insn;
++	bool validate = true;
+ 	int insn_idx, err;
+ 	__u8 class;
+ 
+ 	if (relo->insn_off % sizeof(struct bpf_insn))
+ 		return -EINVAL;
+ 	insn_idx = relo->insn_off / sizeof(struct bpf_insn);
++	insn = &prog->insns[insn_idx];
++	class = BPF_CLASS(insn->code);
+ 
+ 	if (relo->kind == BPF_FIELD_EXISTS) {
+ 		orig_val = 1; /* can't generate EXISTS relo w/o local field */
+ 		new_val = targ_spec ? 1 : 0;
+ 	} else if (!targ_spec) {
+-		failed = true;
+-		new_val = (__u32)-1;
++		pr_debug("prog '%s': relo #%d: substituting insn #%d w/ invalid insn\n",
++			 bpf_program__title(prog, false), relo_idx, insn_idx);
++		insn->code = BPF_JMP | BPF_CALL;
++		insn->dst_reg = 0;
++		insn->src_reg = 0;
++		insn->off = 0;
++		/* if this instruction is reachable (not a dead code),
++		 * verifier will complain with the following message:
++		 * invalid func unknown#195896080
++		 */
++		insn->imm = 195896080; /* => 0xbad2310 => "bad relo" */
++		return 0;
+ 	} else {
+ 		err = bpf_core_calc_field_relo(prog, relo, local_spec,
+ 					       &orig_val, &validate);
+@@ -4268,50 +4280,47 @@ static int bpf_core_reloc_insn(struct bpf_program *prog,
+ 			return err;
+ 	}
+ 
+-	insn = &prog->insns[insn_idx];
+-	class = BPF_CLASS(insn->code);
+-
+ 	switch (class) {
+ 	case BPF_ALU:
+ 	case BPF_ALU64:
+ 		if (BPF_SRC(insn->code) != BPF_K)
+ 			return -EINVAL;
+-		if (!failed && validate && insn->imm != orig_val) {
+-			pr_warn("prog '%s': unexpected insn #%d (ALU/ALU64) value: got %u, exp %u -> %u\n",
+-				bpf_program__title(prog, false), insn_idx,
+-				insn->imm, orig_val, new_val);
++		if (validate && insn->imm != orig_val) {
++			pr_warn("prog '%s': relo #%d: unexpected insn #%d (ALU/ALU64) value: got %u, exp %u -> %u\n",
++				bpf_program__title(prog, false), relo_idx,
++				insn_idx, insn->imm, orig_val, new_val);
+ 			return -EINVAL;
+ 		}
+ 		orig_val = insn->imm;
+ 		insn->imm = new_val;
+-		pr_debug("prog '%s': patched insn #%d (ALU/ALU64)%s imm %u -> %u\n",
+-			 bpf_program__title(prog, false), insn_idx,
+-			 failed ? " w/ failed reloc" : "", orig_val, new_val);
++		pr_debug("prog '%s': relo #%d: patched insn #%d (ALU/ALU64) imm %u -> %u\n",
++			 bpf_program__title(prog, false), relo_idx, insn_idx,
++			 orig_val, new_val);
+ 		break;
+ 	case BPF_LDX:
+ 	case BPF_ST:
+ 	case BPF_STX:
+-		if (!failed && validate && insn->off != orig_val) {
+-			pr_warn("prog '%s': unexpected insn #%d (LD/LDX/ST/STX) value: got %u, exp %u -> %u\n",
+-				bpf_program__title(prog, false), insn_idx,
+-				insn->off, orig_val, new_val);
++		if (validate && insn->off != orig_val) {
++			pr_warn("prog '%s': relo #%d: unexpected insn #%d (LD/LDX/ST/STX) value: got %u, exp %u -> %u\n",
++				bpf_program__title(prog, false), relo_idx,
++				insn_idx, insn->off, orig_val, new_val);
+ 			return -EINVAL;
+ 		}
+ 		if (new_val > SHRT_MAX) {
+-			pr_warn("prog '%s': insn #%d (LD/LDX/ST/STX) value too big: %u\n",
+-				bpf_program__title(prog, false), insn_idx,
+-				new_val);
++			pr_warn("prog '%s': relo #%d: insn #%d (LDX/ST/STX) value too big: %u\n",
++				bpf_program__title(prog, false), relo_idx,
++				insn_idx, new_val);
+ 			return -ERANGE;
+ 		}
+ 		orig_val = insn->off;
+ 		insn->off = new_val;
+-		pr_debug("prog '%s': patched insn #%d (LD/LDX/ST/STX)%s off %u -> %u\n",
+-			 bpf_program__title(prog, false), insn_idx,
+-			 failed ? " w/ failed reloc" : "", orig_val, new_val);
++		pr_debug("prog '%s': relo #%d: patched insn #%d (LDX/ST/STX) off %u -> %u\n",
++			 bpf_program__title(prog, false), relo_idx, insn_idx,
++			 orig_val, new_val);
+ 		break;
+ 	default:
+-		pr_warn("prog '%s': trying to relocate unrecognized insn #%d, code:%x, src:%x, dst:%x, off:%x, imm:%x\n",
+-			bpf_program__title(prog, false),
++		pr_warn("prog '%s': relo #%d: trying to relocate unrecognized insn #%d, code:%x, src:%x, dst:%x, off:%x, imm:%x\n",
++			bpf_program__title(prog, false), relo_idx,
+ 			insn_idx, insn->code, insn->src_reg, insn->dst_reg,
+ 			insn->off, insn->imm);
+ 		return -EINVAL;
+@@ -4510,24 +4519,33 @@ static int bpf_core_reloc_field(struct bpf_program *prog,
+ 	}
+ 
+ 	/*
+-	 * For BPF_FIELD_EXISTS relo or when relaxed CO-RE reloc mode is
+-	 * requested, it's expected that we might not find any candidates.
+-	 * In this case, if field wasn't found in any candidate, the list of
+-	 * candidates shouldn't change at all, we'll just handle relocating
+-	 * appropriately, depending on relo's kind.
++	 * For BPF_FIELD_EXISTS relo or when used BPF program has field
++	 * existence checks or kernel version/config checks, it's expected
++	 * that we might not find any candidates. In this case, if field
++	 * wasn't found in any candidate, the list of candidates shouldn't
++	 * change at all, we'll just handle relocating appropriately,
++	 * depending on relo's kind.
+ 	 */
+ 	if (j > 0)
+ 		cand_ids->len = j;
+ 
+-	if (j == 0 && !prog->obj->relaxed_core_relocs &&
+-	    relo->kind != BPF_FIELD_EXISTS) {
+-		pr_warn("prog '%s': relo #%d: no matching targets found for [%d] %s + %s\n",
+-			prog_name, relo_idx, local_id, local_name, spec_str);
+-		return -ESRCH;
+-	}
++	/*
++	 * If no candidates were found, it might be both a programmer error,
++	 * as well as expected case, depending whether instruction w/
++	 * relocation is guarded in some way that makes it unreachable (dead
++	 * code) if relocation can't be resolved. This is handled in
++	 * bpf_core_reloc_insn() uniformly by replacing that instruction with
++	 * BPF helper call insn (using invalid helper ID). If that instruction
++	 * is indeed unreachable, then it will be ignored and eliminated by
++	 * verifier. If it was an error, then verifier will complain and point
++	 * to a specific instruction number in its log.
++	 */
++	if (j == 0)
++		pr_debug("prog '%s': relo #%d: no matching targets found for [%d] %s + %s\n",
++			 prog_name, relo_idx, local_id, local_name, spec_str);
+ 
+ 	/* bpf_core_reloc_insn should know how to handle missing targ_spec */
+-	err = bpf_core_reloc_insn(prog, relo, &local_spec,
++	err = bpf_core_reloc_insn(prog, relo, relo_idx, &local_spec,
+ 				  j ? &targ_spec : NULL);
+ 	if (err) {
+ 		pr_warn("prog '%s': relo #%d: failed to patch insn at offset %d: %d\n",
+@@ -5057,7 +5075,6 @@ __bpf_object__open(const char *path, const void *obj_buf, size_t obj_buf_sz,
+ 	if (IS_ERR(obj))
+ 		return obj;
+ 
+-	obj->relaxed_core_relocs = OPTS_GET(opts, relaxed_core_relocs, false);
+ 	kconfig = OPTS_GET(opts, kconfig, NULL);
+ 	if (kconfig) {
+ 		obj->kconfig = strdup(kconfig);
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 2a5e3b087002..3fe12c9d1f92 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -77,7 +77,11 @@ struct bpf_object_open_opts {
+ 	const char *object_name;
+ 	/* parse map definitions non-strictly, allowing extra attributes/data */
+ 	bool relaxed_maps;
+-	/* process CO-RE relocations non-strictly, allowing them to fail */
++	/* DEPRECATED: handle CO-RE relocations non-strictly, allowing failures.
++	 * Value is ignored. Relocations always are processed non-strictly.
++	 * Non-relocatable instructions are replaced with invalid ones to
++	 * prevent accidental errors.
++	 * */
+ 	bool relaxed_core_relocs;
+ 	/* maps that set the 'pinning' attribute in their definition will have
+ 	 * their pin_path attribute set to a file in this directory, and be
+-- 
+2.17.1
 
-If smin_value=0 && s32_max_value>=0 then we should be safe to propagate s32_max_value
-into smax_Value as well.
-
->   3. s32_min_value and s32_max_value is reset if the corresponding register
->      is redefined.
-> 
-> The following shows the new register states for the above example.
->   call bpf_strtoul
->     R0_w=inv(id=0) R8=invP0
->   if w0 s< 0x1 goto pc-22
->     R0_w=inv(id=0,smax_value=9223372034707292159,umax_value=18446744071562067967,
->              s32_min_value=1,var_off=(0x0; 0xffffffff7fffffff))
->     R8=invP0
->   if w0 s> 0x7 goto pc-23
->     R0=inv(id=0,smax_value=9223372032559808519,umax_value=18446744069414584327,
->            s32_min_value=1,s32_max_value=7,var_off=(0x0; 0xffffffff00000007))
->     R8=invP0
->   w0 += w8
->     R0_w=inv(id=0,umax_value=7,var_off=(0x0; 0x7)) R8=invP0
-
-And we should also have smin_value=0?
-
-> 
-> With the above LLVM patch and this commit, the original
-> workaround in Commit b7a0d65d80a0 is not needed any more.
-> 
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  include/linux/bpf_verifier.h |  2 +
->  kernel/bpf/verifier.c        | 73 +++++++++++++++++++++++++++++++-----
->  2 files changed, 65 insertions(+), 10 deletions(-)
-> 
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index 5406e6e96585..d5694308466d 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -123,6 +123,8 @@ struct bpf_reg_state {
->  	s64 smax_value; /* maximum possible (s64)value */
->  	u64 umin_value; /* minimum possible (u64)value */
->  	u64 umax_value; /* maximum possible (u64)value */
-> +	s32 s32_min_value; /* minimum possible (s32)value */
-> +	s32 s32_max_value; /* maximum possible (s32)value */
->  	/* parentage chain for liveness checking */
->  	struct bpf_reg_state *parent;
->  	/* Inside the callee two registers can be both PTR_TO_STACK like
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 1cc945daa9c8..c5d6835c38db 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -543,6 +543,14 @@ static void print_verifier_state(struct bpf_verifier_env *env,
->  				if (reg->umax_value != U64_MAX)
->  					verbose(env, ",umax_value=%llu",
->  						(unsigned long long)reg->umax_value);
-> +				if (reg->s32_min_value != reg->umin_value &&
-> +				    reg->s32_min_value != S32_MIN)
-> +					verbose(env, ",s32_min_value=%d",
-> +						(int)reg->s32_min_value);
-> +				if (reg->s32_max_value != reg->umax_value &&
-> +				    reg->s32_max_value != S32_MAX)
-> +					verbose(env, ",s32_max_value=%d",
-> +						(int)reg->s32_max_value);
->  				if (!tnum_is_unknown(reg->var_off)) {
->  					char tn_buf[48];
->  
-> @@ -923,6 +931,10 @@ static void __mark_reg_known(struct bpf_reg_state *reg, u64 imm)
->  	reg->smax_value = (s64)imm;
->  	reg->umin_value = imm;
->  	reg->umax_value = imm;
-> +
-> +	/* no need to be precise, just reset s32_{min,max}_value */
-> +	reg->s32_min_value = S32_MIN;
-> +	reg->s32_max_value = S32_MAX;
-
-If its known it would make more sense to me to set the min/max value vs this
-shortcut. Otherwise we wont have bounds to compare against on a JMP32.
-
->  }
-
-Still thinking through the rest, but figured it would be worth kicking the
-couple comments above out.. I'm trying to understand if the coerce_reg_size()
-can be made a bit cleaner.
-
-Thanks,
-John
