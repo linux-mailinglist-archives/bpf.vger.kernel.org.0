@@ -2,114 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E861482AF
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 12:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C6B7148461
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 12:44:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404147AbgAXL37 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jan 2020 06:29:59 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:36238 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404129AbgAXL37 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Jan 2020 06:29:59 -0500
-Received: by mail-wm1-f67.google.com with SMTP id p17so1380129wma.1
-        for <bpf@vger.kernel.org>; Fri, 24 Jan 2020 03:29:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cJ4TZV5cXZ/8q9QBQvb7gjQiJz0uB/MAQITB1sj0NIA=;
-        b=aGYdZJEshwF1cDJSP1sWdrNLBZhS7I1RyF6A+y71axz3sMiUBhYP2IE6Kd9mNUgg5W
-         IECZ+kHefZaSIFM+5Bg2JehMCd3qN0v0qS3ULjoDIz6rpsX8FxCiZGK6BXNJbtHF3X4T
-         sv57upHc3Gx34c2KFseWNntiHUPIsA2RuSJ9A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cJ4TZV5cXZ/8q9QBQvb7gjQiJz0uB/MAQITB1sj0NIA=;
-        b=N4sg8kHnW1ubW85nDhMUzE9R46rOmmcFFzR0sy8zQRb7DGe3L8a1+Lnucn9qSGcv6t
-         4YUOuK1mVDUV8iy62glXIhHwjlzawMnrlllkyJe8DucLzNU+Px9deKnrV15nwItXhVKl
-         R4DOfoh02tIVCXSuxS1aqKL3XZKHHyWb//0n+fQ+DTVqACuKAzDu8TcFJaajboDRbjn0
-         u9pCL/C/37+hcH8JhEQa32KQz6bPXyL2Ch+e1ibpkq87+xxKkw0uGlyw1EGVTZrE8ZL9
-         tAMgP6/R/zVO82nd4yCiJY1Md0DmnjS13qT6BLJBV5ZRbHmJO26JvGEv0+9WVn57Q+So
-         3gMw==
-X-Gm-Message-State: APjAAAVhIFq4aPa/vTNMFseTHl4idgxkQg2LuZdqqO8UbKwExS39r+Ta
-        yWGwqa46MH/XhxLZbSN2lycVhQ==
-X-Google-Smtp-Source: APXvYqxsibd4gK6MTr1ppba1secKSIQp1ayf0Ni0amvJDL4rkRNpwnjnQZ1jK6nkDlO+g5yIu8e9hQ==
-X-Received: by 2002:a7b:c450:: with SMTP id l16mr2846104wmi.166.1579865397394;
-        Fri, 24 Jan 2020 03:29:57 -0800 (PST)
-Received: from antares.lan (3.a.c.b.c.e.9.a.8.e.c.d.e.4.1.6.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:614e:dce8:a9ec:bca3])
-        by smtp.gmail.com with ESMTPSA id n189sm6808688wme.33.2020.01.24.03.29.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jan 2020 03:29:56 -0800 (PST)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S2387568AbgAXLDg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jan 2020 06:03:36 -0500
+Received: from relay.sw.ru ([185.231.240.75]:60920 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387424AbgAXLDd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Jan 2020 06:03:33 -0500
+Received: from vvs-ws.sw.ru ([172.16.24.21])
+        by relay.sw.ru with esmtp (Exim 4.92.3)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1iuwk4-0001UQ-3m; Fri, 24 Jan 2020 14:03:12 +0300
+Subject: Re: [PATCH 1/1] map_seq_next should increase position index
+To:     Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>, linux-kselftest@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 4/4] selftests: bpf: reset global state between reuseport test runs
-Date:   Fri, 24 Jan 2020 11:27:54 +0000
-Message-Id: <20200124112754.19664-5-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200124112754.19664-1-lmb@cloudflare.com>
-References: <20200123165934.9584-1-lmb@cloudflare.com>
- <20200124112754.19664-1-lmb@cloudflare.com>
+References: <d6e2df39-919e-8d37-0668-5c4bbf19f278@virtuozzo.com>
+ <be6d3c0d-c9e6-d6f0-ac07-0467480e77d6@iogearbox.net>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <468c8645-1441-2f7a-5fa8-8cc7737c44c7@virtuozzo.com>
+Date:   Fri, 24 Jan 2020 14:03:10 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
+In-Reply-To: <be6d3c0d-c9e6-d6f0-ac07-0467480e77d6@iogearbox.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, there is a lot of false positives if a single reuseport test
-fails. This is because expected_results and the result map are not cleared.
+On 1/24/20 1:03 PM, Daniel Borkmann wrote:
+> On 1/24/20 7:17 AM, Vasily Averin wrote:
+>> if seq_file .next fuction does not change position index,
+>> read after some lseek can generate unexpected output.
+>>
+>> https://bugzilla.kernel.org/show_bug.cgi?id=206283
+>> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+>> ---
+>>   kernel/bpf/inode.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+>> index ecf42be..9008a20 100644
+>> --- a/kernel/bpf/inode.c
+>> +++ b/kernel/bpf/inode.c
+>> @@ -196,6 +196,7 @@ static void *map_seq_next(struct seq_file *m, void *v, loff_t *pos)
+>>       void *key = map_iter(m)->key;
+>>       void *prev_key;
+>>   +    (*pos)++;
+>>       if (map_iter(m)->done)
+>>           return NULL;
+>>  
+> 
+> Hm, how did you test this change? Please elaborate, since in map_seq_next()
+> we do increment position index:
 
-Zero both after individual test runs, which fixes the mentioned false
-positives.
+Position index should be updated even if .next returns NULL.
 
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-Fixes: 91134d849a0e ("bpf: Test BPF_PROG_TYPE_SK_REUSEPORT")
----
- .../selftests/bpf/prog_tests/select_reuseport.c  | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+Sorry, I've not tested this case.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/select_reuseport.c b/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
-index e7e56929751c..098bcae5f827 100644
---- a/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
-+++ b/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
-@@ -33,7 +33,7 @@
- #define REUSEPORT_ARRAY_SIZE 32
- 
- static int result_map, tmp_index_ovr_map, linum_map, data_check_map;
--static enum result expected_results[NR_RESULTS];
-+static __u32 expected_results[NR_RESULTS];
- static int sk_fds[REUSEPORT_ARRAY_SIZE];
- static int reuseport_array = -1, outer_map = -1;
- static int select_by_skb_data_prog;
-@@ -697,7 +697,19 @@ static void setup_per_test(int type, sa_family_t family, bool inany,
- 
- static void cleanup_per_test(bool no_inner_map)
- {
--	int i, err;
-+	int i, err, zero = 0;
-+
-+	memset(expected_results, 0, sizeof(expected_results));
-+
-+	for (i = 0; i < NR_RESULTS; i++) {
-+		err = bpf_map_update_elem(result_map, &i, &zero, BPF_ANY);
-+		RET_IF(err, "reset elem in result_map",
-+		       "i:%u err:%d errno:%d\n", i, err, errno);
-+	}
-+
-+	err = bpf_map_update_elem(linum_map, &zero, &zero, BPF_ANY);
-+	RET_IF(err, "reset line number in linum_map", "err:%d errno:%d\n",
-+	       err, errno);
- 
- 	for (i = 0; i < REUSEPORT_ARRAY_SIZE; i++)
- 		close(sk_fds[i]);
--- 
-2.20.1
+$ dd if=AFFECTED_FILE bs=1000 skip=1
 
+With any huge bs it will generate last line.
+If you'll specify bs in middle of last line -- 
+dd will output rest of list line and then whole last line once again.
+
+> static void *map_seq_next(struct seq_file *m, void *v, loff_t *pos)
+> {
+>         struct bpf_map *map = seq_file_to_map(m);
+>         void *key = map_iter(m)->key;
+>         void *prev_key;
+> 
+>         if (map_iter(m)->done)
+>                 return NULL;
+> 
+>         if (unlikely(v == SEQ_START_TOKEN))
+>                 prev_key = NULL;
+>         else
+>                 prev_key = key;
+> 
+>         if (map->ops->map_get_next_key(map, prev_key, key)) {
+>                 map_iter(m)->done = true;
+>                 return NULL;
+>         }
+> 
+>         ++(*pos);                    <------------ here
+
+You are right, I've missed it, it should be removed.
+
+>         return key;
+> }
+> 
+> With your change we'd increment twice. What is missing here?
