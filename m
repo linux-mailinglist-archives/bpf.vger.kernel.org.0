@@ -2,115 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D07B148C79
-	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 17:48:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 511A8148D84
+	for <lists+bpf@lfdr.de>; Fri, 24 Jan 2020 19:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388812AbgAXQsR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jan 2020 11:48:17 -0500
-Received: from ivanoab7.miniserver.com ([37.128.132.42]:58060 "EHLO
-        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387674AbgAXQsR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Jan 2020 11:48:17 -0500
-Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
-        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1iv27r-0006Gu-PM; Fri, 24 Jan 2020 16:48:08 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-        by jain.kot-begemot.co.uk with esmtp (Exim 4.92)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1iv27n-0005K8-Ga; Fri, 24 Jan 2020 16:48:06 +0000
-Subject: Re: [PATCH] um: Fix some error handling in uml_vector_user_bpf()
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     kernel-janitors@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Richard Weinberger <richard@nod.at>,
-        Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org,
-        Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Alex Dewar <alex.dewar@gmx.co.uk>,
-        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>
-References: <20200124101450.jxfzsh6sz7v324hv@kili.mountain>
- <36070c96-8e75-7d06-d945-87a9d366d0b9@cambridgegreys.com>
- <20200124164427.GF1870@kadam>
-From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <de3bdae8-2dcd-490f-cdf2-67bf92a552e8@cambridgegreys.com>
-Date:   Fri, 24 Jan 2020 16:48:03 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S2391048AbgAXSJi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jan 2020 13:09:38 -0500
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:36338 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388542AbgAXSJi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Jan 2020 13:09:38 -0500
+Received: by mail-pj1-f66.google.com with SMTP id gv17so180487pjb.1
+        for <bpf@vger.kernel.org>; Fri, 24 Jan 2020 10:09:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
+         :from:to;
+        bh=tl33NMB4xb0Oa3P5bsoXvWl9n72K/Immm4it2JBZlyA=;
+        b=uyI37eJ5+pWiKL95QrI8s9+IPlQe/iwpnUrs9427leFlv+jWAoJ/A+pPE5gtMAe3y1
+         ym2wBWUw/ug607NLZJ0Lx7Ngoosbnvra9u27cj4ek0Ax8nH3bdbRQ83CK+9G94vqYk2E
+         7UU3+XEIIloN0HYtFxIzDVeY7N+zdTpbxDdsX9uwuBWzl/eFgHFNAsxCVoZQw4WQgeVt
+         Kodi6q6q07iFIPmXnu93ZKTpauWeAiq5jd6P9OJ3AgtF3vB+wmy/IiBSrzp79WEGsJti
+         N/8XZ9rFn+VmpE4HLmAgZQaV/swEBjmtxugC9bDtGq8nXv/43f0R3UL+GE1P4ewQIsso
+         ajCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:date:message-id:mime-version
+         :content-transfer-encoding:cc:from:to;
+        bh=tl33NMB4xb0Oa3P5bsoXvWl9n72K/Immm4it2JBZlyA=;
+        b=tc1YdE8MpcNCXTDdAh6zU7IxjzCUJG52ozLnVHlS5brYXgTnBnnJ+EIbD98neEx4EO
+         Ui2Szty/9ziLKV2HHTCC9Fj7RzLRw1n3J5X74kIjickLk29PLkOsNhQkeDZ4B29PnEu2
+         O8eWLmT8oiMcFP7lTrzR3NOIAxtgCqTzPY+PypMRu2Vesgo1J8Wt3xIsWAFH9Pj1ZWAb
+         UbSfPXgfoiZlJPz+yNj3Z60IYAoODQ2LPvYbnDaz+H9f+eeU87zbfaR3XgwLs5Nb6ipb
+         1/ywczaSn0nhIjvuDas0QJYQkQF6sO2EKjpCNAO4p0Jp+Nyzi2QOSpwcg1UQCkoyun4g
+         mYgQ==
+X-Gm-Message-State: APjAAAVVPJmu62SqlH1htHD4B182quBgsY0wKIwxfn0Gdz52jHzaTSn5
+        sEPkzrksZPAWpLRzSXLLctanjw==
+X-Google-Smtp-Source: APXvYqzFmqNXDTGXhgjmflNvPd4/r6/ygwXhSF679LLu4iDHd+MEhRcrDuwurclHInHbqyWpKkOLEw==
+X-Received: by 2002:a17:90a:d205:: with SMTP id o5mr540430pju.46.1579889377253;
+        Fri, 24 Jan 2020 10:09:37 -0800 (PST)
+Received: from localhost ([2620:0:1000:2514:bf69:4011:cfff:c9e3])
+        by smtp.gmail.com with ESMTPSA id q10sm7192274pfn.5.2020.01.24.10.09.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jan 2020 10:09:36 -0800 (PST)
+Subject: [PATCH] selftests/bpf: Elide a check for LLVM versions that can't compile it
+Date:   Fri, 24 Jan 2020 10:08:39 -0800
+Message-Id: <20200124180839.185837-1-palmerdabbelt@google.com>
+X-Mailer: git-send-email 2.25.0.341.g760bfbb309-goog
 MIME-Version: 1.0
-In-Reply-To: <20200124164427.GF1870@kadam>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -1.0
-X-Spam-Score: -1.0
-X-Clacks-Overhead: GNU Terry Pratchett
+Content-Transfer-Encoding: 8bit
+Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        kernel-team@android.com
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+The current stable LLVM BPF backend fails to compile the BPF selftests
+due to a compiler bug.  The bug has been fixed in trunk, but that fix
+hasn't landed in the binary packages I'm using yet (Fedora arm64).
+Without this workaround the tests don't compile for me.
 
+This patch triggers a preprocessor warning on LLVM versions that
+definitely have the bug.  The test may be conservative (ie, I'm not sure
+if 9.1 will have the fix), but it should at least make the current set
+of stable releases work together.
 
-On 24/01/2020 16:44, Dan Carpenter wrote:
-> On Fri, Jan 24, 2020 at 12:52:18PM +0000, Anton Ivanov wrote:
->>
->>
->> On 24/01/2020 10:14, Dan Carpenter wrote:
->>> 1) The uml_vector_user_bpf() returns pointers so it should return NULL
->>>      instead of false.
->>> 2) If the "bpf_prog" allocation failed, it would have eventually lead to
->>>      a crash.  We can't succeed after the error happens so it should just
->>>      return.
->>>
->>> Fixes: 9807019a62dc ("um: Loadable BPF "Firmware" for vector drivers")
->>> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
->>> ---
->>>    arch/um/drivers/vector_user.c | 10 +++++-----
->>>    1 file changed, 5 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
->>> index ddcd917be0af..88483f5b034c 100644
->>> --- a/arch/um/drivers/vector_user.c
->>> +++ b/arch/um/drivers/vector_user.c
->>> @@ -732,13 +732,13 @@ void *uml_vector_user_bpf(char *filename)
->>>    	if (stat(filename, &statbuf) < 0) {
->>>    		printk(KERN_ERR "Error %d reading bpf file", -errno);
->>> -		return false;
->>> +		return NULL;
->>
->> I will sort this one out, thanks for noticing.
->>
->>>    	}
->>>    	bpf_prog = uml_kmalloc(sizeof(struct sock_fprog), UM_GFP_KERNEL);
->>> -	if (bpf_prog != NULL) {
->>> -		bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
->>> -		bpf_prog->filter = NULL;
->>> -	}
->>> +	if (!pfg_prog)
->>
->> ^^^^^ ?
-> 
-> If we don't return here it leads to a NULL dereference.
+See https://reviews.llvm.org/D69438 for more information on the fix.  I
+obtained the workaround from
+https://lore.kernel.org/linux-kselftest/aed8eda7-df20-069b-ea14-f06628984566@gmail.com/T/
 
-It says pfg_prog
+Fixes: 20a9ad2e7136 ("selftests/bpf: add CO-RE relocs array tests")
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+---
+ .../testing/selftests/bpf/progs/test_core_reloc_arrays.c  | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-I cannot find this identifier :)
-
-> 
-> regards,
-> dan carpenter
-> 
-> 
-> _______________________________________________
-> linux-um mailing list
-> linux-um@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-um
-> 
-
+diff --git a/tools/testing/selftests/bpf/progs/test_core_reloc_arrays.c b/tools/testing/selftests/bpf/progs/test_core_reloc_arrays.c
+index 89951b684282..e5eafdab80a4 100644
+--- a/tools/testing/selftests/bpf/progs/test_core_reloc_arrays.c
++++ b/tools/testing/selftests/bpf/progs/test_core_reloc_arrays.c
+@@ -43,15 +43,23 @@ int test_core_arrays(void *ctx)
+ 	/* in->a[2] */
+ 	if (CORE_READ(&out->a2, &in->a[2]))
+ 		return 1;
++#if defined(__clang__) && (__clang_major__ < 10) && (__clang_minor__ < 1)
++# warning "clang 9.0 SEGVs on multidimensional arrays, see https://reviews.llvm.org/D69438"
++#else
+ 	/* in->b[1][2][3] */
+ 	if (CORE_READ(&out->b123, &in->b[1][2][3]))
+ 		return 1;
++#endif
+ 	/* in->c[1].c */
+ 	if (CORE_READ(&out->c1c, &in->c[1].c))
+ 		return 1;
++#if defined(__clang__) && (__clang_major__ < 10) && (__clang_minor__ < 1)
++# warning "clang 9.0 SEGVs on multidimensional arrays, see https://reviews.llvm.org/D69438"
++#else
+ 	/* in->d[0][0].d */
+ 	if (CORE_READ(&out->d00d, &in->d[0][0].d))
+ 		return 1;
++#endif
+ 
+ 	return 0;
+ }
 -- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+2.25.0.341.g760bfbb309-goog
+
