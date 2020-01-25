@@ -2,76 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC5B149667
-	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2020 16:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C832149817
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2020 23:31:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726191AbgAYPrq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 25 Jan 2020 10:47:46 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:44739 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725843AbgAYPrq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 25 Jan 2020 10:47:46 -0500
-Received: by mail-qk1-f193.google.com with SMTP id v195so5231462qkb.11;
-        Sat, 25 Jan 2020 07:47:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=sGDKkzK7pZH1PmjbRgCXBtXFFSFzoo8Sm5ticdUWb/Y=;
-        b=Ek6lLXLjzoJfwVim+l+BqHvXuPHoK0JuIYZ6CkmXG2gKo6+otdKOBuFOWaNi8D29vO
-         cW/Ygi98XEOGQeQTYEtDhYpvaa/4E7oDlvFmrVAlhhr8s2ugd40EcBUsrJl4Pl9bnoSJ
-         hQS3tdCZNfcbYkoHi3IPR4hO8Df1nPMBLDmwWHQxgNwECLxsDqWKlSp/dw8REerlbCGn
-         BhbBaciLwhr0NmN0gsCQvs892OlrfkSXhgF33iNVy46f4SWZ2rhTP5C/7DaxRiEINnOo
-         Pq2eiaQabZCp7bjqPQ9MY2pS7gyW8h/R5htaTSxAlMyBco52cPKQopjfQz6lUF4eKFhY
-         rLUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sGDKkzK7pZH1PmjbRgCXBtXFFSFzoo8Sm5ticdUWb/Y=;
-        b=kqMTeX9IN2DBmmqmwzyhqk3sfBXSc5I0jSi6WMqyc36R7A1Q8AbaZl7roP+QTduiJr
-         BD6yeTWr8cSjmtFUxQ6fCeeB5D+U7bXBE8T/MVQRv3Lblt36RMWTfA2H9guJRq+dNMcC
-         AD/lsXmI0Eq7SIE4sgV8aVNaowgINVqvV0rwdRlD0fojd8uk50ysk1Y31K1l1l/RHc/b
-         p4UaiKKbpOqnwyLxZFNNsBIZmYqW/bTF+pvWGFuWULTdwA+SxZFHml5d7W/2rFTKs8Qq
-         Yq7TTOMf6pNuqRcvZOB/SR7wtlrQwQqfbrLnsoP16P0BtZ3/F18xe2iWEcb57FgNeNMm
-         RUMw==
-X-Gm-Message-State: APjAAAWCc+m1hm7vG1y/pOOE/iNjgOYR+D2tz7FX4x5bHqRG1q5WhrfO
-        izbkipcT1nVU4/lCLFn+epI=
-X-Google-Smtp-Source: APXvYqxe40f442y6Yy/twjmskp3nwtpwelm7ROmTKIylcz9quGK4E33pHF6O79B21/VjpmUC/RGU+A==
-X-Received: by 2002:a05:620a:1333:: with SMTP id p19mr8556368qkj.73.1579967265411;
-        Sat, 25 Jan 2020 07:47:45 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c091:480::c331])
-        by smtp.gmail.com with ESMTPSA id 13sm5305093qke.85.2020.01.25.07.47.42
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 25 Jan 2020 07:47:44 -0800 (PST)
-Date:   Sat, 25 Jan 2020 07:47:40 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        peterz@infradead.org, mingo@redhat.com, acme@kernel.org
-Subject: Re: [PATCH v4 bpf-next 2/3] tools/bpf: Sync uapi header bpf.h
-Message-ID: <20200125154739.jfsl4cubpkpciq56@ast-mbp>
-References: <20200124211705.24759-1-dxu@dxuuu.xyz>
- <20200124211705.24759-3-dxu@dxuuu.xyz>
+        id S1727440AbgAYWbh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 Jan 2020 17:31:37 -0500
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:44603 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727250AbgAYWbh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 25 Jan 2020 17:31:37 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 509203C5;
+        Sat, 25 Jan 2020 17:31:35 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Sat, 25 Jan 2020 17:31:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=edZb6HITt6UVr7I2c+OC+aO2Zr
+        bIvBHqXyYPhj4LQBA=; b=my3L4jdgk6Hl3D7In3J0I2kHX6jwtxFEqZLxGRHHDy
+        WUQnlLKXla97sggu0RljKOEGqgtfLziX18B3L1wuG096HlupVUiJrQ+962z4OSKP
+        kuThRhY3XhWmWiCq0P35LaHMtC8abCyM+9xvYnThJTNOo76LermpopmfI+w+62Se
+        97B8R83UfUQ/Q1IxLlCygFFjvYl6Y+cyZ5wo14NcmYXuIb3zv2MsCQurpnochjBo
+        XvZNJ7z95xsBIZffcZ7ykv3R124NcweXUSMO/YYQhrVKBR47YiJ+8YYowa5MafEs
+        X8GyKntIOBUNKJPM98IptfpCwUDFkvpA63CdgaE1my9w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=edZb6HITt6UVr7I2c
+        +OC+aO2ZrbIvBHqXyYPhj4LQBA=; b=gPOacjv6hIYa/F6QNNnY21LO5sux3ktI4
+        vdiUPtqjV+n2zvr41tTUDRs39hM3rCz04mahW3cBr8zhfARMUZDPi8pxj0o2uKrj
+        n22yLZNSwEPDoJYk9eLcWGwbPzERWsuEd2LJ1vtBOFJKx0JgYJUhszJzE17BWHBN
+        i3h2fwEriBFPHhShbmfolZvJDXVAhdd/80Asg5kFmu+Kpp70Bq/9imNdk03I2XcA
+        j3kylFrHDG1sRGLTiQ146/KTHZZLNecip7c9TusIL1zH/s2Orkw0ECEcOC3Qd0B0
+        mnVG8zo3GEUPijBsWhH3fW9bu/tM1JBce6Xj7kPZt3wu6w2kSxs7A==
+X-ME-Sender: <xms:xcEsXtO7wTiT27MnIcU_XrhZRtOPEIkae0Pt6KMATkxq6ARdvssPdw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrvdekgddviecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephffvuf
+    ffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhes
+    ugiguhhuuhdrgiihiieqnecukfhppeduleelrddvtddurdeigedrfeenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdig
+    hiii
+X-ME-Proxy: <xmx:xcEsXgcSJ92Sd47LYdLNWCEeyhdxuiRCbCvTVFTM8cJsts3sbWfNow>
+    <xmx:xcEsXt_gsA3ZGI2TmchHp87mYQ-1itXyth5mHlviEaZhKgmPM8VmrQ>
+    <xmx:xcEsXlFOjQDtcE5ZJ3eDNp09snUMzxK0Uiv0v0uBTTcKOn6GBqJ5dA>
+    <xmx:xsEsXvvhQid8YTy28ZrSdk4xqVxqWeW8ptACCZl1mwDOuaTIURFhjOZpIyI>
+Received: from dlxu-fedora-R90QNFJV.thefacebook.com (prn-fbagreements-ext.thefacebook.com [199.201.64.3])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 0F94A328005A;
+        Sat, 25 Jan 2020 17:31:31 -0500 (EST)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, peterz@infradead.org, mingo@redhat.com,
+        acme@kernel.org
+Subject: [PATCH v5 bpf-next 0/2] Add bpf_read_branch_records() helper
+Date:   Sat, 25 Jan 2020 14:31:15 -0800
+Message-Id: <20200125223117.20813-1-dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200124211705.24759-3-dxu@dxuuu.xyz>
-User-Agent: NeoMutt/20180223
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 24, 2020 at 01:17:04PM -0800, Daniel Xu wrote:
-> Sync the header file in a separate commit to help with external sync.
-> 
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
->  tools/include/uapi/linux/bpf.h | 25 ++++++++++++++++++++++++-
->  1 file changed, 24 insertions(+), 1 deletion(-)
+Branch records are a CPU feature that can be configured to record
+certain branches that are taken during code execution. This data is
+particularly interesting for profile guided optimizations. perf has had
+branch record support for a while but the data collection can be a bit
+coarse grained.
 
-fyi we don't have to split tools/ update into separate patch.
-Feel free to squash into patch 3 or keep it as-is.
+We (Facebook) have seen in experiments that associating metadata with
+branch records can improve results (after postprocessing). We generally
+use bpf_probe_read_*() to get metadata out of userspace. That's why bpf
+support for branch records is useful.
+
+Aside from this particular use case, having branch data available to bpf
+progs can be useful to get stack traces out of userspace applications
+that omit frame pointers.
+
+Changes in v5:
+- Rename bpf_perf_prog_read_branches() -> bpf_read_branch_records()
+- Rename BPF_F_GET_BR_SIZE -> BPF_F_GET_BRANCH_RECORDS_SIZE
+- Squash tools/ bpf.h sync into selftest commit
+
+Changes in v4:
+- Add BPF_F_GET_BR_SIZE flag
+- Return -ENOENT on unsupported architectures
+- Only accept initialized memory in helper
+- Check buffer size is multiple of sizeof(struct perf_branch_entry)
+- Use bpf skeleton in selftest
+- Add commit messages
+- Spelling and formatting
+
+Changes in v3:
+- Document filling unused buffer with zero
+- Formatting fixes
+- Rebase
+
+Changes in v2:
+- Change to a bpf helper instead of context access
+- Avoid mentioning Intel specific things
+
+Daniel Xu (2):
+  bpf: Add bpf_read_branch_records() helper
+  selftests/bpf: add bpf_read_branch_records() selftest
+
+ include/uapi/linux/bpf.h                      |  25 +++-
+ kernel/trace/bpf_trace.c                      |  41 +++++++
+ tools/include/uapi/linux/bpf.h                |  25 +++-
+ .../selftests/bpf/prog_tests/perf_branches.c  | 112 ++++++++++++++++++
+ .../selftests/bpf/progs/test_perf_branches.c  |  74 ++++++++++++
+ 5 files changed, 275 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_branches.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_perf_branches.c
+
+-- 
+2.21.1
+
