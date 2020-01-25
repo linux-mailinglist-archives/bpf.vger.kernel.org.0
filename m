@@ -2,95 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 05401149200
-	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2020 00:26:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B5D1493BC
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2020 07:03:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387406AbgAXX0T (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jan 2020 18:26:19 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:44132 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387404AbgAXX0T (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Jan 2020 18:26:19 -0500
-Received: by mail-qt1-f195.google.com with SMTP id w8so2884072qts.11
-        for <bpf@vger.kernel.org>; Fri, 24 Jan 2020 15:26:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RTAEwgRWvbu8ydTGqLXuTo/hhOVQds5P6lPcrWETvtY=;
-        b=IWEBxLvZi3GyTervxZy76zyVc2eEDl6+8Ns3NVs87NA7WsVzUIu4RL/LZcPKxP2Rrm
-         N/g1lm4vUiPhbG8iw5UMhqy/GRWDsmlTQCvRgvh1k1OM/aTzMDrbXD4fGtKu2YT8kHjI
-         8yWYcM2F6LTTWG4e6o25mcGoMBTx3bW9P0eS7bsfGvFPDMZQQpR8AAcNmXWnJxQLakJL
-         p+iUahyTy6UoPOj37kB7TQGuQYIdHNgBrxGt3Zwtop3my+SlkcoHtWdQFU9z6HfggsiN
-         jzuyyACW+z4pA7j8XV9tg/zzWq4+o5b6siDBAAZIVcVZLblReGxO3Zoo/lymVoxfwiqs
-         NAyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RTAEwgRWvbu8ydTGqLXuTo/hhOVQds5P6lPcrWETvtY=;
-        b=dhBdP8KOHtJebT2Z8AKCQCg7DuQPxyYNJxH0KfdJjG8+e0hCBNU+giQwwKpSjR0UMI
-         3kFLQ5tQFzrypIPzxBzRmBLElGK9dUIYjRbP/EAaPLyPNMV143wHT83OmoyROUdWCXEu
-         UGhCOAXEpsX+jr2II2rDfO79EkKMWaTog6XcplgALQq70U6ixZJ/p3IwK0TBFFK2ICTC
-         o9qVx4iaQnlCq0L2xJv5kE0XSt91CwT4PFaMAl5xWxFwUpSuB68JzpxZKvrcjGTPqR94
-         y1tJXvEwes1eyi6FR07jn21mMbVLzAM89rcSqLHsd6Xe1AqyGwu8DA7Klw6COEm4+FQb
-         hQcg==
-X-Gm-Message-State: APjAAAWFmMSX8QE2G0uzU4ChP/T4ol97OIU53mefjpxfunAaHIM4oXF1
-        8cplAjdnwKMkIguOFB6npECyQrveNqb+jw9bQV8=
-X-Google-Smtp-Source: APXvYqyF/tPeEZNwoGAuSruLZzkV1WJl6RdGnFI+H62yluMTG0z0vSBk14y30+SuG4ZjDkHncd42H0W1YJgCvcqR0ac=
-X-Received: by 2002:ac8:4050:: with SMTP id j16mr4876235qtl.171.1579908377957;
- Fri, 24 Jan 2020 15:26:17 -0800 (PST)
-MIME-Version: 1.0
-References: <20200124224142.1833678-1-rdna@fb.com>
-In-Reply-To: <20200124224142.1833678-1-rdna@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 24 Jan 2020 15:26:05 -0800
-Message-ID: <CAEf4BzYZMwDAu-4=UXUBE8NbhXnRnsWWc9Z4mypU0zDb3m6TSg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] tools/bpf: Allow overriding llvm tools for runqslower
-To:     Andrey Ignatov <rdna@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S1726293AbgAYGDB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 Jan 2020 01:03:01 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:47052 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725781AbgAYGDB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 25 Jan 2020 01:03:01 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00P5sFnr124388;
+        Sat, 25 Jan 2020 06:02:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=EOcwFu66kTrDrBW6PWLJLjzwfW3ca+7Yo6tsUOyd08A=;
+ b=mZCmBsZcbtizRKb0yYxH/c2TRuaACugA1xrKvhG0TfLJkljJzmuNQlZctJPm3X2tJKtY
+ P7oq7VaRHAKuX0g7UJRkIZ2fEA5w+H5t+fA5C1xjfXG0MI/A1drGoB8+Vt/R3ND1H5Bj
+ t4NrLCAHlo2DC3+Obg5e7t4qvnA/VXo9WwE4aQv9WDsi6sNcxGgkzHICnnq0MlHMJQlJ
+ TfPA3jNBFGoRfCUh3KJxe4NK5ysq2dFcL1ZAlBzhb3p9m10780iHyJ/isO2OHoGhCS6v
+ 9ZH7s3EOkYjc4873uBbOkKlLGUx++tt4KfFx0SrC2bridxw/x9e2f6Pyul+tcPq5ITu6 CA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 2xrdmq07bs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 25 Jan 2020 06:02:09 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00P5sEnh109243;
+        Sat, 25 Jan 2020 06:02:09 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 2xratb05sa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 25 Jan 2020 06:02:08 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 00P623BY032514;
+        Sat, 25 Jan 2020 06:02:03 GMT
+Received: from kadam (/129.205.23.165)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 24 Jan 2020 22:02:02 -0800
+Date:   Sat, 25 Jan 2020 09:01:52 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc:     kernel-janitors@vger.kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Richard Weinberger <richard@nod.at>,
+        Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org,
+        Song Liu <songliubraving@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Alex Dewar <alex.dewar@gmx.co.uk>,
+        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: Re: [PATCH] um: Fix some error handling in uml_vector_user_bpf()
+Message-ID: <20200125060152.GN1847@kadam>
+References: <20200124101450.jxfzsh6sz7v324hv@kili.mountain>
+ <36070c96-8e75-7d06-d945-87a9d366d0b9@cambridgegreys.com>
+ <20200124164427.GF1870@kadam>
+ <de3bdae8-2dcd-490f-cdf2-67bf92a552e8@cambridgegreys.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <de3bdae8-2dcd-490f-cdf2-67bf92a552e8@cambridgegreys.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9510 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001250050
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9510 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001250050
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 24, 2020 at 2:42 PM Andrey Ignatov <rdna@fb.com> wrote:
->
-> tools/testing/selftests/bpf/Makefile supports overriding clang, llc and
-> other tools so that custom ones can be used instead of those from PATH.
-> It's convinient and heavily used by some users.
->
-> Apply same rules to runqslower/Makefile.
->
-> Signed-off-by: Andrey Ignatov <rdna@fb.com>
-> ---
+On Fri, Jan 24, 2020 at 04:48:03PM +0000, Anton Ivanov wrote:
+> 
+> 
+> On 24/01/2020 16:44, Dan Carpenter wrote:
+> > On Fri, Jan 24, 2020 at 12:52:18PM +0000, Anton Ivanov wrote:
+> > > 
+> > > 
+> > > On 24/01/2020 10:14, Dan Carpenter wrote:
+> > > > 1) The uml_vector_user_bpf() returns pointers so it should return NULL
+> > > >      instead of false.
+> > > > 2) If the "bpf_prog" allocation failed, it would have eventually lead to
+> > > >      a crash.  We can't succeed after the error happens so it should just
+> > > >      return.
+> > > > 
+> > > > Fixes: 9807019a62dc ("um: Loadable BPF "Firmware" for vector drivers")
+> > > > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > > > ---
+> > > >    arch/um/drivers/vector_user.c | 10 +++++-----
+> > > >    1 file changed, 5 insertions(+), 5 deletions(-)
+> > > > 
+> > > > diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
+> > > > index ddcd917be0af..88483f5b034c 100644
+> > > > --- a/arch/um/drivers/vector_user.c
+> > > > +++ b/arch/um/drivers/vector_user.c
+> > > > @@ -732,13 +732,13 @@ void *uml_vector_user_bpf(char *filename)
+> > > >    	if (stat(filename, &statbuf) < 0) {
+> > > >    		printk(KERN_ERR "Error %d reading bpf file", -errno);
+> > > > -		return false;
+> > > > +		return NULL;
+> > > 
+> > > I will sort this one out, thanks for noticing.
+> > > 
+> > > >    	}
+> > > >    	bpf_prog = uml_kmalloc(sizeof(struct sock_fprog), UM_GFP_KERNEL);
+> > > > -	if (bpf_prog != NULL) {
+> > > > -		bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
+> > > > -		bpf_prog->filter = NULL;
+> > > > -	}
+> > > > +	if (!pfg_prog)
+> > > 
+> > > ^^^^^ ?
+> > 
+> > If we don't return here it leads to a NULL dereference.
+> 
+> It says pfg_prog
+> 
+> I cannot find this identifier :)
+> 
 
-Thanks!
+Oh wow...  That's very embarrassing.  My QC scripts do compile these
+as part of the process.  But this wasn't a in of my allmodconfig
+and when I do "make arch/um/drivers/vector_user.o", it just silently
+returns without printing anything.  I didn't notice that it hadn't
+built.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+Even "make V=2 arch/um/drivers/vector_user.o" doesn't generate output.
 
->  tools/bpf/runqslower/Makefile | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
-> index faf5418609ea..0c021352beed 100644
-> --- a/tools/bpf/runqslower/Makefile
-> +++ b/tools/bpf/runqslower/Makefile
-> @@ -1,8 +1,8 @@
->  # SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
->  OUTPUT := .output
-> -CLANG := clang
-> -LLC := llc
-> -LLVM_STRIP := llvm-strip
-> +CLANG ?= clang
-> +LLC ?= llc
-> +LLVM_STRIP ?= llvm-strip
->  DEFAULT_BPFTOOL := $(OUTPUT)/sbin/bpftool
->  BPFTOOL ?= $(DEFAULT_BPFTOOL)
->  LIBBPF_SRC := $(abspath ../../lib/bpf)
-> --
-> 2.17.1
->
+I will resend the patch (on Monday though).
+
+regards,
+dan carpenter
