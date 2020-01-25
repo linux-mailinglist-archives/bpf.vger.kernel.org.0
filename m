@@ -2,101 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0BD14951B
-	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2020 12:13:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA10149635
+	for <lists+bpf@lfdr.de>; Sat, 25 Jan 2020 16:23:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725812AbgAYLNu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 25 Jan 2020 06:13:50 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:39959 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbgAYLNu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 25 Jan 2020 06:13:50 -0500
-Received: by mail-qk1-f195.google.com with SMTP id t204so3975069qke.7
-        for <bpf@vger.kernel.org>; Sat, 25 Jan 2020 03:13:49 -0800 (PST)
+        id S1726232AbgAYPXf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 Jan 2020 10:23:35 -0500
+Received: from mail-lf1-f42.google.com ([209.85.167.42]:33839 "EHLO
+        mail-lf1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbgAYPXf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 25 Jan 2020 10:23:35 -0500
+Received: by mail-lf1-f42.google.com with SMTP id l18so3203935lfc.1;
+        Sat, 25 Jan 2020 07:23:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=nWoqp30LEmmh1Vw2A74fmNpogh9daBW27TBk5Opv0MY=;
-        b=UjhD4nTuuPgqoKgPCRxwCoNzqhSoPFdtFOy67XHISqcFB7n7TnGPFP+3kviIgTXZ1D
-         YIFyOAVMfWX1sAwRGdvdX2Wt2lzSiFn9+81usAGdV4EhFosk1tuvBQAFZTgmOe/nEe8g
-         9735p6sWoeTIhbN79t3OZsbCdiYl7SAiQIvYGnmUTvCkvI0+8bnm9gT4mmBxb09DxQNP
-         G8mJnTJlUy/AmvLXILV+JkCe8fGTqEPIdxQkem6qws0fUisAgzNYDdNAf2ZxonWmMh1M
-         IqoxzNWJHoqITGt2JtYNo5u1G6S32Ms6zq34Ccrz7XT5uxEKXLTUP1dB/OPHbs9Utido
-         t9jw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nqs08425RUN3uyEpWTzaksGv8utumJixkeluY86HgYI=;
+        b=H4nwxo+nKidqIAWFRMpJ17p86ZPPu0eGk7Qps6fgrxt7lnRZYoTE4LuL+JXf2KZQBu
+         3B/xQk/Ci0z0gegWmCITyzcnP+6jrIutPPykwXxvUEtIGZRYNMz/brmjN/xoSkJZpFDp
+         /Tn+w24anZgNgDqYMXwXSv8Do59Ow9COWhzEVRj+Q5HPyS0ZoPTwWZ1VKIxPej6GJdjJ
+         lYo79mP07YFMZ4YW22eWePJsDJYw9T+RErd3hI/pads3bHJYTL2DMFqoQwSL3zkZ6ETc
+         wjP/oaPVYgmbUzI5qJskaLlXHtYi9oFIajEWHreoBEDm7dzxViwZ/S+rRsWHX1M3+vcX
+         ejdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nWoqp30LEmmh1Vw2A74fmNpogh9daBW27TBk5Opv0MY=;
-        b=X88gZwpn47ZgwXbvIKAE7Y67bJ9TJ1XRfO3TbYluSrAouiCvnR9iA2eMJRBiPZu59g
-         C9P0elBRBfBzmJ70OzCxSL+P0CiSscTW/pTHAFEzziazT2hsBQYf3uuCFG6616Daj5WO
-         LquyznIv8DScLnyi8HdFNBAvi9Q0j3boCQZUo8cLVPf4I5NoQ9cM6eO6fXilPUOLxWSh
-         jcIvwvthjS/b5xIclxExhk42ly4KJKaUYacwiupcdwMuvlvHKKLCMXwd0F4N2bM+dyJq
-         voT5uxsIVovzc5m6TpSZeq21RRSZzi8424F8d7E2kjkJJzCYABRXMbKKs3CC5EQ7CdQk
-         6TeA==
-X-Gm-Message-State: APjAAAVexjh3wF0wSUaybt2pZMaCfcLA10gb3dAqSE3Xc824hXN3JjwZ
-        CA2CMojxh6SGhNiSbu8Sqh8=
-X-Google-Smtp-Source: APXvYqwHAjM9zwx9qPZW62BfnK9QEJHtDCHtZwoy3A+19UsfcxnXfx8GJBbeHaeFMbFLr7EdzYym/g==
-X-Received: by 2002:a05:620a:791:: with SMTP id 17mr7276440qka.31.1579950828945;
-        Sat, 25 Jan 2020 03:13:48 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c091:480::e383])
-        by smtp.gmail.com with ESMTPSA id v4sm4319824qkj.64.2020.01.25.03.13.46
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 25 Jan 2020 03:13:48 -0800 (PST)
-Date:   Sat, 25 Jan 2020 03:13:43 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, yhs@fb.com, ast@kernel.org,
-        daniel@iogearbox.net
-Subject: Re: [bpf PATCH] bpf: verifier, do_refine_retval_range may clamp umin
- to 0 incorrectly
-Message-ID: <20200125111341.mu3r2c2dos5c5rpq@ast-mbp>
-References: <157984984270.18622.13529102486040865869.stgit@john-XPS-13-9370>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nqs08425RUN3uyEpWTzaksGv8utumJixkeluY86HgYI=;
+        b=aScYR0HvJocqWqulkbAQ4uhpEzaMyg0WFgyYJRcpzBYxqwl9HRDuc7fm74Sj3QSq0R
+         VgLZscdSNlmy+g4Iw6QYcZF3dmYoRYORTHfWFjuSFadsNXzDEfiu203By0wY7J69bVin
+         rQSRL6ch5O+C/EP3UQDnSYAVpUNb2M+XAxJNCAszTnjbL/7H6z8W+MGqK/FtBFrfmqRN
+         9fQBE+gVmpZ+9JwBq0oK7ZCXhQGG72U17vGH2j1aXjoq4+oMbsyZiGLKhDQpMhTFWAOu
+         f8v2lcMIXKVYTlMGammaLOQEXqdCzchdUWOY40NqKxhOmQxkICyGm2uNflwOPEZeq6Qm
+         DOSw==
+X-Gm-Message-State: APjAAAXiH+Sp6oDHphSmpNAgnfMsf0WJoX2I0GH25UFRcCQVr3iYD3k0
+        AyqQ4Yh/22TOMeS2xAHF/PUaTi9TY5ViqvySj6I=
+X-Google-Smtp-Source: APXvYqxLt/1cWcxBYLBmxSo44hlhsCJ6/wTOviEGGreQ1cvaGNkX4YNTfkd27HgtbXjMGJd92P337mFIeIgiQk0Y4ZY=
+X-Received: by 2002:a19:5013:: with SMTP id e19mr3989969lfb.8.1579965812962;
+ Sat, 25 Jan 2020 07:23:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <157984984270.18622.13529102486040865869.stgit@john-XPS-13-9370>
-User-Agent: NeoMutt/20180223
+References: <20200123161508.915203-1-jolsa@kernel.org>
+In-Reply-To: <20200123161508.915203-1-jolsa@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sat, 25 Jan 2020 07:23:21 -0800
+Message-ID: <CAADnVQLBQ2t30BwqBb9wJc5rM5M9URvKk25HUBa94PuL8tYcDw@mail.gmail.com>
+Subject: Re: [PATCHv4 0/3] bpf: trampoline fixes
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        David Miller <davem@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 23, 2020 at 11:10:42PM -0800, John Fastabend wrote:
-> @@ -3573,7 +3572,6 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 regno,
->  		 * to refine return values.
->  		 */
->  		meta->msize_smax_value = reg->smax_value;
-> -		meta->msize_umax_value = reg->umax_value;
->  
->  		/* The register is SCALAR_VALUE; the access check
->  		 * happens using its boundaries.
-> @@ -4078,9 +4076,9 @@ static void do_refine_retval_range(struct bpf_reg_state *regs, int ret_type,
->  		return;
->  
->  	ret_reg->smax_value = meta->msize_smax_value;
-> -	ret_reg->umax_value = meta->msize_umax_value;
->  	__reg_deduce_bounds(ret_reg);
->  	__reg_bound_offset(ret_reg);
-> +	__update_reg_bounds(ret_reg);
+On Thu, Jan 23, 2020 at 8:15 AM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> hi,
+> sending 2 fixes to fix kernel support for loading
+> trampoline programs in bcc/bpftrace and allow to
+> unwind through trampoline/dispatcher.
+>
+> Original rfc post [1].
+>
+> Speedup output of perf bench while running klockstat.py
+> on kprobes vs trampolines:
+>
+>     Without:
+>             $ perf bench sched messaging -l 50000
+>             ...
+>                  Total time: 18.571 [sec]
+>
+>     With current kprobe tracing:
+>             $ perf bench sched messaging -l 50000
+>             ...
+>                  Total time: 183.395 [sec]
+>
+>     With kfunc tracing:
+>             $ perf bench sched messaging -l 50000
+>             ...
+>                  Total time: 39.773 [sec]
+>
+> v4 changes:
+>   - rebased on latest bpf-next/master
+>   - removed image tree mutex and use trampoline_mutex instead
+>   - checking directly for string pointer in patch 1 [Alexei]
+>   - skipped helpers patches, as they are no longer needed [Alexei]
 
-Thanks a lot for the analysis and the fix.
-I think there is still a small problem.
-The variable is called msize_smax_value which is used to remember smax,
-but the helpers actually use umax and the rest of
-if (arg_type_is_mem_size(arg_type)) { ..}
-branch is validating [0,umax] range of memory.
-bpf_get_stack() and probe_read_str*() have 'u32 size' arguments too.
-So doing
-meta->msize_smax_value = reg->smax_value;
-isn't quite correct.
-Also the name is misleading, since the verifier needs to remember
-the size 'signed max' doesn't have the right meaning here.
-It's just a size. It cannot be 'signed' and cannot be negative.
-How about renaming it to just msize_max_value and do
-meta->msize_max_value = reg->umax_value;
-while later do:
-ret_reg->smax_value = meta->msize_max_value;
-with a comment that return value from the helpers
-is 'int' and not 'unsigned int' while input argument is 'u32 size'.
+Applied. Thanks
