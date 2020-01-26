@@ -2,148 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E001498A2
-	for <lists+bpf@lfdr.de>; Sun, 26 Jan 2020 04:59:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E67B11498B1
+	for <lists+bpf@lfdr.de>; Sun, 26 Jan 2020 05:11:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729164AbgAZD7p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 25 Jan 2020 22:59:45 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:39861 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728842AbgAZD7o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 25 Jan 2020 22:59:44 -0500
-Received: by mail-pl1-f193.google.com with SMTP id g6so2464972plp.6;
-        Sat, 25 Jan 2020 19:59:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=fEp2tBURROlhYKIVBLvlPnIxXcmQzUZcU2zhMK+Ny8k=;
-        b=kAH2Mk54tpKfeIvs9dLDJlgOWFPzBScpMH9NWN+aDHXxUDPDDeuErMlLavKpwd5zKq
-         mkeTSMB2uuUfMcHGjgaLsfNPW6P7uABX4pb3vettusUzlLzEvEM1HrhgR1PLzgOOOSyp
-         jITNLWv/GDcfjekI2X1w6rNXk6hcxByGIMzrSCQE8Ysyu9ZBh2AgcMMQDVXGgzJZJ+W0
-         PXkK8+gSLRYDg9KpzGsXFLFqbqHKb2P6f4iHyzYpjb0WAQgRQHFH4xeklUIS0LLUBbAR
-         9O3u9LkTSQvV/rC3J4XoPKbcejDsNhI8ksax6l6CcZ4PY3cWyHJx3lSQ+c9V0arCg25/
-         L7qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=fEp2tBURROlhYKIVBLvlPnIxXcmQzUZcU2zhMK+Ny8k=;
-        b=KtMEOoOt+66rGh0DW5xBOQEcPbkWlcRYhCmbEsM74ONi9YuUaRqe/VHMRye1iWbrT7
-         FOJ7Ardpoz4wkxs5ySLXxmFP51tjBxvR8LlHnl2fGo46f7l4DoxYSvGNQ/5goHRG+XDt
-         h1MAh6jaRQJYYmtMrHRoqEJWXW/rP+0VKjLe6iaAQgdv8oGHvSLJB8+YXhfz+1CYE8aW
-         uE93l1CYS1EQHruLnJivqMkEAJ+N/Vbyb74h90VC2cRGyBmGO7Hyt21eTRGl9QZMkWxr
-         dmU2pc/y3YAw5x0LSSmyYqUnW5eaap2aLT6ETVil7SXgQCbyzmVrwOG/2ypxVlGDQEaJ
-         OOLA==
-X-Gm-Message-State: APjAAAV61hbdHfAetq2zBDLPH3rayZXBWQxSmkpeoqOJuEuYMq8uJz8T
-        BmICwoAYZAAsWtfiZxEy89gxKaf1
-X-Google-Smtp-Source: APXvYqyHTXdBfKiLJkEnjWvxfqF4QBLDJW+YZ2cQ3ABDFcXiok5eZDGeypK/2ozN1BDcfkRZB+uB7g==
-X-Received: by 2002:a17:90b:3011:: with SMTP id hg17mr7607242pjb.90.1580011183786;
-        Sat, 25 Jan 2020 19:59:43 -0800 (PST)
-Received: from localhost.localdomain ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id 64sm11078650pfd.48.2020.01.25.19.59.34
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Sat, 25 Jan 2020 19:59:43 -0800 (PST)
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     bjorn.topel@intel.com, songliubraving@fb.com,
-        john.fastabend@gmail.com, ast@kernel.org, daniel@iogearbox.net,
-        toke@redhat.com, maciej.fijalkowski@intel.com,
-        netdev@vger.kernel.org
-Subject: [PATCH bpf-next v2 3/3] bpf: xdp, remove no longer required rcu_read_{un}lock()
-Date:   Sat, 25 Jan 2020 19:58:53 -0800
-Message-Id: <1580011133-17784-4-git-send-email-john.fastabend@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1580011133-17784-1-git-send-email-john.fastabend@gmail.com>
-References: <1580011133-17784-1-git-send-email-john.fastabend@gmail.com>
+        id S1729140AbgAZELC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 Jan 2020 23:11:02 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:46327 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728842AbgAZELC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 25 Jan 2020 23:11:02 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id E73544128;
+        Sat, 25 Jan 2020 23:11:00 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Sat, 25 Jan 2020 23:11:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        content-transfer-encoding:content-type:in-reply-to:date:to:cc
+        :subject:from:message-id; s=fm2; bh=MgNAa/447vzoa3FkIs8Gfzp8Dpl/
+        CHPupsfPjijOvV4=; b=gNz5sfww5+UvF7/Rpwy6y/MuJVrI3o8dAv3UMJHTIZlz
+        prsCliZNgLl7elDb84S1NXPc3OcgbgfwcvFGMGQtGcPmvEIsjUTm2VeRdo+njmyq
+        Nb66POnu+mmP0n4eL4aq880/+cGwOOayMHrQ9lVH5FjHQ2bW3JyJ5n7AZxxrW17d
+        4j3kfJKR6CgZCM/6RgoxUOEhT9IKnJuLHjldb865szfMojiSpue/dGLhjKWwKLjH
+        hSOSqVU6y9QW24wMb+ypde+k/0GMEB6Wa+Bu1vnLhtjJMs/22lL//3Y1Y9uCOo4n
+        a/Xhzm0BZR+P0p26EJp9HAKl2jzHN30Bln1x8dsOzw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=MgNAa/
+        447vzoa3FkIs8Gfzp8Dpl/CHPupsfPjijOvV4=; b=p/LY0Th8Oqbo45jPfa2lRf
+        NtEN1vFEG2vXWoLvhAL7pOA21x1nAWlHQ8qUBGpwOMI+QrpEDKP4qaWqgoUSZdQe
+        S/yrmwkLzFRu8O/Og4ishQH+DcmIHpIhM8Wqeb9j6enzy8770Oz2bGVISDxBro7D
+        0ze+Hr3FXsGJsYCrrd6+pyXDIAYUfqD8WOW3eepVz6a0wDKDuaNRUM4Rktboz1Oy
+        sOxKjYz7vZ9hHGXQhF260rTONO9yrscFk4T2gu51hrHFCBbic4sQbNF6zmaqYX+w
+        GF542cdGlQQbyyNUV6TAUzyYXYbE+D4VpSV66+e/0NsSXqjIrOaC/qoDu/af8H+w
+        ==
+X-ME-Sender: <xms:VBEtXuGQ5jgFGpjnD5wUAlxgW-cpXIPXDw9IYXaCZpTYJFzCAjbEog>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrvdekgdelgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculdefhedmnecujfgurhepgfgtjgffvffuhffksehtqhertddttdejnecu
+    hfhrohhmpedfffgrnhhivghlucgiuhdfuceougiguhesugiguhhuuhdrgiihiieqnecuff
+    homhgrihhnpehlkhhmlhdrohhrghenucfkphepjeefrdduiedvrddvvddrudeltdenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugi
+    huuhhurdighiii
+X-ME-Proxy: <xmx:VBEtXtzmMmD2jFHci88Pij5lT_l9BZdbjDmpFYGJoENWGZzA3bqaqA>
+    <xmx:VBEtXvR6Ukvrpsm9Gq_A-UFAvWiZijjQCEraAxKNMlPRNPJJMU3Tdw>
+    <xmx:VBEtXrpGwM86STu-pbM1wqgnz3lYCTEDyVusQ2DiWX6QHhiBjB-P6g>
+    <xmx:VBEtXgEhFsh1JpJcEWmw4RR1zEPgcgMVWynb7oLJSSBdWDGyymUGPw>
+Received: from localhost (c-73-162-22-190.hsd1.ca.comcast.net [73.162.22.190])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 4E02B3067181;
+        Sat, 25 Jan 2020 23:10:59 -0500 (EST)
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <CAADnVQ+Gy_Ph+83TLJkqtLM_pC2g65NhpX2vOwBH
+ =JM3To2Thw@mail.gmail.com>
+Originaldate: Sat Jan 25, 2020 at 6:53 PM
+Originalfrom: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
+Original: =?utf-8?q?On_Sat,_Jan_25,_2020_at_2:32_PM_Daniel_Xu_<dxu@dxuuu.xyz>_wrote?=
+ =?utf-8?q?:=0D=0A>_+_______attr.type_=3D_PERF=5FTYPE=5FHARDWARE;=0D=0A>_+?=
+ =?utf-8?q?_______attr.config_=3D_PERF=5FCOUNT=5FHW=5FCPU=5FCYCLES;=0D=0A>?=
+ =?utf-8?q?_+_______attr.freq_=3D_1;=0D=0A>_+_______attr.sample=5Ffreq_=3D?=
+ =?utf-8?q?_4000;=0D=0A>_+_______attr.sample=5Ftype_=3D_PERF=5FSAMPLE=5FBR?=
+ =?utf-8?q?ANCH=5FSTACK;=0D=0A>_+_______attr.branch=5Fsample=5Ftype_=3D_PE?=
+ =?utf-8?q?RF=5FSAMPLE=5FBRANCH=5FUSER_|_PERF=5FSAMPLE=5FBRANCH=5FANY;=0D?=
+ =?utf-8?q?=0A>_+_______pfd_=3D_syscall(=5F=5FNR=5Fperf=5Fevent=5Fopen,_&a?=
+ =?utf-8?q?ttr,_-1,_0,_-1,_PERF=5FFLAG=5FFD=5FCLOEXEC);=0D=0A>_+_______if_?=
+ =?utf-8?q?(CHECK(pfd_<_0,_"perf=5Fevent=5Fopen",_"err_%d\n",_pfd))=0D=0A>?=
+ =?utf-8?q?_+_______________goto_out=5Fdestroy;=0D=0A=0D=0AIt's_failing_fo?=
+ =?utf-8?q?r_me_in_kvm._Is_there_way_to_make_it_work=3F=0D=0ACIs_will_be_v?=
+ =?utf-8?q?m_based_too._If_this_test_requires_physical_host=0D=0Asuch_test?=
+ =?utf-8?q?_will_keep_failing_in_all_such_environments.=0D=0AFolks_will_be?=
+ =?utf-8?q?_annoyed_and_eventually_will_disable_the_test.=0D=0ACan_we_figu?=
+ =?utf-8?q?re_out_how_to_test_in_the_vm_from_the_start=3F=0D=0A?=
+Date:   Sat, 25 Jan 2020 20:10:57 -0800
+To:     "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
+Cc:     "bpf" <bpf@vger.kernel.org>, "Alexei Starovoitov" <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        "Song Liu" <songliubraving@fb.com>, "Yonghong Song" <yhs@fb.com>,
+        "Andrii Nakryiko" <andriin@fb.com>,
+        "LKML" <linux-kernel@vger.kernel.org>,
+        "Kernel Team" <kernel-team@fb.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "Arnaldo Carvalho de Melo" <acme@kernel.org>
+Subject: Re: [PATCH v5 bpf-next 2/2] selftests/bpf: add
+ bpf_read_branch_records() selftest
+From:   "Daniel Xu" <dxu@dxuuu.xyz>
+Message-Id: <C05FGIY6DS21.3FOPNFKMT6EWK@dlxu-fedora-R90QNFJV>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Now that we depend on rcu_call() and synchronize_rcu() to also wait
-for preempt_disabled region to complete the rcu read critical section
-in __dev_map_flush() is no longer required. Except in a few special
-cases in drivers that need it for other reasons.
+On Sat Jan 25, 2020 at 6:53 PM, Alexei Starovoitov wrote:
+> On Sat, Jan 25, 2020 at 2:32 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > +       attr.type =3D PERF_TYPE_HARDWARE;
+> > +       attr.config =3D PERF_COUNT_HW_CPU_CYCLES;
+> > +       attr.freq =3D 1;
+> > +       attr.sample_freq =3D 4000;
+> > +       attr.sample_type =3D PERF_SAMPLE_BRANCH_STACK;
+> > +       attr.branch_sample_type =3D PERF_SAMPLE_BRANCH_USER | PERF_SAMP=
+LE_BRANCH_ANY;
+> > +       pfd =3D syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FL=
+AG_FD_CLOEXEC);
+> > +       if (CHECK(pfd < 0, "perf_event_open", "err %d\n", pfd))
+> > +               goto out_destroy;
+>
+>=20
+> It's failing for me in kvm. Is there way to make it work?
+> CIs will be vm based too. If this test requires physical host
+> such test will keep failing in all such environments.
+> Folks will be annoyed and eventually will disable the test.
+> Can we figure out how to test in the vm from the start?
 
-These originally ensured the map reference was safe while a map was
-also being free'd. And additionally that bpf program updates via
-ndo_bpf did not happen while flush updates were in flight. But flush
-by new rules can only be called from preempt-disabled NAPI context.
-The synchronize_rcu from the map free path and the rcu_call from the
-delete path will ensure the reference there is safe. So lets remove
-the rcu_read_lock and rcu_read_unlock pair to avoid any confusion
-around how this is being protected.
+It seems there's a patchset that's adding LBR support to guest hosts:
+https://lkml.org/lkml/2019/8/6/215 . However it seems to be stuck in
+review limbo. Is there anything we can do to help that set along?
 
-If the rcu_read_lock was required it would mean errors in the above
-logic and the original patch would also be wrong.
-
-Now that we have done above we put the rcu_read_lock in the driver
-code where it is needed in a driver dependent way. I think this
-helps readability of the code so we know where and why we are
-taking read locks. Most drivers will not need rcu_read_locks here
-and further XDP drivers already have rcu_read_locks in their code
-paths for reading xdp programs on RX side so this makes it symmetric
-where we don't have half of rcu critical sections define in driver
-and the other half in devmap.
-
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- drivers/net/veth.c  | 6 +++++-
- kernel/bpf/devmap.c | 5 +++--
- 2 files changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index a552df3..184e1b4 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -377,6 +377,7 @@ static int veth_xdp_xmit(struct net_device *dev, int n,
- 	unsigned int max_len;
- 	struct veth_rq *rq;
- 
-+	rcu_read_lock();
- 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK)) {
- 		ret = -EINVAL;
- 		goto drop;
-@@ -418,11 +419,14 @@ static int veth_xdp_xmit(struct net_device *dev, int n,
- 	if (flags & XDP_XMIT_FLUSH)
- 		__veth_xdp_flush(rq);
- 
--	if (likely(!drops))
-+	if (likely(!drops)) {
-+		rcu_read_unlock();
- 		return n;
-+	}
- 
- 	ret = n - drops;
- drop:
-+	rcu_read_unlock();
- 	atomic64_add(drops, &priv->dropped);
- 
- 	return ret;
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index f0bf525..d0ce2e2 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -372,16 +372,17 @@ static int bq_xmit_all(struct xdp_bulk_queue *bq, u32 flags)
-  * from NET_RX_SOFTIRQ. Either way the poll routine must complete before the
-  * net device can be torn down. On devmap tear down we ensure the flush list
-  * is empty before completing to ensure all flush operations have completed.
-+ * When drivers update the bpf program they may need to ensure any flush ops
-+ * are also complete. Using synchronize_rcu or call_rcu will suffice for this
-+ * because both wait for napi context to exit.
-  */
- void __dev_map_flush(void)
- {
- 	struct list_head *flush_list = this_cpu_ptr(&dev_map_flush_list);
- 	struct xdp_bulk_queue *bq, *tmp;
- 
--	rcu_read_lock();
- 	list_for_each_entry_safe(bq, tmp, flush_list, flush_node)
- 		bq_xmit_all(bq, XDP_XMIT_FLUSH);
--	rcu_read_unlock();
- }
- 
- /* rcu_read_lock (from syscall and BPF contexts) ensures that if a delete and/or
--- 
-2.7.4
-
+As far as hacking it, nothing really comes to mind. Seems that patchset
+is our best hope.
