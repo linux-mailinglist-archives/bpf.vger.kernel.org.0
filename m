@@ -2,481 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DDADC14AA60
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2020 20:19:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D3E14AA78
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2020 20:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726323AbgA0TTn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Jan 2020 14:19:43 -0500
-Received: from smtp.uniroma2.it ([160.80.6.23]:53886 "EHLO smtp.uniroma2.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726191AbgA0TTn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jan 2020 14:19:43 -0500
-X-Greylist: delayed 789 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Jan 2020 14:19:41 EST
-Received: from localhost.localdomain ([160.80.103.126])
-        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 00RJ5bCS004919
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 27 Jan 2020 20:05:38 +0100
-From:   Andrea Mayer <andrea.mayer@uniroma2.it>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Lebrun <dav.lebrun@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
-        Andrea Mayer <andrea.mayer@uniroma2.it>
-Subject: [net-next] seg6: add support for optional attributes during behavior construction
-Date:   Mon, 27 Jan 2020 20:04:51 +0100
-Message-Id: <20200127190451.11075-1-andrea.mayer@uniroma2.it>
-X-Mailer: git-send-email 2.20.1
+        id S1725938AbgA0T3P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jan 2020 14:29:15 -0500
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:43622 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727749AbgA0T3P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jan 2020 14:29:15 -0500
+Received: by mail-pf1-f196.google.com with SMTP id s1so4755572pfh.10
+        for <bpf@vger.kernel.org>; Mon, 27 Jan 2020 11:29:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=7zvl5jdN15qOGTWXC9memwRy8CHJrggn/p4AeqCupmk=;
+        b=pCOmn88Juc3zZX1ov0RLP7MUcUKApbSP9Tx9mQwDc2YMLnIBBzzbNo5EG5YrilsuyR
+         4T05vHg63mzPeyC0vdj5hUWXmyI1Q+Wqe9NVvtG3eC8rX5ksJq6Xe9xUdCYSlWLo+zLP
+         RMSterD8koziitdOT8zdUQhHxjbJjetWTO7/FZCLyZts98ogqyZWZQdQZfczCdd6bk7h
+         R53AmhyXL7VmUhqsXl+Y2BahP7Wh9xvV5E12cxhUANDE/clmbILvtPKcsyiesyR8k4ZU
+         BlqVmb4lULI/6TUkQ61IZ6kU3VIOMXkr14EQX887Yk0Skw9/NbM8xD7KSu/DKRB4Dl3K
+         IBDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=7zvl5jdN15qOGTWXC9memwRy8CHJrggn/p4AeqCupmk=;
+        b=ZtSesPJZch+QzD4WKK/XMwgFVb17A4+6pwU2h7xN8Hb5H5p2q2d55G4ePfAGsBdFnq
+         YAeXShkGUgj9SoQhw7IC5dNOgatMh8EOosC9aH7jyQOzhMelK0ZyotWiJi+Mh9UmRZNF
+         he+W+xsmB6ItHRzqSyW6DyDnB4g+cSqa1dR5KFJC9+Aw69YqFGJ7Fo2AG6nQ8hu2o5jc
+         M8VQ61E35aSGX3tMst13SAWMOAh0WUHDEEaR4puTox+mHlLZgceHEIrbtERfhFbPdHaW
+         B5j5F7+2ZGRJm1ZrucOEn9zzxXhWKx3VLEaQ/S4nbbM0LQPu9qzRfcLvJ6s6JgyVUDX5
+         DVXQ==
+X-Gm-Message-State: APjAAAX8mvieEoR8F9SbtLiAcW+skH60p/f6fNqVJ6msGajWS4Oilbdy
+        CrzD3kVTtqSjOMCK1faXi6uuCiOf
+X-Google-Smtp-Source: APXvYqxcedu+VicL5ix9fTp1JljNjgFw+/gUVktQ1OG3oV1/kPfBKIhT6nksie0ClGJnjquZBGOl8w==
+X-Received: by 2002:a63:78c:: with SMTP id 134mr20098544pgh.279.1580153354691;
+        Mon, 27 Jan 2020 11:29:14 -0800 (PST)
+Received: from [127.0.1.1] ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id r14sm16437942pfh.10.2020.01.27.11.29.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jan 2020 11:29:14 -0800 (PST)
+Subject: [bpf PATCH v3] bpf: verifier,
+ do_refine_retval_range may clamp umin to 0 incorrectly
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     yhs@fb.com, john.fastabend@gmail.com, ast@kernel.org,
+        daniel@iogearbox.net
+Date:   Mon, 27 Jan 2020 11:29:02 -0800
+Message-ID: <158015334199.28573.4940395881683556537.stgit@john-XPS-13-9370>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
-X-Virus-Status: Clean
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-before this patch, each SRv6 behavior specifies a set of required
-attributes that must be provided by the userspace application when the
-behavior is created. If an attribute is not supplied, the creation
-operation fails.
-As a workaround, if an attribute is not needed by a behavior, it requires
-to be set by the userspace application to a conventional skip-value. The
-kernel side, that processes the creation request of a behavior, reads the
-supplied attribute values and checks if it has been set to the
-conventional skip-value or not. Hence, each optional attribute must have a
-conventional skip-value which is known a priori and shared between
-userspace applications and kernel.
+do_refine_retval_range() is called to refine return values from specified
+helpers, probe_read_str and get_stack at the moment, the reasoning is
+because both have a max value as part of their input arguments and
+because the helper ensure the return value will not be larger than this
+we can set smax values of the return register, r0.
 
-Messy code and complicated tricks may arise from this approach.
-On the other hand, this patch explicitly differentiates the required
-mandatory attributes from the optional ones. Now, each behavior can declare
-a set of required attributes and a set of optional ones. The behavior
-creation fails in case a required attribute is missing, while it goes on
-without generating any issue if an optional attribute is not supplied by
-the userspace application.
+However, the return value is a signed integer so setting umax is incorrect
+It leads to further confusion when the do_refine_retval_range() then calls,
+__reg_deduce_bounds() which will see a umax value as meaning the value is
+unsigned and then assuming it is unsigned set the smin = umin which in this
+case results in 'smin = 0' and an 'smax = X' where X is the input argument
+from the helper call.
 
-To properly combine the required and optional attributes, a new callback
-function called destroy() is used for releasing resources that have been
-acquired, during the parse() operation, by a given attribute.
-However, the destroy() function is optional and if an attribute does not
-require resources that have to be later released, the callback can be
-omitted.
+Here are the comments from _reg_deduce_bounds() on why this would be safe
+to do.
 
-Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
----
- net/ipv6/seg6_local.c | 226 ++++++++++++++++++++++++++++++++++++------
- 1 file changed, 198 insertions(+), 28 deletions(-)
-
-diff --git a/net/ipv6/seg6_local.c b/net/ipv6/seg6_local.c
-index 85a5447a3e8d..480f1ab35221 100644
---- a/net/ipv6/seg6_local.c
-+++ b/net/ipv6/seg6_local.c
-@@ -7,6 +7,13 @@
-  *  eBPF support: Mathieu Xhonneux <m.xhonneux@gmail.com>
+ /* Learn sign from unsigned bounds.  Signed bounds cross the sign
+  * boundary, so we must be careful.
   */
+ if ((s64)reg->umax_value >= 0) {
+	/* Positive.  We can't learn anything from the smin, but smax
+	 * is positive, hence safe.
+	 */
+	reg->smin_value = reg->umin_value;
+	reg->smax_value = reg->umax_value = min_t(u64, reg->smax_value,
+						  reg->umax_value);
+
+But now we incorrectly have a return value with type int with the
+signed bounds (0,X). Suppose the return value is negative, which is
+possible the we have the verifier and reality out of sync. Among other
+things this may result in any error handling code being falsely detected
+as dead-code and removed. For instance the example below shows using
+bpf_probe_read_str() causes the error path to be identified as dead
+code and removed.
+
+>From the 'llvm-object -S' dump,
+
+ r2 = 100
+ call 45
+ if r0 s< 0 goto +4
+ r4 = *(u32 *)(r7 + 0)
+
+But from dump xlate
+
+  (b7) r2 = 100
+  (85) call bpf_probe_read_compat_str#-96768
+  (61) r4 = *(u32 *)(r7 +0)  <-- dropped if goto
+
+Due to verifier state after call being
+
+ R0=inv(id=0,umax_value=100,var_off=(0x0; 0x7f))
+
+To fix omit setting the umax value because its not safe. The only
+actual bounds we know is the smax. This results in the correct bounds
+(SMIN, X) where X is the max length from the helper. After this the
+new verifier state looks like the following after call 45.
+
+R0=inv(id=0,smax_value=100)
+
+Then xlated version no longer removed dead code giving the expected
+result,
+
+  (b7) r2 = 100
+  (85) call bpf_probe_read_compat_str#-96768
+  (c5) if r0 s< 0x0 goto pc+4
+  (61) r4 = *(u32 *)(r7 +0)
+
+Note, bpf_probe_read_* calls are root only so we wont hit this case
+with non-root bpf users.
+
+v3: comment had some documentation about meta set to null case which
+is not relevant here and confusing to include in the comment.
+
+v2 note: In original version we set msize_smax_value from check_func_arg()
+and propagated this into smax of retval. The logic was smax is the bound
+on the retval we set and because the type in the helper is ARG_CONST_SIZE
+we know that the reg is a positive tnum_const() so umax=smax. Alexei
+pointed out though this is a bit odd to read because the register in
+check_func_arg() has a C type of u32 and the umax bound would be the
+normally relavent bound here. Pulling in extra knowledge about future
+checks makes reading the code a bit tricky. Further having a signed
+meta data that can only ever be positive is also a bit odd. So dropped
+the msize_smax_value metadata and made it a u64 msize_max_value to
+indicate its unsigned. And additionally save bound from umax value in
+check_arg_funcs which is the same as smax due to as noted above tnumx_cont
+and negative check but reads better. By my analysis nothing functionally
+changes in v2 but it does get easier to read so that is win.
+
+Fixes: 849fa50662fbc ("bpf/verifier: refine retval R0 state for bpf_get_stack helper")
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+---
+ kernel/bpf/verifier.c |   19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 7d530ce8719d..adeee88102e5 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -227,8 +227,7 @@ struct bpf_call_arg_meta {
+ 	bool pkt_access;
+ 	int regno;
+ 	int access_size;
+-	s64 msize_smax_value;
+-	u64 msize_umax_value;
++	u64 msize_max_value;
+ 	int ref_obj_id;
+ 	int func_id;
+ 	u32 btf_id;
+@@ -3569,11 +3568,15 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 regno,
+ 	} else if (arg_type_is_mem_size(arg_type)) {
+ 		bool zero_size_allowed = (arg_type == ARG_CONST_SIZE_OR_ZERO);
  
-+/* Changes:
-+ *
-+ * Andrea Mayer <andrea.mayer@uniroma2.it>
-+ *	add support for optional attributes during behavior construction
-+ *
-+ */
-+
- #include <linux/types.h>
- #include <linux/skbuff.h>
- #include <linux/net.h>
-@@ -34,7 +41,21 @@ struct seg6_local_lwt;
+-		/* remember the mem_size which may be used later
+-		 * to refine return values.
++		/* This is used to refine r0 return value bounds for helpers
++		 * that enforce this value as an upper bound on return values.
++		 * See do_refine_retval_range() for helpers that can refine
++		 * the return value. C type of helper is u32 so we pull register
++		 * bound from umax_value however, if negative verifier errors
++		 * out. Only upper bounds can be learned because retval is an
++		 * int type and negative retvals are allowed.
+ 		 */
+-		meta->msize_smax_value = reg->smax_value;
+-		meta->msize_umax_value = reg->umax_value;
++		meta->msize_max_value = reg->umax_value;
  
- struct seg6_action_desc {
- 	int action;
--	unsigned long attrs;
-+	unsigned long required_attrs;
-+
-+	/* optional_attrs is used to specify attributes which can be defined
-+	 * as optional attributes (also called optional parameters). If one of
-+	 * these attributes is not present in the netlink msg during the
-+	 * behavior creation, no errors will be returned to the userland (as
-+	 * opposed to a missing required_attrs, where indeed a -EINVAL error
-+	 * is returned to userland).
-+	 *
-+	 * Each attribute can be 1) required or 2) optional. Anyway, if the
-+	 * attribute is set in both ways then it is considered to be only
-+	 * required.
-+	 */
-+	unsigned long optional_attrs;
-+
- 	int (*input)(struct sk_buff *skb, struct seg6_local_lwt *slwt);
- 	int static_headroom;
- };
-@@ -56,6 +77,9 @@ struct seg6_local_lwt {
+ 		/* The register is SCALAR_VALUE; the access check
+ 		 * happens using its boundaries.
+@@ -4077,10 +4080,10 @@ static void do_refine_retval_range(struct bpf_reg_state *regs, int ret_type,
+ 	     func_id != BPF_FUNC_probe_read_str))
+ 		return;
  
- 	int headroom;
- 	struct seg6_action_desc *desc;
-+
-+	/* parsed optional attributes */
-+	unsigned long parsed_optional_attrs;
- };
- 
- static struct seg6_local_lwt *seg6_local_lwtunnel(struct lwtunnel_state *lwt)
-@@ -559,53 +583,53 @@ static int input_action_end_bpf(struct sk_buff *skb,
- static struct seg6_action_desc seg6_action_table[] = {
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END,
--		.attrs		= 0,
-+		.required_attrs	= 0,
- 		.input		= input_action_end,
- 	},
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END_X,
--		.attrs		= (1 << SEG6_LOCAL_NH6),
-+		.required_attrs	= (1 << SEG6_LOCAL_NH6),
- 		.input		= input_action_end_x,
- 	},
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END_T,
--		.attrs		= (1 << SEG6_LOCAL_TABLE),
-+		.required_attrs	= (1 << SEG6_LOCAL_TABLE),
- 		.input		= input_action_end_t,
- 	},
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END_DX2,
--		.attrs		= (1 << SEG6_LOCAL_OIF),
-+		.required_attrs	= (1 << SEG6_LOCAL_OIF),
- 		.input		= input_action_end_dx2,
- 	},
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END_DX6,
--		.attrs		= (1 << SEG6_LOCAL_NH6),
-+		.required_attrs	= (1 << SEG6_LOCAL_NH6),
- 		.input		= input_action_end_dx6,
- 	},
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END_DX4,
--		.attrs		= (1 << SEG6_LOCAL_NH4),
-+		.required_attrs	= (1 << SEG6_LOCAL_NH4),
- 		.input		= input_action_end_dx4,
- 	},
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END_DT6,
--		.attrs		= (1 << SEG6_LOCAL_TABLE),
-+		.required_attrs	= (1 << SEG6_LOCAL_TABLE),
- 		.input		= input_action_end_dt6,
- 	},
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END_B6,
--		.attrs		= (1 << SEG6_LOCAL_SRH),
-+		.required_attrs	= (1 << SEG6_LOCAL_SRH),
- 		.input		= input_action_end_b6,
- 	},
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END_B6_ENCAP,
--		.attrs		= (1 << SEG6_LOCAL_SRH),
-+		.required_attrs	= (1 << SEG6_LOCAL_SRH),
- 		.input		= input_action_end_b6_encap,
- 		.static_headroom	= sizeof(struct ipv6hdr),
- 	},
- 	{
- 		.action		= SEG6_LOCAL_ACTION_END_BPF,
--		.attrs		= (1 << SEG6_LOCAL_BPF),
-+		.required_attrs	= (1 << SEG6_LOCAL_BPF),
- 		.input		= input_action_end_bpf,
- 	},
- 
-@@ -708,6 +732,12 @@ static int cmp_nla_srh(struct seg6_local_lwt *a, struct seg6_local_lwt *b)
- 	return memcmp(a->srh, b->srh, len);
+-	ret_reg->smax_value = meta->msize_smax_value;
+-	ret_reg->umax_value = meta->msize_umax_value;
++	ret_reg->smax_value = meta->msize_max_value;
+ 	__reg_deduce_bounds(ret_reg);
+ 	__reg_bound_offset(ret_reg);
++	__update_reg_bounds(ret_reg);
  }
  
-+static void destroy_attr_srh(struct seg6_local_lwt *slwt)
-+{
-+	kfree(slwt->srh);
-+	slwt->srh = NULL;
-+}
-+
- static int parse_nla_table(struct nlattr **attrs, struct seg6_local_lwt *slwt)
- {
- 	slwt->table = nla_get_u32(attrs[SEG6_LOCAL_TABLE]);
-@@ -899,16 +929,36 @@ static int cmp_nla_bpf(struct seg6_local_lwt *a, struct seg6_local_lwt *b)
- 	return strcmp(a->bpf.name, b->bpf.name);
- }
- 
-+static void destroy_attr_bpf(struct seg6_local_lwt *slwt)
-+{
-+	kfree(slwt->bpf.name);
-+	if (slwt->bpf.prog)
-+		bpf_prog_put(slwt->bpf.prog);
-+
-+	/* avoid to mess up everything if the function is called more
-+	 * than once.
-+	 */
-+	slwt->bpf.name = NULL;
-+	slwt->bpf.prog = NULL;
-+}
-+
- struct seg6_action_param {
- 	int (*parse)(struct nlattr **attrs, struct seg6_local_lwt *slwt);
- 	int (*put)(struct sk_buff *skb, struct seg6_local_lwt *slwt);
- 	int (*cmp)(struct seg6_local_lwt *a, struct seg6_local_lwt *b);
-+
-+	/* optional destroy() callback useful for releasing resources that
-+	 * have been previously allocated in the corresponding parse()
-+	 * function.
-+	 */
-+	void (*destroy)(struct seg6_local_lwt *slwt);
- };
- 
- static struct seg6_action_param seg6_action_params[SEG6_LOCAL_MAX + 1] = {
- 	[SEG6_LOCAL_SRH]	= { .parse = parse_nla_srh,
- 				    .put = put_nla_srh,
--				    .cmp = cmp_nla_srh },
-+				    .cmp = cmp_nla_srh,
-+				    .destroy = destroy_attr_srh },
- 
- 	[SEG6_LOCAL_TABLE]	= { .parse = parse_nla_table,
- 				    .put = put_nla_table,
-@@ -932,12 +982,96 @@ static struct seg6_action_param seg6_action_params[SEG6_LOCAL_MAX + 1] = {
- 
- 	[SEG6_LOCAL_BPF]	= { .parse = parse_nla_bpf,
- 				    .put = put_nla_bpf,
--				    .cmp = cmp_nla_bpf },
-+				    .cmp = cmp_nla_bpf,
-+				    .destroy = destroy_attr_bpf	},
- 
- };
- 
-+/* call the destroy() callback, if any, for each attribute set in
-+ * @parsed_attrs, starting from attribute index @start up to @end excluded.
-+ */
-+static void __destroy_attrs(unsigned long parsed_attrs, int start, int end,
-+			    struct seg6_local_lwt *slwt)
-+{
-+	struct seg6_action_param *param;
-+	int i;
-+
-+	for (i = start; i < end; i++) {
-+		if (!(parsed_attrs & (1 << i)))
-+			continue;
-+
-+		param = &seg6_action_params[i];
-+
-+		if (param->destroy)
-+			param->destroy(slwt);
-+	}
-+}
-+
-+/* release all the resources that have been possibly taken by attributes
-+ * during parsing operations.
-+ */
-+static void destroy_attrs(struct seg6_local_lwt *slwt)
-+{
-+	unsigned long attrs;
-+
-+	attrs = slwt->desc->required_attrs | slwt->parsed_optional_attrs;
-+
-+	__destroy_attrs(attrs, 0, SEG6_LOCAL_MAX + 1, slwt);
-+}
-+
-+/* optional attributes differ from the required (mandatory) ones because they
-+ * can be or they cannot be present at all. If an attribute is declared but is
-+ * not given then it will simply be discarded without generating any error.
-+ */
-+static int parse_nla_optional_attrs(struct nlattr **attrs,
-+				    struct seg6_local_lwt *slwt)
-+{
-+	unsigned long optional_attrs, parsed_optional_attrs;
-+	struct seg6_action_param *param;
-+	struct seg6_action_desc *desc;
-+	int i, err;
-+
-+	desc = slwt->desc;
-+	parsed_optional_attrs = 0;
-+	optional_attrs = desc->optional_attrs;
-+
-+	if (!optional_attrs)
-+		goto out;
-+
-+	/* we call the parse() function for each optional attribute.
-+	 * note: required attributes have already been parsed.
-+	 */
-+	for (i = 0; i < SEG6_LOCAL_MAX + 1; ++i) {
-+		if (!(optional_attrs & (1 << i)) || !attrs[i])
-+			continue;
-+
-+		param = &seg6_action_params[i];
-+
-+		err = param->parse(attrs, slwt);
-+		if (err < 0)
-+			goto parse_err;
-+
-+		/* current attribute has been correctly parsed */
-+		parsed_optional_attrs |= (1 << i);
-+	}
-+
-+out:
-+	slwt->parsed_optional_attrs = parsed_optional_attrs;
-+
-+	return 0;
-+
-+parse_err:
-+	/* release any resource that has been possibly allocated during
-+	 * successful parse() operations.
-+	 */
-+	__destroy_attrs(parsed_optional_attrs, 0, i, slwt);
-+
-+	return err;
-+}
-+
- static int parse_nla_action(struct nlattr **attrs, struct seg6_local_lwt *slwt)
- {
-+	unsigned long parsed_required_attrs;
- 	struct seg6_action_param *param;
- 	struct seg6_action_desc *desc;
- 	int i, err;
-@@ -950,10 +1084,18 @@ static int parse_nla_action(struct nlattr **attrs, struct seg6_local_lwt *slwt)
- 		return -EOPNOTSUPP;
- 
- 	slwt->desc = desc;
-+	parsed_required_attrs = 0;
- 	slwt->headroom += desc->static_headroom;
- 
-+	/* if an attribute is set both optional and required, then we consider
-+	 * it only as a required one. Therefore, we adjust the optional_attrs
-+	 * bit mask so that it cannot contain any required attribute when the
-+	 * same has already been specified in the required_attrs bit mask.
-+	 */
-+	desc->optional_attrs &= ~desc->required_attrs;
-+
- 	for (i = 0; i < SEG6_LOCAL_MAX + 1; i++) {
--		if (desc->attrs & (1 << i)) {
-+		if (desc->required_attrs & (1 << i)) {
- 			if (!attrs[i])
- 				return -EINVAL;
- 
-@@ -961,11 +1103,27 @@ static int parse_nla_action(struct nlattr **attrs, struct seg6_local_lwt *slwt)
- 
- 			err = param->parse(attrs, slwt);
- 			if (err < 0)
--				return err;
-+				goto parse_err;
-+
-+			/* current attribute has been correctly parsed */
-+			parsed_required_attrs |= (1 << i);
- 		}
- 	}
- 
-+	/* if we support optional attributes, then we parse all of them */
-+	err = parse_nla_optional_attrs(attrs, slwt);
-+	if (err < 0)
-+		goto parse_err;
-+
- 	return 0;
-+
-+parse_err:
-+	/* release any resource that has been possibly allocated during
-+	 * successful parse() operations.
-+	 */
-+	__destroy_attrs(parsed_required_attrs, 0, i, slwt);
-+
-+	return err;
- }
- 
- static int seg6_local_build_state(struct nlattr *nla, unsigned int family,
-@@ -1009,8 +1167,16 @@ static int seg6_local_build_state(struct nlattr *nla, unsigned int family,
- 	return 0;
- 
- out_free:
--	kfree(slwt->srh);
-+	/* parse_nla_action() is in charge of calling destroy_attrs() if,
-+	 * during the parsing operation, something went wrong. However, if the
-+	 * creation of the behavior fails after the parse_nla_action()
-+	 * successfully returned, then destroy_attrs() MUST be called.
-+	 *
-+	 * Please, keep that in mind if you need to add more logic here after
-+	 * the parse_nla_action().
-+	 */
- 	kfree(newts);
-+
- 	return err;
- }
- 
-@@ -1018,14 +1184,7 @@ static void seg6_local_destroy_state(struct lwtunnel_state *lwt)
- {
- 	struct seg6_local_lwt *slwt = seg6_local_lwtunnel(lwt);
- 
--	kfree(slwt->srh);
--
--	if (slwt->desc->attrs & (1 << SEG6_LOCAL_BPF)) {
--		kfree(slwt->bpf.name);
--		bpf_prog_put(slwt->bpf.prog);
--	}
--
--	return;
-+	destroy_attrs(slwt);
- }
- 
- static int seg6_local_fill_encap(struct sk_buff *skb,
-@@ -1033,13 +1192,20 @@ static int seg6_local_fill_encap(struct sk_buff *skb,
- {
- 	struct seg6_local_lwt *slwt = seg6_local_lwtunnel(lwt);
- 	struct seg6_action_param *param;
-+	unsigned long attrs;
- 	int i, err;
- 
- 	if (nla_put_u32(skb, SEG6_LOCAL_ACTION, slwt->action))
- 		return -EMSGSIZE;
- 
-+	/* the set of attributes is now made of two parts:
-+	 *  1) required_attrs (the default attributes);
-+	 *  2) a variable number of parsed optional_attrs.
-+	 */
-+	attrs = slwt->desc->required_attrs | slwt->parsed_optional_attrs;
-+
- 	for (i = 0; i < SEG6_LOCAL_MAX + 1; i++) {
--		if (slwt->desc->attrs & (1 << i)) {
-+		if (attrs & (1 << i)) {
- 			param = &seg6_action_params[i];
- 			err = param->put(skb, slwt);
- 			if (err < 0)
-@@ -1058,7 +1224,7 @@ static int seg6_local_get_encap_size(struct lwtunnel_state *lwt)
- 
- 	nlsize = nla_total_size(4); /* action */
- 
--	attrs = slwt->desc->attrs;
-+	attrs = slwt->desc->required_attrs | slwt->parsed_optional_attrs;
- 
- 	if (attrs & (1 << SEG6_LOCAL_SRH))
- 		nlsize += nla_total_size((slwt->srh->hdrlen + 1) << 3);
-@@ -1091,6 +1257,7 @@ static int seg6_local_cmp_encap(struct lwtunnel_state *a,
- {
- 	struct seg6_local_lwt *slwt_a, *slwt_b;
- 	struct seg6_action_param *param;
-+	unsigned long attrs_a, attrs_b;
- 	int i;
- 
- 	slwt_a = seg6_local_lwtunnel(a);
-@@ -1099,11 +1266,14 @@ static int seg6_local_cmp_encap(struct lwtunnel_state *a,
- 	if (slwt_a->action != slwt_b->action)
- 		return 1;
- 
--	if (slwt_a->desc->attrs != slwt_b->desc->attrs)
-+	attrs_a = slwt_a->desc->required_attrs | slwt_a->parsed_optional_attrs;
-+	attrs_b = slwt_b->desc->required_attrs | slwt_b->parsed_optional_attrs;
-+
-+	if (attrs_a != attrs_b)
- 		return 1;
- 
- 	for (i = 0; i < SEG6_LOCAL_MAX + 1; i++) {
--		if (slwt_a->desc->attrs & (1 << i)) {
-+		if (attrs_a & (1 << i)) {
- 			param = &seg6_action_params[i];
- 			if (param->cmp(slwt_a, slwt_b))
- 				return 1;
--- 
-2.20.1
+ static int
 
