@@ -2,153 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D79A414A2E2
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2020 12:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CCB814A318
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2020 12:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726210AbgA0LS2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Jan 2020 06:18:28 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:40099 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725908AbgA0LS1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jan 2020 06:18:27 -0500
-Received: by mail-pg1-f194.google.com with SMTP id k25so4990472pgt.7
-        for <bpf@vger.kernel.org>; Mon, 27 Jan 2020 03:18:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B2jn7Up2+cD+eD0D5ROwEvtEdti9pDs97jpRUZiU808=;
-        b=TeflSVeClgOmybuUdraDwRDq9IBddwlPu0A697aG3aE5gp2/aIDp2vvWgEWA/XhPU5
-         DKrgrbvlYYAdAEyYGSHlCA3Lyu+tHHlgxKD4D17+p9Ty0j+YOIKzJpDWzCaU11xjS2ga
-         tAECbeUjD+qPWCI4YH854OjSrAxIK+z8wE4kY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B2jn7Up2+cD+eD0D5ROwEvtEdti9pDs97jpRUZiU808=;
-        b=MPR/uclxDXuN67yYBcK0eS4DRlfInUXqmLqwemsi9t6/aMtnmd6BsUG0oUtWLjAVvK
-         kR0v2AH6mMDHYmXIBX64yXNC3GubWzPxy8tKq6LqzVQnLrwFP29uU2G0fsZxO3Ipvowq
-         f2ECXqCTtTxh6uQx3j9XpmaNXzmYgSXd1kpr8SgsjTsZTiVlygWmQRczd7oR3tGnRZHt
-         xb7lII0XHr2cCcm3iwegmxkxCBXnjK2kcEK/FKKy9iqzW7xz+dRXkpILZS4zSB7Xh1jt
-         Dxd+WkgO11FbkPS0089dqOx/061lrPFdSKLaowPmg0qEDIKa9hTW9feGN74d9+PmTiyI
-         eH3g==
-X-Gm-Message-State: APjAAAVimX1jXCqU22Bij3mrMIQOLQPCUEND29CaQwDnhIY5gqvuJVkh
-        cGyx7UYnSkANKfqh+qw5G2176m0Z1PFJPgx3Eo4xuuso9mk=
-X-Google-Smtp-Source: APXvYqxi9Al6EhVp6Fzs3kt7WGSSwQJ9MM7X9p2Zw11dLwUwgYfH+Qk893fJYujMv7QyZvGWxu7R2xASBb1OJ8GmRss=
-X-Received: by 2002:a92:bb08:: with SMTP id w8mr13902051ili.27.1580123446775;
- Mon, 27 Jan 2020 03:10:46 -0800 (PST)
+        id S1727642AbgA0LhH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jan 2020 06:37:07 -0500
+Received: from www62.your-server.de ([213.133.104.62]:50590 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725990AbgA0LhH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jan 2020 06:37:07 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iw2H7-0000Fy-9E; Mon, 27 Jan 2020 12:09:49 +0100
+Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-3.fritz.box)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iw2H6-00054j-PT; Mon, 27 Jan 2020 12:09:48 +0100
+Subject: Re: [PATCH] selftests/bpf: Elide a check for LLVM versions that can't
+ compile it
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     shuah@kernel.org, ast@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, kernel-team@android.com,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+References: <20200124180839.185837-1-palmerdabbelt@google.com>
+ <87ftg4fvmo.fsf@toke.dk>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <dcbed741-a16f-0057-6589-e2d2e41e9bfc@iogearbox.net>
+Date:   Mon, 27 Jan 2020 12:09:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20200123130816.24815-1-kalimuthu.velappan@broadcom.com> <a7d6f51f-8c5c-9242-97a1-8fdea9fdbb7b@iogearbox.net>
-In-Reply-To: <a7d6f51f-8c5c-9242-97a1-8fdea9fdbb7b@iogearbox.net>
-From:   Kalimuthu Velappan <kalimuthu.velappan@broadcom.com>
-Date:   Mon, 27 Jan 2020 16:40:09 +0530
-Message-ID: <CAKA8wj0nLH7UV=Pnk6kbHbyx2sxbL+fOd7JC=o2KryZKRgPFYQ@mail.gmail.com>
-Subject: Re: [PATCH] Support for nlattr and nested_nlattr attribute search in
- EBPF filter
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Stanislav Fomichev <sdf@google.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87ftg4fvmo.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25707/Sun Jan 26 12:40:28 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Daniel,
+On 1/24/20 9:27 PM, Toke Høiland-Jørgensen wrote:
+> Palmer Dabbelt <palmerdabbelt@google.com> writes:
+> 
+>> The current stable LLVM BPF backend fails to compile the BPF selftests
+>> due to a compiler bug.  The bug has been fixed in trunk, but that fix
+>> hasn't landed in the binary packages I'm using yet (Fedora arm64).
+>> Without this workaround the tests don't compile for me.
+>>
+>> This patch triggers a preprocessor warning on LLVM versions that
+>> definitely have the bug.  The test may be conservative (ie, I'm not sure
+>> if 9.1 will have the fix), but it should at least make the current set
+>> of stable releases work together.
+>>
+>> See https://reviews.llvm.org/D69438 for more information on the fix.  I
+>> obtained the workaround from
+>> https://lore.kernel.org/linux-kselftest/aed8eda7-df20-069b-ea14-f06628984566@gmail.com/T/
+>>
+>> Fixes: 20a9ad2e7136 ("selftests/bpf: add CO-RE relocs array tests")
+>> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> 
+> Having to depend on the latest trunk llvm to compile the selftests is
+> definitely unfortunate. I believe there are some tests that won't work
+> at all without trunk llvm (the fentry/fexit stuff comes to mind;
+> although I'm not sure if they'll fail to compile, just fail to run?).
+> Could we extend this type of checking to any such case?
 
-There are few network applications relying on Netlink subsystem to get
-notifications for net-device attribute changes like MTU, Speed,
-Oper-Status, Name, slave, slave info, etc. The Netlink subsystem
-notifies the application on every attribute change regardless of what
-is being needed for the application. The attribute search support in
-EBPF filter helps to filter the Netlink packets based on the specific
-set of attributes that are needed for the application.
+Yeah, Palmer, are you saying that with this fix you're able to run through
+all of the BPF test suite on bpf-next with clang/llvm 9.0?
 
-The classical BPF supports attribute search but that doesn't support
-MAPS. The extended BPF supports MAPS, but the attribute search is not
-enabled. Hence this patch enables the support for attribute search in
-EBPF.
-
-Thanks
-Kals
-
-
-On Thu, Jan 23, 2020 at 9:27 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 1/23/20 2:08 PM, Kalimuthu Velappan wrote:
-> > Added attribute search and nested attribute support in EBPF filter
-> > functionality.
->
-> Your commit describes what the code does, but not the rationale why it's needed
-> resp. the use-case you're trying to solve with this.
->
-> Also, why it cannot be resolved in native BPF?
->
-> > Signed-off-by: Kalimuthu Velappan <kalimuthu.velappan@broadcom.com>
-> > ---
-> >   include/uapi/linux/bpf.h       |  5 ++++-
-> >   net/core/filter.c              | 22 ++++++++++++++++++++++
-> >   tools/include/uapi/linux/bpf.h |  4 +++-
-> >   3 files changed, 29 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index dbbcf0b..ac9794c 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -2938,7 +2938,10 @@ union bpf_attr {
-> >       FN(probe_read_user),            \
-> >       FN(probe_read_kernel),          \
-> >       FN(probe_read_user_str),        \
-> > -     FN(probe_read_kernel_str),
-> > +     FN(probe_read_kernel_str),  \
-> > +     FN(skb_get_nlattr),     \
-> > +     FN(skb_get_nlattr_nest),
-> > +
->
-> This is not on latest bpf-next tree.
->
-> >   /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> >    * function eBPF program intends to call
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 538f6a7..56a87e1 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -2699,6 +2699,24 @@ static const struct bpf_func_proto bpf_set_hash_invalid_proto = {
-> >       .arg1_type      = ARG_PTR_TO_CTX,
-> >   };
-> >
-> > +static const struct bpf_func_proto bpf_skb_get_nlattr_proto = {
-> > +     .func           = bpf_skb_get_nlattr,
-> > +     .gpl_only       = false,
-> > +     .ret_type       = RET_INTEGER,
-> > +     .arg1_type      = ARG_PTR_TO_CTX,
-> > +     .arg2_type  = ARG_ANYTHING,
-> > +     .arg3_type  = ARG_ANYTHING,
-> > +};
-> > +
-> > +static const struct bpf_func_proto skb_get_nlattr_nest_proto = {
-> > +     .func           = bpf_skb_get_nlattr_nest,
-> > +     .gpl_only       = false,
-> > +     .ret_type       = RET_INTEGER,
-> > +     .arg1_type      = ARG_PTR_TO_CTX,
-> > +     .arg2_type  = ARG_ANYTHING,
-> > +     .arg3_type  = ARG_ANYTHING,
-> > +};
-> > +
-> >   BPF_CALL_2(bpf_set_hash, struct sk_buff *, skb, u32, hash)
-
-
-
--- 
-Thanks
-- Kals
+So far policy has been that tests run always on latest trunk to also cover
+llvm changes in BPF backend to make sure there are no regressions there. OT:
+perhaps we should have a 'make deps' target in BPF selftests to make it easier
+for developers to spin up a latest test env to run selftests in.
