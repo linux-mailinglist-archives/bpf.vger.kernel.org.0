@@ -2,199 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A915514A3C9
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2020 13:26:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1326114A431
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2020 13:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726179AbgA0M0N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Jan 2020 07:26:13 -0500
-Received: from www62.your-server.de ([213.133.104.62]:58812 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729465AbgA0M0N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jan 2020 07:26:13 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iw3T0-0000NM-IP; Mon, 27 Jan 2020 13:26:10 +0100
-Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-3.fritz.box)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iw3T0-000ROo-62; Mon, 27 Jan 2020 13:26:10 +0100
-Subject: Re: [PATCH v6 bpf-next 1/2] bpf: Add bpf_read_branch_records() helper
-To:     Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org, ast@kernel.org,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        peterz@infradead.org, mingo@redhat.com, acme@kernel.org
-References: <20200126233554.20061-1-dxu@dxuuu.xyz>
- <20200126233554.20061-2-dxu@dxuuu.xyz>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a026ad0c-7d24-09cc-9742-c241d37fbdb0@iogearbox.net>
-Date:   Mon, 27 Jan 2020 13:26:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726054AbgA0Mzk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jan 2020 07:55:40 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:40023 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbgA0Mzj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jan 2020 07:55:39 -0500
+Received: by mail-lj1-f196.google.com with SMTP id n18so10530027ljo.7
+        for <bpf@vger.kernel.org>; Mon, 27 Jan 2020 04:55:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=E3pG5CYHEjCsgBSMHegr9mD/R3aYdRhDn/G73hEuPZM=;
+        b=YlelWj9DORJ91wwCkQGwOncy39mfvBiUWbNF9YD6CdZ9GBhjhuwY3Jb1JVSh5avf7H
+         2vX/d0Yw2MLzJPRCjTwol4A9mLa+zkB3BufyGlvugABpSVEvwtPBcgZ8vRDtObiVllAP
+         vSeV8xkoG6pnJal8ZxOMbkcv305nYg7DJid/U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=E3pG5CYHEjCsgBSMHegr9mD/R3aYdRhDn/G73hEuPZM=;
+        b=QWf7WTHoUn9QRfuE6xDTdIkaQWa3A87Z2jrBNybTkYiOXbzFmQfoYHbk/x/fkMrgV2
+         RI0E/MAiKM3pmD/WU76U4663SV9vgrQBEVcKJX+hnpYX3Q8L+LbqlsRWavhnJDyeQEsY
+         kbpz2oFfpoOm95r7rS0oEI4+H69hzg7fpDYYv0E3M5tNhBX0oTBH+59e5/PlpQZP9GNV
+         aN/JCsq+OnPzfdXXzrjPN3IECHO0+c3nKtZtSbtDUzQX8AeRDOvaw2rdVZwi8Z9bulgR
+         /y+CmzVGV/Daz5sHGc+scVoJcdj+eCNV8IocaS4pkFDC4TiFHBEYYoJqzjfoHFiBdyPd
+         I80Q==
+X-Gm-Message-State: APjAAAXJ8GO4dyD755kuw3L2gHqpOUdaXRTaswuPSW/lWzVTEKETTHNI
+        TkKzr2zVvWB4ob+wCXNpFpW4xKy2Hzh0VA==
+X-Google-Smtp-Source: APXvYqwhyno7yKTGCvdcTYo7sJ6zIzntgAEKnBOGPiIxr72VjqgVmx7OjO7g1NuhOyR6O2odqAj2Bw==
+X-Received: by 2002:a2e:8745:: with SMTP id q5mr10313071ljj.208.1580129736241;
+        Mon, 27 Jan 2020 04:55:36 -0800 (PST)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id u24sm8079180ljo.77.2020.01.27.04.55.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jan 2020 04:55:35 -0800 (PST)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com
+Subject: [PATCH bpf-next v5 00/12] Extend SOCKMAP to store listening sockets
+Date:   Mon, 27 Jan 2020 13:55:22 +0100
+Message-Id: <20200127125534.137492-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <20200126233554.20061-2-dxu@dxuuu.xyz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25707/Sun Jan 26 12:40:28 2020)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/27/20 12:35 AM, Daniel Xu wrote:
-> Branch records are a CPU feature that can be configured to record
-> certain branches that are taken during code execution. This data is
-> particularly interesting for profile guided optimizations. perf has had
-> branch record support for a while but the data collection can be a bit
-> coarse grained.
-> 
-> We (Facebook) have seen in experiments that associating metadata with
-> branch records can improve results (after postprocessing). We generally
-> use bpf_probe_read_*() to get metadata out of userspace. That's why bpf
-> support for branch records is useful.
-> 
-> Aside from this particular use case, having branch data available to bpf
-> progs can be useful to get stack traces out of userspace applications
-> that omit frame pointers.
-> 
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
->   include/uapi/linux/bpf.h | 25 +++++++++++++++++++++++-
->   kernel/trace/bpf_trace.c | 41 ++++++++++++++++++++++++++++++++++++++++
->   2 files changed, 65 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index f1d74a2bd234..332aa433d045 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -2892,6 +2892,25 @@ union bpf_attr {
->    *		Obtain the 64bit jiffies
->    *	Return
->    *		The 64 bit jiffies
-> + *
-> + * int bpf_read_branch_records(struct bpf_perf_event_data *ctx, void *buf, u32 buf_size, u64 flags)
+Make SOCKMAP a generic collection for listening as well as established
+sockets. This lets us use SOCKMAP BPF maps with reuseport BPF programs.
 
-Small nit: s/buf_size/size/, so that it matches with your BPF_CALL below.
+The biggest advantage of SOCKMAP over REUSEPORT_SOCKARRAY is that the
+former allows the socket can be in more than one map at the same time.
+However, until SOCKMAP gets extended to work with UDP, it is not a drop in
+replacement for REUSEPORT_SOCKARRAY.
 
-  +BPF_CALL_4(bpf_read_branch_records, struct bpf_perf_event_data_kern *, ctx,
-  +	   void *, buf, u32, size, u64, flags)
+Having a BPF map type that can hold listening sockets, and can gracefully
+co-exist with reuseport BPF is important if, in the future, we want to have
+BPF programs that run at socket lookup time [0]. Cover letter for v1 of
+this series tells the full background story of how we got here [1].
 
-> + *	Description
-> + *		For an eBPF program attached to a perf event, retrieve the
-> + *		branch records (struct perf_branch_entry) associated to *ctx*
-> + *		and store it in	the buffer pointed by *buf* up to size
-> + *		*buf_size* bytes.
-> + *
-> + *		The *flags* can be set to **BPF_F_GET_BRANCH_RECORDS_SIZE** to
-> + *		instead	return the number of bytes required to store all the
-> + *		branch entries. If this flag is set, *buf* may be NULL.
-> + *	Return
-> + *		On success, number of bytes written to *buf*. On error, a
-> + *		negative value.
+v5 is a rebase onto recent bpf-next. Patches 1 & 2 has conflicts. I carried
+over the Acks.
 
-Maybe pull the 2nd paragraph from above in here so that it reflects the description
-of the return value when flag is used also for this case in the 'Return' description.
+Thanks,
+-jkbs
 
-> + *		**-EINVAL** if arguments invalid or **buf_size** not a multiple
-> + *		of sizeof(struct perf_branch_entry).
-> + *
-> + *		**-ENOENT** if architecture does not support branch records.
->    */
->   #define __BPF_FUNC_MAPPER(FN)		\
->   	FN(unspec),			\
-> @@ -3012,7 +3031,8 @@ union bpf_attr {
->   	FN(probe_read_kernel_str),	\
->   	FN(tcp_send_ack),		\
->   	FN(send_signal_thread),		\
-> -	FN(jiffies64),
-> +	FN(jiffies64),			\
-> +	FN(read_branch_records),
->   
->   /* integer value in 'imm' field of BPF_CALL instruction selects which helper
->    * function eBPF program intends to call
-> @@ -3091,6 +3111,9 @@ enum bpf_func_id {
->   /* BPF_FUNC_sk_storage_get flags */
->   #define BPF_SK_STORAGE_GET_F_CREATE	(1ULL << 0)
->   
-> +/* BPF_FUNC_read_branch_records flags. */
-> +#define BPF_F_GET_BRANCH_RECORDS_SIZE	(1ULL << 0)
-> +
->   /* Mode for BPF_FUNC_skb_adjust_room helper. */
->   enum bpf_adj_room_mode {
->   	BPF_ADJ_ROOM_NET,
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 19e793aa441a..efd119de95b8 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1028,6 +1028,45 @@ static const struct bpf_func_proto bpf_perf_prog_read_value_proto = {
->            .arg3_type      = ARG_CONST_SIZE,
->   };
->   
-> +BPF_CALL_4(bpf_read_branch_records, struct bpf_perf_event_data_kern *, ctx,
-> +	   void *, buf, u32, size, u64, flags)
-> +{
-> +#ifndef CONFIG_X86
-> +	return -ENOENT;
-> +#else
-> +	struct perf_branch_stack *br_stack = ctx->data->br_stack;
-> +	u32 br_entry_size = sizeof(struct perf_branch_entry);
+[0] https://lore.kernel.org/bpf/20190828072250.29828-1-jakub@cloudflare.com/
+[1] https://lore.kernel.org/bpf/20191123110751.6729-1-jakub@cloudflare.com/
+[2] https://lore.kernel.org/bpf/20200111061206.8028-1-john.fastabend@gmail.com/
 
-'static const u32 br_entry_size' if we use it as such below.
+v4 -> v5:
 
-> +	u32 to_copy;
-> +
-> +	if (unlikely(flags & ~BPF_F_GET_BRANCH_RECORDS_SIZE))
-> +		return -EINVAL;
-> +
-> +	if (unlikely(!br_stack))
-> +		return -EINVAL;
+- Rebase onto recent bpf-next to resolve conflicts. (Daniel)
 
-Why the ifdef X86? In previous thread I meant to change it into since it's
-implicit:
+v3 -> v4:
 
-         if (unlikely(!br_stack))
-                 return -ENOENT;
+- Make tcp_bpf_clone parameter names consistent across function declaration
+  and definition. (Martin)
 
-Or is there any other additional rationale?
+- Use sock_map_redirect_okay helper everywhere we need to take a different
+  action for listening sockets. (Lorenz)
 
-> +	if (flags & BPF_F_GET_BRANCH_RECORDS_SIZE)
-> +		return br_stack->nr * br_entry_size;
-> +
-> +	if (!buf || (size % br_entry_size != 0))
-> +		return -EINVAL;
-> +
-> +	to_copy = min_t(u32, br_stack->nr * br_entry_size, size);
-> +	memcpy(buf, br_stack->entries, to_copy);
-> +
-> +	return to_copy;
-> +#endif
-> +}
-> +
-> +static const struct bpf_func_proto bpf_read_branch_records_proto = {
-> +	.func           = bpf_read_branch_records,
-> +	.gpl_only       = true,
-> +	.ret_type       = RET_INTEGER,
-> +	.arg1_type      = ARG_PTR_TO_CTX,
-> +	.arg2_type      = ARG_PTR_TO_MEM_OR_NULL,
-> +	.arg3_type      = ARG_CONST_SIZE_OR_ZERO,
-> +	.arg4_type      = ARG_ANYTHING,
-> +};
-> +
->   static const struct bpf_func_proto *
->   pe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->   {
-> @@ -1040,6 +1079,8 @@ pe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->   		return &bpf_get_stack_proto_tp;
->   	case BPF_FUNC_perf_prog_read_value:
->   		return &bpf_perf_prog_read_value_proto;
-> +	case BPF_FUNC_read_branch_records:
-> +		return &bpf_read_branch_records_proto;
->   	default:
->   		return tracing_func_proto(func_id, prog);
->   	}
-> 
+- Expand comment explaining the need for a callback from reuseport to
+  sockarray code in reuseport_detach_sock. (Martin)
+
+- Mention the possibility of using a u64 counter for reuseport IDs in the
+  future in the description for patch 10. (Martin)
+
+v2 -> v3:
+
+- Generate reuseport ID when group is created. Please see patch 10
+  description for details. (Martin)
+
+- Fix the build when CONFIG_NET_SOCK_MSG is not selected by either
+  CONFIG_BPF_STREAM_PARSER or CONFIG_TLS. (kbuild bot & John)
+
+- Allow updating sockmap from BPF on BPF_SOCK_OPS_TCP_LISTEN_CB callback. An
+  oversight in previous iterations. Users may want to populate the sockmap with
+  listening sockets from BPF as well.
+
+- Removed RCU read lock assertion in sock_map_lookup_sys. (Martin)
+
+- Get rid of a warning when child socket was cloned with parent's psock
+  state. (John)
+
+- Check for tcp_bpf_unhash rather than tcp_bpf_recvmsg when deciding if
+  sk_proto needs restoring on clone. Check for recvmsg in the context of
+  listening socket cloning was confusing. (Martin)
+
+- Consolidate sock_map_sk_is_suitable with sock_map_update_okay. This led
+  to adding dedicated predicates for sockhash. Update self-tests
+  accordingly. (John)
+
+- Annotate unlikely branch in bpf_{sk,msg}_redirect_map when socket isn't
+  in a map, or isn't a valid redirect target. (John)
+
+- Document paired READ/WRITE_ONCE annotations and cover shared access in
+  more detail in patch 2 description. (John)
+
+- Correct a couple of log messages in sockmap_listen self-tests so the
+  message reflects the actual failure.
+
+- Rework reuseport tests from sockmap_listen suite so that ENOENT error
+  from bpf_sk_select_reuseport handler does not happen on happy path.
+
+v1 -> v2:
+
+- af_ops->syn_recv_sock callback is no longer overridden and burdened with
+  restoring sk_prot and clearing sk_user_data in the child socket. As child
+  socket is already hashed when syn_recv_sock returns, it is too late to
+  put it in the right state. Instead patches 3 & 4 address restoring
+  sk_prot and clearing sk_user_data before we hash the child socket.
+  (Pointed out by Martin Lau)
+
+- Annotate shared access to sk->sk_prot with READ_ONCE/WRITE_ONCE macros as
+  we write to it from sk_msg while socket might be getting cloned on
+  another CPU. (Suggested by John Fastabend)
+
+- Convert tests for SOCKMAP holding listening sockets to return-on-error
+  style, and hook them up to test_progs. Also use BPF skeleton for setup.
+  Add new tests to cover the race scenario discovered during v1 review.
+
+RFC -> v1:
+
+- Switch from overriding proto->accept to af_ops->syn_recv_sock, which
+  happens earlier. Clearing the psock state after accept() does not work
+  for child sockets that become orphaned (never got accepted). v4-mapped
+  sockets need special care.
+
+- Return the socket cookie on SOCKMAP lookup from syscall to be on par with
+  REUSEPORT_SOCKARRAY. Requires SOCKMAP to take u64 on lookup/update from
+  syscall.
+
+- Make bpf_sk_redirect_map (ingress) and bpf_msg_redirect_map (egress)
+  SOCKMAP helpers fail when target socket is a listening one.
+
+- Make bpf_sk_select_reuseport helper fail when target is a TCP established
+  socket.
+
+- Teach libbpf to recognize SK_REUSEPORT program type from section name.
+
+- Add a dedicated set of tests for SOCKMAP holding listening sockets,
+  covering map operations, overridden socket callbacks, and BPF helpers.
+
+
+Jakub Sitnicki (12):
+  bpf, sk_msg: Don't clear saved sock proto on restore
+  net, sk_msg: Annotate lockless access to sk_prot on clone
+  net, sk_msg: Clear sk_user_data pointer on clone if tagged
+  tcp_bpf: Don't let child socket inherit parent protocol ops on copy
+  bpf, sockmap: Allow inserting listening TCP sockets into sockmap
+  bpf, sockmap: Don't set up sockmap progs for listening sockets
+  bpf, sockmap: Return socket cookie on lookup from syscall
+  bpf, sockmap: Let all kernel-land lookup values in SOCKMAP
+  bpf: Allow selecting reuseport socket from a SOCKMAP
+  net: Generate reuseport group ID on group creation
+  selftests/bpf: Extend SK_REUSEPORT tests to cover SOCKMAP
+  selftests/bpf: Tests for SOCKMAP holding listening sockets
+
+ include/linux/skmsg.h                         |   20 +-
+ include/net/sock.h                            |   37 +-
+ include/net/sock_reuseport.h                  |    2 -
+ include/net/tcp.h                             |    7 +
+ kernel/bpf/reuseport_array.c                  |    5 -
+ kernel/bpf/verifier.c                         |    6 +-
+ net/core/filter.c                             |   27 +-
+ net/core/skmsg.c                              |    2 +-
+ net/core/sock.c                               |   11 +-
+ net/core/sock_map.c                           |  133 +-
+ net/core/sock_reuseport.c                     |   50 +-
+ net/ipv4/tcp_bpf.c                            |   17 +-
+ net/ipv4/tcp_minisocks.c                      |    2 +
+ net/ipv4/tcp_ulp.c                            |    3 +-
+ net/tls/tls_main.c                            |    3 +-
+ .../bpf/prog_tests/select_reuseport.c         |   60 +-
+ .../selftests/bpf/prog_tests/sockmap_listen.c | 1455 +++++++++++++++++
+ .../selftests/bpf/progs/test_sockmap_listen.c |   77 +
+ tools/testing/selftests/bpf/test_maps.c       |    6 +-
+ 19 files changed, 1811 insertions(+), 112 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_listen.c
+
+-- 
+2.24.1
 
