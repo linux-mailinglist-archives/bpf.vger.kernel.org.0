@@ -2,52 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 509CC14A4AB
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2020 14:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F0214A4A9
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2020 14:11:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727479AbgA0NLZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Jan 2020 08:11:25 -0500
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:34240 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727250AbgA0NLN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jan 2020 08:11:13 -0500
-Received: by mail-lf1-f65.google.com with SMTP id l18so6162646lfc.1
-        for <bpf@vger.kernel.org>; Mon, 27 Jan 2020 05:11:12 -0800 (PST)
+        id S1728236AbgA0NLY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jan 2020 08:11:24 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:46447 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727479AbgA0NLP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jan 2020 08:11:15 -0500
+Received: by mail-lj1-f196.google.com with SMTP id x14so8226062ljd.13
+        for <bpf@vger.kernel.org>; Mon, 27 Jan 2020 05:11:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=eC0CkR7IbFG6bDxCz3dMivOibOCCpaaJ3Hu5W6QGrjg=;
-        b=tJ+sPj7Vz0gbEnV6wJVNPWyqvGbBupr3Hr1L0OlPU5+WpLLZHKnwaIrcfsy6wW0xgW
-         RhGHSuXln1d8DQ9CEzoKbIsiap3YVPC717E+8ffntJwoyWQJspHDnyv+5nVGIm8z8ECH
-         pe/Qw874MA8nTueLqhpd5Sg/lq3Q3/X3Ycs34=
+        bh=5TGuskX+oyn2N1Rk9g6dmvecHvmmmyDhj23M/Fkvjgg=;
+        b=hUubQOgD1A8wW3G4SG8OtnwE0UXfT8Et01uje65pSxZtzuW07kQp1cUhjEAdBNQV1/
+         PsvIiLJXI+KrVtc8BtjQQjktVTGFvH9w3g46t7Pyo+rbNfTB8S+Kvvx7pnFPvHK2V1OS
+         j8r4OABR/3ApICrWyJXdUhWeuZ2UqJNLyo7xM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=eC0CkR7IbFG6bDxCz3dMivOibOCCpaaJ3Hu5W6QGrjg=;
-        b=HPSS7o+/fRThRV3P9k21lchFNTsCQnPkysIwvj8lD3gUeD2khoJrUiQL6ppGT6L9sX
-         y0xtbn3BeHaeHUkS9u+4aLnC6rO6PK2lfbvPpiZhuaCPYpNrDa2uwVbRCmKjpVt9K1Ld
-         b8BHxht7nv9GpnbZx2VZ/6Frc8ynW7FhlHYKo9jeyNQK0r9KxmihvJCxE2contpRVUZn
-         h3KjHUPW8IpO9eG0L7Gw+RCk3sL+Fq/6nPVkF52JWvWzQCUr8Cqsw1sM24k9Rsu4gjz5
-         gHFst43ACZSKxSkSy3A0LS0H+k9t/ynWoqT59XaBKaEeguYV06A60w/phmn65WH3Obib
-         AUJw==
-X-Gm-Message-State: APjAAAUYGmK3tykx4KKzemEO11YS4zk/4hZ0qlEV3Xw5bY6MXpMStAWx
-        704d79UhkN9hNyR6m/5Gi9cuahar4kM3Xw==
-X-Google-Smtp-Source: APXvYqzLgMXpYlkmUZyMlRObE/MZFGz2MqtBCUghAhyndKaZwHfs76SAGY01Urh40n5X1aHQ0wgLTg==
-X-Received: by 2002:a19:cc11:: with SMTP id c17mr8028556lfg.161.1580130670986;
-        Mon, 27 Jan 2020 05:11:10 -0800 (PST)
+        bh=5TGuskX+oyn2N1Rk9g6dmvecHvmmmyDhj23M/Fkvjgg=;
+        b=JgN3tFveNp5zFpdwmEw6X2q75AWZNKi7Wa6uhjkqdSpFZxU9jyYYvtUMSlDGROMRr4
+         aZ28HPLlyuiRTnIyPtF8+hx0muce/zD/kw2cHAsKlrdvLYtGtxFOdQ2sQXtF0Z0SABpY
+         rg7fExyPrbpWb1GBrfe5iQV2subI8WUZaUnA1Rc6aqPrNIgYx5+Hc+nS+PmV/cTbmSVn
+         UIlbPJBW4lVdHVKEf9WXDzE+TvWM0bwjwDN5RFjtbrVj/3GT5nLTyuEfQYBNWYP6oIyj
+         bUtr0e5c15rARUKALY5CsvZzz0l38UfFlDueI/eNg7gSWpj+BgdhpvAr4kXunJgeN4hO
+         O96g==
+X-Gm-Message-State: APjAAAX+t28StZg1rNjlPAPWHujTSg1mRZICe0Q8wTic0vsd4VITDefm
+        CUJUSxgPdcrRzVfopP1ARMg0VgwqbW8xVw==
+X-Google-Smtp-Source: APXvYqzx2oIIpFKX9YaBOhmANhhJp+rR76NLtWj8rIokv4jFI4cMeYlUDVrdUD/GckUmRJf7V9VD5g==
+X-Received: by 2002:a2e:9c0b:: with SMTP id s11mr9877137lji.11.1580130672553;
+        Mon, 27 Jan 2020 05:11:12 -0800 (PST)
 Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id d9sm8129534lja.73.2020.01.27.05.11.10
+        by smtp.gmail.com with ESMTPSA id a8sm2505066ljn.74.2020.01.27.05.11.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jan 2020 05:11:10 -0800 (PST)
+        Mon, 27 Jan 2020 05:11:11 -0800 (PST)
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     bpf@vger.kernel.org
 Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
         Martin KaFai Lau <kafai@fb.com>
-Subject: [PATCH bpf-next v6 08/12] bpf, sockmap: Let all kernel-land lookup values in SOCKMAP
-Date:   Mon, 27 Jan 2020 14:10:53 +0100
-Message-Id: <20200127131057.150941-9-jakub@cloudflare.com>
+Subject: [PATCH bpf-next v6 09/12] bpf: Allow selecting reuseport socket from a SOCKMAP
+Date:   Mon, 27 Jan 2020 14:10:54 +0100
+Message-Id: <20200127131057.150941-10-jakub@cloudflare.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200127131057.150941-1-jakub@cloudflare.com>
 References: <20200127131057.150941-1-jakub@cloudflare.com>
@@ -58,53 +59,84 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Don't require the kernel code, like BPF helpers, that needs access to
-SOCKMAP map contents to live in net/core/sock_map.c. Expose the SOCKMAP
-lookup operation to all kernel-land.
+SOCKMAP now supports storing references to listening sockets. Nothing keeps
+us from using it as an array of sockets to select from in BPF reuseport
+programs. Whitelist the map type with the bpf_sk_select_reuseport helper.
 
-Lookup from BPF context is not whitelisted yet. While syscalls have a
-dedicated lookup handler.
+The restriction that the socket has to be a member of a reuseport group
+still applies. Socket from a SOCKMAP that does not have sk_reuseport_cb set
+is not a valid target and we signal it with -EINVAL.
 
+This lifts the restriction that SOCKARRAY imposes, if SOCKMAP is used with
+reuseport BPF, the listening sockets can exist in more than one BPF map at
+the same time.
+
+Acked-by: John Fastabend <john.fastabend@gmail.com>
 Acked-by: Martin KaFai Lau <kafai@fb.com>
 Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 ---
- net/core/sock_map.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ kernel/bpf/verifier.c |  6 ++++--
+ net/core/filter.c     | 15 ++++++++++-----
+ 2 files changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index 71d0a21e6db1..2cbde385e1a0 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -300,7 +300,7 @@ static struct sock *__sock_map_lookup_elem(struct bpf_map *map, u32 key)
- 
- static void *sock_map_lookup(struct bpf_map *map, void *key)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 1cc945daa9c8..9def066e6847 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3693,7 +3693,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+ 		if (func_id != BPF_FUNC_sk_redirect_map &&
+ 		    func_id != BPF_FUNC_sock_map_update &&
+ 		    func_id != BPF_FUNC_map_delete_elem &&
+-		    func_id != BPF_FUNC_msg_redirect_map)
++		    func_id != BPF_FUNC_msg_redirect_map &&
++		    func_id != BPF_FUNC_sk_select_reuseport)
+ 			goto error;
+ 		break;
+ 	case BPF_MAP_TYPE_SOCKHASH:
+@@ -3774,7 +3775,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+ 			goto error;
+ 		break;
+ 	case BPF_FUNC_sk_select_reuseport:
+-		if (map->map_type != BPF_MAP_TYPE_REUSEPORT_SOCKARRAY)
++		if (map->map_type != BPF_MAP_TYPE_REUSEPORT_SOCKARRAY &&
++		    map->map_type != BPF_MAP_TYPE_SOCKMAP)
+ 			goto error;
+ 		break;
+ 	case BPF_FUNC_map_peek_elem:
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 792e3744b915..6922f1a55383 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -8620,6 +8620,7 @@ struct sock *bpf_run_sk_reuseport(struct sock_reuseport *reuse, struct sock *sk,
+ BPF_CALL_4(sk_select_reuseport, struct sk_reuseport_kern *, reuse_kern,
+ 	   struct bpf_map *, map, void *, key, u32, flags)
  {
--	return ERR_PTR(-EOPNOTSUPP);
-+	return __sock_map_lookup_elem(map, *(u32 *)key);
- }
++	bool is_sockarray = map->map_type == BPF_MAP_TYPE_REUSEPORT_SOCKARRAY;
+ 	struct sock_reuseport *reuse;
+ 	struct sock *selected_sk;
  
- static void *sock_map_lookup_sys(struct bpf_map *map, void *key)
-@@ -969,6 +969,11 @@ static void sock_hash_free(struct bpf_map *map)
- 	kfree(htab);
- }
+@@ -8628,12 +8629,16 @@ BPF_CALL_4(sk_select_reuseport, struct sk_reuseport_kern *, reuse_kern,
+ 		return -ENOENT;
  
-+static void *sock_hash_lookup(struct bpf_map *map, void *key)
-+{
-+	return ERR_PTR(-EOPNOTSUPP);
-+}
-+
- static void sock_hash_release_progs(struct bpf_map *map)
- {
- 	psock_progs_drop(&container_of(map, struct bpf_htab, map)->progs);
-@@ -1048,7 +1053,7 @@ const struct bpf_map_ops sock_hash_ops = {
- 	.map_get_next_key	= sock_hash_get_next_key,
- 	.map_update_elem	= sock_hash_update_elem,
- 	.map_delete_elem	= sock_hash_delete_elem,
--	.map_lookup_elem	= sock_map_lookup,
-+	.map_lookup_elem	= sock_hash_lookup,
- 	.map_release_uref	= sock_hash_release_progs,
- 	.map_check_btf		= map_check_no_btf,
- };
+ 	reuse = rcu_dereference(selected_sk->sk_reuseport_cb);
+-	if (!reuse)
+-		/* selected_sk is unhashed (e.g. by close()) after the
+-		 * above map_lookup_elem().  Treat selected_sk has already
+-		 * been removed from the map.
++	if (!reuse) {
++		/* reuseport_array has only sk with non NULL sk_reuseport_cb.
++		 * The only (!reuse) case here is - the sk has already been
++		 * unhashed (e.g. by close()), so treat it as -ENOENT.
++		 *
++		 * Other maps (e.g. sock_map) do not provide this guarantee and
++		 * the sk may never be in the reuseport group to begin with.
+ 		 */
+-		return -ENOENT;
++		return is_sockarray ? -ENOENT : -EINVAL;
++	}
+ 
+ 	if (unlikely(reuse->reuseport_id != reuse_kern->reuseport_id)) {
+ 		struct sock *sk;
 -- 
 2.24.1
 
