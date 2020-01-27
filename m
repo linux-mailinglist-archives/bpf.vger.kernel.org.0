@@ -2,141 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BAC8914A940
-	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2020 18:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5469A14A9D2
+	for <lists+bpf@lfdr.de>; Mon, 27 Jan 2020 19:34:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725893AbgA0Rvu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Jan 2020 12:51:50 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:30152 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725955AbgA0Rvu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 27 Jan 2020 12:51:50 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00RHolKh009442
-        for <bpf@vger.kernel.org>; Mon, 27 Jan 2020 09:51:48 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=qROix2s9Ti53ZGEPOA9CO6nXYZ7L6BmhcxXnJW5YfcQ=;
- b=Mnif3EAgw8OEMmVkp8WRVf/uP2011vvwMzaodKySnizMI1Xxichi9vvoJBsbCbjIUqTl
- XVSXeL7DQ2rVD+sFKHfzvAB9iD56K3B4eRFkvRQ10e2AY5brEVIHQGjjaLTf2lE8Anom
- /8v4HbB8WwRZhjTebD5CBsmIaOGT/Ob89HM= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2xs6qme9ya-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 27 Jan 2020 09:51:48 -0800
-Received: from intmgw001.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 27 Jan 2020 09:51:46 -0800
-Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
-        id C84F52942041; Mon, 27 Jan 2020 09:51:45 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Martin KaFai Lau <kafai@fb.com>
-Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>, <kernel-team@fb.com>,
-        <netdev@vger.kernel.org>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf] bpf: Reuse log from btf_prase_vmlinux() in btf_struct_ops_init()
-Date:   Mon, 27 Jan 2020 09:51:45 -0800
-Message-ID: <20200127175145.1154438-1-kafai@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1725908AbgA0Sey (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jan 2020 13:34:54 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:46480 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725893AbgA0Sey (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jan 2020 13:34:54 -0500
+Received: by mail-qk1-f196.google.com with SMTP id g195so10592337qke.13;
+        Mon, 27 Jan 2020 10:34:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f8NOrtqi23wWof9JzLK2tNTiXAqyl8GSSIKTJIqJPz4=;
+        b=drVqL/qZRxOEsn3k3go1PGz1BAxaQ/dNWwYsfs8YAYYmJNdW93q71i9lqRS6gHexn8
+         8eyCTJQI2+7UE8da5m/9b+tx80l6rHGxDKEcaTFUrNIn9YJzD02fz/F0GvguAmX7k5/x
+         wvqm36WGzybJDlpTJKOVcfaANZJAUIlunueL1jNDt262pX6IQIlTmdcwnf1/0ZNBq37v
+         JpQl7ytwWefz1w19Z3XcmshddxxUtGJkkvGMmnrS4CfIHFziCCxfVbTz9D8Tua+v0nnG
+         tj6V+RT21bwJa0bAOb2/hQqDz2NRI60XVWfddXFgtUluOqC9r+b+Py4YhRpSKBBIVnNn
+         kmpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f8NOrtqi23wWof9JzLK2tNTiXAqyl8GSSIKTJIqJPz4=;
+        b=atudBtlsMXZlWwc7EuR2n6VbhPgznbRMUibJPuzF85Z0Vvr9xlkaFzpTfzzp7iM3OU
+         jNYxARBOGQ0xlnBf872LFXCsDdTBxwPIeFwU/d7AdNA7vf8+0wlP6GHl7/UCOzV6drEA
+         XQwu1Y5ItY5IcO/xGsQhOGrvg4C2ALVYzhhXi2ERhuUd/HMRDRFWvU6SyAoftooqMHMd
+         KWqjghW6GWXxv1D8AeJW57aqPIsItCLMmOD5/3Hw9wnyFyobfN8vw/RD6bMkxCxXnUu/
+         aKOGATbUl2uUB0rbbM/yggTo6u+av5ZjHxbuyorqbwqR4yp3qkaxujwff3hi1briSukD
+         cS0A==
+X-Gm-Message-State: APjAAAUsFMArx1zAUzO5tTr2RuEQWLD/usmCYJfVvY6yCT5ZTZWFhx6C
+        /XgbXfBLuN3u1fYxulAfA+GVKaMRZho6nJ+LG8b5qw==
+X-Google-Smtp-Source: APXvYqwooDmBqht+/JeQLNBZvtnrvnThGGPUf39rCwrugsLtLpV5ML2pDtPq9hvQWiki3xEFFWv5ViflMNnqmBzx7u4=
+X-Received: by 2002:a37:e408:: with SMTP id y8mr17970935qkf.39.1580150092890;
+ Mon, 27 Jan 2020 10:34:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-01-27_06:2020-01-24,2020-01-27 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- mlxlogscore=583 impostorscore=0 priorityscore=1501 adultscore=0
- spamscore=0 phishscore=0 suspectscore=38 mlxscore=0 clxscore=1015
- lowpriorityscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1911200001 definitions=main-2001270145
-X-FB-Internal: deliver
+References: <20200127175145.1154438-1-kafai@fb.com>
+In-Reply-To: <20200127175145.1154438-1-kafai@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 27 Jan 2020 10:34:42 -0800
+Message-ID: <CAEf4BzYONH0jpi+VV8Q72q2Uico2_MnydX0ptpcOJQLW8H+gng@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Reuse log from btf_prase_vmlinux() in btf_struct_ops_init()
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Instead of using a locally defined "struct bpf_verifier_log log = {}",
-btf_struct_ops_init() should reuse the "log" from its calling
-function "btf_parse_vmlinux()".  It should also resolve the
-frame-size too large compiler warning in some ARCH.
+On Mon, Jan 27, 2020 at 9:52 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> Instead of using a locally defined "struct bpf_verifier_log log = {}",
+> btf_struct_ops_init() should reuse the "log" from its calling
+> function "btf_parse_vmlinux()".  It should also resolve the
+> frame-size too large compiler warning in some ARCH.
+>
+> Fixes: 27ae7997a661 ("bpf: Introduce BPF_PROG_TYPE_STRUCT_OPS")
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> ---
 
-Fixes: 27ae7997a661 ("bpf: Introduce BPF_PROG_TYPE_STRUCT_OPS")
-Signed-off-by: Martin KaFai Lau <kafai@fb.com>
----
- include/linux/bpf.h         | 7 +++++--
- kernel/bpf/bpf_struct_ops.c | 5 ++---
- kernel/bpf/btf.c            | 2 +-
- 3 files changed, 8 insertions(+), 6 deletions(-)
+LGTM, but there is typo in subject (btf_prase_vmlinux).
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 8e9ad3943cd9..49b1a70e12c8 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -728,7 +728,7 @@ struct bpf_struct_ops {
- #if defined(CONFIG_BPF_JIT) && defined(CONFIG_BPF_SYSCALL)
- #define BPF_MODULE_OWNER ((void *)((0xeB9FUL << 2) + POISON_POINTER_DELTA))
- const struct bpf_struct_ops *bpf_struct_ops_find(u32 type_id);
--void bpf_struct_ops_init(struct btf *btf);
-+void bpf_struct_ops_init(struct btf *btf, struct bpf_verifier_log *log);
- bool bpf_struct_ops_get(const void *kdata);
- void bpf_struct_ops_put(const void *kdata);
- int bpf_struct_ops_map_sys_lookup_elem(struct bpf_map *map, void *key,
-@@ -752,7 +752,10 @@ static inline const struct bpf_struct_ops *bpf_struct_ops_find(u32 type_id)
- {
- 	return NULL;
- }
--static inline void bpf_struct_ops_init(struct btf *btf) { }
-+static inline void bpf_struct_ops_init(struct btf *btf,
-+				       struct bpf_verifier_log *log)
-+{
-+}
- static inline bool bpf_try_module_get(const void *data, struct module *owner)
- {
- 	return try_module_get(owner);
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index 8ad1c9ea26b2..042f95534f86 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -96,12 +96,11 @@ const struct bpf_prog_ops bpf_struct_ops_prog_ops = {
- 
- static const struct btf_type *module_type;
- 
--void bpf_struct_ops_init(struct btf *btf)
-+void bpf_struct_ops_init(struct btf *btf, struct bpf_verifier_log *log)
- {
- 	s32 type_id, value_id, module_id;
- 	const struct btf_member *member;
- 	struct bpf_struct_ops *st_ops;
--	struct bpf_verifier_log log = {};
- 	const struct btf_type *t;
- 	char value_name[128];
- 	const char *mname;
-@@ -172,7 +171,7 @@ void bpf_struct_ops_init(struct btf *btf)
- 							       member->type,
- 							       NULL);
- 			if (func_proto &&
--			    btf_distill_func_proto(&log, btf,
-+			    btf_distill_func_proto(log, btf,
- 						   func_proto, mname,
- 						   &st_ops->func_models[j])) {
- 				pr_warn("Error in parsing func ptr %s in struct %s\n",
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index b7c1660fb594..8c9d8f266bef 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -3643,7 +3643,7 @@ struct btf *btf_parse_vmlinux(void)
- 		goto errout;
- 	}
- 
--	bpf_struct_ops_init(btf);
-+	bpf_struct_ops_init(btf, log);
- 
- 	btf_verifier_env_free(env);
- 	refcount_set(&btf->refcnt, 1);
--- 
-2.17.1
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
+[...]
