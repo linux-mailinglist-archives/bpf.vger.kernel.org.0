@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C82D614ADF1
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2020 03:14:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68DFE14ADF5
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2020 03:14:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbgA1COt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Jan 2020 21:14:49 -0500
-Received: from mail-pf1-f178.google.com ([209.85.210.178]:46350 "EHLO
-        mail-pf1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726080AbgA1COr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jan 2020 21:14:47 -0500
-Received: by mail-pf1-f178.google.com with SMTP id k29so3318121pfp.13
-        for <bpf@vger.kernel.org>; Mon, 27 Jan 2020 18:14:46 -0800 (PST)
+        id S1726852AbgA1COv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jan 2020 21:14:51 -0500
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:44756 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726758AbgA1COu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jan 2020 21:14:50 -0500
+Received: by mail-pf1-f196.google.com with SMTP id y5so2754333pfb.11
+        for <bpf@vger.kernel.org>; Mon, 27 Jan 2020 18:14:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=subject:date:message-id:mime-version:content-transfer-encoding:cc
-         :from:to;
-        bh=DrrSxaqg+xMHJET+xxCFd4AzKeXkcnr9cON2fZed2UM=;
-        b=RF9nMOM9cUcTpHOes6fCDFot2ORVBBSCK8xX151vp4yLYwGKEqjk1LuTUbuy/rYMUo
-         OB7cLFZX3tiVGf3mh7j55tR2V/wRiwGIYn0Pp4DcnTb7qRrxNvUo99NGQVrNzDg5pkK/
-         sSYcAjedIPNO4Uerbz8D6UaaqPtAyKJk0C0pm8A3nO3nfWqjC6PdUCrzye4Xbkpikeg8
-         UOjEUmWm5kuJ9uwJphYlQDPai4Dm0JE5K5m3CgLTreFAFGEF7ZvE2dYE1D33MvPeCtik
-         jcrDB1UucvsBipSDT9pfMlydmZVMDbaV1fws6wYK9YgRq8dTq5Il0or6opZDw4YxWxwf
-         oYYg==
+         :from:to:in-reply-to:references;
+        bh=B26eSG9gMaHSxZUV5pLyS5i7Lt3Ya0fKdNJyMPYapJg=;
+        b=rnj6yTltwKWYN3+9NJAw5sCB/fR2AAcye4lYI+VlXhtsAeDA2BY21GJ8k8CnQf7aQY
+         VdJ1qPrTM3EARaQkNVyPlmwk3OR0FZ1qhmjPYmqj747Fi6+MIUvvEt3r/xG932neiZRZ
+         G3MOKgdSY//mdAPafDURRAFv84ghi6Xg6+OIs6B82gN1iNzgi4TCJIbiKMAjvWHnWsI8
+         LfD/uSlWuMSGAOZ40hPJMvwD5XkCAeqbt+356MQtEucaALw0rbVlR+5ifj9W6OqwPggu
+         K+WgKDD0Sf0RDg9+u3AIFA8wMp9WAsRV6SFb5qwxtu0Spb25cBn4ycpFAc+FS2vQBAxJ
+         dq0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:date:message-id:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=DrrSxaqg+xMHJET+xxCFd4AzKeXkcnr9cON2fZed2UM=;
-        b=LFAvqOAvjoRCtKunK4qRxGWpslwlBQGbdMS6JYpW10a1Hj0nwgbWrpGK3n72LfNLTj
-         Ku2TpWH2OgLsMz6NV0gdh9DL9FgjOe1c187uvGfUq/0gY6ECPwc41uIEcWPM9dgPDino
-         mi/UYhWxKNtsc7jOPv7loAJyH4Us8j1/cYtSyENe1YviALoH08anUie7KilAZuqxXibN
-         aqweVilRB5o+oltYeeB9eMd04uZuwKFaR4n7JZ4sk9G3Zp9ieN1KcC0NqtTtBdcFOFDJ
-         ymh5tw1A088Hk9/J21LHaka5/5rSFVPhgK7lqeVEFWWD/1f1h5h0n6kKfk8Qu7ePiYry
-         NOPA==
-X-Gm-Message-State: APjAAAUSHIFFTyz/zYdk/F03+vw34WktA97GA15vIekrYa2powhXLf5P
-        /apiplSAJtb8A8PhcI3cOO/FnA==
-X-Google-Smtp-Source: APXvYqzQaE82BkrwN8enKVWh7LhvYVblBpdtkI68w4zgo2qGK/PKGkjLJeYUCgcwMaQr9ym7GELY6A==
-X-Received: by 2002:a63:ff5c:: with SMTP id s28mr22418848pgk.196.1580177685323;
-        Mon, 27 Jan 2020 18:14:45 -0800 (PST)
-Received: from localhost ([216.9.110.8])
-        by smtp.gmail.com with ESMTPSA id b15sm17010169pft.58.2020.01.27.18.14.43
+         :content-transfer-encoding:cc:from:to:in-reply-to:references;
+        bh=B26eSG9gMaHSxZUV5pLyS5i7Lt3Ya0fKdNJyMPYapJg=;
+        b=g4rsU1QuoY3hFf88F4ctynEANk32gx+WDstbIJ+b/18KIkoPu/Zxk/Szjet6sCd+Xe
+         o2L1MdtP+CIe2nZahizbtJ+xzRAuMdZ6idkW2bLvNOILeVwnIaCUxejegCsKkRfHwXMm
+         CIFsgVAV4xTX0//yqn95Xfl47Kytf7m4I0sN+979sZ2rL0u/KSygVYvFmOEK55kt8jWZ
+         fRrtNm21MAEP4F1mbvI7jU9BpehnfNuoSNnrU5hJPnqqBHFl58wtJxTUj1utuyJHrCGq
+         GpPOHMYwJtL/o1yG0WrzpnNJ7GLOExzGQmG784IVB3BV27pkf3zEQBN2A9A2bi9U4mWx
+         AhMw==
+X-Gm-Message-State: APjAAAVWuX4/RlVvekRSgJFvPX+U05Vzewn7Pl0UEsMZ51lx04/V8hzH
+        RVbj+83La+w6a76lMBruVxgPFA==
+X-Google-Smtp-Source: APXvYqxWbxJsMQEFqUcP7zhlWCZa48n0RUY+fa4pHyARk3jQS+HZxuwfqCKurzNjpNa6tqaE0J+XAw==
+X-Received: by 2002:a62:2b8a:: with SMTP id r132mr1588482pfr.56.1580177689517;
+        Mon, 27 Jan 2020 18:14:49 -0800 (PST)
+Received: from localhost ([216.9.110.6])
+        by smtp.gmail.com with ESMTPSA id x21sm10370389pfq.76.2020.01.27.18.14.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jan 2020 18:14:44 -0800 (PST)
-Subject: arm64: bpf: Elide some moves to a0 after calls
-Date:   Mon, 27 Jan 2020 18:11:41 -0800
-Message-Id: <20200128021145.36774-1-palmerdabbelt@google.com>
+        Mon, 27 Jan 2020 18:14:48 -0800 (PST)
+Subject: [PATCH 1/4] selftests/bpf: Elide a check for LLVM versions that can't compile it
+Date:   Mon, 27 Jan 2020 18:11:42 -0800
+Message-Id: <20200128021145.36774-2-palmerdabbelt@google.com>
 X-Mailer: git-send-email 2.25.0.341.g760bfbb309-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -60,53 +60,61 @@ Cc:     daniel@iogearbox.net, ast@kernel.org, zlim.lnx@gmail.com,
         clang-built-linux@googlegroups.com, kernel-team@android.com
 From:   Palmer Dabbelt <palmerdabbelt@google.com>
 To:     Bjorn Topel <bjorn.topel@gmail.com>
+In-Reply-To: <20200128021145.36774-1-palmerdabbelt@google.com>
+References: <20200128021145.36774-1-palmerdabbelt@google.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There's four patches here, but only one of them actually does anything.  The
-first patch fixes a BPF selftests build failure on my machine and has already
-been sent to the list separately.  The next three are just staged such that
-there are some patches that avoid changing any functionality pulled out from
-the whole point of those refactorings, with two cleanups and then the idea.
+The current stable LLVM BPF backend fails to compile the BPF selftests
+due to a compiler bug.  The bug has been fixed in trunk, but that fix
+hasn't landed in the binary packages I'm using yet (Fedora arm64).
+Without this workaround the tests don't compile for me.
 
-Maybe this is an odd thing to say in a cover letter, but I'm not actually sure
-this patch set is a good idea.  The issue of extra moves after calls came up as
-I was reviewing some unrelated performance optimizations to the RISC-V BPF JIT.
-I figured I'd take a whack at performing the optimization in the context of the
-arm64 port just to get a breath of fresh air, and I'm not convinced I like the
-results.
+This patch triggers a preprocessor warning on LLVM versions that
+definitely have the bug.  The test may be conservative (ie, I'm not sure
+if 9.1 will have the fix), but it should at least make the current set
+of stable releases work together.
 
-That said, I think I would accept something like this for the RISC-V port
-because we're already doing a multi-pass optimization for shrinking function
-addresses so it's not as much extra complexity over there.  If we do that we
-should probably start puling some of this code into the shared BPF compiler,
-but we're also opening the doors to more complicated BPF JIT optimizations.
-Given that the BPF JIT appears to have been designed explicitly to be
-simple/fast as opposed to perform complex optimization, I'm not sure this is a
-sane way to move forward.
+See https://reviews.llvm.org/D69438 for more information on the fix.  I
+obtained the workaround from
+https://lore.kernel.org/linux-kselftest/aed8eda7-df20-069b-ea14-f06628984566@gmail.com/T/
 
-I figured I'd send the patch set out as more of a question than anything else.
-Specifically:
+Fixes: 20a9ad2e7136 ("selftests/bpf: add CO-RE relocs array tests")
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+---
+ .../testing/selftests/bpf/progs/test_core_reloc_arrays.c  | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-* How should I go about measuring the performance of these sort of
-  optimizations?  I'd like to balance the time it takes to run the JIT with the
-  time spent executing the program, but I don't have any feel for what real BPF
-  programs look like or have any benchmark suite to run.  Is there something
-  out there this should be benchmarked against?  (I'd also like to know that to
-  run those benchmarks on the RISC-V port.)
-* Is this the sort of thing that makes sense in a BPF JIT?  I guess I've just
-  realized I turned "review this patch" into a way bigger rabbit hole than I
-  really want to go down...
-
-I worked on top of 5.4 for these, but trivially different versions of the
-patches applied on Linus' master a few days ago when I tried.  LMK if those
-aren't sane places to start from over here, I'm new to both arm64 and BPF so I
-might be a bit lost.
-
-[PATCH 1/4] selftests/bpf: Elide a check for LLVM versions that can't
-[PATCH 2/4] arm64: bpf: Convert bpf2a64 to a function
-[PATCH 3/4] arm64: bpf: Split the read and write halves of dst
-[PATCH 4/4] arm64: bpf: Elide some moves to a0 after calls
+diff --git a/tools/testing/selftests/bpf/progs/test_core_reloc_arrays.c b/tools/testing/selftests/bpf/progs/test_core_reloc_arrays.c
+index bf67f0fdf743..c9a3e0585a84 100644
+--- a/tools/testing/selftests/bpf/progs/test_core_reloc_arrays.c
++++ b/tools/testing/selftests/bpf/progs/test_core_reloc_arrays.c
+@@ -40,15 +40,23 @@ int test_core_arrays(void *ctx)
+ 	/* in->a[2] */
+ 	if (BPF_CORE_READ(&out->a2, &in->a[2]))
+ 		return 1;
++#if defined(__clang__) && (__clang_major__ < 10) && (__clang_minor__ < 1)
++# warning "clang 9.0 SEGVs on multidimensional arrays, see https://reviews.llvm.org/D69438"
++#else
+ 	/* in->b[1][2][3] */
+ 	if (BPF_CORE_READ(&out->b123, &in->b[1][2][3]))
+ 		return 1;
++#endif
+ 	/* in->c[1].c */
+ 	if (BPF_CORE_READ(&out->c1c, &in->c[1].c))
+ 		return 1;
++#if defined(__clang__) && (__clang_major__ < 10) && (__clang_minor__ < 1)
++# warning "clang 9.0 SEGVs on multidimensional arrays, see https://reviews.llvm.org/D69438"
++#else
+ 	/* in->d[0][0].d */
+ 	if (BPF_CORE_READ(&out->d00d, &in->d[0][0].d))
+ 		return 1;
++#endif
+ 
+ 	return 0;
+ }
+-- 
+2.25.0.341.g760bfbb309-goog
 
