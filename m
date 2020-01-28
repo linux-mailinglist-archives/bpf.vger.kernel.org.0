@@ -2,216 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3FC14AE01
-	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2020 03:15:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFED114AE07
+	for <lists+bpf@lfdr.de>; Tue, 28 Jan 2020 03:15:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727440AbgA1CPI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Jan 2020 21:15:08 -0500
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:41667 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727409AbgA1CPF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jan 2020 21:15:05 -0500
-Received: by mail-pl1-f196.google.com with SMTP id t14so4470532plr.8
-        for <bpf@vger.kernel.org>; Mon, 27 Jan 2020 18:15:05 -0800 (PST)
+        id S1726569AbgA1CPs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jan 2020 21:15:48 -0500
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:34557 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726191AbgA1CPs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jan 2020 21:15:48 -0500
+Received: by mail-pl1-f195.google.com with SMTP id q13so4483975pls.1
+        for <bpf@vger.kernel.org>; Mon, 27 Jan 2020 18:15:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
-         :from:to:in-reply-to:references;
-        bh=LUiKWI3Cf+9+n0Mf0T0uSDtpI14DkFl6R/zPz6oE4kA=;
-        b=t6Fkbs2B6XQQ1FJjHeJszTkGjc450EaIRq1KZfmbn8O4NYMZcq6AXMS7pmHbUboObC
-         +++s+jeLdsA6RQB08P9Q5Ack/z09JhMpcwAH9ll/D/MNh2PF/l8bN+H59x2KdWIZQaGJ
-         V6rLY45e1nmA4dzti6zKLzfbfSQH01wh1Pq+jqMqsvZxpHPcSUIN8yopf38iePTDe4Fn
-         PnNN2/5p6w6AcizSaS4T/xDwCmkQr+gZ6sexRbfAK34zFGsth0Z8GT9lZrcVKfKxscsF
-         FNGp79tHt13MmqPXpQkiJlgMycGe4X09ATmdUeh59o7i1ed82t9JibgA5r1Fh0RysWRj
-         6HTw==
+        h=date:subject:cc:from:to:in-reply-to:references:message-id
+         :mime-version:content-transfer-encoding;
+        bh=qmbQ0SD8DHdPpZVGfV+v1K3FzTS4vgL8G+UXqGsRlEM=;
+        b=oJYkHQY0Qg9dTZkcxG6jkQGXiG0GH5ZtKl+UrH4KB1GB4Mw3rWF5wj5MLx9pa78QxD
+         DMYj3w0MOwW3VuO2O9u5lraOKIO6RbPE3a8ClNKWLDgde+w7IJ0zvx2q+y0f+DYwhv0Q
+         +meFECUlEmD+V1igh3dP1bMGVpRH6xKEqP4FRn9giySfJKsQ5CmgrVaOGc3Mtw2ZoMM4
+         eGmnxzo917BFntj3SkDta9Dyh7xBaM3qKVL/s2IbZmUX3hXsW8OVtQdb/gi/QMWHbyb8
+         ZwtVULSmtrgXyhmYNTeGemhXraoOjOJay1yszOmIo2Dc+vkEld06UMMdIQYktXRgq5bW
+         +/Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:date:message-id:mime-version
-         :content-transfer-encoding:cc:from:to:in-reply-to:references;
-        bh=LUiKWI3Cf+9+n0Mf0T0uSDtpI14DkFl6R/zPz6oE4kA=;
-        b=c5OUbcA5tiEN8ORaRXgHJRap/xlaA0T2jHF7D+n0cS9NLKu+xynHUDBWXYkypjYsZM
-         9QtnSz+HCPalDYUctsCnLwRIMXy/xLFMO84OupsGVxmNqBMVNXjasufKfvkcjjaa7C7S
-         P3OZqKo258V1jfpgDroYRLQoyfixAaHTnia1lNmQWh98MWZiprMeO+OMZjUuLdxY/7dR
-         OYIoaZ95ijlKY5WPvCZZ6V2Ez43UPBUkkseOHwKqOObZZ52ARPscYqJrrhx/gA2NcfKM
-         aX4jquUang8cWq1vl0CDWM0zCPEiO1F+o3QGYWQe0sgwWwvT2MtNBo8o114ruYrT+yVN
-         PsUQ==
-X-Gm-Message-State: APjAAAU10NVaMdwpl5XCSoeTpyTdrnE1MloCG+/Phw/uxY9dL2fur7AQ
-        6zURap3Md7Tn6qggDrrljDchpQ==
-X-Google-Smtp-Source: APXvYqxlXoEawlGrjKe7Dg0dTNaImpBzNfwMgpu5Qd3tYpex5PzlG+tN2FelRoSSzPaUPamCbr5Lgw==
-X-Received: by 2002:a17:902:9a09:: with SMTP id v9mr19976280plp.341.1580177704696;
-        Mon, 27 Jan 2020 18:15:04 -0800 (PST)
-Received: from localhost ([216.9.110.11])
-        by smtp.gmail.com with ESMTPSA id o17sm393828pjq.1.2020.01.27.18.15.03
+        h=x-gm-message-state:date:subject:cc:from:to:in-reply-to:references
+         :message-id:mime-version:content-transfer-encoding;
+        bh=qmbQ0SD8DHdPpZVGfV+v1K3FzTS4vgL8G+UXqGsRlEM=;
+        b=HMVvg8mU//9R89At20rxxLRj/3y/9tcTro6tgHQTgBK/8sR4v+LymC2Ha1OwmKEDdy
+         /EXvJMnOqoLvazkVwxYPQ08ZN9XzLEWWa6CGcGtLi9Rz6iq6rmgi91KBCKhfjdcGUArf
+         vIJ2pHbRDgmtvaL/W02Jj3THuZPcpjyI91FKNCBYUY+H5OA5NwBZIpUxpZcRJYYlT1He
+         B/nKZ5PRoqfZSIRW5FBKZQX0UilJcUjvm0N3zCBREaeyGHa9uzkBfrnhNnhCVj59guIf
+         93x3LnIvsCXnYy3OGAoOBwiyR47CLwgrk920dQaIykqMPIaJ9LRfnfY0QhAwxKuNNDQm
+         hUEw==
+X-Gm-Message-State: APjAAAVWk9EDHMZdmpZYuXP/993hC36d1fduO7yiUPo5jxgCRY1hRdw/
+        mpKjMBWCynof7fe6nt6ORWlUag==
+X-Google-Smtp-Source: APXvYqxyw1+9nDeY2fJ0PoezS+gA2HUhBTNGtpwFtRWhhrLUPF/Qn0/RVu3ns6X61ABPQl7i3FNfZQ==
+X-Received: by 2002:a17:902:b484:: with SMTP id y4mr20197741plr.126.1580177747166;
+        Mon, 27 Jan 2020 18:15:47 -0800 (PST)
+Received: from localhost ([216.9.110.1])
+        by smtp.gmail.com with ESMTPSA id u18sm17430131pgi.44.2020.01.27.18.15.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jan 2020 18:15:04 -0800 (PST)
-Subject: [PATCH 4/4] arm64: bpf: Elide some moves to a0 after calls
-Date:   Mon, 27 Jan 2020 18:11:45 -0800
-Message-Id: <20200128021145.36774-5-palmerdabbelt@google.com>
-X-Mailer: git-send-email 2.25.0.341.g760bfbb309-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc:     daniel@iogearbox.net, ast@kernel.org, zlim.lnx@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        shuah@kernel.org, Palmer Dabbelt <palmerdabbelt@google.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        clang-built-linux@googlegroups.com, kernel-team@android.com
+        Mon, 27 Jan 2020 18:15:46 -0800 (PST)
+Date:   Mon, 27 Jan 2020 18:15:46 -0800 (PST)
+X-Google-Original-Date: Mon, 27 Jan 2020 18:15:44 PST (-0800)
+Subject:     Re: [PATCH bpf-next v2 7/9] riscv, bpf: optimize calls
+CC:     daniel@iogearbox.net, ast@kernel.org, netdev@vger.kernel.org,
+        linux-riscv@lists.infradead.org, bpf@vger.kernel.org
 From:   Palmer Dabbelt <palmerdabbelt@google.com>
 To:     Bjorn Topel <bjorn.topel@gmail.com>
-In-Reply-To: <20200128021145.36774-1-palmerdabbelt@google.com>
-References: <20200128021145.36774-1-palmerdabbelt@google.com>
+In-Reply-To: <CAJ+HfNhvTdsBq_tmKNcxVdS=nro=jwL5yLxnyDXO02Vai+5YNg@mail.gmail.com>
+References: <CAJ+HfNhvTdsBq_tmKNcxVdS=nro=jwL5yLxnyDXO02Vai+5YNg@mail.gmail.com>
+  <20191216091343.23260-1-bjorn.topel@gmail.com> <20191216091343.23260-8-bjorn.topel@gmail.com>
+  <mhng-041b1051-f9ac-4cd8-95bf-731bb1bfbdb8@palmerdabbelt-glaptop>
+Message-ID: <mhng-a006210f-8a00-42c3-b93d-135144220411@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On arm64, the BPF function ABI doesn't match the C function ABI.  Specifically,
-arm64 encodes calls as `a0 = f(a0, a1, ...)` while BPF encodes calls as
-`BPF_REG_0 = f(BPF_REG_1, BPF_REG_2, ...)`.  This discrepancy results in
-function calls being encoded as a two operations sequence that first does a C
-ABI calls and then moves the return register into the right place.  This
-results in one extra instruction for every function call.
+On Tue, 07 Jan 2020 02:14:17 PST (-0800), Bjorn Topel wrote:
+> On Mon, 23 Dec 2019 at 19:58, Palmer Dabbelt <palmerdabbelt@google.com> wrote:
+>>
+>> On Mon, 16 Dec 2019 01:13:41 PST (-0800), Bjorn Topel wrote:
+>> > Instead of using emit_imm() and emit_jalr() which can expand to six
+>> > instructions, start using jal or auipc+jalr.
+>> >
+>> > Signed-off-by: Björn Töpel <bjorn.topel@gmail.com>
+>> > ---
+>> >  arch/riscv/net/bpf_jit_comp.c | 101 +++++++++++++++++++++-------------
+>> >  1 file changed, 64 insertions(+), 37 deletions(-)
+>> >
+>> > diff --git a/arch/riscv/net/bpf_jit_comp.c b/arch/riscv/net/bpf_jit_comp.c
+>> > index 46cff093f526..8d7e3343a08c 100644
+>> > --- a/arch/riscv/net/bpf_jit_comp.c
+>> > +++ b/arch/riscv/net/bpf_jit_comp.c
+>> > @@ -811,11 +811,12 @@ static void emit_sext_32_rd(u8 *rd, struct rv_jit_context *ctx)
+>> >       *rd = RV_REG_T2;
+>> >  }
+>> >
+>> > -static void emit_jump_and_link(u8 rd, int rvoff, struct rv_jit_context *ctx)
+>> > +static void emit_jump_and_link(u8 rd, s64 rvoff, bool force_jalr,
+>> > +                            struct rv_jit_context *ctx)
+>> >  {
+>> >       s64 upper, lower;
+>> >
+>> > -     if (is_21b_int(rvoff)) {
+>> > +     if (rvoff && is_21b_int(rvoff) && !force_jalr) {
+>> >               emit(rv_jal(rd, rvoff >> 1), ctx);
+>> >               return;
+>> >       }
+>> > @@ -832,6 +833,28 @@ static bool is_signed_bpf_cond(u8 cond)
+>> >               cond == BPF_JSGE || cond == BPF_JSLE;
+>> >  }
+>> >
+>> > +static int emit_call(bool fixed, u64 addr, struct rv_jit_context *ctx)
+>> > +{
+>> > +     s64 off = 0;
+>> > +     u64 ip;
+>> > +     u8 rd;
+>> > +
+>> > +     if (addr && ctx->insns) {
+>> > +             ip = (u64)(long)(ctx->insns + ctx->ninsns);
+>> > +             off = addr - ip;
+>> > +             if (!is_32b_int(off)) {
+>> > +                     pr_err("bpf-jit: target call addr %pK is out of range\n",
+>> > +                            (void *)addr);
+>> > +                     return -ERANGE;
+>> > +             }
+>> > +     }
+>> > +
+>> > +     emit_jump_and_link(RV_REG_RA, off, !fixed, ctx);
+>> > +     rd = bpf_to_rv_reg(BPF_REG_0, ctx);
+>> > +     emit(rv_addi(rd, RV_REG_A0, 0), ctx);
+>>
+>> Why are they out of order?  It seems like it'd be better to just have the BPF
+>> calling convention match the RISC-V calling convention, as that'd avoid
+>> juggling the registers around.
+>>
+>
+> BPF passes arguments in R1, R2, ..., and return value in R0. Given
+> that a0 plays the role of R1 and R0, how can we avoid the register
+> juggling (without complicating the JIT too much)? It would be nice
+> though... and ARM64 has the same concern AFAIK.
 
-This patch adds an optimization to the arm64 BPF JIT backend that aims to avoid
-some of these moves.
+Oh, why did you say that?  This kind of stuff is why I'm twenty days behind on
+email...
 
-I've done no benchmarking to determine if this is correct.  I ran the BPF
-selftests before and after the change on arm64 in QEMU and found that I had a
-single failure both before and after.  I'm not at all confident this code
-actually works as it's my first time doing anything with both ARM64 and BPF and
-I didn't even open the documentation for either of these.  I was particularly
-surprised that the code didn't fail any tests -- I was kind of assuming this
-would fail the tests, get put on the backburner, sit long enough for me to stop
-caring, and then get deleted.
+https://lore.kernel.org/bpf/20200128021145.36774-1-palmerdabbelt@google.com/T/#t
 
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
----
- arch/arm64/net/bpf_jit_comp.c | 71 +++++++++++++++++++++++++++++++++--
- 1 file changed, 68 insertions(+), 3 deletions(-)
+:)
 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index fba5b1b00cd7..48d900cc7258 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -58,10 +58,14 @@ struct jit_ctx {
- 	int *offset;
- 	__le32 *image;
- 	u32 stack_size;
-+	int reg0_in_reg1;
- };
- 
- static inline int bpf2a64(struct jit_ctx *ctx, int bpf_reg)
- {
-+	if (ctx->reg0_in_reg1 && bpf_reg == BPF_REG_0)
-+		bpf_reg = BPF_REG_1;
-+
- 	return bpf2a64_default[bpf_reg];
- }
- 
-@@ -338,6 +342,47 @@ static void build_epilogue(struct jit_ctx *ctx)
- 	emit(A64_RET(A64_LR), ctx);
- }
- 
-+static int dead_register(const struct jit_ctx *ctx, int offset, int bpf_reg)
-+{
-+	const struct bpf_prog *prog = ctx->prog;
-+	int i;
-+
-+	for (i = offset; i < prog->len; ++i) {
-+		const struct bpf_insn *insn = &prog->insnsi[i];
-+		const u8 code = insn->code;
-+		const u8 bpf_dst = insn->dst_reg;
-+		const u8 bpf_src = insn->src_reg;
-+		const int writes_dst = !((code & BPF_ST) || (code & BPF_STX)
-+					 || (code & BPF_JMP32) || (code & BPF_JMP));
-+		const int reads_dst  = !((code & BPF_LD));
-+		const int reads_src  = true;
-+
-+		/* Calls are a bit special in that they clobber a bunch of regisers. */
-+		if ((code & (BPF_JMP | BPF_CALL)) || (code & (BPF_JMP | BPF_TAIL_CALL)))
-+			if ((bpf_reg >= BPF_REG_0) && (bpf_reg <= BPF_REG_5))
-+				return false;
-+
-+		/* Registers that are read before they're written are alive.
-+		 * Most opcodes are of the form DST = DEST op SRC, but there
-+		 * are some exceptions.*/
-+		if (bpf_src == bpf_reg && reads_src)
-+			return false;
-+
-+		if (bpf_dst == bpf_reg && reads_dst)
-+			return false;
-+		
-+		if (bpf_dst == bpf_reg && writes_dst)
-+			return true;
-+
-+		/* Most BPF instructions are 8 bits long, but some ar 16 bits
-+		 * long. */
-+		if (code & (BPF_LD | BPF_IMM | BPF_DW))
-+			++i;
-+	}
-+
-+	return true;
-+}
-+
- /* JITs an eBPF instruction.
-  * Returns:
-  * 0  - successfully JITed an 8-byte eBPF instruction.
-@@ -348,7 +393,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 		      bool extra_pass)
- {
- 	const u8 code = insn->code;
--	const u8 dstw = bpf2a64(ctx, insn->dst_reg);
-+	u8 dstw;
- 	const u8 dstr = bpf2a64(ctx, insn->dst_reg);
- 	const u8 src = bpf2a64(ctx, insn->src_reg);
- 	const u8 tmp = bpf2a64(ctx, TMP_REG_1);
-@@ -374,6 +419,27 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- #define check_imm19(imm) check_imm(19, imm)
- #define check_imm26(imm) check_imm(26, imm)
- 
-+	/* Handle BPF_REG_0, which may be in the wrong place because the ARM64
-+	 * ABI doesn't match the BPF ABI for function calls. */
-+	if (ctx->reg0_in_reg1) {
-+		/* If we're writing BPF_REG_0 then we don't need to do any
-+		 * extra work to get the registers back in their correct
-+		 * locations. */
-+		if (insn->dst_reg == BPF_REG_0)
-+			ctx->reg0_in_reg1 = false;
-+
-+		/* If we're writing to BPF_REG_1 then we need to save BPF_REG_0
-+		 * into the correct location if it's still alive, as otherwise
-+		 * it will be clobbered. */
-+		if (insn->dst_reg == BPF_REG_1) {
-+			if (!dead_register(ctx, off + 1, BPF_REG_0))
-+				emit(A64_MOV(1, A64_R(7), A64_R(0)), ctx);
-+			ctx->reg0_in_reg1 = false;
-+		}
-+	}
-+
-+	dstw = bpf2a64(ctx, insn->dst_reg);
-+
- 	switch (code) {
- 	/* dst = src */
- 	case BPF_ALU | BPF_MOV | BPF_X:
-@@ -640,7 +706,6 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 	/* function call */
- 	case BPF_JMP | BPF_CALL:
- 	{
--		const u8 r0 = bpf2a64(ctx, BPF_REG_0);
- 		bool func_addr_fixed;
- 		u64 func_addr;
- 		int ret;
-@@ -651,7 +716,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 			return ret;
- 		emit_addr_mov_i64(tmp, func_addr, ctx);
- 		emit(A64_BLR(tmp), ctx);
--		emit(A64_MOV(1, r0, A64_R(0)), ctx);
-+		ctx->reg0_in_reg1 = true;
- 		break;
- 	}
- 	/* tail call */
--- 
-2.25.0.341.g760bfbb309-goog
-
+> [...]
+>> > @@ -1599,36 +1611,51 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>> >       for (i = 0; i < 16; i++) {
+>> >               pass++;
+>> >               ctx->ninsns = 0;
+>> > -             if (build_body(ctx, extra_pass)) {
+>> > +             if (build_body(ctx, extra_pass, ctx->offset)) {
+>> >                       prog = orig_prog;
+>> >                       goto out_offset;
+>> >               }
+>> >               build_prologue(ctx);
+>> >               ctx->epilogue_offset = ctx->ninsns;
+>> >               build_epilogue(ctx);
+>> > -             if (ctx->ninsns == prev_ninsns)
+>> > -                     break;
+>> > +
+>> > +             if (ctx->ninsns == prev_ninsns) {
+>> > +                     if (jit_data->header)
+>> > +                             break;
+>> > +
+>> > +                     image_size = sizeof(u32) * ctx->ninsns;
+>> > +                     jit_data->header =
+>> > +                             bpf_jit_binary_alloc(image_size,
+>> > +                                                  &jit_data->image,
+>> > +                                                  sizeof(u32),
+>> > +                                                  bpf_fill_ill_insns);
+>> > +                     if (!jit_data->header) {
+>> > +                             prog = orig_prog;
+>> > +                             goto out_offset;
+>> > +                     }
+>> > +
+>> > +                     ctx->insns = (u32 *)jit_data->image;
+>> > +                     /* Now, when the image is allocated, the image
+>> > +                      * can potentially shrink more (auipc/jalr ->
+>> > +                      * jal).
+>> > +                      */
+>> > +             }
+>>
+>> It seems like these fragments should go along with patch #2 that introduces the
+>> code, as I don't see anything above that makes this necessary here.
+>>
+>
+> No, you're right.
+>
+>
+> Björn
