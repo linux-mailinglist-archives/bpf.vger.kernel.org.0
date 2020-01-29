@@ -2,137 +2,421 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 419F114CE61
-	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2020 17:25:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A87AB14CF61
+	for <lists+bpf@lfdr.de>; Wed, 29 Jan 2020 18:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgA2QZI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jan 2020 11:25:08 -0500
-Received: from www62.your-server.de ([213.133.104.62]:46278 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726564AbgA2QZH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jan 2020 11:25:07 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iwq9J-0005vw-WB; Wed, 29 Jan 2020 17:25:06 +0100
-Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-3.fritz.box)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iwq9J-000NqP-P8; Wed, 29 Jan 2020 17:25:05 +0100
-Subject: Re: [bpf PATCH v3] bpf: verifier, do_refine_retval_range may clamp
- umin to 0 incorrectly
-To:     John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Cc:     yhs@fb.com, ast@kernel.org
-References: <158015334199.28573.4940395881683556537.stgit@john-XPS-13-9370>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <b26a97e0-6b02-db4b-03b3-58054bcb9b82@iogearbox.net>
-Date:   Wed, 29 Jan 2020 17:25:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726679AbgA2ROb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jan 2020 12:14:31 -0500
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:42015 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726647AbgA2ROb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jan 2020 12:14:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1580318071; x=1611854071;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=Y4qkdH4PnKR8rhbINAimoZdjk7NwzUHSP5Ch9Wm1NKg=;
+  b=b71EdtqVvhj6KmOBJamjG6zb+55ITPLa4RV3BEEXtWTSDtge4vsYlUUT
+   kAqMOyRqAlRlFVQPixdwYfi/ojx2cE0ZmnFaQXZbT+qRGYMIxzBD1BGFo
+   Q6mR2vzZQF7MxS+I/UjmpKjPogF3uZxskq5Z6mCe4t14+AlX8drWSzFT1
+   I=;
+IronPort-SDR: ApPNeuqW/T97xN9up+4Fm2MFy+coHUUyl36FvdiNFU/AvPUtitFp92uZC1RQiHpT0Vw7jmI+62
+ Z7nVj0OBzAWw==
+X-IronPort-AV: E=Sophos;i="5.70,378,1574121600"; 
+   d="scan'208";a="14793931"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-a7fdc47a.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 29 Jan 2020 17:14:27 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-a7fdc47a.us-west-2.amazon.com (Postfix) with ESMTPS id B0A10C5D18;
+        Wed, 29 Jan 2020 17:14:25 +0000 (UTC)
+Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1236.3; Wed, 29 Jan 2020 17:14:25 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.74) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 29 Jan 2020 17:14:18 +0000
+From:   <sjpark@amazon.com>
+To:     <davem@davemloft.net>
+CC:     <edumazet@google.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <andriin@fb.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <aams@amazon.com>, <benh@kernel.crashing.org>, <dola@amazon.com>
+Subject: Latency spikes occurs from frequent socket connections
+Date:   Wed, 29 Jan 2020 18:14:03 +0100
+Message-ID: <20200129171403.3926-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <158015334199.28573.4940395881683556537.stgit@john-XPS-13-9370>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25710/Wed Jan 29 12:38:38 2020)
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.74]
+X-ClientProxiedBy: EX13D35UWB003.ant.amazon.com (10.43.161.65) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/27/20 8:29 PM, John Fastabend wrote:
-> do_refine_retval_range() is called to refine return values from specified
-> helpers, probe_read_str and get_stack at the moment, the reasoning is
-> because both have a max value as part of their input arguments and
-> because the helper ensure the return value will not be larger than this
-> we can set smax values of the return register, r0.
-> 
-> However, the return value is a signed integer so setting umax is incorrect
-> It leads to further confusion when the do_refine_retval_range() then calls,
-> __reg_deduce_bounds() which will see a umax value as meaning the value is
-> unsigned and then assuming it is unsigned set the smin = umin which in this
-> case results in 'smin = 0' and an 'smax = X' where X is the input argument
-> from the helper call.
-> 
-> Here are the comments from _reg_deduce_bounds() on why this would be safe
-> to do.
-> 
->   /* Learn sign from unsigned bounds.  Signed bounds cross the sign
->    * boundary, so we must be careful.
->    */
->   if ((s64)reg->umax_value >= 0) {
-> 	/* Positive.  We can't learn anything from the smin, but smax
-> 	 * is positive, hence safe.
-> 	 */
-> 	reg->smin_value = reg->umin_value;
-> 	reg->smax_value = reg->umax_value = min_t(u64, reg->smax_value,
-> 						  reg->umax_value);
-> 
-> But now we incorrectly have a return value with type int with the
-> signed bounds (0,X). Suppose the return value is negative, which is
-> possible the we have the verifier and reality out of sync. Among other
-> things this may result in any error handling code being falsely detected
-> as dead-code and removed. For instance the example below shows using
-> bpf_probe_read_str() causes the error path to be identified as dead
-> code and removed.
-> 
->>From the 'llvm-object -S' dump,
-> 
->   r2 = 100
->   call 45
->   if r0 s< 0 goto +4
->   r4 = *(u32 *)(r7 + 0)
-> 
-> But from dump xlate
-> 
->    (b7) r2 = 100
->    (85) call bpf_probe_read_compat_str#-96768
->    (61) r4 = *(u32 *)(r7 +0)  <-- dropped if goto
-> 
-> Due to verifier state after call being
-> 
->   R0=inv(id=0,umax_value=100,var_off=(0x0; 0x7f))
-> 
-> To fix omit setting the umax value because its not safe. The only
-> actual bounds we know is the smax. This results in the correct bounds
-> (SMIN, X) where X is the max length from the helper. After this the
-> new verifier state looks like the following after call 45.
-> 
-> R0=inv(id=0,smax_value=100)
-> 
-> Then xlated version no longer removed dead code giving the expected
-> result,
-> 
->    (b7) r2 = 100
->    (85) call bpf_probe_read_compat_str#-96768
->    (c5) if r0 s< 0x0 goto pc+4
->    (61) r4 = *(u32 *)(r7 +0)
-> 
-> Note, bpf_probe_read_* calls are root only so we wont hit this case
-> with non-root bpf users.
-> 
-> v3: comment had some documentation about meta set to null case which
-> is not relevant here and confusing to include in the comment.
-> 
-> v2 note: In original version we set msize_smax_value from check_func_arg()
-> and propagated this into smax of retval. The logic was smax is the bound
-> on the retval we set and because the type in the helper is ARG_CONST_SIZE
-> we know that the reg is a positive tnum_const() so umax=smax. Alexei
-> pointed out though this is a bit odd to read because the register in
-> check_func_arg() has a C type of u32 and the umax bound would be the
-> normally relavent bound here. Pulling in extra knowledge about future
-> checks makes reading the code a bit tricky. Further having a signed
-> meta data that can only ever be positive is also a bit odd. So dropped
-> the msize_smax_value metadata and made it a u64 msize_max_value to
-> indicate its unsigned. And additionally save bound from umax value in
-> check_arg_funcs which is the same as smax due to as noted above tnumx_cont
-> and negative check but reads better. By my analysis nothing functionally
-> changes in v2 but it does get easier to read so that is win.
-> 
-> Fixes: 849fa50662fbc ("bpf/verifier: refine retval R0 state for bpf_get_stack helper")
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+Hello,
 
-Applied, thanks!
+
+We found races in the kernel code that incur latency spikes.  We thus would
+like to share our investigations and hear your opinions.
+
+
+Problem Reproduce
+=================
+
+You can reproduce the problem by compiling and running source code of
+'server.c' and 'client.c', which I pasted at the end of this mail, as below:
+
+    $ gcc -o client client.c
+    $ gcc -o server server.c
+    $ ./server &
+    $ ./client
+    ...
+    port: 45150, lat: 1005320, avg: 229, nr: 1070811
+    ...
+
+The reproduce program works as follow.  The server creates and binds a socket
+to port 4242, listen on it, and start a infinite loop.  Inside the loop, it
+accepts connection, read 4 bytes from the socket, and close.
+The client is constructed as an infinite loop.  Inside the loop, it creates a
+socket with LINGER and NODELAY option, connect to the server, send 4 bytes
+data, try read some data from server.  After the read() returns, it measure the
+latency from the beginning of this loop to here and if the latency is larger
+than 1 second (spike), print a message.
+
+The 6th line of above example is the message client prints for the latency
+spike.  It shows what port currently client used, the latency (in
+microseconds), averaged latency (in microseconds, again), and total number of
+connections client has made since beginning of this execution.  During our 10
+minute execution of the reproduce program, we could see 397 times of latency
+spikes among 2,744,124 connections.
+
+
+Packet Trace
+============
+
+For investigation of this issue, we used tcpdump as below:
+
+    # tcpdump -nnn -i lo port 4242
+
+Below is a part of the trace that related with this spike.
+
+```
+11:57:13.188107 IP 127.0.0.1.45150 > 127.0.0.1.4242: Flags [S], seq 2541101293, win 65495, options [mss 65495,sackOK,TS val 953759375 ecr 0,nop,wscale 7], length 0
+11:57:13.188109 IP 127.0.0.1.4242 > 127.0.0.1.45150: Flags [S.], seq 2413948679, ack 2541101294, win 65483, options [mss 65495,sackOK,TS val 953759375 ecr 953759375,nop,wscale 7], length 0
+11:57:13.188116 IP 127.0.0.1.45150 > 127.0.0.1.4242: Flags [.], ack 1, win 512, options [nop,nop,TS val 953759375 ecr 953759375], length 0
+11:57:13.188231 IP 127.0.0.1.45150 > 127.0.0.1.4242: Flags [P.], seq 1:5, ack 1, win 512, options [nop,nop,TS val 953759375 ecr 953759375], length 4
+11:57:13.188235 IP 127.0.0.1.4242 > 127.0.0.1.45150: Flags [.], ack 5, win 512, options [nop,nop,TS val 953759375 ecr 953759375], length 0
+11:57:13.188248 IP 127.0.0.1.4242 > 127.0.0.1.45150: Flags [F.], seq 1, ack 5, win 512, options [nop,nop,TS val 953759375 ecr 953759375], length 0
+11:57:13.188347 IP 127.0.0.1.45150 > 127.0.0.1.4242: Flags [.], ack 2, win 512, options [nop,nop,TS val 953759375 ecr 953759375], length 0
+11:57:13.188355 IP 127.0.0.1.45150 > 127.0.0.1.4242: Flags [R.], seq 5, ack 2, win 512, options [nop,nop,TS val 953759375 ecr 953759375], length 0
+
+
+11:57:14.436259 IP 127.0.0.1.45150 > 127.0.0.1.4242: Flags [S], seq 2560603644, win 65495, options [mss 65495,sackOK,TS val 953760623 ecr 0,nop,wscale 7], length 0
+11:57:14.436266 IP 127.0.0.1.4242 > 127.0.0.1.45150: Flags [.], ack 5, win 512, options [nop,nop,TS val 953760623 ecr 953759375], length 0
+11:57:14.436271 IP 127.0.0.1.45150 > 127.0.0.1.4242: Flags [R], seq 2541101298, win 0, length 0
+11:57:15.464613 IP 127.0.0.1.45150 > 127.0.0.1.4242: Flags [S], seq 2560603644, win 65495, options [mss 65495,sackOK,TS val 953761652 ecr 0,nop,wscale 7], length 0
+11:57:15.464633 IP 127.0.0.1.4242 > 127.0.0.1.45150: Flags [S.], seq 2449519317, ack 2560603645, win 65483, options [mss 65495,sackOK,TS val 953761652 ecr 953761652,nop,wscale 7], length 0
+11:57:15.464644 IP 127.0.0.1.45150 > 127.0.0.1.4242: Flags [.], ack 1, win 512, options [nop,nop,TS val 953761652 ecr 953761652], length 0
+11:57:15.464677 IP 127.0.0.1.45150 > 127.0.0.1.4242: Flags [P.], seq 1:5, ack 1, win 512, options [nop,nop,TS val 953761652 ecr 953761652], length 4
+11:57:15.464680 IP 127.0.0.1.4242 > 127.0.0.1.45150: Flags [.], ack 5, win 512, options [nop,nop,TS val 953761652 ecr 953761652], length 0
+11:57:15.464730 IP 127.0.0.1.4242 > 127.0.0.1.45150: Flags [F.], seq 1, ack 5, win 512, options [nop,nop,TS val 953761652 ecr 953761652], length 0
+11:57:15.464865 IP 127.0.0.1.45150 > 127.0.0.1.4242: Flags [R.], seq 5, ack 2, win 512, options [nop,nop,TS val 953761652 ecr 953761652], length 0
+```
+
+The lower 10 lines of trace are for the latency spike made connection. You can
+see that it spend more than 1 second.  The client sent SYN packet with seq
+number 2560603644, but server respond with ACK with seq number 5.  This means
+the connection was not properly closed.
+
+The upper 8 lines of trace shows the last connection using the 45150 port.  The
+client sent RST/ACK properly.
+
+
+What Happend Inside
+===================
+
+So, according to the TCP state protocol[1], expected behavior is as below:
+
+	 00 server				clinet
+	 01 ESTABLISHED				ESTABLISHED
+	 02 close()
+	 03 FIN_WAIT_1
+	 04 		---FIN-->
+	 05 					CLOSE_WAIT
+	 06 		<--ACK---
+	 07 FIN_WAIT_2
+	 08 		<--RST/ACK---
+	 09 TIME_WAIT
+	 10 		---ACK-->
+	 11 					LAST_ACK
+	 12 CLOSED				CLOSED
+
+As server closes socket, server socket changes its state to FIN_WAIT_1 and send
+FIN packet to client (lines 1-4).  The client changes its socket state to
+CLOSE_WAIT and send ACK (lines 5 and 6).  By receiving this ACK, server socket
+becomes FIN_WAIT_2 state (line 7).  The client also send RST/ACK (line 8).  By
+receiving the RST/ACK, the server moves to TIME_WAIT state and send ACK to the
+client.  The client now receive the ACK and move to LAST_ACK state, and now
+both the server and the client goes to CLOSED.
+
+However, due to the parallel structure of the TCP packet handling, below
+reordering could happen.
+
+	 00 server				clinet
+	 01 ESTABLISHED				ESTABLISHED
+	 02 close()
+	 03 FIN_WAIT_1
+	 04 		---FIN-->
+	 05 					CLOSE_WAIT
+	 06 				(<--ACK---)
+	 07	  			(<--RST/ACK---)
+	 08 				(fired in right order)
+	 09 		<--RST/ACK---
+	 10 		<--ACK---
+	 11 		(arrived in wrong order)
+	 12 FIN_WAIT_2
+
+Lines 1 to 5 is same with above.  The client now send the ACK first, and then
+RST/ACK.  However, these two packets are handled in parallel and thus RST/ACK
+is processed before ACK.  The RST/ACK is just ignored as it is unexpected
+packet.  The ACK arrives eventually and changes the server's state to
+FIN_WAIT_2.  Now the server waits for RST/ACK from the client but it has
+already arrived before and ignored.  Therefore, the server cannot move to
+TIME_WAIT, and no ACK to the client is sent.  As a result, the client will stay
+in the CLOSE_WAIT state.  Later, the port is reused and thus the previously
+described situation happens.
+
+[1] https://en.wikipedia.org/wiki/File:Tcp_state_diagram.png
+
+
+Into The Kernel Code
+====================
+
+By diving into the kernel code, one of us found where most of this races comes
+out.  It's in the 'tcp_v4_rcv()' function.  Roughly speaking, it does error
+condition check, lookup, process, and few more works in sequence.  I'm calling
+the small steps as lookup and process step as those are labeled as in the
+code.  And, a few of the process step is protected by 'bh_lock_sock_nested()'.
+
+However, the process of the RST/ACK is done outside of the critical section.
+In more detail, the first 'if' statement of the process step checks current
+state and go to 'do_time_wait' step, which will change the state to FIN_WAIT_2
+and send the final ACK that will make the client to LAST_ACK state:
+
+    process:
+    	if (sk->sk_state == TCP_TIME_WAIT)
+    		godo do_time_wait;
+
+This is before the critical section.  Thus in some case, RST/ACK packet passes
+this check while the ACK which the client has sent before RST/ACK is being
+processed inside the critical section.
+
+
+Experimental Fix
+----------------
+
+We confirmed this is the case by logging and some experiments.  Further,
+because the process of RST/ACK packet would stuck in front of the critical
+section while the ACK is being processed inside the critical section in most
+case, we add one more check of the RST/ACK inside the critical section.  In
+detail, it's as below:
+
+    --- a/net/ipv4/tcp_ipv4.c
+    +++ b/net/ipv4/tcp_ipv4.c
+    @@ -1912,6 +1912,29 @@ int tcp_v4_rcv(struct sk_buff *skb)
+            tcp_segs_in(tcp_sk(sk), skb);
+            ret = 0;
+            if (!sock_owned_by_user(sk)) {
+    +               // While waiting for the socket lock, the sk may have
+    +               // transitioned to FIN_WAIT2/TIME_WAIT so lookup the
+    +               // twsk and if one is found reprocess the skb
+    +               if (unlikely(sk->sk_state == TCP_CLOSE && !th->syn
+    +                       && (th->fin || th->rst))) {
+    +                       struct sock *sk2 = __inet_lookup_established(
+    +                               net, &tcp_hashinfo,
+    +                               iph->saddr, th->source,
+    +                               iph->daddr, ntohs(th->dest),
+    +                               inet_iif(skb), sdif);
+    +                       if (sk2) {
+    +                               if (sk2 == sk) {
+    +                                       sock_put(sk2);
+    +                               } else {
+    +                                       bh_unlock_sock(sk);
+    +                                       tcp_v4_restore_cb(skb);
+    +                                       if (refcounted) sock_put(sk);
+    +                                       sk = sk2;
+    +                                       refcounted = true;
+    +                                       goto process;
+    +                               }
+    +                       }
+    +               }
+                    skb_to_free = sk->sk_rx_skb_cache;
+                    sk->sk_rx_skb_cache = NULL;
+                    ret = tcp_v4_do_rcv(sk, skb);
+
+We applied this change to the kernel and confirmed that the latency spikes
+disappeared with the reproduce program.
+
+
+More Races
+----------
+
+Further, the man who found the code path and made the fix found another race
+resulted from the commit ec94c2696f0b ("tcp/dccp: avoid one atomic operation
+for timewait hashdance").  He believes the 'refcount_set()' should be done
+before the 'spin_lock()', as it allows others to see the packet in the list but
+ignore as the reference count is zero.  This race seems much rare than the
+above one and thus we have no reproducible test for this, yet.
+
+
+Request for Comments
+====================
+
+So, may I ask your comments about this issue and our experimental solution?
+Below is the source code of the reproducible program.
+
+
+Thanks,
+SeongJae Park
+
+
+
+============================== 8< ============================================
+========================     client.c     ====================================
+============================== 8< ============================================
+/*
+ * This code is a modification of the code at
+ * https://www.geeksforgeeks.org/socket-programming-cc/
+ */
+#include <arpa/inet.h>
+#include <error.h>
+#include <netinet/tcp.h>
+#include <stdio.h>
+#include <sys/socket.h>
+#include <sys/time.h>
+#include <unistd.h>
+
+#define timediff(s, e) ((e.tv_sec - s.tv_sec) * 1000000 + e.tv_usec - s.tv_usec)
+
+int main(int argc, char const *argv[])
+{
+	int sock = 0;
+	struct sockaddr_in addr, laddr;
+	socklen_t len = sizeof(laddr);
+	struct linger sl;
+	int flag = 1;
+	int buffer;
+	int rc;
+	struct timeval start, end;
+	unsigned long lat, sum_lat = 0, nr_lat = 0;
+
+	while (1) {
+		gettimeofday(&start, NULL);
+
+		sock = socket(AF_INET, SOCK_STREAM, 0);
+		if (sock < 0)
+			error(-1, -1, "socket creation");
+
+		sl.l_onoff = 1;
+		sl.l_linger = 0;
+		if (setsockopt(sock, SOL_SOCKET, SO_LINGER, &sl, sizeof(sl)))
+			error(-1, -1, "setsockopt(linger)");
+
+		if (setsockopt(sock, IPPROTO_TCP, TCP_NODELAY,
+					&flag, sizeof(flag)))
+			error(-1, -1, "setsockopt(nodelay)");
+
+		addr.sin_family = AF_INET;
+		addr.sin_port = htons(4242);
+
+		rc = inet_pton(AF_INET, "127.0.0.1", &addr.sin_addr);
+		if (rc <= 0)
+			error(-1, -1, "inet_pton");
+
+		rc = connect(sock, (struct sockaddr *)&addr, sizeof(addr));
+		if (rc < 0)
+			error(-1, -1, "connect");
+
+		send(sock, &buffer, sizeof(buffer), 0);
+
+		read(sock, &buffer, sizeof(buffer));
+		read(sock, &buffer, sizeof(buffer));
+
+		gettimeofday(&end, NULL);
+		lat = timediff(start, end);
+		sum_lat += lat;
+		nr_lat++;
+		if (lat > 100000) {
+			rc = getsockname(sock, (struct sockaddr *)&laddr, &len);
+			if (rc == -1)
+				error(-1, -1, "getsockname");
+			printf("port: %d, lat: %lu, avg: %lu, nr: %lu\n",
+					ntohs(laddr.sin_port), lat,
+					sum_lat / nr_lat, nr_lat);
+		}
+
+		if (nr_lat % 1000 == 0)
+			fflush(stdout);
+
+
+		close(sock);
+	}
+	return 0;
+}
+============================== 8< ============================================
+========================     server.c     ====================================
+============================== 8< ============================================
+/*
+ * This code is a modification of the code at
+ * https://www.geeksforgeeks.org/socket-programming-cc/
+ */
+#include <error.h>
+#include <netinet/in.h>
+#include <stdio.h>
+#include <sys/socket.h>
+#include <unistd.h>
+
+int main(int argc, char const *argv[])
+{
+	int sock, new_sock;
+	int opt = 1;
+	struct sockaddr_in address;
+	int addrlen = sizeof(address);
+	int buffer;
+	int rc;
+
+	sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (!sock)
+		error(-1, -1, "socket");
+
+	rc = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,
+			&opt, sizeof(opt));
+	if (rc == -1)
+		error(-1, -1, "setsockopt");
+
+	address.sin_family = AF_INET;
+	address.sin_addr.s_addr = INADDR_ANY;
+	address.sin_port = htons(4242);
+
+	rc = bind(sock, (struct sockaddr *)&address, sizeof(address));
+	if (rc < 0)
+		error(-1, -1, "bind");
+
+	rc = listen(sock, 3);
+	if (rc < 0)
+		error(-1, -1, "listen");
+
+	while (1) {
+		new_sock = accept(sock, (struct sockaddr *)&address,
+				(socklen_t *)&addrlen);
+		if (new_sock < 0)
+			error(-1, -1, "accept");
+
+		rc = read(new_sock, &buffer, sizeof(buffer));
+		close(new_sock);
+	}
+	return 0;
+}
