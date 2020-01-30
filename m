@@ -2,63 +2,255 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D2F14DC91
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2020 15:11:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C4114DF8F
+	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2020 18:02:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727201AbgA3OLl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jan 2020 09:11:41 -0500
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:35975 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726948AbgA3OLk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jan 2020 09:11:40 -0500
-Received: by mail-ed1-f68.google.com with SMTP id j17so3972959edp.3
-        for <bpf@vger.kernel.org>; Thu, 30 Jan 2020 06:11:39 -0800 (PST)
+        id S1727191AbgA3RCX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jan 2020 12:02:23 -0500
+Received: from mail-yw1-f45.google.com ([209.85.161.45]:44536 "EHLO
+        mail-yw1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727158AbgA3RCW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jan 2020 12:02:22 -0500
+Received: by mail-yw1-f45.google.com with SMTP id t141so2291119ywc.11
+        for <bpf@vger.kernel.org>; Thu, 30 Jan 2020 09:02:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=KLUUmwLfL0lJg5nXfpErbvGaGXJyUwIdXajuKEnP8mw=;
-        b=APuc4pagGcjcv+Fr10IFtikmJwRD5nvcHSEpVcuND7bcyWIEty3C5Maqii1fCmmjOO
-         +MVkhm6WHiaP23T+nMDU8hAjtMDLtb2yL9BR3jmgxk7p/TRiCVbuRVOEA/H+EGj3vm1K
-         v/HhJPQLW/qMjnqj7eeMmcQ0mkf5JLxlZB73Q4whuj1GJatRxzHnsklVaQoiPGYJ9xPd
-         f1wgY6oY2igG4CIj8HjrksUvSBnXosjb9bH405WiWlBpZ4N5LRBl6Nr4cwjZQiwt+t9L
-         9Rwill/uYlFYmYiwu4Na92trWx5ySH2RDxRxqF5tELWOZd+siL3agYHZ0nrGLX701dBl
-         8FuQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GWyw2294XdMAvsthTlcx13XjSW4J/Y/cJveTRnfDmRs=;
+        b=K94PvBPMaoFOmbLn+LR29NEndRELbCTzCdiuSGcC3rB0u0GiPIs+BZtubd6awuEI38
+         H4ed5a0tCrr2QKR5WhL/mxXv2gR03TUMWiaMt23D5j6XeuVXoqACNGvCPh49Y1P2jfdM
+         CtCwy4TrPvSonNdA0bFihQpIPBVNJ/WtfzphGNeHTVO5IFfOSNpZsqq2RF9KUb7VXNwQ
+         GNzy8+xNksndYdW0sRruQQlLmeGbmXl64n0vR69XH4K+LkmL56xZNzOwjUvvMs3ZsTVK
+         pTCOHho5QwrhDrVnwi4RE6KAc+eU5l3/1ZmPiA+Wwontvc3Ft0YHNzHzMzvS7QUdaf5Z
+         MtCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
-         :from:date:message-id:subject:to:content-transfer-encoding;
-        bh=KLUUmwLfL0lJg5nXfpErbvGaGXJyUwIdXajuKEnP8mw=;
-        b=INJVALATfSyoOngCENN3HBXEh2LaLTalqrqpxSO5X/sG5UrqxbMXwYobrFxR4uR6k7
-         G+s+sPGooOndIO3OwLd6FuetrfTdcBzJ28CgS3XuaZMt+UUZrr7sB6TlT4v5vtflnYZf
-         bAuEG/1FgMywDgYqdKTPcIQnclANuVATWxsaTewCvrtOUfPQUJWCiY1C9WMXCuj8oanZ
-         /URe9Ju6DrGQJmwqLQz9igISPxx3tSBNrk1/m0ZkxPGJbaq1nnhvnB6vDcDoRhOkzQy0
-         +3M1a+5TrZ0ABshjTC9goqLOdM2uNQSMb4khgnXZh87i0kQ8dYsh8m+P51mV3D+igD0h
-         JNBg==
-X-Gm-Message-State: APjAAAVGnMq3c36yOTbKoKxjcD5/ApzJXDjwFwwjtJ4OoJVucRr71+Gf
-        0i8ETKOdsNfHHdAsNSo7fcqP0L4u6bBB72nycT0=
-X-Google-Smtp-Source: APXvYqxtbkJbo5SqRxBYvu5wFZnBQtDXBHLqIPr5yOIwV79oBgP4U6fi0Dw8+n/bCzzBuVQJhZOLH45ZFtm1r46dgfQ=
-X-Received: by 2002:aa7:cccf:: with SMTP id y15mr4004376edt.108.1580393499235;
- Thu, 30 Jan 2020 06:11:39 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GWyw2294XdMAvsthTlcx13XjSW4J/Y/cJveTRnfDmRs=;
+        b=G2GHMdwtYkjC8YqolS2SwaD3koESL0Rtif2+1gpHuB5YiZPJu+oHjnxnzIStrbfyEi
+         KVuGmQKl6F+ExyqCXUQE5l40OqIhrdTvXGjSYG/ZU6EXEUgbuzK65YOym3FXXC1Vqxl4
+         eSJ2a+Y4vrg4s406X8J66bpHbsbjLUoqxaIvb5pA0RkIDeZksxi57CwTMaoqh39JGGCP
+         KCW76mj12C1BesTYgAaWbeg4AHcztnlTNJbOIqMQewytuPEshPUwJEHXTeXRKsm7Ay9p
+         QaytuTzozhcfYJ++lA1lY1DjQvEWe7NXAHXNf5f+FCS2aMXRG/f4sRL3wJjeywKIb2kl
+         ArXg==
+X-Gm-Message-State: APjAAAUbKf/5Tq0V+FE6R4+G8CyxA1mCieOx6svMA51sPkXC2DnqZg0D
+        xgFpdUO56AVdZ/UnQ62xEt1cBaevqmkEz8nBtajlTQ==
+X-Google-Smtp-Source: APXvYqyTjdHogLaV/3tWd/Kd2UXYv0Awbm0eMTiU1lyEzQFA73rkgoTS511rXtpynkwnHbysBe+KZRyxowbmk8x9Jno=
+X-Received: by 2002:a81:3a06:: with SMTP id h6mr4135966ywa.170.1580403740040;
+ Thu, 30 Jan 2020 09:02:20 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a50:af22:0:0:0:0:0 with HTTP; Thu, 30 Jan 2020 06:11:38
- -0800 (PST)
-Reply-To: miraclegod913@gmail.com
-In-Reply-To: <CAOAm71PXNSZDVQ8POTgDFRU-KmYxSxf-bWk99b-7Q5BRuho-sA@mail.gmail.com>
-References: <CAOAm71PXNSZDVQ8POTgDFRU-KmYxSxf-bWk99b-7Q5BRuho-sA@mail.gmail.com>
-From:   Christy Ruth Walton <janetpenninger22@gmail.com>
-Date:   Thu, 30 Jan 2020 06:11:38 -0800
-Message-ID: <CAOAm71O0McU5ck5sJwCQ0UZSzQBv78ZnLKwLOCumNhQDD59bmQ@mail.gmail.com>
-Subject: Fwd: Hi
-To:     undisclosed-recipients:;
+References: <CANn89iJOK9UMQspgikPWb-NA6vmo+wQPB5q7hnWpHDSxYrUSnA@mail.gmail.com>
+ <20200130124121.24587-1-sjpark@amazon.com>
+In-Reply-To: <20200130124121.24587-1-sjpark@amazon.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 30 Jan 2020 09:02:08 -0800
+Message-ID: <CANn89iKDn2XhrnLo2rLf7HGXanEuokprqJ_mb0iPqXEnARc9tw@mail.gmail.com>
+Subject: Re: Re: Latency spikes occurs from frequent socket connections
+To:     sjpark@amazon.com
+Cc:     David Miller <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        andriin@fb.com, netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        aams@amazon.com, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        dola@amazon.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Good Day,
+On Thu, Jan 30, 2020 at 4:41 AM <sjpark@amazon.com> wrote:
+>
+> On Wed, 29 Jan 2020 09:52:43 -0800 Eric Dumazet <edumazet@google.com> wrote:
+>
+> > On Wed, Jan 29, 2020 at 9:14 AM <sjpark@amazon.com> wrote:
+> > >
+> > > Hello,
+> > >
+> > >
+> > > We found races in the kernel code that incur latency spikes.  We thus would
+> > > like to share our investigations and hear your opinions.
+> > >
+> > >
+> > > Problem Reproduce
+> > > =================
+> > >
+> > > You can reproduce the problem by compiling and running source code of
+> > > 'server.c' and 'client.c', which I pasted at the end of this mail, as below:
+> > >
+> > >     $ gcc -o client client.c
+> > >     $ gcc -o server server.c
+> > >     $ ./server &
+> > >     $ ./client
+> > >     ...
+> > >     port: 45150, lat: 1005320, avg: 229, nr: 1070811
+> > >     ...
+> > >
+> >
+> > Thanks for the repro !
+>
+> My pleasure :)
+>
+> >
+> [...]
+> > > Experimental Fix
+> > > ----------------
+> > >
+> > > We confirmed this is the case by logging and some experiments.  Further,
+> > > because the process of RST/ACK packet would stuck in front of the critical
+> > > section while the ACK is being processed inside the critical section in most
+> > > case, we add one more check of the RST/ACK inside the critical section.  In
+> > > detail, it's as below:
+> > >
+> > >     --- a/net/ipv4/tcp_ipv4.c
+> > >     +++ b/net/ipv4/tcp_ipv4.c
+> > >     @@ -1912,6 +1912,29 @@ int tcp_v4_rcv(struct sk_buff *skb)
+> > >             tcp_segs_in(tcp_sk(sk), skb);
+> > >             ret = 0;
+> > >             if (!sock_owned_by_user(sk)) {
+> > >     +               // While waiting for the socket lock, the sk may have
+> > >     +               // transitioned to FIN_WAIT2/TIME_WAIT so lookup the
+> > >     +               // twsk and if one is found reprocess the skb
+> > >     +               if (unlikely(sk->sk_state == TCP_CLOSE && !th->syn
+> > >     +                       && (th->fin || th->rst))) {
+> > >     +                       struct sock *sk2 = __inet_lookup_established(
+> > >     +                               net, &tcp_hashinfo,
+> > >     +                               iph->saddr, th->source,
+> > >     +                               iph->daddr, ntohs(th->dest),
+> > >     +                               inet_iif(skb), sdif);
+> > >     +                       if (sk2) {
+> > >     +                               if (sk2 == sk) {
+> > >     +                                       sock_put(sk2);
+> > >     +                               } else {
+> > >     +                                       bh_unlock_sock(sk);
+> > >     +                                       tcp_v4_restore_cb(skb);
+> > >     +                                       if (refcounted) sock_put(sk);
+> > >     +                                       sk = sk2;
+> > >     +                                       refcounted = true;
+> > >     +                                       goto process;
+> > >     +                               }
+> > >     +                       }
+> > >     +               }
+> >
+> >
+> > Here are my comments
+> >
+> >
+> > 1) This fixes IPv4 side only, so it can not be a proper fix.
+> >
+> > 2) TCP is best effort. You can retry the lookup in ehash tables as
+> > many times you want, a race can always happen after your last lookup.
+> >
+> >   Normal TCP flows going through a real NIC wont hit this race, since
+> > all packets for a given 4-tuple are handled by one cpu (RSS affinity)
+> >
+> > Basically, the race here is that 2 packets for the same flow are
+> > handled by two cpus.
+> > Who wins the race is random, we can not enforce a particular order.
+>
+> Thank you for the comments!  I personally agree with your opinions.
+>
+> >
+> > I would rather try to fix the issue more generically, without adding
+> > extra lookups as you did, since they might appear
+> > to reduce the race, but not completely fix it.
+> >
+> > For example, the fact that the client side ignores the RST and
+> > retransmits a SYN after one second might be something that should be
+> > fixed.
+>
+> I also agree with this direction.  It seems detecting this situation and
+> adjusting the return value of tcp_timeout_init() to a value much lower than the
+> one second would be a straightforward solution.  For a test, I modified the
+> function to return 1 (4ms for CONFIG_HZ=250) and confirmed the reproducer be
+> silent.  My following question is, how we can detect this situation in kernel?
+> However, I'm unsure how we can distinguish this specific case from other cases,
+> as everything is working as normal according to the TCP protocol.
+>
+> Also, it seems the value is made to be adjustable from the user space using the
+> bpf callback, BPF_SOCK_OPS_TIMEOUT_INIT:
+>
+>     BPF_SOCK_OPS_TIMEOUT_INIT,  /* Should return SYN-RTO value to use or
+>                                  * -1 if default value should be used
+>                                  */
+>
+> Thus, it sounds like you are suggesting to do the detection and adjustment from
+> user space.  Am I understanding your point?  If not, please let me know.
+>
 
-I want to open a  Charity Foundation and  Company in your country on
-your behalf  is it okay? I=E2=80=99m Christy Ruth Walton from America.
+No, I was suggesting to implement a mitigation in the kernel :
+
+When in SYN_SENT state, receiving an suspicious ACK should not
+simply trigger a RST.
+
+There are multiple ways maybe to address the issue.
+
+1) Abort the SYN_SENT state and let user space receive an error to its
+connect() immediately.
+
+2) Instead of a RST, allow the first SYN retransmit to happen immediately
+(This is kind of a challenge SYN. Kernel already implements challenge acks)
+
+3) After RST is sent (to hopefully clear the state of the remote),
+schedule a SYN rtx in a few ms,
+instead of ~ one second.
+
+
+> >
+> >
+> >
+> > 11:57:14.436259 IP 127.0.0.1.45150 > 127.0.0.1.4242: Flags [S], seq
+> > 2560603644, win 65495, options [mss 65495,sackOK,TS val 953760623 ecr
+> > 0,nop,wscale 7], length 0
+> > 11:57:14.436266 IP 127.0.0.1.4242 > 127.0.0.1.45150: Flags [.], ack 5,
+> > win 512, options [nop,nop,TS val 953760623 ecr 953759375], length 0
+> > 11:57:14.436271 IP 127.0.0.1.45150 > 127.0.0.1.4242: Flags [R], seq
+> > 2541101298, win 0, length 0
+> > 11:57:15.464613 IP 127.0.0.1.45150 > 127.0.0.1.4242: Flags [S], seq
+> > 2560603644, win 65495, options [mss 65495,sackOK,TS val 953761652 ecr
+> > 0,nop,wscale 7], length 0
+> >
+> >
+> >
+> >                     skb_to_free = sk->sk_rx_skb_cache;
+> > >                     sk->sk_rx_skb_cache = NULL;
+> > >                     ret = tcp_v4_do_rcv(sk, skb);
+> > >
+> > > We applied this change to the kernel and confirmed that the latency spikes
+> > > disappeared with the reproduce program.
+> > >
+> > >
+> > > More Races
+> > > ----------
+> > >
+> > > Further, the man who found the code path and made the fix found another race
+> > > resulted from the commit ec94c2696f0b ("tcp/dccp: avoid one atomic operation
+> > > for timewait hashdance").  He believes the 'refcount_set()' should be done
+> > > before the 'spin_lock()', as it allows others to see the packet in the list but
+> > > ignore as the reference count is zero.  This race seems much rare than the
+> > > above one and thus we have no reproducible test for this, yet.
+> >
+> > Again, TCP is best effort, seeing the refcount being 0 or not is
+> > absolutely fine.
+> >
+> > The cpu reading the refcnt can always be faster than the cpu setting
+> > the refcount to non zero value, no matter how hard you try.
+> >
+> > The rules are more like : we need to ensure all fields have
+> > stable/updated values before allowing other cpus to get the object.
+> > Therefore, writing a non zero refcount should happen last.
+>
+> I personally agree on this, either.
+>
+>
+> Thanks,
+> SeongJae Park
+>
+> >
+> > Thanks.
+> [...]
