@@ -2,184 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF1114E524
-	for <lists+bpf@lfdr.de>; Thu, 30 Jan 2020 22:53:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A00414E60F
+	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2020 00:14:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725907AbgA3Vxg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jan 2020 16:53:36 -0500
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:37995 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725835AbgA3Vxg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jan 2020 16:53:36 -0500
-Received: by mail-pj1-f68.google.com with SMTP id j17so1918672pjz.3;
-        Thu, 30 Jan 2020 13:53:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=9+c98/oxOHNUyGzccjUUkoAPacv6RdIiORztEtMrVFg=;
-        b=JPzkUj15fmdkrIov+SnkTmU2zB7E7+Hbp7Nl5dtXaMGB0Yx8nxkoEcGhP/y2C2SXV/
-         GETslDWAycWZatUHi2bPosvtIUwNEtuF+w9YluWht43vyvCR8Vt/HL51//R5yLWyoLmY
-         y0ljRO3wJ2DHUA5H8uW0f2bQQa9KY3Mn9zVZ2J2uuvOIpBpuPogle0yUig96qY27QcKe
-         dc3sr9mUAaiWIG8QRj1YSStKqwnd5InhveK/r6/a3cA+i16tsWsxeTUxUjlkxizCvS07
-         hL0e5QpNbGlDN5CK4UKeaoEdx5bYJb5RAIVP/j/4uaS51rIdsQwDUNKZo40ENCDXXFTS
-         SEjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9+c98/oxOHNUyGzccjUUkoAPacv6RdIiORztEtMrVFg=;
-        b=mOFPxaejzeNxZAGACRvDDBBG0kc6frEn0Yp/mJ+IS2aYDBiwdQ2t6QuUcpwRBQB4eH
-         be9pi2Mag7d3ZW9MQbK5rLa54eDlKHbnRSle2zEpITzy+z4NERM0vxulIrzyVCdxJw+7
-         kO++jQiKTqJlqXAsRGjVu6RaBjdwS+0q6d3boZSPjji/Nfs/vsgbYuf8XU9SLfKo6SnY
-         2sb/Mkuw8zs0/udfqc72GUyQeR8JJpgFUjFwnCr9suU/7kcSeBQ6gX00XEcXOhgpVWNq
-         m702iFrNi49P3/5UM0nzG3/LOe4ndmuRWlwqn7nJ25hj2DRFf9+4FKYEMudrQkwXAbcv
-         ANOw==
-X-Gm-Message-State: APjAAAV3J6zm/wUm+SsG+7I4nvvTP61maG9ZPwzzCKasFcXJKqAOSIyz
-        FDmmEzXn9vzaBOcJvwaNkEQ=
-X-Google-Smtp-Source: APXvYqy33u2/xNEqTgqNLZvCqe3TzkhXp2Z2m50hMoQoqOkZTn/ou8M8jOaf688IUyPSssG0OwPFqA==
-X-Received: by 2002:a17:90b:30c9:: with SMTP id hi9mr7143094pjb.81.1580421214217;
-        Thu, 30 Jan 2020 13:53:34 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:200::2:f7d])
-        by smtp.gmail.com with ESMTPSA id f127sm7694372pfa.112.2020.01.30.13.53.32
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 30 Jan 2020 13:53:32 -0800 (PST)
-Date:   Thu, 30 Jan 2020 13:53:31 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Matt Cover <werekraken@gmail.com>
-Cc:     daniel@iogearbox.net, davem@davemloft.net,
-        Matthew Cover <matthew.cover@stackpath.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-Subject: unstable bpf helpers proposal. Was: [PATCH bpf-next v2 1/2] bpf: add
- bpf_ct_lookup_{tcp,udp}() helpers
-Message-ID: <20200130215330.f3unziderf5rlipf@ast-mbp>
-References: <20200118000128.15746-1-matthew.cover@stackpath.com>
- <20200121202038.26490-1-matthew.cover@stackpath.com>
- <CAGyo_hpVm7q3ghW+je23xs3ja_COP_BMZoE_=phwGRzjSTih8w@mail.gmail.com>
- <CAOftzPi74gg=g8VK-43KmA7qqpiSYnJVoYUFDtPDwum10KHc2Q@mail.gmail.com>
- <CAGyo_hprQRLLUUnt9G4SJnbgLSdN=HTDDGFBsPYMDC5bGmTPYA@mail.gmail.com>
+        id S1726633AbgA3XOB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jan 2020 18:14:01 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:3012 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726294AbgA3XOB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 30 Jan 2020 18:14:01 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 00UNCc0i020952
+        for <bpf@vger.kernel.org>; Thu, 30 Jan 2020 15:14:00 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=M2ou81ydmmoTZgHSTTmafq1nYY9oLuj23NWIe0+21PE=;
+ b=MLMKeorxegIW/tvdOH56pw/WFhsqqgbsy39zC7gPFQEraE1lh8DABZd3yhIFyr9hKwGP
+ 7qdDI4BkBw0PI7+m/IkTR/bToMLsE3ouxy6Da7WURjvnC0+MTm1J+yCggf7fxCxxi1Zk
+ KxMDU9kVcXX9sFxc4fPaEN3vF4I4fMDXdNI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 2xv76urddh-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 30 Jan 2020 15:14:00 -0800
+Received: from intmgw001.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 30 Jan 2020 15:13:59 -0800
+Received: by devvm4065.prn2.facebook.com (Postfix, from userid 125878)
+        id 0FD18436553EC; Thu, 30 Jan 2020 15:13:57 -0800 (PST)
+Smtp-Origin-Hostprefix: devvm
+From:   Yulia Kartseva <hex@fb.com>
+Smtp-Origin-Hostname: devvm4065.prn2.facebook.com
+To:     <bpf@vger.kernel.org>, <hex@fb.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <netdev@vger.kernel.org>
+CC:     <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH v3 bpf] runqslower: fix Makefile
+Date:   Thu, 30 Jan 2020 15:13:10 -0800
+Message-ID: <908498f794661c44dca54da9e09dc0c382df6fcb.1580425879.git.hex@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGyo_hprQRLLUUnt9G4SJnbgLSdN=HTDDGFBsPYMDC5bGmTPYA@mail.gmail.com>
-User-Agent: NeoMutt/20180223
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-30_09:2020-01-30,2020-01-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ adultscore=0 lowpriorityscore=0 clxscore=1015 mlxscore=0 spamscore=0
+ suspectscore=0 malwarescore=0 bulkscore=0 phishscore=0 priorityscore=1501
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1911200001 definitions=main-2001300155
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 24, 2020 at 02:46:30PM -0700, Matt Cover wrote:
-> 
-> In addition to the nf_conntrack helpers, I'm hoping to add helpers for
-> lookups to the ipvs connection table via ip_vs_conn_in_get(). From my
-> perspective, this is again similar. 
+Fix undefined reference linker errors when building runqslower with
+gcc 7.4.0 on Ubuntu 18.04.
+The issue is with misplaced -lelf, -lz options in Makefile:
+$(Q)$(CC) $(CFLAGS) -lelf -lz $^ -o $@
 
-...
+-lelf, -lz options should follow the list of target dependencies:
+$(Q)$(CC) $(CFLAGS) $^ -lelf -lz -o $@
+or after substitution
+cc -g -Wall runqslower.o libbpf.a -lelf -lz -o runqslower
 
-> Writing to an existing nf_conn could be added to this helper in the
-> future. Then, as an example, an XDP program could populate ct->mark
-> and a restore mark rule could be used to apply the mark to the skb.
-> This is conceptually similar to the XDP/tc interaction example.
+The current order of gcc params causes failure in libelf symbols resolution,
+e.g. undefined reference to `elf_memory'
 
-...
+Fixes: 9c01546d26d2 ("tools/bpf: Add runqslower tool to tools/bpf")
+Signed-off-by: Julia Kartseva <hex@fb.com>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/bpf/runqslower/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> I'm planning to add a bpf_tcp_nf_conn() helper which gives access to
-> members of ip_ct_tcp. This is similar to bpf_tcp_sock() in my mind.
+diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
+index 0c021352b..87eae5be9 100644
+--- a/tools/bpf/runqslower/Makefile
++++ b/tools/bpf/runqslower/Makefile
+@@ -41,7 +41,7 @@ clean:
+ 
+ $(OUTPUT)/runqslower: $(OUTPUT)/runqslower.o $(BPFOBJ)
+ 	$(call msg,BINARY,$@)
+-	$(Q)$(CC) $(CFLAGS) -lelf -lz $^ -o $@
++	$(Q)$(CC) $(CFLAGS) $^ -lelf -lz -o $@
+ 
+ $(OUTPUT)/runqslower.o: runqslower.h $(OUTPUT)/runqslower.skel.h	      \
+ 			$(OUTPUT)/runqslower.bpf.o
+-- 
+2.17.1
 
-...
-
-> I touched on create and update above. Delete, like create, would
-> almost certainly be a separate helper. This submission is not
-> intended to put us on that track. I do not believe it hinders an
-> effort such as that either. Are you worried that adding nf_conn to
-> bpf is a slippery slope?
-
-Looks like there is a need to access quite a bit of ct, ipvs internal states.
-I bet neigh, route and other kernel internal tables will be next. The
-lookup/update/delete to these tables is necessary. If somebody wants to do a
-fast bridge in XDP they may want to reuse icmp_send(). I've seen folks
-reimplementing it purely on BPF side, but kernel's icmp_send() is clearly
-superior, so exposing it as a helper will be useful too. And so on and so
-forth. There are lots of kernel bits that BPF progs want to interact with.
-
-If we expose all of that via existing bpf helper mechanism we will freeze a
-large chunk of networking stack. I agree that accessing these data structures
-from BPF side is useful, but I don't think we can risk hardening the kernel so
-much. We need new helper mechanism that will be unstable api. It needs to be
-obviously unstable to both kernel developers and bpf users. Yet such mechanim
-should allow bpf progs accessing all these things without sacrificing safety.
-
-I think such new mechanism can be modeled similar to kernel modules and
-EXPORT_SYMBOL[_GPL] convention. The kernel has established policy that
-these function do change and in-tree kernel modules get updated along the way
-while out-of-tree gets broken periodically. I propose to do the same for BPF.
-Certain kernel functions can be marked as EXPORT_SYMBOL_BPF and they will be
-eligible to be called from BPF program. The verifier will do safety checks and
-type matching based on BTF. The same way it already does for tracing progs.
-For example the ct lookup can be:
-struct nf_conn *
-bpf_ct_lookup(struct __sk_buff *skb, struct nf_conntrack_tuple *tuple, u32 len,
-              u8 proto, u64 netns_id, u64 flags)
-{
-}
-EXPORT_SYMBOL_BPF(bpf_ct_lookup);
-The first argument 'skb' has stable api and type. It's __sk_buff and it's
-context for all skb-based progs, so any program that got __sk_buff from
-somewhere can pass it into this helper.
-The second argument is 'struct nf_conntrack_tuple *'. It's unstable and
-kernel internal. Currently the verifier recognizes it as PTR_TO_BTF_ID
-for tracing progs and can do the same for networking. It cannot recognize
-it on stack though. Like:
-int bpf_prog(struct __sk_buff *skb)
-{
-  struct nf_conntrack_tuple my_tupple = { ...};
-  bpf_ct_lookup(skb, &my_tupple, ...);
-}
-won't work yet. The verifier needs to be taught to deal with PTR_TO_BTF_ID
-where it points to the stack.
-The last three arguments are scalars and already recognized as SCALAR_VALUE by
-the verifier. So with minor extensions the verifier will be able to prove the
-safety of argument passing.
-
-The return value is trickier. It can be solved with appropriate type
-annotations like:
-struct nf_conn *
-bpf_ct_lookup(struct __sk_buff *skb, struct nf_conntrack_tuple *tuple, u32 len,
-             u8 proto, u64 netns_id, u64 flags)
-{ ...
-}
-EXPORT_SYMBOL_BPF__acquires(bpf_ct_lookup);
-int bpf_ct_release(struct nf_conn * ct)
-{ ...
-}
-EXPORT_SYMBOL_BPF__releases(bpf_ct_release);
-By convention the return value is acquired and the first argument is released.
-Then the verifier will be able to pair them the same way it does
-bpf_sk_lookup()/bpf_sk_release(), but in declarative way. So the verifier code
-doesn't need to be touched for every such function pair in the future.
-
-Note struct nf_conn and struct nf_conntrack_tuple stay kernel internal.
-BPF program can define fields it wants to access as:
-struct nf_conn {
-  u32 timeout;
-  u64 status;
-  u32 mark;
-} __attribute__((preserve_access_index));
-int bpf_prog()
-{
-  struct nf_conn *ct = bpf_ct_lookup(...);
-  if (ct) {
-       ct->timeout;
-  }
-}
-and CO-RE logic will deal with kernel specific relocations.
-The same way it does for tracing progs that access all kernel data.
-
-I think it's plenty obvious that such bpf helpers are unstable api. The
-networking programs will have access to all kernel data structures, receive
-them from white listed set of EXPORT_SYMBOL_BPF() functions and pass them into
-those functions back. Just like tracing progs that have access to everything.
-They can read all fields of kernel internal struct sk_buff and pass it into
-bpf_skb_output().
-The same way kernel modules can access all kernel data structures and call
-white listed set of EXPORT_SYMBOL() helpers.
