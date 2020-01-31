@@ -2,147 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C691014F129
-	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2020 18:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8896A14F3CB
+	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2020 22:32:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726668AbgAaRQG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Jan 2020 12:16:06 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:40570 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgAaRQF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Jan 2020 12:16:05 -0500
-Received: by mail-pf1-f193.google.com with SMTP id q8so3655665pfh.7
-        for <bpf@vger.kernel.org>; Fri, 31 Jan 2020 09:16:05 -0800 (PST)
+        id S1726174AbgAaVcZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Jan 2020 16:32:25 -0500
+Received: from mail-pg1-f169.google.com ([209.85.215.169]:44019 "EHLO
+        mail-pg1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbgAaVcZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Jan 2020 16:32:25 -0500
+Received: by mail-pg1-f169.google.com with SMTP id u131so4146164pgc.10
+        for <bpf@vger.kernel.org>; Fri, 31 Jan 2020 13:32:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=qL4qN52tdZUGmrnOOJvnkXqAqiFD59Pn9vqySC3AzSc=;
-        b=QOJr04V++HoM09dc/KFAH9cREYKsERQv3JgZrVsHEk1sfjdg2GCeeCufYXt9nLykc5
-         xjP5f+qPOxP4gH0+09/BY8LT91mdZI+/AZggJ+csEG7ih26YOyXFmhvAa25LAdarNY/F
-         LpN27P2JKKMbnNxMjLxdSaY5LVcHL3MSU1qqy6HfA3qe45JEOlHCvV1Rf9K6tysZNVgi
-         mG5X8nvrZEmUaVPKe9fBWl1Za2TP9ZUJGlBos4k/Cex83aRwXdapJtte7HhbKXN1Mz5u
-         0/3BsD4kTdmFAxoz970hpj9L66vYLWHA6brCdmJOJSvZcBlXCyfe8uifvEKpnJd5+l+A
-         ft1w==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XyFA36WxUtgN1B6uI/dhE/JlFw5l7tRA6v/t9YsZ+4Y=;
+        b=1xEOD17FFwIS8nQeoUgkw25qZ9S3mjwlnxclYFqCV7Mn1dWiDr18EUry59fS4tajRd
+         avmrAy7klh6lZK7FgCpyHlMQoQN2qxJ7H/3e8AWJ45qn/irosuPX25rTApTlQA8cT+ZM
+         cUNjFlsdbZPm5QJA42yplQgd92FRfZpBhTyP4+DEzD47O+TiM6LjonwmDp2USGbI9JuY
+         ZwrT6mYOA7dsGHgTE38y8ChC0iFw0d84lAOkbjE144kve6DZrqBB6GRB+dYcJq65uyxD
+         ETQkYjVsB0w1dqU7gwT1/DSHnSN5ypUNoWyBsIXlOfKnUEVa0wOkv4TeeX4WHjHJABoF
+         aJVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=qL4qN52tdZUGmrnOOJvnkXqAqiFD59Pn9vqySC3AzSc=;
-        b=XO3BbS62LR6qHkpfPvecVPa1cOlK3MajbyVgwS6TM0K1AUOMB56gZ4bDVX8emd9fNm
-         KmGxE5wH6XqK2Y8GpoNOAk81V7Bm05ELA8EAqghEzmLna4Gj+cV0nr3bE/i6HnDIVmq3
-         Oa1MM8LgVYzRqkq3G3026jK1uPqhmMpV4AbOQFB6cGR/Om7lutxxvSOmVxh61B1dJlfy
-         uneBuLn0ptK/KyHgUNYVOebzk9qqEUX8jrPmpj9EyA9NaAgLQgdDevPX3RV8MWRI+UPt
-         QuUd8pRUGgYgPGyeKoNBv+IifJHtpY2VMWPLIZbbJ2f9Pr8Hw9Zqi4fgdhEklO0z5SqQ
-         l8ww==
-X-Gm-Message-State: APjAAAVR0CqTwfEK1B4tsQ/Kmi4zSAwigqSsxTtw8nvo4is8c0zqdLZ9
-        hYVto7xq50rmhNfLb5TaUpoT+uVF
-X-Google-Smtp-Source: APXvYqwKQiS6OY8/4Rs1XpCMoMfqshsqhlAip6GGnnnO4H9dcabUUv4qAl6CbO5S/qC7uUn0yRNnPQ==
-X-Received: by 2002:a63:8e:: with SMTP id 136mr11136007pga.319.1580490965146;
-        Fri, 31 Jan 2020 09:16:05 -0800 (PST)
-Received: from localhost (198-0-60-179-static.hfc.comcastbusiness.net. [198.0.60.179])
-        by smtp.gmail.com with ESMTPSA id y24sm2029726pge.72.2020.01.31.09.16.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Jan 2020 09:16:04 -0800 (PST)
-Date:   Fri, 31 Jan 2020 09:16:03 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>
-Message-ID: <5e3460d3a3fb1_4a9b2ab23eff45b82c@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAADnVQL+hBuz8AgJ-Tv8iWFoGdpXwSmdqHVzX5NgR_1Lfpx3Yw@mail.gmail.com>
-References: <158015334199.28573.4940395881683556537.stgit@john-XPS-13-9370>
- <b26a97e0-6b02-db4b-03b3-58054bcb9b82@iogearbox.net>
- <CAADnVQ+YhgKLkVCsQeBmKWxfuT+4hiHAYte9Xnq8XpC8WedQXQ@mail.gmail.com>
- <99042fc3-0b02-73cb-56cd-fc9a4bfdf3ee@iogearbox.net>
- <5e320c9a30f64_2a332aadcd1385bc3f@john-XPS-13-9370.notmuch>
- <20200130000415.dwd7zn6wj7qlms7g@ast-mbp>
- <5e33147f55528_19152af196f745c460@john-XPS-13-9370.notmuch>
- <20200130175935.dauoijsxmbjpytjv@ast-mbp.dhcp.thefacebook.com>
- <5e336803b5773_752d2b0db487c5c06e@john-XPS-13-9370.notmuch>
- <20200131024620.2ctms6f2il6qss3q@ast-mbp>
- <5e33bfb6414eb_7c012b2399b465bcfe@john-XPS-13-9370.notmuch>
- <CAADnVQL+hBuz8AgJ-Tv8iWFoGdpXwSmdqHVzX5NgR_1Lfpx3Yw@mail.gmail.com>
-Subject: Re: [bpf PATCH v3] bpf: verifier, do_refine_retval_range may clamp
- umin to 0 incorrectly
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XyFA36WxUtgN1B6uI/dhE/JlFw5l7tRA6v/t9YsZ+4Y=;
+        b=L3LE7cXlEaA0y0oD0ua/GGUk8YjlxLRM9JNZuLsDnJXyXGESacWaiH9H2NLB28f/mY
+         9nBvGazqAwaGgqxHgxpQfbJ5MD0GHaZ4R8+Cvaj5KAubFbJXGkkHZ9y+Jo8cPBCrA7Om
+         ZSWnaArwC2RoBPQ7mBBmTiGiSDckLOmNcpg616ShSbe5h7SfXVWVke83HZV+Uq8LT9AM
+         arnrrRK26GnhWhO+5duEYL6Ahgwx/MI1OWGB0Ow/EOhiWEhFJpIIqUhPAkItbM3Breic
+         QNNI+hQDolmKpFUvP+UaWQ2VAipHAtCPHTuKTjANttbAMDMePjNYOBLh/YoHCsCH5PtR
+         pfCg==
+X-Gm-Message-State: APjAAAVdnGAEW2lIxKp9kGvQm2sbx53ZRaMzwf6JcCxnW2Sb8FQMApXS
+        zXcHRKsoiFJm6KO8fbpWTSNRwgSBEaZcPg==
+X-Google-Smtp-Source: APXvYqy24Ve1+561kObrRFqRP0GvpY+qJCRm1uwI+US5R1xiDIwpAS6GNLd3Ugtjyfcc/16sAe4VbA==
+X-Received: by 2002:a63:5f43:: with SMTP id t64mr12110260pgb.360.1580506343432;
+        Fri, 31 Jan 2020 13:32:23 -0800 (PST)
+Received: from [172.20.10.2] ([107.72.96.24])
+        by smtp.gmail.com with ESMTPSA id h7sm11895854pfq.36.2020.01.31.13.32.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 31 Jan 2020 13:32:22 -0800 (PST)
+Subject: Re: [LSF/MM/BPF TOPIC] programmable IO control flow with io_uring and
+ BPF
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        lsf-pc@lists.linux-foundation.org
+Cc:     io-uring <io-uring@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <e25f7a09-96b2-2288-4777-9f728a8b2c23@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <a2975b58-4d53-f13e-841c-04d4075cd0cd@kernel.dk>
+Date:   Fri, 31 Jan 2020 14:30:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <e25f7a09-96b2-2288-4777-9f728a8b2c23@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov wrote:
-> On Thu, Jan 30, 2020 at 9:48 PM John Fastabend <john.fastabend@gmail.com> wrote:
-> > at the moment. I'll take a look in the morning. That fragment 55,56,
-> > 57 are coming from a zext in llvm though.
+On 1/24/20 7:18 AM, Pavel Begunkov wrote:
+> Apart from concurrent IO execution, io_uring allows to issue a sequence
+> of operations, a.k.a links, where requests are executed sequentially one
+> after another. If an "error" happened, the rest of the link will be
+> cancelled.
 > 
-
-OK I see the disconnect now. I don't get the same instructions at all. I only
-have the <<32 >> 32, no signed shift s>>32.
-
-> I don't think so. Here is how IR looks after all optimizations
-> and right before instruction selection:
-
-Same llvm ir though
-
->   %call12 = call i32 inttoptr (i64 67 to i32 (i8*, i8*, i32,
-> i64)*)(i8* %ctx, i8* nonnull %call8, i32 800, i64 256) #2
->   %cmp = icmp slt i32 %call12, 0
->   br i1 %cmp, label %cleanup, label %if.end15
+> The problem is what to consider an "error". For example, if we
+> read less bytes than have been asked for, the link will be cancelled.
+> It's necessary to play safe here, but this implies a lot of overhead if
+> that isn't the desired behaviour. The user would need to reap all
+> cancelled requests, analyse the state, resubmit them and suffer from
+> context switches and all in-kernel preparation work. And there are
+> dozens of possibly desirable patterns, so it's just not viable to
+> hard-code them into the kernel.
 > 
-> if.end15:                                         ; preds = %if.end11
->   %idx.ext70 = zext i32 %call12 to i64
->   %add.ptr = getelementptr i8, i8* %call8, i64 %idx.ext70
->   %sub = sub nsw i32 800, %call12
->   %call16 = call i32 inttoptr (i64 67 to i32 (i8*, i8*, i32,
-> i64)*)(i8* %ctx, i8* %add.ptr, i32 %sub, i64 0) #2
->   %cmp17 = icmp slt i32 %call16, 0
->   br i1 %cmp17, label %cleanup, label %if.end20
+> The other problem is to keep in running even when a request depends on
+> a result of the previous one. It could be simple passing return code or
+> something more fancy, like reading from the userspace.
 > 
-
- %26 = call i32 inttoptr (i64 67 to i32 (i8*, i8*, i32, i64)*)(i8* %0, i8* nonnull %23, i32 800, i64 256) #3, !dbg !166
-  %27 = icmp slt i32 %26, 0, !dbg !167
-  br i1 %27, label %41, label %28, !dbg !169
-
-28:                                               ; preds = %25
-  %29 = zext i32 %26 to i64, !dbg !170
-  %30 = getelementptr i8, i8* %23, i64 %29, !dbg !170
-
-
-> and corresponding C code:
->         usize = bpf_get_stack(ctx, raw_data, max_len, BPF_F_USER_STACK);
->         if (usize < 0)
->                 return 0;
+> And that's where BPF will be extremely useful. It will control the flow
+> and do steering.
 > 
->         ksize = bpf_get_stack(ctx, raw_data + usize, max_len - usize, 0);
->         if (ksize < 0)
-
-same as well. But my object code only has this (unpatched llvm)
-
-      56:       bc 81 00 00 00 00 00 00 w1 = w8
-      57:       67 01 00 00 20 00 00 00 r1 <<= 32
-      58:       77 01 00 00 20 00 00 00 r1 >>= 32
-
+> The concept is to be able run a BPF program after a request's
+> completion, taking the request's state, and doing some of the following:
+> 1. drop a link/request
+> 2. issue new requests
+> 3. link/unlink requests
+> 4. do fast calculations / accumulate data
+> 5. emit information to the userspace (e.g. via ring's CQ)
 > 
-> %idx.ext70 = zext i32 %call12 to i64
-> that you see is a part of 'raw_data + usize' math.
-> The result of first bpf_get_stack() is directly passed into
-> "icmp slt i32 %call12, 0"
-> and during instruction selection the backend does
-> sign extension with <<32 s>>32.
-
-Assuming latest bpf tree and llvm master branch? 
-
+> With that, it will be possible to have almost context-switch-less IO,
+> and that's really tempting considering how fast current devices are.
 > 
-> I agree that peephole zext->mov32_64 is correct and a nice optimization,
-> but I still don't see how it helps this case.
+> What to discuss:
+> 1. use cases
+> 2. control flow for non-privileged users (e.g. allowing some popular
+>    pre-registered patterns)
+> 3. what input the program needs (e.g. last request's
+>    io_uring_cqe) and how to pass it.
+> 4. whether we need notification via CQ for each cancelled/requested
+>    request, because sometimes they only add noise
+> 5. BPF access to user data (e.g. allow to read only registered buffers)
+> 6. implementation details. E.g.
+>    - how to ask to run BPF (e.g. with a new opcode)
+>    - having global BPF, bound to an io_uring instance or mixed
+>    - program state and how to register
+>    - rework notion of draining and sequencing
+>    - live-lock avoidance (e.g. double check io_uring shut-down code)
 
-Also don't mind to build pseudo instruction here for signed extension
-but its not clear to me why we are getting different instruction
-selections? Its not clear to me why sext is being chosen in your case?
+I think this is a key topic that we should absolutely discuss at LSFMM.
 
-.John
+-- 
+Jens Axboe
+
