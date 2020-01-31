@@ -2,133 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B9FD014E930
-	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2020 08:41:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0223514E99F
+	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2020 09:39:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728107AbgAaHlo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Jan 2020 02:41:44 -0500
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:15475 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728089AbgAaHln (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Jan 2020 02:41:43 -0500
+        id S1728145AbgAaIjE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Jan 2020 03:39:04 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:35222 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728099AbgAaIjE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Jan 2020 03:39:04 -0500
+Received: by mail-wr1-f66.google.com with SMTP id g17so7638938wro.2;
+        Fri, 31 Jan 2020 00:39:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1580456503; x=1611992503;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=hXqcxoeUTXv6Sl/D/o2xVhucn86dLhacZQT1P/cIuzM=;
-  b=VsXqKMr7mO312v5ohuH8XjkUnzIt36KoDYQhKwgEHa6yIdpnjWHqB85X
-   TNTn0Kk7o/x7ABgvPCoRDa9K3C+gJGtGJRRpyFACsWdoiH4PwE0GSwKgC
-   KDaglHlrsojI/XxhHFBFRSLIKT8Xl/aj7S1yX+sUtX9QXKVFiso9fbq9/
-   0=;
-IronPort-SDR: TDVLF5psLVoz4B8kmnPSKaCBxvX8j+VejGNDcH7bgeJuy0/p1gPPyG1+1SwQ0HFCFa+vcpb7p8
- 3JUDRyKLDbEg==
-X-IronPort-AV: E=Sophos;i="5.70,385,1574121600"; 
-   d="scan'208";a="14975291"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 31 Jan 2020 07:41:41 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com (Postfix) with ESMTPS id CC8DEC08EB;
-        Fri, 31 Jan 2020 07:41:37 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1236.3; Fri, 31 Jan 2020 07:41:37 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.29) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Fri, 31 Jan 2020 07:41:30 +0000
-From:   <sjpark@amazon.com>
-To:     Eric Dumazet <edumazet@google.com>
-CC:     <sjpark@amazon.com>, David Miller <davem@davemloft.net>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Martin KaFai Lau" <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        <andriin@fb.com>, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        <aams@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        <dola@amazon.com>
-Subject: Re: Re: Re: Latency spikes occurs from frequent socket connections
-Date:   Fri, 31 Jan 2020 08:41:16 +0100
-Message-ID: <20200131074116.8684-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <CANn89iKDn2XhrnLo2rLf7HGXanEuokprqJ_mb0iPqXEnARc9tw@mail.gmail.com> (raw)
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FoKfCmWfNgqHkhotqXl/ixOYix4Lzf/o3uYst0hF2UA=;
+        b=VLx0SPVk3erxoohzVjmMM5bwQxKcDqDMF0lYxtUvC587AjI8a6v1jpeIs6H8U8cFwk
+         UFyHh5LfCL+bAiO+wV0P8uY6ba3usoJ+/UyJu/R+aQV8hXW4cnNkVPNFWEluhtU3EqVT
+         IqwLzZKvMkVz4Tfe6gufZujFHg+AtdeJGG4Q1jaWSRYglDJFLYXh0Su3umNtC2g1H/He
+         MxajuBoza96LrvOZc1ccSoQJpC+FpXQWlH/mw7VZZ7ywaKB9hzv2ptROuGsejPdY6mLs
+         z4M240EyTFeIGM4kjzPaLUxXyvbPqpIVMWv2roDUN92OnjpKPTQKjRnAmrMx3T6CNXCE
+         ibOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FoKfCmWfNgqHkhotqXl/ixOYix4Lzf/o3uYst0hF2UA=;
+        b=UsfMkI4atASmd+2NFlLIj5Nn2DAeqamq25ISF2kTh/2hJv58kD92RKZc4oWtjnjCyw
+         KLQhTCPiLrrHog5QpElb4ZFVuMUaX7qDvplhylxcOPonWygvrH7gd5fcI9YLLrXxhr4S
+         UQuAeJDshoFfjk4Rz3irS4uW456fcnrI3RmkIHIepwpILzMbvxEYPajsznA4vL+TT93t
+         oARaQNh+lNb7Ly1yOu6wNNNU/Ky43w7emlitkFwe2lSIPdbeJqLJ/zCjdjEMyD4b+wL4
+         sLFeTQ6DGcs1COn7WH1gyFS0QUeIwxwrP+kq+MTM2Kw+xQsrXZdsOz/rryzL1M7koTS7
+         8cSg==
+X-Gm-Message-State: APjAAAVsbo06+VHImuz+4fRv3qwzk4XOnvw9rQx7f4YNBpNZ/ZKxTYBF
+        G5UZx+Lz1RgLftb0+F8Pb/dHgH4p5qs=
+X-Google-Smtp-Source: APXvYqy9LfLp7An1Q2b5wirRcJvPO1Z6lbAngUDPPZW0ZGTDAvuAgC3HzBXA0Dbx0Qfr8HidAsN6jA==
+X-Received: by 2002:adf:e609:: with SMTP id p9mr10602775wrm.397.1580459940732;
+        Fri, 31 Jan 2020 00:39:00 -0800 (PST)
+Received: from quaco.ghostprotocols.net (catv-212-96-54-169.catv.broadband.hu. [212.96.54.169])
+        by smtp.gmail.com with ESMTPSA id v17sm10526092wrt.91.2020.01.31.00.38.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 Jan 2020 00:39:00 -0800 (PST)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id F3C2940A7D; Fri, 31 Jan 2020 09:38:58 +0100 (CET)
+Date:   Fri, 31 Jan 2020 09:38:58 +0100
+To:     Cengiz Can <cengiz@kernel.wtf>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH] tools: perf: add missing unlock to maps__insert error
+ case
+Message-ID: <20200131083858.GH3841@kernel.org>
+References: <20200120141553.23934-1-cengiz@kernel.wtf>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.29]
-X-ClientProxiedBy: EX13D13UWA002.ant.amazon.com (10.43.160.172) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200120141553.23934-1-cengiz@kernel.wtf>
+X-Url:  http://acmel.wordpress.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 30 Jan 2020 09:02:08 -0800 Eric Dumazet <edumazet@google.com> wrote:
+Em Mon, Jan 20, 2020 at 05:15:54PM +0300, Cengiz Can escreveu:
+> `tools/perf/util/map.c` has a function named `maps__insert` that
+> acquires a write lock if its in multithread context.
+> 
+> Even though this lock is released when function successfully completes,
+> there's a branch that is executed when `maps_by_name == NULL` that
+> returns from this function without releasing the write lock.
+> 
+> Added an `up_write` to release the lock when this happens.
+> 
+> Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
+> ---
+> 
+> Hello Arnaldo,
+> 
+> I'm not exactly sure about the order that we must call up_write here.
+> 
+> Please tell me if the `__maps__free_maps_by_name` frees the
+> `rw_semaphore`. If that's the case, should we change the order to unlock and free?
 
-> On Thu, Jan 30, 2020 at 4:41 AM <sjpark@amazon.com> wrote:
-> >
-> > On Wed, 29 Jan 2020 09:52:43 -0800 Eric Dumazet <edumazet@google.com> wrote:
-> >
-> > > On Wed, Jan 29, 2020 at 9:14 AM <sjpark@amazon.com> wrote:
-> > > >
-> > > > Hello,
-> > > >
-> > > >
-> > > > We found races in the kernel code that incur latency spikes.  We thus would
-> > > > like to share our investigations and hear your opinions.
-> > > >
-[...]
-> > >
-> > > I would rather try to fix the issue more generically, without adding
-> > > extra lookups as you did, since they might appear
-> > > to reduce the race, but not completely fix it.
-> > >
-> > > For example, the fact that the client side ignores the RST and
-> > > retransmits a SYN after one second might be something that should be
-> > > fixed.
-> >
-> > I also agree with this direction.  It seems detecting this situation and
-> > adjusting the return value of tcp_timeout_init() to a value much lower than the
-> > one second would be a straightforward solution.  For a test, I modified the
-> > function to return 1 (4ms for CONFIG_HZ=250) and confirmed the reproducer be
-> > silent.  My following question is, how we can detect this situation in kernel?
-> > However, I'm unsure how we can distinguish this specific case from other cases,
-> > as everything is working as normal according to the TCP protocol.
-> >
-> > Also, it seems the value is made to be adjustable from the user space using the
-> > bpf callback, BPF_SOCK_OPS_TIMEOUT_INIT:
-> >
-> >     BPF_SOCK_OPS_TIMEOUT_INIT,  /* Should return SYN-RTO value to use or
-> >                                  * -1 if default value should be used
-> >                                  */
-> >
-> > Thus, it sounds like you are suggesting to do the detection and adjustment from
-> > user space.  Am I understanding your point?  If not, please let me know.
-> >
-> 
-> No, I was suggesting to implement a mitigation in the kernel :
-> 
-> When in SYN_SENT state, receiving an suspicious ACK should not
-> simply trigger a RST.
-> 
-> There are multiple ways maybe to address the issue.
-> 
-> 1) Abort the SYN_SENT state and let user space receive an error to its
-> connect() immediately.
-> 
-> 2) Instead of a RST, allow the first SYN retransmit to happen immediately
-> (This is kind of a challenge SYN. Kernel already implements challenge acks)
-> 
-> 3) After RST is sent (to hopefully clear the state of the remote),
-> schedule a SYN rtx in a few ms,
-> instead of ~ one second.
+No it doesn't free the rw_semaphore, that is in 'struct maps', what is
+being freed is just something protected by rw_semaphore,
+maps->maps_by_name, so your patch is right and I'm applying it, thanks.
 
-Thank you for this kind comment, Eric!  I would prefer the second and third
-idea rather than first one.  Anyway, I will send a patch soon.  Will add a
-kselftest for this case, too.
+- Arnaldo
+ 
+> Thanks!
+> 
+>  tools/perf/util/map.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
+> index fdd5bddb3075..f67960bedebb 100644
+> --- a/tools/perf/util/map.c
+> +++ b/tools/perf/util/map.c
+> @@ -549,6 +549,7 @@ void maps__insert(struct maps *maps, struct map *map)
+> 
+>  			if (maps_by_name == NULL) {
+>  				__maps__free_maps_by_name(maps);
+> +				up_write(&maps->lock);
+>  				return;
+>  			}
+> 
+> --
+> 2.25.0
+> 
 
+-- 
 
-Thanks,
-SeongJae Park
-
-[...]
+- Arnaldo
