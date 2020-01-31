@@ -2,101 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C68AC14E8B6
-	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2020 07:18:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FD014E930
+	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2020 08:41:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725907AbgAaGSk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Jan 2020 01:18:40 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:41814 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725832AbgAaGSj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Jan 2020 01:18:39 -0500
-Received: by mail-lj1-f194.google.com with SMTP id h23so5893894ljc.8
-        for <bpf@vger.kernel.org>; Thu, 30 Jan 2020 22:18:37 -0800 (PST)
+        id S1728107AbgAaHlo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Jan 2020 02:41:44 -0500
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:15475 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728089AbgAaHln (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Jan 2020 02:41:43 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z8uOXyJoggDIemZ+9XlkSU7/fgIs263yBX2IvnT2+8I=;
-        b=uYwZpcaExnYZFNNmftsOEnwgUgfLBpJo5GIsOxBmHLDy5XijL5pI89lYHAGI9FR/yK
-         h9RC0QCLyE5xJBmHSEjoL71KpXxkBaL7M5mcjrggl9C6ygcWV38DSwYRTSrGRTH8lzxf
-         PcLlQwSIOoJevgX2Na3uF5+LhYX7vOc+qKIBk19Vs8o1xhhZ6ONeJiEje8VEDn9bAmLx
-         5aAuVkFGoKPNsE3O2Mty9+tZuycV3u1wSlbRqWwerJ20SXWiwF/AOoA1eAzX1REOqo75
-         2YukkXCm+Eb4TqdUX/kPKshBGQV7npT1pOsHuB77S77gqUWHg7xSxhf6ZmEgLmL3mEc6
-         5+eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z8uOXyJoggDIemZ+9XlkSU7/fgIs263yBX2IvnT2+8I=;
-        b=SwJ98ZKnoKx9xYQA8jVfbsMEfMbq1TT6CWatZoyuL5PWh/nUlbdkJiLum1xKqnUvcU
-         mv/PZ7dZBYpeVBokwG665NSBA+2ZdWqGP4sDTreU1Vlncjg8HDz/h7ThFSiLxkPsst/m
-         r7i/leEDEcnxknfvYCYSnlJL05S86J7sildoTZffHT5qZW2ovPnNOH07RSBC20/voNGB
-         ufx+7/qu6nW6VdzE4IzgDnA4Rbu8Aqi31BI+/diD8j08ZSLyLGnjkwlW633RBnxI2JoB
-         7DLFGdF7Akvvpwg6rLUuIHGpMVMkvnvaJcOC8CZSsOdY02MCdT8PDj1KNwEcgLKua3pD
-         vu+g==
-X-Gm-Message-State: APjAAAXdIL/7Qh7ydKDfUYPZYwbvQ5D7/9HShhvr//Jk7E6JpybEyZte
-        UGuFbUowFom+L1+lUgO+uK6Gtl+gjtGU+8T+E/HtGuKN
-X-Google-Smtp-Source: APXvYqzjDJ9iiEvVwXMVYUgZKXO+zmbuo/k1uzFX1nfq/JEKS5Hn31mIZBM/IaUZqsVei9rx33ZyCoowYgLA9Mu63dM=
-X-Received: by 2002:a2e:8145:: with SMTP id t5mr5045203ljg.144.1580451516528;
- Thu, 30 Jan 2020 22:18:36 -0800 (PST)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1580456503; x=1611992503;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=hXqcxoeUTXv6Sl/D/o2xVhucn86dLhacZQT1P/cIuzM=;
+  b=VsXqKMr7mO312v5ohuH8XjkUnzIt36KoDYQhKwgEHa6yIdpnjWHqB85X
+   TNTn0Kk7o/x7ABgvPCoRDa9K3C+gJGtGJRRpyFACsWdoiH4PwE0GSwKgC
+   KDaglHlrsojI/XxhHFBFRSLIKT8Xl/aj7S1yX+sUtX9QXKVFiso9fbq9/
+   0=;
+IronPort-SDR: TDVLF5psLVoz4B8kmnPSKaCBxvX8j+VejGNDcH7bgeJuy0/p1gPPyG1+1SwQ0HFCFa+vcpb7p8
+ 3JUDRyKLDbEg==
+X-IronPort-AV: E=Sophos;i="5.70,385,1574121600"; 
+   d="scan'208";a="14975291"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 31 Jan 2020 07:41:41 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com (Postfix) with ESMTPS id CC8DEC08EB;
+        Fri, 31 Jan 2020 07:41:37 +0000 (UTC)
+Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1236.3; Fri, 31 Jan 2020 07:41:37 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.29) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Fri, 31 Jan 2020 07:41:30 +0000
+From:   <sjpark@amazon.com>
+To:     Eric Dumazet <edumazet@google.com>
+CC:     <sjpark@amazon.com>, David Miller <davem@davemloft.net>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Martin KaFai Lau" <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        <andriin@fb.com>, netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        <aams@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        <dola@amazon.com>
+Subject: Re: Re: Re: Latency spikes occurs from frequent socket connections
+Date:   Fri, 31 Jan 2020 08:41:16 +0100
+Message-ID: <20200131074116.8684-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <CANn89iKDn2XhrnLo2rLf7HGXanEuokprqJ_mb0iPqXEnARc9tw@mail.gmail.com> (raw)
 MIME-Version: 1.0
-References: <158015334199.28573.4940395881683556537.stgit@john-XPS-13-9370>
- <b26a97e0-6b02-db4b-03b3-58054bcb9b82@iogearbox.net> <CAADnVQ+YhgKLkVCsQeBmKWxfuT+4hiHAYte9Xnq8XpC8WedQXQ@mail.gmail.com>
- <99042fc3-0b02-73cb-56cd-fc9a4bfdf3ee@iogearbox.net> <5e320c9a30f64_2a332aadcd1385bc3f@john-XPS-13-9370.notmuch>
- <20200130000415.dwd7zn6wj7qlms7g@ast-mbp> <5e33147f55528_19152af196f745c460@john-XPS-13-9370.notmuch>
- <20200130175935.dauoijsxmbjpytjv@ast-mbp.dhcp.thefacebook.com>
- <5e336803b5773_752d2b0db487c5c06e@john-XPS-13-9370.notmuch>
- <20200131024620.2ctms6f2il6qss3q@ast-mbp> <5e33bfb6414eb_7c012b2399b465bcfe@john-XPS-13-9370.notmuch>
-In-Reply-To: <5e33bfb6414eb_7c012b2399b465bcfe@john-XPS-13-9370.notmuch>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 30 Jan 2020 22:18:24 -0800
-Message-ID: <CAADnVQL+hBuz8AgJ-Tv8iWFoGdpXwSmdqHVzX5NgR_1Lfpx3Yw@mail.gmail.com>
-Subject: Re: [bpf PATCH v3] bpf: verifier, do_refine_retval_range may clamp
- umin to 0 incorrectly
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.29]
+X-ClientProxiedBy: EX13D13UWA002.ant.amazon.com (10.43.160.172) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 30, 2020 at 9:48 PM John Fastabend <john.fastabend@gmail.com> wrote:
-> at the moment. I'll take a look in the morning. That fragment 55,56,
-> 57 are coming from a zext in llvm though.
+On Thu, 30 Jan 2020 09:02:08 -0800 Eric Dumazet <edumazet@google.com> wrote:
 
-I don't think so. Here is how IR looks after all optimizations
-and right before instruction selection:
-  %call12 = call i32 inttoptr (i64 67 to i32 (i8*, i8*, i32,
-i64)*)(i8* %ctx, i8* nonnull %call8, i32 800, i64 256) #2
-  %cmp = icmp slt i32 %call12, 0
-  br i1 %cmp, label %cleanup, label %if.end15
+> On Thu, Jan 30, 2020 at 4:41 AM <sjpark@amazon.com> wrote:
+> >
+> > On Wed, 29 Jan 2020 09:52:43 -0800 Eric Dumazet <edumazet@google.com> wrote:
+> >
+> > > On Wed, Jan 29, 2020 at 9:14 AM <sjpark@amazon.com> wrote:
+> > > >
+> > > > Hello,
+> > > >
+> > > >
+> > > > We found races in the kernel code that incur latency spikes.  We thus would
+> > > > like to share our investigations and hear your opinions.
+> > > >
+[...]
+> > >
+> > > I would rather try to fix the issue more generically, without adding
+> > > extra lookups as you did, since they might appear
+> > > to reduce the race, but not completely fix it.
+> > >
+> > > For example, the fact that the client side ignores the RST and
+> > > retransmits a SYN after one second might be something that should be
+> > > fixed.
+> >
+> > I also agree with this direction.  It seems detecting this situation and
+> > adjusting the return value of tcp_timeout_init() to a value much lower than the
+> > one second would be a straightforward solution.  For a test, I modified the
+> > function to return 1 (4ms for CONFIG_HZ=250) and confirmed the reproducer be
+> > silent.  My following question is, how we can detect this situation in kernel?
+> > However, I'm unsure how we can distinguish this specific case from other cases,
+> > as everything is working as normal according to the TCP protocol.
+> >
+> > Also, it seems the value is made to be adjustable from the user space using the
+> > bpf callback, BPF_SOCK_OPS_TIMEOUT_INIT:
+> >
+> >     BPF_SOCK_OPS_TIMEOUT_INIT,  /* Should return SYN-RTO value to use or
+> >                                  * -1 if default value should be used
+> >                                  */
+> >
+> > Thus, it sounds like you are suggesting to do the detection and adjustment from
+> > user space.  Am I understanding your point?  If not, please let me know.
+> >
+> 
+> No, I was suggesting to implement a mitigation in the kernel :
+> 
+> When in SYN_SENT state, receiving an suspicious ACK should not
+> simply trigger a RST.
+> 
+> There are multiple ways maybe to address the issue.
+> 
+> 1) Abort the SYN_SENT state and let user space receive an error to its
+> connect() immediately.
+> 
+> 2) Instead of a RST, allow the first SYN retransmit to happen immediately
+> (This is kind of a challenge SYN. Kernel already implements challenge acks)
+> 
+> 3) After RST is sent (to hopefully clear the state of the remote),
+> schedule a SYN rtx in a few ms,
+> instead of ~ one second.
 
-if.end15:                                         ; preds = %if.end11
-  %idx.ext70 = zext i32 %call12 to i64
-  %add.ptr = getelementptr i8, i8* %call8, i64 %idx.ext70
-  %sub = sub nsw i32 800, %call12
-  %call16 = call i32 inttoptr (i64 67 to i32 (i8*, i8*, i32,
-i64)*)(i8* %ctx, i8* %add.ptr, i32 %sub, i64 0) #2
-  %cmp17 = icmp slt i32 %call16, 0
-  br i1 %cmp17, label %cleanup, label %if.end20
+Thank you for this kind comment, Eric!  I would prefer the second and third
+idea rather than first one.  Anyway, I will send a patch soon.  Will add a
+kselftest for this case, too.
 
-and corresponding C code:
-        usize = bpf_get_stack(ctx, raw_data, max_len, BPF_F_USER_STACK);
-        if (usize < 0)
-                return 0;
 
-        ksize = bpf_get_stack(ctx, raw_data + usize, max_len - usize, 0);
-        if (ksize < 0)
+Thanks,
+SeongJae Park
 
-%idx.ext70 = zext i32 %call12 to i64
-that you see is a part of 'raw_data + usize' math.
-The result of first bpf_get_stack() is directly passed into
-"icmp slt i32 %call12, 0"
-and during instruction selection the backend does
-sign extension with <<32 s>>32.
-
-I agree that peephole zext->mov32_64 is correct and a nice optimization,
-but I still don't see how it helps this case.
+[...]
