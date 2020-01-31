@@ -2,122 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8896A14F3CB
-	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2020 22:32:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF3514F3DF
+	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2020 22:36:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgAaVcZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Jan 2020 16:32:25 -0500
-Received: from mail-pg1-f169.google.com ([209.85.215.169]:44019 "EHLO
-        mail-pg1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbgAaVcZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Jan 2020 16:32:25 -0500
-Received: by mail-pg1-f169.google.com with SMTP id u131so4146164pgc.10
-        for <bpf@vger.kernel.org>; Fri, 31 Jan 2020 13:32:24 -0800 (PST)
+        id S1726347AbgAaVgs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Jan 2020 16:36:48 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:43310 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726138AbgAaVgs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Jan 2020 16:36:48 -0500
+Received: by mail-lj1-f193.google.com with SMTP id a13so8572195ljm.10
+        for <bpf@vger.kernel.org>; Fri, 31 Jan 2020 13:36:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XyFA36WxUtgN1B6uI/dhE/JlFw5l7tRA6v/t9YsZ+4Y=;
-        b=1xEOD17FFwIS8nQeoUgkw25qZ9S3mjwlnxclYFqCV7Mn1dWiDr18EUry59fS4tajRd
-         avmrAy7klh6lZK7FgCpyHlMQoQN2qxJ7H/3e8AWJ45qn/irosuPX25rTApTlQA8cT+ZM
-         cUNjFlsdbZPm5QJA42yplQgd92FRfZpBhTyP4+DEzD47O+TiM6LjonwmDp2USGbI9JuY
-         ZwrT6mYOA7dsGHgTE38y8ChC0iFw0d84lAOkbjE144kve6DZrqBB6GRB+dYcJq65uyxD
-         ETQkYjVsB0w1dqU7gwT1/DSHnSN5ypUNoWyBsIXlOfKnUEVa0wOkv4TeeX4WHjHJABoF
-         aJVQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P6uj3VbiSr5ZHXg8N0ttBEy+51E5jA3BxEAKoEu6mNQ=;
+        b=u1q9QlfoWEEECMmLla8HEMR19Gr5JZTBz/bu+VxsIGhDK1ah+IhOVJwPTNNrxfevti
+         PQ7UkYzHb/l9fumUan9m0Fy8oY0b0LYI5HYRfvUQt6tqOvRQjOvgziNCdQzFcnbKKeAu
+         GMMqBpJBkE1DyU3By75LGYyR5yFZ1Q5jEiYs8uU0qJ8whdMWb2m14bZSZu8wlE0ffbeZ
+         jdFalb3RMNzgmWHGZ7nYes8uiGSzWgjCV+4mdiZgOM5UQXylsVzYtqA9qpLESIZ9SId5
+         5+LDpQea+QP0NWXYSs6tTcfqPcAJ4Y0vmlOQL2MLHujoY9o2ZDcbSq/BTLJpHavy7yx3
+         JlHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XyFA36WxUtgN1B6uI/dhE/JlFw5l7tRA6v/t9YsZ+4Y=;
-        b=L3LE7cXlEaA0y0oD0ua/GGUk8YjlxLRM9JNZuLsDnJXyXGESacWaiH9H2NLB28f/mY
-         9nBvGazqAwaGgqxHgxpQfbJ5MD0GHaZ4R8+Cvaj5KAubFbJXGkkHZ9y+Jo8cPBCrA7Om
-         ZSWnaArwC2RoBPQ7mBBmTiGiSDckLOmNcpg616ShSbe5h7SfXVWVke83HZV+Uq8LT9AM
-         arnrrRK26GnhWhO+5duEYL6Ahgwx/MI1OWGB0Ow/EOhiWEhFJpIIqUhPAkItbM3Breic
-         QNNI+hQDolmKpFUvP+UaWQ2VAipHAtCPHTuKTjANttbAMDMePjNYOBLh/YoHCsCH5PtR
-         pfCg==
-X-Gm-Message-State: APjAAAVdnGAEW2lIxKp9kGvQm2sbx53ZRaMzwf6JcCxnW2Sb8FQMApXS
-        zXcHRKsoiFJm6KO8fbpWTSNRwgSBEaZcPg==
-X-Google-Smtp-Source: APXvYqy24Ve1+561kObrRFqRP0GvpY+qJCRm1uwI+US5R1xiDIwpAS6GNLd3Ugtjyfcc/16sAe4VbA==
-X-Received: by 2002:a63:5f43:: with SMTP id t64mr12110260pgb.360.1580506343432;
-        Fri, 31 Jan 2020 13:32:23 -0800 (PST)
-Received: from [172.20.10.2] ([107.72.96.24])
-        by smtp.gmail.com with ESMTPSA id h7sm11895854pfq.36.2020.01.31.13.32.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 31 Jan 2020 13:32:22 -0800 (PST)
-Subject: Re: [LSF/MM/BPF TOPIC] programmable IO control flow with io_uring and
- BPF
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        lsf-pc@lists.linux-foundation.org
-Cc:     io-uring <io-uring@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <e25f7a09-96b2-2288-4777-9f728a8b2c23@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <a2975b58-4d53-f13e-841c-04d4075cd0cd@kernel.dk>
-Date:   Fri, 31 Jan 2020 14:30:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P6uj3VbiSr5ZHXg8N0ttBEy+51E5jA3BxEAKoEu6mNQ=;
+        b=MU5BeFC5s/Zr2gusb9csLJRKJafgp9xmZC1eRw8URQnBBfzTlv7S8K/2SCCTawNJIx
+         BYE3WsfmR6EWoLxbYbEVnTXeY3CeO6qtr8NCSjRzX/6j+FQ+XJ17dVtQ46pEWJCyJ0QR
+         cf9ZanwOimsrMn+shZ48N95VwOCQ7h4z0rs5AeKRJNI89cwn/+GqZB8pBJs0QZu/oIwR
+         ghlF4gXWz6thtsW8epUHiZK55m4WdhhRfm6k0zaLKC+/HTzVDInYjjaN+qlFkS37Y8lC
+         rswIZF7G4cRPPkHWzCEVYlTBCTlc/qpPhr6UdSokphTsc6PxYom2ppnIxOsAZMuI1YPs
+         jZQQ==
+X-Gm-Message-State: APjAAAUXBqcLBQ51LpgvEPoLtM4SgP0AaTHyyPhv/KwnbVUesQ6XsLAU
+        fNlkn6WsyCdDqwNxa48tzEvHk4HxUYIiq+HBIJU=
+X-Google-Smtp-Source: APXvYqwK+eKkINPUo5igvFL4FykKg0ZgvSShqlSu40gCf62t9KIx8Agct3tHH4Hqa+/q18TMlblhwckjKBofLcZk+x0=
+X-Received: by 2002:a2e:a404:: with SMTP id p4mr7247790ljn.234.1580506605981;
+ Fri, 31 Jan 2020 13:36:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <e25f7a09-96b2-2288-4777-9f728a8b2c23@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <158015334199.28573.4940395881683556537.stgit@john-XPS-13-9370>
+ <b26a97e0-6b02-db4b-03b3-58054bcb9b82@iogearbox.net> <CAADnVQ+YhgKLkVCsQeBmKWxfuT+4hiHAYte9Xnq8XpC8WedQXQ@mail.gmail.com>
+ <99042fc3-0b02-73cb-56cd-fc9a4bfdf3ee@iogearbox.net> <5e320c9a30f64_2a332aadcd1385bc3f@john-XPS-13-9370.notmuch>
+ <20200130000415.dwd7zn6wj7qlms7g@ast-mbp> <5e33147f55528_19152af196f745c460@john-XPS-13-9370.notmuch>
+ <20200130175935.dauoijsxmbjpytjv@ast-mbp.dhcp.thefacebook.com>
+ <5e336803b5773_752d2b0db487c5c06e@john-XPS-13-9370.notmuch>
+ <20200131024620.2ctms6f2il6qss3q@ast-mbp> <5e33bfb6414eb_7c012b2399b465bcfe@john-XPS-13-9370.notmuch>
+ <CAADnVQL+hBuz8AgJ-Tv8iWFoGdpXwSmdqHVzX5NgR_1Lfpx3Yw@mail.gmail.com> <5e3460d3a3fb1_4a9b2ab23eff45b82c@john-XPS-13-9370.notmuch>
+In-Reply-To: <5e3460d3a3fb1_4a9b2ab23eff45b82c@john-XPS-13-9370.notmuch>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 31 Jan 2020 13:36:34 -0800
+Message-ID: <CAADnVQ+m70Pzs33mAhsF0JEx+LVoXrTZyC-szhyk+cNo71GgXw@mail.gmail.com>
+Subject: Re: [bpf PATCH v3] bpf: verifier, do_refine_retval_range may clamp
+ umin to 0 incorrectly
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/24/20 7:18 AM, Pavel Begunkov wrote:
-> Apart from concurrent IO execution, io_uring allows to issue a sequence
-> of operations, a.k.a links, where requests are executed sequentially one
-> after another. If an "error" happened, the rest of the link will be
-> cancelled.
-> 
-> The problem is what to consider an "error". For example, if we
-> read less bytes than have been asked for, the link will be cancelled.
-> It's necessary to play safe here, but this implies a lot of overhead if
-> that isn't the desired behaviour. The user would need to reap all
-> cancelled requests, analyse the state, resubmit them and suffer from
-> context switches and all in-kernel preparation work. And there are
-> dozens of possibly desirable patterns, so it's just not viable to
-> hard-code them into the kernel.
-> 
-> The other problem is to keep in running even when a request depends on
-> a result of the previous one. It could be simple passing return code or
-> something more fancy, like reading from the userspace.
-> 
-> And that's where BPF will be extremely useful. It will control the flow
-> and do steering.
-> 
-> The concept is to be able run a BPF program after a request's
-> completion, taking the request's state, and doing some of the following:
-> 1. drop a link/request
-> 2. issue new requests
-> 3. link/unlink requests
-> 4. do fast calculations / accumulate data
-> 5. emit information to the userspace (e.g. via ring's CQ)
-> 
-> With that, it will be possible to have almost context-switch-less IO,
-> and that's really tempting considering how fast current devices are.
-> 
-> What to discuss:
-> 1. use cases
-> 2. control flow for non-privileged users (e.g. allowing some popular
->    pre-registered patterns)
-> 3. what input the program needs (e.g. last request's
->    io_uring_cqe) and how to pass it.
-> 4. whether we need notification via CQ for each cancelled/requested
->    request, because sometimes they only add noise
-> 5. BPF access to user data (e.g. allow to read only registered buffers)
-> 6. implementation details. E.g.
->    - how to ask to run BPF (e.g. with a new opcode)
->    - having global BPF, bound to an io_uring instance or mixed
->    - program state and how to register
->    - rework notion of draining and sequencing
->    - live-lock avoidance (e.g. double check io_uring shut-down code)
+On Fri, Jan 31, 2020 at 9:16 AM John Fastabend <john.fastabend@gmail.com> wrote:
+>
+> Also don't mind to build pseudo instruction here for signed extension
+> but its not clear to me why we are getting different instruction
+> selections? Its not clear to me why sext is being chosen in your case?
 
-I think this is a key topic that we should absolutely discuss at LSFMM.
+Sign extension has to be there if jmp64 is used.
+So the difference is due to -mcpu=v2 vs -mcpu=v3
+v2 does alu32, but not jmp32
+v3 does both.
+By default selftests are using -mcpu=probe which
+detects v2/v3 depending on running kernel.
 
--- 
-Jens Axboe
+llc -mattr=dwarfris -march=bpf -mcpu=v3  -mattr=+alu32
+;       usize = bpf_get_stack(ctx, raw_data, max_len, BPF_F_USER_STACK);
+      48:       bf 61 00 00 00 00 00 00 r1 = r6
+      49:       bf 72 00 00 00 00 00 00 r2 = r7
+      50:       b4 03 00 00 20 03 00 00 w3 = 800
+      51:       b7 04 00 00 00 01 00 00 r4 = 256
+      52:       85 00 00 00 43 00 00 00 call 67
+      53:       bc 08 00 00 00 00 00 00 w8 = w0
+;       if (usize < 0)
+      54:       c6 08 16 00 00 00 00 00 if w8 s< 0 goto +22 <LBB0_6>
+;       ksize = bpf_get_stack(ctx, raw_data + usize, max_len - usize, 0);
+      55:       1c 89 00 00 00 00 00 00 w9 -= w8
+      56:       bc 81 00 00 00 00 00 00 w1 = w8
+      57:       67 01 00 00 20 00 00 00 r1 <<= 32
+      58:       77 01 00 00 20 00 00 00 r1 >>= 32
+      59:       bf 72 00 00 00 00 00 00 r2 = r7
+      60:       0f 12 00 00 00 00 00 00 r2 += r1
+      61:       bf 61 00 00 00 00 00 00 r1 = r6
+      62:       bc 93 00 00 00 00 00 00 w3 = w9
+      63:       b7 04 00 00 00 00 00 00 r4 = 0
+      64:       85 00 00 00 43 00 00 00 call 67
+;       if (ksize < 0)
+      65:       c6 00 0b 00 00 00 00 00 if w0 s< 0 goto +11 <LBB0_6>
 
+llc -mattr=dwarfris -march=bpf -mcpu=v2  -mattr=+alu32
+;       usize = bpf_get_stack(ctx, raw_data, max_len, BPF_F_USER_STACK);
+      48:       bf 61 00 00 00 00 00 00 r1 = r6
+      49:       bf 72 00 00 00 00 00 00 r2 = r7
+      50:       b4 03 00 00 20 03 00 00 w3 = 800
+      51:       b7 04 00 00 00 01 00 00 r4 = 256
+      52:       85 00 00 00 43 00 00 00 call 67
+      53:       bc 08 00 00 00 00 00 00 w8 = w0
+;       if (usize < 0)
+      54:       bc 81 00 00 00 00 00 00 w1 = w8
+      55:       67 01 00 00 20 00 00 00 r1 <<= 32
+      56:       c7 01 00 00 20 00 00 00 r1 s>>= 32
+      57:       c5 01 19 00 00 00 00 00 if r1 s< 0 goto +25 <LBB0_6>
+;       ksize = bpf_get_stack(ctx, raw_data + usize, max_len - usize, 0);
+      58:       1c 89 00 00 00 00 00 00 w9 -= w8
+      59:       bc 81 00 00 00 00 00 00 w1 = w8
+      60:       67 01 00 00 20 00 00 00 r1 <<= 32
+      61:       77 01 00 00 20 00 00 00 r1 >>= 32
+      62:       bf 72 00 00 00 00 00 00 r2 = r7
+      63:       0f 12 00 00 00 00 00 00 r2 += r1
+      64:       bf 61 00 00 00 00 00 00 r1 = r6
+      65:       bc 93 00 00 00 00 00 00 w3 = w9
+      66:       b7 04 00 00 00 00 00 00 r4 = 0
+      67:       85 00 00 00 43 00 00 00 call 67
+;       if (ksize < 0)
+      68:       bc 01 00 00 00 00 00 00 w1 = w0
+      69:       67 01 00 00 20 00 00 00 r1 <<= 32
+      70:       c7 01 00 00 20 00 00 00 r1 s>>= 32
+      71:       c5 01 0b 00 00 00 00 00 if r1 s< 0 goto +11 <LBB0_6>
+
+zext is there both cases and it will be optimized with your llvm patch.
+So please send it. Don't delay :)
