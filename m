@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D2114E6B0
-	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2020 01:44:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E44914E6B8
+	for <lists+bpf@lfdr.de>; Fri, 31 Jan 2020 01:48:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727614AbgAaAoV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jan 2020 19:44:21 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:39492 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727610AbgAaAoV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jan 2020 19:44:21 -0500
-Received: by mail-pg1-f194.google.com with SMTP id 4so2535504pgd.6
-        for <bpf@vger.kernel.org>; Thu, 30 Jan 2020 16:44:19 -0800 (PST)
+        id S1727628AbgAaAsS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jan 2020 19:48:18 -0500
+Received: from mail-pg1-f178.google.com ([209.85.215.178]:41466 "EHLO
+        mail-pg1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727610AbgAaAsS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jan 2020 19:48:18 -0500
+Received: by mail-pg1-f178.google.com with SMTP id x8so2535954pgk.8
+        for <bpf@vger.kernel.org>; Thu, 30 Jan 2020 16:48:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=teUPYWT5Tcf/F6OuESAIp7LDwZdxXEXU1yfg5s41NP0=;
-        b=JCvBjn+opwbPNFoNUfZgIIpKoYhwavA0IKvvWM0uJPxAZJg/8fniuJVXwZRYsdliRz
-         2CdQQQ4XbXDfH4Xw+1ScDuL8yLYs1zaVsIBXZJyR66Km9etBHAFv/yOfMFjPasfLjcYQ
-         r4iDPApopweb2XKWef14YjO96kqUJDs7F3dSZIFdTjml+ddD9BQ+i7MmQBTx5n01+r8s
-         OC0QG/v/QWw/yg6GjbYFMR5uikvgI43sdO1kOSBLVcUa0bfVP/TWYCBT8gpILQYUY0jt
-         N9JjswtdiA+h4fDrIFanygXJ5XWbKKc/njnaZ/p0oxjefe8yf6RhGj7YGvae5J5ybPXa
-         zXcQ==
+        bh=EgZxLtpgr3sZZUhtxkApY0Q9KtzCH4siguGHO+iOr3w=;
+        b=ogB21X/M7up2+BWR/x2+y9WYRtOPWumyw0N83TGhkxD9OEjxyPC0rL1wKTIRLGQO8W
+         FZNLidpYlm2S0I8b1LCQ4jUDij9BE5zkzr0dG1eX6YMsTUluiAnOYztTrHfHCmqF8lMq
+         /AI86fTt2vDEyj/lagaQs85FzjuQ1zz2KCwsfAjXn5ICokpDypMz+PXRbAzUTr8Rqipg
+         71LfkN0Z0EqjWEhcH1NtDcc9VnMVjwov/89VS8ohmX8ut64G6WX97u7c0LUSHI8x6asp
+         hR3w7t8f2HFpaFPkie4cCGsN8uJyKpw7hPaY0W9WXFtyNDSE+7R7Wg0MUP9kVc+RwB9d
+         O+IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=teUPYWT5Tcf/F6OuESAIp7LDwZdxXEXU1yfg5s41NP0=;
-        b=GdnJMAp5WX+O1SxDZ5Ac1hFdCwo4tEf3Lq88TbM/TuXMuZh18L7ga/d4UQ4UtHN1RY
-         Gu+1YGuaOPjl97ANMfpfpshMnYWIpDbFbi9ugVSgdeewnBbfr12NBnPNQeJ7Y8VR/Mx3
-         SsHaLSiXeHkDXAFEiOwTUMeVCbyHID/PgB8hL3TfZ11fxQwxSTactW314bySz8ujkrq4
-         PY9YwdzvwTr0BMvBLV3sPlXrlFprGoN2xcMQ8de4KCzIlzuVwQq4Y1OGVgcSvpyqpmS7
-         FTHSX4OI+7bhKYf8iEgGI3s84ExK2s03SvLO6uFvF5Vz7P9+UMPHHf4CR9DANF089h2O
-         UHfA==
-X-Gm-Message-State: APjAAAW7sRXM8mSQ1j+pSTXIUhJk4p4KY2eYg6FR4X2Yygmn8/bS9R3k
-        OtU7koo5lPPIPvlm741+BD0=
-X-Google-Smtp-Source: APXvYqylXHYHbmYNpx/kYW4VnQvIxXWLWo92iuKuraiq/jyhSp0feXKWks8JKUFD93KOKHzXurAbPg==
-X-Received: by 2002:a62:1a16:: with SMTP id a22mr7740929pfa.34.1580431458765;
-        Thu, 30 Jan 2020 16:44:18 -0800 (PST)
+        bh=EgZxLtpgr3sZZUhtxkApY0Q9KtzCH4siguGHO+iOr3w=;
+        b=YdcW5LQaoyFY6z/y2u64ng8Wj2O3q1/NsycGj3Snf2hLRLCocXKLZaPn4IFnOsjBvj
+         7ssuAPStcEJZSv+Vg9hKSfdQ8q8eYbxfgVj8o66m3ZErOBHPO/etwH6JNHBgIa491dD2
+         g4j8dJWZnsThQFkbSjFzUNd5Y+7oWWmznyQmu9rghJdk9/TkFDzhPOhc/6dkCdBuZfxO
+         cbHCM5RLgOZgXe/JJ6jv3zkuNL3nxCznFgBwa2sRQL3BMx6/lYP5EWcbMhs7BOBWnl7h
+         FTy01/W8/uwVIv+z4s3QuSkwwIkie5VK7ny07wQlZoI+ie+Pn2Y1xLEo6rFlpfiSiUe0
+         Uhlw==
+X-Gm-Message-State: APjAAAVU5qDjZGpY2jdHvc9mW4OOMk2Do1TVla+nBDGDIor5CuwdPCZU
+        fyBOLxv8fSZ/c/7q3sSxbXU=
+X-Google-Smtp-Source: APXvYqyeE3FSceyzpY/5VHRyrcoCng/jiMPdvC178M0sVNtYYp4hqAoEVFb7rA5nAVVCEYMEz2clsg==
+X-Received: by 2002:a63:4416:: with SMTP id r22mr7482694pga.254.1580431697179;
+        Thu, 30 Jan 2020 16:48:17 -0800 (PST)
 Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id x12sm8462652pfr.47.2020.01.30.16.44.15
+        by smtp.gmail.com with ESMTPSA id i68sm7888380pfe.173.2020.01.30.16.48.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jan 2020 16:44:18 -0800 (PST)
-Date:   Thu, 30 Jan 2020 16:44:09 -0800
+        Thu, 30 Jan 2020 16:48:16 -0800 (PST)
+Date:   Thu, 30 Jan 2020 16:48:09 -0800
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>
-Message-ID: <5e337859a4287_43212ac192b965bc51@john-XPS-13-9370.notmuch>
-In-Reply-To: <740b2df9-af35-cc9e-d4f9-50978ef2dbc6@fb.com>
+Message-ID: <5e33794983ffe_43212ac192b965bc78@john-XPS-13-9370.notmuch>
+In-Reply-To: <096d8647-3dc7-6923-dcd3-9702aee2467a@fb.com>
 References: <158015334199.28573.4940395881683556537.stgit@john-XPS-13-9370>
  <b26a97e0-6b02-db4b-03b3-58054bcb9b82@iogearbox.net>
  <CAADnVQ+YhgKLkVCsQeBmKWxfuT+4hiHAYte9Xnq8XpC8WedQXQ@mail.gmail.com>
@@ -62,7 +62,7 @@ References: <158015334199.28573.4940395881683556537.stgit@john-XPS-13-9370>
  <5e33147f55528_19152af196f745c460@john-XPS-13-9370.notmuch>
  <20200130175935.dauoijsxmbjpytjv@ast-mbp.dhcp.thefacebook.com>
  <5e336803b5773_752d2b0db487c5c06e@john-XPS-13-9370.notmuch>
- <740b2df9-af35-cc9e-d4f9-50978ef2dbc6@fb.com>
+ <096d8647-3dc7-6923-dcd3-9702aee2467a@fb.com>
 Subject: Re: [bpf PATCH v3] bpf: verifier, do_refine_retval_range may clamp
  umin to 0 incorrectly
 Mime-Version: 1.0
@@ -205,33 +205,6 @@ Yonghong Song wrote:
 > >   def : Pat<(i64 (zext GPR32:$src)),
 > > -          (SRL_ri (SLL_ri (MOV_32_64 GPR32:$src), 32), 32)>;
 > > +          (MOV_32_64 GPR32:$src)>;
-> 
-> Thanks. This should work.
-> 
-> Also, in BPF backend, we have a phase in BPFMIPeephole.cpp to
-> remove such <<= and >>= in general. It may miss some cases.
-> 
-> But verifier seems handling <<= and >>= correctly, right?
-> Even we have it, the verifier should reach the same conclusion
-> compared to not having it, right?
-> 
-
-No, verifier marks it unknown and doesn't track it fully. We
-can perhaps improve the verifier but the above is a nice
-fix/improvement for the backend imo regardless.
-
-	case BPF_LSH:
-		if (umax_val >= insn_bitness) {
-			/* Shifts greater than 31 or 63 are undefined.
-			 * This includes shifts by a negative number.
-			 */
-			mark_reg_unknown(env, regs, insn->dst_reg);
-			break;
-		}
-		/* We lose all sign bit information (except what we can pick
-		 * up from var_off)
-		 */
-
 > >   
 > > Now the new object code is simply,
 > > 
@@ -290,6 +263,42 @@ fix/improvement for the backend imo regardless.
 > > This appears to conservative. I'll need to analyze that a bit but it
 > > should be safe to relax to catch above <0 case. After that I expect
 > > we should be passing again.
+> 
+> Yes, this is the place I have problem as well. In my case, the top 32bit 
+> bit may not be 0, it will be somehow magically cleared later through
+> w_x = w_y style ALU operations.
+
+The w_x = w_y MOV can be improved as well a bit and this helps my case.
+Needs some more thought but roughly coerce_reg_to_size called from
+MOV can do better with max bound. At the moment it loses all knowledge
+of previous bounds checks on the move becuase of the smax_value=umax_value
+below,
+
+static void coerce_reg_to_size(struct bpf_reg_state *reg, int size)
+{
+	u64 mask;
+
+	/* clear high bits in bit representation */
+	reg->var_off = tnum_cast(reg->var_off, size);
+
+	/* fix arithmetic bounds */
+	mask = ((u64)1 << (size * 8)) - 1;
+	if ((reg->umin_value & ~mask) == (reg->umax_value & ~mask)) {
+		reg->umin_value &= mask;
+		reg->umax_value &= mask;
+	} else {
+		reg->umin_value = 0;
+		reg->umax_value = mask;
+	}
+	reg->smin_value = reg->umin_value;
+	reg->smax_value = reg->umax_value;
+}
+
+I believe smax_value can likely be max(reg->smax_value, reg->umax_value)
+but need to check. (assuming smax_value < UMAX_32) I need to drop off for
+tonight but will dig into it tomorrow.
+
+> 
 > > 
 > > Sorry for the long thread but those are the details. What do you think,
 > > in the meantime I'll generate the relaxed bounds on cmp_val_with_extended
