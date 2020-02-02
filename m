@@ -2,59 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C904414FCBD
-	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2020 12:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C481214FD5C
+	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2020 14:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbgBBLBW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 2 Feb 2020 06:01:22 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47454 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726044AbgBBLBW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 2 Feb 2020 06:01:22 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id CC57DAD69;
-        Sun,  2 Feb 2020 11:01:20 +0000 (UTC)
-From:   Michal Rostecki <mrostecki@opensuse.org>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf] bpftool: Remove redundant "HAVE" prefix from the large INSN limit check
-Date:   Sun,  2 Feb 2020 12:02:00 +0100
-Message-Id: <20200202110200.31024-1-mrostecki@opensuse.org>
-X-Mailer: git-send-email 2.16.4
+        id S1726679AbgBBNhf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 2 Feb 2020 08:37:35 -0500
+Received: from relay10.mail.gandi.net ([217.70.178.230]:41567 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726198AbgBBNhf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 2 Feb 2020 08:37:35 -0500
+Received: from [192.168.0.12] (127.19.86.79.rev.sfr.net [79.86.19.127])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 28D74240002;
+        Sun,  2 Feb 2020 13:37:30 +0000 (UTC)
+Subject: Re: [PATCH bpf-next v2 6/9] riscv, bpf: provide RISC-V specific JIT
+ image alloc/free
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        daniel@iogearbox.net, ast@kernel.org, netdev@vger.kernel.org
+Cc:     linux-riscv@lists.infradead.org, bpf@vger.kernel.org,
+        anup@brainfault.org
+References: <20191216091343.23260-1-bjorn.topel@gmail.com>
+ <20191216091343.23260-7-bjorn.topel@gmail.com>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <3f6d3495-efdf-e663-2a84-303fde947a1d@ghiti.fr>
+Date:   Sun, 2 Feb 2020 08:37:30 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
+MIME-Version: 1.0
+In-Reply-To: <20191216091343.23260-7-bjorn.topel@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-"HAVE" prefix is already applied by default to feature macros and before
-this change, the large INSN limit macro had the incorrect name with
-double "HAVE".
+On 12/16/19 4:13 AM, Björn Töpel wrote:
+> This commit makes sure that the JIT images is kept close to the kernel
+> text, so BPF calls can use relative calling with auipc/jalr or jal
+> instead of loading the full 64-bit address and jalr.
+>
+> The BPF JIT image region is 128 MB before the kernel text.
+>
+> Signed-off-by: Björn Töpel <bjorn.topel@gmail.com>
+> ---
+>   arch/riscv/include/asm/pgtable.h |  4 ++++
+>   arch/riscv/net/bpf_jit_comp.c    | 13 +++++++++++++
+>   2 files changed, 17 insertions(+)
+>
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> index 7ff0ed4f292e..cc3f49415620 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -404,6 +404,10 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
+>   #define VMALLOC_END      (PAGE_OFFSET - 1)
+>   #define VMALLOC_START    (PAGE_OFFSET - VMALLOC_SIZE)
+>   
+> +#define BPF_JIT_REGION_SIZE	(SZ_128M)
+> +#define BPF_JIT_REGION_START	(PAGE_OFFSET - BPF_JIT_REGION_SIZE)
+> +#define BPF_JIT_REGION_END	(VMALLOC_END)
+> +
+>   /*
+>    * Roughly size the vmemmap space to be large enough to fit enough
+>    * struct pages to map half the virtual address space. Then
+> diff --git a/arch/riscv/net/bpf_jit_comp.c b/arch/riscv/net/bpf_jit_comp.c
+> index 8aa19c846881..46cff093f526 100644
+> --- a/arch/riscv/net/bpf_jit_comp.c
+> +++ b/arch/riscv/net/bpf_jit_comp.c
+> @@ -1656,3 +1656,16 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>   					   tmp : orig_prog);
+>   	return prog;
+>   }
+> +
+> +void *bpf_jit_alloc_exec(unsigned long size)
+> +{
+> +	return __vmalloc_node_range(size, PAGE_SIZE, BPF_JIT_REGION_START,
+> +				    BPF_JIT_REGION_END, GFP_KERNEL,
+> +				    PAGE_KERNEL_EXEC, 0, NUMA_NO_NODE,
+> +				    __builtin_return_address(0));
+> +}
+> +
+> +void bpf_jit_free_exec(void *addr)
+> +{
+> +	return vfree(addr);
+> +}
 
-Fixes: 2faef64aa6b3 ("bpftool: Add misc section and probe for large INSN limit")
-Signed-off-by: Michal Rostecki <mrostecki@opensuse.org>
----
- tools/bpf/bpftool/feature.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-index 446ba891f1e2..941873d778d8 100644
---- a/tools/bpf/bpftool/feature.c
-+++ b/tools/bpf/bpftool/feature.c
-@@ -580,7 +580,7 @@ probe_large_insn_limit(const char *define_prefix, __u32 ifindex)
- 	res = bpf_probe_large_insn_limit(ifindex);
- 	print_bool_feature("have_large_insn_limit",
- 			   "Large program size limit",
--			   "HAVE_LARGE_INSN_LIMIT",
-+			   "LARGE_INSN_LIMIT",
- 			   res, define_prefix);
- }
- 
--- 
-2.16.4
+I think it would be better to completely avoid this patch and the 
+definition of this
+new zone by using the generic implementation if we had the patch 
+discussed here
+regarding modules memory allocation (that in any case we need to fix 
+modules loading):
+
+https://lore.kernel.org/linux-riscv/d868acf5-7242-93dc-0051-f97e64dc4387@ghiti.fr/T/#m2be30cb71dc9aa834a50d346961acee26158a238
+
+Alex
 
