@@ -2,96 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0112F14FC03
-	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2020 07:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C904414FCBD
+	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2020 12:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbgBBGwM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 2 Feb 2020 01:52:12 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:51982 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726483AbgBBGwM (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 2 Feb 2020 01:52:12 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0126qBgV024624
-        for <bpf@vger.kernel.org>; Sat, 1 Feb 2020 22:52:11 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=facebook;
- bh=6RlqJId2gCEvf7lAyFLxjnPyGOhROSpW91nDclclOEo=;
- b=nipHvFPbZt/xFHISoiHlhU58TCGDMIchSWgZ480e8Hd1R2Y9NvcAmXL/eDCqRUqMhrkp
- 1GwG3aLZIk/XRg2dmARvueIzPNRcucZottVlQNcqBxby5LDOPUjATRhAp1+o4vdrNW/x
- yjVIuQmTgb/cKcTdzLz3TGvEYuwtjqR1q2Q= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 2xw7whakkh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sat, 01 Feb 2020 22:52:11 -0800
-Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Sat, 1 Feb 2020 22:52:10 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id A9AE42EC2504; Sat,  1 Feb 2020 22:51:59 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf] selftests/bpf: fix trampoline_count.c selftest compilation warning
-Date:   Sat, 1 Feb 2020 22:51:52 -0800
-Message-ID: <20200202065152.2718142-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-02-01_08:2020-01-31,2020-02-01 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- bulkscore=0 priorityscore=1501 suspectscore=8 mlxlogscore=900 adultscore=0
- lowpriorityscore=0 malwarescore=0 spamscore=0 mlxscore=0 clxscore=1015
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1911200001 definitions=main-2002020055
-X-FB-Internal: deliver
+        id S1726149AbgBBLBW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 2 Feb 2020 06:01:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47454 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726044AbgBBLBW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 2 Feb 2020 06:01:22 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id CC57DAD69;
+        Sun,  2 Feb 2020 11:01:20 +0000 (UTC)
+From:   Michal Rostecki <mrostecki@opensuse.org>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf] bpftool: Remove redundant "HAVE" prefix from the large INSN limit check
+Date:   Sun,  2 Feb 2020 12:02:00 +0100
+Message-Id: <20200202110200.31024-1-mrostecki@opensuse.org>
+X-Mailer: git-send-email 2.16.4
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix missing braces compilation warning in trampoline_count test:
+"HAVE" prefix is already applied by default to feature macros and before
+this change, the large INSN limit macro had the incorrect name with
+double "HAVE".
 
-  .../prog_tests/trampoline_count.c: In function =E2=80=98test_trampoline=
-_count=E2=80=99:
-  .../prog_tests/trampoline_count.c:49:9: warning: missing braces around =
-initializer [-Wmissing-braces]
-  struct inst inst[MAX_TRAMP_PROGS] =3D { 0 };
-         ^
-  .../prog_tests/trampoline_count.c:49:9: warning: (near initialization f=
-or =E2=80=98inst[0]=E2=80=99) [-Wmissing-braces]
-
-Fixes: d633d57902a5 ("selftest/bpf: Add test for allowed trampolines coun=
-t")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Fixes: 2faef64aa6b3 ("bpftool: Add misc section and probe for large INSN limit")
+Signed-off-by: Michal Rostecki <mrostecki@opensuse.org>
 ---
- tools/testing/selftests/bpf/prog_tests/trampoline_count.c | 2 +-
+ tools/bpf/bpftool/feature.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c b/=
-tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-index 1235f3d1cc50..1f6ccdaed1ac 100644
---- a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-+++ b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-@@ -46,7 +46,7 @@ void test_trampoline_count(void)
- 	const char *fentry_name =3D "fentry/__set_task_comm";
- 	const char *fexit_name =3D "fexit/__set_task_comm";
- 	const char *object =3D "test_trampoline_count.o";
--	struct inst inst[MAX_TRAMP_PROGS] =3D { 0 };
-+	struct inst inst[MAX_TRAMP_PROGS] =3D {};
- 	int err, i =3D 0, duration =3D 0;
- 	struct bpf_object *obj;
- 	struct bpf_link *link;
---=20
-2.17.1
+diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
+index 446ba891f1e2..941873d778d8 100644
+--- a/tools/bpf/bpftool/feature.c
++++ b/tools/bpf/bpftool/feature.c
+@@ -580,7 +580,7 @@ probe_large_insn_limit(const char *define_prefix, __u32 ifindex)
+ 	res = bpf_probe_large_insn_limit(ifindex);
+ 	print_bool_feature("have_large_insn_limit",
+ 			   "Large program size limit",
+-			   "HAVE_LARGE_INSN_LIMIT",
++			   "LARGE_INSN_LIMIT",
+ 			   res, define_prefix);
+ }
+ 
+-- 
+2.16.4
 
