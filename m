@@ -2,108 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4292D14FE65
-	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2020 17:51:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9527C14FF07
+	for <lists+bpf@lfdr.de>; Sun,  2 Feb 2020 21:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726893AbgBBQvJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 2 Feb 2020 11:51:09 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:9460 "EHLO
+        id S1726916AbgBBUAL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 2 Feb 2020 15:00:11 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:38072 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726885AbgBBQvJ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 2 Feb 2020 11:51:09 -0500
+        by vger.kernel.org with ESMTP id S1726290AbgBBUAK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 2 Feb 2020 15:00:10 -0500
 Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 012GoU7X009223;
-        Sun, 2 Feb 2020 08:50:54 -0800
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 012JxTN8009453;
+        Sun, 2 Feb 2020 11:59:49 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=EtPkO1zn2fMTnMO9paBK2XYnpgw3iHc0Y7IkafuPwz4=;
- b=TwbRO//dRMhKcJlypCPtFhpGYXmQccJ1Yu7amq+gvPYlIqGIU/rbnwf3EUoWpF1MvX45
- 1BO/xv/c91W2QjCSYfOGvuYgJ/5/DTBRtwRRbN36Q19/zlkcE4dSdi1iCU10TnklkbsJ
- 3doHUhmAHROkd4AHmKj9HUowtazGOo+cS30= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2xwsrv94h1-1
+ bh=AwVHMf0ZBIJd8j/skzLv4MvW44rKFaSF/6jyTFiRJHI=;
+ b=DL9H/zp4ekYiK9xsDNcqV60MfVnXGQ04zNL5RqCZEhLfoGLqfwkI53BvKxuSTPcBfXaY
+ AvhJNB/AWM3aU8NV8e1GeHjxhBRPzBwucNUtmFvE3BVvoHIoc4jELerwRNxk3w9l0eSl
+ C8uXmbWFPnKTzjQJX10tbdMTSjyN1Gqk10g= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 2xwsrv9hvp-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 02 Feb 2020 08:50:53 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+        Sun, 02 Feb 2020 11:59:49 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Sun, 2 Feb 2020 08:50:52 -0800
+ 15.1.1779.2; Sun, 2 Feb 2020 11:59:48 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dN0En/e6KLX5RCWpN5S2EQmu0rtGttbzvsHYxOtWWDB3ATSjahlkYhOfZqdolV7KYYX9oQ/5thSINFiTotDBwgiWTLYNjNISz92cFMHnHmljRwAgSO1iqbhD5kQoLQd6wVoWRCdwXotfau26tclAjhgFV6wOZR+TnfkfZ6uNVR5FolUl/BulsFzblNsRGjnglzB2GBFKU5QrmSPGk3TQG20cn0hcQIiA2A2hqRoUT83wioZ889KRPW1F+bf35C/gYiKrx1RVNo1PSfNohLRjxmLIV3GYaGqYCRWyrSZjd35Slswd6+2OHRsB73gd0HBUZnOeYJnnCDuXznW2si/ZRw==
+ b=RJMngZ69Sko5ThnRu2Hxc1nZ5BO5ctZ1Oh/Z7yXNrO7iNguwtNH4e8mBOEpW0hucQ2HrTZxF7VhUpfg2iFCfX9s0/Xd1rs3Qt0bncaDVneuozAZ/st5+IN5S9lDsIjdWlBe8ie6mckPBO+uVWyEp5imq28EBOYuw7JDvRKXPru7KhBt+iP/fWBy2sV/sR6Djo50y76AmFqsO6UOMNQPzMbeViLFn5UOq+j8PrEqWT1JWXY5cRx2PcUyNSKHSgN2Tc7p+TBRlXGrxLHpHbYMIa4NTAc69d0aBjnYmd+NT4YdgICJ2n09RssBrP9uhm3HHYFtD1+FxcmakAOaEx5EOJA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EtPkO1zn2fMTnMO9paBK2XYnpgw3iHc0Y7IkafuPwz4=;
- b=S09h0LGAVXhsOl4t2qUJ8UMO7VkeUnrUziMyb/qI6It13mI+GRims0wYiHMdm+M2aqGn6Z/VwWmAB7lto9HZwrfIzU5HLoiXLp+5WzgGx09xcujSRoiRtBTIqeswWqJ9o1k6RtsMEgtzyqXNPt5EExs0kRrZPsIbcpSmMJTaUsZ/jDv1kaEBzCn/iESxAvtQAHDsCX2lX87Itewpw1o3ILkA6cyiP1CPHKTAt1bFuMWVS9yeOrJKMaSmVutPdir8vJY9NGZqGboIn26vkOW4HKRjFt4SLjP49E5xm863cfN5wXZL58HmYXFAyaO5t0Av6tlN6HS9Bu9vrInVZJThZg==
+ bh=AwVHMf0ZBIJd8j/skzLv4MvW44rKFaSF/6jyTFiRJHI=;
+ b=RGlikupYYV6J9P9iyaqX2uHXoTYj/n/WzmWmA+GNvR5uqXyyt8P5UhrqpepJuF/J7UP9ydZ4dnLenysdGzw3O4+IQizuaV4OQ0huSR+PvYpTrjE1f+cmDvCiXRKI8cfR/UcSbwEP5ZPsp7yaz8tQfrFiCRWTrFgCRdE1K4VymCIQsNc3j5H5pDOzoOSjHhC8GuUXksuoV54hQpPXU/olQp90nuyrJ4TL7dpU48QFxZUdrvk20bNwcpl5jOn9YTzXpOdXeFCbDBLLAzNHuoOmXE1TpeiRYy6XYzAaoPmu6mIvp+kK/YneAaM7mkT+wDqd4kBguUDayq6MIGi3/inB0A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EtPkO1zn2fMTnMO9paBK2XYnpgw3iHc0Y7IkafuPwz4=;
- b=KRw4nGB18NeyyjL7+g5cjuIZDMcYIHu1VIUq4ope1AZ28qswpfulRrmszp62uBI7UMBQxYfhgDlUmJsLBksjUDS5SbvJROI787Wt3C1wk0w59VmKcFNLDIGRKy7RV3otZLJU6Da5VSIrnFoQsdRsHBhwI8llYjX6FKjt9qlnalM=
+ bh=AwVHMf0ZBIJd8j/skzLv4MvW44rKFaSF/6jyTFiRJHI=;
+ b=jzS/qgGYq3yiOJhPgqtDsbH9msG7t6MW9tE4Re7+h93Y3i1B2gwV2MzBbtSE60wpao3+D4T5VBPl7XopMQR2+iOtwx8W2ICyduMZPGQTttSnhdx/FTGj99SIlIsf1HDjSAicjThZ+nL9Rk79MfnudeuHa4rs4YXcXrwFbNiljyI=
 Received: from DM6PR15MB3001.namprd15.prod.outlook.com (20.178.231.16) by
- DM6PR15MB2732.namprd15.prod.outlook.com (20.179.162.225) with Microsoft SMTP
+ DM6PR15MB2857.namprd15.prod.outlook.com (20.178.229.211) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2686.32; Sun, 2 Feb 2020 16:50:51 +0000
+ 15.20.2686.29; Sun, 2 Feb 2020 19:59:47 +0000
 Received: from DM6PR15MB3001.namprd15.prod.outlook.com
  ([fe80::294e:884:76fd:743c]) by DM6PR15MB3001.namprd15.prod.outlook.com
  ([fe80::294e:884:76fd:743c%4]) with mapi id 15.20.2686.030; Sun, 2 Feb 2020
- 16:50:51 +0000
-Subject: Re: [PATCH bpf] selftests/bpf: fix trampoline_count.c selftest
- compilation warning
-To:     Andrii Nakryiko <andriin@fb.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <ast@fb.com>, <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>
-References: <20200202065152.2718142-1-andriin@fb.com>
+ 19:59:47 +0000
+Subject: Re: [PATCH bpf] bpftool: Remove redundant "HAVE" prefix from the
+ large INSN limit check
+To:     Michal Rostecki <mrostecki@opensuse.org>, <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200202110200.31024-1-mrostecki@opensuse.org>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <b26f4053-898d-8bd7-6750-9c5838a3db02@fb.com>
-Date:   Sun, 2 Feb 2020 08:50:46 -0800
+Message-ID: <95fd964f-04ab-5267-c958-25b5a5231030@fb.com>
+Date:   Sun, 2 Feb 2020 11:59:34 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.4.1
-In-Reply-To: <20200202065152.2718142-1-andriin@fb.com>
+In-Reply-To: <20200202110200.31024-1-mrostecki@opensuse.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: CO2PR04CA0180.namprd04.prod.outlook.com
- (2603:10b6:104:4::34) To DM6PR15MB3001.namprd15.prod.outlook.com
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR20CA0012.namprd20.prod.outlook.com
+ (2603:10b6:300:13d::22) To DM6PR15MB3001.namprd15.prod.outlook.com
  (2603:10b6:5:13c::16)
 MIME-Version: 1.0
-Received: from MacBook-Pro-52.local (2620:10d:c090:180::7efc) by CO2PR04CA0180.namprd04.prod.outlook.com (2603:10b6:104:4::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2686.32 via Frontend Transport; Sun, 2 Feb 2020 16:50:50 +0000
-X-Originating-IP: [2620:10d:c090:180::7efc]
+Received: from MacBook-Pro-52.local (2620:10d:c090:180::76ff) by MWHPR20CA0012.namprd20.prod.outlook.com (2603:10b6:300:13d::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2686.32 via Frontend Transport; Sun, 2 Feb 2020 19:59:43 +0000
+X-Originating-IP: [2620:10d:c090:180::76ff]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bd114fa7-0e1f-4e35-9460-08d7a8000fac
-X-MS-TrafficTypeDiagnostic: DM6PR15MB2732:
+X-MS-Office365-Filtering-Correlation-Id: b10ffe9c-be12-4fda-ee74-08d7a81a7475
+X-MS-TrafficTypeDiagnostic: DM6PR15MB2857:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR15MB2732ECAE3F3783FF652C0388D3010@DM6PR15MB2732.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <DM6PR15MB2857579AF3499CAD3F0ED0AAD3010@DM6PR15MB2857.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:66;
+X-MS-Oob-TLC-OOBClassifiers: OLM:1850;
 X-Forefront-PRVS: 0301360BF5
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(366004)(136003)(376002)(346002)(396003)(39860400002)(199004)(189003)(6486002)(2616005)(2906002)(31696002)(6506007)(6666004)(53546011)(16526019)(86362001)(186003)(66946007)(66556008)(66476007)(5660300002)(4744005)(36756003)(31686004)(52116002)(316002)(8676002)(8936002)(81166006)(81156014)(478600001)(4326008)(6512007);DIR:OUT;SFP:1102;SCL:1;SRVR:DM6PR15MB2732;H:DM6PR15MB3001.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(376002)(346002)(366004)(396003)(136003)(39860400002)(199004)(189003)(6486002)(5660300002)(316002)(186003)(6666004)(2616005)(16526019)(8936002)(36756003)(4326008)(6512007)(4744005)(31686004)(54906003)(66476007)(66556008)(2906002)(31696002)(478600001)(66946007)(81166006)(81156014)(8676002)(86362001)(6506007)(52116002)(53546011);DIR:OUT;SFP:1102;SCL:1;SRVR:DM6PR15MB2857;H:DM6PR15MB3001.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 Received-SPF: None (protection.outlook.com: fb.com does not designate
  permitted sender hosts)
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: a3V0xjGo3AwH/uHg2JOoll5NMqOHsEqTYwsk01qFd7WdMthJFt0j8wKUu41ihb+dSdEfEkEpfogj/0NGJ8HNim78mL3e7ef4AzYRYUMfaHW/tBiJ5NxEJu5pKcnKvlaut+OE4nqkfiW9hNJaePWz3bSy2VpwKtWkYgC9cF8dg0/Rh/ux9tAvxWkd2HYbCTjonJ3dkdjBAcN2SCi60C7dbzc9qFy/SIJL3azpi9c45sO6S6HZt20FCOQjV0hJETwmihLyiyCF+GFbAFc3bfv7KBCeqE6iGc1X4C6ywlRZMx8FQrJUL+dzEhbKIfXU4Jp41W2pzS2fK/BmeH4H0HXcF4QTZxCxjrYtwpFZhB3eIS0sggUFTgeTrIADdDNhbx/hXjshmDrFq8b8ipmPjuB9COQv+Erk504/jpQZ2FRFCU4rXG8uxARM276F0bEqsZAG
-X-MS-Exchange-AntiSpam-MessageData: +Wqs3nB+xdcwioyX9H1qfkfbxIlWYreFjIz5/J4BEngWcF5TXMGBh6/DLE/03LQCpMi2XUYF4/N1NI0rEXnmsHosWH9Zr4s9GB2xAeXRLd4Q0CqHrz3//UZ/FpyPiA06HYTittk/OZGQI7V9fWtJlMgGvOgecMBZeQVIcy2Ovgc=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd114fa7-0e1f-4e35-9460-08d7a8000fac
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2020 16:50:51.4638
+X-Microsoft-Antispam-Message-Info: Ypdpgb5MUkLjo/LL/FcHu3gMzzjTe4X9f8v0BG7JWafiHHURsiMXf+LziA67qcl6WqSR1EmVRAecYzGdu+kV+3XrPfsa8G0uMm4Gcyxpp/F7TILEq2h52cp29dcIubIloaTkU5Xtqw4uA/O9gZSOWd5JgkwxtjNhTNVvXvpNzY+KY7x9Ke6Qg6OBQbzPGigyMdCHsdD6mIAu4FiMy9ctkp2ubAWVkPSfJ6Aq0FOzqwZfXQzKgO25+hvcGyVqneaGGs8pJh4QXu4ZdTHC9PeQJv1ZF7oWLQLNZe2tX0MHztwgSfXM670WoI/tyA1IcKxW5ClBCqXkRQNiuv+gbafPOizlrmFKhFF0DO1MKeysptxJ6yrKEbmGxze8bP+LjIBA4JuRtlNweJZg4GhxZjvafIIwcQzR2xBrkDhsguOV9+m7UynLdzGR4RFy7Gj6GWMv
+X-MS-Exchange-AntiSpam-MessageData: WFYRoOQPGCIRRQyODl2N4VVv102RQ0l9e4VukXMyoIlNEEkrtpZIjJRq2fpzAZ/5NlshkHdfFLDIdLyafCwOFcHfTZ0CAuw16YSire4mCLrCvW97wKQ0S6vNCVXhxPUpcDRFzpgHKTcsWux/BP6IU0rRrZpdNdfiN3lLm+nhcJo=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b10ffe9c-be12-4fda-ee74-08d7a81a7475
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2020 19:59:47.3955
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UyiIomru4ni481ubsUc8rDAuIxjsLk5Td5Pkj4zLbOTlWnduJXeGPeEt1fHwCMlo
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2732
+X-MS-Exchange-CrossTenant-UserPrincipalName: /TZtyet++NLfOGbyjtwsdD2lRrSKTu/XOV6c0Y40VDKz7pMTM/wt+7RFYHYXONfF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2857
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-02-02_04:2020-01-31,2020-02-02 signatures=0
+ definitions=2020-02-02_07:2020-01-31,2020-02-02 signatures=0
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- adultscore=0 priorityscore=1501 phishscore=0 mlxlogscore=831 bulkscore=0
- impostorscore=0 malwarescore=0 clxscore=1015 spamscore=0 mlxscore=0
+ adultscore=0 priorityscore=1501 phishscore=0 mlxlogscore=999 bulkscore=0
+ impostorscore=0 malwarescore=0 clxscore=1011 spamscore=0 mlxscore=0
  suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1911200001 definitions=main-2002020136
+ engine=8.12.0-1911200001 definitions=main-2002020159
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -112,16 +116,12 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 2/1/20 10:51 PM, Andrii Nakryiko wrote:
-> Fix missing braces compilation warning in trampoline_count test:
+On 2/2/20 3:02 AM, Michal Rostecki wrote:
+> "HAVE" prefix is already applied by default to feature macros and before
+> this change, the large INSN limit macro had the incorrect name with
+> double "HAVE".
 > 
->    .../prog_tests/trampoline_count.c: In function ‘test_trampoline_count’:
->    .../prog_tests/trampoline_count.c:49:9: warning: missing braces around initializer [-Wmissing-braces]
->    struct inst inst[MAX_TRAMP_PROGS] = { 0 };
->           ^
->    .../prog_tests/trampoline_count.c:49:9: warning: (near initialization for ‘inst[0]’) [-Wmissing-braces]
-> 
-> Fixes: d633d57902a5 ("selftest/bpf: Add test for allowed trampolines count")
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> Fixes: 2faef64aa6b3 ("bpftool: Add misc section and probe for large INSN limit")
+> Signed-off-by: Michal Rostecki <mrostecki@opensuse.org>
 
 Acked-by: Yonghong Song <yhs@fb.com>
