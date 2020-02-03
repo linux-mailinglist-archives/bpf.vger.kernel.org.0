@@ -2,96 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8E7150260
-	for <lists+bpf@lfdr.de>; Mon,  3 Feb 2020 09:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6491505E5
+	for <lists+bpf@lfdr.de>; Mon,  3 Feb 2020 13:11:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727133AbgBCIQw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Feb 2020 03:16:52 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:39146 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727540AbgBCIQv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Feb 2020 03:16:51 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 71800479F7C0A6080A88;
-        Mon,  3 Feb 2020 16:16:48 +0800 (CST)
-Received: from [127.0.0.1] (10.57.71.8) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.439.0; Mon, 3 Feb 2020
- 16:16:38 +0800
-Subject: Re: [PATCH -next] bpf: make btf_check_func_type_match() static
-To:     Yonghong Song <yhs@fb.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>
-CC:     <chenzhou10@huawei.com>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <andriin@fb.com>, <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <clang-built-linux@googlegroups.com>
-References: <20200203020220.117152-1-yaohongbo@huawei.com>
- <a29bf101-81b0-68ef-356c-dfdc9c53d899@fb.com>
-From:   Yao HongBo <yaohongbo@huawei.com>
-Message-ID: <f82e64c5-9299-b1a2-41b6-0f3630793d2b@huawei.com>
-Date:   Mon, 3 Feb 2020 16:16:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.0
+        id S1727267AbgBCMLo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Feb 2020 07:11:44 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:40785 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727201AbgBCMLo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Feb 2020 07:11:44 -0500
+Received: by mail-qk1-f193.google.com with SMTP id t204so13904510qke.7;
+        Mon, 03 Feb 2020 04:11:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=PJ4qdO8JQggLc2fWQs+boqL64SksK4OFYeVmitKgQE4=;
+        b=Bxb38YHIJX1vfVH2RKNljqr7dyt5Q/ki6AeGgnHvJ7uOngxB49ry89IdWx1kdg90B0
+         GUL7iyKw5dK8qSyARFnm5WazGUbUNcL+RhZjW0PLt33AoYRIAbPMNUNVk2EFECzaSse6
+         cs3zlPKhSYicpauAlaPnppQMfZGJI027iWqF+fbMnQyH49WfkGYrINVJ7VW0IlNpqwiS
+         rirxMWUGsjIJT7hU3jM/KK/bGr+1LyPgcWyOhSNqpFYjKOeK4Env3C9EwHyDzVZn+RE+
+         3LuENlU84kdtV3wbj7hTI6F0ndsbWJlLCkOz4C91+6usbO0dszlufk/rWNoscdOoliE7
+         Jf9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PJ4qdO8JQggLc2fWQs+boqL64SksK4OFYeVmitKgQE4=;
+        b=T9U8fMvoP8Lk+PdT1cLSQitiVl8qo6sfjx30Zps78/3DIAxdmfcARea059kCCkpcdi
+         UdVfF1mgYdFz9TduhZvWpWC0qa5c3yFQXVw42camNK8ROf7dbVc8cTHA0m/PKy/bNxyY
+         0xHueOOaANQpNzgmpqUerA2dp72LoiokFhKNt5507/MUusoOipU3o36tjvlRm7pAG+Zb
+         MNhOXmcC7wsKSFITsmQK9DlHup8DfyauQ3xJex0bKJwpeytS2FWjEqwRDrzKDtVoa64w
+         zlNmn+F9iKELG5/9G344Vw0Si0keqyxd+GF+XFM9JbU7V8xW/3bZLO32MtQ0p9jbBXeS
+         bsNQ==
+X-Gm-Message-State: APjAAAXJR8RkRd8JD5nKFlRNaP5paZ8gQVfBy74VstEP2tJIrBJhJ39r
+        eWlaaV7xiemcP8zHRXo573uzVbv62ssOso5ZQ/HYr9ibEVw=
+X-Google-Smtp-Source: APXvYqwe9Us2PgVu6MqeMNAO664AzntNtBV6pxz6hiw73jiD8G4iW8o+aobGl1EqwZofyiZhblcjvbiNbuP9RfonqcM=
+X-Received: by 2002:a37:9c0f:: with SMTP id f15mr23348389qke.297.1580731903294;
+ Mon, 03 Feb 2020 04:11:43 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <a29bf101-81b0-68ef-356c-dfdc9c53d899@fb.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.57.71.8]
-X-CFilter-Loop: Reflected
+References: <20191216091343.23260-1-bjorn.topel@gmail.com> <20191216091343.23260-8-bjorn.topel@gmail.com>
+ <mhng-041b1051-f9ac-4cd8-95bf-731bb1bfbdb8@palmerdabbelt-glaptop>
+ <CAJ+HfNhvTdsBq_tmKNcxVdS=nro=jwL5yLxnyDXO02Vai+5YNg@mail.gmail.com> <mhng-a006210f-8a00-42c3-b93d-135144220411@palmerdabbelt-glaptop1>
+In-Reply-To: <mhng-a006210f-8a00-42c3-b93d-135144220411@palmerdabbelt-glaptop1>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Mon, 3 Feb 2020 13:11:32 +0100
+Message-ID: <CAJ+HfNit8dsXV360qUCiG33yNdbf7=w58M9DncOuNqNOCAE40A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 7/9] riscv, bpf: optimize calls
+To:     Palmer Dabbelt <palmerdabbelt@google.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Netdev <netdev@vger.kernel.org>, linux-riscv@lists.infradead.org,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, 28 Jan 2020 at 03:15, Palmer Dabbelt <palmerdabbelt@google.com> wro=
+te:
+>
+[...]
+> >
+> > BPF passes arguments in R1, R2, ..., and return value in R0. Given
+> > that a0 plays the role of R1 and R0, how can we avoid the register
+> > juggling (without complicating the JIT too much)? It would be nice
+> > though... and ARM64 has the same concern AFAIK.
+>
+> Oh, why did you say that?  This kind of stuff is why I'm twenty days behi=
+nd on
+> email...
+>
+> https://lore.kernel.org/bpf/20200128021145.36774-1-palmerdabbelt@google.c=
+om/T/#t
+>
+> :)
+>
+
+(back from vacation)
+
+:-D Very nice, I'll take a look!
 
 
-On 2/3/2020 2:20 PM, Yonghong Song wrote:
-> 
-> 
-> On 2/2/20 6:02 PM, Hongbo Yao wrote:
->> Fix sparse warning:
->> kernel/bpf/btf.c:4131:5: warning: symbol 'btf_check_func_type_match' was
->> not declared. Should it be static?
-> 
-> Yes, static is better since the function is only used in one file.
-> 
-> Please use the tag "[PATCH bpf-next]" instead of "[PATCH -next]".
-> Since this is to fix a sparse warning, I think it should be okay
-> to target bpf-next. Please resubmit after bpf-next reopens in
-> about a week.
-
-OK.
-
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Hongbo Yao <yaohongbo@huawei.com>
->> ---
->>   kernel/bpf/btf.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
->> index 8c9d8f266bef..83d3d92023af 100644
->> --- a/kernel/bpf/btf.c
->> +++ b/kernel/bpf/btf.c
->> @@ -4144,7 +4144,7 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
->>    * EFAULT - verifier bug
->>    * 0 - 99% match. The last 1% is validated by the verifier.
->>    */
->> -int btf_check_func_type_match(struct bpf_verifier_log *log,
->> +static int btf_check_func_type_match(struct bpf_verifier_log *log,
->>                     struct btf *btf1, const struct btf_type *t1,
->>                     struct btf *btf2, const struct btf_type *t2)
-> 
-> Please also align
->   struct btf *btf1, const struct btf_type *t1,
->   struct btf *btf2, const struct btf_type *t2)
-> properly after you added 'static' before the function declaration.
-
-I'll fix it, thanks.
-
->>   {
->>
-> 
-> .
-> 
-
+Bj=C3=B6rn
