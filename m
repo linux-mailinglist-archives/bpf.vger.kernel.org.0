@@ -2,154 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D491501A8
-	for <lists+bpf@lfdr.de>; Mon,  3 Feb 2020 07:22:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B5B1501FE
+	for <lists+bpf@lfdr.de>; Mon,  3 Feb 2020 08:29:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727512AbgBCGV7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Feb 2020 01:21:59 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:42576 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727240AbgBCGV7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 3 Feb 2020 01:21:59 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0136A2sG017419;
-        Sun, 2 Feb 2020 22:20:52 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=K/8ktSIsAvoJ0nUZ5dILkNtx4J6nUrEgEIG+FDKgSHI=;
- b=nqwHLhheXdj+Wal0rgZHuIOmcBK0MrFxvdaWSzqQj030yD3fInONWcaDZtLk8XxArsza
- 3cYTKRoxS3WAw6feoP7S2ZTRDQwTPjrHunhGOOJdVy01YvPF5H7vr9laYtE9GTu0yOhH
- Rrj/w31JNcefJDzB+GwN7sxwVJvWGjbtIQI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 2xw5vsntpg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 02 Feb 2020 22:20:51 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Sun, 2 Feb 2020 22:20:51 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PBk8EfOHxNkQcjW3a/HAa7E9wy2f2w/8HKtETTK4xnP96Nlnt/saGGd/bQlpD1bR3i0JC/DvkAiDvfs3bJ5FJh6mEGYXTeb16LMNqFabYsM6oa2CV0y4ncUQ34IrtuFahq9VMVqhuWz6FIkBD3VKkEhLxy6U5vASAjFgijDLk8XMoBNH7p5cHViZesQnCtofO5zXEkZM37/mC+MKAEZQxzx+vU99qdNS/lxXNdK+h+mYMtIB/nrZuUJn7zJpC//7p3vog5TiqoHuaDrFSEvpxtS0nlBp5X4O71VvEToufNs7Sb8asE4DaZFk2KTVdK02UfnuEXxy30THhRjcNPA9Jg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K/8ktSIsAvoJ0nUZ5dILkNtx4J6nUrEgEIG+FDKgSHI=;
- b=Aw3Kedog5AS2xMmQ9NueWnbzQfx+2UzVbyfARfzQTAEVTHG+c654bphh+1Fx0LR3j6SIOhWSCz6tOSuOIYjNmzblv5DOYdfIdlh/fmzJd67OMn5A9b7rSal2oA9TK4zv78etY7ibFsFqEuFrHHZWZIsWN64UA+v/lkOdOIEiw+c0uDI/RcxX7f1PTkSurWLPD6QXkBlpLHE5TfKR83W2S7h0IzSfG6SkFls5D0eYBNeNtXC5VFt6wP9BarfZZC1FyY83FSUjQuEvWZUbfJrWNZPNH/yfMYLsHNwnx5HqRD2JAnTO2cVCjqW7qikaKXPXdl/3I/gtFaCc0cXfPRkaUA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K/8ktSIsAvoJ0nUZ5dILkNtx4J6nUrEgEIG+FDKgSHI=;
- b=Q0KHKHKj4ZTn2rmPtzIjpwCgWRfKBbji0kKrcaWFY8aKF6xZzYeSsvyWYquNdegDIjMw87clI8RGZJNJt1SLsbXAzEZb2ug81pouD9C6X0rjh7HGKmrUbkmFZ9YJKQcZVVEeZWpHbALoVQHNz1fSwNZp7LulM3HDeAOcVwJudto=
-Received: from DM6PR15MB3001.namprd15.prod.outlook.com (20.178.231.16) by
- DM6PR15MB2826.namprd15.prod.outlook.com (20.179.164.31) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2686.27; Mon, 3 Feb 2020 06:20:36 +0000
-Received: from DM6PR15MB3001.namprd15.prod.outlook.com
- ([fe80::294e:884:76fd:743c]) by DM6PR15MB3001.namprd15.prod.outlook.com
- ([fe80::294e:884:76fd:743c%4]) with mapi id 15.20.2686.030; Mon, 3 Feb 2020
- 06:20:36 +0000
-Subject: Re: [PATCH -next] bpf: make btf_check_func_type_match() static
-To:     Hongbo Yao <yaohongbo@huawei.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>
-CC:     <chenzhou10@huawei.com>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <andriin@fb.com>, <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <clang-built-linux@googlegroups.com>
-References: <20200203020220.117152-1-yaohongbo@huawei.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <a29bf101-81b0-68ef-356c-dfdc9c53d899@fb.com>
-Date:   Sun, 2 Feb 2020 22:20:31 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.4.1
-In-Reply-To: <20200203020220.117152-1-yaohongbo@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWHPR03CA0018.namprd03.prod.outlook.com
- (2603:10b6:300:117::28) To DM6PR15MB3001.namprd15.prod.outlook.com
- (2603:10b6:5:13c::16)
+        id S1727315AbgBCH3N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Feb 2020 02:29:13 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:35072 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727312AbgBCH3M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Feb 2020 02:29:12 -0500
+Received: by mail-qt1-f193.google.com with SMTP id n17so9538482qtv.2;
+        Sun, 02 Feb 2020 23:29:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=s0gCUwJEUxpdaZHCvvLKXwd/easrsvYbjTgjrxKfnjE=;
+        b=HgNn3H3Mv7SLPnYzDuLv43TVnDklSEit1ZBQ7fEOtwucBhIsU9d+fir1S1+ARux94d
+         i9PQOQTnXo74hjbbGWTVgKEVB+NcNajXoQgYZL8Dxt8Otcn6S+9ZQFFG+BFL8/w8YWfm
+         69O/mF7mtUUO6l5QJp2rReVocFKzvhY8bMCTauJoZ5pSsfH95O1pbuIsqe5nr5OhIOfE
+         smD5RkE3FxbHNHVSY1p7vzDmPmub/NvokK9ML16mnoehZwsdZdBa3wfjlUeU1iwatgVL
+         uKMKEfOlzqAo5uAVVq1vicTI9zbTBWY+xYWVBP2/VOv5zjh3YIhxQK0kanEgXnDWPPuM
+         +6nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=s0gCUwJEUxpdaZHCvvLKXwd/easrsvYbjTgjrxKfnjE=;
+        b=GebEgBPRms9TY5/r1dbm07PlDKEZVML1HJOyrMjh88yBrfbmloelmUp9EYCIfUlFVq
+         V8sWtYOjROu/P31ITJ3rPxbcB3kHOJZyOWu0EyJhEC9gzPRty3PS16Ts4Q1Xoh1i9bIU
+         fcepewj2XKk9Wly+Q7yThCKaMdHJkXDk9FcD4IE+iOBZ1xWV3RyY1aFzeMbWCcDR1e/x
+         jE1LLfGYjZR1FxcIl0rshQBSZBfoKpkjvIGMKym4XfVkb+W0KAacBb0GXGD5P1iSwIbn
+         Vmm4iMlQ+qaFYgaDEaCDzO93QxUTkciK7iDezAshdw0YBQclsa6/Fl61HqPk4Y1fkbhp
+         MR9g==
+X-Gm-Message-State: APjAAAX/t4eRypm7fBi7TE2KcSrda9lTtpscG55cZiljrdN2FzM4oe1W
+        IdA1e2xx8lKwC/8KKtCChMHOyW1aYH7zGQ3EIKvGNHAM
+X-Google-Smtp-Source: APXvYqy3ZzZxvdhH7ymnf+cT60JeAoZogjcc0Tn6iPoTTfRvGT2fG4KSqWGDlURTbU6MMWWn84/3hiX/T3c7HJ+5xCE=
+X-Received: by 2002:ac8:140c:: with SMTP id k12mr22355714qtj.117.1580714951571;
+ Sun, 02 Feb 2020 23:29:11 -0800 (PST)
 MIME-Version: 1.0
-Received: from MacBook-Pro-52.local (2620:10d:c090:180::afe7) by MWHPR03CA0018.namprd03.prod.outlook.com (2603:10b6:300:117::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2686.29 via Frontend Transport; Mon, 3 Feb 2020 06:20:34 +0000
-X-Originating-IP: [2620:10d:c090:180::afe7]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d9cea84e-7bd2-4a5e-b2cc-08d7a8712e73
-X-MS-TrafficTypeDiagnostic: DM6PR15MB2826:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR15MB28264B169DAFFA6D1AB8BAC6D3000@DM6PR15MB2826.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:291;
-X-Forefront-PRVS: 0302D4F392
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(346002)(376002)(366004)(396003)(136003)(39860400002)(189003)(199004)(6666004)(66946007)(53546011)(6506007)(5660300002)(66556008)(66476007)(52116002)(81156014)(8676002)(81166006)(478600001)(8936002)(316002)(16526019)(31686004)(2906002)(6486002)(6512007)(31696002)(86362001)(186003)(2616005)(4326008)(36756003);DIR:OUT;SFP:1102;SCL:1;SRVR:DM6PR15MB2826;H:DM6PR15MB3001.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-Received-SPF: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bkJgpyaHV8h8MGm9SfOruVxFeJuq/OQNuqcOP6Sgo0FJM2FsU8pEVQX1burRaPJVxdGbH85+vQ4VxEXoHy/pHlnU/Koi4GcJgJi2dIMGauLzqmqlztP67x0Ny4QwTM2V85UJ2N19obHPSYvRPwS/ULirmx8iNEslgAu3P2+/0ZOB8LBcyZz0L94k2Sh3YEw/TDX+vBuHkYWIKlB5bNz4dIh56flKZZZSxRdvosmPjFvhBqCx+mTMTqZJXsmzkSD2mj7bsmf8Jct6ITraD+a4WFPtuXy8lL62W8g010g9e3sXHjpU39Xgi/9XFXNQPldukNCFE4e3t/OBB+dC6lNE3WH7DiGB23mU60eeRH9kD2BvRj4ChDyoBew5TfVdkgm7gcu6qSTLGtBnO//cDFcf52gJONf9QlHBz+KBYWutqu97bq4HsUJHUAzGjOjXyy7v
-X-MS-Exchange-AntiSpam-MessageData: +BG3KNvhsvVnHfDug5jXGdZXILspH3fQF6xMEeEXL0iFdOe9qLt4MpcGXeI0ABfGos3Am/+Pf/38a49H4siKLjjBLfNqJpPPPiYT6qXn4W8OC3HimgHfMCWCjjBbsa6XvJdtssWlFB5hJpKBujmqn7Amzt3ol65J2CkeF5BHjEE=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d9cea84e-7bd2-4a5e-b2cc-08d7a8712e73
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Feb 2020 06:20:36.3118
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OutLqTq+6zduPepUAz5Nzz49tHmOmRiJr3BuC7z32tFpbXgwchloDlz3VmGz3mdf
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2826
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-02-03_01:2020-02-02,2020-02-03 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- mlxlogscore=999 suspectscore=0 clxscore=1011 priorityscore=1501
- adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0 malwarescore=0
- bulkscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1911200001 definitions=main-2002030049
-X-FB-Internal: deliver
+References: <20190820114706.18546-1-toke@redhat.com> <CAEf4BzZxb7qZabw6aDVaTqnhr3AGtwEo+DbuBR9U9tJr+qVuyg@mail.gmail.com>
+ <87blwiqlc8.fsf@toke.dk> <CAEf4BzYMKPbfOu4a4UDEfJVcNW1-KvRwJ7PVo+Mf_1YUJgE4Qw@mail.gmail.com>
+ <43e8c177-cc9c-ca0b-1622-e30a7a1281b7@iogearbox.net> <CAEf4Bzab_w0AXy5P9mG14mcyJVgUCzuuNda5FpU5wSEwUciGfg@mail.gmail.com>
+ <87tva8m85t.fsf@toke.dk> <CAEf4BzbzQwLn87G046ZbkLtTbY6WF6o8JkygcPLPGUSezgs9Tw@mail.gmail.com>
+In-Reply-To: <CAEf4BzbzQwLn87G046ZbkLtTbY6WF6o8JkygcPLPGUSezgs9Tw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sun, 2 Feb 2020 23:29:00 -0800
+Message-ID: <CAEf4BzZOAukJZzo4J5q3F2v4MswQ6nJh6G1_c0H0fOJCdc7t0A@mail.gmail.com>
+Subject: Re: [RFC bpf-next 0/5] Convert iproute2 to use libbpf (WIP)
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Aug 28, 2019 at 1:40 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Aug 23, 2019 at 4:29 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+> >
+> > [ ... snip ...]
+> >
+> > > E.g., today's API is essentially three steps:
+> > >
+> > > 1. open and parse ELF: collect relos, programs, map definitions
+> > > 2. load: create maps from collected defs, do program/global data/CO-R=
+E
+> > > relocs, load and verify BPF programs
+> > > 3. attach programs one by one.
+> > >
+> > > Between step 1 and 2 user has flexibility to create more maps, set up
+> > > map-in-map, etc. Between 2 and 3 you can fill in global data, fill in
+> > > tail call maps, etc. That's already pretty flexible. But we can tune
+> > > and break apart those steps even further, if necessary.
+> >
+> > Today, steps 1 and 2 can be collapsed into a single call to
+> > bpf_prog_load_xattr(). As Jesper's mail explains, for XDP we don't
+> > generally want to do all the fancy rewriting stuff, we just want a
+> > simple way to load a program and get reusable pinning of maps.
+>
+> I agree. See my response to Jesper's message. Note also my view of
+> bpf_prog_load_xattr() existence.
+>
+> > Preferably in a way that is compatible with the iproute2 loader.
+> >
 
+Hi Toke,
 
-On 2/2/20 6:02 PM, Hongbo Yao wrote:
-> Fix sparse warning:
-> kernel/bpf/btf.c:4131:5: warning: symbol 'btf_check_func_type_match' was
-> not declared. Should it be static?
+I was wondering what's the state of converting iproute2 to use libbpf?
+Is this still something you (or someone else) interested to do?
 
-Yes, static is better since the function is only used in one file.
+Briefly re-reading the thread, I think libbpf already has almost
+everything to be used by iproute2. You've added map pinning, so with
+bpf_map__set_pin_path() iproute2 should be able to specify pinning
+path, according to its own logic. The only thing missing that I can
+see is ability to specify numa_node, which we should add both to
+BTF-defined map definitions (trivial change), as well as probably
+expose a method like bpf_map__set_numa_node(struct bpf_map *map, int
+numa_node) for non-declarative and non-BTF legacy cases.
 
-Please use the tag "[PATCH bpf-next]" instead of "[PATCH -next]".
-Since this is to fix a sparse warning, I think it should be okay
-to target bpf-next. Please resubmit after bpf-next reopens in
-about a week.
+There was concern about supporting "extended" bpf_map_def format of
+iproute2 (bpf_elf_map, actually) with extra fields. I think it's
+actually easy to handle as is without any extra new APIs.
+bpf_object__open() w/ .relaxed_maps =3D true option will process
+compatible 5 fields of bpf_map_def (type, key/value sizes,
+max_entries, and map_flags) and will set up corresponding struct
+bpf_map entries (but won't create BPF maps in kernel yet). Then
+iproute2 can iterate over "maps" ELF section on its own, and see which
+maps need to get some more adjustments before load phase: map-in-map
+set up, numa node, pinning, etc. All those adjustments can be done
+(except for numa yet) through existing libbpf APIs, as far as I can
+tell. Once that is taken care of, proceed to bpf_object__load() and
+other standard steps. No callbacks, no extra cruft.
 
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Hongbo Yao <yaohongbo@huawei.com>
-> ---
->   kernel/bpf/btf.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 8c9d8f266bef..83d3d92023af 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -4144,7 +4144,7 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
->    * EFAULT - verifier bug
->    * 0 - 99% match. The last 1% is validated by the verifier.
->    */
-> -int btf_check_func_type_match(struct bpf_verifier_log *log,
-> +static int btf_check_func_type_match(struct bpf_verifier_log *log,
->   			      struct btf *btf1, const struct btf_type *t1,
->   			      struct btf *btf2, const struct btf_type *t2)
+Is there anything else that can block iproute2 conversion to libbpf?
 
-Please also align
-   struct btf *btf1, const struct btf_type *t1,
-   struct btf *btf2, const struct btf_type *t2)
-properly after you added 'static' before the function declaration.
-
->   {
-> 
+BTW, I have a draft patches for declarative (BTF-based) map-in-map set
+up and initialization the way I described it at Plumbers last year. So
+while I'm finalizing that, thought I'll resurrect iproute2 thread and
+see if we can get iproute2 migration to libbpf started.
