@@ -2,81 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A713151170
-	for <lists+bpf@lfdr.de>; Mon,  3 Feb 2020 21:58:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 441561512BD
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2020 00:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725372AbgBCU6B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Feb 2020 15:58:01 -0500
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:53979 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726272AbgBCU6B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Feb 2020 15:58:01 -0500
-X-Originating-IP: 79.86.19.127
-Received: from [192.168.0.12] (127.19.86.79.rev.sfr.net [79.86.19.127])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 10182E0004;
-        Mon,  3 Feb 2020 20:57:55 +0000 (UTC)
-Subject: Re: [PATCH bpf-next v2 6/9] riscv, bpf: provide RISC-V specific JIT
- image alloc/free
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Netdev <netdev@vger.kernel.org>, linux-riscv@lists.infradead.org,
-        bpf <bpf@vger.kernel.org>, Anup Patel <anup@brainfault.org>,
-        vincent.chen@sifive.com
-References: <20191216091343.23260-1-bjorn.topel@gmail.com>
- <20191216091343.23260-7-bjorn.topel@gmail.com>
- <3f6d3495-efdf-e663-2a84-303fde947a1d@ghiti.fr>
- <CAJ+HfNgOrx1D-tSxXsoZsMxZtHX-Ksdeg8bZFFPRPGChup4oFg@mail.gmail.com>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <881b35d6-23ce-fac3-23b8-cdd4d70fa106@ghiti.fr>
-Date:   Mon, 3 Feb 2020 15:57:55 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1726930AbgBCXK3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Feb 2020 18:10:29 -0500
+Received: from www62.your-server.de ([213.133.104.62]:40660 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726331AbgBCXK3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Feb 2020 18:10:29 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iykrK-0002ZK-R6; Tue, 04 Feb 2020 00:10:26 +0100
+Received: from [178.197.249.21] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iykrK-000T5X-Gc; Tue, 04 Feb 2020 00:10:26 +0100
+Subject: Re: [PATCH bpf] bpftool: Remove redundant "HAVE" prefix from the
+ large INSN limit check
+To:     Michal Rostecki <mrostecki@opensuse.org>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200202110200.31024-1-mrostecki@opensuse.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <66fc14f9-5147-7075-8b6c-99939fd68f79@iogearbox.net>
+Date:   Tue, 4 Feb 2020 00:10:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <CAJ+HfNgOrx1D-tSxXsoZsMxZtHX-Ksdeg8bZFFPRPGChup4oFg@mail.gmail.com>
+In-Reply-To: <20200202110200.31024-1-mrostecki@opensuse.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25715/Mon Feb  3 12:37:20 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/3/20 7:28 AM, Björn Töpel wrote:
-> On Sun, 2 Feb 2020 at 14:37, Alex Ghiti <alex@ghiti.fr> wrote:
-> [...]
->> I think it would be better to completely avoid this patch and the
->> definition of this
->> new zone by using the generic implementation if we had the patch
->> discussed here
->> regarding modules memory allocation (that in any case we need to fix
->> modules loading):
->>
->> https://lore.kernel.org/linux-riscv/d868acf5-7242-93dc-0051-f97e64dc4387@ghiti.fr/T/#m2be30cb71dc9aa834a50d346961acee26158a238
->>
-> This patch is already upstream. I agree that when the module
-> allocation fix is upstream, the BPF image allocation can be folded
-> into the module allocation. IOW, I wont send any page table dumper
-> patch for BPF memory.
+On 2/2/20 12:02 PM, Michal Rostecki wrote:
+> "HAVE" prefix is already applied by default to feature macros and before
+> this change, the large INSN limit macro had the incorrect name with
+> double "HAVE".
+> 
+> Fixes: 2faef64aa6b3 ("bpftool: Add misc section and probe for large INSN limit")
+> Signed-off-by: Michal Rostecki <mrostecki@opensuse.org>
 
-
-Too late then :) I'll remove this zone with the patch regarding module
-allocation.
-
-
->
-> But keep in mind that the RV BPF JIT relies on having the kernel text
-> within the 32b range (as does modules)
-
-
-Yep, same constraints as for modules ;)
-
-Thanks,
-
-Alex
-
-
->
-> Cheers,
-> Björn
+Applied, thanks!
