@@ -2,63 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B619E152115
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2020 20:30:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7F1152128
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2020 20:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727492AbgBDTaf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Feb 2020 14:30:35 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:37992 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727358AbgBDTaf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Feb 2020 14:30:35 -0500
-Received: by mail-qt1-f194.google.com with SMTP id c24so15288969qtp.5;
-        Tue, 04 Feb 2020 11:30:34 -0800 (PST)
+        id S1727587AbgBDTcN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Feb 2020 14:32:13 -0500
+Received: from mail-qk1-f176.google.com ([209.85.222.176]:41672 "EHLO
+        mail-qk1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727581AbgBDTcM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Feb 2020 14:32:12 -0500
+Received: by mail-qk1-f176.google.com with SMTP id x82so164639qkb.8;
+        Tue, 04 Feb 2020 11:32:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=UapTR/Swn2AywRKzX/GSR/rd23O04e9h6Fgs9p2msUo=;
-        b=o/eOozhV6u7iYKKKZLmW9I9eE+A50S7MONuuj7k/cxVH+dM2FEQTnarK5ohzH6rGvj
-         0CgNbVzW529C0KjCozjxar2OsHiNfHWDnX2D253V7ISvOQqErGLlZMwIM+CvfvAk/ETr
-         kIN2VYeX2wVepBOg7pBlY3ot6HrDTlJcZar8+SV0kQAuWlb8sPSPR88RhgMETAMeMdzY
-         5OSNHeIIxUDDbrEHfmSZ+8Tu9uVC1FThvyOAscXaxa6fYkHHiOzH0GdC3vVlVJ72f7F6
-         bWTdyt9dGFRZE3xFNu6izLDDJf4wFBZDkFrHyopiOWXrfO0v+0bih6u0gyOnJ/ksyvBb
-         32Rg==
+        bh=B/ZhbdzXUU4cU2LkoE3S0r5aNzHAmsl12y1TsjYHKS0=;
+        b=lXRH2gTyvOBPLYmu7KgmUUgvavIGEggEuaa0JFFOL5CPiXz8I9+ocEAG52ZZT84IQC
+         sZnLYlxViXodqwuXIlmVe2DteRZH34yBIjOI45M3HsvK4gWsSeJH9I0rCFyL3eC5jO+9
+         kmrz8/GO2Yap+2lDPIdn+MhRqPY3CAKss+lbe6yq6Rw+tm23fJsuRRwg24m3zTMNcI1E
+         FF4yjmxD+riX0FwRfyFpFdsBc3VAZSV+Ib4GChRnIEvEs4t3EYK9AsnEZhP96gdgD3Mx
+         EBwudei3cTOxevCfz2Kiup9w6DXXmX+lFXny1vn3vI8u2Kf8Qlxmc89fCoim52vAhzKd
+         LhXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=UapTR/Swn2AywRKzX/GSR/rd23O04e9h6Fgs9p2msUo=;
-        b=D8/fl8ysVBYsuMreGgoJ6g9oyKGASzItM6bd0laCA9V9ifLJ4BDYo16yX+HOJ89Wx9
-         ev4OMGrQz8B3lIo+REwDINOdPyMzimBl60+YChAaY8km6mGwhkE7SRcxe+a5HJWINCET
-         /gSbzF5eq1cfIJuWr69oMbDzE1Tgku4JuCHvgcaB8wcFCc58ZDQjYi+dh2YOwSrzy4hq
-         SPB8WltlMox/Lw+h6lcbAauddvqOuA7Tk105AaHoPhObtC0SsaQUxn/sHjo7l6TC4xXB
-         0iuYu6BjVVcg5+3en8jUv1Sx5gsQAPAeyXwI2tuR+ibNpSlDq+6yPMIi/s4k57edI73i
-         t+mA==
-X-Gm-Message-State: APjAAAUwGuPR9c796TUq/CO98Ra/ZUbWeVZPmMI7j/5Ex1Mk8Z+CRWwj
-        eynK3SgXNoEVQvzqeyB+b0yDzROszrVUQ3YkluE=
-X-Google-Smtp-Source: APXvYqzynoTQgpdm/iT9SFNSo/qjNEMHfOmhlVwoEI483RemBJB+ylGnJ7qiC5IrDY/m23437c91LCoT0rOjsfwP7pU=
-X-Received: by 2002:ac8:554b:: with SMTP id o11mr30093106qtr.36.1580844634484;
- Tue, 04 Feb 2020 11:30:34 -0800 (PST)
+        bh=B/ZhbdzXUU4cU2LkoE3S0r5aNzHAmsl12y1TsjYHKS0=;
+        b=a6stcf/ncskoQa3Bl2wVzAslBpKgvW246uveUsNoqo/bT2goOEF8buM9XCYgqH4gss
+         LSO0Nz7NWtXxopV6EH5knVhbIfo5IrnQuf5m4hIp4RST74/kM9ifJ6RA3pyhgVVEPcF3
+         qGUMKPeDaPL8Bx/gOmCDeigNKZeriqipRjPGSSSX5j/Sx/7gdDcbt47Q2YI2yjxIu9zg
+         OxaqEcgoybWYIvSUyPwPiGvsv7rsb2uMl8juWiUSeJ9C5kMYhHynYTOmvfJp1XMu5NuJ
+         oT77ExHWYhRnHO57lKOF7a9fvM2tkblow0CAphvd3yDM0BN/aJFrOFSIpRsS5CzBeakL
+         1x7w==
+X-Gm-Message-State: APjAAAX6vffLUTgpnLaW1HHBkiprUA9mU1iMGSZp2zydYvqtnh1YceBX
+        SGhBQomsX9DdfQq17mKvr2FpUka9vV2yvqSn5WA=
+X-Google-Smtp-Source: APXvYqzl7M4PIhJurb9T3O6suflM2UvcD69T7M7BipQONFV6To02JJjSHiLO65f9yVjYAjFDov7m9Nil8DW6uABQq1A=
+X-Received: by 2002:ae9:eb48:: with SMTP id b69mr27781278qkg.39.1580844731251;
+ Tue, 04 Feb 2020 11:32:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20200128021145.36774-1-palmerdabbelt@google.com>
-In-Reply-To: <20200128021145.36774-1-palmerdabbelt@google.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Tue, 4 Feb 2020 20:30:23 +0100
-Message-ID: <CAJ+HfNh2csyH2xZtGFXW1zwBEW4+bo_E60PWPydJkB6zZTVx3A@mail.gmail.com>
-Subject: Re: arm64: bpf: Elide some moves to a0 after calls
-To:     Palmer Dabbelt <palmerdabbelt@google.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, zlim.lnx@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Shuah Khan <shuah@kernel.org>, Netdev <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        clang-built-linux@googlegroups.com, kernel-team@android.com
+References: <D0F8E306-ABEE-480E-BDFD-D43E3A98DC5A@redhat.com>
+ <874kw664dy.fsf@toke.dk> <f1fa48b7-8096-b4f2-51cc-bcb4c1da0cd4@fb.com> <87zhdyduho.fsf@toke.dk>
+In-Reply-To: <87zhdyduho.fsf@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 4 Feb 2020 11:32:00 -0800
+Message-ID: <CAEf4BzbWwseeKnGJCPj_VLLcQ-wkbhXWKAPsjQuy4LNDq8fvBg@mail.gmail.com>
+Subject: Re: Need a way to modify the section name for a read program object
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Xdp <xdp-newbies@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
@@ -66,83 +60,99 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 28 Jan 2020 at 03:14, Palmer Dabbelt <palmerdabbelt@google.com> wro=
-te:
+On Tue, Feb 4, 2020 at 11:27 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> There's four patches here, but only one of them actually does anything.  =
-The
-> first patch fixes a BPF selftests build failure on my machine and has alr=
-eady
-> been sent to the list separately.  The next three are just staged such th=
-at
-> there are some patches that avoid changing any functionality pulled out f=
-rom
-> the whole point of those refactorings, with two cleanups and then the ide=
-a.
+> Andrii Nakryiko <andriin@fb.com> writes:
 >
-> Maybe this is an odd thing to say in a cover letter, but I'm not actually=
- sure
-> this patch set is a good idea.  The issue of extra moves after calls came=
- up as
-> I was reviewing some unrelated performance optimizations to the RISC-V BP=
-F JIT.
-> I figured I'd take a whack at performing the optimization in the context =
-of the
-> arm64 port just to get a breath of fresh air, and I'm not convinced I lik=
-e the
-> results.
+> > On 2/4/20 2:19 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> >> "Eelco Chaudron" <echaudro@redhat.com> writes:
+> >>
+> >>> Hi All,
+> >>>
+> >>> I'm trying to write an xdpdump like utility and have some missing par=
+t
+> >>> in libbpf to change the fentry/FUNCTION section name before loading t=
+he
+> >>> trace program.
+> >>>
+> >>> In short, I have an eBPF program that has a section name like
+> >>> "fentry/FUNCTION" where FUNCTION needs to be replaced by the name of =
+the
+> >>> XDP program loaded in the interfaces its start function.
+> >>>
+> >>> The code for loading the ftrace part is something like:
+> >>>
+> >>>     open_opts.attach_prog_fd =3D bpf_prog_get_fd_by_id(info.id);
+> >>>     trace_obj =3D bpf_object__open_file("xdpdump_bpf.o", &open_opts);
+> >>>
+> >>>     trace_prog_fentry =3D bpf_object__find_program_by_title(trace_obj=
+,
+> >>> "fentry/FUNCTION");
+> >>>
+> >>>     /* Here I need to replace the trace_prog_fentry->section_name =3D
+> >>> "fentry/<INTERFACE PROG NAME> */
+> >>>
+> >>>     bpf_object__load(trace_obj);
+> >>>     trace_link_fentry =3D bpf_program__attach_trace(trace_prog_fentry=
+);
+> >>>
+> >>>
+> >>> See the above, I would like to change the section_name but there is n=
+o
+> >>> API to do this, and of course, the struct bpf_program is
+> >>> implementation-specific.
+> >>>
+> >>> Any idea how I would work around this, or what extension to libbpf ca=
+n
+> >>> be suggested to support this?
+> >>
+> >> I think what's missing is a way for the caller to set the attach_btf_i=
+d.
+> >> Currently, libbpf always tries to discover this based on the section
+> >> name (see libbpf_find_attach_btf_id()). I think the right way to let t=
+he
+> >> caller specify this is not to change the section name, though, but jus=
+t
+> >> to expose a way to explicitly set the btf_id (which the caller can the=
+n
+> >> go find on its own).
+> >
+> > Yes, I agree, section name should be treated as an immutable identifier
+> > and a (overrideable) hint to libbpf.
+> >
+> >>
+> >> Not sure if it would be better with a new open_opt (to mirror
+> >> attach_prog_fd), or just a setter (bpf_program__set_attach_btf_id()?).
+> >> Or maybe both? Andrii, WDYT?
+> >
+> > open_opts is definitely wrong way to do this, because open_opts apply t=
+o
+> > all BPF programs, while this should be per-program.
 >
-> That said, I think I would accept something like this for the RISC-V port
-> because we're already doing a multi-pass optimization for shrinking funct=
-ion
-> addresses so it's not as much extra complexity over there.  If we do that=
- we
-> should probably start puling some of this code into the shared BPF compil=
-er,
-> but we're also opening the doors to more complicated BPF JIT optimization=
-s.
-> Given that the BPF JIT appears to have been designed explicitly to be
-> simple/fast as opposed to perform complex optimization, I'm not sure this=
- is a
-> sane way to move forward.
+> Yes, of course; silly me :)
 >
-
-Obviously I can only speak for myself and the RISC-V JIT, but given
-that we already have opened the door for more advanced translations
-(branch relaxation e.g.), I think that this makes sense. At the same
-time we don't want to go all JVM on the JITs. :-P
-
-> I figured I'd send the patch set out as more of a question than anything =
-else.
-> Specifically:
+> > I'm also not sure having API that allows to specify BTF type ID is the
+> > best, probably better to let libbpf perform the search by name. So I'd
+> > say something like this:
+> >
+> > int bpf_program__set_attach_target(int attach_prog_fd, const char
+> > *attach_func_name)
+> >
+> > This should handle customizing all the tp_btf/fentry/fexit/freplace BPF
+> > programs we have.
 >
-> * How should I go about measuring the performance of these sort of
->   optimizations?  I'd like to balance the time it takes to run the JIT wi=
-th the
->   time spent executing the program, but I don't have any feel for what re=
-al BPF
->   programs look like or have any benchmark suite to run.  Is there someth=
-ing
->   out there this should be benchmarked against?  (I'd also like to know t=
-hat to
->   run those benchmarks on the RISC-V port.)
+> Right, that makes sense; I think that would cover it (apart from your
+> function signature missing a struct bpf_program argument).
 
-If you run the selftests 'test_progs' with -v it'll measure/print the
-execution time of the programs. I'd say *most* BPF program invokes a
-helper (via call). It would be interesting to see, for say the
-selftests, how often the optimization can be performed.
+great! and, ha-ha, too object-oriented thinking ;)
 
-> * Is this the sort of thing that makes sense in a BPF JIT?  I guess I've =
-just
->   realized I turned "review this patch" into a way bigger rabbit hole tha=
-n I
->   really want to go down...
 >
-
-I'd say 'yes'. My hunch, and the workloads I've seen, BPF programs are
-usually loaded, and then resident for a long time. So, the JIT time is
-not super critical. The FB/Cilium folks can definitely provide a
-better sample point, than my hunch. ;-)
-
-
-Bj=C3=B6rn
+> > We might add extra attach_target_ops for future extensibility, if we
+> > anticipate that we'll need more knobs in the future, I haven't thought
+> > too much about that.
+>
+> Good question, me neither. Will see if I can think of anything...
+>
+> -Toke
+>
