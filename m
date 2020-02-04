@@ -2,236 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E102151659
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2020 08:17:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 613F21516E8
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2020 09:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbgBDHRF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Feb 2020 02:17:05 -0500
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:39603 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725834AbgBDHRE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Feb 2020 02:17:04 -0500
-Received: by mail-pl1-f196.google.com with SMTP id g6so6895568plp.6;
-        Mon, 03 Feb 2020 23:17:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Ilfu3WmKSVrH6Kay2DlwZBIEnaGW/2gaQGQqUnhH9hk=;
-        b=pFUVVWD73rNuHHpblzOfrscS+2bxtu6qIh6DZl+zrryQNRN5p1SEsdWjc2Sz4809iS
-         Tx1UqSf82dVdUZIq40auQ3cATkRuyVPHMQMgPrToXY32ZFx+dnN0tpoXktM+sFOkAndb
-         3qHh4e4++2fbz2lYgLy2pudPQTPOEnoIyK6OChdA5vpFn60OnqQnLz4KV4/RYteLFCX9
-         LZXlwchAx9/9zlJ3NmtlwmwF0rLDOOkc7BF2wuCyM1/w9mtHb2/O+VEPy6woTLiQ5gPy
-         tMKYNXAOiLtMU8XHjiB0xvN8E1lXjMBiLbs5pHQqcJNA/GoY2QQ+H5XKiWLawbdmTIR6
-         gsdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Ilfu3WmKSVrH6Kay2DlwZBIEnaGW/2gaQGQqUnhH9hk=;
-        b=phM2o1qYGcl3stW7vsZ1KE95Q9ikEqGKBiURAQuWptjmGWQ38st8J5QexbOHxyqPn2
-         IUUctXCB+dboYyfpLQvf1m0V0WQp2JrLQ7wHLxVy080Vpk5+QrjdFx1tlUpByUyoKxAm
-         +ueXKbPW70sGISvsfRLc/c+1jqd70hKDCNBrhdAFm4YfNwjBmgGhKu5R+igus68awWw+
-         uRKuYUdilC0feLDvZ4xriNgX/TDRS3RNmGqZ1ez8BDVuy63XxPULqP/3nh6YbW7AEVHs
-         x2X6DvHhLL7ROAJrrjX4dr+PDfFAjq9LKd9URe+c4cwQkLBUtD0I/ktqhZzRHjHjPbJg
-         GEvw==
-X-Gm-Message-State: APjAAAUK2EHeyKSgt1AFMnaZN0TVZPuGpHnIym7T3G6YJCo1PV7oCXYf
-        WFAOXosxz399OdS79Y4iabvh+U0jbTT9Tg==
-X-Google-Smtp-Source: APXvYqzU+olYyf72/JexE1NOLO+sa3FwkTxIL5iLLtGkCcjAYdUhxvXHsxP9wipTCCin1BcTEQKNAw==
-X-Received: by 2002:a17:902:341:: with SMTP id 59mr29290084pld.29.1580800623869;
-        Mon, 03 Feb 2020 23:17:03 -0800 (PST)
-Received: from localhost.localdomain ([103.202.217.14])
-        by smtp.gmail.com with ESMTPSA id v10sm22016045pgk.24.2020.02.03.23.16.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Feb 2020 23:17:03 -0800 (PST)
-From:   Yuya Kusakabe <yuya.kusakabe@gmail.com>
-To:     jasowang@redhat.com
-Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
-        mst@redhat.com, songliubraving@fb.com, yhs@fb.com, kuba@kernel.org,
-        andriin@fb.com, yuya.kusakabe@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH bpf-next v4] virtio_net: add XDP meta data support
-Date:   Tue,  4 Feb 2020 16:16:55 +0900
-Message-Id: <20200204071655.94474-1-yuya.kusakabe@gmail.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <8da1b560-3128-b885-b453-13de5c7431fb@redhat.com>
-References: <8da1b560-3128-b885-b453-13de5c7431fb@redhat.com>
+        id S1726189AbgBDISX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Feb 2020 03:18:23 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:46652 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726566AbgBDISW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Feb 2020 03:18:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1580804302;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pBGYZLblushYtsXweaHtBpvwr3TbUuhVxGoRYPzdYAM=;
+        b=Vw9cGI4kbrl6jfdAdFbx+KO8Uofl+MvrENBMd0iZD/kRyhtMGpUMfwpH3DwthA5ZpBCZoV
+        EW0tRldajumps8tCFicQO/CmDAj1VGRgES/EEL/uuF9L6lIX3ZQhehrRHa4WQKXz93zjPp
+        lI7pN61s9bgI34DohOLpN3qnDzwfJJ0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-385-ygvo1I3NNG-N31GA9SxjfA-1; Tue, 04 Feb 2020 03:18:18 -0500
+X-MC-Unique: ygvo1I3NNG-N31GA9SxjfA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 961431137840;
+        Tue,  4 Feb 2020 08:18:16 +0000 (UTC)
+Received: from krava (ovpn-205-67.brq.redhat.com [10.40.205.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 470A55D9CA;
+        Tue,  4 Feb 2020 08:18:13 +0000 (UTC)
+Date:   Tue, 4 Feb 2020 09:18:10 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        David Miller <davem@redhat.com>
+Subject: Re: [PATCH 5/5] bpf: Allow to resolve bpf trampoline in unwind
+Message-ID: <20200204081810.GA1554679@krava>
+References: <20191229143740.29143-6-jolsa@kernel.org>
+ <20200106234639.fo2ctgkb5vumayyl@ast-mbp>
+ <20200107130546.GI290055@krava>
+ <76a10338-391a-ffca-9af8-f407265d146a@intel.com>
+ <20200113094310.GE35080@krava>
+ <a2e2b84e-71dd-e32c-bcf4-09298e9f4ce7@intel.com>
+ <9da1c8f9-7ca5-e10b-8931-6871fdbffb23@intel.com>
+ <20200113123728.GA120834@krava>
+ <20200203195826.GB1535545@krava>
+ <8f656ce1-c350-0edd-096b-8f1c395609ec@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <8f656ce1-c350-0edd-096b-8f1c395609ec@intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Implement support for transferring XDP meta data into skb for
-virtio_net driver; before calling into the program, xdp.data_meta points
-to xdp.data and copy vnet header to the front of xdp.data_hard_start
-to avoid overwriting it, where on program return with pass verdict,
-we call into skb_metadata_set().
+On Mon, Feb 03, 2020 at 09:27:39PM +0100, Bj=F6rn T=F6pel wrote:
+> On 2020-02-03 20:58, Jiri Olsa wrote:
+> [...]
+> > > > ...and FWIW, it would be nice with bpf_dispatcher_<...> entries i=
+n kallsyms
+> > >=20
+> > > ok so it'd be 'bpf_dispatcher_<name>'
+> >=20
+> > hi,
+> > so the only dispatcher is currently defined as:
+> >    DEFINE_BPF_DISPATCHER(bpf_dispatcher_xdp)
+> >=20
+> > with the bpf_dispatcher_<name> logic it shows in kallsyms as:
+> >    ffffffffa0450000 t bpf_dispatcher_bpf_dispatcher_xdp    [bpf]
+> >=20
+>=20
+> Ick! :-P
 
-Fixes: de8f3a83b0a0 ("bpf: add meta pointer for direct access")
-Signed-off-by: Yuya Kusakabe <yuya.kusakabe@gmail.com>
----
- drivers/net/virtio_net.c | 47 ++++++++++++++++++++++++++++------------
- 1 file changed, 33 insertions(+), 14 deletions(-)
+yea, but it draws attention ;-)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 2fe7a3188282..5fdd6ea0e3f1 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -371,7 +371,7 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
- 				   struct receive_queue *rq,
- 				   struct page *page, unsigned int offset,
- 				   unsigned int len, unsigned int truesize,
--				   bool hdr_valid)
-+				   bool hdr_valid, unsigned int metasize)
- {
- 	struct sk_buff *skb;
- 	struct virtio_net_hdr_mrg_rxbuf *hdr;
-@@ -393,7 +393,7 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
- 	else
- 		hdr_padded_len = sizeof(struct padded_vnet_hdr);
- 
--	if (hdr_valid)
-+	if (hdr_valid && !metasize)
- 		memcpy(hdr, p, hdr_len);
- 
- 	len -= hdr_len;
-@@ -405,6 +405,11 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
- 		copy = skb_tailroom(skb);
- 	skb_put_data(skb, p, copy);
- 
-+	if (metasize) {
-+		__skb_pull(skb, metasize);
-+		skb_metadata_set(skb, metasize);
-+	}
-+
- 	len -= copy;
- 	offset += copy;
- 
-@@ -644,6 +649,7 @@ static struct sk_buff *receive_small(struct net_device *dev,
- 	unsigned int delta = 0;
- 	struct page *xdp_page;
- 	int err;
-+	unsigned int metasize = 0;
- 
- 	len -= vi->hdr_len;
- 	stats->bytes += len;
-@@ -683,10 +689,15 @@ static struct sk_buff *receive_small(struct net_device *dev,
- 
- 		xdp.data_hard_start = buf + VIRTNET_RX_PAD + vi->hdr_len;
- 		xdp.data = xdp.data_hard_start + xdp_headroom;
--		xdp_set_data_meta_invalid(&xdp);
- 		xdp.data_end = xdp.data + len;
-+		xdp.data_meta = xdp.data;
- 		xdp.rxq = &rq->xdp_rxq;
- 		orig_data = xdp.data;
-+		/* Copy the vnet header to the front of data_hard_start to avoid
-+		 * overwriting it by XDP meta data.
-+		 */
-+		memcpy(xdp.data_hard_start - vi->hdr_len,
-+		       xdp.data - vi->hdr_len, vi->hdr_len);
- 		act = bpf_prog_run_xdp(xdp_prog, &xdp);
- 		stats->xdp_packets++;
- 
-@@ -695,9 +706,11 @@ static struct sk_buff *receive_small(struct net_device *dev,
- 			/* Recalculate length in case bpf program changed it */
- 			delta = orig_data - xdp.data;
- 			len = xdp.data_end - xdp.data;
-+			metasize = xdp.data - xdp.data_meta;
- 			break;
- 		case XDP_TX:
- 			stats->xdp_tx++;
-+			xdp.data_meta = xdp.data;
- 			xdpf = convert_to_xdp_frame(&xdp);
- 			if (unlikely(!xdpf))
- 				goto err_xdp;
-@@ -736,10 +749,12 @@ static struct sk_buff *receive_small(struct net_device *dev,
- 	skb_reserve(skb, headroom - delta);
- 	skb_put(skb, len);
- 	if (!delta) {
--		buf += header_offset;
--		memcpy(skb_vnet_hdr(skb), buf, vi->hdr_len);
-+		memcpy(skb_vnet_hdr(skb), buf + VIRTNET_RX_PAD, vi->hdr_len);
- 	} /* keep zeroed vnet hdr since packet was changed by bpf */
- 
-+	if (metasize)
-+		skb_metadata_set(skb, metasize);
-+
- err:
- 	return skb;
- 
-@@ -760,8 +775,8 @@ static struct sk_buff *receive_big(struct net_device *dev,
- 				   struct virtnet_rq_stats *stats)
- {
- 	struct page *page = buf;
--	struct sk_buff *skb = page_to_skb(vi, rq, page, 0, len,
--					  PAGE_SIZE, true);
-+	struct sk_buff *skb =
-+		page_to_skb(vi, rq, page, 0, len, PAGE_SIZE, true, 0);
- 
- 	stats->bytes += len - vi->hdr_len;
- 	if (unlikely(!skb))
-@@ -793,6 +808,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 	unsigned int truesize;
- 	unsigned int headroom = mergeable_ctx_to_headroom(ctx);
- 	int err;
-+	unsigned int metasize = 0;
- 
- 	head_skb = NULL;
- 	stats->bytes += len - vi->hdr_len;
-@@ -839,8 +855,8 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 		data = page_address(xdp_page) + offset;
- 		xdp.data_hard_start = data - VIRTIO_XDP_HEADROOM + vi->hdr_len;
- 		xdp.data = data + vi->hdr_len;
--		xdp_set_data_meta_invalid(&xdp);
- 		xdp.data_end = xdp.data + (len - vi->hdr_len);
-+		xdp.data_meta = xdp.data;
- 		xdp.rxq = &rq->xdp_rxq;
- 
- 		act = bpf_prog_run_xdp(xdp_prog, &xdp);
-@@ -852,8 +868,9 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 			 * adjustments. Note other cases do not build an
- 			 * skb and avoid using offset
- 			 */
--			offset = xdp.data -
--					page_address(xdp_page) - vi->hdr_len;
-+			metasize = xdp.data - xdp.data_meta;
-+			offset = xdp.data - page_address(xdp_page) -
-+				 vi->hdr_len - metasize;
- 
- 			/* recalculate len if xdp.data or xdp.data_end were
- 			 * adjusted
-@@ -863,14 +880,15 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 			if (unlikely(xdp_page != page)) {
- 				rcu_read_unlock();
- 				put_page(page);
--				head_skb = page_to_skb(vi, rq, xdp_page,
--						       offset, len,
--						       PAGE_SIZE, false);
-+				head_skb = page_to_skb(vi, rq, xdp_page, offset,
-+						       len, PAGE_SIZE, false,
-+						       metasize);
- 				return head_skb;
- 			}
- 			break;
- 		case XDP_TX:
- 			stats->xdp_tx++;
-+			xdp.data_meta = xdp.data;
- 			xdpf = convert_to_xdp_frame(&xdp);
- 			if (unlikely(!xdpf))
- 				goto err_xdp;
-@@ -921,7 +939,8 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 		goto err_skb;
- 	}
- 
--	head_skb = page_to_skb(vi, rq, page, offset, len, truesize, !xdp_prog);
-+	head_skb = page_to_skb(vi, rq, page, offset, len, truesize, !xdp_prog,
-+			       metasize);
- 	curr_skb = head_skb;
- 
- 	if (unlikely(!curr_skb))
--- 
-2.24.1
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index f349e2c0884c..eafe72644282 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -577,7 +577,7 @@ DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
+>  	ret; })
+>=20
+>  #define BPF_PROG_RUN(prog, ctx) __BPF_PROG_RUN(prog, ctx,		\
+> -					       bpf_dispatcher_nopfunc)
+> +					       bpf_dispatcher_nop_func)
+>=20
+>  #define BPF_SKB_CB_LEN QDISC_CB_PRIV_LEN
+>=20
+> @@ -701,7 +701,7 @@ static inline u32 bpf_prog_run_clear_cb(const struc=
+t
+> bpf_prog *prog,
+>  	return res;
+>  }
+>=20
+> -DECLARE_BPF_DISPATCHER(bpf_dispatcher_xdp)
+> +DECLARE_BPF_DISPATCHER(xdp)
+
+yep, that's what I prefer ;-) I'll attach your patch
+to my kallsyms changes
+
+thanks,
+jirka
 
