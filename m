@@ -2,142 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A6715209D
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2020 19:48:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB76E1520B3
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2020 20:00:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727382AbgBDSsL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Feb 2020 13:48:11 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:44045 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727381AbgBDSsK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Feb 2020 13:48:10 -0500
-Received: by mail-qt1-f195.google.com with SMTP id w8so15133241qts.11;
-        Tue, 04 Feb 2020 10:48:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=pZ3lRV9H5GXmdJmVKgZelLW8v0KJbkKxQiunQLx4arI=;
-        b=lviyihjaQlK93Z0tUJEGUeDEM7tmqTxavD7sfrMkXhQcfo5j2pdcqgBteI+yb9GNzU
-         rwgJXk/uf+OizdrVCX1PTovV32kK2ce9eoQuOTjrKJk9YBb3QbOSa0sqJLTblGGXSutP
-         9pCtEJ2zDGoPSfbJexSh1C54k26C6tqibEu23O7xPJY6TToyNnoxy5ck8wUqbxTmXXi6
-         L3B3I4vMww9o4l9KCbMmlqo6iuBOTGP3y4f9m+om0V/30Evb5+GfiL9v2xXqXgEGjm0o
-         jJ5JB2TtZj3kK4Oc3yTfyQLdsTge9Ibll4rweuGg2ORm62glV5k2l7QQPRvJ02ejDBMt
-         18Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pZ3lRV9H5GXmdJmVKgZelLW8v0KJbkKxQiunQLx4arI=;
-        b=rXCtpatQQ1N/XXp1dhe9Etxp8C9uS0y7lPW9ZkvYB1k2gqLWo1+Wsb70y4oZLglitv
-         ucGfR87mPavcCsW1ChYWus70rRM+X9vsDD7egsy5t7I5Q2qCuAlADquE7O4fnvbOtbf+
-         DZ5jA8j8QElGmH/CCdKzkIHe03Xns9zxjIwcE+l3UH/pKQJqnFRJcy2aTIU/xskFcrYa
-         DaPg/etdtqbchqr4pSVRF/VhL9Ngtdj/W25OtfdTUB+jPHNyMP2jP7gsYMMkeYsdW8EF
-         PqvZ70nzsOXBxzhkkhBVaOeyCz3Kvh/8xbCy7w4yXwnQRyOYQ+EfZ2/5cQJEhSVyTjqm
-         glHQ==
-X-Gm-Message-State: APjAAAWtwBEziu/hI//bO5cWRaG/1aQU6gD9JyuTHdck87ChtXp8Epsh
-        Id4OgT1ZbZHCrP5M8YKxvp6Vx6hZsi1qV3VoUZE=
-X-Google-Smtp-Source: APXvYqzAjb9rZmpKaAxpthXum21Sd9DUKvNAWQccHwUeJUvyMfw2XqIRfK3n0jKGnYlzDyN6z6CL6OOz1bjDJBmpdjE=
-X-Received: by 2002:ac8:140c:: with SMTP id k12mr29797867qtj.117.1580842089603;
- Tue, 04 Feb 2020 10:48:09 -0800 (PST)
+        id S1727446AbgBDTAs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Feb 2020 14:00:48 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:62216 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727308AbgBDTAr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 4 Feb 2020 14:00:47 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 014IwXeA016295;
+        Tue, 4 Feb 2020 11:00:41 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : references
+ : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=h3Vm8gnZQnElPQUpKm+lLfFISDDIxWg5HBiTh0xI2w4=;
+ b=TDo1i1BfzZIPvSQLi7pF526NX2x/3mjlY4gmqWFgVEZ+T0KOB6hSMrb2F+S5fJF4pkK+
+ 1r+4CnXSr+Nxs+kx6OUaVWOg3HcaVGlR+T36IMxbQ47v7bBL5rPJ3oXJhAGf6ezjgMi3
+ 3W6rxV54xhyTGNPjQSawqvwXDpOVY6TKIFQ= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2xxvs14c59-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 04 Feb 2020 11:00:41 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 4 Feb 2020 11:00:40 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FlCoTBwHvW0q4tclo1vAfXhhBoN8HdHbnN3qgo4Yx02ZMOW4YW2FjmACImaya/zlsHden72y33ulYcij7SbACNcg43VvFl2/oxOoQwmGEYY5I/Ay6zPujnPtKIy/Q2YhXCK7ihiHAjYor9LOVnUjtPhgz4xX3ShXV+rVBdd55vk7d8fZu4WGqF1h75j/Zut7kAzbWz6boTeLvbAK8Bweh93iP6lc4tYfLNN6B5s9S919Q9N85YHWnLnBvT0SLb5YSkHmNHMSO/Shayjd1vlioPOPDn//PKSO3aJd/0VfTRtWP13OBee7iLBfVJcZ+96tMde9B11W8MOYsByK8Mlyjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h3Vm8gnZQnElPQUpKm+lLfFISDDIxWg5HBiTh0xI2w4=;
+ b=GR0xslChMIMbOtWe4wulqsmY2F+0+PEjIUKGxu2ZRpWcXVgB66G4fg0XI7U0YK/dkIkXkQuhPlQlsorXtTCYzn0Q0h1YYOqe5jvjH+4qRxM64Ir/kGNuC1x8DiRP1bxpho4qvbM2ywcslQPv3OCwPJhIZOoJfzZbXqq6YBawVbJcw0LU5nNyVqk9WkDIs8T1hfQlucXbBZzFkcAU+5F2e89fC+zWz42L4++YzsFAKxKN9bkXGpjEgvR8h5/ZzlmdTMm6OkTXl2elIQuel52NJLb0Fiwu1jm9aeQQDgj1TAuKsLsxVxzGJIIjdK79xpZLHZ70LNXOwz85kr+2I5mg0Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h3Vm8gnZQnElPQUpKm+lLfFISDDIxWg5HBiTh0xI2w4=;
+ b=ZGCrLNa1k0pUDuTLJ1Ym25Atjb2OAb5+r3F4JwLw+yDF21QmWy9mphYh1daYFCBpzBQiVAk3RwfVGR4a2Sdjk7okHf+62L5DdlIGGIK9lczCoDAH17aBikYcls1nFry7eu8Sx28BetHKCrCaDCmwCJKn2B8+H8NccEeANb+n8oE=
+Received: from CY4PR15MB1304.namprd15.prod.outlook.com (10.172.181.135) by
+ CY4PR15MB1270.namprd15.prod.outlook.com (10.172.177.143) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2686.29; Tue, 4 Feb 2020 19:00:39 +0000
+Received: from CY4PR15MB1304.namprd15.prod.outlook.com
+ ([fe80::d8e:7375:a261:6e38]) by CY4PR15MB1304.namprd15.prod.outlook.com
+ ([fe80::d8e:7375:a261:6e38%5]) with mapi id 15.20.2686.031; Tue, 4 Feb 2020
+ 19:00:38 +0000
+Subject: Re: Need a way to modify the section name for a read program object
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        <xdp-newbies@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+References: <D0F8E306-ABEE-480E-BDFD-D43E3A98DC5A@redhat.com>
+ <874kw664dy.fsf@toke.dk>
+From:   Andrii Nakryiko <andriin@fb.com>
+Message-ID: <f1fa48b7-8096-b4f2-51cc-bcb4c1da0cd4@fb.com>
+Date:   Tue, 4 Feb 2020 11:00:34 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.4.2
+In-Reply-To: <874kw664dy.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MWHPR08CA0047.namprd08.prod.outlook.com
+ (2603:10b6:300:c0::21) To CY4PR15MB1304.namprd15.prod.outlook.com
+ (2603:10b6:903:113::7)
 MIME-Version: 1.0
-References: <20190820114706.18546-1-toke@redhat.com> <CAEf4BzZxb7qZabw6aDVaTqnhr3AGtwEo+DbuBR9U9tJr+qVuyg@mail.gmail.com>
- <87blwiqlc8.fsf@toke.dk> <CAEf4BzYMKPbfOu4a4UDEfJVcNW1-KvRwJ7PVo+Mf_1YUJgE4Qw@mail.gmail.com>
- <43e8c177-cc9c-ca0b-1622-e30a7a1281b7@iogearbox.net> <CAEf4Bzab_w0AXy5P9mG14mcyJVgUCzuuNda5FpU5wSEwUciGfg@mail.gmail.com>
- <87tva8m85t.fsf@toke.dk> <CAEf4BzbzQwLn87G046ZbkLtTbY6WF6o8JkygcPLPGUSezgs9Tw@mail.gmail.com>
- <CAEf4BzZOAukJZzo4J5q3F2v4MswQ6nJh6G1_c0H0fOJCdc7t0A@mail.gmail.com>
- <87blqfcvnf.fsf@toke.dk> <CAEf4Bza4bSAzjFp2WDiPAM7hbKcKgAX4A8_TUN8V38gXV9GbTg@mail.gmail.com>
- <0bf50b22-a8e2-e3b3-aa53-7bd5dd5d4399@gmail.com> <CAEf4Bzbzz3s0bSF_CkP56NTDd+WBLAy0QrMvreShubetahuH0g@mail.gmail.com>
- <2cf136a4-7f0e-f4b7-1ecb-6cbf6cb6c8ff@gmail.com> <CAEf4Bzb1fXdGFz7BkrQF7uMhBD1F-K_kudhLR5wC-+kA7PMqnA@mail.gmail.com>
- <87h80669o6.fsf@toke.dk>
-In-Reply-To: <87h80669o6.fsf@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 4 Feb 2020 10:47:58 -0800
-Message-ID: <CAEf4BzYGp95MKjBxNay2w=9RhFAEUCrZ8_y1pqzdG-fUyY63=w@mail.gmail.com>
-Subject: Re: [RFC bpf-next 0/5] Convert iproute2 to use libbpf (WIP)
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     David Ahern <dsahern@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Received: from [IPv6:2620:10d:c083:1309:c13:c9a5:618e:9452] (2620:10d:c090:200::1:88e0) by MWHPR08CA0047.namprd08.prod.outlook.com (2603:10b6:300:c0::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2686.32 via Frontend Transport; Tue, 4 Feb 2020 19:00:38 +0000
+X-Originating-IP: [2620:10d:c090:200::1:88e0]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d8133755-d40c-4b07-af28-08d7a9a4861a
+X-MS-TrafficTypeDiagnostic: CY4PR15MB1270:
+X-Microsoft-Antispam-PRVS: <CY4PR15MB12706D6D45F7150DE2DA825EC6030@CY4PR15MB1270.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Forefront-PRVS: 03030B9493
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(136003)(39860400002)(376002)(366004)(346002)(396003)(199004)(189003)(2906002)(66946007)(66476007)(66556008)(8936002)(6666004)(66574012)(6486002)(110136005)(316002)(16526019)(186003)(36756003)(81166006)(86362001)(31696002)(2616005)(52116002)(31686004)(478600001)(81156014)(8676002)(5660300002)(53546011)(43043002);DIR:OUT;SFP:1102;SCL:1;SRVR:CY4PR15MB1270;H:CY4PR15MB1304.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+Received-SPF: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hCPGPdIT2XjyxIVV6MIyC87xpJNytLVQCgTZeWQntg8eTIHVV3/sLdFitPxg/o+RwrtMsD1LLiaCW+obEkUC+hl1QxO33IuWLuBf0AppY0m8coH83Hwtbosr9GIe2I0PiRlkyHQ8Txk1xK8+M0D+wGzcQpQF3b0Sz6LTSo2YmfreKkgbf9Fz9S3JUl/lt/loedb5kSdzm/WtjuO1lqmjYjCPC0AIB3Espev6VJz0si800hZtNAiAB+Pp7iyP5zm3WMGMofL6JGHyClZuJcMA0ELwzAX3rKE4Y2SMkeGgJVW0JewVH59s+vXLnSnoP6dj3Q61So+BVkmM6u/Zxwj5xGyz/eRz1FS39uMXIlI9MAkPVfRuKE6XLx/I2FFLcsk+cA10WttJwDIutXyOinaw/CSnxKBwVkEI1rrCyqkJhX3iMWnJMECJxEDmCgr64yqxY9//mml5WEdy+WNfxSSpVrr6w/HfKWJ5yMao6wn41lK3CNybX8Iw9cqp1OTLTTM1
+X-MS-Exchange-AntiSpam-MessageData: 7odhrRKR93tcM+G2J8cQLzj0bWX6SBUqDW3hg6WhUCGk4B9R9jhkSanBd+9zTJ6J+mBlb9kvMi9Uxc8/E4pMsm8CSFW3pOKvXNc0PZJol2ss2I64dYVd7DxZTCIu67AiUOGWzgtdRZWxQHK4++TfAHrxm/WRAX8QEtLWd6PIM8tASYSsVikk5nqlUmJxOfKl
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8133755-d40c-4b07-af28-08d7a9a4861a
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2020 19:00:38.8829
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DqX3QxB6pnQybkQrm1gNOXr6IvfbMFqO0iDfd0cr6fLfvJ0CcXWjZSEyKEiHoUnb
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR15MB1270
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-02-04_07:2020-02-04,2020-02-04 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 phishscore=0
+ mlxscore=0 adultscore=0 priorityscore=1501 lowpriorityscore=0
+ suspectscore=0 spamscore=0 clxscore=1011 malwarescore=0 impostorscore=0
+ mlxlogscore=944 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1911200001 definitions=main-2002040126
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 4, 2020 at 12:25 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->
-> > On Mon, Feb 3, 2020 at 8:53 PM David Ahern <dsahern@gmail.com> wrote:
-> >>
-> >> On 2/3/20 8:41 PM, Andrii Nakryiko wrote:
-> >> > On Mon, Feb 3, 2020 at 5:46 PM David Ahern <dsahern@gmail.com> wrote=
-:
-> >> >>
-> >> >> On 2/3/20 5:56 PM, Andrii Nakryiko wrote:
-> >> >>> Great! Just to disambiguate and make sure we are in agreement, my =
-hope
-> >> >>> here is that iproute2 can completely delegate to libbpf all the EL=
-F
-> >> >>>
-> >> >>
-> >> >> iproute2 needs to compile and continue working as is when libbpf is=
- not
-> >> >> available. e.g., add check in configure to define HAVE_LIBBPF and m=
-ove
-> >> >> the existing code and move under else branch.
-> >> >
-> >> > Wouldn't it be better to statically compile against libbpf in this
-> >> > case and get rid a lot of BPF-related code and simplify the rest of
-> >> > it? This can be easily done by using libbpf through submodule, the
-> >> > same way as BCC and pahole do it.
-> >> >
-> >>
-> >> iproute2 compiles today and runs on older distributions and older
-> >> distributions with newer kernels. That needs to hold true after the mo=
-ve
-> >> to libbpf.
-> >
-> > And by statically compiling against libbpf, checked out as a
-> > submodule, that will still hold true, wouldn't it? Or there is some
-> > complications I'm missing? Libbpf is designed to handle old kernels
-> > with no problems.
->
-> My plan was to use the same configure test I'm using for xdp-tools
-> (where I in turn copied the structure of the configure script from
-> iproute2):
->
-> https://github.com/xdp-project/xdp-tools/blob/master/configure#L59
->
-> This will look for a system libbpf install and compile against it if it
-> is compatible, and otherwise fall back to a statically linking against a
-> git submodule.
+On 2/4/20 2:19 AM, Toke Høiland-Jørgensen wrote:
+> "Eelco Chaudron" <echaudro@redhat.com> writes:
+> 
+>> Hi All,
+>>
+>> I'm trying to write an xdpdump like utility and have some missing part
+>> in libbpf to change the fentry/FUNCTION section name before loading the
+>> trace program.
+>>
+>> In short, I have an eBPF program that has a section name like
+>> "fentry/FUNCTION" where FUNCTION needs to be replaced by the name of the
+>> XDP program loaded in the interfaces its start function.
+>>
+>> The code for loading the ftrace part is something like:
+>>
+>> 	open_opts.attach_prog_fd = bpf_prog_get_fd_by_id(info.id);
+>> 	trace_obj = bpf_object__open_file("xdpdump_bpf.o", &open_opts);
+>>
+>> 	trace_prog_fentry = bpf_object__find_program_by_title(trace_obj,
+>> "fentry/FUNCTION");
+>>
+>> 	/* Here I need to replace the trace_prog_fentry->section_name =
+>> "fentry/<INTERFACE PROG NAME> */
+>>
+>> 	bpf_object__load(trace_obj);
+>> 	trace_link_fentry = bpf_program__attach_trace(trace_prog_fentry);
+>>
+>>
+>> See the above, I would like to change the section_name but there is no
+>> API to do this, and of course, the struct bpf_program is
+>> implementation-specific.
+>>
+>> Any idea how I would work around this, or what extension to libbpf can
+>> be suggested to support this?
+> 
+> I think what's missing is a way for the caller to set the attach_btf_id.
+> Currently, libbpf always tries to discover this based on the section
+> name (see libbpf_find_attach_btf_id()). I think the right way to let the
+> caller specify this is not to change the section name, though, but just
+> to expose a way to explicitly set the btf_id (which the caller can then
+> go find on its own).
 
-How will this work when build host has libbpf installed, but target
-host doesn't? You'll get dynamic linker error when trying to run that
-tool.
+Yes, I agree, section name should be treated as an immutable identifier 
+and a (overrideable) hint to libbpf.
 
-If the goal is to have a reliable tool working everywhere, and you
-already support having libbpf as a submodule, why not always use
-submodule's libbpf? What's the concern? Libbpf is a small library, I
-don't think a binary size argument is enough reason to not do this. On
-the other hand, by using libbpf from submodule, your tool is built
-*and tested* with a well-known libbpf version that tool-producer
-controls.
+> 
+> Not sure if it would be better with a new open_opt (to mirror
+> attach_prog_fd), or just a setter (bpf_program__set_attach_btf_id()?).
+> Or maybe both? Andrii, WDYT?
 
->
-> We'll need to double-check that this will work on everything currently
-> supported by iproute2, and fix libbpf if there are any issues with that.
-> Not that I foresee any, but you never know :)
->
+open_opts is definitely wrong way to do this, because open_opts apply to 
+all BPF programs, while this should be per-program. I'm also not sure 
+having API that allows to specify BTF type ID is the best, probably 
+better to let libbpf perform the search by name. So I'd say something 
+like this:
+
+int bpf_program__set_attach_target(int attach_prog_fd, const char 
+*attach_func_name)
+
+This should handle customizing all the tp_btf/fentry/fexit/freplace BPF 
+programs we have. We might add extra attach_target_ops for future 
+extensibility, if we anticipate that we'll need more knobs in the 
+future, I haven't thought too much about that.
+
+> 
 > -Toke
->
+> 
+
