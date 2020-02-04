@@ -2,116 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 613F21516E8
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2020 09:18:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D31151703
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2020 09:25:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgBDISX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Feb 2020 03:18:23 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:46652 "EHLO
+        id S1727126AbgBDIZz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Feb 2020 03:25:55 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:54055 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726566AbgBDISW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Feb 2020 03:18:22 -0500
+        with ESMTP id S1727115AbgBDIZy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Feb 2020 03:25:54 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1580804302;
+        s=mimecast20190719; t=1580804753;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pBGYZLblushYtsXweaHtBpvwr3TbUuhVxGoRYPzdYAM=;
-        b=Vw9cGI4kbrl6jfdAdFbx+KO8Uofl+MvrENBMd0iZD/kRyhtMGpUMfwpH3DwthA5ZpBCZoV
-        EW0tRldajumps8tCFicQO/CmDAj1VGRgES/EEL/uuF9L6lIX3ZQhehrRHa4WQKXz93zjPp
-        lI7pN61s9bgI34DohOLpN3qnDzwfJJ0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-385-ygvo1I3NNG-N31GA9SxjfA-1; Tue, 04 Feb 2020 03:18:18 -0500
-X-MC-Unique: ygvo1I3NNG-N31GA9SxjfA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 961431137840;
-        Tue,  4 Feb 2020 08:18:16 +0000 (UTC)
-Received: from krava (ovpn-205-67.brq.redhat.com [10.40.205.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 470A55D9CA;
-        Tue,  4 Feb 2020 08:18:13 +0000 (UTC)
-Date:   Tue, 4 Feb 2020 09:18:10 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
+        bh=+cv0iF+0H7Pigj2tNEIXGEzBnJQuDpwFFoAut7P08Ik=;
+        b=dB/dxOdbXhjEviWcZ2WlSAl1jpOMsjZqekDxB7S9HIe3kPop9UIA1wvslk7GcHRzTb2vhQ
+        JNeFPv9VBiBB0MQbthsvHwwzcuZXG84zHJ4cNz89Jb5iKPeQ7XHt1oceHEbtthGFTW8x5e
+        BtW12Ng8pIJuQu/ugF/EUzkSU6Tt2jw=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-318-fNVvg5hjNlKwGmmf4neg2g-1; Tue, 04 Feb 2020 03:25:51 -0500
+X-MC-Unique: fNVvg5hjNlKwGmmf4neg2g-1
+Received: by mail-lj1-f198.google.com with SMTP id j1so4987787lja.3
+        for <bpf@vger.kernel.org>; Tue, 04 Feb 2020 00:25:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=+cv0iF+0H7Pigj2tNEIXGEzBnJQuDpwFFoAut7P08Ik=;
+        b=uDf0lWYK8f8QJL7JMCyBJKiMM4GWXDCWX+yxyQeO3MaN4lUwNye8GNnYoj5oip51VE
+         w4URoTLtWGjHchmB3Rnh/Ne+QXf+CfHp4ZDRXx14c+pWeIoAJCCVBgemffi5uDgfAkIA
+         xshS+rzITR2qHIZYB5rwZLKYjL8vpifGV2Ol+H73bs/H78hxbLDRKLMaYsiePIkvlwKT
+         MB4RecrZMTz8+eD+VvSGKEEn5ISvzUCBBQorTpeCHrnDi3mQm7Kc7QAyrkJI7EcySG9d
+         JpZvTLf4q91T4F+V7NoZAQrFHnbdI9feSJS+sTYMJNk+QClf3/teF4WyKgWyzF0SHIkp
+         MhFg==
+X-Gm-Message-State: APjAAAWf6WtXo9Ek8N8w8oogYNYgGAeI0Ca8ghnL1phhslZRPv9OaYjv
+        ldWOsXqczpKPTqqEs+erbOWcaf8CEKALgL5wkY6F2fLRB0XXX0DqecsmhPjLM3dKoZH8NSk+F1c
+        KIDP+RNiiog0G
+X-Received: by 2002:a19:8b89:: with SMTP id n131mr14329732lfd.14.1580804749604;
+        Tue, 04 Feb 2020 00:25:49 -0800 (PST)
+X-Google-Smtp-Source: APXvYqzw5LKNwpDeykmN26/MhP+JVwDAcWl5YcJizUE2gM92ULT/ajB61KUKFyxVqnEEMNZ9Oz8paA==
+X-Received: by 2002:a19:8b89:: with SMTP id n131mr14329709lfd.14.1580804749298;
+        Tue, 04 Feb 2020 00:25:49 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id 135sm10169663lfb.28.2020.02.04.00.25.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Feb 2020 00:25:48 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 767E61802CA; Tue,  4 Feb 2020 09:25:45 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        David Ahern <dsahern@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Stephen Hemminger <stephen@networkplumber.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        David Miller <davem@redhat.com>
-Subject: Re: [PATCH 5/5] bpf: Allow to resolve bpf trampoline in unwind
-Message-ID: <20200204081810.GA1554679@krava>
-References: <20191229143740.29143-6-jolsa@kernel.org>
- <20200106234639.fo2ctgkb5vumayyl@ast-mbp>
- <20200107130546.GI290055@krava>
- <76a10338-391a-ffca-9af8-f407265d146a@intel.com>
- <20200113094310.GE35080@krava>
- <a2e2b84e-71dd-e32c-bcf4-09298e9f4ce7@intel.com>
- <9da1c8f9-7ca5-e10b-8931-6871fdbffb23@intel.com>
- <20200113123728.GA120834@krava>
- <20200203195826.GB1535545@krava>
- <8f656ce1-c350-0edd-096b-8f1c395609ec@intel.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [RFC bpf-next 0/5] Convert iproute2 to use libbpf (WIP)
+In-Reply-To: <CAEf4Bzb1fXdGFz7BkrQF7uMhBD1F-K_kudhLR5wC-+kA7PMqnA@mail.gmail.com>
+References: <20190820114706.18546-1-toke@redhat.com> <CAEf4BzZxb7qZabw6aDVaTqnhr3AGtwEo+DbuBR9U9tJr+qVuyg@mail.gmail.com> <87blwiqlc8.fsf@toke.dk> <CAEf4BzYMKPbfOu4a4UDEfJVcNW1-KvRwJ7PVo+Mf_1YUJgE4Qw@mail.gmail.com> <43e8c177-cc9c-ca0b-1622-e30a7a1281b7@iogearbox.net> <CAEf4Bzab_w0AXy5P9mG14mcyJVgUCzuuNda5FpU5wSEwUciGfg@mail.gmail.com> <87tva8m85t.fsf@toke.dk> <CAEf4BzbzQwLn87G046ZbkLtTbY6WF6o8JkygcPLPGUSezgs9Tw@mail.gmail.com> <CAEf4BzZOAukJZzo4J5q3F2v4MswQ6nJh6G1_c0H0fOJCdc7t0A@mail.gmail.com> <87blqfcvnf.fsf@toke.dk> <CAEf4Bza4bSAzjFp2WDiPAM7hbKcKgAX4A8_TUN8V38gXV9GbTg@mail.gmail.com> <0bf50b22-a8e2-e3b3-aa53-7bd5dd5d4399@gmail.com> <CAEf4Bzbzz3s0bSF_CkP56NTDd+WBLAy0QrMvreShubetahuH0g@mail.gmail.com> <2cf136a4-7f0e-f4b7-1ecb-6cbf6cb6c8ff@gmail.com> <CAEf4Bzb1fXdGFz7BkrQF7uMhBD1F-K_kudhLR5wC-+kA7PMqnA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 04 Feb 2020 09:25:45 +0100
+Message-ID: <87h80669o6.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <8f656ce1-c350-0edd-096b-8f1c395609ec@intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 03, 2020 at 09:27:39PM +0100, Bj=F6rn T=F6pel wrote:
-> On 2020-02-03 20:58, Jiri Olsa wrote:
-> [...]
-> > > > ...and FWIW, it would be nice with bpf_dispatcher_<...> entries i=
-n kallsyms
-> > >=20
-> > > ok so it'd be 'bpf_dispatcher_<name>'
-> >=20
-> > hi,
-> > so the only dispatcher is currently defined as:
-> >    DEFINE_BPF_DISPATCHER(bpf_dispatcher_xdp)
-> >=20
-> > with the bpf_dispatcher_<name> logic it shows in kallsyms as:
-> >    ffffffffa0450000 t bpf_dispatcher_bpf_dispatcher_xdp    [bpf]
-> >=20
->=20
-> Ick! :-P
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-yea, but it draws attention ;-)
+> On Mon, Feb 3, 2020 at 8:53 PM David Ahern <dsahern@gmail.com> wrote:
+>>
+>> On 2/3/20 8:41 PM, Andrii Nakryiko wrote:
+>> > On Mon, Feb 3, 2020 at 5:46 PM David Ahern <dsahern@gmail.com> wrote:
+>> >>
+>> >> On 2/3/20 5:56 PM, Andrii Nakryiko wrote:
+>> >>> Great! Just to disambiguate and make sure we are in agreement, my hope
+>> >>> here is that iproute2 can completely delegate to libbpf all the ELF
+>> >>>
+>> >>
+>> >> iproute2 needs to compile and continue working as is when libbpf is not
+>> >> available. e.g., add check in configure to define HAVE_LIBBPF and move
+>> >> the existing code and move under else branch.
+>> >
+>> > Wouldn't it be better to statically compile against libbpf in this
+>> > case and get rid a lot of BPF-related code and simplify the rest of
+>> > it? This can be easily done by using libbpf through submodule, the
+>> > same way as BCC and pahole do it.
+>> >
+>>
+>> iproute2 compiles today and runs on older distributions and older
+>> distributions with newer kernels. That needs to hold true after the move
+>> to libbpf.
+>
+> And by statically compiling against libbpf, checked out as a
+> submodule, that will still hold true, wouldn't it? Or there is some
+> complications I'm missing? Libbpf is designed to handle old kernels
+> with no problems.
 
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index f349e2c0884c..eafe72644282 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -577,7 +577,7 @@ DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
->  	ret; })
->=20
->  #define BPF_PROG_RUN(prog, ctx) __BPF_PROG_RUN(prog, ctx,		\
-> -					       bpf_dispatcher_nopfunc)
-> +					       bpf_dispatcher_nop_func)
->=20
->  #define BPF_SKB_CB_LEN QDISC_CB_PRIV_LEN
->=20
-> @@ -701,7 +701,7 @@ static inline u32 bpf_prog_run_clear_cb(const struc=
-t
-> bpf_prog *prog,
->  	return res;
->  }
->=20
-> -DECLARE_BPF_DISPATCHER(bpf_dispatcher_xdp)
-> +DECLARE_BPF_DISPATCHER(xdp)
+My plan was to use the same configure test I'm using for xdp-tools
+(where I in turn copied the structure of the configure script from
+iproute2):
 
-yep, that's what I prefer ;-) I'll attach your patch
-to my kallsyms changes
+https://github.com/xdp-project/xdp-tools/blob/master/configure#L59
 
-thanks,
-jirka
+This will look for a system libbpf install and compile against it if it
+is compatible, and otherwise fall back to a statically linking against a
+git submodule.
+
+We'll need to double-check that this will work on everything currently
+supported by iproute2, and fix libbpf if there are any issues with that.
+Not that I foresee any, but you never know :)
+
+-Toke
 
