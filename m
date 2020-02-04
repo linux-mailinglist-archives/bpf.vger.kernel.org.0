@@ -2,73 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8D91520EF
-	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2020 20:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D821520FD
+	for <lists+bpf@lfdr.de>; Tue,  4 Feb 2020 20:26:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727358AbgBDTTd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Feb 2020 14:19:33 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28284 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727442AbgBDTTd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Feb 2020 14:19:33 -0500
+        id S1727466AbgBDT0j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Feb 2020 14:26:39 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:48233 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727358AbgBDT0j (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 4 Feb 2020 14:26:39 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1580843972;
+        s=mimecast20190719; t=1580844398;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=k0pjhqQ38lLEsOHy4AcSgtj8v6zTX3VHqcHQyJnlSjY=;
-        b=EDbHNmG9ar1hS4xlFZ9ugxBuZ1PKELpVMEXSiz56JJrSjC8fJibtge0Sf1PWQ3n3X67YL4
-        e8u39MapBVUU08rvWiTpXfMlWseTZBe5eIQOSXMMiLqhaVp94XAhalqjCCREtZEEd1aNn3
-        8CHIe44AoHxIqw38l2o2alpcfilnPHY=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-55-ZpbZ3__TM5CIeNayFvn4FQ-1; Tue, 04 Feb 2020 14:19:28 -0500
-X-MC-Unique: ZpbZ3__TM5CIeNayFvn4FQ-1
-Received: by mail-lf1-f71.google.com with SMTP id c16so2657155lfm.10
-        for <bpf@vger.kernel.org>; Tue, 04 Feb 2020 11:19:28 -0800 (PST)
+        bh=cK4kk9KTG8BWaRuBvs8XbBF2ptu8HKpXaRe/RR/WOiY=;
+        b=KhDHCx3l5rgoJ3mQ+FVWA5SD2tRcAc+YBDoS+IAF1oLrTyRqTVbYQid0eFZQBvFf1yKmrd
+        xDJwUvjbbjO+U0ECNzOiitidtnuKpqA5gaZh9W6cg79LhE0DreRaz9pTHHx4qmllzMkD8R
+        2C2hODicraV89zuYhTIBS4bjFMdHBIw=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-264-d9PiS4aAMd--XzuvSZydMw-1; Tue, 04 Feb 2020 14:26:33 -0500
+X-MC-Unique: d9PiS4aAMd--XzuvSZydMw-1
+Received: by mail-lj1-f198.google.com with SMTP id y15so5508120ljh.22
+        for <bpf@vger.kernel.org>; Tue, 04 Feb 2020 11:26:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+        h=x-gm-message-state:from:to:subject:in-reply-to:references:date
          :message-id:mime-version:content-transfer-encoding;
-        bh=k0pjhqQ38lLEsOHy4AcSgtj8v6zTX3VHqcHQyJnlSjY=;
-        b=T3OP+uesA1jFBE4izFBG+hC3kFNBv11u4oO7tR4eWDftzGPHsjJfp+iVS9RSREO5ea
-         s7L+ZwlOidj6jlAxvElMRjj+R4hX4fyfY2E0weAKaDIz9QypvVxIO0ETqtY6tXQvte+9
-         0nowfV35sdiwlQbgKIPU2soOVhI+zh1Gqfd6htgLoDRn+yHCC0TtfPqM6g6uK6R4G4Kh
-         +taaaVJ2sBzqaxYSPI7BrP1MSBRGfFRZ3hzvj2p2NMZgelEoPmJgg7CFUjJH6tnUoBUx
-         bpYKX7O5l3CqIM0nHEGeIAGHq07l34+4mv5STZioarE0I8qk4qH9vNfUfyB1in2fKrTK
-         46/Q==
-X-Gm-Message-State: APjAAAURAmc0SrUf+A5jjpxiwCVZOfYLPc6U/m1fazJI0vt78emjm+Ay
-        FXzIG2JqtL3GOsM5ZcjD1Zq7JcSd8KmcXl6p/iLTNbJR1HF9C3MFV0AO2oHs+ShSYPi1bAE8C0q
-        xQ3DZgNBXfcGN
-X-Received: by 2002:a2e:a404:: with SMTP id p4mr18722646ljn.234.1580843967224;
-        Tue, 04 Feb 2020 11:19:27 -0800 (PST)
-X-Google-Smtp-Source: APXvYqzjvtMf2bfhzg268ZEIuVd0j8Vz7vTbbgj1be3aFsRivKNgBMLzW1BZjWry/ZTV+Ze1XTav7A==
-X-Received: by 2002:a2e:a404:: with SMTP id p4mr18722636ljn.234.1580843966957;
-        Tue, 04 Feb 2020 11:19:26 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id t1sm12167127lji.98.2020.02.04.11.19.26
+        bh=cK4kk9KTG8BWaRuBvs8XbBF2ptu8HKpXaRe/RR/WOiY=;
+        b=n0l1D4emlehuOB0CUgdOcUmZppgQqzwCdMyRggy0o3c9v4exf0812QavQ/sQnm7EWy
+         +93luOykb8XD4AGWOHVanm5TZvkL8xCcTtsDDXaaYB0uSMPrA8pTkZha2vHj2GTKnjHS
+         6VjxmyvJCYSXwBI7pbWw9OLT9/y6Z17XlMsrXUTAiRf1yBNN5WsJxHsZ8cOJEa6c381b
+         /eMOI3RmhxH5ufZYkjM6eYELmiZd9eUsxVEGMlI5XlRRw0soCCc25zCaJhybokIdWzCZ
+         nr8AnLo8+AM57oVaR/ykFYHB9HW2HnwQmk1TMa8RFN2ukhnsj3JyWZKo4dg8b8YNxYEh
+         xjAw==
+X-Gm-Message-State: APjAAAXi8evO7PGzrsKrZ2unJLJEfQ+++WAHdXvhoBu7tx75Du6lPzwB
+        mM4IaxKL/OcZ8OorAX7JjDCoSwTCyvcFb0/YAXwFWMiXTc3R9eXPpDk970PVqIL7RmNRToud1gr
+        k16YBexPj3byF
+X-Received: by 2002:a2e:8490:: with SMTP id b16mr18432406ljh.282.1580844392057;
+        Tue, 04 Feb 2020 11:26:32 -0800 (PST)
+X-Google-Smtp-Source: APXvYqwvfvrqkwYpIaL9OAVxaJzuQfBr7IoIkRwk5o0R2IIVGFCIbsigjFjq5mfDfNs75pDaOUSY8w==
+X-Received: by 2002:a2e:8490:: with SMTP id b16mr18432399ljh.282.1580844391819;
+        Tue, 04 Feb 2020 11:26:31 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id v9sm12662518lfe.18.2020.02.04.11.26.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Feb 2020 11:19:26 -0800 (PST)
+        Tue, 04 Feb 2020 11:26:31 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 60B0D1802D4; Tue,  4 Feb 2020 20:19:23 +0100 (CET)
+        id 50B201802D4; Tue,  4 Feb 2020 20:26:27 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     David Ahern <dsahern@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [RFC bpf-next 0/5] Convert iproute2 to use libbpf (WIP)
-In-Reply-To: <CAEf4BzYGp95MKjBxNay2w=9RhFAEUCrZ8_y1pqzdG-fUyY63=w@mail.gmail.com>
-References: <20190820114706.18546-1-toke@redhat.com> <CAEf4BzZxb7qZabw6aDVaTqnhr3AGtwEo+DbuBR9U9tJr+qVuyg@mail.gmail.com> <87blwiqlc8.fsf@toke.dk> <CAEf4BzYMKPbfOu4a4UDEfJVcNW1-KvRwJ7PVo+Mf_1YUJgE4Qw@mail.gmail.com> <43e8c177-cc9c-ca0b-1622-e30a7a1281b7@iogearbox.net> <CAEf4Bzab_w0AXy5P9mG14mcyJVgUCzuuNda5FpU5wSEwUciGfg@mail.gmail.com> <87tva8m85t.fsf@toke.dk> <CAEf4BzbzQwLn87G046ZbkLtTbY6WF6o8JkygcPLPGUSezgs9Tw@mail.gmail.com> <CAEf4BzZOAukJZzo4J5q3F2v4MswQ6nJh6G1_c0H0fOJCdc7t0A@mail.gmail.com> <87blqfcvnf.fsf@toke.dk> <CAEf4Bza4bSAzjFp2WDiPAM7hbKcKgAX4A8_TUN8V38gXV9GbTg@mail.gmail.com> <0bf50b22-a8e2-e3b3-aa53-7bd5dd5d4399@gmail.com> <CAEf4Bzbzz3s0bSF_CkP56NTDd+WBLAy0QrMvreShubetahuH0g@mail.gmail.com> <2cf136a4-7f0e-f4b7-1ecb-6cbf6cb6c8ff@gmail.com> <CAEf4Bzb1fXdGFz7BkrQF7uMhBD1F-K_kudhLR5wC-+kA7PMqnA@mail.gmail.com> <87h80669o6.fsf@toke.dk> <CAEf4BzYGp95MKjBxNay2w=9RhFAEUCrZ8_y1pqzdG-fUyY63=w@mail.gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        xdp-newbies@vger.kernel.org,
+        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: Need a way to modify the section name for a read program object
+In-Reply-To: <f1fa48b7-8096-b4f2-51cc-bcb4c1da0cd4@fb.com>
+References: <D0F8E306-ABEE-480E-BDFD-D43E3A98DC5A@redhat.com> <874kw664dy.fsf@toke.dk> <f1fa48b7-8096-b4f2-51cc-bcb4c1da0cd4@fb.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 04 Feb 2020 20:19:23 +0100
-Message-ID: <8736bqf9dw.fsf@toke.dk>
+Date:   Tue, 04 Feb 2020 20:26:27 +0100
+Message-ID: <87zhdyduho.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -77,86 +71,82 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+Andrii Nakryiko <andriin@fb.com> writes:
 
-> On Tue, Feb 4, 2020 at 12:25 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->>
->> > On Mon, Feb 3, 2020 at 8:53 PM David Ahern <dsahern@gmail.com> wrote:
->> >>
->> >> On 2/3/20 8:41 PM, Andrii Nakryiko wrote:
->> >> > On Mon, Feb 3, 2020 at 5:46 PM David Ahern <dsahern@gmail.com> wrot=
-e:
->> >> >>
->> >> >> On 2/3/20 5:56 PM, Andrii Nakryiko wrote:
->> >> >>> Great! Just to disambiguate and make sure we are in agreement, my=
- hope
->> >> >>> here is that iproute2 can completely delegate to libbpf all the E=
-LF
->> >> >>>
->> >> >>
->> >> >> iproute2 needs to compile and continue working as is when libbpf i=
-s not
->> >> >> available. e.g., add check in configure to define HAVE_LIBBPF and =
-move
->> >> >> the existing code and move under else branch.
->> >> >
->> >> > Wouldn't it be better to statically compile against libbpf in this
->> >> > case and get rid a lot of BPF-related code and simplify the rest of
->> >> > it? This can be easily done by using libbpf through submodule, the
->> >> > same way as BCC and pahole do it.
->> >> >
->> >>
->> >> iproute2 compiles today and runs on older distributions and older
->> >> distributions with newer kernels. That needs to hold true after the m=
-ove
->> >> to libbpf.
->> >
->> > And by statically compiling against libbpf, checked out as a
->> > submodule, that will still hold true, wouldn't it? Or there is some
->> > complications I'm missing? Libbpf is designed to handle old kernels
->> > with no problems.
->>
->> My plan was to use the same configure test I'm using for xdp-tools
->> (where I in turn copied the structure of the configure script from
->> iproute2):
->>
->> https://github.com/xdp-project/xdp-tools/blob/master/configure#L59
->>
->> This will look for a system libbpf install and compile against it if it
->> is compatible, and otherwise fall back to a statically linking against a
->> git submodule.
+> On 2/4/20 2:19 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> "Eelco Chaudron" <echaudro@redhat.com> writes:
+>>=20
+>>> Hi All,
+>>>
+>>> I'm trying to write an xdpdump like utility and have some missing part
+>>> in libbpf to change the fentry/FUNCTION section name before loading the
+>>> trace program.
+>>>
+>>> In short, I have an eBPF program that has a section name like
+>>> "fentry/FUNCTION" where FUNCTION needs to be replaced by the name of the
+>>> XDP program loaded in the interfaces its start function.
+>>>
+>>> The code for loading the ftrace part is something like:
+>>>
+>>> 	open_opts.attach_prog_fd =3D bpf_prog_get_fd_by_id(info.id);
+>>> 	trace_obj =3D bpf_object__open_file("xdpdump_bpf.o", &open_opts);
+>>>
+>>> 	trace_prog_fentry =3D bpf_object__find_program_by_title(trace_obj,
+>>> "fentry/FUNCTION");
+>>>
+>>> 	/* Here I need to replace the trace_prog_fentry->section_name =3D
+>>> "fentry/<INTERFACE PROG NAME> */
+>>>
+>>> 	bpf_object__load(trace_obj);
+>>> 	trace_link_fentry =3D bpf_program__attach_trace(trace_prog_fentry);
+>>>
+>>>
+>>> See the above, I would like to change the section_name but there is no
+>>> API to do this, and of course, the struct bpf_program is
+>>> implementation-specific.
+>>>
+>>> Any idea how I would work around this, or what extension to libbpf can
+>>> be suggested to support this?
+>>=20
+>> I think what's missing is a way for the caller to set the attach_btf_id.
+>> Currently, libbpf always tries to discover this based on the section
+>> name (see libbpf_find_attach_btf_id()). I think the right way to let the
+>> caller specify this is not to change the section name, though, but just
+>> to expose a way to explicitly set the btf_id (which the caller can then
+>> go find on its own).
 >
-> How will this work when build host has libbpf installed, but target
-> host doesn't? You'll get dynamic linker error when trying to run that
-> tool.
+> Yes, I agree, section name should be treated as an immutable identifier=20
+> and a (overrideable) hint to libbpf.
+>
+>>=20
+>> Not sure if it would be better with a new open_opt (to mirror
+>> attach_prog_fd), or just a setter (bpf_program__set_attach_btf_id()?).
+>> Or maybe both? Andrii, WDYT?
+>
+> open_opts is definitely wrong way to do this, because open_opts apply to=
+=20
+> all BPF programs, while this should be per-program.
 
-That's called dependency tracking; distros have various ways of going
-about that :)
+Yes, of course; silly me :)
 
-But yeah, if you're going to do you own cross-compilation, you'd
-probably want to just force using the static library.
+> I'm also not sure having API that allows to specify BTF type ID is the
+> best, probably better to let libbpf perform the search by name. So I'd
+> say something like this:
+>
+> int bpf_program__set_attach_target(int attach_prog_fd, const char=20
+> *attach_func_name)
+>
+> This should handle customizing all the tp_btf/fentry/fexit/freplace BPF=20
+> programs we have.
 
-> If the goal is to have a reliable tool working everywhere, and you
-> already support having libbpf as a submodule, why not always use
-> submodule's libbpf? What's the concern? Libbpf is a small library, I
-> don't think a binary size argument is enough reason to not do this. On
-> the other hand, by using libbpf from submodule, your tool is built
-> *and tested* with a well-known libbpf version that tool-producer
-> controls.
+Right, that makes sense; I think that would cover it (apart from your
+function signature missing a struct bpf_program argument).
 
-I thought we already had this discussion? :)
+> We might add extra attach_target_ops for future extensibility, if we
+> anticipate that we'll need more knobs in the future, I haven't thought
+> too much about that.
 
-libbpf is a library like any other. Distros that package the library
-want the tools that use it to be dynamically linked against it so
-library upgrades (especially of the CVE-fixing kind) get picked up by
-all users. Other distros have memory and space constraints (iproute2 is
-shipped on OpenWrt, for instance, which is *extremely*
-space-constrained). And yeah, other deployments don't care and will just
-statically compile in the vendored version. So we'll need to support all
-of those use cases.
+Good question, me neither. Will see if I can think of anything...
 
 -Toke
 
