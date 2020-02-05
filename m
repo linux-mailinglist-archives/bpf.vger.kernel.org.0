@@ -2,134 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C8615294D
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2020 11:37:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61DAB153053
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2020 13:06:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728244AbgBEKhw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Feb 2020 05:37:52 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:51500 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727367AbgBEKhw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Feb 2020 05:37:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1580899072;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XJMxmKv/7NFy8a5uAJ1R6xwJxnA8R5SW1BrLj1tXa2s=;
-        b=MwqwDvxY6l55ws4pnp0YUDcYMyl8NBcaHKEL4mwCP5u1KsYuHeVF/1JjlG0OhJdZcL9B2g
-        xh3/nQsEPhz1N8gfcHQr6y+ZoqXXUIB5z9zbCIoS863N6nb4jak4HYRzblaAM1DA1Ylb63
-        TBY3FRTGbnU/bZwfxcM7Fg81cm7ivbU=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-155-dynifIyyN4qvDpD0CZjfmQ-1; Wed, 05 Feb 2020 05:37:49 -0500
-X-MC-Unique: dynifIyyN4qvDpD0CZjfmQ-1
-Received: by mail-lj1-f199.google.com with SMTP id b15so181854ljp.7
-        for <bpf@vger.kernel.org>; Wed, 05 Feb 2020 02:37:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=XJMxmKv/7NFy8a5uAJ1R6xwJxnA8R5SW1BrLj1tXa2s=;
-        b=tio4tyNCKAKGtqqgJwnNPvp619q98m6DQvehuKpvGajHz3kC7NziZhryErHl3uvgDW
-         m6l1tZqilnpj2kCvFOd1fW1W0/asios9xgeZXaa3KIuMuWxc0NXbAN0nkWErZIZROqSb
-         w9ukG4HEakADu6p+/GkdVoa6bFMPp+feoZKM8ofgmy/bymFK/u0C6Ie/NsBSy+tYnCJC
-         R1kuixCPYYFFT9AwK+hohPVNUpBRTHm+QXBYPmlNNmxFkc49FGj5KHZqUFEBOWCdJqPM
-         qUl9Cq4JhkUdjm/8fkWkua0KbOCKTO1BwNNd/q/L+u/mpAnvc2xZHZIyzzeNyPBhQmVy
-         kblQ==
-X-Gm-Message-State: APjAAAWmYW4VVRhPX1oHxVQT/tTPcwZzYzAwcOqOsZfHtkIIl9SJXTvt
-        1DgeUsnomPoQDkX+afLWicg6CajImMlEK5iygEqpGt+On+UfNCWkyx3UwEmrDX9x2p4drAm3Jaa
-        97EZL3coc5rLZ
-X-Received: by 2002:ac2:5c4a:: with SMTP id s10mr17114541lfp.88.1580899068372;
-        Wed, 05 Feb 2020 02:37:48 -0800 (PST)
-X-Google-Smtp-Source: APXvYqyGQ+MAW2nIcH05LZAor6Ff7MX5If5Gs68OzCOwxTnrnXXD/DVILU2bBb6oCjmDQy+/ADH1pQ==
-X-Received: by 2002:ac2:5c4a:: with SMTP id s10mr17114519lfp.88.1580899068050;
-        Wed, 05 Feb 2020 02:37:48 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id q24sm11977807lfm.78.2020.02.05.02.37.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Feb 2020 02:37:46 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 025DB1802D4; Wed,  5 Feb 2020 11:37:44 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [RFC bpf-next 0/5] Convert iproute2 to use libbpf (WIP)
-In-Reply-To: <d5434db9-1899-776d-c4cd-918e2418175d@gmail.com>
-References: <20190820114706.18546-1-toke@redhat.com>
- <43e8c177-cc9c-ca0b-1622-e30a7a1281b7@iogearbox.net>
- <CAEf4Bzab_w0AXy5P9mG14mcyJVgUCzuuNda5FpU5wSEwUciGfg@mail.gmail.com>
- <87tva8m85t.fsf@toke.dk>
- <CAEf4BzbzQwLn87G046ZbkLtTbY6WF6o8JkygcPLPGUSezgs9Tw@mail.gmail.com>
- <CAEf4BzZOAukJZzo4J5q3F2v4MswQ6nJh6G1_c0H0fOJCdc7t0A@mail.gmail.com>
- <87blqfcvnf.fsf@toke.dk>
- <CAEf4Bza4bSAzjFp2WDiPAM7hbKcKgAX4A8_TUN8V38gXV9GbTg@mail.gmail.com>
- <0bf50b22-a8e2-e3b3-aa53-7bd5dd5d4399@gmail.com>
- <CAEf4Bzbzz3s0bSF_CkP56NTDd+WBLAy0QrMvreShubetahuH0g@mail.gmail.com>
- <2cf136a4-7f0e-f4b7-1ecb-6cbf6cb6c8ff@gmail.com>
- <CAEf4Bzb1fXdGFz7BkrQF7uMhBD1F-K_kudhLR5wC-+kA7PMqnA@mail.gmail.com>
- <87h80669o6.fsf@toke.dk>
- <CAEf4BzYGp95MKjBxNay2w=9RhFAEUCrZ8_y1pqzdG-fUyY63=w@mail.gmail.com>
- <8736bqf9dw.fsf@toke.dk>
- <CAEf4BzbNZQmDD3Ob+m6yJK2CzNb9=3F2bYfxOUyn7uOp0bhXZA@mail.gmail.com>
- <87tv46dnj6.fsf@toke.dk> <2ab65028-c200-f8f8-b57d-904cb8a7c00c@gmail.com>
- <87r1zadlpx.fsf@toke.dk> <d5434db9-1899-776d-c4cd-918e2418175d@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 05 Feb 2020 11:37:44 +0100
-Message-ID: <87imkle2vb.fsf@toke.dk>
+        id S1727064AbgBEMG1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Feb 2020 07:06:27 -0500
+Received: from mga14.intel.com ([192.55.52.115]:56042 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726810AbgBEMG1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Feb 2020 07:06:27 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 05 Feb 2020 04:06:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,405,1574150400"; 
+   d="scan'208";a="254742591"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by fmsmga004.fm.intel.com with ESMTP; 05 Feb 2020 04:06:24 -0800
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     ast@kernel.org, daniel@iogearbox.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, bjorn.topel@intel.com,
+        magnus.karlsson@intel.com, maximmi@mellanox.com
+Subject: [PATCH bpf 0/3] XSK related fixes
+Date:   Wed,  5 Feb 2020 05:58:31 +0100
+Message-Id: <20200205045834.56795-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-David Ahern <dsahern@gmail.com> writes:
+Cameron reported [0] that on fresh bpf-next he could not run multiple
+xdpsock instances in Tx-only mode on single network interface with i40e
+driver.
 
-> On 2/4/20 3:35 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->>=20
->>> Most likely, making iproute2 use libbpf statically is going to be
->>> challenging and I am not sure it is the right thing to do (unless the
->>> user is building a static version of iproute2 commands).
->>=20
->> Linking dynamically would imply a new dependency. I'm not necessarily
->> against that, but would it be acceptable from your PoV? And if so,
->> should we keep the current internal BPF code for when libbpf is not
->> available, or would it be acceptable to not be able to load BPF programs
->> if libbpf is not present (similar to how the libelf dependency works
->> today)?
->
-> iproute2 recently gained the libmnl dependency for extack. Seems like
-> libbpf falls into the similar category.
->
->>=20
->>> 2. git submodules can be a PITA to deal with (e.g., jumping between
->>> branches and versions), so there needs to be a good reason for it.
->>=20
->> Yes, totally with you on that. Another option could be to just copy the
->> files into the iproute2 tree, and update them the same way the kernel
->> headers are? Or maybe doing fancy things like this:
->> https://github.com/apenwarr/git-subtrac
->
-> kernel uapi is a totally different reason to import the headers. bpf
-> functionality is an add-on.
->
-> I would like to see iproute2 work with libbpf. Given libbpf's current
-> status and availability across OS'es that is going to be a challenge for
-> a lot of OS'es which is why I suggested the HAVE_LIBBPF check falls back
-> to existing code if libbpf is not installed.
+Turns out that Maxim's series [1] which was adding RCU protection around
+ndo_xsk_wakeup added check against the __I40E_CONFIG_BUSY being set on
+pf->state within i40e_xsk_wakeup() - if it's set, return -ENETDOWN.
+Since this bit is set per PF when UMEM is being enabled/disabled, the
+situation Cameron stumbled upon was that when he launched second xdpsock
+instance, second UMEM was being registered, hence set __I40E_CONFIG_BUSY
+which is now observed by first xdpsock and therefore xdpsock's kick_tx()
+gets -ENETDOWN as errno.
 
-Sure, can do.
+-ENETDOWN currently is not allowed in kick_tx(), so we were exiting the
+first application. Such exit means also XDP program being unloaded and
+its dedicated resources, which caused an -ENXIO being return in the
+second xdpsock instance.
 
--Toke
+Let's fix the issue from both sides - protect ourselves from future
+xdpsock crashes by allowing for -ENETDOWN errno being set in kick_tx()
+(patch 3) and from driver side, return -EAGAIN for the case where PF is
+busy (patch 1).
+
+Remove also doubled variable from xdpsock_user.c (patch 2).
+
+Note that ixgbe seems not to be affected since UMEM registration sets
+the busy/disable bit per ring, not per PF.
+
+Thanks!
+Maciej
+
+[0]: https://www.spinics.net/lists/xdp-newbies/msg01558.html
+[1]: https://lore.kernel.org/netdev/20191217162023.16011-1-maximmi@mellanox.com/
+
+Maciej Fijalkowski (3):
+  i40e: Relax i40e_xsk_wakeup's return value when PF is busy
+  samples: bpf: drop doubled variable declaration in xdpsock
+  samples: bpf: allow for -ENETDOWN in xdpsock
+
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c | 2 +-
+ samples/bpf/xdpsock_user.c                 | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+-- 
+2.20.1
 
