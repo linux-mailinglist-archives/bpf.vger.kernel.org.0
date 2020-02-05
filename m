@@ -2,228 +2,297 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DFC152517
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2020 04:05:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13616152583
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2020 05:11:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727897AbgBEDFe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Feb 2020 22:05:34 -0500
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:38280 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727920AbgBEDFd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Feb 2020 22:05:33 -0500
-Received: by mail-pj1-f68.google.com with SMTP id j17so322860pjz.3
-        for <bpf@vger.kernel.org>; Tue, 04 Feb 2020 19:05:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=eH0rpR/5UsjYJvawXdVJ3pMlqI+aJHHpMICaLRSG+80=;
-        b=UVdXLGZNS1bADPWaa3CvILT6/Kr8/aAilS69qBpnWfe8PVq0BBR/dJjivT7OllgqP9
-         2fLwM3UPTbA3av2OkEZvP42cPpM62yYRaV3iuYFN6/twd1giYHfAzbDJVHgSeY6PIzqp
-         MQ5GN8GZp6VIonJNdjMD+iddHHxueAp+m5JLROWPOVcrFr2FDkBFFa3PTU3xU0oMCpM6
-         VEDLfhguHiEHmWGA/beuaBJhINjEEUNLqWYygVV/oMTUtQ5dGjQFl6ia1oc3goMZtIgA
-         HGg0u2hwsu/nuVGGz4aAQDJYWzEtaumk6DE0hAyfc6nBoxoxgsym65EZPfb+kN9hexp5
-         WL8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=eH0rpR/5UsjYJvawXdVJ3pMlqI+aJHHpMICaLRSG+80=;
-        b=F8bOhsiKwLYLK2Dto+z43RAtIVXtDXYefReb2AHufVFR5JxBXe+aP8ozaPto9T1m51
-         AgWO+opLH3LH6S4yiS8Y6cDDdfRG4Yco5w55LmNn4Ir6psfaMSZhs7xswHm++dhrv+nw
-         sEwWpt76x0N3Iv7DZj5UDI0oKPQ2+x2hjbiX2A5iz2kVvj5RfCipZBaDnW4Qx/+r58k5
-         R+42w4ycX2Id8mc0gPtfhiPuWd6AxrxADpiObYmv/EzkqWdKP0YqJm8QvTlFvf/gWhnE
-         54+h5fTDMwaM8ry8mjxbqu9O0ScA2xlaj4CbAWxaH5amIIB1kSx+HuYb56mMPnEYwF0J
-         GpOQ==
-X-Gm-Message-State: APjAAAUq7wTAM2rnJnyFr/xgEzSy15/TTMgaIsQ39VK+cBiCEaYOIsju
-        y4zZpoyD2x2FL7NR5t9bo8k=
-X-Google-Smtp-Source: APXvYqyCguwATiHik9isF8EZd5+UO31+PhyATG6aDiIgNpGHh5fK8pb7fWlY9vVfwU13uisnTJYZtw==
-X-Received: by 2002:a17:902:8f8a:: with SMTP id z10mr33843356plo.169.1580871931480;
-        Tue, 04 Feb 2020 19:05:31 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id m26sm4719723pgc.84.2020.02.04.19.05.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Feb 2020 19:05:30 -0800 (PST)
-Date:   Tue, 04 Feb 2020 19:05:23 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Message-ID: <5e3a30f3a9221_3b4f2ab2596925b8e3@john-XPS-13-9370.notmuch>
-In-Reply-To: <fe3e8178-c069-4299-10df-8c983388c48c@fb.com>
-References: <158015334199.28573.4940395881683556537.stgit@john-XPS-13-9370>
- <b26a97e0-6b02-db4b-03b3-58054bcb9b82@iogearbox.net>
- <CAADnVQ+YhgKLkVCsQeBmKWxfuT+4hiHAYte9Xnq8XpC8WedQXQ@mail.gmail.com>
- <99042fc3-0b02-73cb-56cd-fc9a4bfdf3ee@iogearbox.net>
- <5e320c9a30f64_2a332aadcd1385bc3f@john-XPS-13-9370.notmuch>
- <20200130000415.dwd7zn6wj7qlms7g@ast-mbp>
- <5e33147f55528_19152af196f745c460@john-XPS-13-9370.notmuch>
- <20200130175935.dauoijsxmbjpytjv@ast-mbp.dhcp.thefacebook.com>
- <5e336803b5773_752d2b0db487c5c06e@john-XPS-13-9370.notmuch>
- <20200131024620.2ctms6f2il6qss3q@ast-mbp>
- <5e33bfb6414eb_7c012b2399b465bcfe@john-XPS-13-9370.notmuch>
- <CAADnVQL+hBuz8AgJ-Tv8iWFoGdpXwSmdqHVzX5NgR_1Lfpx3Yw@mail.gmail.com>
- <5e3460d3a3fb1_4a9b2ab23eff45b82c@john-XPS-13-9370.notmuch>
- <CAADnVQ+m70Pzs33mAhsF0JEx+LVoXrTZyC-szhyk+cNo71GgXw@mail.gmail.com>
- <5e39cc3957bd1_63882ad0d49345c0c5@john-XPS-13-9370.notmuch>
- <fe3e8178-c069-4299-10df-8c983388c48c@fb.com>
-Subject: Re: [bpf PATCH v3] bpf: verifier, do_refine_retval_range may clamp
- umin to 0 incorrectly
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1727873AbgBEELC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Feb 2020 23:11:02 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43677 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727836AbgBEELC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Feb 2020 23:11:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1580875859;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mZTJknh5sK2MHEpZvb12IRTeffrqu13C1stnHofSxGc=;
+        b=i2c9SGzPwJjBraJ0xuFwFHw0Hf5RbezHTExtE72hHC3dGdvowqdokuHTEX/adsHtP+tumn
+        QpE4CH4rHOFxJ+ZPkn8R+SqgRNRWq9KQp2XSC35+0g8XgU0YaaEfmVKAjD5e15XOIaSOGQ
+        u2jWAet/us/cgJXxR54Y4+7WlUSVjC8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-197-cUk5z23YN_Se3RSdtgiohw-1; Tue, 04 Feb 2020 23:10:55 -0500
+X-MC-Unique: cUk5z23YN_Se3RSdtgiohw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D114D1081FA1;
+        Wed,  5 Feb 2020 04:10:52 +0000 (UTC)
+Received: from [10.72.13.188] (ovpn-13-188.pek2.redhat.com [10.72.13.188])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F17277792B;
+        Wed,  5 Feb 2020 04:10:44 +0000 (UTC)
+Subject: Re: [PATCH bpf-next v4] virtio_net: add XDP meta data support
+To:     Yuya Kusakabe <yuya.kusakabe@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
+        mst@redhat.com, songliubraving@fb.com, yhs@fb.com, kuba@kernel.org,
+        andriin@fb.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <8da1b560-3128-b885-b453-13de5c7431fb@redhat.com>
+ <20200204071655.94474-1-yuya.kusakabe@gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <9a0a1469-c8a7-8223-a4d5-dad656a142fc@redhat.com>
+Date:   Wed, 5 Feb 2020 12:10:43 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200204071655.94474-1-yuya.kusakabe@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Yonghong Song wrote:
-> 
-> 
-> On 2/4/20 11:55 AM, John Fastabend wrote:
-> > Alexei Starovoitov wrote:
-> >> On Fri, Jan 31, 2020 at 9:16 AM John Fastabend <john.fastabend@gmail.com> wrote:
-> >>>
-> >>> Also don't mind to build pseudo instruction here for signed extension
-> >>> but its not clear to me why we are getting different instruction
-> >>> selections? Its not clear to me why sext is being chosen in your case?
 
-[...]
+On 2020/2/4 =E4=B8=8B=E5=8D=883:16, Yuya Kusakabe wrote:
+> Implement support for transferring XDP meta data into skb for
+> virtio_net driver; before calling into the program, xdp.data_meta point=
+s
+> to xdp.data and copy vnet header to the front of xdp.data_hard_start
+> to avoid overwriting it, where on program return with pass verdict,
+> we call into skb_metadata_set().
+>
+> Fixes: de8f3a83b0a0 ("bpf: add meta pointer for direct access")
+> Signed-off-by: Yuya Kusakabe <yuya.kusakabe@gmail.com>
+> ---
+>   drivers/net/virtio_net.c | 47 ++++++++++++++++++++++++++++-----------=
+-
+>   1 file changed, 33 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 2fe7a3188282..5fdd6ea0e3f1 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -371,7 +371,7 @@ static struct sk_buff *page_to_skb(struct virtnet_i=
+nfo *vi,
+>   				   struct receive_queue *rq,
+>   				   struct page *page, unsigned int offset,
+>   				   unsigned int len, unsigned int truesize,
+> -				   bool hdr_valid)
+> +				   bool hdr_valid, unsigned int metasize)
+>   {
+>   	struct sk_buff *skb;
+>   	struct virtio_net_hdr_mrg_rxbuf *hdr;
+> @@ -393,7 +393,7 @@ static struct sk_buff *page_to_skb(struct virtnet_i=
+nfo *vi,
+>   	else
+>   		hdr_padded_len =3D sizeof(struct padded_vnet_hdr);
+>  =20
+> -	if (hdr_valid)
+> +	if (hdr_valid && !metasize)
 
-> >> zext is there both cases and it will be optimized with your llvm patch.
-> >> So please send it. Don't delay :)
-> > 
-> > LLVM patch here, https://urldefense.proofpoint.com/v2/url?u=https-3A__reviews.llvm.org_D73985&d=DwICaQ&c=5VD0RTtNlTh3ycd41b3MUw&r=DA8e1B5r073vIqRrFz7MRA&m=VnK0SKxGnw_yzWjaO-cZFrmlZB9p86L4me-mWE_vDto&s=jwDJuAEdJ23HVcvIILvkfxvTNSe_cgHQFn_MpXssfXc&e=
-> > 
-> > With updated LLVM I can pass selftests with above fix and additional patch
-> > below to get tighter bounds on 32bit registers. So going forward I think
-> > we need to review and assuming it looks good commit above llvm patch and
-> > then go forward with this series.
-> 
-> Thanks. The llvm patch looks sane, but after applying the patch, I hit 
-> several selftest failures. For example, strobemeta_nounroll1.o.
-> 
-> The following is a brief analysis of the verifier state:
-> 
-> 184: 
-> R0=inv(id=0,smax_value=9223372032559808513,umax_value=18446744069414584321,var_off=(0x0; 
-> 0xffffffff00000001))
-> R7=inv0
-> 
-> 184: (bc) w7 = w0
-> 185: 
-> R0=inv(id=0,smax_value=9223372032559808513,umax_value=18446744069414584321,var_off=(0x0; 
-> 0xffffffff00000001))
-> R7_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0x1))
-> 
-> 185: (67) r7 <<= 32
-> 186: 
-> R0=inv(id=0,smax_value=9223372032559808513,umax_value=18446744069414584321,var_off=(0x0; 
-> 0xffffffff00000001))
-> R7_w=inv(id=0,umax_value=4294967296,var_off=(0x0; 0x100000000))
-> 
-> 186: (77) r7 >>= 32
-> 187: 
-> R0=inv(id=0,smax_value=9223372032559808513,umax_value=18446744069414584321,var_off=(0x0; 
-> 0xffffffff00000001))
-> R7_w=inv(id=0,umax_value=1,var_off=(0x0; 0x1))
-> 
-> You can see after left and right shift, we got a better R7 umax_value=1.
-> Without the left and right shift, eventually verifier complains.
-> 
-> Can we make uname_value=1 at insn 'w7 = w0'?
-> Currently, we cannot do this due to the logic in coerce_reg_to_size().
-> It looks correct to me to ignore the top mask as we know the upper 32bit 
-> will be discarded.
-> 
-> I have implemented in my previous patch to deal with signed compares.
-> The following is the patch to fix this particular issue:
 
-[...]
+hdr_valid means no XDP, so I think we can remove the check for metasize=20
+here and add a comment instead?
 
-> 
-> With the above patch, there is still one more issue in test_seg6_loop.o, 
-> which is related to llvm code generation, w.r.t. our strange 32bit 
-> packet begin and packet end.
-> 
-> The following patch is generated:
-> 
-> 2: (61) r1 = *(u32 *)(r6 +76)
-> 3: R1_w=pkt(id=0,off=0,r=0,imm=0) R2_w=pkt_end(id=0,off=0,imm=0) 
-> R6_w=ctx(id=0,off=0,imm=0) R10=fp0
-> ; cursor = (void *)(long)skb->data;
-> 3: (bc) w8 = w1
-> 4: R1_w=pkt(id=0,off=0,r=0,imm=0) R2_w=pkt_end(id=0,off=0,imm=0) 
-> R6_w=ctx(id=0,off=0,imm=0) 
-> R8_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R10=fp0
-> ; if ((void *)ipver + sizeof(*ipver) > data_end)
-> 4: (bf) r3 = r8
-> 
-> In the above r1 is packet pointer and after the assignment, it becomes a 
-> scalar and will lead later verification failure.
-> 
-> Without the patch, we generates:
-> 1: R1=ctx(id=0,off=0,imm=0) R6_w=ctx(id=0,off=0,imm=0) R10=fp0
-> ; data_end = (void *)(long)skb->data_end;
-> 1: (61) r1 = *(u32 *)(r6 +80)
-> 2: R1_w=pkt_end(id=0,off=0,imm=0) R6_w=ctx(id=0,off=0,imm=0) R10=fp0
-> ; cursor = (void *)(long)skb->data;
-> 2: (61) r8 = *(u32 *)(r6 +76)
-> 3: R1_w=pkt_end(id=0,off=0,imm=0) R6_w=ctx(id=0,off=0,imm=0) 
-> R8_w=pkt(id=0,off=0,r=0,imm=0) R10=fp0
-> ; if ((void *)ipver + sizeof(*ipver) > data_end)
-> 3: (bf) r2 = r8
-> 4: R1_w=pkt_end(id=0,off=0,imm=0) R2_w=pkt(id=0,off=0,r=0,imm=0) 
-> R6_w=ctx(id=0,off=0,imm=0) R8_w=pkt(id=0,off=0,r=0,imm=0) R10=fp0
-> 4: (07) r2 += 1
-> 5: R1_w=pkt_end(id=0,off=0,imm=0) R2_w=pkt(id=0,off=1,r=0,imm=0) 
-> R6_w=ctx(id=0,off=0,imm=0) R8_w=pkt(id=0,off=0,r=0,imm=0) R10=fp0
-> 
-> r2 keeps as a packet pointer, so we don't have issues later.
-> 
-> Not sure how we could fix this in llvm as llvm does not really have idea
-> the above w1 in w8 = w1 is a packet pointer.
-> 
 
-OK thanks for analysis. I have this on my stack as well but need to
-check its correct still,
+>   		memcpy(hdr, p, hdr_len);
+>  =20
+>   	len -=3D hdr_len;
+> @@ -405,6 +405,11 @@ static struct sk_buff *page_to_skb(struct virtnet_=
+info *vi,
+>   		copy =3D skb_tailroom(skb);
+>   	skb_put_data(skb, p, copy);
+>  =20
+> +	if (metasize) {
+> +		__skb_pull(skb, metasize);
+> +		skb_metadata_set(skb, metasize);
+> +	}
+> +
+>   	len -=3D copy;
+>   	offset +=3D copy;
+>  =20
+> @@ -644,6 +649,7 @@ static struct sk_buff *receive_small(struct net_dev=
+ice *dev,
+>   	unsigned int delta =3D 0;
+>   	struct page *xdp_page;
+>   	int err;
+> +	unsigned int metasize =3D 0;
+>  =20
+>   	len -=3D vi->hdr_len;
+>   	stats->bytes +=3D len;
+> @@ -683,10 +689,15 @@ static struct sk_buff *receive_small(struct net_d=
+evice *dev,
+>  =20
+>   		xdp.data_hard_start =3D buf + VIRTNET_RX_PAD + vi->hdr_len;
+>   		xdp.data =3D xdp.data_hard_start + xdp_headroom;
+> -		xdp_set_data_meta_invalid(&xdp);
+>   		xdp.data_end =3D xdp.data + len;
+> +		xdp.data_meta =3D xdp.data;
+>   		xdp.rxq =3D &rq->xdp_rxq;
+>   		orig_data =3D xdp.data;
+> +		/* Copy the vnet header to the front of data_hard_start to avoid
+> +		 * overwriting it by XDP meta data.
+> +		 */
+> +		memcpy(xdp.data_hard_start - vi->hdr_len,
+> +		       xdp.data - vi->hdr_len, vi->hdr_len);
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 320e2df..3072dba7 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2804,8 +2804,11 @@ static void coerce_reg_to_size(struct bpf_reg_state *reg, int size)
-                reg->umax_value = mask;
-        }
-        reg->smin_value = reg->umin_value;
--       if (reg->smax_value < 0 || reg->smax_value > reg->umax_value)
-+       if (reg->smax_value < 0 || reg->smax_value > reg->umax_value) {
-                reg->smax_value = reg->umax_value;
-+       } else {
-+               reg->umax_value = reg->smax_value;
-+       }
- }
 
-this helps but still hitting above issue with the packet pointer as
-you pointed out. I'll sort out how we can fix this. Somewhat related
-we have a similar issue we hit fairly consistently I've been meaning
-to sort out where the cmp happens on a different register then is
-used in the call, for example something like this pseudocode
+I think we don't need this. And it looks to me there's a bug in the=20
+current code.
 
-   r8 = r2
-   if r8 > blah goto +label
-   r1 = dest_ptr
-   r1 += r2
-   r2 = size
-   r3 = ptr
-   call #some_call
+Commit 436c9453a1ac0 ("virtio-net: keep vnet header zeroed after=20
+processing XDP") leave the a corner case for receive_small() which still=20
+use:
 
-and the verifier aborts because r8 was verified instead of r2. The
-working plan was to walk back in the def-use chain and sort it out
-but tbd.
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!delta) {
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 buf +=3D header_offset;
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 memcpy(skb_vnet_hdr(skb), buf, vi->hdr_len);
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } /* keep zeroed vnet hdr sin=
+ce packet was changed by bpf */
 
-.John
-   
+Which seems wrong, we need check xdp_prog instead of delta.
+
+With this fixed, there's no need to care about the vnet header here=20
+since we don't know whether or not packet is modified by XDP.
+
+
+>   		act =3D bpf_prog_run_xdp(xdp_prog, &xdp);
+>   		stats->xdp_packets++;
+>  =20
+> @@ -695,9 +706,11 @@ static struct sk_buff *receive_small(struct net_de=
+vice *dev,
+>   			/* Recalculate length in case bpf program changed it */
+>   			delta =3D orig_data - xdp.data;
+>   			len =3D xdp.data_end - xdp.data;
+> +			metasize =3D xdp.data - xdp.data_meta;
+>   			break;
+>   		case XDP_TX:
+>   			stats->xdp_tx++;
+> +			xdp.data_meta =3D xdp.data;
+
+
+I think we should remove the xdp_set_data_meta_invalid() at least? And=20
+move this initialization just after xdp.data is initialized.
+
+Testing receive_small() requires to disable mrg_rxbuf, guest_tso4,=20
+guest_tso6 and guest_ufo from qemu command line.
+
+
+>   			xdpf =3D convert_to_xdp_frame(&xdp);
+>   			if (unlikely(!xdpf))
+>   				goto err_xdp;
+> @@ -736,10 +749,12 @@ static struct sk_buff *receive_small(struct net_d=
+evice *dev,
+>   	skb_reserve(skb, headroom - delta);
+>   	skb_put(skb, len);
+>   	if (!delta) {
+
+
+Need to check xdp_prog (need another patch).
+
+
+> -		buf +=3D header_offset;
+> -		memcpy(skb_vnet_hdr(skb), buf, vi->hdr_len);
+> +		memcpy(skb_vnet_hdr(skb), buf + VIRTNET_RX_PAD, vi->hdr_len);
+>   	} /* keep zeroed vnet hdr since packet was changed by bpf */
+>  =20
+> +	if (metasize)
+> +		skb_metadata_set(skb, metasize);
+> +
+>   err:
+>   	return skb;
+>  =20
+> @@ -760,8 +775,8 @@ static struct sk_buff *receive_big(struct net_devic=
+e *dev,
+>   				   struct virtnet_rq_stats *stats)
+>   {
+>   	struct page *page =3D buf;
+> -	struct sk_buff *skb =3D page_to_skb(vi, rq, page, 0, len,
+> -					  PAGE_SIZE, true);
+> +	struct sk_buff *skb =3D
+> +		page_to_skb(vi, rq, page, 0, len, PAGE_SIZE, true, 0);
+>  =20
+>   	stats->bytes +=3D len - vi->hdr_len;
+>   	if (unlikely(!skb))
+> @@ -793,6 +808,7 @@ static struct sk_buff *receive_mergeable(struct net=
+_device *dev,
+>   	unsigned int truesize;
+>   	unsigned int headroom =3D mergeable_ctx_to_headroom(ctx);
+>   	int err;
+> +	unsigned int metasize =3D 0;
+>  =20
+>   	head_skb =3D NULL;
+>   	stats->bytes +=3D len - vi->hdr_len;
+> @@ -839,8 +855,8 @@ static struct sk_buff *receive_mergeable(struct net=
+_device *dev,
+>   		data =3D page_address(xdp_page) + offset;
+>   		xdp.data_hard_start =3D data - VIRTIO_XDP_HEADROOM + vi->hdr_len;
+>   		xdp.data =3D data + vi->hdr_len;
+> -		xdp_set_data_meta_invalid(&xdp);
+>   		xdp.data_end =3D xdp.data + (len - vi->hdr_len);
+> +		xdp.data_meta =3D xdp.data;
+>   		xdp.rxq =3D &rq->xdp_rxq;
+>  =20
+>   		act =3D bpf_prog_run_xdp(xdp_prog, &xdp);
+> @@ -852,8 +868,9 @@ static struct sk_buff *receive_mergeable(struct net=
+_device *dev,
+>   			 * adjustments. Note other cases do not build an
+>   			 * skb and avoid using offset
+>   			 */
+> -			offset =3D xdp.data -
+> -					page_address(xdp_page) - vi->hdr_len;
+> +			metasize =3D xdp.data - xdp.data_meta;
+> +			offset =3D xdp.data - page_address(xdp_page) -
+> +				 vi->hdr_len - metasize;
+>  =20
+>   			/* recalculate len if xdp.data or xdp.data_end were
+>   			 * adjusted
+> @@ -863,14 +880,15 @@ static struct sk_buff *receive_mergeable(struct n=
+et_device *dev,
+>   			if (unlikely(xdp_page !=3D page)) {
+>   				rcu_read_unlock();
+>   				put_page(page);
+> -				head_skb =3D page_to_skb(vi, rq, xdp_page,
+> -						       offset, len,
+> -						       PAGE_SIZE, false);
+> +				head_skb =3D page_to_skb(vi, rq, xdp_page, offset,
+> +						       len, PAGE_SIZE, false,
+> +						       metasize);
+>   				return head_skb;
+>   			}
+>   			break;
+>   		case XDP_TX:
+>   			stats->xdp_tx++;
+> +			xdp.data_meta =3D xdp.data;
+
+
+Any reason for doing this?
+
+Thanks
+
+
+>   			xdpf =3D convert_to_xdp_frame(&xdp);
+>   			if (unlikely(!xdpf))
+>   				goto err_xdp;
+> @@ -921,7 +939,8 @@ static struct sk_buff *receive_mergeable(struct net=
+_device *dev,
+>   		goto err_skb;
+>   	}
+>  =20
+> -	head_skb =3D page_to_skb(vi, rq, page, offset, len, truesize, !xdp_pr=
+og);
+> +	head_skb =3D page_to_skb(vi, rq, page, offset, len, truesize, !xdp_pr=
+og,
+> +			       metasize);
+>   	curr_skb =3D head_skb;
+>  =20
+>   	if (unlikely(!curr_skb))
+
