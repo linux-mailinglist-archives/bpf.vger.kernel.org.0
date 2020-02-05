@@ -2,310 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A1488153711
-	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2020 18:55:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37982153A0F
+	for <lists+bpf@lfdr.de>; Wed,  5 Feb 2020 22:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726957AbgBERzk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Feb 2020 12:55:40 -0500
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:36660 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726822AbgBERzk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Feb 2020 12:55:40 -0500
-Received: by mail-lf1-f67.google.com with SMTP id f24so2135561lfh.3
-        for <bpf@vger.kernel.org>; Wed, 05 Feb 2020 09:55:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=1Yrg3T6KZS2OyA+ADGtO1u0bSFpjplnhjmg6jfz5vhY=;
-        b=wtd3ITEppKCHCEO4iKtaXhljPGbMo9Kvvxk9ii/DFRDO1rHBAVgykPoCrtuoKV6o/3
-         0WzHjm9HIYJhRNLqZSimAmjsEXSb4Xth9S9XhZ4A1WzdWLfFrm6p0g3k7ru4SwiGuykV
-         kGXn314LVa0j5JYjVdMC3pLI6YoR7Dl4PcVCU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=1Yrg3T6KZS2OyA+ADGtO1u0bSFpjplnhjmg6jfz5vhY=;
-        b=W2aL09vbn+Ua8aWBNaX1W93RMxiYkV4b+soiq/I1CA/m2IBqmJ6oSP9ZRanaxtkw9U
-         n6Ld75VlublnjprWJQFf3pSp09e4x/WF77L2lozOD3v2vqyjsfgwGdV+UoqVrvJfZ1mL
-         qGr48A83DIUDntM8A7jKSQELK5auYAVE67BYm2KdgwyIr0XMokobCHye+sseeoeqZv/O
-         K1OdQypZE5RFKCPpkgQwEMNWzoVRNx49JV5vuEp+c0XQzUBWqdyyaQdRksvNuFETgCB6
-         tjVo99be4+AjHsz4HmFi5IWR7Y5rnus+kLQYJNuxUyxvxL27R7blz4n6EIdckXRkXaWK
-         O+Qg==
-X-Gm-Message-State: APjAAAUvwKBwIF+w041tm/hy6PVdGGeJ8NZp5r+7fpa3w5x6brYwnXLq
-        wW544WXpAnaCGIJygiFYydZQiQ==
-X-Google-Smtp-Source: APXvYqwg06H2ll3jXVyWP1Sw1iK3UoOhzbE5XP0kbkD6/rBo5o6XIsWopp+Q9BK/F3XqJ/o1f+xdjA==
-X-Received: by 2002:ac2:4a89:: with SMTP id l9mr18233750lfp.121.1580925337603;
-        Wed, 05 Feb 2020 09:55:37 -0800 (PST)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id 3sm91527lja.65.2020.02.05.09.55.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Feb 2020 09:55:36 -0800 (PST)
-References: <20200111061206.8028-1-john.fastabend@gmail.com> <20200111061206.8028-3-john.fastabend@gmail.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
-        ast@kernel.org, song@kernel.org, jonathan.lemon@gmail.com
-Subject: Re: [bpf PATCH v2 2/8] bpf: sockmap, ensure sock lock held during tear down
-In-reply-to: <20200111061206.8028-3-john.fastabend@gmail.com>
-Date:   Wed, 05 Feb 2020 18:55:34 +0100
-Message-ID: <8736boor55.fsf@cloudflare.com>
+        id S1727355AbgBEVVv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Feb 2020 16:21:51 -0500
+Received: from www62.your-server.de ([213.133.104.62]:50658 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727085AbgBEVVv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Feb 2020 16:21:51 -0500
+Received: from 33.248.197.178.dynamic.dsl-lte-bonding.zhbmb00p-msn.res.cust.swisscom.ch ([178.197.248.33] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1izS7H-0007UK-RQ; Wed, 05 Feb 2020 22:21:47 +0100
+Date:   Wed, 5 Feb 2020 22:21:47 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     ast@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        bjorn.topel@intel.com, magnus.karlsson@intel.com,
+        maximmi@mellanox.com
+Subject: Re: [PATCH bpf 0/3] XSK related fixes
+Message-ID: <20200205212147.GA5358@pc-9.home>
+References: <20200205045834.56795-1-maciej.fijalkowski@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200205045834.56795-1-maciej.fijalkowski@intel.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25716/Tue Feb  4 12:35:33 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jan 11, 2020 at 07:12 AM CET, John Fastabend wrote:
-> The sock_map_free() and sock_hash_free() paths used to delete sockmap
-> and sockhash maps walk the maps and destroy psock and bpf state associated
-> with the socks in the map. When done the socks no longer have BPF programs
-> attached and will function normally. This can happen while the socks in
-> the map are still "live" meaning data may be sent/received during the walk.
->
-> Currently, though we don't take the sock_lock when the psock and bpf state
-> is removed through this path. Specifically, this means we can be writing
-> into the ops structure pointers such as sendmsg, sendpage, recvmsg, etc.
-> while they are also being called from the networking side. This is not
-> safe, we never used proper READ_ONCE/WRITE_ONCE semantics here if we
-> believed it was safe. Further its not clear to me its even a good idea
-> to try and do this on "live" sockets while networking side might also
-> be using the socket. Instead of trying to reason about using the socks
-> from both sides lets realize that every use case I'm aware of rarely
-> deletes maps, in fact kubernetes/Cilium case builds map at init and
-> never tears it down except on errors. So lets do the simple fix and
-> grab sock lock.
->
-> This patch wraps sock deletes from maps in sock lock and adds some
-> annotations so we catch any other cases easier.
->
-> Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
-> Cc: stable@vger.kernel.org
-> Acked-by: Song Liu <songliubraving@fb.com>
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> ---
->  net/core/skmsg.c    | 2 ++
->  net/core/sock_map.c | 7 ++++++-
->  2 files changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index ded2d5227678..3866d7e20c07 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -594,6 +594,8 @@ EXPORT_SYMBOL_GPL(sk_psock_destroy);
->
->  void sk_psock_drop(struct sock *sk, struct sk_psock *psock)
->  {
-> +	sock_owned_by_me(sk);
-> +
->  	sk_psock_cork_free(psock);
->  	sk_psock_zap_ingress(psock);
->
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index eb114ee419b6..8998e356f423 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -241,8 +241,11 @@ static void sock_map_free(struct bpf_map *map)
->  		struct sock *sk;
->
->  		sk = xchg(psk, NULL);
-> -		if (sk)
-> +		if (sk) {
-> +			lock_sock(sk);
->  			sock_map_unref(sk, psk);
-> +			release_sock(sk);
-> +		}
->  	}
->  	raw_spin_unlock_bh(&stab->lock);
->  	rcu_read_unlock();
+On Wed, Feb 05, 2020 at 05:58:31AM +0100, Maciej Fijalkowski wrote:
+> Cameron reported [0] that on fresh bpf-next he could not run multiple
+> xdpsock instances in Tx-only mode on single network interface with i40e
+> driver.
+> 
+> Turns out that Maxim's series [1] which was adding RCU protection around
+> ndo_xsk_wakeup added check against the __I40E_CONFIG_BUSY being set on
+> pf->state within i40e_xsk_wakeup() - if it's set, return -ENETDOWN.
+> Since this bit is set per PF when UMEM is being enabled/disabled, the
+> situation Cameron stumbled upon was that when he launched second xdpsock
+> instance, second UMEM was being registered, hence set __I40E_CONFIG_BUSY
+> which is now observed by first xdpsock and therefore xdpsock's kick_tx()
+> gets -ENETDOWN as errno.
+> 
+> -ENETDOWN currently is not allowed in kick_tx(), so we were exiting the
+> first application. Such exit means also XDP program being unloaded and
+> its dedicated resources, which caused an -ENXIO being return in the
+> second xdpsock instance.
+> 
+> Let's fix the issue from both sides - protect ourselves from future
+> xdpsock crashes by allowing for -ENETDOWN errno being set in kick_tx()
+> (patch 3) and from driver side, return -EAGAIN for the case where PF is
+> busy (patch 1).
+> 
+> Remove also doubled variable from xdpsock_user.c (patch 2).
+> 
+> Note that ixgbe seems not to be affected since UMEM registration sets
+> the busy/disable bit per ring, not per PF.
+> 
+> Thanks!
+> Maciej
+> 
+> [0]: https://www.spinics.net/lists/xdp-newbies/msg01558.html
+> [1]: https://lore.kernel.org/netdev/20191217162023.16011-1-maximmi@mellanox.com/
 
-John, I've noticed this is triggering warnings that we might sleep in
-lock_sock while (1) in RCU read-side section, and (2) holding a spin
-lock:
-
-=============================
-WARNING: suspicious RCU usage
-5.5.0-04012-g38c811e4cd3c #443 Not tainted
------------------------------
-include/linux/rcupdate.h:272 Illegal context switch in RCU read-side critical section!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 1
-4 locks held by kworker/0:1/62:
- #0: ffff88813b019748 ((wq_completion)events){+.+.}, at: process_one_work+0x1d7/0x5e0
- #1: ffffc900000abe50 ((work_completion)(&map->work)){+.+.}, at: process_one_work+0x1d7/0x5e0
- #2: ffffffff82065d20 (rcu_read_lock){....}, at: sock_map_free+0x5/0x170
- #3: ffff8881383dbdf8 (&stab->lock){+.-.}, at: sock_map_free+0x64/0x170
-
-stack backtrace:
-CPU: 0 PID: 62 Comm: kworker/0:1 Not tainted 5.5.0-04012-g38c811e4cd3c #443
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
-Workqueue: events bpf_map_free_deferred
-Call Trace:
- dump_stack+0x71/0xa0
- ___might_sleep+0x105/0x190
- lock_sock_nested+0x28/0x90
- sock_map_free+0x95/0x170
- bpf_map_free_deferred+0x58/0x80
- process_one_work+0x260/0x5e0
- worker_thread+0x4d/0x3e0
- kthread+0x108/0x140
- ? process_one_work+0x5e0/0x5e0
- ? kthread_park+0x90/0x90
- ret_from_fork+0x3a/0x50
-BUG: sleeping function called from invalid context at net/core/sock.c:2942
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 62, name: kworker/0:1
-4 locks held by kworker/0:1/62:
- #0: ffff88813b019748 ((wq_completion)events){+.+.}, at: process_one_work+0x1d7/0x5e0
- #1: ffffc900000abe50 ((work_completion)(&map->work)){+.+.}, at: process_one_work+0x1d7/0x5e0
- #2: ffffffff82065d20 (rcu_read_lock){....}, at: sock_map_free+0x5/0x170
- #3: ffff8881383dbdf8 (&stab->lock){+.-.}, at: sock_map_free+0x64/0x170
-CPU: 0 PID: 62 Comm: kworker/0:1 Not tainted 5.5.0-04012-g38c811e4cd3c #443
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
-Workqueue: events bpf_map_free_deferred
-Call Trace:
- dump_stack+0x71/0xa0
- ___might_sleep.cold+0xa6/0xb6
- lock_sock_nested+0x28/0x90
- sock_map_free+0x95/0x170
- bpf_map_free_deferred+0x58/0x80
- process_one_work+0x260/0x5e0
- worker_thread+0x4d/0x3e0
- kthread+0x108/0x140
- ? process_one_work+0x5e0/0x5e0
- ? kthread_park+0x90/0x90
- ret_from_fork+0x3a/0x50
-
-Easy to trigger on a VM with 1 vCPU, reproducer below.
-
-Here's an idea how to change the locking. I'm still wrapping my head
-around what protects what in sock_map_free, so please bear with me:
-
-1. synchronize_rcu before we iterate over the array is not needed,
-   AFAICT. We are not free'ing the map just yet, hence any readers
-   accessing the map via the psock are not in danger of use-after-free.
-
-2. rcu_read_lock is needed to protect access to psock inside
-   sock_map_unref, but we can't sleep while in RCU read-side.  So push
-   it down, after we grab the sock lock.
-
-3. Grabbing stab->lock seems not needed, either. We get called from
-   bpf_map_free_deferred, after map refcnt dropped to 0, so we're not
-   racing with any other map user to modify its contents.
-
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index 2cbde385e1a0..7f54e0d27d32 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -259,9 +259,6 @@ static void sock_map_free(struct bpf_map *map)
-        struct bpf_stab *stab = container_of(map, struct bpf_stab, map);
-        int i;
-
--       synchronize_rcu();
--       rcu_read_lock();
--       raw_spin_lock_bh(&stab->lock);
-        for (i = 0; i < stab->map.max_entries; i++) {
-                struct sock **psk = &stab->sks[i];
-                struct sock *sk;
-@@ -269,12 +266,12 @@ static void sock_map_free(struct bpf_map *map)
-                sk = xchg(psk, NULL);
-                if (sk) {
-                        lock_sock(sk);
-+                       rcu_read_lock();
-                        sock_map_unref(sk, psk);
-+                       rcu_read_unlock();
-                        release_sock(sk);
-                }
-        }
--       raw_spin_unlock_bh(&stab->lock);
--       rcu_read_unlock();
-
-        synchronize_rcu();
-
-> @@ -862,7 +865,9 @@ static void sock_hash_free(struct bpf_map *map)
->  		raw_spin_lock_bh(&bucket->lock);
->  		hlist_for_each_entry_safe(elem, node, &bucket->head, node) {
->  			hlist_del_rcu(&elem->node);
-> +			lock_sock(elem->sk);
->  			sock_map_unref(elem->sk, elem);
-> +			release_sock(elem->sk);
->  		}
->  		raw_spin_unlock_bh(&bucket->lock);
->  	}
-
-Similar problems here. With one extra that it seems we're missing a
-synchronize_rcu *after* walking over the htable for the same reason as
-it got added to sock_map_free in 2bb90e5cc90e ("bpf: sockmap,
-synchronize_rcu before free'ing map"):
-
-    We need to have a synchronize_rcu before free'ing the sockmap because
-    any outstanding psock references will have a pointer to the map and
-    when they use this could trigger a use after free.
-
-WDYT?
-
-Reproducer follows.
-
----8<---
-
-/* sockmap_update.c */
-
-#include <errno.h>
-#include <error.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-
-#include <bpf/bpf.h>
-
-#define fail(fmt...) error_at_line(1, errno, __func__, __LINE__, fmt)
-
-int main(void)
-{
-	struct sockaddr_storage addr_ = {0};
-	struct sockaddr *addr = (void *) &addr_;
-	socklen_t len = sizeof(addr_);
-	int srv, cli, map, key;
-
-	srv = socket(AF_INET, SOCK_STREAM, 0);
-	if (srv == -1)
-		fail("socket(cli)");
-
-	if (listen(srv, SOMAXCONN))
-		fail("listen");
-
-	if (getsockname(srv, addr, &len))
-		fail("getsockname");
-
-	cli = socket(AF_INET, SOCK_STREAM, 0);
-	if (cli == -1)
-		fail("socket(srv)");
-
-	if (connect(cli, addr, len))
-		fail("connect");
-
-	map = bpf_create_map(BPF_MAP_TYPE_SOCKMAP, sizeof(int), sizeof(int), 1, 0);
-	if (map == -1)
-		fail("bpf_create_map");
-
-	key = 0;
-	if (bpf_map_update_elem(map, &key, &cli, BPF_NOEXIST))
-		fail("bpf_map_update_elem");
-
-	if (close(map))
-		fail("close(map)");
-
-	if (close(cli))
-		fail("close(cli)");
-
-	if (close(srv))
-		fail("close(srv)");
-
-	return 0;
-}
-
---->8---
+Applied, thanks!
