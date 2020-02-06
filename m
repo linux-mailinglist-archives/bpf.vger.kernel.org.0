@@ -2,180 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F28981543FC
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2020 13:26:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CAE1154598
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2020 14:58:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728068AbgBFM0g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Feb 2020 07:26:36 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:38003 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728018AbgBFM0f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Feb 2020 07:26:35 -0500
-Received: by mail-wm1-f67.google.com with SMTP id a9so6897372wmj.3
-        for <bpf@vger.kernel.org>; Thu, 06 Feb 2020 04:26:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=4IqGG90hzs/rSeSyZlWCzvOfVkyWTnP3OPmi4HPtnac=;
-        b=kvnlldKAOEWtv9L4cvgc2+kQBBKi0f3EU5UPhPSwxvq4Z6YndBuF4UdShoEwwlDbMv
-         HUNKWldMOSZep+NRpPzE+xy86NtpH+CK97crbFffDiW8NVe20GGukHcp32qPNfwqagnF
-         6huWrs3zTZ1ZZ7ZjJmFykJrncXFFWU3t1GNQo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=4IqGG90hzs/rSeSyZlWCzvOfVkyWTnP3OPmi4HPtnac=;
-        b=LYl5M2Y3C/cE4ufwGxJxSuN3cujJ31j2Q47XwjXnyDD3TdZnsWHNvw84sLQhbpjTuD
-         a+xNjKQ6aduv7VEOyhyaQQ/lfYNj2OdmDrWg3q+i6ClFHzq3RyKfz+WeNevuLPWiXxm6
-         SAhOmwECipLh/Y/L+pQYSvzwQfsfqr3UfM078ga7gOF9iKg2ods0ruaAQUihZVmQj92S
-         CgL6QNGYIpUu96UKEwnsgKBVkDmdyS7sPqExRpoz9ipuP9BElnisNKsxO7GiNZqgaEXV
-         8H1USYRAai4nD+ZRGrcoU8O7c0r+Xp1dQb6pGEHdkdtEICbn/YYuSExO61S1N7ZqzkWK
-         Savg==
-X-Gm-Message-State: APjAAAXnWRqI739Fjsil39fzS0DpZXMtFIgkGYFjdfxeF8ZoKPjz6Bcw
-        LEfF1KX16qfcHbrvKQBe8LZPeA==
-X-Google-Smtp-Source: APXvYqw5kEFIKIbx/Y0Im1n2EpW6nOkN2LSVe/Qzg0jWTSXr86kfe13lT8IZKDZLiWGUhGtGAzLISA==
-X-Received: by 2002:a1c:48c1:: with SMTP id v184mr4315520wma.5.1580991992526;
-        Thu, 06 Feb 2020 04:26:32 -0800 (PST)
-Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id a26sm3691058wmm.18.2020.02.06.04.26.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Feb 2020 04:26:31 -0800 (PST)
-References: <20200111061206.8028-1-john.fastabend@gmail.com> <20200111061206.8028-3-john.fastabend@gmail.com> <8736boor55.fsf@cloudflare.com> <5e3ba96ca7889_6b512aafe4b145b812@john-XPS-13-9370.notmuch>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
-        ast@kernel.org, song@kernel.org, jonathan.lemon@gmail.com
-Subject: Re: [bpf PATCH v2 2/8] bpf: sockmap, ensure sock lock held during tear down
-In-reply-to: <5e3ba96ca7889_6b512aafe4b145b812@john-XPS-13-9370.notmuch>
-Date:   Thu, 06 Feb 2020 13:26:30 +0100
-Message-ID: <871rr7oqa1.fsf@cloudflare.com>
+        id S1727901AbgBFN61 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Feb 2020 08:58:27 -0500
+Received: from mail-eopbgr140043.outbound.protection.outlook.com ([40.107.14.43]:45903
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727637AbgBFN60 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Feb 2020 08:58:26 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hnxoQxy5Uqvpe92n+VlYOskHDw0yr5CtZbkphwAt9sXL775l/ioExAxZ73oLgCLzZvWjkiQOY7JsF1QtCeTWsZE1Sae9tj1qavTHdAaqPcjd+AtwYrc3m1ZtXNWCY2nzj2256yQQ+NF7GaVP17BTjpO7mAfcZx8ya+TBl9ioBtCIhV/QsKZnu+/kz61B6q7eyUagL51k7erj6NWnFnz2/DfdGTFlKx8/JsiRo+A55OkfPLSRwiZpEQKZBDV+QNBOWEE7bE7ZX9BkwL7cgKJXE+qk8kfEhy81gMuQva/yc48Lbc46QFSc4nP0JxLCK5bE13Ve3tHcY6LQWAWrnfxUMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NksTOhSenlwDVAIMweZYrPSKWaWAq5cVzRkj5rwN6Fk=;
+ b=lUnepKKyRfdE6vwCXhfe0YmCMc4uA9AsojoaGqZRDctkvhYqQXynm7aMpEXulx37bhqGy5e12hsXlYEqgyl/3mDKcv/JSeWnn/vkiipI8a4Z67Jsiqwlv6/iHmdNztX5/oMPog4mi9r5bhPjbE66jK+JBZ0jKAEkIblLYGyJKExwn0OOPCYAj7mQOoaBejj5VEEFc0yCa2zKBw/ZH3LWob5rNAalpnwf+vw7b1TOxUrm881G/MShVYHoEkEyAToIwVP7ZSGRrfiEplxzucctIie9v6Aq6AJ96BwOIJnyMc096ble/djBzc0d5VrfRjlcnrR38rmbxDGoUqdbUsOvdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NksTOhSenlwDVAIMweZYrPSKWaWAq5cVzRkj5rwN6Fk=;
+ b=d2kFQFkl5oe1DffoSz8NjEP1RPfra14vY6KuBbGNLOccu080sPqtVYvO3a1+VAAQKiXFHTUu1D0HrUFkdmjaJd3q9oZ9YVHI+jOCwzeoO+eUtPmKuTUeW/UFtahuKzB7rwL7NSR8d/iJVmYCoqDPFWj2F2ZPzwXPmhaICe9Wyq8=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=maximmi@mellanox.com; 
+Received: from HE1PR0501MB2570.eurprd05.prod.outlook.com (10.168.126.17) by
+ HE1PR0501MB2460.eurprd05.prod.outlook.com (10.168.125.16) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2707.23; Thu, 6 Feb 2020 13:58:21 +0000
+Received: from HE1PR0501MB2570.eurprd05.prod.outlook.com
+ ([fe80::60c4:f0b4:dc7b:c7fc]) by HE1PR0501MB2570.eurprd05.prod.outlook.com
+ ([fe80::60c4:f0b4:dc7b:c7fc%10]) with mapi id 15.20.2707.023; Thu, 6 Feb 2020
+ 13:58:21 +0000
+Subject: Re: [PATCH bpf 0/3] XSK related fixes
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        daniel@iogearbox.net
+Cc:     ast@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        bjorn.topel@intel.com, magnus.karlsson@intel.com
+References: <20200205045834.56795-1-maciej.fijalkowski@intel.com>
+From:   Maxim Mikityanskiy <maximmi@mellanox.com>
+Message-ID: <d843052f-e0a5-7a8c-da65-7cb15c274483@mellanox.com>
+Date:   Thu, 6 Feb 2020 15:58:17 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
+In-Reply-To: <20200205045834.56795-1-maciej.fijalkowski@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM4PR0902CA0010.eurprd09.prod.outlook.com
+ (2603:10a6:200:9b::20) To HE1PR0501MB2570.eurprd05.prod.outlook.com
+ (2603:10a6:3:6c::17)
 MIME-Version: 1.0
-Content-Type: text/plain
+Received: from [10.44.1.235] (37.57.128.233) by AM4PR0902CA0010.eurprd09.prod.outlook.com (2603:10a6:200:9b::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2707.21 via Frontend Transport; Thu, 6 Feb 2020 13:58:20 +0000
+X-Originating-IP: [37.57.128.233]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: defbfaae-c669-4c57-ae8c-08d7ab0ca00c
+X-MS-TrafficTypeDiagnostic: HE1PR0501MB2460:
+X-Microsoft-Antispam-PRVS: <HE1PR0501MB2460B2931B4AEADF9989628ED11D0@HE1PR0501MB2460.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Forefront-PRVS: 0305463112
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(346002)(376002)(396003)(366004)(39860400002)(199004)(189003)(2906002)(81156014)(31686004)(81166006)(86362001)(5660300002)(8676002)(31696002)(186003)(2616005)(16526019)(26005)(52116002)(956004)(4326008)(55236004)(53546011)(6486002)(6666004)(8936002)(316002)(36756003)(66946007)(966005)(16576012)(66556008)(478600001)(66476007);DIR:OUT;SFP:1101;SCL:1;SRVR:HE1PR0501MB2460;H:HE1PR0501MB2570.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GLy6aAjEUPlDJcHtzwl5G7o0RMjVjPgmhlKANikWZPzhBUW+dwwrEr/7ZKbxqEnvJJheHN1U5SksGVHcQDkW38T40GcVY5aGJYCmO7y/9DXpNqMIxdj7OXUuo1HJ2xdP8sHqvNPH3sZlhGaexFXMzJDnLZm1RMa9O7UGg63+DYkxkdVvDQQ2z+avjQ8GCrzTeU4lIqd+C1WKYd64jQNzb8qJx9+wCWcdyl3qmZJ4J08P6ZzOurxXGEDsqzvDulBTDcSccCz/CIdq/EUa1WqluVKXO4aMwPvppT7h3U7D2TIbOG13Kli4jYuyUhrLzMHNJJ7hPpQq0zGMxQ0V7e/vorIl87vokg3rj+HvRfl6hGLdRS2FRR2AQbi0/FPzxcvG5P+nRqBInQ1v/y2evQL3XcW0U3pO/ux4/eDiZU3Gzoh6vQDGHrIRQpzpv6ECN6tFX8Z/wHJciPlQVoVRE6VS3OxT/I4jPaCf5VObgi/QoFfDKuSAu+t00fW7YvSd82Swc3mk4QZ0irGmBF4aFvo2ag==
+X-MS-Exchange-AntiSpam-MessageData: JlAZlgHQMmkq99draulB2HGMyciNdv8FVxM9S6KlrcZUxT9VZJOhlwOHtEcj5bkR3e4z6bvAmLWluy8Zr792e27VNtscAztB9K9O+aP2T0G6MbXX9HednEtPloHSI8IubOTor9zRcSMc29V9tBuQBw==
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: defbfaae-c669-4c57-ae8c-08d7ab0ca00c
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2020 13:58:21.2056
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: r0kYAfIS1fa8S7SjbQ+bQBIAYdi263kGyz2FtxhXjddE94wB+8/pN8Jz73npXraanIlzQcgXT2PHosGuz05xaA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0501MB2460
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 06, 2020 at 06:51 AM CET, John Fastabend wrote:
-> Jakub Sitnicki wrote:
->> On Sat, Jan 11, 2020 at 07:12 AM CET, John Fastabend wrote:
->> > The sock_map_free() and sock_hash_free() paths used to delete sockmap
->> > and sockhash maps walk the maps and destroy psock and bpf state associated
->> > with the socks in the map. When done the socks no longer have BPF programs
->> > attached and will function normally. This can happen while the socks in
->> > the map are still "live" meaning data may be sent/received during the walk.
->> >
->> > Currently, though we don't take the sock_lock when the psock and bpf state
->> > is removed through this path. Specifically, this means we can be writing
->> > into the ops structure pointers such as sendmsg, sendpage, recvmsg, etc.
->> > while they are also being called from the networking side. This is not
->> > safe, we never used proper READ_ONCE/WRITE_ONCE semantics here if we
->> > believed it was safe. Further its not clear to me its even a good idea
->> > to try and do this on "live" sockets while networking side might also
->> > be using the socket. Instead of trying to reason about using the socks
->> > from both sides lets realize that every use case I'm aware of rarely
->> > deletes maps, in fact kubernetes/Cilium case builds map at init and
->> > never tears it down except on errors. So lets do the simple fix and
->> > grab sock lock.
->> >
->> > This patch wraps sock deletes from maps in sock lock and adds some
->> > annotations so we catch any other cases easier.
->> >
->> > Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
->> > Cc: stable@vger.kernel.org
->> > Acked-by: Song Liu <songliubraving@fb.com>
->> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
->> > ---
->> >  net/core/skmsg.c    | 2 ++
->> >  net/core/sock_map.c | 7 ++++++-
->> >  2 files changed, 8 insertions(+), 1 deletion(-)
->> >
->> > diff --git a/net/core/skmsg.c b/net/core/skmsg.c
->> > index ded2d5227678..3866d7e20c07 100644
->> > --- a/net/core/skmsg.c
->> > +++ b/net/core/skmsg.c
->> > @@ -594,6 +594,8 @@ EXPORT_SYMBOL_GPL(sk_psock_destroy);
->> >
->> >  void sk_psock_drop(struct sock *sk, struct sk_psock *psock)
->> >  {
->> > +	sock_owned_by_me(sk);
->> > +
->> >  	sk_psock_cork_free(psock);
->> >  	sk_psock_zap_ingress(psock);
->> >
->> > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
->> > index eb114ee419b6..8998e356f423 100644
->> > --- a/net/core/sock_map.c
->> > +++ b/net/core/sock_map.c
->> > @@ -241,8 +241,11 @@ static void sock_map_free(struct bpf_map *map)
->> >  		struct sock *sk;
->> >
->> >  		sk = xchg(psk, NULL);
->> > -		if (sk)
->> > +		if (sk) {
->> > +			lock_sock(sk);
->> >  			sock_map_unref(sk, psk);
->> > +			release_sock(sk);
->> > +		}
->> >  	}
->> >  	raw_spin_unlock_bh(&stab->lock);
->> >  	rcu_read_unlock();
->>
->> John, I've noticed this is triggering warnings that we might sleep in
->> lock_sock while (1) in RCU read-side section, and (2) holding a spin
->> lock:
+On 2020-02-05 06:58, Maciej Fijalkowski wrote:
+> Cameron reported [0] that on fresh bpf-next he could not run multiple
+> xdpsock instances in Tx-only mode on single network interface with i40e
+> driver.
+> 
+> Turns out that Maxim's series [1] which was adding RCU protection around
+> ndo_xsk_wakeup added check against the __I40E_CONFIG_BUSY being set on
+> pf->state within i40e_xsk_wakeup() - if it's set, return -ENETDOWN.
+> Since this bit is set per PF when UMEM is being enabled/disabled, the
+> situation Cameron stumbled upon was that when he launched second xdpsock
+> instance, second UMEM was being registered, hence set __I40E_CONFIG_BUSY
+> which is now observed by first xdpsock and therefore xdpsock's kick_tx()
+> gets -ENETDOWN as errno.
+> 
+> -ENETDOWN currently is not allowed in kick_tx(), so we were exiting the
+> first application. Such exit means also XDP program being unloaded and
+> its dedicated resources, which caused an -ENXIO being return in the
+> second xdpsock instance.
+> 
+> Let's fix the issue from both sides - protect ourselves from future
+> xdpsock crashes by allowing for -ENETDOWN errno being set in kick_tx()
+> (patch 3) and from driver side, return -EAGAIN for the case where PF is
+> busy (patch 1).
+> 
+> Remove also doubled variable from xdpsock_user.c (patch 2).
+> 
+> Note that ixgbe seems not to be affected since UMEM registration sets
+> the busy/disable bit per ring, not per PF.
+> 
+> Thanks!
+> Maciej
+> 
+> [0]: https://www.spinics.net/lists/xdp-newbies/msg01558.html
+> [1]: https://lore.kernel.org/netdev/20191217162023.16011-1-maximmi@mellanox.com/
+> 
+> Maciej Fijalkowski (3):
+>    i40e: Relax i40e_xsk_wakeup's return value when PF is busy
+>    samples: bpf: drop doubled variable declaration in xdpsock
+>    samples: bpf: allow for -ENETDOWN in xdpsock
+> 
+>   drivers/net/ethernet/intel/i40e/i40e_xsk.c | 2 +-
+>   samples/bpf/xdpsock_user.c                 | 4 ++--
+>   2 files changed, 3 insertions(+), 3 deletions(-)
+> 
 
-[...]
+Acked-by: Maxim Mikityanskiy <maximmi@mellanox.com>
 
->>
->> Here's an idea how to change the locking. I'm still wrapping my head
->> around what protects what in sock_map_free, so please bear with me:
->>
->> 1. synchronize_rcu before we iterate over the array is not needed,
->>    AFAICT. We are not free'ing the map just yet, hence any readers
->>    accessing the map via the psock are not in danger of use-after-free.
->
-> Agreed. When we added 2bb90e5cc90e ("bpf: sockmap, synchronize_rcu before
-> free'ing map") we could have done this.
->
->>
->> 2. rcu_read_lock is needed to protect access to psock inside
->>    sock_map_unref, but we can't sleep while in RCU read-side.  So push
->>    it down, after we grab the sock lock.
->
-> yes this looks better.
->
->>
->> 3. Grabbing stab->lock seems not needed, either. We get called from
->>    bpf_map_free_deferred, after map refcnt dropped to 0, so we're not
->>    racing with any other map user to modify its contents.
->
-> This I'll need to think on a bit. We have the link-lock there so
-> probably should be safe to drop. But will need to trace this through
-> git history to be sure.
->
-
-[...]
-
->> WDYT?
->
-> Can you push the fix to bpf but leave the stab->lock for now. I think
-> we can do a slightly better cleanup on stab->lock in bpf-next.
-
-Here it is:
-
-https://lore.kernel.org/bpf/20200206111652.694507-1-jakub@cloudflare.com/T/#t
-
-I left the "extra" synchronize_rcu before walking the map. On second
-thought, this isn't a bug. Just adds extra wait. bpf-next material?
-
->
->>
->> Reproducer follows.
->
-> push reproducer into selftests?
-
-Included the reproducer with the fixes. If it gets dropped from the
-series, I'll resubmit it once bpf-next reopens.
+Though it's already merged (that was too fast).
