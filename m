@@ -2,96 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3801541E0
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2020 11:29:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 804861542D7
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2020 12:17:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728415AbgBFK3e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Feb 2020 05:29:34 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35210 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728394AbgBFK3d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Feb 2020 05:29:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1580984972;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=rLvLgIFZDxpilM3hf5DEhzcY/HFRNtYD6YOwnh0ogoY=;
-        b=h5o1eGldVWADIgwt4ahfL8uohvV237L2TACJFkw3g7H7Ou87/dKmhQP+evFzCHsVQTa5MI
-        /bkM4ISR/EH/wEJ940o9SEANvpsk7SlLfw2r5AoPql++UeyIX8KvSly6wqJT2Ecxi1DkcX
-        Wq14liJ+3EraTwXChLJjygHJajPI+b4=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-19-1Suq3jNkPJ2aHhwwSoZcNQ-1; Thu, 06 Feb 2020 05:29:30 -0500
-X-MC-Unique: 1Suq3jNkPJ2aHhwwSoZcNQ-1
-Received: by mail-lj1-f200.google.com with SMTP id y15so874680ljh.22
-        for <bpf@vger.kernel.org>; Thu, 06 Feb 2020 02:29:29 -0800 (PST)
+        id S1727710AbgBFLQ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Feb 2020 06:16:59 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:34527 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726538AbgBFLQ6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Feb 2020 06:16:58 -0500
+Received: by mail-wr1-f67.google.com with SMTP id t2so6686630wrr.1
+        for <bpf@vger.kernel.org>; Thu, 06 Feb 2020 03:16:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1OgZjMiLWNnAgKB8dAEkHOVKRVeaBJzQ1MB3Kd7Onc8=;
+        b=T9TWvEBNzmm/2Rcv2PuYqS7+mG7wUzuiPoW3+ZVw4PdyYijSUVMsIAuHjKKe3zypr2
+         I0K1zhdlc1SHDNsGEmE/njedWUyvaAyiCilWW6N+5MGRbIoxtwttzj91SFcoRpLHJS2E
+         WEs6eKk2aT5WvEUFaubuQgwR5zmQNuu3Vvx04=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=rLvLgIFZDxpilM3hf5DEhzcY/HFRNtYD6YOwnh0ogoY=;
-        b=R4X+Gn/dWRPPgrKc1Srn3Jwh8qe5Pm+OxFD5Vf7HvW9jy+5l3oSfa/IFIWsT3Zt5GI
-         5SLLyKCohieilRz5ZgY1wNqMv2M8DQZJdgqzQ5cOp5klk2QRZqfyO2Ig1H3fSYkhzh62
-         QlZ6fspw0hWb6tO/KfyAkWyoZ6OMbI+8GRshOxw1pQ2YGDvcXs9IJGljRZWJytgtCAfa
-         c8ab7oJtF/d84Ed3DCMSQnWGhBb8zBFQdrUv2+YsQ3nsSBzuWCi2mc/myAvA4L4BqJcW
-         8yocnCcYtW7ng6KfL/tIBzEK2vU/HETglzGhEvWKMpJtXilXGTNnrNnowkEJokzwbsdA
-         1AuA==
-X-Gm-Message-State: APjAAAWzXiJtVfRMCIGrg8yg2wu2Y3vZYqw/Xz/Y/HpnthgBZngvgNJp
-        NB89kOA9sWlhdB4gjepExz/JISULZ98I9cwkPdc2oyMA1+zw3vXoCfvEoqavcpUhNEdNVEGkJhD
-        EIbTl2/eb2a2H
-X-Received: by 2002:ac2:5335:: with SMTP id f21mr1447275lfh.150.1580984968383;
-        Thu, 06 Feb 2020 02:29:28 -0800 (PST)
-X-Google-Smtp-Source: APXvYqxwYbfo9IHDqEGxf6Vub/TsJPik3bcwC8zpaV6QIIn8M6U1RKrDRN0ymXE20jLuePMN6xC3CA==
-X-Received: by 2002:ac2:5335:: with SMTP id f21mr1447259lfh.150.1580984968139;
-        Thu, 06 Feb 2020 02:29:28 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id y21sm1050515lfy.46.2020.02.06.02.29.27
+        bh=1OgZjMiLWNnAgKB8dAEkHOVKRVeaBJzQ1MB3Kd7Onc8=;
+        b=oAwTgeRBesRsdZ6lV80QV1Sr3c3ZqOSAJ/fw1pKgEKBVeoccyCVW2s6MOKjwtcCCdC
+         6j58zQvuhKguYtDtbtVx2aWlIEcBusLv9wm23CWoz0PEqR7ISCGK7olIzrItT2hlfQnC
+         6WzCdow9A/EA1yX65E8kSoMwmSh0zPI/Ha2P1okkLlUv1bDX6UHF8TgfJVS9ST/qp4Y+
+         MzrDbVKfhOvsGAlCh9dtWO27hKFdsjJVjD+OHm6gkrg1V8eEpjacQN1DHruyezQxTeRU
+         sOQILZMOiZDA7KhSBucnPIu3iZ9H/b3iGZ12vnRw80ilVRK8kni98dmVdZmLL4pJGWTf
+         e1Yg==
+X-Gm-Message-State: APjAAAWNfnP6r4Cvm/yWKxAPkepM9uU2wes5w9e3cMDfeaJxZKt1Yf5V
+        SCgp+j2aO4w7ptP1uTf59ZXEqrL/S4ip2A==
+X-Google-Smtp-Source: APXvYqxhQVtc1FSZmOMfXzpMqI8IKwEcfk59uSM56sTM9QGrM84fwmuMRjt+RH2bMMiS9G2HGddLNg==
+X-Received: by 2002:a5d:4289:: with SMTP id k9mr3417323wrq.280.1580987815038;
+        Thu, 06 Feb 2020 03:16:55 -0800 (PST)
+Received: from cloudflare.com ([176.221.114.230])
+        by smtp.gmail.com with ESMTPSA id z11sm3723877wrv.96.2020.02.06.03.16.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Feb 2020 02:29:27 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 31CC71802D4; Thu,  6 Feb 2020 11:29:24 +0100 (CET)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     daniel@iogearbox.net, ast@fb.com
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH bpf] bpftool: Don't crash on missing xlated program instructions
-Date:   Thu,  6 Feb 2020 11:29:06 +0100
-Message-Id: <20200206102906.112551-1-toke@redhat.com>
-X-Mailer: git-send-email 2.25.0
+        Thu, 06 Feb 2020 03:16:53 -0800 (PST)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: [PATCH bpf 0/3] Fix locking order and synchronization on sockmap/sockhash tear-down
+Date:   Thu,  6 Feb 2020 12:16:49 +0100
+Message-Id: <20200206111652.694507-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Turns out the xlated program instructions can also be missing if
-kptr_restrict sysctl is set. This means that the previous fix to check the
-jited_prog_insns pointer was insufficient; add another check of the
-xlated_prog_insns pointer as well.
+Couple of fixes that came from recent discussion [0] on commit
+7e81a3530206 ("bpf: Sockmap, ensure sock lock held during tear down").
 
-Fixes: 5b79bcdf0362 ("bpftool: Don't crash on missing jited insns or ksyms")
-Fixes: cae73f233923 ("bpftool: use bpf_program__get_prog_info_linear() in prog.c:do_dump()")
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- tools/bpf/bpftool/prog.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This series doesn't address the sleeping while holding a spinlock
+problem. We're still trying to decide how to fix that [1].
 
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index a3521deca869..b352ab041160 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -536,7 +536,7 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
- 		buf = (unsigned char *)(info->jited_prog_insns);
- 		member_len = info->jited_prog_len;
- 	} else {	/* DUMP_XLATED */
--		if (info->xlated_prog_len == 0) {
-+		if (info->xlated_prog_len == 0 || !info->xlated_prog_insns) {
- 			p_err("error retrieving insn dump: kernel.kptr_restrict set?");
- 			return -1;
- 		}
+Until then sockmap users might see the following warnings:
+
+| BUG: sleeping function called from invalid context at net/core/sock.c:2935
+| in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 62, name: kworker/0:1
+| 3 locks held by kworker/0:1/62:
+|  #0: ffff88813b019748 ((wq_completion)events){+.+.}, at: process_one_work+0x1d7/0x5e0
+|  #1: ffffc900000abe50 ((work_completion)(&map->work)){+.+.}, at: process_one_work+0x1d7/0x5e0
+|  #2: ffff8881381f6df8 (&stab->lock){+...}, at: sock_map_free+0x26/0x180
+| CPU: 0 PID: 62 Comm: kworker/0:1 Not tainted 5.5.0-04008-g7b083332376e #454
+| Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
+| Workqueue: events bpf_map_free_deferred
+| Call Trace:
+|  dump_stack+0x71/0xa0
+|  ___might_sleep.cold+0xa6/0xb6
+|  lock_sock_nested+0x28/0x90
+|  sock_map_free+0x5f/0x180
+|  bpf_map_free_deferred+0x58/0x80
+|  process_one_work+0x260/0x5e0
+|  worker_thread+0x4d/0x3e0
+|  kthread+0x108/0x140
+|  ? process_one_work+0x5e0/0x5e0
+|  ? kthread_park+0x90/0x90
+|  ret_from_fork+0x3a/0x50
+|
+| ======================================================
+| WARNING: possible circular locking dependency detected
+| 5.5.0-04008-g7b083332376e #454 Tainted: G        W
+| ------------------------------------------------------
+| kworker/0:1/62 is trying to acquire lock:
+| ffff88813b280130 (sk_lock-AF_INET){+.+.}, at: sock_map_free+0x5f/0x180
+|
+| but task is already holding lock:
+| ffff8881381f6df8 (&stab->lock){+...}, at: sock_map_free+0x26/0x180
+|
+| which lock already depends on the new lock.
+|
+|
+| the existing dependency chain (in reverse order) is:
+|
+| -> #1 (&stab->lock){+...}:
+|        _raw_spin_lock_bh+0x39/0x80
+|        sock_map_update_common+0xdc/0x300
+|        sock_map_update_elem+0xc3/0x150
+|        __do_sys_bpf+0x1285/0x1620
+|        do_syscall_64+0x6d/0x690
+|        entry_SYSCALL_64_after_hwframe+0x49/0xbe
+|
+| -> #0 (sk_lock-AF_INET){+.+.}:
+|        __lock_acquire+0xe2f/0x19f0
+|        lock_acquire+0x95/0x190
+|        lock_sock_nested+0x6b/0x90
+|        sock_map_free+0x5f/0x180
+|        bpf_map_free_deferred+0x58/0x80
+|        process_one_work+0x260/0x5e0
+|        worker_thread+0x4d/0x3e0
+|        kthread+0x108/0x140
+|        ret_from_fork+0x3a/0x50
+|
+| other info that might help us debug this:
+|
+|  Possible unsafe locking scenario:
+|
+|        CPU0                    CPU1
+|        ----                    ----
+|   lock(&stab->lock);
+|                                lock(sk_lock-AF_INET);
+|                                lock(&stab->lock);
+|   lock(sk_lock-AF_INET);
+|
+|  *** DEADLOCK ***
+|
+| 3 locks held by kworker/0:1/62:
+|  #0: ffff88813b019748 ((wq_completion)events){+.+.}, at: process_one_work+0x1d7/0x5e0
+|  #1: ffffc900000abe50 ((work_completion)(&map->work)){+.+.}, at: process_one_work+0x1d7/0x5e0
+|  #2: ffff8881381f6df8 (&stab->lock){+...}, at: sock_map_free+0x26/0x180
+|
+| stack backtrace:
+| CPU: 0 PID: 62 Comm: kworker/0:1 Tainted: G        W         5.5.0-04008-g7b083332376e #454
+| Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
+| Workqueue: events bpf_map_free_deferred
+| Call Trace:
+|  dump_stack+0x71/0xa0
+|  check_noncircular+0x176/0x190
+|  __lock_acquire+0xe2f/0x19f0
+|  lock_acquire+0x95/0x190
+|  ? sock_map_free+0x5f/0x180
+|  lock_sock_nested+0x6b/0x90
+|  ? sock_map_free+0x5f/0x180
+|  sock_map_free+0x5f/0x180
+|  bpf_map_free_deferred+0x58/0x80
+|  process_one_work+0x260/0x5e0
+|  worker_thread+0x4d/0x3e0
+|  kthread+0x108/0x140
+|  ? process_one_work+0x5e0/0x5e0
+|  ? kthread_park+0x90/0x90
+|  ret_from_fork+0x3a/0x50
+
+[0] https://lore.kernel.org/bpf/8736boor55.fsf@cloudflare.com/
+[1] https://lore.kernel.org/bpf/5e3ba96ca7889_6b512aafe4b145b812@john-XPS-13-9370.notmuch/
+
+
+Jakub Sitnicki (3):
+  bpf, sockmap: Don't sleep while holding RCU lock on tear-down
+  bpf, sockhash: synchronize_rcu before free'ing map
+  selftests/bpf: Test freeing sockmap/sockhash with a socket in it
+
+ net/core/sock_map.c                           | 12 ++-
+ .../selftests/bpf/prog_tests/sockmap_basic.c  | 74 +++++++++++++++++++
+ 2 files changed, 82 insertions(+), 4 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+
 -- 
-2.25.0
+2.24.1
 
