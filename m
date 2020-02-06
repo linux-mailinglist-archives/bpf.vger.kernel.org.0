@@ -2,158 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0781542DD
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2020 12:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F28981543FC
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2020 13:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727751AbgBFLRD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Feb 2020 06:17:03 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:55294 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727530AbgBFLRC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Feb 2020 06:17:02 -0500
-Received: by mail-wm1-f66.google.com with SMTP id g1so5856984wmh.4
-        for <bpf@vger.kernel.org>; Thu, 06 Feb 2020 03:17:01 -0800 (PST)
+        id S1728068AbgBFM0g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Feb 2020 07:26:36 -0500
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:38003 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728018AbgBFM0f (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Feb 2020 07:26:35 -0500
+Received: by mail-wm1-f67.google.com with SMTP id a9so6897372wmj.3
+        for <bpf@vger.kernel.org>; Thu, 06 Feb 2020 04:26:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WgjC54an/BsE9+r+d7h+ThtXSsEnf/5wIybUYx0C7/s=;
-        b=PYvVPgFTYk2ky/EPLel3tNo86NsfUQWDr0ifWuQjf+cvL0Wbm84skc6h+eooSBmLks
-         RL+UWkAYk2erkGpt2jjWWouF6C2UAwJWOeQRpelql71vs2nz2ySuzzUNU7x0t+4bfRvq
-         dK5Zgr+zVRKVMam1Z6/dcWglTRrIzajHbWcKc=
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=4IqGG90hzs/rSeSyZlWCzvOfVkyWTnP3OPmi4HPtnac=;
+        b=kvnlldKAOEWtv9L4cvgc2+kQBBKi0f3EU5UPhPSwxvq4Z6YndBuF4UdShoEwwlDbMv
+         HUNKWldMOSZep+NRpPzE+xy86NtpH+CK97crbFffDiW8NVe20GGukHcp32qPNfwqagnF
+         6huWrs3zTZ1ZZ7ZjJmFykJrncXFFWU3t1GNQo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WgjC54an/BsE9+r+d7h+ThtXSsEnf/5wIybUYx0C7/s=;
-        b=sm7iJTiof3E2sqOagnUDZi91WUYEIx+dzCG05hZnZ4SFUbJYgmbxqeChA6ioldo5mt
-         dS753YKuqJzNrVP8j4FwHw33oIdaIkHywHp5yw+rN/KePlFGmsGX01m8djxYovS0SxAd
-         QpDxjeCV2Md4vA7Q4YREay9szRdiG51Dg3WbUDUu2OftMv0Sv7hThr/DP2bVeq8Py71p
-         ow9aprOOymsEaPSxOiQE9mOYnfcLE+laJz2rTtR4/DDSB3U1zyhvcktAiHkYHTkus0bg
-         EiHeBkOFwO+NM8g4CMgxzbcMa/euysm4Z4oGBl8rbY7R9k72usy3dWLJCLw1x7O3EwBQ
-         /yEQ==
-X-Gm-Message-State: APjAAAVCx3TBJ9sx+4xP9VO++bdAnKNNh1vT4Tvo8cdOCdXo+hi6yHNn
-        wpzfW+lOByMJygUWG0HwIGtbg50ZvuDNHQ==
-X-Google-Smtp-Source: APXvYqx0hcoSru418OaERRG7HYUyMtGRJbQvWS6e7ehBSfajeZpRXufOLaPiAT9GKHFS6p2Kpt3bmw==
-X-Received: by 2002:a05:600c:2290:: with SMTP id 16mr4058246wmf.93.1580987820279;
-        Thu, 06 Feb 2020 03:17:00 -0800 (PST)
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=4IqGG90hzs/rSeSyZlWCzvOfVkyWTnP3OPmi4HPtnac=;
+        b=LYl5M2Y3C/cE4ufwGxJxSuN3cujJ31j2Q47XwjXnyDD3TdZnsWHNvw84sLQhbpjTuD
+         a+xNjKQ6aduv7VEOyhyaQQ/lfYNj2OdmDrWg3q+i6ClFHzq3RyKfz+WeNevuLPWiXxm6
+         SAhOmwECipLh/Y/L+pQYSvzwQfsfqr3UfM078ga7gOF9iKg2ods0ruaAQUihZVmQj92S
+         CgL6QNGYIpUu96UKEwnsgKBVkDmdyS7sPqExRpoz9ipuP9BElnisNKsxO7GiNZqgaEXV
+         8H1USYRAai4nD+ZRGrcoU8O7c0r+Xp1dQb6pGEHdkdtEICbn/YYuSExO61S1N7ZqzkWK
+         Savg==
+X-Gm-Message-State: APjAAAXnWRqI739Fjsil39fzS0DpZXMtFIgkGYFjdfxeF8ZoKPjz6Bcw
+        LEfF1KX16qfcHbrvKQBe8LZPeA==
+X-Google-Smtp-Source: APXvYqw5kEFIKIbx/Y0Im1n2EpW6nOkN2LSVe/Qzg0jWTSXr86kfe13lT8IZKDZLiWGUhGtGAzLISA==
+X-Received: by 2002:a1c:48c1:: with SMTP id v184mr4315520wma.5.1580991992526;
+        Thu, 06 Feb 2020 04:26:32 -0800 (PST)
 Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id a26sm3470605wmm.18.2020.02.06.03.16.59
+        by smtp.gmail.com with ESMTPSA id a26sm3691058wmm.18.2020.02.06.04.26.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Feb 2020 03:16:59 -0800 (PST)
+        Thu, 06 Feb 2020 04:26:31 -0800 (PST)
+References: <20200111061206.8028-1-john.fastabend@gmail.com> <20200111061206.8028-3-john.fastabend@gmail.com> <8736boor55.fsf@cloudflare.com> <5e3ba96ca7889_6b512aafe4b145b812@john-XPS-13-9370.notmuch>
+User-agent: mu4e 1.1.0; emacs 26.3
 From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: [PATCH bpf 3/3] selftests/bpf: Test freeing sockmap/sockhash with a socket in it
-Date:   Thu,  6 Feb 2020 12:16:52 +0100
-Message-Id: <20200206111652.694507-4-jakub@cloudflare.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200206111652.694507-1-jakub@cloudflare.com>
-References: <20200206111652.694507-1-jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
+        ast@kernel.org, song@kernel.org, jonathan.lemon@gmail.com
+Subject: Re: [bpf PATCH v2 2/8] bpf: sockmap, ensure sock lock held during tear down
+In-reply-to: <5e3ba96ca7889_6b512aafe4b145b812@john-XPS-13-9370.notmuch>
+Date:   Thu, 06 Feb 2020 13:26:30 +0100
+Message-ID: <871rr7oqa1.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit 7e81a3530206 ("bpf: Sockmap, ensure sock lock held during tear
-down") introduced sleeping issues inside RCU critical sections and while
-holding a spinlock on sockmap/sockhash tear-down. There has to be at least
-one socket in the map for the problem to surface.
+On Thu, Feb 06, 2020 at 06:51 AM CET, John Fastabend wrote:
+> Jakub Sitnicki wrote:
+>> On Sat, Jan 11, 2020 at 07:12 AM CET, John Fastabend wrote:
+>> > The sock_map_free() and sock_hash_free() paths used to delete sockmap
+>> > and sockhash maps walk the maps and destroy psock and bpf state associated
+>> > with the socks in the map. When done the socks no longer have BPF programs
+>> > attached and will function normally. This can happen while the socks in
+>> > the map are still "live" meaning data may be sent/received during the walk.
+>> >
+>> > Currently, though we don't take the sock_lock when the psock and bpf state
+>> > is removed through this path. Specifically, this means we can be writing
+>> > into the ops structure pointers such as sendmsg, sendpage, recvmsg, etc.
+>> > while they are also being called from the networking side. This is not
+>> > safe, we never used proper READ_ONCE/WRITE_ONCE semantics here if we
+>> > believed it was safe. Further its not clear to me its even a good idea
+>> > to try and do this on "live" sockets while networking side might also
+>> > be using the socket. Instead of trying to reason about using the socks
+>> > from both sides lets realize that every use case I'm aware of rarely
+>> > deletes maps, in fact kubernetes/Cilium case builds map at init and
+>> > never tears it down except on errors. So lets do the simple fix and
+>> > grab sock lock.
+>> >
+>> > This patch wraps sock deletes from maps in sock lock and adds some
+>> > annotations so we catch any other cases easier.
+>> >
+>> > Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
+>> > Cc: stable@vger.kernel.org
+>> > Acked-by: Song Liu <songliubraving@fb.com>
+>> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+>> > ---
+>> >  net/core/skmsg.c    | 2 ++
+>> >  net/core/sock_map.c | 7 ++++++-
+>> >  2 files changed, 8 insertions(+), 1 deletion(-)
+>> >
+>> > diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+>> > index ded2d5227678..3866d7e20c07 100644
+>> > --- a/net/core/skmsg.c
+>> > +++ b/net/core/skmsg.c
+>> > @@ -594,6 +594,8 @@ EXPORT_SYMBOL_GPL(sk_psock_destroy);
+>> >
+>> >  void sk_psock_drop(struct sock *sk, struct sk_psock *psock)
+>> >  {
+>> > +	sock_owned_by_me(sk);
+>> > +
+>> >  	sk_psock_cork_free(psock);
+>> >  	sk_psock_zap_ingress(psock);
+>> >
+>> > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+>> > index eb114ee419b6..8998e356f423 100644
+>> > --- a/net/core/sock_map.c
+>> > +++ b/net/core/sock_map.c
+>> > @@ -241,8 +241,11 @@ static void sock_map_free(struct bpf_map *map)
+>> >  		struct sock *sk;
+>> >
+>> >  		sk = xchg(psk, NULL);
+>> > -		if (sk)
+>> > +		if (sk) {
+>> > +			lock_sock(sk);
+>> >  			sock_map_unref(sk, psk);
+>> > +			release_sock(sk);
+>> > +		}
+>> >  	}
+>> >  	raw_spin_unlock_bh(&stab->lock);
+>> >  	rcu_read_unlock();
+>>
+>> John, I've noticed this is triggering warnings that we might sleep in
+>> lock_sock while (1) in RCU read-side section, and (2) holding a spin
+>> lock:
 
-This adds a test that triggers the warnings for broken locking rules. Not a
-fix per se, but rather tooling to verify the accompanying fixes. Run on a
-VM with 1 vCPU to reproduce the warnings.
+[...]
 
-Fixes: 7e81a3530206 ("bpf: Sockmap, ensure sock lock held during tear down")
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
----
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 74 +++++++++++++++++++
- 1 file changed, 74 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+>>
+>> Here's an idea how to change the locking. I'm still wrapping my head
+>> around what protects what in sock_map_free, so please bear with me:
+>>
+>> 1. synchronize_rcu before we iterate over the array is not needed,
+>>    AFAICT. We are not free'ing the map just yet, hence any readers
+>>    accessing the map via the psock are not in danger of use-after-free.
+>
+> Agreed. When we added 2bb90e5cc90e ("bpf: sockmap, synchronize_rcu before
+> free'ing map") we could have done this.
+>
+>>
+>> 2. rcu_read_lock is needed to protect access to psock inside
+>>    sock_map_unref, but we can't sleep while in RCU read-side.  So push
+>>    it down, after we grab the sock lock.
+>
+> yes this looks better.
+>
+>>
+>> 3. Grabbing stab->lock seems not needed, either. We get called from
+>>    bpf_map_free_deferred, after map refcnt dropped to 0, so we're not
+>>    racing with any other map user to modify its contents.
+>
+> This I'll need to think on a bit. We have the link-lock there so
+> probably should be safe to drop. But will need to trace this through
+> git history to be sure.
+>
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-new file mode 100644
-index 000000000000..07f5b462c2ef
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -0,0 +1,74 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Cloudflare
-+
-+#include "test_progs.h"
-+
-+static int connected_socket_v4(void)
-+{
-+	struct sockaddr_in addr = {
-+		.sin_family = AF_INET,
-+		.sin_port = htons(80),
-+		.sin_addr = { inet_addr("127.0.0.1") },
-+	};
-+	socklen_t len = sizeof(addr);
-+	int s, repair, err;
-+
-+	s = socket(AF_INET, SOCK_STREAM, 0);
-+	if (CHECK_FAIL(s == -1))
-+		goto error;
-+
-+	repair = TCP_REPAIR_ON;
-+	err = setsockopt(s, SOL_TCP, TCP_REPAIR, &repair, sizeof(repair));
-+	if (CHECK_FAIL(err))
-+		goto error;
-+
-+	err = connect(s, (struct sockaddr *)&addr, len);
-+	if (CHECK_FAIL(err))
-+		goto error;
-+
-+	repair = TCP_REPAIR_OFF_NO_WP;
-+	err = setsockopt(s, SOL_TCP, TCP_REPAIR, &repair, sizeof(repair));
-+	if (CHECK_FAIL(err))
-+		goto error;
-+
-+	return s;
-+error:
-+	perror(__func__);
-+	close(s);
-+	return -1;
-+}
-+
-+/* Create a map, populate it with one socket, and free the map. */
-+static void test_sockmap_create_update_free(enum bpf_map_type map_type)
-+{
-+	const int zero = 0;
-+	int s, map, err;
-+
-+	s = connected_socket_v4();
-+	if (CHECK_FAIL(s == -1))
-+		return;
-+
-+	map = bpf_create_map(map_type, sizeof(int), sizeof(int), 1, 0);
-+	if (CHECK_FAIL(map == -1)) {
-+		perror("bpf_create_map");
-+		goto out;
-+	}
-+
-+	err = bpf_map_update_elem(map, &zero, &s, BPF_NOEXIST);
-+	if (CHECK_FAIL(err)) {
-+		perror("bpf_map_update");
-+		goto out;
-+	}
-+
-+out:
-+	close(map);
-+	close(s);
-+}
-+
-+void test_sockmap_basic(void)
-+{
-+	if (test__start_subtest("sockmap create_update_free"))
-+		test_sockmap_create_update_free(BPF_MAP_TYPE_SOCKMAP);
-+	if (test__start_subtest("sockhash create_update_free"))
-+		test_sockmap_create_update_free(BPF_MAP_TYPE_SOCKHASH);
-+}
--- 
-2.24.1
+[...]
 
+>> WDYT?
+>
+> Can you push the fix to bpf but leave the stab->lock for now. I think
+> we can do a slightly better cleanup on stab->lock in bpf-next.
+
+Here it is:
+
+https://lore.kernel.org/bpf/20200206111652.694507-1-jakub@cloudflare.com/T/#t
+
+I left the "extra" synchronize_rcu before walking the map. On second
+thought, this isn't a bug. Just adds extra wait. bpf-next material?
+
+>
+>>
+>> Reproducer follows.
+>
+> push reproducer into selftests?
+
+Included the reproducer with the fixes. If it gets dropped from the
+series, I'll resubmit it once bpf-next reopens.
