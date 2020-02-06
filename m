@@ -2,135 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CAE1154598
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2020 14:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 988BB15478F
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2020 16:18:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727901AbgBFN61 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Feb 2020 08:58:27 -0500
-Received: from mail-eopbgr140043.outbound.protection.outlook.com ([40.107.14.43]:45903
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727637AbgBFN60 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Feb 2020 08:58:26 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hnxoQxy5Uqvpe92n+VlYOskHDw0yr5CtZbkphwAt9sXL775l/ioExAxZ73oLgCLzZvWjkiQOY7JsF1QtCeTWsZE1Sae9tj1qavTHdAaqPcjd+AtwYrc3m1ZtXNWCY2nzj2256yQQ+NF7GaVP17BTjpO7mAfcZx8ya+TBl9ioBtCIhV/QsKZnu+/kz61B6q7eyUagL51k7erj6NWnFnz2/DfdGTFlKx8/JsiRo+A55OkfPLSRwiZpEQKZBDV+QNBOWEE7bE7ZX9BkwL7cgKJXE+qk8kfEhy81gMuQva/yc48Lbc46QFSc4nP0JxLCK5bE13Ve3tHcY6LQWAWrnfxUMA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NksTOhSenlwDVAIMweZYrPSKWaWAq5cVzRkj5rwN6Fk=;
- b=lUnepKKyRfdE6vwCXhfe0YmCMc4uA9AsojoaGqZRDctkvhYqQXynm7aMpEXulx37bhqGy5e12hsXlYEqgyl/3mDKcv/JSeWnn/vkiipI8a4Z67Jsiqwlv6/iHmdNztX5/oMPog4mi9r5bhPjbE66jK+JBZ0jKAEkIblLYGyJKExwn0OOPCYAj7mQOoaBejj5VEEFc0yCa2zKBw/ZH3LWob5rNAalpnwf+vw7b1TOxUrm881G/MShVYHoEkEyAToIwVP7ZSGRrfiEplxzucctIie9v6Aq6AJ96BwOIJnyMc096ble/djBzc0d5VrfRjlcnrR38rmbxDGoUqdbUsOvdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NksTOhSenlwDVAIMweZYrPSKWaWAq5cVzRkj5rwN6Fk=;
- b=d2kFQFkl5oe1DffoSz8NjEP1RPfra14vY6KuBbGNLOccu080sPqtVYvO3a1+VAAQKiXFHTUu1D0HrUFkdmjaJd3q9oZ9YVHI+jOCwzeoO+eUtPmKuTUeW/UFtahuKzB7rwL7NSR8d/iJVmYCoqDPFWj2F2ZPzwXPmhaICe9Wyq8=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=maximmi@mellanox.com; 
-Received: from HE1PR0501MB2570.eurprd05.prod.outlook.com (10.168.126.17) by
- HE1PR0501MB2460.eurprd05.prod.outlook.com (10.168.125.16) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2707.23; Thu, 6 Feb 2020 13:58:21 +0000
-Received: from HE1PR0501MB2570.eurprd05.prod.outlook.com
- ([fe80::60c4:f0b4:dc7b:c7fc]) by HE1PR0501MB2570.eurprd05.prod.outlook.com
- ([fe80::60c4:f0b4:dc7b:c7fc%10]) with mapi id 15.20.2707.023; Thu, 6 Feb 2020
- 13:58:21 +0000
-Subject: Re: [PATCH bpf 0/3] XSK related fixes
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        daniel@iogearbox.net
-Cc:     ast@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        bjorn.topel@intel.com, magnus.karlsson@intel.com
-References: <20200205045834.56795-1-maciej.fijalkowski@intel.com>
-From:   Maxim Mikityanskiy <maximmi@mellanox.com>
-Message-ID: <d843052f-e0a5-7a8c-da65-7cb15c274483@mellanox.com>
-Date:   Thu, 6 Feb 2020 15:58:17 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
-In-Reply-To: <20200205045834.56795-1-maciej.fijalkowski@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM4PR0902CA0010.eurprd09.prod.outlook.com
- (2603:10a6:200:9b::20) To HE1PR0501MB2570.eurprd05.prod.outlook.com
- (2603:10a6:3:6c::17)
+        id S1727702AbgBFPSX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Feb 2020 10:18:23 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:38224 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727641AbgBFPSB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Feb 2020 10:18:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=eNDq33QOomCijKEVn1Z9oPH66Mc+mguHW+VeL5pLAhc=; b=So8I9geR14GrGuO9lA9c6sXiEo
+        7Ws15T/LX0KmsnmzEPlAAEj23x41YzqKtxcygM1Xqa3cte8wLkTcHLT/w0P+Mx8wvk79NQg2iSCJ6
+        fctuWwiTO348VpvHZBgzU9iqP9XQIh1Ohc78Tr+kj7Mm0cbBOWXGEsDO6B0PgI+o+1yyscaCOyL/A
+        8AD1Iv7rkKa0ycgY8nsAEugIElBxYwhWE91OCEI+owntY79wPXGI++GaM9OCtOmkpd9Nn8rpu7QfJ
+        72YqQZf8OZZXxyX88DBgxCoA76E6oyjzgcVYxeEFOzHXAyBfkpM9+mA0BT54q/c9g0dxFRCiSzrqF
+        UHHHAhNA==;
+Received: from [179.95.15.160] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iziul-0005jA-Al; Thu, 06 Feb 2020 15:17:59 +0000
+Received: from mchehab by bombadil.infradead.org with local (Exim 4.92.3)
+        (envelope-from <mchehab@bombadil.infradead.org>)
+        id 1iziuc-002oUk-B9; Thu, 06 Feb 2020 16:17:50 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@infradead.org>,
+        Alexander Aring <alex.aring@gmail.com>,
+        linux-doc@vger.kernel.org, Yonghong Song <yhs@fb.com>,
+        Jukka Rissanen <jukka.rissanen@linux.intel.com>,
+        netdev@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        linux-wpan@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jonathan Corbet <corbet@lwn.net>, bpf@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        linux-bluetooth@vger.kernel.org
+Subject: [PATCH 00/28] Manually convert network text files to ReST (part 1)
+Date:   Thu,  6 Feb 2020 16:17:20 +0100
+Message-Id: <cover.1581002062.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Received: from [10.44.1.235] (37.57.128.233) by AM4PR0902CA0010.eurprd09.prod.outlook.com (2603:10a6:200:9b::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2707.21 via Frontend Transport; Thu, 6 Feb 2020 13:58:20 +0000
-X-Originating-IP: [37.57.128.233]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: defbfaae-c669-4c57-ae8c-08d7ab0ca00c
-X-MS-TrafficTypeDiagnostic: HE1PR0501MB2460:
-X-Microsoft-Antispam-PRVS: <HE1PR0501MB2460B2931B4AEADF9989628ED11D0@HE1PR0501MB2460.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-Forefront-PRVS: 0305463112
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(346002)(376002)(396003)(366004)(39860400002)(199004)(189003)(2906002)(81156014)(31686004)(81166006)(86362001)(5660300002)(8676002)(31696002)(186003)(2616005)(16526019)(26005)(52116002)(956004)(4326008)(55236004)(53546011)(6486002)(6666004)(8936002)(316002)(36756003)(66946007)(966005)(16576012)(66556008)(478600001)(66476007);DIR:OUT;SFP:1101;SCL:1;SRVR:HE1PR0501MB2460;H:HE1PR0501MB2570.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-Received-SPF: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GLy6aAjEUPlDJcHtzwl5G7o0RMjVjPgmhlKANikWZPzhBUW+dwwrEr/7ZKbxqEnvJJheHN1U5SksGVHcQDkW38T40GcVY5aGJYCmO7y/9DXpNqMIxdj7OXUuo1HJ2xdP8sHqvNPH3sZlhGaexFXMzJDnLZm1RMa9O7UGg63+DYkxkdVvDQQ2z+avjQ8GCrzTeU4lIqd+C1WKYd64jQNzb8qJx9+wCWcdyl3qmZJ4J08P6ZzOurxXGEDsqzvDulBTDcSccCz/CIdq/EUa1WqluVKXO4aMwPvppT7h3U7D2TIbOG13Kli4jYuyUhrLzMHNJJ7hPpQq0zGMxQ0V7e/vorIl87vokg3rj+HvRfl6hGLdRS2FRR2AQbi0/FPzxcvG5P+nRqBInQ1v/y2evQL3XcW0U3pO/ux4/eDiZU3Gzoh6vQDGHrIRQpzpv6ECN6tFX8Z/wHJciPlQVoVRE6VS3OxT/I4jPaCf5VObgi/QoFfDKuSAu+t00fW7YvSd82Swc3mk4QZ0irGmBF4aFvo2ag==
-X-MS-Exchange-AntiSpam-MessageData: JlAZlgHQMmkq99draulB2HGMyciNdv8FVxM9S6KlrcZUxT9VZJOhlwOHtEcj5bkR3e4z6bvAmLWluy8Zr792e27VNtscAztB9K9O+aP2T0G6MbXX9HednEtPloHSI8IubOTor9zRcSMc29V9tBuQBw==
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: defbfaae-c669-4c57-ae8c-08d7ab0ca00c
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2020 13:58:21.2056
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: r0kYAfIS1fa8S7SjbQ+bQBIAYdi263kGyz2FtxhXjddE94wB+8/pN8Jz73npXraanIlzQcgXT2PHosGuz05xaA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0501MB2460
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-02-05 06:58, Maciej Fijalkowski wrote:
-> Cameron reported [0] that on fresh bpf-next he could not run multiple
-> xdpsock instances in Tx-only mode on single network interface with i40e
-> driver.
-> 
-> Turns out that Maxim's series [1] which was adding RCU protection around
-> ndo_xsk_wakeup added check against the __I40E_CONFIG_BUSY being set on
-> pf->state within i40e_xsk_wakeup() - if it's set, return -ENETDOWN.
-> Since this bit is set per PF when UMEM is being enabled/disabled, the
-> situation Cameron stumbled upon was that when he launched second xdpsock
-> instance, second UMEM was being registered, hence set __I40E_CONFIG_BUSY
-> which is now observed by first xdpsock and therefore xdpsock's kick_tx()
-> gets -ENETDOWN as errno.
-> 
-> -ENETDOWN currently is not allowed in kick_tx(), so we were exiting the
-> first application. Such exit means also XDP program being unloaded and
-> its dedicated resources, which caused an -ENXIO being return in the
-> second xdpsock instance.
-> 
-> Let's fix the issue from both sides - protect ourselves from future
-> xdpsock crashes by allowing for -ENETDOWN errno being set in kick_tx()
-> (patch 3) and from driver side, return -EAGAIN for the case where PF is
-> busy (patch 1).
-> 
-> Remove also doubled variable from xdpsock_user.c (patch 2).
-> 
-> Note that ixgbe seems not to be affected since UMEM registration sets
-> the busy/disable bit per ring, not per PF.
-> 
-> Thanks!
-> Maciej
-> 
-> [0]: https://www.spinics.net/lists/xdp-newbies/msg01558.html
-> [1]: https://lore.kernel.org/netdev/20191217162023.16011-1-maximmi@mellanox.com/
-> 
-> Maciej Fijalkowski (3):
->    i40e: Relax i40e_xsk_wakeup's return value when PF is busy
->    samples: bpf: drop doubled variable declaration in xdpsock
->    samples: bpf: allow for -ENETDOWN in xdpsock
-> 
->   drivers/net/ethernet/intel/i40e/i40e_xsk.c | 2 +-
->   samples/bpf/xdpsock_user.c                 | 4 ++--
->   2 files changed, 3 insertions(+), 3 deletions(-)
-> 
+Manually convert Documentation/networking text files to ReST.
 
-Acked-by: Maxim Mikityanskiy <maximmi@mellanox.com>
+As there are lots of unconverted files there, I have ~120 patches.
+So, I'll split the conversion into 4 parts. This is the first patch.
 
-Though it's already merged (that was too fast).
+Mauro Carvalho Chehab (28):
+  docs: networking: caif: convert to ReST
+  docs: networking: convert 6lowpan.txt to ReST
+  docs: networking: convert 6pack.txt to ReST
+  docs: networking: convert altera_tse.txt to ReST
+  docs: networking: convert arcnet-hardware.txt to ReST
+  docs: networking: convert arcnet.txt to ReST
+  docs: networking: convert atm.txt to ReST
+  docs: networking: convert ax25.txt to ReST
+  docs: networking: convert baycom.txt to ReST
+  docs: networking: convert bonding.txt to ReST
+  docs: networking: convert cdc_mbim.txt to ReST
+  docs: networking: convert cops.txt to ReST
+  docs: networking: convert cxacru.txt to ReST
+  docs: networking: convert dccp.txt to ReST
+  docs: networking: convert dctcp.txt to ReST
+  docs: networking: convert decnet.txt to ReST
+  docs: networking: convert defza.txt to ReST
+  docs: networking: convert dns_resolver.txt to ReST
+  docs: networking: convert driver.txt to ReST
+  docs: networking: convert eql.txt to ReST
+  docs: networking: convert fib_trie.txt to ReST
+  docs: networking: convert filter.txt to ReST
+  docs: networking: convert fore200e.txt to ReST
+  docs: networking: convert framerelay.txt to ReST
+  docs: networking: convert generic-hdlc.txt to ReST
+  docs: networking: convert generic_netlink.txt to ReST
+  docs: networking: convert gen_stats.txt to ReST
+  docs: networking: convert gtp.txt to ReST
+
+ .../networking/{6lowpan.txt => 6lowpan.rst}   |   29 +-
+ .../networking/{6pack.txt => 6pack.rst}       |   46 +-
+ .../{altera_tse.txt => altera_tse.rst}        |   87 +-
+ ...rcnet-hardware.txt => arcnet-hardware.rst} | 2169 +++++++++--------
+ .../networking/{arcnet.txt => arcnet.rst}     |  348 +--
+ Documentation/networking/{atm.txt => atm.rst} |    6 +
+ .../networking/{ax25.txt => ax25.rst}         |    6 +
+ .../networking/{baycom.txt => baycom.rst}     |  110 +-
+ .../networking/{bonding.txt => bonding.rst}   | 1273 +++++-----
+ Documentation/networking/caif/caif.rst        |    2 -
+ Documentation/networking/caif/index.rst       |   13 +
+ .../caif/{Linux-CAIF.txt => linux_caif.rst}   |   54 +-
+ Documentation/networking/caif/spi_porting.rst |  229 ++
+ Documentation/networking/caif/spi_porting.txt |  208 --
+ .../networking/{cdc_mbim.txt => cdc_mbim.rst} |   76 +-
+ Documentation/networking/cops.rst             |   80 +
+ Documentation/networking/cops.txt             |   63 -
+ .../networking/{cxacru.txt => cxacru.rst}     |   86 +-
+ .../networking/{dccp.txt => dccp.rst}         |   39 +-
+ .../networking/{dctcp.txt => dctcp.rst}       |   14 +-
+ .../networking/{decnet.txt => decnet.rst}     |   77 +-
+ .../networking/{defza.txt => defza.rst}       |    8 +-
+ .../{dns_resolver.txt => dns_resolver.rst}    |   52 +-
+ .../networking/{driver.txt => driver.rst}     |   22 +-
+ Documentation/networking/{eql.txt => eql.rst} |  445 ++--
+ .../networking/{fib_trie.txt => fib_trie.rst} |   16 +-
+ .../networking/{filter.txt => filter.rst}     |  850 ++++---
+ .../networking/{fore200e.txt => fore200e.rst} |    8 +-
+ .../{framerelay.txt => framerelay.rst}        |   21 +-
+ .../{gen_stats.txt => gen_stats.rst}          |   98 +-
+ .../{generic-hdlc.txt => generic-hdlc.rst}    |   86 +-
+ ...eneric_netlink.txt => generic_netlink.rst} |    6 +
+ Documentation/networking/{gtp.txt => gtp.rst} |   95 +-
+ Documentation/networking/index.rst            |   28 +
+ 34 files changed, 3610 insertions(+), 3140 deletions(-)
+ rename Documentation/networking/{6lowpan.txt => 6lowpan.rst} (64%)
+ rename Documentation/networking/{6pack.txt => 6pack.rst} (90%)
+ rename Documentation/networking/{altera_tse.txt => altera_tse.rst} (85%)
+ rename Documentation/networking/{arcnet-hardware.txt => arcnet-hardware.rst} (66%)
+ rename Documentation/networking/{arcnet.txt => arcnet.rst} (76%)
+ rename Documentation/networking/{atm.txt => atm.rst} (89%)
+ rename Documentation/networking/{ax25.txt => ax25.rst} (91%)
+ rename Documentation/networking/{baycom.txt => baycom.rst} (58%)
+ rename Documentation/networking/{bonding.txt => bonding.rst} (75%)
+ create mode 100644 Documentation/networking/caif/index.rst
+ rename Documentation/networking/caif/{Linux-CAIF.txt => linux_caif.rst} (90%)
+ create mode 100644 Documentation/networking/caif/spi_porting.rst
+ delete mode 100644 Documentation/networking/caif/spi_porting.txt
+ rename Documentation/networking/{cdc_mbim.txt => cdc_mbim.rst} (88%)
+ create mode 100644 Documentation/networking/cops.rst
+ delete mode 100644 Documentation/networking/cops.txt
+ rename Documentation/networking/{cxacru.txt => cxacru.rst} (66%)
+ rename Documentation/networking/{dccp.txt => dccp.rst} (94%)
+ rename Documentation/networking/{dctcp.txt => dctcp.rst} (89%)
+ rename Documentation/networking/{decnet.txt => decnet.rst} (87%)
+ rename Documentation/networking/{defza.txt => defza.rst} (91%)
+ rename Documentation/networking/{dns_resolver.txt => dns_resolver.rst} (89%)
+ rename Documentation/networking/{driver.txt => driver.rst} (85%)
+ rename Documentation/networking/{eql.txt => eql.rst} (62%)
+ rename Documentation/networking/{fib_trie.txt => fib_trie.rst} (96%)
+ rename Documentation/networking/{filter.txt => filter.rst} (77%)
+ rename Documentation/networking/{fore200e.txt => fore200e.rst} (94%)
+ rename Documentation/networking/{framerelay.txt => framerelay.rst} (93%)
+ rename Documentation/networking/{gen_stats.txt => gen_stats.rst} (60%)
+ rename Documentation/networking/{generic-hdlc.txt => generic-hdlc.rst} (75%)
+ rename Documentation/networking/{generic_netlink.txt => generic_netlink.rst} (64%)
+ rename Documentation/networking/{gtp.txt => gtp.rst} (79%)
+
+-- 
+2.24.1
+
+
