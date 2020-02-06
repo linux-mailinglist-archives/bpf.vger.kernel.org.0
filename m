@@ -2,154 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 511D8154B71
-	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2020 19:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41459154B80
+	for <lists+bpf@lfdr.de>; Thu,  6 Feb 2020 20:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727738AbgBFSs6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Feb 2020 13:48:58 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:39218 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726990AbgBFSs6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Feb 2020 13:48:58 -0500
-Received: by mail-oi1-f193.google.com with SMTP id z2so5657553oih.6;
-        Thu, 06 Feb 2020 10:48:57 -0800 (PST)
+        id S1727738AbgBFS77 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Feb 2020 13:59:59 -0500
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:36175 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726990AbgBFS76 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Feb 2020 13:59:58 -0500
+Received: by mail-pg1-f195.google.com with SMTP id k3so3202107pgc.3;
+        Thu, 06 Feb 2020 10:59:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mR5xQPBsCDP5sxHfwtSDwtS5A2L0vDKJavonjD70TJU=;
-        b=TpdJll+C56zKh7PPU2Z9PRemfGcJuaV+HxsePNF3CtrwuLKdhSXYQDlC07yj2SeT5Y
-         /ZkkIQLvDRXuCD9TtSrIyjM84nMTgERVzHKNmybz5n1TqKrLMthy3DaBKxrc+et3eAsj
-         7MxJgONtAOgXCDMVkXN8IS2q4ZA6GoQ0V52PgKKuQGpuv5BJUZF9uMQtTStC2hBknGvM
-         ykwW6ezm1EopaKRd21DULiLNHmdGstkC3z7G+pgwVCCB+glGuOgClZywrnlaSkPG1wOO
-         DFWlcZZ0uK9i5P32bcnJ2O96/caCL5gxaGqvm0bfSe4hlseq5zH2MntxdywGCZZeGzqa
-         a1Rg==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=Mhrdlreibd+nURVd1UhixUAEn1bwcDj1E4A6BAlfU7k=;
+        b=Zp4HvXgNtfDRNPdpAgoo9VTCViyYvfcui3vgQ7r23fpb9UfMPIixnbgscQ/qL/XB4I
+         cVSnH5HgxfR2zNOmg3NKWMnfG5yELprsPnFuDwgrnkgtcHvrchc5eKusL2t289i5yW8z
+         rfw3WJ7lJwClNzJjGJAykuU+c/OE7O/obmdRmrXGQkKGHnhQByNxo78P57GpjWOVxDBZ
+         9DLTPKqY8cMEpOJQwOa6am9HxDTWfmnG0yHxRvBDmtKGrrodNtuOE1amOyKdSOjBleZX
+         RALwiCSwTY1+487bR9GhSGADfEF9nrud5PaZRyURmX6gjeBUPd3+00YDVezVqextcXOW
+         6qwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mR5xQPBsCDP5sxHfwtSDwtS5A2L0vDKJavonjD70TJU=;
-        b=QrKLrVg24QbZtd3SSv/WWbuLk5psqx4xcGKMdoIZbtvkBnWx2OL2rcuEUO4Smje2wM
-         8Rc+IPrShP9xgqF5yNRjINI5i8SC0W5o0qghckI7tMvdMONnJ/316tJc9m1MpQVEvl4C
-         xO2UQ7o3e5zwDsKS193KMIM9RAa6pM+V7G5NSYq6x5xKut2G2XALWQdhJSUb7Apn724d
-         cSuaMzi2rYvTrO4OZanCG/iDAlJPREm0HtJoEcjkZrBhGyJLC7tVWwXven7ZkTSshmxw
-         +bLZHJzu7NwVj7AiUmnlxmCRu970s+Wk9bOBYKS8am8DnlI3XE+JS3M4kblnxSe2KvRL
-         rTvw==
-X-Gm-Message-State: APjAAAW1kEwhOahR4hRyNLhHGmGwLASFbod5AdZImg9UJh5GBaV2nIjx
-        qqm0oRV5uYuE+s/XjbkCZQQZpAVbVhDcro5S5RoZPGoJ
-X-Google-Smtp-Source: APXvYqy9+OJGPud4G5mhps2FWLlPdtJ11hMEBTCjZsUWCagAcqWJ1se//DAwDifae9MerLqI4eoOsE0MrFTMGC42UiA=
-X-Received: by 2002:a05:6808:994:: with SMTP id a20mr7863815oic.67.1581014937407;
- Thu, 06 Feb 2020 10:48:57 -0800 (PST)
-MIME-Version: 1.0
-References: <20200206083515.10334-1-forrest0579@gmail.com> <20200206083515.10334-2-forrest0579@gmail.com>
-In-Reply-To: <20200206083515.10334-2-forrest0579@gmail.com>
-From:   Petar Penkov <ppenkov.kernel@gmail.com>
-Date:   Thu, 6 Feb 2020 10:48:46 -0800
-Message-ID: <CAGdtWsQEvnOuZatftxmqp5iT_ac3jCjEV6q2gWaJRbP_TpDDcg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add sock ops get netns helpers
-To:     Lingpeng Chen <forrest0579@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=Mhrdlreibd+nURVd1UhixUAEn1bwcDj1E4A6BAlfU7k=;
+        b=sQsGTNDWz5l1hSY8oMvmi+V1XiS95yvjVCVFPBA4CCF8JbWlcdqRPrENyEeLZW/I1v
+         graJw+a/SXyed3XSysmRtu6mcQWpTstZlEmwX4RyrE2d3ExWLzI0cR21q2VsxIBvkPU4
+         oaY7YD3f88AmqArP0E9okqBva5Js6tt1UGmMoXdnUwEuAu7nqXVt88XuUPp2CQJQJgSR
+         3TPalF3fsqGlYmClmo8RbxPIm/fxx78btuwPDOi+RVPsADiP066V5e2v7wJN/o/dYTA7
+         M5WtaAyUcjFMSstx3VAMlPbrGxs/6aiezF5qkbTNHGIRpi6wdhCmdqmV11bprcxn4BMR
+         qkTg==
+X-Gm-Message-State: APjAAAWqyeOh7/0J5+xQz+lP8E/WgUhF7N0w08F0dFUbpixkPDmp4mHM
+        211hfaky3HhdzSJWrr7wpJoe+/cL
+X-Google-Smtp-Source: APXvYqwE73RqY+go9W8N/ydNBi/jQgF/XIB2qtVRmPyh/wnCgXuBQ9ieuy5KiIcHZdzeNBEabC5UJw==
+X-Received: by 2002:a63:d301:: with SMTP id b1mr5087594pgg.321.1581015598034;
+        Thu, 06 Feb 2020 10:59:58 -0800 (PST)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id y2sm132000pff.139.2020.02.06.10.59.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Feb 2020 10:59:57 -0800 (PST)
+Date:   Thu, 06 Feb 2020 10:59:49 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>
+Message-ID: <5e3c6225ba251_22ad2af2cbd0a5b41@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200206111652.694507-2-jakub@cloudflare.com>
+References: <20200206111652.694507-1-jakub@cloudflare.com>
+ <20200206111652.694507-2-jakub@cloudflare.com>
+Subject: RE: [PATCH bpf 1/3] bpf, sockmap: Don't sleep while holding RCU lock
+ on tear-down
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 6, 2020 at 12:36 AM Lingpeng Chen <forrest0579@gmail.com> wrote:
->
-> Currently 5-tuple(sip+dip+sport+dport+proto) can't identify a
-> uniq connection because there may be multi net namespace.
-> For example, there may be a chance that netns a and netns b all
-> listen on 127.0.0.1:8080 and the client with same port 40782
-> connect to them. Without netns number, sock ops program
-> can't distinguish them.
-> Using bpf_sock_ops_get_netns helpers to get current connection
-> netns number to distinguish connections.
->
-> Signed-off-by: Lingpeng Chen <forrest0579@gmail.com>
+Jakub Sitnicki wrote:
+> rcu_read_lock is needed to protect access to psock inside sock_map_unref
+> when tearing down the map. However, we can't afford to sleep in lock_sock
+> while in RCU read-side critical section. Grab the RCU lock only after we
+> have locked the socket.
+> 
+> This fixes RCU warnings triggerable on a VM with 1 vCPU when free'ing a
+> sockmap/sockhash that contains at least one socket:
+> 
+> | =============================
+> | WARNING: suspicious RCU usage
+> | 5.5.0-04005-g8fc91b972b73 #450 Not tainted
+> | -----------------------------
+> | include/linux/rcupdate.h:272 Illegal context switch in RCU read-side critical section!
+> |
+> | other info that might help us debug this:
+> |
+> |
+> | rcu_scheduler_active = 2, debug_locks = 1
+> | 4 locks held by kworker/0:1/62:
+> |  #0: ffff88813b019748 ((wq_completion)events){+.+.}, at: process_one_work+0x1d7/0x5e0
+> |  #1: ffffc900000abe50 ((work_completion)(&map->work)){+.+.}, at: process_one_work+0x1d7/0x5e0
+> |  #2: ffffffff82065d20 (rcu_read_lock){....}, at: sock_map_free+0x5/0x170
+> |  #3: ffff8881368c5df8 (&stab->lock){+...}, at: sock_map_free+0x64/0x170
+> |
+> | stack backtrace:
+> | CPU: 0 PID: 62 Comm: kworker/0:1 Not tainted 5.5.0-04005-g8fc91b972b73 #450
+> | Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
+> | Workqueue: events bpf_map_free_deferred
+> | Call Trace:
+> |  dump_stack+0x71/0xa0
+> |  ___might_sleep+0x105/0x190
+> |  lock_sock_nested+0x28/0x90
+> |  sock_map_free+0x95/0x170
+> |  bpf_map_free_deferred+0x58/0x80
+> |  process_one_work+0x260/0x5e0
+> |  worker_thread+0x4d/0x3e0
+> |  kthread+0x108/0x140
+> |  ? process_one_work+0x5e0/0x5e0
+> |  ? kthread_park+0x90/0x90
+> |  ret_from_fork+0x3a/0x50
+> 
+> | =============================
+> | WARNING: suspicious RCU usage
+> | 5.5.0-04005-g8fc91b972b73-dirty #452 Not tainted
+> | -----------------------------
+> | include/linux/rcupdate.h:272 Illegal context switch in RCU read-side critical section!
+> |
+> | other info that might help us debug this:
+> |
+> |
+> | rcu_scheduler_active = 2, debug_locks = 1
+> | 4 locks held by kworker/0:1/62:
+> |  #0: ffff88813b019748 ((wq_completion)events){+.+.}, at: process_one_work+0x1d7/0x5e0
+> |  #1: ffffc900000abe50 ((work_completion)(&map->work)){+.+.}, at: process_one_work+0x1d7/0x5e0
+> |  #2: ffffffff82065d20 (rcu_read_lock){....}, at: sock_hash_free+0x5/0x1d0
+> |  #3: ffff888139966e00 (&htab->buckets[i].lock){+...}, at: sock_hash_free+0x92/0x1d0
+> |
+> | stack backtrace:
+> | CPU: 0 PID: 62 Comm: kworker/0:1 Not tainted 5.5.0-04005-g8fc91b972b73-dirty #452
+> | Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
+> | Workqueue: events bpf_map_free_deferred
+> | Call Trace:
+> |  dump_stack+0x71/0xa0
+> |  ___might_sleep+0x105/0x190
+> |  lock_sock_nested+0x28/0x90
+> |  sock_hash_free+0xec/0x1d0
+> |  bpf_map_free_deferred+0x58/0x80
+> |  process_one_work+0x260/0x5e0
+> |  worker_thread+0x4d/0x3e0
+> |  kthread+0x108/0x140
+> |  ? process_one_work+0x5e0/0x5e0
+> |  ? kthread_park+0x90/0x90
+> |  ret_from_fork+0x3a/0x50
+> 
+> Fixes: 7e81a3530206 ("bpf: Sockmap, ensure sock lock held during tear down")
+> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 > ---
->  include/uapi/linux/bpf.h |  8 +++++++-
->  net/core/filter.c        | 18 ++++++++++++++++++
->  2 files changed, 25 insertions(+), 1 deletion(-)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index f1d74a2bd234..b15a55051232 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -2892,6 +2892,11 @@ union bpf_attr {
->   *             Obtain the 64bit jiffies
->   *     Return
->   *             The 64 bit jiffies
-> + * u32 bpf_sock_ops_get_netns(struct bpf_sock_ops *bpf_socket)
-Should this return u64 instead? Also, would it make sense here to add
-a 'u64 flags' field to allow some extensibility of this helper
-function, consistent with some other helpers. Initially, we can reject
-any flags with:
-if (unlikely(flags))
-        return -EINVAL;
+>  net/core/sock_map.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
-Last, I was hoping we could add a regression test for this helper.
+Thanks! Fixes for fixes agh.
 
-Thanks,
-Petar
-
-> + *  Description
-> + *      Obtain netns id of sock
-> + * Return
-> + *      The current netns inum
->   */
->  #define __BPF_FUNC_MAPPER(FN)          \
->         FN(unspec),                     \
-> @@ -3012,7 +3017,8 @@ union bpf_attr {
->         FN(probe_read_kernel_str),      \
->         FN(tcp_send_ack),               \
->         FN(send_signal_thread),         \
-> -       FN(jiffies64),
-> +       FN(jiffies64),          \
-> +       FN(sock_ops_get_netns),
->
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
->   * function eBPF program intends to call
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 792e3744b915..b7f33f20e8fb 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -4421,6 +4421,22 @@ static const struct bpf_func_proto bpf_sock_ops_cb_flags_set_proto = {
->         .arg2_type      = ARG_ANYTHING,
->  };
->
-> +BPF_CALL_1(bpf_sock_ops_get_netns, struct bpf_sock_ops_kern *, bpf_sock)
-> +{
-> +       struct sock *sk = bpf_sock->sk;
-> +
-> +       if (!IS_ENABLED(CONFIG_NET_NS))
-> +               return 0;
-> +       return sk->sk_net.net->ns.inum;
-> +}
-> +
-> +static const struct bpf_func_proto bpf_sock_ops_get_netns_proto = {
-> +       .func           = bpf_sock_ops_get_netns,
-> +       .gpl_only       = false,
-> +       .ret_type       = RET_INTEGER,
-> +       .arg1_type      = ARG_PTR_TO_CTX,
-> +};
-> +
->  const struct ipv6_bpf_stub *ipv6_bpf_stub __read_mostly;
->  EXPORT_SYMBOL_GPL(ipv6_bpf_stub);
->
-> @@ -6218,6 +6234,8 @@ sock_ops_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->         case BPF_FUNC_tcp_sock:
->                 return &bpf_tcp_sock_proto;
->  #endif /* CONFIG_INET */
-> +       case BPF_FUNC_sock_ops_get_netns:
-> +               return &bpf_sock_ops_get_netns_proto;
->         default:
->                 return bpf_base_func_proto(func_id);
->         }
-> --
-> 2.17.1
->
+Acked-by: John Fastabend <john.fastabend@gmail.com>
