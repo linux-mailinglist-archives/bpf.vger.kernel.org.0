@@ -2,68 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CE9155E54
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2020 19:43:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2656C155EAA
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2020 20:39:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726951AbgBGSnu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Feb 2020 13:43:50 -0500
-Received: from mail-lf1-f48.google.com ([209.85.167.48]:36133 "EHLO
-        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726900AbgBGSnt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Feb 2020 13:43:49 -0500
-Received: by mail-lf1-f48.google.com with SMTP id f24so44994lfh.3
-        for <bpf@vger.kernel.org>; Fri, 07 Feb 2020 10:43:48 -0800 (PST)
+        id S1726988AbgBGTjr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Feb 2020 14:39:47 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:34045 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727031AbgBGTjq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Feb 2020 14:39:46 -0500
+Received: by mail-lj1-f195.google.com with SMTP id x7so558513ljc.1
+        for <bpf@vger.kernel.org>; Fri, 07 Feb 2020 11:39:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=fYvCfKyPiCf/hdVwVs97IyhXrIhnGUFJXaGUhEhqUGk=;
-        b=Gj3dWtcRbk//yY3rkE1aQYw3vqJBwiSFfmKHtowe2p/tvnwfPQjUm6daZQnVYufIUp
-         f9Zh9qyYOGyq16IWdLXHPdt8+g4YcQgbhdP96GKRyRNiTDzmg5zw+xwhn7sBuLF68LI6
-         uoGqQytHRKb2Zo4OL5HLTR1heG3AD7Ui694Txkb0rvOXKjDzyMvd5Ua1fTN5aaSqqoiY
-         /B+ukJ6LAky2fuYqYNgfsyz9RV+wsxwnbpJ/t5xnJyD4HnhBeaaMPmkFaDoRaJD+47j8
-         IA9DaPata6e5qEj58JDqCt2Y4M/WnyZF4P5hEIBW205vLbuSFZVfmYsUZ2oLRVIdKEKZ
-         gMkw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HIvc4xuHKc+POzMOKNgXq3OMyec9mjR3k3fUdELymW8=;
+        b=WuHJJZkXMsh43TIeJV7vGA9qAnewgEO/vweVAm9U/IwYfD1BjD7Wh2J0adotOTCPJG
+         bx2fByYeZKAWFgipAeqolffyKlrrtODjC87tqPBIw6UNNh4LSj0Qs9QYnFg7I8+SGPUR
+         0gV+/r57KHSZ05tK78jw8ASN3ILsBwGBL9hJ4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=fYvCfKyPiCf/hdVwVs97IyhXrIhnGUFJXaGUhEhqUGk=;
-        b=Htfx8qHVm8g1mPWnFdYU7Yn1n9MrzTUoXAhZ35ibltLggqH29TDpGXXU3tuaCB8a/G
-         WbcPuV4arbHb2Y1lBjNMPwbpV2vpYBXUKqIUHZOiOwdK+eAKvXFcNWyqB3v/HpdHPvtr
-         FskNmVBgi1+crLVmwoUnkqcqlYi36dL3qVYZ7hMBlbs6aYoWUsVm+OAZUnNmDzsGwD2c
-         BmF7es2hOTfphPk6mEC6/XRnCeTSqyyUifzF99uWp0Y15QjdVM2pqIUUcNTy/TmDczd8
-         GaOQYpVQPrWxqjfmSAWoJ2EC8jJQQM/E1u/OYyBgtOOLSAA53fUlKmnHbvEpFHOZLjbG
-         OR+g==
-X-Gm-Message-State: APjAAAUkCtLe4L1wo/DxDhu+mPZGT4mN0UAQhqSB8iZXkXmfoMwglh60
-        es0cOEfltzzmyf723d/TmO04EGvBB7dJemL7yu7jo82o
-X-Google-Smtp-Source: APXvYqxFAbBBSPwA25nNNoyWEwGAkkAQ8TlWZMNFfpdjUFnr9V/gjjBI+qQ6TFgMB9EhJgtzWr2o/Ss2gzpNHSzYehg=
-X-Received: by 2002:a19:c3ce:: with SMTP id t197mr140043lff.174.1581101027245;
- Fri, 07 Feb 2020 10:43:47 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HIvc4xuHKc+POzMOKNgXq3OMyec9mjR3k3fUdELymW8=;
+        b=cTrJP8KJMZV+hln+hVCOAK12evq394pi7oVsD1WqKclkA2wK040XJXh4xNEjjNNqZr
+         cGDLOx646lKlGF7uyP1mzk0xddwdYj69p76uAk8l13dC3ifLx/yUwBKncC2VfhxZvY3P
+         J7Uh0y3XCJpoc828ugJ7qgzGsu5gM3RrgVm2SYRCbuyWRKo7vrfONB7bd62t1qJUslpa
+         iJdhDmvX6dRjMKtbilhSQsVH5io353s/FHB/H3Vnpx1Lq/YBIEd6WWtbLVmtbF1kdLHt
+         1z/CSTTvjMSKtrRnxD3AguZSt1abjheyfssCpQtRXIRcp+LK2XKmpNUhu3sXSdMlUvzV
+         p4Lw==
+X-Gm-Message-State: APjAAAW/muQl2S7Es1EhSo7iAb1rvGsx921LA0dgcszh4VgWR5A0rDLb
+        rz1SsUyRHWvsotqdHwrvmE76XSDXtdVNvA==
+X-Google-Smtp-Source: APXvYqxoUVITtlLuCXfynT0Pr5a+y5Oz4CB6hZW2gv5AzSStouTDanVRdTEHXoU4RgyXZGpjrTVIVQ==
+X-Received: by 2002:a2e:9942:: with SMTP id r2mr464359ljj.182.1581104381797;
+        Fri, 07 Feb 2020 11:39:41 -0800 (PST)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id m24sm2092269ljb.81.2020.02.07.11.39.40
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 Feb 2020 11:39:40 -0800 (PST)
+Received: by mail-lf1-f52.google.com with SMTP id t23so130259lfk.6
+        for <bpf@vger.kernel.org>; Fri, 07 Feb 2020 11:39:40 -0800 (PST)
+X-Received: by 2002:a19:c82:: with SMTP id 124mr231742lfm.152.1581104379964;
+ Fri, 07 Feb 2020 11:39:39 -0800 (PST)
 MIME-Version: 1.0
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 7 Feb 2020 10:43:36 -0800
-Message-ID: <CAADnVQL7SiR-4HZnia+NiDFPW_JjhwaxrvgfPZBKQ91oVjcTwg@mail.gmail.com>
-Subject: LSF/MM/BPF 2020 reminder
-To:     bpf <bpf@vger.kernel.org>
+References: <20200207081810.3918919-1-kafai@fb.com> <CAHk-=wieADOQcYkehVN7meevnd3jZrq06NkmyH9GGR==2rEpuQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wieADOQcYkehVN7meevnd3jZrq06NkmyH9GGR==2rEpuQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 7 Feb 2020 11:39:24 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjbhawNieeiEig4LnPVRTRPgY8xag7NuAKuM9NKXCTLeQ@mail.gmail.com>
+Message-ID: <CAHk-=wjbhawNieeiEig4LnPVRTRPgY8xag7NuAKuM9NKXCTLeQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Improve bucket_log calculation logic
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, kernel-team@fb.com,
+        Linux-Sparse <linux-sparse@vger.kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Netdev <netdev@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi All,
+On Fri, Feb 7, 2020 at 10:07 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> I do think this is a good test-case for sparse. Luc, have you looked
+> at what it is that then makes sparse use *so* much memory for this one
+> line?
 
-A reminder that deadline to request attendance and
-submit topic proposal for this year event in Palm Springs, CA
-is Feb 15th.
+Looking at the profile, it's doing a lot of "copy_expression()".
 
-Please fill in the attendee request form:
-https://forms.gle/voWi1j9kDs13Lyqf9
+Which comes from inlining.
 
-The proposals should be sent to both
-bpf@vger.kernel.org
-lsf-pc@lists.linux-foundation.org
+I think the problem may be that with that macro expansion from hell we
+end up with 28968 copies of cpumask_weight(), and sparse will inline
+every one of them into the parse tree - even though basically none of
+them are _used_.
 
-Please tag your email subject with [LSF/MM/BPF TOPIC] as described in:
-https://lore.kernel.org/linux-fsdevel/20191122172502.vffyfxlqejthjib6@macbook-pro-91.dhcp.thefacebook.com/
+In fact, it's worse than that: we end up having a few rounds of
+inlining thanks to
 
-Thanks!
+static inline unsigned int cpumask_weight(const struct cpumask *srcp)
+{
+        return bitmap_weight(cpumask_bits(srcp), nr_cpumask_bits);
+}
+
+static __always_inline int bitmap_weight(const unsigned long *src,
+unsigned int nbits)
+{
+        if (small_const_nbits(nbits))
+                return hweight_long(*src & BITMAP_LAST_WORD_MASK(nbits));
+        return __bitmap_weight(src, nbits);
+}
+
+static __always_inline unsigned long hweight_long(unsigned long w)
+{
+        return sizeof(w) == 4 ? hweight32(w) : hweight64(w);
+}
+
+where those hweight*() things aren't simple either, they end up doing
+
+  #define hweight32(w) (__builtin_constant_p(w) ? __const_hweight32(w)
+: __arch_hweight32(w))
+  #define hweight64(w) (__builtin_constant_p(w) ? __const_hweight64(w)
+: __arch_hweight64(w))
+
+where the __const_hweight*() in turn are more expansions of a macro
+with several levels in order to turn it all into a constant value.
+
+So we may have "only" 28968 calls to cpumask_weight(), but it results
+in millions of expressions being expanded.
+
+If we did some basic simplification of constant ops before inlining,
+that would likely help a lot.
+
+But currently sparse does inline function expansion at type evaluation
+time - so long before it does any simplification of the tree at all.
+
+So that explains why sparse happens to react _so_ badly to this thing.
+A real compiler would do inlining much later.
+
+Inlining that early is partly because originally one of the design
+ideas in sparse was to make inline functions act basically as
+templates, so they'd react to the types of the context. But it really
+bites us in the ass here.
+
+Luc, any ideas? Yes, this is solvable in the kernel, but it does show
+that sparse simply does a _lot_ of unnecessary work.
+
+               Linus
