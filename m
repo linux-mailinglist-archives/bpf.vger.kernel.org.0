@@ -2,88 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 60E9D155BFE
-	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2020 17:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC8E155D59
+	for <lists+bpf@lfdr.de>; Fri,  7 Feb 2020 19:07:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbgBGQlL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Feb 2020 11:41:11 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:43820 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727009AbgBGQlK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Feb 2020 11:41:10 -0500
-Received: by mail-pf1-f195.google.com with SMTP id s1so19982pfh.10
-        for <bpf@vger.kernel.org>; Fri, 07 Feb 2020 08:41:09 -0800 (PST)
+        id S1727123AbgBGSHx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Feb 2020 13:07:53 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:36928 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726956AbgBGSHw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Feb 2020 13:07:52 -0500
+Received: by mail-lj1-f195.google.com with SMTP id v17so267478ljg.4
+        for <bpf@vger.kernel.org>; Fri, 07 Feb 2020 10:07:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=ZRvofd/DMmPC/OMPUBWDllNF6s2U7sb8/8XSEwa6JXA=;
-        b=XJJ0JACTq1ESsC/yaDWLvU3gVPFoTG3CenrcKirPe6wlEk0ynPMYkyXBWbAk78O3JF
-         K1QJZ3Xz00k89ehDzCyWGqmO2OwjKOtJFrZhLkqlLmLixrzh5t6ArxRcAan7Ora2b+ln
-         Iy0orv/hMpPxWYYi4HK5i18wBzl1Ua4oUeA/I0/w2Cc+YDVYIRbTz/tAIxebNJ+dAmLY
-         83W9n6n/Sl/RzNGcfu6PTAccdNZmbKhSMrLJdWqXa2+F2GuLiV8AbLwxe0gvBtnYE8bK
-         qyeBJbRaWC/CW4+i6BXhs32Jin4GZFfW7/0NcrAl/BdkVWQjQhPprzurnA+ISx7WL67m
-         +XWw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ii4YAfaJ6LUAXS+i9+EEBAEXwOhLwhmJIesgnXLnmAc=;
+        b=A8seTsjAN2EA8ZSrrz51PSagLWek/hwmR0O7d+YjGOF+PvcR+fBXd3sScmJqYpxswW
+         JwGl0gcNajX7CahzEl279rJ3HyLZ1EIQmQwVK8gLcrnilFUz/e/rQ8atjgrUgIUdB1mC
+         efkR7Ne33pYjbDHvwwqRlu8vrqSOlqu2tnYeA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=ZRvofd/DMmPC/OMPUBWDllNF6s2U7sb8/8XSEwa6JXA=;
-        b=KMn9XrrMrnqQIk/F22c8m8KXI85sL1VasihVN3M9/8G+tYCgqsMvx/IETY7ttcJJO+
-         vheEprm7Rz1f+Zp+rXGeSJ7MqMexJCiHrz3YQ+6QNqVvZWxA29qyyAdy+HUuHL/vzrpC
-         FHgYuFI6rQjgHA8HLVUYm44KEVwOH7s1VXSFpaxDsNSxzSnq/x2k3LWMqgIwLmE3FI0L
-         BiDp7NXHsQbt0yJ+M9VpXvYPNUKtpq+tF0/ttuXD8y3sysUaTQF2WQQe1fCoQH70hhbc
-         yBeTj1Nj7YljFhqMjtR0TOvaNq0KoVjvfteNseeENY9E8xxS46xvi5S+8R/9pkG3M68o
-         tDSQ==
-X-Gm-Message-State: APjAAAXsswoDd+/+fxiMtfeJRuqIltp4iTorMiBHhIaxqfQkU2y8yqFY
-        1YqqXU5M9y5CuDUPV4keOeTMxg==
-X-Google-Smtp-Source: APXvYqw5NRhjkdqGxSWnp7ivRI4G6zvKdAFqLBmtLYjJ/6x14Gv5/UBFBeC13W6UvGzCVXli+vxtJA==
-X-Received: by 2002:a63:8349:: with SMTP id h70mr116564pge.396.1581093669103;
-        Fri, 07 Feb 2020 08:41:09 -0800 (PST)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id t19sm3524823pgg.23.2020.02.07.08.41.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Feb 2020 08:41:08 -0800 (PST)
-Date:   Fri, 7 Feb 2020 08:41:07 -0800
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     lsf-pc@lists.linux-foundation.org
-Cc:     bpf@vger.kernel.org
-Subject: [LSF/MM/BPF ATTEND] BPF track
-Message-ID: <20200207164107.GA1400227@mini-arch>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ii4YAfaJ6LUAXS+i9+EEBAEXwOhLwhmJIesgnXLnmAc=;
+        b=JJm2Tf5+WhPwio6z4MZ+7OvQC91rGBB2i6wpmwx/RhoJEYgA8PicZ7i4SYfGRuPNFc
+         Ri/1yTqsB8efSveG4QKsliHaFZfP9rrfBmY1miluGxYZ8leC0oSQj4hhPtEPMK2dk7WK
+         avlL90tLVseJfrmMG76N1e9FvHN27Ikm7rQioXaYh7xlq3D4RnSDq89HSb0Ig+D/nKpL
+         fdZm/+DRqArudx3C3lvGvWab8sFvzVTd0rpXj8Mrlyoc62k/TjWIG/eItEs1Q6e0Mnsx
+         tewpHIwafMqJr7mZWLbfhUfKgcsfbEEnoIN3biVzCm0q9bAE6pKpJcbn7WraK1mczNnl
+         icxw==
+X-Gm-Message-State: APjAAAWsRnoa97/UUlooWZi4UPXVTtDfYYMA+vG46qivNb3tnve2wfem
+        O0c90vmFQUIjueGP/QO/fVMSFpsJGrJUQA==
+X-Google-Smtp-Source: APXvYqyJz4LY2y2KjsqYo18iwClvNPQw6IqS96x/mRbEFoO1g7/s4QVZyKF2K3r99BTDBr1Ts4CIsA==
+X-Received: by 2002:a2e:b0e3:: with SMTP id h3mr287054ljl.56.1581098870218;
+        Fri, 07 Feb 2020 10:07:50 -0800 (PST)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
+        by smtp.gmail.com with ESMTPSA id s15sm1585480ljs.58.2020.02.07.10.07.48
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 Feb 2020 10:07:49 -0800 (PST)
+Received: by mail-lj1-f178.google.com with SMTP id d10so239715ljl.9
+        for <bpf@vger.kernel.org>; Fri, 07 Feb 2020 10:07:48 -0800 (PST)
+X-Received: by 2002:a2e:3a13:: with SMTP id h19mr303001lja.16.1581098868657;
+ Fri, 07 Feb 2020 10:07:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.12.2 (2019-09-21)
+References: <20200207081810.3918919-1-kafai@fb.com>
+In-Reply-To: <20200207081810.3918919-1-kafai@fb.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 7 Feb 2020 10:07:32 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wieADOQcYkehVN7meevnd3jZrq06NkmyH9GGR==2rEpuQ@mail.gmail.com>
+Message-ID: <CAHk-=wieADOQcYkehVN7meevnd3jZrq06NkmyH9GGR==2rEpuQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Improve bucket_log calculation logic
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, kernel-team@fb.com,
+        Linux-Sparse <linux-sparse@vger.kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Netdev <netdev@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Fri, Feb 7, 2020 at 12:18 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> It was reported that the max_t, ilog2, and roundup_pow_of_two macros have
+> exponential effects on the number of states in the sparse checker.
 
-I'd like to participate in the BPF track of LSF/MM/BPF Summit 2020. I
-work on BPF stuff at Google, I recently contributed the following
-features to the upstream BPF subsystem:
-* {set,get}sockopt hooks & BPF_SOCK_OPS_RTT_CB callback
-* Optional socket storage cloning on accept (BPF_F_CLONE)
-* Improvements to flow dissector BPF hook to make it work in driver
-  (non-skb) context
-* Various improvements to selftests / BPF_PROG_TEST_RUN framework
+Patch looks good, but I'd like to point out that it's not just sparse.
 
-Topics I'd like to discuss:
-* BTF/BPF meta-information: how to append enough info to BPF/BTF to
-  recover build timestamp + commit sha1
-* Global mode for cgroup storage as a way to have common/persistent
-  per-cgroup scratch buffer
-* Unit-testing and uBPF; uBPF integration with libbpf
-* Average prog runtime; discuss any future plans to extend it to return a
-  distribution, not average (with BPF?)
+You can see it with a simple
 
-I don't think my topics deserve a dedicated 30-minutes session. I'm also
-interested in general BPF direction and how we can apply future
-potential features here at Google.
+    make net/core/bpf_sk_storage.i
+    grep 'smap->bucket_log = ' net/core/bpf_sk_storage.i | wc
 
-In particular, some of the proposed talks that are of particular
-interest:
-* BPF logging
-* BPF unit testing
+and see the end result:
+
+      1  365071 2686974
+
+That's one line (the assignment line) that is 2,686,974 characters in length.
+
+Now, sparse does happen to react particularly badly to that (I didn't
+look to why, but I suspect it's just that evaluating all the types
+that don't actually ever end up getting used ends up being much more
+expensive than it should be), but I bet it's not good for gcc either.
+
+I do think this is a good test-case for sparse. Luc, have you looked
+at what it is that then makes sparse use *so* much memory for this one
+line?
+
+             Linus
