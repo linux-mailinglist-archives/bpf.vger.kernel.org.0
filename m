@@ -2,102 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4477115653A
-	for <lists+bpf@lfdr.de>; Sat,  8 Feb 2020 16:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4105715686C
+	for <lists+bpf@lfdr.de>; Sun,  9 Feb 2020 03:41:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727581AbgBHPnO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sat, 8 Feb 2020 10:43:14 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:42877 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727591AbgBHPnO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 8 Feb 2020 10:43:14 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-165-7bPdM3CtNmWEZytLkHEdMQ-1; Sat, 08 Feb 2020 10:43:10 -0500
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CC7DA1800D42;
-        Sat,  8 Feb 2020 15:43:08 +0000 (UTC)
-Received: from krava.redhat.com (ovpn-204-79.brq.redhat.com [10.40.204.79])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F3D325C28F;
-        Sat,  8 Feb 2020 15:43:05 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@redhat.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Subject: [PATCH 14/14] bpf: Sort bpf kallsyms symbols
-Date:   Sat,  8 Feb 2020 16:42:09 +0100
-Message-Id: <20200208154209.1797988-15-jolsa@kernel.org>
-In-Reply-To: <20200208154209.1797988-1-jolsa@kernel.org>
-References: <20200208154209.1797988-1-jolsa@kernel.org>
+        id S1727542AbgBIClV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 8 Feb 2020 21:41:21 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:40785 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727532AbgBIClV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 8 Feb 2020 21:41:21 -0500
+Received: by mail-lj1-f196.google.com with SMTP id n18so3307242ljo.7;
+        Sat, 08 Feb 2020 18:41:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=fqOT00vdEoOkzm2DYFL5BApyU6+3BEwc5eg/GKP0xe8=;
+        b=kaBdIIlUA4uJhUOWXTYmnwrA2h9g8gkIYX39KdE24UZwt45XY/BXxGgSv/nLQhkCOi
+         mKb1+xM4voE1rhH5soB22SNp1ZvaZH8kQ2kEKMRnUY4ebgP62V1/O4F5LeDsloJuBAid
+         d2ZNfsoajmHwtYoSAxlwbtSyJwFNDkD0IWiiTFTh001Ezkqfn8RzlA//O/gA7OIiG3gJ
+         dpoICIQriiiVGphkPSR11IYs8igrE5TUVVpa1FmeSM4xTkunwdap41Wb2BPA3XwJ/bHg
+         7gQSB0aU7x+Q4sb/HSRiGR3lCMAjmoCl29irN97YQwNb+EACtlKTwbl/ex4xDkjLzUgB
+         gVRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fqOT00vdEoOkzm2DYFL5BApyU6+3BEwc5eg/GKP0xe8=;
+        b=rKRmLt9WqkjbwjRJIAU/SoU5GAXBz9yHSJFyLU7QmaGgn31QCRk4oUCW4tOueO55nN
+         InpYlpSX33njPDArkWNhjbThrvnOZ32jAHWBZARyO2IU09NwZYAw+cnWewAD9iBWr9/F
+         0aQ2Zb0HbdluFnQIJ5Ao21s6CY2PxLHfdqJkbyMXvvoEPXRMZ2jx2a+KyWaEkVZQKvjO
+         x2XiSj0O3Lgd9T25zFbvSTUY+2SL/vCMpCmUGYsaa8g3anvIZh1pG0XEaVQJgxf56eC4
+         90EmkJYJs99Fm3B6inmBltSbiD9ug3Pss+xnGJy70QIISoQdAOqQBj79tS6eONjSCd8Y
+         B8nw==
+X-Gm-Message-State: APjAAAV75F+cqUbR1HC6USYf2EyHA8l9ROnJtsrwhEH8JkHrJD2QlMNd
+        NHGIDvyPzLmSh8puXgyI2vbqmoGOTdPqBBbxFVk=
+X-Google-Smtp-Source: APXvYqz+2qLSlhgrE7fPJOV32SolzWDdj3B1+XwHOnUlUQrjWX8UJk/1LahfZ4qKEJJAZIZ4AfA9MGUMrtTC3DtFTfM=
+X-Received: by 2002:a2e:8145:: with SMTP id t5mr4137531ljg.144.1581216078811;
+ Sat, 08 Feb 2020 18:41:18 -0800 (PST)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-MC-Unique: 7bPdM3CtNmWEZytLkHEdMQ-1
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+References: <20200206111652.694507-1-jakub@cloudflare.com> <20200206111652.694507-4-jakub@cloudflare.com>
+In-Reply-To: <20200206111652.694507-4-jakub@cloudflare.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sat, 8 Feb 2020 18:41:07 -0800
+Message-ID: <CAADnVQJU4RtAAMH0pL9AQSXDgHGcXOqm15EKZw10c=r-f=bfuw@mail.gmail.com>
+Subject: Re: [PATCH bpf 3/3] selftests/bpf: Test freeing sockmap/sockhash with
+ a socket in it
+To:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently we don't sort bpf_kallsyms and display symbols
-in proc/kallsyms as they come in via __bpf_ksym_add.
+On Thu, Feb 6, 2020 at 3:28 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>
+> Commit 7e81a3530206 ("bpf: Sockmap, ensure sock lock held during tear
+> down") introduced sleeping issues inside RCU critical sections and while
+> holding a spinlock on sockmap/sockhash tear-down. There has to be at leas=
+t
+> one socket in the map for the problem to surface.
+>
+> This adds a test that triggers the warnings for broken locking rules. Not=
+ a
+> fix per se, but rather tooling to verify the accompanying fixes. Run on a
+> VM with 1 vCPU to reproduce the warnings.
+>
+> Fixes: 7e81a3530206 ("bpf: Sockmap, ensure sock lock held during tear dow=
+n")
+> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 
-Using the latch tree to get the next bpf_ksym object
-and insert the new symbol ahead of it.
+selftests/bpf no longer builds for me.
+make
+  BINARY   test_maps
+  TEST-OBJ [test_progs] sockmap_basic.test.o
+/data/users/ast/net/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c:
+In function =E2=80=98connected_socket_v4=E2=80=99:
+/data/users/ast/net/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c:=
+20:11:
+error: =E2=80=98TCP_REPAIR_ON=E2=80=99 undeclared (first use in this functi=
+on); did
+you mean =E2=80=98TCP_REPAIR=E2=80=99?
+   20 |  repair =3D TCP_REPAIR_ON;
+      |           ^~~~~~~~~~~~~
+      |           TCP_REPAIR
+/data/users/ast/net/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c:=
+20:11:
+note: each undeclared identifier is reported only once for each
+function it appears in
+/data/users/ast/net/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c:=
+29:11:
+error: =E2=80=98TCP_REPAIR_OFF_NO_WP=E2=80=99 undeclared (first use in this=
+ function);
+did you mean =E2=80=98TCP_REPAIR_OPTIONS=E2=80=99?
+   29 |  repair =3D TCP_REPAIR_OFF_NO_WP;
+      |           ^~~~~~~~~~~~~~~~~~~~
+      |           TCP_REPAIR_OPTIONS
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- kernel/bpf/core.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 50af5dcf7ff9..c63ff34b2128 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -651,9 +651,30 @@ static struct latch_tree_root bpf_progs_tree __cacheline_aligned;
- 
- static void __bpf_ksym_add(struct bpf_ksym *ksym)
- {
-+	struct list_head *head = &bpf_kallsyms;
-+
- 	WARN_ON_ONCE(!list_empty(&ksym->lnode));
--	list_add_tail_rcu(&ksym->lnode, &bpf_kallsyms);
- 	latch_tree_insert(&ksym->tnode, &bpf_kallsyms_tree, &bpf_kallsyms_tree_ops);
-+
-+	/*
-+	 * Add ksym into bpf_kallsyms in ordered position,
-+	 * which is prepared for us by latch tree addition.
-+	 *
-+	 * Find out the next symbol and insert ksym right
-+	 * ahead of it. If ksym is the last one, just tail
-+	 * add to the bpf_kallsyms.
-+	 */
-+	if (!list_empty(&bpf_kallsyms)) {
-+		struct rb_node *next = rb_next(&ksym->tnode.node[0]);
-+
-+		if (next) {
-+			struct bpf_ksym *ptr;
-+
-+			ptr = container_of(next, struct bpf_ksym, tnode.node[0]);
-+			head = &ptr->lnode;
-+		}
-+	}
-+	list_add_tail_rcu(&ksym->lnode, head);
- }
- 
- void bpf_ksym_add(struct bpf_ksym *ksym)
--- 
-2.24.1
-
+Clearly /usr/include/linux/tcp.h is too old.
+Suggestions?
