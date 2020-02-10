@@ -2,55 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD9A157244
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2020 10:59:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF941573B5
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2020 12:52:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726796AbgBJJ7z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Feb 2020 04:59:55 -0500
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:44421 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726451AbgBJJ7y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Feb 2020 04:59:54 -0500
-Received: by mail-wr1-f68.google.com with SMTP id m16so6746930wrx.11
-        for <bpf@vger.kernel.org>; Mon, 10 Feb 2020 01:59:52 -0800 (PST)
+        id S1727429AbgBJLwl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Feb 2020 06:52:41 -0500
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:38051 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727029AbgBJLwk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Feb 2020 06:52:40 -0500
+Received: by mail-wm1-f67.google.com with SMTP id a9so10247759wmj.3
+        for <bpf@vger.kernel.org>; Mon, 10 Feb 2020 03:52:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=references:user-agent:from:to:cc:subject:in-reply-to:date
          :message-id:mime-version:content-transfer-encoding;
-        bh=kfdFxRlP+TMK7CgIbUcstIHGZH0w34dTTNNCY8oMeFc=;
-        b=kYlX32XWTJOlSvvxY3CD10rBLglj0+evxRZutAADNeUZdSQ6rKbOcZop8LsSZoZ+bX
-         253+/tBUoxcMOuK/YOnK52yOFLyX+mkoXUW9ec2oXNKM1DBzKm7y/Nim86OZMXrLwawu
-         JN7LHOW7Ni9M/R3TW1MP2ycpgqbV43GnRyEG8=
+        bh=v0jsfdDUzAOrCN8MLFPhyS4TShYPDB3NuAvx8HFlXUo=;
+        b=ZfE2dAIoWQCCKQbXg/IGCuHB6GFkuDWFSAKaF5Rd8iG28tRFhT6YarG+OyIF5d/bW3
+         hI4lfzfJaNWpYDLzVj8+1QYCgOkQ3TjWPVeDT/Gb0RPiiPDGeBcSkTiGjXyA2e2RtDhJ
+         UuDQvKqLBc0zpechLd4ToaV5fnpnTa8KNcgmw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:references:user-agent:from:to:cc:subject
          :in-reply-to:date:message-id:mime-version:content-transfer-encoding;
-        bh=kfdFxRlP+TMK7CgIbUcstIHGZH0w34dTTNNCY8oMeFc=;
-        b=YXbnsankeLIa7I6HSMMRZuOlSQvayTEbyAoLfp+nCw6PZoJZnNrHbtaaoYqSApm/Hc
-         /aEzd/9clECwOIVlMBEE1EM/jfS+8mrfE4Cf7lYU/GMMJycCXIlz/zswodTTWIgdYY6d
-         w6xfWfBHcQY6/TSgu7/20Sh4QQkgKnQXY0rCRaDEyHWLppyQK8fG+yLqh6JGN/phZ08r
-         35PKZxY9Fls7qxBruAJbzoYU47hCZ8NaZDIcnsNZcYdBjIq1qgVbCGKkf6ewlVxcymLL
-         N4y+2xuNsVtm3shyN0c3JBRIwE0eOQ2GNPLM+VC1fn1s22qWL5ONt4yF9EFphLVradPO
-         AUcw==
-X-Gm-Message-State: APjAAAVzIKX2pQJLtrwXpOc2AJvGr+Lve2eWK3J1zoC5ePLasl6tKnmb
-        z7LJmq2pNbmWkaaSInihCSiGfg==
-X-Google-Smtp-Source: APXvYqybXg81Fw56ANOv2rgQ4Sz8b23jypwCHMuRwirRGk3swWkYQja0ERv/SU0s935UoPFjBz4Wzw==
-X-Received: by 2002:adf:81e3:: with SMTP id 90mr1003706wra.23.1581328791911;
-        Mon, 10 Feb 2020 01:59:51 -0800 (PST)
+        bh=v0jsfdDUzAOrCN8MLFPhyS4TShYPDB3NuAvx8HFlXUo=;
+        b=iDCG4L1vGiWOIIfdt553ry8PS3LAUd67D+UqZwHBVO1gmaI1K7pUcw0MLkBddMD0cL
+         7G8QEmxPW2Ebkv+ITwNYv1YQE0XnSDUTOChIRcGIj3BpDdq5zCvlzVdlRMkD9NcLade2
+         Siz/Lmk8uFEorLWzNlPYyBIaLp8EFdsMYvjJSRiKyy0iRDQIWaQCJ3VBbxmX6pTjXg11
+         HRYGxgtNTp0+JR1xFoJItn1BmvDCXdpseI5XzUzGIZ1zH95wGG4QQPFGtFgB/+p0L8RM
+         DtcdQ4Bx220YUoYaZRy4f7pyQ90/7+OS9vzckw47JhiNvEQbuR35UtguwZlck5ViNAcz
+         cKMw==
+X-Gm-Message-State: APjAAAXrTWLXTEEj45g6OD/DpYVllchzwZm/CTnz9y83TdUWOhuH3x5q
+        niayYSn+JJxFis/4cQMe9aYzaA==
+X-Google-Smtp-Source: APXvYqy4WMchAPxTBVzuTtOmfOnSGwG4sYdP4mxAzL+6LjS3N56N26Hb0nKO0rvmB/8D4K4Gydyx2Q==
+X-Received: by 2002:a1c:6189:: with SMTP id v131mr14964365wmb.185.1581335558374;
+        Mon, 10 Feb 2020 03:52:38 -0800 (PST)
 Received: from cloudflare.com ([88.157.168.82])
-        by smtp.gmail.com with ESMTPSA id c9sm15406594wrq.44.2020.02.10.01.59.51
+        by smtp.gmail.com with ESMTPSA id i204sm244164wma.44.2020.02.10.03.52.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Feb 2020 01:59:51 -0800 (PST)
-References: <158131347731.21414.12120493483848386652.stgit@john-Precision-5820-Tower>
+        Mon, 10 Feb 2020 03:52:37 -0800 (PST)
+References: <20200206111652.694507-1-jakub@cloudflare.com> <20200206111652.694507-4-jakub@cloudflare.com> <CAADnVQJU4RtAAMH0pL9AQSXDgHGcXOqm15EKZw10c=r-f=bfuw@mail.gmail.com> <87eev3aidz.fsf@cloudflare.com> <5e40d43715474_2a9a2abf5f7f85c025@john-XPS-13-9370.notmuch>
 User-agent: mu4e 1.1.0; emacs 26.3
 From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     alexei.starovoitov@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net
-Subject: Re: [PATCH] bpf: selftests build error in sockmap_basic.c
-In-reply-to: <158131347731.21414.12120493483848386652.stgit@john-Precision-5820-Tower>
-Date:   Mon, 10 Feb 2020 09:59:50 +0000
-Message-ID: <87d0amahk9.fsf@cloudflare.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
+Subject: Re: [PATCH bpf 3/3] selftests/bpf: Test freeing sockmap/sockhash with a socket in it
+In-reply-to: <5e40d43715474_2a9a2abf5f7f85c025@john-XPS-13-9370.notmuch>
+Date:   Mon, 10 Feb 2020 11:52:36 +0000
+Message-ID: <87blq6accb.fsf@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -59,59 +61,102 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 10, 2020 at 05:44 AM GMT, John Fastabend wrote:
-> Fix following build error. We could push a tcp.h header into one of the
-> include paths, but I think its easy enough to simply pull in the three
-> defines we need here. If we end up using more of tcp.h at some point
-> we can pull it in later.
+On Mon, Feb 10, 2020 at 03:55 AM GMT, John Fastabend wrote:
+> Jakub Sitnicki wrote:
+>> On Sun, Feb 09, 2020 at 03:41 AM CET, Alexei Starovoitov wrote:
+>> > On Thu, Feb 6, 2020 at 3:28 AM Jakub Sitnicki <jakub@cloudflare.com> w=
+rote:
+>> >>
+>> >> Commit 7e81a3530206 ("bpf: Sockmap, ensure sock lock held during tear
+>> >> down") introduced sleeping issues inside RCU critical sections and wh=
+ile
+>> >> holding a spinlock on sockmap/sockhash tear-down. There has to be at =
+least
+>> >> one socket in the map for the problem to surface.
+>> >>
+>> >> This adds a test that triggers the warnings for broken locking rules.=
+ Not a
+>> >> fix per se, but rather tooling to verify the accompanying fixes. Run =
+on a
+>> >> VM with 1 vCPU to reproduce the warnings.
+>> >>
+>> >> Fixes: 7e81a3530206 ("bpf: Sockmap, ensure sock lock held during tear=
+ down")
+>> >> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+>> >
+>> > selftests/bpf no longer builds for me.
+>> > make
+>> >   BINARY   test_maps
+>> >   TEST-OBJ [test_progs] sockmap_basic.test.o
+>> > /data/users/ast/net/tools/testing/selftests/bpf/prog_tests/sockmap_bas=
+ic.c:
+>> > In function =E2=80=98connected_socket_v4=E2=80=99:
+>> > /data/users/ast/net/tools/testing/selftests/bpf/prog_tests/sockmap_bas=
+ic.c:20:11:
+>> > error: =E2=80=98TCP_REPAIR_ON=E2=80=99 undeclared (first use in this f=
+unction); did
+>> > you mean =E2=80=98TCP_REPAIR=E2=80=99?
+>> >    20 |  repair =3D TCP_REPAIR_ON;
+>> >       |           ^~~~~~~~~~~~~
+>> >       |           TCP_REPAIR
+>> > /data/users/ast/net/tools/testing/selftests/bpf/prog_tests/sockmap_bas=
+ic.c:20:11:
+>> > note: each undeclared identifier is reported only once for each
+>> > function it appears in
+>> > /data/users/ast/net/tools/testing/selftests/bpf/prog_tests/sockmap_bas=
+ic.c:29:11:
+>> > error: =E2=80=98TCP_REPAIR_OFF_NO_WP=E2=80=99 undeclared (first use in=
+ this function);
+>> > did you mean =E2=80=98TCP_REPAIR_OPTIONS=E2=80=99?
+>> >    29 |  repair =3D TCP_REPAIR_OFF_NO_WP;
+>> >       |           ^~~~~~~~~~~~~~~~~~~~
+>> >       |           TCP_REPAIR_OPTIONS
+>> >
+>> > Clearly /usr/include/linux/tcp.h is too old.
+>> > Suggestions?
+>>
+>> Sorry for the inconvenience. I see that tcp.h header is missing under
+>> linux/tools/include/uapi/.
 >
-> /home/john/git/bpf/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c=
-: In function =E2=80=98connected_socket_v4=E2=80=99:
-> /home/john/git/bpf/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c=
-:20:11: error: =E2=80=98TCP_REPAIR_ON=E2=80=99 undeclared (first use in thi=
-s function)
->   repair =3D TCP_REPAIR_ON;
->            ^
-> /home/john/git/bpf/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c=
-:20:11: note: each undeclared identifier is reported only once for each fun=
-ction it appears in
-> /home/john/git/bpf/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c=
-:29:11: error: =E2=80=98TCP_REPAIR_OFF_NO_WP=E2=80=99 undeclared (first use=
- in this function)
->   repair =3D TCP_REPAIR_OFF_NO_WP;
->
-> Then with fix,
->
-> $ ./test_progs -n 44
-> #44/1 sockmap create_update_free:OK
-> #44/2 sockhash create_update_free:OK
-> #44 sockmap_basic:OK
->
-> Fixes: 5d3919a953c3c ("selftests/bpf: Test freeing sockmap/sockhash with =
-a socket in it")
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> ---
->  .../selftests/bpf/prog_tests/sockmap_basic.c       |    5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/too=
-ls/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> index 07f5b46..aa43e0b 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> @@ -3,6 +3,11 @@
->
->  #include "test_progs.h"
->
-> +#define TCP_REPAIR		19	/* TCP sock is under repair right now */
-> +
-> +#define TCP_REPAIR_ON		1
-> +#define TCP_REPAIR_OFF_NO_WP	-1	/* Turn off without window probes */
-> +
->  static int connected_socket_v4(void)
->  {
->  	struct sockaddr_in addr =3D {
+> How about we just add the couple defines needed to sockmap_basic.c I don't
+> see a need to pull in all of tcp.h just for a couple defines that wont
+> change anyways.
 
-Neat, I haven't thought of that. Thank you for fixing up my mistake.
+Looking back at how this happened. test_progs.h pulls in netinet/tcp.h:
 
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+# 19 "/home/jkbs/src/linux/tools/testing/selftests/bpf/test_progs.h" 2
+# 1 "/usr/include/netinet/tcp.h" 1 3 4
+# 92 "/usr/include/netinet/tcp.h" 3 4
+
+A glibc header, which gained TCP_REPAIR_* constants in 2.29 [0]:
+
+$ git describe --contains 5cd7dbdea13eb302620491ef44837b17e9d39c5a
+glibc-2.29~510
+
+Pulling in linux/tcp.h would conflict with struct definitions in
+netinet/tcp.h. So redefining the possibly missing constants, like John
+suggests, is the right way out.
+
+I'm not sure, though, how to protect against such mistakes in the
+future. Any ideas?
+
+[0] https://sourceware.org/git/?p=3Dglibc.git;a=3Dcommit;h=3D5cd7dbdea13eb3=
+02620491ef44837b17e9d39c5a
+
+>
+>>
+>> I have been building against my distro kernel headers, completely
+>> unaware of this. This is an oversight on my side.
+>>
+>> Can I ask for a revert? I'm traveling today with limited ability to
+>> post patches.
+>
+> I don't think we need a full revert.
+>
+>>
+>> I can resubmit the test with the missing header for bpf-next once it
+>> reopens.
+>
+> If you are traveling I'll post a patch with the defines.
+
+Thanks, again.
