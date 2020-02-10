@@ -2,161 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF941573B5
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2020 12:52:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9A5157D3F
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2020 15:17:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727429AbgBJLwl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Feb 2020 06:52:41 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:38051 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727029AbgBJLwk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Feb 2020 06:52:40 -0500
-Received: by mail-wm1-f67.google.com with SMTP id a9so10247759wmj.3
-        for <bpf@vger.kernel.org>; Mon, 10 Feb 2020 03:52:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=v0jsfdDUzAOrCN8MLFPhyS4TShYPDB3NuAvx8HFlXUo=;
-        b=ZfE2dAIoWQCCKQbXg/IGCuHB6GFkuDWFSAKaF5Rd8iG28tRFhT6YarG+OyIF5d/bW3
-         hI4lfzfJaNWpYDLzVj8+1QYCgOkQ3TjWPVeDT/Gb0RPiiPDGeBcSkTiGjXyA2e2RtDhJ
-         UuDQvKqLBc0zpechLd4ToaV5fnpnTa8KNcgmw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version:content-transfer-encoding;
-        bh=v0jsfdDUzAOrCN8MLFPhyS4TShYPDB3NuAvx8HFlXUo=;
-        b=iDCG4L1vGiWOIIfdt553ry8PS3LAUd67D+UqZwHBVO1gmaI1K7pUcw0MLkBddMD0cL
-         7G8QEmxPW2Ebkv+ITwNYv1YQE0XnSDUTOChIRcGIj3BpDdq5zCvlzVdlRMkD9NcLade2
-         Siz/Lmk8uFEorLWzNlPYyBIaLp8EFdsMYvjJSRiKyy0iRDQIWaQCJ3VBbxmX6pTjXg11
-         HRYGxgtNTp0+JR1xFoJItn1BmvDCXdpseI5XzUzGIZ1zH95wGG4QQPFGtFgB/+p0L8RM
-         DtcdQ4Bx220YUoYaZRy4f7pyQ90/7+OS9vzckw47JhiNvEQbuR35UtguwZlck5ViNAcz
-         cKMw==
-X-Gm-Message-State: APjAAAXrTWLXTEEj45g6OD/DpYVllchzwZm/CTnz9y83TdUWOhuH3x5q
-        niayYSn+JJxFis/4cQMe9aYzaA==
-X-Google-Smtp-Source: APXvYqy4WMchAPxTBVzuTtOmfOnSGwG4sYdP4mxAzL+6LjS3N56N26Hb0nKO0rvmB/8D4K4Gydyx2Q==
-X-Received: by 2002:a1c:6189:: with SMTP id v131mr14964365wmb.185.1581335558374;
-        Mon, 10 Feb 2020 03:52:38 -0800 (PST)
-Received: from cloudflare.com ([88.157.168.82])
-        by smtp.gmail.com with ESMTPSA id i204sm244164wma.44.2020.02.10.03.52.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Feb 2020 03:52:37 -0800 (PST)
-References: <20200206111652.694507-1-jakub@cloudflare.com> <20200206111652.694507-4-jakub@cloudflare.com> <CAADnVQJU4RtAAMH0pL9AQSXDgHGcXOqm15EKZw10c=r-f=bfuw@mail.gmail.com> <87eev3aidz.fsf@cloudflare.com> <5e40d43715474_2a9a2abf5f7f85c025@john-XPS-13-9370.notmuch>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>
-Subject: Re: [PATCH bpf 3/3] selftests/bpf: Test freeing sockmap/sockhash with a socket in it
-In-reply-to: <5e40d43715474_2a9a2abf5f7f85c025@john-XPS-13-9370.notmuch>
-Date:   Mon, 10 Feb 2020 11:52:36 +0000
-Message-ID: <87blq6accb.fsf@cloudflare.com>
+        id S1727546AbgBJORc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Feb 2020 09:17:32 -0500
+Received: from ivanoab7.miniserver.com ([37.128.132.42]:41484 "EHLO
+        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727434AbgBJORc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Feb 2020 09:17:32 -0500
+Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
+        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1j19sL-0004Uz-9I; Mon, 10 Feb 2020 14:17:25 +0000
+Received: from jain.kot-begemot.co.uk ([192.168.3.3])
+        by jain.kot-begemot.co.uk with esmtp (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1j19sI-0000TK-TU; Mon, 10 Feb 2020 14:17:25 +0000
+Subject: Re: [PATCH v3] um: Fix some error handling in uml_vector_user_bpf()
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Jeff Dike <jdike@addtoit.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alex Dewar <alex.dewar@gmx.co.uk>,
+        linux-um@lists.infradead.org, bpf@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <20200128151000.kx2bwayuuxpuqn6t@kili.mountain>
+From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <cd66b933-c433-3d8a-8457-1de6c0716f49@cambridgegreys.com>
+Date:   Mon, 10 Feb 2020 14:17:22 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200128151000.kx2bwayuuxpuqn6t@kili.mountain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0
+X-Spam-Score: -1.0
+X-Clacks-Overhead: GNU Terry Pratchett
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 10, 2020 at 03:55 AM GMT, John Fastabend wrote:
-> Jakub Sitnicki wrote:
->> On Sun, Feb 09, 2020 at 03:41 AM CET, Alexei Starovoitov wrote:
->> > On Thu, Feb 6, 2020 at 3:28 AM Jakub Sitnicki <jakub@cloudflare.com> w=
-rote:
->> >>
->> >> Commit 7e81a3530206 ("bpf: Sockmap, ensure sock lock held during tear
->> >> down") introduced sleeping issues inside RCU critical sections and wh=
-ile
->> >> holding a spinlock on sockmap/sockhash tear-down. There has to be at =
-least
->> >> one socket in the map for the problem to surface.
->> >>
->> >> This adds a test that triggers the warnings for broken locking rules.=
- Not a
->> >> fix per se, but rather tooling to verify the accompanying fixes. Run =
-on a
->> >> VM with 1 vCPU to reproduce the warnings.
->> >>
->> >> Fixes: 7e81a3530206 ("bpf: Sockmap, ensure sock lock held during tear=
- down")
->> >> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
->> >
->> > selftests/bpf no longer builds for me.
->> > make
->> >   BINARY   test_maps
->> >   TEST-OBJ [test_progs] sockmap_basic.test.o
->> > /data/users/ast/net/tools/testing/selftests/bpf/prog_tests/sockmap_bas=
-ic.c:
->> > In function =E2=80=98connected_socket_v4=E2=80=99:
->> > /data/users/ast/net/tools/testing/selftests/bpf/prog_tests/sockmap_bas=
-ic.c:20:11:
->> > error: =E2=80=98TCP_REPAIR_ON=E2=80=99 undeclared (first use in this f=
-unction); did
->> > you mean =E2=80=98TCP_REPAIR=E2=80=99?
->> >    20 |  repair =3D TCP_REPAIR_ON;
->> >       |           ^~~~~~~~~~~~~
->> >       |           TCP_REPAIR
->> > /data/users/ast/net/tools/testing/selftests/bpf/prog_tests/sockmap_bas=
-ic.c:20:11:
->> > note: each undeclared identifier is reported only once for each
->> > function it appears in
->> > /data/users/ast/net/tools/testing/selftests/bpf/prog_tests/sockmap_bas=
-ic.c:29:11:
->> > error: =E2=80=98TCP_REPAIR_OFF_NO_WP=E2=80=99 undeclared (first use in=
- this function);
->> > did you mean =E2=80=98TCP_REPAIR_OPTIONS=E2=80=99?
->> >    29 |  repair =3D TCP_REPAIR_OFF_NO_WP;
->> >       |           ^~~~~~~~~~~~~~~~~~~~
->> >       |           TCP_REPAIR_OPTIONS
->> >
->> > Clearly /usr/include/linux/tcp.h is too old.
->> > Suggestions?
->>
->> Sorry for the inconvenience. I see that tcp.h header is missing under
->> linux/tools/include/uapi/.
->
-> How about we just add the couple defines needed to sockmap_basic.c I don't
-> see a need to pull in all of tcp.h just for a couple defines that wont
-> change anyways.
 
-Looking back at how this happened. test_progs.h pulls in netinet/tcp.h:
 
-# 19 "/home/jkbs/src/linux/tools/testing/selftests/bpf/test_progs.h" 2
-# 1 "/usr/include/netinet/tcp.h" 1 3 4
-# 92 "/usr/include/netinet/tcp.h" 3 4
+On 28/01/2020 15:27, Dan Carpenter wrote:
+> 1) The uml_vector_user_bpf() returns pointers so it should return NULL
+>     instead of false.
+> 2) If the "bpf_prog" allocation failed, it would have eventually lead to
+>     a crash.  We can't succeed after the error happens so it should just
+>     return.
+> 
+> Fixes: 9807019a62dc ("um: Loadable BPF "Firmware" for vector drivers")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+> v3: Fix screwed up subject.  Sorry.  Not my most shining hour.
+> v2: The first version broke the build.  Shame upon me.
+> 
+>   arch/um/drivers/vector_user.c | 11 ++++++-----
+>   1 file changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
+> index ddcd917be0af..1403cbadf92b 100644
+> --- a/arch/um/drivers/vector_user.c
+> +++ b/arch/um/drivers/vector_user.c
+> @@ -732,13 +732,14 @@ void *uml_vector_user_bpf(char *filename)
+>   
+>   	if (stat(filename, &statbuf) < 0) {
+>   		printk(KERN_ERR "Error %d reading bpf file", -errno);
+> -		return false;
+> +		return NULL;
+>   	}
+>   	bpf_prog = uml_kmalloc(sizeof(struct sock_fprog), UM_GFP_KERNEL);
+> -	if (bpf_prog != NULL) {
+> -		bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
+> -		bpf_prog->filter = NULL;
+> -	}
+> +	if (bpf_prog == NULL)
+> +		return NULL;
+> +	bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
+> +	bpf_prog->filter = NULL;
+> +
+>   	ffd = os_open_file(filename, of_read(OPENFLAGS()), 0);
+>   	if (ffd < 0) {
+>   		printk(KERN_ERR "Error %d opening bpf file", -errno);
+> 
 
-A glibc header, which gained TCP_REPAIR_* constants in 2.29 [0]:
+Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-$ git describe --contains 5cd7dbdea13eb302620491ef44837b17e9d39c5a
-glibc-2.29~510
-
-Pulling in linux/tcp.h would conflict with struct definitions in
-netinet/tcp.h. So redefining the possibly missing constants, like John
-suggests, is the right way out.
-
-I'm not sure, though, how to protect against such mistakes in the
-future. Any ideas?
-
-[0] https://sourceware.org/git/?p=3Dglibc.git;a=3Dcommit;h=3D5cd7dbdea13eb3=
-02620491ef44837b17e9d39c5a
-
->
->>
->> I have been building against my distro kernel headers, completely
->> unaware of this. This is an oversight on my side.
->>
->> Can I ask for a revert? I'm traveling today with limited ability to
->> post patches.
->
-> I don't think we need a full revert.
->
->>
->> I can resubmit the test with the missing header for bpf-next once it
->> reopens.
->
-> If you are traveling I'll post a patch with the defines.
-
-Thanks, again.
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
