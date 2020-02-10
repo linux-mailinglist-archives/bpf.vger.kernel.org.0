@@ -2,64 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BCC9158416
+	by mail.lfdr.de (Postfix) with ESMTP id A186C158417
 	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2020 21:08:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727597AbgBJUII (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Feb 2020 15:08:08 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:41679 "EHLO
+        id S1727606AbgBJUIK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Feb 2020 15:08:10 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:56281 "EHLO
         new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727029AbgBJUIH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 10 Feb 2020 15:08:07 -0500
+        by vger.kernel.org with ESMTP id S1727653AbgBJUIJ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 10 Feb 2020 15:08:09 -0500
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 97E758124;
-        Mon, 10 Feb 2020 15:08:06 -0500 (EST)
+        by mailnew.nyi.internal (Postfix) with ESMTP id 23C498121;
+        Mon, 10 Feb 2020 15:08:08 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 10 Feb 2020 15:08:06 -0500
+  by compute4.internal (MEProxy); Mon, 10 Feb 2020 15:08:08 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=ZvSMU6y7wAeb8
-        /2s/fn5ni9DRfl6SUxPF0nyHzLwl+M=; b=sth0NNbOajC2XiSgPUQkT8nsXn97I
-        oTMnlOhXEwiNBKxmc8Mldgy0zrHRkvVxC8oEacRvDMCls4gdArgWTISajOsif7F9
-        bFv+m58A4u/0tAUL79pnO2NfNaj6Tl6llRGyvziG10+5Zba059BcsIJbMfjGbOhx
-        LBP4OW7S8xegpfGlbspm+9h2uaNVQxafkHkhMM/ZaagyNHUBwa4Iy9wIjb+lx9OB
-        8eI5BmXFixxbHLe2IsmLGbBfuXPym0jXgLOpsz4gsskFdKjShZjRpdvhl9Kr29ow
-        fU9y0V1gUzao/sZIu5Igqh0jeiHUb5A1X7GRlXvisTI+KWjl/Gzgn1Hbg==
+        :mime-version:content-transfer-encoding; s=fm2; bh=0bk2vkHQhjOpH
+        5NKlIz3kCWYq7Vt7kQrSyvdyRQNkI4=; b=fCINOIEfCFwYf0aKy1oBFBoMZPhbD
+        BX7+pNay3yylXDZsVuAFVB72njxtR88HqkeIkQq1uxAzxVVj7DM9m8/7SKx9IikL
+        SwB8IO+EhGcDNWLMn8ZTnDLdX8FtVjHX5lEBb2nIs7b2hDm8wUCPZWtZ/z0S5r5g
+        ZCx/ykOXHyuBbUaRcEUqdUygedNwt4BEVx6lPLOPAhA3aUubVPkqJa3dnraI55Mu
+        xlvURL+lxMzyB//B0XAi472xLbza8iXUP61nDTJXBEAAOP8+MAD6zFOd+titc9TV
+        c42vHpx6I54y/ncMwVfjq/aQd7QHm5t4gBor6rnNUAokU5cPdSQzPQ+lg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=ZvSMU6y7wAeb8/2s/fn5ni9DRfl6SUxPF0nyHzLwl+M=; b=bkAOZFga
-        s2pCu4kaDv58PUQXUYbMBcJ9ryEt8iUA3ZZz9tZPZO+fx68ivRnmw3a1nUAO681c
-        Aexe1IILsipR6dFK0ljSCkpud2frfYAE+pLVEhUJT1I7ySCw2dkOtsoyrP0CI0lT
-        e5sepNQzhG+mIjphruaPh011O+w6dsFyAIvouXrjPPJyiuKDVYDY8tJ4KSVPNqVO
-        666QxrcPCa7P/HYm/k7bQ133va9BiVYWuTdIt76Ha0bc9sv5GepZG2ZjqN/DS4lY
-        E1Z4waPtPTqotgKvqfF3bRjclLFj2+gviW4iNQuRTwCgnqs8/AVV62YC++JyJkm8
-        a2MWhG05/qding==
-X-ME-Sender: <xms:JrhBXt5N6dFT3z52T7Kb_8ZN5qzZC5r8FmD8BY4ksop4Nod5Hp_CVA>
+        fm2; bh=0bk2vkHQhjOpH5NKlIz3kCWYq7Vt7kQrSyvdyRQNkI4=; b=X8JFBTf/
+        NqmHk7tqzhcgYnTpLzwAO3s/ZeBitLLHW8O+hddzMs4OQFrcloMptV4CJTwX1ouu
+        yI64re1vzB26pluKZKNmk4hAyVLb2vA7EpEJsQFh92NABqtwKnCStHXqFE8SlZxy
+        VodVfIJKC/crqbsfb65imcBVdjnI+TcQGSfrhOD9EKWi/sllre1E4giwVqPF1lNQ
+        s53fVFkeiCChEQRKLgt6J2CfUQtOeSjGRaTybO/OY9AKBPqg5zZJAEpkosla1OZ5
+        Ue2eUevxM9PstkPySjRndeNShVnXDCH5gSEblRUYfsHFCW/ZvtNdu+mrd7ohkC/J
+        KfLhVbxACTFkbA==
+X-ME-Sender: <xms:KLhBXubzN2lgHhlmCZ_83Ac_papyfGw-PjKcqU__YiT3-wqmbdI6Zw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedriedugdduvdegucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
     fufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegu
     gihusegugihuuhhurdighiiiqeenucfkphepudelledrvddtuddrieegrddufeeknecuve
-    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugig
+    hluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugig
     uhhuuhdrgiihii
-X-ME-Proxy: <xmx:JrhBXsa3ugpsn0C3WGXU9Oo_kftfZgIkphuLBx1aKy6cjFXEWL5ABA>
-    <xmx:JrhBXtGxPCZo7I6YoaaTEhmHp_h_jQe1aQilqJkm-qPjvrEeQvR50g>
-    <xmx:JrhBXoKOnj8I6WU8-Dwpv6J-LSMIGUZa8lJni2Ebvz-8a50ALENNGQ>
-    <xmx:JrhBXgtXe9FOh1xY94BQhxNz3wckpUJtNfTOWmrtho37BgeftJfA6Q>
+X-ME-Proxy: <xmx:KLhBXn-9QwT_xmiVFnljmUoobO5eAa22HSIvnhJbhr9dDPLM7xStug>
+    <xmx:KLhBXmL1tPGBmNey0XWgiiWJ__Yv1lq6SidWXifCGi6YND6Doa2D7A>
+    <xmx:KLhBXitoD76CXcCWSMVcqXJYc_DNdOTRVNtDG7HswQbR4M62veSyjg>
+    <xmx:KLhBXsMQTQwIQwajsFUeegaRlg0U3Tykb3NGvXMqZ19mjhrGVgv4Sw>
 Received: from dlxu-fedora-R90QNFJV.thefacebook.com (unknown [199.201.64.138])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 2F0EA30607B0;
-        Mon, 10 Feb 2020 15:08:05 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 96DE43060272;
+        Mon, 10 Feb 2020 15:08:06 -0500 (EST)
 From:   Daniel Xu <dxu@dxuuu.xyz>
 To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         songliubraving@fb.com, yhs@fb.com, andriin@fb.com
 Cc:     Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
         kernel-team@fb.com, peterz@infradead.org, mingo@redhat.com,
         acme@kernel.org
-Subject: [PATCH v7 bpf-next RESEND 1/2] bpf: Add bpf_read_branch_records() helper
-Date:   Mon, 10 Feb 2020 12:07:36 -0800
-Message-Id: <20200210200737.13866-2-dxu@dxuuu.xyz>
+Subject: [PATCH v7 bpf-next RESEND 2/2] selftests/bpf: add bpf_read_branch_records() selftest
+Date:   Mon, 10 Feb 2020 12:07:37 -0800
+Message-Id: <20200210200737.13866-3-dxu@dxuuu.xyz>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200210200737.13866-1-dxu@dxuuu.xyz>
 References: <20200210200737.13866-1-dxu@dxuuu.xyz>
@@ -70,31 +70,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Branch records are a CPU feature that can be configured to record
-certain branches that are taken during code execution. This data is
-particularly interesting for profile guided optimizations. perf has had
-branch record support for a while but the data collection can be a bit
-coarse grained.
+Add a selftest to test:
 
-We (Facebook) have seen in experiments that associating metadata with
-branch records can improve results (after postprocessing). We generally
-use bpf_probe_read_*() to get metadata out of userspace. That's why bpf
-support for branch records is useful.
+* default bpf_read_branch_records() behavior
+* BPF_F_GET_BRANCH_RECORDS_SIZE flag behavior
+* error path on non branch record perf events
+* using helper to write to stack
+* using helper to write to map
 
-Aside from this particular use case, having branch data available to bpf
-progs can be useful to get stack traces out of userspace applications
-that omit frame pointers.
+On host with hardware counter support:
+
+    # ./test_progs -t perf_branches
+    #27/1 perf_branches_hw:OK
+    #27/2 perf_branches_no_hw:OK
+    #27 perf_branches:OK
+    Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+
+On host without hardware counter support (VM):
+
+    # ./test_progs -t perf_branches
+    #27/1 perf_branches_hw:OK
+    #27/2 perf_branches_no_hw:OK
+    #27 perf_branches:OK
+    Summary: 1/2 PASSED, 1 SKIPPED, 0 FAILED
+
+Also sync tools/include/uapi/linux/bpf.h.
 
 Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 ---
- include/uapi/linux/bpf.h | 25 +++++++++++++++++++++++-
- kernel/trace/bpf_trace.c | 41 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 65 insertions(+), 1 deletion(-)
+ tools/include/uapi/linux/bpf.h                |  25 ++-
+ .../selftests/bpf/prog_tests/perf_branches.c  | 182 ++++++++++++++++++
+ .../selftests/bpf/progs/test_perf_branches.c  |  74 +++++++
+ 3 files changed, 280 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_branches.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_perf_branches.c
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
 index f1d74a2bd234..3004470b7269 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
 @@ -2892,6 +2892,25 @@ union bpf_attr {
   *		Obtain the 64bit jiffies
   *	Return
@@ -141,65 +155,274 @@ index f1d74a2bd234..3004470b7269 100644
  /* Mode for BPF_FUNC_skb_adjust_room helper. */
  enum bpf_adj_room_mode {
  	BPF_ADJ_ROOM_NET,
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 19e793aa441a..4d3c87a1d215 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1028,6 +1028,45 @@ static const struct bpf_func_proto bpf_perf_prog_read_value_proto = {
-          .arg3_type      = ARG_CONST_SIZE,
- };
- 
-+BPF_CALL_4(bpf_read_branch_records, struct bpf_perf_event_data_kern *, ctx,
-+	   void *, buf, u32, size, u64, flags)
-+{
-+#ifndef CONFIG_X86
-+	return -ENOENT;
-+#else
-+	static const u32 br_entry_size = sizeof(struct perf_branch_entry);
-+	struct perf_branch_stack *br_stack = ctx->data->br_stack;
-+	u32 to_copy;
+diff --git a/tools/testing/selftests/bpf/prog_tests/perf_branches.c b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
+new file mode 100644
+index 000000000000..bceefaea85b9
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
+@@ -0,0 +1,182 @@
++// SPDX-License-Identifier: GPL-2.0
++#define _GNU_SOURCE
++#include <pthread.h>
++#include <sched.h>
++#include <sys/socket.h>
++#include <test_progs.h>
++#include "bpf/libbpf_internal.h"
++#include "test_perf_branches.skel.h"
 +
-+	if (unlikely(flags & ~BPF_F_GET_BRANCH_RECORDS_SIZE))
-+		return -EINVAL;
-+
-+	if (unlikely(!br_stack))
-+		return -EINVAL;
-+
-+	if (flags & BPF_F_GET_BRANCH_RECORDS_SIZE)
-+		return br_stack->nr * br_entry_size;
-+
-+	if (!buf || (size % br_entry_size != 0))
-+		return -EINVAL;
-+
-+	to_copy = min_t(u32, br_stack->nr * br_entry_size, size);
-+	memcpy(buf, br_stack->entries, to_copy);
-+
-+	return to_copy;
-+#endif
-+}
-+
-+static const struct bpf_func_proto bpf_read_branch_records_proto = {
-+	.func           = bpf_read_branch_records,
-+	.gpl_only       = true,
-+	.ret_type       = RET_INTEGER,
-+	.arg1_type      = ARG_PTR_TO_CTX,
-+	.arg2_type      = ARG_PTR_TO_MEM_OR_NULL,
-+	.arg3_type      = ARG_CONST_SIZE_OR_ZERO,
-+	.arg4_type      = ARG_ANYTHING,
++struct output {
++	int required_size;
++	int written_stack;
++	int written_map;
 +};
 +
- static const struct bpf_func_proto *
- pe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- {
-@@ -1040,6 +1079,8 @@ pe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_get_stack_proto_tp;
- 	case BPF_FUNC_perf_prog_read_value:
- 		return &bpf_perf_prog_read_value_proto;
-+	case BPF_FUNC_read_branch_records:
-+		return &bpf_read_branch_records_proto;
- 	default:
- 		return tracing_func_proto(func_id, prog);
- 	}
++static void on_good_sample(void *ctx, int cpu, void *data, __u32 size)
++{
++	int required_size = ((struct output *)data)->required_size;
++	int written_stack = ((struct output *)data)->written_stack;
++	int written_map = ((struct output *)data)->written_map;
++	int pbe_size = sizeof(struct perf_branch_entry);
++	int duration = 0;
++
++	/*
++	 * It's hard to validate the contents of the branch entries b/c it
++	 * would require some kind of disassembler and also encoding the
++	 * valid jump instructions for supported architectures. So just check
++	 * the easy stuff for now.
++	 */
++	CHECK(required_size <= 0, "read_branches_size", "err %d\n", required_size);
++	CHECK(written_stack < 0, "read_branches_stack", "err %d\n", written_stack);
++	CHECK(written_stack % pbe_size != 0, "read_branches_stack",
++	      "stack bytes written=%d not multiple of struct size=%d\n",
++	      written_stack, pbe_size);
++	CHECK(written_map < 0, "read_branches_map", "err %d\n", written_map);
++	CHECK(written_map % pbe_size != 0, "read_branches_map",
++	      "map bytes written=%d not multiple of struct size=%d\n",
++	      written_map, pbe_size);
++	CHECK(written_map < written_stack, "read_branches_size",
++	      "written_map=%d < written_stack=%d\n", written_map, written_stack);
++
++	*(int *)ctx = 1;
++}
++
++static void on_bad_sample(void *ctx, int cpu, void *data, __u32 size)
++{
++	int required_size = ((struct output *)data)->required_size;
++	int written_stack = ((struct output *)data)->written_stack;
++	int written_map = ((struct output *)data)->written_map;
++	int duration = 0;
++
++	CHECK((required_size != -EINVAL && required_size != -ENOENT),
++	      "read_branches_size", "err %d\n", required_size);
++	CHECK((written_stack != -EINVAL && written_stack != -ENOENT),
++	      "read_branches_stack", "written %d\n", written_stack);
++	CHECK((written_map != -EINVAL && written_map != -ENOENT),
++	      "read_branches_map", "written %d\n", written_map);
++
++	*(int *)ctx = 1;
++}
++
++static void test_perf_branches_common(int perf_fd, void *sample_cb)
++{
++	struct perf_buffer_opts pb_opts = {};
++	int err, i, duration = 0, ok = 0;
++	struct test_perf_branches *skel;
++	struct perf_buffer *pb;
++	struct bpf_link *link;
++	volatile int j = 0;
++	cpu_set_t cpu_set;
++
++	skel = test_perf_branches__open_and_load();
++	if (CHECK(!skel, "test_perf_branches_load",
++		  "perf_branches skeleton failed\n"))
++		goto out_destroy;
++
++	/* attach perf_event */
++	link = bpf_program__attach_perf_event(skel->progs.perf_branches, perf_fd);
++	if (CHECK(IS_ERR(link), "attach_perf_event", "err %ld\n", PTR_ERR(link)))
++		goto out_destroy;
++
++	/* set up perf buffer */
++	pb_opts.sample_cb = sample_cb;
++	pb_opts.ctx = &ok;
++	pb = perf_buffer__new(bpf_map__fd(skel->maps.perf_buf_map), 1, &pb_opts);
++	if (CHECK(IS_ERR(pb), "perf_buf__new", "err %ld\n", PTR_ERR(pb)))
++		goto out_detach;
++
++	/* generate some branches on cpu 0 */
++	CPU_ZERO(&cpu_set);
++	CPU_SET(0, &cpu_set);
++	err = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set), &cpu_set);
++	if (CHECK(err, "set_affinity", "cpu #0, err %d\n", err))
++		goto out_free_pb;
++	/* spin the loop for a while (random high number) */
++	for (i = 0; i < 1000000; ++i)
++		++j;
++
++	/* read perf buffer */
++	err = perf_buffer__poll(pb, 500);
++	if (CHECK(err < 0, "perf_buffer__poll", "err %d\n", err))
++		goto out_free_pb;
++
++	if (CHECK(!ok, "ok", "not ok\n"))
++		goto out_free_pb;
++
++out_free_pb:
++	perf_buffer__free(pb);
++out_detach:
++	bpf_link__destroy(link);
++out_destroy:
++	test_perf_branches__destroy(skel);
++}
++
++static void test_perf_branches_hw(void)
++{
++	struct perf_event_attr attr = {0};
++	int duration = 0;
++	int pfd;
++
++	/* create perf event */
++	attr.size = sizeof(attr);
++	attr.type = PERF_TYPE_HARDWARE;
++	attr.config = PERF_COUNT_HW_CPU_CYCLES;
++	attr.freq = 1;
++	attr.sample_freq = 4000;
++	attr.sample_type = PERF_SAMPLE_BRANCH_STACK;
++	attr.branch_sample_type = PERF_SAMPLE_BRANCH_USER | PERF_SAMPLE_BRANCH_ANY;
++	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
++
++	/*
++	 * Some setups don't support branch records (virtual machines, !x86),
++	 * so skip test in this case.
++	 */
++	if (pfd == -1) {
++		if (errno == ENOENT) {
++			printf("%s:SKIP:no PERF_SAMPLE_BRANCH_STACK\n",
++			       __func__);
++			test__skip();
++			return;
++		}
++		if (CHECK(pfd < 0, "perf_event_open", "err %d\n", pfd))
++			return;
++	}
++
++	test_perf_branches_common(pfd, on_good_sample);
++
++	close(pfd);
++}
++
++/*
++ * Tests negative case -- run bpf_read_branch_records() on improperly configured
++ * perf event.
++ */
++static void test_perf_branches_no_hw(void)
++{
++	struct perf_event_attr attr = {0};
++	int duration = 0;
++	int pfd;
++
++	/* create perf event */
++	attr.size = sizeof(attr);
++	attr.type = PERF_TYPE_SOFTWARE;
++	attr.config = PERF_COUNT_SW_CPU_CLOCK;
++	attr.freq = 1;
++	attr.sample_freq = 4000;
++	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
++	if (CHECK(pfd < 0, "perf_event_open", "err %d\n", pfd))
++		return;
++
++	test_perf_branches_common(pfd, on_bad_sample);
++
++	close(pfd);
++}
++
++void test_perf_branches(void)
++{
++	if (test__start_subtest("perf_branches_hw"))
++		test_perf_branches_hw();
++	if (test__start_subtest("perf_branches_no_hw"))
++		test_perf_branches_no_hw();
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_perf_branches.c b/tools/testing/selftests/bpf/progs/test_perf_branches.c
+new file mode 100644
+index 000000000000..60327d512400
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_perf_branches.c
+@@ -0,0 +1,74 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2019 Facebook
++
++#include <stddef.h>
++#include <linux/ptrace.h>
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_trace_helpers.h"
++
++struct fake_perf_branch_entry {
++	__u64 _a;
++	__u64 _b;
++	__u64 _c;
++};
++
++struct output {
++	int required_size;
++	int written_stack;
++	int written_map;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
++	__uint(key_size, sizeof(int));
++	__uint(value_size, sizeof(int));
++} perf_buf_map SEC(".maps");
++
++typedef struct fake_perf_branch_entry fpbe_t[30];
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, __u32);
++	__type(value, fpbe_t);
++} scratch_map SEC(".maps");
++
++SEC("perf_event")
++int perf_branches(void *ctx)
++{
++	struct fake_perf_branch_entry entries[4] = {0};
++	struct output output = {0};
++	__u32 key = 0, *value;
++
++	/* write to stack */
++	output.written_stack = bpf_read_branch_records(ctx, entries,
++						       sizeof(entries), 0);
++	/* ignore spurious events */
++	if (!output.written_stack)
++		return 1;
++
++	/* get required size */
++	output.required_size =
++		bpf_read_branch_records(ctx, NULL, 0,
++					BPF_F_GET_BRANCH_RECORDS_SIZE);
++
++	/* write to map */
++	value = bpf_map_lookup_elem(&scratch_map, &key);
++	if (value)
++		output.written_map =
++			bpf_read_branch_records(ctx,
++						value,
++						30 * sizeof(struct fake_perf_branch_entry),
++						0);
++
++	/* ignore spurious events */
++	if (!output.written_map)
++		return 1;
++
++	bpf_perf_event_output(ctx, &perf_buf_map, BPF_F_CURRENT_CPU,
++			      &output, sizeof(output));
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.21.1
 
