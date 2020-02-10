@@ -2,92 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E425156E7B
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2020 05:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 638B0156EE6
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2020 06:44:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727008AbgBJEno (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 9 Feb 2020 23:43:44 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:41990 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726961AbgBJEno (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 9 Feb 2020 23:43:44 -0500
-Received: by mail-qk1-f196.google.com with SMTP id q15so5287714qke.9
-        for <bpf@vger.kernel.org>; Sun, 09 Feb 2020 20:43:43 -0800 (PST)
+        id S1726167AbgBJFov (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Feb 2020 00:44:51 -0500
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:34530 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbgBJFov (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Feb 2020 00:44:51 -0500
+Received: by mail-pj1-f66.google.com with SMTP id f2so2606744pjq.1;
+        Sun, 09 Feb 2020 21:44:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netflix.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dfoBXSjIiP8bllXnjsNJlexmsGl/T8lS+3Z9r/hB9J4=;
-        b=Or5PPChHnJb2WYfuYZQn5LcPcG+4S0oUa6CEBGa8uN7wSJTMgD83h8WvZ08To226Zh
-         kmuWp343QTfT6s8FZjIMMAc/ejQoceVg7X/YPRp/Q1OBlL7gzQdPhk0BuX+5vFofG68j
-         GDcd9EFzhMIZaY06JaFfNCL0zVKHbMPCK+oCA=
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=labp035rli0OVm73UTGjoZ6dXuDB1qKbYO5tg3KOfN0=;
+        b=TU/wBb4XkZKeMhj1Q+CUixOVtoA1mf2W79DLnHBSGHDQaiDpoJohR2vtxYOA6WJnbb
+         7v9oBakXRcPcHlm0Hl9kuLsuJ1DmcMr1Xl8v0ULDK0kTxz66QREC1oWkVQyf77tB9R5U
+         449zXzCvTiuQHlM+xZY6VVH+Tp+TaG+gSWxv/Kv9LD/sPdiK474wkNE47xrJI+2qi1MJ
+         F36m2Pu/Agn7g8AuPLSkBmsEUaO2JA6nC6lPQHFL9JsU02TXSd+sC7niv6ZPLfKI9NyD
+         Svstm2AseGXwd5ThutJYBHUAMcTJ6aJeHEwgphgvHFmrY4cL+XQIe9+suYjQBTW+yf/P
+         vKtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dfoBXSjIiP8bllXnjsNJlexmsGl/T8lS+3Z9r/hB9J4=;
-        b=R7qFRTwriDmRanjv4LEnks9BBVHF1/W6+7X86sXi7ob8rHNQ/Ql3DObgnb5H3jH7oR
-         HwjBAC+iLZKWrlCwgaj7M7YL8n33l+MF8VfkEkaDfZ81JPokJ31yDrTOWxvGDrJSkhwS
-         8sCDfv8fseks0raTbNwXC5ZifbfsYVzHhe26ydkUkBwnbxiSKSZaDPbao+hkp/FgVwlQ
-         9bFw2lj5cTY7aQDQ01b63VMhXi/5ol8POAQxQTYN564/BUu+Mp99NgdNSVE52x4A34Dp
-         HT7czFhc+MrcrZSFklouZRHfCh5u9yT9YiYP9nGAzK7nV8rz7w1LL4uvoJz7F8SWl+Ko
-         t9sQ==
-X-Gm-Message-State: APjAAAWp4Eeq7mtTfk2t65biyOd50Sy5+0a4t0qgHSDqUUsL/aF+E4pq
-        cVvfsncEQQJOL47P6gNTlzX7l2jyBZixySmpjLY6gg==
-X-Google-Smtp-Source: APXvYqw8dPSqQFU+D7xMcBArzOUhkZS2pJSS3gbAxOPmLzQy7t+t3RnKEOu+DRRxgzTC13CoGYNOrgikqc0vxnJJcH4=
-X-Received: by 2002:a05:620a:b0f:: with SMTP id t15mr8941217qkg.135.1581309823409;
- Sun, 09 Feb 2020 20:43:43 -0800 (PST)
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=labp035rli0OVm73UTGjoZ6dXuDB1qKbYO5tg3KOfN0=;
+        b=H+YjCz3Umc3OBnf1KE9bLQE5YIpMaAdTJFUUpOysk1RJ0gkfn5gyxq6WranWob15Ce
+         cPn17XRI778ZyLP1VHsYA8uRcphJgBI+ByNGNC8PsIBUDMuYH6HXnOSEAkjUAJxZen4P
+         vLjSTnpQ3WWfpUBydSd+6F29J8S2n6y8QTmHQhqBA8g9xJHTwodsorOCdndgdE+jGDNI
+         3JAQUq6QmBOqPz7Ynrko9hjGPf9lRFG12By6Sqauv/MoYdO59/ue6s9/6Ys/iPpMv3eV
+         /FcY45fCc8AHoxZQ6VKHb90xQVOzCIbvfPHN/poG+MvuMmlflD0Rw/udK/fliqeMj68y
+         r+Cg==
+X-Gm-Message-State: APjAAAV7g64gnuN4NKqzBfGC6gSzd/kJrvZMcIvouO6ke0amI7/M6lu/
+        TqZfufO4UGICZOSKWdek17I=
+X-Google-Smtp-Source: APXvYqyz94mEMAGD9HZUu8ZQWtYKzgXd7PpEsARBppsi4WOvkCAbMogepgU8/i5/+jWLBF+D5hc7Yw==
+X-Received: by 2002:a17:90a:9f83:: with SMTP id o3mr18752096pjp.95.1581313490372;
+        Sun, 09 Feb 2020 21:44:50 -0800 (PST)
+Received: from [127.0.1.1] ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id y190sm10861171pfb.82.2020.02.09.21.44.44
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 09 Feb 2020 21:44:49 -0800 (PST)
+Subject: [PATCH] bpf: selftests build error in sockmap_basic.c
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     alexei.starovoitov@gmail.com, jakub@cloudflare.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        john.fastabend@gmail.com, daniel@iogearbox.net
+Date:   Sun, 09 Feb 2020 21:44:37 -0800
+Message-ID: <158131347731.21414.12120493483848386652.stgit@john-Precision-5820-Tower>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-References: <8f6b8979fb64bedf5cb406ba29146c5fa2539267.1576575253.git.ethercflow@gmail.com>
- <cover.1576629200.git.ethercflow@gmail.com> <7464919bd9c15f2496ca29dceb6a4048b3199774.1576629200.git.ethercflow@gmail.com>
- <51564b9e-35f0-3c73-1701-8e351f2482d7@iogearbox.net> <CABtjQmbh080cFr9e_V_vutb1fErRcCvw-bNNYeJHOcah-adFCA@mail.gmail.com>
- <20200116085943.GA270346@krava>
-In-Reply-To: <20200116085943.GA270346@krava>
-From:   Brendan Gregg <bgregg@netflix.com>
-Date:   Sun, 9 Feb 2020 20:43:17 -0800
-Message-ID: <CAJN39ogSo=bEEydp7s34AjtDVwXxw7_hQFrARWE4NXQwRZxSxw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v14 1/2] bpf: add new helper get_fd_path for
- mapping a file descriptor to a pathname
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Wenbo Zhang <ethercflow@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Networking <netdev@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 12:59 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Fri, Dec 20, 2019 at 11:35:08AM +0800, Wenbo Zhang wrote:
-> > > [ Wenbo, please keep also Al (added here) in the loop since he was providing
-> > >    feedback on prior submissions as well wrt vfs bits. ]
-> >
-> > Get it, thank you!
->
-> hi,
-> is this stuck on review? I'd like to see this merged ;-)
+Fix following build error. We could push a tcp.h header into one of the
+include paths, but I think its easy enough to simply pull in the three
+defines we need here. If we end up using more of tcp.h at some point
+we can pull it in later.
 
-Is this still waiting on someone? I'm writing some docs on analyzing
-file systems via syscall tracing and this will be a big improvement.
-Thanks,
+/home/john/git/bpf/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c: In function ‘connected_socket_v4’:
+/home/john/git/bpf/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c:20:11: error: ‘TCP_REPAIR_ON’ undeclared (first use in this function)
+  repair = TCP_REPAIR_ON;
+           ^
+/home/john/git/bpf/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c:20:11: note: each undeclared identifier is reported only once for each function it appears in
+/home/john/git/bpf/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c:29:11: error: ‘TCP_REPAIR_OFF_NO_WP’ undeclared (first use in this function)
+  repair = TCP_REPAIR_OFF_NO_WP;
 
-Brendan
+Then with fix,
 
->
-> we have bpftrace change using it already.. from that side:
->
-> Tested-by: Jiri Olsa <jolsa@kernel.org>
->
-> thanks,
-> jirka
->
+$ ./test_progs -n 44
+#44/1 sockmap create_update_free:OK
+#44/2 sockhash create_update_free:OK
+#44 sockmap_basic:OK
 
+Fixes: 5d3919a953c3c ("selftests/bpf: Test freeing sockmap/sockhash with a socket in it")
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+---
+ .../selftests/bpf/prog_tests/sockmap_basic.c       |    5 +++++
+ 1 file changed, 5 insertions(+)
 
--- 
-Brendan Gregg, Senior Performance Architect, Netflix
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+index 07f5b46..aa43e0b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+@@ -3,6 +3,11 @@
+ 
+ #include "test_progs.h"
+ 
++#define TCP_REPAIR		19	/* TCP sock is under repair right now */
++
++#define TCP_REPAIR_ON		1
++#define TCP_REPAIR_OFF_NO_WP	-1	/* Turn off without window probes */
++
+ static int connected_socket_v4(void)
+ {
+ 	struct sockaddr_in addr = {
+
