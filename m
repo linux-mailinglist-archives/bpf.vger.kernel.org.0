@@ -2,102 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9A5157D3F
-	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2020 15:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E33157D89
+	for <lists+bpf@lfdr.de>; Mon, 10 Feb 2020 15:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727546AbgBJORc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Feb 2020 09:17:32 -0500
-Received: from ivanoab7.miniserver.com ([37.128.132.42]:41484 "EHLO
-        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727434AbgBJORc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Feb 2020 09:17:32 -0500
-Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
-        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1j19sL-0004Uz-9I; Mon, 10 Feb 2020 14:17:25 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-        by jain.kot-begemot.co.uk with esmtp (Exim 4.92)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1j19sI-0000TK-TU; Mon, 10 Feb 2020 14:17:25 +0000
-Subject: Re: [PATCH v3] um: Fix some error handling in uml_vector_user_bpf()
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Jeff Dike <jdike@addtoit.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alex Dewar <alex.dewar@gmx.co.uk>,
-        linux-um@lists.infradead.org, bpf@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <20200128151000.kx2bwayuuxpuqn6t@kili.mountain>
-From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <cd66b933-c433-3d8a-8457-1de6c0716f49@cambridgegreys.com>
-Date:   Mon, 10 Feb 2020 14:17:22 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1727789AbgBJOja (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Feb 2020 09:39:30 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:37581 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726961AbgBJOja (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Feb 2020 09:39:30 -0500
+Received: by mail-qk1-f196.google.com with SMTP id c188so6656353qkg.4
+        for <bpf@vger.kernel.org>; Mon, 10 Feb 2020 06:39:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=6sX3ZJUT5rNQhs9T12yJVcQ5bB++UtlrbjT9atUBX7I=;
+        b=sb3OCgOC3oFJOLBbYLS4OhTTxH9DVd/5nqiq2IFIaw6GMGVWeEZNa7W+rSV70hMfBA
+         DhRtRAqsi4saeXuTBPqn14DnicXMAjJFj9dlsaT1Ce0BRgFMz9Nq/mueTk4+KLH/CmP/
+         An0Wcv8a8/yYYo8Uw6ce1o7l6NrILSeW+8Yr2V4dFv9YfMUWJs9ZXTirfiTAPDdDtWQ7
+         TGlDilNhyHMLRfm++DvLcd1SWvFrrSnq/ToNKA47GvoFLF0FkAVSIM590F1i6phoPFS4
+         EB6EgOfnefxGykaxQMQstPD5BH3qWlGUO4BfFXP+kuS+g7HXxmPr32PI6Hn23FJwumrg
+         lECg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=6sX3ZJUT5rNQhs9T12yJVcQ5bB++UtlrbjT9atUBX7I=;
+        b=ZNQc5aRbtXr6D+XzVW8b6cFPloSNQKWFw7NmcwsfDI5Ihe9JvL/W4/ZWC0B2Bu3TD/
+         TYQaxEktuRRnxWOD6HJS4sNLvnJOrGkCmE7cV3hweDu72UFa5HjgPayfxNxYwza8rW5X
+         wizSbj6ydc1FpVrsqyHsWtAB6ujK9EgB419Yqt+/I/ICYzgofU0tbPUg7mezp8nn2nkV
+         qXDQkHpF2aG9G1ShB+LBEqatK/9S1MMU0EsJx8Mpw54OdKklI52n8/i269L7uL3lD8PE
+         bNWEJpCfHUYd4cv9N6UE/HwRW33bKgiglwHGQmfGLoLxr+17NmGOSCB1d52NattJ4eiw
+         MmCQ==
+X-Gm-Message-State: APjAAAVlgPblQZAKSrVKYzokWa9D6x9UHnG/bLZhn4mXfub1gzO0HhLH
+        E2fQkqLJqgH7bFsrKdPg01eyhBUc1peMiMY/3unPpm7X
+X-Google-Smtp-Source: APXvYqyWwjZOOWNW58pVNWoQMfKfe9ZAIKwYS0UTMFNQCZ/9m9BCZIBIa1YQHh5vivCe5eR7o0QQFVHld7tl3Sy0Ve4=
+X-Received: by 2002:a05:620a:1656:: with SMTP id c22mr1708063qko.144.1581345569188;
+ Mon, 10 Feb 2020 06:39:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20200128151000.kx2bwayuuxpuqn6t@kili.mountain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -1.0
-X-Spam-Score: -1.0
-X-Clacks-Overhead: GNU Terry Pratchett
+Received: by 2002:ac8:2bc5:0:0:0:0:0 with HTTP; Mon, 10 Feb 2020 06:39:28
+ -0800 (PST)
+Reply-To: passey300@hotmail.com
+From:   Emerald Passey <andrewroger60@gmail.com>
+Date:   Mon, 10 Feb 2020 14:39:28 +0000
+Message-ID: <CAD9MNyMy6koSaDRK_3D2tH0ce4gpTrBSroN2qhWe+zf80ZUjaw@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 28/01/2020 15:27, Dan Carpenter wrote:
-> 1) The uml_vector_user_bpf() returns pointers so it should return NULL
->     instead of false.
-> 2) If the "bpf_prog" allocation failed, it would have eventually lead to
->     a crash.  We can't succeed after the error happens so it should just
->     return.
-> 
-> Fixes: 9807019a62dc ("um: Loadable BPF "Firmware" for vector drivers")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
-> v3: Fix screwed up subject.  Sorry.  Not my most shining hour.
-> v2: The first version broke the build.  Shame upon me.
-> 
->   arch/um/drivers/vector_user.c | 11 ++++++-----
->   1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-> index ddcd917be0af..1403cbadf92b 100644
-> --- a/arch/um/drivers/vector_user.c
-> +++ b/arch/um/drivers/vector_user.c
-> @@ -732,13 +732,14 @@ void *uml_vector_user_bpf(char *filename)
->   
->   	if (stat(filename, &statbuf) < 0) {
->   		printk(KERN_ERR "Error %d reading bpf file", -errno);
-> -		return false;
-> +		return NULL;
->   	}
->   	bpf_prog = uml_kmalloc(sizeof(struct sock_fprog), UM_GFP_KERNEL);
-> -	if (bpf_prog != NULL) {
-> -		bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
-> -		bpf_prog->filter = NULL;
-> -	}
-> +	if (bpf_prog == NULL)
-> +		return NULL;
-> +	bpf_prog->len = statbuf.st_size / sizeof(struct sock_filter);
-> +	bpf_prog->filter = NULL;
-> +
->   	ffd = os_open_file(filename, of_read(OPENFLAGS()), 0);
->   	if (ffd < 0) {
->   		printk(KERN_ERR "Error %d opening bpf file", -errno);
-> 
-
-Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+LS0gDQpPbMOhLCBjb21vIGVzdMOhPw0K
