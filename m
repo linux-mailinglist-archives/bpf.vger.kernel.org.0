@@ -2,174 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D40158C28
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 10:54:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F85D158ED1
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 13:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727264AbgBKJyL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Feb 2020 04:54:11 -0500
-Received: from mail-eopbgr150051.outbound.protection.outlook.com ([40.107.15.51]:55523
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728020AbgBKJyK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Feb 2020 04:54:10 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dsYNxvIzSUFiyF83pwb4m785XdRbMXWXowmG/ZVreeWtHYmdfaYqWG+mw9brV6OS/J18rCVdAJYLxfLzqwivk3M8efqzIl3/ymWVZlkBLq34sxwf+ho2nrFuFsj87XF10n/FmLLUhbHdvfOvgLhHex186TSsPJAdcfqmXzUYmHONtd8JQ01++RYGBaRbGFZAywLszpUHhCqv14mNo2uFv5J6V08uVTVHz1IPB/mtYRp3XSlWuBKH5MwXWx1ZHFZpAs6X43xKm8elQwN5pvuNF2CPC6g3s0n/kR9Z8GG8TjBOZ9P07dOsn8bqabCE2HwfGkFdRihNeK/Gw+zuz/QDTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PxsFyuSYFN6ARU4xdVgmKePHxDX7VfzbrTRH6KSahyQ=;
- b=W9VGJEFgChSAutUf7v0Fc8igkbSBBGnOPR0uOWFB41vYipP8IUqF+x8Mtw/er3OLgqIP5BlgbIzMqwqtaLqjBk2jALCJZ2/Mbdh+oEZuLvlX6Z/CuzZXXJiQoT/9gTNiRwKJxVRCbQ9PVRXVLujQpRzlqiS6ous3vVcufYiqvd3D6FSWeXFqbHKUkwxBGiHVn31L49CQWqJ4uTTkSj/UgBRhHdg3QZiv81Yk8UVbIHWYAGu5IFS6ZlVDEEqzkhK9PVdbyZd1F9SJiKz18nbkOeVnk9ibfui0K+KLTifD5vhARXoy0ANx+e00GIB1FYcL/NlNzaP00U352FaL9MsgWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PxsFyuSYFN6ARU4xdVgmKePHxDX7VfzbrTRH6KSahyQ=;
- b=UYGdKqu7ffndDuZTmk/1Rfbz0dm7eMNBe7D+QOLmg022ZLkEZWm2AfnxgrFh9+6fzFbTohHWNnCed+IDFT7gWFyVSAOmWU7l3N3s8M9OyN44XNGLsMk28Bi1eL6uaCNzqI2qBL18SDMCN8YS7Z0Ki1g6ZbF/R8xiOwD6sJ/JtCo=
-Received: from HE1PR0501MB2570.eurprd05.prod.outlook.com (10.168.126.17) by
- HE1PR0501MB2300.eurprd05.prod.outlook.com (10.168.29.138) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2707.23; Tue, 11 Feb 2020 09:53:54 +0000
-Received: from HE1PR0501MB2570.eurprd05.prod.outlook.com
- ([fe80::60c4:f0b4:dc7b:c7fc]) by HE1PR0501MB2570.eurprd05.prod.outlook.com
- ([fe80::60c4:f0b4:dc7b:c7fc%10]) with mapi id 15.20.2707.030; Tue, 11 Feb
- 2020 09:53:54 +0000
-From:   Maxim Mikityanskiy <maximmi@mellanox.com>
-To:     Magnus Karlsson <magnus.karlsson@intel.com>
-CC:     "jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "bjorn.topel@intel.com" <bjorn.topel@intel.com>,
-        "rgoodfel@isi.edu" <rgoodfel@isi.edu>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "maciejromanfijalkowski@gmail.com" <maciejromanfijalkowski@gmail.com>
-Subject: RE: [PATCH bpf] xsk: publish global consumer pointers when NAPI is
- finished
-Thread-Topic: [PATCH bpf] xsk: publish global consumer pointers when NAPI is
- finished
-Thread-Index: AQHV4CaXGckPhJY83Ua+L52EU3+kYKgVwXrg
-Date:   Tue, 11 Feb 2020 09:53:44 +0000
-Deferred-Delivery: Tue, 11 Feb 2020 09:53:40 +0000
-Message-ID: <HE1PR0501MB2570A5C385E2EA5A79CC1700D1180@HE1PR0501MB2570.eurprd05.prod.outlook.com>
-References: <1581348432-6747-1-git-send-email-magnus.karlsson@intel.com>
-In-Reply-To: <1581348432-6747-1-git-send-email-magnus.karlsson@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=maximmi@mellanox.com; 
-x-originating-ip: [77.75.144.194]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 9885e4ab-d73d-4ed7-edce-08d7aed84e7f
-x-ms-traffictypediagnostic: HE1PR0501MB2300:
-x-microsoft-antispam-prvs: <HE1PR0501MB2300B6578F2A0725B9ABD360D1180@HE1PR0501MB2300.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3826;
-x-forefront-prvs: 0310C78181
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(366004)(136003)(396003)(376002)(39860400002)(189003)(199004)(478600001)(316002)(53546011)(4326008)(2906002)(71200400001)(6506007)(54906003)(52536014)(86362001)(6666004)(8676002)(76116006)(7696005)(66476007)(5660300002)(6916009)(66446008)(26005)(8936002)(64756008)(66556008)(66946007)(33656002)(81166006)(55016002)(9686003)(186003)(81156014);DIR:OUT;SFP:1101;SCL:1;SRVR:HE1PR0501MB2300;H:HE1PR0501MB2570.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Y2KCBrDEIpOiLEJvsVgam5JhIXE1TGydeJzUf1OeBwN1iY9gshNsFwe/wRqWdJfHrZsuArumD1RjFniAePnm3dxfKt5l+JbvGN/kCjMxq7wEvi7l/1Xw5ETlwJQHA76Cw9wb6aL+DNjrE9fpYzAupHF0NTUCqWmp7JDvj+s7yWhMiWus8IZ5IEmx3AI1nyNyjr013xl7ekGCw7xMhnkHVjHZ+f+zY/eWrPkc2WOnczEI7x7EKmBjs7DUwjKCpNySn1MxwX6E1SjdmALjAIFetxif54kGYhwd6jLsXVuIh+l4ao4G+WBvHYX9Y0UZdemcfGl23ZdfX97EPsFhaSRjjVQo7BIMCS+RmosCrHCFGwg1GRQRrrGHjpBo6ykx+kQd162Qb3cCKELACazCoO/997slGV7hWQrxUAwQ25glcAiphukkf+KgM3JBkBa1lL4S
-x-ms-exchange-antispam-messagedata: BktyRGjB7ggzcdxAM6JC22BLMvif4RyILJ9gXbwlOAb9YiahRFUNNK23AI2/MVMl5Bd+/FkAPwv7ure4rwg9RUGIMsKyYWMMFzz1KqJvH57cX01IU/j5tJJn4cPnShPy2cFO4zyuIWJCnrn96a6eqg==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728088AbgBKMni (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Feb 2020 07:43:38 -0500
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:33361 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728070AbgBKMni (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Feb 2020 07:43:38 -0500
+Received: by mail-wr1-f68.google.com with SMTP id u6so12241415wrt.0
+        for <bpf@vger.kernel.org>; Tue, 11 Feb 2020 04:43:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qScZ2OQGzUYXuR6kAH88f9B9FETX7y4KOyCPzNNd570=;
+        b=F6kcxw2aIpOCljO93d1/LT58wt42RsUWIhyechuyPoYaZYHnDGhT/t1x0l3els26iO
+         xa2zSEN/RFIqGzLp/Qm73F/kCkab1SWK7xAMM0u1vZuw9ThZeIdHgnK/fkL6pKLDbaqz
+         uzbQq9otoYSlNfqquoXNQJgNgx+cy1Jk7s2ts=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qScZ2OQGzUYXuR6kAH88f9B9FETX7y4KOyCPzNNd570=;
+        b=C1PqjRa9vxkIWR53mOVqTI/UMblqXPGDhLnLnNri0vdS+VZfZXF7TbEZewvzgWB544
+         wK/TjtU8TY4xLqVeqIYnvOReiquMZl4oPFOeea5ZbxG3h3r01dOzl1tGvJCoPQG0Tq7Z
+         BxUpvVjafQPX4ckoVPjSBvR1Tcm2WZosa2PDDocs/9ljE2yfBXCr4f79MEztCPVuM/g/
+         VfpOaIrsI6MDZa3UUkyvWmHzw4mh1SkzLI3K2wvuV5uq4Lo0Bjp+T2YVmEfEHYXy9Qxy
+         +STEYRfTnBap5X1qNcxgLIr/zOHZWoMP2YWGiHzlOhdXaNPL3IheuoE+8wwMloo0M36C
+         MKzQ==
+X-Gm-Message-State: APjAAAWujORPzkcqiZfzXI38jxX+MxEJsMBS8Xe74ZCaVQNO97lP19mM
+        DIFgV/AsmXIm6c/Rt3zxLKRihPKwwvM=
+X-Google-Smtp-Source: APXvYqwuTAbA4laJrO9pymMZOyFSIlGy7FFR+JJ08nww0DqckH8bzRCFXGZWNtaq6pCXQYJWjW0lsg==
+X-Received: by 2002:adf:b193:: with SMTP id q19mr8365117wra.78.1581425016848;
+        Tue, 11 Feb 2020 04:43:36 -0800 (PST)
+Received: from google.com ([2a00:79e0:42:204:8a21:ba0c:bb42:75ec])
+        by smtp.gmail.com with ESMTPSA id b13sm5269864wrq.48.2020.02.11.04.43.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Feb 2020 04:43:36 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Tue, 11 Feb 2020 13:43:34 +0100
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@google.com>,
+        Thomas Garnier <thgarnie@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Garnier <thgarnie@chromium.org>,
+        Michael Halcrow <mhalcrow@google.com>,
+        Paul Turner <pjt@google.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Jann Horn <jannh@google.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Christian Brauner <christian@brauner.io>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel-team@fb.com
+Subject: Re: [PATCH bpf-next v3 04/10] bpf: lsm: Add mutable hooks list for
+ the BPF LSM
+Message-ID: <20200211124334.GA96694@google.com>
+References: <20200123152440.28956-1-kpsingh@chromium.org>
+ <20200123152440.28956-5-kpsingh@chromium.org>
+ <20200211031208.e6osrcathampoog7@ast-mbp>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9885e4ab-d73d-4ed7-edce-08d7aed84e7f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Feb 2020 09:53:54.8070
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sGKyfN4tx4qpgbFIyjcm7wVtVmOfxr04Ee+sULY2NpkmTOZ8tZwJfksTZV4vun5d+EGIy5nWy/c1SzfSw8fTiw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0501MB2300
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200211031208.e6osrcathampoog7@ast-mbp>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-02-10 17:27, Magnus Karlsson wrote:
-> The commit 4b638f13bab4 ("xsk: Eliminate the RX batch size")
-> introduced a much more lazy way of updating the global consumer
-> pointers from the kernel side, by only doing so when running out of
-> entries in the fill or Tx rings (the rings consumed by the
-> kernel). This can result in a deadlock with the user application if
-> the kernel requires more than one entry to proceed and the application
-> cannot put these entries in the fill ring because the kernel has not
-> updated the global consumer pointer since the ring is not empty.
->=20
-> Fix this by publishing the local kernel side consumer pointer whenever
-> we have completed Rx or Tx processing in the kernel. This way, user
-> space will have an up-to-date view of the consumer pointers whenever it
-> gets to execute in the one core case (application and driver on the
-> same core), or after a certain number of packets have been processed
-> in the two core case (application and driver on different cores).
->=20
-> A side effect of this patch is that the one core case gets better
-> performance, but the two core case gets worse. The reason that the one
-> core case improves is that updating the global consumer pointer is
-> relatively cheap since the application by definition is not running
-> when the kernel is (they are on the same core) and it is beneficial
-> for the application, once it gets to run, to have pointers that are
-> as up to date as possible since it then can operate on more packets
-> and buffers. In the two core case, the most important performance
-> aspect is to minimize the number of accesses to the global pointers
-> since they are shared between two cores and bounces between the caches
-> of those cores. This patch results in more updates to global state,
-> which means lower performance in the two core case.
->=20
-> Fixes: 4b638f13bab4 ("xsk: Eliminate the RX batch size")
-> Reported-by: Ryan Goodfellow <rgoodfel@isi.edu>
-> Reported-by: Maxim Mikityanskiy <maximmi@mellanox.com>
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+On 10-Feb 19:12, Alexei Starovoitov wrote:
+> On Thu, Jan 23, 2020 at 07:24:34AM -0800, KP Singh wrote:
+> > +#define CALL_BPF_LSM_INT_HOOKS(FUNC, ...) ({			\
+> > +	int _ret = 0;						\
+> > +	do {							\
+> > +		struct security_hook_list *P;			\
+> > +		int _idx;					\
+> > +								\
+> > +		if (hlist_empty(&bpf_lsm_hook_heads.FUNC))	\
+> > +			break;					\
+> > +								\
+> > +		_idx = bpf_lsm_srcu_read_lock();		\
+> > +								\
+> > +		hlist_for_each_entry(P,				\
+> > +			&bpf_lsm_hook_heads.FUNC, list) {	\
+> > +			_ret = P->hook.FUNC(__VA_ARGS__);		\
+> > +			if (_ret && IS_ENABLED(CONFIG_SECURITY_BPF_ENFORCE)) \
+> > +				break;				\
+> > +		}						\
+> > +		bpf_lsm_srcu_read_unlock(_idx);			\
+> > +	} while (0);						\
+> > +	IS_ENABLED(CONFIG_SECURITY_BPF_ENFORCE) ? _ret : 0;	\
+> > +})
+> 
+> This extra CONFIG_SECURITY_BPF_ENFORCE doesn't make sense to me.
 
-Acked-by: Maxim Mikityanskiy <maximmi@mellanox.com>
+We found it easier to debug the programs if enforcement is disabled.
+But we can remove this option if you feel strongly about it.
 
-> ---
->   net/xdp/xsk.c       | 2 ++
->   net/xdp/xsk_queue.h | 3 ++-
->   2 files changed, 4 insertions(+), 1 deletion(-)
->=20
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index df60048..356f90e 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -217,6 +217,7 @@ static int xsk_rcv(struct xdp_sock *xs, struct xdp_bu=
-ff *xdp)
->   static void xsk_flush(struct xdp_sock *xs)
->   {
->   	xskq_prod_submit(xs->rx);
-> +	__xskq_cons_release(xs->umem->fq);
->   	sock_def_readable(&xs->sk);
->   }
->  =20
-> @@ -304,6 +305,7 @@ void xsk_umem_consume_tx_done(struct xdp_umem *umem)
->  =20
->   	rcu_read_lock();
->   	list_for_each_entry_rcu(xs, &umem->xsk_list, list) {
-> +		__xskq_cons_release(xs->tx);
->   		xs->sk.sk_write_space(&xs->sk);
->   	}
->   	rcu_read_unlock();
-> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-> index bec2af1..89a01ac 100644
-> --- a/net/xdp/xsk_queue.h
-> +++ b/net/xdp/xsk_queue.h
-> @@ -271,7 +271,8 @@ static inline void xskq_cons_release(struct xsk_queue=
- *q)
->   {
->   	/* To improve performance, only update local state here.
->   	 * Reflect this to global state when we get new entries
-> -	 * from the ring in xskq_cons_get_entries().
-> +	 * from the ring in xskq_cons_get_entries() and whenever
-> +	 * Rx or Tx processing are completed in the NAPI loop.
->   	 */
->   	q->cached_cons++;
->   }
->
+> Why do all the work for bpf-lsm and ignore return code? Such framework already
+> exists. For audit only case the user could have kprobed security_*() in
+> security/security.c and had access to exactly the same data. There is no need
+> in any of these patches if audit the only use case.
+> Obviously bpf-lsm has to be capable of making go/no-go decision, so
+> my preference is to drop this extra kconfig knob.
+> I think the agreement seen in earlier comments in this thread that the prefered
+> choice is to always have bpf-based lsm to be equivalent to LSM_ORDER_LAST. In
+> such case how about using bpf-trampoline fexit logic instead?
+
+Even if the BPF LSM is LSM_ORDER_LAST this is still different from
+adding a trampoline to the exit of the security hooks for a few other
+reasons.
+
+> Pros:
+> - no changes to security/ directory
+
+* We do need to initialize the BPF LSM as a proper LSM (i.e. in
+  security/bpf) because it needs access to security blobs. This is
+  only possible statically for now as they should be set after boot
+  time to provide guarantees to any helper that uses information in
+  security blobs. I have proposed how we could make this dynamic as a
+  discussion topic for the BPF conference:
+
+    https://lore.kernel.org/bpf/20200127171516.GA2710@chromium.org
+
+  As you can see from some of the prototype use cases e.g:
+
+    https://github.com/sinkap/linux-krsi/blob/patch/v1/examples/samples/bpf/lsm_detect_exec_unlink.c
+
+  that they do rely on security blobs and that they are key in doing
+  meaningful security analysis.
+
+* When using the semantic provided by fexit, the BPF LSM program will
+  always be executed and will be able to override / clobber the
+  decision of LSMs which appear before it in the ordered list. This
+  semantic is very different from what we currently have (i.e. the BPF
+  LSM hook is only called if all the other LSMs allow the action) and
+  seems to be bypassing the LSM framework.
+
+* Not all security_* wrappers simply call the attached hooks and return
+  their exit code and not all of them pass the same arguments to the
+  hook e.g. security_bprm_check, security_file_open,
+  security_task_alloc to just name a few. Illustrating this further
+  using security_task_alloc as an example:
+
+	rc = call_int_hook(task_alloc, 0, task, clone_flags);
+	if (unlikely(rc))
+		security_task_free(task);
+	return rc;
+
+Which means we would leak task_structs in this case. While
+call_int_hook is sort of equivalent to the fexit trampoline for most
+hooks, it's not really the case for some (quite important) LSM hooks.
+
+- KP
+
+> - no changes to call_int_hook() macro
+> - patches 4, 5, 6 no longer necessary
+> - when security is off all security_*() hooks do single
+>   if (hlist_empty(&bpf_lsm_hook_heads.FUNC)) check.
+>   With patch 4 there will two such checks. Tiny perf penalty.
+>   With fexit approach there will be no extra check.
+> - fexit approach is fast even on kernels compiled with retpoline, since
+>   its using direct calls
+> Cons:
+> - bpf trampoline so far is x86 only and arm64 support is wip
+> 
+> By plugging into fexit I'm proposing to let bpf-lsm prog type modify return
+> value. Currently bpf-fexit prog type has read-only access to it. Adding write
+> access is a straightforward verifier change. The bpf progs from patch 9 will
+> still look exactly the same way:
+> SEC("lsm/file_mprotect")
+> int BPF_PROG(mprotect_audit, struct vm_area_struct *vma,
+>             unsigned long reqprot, unsigned long prot) { ... }
+> The difference that libbpf will be finding btf_id of security_file_mprotect()
+> function and adding fexit trampoline to it instead of going via
+> security_list_options and its own lsm_hook_idx uapi. I think reusing existing
+> tracing facilities to attach and multiplex multiple programs is cleaner. More
+> code reuse. Unified testing of lsm and tracing, etc.
