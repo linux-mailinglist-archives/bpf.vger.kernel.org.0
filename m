@@ -2,155 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6781B15995B
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 20:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3638159968
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 20:09:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729610AbgBKTDf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Feb 2020 14:03:35 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:39365 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729542AbgBKTDe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Feb 2020 14:03:34 -0500
-Received: by mail-qt1-f193.google.com with SMTP id c5so8802812qtj.6;
-        Tue, 11 Feb 2020 11:03:34 -0800 (PST)
+        id S1729905AbgBKTJt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Feb 2020 14:09:49 -0500
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:38649 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728295AbgBKTJt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Feb 2020 14:09:49 -0500
+Received: by mail-pg1-f194.google.com with SMTP id d6so6225723pgn.5;
+        Tue, 11 Feb 2020 11:09:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9MvmwcqVniLpsEakuGLvwQkyfWaIncNOFXlu99UDQZU=;
-        b=ImCNXH1/OQiJ6Yp1fH0YHRGub6GjWrqLdgpI0ROAGsNyUrUzVj3oNWWnzLs83mcJQO
-         E0Lh6zpK0ztv3p0A7RN1OZw9bWmzWJ6yC2l32E0tRxS02n2ktsEBcW2RWumJbycQXL6H
-         lh26Gm1ZT75wXDmrdGtStKtlCS2TctZgZyxdgbV9RejFslpLN2ZOUx9Eme4Eor2TV/8c
-         7H0HSaUo9U5qMldBMYN0HKz1/y9dkWT6w4pjR7dsy7xdNDeraV3FjTVwSa5lrN1EqOy3
-         0vMhwLPZrwVleXaQn1LjDPwydDl/CCCv/r0XPVovhlk73IFdLEfUgz5V1wXK+EPP3ocA
-         eYoQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=DdsrzRs5GOQlNR32edutZ6f0+7+c3wenHW9tPk91IXQ=;
+        b=jUFg2P2wPWe5n8gJz2v94k0wIKdVuT2M2HF3uq3iA7aKhI+IkXcLVhjY8zpCZG9SNY
+         9cNfTMW/PveAoPemS2Q/VOoo9/R26xUGAfBgCeUAXxNp7R0RAjsP57uQm2dhZBbNFLLD
+         E5FlwyYdXnPAAOweUrUVacckqkfiuxwg10oTX5F7VN2Zn4bkd906Tv8xeuSFNQAZ08MV
+         hi/3nSZONHkfRrnxoujljl9n6Z0+TdrmZXdkBE08kIu49khw+C3sw8j0fekV8BymxxZj
+         wR/dHEo3QGbHSOhTTEjK6gF1fM4siv+fgj2LimhxzE3E/eHaCbLP8FfQD5cR/B94n2BE
+         +6SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9MvmwcqVniLpsEakuGLvwQkyfWaIncNOFXlu99UDQZU=;
-        b=XB/luWO3FgX1EvdzsKghmRIy5jY943xpGP+Z94fDDGIl0ejzZCq1R0HEIjM5/xAGtI
-         0btSHwluSkU7aDCftRX8J00Q5xX83OdCc7tHxdej3/hEu9haFJ3WGkB0grxLykrof5bd
-         3wJVajwt6LtGA16rnv1M3E880iVNbgyt3RF9soNV1rNjntzXZ8oolJ8XcZ1YLS7hBRDc
-         0VleWG1pzWna4uUP9II6sRkRzPROfMm7Brlyicii5yozIS7bCFz7IJl/veZHNVOoCjnF
-         K/k1a0QxjYQf5LtzJs438wzYlPoAq7Whgsro3m3np9DL1FQ+zvrmBh3ZTVDJAlg4mtii
-         qBpw==
-X-Gm-Message-State: APjAAAVESBdY/FpQHAV4x/Dwd19/enmudNjMt6K+HIfT5JE3ZyHdTEtO
-        eOwq5T2/Z20ZJSiSwIopR8BZk4OlcqNFDkU9XaU=
-X-Google-Smtp-Source: APXvYqzs8eJxtNAq+53OhfBGwzTzgKyeUQKwsKhQhqaNFVOVn0+MN0uh87KUqioI0iWNccCRpg1FO5dtSG9kllphLJA=
-X-Received: by 2002:ac8:1385:: with SMTP id h5mr3718358qtj.59.1581447813900;
- Tue, 11 Feb 2020 11:03:33 -0800 (PST)
-MIME-Version: 1.0
-References: <20200208154209.1797988-1-jolsa@kernel.org> <20200208154209.1797988-14-jolsa@kernel.org>
-In-Reply-To: <20200208154209.1797988-14-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 11 Feb 2020 11:03:23 -0800
-Message-ID: <CAEf4BzZM-pc4Yva8kKsuD6QjOY8bVCGUzDJCdoeZzVOTc2zV2A@mail.gmail.com>
-Subject: Re: [PATCH 13/14] bpf: Add dispatchers to kallsyms
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=DdsrzRs5GOQlNR32edutZ6f0+7+c3wenHW9tPk91IXQ=;
+        b=buPmm9/6wvTFdCdY2Ko5zwHbj9Tkho7EMlXmjwKMHRqpQDBTVCli88XqDQYw9g2Oww
+         nxRJyFfUEQCVp38CTfR/1GCAwRjLbskQ9cptamK7iQ2FQENlRanUIwKusPejoYkgb0jg
+         3QSU/zgbZomqDA9jFT86YpxlExFCN5iNBA6sAmuIb5Q0wZX8T1Duro76H+Roj4kvXBbn
+         f2JUI7MZf6FlitrGra3tRDOX9A0SdXH9c8h+dUI0d9TQke8jBbt0tyttmWS3ubSqPqUv
+         sOu8t2IwKTpgciI19gcrKEZpQd39esMhAu0dgex9z/4H/hZzllBbau/JamSNWPSMWsGw
+         JznA==
+X-Gm-Message-State: APjAAAWPZIOl0OIiRXTXVJdIeIjdPEprdaQ7NEMVBxk4NmxNAwIUdf/c
+        h8Jy9yjuRJjFhb6p4ghgIy8=
+X-Google-Smtp-Source: APXvYqzRHkBLhol9enkRUQh0FR/hutR9VwxiVXEvgSOpAc6SqnqoNFvmuuWvGmS6H9lHdEVKdyxi7w==
+X-Received: by 2002:aa7:951c:: with SMTP id b28mr4453233pfp.97.1581448187897;
+        Tue, 11 Feb 2020 11:09:47 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:200::1:aeb4])
+        by smtp.gmail.com with ESMTPSA id v8sm4989689pfn.172.2020.02.11.11.09.46
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 11 Feb 2020 11:09:47 -0800 (PST)
+Date:   Tue, 11 Feb 2020 11:09:45 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jann Horn <jannh@google.com>
+Cc:     KP Singh <kpsingh@chromium.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@google.com>,
+        Thomas Garnier <thgarnie@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@redhat.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Garnier <thgarnie@chromium.org>,
+        Michael Halcrow <mhalcrow@google.com>,
+        Paul Turner <pjt@google.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Christian Brauner <christian@brauner.io>,
+        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: BPF LSM and fexit [was: [PATCH bpf-next v3 04/10] bpf: lsm: Add
+ mutable hooks list for the BPF LSM]
+Message-ID: <20200211190943.sysdbz2zuz5666nq@ast-mbp>
+References: <20200123152440.28956-1-kpsingh@chromium.org>
+ <20200123152440.28956-5-kpsingh@chromium.org>
+ <20200211031208.e6osrcathampoog7@ast-mbp>
+ <20200211124334.GA96694@google.com>
+ <20200211175825.szxaqaepqfbd2wmg@ast-mbp>
+ <CAG48ez25mW+_oCxgCtbiGMX07g_ph79UOJa07h=o_6B6+Q-u5g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez25mW+_oCxgCtbiGMX07g_ph79UOJa07h=o_6B6+Q-u5g@mail.gmail.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Feb 8, 2020 at 7:43 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Adding dispatchers to kallsyms. It's displayed as
->   bpf_dispatcher_<NAME>
->
-> where NAME is the name of dispatcher.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  include/linux/bpf.h     | 19 ++++++++++++-------
->  kernel/bpf/dispatcher.c |  6 ++++++
->  2 files changed, 18 insertions(+), 7 deletions(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index b91bac10d3ea..837cdc093d2c 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -520,6 +520,7 @@ struct bpf_dispatcher {
->         int num_progs;
->         void *image;
->         u32 image_off;
-> +       struct bpf_ksym ksym;
->  };
->
->  static __always_inline unsigned int bpf_dispatcher_nop_func(
-> @@ -535,13 +536,17 @@ struct bpf_trampoline *bpf_trampoline_lookup(u64 ke=
-y);
->  int bpf_trampoline_link_prog(struct bpf_prog *prog);
->  int bpf_trampoline_unlink_prog(struct bpf_prog *prog);
->  void bpf_trampoline_put(struct bpf_trampoline *tr);
-> -#define BPF_DISPATCHER_INIT(name) {                    \
-> -       .mutex =3D __MUTEX_INITIALIZER(name.mutex),       \
-> -       .func =3D &name##_func,                           \
-> -       .progs =3D {},                                    \
-> -       .num_progs =3D 0,                                 \
-> -       .image =3D NULL,                                  \
-> -       .image_off =3D 0                                  \
-> +#define BPF_DISPATCHER_INIT(_name) {                           \
-> +       .mutex =3D __MUTEX_INITIALIZER(_name.mutex),              \
-> +       .func =3D &_name##_func,                                  \
-> +       .progs =3D {},                                            \
-> +       .num_progs =3D 0,                                         \
-> +       .image =3D NULL,                                          \
-> +       .image_off =3D 0,                                         \
-> +       .ksym =3D {                                               \
-> +               .name =3D #_name,                                 \
-> +               .lnode =3D LIST_HEAD_INIT(_name.ksym.lnode),      \
-> +       },                                                      \
->  }
->
->  #define DEFINE_BPF_DISPATCHER(name)                                    \
-> diff --git a/kernel/bpf/dispatcher.c b/kernel/bpf/dispatcher.c
-> index b3e5b214fed8..8771d2cc5840 100644
-> --- a/kernel/bpf/dispatcher.c
-> +++ b/kernel/bpf/dispatcher.c
-> @@ -152,6 +152,12 @@ void bpf_dispatcher_change_prog(struct bpf_dispatche=
-r *d, struct bpf_prog *from,
->         if (!changed)
->                 goto out;
->
-> +       if (!prev_num_progs)
-> +               bpf_image_ksym_add(d->image, &d->ksym);
-> +
-> +       if (!d->num_progs)
-> +               bpf_ksym_del(&d->ksym);
-> +
->         bpf_dispatcher_update(d, prev_num_progs);
+On Tue, Feb 11, 2020 at 07:44:05PM +0100, Jann Horn wrote:
+> On Tue, Feb 11, 2020 at 6:58 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> > On Tue, Feb 11, 2020 at 01:43:34PM +0100, KP Singh wrote:
+> [...]
+> > > * When using the semantic provided by fexit, the BPF LSM program will
+> > >   always be executed and will be able to override / clobber the
+> > >   decision of LSMs which appear before it in the ordered list. This
+> > >   semantic is very different from what we currently have (i.e. the BPF
+> > >   LSM hook is only called if all the other LSMs allow the action) and
+> > >   seems to be bypassing the LSM framework.
+> >
+> > It that's a concern it's trivial to add 'if (RC == 0)' check to fexit
+> > trampoline generator specific to lsm progs.
+> [...]
+> > Using fexit mechanism and bpf_sk_storage generalization is
+> > all that is needed. None of it should touch security/*.
+> 
+> If I understand your suggestion correctly, that seems like a terrible
+> idea to me from the perspective of inspectability and debuggability.
+> If at runtime, a function can branch off elsewhere to modify its
+> decision, I want to see that in the source code. If someone e.g.
+> changes the parameters or the locking rules around a security hook,
+> how are they supposed to understand the implications if that happens
+> through some magic fexit trampoline that is injected at runtime?
 
-On slightly unrelated note: seems like bpf_dispatcher_update won't
-propagate any lower-level errors back, which seems pretty bad as a
-bunch of stuff can go wrong.
-
-Bj=C3=B6rn, was it a conscious decision or this just slipped through the cr=
-acks?
-
-Jiri, reason I started looking at this was twofold:
-1. you add/remove symbol before dispatcher is updated, which is
-different order from BPF trampoline updates. I think updating symbols
-after successful update makes more sense, no?
-2. I was wondering if bpf_dispatcher_update() could return 0/1 (and <0
-on error, of course), depending on whether dispatcher is present or
-not. Though I'm not hard set on this.
-
->  out:
->         mutex_unlock(&d->mutex);
-> --
-> 2.24.1
->
+I'm not following the concern. There is error injection facility that is
+heavily used with and without bpf. In this case there is really no difference
+whether trampoline is used with direct call or indirect callback via function
+pointer. Both will jump to bpf prog. The _source code_ of bpf program will
+_always_ be available for humans to examine via "bpftool prog dump" since BTF
+is required. So from inspectability and debuggability point of view lsm+bpf
+stuff is way more visible than any builtin LSM. At any time people will be able
+to see what exactly is running on the system. Assuming folks can read C code.
