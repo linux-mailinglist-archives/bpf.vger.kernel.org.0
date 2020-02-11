@@ -2,164 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BBF61599D2
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 20:32:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5517A1599DD
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 20:36:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730465AbgBKTcb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Feb 2020 14:32:31 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:40470 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728849AbgBKTcb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Feb 2020 14:32:31 -0500
-Received: by mail-qk1-f194.google.com with SMTP id b7so11306080qkl.7;
-        Tue, 11 Feb 2020 11:32:30 -0800 (PST)
+        id S1731684AbgBKTgp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Feb 2020 14:36:45 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:45275 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730960AbgBKTgp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Feb 2020 14:36:45 -0500
+Received: by mail-ot1-f65.google.com with SMTP id 59so11303021otp.12
+        for <bpf@vger.kernel.org>; Tue, 11 Feb 2020 11:36:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Jv32+hQlvyuqWyQZrfmL7SM1lCUMOPRtNgkxMCMMRjc=;
-        b=o/Bs8QDgs29PFBmp+uMx+YyqHqyX9gug4WxKxnazsRYu6qnpmicfba9R7CkyqVmpwO
-         Vr+kdV9BiNqbUF/ew7oOTCuMHSrGRDPmcIe8ADMqcQwE5FmY0H7uGbuBaHdoyuY0VEJS
-         VpSRKEavyELmFEjxeDRGvaXRpp/jpfjCNoVq6TmyrrVtrPTZfaURUSfaoz7OjSeDRIVm
-         gfGeXQFODdAKKzf58mYhI1wRcUHzs4ewFeaioIr6Bp5p0kqDPKjLFCJ2nTmdmZGrpQay
-         w7N1JS0btthILjiPzXAr8sPJl/4s524Z2mptG+bTIwoGgThpvXf37rPt5K+xthXKKolc
-         WFgQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vxqF+VNeMWZGe5ApL4PlqNlBNetErOePHfuXXbpvPY8=;
+        b=IZhloKZlSi90VZuyomEqK+wb28Ls462eDYugPvp1S7ESpuRD4Rfl6jLj2xl2jhqEVH
+         7ho7YjhbHTbVYCyzKyNalVjYOxoQbOO1JHWlIPbYbpej0Q62uLfuEXSWZcUj9KfIv0Gd
+         QZTUlFVV5gdTcvaT6/P165+oF7SbzBPL2GjYEKXQXLq2ZfuVBlj7RCbVUnqa+L7lBdwX
+         o2d6FYR7ZmxhttJWZM06H/Cjb1GxGmlwA/tAi+NjvbFsx5T3j0Qt8V1ZOVOua8p2nBVG
+         bXPVjnPAiq0mc8uFLwuc2NsrL8+cV53joMVXnRy60OaZKL5CJsjqbXpW1cJaEECq7a9z
+         F8aA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Jv32+hQlvyuqWyQZrfmL7SM1lCUMOPRtNgkxMCMMRjc=;
-        b=tc/EoLcPEgXtWRZlbfz5pa+7hmYh+LgX8Ju0dUZG8fAh2KuoCrt5dpz+qO06YM/5JB
-         8wH4A+dSx9SaPvPbZIi+4BhPphzV61TUG6Ti38grtlkMKpkbKz/jgV5ZPUbcAXwRQ2Ku
-         dF8zJbfHKPl/wqGXELZJyYNgipHZwO5zPGVi3zaHDiTnIRV30LzRNxSCUc93jKVPLsFJ
-         xpIyx09zlmKzYnO6Qvjke0H7yhXP6aHBaavE5tzVIEkby5DIAMbBDwg53zgqF5b1jYPo
-         ls/+42ieaq7rViwKxWcFOlCI+UfJ15y5IWOrrvKpc6nJdZRcyOpjPAWKHyor28WIjebp
-         UIIg==
-X-Gm-Message-State: APjAAAU2h3YGEhfqkjIVcA7/rdMhjoDwX/PKM7WVuxYK4zmaHweTATx8
-        N67Wrk758Lsw3ngfp6Q7gUg=
-X-Google-Smtp-Source: APXvYqx7hgyhFuIjIj0kJ8Hkkx3RAoznfr4OmkQ2Zz6673Q4D6ZSqHyiIAc3mt+ZsUHoGzqEr7wu5w==
-X-Received: by 2002:a05:620a:140d:: with SMTP id d13mr3297259qkj.450.1581449549652;
-        Tue, 11 Feb 2020 11:32:29 -0800 (PST)
-Received: from quaco.ghostprotocols.net ([177.195.209.176])
-        by smtp.gmail.com with ESMTPSA id v10sm2755866qtj.26.2020.02.11.11.32.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Feb 2020 11:32:29 -0800 (PST)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id CA36840A7D; Tue, 11 Feb 2020 16:32:23 -0300 (-03)
-Date:   Tue, 11 Feb 2020 16:32:23 -0300
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vxqF+VNeMWZGe5ApL4PlqNlBNetErOePHfuXXbpvPY8=;
+        b=rTYYXxNF+Z9q1+F4S2Z2UuUaP+JyZ/RBK1/O/G880mMZ6CMVhdeObAT9p6vW2zwDqj
+         5PdDk/cADA5sLSRRzXX6++t+RvrSeIUt1orkaX4Lm1D9XDUj9XPrcMfI2HqqGYEf66XI
+         PQ5ekiLLd4JbsF+pN/px8+si4Xu4HUNPM/BlSsI49Wv8f5S7JvHayEbHqQ/y5GQYeiEB
+         i15dZ3cafV2NKjw3bWCrazT2kQCSzZbBsL4JLTq7UPUBFHj5kau7dS4y7N5yJ6CQ4Adq
+         xE9rmNYU5Z7OJqcZD+s3TVmko9M8jGF1FN0wUdqs/oSbLkIhm7r/KN/G9/QMbcFnxbpf
+         /9Yw==
+X-Gm-Message-State: APjAAAXYfC7VKTHTMH5CUCVhdle1KAtGbJqPlGh8mwY1xPQvcSc/zbR3
+        GKD41IXK3ubjzKQLZSIoSkQMKABIuwFYcnmZ/zJURQ==
+X-Google-Smtp-Source: APXvYqyyrnBUsCabs/CQ6Qhae2j7QYXzMx9OL94W1lELvhgv0t9KfhU7xnAJyW+zD5QqB4wH0A0UXDdV+EVyKDdBOx0=
+X-Received: by 2002:a9d:65c1:: with SMTP id z1mr6740319oth.180.1581449804497;
+ Tue, 11 Feb 2020 11:36:44 -0800 (PST)
+MIME-Version: 1.0
+References: <20200123152440.28956-1-kpsingh@chromium.org> <20200123152440.28956-5-kpsingh@chromium.org>
+ <20200211031208.e6osrcathampoog7@ast-mbp> <20200211124334.GA96694@google.com>
+ <20200211175825.szxaqaepqfbd2wmg@ast-mbp> <CAG48ez25mW+_oCxgCtbiGMX07g_ph79UOJa07h=o_6B6+Q-u5g@mail.gmail.com>
+ <20200211190943.sysdbz2zuz5666nq@ast-mbp>
+In-Reply-To: <20200211190943.sysdbz2zuz5666nq@ast-mbp>
+From:   Jann Horn <jannh@google.com>
+Date:   Tue, 11 Feb 2020 20:36:18 +0100
+Message-ID: <CAG48ez2gvo1dA4P1L=ASz7TRfbH-cgLZLmOPmr0NweayL-efLw@mail.gmail.com>
+Subject: Re: BPF LSM and fexit [was: [PATCH bpf-next v3 04/10] bpf: lsm: Add
+ mutable hooks list for the BPF LSM]
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     KP Singh <kpsingh@chromium.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@google.com>,
+        Thomas Garnier <thgarnie@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@redhat.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Subject: Re: [PATCH 00/14] bpf: Add trampoline and dispatcher to
- /proc/kallsyms
-Message-ID: <20200211193223.GI3416@kernel.org>
-References: <20200208154209.1797988-1-jolsa@kernel.org>
- <CAJ+HfNhBDU9c4-0D5RiHFZBq_LN7E=k8=rhL+VbmxJU7rdDBxQ@mail.gmail.com>
- <20200210161751.GC28110@krava>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200210161751.GC28110@krava>
-X-Url:  http://acmel.wordpress.com
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Garnier <thgarnie@chromium.org>,
+        Michael Halcrow <mhalcrow@google.com>,
+        Paul Turner <pjt@google.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Christian Brauner <christian@brauner.io>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Feb 10, 2020 at 05:17:51PM +0100, Jiri Olsa escreveu:
-> On Mon, Feb 10, 2020 at 04:51:08PM +0100, Björn Töpel wrote:
-> > On Sat, 8 Feb 2020 at 16:42, Jiri Olsa <jolsa@kernel.org> wrote:
-> > > this patchset adds trampoline and dispatcher objects
-> > > to be visible in /proc/kallsyms. The last patch also
-> > > adds sorting for all bpf objects in /proc/kallsyms.
+On Tue, Feb 11, 2020 at 8:09 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+> On Tue, Feb 11, 2020 at 07:44:05PM +0100, Jann Horn wrote:
+> > On Tue, Feb 11, 2020 at 6:58 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > > On Tue, Feb 11, 2020 at 01:43:34PM +0100, KP Singh wrote:
+> > [...]
+> > > > * When using the semantic provided by fexit, the BPF LSM program will
+> > > >   always be executed and will be able to override / clobber the
+> > > >   decision of LSMs which appear before it in the ordered list. This
+> > > >   semantic is very different from what we currently have (i.e. the BPF
+> > > >   LSM hook is only called if all the other LSMs allow the action) and
+> > > >   seems to be bypassing the LSM framework.
+> > >
+> > > It that's a concern it's trivial to add 'if (RC == 0)' check to fexit
+> > > trampoline generator specific to lsm progs.
+> > [...]
+> > > Using fexit mechanism and bpf_sk_storage generalization is
+> > > all that is needed. None of it should touch security/*.
+> >
+> > If I understand your suggestion correctly, that seems like a terrible
+> > idea to me from the perspective of inspectability and debuggability.
+> > If at runtime, a function can branch off elsewhere to modify its
+> > decision, I want to see that in the source code. If someone e.g.
+> > changes the parameters or the locking rules around a security hook,
+> > how are they supposed to understand the implications if that happens
+> > through some magic fexit trampoline that is injected at runtime?
+>
+> I'm not following the concern. There is error injection facility that is
+> heavily used with and without bpf. In this case there is really no difference
+> whether trampoline is used with direct call or indirect callback via function
+> pointer. Both will jump to bpf prog. The _source code_ of bpf program will
+> _always_ be available for humans to examine via "bpftool prog dump" since BTF
+> is required. So from inspectability and debuggability point of view lsm+bpf
+> stuff is way more visible than any builtin LSM. At any time people will be able
+> to see what exactly is running on the system. Assuming folks can read C code.
 
-> > Thanks for working on this!
+You said that you want to use fexit without touching security/, which
+AFAIU means that the branch from security_*() to the BPF LSM will be
+invisible in the *kernel's* source code unless the reader already
+knows about the BPF LSM. But maybe I'm just misunderstanding your
+idea.
 
-> > I'm probably missing something with my perf setup; I've applied your
-> > patches, and everything seem to work fine from an kallsyms
-> > perspective:
+If a random developer is trying to change the locking rules around
+security_blah(), and wants to e.g. figure out whether it's okay to
+call that thing with a spinlock held, or whether one of the arguments
+is actually used, or stuff like that, the obvious way to verify that
+is to follow all the direct and indirect calls made from
+security_blah(). It's tedious, but it works, unless something is
+hooked up to it in a way that is visible in no way in the source code.
 
-> > # grep bpf_dispatcher_xdp /proc/kallsyms
-> > ...
-> > ffffffffc0511000 t bpf_dispatcher_xdp   [bpf]
-> > 
-> > However, when I run
-> > # perf top
-> > 
-> > I still see the undecorated one:
-> > 0.90%  [unknown]                  [k] 0xffffffffc0511037
-> > 
-> > Any ideas?
- 
-> yea strange.. it should be picked up from /proc/kallsyms as
-> fallback if there's no other source, I'll check on that
-> (might be the problem with perf depending on address going
-> only higher in /proc/kallsyms, while bpf symbols are at the
-> end and start over from the lowest bpf address)
-> 
-> anyway, in perf we enumerate bpf_progs via the perf events
-> PERF_BPF_EVENT_PROG_LOAD,PERF_BPF_EVENT_PROG_UNLOAD interface
-> together with PERF_RECORD_KSYMBOL_TYPE_BPF events
-> 
-> we might need to add something like:
->   PERF_RECORD_KSYMBOL_TYPE_BPF_TRAMPOLINE
->   PERF_RECORD_KSYMBOL_TYPE_BPF_DISPATCHER
-> 
-> to notify about the area, I'll check on that
-> 
-> however the /proc/kallsyms fallback should work in any
-> case.. thanks for report ;-)
-
-We should by now move kallsyms to be the preferred source of symbols,
-not vmlinux, right?
-
-Perhaps what is happening is:
-
-[root@quaco ~]# strace -f -e open,openat -o /tmp/bla perf top
-[root@quaco ~]# grep vmlinux /tmp/bla
-11013 openat(AT_FDCWD, "vmlinux", O_RDONLY) = -1 ENOENT (No such file or directory)
-11013 openat(AT_FDCWD, "/boot/vmlinux", O_RDONLY) = -1 ENOENT (No such file or directory)
-11013 openat(AT_FDCWD, "/boot/vmlinux-5.5.0+", O_RDONLY) = -1 ENOENT (No such file or directory)
-11013 openat(AT_FDCWD, "/usr/lib/debug/boot/vmlinux-5.5.0+", O_RDONLY) = -1 ENOENT (No such file or directory)
-11013 openat(AT_FDCWD, "/lib/modules/5.5.0+/build/vmlinux", O_RDONLY) = 152
-[root@quaco ~]#
-
-I.e. it is using vmlinux for resolving symbols and he should try with:
-
-[root@quaco ~]# strace -f -e open,openat -o /tmp/bla perf top --ignore-vmlinux
-[root@quaco ~]# perf top -h vmlinux
-
- Usage: perf top [<options>]
-
-    -k, --vmlinux <file>  vmlinux pathname
-        --ignore-vmlinux  don't load vmlinux even if found
-
-[root@quaco ~]# grep vmlinux /tmp/bla
-[root@quaco ~]#
-
-Historically vmlinux was preferred because it contains function sizes,
-but with all these out of the blue symbols, we need to prefer starting
-with /proc/kallsyms and, as we do now, continue getting updates via
-PERF_RECORD_KSYMBOL.
-
-Humm, but then trampolines don't generate that, right? Or does it? If it
-doesn't, then we will know about just the trampolines in place when the
-record/top session starts, reparsing /proc/kallsyms periodically seems
-excessive?
-
-- Arnaldo
+I agree that the way in which the call happens behind the scenes
+doesn't matter all that much - I don't really care all that much
+whether it's an indirect call, a runtime-patched direct call in inline
+assembly, or an fexit hook. What I do care about is that someone
+reading through any affected function can immediately see that the
+branch exists - in other words, ideally, I'd like it to be something
+happening in the method body, but if you think that's unacceptable, I
+think there should at least be a function attribute that makes it very
+clear what's going on.
