@@ -2,83 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC1D15924C
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 15:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFCEF159256
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 15:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729858AbgBKOwq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Feb 2020 09:52:46 -0500
-Received: from www62.your-server.de ([213.133.104.62]:51152 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729831AbgBKOwq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Feb 2020 09:52:46 -0500
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1j1Wtz-0004W3-2W; Tue, 11 Feb 2020 15:52:39 +0100
-Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-3.fritz.box)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1j1Wty-000OYm-Nh; Tue, 11 Feb 2020 15:52:38 +0100
-Subject: Re: [PATCH bpf] xsk: publish global consumer pointers when NAPI is
- finished
-To:     Magnus Karlsson <magnus.karlsson@intel.com>, maximmi@mellanox.com,
-        bjorn.topel@intel.com, ast@kernel.org, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com
-Cc:     rgoodfel@isi.edu, bpf@vger.kernel.org,
-        maciejromanfijalkowski@gmail.com
-References: <1581348432-6747-1-git-send-email-magnus.karlsson@intel.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <e4702dd2-3968-4740-aa50-9f7cda3bb13e@iogearbox.net>
-Date:   Tue, 11 Feb 2020 15:52:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1727264AbgBKOye (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Feb 2020 09:54:34 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:36769 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729799AbgBKOyd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 11 Feb 2020 09:54:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1581432871;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d8NVLxwWTOxE6u7A/qti2YerzSZ7+x+aQJQi9mvS0cs=;
+        b=HBuPh/34z+siAYHz8gkf7jyrXCftvjJWEj4Y4GYQPc8FT4xQTNV1B2qqxauxmsthF689aI
+        eEMXK55kqVcgItoie/DZlqIugiOCWiqHHGK5aIo7JE/G9KFUXElL2iF6oHEOm+GyuEzibG
+        0E4IioAstvn2ykEvmRtgO+0wtv9BHG4=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-334--KFedCahN126PpoPnpXotA-1; Tue, 11 Feb 2020 09:54:29 -0500
+X-MC-Unique: -KFedCahN126PpoPnpXotA-1
+Received: by mail-lf1-f69.google.com with SMTP id y23so1152229lfh.7
+        for <bpf@vger.kernel.org>; Tue, 11 Feb 2020 06:54:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=d8NVLxwWTOxE6u7A/qti2YerzSZ7+x+aQJQi9mvS0cs=;
+        b=a8DSijPfRdt7eaNXe6qr6v7lKlQZ0ouasBf18axFlD0W8njrjY4f5VZlsYotat3hYf
+         IGVaNC/ya7ZeZxULoFzfLviiqEDIJG1rSPzuM/YqyQsv112HHxMbDgT0hFFUAfverGJQ
+         Ajdere7UUr3J/hebMOQV4nbQiZKFrHnEk478J2qJT04o1w5vBLQ1t+RnFBGp+OalCiTf
+         rbZm6BYAlqZaSb8pj9imFRigxdZiSekRdJKXR8wYfd+nSwUaO+9ViKstnwEy/HA+KmXK
+         jjVdfFHupjZhOrUQLmbEv5N2d+UEVgydOos9UhYoNaelN4NaDR9d0se8r7N46MV6gcb6
+         8+0A==
+X-Gm-Message-State: APjAAAXhoSMR/LIPkNmmDttUNqcoOwozNQXZixZE4EqQzSVf89XeXnGR
+        1Qwzaq5t49aKIMKsZTVPdPgKQTUqxrDqFzxzCrwwcGSqrrjD7gD6VzJTUJlBSo/jy4Y8wXOd5GO
+        yAuKU6b6mdenw
+X-Received: by 2002:a19:7401:: with SMTP id v1mr3843617lfe.129.1581432868334;
+        Tue, 11 Feb 2020 06:54:28 -0800 (PST)
+X-Google-Smtp-Source: APXvYqxJ0zzuLIZLPJvyWS7ogYan9maBy3tqsqdTMzYz5/ikzYB5eKiGpt/P2xxEQRIa4WNjFCOqwg==
+X-Received: by 2002:a19:7401:: with SMTP id v1mr3843611lfe.129.1581432868083;
+        Tue, 11 Feb 2020 06:54:28 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id w6sm1934253lfq.95.2020.02.11.06.54.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Feb 2020 06:54:27 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 8BBDC180365; Tue, 11 Feb 2020 15:54:26 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Eelco Chaudron <echaudro@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Xdp <xdp-newbies@vger.kernel.org>, bpf@vger.kernel.org
+Subject: Re: Need a way to modify the section name for a read program object
+In-Reply-To: <0D7B2C92-FC75-4167-A973-EB0AD84FC878@redhat.com>
+References: <D0F8E306-ABEE-480E-BDFD-D43E3A98DC5A@redhat.com> <874kw664dy.fsf@toke.dk> <f1fa48b7-8096-b4f2-51cc-bcb4c1da0cd4@fb.com> <87zhdyduho.fsf@toke.dk> <CAEf4BzbWwseeKnGJCPj_VLLcQ-wkbhXWKAPsjQuy4LNDq8fvBg@mail.gmail.com> <0D7B2C92-FC75-4167-A973-EB0AD84FC878@redhat.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 11 Feb 2020 15:54:26 +0100
+Message-ID: <87wo8ti38d.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <1581348432-6747-1-git-send-email-magnus.karlsson@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.1/25720/Mon Feb 10 12:53:41 2020)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/10/20 4:27 PM, Magnus Karlsson wrote:
-> The commit 4b638f13bab4 ("xsk: Eliminate the RX batch size")
-> introduced a much more lazy way of updating the global consumer
-> pointers from the kernel side, by only doing so when running out of
-> entries in the fill or Tx rings (the rings consumed by the
-> kernel). This can result in a deadlock with the user application if
-> the kernel requires more than one entry to proceed and the application
-> cannot put these entries in the fill ring because the kernel has not
-> updated the global consumer pointer since the ring is not empty.
-> 
-> Fix this by publishing the local kernel side consumer pointer whenever
-> we have completed Rx or Tx processing in the kernel. This way, user
-> space will have an up-to-date view of the consumer pointers whenever it
-> gets to execute in the one core case (application and driver on the
-> same core), or after a certain number of packets have been processed
-> in the two core case (application and driver on different cores).
-> 
-> A side effect of this patch is that the one core case gets better
-> performance, but the two core case gets worse. The reason that the one
-> core case improves is that updating the global consumer pointer is
-> relatively cheap since the application by definition is not running
-> when the kernel is (they are on the same core) and it is beneficial
-> for the application, once it gets to run, to have pointers that are
-> as up to date as possible since it then can operate on more packets
-> and buffers. In the two core case, the most important performance
-> aspect is to minimize the number of accesses to the global pointers
-> since they are shared between two cores and bounces between the caches
-> of those cores. This patch results in more updates to global state,
-> which means lower performance in the two core case.
-> 
-> Fixes: 4b638f13bab4 ("xsk: Eliminate the RX batch size")
-> Reported-by: Ryan Goodfellow <rgoodfel@isi.edu>
-> Reported-by: Maxim Mikityanskiy <maximmi@mellanox.com>
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+"Eelco Chaudron" <echaudro@redhat.com> writes:
 
-Applied, thanks!
+> On 4 Feb 2020, at 20:32, Andrii Nakryiko wrote:
+>
+>> On Tue, Feb 4, 2020 at 11:27 AM Toke H=C3=B8iland-J=C3=B8rgensen=20
+>> <toke@redhat.com> wrote:
+>>>
+>>> Andrii Nakryiko <andriin@fb.com> writes:
+>>>
+>>>> On 2/4/20 2:19 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>>>>> "Eelco Chaudron" <echaudro@redhat.com> writes:
+>>>>>
+>>>>>> Hi All,
+>>>>>>
+>>>>>> I'm trying to write an xdpdump like utility and have some missing=20
+>>>>>> part
+>>>>>> in libbpf to change the fentry/FUNCTION section name before=20
+>>>>>> loading the
+>>>>>> trace program.
+>>>>>>
+>>>>>> In short, I have an eBPF program that has a section name like
+>>>>>> "fentry/FUNCTION" where FUNCTION needs to be replaced by the name=20
+>>>>>> of the
+>>>>>> XDP program loaded in the interfaces its start function.
+>>>>>>
+>>>>>> The code for loading the ftrace part is something like:
+>>>>>>
+>>>>>>     open_opts.attach_prog_fd =3D bpf_prog_get_fd_by_id(info.id);
+>>>>>>     trace_obj =3D bpf_object__open_file("xdpdump_bpf.o",=20
+>>>>>> &open_opts);
+>>>>>>
+>>>>>>     trace_prog_fentry =3D=20
+>>>>>> bpf_object__find_program_by_title(trace_obj,
+>>>>>> "fentry/FUNCTION");
+>>>>>>
+>>>>>>     /* Here I need to replace the trace_prog_fentry->section_name=20
+>>>>>> =3D
+>>>>>> "fentry/<INTERFACE PROG NAME> */
+>>>>>>
+>>>>>>     bpf_object__load(trace_obj);
+>>>>>>     trace_link_fentry =3D=20
+>>>>>> bpf_program__attach_trace(trace_prog_fentry);
+>>>>>>
+>>>>>>
+>>>>>> See the above, I would like to change the section_name but there=20
+>>>>>> is no
+>>>>>> API to do this, and of course, the struct bpf_program is
+>>>>>> implementation-specific.
+>>>>>>
+>>>>>> Any idea how I would work around this, or what extension to libbpf=20
+>>>>>> can
+>>>>>> be suggested to support this?
+>>>>>
+>>>>> I think what's missing is a way for the caller to set the=20
+>>>>> attach_btf_id.
+>>>>> Currently, libbpf always tries to discover this based on the=20
+>>>>> section
+>>>>> name (see libbpf_find_attach_btf_id()). I think the right way to=20
+>>>>> let the
+>>>>> caller specify this is not to change the section name, though, but=20
+>>>>> just
+>>>>> to expose a way to explicitly set the btf_id (which the caller can=20
+>>>>> then
+>>>>> go find on its own).
+>>>>
+>>>> Yes, I agree, section name should be treated as an immutable=20
+>>>> identifier
+>>>> and a (overrideable) hint to libbpf.
+>>>>
+>>>>>
+>>>>> Not sure if it would be better with a new open_opt (to mirror
+>>>>> attach_prog_fd), or just a setter=20
+>>>>> (bpf_program__set_attach_btf_id()?).
+>>>>> Or maybe both? Andrii, WDYT?
+>>>>
+>>>> open_opts is definitely wrong way to do this, because open_opts=20
+>>>> apply to
+>>>> all BPF programs, while this should be per-program.
+>>>
+>>> Yes, of course; silly me :)
+>>>
+>>>> I'm also not sure having API that allows to specify BTF type ID is=20
+>>>> the
+>>>> best, probably better to let libbpf perform the search by name. So=20
+>>>> I'd
+>>>> say something like this:
+>>>>
+>>>> int bpf_program__set_attach_target(int attach_prog_fd, const char
+>>>> *attach_func_name)
+>>>>
+>>>> This should handle customizing all the tp_btf/fentry/fexit/freplace=20
+>>>> BPF
+>>>> programs we have.
+>>>
+>>> Right, that makes sense; I think that would cover it (apart from your
+>>> function signature missing a struct bpf_program argument).
+>>
+>> great! and, ha-ha, too object-oriented thinking ;)
+>
+> Thanks for your feedback, assuming you are not working on it, I=E2=80=99l=
+l=20
+> implement/test it and sent out a patch.
+
+Please do! :)
+
+-Toke
+
