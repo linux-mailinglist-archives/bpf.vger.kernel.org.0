@@ -2,127 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E8741158ED8
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 13:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F3315920C
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 15:37:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727780AbgBKMpw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Feb 2020 07:45:52 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:36814 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727781AbgBKMpv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Feb 2020 07:45:51 -0500
-Received: by mail-wr1-f67.google.com with SMTP id z3so12231230wru.3
-        for <bpf@vger.kernel.org>; Tue, 11 Feb 2020 04:45:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=C9q8BGu7IB7PXt2yUMUBykDSQ0B6YXHjWHvkwjJyPU4=;
-        b=Mz/Z2r+UYxnjdLLVzkoZoBQVAuezwg4Xnwp3DOGa2wS7dUDOCMCMfxYlGRovBodSYd
-         1eoYYXHQI0cvtBwC45WV5/QfIxbvaGM3+Mq5paj29D1BmneE39YBBXxE2vhYJyjmgQNA
-         cfD6Ae6hI59JebLeC5+AswAzqZMnHk02PwZjY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=C9q8BGu7IB7PXt2yUMUBykDSQ0B6YXHjWHvkwjJyPU4=;
-        b=cloiRM5jYoYkyhmb6CU/vfWbiF1ZBGtVsoeM3zD9OhITKg496gZfM4/JpPch1dK6mQ
-         dU+YcFzawEnUo1b6/X0POt6JdPHIKqxEYAKaiG2rWu49ceFJ1DI5QObyDm6qIyYtu74+
-         LmJb8rL+Tw5sPAuhBkXV77qZJ8W5buXVQR5CLS06LOXkksmQxI18SkgW8HAhiPXOyPan
-         vQnYABgZi/r+0XZIRM+VI0/X69rvPUah8ULLkxesCsc+4kyUstd88NvNFV6ptr7HQHbp
-         BegQqAFRmzNc2+Zn0lQAkaiAbct7qmWV0bwqlkocYU2E1ifoLYp79OkVY69d/8T9gWuN
-         KmyQ==
-X-Gm-Message-State: APjAAAURfxFBS4hkCpo5H10axPAAne0w3XByYyiE0Y4HFsAV7LkQ1A4J
-        mwBePLQ1RpaZaRfJQpryWm46Ig==
-X-Google-Smtp-Source: APXvYqzAKYr3XKAmFzgDScO7mcJ05XPCyWTrDngMYlhcutSKBK5Ht3CrGf4S4X8JhNdaS07YsYKUNg==
-X-Received: by 2002:a5d:4446:: with SMTP id x6mr8281334wrr.312.1581425149398;
-        Tue, 11 Feb 2020 04:45:49 -0800 (PST)
-Received: from google.com ([2a00:79e0:42:204:8a21:ba0c:bb42:75ec])
-        by smtp.gmail.com with ESMTPSA id w15sm5371585wrs.80.2020.02.11.04.45.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Feb 2020 04:45:48 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Tue, 11 Feb 2020 13:45:47 +0100
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@google.com>,
-        Thomas Garnier <thgarnie@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Garnier <thgarnie@chromium.org>,
-        Michael Halcrow <mhalcrow@google.com>,
-        Paul Turner <pjt@google.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Jann Horn <jannh@google.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Christian Brauner <christian@brauner.io>,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Andrey Ignatov <rdna@fb.com>, Joe Stringer <joe@wand.net.nz>
-Subject: Re: [PATCH bpf-next v3 02/10] bpf: lsm: Add a skeleton and config
- options
-Message-ID: <20200211124547.GC96694@google.com>
-References: <20200123152440.28956-1-kpsingh@chromium.org>
- <20200123152440.28956-3-kpsingh@chromium.org>
- <20200210235214.ypb56vrkvzol3qdu@ast-mbp>
+        id S1727818AbgBKOhm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Feb 2020 09:37:42 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:55034 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728508AbgBKOhm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Feb 2020 09:37:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1581431861;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f4p0T/nCSg8h1suF8dXHDOiEnRfyScsYDIYDBFuw/ss=;
+        b=iq3nOO493C4+n/a9jqDumJ3tDPrug+89BEpEru1zX0E6s3aUSksKbA1KnqSb58iR5Oj3a/
+        NdxtFUwDALFpsjF/yTE12T576z85ypdfOuzbdB8uSL6RqNRZE2N4SK2aWJKM5r9IOlczgQ
+        b7ZdVpzBHBUSxfJrppz2lf14+BuvuWk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-7-_PJd-dntMx2zLlfUrJG3EQ-1; Tue, 11 Feb 2020 09:37:25 -0500
+X-MC-Unique: _PJd-dntMx2zLlfUrJG3EQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E593C19057A1;
+        Tue, 11 Feb 2020 14:37:23 +0000 (UTC)
+Received: from [10.36.116.104] (ovpn-116-104.ams2.redhat.com [10.36.116.104])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3F23210001AE;
+        Tue, 11 Feb 2020 14:37:20 +0000 (UTC)
+From:   "Eelco Chaudron" <echaudro@redhat.com>
+To:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>,
+        "Toke =?utf-8?b?SMO4aWxhbmQtSsO4cmdlbnNlbg==?=" <toke@redhat.com>
+Cc:     "Andrii Nakryiko" <andriin@fb.com>,
+        Xdp <xdp-newbies@vger.kernel.org>, bpf@vger.kernel.org
+Subject: Re: Need a way to modify the section name for a read program object
+Date:   Tue, 11 Feb 2020 15:37:18 +0100
+Message-ID: <0D7B2C92-FC75-4167-A973-EB0AD84FC878@redhat.com>
+In-Reply-To: <CAEf4BzbWwseeKnGJCPj_VLLcQ-wkbhXWKAPsjQuy4LNDq8fvBg@mail.gmail.com>
+References: <D0F8E306-ABEE-480E-BDFD-D43E3A98DC5A@redhat.com>
+ <874kw664dy.fsf@toke.dk> <f1fa48b7-8096-b4f2-51cc-bcb4c1da0cd4@fb.com>
+ <87zhdyduho.fsf@toke.dk>
+ <CAEf4BzbWwseeKnGJCPj_VLLcQ-wkbhXWKAPsjQuy4LNDq8fvBg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200210235214.ypb56vrkvzol3qdu@ast-mbp>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10-Feb 15:52, Alexei Starovoitov wrote:
-> On Thu, Jan 23, 2020 at 07:24:32AM -0800, KP Singh wrote:
-> >  
-> > +BPF SECURITY MODULE
-> > +M:	KP Singh <kpsingh@chromium.org>
-> > +L:	linux-security-module@vger.kernel.org
-> > +L:	bpf@vger.kernel.org
-> > +S:	Maintained
-> > +F:	security/bpf/
-> 
-> Instead of creating new entry I think it's more appropriate
-> to add this to main BPF entry like:
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index c74e4ea714a5..f656ddec0722 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3147,6 +3147,7 @@ R:        Martin KaFai Lau <kafai@fb.com>
->  R:     Song Liu <songliubraving@fb.com>
->  R:     Yonghong Song <yhs@fb.com>
->  R:     Andrii Nakryiko <andriin@fb.com>
-> +R:     KP Singh <kpsingh@chromium.org>
 
-I am okay with this too :) Will update it in the next revision.
 
-- KP
+On 4 Feb 2020, at 20:32, Andrii Nakryiko wrote:
 
->  L:     netdev@vger.kernel.org
->  L:     bpf@vger.kernel.org
->  T:     git git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-> @@ -3172,6 +3173,7 @@ F:        samples/bpf/
->  F:     tools/bpf/
->  F:     tools/lib/bpf/
->  F:     tools/testing/selftests/bpf/
-> +F:     security/bpf/
->  K:     bpf
->  N:     bpf
+> On Tue, Feb 4, 2020 at 11:27 AM Toke H=C3=B8iland-J=C3=B8rgensen=20
+> <toke@redhat.com> wrote:
+>>
+>> Andrii Nakryiko <andriin@fb.com> writes:
+>>
+>>> On 2/4/20 2:19 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>>>> "Eelco Chaudron" <echaudro@redhat.com> writes:
+>>>>
+>>>>> Hi All,
+>>>>>
+>>>>> I'm trying to write an xdpdump like utility and have some missing=20
+>>>>> part
+>>>>> in libbpf to change the fentry/FUNCTION section name before=20
+>>>>> loading the
+>>>>> trace program.
+>>>>>
+>>>>> In short, I have an eBPF program that has a section name like
+>>>>> "fentry/FUNCTION" where FUNCTION needs to be replaced by the name=20
+>>>>> of the
+>>>>> XDP program loaded in the interfaces its start function.
+>>>>>
+>>>>> The code for loading the ftrace part is something like:
+>>>>>
+>>>>>     open_opts.attach_prog_fd =3D bpf_prog_get_fd_by_id(info.id);
+>>>>>     trace_obj =3D bpf_object__open_file("xdpdump_bpf.o",=20
+>>>>> &open_opts);
+>>>>>
+>>>>>     trace_prog_fentry =3D=20
+>>>>> bpf_object__find_program_by_title(trace_obj,
+>>>>> "fentry/FUNCTION");
+>>>>>
+>>>>>     /* Here I need to replace the trace_prog_fentry->section_name=20
+>>>>> =3D
+>>>>> "fentry/<INTERFACE PROG NAME> */
+>>>>>
+>>>>>     bpf_object__load(trace_obj);
+>>>>>     trace_link_fentry =3D=20
+>>>>> bpf_program__attach_trace(trace_prog_fentry);
+>>>>>
+>>>>>
+>>>>> See the above, I would like to change the section_name but there=20
+>>>>> is no
+>>>>> API to do this, and of course, the struct bpf_program is
+>>>>> implementation-specific.
+>>>>>
+>>>>> Any idea how I would work around this, or what extension to libbpf=20
+>>>>> can
+>>>>> be suggested to support this?
+>>>>
+>>>> I think what's missing is a way for the caller to set the=20
+>>>> attach_btf_id.
+>>>> Currently, libbpf always tries to discover this based on the=20
+>>>> section
+>>>> name (see libbpf_find_attach_btf_id()). I think the right way to=20
+>>>> let the
+>>>> caller specify this is not to change the section name, though, but=20
+>>>> just
+>>>> to expose a way to explicitly set the btf_id (which the caller can=20
+>>>> then
+>>>> go find on its own).
+>>>
+>>> Yes, I agree, section name should be treated as an immutable=20
+>>> identifier
+>>> and a (overrideable) hint to libbpf.
+>>>
+>>>>
+>>>> Not sure if it would be better with a new open_opt (to mirror
+>>>> attach_prog_fd), or just a setter=20
+>>>> (bpf_program__set_attach_btf_id()?).
+>>>> Or maybe both? Andrii, WDYT?
+>>>
+>>> open_opts is definitely wrong way to do this, because open_opts=20
+>>> apply to
+>>> all BPF programs, while this should be per-program.
+>>
+>> Yes, of course; silly me :)
+>>
+>>> I'm also not sure having API that allows to specify BTF type ID is=20
+>>> the
+>>> best, probably better to let libbpf perform the search by name. So=20
+>>> I'd
+>>> say something like this:
+>>>
+>>> int bpf_program__set_attach_target(int attach_prog_fd, const char
+>>> *attach_func_name)
+>>>
+>>> This should handle customizing all the tp_btf/fentry/fexit/freplace=20
+>>> BPF
+>>> programs we have.
+>>
+>> Right, that makes sense; I think that would cover it (apart from your
+>> function signature missing a struct bpf_program argument).
+>
+> great! and, ha-ha, too object-oriented thinking ;)
+
+Thanks for your feedback, assuming you are not working on it, I=E2=80=99l=
+l=20
+implement/test it and sent out a patch.
+
+//Eelco
+
