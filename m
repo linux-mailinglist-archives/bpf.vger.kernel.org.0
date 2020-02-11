@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 23ED6159926
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 19:51:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6781B15995B
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 20:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728706AbgBKSvj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Feb 2020 13:51:39 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:46913 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727722AbgBKSvj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Feb 2020 13:51:39 -0500
-Received: by mail-qk1-f193.google.com with SMTP id g195so11121728qke.13;
-        Tue, 11 Feb 2020 10:51:38 -0800 (PST)
+        id S1729610AbgBKTDf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Feb 2020 14:03:35 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:39365 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729542AbgBKTDe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Feb 2020 14:03:34 -0500
+Received: by mail-qt1-f193.google.com with SMTP id c5so8802812qtj.6;
+        Tue, 11 Feb 2020 11:03:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l/+E2eVsRW0Yo4vFctboUwHNG9669KLGFE00pneG3vM=;
-        b=rLK6G0qJiN02pSXjNvkjM2OrYuVgwHM6VnYInbus+DfuYXtUgPPe2r14DaYgCcWNyH
-         toFbmkc8EXMHctCTtcq7xVjnD1yjowCnLpnWbs32RhvKeHOQp6AR5ZdCNSz9EP7zS5yD
-         0q2+EKbDL1IyKMDPzytneJVlUxA7BmRzb+zhFsp9Moi7Z0/Dyx3PItt+TW86wYvBljrm
-         siKznHQlPiZLo5MjzT1XOdmYGQJ1VcjH3kqz1q9qWGpsd2T1NlS18BbVsPIUokPEzPNT
-         9YKhtrDaj5q4xexZX551ahMRvcqEwTlRGX3Oj476nLWX0YOIMhaE8VXc2G9PYNRyo7ly
-         2ueA==
+         :cc:content-transfer-encoding;
+        bh=9MvmwcqVniLpsEakuGLvwQkyfWaIncNOFXlu99UDQZU=;
+        b=ImCNXH1/OQiJ6Yp1fH0YHRGub6GjWrqLdgpI0ROAGsNyUrUzVj3oNWWnzLs83mcJQO
+         E0Lh6zpK0ztv3p0A7RN1OZw9bWmzWJ6yC2l32E0tRxS02n2ktsEBcW2RWumJbycQXL6H
+         lh26Gm1ZT75wXDmrdGtStKtlCS2TctZgZyxdgbV9RejFslpLN2ZOUx9Eme4Eor2TV/8c
+         7H0HSaUo9U5qMldBMYN0HKz1/y9dkWT6w4pjR7dsy7xdNDeraV3FjTVwSa5lrN1EqOy3
+         0vMhwLPZrwVleXaQn1LjDPwydDl/CCCv/r0XPVovhlk73IFdLEfUgz5V1wXK+EPP3ocA
+         eYoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l/+E2eVsRW0Yo4vFctboUwHNG9669KLGFE00pneG3vM=;
-        b=PPCQWHHQ7dlTOrX7KltQrZhGjr8bY8uffCBtFQl1vrfInRsMbbY7gqUxltGs+shV6Z
-         JijhNovSMvmqGi79xCWHlFSRCWl8uKr8gmqER1HIcJYrDCXF86YyfB3E+R71Pyvs13GJ
-         5NPuxM0sBBOw3QkafDkJ1vyObhqJm0KBwGLybqdwV1tb8cbtuOy8NLo6VhEbSUBHLZNH
-         6EF3fXsQVAjIouVtcaH0hN3mtUC0h0mOllyLUJTNPN4qe//f761txm+87zc7A9SK81p/
-         LOc2GAOC2i39KSNNQMjuRQpLjjlH0T0+cTAJvnnVYkAzRIF8xjM0WcukQHA1Wh4TO/ii
-         o6/w==
-X-Gm-Message-State: APjAAAW7XOoTc130Hu8bjErtW2wwiCB3U+vR9XsucNSWBXonytX8RzTM
-        JVkBf7yOT5h1b6ebKLaGn/mshzO7BxWjw9hmmgA=
-X-Google-Smtp-Source: APXvYqzKmL1sYrrdHMxxtTh9JVJ+1phmHcTzJ9y1HZBKGYmp8+U9/aeOn35Pw5FKRg4YxyxEQyKbVhtRSz53Ivd8oes=
-X-Received: by 2002:a37:a685:: with SMTP id p127mr7868061qke.449.1581447098036;
- Tue, 11 Feb 2020 10:51:38 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9MvmwcqVniLpsEakuGLvwQkyfWaIncNOFXlu99UDQZU=;
+        b=XB/luWO3FgX1EvdzsKghmRIy5jY943xpGP+Z94fDDGIl0ejzZCq1R0HEIjM5/xAGtI
+         0btSHwluSkU7aDCftRX8J00Q5xX83OdCc7tHxdej3/hEu9haFJ3WGkB0grxLykrof5bd
+         3wJVajwt6LtGA16rnv1M3E880iVNbgyt3RF9soNV1rNjntzXZ8oolJ8XcZ1YLS7hBRDc
+         0VleWG1pzWna4uUP9II6sRkRzPROfMm7Brlyicii5yozIS7bCFz7IJl/veZHNVOoCjnF
+         K/k1a0QxjYQf5LtzJs438wzYlPoAq7Whgsro3m3np9DL1FQ+zvrmBh3ZTVDJAlg4mtii
+         qBpw==
+X-Gm-Message-State: APjAAAVESBdY/FpQHAV4x/Dwd19/enmudNjMt6K+HIfT5JE3ZyHdTEtO
+        eOwq5T2/Z20ZJSiSwIopR8BZk4OlcqNFDkU9XaU=
+X-Google-Smtp-Source: APXvYqzs8eJxtNAq+53OhfBGwzTzgKyeUQKwsKhQhqaNFVOVn0+MN0uh87KUqioI0iWNccCRpg1FO5dtSG9kllphLJA=
+X-Received: by 2002:ac8:1385:: with SMTP id h5mr3718358qtj.59.1581447813900;
+ Tue, 11 Feb 2020 11:03:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20200208154209.1797988-1-jolsa@kernel.org> <20200208154209.1797988-13-jolsa@kernel.org>
-In-Reply-To: <20200208154209.1797988-13-jolsa@kernel.org>
+References: <20200208154209.1797988-1-jolsa@kernel.org> <20200208154209.1797988-14-jolsa@kernel.org>
+In-Reply-To: <20200208154209.1797988-14-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 11 Feb 2020 10:51:27 -0800
-Message-ID: <CAEf4BzZFBYVAs5-LowuMov86cbNFdXABkcA=XZAC2JJWg52HKg@mail.gmail.com>
-Subject: Re: [PATCH 12/14] bpf: Add trampolines to kallsyms
+Date:   Tue, 11 Feb 2020 11:03:23 -0800
+Message-ID: <CAEf4BzZM-pc4Yva8kKsuD6QjOY8bVCGUzDJCdoeZzVOTc2zV2A@mail.gmail.com>
+Subject: Re: [PATCH 13/14] bpf: Add dispatchers to kallsyms
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -60,6 +60,7 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -67,121 +68,89 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Sat, Feb 8, 2020 at 7:43 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding trampolines to kallsyms. It's displayed as
->   bpf_trampoline_<ID> [bpf]
+> Adding dispatchers to kallsyms. It's displayed as
+>   bpf_dispatcher_<NAME>
 >
-> where ID is the BTF id of the trampoline function.
+> where NAME is the name of dispatcher.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  include/linux/bpf.h     |  2 ++
->  kernel/bpf/trampoline.c | 23 +++++++++++++++++++++++
->  2 files changed, 25 insertions(+)
+>  include/linux/bpf.h     | 19 ++++++++++++-------
+>  kernel/bpf/dispatcher.c |  6 ++++++
+>  2 files changed, 18 insertions(+), 7 deletions(-)
 >
 > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 7a4626c8e747..b91bac10d3ea 100644
+> index b91bac10d3ea..837cdc093d2c 100644
 > --- a/include/linux/bpf.h
 > +++ b/include/linux/bpf.h
-> @@ -502,6 +502,7 @@ struct bpf_trampoline {
->         /* Executable image of trampoline */
+> @@ -520,6 +520,7 @@ struct bpf_dispatcher {
+>         int num_progs;
 >         void *image;
->         u64 selector;
+>         u32 image_off;
 > +       struct bpf_ksym ksym;
 >  };
 >
->  #define BPF_DISPATCHER_MAX 48 /* Fits in 2048B */
-> @@ -573,6 +574,7 @@ struct bpf_image {
->  #define BPF_IMAGE_SIZE (PAGE_SIZE - sizeof(struct bpf_image))
->  bool is_bpf_image_address(unsigned long address);
->  void *bpf_image_alloc(void);
-> +void bpf_image_ksym_add(void *data, struct bpf_ksym *ksym);
->  /* Called only from code, so there's no need for stubs. */
->  void bpf_ksym_add(struct bpf_ksym *ksym);
->  void bpf_ksym_del(struct bpf_ksym *ksym);
-> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> index 6b264a92064b..1ee29907cbe5 100644
-> --- a/kernel/bpf/trampoline.c
-> +++ b/kernel/bpf/trampoline.c
-> @@ -96,6 +96,15 @@ bool is_bpf_image_address(unsigned long addr)
->         return ret;
+>  static __always_inline unsigned int bpf_dispatcher_nop_func(
+> @@ -535,13 +536,17 @@ struct bpf_trampoline *bpf_trampoline_lookup(u64 ke=
+y);
+>  int bpf_trampoline_link_prog(struct bpf_prog *prog);
+>  int bpf_trampoline_unlink_prog(struct bpf_prog *prog);
+>  void bpf_trampoline_put(struct bpf_trampoline *tr);
+> -#define BPF_DISPATCHER_INIT(name) {                    \
+> -       .mutex =3D __MUTEX_INITIALIZER(name.mutex),       \
+> -       .func =3D &name##_func,                           \
+> -       .progs =3D {},                                    \
+> -       .num_progs =3D 0,                                 \
+> -       .image =3D NULL,                                  \
+> -       .image_off =3D 0                                  \
+> +#define BPF_DISPATCHER_INIT(_name) {                           \
+> +       .mutex =3D __MUTEX_INITIALIZER(_name.mutex),              \
+> +       .func =3D &_name##_func,                                  \
+> +       .progs =3D {},                                            \
+> +       .num_progs =3D 0,                                         \
+> +       .image =3D NULL,                                          \
+> +       .image_off =3D 0,                                         \
+> +       .ksym =3D {                                               \
+> +               .name =3D #_name,                                 \
+> +               .lnode =3D LIST_HEAD_INIT(_name.ksym.lnode),      \
+> +       },                                                      \
 >  }
 >
-> +void bpf_image_ksym_add(void *data, struct bpf_ksym *ksym)
-> +{
-> +       struct bpf_image *image = container_of(data, struct bpf_image, data);
-> +
-> +       ksym->start = (unsigned long) image;
-> +       ksym->end = ksym->start + PAGE_SIZE;
-
-this seems wrong, use BPF_IMAGE_SIZE instead of PAGE_SIZE?
-
-> +       bpf_ksym_add(ksym);
-> +}
-> +
->  struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
->  {
->         struct bpf_trampoline *tr;
-> @@ -131,6 +140,7 @@ struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
->         for (i = 0; i < BPF_TRAMP_MAX; i++)
->                 INIT_HLIST_HEAD(&tr->progs_hlist[i]);
->         tr->image = image;
-> +       INIT_LIST_HEAD_RCU(&tr->ksym.lnode);
->  out:
->         mutex_unlock(&trampoline_mutex);
->         return tr;
-> @@ -267,6 +277,15 @@ static enum bpf_tramp_prog_type bpf_attach_type_to_tramp(enum bpf_attach_type t)
->         }
->  }
+>  #define DEFINE_BPF_DISPATCHER(name)                                    \
+> diff --git a/kernel/bpf/dispatcher.c b/kernel/bpf/dispatcher.c
+> index b3e5b214fed8..8771d2cc5840 100644
+> --- a/kernel/bpf/dispatcher.c
+> +++ b/kernel/bpf/dispatcher.c
+> @@ -152,6 +152,12 @@ void bpf_dispatcher_change_prog(struct bpf_dispatche=
+r *d, struct bpf_prog *from,
+>         if (!changed)
+>                 goto out;
 >
-> +static void bpf_trampoline_kallsyms_add(struct bpf_trampoline *tr)
-> +{
-> +       struct bpf_ksym *ksym = &tr->ksym;
+> +       if (!prev_num_progs)
+> +               bpf_image_ksym_add(d->image, &d->ksym);
 > +
-> +       snprintf(ksym->name, KSYM_NAME_LEN, "bpf_trampoline_%llu",
-> +                tr->key & ((u64) (1LU << 32) - 1));
-
-why the 32-bit truncation? also, wouldn't it be more trivial as (u32)tr->key?
-
-> +       bpf_image_ksym_add(tr->image, &tr->ksym);
-> +}
+> +       if (!d->num_progs)
+> +               bpf_ksym_del(&d->ksym);
 > +
->  int bpf_trampoline_link_prog(struct bpf_prog *prog)
->  {
->         enum bpf_tramp_prog_type kind;
-> @@ -311,6 +330,8 @@ int bpf_trampoline_link_prog(struct bpf_prog *prog)
->         if (err) {
->                 hlist_del(&prog->aux->tramp_hlist);
->                 tr->progs_cnt[kind]--;
-> +       } else if (cnt == 0) {
-> +               bpf_trampoline_kallsyms_add(tr);
+>         bpf_dispatcher_update(d, prev_num_progs);
 
-You didn't handle BPF_TRAMP_REPLACE case above.
+On slightly unrelated note: seems like bpf_dispatcher_update won't
+propagate any lower-level errors back, which seems pretty bad as a
+bunch of stuff can go wrong.
 
-Also this if (err) { ... } else if (cnt == 0) { } pattern is a bit
-convoluted. How about:
+Bj=C3=B6rn, was it a conscious decision or this just slipped through the cr=
+acks?
 
-if (err) {
-   ... whatever ...
-   goto out;
-}
-if (cnt == 0) { ... }
+Jiri, reason I started looking at this was twofold:
+1. you add/remove symbol before dispatcher is updated, which is
+different order from BPF trampoline updates. I think updating symbols
+after successful update makes more sense, no?
+2. I was wondering if bpf_dispatcher_update() could return 0/1 (and <0
+on error, of course), depending on whether dispatcher is present or
+not. Though I'm not hard set on this.
 
->         }
 >  out:
->         mutex_unlock(&tr->mutex);
-> @@ -336,6 +357,8 @@ int bpf_trampoline_unlink_prog(struct bpf_prog *prog)
->         }
->         hlist_del(&prog->aux->tramp_hlist);
->         tr->progs_cnt[kind]--;
-> +       if (!(tr->progs_cnt[BPF_TRAMP_FENTRY] + tr->progs_cnt[BPF_TRAMP_FEXIT]))
-> +               bpf_ksym_del(&tr->ksym);
-
-same, BPF_TRAMP_REPLACE case. I'd also introduce cnt for consistency
-with bpf_trampoline_link_prog?
-
->         err = bpf_trampoline_update(prog->aux->trampoline);
->  out:
->         mutex_unlock(&tr->mutex);
+>         mutex_unlock(&d->mutex);
 > --
 > 2.24.1
 >
