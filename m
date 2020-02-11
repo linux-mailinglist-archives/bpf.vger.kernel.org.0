@@ -2,71 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C8CDE15865F
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 01:01:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7046D158671
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 01:15:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727588AbgBKABV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Feb 2020 19:01:21 -0500
-Received: from www62.your-server.de ([213.133.104.62]:55744 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727587AbgBKABV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Feb 2020 19:01:21 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1j1IzN-0001vO-7n; Tue, 11 Feb 2020 01:01:17 +0100
-Received: from [85.7.42.192] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1j1IzM-0009zZ-T8; Tue, 11 Feb 2020 01:01:16 +0100
-Subject: Re: [PATCH bpf-next v14 1/2] bpf: add new helper get_fd_path for
- mapping a file descriptor to a pathname
-To:     Brendan Gregg <bgregg@netflix.com>, Jiri Olsa <jolsa@redhat.com>
-Cc:     Wenbo Zhang <ethercflow@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Networking <netdev@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-References: <8f6b8979fb64bedf5cb406ba29146c5fa2539267.1576575253.git.ethercflow@gmail.com>
- <cover.1576629200.git.ethercflow@gmail.com>
- <7464919bd9c15f2496ca29dceb6a4048b3199774.1576629200.git.ethercflow@gmail.com>
- <51564b9e-35f0-3c73-1701-8e351f2482d7@iogearbox.net>
- <CABtjQmbh080cFr9e_V_vutb1fErRcCvw-bNNYeJHOcah-adFCA@mail.gmail.com>
- <20200116085943.GA270346@krava>
- <CAJN39ogSo=bEEydp7s34AjtDVwXxw7_hQFrARWE4NXQwRZxSxw@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <c27d3cc2-f846-8aa9-10fd-c2940e7605d1@iogearbox.net>
-Date:   Tue, 11 Feb 2020 01:01:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1727505AbgBKAPa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Feb 2020 19:15:30 -0500
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:45912 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727455AbgBKAPa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Feb 2020 19:15:30 -0500
+Received: by mail-pf1-f193.google.com with SMTP id 2so4504937pfg.12;
+        Mon, 10 Feb 2020 16:15:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=r5ohSbrtojTxCSFCkg8rYW9zCxgtMfpQZkLpXgHPTpk=;
+        b=KQylGPxdiaGvk+7Y+4BneWCRdxmvASR00418Jv7gHTm/EZxZkAZt8Hj7qbRh3JOGFy
+         oxl2x5m6yV6iMc5YLIlOjEox0c90qBOT+fwVam8DvtExHZ1JkoYBwPjGtqNhiRcZzwQq
+         TtY0mLuruewCig3yfcTFRMCAesZI8xyGIGReVInSiRC1XvxvpQq6veSmY1sNTWCG4Fwl
+         LLMc6e0KVLz+vy3Umv/5RTzT1ubEHIv95CCcWRKM8oKJcjqI1cX1Y8UcJSx9wMbYbBi7
+         H3aZXfZWPc9EK8I+72g6uwnDPYF0MUz4QJtn6UjV0uyHk3G1avz4AXDxhznkFQy9s/5o
+         JNFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=r5ohSbrtojTxCSFCkg8rYW9zCxgtMfpQZkLpXgHPTpk=;
+        b=BWJkqB8kaXTQ6vRF2tfYkpBrwH5Aal6vL1eAr01oX1eJZmRWaMdlXeSb+bT5Wxq0ev
+         lnD7SH0TK7edouZG0a82L94GS6l2gAz2Ls9shKGUmebYbR7m7jI+MTkaeidC9DY8wEpG
+         pTiTkiBx9KioZ4HyKMvP9bNN7bEpqUhzP8XgsBjlqh/RC//rXTR5kmyy5lKSZZCqUIcK
+         appJ9QczHPEmclmdmhUVhdF6Z7vAy7Wk/Pu7eH4x1Jh1xN3b0L8S2WP7ze8C5wUWVu87
+         jcxchbeZgZedXllDkuiwxdvOR86zNa8zoG/A+DqQnXwTI4a3FwFFz2yxM1HAq7Ghl+ZB
+         fa7Q==
+X-Gm-Message-State: APjAAAWuyuIpZdTjeu2Lf6XZxEOFiZd6kCV23/J4MXkrVK1roLjQvTLf
+        DYorImDf4/koNJ1Pv9bat+s=
+X-Google-Smtp-Source: APXvYqwaI1pmqbF0HQJmCdNPwqmI2s1WtrWOIQeTyY/IRieg6LQrDFvOhcDN4OionXTTqMh7Vs1K2g==
+X-Received: by 2002:a65:5549:: with SMTP id t9mr4124065pgr.439.1581380129926;
+        Mon, 10 Feb 2020 16:15:29 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:200::2:685c])
+        by smtp.gmail.com with ESMTPSA id z26sm1201161pgu.80.2020.02.10.16.15.28
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 10 Feb 2020 16:15:29 -0800 (PST)
+Date:   Mon, 10 Feb 2020 16:15:27 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Palmer Dabbelt <palmerdabbelt@google.com>
+Cc:     Bjorn Topel <bjorn.topel@gmail.com>, daniel@iogearbox.net,
+        ast@kernel.org, zlim.lnx@gmail.com, catalin.marinas@arm.com,
+        will@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        andriin@fb.com, shuah@kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        clang-built-linux@googlegroups.com, kernel-team@android.com
+Subject: Re: [PATCH 4/4] arm64: bpf: Elide some moves to a0 after calls
+Message-ID: <20200211001526.xbfwdnpjqrg3ed6q@ast-mbp>
+References: <20200128021145.36774-1-palmerdabbelt@google.com>
+ <20200128021145.36774-5-palmerdabbelt@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJN39ogSo=bEEydp7s34AjtDVwXxw7_hQFrARWE4NXQwRZxSxw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.1/25720/Mon Feb 10 12:53:41 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200128021145.36774-5-palmerdabbelt@google.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/10/20 5:43 AM, Brendan Gregg wrote:
-> On Thu, Jan 16, 2020 at 12:59 AM Jiri Olsa <jolsa@redhat.com> wrote:
->> On Fri, Dec 20, 2019 at 11:35:08AM +0800, Wenbo Zhang wrote:
->>>> [ Wenbo, please keep also Al (added here) in the loop since he was providing
->>>>     feedback on prior submissions as well wrt vfs bits. ]
->>>
->>> Get it, thank you!
->>
->> hi,
->> is this stuck on review? I'd like to see this merged ;-)
-> 
-> Is this still waiting on someone? I'm writing some docs on analyzing
-> file systems via syscall tracing and this will be a big improvement.
+On Mon, Jan 27, 2020 at 06:11:45PM -0800, Palmer Dabbelt wrote:
+>  
+> +	/* Handle BPF_REG_0, which may be in the wrong place because the ARM64
+> +	 * ABI doesn't match the BPF ABI for function calls. */
+> +	if (ctx->reg0_in_reg1) {
+> +		/* If we're writing BPF_REG_0 then we don't need to do any
+> +		 * extra work to get the registers back in their correct
+> +		 * locations. */
+> +		if (insn->dst_reg == BPF_REG_0)
+> +			ctx->reg0_in_reg1 = false;
+> +
+> +		/* If we're writing to BPF_REG_1 then we need to save BPF_REG_0
+> +		 * into the correct location if it's still alive, as otherwise
+> +		 * it will be clobbered. */
+> +		if (insn->dst_reg == BPF_REG_1) {
+> +			if (!dead_register(ctx, off + 1, BPF_REG_0))
+> +				emit(A64_MOV(1, A64_R(7), A64_R(0)), ctx);
+> +			ctx->reg0_in_reg1 = false;
+> +		}
+> +	}
 
-It was waiting on final review/ACK from vfs folks, but given that didn't
-happen so far :/, this series should get rebased for proceeding with merge.
+I'm not sure this is correct, since it processes insns as a linear code, but
+there could be jumps in the middle. The logic should be following the control
+flow of the program. The verifier is a better place to do such analysis.
+I don't see how JITs can do it on their own.
