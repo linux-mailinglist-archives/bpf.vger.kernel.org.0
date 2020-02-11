@@ -2,57 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DE28159B38
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 22:33:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2248159B48
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 22:40:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727753AbgBKVdE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Feb 2020 16:33:04 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:35286 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727433AbgBKVdE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Feb 2020 16:33:04 -0500
-Received: by mail-ot1-f68.google.com with SMTP id r16so11750757otd.2
-        for <bpf@vger.kernel.org>; Tue, 11 Feb 2020 13:33:04 -0800 (PST)
+        id S1727897AbgBKVi0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Feb 2020 16:38:26 -0500
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:38012 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727361AbgBKViZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Feb 2020 16:38:25 -0500
+Received: by mail-pf1-f194.google.com with SMTP id x185so92291pfc.5;
+        Tue, 11 Feb 2020 13:38:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w7t90g4c6XNbG2IVEsLyCTMS996Wdaa8ZX4sfkSxqPY=;
-        b=sPb+i27ruMFTvdaOm/MyeY4Oz9L1b8r1xJSqYOfN+o5NMuR8tLmfXcwUTIumlqIiYW
-         2N8lzmIaxjR+23jnTm7qAer4rFagk617Vw5fp6rbbZAoseCihITs9GNCZ4bnVda2WJnk
-         oiLpm3H8xB22+xnzg0KozaxmzWdWjbLz64ru6WrEx0MMiBBMRsPvHBFlRVuQAdlBaR5O
-         YUpX/nkFwO39yJTtfwvmkOhu73zPYObk0PdEjCMmWCpJ2YWhjbHOa+ZOUJCgxialqOvU
-         x3LpOiDBJtwItD0ieD23vk+I1qQp1gvNs12BQTOn4RGIJYOyWze2v5PeqFwz0IpDf+dV
-         UZiw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=oJSY3+unP7njMIVK4X94hP/7d/d2A7Dqq9Ad7uaQNuM=;
+        b=Kp+kvUFE8QBS06WMeMrPfDHf6XHJBSFjBNdpWZoNQEFuDXpQNvDlKsacoJXbKp/F0z
+         7mjYdwKOaTU+l/BbI0M35AbxA4Bk+zW+knm5/w/vdR+3T1qXdCJkIIWDy0dwlbgz8NxY
+         3cu40q8BNwsRHaAh+O5VbTV5B7QzT5e7tKwELBIAbIJAwytkfzTVvEKVVK86NXy4k0NS
+         REEU+ySD34LlI7ixGYsC9mQzCTXJO/9Hoovi73SZQLq6iNnA2NqlEeMr+rggUykmNwU6
+         3na9+7zREZUQHoLyBc88JraQMoPZNVka+XeZCODMhZqcujAlao92ta4IcvKoPzLbp0mP
+         vfpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w7t90g4c6XNbG2IVEsLyCTMS996Wdaa8ZX4sfkSxqPY=;
-        b=q/oek8ycSnQ9+GRgMicTK7+oIfaTbB57kKImloEGrGngMX91rg6dEPTWtAChDDgj72
-         IG2COMJ7RxSdsLwwQ3zoUkFs4RSyUY8/dQD5D/BfF1+TwF5MaPpdr2dsfdPNe1UZifBj
-         2/m4hU6OJjir6Jfs9KX/2NWgU72ThnpMMeLl47/JZ66q2YCucsSDGRwttV9TbEAtw6XM
-         5+cwuxD6fhslBc6UuounLagSeIieKLcidK+Gn02F6/b4aS2qhloH5uPQsgH1DINv+9KS
-         zqMX4tzy8PiFmJ7dL4OYsBj5KRQt0xwAIquAX5cWHKb6pWVlIbg6gmfkDqHCXzbrZbjs
-         uivQ==
-X-Gm-Message-State: APjAAAUZvyajc4kzFn+adjLVexUebpsNqyN+sZiFeqiI7F5KcGLxqqqD
-        9+lhKUJl/dTmlZUxC3whiiu0kd2HWSEzE+aQA93Xvg==
-X-Google-Smtp-Source: APXvYqyx2YfO3CrgVT8Ue7KGbrpANlKv/7s2kPE1d6utD3uoHxPksjBi0y8VM3cugmkfUj0o0k+v0rF5MEB6CHlQjRg=
-X-Received: by 2002:a05:6830:22cc:: with SMTP id q12mr7016668otc.110.1581456783363;
- Tue, 11 Feb 2020 13:33:03 -0800 (PST)
-MIME-Version: 1.0
-References: <20200123152440.28956-1-kpsingh@chromium.org> <20200123152440.28956-5-kpsingh@chromium.org>
- <20200211031208.e6osrcathampoog7@ast-mbp> <20200211124334.GA96694@google.com>
- <20200211175825.szxaqaepqfbd2wmg@ast-mbp> <CAG48ez25mW+_oCxgCtbiGMX07g_ph79UOJa07h=o_6B6+Q-u5g@mail.gmail.com>
- <20200211190943.sysdbz2zuz5666nq@ast-mbp> <CAG48ez2gvo1dA4P1L=ASz7TRfbH-cgLZLmOPmr0NweayL-efLw@mail.gmail.com>
- <20200211201039.om6xqoscfle7bguz@ast-mbp> <CAG48ez1qGqF9z7APajFyzjZh82YxFV9sHE64f5kdKBeH9J3YPg@mail.gmail.com>
-In-Reply-To: <CAG48ez1qGqF9z7APajFyzjZh82YxFV9sHE64f5kdKBeH9J3YPg@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 11 Feb 2020 22:32:37 +0100
-Message-ID: <CAG48ez0gxY5bzTpk+6DjkXqTPDM+06yy8spKdqoF7Edt9Nx_JQ@mail.gmail.com>
-Subject: Re: BPF LSM and fexit [was: [PATCH bpf-next v3 04/10] bpf: lsm: Add
- mutable hooks list for the BPF LSM]
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=oJSY3+unP7njMIVK4X94hP/7d/d2A7Dqq9Ad7uaQNuM=;
+        b=HXihRdvmOARFnYqFhbp3wgqcNg64kjntwnj2SyCAISENS/QhdICPBQPrSlN0QLLuCc
+         F+xJUoBaZAjQCf11Lusl63x6IWc2Vef4dX0Wvz6s2dVyUTAc2aYeVv3Hk0SicgwOxeR6
+         soCpl31HYvKnjjPnmG3rzMUxSPw/2cSdvKFx2qMmFOxNlDB7Cl93NWGwy20yUHntck3o
+         nSLhPPMNn5JVcSMypaB6TbQTBMk50gFrb1jfX+PwIumX7FMETOR5xBF6XmIssWxbV2Mf
+         RdTw95ibC/3SRkXebLGzJ2LgnNCfmbYKh9Qgd1+M6GZVXkMPwqVerHssPs3/N19xP0id
+         jZ1Q==
+X-Gm-Message-State: APjAAAX2Ht5HDPzhYWDlmff9wiO3JmJI7HX0T++xfXdZX+z90d62AdTU
+        aT1hXOQ11dySP8BQUuV/Nro=
+X-Google-Smtp-Source: APXvYqzPQNC73PGSmEbOYih8cQaHC5eGDgjAfZNnep7lcccZ066rjEwUFgQM6K61/xXQOktcYcoP3g==
+X-Received: by 2002:aa7:8ad9:: with SMTP id b25mr5108673pfd.70.1581457103385;
+        Tue, 11 Feb 2020 13:38:23 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:200::1:aeb4])
+        by smtp.gmail.com with ESMTPSA id d14sm4447685pjz.12.2020.02.11.13.38.21
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 11 Feb 2020 13:38:22 -0800 (PST)
+Date:   Tue, 11 Feb 2020 13:38:20 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jann Horn <jannh@google.com>
 Cc:     KP Singh <kpsingh@chromium.org>,
         kernel list <linux-kernel@vger.kernel.org>,
         bpf@vger.kernel.org,
@@ -70,7 +64,7 @@ Cc:     KP Singh <kpsingh@chromium.org>,
         Brendan Gregg <brendan.d.gregg@gmail.com>,
         Matthew Garrett <mjg59@google.com>,
         Christian Brauner <christian@brauner.io>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
         Florent Revest <revest@chromium.org>,
         Brendan Jackman <jackmanb@chromium.org>,
         "Serge E. Hallyn" <serge@hallyn.com>,
@@ -78,51 +72,62 @@ Cc:     KP Singh <kpsingh@chromium.org>,
         "David S. Miller" <davem@davemloft.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: BPF LSM and fexit [was: [PATCH bpf-next v3 04/10] bpf: lsm: Add
+ mutable hooks list for the BPF LSM]
+Message-ID: <20200211213819.j4ltrjjkuywihpnv@ast-mbp>
+References: <20200123152440.28956-1-kpsingh@chromium.org>
+ <20200123152440.28956-5-kpsingh@chromium.org>
+ <20200211031208.e6osrcathampoog7@ast-mbp>
+ <20200211124334.GA96694@google.com>
+ <20200211175825.szxaqaepqfbd2wmg@ast-mbp>
+ <CAG48ez25mW+_oCxgCtbiGMX07g_ph79UOJa07h=o_6B6+Q-u5g@mail.gmail.com>
+ <20200211190943.sysdbz2zuz5666nq@ast-mbp>
+ <CAG48ez2gvo1dA4P1L=ASz7TRfbH-cgLZLmOPmr0NweayL-efLw@mail.gmail.com>
+ <20200211201039.om6xqoscfle7bguz@ast-mbp>
+ <CAG48ez1qGqF9z7APajFyzjZh82YxFV9sHE64f5kdKBeH9J3YPg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez1qGqF9z7APajFyzjZh82YxFV9sHE64f5kdKBeH9J3YPg@mail.gmail.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 11, 2020 at 9:33 PM Jann Horn <jannh@google.com> wrote:
-> On Tue, Feb 11, 2020 at 9:10 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> > On Tue, Feb 11, 2020 at 08:36:18PM +0100, Jann Horn wrote:
-> > > On Tue, Feb 11, 2020 at 8:09 PM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > > On Tue, Feb 11, 2020 at 07:44:05PM +0100, Jann Horn wrote:
-> > > > > On Tue, Feb 11, 2020 at 6:58 PM Alexei Starovoitov
-> > > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > > On Tue, Feb 11, 2020 at 01:43:34PM +0100, KP Singh wrote:
-> > > > > [...]
-> > > > > > > * When using the semantic provided by fexit, the BPF LSM program will
-> > > > > > >   always be executed and will be able to override / clobber the
-> > > > > > >   decision of LSMs which appear before it in the ordered list. This
-> > > > > > >   semantic is very different from what we currently have (i.e. the BPF
-> > > > > > >   LSM hook is only called if all the other LSMs allow the action) and
-> > > > > > >   seems to be bypassing the LSM framework.
-> > > > > >
-> > > > > > It that's a concern it's trivial to add 'if (RC == 0)' check to fexit
-> > > > > > trampoline generator specific to lsm progs.
-> > > > > [...]
-> > > > > > Using fexit mechanism and bpf_sk_storage generalization is
-> > > > > > all that is needed. None of it should touch security/*.
-[...]
+On Tue, Feb 11, 2020 at 09:33:49PM +0100, Jann Horn wrote:
+> >
+> > Got it. Then let's whitelist them ?
+> > All error injection points are marked with ALLOW_ERROR_INJECTION().
+> > We can do something similar here, but let's do it via BTF and avoid
+> > abusing yet another elf section for this mark.
+> > I think BTF_TYPE_EMIT() should work. Just need to pick explicit enough
+> > name and extensive comment about what is going on.
+> 
+> Sounds reasonable to me. :)
+
+awesome :)
+
+> > Locking rules and cleanup around security_blah() shouldn't change though.
+> > Like security_task_alloc() should be paired with security_task_free().
+> > And so on. With bpf_sk_storage like logic the alloc/free of scratch
+> > space will be similar to the way socket and bpf progs deal with it.
+> >
 > > Some of the lsm hooks are in critical path. Like security_socket_sendmsg().
 > > retpoline hurts. If we go with indirect calls right now it will be harder to
 > > optimize later. It took us long time to come up with bpf trampoline and build
 > > bpf dispatcher on top of it to remove single indirect call from XDP runtime.
 > > For bpf+lsm would be good to avoid it from the start.
->
+> 
 > Just out of curiosity: Are fexit hooks really much cheaper than indirect calls?
->
+> 
 > AFAIK ftrace on x86-64 replaces the return pointer for fexit
 > instrumentation (see prepare_ftrace_return()). So when the function
 > returns, there is one return misprediction for branching into
 > return_to_handler(), and then the processor's internal return stack
 > will probably be misaligned so that after ftrace_return_to_handler()
 > is done running, all the following returns will also be mispredicted.
->
+> 
 > So I would've thought that fexit hooks would have at least roughly the
 > same impact as indirect calls - indirect calls via retpoline do one
 > mispredicted branch, fexit hooks do at least two AFAICS. But I guess
@@ -131,11 +136,13 @@ On Tue, Feb 11, 2020 at 9:33 PM Jann Horn <jannh@google.com> wrote:
 > indirect branch target is too infrequently accessed to be in L1D, or
 > something like that?
 
-Ah, kpsingh explained to me that BPF trampolines work differently from
-normal ftrace and don't do the return address poking. Still, the
-processor's internal call stack will be misaligned by the BPF
-trampoline, right? Since there is one more call than return, if e.g.
-security_blah() is hooked, then the kernel will probably predict
-security_blah+5 as the target when returning from the trampoline to
-security_blah's parent, then when returning from security_blah's
-parent to the grandparent predict the parent, and so on, right?
+For fexit I've tried ftrace style of overwriting return address in the stack,
+but it was slower than "leave; add rsp, 8; ret". So I went with that.
+Looks like skipping one frame makes intel return stack prediction work better
+than overwriting. I tested on broadwell only though. Later I realized that I
+can do "jmp bpf_trampoline" instead of "call bpf_trampoline", so this extra
+'add rsp, 8' can be removed and both direct jump and return stack predictors
+will be happy. Will be posting this patch soon.
+
+Old perf numbers of fexit vs original vs kprobe:
+https://lore.kernel.org/bpf/20191122011515.255371-1-ast@kernel.org/
