@@ -2,130 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B947015945A
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 17:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D61159780
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 19:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729412AbgBKQGN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Feb 2020 11:06:13 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:48020 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730751AbgBKQGM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Feb 2020 11:06:12 -0500
-Received: by mail-io1-f70.google.com with SMTP id 13so7254832iof.14
-        for <bpf@vger.kernel.org>; Tue, 11 Feb 2020 08:06:10 -0800 (PST)
+        id S1729794AbgBKR6b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Feb 2020 12:58:31 -0500
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:37958 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727887AbgBKR6b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Feb 2020 12:58:31 -0500
+Received: by mail-pl1-f195.google.com with SMTP id t6so4565075plj.5;
+        Tue, 11 Feb 2020 09:58:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=rptgnpdljC5x2bhptwLXpbtKJ/HkIadlAqVDXaT95LU=;
+        b=eCn2WxhbxODwWTEQoefBVinrom6bS+mgcBkXBuHwVC4mipCdsujuGpAh2CeQ1w/fG+
+         NHNsbrWdzQKZbKF4YsDIR4lUOMYbtyBWJ9Ca8AP9Xfkc/3MRpyNiOlp6YIXFFpyRTq5/
+         KiLp/jrYJ+45+/nJOEAkt1cCUMciUY8WZIT2vHcuGW/YTb11XUvaObIsJTrZmq0RRsKL
+         +fmo420j77BIqDkdks8pYM1l0RhcpyQS5rWoG0KBWZuK3gTaMj2V6elXOIGT4cjD2b2v
+         lOXd8jMqcwXBN60bcFFch9l4L6+zIouf/bJSXIOy8BZgs8fNlZSK9DFV+HBgQ6twF+C5
+         Okbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Jdoz05JAAw+9K6HAuWNyOVTPMvhxyYRmEKIP8cTLjUA=;
-        b=RbWc2l/P/mDrHtfeElQ46hTQYJBbDCgcdjhKtmw66hfLtWEltyRmp1kXJOLlhcJOoL
-         b/J6V92dS5rSoAnQE1CEfIWO5n9v5bXbD2rd28o13IPvuEkqNC7NvQTyNlThgu5B+vOV
-         85QyfaSLrV7NJJ3jqEa9RSEyRMAE8UQ+RsZgiMM9QYSVYq4HiRzzsfS6yRXqYHORr3cf
-         koj6mEqzHDmhfINb5DKC/rDMTcgi88MaG846xU+pc5vuv4WtKd7mwxS2QXC7jACM9KIK
-         6gbnuUkI+wYj4H1eTeyyOVdT8YDHOnIu8H6hnZfvEooodw6ndhSTneAxLCYaaQV+UbjV
-         7u4A==
-X-Gm-Message-State: APjAAAVuXOzvUNnB9B5PUl6ky+az3ee+env/qEk4FHpe7f8q2G36gr9Z
-        ySy/CVpum9vwYnmBLBlWAUC3Y2I3xj2e/582tMqmd0XGSgOj
-X-Google-Smtp-Source: APXvYqynHf3OEs4Q7nFiEkAHlhoE3vw/BAvA5frqHvj6nn+PEKRsD7ZEggL5lc2dfMXJ9M0izXdgr3AaxDjhk4SZAOJOBt9p3tCz
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rptgnpdljC5x2bhptwLXpbtKJ/HkIadlAqVDXaT95LU=;
+        b=QvgFgO5pDHcDUKqEOilaauyxuHgLMMOme+I9BSIE1iaLBfThZxtPM5ai0iJrkRd+AL
+         CU5D0uasAPeey6cZNn1RCHqpolLRpprCs8CikQZDVat+1hshfm8Hte6mhIaQeCLPHqT6
+         85glL78TtNOJGBCWT6PALtAtSvzfKH2Vtaznydif3X5yFFCbne1b8iuxsYizuMOpzWPQ
+         U9MpsdAWwMDRmAm6GZUZ4FEP3zuXt2WBztGzyfU1BQi9SQfl60LFBD++6d2C5qR7zy7J
+         rVozxv/Hb4jP7eRuewW8t8LjE1wcy2YU3VQWxFpDkliFErpUxgsrYc+U8Ttj2P+4u92a
+         LLJw==
+X-Gm-Message-State: APjAAAWCrRIFnUEsb5GhdWBmRGDeJu6R4Vdo03MV/DLXfR6t7ZAB/o+G
+        czp+33P8aZt+TOZ7LXxjHtM=
+X-Google-Smtp-Source: APXvYqyq0aeXQPknw0aJdqRVkPfZrGR5i6YUVphYlNhjXpItzPVkQdArr7E199v9AJHzFp1eUC+rxA==
+X-Received: by 2002:a17:90a:3243:: with SMTP id k61mr5093197pjb.43.1581443910071;
+        Tue, 11 Feb 2020 09:58:30 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:200::1:aeb4])
+        by smtp.gmail.com with ESMTPSA id e9sm3993074pjt.16.2020.02.11.09.58.28
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 11 Feb 2020 09:58:29 -0800 (PST)
+Date:   Tue, 11 Feb 2020 09:58:27 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@google.com>,
+        Thomas Garnier <thgarnie@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Garnier <thgarnie@chromium.org>,
+        Michael Halcrow <mhalcrow@google.com>,
+        Paul Turner <pjt@google.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Jann Horn <jannh@google.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Christian Brauner <christian@brauner.io>,
+        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel-team@fb.com
+Subject: Re: [PATCH bpf-next v3 04/10] bpf: lsm: Add mutable hooks list for
+ the BPF LSM
+Message-ID: <20200211175825.szxaqaepqfbd2wmg@ast-mbp>
+References: <20200123152440.28956-1-kpsingh@chromium.org>
+ <20200123152440.28956-5-kpsingh@chromium.org>
+ <20200211031208.e6osrcathampoog7@ast-mbp>
+ <20200211124334.GA96694@google.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:cd0d:: with SMTP id g13mr15627399jaq.110.1581437170301;
- Tue, 11 Feb 2020 08:06:10 -0800 (PST)
-Date:   Tue, 11 Feb 2020 08:06:10 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c54420059e4f08ff@google.com>
-Subject: WARNING in dev_change_net_namespace
-From:   syzbot <syzbot+830c6dbfc71edc4f0b8f@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, dsahern@gmail.com,
-        hawk@kernel.org, jiri@mellanox.com, johannes.berg@intel.com,
-        john.fastabend@gmail.com, kafai@fb.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, mkubecek@suse.cz,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200211124334.GA96694@google.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Tue, Feb 11, 2020 at 01:43:34PM +0100, KP Singh wrote:
+> 
+> > Pros:
+> > - no changes to security/ directory
+> 
+> * We do need to initialize the BPF LSM as a proper LSM (i.e. in
+>   security/bpf) because it needs access to security blobs. This is
+>   only possible statically for now as they should be set after boot
+>   time to provide guarantees to any helper that uses information in
+>   security blobs. I have proposed how we could make this dynamic as a
+>   discussion topic for the BPF conference:
+> 
+>     https://lore.kernel.org/bpf/20200127171516.GA2710@chromium.org
+> 
+>   As you can see from some of the prototype use cases e.g:
+> 
+>     https://github.com/sinkap/linux-krsi/blob/patch/v1/examples/samples/bpf/lsm_detect_exec_unlink.c
+> 
+>   that they do rely on security blobs and that they are key in doing
+>   meaningful security analysis.
 
-syzbot found the following crash on:
+above example doesn't use security blob from bpf prog.
+Are you referring to
+https://github.com/sinkap/linux-krsi/blob/patch/v1/examples/security/bpf/ops.c#L455
+Then it's a bpf helper that is using it. And that helper could have been
+implemented differently. I think it should be a separate discussion on merits
+of such helper, its api, and its implementation.
 
-HEAD commit:    0a679e13 Merge branch 'for-5.6-fixes' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15142701e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6780df5a5f208964
-dashboard link: https://syzkaller.appspot.com/bug?extid=830c6dbfc71edc4f0b8f
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+At the same time I agree that additional scratch space accessible by lsm in
+inode->i_security, cred->security and other kernel structs is certainly
+necessary, but it's a nack to piggy back on legacy lsm way of doing it. The
+implementation of bpf_lsm_blob_sizes.lbs_inode fits one single purpose. It's
+fine for builtin LSM where blob sizes and code that uses it lives in one place
+in the kernel and being modified at once when need for more space arises. For
+bpf progs such approach is a non starter. Progs need to have flexible amount
+scratch space. Thankfully this problem is not new. It was solved already.
+Please see how bpf_sk_storage is implemented. It's a flexible amount of scratch
+spaces available to bpf progs that is available in every socket. It's done on
+demand. No space is wasted when progs are not using it. Not all sockets has to
+have it either. I strongly believe that the same approach should be used for
+scratch space in inode, cred, etc. It can be a union of existing 'void
+*security' pointer or a new pointer. net/core/bpf_sk_storage.c implementation
+is not socket specific. It can be generalized for inode, cred, task, etc.
 
-Unfortunately, I don't have any reproducer for this crash yet.
+> * When using the semantic provided by fexit, the BPF LSM program will
+>   always be executed and will be able to override / clobber the
+>   decision of LSMs which appear before it in the ordered list. This
+>   semantic is very different from what we currently have (i.e. the BPF
+>   LSM hook is only called if all the other LSMs allow the action) and
+>   seems to be bypassing the LSM framework.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+830c6dbfc71edc4f0b8f@syzkaller.appspotmail.com
+It that's a concern it's trivial to add 'if (RC == 0)' check to fexit
+trampoline generator specific to lsm progs.
 
-RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000004
-RBP: 000000000075bfc8 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000007
-R13: 00000000000009cb R14: 00000000004cb3dd R15: 0000000000000016
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 24839 at net/core/dev.c:10108 dev_change_net_namespace+0x155f/0x16b0 net/core/dev.c:10108
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 24839 Comm: syz-executor.4 Not tainted 5.6.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1fb/0x318 lib/dump_stack.c:118
- panic+0x264/0x7a9 kernel/panic.c:221
- __warn+0x209/0x210 kernel/panic.c:582
- report_bug+0x1b6/0x2f0 lib/bug.c:195
- fixup_bug arch/x86/kernel/traps.c:174 [inline]
- do_error_trap+0xcf/0x1c0 arch/x86/kernel/traps.c:267
- do_invalid_op+0x36/0x40 arch/x86/kernel/traps.c:286
- invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-RIP: 0010:dev_change_net_namespace+0x155f/0x16b0 net/core/dev.c:10108
-Code: b7 f9 02 01 48 c7 c7 5d 66 e6 88 48 c7 c6 b4 42 04 89 ba 25 27 00 00 31 c0 e8 6d a6 dc fa 0f 0b e9 0d eb ff ff e8 a1 e6 0a fb <0f> 0b e9 2f fe ff ff e8 95 e6 0a fb c6 05 05 b7 f9 02 01 48 c7 c7
-RSP: 0018:ffffc90001ae7140 EFLAGS: 00010246
-RAX: ffffffff866c18df RBX: 00000000fffffff4 RCX: 0000000000040000
-RDX: ffffc90012028000 RSI: 000000000003ffff RDI: 0000000000040000
-RBP: ffffc90001ae7240 R08: ffffffff866c1700 R09: fffffbfff1406318
-R10: fffffbfff1406318 R11: 0000000000000000 R12: ffff8880918d2b60
-R13: ffff8880918d20b8 R14: ffffc90001ae71e8 R15: ffffc90001ae71e0
- do_setlink+0x196/0x3880 net/core/rtnetlink.c:2501
- __rtnl_newlink net/core/rtnetlink.c:3252 [inline]
- rtnl_newlink+0x1509/0x1c00 net/core/rtnetlink.c:3377
- rtnetlink_rcv_msg+0x889/0xd40 net/core/rtnetlink.c:5438
- netlink_rcv_skb+0x19e/0x3e0 net/netlink/af_netlink.c:2477
- rtnetlink_rcv+0x1c/0x20 net/core/rtnetlink.c:5456
- netlink_unicast_kernel net/netlink/af_netlink.c:1302 [inline]
- netlink_unicast+0x766/0x920 net/netlink/af_netlink.c:1328
- netlink_sendmsg+0xa2b/0xd40 net/netlink/af_netlink.c:1917
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg net/socket.c:672 [inline]
- ____sys_sendmsg+0x4f7/0x7f0 net/socket.c:2343
- ___sys_sendmsg net/socket.c:2397 [inline]
- __sys_sendmsg+0x1ed/0x290 net/socket.c:2430
- __do_sys_sendmsg net/socket.c:2439 [inline]
- __se_sys_sendmsg net/socket.c:2437 [inline]
- __x64_sys_sendmsg+0x7f/0x90 net/socket.c:2437
- do_syscall_64+0xf7/0x1c0 arch/x86/entry/common.c:294
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x45b3b9
-Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f483611ac78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f483611b6d4 RCX: 000000000045b3b9
-RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000004
-RBP: 000000000075bfc8 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000007
-R13: 00000000000009cb R14: 00000000004cb3dd R15: 0000000000000016
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+> * Not all security_* wrappers simply call the attached hooks and return
+>   their exit code and not all of them pass the same arguments to the
+>   hook e.g. security_bprm_check, security_file_open,
+>   security_task_alloc to just name a few. Illustrating this further
+>   using security_task_alloc as an example:
+> 
+> 	rc = call_int_hook(task_alloc, 0, task, clone_flags);
+> 	if (unlikely(rc))
+> 		security_task_free(task);
+> 	return rc;
+> 
+> Which means we would leak task_structs in this case. While
+> call_int_hook is sort of equivalent to the fexit trampoline for most
+> hooks, it's not really the case for some (quite important) LSM hooks.
 
+let's look at them one by one.
+1.
+security_bprm_check() calling ima_bprm_check.
+I think it's layering violation.
+Was it that hard to convince vfs folks to add it in fs/exec.c where
+it belongs?
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+2.
+security_file_open() calling fsnotify_perm().
+Same layering violation and it's clearly broken.
+When CONFIG_SECURITY is not defined:
+static inline int security_file_open(struct file *file)
+{
+        return 0;
+}
+There is no call to fsnotify_perm().
+So fsnotify_open/mkdir/etc() work fine with and without CONFIG_SECURITY,
+but fsnotify_perm() events can be lost depending on kconfig.
+fsnotify_perm() should be moved in fs/open.c.
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+3.
+security_task_alloc(). hmm.
+when CONFIG_SECURITY is enabled and corresponding LSM with
+non zero blob_sizes.lbs_task is registered that hook allocates
+memory even if task_alloc is empty.
+Doing security_task_free() in that hook also looks wrong.
+It should have been:
+diff --git a/kernel/fork.c b/kernel/fork.c
+index ef82feb4bddc..a0d31e781341 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2062,7 +2062,7 @@ static __latent_entropy struct task_struct *copy_process(
+        shm_init_task(p);
+        retval = security_task_alloc(p, clone_flags);
+        if (retval)
+-               goto bad_fork_cleanup_audit;
++               goto bad_fork_cleanup_security;
+Same issue with security_file_alloc().
+
+I think this layering issues should be fixed, but it's not a blocker for
+lsm-bpf to proceed. Using fexit mechanism and bpf_sk_storage generalization is
+all that is needed. None of it should touch security/*.
