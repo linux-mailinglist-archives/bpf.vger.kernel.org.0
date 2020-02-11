@@ -2,179 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CFCEF159256
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 15:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B947015945A
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 17:06:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727264AbgBKOye (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Feb 2020 09:54:34 -0500
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:36769 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729799AbgBKOyd (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 11 Feb 2020 09:54:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581432871;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d8NVLxwWTOxE6u7A/qti2YerzSZ7+x+aQJQi9mvS0cs=;
-        b=HBuPh/34z+siAYHz8gkf7jyrXCftvjJWEj4Y4GYQPc8FT4xQTNV1B2qqxauxmsthF689aI
-        eEMXK55kqVcgItoie/DZlqIugiOCWiqHHGK5aIo7JE/G9KFUXElL2iF6oHEOm+GyuEzibG
-        0E4IioAstvn2ykEvmRtgO+0wtv9BHG4=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-334--KFedCahN126PpoPnpXotA-1; Tue, 11 Feb 2020 09:54:29 -0500
-X-MC-Unique: -KFedCahN126PpoPnpXotA-1
-Received: by mail-lf1-f69.google.com with SMTP id y23so1152229lfh.7
-        for <bpf@vger.kernel.org>; Tue, 11 Feb 2020 06:54:29 -0800 (PST)
+        id S1729412AbgBKQGN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Feb 2020 11:06:13 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:48020 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730751AbgBKQGM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Feb 2020 11:06:12 -0500
+Received: by mail-io1-f70.google.com with SMTP id 13so7254832iof.14
+        for <bpf@vger.kernel.org>; Tue, 11 Feb 2020 08:06:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=d8NVLxwWTOxE6u7A/qti2YerzSZ7+x+aQJQi9mvS0cs=;
-        b=a8DSijPfRdt7eaNXe6qr6v7lKlQZ0ouasBf18axFlD0W8njrjY4f5VZlsYotat3hYf
-         IGVaNC/ya7ZeZxULoFzfLviiqEDIJG1rSPzuM/YqyQsv112HHxMbDgT0hFFUAfverGJQ
-         Ajdere7UUr3J/hebMOQV4nbQiZKFrHnEk478J2qJT04o1w5vBLQ1t+RnFBGp+OalCiTf
-         rbZm6BYAlqZaSb8pj9imFRigxdZiSekRdJKXR8wYfd+nSwUaO+9ViKstnwEy/HA+KmXK
-         jjVdfFHupjZhOrUQLmbEv5N2d+UEVgydOos9UhYoNaelN4NaDR9d0se8r7N46MV6gcb6
-         8+0A==
-X-Gm-Message-State: APjAAAXhoSMR/LIPkNmmDttUNqcoOwozNQXZixZE4EqQzSVf89XeXnGR
-        1Qwzaq5t49aKIMKsZTVPdPgKQTUqxrDqFzxzCrwwcGSqrrjD7gD6VzJTUJlBSo/jy4Y8wXOd5GO
-        yAuKU6b6mdenw
-X-Received: by 2002:a19:7401:: with SMTP id v1mr3843617lfe.129.1581432868334;
-        Tue, 11 Feb 2020 06:54:28 -0800 (PST)
-X-Google-Smtp-Source: APXvYqxJ0zzuLIZLPJvyWS7ogYan9maBy3tqsqdTMzYz5/ikzYB5eKiGpt/P2xxEQRIa4WNjFCOqwg==
-X-Received: by 2002:a19:7401:: with SMTP id v1mr3843611lfe.129.1581432868083;
-        Tue, 11 Feb 2020 06:54:28 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id w6sm1934253lfq.95.2020.02.11.06.54.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Feb 2020 06:54:27 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 8BBDC180365; Tue, 11 Feb 2020 15:54:26 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Eelco Chaudron <echaudro@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Xdp <xdp-newbies@vger.kernel.org>, bpf@vger.kernel.org
-Subject: Re: Need a way to modify the section name for a read program object
-In-Reply-To: <0D7B2C92-FC75-4167-A973-EB0AD84FC878@redhat.com>
-References: <D0F8E306-ABEE-480E-BDFD-D43E3A98DC5A@redhat.com> <874kw664dy.fsf@toke.dk> <f1fa48b7-8096-b4f2-51cc-bcb4c1da0cd4@fb.com> <87zhdyduho.fsf@toke.dk> <CAEf4BzbWwseeKnGJCPj_VLLcQ-wkbhXWKAPsjQuy4LNDq8fvBg@mail.gmail.com> <0D7B2C92-FC75-4167-A973-EB0AD84FC878@redhat.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 11 Feb 2020 15:54:26 +0100
-Message-ID: <87wo8ti38d.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Jdoz05JAAw+9K6HAuWNyOVTPMvhxyYRmEKIP8cTLjUA=;
+        b=RbWc2l/P/mDrHtfeElQ46hTQYJBbDCgcdjhKtmw66hfLtWEltyRmp1kXJOLlhcJOoL
+         b/J6V92dS5rSoAnQE1CEfIWO5n9v5bXbD2rd28o13IPvuEkqNC7NvQTyNlThgu5B+vOV
+         85QyfaSLrV7NJJ3jqEa9RSEyRMAE8UQ+RsZgiMM9QYSVYq4HiRzzsfS6yRXqYHORr3cf
+         koj6mEqzHDmhfINb5DKC/rDMTcgi88MaG846xU+pc5vuv4WtKd7mwxS2QXC7jACM9KIK
+         6gbnuUkI+wYj4H1eTeyyOVdT8YDHOnIu8H6hnZfvEooodw6ndhSTneAxLCYaaQV+UbjV
+         7u4A==
+X-Gm-Message-State: APjAAAVuXOzvUNnB9B5PUl6ky+az3ee+env/qEk4FHpe7f8q2G36gr9Z
+        ySy/CVpum9vwYnmBLBlWAUC3Y2I3xj2e/582tMqmd0XGSgOj
+X-Google-Smtp-Source: APXvYqynHf3OEs4Q7nFiEkAHlhoE3vw/BAvA5frqHvj6nn+PEKRsD7ZEggL5lc2dfMXJ9M0izXdgr3AaxDjhk4SZAOJOBt9p3tCz
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a02:cd0d:: with SMTP id g13mr15627399jaq.110.1581437170301;
+ Tue, 11 Feb 2020 08:06:10 -0800 (PST)
+Date:   Tue, 11 Feb 2020 08:06:10 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c54420059e4f08ff@google.com>
+Subject: WARNING in dev_change_net_namespace
+From:   syzbot <syzbot+830c6dbfc71edc4f0b8f@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, dsahern@gmail.com,
+        hawk@kernel.org, jiri@mellanox.com, johannes.berg@intel.com,
+        john.fastabend@gmail.com, kafai@fb.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, mkubecek@suse.cz,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-"Eelco Chaudron" <echaudro@redhat.com> writes:
+Hello,
 
-> On 4 Feb 2020, at 20:32, Andrii Nakryiko wrote:
->
->> On Tue, Feb 4, 2020 at 11:27 AM Toke H=C3=B8iland-J=C3=B8rgensen=20
->> <toke@redhat.com> wrote:
->>>
->>> Andrii Nakryiko <andriin@fb.com> writes:
->>>
->>>> On 2/4/20 2:19 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->>>>> "Eelco Chaudron" <echaudro@redhat.com> writes:
->>>>>
->>>>>> Hi All,
->>>>>>
->>>>>> I'm trying to write an xdpdump like utility and have some missing=20
->>>>>> part
->>>>>> in libbpf to change the fentry/FUNCTION section name before=20
->>>>>> loading the
->>>>>> trace program.
->>>>>>
->>>>>> In short, I have an eBPF program that has a section name like
->>>>>> "fentry/FUNCTION" where FUNCTION needs to be replaced by the name=20
->>>>>> of the
->>>>>> XDP program loaded in the interfaces its start function.
->>>>>>
->>>>>> The code for loading the ftrace part is something like:
->>>>>>
->>>>>>     open_opts.attach_prog_fd =3D bpf_prog_get_fd_by_id(info.id);
->>>>>>     trace_obj =3D bpf_object__open_file("xdpdump_bpf.o",=20
->>>>>> &open_opts);
->>>>>>
->>>>>>     trace_prog_fentry =3D=20
->>>>>> bpf_object__find_program_by_title(trace_obj,
->>>>>> "fentry/FUNCTION");
->>>>>>
->>>>>>     /* Here I need to replace the trace_prog_fentry->section_name=20
->>>>>> =3D
->>>>>> "fentry/<INTERFACE PROG NAME> */
->>>>>>
->>>>>>     bpf_object__load(trace_obj);
->>>>>>     trace_link_fentry =3D=20
->>>>>> bpf_program__attach_trace(trace_prog_fentry);
->>>>>>
->>>>>>
->>>>>> See the above, I would like to change the section_name but there=20
->>>>>> is no
->>>>>> API to do this, and of course, the struct bpf_program is
->>>>>> implementation-specific.
->>>>>>
->>>>>> Any idea how I would work around this, or what extension to libbpf=20
->>>>>> can
->>>>>> be suggested to support this?
->>>>>
->>>>> I think what's missing is a way for the caller to set the=20
->>>>> attach_btf_id.
->>>>> Currently, libbpf always tries to discover this based on the=20
->>>>> section
->>>>> name (see libbpf_find_attach_btf_id()). I think the right way to=20
->>>>> let the
->>>>> caller specify this is not to change the section name, though, but=20
->>>>> just
->>>>> to expose a way to explicitly set the btf_id (which the caller can=20
->>>>> then
->>>>> go find on its own).
->>>>
->>>> Yes, I agree, section name should be treated as an immutable=20
->>>> identifier
->>>> and a (overrideable) hint to libbpf.
->>>>
->>>>>
->>>>> Not sure if it would be better with a new open_opt (to mirror
->>>>> attach_prog_fd), or just a setter=20
->>>>> (bpf_program__set_attach_btf_id()?).
->>>>> Or maybe both? Andrii, WDYT?
->>>>
->>>> open_opts is definitely wrong way to do this, because open_opts=20
->>>> apply to
->>>> all BPF programs, while this should be per-program.
->>>
->>> Yes, of course; silly me :)
->>>
->>>> I'm also not sure having API that allows to specify BTF type ID is=20
->>>> the
->>>> best, probably better to let libbpf perform the search by name. So=20
->>>> I'd
->>>> say something like this:
->>>>
->>>> int bpf_program__set_attach_target(int attach_prog_fd, const char
->>>> *attach_func_name)
->>>>
->>>> This should handle customizing all the tp_btf/fentry/fexit/freplace=20
->>>> BPF
->>>> programs we have.
->>>
->>> Right, that makes sense; I think that would cover it (apart from your
->>> function signature missing a struct bpf_program argument).
->>
->> great! and, ha-ha, too object-oriented thinking ;)
->
-> Thanks for your feedback, assuming you are not working on it, I=E2=80=99l=
-l=20
-> implement/test it and sent out a patch.
+syzbot found the following crash on:
 
-Please do! :)
+HEAD commit:    0a679e13 Merge branch 'for-5.6-fixes' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15142701e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6780df5a5f208964
+dashboard link: https://syzkaller.appspot.com/bug?extid=830c6dbfc71edc4f0b8f
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
 
--Toke
+Unfortunately, I don't have any reproducer for this crash yet.
 
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+830c6dbfc71edc4f0b8f@syzkaller.appspotmail.com
+
+RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000004
+RBP: 000000000075bfc8 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000007
+R13: 00000000000009cb R14: 00000000004cb3dd R15: 0000000000000016
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 24839 at net/core/dev.c:10108 dev_change_net_namespace+0x155f/0x16b0 net/core/dev.c:10108
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 24839 Comm: syz-executor.4 Not tainted 5.6.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1fb/0x318 lib/dump_stack.c:118
+ panic+0x264/0x7a9 kernel/panic.c:221
+ __warn+0x209/0x210 kernel/panic.c:582
+ report_bug+0x1b6/0x2f0 lib/bug.c:195
+ fixup_bug arch/x86/kernel/traps.c:174 [inline]
+ do_error_trap+0xcf/0x1c0 arch/x86/kernel/traps.c:267
+ do_invalid_op+0x36/0x40 arch/x86/kernel/traps.c:286
+ invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+RIP: 0010:dev_change_net_namespace+0x155f/0x16b0 net/core/dev.c:10108
+Code: b7 f9 02 01 48 c7 c7 5d 66 e6 88 48 c7 c6 b4 42 04 89 ba 25 27 00 00 31 c0 e8 6d a6 dc fa 0f 0b e9 0d eb ff ff e8 a1 e6 0a fb <0f> 0b e9 2f fe ff ff e8 95 e6 0a fb c6 05 05 b7 f9 02 01 48 c7 c7
+RSP: 0018:ffffc90001ae7140 EFLAGS: 00010246
+RAX: ffffffff866c18df RBX: 00000000fffffff4 RCX: 0000000000040000
+RDX: ffffc90012028000 RSI: 000000000003ffff RDI: 0000000000040000
+RBP: ffffc90001ae7240 R08: ffffffff866c1700 R09: fffffbfff1406318
+R10: fffffbfff1406318 R11: 0000000000000000 R12: ffff8880918d2b60
+R13: ffff8880918d20b8 R14: ffffc90001ae71e8 R15: ffffc90001ae71e0
+ do_setlink+0x196/0x3880 net/core/rtnetlink.c:2501
+ __rtnl_newlink net/core/rtnetlink.c:3252 [inline]
+ rtnl_newlink+0x1509/0x1c00 net/core/rtnetlink.c:3377
+ rtnetlink_rcv_msg+0x889/0xd40 net/core/rtnetlink.c:5438
+ netlink_rcv_skb+0x19e/0x3e0 net/netlink/af_netlink.c:2477
+ rtnetlink_rcv+0x1c/0x20 net/core/rtnetlink.c:5456
+ netlink_unicast_kernel net/netlink/af_netlink.c:1302 [inline]
+ netlink_unicast+0x766/0x920 net/netlink/af_netlink.c:1328
+ netlink_sendmsg+0xa2b/0xd40 net/netlink/af_netlink.c:1917
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ ____sys_sendmsg+0x4f7/0x7f0 net/socket.c:2343
+ ___sys_sendmsg net/socket.c:2397 [inline]
+ __sys_sendmsg+0x1ed/0x290 net/socket.c:2430
+ __do_sys_sendmsg net/socket.c:2439 [inline]
+ __se_sys_sendmsg net/socket.c:2437 [inline]
+ __x64_sys_sendmsg+0x7f/0x90 net/socket.c:2437
+ do_syscall_64+0xf7/0x1c0 arch/x86/entry/common.c:294
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x45b3b9
+Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f483611ac78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007f483611b6d4 RCX: 000000000045b3b9
+RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000004
+RBP: 000000000075bfc8 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000007
+R13: 00000000000009cb R14: 00000000004cb3dd R15: 0000000000000016
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
