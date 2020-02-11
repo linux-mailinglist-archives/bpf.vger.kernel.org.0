@@ -2,176 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 368DF1599C4
-	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 20:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBF61599D2
+	for <lists+bpf@lfdr.de>; Tue, 11 Feb 2020 20:32:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729641AbgBKTaN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Feb 2020 14:30:13 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:42427 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728202AbgBKTaN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Feb 2020 14:30:13 -0500
-Received: by mail-qk1-f193.google.com with SMTP id q15so11280157qke.9;
-        Tue, 11 Feb 2020 11:30:13 -0800 (PST)
+        id S1730465AbgBKTcb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Feb 2020 14:32:31 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:40470 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728849AbgBKTcb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Feb 2020 14:32:31 -0500
+Received: by mail-qk1-f194.google.com with SMTP id b7so11306080qkl.7;
+        Tue, 11 Feb 2020 11:32:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Mtc3nhV1yFjtyZ72uQDRZQmFUp1an9UYV0/ZePw2JCY=;
-        b=JRgMwCSc06Tbaq6tXLRRPsebZ4U51bfbGDh7uFD7ElvOgNWtSNEHQzFpbPYOXHSaxr
-         MvOIVziC5npjqgPFgaL6hfAYsh0oy77XbPBODfewzN0QV0kS9WReWl0qpferJtWLw+v3
-         4sGJXUMswY5s6j1YrY0vCIP+BpJ+NOViRQB/J5kkDd1ah1Xbi7lOl+Wwu14s9XlM8H2h
-         VCHmLzd8yNWObKAOJGl4AeW2vCGGsCV07sgn2zDf/J6Nliov/42GiIU62gog/VFe3XoL
-         9Ye2hz0euj56TKlNinXUh/ZeOdGobudVUgeItilRtOEn12JA6HnfAPOqWKLYoERZaxd4
-         TXRg==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Jv32+hQlvyuqWyQZrfmL7SM1lCUMOPRtNgkxMCMMRjc=;
+        b=o/Bs8QDgs29PFBmp+uMx+YyqHqyX9gug4WxKxnazsRYu6qnpmicfba9R7CkyqVmpwO
+         Vr+kdV9BiNqbUF/ew7oOTCuMHSrGRDPmcIe8ADMqcQwE5FmY0H7uGbuBaHdoyuY0VEJS
+         VpSRKEavyELmFEjxeDRGvaXRpp/jpfjCNoVq6TmyrrVtrPTZfaURUSfaoz7OjSeDRIVm
+         gfGeXQFODdAKKzf58mYhI1wRcUHzs4ewFeaioIr6Bp5p0kqDPKjLFCJ2nTmdmZGrpQay
+         w7N1JS0btthILjiPzXAr8sPJl/4s524Z2mptG+bTIwoGgThpvXf37rPt5K+xthXKKolc
+         WFgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Mtc3nhV1yFjtyZ72uQDRZQmFUp1an9UYV0/ZePw2JCY=;
-        b=lzg7xm/o7FI+0mW5viT80SHA7KUAqgSAGD2z5dc8DbWnVkYSwqhZf+fWkZscCV1mq5
-         mbj22Bic4mU0X/atygI6gfbxwD6kcftAMoXKNKoC6ZoaarhCeHNtSPyxRFPo4zj2ZJRq
-         FRGjFZC2iSNTY6XEkOcN+yIwczWCuoG1u32Im7BslaH4frgqCHRI7FoCEIFmIfDPkIAa
-         NIW9ekPK31I7SFCzD0tw9vdGR+WFyr0Iw/4vpxPpVgJ0ne2FUY7j3Hu03ZGZ4mja+c+f
-         Plgu8ni7LFitfzbWsx+mFgWANzjkRb26X2Iq2OLIQ8cuGbuYSDpZBH/fpNVNPDq7kdc/
-         +23w==
-X-Gm-Message-State: APjAAAU2ESK/M+oVitIx8Mr49R6D7itK2Pa3acFKW4XWyThMVa5Go3ZH
-        eCB2EhWAyI5YCFWBdolQJbH8S6tlIUsx/kk7YeU=
-X-Google-Smtp-Source: APXvYqzDRL8WUdWdfu/NIMmgyHqNWTLG1ythYteS9iJVNiC9RoJWX2HGhndP6u2TLymhMdgC8Cr216jYUxnmWOh4f58=
-X-Received: by 2002:ae9:eb48:: with SMTP id b69mr7708132qkg.39.1581449412579;
- Tue, 11 Feb 2020 11:30:12 -0800 (PST)
-MIME-Version: 1.0
-References: <20200210200737.13866-1-dxu@dxuuu.xyz> <20200210200737.13866-3-dxu@dxuuu.xyz>
-In-Reply-To: <20200210200737.13866-3-dxu@dxuuu.xyz>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 11 Feb 2020 11:30:01 -0800
-Message-ID: <CAEf4BzZfGXHL36ntjkQsTTEEa9yzqnS=Xs4XCibejpo5AKGpuQ@mail.gmail.com>
-Subject: Re: [PATCH v7 bpf-next RESEND 2/2] selftests/bpf: add
- bpf_read_branch_records() selftest
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Jv32+hQlvyuqWyQZrfmL7SM1lCUMOPRtNgkxMCMMRjc=;
+        b=tc/EoLcPEgXtWRZlbfz5pa+7hmYh+LgX8Ju0dUZG8fAh2KuoCrt5dpz+qO06YM/5JB
+         8wH4A+dSx9SaPvPbZIi+4BhPphzV61TUG6Ti38grtlkMKpkbKz/jgV5ZPUbcAXwRQ2Ku
+         dF8zJbfHKPl/wqGXELZJyYNgipHZwO5zPGVi3zaHDiTnIRV30LzRNxSCUc93jKVPLsFJ
+         xpIyx09zlmKzYnO6Qvjke0H7yhXP6aHBaavE5tzVIEkby5DIAMbBDwg53zgqF5b1jYPo
+         ls/+42ieaq7rViwKxWcFOlCI+UfJ15y5IWOrrvKpc6nJdZRcyOpjPAWKHyor28WIjebp
+         UIIg==
+X-Gm-Message-State: APjAAAU2h3YGEhfqkjIVcA7/rdMhjoDwX/PKM7WVuxYK4zmaHweTATx8
+        N67Wrk758Lsw3ngfp6Q7gUg=
+X-Google-Smtp-Source: APXvYqx7hgyhFuIjIj0kJ8Hkkx3RAoznfr4OmkQ2Zz6673Q4D6ZSqHyiIAc3mt+ZsUHoGzqEr7wu5w==
+X-Received: by 2002:a05:620a:140d:: with SMTP id d13mr3297259qkj.450.1581449549652;
+        Tue, 11 Feb 2020 11:32:29 -0800 (PST)
+Received: from quaco.ghostprotocols.net ([177.195.209.176])
+        by smtp.gmail.com with ESMTPSA id v10sm2755866qtj.26.2020.02.11.11.32.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Feb 2020 11:32:29 -0800 (PST)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id CA36840A7D; Tue, 11 Feb 2020 16:32:23 -0300 (-03)
+Date:   Tue, 11 Feb 2020 16:32:23 -0300
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@redhat.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>
+Subject: Re: [PATCH 00/14] bpf: Add trampoline and dispatcher to
+ /proc/kallsyms
+Message-ID: <20200211193223.GI3416@kernel.org>
+References: <20200208154209.1797988-1-jolsa@kernel.org>
+ <CAJ+HfNhBDU9c4-0D5RiHFZBq_LN7E=k8=rhL+VbmxJU7rdDBxQ@mail.gmail.com>
+ <20200210161751.GC28110@krava>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200210161751.GC28110@krava>
+X-Url:  http://acmel.wordpress.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 10, 2020 at 12:09 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> Add a selftest to test:
->
-> * default bpf_read_branch_records() behavior
-> * BPF_F_GET_BRANCH_RECORDS_SIZE flag behavior
-> * error path on non branch record perf events
-> * using helper to write to stack
-> * using helper to write to map
->
-> On host with hardware counter support:
->
->     # ./test_progs -t perf_branches
->     #27/1 perf_branches_hw:OK
->     #27/2 perf_branches_no_hw:OK
->     #27 perf_branches:OK
->     Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
->
-> On host without hardware counter support (VM):
->
->     # ./test_progs -t perf_branches
->     #27/1 perf_branches_hw:OK
->     #27/2 perf_branches_no_hw:OK
->     #27 perf_branches:OK
->     Summary: 1/2 PASSED, 1 SKIPPED, 0 FAILED
->
-> Also sync tools/include/uapi/linux/bpf.h.
->
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
->  tools/include/uapi/linux/bpf.h                |  25 ++-
->  .../selftests/bpf/prog_tests/perf_branches.c  | 182 ++++++++++++++++++
->  .../selftests/bpf/progs/test_perf_branches.c  |  74 +++++++
->  3 files changed, 280 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_branches.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_perf_branches.c
->
+Em Mon, Feb 10, 2020 at 05:17:51PM +0100, Jiri Olsa escreveu:
+> On Mon, Feb 10, 2020 at 04:51:08PM +0100, Björn Töpel wrote:
+> > On Sat, 8 Feb 2020 at 16:42, Jiri Olsa <jolsa@kernel.org> wrote:
+> > > this patchset adds trampoline and dispatcher objects
+> > > to be visible in /proc/kallsyms. The last patch also
+> > > adds sorting for all bpf objects in /proc/kallsyms.
 
-[...]
+> > Thanks for working on this!
 
-> +       /* generate some branches on cpu 0 */
-> +       CPU_ZERO(&cpu_set);
-> +       CPU_SET(0, &cpu_set);
-> +       err = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set), &cpu_set);
-> +       if (CHECK(err, "set_affinity", "cpu #0, err %d\n", err))
-> +               goto out_free_pb;
-> +       /* spin the loop for a while (random high number) */
-> +       for (i = 0; i < 1000000; ++i)
-> +               ++j;
-> +
+> > I'm probably missing something with my perf setup; I've applied your
+> > patches, and everything seem to work fine from an kallsyms
+> > perspective:
 
-test_perf_branches__detach here?
+> > # grep bpf_dispatcher_xdp /proc/kallsyms
+> > ...
+> > ffffffffc0511000 t bpf_dispatcher_xdp   [bpf]
+> > 
+> > However, when I run
+> > # perf top
+> > 
+> > I still see the undecorated one:
+> > 0.90%  [unknown]                  [k] 0xffffffffc0511037
+> > 
+> > Any ideas?
+ 
+> yea strange.. it should be picked up from /proc/kallsyms as
+> fallback if there's no other source, I'll check on that
+> (might be the problem with perf depending on address going
+> only higher in /proc/kallsyms, while bpf symbols are at the
+> end and start over from the lowest bpf address)
+> 
+> anyway, in perf we enumerate bpf_progs via the perf events
+> PERF_BPF_EVENT_PROG_LOAD,PERF_BPF_EVENT_PROG_UNLOAD interface
+> together with PERF_RECORD_KSYMBOL_TYPE_BPF events
+> 
+> we might need to add something like:
+>   PERF_RECORD_KSYMBOL_TYPE_BPF_TRAMPOLINE
+>   PERF_RECORD_KSYMBOL_TYPE_BPF_DISPATCHER
+> 
+> to notify about the area, I'll check on that
+> 
+> however the /proc/kallsyms fallback should work in any
+> case.. thanks for report ;-)
 
-> +       /* read perf buffer */
-> +       err = perf_buffer__poll(pb, 500);
-> +       if (CHECK(err < 0, "perf_buffer__poll", "err %d\n", err))
-> +               goto out_free_pb;
-> +
-> +       if (CHECK(!ok, "ok", "not ok\n"))
-> +               goto out_free_pb;
-> +
+We should by now move kallsyms to be the preferred source of symbols,
+not vmlinux, right?
 
-[...]
+Perhaps what is happening is:
 
-> diff --git a/tools/testing/selftests/bpf/progs/test_perf_branches.c b/tools/testing/selftests/bpf/progs/test_perf_branches.c
-> new file mode 100644
-> index 000000000000..60327d512400
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_perf_branches.c
-> @@ -0,0 +1,74 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2019 Facebook
-> +
-> +#include <stddef.h>
-> +#include <linux/ptrace.h>
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include "bpf_trace_helpers.h"
-> +
-> +struct fake_perf_branch_entry {
-> +       __u64 _a;
-> +       __u64 _b;
-> +       __u64 _c;
-> +};
-> +
-> +struct output {
-> +       int required_size;
-> +       int written_stack;
-> +       int written_map;
-> +};
-> +
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-> +       __uint(key_size, sizeof(int));
-> +       __uint(value_size, sizeof(int));
-> +} perf_buf_map SEC(".maps");
-> +
-> +typedef struct fake_perf_branch_entry fpbe_t[30];
-> +
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_ARRAY);
-> +       __uint(max_entries, 1);
-> +       __type(key, __u32);
-> +       __type(value, fpbe_t);
-> +} scratch_map SEC(".maps");
+[root@quaco ~]# strace -f -e open,openat -o /tmp/bla perf top
+[root@quaco ~]# grep vmlinux /tmp/bla
+11013 openat(AT_FDCWD, "vmlinux", O_RDONLY) = -1 ENOENT (No such file or directory)
+11013 openat(AT_FDCWD, "/boot/vmlinux", O_RDONLY) = -1 ENOENT (No such file or directory)
+11013 openat(AT_FDCWD, "/boot/vmlinux-5.5.0+", O_RDONLY) = -1 ENOENT (No such file or directory)
+11013 openat(AT_FDCWD, "/usr/lib/debug/boot/vmlinux-5.5.0+", O_RDONLY) = -1 ENOENT (No such file or directory)
+11013 openat(AT_FDCWD, "/lib/modules/5.5.0+/build/vmlinux", O_RDONLY) = 152
+[root@quaco ~]#
 
-Can you please use global variables instead of array and
-perf_event_array? Would make BPF side clearer and userspace simpler.
-struct output member will just become variables.
+I.e. it is using vmlinux for resolving symbols and he should try with:
 
-[...]
+[root@quaco ~]# strace -f -e open,openat -o /tmp/bla perf top --ignore-vmlinux
+[root@quaco ~]# perf top -h vmlinux
+
+ Usage: perf top [<options>]
+
+    -k, --vmlinux <file>  vmlinux pathname
+        --ignore-vmlinux  don't load vmlinux even if found
+
+[root@quaco ~]# grep vmlinux /tmp/bla
+[root@quaco ~]#
+
+Historically vmlinux was preferred because it contains function sizes,
+but with all these out of the blue symbols, we need to prefer starting
+with /proc/kallsyms and, as we do now, continue getting updates via
+PERF_RECORD_KSYMBOL.
+
+Humm, but then trampolines don't generate that, right? Or does it? If it
+doesn't, then we will know about just the trampolines in place when the
+record/top session starts, reparsing /proc/kallsyms periodically seems
+excessive?
+
+- Arnaldo
