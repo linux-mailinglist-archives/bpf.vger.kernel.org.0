@@ -2,95 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB8C15A9A7
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2020 14:05:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5965315AA01
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2020 14:27:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727054AbgBLNFX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Feb 2020 08:05:23 -0500
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:41111 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725887AbgBLNFX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 12 Feb 2020 08:05:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581512722;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/XD0MHQK5ZuJMwMqcwKOLpQ1jPM8Al3qW0s4LcNAgmg=;
-        b=jCCxIZB+LvKuYZ3/m+vP6CszVn/ISVGOEvWCgCKhWV3uwWBw8a8ayZUwWPAFDxpPBKlnNr
-        I3G8+I4WV6N5MZsUzFaS238h8z/MvxzJUvtYJZYh1jLIQe7oaWgTiUsF9TWM/HnMc64qgx
-        2/p5f/pmmU5thQHiIAZx5hoezTTc8+o=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-34-AKprAc35P02G6yEOoxfudA-1; Wed, 12 Feb 2020 08:05:20 -0500
-X-MC-Unique: AKprAc35P02G6yEOoxfudA-1
-Received: by mail-lj1-f199.google.com with SMTP id l14so748819ljb.10
-        for <bpf@vger.kernel.org>; Wed, 12 Feb 2020 05:05:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=/XD0MHQK5ZuJMwMqcwKOLpQ1jPM8Al3qW0s4LcNAgmg=;
-        b=fG2ElPti+TU7NjQNYA9FENHIDJHcDRdVLqJ1y0drKVaIt4knaz+bz7jieTgtsRXgWI
-         MyQBa55xCy0uhmtz3d9W2W8d5DhJD1Fj+pCIVvjL4SjfDKgqrPIzkEt2kBrCqni5nB+4
-         YszYjk4z9iKVQBjf8XcjP+24VddZaRbCUmqAPHlEeIMbSjrtozl1Mcy24b4dhFpfrAdG
-         596duanPCNMs2wa6Kdv8viZsJtCou4PzoZm5G7xVWjm8o1up+KFCw6qv4wj+F3G6rzKL
-         s4ebpgXMMx95h9EMruL6zEdvUqUNWv7rw04a+ZVIWBoWyZL9QPnThtRvkD7gL3ldDoam
-         PQmw==
-X-Gm-Message-State: APjAAAU/OUn3/W7Z6k5YlECoD2EnRBinzCbWOC/XU31R+YtmN8832Y6j
-        6DRmAwn5bBDWohjk8O0Xc2GgDZD77wmqMXlqCheePXj85G2Skw3QNbFK6f89jOL3LjiwzvyfyoW
-        FFtEy1fqyXfcJ
-X-Received: by 2002:a19:4f46:: with SMTP id a6mr6617544lfk.143.1581512719254;
-        Wed, 12 Feb 2020 05:05:19 -0800 (PST)
-X-Google-Smtp-Source: APXvYqxEmYbs1kpH4LtWXeOOm0UGQZP4l0SeP5rAJoLcOaLK6Rn3gHLo/Dl6HD3JuR8fFbbymXRJDw==
-X-Received: by 2002:a19:4f46:: with SMTP id a6mr6617529lfk.143.1581512719049;
-        Wed, 12 Feb 2020 05:05:19 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id s15sm235031ljs.58.2020.02.12.05.05.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Feb 2020 05:05:15 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id ADE9A180365; Wed, 12 Feb 2020 14:05:13 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Eelco Chaudron <echaudro@redhat.com>, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, andriin@fb.com
-Subject: Re: [PATCH bpf-next] libbpf: Add support for dynamic program attach target
-In-Reply-To: <158151067149.71757.2222114135650741733.stgit@xdp-tutorial>
-References: <158151067149.71757.2222114135650741733.stgit@xdp-tutorial>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 12 Feb 2020 14:05:13 +0100
-Message-ID: <874kvwhs6u.fsf@toke.dk>
+        id S1727662AbgBLN11 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Feb 2020 08:27:27 -0500
+Received: from www62.your-server.de ([213.133.104.62]:57368 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbgBLN11 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Feb 2020 08:27:27 -0500
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j1s2v-0004et-Je; Wed, 12 Feb 2020 14:27:18 +0100
+Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-3.fritz.box)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j1s2u-000X31-Sa; Wed, 12 Feb 2020 14:27:16 +0100
+Subject: Re: BPF LSM and fexit [was: [PATCH bpf-next v3 04/10] bpf: lsm: Add
+ mutable hooks list for the BPF LSM]
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jann Horn <jannh@google.com>, KP Singh <kpsingh@chromium.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@google.com>,
+        Thomas Garnier <thgarnie@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Garnier <thgarnie@chromium.org>,
+        Michael Halcrow <mhalcrow@google.com>,
+        Paul Turner <pjt@google.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Christian Brauner <christian@brauner.io>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kernel Team <kernel-team@fb.com>
+References: <20200211124334.GA96694@google.com>
+ <20200211175825.szxaqaepqfbd2wmg@ast-mbp>
+ <CAG48ez25mW+_oCxgCtbiGMX07g_ph79UOJa07h=o_6B6+Q-u5g@mail.gmail.com>
+ <20200211190943.sysdbz2zuz5666nq@ast-mbp>
+ <CAG48ez2gvo1dA4P1L=ASz7TRfbH-cgLZLmOPmr0NweayL-efLw@mail.gmail.com>
+ <20200211201039.om6xqoscfle7bguz@ast-mbp>
+ <CAG48ez1qGqF9z7APajFyzjZh82YxFV9sHE64f5kdKBeH9J3YPg@mail.gmail.com>
+ <20200211213819.j4ltrjjkuywihpnv@ast-mbp>
+ <CAADnVQLsiWgSBXbuxmpkC9TS8d1aQRw2zDHG8J6E=kfcRoXtKQ@mail.gmail.com>
+ <1cd10710-a81b-8f9b-696d-aa40b0a67225@iogearbox.net>
+ <20200212024542.gdsafhvqykucdp4h@ast-mbp>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <ff6dec98-5e33-4603-1b90-e4bff23695cc@iogearbox.net>
+Date:   Wed, 12 Feb 2020 14:27:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200212024542.gdsafhvqykucdp4h@ast-mbp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.1/25721/Wed Feb 12 06:24:38 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Eelco Chaudron <echaudro@redhat.com> writes:
+On 2/12/20 3:45 AM, Alexei Starovoitov wrote:
+> On Wed, Feb 12, 2020 at 01:09:07AM +0100, Daniel Borkmann wrote:
+>>
+>> Another approach could be to have a special nop inside call_int_hook()
+>> macro which would then get patched to avoid these situations. Somewhat
+>> similar like static keys where it could be defined anywhere in text but
+>> with updating of call_int_hook()'s RC for the verdict.
+> 
+> Sounds nice in theory. I couldn't quite picture how that would look
+> in the code, so I hacked:
+> diff --git a/security/security.c b/security/security.c
+> index 565bc9b67276..ce4bc1e5e26c 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -28,6 +28,7 @@
+>   #include <linux/string.h>
+>   #include <linux/msg.h>
+>   #include <net/flow.h>
+> +#include <linux/jump_label.h>
+> 
+>   #define MAX_LSM_EVM_XATTR      2
+> 
+> @@ -678,12 +679,26 @@ static void __init lsm_early_task(struct task_struct *task)
+>    *     This is a hook that returns a value.
+>    */
+> 
+> +#define LSM_HOOK_NAME(FUNC) \
+> +       DEFINE_STATIC_KEY_FALSE(bpf_lsm_key_##FUNC);
+> +#include <linux/lsm_hook_names.h>
+> +#undef LSM_HOOK_NAME
+> +__diag_push();
+> +__diag_ignore(GCC, 8, "-Wstrict-prototypes", "");
+> +#define LSM_HOOK_NAME(FUNC) \
+> +       int bpf_lsm_call_##FUNC() {return 0;}
+> +#include <linux/lsm_hook_names.h>
+> +#undef LSM_HOOK_NAME
+> +__diag_pop();
+> +
+>   #define call_void_hook(FUNC, ...)                              \
+>          do {                                                    \
+>                  struct security_hook_list *P;                   \
+>                                                                  \
+>                  hlist_for_each_entry(P, &security_hook_heads.FUNC, list) \
+>                          P->hook.FUNC(__VA_ARGS__);              \
+> +               if (static_branch_unlikely(&bpf_lsm_key_##FUNC)) \
+> +                      (void)bpf_lsm_call_##FUNC(__VA_ARGS__); \
+>          } while (0)
+> 
+>   #define call_int_hook(FUNC, IRC, ...) ({                       \
+> @@ -696,6 +711,8 @@ static void __init lsm_early_task(struct task_struct *task)
+>                          if (RC != 0)                            \
+>                                  break;                          \
+>                  }                                               \
+> +               if (RC == IRC && static_branch_unlikely(&bpf_lsm_key_##FUNC)) \
+> +                      RC = bpf_lsm_call_##FUNC(__VA_ARGS__); \
 
-> Currently when you want to attach a trace program to a bpf program
-> the section name needs to match the tracepoint/function semantics.
->
-> However the addition of the bpf_program__set_attach_target() API
-> allows you to specify the tracepoint/function dynamically.
->
-> The call flow would look something like this:
->
->   xdp_fd = bpf_prog_get_fd_by_id(id);
->   trace_obj = bpf_object__open_file("func.o", NULL);
->   prog = bpf_object__find_program_by_title(trace_obj,
->                                            "fentry/myfunc");
->   bpf_program__set_attach_target(prog, xdp_fd,
->                                  "fentry/xdpfilt_blk_all");
+Nit: the `RC == IRC` test could be moved behind the static_branch_unlikely() so
+that it would be bypassed when not enabled.
 
-I think it would be better to have the attach type as a separate arg
-instead of encoding it in the function name. I.e., rather:
+>          } while (0);                                            \
+>          RC;                                                     \
+>   })
+> 
+> The assembly looks good from correctness and performance points.
+> union security_list_options can be split into lsm_hook_names.h too
+> to avoid __diag_ignore. Is that what you have in mind?
+> I don't see how one can improve call_int_hook() macro without
+> full refactoring of linux/lsm_hooks.h
+> imo static_key doesn't have to be there in the first set. We can add this
+> optimization later.
 
-   bpf_program__set_attach_target(prog, xdp_fd,
-                                  "xdpfilt_blk_all", BPF_TRACE_FENTRY);
+Yes, like the above diff looks good, and then we'd dynamically attach the program
+at bpf_lsm_call_##FUNC()'s fexit hook for a direct jump, so all the security_blah()
+internals could stay as-is which then might also address Jann's concerns wrt
+concrete annotation as well as potential locking changes inside security_blah().
+Agree that patching out via static key could be optional but since you were talking
+about avoiding indirect jumps..
 
--Toke
-
+Thanks,
+Daniel
