@@ -2,38 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7041415A709
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2020 11:53:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A510215A75D
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2020 12:10:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727697AbgBLKxF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Feb 2020 05:53:05 -0500
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:21377 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727652AbgBLKxF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 12 Feb 2020 05:53:05 -0500
+        id S1726351AbgBLLKN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Feb 2020 06:10:13 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:49345 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726135AbgBLLKN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Feb 2020 06:10:13 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581504783;
+        s=mimecast20190719; t=1581505811;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=cYy5ZesNeuoMyvhxjO67yiIhOj9c7xYorYYNb501pKk=;
-        b=DH3ksUENT5tZDuL/O4D+dGy3GebUe1LS9MTMSdD3dFXvzFTpyMeUUCfx3uRa9pqRqpHkWe
-        1CYMlN2fwbRXZy3x6TK8RGfUmUJznoILlo4JMAxqsPUkO6Cupn9iuDspbZKxKKIC88AcUo
-        tH/OlbEiK9lVIL1XmpHEpSeYwUbDVMc=
+        bh=HOHkpNVNh7nL5GYRH5ewTywESYisLcmSPkeZ+2rKpQo=;
+        b=QrBZ9HYl+TIELfro1icFiHHYrATz1nAiOgYITS1TStfRIBGChWjUtIz1OP4ezqpaXGlelt
+        TGV4oQdLEfgaAplVIP+qSOlgOcewoX3P7pzigIs61dRsN11mj0xzyGXAZOLfoiWEptRxxQ
+        13gjrMiIw0sOf100s9BEqEJzxIli9g4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-88-auPzfwm0O1q7T0IcdWzf7A-1; Wed, 12 Feb 2020 05:52:59 -0500
-X-MC-Unique: auPzfwm0O1q7T0IcdWzf7A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+ us-mta-293-O_ZqU2BJP52NS-C8JziGxg-1; Wed, 12 Feb 2020 06:10:07 -0500
+X-MC-Unique: O_ZqU2BJP52NS-C8JziGxg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8BC421B2C984;
-        Wed, 12 Feb 2020 10:52:57 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9124A100551C;
+        Wed, 12 Feb 2020 11:10:05 +0000 (UTC)
 Received: from krava (ovpn-204-247.brq.redhat.com [10.40.204.247])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id ADA6E26FA9;
-        Wed, 12 Feb 2020 10:52:54 +0000 (UTC)
-Date:   Wed, 12 Feb 2020 11:52:52 +0100
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 90D558AC24;
+        Wed, 12 Feb 2020 11:10:02 +0000 (UTC)
+Date:   Wed, 12 Feb 2020 12:10:00 +0100
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
@@ -47,114 +46,153 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
         John Fastabend <john.fastabend@gmail.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>
-Subject: Re: [PATCH 13/14] bpf: Add dispatchers to kallsyms
-Message-ID: <20200212105252.GD183981@krava>
+Subject: Re: [PATCH 12/14] bpf: Add trampolines to kallsyms
+Message-ID: <20200212111000.GE183981@krava>
 References: <20200208154209.1797988-1-jolsa@kernel.org>
- <20200208154209.1797988-14-jolsa@kernel.org>
- <CAEf4BzZM-pc4Yva8kKsuD6QjOY8bVCGUzDJCdoeZzVOTc2zV2A@mail.gmail.com>
+ <20200208154209.1797988-13-jolsa@kernel.org>
+ <CAEf4BzZFBYVAs5-LowuMov86cbNFdXABkcA=XZAC2JJWg52HKg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzZM-pc4Yva8kKsuD6QjOY8bVCGUzDJCdoeZzVOTc2zV2A@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAEf4BzZFBYVAs5-LowuMov86cbNFdXABkcA=XZAC2JJWg52HKg@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 11, 2020 at 11:03:23AM -0800, Andrii Nakryiko wrote:
+On Tue, Feb 11, 2020 at 10:51:27AM -0800, Andrii Nakryiko wrote:
 > On Sat, Feb 8, 2020 at 7:43 AM Jiri Olsa <jolsa@kernel.org> wrote:
 > >
-> > Adding dispatchers to kallsyms. It's displayed as
-> >   bpf_dispatcher_<NAME>
+> > Adding trampolines to kallsyms. It's displayed as
+> >   bpf_trampoline_<ID> [bpf]
 > >
-> > where NAME is the name of dispatcher.
+> > where ID is the BTF id of the trampoline function.
 > >
 > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > ---
-> >  include/linux/bpf.h     | 19 ++++++++++++-------
-> >  kernel/bpf/dispatcher.c |  6 ++++++
-> >  2 files changed, 18 insertions(+), 7 deletions(-)
+> >  include/linux/bpf.h     |  2 ++
+> >  kernel/bpf/trampoline.c | 23 +++++++++++++++++++++++
+> >  2 files changed, 25 insertions(+)
 > >
 > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index b91bac10d3ea..837cdc093d2c 100644
+> > index 7a4626c8e747..b91bac10d3ea 100644
 > > --- a/include/linux/bpf.h
 > > +++ b/include/linux/bpf.h
-> > @@ -520,6 +520,7 @@ struct bpf_dispatcher {
-> >         int num_progs;
+> > @@ -502,6 +502,7 @@ struct bpf_trampoline {
+> >         /* Executable image of trampoline */
 > >         void *image;
-> >         u32 image_off;
+> >         u64 selector;
 > > +       struct bpf_ksym ksym;
 > >  };
 > >
-> >  static __always_inline unsigned int bpf_dispatcher_nop_func(
-> > @@ -535,13 +536,17 @@ struct bpf_trampoline *bpf_trampoline_lookup(u6=
-4 key);
-> >  int bpf_trampoline_link_prog(struct bpf_prog *prog);
-> >  int bpf_trampoline_unlink_prog(struct bpf_prog *prog);
-> >  void bpf_trampoline_put(struct bpf_trampoline *tr);
-> > -#define BPF_DISPATCHER_INIT(name) {                    \
-> > -       .mutex =3D __MUTEX_INITIALIZER(name.mutex),       \
-> > -       .func =3D &name##_func,                           \
-> > -       .progs =3D {},                                    \
-> > -       .num_progs =3D 0,                                 \
-> > -       .image =3D NULL,                                  \
-> > -       .image_off =3D 0                                  \
-> > +#define BPF_DISPATCHER_INIT(_name) {                           \
-> > +       .mutex =3D __MUTEX_INITIALIZER(_name.mutex),              \
-> > +       .func =3D &_name##_func,                                  \
-> > +       .progs =3D {},                                            \
-> > +       .num_progs =3D 0,                                         \
-> > +       .image =3D NULL,                                          \
-> > +       .image_off =3D 0,                                         \
-> > +       .ksym =3D {                                               \
-> > +               .name =3D #_name,                                 \
-> > +               .lnode =3D LIST_HEAD_INIT(_name.ksym.lnode),      \
-> > +       },                                                      \
+> >  #define BPF_DISPATCHER_MAX 48 /* Fits in 2048B */
+> > @@ -573,6 +574,7 @@ struct bpf_image {
+> >  #define BPF_IMAGE_SIZE (PAGE_SIZE - sizeof(struct bpf_image))
+> >  bool is_bpf_image_address(unsigned long address);
+> >  void *bpf_image_alloc(void);
+> > +void bpf_image_ksym_add(void *data, struct bpf_ksym *ksym);
+> >  /* Called only from code, so there's no need for stubs. */
+> >  void bpf_ksym_add(struct bpf_ksym *ksym);
+> >  void bpf_ksym_del(struct bpf_ksym *ksym);
+> > diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> > index 6b264a92064b..1ee29907cbe5 100644
+> > --- a/kernel/bpf/trampoline.c
+> > +++ b/kernel/bpf/trampoline.c
+> > @@ -96,6 +96,15 @@ bool is_bpf_image_address(unsigned long addr)
+> >         return ret;
 > >  }
 > >
-> >  #define DEFINE_BPF_DISPATCHER(name)                                 =
-   \
-> > diff --git a/kernel/bpf/dispatcher.c b/kernel/bpf/dispatcher.c
-> > index b3e5b214fed8..8771d2cc5840 100644
-> > --- a/kernel/bpf/dispatcher.c
-> > +++ b/kernel/bpf/dispatcher.c
-> > @@ -152,6 +152,12 @@ void bpf_dispatcher_change_prog(struct bpf_dispa=
-tcher *d, struct bpf_prog *from,
-> >         if (!changed)
-> >                 goto out;
+> > +void bpf_image_ksym_add(void *data, struct bpf_ksym *ksym)
+> > +{
+> > +       struct bpf_image *image = container_of(data, struct bpf_image, data);
+> > +
+> > +       ksym->start = (unsigned long) image;
+> > +       ksym->end = ksym->start + PAGE_SIZE;
+> 
+> this seems wrong, use BPF_IMAGE_SIZE instead of PAGE_SIZE?
+
+BPF_IMAGE_SIZE is the size of the data portion of the image,
+which is PAGE_SIZE - sizeof(struct bpf_image)
+
+here we want to account the whole size = data + tree node (struct bpf_image)
+
+> 
+> > +       bpf_ksym_add(ksym);
+> > +}
+> > +
+> >  struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
+> >  {
+> >         struct bpf_trampoline *tr;
+> > @@ -131,6 +140,7 @@ struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
+> >         for (i = 0; i < BPF_TRAMP_MAX; i++)
+> >                 INIT_HLIST_HEAD(&tr->progs_hlist[i]);
+> >         tr->image = image;
+> > +       INIT_LIST_HEAD_RCU(&tr->ksym.lnode);
+> >  out:
+> >         mutex_unlock(&trampoline_mutex);
+> >         return tr;
+> > @@ -267,6 +277,15 @@ static enum bpf_tramp_prog_type bpf_attach_type_to_tramp(enum bpf_attach_type t)
+> >         }
+> >  }
 > >
-> > +       if (!prev_num_progs)
-> > +               bpf_image_ksym_add(d->image, &d->ksym);
+> > +static void bpf_trampoline_kallsyms_add(struct bpf_trampoline *tr)
+> > +{
+> > +       struct bpf_ksym *ksym = &tr->ksym;
 > > +
-> > +       if (!d->num_progs)
-> > +               bpf_ksym_del(&d->ksym);
+> > +       snprintf(ksym->name, KSYM_NAME_LEN, "bpf_trampoline_%llu",
+> > +                tr->key & ((u64) (1LU << 32) - 1));
+> 
+> why the 32-bit truncation? also, wouldn't it be more trivial as (u32)tr->key?
+
+tr->key can have the target prog id in upper 32 bits,
+I'll try to use the casting as you suggest
+
+> 
+> > +       bpf_image_ksym_add(tr->image, &tr->ksym);
+> > +}
 > > +
-> >         bpf_dispatcher_update(d, prev_num_progs);
->=20
-> On slightly unrelated note: seems like bpf_dispatcher_update won't
-> propagate any lower-level errors back, which seems pretty bad as a
-> bunch of stuff can go wrong.
->=20
-> Bj=F6rn, was it a conscious decision or this just slipped through the c=
-racks?
->=20
-> Jiri, reason I started looking at this was twofold:
-> 1. you add/remove symbol before dispatcher is updated, which is
-> different order from BPF trampoline updates. I think updating symbols
-> after successful update makes more sense, no?
+> >  int bpf_trampoline_link_prog(struct bpf_prog *prog)
+> >  {
+> >         enum bpf_tramp_prog_type kind;
+> > @@ -311,6 +330,8 @@ int bpf_trampoline_link_prog(struct bpf_prog *prog)
+> >         if (err) {
+> >                 hlist_del(&prog->aux->tramp_hlist);
+> >                 tr->progs_cnt[kind]--;
+> > +       } else if (cnt == 0) {
+> > +               bpf_trampoline_kallsyms_add(tr);
+> 
+> You didn't handle BPF_TRAMP_REPLACE case above.
 
-right, I guess I did not care, because there's no error returned
-from bpf_dispatcher_update as you pointed out.. I'll check if we
-can add that and add/del symbols afterwards
+ugh, right.. will add
 
-> 2. I was wondering if bpf_dispatcher_update() could return 0/1 (and <0
-> on error, of course), depending on whether dispatcher is present or
-> not. Though I'm not hard set on this.
+> 
+> Also this if (err) { ... } else if (cnt == 0) { } pattern is a bit
+> convoluted. How about:
+> 
+> if (err) {
+>    ... whatever ...
+>    goto out;
+> }
+> if (cnt == 0) { ... }
 
-yes, that might be a way.. I'll check
+yep, that's better
 
-thanks,
+> 
+> >         }
+> >  out:
+> >         mutex_unlock(&tr->mutex);
+> > @@ -336,6 +357,8 @@ int bpf_trampoline_unlink_prog(struct bpf_prog *prog)
+> >         }
+> >         hlist_del(&prog->aux->tramp_hlist);
+> >         tr->progs_cnt[kind]--;
+> > +       if (!(tr->progs_cnt[BPF_TRAMP_FENTRY] + tr->progs_cnt[BPF_TRAMP_FEXIT]))
+> > +               bpf_ksym_del(&tr->ksym);
+> 
+> same, BPF_TRAMP_REPLACE case. I'd also introduce cnt for consistency
+> with bpf_trampoline_link_prog?
+
+ok, thanks a lot for comments
+
 jirka
 
