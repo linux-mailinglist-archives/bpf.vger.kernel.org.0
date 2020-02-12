@@ -2,120 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFA015A6CE
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2020 11:44:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B19EF15A6DE
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2020 11:47:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727888AbgBLKnl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Feb 2020 05:43:41 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:36569 "EHLO
+        id S1727691AbgBLKq7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Feb 2020 05:46:59 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:39987 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727549AbgBLKnk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 12 Feb 2020 05:43:40 -0500
+        by vger.kernel.org with ESMTP id S1727555AbgBLKq7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 12 Feb 2020 05:46:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581504217;
+        s=mimecast20190719; t=1581504418;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YjRCeO/nyWvPOF/c2mr64joPRjE0wRZjF1FDzleGvQE=;
-        b=VcmsvNnuWJpU4j8sMjRO5NYiHCki9gFMCs/MmARyPEDu2XSpQdGA1LTi2Q+JkZ7pfzTi08
-        6DDiFmAmKCmko3VmrDPXyK8EQYjDXyA+3FfZr476xBnuv0kOO1N3X1Xt2WTa+VT/URhFSg
-        8Ya9p9NzDLx/ezW+ZIuZbtYdDkJym2g=
+        bh=vOJN708VgW9Z5byuJ0EoT8tB8XT5uOhixHyoS0jdxRg=;
+        b=HpVWKLZ45NK4ZyngNqmVSUkEUdKpdUtmO1+x9wsHwfh/gD+I5Qu5UQP3je9DIN/yI3NrFo
+        PeqMdmHKdDMhAhKnDlv5xv/jWTxT86HZR8A9hsNyUQt9Z+SRd+CmXi9BjcK+FqJLMx284h
+        PdDjuQoukPi8AdWIhctl+tL77U2QxGo=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-259-9SuEL6oUMyONNpnfFsXrHg-1; Wed, 12 Feb 2020 05:43:33 -0500
-X-MC-Unique: 9SuEL6oUMyONNpnfFsXrHg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+ us-mta-238-T-oQ12IyP12czaPgmJnI2w-1; Wed, 12 Feb 2020 05:46:54 -0500
+X-MC-Unique: T-oQ12IyP12czaPgmJnI2w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C8EBA0CC2;
-        Wed, 12 Feb 2020 10:43:31 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA4121137847;
+        Wed, 12 Feb 2020 10:46:52 +0000 (UTC)
 Received: from krava (ovpn-204-247.brq.redhat.com [10.40.204.247])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C5D4E8AC20;
-        Wed, 12 Feb 2020 10:43:26 +0000 (UTC)
-Date:   Wed, 12 Feb 2020 11:43:24 +0100
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A574990073;
+        Wed, 12 Feb 2020 10:46:49 +0000 (UTC)
+Date:   Wed, 12 Feb 2020 11:46:47 +0100
 From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
+        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
         Martin KaFai Lau <kafai@fb.com>,
         Jakub Kicinski <kuba@kernel.org>,
         David Miller <davem@redhat.com>,
         =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
         John Fastabend <john.fastabend@gmail.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>
-Subject: Re: [PATCH 10/14] bpf: Re-initialize lnode in bpf_ksym_del
-Message-ID: <20200212104324.GA183981@krava>
+Subject: Re: [PATCH 00/14] bpf: Add trampoline and dispatcher to
+ /proc/kallsyms
+Message-ID: <20200212104647.GB183981@krava>
 References: <20200208154209.1797988-1-jolsa@kernel.org>
- <20200208154209.1797988-11-jolsa@kernel.org>
- <CAEf4Bzb-J67oKcKtB-7TsO7wD7bnp57NAgqNJW9giZrhrqu_+g@mail.gmail.com>
+ <20200211191347.GH3416@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAEf4Bzb-J67oKcKtB-7TsO7wD7bnp57NAgqNJW9giZrhrqu_+g@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20200211191347.GH3416@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 11, 2020 at 10:28:50AM -0800, Andrii Nakryiko wrote:
-> On Sat, Feb 8, 2020 at 7:43 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > When bpf_prog is removed from kallsyms it's on the way
-> > out to be removed, so we don't care about lnode state.
-> >
-> > However the bpf_ksym_del will be used also by bpf_trampoline
-> > and bpf_dispatcher objects, which stay allocated even when
-> > they are not in kallsyms list, hence the lnode re-init.
-> >
-> > The list_del_rcu commentary states that we need to call
-> > synchronize_rcu, before we can change/re-init the list_head
-> > pointers.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> 
-> Wouldn't it make more sense to have patches 7 though 10 as a one
-> patch? It's a generalization of ksym from being bpf_prog-specific to
-> be more general (which this initialization fix is part of, arguably).
+On Tue, Feb 11, 2020 at 04:13:47PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Sat, Feb 08, 2020 at 04:41:55PM +0100, Jiri Olsa escreveu:
+> > hi,
+> > this patchset adds trampoline and dispatcher objects
+> > to be visible in /proc/kallsyms. The last patch also
+> > adds sorting for all bpf objects in /proc/kallsyms.
+>=20
+> This will allow those to appear in profiles, right? That would be
 
-it was my initial change ;-) but then I realized I have to explain
-several things in the changelog, and that's usually the sign that
-you need to split the patch.. also I think now it's easier for review
-and backporting
+yea, one would think so.. but as you saw in the other email
+there are still some issues ;-)
 
-so I prefer it split like this, but if you guys want to squash it
-together, I'll do it ;-)
+> interesting to explicitely state, i.e. the _why_ of this patch, not jus=
+t
+> the _what_.
+
+I guess another reason would be accountability of the kernel space,
+so that everything with the symbol would appear in /proc/kallsyms
 
 jirka
 
-> 
-> >  kernel/bpf/core.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > index 73242fd07893..66b17bea286e 100644
-> > --- a/kernel/bpf/core.c
-> > +++ b/kernel/bpf/core.c
-> > @@ -676,6 +676,13 @@ void bpf_ksym_del(struct bpf_ksym *ksym)
-> >         spin_lock_bh(&bpf_lock);
-> >         __bpf_ksym_del(ksym);
-> >         spin_unlock_bh(&bpf_lock);
-> > +
-> > +       /*
-> > +        * As explained in list_del_rcu, We must call synchronize_rcu
-> > +        * before changing list_head pointers.
-> > +        */
-> > +       synchronize_rcu();
-> > +       INIT_LIST_HEAD_RCU(&ksym->lnode);
-> >  }
-> >
-> >  static bool bpf_prog_kallsyms_candidate(const struct bpf_prog *fp)
-> > --
-> > 2.24.1
-> >
-> 
+>=20
+> Thanks,
+>=20
+> - Arnaldo
+> =20
+> >   $ sudo cat /proc/kallsyms | tail -20
+> >   ...
+> >   ffffffffa050f000 t bpf_prog_5a2b06eab81b8f51    [bpf]
+> >   ffffffffa0511000 t bpf_prog_6deef7357e7b4530    [bpf]
+> >   ffffffffa0542000 t bpf_trampoline_13832 [bpf]
+> >   ffffffffa0548000 t bpf_prog_96f1b5bf4e4cc6dc_mutex_lock [bpf]
+> >   ffffffffa0572000 t bpf_prog_d1c63e29ad82c4ab_bpf_prog1  [bpf]
+> >   ffffffffa0585000 t bpf_prog_e314084d332a5338__dissect   [bpf]
+> >   ffffffffa0587000 t bpf_prog_59785a79eac7e5d2_mutex_unlock       [bp=
+f]
+> >   ffffffffa0589000 t bpf_prog_d0db6e0cac050163_mutex_lock [bpf]
+> >   ffffffffa058d000 t bpf_prog_d8f047721e4d8321_bpf_prog2  [bpf]
+> >   ffffffffa05df000 t bpf_trampoline_25637 [bpf]
+> >   ffffffffa05e3000 t bpf_prog_d8f047721e4d8321_bpf_prog2  [bpf]
+> >   ffffffffa05e5000 t bpf_prog_3b185187f1855c4c    [bpf]
+> >   ffffffffa05e7000 t bpf_prog_d8f047721e4d8321_bpf_prog2  [bpf]
+> >   ffffffffa05eb000 t bpf_prog_93cebb259dd5c4b2_do_sys_open        [bp=
+f]
+> >   ffffffffa0677000 t bpf_dispatcher_xdp   [bpf]
+> >=20
+> > thanks,
+> > jirka
+> >=20
+> >=20
+> > ---
+> > Bj=F6rn T=F6pel (1):
+> >       bpf: Add bpf_trampoline_ name prefix for DECLARE_BPF_DISPATCHER
+> >=20
+> > Jiri Olsa (13):
+> >       x86/mm: Rename is_kernel_text to __is_kernel_text
+> >       bpf: Add struct bpf_ksym
+> >       bpf: Add name to struct bpf_ksym
+> >       bpf: Add lnode list node to struct bpf_ksym
+> >       bpf: Add bpf_kallsyms_tree tree
+> >       bpf: Move bpf_tree add/del from bpf_prog_ksym_node_add/del
+> >       bpf: Separate kallsyms add/del functions
+> >       bpf: Add bpf_ksym_add/del functions
+> >       bpf: Re-initialize lnode in bpf_ksym_del
+> >       bpf: Rename bpf_tree to bpf_progs_tree
+> >       bpf: Add trampolines to kallsyms
+> >       bpf: Add dispatchers to kallsyms
+> >       bpf: Sort bpf kallsyms symbols
+> >=20
+> >  arch/x86/mm/init_32.c   |  14 ++++++----
+> >  include/linux/bpf.h     |  54 ++++++++++++++++++++++++++------------
+> >  include/linux/filter.h  |  13 +++-------
+> >  kernel/bpf/core.c       | 182 ++++++++++++++++++++++++++++++++++++++=
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----------------=
+----------------
+> >  kernel/bpf/dispatcher.c |   6 +++++
+> >  kernel/bpf/trampoline.c |  23 ++++++++++++++++
+> >  kernel/events/core.c    |   4 +--
+> >  net/core/filter.c       |   5 ++--
+> >  8 files changed, 219 insertions(+), 82 deletions(-)
+> >=20
+>=20
+> --=20
+>=20
+> - Arnaldo
+>=20
 
