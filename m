@@ -2,133 +2,230 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E58B715AD5C
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2020 17:26:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 237AD15AD72
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2020 17:34:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727600AbgBLQ0S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Feb 2020 11:26:18 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:54785 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727429AbgBLQ0R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Feb 2020 11:26:17 -0500
-Received: by mail-wm1-f68.google.com with SMTP id g1so2995280wmh.4
-        for <bpf@vger.kernel.org>; Wed, 12 Feb 2020 08:26:16 -0800 (PST)
+        id S1728544AbgBLQeC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Feb 2020 11:34:02 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:38723 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727279AbgBLQeC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Feb 2020 11:34:02 -0500
+Received: by mail-qv1-f65.google.com with SMTP id g6so1201653qvy.5;
+        Wed, 12 Feb 2020 08:34:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=+Oq1AdUw8m9+Ejebod5uLNgdGrkCleSq0Jc+gdcY2Xc=;
-        b=YpL67d8OFfQLpn88KHHeHpPU9M5tKjVFTcgq5WB9ADXua8Vw9eM8D2prp/DJjWvw5x
-         IUn9CPoWMY9ErauDjliaZ0oyal2LyauacKjUhMC9MEyWAKMtuwKlz5y5xltvAr5Xm+4a
-         LxQdRjGor2YzOi0pqFDJ9uvpsP70D/2xy3qaY=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jPDghSiMnJ5ArV1uIYx7OEKA+c/PzF9WfW5YPQOupgY=;
+        b=dCBYdHo6Wswj5HqR/eBzQiCEySA74GEWw3KAvLKQjIuRoPa32mRwXB7f2OA8OIKoNi
+         kHOeHotpNUSXvq7u6o/miVtMGZGFXy+6NgTtelHJGxOahjar7Wt3DniobflEr9x9Ebt4
+         G6XLvS/E1k4IcVcp6ZhHemwkA5vKwn00UxxKOXoBImvx92yizr+HRZw8X5Xh/rQB2e6Z
+         VEzl/tAN2Pv0CaWA0NccUtena3s8Ac1kvTsTgbIs6jWM7C5DfcwZvz7bIVYA5LwMlHsx
+         Pcgu19eXll8ZXEi/0Uoy3Nr8N8dPN1vY2hFvwOvtyJyibe2zZGRrDTVCsXN4avPlpykk
+         TEgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+Oq1AdUw8m9+Ejebod5uLNgdGrkCleSq0Jc+gdcY2Xc=;
-        b=AfvaVP+bQLuqYDQEB4qYM6x4q2CZ7xxtAgII/Wmr354H8E7gEGD3B+XtEnr7H62qWH
-         ElnYOCoOLSjN/QZJe6uuAXGJL5zjWUsKe5k8A2kA0/Ddw/whTJNihyHlMB53UvNTzA3a
-         NzBFPT+sfScSulUx+C46f2u9m4n24xG3K2fPe2pULtViHs2j43IAsYu7rQMYm3uMwiig
-         8KDGQT/Kqdr/am/dA1Kvf2JKzRx9t/rXTrqccmZOfdJ1ciC8lnwfjEXLd317KV6rjHTc
-         RMCOSYmb5IUCXo0RCiT9lJo9Fj4o6Olvh98S1U8X1xjDbON0aU9MeO5X7gCl+w7WgMm7
-         Z+4w==
-X-Gm-Message-State: APjAAAWIW7heZibnW1joyfaGd/oNoNR5HcF9WmTPvEnsVARtarTHfeB/
-        GRk8/wgvifArjWY36q01a0kS4A==
-X-Google-Smtp-Source: APXvYqz35eTpzE3tOLY8FLLO74LVWtEJvvI50Wec8849cwajczF2fVsNZaWwaW+IbhiJCYa0NkM9Lg==
-X-Received: by 2002:a7b:cab1:: with SMTP id r17mr13425209wml.116.1581524775975;
-        Wed, 12 Feb 2020 08:26:15 -0800 (PST)
-Received: from google.com ([2a00:79e0:42:204:8a21:ba0c:bb42:75ec])
-        by smtp.gmail.com with ESMTPSA id s8sm1267535wrt.57.2020.02.12.08.26.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Feb 2020 08:26:15 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Wed, 12 Feb 2020 17:26:13 +0100
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jann Horn <jannh@google.com>, KP Singh <kpsingh@chromium.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@google.com>,
-        Thomas Garnier <thgarnie@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Garnier <thgarnie@chromium.org>,
-        Michael Halcrow <mhalcrow@google.com>,
-        Paul Turner <pjt@google.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Christian Brauner <christian@brauner.io>,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: BPF LSM and fexit [was: [PATCH bpf-next v3 04/10] bpf: lsm: Add
- mutable hooks list for the BPF LSM]
-Message-ID: <20200212162613.GB259057@google.com>
-References: <CAG48ez25mW+_oCxgCtbiGMX07g_ph79UOJa07h=o_6B6+Q-u5g@mail.gmail.com>
- <20200211190943.sysdbz2zuz5666nq@ast-mbp>
- <CAG48ez2gvo1dA4P1L=ASz7TRfbH-cgLZLmOPmr0NweayL-efLw@mail.gmail.com>
- <20200211201039.om6xqoscfle7bguz@ast-mbp>
- <CAG48ez1qGqF9z7APajFyzjZh82YxFV9sHE64f5kdKBeH9J3YPg@mail.gmail.com>
- <20200211213819.j4ltrjjkuywihpnv@ast-mbp>
- <CAADnVQLsiWgSBXbuxmpkC9TS8d1aQRw2zDHG8J6E=kfcRoXtKQ@mail.gmail.com>
- <1cd10710-a81b-8f9b-696d-aa40b0a67225@iogearbox.net>
- <20200212024542.gdsafhvqykucdp4h@ast-mbp>
- <bee0fd08-b9f2-83e4-2882-475b81c74303@schaufler-ca.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jPDghSiMnJ5ArV1uIYx7OEKA+c/PzF9WfW5YPQOupgY=;
+        b=l7OSN9geOkzQQxwt9LmLrHz+HN8IC1GlknVAw6yMuL3XWcQVaaJrhQl33m6pO5gRVK
+         1pnGKZK2ym/fBtQ5oEt3tcv6m+oE83aduvP/SYJi1XHadqz3uqiUUdvOUiLp6G8R9dEz
+         TjNmCNHe7CHb+6gJ5+tLFRNDxL14Zo49wGPN4RaNE2KTBhNPNkloBIzXUez3KwLmBArW
+         StFC9VKsXsVNwSbgCRp0zAFPLNs4jxYsmRbpc5f2qaViVmvVLB3ISS0+Qk2c1HuDrcX8
+         fa57QkOvA9Pm/Gi2tppsujbLv4Dk7X90/Mj1dWdq4mMIxi2aqAFtZ3/HriIXKWE4+OcT
+         jckQ==
+X-Gm-Message-State: APjAAAVRTSrRBEiuGZpyde5icH61LCZZnMZPbZe0ySUrQ67HMcEj90l6
+        ySE8JnZXpz942EwZqnBhZ1bRangLiNbb8eaVBamZ3/Qyv/k=
+X-Google-Smtp-Source: APXvYqwk30M8awXgsAAgyvb+CdP5ySHOqKFoKZIEg+t7QwtQEookdEac9ubtkRhdkERJkYjRqYSBOANw2AzhDjoV4eE=
+X-Received: by 2002:a05:6214:38c:: with SMTP id l12mr7977822qvy.224.1581525240789;
+ Wed, 12 Feb 2020 08:34:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bee0fd08-b9f2-83e4-2882-475b81c74303@schaufler-ca.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200208154209.1797988-1-jolsa@kernel.org> <20200208154209.1797988-13-jolsa@kernel.org>
+ <CAEf4BzZFBYVAs5-LowuMov86cbNFdXABkcA=XZAC2JJWg52HKg@mail.gmail.com> <20200212111000.GE183981@krava>
+In-Reply-To: <20200212111000.GE183981@krava>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 12 Feb 2020 08:33:49 -0800
+Message-ID: <CAEf4BzZEVOZ36xx882WO30ReG=jkazug-gmWnXhxmA8Ka6PuhQ@mail.gmail.com>
+Subject: Re: [PATCH 12/14] bpf: Add trampolines to kallsyms
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12-Feb 07:52, Casey Schaufler wrote:
-> On 2/11/2020 6:45 PM, Alexei Starovoitov wrote:
-> > On Wed, Feb 12, 2020 at 01:09:07AM +0100, Daniel Borkmann wrote:
-> >> Another approach could be to have a special nop inside call_int_hook()
-> >> macro which would then get patched to avoid these situations. Somewhat
-> >> similar like static keys where it could be defined anywhere in text but
-> >> with updating of call_int_hook()'s RC for the verdict.
-> 
-> Tell me again why you can't register your BPF hooks like all the
-> other security modules do? You keep reintroducing BPF as a special
-> case, and I don't see why.
+On Wed, Feb 12, 2020 at 3:10 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Tue, Feb 11, 2020 at 10:51:27AM -0800, Andrii Nakryiko wrote:
+> > On Sat, Feb 8, 2020 at 7:43 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > Adding trampolines to kallsyms. It's displayed as
+> > >   bpf_trampoline_<ID> [bpf]
+> > >
+> > > where ID is the BTF id of the trampoline function.
+> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  include/linux/bpf.h     |  2 ++
+> > >  kernel/bpf/trampoline.c | 23 +++++++++++++++++++++++
+> > >  2 files changed, 25 insertions(+)
+> > >
+> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > index 7a4626c8e747..b91bac10d3ea 100644
+> > > --- a/include/linux/bpf.h
+> > > +++ b/include/linux/bpf.h
+> > > @@ -502,6 +502,7 @@ struct bpf_trampoline {
+> > >         /* Executable image of trampoline */
+> > >         void *image;
+> > >         u64 selector;
+> > > +       struct bpf_ksym ksym;
+> > >  };
+> > >
+> > >  #define BPF_DISPATCHER_MAX 48 /* Fits in 2048B */
+> > > @@ -573,6 +574,7 @@ struct bpf_image {
+> > >  #define BPF_IMAGE_SIZE (PAGE_SIZE - sizeof(struct bpf_image))
+> > >  bool is_bpf_image_address(unsigned long address);
+> > >  void *bpf_image_alloc(void);
+> > > +void bpf_image_ksym_add(void *data, struct bpf_ksym *ksym);
+> > >  /* Called only from code, so there's no need for stubs. */
+> > >  void bpf_ksym_add(struct bpf_ksym *ksym);
+> > >  void bpf_ksym_del(struct bpf_ksym *ksym);
+> > > diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> > > index 6b264a92064b..1ee29907cbe5 100644
+> > > --- a/kernel/bpf/trampoline.c
+> > > +++ b/kernel/bpf/trampoline.c
+> > > @@ -96,6 +96,15 @@ bool is_bpf_image_address(unsigned long addr)
+> > >         return ret;
+> > >  }
+> > >
+> > > +void bpf_image_ksym_add(void *data, struct bpf_ksym *ksym)
+> > > +{
+> > > +       struct bpf_image *image = container_of(data, struct bpf_image, data);
+> > > +
+> > > +       ksym->start = (unsigned long) image;
+> > > +       ksym->end = ksym->start + PAGE_SIZE;
+> >
+> > this seems wrong, use BPF_IMAGE_SIZE instead of PAGE_SIZE?
+>
+> BPF_IMAGE_SIZE is the size of the data portion of the image,
+> which is PAGE_SIZE - sizeof(struct bpf_image)
+>
+> here we want to account the whole size = data + tree node (struct bpf_image)
 
-I think we tried to answer this in the discussion we had:
+Why? Seems like the main use case for this is resolve IP to symbol
+(function, dispatcher, trampoline, bpf program, etc). For this
+purpose, you only need part of trampoline actually containing
+executable code?
 
- https://lore.kernel.org/bpf/20200123152440.28956-1-kpsingh@chromium.org/T/#meb1eea982e63be0806f9bba58e91160871803752
+Also, for bpf_dispatcher in later patch, you are not including struct
+bpf_dispatcher itself, you only include image, so if the idea is to
+include all the code and supporting data structures, that already
+failed for bpf_dispatcher (and can't even work for that case, due to
+dispatcher and image not being part of the same blob of memory, so
+you'll need two symbols).
 
-BPF should not allocate a wrapper (to be statically regsitered at
-init) for each LSM hook and run the programs from within that as this
-implies adding overhead across the board for every hook even if
-it's never used (i.e. no BPF program is attached to the hook).
+So I guess it would be good to be clear on why we include these
+symbols and not mix data and executable parts.
 
-We can, with the suggestions discussed here, avoid adding unncessary
-overhead for unused hooks. And, as Alexei mentioned, adding overhead
-when not really needed is especially bad for LSM hooks like
-sock_sendmsg.
+>
+> >
+> > > +       bpf_ksym_add(ksym);
+> > > +}
+> > > +
+> > >  struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
+> > >  {
+> > >         struct bpf_trampoline *tr;
+> > > @@ -131,6 +140,7 @@ struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
+> > >         for (i = 0; i < BPF_TRAMP_MAX; i++)
+> > >                 INIT_HLIST_HEAD(&tr->progs_hlist[i]);
+> > >         tr->image = image;
+> > > +       INIT_LIST_HEAD_RCU(&tr->ksym.lnode);
+> > >  out:
+> > >         mutex_unlock(&trampoline_mutex);
+> > >         return tr;
+> > > @@ -267,6 +277,15 @@ static enum bpf_tramp_prog_type bpf_attach_type_to_tramp(enum bpf_attach_type t)
+> > >         }
+> > >  }
+> > >
+> > > +static void bpf_trampoline_kallsyms_add(struct bpf_trampoline *tr)
+> > > +{
+> > > +       struct bpf_ksym *ksym = &tr->ksym;
+> > > +
+> > > +       snprintf(ksym->name, KSYM_NAME_LEN, "bpf_trampoline_%llu",
+> > > +                tr->key & ((u64) (1LU << 32) - 1));
+> >
+> > why the 32-bit truncation? also, wouldn't it be more trivial as (u32)tr->key?
+>
+> tr->key can have the target prog id in upper 32 bits,
 
-The other LSMs do not provide dynamic / mutable hooks, so it makes
-sense for them to register the hooks once at load time.
+True, but not clear why it's bad? It's not a security concern, because
+those IDs are already exposed (you can dump them from bpftool). On the
+other hand, by cutting out part of key, you make symbols potentially
+ambiguous, with different trampolines marked with the same name in
+kallsyms, which is just going to be confusing to users/tools.
 
-- KP
+> I'll try to use the casting as you suggest
+>
+> >
+> > > +       bpf_image_ksym_add(tr->image, &tr->ksym);
+> > > +}
+> > > +
+> > >  int bpf_trampoline_link_prog(struct bpf_prog *prog)
+> > >  {
+> > >         enum bpf_tramp_prog_type kind;
+> > > @@ -311,6 +330,8 @@ int bpf_trampoline_link_prog(struct bpf_prog *prog)
+> > >         if (err) {
+> > >                 hlist_del(&prog->aux->tramp_hlist);
+> > >                 tr->progs_cnt[kind]--;
+> > > +       } else if (cnt == 0) {
+> > > +               bpf_trampoline_kallsyms_add(tr);
+> >
+> > You didn't handle BPF_TRAMP_REPLACE case above.
+>
+> ugh, right.. will add
+>
+> >
+> > Also this if (err) { ... } else if (cnt == 0) { } pattern is a bit
+> > convoluted. How about:
+> >
+> > if (err) {
+> >    ... whatever ...
+> >    goto out;
+> > }
+> > if (cnt == 0) { ... }
+>
+> yep, that's better
+>
+> >
+> > >         }
+> > >  out:
+> > >         mutex_unlock(&tr->mutex);
+> > > @@ -336,6 +357,8 @@ int bpf_trampoline_unlink_prog(struct bpf_prog *prog)
+> > >         }
+> > >         hlist_del(&prog->aux->tramp_hlist);
+> > >         tr->progs_cnt[kind]--;
+> > > +       if (!(tr->progs_cnt[BPF_TRAMP_FENTRY] + tr->progs_cnt[BPF_TRAMP_FEXIT]))
+> > > +               bpf_ksym_del(&tr->ksym);
+> >
+> > same, BPF_TRAMP_REPLACE case. I'd also introduce cnt for consistency
+> > with bpf_trampoline_link_prog?
+>
+> ok, thanks a lot for comments
 
-> > Sounds nice in theory. I couldn't quite picture how that would look
-> > in the code, so I hacked:
-> > diff --git a/security/security.c b/security/security.c
-> > index 565bc9b67276..ce4bc1e5e26c 100644
-> > --- a/security/security.c
+sure, you are welcome :)
 
-[...]
+>
+> jirka
+>
