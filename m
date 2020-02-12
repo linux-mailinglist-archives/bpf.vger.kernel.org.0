@@ -2,114 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFA215B31B
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2020 22:52:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF0D15B405
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2020 23:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727564AbgBLVwd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Feb 2020 16:52:33 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:20065 "EHLO
+        id S1728674AbgBLWkx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Feb 2020 17:40:53 -0500
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:57254 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727692AbgBLVwc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 12 Feb 2020 16:52:32 -0500
+        by vger.kernel.org with ESMTP id S1728447AbgBLWkx (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 12 Feb 2020 17:40:53 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581544352;
+        s=mimecast20190719; t=1581547252;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Ut8JNPHbV/vle2Nzp00xNm23ljflYGh+71pleXomCZU=;
-        b=ZqFdRBXlCHiWi0DyafUC+prUyJ/Op51np8ickjWbBHl2JIpML2v5VluWAZGePDtP4MSGLf
-        Gkn6JD4AphELrwLr6+6wnn+I8eOoVvXyAtU519va3Uocvw85rplgSZpOwFliMYR3uqUF1j
-        Vz/uZGesNFl98spsAmwLTIhYqUFMx5E=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-339-2Gzp6khqPpO-Y_GPy1_FAg-1; Wed, 12 Feb 2020 16:52:29 -0500
-X-MC-Unique: 2Gzp6khqPpO-Y_GPy1_FAg-1
-Received: by mail-lj1-f200.google.com with SMTP id t23so1280850ljk.14
-        for <bpf@vger.kernel.org>; Wed, 12 Feb 2020 13:52:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=Ut8JNPHbV/vle2Nzp00xNm23ljflYGh+71pleXomCZU=;
-        b=gBKVsshsqwUDDq0Cx+7RRb9XZjSCv9ydVEAUFmuOPuf5ZCyKvtUmAK9ohMbiD5Av43
-         Zky169/m3pxdrrhJEABR7ESB+JRK3pDcdYANtneGPvwyDjh4BTz6HhX7Cog5VsDlQZrZ
-         jHLsD8VZ8FRU2Cy5lEOA8RfZ6LhciZ4pjsKDFdl7ezzIUSVzuFQnSEFay322CB4w3tgV
-         jvnBbEbVk4jO9mEK7evsq5M3nevjKFUqRrxVpbC4bwccNX5+fphT2MSp9u8h0VYXGncd
-         Y3Z/SisCK3J+QTQ8fXI6iXD9fqY1vvhKvjs6hbUAAT0yBi5Qbz+g1IHPCgPYv4ySbwZc
-         LLOw==
-X-Gm-Message-State: APjAAAWO2GY1xxjBo/4uCxsiWkIwU9gb6kMJFREw2mLbeCfgQCCKdZQH
-        6E5mCMwvhimU1bVlaClfWwrvYznytVSKpdfM1khwCrQtKwh6VsqBmnIMYuum/2uVVfI7BIcUA3c
-        sftlrkKtj/3Yc
-X-Received: by 2002:a2e:7009:: with SMTP id l9mr8969124ljc.96.1581544348339;
-        Wed, 12 Feb 2020 13:52:28 -0800 (PST)
-X-Google-Smtp-Source: APXvYqzcymufI4ntD4MBsujZ3eOdrYHFB8Xec/vw1aTAActF+XRlvmm52LjGj5ypd+aafURKhkvgWQ==
-X-Received: by 2002:a2e:7009:: with SMTP id l9mr8969113ljc.96.1581544348116;
-        Wed, 12 Feb 2020 13:52:28 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id j19sm193887lfb.90.2020.02.12.13.52.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Feb 2020 13:52:27 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 792F7180365; Wed, 12 Feb 2020 22:52:25 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Eelco Chaudron <echaudro@redhat.com>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
+        bh=eL3bOf0Ue8KnmLIX3IiACzfPQmTnby6aitjM8xRfWC8=;
+        b=Psw37HH1JYXgYGxwc4RKFtJ1IjM2A90mDdpAh5PK2JopPBAawaxfIO9wAyI/0ujAyXB6yc
+        l9d1f4+ZMBzxrsLWjanXDknxgijEgmfbdr3CYylBFLyogurEaQ8kngmaOw/mDnh9Xj6+Hp
+        fYVap9SHH4UMRyzyrbggypvAOhr0ob8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-145-evQGAiydPT-i6Mai_gLHRQ-1; Wed, 12 Feb 2020 17:40:48 -0500
+X-MC-Unique: evQGAiydPT-i6Mai_gLHRQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 437DFDB61;
+        Wed, 12 Feb 2020 22:40:46 +0000 (UTC)
+Received: from krava (ovpn-204-72.brq.redhat.com [10.40.204.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9FF395C1D6;
+        Wed, 12 Feb 2020 22:40:42 +0000 (UTC)
+Date:   Wed, 12 Feb 2020 23:40:39 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH bpf-next] libbpf: Add support for dynamic program attach target
-In-Reply-To: <CAEf4BzYn3pVhqzj8PwRWxjWSJ16CS9d60zFtsS=OuA5ydPyp2Q@mail.gmail.com>
-References: <158151067149.71757.2222114135650741733.stgit@xdp-tutorial> <874kvwhs6u.fsf@toke.dk> <CAEf4BzYn3pVhqzj8PwRWxjWSJ16CS9d60zFtsS=OuA5ydPyp2Q@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 12 Feb 2020 22:52:25 +0100
-Message-ID: <871rqziicm.fsf@toke.dk>
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@redhat.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>
+Subject: Re: [PATCH 00/14] bpf: Add trampoline and dispatcher to
+ /proc/kallsyms
+Message-ID: <20200212224039.GA233036@krava>
+References: <20200208154209.1797988-1-jolsa@kernel.org>
+ <CAJ+HfNhBDU9c4-0D5RiHFZBq_LN7E=k8=rhL+VbmxJU7rdDBxQ@mail.gmail.com>
+ <20200210161751.GC28110@krava>
+ <20200211193223.GI3416@kernel.org>
+ <20200212111346.GF183981@krava>
+ <20200212133125.GA22501@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200212133125.GA22501@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On Wed, Feb 12, 2020 at 10:31:25AM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Feb 12, 2020 at 12:13:46PM +0100, Jiri Olsa escreveu:
+> > On Tue, Feb 11, 2020 at 04:32:23PM -0300, Arnaldo Carvalho de Melo wrote:
+> > > Historically vmlinux was preferred because it contains function sizes,
+> > > but with all these out of the blue symbols, we need to prefer starting
+> > > with /proc/kallsyms and, as we do now, continue getting updates via
+> > > PERF_RECORD_KSYMBOL.
+> 
+> > > Humm, but then trampolines don't generate that, right? Or does it? If it
+> > > doesn't, then we will know about just the trampolines in place when the
+> > > record/top session starts, reparsing /proc/kallsyms periodically seems
+> > > excessive?
+> 
+> > I plan to extend the KSYMBOL interface to contain trampolines/dispatcher
+> > data,
+> 
+> That seems like the sensible, without looking too much at all the
+> details, to do, yes.
+> 
+> > plus we could do some inteligent fallback to /proc/kallsyms in case
+> > vmlinux won't have anything
+> 
+> At this point what would be the good reason to prefer vmlinux instead of
+> going straight to using /proc/kallsyms?
 
-> On Wed, Feb 12, 2020 at 5:05 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Eelco Chaudron <echaudro@redhat.com> writes:
->>
->> > Currently when you want to attach a trace program to a bpf program
->> > the section name needs to match the tracepoint/function semantics.
->> >
->> > However the addition of the bpf_program__set_attach_target() API
->> > allows you to specify the tracepoint/function dynamically.
->> >
->> > The call flow would look something like this:
->> >
->> >   xdp_fd =3D bpf_prog_get_fd_by_id(id);
->> >   trace_obj =3D bpf_object__open_file("func.o", NULL);
->> >   prog =3D bpf_object__find_program_by_title(trace_obj,
->> >                                            "fentry/myfunc");
->> >   bpf_program__set_attach_target(prog, xdp_fd,
->> >                                  "fentry/xdpfilt_blk_all");
->>
->> I think it would be better to have the attach type as a separate arg
->> instead of encoding it in the function name. I.e., rather:
->>
->>    bpf_program__set_attach_target(prog, xdp_fd,
->>                                   "xdpfilt_blk_all", BPF_TRACE_FENTRY);
->
-> I agree about not specifying section name prefix (e.g., fentry/). But
-> disagree that expected attach type (BPF_TRACE_FENTRY) should be part
-> of this API. We already have bpf_program__set_expected_attach_type()
-> API, no need to duplicate it here.
+symbol (with sizes) and code for dwarf unwind, processor trace
 
-Ah yes, forgot about that; just keeping that and making this function
-name only is fine with me :)
+jirka
 
--Toke
+> 
+> We have support for taking a snapshot of it at 'perf top' start, i.e.
+> right at the point we need to resolve a kernel symbol, then we get
+> PERF_RECORD_KSYMBOL for things that gets in place after that.
+> 
+> And as well we save it to the build-id cache so that later, at 'perf
+> report/script' time we can resolve kernel symbols, etc.
+> 
+> vmlinux is just what is in there right before boot, after that, for
+> quite some time, _lots_ of stuff happens :-)
+> 
+> - Arnaldo
+> 
 
