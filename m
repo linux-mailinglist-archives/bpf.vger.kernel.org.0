@@ -2,164 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7CA015A76F
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2020 12:13:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2631015A934
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2020 13:31:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726351AbgBLLN7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Feb 2020 06:13:59 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27938 "EHLO
+        id S1727361AbgBLMbt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Feb 2020 07:31:49 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47961 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725781AbgBLLN6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Feb 2020 06:13:58 -0500
+        with ESMTP id S1727111AbgBLMbt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Feb 2020 07:31:49 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581506038;
+        s=mimecast20190719; t=1581510708;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dCm1QcljRNqoJRRTewmtTan9vvxIIVIVsEI5I1bO+e4=;
-        b=QxAnngMlpfsgYQcGyZj/ugS8i/Gv4DySUqFUNIIUuuP6R2itaQLrJqUHZNOemAUh8wljpc
-        3VqNX6pK9TnJ4jK4vtgWPzipGvuuN2msGEJ7Uzf7CXbty7Hi9TZ0+658a4t9CZFIov328W
-        OMnKyzrbejJqJ6HYe0piNv7/m0+aNFs=
+         content-transfer-encoding:content-transfer-encoding;
+        bh=DkuFJgCWon69tEItX6xkmXrSdlha2NBDOEqvvQkjjyw=;
+        b=GqhNMcnQuGUHkJdaQdxa3AF2+52cpMsyHoPTBNWFLl39rZWubhxjUFxEP/+kJCoJSKocA2
+        i/APKlLlr18A2/rk7+94CxCrLcOLtUW0VXjLQ3N6z0xiEhihzdZ42GwkBe7Byg/tgtuQAP
+        WMC266RckfESC+dpkRvCeAeRjo3PB7g=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-353-gtVSRAGwN966G1onu8cJlg-1; Wed, 12 Feb 2020 06:13:54 -0500
-X-MC-Unique: gtVSRAGwN966G1onu8cJlg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-341-coPtXN7cN3qSXUd7zsoJqQ-1; Wed, 12 Feb 2020 07:31:46 -0500
+X-MC-Unique: coPtXN7cN3qSXUd7zsoJqQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F09B918A8C8D;
-        Wed, 12 Feb 2020 11:13:51 +0000 (UTC)
-Received: from krava (ovpn-204-247.brq.redhat.com [10.40.204.247])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id F2B0D60BF4;
-        Wed, 12 Feb 2020 11:13:48 +0000 (UTC)
-Date:   Wed, 12 Feb 2020 12:13:46 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@redhat.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Subject: Re: [PATCH 00/14] bpf: Add trampoline and dispatcher to
- /proc/kallsyms
-Message-ID: <20200212111346.GF183981@krava>
-References: <20200208154209.1797988-1-jolsa@kernel.org>
- <CAJ+HfNhBDU9c4-0D5RiHFZBq_LN7E=k8=rhL+VbmxJU7rdDBxQ@mail.gmail.com>
- <20200210161751.GC28110@krava>
- <20200211193223.GI3416@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DCD1F107ACCA;
+        Wed, 12 Feb 2020 12:31:44 +0000 (UTC)
+Received: from localhost.localdomain (wsfd-netdev76.ntdv.lab.eng.bos.redhat.com [10.19.188.157])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0A65C27061;
+        Wed, 12 Feb 2020 12:31:40 +0000 (UTC)
+From:   Eelco Chaudron <echaudro@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, andriin@fb.com, toke@redhat.com
+Subject: [PATCH bpf-next] libbpf: Add support for dynamic program attach target
+Date:   Wed, 12 Feb 2020 12:31:22 +0000
+Message-Id: <158151067149.71757.2222114135650741733.stgit@xdp-tutorial>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <20200211193223.GI3416@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset="utf-8"
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 11, 2020 at 04:32:23PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Feb 10, 2020 at 05:17:51PM +0100, Jiri Olsa escreveu:
-> > On Mon, Feb 10, 2020 at 04:51:08PM +0100, Bj=F6rn T=F6pel wrote:
-> > > On Sat, 8 Feb 2020 at 16:42, Jiri Olsa <jolsa@kernel.org> wrote:
-> > > > this patchset adds trampoline and dispatcher objects
-> > > > to be visible in /proc/kallsyms. The last patch also
-> > > > adds sorting for all bpf objects in /proc/kallsyms.
->=20
-> > > Thanks for working on this!
->=20
-> > > I'm probably missing something with my perf setup; I've applied you=
-r
-> > > patches, and everything seem to work fine from an kallsyms
-> > > perspective:
->=20
-> > > # grep bpf_dispatcher_xdp /proc/kallsyms
-> > > ...
-> > > ffffffffc0511000 t bpf_dispatcher_xdp   [bpf]
-> > >=20
-> > > However, when I run
-> > > # perf top
-> > >=20
-> > > I still see the undecorated one:
-> > > 0.90%  [unknown]                  [k] 0xffffffffc0511037
-> > >=20
-> > > Any ideas?
-> =20
-> > yea strange.. it should be picked up from /proc/kallsyms as
-> > fallback if there's no other source, I'll check on that
-> > (might be the problem with perf depending on address going
-> > only higher in /proc/kallsyms, while bpf symbols are at the
-> > end and start over from the lowest bpf address)
-> >=20
-> > anyway, in perf we enumerate bpf_progs via the perf events
-> > PERF_BPF_EVENT_PROG_LOAD,PERF_BPF_EVENT_PROG_UNLOAD interface
-> > together with PERF_RECORD_KSYMBOL_TYPE_BPF events
-> >=20
-> > we might need to add something like:
-> >   PERF_RECORD_KSYMBOL_TYPE_BPF_TRAMPOLINE
-> >   PERF_RECORD_KSYMBOL_TYPE_BPF_DISPATCHER
-> >=20
-> > to notify about the area, I'll check on that
-> >=20
-> > however the /proc/kallsyms fallback should work in any
-> > case.. thanks for report ;-)
->=20
-> We should by now move kallsyms to be the preferred source of symbols,
-> not vmlinux, right?
->=20
-> Perhaps what is happening is:
->=20
-> [root@quaco ~]# strace -f -e open,openat -o /tmp/bla perf top
-> [root@quaco ~]# grep vmlinux /tmp/bla
-> 11013 openat(AT_FDCWD, "vmlinux", O_RDONLY) =3D -1 ENOENT (No such file=
- or directory)
-> 11013 openat(AT_FDCWD, "/boot/vmlinux", O_RDONLY) =3D -1 ENOENT (No suc=
-h file or directory)
-> 11013 openat(AT_FDCWD, "/boot/vmlinux-5.5.0+", O_RDONLY) =3D -1 ENOENT =
-(No such file or directory)
-> 11013 openat(AT_FDCWD, "/usr/lib/debug/boot/vmlinux-5.5.0+", O_RDONLY) =
-=3D -1 ENOENT (No such file or directory)
-> 11013 openat(AT_FDCWD, "/lib/modules/5.5.0+/build/vmlinux", O_RDONLY) =3D=
- 152
-> [root@quaco ~]#
->=20
-> I.e. it is using vmlinux for resolving symbols and he should try with:
->=20
-> [root@quaco ~]# strace -f -e open,openat -o /tmp/bla perf top --ignore-=
-vmlinux
-> [root@quaco ~]# perf top -h vmlinux
->=20
->  Usage: perf top [<options>]
->=20
->     -k, --vmlinux <file>  vmlinux pathname
->         --ignore-vmlinux  don't load vmlinux even if found
->=20
-> [root@quaco ~]# grep vmlinux /tmp/bla
-> [root@quaco ~]#
->=20
-> Historically vmlinux was preferred because it contains function sizes,
-> but with all these out of the blue symbols, we need to prefer starting
-> with /proc/kallsyms and, as we do now, continue getting updates via
-> PERF_RECORD_KSYMBOL.
->=20
-> Humm, but then trampolines don't generate that, right? Or does it? If i=
-t
-> doesn't, then we will know about just the trampolines in place when the
-> record/top session starts, reparsing /proc/kallsyms periodically seems
-> excessive?
+Currently when you want to attach a trace program to a bpf program
+the section name needs to match the tracepoint/function semantics.
 
-I plan to extend the KSYMBOL interface to contain trampolines/dispatcher
-data, plus we could do some inteligent fallback to /proc/kallsyms in case
-vmlinux won't have anything
+However the addition of the bpf_program__set_attach_target() API
+allows you to specify the tracepoint/function dynamically.
 
-jirka
+The call flow would look something like this:
+
+  xdp_fd =3D bpf_prog_get_fd_by_id(id);
+  trace_obj =3D bpf_object__open_file("func.o", NULL);
+  prog =3D bpf_object__find_program_by_title(trace_obj,
+                                           "fentry/myfunc");
+  bpf_program__set_attach_target(prog, xdp_fd,
+                                 "fentry/xdpfilt_blk_all");
+  bpf_object__load(trace_obj)
+
+Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+---
+ tools/lib/bpf/libbpf.c   |   41 +++++++++++++++++++++++++++++++++++-----=
+-
+ tools/lib/bpf/libbpf.h   |    4 ++++
+ tools/lib/bpf/libbpf.map |    1 +
+ 3 files changed, 40 insertions(+), 6 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 514b1a524abb..2ce879c301bb 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4933,15 +4933,16 @@ load_program(struct bpf_program *prog, struct bpf=
+_insn *insns, int insns_cnt,
+ 	return ret;
+ }
+=20
+-static int libbpf_find_attach_btf_id(struct bpf_program *prog);
++static int libbpf_find_attach_btf_id(struct bpf_program *prog,
++				     const char *name);
+=20
+ int bpf_program__load(struct bpf_program *prog, char *license, __u32 ker=
+n_ver)
+ {
+ 	int err =3D 0, fd, i, btf_id;
+=20
+-	if (prog->type =3D=3D BPF_PROG_TYPE_TRACING ||
+-	    prog->type =3D=3D BPF_PROG_TYPE_EXT) {
+-		btf_id =3D libbpf_find_attach_btf_id(prog);
++	if ((prog->type =3D=3D BPF_PROG_TYPE_TRACING ||
++	     prog->type =3D=3D BPF_PROG_TYPE_EXT) && !prog->attach_btf_id) {
++		btf_id =3D libbpf_find_attach_btf_id(prog, NULL);
+ 		if (btf_id <=3D 0)
+ 			return btf_id;
+ 		prog->attach_btf_id =3D btf_id;
+@@ -6202,6 +6203,31 @@ void bpf_program__set_expected_attach_type(struct =
+bpf_program *prog,
+ 	prog->expected_attach_type =3D type;
+ }
+=20
++int bpf_program__set_attach_target(struct bpf_program *prog,
++				   int attach_prog_fd,
++				   const char *attach_func_name)
++{
++	__u32 org_attach_prog_fd;
++	int btf_id;
++
++	if (!prog || attach_prog_fd < 0 || !attach_func_name)
++		return -EINVAL;
++
++	org_attach_prog_fd =3D prog->attach_prog_fd;
++	prog->attach_prog_fd =3D attach_prog_fd;
++
++	btf_id =3D libbpf_find_attach_btf_id(prog,
++					   attach_func_name);
++
++	if (btf_id < 0) {
++		prog->attach_prog_fd =3D org_attach_prog_fd;
++		return btf_id;
++	}
++
++	prog->attach_btf_id =3D btf_id;
++	return 0;
++}
++
+ #define BPF_PROG_SEC_IMPL(string, ptype, eatype, is_attachable, btf, aty=
+pe) \
+ 	{ string, sizeof(string) - 1, ptype, eatype, is_attachable, btf, atype =
+}
+=20
+@@ -6633,13 +6659,16 @@ static int libbpf_find_prog_btf_id(const char *na=
+me, __u32 attach_prog_fd)
+ 	return err;
+ }
+=20
+-static int libbpf_find_attach_btf_id(struct bpf_program *prog)
++static int libbpf_find_attach_btf_id(struct bpf_program *prog,
++				     const char *name)
+ {
+ 	enum bpf_attach_type attach_type =3D prog->expected_attach_type;
+ 	__u32 attach_prog_fd =3D prog->attach_prog_fd;
+-	const char *name =3D prog->section_name;
+ 	int i, err;
+=20
++	if (!name)
++		name =3D prog->section_name;
++
+ 	if (!name)
+ 		return -EINVAL;
+=20
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 3fe12c9d1f92..02fc58a21a7f 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -334,6 +334,10 @@ LIBBPF_API void
+ bpf_program__set_expected_attach_type(struct bpf_program *prog,
+ 				      enum bpf_attach_type type);
+=20
++LIBBPF_API int
++bpf_program__set_attach_target(struct bpf_program *prog, int attach_prog=
+_fd,
++			       const char *attach_func_name);
++
+ LIBBPF_API bool bpf_program__is_socket_filter(const struct bpf_program *=
+prog);
+ LIBBPF_API bool bpf_program__is_tracepoint(const struct bpf_program *pro=
+g);
+ LIBBPF_API bool bpf_program__is_raw_tracepoint(const struct bpf_program =
+*prog);
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index b035122142bb..8aba5438a3f0 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -230,6 +230,7 @@ LIBBPF_0.0.7 {
+ 		bpf_program__name;
+ 		bpf_program__is_extension;
+ 		bpf_program__is_struct_ops;
++		bpf_program__set_attach_target;
+ 		bpf_program__set_extension;
+ 		bpf_program__set_struct_ops;
+ 		btf__align_of;
 
