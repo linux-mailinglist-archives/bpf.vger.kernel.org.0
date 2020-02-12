@@ -2,213 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1800815B007
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2020 19:42:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4552015B061
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2020 20:00:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728840AbgBLSmH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Feb 2020 13:42:07 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:27332 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727054AbgBLSmH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 12 Feb 2020 13:42:07 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01CIY8Mb014512;
-        Wed, 12 Feb 2020 10:40:56 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=Pfm4Ins0onsbySSV3DIQ7I4/jrcIZZtmUHPZuWknubc=;
- b=SFbbq2jaqCJ4AL4M1B1afysTvABJPaCqg+fthJXlyF3uJK7H8W6HmhZlVGvAKj+Rk6To
- 1ShGkNrHKEEfqLiIh/TmMfqEXDjy6KKglDIaALTmeEA/LGShsPvhHWxEqD1EAO0CE1tH
- S6+TMkRLyYMQUYuiH/whK0hQvIip+2FuU8E= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 2y4607mqph-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 12 Feb 2020 10:40:56 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 12 Feb 2020 10:40:55 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dfEGi+55sWBdBuUtWE9OkT2jUO/LLZKcvD2WhpBTtoxKhFhEa1xId/x/6vANIsm+Ma9NaLL5zKmS8B3oH1Pvz48HworcHMhxn6wFo4L5UNVBntLOjWaPrEUN8fZRIamcoutqkRTF6mRZL8R/BKwrVv4+cdiZ9UnGIP0G8RsA52IPoZVAXzrNEQTXfOK0odr9nkYHG+a2pipaJr/9yCdEGA7HN4dCk1SfqS9Nw5YPsa5bmMU480SxGt20paie+sylXioF22HMMeiXbwRQxlWHAKw3QQP1vsaMi9m6IZDyTSegRfKl1kFRkUT0cIxkP5LMAzxSdI4zlxQeVkWlf20g+w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Pfm4Ins0onsbySSV3DIQ7I4/jrcIZZtmUHPZuWknubc=;
- b=khRsyslNKhd6L+zqhzjiByGW13KUL9H1C6ANi9X4kvaHE97y5UkxIxKr7g3Z2bvDXINDJCUScXtX1ZZ1L/gQOwsXCjnGtNAyHO8XHxeIir9kq67jz/jC32kp1rrRrmjG8UYQCG9fmI5AGEBOpuhLg4tBEake7CxZvuAZxY7Sc65/cz4rXfH0GxGvqVq4w93lLMyndgF7JJy/s6f4iY4tVOHMyeD/W/qf3tKVpCnhkLlXlBHIaKJ3Xoz2ifBxYU+e1B6Vv+70QUZ4Ph8icAa2IXI+h5W4Wj2eu2yWqZHaflnyjUobqOXi4+L40+Vhp0QG3BWDzimGyVxpSV5YVKPn+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Pfm4Ins0onsbySSV3DIQ7I4/jrcIZZtmUHPZuWknubc=;
- b=kh1TXYqOPF45bTjmB61KDucMYauR87W1FfSa08z2HSeIfJxGUEVmhN9O+51DF1sT8hAjKJr5f3xBBkaPOjtRO9fJKTDAIQBD7Ynd6RmgliDgtbw7fDA3+EXNIA8XHvZKTX5ID6eFr22kl1SiDZUSjU5PpZxEDuoCPcHmSHWO5bw=
-Received: from MW2PR1501MB2171.namprd15.prod.outlook.com (52.132.153.155) by
- MW2PR1501MB2044.namprd15.prod.outlook.com (52.132.147.155) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2707.28; Wed, 12 Feb 2020 18:40:54 +0000
-Received: from MW2PR1501MB2171.namprd15.prod.outlook.com
- ([fe80::492d:3e00:17dc:6b30]) by MW2PR1501MB2171.namprd15.prod.outlook.com
- ([fe80::492d:3e00:17dc:6b30%7]) with mapi id 15.20.2707.030; Wed, 12 Feb 2020
- 18:40:54 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Eelco Chaudron <echaudro@redhat.com>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
+        id S1728887AbgBLS7X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Feb 2020 13:59:23 -0500
+Received: from sonic301-38.consmr.mail.ne1.yahoo.com ([66.163.184.207]:43635
+        "EHLO sonic301-38.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729003AbgBLS7S (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 12 Feb 2020 13:59:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1581533956; bh=8cVK0KCjE9iMM007r/sfUO8hpn6gI09B/rc04UxoAZ0=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=LBKoVcXnhwLMn4NyYKZ35M8mtyQ16O39sJHosBPJ52aNtojII81YF3qgt7ixdAP37dHI4nzTpgzan79j7ufmi6wDbk7CmzNek/FyGBK3zshN0CkKGp2PNoY3FheLymidBqSqaJECYVPcUj3BK0K0N788X3wuAwAUSuTDslT7OvPLkMAZAJ6T04wAmDZL/tu/C6xX/tooM1qY+9U6sLDPdKkYi47ac+bLaQnaPoldAn2mYGFS8NduovRtfa3Hidd2bwv1F4YBeGBtNyBZ7RrVeRoNe9aVtIlkSasznaX+rnU0TYQB3oLP2HdTwLpuMIIrEXoXT4mTrL8SqILcjGA9Uw==
+X-YMail-OSG: 6UnkX1EVM1lJjWOPTEH9Sa1hGqzN0mREddys.exOq__c1JbJcgjXuE2W.u8sd4g
+ 7hPkpppwXEPUNjpZ14eE5F8H.zc87oF5sF4fSKBLwwlpP9sQ5m6keRqLwCJVw_askE0BreRdnwjZ
+ GEKsdIShYalES0SW.kbiWKkGO2c8gDVeF3dFUeiwdNGDN6geq5GQUBHTieZoasHqzTs2mXOEj.Rr
+ vnoAa5exOZd4vIm1u3iV2uyCoriLJGBDTyD3ZEYRCnD2wtAm7mtDa0q2FzjGE60WXenTnWdsl8bt
+ pXOXK2Eu50dmJ3sk95d3xkyM30bds8EFD94M1ulqSTzLQ2Gfifn9O_mwiOlD.LDWS2j0UNGHJDb4
+ DD3ewOlxjWavM9xWgVaYJwI20S6ByIWd.D02IHYatFCKfGBd2Is1LBgpvbX3l_39adZISvoDX2zB
+ fTGvAixwsyn58SFWUtRhLQY0knUpEW1lTQx4uuE0sQi9_qarZdBDTYSPA..XNo8j3_sHk8xMdk_.
+ 7263TLVSomB.H03deByL7_AvdXca4F.xi4bPGg2UVDe1_xSzGe8Bwgu822PXq5AMmuPvpcglqcYJ
+ Pa52hZp2E1XSbo88ZWYOOEmsFwVNrt6RKcIgP75QtfyVbnvUfXCYg4Egw.SP5YCoUkG4Xq6XWgNx
+ qhNGtgCP31M15smhgzvW5Z28gpL3pLwOFUsM6GEVF8H12iWIadwSU97YUpGN7aanuEGD..cnfCR7
+ Vj3nSSxy5I7tvvDTfmi8H0X3IqsDbU5eNmsUyBwKSIMErosVWrljgqofUa3VArbMZKn35ftif07u
+ 0wjXKQzBUfMBBYyl6anQPygNVxveGsefDLLRT_d8pydKgUaNUGCz1xuwNGXXy2eUErbkiqMz1JEG
+ ttPxrmReFw52OlDtjn4R9rritqnG06stioiDg1PryVnTeJxsZz5JMHtfCn7vtmlHfWBvmAdCZGTY
+ rsWu9rnMMH.zDfleW9g1ixZHP8rX.WxictKDQEpiZ9JT0Kc3TO.LC.JIYBlSR1V7qrUmBwvd0la7
+ Ww_EaclQrj2z1ZhYGP49N.ZQ22lPXQclY.NwfNrb96VH5efX.nJ1dxYygXVrbr0bAQvd1w5IkkVk
+ lZsSN9ZZWINmwnfDvoEU0MtuCiJP.zIEM3WGpH_.l8Ca8x0ze9RZk.JntIdWRC_G5xGJ06QEacna
+ RYI9kB0zLmSkmZdR3oLExMCUJJp2IKqnKJXYxYAIMxg3hjER9UoLmdub6MY5uOQYtbtb4lc8k8AM
+ hlYvYOSJmHsoBdjolZy9Ke.IPtx8YAKNkVs4kSpP66n6iaD5n43NXak8GahSJ3uPP6e_eoqgni6p
+ kfOa23cJwSZJL3hTtC6jnutMUOTkvXUbpQadMC8T1ypoaTDp7BNmR6BqOPXeKYitNrZjb_QG_sFZ
+ OXZ9s2JuYbGgYMFHGDKc4QHNgy1HX1PHJmmZ291r7p2rc3.bsqxz5_WTJOP.fh4r8C0U8jedKU0S
+ FeKIJ.A7X5yYfbyMQznohu_7YmNzdWeE-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic301.consmr.mail.ne1.yahoo.com with HTTP; Wed, 12 Feb 2020 18:59:16 +0000
+Received: by smtp418.mail.ne1.yahoo.com (Oath Hermes SMTP Server) with ESMTPA ID 4e718907107bca3f337af6f8d79602ff;
+          Wed, 12 Feb 2020 18:59:10 +0000 (UTC)
+Subject: Re: BPF LSM and fexit [was: [PATCH bpf-next v3 04/10] bpf: lsm: Add
+ mutable hooks list for the BPF LSM]
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "Martin Lau" <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        =?iso-8859-1?Q?Toke_H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH bpf-next] libbpf: Add support for dynamic program attach
- target
-Thread-Topic: [PATCH bpf-next] libbpf: Add support for dynamic program attach
- target
-Thread-Index: AQHV4aBmkuDy8vU+NUWdt8DKhmBCX6gX0g0AgAAGM4CAAAUIAIAAA/gAgAABgYCAAAHmgA==
-Date:   Wed, 12 Feb 2020 18:40:54 +0000
-Message-ID: <04B1C476-5ABC-4F98-A5A3-5A2E124B516F@fb.com>
-References: <158151067149.71757.2222114135650741733.stgit@xdp-tutorial>
- <CAEf4BzZqxQxWe5qawBOuDzvDpCHsmgfyqxWnackHd=hUQpz6bA@mail.gmail.com>
- <628E972C-1156-46F8-AC61-DB0D38C34C81@fb.com>
- <CAEf4BzYFVtgW4Zyz09vuppAJA3oQ-UAT4yALeFJk2JQ70+mE2g@mail.gmail.com>
- <F37F13F4-DAFE-4431-804F-BF7940D9970D@fb.com>
- <CAEf4Bza4MQW6QEg7_VdWJwMJPKP8nPSD-ErkUFhVtxyA=jLkHw@mail.gmail.com>
-In-Reply-To: <CAEf4Bza4MQW6QEg7_VdWJwMJPKP8nPSD-ErkUFhVtxyA=jLkHw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.60.0.2.5)
-x-originating-ip: [2620:10d:c090:400::5:f48e]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 8b6ed840-c640-4e31-3e4c-08d7afeb178c
-x-ms-traffictypediagnostic: MW2PR1501MB2044:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW2PR1501MB2044C4F4F5337363B33B678EB31B0@MW2PR1501MB2044.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 0311124FA9
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(396003)(136003)(346002)(366004)(376002)(189003)(199004)(36756003)(54906003)(6506007)(8936002)(66556008)(5660300002)(4326008)(66446008)(76116006)(71200400001)(66946007)(316002)(8676002)(64756008)(53546011)(6486002)(81166006)(81156014)(6916009)(33656002)(66476007)(478600001)(6512007)(2616005)(186003)(86362001)(2906002)(21314003);DIR:OUT;SFP:1102;SCL:1;SRVR:MW2PR1501MB2044;H:MW2PR1501MB2171.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: QRdXAcdlg1I8HZsbjfLjQJmjmTYwH6HTwNKB9vzPvVRT65XgCEw7oC1jWHCj4y8zOGJ+sfzNuNdV1iOIfVy+LBcIp52QoF8jWcuH6MtymCIX2Fi1J+ne0J6KjR89NmVOeEOQgdyh6VZnTx3CBnk1MLaAKp/9AUJuAl4LJUXOW/LjIqpP1RD/OiTET1//3YAQvsRp0bBVO1luHioAPXd6I75ghQ21WEGsyOcdjulNsHYnHf0QPiQ69T94oENEHY35AzW0n+/NSgbWKiY9kkGCTMTezQxIJhAS7F85rZZ76AkSEW6NrD5X6CzRMZloO71UII/ZeZgz6P0qhkjH9rIPYTiErCXlABed2UObx2JV6qkVoDFdWOC4dGJestsgJUX5aVZhLYH4pWLCRhRVPbQYqKTA7QXiD6ZzD1xdnrg9BE/iq4qARK9Fho7aTbUenB80j/BegJAWTCn78J1f1Zrc+wnjXKpiCtQ/0U1j3SxpQt944+QtIFgWf0cEkNHWj+2U
-x-ms-exchange-antispam-messagedata: nPFqG5sXd0iHRRU8tnKXEtpxe8bWWiGXNhSzlXuoxn1IQP2b1BPQzCpvCuz1h4knlKl3Yih1cDJGSXOxSL+oUWUxNMwRvlUInMtWhAa/dIMDGNpWvVUiUmXvGLrvnZT7T5O1WKUOvg+2ttzpGdh3o41KxrYEQMe6bqFDxIldfsZZkHZDaHPZGiQ5/WpOKspz
-Content-Type: text/plain; charset="iso-8859-1"
-Content-ID: <93C484F6E903FC4CB103FDE0B6FDB4CC@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Jann Horn <jannh@google.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@google.com>,
+        Thomas Garnier <thgarnie@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Garnier <thgarnie@chromium.org>,
+        Michael Halcrow <mhalcrow@google.com>,
+        Paul Turner <pjt@google.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Christian Brauner <christian@brauner.io>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <CAG48ez25mW+_oCxgCtbiGMX07g_ph79UOJa07h=o_6B6+Q-u5g@mail.gmail.com>
+ <20200211190943.sysdbz2zuz5666nq@ast-mbp>
+ <CAG48ez2gvo1dA4P1L=ASz7TRfbH-cgLZLmOPmr0NweayL-efLw@mail.gmail.com>
+ <20200211201039.om6xqoscfle7bguz@ast-mbp>
+ <CAG48ez1qGqF9z7APajFyzjZh82YxFV9sHE64f5kdKBeH9J3YPg@mail.gmail.com>
+ <20200211213819.j4ltrjjkuywihpnv@ast-mbp>
+ <CAADnVQLsiWgSBXbuxmpkC9TS8d1aQRw2zDHG8J6E=kfcRoXtKQ@mail.gmail.com>
+ <1cd10710-a81b-8f9b-696d-aa40b0a67225@iogearbox.net>
+ <20200212024542.gdsafhvqykucdp4h@ast-mbp>
+ <bee0fd08-b9f2-83e4-2882-475b81c74303@schaufler-ca.com>
+ <20200212162613.GB259057@google.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Autocrypt: addr=casey@schaufler-ca.com; keydata=
+ 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
+ abzjfg==
+Message-ID: <9eddd26d-9157-7f8d-c6d1-ab3f11a526e2@schaufler-ca.com>
+Date:   Wed, 12 Feb 2020 10:59:09 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8b6ed840-c640-4e31-3e4c-08d7afeb178c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Feb 2020 18:40:54.2337
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /jBaAJFZDDx7jGUT2G9kmkOoyNaGMLuiYiUEXLZJ/feB+bTKYCY1wf1xEt8YMsKf3zDG4rEn6AQhax4aq0k+OQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR1501MB2044
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-02-12_08:2020-02-12,2020-02-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 bulkscore=0
- adultscore=0 impostorscore=0 malwarescore=0 suspectscore=0
- priorityscore=1501 lowpriorityscore=0 spamscore=0 mlxscore=0
- mlxlogscore=999 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2001150001 definitions=main-2002120133
-X-FB-Internal: deliver
+In-Reply-To: <20200212162613.GB259057@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Mailer: WebService/1.1.15199 hermes Apache-HttpAsyncClient/4.1.4 (Java/1.8.0_181)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 2/12/2020 8:26 AM, KP Singh wrote:
+> On 12-Feb 07:52, Casey Schaufler wrote:
+>> On 2/11/2020 6:45 PM, Alexei Starovoitov wrote:
+>>> On Wed, Feb 12, 2020 at 01:09:07AM +0100, Daniel Borkmann wrote:
+>>>> Another approach could be to have a special nop inside call_int_hook=
+()
+>>>> macro which would then get patched to avoid these situations. Somewh=
+at
+>>>> similar like static keys where it could be defined anywhere in text =
+but
+>>>> with updating of call_int_hook()'s RC for the verdict.
+>> Tell me again why you can't register your BPF hooks like all the
+>> other security modules do? You keep reintroducing BPF as a special
+>> case, and I don't see why.
+> I think we tried to answer this in the discussion we had:
+>
+>  https://lore.kernel.org/bpf/20200123152440.28956-1-kpsingh@chromium.or=
+g/T/#meb1eea982e63be0806f9bba58e91160871803752
 
+I understand your arguments, but remain unconvinced.
 
-> On Feb 12, 2020, at 10:34 AM, Andrii Nakryiko <andrii.nakryiko@gmail.com>=
- wrote:
->=20
-> On Wed, Feb 12, 2020 at 10:29 AM Song Liu <songliubraving@fb.com> wrote:
->>=20
->>=20
->>=20
->>> On Feb 12, 2020, at 10:14 AM, Andrii Nakryiko <andrii.nakryiko@gmail.co=
-m> wrote:
->>>=20
->>> On Wed, Feb 12, 2020 at 10:07 AM Song Liu <songliubraving@fb.com> wrote=
-:
->>>>=20
->>>>=20
->>>>=20
->>>>> On Feb 12, 2020, at 9:34 AM, Andrii Nakryiko <andrii.nakryiko@gmail.c=
-om> wrote:
->>>>>=20
->>>>> On Wed, Feb 12, 2020 at 4:32 AM Eelco Chaudron <echaudro@redhat.com> =
-wrote:
->>>>>>=20
->>>>>> Currently when you want to attach a trace program to a bpf program
->>>>>> the section name needs to match the tracepoint/function semantics.
->>>>>>=20
->>>>>> However the addition of the bpf_program__set_attach_target() API
->>>>>> allows you to specify the tracepoint/function dynamically.
->>>>>>=20
->>>>>> The call flow would look something like this:
->>>>>>=20
->>>>>> xdp_fd =3D bpf_prog_get_fd_by_id(id);
->>>>>> trace_obj =3D bpf_object__open_file("func.o", NULL);
->>>>>> prog =3D bpf_object__find_program_by_title(trace_obj,
->>>>>>                                         "fentry/myfunc");
->>>>>> bpf_program__set_attach_target(prog, xdp_fd,
->>>>>>                               "fentry/xdpfilt_blk_all");
->>>>>> bpf_object__load(trace_obj)
->>>>>>=20
->>>>>> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
->>>>=20
->>>>=20
->>>> I am trying to solve the same problem with slightly different approach=
-.
->>>>=20
->>>> It works as the following (with skeleton):
->>>>=20
->>>>       obj =3D myobject_bpf__open_opts(&opts);
->>>>       bpf_object__for_each_program(prog, obj->obj)
->>>>               bpf_program__overwrite_section_name(prog, new_names[id++=
-]);
->>>>       err =3D myobject_bpf__load(obj);
->>>>=20
->>>> I don't have very strong preference. But I think my approach is simple=
-r?
->>>=20
->>> I prefer bpf_program__set_attach_target() approach. Section name is a
->>> program identifier and a *hint* for libbpf to determine program type,
->>> attach type, and whatever else makes sense. But there still should be
->>> an API to set all that manually at runtime, thus
->>> bpf_program__set_attach_target(). Doing same by overriding section
->>> name feels like a hack, plus it doesn't handle overriding
->>> attach_program_fd at all.
->>=20
->> We already have bpf_object_open_opts to handle different attach_program_=
-fd.
->=20
-> Not really, because open_opts apply to bpf_object and all its
-> bpf_programs, not to individual bpf_program. So it works only if BPF
-> application has only one BPF program. If you have many, you can only
-> set the same attach_program_fd for all of them. Basically, open_opts'
-> attach_prog_fd should be treated as a default or fallback
-> attach_prog_fd.
+> BPF should not allocate a wrapper (to be statically regsitered at
+> init) for each LSM hook and run the programs from within that as this
+> implies adding overhead across the board for every hook even if
+> it's never used (i.e. no BPF program is attached to the hook).
 
-Fair enough. I will use set_attach_target in my code.=20
+SELinux would run faster if it didn't have hooks installed where
+there is no policy loaded that would ever fail for them. That's
+not the infrastructure's problem.
 
->=20
->> Can we depreciate bpf_object_open_opts.attach_prog_fd with the
->> bpf_program__set_attach_target() approach?
->=20
-> bpf_program__set_attach_target() overrides attach_prog_fd, yes. But we
-> can't just deprecate that option because it's part of an API already,
-> even though adding it to open opts was probably a mistake. But for
-> simple BPF apps with single BPF program it does work fine, so...
+> We can, with the suggestions discussed here, avoid adding unncessary
+> overhead for unused hooks. And, as Alexei mentioned, adding overhead
+> when not really needed is especially bad for LSM hooks like
+> sock_sendmsg.
 
-Maybe add a warning saying "attach_prog_fd is deprecated, xxx"?
+You're adding overhead for systems that have BPF built, but not used.
 
-Thanks,
-Song=
+> The other LSMs do not provide dynamic / mutable hooks, so it makes
+> sense for them to register the hooks once at load time.
+
+As mentioned above, the hooks may not be mutable, but policy
+may make them pointless. That is the security module's problem,
+not the infrastructure's.
+
+>
+> - KP
+>
+>>> Sounds nice in theory. I couldn't quite picture how that would look
+>>> in the code, so I hacked:
+>>> diff --git a/security/security.c b/security/security.c
+>>> index 565bc9b67276..ce4bc1e5e26c 100644
+>>> --- a/security/security.c
+> [...]
+
