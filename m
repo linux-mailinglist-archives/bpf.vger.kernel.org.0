@@ -2,157 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5965315AA01
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2020 14:27:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D59B15AA0A
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2020 14:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727662AbgBLN11 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Feb 2020 08:27:27 -0500
-Received: from www62.your-server.de ([213.133.104.62]:57368 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgBLN11 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Feb 2020 08:27:27 -0500
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1j1s2v-0004et-Je; Wed, 12 Feb 2020 14:27:18 +0100
-Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-3.fritz.box)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1j1s2u-000X31-Sa; Wed, 12 Feb 2020 14:27:16 +0100
-Subject: Re: BPF LSM and fexit [was: [PATCH bpf-next v3 04/10] bpf: lsm: Add
- mutable hooks list for the BPF LSM]
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jann Horn <jannh@google.com>, KP Singh <kpsingh@chromium.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@google.com>,
-        Thomas Garnier <thgarnie@google.com>,
+        id S1727692AbgBLNbd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Feb 2020 08:31:33 -0500
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:42875 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbgBLNbd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Feb 2020 08:31:33 -0500
+Received: by mail-qv1-f66.google.com with SMTP id dc14so890112qvb.9;
+        Wed, 12 Feb 2020 05:31:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=myZUd9/EmvSZIipj4aycXbLr16w30buYk0xA+FZcMZU=;
+        b=cTKJfozoaBYtXHn0s+YZrxbQ5Q62gzDLv9rd50YJ0haP8AcvNBIUZ69Ck4GUzesGfz
+         sqEVGTkAMMoKN+sVP+yOiF3WjE+ttFF5VWIimqt0qNo+sJF7glJZcQlAuhtDUUywFhMf
+         1D5Md8cAOE2iCOnq75X47ajgDrxxbt9DLSXwrVzW8wCJtZwuHH8wBNta6imu1UnWupRw
+         UPSwtvYyDdFJdzGi+ljhloCjVmI3PvKKRsTYR/Hj52/hQQZmj9b2tZ7F7JaPJR/9TxYy
+         1xaHywEvVCWUeqMW1/aj0udI92kfP8NTdabgLyTc+LyHQrIPbIZQdaD1s9lp1y6WeAjO
+         qCTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=myZUd9/EmvSZIipj4aycXbLr16w30buYk0xA+FZcMZU=;
+        b=G7W2TJNbhQ5+m5pSnZ8AQ6nnBUVrQ2BsRTvr8UGkvoPQzcRfPRPt2XrJDJGb3Oj+nM
+         AIUpRHS4cK1/jMGnasmFEY/vS/Z0g/lpe+ey+IqT6C9moMkjpOm8owDHf7vPi7F+vm4I
+         UQoOcUAdmDG4dJI5azm2VxZZKh/wIjvPnkQ1CY/RtPVgvv4OBn0/jw90iOw9GZIy5gLw
+         hGUx/VWg95fTyPFXImN+J7Kwrr6uP/q5bX2l9x1ipfHVX0WsCSbygPJ28W59SSmGrNvo
+         vBKb62clv9Q47EtAIWwYM/jbSfNKhGz4Nvnnaf5/zYqbS7yggaKIgyprnrJQsZRAW1qR
+         +46A==
+X-Gm-Message-State: APjAAAVxPRZCcXXBUdOm/3C7WEm1HkRrNiJPtW8XR6tCeP8rCRJ6tgs6
+        jNI8WcMF5L/lz7wcxkixPc4=
+X-Google-Smtp-Source: APXvYqzpkZnamk4UBoQA1UDxWfKB08dA8uiLqvcrWLWGIIuI2v01Q/QkJB6psL0bbS6jrec2cfK/mg==
+X-Received: by 2002:a0c:edc3:: with SMTP id i3mr7257890qvr.29.1581514292041;
+        Wed, 12 Feb 2020 05:31:32 -0800 (PST)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id t16sm170213qkg.96.2020.02.12.05.31.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Feb 2020 05:31:27 -0800 (PST)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 9E60740A7D; Wed, 12 Feb 2020 10:31:25 -0300 (-03)
+Date:   Wed, 12 Feb 2020 10:31:25 -0300
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Garnier <thgarnie@chromium.org>,
-        Michael Halcrow <mhalcrow@google.com>,
-        Paul Turner <pjt@google.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Christian Brauner <christian@brauner.io>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kernel Team <kernel-team@fb.com>
-References: <20200211124334.GA96694@google.com>
- <20200211175825.szxaqaepqfbd2wmg@ast-mbp>
- <CAG48ez25mW+_oCxgCtbiGMX07g_ph79UOJa07h=o_6B6+Q-u5g@mail.gmail.com>
- <20200211190943.sysdbz2zuz5666nq@ast-mbp>
- <CAG48ez2gvo1dA4P1L=ASz7TRfbH-cgLZLmOPmr0NweayL-efLw@mail.gmail.com>
- <20200211201039.om6xqoscfle7bguz@ast-mbp>
- <CAG48ez1qGqF9z7APajFyzjZh82YxFV9sHE64f5kdKBeH9J3YPg@mail.gmail.com>
- <20200211213819.j4ltrjjkuywihpnv@ast-mbp>
- <CAADnVQLsiWgSBXbuxmpkC9TS8d1aQRw2zDHG8J6E=kfcRoXtKQ@mail.gmail.com>
- <1cd10710-a81b-8f9b-696d-aa40b0a67225@iogearbox.net>
- <20200212024542.gdsafhvqykucdp4h@ast-mbp>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <ff6dec98-5e33-4603-1b90-e4bff23695cc@iogearbox.net>
-Date:   Wed, 12 Feb 2020 14:27:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@redhat.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>
+Subject: Re: [PATCH 00/14] bpf: Add trampoline and dispatcher to
+ /proc/kallsyms
+Message-ID: <20200212133125.GA22501@kernel.org>
+References: <20200208154209.1797988-1-jolsa@kernel.org>
+ <CAJ+HfNhBDU9c4-0D5RiHFZBq_LN7E=k8=rhL+VbmxJU7rdDBxQ@mail.gmail.com>
+ <20200210161751.GC28110@krava>
+ <20200211193223.GI3416@kernel.org>
+ <20200212111346.GF183981@krava>
 MIME-Version: 1.0
-In-Reply-To: <20200212024542.gdsafhvqykucdp4h@ast-mbp>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.1/25721/Wed Feb 12 06:24:38 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200212111346.GF183981@krava>
+X-Url:  http://acmel.wordpress.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/12/20 3:45 AM, Alexei Starovoitov wrote:
-> On Wed, Feb 12, 2020 at 01:09:07AM +0100, Daniel Borkmann wrote:
->>
->> Another approach could be to have a special nop inside call_int_hook()
->> macro which would then get patched to avoid these situations. Somewhat
->> similar like static keys where it could be defined anywhere in text but
->> with updating of call_int_hook()'s RC for the verdict.
-> 
-> Sounds nice in theory. I couldn't quite picture how that would look
-> in the code, so I hacked:
-> diff --git a/security/security.c b/security/security.c
-> index 565bc9b67276..ce4bc1e5e26c 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -28,6 +28,7 @@
->   #include <linux/string.h>
->   #include <linux/msg.h>
->   #include <net/flow.h>
-> +#include <linux/jump_label.h>
-> 
->   #define MAX_LSM_EVM_XATTR      2
-> 
-> @@ -678,12 +679,26 @@ static void __init lsm_early_task(struct task_struct *task)
->    *     This is a hook that returns a value.
->    */
-> 
-> +#define LSM_HOOK_NAME(FUNC) \
-> +       DEFINE_STATIC_KEY_FALSE(bpf_lsm_key_##FUNC);
-> +#include <linux/lsm_hook_names.h>
-> +#undef LSM_HOOK_NAME
-> +__diag_push();
-> +__diag_ignore(GCC, 8, "-Wstrict-prototypes", "");
-> +#define LSM_HOOK_NAME(FUNC) \
-> +       int bpf_lsm_call_##FUNC() {return 0;}
-> +#include <linux/lsm_hook_names.h>
-> +#undef LSM_HOOK_NAME
-> +__diag_pop();
-> +
->   #define call_void_hook(FUNC, ...)                              \
->          do {                                                    \
->                  struct security_hook_list *P;                   \
->                                                                  \
->                  hlist_for_each_entry(P, &security_hook_heads.FUNC, list) \
->                          P->hook.FUNC(__VA_ARGS__);              \
-> +               if (static_branch_unlikely(&bpf_lsm_key_##FUNC)) \
-> +                      (void)bpf_lsm_call_##FUNC(__VA_ARGS__); \
->          } while (0)
-> 
->   #define call_int_hook(FUNC, IRC, ...) ({                       \
-> @@ -696,6 +711,8 @@ static void __init lsm_early_task(struct task_struct *task)
->                          if (RC != 0)                            \
->                                  break;                          \
->                  }                                               \
-> +               if (RC == IRC && static_branch_unlikely(&bpf_lsm_key_##FUNC)) \
-> +                      RC = bpf_lsm_call_##FUNC(__VA_ARGS__); \
+Em Wed, Feb 12, 2020 at 12:13:46PM +0100, Jiri Olsa escreveu:
+> On Tue, Feb 11, 2020 at 04:32:23PM -0300, Arnaldo Carvalho de Melo wrote:
+> > Historically vmlinux was preferred because it contains function sizes,
+> > but with all these out of the blue symbols, we need to prefer starting
+> > with /proc/kallsyms and, as we do now, continue getting updates via
+> > PERF_RECORD_KSYMBOL.
 
-Nit: the `RC == IRC` test could be moved behind the static_branch_unlikely() so
-that it would be bypassed when not enabled.
+> > Humm, but then trampolines don't generate that, right? Or does it? If it
+> > doesn't, then we will know about just the trampolines in place when the
+> > record/top session starts, reparsing /proc/kallsyms periodically seems
+> > excessive?
 
->          } while (0);                                            \
->          RC;                                                     \
->   })
-> 
-> The assembly looks good from correctness and performance points.
-> union security_list_options can be split into lsm_hook_names.h too
-> to avoid __diag_ignore. Is that what you have in mind?
-> I don't see how one can improve call_int_hook() macro without
-> full refactoring of linux/lsm_hooks.h
-> imo static_key doesn't have to be there in the first set. We can add this
-> optimization later.
+> I plan to extend the KSYMBOL interface to contain trampolines/dispatcher
+> data,
 
-Yes, like the above diff looks good, and then we'd dynamically attach the program
-at bpf_lsm_call_##FUNC()'s fexit hook for a direct jump, so all the security_blah()
-internals could stay as-is which then might also address Jann's concerns wrt
-concrete annotation as well as potential locking changes inside security_blah().
-Agree that patching out via static key could be optional but since you were talking
-about avoiding indirect jumps..
+That seems like the sensible, without looking too much at all the
+details, to do, yes.
 
-Thanks,
-Daniel
+> plus we could do some inteligent fallback to /proc/kallsyms in case
+> vmlinux won't have anything
+
+At this point what would be the good reason to prefer vmlinux instead of
+going straight to using /proc/kallsyms?
+
+We have support for taking a snapshot of it at 'perf top' start, i.e.
+right at the point we need to resolve a kernel symbol, then we get
+PERF_RECORD_KSYMBOL for things that gets in place after that.
+
+And as well we save it to the build-id cache so that later, at 'perf
+report/script' time we can resolve kernel symbols, etc.
+
+vmlinux is just what is in there right before boot, after that, for
+quite some time, _lots_ of stuff happens :-)
+
+- Arnaldo
