@@ -2,58 +2,29 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E0F159D2A
-	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2020 00:26:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DDB0159DCA
+	for <lists+bpf@lfdr.de>; Wed, 12 Feb 2020 01:09:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727865AbgBKX00 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Feb 2020 18:26:26 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:44782 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727597AbgBKX00 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Feb 2020 18:26:26 -0500
-Received: by mail-lj1-f195.google.com with SMTP id q8so96263ljj.11;
-        Tue, 11 Feb 2020 15:26:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b+UnFJdAm9s/f93leG1ycIqg/kGef55fT1Md7EMcfbM=;
-        b=kLJeqEt5CYtm8yUjPsFzYb9Z+Y0vuRc0rVpStu4m6kw4CA52xUgmo2SVKD4xLYQwpb
-         tRAheeXe9hu0u6CraeycsJ7+itG45yM4VnVBDtbo/IUeWC0LpB7pIU8dzTssDeFwAR7j
-         MtOxnPATkeSWcwTKri1i6ZRt/N/Aj23R2ijnr5hagD6F3i1mMp69nf35zwu+xnOOxizG
-         NwLxQyjonLIlZwmnM+ZONki0vHWJShUSPHsiZRQqU/psifcRvbDaCmW3YpIm7byLezLX
-         YIKBLGgdczORPtgVgwPYXN1Oq4oDncolkZ6Z1y9+gt4TNSM7bjsLOG6k1vqj/+bp78q1
-         B/fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b+UnFJdAm9s/f93leG1ycIqg/kGef55fT1Md7EMcfbM=;
-        b=JOqqR0yZqsqTSqhWQoCRjD+yJjEVBtCIKrY9MbntqRXmRvVoeUNy/BFPdIbfn5XxZv
-         AEPCVfR0+IEMQZtDglHE6K+GhW3AP1VqxnkraAla5wG2bUos/UjShwMsSjpjYo5xwC/F
-         Of7KM433HDarzsU8kwdeFvuI38l+UBZYqfUxzbEJZd1zxJvh5cVXkz6BPRMfkWhKehS6
-         YAWuD8uCTE0pfQGAhkaM0kgDPH727mal9rXM8dK8xGrHKIw8xaQac2ZVKRgZTL5EdP84
-         ztlsgtHSwXyD27Ma2s5Cx70P4BjzwlNV+bQDZv6kJevgB3fxrezhBt+bDHnlhT2zoTUe
-         WGTQ==
-X-Gm-Message-State: APjAAAUj9BKdwePx9YOrtSdsTj2MsuFyB6GwLqYPMcKOyEqhiEffOqix
-        BmejVLGPS/uVIxIXyMmtsKoHQ3Z/MV11PBgGqao=
-X-Google-Smtp-Source: APXvYqwaKatfhBd0fIQTVs5Yimze4i5NNaCnOiThpMyD9BiV7j3UfnGigS0KE40nNkDY0UIiFZWe669eMpM7R9PkmoA=
-X-Received: by 2002:a2e:8145:: with SMTP id t5mr5874745ljg.144.1581463584142;
- Tue, 11 Feb 2020 15:26:24 -0800 (PST)
-MIME-Version: 1.0
-References: <20200123152440.28956-1-kpsingh@chromium.org> <20200123152440.28956-5-kpsingh@chromium.org>
- <20200211031208.e6osrcathampoog7@ast-mbp> <20200211124334.GA96694@google.com>
- <20200211175825.szxaqaepqfbd2wmg@ast-mbp> <CAG48ez25mW+_oCxgCtbiGMX07g_ph79UOJa07h=o_6B6+Q-u5g@mail.gmail.com>
- <20200211190943.sysdbz2zuz5666nq@ast-mbp> <CAG48ez2gvo1dA4P1L=ASz7TRfbH-cgLZLmOPmr0NweayL-efLw@mail.gmail.com>
- <20200211201039.om6xqoscfle7bguz@ast-mbp> <CAG48ez1qGqF9z7APajFyzjZh82YxFV9sHE64f5kdKBeH9J3YPg@mail.gmail.com>
- <20200211213819.j4ltrjjkuywihpnv@ast-mbp>
-In-Reply-To: <20200211213819.j4ltrjjkuywihpnv@ast-mbp>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 11 Feb 2020 15:26:12 -0800
-Message-ID: <CAADnVQLsiWgSBXbuxmpkC9TS8d1aQRw2zDHG8J6E=kfcRoXtKQ@mail.gmail.com>
+        id S1728005AbgBLAJQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Feb 2020 19:09:16 -0500
+Received: from www62.your-server.de ([213.133.104.62]:39780 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727979AbgBLAJQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Feb 2020 19:09:16 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j1faW-0007DH-Se; Wed, 12 Feb 2020 01:09:09 +0100
+Received: from [85.7.42.192] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j1faW-000ETx-4j; Wed, 12 Feb 2020 01:09:08 +0100
 Subject: Re: BPF LSM and fexit [was: [PATCH bpf-next v3 04/10] bpf: lsm: Add
  mutable hooks list for the BPF LSM]
-To:     Jann Horn <jannh@google.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jann Horn <jannh@google.com>
 Cc:     KP Singh <kpsingh@chromium.org>,
         kernel list <linux-kernel@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>,
@@ -62,7 +33,6 @@ Cc:     KP Singh <kpsingh@chromium.org>,
         Florent Revest <revest@google.com>,
         Thomas Garnier <thgarnie@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         James Morris <jmorris@namei.org>,
         Kees Cook <keescook@chromium.org>,
         Thomas Garnier <thgarnie@chromium.org>,
@@ -71,7 +41,7 @@ Cc:     KP Singh <kpsingh@chromium.org>,
         Brendan Gregg <brendan.d.gregg@gmail.com>,
         Matthew Garrett <mjg59@google.com>,
         Christian Brauner <christian@brauner.io>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
         Florent Revest <revest@chromium.org>,
         Brendan Jackman <jackmanb@chromium.org>,
         "Serge E. Hallyn" <serge@hallyn.com>,
@@ -79,38 +49,83 @@ Cc:     KP Singh <kpsingh@chromium.org>,
         "David S. Miller" <davem@davemloft.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+References: <20200123152440.28956-1-kpsingh@chromium.org>
+ <20200123152440.28956-5-kpsingh@chromium.org>
+ <20200211031208.e6osrcathampoog7@ast-mbp> <20200211124334.GA96694@google.com>
+ <20200211175825.szxaqaepqfbd2wmg@ast-mbp>
+ <CAG48ez25mW+_oCxgCtbiGMX07g_ph79UOJa07h=o_6B6+Q-u5g@mail.gmail.com>
+ <20200211190943.sysdbz2zuz5666nq@ast-mbp>
+ <CAG48ez2gvo1dA4P1L=ASz7TRfbH-cgLZLmOPmr0NweayL-efLw@mail.gmail.com>
+ <20200211201039.om6xqoscfle7bguz@ast-mbp>
+ <CAG48ez1qGqF9z7APajFyzjZh82YxFV9sHE64f5kdKBeH9J3YPg@mail.gmail.com>
+ <20200211213819.j4ltrjjkuywihpnv@ast-mbp>
+ <CAADnVQLsiWgSBXbuxmpkC9TS8d1aQRw2zDHG8J6E=kfcRoXtKQ@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <1cd10710-a81b-8f9b-696d-aa40b0a67225@iogearbox.net>
+Date:   Wed, 12 Feb 2020 01:09:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <CAADnVQLsiWgSBXbuxmpkC9TS8d1aQRw2zDHG8J6E=kfcRoXtKQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.1/25720/Mon Feb 10 12:53:41 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 11, 2020 at 1:38 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Feb 11, 2020 at 09:33:49PM +0100, Jann Horn wrote:
-> > >
-> > > Got it. Then let's whitelist them ?
-> > > All error injection points are marked with ALLOW_ERROR_INJECTION().
-> > > We can do something similar here, but let's do it via BTF and avoid
-> > > abusing yet another elf section for this mark.
-> > > I think BTF_TYPE_EMIT() should work. Just need to pick explicit enough
-> > > name and extensive comment about what is going on.
-> >
-> > Sounds reasonable to me. :)
->
-> awesome :)
+On 2/12/20 12:26 AM, Alexei Starovoitov wrote:
+> On Tue, Feb 11, 2020 at 1:38 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>>
+>> On Tue, Feb 11, 2020 at 09:33:49PM +0100, Jann Horn wrote:
+>>>>
+>>>> Got it. Then let's whitelist them ?
+>>>> All error injection points are marked with ALLOW_ERROR_INJECTION().
+>>>> We can do something similar here, but let's do it via BTF and avoid
+>>>> abusing yet another elf section for this mark.
+>>>> I think BTF_TYPE_EMIT() should work. Just need to pick explicit enough
+>>>> name and extensive comment about what is going on.
+>>>
+>>> Sounds reasonable to me. :)
+>>
+>> awesome :)
+> 
+> Looks like the kernel already provides this whitelisting.
+> $ bpftool btf dump file /sys/kernel/btf/vmlinux |grep FUNC|grep '\<security_'
+> gives the list of all LSM hooks that lsm-bpf will be able to attach to.
+> There are two exceptions there security_add_hooks() and security_init().
+> Both are '__init'. Too late for lsm-bpf to touch.
+> So filtering BTF funcs by 'security_' prefix will be enough.
+> It should be documented though.
+> The number of attachable funcs depends on kconfig which is
+> a nice property and further strengthen the point that
+> lsm-bpf is very much kernel specific.
+> We probably should blacklist security_bpf*() hooks though.
 
-Looks like the kernel already provides this whitelisting.
-$ bpftool btf dump file /sys/kernel/btf/vmlinux |grep FUNC|grep '\<security_'
-gives the list of all LSM hooks that lsm-bpf will be able to attach to.
-There are two exceptions there security_add_hooks() and security_init().
-Both are '__init'. Too late for lsm-bpf to touch.
-So filtering BTF funcs by 'security_' prefix will be enough.
-It should be documented though.
-The number of attachable funcs depends on kconfig which is
-a nice property and further strengthen the point that
-lsm-bpf is very much kernel specific.
-We probably should blacklist security_bpf*() hooks though.
-Otherwise inception fans will have a field day.
-Disallowing bpf with bpf :)
+One thing that is not quite clear to me wrt the fexit approach; assuming
+we'd whitelist something like security_inode_link():
+
+int security_inode_link(struct dentry *old_dentry, struct inode *dir,
+                          struct dentry *new_dentry)
+{
+         if (unlikely(IS_PRIVATE(d_backing_inode(old_dentry))))
+                 return 0;
+         return call_int_hook(inode_link, 0, old_dentry, dir, new_dentry);
+}
+
+Would this then mean the BPF prog needs to reimplement above check by
+probing old_dentry->d_inode to later ensure its verdict stays 0 there
+too, or that such extra code is to be moved to call-sites instead? If
+former, what about more complex logic?
+
+Another approach could be to have a special nop inside call_int_hook()
+macro which would then get patched to avoid these situations. Somewhat
+similar like static keys where it could be defined anywhere in text but
+with updating of call_int_hook()'s RC for the verdict.
+
+Thanks,
+Daniel
