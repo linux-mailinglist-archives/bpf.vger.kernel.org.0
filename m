@@ -2,118 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4151515C290
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2020 16:35:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 149B415C825
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2020 17:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728392AbgBMPeo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Feb 2020 10:34:44 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:45980 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729857AbgBMPdQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 13 Feb 2020 10:33:16 -0500
+        id S1727772AbgBMQX6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Feb 2020 11:23:58 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:40445 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727999AbgBMQX5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Feb 2020 11:23:57 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581607995;
+        s=mimecast20190719; t=1581611035;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=RFvkSpm4IwLd01HTkzruRySmSPs5no9cLpZYqP7h4Y8=;
-        b=dPEsvQDrUCR3Y58tUw7k7Umc+WXevrJGABPhZQd+CYlpG6n2UqvDdY+Pv6MSIBiAkW6Koq
-        BROT4l2EghntLZOouN4QqLoLdHN0pzfbtgPueC5pEYFY2mzisQKKEHhArRNh1nuW0gRmYa
-        DFO5MN5C1oFdJAZwnGVGhqALpYEM0MI=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-24-szT_aBQNNPK3GHOyJC4t4A-1; Thu, 13 Feb 2020 10:32:04 -0500
-X-MC-Unique: szT_aBQNNPK3GHOyJC4t4A-1
-Received: by mail-lj1-f200.google.com with SMTP id k25so2241612lji.4
-        for <bpf@vger.kernel.org>; Thu, 13 Feb 2020 07:32:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=RFvkSpm4IwLd01HTkzruRySmSPs5no9cLpZYqP7h4Y8=;
-        b=AkHxb56XgOlBmCdcbBw5M3CTU+BGirVepFJtHk69SV3cjaJwj7HjyG/RgFeQf6+PyK
-         A21IPYkviv7R0i9AxeDwOIRpsCAmBSTS3U3eRSIgyyMbM0X3pCm0JL397rongcrHQ2+A
-         kjR6BiKcVnAmvtLtKNS72+LBX/uG/xHFhRxcFoLCwhXMogxMjzzLmZVTjJpBmMqo6Xlh
-         3815JgH5rU1IYQVbV3zla3b6C5pA++FnWm5aw2nBcI4zfb0458iUOUjIlBlOFzYRuL6K
-         hgX2VS5Sk72gWDeY1I3cZVEBQ3Vvycr07zyFrCdrJGD8ykX0zXY0lzYV9pF7bl195484
-         Utzg==
-X-Gm-Message-State: APjAAAXIh3qklY5rnHnry85O5EJPxrT4WIqj2xYd/BVXQ3DuUat6Qq+H
-        1wnsTm9/a5ZhvkRv43y8sIq0zzQ48Y+sF3jSczEh9jGKmIbHhlf83GrYUSsXsANtkOOrIsLSm4g
-        Pw4rlRu/FtwE+
-X-Received: by 2002:a2e:7818:: with SMTP id t24mr11193078ljc.195.1581607923160;
-        Thu, 13 Feb 2020 07:32:03 -0800 (PST)
-X-Google-Smtp-Source: APXvYqw0y9boF3lVrvrxVIhdVwRR6fhl5800oZPJ3Twbe8XRUDRYmViuzFOpaQTcoR3Z8ImnxC8Dfw==
-X-Received: by 2002:a2e:7818:: with SMTP id t24mr11193064ljc.195.1581607922961;
-        Thu, 13 Feb 2020 07:32:02 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id a12sm1699198ljk.48.2020.02.13.07.32.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Feb 2020 07:32:02 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 9103B180365; Thu, 13 Feb 2020 16:32:01 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Eelco Chaudron <echaudro@redhat.com>, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, andriin@fb.com
-Subject: Re: [PATCH bpf-next v2] libbpf: Add support for dynamic program attach target
-In-Reply-To: <158160616195.80320.5636088335810242866.stgit@xdp-tutorial>
-References: <158160616195.80320.5636088335810242866.stgit@xdp-tutorial>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 13 Feb 2020 16:32:01 +0100
-Message-ID: <87h7zuh5am.fsf@toke.dk>
+        bh=i18q2PNF44L0tvEOum/zQP+bXFTOtAUWikKBvD1Xl0I=;
+        b=aTN8QghAxBqaZCI2hEypV2eY7ZAA6/n/1THZk6YF0iAGRdfir46BDZBP4ozpVtSZu46Yg6
+        ydAOM/baQQQ6YNftfzYQkHZwcLbVXDS8aN6J6MbeKzujSVG+f3zWinV+s9qGqliZGhWsuV
+        dA+irRW7h5WFDQ2iTCuqDGzSFH4GRCQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-321-eTXqlYJSOLi-Ox_QbJVGwg-1; Thu, 13 Feb 2020 11:23:49 -0500
+X-MC-Unique: eTXqlYJSOLi-Ox_QbJVGwg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7E6C88018A7;
+        Thu, 13 Feb 2020 16:23:47 +0000 (UTC)
+Received: from krava (unknown [10.43.17.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A36E25C1BB;
+        Thu, 13 Feb 2020 16:23:44 +0000 (UTC)
+Date:   Thu, 13 Feb 2020 17:23:42 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@redhat.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>
+Subject: Re: [PATCH 00/14] bpf: Add trampoline and dispatcher to
+ /proc/kallsyms
+Message-ID: <20200213162342.GB296320@krava>
+References: <20200208154209.1797988-1-jolsa@kernel.org>
+ <CAJ+HfNhBDU9c4-0D5RiHFZBq_LN7E=k8=rhL+VbmxJU7rdDBxQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <CAJ+HfNhBDU9c4-0D5RiHFZBq_LN7E=k8=rhL+VbmxJU7rdDBxQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Eelco Chaudron <echaudro@redhat.com> writes:
+On Mon, Feb 10, 2020 at 04:51:08PM +0100, Bj=F6rn T=F6pel wrote:
+> On Sat, 8 Feb 2020 at 16:42, Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > hi,
+> > this patchset adds trampoline and dispatcher objects
+> > to be visible in /proc/kallsyms. The last patch also
+> > adds sorting for all bpf objects in /proc/kallsyms.
+> >
+>=20
+> Thanks for working on this!
+>=20
+> I'm probably missing something with my perf setup; I've applied your
+> patches, and everything seem to work fine from an kallsyms
+> perspective:
+>=20
+> # grep bpf_dispatcher_xdp /proc/kallsyms
+> ...
+> ffffffffc0511000 t bpf_dispatcher_xdp   [bpf]
+>=20
+> However, when I run
+> # perf top
+>=20
+> I still see the undecorated one:
+> 0.90%  [unknown]                  [k] 0xffffffffc0511037
+>=20
+> Any ideas?
 
-> Currently when you want to attach a trace program to a bpf program
-> the section name needs to match the tracepoint/function semantics.
->
-> However the addition of the bpf_program__set_attach_target() API
-> allows you to specify the tracepoint/function dynamically.
->
-> The call flow would look something like this:
->
->   xdp_fd = bpf_prog_get_fd_by_id(id);
->   trace_obj = bpf_object__open_file("func.o", NULL);
->   prog = bpf_object__find_program_by_title(trace_obj,
->                                            "fentry/myfunc");
->   bpf_program__set_expected_attach_type(prog, BPF_TRACE_FENTRY);
->   bpf_program__set_attach_target(prog, xdp_fd,
->                                  "xdpfilt_blk_all");
->   bpf_object__load(trace_obj)
->
-> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+heya,
+the code is little rusty and needs some fixing :-\
 
-Hmm, one question about the attach_prog_fd usage:
+with the patch below on top of Arnaldo's perf/urgent branch,
+there's one workaround for now:
 
-> +int bpf_program__set_attach_target(struct bpf_program *prog,
-> +				   int attach_prog_fd,
-> +				   const char *attach_func_name)
-> +{
-> +	int btf_id;
-> +
-> +	if (!prog || attach_prog_fd < 0 || !attach_func_name)
-> +		return -EINVAL;
-> +
-> +	if (attach_prog_fd)
-> +		btf_id = libbpf_find_prog_btf_id(attach_func_name,
-> +						 attach_prog_fd);
-> +	else
-> +		btf_id = __find_vmlinux_btf_id(prog->obj->btf_vmlinux,
-> +					       attach_func_name,
-> +					       prog->expected_attach_type);
+  # perf record --vmlinux /proc/kallsyms=20
+  ^C[ perf record: Woken up 0 times to write data ]
+  [ perf record: Captured and wrote 18.954 MB perf.data (348693 samples) =
+]
 
-This implies that no one would end up using fd 0 as a legitimate prog
-fd. This already seems to be the case for the existing code, but is that
-really a safe assumption? Couldn't a caller that closes fd 0 (for
-instance while forking) end up having it reused? Seems like this could
-result in weird hard-to-debug bugs?
+  # perf report --kallsyms /proc/kallsyms | grep bpf_trampoline_13795
+     0.01%  sched-messaging  kallsyms                                [k] =
+bpf_trampoline_13795
+     0.00%  perf             kallsyms                                [k] =
+bpf_trampoline_13795
+     0.00%  :47547           kallsyms                                [k] =
+bpf_trampoline_13795
+     0.00%  :47546           kallsyms                                [k] =
+bpf_trampoline_13795
+     0.00%  :47544           kallsyms                                [k] =
+bpf_trampoline_13795
 
--Toke
+with recent kcore/vmlinux changes we neglected kallsyms fallback,
+I'm preparing changes that will detect and use it automaticaly
+
+jirka
+
+
+---
+diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+index fb5c2cd44d30..463ada5117f8 100644
+--- a/tools/perf/util/machine.c
++++ b/tools/perf/util/machine.c
+@@ -742,6 +742,7 @@ static int machine__process_ksymbol_register(struct m=
+achine *machine,
+ 		map->start =3D event->ksymbol.addr;
+ 		map->end =3D map->start + event->ksymbol.len;
+ 		maps__insert(&machine->kmaps, map);
++		dso__set_loaded(dso);
+ 	}
+=20
+ 	sym =3D symbol__new(map->map_ip(map, map->start),
 
