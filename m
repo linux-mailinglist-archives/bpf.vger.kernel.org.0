@@ -2,44 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 890C115CCD7
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2020 22:01:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0533915CCCF
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2020 22:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727883AbgBMVBi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Feb 2020 16:01:38 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:40298 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728028AbgBMVB3 (ORCPT
+        id S1728036AbgBMVB3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Feb 2020 16:01:29 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48206 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728012AbgBMVB3 (ORCPT
         <rfc822;bpf@vger.kernel.org>); Thu, 13 Feb 2020 16:01:29 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01DL12st026625
-        for <bpf@vger.kernel.org>; Thu, 13 Feb 2020 13:01:29 -0800
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01DL0pgW003853
+        for <bpf@vger.kernel.org>; Thu, 13 Feb 2020 13:01:28 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=s5AINjqbi4/0oeVLttio2uLVEGZPsLRmz6siQCTuMVM=;
- b=JI0/4LdgSgjGVTI2aJZb2j+fQEQ0XwVW5EPVl46WNZDUdCi3M27PwfrO6ADV7qINwug+
- amXvwmx7IZKj/2bqnezENk9LbRs26jVDUjcm2u7zDSqU8Fy8TwwW5ra3RzdC6uDvaGzZ
- +y0b00lXy3FZWdgDnhhk/krIKWrFY5y1m7s= 
+ content-type; s=facebook; bh=v8Lkrz2gobavw9Yz2OAUEmb8WVq6qGCJLbPN7UHU4CM=;
+ b=PoCedZYrdwLAzqfymYhS5tiGNRatX7R3Fg8ce+zTRPr7Z69lpkNZeiEHu2wbzLOwK0VJ
+ jHhrKlu9YiM0zXyWJRjZRzCuY7Tw/tKXAX50wWILj11HkZonYiU/6gTXDQu4HT2v8QD+
+ +BM9/cDI6JKzWf4vMZZBGyVbiJOaB1bHpeE= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2y44cxuvmy-1
+        by mx0a-00082601.pphosted.com with ESMTP id 2y4qv664qb-4
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 13 Feb 2020 13:01:29 -0800
-Received: from intmgw001.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 13 Feb 2020 13:01:28 -0800
+Received: from intmgw003.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 13 Feb 2020 13:01:28 -0800
+ 15.1.1779.2; Thu, 13 Feb 2020 13:01:27 -0800
 Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id C4A9A62E1882; Thu, 13 Feb 2020 13:01:21 -0800 (PST)
+        id E76CA62E1D26; Thu, 13 Feb 2020 13:01:21 -0800 (PST)
 Smtp-Origin-Hostprefix: devbig
 From:   Song Liu <songliubraving@fb.com>
 Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
 To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
 CC:     <kernel-team@fb.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+        Song Liu <songliubraving@fb.com>
 Smtp-Origin-Cluster: ftw2c04
-Subject: [RFC bpf-next 1/4] bpf: allow bpf_perf_event_read_value in all BPF programs
-Date:   Thu, 13 Feb 2020 13:01:12 -0800
-Message-ID: <20200213210115.1455809-2-songliubraving@fb.com>
+Subject: [RFC bpf-next 2/4] libbpf: introduce bpf_program__overwrite_section_name()
+Date:   Thu, 13 Feb 2020 13:01:13 -0800
+Message-ID: <20200213210115.1455809-3-songliubraving@fb.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200213210115.1455809-1-songliubraving@fb.com>
 References: <20200213210115.1455809-1-songliubraving@fb.com>
@@ -48,9 +48,9 @@ MIME-Version: 1.0
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
  definitions=2020-02-13_08:2020-02-12,2020-02-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- bulkscore=0 spamscore=0 mlxscore=0 clxscore=1015 priorityscore=1501
- mlxlogscore=932 suspectscore=0 phishscore=0 adultscore=0 impostorscore=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ bulkscore=0 mlxlogscore=972 malwarescore=0 clxscore=1015 phishscore=0
+ spamscore=0 mlxscore=0 impostorscore=0 priorityscore=1501 adultscore=0
  lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2001150001 definitions=main-2002130150
 X-FB-Internal: deliver
@@ -59,38 +59,88 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_perf_event_read_value() is NMI safe. Enable it for all BPF programs.
-This can be used in fentry/fexit to profile BPF program and individual
-kernel function with hardware counters.
+This is a temporary solution before Eelco Chaudron's work for
+bpf_program__set_attach_target():
 
-Cc: Yonghong Song <yhs@fb.com>
+https://patchwork.ozlabs.org/patch/1237539/
+
 Signed-off-by: Song Liu <songliubraving@fb.com>
 ---
- kernel/trace/bpf_trace.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/lib/bpf/libbpf.c   | 13 ++++++++++++-
+ tools/lib/bpf/libbpf.h   |  4 ++++
+ tools/lib/bpf/libbpf.map |  5 +++++
+ 3 files changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 19e793aa441a..4ddd5ac46094 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -843,6 +843,8 @@ tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_send_signal_proto;
- 	case BPF_FUNC_send_signal_thread:
- 		return &bpf_send_signal_thread_proto;
-+	case BPF_FUNC_perf_event_read_value:
-+		return &bpf_perf_event_read_value_proto;
- 	default:
- 		return NULL;
- 	}
-@@ -858,8 +860,6 @@ kprobe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_get_stackid_proto;
- 	case BPF_FUNC_get_stack:
- 		return &bpf_get_stack_proto;
--	case BPF_FUNC_perf_event_read_value:
--		return &bpf_perf_event_read_value_proto;
- #ifdef CONFIG_BPF_KPROBE_OVERRIDE
- 	case BPF_FUNC_override_return:
- 		return &bpf_override_return_proto;
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 514b1a524abb..4c29a7181d57 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -238,6 +238,8 @@ struct bpf_program {
+ 	__u32 line_info_rec_size;
+ 	__u32 line_info_cnt;
+ 	__u32 prog_flags;
++
++	char *overwritten_section_name;
+ };
+ 
+ struct bpf_struct_ops {
+@@ -442,6 +444,7 @@ static void bpf_program__exit(struct bpf_program *prog)
+ 	zfree(&prog->pin_name);
+ 	zfree(&prog->insns);
+ 	zfree(&prog->reloc_desc);
++	zfree(&prog->overwritten_section_name);
+ 
+ 	prog->nr_reloc = 0;
+ 	prog->insns_cnt = 0;
+@@ -6637,7 +6640,7 @@ static int libbpf_find_attach_btf_id(struct bpf_program *prog)
+ {
+ 	enum bpf_attach_type attach_type = prog->expected_attach_type;
+ 	__u32 attach_prog_fd = prog->attach_prog_fd;
+-	const char *name = prog->section_name;
++	const char *name = prog->overwritten_section_name ? : prog->section_name;
+ 	int i, err;
+ 
+ 	if (!name)
+@@ -8396,3 +8399,11 @@ void bpf_object__destroy_skeleton(struct bpf_object_skeleton *s)
+ 	free(s->progs);
+ 	free(s);
+ }
++
++char *bpf_program__overwrite_section_name(struct bpf_program *prog,
++					  const char *sec_name)
++{
++	prog->overwritten_section_name = strdup(sec_name);
++
++	return prog->overwritten_section_name;
++}
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 3fe12c9d1f92..02f0d8b57cc4 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -595,6 +595,10 @@ bpf_program__bpil_addr_to_offs(struct bpf_prog_info_linear *info_linear);
+ LIBBPF_API void
+ bpf_program__bpil_offs_to_addr(struct bpf_prog_info_linear *info_linear);
+ 
++LIBBPF_API char *
++bpf_program__overwrite_section_name(struct bpf_program *prog,
++				    const char *sec_name);
++
+ /*
+  * A helper function to get the number of possible CPUs before looking up
+  * per-CPU maps. Negative errno is returned on failure.
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index b035122142bb..ed26c20729db 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -235,3 +235,8 @@ LIBBPF_0.0.7 {
+ 		btf__align_of;
+ 		libbpf_find_kernel_btf;
+ } LIBBPF_0.0.6;
++
++LIBBPF_0.0.8 {
++	global:
++		bpf_program__overwrite_section_name;
++} LIBBPF_0.0.7;
 -- 
 2.17.1
 
