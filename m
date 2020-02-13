@@ -2,162 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37EF515C0F4
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2020 16:04:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F9715C43A
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2020 16:53:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727433AbgBMPE5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Feb 2020 10:04:57 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:38172 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725781AbgBMPE5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Feb 2020 10:04:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581606296;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=HLe357ysOGQZCr5dc1Y3s+U/g5TdgVSZKlWqF02Wz2I=;
-        b=A+r2O03CUVU55vHyqAZfSxrwnydm4vJssgQFKRk9Gl/J3Ob8koV2IV8HU97bJKd2swWUHH
-        d+gDzb16d9ZhfCTY2ET7QcWIo0tFvMLPs3CFCG3KEtx+ly+1CXeN4U8Sf9EEeH5FAdg+kr
-        1XozxODhfOi1cuILQytNeiw/OB0Yaak=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-362-Z9ez1DWpONSa0Q5chqR47Q-1; Thu, 13 Feb 2020 10:04:52 -0500
-X-MC-Unique: Z9ez1DWpONSa0Q5chqR47Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A076E13F8;
-        Thu, 13 Feb 2020 15:04:50 +0000 (UTC)
-Received: from localhost.localdomain (wsfd-netdev76.ntdv.lab.eng.bos.redhat.com [10.19.188.157])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F2FF119C70;
-        Thu, 13 Feb 2020 15:04:46 +0000 (UTC)
-From:   Eelco Chaudron <echaudro@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, andriin@fb.com, toke@redhat.com
-Subject: [PATCH bpf-next v2] libbpf: Add support for dynamic program attach target
-Date:   Thu, 13 Feb 2020 15:04:25 +0000
-Message-Id: <158160616195.80320.5636088335810242866.stgit@xdp-tutorial>
-User-Agent: StGit/0.19
+        id S1729437AbgBMPpJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Feb 2020 10:45:09 -0500
+Received: from gateway31.websitewelcome.com ([192.185.143.43]:29973 "EHLO
+        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729501AbgBMPpE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 13 Feb 2020 10:45:04 -0500
+X-Greylist: delayed 1401 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 Feb 2020 10:45:03 EST
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway31.websitewelcome.com (Postfix) with ESMTP id E956B494E
+        for <bpf@vger.kernel.org>; Thu, 13 Feb 2020 09:21:41 -0600 (CST)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id 2GJBjQYpnAGTX2GJBjcaCO; Thu, 13 Feb 2020 09:21:41 -0600
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
+        Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=tlzInWey23Efbti3IVI7QK7bG7x1edOF4vWB/j8UuCg=; b=qUBPc+5fDEGt6M5dgwJulMJp+G
+        xcMtSAYOH/X0jV8IyUUPvs80Ttm+MXBgQ8qc27gOJWz05nEnxh4pFjiFklBTyOZgBCxQ0gkv0qNVU
+        oKGPrxltSRC+XnaTwGk/xuX5mhgyFpgQdq+I4gqPpsSIi2DpRDoQCe55ho30GyrzWIqoyuzXhHiwE
+        jyiSnpGoggRlGalXfSmMNqIutwrK5Wee4Z77OuIp/CvM13nU/t/nBmkfntKDkFRCSdgrqjor/APB0
+        5QE3/CkAoKBfUgQV9K5AT+4GfPe1H4rDZTWmD742+C+7oRRpkbCKEhX4WDPXJMHEDFtddVW2fo3hk
+        OXEc0N7Q==;
+Received: from [200.68.140.15] (port=29529 helo=embeddedor)
+        by gator4166.hostgator.com with esmtpa (Exim 4.92)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1j2GJA-003BYr-8t; Thu, 13 Feb 2020 09:21:40 -0600
+Date:   Thu, 13 Feb 2020 09:24:16 -0600
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] bpf: queue_stack_maps: Replace zero-length array with
+ flexible-array member
+Message-ID: <20200213152416.GA1873@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 200.68.140.15
+X-Source-L: No
+X-Exim-ID: 1j2GJA-003BYr-8t
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (embeddedor) [200.68.140.15]:29529
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 29
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently when you want to attach a trace program to a bpf program
-the section name needs to match the tracepoint/function semantics.
+The current codebase makes use of the zero-length array language
+extension to the C90 standard, but the preferred mechanism to declare
+variable-length types such as these ones is a flexible array member[1][2],
+introduced in C99:
 
-However the addition of the bpf_program__set_attach_target() API
-allows you to specify the tracepoint/function dynamically.
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
-The call flow would look something like this:
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on.
 
-  xdp_fd =3D bpf_prog_get_fd_by_id(id);
-  trace_obj =3D bpf_object__open_file("func.o", NULL);
-  prog =3D bpf_object__find_program_by_title(trace_obj,
-                                           "fentry/myfunc");
-  bpf_program__set_expected_attach_type(prog, BPF_TRACE_FENTRY);
-  bpf_program__set_attach_target(prog, xdp_fd,
-                                 "xdpfilt_blk_all");
-  bpf_object__load(trace_obj)
+Also, notice that, dynamic memory allocations won't be affected by
+this change:
 
-Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+"Flexible array members have incomplete type, and so the sizeof operator
+may not be applied. As a quirk of the original implementation of
+zero-length arrays, sizeof evaluates to zero."[1]
+
+This issue was found with the help of Coccinelle.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 ---
-v1 -> v2: Remove requirement for attach type name in API
+ kernel/bpf/queue_stack_maps.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- tools/lib/bpf/libbpf.c   |   33 +++++++++++++++++++++++++++++++--
- tools/lib/bpf/libbpf.h   |    4 ++++
- tools/lib/bpf/libbpf.map |    1 +
- 3 files changed, 36 insertions(+), 2 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 514b1a524abb..9b8cab995580 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4939,8 +4939,8 @@ int bpf_program__load(struct bpf_program *prog, cha=
-r *license, __u32 kern_ver)
- {
- 	int err =3D 0, fd, i, btf_id;
-=20
--	if (prog->type =3D=3D BPF_PROG_TYPE_TRACING ||
--	    prog->type =3D=3D BPF_PROG_TYPE_EXT) {
-+	if ((prog->type =3D=3D BPF_PROG_TYPE_TRACING ||
-+	     prog->type =3D=3D BPF_PROG_TYPE_EXT) && !prog->attach_btf_id) {
- 		btf_id =3D libbpf_find_attach_btf_id(prog);
- 		if (btf_id <=3D 0)
- 			return btf_id;
-@@ -8132,6 +8132,35 @@ void bpf_program__bpil_offs_to_addr(struct bpf_pro=
-g_info_linear *info_linear)
- 	}
- }
-=20
-+int bpf_program__set_attach_target(struct bpf_program *prog,
-+				   int attach_prog_fd,
-+				   const char *attach_func_name)
-+{
-+	int btf_id;
-+
-+	if (!prog || attach_prog_fd < 0 || !attach_func_name)
-+		return -EINVAL;
-+
-+	if (attach_prog_fd)
-+		btf_id =3D libbpf_find_prog_btf_id(attach_func_name,
-+						 attach_prog_fd);
-+	else
-+		btf_id =3D __find_vmlinux_btf_id(prog->obj->btf_vmlinux,
-+					       attach_func_name,
-+					       prog->expected_attach_type);
-+
-+	if (btf_id <=3D 0) {
-+		if (!attach_prog_fd)
-+			pr_warn("%s is not found in vmlinux BTF\n",
-+				attach_func_name);
-+		return btf_id;
-+	}
-+
-+	prog->attach_btf_id =3D btf_id;
-+	prog->attach_prog_fd =3D attach_prog_fd;
-+	return 0;
-+}
-+
- int parse_cpu_mask_str(const char *s, bool **mask, int *mask_sz)
- {
- 	int err =3D 0, n, len, start, end =3D -1;
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 3fe12c9d1f92..02fc58a21a7f 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -334,6 +334,10 @@ LIBBPF_API void
- bpf_program__set_expected_attach_type(struct bpf_program *prog,
- 				      enum bpf_attach_type type);
-=20
-+LIBBPF_API int
-+bpf_program__set_attach_target(struct bpf_program *prog, int attach_prog=
-_fd,
-+			       const char *attach_func_name);
-+
- LIBBPF_API bool bpf_program__is_socket_filter(const struct bpf_program *=
-prog);
- LIBBPF_API bool bpf_program__is_tracepoint(const struct bpf_program *pro=
-g);
- LIBBPF_API bool bpf_program__is_raw_tracepoint(const struct bpf_program =
-*prog);
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index b035122142bb..8aba5438a3f0 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -230,6 +230,7 @@ LIBBPF_0.0.7 {
- 		bpf_program__name;
- 		bpf_program__is_extension;
- 		bpf_program__is_struct_ops;
-+		bpf_program__set_attach_target;
- 		bpf_program__set_extension;
- 		bpf_program__set_struct_ops;
- 		btf__align_of;
+diff --git a/kernel/bpf/queue_stack_maps.c b/kernel/bpf/queue_stack_maps.c
+index f697647ceb54..30e1373fd437 100644
+--- a/kernel/bpf/queue_stack_maps.c
++++ b/kernel/bpf/queue_stack_maps.c
+@@ -19,7 +19,7 @@ struct bpf_queue_stack {
+ 	u32 head, tail;
+ 	u32 size; /* max_entries + 1 */
+ 
+-	char elements[0] __aligned(8);
++	char elements[] __aligned(8);
+ };
+ 
+ static struct bpf_queue_stack *bpf_queue_stack(struct bpf_map *map)
+-- 
+2.25.0
 
