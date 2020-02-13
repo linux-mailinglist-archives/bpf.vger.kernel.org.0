@@ -2,109 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB4715C084
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2020 15:41:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37EF515C0F4
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2020 16:04:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725781AbgBMOlV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Feb 2020 09:41:21 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:36412 "EHLO
+        id S1727433AbgBMPE5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Feb 2020 10:04:57 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:38172 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727347AbgBMOlU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Feb 2020 09:41:20 -0500
+        with ESMTP id S1725781AbgBMPE5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Feb 2020 10:04:57 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581604879;
+        s=mimecast20190719; t=1581606296;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nh7A+i5hGvGRznwUm9e/CsaY5mKsbnQUgLtyPYJMw3U=;
-        b=J5Ad2ie6fzamIazPMUuS4mAzaKJ4/avRRn4NrFH5vzECs2ltAi7PnHcRy/xOOX611gid2l
-        cUZ9KqT8QCDLRwuq6sGmJY9uscIogtDPKEShv0n96jPE1RGNti+eDsiTl3E/fOgfYMqUkD
-        kfZLmbDmQUji9dH9TgO4ZzOmU0aAPr4=
+         content-transfer-encoding:content-transfer-encoding;
+        bh=HLe357ysOGQZCr5dc1Y3s+U/g5TdgVSZKlWqF02Wz2I=;
+        b=A+r2O03CUVU55vHyqAZfSxrwnydm4vJssgQFKRk9Gl/J3Ob8koV2IV8HU97bJKd2swWUHH
+        d+gDzb16d9ZhfCTY2ET7QcWIo0tFvMLPs3CFCG3KEtx+ly+1CXeN4U8Sf9EEeH5FAdg+kr
+        1XozxODhfOi1cuILQytNeiw/OB0Yaak=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-91-ztgeibA0N8CkCE6ukN-ADA-1; Thu, 13 Feb 2020 09:41:15 -0500
-X-MC-Unique: ztgeibA0N8CkCE6ukN-ADA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-362-Z9ez1DWpONSa0Q5chqR47Q-1; Thu, 13 Feb 2020 10:04:52 -0500
+X-MC-Unique: Z9ez1DWpONSa0Q5chqR47Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8BDC91B2C984;
-        Thu, 13 Feb 2020 14:41:13 +0000 (UTC)
-Received: from [10.36.116.194] (ovpn-116-194.ams2.redhat.com [10.36.116.194])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 477CE60BF1;
-        Thu, 13 Feb 2020 14:41:08 +0000 (UTC)
-From:   "Eelco Chaudron" <echaudro@redhat.com>
-To:     "Toke =?utf-8?b?SMO4aWxhbmQtSsO4cmdlbnNlbg==?=" <toke@redhat.com>
-Cc:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        "Martin Lau" <kafai@fb.com>, "Song Liu" <songliubraving@fb.com>,
-        "Yonghong Song" <yhs@fb.com>, "Andrii Nakryiko" <andriin@fb.com>
-Subject: Re: [PATCH bpf-next] libbpf: Add support for dynamic program attach
- target
-Date:   Thu, 13 Feb 2020 15:41:06 +0100
-Message-ID: <62B507DD-104D-4006-9FF0-204AD23B1505@redhat.com>
-In-Reply-To: <871rqziicm.fsf@toke.dk>
-References: <158151067149.71757.2222114135650741733.stgit@xdp-tutorial>
- <874kvwhs6u.fsf@toke.dk>
- <CAEf4BzYn3pVhqzj8PwRWxjWSJ16CS9d60zFtsS=OuA5ydPyp2Q@mail.gmail.com>
- <871rqziicm.fsf@toke.dk>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A076E13F8;
+        Thu, 13 Feb 2020 15:04:50 +0000 (UTC)
+Received: from localhost.localdomain (wsfd-netdev76.ntdv.lab.eng.bos.redhat.com [10.19.188.157])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F2FF119C70;
+        Thu, 13 Feb 2020 15:04:46 +0000 (UTC)
+From:   Eelco Chaudron <echaudro@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, andriin@fb.com, toke@redhat.com
+Subject: [PATCH bpf-next v2] libbpf: Add support for dynamic program attach target
+Date:   Thu, 13 Feb 2020 15:04:25 +0000
+Message-Id: <158160616195.80320.5636088335810242866.stgit@xdp-tutorial>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset="utf-8"
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Currently when you want to attach a trace program to a bpf program
+the section name needs to match the tracepoint/function semantics.
 
+However the addition of the bpf_program__set_attach_target() API
+allows you to specify the tracepoint/function dynamically.
 
-On 12 Feb 2020, at 22:52, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+The call flow would look something like this:
 
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->
->> On Wed, Feb 12, 2020 at 5:05 AM Toke H=C3=B8iland-J=C3=B8rgensen=20
->> <toke@redhat.com> wrote:
->>>
->>> Eelco Chaudron <echaudro@redhat.com> writes:
->>>
->>>> Currently when you want to attach a trace program to a bpf program
->>>> the section name needs to match the tracepoint/function semantics.
->>>>
->>>> However the addition of the bpf_program__set_attach_target() API
->>>> allows you to specify the tracepoint/function dynamically.
->>>>
->>>> The call flow would look something like this:
->>>>
->>>>   xdp_fd =3D bpf_prog_get_fd_by_id(id);
->>>>   trace_obj =3D bpf_object__open_file("func.o", NULL);
->>>>   prog =3D bpf_object__find_program_by_title(trace_obj,
->>>>                                            "fentry/myfunc");
->>>>   bpf_program__set_attach_target(prog, xdp_fd,
->>>>                                  "fentry/xdpfilt_blk_all");
->>>
->>> I think it would be better to have the attach type as a separate arg
->>> instead of encoding it in the function name. I.e., rather:
->>>
->>>    bpf_program__set_attach_target(prog, xdp_fd,
->>>                                   "xdpfilt_blk_all",=20
->>> BPF_TRACE_FENTRY);
->>
->> I agree about not specifying section name prefix (e.g., fentry/). But
->> disagree that expected attach type (BPF_TRACE_FENTRY) should be part
->> of this API. We already have bpf_program__set_expected_attach_type()
->> API, no need to duplicate it here.
->
-> Ah yes, forgot about that; just keeping that and making this function
-> name only is fine with me :)
+  xdp_fd =3D bpf_prog_get_fd_by_id(id);
+  trace_obj =3D bpf_object__open_file("func.o", NULL);
+  prog =3D bpf_object__find_program_by_title(trace_obj,
+                                           "fentry/myfunc");
+  bpf_program__set_expected_attach_type(prog, BPF_TRACE_FENTRY);
+  bpf_program__set_attach_target(prog, xdp_fd,
+                                 "xdpfilt_blk_all");
+  bpf_object__load(trace_obj)
 
-Toke/Andrii,
+Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+---
+v1 -> v2: Remove requirement for attach type name in API
 
-Thanks for the feedback, will send out a v2 soon.
+ tools/lib/bpf/libbpf.c   |   33 +++++++++++++++++++++++++++++++--
+ tools/lib/bpf/libbpf.h   |    4 ++++
+ tools/lib/bpf/libbpf.map |    1 +
+ 3 files changed, 36 insertions(+), 2 deletions(-)
 
-//Eelco
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 514b1a524abb..9b8cab995580 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4939,8 +4939,8 @@ int bpf_program__load(struct bpf_program *prog, cha=
+r *license, __u32 kern_ver)
+ {
+ 	int err =3D 0, fd, i, btf_id;
+=20
+-	if (prog->type =3D=3D BPF_PROG_TYPE_TRACING ||
+-	    prog->type =3D=3D BPF_PROG_TYPE_EXT) {
++	if ((prog->type =3D=3D BPF_PROG_TYPE_TRACING ||
++	     prog->type =3D=3D BPF_PROG_TYPE_EXT) && !prog->attach_btf_id) {
+ 		btf_id =3D libbpf_find_attach_btf_id(prog);
+ 		if (btf_id <=3D 0)
+ 			return btf_id;
+@@ -8132,6 +8132,35 @@ void bpf_program__bpil_offs_to_addr(struct bpf_pro=
+g_info_linear *info_linear)
+ 	}
+ }
+=20
++int bpf_program__set_attach_target(struct bpf_program *prog,
++				   int attach_prog_fd,
++				   const char *attach_func_name)
++{
++	int btf_id;
++
++	if (!prog || attach_prog_fd < 0 || !attach_func_name)
++		return -EINVAL;
++
++	if (attach_prog_fd)
++		btf_id =3D libbpf_find_prog_btf_id(attach_func_name,
++						 attach_prog_fd);
++	else
++		btf_id =3D __find_vmlinux_btf_id(prog->obj->btf_vmlinux,
++					       attach_func_name,
++					       prog->expected_attach_type);
++
++	if (btf_id <=3D 0) {
++		if (!attach_prog_fd)
++			pr_warn("%s is not found in vmlinux BTF\n",
++				attach_func_name);
++		return btf_id;
++	}
++
++	prog->attach_btf_id =3D btf_id;
++	prog->attach_prog_fd =3D attach_prog_fd;
++	return 0;
++}
++
+ int parse_cpu_mask_str(const char *s, bool **mask, int *mask_sz)
+ {
+ 	int err =3D 0, n, len, start, end =3D -1;
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 3fe12c9d1f92..02fc58a21a7f 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -334,6 +334,10 @@ LIBBPF_API void
+ bpf_program__set_expected_attach_type(struct bpf_program *prog,
+ 				      enum bpf_attach_type type);
+=20
++LIBBPF_API int
++bpf_program__set_attach_target(struct bpf_program *prog, int attach_prog=
+_fd,
++			       const char *attach_func_name);
++
+ LIBBPF_API bool bpf_program__is_socket_filter(const struct bpf_program *=
+prog);
+ LIBBPF_API bool bpf_program__is_tracepoint(const struct bpf_program *pro=
+g);
+ LIBBPF_API bool bpf_program__is_raw_tracepoint(const struct bpf_program =
+*prog);
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index b035122142bb..8aba5438a3f0 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -230,6 +230,7 @@ LIBBPF_0.0.7 {
+ 		bpf_program__name;
+ 		bpf_program__is_extension;
+ 		bpf_program__is_struct_ops;
++		bpf_program__set_attach_target;
+ 		bpf_program__set_extension;
+ 		bpf_program__set_struct_ops;
+ 		btf__align_of;
 
