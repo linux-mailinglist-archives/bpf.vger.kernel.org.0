@@ -2,119 +2,294 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F00A615CCD1
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2020 22:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA84F15CD96
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2020 22:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728107AbgBMVBd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Feb 2020 16:01:33 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:40740 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728034AbgBMVBa (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 13 Feb 2020 16:01:30 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01DL12su026625
-        for <bpf@vger.kernel.org>; Thu, 13 Feb 2020 13:01:29 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=Qow9JKY4oE3pQAjHYvfF82onevFNQU6h376iKCnwHIg=;
- b=Ahn3aNRi9jRjCEikkfhTvST4iph2slUyyXuBfLRoCLSAusDF5UTewwhb4M2Jf+YL8kIt
- 5IFfErDEJW0u11KDxKjTMNyWU86evOHzZ05g+TXG3ZI2YSZSwhjCOopciRU0zLxvvNED
- poEHFstnDn3cvLLVtETa1PczTgDkW6OlgiY= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2y44cxuvmy-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 13 Feb 2020 13:01:29 -0800
-Received: from intmgw001.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 13 Feb 2020 13:01:28 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 51DFD62E2004; Thu, 13 Feb 2020 13:01:22 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Song Liu <songliubraving@fb.com>
-Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
-To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-CC:     <kernel-team@fb.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        id S1728798AbgBMVuN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Feb 2020 16:50:13 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:39653 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728051AbgBMVuM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 13 Feb 2020 16:50:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1581630611;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rccrrusYeh/lKJYi1zR95yhXu0ox759XDiw1HfFrUwQ=;
+        b=ZXRdVo2XXwyREaCdO1B+DbWJGbAr0wxLcSIU1j5IyDPuBjXoM5Ni7cDezNUkFjSP+QbRXF
+        szBO3uVY7ALJpb4mK9ZLUXxbEtl1+XWUS4emOy2XKjWHJJxyX+H/gVRYDNQp9hv847MDRv
+        LIgDgX0MvMv02yxE3zuyq7WyqJcCZwU=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-332-JGwNGXthMzulqAo4yOfc_Q-1; Thu, 13 Feb 2020 16:50:09 -0500
+X-MC-Unique: JGwNGXthMzulqAo4yOfc_Q-1
+Received: by mail-lj1-f200.google.com with SMTP id b3so2554324ljo.23
+        for <bpf@vger.kernel.org>; Thu, 13 Feb 2020 13:50:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=rccrrusYeh/lKJYi1zR95yhXu0ox759XDiw1HfFrUwQ=;
+        b=R9OMHj0QVsvoSmURJ/vbx7OlbsrruIhQ7vbDKQQb4CO4hSGeNINePA1SkAPEyh0hjD
+         mq3/iUUrD4ksHij400FfNnCXjYgo1aZD1uflazuESKjDOuI91tA1ZnY8404Fa9/sXWED
+         L3EMZi4/AZzUdTlabAbND5z5Xb88QxrSSqgmFAhQGmbl54UYJHiPKBGqJpX7SANL9NHC
+         M1g9gvLkM2N3sXj2YvSsQxVNdVx1eAjUJ3TaEYEFL4aFYZhuC73w7tDmdr/ML9/ZjL0a
+         CWXk2ru/tliEMPArFK4mk7xgnzaqbemJ6+jWY6ojFzImpQbav3KRHGYLhTEiA/cOIxo3
+         fYWQ==
+X-Gm-Message-State: APjAAAXYWo0d/CtHoOFNCbV9gQbGYjg75XsBQUkPbagg1yVP1q49pKA4
+        jtdMT3723S/FK3rh6qIpdHyLC0T+AR4tuLe0CkvvyZZmk54h+VAeLXKa0ahnNlcy9p24hB8zoVz
+        gP3d08bnAl0o/
+X-Received: by 2002:a2e:7812:: with SMTP id t18mr12947427ljc.289.1581630608080;
+        Thu, 13 Feb 2020 13:50:08 -0800 (PST)
+X-Google-Smtp-Source: APXvYqyXjkEZfMsjk1Sf2VTCksNc2vfWRGOAZDq6df04jcnIkWuCsFmH9R7MtIPfyy8/M8ggS39bEw==
+X-Received: by 2002:a2e:7812:: with SMTP id t18mr12947420ljc.289.1581630607825;
+        Thu, 13 Feb 2020 13:50:07 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id v9sm2370728lfe.18.2020.02.13.13.50.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Feb 2020 13:50:07 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 4BC75180371; Thu, 13 Feb 2020 22:50:06 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Song Liu <songliubraving@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     kernel-team@fb.com, ast@kernel.org, daniel@iogearbox.net,
         Song Liu <songliubraving@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [RFC bpf-next 4/4] bpftool: Documentation for bpftool prog profile
-Date:   Thu, 13 Feb 2020 13:01:15 -0800
-Message-ID: <20200213210115.1455809-5-songliubraving@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200213210115.1455809-1-songliubraving@fb.com>
-References: <20200213210115.1455809-1-songliubraving@fb.com>
-X-FB-Internal: Safe
+Subject: Re: [RFC bpf-next 3/4] bpftool: introduce "prog profile" command
+In-Reply-To: <20200213210115.1455809-4-songliubraving@fb.com>
+References: <20200213210115.1455809-1-songliubraving@fb.com> <20200213210115.1455809-4-songliubraving@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 13 Feb 2020 22:50:06 +0100
+Message-ID: <87o8u2dunl.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-02-13_08:2020-02-12,2020-02-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- bulkscore=0 spamscore=0 mlxscore=0 clxscore=1015 priorityscore=1501
- mlxlogscore=999 suspectscore=0 phishscore=0 adultscore=0 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002130150
-X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add documentation for the new bpftool prog profile command.
+Song Liu <songliubraving@fb.com> writes:
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- .../bpf/bpftool/Documentation/bpftool-prog.rst  | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+> With fentry/fexit programs, it is possible to profile BPF program with
+> hardware counters. Introduce bpftool "prog profile", which measures key
+> metrics of a BPF program.
+>
+> bpftool prog profile command creates per-cpu perf events. Then it attaches
+> fentry/fexit programs to the target BPF program. The fentry program saves
+> perf event value to a map. The fexit program reads the perf event again,
+> and calculates the difference, which is the instructions/cycles used by
+> the target program.
+>
+> Example input and output:
+>
+>   ./bpftool prog profile 20 id 810 cycles instructions
+>   cycles: duration 20 run_cnt 1368 miss_cnt 665
+>           counter 503377 enabled 668202 running 351857
+>   instructions: duration 20 run_cnt 1368 miss_cnt 707
+>           counter 398625 enabled 502330 running 272014
+>
+> This command measures cycles and instructions for BPF program with id
+> 810 for 20 seconds. The program has triggered 1368 times. cycles was not
+> measured in 665 out of these runs, because of perf event multiplexing
+> (some perf commands are running in the background). In these runs, the BPF
+> program consumed 503377 cycles. The perf_event enabled and running time
+> are 668202 and 351857 respectively.
+>
+> Note that, this approach measures cycles and instructions in very small
+> increments. So the fentry/fexit programs introduce noticable errors to
+> the measurement results.
+>
+> The fentry/fexit programs are generated with BPF skeleton. Currently,
+> generation of the skeleton requires some manual steps.
+>
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
+>  tools/bpf/bpftool/profiler.skel.h         | 820 ++++++++++++++++++++++
+>  tools/bpf/bpftool/prog.c                  | 387 +++++++++-
+>  tools/bpf/bpftool/skeleton/README         |   3 +
+>  tools/bpf/bpftool/skeleton/profiler.bpf.c | 185 +++++
+>  tools/bpf/bpftool/skeleton/profiler.h     |  47 ++
+>  5 files changed, 1441 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/bpf/bpftool/profiler.skel.h
+>  create mode 100644 tools/bpf/bpftool/skeleton/README
+>  create mode 100644 tools/bpf/bpftool/skeleton/profiler.bpf.c
+>  create mode 100644 tools/bpf/bpftool/skeleton/profiler.h
+>
+> diff --git a/tools/bpf/bpftool/profiler.skel.h b/tools/bpf/bpftool/profiler.skel.h
+> new file mode 100644
+> index 000000000000..10e99989c03e
+> --- /dev/null
+> +++ b/tools/bpf/bpftool/profiler.skel.h
+> @@ -0,0 +1,820 @@
+> +/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+> +
+> +/* THIS FILE IS AUTOGENERATED! */
+> +#ifndef __PROFILER_BPF_SKEL_H__
+> +#define __PROFILER_BPF_SKEL_H__
+> +
+> +#include <stdlib.h>
+> +#include <bpf/libbpf.h>
+> +
+> +struct profiler_bpf {
+> +	struct bpf_object_skeleton *skeleton;
+> +	struct bpf_object *obj;
+> +	struct {
+> +		struct bpf_map *events;
+> +		struct bpf_map *fentry_readings;
+> +		struct bpf_map *accum_readings;
+> +		struct bpf_map *counts;
+> +		struct bpf_map *miss_counts;
+> +		struct bpf_map *rodata;
+> +	} maps;
+> +	struct {
+> +		struct bpf_program *fentry_XXX;
+> +		struct bpf_program *fexit_XXX;
+> +	} progs;
+> +	struct {
+> +		struct bpf_link *fentry_XXX;
+> +		struct bpf_link *fexit_XXX;
+> +	} links;
+> +	struct profiler_bpf__rodata {
+> +		__u32 num_cpu;
+> +		__u32 num_metric;
+> +	} *rodata;
+> +};
+> +
+> +static void
+> +profiler_bpf__destroy(struct profiler_bpf *obj)
+> +{
+> +	if (!obj)
+> +		return;
+> +	if (obj->skeleton)
+> +		bpf_object__destroy_skeleton(obj->skeleton);
+> +	free(obj);
+> +}
+> +
+> +static inline int
+> +profiler_bpf__create_skeleton(struct profiler_bpf *obj);
+> +
+> +static inline struct profiler_bpf *
+> +profiler_bpf__open_opts(const struct bpf_object_open_opts *opts)
+> +{
+> +	struct profiler_bpf *obj;
+> +
+> +	obj = (typeof(obj))calloc(1, sizeof(*obj));
+> +	if (!obj)
+> +		return NULL;
+> +	if (profiler_bpf__create_skeleton(obj))
+> +		goto err;
+> +	if (bpf_object__open_skeleton(obj->skeleton, opts))
+> +		goto err;
+> +
+> +	return obj;
+> +err:
+> +	profiler_bpf__destroy(obj);
+> +	return NULL;
+> +}
+> +
+> +static inline struct profiler_bpf *
+> +profiler_bpf__open(void)
+> +{
+> +	return profiler_bpf__open_opts(NULL);
+> +}
+> +
+> +static inline int
+> +profiler_bpf__load(struct profiler_bpf *obj)
+> +{
+> +	return bpf_object__load_skeleton(obj->skeleton);
+> +}
+> +
+> +static inline struct profiler_bpf *
+> +profiler_bpf__open_and_load(void)
+> +{
+> +	struct profiler_bpf *obj;
+> +
+> +	obj = profiler_bpf__open();
+> +	if (!obj)
+> +		return NULL;
+> +	if (profiler_bpf__load(obj)) {
+> +		profiler_bpf__destroy(obj);
+> +		return NULL;
+> +	}
+> +	return obj;
+> +}
+> +
+> +static inline int
+> +profiler_bpf__attach(struct profiler_bpf *obj)
+> +{
+> +	return bpf_object__attach_skeleton(obj->skeleton);
+> +}
+> +
+> +static inline void
+> +profiler_bpf__detach(struct profiler_bpf *obj)
+> +{
+> +	return bpf_object__detach_skeleton(obj->skeleton);
+> +}
+> +
+> +static inline int
+> +profiler_bpf__create_skeleton(struct profiler_bpf *obj)
+> +{
+> +	struct bpf_object_skeleton *s;
+> +
+> +	s = (typeof(s))calloc(1, sizeof(*s));
+> +	if (!s)
+> +		return -1;
+> +	obj->skeleton = s;
+> +
+> +	s->sz = sizeof(*s);
+> +	s->name = "profiler_bpf";
+> +	s->obj = &obj->obj;
+> +
+> +	/* maps */
+> +	s->map_cnt = 6;
+> +	s->map_skel_sz = sizeof(*s->maps);
+> +	s->maps = (typeof(s->maps))calloc(s->map_cnt, s->map_skel_sz);
+> +	if (!s->maps)
+> +		goto err;
+> +
+> +	s->maps[0].name = "events";
+> +	s->maps[0].map = &obj->maps.events;
+> +
+> +	s->maps[1].name = "fentry_readings";
+> +	s->maps[1].map = &obj->maps.fentry_readings;
+> +
+> +	s->maps[2].name = "accum_readings";
+> +	s->maps[2].map = &obj->maps.accum_readings;
+> +
+> +	s->maps[3].name = "counts";
+> +	s->maps[3].map = &obj->maps.counts;
+> +
+> +	s->maps[4].name = "miss_counts";
+> +	s->maps[4].map = &obj->maps.miss_counts;
+> +
+> +	s->maps[5].name = "profiler.rodata";
+> +	s->maps[5].map = &obj->maps.rodata;
+> +	s->maps[5].mmaped = (void **)&obj->rodata;
+> +
+> +	/* programs */
+> +	s->prog_cnt = 2;
+> +	s->prog_skel_sz = sizeof(*s->progs);
+> +	s->progs = (typeof(s->progs))calloc(s->prog_cnt, s->prog_skel_sz);
+> +	if (!s->progs)
+> +		goto err;
+> +
+> +	s->progs[0].name = "fentry_XXX";
+> +	s->progs[0].prog = &obj->progs.fentry_XXX;
+> +	s->progs[0].link = &obj->links.fentry_XXX;
+> +
+> +	s->progs[1].name = "fexit_XXX";
+> +	s->progs[1].prog = &obj->progs.fexit_XXX;
+> +	s->progs[1].link = &obj->links.fexit_XXX;
+> +
+> +	s->data_sz = 18256;
+> +	s->data = (void *)"\
+> +\x7f\x45\x4c\x46\x02\x01\x01\0\0\0\0\0\0\0\0\0\x01\0\xf7\0\x01\0\0\0\0\0\0\0\0\
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-index 64ddf8a4c518..22ff0df327a1 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-@@ -30,6 +30,7 @@ PROG COMMANDS
- |	**bpftool** **prog detach** *PROG* *ATTACH_TYPE* [*MAP*]
- |	**bpftool** **prog tracelog**
- |	**bpftool** **prog run** *PROG* **data_in** *FILE* [**data_out** *FILE* [**data_size_out** *L*]] [**ctx_in** *FILE* [**ctx_out** *FILE* [**ctx_size_out** *M*]]] [**repeat** *N*]
-+|	**bpftool** **prog profile** *DURATION* *PROG* *METRICs*
- |	**bpftool** **prog help**
- |
- |	*MAP* := { **id** *MAP_ID* | **pinned** *FILE* }
-@@ -47,6 +48,9 @@ PROG COMMANDS
- |       *ATTACH_TYPE* := {
- |		**msg_verdict** | **stream_verdict** | **stream_parser** | **flow_dissector**
- |	}
-+|	*METRIC* := {
-+|		**cycles** | **instructions** | **l1d_loads** | **llc_misses**
-+|	}
- 
- 
- DESCRIPTION
-@@ -188,6 +192,10 @@ DESCRIPTION
- 		  not all of them can take the **ctx_in**/**ctx_out**
- 		  arguments. bpftool does not perform checks on program types.
- 
-+	**bpftool prog profile** *DURATION* *PROG* *METRICs*
-+		  Profile *METRICs* for bpf program *PROG* for *DURATION*
-+		  seconds.
-+
- 	**bpftool prog help**
- 		  Print short help message.
- 
-@@ -310,6 +318,15 @@ EXAMPLES
- 
- **# rm /sys/fs/bpf/xdp1**
- 
-+|
-+| **# bpftool prog profile 20 id 810 cycles instructions**
-+
-+::
-+    cycles: duration 20 run_cnt 1368 miss_cnt 665
-+            counter 503377 enabled 668202 running 351857
-+    instructions: duration 20 run_cnt 1368 miss_cnt 707
-+	    counter 398625 enabled 502330 running 272014
-+
- SEE ALSO
- ========
- 	**bpf**\ (2),
--- 
-2.17.1
+Holy binary blob, Batman! :)
+
+What is this blob, exactly? The bytecode output of a precompiled
+program?
+
+-Toke
 
