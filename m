@@ -2,186 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7A415C9A1
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2020 18:42:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC5D15C9B3
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2020 18:47:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727705AbgBMRmV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Feb 2020 12:42:21 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:43387 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726282AbgBMRmV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Feb 2020 12:42:21 -0500
-Received: by mail-qk1-f196.google.com with SMTP id p7so6474945qkh.10;
-        Thu, 13 Feb 2020 09:42:20 -0800 (PST)
+        id S1727857AbgBMRrj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Feb 2020 12:47:39 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:44361 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725781AbgBMRrj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Feb 2020 12:47:39 -0500
+Received: by mail-qk1-f195.google.com with SMTP id v195so6470465qkb.11;
+        Thu, 13 Feb 2020 09:47:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0SeRIRwAxXCgkVIkqnHKnVkNwgSm44M/L7Ref4jNpIk=;
-        b=spwkzztgIQeIuO4waZxR636AO2fypTRBRalqcpVGHE09aC/6U1WNQVuj7QVf+nLoRn
-         FkcEXooRYeZhg7zKIMZk02VgAoAhGWYkrPAbycUZJ9LBO8voxNthFdJvOfR7iXivwTMA
-         vVH9wukDV8r89eu1Gpk1O4rmydZYsmkQ8G9U7M7AIIEtjU8CTYnWrg8sgwIh2BFwjIKx
-         jYj08tm26pqn7KeuedkozsDoEIGhjsXovv46FqbJquMS2IyFUPx4rrAorBM3D542IY4A
-         X1fz+Kw+9D4aZ+EGLY6gzQxT63WDgr1rj1eqn9xw2E3ooN7YnISUtAM9WzGOPngfkm3P
-         vQJw==
+        bh=QqYQBHl3dLMvD5Z6qSR6RJN0d5WnItMFfOyEDAwMXCo=;
+        b=Ki5E6dMoRZTUfdResgbYtn48OiDJhJPt96efZpVZTxXU67/iLnRdLnKFw9WEU17QuL
+         9ioG/sMDQHwiaAceH9BlAVI9a9EOTUJGm08R9ZowZop97ko6cxgIURBG+An33EitrxTm
+         cX3MJZ/GOoSXQCQJq+hi5x4r1J/xLale9rxUVyImfQLWEJ9yHSmoxqXZn4OPHS3THAVW
+         eDG05oPrM5tcP08hokvE+qfGHn6Cm3TjOOvUsggVbOpQIJnITD1Z6d+IYstqNRQSmiPr
+         N3e1lMd305ayw9ONHgRzU/7w0t3rUSD6VMbwIO22+UuNPaq5DYkb9RJhfZgac6gLkhXg
+         kM/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0SeRIRwAxXCgkVIkqnHKnVkNwgSm44M/L7Ref4jNpIk=;
-        b=Kfr1r3Rla3ff04v0ZmNJvia66cw+kduO0cXhJlArsTM2lU4eRf7Bx5DMBJy7Oflsyg
-         1+gTbU65Yfn8FpcikAuqGszKVPZkurD7Ie3w7tgiaoSUeOykr8hGHs84042Hrr+Vzxqf
-         CPJNOy83dRhRlNbHqG7qyAPvJ4UNuEH877WCnjMV7hQW+uXD4sD79jtU75txbsGrrw8Q
-         eip+ROo0eOMurwrRsfcPhlarioH59j24tyLkwlPXTBZRTojulqQYFvs+Mt2OUNh56j4N
-         iRnZsc9m9ZmB2RLNl9/WSj6cbqxxdjCAtCx5XM7vuxlYXCj2dhvHIbBa0cbblNJbs7gG
-         qOMg==
-X-Gm-Message-State: APjAAAVwO7Hqx78oV6GcNjCgYlbmqalrEZLsrzse2gXofY2+GRczLhyM
-        +N+Ym6tVE3VmOojZ1/pD83ZO9+heC/nuVfqT0uA=
-X-Google-Smtp-Source: APXvYqx1nl6f2Zr1d51JuwBUaBpaNIgNfEMGseiSHJsucuRgkIjD3os20mX9S6GucebEwh+B55lENgq0kuxAqDhM2Zo=
-X-Received: by 2002:a37:785:: with SMTP id 127mr17031600qkh.437.1581615739921;
- Thu, 13 Feb 2020 09:42:19 -0800 (PST)
+        bh=QqYQBHl3dLMvD5Z6qSR6RJN0d5WnItMFfOyEDAwMXCo=;
+        b=uXFdQ9mCWNxXDR3kvDVc1KFl0tE9oQ4RCeBpgWsMAEaGRROGPFGxs7Cuxci7S5J80g
+         8Z1fi4Nljjm7ZIixUvRBhUTn7A3HaLKvZiD1bSQnG95yoGXDc+Jv1m3QEZSYmIVUhHKa
+         rEl5U9+Xms75hd6Mt6wAcPD20L8wq/D7vutF8ZRUSbwCfbAe3lLEkunvDpx5Sv/D9Mse
+         O2Glh67+EZEa7K5XLPoX/caYrUsFcEYIsS/eB4p3OSjv4kabnf8BrFNI6SmQn+/J/Fa+
+         BswSd+Tn3zNjQsODhkCg22s8FQ0Oi5vdEL15rEeuYzNSvfi4+yxp1GVMSNOwCcAlZnPI
+         pZZQ==
+X-Gm-Message-State: APjAAAWOav5BP/FCr6lY5FCHh4At30jMOEwFF1Qi1J7aPtuCSYvMAgB8
+        UVRGbMI5J7L2pKys7gISBWZUHoGw0pSpt7X+wE0=
+X-Google-Smtp-Source: APXvYqyfayhltEAhkoqdbYnchFW7sXFhdJb0s2Oi1gjy6iPWMTHeIVsV9b6s9/hHeFf05GQusuipitPcvO+Zhv/+n8M=
+X-Received: by 2002:a05:620a:14a2:: with SMTP id x2mr16976934qkj.36.1581616057237;
+ Thu, 13 Feb 2020 09:47:37 -0800 (PST)
 MIME-Version: 1.0
-References: <158160616195.80320.5636088335810242866.stgit@xdp-tutorial>
-In-Reply-To: <158160616195.80320.5636088335810242866.stgit@xdp-tutorial>
+References: <20200213152416.GA1873@embeddedor>
+In-Reply-To: <20200213152416.GA1873@embeddedor>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 13 Feb 2020 09:42:07 -0800
-Message-ID: <CAEf4Bzb59yjEMzs=n7pmbCB-L6RfmGDQiOwDFBoh54aSps4Vsg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] libbpf: Add support for dynamic program
- attach target
-To:     Eelco Chaudron <echaudro@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 13 Feb 2020 09:47:25 -0800
+Message-ID: <CAEf4Bzae=Afp_4FGgeFy+=kk64nm1vhRso2zF3j7Qdst66RFZw@mail.gmail.com>
+Subject: Re: [PATCH] bpf: queue_stack_maps: Replace zero-length array with
+ flexible-array member
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 13, 2020 at 7:05 AM Eelco Chaudron <echaudro@redhat.com> wrote:
+On Thu, Feb 13, 2020 at 7:22 AM Gustavo A. R. Silva
+<gustavo@embeddedor.com> wrote:
 >
-> Currently when you want to attach a trace program to a bpf program
-> the section name needs to match the tracepoint/function semantics.
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
 >
-> However the addition of the bpf_program__set_attach_target() API
-> allows you to specify the tracepoint/function dynamically.
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
 >
-> The call flow would look something like this:
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
 >
->   xdp_fd = bpf_prog_get_fd_by_id(id);
->   trace_obj = bpf_object__open_file("func.o", NULL);
->   prog = bpf_object__find_program_by_title(trace_obj,
->                                            "fentry/myfunc");
->   bpf_program__set_expected_attach_type(prog, BPF_TRACE_FENTRY);
->   bpf_program__set_attach_target(prog, xdp_fd,
->                                  "xdpfilt_blk_all");
->   bpf_object__load(trace_obj)
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
 >
-> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+>
+> This issue was found with the help of Coccinelle.
+>
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+>
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 > ---
 
-API-wise this looks good, thanks! Please address feedback below and
-re-submit once bpf-next opens. Can you please also convert one of
-existing selftests using open_opts's attach_prog_fd to use this API
-instead to have a demonstration there?
+Sure, why not, though I don't think that's the only one (e.g.,
+bpf_storage_buffer's data is zero-length as well).
 
-> v1 -> v2: Remove requirement for attach type name in API
->
->  tools/lib/bpf/libbpf.c   |   33 +++++++++++++++++++++++++++++++--
->  tools/lib/bpf/libbpf.h   |    4 ++++
->  tools/lib/bpf/libbpf.map |    1 +
->  3 files changed, 36 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 514b1a524abb..9b8cab995580 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -4939,8 +4939,8 @@ int bpf_program__load(struct bpf_program *prog, char *license, __u32 kern_ver)
->  {
->         int err = 0, fd, i, btf_id;
->
-> -       if (prog->type == BPF_PROG_TYPE_TRACING ||
-> -           prog->type == BPF_PROG_TYPE_EXT) {
-> +       if ((prog->type == BPF_PROG_TYPE_TRACING ||
-> +            prog->type == BPF_PROG_TYPE_EXT) && !prog->attach_btf_id) {
->                 btf_id = libbpf_find_attach_btf_id(prog);
->                 if (btf_id <= 0)
->                         return btf_id;
-> @@ -8132,6 +8132,35 @@ void bpf_program__bpil_offs_to_addr(struct bpf_prog_info_linear *info_linear)
->         }
->  }
->
-> +int bpf_program__set_attach_target(struct bpf_program *prog,
-> +                                  int attach_prog_fd,
-> +                                  const char *attach_func_name)
-> +{
-> +       int btf_id;
-> +
-> +       if (!prog || attach_prog_fd < 0 || !attach_func_name)
-> +               return -EINVAL;
-> +
-> +       if (attach_prog_fd)
-> +               btf_id = libbpf_find_prog_btf_id(attach_func_name,
-> +                                                attach_prog_fd);
-> +       else
-> +               btf_id = __find_vmlinux_btf_id(prog->obj->btf_vmlinux,
-> +                                              attach_func_name,
-> +                                              prog->expected_attach_type);
-> +
-> +       if (btf_id <= 0) {
-> +               if (!attach_prog_fd)
-> +                       pr_warn("%s is not found in vmlinux BTF\n",
-> +                               attach_func_name);
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-libbpf_find_attach_btf_id's error reporting is misleading (it always
-reports as if error happened with vmlinux BTF, even if attach_prog_fd
-> 0). Could you please fix that and add better error reporting here
-for attach_prog_fd>0 case here?
-
-> +               return btf_id;
-> +       }
-> +
-> +       prog->attach_btf_id = btf_id;
-> +       prog->attach_prog_fd = attach_prog_fd;
-> +       return 0;
-> +}
-> +
->  int parse_cpu_mask_str(const char *s, bool **mask, int *mask_sz)
->  {
->         int err = 0, n, len, start, end = -1;
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index 3fe12c9d1f92..02fc58a21a7f 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -334,6 +334,10 @@ LIBBPF_API void
->  bpf_program__set_expected_attach_type(struct bpf_program *prog,
->                                       enum bpf_attach_type type);
+>  kernel/bpf/queue_stack_maps.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> +LIBBPF_API int
-> +bpf_program__set_attach_target(struct bpf_program *prog, int attach_prog_fd,
-> +                              const char *attach_func_name);
-> +
->  LIBBPF_API bool bpf_program__is_socket_filter(const struct bpf_program *prog);
->  LIBBPF_API bool bpf_program__is_tracepoint(const struct bpf_program *prog);
->  LIBBPF_API bool bpf_program__is_raw_tracepoint(const struct bpf_program *prog);
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index b035122142bb..8aba5438a3f0 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -230,6 +230,7 @@ LIBBPF_0.0.7 {
->                 bpf_program__name;
->                 bpf_program__is_extension;
->                 bpf_program__is_struct_ops;
-> +               bpf_program__set_attach_target;
-
-This will have to go into LIBBPF_0.0.8 once bpf-next opens. Please
-rebase and re-send then.
-
->                 bpf_program__set_extension;
->                 bpf_program__set_struct_ops;
->                 btf__align_of;
+> diff --git a/kernel/bpf/queue_stack_maps.c b/kernel/bpf/queue_stack_maps.c
+> index f697647ceb54..30e1373fd437 100644
+> --- a/kernel/bpf/queue_stack_maps.c
+> +++ b/kernel/bpf/queue_stack_maps.c
+> @@ -19,7 +19,7 @@ struct bpf_queue_stack {
+>         u32 head, tail;
+>         u32 size; /* max_entries + 1 */
+>
+> -       char elements[0] __aligned(8);
+> +       char elements[] __aligned(8);
+>  };
+>
+>  static struct bpf_queue_stack *bpf_queue_stack(struct bpf_map *map)
+> --
+> 2.25.0
 >
