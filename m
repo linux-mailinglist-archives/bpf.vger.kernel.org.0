@@ -2,121 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC5D15C9B3
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2020 18:47:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A74D15CA81
+	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2020 19:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbgBMRrj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Feb 2020 12:47:39 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:44361 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgBMRrj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Feb 2020 12:47:39 -0500
-Received: by mail-qk1-f195.google.com with SMTP id v195so6470465qkb.11;
-        Thu, 13 Feb 2020 09:47:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QqYQBHl3dLMvD5Z6qSR6RJN0d5WnItMFfOyEDAwMXCo=;
-        b=Ki5E6dMoRZTUfdResgbYtn48OiDJhJPt96efZpVZTxXU67/iLnRdLnKFw9WEU17QuL
-         9ioG/sMDQHwiaAceH9BlAVI9a9EOTUJGm08R9ZowZop97ko6cxgIURBG+An33EitrxTm
-         cX3MJZ/GOoSXQCQJq+hi5x4r1J/xLale9rxUVyImfQLWEJ9yHSmoxqXZn4OPHS3THAVW
-         eDG05oPrM5tcP08hokvE+qfGHn6Cm3TjOOvUsggVbOpQIJnITD1Z6d+IYstqNRQSmiPr
-         N3e1lMd305ayw9ONHgRzU/7w0t3rUSD6VMbwIO22+UuNPaq5DYkb9RJhfZgac6gLkhXg
-         kM/Q==
+        id S1727976AbgBMShP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Feb 2020 13:37:15 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:42370 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727782AbgBMShP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Feb 2020 13:37:15 -0500
+Received: by mail-io1-f72.google.com with SMTP id e7so4870651iog.9
+        for <bpf@vger.kernel.org>; Thu, 13 Feb 2020 10:37:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QqYQBHl3dLMvD5Z6qSR6RJN0d5WnItMFfOyEDAwMXCo=;
-        b=uXFdQ9mCWNxXDR3kvDVc1KFl0tE9oQ4RCeBpgWsMAEaGRROGPFGxs7Cuxci7S5J80g
-         8Z1fi4Nljjm7ZIixUvRBhUTn7A3HaLKvZiD1bSQnG95yoGXDc+Jv1m3QEZSYmIVUhHKa
-         rEl5U9+Xms75hd6Mt6wAcPD20L8wq/D7vutF8ZRUSbwCfbAe3lLEkunvDpx5Sv/D9Mse
-         O2Glh67+EZEa7K5XLPoX/caYrUsFcEYIsS/eB4p3OSjv4kabnf8BrFNI6SmQn+/J/Fa+
-         BswSd+Tn3zNjQsODhkCg22s8FQ0Oi5vdEL15rEeuYzNSvfi4+yxp1GVMSNOwCcAlZnPI
-         pZZQ==
-X-Gm-Message-State: APjAAAWOav5BP/FCr6lY5FCHh4At30jMOEwFF1Qi1J7aPtuCSYvMAgB8
-        UVRGbMI5J7L2pKys7gISBWZUHoGw0pSpt7X+wE0=
-X-Google-Smtp-Source: APXvYqyfayhltEAhkoqdbYnchFW7sXFhdJb0s2Oi1gjy6iPWMTHeIVsV9b6s9/hHeFf05GQusuipitPcvO+Zhv/+n8M=
-X-Received: by 2002:a05:620a:14a2:: with SMTP id x2mr16976934qkj.36.1581616057237;
- Thu, 13 Feb 2020 09:47:37 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=+zEG83XJ2KD3tG6iswUl3A3tfv53W4BSz1ckWVsUsPQ=;
+        b=DlNYCzRJVStM/niWZ1BmxhV/bVd8IAvFOMWOMKbNDuItgYJz820lw0id1ka/JTDkvD
+         PNi+fVj9sismoQmBOtSFPVqpEorAMcPGR6468dmaCTB9fpzsVsHOT8oCrcTlJSMqShGz
+         u+rC2bk+QxBMM4akUnrdeco4vycVCOCzkM5qNHVEg+2tDXP9gqLeF82AQwvgnnv+th/H
+         gyGXu5mcjx/Tt53l34snlgb6quAucv3yIPeJ0z3SYp4NMjo8GvTePXF9EuX6Bw7evOQs
+         /nn/33w3wkD10uQaes7wxB8R+3aQbemnSJny+2Q5Z9FEBarejt8CWWoNck8KMVZZ6vk1
+         iedw==
+X-Gm-Message-State: APjAAAVXd6Ipk4wBcpLlnkGnMQ3p43o3EdEyq/u/QYyGVGlOClxOkkDp
+        oWjPlvhorm/CoY5Slp7bTXrcOe/MQsobxYkQ0hlgJ0plypQT
+X-Google-Smtp-Source: APXvYqwpDr8WMrelfAhfG71WD/hHH/92X9e6sc5SsUElMtH1a9tCOfese5BRwU3d5gC8zWRS/1p1mb+RvBAuRPBPZ2UIUfOBbFXM
 MIME-Version: 1.0
-References: <20200213152416.GA1873@embeddedor>
-In-Reply-To: <20200213152416.GA1873@embeddedor>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 13 Feb 2020 09:47:25 -0800
-Message-ID: <CAEf4Bzae=Afp_4FGgeFy+=kk64nm1vhRso2zF3j7Qdst66RFZw@mail.gmail.com>
-Subject: Re: [PATCH] bpf: queue_stack_maps: Replace zero-length array with
- flexible-array member
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a92:5d03:: with SMTP id r3mr16292873ilb.278.1581619034415;
+ Thu, 13 Feb 2020 10:37:14 -0800 (PST)
+Date:   Thu, 13 Feb 2020 10:37:14 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b76960059e7960fc@google.com>
+Subject: memory leak in kcm_sendmsg
+From:   syzbot <syzbot+b039f5699bd82e1fb011@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+        jslaby@suse.cz, kafai@fb.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, willy@infradead.org, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 13, 2020 at 7:22 AM Gustavo A. R. Silva
-<gustavo@embeddedor.com> wrote:
->
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
->
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
->
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
->
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
->
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
->
-> This issue was found with the help of Coccinelle.
->
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
->
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-> ---
+Hello,
 
-Sure, why not, though I don't think that's the only one (e.g.,
-bpf_storage_buffer's data is zero-length as well).
+syzbot found the following crash on:
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+HEAD commit:    f2850dd5 Merge tag 'kbuild-fixes-v5.6' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15b6e2a1e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2802e33434f4f863
+dashboard link: https://syzkaller.appspot.com/bug?extid=b039f5699bd82e1fb011
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1036aae6e00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14a48aa1e00000
 
->  kernel/bpf/queue_stack_maps.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/queue_stack_maps.c b/kernel/bpf/queue_stack_maps.c
-> index f697647ceb54..30e1373fd437 100644
-> --- a/kernel/bpf/queue_stack_maps.c
-> +++ b/kernel/bpf/queue_stack_maps.c
-> @@ -19,7 +19,7 @@ struct bpf_queue_stack {
->         u32 head, tail;
->         u32 size; /* max_entries + 1 */
->
-> -       char elements[0] __aligned(8);
-> +       char elements[] __aligned(8);
->  };
->
->  static struct bpf_queue_stack *bpf_queue_stack(struct bpf_map *map)
-> --
-> 2.25.0
->
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+b039f5699bd82e1fb011@syzkaller.appspotmail.com
+
+executing program
+executing program
+BUG: memory leak
+unreferenced object 0xffff88812166aa00 (size 224):
+  comm "syz-executor252", pid 7098, jiffies 4294946073 (age 7.970s)
+  hex dump (first 32 bytes):
+    00 5f 7e 21 81 88 ff ff 00 00 00 00 00 00 00 00  ._~!............
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000344c790c>] kmemleak_alloc_recursive include/linux/kmemleak.h:43 [inline]
+    [<00000000344c790c>] slab_post_alloc_hook mm/slab.h:586 [inline]
+    [<00000000344c790c>] slab_alloc_node mm/slab.c:3263 [inline]
+    [<00000000344c790c>] kmem_cache_alloc_node+0x163/0x2f0 mm/slab.c:3575
+    [<0000000055638a6a>] __alloc_skb+0x6e/0x210 net/core/skbuff.c:198
+    [<00000000e5df7d05>] alloc_skb include/linux/skbuff.h:1051 [inline]
+    [<00000000e5df7d05>] kcm_sendmsg+0x63e/0xa6b net/kcm/kcmsock.c:969
+    [<000000001a13b16a>] sock_sendmsg_nosec net/socket.c:652 [inline]
+    [<000000001a13b16a>] sock_sendmsg+0x54/0x70 net/socket.c:672
+    [<0000000051101f49>] ____sys_sendmsg+0x123/0x300 net/socket.c:2343
+    [<000000002286b08d>] ___sys_sendmsg+0x8a/0xd0 net/socket.c:2397
+    [<0000000027623508>] __sys_sendmmsg+0xf4/0x270 net/socket.c:2487
+    [<00000000a5d459c2>] __do_sys_sendmmsg net/socket.c:2516 [inline]
+    [<00000000a5d459c2>] __se_sys_sendmmsg net/socket.c:2513 [inline]
+    [<00000000a5d459c2>] __x64_sys_sendmmsg+0x28/0x30 net/socket.c:2513
+    [<00000000345a6e04>] do_syscall_64+0x73/0x220 arch/x86/entry/common.c:294
+    [<00000000e4a592cb>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff888123b6fa00 (size 512):
+  comm "syz-executor252", pid 7098, jiffies 4294946073 (age 7.970s)
+  hex dump (first 32 bytes):
+    00 00 33 33 00 00 00 02 42 01 0a 80 00 42 86 dd  ..33....B....B..
+    60 00 00 00 00 10 3a ff fe 80 00 00 00 00 00 00  `.....:.........
+  backtrace:
+    [<000000003f7d57be>] kmemleak_alloc_recursive include/linux/kmemleak.h:43 [inline]
+    [<000000003f7d57be>] slab_post_alloc_hook mm/slab.h:586 [inline]
+    [<000000003f7d57be>] slab_alloc_node mm/slab.c:3263 [inline]
+    [<000000003f7d57be>] kmem_cache_alloc_node_trace+0x161/0x2f0 mm/slab.c:3593
+    [<000000007b27008a>] __do_kmalloc_node mm/slab.c:3615 [inline]
+    [<000000007b27008a>] __kmalloc_node_track_caller+0x38/0x50 mm/slab.c:3630
+    [<00000000b67c7fa9>] __kmalloc_reserve.isra.0+0x40/0xb0 net/core/skbuff.c:142
+    [<0000000084d25a21>] __alloc_skb+0xa0/0x210 net/core/skbuff.c:210
+    [<00000000e5df7d05>] alloc_skb include/linux/skbuff.h:1051 [inline]
+    [<00000000e5df7d05>] kcm_sendmsg+0x63e/0xa6b net/kcm/kcmsock.c:969
+    [<000000001a13b16a>] sock_sendmsg_nosec net/socket.c:652 [inline]
+    [<000000001a13b16a>] sock_sendmsg+0x54/0x70 net/socket.c:672
+    [<0000000051101f49>] ____sys_sendmsg+0x123/0x300 net/socket.c:2343
+    [<000000002286b08d>] ___sys_sendmsg+0x8a/0xd0 net/socket.c:2397
+    [<0000000027623508>] __sys_sendmmsg+0xf4/0x270 net/socket.c:2487
+    [<00000000a5d459c2>] __do_sys_sendmmsg net/socket.c:2516 [inline]
+    [<00000000a5d459c2>] __se_sys_sendmmsg net/socket.c:2513 [inline]
+    [<00000000a5d459c2>] __x64_sys_sendmmsg+0x28/0x30 net/socket.c:2513
+    [<00000000345a6e04>] do_syscall_64+0x73/0x220 arch/x86/entry/common.c:294
+    [<00000000e4a592cb>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff8881217e5f00 (size 224):
+  comm "syz-executor252", pid 7098, jiffies 4294946073 (age 7.970s)
+  hex dump (first 32 bytes):
+    00 5e 7e 21 81 88 ff ff 00 00 00 00 00 00 00 00  .^~!............
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000344c790c>] kmemleak_alloc_recursive include/linux/kmemleak.h:43 [inline]
+    [<00000000344c790c>] slab_post_alloc_hook mm/slab.h:586 [inline]
+    [<00000000344c790c>] slab_alloc_node mm/slab.c:3263 [inline]
+    [<00000000344c790c>] kmem_cache_alloc_node+0x163/0x2f0 mm/slab.c:3575
+    [<0000000055638a6a>] __alloc_skb+0x6e/0x210 net/core/skbuff.c:198
+    [<00000000e5df7d05>] alloc_skb include/linux/skbuff.h:1051 [inline]
+    [<00000000e5df7d05>] kcm_sendmsg+0x63e/0xa6b net/kcm/kcmsock.c:969
+    [<000000001a13b16a>] sock_sendmsg_nosec net/socket.c:652 [inline]
+    [<000000001a13b16a>] sock_sendmsg+0x54/0x70 net/socket.c:672
+    [<0000000051101f49>] ____sys_sendmsg+0x123/0x300 net/socket.c:2343
+    [<000000002286b08d>] ___sys_sendmsg+0x8a/0xd0 net/socket.c:2397
+    [<0000000027623508>] __sys_sendmmsg+0xf4/0x270 net/socket.c:2487
+    [<00000000a5d459c2>] __do_sys_sendmmsg net/socket.c:2516 [inline]
+    [<00000000a5d459c2>] __se_sys_sendmmsg net/socket.c:2513 [inline]
+    [<00000000a5d459c2>] __x64_sys_sendmmsg+0x28/0x30 net/socket.c:2513
+    [<00000000345a6e04>] do_syscall_64+0x73/0x220 arch/x86/entry/common.c:294
+    [<00000000e4a592cb>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88812084ae00 (size 512):
+  comm "syz-executor252", pid 7098, jiffies 4294946073 (age 7.970s)
+  hex dump (first 32 bytes):
+    a3 0f 00 00 00 00 00 00 40 00 00 00 00 00 00 00  ........@.......
+    40 00 40 00 00 00 00 00 40 00 40 00 00 00 00 00  @.@.....@.@.....
+  backtrace:
+    [<000000003f7d57be>] kmemleak_alloc_recursive include/linux/kmemleak.h:43 [inline]
+    [<000000003f7d57be>] slab_post_alloc_hook mm/slab.h:586 [inline]
+    [<000000003f7d57be>] slab_alloc_node mm/slab.c:3263 [inline]
+    [<000000003f7d57be>] kmem_cache_alloc_node_trace+0x161/0x2f0 mm/slab.c:3593
+    [<000000007b27008a>] __do_kmalloc_node mm/slab.c:3615 [inline]
+    [<000000007b27008a>] __kmalloc_node_track_caller+0x38/0x50 mm/slab.c:3630
+    [<00000000b67c7fa9>] __kmalloc_reserve.isra.0+0x40/0xb0 net/core/skbuff.c:142
+    [<0000000084d25a21>] __alloc_skb+0xa0/0x210 net/core/skbuff.c:210
+    [<00000000e5df7d05>] alloc_skb include/linux/skbuff.h:1051 [inline]
+    [<00000000e5df7d05>] kcm_sendmsg+0x63e/0xa6b net/kcm/kcmsock.c:969
+    [<000000001a13b16a>] sock_sendmsg_nosec net/socket.c:652 [inline]
+    [<000000001a13b16a>] sock_sendmsg+0x54/0x70 net/socket.c:672
+    [<0000000051101f49>] ____sys_sendmsg+0x123/0x300 net/socket.c:2343
+    [<000000002286b08d>] ___sys_sendmsg+0x8a/0xd0 net/socket.c:2397
+    [<0000000027623508>] __sys_sendmmsg+0xf4/0x270 net/socket.c:2487
+    [<00000000a5d459c2>] __do_sys_sendmmsg net/socket.c:2516 [inline]
+    [<00000000a5d459c2>] __se_sys_sendmmsg net/socket.c:2513 [inline]
+    [<00000000a5d459c2>] __x64_sys_sendmmsg+0x28/0x30 net/socket.c:2513
+    [<00000000345a6e04>] do_syscall_64+0x73/0x220 arch/x86/entry/common.c:294
+    [<00000000e4a592cb>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
