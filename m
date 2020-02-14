@@ -2,41 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9389F15F36A
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 19:21:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1918015F1A3
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 19:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404239AbgBNSLT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Feb 2020 13:11:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32780 "EHLO mail.kernel.org"
+        id S1731580AbgBNPyh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Feb 2020 10:54:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731267AbgBNPxa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Feb 2020 10:53:30 -0500
+        id S1731574AbgBNPyh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Feb 2020 10:54:37 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1852F24676;
-        Fri, 14 Feb 2020 15:53:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C1352467C;
+        Fri, 14 Feb 2020 15:54:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581695610;
-        bh=AM/cxaMLSs+1tt+XbdmWhg83uD3mrehTan0F9wpp1Xs=;
+        s=default; t=1581695676;
+        bh=MMvYnTh/h4R2QL5OTCI5uAa2vYTgJROedZx4TjC11Sw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nonzCETK6MpkL+LcSar/aVLQUg3zYVmesDa9mpX9cPeCIyO8PCAo7anf4PTT0gS9g
-         VZxgm7D+y23LLpgzDWBU/z1+wLz71Z4jSiWEBWJaRBRx4W9dZBaZfnRCNaCBtFA/so
-         Nk9vmVWDeZPyq0i0n41ONx8l6V7sH0W+O4wGDTbk=
+        b=oYKrDpy+k9q+7XLgrLdd2rWLSwZ2Owk9n4NZb6qWxwTI8+JCqc7CiSmB+m9Asp5W1
+         MD49zZ5pI9iIIDKCUGXwjQxsd+buKJ8VDz41D0vlFPXIrqhzzFgMKTdBLrMDpHvpHC
+         w65V/TJEDG6QHWwfrouREeX9IQmmxwRHHDWO+nwk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     Hechao Li <hechaol@fb.com>, Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 5.5 212/542] samples/bpf: Set -fno-stack-protector when building BPF programs
-Date:   Fri, 14 Feb 2020 10:43:24 -0500
-Message-Id: <20200214154854.6746-212-sashal@kernel.org>
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.5 263/542] bpf: Print error message for bpftool cgroup show
+Date:   Fri, 14 Feb 2020 10:44:15 -0500
+Message-Id: <20200214154854.6746-263-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
 References: <20200214154854.6746-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,41 +43,138 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+From: Hechao Li <hechaol@fb.com>
 
-[ Upstream commit 450278977acbf494a20367c22fbb38729772d1fc ]
+[ Upstream commit 1162f844030ac1ac7321b5e8f6c9badc7a11428f ]
 
-It seems Clang can in some cases turn on stack protection by default, which
-doesn't work with BPF. This was reported once before[0], but it seems the
-flag to explicitly turn off the stack protector wasn't added to the
-Makefile, so do that now.
+Currently, when bpftool cgroup show <path> has an error, no error
+message is printed. This is confusing because the user may think the
+result is empty.
 
-The symptom of this is compile errors like the following:
+Before the change:
 
-error: <unknown>:0:0: in function bpf_prog1 i32 (%struct.__sk_buff*): A call to built-in function '__stack_chk_fail' is not supported.
+$ bpftool cgroup show /sys/fs/cgroup
+ID       AttachType      AttachFlags     Name
+$ echo $?
+255
 
-[0] https://www.spinics.net/lists/netdev/msg556400.html
+After the change:
+$ ./bpftool cgroup show /sys/fs/cgroup
+Error: can't query bpf programs attached to /sys/fs/cgroup: Operation
+not permitted
 
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20191216103819.359535-1-toke@redhat.com
+v2: Rename check_query_cgroup_progs to cgroup_has_attached_progs
+
+Signed-off-by: Hechao Li <hechaol@fb.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20191224011742.3714301-1-hechaol@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- samples/bpf/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+ tools/bpf/bpftool/cgroup.c | 56 ++++++++++++++++++++++++++------------
+ 1 file changed, 39 insertions(+), 17 deletions(-)
 
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index c0147a8cf1882..06ebe3104cc03 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -236,6 +236,7 @@ BTF_LLVM_PROBE := $(shell echo "int main() { return 0; }" | \
- 			  readelf -S ./llvm_btf_verify.o | grep BTF; \
- 			  /bin/rm -f ./llvm_btf_verify.o)
+diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
+index 1ef45e55039e1..2f017caa678dc 100644
+--- a/tools/bpf/bpftool/cgroup.c
++++ b/tools/bpf/bpftool/cgroup.c
+@@ -117,6 +117,25 @@ static int count_attached_bpf_progs(int cgroup_fd, enum bpf_attach_type type)
+ 	return prog_cnt;
+ }
  
-+BPF_EXTRA_CFLAGS += -fno-stack-protector
- ifneq ($(BTF_LLVM_PROBE),)
- 	BPF_EXTRA_CFLAGS += -g
- else
++static int cgroup_has_attached_progs(int cgroup_fd)
++{
++	enum bpf_attach_type type;
++	bool no_prog = true;
++
++	for (type = 0; type < __MAX_BPF_ATTACH_TYPE; type++) {
++		int count = count_attached_bpf_progs(cgroup_fd, type);
++
++		if (count < 0 && errno != EINVAL)
++			return -1;
++
++		if (count > 0) {
++			no_prog = false;
++			break;
++		}
++	}
++
++	return no_prog ? 0 : 1;
++}
+ static int show_attached_bpf_progs(int cgroup_fd, enum bpf_attach_type type,
+ 				   int level)
+ {
+@@ -161,6 +180,7 @@ static int show_attached_bpf_progs(int cgroup_fd, enum bpf_attach_type type,
+ static int do_show(int argc, char **argv)
+ {
+ 	enum bpf_attach_type type;
++	int has_attached_progs;
+ 	const char *path;
+ 	int cgroup_fd;
+ 	int ret = -1;
+@@ -192,6 +212,16 @@ static int do_show(int argc, char **argv)
+ 		goto exit;
+ 	}
+ 
++	has_attached_progs = cgroup_has_attached_progs(cgroup_fd);
++	if (has_attached_progs < 0) {
++		p_err("can't query bpf programs attached to %s: %s",
++		      path, strerror(errno));
++		goto exit_cgroup;
++	} else if (!has_attached_progs) {
++		ret = 0;
++		goto exit_cgroup;
++	}
++
+ 	if (json_output)
+ 		jsonw_start_array(json_wtr);
+ 	else
+@@ -212,6 +242,7 @@ static int do_show(int argc, char **argv)
+ 	if (json_output)
+ 		jsonw_end_array(json_wtr);
+ 
++exit_cgroup:
+ 	close(cgroup_fd);
+ exit:
+ 	return ret;
+@@ -228,7 +259,7 @@ static int do_show_tree_fn(const char *fpath, const struct stat *sb,
+ 			   int typeflag, struct FTW *ftw)
+ {
+ 	enum bpf_attach_type type;
+-	bool skip = true;
++	int has_attached_progs;
+ 	int cgroup_fd;
+ 
+ 	if (typeflag != FTW_D)
+@@ -240,22 +271,13 @@ static int do_show_tree_fn(const char *fpath, const struct stat *sb,
+ 		return SHOW_TREE_FN_ERR;
+ 	}
+ 
+-	for (type = 0; type < __MAX_BPF_ATTACH_TYPE; type++) {
+-		int count = count_attached_bpf_progs(cgroup_fd, type);
+-
+-		if (count < 0 && errno != EINVAL) {
+-			p_err("can't query bpf programs attached to %s: %s",
+-			      fpath, strerror(errno));
+-			close(cgroup_fd);
+-			return SHOW_TREE_FN_ERR;
+-		}
+-		if (count > 0) {
+-			skip = false;
+-			break;
+-		}
+-	}
+-
+-	if (skip) {
++	has_attached_progs = cgroup_has_attached_progs(cgroup_fd);
++	if (has_attached_progs < 0) {
++		p_err("can't query bpf programs attached to %s: %s",
++		      fpath, strerror(errno));
++		close(cgroup_fd);
++		return SHOW_TREE_FN_ERR;
++	} else if (!has_attached_progs) {
+ 		close(cgroup_fd);
+ 		return 0;
+ 	}
 -- 
 2.20.1
 
