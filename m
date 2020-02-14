@@ -2,43 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4061615DFB1
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 17:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C1715E103
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 17:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391082AbgBNQKQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Feb 2020 11:10:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35706 "EHLO mail.kernel.org"
+        id S2389754AbgBNQQd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Feb 2020 11:16:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391433AbgBNQKQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:10:16 -0500
+        id S2392616AbgBNQQd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:16:33 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B30B82467E;
-        Fri, 14 Feb 2020 16:10:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93C2524676;
+        Fri, 14 Feb 2020 16:16:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581696615;
-        bh=j5+g+RQG+8iUqfhHmGbPWGjRcRjG8CzYFVOGHpcaMTw=;
+        s=default; t=1581696992;
+        bh=7P2vlFybEQGvQnGZvdak6Xt5WNMRnhmHfVS2Glgdc78=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iJ9TmJByxRIXIVSdQs2zxoEv6wd3qlkEG4X+scMuV4lEAznyuo4xUxNYqslPKh7GN
-         7b2J9DIreXxVIRIGWV81AIIIELNLDHkPygzPJlTKVtvCJUrnirAjfM73B72VO40hXH
-         X8yatePeub2IpF4Wi0qCKtfwkyHyzlxLkSbW2Vcg=
+        b=cESJPItgrGwjm6V0ciDAxEe51wumZdjpHEpSzS8PiFrQRkN6SPV3CXgJJF5/GAYeh
+         oYe/tj4iACRngHtA+qOSNBzU2KLbvAHmHashW6Z31bXAJ0Wb+AUl4ILQgJLCz0Nbjp
+         G4gYKJ1NmnCEJ7Cr74ADiMKqvZ/yiun7qNVoXYhg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lorenz Bauer <lmb@cloudflare.com>,
+Cc:     Vasily Averin <vvs@virtuozzo.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 397/459] selftests: bpf: Reset global state between reuseport test runs
-Date:   Fri, 14 Feb 2020 11:00:47 -0500
-Message-Id: <20200214160149.11681-397-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 226/252] bpf: map_seq_next should always increase position index
+Date:   Fri, 14 Feb 2020 11:11:21 -0500
+Message-Id: <20200214161147.15842-226-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214160149.11681-1-sashal@kernel.org>
-References: <20200214160149.11681-1-sashal@kernel.org>
+In-Reply-To: <20200214161147.15842-1-sashal@kernel.org>
+References: <20200214161147.15842-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -48,62 +44,46 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Lorenz Bauer <lmb@cloudflare.com>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-[ Upstream commit 51bad0f05616c43d6d34b0a19bcc9bdab8e8fb39 ]
+[ Upstream commit 90435a7891a2259b0f74c5a1bc5600d0d64cba8f ]
 
-Currently, there is a lot of false positives if a single reuseport test
-fails. This is because expected_results and the result map are not cleared.
+If seq_file .next fuction does not change position index,
+read after some lseek can generate an unexpected output.
 
-Zero both after individual test runs, which fixes the mentioned false
-positives.
+See also: https://bugzilla.kernel.org/show_bug.cgi?id=206283
 
-Fixes: 91134d849a0e ("bpf: Test BPF_PROG_TYPE_SK_REUSEPORT")
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+v1 -> v2: removed missed increment in end of function
+
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Link: https://lore.kernel.org/bpf/20200124112754.19664-5-lmb@cloudflare.com
+Link: https://lore.kernel.org/bpf/eca84fdd-c374-a154-d874-6c7b55fc3bc4@virtuozzo.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../selftests/bpf/test_select_reuseport.c        | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ kernel/bpf/inode.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_select_reuseport.c b/tools/testing/selftests/bpf/test_select_reuseport.c
-index 7566c13eb51a7..079d0f5a29091 100644
---- a/tools/testing/selftests/bpf/test_select_reuseport.c
-+++ b/tools/testing/selftests/bpf/test_select_reuseport.c
-@@ -30,7 +30,7 @@
- #define REUSEPORT_ARRAY_SIZE 32
+diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+index dc9d7ac8228db..c04815bb15cc1 100644
+--- a/kernel/bpf/inode.c
++++ b/kernel/bpf/inode.c
+@@ -198,6 +198,7 @@ static void *map_seq_next(struct seq_file *m, void *v, loff_t *pos)
+ 	void *key = map_iter(m)->key;
+ 	void *prev_key;
  
- static int result_map, tmp_index_ovr_map, linum_map, data_check_map;
--static enum result expected_results[NR_RESULTS];
-+static __u32 expected_results[NR_RESULTS];
- static int sk_fds[REUSEPORT_ARRAY_SIZE];
- static int reuseport_array, outer_map;
- static int select_by_skb_data_prog;
-@@ -662,7 +662,19 @@ static void setup_per_test(int type, unsigned short family, bool inany)
++	(*pos)++;
+ 	if (map_iter(m)->done)
+ 		return NULL;
  
- static void cleanup_per_test(void)
- {
--	int i, err;
-+	int i, err, zero = 0;
-+
-+	memset(expected_results, 0, sizeof(expected_results));
-+
-+	for (i = 0; i < NR_RESULTS; i++) {
-+		err = bpf_map_update_elem(result_map, &i, &zero, BPF_ANY);
-+		RET_IF(err, "reset elem in result_map",
-+		       "i:%u err:%d errno:%d\n", i, err, errno);
-+	}
-+
-+	err = bpf_map_update_elem(linum_map, &zero, &zero, BPF_ANY);
-+	RET_IF(err, "reset line number in linum_map", "err:%d errno:%d\n",
-+	       err, errno);
+@@ -210,8 +211,6 @@ static void *map_seq_next(struct seq_file *m, void *v, loff_t *pos)
+ 		map_iter(m)->done = true;
+ 		return NULL;
+ 	}
+-
+-	++(*pos);
+ 	return key;
+ }
  
- 	for (i = 0; i < REUSEPORT_ARRAY_SIZE; i++)
- 		close(sk_fds[i]);
 -- 
 2.20.1
 
