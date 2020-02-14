@@ -2,162 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A33115F9D5
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 23:43:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0EB015FAD5
+	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2020 00:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727581AbgBNWnP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Feb 2020 17:43:15 -0500
-Received: from mail-pg1-f201.google.com ([209.85.215.201]:37370 "EHLO
-        mail-pg1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727573AbgBNWnP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Feb 2020 17:43:15 -0500
-Received: by mail-pg1-f201.google.com with SMTP id b22so6970693pgs.4
-        for <bpf@vger.kernel.org>; Fri, 14 Feb 2020 14:43:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=uHN7vdUXj9zg5j6BFSm9FeBemrt4Oks3aUAhhkdikgA=;
-        b=IeXW9Ek8IIWzbRkroTSuaubhFbW+FB8nYXCtlIy26K7MVDvhCdpSfLETg8Si9wMve2
-         UiHxMDhpjR9Dl0QaCK8Ds1kdIqYaTlWqA+xmfPOpbrCMXauCY5Y+ai7GExkl/HfSa311
-         KOX/CueF5MxQbOZroE0U02KBQDrTdv15TAd1Cm8PjniDcK3eEOBwOAQzYCvT4NDKSpR3
-         1eH+b20qtF0OAJKVSaBsZzr3MynnY33jR1dntOVJntwWWxuPUHmeL01TxDRViqbSGhcV
-         HE1vNcxhg8Ou9tkWYURTl9jJ9ebB3ZbnuSa6UJMll1dgr5TlVS7BNVkDGlpGTQR+l1cq
-         ndAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=uHN7vdUXj9zg5j6BFSm9FeBemrt4Oks3aUAhhkdikgA=;
-        b=U9A0Dw/X2Rs5RCjFSC2Iq7n69SbGg1GCJaw/EKWbn/UZSg0ZfRyKvoBi5RHGOKfV4q
-         sb4dBAFLcgUVlp+i3kxd5r6jkUdGPQ0PxPN843bOS5JFimFoci1iU2HSbFN4acV2ctM1
-         aZsdKauNs6fnBnWWRAHEVoReA4bWDMjfIM1LrCRUklLCC7JyRI08X4r5IdnQCVkcCAEZ
-         Lh1BuKewBHdiquzPHllUFOTGu+9A/XE5WzrkZKFpXi+F6XNhlqNJYnKBhAn2aivVE1Mc
-         0qkFzdwS8qunhuWAXgmHQMeh8BoJF3xMe/n5j2ekcE4Fr+MP5F0KhaKVda+zMVSyI6lG
-         SbCw==
-X-Gm-Message-State: APjAAAUyR14NwKq8/uv64C200fzCeqWURRpBGbP3BCIMlvUfqkyRh70L
-        TFAcG/95AOL8uYsO9sGLNk7vZ90xUZKH
-X-Google-Smtp-Source: APXvYqyByT20Xf2cS83FQR4XFLJ7Tfrbx1N29R/vELEta1kYPJIR+JGWxOYQELvfk6vRtBTB8wdqez/C4cDs
-X-Received: by 2002:a63:2254:: with SMTP id t20mr5909022pgm.423.1581720194053;
- Fri, 14 Feb 2020 14:43:14 -0800 (PST)
-Date:   Fri, 14 Feb 2020 14:43:02 -0800
-Message-Id: <20200214224302.229920-1-brianvv@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.25.0.265.gbab2e86ba0-goog
-Subject: [PATCH bpf] bpf: Do not grab the bucket spinlock by default on htab
- batch ops
-From:   Brian Vazquez <brianvv@google.com>
-To:     Brian Vazquez <brianvv.kernel@gmail.com>,
-        Brian Vazquez <brianvv@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727957AbgBNXl4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Feb 2020 18:41:56 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:15294 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726861AbgBNXl4 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 14 Feb 2020 18:41:56 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01ENbPWB012913
+        for <bpf@vger.kernel.org>; Fri, 14 Feb 2020 15:41:55 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=s5AINjqbi4/0oeVLttio2uLVEGZPsLRmz6siQCTuMVM=;
+ b=JqaETfaj5Wx/w5LIRtwG2/Os7HChJsAa1IO6j82hc1MvdkD7l//46b1LSo5RdkJm/215
+ oW0hTCi+KebW+g4nIry3b1FrRMQChJ2dsikUYjOQSeksnudCL20X4V+FfUfBiLc14dwm
+ 1kPMwijPakKlwHd1DKME9mnKIzpTQwG2/i8= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2y5gdnncrf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 14 Feb 2020 15:41:55 -0800
+Received: from intmgw003.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Fri, 14 Feb 2020 15:41:53 -0800
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 6ABCD62E356D; Fri, 14 Feb 2020 15:41:48 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Song Liu <songliubraving@fb.com>
+Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
+To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     <kernel-team@fb.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] bpf: allow bpf_perf_event_read_value in all BPF programs
+Date:   Fri, 14 Feb 2020 15:41:46 -0800
+Message-ID: <20200214234146.2910011-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-02-14_09:2020-02-14,2020-02-14 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ adultscore=0 priorityscore=1501 impostorscore=0 suspectscore=0
+ clxscore=1015 spamscore=0 bulkscore=0 phishscore=0 mlxscore=0
+ lowpriorityscore=0 mlxlogscore=956 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2001150001 definitions=main-2002140172
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Grabbing the spinlock for every bucket even if it's empty, was causing
-significant perfomance cost when traversing htab maps that have only a
-few entries. This patch addresses the issue by checking first the
-bucket_cnt, if the bucket has some entries then we go and grab the
-spinlock and proceed with the batching.
+bpf_perf_event_read_value() is NMI safe. Enable it for all BPF programs.
+This can be used in fentry/fexit to profile BPF program and individual
+kernel function with hardware counters.
 
-Tested with a htab of size 50K and different value of populated entries.
-
-Before:
-  Benchmark             Time(ns)        CPU(ns)
-  ---------------------------------------------
-  BM_DumpHashMap/1       2759655        2752033
-  BM_DumpHashMap/10      2933722        2930825
-  BM_DumpHashMap/200     3171680        3170265
-  BM_DumpHashMap/500     3639607        3635511
-  BM_DumpHashMap/1000    4369008        4364981
-  BM_DumpHashMap/5k     11171919       11134028
-  BM_DumpHashMap/20k    69150080       69033496
-  BM_DumpHashMap/39k   190501036      190226162
-
-After:
-  Benchmark             Time(ns)        CPU(ns)
-  ---------------------------------------------
-  BM_DumpHashMap/1        202707         200109
-  BM_DumpHashMap/10       213441         210569
-  BM_DumpHashMap/200      478641         472350
-  BM_DumpHashMap/500      980061         967102
-  BM_DumpHashMap/1000    1863835        1839575
-  BM_DumpHashMap/5k      8961836        8902540
-  BM_DumpHashMap/20k    69761497       69322756
-  BM_DumpHashMap/39k   187437830      186551111
-
-Fixes: 057996380a42 ("bpf: Add batch ops to all htab bpf map")
 Cc: Yonghong Song <yhs@fb.com>
-Signed-off-by: Brian Vazquez <brianvv@google.com>
+Signed-off-by: Song Liu <songliubraving@fb.com>
 ---
- kernel/bpf/hashtab.c | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+ kernel/trace/bpf_trace.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 2d182c4ee9d99..fdbde28b0fe06 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -1260,6 +1260,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 	struct hlist_nulls_head *head;
- 	struct hlist_nulls_node *n;
- 	unsigned long flags;
-+	bool locked = false;
- 	struct htab_elem *l;
- 	struct bucket *b;
- 	int ret = 0;
-@@ -1319,15 +1320,25 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 	dst_val = values;
- 	b = &htab->buckets[batch];
- 	head = &b->head;
--	raw_spin_lock_irqsave(&b->lock, flags);
-+	/* do not grab the lock unless need it (bucket_cnt > 0). */
-+	if (locked)
-+		raw_spin_lock_irqsave(&b->lock, flags);
- 
- 	bucket_cnt = 0;
- 	hlist_nulls_for_each_entry_rcu(l, n, head, hash_node)
- 		bucket_cnt++;
- 
-+	if (bucket_cnt && !locked) {
-+		locked = true;
-+		goto again_nocopy;
-+	}
-+
- 	if (bucket_cnt > (max_count - total)) {
- 		if (total == 0)
- 			ret = -ENOSPC;
-+		/* Note that since bucket_cnt > 0 here, it is implicit
-+		 * that the locked was grabbed, so release it.
-+		 */
- 		raw_spin_unlock_irqrestore(&b->lock, flags);
- 		rcu_read_unlock();
- 		this_cpu_dec(bpf_prog_active);
-@@ -1337,6 +1348,9 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 
- 	if (bucket_cnt > bucket_size) {
- 		bucket_size = bucket_cnt;
-+		/* Note that since bucket_cnt > 0 here, it is implicit
-+		 * that the locked was grabbed, so release it.
-+		 */
- 		raw_spin_unlock_irqrestore(&b->lock, flags);
- 		rcu_read_unlock();
- 		this_cpu_dec(bpf_prog_active);
-@@ -1379,7 +1393,10 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 		dst_val += value_size;
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 19e793aa441a..4ddd5ac46094 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -843,6 +843,8 @@ tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_send_signal_proto;
+ 	case BPF_FUNC_send_signal_thread:
+ 		return &bpf_send_signal_thread_proto;
++	case BPF_FUNC_perf_event_read_value:
++		return &bpf_perf_event_read_value_proto;
+ 	default:
+ 		return NULL;
  	}
- 
--	raw_spin_unlock_irqrestore(&b->lock, flags);
-+	if (locked) {
-+		raw_spin_unlock_irqrestore(&b->lock, flags);
-+		locked = false;
-+	}
- 	/* If we are not copying data, we can go to next bucket and avoid
- 	 * unlocking the rcu.
- 	 */
+@@ -858,8 +860,6 @@ kprobe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_get_stackid_proto;
+ 	case BPF_FUNC_get_stack:
+ 		return &bpf_get_stack_proto;
+-	case BPF_FUNC_perf_event_read_value:
+-		return &bpf_perf_event_read_value_proto;
+ #ifdef CONFIG_BPF_KPROBE_OVERRIDE
+ 	case BPF_FUNC_override_return:
+ 		return &bpf_override_return_proto;
 -- 
-2.25.0.265.gbab2e86ba0-goog
+2.17.1
 
