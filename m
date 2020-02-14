@@ -2,90 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A039A15F56E
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 19:39:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B8315F621
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 19:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388846AbgBNShC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Feb 2020 13:37:02 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:55987 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387551AbgBNShC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Feb 2020 13:37:02 -0500
-Received: from p5b06da22.dip0.t-ipconnect.de ([91.6.218.34] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1j2fpO-0004c8-S7; Fri, 14 Feb 2020 19:36:39 +0100
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 57DD9101161; Fri, 14 Feb 2020 19:36:37 +0100 (CET)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     David Miller <davem@davemloft.net>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        bigeasy@linutronix.de, peterz@infradead.org, williams@redhat.com,
-        rostedt@goodmis.org, juri.lelli@redhat.com, mingo@kernel.org
-Subject: Re: [RFC patch 00/19] bpf: Make BPF and PREEMPT_RT co-exist
-In-Reply-To: <20200214.095303.341559462549043464.davem@davemloft.net>
-Date:   Fri, 14 Feb 2020 19:36:37 +0100
-Message-ID: <87pneht3re.fsf@nanos.tec.linutronix.de>
+        id S2390024AbgBNSub (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Feb 2020 13:50:31 -0500
+Received: from mail.efficios.com ([167.114.26.124]:58502 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388268AbgBNSub (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Feb 2020 13:50:31 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 256EF23BC1F;
+        Fri, 14 Feb 2020 13:50:30 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id YYpVRuuR_C_6; Fri, 14 Feb 2020 13:50:29 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id CFC9F23B8E1;
+        Fri, 14 Feb 2020 13:50:29 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com CFC9F23B8E1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1581706229;
+        bh=VzUR9Bfe3F/JSoaq6QEVx8D9A43LNgpVZoQQa6Y285o=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=tF77J3ZG5K6RKC7QA+KvDTzXXSjI6ATvHNWQHVRnG5ZrNIXUwMsSkZdoTThDk9J4D
+         njRQaJPlXHoj6T9YwJwEbF0Vm2y/uJ5vXwKB4UtRESpcV5QqTj4vvVBMrckN+TDt1l
+         JFYJvUiaM0qOb0wJeHJ1toSz+xYZzJUOSizPOv44TZ+2feTghgbD3tEMzuyWCbrbgR
+         ZtHPNn3lwcrupb2P/Xsl4CaSCrOWAwNQXaYdUEndNGwoe+h69yQQ2wMEphKyaLVDys
+         k1ZYER6Sqk1f2Zd1ZjDnh+R5/uqhVo87ymto+ZyjQLebIZWERQfeDjp3MRl68leKRe
+         HjO+X71YSt7Bw==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id CtnvbEbnMtXo; Fri, 14 Feb 2020 13:50:29 -0500 (EST)
+Received: from localhost (192-222-181-218.qc.cable.ebox.net [192.222.181.218])
+        by mail.efficios.com (Postfix) with ESMTPSA id 909E923B77F;
+        Fri, 14 Feb 2020 13:50:28 -0500 (EST)
+Date:   Fri, 14 Feb 2020 13:50:27 -0500
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Sebastian Sewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Clark Williams <williams@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [RFC patch 07/19] bpf: Provide BPF_PROG_RUN_PIN_ON_CPU() macro
+Message-ID: <20200214185027.nx6enxvmghucai2d@localhost>
+References: <20200214133917.304937432@linutronix.de>
+ <20200214161503.595780887@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200214161503.595780887@linutronix.de>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-David Miller <davem@davemloft.net> writes:
+On 14-Feb-2020 02:39:24 PM, Thomas Gleixner wrote:
+[...]
+> +#define BPF_PROG_RUN_PIN_ON_CPU(prog, ctx) ({				\
+> +	u32 ret;							\
+> +	migrate_disable();						\
+> +	ret = __BPF_PROG_RUN(prog, ctx, bpf_dispatcher_nopfunc);	\
+> +	migrate_enable();						\
+> +	ret; })
 
-> From: Thomas Gleixner <tglx@linutronix.de>
-> Date: Fri, 14 Feb 2020 14:39:17 +0100
->
->> This is a follow up to the initial patch series which David posted a
->> while ago:
->> 
->>  https://lore.kernel.org/bpf/20191207.160357.828344895192682546.davem@davemloft.net/
->> 
->> which was (while non-functional on RT) a good starting point for further
->> investigations.
->
-> This looks really good after a cursory review, thanks for doing this week.
->
-> I was personally unaware of the pre-allocation rules for MAPs used by
-> tracing et al.  And that definitely shapes how this should be handled.
+Does it really have to be a statement expression with a local variable ?
 
-Hmm. I just noticed that my analysis only holds for PERF events. But
-that's broken on mainline already.
-
-Assume the following simplified callchain:
-
-       kmalloc() from regular non BPF context
-         cache empty
-           freelist empty
-             lock(zone->lock);
-                tracepoint or kprobe
-                  BPF()
-                    update_elem()
-                      lock(bucket)
-                        kmalloc()
-                          cache empty
-                            freelist empty
-                              lock(zone->lock);  <- DEADLOCK
-
-So really, preallocation _must_ be enforced for all variants of
-intrusive instrumentation. There is no if and but, it's simply mandatory
-as all intrusive instrumentation has to follow the only sensible
-principle: KISS = Keep It Safe and Simple.
-
-The above is a perfectly valid scenario and works with perf and tracing,
-so it has to work with BPF in the same safe way.
-
-I might be missing some magic enforcement of that, but I got lost in the
-maze.
+If so, we should consider renaming "ret" to "__ret" to minimize the
+chances of a caller issuing BPF_PROG_RUN_PIN_ON_CPU with "ret" as
+prog or ctx argument, which would lead to unexpected results.
 
 Thanks,
 
-        tglx
+Mathieu
 
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
