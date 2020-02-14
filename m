@@ -2,38 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC28815F20F
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 19:09:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12CF415F209
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 19:09:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388190AbgBNSGQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Feb 2020 13:06:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35492 "EHLO mail.kernel.org"
+        id S2389124AbgBNSGA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Feb 2020 13:06:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731103AbgBNPy4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Feb 2020 10:54:56 -0500
+        id S1731697AbgBNPzG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Feb 2020 10:55:06 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C80F824673;
-        Fri, 14 Feb 2020 15:54:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49B8424673;
+        Fri, 14 Feb 2020 15:55:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581695695;
-        bh=UsiEZwaNCOzGinm9GY9LYQeSFH9pbbl3cGztO6ANsr0=;
+        s=default; t=1581695706;
+        bh=6tbLCWnpf1qdG/ZfEExJsIDCvHtX8M011tK0lJqgro0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n6JL2uVcr+8VOcuB2PA9dV57/JbWR500G8Myd7d6QAZNVfjvwU8i1/TPSIC7yjhXg
-         Hm2HZ9XFgUGMMgT/m1CUYnleEF6VXY39/2klzzqNGtt3ba4ZeTEqOAOJAFRr4zWQMG
-         NGxIsAuTiFZQEFgX0ujIUGn7t5Ls3691dRXFIDYk=
+        b=teSEtjNQuDQbMpH/2USTStNV+Evg255zgdDIpw+wsEXZR90esRBEZhLekNaQyvvE2
+         2+/srGrU4WdgxuX0BshIBrs9oyO4qTQHo9XsXmtw2X04roVxtFw7et5pKwWOT9Zc8a
+         SZ/dNRqVMZCALM29rgkrrIetGzipptxd1Fxt/Y4I=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mitch Williams <mitch.a.williams@intel.com>,
-        Andrew Bowers <andrewx.bowers@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 278/542] ice: add extra check for null Rx descriptor
-Date:   Fri, 14 Feb 2020 10:44:30 -0500
-Message-Id: <20200214154854.6746-278-sashal@kernel.org>
+Cc:     Andrey Zhizhikin <andrey.z@gmail.com>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Petr Mladek <pmladek@suse.com>, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.5 286/542] tools lib api fs: Fix gcc9 stringop-truncation compilation error
+Date:   Fri, 14 Feb 2020 10:44:38 -0500
+Message-Id: <20200214154854.6746-286-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
 References: <20200214154854.6746-1-sashal@kernel.org>
@@ -46,56 +53,65 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Mitch Williams <mitch.a.williams@intel.com>
+From: Andrey Zhizhikin <andrey.z@gmail.com>
 
-[ Upstream commit 1f45ebe0d8fbe6178670b663005f38ef8535db5d ]
+[ Upstream commit 6794200fa3c9c3e6759dae099145f23e4310f4f7 ]
 
-In the case where the hardware gives us a null Rx descriptor, it is
-theoretically possible that we could call one of our skb-construction
-functions with no data pointer, which would cause a panic.
+GCC9 introduced string hardening mechanisms, which exhibits the error
+during fs api compilation:
 
-In real life, this will never happen - we only get null RX
-descriptors as the final descriptor in a chain of otherwise-valid
-descriptors. When this happens, the skb will be extant and we'll just
-call ice_add_rx_frag(), which can deal with empty data buffers.
+error: '__builtin_strncpy' specified bound 4096 equals destination size
+[-Werror=stringop-truncation]
 
-Unfortunately, Coverity does not have intimate knowledge of our
-hardware, so we must add a check here.
+This comes when the length of copy passed to strncpy is is equal to
+destination size, which could potentially lead to buffer overflow.
 
-Signed-off-by: Mitch Williams <mitch.a.williams@intel.com>
-Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
-Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+There is a need to mitigate this potential issue by limiting the size of
+destination by 1 and explicitly terminate the destination with NULL.
+
+Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andriin@fb.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20191211080109.18765-1-andrey.zhizhikin@leica-geosystems.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ice/ice_txrx.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ tools/lib/api/fs/fs.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
-index 2c212f64d99f2..8b2b9e254d28d 100644
---- a/drivers/net/ethernet/intel/ice/ice_txrx.c
-+++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
-@@ -1071,13 +1071,16 @@ static int ice_clean_rx_irq(struct ice_ring *rx_ring, int budget)
- 		ice_put_rx_buf(rx_ring, rx_buf);
- 		continue;
- construct_skb:
--		if (skb)
-+		if (skb) {
- 			ice_add_rx_frag(rx_ring, rx_buf, skb, size);
--		else if (ice_ring_uses_build_skb(rx_ring))
--			skb = ice_build_skb(rx_ring, rx_buf, &xdp);
--		else
-+		} else if (likely(xdp.data)) {
-+			if (ice_ring_uses_build_skb(rx_ring))
-+				skb = ice_build_skb(rx_ring, rx_buf, &xdp);
-+			else
-+				skb = ice_construct_skb(rx_ring, rx_buf, &xdp);
-+		} else {
- 			skb = ice_construct_skb(rx_ring, rx_buf, &xdp);
--
-+		}
- 		/* exit if we failed to retrieve a buffer */
- 		if (!skb) {
- 			rx_ring->rx_stats.alloc_buf_failed++;
+diff --git a/tools/lib/api/fs/fs.c b/tools/lib/api/fs/fs.c
+index 11b3885e833ed..027b18f7ed8cf 100644
+--- a/tools/lib/api/fs/fs.c
++++ b/tools/lib/api/fs/fs.c
+@@ -210,6 +210,7 @@ static bool fs__env_override(struct fs *fs)
+ 	size_t name_len = strlen(fs->name);
+ 	/* name + "_PATH" + '\0' */
+ 	char upper_name[name_len + 5 + 1];
++
+ 	memcpy(upper_name, fs->name, name_len);
+ 	mem_toupper(upper_name, name_len);
+ 	strcpy(&upper_name[name_len], "_PATH");
+@@ -219,7 +220,8 @@ static bool fs__env_override(struct fs *fs)
+ 		return false;
+ 
+ 	fs->found = true;
+-	strncpy(fs->path, override_path, sizeof(fs->path));
++	strncpy(fs->path, override_path, sizeof(fs->path) - 1);
++	fs->path[sizeof(fs->path) - 1] = '\0';
+ 	return true;
+ }
+ 
 -- 
 2.20.1
 
