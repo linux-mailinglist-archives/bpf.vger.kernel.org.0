@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB6015E538
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 17:41:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3272615E3F5
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 17:33:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405729AbgBNQjz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Feb 2020 11:39:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59042 "EHLO mail.kernel.org"
+        id S2392914AbgBNQdF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Feb 2020 11:33:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393326AbgBNQXD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:23:03 -0500
+        id S2406164AbgBNQZh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:25:37 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 740FD24768;
-        Fri, 14 Feb 2020 16:23:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDBEF247C9;
+        Fri, 14 Feb 2020 16:25:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581697383;
-        bh=Ba+QKGRskXBXvu0aL2I2KaAkS6/2ikohdEhv5jDvwgE=;
+        s=default; t=1581697536;
+        bh=WfLUugpGPKXn/iHU2isoZ0mKXtTg4eIb74duBSFyh0I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mdMWciMj8iEskCf6Mmp0ynORluFwvLHnDay/UvheAkUrU+7ov7CJUzG8oYF34kdOb
-         64pOVdLKgxEBXYugCyzbGWJf/xvp/clNbvlDLw0+Bh50jgTQxIsJBNP0Vu/q+Ej3p9
-         hbhblqppxlS8EtwmrugQ3W431xlc3fr6PfkJqcCM=
+        b=gYW8HCa5coIQR3ZbOdeTwiYnkUutToI8a2H62Ep5Tae4Uhu9XK64PFVQqBSab5Vh+
+         f3Vg5gMeZeeCnPrgCCek0g+5aT61/pzfw4eexJsezu+NbEkk4tkmhMCgrozEo+KjiB
+         /WcdVqo2eLAM2jzxlVbGCdoD/p9Q7UOSdX+O8NQ8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Andrey Zhizhikin <andrey.z@gmail.com>,
@@ -38,12 +38,12 @@ Cc:     Andrey Zhizhikin <andrey.z@gmail.com>,
         bpf@vger.kernel.org, netdev@vger.kernel.org,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.9 079/141] tools lib api fs: Fix gcc9 stringop-truncation compilation error
-Date:   Fri, 14 Feb 2020 11:20:19 -0500
-Message-Id: <20200214162122.19794-79-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 057/100] tools lib api fs: Fix gcc9 stringop-truncation compilation error
+Date:   Fri, 14 Feb 2020 11:23:41 -0500
+Message-Id: <20200214162425.21071-57-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214162122.19794-1-sashal@kernel.org>
-References: <20200214162122.19794-1-sashal@kernel.org>
+In-Reply-To: <20200214162425.21071-1-sashal@kernel.org>
+References: <20200214162425.21071-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -91,10 +91,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/tools/lib/api/fs/fs.c b/tools/lib/api/fs/fs.c
-index f99f49e4a31e6..21e714cf0126c 100644
+index 459599d1b6c41..58f05748dd39e 100644
 --- a/tools/lib/api/fs/fs.c
 +++ b/tools/lib/api/fs/fs.c
-@@ -194,6 +194,7 @@ static bool fs__env_override(struct fs *fs)
+@@ -179,6 +179,7 @@ static bool fs__env_override(struct fs *fs)
  	size_t name_len = strlen(fs->name);
  	/* name + "_PATH" + '\0' */
  	char upper_name[name_len + 5 + 1];
@@ -102,7 +102,7 @@ index f99f49e4a31e6..21e714cf0126c 100644
  	memcpy(upper_name, fs->name, name_len);
  	mem_toupper(upper_name, name_len);
  	strcpy(&upper_name[name_len], "_PATH");
-@@ -203,7 +204,8 @@ static bool fs__env_override(struct fs *fs)
+@@ -188,7 +189,8 @@ static bool fs__env_override(struct fs *fs)
  		return false;
  
  	fs->found = true;
