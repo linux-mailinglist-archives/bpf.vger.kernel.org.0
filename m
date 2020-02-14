@@ -2,116 +2,254 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3C315E192
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 17:19:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DED7315E60D
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 17:46:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392796AbgBNQT0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Feb 2020 11:19:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52464 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392792AbgBNQTZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:19:25 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F4CD2470C;
-        Fri, 14 Feb 2020 16:19:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581697164;
-        bh=z24xMhAOAsv3RMvG0Q89BdGt7Cz+HJ5sGckhBahJMxk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IEAX4ozbmnfCwV7LxSneo8uRy7JipFRN/e1CsCC6rXL8jIxClWW3w5RS6lDgbfjoX
-         ONQZsy0lKUeiW4ExhsQ3/n1IfVU2UFivaFQt/Q6LkyeUvRbBVK+KPD3IXwq4Okjybx
-         0ii9Z5UWQjavciksArUccYEQxI57xhs2tr6SEIUk=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andrey Zhizhikin <andrey.z@gmail.com>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Petr Mladek <pmladek@suse.com>, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
+        id S2394102AbgBNQp3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Feb 2020 11:45:29 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:55551 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392969AbgBNQVd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:21:33 -0500
+Received: from [5.158.153.52] (helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1j2diB-0003Hz-Sn; Fri, 14 Feb 2020 17:21:03 +0100
+Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 8ADA81004EC;
+        Fri, 14 Feb 2020 17:21:03 +0100 (CET)
+Message-Id: <20200214133917.304937432@linutronix.de>
+User-Agent: quilt/0.65
+Date:   Fri, 14 Feb 2020 14:39:17 +0100
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     David Miller <davem@davemloft.net>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 100/186] tools lib api fs: Fix gcc9 stringop-truncation compilation error
-Date:   Fri, 14 Feb 2020 11:15:49 -0500
-Message-Id: <20200214161715.18113-100-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214161715.18113-1-sashal@kernel.org>
-References: <20200214161715.18113-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        Sebastian Sewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Clark Williams <williams@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [RFC patch 00/19] bpf: Make BPF and PREEMPT_RT co-exist
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Andrey Zhizhikin <andrey.z@gmail.com>
+Hi!
 
-[ Upstream commit 6794200fa3c9c3e6759dae099145f23e4310f4f7 ]
+This is a follow up to the initial patch series which David posted a while
+ago:
 
-GCC9 introduced string hardening mechanisms, which exhibits the error
-during fs api compilation:
+ https://lore.kernel.org/bpf/20191207.160357.828344895192682546.davem@davemloft.net/
 
-error: '__builtin_strncpy' specified bound 4096 equals destination size
-[-Werror=stringop-truncation]
+which was (while non-functional on RT) a good starting point for further
+investigations.
 
-This comes when the length of copy passed to strncpy is is equal to
-destination size, which could potentially lead to buffer overflow.
+PREEMPT_RT aims to make the kernel fully preemptible except for a few low
+level operations which have to be unpreemptible, like scheduler, low level
+entry/exit code, low level interrupt handling, locking internals etc.
 
-There is a need to mitigate this potential issue by limiting the size of
-destination by 1 and explicitly terminate the destination with NULL.
+This is achieved by the following main transformations (there are some
+more minor ones, but they don't matter in this context):
 
-Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andriin@fb.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20191211080109.18765-1-andrey.zhizhikin@leica-geosystems.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/lib/api/fs/fs.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+   1) All interrupts, which are not explicitely marked IRQF_NO_THREAD, are
+      forced into threaded interrupt handlers. This applies to almost all
+      device interrupt handlers.
 
-diff --git a/tools/lib/api/fs/fs.c b/tools/lib/api/fs/fs.c
-index b24afc0e6e81c..45b50b89009aa 100644
---- a/tools/lib/api/fs/fs.c
-+++ b/tools/lib/api/fs/fs.c
-@@ -210,6 +210,7 @@ static bool fs__env_override(struct fs *fs)
- 	size_t name_len = strlen(fs->name);
- 	/* name + "_PATH" + '\0' */
- 	char upper_name[name_len + 5 + 1];
-+
- 	memcpy(upper_name, fs->name, name_len);
- 	mem_toupper(upper_name, name_len);
- 	strcpy(&upper_name[name_len], "_PATH");
-@@ -219,7 +220,8 @@ static bool fs__env_override(struct fs *fs)
- 		return false;
- 
- 	fs->found = true;
--	strncpy(fs->path, override_path, sizeof(fs->path));
-+	strncpy(fs->path, override_path, sizeof(fs->path) - 1);
-+	fs->path[sizeof(fs->path) - 1] = '\0';
- 	return true;
- }
- 
--- 
-2.20.1
+   2) hrtimers which are not explicitely marked to expire in hard interrupt
+      context are expired in soft interrupt context.
+
+   3) Soft interrupts are also forced into thread context. They run either
+      in the context of a threaded interrupt handler (similar to the !RT
+      mode of running on return from interrupt), in ksoftirqd or in a
+      thread context which raised a soft interrupt (same as in !RT).
+
+      Soft interrupts (BH) are serialized per CPU so the usual bottom half
+      protections still work.
+
+   4) spinlocks and rwlocks are substituted with 'sleeping spin/rwlocks'.
+      The internal representation is a priority inheritance aware rtmutex
+      which has glue code attached to preserve the spin/rwlock semantics
+      vs. task state. They neither disable preemption nor interrupts, which
+      is fine as the interrupt handler they want to be protected against is
+      forced into thread context.
+
+      The true hard interrupt handlers are not affecting these sections as
+      they are completely independent.
+
+      The code pathes which need to be atomic are using raw_spinlocks which
+      disable preemption (and/or interrupts).
+
+      On a non RT kernel spinlocks are mapped to raw_spinlocks so everything
+      works as usual.
+
+As a consequence allocation of memory is not possible from truly atomic
+contexts on RT, even with GFP_ATOMIC set. This is required because the slab
+allocator can run into a situation even with GPF_ATOMIC where it needs to
+call into the page allocator, which in turn takes regular spinlocks. As the
+RT substitution of regular spinlocks might sleep, it's obvious that memory
+allocations from truly atomic contexts on RT are not permitted. The page
+allocator locks cannot be converted to raw locks as the length of the
+resulting preempt/interrupt disabled sections are way above the tolerance
+level of demanding realtime applications.
+
+So this leads to a conflict with the current BPF implementation. BPF
+disables preemption around:
+
+  1) The invocation of BPF programs. This is required to guarantee
+     that the program runs to completion on one CPU
+
+  2) The invocation of map operations from sys_bpf(). This is required
+     to protect the operation against BPF programs which access the
+     same map from perf, kprobes or tracing context because the syscall
+     operation has to lock the hashtab bucket lock.
+
+     If the perf NMI, kprobe or tracepoint happens inside the bucket lock
+     held region and the BPF program needs to access the same bucket then
+     the system would deadlock.
+
+     The mechanism used for this is to increment the per CPU recursion
+     protection which prevents such programs to be executed. The same per
+     CPU variable is used to prevent recursion of the programs themself,
+     which might happen when e.g. a kprobe attached BPF program triggers
+     another kprobe attached BPF program.
+
+In principle this works on RT as well as long as the BPF programs use
+preallocated maps, which is required for trace type programs to prevent
+deadlocks of all sorts. Other BPF programs which run in softirq context,
+e.g. packet filtering, or in thread context, e.g. syscall auditing have no
+requirement for preallocated maps. They can allocate memory when required.
+
+But as explained above on RT memory allocation from truly atomic context is
+not permitted, which required a few teaks to the BPF code.
+
+The initial misunderstanding on my side was that the preempt disable around
+the invocations of BPF programs is not only required to prevent migration
+to a different CPU (in case the program is invoked from preemptible
+context) but is also required to prevent reentrancy from a preempting
+task. In hindsight I should have figured out myself that this is not the
+case because the same program can run concurrently on a different CPU or
+from a different context (e.g. interrupt). Alexei thankfully enlightened me
+recently over a beer that the real intent here is to guarantee that the
+program runs to completion on the same CPU where it started. The same is
+true for the syscall side as this just has to guarantee the per CPU
+recursion protection.
+
+This part of the problem is trivial. RT provides a true migrate_disable()
+mechanism which does not disable preemption. So the preempt_disable /
+enable() pairs can be replaced with migrate_disable / enable() pairs.
+migrate_disable / enable() maps to preempt_disable / enable() on a
+not-RT kernel, so there is no functional change when RT is disabled.
+
+But there is another issue which is not as straight forward to solve:
+
+The map operations which deal with elements in hashtab buckets (or other
+map mechanisms) have spinlocks to protect them against concurrent access
+from other CPUs. These spinlocks are raw_spinlocks, so they disable
+preemption and interrupts (_irqsave()). Not a problem per se, but some of
+these code pathes invoke memory allocations with a bucket lock held. This
+obviously conflicts with the RT semantics.
+
+The easy way out would be to convert these locks to regular spinlocks which
+can be substituted by RT. Works like a charm for both RT and !RT for BPF
+programs which run in thread context (includes soft interrupt and device
+interrupt handler context on RT).
+
+But there are also the BPF programs which run in truly atomic context even
+on a RT kernel, i.e. tracing types (perf, perf NMI, kprobes and trace).
+
+For obvious reasons these context cannot take regular spinlocks on RT
+because RT substitutes them with sleeping spinlocks. might_sleep() splats
+from NMI context are not really desired and on lock contention the
+scheduler explodes in colourful ways. Same problem for kprobes and
+tracepoints. So these program types need a raw spinlock which brings us
+back to square one.
+
+But, there is an important detail to the rescue. The trace type programs
+require preallocated maps to prevent deadlocks of all sorts in the memory
+allocator. Preallocated maps never call into the memory allocator or other
+code pathes which might sleep on a RT kernel. The allocation type is known
+when the program and the map is initialized.
+
+This allows to differentiate between lock types for preallocated and
+run-time allocated maps. While not pretty, the proposed solution is to have
+a lock union in the bucket:
+
+	union {
+		raw_spinlock_t	raw_lock;
+		spinlock_t	lock;
+	};
+
+and have init/lock/unlock helpers which handle the lock type depending on
+the allocation mechanism, i.e. for preallocated maps it uses the raw lock
+and for dynamic allocations it uses the regular spinlock. The locks in the
+percpu_freelist need to stay raw as well as they nest into the bucket lock
+held section, which works for both the raw and the regular spinlock
+variant.
+
+I'm not proud of that, but I really couldn't come up with anything better
+aside of completely splitting the code pathes which would be even worse due
+to the resulting code duplication.
+
+The locks in the LPM trie map needs to become a regular spinlock as well as
+trie map is based on dynamic allocation, but again not a problem as this
+map cannot be used for the critical types anyway.
+
+I kept the LRU and the stack map locks raw for now as they do not use
+dynamic allocations, but I haven't done any testing on latency impact
+yet. The stack map critical sections are truly short, so they should not
+matter at all, but the LRU ones could. That can be revisited once we have
+numbers. I assume that LRU is not the right choice for the trace type
+programs anyway, but who knows.
+
+The last and trivial to solve (Dave solved that already) issue is the non
+owner release of mmap sem, which is forbidden on RT as well. So this just
+forces the IP fallback path.
+
+On a non RT kernel this does not change anything. The compiler optimizes
+the lock magic out and everything maps to the state before these changes.
+
+This survives the selftests and a bunch of different invocations of
+bpftrace on mainline and on a backport to 5.4-rt.
+
+But of course I surely have missed some details here and there, so please
+have a close look at this.
+
+The diffstat of hashtab.c is so large because I sat down and documented the
+above write up in condensed form in a comment on top of the file as I
+wanted to spare others the dubious experience of having to reverse engineer
+the inner workings of BPF.
+
+Thanks,
+
+	tglx
+
+8<----------------
+ include/linux/bpf.h          |    8 +-
+ include/linux/filter.h       |   33 ++++++--
+ include/linux/kernel.h       |    7 +
+ include/linux/preempt.h      |   30 +++++++
+ kernel/bpf/hashtab.c         |  164 ++++++++++++++++++++++++++++++++-----------
+ kernel/bpf/lpm_trie.c        |   12 +--
+ kernel/bpf/percpu_freelist.c |   20 ++---
+ kernel/bpf/stackmap.c        |   18 +++-
+ kernel/bpf/syscall.c         |   16 ++--
+ kernel/bpf/trampoline.c      |    9 +-
+ kernel/events/core.c         |    2 
+ kernel/seccomp.c             |    4 -
+ kernel/trace/bpf_trace.c     |    6 -
+ lib/test_bpf.c               |    4 -
+ net/bpf/test_run.c           |    8 +-
+ net/core/flow_dissector.c    |    4 -
+ net/core/skmsg.c             |    8 --
+ net/kcm/kcmsock.c            |    4 -
+ 18 files changed, 248 insertions(+), 109 deletions(-)
+
+
+
+
 
