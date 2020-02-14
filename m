@@ -2,319 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F07615CDCF
-	for <lists+bpf@lfdr.de>; Thu, 13 Feb 2020 23:07:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D82EE15D233
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 07:35:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726282AbgBMWGv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Feb 2020 17:06:51 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:33157 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727519AbgBMWGv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Feb 2020 17:06:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581631609;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LxFQbPQ4DkEncmBxpMMyx8C/MI86QK2bsuQ9NT3AH+c=;
-        b=VKiJ3jXfK3qKz+hg1DXW+MZMZohQF7FpZrLpXAIjppG4Fb/TFlmtqMfHqnS4lpD/Tv1lEs
-        m1E39fHFHrtI5FA6SyGUNQ++X6e0xyTIFgczQhzAs7Q5cWwoFwjGle6LOva72fmOxmxGzT
-        5Fb7RUDm3h7wbKNMOzF88PaQQ82WhFU=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-264-Qf3OhWPSNA-H1Q6IzJSOOA-1; Thu, 13 Feb 2020 17:06:48 -0500
-X-MC-Unique: Qf3OhWPSNA-H1Q6IzJSOOA-1
-Received: by mail-lf1-f70.google.com with SMTP id i24so876788lfj.17
-        for <bpf@vger.kernel.org>; Thu, 13 Feb 2020 14:06:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=LxFQbPQ4DkEncmBxpMMyx8C/MI86QK2bsuQ9NT3AH+c=;
-        b=QPwbiKxbBw4ch7QjnJtW7iy0uny7t5hWtAzYta4gBK+1v2LwuRFtqoZsm2AuP8hOfL
-         Mugox2SglLF7riQ+LdZFDPIojhC7mbO2zIHerDQdOpt4Y0amXeMv4Be9LMpE9eADj5Io
-         TDsIRjXj5hngGa9g/1BWIIWguxQUpHSqkY5y7BwJM2aQZIzx9FMjAwYXr0C7lp9puLdt
-         Qm+eFI30j8O+RyBkti2bkLlpnE6uGgP37af+L3c7Wg4RaNVzPYJJsTiDLLnrsqx2gCTB
-         s/AsOMkIaymxehKocsf4WmJBbS6/CsOjhUmb4LjbDOjQsrwi7UXRD3nmlJMy5pLSFdaH
-         4kHw==
-X-Gm-Message-State: APjAAAX77csGpzQywiEhceI8uIpnsZxnJ16YqpvjlksMwueKcj3+l8qQ
-        W5PmTbC22WsBaL696TVFmxnN5i6EMKm3Spg/g6HkEA9yx75SIyCMHkjLXnSlsqaN4oWfeNH0dHG
-        A0CJ1Vwob89ip
-X-Received: by 2002:a19:8b88:: with SMTP id n130mr43429lfd.210.1581631606723;
-        Thu, 13 Feb 2020 14:06:46 -0800 (PST)
-X-Google-Smtp-Source: APXvYqxIR5MTDuyqJZzbAd+Oog4qWtz2YVgnGuRldqMlL9ZjjTHwn2JU3D4VUhs8wnw513YCkFeUVA==
-X-Received: by 2002:a19:8b88:: with SMTP id n130mr43419lfd.210.1581631606369;
-        Thu, 13 Feb 2020 14:06:46 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id r12sm2307837ljh.105.2020.02.13.14.06.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Feb 2020 14:06:45 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 04299180371; Thu, 13 Feb 2020 23:06:43 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Networking <netdev@vger.kernel.org>,
-        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "ast\@kernel.org" <ast@kernel.org>,
-        "daniel\@iogearbox.net" <daniel@iogearbox.net>
-Subject: Re: [RFC bpf-next 3/4] bpftool: introduce "prog profile" command
-In-Reply-To: <6C487C26-1037-4CE5-8FA2-0BD67DA5F3F7@fb.com>
-References: <20200213210115.1455809-1-songliubraving@fb.com> <20200213210115.1455809-4-songliubraving@fb.com> <87o8u2dunl.fsf@toke.dk> <6C487C26-1037-4CE5-8FA2-0BD67DA5F3F7@fb.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 13 Feb 2020 23:06:43 +0100
-Message-ID: <87lfp6dtvw.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S1726181AbgBNGfF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Feb 2020 01:35:05 -0500
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:37939 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725897AbgBNGfE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 14 Feb 2020 01:35:04 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 746EFB0B;
+        Fri, 14 Feb 2020 01:35:02 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 14 Feb 2020 01:35:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        content-transfer-encoding:content-type:in-reply-to:date:from:to
+        :cc:subject:message-id; s=fm2; bh=EcBAKpkzUfZmtQUv/xOSmOq1Sve95J
+        yK7cR+M/QSPUk=; b=sRAC5GxIt8fI8LBN4fcEoXLAx8RZdwwQYMUSWj0UgYWVQ4
+        7iLRiwPmqE8Du8yEET2ho5FFsm9KR5rI9TxKpONdgnUnVB5tHa/nlUk4lsfwirJG
+        jHq3m7+aS+hulWtbBcc3SK0JtmswRqT+3N3SZMhqwwo3psvoGZaMVzuMR38BtAnT
+        RruQRN8YeM57u0CFD0tMQGhjd64sFMUvlrX2kESmh8CzAfcMqTSNRcIzwG0XcjVw
+        LOKu4tJc93k9iiqBrSNfa+tZUZsQC6OwPLALjV6T6OyGcGOYZv7HjK73yfgfs9yP
+        aEp20hDa5VGceKZFcpZ3Rg4P/WIS4VtqomWPirGQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=EcBAKp
+        kzUfZmtQUv/xOSmOq1Sve95JyK7cR+M/QSPUk=; b=LExUndLL9dXfESi7Tft11J
+        n0HHMBX9iZkz9HYx4FsKeUovZWRh1d3YLYtG8sSO6HkNT790mMV0nwNDk0Ni81+B
+        aRGUCnqzp7W0f9OPaos2b+djimjwzaJ1kzEHoHK1mPeR4kOXsbblpOq8lhnh0EBm
+        tqmAel3Zl5YKE4BWJd9Q0uL/go+roZQWMYh41dPNSAXDVIv4hLvtjtIyzpDMo/I3
+        QkXA1FgtMyLjvUKQNy11nh+wNRiqmjMgN42rlYUznYOBqdYRcWSecSDK/bY7EvJQ
+        Oq0xCWOF207O9+vJsVYafp6X4gzAqxwoypz5m0UWqlzrOCPwKWUdwtCAlYtEZLPA
+        ==
+X-ME-Sender: <xms:lT9GXlCmBH6kRQPTWP7ImMfe7OVaBcDrut-oYsH_rlAo_Pt7TiCApA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrieelgdeljecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculdejtddmnecujfgurhepgfgtjgffhffvuffksehtqhertddttdejnecu
+    hfhrohhmpedfffgrnhhivghlucgiuhdfuceougiguhesugiguhhuuhdrgiihiieqnecukf
+    hppeduieefrdduudegrddufedvrdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
+    rghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:lT9GXhf5AK-wbrIsflCRCX7viDy4YmeznMo6FKo_R43FJyo0PTChTw>
+    <xmx:lT9GXoI2L-AhQKuJinfTKbUtukc-G1hNPyJypKwAdWvY60me3x7zmg>
+    <xmx:lT9GXsfsgnhUq3e0huaswN7DLwiqQ0K4Xh9d-jUOjbuTPrazZoWbGw>
+    <xmx:lj9GXr45Bj-dDwG4xfCIA1lwrQ-UykhSu6ZtfaNa6-e_8bJ1LsjZJivtoWc>
+Received: from localhost (unknown [163.114.132.3])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 093F33280064;
+        Fri, 14 Feb 2020 01:34:57 -0500 (EST)
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Original: =?utf-8?q?On_Mon,_Feb_10,_2020_at_12:09_PM_Daniel_Xu_<dxu@dxuuu.xyz>_wrot?=
+ =?utf-8?q?e:=0D=0A>=0D=0A>_Branch_records_are_a_CPU_feature_that_can_be_c?=
+ =?utf-8?q?onfigured_to_record=0D=0A>_certain_branches_that_are_taken_duri?=
+ =?utf-8?q?ng_code_execution._This_data_is=0D=0A>_particularly_interesting?=
+ =?utf-8?q?_for_profile_guided_optimizations._perf_has_had=0D=0A>_branch_r?=
+ =?utf-8?q?ecord_support_for_a_while_but_the_data_collection_can_be_a_bit?=
+ =?utf-8?q?=0D=0A>_coarse_grained.=0D=0A>=0D=0A>_We_(Facebook)_have_seen_i?=
+ =?utf-8?q?n_experiments_that_associating_metadata_with=0D=0A>_branch_reco?=
+ =?utf-8?q?rds_can_improve_results_(after_postprocessing)._We_generally=0D?=
+ =?utf-8?q?=0A>_use_bpf=5Fprobe=5Fread=5F*()_to_get_metadata_out_of_usersp?=
+ =?utf-8?q?ace._That's_why_bpf=0D=0A>_support_for_branch_records_is_useful?=
+ =?utf-8?q?.=0D=0A>=0D=0A>_Aside_from_this_particular_use_case,_having_bra?=
+ =?utf-8?q?nch_data_available_to_bpf=0D=0A>_progs_can_be_useful_to_get_sta?=
+ =?utf-8?q?ck_traces_out_of_userspace_applications=0D=0A>_that_omit_frame_?=
+ =?utf-8?q?pointers.=0D=0A>=0D=0A>_Signed-off-by:_Daniel_Xu_<dxu@dxuuu.xyz?=
+ =?utf-8?q?>=0D=0A>_---=0D=0A=0D=0ALGTM,_one_typo_in_description_of_the_he?=
+ =?utf-8?q?lper._bpf-next_is_still_closed,=0D=0Abtw,_but_should_hopefully_?=
+ =?utf-8?q?open_soon.=0D=0A=0D=0AAcked-by:_Andrii_Nakryiko_<andriin@fb.com?=
+ =?utf-8?q?>=0D=0A=0D=0A>__include/uapi/linux/bpf.h_|_25_+++++++++++++++++?=
+ =?utf-8?q?++++++-=0D=0A>__kernel/trace/bpf=5Ftrace.c_|_41_+++++++++++++++?=
+ =?utf-8?q?+++++++++++++++++++++++++=0D=0A>__2_files_changed,_65_insertion?=
+ =?utf-8?q?s(+),_1_deletion(-)=0D=0A>=0D=0A>_diff_--git_a/include/uapi/lin?=
+ =?utf-8?q?ux/bpf.h_b/include/uapi/linux/bpf.h=0D=0A>_index_f1d74a2bd234..?=
+ =?utf-8?q?3004470b7269_100644=0D=0A>_---_a/include/uapi/linux/bpf.h=0D=0A?=
+ =?utf-8?q?>_+++_b/include/uapi/linux/bpf.h=0D=0A>_@@_-2892,6_+2892,25_@@_?=
+ =?utf-8?q?union_bpf=5Fattr_{=0D=0A>___*_____________Obtain_the_64bit_jiff?=
+ =?utf-8?q?ies=0D=0A>___*_____Return=0D=0A>___*_____________The_64_bit_jif?=
+ =?utf-8?q?fies=0D=0A>_+_*=0D=0A>_+_*_int_bpf=5Fread=5Fbranch=5Frecords(st?=
+ =?utf-8?q?ruct_bpf=5Fperf=5Fevent=5Fdata_*ctx,_void_*buf,_u32_size,_u64_f?=
+ =?utf-8?q?lags)=0D=0A>_+_*_____Description=0D=0A>_+_*_____________For_an_?=
+ =?utf-8?q?eBPF_program_attached_to_a_perf_event,_retrieve_the=0D=0A>_+_*_?=
+ =?utf-8?q?____________branch_records_(struct_perf=5Fbranch=5Fentry)_assoc?=
+ =?utf-8?q?iated_to_*ctx*=0D=0A>_+_*_____________and_store_it_in_the_buffe?=
+ =?utf-8?q?r_pointed_by_*buf*_up_to_size=0D=0A>_+_*_____________*buf=5Fsiz?=
+ =?utf-8?q?e*_bytes.=0D=0A>_+_*_____Return=0D=0A>_+_*_____________On_succe?=
+ =?utf-8?q?ss,_number_of_bytes_written_to_*buf*._On_error,_a=0D=0A>_+_*___?=
+ =?utf-8?q?__________negative_value.=0D=0A>_+_*=0D=0A>_+_*_____________The?=
+ =?utf-8?q?_*flags*_can_be_set_to_**BPF=5FF=5FGET=5FBRANCH=5FRECORDS=5FSIZ?=
+ =?utf-8?q?E**_to=0D=0A>_+_*_____________instead_return_the_number_of_byte?=
+ =?utf-8?q?s_required_to_store_all_the=0D=0A>_+_*_____________branch_entri?=
+ =?utf-8?q?es._If_this_flag_is_set,_*buf*_may_be_NULL.=0D=0A>_+_*=0D=0A>_+?=
+ =?utf-8?q?_*_____________**-EINVAL**_if_arguments_invalid_or_**buf=5Fsize?=
+ =?utf-8?q?**_not_a_multiple=0D=0A=0D=0Abuf=5Fsize_->_size=0D=0A=0D=0A>_+_?=
+ =?utf-8?q?*_____________of_sizeof(struct_perf=5Fbranch=5Fentry).=0D=0A>_+?=
+ =?utf-8?q?_*=0D=0A>_+_*_____________**-ENOENT**_if_architecture_does_not_?=
+ =?utf-8?q?support_branch_records.=0D=0A>___*/=0D=0A=0D=0A[...]=0D=0A?=
+In-Reply-To: <CAEf4Bzam8ikJO7atrSS8s-rLJ0jHKNjahcuVEWFh7AAbGTaoGw@mail.gmail.com>
+Originaldate: Tue Feb 11, 2020 at 11:23 AM
+Originalfrom: "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
+Date:   Thu, 13 Feb 2020 22:34:56 -0800
+From:   "Daniel Xu" <dxu@dxuuu.xyz>
+To:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
+Cc:     "bpf" <bpf@vger.kernel.org>, "Alexei Starovoitov" <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        "Song Liu" <songliubraving@fb.com>, "Yonghong Song" <yhs@fb.com>,
+        "Andrii Nakryiko" <andriin@fb.com>,
+        "open list" <linux-kernel@vger.kernel.org>,
+        "Kernel Team" <kernel-team@fb.com>,
+        "Peter Ziljstra" <peterz@infradead.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "Arnaldo Carvalho de Melo" <acme@kernel.org>
+Subject: Re: [PATCH v7 bpf-next RESEND 1/2] bpf: Add
+ bpf_read_branch_records() helper
+Message-Id: <C0LOF40A2NT4.1N6H8Y7LVZGFF@dlxu-fedora-R90QNFJV>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Song Liu <songliubraving@fb.com> writes:
-
->> On Feb 13, 2020, at 1:50 PM, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->>=20
->> Song Liu <songliubraving@fb.com> writes:
->>=20
->>> With fentry/fexit programs, it is possible to profile BPF program with
->>> hardware counters. Introduce bpftool "prog profile", which measures key
->>> metrics of a BPF program.
->>>=20
->>> bpftool prog profile command creates per-cpu perf events. Then it attac=
-hes
->>> fentry/fexit programs to the target BPF program. The fentry program sav=
-es
->>> perf event value to a map. The fexit program reads the perf event again,
->>> and calculates the difference, which is the instructions/cycles used by
->>> the target program.
->>>=20
->>> Example input and output:
->>>=20
->>>  ./bpftool prog profile 20 id 810 cycles instructions
->>>  cycles: duration 20 run_cnt 1368 miss_cnt 665
->>>          counter 503377 enabled 668202 running 351857
->>>  instructions: duration 20 run_cnt 1368 miss_cnt 707
->>>          counter 398625 enabled 502330 running 272014
->>>=20
->>> This command measures cycles and instructions for BPF program with id
->>> 810 for 20 seconds. The program has triggered 1368 times. cycles was not
->>> measured in 665 out of these runs, because of perf event multiplexing
->>> (some perf commands are running in the background). In these runs, the =
-BPF
->>> program consumed 503377 cycles. The perf_event enabled and running time
->>> are 668202 and 351857 respectively.
->>>=20
->>> Note that, this approach measures cycles and instructions in very small
->>> increments. So the fentry/fexit programs introduce noticable errors to
->>> the measurement results.
->>>=20
->>> The fentry/fexit programs are generated with BPF skeleton. Currently,
->>> generation of the skeleton requires some manual steps.
->>>=20
->>> Signed-off-by: Song Liu <songliubraving@fb.com>
->>> ---
->>> tools/bpf/bpftool/profiler.skel.h         | 820 ++++++++++++++++++++++
->>> tools/bpf/bpftool/prog.c                  | 387 +++++++++-
->>> tools/bpf/bpftool/skeleton/README         |   3 +
->>> tools/bpf/bpftool/skeleton/profiler.bpf.c | 185 +++++
->>> tools/bpf/bpftool/skeleton/profiler.h     |  47 ++
->>> 5 files changed, 1441 insertions(+), 1 deletion(-)
->>> create mode 100644 tools/bpf/bpftool/profiler.skel.h
->>> create mode 100644 tools/bpf/bpftool/skeleton/README
->>> create mode 100644 tools/bpf/bpftool/skeleton/profiler.bpf.c
->>> create mode 100644 tools/bpf/bpftool/skeleton/profiler.h
->>>=20
->>> diff --git a/tools/bpf/bpftool/profiler.skel.h b/tools/bpf/bpftool/prof=
-iler.skel.h
->>> new file mode 100644
->>> index 000000000000..10e99989c03e
->>> --- /dev/null
->>> +++ b/tools/bpf/bpftool/profiler.skel.h
->>> @@ -0,0 +1,820 @@
->>> +/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
->>> +
->>> +/* THIS FILE IS AUTOGENERATED! */
->>> +#ifndef __PROFILER_BPF_SKEL_H__
->>> +#define __PROFILER_BPF_SKEL_H__
->>> +
->>> +#include <stdlib.h>
->>> +#include <bpf/libbpf.h>
->>> +
->>> +struct profiler_bpf {
->>> +	struct bpf_object_skeleton *skeleton;
->>> +	struct bpf_object *obj;
->>> +	struct {
->>> +		struct bpf_map *events;
->>> +		struct bpf_map *fentry_readings;
->>> +		struct bpf_map *accum_readings;
->>> +		struct bpf_map *counts;
->>> +		struct bpf_map *miss_counts;
->>> +		struct bpf_map *rodata;
->>> +	} maps;
->>> +	struct {
->>> +		struct bpf_program *fentry_XXX;
->>> +		struct bpf_program *fexit_XXX;
->>> +	} progs;
->>> +	struct {
->>> +		struct bpf_link *fentry_XXX;
->>> +		struct bpf_link *fexit_XXX;
->>> +	} links;
->>> +	struct profiler_bpf__rodata {
->>> +		__u32 num_cpu;
->>> +		__u32 num_metric;
->>> +	} *rodata;
->>> +};
->>> +
->>> +static void
->>> +profiler_bpf__destroy(struct profiler_bpf *obj)
->>> +{
->>> +	if (!obj)
->>> +		return;
->>> +	if (obj->skeleton)
->>> +		bpf_object__destroy_skeleton(obj->skeleton);
->>> +	free(obj);
->>> +}
->>> +
->>> +static inline int
->>> +profiler_bpf__create_skeleton(struct profiler_bpf *obj);
->>> +
->>> +static inline struct profiler_bpf *
->>> +profiler_bpf__open_opts(const struct bpf_object_open_opts *opts)
->>> +{
->>> +	struct profiler_bpf *obj;
->>> +
->>> +	obj =3D (typeof(obj))calloc(1, sizeof(*obj));
->>> +	if (!obj)
->>> +		return NULL;
->>> +	if (profiler_bpf__create_skeleton(obj))
->>> +		goto err;
->>> +	if (bpf_object__open_skeleton(obj->skeleton, opts))
->>> +		goto err;
->>> +
->>> +	return obj;
->>> +err:
->>> +	profiler_bpf__destroy(obj);
->>> +	return NULL;
->>> +}
->>> +
->>> +static inline struct profiler_bpf *
->>> +profiler_bpf__open(void)
->>> +{
->>> +	return profiler_bpf__open_opts(NULL);
->>> +}
->>> +
->>> +static inline int
->>> +profiler_bpf__load(struct profiler_bpf *obj)
->>> +{
->>> +	return bpf_object__load_skeleton(obj->skeleton);
->>> +}
->>> +
->>> +static inline struct profiler_bpf *
->>> +profiler_bpf__open_and_load(void)
->>> +{
->>> +	struct profiler_bpf *obj;
->>> +
->>> +	obj =3D profiler_bpf__open();
->>> +	if (!obj)
->>> +		return NULL;
->>> +	if (profiler_bpf__load(obj)) {
->>> +		profiler_bpf__destroy(obj);
->>> +		return NULL;
->>> +	}
->>> +	return obj;
->>> +}
->>> +
->>> +static inline int
->>> +profiler_bpf__attach(struct profiler_bpf *obj)
->>> +{
->>> +	return bpf_object__attach_skeleton(obj->skeleton);
->>> +}
->>> +
->>> +static inline void
->>> +profiler_bpf__detach(struct profiler_bpf *obj)
->>> +{
->>> +	return bpf_object__detach_skeleton(obj->skeleton);
->>> +}
->>> +
->>> +static inline int
->>> +profiler_bpf__create_skeleton(struct profiler_bpf *obj)
->>> +{
->>> +	struct bpf_object_skeleton *s;
->>> +
->>> +	s =3D (typeof(s))calloc(1, sizeof(*s));
->>> +	if (!s)
->>> +		return -1;
->>> +	obj->skeleton =3D s;
->>> +
->>> +	s->sz =3D sizeof(*s);
->>> +	s->name =3D "profiler_bpf";
->>> +	s->obj =3D &obj->obj;
->>> +
->>> +	/* maps */
->>> +	s->map_cnt =3D 6;
->>> +	s->map_skel_sz =3D sizeof(*s->maps);
->>> +	s->maps =3D (typeof(s->maps))calloc(s->map_cnt, s->map_skel_sz);
->>> +	if (!s->maps)
->>> +		goto err;
->>> +
->>> +	s->maps[0].name =3D "events";
->>> +	s->maps[0].map =3D &obj->maps.events;
->>> +
->>> +	s->maps[1].name =3D "fentry_readings";
->>> +	s->maps[1].map =3D &obj->maps.fentry_readings;
->>> +
->>> +	s->maps[2].name =3D "accum_readings";
->>> +	s->maps[2].map =3D &obj->maps.accum_readings;
->>> +
->>> +	s->maps[3].name =3D "counts";
->>> +	s->maps[3].map =3D &obj->maps.counts;
->>> +
->>> +	s->maps[4].name =3D "miss_counts";
->>> +	s->maps[4].map =3D &obj->maps.miss_counts;
->>> +
->>> +	s->maps[5].name =3D "profiler.rodata";
->>> +	s->maps[5].map =3D &obj->maps.rodata;
->>> +	s->maps[5].mmaped =3D (void **)&obj->rodata;
->>> +
->>> +	/* programs */
->>> +	s->prog_cnt =3D 2;
->>> +	s->prog_skel_sz =3D sizeof(*s->progs);
->>> +	s->progs =3D (typeof(s->progs))calloc(s->prog_cnt, s->prog_skel_sz);
->>> +	if (!s->progs)
->>> +		goto err;
->>> +
->>> +	s->progs[0].name =3D "fentry_XXX";
->>> +	s->progs[0].prog =3D &obj->progs.fentry_XXX;
->>> +	s->progs[0].link =3D &obj->links.fentry_XXX;
->>> +
->>> +	s->progs[1].name =3D "fexit_XXX";
->>> +	s->progs[1].prog =3D &obj->progs.fexit_XXX;
->>> +	s->progs[1].link =3D &obj->links.fexit_XXX;
->>> +
->>> +	s->data_sz =3D 18256;
->>> +	s->data =3D (void *)"\
->>> +\x7f\x45\x4c\x46\x02\x01\x01\0\0\0\0\0\0\0\0\0\x01\0\xf7\0\x01\0\0\0\0=
-\0\0\0\0\
->>=20
->> Holy binary blob, Batman! :)
->>=20
->> What is this blob, exactly? The bytecode output of a precompiled
->> program?
+On Tue Feb 11, 2020 at 11:23 AM, Andrii Nakryiko wrote:
+> On Mon, Feb 10, 2020 at 12:09 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+[...]
+> > + * int bpf_read_branch_records(struct bpf_perf_event_data *ctx, void *=
+buf, u32 size, u64 flags)
+> > + *     Description
+> > + *             For an eBPF program attached to a perf event, retrieve =
+the
+> > + *             branch records (struct perf_branch_entry) associated to=
+ *ctx*
+> > + *             and store it in the buffer pointed by *buf* up to size
+> > + *             *buf_size* bytes.
+> > + *     Return
+> > + *             On success, number of bytes written to *buf*. On error,=
+ a
+> > + *             negative value.
+> > + *
+> > + *             The *flags* can be set to **BPF_F_GET_BRANCH_RECORDS_SI=
+ZE** to
+> > + *             instead return the number of bytes required to store al=
+l the
+> > + *             branch entries. If this flag is set, *buf* may be NULL.
+> > + *
+> > + *             **-EINVAL** if arguments invalid or **buf_size** not a =
+multiple
 >
-> It is the skeleton compiled from profiler.bpf.c. Please refer to=20
-> the README file for step to generate it.
+>=20
+> buf_size -> size
 
-Ah, right, seems I managed to skip over the second half of the patch so
-missed that :)
+Whoops, thanks for catching.
 
-> In long term, we should include the generation of this blob in the=20
-> make process. But for RFC, I kept it simple for now. :)
-
-Yes, I agree; but fair enough.
-
--Toke
-
+[...]
