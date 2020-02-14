@@ -2,85 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D2315F138
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 19:03:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A039A15F56E
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 19:39:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387836AbgBNP4a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Feb 2020 10:56:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38336 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387829AbgBNP4a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Feb 2020 10:56:30 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1C9A2086A;
-        Fri, 14 Feb 2020 15:56:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581695789;
-        bh=+rAfQc5HdLOMIL4uUKimOeM2WHF8AZu9IucVD2BUBUs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tQI8Rl6wWJw6gfhFBcel1MDafq2XSvoFHzujpw4A4dDMj5K1JoECLRNYFGK2ALvNG
-         oowlmBGFH425QQDtdK78Qd9uovKdUG9r8OEWmqa/ErO7aZNX439jU1c5m2pNgT1i/y
-         nEaW9MOI3Xoha9RdqSTGgI8bLUPrkesjb2XcgnQA=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Li RongQing <lirongqing@baidu.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 352/542] bpf: Return -EBADRQC for invalid map type in __bpf_tx_xdp_map
-Date:   Fri, 14 Feb 2020 10:45:44 -0500
-Message-Id: <20200214154854.6746-352-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
-References: <20200214154854.6746-1-sashal@kernel.org>
+        id S2388846AbgBNShC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Feb 2020 13:37:02 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:55987 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387551AbgBNShC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Feb 2020 13:37:02 -0500
+Received: from p5b06da22.dip0.t-ipconnect.de ([91.6.218.34] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1j2fpO-0004c8-S7; Fri, 14 Feb 2020 19:36:39 +0100
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 57DD9101161; Fri, 14 Feb 2020 19:36:37 +0100 (CET)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     David Miller <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        bigeasy@linutronix.de, peterz@infradead.org, williams@redhat.com,
+        rostedt@goodmis.org, juri.lelli@redhat.com, mingo@kernel.org
+Subject: Re: [RFC patch 00/19] bpf: Make BPF and PREEMPT_RT co-exist
+In-Reply-To: <20200214.095303.341559462549043464.davem@davemloft.net>
+Date:   Fri, 14 Feb 2020 19:36:37 +0100
+Message-ID: <87pneht3re.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Li RongQing <lirongqing@baidu.com>
+David Miller <davem@davemloft.net> writes:
 
-[ Upstream commit 0a29275b6300f39f78a87f2038bbfe5bdbaeca47 ]
+> From: Thomas Gleixner <tglx@linutronix.de>
+> Date: Fri, 14 Feb 2020 14:39:17 +0100
+>
+>> This is a follow up to the initial patch series which David posted a
+>> while ago:
+>> 
+>>  https://lore.kernel.org/bpf/20191207.160357.828344895192682546.davem@davemloft.net/
+>> 
+>> which was (while non-functional on RT) a good starting point for further
+>> investigations.
+>
+> This looks really good after a cursory review, thanks for doing this week.
+>
+> I was personally unaware of the pre-allocation rules for MAPs used by
+> tracing et al.  And that definitely shapes how this should be handled.
 
-A negative value should be returned if map->map_type is invalid
-although that is impossible now, but if we run into such situation
-in future, then xdpbuff could be leaked.
+Hmm. I just noticed that my analysis only holds for PERF events. But
+that's broken on mainline already.
 
-Daniel Borkmann suggested:
+Assume the following simplified callchain:
 
--EBADRQC should be returned to stay consistent with generic XDP
-for the tracepoint output and not to be confused with -EOPNOTSUPP
-from other locations like dev_map_enqueue() when ndo_xdp_xmit is
-missing and such.
+       kmalloc() from regular non BPF context
+         cache empty
+           freelist empty
+             lock(zone->lock);
+                tracepoint or kprobe
+                  BPF()
+                    update_elem()
+                      lock(bucket)
+                        kmalloc()
+                          cache empty
+                            freelist empty
+                              lock(zone->lock);  <- DEADLOCK
 
-Suggested-by: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Li RongQing <lirongqing@baidu.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/1578618277-18085-1-git-send-email-lirongqing@baidu.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/core/filter.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+So really, preallocation _must_ be enforced for all variants of
+intrusive instrumentation. There is no if and but, it's simply mandatory
+as all intrusive instrumentation has to follow the only sensible
+principle: KISS = Keep It Safe and Simple.
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 538f6a735a19f..f797b1599c92f 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3543,7 +3543,7 @@ static int __bpf_tx_xdp_map(struct net_device *dev_rx, void *fwd,
- 		return err;
- 	}
- 	default:
--		break;
-+		return -EBADRQC;
- 	}
- 	return 0;
- }
--- 
-2.20.1
+The above is a perfectly valid scenario and works with perf and tracing,
+so it has to work with BPF in the same safe way.
+
+I might be missing some magic enforcement of that, but I got lost in the
+maze.
+
+Thanks,
+
+        tglx
 
