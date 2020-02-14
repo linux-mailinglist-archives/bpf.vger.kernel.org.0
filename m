@@ -2,39 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C1715E103
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 17:16:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3C315E192
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 17:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389754AbgBNQQd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Feb 2020 11:16:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47392 "EHLO mail.kernel.org"
+        id S2392796AbgBNQT0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Feb 2020 11:19:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392616AbgBNQQd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:16:33 -0500
+        id S2392792AbgBNQTZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:19:25 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 93C2524676;
-        Fri, 14 Feb 2020 16:16:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F4CD2470C;
+        Fri, 14 Feb 2020 16:19:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581696992;
-        bh=7P2vlFybEQGvQnGZvdak6Xt5WNMRnhmHfVS2Glgdc78=;
+        s=default; t=1581697164;
+        bh=z24xMhAOAsv3RMvG0Q89BdGt7Cz+HJ5sGckhBahJMxk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cESJPItgrGwjm6V0ciDAxEe51wumZdjpHEpSzS8PiFrQRkN6SPV3CXgJJF5/GAYeh
-         oYe/tj4iACRngHtA+qOSNBzU2KLbvAHmHashW6Z31bXAJ0Wb+AUl4ILQgJLCz0Nbjp
-         G4gYKJ1NmnCEJ7Cr74ADiMKqvZ/yiun7qNVoXYhg=
+        b=IEAX4ozbmnfCwV7LxSneo8uRy7JipFRN/e1CsCC6rXL8jIxClWW3w5RS6lDgbfjoX
+         ONQZsy0lKUeiW4ExhsQ3/n1IfVU2UFivaFQt/Q6LkyeUvRbBVK+KPD3IXwq4Okjybx
+         0ii9Z5UWQjavciksArUccYEQxI57xhs2tr6SEIUk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Vasily Averin <vvs@virtuozzo.com>,
+Cc:     Andrey Zhizhikin <andrey.z@gmail.com>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Petr Mladek <pmladek@suse.com>, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 226/252] bpf: map_seq_next should always increase position index
-Date:   Fri, 14 Feb 2020 11:11:21 -0500
-Message-Id: <20200214161147.15842-226-sashal@kernel.org>
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 100/186] tools lib api fs: Fix gcc9 stringop-truncation compilation error
+Date:   Fri, 14 Feb 2020 11:15:49 -0500
+Message-Id: <20200214161715.18113-100-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214161147.15842-1-sashal@kernel.org>
-References: <20200214161147.15842-1-sashal@kernel.org>
+In-Reply-To: <20200214161715.18113-1-sashal@kernel.org>
+References: <20200214161715.18113-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,44 +53,63 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Andrey Zhizhikin <andrey.z@gmail.com>
 
-[ Upstream commit 90435a7891a2259b0f74c5a1bc5600d0d64cba8f ]
+[ Upstream commit 6794200fa3c9c3e6759dae099145f23e4310f4f7 ]
 
-If seq_file .next fuction does not change position index,
-read after some lseek can generate an unexpected output.
+GCC9 introduced string hardening mechanisms, which exhibits the error
+during fs api compilation:
 
-See also: https://bugzilla.kernel.org/show_bug.cgi?id=206283
+error: '__builtin_strncpy' specified bound 4096 equals destination size
+[-Werror=stringop-truncation]
 
-v1 -> v2: removed missed increment in end of function
+This comes when the length of copy passed to strncpy is is equal to
+destination size, which could potentially lead to buffer overflow.
 
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/eca84fdd-c374-a154-d874-6c7b55fc3bc4@virtuozzo.com
+There is a need to mitigate this potential issue by limiting the size of
+destination by 1 and explicitly terminate the destination with NULL.
+
+Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andriin@fb.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20191211080109.18765-1-andrey.zhizhikin@leica-geosystems.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/inode.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ tools/lib/api/fs/fs.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-index dc9d7ac8228db..c04815bb15cc1 100644
---- a/kernel/bpf/inode.c
-+++ b/kernel/bpf/inode.c
-@@ -198,6 +198,7 @@ static void *map_seq_next(struct seq_file *m, void *v, loff_t *pos)
- 	void *key = map_iter(m)->key;
- 	void *prev_key;
+diff --git a/tools/lib/api/fs/fs.c b/tools/lib/api/fs/fs.c
+index b24afc0e6e81c..45b50b89009aa 100644
+--- a/tools/lib/api/fs/fs.c
++++ b/tools/lib/api/fs/fs.c
+@@ -210,6 +210,7 @@ static bool fs__env_override(struct fs *fs)
+ 	size_t name_len = strlen(fs->name);
+ 	/* name + "_PATH" + '\0' */
+ 	char upper_name[name_len + 5 + 1];
++
+ 	memcpy(upper_name, fs->name, name_len);
+ 	mem_toupper(upper_name, name_len);
+ 	strcpy(&upper_name[name_len], "_PATH");
+@@ -219,7 +220,8 @@ static bool fs__env_override(struct fs *fs)
+ 		return false;
  
-+	(*pos)++;
- 	if (map_iter(m)->done)
- 		return NULL;
- 
-@@ -210,8 +211,6 @@ static void *map_seq_next(struct seq_file *m, void *v, loff_t *pos)
- 		map_iter(m)->done = true;
- 		return NULL;
- 	}
--
--	++(*pos);
- 	return key;
+ 	fs->found = true;
+-	strncpy(fs->path, override_path, sizeof(fs->path));
++	strncpy(fs->path, override_path, sizeof(fs->path) - 1);
++	fs->path[sizeof(fs->path) - 1] = '\0';
+ 	return true;
  }
  
 -- 
