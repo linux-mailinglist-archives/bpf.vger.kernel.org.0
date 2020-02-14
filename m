@@ -2,206 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D759E15D2DC
-	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 08:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C5815DC43
+	for <lists+bpf@lfdr.de>; Fri, 14 Feb 2020 16:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728844AbgBNHel (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Feb 2020 02:34:41 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44591 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728829AbgBNHel (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Feb 2020 02:34:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581665679;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1vTB07YCHquUQRM8bojAgZpjMe0UTX9SMv5SiNm5LOI=;
-        b=e8Eny1EfidtErfpAFV0MQmyCoOPlzf0MH+TbYpUjqDZV9S4t/oxqi33F/DMPswRYJMlra9
-        V9gQgdqfSy1Q3ifjxEE7xFImtxN8iOSuRh8SLQhvR8inp8xmI7lsSQoU+1z3g63sJrnN6Y
-        YTh7exEj+eXD1u/P1iUtinP8pXAGJDE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-311-gFvEo78qM1yO2J4hbv0WnQ-1; Fri, 14 Feb 2020 02:34:38 -0500
-X-MC-Unique: gFvEo78qM1yO2J4hbv0WnQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1730862AbgBNPvt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Feb 2020 10:51:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57038 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730858AbgBNPvs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Feb 2020 10:51:48 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2CE7D18B9F80;
-        Fri, 14 Feb 2020 07:34:36 +0000 (UTC)
-Received: from [10.36.116.117] (ovpn-116-117.ams2.redhat.com [10.36.116.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2D6865DA87;
-        Fri, 14 Feb 2020 07:34:31 +0000 (UTC)
-From:   "Eelco Chaudron" <echaudro@redhat.com>
-To:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        "Martin Lau" <kafai@fb.com>, "Song Liu" <songliubraving@fb.com>,
-        "Yonghong Song" <yhs@fb.com>, "Andrii Nakryiko" <andriin@fb.com>,
-        "Toke =?utf-8?b?SMO4aWxhbmQtSsO4cmdlbnNlbg==?=" <toke@redhat.com>
-Subject: Re: [PATCH bpf-next v2] libbpf: Add support for dynamic program
- attach target
-Date:   Fri, 14 Feb 2020 08:34:28 +0100
-Message-ID: <E8D7E3C9-A0C8-4AFC-A7AE-BB6123E687C8@redhat.com>
-In-Reply-To: <CAEf4Bzb59yjEMzs=n7pmbCB-L6RfmGDQiOwDFBoh54aSps4Vsg@mail.gmail.com>
-References: <158160616195.80320.5636088335810242866.stgit@xdp-tutorial>
- <CAEf4Bzb59yjEMzs=n7pmbCB-L6RfmGDQiOwDFBoh54aSps4Vsg@mail.gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 1201624681;
+        Fri, 14 Feb 2020 15:51:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1581695507;
+        bh=oW9af36Ad6Dfo5IY6x/pAj7mJ6EGZgnbtxwOT8Tddp0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=G52C9nVqbboZ1vFxUiIfQ/M8N8MwsDbDYuk+g+142uLmCoNFf05i3fKyUNenP6cA0
+         h1iD55qPv4Q2l1xe8GBphgZQuh3GlLYHvnN0vSxknSe1VI4/ZElV+kxm1ZTWa3aFuW
+         2XRBVtlnJ4AxQNvyI0rZ4HUOVGiG0/1FfJxuoTa0=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.5 133/542] bpftool: Don't crash on missing xlated program instructions
+Date:   Fri, 14 Feb 2020 10:42:05 -0500
+Message-Id: <20200214154854.6746-133-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
+References: <20200214154854.6746-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Toke Høiland-Jørgensen <toke@redhat.com>
 
+[ Upstream commit d95f1e8b462c4372ac409886070bb8719d8a4d3a ]
 
-On 13 Feb 2020, at 18:42, Andrii Nakryiko wrote:
+Turns out the xlated program instructions can also be missing if
+kptr_restrict sysctl is set. This means that the previous fix to check the
+jited_prog_insns pointer was insufficient; add another check of the
+xlated_prog_insns pointer as well.
 
-> On Thu, Feb 13, 2020 at 7:05 AM Eelco Chaudron <echaudro@redhat.com>=20
-> wrote:
->>
->> Currently when you want to attach a trace program to a bpf program
->> the section name needs to match the tracepoint/function semantics.
->>
->> However the addition of the bpf_program__set_attach_target() API
->> allows you to specify the tracepoint/function dynamically.
->>
->> The call flow would look something like this:
->>
->>   xdp_fd =3D bpf_prog_get_fd_by_id(id);
->>   trace_obj =3D bpf_object__open_file("func.o", NULL);
->>   prog =3D bpf_object__find_program_by_title(trace_obj,
->>                                            "fentry/myfunc");
->>   bpf_program__set_expected_attach_type(prog, BPF_TRACE_FENTRY);
->>   bpf_program__set_attach_target(prog, xdp_fd,
->>                                  "xdpfilt_blk_all");
->>   bpf_object__load(trace_obj)
->>
->> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
->> ---
->
-> API-wise this looks good, thanks! Please address feedback below and
-> re-submit once bpf-next opens. Can you please also convert one of
-> existing selftests using open_opts's attach_prog_fd to use this API
-> instead to have a demonstration there?
+Fixes: 5b79bcdf0362 ("bpftool: Don't crash on missing jited insns or ksyms")
+Fixes: cae73f233923 ("bpftool: use bpf_program__get_prog_info_linear() in prog.c:do_dump()")
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+Link: https://lore.kernel.org/bpf/20200206102906.112551-1-toke@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ tools/bpf/bpftool/prog.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yes will update the one I added for bfp2bpf testing=E2=80=A6
-
->> v1 -> v2: Remove requirement for attach type name in API
->>
->>  tools/lib/bpf/libbpf.c   |   33 +++++++++++++++++++++++++++++++--
->>  tools/lib/bpf/libbpf.h   |    4 ++++
->>  tools/lib/bpf/libbpf.map |    1 +
->>  3 files changed, 36 insertions(+), 2 deletions(-)
->>
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index 514b1a524abb..9b8cab995580 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -4939,8 +4939,8 @@ int bpf_program__load(struct bpf_program *prog,=20
->> char *license, __u32 kern_ver)
->>  {
->>         int err =3D 0, fd, i, btf_id;
->>
->> -       if (prog->type =3D=3D BPF_PROG_TYPE_TRACING ||
->> -           prog->type =3D=3D BPF_PROG_TYPE_EXT) {
->> +       if ((prog->type =3D=3D BPF_PROG_TYPE_TRACING ||
->> +            prog->type =3D=3D BPF_PROG_TYPE_EXT) &&=20
->> !prog->attach_btf_id) {
->>                 btf_id =3D libbpf_find_attach_btf_id(prog);
->>                 if (btf_id <=3D 0)
->>                         return btf_id;
->> @@ -8132,6 +8132,35 @@ void bpf_program__bpil_offs_to_addr(struct=20
->> bpf_prog_info_linear *info_linear)
->>         }
->>  }
->>
->> +int bpf_program__set_attach_target(struct bpf_program *prog,
->> +                                  int attach_prog_fd,
->> +                                  const char *attach_func_name)
->> +{
->> +       int btf_id;
->> +
->> +       if (!prog || attach_prog_fd < 0 || !attach_func_name)
->> +               return -EINVAL;
->> +
->> +       if (attach_prog_fd)
->> +               btf_id =3D libbpf_find_prog_btf_id(attach_func_name,
->> +                                                attach_prog_fd);
->> +       else
->> +               btf_id =3D=20
->> __find_vmlinux_btf_id(prog->obj->btf_vmlinux,
->> +                                              attach_func_name,
->> +                                             =20
->> prog->expected_attach_type);
->> +
->> +       if (btf_id <=3D 0) {
->> +               if (!attach_prog_fd)
->> +                       pr_warn("%s is not found in vmlinux BTF\n",
->> +                               attach_func_name);
->
-> libbpf_find_attach_btf_id's error reporting is misleading (it always
-> reports as if error happened with vmlinux BTF, even if attach_prog_fd
-> 0). Could you please fix that and add better error reporting here
-> for attach_prog_fd>0 case here?
->
-
-I did not add log messages for the btf_id > 0 case as they are covered=20
-in the libbpf_find_prog_btf_id() function. Please let me know if this is=20
-not enough.
-
->> +               return btf_id;
->> +       }
->> +
->> +       prog->attach_btf_id =3D btf_id;
->> +       prog->attach_prog_fd =3D attach_prog_fd;
->> +       return 0;
->> +}
->> +
->>  int parse_cpu_mask_str(const char *s, bool **mask, int *mask_sz)
->>  {
->>         int err =3D 0, n, len, start, end =3D -1;
->> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
->> index 3fe12c9d1f92..02fc58a21a7f 100644
->> --- a/tools/lib/bpf/libbpf.h
->> +++ b/tools/lib/bpf/libbpf.h
->> @@ -334,6 +334,10 @@ LIBBPF_API void
->>  bpf_program__set_expected_attach_type(struct bpf_program *prog,
->>                                       enum bpf_attach_type type);
->>
->> +LIBBPF_API int
->> +bpf_program__set_attach_target(struct bpf_program *prog, int=20
->> attach_prog_fd,
->> +                              const char *attach_func_name);
->> +
->>  LIBBPF_API bool bpf_program__is_socket_filter(const struct=20
->> bpf_program *prog);
->>  LIBBPF_API bool bpf_program__is_tracepoint(const struct bpf_program=20
->> *prog);
->>  LIBBPF_API bool bpf_program__is_raw_tracepoint(const struct=20
->> bpf_program *prog);
->> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
->> index b035122142bb..8aba5438a3f0 100644
->> --- a/tools/lib/bpf/libbpf.map
->> +++ b/tools/lib/bpf/libbpf.map
->> @@ -230,6 +230,7 @@ LIBBPF_0.0.7 {
->>                 bpf_program__name;
->>                 bpf_program__is_extension;
->>                 bpf_program__is_struct_ops;
->> +               bpf_program__set_attach_target;
->
-> This will have to go into LIBBPF_0.0.8 once bpf-next opens. Please
-> rebase and re-send then.
-
-Will do=E2=80=A6
-
->>                 bpf_program__set_extension;
->>                 bpf_program__set_struct_ops;
->>                 btf__align_of;
->>
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index 2ce9c5ba19347..9288be1d6bf0e 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -500,7 +500,7 @@ static int do_dump(int argc, char **argv)
+ 		buf = (unsigned char *)(info->jited_prog_insns);
+ 		member_len = info->jited_prog_len;
+ 	} else {	/* DUMP_XLATED */
+-		if (info->xlated_prog_len == 0) {
++		if (info->xlated_prog_len == 0 || !info->xlated_prog_insns) {
+ 			p_err("error retrieving insn dump: kernel.kptr_restrict set?");
+ 			goto err_free;
+ 		}
+-- 
+2.20.1
 
