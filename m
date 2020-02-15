@@ -2,93 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F0EB015FAD5
-	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2020 00:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC6C15FB5E
+	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2020 01:15:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727957AbgBNXl4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Feb 2020 18:41:56 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:15294 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726861AbgBNXl4 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 14 Feb 2020 18:41:56 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01ENbPWB012913
-        for <bpf@vger.kernel.org>; Fri, 14 Feb 2020 15:41:55 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=s5AINjqbi4/0oeVLttio2uLVEGZPsLRmz6siQCTuMVM=;
- b=JqaETfaj5Wx/w5LIRtwG2/Os7HChJsAa1IO6j82hc1MvdkD7l//46b1LSo5RdkJm/215
- oW0hTCi+KebW+g4nIry3b1FrRMQChJ2dsikUYjOQSeksnudCL20X4V+FfUfBiLc14dwm
- 1kPMwijPakKlwHd1DKME9mnKIzpTQwG2/i8= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2y5gdnncrf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 14 Feb 2020 15:41:55 -0800
-Received: from intmgw003.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 14 Feb 2020 15:41:53 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 6ABCD62E356D; Fri, 14 Feb 2020 15:41:48 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Song Liu <songliubraving@fb.com>
-Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
-To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-CC:     <kernel-team@fb.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] bpf: allow bpf_perf_event_read_value in all BPF programs
-Date:   Fri, 14 Feb 2020 15:41:46 -0800
-Message-ID: <20200214234146.2910011-1-songliubraving@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1727639AbgBOAP0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Feb 2020 19:15:26 -0500
+Received: from mail-wm1-f54.google.com ([209.85.128.54]:50575 "EHLO
+        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726079AbgBOAP0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Feb 2020 19:15:26 -0500
+Received: by mail-wm1-f54.google.com with SMTP id a5so11707704wmb.0
+        for <bpf@vger.kernel.org>; Fri, 14 Feb 2020 16:15:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=mYoij7/0PpaPJGbReo/cChSNDS2iUj8CyCrcTA9q/QI=;
+        b=QbDkJLRKiyG1zmdk1X+IGdDmXMko9Zkd1NZKukdtTB7SJbDY4sFcVJGw8GLpo8WOS3
+         yVOZzOgSemuJdvtm3C+J9fVU4HmR4QmvaSr3KtqEuaHQ7qDDndUD+nPYKe42JH+YWzNr
+         kYRooWriYYd9N5dHUawsWXCsnZqMpDagxpzf7DKqoaloeVPOMjxDkT77lnx25SC3oD8c
+         egkHSEtAQjrfyQ0BlQvveqnr805TJeXitgosjdP7TlJXEGUZ82vaE/lQyLdfWJh+Wt8s
+         0mxF6THn+MOurGyZHG6RSgCidjHr2XhGXDRAbe72nT8BmFJDOfQMfDYolEo8CW7WTOWt
+         S93w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=mYoij7/0PpaPJGbReo/cChSNDS2iUj8CyCrcTA9q/QI=;
+        b=WpETpKx54rnOZ3YGUDHZcscJujIC9zojNA2163kAYhUz9I3AEhv7ae+3BSttrHOPms
+         CjaOR8+Z/G7/aoNOhNjsa+T6pgtKJG3prrV/WvXTEMCbcUARUtzBs4JWEJJsjbduWIAZ
+         97ZRZ59kbDKlXEp7IbxmI21dI5af50zUU5xK1LdtWjC3nTWDr7YNVkq6OYiUKVJIeE1E
+         e5SHTdHF7U9GwcPF+bwbBeYpKWzH7+m8UxebMALm1cZoNgtb6v0RfvH2+gpap+w2S3d3
+         Wr9jR9g6w7RmtAkm0MDs7Bscs63lGNxMqFbrPyykjmf2V1ByIt8+kckzQYk7p27ZQBbS
+         h24Q==
+X-Gm-Message-State: APjAAAXOK+Q2kt7SzNCU7Bej/G4mhiaq0+d5dmhcStQ90vOdH9/ahYrx
+        +l9pft78/VUzCtRxxjCo0EpMb6QXGoO8AqnBywgTdpsR
+X-Google-Smtp-Source: APXvYqybHV0v0pxdLQfq4AfU07beMiYZaEQ6XY4Lf5MIt6r5mv2f1jtE1tl4m7XZX2AzM8eyCFdb4EeRoF4H54u08D8=
+X-Received: by 2002:a1c:bc08:: with SMTP id m8mr7546420wmf.189.1581725724133;
+ Fri, 14 Feb 2020 16:15:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-02-14_09:2020-02-14,2020-02-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- adultscore=0 priorityscore=1501 impostorscore=0 suspectscore=0
- clxscore=1015 spamscore=0 bulkscore=0 phishscore=0 mlxscore=0
- lowpriorityscore=0 mlxlogscore=956 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2001150001 definitions=main-2002140172
-X-FB-Internal: deliver
+From:   Joe Stringer <joestringernz@gmail.com>
+Date:   Fri, 14 Feb 2020 16:15:13 -0800
+Message-ID: <CAOftzPiUcD3mSdM+GhJ3ma0LRmnifEJVK9RfyH_iX+CcdWY2Sw@mail.gmail.com>
+Subject: [LSF/MM/BPF TOPIC] BPF: Various topics
+To:     bpf@vger.kernel.org
+Cc:     lsf-pc@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_perf_event_read_value() is NMI safe. Enable it for all BPF programs.
-This can be used in fentry/fexit to profile BPF program and individual
-kernel function with hardware counters.
+I'd be interested to participate in the BPF track to discuss the
+following topics on BPF, motivated from recent experiences in building
+Cilium and a Go eBPF library.
 
-Cc: Yonghong Song <yhs@fb.com>
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- kernel/trace/bpf_trace.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+* Improving verifier friendliness. Cilium generates complex BPF
+programs which can trigger poor verifier behaviour, eg. a program
+would be rejected unless we provided a log buffer of 64MB[0]. Would
+like to discuss improvements here like allowing the verifier to treat
+the user buffer as a ring buffer via opt-in flag, so that users can
+bound the verifier log size and capture only the last N relevant bytes
+of verification failure.
+* Improving the map iteration interactions. During development of
+cilium/ebpf go library, we hit issues defining a clean API providing
+guarantees around iteration bounding and completeness of dump[1].
+These could be improved via kernel extension, such as opt-in ability
+to detect when dumping next key leads to iteration reset to beginning
+of map. Also interested in potential for kernel assistance on LRU
+eviction handling.
+* Development of pure-Go eBPF library. Depending on the audience
+appetite this could be hallway track but syncing on library status,
+next steps, kernel API pain points.
+* Any further updates on socket redirection following LPC discussions.
+Detail unclear given that this is in flux.
+* Future of BPF interaction with other subsystems / unstable BPF
+helpers API per recent discussion on the list.[2]
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 19e793aa441a..4ddd5ac46094 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -843,6 +843,8 @@ tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_send_signal_proto;
- 	case BPF_FUNC_send_signal_thread:
- 		return &bpf_send_signal_thread_proto;
-+	case BPF_FUNC_perf_event_read_value:
-+		return &bpf_perf_event_read_value_proto;
- 	default:
- 		return NULL;
- 	}
-@@ -858,8 +860,6 @@ kprobe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_get_stackid_proto;
- 	case BPF_FUNC_get_stack:
- 		return &bpf_get_stack_proto;
--	case BPF_FUNC_perf_event_read_value:
--		return &bpf_perf_event_read_value_proto;
- #ifdef CONFIG_BPF_KPROBE_OVERRIDE
- 	case BPF_FUNC_override_return:
- 		return &bpf_override_return_proto;
--- 
-2.17.1
-
+[0] https://github.com/cilium/cilium/issues/9809 ,
+https://github.com/cilium/cilium/issues/7770#issuecomment-558343180,
+other PRs.
+[1] https://github.com/cilium/ebpf/pull/11
+[2] https://www.spinics.net/lists/netdev/msg628451.html
