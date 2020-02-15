@@ -2,121 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F7B15FBB7
-	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2020 01:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C8C15FEF7
+	for <lists+bpf@lfdr.de>; Sat, 15 Feb 2020 16:33:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728063AbgBOApG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Feb 2020 19:45:06 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:41592 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727980AbgBOApG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Feb 2020 19:45:06 -0500
-Received: by mail-pg1-f194.google.com with SMTP id 70so5752080pgf.8;
-        Fri, 14 Feb 2020 16:45:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ubyDc/J45m18NS4YhmhXALa8rTe8ybSZrRD+88QTVz8=;
-        b=aQI8jJdcVlV2Xbe8n7UDjRM938M5ezgxBDtphW031gKtvYAnlX3hPOhONCU1KvIsuM
-         4DpKl813EYkyE+zzFtF4lj2cXma3k3QCo4KPbi+39Ms+G7GY4WpvERtIaRuidBrnN5eg
-         RqVP7wg0QDWdAQNQXmo7zWWd49RAzPhoY/osIoN0FLPUKrJSDsu2IE7LSnZoWu/OSBqr
-         nitt4C7vVFQiyBzNjcJhIS4RnghgP3z2PN8/P9ftXnGvLKGxWp47rJjOOLN5oDy69XhW
-         S31g0yJnahyW9QKv8yxTJAhpF1QBBUNj7Ypw/99Gqn2QrPlFuXzSOzjFcpFdBD0Ceq+h
-         IDrA==
+        id S1726438AbgBOPdQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Feb 2020 10:33:16 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:52263 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726383AbgBOPdQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Feb 2020 10:33:16 -0500
+Received: by mail-il1-f200.google.com with SMTP id o5so10267329ilg.19
+        for <bpf@vger.kernel.org>; Sat, 15 Feb 2020 07:33:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ubyDc/J45m18NS4YhmhXALa8rTe8ybSZrRD+88QTVz8=;
-        b=HXSVxEv08gXp1kwIiQIRbEjp9dvlZZpuiTOo4cy4msSYip5/9Exaj2Y3jK77iBEHST
-         Qvz/onBOOjNc51yZkp3nylrfV/Gl5o9/wipIg1v1BMk0Y/LBz7Z0EgmJXiJu4aaekf/d
-         e/88NzoXUsDgeJFspy5XaU1TTwecSDyGWl/fKFvMlbbyZQTnmJkAgVyyHJG94ZS7D6gL
-         BymJCjB+m3+h1fl44hVg1ChAdUQOiKUAx8W9SkTyYK/xKfJ1qF1/XdgmHmAU1uuzstHK
-         mkI4gO5PksrcfEyShwM08JsD91CrxkqPouitgoHUu5HymeinJ2Q1JGEltm6MwesPsAzP
-         ezEg==
-X-Gm-Message-State: APjAAAUqfcgZ6AxwjaRqa+MN/05qwHCWcfA7ROh5Yc96R1PTTnjug0VU
-        P3Ou8ciiH41lrK8xH5GQn5A=
-X-Google-Smtp-Source: APXvYqxQgxFAC/7PTEjrNE1hLwHK6xX5L9aa6Ust6YfFaTt/kgP19YfVsc0gFJkkWNqsKcY1FkEc9Q==
-X-Received: by 2002:a63:214e:: with SMTP id s14mr6113738pgm.428.1581727504842;
-        Fri, 14 Feb 2020 16:45:04 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:500::6:17ee])
-        by smtp.gmail.com with ESMTPSA id s124sm8744488pfc.57.2020.02.14.16.45.03
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 14 Feb 2020 16:45:04 -0800 (PST)
-Date:   Fri, 14 Feb 2020 16:45:02 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
-        ast@kernel.org, daniel@iogearbox.net
-Subject: Re: [RFC bpf-next 3/4] bpftool: introduce "prog profile" command
-Message-ID: <20200215004500.gs3ylstfo3aksfbp@ast-mbp>
-References: <20200213210115.1455809-1-songliubraving@fb.com>
- <20200213210115.1455809-4-songliubraving@fb.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=i1ZtrzvsphpDvmdslly7GxdVaV3LFE9gOyvz4k2Kd4o=;
+        b=RVO5b6FrKvv3woIc9M8BU9KudAsVgivpyzZAyMLuyBWUrbnH34bJYab2aXjlLWP4FV
+         vbUCqx1HbSt2UwXHkCDHEwBrXVcOifkL6un2lJfO2wKi1coEP3ibAo51z3VLotUG9fuf
+         jpTa8HlR8IKz1gdMhpC1FfsBkcW/YF0htBRAfGFGfQTxjlSGlXe2jBPAkAZbb6nQbsRV
+         xKm0o9wtHG+nyM641ikJY7HX4LkaxWvM/S43OztppHI2tE6MXt0b5ctw7RjXA51EG4pv
+         nag/mPDmKwoIJ2GDnsBHxtvw50jOQl33Sce8xqGZLuFwO1GcwrX1nP1hg7/NHTh+P5Yr
+         njWw==
+X-Gm-Message-State: APjAAAVYi3HYk34GdO/RXpGYST/p+PAYNmweiwgaS9PSt03XWc5q3Chl
+        Xb3QiBDZwzuDM7d25PC+FVu6KbsF8OEiFlOxSFbJ2NrXe0Av
+X-Google-Smtp-Source: APXvYqwaf1rvNvL+yMEH5bZ2WsGu2SzzPqdBvJEz74lk96rib3k0fOVblHOHXJfNsAW+wX5QVomcBi9oS1AMk6CC1Qg43VCdt2Z2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200213210115.1455809-4-songliubraving@fb.com>
-User-Agent: NeoMutt/20180223
+X-Received: by 2002:a5d:80d6:: with SMTP id h22mr6058924ior.129.1581780793813;
+ Sat, 15 Feb 2020 07:33:13 -0800 (PST)
+Date:   Sat, 15 Feb 2020 07:33:13 -0800
+In-Reply-To: <000000000000fd119d0597d12a56@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000053f643059e9f0a89@google.com>
+Subject: Re: kernel panic: stack is corrupted in vhost_net_ioctl
+From:   syzbot <syzbot+f2a62d07a5198c819c7b@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, hawk@kernel.org, jakub.kicinski@netronome.com,
+        jasowang@redhat.com, john.fastabend@gmail.com, kuba@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org, mst@redhat.com,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 13, 2020 at 01:01:14PM -0800, Song Liu wrote:
-> With fentry/fexit programs, it is possible to profile BPF program with
-> hardware counters. Introduce bpftool "prog profile", which measures key
-> metrics of a BPF program.
-> 
-> bpftool prog profile command creates per-cpu perf events. Then it attaches
-> fentry/fexit programs to the target BPF program. The fentry program saves
-> perf event value to a map. The fexit program reads the perf event again,
-> and calculates the difference, which is the instructions/cycles used by
-> the target program.
-> 
-> Example input and output:
-> 
->   ./bpftool prog profile 20 id 810 cycles instructions
->   cycles: duration 20 run_cnt 1368 miss_cnt 665
->           counter 503377 enabled 668202 running 351857
->   instructions: duration 20 run_cnt 1368 miss_cnt 707
->           counter 398625 enabled 502330 running 272014
-> 
-> This command measures cycles and instructions for BPF program with id
-> 810 for 20 seconds. The program has triggered 1368 times. cycles was not
-> measured in 665 out of these runs, because of perf event multiplexing
-> (some perf commands are running in the background). In these runs, the BPF
-> program consumed 503377 cycles. The perf_event enabled and running time
-> are 668202 and 351857 respectively.
+syzbot has found a reproducer for the following crash on:
 
-if (diff.enabled > diff.running) increment miss_cnt.
-Why show this to users?
-I think 'miss_cnt' the users will interpret as data is bogus,
-but it only means that the counter was multiplexed.
-The data is still accurate, no?
-This condition will probably be hit fairly often, no?
+HEAD commit:    2019fc96 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1677602de00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6780df5a5f208964
+dashboard link: https://syzkaller.appspot.com/bug?extid=f2a62d07a5198c819c7b
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16dcd87ee00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1135fa31e00000
 
->  tools/bpf/bpftool/profiler.skel.h         | 820 ++++++++++++++++++++++
+Bisection is inconclusive: the bug happens on the oldest tested release.
 
-I think bpftool needs to be build twice to avoid this.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13204371e00000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=10a04371e00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17204371e00000
 
-Could you change the output format to be 'perf stat' like:
-         55,766.51 msec task-clock                #    0.996 CPUs utilized
-             4,891      context-switches          #    0.088 K/sec
-                31      cpu-migrations            #    0.001 K/sec
-         1,806,065      page-faults               #    0.032 M/sec
-   166,819,295,451      cycles                    #    2.991 GHz                      (50.12%)
-   251,115,795,764      instructions              #    1.51  insn per cycle           (50.10%)
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+f2a62d07a5198c819c7b@syzkaller.appspotmail.com
 
-Also printing 'duration' is unnecessary. The user specified it at the command
-line and it doesn't need to be reported back to the user.
-Can you also make it optional? Until users Ctrl-C's bpftool ?
-So it may look like:
-$ ./bpftool prog profile id 810 cycles instructions
-             1,368      run_cnt
-           503,377      cycles
-           398,625      instructions         # 0.79 insn per cycle
+Kernel panic - not syncing: stack-protector: Kernel stack is corrupted in: vhost_net_ioctl+0x1d83/0x1db0 drivers/vhost/net.c:366
+CPU: 0 PID: 8673 Comm: syz-executor239 Not tainted 5.6.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1fb/0x318 lib/dump_stack.c:118
+ panic+0x264/0x7a9 kernel/panic.c:221
+ __stack_chk_fail+0x1f/0x20 kernel/panic.c:667
+ vhost_net_ioctl+0x1d83/0x1db0 drivers/vhost/net.c:366
+ vfs_ioctl fs/ioctl.c:47 [inline]
+ ksys_ioctl fs/ioctl.c:763 [inline]
+ __do_sys_ioctl fs/ioctl.c:772 [inline]
+ __se_sys_ioctl+0x113/0x190 fs/ioctl.c:770
+ __x64_sys_ioctl+0x7b/0x90 fs/ioctl.c:770
+ do_syscall_64+0xf7/0x1c0 arch/x86/entry/common.c:294
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x440259
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 fb 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffdeb5890b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440259
+RDX: 0000000020f1dff8 RSI: 000000004008af30 RDI: 0000000000000003
+RBP: 00000000006ca018 R08: 00000000004002c8 R09: 00000000004002c8
+R10: 00000000004002c8 R11: 0000000000000246 R12: 0000000000401ae0
+R13: 0000000000401b70 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
-Computing additional things like 'insn per cycle' do help humans to
-pay attention the issue. Like <1 ipc is not great and the next step
-would be to profile this program for cache misses.
