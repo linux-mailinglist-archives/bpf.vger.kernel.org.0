@@ -2,113 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 314D916151A
-	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2020 15:52:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41034161600
+	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2020 16:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729180AbgBQOv7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Feb 2020 09:51:59 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47724 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728375AbgBQOv7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Feb 2020 09:51:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581951117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/NoWh0zn9jWJMB5I+rtK46UqFrT287gQNYFOr27dFUg=;
-        b=GHaHSdcbMztCCTbyYAbucC4L7nXVn49Lb9QiA/3CyWkul1Hozx7TR0WisdgsLXPv/ngUn+
-        kN5fYxEHtvmKKEFJ/NrxunubsqPQvAn57KitI4o9BhYJqicg/+jl5SEVCqtvFF9CRlyuMs
-        Nrl9RGIzebCnbsoCydriWwmEgMbTs6g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-69-XH_M8WsZP5i6dbm-sWHrdg-1; Mon, 17 Feb 2020 09:51:50 -0500
-X-MC-Unique: XH_M8WsZP5i6dbm-sWHrdg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C20FF13E4;
-        Mon, 17 Feb 2020 14:51:48 +0000 (UTC)
-Received: from carbon (ovpn-200-53.brq.redhat.com [10.40.200.53])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7402319C69;
-        Mon, 17 Feb 2020 14:51:40 +0000 (UTC)
-Date:   Mon, 17 Feb 2020 15:51:38 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        ilias.apalodimas@linaro.org, davem@davemloft.net,
-        David Ahern <dsahern@kernel.org>,
-        BPF-dev-list <bpf@vger.kernel.org>, brouer@redhat.com
-Subject: Re: [PATCH net-next 4/5] net: mvneta: introduce xdp counters to
- ethtool
-Message-ID: <20200217155139.6363aa52@carbon>
-In-Reply-To: <20200217130515.GE32734@lunn.ch>
-References: <cover.1581886691.git.lorenzo@kernel.org>
-        <882d9f03a8542cceec7c7b8e6d083419d84eaf7a.1581886691.git.lorenzo@kernel.org>
-        <20200217111718.2c9ab08a@carbon>
-        <20200217102550.GB3080@localhost.localdomain>
-        <20200217113209.2dab7f71@carbon>
-        <20200217130515.GE32734@lunn.ch>
+        id S1727533AbgBQPWS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Feb 2020 10:22:18 -0500
+Received: from www62.your-server.de ([213.133.104.62]:55692 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727428AbgBQPWS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Feb 2020 10:22:18 -0500
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j3iDo-0006lQ-7Y; Mon, 17 Feb 2020 16:22:08 +0100
+Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-3.fritz.box)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j3iDn-000V5F-P3; Mon, 17 Feb 2020 16:22:07 +0100
+Subject: Re: [PATCH v3] samples/bpf: Add xdp_stat sample program
+To:     Eric Sage <eric@sage.org>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, kafai@fb.com, yhs@fb.com, andriin@fb.com,
+        jakub.kicinski@netronome.com, hawk@kernel.org,
+        john.fastabend@gmail.com, davem@davemloft.net,
+        netdev@vger.kernel.org
+References: <CAEf4BzbjXRFYkr2LCh50mLV+cQ9WrgRB+U4CbxekVVf=nfRUZw@mail.gmail.com>
+ <20200129035457.90892-1-eric@sage.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2f05b54f-0b01-1f7e-d665-9e0e3c5ff7d8@iogearbox.net>
+Date:   Mon, 17 Feb 2020 16:22:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200129035457.90892-1-eric@sage.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.1/25726/Mon Feb 17 15:01:07 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 17 Feb 2020 14:05:15 +0100
-Andrew Lunn <andrew@lunn.ch> wrote:
-
-> On Mon, Feb 17, 2020 at 11:32:09AM +0100, Jesper Dangaard Brouer wrote:
-> > On Mon, 17 Feb 2020 11:25:50 +0100
-> > Lorenzo Bianconi <lorenzo.bianconi@redhat.com> wrote:
-> >   
-[...]
-> > > 
-> > > yes, I think it is definitely better. So to follow up:
-> > > - rename current "xdp_tx" counter in "xdp_xmit" and increment it for
-> > >   XDP_TX verdict and for ndo_xdp_xmit
-> > > - introduce a new "xdp_tx" counter only for XDP_TX verdict.
-> > > 
-> > > If we agree I can post a follow-up patch.  
-> > 
-> > I agree, that sounds like an improvement to this patchset.
-> > 
-> > 
-> > I suspect David Ahern have some opinions about more general stats for
-> > XDP, but that it is a more general discussion, that it outside this
-> > patchset, but we should also have that discussion.  
+On 1/29/20 4:54 AM, Eric Sage wrote:
+> At Facebook we use tail calls to jump between our firewall filters and
+> our L4LB. This is a program I wrote to estimate per program performance
+> by swapping out the entries in the program array with interceptors that
+> take measurements and then jump to the original entries.
 > 
-> Hi Jesper
+> I found the sample programs to be invaluable in understanding how to use
+> the libbpf API (as well as the test env from the xdp-tutorial repo for
+> testing), and want to return the favor. I am currently working on
+> my next iteration that uses fentry/fexit to be less invasive,
+> but I thought it was an interesting PoC of what you can do with program
+> arrays.
 > 
-> I've not been following XDP too much, but xdp_xmit seems pretty
-> generic. It would be nice if all drivers used the same statistics
-> names. Less user confusion that way. So why is this outside of the
-> discussion?
+> Signed-off-by: Eric Sage <eric@sage.org>
 
-I do want to have this discussion, please.
+Now that bpf-next is back open, this needs a rebase for proceeding to get merged.
 
-I had hoped this patchset sparked this that discussion... maybe we can
-have it despite this patchset already got applied?
-
-My only request is that, if we don't revert, we fixup the "xdp_tx"
-counter name.  It would make it easier for us[1] if we can keep them
-applied, as we are preparing (asciinema) demos for [1].
-
-That said, I think it is rather important to standardize on same
-statistics names across drivers... which is an assignment that Lorenzo
-have already signed up for [2].
-
-
-[1] https://netdevconf.info/0x14/session.html?tutorial-add-XDP-support-to-a-NIC-driver
-[2] https://github.com/xdp-project/xdp-project/blob/master/planning.org#consistency-for-statistics-with-xdp
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+Thanks,
+Daniel
