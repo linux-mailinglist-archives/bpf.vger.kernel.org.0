@@ -2,107 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C0DD1160C5E
-	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2020 09:08:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02201160FC4
+	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2020 11:17:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727300AbgBQIIx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Feb 2020 03:08:53 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:59170 "EHLO
+        id S1729058AbgBQKRc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Feb 2020 05:17:32 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54280 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726996AbgBQIIw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Feb 2020 03:08:52 -0500
+        with ESMTP id S1726397AbgBQKRc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Feb 2020 05:17:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581926931;
+        s=mimecast20190719; t=1581934651;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EtqkCjqdRXLuRh9VlLNSDW1ljo1S6L5c70FnhGzTNhM=;
-        b=OnZsI0bblNvbolzL7YFuQHX1bVDzFfhZLCjoJMhn2h04wBrc8aizDZRisYJbAnhTU2uBut
-        jss2u6/QrCseAPirZzvKyJfsmZ1ltLSmuhZI8Mmt0CGg5DZKSrFvDhfbKYdSefJGDEagFe
-        ujAyTeo7WPSO65GJq5qgyKF/ucBkg4M=
+        bh=ppDD5AMkrOfQjlQvQgRMNAO+Ohmwmyr7wzDAlX1AsEc=;
+        b=IwM5yWa3IJ5OOr1YThhT7a4Xv2YlfsJ/SjP/5hBAWBjcIC+GerAf0nZ00JOaEGGhaSp95X
+        NxE+DKaD4txD4CbqhqsziZZkznRla+CxmEtP72Mkdm2AftYZDmZK1rm3vrbS6+kTI5w6hW
+        7syP4FW6mm4lFI/C4RgWcwcm3QqvRaQ=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-152-9Nx8pL2hOKaLfoXLO9UU9Q-1; Mon, 17 Feb 2020 03:08:48 -0500
-X-MC-Unique: 9Nx8pL2hOKaLfoXLO9UU9Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-369-HZVGfACIP069pHQUmWBUdg-1; Mon, 17 Feb 2020 05:17:29 -0500
+X-MC-Unique: HZVGfACIP069pHQUmWBUdg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 562D0107ACC4;
-        Mon, 17 Feb 2020 08:08:45 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 14950800D5A;
+        Mon, 17 Feb 2020 10:17:28 +0000 (UTC)
 Received: from carbon (ovpn-200-41.brq.redhat.com [10.40.200.41])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6396C1001B09;
-        Mon, 17 Feb 2020 08:08:33 +0000 (UTC)
-Date:   Mon, 17 Feb 2020 09:08:31 +0100
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6CC785C3FA;
+        Mon, 17 Feb 2020 10:17:20 +0000 (UTC)
+Date:   Mon, 17 Feb 2020 11:17:18 +0100
 From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     netdev@vger.kernel.org, jonathan.lemon@gmail.com,
-        lorenzo@kernel.org, toke@redhat.com,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
-        brouer@redhat.com
-Subject: Re: [PATCH net-next v2] net: page_pool: API cleanup and comments
-Message-ID: <20200217090831.56de425e@carbon>
-In-Reply-To: <20200217074608.GA139819@apalos.home>
-References: <20200217062850.133121-1-ilias.apalodimas@linaro.org>
-        <20200217084133.1a67ae63@carbon>
-        <20200217074608.GA139819@apalos.home>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     netdev@vger.kernel.org, ilias.apalodimas@linaro.org,
+        davem@davemloft.net, lorenzo.bianconi@redhat.com,
+        brouer@redhat.com, David Ahern <dsahern@kernel.org>,
+        BPF-dev-list <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next 4/5] net: mvneta: introduce xdp counters to
+ ethtool
+Message-ID: <20200217111718.2c9ab08a@carbon>
+In-Reply-To: <882d9f03a8542cceec7c7b8e6d083419d84eaf7a.1581886691.git.lorenzo@kernel.org>
+References: <cover.1581886691.git.lorenzo@kernel.org>
+        <882d9f03a8542cceec7c7b8e6d083419d84eaf7a.1581886691.git.lorenzo@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 17 Feb 2020 09:46:08 +0200
-Ilias Apalodimas <ilias.apalodimas@linaro.org> wrote:
+On Sun, 16 Feb 2020 22:07:32 +0100
+Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 
-> On Mon, Feb 17, 2020 at 08:41:33AM +0100, Jesper Dangaard Brouer wrote:
-> > On Mon, 17 Feb 2020 08:28:49 +0200
-> > Ilias Apalodimas <ilias.apalodimas@linaro.org> wrote:
-> >   
-> > > diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-> > > index cfbed00ba7ee..7c1f23930035 100644
-> > > --- a/include/net/page_pool.h
-> > > +++ b/include/net/page_pool.h
-> > > @@ -162,39 +162,33 @@ static inline void page_pool_use_xdp_mem(struct page_pool *pool,
-> > >  }
-> > >  #endif
-> > >  
-> > > -/* Never call this directly, use helpers below */
-> > > -void __page_pool_put_page(struct page_pool *pool, struct page *page,
-> > > -			  unsigned int dma_sync_size, bool allow_direct);
-> > > +void page_pool_release_page(struct page_pool *pool, struct page *page);
-> > >  
-> > > -static inline void page_pool_put_page(struct page_pool *pool,
-> > > -				      struct page *page, bool allow_direct)
-> > > +/* If the page refcnt == 1, this will try to recycle the page.
-> > > + * if PP_FLAG_DMA_SYNC_DEV is set, it will try to sync the DMA area for
-> > > + * the configured size min(dma_sync_size, pool->max_len).
-> > > + * If the page refcnt != page will be returned  
-> > 
-> > Is this last comment line fully formed?  
-> 
-> Yes, but that dosen't mena it makes sense!
-> Maybe i should switch the last sentence to sometning like:
-> "If the page refcnt != 1, page will be returned to memory subsystem" ?
+> @@ -2033,6 +2050,7 @@ mvneta_xdp_submit_frame(struct mvneta_port *pp, struct mvneta_tx_queue *txq,
+>  	u64_stats_update_begin(&stats->syncp);
+>  	stats->es.ps.tx_bytes += xdpf->len;
+>  	stats->es.ps.tx_packets++;
+> +	stats->es.ps.xdp_tx++;
+>  	u64_stats_update_end(&stats->syncp);
 
-Yes, that sounds better.
+I find it confusing that this ethtool stats is named "xdp_tx".
+Because you use it as an "xmit" counter and not for the action XDP_TX.
+
+Both XDP_TX and XDP_REDIRECT out this device will increment this
+"xdp_tx" counter.  I don't think end-users will comprehend this...
+
+What about naming it "xdp_xmit" ?
+
+
+>  	mvneta_txq_inc_put(txq);
+> @@ -2114,6 +2132,7 @@ mvneta_run_xdp(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
+>  
+>  	switch (act) {
+>  	case XDP_PASS:
+> +		stats->xdp_pass++;
+>  		return MVNETA_XDP_PASS;
+>  	case XDP_REDIRECT: {
+>  		int err;
+> @@ -2126,6 +2145,7 @@ mvneta_run_xdp(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
+>  					     len, true);
+>  		} else {
+>  			ret = MVNETA_XDP_REDIR;
+> +			stats->xdp_redirect++;
+>  		}
+>  		break;
+>  	}
+> @@ -2147,6 +2167,7 @@ mvneta_run_xdp(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
+>  				     virt_to_head_page(xdp->data),
+>  				     len, true);
+>  		ret = MVNETA_XDP_DROPPED;
+> +		stats->xdp_drop++;
+>  		break;
+>  	}
+
 
 -- 
 Best regards,
