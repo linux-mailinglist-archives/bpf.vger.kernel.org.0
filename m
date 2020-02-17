@@ -2,109 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E729E16126B
-	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2020 13:59:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D5C1612A1
+	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2020 14:05:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727326AbgBQM7l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Feb 2020 07:59:41 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:59593 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728540AbgBQM7l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Feb 2020 07:59:41 -0500
-Received: from [5.158.153.52] (helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1j3fzV-0003bS-1A; Mon, 17 Feb 2020 13:59:13 +0100
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 93A031039FC; Mon, 17 Feb 2020 13:59:12 +0100 (CET)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     David Miller <davem@davemloft.net>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        bigeasy@linutronix.de, peterz@infradead.org, williams@redhat.com,
-        rostedt@goodmis.org, juri.lelli@redhat.com, mingo@kernel.org
-Subject: [PATCH] bpf: Enforce map preallocation for all instrumentation programs
-In-Reply-To: <87pneht3re.fsf@nanos.tec.linutronix.de>
-References: <87pneht3re.fsf@nanos.tec.linutronix.de>
-Date:   Mon, 17 Feb 2020 13:59:12 +0100
-Message-ID: <875zg5pdy7.fsf@nanos.tec.linutronix.de>
+        id S1726866AbgBQNFW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Feb 2020 08:05:22 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:49832 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726633AbgBQNFW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Feb 2020 08:05:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=HpIdm9DMydVRRiMV5Ha+p/ZTvwHk+GnqkwHX2W4/ft0=; b=qHrUTUFG6b+ft1kWPZekMkVxML
+        Ex9kqLm5lq0IHFdF1I/9F8tuLqv/Ucvv/wH4GalSnhvc6onNOvDUpYEE5TaXe4z3n5hGeTRawsGk2
+        aX0N2hR8TjBkIunSFX6W+koLlEGwDOICGxGYNdW1SxL5/6qlOgD0jOWPPhL2bcnHB9Lk=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1j3g5L-0004cS-1f; Mon, 17 Feb 2020 14:05:15 +0100
+Date:   Mon, 17 Feb 2020 14:05:15 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
+        ilias.apalodimas@linaro.org, davem@davemloft.net,
+        David Ahern <dsahern@kernel.org>,
+        BPF-dev-list <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next 4/5] net: mvneta: introduce xdp counters to
+ ethtool
+Message-ID: <20200217130515.GE32734@lunn.ch>
+References: <cover.1581886691.git.lorenzo@kernel.org>
+ <882d9f03a8542cceec7c7b8e6d083419d84eaf7a.1581886691.git.lorenzo@kernel.org>
+ <20200217111718.2c9ab08a@carbon>
+ <20200217102550.GB3080@localhost.localdomain>
+ <20200217113209.2dab7f71@carbon>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200217113209.2dab7f71@carbon>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The assumption that only programs attached to perf NMI events can deadlock
-on memory allocators is wrong. Assume the following simplified callchain:
+On Mon, Feb 17, 2020 at 11:32:09AM +0100, Jesper Dangaard Brouer wrote:
+> On Mon, 17 Feb 2020 11:25:50 +0100
+> Lorenzo Bianconi <lorenzo.bianconi@redhat.com> wrote:
+> 
+> > > On Sun, 16 Feb 2020 22:07:32 +0100
+> > > Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+> > >   
+> > > > @@ -2033,6 +2050,7 @@ mvneta_xdp_submit_frame(struct mvneta_port *pp, struct mvneta_tx_queue *txq,
+> > > >  	u64_stats_update_begin(&stats->syncp);
+> > > >  	stats->es.ps.tx_bytes += xdpf->len;
+> > > >  	stats->es.ps.tx_packets++;
+> > > > +	stats->es.ps.xdp_tx++;
+> > > >  	u64_stats_update_end(&stats->syncp);  
+> > > 
+> > > I find it confusing that this ethtool stats is named "xdp_tx".
+> > > Because you use it as an "xmit" counter and not for the action XDP_TX.
+> > > 
+> > > Both XDP_TX and XDP_REDIRECT out this device will increment this
+> > > "xdp_tx" counter.  I don't think end-users will comprehend this...
+> > > 
+> > > What about naming it "xdp_xmit" ?  
+> > 
+> > Hi Jesper,
+> > 
+> > yes, I think it is definitely better. So to follow up:
+> > - rename current "xdp_tx" counter in "xdp_xmit" and increment it for
+> >   XDP_TX verdict and for ndo_xdp_xmit
+> > - introduce a new "xdp_tx" counter only for XDP_TX verdict.
+> > 
+> > If we agree I can post a follow-up patch.
+> 
+> I agree, that sounds like an improvement to this patchset.
+> 
+> 
+> I suspect David Ahern have some opinions about more general stats for
+> XDP, but that it is a more general discussion, that it outside this
+> patchset, but we should also have that discussion.
 
- kmalloc() from regular non BPF context
-  cache empty
-   freelist empty
-    lock(zone->lock);
-     tracepoint or kprobe
-      BPF()
-       update_elem()
-        lock(bucket)
-          kmalloc()
-           cache empty
-            freelist empty
-             lock(zone->lock);  <- DEADLOCK
+Hi Jesper
 
-There are also other ways to create wreckage:
+I've not been following XDP too much, but xdp_xmit seems pretty
+generic. It would be nice if all drivers used the same statistics
+names. Less user confusion that way. So why is this outside of the
+discussion?
 
- kmalloc() from regular non BPF context
-  local_irq_save();
-   ...
-    obj = slab_first();
-     kprobe()
-      BPF()
-       update_elem()
-        lock(bucket)
-         kmalloc()
-          local_irq_save();
-           ...
-            obj = slab_first(); <- Same object as above ...
-
-So preallocation _must_ be enforced for all variants of intrusive
-instrumentation.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- kernel/bpf/verifier.c |   18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
-
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -8144,19 +8144,23 @@ static int check_map_prog_compatibility(
- 					struct bpf_prog *prog)
- 
- {
--	/* Make sure that BPF_PROG_TYPE_PERF_EVENT programs only use
--	 * preallocated hash maps, since doing memory allocation
--	 * in overflow_handler can crash depending on where nmi got
--	 * triggered.
-+	/*
-+	 * Make sure that trace type programs use preallocated hash maps.
-+	 * Perf programs obviously can't do memory allocation in NMI
-+	 * context and all other types can deadlock on a memory allocator
-+	 * lock when a tracepoint/kprobe triggers a BPF program inside a
-+	 * lock held region or create inconsistent state when the probe is
-+	 * within an interrupts disabled critical region in the memory
-+	 * allocator.
- 	 */
--	if (prog->type == BPF_PROG_TYPE_PERF_EVENT) {
-+	if ((is_tracing_prog_type(prog->type)) {
- 		if (!check_map_prealloc(map)) {
--			verbose(env, "perf_event programs can only use preallocated hash map\n");
-+			verbose(env, "tracing programs can only use preallocated hash map\n");
- 			return -EINVAL;
- 		}
- 		if (map->inner_map_meta &&
- 		    !check_map_prealloc(map->inner_map_meta)) {
--			verbose(env, "perf_event programs can only use preallocated inner hash map\n");
-+			verbose(env, "tracing programs can only use preallocated inner hash map\n");
- 			return -EINVAL;
- 		}
- 	}
+	Andrew
