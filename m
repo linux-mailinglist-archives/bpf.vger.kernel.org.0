@@ -2,95 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBCA16109F
-	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2020 12:07:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6586B1611D0
+	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2020 13:15:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727274AbgBQLHW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Feb 2020 06:07:22 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:46970 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726863AbgBQLHW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Feb 2020 06:07:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581937641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4meJ+9cGtIXsHFSQL1G0hT63jAf2xSIQo/UpbNAdilE=;
-        b=fvhdaV0NNfIPezjxNs5364V2Vdz6ebK8LfQ7i7z2+MOQ2Hyvry4vAHUDzOkoYY46VCHwN7
-        tGMHlsi6MvSTH1d1pf0aYS7V4dV0iuVH/dwl+/f31iodDW4nA4ZQD4ay2jvi8awanJTrn6
-        pAuQqb1c7buWcJbrcftKuiEyKMnWN2Q=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-78-UVAPm0FLPz-IEPPphPW9MA-1; Mon, 17 Feb 2020 06:07:18 -0500
-X-MC-Unique: UVAPm0FLPz-IEPPphPW9MA-1
-Received: by mail-lj1-f200.google.com with SMTP id s25so5766948ljm.9
-        for <bpf@vger.kernel.org>; Mon, 17 Feb 2020 03:07:18 -0800 (PST)
+        id S1727749AbgBQMPe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Feb 2020 07:15:34 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:51974 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726911AbgBQMPe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Feb 2020 07:15:34 -0500
+Received: by mail-wm1-f66.google.com with SMTP id t23so16919733wmi.1
+        for <bpf@vger.kernel.org>; Mon, 17 Feb 2020 04:15:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xqYm6wF8L0TX7f4HXgw6QZrFLaxswQUGOedy6hxkX+o=;
+        b=QrsC1KbRJWJlaLS8bMEq9P3Wu988FELiXZs1gwaizwQ5gMmyQrKFHwTpRp0P4IJ8es
+         ZqrV+qraYmRnw/vzjLHMZhEPa4UevxAqykK5JIIDYETA+327ZwjegSVboF8dcosuPUwI
+         WM12exfktFIVVMOJNWxm5QfbfwD1/G/IiflQo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=4meJ+9cGtIXsHFSQL1G0hT63jAf2xSIQo/UpbNAdilE=;
-        b=SjH9xjEk3IhrGTL+jl+qeYSkLm1qpeMOUKjM1vm5ZBzs7HC5vdEY4yubRDPefORFG7
-         SyNATad+Qer173qjQcNYKazyGAMRsPvmbH9gpzZaO/PjzTuQw7S4Jp90cc9kLpcm5Zsy
-         pWFCuek3DRltbvVfqSg5OTSfyflcmzLzj/FBAvSBW1HpHAkcE9tdYvGXjzNnibdH9gSO
-         yI5tVFnW3Xm15AGMXYIN9R5vlnPJlyTHuPYKexslqILc6IFoy+TMJUCjk3DjlzizOSfz
-         wgsw/B6jwXVE3JXq+ANeAl+ogs5ULGUwVOUVM2XKJRQqoxsgZ7lQKHzlFypRBS6J5ZUT
-         dDGA==
-X-Gm-Message-State: APjAAAWOOBtDPeOxyVT+U7eQfzTQZ0nq2taTJMCt9IphbssoKzsN26eJ
-        CYAZmG7dZKOmK5jhOcdgBOChSxJ7PNxoF0ymN37JdByvK3vitNFQpJNhkllkfniAScJY3TUnvVF
-        k0H8rfS93havx
-X-Received: by 2002:a2e:e12:: with SMTP id 18mr9901890ljo.123.1581937636845;
-        Mon, 17 Feb 2020 03:07:16 -0800 (PST)
-X-Google-Smtp-Source: APXvYqwIPHCIs14g1Gu8hKPTMZVM4Wo6sviJJaYmXzxNaFPsm29lKGs9/zSmdLZZmKob3xGBzkcGNw==
-X-Received: by 2002:a2e:e12:: with SMTP id 18mr9901866ljo.123.1581937636587;
-        Mon, 17 Feb 2020 03:07:16 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id q10sm173109ljj.60.2020.02.17.03.07.15
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xqYm6wF8L0TX7f4HXgw6QZrFLaxswQUGOedy6hxkX+o=;
+        b=iJYRwv+Q6TtpsjDLTlCxJtaKIbboXYLslM/+iLBxZjXwJ4b/QW1DJEI5srGxRD0lHO
+         k9Vwsq8bGG5Kwc1S0gUriXWczlALVDMwSk9rG2kU5JwVPY+J/IDXrOEAH+NpKG/aLWZi
+         9Hn4l/uPa/qSKKKtiKQmt6QfMU2wGXarOUProYKAMfsZqjDlWfWZpOjIEiMjRU5G+50G
+         8mQpp5GUjWhxUJb7GXMG8xLOscZKT9nPcBrnoWGRlV1zv3K3lGEbMyUe+wi9dZm3lLK1
+         UkH3nzun6NScHg9BguFC/++eS5FfAF5reFh//iRKO5T2meV7aOHPU5urTS3YFb2H+L2L
+         7K9Q==
+X-Gm-Message-State: APjAAAWIGA9NRLay+3P2tWmjw0WQUQpMqg2IG4YuPMwXaTiJEayM4ASk
+        Zza2K0JlZpjzOklWLvMOo8YkOLBsIQ/98i79
+X-Google-Smtp-Source: APXvYqwZcyzFMWyS0F42gYwSnohVguLDDxiDtqJbg24IC9TEyGax/PGc90EibEDi8/YIc9XyA50ZwQ==
+X-Received: by 2002:a1c:65d6:: with SMTP id z205mr21451025wmb.38.1581941732617;
+        Mon, 17 Feb 2020 04:15:32 -0800 (PST)
+Received: from cloudflare.com ([88.157.168.82])
+        by smtp.gmail.com with ESMTPSA id c13sm783356wrn.46.2020.02.17.04.15.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Feb 2020 03:07:15 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 3D9931808E6; Mon, 17 Feb 2020 12:07:15 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Eelco Chaudron <echaudro@redhat.com>, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, andriin@fb.com
-Subject: Re: [PATCH bpf-next v3] libbpf: Add support for dynamic program attach target
-In-Reply-To: <158193725120.96608.9449808053785640511.stgit@xdp-tutorial>
-References: <158193725120.96608.9449808053785640511.stgit@xdp-tutorial>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 17 Feb 2020 12:07:15 +0100
-Message-ID: <878sl1bhgc.fsf@toke.dk>
+        Mon, 17 Feb 2020 04:15:31 -0800 (PST)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: [PATCH bpf-next 0/3] sockmap/ktls: Simplify how we restore sk_prot callbacks
+Date:   Mon, 17 Feb 2020 12:15:27 +0000
+Message-Id: <20200217121530.754315-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Eelco Chaudron <echaudro@redhat.com> writes:
+This series has been split out from "Extend SOCKMAP to store listening
+sockets" [0]. I think it stands on its own, and makes the latter series
+smaller, which will make the review easier, hopefully.
 
-> Currently when you want to attach a trace program to a bpf program
-> the section name needs to match the tracepoint/function semantics.
->
-> However the addition of the bpf_program__set_attach_target() API
-> allows you to specify the tracepoint/function dynamically.
->
-> The call flow would look something like this:
->
->   xdp_fd =3D bpf_prog_get_fd_by_id(id);
->   trace_obj =3D bpf_object__open_file("func.o", NULL);
->   prog =3D bpf_object__find_program_by_title(trace_obj,
->                                            "fentry/myfunc");
->   bpf_program__set_expected_attach_type(prog, BPF_TRACE_FENTRY);
->   bpf_program__set_attach_target(prog, xdp_fd,
->                                  "xdpfilt_blk_all");
->   bpf_object__load(trace_obj)
->
-> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+The essence is that we don't need to do a complicated dance in
+sk_psock_restore_proto, if we agree that the contract with tcp_update_ulp
+is to restore callbacks even when the socket doesn't use ULP. This is what
+tcp_update_ulp currently does, and we just make use of it.
 
-Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+Series is accompanied by a test for a particularly tricky case of restoring
+callbacks when we have both sockmap and tls callbacks configured in
+sk->sk_prot.
+
+[0] https://lore.kernel.org/bpf/20200127131057.150941-1-jakub@cloudflare.com/
+
+
+Jakub Sitnicki (3):
+  bpf, sk_msg: Let ULP restore sk_proto and write_space callback
+  bpf, sk_msg: Don't clear saved sock proto on restore
+  selftests/bpf: Test unhashing kTLS socket after removing from map
+
+ include/linux/skmsg.h                         |  17 +--
+ .../selftests/bpf/prog_tests/sockmap_ktls.c   | 123 ++++++++++++++++++
+ 2 files changed, 124 insertions(+), 16 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c
+
+-- 
+2.24.1
 
