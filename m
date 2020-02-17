@@ -2,74 +2,226 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C57D16095F
-	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2020 05:00:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3EDD1609A1
+	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2020 05:27:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727329AbgBQD77 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 16 Feb 2020 22:59:59 -0500
-Received: from shards.monkeyblade.net ([23.128.96.9]:48562 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726672AbgBQD77 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 16 Feb 2020 22:59:59 -0500
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id D16A2158489B5;
-        Sun, 16 Feb 2020 19:59:57 -0800 (PST)
-Date:   Sun, 16 Feb 2020 19:59:57 -0800 (PST)
-Message-Id: <20200216.195957.2300038427552527679.davem@davemloft.net>
-To:     ilias.apalodimas@linaro.org
-Cc:     netdev@vger.kernel.org, jonathan.lemon@gmail.com,
-        lorenzo@kernel.org, thomas.petazzoni@bootlin.com,
-        jaswinder.singh@linaro.org, peppe.cavallaro@st.com,
-        alexandre.torgue@st.com, joabreu@synopsys.com,
-        mcoquelin.stm32@gmail.com, hawk@kernel.org, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next] net: page_pool: API cleanup and comments
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200216.195300.260413184133485319.davem@davemloft.net>
-References: <20200216094056.8078-1-ilias.apalodimas@linaro.org>
-        <20200216.195300.260413184133485319.davem@davemloft.net>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-7
-Content-Transfer-Encoding: base64
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Sun, 16 Feb 2020 19:59:58 -0800 (PST)
+        id S1727794AbgBQE1L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 16 Feb 2020 23:27:11 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:33781 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727789AbgBQE1L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 16 Feb 2020 23:27:11 -0500
+Received: by mail-il1-f197.google.com with SMTP id s9so13406658ilk.0
+        for <bpf@vger.kernel.org>; Sun, 16 Feb 2020 20:27:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=+bBk/Fq1vUTdJXRyprYVb3odKn2c5aAcymM78HKQdHw=;
+        b=P/x3Wy4s3Jr+f9xZyf0YPk6fOtQnPLkoyb8PlFLftdc6S32MTo89Y+5WEmYobODDiH
+         IlFeBl960EPtAzeLK5t64zTKVGM2SGuyCnZpOkr/xKGzHIbB92rWk3F1M8zs9AImoJFg
+         KqkNzmp66mpHuEKtBs6uARg07DCHtN/JPmnEfswZc1sHF9d48jYUe0W6JDsygvbeUvTK
+         BR/dssk01WEAdl369dORJd+Wo4C9ZnxOKntQ0TJOzTGQ459qTYe5cSUCtJNiGJ8tZNbB
+         lecL2CiewkCd4s6c+zvnPtEIhGGoaYiKMtb7sQCEvfP3hwt6Dsea4LyNSrBcidLzYjLb
+         +Hrw==
+X-Gm-Message-State: APjAAAV2xfTZ2CyFDGHrXgI2Ma4EnkFQ2TWQSb2ff0VynT2jJZ5fv9w3
+        28qAc9RNNXv16s+VAHy65yp5/1BPeIDlJ5IVbVXYXl2VF5RW
+X-Google-Smtp-Source: APXvYqxcIb/CRzVCGjsDdSN+fXJyEVys3Ud2R1DQgOHZ92+rAQLP/9cn8drlfpuMoPocx6nXHy6gdoLTuJGms/aOFYx3v/5F6RbP
+MIME-Version: 1.0
+X-Received: by 2002:a5d:9805:: with SMTP id a5mr10514425iol.80.1581913630947;
+ Sun, 16 Feb 2020 20:27:10 -0800 (PST)
+Date:   Sun, 16 Feb 2020 20:27:10 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000009c250059ebdf837@google.com>
+Subject: possible deadlock in htab_lru_map_delete_node
+From:   syzbot <syzbot+a38ff3d9356388f2fb83@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        brianvv@google.com, daniel@iogearbox.net, kafai@fb.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-RnJvbTogRGF2aWQgTWlsbGVyIDxkYXZlbUBkYXZlbWxvZnQubmV0Pg0KRGF0ZTogU3VuLCAxNiBG
-ZWIgMjAyMCAxOTo1MzowMCAtMDgwMCAoUFNUKQ0KDQo+IEZyb206IElsaWFzIEFwYWxvZGltYXMg
-PGlsaWFzLmFwYWxvZGltYXNAbGluYXJvLm9yZz4NCj4gRGF0ZTogU3VuLCAxNiBGZWIgMjAyMCAx
-MTo0MDo1NSArMDIwMA0KPiANCj4+IEZ1bmN0aW9ucyBzdGFydGluZyB3aXRoIF9fIHVzdWFsbHkg
-aW5kaWNhdGUgdGhvc2Ugd2hpY2ggYXJlIGV4cG9ydGVkLA0KPj4gYnV0IHNob3VsZCBub3QgYmUg
-Y2FsbGVkIGRpcmVjdGx5LiBVcGRhdGUgc29tZSBvZiB0aG9zZSBkZWNsYXJlZCBpbiB0aGUNCj4+
-IEFQSSBhbmQgbWFrZSBpdCBtb3JlIHJlYWRhYmxlLg0KPj4gDQo+PiBwYWdlX3Bvb2xfdW5tYXBf
-cGFnZSgpIGFuZCBwYWdlX3Bvb2xfcmVsZWFzZV9wYWdlKCkgd2VyZSBkb2luZw0KPj4gZXhhY3Rs
-eSB0aGUgc2FtZSB0aGluZy4gS2VlcCB0aGUgcGFnZV9wb29sX3JlbGVhc2VfcGFnZSgpIHZhcmlh
-bnQNCj4+IGFuZCBleHBvcnQgaXQgaW4gb3JkZXIgdG8gc2hvdyB1cCBvbiBwZXJmIGxvZ3MuDQo+
-PiBGaW5hbGx5IHJlbmFtZSBfX3BhZ2VfcG9vbF9wdXRfcGFnZSgpIHRvIHBhZ2VfcG9vbF9wdXRf
-cGFnZSgpIHNpbmNlIHdlDQo+PiBjYW4gbm93IGRpcmVjdGx5IGNhbGwgaXQgZnJvbSBkcml2ZXJz
-IGFuZCByZW5hbWUgdGhlIGV4aXN0aW5nDQo+PiBwYWdlX3Bvb2xfcHV0X3BhZ2UoKSB0byBwYWdl
-X3Bvb2xfcHV0X2Z1bGxfcGFnZSgpIHNpbmNlIHRoZXkgZG8gdGhlIHNhbWUNCj4+IHRoaW5nIGJ1
-dCB0aGUgbGF0dGVyIGlzIHRyeWluZyB0byBzeW5jIHRoZSBmdWxsIERNQSBhcmVhLg0KPj4gDQo+
-PiBBbHNvIHVwZGF0ZSBuZXRzZWMsIG12bmV0YSBhbmQgc3RtbWFjIGRyaXZlcnMgd2hpY2ggdXNl
-IHRob3NlIGZ1bmN0aW9ucy4NCj4+IA0KPj4gU3VnZ2VzdGVkLWJ5OiBKb25hdGhhbiBMZW1vbiA8
-am9uYXRoYW4ubGVtb25AZ21haWwuY29tPg0KPj4gU2lnbmVkLW9mZi1ieTogSWxpYXMgQXBhbG9k
-aW1hcyA8aWxpYXMuYXBhbG9kaW1hc0BsaW5hcm8ub3JnPg0KPiANCj4gQXBwbGllZCB0byBuZXQt
-bmV4dCwgdGhhbmtzLg0KDQpBY3R1YWxseSB0aGlzIGRvZXNuJ3QgY29tcGlsZSwgcGxlYXNlIHJl
-c3BpbjoNCg0KZHJpdmVycy9uZXQvZXRoZXJuZXQvc29jaW9uZXh0L25ldHNlYy5jOiBJbiBmdW5j
-dGlvbiChbmV0c2VjX3VuaW5pdF9wa3RfZHJpbmeiOg0KZHJpdmVycy9uZXQvZXRoZXJuZXQvc29j
-aW9uZXh0L25ldHNlYy5jOjEyMDE6NDogZXJyb3I6IHRvbyBmZXcgYXJndW1lbnRzIHRvIGZ1bmN0
-aW9uIKFwYWdlX3Bvb2xfcHV0X3BhZ2WiDQogICAgcGFnZV9wb29sX3B1dF9wYWdlKGRyaW5nLT5w
-YWdlX3Bvb2wsIHBhZ2UsIGZhbHNlKTsNCiAgICBefn5+fn5+fn5+fn5+fn5+fn4NCkluIGZpbGUg
-aW5jbHVkZWQgZnJvbSBkcml2ZXJzL25ldC9ldGhlcm5ldC9zb2Npb25leHQvbmV0c2VjLmM6MTc6
-DQouL2luY2x1ZGUvbmV0L3BhZ2VfcG9vbC5oOjE3Mjo2OiBub3RlOiBkZWNsYXJlZCBoZXJlDQog
-dm9pZCBwYWdlX3Bvb2xfcHV0X3BhZ2Uoc3RydWN0IHBhZ2VfcG9vbCAqcG9vbCwgc3RydWN0IHBh
-Z2UgKnBhZ2UsDQogICAgICBefn5+fn5+fn5+fn5+fn5+fn4NCg==
+Hello,
+
+syzbot found the following crash on:
+
+HEAD commit:    2019fc96 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=1085b209e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=735296e4dd620b10
+dashboard link: https://syzkaller.appspot.com/bug?extid=a38ff3d9356388f2fb83
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d716e6e00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1485b209e00000
+
+The bug was bisected to:
+
+commit 057996380a42bb64ccc04383cfa9c0ace4ea11f0
+Author: Yonghong Song <yhs@fb.com>
+Date:   Wed Jan 15 18:43:04 2020 +0000
+
+    bpf: Add batch ops to all htab bpf map
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14d9b6e6e00000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=16d9b6e6e00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12d9b6e6e00000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+a38ff3d9356388f2fb83@syzkaller.appspotmail.com
+Fixes: 057996380a42 ("bpf: Add batch ops to all htab bpf map")
+
+======================================================
+WARNING: possible circular locking dependency detected
+5.6.0-rc1-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor432/10129 is trying to acquire lock:
+ffff8880988693e0 (&htab->buckets[i].lock){....}, at: htab_lru_map_delete_node+0xce/0x2f0 kernel/bpf/hashtab.c:593
+
+but task is already holding lock:
+ffff888098869a18 (&l->lock){....}, at: bpf_lru_list_pop_free_to_local kernel/bpf/bpf_lru_list.c:325 [inline]
+ffff888098869a18 (&l->lock){....}, at: bpf_common_lru_pop_free kernel/bpf/bpf_lru_list.c:447 [inline]
+ffff888098869a18 (&l->lock){....}, at: bpf_lru_pop_free+0x67f/0x1670 kernel/bpf/bpf_lru_list.c:499
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&l->lock){....}:
+       __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+       _raw_spin_lock+0x2f/0x40 kernel/locking/spinlock.c:151
+       bpf_lru_list_pop_free_to_local kernel/bpf/bpf_lru_list.c:325 [inline]
+       bpf_common_lru_pop_free kernel/bpf/bpf_lru_list.c:447 [inline]
+       bpf_lru_pop_free+0x67f/0x1670 kernel/bpf/bpf_lru_list.c:499
+       prealloc_lru_pop+0x2c/0xa0 kernel/bpf/hashtab.c:132
+       __htab_lru_percpu_map_update_elem+0x67e/0xa90 kernel/bpf/hashtab.c:1069
+       bpf_percpu_hash_update+0x16e/0x210 kernel/bpf/hashtab.c:1585
+       bpf_map_update_value.isra.0+0x2d7/0x8e0 kernel/bpf/syscall.c:181
+       generic_map_update_batch+0x41f/0x610 kernel/bpf/syscall.c:1319
+       bpf_map_do_batch+0x3f5/0x510 kernel/bpf/syscall.c:3348
+       __do_sys_bpf+0x9b7/0x41e0 kernel/bpf/syscall.c:3460
+       __se_sys_bpf kernel/bpf/syscall.c:3355 [inline]
+       __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3355
+       do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+       entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+-> #1 (&loc_l->lock){....}:
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0x95/0xcd kernel/locking/spinlock.c:159
+       bpf_common_lru_push_free kernel/bpf/bpf_lru_list.c:516 [inline]
+       bpf_lru_push_free+0x250/0x5b0 kernel/bpf/bpf_lru_list.c:555
+       __htab_map_lookup_and_delete_batch+0x8d4/0x1540 kernel/bpf/hashtab.c:1374
+       htab_lru_map_lookup_and_delete_batch+0x34/0x40 kernel/bpf/hashtab.c:1491
+       bpf_map_do_batch+0x3f5/0x510 kernel/bpf/syscall.c:3348
+       __do_sys_bpf+0x1f7d/0x41e0 kernel/bpf/syscall.c:3456
+       __se_sys_bpf kernel/bpf/syscall.c:3355 [inline]
+       __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3355
+       do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+       entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+-> #0 (&htab->buckets[i].lock){....}:
+       check_prev_add kernel/locking/lockdep.c:2475 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2580 [inline]
+       validate_chain kernel/locking/lockdep.c:2970 [inline]
+       __lock_acquire+0x2596/0x4a00 kernel/locking/lockdep.c:3954
+       lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4484
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0x95/0xcd kernel/locking/spinlock.c:159
+       htab_lru_map_delete_node+0xce/0x2f0 kernel/bpf/hashtab.c:593
+       __bpf_lru_list_shrink_inactive kernel/bpf/bpf_lru_list.c:220 [inline]
+       __bpf_lru_list_shrink+0xf9/0x470 kernel/bpf/bpf_lru_list.c:266
+       bpf_lru_list_pop_free_to_local kernel/bpf/bpf_lru_list.c:340 [inline]
+       bpf_common_lru_pop_free kernel/bpf/bpf_lru_list.c:447 [inline]
+       bpf_lru_pop_free+0x87c/0x1670 kernel/bpf/bpf_lru_list.c:499
+       prealloc_lru_pop+0x2c/0xa0 kernel/bpf/hashtab.c:132
+       __htab_lru_percpu_map_update_elem+0x67e/0xa90 kernel/bpf/hashtab.c:1069
+       bpf_percpu_hash_update+0x16e/0x210 kernel/bpf/hashtab.c:1585
+       bpf_map_update_value.isra.0+0x2d7/0x8e0 kernel/bpf/syscall.c:181
+       generic_map_update_batch+0x41f/0x610 kernel/bpf/syscall.c:1319
+       bpf_map_do_batch+0x3f5/0x510 kernel/bpf/syscall.c:3348
+       __do_sys_bpf+0x9b7/0x41e0 kernel/bpf/syscall.c:3460
+       __se_sys_bpf kernel/bpf/syscall.c:3355 [inline]
+       __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3355
+       do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+       entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+other info that might help us debug this:
+
+Chain exists of:
+  &htab->buckets[i].lock --> &loc_l->lock --> &l->lock
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&l->lock);
+                               lock(&loc_l->lock);
+                               lock(&l->lock);
+  lock(&htab->buckets[i].lock);
+
+ *** DEADLOCK ***
+
+3 locks held by syz-executor432/10129:
+ #0: ffffffff89bac240 (rcu_read_lock){....}, at: bpf_percpu_hash_update+0x0/0x210 kernel/bpf/hashtab.c:1565
+ #1: ffffe8ffffc49e40 (&loc_l->lock){....}, at: bpf_common_lru_pop_free kernel/bpf/bpf_lru_list.c:443 [inline]
+ #1: ffffe8ffffc49e40 (&loc_l->lock){....}, at: bpf_lru_pop_free+0x32b/0x1670 kernel/bpf/bpf_lru_list.c:499
+ #2: ffff888098869a18 (&l->lock){....}, at: bpf_lru_list_pop_free_to_local kernel/bpf/bpf_lru_list.c:325 [inline]
+ #2: ffff888098869a18 (&l->lock){....}, at: bpf_common_lru_pop_free kernel/bpf/bpf_lru_list.c:447 [inline]
+ #2: ffff888098869a18 (&l->lock){....}, at: bpf_lru_pop_free+0x67f/0x1670 kernel/bpf/bpf_lru_list.c:499
+
+stack backtrace:
+CPU: 0 PID: 10129 Comm: syz-executor432 Not tainted 5.6.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x197/0x210 lib/dump_stack.c:118
+ print_circular_bug.isra.0.cold+0x163/0x172 kernel/locking/lockdep.c:1684
+ check_noncircular+0x32e/0x3e0 kernel/locking/lockdep.c:1808
+ check_prev_add kernel/locking/lockdep.c:2475 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2580 [inline]
+ validate_chain kernel/locking/lockdep.c:2970 [inline]
+ __lock_acquire+0x2596/0x4a00 kernel/locking/lockdep.c:3954
+ lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4484
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x95/0xcd kernel/locking/spinlock.c:159
+ htab_lru_map_delete_node+0xce/0x2f0 kernel/bpf/hashtab.c:593
+ __bpf_lru_list_shrink_inactive kernel/bpf/bpf_lru_list.c:220 [inline]
+ __bpf_lru_list_shrink+0xf9/0x470 kernel/bpf/bpf_lru_list.c:266
+ bpf_lru_list_pop_free_to_local kernel/bpf/bpf_lru_list.c:340 [inline]
+ bpf_common_lru_pop_free kernel/bpf/bpf_lru_list.c:447 [inline]
+ bpf_lru_pop_free+0x87c/0x1670 kernel/bpf/bpf_lru_list.c:499
+ prealloc_lru_pop+0x2c/0xa0 kernel/bpf/hashtab.c:132
+ __htab_lru_percpu_map_update_elem+0x67e/0xa90 kernel/bpf/hashtab.c:1069
+ bpf_percpu_hash_update+0x16e/0x210 kernel/bpf/hashtab.c:1585
+ bpf_map_update_value.isra.0+0x2d7/0x8e0 kernel/bpf/syscall.c:181
+ generic_map_update_batch+0x41f/0x610 kernel/bpf/syscall.c:1319
+ bpf_map_do_batch+0x3f5/0x510 kernel/bpf/syscall.c:3348
+ __do_sys_bpf+0x9b7/0x41e0 kernel/bpf/syscall.c:3460
+ __se_sys_bpf kernel/bpf/syscall.c:3355 [inline]
+ __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3355
+ do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x446b99
+Code: e8 bc b4 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 ab 08 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f14c0df8db8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446b99
+RDX: 0000000000000038 RSI: 0000000020000040 RDI: 000000000000001a
+RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+R13: 00007ffc51c1364f R14: 00007f14c0df99c0 R15: 0000000000000000
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
