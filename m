@@ -2,123 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A9027161C44
-	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2020 21:22:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FDA161D39
+	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2020 23:18:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729124AbgBQUWG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Feb 2020 15:22:06 -0500
-Received: from gateway30.websitewelcome.com ([192.185.160.12]:20428 "EHLO
-        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729041AbgBQUWF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 17 Feb 2020 15:22:05 -0500
-X-Greylist: delayed 1413 seconds by postgrey-1.27 at vger.kernel.org; Mon, 17 Feb 2020 15:22:04 EST
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id 03CDE925A
-        for <bpf@vger.kernel.org>; Mon, 17 Feb 2020 13:58:31 -0600 (CST)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id 3mXGjVCx3XVkQ3mXGjsIvJ; Mon, 17 Feb 2020 13:58:30 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
-        Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=lL/wXEQHi6LCYu2lhykWxgmf1aHw3CsCn1BREA1tfRE=; b=fK82/v2ZvhIZLJatuoWe0R1cPJ
-        pAvAjXK22AfD8Z/Du17oJLpt7auD8pYHZpKBB5J93519ocXDYMERj8cONkZeFbahHPRH5RXYxIV6M
-        AxzvuVd+cg9PG2eh6aUyqpWWR5DGeUMpcKYOi6/yZAEAeDTNOh0CNhynuWryGDMeuClYY6/XY8KcR
-        dU7c4txB1QAsHDWa2eJ0kkK2gS9XZNT4IULQgdkyqeZPtKP4AuwVy1PI7jyvQ9+nXskmDHhkGjJUV
-        pov0c83Un8z+vtC6yzGbPB4+hhdAN5lLBUjjw+BIy0nquFVXVfDhGShblYTzr9s4zijvIESHIUHlg
-        nkjnRtMg==;
-Received: from [200.68.140.26] (port=19134 helo=embeddedor)
-        by gator4166.hostgator.com with esmtpa (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1j3mXF-000Mi0-Fe; Mon, 17 Feb 2020 13:58:29 -0600
-Date:   Mon, 17 Feb 2020 14:01:11 -0600
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] bpf, sockmap: Replace zero-length array with
- flexible-array member
-Message-ID: <20200217200111.GA5283@embeddedor>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 200.68.140.26
-X-Source-L: No
-X-Exim-ID: 1j3mXF-000Mi0-Fe
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (embeddedor) [200.68.140.26]:19134
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 28
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+        id S1726155AbgBQWSw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Feb 2020 17:18:52 -0500
+Received: from shards.monkeyblade.net ([23.128.96.9]:56070 "EHLO
+        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726047AbgBQWSv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Feb 2020 17:18:51 -0500
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 3523015AA6301;
+        Mon, 17 Feb 2020 14:18:51 -0800 (PST)
+Date:   Mon, 17 Feb 2020 14:18:50 -0800 (PST)
+Message-Id: <20200217.141850.2134390863127670308.davem@davemloft.net>
+To:     lorenzo.bianconi@redhat.com
+Cc:     brouer@redhat.com, lorenzo@kernel.org, netdev@vger.kernel.org,
+        ilias.apalodimas@linaro.org, dsahern@kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH net-next 4/5] net: mvneta: introduce xdp counters to
+ ethtool
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200217102550.GB3080@localhost.localdomain>
+References: <882d9f03a8542cceec7c7b8e6d083419d84eaf7a.1581886691.git.lorenzo@kernel.org>
+        <20200217111718.2c9ab08a@carbon>
+        <20200217102550.GB3080@localhost.localdomain>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 17 Feb 2020 14:18:51 -0800 (PST)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+From: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Date: Mon, 17 Feb 2020 11:25:50 +0100
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+> yes, I think it is definitely better. So to follow up:
+> - rename current "xdp_tx" counter in "xdp_xmit" and increment it for
+>   XDP_TX verdict and for ndo_xdp_xmit
+> - introduce a new "xdp_tx" counter only for XDP_TX verdict.
+> 
+> If we agree I can post a follow-up patch.
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
-
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
-
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
-
-This issue was found with the help of Coccinelle.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- net/core/sock_map.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index 085cef5857bb..3a7a96ab088a 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -518,7 +518,7 @@ struct bpf_htab_elem {
- 	u32 hash;
- 	struct sock *sk;
- 	struct hlist_node node;
--	u8 key[0];
-+	u8 key[];
- };
- 
- struct bpf_htab_bucket {
--- 
-2.25.0
-
+What names do other drivers use?  Consistency is important.  I noticed
+while reviewing these patches that mellanox drivers export similar
+statistics in the exact same way.
