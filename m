@@ -2,182 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB511605FE
-	for <lists+bpf@lfdr.de>; Sun, 16 Feb 2020 20:32:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D621C160857
+	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2020 03:52:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727668AbgBPTcD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sun, 16 Feb 2020 14:32:03 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:34087 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726043AbgBPTcD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 16 Feb 2020 14:32:03 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-217-M4y6KAKvO5aL9vvS_ikQCA-1; Sun, 16 Feb 2020 14:31:57 -0500
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E15DE1005516;
-        Sun, 16 Feb 2020 19:31:54 +0000 (UTC)
-Received: from krava.redhat.com (ovpn-204-28.brq.redhat.com [10.40.204.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7269F8574E;
-        Sun, 16 Feb 2020 19:31:47 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@redhat.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 18/18] perf annotate: Add base support for bpf_image
-Date:   Sun, 16 Feb 2020 20:30:05 +0100
-Message-Id: <20200216193005.144157-19-jolsa@kernel.org>
-In-Reply-To: <20200216193005.144157-1-jolsa@kernel.org>
-References: <20200216193005.144157-1-jolsa@kernel.org>
+        id S1726485AbgBQCwb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 16 Feb 2020 21:52:31 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:50498 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726269AbgBQCwa (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 16 Feb 2020 21:52:30 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 01H2olO5024586;
+        Sun, 16 Feb 2020 18:52:16 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=ktsVcn29adyZK8/JOjZtxGKqJq0uoTPwdp62603/WWA=;
+ b=F1yQH7FGRaCry6dp/zva+mT+fyziV6WNVjdYfCI4HjO7qVzAcp+A3aX4fzVnjU2ICAx6
+ jdXC5QoTRYJb/xlG93mT3YO+Af/NcJcyg1Q/oEMRJmRZXNMoYYoHE1V8sO8E8xiHF6mP
+ jAL247n4D71brhy3iCujsG8VJATTpYdU4tA= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 2y6d15d4tn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sun, 16 Feb 2020 18:52:16 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Sun, 16 Feb 2020 18:52:15 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bsMp9MulsVAQGQoFKro/eA2QwiuyX27gKF2/ow1mOvCU84Pzwa1VDPHyhJOFpSZw/1rRYOfl7pZjda1Czq6dEPGGrrIsA7W96H4+1V055Clv5Mw3oKwgHDd6y4few+1MbMI3LI+Sit6D5Yb2CH/HHGU5kzc0E2R3lnuk15bn9LFcQjrs9qTb7cvUQUnRp8pEF0VbyfunDFO7Nn63eNwYTxYoPdQEwLC99hOZMw3wvw8l4q8BCa0w630y76+qy1b7VlAiFW5F9K9BvL3adNG2VChbRqwDwl7C7MgwgKzKv3X1BkdYyF80qBaV1CP6DcWQMz7zxZ2YZb7Bx7c0chxykg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ktsVcn29adyZK8/JOjZtxGKqJq0uoTPwdp62603/WWA=;
+ b=iw2MCtlkj+Ual8hDFdPsr0/+WlikiZBVPKhKV/ZrX/KdUbRVCxfRvHzmjmM3tUsev2ykCsYa/BSF1pJ5tRvMyFHFDXHXAIkzaOuNBItN4CMEWZTTivYBAajC9R9trxTklUeg6IE2hKRX9IbSD9wBGw84O3qGzYkbUDA3s2yFZ/0Nc8v7U/wHNXjpB9MIaV6WIC83MsxUgE0P6DaglvPxuySJuClCkpuas2iqi6MSJQ+DM76bWUIUoDn0ynrxKJzUwm0nmau2JU+IENWBbBuZSkj2hwAHFoqd5ifgDJ8LWo4AIg4tM6aDRy1Wf5wcrzHLP+B317swws7KeLkhjVF2JQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ktsVcn29adyZK8/JOjZtxGKqJq0uoTPwdp62603/WWA=;
+ b=I3sNPUi8SZLpy96zjstV2mvnF+sXRWmHnIZcxA0PZZz7QNX/K0gHXmcQ1ElIyd82UWcAllS9GxjSjzCi7/6CTToDZ3sho5VXOVoaJesjGtPW5JpgQZzHWbi57Ea1DTC68dndmioHBA1JOjCzTboB3RNMqhko2d4MwUXYFAu+hWA=
+Received: from MW2PR1501MB2171.namprd15.prod.outlook.com (52.132.153.155) by
+ MW2PR1501MB2156.namprd15.prod.outlook.com (52.132.150.152) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2729.23; Mon, 17 Feb 2020 02:51:59 +0000
+Received: from MW2PR1501MB2171.namprd15.prod.outlook.com
+ ([fe80::492d:3e00:17dc:6b30]) by MW2PR1501MB2171.namprd15.prod.outlook.com
+ ([fe80::492d:3e00:17dc:6b30%7]) with mapi id 15.20.2707.034; Mon, 17 Feb 2020
+ 02:51:59 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>
+Subject: Re: [RFC bpf-next 3/4] bpftool: introduce "prog profile" command
+Thread-Topic: [RFC bpf-next 3/4] bpftool: introduce "prog profile" command
+Thread-Index: AQHV4rD13dwh4/0hXUSMa6ZitJFaYKgbbO4AgANH4gA=
+Date:   Mon, 17 Feb 2020 02:51:59 +0000
+Message-ID: <2AC53E92-FC90-4133-9BCF-5BE627A5B3A2@fb.com>
+References: <20200213210115.1455809-1-songliubraving@fb.com>
+ <20200213210115.1455809-4-songliubraving@fb.com>
+ <20200215004500.gs3ylstfo3aksfbp@ast-mbp>
+In-Reply-To: <20200215004500.gs3ylstfo3aksfbp@ast-mbp>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.60.0.2.5)
+x-originating-ip: [2620:10d:c090:400::5:3efc]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 495799ca-1997-4c2d-b29b-08d7b3545bca
+x-ms-traffictypediagnostic: MW2PR1501MB2156:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW2PR1501MB21561366F99411E77E817673B3160@MW2PR1501MB2156.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 0316567485
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(136003)(366004)(396003)(376002)(346002)(199004)(189003)(6916009)(81156014)(8936002)(81166006)(86362001)(8676002)(478600001)(71200400001)(4326008)(33656002)(6486002)(36756003)(6512007)(2906002)(76116006)(5660300002)(66946007)(53546011)(2616005)(6506007)(186003)(54906003)(66476007)(64756008)(66556008)(66446008)(316002);DIR:OUT;SFP:1102;SCL:1;SRVR:MW2PR1501MB2156;H:MW2PR1501MB2171.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7CaYpwuN7abb5GmH8l0JCxz0KfidgtFkW9pYBxdv7lZOJVv/sryQ0PeaBFurdFyti8dHr/B27+ubhbkSz4u3uchDxuOlsolcSOHlZ6UDMKcUJWcg+umgwU9JBXfelAzXfruPzp3Iq71yghWFeDNWWLe/SmrWZ+p9Y8R1uNKqb6CZYs8xmTrPbt4mch3PWwkCZk9sCXljBCRmNpcQ8ZtIxV8jhOEztPjXzqagoeFUoekQLwBJPbkAw6B9KoF9Pqw8Eq2TA2++BQpO7kjS3OW7qyJ05hsoxWjuOnXVjg6MV02qU5HN6+FYUM5UnGqeQszZ7rcsYGcmMXPgDu8J3VYKfs7oB3DxVatAA3+MprFKzD5wxEPUQZnB7S2h3tkvISJFf44uqjDbp+qzSbngVuK88ibZNj/H5IY17L9FHW+AJ8mkwWK61NVdAev/D9ZKaoVp
+x-ms-exchange-antispam-messagedata: 89ZsAYPcEF2r7wmG3XMjsH/Y6YCYtDMEU4C+MVgHmPZCuAr8R+MoRgWUMgJ8KM3/QoU97pzdDDY7t2hIeXYnCjbMGeeeq5pNK81L3vtmyBw7dLSjD9NVBLnLGblaiUDafZTlHAjtq2RavovQesdjus53Yl+k7sTJvUJZoeD7b8EhfqqF3Eis/MWCKrRBQxd9
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <E599C6F523369848BDE7FDB82FE1EA26@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-MC-Unique: M4y6KAKvO5aL9vvS_ikQCA-1
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+X-MS-Exchange-CrossTenant-Network-Message-Id: 495799ca-1997-4c2d-b29b-08d7b3545bca
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Feb 2020 02:51:59.3100
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: DVIdC3Nwwb9ThHrxj1tqqtGWplZa9Ncan+FC7NhxoalX5mw5d2PWJs0ib7L6Qaig9c+pZETTkYU0vnIV7FcbAQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR1501MB2156
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-02-17_01:2020-02-14,2020-02-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ adultscore=0 mlxlogscore=999 lowpriorityscore=0 phishscore=0 bulkscore=0
+ clxscore=1015 malwarescore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2002170022
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding the DSO_BINARY_TYPE__BPF_IMAGE dso binary type
-to recognize bpf images that carry trampoline or dispatcher.
 
-Upcoming patches will add support to read the image data,
-store it within the BPF feature in perf.data and display
-it for annotation purposes.
 
-Currently we only display following message:
+> On Feb 14, 2020, at 4:45 PM, Alexei Starovoitov <alexei.starovoitov@gmail=
+.com> wrote:
+>=20
+> On Thu, Feb 13, 2020 at 01:01:14PM -0800, Song Liu wrote:
+>> With fentry/fexit programs, it is possible to profile BPF program with
+>> hardware counters. Introduce bpftool "prog profile", which measures key
+>> metrics of a BPF program.
+>>=20
+>> bpftool prog profile command creates per-cpu perf events. Then it attach=
+es
+>> fentry/fexit programs to the target BPF program. The fentry program save=
+s
+>> perf event value to a map. The fexit program reads the perf event again,
+>> and calculates the difference, which is the instructions/cycles used by
+>> the target program.
+>>=20
+>> Example input and output:
+>>=20
+>>  ./bpftool prog profile 20 id 810 cycles instructions
+>>  cycles: duration 20 run_cnt 1368 miss_cnt 665
+>>          counter 503377 enabled 668202 running 351857
+>>  instructions: duration 20 run_cnt 1368 miss_cnt 707
+>>          counter 398625 enabled 502330 running 272014
+>>=20
+>> This command measures cycles and instructions for BPF program with id
+>> 810 for 20 seconds. The program has triggered 1368 times. cycles was not
+>> measured in 665 out of these runs, because of perf event multiplexing
+>> (some perf commands are running in the background). In these runs, the B=
+PF
+>> program consumed 503377 cycles. The perf_event enabled and running time
+>> are 668202 and 351857 respectively.
+>=20
+> if (diff.enabled > diff.running) increment miss_cnt.
+> Why show this to users?
+> I think 'miss_cnt' the users will interpret as data is bogus,
+> but it only means that the counter was multiplexed.
+> The data is still accurate, no?
 
-  # ./perf annotate bpf_trampoline_24456 --stdio
-   Percent |      Source code & Disassembly of . for cycles (504  ...
-  --------------------------------------------------------------- ...
-           :       to be implemented
+We (or the user) need to be careful to get all the math correct:
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/perf/util/annotate.c | 20 ++++++++++++++++++++
- tools/perf/util/dso.c      |  1 +
- tools/perf/util/dso.h      |  1 +
- tools/perf/util/machine.c  | 11 +++++++++++
- tools/perf/util/symbol.c   |  1 +
- 5 files changed, 34 insertions(+)
+For # of run per second, we need total count;
+For cycles per run, we need non-miss-count (total_count - miss_cnt).=20
 
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index ca73fb74ad03..d9e606e11936 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -1843,6 +1843,24 @@ static int symbol__disassemble_bpf(struct symbol *sym __maybe_unused,
- }
- #endif // defined(HAVE_LIBBFD_SUPPORT) && defined(HAVE_LIBBPF_SUPPORT)
- 
-+static int
-+symbol__disassemble_bpf_image(struct symbol *sym,
-+			      struct annotate_args *args)
-+{
-+	struct annotation *notes = symbol__annotation(sym);
-+	struct disasm_line *dl;
-+
-+	args->offset = -1;
-+	args->line = strdup("to be implemented");
-+	args->line_nr = 0;
-+	dl = disasm_line__new(args);
-+	if (dl)
-+		annotation_line__add(&dl->al, &notes->src->source);
-+
-+	free(args->line);
-+	return 0;
-+}
-+
- /*
-  * Possibly create a new version of line with tabs expanded. Returns the
-  * existing or new line, storage is updated if a new line is allocated. If
-@@ -1942,6 +1960,8 @@ static int symbol__disassemble(struct symbol *sym, struct annotate_args *args)
- 
- 	if (dso->binary_type == DSO_BINARY_TYPE__BPF_PROG_INFO) {
- 		return symbol__disassemble_bpf(sym, args);
-+	} else if (dso->binary_type == DSO_BINARY_TYPE__BPF_IMAGE) {
-+		return symbol__disassemble_bpf_image(sym, args);
- 	} else if (dso__is_kcore(dso)) {
- 		kce.kcore_filename = symfs_filename;
- 		kce.addr = map__rip_2objdump(map, sym->start);
-diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
-index 91f21239608b..f338990e0fe6 100644
---- a/tools/perf/util/dso.c
-+++ b/tools/perf/util/dso.c
-@@ -191,6 +191,7 @@ int dso__read_binary_type_filename(const struct dso *dso,
- 	case DSO_BINARY_TYPE__GUEST_KALLSYMS:
- 	case DSO_BINARY_TYPE__JAVA_JIT:
- 	case DSO_BINARY_TYPE__BPF_PROG_INFO:
-+	case DSO_BINARY_TYPE__BPF_IMAGE:
- 	case DSO_BINARY_TYPE__NOT_FOUND:
- 		ret = -1;
- 		break;
-diff --git a/tools/perf/util/dso.h b/tools/perf/util/dso.h
-index 2db64b79617a..9553a1fd9e8a 100644
---- a/tools/perf/util/dso.h
-+++ b/tools/perf/util/dso.h
-@@ -40,6 +40,7 @@ enum dso_binary_type {
- 	DSO_BINARY_TYPE__GUEST_KCORE,
- 	DSO_BINARY_TYPE__OPENEMBEDDED_DEBUGINFO,
- 	DSO_BINARY_TYPE__BPF_PROG_INFO,
-+	DSO_BINARY_TYPE__BPF_IMAGE,
- 	DSO_BINARY_TYPE__NOT_FOUND,
- };
- 
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 463ada5117f8..372ed147bed5 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -719,6 +719,12 @@ int machine__process_switch_event(struct machine *machine __maybe_unused,
- 	return 0;
- }
- 
-+static int is_bpf_image(const char *name)
-+{
-+	return strncmp(name, "bpf_trampoline_", sizeof("bpf_trampoline_") - 1) ||
-+	       strncmp(name, "bpf_dispatcher_", sizeof("bpf_dispatcher_") - 1);
-+}
-+
- static int machine__process_ksymbol_register(struct machine *machine,
- 					     union perf_event *event,
- 					     struct perf_sample *sample __maybe_unused)
-@@ -743,6 +749,11 @@ static int machine__process_ksymbol_register(struct machine *machine,
- 		map->end = map->start + event->ksymbol.len;
- 		maps__insert(&machine->kmaps, map);
- 		dso__set_loaded(dso);
-+
-+		if (is_bpf_image(event->ksymbol.name)) {
-+			dso->binary_type = DSO_BINARY_TYPE__BPF_IMAGE;
-+			dso__set_long_name(dso, "", false);
-+		}
- 	}
- 
- 	sym = symbol__new(map->map_ip(map, map->start),
-diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-index 3b379b1296f1..e6caec4b6054 100644
---- a/tools/perf/util/symbol.c
-+++ b/tools/perf/util/symbol.c
-@@ -1537,6 +1537,7 @@ static bool dso__is_compatible_symtab_type(struct dso *dso, bool kmod,
- 		return true;
- 
- 	case DSO_BINARY_TYPE__BPF_PROG_INFO:
-+	case DSO_BINARY_TYPE__BPF_IMAGE:
- 	case DSO_BINARY_TYPE__NOT_FOUND:
- 	default:
- 		return false;
--- 
-2.24.1
+So miss_cnt is useful for some users.=20
+
+One thing tricky here is that different events in the same session may=20
+have different miss_cnt. I just realized that we can probably avoid most=20
+of such cases, and only take samples when all the counters are counting.=20
+
+> This condition will probably be hit fairly often, no?
+
+This really depends on the system. Data center servers usually have a=20
+few perf_event running 24/7. We are more likely to hit multiplexing on
+these systems.=20
+
+>=20
+>> tools/bpf/bpftool/profiler.skel.h         | 820 ++++++++++++++++++++++
+>=20
+> I think bpftool needs to be build twice to avoid this.
+>=20
+> Could you change the output format to be 'perf stat' like:
+>         55,766.51 msec task-clock                #    0.996 CPUs utilized
+>             4,891      context-switches          #    0.088 K/sec
+>                31      cpu-migrations            #    0.001 K/sec
+>         1,806,065      page-faults               #    0.032 M/sec
+>   166,819,295,451      cycles                    #    2.991 GHz          =
+            (50.12%)
+>   251,115,795,764      instructions              #    1.51  insn per cycl=
+e           (50.10%)
+
+Will try this in next version.=20
+
+>=20
+> Also printing 'duration' is unnecessary. The user specified it at the com=
+mand
+> line and it doesn't need to be reported back to the user.
+> Can you also make it optional? Until users Ctrl-C's bpftool ?
+
+Yes, I plan to add the Ctrl-C approach. Even with a duration, user can stil=
+l=20
+hit Ctrl-C and get partial results. I guess, we should show the duration fo=
+r=20
+when user Ctrl-C?
+
+> So it may look like:
+> $ ./bpftool prog profile id 810 cycles instructions
+>             1,368      run_cnt
+>           503,377      cycles
+>           398,625      instructions         # 0.79 insn per cycle
+>=20
+> Computing additional things like 'insn per cycle' do help humans to
+> pay attention the issue. Like <1 ipc is not great and the next step
+> would be to profile this program for cache misses.
+
+Yes, instruction per cycle is useful. Let me add that.=20
 
