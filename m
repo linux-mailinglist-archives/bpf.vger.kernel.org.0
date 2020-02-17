@@ -2,119 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B97B11618A6
-	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2020 18:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF971619A2
+	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2020 19:18:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728952AbgBQRRU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Feb 2020 12:17:20 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:39552 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728653AbgBQRRU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Feb 2020 12:17:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581959839;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=qeiA2zNy+KX8mcg4wbgxxGNyHshOOJC4Sg9lsLuNiz0=;
-        b=HyTx+hSaO8pHSb8BNsOI4UzjzUWbrAcLnVQm1FeFu5Tjh1Yq4NlQ/CyJ/gyygebuPWAMpG
-        wuqSxyCMrb1VcTM+r/uMYMqP+bxLX/F3fXQSf1J1CctyOB5/Mv3HF+8r5kTYFpHjwhdx7o
-        rPWP7BTH5J8aIV/asZcxiQy9xclQAQo=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-3-61q2ZZamMFKUEtXLmFUodg-1; Mon, 17 Feb 2020 12:17:17 -0500
-X-MC-Unique: 61q2ZZamMFKUEtXLmFUodg-1
-Received: by mail-lf1-f71.google.com with SMTP id f26so1727598lfh.15
-        for <bpf@vger.kernel.org>; Mon, 17 Feb 2020 09:17:17 -0800 (PST)
+        id S1729708AbgBQSSC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Feb 2020 13:18:02 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:43317 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726833AbgBQSSC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Feb 2020 13:18:02 -0500
+Received: by mail-qt1-f195.google.com with SMTP id d18so12675505qtj.10;
+        Mon, 17 Feb 2020 10:18:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=SOcf8TuKJ88k2p/O21+wCb6aXk50+NW/MesqUsVcIbE=;
+        b=Q7zrkAyEyl/8DtSY2WR7zOCW8m/nRmB+x/ePE2y0Dt/9g+xyKUI9DYnUPsER1XhcJD
+         +/RjtjlPa+uJhT6RjAQ4372uxf0oUQ8shaIKQ6SKIYa65S4w/u2h7yIu5xNgczZeFTuT
+         uD8quXbAgmvuI2laQ1R4CaRLGeXMJJsEDiRJhI0DK4t9Abl4Biv2lkvsg1d1kknNLuVc
+         1zusGWLz5BdMs24jxAQdeiCXpnlNzIT/2vr09twfZ5IvKkbGHML0C6orDd0XMfHYj3fV
+         FEpr1X9NAWzaxsOqGys4t2uzaGGPkcs5BVFAyojcof1XkaCg61I0mGZVqXdsA93aM2YV
+         ++Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=qeiA2zNy+KX8mcg4wbgxxGNyHshOOJC4Sg9lsLuNiz0=;
-        b=RtffSKZ4i/LnXrmQ0DmcDkAP8X1QCRN3a6mSMeDGCsEz4VlL2gWUVZ38xotPWPae3k
-         p3/Z1cNh8OpxHVjzv7H4Ks4V11OCcEgmGjAX/rfJ6/2VSS+KkCZrTl7tAfLyTPXNfuZP
-         MbndHmOb1rasmQ0Uht5CCci5yTlDuIjbKDAiQHFcqaW/js6kH/ps1YmSvbeWq1ytEo9P
-         Uy9D7qsWqT0SHZLSsj+rrJwn7Z1dA7v9FtM/iUc+Xu5g1zBy+eFyY38pS7uEDvC9kwcg
-         okAav8WJz3uvp+WFypn9JOquYZbG0/C/yxd4zxMF/96le7fjaGVu4K6zn4x2gb61S7Vs
-         W9LA==
-X-Gm-Message-State: APjAAAWUt0z2zsgy0NeA6sqqApQs04CKsYUv9ld1mmBt++9RUg3PEaMY
-        h+0zA3yM5yoEWxyi6srIIRP08iw3zD7yEPcT8S6LGIrrgmTMzm7Vy1R88z27gPFCrUOsxWBPM3P
-        VDwb9bF8SZCw3
-X-Received: by 2002:a2e:8702:: with SMTP id m2mr10741512lji.278.1581959835817;
-        Mon, 17 Feb 2020 09:17:15 -0800 (PST)
-X-Google-Smtp-Source: APXvYqyT/XRSylcKMU5hkKtXzin0V8eVj+3tuoEYwtYxLeF2KXw8Lvo06GvSDcZZ6TCVSTq5wcEmkA==
-X-Received: by 2002:a2e:8702:: with SMTP id m2mr10741501lji.278.1581959835561;
-        Mon, 17 Feb 2020 09:17:15 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id k12sm703708lfc.33.2020.02.17.09.17.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Feb 2020 09:17:14 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id A9C3C180365; Mon, 17 Feb 2020 18:17:13 +0100 (CET)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     daniel@iogearbox.net, ast@fb.com
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH bpf] libbpf: Sanitise internal map names so they are not rejected by the kernel
-Date:   Mon, 17 Feb 2020 18:17:01 +0100
-Message-Id: <20200217171701.215215-1-toke@redhat.com>
-X-Mailer: git-send-email 2.25.0
+        bh=SOcf8TuKJ88k2p/O21+wCb6aXk50+NW/MesqUsVcIbE=;
+        b=lRYH92xnsilhynM5TZH7HFoDQRY1SNvHiXV2Tul/mqGxYmfylXvfiMHMwNrxG17xvx
+         kvp4ZGPe+tgqbZRGw2S+VkWzmWsSx9a45sdWc2JIo4Fh6OcdArLSZSY+V+Qxm5yINYYS
+         v3U5VSbxNrNZKAbIQsd5RntaGdto85G/Z0sx66vayf1NPidM8gODCZxLXO3OWM4qGIg8
+         wDQ/RmKYNUIYhWiBef+hGv53bgJfCo4OtIhLuAKbhI4X6gCk3GsCKHkedLNDMMVMMSQW
+         dLdB2jfrFt1q6F74IG6V5QpSw9LJzlnIS5MhMEDTiBno/ir5IFNzb33pKL8mWL+En14u
+         EQ8g==
+X-Gm-Message-State: APjAAAUeYwM6MHC72g8cYMLeClW24JkA9oLRxZpHVapOSuU4r3rj4Y4D
+        4Zy9vkJ+FyR7H3pYM2to9UFAEL89
+X-Google-Smtp-Source: APXvYqwQGxsckCpI+nKuMkd3dne4GSOPW5AngfJ1jBDnoPJbBO8Nd+O1M07WvE3DI3Wf8GK6xRaSiA==
+X-Received: by 2002:ac8:f7d:: with SMTP id l58mr7091qtk.50.1581963479501;
+        Mon, 17 Feb 2020 10:17:59 -0800 (PST)
+Received: from ?IPv6:2601:282:803:7700:65d1:a3b2:d15f:79af? ([2601:282:803:7700:65d1:a3b2:d15f:79af])
+        by smtp.googlemail.com with ESMTPSA id 139sm618053qkg.79.2020.02.17.10.17.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Feb 2020 10:17:58 -0800 (PST)
+Subject: Re: [PATCH net-next 4/5] net: mvneta: introduce xdp counters to
+ ethtool
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrew Lunn <andrew@lunn.ch>
+Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
+        ilias.apalodimas@linaro.org, davem@davemloft.net,
+        David Ahern <dsahern@kernel.org>,
+        BPF-dev-list <bpf@vger.kernel.org>
+References: <cover.1581886691.git.lorenzo@kernel.org>
+ <882d9f03a8542cceec7c7b8e6d083419d84eaf7a.1581886691.git.lorenzo@kernel.org>
+ <20200217111718.2c9ab08a@carbon>
+ <20200217102550.GB3080@localhost.localdomain>
+ <20200217113209.2dab7f71@carbon> <20200217130515.GE32734@lunn.ch>
+ <20200217155139.6363aa52@carbon>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <ce801d5b-f86d-76e3-5faa-a10dac373f2c@gmail.com>
+Date:   Mon, 17 Feb 2020 11:17:56 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200217155139.6363aa52@carbon>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The kernel only accepts map names with alphanumeric characters, underscores
-and periods in their name. However, the auto-generated internal map names
-used by libbpf takes their prefix from the user-supplied BPF object name,
-which has no such restriction. This can lead to "Invalid argument" errors
-when trying to load a BPF program using global variables.
+On 2/17/20 7:51 AM, Jesper Dangaard Brouer wrote:
+> On Mon, 17 Feb 2020 14:05:15 +0100
+> Andrew Lunn <andrew@lunn.ch> wrote:
+> 
+>> On Mon, Feb 17, 2020 at 11:32:09AM +0100, Jesper Dangaard Brouer wrote:
+>>> On Mon, 17 Feb 2020 11:25:50 +0100
+>>> Lorenzo Bianconi <lorenzo.bianconi@redhat.com> wrote:
+>>>   
+> [...]
+>>>>
+>>>> yes, I think it is definitely better. So to follow up:
+>>>> - rename current "xdp_tx" counter in "xdp_xmit" and increment it for
+>>>>   XDP_TX verdict and for ndo_xdp_xmit
+>>>> - introduce a new "xdp_tx" counter only for XDP_TX verdict.
+>>>>
+>>>> If we agree I can post a follow-up patch.  
+>>>
+>>> I agree, that sounds like an improvement to this patchset.
+>>>
+>>>
+>>> I suspect David Ahern have some opinions about more general stats for
+>>> XDP, but that it is a more general discussion, that it outside this
+>>> patchset, but we should also have that discussion.  
+>>
+>> Hi Jesper
+>>
+>> I've not been following XDP too much, but xdp_xmit seems pretty
+>> generic. It would be nice if all drivers used the same statistics
+>> names. Less user confusion that way. So why is this outside of the
+>> discussion?
 
-Fix this by sanitising the map names, replacing any non-allowed characters
-with underscores.
+Hi Andrew: I brought this up over a year ago - the need for some
+consistency in XDP stats (names and meaning) across drivers:
 
-Fixes: d859900c4c56 ("bpf, libbpf: support global data/bss/rodata sections")
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- tools/lib/bpf/libbpf.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+https://lore.kernel.org/netdev/1d9a6548-4d1d-6624-e808-6ab0460a8655@gmail.com/
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 514b1a524abb..7469c7dcc15e 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -24,6 +24,7 @@
- #include <endian.h>
- #include <fcntl.h>
- #include <errno.h>
-+#include <ctype.h>
- #include <asm/unistd.h>
- #include <linux/err.h>
- #include <linux/kernel.h>
-@@ -1283,7 +1284,7 @@ static size_t bpf_map_mmap_sz(const struct bpf_map *map)
- static char *internal_map_name(struct bpf_object *obj,
- 			       enum libbpf_map_type type)
- {
--	char map_name[BPF_OBJ_NAME_LEN];
-+	char map_name[BPF_OBJ_NAME_LEN], *p;
- 	const char *sfx = libbpf_type_to_btf_name[type];
- 	int sfx_len = max((size_t)7, strlen(sfx));
- 	int pfx_len = min((size_t)BPF_OBJ_NAME_LEN - sfx_len - 1,
-@@ -1292,6 +1293,11 @@ static char *internal_map_name(struct bpf_object *obj,
- 	snprintf(map_name, sizeof(map_name), "%.*s%.*s", pfx_len, obj->name,
- 		 sfx_len, libbpf_type_to_btf_name[type]);
- 
-+	/* sanitise map name to characters allowed by kernel */
-+	for (p = map_name; *p && p < map_name + sizeof(map_name); p++)
-+		if (!isalnum(*p) && *p != '_' && *p != '.')
-+			*p = '_';
-+
- 	return strdup(map_name);
- }
- 
--- 
-2.25.0
+I don't have strong preferences on which driver is right in the current
+naming, only that we have consistency. There has not been much progress
+in the past 15 months, so I am glad to see someone take this on.
 
+> 
+> I do want to have this discussion, please.
+> 
+> I had hoped this patchset sparked this that discussion... maybe we can
+> have it despite this patchset already got applied?
+> 
+> My only request is that, if we don't revert, we fixup the "xdp_tx"
+> counter name.  It would make it easier for us[1] if we can keep them
+> applied, as we are preparing (asciinema) demos for [1].
+
+Jesper: what about the mlx5 naming scheme:
+
+     rx_xdp_drop: 86468350180
+     rx_xdp_redirect: 18860584
+     rx_xdp_tx_xmit: 0
+
+The rx prefix shows the xdp action is in the Rx path, and then the Tx
+path has tx_xdp_xmit.
+
+i40e seems to have something similar for the Rx path:
+     rx-0.xdp.pass: 0
+     rx-0.xdp.drop: 0
+     rx-0.xdp.tx: 0
+     rx-0.xdp.unknown: 0
+     rx-0.xdp.redirect: 0
+     rx-0.xdp.redirect_fail: 0
+
+I don't see any Tx stats for xdp, but this is an older kernel so not
+sure what 5.x has.
+
+Looks like sfc has a similar naming scheme:
+     rx_xdp_drops: 0
+     rx_xdp_bad_drops: 0
+     rx_xdp_tx: 0
+     rx_xdp_redirect: 0
+
+So if mvneta follows these 3, the names just need rx_ prepended.
