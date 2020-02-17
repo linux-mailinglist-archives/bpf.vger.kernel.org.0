@@ -2,104 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA4841619B6
-	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2020 19:25:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9027161C44
+	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2020 21:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728615AbgBQSZ1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Feb 2020 13:25:27 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:33641 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726833AbgBQSZZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Feb 2020 13:25:25 -0500
-Received: by mail-pf1-f196.google.com with SMTP id n7so9335015pfn.0
-        for <bpf@vger.kernel.org>; Mon, 17 Feb 2020 10:25:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+y8jRH9et24PzZEzAuvtS6mrYS3E40060UY4DYXNlPU=;
-        b=XdybOT4fn4GZR7RpSc1kSHox+vYiKKtchga8ALKVPxCgX40ZIME8RK3kjkFiNPSm38
-         uveaXH2a1VHQ2Fz8wm3Du+ivcowo1Lpxla2Ucef+7rkrfw9WQw1MbzSbkIZ0bS0qkUHw
-         hQg2oHMweOiuO/de7+09ohgPaxuSgSs8sarCA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+y8jRH9et24PzZEzAuvtS6mrYS3E40060UY4DYXNlPU=;
-        b=QDescYyBKGMwFMjFd1OL11Q6IKNbzyJ6nQv2szm8CjcoZ4p6EJ/4xvaBsh6/3R5kZz
-         9hhp9ztRDkrdm6jWZHEL7d9YNbZJftfSRB5UXqVhSVZPHA8RwgEQ21eMIa4Rshv8ZiQ3
-         uo61Nhqv4Qs7SUAcruWbML1GORSjGxc2iEfNXD/J3dpRv3FCZHr0L75z6IT65/RTyPrf
-         Esvn9rlqPcJ5/odnncl2eCOdZlrNUhAbxiOQZBBUsACYjG38iqumwg1C2ri/oKr1twZ2
-         xPC3Bh3P6Zr/P0TcDfPLS8lO+OwP24uYSJ+PRp9xsqa17Jzll2mIwR7O+NBF73FfUr5X
-         Oe2A==
-X-Gm-Message-State: APjAAAWilPrqcT/XhX+kUtENpJSJxVMp+30hIFy9k2AF9V+r6qSxTdhE
-        +nlzex++dsxH3f6tBO20EF2A2A==
-X-Google-Smtp-Source: APXvYqxd822QciqhrEDCTSK81ganIzKlTj7DzPuTBQq+3keCMilmP9kHcrJPHvZRfEaD0zm+iJwfcw==
-X-Received: by 2002:a17:90b:4004:: with SMTP id ie4mr372116pjb.49.1581963923632;
-        Mon, 17 Feb 2020 10:25:23 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id f8sm1143089pfn.2.2020.02.17.10.25.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Feb 2020 10:25:22 -0800 (PST)
-Date:   Mon, 17 Feb 2020 10:25:22 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>, linux-kernel@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Sami Tolvanen <samitolvanen@google.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH] bpf: Avoid function casting when calculating immediate
-Message-ID: <202002171024.184D90B@keescook>
-References: <202001291335.31F425A198@keescook>
- <92bcfdab-79df-c3f4-bae8-00116b39e015@iogearbox.net>
+        id S1729124AbgBQUWG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Feb 2020 15:22:06 -0500
+Received: from gateway30.websitewelcome.com ([192.185.160.12]:20428 "EHLO
+        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729041AbgBQUWF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 17 Feb 2020 15:22:05 -0500
+X-Greylist: delayed 1413 seconds by postgrey-1.27 at vger.kernel.org; Mon, 17 Feb 2020 15:22:04 EST
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway30.websitewelcome.com (Postfix) with ESMTP id 03CDE925A
+        for <bpf@vger.kernel.org>; Mon, 17 Feb 2020 13:58:31 -0600 (CST)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id 3mXGjVCx3XVkQ3mXGjsIvJ; Mon, 17 Feb 2020 13:58:30 -0600
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
+        Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=lL/wXEQHi6LCYu2lhykWxgmf1aHw3CsCn1BREA1tfRE=; b=fK82/v2ZvhIZLJatuoWe0R1cPJ
+        pAvAjXK22AfD8Z/Du17oJLpt7auD8pYHZpKBB5J93519ocXDYMERj8cONkZeFbahHPRH5RXYxIV6M
+        AxzvuVd+cg9PG2eh6aUyqpWWR5DGeUMpcKYOi6/yZAEAeDTNOh0CNhynuWryGDMeuClYY6/XY8KcR
+        dU7c4txB1QAsHDWa2eJ0kkK2gS9XZNT4IULQgdkyqeZPtKP4AuwVy1PI7jyvQ9+nXskmDHhkGjJUV
+        pov0c83Un8z+vtC6yzGbPB4+hhdAN5lLBUjjw+BIy0nquFVXVfDhGShblYTzr9s4zijvIESHIUHlg
+        nkjnRtMg==;
+Received: from [200.68.140.26] (port=19134 helo=embeddedor)
+        by gator4166.hostgator.com with esmtpa (Exim 4.92)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1j3mXF-000Mi0-Fe; Mon, 17 Feb 2020 13:58:29 -0600
+Date:   Mon, 17 Feb 2020 14:01:11 -0600
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] bpf, sockmap: Replace zero-length array with
+ flexible-array member
+Message-ID: <20200217200111.GA5283@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <92bcfdab-79df-c3f4-bae8-00116b39e015@iogearbox.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 200.68.140.26
+X-Source-L: No
+X-Exim-ID: 1j3mXF-000Mi0-Fe
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (embeddedor) [200.68.140.26]:19134
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 28
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 17, 2020 at 04:51:46PM +0100, Daniel Borkmann wrote:
-> On 1/29/20 10:36 PM, Kees Cook wrote:
-> > In an effort to enable -Wcast-function-type in the top-level Makefile
-> > to support Control Flow Integrity builds, rework the BPF instruction
-> > immediate calculation macros to avoid mismatched function pointers. Since
-> > these calculations are only ever between function address (these are
-> > not function calls, just address calculations), they can be cast to u64
-> > instead, where the result will be assigned to the s32 insn->imm.
-> > 
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >   include/linux/filter.h |  6 +++---
-> >   kernel/bpf/hashtab.c   |  6 +++---
-> >   kernel/bpf/verifier.c  | 21 +++++++--------------
-> >   3 files changed, 13 insertions(+), 20 deletions(-)
-> > 
-> > diff --git a/include/linux/filter.h b/include/linux/filter.h
-> > index f349e2c0884c..b5beee7bf2ea 100644
-> > --- a/include/linux/filter.h
-> > +++ b/include/linux/filter.h
-> > @@ -340,8 +340,8 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
-> >   /* Function call */
-> > -#define BPF_CAST_CALL(x)					\
-> > -		((u64 (*)(u64, u64, u64, u64, u64))(x))
-> > +#define BPF_FUNC_IMM(FUNC)					\
-> > +		((u64)(FUNC) - (u64)__bpf_call_base)
-> 
-> Looks good to me in general. My only concern is compilation on 32bit archs: I think
-> the cast needs to be of '(u64)(unsigned long)' to avoid introducing new warnings a la
-> 'cast from pointer to integer of different size'.
+The current codebase makes use of the zero-length array language
+extension to the C90 standard, but the preferred mechanism to declare
+variable-length types such as these ones is a flexible array member[1][2],
+introduced in C99:
 
-Oh, good point. I'll double-check the 32-bit builds. (I also have
-another related change that I found several days later.) I'll get this
-adjusted/tested and resend the patch.
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
-Thanks!
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on.
 
--Kees
+Also, notice that, dynamic memory allocations won't be affected by
+this change:
 
+"Flexible array members have incomplete type, and so the sizeof operator
+may not be applied. As a quirk of the original implementation of
+zero-length arrays, sizeof evaluates to zero."[1]
+
+This issue was found with the help of Coccinelle.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ net/core/sock_map.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 085cef5857bb..3a7a96ab088a 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -518,7 +518,7 @@ struct bpf_htab_elem {
+ 	u32 hash;
+ 	struct sock *sk;
+ 	struct hlist_node node;
+-	u8 key[0];
++	u8 key[];
+ };
+ 
+ struct bpf_htab_bucket {
 -- 
-Kees Cook
+2.25.0
+
