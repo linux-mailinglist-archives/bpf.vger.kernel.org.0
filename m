@@ -2,402 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B6B162F52
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2020 20:03:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DFC4162FEC
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2020 20:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726401AbgBRTCr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Feb 2020 14:02:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35786 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726700AbgBRTCp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Feb 2020 14:02:45 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 59328ADAB;
-        Tue, 18 Feb 2020 19:02:42 +0000 (UTC)
-From:   Michal Rostecki <mrostecki@opensuse.org>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next 6/6] selftests/bpf: Add test for "bpftool feature" command
-Date:   Tue, 18 Feb 2020 20:02:23 +0100
-Message-Id: <20200218190224.22508-7-mrostecki@opensuse.org>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200218190224.22508-1-mrostecki@opensuse.org>
-References: <20200218190224.22508-1-mrostecki@opensuse.org>
-MIME-Version: 1.0
+        id S1726478AbgBRT2P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Feb 2020 14:28:15 -0500
+Received: from mail-pf1-f170.google.com ([209.85.210.170]:39163 "EHLO
+        mail-pf1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726352AbgBRT2P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Feb 2020 14:28:15 -0500
+Received: by mail-pf1-f170.google.com with SMTP id 84so11140862pfy.6
+        for <bpf@vger.kernel.org>; Tue, 18 Feb 2020 11:28:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zhYJCkJXlPxXtgjObEVr42uyGuLn0+lKW2wKfP/UpCE=;
+        b=DvmqpHrnM5O330XZo1r4oQuSvPgecXnkvWf1HePsqxhXDtfRmjIjyRMJC5NXDcCYn+
+         OwvGhCTbVAvqmsw7DHX6CX7ayI8MRX80ZKZFm3l7gtOi8e7I+QXoV2LNG3hx3pvtvgiV
+         LSIt91cMdVZ0sjN19WquhWlHxwMKtoi8sHzngiTeNW13UUBuZJ+eKQMx92fEmu2wm/iA
+         Zt5J/EId0BdKG8K0owTwcXRs3abR2p6cDm6V/Hc1tImyyILCj1yMKM1SnD10oedygFij
+         qIgZMDYYyaPAr0O+2Mq3cmqiX39FLOwWYivab+YigA6JwRjURv6j+9wGEC6ZR3iOJu+H
+         mZDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=zhYJCkJXlPxXtgjObEVr42uyGuLn0+lKW2wKfP/UpCE=;
+        b=j1UP5nFvCAHMA2msTCqJDOZ0pp1mvp9eypuz+6WDgqewRzbI7C2hoOIWhw7IxNS00V
+         n4fsEdc39LmefllH/EuxX5nZ70JAGG+4AbIGuSvB1vStKLKXJ3nYTkngFwrZJIPYIFjw
+         +9tmlVK4pemgR2jVZN+0CYYlizXR6HS1gsfgthdtYqk06aISMgGAeb0BbXHUggFP6sEX
+         IGaFS8P0Au1V/F8jQLDaKGsp8s2e49HfmSh4u+a/ONtFVXcITOd4LHOOtcZ++kCd3qjg
+         75lKKa8Dba6xU075Z8iWykXKSkavtcRo5DSX0QoeFOOi8kjkFtaG3ClkJSovukECLoxY
+         PZwQ==
+X-Gm-Message-State: APjAAAWGPjphCmpCJVor8vMHJLxDBVjNu7sZjBrHPTtomMWqTfYU6P5w
+        5IBOHkcvy1zWl7cpzmcErwCJ7w==
+X-Google-Smtp-Source: APXvYqxvBhs/kNz46f0NM7yQK9O+VsDMro0hxwtL6uWXHEPpf1QvsgH3bBRF8NOa1+svFTWNKSApFA==
+X-Received: by 2002:a62:cfc1:: with SMTP id b184mr22611022pfg.55.1582054093924;
+        Tue, 18 Feb 2020 11:28:13 -0800 (PST)
+Received: from localhost ([2620:0:1000:2514:23a5:d584:6a92:3e3c])
+        by smtp.gmail.com with ESMTPSA id q12sm4931028pfh.158.2020.02.18.11.28.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Feb 2020 11:28:13 -0800 (PST)
+Date:   Tue, 18 Feb 2020 11:28:13 -0800 (PST)
+X-Google-Original-Date: Tue, 18 Feb 2020 11:28:02 PST (-0800)
+Subject:     Re: arm64: bpf: Elide some moves to a0 after calls
+In-Reply-To: <5e39d509c9edc_63882ad0d49345c08@john-XPS-13-9370.notmuch>
+CC:     Bjorn Topel <bjorn.topel@gmail.com>, daniel@iogearbox.net,
+        ast@kernel.org, zlim.lnx@gmail.com, catalin.marinas@arm.com,
+        will@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        andriin@fb.com, shuah@kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        clang-built-linux@googlegroups.com, kernel-team@android.com
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     john.fastabend@gmail.com
+Message-ID: <mhng-eae623ac-3032-4327-9b23-af9838e3e979@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add Python module with tests for "bpftool feature" command which check
-whether:
+On Tue, 04 Feb 2020 12:33:13 PST (-0800), john.fastabend@gmail.com wrote:
+> Björn Töpel wrote:
+>> On Tue, 28 Jan 2020 at 03:14, Palmer Dabbelt <palmerdabbelt@google.com> wrote:
+>> >
+>> > There's four patches here, but only one of them actually does anything.  The
+>> > first patch fixes a BPF selftests build failure on my machine and has already
+>> > been sent to the list separately.  The next three are just staged such that
+>> > there are some patches that avoid changing any functionality pulled out from
+>> > the whole point of those refactorings, with two cleanups and then the idea.
+>> >
+>> > Maybe this is an odd thing to say in a cover letter, but I'm not actually sure
+>> > this patch set is a good idea.  The issue of extra moves after calls came up as
+>> > I was reviewing some unrelated performance optimizations to the RISC-V BPF JIT.
+>> > I figured I'd take a whack at performing the optimization in the context of the
+>> > arm64 port just to get a breath of fresh air, and I'm not convinced I like the
+>> > results.
+>> >
+>> > That said, I think I would accept something like this for the RISC-V port
+>> > because we're already doing a multi-pass optimization for shrinking function
+>> > addresses so it's not as much extra complexity over there.  If we do that we
+>> > should probably start puling some of this code into the shared BPF compiler,
+>> > but we're also opening the doors to more complicated BPF JIT optimizations.
+>> > Given that the BPF JIT appears to have been designed explicitly to be
+>> > simple/fast as opposed to perform complex optimization, I'm not sure this is a
+>> > sane way to move forward.
+>> >
+>> 
+>> Obviously I can only speak for myself and the RISC-V JIT, but given
+>> that we already have opened the door for more advanced translations
+>> (branch relaxation e.g.), I think that this makes sense. At the same
+>> time we don't want to go all JVM on the JITs. :-P
+>
+> I'm not against it although if we start to go this route I would want some
+> way to quantify how we are increasing/descreasing load times.
+>
+>> 
+>> > I figured I'd send the patch set out as more of a question than anything else.
+>> > Specifically:
+>> >
+>> > * How should I go about measuring the performance of these sort of
+>> >   optimizations?  I'd like to balance the time it takes to run the JIT with the
+>> >   time spent executing the program, but I don't have any feel for what real BPF
+>> >   programs look like or have any benchmark suite to run.  Is there something
+>> >   out there this should be benchmarked against?  (I'd also like to know that to
+>> >   run those benchmarks on the RISC-V port.)
+>> 
+>> If you run the selftests 'test_progs' with -v it'll measure/print the
+>> execution time of the programs. I'd say *most* BPF program invokes a
+>> helper (via call). It would be interesting to see, for say the
+>> selftests, how often the optimization can be performed.
+>> 
+>> > * Is this the sort of thing that makes sense in a BPF JIT?  I guess I've just
+>> >   realized I turned "review this patch" into a way bigger rabbit hole than I
+>> >   really want to go down...
+>> >
+>> 
+>> I'd say 'yes'. My hunch, and the workloads I've seen, BPF programs are
+>> usually loaded, and then resident for a long time. So, the JIT time is
+>> not super critical. The FB/Cilium folks can definitely provide a
+>> better sample point, than my hunch. ;-)
+>
+> In our case the JIT time can be relevant because we are effectively holding
+> up a kubernetes pod load waiting for programs to load. However, we can
+> probably work-around it by doing more aggressive dynamic linking now that
+> this is starting to land.
+>
+> It would be interesting to have a test to measure load time in selftests
+> or selftests/benchmark/ perhaps. We have some of these out of tree we
+> could push in I think if there is interest.
 
-- probing kernel and network devices works
-- "section" option selects sections properly
-- "filter_in" and "filter_out" options filter results properly
-- "macro" option generates C macros properly
+I'd be interested in some sort of benchmark suite for BPF.  Something like
+selftests/bpf/benchmarks/ seems like a reasonable place to me.
 
-Signed-off-by: Michal Rostecki <mrostecki@opensuse.org>
----
- tools/testing/selftests/.gitignore          |   5 +-
- tools/testing/selftests/bpf/Makefile        |   3 +-
- tools/testing/selftests/bpf/test_bpftool.py | 294 ++++++++++++++++++++
- tools/testing/selftests/bpf/test_bpftool.sh |   5 +
- 4 files changed, 305 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/test_bpftool.py
- create mode 100755 tools/testing/selftests/bpf/test_bpftool.sh
-
-diff --git a/tools/testing/selftests/.gitignore b/tools/testing/selftests/.gitignore
-index 61df01cdf0b2..304fdf1a21dc 100644
---- a/tools/testing/selftests/.gitignore
-+++ b/tools/testing/selftests/.gitignore
-@@ -3,4 +3,7 @@ gpiogpio-hammer
- gpioinclude/
- gpiolsgpio
- tpm2/SpaceTest.log
--tpm2/*.pyc
-+
-+# Python bytecode and cache
-+__pycache__/
-+*.py[cod]
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 257a1aaaa37d..e7d822259c50 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -62,7 +62,8 @@ TEST_PROGS := test_kmod.sh \
- 	test_tc_tunnel.sh \
- 	test_tc_edt.sh \
- 	test_xdping.sh \
--	test_bpftool_build.sh
-+	test_bpftool_build.sh \
-+	test_bpftool.sh
- 
- TEST_PROGS_EXTENDED := with_addr.sh \
- 	with_tunnels.sh \
-diff --git a/tools/testing/selftests/bpf/test_bpftool.py b/tools/testing/selftests/bpf/test_bpftool.py
-new file mode 100644
-index 000000000000..e298dca5fdcf
---- /dev/null
-+++ b/tools/testing/selftests/bpf/test_bpftool.py
-@@ -0,0 +1,294 @@
-+# Copyright (c) 2020 SUSE LLC.
-+#
-+# This software is licensed under the GNU General License Version 2,
-+# June 1991 as shown in the file COPYING in the top-level directory of this
-+# source tree.
-+#
-+# THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM "AS IS"
-+# WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING,
-+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-+# FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE
-+# OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME
-+# THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
-+
-+import collections
-+import functools
-+import json
-+import os
-+import socket
-+import subprocess
-+import unittest
-+
-+
-+# Add the source tree of bpftool and /usr/local/sbin to PATH
-+cur_dir = os.path.dirname(os.path.realpath(__file__))
-+bpftool_dir = os.path.abspath(os.path.join(cur_dir, "..", "..", "..", "..",
-+                                           "tools", "bpf", "bpftool"))
-+os.environ["PATH"] = bpftool_dir + ":/usr/local/sbin:" + os.environ["PATH"]
-+
-+# Probe sections
-+SECTION_SYSTEM_CONFIG_NAME = "system_config"
-+SECTION_SYSCALL_CONFIG_NAME = "syscall_config"
-+SECTION_PROGRAM_TYPES_NAME = "program_types"
-+SECTION_MAP_TYPES_NAME = "map_types"
-+SECTION_HELPERS_NAME = "helpers"
-+SECTION_MISC_NAME = "misc"
-+SECTION_SYSTEM_CONFIG_PATTERN = b"Scanning system configuration..."
-+SECTION_SYSCALL_CONFIG_PATTERN = b"Scanning system call availability..."
-+SECTION_PROGRAM_TYPES_PATTERN = b"Scanning eBPF program types..."
-+SECTION_MAP_TYPES_PATTERN = b"Scanning eBPF map types..."
-+SECTION_HELPERS_PATTERN = b"Scanning eBPF helper functions..."
-+SECTION_MISC_PATTERN = b"Scanning miscellaneous eBPF features..."
-+
-+
-+class IfaceNotFoundError(Exception):
-+    pass
-+
-+
-+class UnprivilegedUserError(Exception):
-+    pass
-+
-+
-+def _bpftool(args, json=True):
-+    _args = ["bpftool"]
-+    if json:
-+        _args.append("-j")
-+    _args.extend(args)
-+
-+    res = subprocess.run(_args, capture_output=True)
-+    return res.stdout
-+
-+
-+def bpftool(args):
-+    return _bpftool(args, json=False)
-+
-+
-+def bpftool_json(args):
-+    res = _bpftool(args)
-+    return json.loads(res)
-+
-+
-+def get_default_iface():
-+    for iface in socket.if_nameindex():
-+        if iface[1] != "lo":
-+            return iface[1]
-+    raise IfaceNotFoundError("Could not find any network interface to probe")
-+
-+
-+def default_iface(f):
-+    @functools.wraps(f)
-+    def wrapper(*args, **kwargs):
-+        iface = get_default_iface()
-+        return f(*args, iface, **kwargs)
-+    return wrapper
-+
-+
-+class TestBpftool(unittest.TestCase):
-+    @classmethod
-+    def setUpClass(cls):
-+        if os.getuid() != 0:
-+            raise UnprivilegedUserError("This test suite eeeds root privileges")
-+
-+    @default_iface
-+    def test_feature_dev(self, iface):
-+        expected_lines = [
-+            SECTION_SYSCALL_CONFIG_PATTERN,
-+            SECTION_PROGRAM_TYPES_PATTERN,
-+            SECTION_MAP_TYPES_PATTERN,
-+            SECTION_HELPERS_PATTERN,
-+            SECTION_MISC_PATTERN,
-+        ]
-+
-+        res = bpftool(["feature", "probe", "dev", iface])
-+        for expected_line in expected_lines:
-+            self.assertIn(expected_line, res)
-+
-+    @default_iface
-+    def test_feature_dev_json(self, iface):
-+        expected_keys = [
-+            "syscall_config",
-+            "program_types",
-+            "map_types",
-+            "helpers",
-+            "misc",
-+        ]
-+
-+        res = bpftool_json(["feature", "probe", "dev", iface])
-+        self.assertCountEqual(res.keys(), expected_keys)
-+
-+    def test_feature_kernel(self):
-+        expected_lines = [
-+            SECTION_SYSTEM_CONFIG_PATTERN,
-+            SECTION_SYSCALL_CONFIG_PATTERN,
-+            SECTION_PROGRAM_TYPES_PATTERN,
-+            SECTION_MAP_TYPES_PATTERN,
-+            SECTION_HELPERS_PATTERN,
-+            SECTION_MISC_PATTERN,
-+        ]
-+
-+        res_default1 = bpftool(["feature"])
-+        res_default2 = bpftool(["feature", "probe"])
-+        res = bpftool(["feature", "probe", "kernel"])
-+
-+        for expected_line in expected_lines:
-+            self.assertIn(expected_line, res_default1)
-+            self.assertIn(expected_line, res_default2)
-+            self.assertIn(expected_line, res)
-+
-+    def test_feature_kernel_json(self):
-+        expected_keys = [
-+            "system_config",
-+            "syscall_config",
-+            "program_types",
-+            "map_types",
-+            "helpers",
-+            "misc",
-+        ]
-+
-+        res_default1 = bpftool_json(["feature"])
-+        self.assertCountEqual(res_default1.keys(), expected_keys)
-+
-+        res_default2 = bpftool_json(["feature", "probe"])
-+        self.assertCountEqual(res_default2.keys(), expected_keys)
-+
-+        res = bpftool_json(["feature", "probe", "kernel"])
-+        self.assertCountEqual(res.keys(), expected_keys)
-+
-+    def test_feature_section(self):
-+        SectionTestCase = collections.namedtuple(
-+            "SectionTestCase",
-+            ["section_name", "expected_pattern", "unexpected_patterns"])
-+        test_cases = [
-+            SectionTestCase(
-+                section_name=SECTION_SYSTEM_CONFIG_NAME,
-+                expected_pattern=SECTION_SYSTEM_CONFIG_PATTERN,
-+                unexpected_patterns=[SECTION_SYSCALL_CONFIG_PATTERN,
-+                                     SECTION_PROGRAM_TYPES_PATTERN,
-+                                     SECTION_MAP_TYPES_PATTERN,
-+                                     SECTION_HELPERS_PATTERN,
-+                                     SECTION_MISC_PATTERN]),
-+            SectionTestCase(
-+                section_name=SECTION_SYSCALL_CONFIG_NAME,
-+                expected_pattern=SECTION_SYSCALL_CONFIG_PATTERN,
-+                unexpected_patterns=[SECTION_SYSTEM_CONFIG_PATTERN,
-+                                     SECTION_PROGRAM_TYPES_PATTERN,
-+                                     SECTION_MAP_TYPES_PATTERN,
-+                                     SECTION_HELPERS_PATTERN,
-+                                     SECTION_MISC_PATTERN]),
-+            SectionTestCase(
-+                section_name=SECTION_PROGRAM_TYPES_NAME,
-+                expected_pattern=SECTION_PROGRAM_TYPES_PATTERN,
-+                unexpected_patterns=[SECTION_SYSTEM_CONFIG_PATTERN,
-+                                     SECTION_SYSCALL_CONFIG_PATTERN,
-+                                     SECTION_MAP_TYPES_PATTERN,
-+                                     SECTION_HELPERS_PATTERN,
-+                                     SECTION_MISC_PATTERN]),
-+            SectionTestCase(
-+                section_name=SECTION_MAP_TYPES_NAME,
-+                expected_pattern=SECTION_MAP_TYPES_PATTERN,
-+                unexpected_patterns=[SECTION_SYSTEM_CONFIG_PATTERN,
-+                                     SECTION_SYSCALL_CONFIG_PATTERN,
-+                                     SECTION_PROGRAM_TYPES_PATTERN,
-+                                     SECTION_HELPERS_PATTERN,
-+                                     SECTION_MISC_PATTERN]),
-+            SectionTestCase(
-+                section_name=SECTION_HELPERS_NAME,
-+                expected_pattern=SECTION_HELPERS_PATTERN,
-+                unexpected_patterns=[SECTION_SYSTEM_CONFIG_PATTERN,
-+                                     SECTION_SYSCALL_CONFIG_PATTERN,
-+                                     SECTION_PROGRAM_TYPES_PATTERN,
-+                                     SECTION_MAP_TYPES_PATTERN,
-+                                     SECTION_MISC_PATTERN]),
-+            SectionTestCase(
-+                section_name=SECTION_MISC_NAME,
-+                expected_pattern=SECTION_MISC_PATTERN,
-+                unexpected_patterns=[SECTION_SYSTEM_CONFIG_PATTERN,
-+                                     SECTION_SYSCALL_CONFIG_PATTERN,
-+                                     SECTION_PROGRAM_TYPES_PATTERN,
-+                                     SECTION_MAP_TYPES_PATTERN,
-+                                     SECTION_HELPERS_PATTERN]),
-+        ]
-+
-+        for tc in test_cases:
-+            res = bpftool(["feature", "probe", "kernel",
-+                           "section", tc.section_name])
-+            self.assertIn(tc.expected_pattern, res)
-+            for pattern in tc.unexpected_patterns:
-+                self.assertNotIn(pattern, res)
-+
-+    def test_feature_section_json(self):
-+        res_syscall_config = bpftool_json(["feature", "probe", "kernel",
-+                                           "section", "syscall_config"])
-+        self.assertCountEqual(res_syscall_config.keys(), ["syscall_config"])
-+
-+        res_system_config = bpftool_json(["feature", "probe", "kernel",
-+                                          "section", "system_config"])
-+        self.assertCountEqual(res_system_config.keys(), ["system_config"])
-+
-+        res_program_types = bpftool_json(["feature", "probe", "kernel",
-+                                          "section", "program_types"])
-+        self.assertCountEqual(res_program_types.keys(), ["program_types"])
-+
-+        res_map_types = bpftool_json(["feature", "probe", "kernel",
-+                                      "section", "map_types"])
-+        self.assertCountEqual(res_map_types.keys(), ["map_types"])
-+
-+        res_helpers = bpftool_json(["feature", "probe", "kernel",
-+                                    "section", "helpers"])
-+        self.assertCountEqual(res_helpers.keys(), ["helpers"])
-+
-+        res_misc = bpftool_json(["feature", "probe", "kernel",
-+                                 "section", "misc"])
-+        self.assertCountEqual(res_misc.keys(), ["misc"])
-+
-+    def _assert_pattern_in_dict(self, dct, pattern, check_keys=False):
-+        """Check if all string values inside dictionary contain the given
-+        pattern.
-+        """
-+        for key, value in dct.items():
-+            if check_keys:
-+                self.assertIn(pattern, key)
-+            if isinstance(value, dict):
-+                self._assert_pattern_in_dict(value, pattern, check_keys=True)
-+            elif isinstance(value, str):
-+                self.assertIn(pattern, value)
-+
-+    def _assert_pattern_not_in_dict(self, dct, pattern, check_keys=False):
-+        """Check if all string values inside dictionary do not containe the
-+        given pattern.
-+        """
-+        for key, value in dct.items():
-+            if check_keys:
-+                self.assertNotIn(pattern, key)
-+            if isinstance(value, dict):
-+                self._assert_pattern_not_in_dict(value, pattern,
-+                                                 check_keys=True)
-+            elif isinstance(value, str):
-+                self.assertNotIn(pattern, value)
-+
-+    def test_feature_filter_in_json(self):
-+        res = bpftool_json(["feature", "probe", "kernel",
-+                            "filter_in", "trace"])
-+        self._assert_pattern_in_dict(res, "trace")
-+
-+    def test_feature_filter_out_json(self):
-+        res = bpftool_json(["feature", "probe", "kernel",
-+                            "filter_out", "trace"])
-+        self._assert_pattern_not_in_dict(res, "trace")
-+
-+    def test_feature_macros(self):
-+        expected_patterns = [
-+            b"/\*\*\* System call availability \*\*\*/",
-+            b"#define HAVE_BPF_SYSCALL",
-+            b"/\*\*\* eBPF program types \*\*\*/",
-+            b"#define HAVE.*PROG_TYPE",
-+            b"/\*\*\* eBPF map types \*\*\*/",
-+            b"#define HAVE.*MAP_TYPE",
-+            b"/\*\*\* eBPF helper functions \*\*\*/",
-+            b"#define HAVE.*HELPER",
-+            b"/\*\*\* eBPF misc features \*\*\*/",
-+        ]
-+
-+        res = bpftool(["feature", "probe", "macros"])
-+        for pattern in expected_patterns:
-+            self.assertRegex(res, pattern)
-diff --git a/tools/testing/selftests/bpf/test_bpftool.sh b/tools/testing/selftests/bpf/test_bpftool.sh
-new file mode 100755
-index 000000000000..66690778e36d
---- /dev/null
-+++ b/tools/testing/selftests/bpf/test_bpftool.sh
-@@ -0,0 +1,5 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2020 SUSE LLC.
-+
-+python3 -m unittest -v test_bpftool.TestBpftool
--- 
-2.25.0
-
+>
+>> 
+>> 
+>> Björn
