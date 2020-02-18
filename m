@@ -2,60 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0031628B0
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2020 15:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BDC51628E3
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2020 15:53:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726681AbgBROke (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Feb 2020 09:40:34 -0500
-Received: from www62.your-server.de ([213.133.104.62]:45930 "EHLO
+        id S1726605AbgBROx2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Feb 2020 09:53:28 -0500
+Received: from www62.your-server.de ([213.133.104.62]:50180 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726116AbgBROke (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Feb 2020 09:40:34 -0500
-Received: from sslproxy05.your-server.de ([78.46.172.2])
+        with ESMTP id S1726540AbgBROx2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Feb 2020 09:53:28 -0500
+Received: from sslproxy03.your-server.de ([88.198.220.132])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1j4434-0001cM-2o; Tue, 18 Feb 2020 15:40:30 +0100
+        id 1j44FP-0002Mk-PX; Tue, 18 Feb 2020 15:53:15 +0100
 Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-3.fritz.box)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1j4433-000SqE-Qd; Tue, 18 Feb 2020 15:40:29 +0100
-Subject: Re: [PATCH bpf] libbpf: Sanitise internal map names so they are not
- rejected by the kernel
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        ast@fb.com
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20200217171701.215215-1-toke@redhat.com>
+        id 1j44FP-0009S1-Dl; Tue, 18 Feb 2020 15:53:15 +0100
+Subject: Re: [PATCH] bpf: queue_stack_maps: Replace zero-length array with
+ flexible-array member
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200213152416.GA1873@embeddedor>
+ <CAEf4Bzae=Afp_4FGgeFy+=kk64nm1vhRso2zF3j7Qdst66RFZw@mail.gmail.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9ddddbd6-aca2-61ae-b864-0f12d7fd33b4@iogearbox.net>
-Date:   Tue, 18 Feb 2020 15:40:29 +0100
+Message-ID: <8c212e06-dc1f-3a47-ba3e-8f408ba7a972@iogearbox.net>
+Date:   Tue, 18 Feb 2020 15:53:14 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20200217171701.215215-1-toke@redhat.com>
+In-Reply-To: <CAEf4Bzae=Afp_4FGgeFy+=kk64nm1vhRso2zF3j7Qdst66RFZw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.1/25726/Mon Feb 17 15:01:07 2020)
+X-Virus-Scanned: Clear (ClamAV 0.102.1/25727/Tue Feb 18 15:05:00 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/17/20 6:17 PM, Toke Høiland-Jørgensen wrote:
-> The kernel only accepts map names with alphanumeric characters, underscores
-> and periods in their name. However, the auto-generated internal map names
-> used by libbpf takes their prefix from the user-supplied BPF object name,
-> which has no such restriction. This can lead to "Invalid argument" errors
-> when trying to load a BPF program using global variables.
+On 2/13/20 6:47 PM, Andrii Nakryiko wrote:
+> On Thu, Feb 13, 2020 at 7:22 AM Gustavo A. R. Silva
+> <gustavo@embeddedor.com> wrote:
+>>
+>> The current codebase makes use of the zero-length array language
+>> extension to the C90 standard, but the preferred mechanism to declare
+>> variable-length types such as these ones is a flexible array member[1][2],
+>> introduced in C99:
+>>
+>> struct foo {
+>>          int stuff;
+>>          struct boo array[];
+>> };
+>>
+>> By making use of the mechanism above, we will get a compiler warning
+>> in case the flexible array does not occur last in the structure, which
+>> will help us prevent some kind of undefined behavior bugs from being
+>> inadvertently introduced[3] to the codebase from now on.
+>>
+>> Also, notice that, dynamic memory allocations won't be affected by
+>> this change:
+>>
+>> "Flexible array members have incomplete type, and so the sizeof operator
+>> may not be applied. As a quirk of the original implementation of
+>> zero-length arrays, sizeof evaluates to zero."[1]
+>>
+>> This issue was found with the help of Coccinelle.
+>>
+>> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+>> [2] https://github.com/KSPP/linux/issues/21
+>> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+>>
+>> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 > 
-> Fix this by sanitising the map names, replacing any non-allowed characters
-> with underscores.
+> Sure, why not, though I don't think that's the only one (e.g.,
+> bpf_storage_buffer's data is zero-length as well).
 > 
-> Fixes: d859900c4c56 ("bpf, libbpf: support global data/bss/rodata sections")
-> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-Makes sense to me, applied, thanks! I presume you had something like '-' in the
-global var leading to rejection?
++1, Gustavo, there are several such instances in the whole BPF subsystem. Please combine
+them all into a single patch, including https://patchwork.ozlabs.org/patch/1239563/, and
+resubmit.
+
+Thanks,
+Daniel
