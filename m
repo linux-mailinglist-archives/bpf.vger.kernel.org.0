@@ -2,114 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 60265162ADF
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2020 17:42:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7458E162B38
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2020 18:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgBRQmH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Feb 2020 11:42:07 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:37586 "EHLO
+        id S1726403AbgBRRC3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Feb 2020 12:02:29 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:22010 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726415AbgBRQmG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Feb 2020 11:42:06 -0500
+        with ESMTP id S1726549AbgBRRC3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Feb 2020 12:02:29 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582044125;
+        s=mimecast20190719; t=1582045348;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Da0a2vMsz34AthRKxQAElJS/XJmZChgUuBhVkkThmfM=;
-        b=IQ3F72SgixdQZaAfI4LvEe36fXHlNkR3uULn7j7Omssi0XAEnhzpAm4IGU3KopXyHRNxN6
-        4ysJ2+st4scmlvATuVI8xxMDWclFaeldtn7ah8Air1SqeErKhkFv9Kluf3lS6lSgsU84Mk
-        mnVNJTvGPtdlXkyL4OwxCgOEb9dc0wA=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-319-slvf6EgLPmCsayihjXWyuA-1; Tue, 18 Feb 2020 11:42:03 -0500
-X-MC-Unique: slvf6EgLPmCsayihjXWyuA-1
-Received: by mail-lj1-f200.google.com with SMTP id z2so7345193ljh.16
-        for <bpf@vger.kernel.org>; Tue, 18 Feb 2020 08:42:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=Da0a2vMsz34AthRKxQAElJS/XJmZChgUuBhVkkThmfM=;
-        b=dWN9krb1Ipf5H5EFKCXNy4MJLD0xI6zhZkqZAFh/ea1wRJiy4LzKz/NBFtlGNejmkT
-         Xa1IUplgrDgb6r9Q7bMio2XnvQXnmaWpO0FwZfOBHPKpXz4Vu3kN+9O92DvnRTP3UJeN
-         3MECsAY0L3zzHA2eZXQtjEgxtY0czZDQevTVu1Lpmef0K5zivKFSAcqw58rJofXv/GqW
-         KbFPbvwGeGzFu09jSHtjAK2vH3z5eshASc+G7+n7sJSbdxCk+dmUxf8Vuu0RoWZT0yq2
-         CioWexxGrZAHYi7S+krtlFFRPXwjSrA5oD6sgtTco5Mdvpf0Vxy+u7LPlkwzwq6X3up5
-         XfKg==
-X-Gm-Message-State: APjAAAVu03M3avcO9M5/LPsF+KOUfFUBpEYjjW0eLP+XqnzAylQP2bYt
-        WgBI0z8A4Rn/moLYntAL98iQ/j6EnQ5OV6CTlCT/yylyIJz2b7fGSFu5Q5Do7otD3j+EMdMR61D
-        8394FZ//xB4Tw
-X-Received: by 2002:a2e:761a:: with SMTP id r26mr13717322ljc.135.1582044122175;
-        Tue, 18 Feb 2020 08:42:02 -0800 (PST)
-X-Google-Smtp-Source: APXvYqx0fuWRuZpOiL5TQahKWr/7iSFU4gA7j8vSPrhDev9my/sJmZkObcwb4DCUACw44gNhVDzNIQ==
-X-Received: by 2002:a2e:761a:: with SMTP id r26mr13717304ljc.135.1582044121946;
-        Tue, 18 Feb 2020 08:42:01 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id l22sm2841469ljb.2.2020.02.18.08.42.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Feb 2020 08:42:01 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 3C9FC180365; Tue, 18 Feb 2020 17:42:00 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Yonghong Song <yhs@fb.com>, Daniel Borkmann <daniel@iogearbox.net>,
-        ast@fb.com
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf] libbpf: Sanitise internal map names so they are not rejected by the kernel
-In-Reply-To: <a0923745-ee34-3eb0-7f9b-31cec99661ec@fb.com>
-References: <20200217171701.215215-1-toke@redhat.com> <9ddddbd6-aca2-61ae-b864-0f12d7fd33b4@iogearbox.net> <a0923745-ee34-3eb0-7f9b-31cec99661ec@fb.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 18 Feb 2020 17:42:00 +0100
-Message-ID: <87sgj7yhif.fsf@toke.dk>
+        bh=icIeh1VYwN1vz+jlOHFF+iV6L33s19ZLs82Zd9uQ9AU=;
+        b=YV3UcYOiNz31/KU5z9AwfeIaMP6yDPpSXIBNRldy6hWonzV2bcdAo4C/jS59AYYH3roHXK
+        NzrJjMloeg6nmDEsLrTiuLRTqE93jGVr9hjXFIKlie2GTT1wtr5zaTYSAh1fKgmVAQyZ1H
+        QGaTX9vTYjgSJKnFEdb5v7r7+4h3iiA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-287-HcXZNYKWMv2L1sulpvpQPQ-1; Tue, 18 Feb 2020 12:02:25 -0500
+X-MC-Unique: HcXZNYKWMv2L1sulpvpQPQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5E7B28017DF;
+        Tue, 18 Feb 2020 17:02:23 +0000 (UTC)
+Received: from carbon (ovpn-200-26.brq.redhat.com [10.40.200.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7BF9A19756;
+        Tue, 18 Feb 2020 17:02:12 +0000 (UTC)
+Date:   Tue, 18 Feb 2020 18:02:10 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     netdev@vger.kernel.org, ilias.apalodimas@linaro.org,
+        davem@davemloft.net, lorenzo.bianconi@redhat.com, andrew@lunn.ch,
+        dsahern@kernel.org, bpf@vger.kernel.org, brouer@redhat.com,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Subject: Re: [RFC net-next] net: mvneta: align xdp stats naming scheme to
+ mlx5 driver
+Message-ID: <20200218180210.130f0e6d@carbon>
+In-Reply-To: <526238d9bcc60500ed61da1a4af8b65af1af9583.1581984697.git.lorenzo@kernel.org>
+References: <526238d9bcc60500ed61da1a4af8b65af1af9583.1581984697.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Yonghong Song <yhs@fb.com> writes:
+On Tue, 18 Feb 2020 01:14:29 +0100
+Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 
-> On 2/18/20 6:40 AM, Daniel Borkmann wrote:
->> On 2/17/20 6:17 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->>> The kernel only accepts map names with alphanumeric characters,=20
->>> underscores
->>> and periods in their name. However, the auto-generated internal map nam=
-es
->>> used by libbpf takes their prefix from the user-supplied BPF object nam=
-e,
->>> which has no such restriction. This can lead to "Invalid argument" erro=
-rs
->>> when trying to load a BPF program using global variables.
->>>
->>> Fix this by sanitising the map names, replacing any non-allowed=20
->>> characters
->>> with underscores.
->>>
->>> Fixes: d859900c4c56 ("bpf, libbpf: support global data/bss/rodata=20
->>> sections")
->>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->>=20
->> Makes sense to me, applied, thanks! I presume you had something like '-'=
-=20
->> in the
->> global var leading to rejection?
->
-> The C global variable cannot have '-'. I saw a complain in bcc mailing=20
-> list sometimes back like: if an object file is a-b.o, then we will=20
-> generate a map name like a-b.bss for the bss ELF section data. The
-> map name "a-b.bss" name will be rejected by the kernel. The workaround
-> is to change object file name. Not sure whether this is the only
-> issue which may introduce non [a-zA-Z0-9_] or not. But this patch indeed=
-=20
-> should fix the issue I just described.
+> Introduce "rx" prefix in the name scheme for xdp counters
+> on rx path.
+> Differentiate between XDP_TX and ndo_xdp_xmit counters
+> 
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  drivers/net/ethernet/marvell/mvneta.c | 22 +++++++++++++++++-----
+>  1 file changed, 17 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+> index b7045b6a15c2..6223700dc3df 100644
+> --- a/drivers/net/ethernet/marvell/mvneta.c
+> +++ b/drivers/net/ethernet/marvell/mvneta.c
+> @@ -344,6 +344,7 @@ enum {
+>  	ETHTOOL_XDP_REDIRECT,
+>  	ETHTOOL_XDP_PASS,
+>  	ETHTOOL_XDP_DROP,
+> +	ETHTOOL_XDP_XMIT,
+>  	ETHTOOL_XDP_TX,
+>  	ETHTOOL_MAX_STATS,
+>  };
+> @@ -399,10 +400,11 @@ static const struct mvneta_statistic mvneta_statistics[] = {
+>  	{ ETHTOOL_STAT_EEE_WAKEUP, T_SW, "eee_wakeup_errors", },
+>  	{ ETHTOOL_STAT_SKB_ALLOC_ERR, T_SW, "skb_alloc_errors", },
+>  	{ ETHTOOL_STAT_REFILL_ERR, T_SW, "refill_errors", },
+> -	{ ETHTOOL_XDP_REDIRECT, T_SW, "xdp_redirect", },
+> -	{ ETHTOOL_XDP_PASS, T_SW, "xdp_pass", },
+> -	{ ETHTOOL_XDP_DROP, T_SW, "xdp_drop", },
+> -	{ ETHTOOL_XDP_TX, T_SW, "xdp_tx", },
+> +	{ ETHTOOL_XDP_REDIRECT, T_SW, "rx_xdp_redirect", },
+> +	{ ETHTOOL_XDP_PASS, T_SW, "rx_xdp_pass", },
+> +	{ ETHTOOL_XDP_DROP, T_SW, "rx_xdp_drop", },
+> +	{ ETHTOOL_XDP_TX, T_SW, "rx_xdp_tx_xmit", },
 
-Yes, this was exactly my problem; my object file is called
-'xdp-dispatcher.o'. Fun error to track down :P
+Hmmm... "rx_xdp_tx_xmit", I expected this to be named "rx_xdp_tx" to
+count the XDP_TX actions, but I guess this means something else.
 
-Why doesn't the kernel allow dashes in the name anyway?
+> +	{ ETHTOOL_XDP_XMIT, T_SW, "tx_xdp_xmit", },
 
--Toke
+Okay, maybe.  I guess, this will still be valid for when we add an XDP
+egress/TX-hook point.
+
+>  };
+>  
+>  struct mvneta_stats {
+> @@ -414,6 +416,7 @@ struct mvneta_stats {
+>  	u64	xdp_redirect;
+>  	u64	xdp_pass;
+>  	u64	xdp_drop;
+> +	u64	xdp_xmit;
+>  	u64	xdp_tx;
+>  };
+>  
+> @@ -2050,7 +2053,10 @@ mvneta_xdp_submit_frame(struct mvneta_port *pp, struct mvneta_tx_queue *txq,
+>  	u64_stats_update_begin(&stats->syncp);
+>  	stats->es.ps.tx_bytes += xdpf->len;
+>  	stats->es.ps.tx_packets++;
+> -	stats->es.ps.xdp_tx++;
+> +	if (buf->type == MVNETA_TYPE_XDP_NDO)
+> +		stats->es.ps.xdp_xmit++;
+> +	else
+> +		stats->es.ps.xdp_tx++;
+
+I don't like that you add a branch (if-statement) in this fast-path code.
+
+Do we really need to account in the xmit frame function, if this was a
+XDP_REDIRECT or XDP_TX that started the xmit?  I mean we already have
+action counters for XDP_REDIRECT and XDP_TX (but I guess you skipped
+the XDP_TX action counter). 
+
+
+>  	u64_stats_update_end(&stats->syncp);
+>  
+>  	mvneta_txq_inc_put(txq);
+> @@ -4484,6 +4490,7 @@ mvneta_ethtool_update_pcpu_stats(struct mvneta_port *pp,
+>  		u64 xdp_redirect;
+>  		u64 xdp_pass;
+>  		u64 xdp_drop;
+> +		u64 xdp_xmit;
+>  		u64 xdp_tx;
+>  
+>  		stats = per_cpu_ptr(pp->stats, cpu);
+> @@ -4494,6 +4501,7 @@ mvneta_ethtool_update_pcpu_stats(struct mvneta_port *pp,
+>  			xdp_redirect = stats->es.ps.xdp_redirect;
+>  			xdp_pass = stats->es.ps.xdp_pass;
+>  			xdp_drop = stats->es.ps.xdp_drop;
+> +			xdp_xmit = stats->es.ps.xdp_xmit;
+>  			xdp_tx = stats->es.ps.xdp_tx;
+>  		} while (u64_stats_fetch_retry_irq(&stats->syncp, start));
+>  
+> @@ -4502,6 +4510,7 @@ mvneta_ethtool_update_pcpu_stats(struct mvneta_port *pp,
+>  		es->ps.xdp_redirect += xdp_redirect;
+>  		es->ps.xdp_pass += xdp_pass;
+>  		es->ps.xdp_drop += xdp_drop;
+> +		es->ps.xdp_xmit += xdp_xmit;
+>  		es->ps.xdp_tx += xdp_tx;
+>  	}
+>  }
+> @@ -4555,6 +4564,9 @@ static void mvneta_ethtool_update_stats(struct mvneta_port *pp)
+>  			case ETHTOOL_XDP_TX:
+>  				pp->ethtool_stats[i] = stats.ps.xdp_tx;
+>  				break;
+> +			case ETHTOOL_XDP_XMIT:
+> +				pp->ethtool_stats[i] = stats.ps.xdp_xmit;
+> +				break;
+>  			}
+>  			break;
+>  		}
+
+It doesn't look like you have an action counter for XDP_TX, but we have
+one for XDP_REDIRECT?
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
