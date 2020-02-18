@@ -2,129 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E261636CD
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 00:03:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8403816370D
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 00:18:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727206AbgBRXDy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Feb 2020 18:03:54 -0500
-Received: from www62.your-server.de ([213.133.104.62]:56932 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727211AbgBRXDx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Feb 2020 18:03:53 -0500
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1j4BuA-0008E5-MW; Wed, 19 Feb 2020 00:03:50 +0100
-Received: from [85.7.42.192] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1j4BuA-00072U-7Q; Wed, 19 Feb 2020 00:03:50 +0100
-Subject: Re: [PATCH 03/18] bpf: Add struct bpf_ksym
-To:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Song Liu <songliubraving@fb.com>,
+        id S1727862AbgBRXSV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Feb 2020 18:18:21 -0500
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:33242 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727635AbgBRXSV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Feb 2020 18:18:21 -0500
+Received: by mail-pg1-f195.google.com with SMTP id 6so11722847pgk.0;
+        Tue, 18 Feb 2020 15:18:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Wr4DuRVgR1jd4oTUUpPq0Q2YSUdbLao1hXDjFRWINh0=;
+        b=NZIOEomRHq5wTNr6cqFSxCO12drK3rGMjv66dh6YznuBgxTbw1yqHwaHw9GUufDJo+
+         OgZCEardbTeP4Z4J1oDXyOXrYNFlbvL1PNXL+Nu7bbHryI4kzzBhc7uh+1u+icxU3CKD
+         fkMhhf/Tb0Khgo453xtPmF7AMdQWpvELJL1wTHkqjJkwEOLOd4Lhr+EdGdk9ECLaW7fL
+         bbgN7hyIScKQ4vTYByVR5yOlKGE6flyml8kc6aR//ZzBZw/pXzUR09h5uNqNc82t5jjG
+         UDDPIhxgrK/IVx3gRM8RXIRp2/59VsOaZh+FpW5WT1ht5RkFuTF5VO1Wo6nremUpteNG
+         Rcuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Wr4DuRVgR1jd4oTUUpPq0Q2YSUdbLao1hXDjFRWINh0=;
+        b=DxSkhTVvdYCLF+2vWCacRj8hjkWSGZdMRIpGaJhqjIjmHYi/rYkOjPjrsaXTNPNMkZ
+         ePSfIBZ5xiyHCob/r4KeV/mJwINN7jo8q8+vhjyGuv+/Fgk650qsEhf+Doq4t3SJjcux
+         q3OfjZEmcl3RQOCmcgmE+kW9WUBR9iKohsCfqoGh2nlQHWjpncFsKzeTEgmswQgSl3bs
+         dRTs8FQDrtOE0b84UY47w2k4LXIP4pSykOBWuzyGuoABcAxhNeOx1ihOFVbp37MaC4Yj
+         5BdjdPBDz2t9GgtxO0VXRfEizuXSrJMHw4P1Jh5TqMhPLF/QQSt6xU6KrlxVoaIEpMRq
+         d4RA==
+X-Gm-Message-State: APjAAAWfhzn+DifnDltp7QWEmGHP//3kmLXrqD6hhtbC9to2h0aCjMkD
+        NhvDY9QWFEBbvQFvdaWUQlI=
+X-Google-Smtp-Source: APXvYqzRzk6xcaC+XO/KYJEeu21032vpEy76fvhAcH60V4Vx/eqYEIkQe2n87Vg7YAFFAFPYBieULA==
+X-Received: by 2002:a65:6718:: with SMTP id u24mr25535951pgf.289.1582067900759;
+        Tue, 18 Feb 2020 15:18:20 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:500::5:dd54])
+        by smtp.gmail.com with ESMTPSA id x65sm68563pfb.171.2020.02.18.15.18.18
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 18 Feb 2020 15:18:19 -0800 (PST)
+Date:   Tue, 18 Feb 2020 15:18:17 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
+        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
         Martin KaFai Lau <kafai@fb.com>,
         Jakub Kicinski <kuba@kernel.org>,
         David Miller <davem@redhat.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         John Fastabend <john.fastabend@gmail.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH 15/18] bpf: Sort bpf kallsyms symbols
+Message-ID: <20200218231816.own6y5ijjx25kti6@ast-mbp>
 References: <20200216193005.144157-1-jolsa@kernel.org>
- <20200216193005.144157-4-jolsa@kernel.org>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <d61ff7d5-f0a7-8828-cf94-54936670f244@iogearbox.net>
-Date:   Wed, 19 Feb 2020 00:03:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+ <20200216193005.144157-16-jolsa@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200216193005.144157-4-jolsa@kernel.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.1/25727/Tue Feb 18 15:05:00 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200216193005.144157-16-jolsa@kernel.org>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/16/20 8:29 PM, Jiri Olsa wrote:
-> Adding 'struct bpf_ksym' object that will carry the
-> kallsym information for bpf symbol. Adding the start
-> and end address to begin with. It will be used by
-> bpf_prog, bpf_trampoline, bpf_dispatcher.
+On Sun, Feb 16, 2020 at 08:30:02PM +0100, Jiri Olsa wrote:
+> Currently we don't sort bpf_kallsyms and display symbols
+> in proc/kallsyms as they come in via __bpf_ksym_add.
 > 
-> Using the bpf_func for program symbol start instead
-> of the image start, because it will be used later for
-> kallsyms program value and it makes no difference
-> (compared to the image start) for sorting bpf programs.
+> Using the latch tree to get the next bpf_ksym object
+> and insert the new symbol ahead of it.
 > 
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->   include/linux/bpf.h |  6 ++++++
->   kernel/bpf/core.c   | 26 +++++++++++---------------
->   2 files changed, 17 insertions(+), 15 deletions(-)
+>  kernel/bpf/core.c | 21 ++++++++++++++++++++-
+>  1 file changed, 20 insertions(+), 1 deletion(-)
 > 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index be7afccc9459..5ad8eea1cd37 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -462,6 +462,11 @@ int arch_prepare_bpf_trampoline(void *image, void *image_end,
->   u64 notrace __bpf_prog_enter(void);
->   void notrace __bpf_prog_exit(struct bpf_prog *prog, u64 start);
->   
-> +struct bpf_ksym {
-> +	unsigned long		 start;
-> +	unsigned long		 end;
-> +};
-> +
->   enum bpf_tramp_prog_type {
->   	BPF_TRAMP_FENTRY,
->   	BPF_TRAMP_FEXIT,
-> @@ -643,6 +648,7 @@ struct bpf_prog_aux {
->   	u32 size_poke_tab;
->   	struct latch_tree_node ksym_tnode;
->   	struct list_head ksym_lnode;
-> +	struct bpf_ksym ksym;
->   	const struct bpf_prog_ops *ops;
->   	struct bpf_map **used_maps;
->   	struct bpf_prog *prog;
 > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 973a20d49749..39a9e4184900 100644
+> index 2f857bbfe05c..fa814179730c 100644
 > --- a/kernel/bpf/core.c
 > +++ b/kernel/bpf/core.c
-> @@ -524,17 +524,15 @@ int bpf_jit_harden   __read_mostly;
->   long bpf_jit_limit   __read_mostly;
->   
->   static __always_inline void
-> -bpf_get_prog_addr_region(const struct bpf_prog *prog,
-> -			 unsigned long *symbol_start,
-> -			 unsigned long *symbol_end)
-> +bpf_get_prog_addr_region(const struct bpf_prog *prog)
->   {
->   	const struct bpf_binary_header *hdr = bpf_jit_binary_hdr(prog);
->   	unsigned long addr = (unsigned long)hdr;
->   
->   	WARN_ON_ONCE(!bpf_prog_ebpf_jited(prog));
->   
-> -	*symbol_start = addr;
-> -	*symbol_end   = addr + hdr->pages * PAGE_SIZE;
-> +	prog->aux->ksym.start = (unsigned long) prog->bpf_func;
+> @@ -651,9 +651,28 @@ static struct latch_tree_root bpf_progs_tree __cacheline_aligned;
+>  
+>  static void __bpf_ksym_add(struct bpf_ksym *ksym)
+>  {
+> +	struct list_head *head = &bpf_kallsyms;
+> +	struct rb_node *next;
+> +
+>  	WARN_ON_ONCE(!list_empty(&ksym->lnode));
+> -	list_add_tail_rcu(&ksym->lnode, &bpf_kallsyms);
+>  	latch_tree_insert(&ksym->tnode, &bpf_ksym_tree, &bpf_ksym_tree_ops);
+> +
+> +	/*
+> +	 * Add ksym into bpf_kallsyms in ordered position,
+> +	 * which is prepared for us by latch tree addition.
+> +	 *
+> +	 * Find out the next symbol and insert ksym right
+> +	 * ahead of it. If ksym is the last one, just tail
+> +	 * add to the bpf_kallsyms.
+> +	 */
+> +	next = rb_next(&ksym->tnode.node[0]);
+> +	if (next) {
+> +		struct bpf_ksym *ptr;
+> +
+> +		ptr = container_of(next, struct bpf_ksym, tnode.node[0]);
+> +		head = &ptr->lnode;
+> +	}
+> +	list_add_tail_rcu(&ksym->lnode, head);
 
-Your commit descriptions are too terse. :/ What does "because it will be used
-later for kallsyms program value" mean exactly compared to how it's used today
-for programs?
-
-Is this a requirement to have them point exactly to prog->bpf_func and if so
-why? My concern is that bpf_func has a random offset from hdr, so even if the
-/proc/kallsyms would be readable with concrete addresses for !cap_sys_admin
-users, it's still not the concrete start address being exposed there, but the
-allocated range instead.
-
-> +	prog->aux->ksym.end   = addr + hdr->pages * PAGE_SIZE;
->   }
->   
+what is the motivation for sorting? do you want perf and other user space
+to depend on it? Or purely aesthetics?
