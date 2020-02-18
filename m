@@ -2,36 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C2D161E27
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2020 01:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD67161F31
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2020 04:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726108AbgBRAPH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Feb 2020 19:15:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32780 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726140AbgBRAPH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Feb 2020 19:15:07 -0500
-Received: from localhost.localdomain (unknown [151.48.137.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14541207FD;
-        Tue, 18 Feb 2020 00:15:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581984906;
-        bh=wy2pRQV+bU+yOoXVAQAXXPoSzon9kgDk14ziMHLv6IE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=mR+EzqiQqBhBrktMURSKmDttWLwGKALjseyBBQBm5WzDoK8PaEjq0cZSLnI4fN4as
-         qqo58tAI3NtC3CJhREMRIYcvRD/xjBiYMV5R5az1aHizAGeHsNmE9iI/qXc0qIiMKY
-         3Rmj/Fe84ABCOLg5pNTMO+v2dWPUjHrmt6NjqNms=
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     netdev@vger.kernel.org
-Cc:     ilias.apalodimas@linaro.org, davem@davemloft.net,
-        lorenzo.bianconi@redhat.com, andrew@lunn.ch, brouer@redhat.com,
-        dsahern@kernel.org, bpf@vger.kernel.org
-Subject: [RFC net-next] net: mvneta: align xdp stats naming scheme to mlx5 driver
-Date:   Tue, 18 Feb 2020 01:14:29 +0100
-Message-Id: <526238d9bcc60500ed61da1a4af8b65af1af9583.1581984697.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.24.1
+        id S1726237AbgBRDFE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Feb 2020 22:05:04 -0500
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:35153 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726283AbgBRDFB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 17 Feb 2020 22:05:01 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 8A4F2689;
+        Mon, 17 Feb 2020 22:04:56 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 17 Feb 2020 22:04:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=58BXXdeAkUtD9tu7+KN6VDGLHb
+        VpXPw6ckoICOGQz6E=; b=lAJQO9V+pi/Qy5JOkdUUzGOtDjpUeHG3XZ7kozmEt+
+        csRgry5Ht8v+7o+tNDcH6lhR7E3Fp5meYxh/hDL5kFK9K+zRQNn0S5t3+aP4pVsL
+        PTQIWIbAuks89HkX3N8cykFlQLGm5Cp+LdvF8yC7H77YXcAlcnGnl/AvGpACITC2
+        u8TKQPVmPxX5Ez2+TbJvIhacem3byBMXqIhc4qxPxuKIPTHrOvtPvvTy04zzjkKS
+        TBZ61Q9N9ZwoAR7vqIYerninAx39ROSHz3x40BHCcCMYlf8NSsZBp2Ozu8GHG9la
+        1F9T6q+Yt6k+s1WTZTJJDLAnPCLEZmnXFu2Y7TAf1kyw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=58BXXdeAkUtD9tu7+
+        KN6VDGLHbVpXPw6ckoICOGQz6E=; b=MLHc+mf7xKzrG2D5pih234I8UcnG/1ZoV
+        3hRvUbOpG59hsocUKxZkRvfZaHj/PNt/lbMU5saPazVNbpXwFAzrdtk5p5hgOozK
+        jbmq4oO7eG+KoYFrZ65atY6miE0/XWa8kvYhsOo826zqASJ+ZzJBC5dU8+Np6IYb
+        /ycd0cn34wHC0U0fMKR4hFnm0D/xPOFWYYd5IbOyEA2nak6EWX5VqmEBEmvK+Yrs
+        enkfmt+EwI97Dpem2kWjWAeg3qa5B4ncIY1jrcZQ4wnlMs5VMSyhgHvB7OEw2K8b
+        Pnrq84psbOqTxCnepmXnSS05JrVlDujb5yrVpRLmPNi5bdwoXuSTQ==
+X-ME-Sender: <xms:T1RLXjGSGZORjExlD4LfUMq49hMlbBMB4VYV-jDStyUB0LJ0PqBN4g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrjeejgdehfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephffvuf
+    ffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhes
+    ugiguhhuuhdrgiihiieqnecukfhppeduieefrdduudegrddufedtrddunecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdr
+    giihii
+X-ME-Proxy: <xmx:T1RLXkcYK26RV3N93bIkX87fYDp8xm1WPJ87HxfjBHL15mUzZT6Ncg>
+    <xmx:T1RLXgvgzdZ9JfMkE0GFHQRsT7Sx0r4BFzUl2cCBGEEh9mJ2rvwzYg>
+    <xmx:T1RLXjXKHAOQmPCqicKt1DImDl8NtoMa5aw6-4O1-Ma3B7B4V0nObw>
+    <xmx:WFRLXq8euUKQICINIrvBNvXYwdfqxT5R_iCpJ_z8vGGklEyN4YAnKCwmMtE>
+Received: from dlxu-fedora-R90QNFJV.thefacebook.com (unknown [163.114.130.1])
+        by mail.messagingengine.com (Postfix) with ESMTPA id C05283060BE4;
+        Mon, 17 Feb 2020 22:04:46 -0500 (EST)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, peterz@infradead.org, mingo@redhat.com,
+        acme@kernel.org
+Subject: [PATCH v8 bpf-next 0/2] Add bpf_read_branch_records() helper
+Date:   Mon, 17 Feb 2020 19:04:30 -0800
+Message-Id: <20200218030432.4600-1-dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
@@ -39,97 +67,73 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce "rx" prefix in the name scheme for xdp counters
-on rx path.
-Differentiate between XDP_TX and ndo_xdp_xmit counters
+Branch records are a CPU feature that can be configured to record
+certain branches that are taken during code execution. This data is
+particularly interesting for profile guided optimizations. perf has had
+branch record support for a while but the data collection can be a bit
+coarse grained.
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- drivers/net/ethernet/marvell/mvneta.c | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+We (Facebook) have seen in experiments that associating metadata with
+branch records can improve results (after postprocessing). We generally
+use bpf_probe_read_*() to get metadata out of userspace. That's why bpf
+support for branch records is useful.
 
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index b7045b6a15c2..6223700dc3df 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -344,6 +344,7 @@ enum {
- 	ETHTOOL_XDP_REDIRECT,
- 	ETHTOOL_XDP_PASS,
- 	ETHTOOL_XDP_DROP,
-+	ETHTOOL_XDP_XMIT,
- 	ETHTOOL_XDP_TX,
- 	ETHTOOL_MAX_STATS,
- };
-@@ -399,10 +400,11 @@ static const struct mvneta_statistic mvneta_statistics[] = {
- 	{ ETHTOOL_STAT_EEE_WAKEUP, T_SW, "eee_wakeup_errors", },
- 	{ ETHTOOL_STAT_SKB_ALLOC_ERR, T_SW, "skb_alloc_errors", },
- 	{ ETHTOOL_STAT_REFILL_ERR, T_SW, "refill_errors", },
--	{ ETHTOOL_XDP_REDIRECT, T_SW, "xdp_redirect", },
--	{ ETHTOOL_XDP_PASS, T_SW, "xdp_pass", },
--	{ ETHTOOL_XDP_DROP, T_SW, "xdp_drop", },
--	{ ETHTOOL_XDP_TX, T_SW, "xdp_tx", },
-+	{ ETHTOOL_XDP_REDIRECT, T_SW, "rx_xdp_redirect", },
-+	{ ETHTOOL_XDP_PASS, T_SW, "rx_xdp_pass", },
-+	{ ETHTOOL_XDP_DROP, T_SW, "rx_xdp_drop", },
-+	{ ETHTOOL_XDP_TX, T_SW, "rx_xdp_tx_xmit", },
-+	{ ETHTOOL_XDP_XMIT, T_SW, "tx_xdp_xmit", },
- };
- 
- struct mvneta_stats {
-@@ -414,6 +416,7 @@ struct mvneta_stats {
- 	u64	xdp_redirect;
- 	u64	xdp_pass;
- 	u64	xdp_drop;
-+	u64	xdp_xmit;
- 	u64	xdp_tx;
- };
- 
-@@ -2050,7 +2053,10 @@ mvneta_xdp_submit_frame(struct mvneta_port *pp, struct mvneta_tx_queue *txq,
- 	u64_stats_update_begin(&stats->syncp);
- 	stats->es.ps.tx_bytes += xdpf->len;
- 	stats->es.ps.tx_packets++;
--	stats->es.ps.xdp_tx++;
-+	if (buf->type == MVNETA_TYPE_XDP_NDO)
-+		stats->es.ps.xdp_xmit++;
-+	else
-+		stats->es.ps.xdp_tx++;
- 	u64_stats_update_end(&stats->syncp);
- 
- 	mvneta_txq_inc_put(txq);
-@@ -4484,6 +4490,7 @@ mvneta_ethtool_update_pcpu_stats(struct mvneta_port *pp,
- 		u64 xdp_redirect;
- 		u64 xdp_pass;
- 		u64 xdp_drop;
-+		u64 xdp_xmit;
- 		u64 xdp_tx;
- 
- 		stats = per_cpu_ptr(pp->stats, cpu);
-@@ -4494,6 +4501,7 @@ mvneta_ethtool_update_pcpu_stats(struct mvneta_port *pp,
- 			xdp_redirect = stats->es.ps.xdp_redirect;
- 			xdp_pass = stats->es.ps.xdp_pass;
- 			xdp_drop = stats->es.ps.xdp_drop;
-+			xdp_xmit = stats->es.ps.xdp_xmit;
- 			xdp_tx = stats->es.ps.xdp_tx;
- 		} while (u64_stats_fetch_retry_irq(&stats->syncp, start));
- 
-@@ -4502,6 +4510,7 @@ mvneta_ethtool_update_pcpu_stats(struct mvneta_port *pp,
- 		es->ps.xdp_redirect += xdp_redirect;
- 		es->ps.xdp_pass += xdp_pass;
- 		es->ps.xdp_drop += xdp_drop;
-+		es->ps.xdp_xmit += xdp_xmit;
- 		es->ps.xdp_tx += xdp_tx;
- 	}
- }
-@@ -4555,6 +4564,9 @@ static void mvneta_ethtool_update_stats(struct mvneta_port *pp)
- 			case ETHTOOL_XDP_TX:
- 				pp->ethtool_stats[i] = stats.ps.xdp_tx;
- 				break;
-+			case ETHTOOL_XDP_XMIT:
-+				pp->ethtool_stats[i] = stats.ps.xdp_xmit;
-+				break;
- 			}
- 			break;
- 		}
+Aside from this particular use case, having branch data available to bpf
+progs can be useful to get stack traces out of userspace applications
+that omit frame pointers.
+
+Changes in v8:
+- Use globals instead of perf buffer
+- Call test_perf_branches__detach() before destroying skeleton
+- Fix typo in docs
+
+Changes in v7:
+- Const-ify and static-ify local var
+- Documentation formatting
+
+Changes in v6:
+- Move #ifdef a little to avoid unused variable warnings on !x86
+- Test negative condition in selftest (-EINVAL on improperly configured
+  perf event)
+- Skip positive condition selftest on setups that don't support branch
+  records
+
+Changes in v5:
+- Rename bpf_perf_prog_read_branches() -> bpf_read_branch_records()
+- Rename BPF_F_GET_BR_SIZE -> BPF_F_GET_BRANCH_RECORDS_SIZE
+- Squash tools/ bpf.h sync into selftest commit
+
+Changes in v4:
+- Add BPF_F_GET_BR_SIZE flag
+- Return -ENOENT on unsupported architectures
+- Only accept initialized memory in helper
+- Check buffer size is multiple of sizeof(struct perf_branch_entry)
+- Use bpf skeleton in selftest
+- Add commit messages
+- Spelling and formatting
+
+Changes in v3:
+- Document filling unused buffer with zero
+- Formatting fixes
+- Rebase
+
+Changes in v2:
+- Change to a bpf helper instead of context access
+- Avoid mentioning Intel specific things
+
+Daniel Xu (2):
+  bpf: Add bpf_read_branch_records() helper
+  selftests/bpf: add bpf_read_branch_records() selftest
+
+ include/uapi/linux/bpf.h                      |  25 ++-
+ kernel/trace/bpf_trace.c                      |  41 +++++
+ tools/include/uapi/linux/bpf.h                |  25 ++-
+ .../selftests/bpf/prog_tests/perf_branches.c  | 169 ++++++++++++++++++
+ .../selftests/bpf/progs/test_perf_branches.c  |  50 ++++++
+ 5 files changed, 308 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_branches.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_perf_branches.c
+
 -- 
-2.24.1
+2.21.1
 
