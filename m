@@ -2,192 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 34280162335
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2020 10:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6BC1624A5
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2020 11:34:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgBRJQg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Feb 2020 04:16:36 -0500
-Received: from mail-pf1-f172.google.com ([209.85.210.172]:35649 "EHLO
-        mail-pf1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726186AbgBRJQg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Feb 2020 04:16:36 -0500
-Received: by mail-pf1-f172.google.com with SMTP id y73so10353542pfg.2;
-        Tue, 18 Feb 2020 01:16:36 -0800 (PST)
+        id S1726571AbgBRKeC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Feb 2020 05:34:02 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:33058 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726360AbgBRKeB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Feb 2020 05:34:01 -0500
+Received: by mail-wr1-f65.google.com with SMTP id u6so23321648wrt.0
+        for <bpf@vger.kernel.org>; Tue, 18 Feb 2020 02:33:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gTzqX9MZ+13NkjyUA3S/Rp+W6CQYR2KrA7XcAGA6wdU=;
-        b=B+AlZHGcpJk0mxGmPoY7aZFp0ikUmF6RIRP7ID7OmMIL90dTtMS9GCU/YyRDm3lfMu
-         sdtpz6yMAR9tiT2bY5cM2Z9ZgsfXHLH1MSEqxrOkjE2CXhVmHuiu1hEpYsNb5IpVaw/H
-         S/FGaT/DNPuCoHcSdDtZKvH5tR4wwI/KdZGUGBt1UldliBgZarCa1b17OGwwpzzS2mfg
-         MxSpEL760lVTX9b+TFfmr1ETsCb1Ap7z0akQAleYQbi6wk00vZ68vqsxJQ988DX1szh/
-         KY4KEfScmqLJKodyO6O1oXv7Yh/+w90UEns2cNwvSOg1GB/0FmK6CT9BGCgqNygyTG3i
-         eLzA==
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2BhHbz6z8YTqeu/gQYCM/nPZKelCVYS9NAVSwsj0jvs=;
+        b=LiG3SCzgCkh433wMfqqY6Yf8bxyCocTaXi/wnruYHXaZvDoVgf/uDt3LsZLWWfgR7l
+         69A/ahnTplbSPh2z5yphCJCGpDQanTG/42ecjWRNX892pAA7jA14iHdf25zJgRD16Zyh
+         Zqdpxe5fco7kiuJ+4oQp86D/naEZj/FomJUPzogoY1WJnmO0DxZx1qCK6rWWd+teA2ub
+         EsNPJ6N1iphGG0uGpBJ2SS2RfwzMlPpcUGf7EZO662wcinCXq76PeZ9E9//uqZV5nhnF
+         JGhvstMBdLLPAhGugPttI1CGOV+7xgP+HBERD5J9R6iZpMGm8hyo2vhWDuI5TrvCxemP
+         0uwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gTzqX9MZ+13NkjyUA3S/Rp+W6CQYR2KrA7XcAGA6wdU=;
-        b=HkJGVu8N2xBJb1RoIMXYGX6e8QjMmAnpoDdRkrpt9gYUGfPChV84ypwCskVstvO4vZ
-         NMH/G8StHqBcE70kXdo5gfYJ9fgo1Gko08YwhVLAkTUIOoA1h8Q8UuydCjaFDpr9JMHa
-         0rzBBBazaPYgxorq1IDZAzvNDTkHf+RoAb+L/qQ0OidZAuf/Ma9EMntNAFnixwI4pQtA
-         JwaqfxTVq6Y0dlQvfZL3MrA1NpZqxrCefLnXbgLk0Uty3JfHNXdgk4sy8pcj37IJLaBu
-         K7kKKvth3Q2hPSzsJgCgsli7RhgWJ5VmgHMK4dLNwECiGop/owbfeyNbp//hxPsbKL4A
-         8Dqg==
-X-Gm-Message-State: APjAAAV21EYBd8iEkDCX2ii4s6tXaWX4M3GOYMfbIm8Bs5K0BC4GrgOg
-        3N2uh4GZHmU9sgmd3TFxnn2sPfdiv1fYfg==
-X-Google-Smtp-Source: APXvYqw78e8junFXhv9T9LHsbHXY4LhWqaxISEgzBHJrNzX/HevXlUf23y/TUMVgvKIZ5MCorVaTtQ==
-X-Received: by 2002:a62:15d8:: with SMTP id 207mr21015921pfv.40.1582017395525;
-        Tue, 18 Feb 2020 01:16:35 -0800 (PST)
-Received: from kernel.rdqbwbcbjylexclmhxlbqg5jve.hx.internal.cloudapp.net ([65.52.171.215])
-        by smtp.gmail.com with ESMTPSA id h191sm1992110pge.85.2020.02.18.01.16.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Feb 2020 01:16:35 -0800 (PST)
-From:   Lingpeng Chen <forrest0579@gmail.com>
-To:     bpf <bpf@vger.kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Petar Penkov <ppenkov.kernel@gmail.com>,
-        Lingpeng Chen <forrest0579@gmail.com>
-Subject: [PATCH v2 bpf-next 3/3] selftests/bpf: add selftest for sock_ops_get_netns helper
-Date:   Tue, 18 Feb 2020 09:15:41 +0000
-Message-Id: <20200218091541.107371-4-forrest0579@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200218091541.107371-1-forrest0579@gmail.com>
-References: <20200206083515.10334-1-forrest0579@gmail.com>
- <20200218091541.107371-1-forrest0579@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2BhHbz6z8YTqeu/gQYCM/nPZKelCVYS9NAVSwsj0jvs=;
+        b=qkF2RrAyU++ambQPAVWOrmwOoJKlbazTih8/gFKhK/4zxcCpP5fW0qRzYv76ZDllSr
+         aPGbj6SNTk8l+KjguNJFv/v87xnad9yImtmqNQa29SSq//gdoyZipFb/qJrkWmiU6p/B
+         0EVe+dmANP4WpMnApRohO/kyKxZE9qPb/JQm4bYl9VwPJbs527nff612z1JKTn1CBVrO
+         eKoe6S9XHGanaIT+NNuOeCjvuKAULIt1wbQPXSStFU2sh4co4QCGEu94kyDZZ7gUHN8c
+         TAqWr0F0iKThz9bAsb7xreiGUKSBWSmBPCAJjgXpBxdKznVVcgLlQTJZtzg8EVekMf4G
+         Zb3g==
+X-Gm-Message-State: APjAAAXg88hJmlbtPvyjleDpl//zpVlqUAxELxK4IMnjUphyQQzJ4Xqp
+        1G2sKolaH3uIWkUj8fzTUtiHJA==
+X-Google-Smtp-Source: APXvYqw8IhAjn80T8c3NXFcvb3V/xoxS1vxK8flLE1vr4/DJoGiRaAdX3YCRynnghgIRVvhC6U+5CQ==
+X-Received: by 2002:adf:f8c4:: with SMTP id f4mr26839162wrq.243.1582022039116;
+        Tue, 18 Feb 2020 02:33:59 -0800 (PST)
+Received: from [192.168.1.23] ([91.143.66.155])
+        by smtp.gmail.com with ESMTPSA id f62sm2924857wmf.36.2020.02.18.02.33.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Feb 2020 02:33:58 -0800 (PST)
+Subject: Re: [PATCH bpf] uapi/bpf: Remove text about bpf_redirect_map() giving
+ higher performance
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        daniel@iogearbox.net, ast@fb.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        David Ahern <dsahern@gmail.com>
+References: <20200218074621.25391-1-toke@redhat.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <485aa804-0235-51dc-d3e2-02d71ae17266@isovalent.com>
+Date:   Tue, 18 Feb 2020 10:33:57 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20200218074621.25391-1-toke@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-adding selftest for new bpf helper function sock_ops_get_netns
+2020-02-18 08:46 UTC+0100 ~ Toke Høiland-Jørgensen <toke@redhat.com>
+> The performance of bpf_redirect() is now roughly the same as that of
+> bpf_redirect_map(). However, David Ahern pointed out that the header file
+> has not been updated to reflect this, and still says that a significant
+> performance increase is possible when using bpf_redirect_map(). Remove this
+> text from the bpf_redirect_map() description, and reword the description in
+> bpf_redirect() slightly.
+> 
+> Fixes: 1d233886dd90 ("xdp: Use bulking for non-map XDP_REDIRECT and consolidate code paths")
+> Suggested-by: David Ahern <dsahern@gmail.com>
+> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> ---
+>   include/uapi/linux/bpf.h | 12 +++---------
+>   1 file changed, 3 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index f1d74a2bd234..7a526d917fb3 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1045,9 +1045,9 @@ union bpf_attr {
+>    * 		supports redirection to the egress interface, and accepts no
+>    * 		flag at all.
+>    *
+> - * 		The same effect can be attained with the more generic
+> - * 		**bpf_redirect_map**\ (), which requires specific maps to be
+> - * 		used but offers better performance.
+> + * 		The same effect can also be attained with the more generic
+> + * 		**bpf_redirect_map**\ (), which uses a BPF map to store the
+> + * 		redirect target instead of providing it directly to the helper.
+>    * 	Return
+>    * 		For XDP, the helper returns **XDP_REDIRECT** on success or
+>    * 		**XDP_ABORTED** on error. For other program types, the values
+> @@ -1610,12 +1610,6 @@ union bpf_attr {
+>    * 		one of the XDP program return codes up to XDP_TX, as chosen by
+>    * 		the caller. Any higher bits in the *flags* argument must be
+>    * 		unset.
+> - *
+> - * 		When used to redirect packets to net devices, this helper
+> - * 		provides a high performance increase over **bpf_redirect**\ ().
+> - * 		This is due to various implementation details of the underlying
+> - * 		mechanisms, one of which is the fact that **bpf_redirect_map**\
+> - * 		() tries to send packet as a "bulk" to the device.
+>    * 	Return
+>    * 		**XDP_REDIRECT** on success, or **XDP_ABORTED** on error.
+>    *
+> 
 
-Signed-off-by: Lingpeng Chen <forrest0579@gmail.com>
----
- .../selftests/bpf/progs/test_tcpbpf_kern.c    | 11 +++++
- .../testing/selftests/bpf/test_tcpbpf_user.c  | 46 ++++++++++++++++++-
- 2 files changed, 56 insertions(+), 1 deletion(-)
+We could maybe leave something like “See also bpf_redirect()" in the 
+description of "bpf_redirect_map()"?
 
-diff --git a/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c b/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
-index 1f1966e86e9f..044967f70432 100644
---- a/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
-@@ -28,6 +28,13 @@ struct {
- 	__type(value, int);
- } sockopt_results SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} netns_number SEC(".maps");
-+
- static inline void update_event_map(int event)
- {
- 	__u32 key = 0;
-@@ -61,6 +68,7 @@ int bpf_testcb(struct bpf_sock_ops *skops)
- 	int rv = -1;
- 	int v = 0;
- 	int op;
-+	__u64 netns_inum;
- 
- 	op = (int) skops->op;
- 
-@@ -144,6 +152,9 @@ int bpf_testcb(struct bpf_sock_ops *skops)
- 		__u32 key = 0;
- 
- 		bpf_map_update_elem(&sockopt_results, &key, &v, BPF_ANY);
-+
-+		netns_inum = bpf_sock_ops_get_netns(skops);
-+		bpf_map_update_elem(&netns_number, &key, &netns_inum, BPF_ANY);
- 		break;
- 	default:
- 		rv = -1;
-diff --git a/tools/testing/selftests/bpf/test_tcpbpf_user.c b/tools/testing/selftests/bpf/test_tcpbpf_user.c
-index 3ae127620463..77a344f41310 100644
---- a/tools/testing/selftests/bpf/test_tcpbpf_user.c
-+++ b/tools/testing/selftests/bpf/test_tcpbpf_user.c
-@@ -76,6 +76,41 @@ int verify_sockopt_result(int sock_map_fd)
- 	return ret;
- }
- 
-+int verify_netns(__u64 netns_inum)
-+{
-+	char buf1[40];
-+	char buf2[40];
-+	int ret = 0;
-+	ssize_t len = 0;
-+
-+	len = readlink("/proc/self/ns/net", buf1, 39);
-+	sprintf(buf2, "net:[%llu]", netns_inum);
-+
-+	if (len <= 0) {
-+		printf("FAILED: readlink /proc/self/ns/net");
-+		return ret;
-+	}
-+
-+	if (strncmp(buf1, buf2, len)) {
-+		printf("FAILED: netns don't match");
-+		ret = 1;
-+	}
-+	return ret;
-+}
-+
-+int verify_netns_result(int netns_map_fd)
-+{
-+	__u32 key = 0;
-+	__u64 res = 0;
-+	int ret = 0;
-+	int rv;
-+
-+	rv = bpf_map_lookup_elem(netns_map_fd, &key, &res);
-+	EXPECT_EQ(0, rv, "d");
-+
-+	return verify_netns(res);
-+}
-+
- static int bpf_find_map(const char *test, struct bpf_object *obj,
- 			const char *name)
- {
-@@ -92,7 +127,7 @@ static int bpf_find_map(const char *test, struct bpf_object *obj,
- int main(int argc, char **argv)
- {
- 	const char *file = "test_tcpbpf_kern.o";
--	int prog_fd, map_fd, sock_map_fd;
-+	int prog_fd, map_fd, sock_map_fd, netns_map_fd;
- 	struct tcpbpf_globals g = {0};
- 	const char *cg_path = "/foo";
- 	int error = EXIT_FAILURE;
-@@ -137,6 +172,10 @@ int main(int argc, char **argv)
- 	if (sock_map_fd < 0)
- 		goto err;
- 
-+	netns_map_fd = bpf_find_map(__func__, obj, "netns_number");
-+	if (netns_map_fd < 0)
-+		goto err;
-+
- retry_lookup:
- 	rv = bpf_map_lookup_elem(map_fd, &key, &g);
- 	if (rv != 0) {
-@@ -161,6 +200,11 @@ int main(int argc, char **argv)
- 		goto err;
- 	}
- 
-+	if (verify_netns_result(netns_map_fd)) {
-+		printf("FAILED: Wrong netns stats\n");
-+		goto err;
-+	}
-+
- 	printf("PASSED!\n");
- 	error = 0;
- err:
--- 
-2.20.1
+Either way,
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 
+Thanks,
+Quentin
