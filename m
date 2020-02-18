@@ -2,114 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F920162C78
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2020 18:18:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 978BB162CAC
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2020 18:26:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727086AbgBRRSQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Feb 2020 12:18:16 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:37011 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726655AbgBRRSQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Feb 2020 12:18:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582046295;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ek37kVTDy+eubHSmBaHlU9802HiWJpZwSmyiNbGJoro=;
-        b=M5rFuEHug/ZtNlxV0hPVRe9RcJpZ9v57I1lCLNI7XP0rHcl5vBKMovji8EYkwDo7w8JJNd
-        SCLUW3jX/iInQbhS6552040hwLhJMrnDSOw5yKFL89y0QPmEvcoylKbgPcrm8t4qagSbyb
-        CzLpsTQMl1WxD32zFrCV52RiGjP0KGc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-240-uC0VfL6AP3Ci3cM_MFvf2Q-1; Tue, 18 Feb 2020 12:18:10 -0500
-X-MC-Unique: uC0VfL6AP3Ci3cM_MFvf2Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3CD648010FF;
-        Tue, 18 Feb 2020 17:18:06 +0000 (UTC)
-Received: from carbon (ovpn-200-26.brq.redhat.com [10.40.200.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D179990F70;
-        Tue, 18 Feb 2020 17:17:53 +0000 (UTC)
-Date:   Tue, 18 Feb 2020 18:17:51 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     brouer@redhat.com, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com, lorenzo@kernel.org, toke@redhat.com,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S1726569AbgBRR0A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Feb 2020 12:26:00 -0500
+Received: from mail-pf1-f201.google.com ([209.85.210.201]:38325 "EHLO
+        mail-pf1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726415AbgBRR0A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Feb 2020 12:26:00 -0500
+Received: by mail-pf1-f201.google.com with SMTP id 203so13697797pfx.5
+        for <bpf@vger.kernel.org>; Tue, 18 Feb 2020 09:26:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=lyf2EcSh16c+FJvJ7zk5/nVq8X1hNmS4hPMHSudZurU=;
+        b=vY/wCGANEuyQVy7n1cXuvJA6kDpv9TZiRDMnJk8/AFUvBJQpjq07YFRbnMuXQmebVu
+         sQfsTZ0b1SDZN4REs4wsIUsMBIt6tHY5A4qOsO6Hq1pSHhOFQlGezlewQ03EKNBjZw9m
+         bUwy3oorlJjTbc90+08m5iRiltG7Cg+0NpkBnsKPKLoMIIoDBiIXr1i1eZTeVJsg0RtM
+         HqRmlhs0u8zXdmdEFII9d6IUnPcP0B6P6PjdnAyBsKnREja4V+F3DlcWVF/jxs5PuaPs
+         j1N4F/1ApMYWaTFdl2kHy+H/mmDK0U+e0c1PL+1XAVuxKpavg+EbVKKgW3YcSXtUgkNR
+         k5OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=lyf2EcSh16c+FJvJ7zk5/nVq8X1hNmS4hPMHSudZurU=;
+        b=a1xyL7mPzkbUQ07IlujLmqTCP3tp21MNK4jDWTdFU26A9i2cfcw4etLvkyn6jaOLSS
+         bp5NAJOnLYXJXHAWcb6BkMOG0xtmnL+yB3lenL2ZWNI9yxfuM1uuPJH6Nv4Pn3f97vgi
+         ar0m0CrrPpndkcczXsvDwp/pPbVkt4M7gMPdSp5VAAejxThYsp1IH/kaJp2MTG898ThW
+         9UCAM3fvjrXj5QNDDXg99E4YdHz59h0LfsQCbGyaLchlub2KeYrFL4NAtP37jedSCVnY
+         393q0f5/0gYCcM9PdYEvdApWo0v0hGjS/bgnYmV2GwbNe0c33IDsNRl2gaxt9ppf8DY8
+         fg8Q==
+X-Gm-Message-State: APjAAAX9fPLjcOT+UpSMDIxdZVjt+6WhcpF2fjjCdhgFzyHYHci3tstG
+        SNdEnX0icH+8oO51sL6zGJXj92eyllZ8
+X-Google-Smtp-Source: APXvYqw3POrOlQL3qmkPAMYunWSKWobAfMfRAMMyJpuKeQl2oRDOKPBZkXofJN93WXxFTfZpPfmLDaJetbSe
+X-Received: by 2002:a63:fe43:: with SMTP id x3mr24852110pgj.119.1582046759601;
+ Tue, 18 Feb 2020 09:25:59 -0800 (PST)
+Date:   Tue, 18 Feb 2020 09:25:52 -0800
+Message-Id: <20200218172552.215077-1-brianvv@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.25.0.265.gbab2e86ba0-goog
+Subject: [PATCH v2 bpf] bpf: Do not grab the bucket spinlock by default on
+ htab batch ops
+From:   Brian Vazquez <brianvv@google.com>
+To:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Brian Vazquez <brianvv@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next v4] net: page_pool: API cleanup and comments
-Message-ID: <20200218181751.1d7139d2@carbon>
-In-Reply-To: <20200218141031.377860-1-ilias.apalodimas@linaro.org>
-References: <20200218141031.377860-1-ilias.apalodimas@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        "David S . Miller" <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 18 Feb 2020 16:10:31 +0200
-Ilias Apalodimas <ilias.apalodimas@linaro.org> wrote:
+Grabbing the spinlock for every bucket even if it's empty, was causing
+significant perfomance cost when traversing htab maps that have only a
+few entries. This patch addresses the issue by checking first the
+bucket_cnt, if the bucket has some entries then we go and grab the
+spinlock and proceed with the batching.
 
-> Functions starting with __ usually indicate those which are exported,
-> but should not be called directly. Update some of those declared in the
-> API and make it more readable.
->=20
-> page_pool_unmap_page() and page_pool_release_page() were doing
-> exactly the same thing calling __page_pool_clean_page().  Let's
-> rename __page_pool_clean_page() to page_pool_release_page() and
-> export it in order to show up on perf logs and get rid of
-> page_pool_unmap_page().
->=20
-> Finally rename __page_pool_put_page() to page_pool_put_page() since we
-> can now directly call it from drivers and rename the existing
-> page_pool_put_page() to page_pool_put_full_page() since they do the same
-> thing but the latter is trying to sync the full DMA area.
->=20
-> This patch also updates netsec, mvneta and stmmac drivers which use
-> those functions.
->=20
-> Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Tested with a htab of size 50K and different value of populated entries.
 
-LGTM - on a quick review (not compile tested...).
+Before:
+  Benchmark             Time(ns)        CPU(ns)
+  ---------------------------------------------
+  BM_DumpHashMap/1       2759655        2752033
+  BM_DumpHashMap/10      2933722        2930825
+  BM_DumpHashMap/200     3171680        3170265
+  BM_DumpHashMap/500     3639607        3635511
+  BM_DumpHashMap/1000    4369008        4364981
+  BM_DumpHashMap/5k     11171919       11134028
+  BM_DumpHashMap/20k    69150080       69033496
+  BM_DumpHashMap/39k   190501036      190226162
 
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+After:
+  Benchmark             Time(ns)        CPU(ns)
+  ---------------------------------------------
+  BM_DumpHashMap/1        202707         200109
+  BM_DumpHashMap/10       213441         210569
+  BM_DumpHashMap/200      478641         472350
+  BM_DumpHashMap/500      980061         967102
+  BM_DumpHashMap/1000    1863835        1839575
+  BM_DumpHashMap/5k      8961836        8902540
+  BM_DumpHashMap/20k    69761497       69322756
+  BM_DumpHashMap/39k   187437830      186551111
 
-> ---
-> Changes since
-> v1:
-> - Fixed netsec driver compilation error
-> v2:
-> - Improved comment description of page_pool_put_page()
-> v3:
-> - Properly define page_pool_release_page() in the header file
->   within an ifdef since xdp.c uses it even if CONFIG_PAGE_POOL is not sel=
-ected
-> - rename __page_pool_clean_page -> page_pool_release_page and get rid of
-> another redundant helper
+Fixes: 057996380a42 ("bpf: Add batch ops to all htab bpf map")
+Cc: Yonghong Song <yhs@fb.com>
+Signed-off-by: Brian Vazquez <brianvv@google.com>
+---
+v1 -> v2: Skip hlist_nulls_for_each_entry_safe if lock is not held
 
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+ kernel/bpf/hashtab.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 2d182c4ee9d99..ea3bf04a0a7b6 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -1260,6 +1260,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 	struct hlist_nulls_head *head;
+ 	struct hlist_nulls_node *n;
+ 	unsigned long flags;
++	bool locked = false;
+ 	struct htab_elem *l;
+ 	struct bucket *b;
+ 	int ret = 0;
+@@ -1319,15 +1320,25 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 	dst_val = values;
+ 	b = &htab->buckets[batch];
+ 	head = &b->head;
+-	raw_spin_lock_irqsave(&b->lock, flags);
++	/* do not grab the lock unless need it (bucket_cnt > 0). */
++	if (locked)
++		raw_spin_lock_irqsave(&b->lock, flags);
+ 
+ 	bucket_cnt = 0;
+ 	hlist_nulls_for_each_entry_rcu(l, n, head, hash_node)
+ 		bucket_cnt++;
+ 
++	if (bucket_cnt && !locked) {
++		locked = true;
++		goto again_nocopy;
++	}
++
+ 	if (bucket_cnt > (max_count - total)) {
+ 		if (total == 0)
+ 			ret = -ENOSPC;
++		/* Note that since bucket_cnt > 0 here, it is implicit
++		 * that the locked was grabbed, so release it.
++		 */
+ 		raw_spin_unlock_irqrestore(&b->lock, flags);
+ 		rcu_read_unlock();
+ 		this_cpu_dec(bpf_prog_active);
+@@ -1337,6 +1348,9 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 
+ 	if (bucket_cnt > bucket_size) {
+ 		bucket_size = bucket_cnt;
++		/* Note that since bucket_cnt > 0 here, it is implicit
++		 * that the locked was grabbed, so release it.
++		 */
+ 		raw_spin_unlock_irqrestore(&b->lock, flags);
+ 		rcu_read_unlock();
+ 		this_cpu_dec(bpf_prog_active);
+@@ -1346,6 +1360,10 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 		goto alloc;
+ 	}
+ 
++	/* Next block is only safe to run if you have grabbed the lock */
++	if (!locked)
++		goto next_batch;
++
+ 	hlist_nulls_for_each_entry_safe(l, n, head, hash_node) {
+ 		memcpy(dst_key, l->key, key_size);
+ 
+@@ -1380,6 +1398,8 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 	}
+ 
+ 	raw_spin_unlock_irqrestore(&b->lock, flags);
++	locked = false;
++next_batch:
+ 	/* If we are not copying data, we can go to next bucket and avoid
+ 	 * unlocking the rcu.
+ 	 */
+-- 
+2.25.0.265.gbab2e86ba0-goog
 
