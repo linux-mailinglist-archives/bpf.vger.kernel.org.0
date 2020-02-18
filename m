@@ -2,53 +2,34 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 34BF41624F5
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2020 11:52:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F254316256E
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2020 12:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726327AbgBRKwf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Feb 2020 05:52:35 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:44598 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726338AbgBRKwf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Feb 2020 05:52:35 -0500
-Received: by mail-wr1-f66.google.com with SMTP id m16so23294449wrx.11
-        for <bpf@vger.kernel.org>; Tue, 18 Feb 2020 02:52:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=CE/pgHyanhmc6jLqsxDCeHUfCHIDMRAwR39NvYTnVpY=;
-        b=mvjX4ekSrTZt9lmQ1FFKz/G7xx1R7scrAlF++QCCbLL7aGzuZGVW9USJKeOCULlG21
-         yh1Xk+PI+vbhOSmfs7F8l1H4Wt0XLaef+bOm+wf+kbilZNHMLiYTeceEibyBEA1JmY4r
-         nnk2mrBG2050jJ6rntkRxZLsORxIpP7G9Le4Egk7p0qYBO5a3GGiLxda8PwKZFigaYeH
-         79uVRpkoZZsrbfIZi1aPJPPB8ne9VyMnYKj3CQQo0GJluFCOjDT3BB93nc8Bw0vT+eK4
-         YqQN0+WV0tTZFVcdDhfbrLalUAlVtNI7YTgK/1z7J71K21QAQpYikiwa+pKUfwhc1jKt
-         XuXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=CE/pgHyanhmc6jLqsxDCeHUfCHIDMRAwR39NvYTnVpY=;
-        b=DfAxNNqpmXfPgBmJsd1uVcYzUST1VkKIuz3gcuIGnijH+QVz4XdMDYNxslV8LvVfis
-         BiKpSuZO084q/vm06uNMzyyEOPtIQjDuAhF49bimgvczUx4p+yrYFt09eN3yw5wyn8xD
-         HMYoTRotdkoOaFaxVA3eZdH2i+vHH0gjAwyjwCwFDUodJw3pvfwbMNvuCBgzu9tHD1hG
-         Gvyod0+otadTz3pNYEd/tbN2Gil5T/bbqXkqxFxswbkasRKbuHdsXH6xv3ht7lHuFJGj
-         KYZaG4lSUOGQ6C+ro234KNF1udsrt7IRWpoUZTI6cbodAIBf7PmHF9MpP66TueDmnzLg
-         vhEA==
-X-Gm-Message-State: APjAAAWeZ+fiWa4c+XZ8T/go1oGbfNZyUjx3hxuwHeqym/K5FSF+GDeB
-        IAP3JEAmJMYWNuazJG2UH7bL7Q==
-X-Google-Smtp-Source: APXvYqxkMbjmf+SDu7haNAsrP5Y4CZzpu7hmBj1k/4YWieRi1ZPkzVsYalktNyvx6jkcQlRACUK8Vw==
-X-Received: by 2002:adf:eb46:: with SMTP id u6mr28673181wrn.239.1582023151386;
-        Tue, 18 Feb 2020 02:52:31 -0800 (PST)
-Received: from apalos.home (ppp-2-87-54-32.home.otenet.gr. [2.87.54.32])
-        by smtp.gmail.com with ESMTPSA id f11sm3013705wml.3.2020.02.18.02.52.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Feb 2020 02:52:30 -0800 (PST)
-Date:   Tue, 18 Feb 2020 12:52:27 +0200
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     netdev@vger.kernel.org
-Cc:     jonathan.lemon@gmail.com, lorenzo@kernel.org, toke@redhat.com,
+        id S1726360AbgBRLXU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Feb 2020 06:23:20 -0500
+Received: from mga17.intel.com ([192.55.52.151]:57567 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726327AbgBRLXU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Feb 2020 06:23:20 -0500
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Feb 2020 03:23:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,456,1574150400"; 
+   d="gz'50?scan'50,208,50";a="268723537"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 18 Feb 2020 03:23:12 -0800
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1j40y7-000GJ4-Uu; Tue, 18 Feb 2020 19:23:11 +0800
+Date:   Tue, 18 Feb 2020 19:22:59 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     kbuild-all@lists.01.org, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com, lorenzo@kernel.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jassi Brar <jaswinder.singh@linaro.org>,
@@ -64,440 +45,311 @@ Cc:     jonathan.lemon@gmail.com, lorenzo@kernel.org, toke@redhat.com,
         linux-kernel@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next v3] net: page_pool: API cleanup and comments
-Message-ID: <20200218105227.GA170097@apalos.home>
-References: <20200218075658.165499-1-ilias.apalodimas@linaro.org>
+Subject: Re: [PATCH net-next] net: page_pool: API cleanup and comments
+Message-ID: <202002181917.X25VTBTn%lkp@intel.com>
+References: <20200216094056.8078-1-ilias.apalodimas@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/mixed; boundary="Dxnq1zWXvFF0Q93v"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200218075658.165499-1-ilias.apalodimas@linaro.org>
+In-Reply-To: <20200216094056.8078-1-ilias.apalodimas@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This breaks xdp.c building since page_pool_release_page is not available if the
-kernel is compiled without PAGE_POOL support. 
 
-I'll fix it and sent a v4
+--Dxnq1zWXvFF0Q93v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Regards
-/Ilias
-On Tue, Feb 18, 2020 at 09:56:57AM +0200, Ilias Apalodimas wrote:
-> Functions starting with __ usually indicate those which are exported,
-> but should not be called directly. Update some of those declared in the
-> API and make it more readable.
-> page_pool_unmap_page() and page_pool_release_page() were doing
-> exactly the same thing. Keep the page_pool_release_page() variant
-> and export it in order to show up on perf logs.
-> Finally rename __page_pool_put_page() to page_pool_put_page() since we
-> can now directly call it from drivers and rename the existing
-> page_pool_put_page() to page_pool_put_full_page() since they do the same
-> thing but the latter is trying to sync the full DMA area.
-> 
-> This patch also updates netsec, mvneta and stmmac drivers which use
-> those functions.
-> 
-> Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> ---
-> v1:
-> - Fixed netsec driver compilation error
-> v2:
-> - Improved comment description of page_pool_put_page()
-> 
->  drivers/net/ethernet/marvell/mvneta.c         | 19 +++---
->  drivers/net/ethernet/socionext/netsec.c       | 23 ++++---
->  .../net/ethernet/stmicro/stmmac/stmmac_main.c |  4 +-
->  include/net/page_pool.h                       | 39 +++++------
->  net/core/page_pool.c                          | 64 ++++++++++---------
->  net/core/xdp.c                                |  2 +-
->  6 files changed, 75 insertions(+), 76 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-> index 98017e7d5dd0..22b568c60f65 100644
-> --- a/drivers/net/ethernet/marvell/mvneta.c
-> +++ b/drivers/net/ethernet/marvell/mvneta.c
-> @@ -1933,7 +1933,7 @@ static void mvneta_rxq_drop_pkts(struct mvneta_port *pp,
->  		if (!data || !(rx_desc->buf_phys_addr))
->  			continue;
->  
-> -		page_pool_put_page(rxq->page_pool, data, false);
-> +		page_pool_put_full_page(rxq->page_pool, data, false);
->  	}
->  	if (xdp_rxq_info_is_reg(&rxq->xdp_rxq))
->  		xdp_rxq_info_unreg(&rxq->xdp_rxq);
-> @@ -2108,9 +2108,9 @@ mvneta_run_xdp(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
->  		err = xdp_do_redirect(pp->dev, xdp, prog);
->  		if (err) {
->  			ret = MVNETA_XDP_DROPPED;
-> -			__page_pool_put_page(rxq->page_pool,
-> -					     virt_to_head_page(xdp->data),
-> -					     len, true);
-> +			page_pool_put_page(rxq->page_pool,
-> +					   virt_to_head_page(xdp->data), len,
-> +					   true);
->  		} else {
->  			ret = MVNETA_XDP_REDIR;
->  		}
-> @@ -2119,9 +2119,9 @@ mvneta_run_xdp(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
->  	case XDP_TX:
->  		ret = mvneta_xdp_xmit_back(pp, xdp);
->  		if (ret != MVNETA_XDP_TX)
-> -			__page_pool_put_page(rxq->page_pool,
-> -					     virt_to_head_page(xdp->data),
-> -					     len, true);
-> +			page_pool_put_page(rxq->page_pool,
-> +					   virt_to_head_page(xdp->data), len,
-> +					   true);
->  		break;
->  	default:
->  		bpf_warn_invalid_xdp_action(act);
-> @@ -2130,9 +2130,8 @@ mvneta_run_xdp(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
->  		trace_xdp_exception(pp->dev, prog, act);
->  		/* fall through */
->  	case XDP_DROP:
-> -		__page_pool_put_page(rxq->page_pool,
-> -				     virt_to_head_page(xdp->data),
-> -				     len, true);
-> +		page_pool_put_page(rxq->page_pool,
-> +				   virt_to_head_page(xdp->data), len, true);
->  		ret = MVNETA_XDP_DROPPED;
->  		break;
->  	}
-> diff --git a/drivers/net/ethernet/socionext/netsec.c b/drivers/net/ethernet/socionext/netsec.c
-> index e8224b543dfc..46424533d478 100644
-> --- a/drivers/net/ethernet/socionext/netsec.c
-> +++ b/drivers/net/ethernet/socionext/netsec.c
-> @@ -896,9 +896,9 @@ static u32 netsec_run_xdp(struct netsec_priv *priv, struct bpf_prog *prog,
->  	case XDP_TX:
->  		ret = netsec_xdp_xmit_back(priv, xdp);
->  		if (ret != NETSEC_XDP_TX)
-> -			__page_pool_put_page(dring->page_pool,
-> -					     virt_to_head_page(xdp->data),
-> -					     len, true);
-> +			page_pool_put_page(dring->page_pool,
-> +					   virt_to_head_page(xdp->data), len,
-> +					   true);
->  		break;
->  	case XDP_REDIRECT:
->  		err = xdp_do_redirect(priv->ndev, xdp, prog);
-> @@ -906,9 +906,9 @@ static u32 netsec_run_xdp(struct netsec_priv *priv, struct bpf_prog *prog,
->  			ret = NETSEC_XDP_REDIR;
->  		} else {
->  			ret = NETSEC_XDP_CONSUMED;
-> -			__page_pool_put_page(dring->page_pool,
-> -					     virt_to_head_page(xdp->data),
-> -					     len, true);
-> +			page_pool_put_page(dring->page_pool,
-> +					   virt_to_head_page(xdp->data), len,
-> +					   true);
->  		}
->  		break;
->  	default:
-> @@ -919,9 +919,8 @@ static u32 netsec_run_xdp(struct netsec_priv *priv, struct bpf_prog *prog,
->  		/* fall through -- handle aborts by dropping packet */
->  	case XDP_DROP:
->  		ret = NETSEC_XDP_CONSUMED;
-> -		__page_pool_put_page(dring->page_pool,
-> -				     virt_to_head_page(xdp->data),
-> -				     len, true);
-> +		page_pool_put_page(dring->page_pool,
-> +				   virt_to_head_page(xdp->data), len, true);
->  		break;
->  	}
->  
-> @@ -1020,8 +1019,8 @@ static int netsec_process_rx(struct netsec_priv *priv, int budget)
->  			 * cache state. Since we paid the allocation cost if
->  			 * building an skb fails try to put the page into cache
->  			 */
-> -			__page_pool_put_page(dring->page_pool, page,
-> -					     pkt_len, true);
-> +			page_pool_put_page(dring->page_pool, page, pkt_len,
-> +					   true);
->  			netif_err(priv, drv, priv->ndev,
->  				  "rx failed to build skb\n");
->  			break;
-> @@ -1199,7 +1198,7 @@ static void netsec_uninit_pkt_dring(struct netsec_priv *priv, int id)
->  		if (id == NETSEC_RING_RX) {
->  			struct page *page = virt_to_page(desc->addr);
->  
-> -			page_pool_put_page(dring->page_pool, page, false);
-> +			page_pool_put_full_page(dring->page_pool, page, false);
->  		} else if (id == NETSEC_RING_TX) {
->  			dma_unmap_single(priv->dev, desc->dma_addr, desc->len,
->  					 DMA_TO_DEVICE);
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> index 5836b21edd7e..37920b4da091 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -1251,11 +1251,11 @@ static void stmmac_free_rx_buffer(struct stmmac_priv *priv, u32 queue, int i)
->  	struct stmmac_rx_buffer *buf = &rx_q->buf_pool[i];
->  
->  	if (buf->page)
-> -		page_pool_put_page(rx_q->page_pool, buf->page, false);
-> +		page_pool_put_full_page(rx_q->page_pool, buf->page, false);
->  	buf->page = NULL;
->  
->  	if (buf->sec_page)
-> -		page_pool_put_page(rx_q->page_pool, buf->sec_page, false);
-> +		page_pool_put_full_page(rx_q->page_pool, buf->sec_page, false);
->  	buf->sec_page = NULL;
->  }
->  
-> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-> index cfbed00ba7ee..5cf75141c82c 100644
-> --- a/include/net/page_pool.h
-> +++ b/include/net/page_pool.h
-> @@ -162,39 +162,34 @@ static inline void page_pool_use_xdp_mem(struct page_pool *pool,
->  }
->  #endif
->  
-> -/* Never call this directly, use helpers below */
-> -void __page_pool_put_page(struct page_pool *pool, struct page *page,
-> -			  unsigned int dma_sync_size, bool allow_direct);
-> +void page_pool_release_page(struct page_pool *pool, struct page *page);
->  
-> -static inline void page_pool_put_page(struct page_pool *pool,
-> -				      struct page *page, bool allow_direct)
-> +/* If the page refcnt == 1, this will try to recycle the page.
-> + * if PP_FLAG_DMA_SYNC_DEV is set, we'll try to sync the DMA area for
-> + * the configured size min(dma_sync_size, pool->max_len).
-> + * If the page refcnt != 1, then the page will be returned to memory
-> + * subsystem.
-> + */
-> +void page_pool_put_page(struct page_pool *pool, struct page *page,
-> +			unsigned int dma_sync_size, bool allow_direct);
-> +
-> +/* Same as above but will try to sync the entire area pool->max_len */
-> +static inline void page_pool_put_full_page(struct page_pool *pool,
-> +					   struct page *page, bool allow_direct)
->  {
->  	/* When page_pool isn't compiled-in, net/core/xdp.c doesn't
->  	 * allow registering MEM_TYPE_PAGE_POOL, but shield linker.
->  	 */
->  #ifdef CONFIG_PAGE_POOL
-> -	__page_pool_put_page(pool, page, -1, allow_direct);
-> +	page_pool_put_page(pool, page, -1, allow_direct);
->  #endif
->  }
-> -/* Very limited use-cases allow recycle direct */
-> +
-> +/* Same as above but the caller must guarantee safe context. e.g NAPI */
->  static inline void page_pool_recycle_direct(struct page_pool *pool,
->  					    struct page *page)
->  {
-> -	__page_pool_put_page(pool, page, -1, true);
-> -}
-> -
-> -/* Disconnects a page (from a page_pool).  API users can have a need
-> - * to disconnect a page (from a page_pool), to allow it to be used as
-> - * a regular page (that will eventually be returned to the normal
-> - * page-allocator via put_page).
-> - */
-> -void page_pool_unmap_page(struct page_pool *pool, struct page *page);
-> -static inline void page_pool_release_page(struct page_pool *pool,
-> -					  struct page *page)
-> -{
-> -#ifdef CONFIG_PAGE_POOL
-> -	page_pool_unmap_page(pool, page);
-> -#endif
-> +	page_pool_put_full_page(pool, page, true);
->  }
->  
->  static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index 9b7cbe35df37..464500c551e8 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -96,7 +96,7 @@ struct page_pool *page_pool_create(const struct page_pool_params *params)
->  }
->  EXPORT_SYMBOL(page_pool_create);
->  
-> -static void __page_pool_return_page(struct page_pool *pool, struct page *page);
-> +static void page_pool_return_page(struct page_pool *pool, struct page *page);
->  
->  noinline
->  static struct page *page_pool_refill_alloc_cache(struct page_pool *pool,
-> @@ -137,7 +137,7 @@ static struct page *page_pool_refill_alloc_cache(struct page_pool *pool,
->  			 * (2) break out to fallthrough to alloc_pages_node.
->  			 * This limit stress on page buddy alloactor.
->  			 */
-> -			__page_pool_return_page(pool, page);
-> +			page_pool_return_page(pool, page);
->  			page = NULL;
->  			break;
->  		}
-> @@ -281,17 +281,20 @@ static s32 page_pool_inflight(struct page_pool *pool)
->  }
->  
->  /* Cleanup page_pool state from page */
-> -static void __page_pool_clean_page(struct page_pool *pool,
-> -				   struct page *page)
-> +static void page_pool_clean_page(struct page_pool *pool, struct page *page)
->  {
->  	dma_addr_t dma;
->  	int count;
->  
->  	if (!(pool->p.flags & PP_FLAG_DMA_MAP))
-> +		/* Always account for inflight pages, even if we didn't
-> +		 * map them
-> +		 */
->  		goto skip_dma_unmap;
->  
->  	dma = page->dma_addr;
-> -	/* DMA unmap */
-> +
-> +	/* When page is unmapped, it cannot be returned our pool */
->  	dma_unmap_page_attrs(pool->p.dev, dma,
->  			     PAGE_SIZE << pool->p.order, pool->p.dma_dir,
->  			     DMA_ATTR_SKIP_CPU_SYNC);
-> @@ -304,20 +307,23 @@ static void __page_pool_clean_page(struct page_pool *pool,
->  	trace_page_pool_state_release(pool, page, count);
->  }
->  
-> -/* unmap the page and clean our state */
-> -void page_pool_unmap_page(struct page_pool *pool, struct page *page)
-> +/* Disconnects a page (from a page_pool).  API users can have a need
-> + * to disconnect a page (from a page_pool), to allow it to be used as
-> + * a regular page (that will eventually be returned to the normal
-> + * page-allocator via put_page).
-> + */
-> +void page_pool_release_page(struct page_pool *pool, struct page *page)
->  {
-> -	/* When page is unmapped, this implies page will not be
-> -	 * returned to page_pool.
-> -	 */
-> -	__page_pool_clean_page(pool, page);
-> +#ifdef CONFIG_PAGE_POOL
-> +	page_pool_clean_page(pool, page);
-> +#endif
->  }
-> -EXPORT_SYMBOL(page_pool_unmap_page);
-> +EXPORT_SYMBOL(page_pool_release_page);
->  
->  /* Return a page to the page allocator, cleaning up our state */
-> -static void __page_pool_return_page(struct page_pool *pool, struct page *page)
-> +static void page_pool_return_page(struct page_pool *pool, struct page *page)
->  {
-> -	__page_pool_clean_page(pool, page);
-> +	page_pool_release_page(pool, page);
->  
->  	put_page(page);
->  	/* An optimization would be to call __free_pages(page, pool->p.order)
-> @@ -326,8 +332,7 @@ static void __page_pool_return_page(struct page_pool *pool, struct page *page)
->  	 */
->  }
->  
-> -static bool __page_pool_recycle_into_ring(struct page_pool *pool,
-> -				   struct page *page)
-> +static bool page_pool_recycle_in_ring(struct page_pool *pool, struct page *page)
->  {
->  	int ret;
->  	/* BH protection not needed if current is serving softirq */
-> @@ -344,7 +349,7 @@ static bool __page_pool_recycle_into_ring(struct page_pool *pool,
->   *
->   * Caller must provide appropriate safe context.
->   */
-> -static bool __page_pool_recycle_direct(struct page *page,
-> +static bool page_pool_recycle_in_cache(struct page *page,
->  				       struct page_pool *pool)
->  {
->  	if (unlikely(pool->alloc.count == PP_ALLOC_CACHE_SIZE))
-> @@ -363,8 +368,8 @@ static bool pool_page_reusable(struct page_pool *pool, struct page *page)
->  	return !page_is_pfmemalloc(page);
->  }
->  
-> -void __page_pool_put_page(struct page_pool *pool, struct page *page,
-> -			  unsigned int dma_sync_size, bool allow_direct)
-> +void page_pool_put_page(struct page_pool *pool, struct page *page,
-> +			unsigned int dma_sync_size, bool allow_direct)
->  {
->  	/* This allocator is optimized for the XDP mode that uses
->  	 * one-frame-per-page, but have fallbacks that act like the
-> @@ -381,12 +386,12 @@ void __page_pool_put_page(struct page_pool *pool, struct page *page,
->  						      dma_sync_size);
->  
->  		if (allow_direct && in_serving_softirq())
-> -			if (__page_pool_recycle_direct(page, pool))
-> +			if (page_pool_recycle_in_cache(page, pool))
->  				return;
->  
-> -		if (!__page_pool_recycle_into_ring(pool, page)) {
-> +		if (!page_pool_recycle_in_ring(pool, page)) {
->  			/* Cache full, fallback to free pages */
-> -			__page_pool_return_page(pool, page);
-> +			page_pool_return_page(pool, page);
->  		}
->  		return;
->  	}
-> @@ -403,12 +408,13 @@ void __page_pool_put_page(struct page_pool *pool, struct page *page,
->  	 * doing refcnt based recycle tricks, meaning another process
->  	 * will be invoking put_page.
->  	 */
-> -	__page_pool_clean_page(pool, page);
-> +	/* Do not replace this with page_pool_return_page() */
-> +	page_pool_release_page(pool, page);
->  	put_page(page);
->  }
-> -EXPORT_SYMBOL(__page_pool_put_page);
-> +EXPORT_SYMBOL(page_pool_put_page);
->  
-> -static void __page_pool_empty_ring(struct page_pool *pool)
-> +static void page_pool_empty_ring(struct page_pool *pool)
->  {
->  	struct page *page;
->  
-> @@ -419,7 +425,7 @@ static void __page_pool_empty_ring(struct page_pool *pool)
->  			pr_crit("%s() page_pool refcnt %d violation\n",
->  				__func__, page_ref_count(page));
->  
-> -		__page_pool_return_page(pool, page);
-> +		page_pool_return_page(pool, page);
->  	}
->  }
->  
-> @@ -449,7 +455,7 @@ static void page_pool_empty_alloc_cache_once(struct page_pool *pool)
->  	 */
->  	while (pool->alloc.count) {
->  		page = pool->alloc.cache[--pool->alloc.count];
-> -		__page_pool_return_page(pool, page);
-> +		page_pool_return_page(pool, page);
->  	}
->  }
->  
-> @@ -461,7 +467,7 @@ static void page_pool_scrub(struct page_pool *pool)
->  	/* No more consumers should exist, but producers could still
->  	 * be in-flight.
->  	 */
-> -	__page_pool_empty_ring(pool);
-> +	page_pool_empty_ring(pool);
->  }
->  
->  static int page_pool_release(struct page_pool *pool)
-> @@ -535,7 +541,7 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
->  	/* Flush pool alloc cache, as refill will check NUMA node */
->  	while (pool->alloc.count) {
->  		page = pool->alloc.cache[--pool->alloc.count];
-> -		__page_pool_return_page(pool, page);
-> +		page_pool_return_page(pool, page);
->  	}
->  }
->  EXPORT_SYMBOL(page_pool_update_nid);
-> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> index 8310714c47fd..4c7ea85486af 100644
-> --- a/net/core/xdp.c
-> +++ b/net/core/xdp.c
-> @@ -372,7 +372,7 @@ static void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
->  		xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
->  		page = virt_to_head_page(data);
->  		napi_direct &= !xdp_return_frame_no_direct();
-> -		page_pool_put_page(xa->page_pool, page, napi_direct);
-> +		page_pool_put_full_page(xa->page_pool, page, napi_direct);
->  		rcu_read_unlock();
->  		break;
->  	case MEM_TYPE_PAGE_SHARED:
-> -- 
-> 2.25.0
-> 
+Hi Ilias,
+
+I love your patch! Yet something to improve:
+
+[auto build test ERROR on v5.6-rc1]
+[also build test ERROR on next-20200217]
+[cannot apply to net-next/master net/master linus/master ipvs/master v5.6-rc2]
+[if your patch is applied to the wrong git tree, please drop us a note to help
+improve the system. BTW, we also suggest to use '--base' option to specify the
+base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+
+url:    https://github.com/0day-ci/linux/commits/Ilias-Apalodimas/net-page_pool-API-cleanup-and-comments/20200218-163634
+base:    bb6d3fb354c5ee8d6bde2d576eb7220ea09862b9
+config: alpha-defconfig (attached as .config)
+compiler: alpha-linux-gcc (GCC) 7.5.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # save the attached .config to linux build tree
+        GCC_VERSION=7.5.0 make.cross ARCH=alpha 
+
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   net/core/xdp.o: In function `__xdp_release_frame':
+>> (.text+0x694): undefined reference to `page_pool_release_page'
+   (.text+0x698): undefined reference to `page_pool_release_page'
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+--Dxnq1zWXvFF0Q93v
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+H4sICFW6S14AAy5jb25maWcAnFxbc+M2sn7Pr2AlVaeSqp2JLF/G3lN+AEGQwookaACU5Hlh
+aWzOjCq25JXkJPPvTwO8CKQASjlVmx0T/eHWaPQNgH756RcPve83r8v96mn58vLD+1auy+1y
+Xz57X1cv5f96AfNSJj0SUPkRwPFq/f7378uXt+9L7/rjzcfRh+3ThTctt+vyxcOb9dfVt3eo
+vtqsf/rlJ/jfL1D4+gYtbf/t6VofXlQLH749PXm/Rhj/5n36eP1xBEjM0pBGBcYFFQVQ7n80
+RfBRzAgXlKX3n0bXo1GLjVEataSR0cQEiQKJpIiYZIeGDAJNY5qSI9Ic8bRI0KNPijylKZUU
+xfQzCQ5Ayh+KOeNTKNHTizS/XrxduX9/O0zD52xK0oKlhUgyozY0WZB0ViAeFTFNqLy/HCsm
+1aNgSUZjUkgipLfaeevNXjXc1I4ZRnEz3Z9/thUXKDdn7Oc0DgqBYmngAxKiPJbFhAmZooTc
+//zrerMuf2sBYo6MMYtHMaMZPipQ/2IZH8ozJuiiSB5ykhN76VEVzJkQRUISxh8LJCXCkwMx
+FySmPny3/EE5iKGFMRM0I8BSPKkQqhcUx80SwZJ5u/cvux+7ffl6WKKIpIRTrFc048w3xmyS
+xITN9RjK9bO3+dprrV8Dw2JMyYykUjTdy9Vrud3ZRjD5XGRQiwUUm7NMmaLQICbmVLtkK2VC
+o0nBiSgkTUAcuph6+EejadeJE5JkEprX+6Lau1n+u1zu/vD2UMtbQgu7/XK/85ZPT5v39X61
+/naYjKR4WkCFAmHM8lTSNDIn5YtAcRkTWG9ASOsEJBJTIZEUVmomqHVKZ4xSz4bj3BPHqwAj
+fSyAZo4WPguygMWxSZuowGZ10dSvh9Tt6tAunVZ/WOdHpxOCgt7CtXtcbeYQpJGG8v7i6rBq
+NJVT2OEh6WMuq1mLp+/l8zsoYO9rudy/b8udLq4HaqH2VCK0fzG+NZmDI87yzDZKpU1EhmCR
+jV0sRZEa30pz6O+2PdjnHIos7WU06NRNiezVxROCpxmDQSrBl4zb94wAXKB1ox67HfMoQgHK
+ETYCRpIEVhAnMXq0Uvx4CpVnWsXzwDIZ4CfLYGeCPSlCxtXWh38SlGLSmVEPJuAPmxD2NKlW
+gRkW2RRajpFUTRt2IAvNPpyinYBdoGo9Otoe2HJQqXVxOEEpaKi+nq80j1Gq5dM0SNHhg8Qh
+mDxuNuKcABLAjrwzglySRe8TJMZoPmMmXtAoRXEYmFsXBmsWaMVtFogJ2KbDJ6KGbaWsyHml
+5RpyMKOCNLwyuACN+IhzavJ1qiCPiTguKTqMbks1C5T8STrrSAwsbtOnVTLVemqLH9plGgZH
+goDYZLaSKqhedG1a7fBl5fbrZvu6XD+VHvmzXIPSRaBXsFK7YGUqG1Kv7KERqxI/s8VmYLOk
+aqzQtqYjciLOfdiJHUlTjhWS4JVNTcaJGPm2rQUNmM0hHxaQR6RxnPpNFCGYzpgKUEGwJ1hi
+1y4d4ATxADwG+3qISR6G4AVmCPqERQX3DhSb3SRyFlLwZCMrT7u+aSulcTZBh/ndXPlUGqKa
+GLat9WrAC/Y5KEVgAei/A+AzOAtFkKDjKlSgLiGLJPJhVjGsG+yNy3Y4ymPTzlsjXEJbzb5H
+rYfdNN9xCjUBxdjBo4q+sO+NiugzNr0YoKMZAocGjM0ABiMfXLmY2D2bChNk45urATrxL07Q
+b66y4WEA5OYE2W7+ajqNyBAb48XwCOPHdDFAThCH1R8CUCTRIH2KxBAgBSNP49zuQdYQpvyU
+YTamjFOJpnZvooJkeJgV2Xg6QOVoPqHBUPsctABF6RDixGKIU3S1IYfooKaG5gAMQnxoMSTw
+cGgCc4hOQ8pt/g3oD8PUVsqkQKZ5bzTNZA5COzFUWL2nqwhchXAJhBUH8ixCKvQ1vA4dOULU
+3zhRRRh0NAyE8PZJqHoBFfApaQRGHkL7EyydQ7hgc7wgfPdhTEWiHVpjsJ3yAuL+CyPe+1xc
+ju2R4OfCsfJAAXfeRRpf31gGp+qMxlcmS3Qzo5EVfK/Ah2BJcWV2/2rEHKZ+b5MSeZI8gp1O
+BYvb+LMxYMvt0/fVvnxSAcqH5/INGgLXwNu8qUTTzkgecSQmPZdSrymrDKUlxIe11aF2IScc
+oq9ePZUqSlhQJ1dEx0wWEZITFbkwZfejvjzp+mlCq9gMJ9kCT6IeZg5mRQdEGeKwyE1qp5+V
+gpAYghzOJMHgCDQRujnOGeWyF3yrGfZQMJOqX5ERTENq5HSAlMdEKF9Ru+XKz+zuPz8X3f3H
+gqCAXsGtRlh2hs1UzolGIod+0qAT3FR+2OUYfA7tflsESI8QmFonJAxuwPygnIBaxFT5fmHY
+OqQRZrMPX5a78tn7o/Ik37abr6uXKkVx8IgGYK2jEucRTXV2DGOVNjvyp06IY9MQMCdRQYkZ
+DWsnXiTKwx/1eG/yqSpS8R9WcT2y+eY1Jk8V3Vm5Ilv3uyHYLrpqR3DcJhcdEUaDdCQ2arJa
+fAjSBztT7u4crLwQSoTbfEJBk4xxR14oT0FqQeIeE5/FdojkNGlwUxVNWfjpq9SdsVIQzwss
+KGyFh5wI2aWoSN8X3QzXoRi85RM5AkkicDCGMwnKubavnELgJFAp7Ep12F02BZv7dodUTw+4
+wTLUWVO9W7Lldr9SwuzJH29lN45DHKy6FoZgpnIXNtFkIjwADSUjAiZsBBLSTnG74/oDMZcg
+eQBTTdskLzvksgyLACDKquxPAOq9m/Q3iNNHXwfnh2RcTfDDB2ts1e3vkN/XayIyUCBq54HJ
+BgfEzP9rurI0NX2IZq07B7khrsomsa6tuUP+Lp/e98svL6U+1vF0jL03+OTTNEykUv2d9EzX
+lKovZaiz9ghBmYo6aWnsj6otgTk11XdlUFneiZ9rrCq2i2k9ruTWHtXUdFAY2JZygwGr8Zoi
+5WKF5lNSvm62P7xkuV5+K1+tPkYYI9lJCqkCsEsBUWkecCPNo5MsBjuXSb0cYL7E/dVhaGAJ
+e3YzoREE2Z2ibPIIZjcIeCH7kboPhh4bq6N9AMmUoTY5PBWJhTPNAiYwXug31X3cX43ubg65
+VpD+DPwbZXanSceKxwR2PoL9YV2TkIM/rM6QrFSc2COGzxljduvy2c/tavCzNqQMW4naqdMp
+FMnBfTrKkTQMJlxN0H3qEOVZ4ZMUT5KjYKiWKLfQGHnrbhIbRqMsoSEpU78gC0nSxs/U4piW
++7822z/AOzmWQ5CeKenspaoEAhIUWVY8T6mRLVVfsEM7y6rL+rUPJjS2Gc1FaGZp1ReY8IiB
+u28W6Yzy66EtXShyv8hYTLHdCmpMtSPsYlY1AutGhaTYehwB3JiSR7PnusjWcKtJzcWiWZUT
+x0h0eA3ljf0rOCgvhwUGWJba94EWg4wOESOlbkmS2zMqami6a8dpRgo6hk0psYt11cNMUic1
+ZLmDPQWaHBZYF4CXZnK5KStYGDrdzwYEzhC2c4FWg1Sq0jUSJa6mFYQiaK0p7raUB5lbvDWC
+o/kJhKLCmgjJmV1sVe/wZzTkHrUYnPtmENYo5YZ+//PT+5fV08/d1pPg2uVow4LazSTEUQ4e
+w6TUdQbwBfGxguthwBjpoA02XZL1FOoBCnG2NA862qKWJe3x8mZbKh0Hdnhfbo+ujxzVP2hN
+c2g1Ef4CF2jqPlw+huo7CWdiY2Zn+TESnF87Uh12pam2Ri6AOsKFdsD7dyF0Et2h7OqBLCrM
+/WvF5YV2dnbe0+b1y2oNke/rRnmtHa/erFz05aDTyn65/Vbu3ZUl4hHsExwjCOFC+x6xVbCY
+1wG0Mu769O7sGqfX74D9R0NJw3/SdBqeI3QHvDJSvctAg3hAn4/FWdKNxjsrDV4xBDhDYiLV
+hRvwG+VjdkavFd7PHLvjGAp6PyHpGXOv4Vl+LjTAbm14hCUz950BG16c3zbB9uy4DSrObnWC
+xETfLTu7gt3vtiCPjfEwWidGz4XHY3l20zFJI2k/wLGh/wk3EmQPKKzQcxRFjVVupEpinVsh
+Dc8wZS3aaXUs0Hl6juKswAMeug09lf9EGTzkzHHaZwGfrQprOEGx/SjeCsb/QNMIfL6gCnUf
+8PyWm3Dm/ArcFdla0McafxDdy88PYfP+QVRzN2/IxevEMsLBJSDNjo0Uzf494DmaDlO1AMo1
+th+IKZ8q42zxOAgJ8myQrhw3xB1SUZGHqnPyH4KPB3lgAWBo1vp1JnOAUltiuzo0IS57Y2Kk
+jJ1DqF37owE0zoqexWAPaeQ4Hq0AEIANUIHBx+7vISM7IBJGwjCrJuHqxukaKBF17XseOI4d
+wF5aCUjaVZPTBPqcBpEtXVEdM6rIVB+YdyL4oHtToqbMYpQWt6PxxYO5kIfSIpo5BNnAJC5M
+ADLm2MlxjO2n1Uii2G5HF+Nre1Mos5+wZBPm6p4SQtTgrx27kMjqmqh9WthxogMrifRZiJXM
+MpLOxJxKx2WTWaWdnCpZB5TOjESSOY67qnuy9i4nwmn7i2qkzuhThVGX6jaFUv1DqBR3r2ob
+JL5QCerHons303+IezlPb1/u9s3prVEfPIyIpFYFcFSzRzDTqAY/UMJRQJl1MthxfcVxqIZA
+gy24a8+HxRTbcvFzykncy2vgMFKy2rmUVrGiIazL8hnC8Y33pYR5qpDtWZ1leOC+aoBxBlaX
+KO9CBwdQstD3iu9Hhx7nFErt2i2cUsfBr1qRO0eeH1G7R4pJpjxy+35KQzvzMoFA2p3uSEFD
+Oy2eyzxNic2kQVQHY6nu6bb4ENGYzbrmoSYROZGMxc22bOQ1KP9cPZVesF392Tl51IqZ0K5W
+Vt8uJV4dZjbj0If3naL+RxGwBFHzUooqPFzUPvAOU6ICDz+33rEHKhJZ0mlGl9juu7a0jM0J
+FzBu+3J1YIXIs7PAhxvxTmCROUynmnxiVTuK8pBTPhW9mVS3hJ2tCZk7jAwQKbOrP0XLuD2r
+rmlIULuJmTCprp4o1NGuV2VPm/V+u3lRbzWeW2GrRXC3+raeL8HVVkDtc4v3t7fNdm9efhmC
+Vbpl+Vyqi9dALY3u1Guho8ZOY9szfPvY23mR9fPbZrXed24ZAKdIGuiHHVZd36nYNrX7a7V/
++m7nVHdp57WtkwQ723e3ZjaGEXc8FUEZ7dmVw6W21VOtMTzWHuy1NfPqavuExJnDUQXjK5Ms
+tO1nUPJpgOLOHbGMVy2GlCdzxEn1LrDRYOFq+/qXkoqXDSzq1jjqnuu7R2YynywkR2071e2o
+Prp60DMw+gPSfiWoXoP+uA73O9UdIXVDpnO+37IG9nQRcDpz8k4DyIw7jsYqgHqDWTcDgU3C
+HMpLw5B4THED1m8JbfamuUyf5cUsj+ED+TSmktZXv8xLZsfioVfKf995z9redB5xmcWGnWVg
++LDr5UCUui5iSbs4s9Ayp+rmrLp+296dzSBKA2PTPZjm/cRXQ0mN2xLwUfM+AZFAEWnPwbPt
+Zr952rwY5hUMaadyfWnKdiErzeNYfVj6byDmmx8ccJbY2lHmR4gAOESzy/HC7iw14DwhNl+v
+IceMZYczVLNU38bQlzjvb4+bxfwxk0zhBnsPuO++OaZ5coIupifoC/sd4obOkd1Ka+YqJx4H
+M3sPEAwWygNT/tZwFyemwEV3iaroYpaQjm3s82XmynkBoeg7p018YTZa3SNa7Z46O7VRLfqW
+s3pCbA9eUSod74ckDROt76xUkuKYiRw0O6jeGcUOzTbJCnBvrSThWjHTFB89TD8E6uoVEgQV
+Qdg3qM3Cj/sqoLqYRkBdJh0Ho5mSphR3l3hxY+V6r6rRlf/pYnTEq+otdvn3cufR9W6/fX/V
+r8t238HCPHv77XK9U+14L6t16T3D+q3e1J+mnv1/1NbVkcpILb0wi5D3tTFqz5u/1sqw1cex
+3q/b8r/vq20JHYzxb41rR9f78sVLKPb+x9uWL/qHGSzMmoHe8PuPXpq82EAThj0g6fzBIVx4
+YpcZdeuuenjVd1q7EC7FwomYIB+lqED2t92djdQJl2hgODjVR2UrXsrlroRWICbbPOl10jnA
+31fPpfrv43a314Hy9/Ll7ffV+uvG26w99RRHe3emiQlIsQhBEyWs15dKjdM0Et1C0Fz6fvyR
+UlFE0XvXZNSLgm47UaCa6lxfaUszW4Bj9IODI5NYFbcvSQjnjAvHMKEDR3pWTRqJKcQ92J4g
+BoB6318c7uQrnj59X70BqhG437+8f/u6+rvPZcurvtbo1k+BB1U9tNG7ZnUMUO+HRBi2YgLi
+aAzQjHEsjZuhd/Wt5Fk9iWA86F4cbqqxMPQZsr4EbyAD01ZPwG/GF6enVA3tqD4i+KbnovQR
+Mb24XlxaKyfBp6vByjgJbq4WtrqS0zAmg3Ufb8f45s7a8ySTl473iw3kP6DJOHOk5RqhoXTY
+O6Py9uKTPRltQMYXl6chwx2l4vbT1YU9id2ONsDjESyWejdzHjAl9mOS1jubzad2D6BFUJog
+x9F8i4nx3YicWA7Jk/HdaBAyowhWfHHCYZb49gaPRscZT7b/DnGQY69WTt1mX/4b7CgodjAZ
+AAf9v3zZbbzapHq7t/JptXxp3vx82UD7b8vt8rXsP1NvRnOlg7lhHqoddHViVoHE4/GnYV95
+Im+ub0bDL0YegpvrkxEHcLAr1FaV0T6zVkn6yrQeKz/98gXsnrlJOaLKBknrD5SoCsZ1ZlW9
+8/xbl/QMhB5B3bW3//EGThC4Tn/8y9sv38p/eTj4AA7eb8caWXTflE14VWoLMNsq/NguCg5G
+MQ0Yt7Zmzwu2ZMeBjp4m/K2yMI5jHQ2JWRS5Du41QGB1rKTyCkcbQrNNNi7nrrdoIqPVIpmn
+e5oS4uPV6yKo/v8TIKF+Qus0JKY+/DOA4ZmtmeaNaG+OP3WZN9e/ItBxkTTFeZNYU33GZPV7
+JgNrt4j8ywo/DLo6BfLTxXgA45PxALEW0ct5AXpzobeeu6dJ5ngSr6nQxp1L+TaAwZVCzhRn
+RZ6gi+vxQPsacGW3thUA4f4EO2SKP8EEDumSukB5IUI/UQFWQcx7P76+7EM4EeogXP1qRZGI
+++vRyDjyakBV0un47bYVph+Tj4770VlWKR+rn7zpPB9vJnE3tAoAuHNZk0obzwZXKZnlyYA0
+Bpks6NgR++v+1eVs2BwDCI4Tx+GxphMY39hOT0iEtPkAz+Xo+LaPieEPx5WzFjPMCvAiTwHG
+w8opQVxmDwP8zEMxwYN7UlJHkq7SDrkAG0DtyZJqkI/c7hM01KHxp0MtB8ni8uLuYmD0YXW2
+6AzaOyA6pH2iwJHGq6h1TjzF/Pry1u5GVpYpGzJb6ocaB0Qb6OhiNNC6kGRg44nH5PoS38Iu
+H9BhD3o1i3BIqmrMxXhopg8xOmVZAnx5d/33wEZV4737ZL/nohHz4NPF3cCU3QejlR+XHCns
+PuC258r32u/JhGn1ey6poa4dd0UT+0CalwiunGmYq7d2R96VuibkXVzeXXm/hhA7zOG/32wp
+N/W7JXPqarsmFikTj9apDnZjXJipTJv5yxPU8LPTeoKdWJqlgf1xzv8x9mzNjds6/5VMH860
+M+1pbMeJ87APtETbXOsWUfIlLxpv4t14msQZO5mv+X79IUhJJiVAzkzb1ARI8QKSAIiL1j7b
+bCF0cZpTtzu/y3X0U9peiDDW0F5YnNAnh8wDOzKcTUtI0GJFQeAMIR7npoQ1neqDJPTUqu+e
+CUKCE1WOd0KVFwu9GjqiKVF7Qb1pREFIqDTUpdswaDNP/rvj+2H34wOUudK8UzMrKoXz7l09
+/3+ximXvwtOW56qRmIqB576R8QBXlQy8oav9qGYiTk30vtMMrpNZ7E5C+7PMZ0nG3fBfpgje
+vVMilpDdwJS7u4VnvUEPU1fZlQLFoAr1kZnD1gXCiyUmCztVM16GNKj663HqcgbklBWZPDeI
+kN3bTuIOyJGN1c9Rr9cj39KCDlsb1SoRXSgS19ia2t1QR0eUCYb3MfXwciC42FFNsyygTEYD
+ImCbAhABmBSEmvdzBJCncepo5E1JEY1HIzQKklV5nMbMb2yX8RV+OY+9EI4zIhaCEihxpQRF
+UJmYxhGhw1SNEQzAWrFDIempoipiihZ3wB7z3Tspwh4/rDpQwYlm4MAWInemL5vlEZiPqHEX
+hD+ZjbI4jzKe4pNh46QEjulfkRCXTSDu8qYhEDLIGQ+kDi9q6Zp0UZHhlF6D8QWuwTilncAL
+zLDD7plIUzekhCdHt/+eoXoPwqI5B22DSJEqiuRE5Gwzv7EX2pV83jhMsjwQll2Iz/u9yytL
+eVAWFL60QjBVlaz7PAD/+iX23FbCQne1TGnUeKE7jYRfrfBngKWIgGUrRle4VOCHt71LfOOr
+Tw7712cOL7+0Vj01GBCRCaWi9eaF0G6Ph3ngXt1j3j+7Tvzem9nrYoGmcTwN8K0/y9mSCxQk
+Rv3haoWDosxVDnJK+gNAB4R4C53icrkqJ04asaKqKADxkSvy6/hZ/x0NpmbNiom96cxLuAgp
+y3c5J16H5HyNvTHYH1JfYVHskEgYrK4KSvETrIa0mKagctkJnizP9Ed4qUsPczkaDXuqLm7V
+Ppf3o9FVy2QBbzku6drmqW6uBmc2pa4peYjTdrhOnVdd+N27JBZkwlkQnflcxLLyYycmzhTh
+DJ4cDUb9Mye8+l9IXuAwt7JPkNNihXovuc2lcRSH+EEQuX0XhWoP3MkUPw8+4kWTaWq3MBrc
+XroOUn1q7yvQnFR95UFGxDxd+qPLfwdnRrlQrIBzxWlLf7/BoLcrxnNnBhR+fOY6LcMB8Wgq
+Ije64EwJEIpqkeprDra1E4ELFwmPJES4dt5d4rP3ulF72ZXuAjagniTuApKdVW2ueFRQ4Ds0
+2IrdkRyMlUKHlbxTBepKI3y+0/AsXaVurNj0+vLqzMYBz+SMO1fyqDe4JZ6uAJTF+K5KR73r
+23Mfi0Avj65nCs5nKQqSLFTcgBNDR8Jd1ZQkkZqc3+FNxoGS0NW/jmQgCR2SKi8msFxnNAJS
+qPPWfW257V8OMMsZp5azIdTPW0o/LGTv9syCylA24gV7t71bnO/mifBIXbRq57ZHWJRo4NW5
+Q1nGntqRfIVrbWSm7x2nr1moiP8Ly5pH7hGSJOuQM/wCBdLhhAEwxIWJiGtHYBGn7E6sozhR
+8qnDzS69YhVMGzu4XTfjszxzzlBTcqaWW0MUXqK4EQiEJIk45llDT9luc+FeAOpnkc7UGY1f
+nAqq2Da1rG600HazS3EfuQHhTEmxHFIEVyMMzikxjH2v3Xhp8ctWgj4+J75PGH2KhJCTtBvq
+mGTLgV8tn3txtdVsTbkWJgnxHBe4Qdi0znS2P77/ddw9bi9yOa5tVABru30sPS0BUvmcssfN
+G7idtwxpluZ4sn6ddJmhuQUwWOaoGtXPjicZBR22+BW00ZAH+PcsHRUCrWR5BFSJWgQoVcez
+c2zEMiPiQiapkOEQC39gN3oSYjAgV7wVOacpKwVhDFZfyRjQtmyyAXZQYLs8I/Dv1759E9sg
+rS/lUVRbZ3Ht0nux3IFX7u9tD+Y/wPUXjJzfnyosxNdtSb2mhCtQ75I7EHODPbF80kdPuIXD
+WKmfRdLwuilN2t8+3knDMxEluR1/EX4WkwnEVm36SBsYOJJTvugGQ+oQyfOQIDyDFLIsFasm
+ku5wftweniGt2A5y0PzcNHw6yvoxBJfu7Mf3eN2NwBfn4I0jwJpPyg3Z1JzztTZGPk1sVaJO
+hfnYeTOoIcF8TrjY1CgRX2bEw1WNAzEQQHzHH8ZrNJnFS7YkkmudsPLobKdWWQOlvVDWcyr8
+LBLZR4ogZ4PEysdrHysGOUf9TRIMqHgXlkCgUgzorRM3HuwJpOMFau8bRyNQw3kAJwdhjmh9
+nsNJTUhO1tfi3JvN0SSLJ6QJJJxsPocZsOSpIJhCg6D4xoDrr3Qgjb1wSNkvGAy1ltQDhUGA
+tRgTL9BmIF6vd5mQofEBZSGVkMoIowMz3GpRC2AGOrc+RHXC1a4GRUe2ISKXGASYNOmlnFCj
+leTdiIRtibLiCneKmm0Oj9olSfwdXzRNSkHFcyJLxN+zgaF/FmJ0edVvFqr/Nj1DDUCxLoqs
+EJIzYMXQmf3ZqEYFCzLQ8jG10XDzy7IPcdm6mkk9so1co6CgKQt5m0LLl3hswk/eWsjtaK6b
+p81h8wBM5smxsJI5Misn18JOmWFMGeAQiWSgY4tLG9NKuFJxaEur7MQvZBYAgq4TFiYQQvp2
+VCTZ2vqMsecjC0tn1/7w2p17FkCmE+POTlioRPF9TKkwi6kkPClTSCihhFAidB94C2eosBX4
+2uEtBwdcO1WMurVNRPiTUMoX84YDsDHd3h7AD+GxeUuX4+UsDdae/bRfAkb94SVaaOWr1D5D
+zvraeMZZujnBGtS7Hg4vlZTJVBFptG7hT4Czx7ypbaQWYTmdsf2pbABfsRSHRGmRszSzIujb
+0BRy3oS8RkH7reOr+1TSPXtO6XOl/mDWH40Q9+L9618AVyV6obXUiBiPlU1BdwOBhiEvMdwE
+DFYhtktL8HeC8Euw9LxoRYjCBqM8Or9nDIzD6NPxhHoWLSW0fAacJvQhrcATGRRBcu4bGktE
+4H3WRq0MDN3912pD528hkseJJBSFyXqKhQdS56NJ/2gb2NWFJteoiPGoAGnm6A/9jAiHBsyT
+8AgPcR28nA57kXnq3wTPBbFo3ssrEQRryqG4fRHZnTCjTXOZaX8LE+ijLbT0PWxfQDH2SRvd
+wh4QVEXolmRCXBYzwto2ca2OjeNollw8PO8f/sH6r4BFbzgamTzgrbqlUF8qqUCkjKjQ6pZ0
+v3l81DlwFOHqDx//a5v1tftjdUdEXpbi7Pg0ETGlKlviFicmmBNb4PvDQLXDRQdc5oqGsct1
+tgzdt0RdUDpdwBtr+7DdvKttjKk9lLAj41QWTA5uCFV7jZFw8kYwKGI4L1hImOKXOJOb3uhy
+iD/+2zij/oQwq64+lo1uOhFCturddqMk3uhmcN09bsC56ne3E2VeASZ5SqSgosjUqF52fT3C
+9Uk2zs0NbgNT4yReeEM5wZQ4Usjh8La7HXgsuboJCQt0B2k8ODOdC8GuR9eEi0OFk/UawfoQ
+lFF/0I2yHA2u+zezbjIySJzA0utFCOBLiO/qxxjfLiXkYpFSjBschcQSJCvxnKHo40ZyHxML
+5eP5fffz4/VB5/EqJRtk04YTX1G3uizwqZ5lng6e5uFUFihRVBBKBYBRDpvw1e8sui+8MKZs
+YQBnzsOEcM/WHc+uKToCcOp7A8pVHOAyHBLuEmy8Gl62o5m4tdeQgpQEZ+ARMhgMV0UmPeYT
+KiBAvAtXRJ4tAC9Wo2Fj21VROrqW2GIO+DQPyFzWStCmRwmafX13YEFkpofN29Pu4YjdyGyK
+xYWAHLAstbJ8lwU6MuYUEnX1LGnUT9uSHFNlSCguu9jgecnF7+zjcbe/8PbJYa8Ax/3hDyRk
+ddXClyqYwG3gwX7x4+PnT8WL+e1oQ5MxulpoNRNfbPPwz/Pu19P7xX8uAs9vK+lPW8rzTY6P
+rse4MfPmgVYW0ahVCLPuL5fpYl6P+2cdXuftefNZElj7CQHWEtNhTJn6v0LGE52bLg6CMZWJ
+JfTrFjB+2U5Vq/4Geaik7tElDk/jpfzWH1rs85lh1IHgmlRtHctxHvktkpwJvz0ZqtBhqoQP
+MYuV0LaG2PF0FgWFSOnX8hnqqwtNnyKaGHVHGXcBKrR0HoDPrppqZF3qpTlm0KZhoD9uVcjT
+himCPVwezG2DJijz1DWZrptlSrSK1s22vTifMvzEAnDIINwq/mqhq+uji+jaSe3v1FEzP42j
+VEh8WwEKDxVDibMAGhzwhphoA+8hKVrjm1MejgWhZtPwCRGDB4CqPVqlrxHW9FCWLMgIT1kA
+LwRfyqaRmdu1tcmaSCII8C4gJkNkLWr6zsYUD6Kg2VJEM9TEw8xEBJlrs4YoA17NnhaAyHYD
+HsULnP8wdDYVnn506EAJMioyjoGvJ+ocxgx9AJxyQ3furjCGqurMbBTH8LrfJiOd5aSbFiIi
+5xzAwCsMP5IBmrAI+Nsg7qDThGcsWEc4q6UR1C4PCM9tDYf3tBQIjoihBzgpGSx7pp3TRdcw
+Sts6Gg4iaUDppzUG6V1ZQnkACi0qCqDQ76hJQCi6NDFQmhLYb/AEpThxeo9o9/nv8brzE5no
+IHd1IkhKMNfwGWiYTCh6EimHK6xIJC4xAMZKRCHdiXuexp1DAIMOMhiVnggttBUzIpC0vruC
+pmt7pavELs/6Ccm66+vHFyXExTNPFIHIMsV58EjdPNZ2BnjJQtvbForzIBFNxacFLhPay2Lm
++Y2qRA0rMzMgaT14I2o1lCdPn8fdgxpksPnEozVHcaIbXHlcLNB56mjHHeSU+VNCNwVJi/AL
+BiqmwMd1ZHEIQ0KmUrc0+eob8aU684nEIczzOIjXEB8Y5y1SJQ5rrhqF+iBIL5pxQI3ncMjG
++cTKJ3viKiGI8UQQvsumHmR7Jui10bA1mHzlC6nOVXwkOeUyAPmMjUIbo0sAi1jNcZS71pS6
+mLLer2qFSGDucPdw2B/3P98vZp9v28Nfi4tfH9vjOxb9/Bzq6YPqsGwr0qsJzxgZBGoaB/5E
+UDk8lpA2FVUxe1oVLPcfB0fLUlYEp6lB4aYO94L5OPAN6JsViBptySJuJoJxjLHpIg7D3Dpp
+nKjnGniRbH5tTQ5uJE79OVSNm25f9u/bNyUfY6cGBOzOID4s/pyAVDaNvr0cf6HtJaGsiAdv
+0alphB/18d/l5/F9+3IRv154T7u3P0wkup91eO/6MGQvz/tfqljuPcx3HwObeqpB8OcnqrWh
+Rs4/7DePD/sXqh4KNzr3VfL35LDdHtVhu7242x/EHdXIOVSNu/tvuKIaaME08O5j86y6RvYd
+hduis1dk7QQLq93z7vXfVptlpdLWeeHl6OJjletb/EtUcPqUTruxmKQcDxHNVxCegrpt4hQ/
+YgVxxEYZzpdArGvq0EqWbWUYBLSG4IzYUdmCWd0CFyXyQyZ0l/qRga4GeUNMZmt1Jvw46sm1
+l6uKKgQIqF7KC4t5HDG43PskFjzJJStW9EdRCC+ERGIaGwvaI7G0qbQS3JvMQvWO54zGqgpS
+o0fYroZEWqqUtS9+9vp42O8eHeVo5KdxM45PdXaU6CfsQIyjhS9CXPLwCYEIgqO3KWa2hKDZ
+D2DQjJlHEDlezBQ2NVYVS9xu8lRTx95G72ARE89NgQhJUwAQfj2TXwFF0CZNTcmkTsPiWOqW
+KTjUEWmW3jl4FiwQPst4MZGFtmJGExOtsr6JqmkfE1BUrCDCInWQDAoiEKKCXRVocpGUC9UH
+1fDECS9ZF3szTrC7NYqOASqiCeHRdvpAR+e/awQUtKJB0wnYrhIxXbOUrhiJoKPqpE/XVJDG
+vqinGJij5qKZsmIMDFoRJ9gKAH+uGTgRWYnvQzCSy9Tx34TbPeGRzh5BacoUhmK1cTejiYzi
+TEwsjanfLBCmQBtFOh9mBoB+k04AC1Z2E9kkwwaYnHawzSVg4NYA0SAn7RPS2zQTXk+kxxRN
+o/u4xDboOlTt35DTArbyaSdXkyPj2+vry8Yu/R4HghBI71UNYgC5P2mNreoS3g0j98Xy7wnL
+/o4yvIsKZrpXkZRUNZySRRMFfpc5wtSJ5/OETfm3q8ENBhexN4MDLPv22+64H42Gt3/17ORB
+FmqeTfCAyVGGLHl1quLDM4zCcfvxuL/4iQ37FJLYLpi7dne6DF5Zs6BRCEMGZajI3DDCGujN
+ROCnHNMVz3ka2V/VUWlPP3VyJ8fzEArgzV2sCuYRnocap3VqntjDiV94KWeuxtv8oScWmby6
+STCHhQPHhAxyOhzr1N/0FmV+B2xCw2adINDWkUd8R2/GNKijlpeykIolfJczOSOAi45LKhSR
+WmLq7Ao7Rp/QsLtoddUJvaahaddHE7AMIuKErOWCqpZ3THfaPter7V/ayrkUVwErpsT6veg3
+fg9spsWUkLtJg6mEzbKQS4YZFgDIFxJ8OdRBnVhakBOC7/TKh259Oo37Z/rlF2ia6Kk2bE/A
+zNT6BPACzZ+qvjtzEBXBMTvPozTxnAjiuqTDC1Wn9aQ2iqAAsc/oU4Cig8Be90DWeSrtm8UC
+V1dToa4mZ6Zt2M0At95xkQjzNQdpNCSiirhIRGg9F+lLn/tCx0eEOWADCTdBaiB9pePXhGup
+i0TsLhfpK1NA5KhoIN2eR7odfKGl268s8C0VO9FBuvpCn0aEIxwgKS4RCL4g+CW7mV7/K91W
+WDQRMOkJwtvG6gtdv8KgZ6bCoMmnwjg/JzThVBj0WlcY9NaqMOgFrOfj/GB650dD5JABlHks
+RgURpLcC5yQYon+oO55wFK8wPB5kgojKU6NEGc9TQtNYIaUxy8S5j61TEVC+qhXSlJHurDVK
+yoln+ApDeOA+SziXVThRLnAhzZm+c4PK8nROvecADin15JGA7YlchCIulnf2k42jRiodzh4+
+Drv3T+y9b86paP/cy0ERUPghl1oRm6WC0HRVuJ1A9BrXDqRKJvR5xH2tNvDiZK2zu3qsIU61
+0PDPZYq2PI0DKdvaGWhLvErQPI2TWUEkAxl++w3eviBD35+fm5fNn5Cn7233+udx83Or2tk9
+/gmhAH7BxP5m5nluMgs9bQ6P21c70Xz5vhNuX/aHz4vd6+59t3ne/X9l9lmtpBIgofveHHwe
+HflMg+LIzEvddUKHUyFPFOWTuNUbJt6lCkyP6ORM1aCt+kVRJyn99lLqRg6fb+/7iwdIN12m
+3bOTDBtkNbwpZM97QYv77XLOfLSwjSrnnkhmPCUB7SozJbuhhW3UNJpiZShizai2Ok72ZJ4k
+yOAhbXK72ITDa4+zLO/b7HwJynGNsluxFmgg+6fFepdY4DDb+iYUYh/UfzDr0WpoeTbjkYfU
+bKYeNZqdjx/Pu4e//tl+XjxoMvsFRrOf9ilXTT+RpKIENxMSuFDunYOnfnf76qBZ8P5w2Ltt
+jYF9vD9tX993DzozJ3/VAwE7+v/bvT9dsONx/7DTIH/zvkFG5nlEpC0DnnaDvRlT//QvkzhY
+9waXOJdR76+pkL0+fk1Vm4rfuXY6zZmaMXVILarDYayNDF72j7Y7e9W1MUYHXtOqvQEmngxq
+MKXKKbvX2XiQ4hbRJTju7lqiBtQFX3X3TV3Xy5R4B6wWCAy+srxzwcGuaNEiwtnm+FQvQ2vS
+8OBq1bmooMg6rc6MdtFotExr8Gt7fMe6kHqDpm8ogtE5vasZI/ivEmMcsDnvd66hQelcJ9WR
+rHfpC9w6u9qV5/rylf0Y+pgaqAYOkVUJhdqAPIC/XS2noX9mnwMGoVQ4YfSHuIh1whigAQ2r
+s2TGeu1bW51Ww2tkaAow7HVSgMIgYqWX8LAbnCmuahwT6q/ylpqmvdvOTiyTRi8Nte/enhpG
+J/Wh20ltClwQBtUVRpSPRXcbqUcEia+IHmLCdtOrxyDsM2ETXOPIrJOgAeGapgefS2TdJ/pv
+58k5Y/dEoJ9qaVkgWb+TnKuLsvvyI0yWa3iaKCm5mwY7lyLjnTOcLePmQpWuUy9vh+3xWPma
+Ned1ErAMV+NXN989LteX4BGR3q+u3TkoBZ51Hkf3Mmu7O6Wb18f9y0X08fJjezBGgydnuuYW
+gKSNSYrGrKkmIR1PjTVp88TREH3LfbanTsNwpwoLpdXmdwE+WBxsm5I1wZgXSvJptU0iVtLM
+l5BTwuq0iQcSVZuYjED3vPtx2CgB8rD/eN+9ooxDIMZfuTEBzWyvs1goG93GMydFu7y6VSGm
+4z3/1kM/8pWr99RlnHVuY9f3VoN7WmJUBRlm2YSvPCLIrIXHQpNVbroK2iu1PbyDnaESH47/
+q+xamhu3YfC9vyLHdmab2W0z7V5ykGk61pp6mJJipxeN62i8niROJnY6+/MXACWblAElvWUE
+hOYDBEEQ+ECQpfvtZreiak/r780a8ST9UL2PsBO/GVh6jOnjwaFGMRygGM3tvax3oXpwtqYq
+v6snNku6EBKGxehUoCJqZVXGJixUktlxzJmuxwhBFWO4cuQh9lGuA8aPqCRfqql7MbN6Ei6T
+gmsXbGFhcdQXye5R9aBtqOq4rGoOfY/M214f/kRYPzPp34xDBhMrPbr7yvyro0iamVgiu5AP
+BuQYCa5RoArPO0o2NhTvbofdM2j+K95QdVA0whwduZb/YAkZ1j1Z1ITX4yW+0Sd8z60DkcHv
+QbHrFOyAuqCcCczruyE0X5+GBGiCPJa6J3tIi8ZjW5f1X1cwvwEyENJypj5jSy9ujHMUeoFa
+c+O/lmJ0SOBetHOCUGUbA0pmet1LMyTQNd57L4Z+uinxnLEW1IAw+a3COdMjoS+1U1D09eV1
+uzs8EGjO/VOz33AebSq9OyMgHXaxWzpm7PJ+rzZn22BBmlttjg67v0WOeRXr8gRKlsD1Gt/R
+zlq4OvWCylC3XaHKxNzc3yWjDDZora1No0T7Xn5xJo6m3vax+f2wfWrV9p5Y1+77KzdvDmSn
+H5TZEl1d5DpBRCeK7/QCwCx0rV5ENr3+4/PV13Dx8zoqEhyIFN4djanhSIArm2oEA4EdhxiA
+rIAi4F0C5ziwmDjtBTy6MRVaYcAjhiolUS9/q+trj4XGU2epuTtvjop11AsdzajutMr5hIAP
+r0GQGtPK/bj5922zQY97vNsfXt+emp2PyEmJwBhdY70yC97Ho9vfrdv15x9fOC4HeMaMUIjY
+GRVszjN9B5UT36RYh8UX0w8N65fgxzEqzocTbytux8URUaB9tDg2FloesPEI5K9f2LU3RmQk
+LckrCWwmz2JMOhfMZNdMNvqmJX9iYapRx8Z3hThQ/wsZfE586UmoQpXCNwIbctxy6XQ8EH/t
+2rvl8d9olil9hF6QPJToCJeX2idjOXw6Oq3CWb+nmPZx5t1D/ovs+WX/6cI8rx/eXty2mK52
+m54NifX2YE9mfBB0QMcg+Uqfark5Ip4BWVVee+XeMYsdjbkqh16WsHQCEI0j1tMqxSLCBT+f
+izmLp+RF+Q+N1b3Ngma4f3skEJaTOAcrS7MZnKr4mZGa7kmOabK/NjgzM63znnA7wx698aed
++uv+ZbsjyLlPF09vh+ZHA380h/Xl5eVv5+cHmkVVqZeCw6qVDCZxscfyfiN2UWjhWHEMbQC8
+uxi3FgjPT6H2IAllZfXZG9NptReuV++YM/9j9ry28bgBdVRXKfqPYNWd5TowvJlTPcIGe3AK
+9351WF2gpqXyvsx5b2JhtK2WfIdeDOlGivmPtVCj3qnFehyViLNjbcVkJQT7SBhS/1eVhfnD
+urPmPLjfqoo/NoCAh/lEXn3keFdEiAkjMEWqnhdc/GSXQRr0rz8yUDfO9rCM1RFwuuQROAbR
+OyDEbERJbpjU8NXjy/cVp4wIl7g1Wb3rgMmnUQfkjOWXS7q3hDj2WNQ3qXy7oP8rvs1fNvsD
+bh3UlOr5v+Z1tWmCkJUqlWJxWoFDg5mKj3xzZh3L3KYkcDydna/oVgenn8puW8jo3LtVdYDD
+KA6oaPpp6PidNhicOgJsLbGIVMSmapGqQeUMiN0IXyUG6HQVzUyGYJoiFyW0wTlaDzcG2wSE
+T6ZHZZbEcPEfvnLTwKd6Oa4S/jXTzYy7P7ogHl6NdHyFEgKCiGEGHKWQ5EcMJNcCnCLS3d12
+kA6SJ4ADEkdV9ZMsfeoyslbARiA6ZixNTMY/PROHRS8xFRAYmHDJkUzUeMz7Xp0czwQkdSTe
+JrIp7QaPzmQxZsvNoFTEmYgGtsIUL91SdZRJDKYvrEI90qmaJpHlrQtqbRLbBE7cgYlyeT4D
+4zm7s/cFkqLQxOg6J5RJNiARYIurCARz8EfQwhGUYdeIyAA00YoZVMVn0WHOR/MTKcoCikjY
+AAA=
+
+--Dxnq1zWXvFF0Q93v--
