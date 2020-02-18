@@ -2,109 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6111E1634F7
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2020 22:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC1C216360D
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2020 23:23:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbgBRV3j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Feb 2020 16:29:39 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:33819 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726339AbgBRV3j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Feb 2020 16:29:39 -0500
-Received: by mail-qk1-f193.google.com with SMTP id c20so21072734qkm.1;
-        Tue, 18 Feb 2020 13:29:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OrdDkIMDWhhABSmakNixMXmfGtr8QsZxJzVPjLWIkfU=;
-        b=Dp2yWu0tAN3p4J5E7bAGj7wKakRGPfsizzsbUpzlHOXm84hbrFYHox7r65h9FLA+Ba
-         Z+OYEzg6eNSfiwtPTSSjbY/wWmU/LryxaxwcH4WLJGqEM00jQnJ37XpE8zm4PP/Tp3BR
-         IJzOjWn5cebjb9xGzuLzVh0kChRyVxgWy1jTwO0TL2VaaVqbXYmYB5QQ6/UNqbh428y6
-         YlZyhpBp5VXUgkiS0YQ3I4c+hFPS+7BFh2WN2h4hGAh5zbzzxU6CC6xzyXw6brhH1/0t
-         jX8ngNsuHt5S9linCyWzJjUwIK+MMc3ZCLuqI4JzkIp36zl4rp//4Q4U6l17HFH29nQq
-         geDA==
+        id S1726391AbgBRWX3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Feb 2020 17:23:29 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:41012 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726427AbgBRWX3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 18 Feb 2020 17:23:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1582064607;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KzniXuxGG3xuNTREj2X9iqbFXp/dsAkbv0yAly6KfyY=;
+        b=Cyrw7i/14fdvbw8jR1eW+sfDAhSU8K9VpmVy/LXOPRbJ88btgYRaBMdVxDEaBuu3KgtgbF
+        a/APVnhOjjnibJOOvyd/Z37ARdwnmYtqnDI2di+koQVCqVqhxJQapVj7oxgEwdODwfgbfQ
+        lv2ypXdiungGfNvBHcfNITEuE0Csmu0=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-346-4R07EQ4_NjegNphyyNQ5FA-1; Tue, 18 Feb 2020 17:23:25 -0500
+X-MC-Unique: 4R07EQ4_NjegNphyyNQ5FA-1
+Received: by mail-lf1-f72.google.com with SMTP id v19so2336928lfg.2
+        for <bpf@vger.kernel.org>; Tue, 18 Feb 2020 14:23:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OrdDkIMDWhhABSmakNixMXmfGtr8QsZxJzVPjLWIkfU=;
-        b=tVcYkR7dHdykUqZrI/8ndTb/tKhnafhMZ8zsUKFS45yIx96ooSclf1XC2o06HtqRUc
-         fMKCibFSYeycct9bz+m6Mbq3IQ0WeR30thJseocJcpwWAkn0Ch23jhejmuQDQs1ADxmV
-         1TLhDUG86auKrgv2KGKAPmAoQN7OjeraXHet4Ijvztrmat1mTgxKb7jIEyy1tJe+4SFi
-         mtrJkFEmO6QnQ27aTzZJuwFt8AMEHji90pttD9Aus8x48VJAKwFzaXfYG2+iVbkK+9ez
-         GFWahj1gVlisVBFSDxvammoo05fm0WSbTSiPu7U6Pbj1ZA2YsiZYn+46RmmIPsjsOZef
-         H60w==
-X-Gm-Message-State: APjAAAUCQy3CBXQhH9X7jRBUWm9r7AhPPEDHu/IIlcK6VmzB2gb0iMc8
-        l7+otu+iYEb4xQknojAZs7Tlaqv5XD34Iqxs0jA=
-X-Google-Smtp-Source: APXvYqxjkxAsqWVLPzMbXkR3lkgZU0ccbUxFBgO1vVsNjZO397cAYGAzXmyQEdA+DhxQMr1nNx77gFF9y1Wy7t6cZFI=
-X-Received: by 2002:a37:9d03:: with SMTP id g3mr20820108qke.39.1582061378329;
- Tue, 18 Feb 2020 13:29:38 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=KzniXuxGG3xuNTREj2X9iqbFXp/dsAkbv0yAly6KfyY=;
+        b=kXFUkU/MKQQM1VIpjf4VbELWDdlxCYiRHTvYTWochXbbJJD6eSOgJfXuHmfYxG5atj
+         huFvMiJWU/GH7frBTbwt4wbKaO14NNHOP9kfVVTNR20eiaiea3wAei1TFE9oh3eQ3O5b
+         FD9Cr3wiZpf5paxvlRKS89HpE+c9i5SYXPrlydHzypYYsvUbIwD2tzg78l7MwisjHX0m
+         A/Fons1K6k6cdMGKR+VJEB7olJ9teiZ/Q5wGFjMIt1ssB3yBf9cmEAHO1MRRmvNXJqZC
+         LrNb9A6GvUBxLp6uhsFwcSHXxeRL4jXkWl1k6I1wWBvz53jrPcpuAtpd+QUOhb0S0c5O
+         7/dA==
+X-Gm-Message-State: APjAAAVXOGTFI6L6Y+VR/89HfzgsKpV8mitRI7vaqDa/NoHzjdDlUoUw
+        ccS4qNmsJFnwMbCIxMiGMb7WhkK1biXJOUsQT9omsxlH8T+zp1VY83nIBtLlmODB0dVdZojRs/K
+        NpXpvaE9ilk/Q
+X-Received: by 2002:a2e:888b:: with SMTP id k11mr14325321lji.197.1582064604203;
+        Tue, 18 Feb 2020 14:23:24 -0800 (PST)
+X-Google-Smtp-Source: APXvYqxYWLZAyv8CoD8AZ/XywYZzw4bS9wLMvINlzJFDMHl7GteVE53+Up4eF5q8jg0FySo7bFGPNA==
+X-Received: by 2002:a2e:888b:: with SMTP id k11mr14325313lji.197.1582064603932;
+        Tue, 18 Feb 2020 14:23:23 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id n2sm67763ljj.1.2020.02.18.14.23.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Feb 2020 14:23:23 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 4FB19180365; Tue, 18 Feb 2020 23:23:22 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     netdev@vger.kernel.org, ilias.apalodimas@linaro.org,
+        davem@davemloft.net, lorenzo.bianconi@redhat.com, andrew@lunn.ch,
+        brouer@redhat.com, dsahern@kernel.org, bpf@vger.kernel.org
+Subject: Re: [RFC net-next] net: mvneta: align xdp stats naming scheme to mlx5 driver
+In-Reply-To: <20200218132921.46df7f8b@kicinski-fedora-PC1C0HJN>
+References: <526238d9bcc60500ed61da1a4af8b65af1af9583.1581984697.git.lorenzo@kernel.org> <20200218132921.46df7f8b@kicinski-fedora-PC1C0HJN>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 18 Feb 2020 23:23:22 +0100
+Message-ID: <87eeury1ph.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20200218030432.4600-1-dxu@dxuuu.xyz> <20200218030432.4600-3-dxu@dxuuu.xyz>
-In-Reply-To: <20200218030432.4600-3-dxu@dxuuu.xyz>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 18 Feb 2020 13:29:27 -0800
-Message-ID: <CAEf4Bza-JRpWhfFr54R-th5EwqB7EmyCV8irZd56YkZ8rOjEDQ@mail.gmail.com>
-Subject: Re: [PATCH v8 bpf-next 2/2] selftests/bpf: add bpf_read_branch_records()
- selftest
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 17, 2020 at 7:06 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> Add a selftest to test:
->
-> * default bpf_read_branch_records() behavior
-> * BPF_F_GET_BRANCH_RECORDS_SIZE flag behavior
-> * error path on non branch record perf events
-> * using helper to write to stack
-> * using helper to write to global
->
-> On host with hardware counter support:
->
->     # ./test_progs -t perf_branches
->     #27/1 perf_branches_hw:OK
->     #27/2 perf_branches_no_hw:OK
->     #27 perf_branches:OK
->     Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
->
-> On host without hardware counter support (VM):
->
->     # ./test_progs -t perf_branches
->     #27/1 perf_branches_hw:OK
->     #27/2 perf_branches_no_hw:OK
->     #27 perf_branches:OK
->     Summary: 1/2 PASSED, 1 SKIPPED, 0 FAILED
->
-> Also sync tools/include/uapi/linux/bpf.h.
->
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
+Jakub Kicinski <kuba@kernel.org> writes:
 
-LGTM.
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  tools/include/uapi/linux/bpf.h                |  25 ++-
->  .../selftests/bpf/prog_tests/perf_branches.c  | 169 ++++++++++++++++++
->  .../selftests/bpf/progs/test_perf_branches.c  |  50 ++++++
->  3 files changed, 243 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_branches.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_perf_branches.c
+> On Tue, 18 Feb 2020 01:14:29 +0100 Lorenzo Bianconi wrote:
+>> Introduce "rx" prefix in the name scheme for xdp counters
+>> on rx path.
+>> Differentiate between XDP_TX and ndo_xdp_xmit counters
+>> 
+>> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 >
+> Sorry for coming in late.
+>
+> I thought the ability to attach a BPF program to a fexit of another BPF
+> program will put an end to these unnecessary statistics. IOW I maintain
+> my position that there should be no ethtool stats for XDP.
+>
+> As discussed before real life BPF progs will maintain their own stats
+> at the granularity of their choosing, so we're just wasting datapath
+> cycles.
+>
+> The previous argument that the BPF prog stats are out of admin control
+> is no longer true with the fexit option (IIUC how that works).
 
-[...]
+So you're proposing an admin that wants to keep track of XDP has to
+(permantently?) attach an fexit program to every running XDP program and
+use that to keep statistics? But presumably he'd first need to discover
+that XDP is enabled; which the ethtool stats is a good hint for :)
+
+-Toke
+
