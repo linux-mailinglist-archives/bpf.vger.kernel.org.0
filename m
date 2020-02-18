@@ -2,125 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4B4161D6F
-	for <lists+bpf@lfdr.de>; Mon, 17 Feb 2020 23:39:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C2D161E27
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2020 01:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726091AbgBQWir (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Feb 2020 17:38:47 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:37721 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725867AbgBQWir (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Feb 2020 17:38:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581979126;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NymLtRtDCvksl9Nxa72rbeaRJgU35z454HfVv3yh+EA=;
-        b=W9XeBhTYZWuaRG8cGH6NpxeV1eIX7nrD554+PUnxUcLElQrG+5WQ7H/p0myYqluljm7uGr
-        0644wkjHcIf/DgX2l/8M0QPv3vJXFFxxLGMVaC6NY5RZi/IJzLbQQy/yAiH6C8mxwOskcl
-        HolkuwPCfWrnsXSHCZ9vBLRwM4LqdnY=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-122-7Bl8EiGGNUuK2kARjANuRw-1; Mon, 17 Feb 2020 17:38:42 -0500
-X-MC-Unique: 7Bl8EiGGNUuK2kARjANuRw-1
-Received: by mail-wm1-f71.google.com with SMTP id p2so270082wmi.8
-        for <bpf@vger.kernel.org>; Mon, 17 Feb 2020 14:38:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NymLtRtDCvksl9Nxa72rbeaRJgU35z454HfVv3yh+EA=;
-        b=khtRd5grytE5DBQmbiuMXPhXfg7Rd7TU6HkirVkLCRN+GsjKefxbiyD/RnVNoFspje
-         WHE0gNDuwpF5a7/K45rb5xUP+PjSr3bjKbsFYbhe68BB2ybcLfisxg0KvztJ5fJpspH7
-         Fvs4wWZpDHIPyspoD5uWU9peF13NxQUuVHce0Qz36F/15KeMwPe6mEiu6RqppIJs4YKJ
-         nv2i7dZoBXEoD74EXz88ai5RCrihWhnSoXt/LyBtnqnuHSuSoYTt0IqekBspbM1pigyO
-         JtVbwRfbqeFmZypBo48QDh0WsUgffQhTnd7FS2U844X5VHkYsN+oxg6EeUodKmUl5Ja+
-         4ZZw==
-X-Gm-Message-State: APjAAAUHPIuvx4X/3itwji19jO6JARoDNq6cQNtqOSa9r3xf2K32X6mI
-        N8Pq7pRg8Gi/6OMKXoHYXLy5GoyMWuzBbhHsDb40RD4Dr096vJf/FAJe2P/m1lNCKbirSFlfRQU
-        bbnjZjXLtPAfP
-X-Received: by 2002:a1c:4e03:: with SMTP id g3mr1134219wmh.22.1581979120916;
-        Mon, 17 Feb 2020 14:38:40 -0800 (PST)
-X-Google-Smtp-Source: APXvYqzSN4aiDtJiBBE1Ht8Yx46Arfxvcv4DorPaWHQzoGKPEFFo9K6XhAtVGHyMZ4v6H/NkQJDWFw==
-X-Received: by 2002:a1c:4e03:: with SMTP id g3mr1134204wmh.22.1581979120655;
-        Mon, 17 Feb 2020 14:38:40 -0800 (PST)
-Received: from lore-desk-wlan ([151.48.137.85])
-        by smtp.gmail.com with ESMTPSA id a13sm2934557wrp.93.2020.02.17.14.38.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Feb 2020 14:38:40 -0800 (PST)
-Date:   Mon, 17 Feb 2020 23:38:37 +0100
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     David Miller <davem@davemloft.net>
-Cc:     brouer@redhat.com, lorenzo@kernel.org, netdev@vger.kernel.org,
-        ilias.apalodimas@linaro.org, dsahern@kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 4/5] net: mvneta: introduce xdp counters to
- ethtool
-Message-ID: <20200217223837.GA5669@lore-desk-wlan>
-References: <882d9f03a8542cceec7c7b8e6d083419d84eaf7a.1581886691.git.lorenzo@kernel.org>
- <20200217111718.2c9ab08a@carbon>
- <20200217102550.GB3080@localhost.localdomain>
- <20200217.141850.2134390863127670308.davem@davemloft.net>
+        id S1726108AbgBRAPH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Feb 2020 19:15:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726140AbgBRAPH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Feb 2020 19:15:07 -0500
+Received: from localhost.localdomain (unknown [151.48.137.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14541207FD;
+        Tue, 18 Feb 2020 00:15:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1581984906;
+        bh=wy2pRQV+bU+yOoXVAQAXXPoSzon9kgDk14ziMHLv6IE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mR+EzqiQqBhBrktMURSKmDttWLwGKALjseyBBQBm5WzDoK8PaEjq0cZSLnI4fN4as
+         qqo58tAI3NtC3CJhREMRIYcvRD/xjBiYMV5R5az1aHizAGeHsNmE9iI/qXc0qIiMKY
+         3Rmj/Fe84ABCOLg5pNTMO+v2dWPUjHrmt6NjqNms=
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     netdev@vger.kernel.org
+Cc:     ilias.apalodimas@linaro.org, davem@davemloft.net,
+        lorenzo.bianconi@redhat.com, andrew@lunn.ch, brouer@redhat.com,
+        dsahern@kernel.org, bpf@vger.kernel.org
+Subject: [RFC net-next] net: mvneta: align xdp stats naming scheme to mlx5 driver
+Date:   Tue, 18 Feb 2020 01:14:29 +0100
+Message-Id: <526238d9bcc60500ed61da1a4af8b65af1af9583.1581984697.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="7JfCtLOvnd9MIVvH"
-Content-Disposition: inline
-In-Reply-To: <20200217.141850.2134390863127670308.davem@davemloft.net>
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Introduce "rx" prefix in the name scheme for xdp counters
+on rx path.
+Differentiate between XDP_TX and ndo_xdp_xmit counters
 
---7JfCtLOvnd9MIVvH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+---
+ drivers/net/ethernet/marvell/mvneta.c | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
-> From: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-> Date: Mon, 17 Feb 2020 11:25:50 +0100
->=20
-> > yes, I think it is definitely better. So to follow up:
-> > - rename current "xdp_tx" counter in "xdp_xmit" and increment it for
-> >   XDP_TX verdict and for ndo_xdp_xmit
-> > - introduce a new "xdp_tx" counter only for XDP_TX verdict.
-> >=20
-> > If we agree I can post a follow-up patch.
->=20
-> What names do other drivers use?  Consistency is important.  I noticed
-> while reviewing these patches that mellanox drivers export similar
-> statistics in the exact same way.
-
-According to David's suggestion, I am following mellanox implementation
-adding "rx_" prefix for xdp actions on rx path and, based on Jesper's comme=
-nt,
-I am differentiating between XDP_TX and ndo_xdp_xmit.
-So, to follow up:
-
-XDP_TX: rx_xdp_tx_xmit
-XDP_DROP: rx_xdp_drop
-XDP_PASS: rx_xdp_pass
-XDP_REDIRECT: rx_xdp_redirect
-ndo_xdp_xmit: tx_xdp_xmit
-
-I will post a RFC patch soon.
-
-Regards,
-Lorenzo
-
->=20
-
---7JfCtLOvnd9MIVvH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCXksV6gAKCRA6cBh0uS2t
-rPMtAP9LV3ttyfAZVqDtzm/OKXh0otr7LL/yrs2BWjOGc+4FQAD+P9C0iNo8kmLj
-9Mf7vMARZitKgFaIRvELIn3T3SX5FwA=
-=W4uj
------END PGP SIGNATURE-----
-
---7JfCtLOvnd9MIVvH--
+diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+index b7045b6a15c2..6223700dc3df 100644
+--- a/drivers/net/ethernet/marvell/mvneta.c
++++ b/drivers/net/ethernet/marvell/mvneta.c
+@@ -344,6 +344,7 @@ enum {
+ 	ETHTOOL_XDP_REDIRECT,
+ 	ETHTOOL_XDP_PASS,
+ 	ETHTOOL_XDP_DROP,
++	ETHTOOL_XDP_XMIT,
+ 	ETHTOOL_XDP_TX,
+ 	ETHTOOL_MAX_STATS,
+ };
+@@ -399,10 +400,11 @@ static const struct mvneta_statistic mvneta_statistics[] = {
+ 	{ ETHTOOL_STAT_EEE_WAKEUP, T_SW, "eee_wakeup_errors", },
+ 	{ ETHTOOL_STAT_SKB_ALLOC_ERR, T_SW, "skb_alloc_errors", },
+ 	{ ETHTOOL_STAT_REFILL_ERR, T_SW, "refill_errors", },
+-	{ ETHTOOL_XDP_REDIRECT, T_SW, "xdp_redirect", },
+-	{ ETHTOOL_XDP_PASS, T_SW, "xdp_pass", },
+-	{ ETHTOOL_XDP_DROP, T_SW, "xdp_drop", },
+-	{ ETHTOOL_XDP_TX, T_SW, "xdp_tx", },
++	{ ETHTOOL_XDP_REDIRECT, T_SW, "rx_xdp_redirect", },
++	{ ETHTOOL_XDP_PASS, T_SW, "rx_xdp_pass", },
++	{ ETHTOOL_XDP_DROP, T_SW, "rx_xdp_drop", },
++	{ ETHTOOL_XDP_TX, T_SW, "rx_xdp_tx_xmit", },
++	{ ETHTOOL_XDP_XMIT, T_SW, "tx_xdp_xmit", },
+ };
+ 
+ struct mvneta_stats {
+@@ -414,6 +416,7 @@ struct mvneta_stats {
+ 	u64	xdp_redirect;
+ 	u64	xdp_pass;
+ 	u64	xdp_drop;
++	u64	xdp_xmit;
+ 	u64	xdp_tx;
+ };
+ 
+@@ -2050,7 +2053,10 @@ mvneta_xdp_submit_frame(struct mvneta_port *pp, struct mvneta_tx_queue *txq,
+ 	u64_stats_update_begin(&stats->syncp);
+ 	stats->es.ps.tx_bytes += xdpf->len;
+ 	stats->es.ps.tx_packets++;
+-	stats->es.ps.xdp_tx++;
++	if (buf->type == MVNETA_TYPE_XDP_NDO)
++		stats->es.ps.xdp_xmit++;
++	else
++		stats->es.ps.xdp_tx++;
+ 	u64_stats_update_end(&stats->syncp);
+ 
+ 	mvneta_txq_inc_put(txq);
+@@ -4484,6 +4490,7 @@ mvneta_ethtool_update_pcpu_stats(struct mvneta_port *pp,
+ 		u64 xdp_redirect;
+ 		u64 xdp_pass;
+ 		u64 xdp_drop;
++		u64 xdp_xmit;
+ 		u64 xdp_tx;
+ 
+ 		stats = per_cpu_ptr(pp->stats, cpu);
+@@ -4494,6 +4501,7 @@ mvneta_ethtool_update_pcpu_stats(struct mvneta_port *pp,
+ 			xdp_redirect = stats->es.ps.xdp_redirect;
+ 			xdp_pass = stats->es.ps.xdp_pass;
+ 			xdp_drop = stats->es.ps.xdp_drop;
++			xdp_xmit = stats->es.ps.xdp_xmit;
+ 			xdp_tx = stats->es.ps.xdp_tx;
+ 		} while (u64_stats_fetch_retry_irq(&stats->syncp, start));
+ 
+@@ -4502,6 +4510,7 @@ mvneta_ethtool_update_pcpu_stats(struct mvneta_port *pp,
+ 		es->ps.xdp_redirect += xdp_redirect;
+ 		es->ps.xdp_pass += xdp_pass;
+ 		es->ps.xdp_drop += xdp_drop;
++		es->ps.xdp_xmit += xdp_xmit;
+ 		es->ps.xdp_tx += xdp_tx;
+ 	}
+ }
+@@ -4555,6 +4564,9 @@ static void mvneta_ethtool_update_stats(struct mvneta_port *pp)
+ 			case ETHTOOL_XDP_TX:
+ 				pp->ethtool_stats[i] = stats.ps.xdp_tx;
+ 				break;
++			case ETHTOOL_XDP_XMIT:
++				pp->ethtool_stats[i] = stats.ps.xdp_xmit;
++				break;
+ 			}
+ 			break;
+ 		}
+-- 
+2.24.1
 
