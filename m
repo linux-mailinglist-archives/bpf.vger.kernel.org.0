@@ -2,88 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 361C1161F3A
-	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2020 04:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE521621AA
+	for <lists+bpf@lfdr.de>; Tue, 18 Feb 2020 08:47:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbgBRDMr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Feb 2020 22:12:47 -0500
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:44524 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbgBRDMr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Feb 2020 22:12:47 -0500
-Received: by mail-qv1-f67.google.com with SMTP id n8so8498041qvg.11;
-        Mon, 17 Feb 2020 19:12:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6kcPaoQ/OOo2zZ+VvgC+FS69kL9fFamWWFF1feFv6AY=;
-        b=YQVf50QMALLBCsGVQxOe/bNEjOhO4zpztJ/1dR4s4CznMTIRkckfOUBAWw02uLxq8K
-         K7wbLEojPW9mSRQvvoSFIFWWRady3MAI6Sj5x83+NWXwh5wdWXHjuV95GBWO7oVaHTiK
-         ppPTtottqVzVNnSXlGvXWgWAiGsubbi9DQaCKRwHwFHAfob7B0WEgPqqjS6SW0K9v8aQ
-         cvEl7x9xf3iHvwwvFAl/2fvAMvcV6Vu0GFc7zPgq+A7VwJgrmJ2WzU+/vY5Hom6nyucn
-         t+6+R14h1TjDn4il8szxIRBzI36aOMl8fEFrwyIhbIDRYQjJ1yz1GY61jo/Q5wgflRBY
-         06UQ==
+        id S1726127AbgBRHq7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Feb 2020 02:46:59 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:35425 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726139AbgBRHq7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 18 Feb 2020 02:46:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1582012017;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=L0KwBipFTk/tXRKVos7TVVzcI+dPws7IUmcDi9hmKr4=;
+        b=PGpJe0F8UanuRS+M5KQUyeovYd4cs7iz1dBAEYFB4kvTWSZV/FUXViTZfUTc+xuOYVKSkM
+        7gzBzX8pS3RgJtk5ce3SksgCtVKcNk3ZkoaKpufhLeMhBSf2nmXxbEBUqSDeII0P7FbF5V
+        2Tpszd1Ou17YrEGAcAI/VfO7/YrZtXQ=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-394-b-Qq58r-Pi-Kt1-bNrPM4g-1; Tue, 18 Feb 2020 02:46:56 -0500
+X-MC-Unique: b-Qq58r-Pi-Kt1-bNrPM4g-1
+Received: by mail-lf1-f72.google.com with SMTP id u2so2003855lfk.3
+        for <bpf@vger.kernel.org>; Mon, 17 Feb 2020 23:46:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=6kcPaoQ/OOo2zZ+VvgC+FS69kL9fFamWWFF1feFv6AY=;
-        b=p5jXNgUuPfsoDy1qrxUcvm9WJfBZBs1EkSPbZ5Y7YuZut1Dpbq409XL7wmzVeRq9gu
-         vGBCgVjvYZ/UG3vgB63Wonl9xcQSXNlaW+qwuVPpYwQnTGP4R9tOSAyYB6YCZe6KReCC
-         Ae28ev4NpQ44C9h12O0CSKAQVRhnUc35/I8jjyT5FfeiAaj4ujo2t/0MOyezUOkcgf9w
-         Lxa+IqIAlNT/uv01arKYeJEwP3W9L9BlqcGHDr4mtnarUlrSsl8cC6c55oIcM+D1A9Um
-         SpXGBcvSz7xpzjgQs+jJgT3Yiwq75Ch57sejRZ0q4gvT2KHMfgudUZ2yDrEGCLv82R97
-         X2Mg==
-X-Gm-Message-State: APjAAAV2DEZZ2LmFMz4dE8braKCho9UoyswYRfmumQksIc6qBFXjqTec
-        Tmx99gLMSiLs3z6C1fweBBWC21mo
-X-Google-Smtp-Source: APXvYqy71nUt7r8mVrAQJ93AZyW4VmWU1gK0wUS6l0FXTh3leEzTR+wGuZLYpDs2Y+lyh7HASHkIpw==
-X-Received: by 2002:a0c:ab13:: with SMTP id h19mr14895264qvb.243.1581995565922;
-        Mon, 17 Feb 2020 19:12:45 -0800 (PST)
-Received: from ?IPv6:2601:282:803:7700:5af:31c:27bd:ccb5? ([2601:282:803:7700:5af:31c:27bd:ccb5])
-        by smtp.googlemail.com with ESMTPSA id v10sm1241008qtj.26.2020.02.17.19.12.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Feb 2020 19:12:45 -0800 (PST)
-Subject: Re: [RFC net-next] net: mvneta: align xdp stats naming scheme to mlx5
- driver
-To:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org
-Cc:     ilias.apalodimas@linaro.org, davem@davemloft.net,
-        lorenzo.bianconi@redhat.com, andrew@lunn.ch, brouer@redhat.com,
-        dsahern@kernel.org, bpf@vger.kernel.org
-References: <526238d9bcc60500ed61da1a4af8b65af1af9583.1581984697.git.lorenzo@kernel.org>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <70db0e12-22df-e612-b885-bce926bbaf5f@gmail.com>
-Date:   Mon, 17 Feb 2020 20:12:43 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.4.2
+        bh=L0KwBipFTk/tXRKVos7TVVzcI+dPws7IUmcDi9hmKr4=;
+        b=gQKGX7o6C9j5NvknO+iGNBj5si8MNIfDUO6TwMgsxUVLnolpq5hvE/Lq7Hf4o9IdnJ
+         LmsJ43OzOoPkU0O6n+aSyy2E2I53HyMzF8tO+/AWZoFTfwXujeEs59CduD83MLjj8cEA
+         jM59dw36HLMPguJWQdlYeD5lY/OmDasYrxBS/nwU3ZoxAaZgor9Ebni+vVsHaG0e1Is2
+         PdDdpF4yeL04a5tfi3S4At6kJAr/skStwQUlc5wAI+GG+pIUfJJK6q1plsHOCk6k6RHU
+         USEE5wogqQ3lpukEgSt/LhnbJUUnxpIoh5TxueTmh67iahgUO1lAAhJ2dghfauNTuzd7
+         icfw==
+X-Gm-Message-State: APjAAAWgVFKWWmkwQUBcfDTw9eJz6lYY/nXIZ/X85V1CuVbysB6ydzfQ
+        4JCnSZVY6KQG8RAOUp3KXRbI8q2zCBnZu2x6rL76Mru4Xw3To+yUXeBum37QzGaO6/OA7KuJEkb
+        AGMfeIMgH+C8k
+X-Received: by 2002:ac2:5e71:: with SMTP id a17mr9769196lfr.181.1582012014661;
+        Mon, 17 Feb 2020 23:46:54 -0800 (PST)
+X-Google-Smtp-Source: APXvYqzqe1aYSFI6f3NrR1ycP6OPMPR8EDPcyyzjtIF1r+CmR0ZJFLoMsJNm0YQjhhTkYO6WxTOTRQ==
+X-Received: by 2002:ac2:5e71:: with SMTP id a17mr9769181lfr.181.1582012014348;
+        Mon, 17 Feb 2020 23:46:54 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id x18sm1663475lfe.37.2020.02.17.23.46.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Feb 2020 23:46:53 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id D4D22180365; Tue, 18 Feb 2020 08:46:52 +0100 (CET)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     daniel@iogearbox.net, ast@fb.com
+Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        David Ahern <dsahern@gmail.com>
+Subject: [PATCH bpf] uapi/bpf: Remove text about bpf_redirect_map() giving higher performance
+Date:   Tue, 18 Feb 2020 08:46:21 +0100
+Message-Id: <20200218074621.25391-1-toke@redhat.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <526238d9bcc60500ed61da1a4af8b65af1af9583.1581984697.git.lorenzo@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/17/20 5:14 PM, Lorenzo Bianconi wrote:
-> @@ -399,10 +400,11 @@ static const struct mvneta_statistic mvneta_statistics[] = {
->  	{ ETHTOOL_STAT_EEE_WAKEUP, T_SW, "eee_wakeup_errors", },
->  	{ ETHTOOL_STAT_SKB_ALLOC_ERR, T_SW, "skb_alloc_errors", },
->  	{ ETHTOOL_STAT_REFILL_ERR, T_SW, "refill_errors", },
-> -	{ ETHTOOL_XDP_REDIRECT, T_SW, "xdp_redirect", },
-> -	{ ETHTOOL_XDP_PASS, T_SW, "xdp_pass", },
-> -	{ ETHTOOL_XDP_DROP, T_SW, "xdp_drop", },
-> -	{ ETHTOOL_XDP_TX, T_SW, "xdp_tx", },
-> +	{ ETHTOOL_XDP_REDIRECT, T_SW, "rx_xdp_redirect", },
-> +	{ ETHTOOL_XDP_PASS, T_SW, "rx_xdp_pass", },
-> +	{ ETHTOOL_XDP_DROP, T_SW, "rx_xdp_drop", },
-> +	{ ETHTOOL_XDP_TX, T_SW, "rx_xdp_tx_xmit", },
-> +	{ ETHTOOL_XDP_XMIT, T_SW, "tx_xdp_xmit", },
->  };
->  
+The performance of bpf_redirect() is now roughly the same as that of
+bpf_redirect_map(). However, David Ahern pointed out that the header file
+has not been updated to reflect this, and still says that a significant
+performance increase is possible when using bpf_redirect_map(). Remove this
+text from the bpf_redirect_map() description, and reword the description in
+bpf_redirect() slightly.
 
-LGTM
+Fixes: 1d233886dd90 ("xdp: Use bulking for non-map XDP_REDIRECT and consolidate code paths")
+Suggested-by: David Ahern <dsahern@gmail.com>
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
+ include/uapi/linux/bpf.h | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-Acked-by: David Ahern <dsahern@gmail.com>
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index f1d74a2bd234..7a526d917fb3 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1045,9 +1045,9 @@ union bpf_attr {
+  * 		supports redirection to the egress interface, and accepts no
+  * 		flag at all.
+  *
+- * 		The same effect can be attained with the more generic
+- * 		**bpf_redirect_map**\ (), which requires specific maps to be
+- * 		used but offers better performance.
++ * 		The same effect can also be attained with the more generic
++ * 		**bpf_redirect_map**\ (), which uses a BPF map to store the
++ * 		redirect target instead of providing it directly to the helper.
+  * 	Return
+  * 		For XDP, the helper returns **XDP_REDIRECT** on success or
+  * 		**XDP_ABORTED** on error. For other program types, the values
+@@ -1610,12 +1610,6 @@ union bpf_attr {
+  * 		one of the XDP program return codes up to XDP_TX, as chosen by
+  * 		the caller. Any higher bits in the *flags* argument must be
+  * 		unset.
+- *
+- * 		When used to redirect packets to net devices, this helper
+- * 		provides a high performance increase over **bpf_redirect**\ ().
+- * 		This is due to various implementation details of the underlying
+- * 		mechanisms, one of which is the fact that **bpf_redirect_map**\
+- * 		() tries to send packet as a "bulk" to the device.
+  * 	Return
+  * 		**XDP_REDIRECT** on success, or **XDP_ABORTED** on error.
+  *
+-- 
+2.25.0
+
