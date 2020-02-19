@@ -2,104 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58DF5164452
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 13:33:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB329164581
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 14:29:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgBSMdF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Feb 2020 07:33:05 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47544 "EHLO mx2.suse.de"
+        id S1727274AbgBSN3A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Feb 2020 08:29:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726491AbgBSMdF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Feb 2020 07:33:05 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 347DFC08C;
-        Wed, 19 Feb 2020 12:33:02 +0000 (UTC)
-Subject: Re: [PATCH bpf-next 0/6] bpftool: Allow to select sections and filter
- probes
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        id S1726725AbgBSN3A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Feb 2020 08:29:00 -0500
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67BE824654;
+        Wed, 19 Feb 2020 13:28:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582118939;
+        bh=2Eok6QDwEYTXtMZn1ZUTzSuDcxAHDuGB/EMud+DtNVA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SDOquG1GvLtxm/+qKnQDLJtvjCuHprU5zHxrLLHPi9io2GUA4ex23J0n2NJ0n/lVy
+         7RdP3jPNxPm569R+/Wv6Eq+A1JxOTUow5q6tUIME8BX0EsMqB6O/1vuTcOys+2BB3Y
+         sTOjAecBi4r80oLBY38TAluXbBr8Rx6QOTKKRmGo=
+Date:   Wed, 19 Feb 2020 14:28:56 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Andrii Nakryiko <andriin@fb.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
         LKML <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-References: <20200218190224.22508-1-mrostecki@opensuse.org>
- <CAADnVQJm_tvMGjhHyVn66feA3rHLSXTdzqCCABu+9tKer89LVA@mail.gmail.com>
-From:   Michal Rostecki <mrostecki@opensuse.org>
-Autocrypt: addr=mrostecki@opensuse.org; keydata=
- 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
- ZURUUA==
-Message-ID: <06ae3070-0d35-df49-9310-d1fb7bfb3e67@opensuse.org>
-Date:   Wed, 19 Feb 2020 13:33:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+        Anders Roxell <anders.roxell@linaro.org>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Subject: Re: Kernel 5.5.4 build fail for BPF-selftests with latest LLVM
+Message-ID: <20200219132856.GA2836367@kroah.com>
+References: <20200219133012.7cb6ac9e@carbon>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQJm_tvMGjhHyVn66feA3rHLSXTdzqCCABu+9tKer89LVA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200219133012.7cb6ac9e@carbon>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/19/20 4:02 AM, Alexei Starovoitov wrote:
-> The motivation is clear, but I think the users shouldn't be made
-> aware of such implementation details. I think instead of filter_in/out
-> it's better to do 'full or safe' mode of probing.
-> By default it can do all the probing that doesn't cause
-> extra dmesgs and in 'full' mode it can probe everything.
+On Wed, Feb 19, 2020 at 01:30:12PM +0100, Jesper Dangaard Brouer wrote:
+> Hi Andrii,
+> 
+> Downloaded tarball for kernel release 5.5.4, and I cannot compile
+> tools/testing/selftests/bpf/ with latest LLVM release version 9.
 
-Alright, then I will send later v2 where the "internal" implementation
-(filtering out based on regex) stays similar (filter_out will stay in
-the code without being exposed to users, filter_in will be removed). And
-the exposed option of "safe" probing will just apply the
-"(trace|write_user)" filter_out pattern. Does it sound good?
+Is this something that recently broke?  If so, what commit caused it?
+
+And has llvm 9 always worked here?
+
+> Looking closer at the build error messages, I can see that this is
+> caused by using LLVM features that (I assume) will be avail in release
+> 10. I find it very strange that we can release a kernel that have build
+> dependencies on a unreleased version of LLVM.
+
+Is this the first time you have tried using llvm to build a kernel?
+This isn't a new thing :)
+
+> I love the new LLVM BTF features, but we cannot break users/CI-systems
+> that wants to run the BPF-selftests.
+
+Is this a regression from older kernels?
+
+And does gcc work?
+
+thanks,
+
+greg k-h
