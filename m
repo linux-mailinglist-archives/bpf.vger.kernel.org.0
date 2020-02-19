@@ -2,116 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA76016396E
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 02:38:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC82163AB0
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 04:03:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727743AbgBSBiD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Feb 2020 20:38:03 -0500
-Received: from mga18.intel.com ([134.134.136.126]:22398 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726655AbgBSBiD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Feb 2020 20:38:03 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Feb 2020 17:38:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,458,1574150400"; 
-   d="scan'208";a="436061496"
-Received: from vcostago-desk1.jf.intel.com (HELO vcostago-desk1) ([10.54.70.26])
-  by fmsmga006.fm.intel.com with ESMTP; 18 Feb 2020 17:38:02 -0800
-From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     David Miller <davem@davemloft.net>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sebastian Sewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Clark Williams <williams@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [RFC patch 09/19] bpf: Use BPF_PROG_RUN_PIN_ON_CPU() at simple call sites.
-In-Reply-To: <20200214161503.804093748@linutronix.de>
-References: <20200214133917.304937432@linutronix.de> <20200214161503.804093748@linutronix.de>
-Date:   Tue, 18 Feb 2020 17:39:45 -0800
-Message-ID: <87a75ftkwu.fsf@linux.intel.com>
+        id S1728296AbgBSDDF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Feb 2020 22:03:05 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:42100 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728202AbgBSDDF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Feb 2020 22:03:05 -0500
+Received: by mail-lj1-f196.google.com with SMTP id d10so25405036ljl.9;
+        Tue, 18 Feb 2020 19:03:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7wV059MxZJL/ceXzJdSzbWhMkKat8X1C7CgUxvhC/Fs=;
+        b=PKNhjIBs6bvXetw2vIHXvTsf3L5yW59GXkcSVok4M/uU2jBYLgZexysQZkbBtOlWAn
+         hkSwVsB6durXBAeziSw5lmgLLR12XHSqrfQ5TqvMS66rdkUxRz1T6eXc11RynMpCK59n
+         cJkvJOoodL9Enc6a/92XE2LAG8Vwuwi2f/bkfGx0d7CSYsbRajkcxoqdWqw3YGxT6Xsy
+         le4BR7c0aEHEYSl2xelPy2iRFBEHWwsg6Vg3CWX+QYRgNcQMkjPTpc31ZNl5N+iRoXDL
+         CWioCtrHVMHt3S1sq2sCCLlDRKSRNMBTgRTcUUM39p4Cjc8dkI54ZClZtkbvFiSHcz3F
+         a6VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7wV059MxZJL/ceXzJdSzbWhMkKat8X1C7CgUxvhC/Fs=;
+        b=d+NFftlbFSCL5r2AE0Y0FUpoQl6agmUvnrdbIJsSP2eztrnN69LDlVw/QzdGwQpm27
+         OtWphXRAaj1Iwb66ZpJApW4/fED58wd4Xnh1XWzUDfvOrKxcNAhuW6weXl6LjZtepN/f
+         gjYtDXi2qEpSnUXytBLIESGMshj1/BvWOsZBBQ0SERdhMaDB9W/ewupVFe0YflLIEHSA
+         BBJMUFUpn/RIYuTAJzb0dK2wPmePCw6TrQjNgNszFSAmuFhrgoiNmZcwUjQ1zDmP4FLM
+         BblM58igcW8RZyTqlKkhW2liVn6rzA4QUY8OSDj01ZlAHxeHlN/EvHimDDMP0OiOJCOb
+         dBYg==
+X-Gm-Message-State: APjAAAUazwtX+BFY8dVyjXF3049zDqPF3QYkC6qYNkCI3UQYe8AnK5fH
+        YsH4VuGVMbe5aM01VITM0cOHmHEKQTGagC0Ijk1YGA==
+X-Google-Smtp-Source: APXvYqxwmc9iUV03II2uPqdKueW1KryDeg2UkbKuQpAQnmh0IThI3w3k66upIYSWld8XP8vU0N5CZgxMyIxFT+W5fOM=
+X-Received: by 2002:a2e:a404:: with SMTP id p4mr15029723ljn.234.1582081382464;
+ Tue, 18 Feb 2020 19:03:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200218190224.22508-1-mrostecki@opensuse.org>
+In-Reply-To: <20200218190224.22508-1-mrostecki@opensuse.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 18 Feb 2020 19:02:49 -0800
+Message-ID: <CAADnVQJm_tvMGjhHyVn66feA3rHLSXTdzqCCABu+9tKer89LVA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/6] bpftool: Allow to select sections and filter probes
+To:     Michal Rostecki <mrostecki@opensuse.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Tue, Feb 18, 2020 at 11:02 AM Michal Rostecki <mrostecki@opensuse.org> wrote:
+>
+> This patch series extend the "bpftool feature" subcommand with the
+> new positional arguments:
+>
+> - "section", which allows to select a specific section of probes (i.e.
+>   "system_config", "program_types", "map_types");
+> - "filter_in", which allows to select only probes which matches the
+>   given regex pattern;
+> - "filter_out", which allows to filter out probes which do not match the
+>   given regex pattern.
+>
+> The main motivation behind those changes is ability the fact that some
+> probes (for example those related to "trace" or "write_user" helpers)
+> emit dmesg messages which might be confusing for people who are running
+> on production environments. For details see the Cilium issue[0].
+>
+> [0] https://github.com/cilium/cilium/issues/10048
 
-Thomas Gleixner <tglx@linutronix.de> writes:
-
-> From: David Miller <davem@davemloft.net>
->
-> All of these cases are strictly of the form:
->
-> 	preempt_disable();
-> 	BPF_PROG_RUN(...);
-> 	preempt_enable();
->
-> Replace this with BPF_PROG_RUN_PIN_ON_CPU() which wraps BPF_PROG_RUN()
-> with:
->
-> 	migrate_disable();
-> 	BPF_PROG_RUN(...);
-> 	migrate_enable();
->
-> On non RT enabled kernels this maps to preempt_disable/enable() and on RT
-> enabled kernels this solely prevents migration, which is sufficient as
-> there is no requirement to prevent reentrancy to any BPF program from a
-> preempting task. The only requirement is that the program stays on the same
-> CPU.
->
-> Therefore, this is a trivially correct transformation.
->
-> [ tglx: Converted to BPF_PROG_RUN_PIN_ON_CPU() ]
->
-> Signed-off-by: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
->
-> ---
->  include/linux/filter.h    |    4 +---
->  kernel/seccomp.c          |    4 +---
->  net/core/flow_dissector.c |    4 +---
->  net/core/skmsg.c          |    8 ++------
->  net/kcm/kcmsock.c         |    4 +---
->  5 files changed, 6 insertions(+), 18 deletions(-)
->
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -713,9 +713,7 @@ static inline u32 bpf_prog_run_clear_cb(
->  	if (unlikely(prog->cb_access))
->  		memset(cb_data, 0, BPF_SKB_CB_LEN);
->  
-> -	preempt_disable();
-> -	res = BPF_PROG_RUN(prog, skb);
-> -	preempt_enable();
-> +	res = BPF_PROG_RUN_PIN_ON_CPU(prog, skb);
->  	return res;
->  }
->  
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -268,16 +268,14 @@ static u32 seccomp_run_filters(const str
->  	 * All filters in the list are evaluated and the lowest BPF return
->  	 * value always takes priority (ignoring the DATA).
->  	 */
-> -	preempt_disable();
->  	for (; f; f = f->prev) {
-> -		u32 cur_ret = BPF_PROG_RUN(f->prog, sd);
-> +		u32 cur_ret = BPF_PROG_RUN_PIN_ON_CPU(f->prog, sd);
->
-
-More a question really, isn't the behavior changing here? i.e. shouldn't
-migrate_disable()/migrate_enable() be moved to outside the loop? Or is
-running seccomp filters on different cpus not a problem?
-
--- 
-Vinicius
+The motivation is clear, but I think the users shouldn't be made
+aware of such implementation details. I think instead of filter_in/out
+it's better to do 'full or safe' mode of probing.
+By default it can do all the probing that doesn't cause
+extra dmesgs and in 'full' mode it can probe everything.
