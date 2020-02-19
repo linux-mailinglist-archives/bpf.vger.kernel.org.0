@@ -2,214 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0043C1645E8
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 14:46:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6573F16472B
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 15:38:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgBSNqz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Feb 2020 08:46:55 -0500
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:44682 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgBSNqz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Feb 2020 08:46:55 -0500
+        id S1726680AbgBSOiz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Feb 2020 09:38:55 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:34094 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726539AbgBSOiy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Feb 2020 09:38:54 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582120013;
+        s=mimecast20190719; t=1582123133;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AsOAJntgYEqLqQBm6Er/vhjY7n7ShwDmEcgzimDVwlQ=;
-        b=FsNopVf1XQpIVphwIZ9IgsNRg2zwyttExfibPIaqgoPb4K8gWZIhWhf65GYkwgu7lyxP3Q
-        XKsCn3SOdCy8bp0TEVXFrSkTRu5RgqxLifBgsVuDdBCLU72n0L3XgLB80/1mOaawZRJsvF
-        MAZhHmyfd+fsuO9DpVr1YyQeI9FBfag=
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=bZrSi5zlYelhhln3YVdj6GttxSHJSX9JvDG2NaZdgeA=;
+        b=Gh2zo9YDxDTlHgHw/xRDB+59RgpMWVL+NsBdbyYAWnLDpoItQahRuMfStMOqGF5H1HjoxP
+        m6tJs1WRYZCWpppEY+09JkTvkjKZigLEM1nL39mKW96J928oMGXzpAFrwqvn2mFX4R8ClG
+        +/+3QvYs95tRQcCQ90+XAE5ZGz0tKXA=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-18-BnhEGNdYP4mKI6shw1Yj5g-1; Wed, 19 Feb 2020 08:46:52 -0500
-X-MC-Unique: BnhEGNdYP4mKI6shw1Yj5g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+ us-mta-43-GXJ7BLpvMNq1XtW27h6ZjQ-1; Wed, 19 Feb 2020 09:38:50 -0500
+X-MC-Unique: GXJ7BLpvMNq1XtW27h6ZjQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDC4E107ACC7;
-        Wed, 19 Feb 2020 13:46:50 +0000 (UTC)
-Received: from carbon (ovpn-200-26.brq.redhat.com [10.40.200.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 604CD19756;
-        Wed, 19 Feb 2020 13:46:42 +0000 (UTC)
-Date:   Wed, 19 Feb 2020 14:46:40 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     netdev@vger.kernel.org, ilias.apalodimas@linaro.org,
-        davem@davemloft.net, kuba@kernel.org, lorenzo.bianconi@redhat.com,
-        dsahern@kernel.org, bpf@vger.kernel.org, brouer@redhat.com
-Subject: Re: [PATCH net-next] net: mvneta: align xdp stats naming scheme to
- mlx5 driver
-Message-ID: <20200219144640.63964b2d@carbon>
-In-Reply-To: <6c5f27aff46e6dd6be92ce29b65bc3670eeabffc.1582105994.git.lorenzo@kernel.org>
-References: <6c5f27aff46e6dd6be92ce29b65bc3670eeabffc.1582105994.git.lorenzo@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF73A800D5F;
+        Wed, 19 Feb 2020 14:38:48 +0000 (UTC)
+Received: from [10.36.116.231] (ovpn-116-231.ams2.redhat.com [10.36.116.231])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C801B5C28D;
+        Wed, 19 Feb 2020 14:38:42 +0000 (UTC)
+From:   "Eelco Chaudron" <echaudro@redhat.com>
+To:     "Alexei Starovoitov" <ast@kernel.org>
+Cc:     Xdp <xdp-newbies@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "Toke =?utf-8?b?SMO4aWxhbmQtSsO4cmdlbnNlbg==?=" <toke@redhat.com>,
+        "Jesper Dangaard Brouer" <brouer@redhat.com>
+Subject: Capture xdp packets in an fentry BPF hook
+Date:   Wed, 19 Feb 2020 15:38:40 +0100
+Message-ID: <F844EC8A-902B-4BF7-95E3-B0D6DC618F1B@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; format=flowed
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 19 Feb 2020 10:57:37 +0100
-Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+Hi Alexei at al.,
 
-> Introduce "rx" prefix in the name scheme for xdp counters
-> on rx path.
-> Differentiate between XDP_TX and ndo_xdp_xmit counters
-> 
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+I'm getting closer to finally have an xdpdump tool that uses the bpf 
+fentry/fexit tracepoints, but I ran into a final hurdle...
 
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+To stuff the packet into a perf ring I'll need to use the 
+bpf_perf_event_output(), but unfortunately, this is a program of trace 
+type, and not XDP so the packet data is not added automatically :(
 
-> ---
-> Changes since RFC:
-> - rename rx_xdp_tx_xmit in rx_xdp_tx
-> - move tx stats accounting in mvneta_xdp_xmit_back/mvneta_xdp_xmit
+Secondly even trying to pass the actual packet data as a reference to 
+bpf_perf_event_output() will not work as the verifier wants the data to 
+be on the fp.
 
-I like how you managed to bulk update the ndo_xdp_xmit counters.
+Even worse, the trace program gets the XDP info not thought the ctx, but 
+trough the fentry/fexit input value, i.e.:
 
-> ---
->  drivers/net/ethernet/marvell/mvneta.c | 52 ++++++++++++++++++---------
->  1 file changed, 36 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-> index b7045b6a15c2..8e1feb678cea 100644
-> --- a/drivers/net/ethernet/marvell/mvneta.c
-> +++ b/drivers/net/ethernet/marvell/mvneta.c
-> @@ -344,6 +344,7 @@ enum {
->  	ETHTOOL_XDP_REDIRECT,
->  	ETHTOOL_XDP_PASS,
->  	ETHTOOL_XDP_DROP,
-> +	ETHTOOL_XDP_XMIT,
->  	ETHTOOL_XDP_TX,
->  	ETHTOOL_MAX_STATS,
->  };
-> @@ -399,10 +400,11 @@ static const struct mvneta_statistic mvneta_statistics[] = {
->  	{ ETHTOOL_STAT_EEE_WAKEUP, T_SW, "eee_wakeup_errors", },
->  	{ ETHTOOL_STAT_SKB_ALLOC_ERR, T_SW, "skb_alloc_errors", },
->  	{ ETHTOOL_STAT_REFILL_ERR, T_SW, "refill_errors", },
-> -	{ ETHTOOL_XDP_REDIRECT, T_SW, "xdp_redirect", },
-> -	{ ETHTOOL_XDP_PASS, T_SW, "xdp_pass", },
-> -	{ ETHTOOL_XDP_DROP, T_SW, "xdp_drop", },
-> -	{ ETHTOOL_XDP_TX, T_SW, "xdp_tx", },
-> +	{ ETHTOOL_XDP_REDIRECT, T_SW, "rx_xdp_redirect", },
-> +	{ ETHTOOL_XDP_PASS, T_SW, "rx_xdp_pass", },
-> +	{ ETHTOOL_XDP_DROP, T_SW, "rx_xdp_drop", },
-> +	{ ETHTOOL_XDP_TX, T_SW, "rx_xdp_tx", },
-> +	{ ETHTOOL_XDP_XMIT, T_SW, "tx_xdp_xmit", },
->  };
+	SEC("fentry/func")
+	int BPF_PROG(trace_on_entry, struct xdp_buff *xdp)...
 
-I'm fine with these names.
+	struct net_device {
+	    int ifindex;
+	} __attribute__((preserve_access_index));
 
-Based on the code, the "rx_xdp_tx" counter is counting the successful
-XDP_TX operations, which I actually like.  I could use this to debug,
-if my XDP_TX operations are drop packets (due to TX-queue full), by
-using fexit or XDP-prog counter to deduct this.  I think it would be
-valuable to provide a "rx_xdp_tx_err" counter, that would detect this,
-it makes it easier to detect this for end-users (as a followup patch).
+	struct xdp_rxq_info {
+	    struct net_device *dev;
+	    __u32 queue_index;
+	} __attribute__((preserve_access_index));
 
+	struct xdp_buff {
+	    void *data;
+	    void *data_end;
+	    void *data_meta;
+	    void *data_hard_start;
+	    unsigned long handle;
+	    struct xdp_rxq_info *rxq;
+	} __attribute__((preserve_access_index));
 
->  struct mvneta_stats {
-> @@ -414,6 +416,7 @@ struct mvneta_stats {
->  	u64	xdp_redirect;
->  	u64	xdp_pass;
->  	u64	xdp_drop;
-> +	u64	xdp_xmit;
->  	u64	xdp_tx;
->  };
->  
-> @@ -2012,7 +2015,6 @@ static int
->  mvneta_xdp_submit_frame(struct mvneta_port *pp, struct mvneta_tx_queue *txq,
->  			struct xdp_frame *xdpf, bool dma_map)
->  {
-> -	struct mvneta_pcpu_stats *stats = this_cpu_ptr(pp->stats);
->  	struct mvneta_tx_desc *tx_desc;
->  	struct mvneta_tx_buf *buf;
->  	dma_addr_t dma_addr;
-> @@ -2047,12 +2049,6 @@ mvneta_xdp_submit_frame(struct mvneta_port *pp, struct mvneta_tx_queue *txq,
->  	tx_desc->buf_phys_addr = dma_addr;
->  	tx_desc->data_size = xdpf->len;
->  
-> -	u64_stats_update_begin(&stats->syncp);
-> -	stats->es.ps.tx_bytes += xdpf->len;
-> -	stats->es.ps.tx_packets++;
-> -	stats->es.ps.xdp_tx++;
-> -	u64_stats_update_end(&stats->syncp);
-> -
->  	mvneta_txq_inc_put(txq);
->  	txq->pending++;
->  	txq->count++;
-> @@ -2079,8 +2075,17 @@ mvneta_xdp_xmit_back(struct mvneta_port *pp, struct xdp_buff *xdp)
->  
->  	__netif_tx_lock(nq, cpu);
->  	ret = mvneta_xdp_submit_frame(pp, txq, xdpf, false);
-> -	if (ret == MVNETA_XDP_TX)
-> +	if (ret == MVNETA_XDP_TX) {
-> +		struct mvneta_pcpu_stats *stats = this_cpu_ptr(pp->stats);
-> +
-> +		u64_stats_update_begin(&stats->syncp);
-> +		stats->es.ps.tx_bytes += xdpf->len;
-> +		stats->es.ps.tx_packets++;
-> +		stats->es.ps.xdp_tx++;
-> +		u64_stats_update_end(&stats->syncp);
-> +
->  		mvneta_txq_pend_desc_add(pp, txq, 0);
-> +	}
->  	__netif_tx_unlock(nq);
->  
->  	return ret;
-> @@ -2091,10 +2096,11 @@ mvneta_xdp_xmit(struct net_device *dev, int num_frame,
->  		struct xdp_frame **frames, u32 flags)
->  {
->  	struct mvneta_port *pp = netdev_priv(dev);
-> +	struct mvneta_pcpu_stats *stats = this_cpu_ptr(pp->stats);
-> +	int i, nxmit_byte = 0, nxmit = num_frame;
->  	int cpu = smp_processor_id();
->  	struct mvneta_tx_queue *txq;
->  	struct netdev_queue *nq;
-> -	int i, drops = 0;
->  	u32 ret;
->  
->  	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
-> @@ -2106,9 +2112,11 @@ mvneta_xdp_xmit(struct net_device *dev, int num_frame,
->  	__netif_tx_lock(nq, cpu);
->  	for (i = 0; i < num_frame; i++) {
->  		ret = mvneta_xdp_submit_frame(pp, txq, frames[i], true);
-> -		if (ret != MVNETA_XDP_TX) {
-> +		if (ret == MVNETA_XDP_TX) {
-> +			nxmit_byte += frames[i]->len;
-> +		} else {
->  			xdp_return_frame_rx_napi(frames[i]);
-> -			drops++;
-> +			nxmit--;
->  		}
->  	}
->  
-> @@ -2116,7 +2124,13 @@ mvneta_xdp_xmit(struct net_device *dev, int num_frame,
->  		mvneta_txq_pend_desc_add(pp, txq, 0);
->  	__netif_tx_unlock(nq);
->  
-> -	return num_frame - drops;
-> +	u64_stats_update_begin(&stats->syncp);
-> +	stats->es.ps.tx_bytes += nxmit_byte;
-> +	stats->es.ps.tx_packets += nxmit;
-> +	stats->es.ps.xdp_xmit += nxmit;
-> +	u64_stats_update_end(&stats->syncp);
-> +
-> +	return nxmit;
->  }
+Hence even trying to copy in bytes to a local buffer is not allowed by 
+the verifier, i.e. __u8 *data = (u8 *)(long)xdp->data;
 
-Updating xmit counter per bulk, nice.
+Can you let me know how you envisioned a BPF entry hook to capture 
+packets from XDP. Am I missing something, or is there something missing 
+from the infrastructure?
 
->  
-[...]
+Thanks,
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Eelco
 
