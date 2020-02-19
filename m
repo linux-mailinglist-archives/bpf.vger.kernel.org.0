@@ -2,202 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2C3164323
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 12:15:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6048164448
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 13:30:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726875AbgBSLPZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Feb 2020 06:15:25 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:44280 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726697AbgBSLPZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Feb 2020 06:15:25 -0500
-Received: by mail-wr1-f66.google.com with SMTP id m16so27702343wrx.11
-        for <bpf@vger.kernel.org>; Wed, 19 Feb 2020 03:15:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=KKw/IAOCGShqjvSA+eVh7OxKgmnBf/WOFYYRC5vRt14=;
-        b=DoHj1/fELsR5P1WkoEY65BUrycw9MuYgPuMZRmnXksREQ5eq6TWUVWTvSZbZssHYH3
-         nzxoiC8RhM1VYVHPdflJUO/sNZWFlAWJ1vNQftEoxo6ieymiQ3GQdeE/1ip2KmZrL8ur
-         DnpeHbl8DxUcphcfyEUrWyhnio/55Jm3VhD8g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=KKw/IAOCGShqjvSA+eVh7OxKgmnBf/WOFYYRC5vRt14=;
-        b=FWzOVZ0uvfx3FQq3a4g2KGbpMgfC0052ULJz0jShITOOSqrABLeCg4b86n/d6h/f4n
-         tnW77V2kw/uf48zQcynevqDSfOBF1nQHtXRXNAqQVAx2yPAKLqnKFuOxhGuaL+rDBxOE
-         ajLF1AVsqew5SUxBMhpa7J0aKZcKA5Kw6sTqn6ZcvjCfOGLsHEYNMRdAR0k2zmLbqWe0
-         niYT2FpXYA580JU4pusmRI5Ozs8CzCp4qqAQZPwyhSQufQlq6jLDIOv/sKrL088bZg+u
-         o5p0p2BTKSHEEldlR379dnwIM2KE4rGzYuwJ8m4jr+mXE4JuLEW2dbPpqWqmEq6LqDD+
-         /yvw==
-X-Gm-Message-State: APjAAAVhIqzB1gIeZ6JRUwi2Tu1OXXjNCO0MG3KTOh87Y6c0MJVpaZE/
-        yEEWF/69jbJHsbl+B+qxjLp7nw==
-X-Google-Smtp-Source: APXvYqwC2wHBucdB5uuWXZiGayLCctc3Ub5gcT3EN0PNRKRWDqvKgRMaQ2NhaL6Wjv2wGgy3Y/Edng==
-X-Received: by 2002:a5d:61c2:: with SMTP id q2mr33993149wrv.425.1582110922323;
-        Wed, 19 Feb 2020 03:15:22 -0800 (PST)
-Received: from cloudflare.com ([88.157.168.82])
-        by smtp.gmail.com with ESMTPSA id p11sm2649024wrn.40.2020.02.19.03.15.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Feb 2020 03:15:21 -0800 (PST)
-References: <20200219064817.3636079-1-yhs@fb.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        Brian Vazquez <brianvv@google.com>
-Subject: Re: [PATCH bpf] bpf: fix a potential deadlock with bpf_map_do_batch
-In-reply-to: <20200219064817.3636079-1-yhs@fb.com>
-Date:   Wed, 19 Feb 2020 11:15:20 +0000
-Message-ID: <87mu9e6d6f.fsf@cloudflare.com>
+        id S1726788AbgBSMae (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Feb 2020 07:30:34 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:51471 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726491AbgBSMad (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Feb 2020 07:30:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1582115431;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=FlQCARZ1FbwRbU2uJuzeHmBQSyIgJVmrLI3UOgbvB+8=;
+        b=UXEJ/DioBwQsq5ICtwu3PyCfJp99T0fBdCqXLI2omhPv3zn03gXuxz+ujjXlvv0r9uIjNy
+        jyR59SW4bihEpqU8Invn0MImgfGBr/Fk89+Jn6hU8ktpRwqBSyVIE1w8OLMCorTOd1/8wG
+        xH9ySkxQc65nReU5Zuf7EdzZD1hLmIc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-208-Q4_uj_NHPDK7p6ZkD_KXvA-1; Wed, 19 Feb 2020 07:30:24 -0500
+X-MC-Unique: Q4_uj_NHPDK7p6ZkD_KXvA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB191107ACCC;
+        Wed, 19 Feb 2020 12:30:22 +0000 (UTC)
+Received: from carbon (ovpn-200-26.brq.redhat.com [10.40.200.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4B7E819E9C;
+        Wed, 19 Feb 2020 12:30:13 +0000 (UTC)
+Date:   Wed, 19 Feb 2020 13:30:12 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     brouer@redhat.com, Andrii Nakryiko <andriin@fb.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Subject: Kernel 5.5.4 build fail for BPF-selftests with latest LLVM
+Message-ID: <20200219133012.7cb6ac9e@carbon>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 06:48 AM GMT, Yonghong Song wrote:
-> Commit 057996380a42 ("bpf: Add batch ops to all htab bpf map")
-> added lookup_and_delete batch operation for hash table.
-> The current implementation has bpf_lru_push_free() inside
-> the bucket lock, which may cause a deadlock.
->
-> syzbot reports:
->    -> #2 (&htab->buckets[i].lock#2){....}:
->        __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
->        _raw_spin_lock_irqsave+0x95/0xcd kernel/locking/spinlock.c:159
->        htab_lru_map_delete_node+0xce/0x2f0 kernel/bpf/hashtab.c:593
->        __bpf_lru_list_shrink_inactive kernel/bpf/bpf_lru_list.c:220 [inline]
->        __bpf_lru_list_shrink+0xf9/0x470 kernel/bpf/bpf_lru_list.c:266
->        bpf_lru_list_pop_free_to_local kernel/bpf/bpf_lru_list.c:340 [inline]
->        bpf_common_lru_pop_free kernel/bpf/bpf_lru_list.c:447 [inline]
->        bpf_lru_pop_free+0x87c/0x1670 kernel/bpf/bpf_lru_list.c:499
->        prealloc_lru_pop+0x2c/0xa0 kernel/bpf/hashtab.c:132
->        __htab_lru_percpu_map_update_elem+0x67e/0xa90 kernel/bpf/hashtab.c:1069
->        bpf_percpu_hash_update+0x16e/0x210 kernel/bpf/hashtab.c:1585
->        bpf_map_update_value.isra.0+0x2d7/0x8e0 kernel/bpf/syscall.c:181
->        generic_map_update_batch+0x41f/0x610 kernel/bpf/syscall.c:1319
->        bpf_map_do_batch+0x3f5/0x510 kernel/bpf/syscall.c:3348
->        __do_sys_bpf+0x9b7/0x41e0 kernel/bpf/syscall.c:3460
->        __se_sys_bpf kernel/bpf/syscall.c:3355 [inline]
->        __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3355
->        do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
->        entry_SYSCALL_64_after_hwframe+0x49/0xbe
->
->    -> #0 (&loc_l->lock){....}:
->        check_prev_add kernel/locking/lockdep.c:2475 [inline]
->        check_prevs_add kernel/locking/lockdep.c:2580 [inline]
->        validate_chain kernel/locking/lockdep.c:2970 [inline]
->        __lock_acquire+0x2596/0x4a00 kernel/locking/lockdep.c:3954
->        lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4484
->        __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
->        _raw_spin_lock_irqsave+0x95/0xcd kernel/locking/spinlock.c:159
->        bpf_common_lru_push_free kernel/bpf/bpf_lru_list.c:516 [inline]
->        bpf_lru_push_free+0x250/0x5b0 kernel/bpf/bpf_lru_list.c:555
->        __htab_map_lookup_and_delete_batch+0x8d4/0x1540 kernel/bpf/hashtab.c:1374
->        htab_lru_map_lookup_and_delete_batch+0x34/0x40 kernel/bpf/hashtab.c:1491
->        bpf_map_do_batch+0x3f5/0x510 kernel/bpf/syscall.c:3348
->        __do_sys_bpf+0x1f7d/0x41e0 kernel/bpf/syscall.c:3456
->        __se_sys_bpf kernel/bpf/syscall.c:3355 [inline]
->        __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3355
->        do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
->        entry_SYSCALL_64_after_hwframe+0x49/0xbe
->
->     Possible unsafe locking scenario:
->
->           CPU0                    CPU2
->           ----                    ----
->      lock(&htab->buckets[i].lock#2);
->                                   lock(&l->lock);
->                                   lock(&htab->buckets[i].lock#2);
->      lock(&loc_l->lock);
->
->     *** DEADLOCK ***
->
-> To fix the issue, for htab_lru_map_lookup_and_delete_batch() in CPU0,
-> let us do bpf_lru_push_free() out of the htab bucket lock. This can
-> avoid the above deadlock scenario.
->
-> Fixes: 057996380a42 ("bpf: Add batch ops to all htab bpf map")
-> Reported-by: syzbot+a38ff3d9356388f2fb83@syzkaller.appspotmail.com
-> Reported-by: syzbot+122b5421d14e68f29cd1@syzkaller.appspotmail.com
-> Suggested-by: Hillf Danton <hdanton@sina.com>
-> Suggested-by: Martin KaFai Lau <kafai@fb.com>
-> Cc: Brian Vazquez <brianvv@google.com>
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  kernel/bpf/hashtab.c | 19 ++++++++++++++++---
->  1 file changed, 16 insertions(+), 3 deletions(-)
->
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index 2d182c4ee9d9..59083061dd3a 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -56,6 +56,7 @@ struct htab_elem {
->  			union {
->  				struct bpf_htab *htab;
->  				struct pcpu_freelist_node fnode;
-> +				struct htab_elem *link;
->  			};
->  		};
->  	};
-> @@ -1255,6 +1256,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
->  	void __user *uvalues = u64_to_user_ptr(attr->batch.values);
->  	void __user *ukeys = u64_to_user_ptr(attr->batch.keys);
->  	void *ubatch = u64_to_user_ptr(attr->batch.in_batch);
-> +	struct htab_elem *node_to_free = NULL;
->  	u32 batch, max_count, size, bucket_size;
->  	u64 elem_map_flags, map_flags;
->  	struct hlist_nulls_head *head;
-> @@ -1370,9 +1372,13 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
->  		}
->  		if (do_delete) {
->  			hlist_nulls_del_rcu(&l->hash_node);
-> -			if (is_lru_map)
-> -				bpf_lru_push_free(&htab->lru, &l->lru_node);
-> -			else
-> +			if (is_lru_map) {
-> +				/* link to-be-freed elements together so
-> +				 * they can freed outside bucket lock region.
-> +				 */
-> +				l->link = node_to_free;
-> +				node_to_free = l;
-> +			} else
->  				free_htab_elem(htab, l);
+Hi Andrii,
 
-Nit, we need braces in both branches now, as per
-process/coding-style.rst:
+Downloaded tarball for kernel release 5.5.4, and I cannot compile
+tools/testing/selftests/bpf/ with latest LLVM release version 9.
 
-| This does not apply if only one branch of a conditional statement is a single
-| statement; in the latter case use braces in both branches:
-|
-| .. code-block:: c
-|
-|         if (condition) {
-|                 do_this();
-|                 do_that();
-|         } else {
-|                 otherwise();
-|         }
+Looking closer at the build error messages, I can see that this is
+caused by using LLVM features that (I assume) will be avail in release
+10. I find it very strange that we can release a kernel that have build
+dependencies on a unreleased version of LLVM.
 
->  		}
->  		dst_key += key_size;
-> @@ -1380,6 +1386,13 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
->  	}
->
->  	raw_spin_unlock_irqrestore(&b->lock, flags);
-> +
-> +	while (node_to_free) {
-> +		l = node_to_free;
-> +		node_to_free = node_to_free->link;
-> +		bpf_lru_push_free(&htab->lru, &l->lru_node);
-> +	}
-> +
->  	/* If we are not copying data, we can go to next bucket and avoid
->  	 * unlocking the rcu.
->  	 */
+I'm willing to help out, such that we can do either version or feature
+detection, to either skip compiling specific test programs or at least
+give users a proper warning of they are using a too "old" LLVM version.
 
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+
+I love the new LLVM BTF features, but we cannot break users/CI-systems
+that wants to run the BPF-selftests.
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
+http://releases.llvm.org/download.html
+
+Compile error message:
+ unknown builtin '__builtin_preserve_field_info'
+
+Full:
+
+make -C /home/jbrouer/build/linux-5.5.4/tools/lib/bpf OUTPUT=/home/jbrouer/build/linux-5.5.4/tools/testing/selftests/bpf/
+make[1]: Entering directory '/home/jbrouer/build/linux-5.5.4/tools/lib/bpf'
+make[1]: Leaving directory '/home/jbrouer/build/linux-5.5.4/tools/lib/bpf'
+(clang  -I. -I/home/jbrouer/build/linux-5.5.4/tools/testing/selftests/bpf -g -D__TARGET_ARCH_x86 -mlittle-endian -I. -I./include/uapi -I/home/jbrouer/build/linux-5.5.4/tools/include/uapi -I/home/jbrouer/build/linux-5.5.4/tools/lib/bpf -I/home/jbrouer/build/linux-5.5.4/tools/testing/selftests/usr/include -idirafter /usr/local/include -idirafter /usr/lib64/clang/9.0.0/include -idirafter /usr/include -Wno-compare-distinct-pointer-types -O2 -target bpf -emit-llvm -c progs/test_core_reloc_bitfields_probed.c -o - || echo "BPF obj compilation failed") | llc -mattr=dwarfris -march=bpf -mcpu=probe  -mattr=+alu32 -filetype=obj -o /home/jbrouer/build/linux-5.5.4/tools/testing/selftests/bpf/test_core_reloc_bitfields_probed.o
+progs/test_core_reloc_bitfields_probed.c:47:13: error: use of unknown builtin '__builtin_preserve_field_info' [-Wimplicit-function-declaration]
+        out->ub1 = BPF_CORE_READ_BITFIELD_PROBED(in, ub1);
+                   ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:52:2: note: expanded from macro 'BPF_CORE_READ_BITFIELD_PROBED'
+        __CORE_BITFIELD_PROBE_READ(&val, s, field);                           \
+        ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:28:10: note: expanded from macro '__CORE_BITFIELD_PROBE_READ'
+                       __CORE_RELO(src, fld, BYTE_SIZE),                      \
+                       ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:23:2: note: expanded from macro '__CORE_RELO'
+        __builtin_preserve_field_info((src)->field, BPF_FIELD_##info)
+        ^
+progs/test_core_reloc_bitfields_probed.c:48:13: error: use of unknown builtin '__builtin_preserve_field_info' [-Wimplicit-function-declaration]
+        out->ub2 = BPF_CORE_READ_BITFIELD_PROBED(in, ub2);
+                   ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:52:2: note: expanded from macro 'BPF_CORE_READ_BITFIELD_PROBED'
+        __CORE_BITFIELD_PROBE_READ(&val, s, field);                           \
+        ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:28:10: note: expanded from macro '__CORE_BITFIELD_PROBE_READ'
+                       __CORE_RELO(src, fld, BYTE_SIZE),                      \
+                       ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:23:2: note: expanded from macro '__CORE_RELO'
+        __builtin_preserve_field_info((src)->field, BPF_FIELD_##info)
+        ^
+progs/test_core_reloc_bitfields_probed.c:49:13: error: use of unknown builtin '__builtin_preserve_field_info' [-Wimplicit-function-declaration]
+        out->ub7 = BPF_CORE_READ_BITFIELD_PROBED(in, ub7);
+                   ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:52:2: note: expanded from macro 'BPF_CORE_READ_BITFIELD_PROBED'
+        __CORE_BITFIELD_PROBE_READ(&val, s, field);                           \
+        ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:28:10: note: expanded from macro '__CORE_BITFIELD_PROBE_READ'
+                       __CORE_RELO(src, fld, BYTE_SIZE),                      \
+                       ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:23:2: note: expanded from macro '__CORE_RELO'
+        __builtin_preserve_field_info((src)->field, BPF_FIELD_##info)
+        ^
+progs/test_core_reloc_bitfields_probed.c:50:13: error: use of unknown builtin '__builtin_preserve_field_info' [-Wimplicit-function-declaration]
+        out->sb4 = BPF_CORE_READ_BITFIELD_PROBED(in, sb4);
+                   ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:52:2: note: expanded from macro 'BPF_CORE_READ_BITFIELD_PROBED'
+        __CORE_BITFIELD_PROBE_READ(&val, s, field);                           \
+        ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:28:10: note: expanded from macro '__CORE_BITFIELD_PROBE_READ'
+                       __CORE_RELO(src, fld, BYTE_SIZE),                      \
+                       ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:23:2: note: expanded from macro '__CORE_RELO'
+        __builtin_preserve_field_info((src)->field, BPF_FIELD_##info)
+        ^
+progs/test_core_reloc_bitfields_probed.c:51:14: error: use of unknown builtin '__builtin_preserve_field_info' [-Wimplicit-function-declaration]
+        out->sb20 = BPF_CORE_READ_BITFIELD_PROBED(in, sb20);
+                    ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:52:2: note: expanded from macro 'BPF_CORE_READ_BITFIELD_PROBED'
+        __CORE_BITFIELD_PROBE_READ(&val, s, field);                           \
+        ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:28:10: note: expanded from macro '__CORE_BITFIELD_PROBE_READ'
+                       __CORE_RELO(src, fld, BYTE_SIZE),                      \
+                       ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:23:2: note: expanded from macro '__CORE_RELO'
+        __builtin_preserve_field_info((src)->field, BPF_FIELD_##info)
+        ^
+progs/test_core_reloc_bitfields_probed.c:52:13: error: use of unknown builtin '__builtin_preserve_field_info' [-Wimplicit-function-declaration]
+        out->u32 = BPF_CORE_READ_BITFIELD_PROBED(in, u32);
+                   ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:52:2: note: expanded from macro 'BPF_CORE_READ_BITFIELD_PROBED'
+        __CORE_BITFIELD_PROBE_READ(&val, s, field);                           \
+        ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:28:10: note: expanded from macro '__CORE_BITFIELD_PROBE_READ'
+                       __CORE_RELO(src, fld, BYTE_SIZE),                      \
+                       ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:23:2: note: expanded from macro '__CORE_RELO'
+        __builtin_preserve_field_info((src)->field, BPF_FIELD_##info)
+        ^
+progs/test_core_reloc_bitfields_probed.c:53:13: error: use of unknown builtin '__builtin_preserve_field_info' [-Wimplicit-function-declaration]
+        out->s32 = BPF_CORE_READ_BITFIELD_PROBED(in, s32);
+                   ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:52:2: note: expanded from macro 'BPF_CORE_READ_BITFIELD_PROBED'
+        __CORE_BITFIELD_PROBE_READ(&val, s, field);                           \
+        ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:28:10: note: expanded from macro '__CORE_BITFIELD_PROBE_READ'
+                       __CORE_RELO(src, fld, BYTE_SIZE),                      \
+                       ^
+/home/jbrouer/build/linux-5.5.4/tools/lib/bpf/bpf_core_read.h:23:2: note: expanded from macro '__CORE_RELO'
+        __builtin_preserve_field_info((src)->field, BPF_FIELD_##info)
+        ^
+7 errors generated.
+llc: error: llc: <stdin>:1:1: error: expected top-level entity
+BPF obj compilation failed
+^
+make: *** [Makefile:281: /home/jbrouer/build/linux-5.5.4/tools/testing/selftests/bpf/test_core_reloc_bitfields_probed.o] Error 1
+
