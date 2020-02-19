@@ -2,208 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE031640E8
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 10:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DEA4164212
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 11:28:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726453AbgBSJ5w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Feb 2020 04:57:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726450AbgBSJ5w (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Feb 2020 04:57:52 -0500
-Received: from localhost.localdomain (unknown [151.48.137.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3794521D56;
-        Wed, 19 Feb 2020 09:57:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582106270;
-        bh=HDpGa9t2mlk/qeWGVPL2lJCrLYCMr7KkBb+ZD4aNI/Y=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YNfJBYcDBmiqf57L2VbwBFTtoAL0s+k4hQGGHwxjoSttctmmIyEeLI0B+6H2u3jo0
-         SqqrEeyCNQ7Sy9NEg0jtxW3x91xzbCKR0XqfkXWAp+tXwvruFXUT/3Rec5z26u1A2P
-         eiRePQLCwuMrZi/+sLcuaszUOrtLn8IYobZBwHys=
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     netdev@vger.kernel.org
-Cc:     ilias.apalodimas@linaro.org, davem@davemloft.net, kuba@kernel.org,
-        lorenzo.bianconi@redhat.com, brouer@redhat.com, dsahern@kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH net-next] net: mvneta: align xdp stats naming scheme to mlx5 driver
-Date:   Wed, 19 Feb 2020 10:57:37 +0100
-Message-Id: <6c5f27aff46e6dd6be92ce29b65bc3670eeabffc.1582105994.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.24.1
+        id S1726495AbgBSK2P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Feb 2020 05:28:15 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:36097 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726453AbgBSK2P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Feb 2020 05:28:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1582108093;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vXI0vzQ/32o7Z8p5s0zKYHP5YIIZ9uPsSeeuIvMaYPk=;
+        b=jCrYyo5nVGbqoMqgHjm6ol+k6k3vKvN5Chbpxi+w5jOagA1bvimPW43x8JHd1ZN28PcM9E
+        kWQ/tLEMuV/R2Gu+ELJiWtTFh9js+qUTpiwvt+MqZHLy+zM2cssaSeparPXpt6r8BkZxXS
+        Bu463VcQkWPuWpA1fwEVbFPwkkznuKs=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-113-I508sYMcOb-R1kTOsFc9PA-1; Wed, 19 Feb 2020 05:28:12 -0500
+X-MC-Unique: I508sYMcOb-R1kTOsFc9PA-1
+Received: by mail-lf1-f72.google.com with SMTP id q16so2931001lfa.13
+        for <bpf@vger.kernel.org>; Wed, 19 Feb 2020 02:28:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=vXI0vzQ/32o7Z8p5s0zKYHP5YIIZ9uPsSeeuIvMaYPk=;
+        b=Kn+vaFtD7oXG4KZJX9fqqvp40hFMLZtTpwtb9oP02+kkKjBxaMywZVGSlIlzgIDfSN
+         6aFLYPe1qi8Z3rplD5yH0wio4F5xwMbgVyWqkxGyGpfiBGa11n07k4ZsmO5VU4N+rMaL
+         U3pHFuc+15ORYuKL0FLikz62aoFA2b9ntv2hqpK3PkNvLOLJvdZWL3x1Cwn87HpKsbvo
+         iQoSRPhhDu+NgaRZo7f8gEDv+KPdEYHcMXVVsYG34KVWuAX0BRaDisubGveZtQNDcejL
+         VwcoB57vxNxqMNeidhAaPjYuv7pemEmEuPtWZVa/Awfk5zvNbv/Bf7tnq5Z/sk1D+/7t
+         Gdig==
+X-Gm-Message-State: APjAAAX/AIrjBKrSd8nuFRvtT1uddQviYICngu5suTwN4anChNARy28t
+        2drtnQEB8UChZr2UEWG5SdALPzdMIpiWd+Z4Y1a5q+Tfz2fwqRYoyir3vTWtpHjvi/abciP5/Lv
+        bTV+nhUYLw3oa
+X-Received: by 2002:a2e:3a13:: with SMTP id h19mr15691806lja.16.1582108090946;
+        Wed, 19 Feb 2020 02:28:10 -0800 (PST)
+X-Google-Smtp-Source: APXvYqxf4fBztSDmrjRNU4tO6ynotwCqNMQvOY7VRbFJDZ9p9yu/ijggDFH6aB3OGsvS978dpq7GLg==
+X-Received: by 2002:a2e:3a13:: with SMTP id h19mr15691794lja.16.1582108090681;
+        Wed, 19 Feb 2020 02:28:10 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id k4sm954208lfo.48.2020.02.19.02.28.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Feb 2020 02:28:09 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 49136180365; Wed, 19 Feb 2020 11:28:09 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>, Yonghong Song <yhs@fb.com>,
+        ast@fb.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH bpf] libbpf: Sanitise internal map names so they are not rejected by the kernel
+In-Reply-To: <e7a1f042-a3d7-ad25-e195-fdd5f8b78680@iogearbox.net>
+References: <20200217171701.215215-1-toke@redhat.com> <9ddddbd6-aca2-61ae-b864-0f12d7fd33b4@iogearbox.net> <a0923745-ee34-3eb0-7f9b-31cec99661ec@fb.com> <87sgj7yhif.fsf@toke.dk> <e7a1f042-a3d7-ad25-e195-fdd5f8b78680@iogearbox.net>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 19 Feb 2020 11:28:09 +0100
+Message-ID: <878skyyipy.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce "rx" prefix in the name scheme for xdp counters
-on rx path.
-Differentiate between XDP_TX and ndo_xdp_xmit counters
+Daniel Borkmann <daniel@iogearbox.net> writes:
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
-Changes since RFC:
-- rename rx_xdp_tx_xmit in rx_xdp_tx
-- move tx stats accounting in mvneta_xdp_xmit_back/mvneta_xdp_xmit
----
- drivers/net/ethernet/marvell/mvneta.c | 52 ++++++++++++++++++---------
- 1 file changed, 36 insertions(+), 16 deletions(-)
+> On 2/18/20 5:42 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Yonghong Song <yhs@fb.com> writes:
+>>> On 2/18/20 6:40 AM, Daniel Borkmann wrote:
+>>>> On 2/17/20 6:17 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>>>>> The kernel only accepts map names with alphanumeric characters,
+>>>>> underscores
+>>>>> and periods in their name. However, the auto-generated internal map n=
+ames
+>>>>> used by libbpf takes their prefix from the user-supplied BPF object n=
+ame,
+>>>>> which has no such restriction. This can lead to "Invalid argument" er=
+rors
+>>>>> when trying to load a BPF program using global variables.
+>>>>>
+>>>>> Fix this by sanitising the map names, replacing any non-allowed
+>>>>> characters
+>>>>> with underscores.
+>>>>>
+>>>>> Fixes: d859900c4c56 ("bpf, libbpf: support global data/bss/rodata
+>>>>> sections")
+>>>>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>>>>
+>>>> Makes sense to me, applied, thanks! I presume you had something like '=
+-'
+>>>> in the
+>>>> global var leading to rejection?
+>>>
+>>> The C global variable cannot have '-'. I saw a complain in bcc mailing
+>>> list sometimes back like: if an object file is a-b.o, then we will
+>>> generate a map name like a-b.bss for the bss ELF section data. The
+>>> map name "a-b.bss" name will be rejected by the kernel. The workaround
+>>> is to change object file name. Not sure whether this is the only
+>>> issue which may introduce non [a-zA-Z0-9_] or not. But this patch indeed
+>>> should fix the issue I just described.
+>
+> Yep, meant object file name, just realized too late after sending. :/
+>
+>> Yes, this was exactly my problem; my object file is called
+>> 'xdp-dispatcher.o'. Fun error to track down :P
+>>=20
+>> Why doesn't the kernel allow dashes in the name anyway?
+>
+> Commit cb4d2b3f03d8 ("bpf: Add name, load_time, uid and map_ids to bpf_pr=
+og_info")
+> doesn't state a specific reason, and we did later extend it via 3e0ddc4f3=
+ff1 ("bpf:
+> allow . char as part of the object name"). My best guess right now is pot=
+entially
+> not to confuse BPF's kallsyms handling with dashes etc.
 
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index b7045b6a15c2..8e1feb678cea 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -344,6 +344,7 @@ enum {
- 	ETHTOOL_XDP_REDIRECT,
- 	ETHTOOL_XDP_PASS,
- 	ETHTOOL_XDP_DROP,
-+	ETHTOOL_XDP_XMIT,
- 	ETHTOOL_XDP_TX,
- 	ETHTOOL_MAX_STATS,
- };
-@@ -399,10 +400,11 @@ static const struct mvneta_statistic mvneta_statistics[] = {
- 	{ ETHTOOL_STAT_EEE_WAKEUP, T_SW, "eee_wakeup_errors", },
- 	{ ETHTOOL_STAT_SKB_ALLOC_ERR, T_SW, "skb_alloc_errors", },
- 	{ ETHTOOL_STAT_REFILL_ERR, T_SW, "refill_errors", },
--	{ ETHTOOL_XDP_REDIRECT, T_SW, "xdp_redirect", },
--	{ ETHTOOL_XDP_PASS, T_SW, "xdp_pass", },
--	{ ETHTOOL_XDP_DROP, T_SW, "xdp_drop", },
--	{ ETHTOOL_XDP_TX, T_SW, "xdp_tx", },
-+	{ ETHTOOL_XDP_REDIRECT, T_SW, "rx_xdp_redirect", },
-+	{ ETHTOOL_XDP_PASS, T_SW, "rx_xdp_pass", },
-+	{ ETHTOOL_XDP_DROP, T_SW, "rx_xdp_drop", },
-+	{ ETHTOOL_XDP_TX, T_SW, "rx_xdp_tx", },
-+	{ ETHTOOL_XDP_XMIT, T_SW, "tx_xdp_xmit", },
- };
- 
- struct mvneta_stats {
-@@ -414,6 +416,7 @@ struct mvneta_stats {
- 	u64	xdp_redirect;
- 	u64	xdp_pass;
- 	u64	xdp_drop;
-+	u64	xdp_xmit;
- 	u64	xdp_tx;
- };
- 
-@@ -2012,7 +2015,6 @@ static int
- mvneta_xdp_submit_frame(struct mvneta_port *pp, struct mvneta_tx_queue *txq,
- 			struct xdp_frame *xdpf, bool dma_map)
- {
--	struct mvneta_pcpu_stats *stats = this_cpu_ptr(pp->stats);
- 	struct mvneta_tx_desc *tx_desc;
- 	struct mvneta_tx_buf *buf;
- 	dma_addr_t dma_addr;
-@@ -2047,12 +2049,6 @@ mvneta_xdp_submit_frame(struct mvneta_port *pp, struct mvneta_tx_queue *txq,
- 	tx_desc->buf_phys_addr = dma_addr;
- 	tx_desc->data_size = xdpf->len;
- 
--	u64_stats_update_begin(&stats->syncp);
--	stats->es.ps.tx_bytes += xdpf->len;
--	stats->es.ps.tx_packets++;
--	stats->es.ps.xdp_tx++;
--	u64_stats_update_end(&stats->syncp);
--
- 	mvneta_txq_inc_put(txq);
- 	txq->pending++;
- 	txq->count++;
-@@ -2079,8 +2075,17 @@ mvneta_xdp_xmit_back(struct mvneta_port *pp, struct xdp_buff *xdp)
- 
- 	__netif_tx_lock(nq, cpu);
- 	ret = mvneta_xdp_submit_frame(pp, txq, xdpf, false);
--	if (ret == MVNETA_XDP_TX)
-+	if (ret == MVNETA_XDP_TX) {
-+		struct mvneta_pcpu_stats *stats = this_cpu_ptr(pp->stats);
-+
-+		u64_stats_update_begin(&stats->syncp);
-+		stats->es.ps.tx_bytes += xdpf->len;
-+		stats->es.ps.tx_packets++;
-+		stats->es.ps.xdp_tx++;
-+		u64_stats_update_end(&stats->syncp);
-+
- 		mvneta_txq_pend_desc_add(pp, txq, 0);
-+	}
- 	__netif_tx_unlock(nq);
- 
- 	return ret;
-@@ -2091,10 +2096,11 @@ mvneta_xdp_xmit(struct net_device *dev, int num_frame,
- 		struct xdp_frame **frames, u32 flags)
- {
- 	struct mvneta_port *pp = netdev_priv(dev);
-+	struct mvneta_pcpu_stats *stats = this_cpu_ptr(pp->stats);
-+	int i, nxmit_byte = 0, nxmit = num_frame;
- 	int cpu = smp_processor_id();
- 	struct mvneta_tx_queue *txq;
- 	struct netdev_queue *nq;
--	int i, drops = 0;
- 	u32 ret;
- 
- 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
-@@ -2106,9 +2112,11 @@ mvneta_xdp_xmit(struct net_device *dev, int num_frame,
- 	__netif_tx_lock(nq, cpu);
- 	for (i = 0; i < num_frame; i++) {
- 		ret = mvneta_xdp_submit_frame(pp, txq, frames[i], true);
--		if (ret != MVNETA_XDP_TX) {
-+		if (ret == MVNETA_XDP_TX) {
-+			nxmit_byte += frames[i]->len;
-+		} else {
- 			xdp_return_frame_rx_napi(frames[i]);
--			drops++;
-+			nxmit--;
- 		}
- 	}
- 
-@@ -2116,7 +2124,13 @@ mvneta_xdp_xmit(struct net_device *dev, int num_frame,
- 		mvneta_txq_pend_desc_add(pp, txq, 0);
- 	__netif_tx_unlock(nq);
- 
--	return num_frame - drops;
-+	u64_stats_update_begin(&stats->syncp);
-+	stats->es.ps.tx_bytes += nxmit_byte;
-+	stats->es.ps.tx_packets += nxmit;
-+	stats->es.ps.xdp_xmit += nxmit;
-+	u64_stats_update_end(&stats->syncp);
-+
-+	return nxmit;
- }
- 
- static int
-@@ -4484,6 +4498,7 @@ mvneta_ethtool_update_pcpu_stats(struct mvneta_port *pp,
- 		u64 xdp_redirect;
- 		u64 xdp_pass;
- 		u64 xdp_drop;
-+		u64 xdp_xmit;
- 		u64 xdp_tx;
- 
- 		stats = per_cpu_ptr(pp->stats, cpu);
-@@ -4494,6 +4509,7 @@ mvneta_ethtool_update_pcpu_stats(struct mvneta_port *pp,
- 			xdp_redirect = stats->es.ps.xdp_redirect;
- 			xdp_pass = stats->es.ps.xdp_pass;
- 			xdp_drop = stats->es.ps.xdp_drop;
-+			xdp_xmit = stats->es.ps.xdp_xmit;
- 			xdp_tx = stats->es.ps.xdp_tx;
- 		} while (u64_stats_fetch_retry_irq(&stats->syncp, start));
- 
-@@ -4502,6 +4518,7 @@ mvneta_ethtool_update_pcpu_stats(struct mvneta_port *pp,
- 		es->ps.xdp_redirect += xdp_redirect;
- 		es->ps.xdp_pass += xdp_pass;
- 		es->ps.xdp_drop += xdp_drop;
-+		es->ps.xdp_xmit += xdp_xmit;
- 		es->ps.xdp_tx += xdp_tx;
- 	}
- }
-@@ -4555,6 +4572,9 @@ static void mvneta_ethtool_update_stats(struct mvneta_port *pp)
- 			case ETHTOOL_XDP_TX:
- 				pp->ethtool_stats[i] = stats.ps.xdp_tx;
- 				break;
-+			case ETHTOOL_XDP_XMIT:
-+				pp->ethtool_stats[i] = stats.ps.xdp_xmit;
-+				break;
- 			}
- 			break;
- 		}
--- 
-2.24.1
+Right, OK, fair enough I suppose. I was just wondering since this is
+the second time I've run into hard-to-debug problems because of the
+naming restrictions.
+
+Really, it would be nice to have something like the netlink extack
+mechanism so the kernel can return something more than just an error
+code when a bpf() call fails. Is there any way to do something similar
+for a syscall? Could we invent something?
+
+-Toke
 
