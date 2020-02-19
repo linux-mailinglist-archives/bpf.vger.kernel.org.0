@@ -2,81 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEC5164FB1
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 21:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C2F165019
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 21:36:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbgBSUUG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Feb 2020 15:20:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49320 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726645AbgBSUUG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Feb 2020 15:20:06 -0500
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07A6A24654;
-        Wed, 19 Feb 2020 20:20:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582143605;
-        bh=uIBm1dGD7YzjetMlfl+s7x73fGRtf+jKsTUZT2posg0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ev6C+hKaxC3x5s1Xz8uy3r2XIJQHV4AwCZlCb54jWfF7+HbqSCtTkFLxdEetdlDma
-         ZMyf1jvm7jxHkToPTk58MIMS9OWg8ntwsXE+dV5iveXxNx2eqw+FdQGzpG1h7gu/lA
-         oGrEuV3HnEqbxHpxAUadW3WPYdTpDY18tShsPrDM=
-Date:   Wed, 19 Feb 2020 21:20:03 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        BPF-dev-list <bpf@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Subject: Re: Kernel 5.5.4 build fail for BPF-selftests with latest LLVM
-Message-ID: <20200219202003.GB2882443@kroah.com>
-References: <20200219133012.7cb6ac9e@carbon>
- <20200219132856.GA2836367@kroah.com>
- <20200219144254.36c3921b@carbon>
- <20200219181250.GA2852230@kroah.com>
- <20200219204039.121f10d2@carbon>
+        id S1727438AbgBSUgc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Feb 2020 15:36:32 -0500
+Received: from mail-pg1-f173.google.com ([209.85.215.173]:39304 "EHLO
+        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726750AbgBSUgc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Feb 2020 15:36:32 -0500
+Received: by mail-pg1-f173.google.com with SMTP id j15so679490pgm.6;
+        Wed, 19 Feb 2020 12:36:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tSDIGLfqY03aYQMUY+XzgKjwIxukL008QXJQGYWNi5A=;
+        b=g7nJJvh/OY0i9pnJlDRmVlV3OcTZGhvrjImio+dIeklaMcAKK0ByRDEL7PT1NwRBqa
+         p/acTuo54zBrw9VU/LOaP+KU7AtEG05B1eMzOi4kDWyGLIbmt/GS7iEWcKheDAqSdQdC
+         ktY9kcdweangyk6eS06I61tBwYvqbZtjHbf42RJLOfbAVe6oto2wiqGWRy99t7vsDZp3
+         3ohogpo7fQHtR9suvn3qaL4lFfAsU0EJC9pCQ5SNflytQ7yR/h5IR4NPq6aFd6ZN5fg0
+         NWqWbJmK3GriBf0Ve2/o+Zqd2G2z6tIZTGnlOw0Odgy5N00vxiqTvL0DGI1RAOV5KV44
+         7IGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tSDIGLfqY03aYQMUY+XzgKjwIxukL008QXJQGYWNi5A=;
+        b=P6R5r7QeFVgDF1CQ5uleY+38zlgkGNU5wkM3PxgqTT6/qS9ugZ6cLXRxmGhns/jtVi
+         mXXAY0NTA9LmbAfOY/HbML4OrbMDOqvjEkdCvR93PBqDFLweR6dr81Ohkle6wQg+tMjT
+         SXJIfhg5grhuQ8zmL+ex+tjb7Lr2R9+X7wXHfAzTng0znJAZdK4M6VUzEEO5r3GQ2PPj
+         VygWUwA1xUY2zg5QXCDw2zssBbOdbwfBfpPOri5HnaeVLGMQ3cKt14DopxsENxGZincr
+         r7IQkTbSGo+CFAnl8fLOOIfzeAIyHB+5/JpptCQK+0LiMzXbKJdVcQWW2HCP0ZMnsxYc
+         yOFw==
+X-Gm-Message-State: APjAAAVZRuILGhtaKabDmINpjhiRCfl1XYPwwsGMWhxy3222+BEAPgZ+
+        9/PyEDK3ObgsoiaG7uejw3w=
+X-Google-Smtp-Source: APXvYqzJjOb53sH0zFs7r3QHWUn6n0O3B0Ku8PmI0y3hqoFFhF0NIuHRTbYuG/KezQ0JUzH62YPYOA==
+X-Received: by 2002:a63:1555:: with SMTP id 21mr3087909pgv.348.1582144591618;
+        Wed, 19 Feb 2020 12:36:31 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:1b18])
+        by smtp.gmail.com with ESMTPSA id r9sm495403pfl.136.2020.02.19.12.36.29
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 19 Feb 2020 12:36:30 -0800 (PST)
+Date:   Wed, 19 Feb 2020 12:36:28 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Eelco Chaudron <echaudro@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Xdp <xdp-newbies@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: Re: Capture xdp packets in an fentry BPF hook
+Message-ID: <20200219203626.ozkdoyhyexwxwbbt@ast-mbp>
+References: <F844EC8A-902B-4BF7-95E3-B0D6DC618F1B@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200219204039.121f10d2@carbon>
+In-Reply-To: <F844EC8A-902B-4BF7-95E3-B0D6DC618F1B@redhat.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 08:40:39PM +0100, Jesper Dangaard Brouer wrote:
-> On Wed, 19 Feb 2020 19:12:50 +0100
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On Wed, Feb 19, 2020 at 03:38:40PM +0100, Eelco Chaudron wrote:
+> Hi Alexei at al.,
 > 
-> > On Wed, Feb 19, 2020 at 02:42:54PM +0100, Jesper Dangaard Brouer wrote:
-> > > On Wed, 19 Feb 2020 14:28:56 +0100
-> > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> > >   
-> > > > On Wed, Feb 19, 2020 at 01:30:12PM +0100, Jesper Dangaard Brouer wrote:  
-> > > > > Hi Andrii,
-> > > > > 
-> > > > > Downloaded tarball for kernel release 5.5.4, and I cannot compile
-> > > > > tools/testing/selftests/bpf/ with latest LLVM release version 9.    
-> > > > 
-> [...]
-> > > > And has llvm 9 always worked here?  
-> > > 
-> > > Yes, llvm-9 used to work for tools/testing/selftests/bpf/.  
-> > 
-> > As of when?
+> I'm getting closer to finally have an xdpdump tool that uses the bpf
+> fentry/fexit tracepoints, but I ran into a final hurdle...
 > 
-> Kernel v5.4 works when compiling BPF-selftests with LLVM 9.0.1.
+> To stuff the packet into a perf ring I'll need to use the
+> bpf_perf_event_output(), but unfortunately, this is a program of trace type,
+> and not XDP so the packet data is not added automatically :(
+> 
+> Secondly even trying to pass the actual packet data as a reference to
+> bpf_perf_event_output() will not work as the verifier wants the data to be
+> on the fp.
+> 
+> Even worse, the trace program gets the XDP info not thought the ctx, but
+> trough the fentry/fexit input value, i.e.:
+> 
+> 	SEC("fentry/func")
+> 	int BPF_PROG(trace_on_entry, struct xdp_buff *xdp)...
+> 
+> 	struct net_device {
+> 	    int ifindex;
+> 	} __attribute__((preserve_access_index));
+> 
+> 	struct xdp_rxq_info {
+> 	    struct net_device *dev;
+> 	    __u32 queue_index;
+> 	} __attribute__((preserve_access_index));
+> 
+> 	struct xdp_buff {
+> 	    void *data;
+> 	    void *data_end;
+> 	    void *data_meta;
+> 	    void *data_hard_start;
+> 	    unsigned long handle;
+> 	    struct xdp_rxq_info *rxq;
+> 	} __attribute__((preserve_access_index));
+> 
+> Hence even trying to copy in bytes to a local buffer is not allowed by the
+> verifier, i.e. __u8 *data = (u8 *)(long)xdp->data;
+> 
+> Can you let me know how you envisioned a BPF entry hook to capture packets
+> from XDP. Am I missing something, or is there something missing from the
+> infrastructure?
 
-Bisection can help us here :)
-
-thanks,
-
-greg k-h
+Tracing of XDP is missing a helper similar to bpf_skb_output() for skb.
+Its first arg will be 'struct xdp_buff *' and .arg1_type = ARG_PTR_TO_BTF_ID
+then it will work similar to bpf_skb_output() in progs/kfree_skb.c.
