@@ -2,84 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 69122163DAB
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 08:34:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B818163EFA
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 09:26:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727561AbgBSHea (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Feb 2020 02:34:30 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:46275 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727405AbgBSHe3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Feb 2020 02:34:29 -0500
-Received: by mail-qk1-f194.google.com with SMTP id u124so21644944qkh.13
-        for <bpf@vger.kernel.org>; Tue, 18 Feb 2020 23:34:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hHsI7MOCCKl5QBPgBe8NW7G5OUlzsFWWyufHJc8ohB4=;
-        b=FhrsIxj+EbyUY+MML+4ZXWqQIPsMkUSv0B25EsWZJRBrTlcJS8szdStvEXxcRMsIvx
-         hGflT0/RttOGLCzHnJWtoLySDkTYf99X5RT3soG+3mqqCpXw8kokObticDiWRqLmNX2S
-         xYKxpbSYUXlKWF4dB5ljDZBsG29l9TfB4amH6oE2z0TMkKXVdMc6eh80JdvuNyUS7Npt
-         QeAv9w+iYdnHfm2gbWVPj2v+Uz2XgYmhAeu833Gjv3iZJLQAZg7kNLKZO+cTJG1U0nHN
-         /IOslywMSxTNvMEzLXKSaq2JskQ0KJ0T9z9PJ6UnaDTnLR/nHFRiHHPFASlJGawsBBZ3
-         mBzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hHsI7MOCCKl5QBPgBe8NW7G5OUlzsFWWyufHJc8ohB4=;
-        b=Ns2TcAoSUXLXMqGKcopwmcbxW524SVhkv3S4RtjPRkZnl6rh44QaOeS8eQqxzq7m9R
-         m/qrreTd2nTzqZFcCVxW1cNRQYir42qKVEAcdJmIV3hLSSIzr6TjMlVlSaJ5OgFuCqk9
-         0JB88dqWzm9jUm51y9PeY7qiEi7vE8FKwFOcdzxSTBqNR4hPw8oYmnsT953SFwylbn8b
-         8d3vCIOEaiAjeOKdF+ryWmL5X04IWqqA2/Ho60AQ1QZije+oaiGyLTNj5h0m7t6aN/JS
-         8dX1x0QI/w2Xs6NjeDImMMCB0RX1URAT97o0YryU/UX21xZ1Y4pg7jggd8RINWlZzPEz
-         yslw==
-X-Gm-Message-State: APjAAAXXAmbAZSIzCgxGLzY8V2yDqtPr7XiUbUak6Z97lplp4TcIfuF2
-        W06D54rtSlMPdUEcoaDTjiz+BeK+g7PVBFu4HrI=
-X-Google-Smtp-Source: APXvYqy0zj1w2wQplH+ZCbg3RMPmKZir7w2bmzanyZ+oXmSe8Q4hKrghDrJmwVZ76VxELPb560GccXXnXOP+dkmJwrQ=
-X-Received: by 2002:a37:9fcf:: with SMTP id i198mr7440951qke.36.1582097668532;
- Tue, 18 Feb 2020 23:34:28 -0800 (PST)
+        id S1726512AbgBSI03 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Feb 2020 03:26:29 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:33628 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725904AbgBSI03 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Feb 2020 03:26:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1582100787;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7GifVFb+0Kxr3UdPmgjUJ5WdA1mThVqvy94SyaGNd6c=;
+        b=WC75XsfJ/cioReVuc53ep0mNVB2kbDWMGlhcgsrugKxDEQk+I9rKPZOkkmuzmU096bqdpS
+        GPnlX8Z57QXLR9dLoIcpkGEaTw3bQ6imtFBpROzYkM4LnNRCZkmpmyRSQ2z+k+tzGDYh1t
+        RT0mySonNC9UKrRHqhqShFXi9k2I9Bk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-36-msCJ53M5OICQ-DahCdb5Lw-1; Wed, 19 Feb 2020 03:26:25 -0500
+X-MC-Unique: msCJ53M5OICQ-DahCdb5Lw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B2D8118AB2C3;
+        Wed, 19 Feb 2020 08:26:23 +0000 (UTC)
+Received: from carbon (ovpn-200-26.brq.redhat.com [10.40.200.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D0FD55D9E5;
+        Wed, 19 Feb 2020 08:26:12 +0000 (UTC)
+Date:   Wed, 19 Feb 2020 09:26:11 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     David Miller <davem@davemloft.net>
+Cc:     toke@redhat.com, kuba@kernel.org, lorenzo@kernel.org,
+        netdev@vger.kernel.org, ilias.apalodimas@linaro.org,
+        lorenzo.bianconi@redhat.com, andrew@lunn.ch, dsahern@kernel.org,
+        bpf@vger.kernel.org, brouer@redhat.com
+Subject: Re: [RFC net-next] net: mvneta: align xdp stats naming scheme to
+ mlx5 driver
+Message-ID: <20200219092611.1060dbb0@carbon>
+In-Reply-To: <20200218.154713.1411536344737312845.davem@davemloft.net>
+References: <526238d9bcc60500ed61da1a4af8b65af1af9583.1581984697.git.lorenzo@kernel.org>
+        <20200218132921.46df7f8b@kicinski-fedora-PC1C0HJN>
+        <87eeury1ph.fsf@toke.dk>
+        <20200218.154713.1411536344737312845.davem@davemloft.net>
 MIME-Version: 1.0
-References: <20200219004236.2291125-1-yhs@fb.com>
-In-Reply-To: <20200219004236.2291125-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 18 Feb 2020 23:34:17 -0800
-Message-ID: <CAEf4BzagQu2ecGBP8jiOOkSz39pBzGBPuTcF48yzpfnzwKehdA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: change llvm flag -mcpu=probe to -mcpu=v3
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 18, 2020 at 4:44 PM Yonghong Song <yhs@fb.com> wrote:
->
-> The latest llvm supports cpu version v3, which is cpu version v1
-> plus some additional 64bit jmp insns and 32bit jmp insn support.
->
-> In selftests/bpf Makefile, the llvm flag -mcpu=probe did runtime
-> probe into the host system. Depending on compilation environments,
-> it is possible that runtime probe may fail, e.g., due to
-> memlock issue. This will cause generated code with cpu version v1.
-> This may cause confusion as the same compiler and the same C code
-> generates different byte codes in different environment.
->
-> Let us change the llvm flag -mcpu=probe to -mcpu=v3 so the
-> generated code will be the same regardless of the compilation
-> environment.
->
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
+On Tue, 18 Feb 2020 15:47:13 -0800 (PST)
+David Miller <davem@davemloft.net> wrote:
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> Date: Tue, 18 Feb 2020 23:23:22 +0100
+>=20
+> > Jakub Kicinski <kuba@kernel.org> writes:
+> >  =20
+> >> On Tue, 18 Feb 2020 01:14:29 +0100 Lorenzo Bianconi wrote: =20
+> >>> Introduce "rx" prefix in the name scheme for xdp counters
+> >>> on rx path.
+> >>> Differentiate between XDP_TX and ndo_xdp_xmit counters
+> >>>=20
+> >>> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org> =20
+> >>
+> >> Sorry for coming in late.
+> >>
+> >> I thought the ability to attach a BPF program to a fexit of another BPF
+> >> program will put an end to these unnecessary statistics. IOW I maintain
+> >> my position that there should be no ethtool stats for XDP.
+> >>
+> >> As discussed before real life BPF progs will maintain their own stats
+> >> at the granularity of their choosing, so we're just wasting datapath
+> >> cycles.
 
->  tools/testing/selftests/bpf/Makefile | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
+Well, in practice we see that real-life[1] BPF progs don't maintain
+stats (as I agree they _should_), and an end-user of this showed up on
+XDP-newbies list, and I helped out, going in the complete wrong
+direction, when it was simply the XDP prog dropping these packets, due
+to builtin rate limiter.  It would have been so much easier to identify
+via a simple counter, that I could have asked for from the sysadm.
 
-[...]
+[1] https://gitlab.com/Dreae/compressor/
+
+> >>
+> >> The previous argument that the BPF prog stats are out of admin control
+> >> is no longer true with the fexit option (IIUC how that works). =20
+> >=20
+> > So you're proposing an admin that wants to keep track of XDP has to
+> > (permantently?) attach an fexit program to every running XDP program and
+> > use that to keep statistics? But presumably he'd first need to discover
+> > that XDP is enabled; which the ethtool stats is a good hint for :) =20
+>=20
+> Really, mistakes happen and a poorly implemented or inserted fexit
+> module should not be a reason to not have access to accurate and
+> working statistics for fundamental events.
+
+Yes, exactly.  These statistics counters are only "basic" XDP events,
+that e.g. don't count the bytes.  They are only the first level of
+identifying what the system is doing.  When digging deeper we need
+tracepoint and fexit.
+
+> I am therefore totally against requiring fexit for this functionality.
+> If you want more sophisticated events or custome ones, sure, but not
+> for this baseline stuff.
+
+I fully agree.
+
+> I do, however, think we need a way to turn off these counter bumps if
+> the user wishes to do so for maximum performance.
+
+I sort of agree, but having a mechanism to turn on/off these "basic"
+counters might cost more than just always having them always on.  Even
+the static_key infra will create sub-optimal code, which can throw-off
+the advantage.
+
+Maybe it is worth pointing out, that Lorenzo's code is doing something
+smart, which lowers the overhead.  The stats struct (mvneta_stats) that
+is passed to mvneta_run_xdp is not global, it only counts events in
+this NAPI cycle, and is first transferred to the global counters when
+drivers NAPI functions end, calling mvneta_update_stats().  (We can
+optimized this a bit more on this HW as it is not necessary to have u64
+long counters for these temp/non-global stats).
+
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
