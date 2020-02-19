@@ -2,191 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C49164A24
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 17:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3C9164A9E
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 17:37:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgBSQXk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Feb 2020 11:23:40 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:56862 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726528AbgBSQXk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 19 Feb 2020 11:23:40 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 01JGFJZp004890
-        for <bpf@vger.kernel.org>; Wed, 19 Feb 2020 08:23:38 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=8VmIST07JzxWqBipQ6E+mct2kRs8cd8dVp2nARgD6QA=;
- b=XeTAa/SDZVNd4bIeu5iCXc+7xYOAGYnLs8LAgz0vnekiGwLE9L04iCu+dcIwe5sXHr4b
- +NL3Xopii3nxz5owb4dQ5omtnnWZ12AcSW5RcF53Aj9ATK1PAhy0VEY0SNLiEUpr2V3X
- lltEP2Qt7aVsUJWVxanPG+SfYlHiFdyQWRA= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 2y8ubukafp-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 19 Feb 2020 08:23:38 -0800
-Received: from intmgw003.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 19 Feb 2020 08:23:11 -0800
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id AAF0F370242F; Wed, 19 Feb 2020 08:23:01 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Yonghong Song <yhs@fb.com>
-Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf v2] bpf: fix a potential deadlock with bpf_map_do_batch
-Date:   Wed, 19 Feb 2020 08:23:01 -0800
-Message-ID: <20200219162301.1551623-1-yhs@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1726841AbgBSQhk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Feb 2020 11:37:40 -0500
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:33055 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726754AbgBSQhj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Feb 2020 11:37:39 -0500
+Received: by mail-lf1-f66.google.com with SMTP id n25so652611lfl.0;
+        Wed, 19 Feb 2020 08:37:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Iu8Su62Lx6G7NQ7VTXQB00i29wr5tuhT9NpagmWKkGs=;
+        b=rnCJByyiPYNjDhjdfTZp5+OjAkMgvmj/vL+JE4lRnGBxTjAClFJyXErfVglS/EsHej
+         Oqr/vzk62telFtUak6fnwIA0C7MrM0/M4ay8jT6k7KKJF5OGqUKaaxSKYG8JoJzaFygm
+         xhX09nbLseabDhp7kDci5Nb5VXDi8MgKI4zQFsqGmCEyNnGVy8GY30xah450ETBlw16k
+         ikX4kCQi7Fa8ZGHL9G1l7CnV6DfKtaF6Jil+wiG9udbu3zP6j3cZK908bgRkvQiKuisu
+         UJL05LixhhyZBWzGptIP9iw7c8hU+XzPS+ZDXFXXaycvtMQlqwD7oJHh03eyl19WH555
+         pUUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Iu8Su62Lx6G7NQ7VTXQB00i29wr5tuhT9NpagmWKkGs=;
+        b=YnxOX3zpluOnMh+8Ll44o1wwc6v3KX+eTlmfzLdnTKFmsc1yNZQEteXuB/vGTU5mwe
+         aVNqWkSRVvvEfJR04fzbF3N94xVUMJHow+8KFtbs7yk9WgOmH+pzyFBEahfViEgxtlHO
+         adeK0CP24ue1ZN54NZVhPUlLBCc1klsKTVTrOSO6hjGyUAO5/z/ac0kqMdg2YmXT4xAD
+         JdUw5KdDKrvll2MCGpdb7sfzY+F1A6zhRQDWhHyEeNBGnOIGR+ozB46YzAGpjcHSHw4e
+         mYi9nsHUwrR3ofTskdr7PhMrWMnCy/i6d5iQ5E58i1FC/QhI65n2rJCqzeb5/EVsZiik
+         CZSA==
+X-Gm-Message-State: APjAAAXF5QhAdnWdEcBx6JL82KwsrwmizJQA4+AN2P+IdcRe0Tf8PAks
+        Um9r/Pnqou/TDkoIduBejJPosVShVTSU46gM0l56cg==
+X-Google-Smtp-Source: APXvYqyZXXgGUsrmB7smOwrThCKSrBFcNYDQijyrqFmYfRiO/UeECbjs/x+Qj5rKUxiIW1iHEOBmCPU0Dz2L7rg/HF8=
+X-Received: by 2002:ac2:515b:: with SMTP id q27mr13400289lfd.119.1582130257014;
+ Wed, 19 Feb 2020 08:37:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-02-19_04:2020-02-19,2020-02-19 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=712
- bulkscore=0 malwarescore=0 clxscore=1015 spamscore=0 lowpriorityscore=0
- phishscore=0 impostorscore=0 adultscore=0 mlxscore=0 priorityscore=1501
- suspectscore=38 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002190123
-X-FB-Internal: deliver
+References: <20200218190224.22508-1-mrostecki@opensuse.org>
+ <CAADnVQJm_tvMGjhHyVn66feA3rHLSXTdzqCCABu+9tKer89LVA@mail.gmail.com> <06ae3070-0d35-df49-9310-d1fb7bfb3e67@opensuse.org>
+In-Reply-To: <06ae3070-0d35-df49-9310-d1fb7bfb3e67@opensuse.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 19 Feb 2020 08:37:25 -0800
+Message-ID: <CAADnVQLhEaV=dWMZC83g5QHit7Qvu4H84Dh--K3aOTiUNeEd4g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/6] bpftool: Allow to select sections and filter probes
+To:     Michal Rostecki <mrostecki@opensuse.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit 057996380a42 ("bpf: Add batch ops to all htab bpf map")
-added lookup_and_delete batch operation for hash table.
-The current implementation has bpf_lru_push_free() inside
-the bucket lock, which may cause a deadlock.
+On Wed, Feb 19, 2020 at 4:33 AM Michal Rostecki <mrostecki@opensuse.org> wrote:
+>
+> On 2/19/20 4:02 AM, Alexei Starovoitov wrote:
+> > The motivation is clear, but I think the users shouldn't be made
+> > aware of such implementation details. I think instead of filter_in/out
+> > it's better to do 'full or safe' mode of probing.
+> > By default it can do all the probing that doesn't cause
+> > extra dmesgs and in 'full' mode it can probe everything.
+>
+> Alright, then I will send later v2 where the "internal" implementation
+> (filtering out based on regex) stays similar (filter_out will stay in
+> the code without being exposed to users, filter_in will be removed). And
+> the exposed option of "safe" probing will just apply the
+> "(trace|write_user)" filter_out pattern. Does it sound good?
 
-syzbot reports:
-   -> #2 (&htab->buckets[i].lock#2){....}:
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x95/0xcd kernel/locking/spinlock.c:159
-       htab_lru_map_delete_node+0xce/0x2f0 kernel/bpf/hashtab.c:593
-       __bpf_lru_list_shrink_inactive kernel/bpf/bpf_lru_list.c:220 [inline]
-       __bpf_lru_list_shrink+0xf9/0x470 kernel/bpf/bpf_lru_list.c:266
-       bpf_lru_list_pop_free_to_local kernel/bpf/bpf_lru_list.c:340 [inline]
-       bpf_common_lru_pop_free kernel/bpf/bpf_lru_list.c:447 [inline]
-       bpf_lru_pop_free+0x87c/0x1670 kernel/bpf/bpf_lru_list.c:499
-       prealloc_lru_pop+0x2c/0xa0 kernel/bpf/hashtab.c:132
-       __htab_lru_percpu_map_update_elem+0x67e/0xa90 kernel/bpf/hashtab.c:1069
-       bpf_percpu_hash_update+0x16e/0x210 kernel/bpf/hashtab.c:1585
-       bpf_map_update_value.isra.0+0x2d7/0x8e0 kernel/bpf/syscall.c:181
-       generic_map_update_batch+0x41f/0x610 kernel/bpf/syscall.c:1319
-       bpf_map_do_batch+0x3f5/0x510 kernel/bpf/syscall.c:3348
-       __do_sys_bpf+0x9b7/0x41e0 kernel/bpf/syscall.c:3460
-       __se_sys_bpf kernel/bpf/syscall.c:3355 [inline]
-       __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3355
-       do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
-       entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-   -> #0 (&loc_l->lock){....}:
-       check_prev_add kernel/locking/lockdep.c:2475 [inline]
-       check_prevs_add kernel/locking/lockdep.c:2580 [inline]
-       validate_chain kernel/locking/lockdep.c:2970 [inline]
-       __lock_acquire+0x2596/0x4a00 kernel/locking/lockdep.c:3954
-       lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4484
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x95/0xcd kernel/locking/spinlock.c:159
-       bpf_common_lru_push_free kernel/bpf/bpf_lru_list.c:516 [inline]
-       bpf_lru_push_free+0x250/0x5b0 kernel/bpf/bpf_lru_list.c:555
-       __htab_map_lookup_and_delete_batch+0x8d4/0x1540 kernel/bpf/hashtab.c:1374
-       htab_lru_map_lookup_and_delete_batch+0x34/0x40 kernel/bpf/hashtab.c:1491
-       bpf_map_do_batch+0x3f5/0x510 kernel/bpf/syscall.c:3348
-       __do_sys_bpf+0x1f7d/0x41e0 kernel/bpf/syscall.c:3456
-       __se_sys_bpf kernel/bpf/syscall.c:3355 [inline]
-       __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3355
-       do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
-       entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-    Possible unsafe locking scenario:
-
-          CPU0                    CPU2
-          ----                    ----
-     lock(&htab->buckets[i].lock#2);
-                                  lock(&l->lock);
-                                  lock(&htab->buckets[i].lock#2);
-     lock(&loc_l->lock);
-
-    *** DEADLOCK ***
-
-To fix the issue, for htab_lru_map_lookup_and_delete_batch() in CPU0,
-let us do bpf_lru_push_free() out of the htab bucket lock. This can
-avoid the above deadlock scenario.
-
-Fixes: 057996380a42 ("bpf: Add batch ops to all htab bpf map")
-Reported-by: syzbot+a38ff3d9356388f2fb83@syzkaller.appspotmail.com
-Reported-by: syzbot+122b5421d14e68f29cd1@syzkaller.appspotmail.com
-Suggested-by: Hillf Danton <hdanton@sina.com>
-Suggested-by: Martin KaFai Lau <kafai@fb.com>
-Acked-by: Brian Vazquez <brianvv@google.com>
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- kernel/bpf/hashtab.c | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
-
-Changelog:
- v1 -> v2:
-    . coding style fix to have braces in both then and else
-      branch, from Jakub.
-
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 2d182c4ee9d9..a6e0d6aace62 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -56,6 +56,7 @@ struct htab_elem {
- 			union {
- 				struct bpf_htab *htab;
- 				struct pcpu_freelist_node fnode;
-+				struct htab_elem *link;
- 			};
- 		};
- 	};
-@@ -1255,6 +1256,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 	void __user *uvalues = u64_to_user_ptr(attr->batch.values);
- 	void __user *ukeys = u64_to_user_ptr(attr->batch.keys);
- 	void *ubatch = u64_to_user_ptr(attr->batch.in_batch);
-+	struct htab_elem *node_to_free = NULL;
- 	u32 batch, max_count, size, bucket_size;
- 	u64 elem_map_flags, map_flags;
- 	struct hlist_nulls_head *head;
-@@ -1370,16 +1372,28 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 		}
- 		if (do_delete) {
- 			hlist_nulls_del_rcu(&l->hash_node);
--			if (is_lru_map)
--				bpf_lru_push_free(&htab->lru, &l->lru_node);
--			else
-+			if (is_lru_map) {
-+				/* link to-be-freed elements together so
-+				 * they can freed outside bucket lock region.
-+				 */
-+				l->link = node_to_free;
-+				node_to_free = l;
-+			} else {
- 				free_htab_elem(htab, l);
-+			}
- 		}
- 		dst_key += key_size;
- 		dst_val += value_size;
- 	}
- 
- 	raw_spin_unlock_irqrestore(&b->lock, flags);
-+
-+	while (node_to_free) {
-+		l = node_to_free;
-+		node_to_free = node_to_free->link;
-+		bpf_lru_push_free(&htab->lru, &l->lru_node);
-+	}
-+
- 	/* If we are not copying data, we can go to next bucket and avoid
- 	 * unlocking the rcu.
- 	 */
--- 
-2.17.1
-
+yes. If implementation is doing filter_in and applying 'trace_printk|write_user'
+strings hidden within bpftool than I think it should be good.
+What do you think the default should be?
+It feels to me that the default should not be causing dmesg prints.
+So only addition flag for bpftool command line will be 'bpftool
+feature probe full'
