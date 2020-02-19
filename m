@@ -2,125 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA3F163D10
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 07:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A615E163D6E
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 08:14:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726156AbgBSGb4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Feb 2020 01:31:56 -0500
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:39633 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726133AbgBSGb4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Feb 2020 01:31:56 -0500
-Received: by mail-pl1-f194.google.com with SMTP id g6so9143631plp.6;
-        Tue, 18 Feb 2020 22:31:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=yHHgpBANwrMB3jhs9hI0b1CDaiyJ2Cjlf5IBS/MPeGo=;
-        b=IjeBbZQUFOdhM9b+UyK5lJqf3gDoZ0Zhe707jyNovSSDOez8X/Tu/7asUcWC5tvBxX
-         eC9+ShCPTZGQGNIins6XiE5JMLC8urRb+cPNn2mpk52UgzFZe2dMdAcTJsaX8v5/vQYf
-         s9uHUYJXWcgDUkPAy4ukI8ViP/9q+32cK69loQqb8iPrrhMBld/3i5Jlo2pLDbnUcW7f
-         +W5sB6gwuPQk2PexwdCdWSvjNt7xsHyP9p7F4DOgfmT67iiqpUAFM7Beig1HcXrDoxKc
-         u5cuolfzhLiDi1UjAxcFVO8bq7dY76O8UI1lZUUaBNbuhetz7zHP5w8YMd70UqxSixJ5
-         U6lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=yHHgpBANwrMB3jhs9hI0b1CDaiyJ2Cjlf5IBS/MPeGo=;
-        b=uf1PpzQ6Ky3E4TyEVtS8qKp1TUkly9vVs5lHiRJ4FJfo8+LdBpy4rIf6/JbQc0WIxm
-         5dMy8uLvc+U1EfofqgpZLWqp8QSuh8GXkKlVrA0Gu9NyRCeGMBvmnO3HQ0cMjwke2sqM
-         Jp3xFfmK7ziYwzf6TerwKyHBzk5KUYR0Gn8VYLwkP2JKSccj39Qoezn7vI/jBKJG0VvZ
-         CqmsIfdpC4yXTWIC9PhmsncexlMqVm29majHx9KpUs51HXvtfNgVXbrdVFy47HtH/h+8
-         WBOGff6IPSD3n6iii0bfr2SCfXfMBCGFmjbQ3r6RJEmC//31zeLCK710NTPyKkFw7NGN
-         3OkQ==
-X-Gm-Message-State: APjAAAWE/42qWfrH2rUuRrHg5bTaBTmB4oW4oHHeaxBL+KyV0vIhmTC+
-        k7QpNGdU4GrUoEG6NuGB/6hIWHSJ
-X-Google-Smtp-Source: APXvYqzds47dr4tLMQlbJAHaKvXWG2xLrP8jOwn9XRTGCXyf6gKnsxD15JrWb4ks/Qj5UazhHoX/1A==
-X-Received: by 2002:a17:90a:ec10:: with SMTP id l16mr7158975pjy.19.1582093915829;
-        Tue, 18 Feb 2020 22:31:55 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id w17sm1169047pfi.56.2020.02.18.22.31.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Feb 2020 22:31:55 -0800 (PST)
-Date:   Tue, 18 Feb 2020 22:31:46 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <5e4cd6527bf96_404b2ac01efba5b491@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200217200111.GA5283@embeddedor>
-References: <20200217200111.GA5283@embeddedor>
-Subject: RE: [PATCH][next] bpf, sockmap: Replace zero-length array with
- flexible-array member
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1726593AbgBSHO4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Feb 2020 02:14:56 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:8644 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726336AbgBSHOz (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 19 Feb 2020 02:14:55 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01J6iHbd013967
+        for <bpf@vger.kernel.org>; Tue, 18 Feb 2020 22:48:23 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=y4/rK8WdqZ66yCW6hFl7mD4kuG+K5b8nPspSgq9K/uY=;
+ b=ihniGMgTNzeavZClEvz67J2P9Cb++ZtNzD21G50kBq3yMODLI7SmVKbS5SF4Is2cAb6J
+ 0YLvRvpO6qy2toED0Icr5zLzGW0T4Qy8p/KGh3hVJ0qiOz8TqBMJxlRpDYiqjXuR7NyX
+ yMqyJr007hOFQoicixHAL4sGFsszU1UoCys= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2y8ubds0ke-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 18 Feb 2020 22:48:23 -0800
+Received: from intmgw004.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 18 Feb 2020 22:48:22 -0800
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 5107F37037BC; Tue, 18 Feb 2020 22:48:17 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Yonghong Song <yhs@fb.com>
+Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Brian Vazquez <brianvv@google.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf] bpf: fix a potential deadlock with bpf_map_do_batch
+Date:   Tue, 18 Feb 2020 22:48:17 -0800
+Message-ID: <20200219064817.3636079-1-yhs@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-02-19_01:2020-02-18,2020-02-19 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ phishscore=0 lowpriorityscore=0 malwarescore=0 mlxscore=0 spamscore=0
+ priorityscore=1501 bulkscore=0 adultscore=0 clxscore=1015 mlxlogscore=623
+ suspectscore=38 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2002190050
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Gustavo A. R. Silva wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
-> 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
-> 
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
-> 
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
-> 
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
-> 
-> This issue was found with the help of Coccinelle.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-> ---
->  net/core/sock_map.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index 085cef5857bb..3a7a96ab088a 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -518,7 +518,7 @@ struct bpf_htab_elem {
->  	u32 hash;
->  	struct sock *sk;
->  	struct hlist_node node;
-> -	u8 key[0];
-> +	u8 key[];
->  };
->  
->  struct bpf_htab_bucket {
-> -- 
-> 2.25.0
-> 
+Commit 057996380a42 ("bpf: Add batch ops to all htab bpf map")
+added lookup_and_delete batch operation for hash table.
+The current implementation has bpf_lru_push_free() inside
+the bucket lock, which may cause a deadlock.
 
-The same pattern is in ./kernel/bpf/hashtab.c can you also change
-it here then if this is the case so sockmap is aligned with bpf
-coding style.
+syzbot reports:
+   -> #2 (&htab->buckets[i].lock#2){....}:
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0x95/0xcd kernel/locking/spinlock.c:159
+       htab_lru_map_delete_node+0xce/0x2f0 kernel/bpf/hashtab.c:593
+       __bpf_lru_list_shrink_inactive kernel/bpf/bpf_lru_list.c:220 [inline]
+       __bpf_lru_list_shrink+0xf9/0x470 kernel/bpf/bpf_lru_list.c:266
+       bpf_lru_list_pop_free_to_local kernel/bpf/bpf_lru_list.c:340 [inline]
+       bpf_common_lru_pop_free kernel/bpf/bpf_lru_list.c:447 [inline]
+       bpf_lru_pop_free+0x87c/0x1670 kernel/bpf/bpf_lru_list.c:499
+       prealloc_lru_pop+0x2c/0xa0 kernel/bpf/hashtab.c:132
+       __htab_lru_percpu_map_update_elem+0x67e/0xa90 kernel/bpf/hashtab.c:1069
+       bpf_percpu_hash_update+0x16e/0x210 kernel/bpf/hashtab.c:1585
+       bpf_map_update_value.isra.0+0x2d7/0x8e0 kernel/bpf/syscall.c:181
+       generic_map_update_batch+0x41f/0x610 kernel/bpf/syscall.c:1319
+       bpf_map_do_batch+0x3f5/0x510 kernel/bpf/syscall.c:3348
+       __do_sys_bpf+0x9b7/0x41e0 kernel/bpf/syscall.c:3460
+       __se_sys_bpf kernel/bpf/syscall.c:3355 [inline]
+       __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3355
+       do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+       entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
-.John
+   -> #0 (&loc_l->lock){....}:
+       check_prev_add kernel/locking/lockdep.c:2475 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2580 [inline]
+       validate_chain kernel/locking/lockdep.c:2970 [inline]
+       __lock_acquire+0x2596/0x4a00 kernel/locking/lockdep.c:3954
+       lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4484
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0x95/0xcd kernel/locking/spinlock.c:159
+       bpf_common_lru_push_free kernel/bpf/bpf_lru_list.c:516 [inline]
+       bpf_lru_push_free+0x250/0x5b0 kernel/bpf/bpf_lru_list.c:555
+       __htab_map_lookup_and_delete_batch+0x8d4/0x1540 kernel/bpf/hashtab.c:1374
+       htab_lru_map_lookup_and_delete_batch+0x34/0x40 kernel/bpf/hashtab.c:1491
+       bpf_map_do_batch+0x3f5/0x510 kernel/bpf/syscall.c:3348
+       __do_sys_bpf+0x1f7d/0x41e0 kernel/bpf/syscall.c:3456
+       __se_sys_bpf kernel/bpf/syscall.c:3355 [inline]
+       __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3355
+       do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+       entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+    Possible unsafe locking scenario:
+
+          CPU0                    CPU2
+          ----                    ----
+     lock(&htab->buckets[i].lock#2);
+                                  lock(&l->lock);
+                                  lock(&htab->buckets[i].lock#2);
+     lock(&loc_l->lock);
+
+    *** DEADLOCK ***
+
+To fix the issue, for htab_lru_map_lookup_and_delete_batch() in CPU0,
+let us do bpf_lru_push_free() out of the htab bucket lock. This can
+avoid the above deadlock scenario.
+
+Fixes: 057996380a42 ("bpf: Add batch ops to all htab bpf map")
+Reported-by: syzbot+a38ff3d9356388f2fb83@syzkaller.appspotmail.com
+Reported-by: syzbot+122b5421d14e68f29cd1@syzkaller.appspotmail.com
+Suggested-by: Hillf Danton <hdanton@sina.com>
+Suggested-by: Martin KaFai Lau <kafai@fb.com>
+Cc: Brian Vazquez <brianvv@google.com>
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ kernel/bpf/hashtab.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 2d182c4ee9d9..59083061dd3a 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -56,6 +56,7 @@ struct htab_elem {
+ 			union {
+ 				struct bpf_htab *htab;
+ 				struct pcpu_freelist_node fnode;
++				struct htab_elem *link;
+ 			};
+ 		};
+ 	};
+@@ -1255,6 +1256,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 	void __user *uvalues = u64_to_user_ptr(attr->batch.values);
+ 	void __user *ukeys = u64_to_user_ptr(attr->batch.keys);
+ 	void *ubatch = u64_to_user_ptr(attr->batch.in_batch);
++	struct htab_elem *node_to_free = NULL;
+ 	u32 batch, max_count, size, bucket_size;
+ 	u64 elem_map_flags, map_flags;
+ 	struct hlist_nulls_head *head;
+@@ -1370,9 +1372,13 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 		}
+ 		if (do_delete) {
+ 			hlist_nulls_del_rcu(&l->hash_node);
+-			if (is_lru_map)
+-				bpf_lru_push_free(&htab->lru, &l->lru_node);
+-			else
++			if (is_lru_map) {
++				/* link to-be-freed elements together so
++				 * they can freed outside bucket lock region.
++				 */
++				l->link = node_to_free;
++				node_to_free = l;
++			} else
+ 				free_htab_elem(htab, l);
+ 		}
+ 		dst_key += key_size;
+@@ -1380,6 +1386,13 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 	}
+ 
+ 	raw_spin_unlock_irqrestore(&b->lock, flags);
++
++	while (node_to_free) {
++		l = node_to_free;
++		node_to_free = node_to_free->link;
++		bpf_lru_push_free(&htab->lru, &l->lru_node);
++	}
++
+ 	/* If we are not copying data, we can go to next bucket and avoid
+ 	 * unlocking the rcu.
+ 	 */
+-- 
+2.17.1
+
