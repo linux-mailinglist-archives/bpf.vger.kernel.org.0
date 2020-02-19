@@ -2,85 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 70253164BDC
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 18:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 296FE164C07
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 18:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbgBSR02 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Feb 2020 12:26:28 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:38913 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726558AbgBSR02 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Feb 2020 12:26:28 -0500
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1j4T6o-0000pA-OG; Wed, 19 Feb 2020 18:26:03 +0100
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id BF7A5103A01; Wed, 19 Feb 2020 18:26:01 +0100 (CET)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        David Miller <davem@davemloft.net>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sebastian Sewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Clark Williams <williams@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [RFC patch 04/19] bpf/tracing: Remove redundant preempt_disable() in __bpf_trace_run()
-In-Reply-To: <20200219115415.57ee6d3c@gandalf.local.home>
-References: <20200214133917.304937432@linutronix.de> <20200214161503.289763704@linutronix.de> <20200219115415.57ee6d3c@gandalf.local.home>
-Date:   Wed, 19 Feb 2020 18:26:01 +0100
-Message-ID: <87d0aapjyu.fsf@nanos.tec.linutronix.de>
+        id S1726598AbgBSRgO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Feb 2020 12:36:14 -0500
+Received: from www62.your-server.de ([213.133.104.62]:52472 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726582AbgBSRgO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Feb 2020 12:36:14 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j4TGe-0000ez-Re; Wed, 19 Feb 2020 18:36:12 +0100
+Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-3.fritz.box)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j4TGe-000BvG-Hi; Wed, 19 Feb 2020 18:36:12 +0100
+Subject: Re: [PATCH bpf-next 0/3] sockmap/ktls: Simplify how we restore
+ sk_prot callbacks
+To:     Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>
+References: <20200217121530.754315-1-jakub@cloudflare.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <7d998c5a-18cb-bbe7-cc85-460efb32e9de@iogearbox.net>
+Date:   Wed, 19 Feb 2020 18:36:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+In-Reply-To: <20200217121530.754315-1-jakub@cloudflare.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.1/25728/Wed Feb 19 15:06:20 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Steven Rostedt <rostedt@goodmis.org> writes:
+On 2/17/20 1:15 PM, Jakub Sitnicki wrote:
+> This series has been split out from "Extend SOCKMAP to store listening
+> sockets" [0]. I think it stands on its own, and makes the latter series
+> smaller, which will make the review easier, hopefully.
+> 
+> The essence is that we don't need to do a complicated dance in
+> sk_psock_restore_proto, if we agree that the contract with tcp_update_ulp
+> is to restore callbacks even when the socket doesn't use ULP. This is what
+> tcp_update_ulp currently does, and we just make use of it.
+> 
+> Series is accompanied by a test for a particularly tricky case of restoring
+> callbacks when we have both sockmap and tls callbacks configured in
+> sk->sk_prot.
+> 
+> [0] https://lore.kernel.org/bpf/20200127131057.150941-1-jakub@cloudflare.com/
+> 
+> 
+> Jakub Sitnicki (3):
+>    bpf, sk_msg: Let ULP restore sk_proto and write_space callback
+>    bpf, sk_msg: Don't clear saved sock proto on restore
+>    selftests/bpf: Test unhashing kTLS socket after removing from map
+> 
+>   include/linux/skmsg.h                         |  17 +--
+>   .../selftests/bpf/prog_tests/sockmap_ktls.c   | 123 ++++++++++++++++++
+>   2 files changed, 124 insertions(+), 16 deletions(-)
+>   create mode 100644 tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c
+> 
 
-> On Fri, 14 Feb 2020 14:39:21 +0100
-> Thomas Gleixner <tglx@linutronix.de> wrote:
->
->> __bpf_trace_run() disables preemption around the BPF_PROG_RUN() invocation.
->> 
->> This is redundant because __bpf_trace_run() is invoked from a trace point
->> via __DO_TRACE() which already disables preemption _before_ invoking any of
->> the functions which are attached to a trace point.
->> 
->> Remove it.
->> 
->> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
->> ---
->>  kernel/trace/bpf_trace.c |    2 --
->>  1 file changed, 2 deletions(-)
->> 
->> --- a/kernel/trace/bpf_trace.c
->> +++ b/kernel/trace/bpf_trace.c
->> @@ -1476,9 +1476,7 @@ static __always_inline
->>  void __bpf_trace_run(struct bpf_prog *prog, u64 *args)
->>  {
->
-> Should there be a "cant_migrate()" added here?
-
-A cant_sleep() is the right thing to add as this really needs to stay
-non-preemptible. Hmm?
-
->>  	rcu_read_lock();
->> -	preempt_disable();
->>  	(void) BPF_PROG_RUN(prog, args);
->> -	preempt_enable();
->>  	rcu_read_unlock();
->>  }
-
-Thanks,
-
-        tglx
-
+Applied, thanks!
