@@ -2,66 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7622165283
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 23:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF352165292
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 23:34:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727469AbgBSW3j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Feb 2020 17:29:39 -0500
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:32574 "EHLO
+        id S1727636AbgBSWeq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Feb 2020 17:34:46 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:51523 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727163AbgBSW3j (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 19 Feb 2020 17:29:39 -0500
+        by vger.kernel.org with ESMTP id S1727232AbgBSWep (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 19 Feb 2020 17:34:45 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582151377;
+        s=mimecast20190719; t=1582151684;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BRybc8sxCddd24vT1nlye7r7O7R0DpcpTVIioA7SFcI=;
-        b=KQVHNkWSxSe1N3LeiuMbDAZPB6fBr3ZwxjVAWSx6sQGUYQ5pnjgYiE+yrnPpWD/qhwweOr
-        xSFWypyaugBulZHGg9Eooj9hP9Jwxp+PNtOf63MgncO1t/z9p/OLOe6nxFxfuKrYDqQq9X
-        BkDuH/74IWCfw9h1cdXCAah0WfNPgu0=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-307-9SPjWgzJO-Ca0-E5MRtFpQ-1; Wed, 19 Feb 2020 17:29:35 -0500
-X-MC-Unique: 9SPjWgzJO-Ca0-E5MRtFpQ-1
-Received: by mail-lf1-f70.google.com with SMTP id b22so529413lfa.16
-        for <bpf@vger.kernel.org>; Wed, 19 Feb 2020 14:29:35 -0800 (PST)
+        bh=7nl8XmgRfVXFQsqJYp+U1pyKQ6mhV4WooSWhRcLVnvo=;
+        b=AfPgRIyqzigqHLLavjV0ABIHwrvYH3mOxqVx3KdhPhwTBDGDJA4I5ipLmcwWj4dkI2zLJc
+        10K20+aXw4A0fb+ConNCmPfASeaYucCRFE5MkjwbnJmL6xqJprf3E1qbZy6WLrgJULWC4S
+        lJtfBLEb1w7Wd8HDRCnM4OwQA2WeSLE=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-262-fylyb6sFMxGrxVUy_UqrLg-1; Wed, 19 Feb 2020 17:34:42 -0500
+X-MC-Unique: fylyb6sFMxGrxVUy_UqrLg-1
+Received: by mail-lj1-f199.google.com with SMTP id m1so167862lji.5
+        for <bpf@vger.kernel.org>; Wed, 19 Feb 2020 14:34:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version:content-transfer-encoding;
-        bh=BRybc8sxCddd24vT1nlye7r7O7R0DpcpTVIioA7SFcI=;
-        b=TBJX8mkTC2z72OgcSkoFi9CGp/ZMjLK0e0djMNZ0kn3ZszdWCVPNTI7mCvMx743Eg5
-         F2vEXZ0u5W2NYgJAXi1rQEU+vafNBgqpDHsV/gOM+nVgJF79xm2Pv7Dd1+1aCPmEefgp
-         7acar5AA1Ktc4fKP9fptq7np1FtxAQs7zwf5apEnBIfZDHqkWpd3utv90QYI/KbTGtOr
-         PSxSboJkExKkrzk2Z2L0qxvYcRbIeht6lSbC/5/wQbZ6leTzbLXdn/EnqRbn2CouVZ2k
-         xMRJ6TYaKSdwc5XfENSKwum4NLJ4VD1hR+FU/r1ohgieqVZxvv21pHP8MZU//ofNYGrr
-         JI7g==
-X-Gm-Message-State: APjAAAWcPiWUGx60G2XYgLtzUwSE4Oa7lg8cCa0wG1Y1k122fk40DXxU
-        Bza8khYeeRI9kCNCNZdfhfzNMVu9yBoAemxW/CacjBd1W9AAVkAplOjiChEes+lHL9ZBF84UtTA
-        Wu8Jl/nbey+s+
-X-Received: by 2002:ac2:555c:: with SMTP id l28mr14691675lfk.52.1582151374211;
-        Wed, 19 Feb 2020 14:29:34 -0800 (PST)
-X-Google-Smtp-Source: APXvYqxc6aVcfJnfP1VotH2usBJXR3Riq0jeCoNz2ypR8KxRW6Ovyvnd8eBA9IpMzPUNtB288v3RHw==
-X-Received: by 2002:ac2:555c:: with SMTP id l28mr14691666lfk.52.1582151373951;
-        Wed, 19 Feb 2020 14:29:33 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id y11sm592004lfc.27.2020.02.19.14.29.33
+        bh=7nl8XmgRfVXFQsqJYp+U1pyKQ6mhV4WooSWhRcLVnvo=;
+        b=nPQDgAZJ9jfx8s1bIS9/9+KMHqkEGe3/BcM8TzZK46YRqsbZEmHc3PjxjRYJoc3XJa
+         qBelq4vqWSO7GuK+E24BB3CNTRb5kUt3BD2qcE3MqZapC0UHtgOysrMMujXNzdP2fP++
+         8dO1D9ez+eyryGJKCXUCoZs2CoRArROjzM091HKMvZ+fXE7wP78tvwuEih/aI+Tixvm/
+         coD45yPGOLctHDBl/l9r7Olk9wNgF+hyqU6/zBHgw0bWum+uTaLP6pjs/fM/twsfTud3
+         akt1DAPLlkmU7f5I8Lc3bVIkfPu9F2KattthKuiczHSdH6UdUUKBQ++SAdiBNUJ1Fpqw
+         ThXA==
+X-Gm-Message-State: APjAAAWVa42h16ZiZqZPAYwY69E6QQ7wXDfQ6CW863+qTDG3u/69MOXs
+        y2upRybLa5/ScmLk9E8xDOt/CeO80zlPVvINmWUjTUb6GGfN4sScyGxvraFzMQvW2jbhNJ4+Etf
+        k2O803tbfxmT8
+X-Received: by 2002:a2e:721a:: with SMTP id n26mr17063387ljc.128.1582151681032;
+        Wed, 19 Feb 2020 14:34:41 -0800 (PST)
+X-Google-Smtp-Source: APXvYqzvWQFtxPjk1/T6HMqQjAhCQGTZZ+/vNOQhiEwlpDfZyoOdoBkZV6JpADcyTcoKqcxKbmS3Bw==
+X-Received: by 2002:a2e:721a:: with SMTP id n26mr17063368ljc.128.1582151680748;
+        Wed, 19 Feb 2020 14:34:40 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id x23sm538480lff.24.2020.02.19.14.34.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Feb 2020 14:29:33 -0800 (PST)
+        Wed, 19 Feb 2020 14:34:39 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 1260B180365; Wed, 19 Feb 2020 23:29:30 +0100 (CET)
+        id 3320E180365; Wed, 19 Feb 2020 23:34:39 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Yonghong Song <yhs@fb.com>, Daniel Borkmann <daniel@iogearbox.net>,
-        ast@fb.com
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf] libbpf: Sanitise internal map names so they are not rejected by the kernel
-In-Reply-To: <75035604-6cf8-515e-c0b0-569758ffa2e1@fb.com>
-References: <20200217171701.215215-1-toke@redhat.com> <9ddddbd6-aca2-61ae-b864-0f12d7fd33b4@iogearbox.net> <a0923745-ee34-3eb0-7f9b-31cec99661ec@fb.com> <87sgj7yhif.fsf@toke.dk> <e7a1f042-a3d7-ad25-e195-fdd5f8b78680@iogearbox.net> <878skyyipy.fsf@toke.dk> <75035604-6cf8-515e-c0b0-569758ffa2e1@fb.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Eelco Chaudron <echaudro@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Xdp <xdp-newbies@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: Re: Capture xdp packets in an fentry BPF hook
+In-Reply-To: <CAADnVQJzbAu3tdqn1DbyK+VFwYjp5rpgJOpPFLEcoe_mEr3YEw@mail.gmail.com>
+References: <F844EC8A-902B-4BF7-95E3-B0D6DC618F1B@redhat.com> <20200219203626.ozkdoyhyexwxwbbt@ast-mbp> <87o8tuw7gj.fsf@toke.dk> <CAADnVQJzbAu3tdqn1DbyK+VFwYjp5rpgJOpPFLEcoe_mEr3YEw@mail.gmail.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 19 Feb 2020 23:29:30 +0100
-Message-ID: <87imk2w6r9.fsf@toke.dk>
+Date:   Wed, 19 Feb 2020 23:34:39 +0100
+Message-ID: <87ftf6w6io.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -70,83 +72,84 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Yonghong Song <yhs@fb.com> writes:
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-> On 2/19/20 2:28 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Daniel Borkmann <daniel@iogearbox.net> writes:
->>=20
->>> On 2/18/20 5:42 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->>>> Yonghong Song <yhs@fb.com> writes:
->>>>> On 2/18/20 6:40 AM, Daniel Borkmann wrote:
->>>>>> On 2/17/20 6:17 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->>>>>>> The kernel only accepts map names with alphanumeric characters,
->>>>>>> underscores
->>>>>>> and periods in their name. However, the auto-generated internal map=
- names
->>>>>>> used by libbpf takes their prefix from the user-supplied BPF object=
- name,
->>>>>>> which has no such restriction. This can lead to "Invalid argument" =
-errors
->>>>>>> when trying to load a BPF program using global variables.
->>>>>>>
->>>>>>> Fix this by sanitising the map names, replacing any non-allowed
->>>>>>> characters
->>>>>>> with underscores.
->>>>>>>
->>>>>>> Fixes: d859900c4c56 ("bpf, libbpf: support global data/bss/rodata
->>>>>>> sections")
->>>>>>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->>>>>>
->>>>>> Makes sense to me, applied, thanks! I presume you had something like=
- '-'
->>>>>> in the
->>>>>> global var leading to rejection?
->>>>>
->>>>> The C global variable cannot have '-'. I saw a complain in bcc mailing
->>>>> list sometimes back like: if an object file is a-b.o, then we will
->>>>> generate a map name like a-b.bss for the bss ELF section data. The
->>>>> map name "a-b.bss" name will be rejected by the kernel. The workaround
->>>>> is to change object file name. Not sure whether this is the only
->>>>> issue which may introduce non [a-zA-Z0-9_] or not. But this patch ind=
-eed
->>>>> should fix the issue I just described.
->>>
->>> Yep, meant object file name, just realized too late after sending. :/
->>>
->>>> Yes, this was exactly my problem; my object file is called
->>>> 'xdp-dispatcher.o'. Fun error to track down :P
->>>>
->>>> Why doesn't the kernel allow dashes in the name anyway?
->>>
->>> Commit cb4d2b3f03d8 ("bpf: Add name, load_time, uid and map_ids to bpf_=
-prog_info")
->>> doesn't state a specific reason, and we did later extend it via 3e0ddc4=
-f3ff1 ("bpf:
->>> allow . char as part of the object name"). My best guess right now is p=
-otentially
->>> not to confuse BPF's kallsyms handling with dashes etc.
->>=20
->> Right, OK, fair enough I suppose. I was just wondering since this is
->> the second time I've run into hard-to-debug problems because of the
->> naming restrictions.
->>=20
->> Really, it would be nice to have something like the netlink extack
->> mechanism so the kernel can return something more than just an error
->> code when a bpf() call fails. Is there any way to do something similar
->> for a syscall? Could we invent something?
+> On Wed, Feb 19, 2020 at 2:14 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>>
+>> > On Wed, Feb 19, 2020 at 03:38:40PM +0100, Eelco Chaudron wrote:
+>> >> Hi Alexei at al.,
+>> >>
+>> >> I'm getting closer to finally have an xdpdump tool that uses the bpf
+>> >> fentry/fexit tracepoints, but I ran into a final hurdle...
+>> >>
+>> >> To stuff the packet into a perf ring I'll need to use the
+>> >> bpf_perf_event_output(), but unfortunately, this is a program of trac=
+e type,
+>> >> and not XDP so the packet data is not added automatically :(
+>> >>
+>> >> Secondly even trying to pass the actual packet data as a reference to
+>> >> bpf_perf_event_output() will not work as the verifier wants the data =
+to be
+>> >> on the fp.
+>> >>
+>> >> Even worse, the trace program gets the XDP info not thought the ctx, =
+but
+>> >> trough the fentry/fexit input value, i.e.:
+>> >>
+>> >>      SEC("fentry/func")
+>> >>      int BPF_PROG(trace_on_entry, struct xdp_buff *xdp)...
+>> >>
+>> >>      struct net_device {
+>> >>          int ifindex;
+>> >>      } __attribute__((preserve_access_index));
+>> >>
+>> >>      struct xdp_rxq_info {
+>> >>          struct net_device *dev;
+>> >>          __u32 queue_index;
+>> >>      } __attribute__((preserve_access_index));
+>> >>
+>> >>      struct xdp_buff {
+>> >>          void *data;
+>> >>          void *data_end;
+>> >>          void *data_meta;
+>> >>          void *data_hard_start;
+>> >>          unsigned long handle;
+>> >>          struct xdp_rxq_info *rxq;
+>> >>      } __attribute__((preserve_access_index));
+>> >>
+>> >> Hence even trying to copy in bytes to a local buffer is not allowed b=
+y the
+>> >> verifier, i.e. __u8 *data =3D (u8 *)(long)xdp->data;
+>> >>
+>> >> Can you let me know how you envisioned a BPF entry hook to capture pa=
+ckets
+>> >> from XDP. Am I missing something, or is there something missing from =
+the
+>> >> infrastructure?
+>> >
+>> > Tracing of XDP is missing a helper similar to bpf_skb_output() for skb.
+>> > Its first arg will be 'struct xdp_buff *' and .arg1_type =3D ARG_PTR_T=
+O_BTF_ID
+>> > then it will work similar to bpf_skb_output() in progs/kfree_skb.c.
+>>
+>> What about freplace? Since that is also using the tracing
+>> infrastructure, will the replacing program also be considered a tracing
+>> program by the verifier? Or is it possible to load a program with an XDP
+>> type, but still use it for freplace?
 >
-> Currently, BPF_PROG_LOAD and BPF_BTF_LOAD has log_buf as part of syscall=
-=20
-> interface. Esp. for BPF_PROG_LOAD, maybe we could put some non-verifier=20
-> logs here?
->
-> Maybe we could introduce log_buf to other syscall commands if there is
-> a great need in user space to get more details about the error code?
+> Please see freplace example in progs/fexit_bpf2bpf.c
+> freplace is not a separate type of program.
+> It's not tracing and it's not networking.
+> It's an extension of the target program.
+> If target prog is xdp prog the extension will have access
+> to the same struct xdp_md and the same xdp helpers.
 
-Hmm, that's not a bad idea, actually. I guess I'll take a stab at that
-the next time I get really annoyed at having to track down an -EINVAL ;)
-
-Unless someone else beats me to it, of course, which would be great!
+Ah, great! It would seem I had not really looked at those examples,
+other than to notice they were there. Thanks for the pointer, and sorry
+for being dense! :)
 
 -Toke
 
