@@ -2,122 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 110B3164F88
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 21:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEC5164FB1
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 21:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbgBSUGc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Feb 2020 15:06:32 -0500
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:49184 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726683AbgBSUGb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 19 Feb 2020 15:06:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582142790;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rSgZmzP4k8CmOEp7jZmOsNnNYRQvUnS1sXvQgXw+mZI=;
-        b=MnocYY4uPVq3trk3OSaRbDPiexbfFYBwKcj6D+oy3hf0M0XQwJY/CR9zmJwoJ9T0foXHDP
-        N4jkEoL8Ll6GXHScCF4a2s4I6ghEzerP7CMGxZZYNtQswCqqu0hQIAwQGT1Gz7acBbjcIR
-        m3RzUd/ogJuxoh44SQ6Fu3skUyaMJy0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-304-7KKjfjZ3OPKe4pAB1JMKZg-1; Wed, 19 Feb 2020 15:06:24 -0500
-X-MC-Unique: 7KKjfjZ3OPKe4pAB1JMKZg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726980AbgBSUUG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Feb 2020 15:20:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726645AbgBSUUG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Feb 2020 15:20:06 -0500
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8411E800D4E;
-        Wed, 19 Feb 2020 20:06:22 +0000 (UTC)
-Received: from carbon (ovpn-200-26.brq.redhat.com [10.40.200.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4F22638D;
-        Wed, 19 Feb 2020 20:06:10 +0000 (UTC)
-Date:   Wed, 19 Feb 2020 21:06:09 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        by mail.kernel.org (Postfix) with ESMTPSA id 07A6A24654;
+        Wed, 19 Feb 2020 20:20:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582143605;
+        bh=uIBm1dGD7YzjetMlfl+s7x73fGRtf+jKsTUZT2posg0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ev6C+hKaxC3x5s1Xz8uy3r2XIJQHV4AwCZlCb54jWfF7+HbqSCtTkFLxdEetdlDma
+         ZMyf1jvm7jxHkToPTk58MIMS9OWg8ntwsXE+dV5iveXxNx2eqw+FdQGzpG1h7gu/lA
+         oGrEuV3HnEqbxHpxAUadW3WPYdTpDY18tShsPrDM=
+Date:   Wed, 19 Feb 2020 21:20:03 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Andrii Nakryiko <andriin@fb.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         BPF-dev-list <bpf@vger.kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Daniel Borkmann <borkmann@iogearbox.net>,
         David Miller <davem@davemloft.net>,
         LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Anders Roxell <anders.roxell@linaro.org>,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        brouer@redhat.com
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
 Subject: Re: Kernel 5.5.4 build fail for BPF-selftests with latest LLVM
-Message-ID: <20200219210609.20a097fb@carbon>
-In-Reply-To: <CAEf4BzaRAK6-7aCCVOA6hjTevKuxgvZZnHeVgdj_ZWNn8wibYQ@mail.gmail.com>
+Message-ID: <20200219202003.GB2882443@kroah.com>
 References: <20200219133012.7cb6ac9e@carbon>
-        <CAADnVQKQRKtDz0Boy=-cudc4eKGXB-yParGZv6qvYcQR4uMUQQ@mail.gmail.com>
-        <20200219180348.40393e28@carbon>
-        <CAEf4Bza9imKymHfv_LpSFE=kNB5=ZapTS3SCdeZsDdtrUrUGcg@mail.gmail.com>
-        <20200219192854.6b05b807@carbon>
-        <CAEf4BzaRAK6-7aCCVOA6hjTevKuxgvZZnHeVgdj_ZWNn8wibYQ@mail.gmail.com>
+ <20200219132856.GA2836367@kroah.com>
+ <20200219144254.36c3921b@carbon>
+ <20200219181250.GA2852230@kroah.com>
+ <20200219204039.121f10d2@carbon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200219204039.121f10d2@carbon>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 19 Feb 2020 10:38:45 -0800
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-
-> On Wed, Feb 19, 2020 at 10:29 AM Jesper Dangaard Brouer
-> <brouer@redhat.com> wrote:
-> >
-> > On Wed, 19 Feb 2020 09:38:50 -0800
-> > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >  
-> > > On Wed, Feb 19, 2020 at 9:04 AM Jesper Dangaard Brouer
-> > > <brouer@redhat.com> wrote:  
-> > > >
-> > > > On Wed, 19 Feb 2020 08:41:27 -0800
-> > > > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > > >  
-> > > > > On Wed, Feb 19, 2020 at 4:30 AM Jesper Dangaard Brouer
-> > > > > <brouer@redhat.com> wrote:  
-> > > > > >
-> > > > > > I'm willing to help out, such that we can do either version or feature
-> > > > > > detection, to either skip compiling specific test programs or at least
-> > > > > > give users a proper warning of they are using a too "old" LLVM version.  
-> > > > > ...  
-> > > > > > progs/test_core_reloc_bitfields_probed.c:47:13: error: use of unknown builtin '__builtin_preserve_field_info' [-Wimplicit-function-declaration]
-> > > > > >         out->ub1 = BPF_CORE_READ_BITFIELD_PROBED(in, ub1);  
-> > > > >
-> > > > > imo this is proper warning message already.  
-> > > >
-> > > > This is an error, not a warning.  The build breaks as the make process stops.
-> > > >  
-> > >
-> > > Latest Clang was a requirement for building and running all selftests
-> > > for a long time now. There were few previous discussions on mailing
-> > > list about this and each time the conclusion was the same: latest
-> > > Clang is a requirement for BPF selftests.  
-> >
-> > The latest Clang is 9.0.1, and it doesn't build with that.  
+On Wed, Feb 19, 2020 at 08:40:39PM +0100, Jesper Dangaard Brouer wrote:
+> On Wed, 19 Feb 2020 19:12:50 +0100
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 > 
-> Latest as in "latest built from sources".
+> > On Wed, Feb 19, 2020 at 02:42:54PM +0100, Jesper Dangaard Brouer wrote:
+> > > On Wed, 19 Feb 2020 14:28:56 +0100
+> > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> > >   
+> > > > On Wed, Feb 19, 2020 at 01:30:12PM +0100, Jesper Dangaard Brouer wrote:  
+> > > > > Hi Andrii,
+> > > > > 
+> > > > > Downloaded tarball for kernel release 5.5.4, and I cannot compile
+> > > > > tools/testing/selftests/bpf/ with latest LLVM release version 9.    
+> > > > 
+> [...]
+> > > > And has llvm 9 always worked here?  
+> > > 
+> > > Yes, llvm-9 used to work for tools/testing/selftests/bpf/.  
+> > 
+> > As of when?
+> 
+> Kernel v5.4 works when compiling BPF-selftests with LLVM 9.0.1.
 
-When I download a specific kernel release, how can I know what LLVM
-git-hash or version I need (to use BPF-selftests)?
+Bisection can help us here :)
 
-Do you think it is reasonable to require end-users to compile their own
-bleeding edge version of LLVM, to use BPF-selftests?
+thanks,
 
-I do hope that some end-users of BPF-selftests will be CI-systems.
-That also implies that CI-system maintainers need to constantly do
-"latest built from sources" of LLVM git-tree to keep up.  Is that a
-reasonable requirement when buying a CI-system in the cloud?
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+greg k-h
