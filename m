@@ -2,134 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DEA4164212
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 11:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D0D1642B6
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 11:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbgBSK2P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Feb 2020 05:28:15 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:36097 "EHLO
+        id S1726708AbgBSKyl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Feb 2020 05:54:41 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:20934 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726453AbgBSK2P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Feb 2020 05:28:15 -0500
+        with ESMTP id S1726691AbgBSKyl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Feb 2020 05:54:41 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582108093;
+        s=mimecast20190719; t=1582109681;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vXI0vzQ/32o7Z8p5s0zKYHP5YIIZ9uPsSeeuIvMaYPk=;
-        b=jCrYyo5nVGbqoMqgHjm6ol+k6k3vKvN5Chbpxi+w5jOagA1bvimPW43x8JHd1ZN28PcM9E
-        kWQ/tLEMuV/R2Gu+ELJiWtTFh9js+qUTpiwvt+MqZHLy+zM2cssaSeparPXpt6r8BkZxXS
-        Bu463VcQkWPuWpA1fwEVbFPwkkznuKs=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-113-I508sYMcOb-R1kTOsFc9PA-1; Wed, 19 Feb 2020 05:28:12 -0500
-X-MC-Unique: I508sYMcOb-R1kTOsFc9PA-1
-Received: by mail-lf1-f72.google.com with SMTP id q16so2931001lfa.13
-        for <bpf@vger.kernel.org>; Wed, 19 Feb 2020 02:28:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=vXI0vzQ/32o7Z8p5s0zKYHP5YIIZ9uPsSeeuIvMaYPk=;
-        b=Kn+vaFtD7oXG4KZJX9fqqvp40hFMLZtTpwtb9oP02+kkKjBxaMywZVGSlIlzgIDfSN
-         6aFLYPe1qi8Z3rplD5yH0wio4F5xwMbgVyWqkxGyGpfiBGa11n07k4ZsmO5VU4N+rMaL
-         U3pHFuc+15ORYuKL0FLikz62aoFA2b9ntv2hqpK3PkNvLOLJvdZWL3x1Cwn87HpKsbvo
-         iQoSRPhhDu+NgaRZo7f8gEDv+KPdEYHcMXVVsYG34KVWuAX0BRaDisubGveZtQNDcejL
-         VwcoB57vxNxqMNeidhAaPjYuv7pemEmEuPtWZVa/Awfk5zvNbv/Bf7tnq5Z/sk1D+/7t
-         Gdig==
-X-Gm-Message-State: APjAAAX/AIrjBKrSd8nuFRvtT1uddQviYICngu5suTwN4anChNARy28t
-        2drtnQEB8UChZr2UEWG5SdALPzdMIpiWd+Z4Y1a5q+Tfz2fwqRYoyir3vTWtpHjvi/abciP5/Lv
-        bTV+nhUYLw3oa
-X-Received: by 2002:a2e:3a13:: with SMTP id h19mr15691806lja.16.1582108090946;
-        Wed, 19 Feb 2020 02:28:10 -0800 (PST)
-X-Google-Smtp-Source: APXvYqxf4fBztSDmrjRNU4tO6ynotwCqNMQvOY7VRbFJDZ9p9yu/ijggDFH6aB3OGsvS978dpq7GLg==
-X-Received: by 2002:a2e:3a13:: with SMTP id h19mr15691794lja.16.1582108090681;
-        Wed, 19 Feb 2020 02:28:10 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id k4sm954208lfo.48.2020.02.19.02.28.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Feb 2020 02:28:09 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 49136180365; Wed, 19 Feb 2020 11:28:09 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>, Yonghong Song <yhs@fb.com>,
-        ast@fb.com
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf] libbpf: Sanitise internal map names so they are not rejected by the kernel
-In-Reply-To: <e7a1f042-a3d7-ad25-e195-fdd5f8b78680@iogearbox.net>
-References: <20200217171701.215215-1-toke@redhat.com> <9ddddbd6-aca2-61ae-b864-0f12d7fd33b4@iogearbox.net> <a0923745-ee34-3eb0-7f9b-31cec99661ec@fb.com> <87sgj7yhif.fsf@toke.dk> <e7a1f042-a3d7-ad25-e195-fdd5f8b78680@iogearbox.net>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 19 Feb 2020 11:28:09 +0100
-Message-ID: <878skyyipy.fsf@toke.dk>
+        bh=PauumciWQeMsaVAq7AsvZUadieEbxMADpQ3r9+NupQ8=;
+        b=UKfsxQlKKEGxB14GkBx5+K6LhxYAT0lrkQ0q5uDypKCESdbnVhsZArKZP9BpXxFVPyxTyD
+        1ijANRyKPfX/PO5OhRtJlQSr74p9CofbwTXYp1v1djobpy064UNotuhoXAib857FKSzRfD
+        +T5iRT4CaVqA7XI1aPb3QceUYtwcsTw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-283-vXBSodOxM72P_Chen0DNHQ-1; Wed, 19 Feb 2020 05:54:39 -0500
+X-MC-Unique: vXBSodOxM72P_Chen0DNHQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3BC7E1336562;
+        Wed, 19 Feb 2020 10:54:37 +0000 (UTC)
+Received: from [10.36.116.231] (ovpn-116-231.ams2.redhat.com [10.36.116.231])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 647E589F3B;
+        Wed, 19 Feb 2020 10:54:32 +0000 (UTC)
+From:   "Eelco Chaudron" <echaudro@redhat.com>
+To:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        "Martin Lau" <kafai@fb.com>, "Song Liu" <songliubraving@fb.com>,
+        "Yonghong Song" <yhs@fb.com>, "Andrii Nakryiko" <andriin@fb.com>,
+        "Toke =?utf-8?b?SMO4aWxhbmQtSsO4cmdlbnNlbg==?=" <toke@redhat.com>
+Subject: Re: [PATCH bpf-next v4 3/3] selftests/bpf: update xdp_bpf2bpf test to
+ use new set_attach_target API
+Date:   Wed, 19 Feb 2020 11:54:30 +0100
+Message-ID: <C9BBE2C5-E7ED-465C-98B5-1476B9B475A9@redhat.com>
+In-Reply-To: <CAEf4BzYx2ZccrAu8JC=UxeHamk4dHKVa2jH4P=Hr7VzMwUphJQ@mail.gmail.com>
+References: <158194337246.104074.6407151818088717541.stgit@xdp-tutorial>
+ <158194342478.104074.6851588870108514192.stgit@xdp-tutorial>
+ <CAEf4BzYx2ZccrAu8JC=UxeHamk4dHKVa2jH4P=Hr7VzMwUphJQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="UTF-8"
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
 
-> On 2/18/20 5:42 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Yonghong Song <yhs@fb.com> writes:
->>> On 2/18/20 6:40 AM, Daniel Borkmann wrote:
->>>> On 2/17/20 6:17 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->>>>> The kernel only accepts map names with alphanumeric characters,
->>>>> underscores
->>>>> and periods in their name. However, the auto-generated internal map n=
-ames
->>>>> used by libbpf takes their prefix from the user-supplied BPF object n=
-ame,
->>>>> which has no such restriction. This can lead to "Invalid argument" er=
-rors
->>>>> when trying to load a BPF program using global variables.
->>>>>
->>>>> Fix this by sanitising the map names, replacing any non-allowed
->>>>> characters
->>>>> with underscores.
->>>>>
->>>>> Fixes: d859900c4c56 ("bpf, libbpf: support global data/bss/rodata
->>>>> sections")
->>>>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->>>>
->>>> Makes sense to me, applied, thanks! I presume you had something like '=
--'
->>>> in the
->>>> global var leading to rejection?
->>>
->>> The C global variable cannot have '-'. I saw a complain in bcc mailing
->>> list sometimes back like: if an object file is a-b.o, then we will
->>> generate a map name like a-b.bss for the bss ELF section data. The
->>> map name "a-b.bss" name will be rejected by the kernel. The workaround
->>> is to change object file name. Not sure whether this is the only
->>> issue which may introduce non [a-zA-Z0-9_] or not. But this patch indeed
->>> should fix the issue I just described.
+
+On 18 Feb 2020, at 22:21, Andrii Nakryiko wrote:
+
+> On Mon, Feb 17, 2020 at 5:03 AM Eelco Chaudron <echaudro@redhat.com> wr=
+ote:
+>>
+>> Use the new bpf_program__set_attach_target() API in the xdp_bpf2bpf
+>> selftest so it can be referenced as an example on how to use it.
+>>
+>>
 >
-> Yep, meant object file name, just realized too late after sending. :/
+> nit: extra empty line?
+
+ACK <SNIP>
+>> +       prog =3D *ftrace_skel->skeleton->progs[0].prog;
 >
->> Yes, this was exactly my problem; my object file is called
->> 'xdp-dispatcher.o'. Fun error to track down :P
->>=20
->> Why doesn't the kernel allow dashes in the name anyway?
+> it took me a while to understand what's going on here... :) You are
+> not supposed to peek into ftrace_skel->skeleton, it's an "internal"
+> object that's passed into libbpf.
 >
-> Commit cb4d2b3f03d8 ("bpf: Add name, load_time, uid and map_ids to bpf_pr=
-og_info")
-> doesn't state a specific reason, and we did later extend it via 3e0ddc4f3=
-ff1 ("bpf:
-> allow . char as part of the object name"). My best guess right now is pot=
-entially
-> not to confuse BPF's kallsyms handling with dashes etc.
+> It's better to write it as a nice and short:
+>
+> prog =3D ftrace_skel->progs.trace_on_entry;
+>
 
-Right, OK, fair enough I suppose. I was just wondering since this is
-the second time I've run into hard-to-debug problems because of the
-naming restrictions.
-
-Really, it would be nice to have something like the netlink extack
-mechanism so the kernel can return something more than just an error
-code when a bpf() call fails. Is there any way to do something similar
-for a syscall? Could we invent something?
-
--Toke
+Will change in next rev=E2=80=A6
 
