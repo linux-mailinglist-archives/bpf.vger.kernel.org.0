@@ -2,184 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EBEA16389C
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 01:37:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E001638A3
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 01:42:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726729AbgBSAhO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Feb 2020 19:37:14 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:55068 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726698AbgBSAhO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Feb 2020 19:37:14 -0500
-Received: by mail-il1-f199.google.com with SMTP id t4so18504311ili.21
-        for <bpf@vger.kernel.org>; Tue, 18 Feb 2020 16:37:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=G0UMOdy6Hx8tmKoct5pIw4vcRna5accTPF/IPfYBhh8=;
-        b=f2KKGYkZtwCHm4YMfE3A9jc0g7QhTzWvD+1Dv2quCLmUkPqaC9wdxt6SaXjuH7CnLR
-         4sHs16m74Z0RdQ+frHjQRolae1jxpkH9sP5TPDW6HQYvl35h2y5OMuWSGtNRrggGl2hj
-         gt85iCtqFkzCzp5yG7NmnxPwSvtlmUV9M4s4XE4tE8x9QtqBAkMcNPdkWiigbQJKniBF
-         A0P4ZUr1l0g9gjEeJuYZmSgTXy9h9HZ/icLLkQWhc5pzEss51/Yj/Q0ijwal8uXctq2K
-         6zdbuhVDQFlAYr7Ob/W8DNxcG8qHdlNTk+v8ZwsViZngv/oyOJA3KDCNEG25MQuKV58Q
-         LA5g==
-X-Gm-Message-State: APjAAAVENwfoJHhhZYCkaglqJQDm+cH7bx3w7zanR1n3mX/uyIPwWb4o
-        wyJVOEf+DnU/t+1g/Wu5Tnw/ibrNmTgCo1ti5kYsx0/j+ClV
-X-Google-Smtp-Source: APXvYqxOg5ZusHJNKTp/6eLXbbdM4Rp9vPcRFhbcxm0I2XjrAgydk5UUE1yoPNaa6Fjw6Hh2aQjFeU4NrVNqHINA9iSJrgBj5SuJ
+        id S1726595AbgBSAmn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Feb 2020 19:42:43 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:32256 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726616AbgBSAmn (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 18 Feb 2020 19:42:43 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01J0PsVo011255
+        for <bpf@vger.kernel.org>; Tue, 18 Feb 2020 16:42:41 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=isfm9XXKWnu4wosNCV4Z1GE7af5vYK9maPpLca25oA4=;
+ b=rhqZGQn7jH/yO4Tg/pWRu2tBmEju8fOFzeJPJtnH2F+/PX4YQJthBtazCedJrjZlgJff
+ 3WXwLHCsfhImuQUb/NNLgU5jwQ6dTlh5Vp0mxI86r4gbh+N7XqJhQPV/f2I4xZ1+x2z7
+ H+I07KCaHUL+4DF3UrMtKOxB3LBVbIBbY40= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 2y8jtdjmen-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 18 Feb 2020 16:42:41 -0800
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 18 Feb 2020 16:42:40 -0800
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id DE0963703779; Tue, 18 Feb 2020 16:42:36 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Yonghong Song <yhs@fb.com>
+Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] selftests/bpf: change llvm flag -mcpu=probe to -mcpu=v3
+Date:   Tue, 18 Feb 2020 16:42:36 -0800
+Message-ID: <20200219004236.2291125-1-yhs@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-X-Received: by 2002:a6b:e411:: with SMTP id u17mr18784050iog.39.1582072633265;
- Tue, 18 Feb 2020 16:37:13 -0800 (PST)
-Date:   Tue, 18 Feb 2020 16:37:13 -0800
-In-Reply-To: <0000000000000973ee059eaf4de6@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000509454059ee2fd96@google.com>
-Subject: Re: possible deadlock in bpf_lru_push_free
-From:   syzbot <syzbot+122b5421d14e68f29cd1@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, hdanton@sina.com, kafai@fb.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-02-18_08:2020-02-18,2020-02-18 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ malwarescore=0 mlxlogscore=999 clxscore=1015 bulkscore=0 phishscore=0
+ impostorscore=0 spamscore=0 suspectscore=13 mlxscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2002190000
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has found a reproducer for the following crash on:
+The latest llvm supports cpu version v3, which is cpu version v1
+plus some additional 64bit jmp insns and 32bit jmp insn support.
 
-HEAD commit:    e20d3a05 bpf, offload: Replace bitwise AND by logical AND ..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=1491c481e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e7d35de59001df38
-dashboard link: https://syzkaller.appspot.com/bug?extid=122b5421d14e68f29cd1
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16ca6c45e00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=134bae29e00000
+In selftests/bpf Makefile, the llvm flag -mcpu=probe did runtime
+probe into the host system. Depending on compilation environments,
+it is possible that runtime probe may fail, e.g., due to
+memlock issue. This will cause generated code with cpu version v1.
+This may cause confusion as the same compiler and the same C code
+generates different byte codes in different environment.
 
-Bisection is inconclusive: the first bad commit could be any of:
+Let us change the llvm flag -mcpu=probe to -mcpu=v3 so the
+generated code will be the same regardless of the compilation
+environment.
 
-36a375c6 mailmap: add entry for Tiezhu Yang
-95c472ff Documentation/ko_KR/howto: Update a broken link
-ff1e81a7 Documentation: build warnings related to missing blank lines after explicit markups has been fixed
-5549c202 Documentation/ko_KR/howto: Update broken web addresses
-599e6f8d Documentation: changes.rst: update several outdated project URLs
-4bfdebd6 docs/locking: Fix outdated section names
-d1c9038a Allow git builds of Sphinx
-41dcd67e Merge tag 'docs-5.6-2' of git://git.lwn.net/linux
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ tools/testing/selftests/bpf/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17c6c36ee00000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+122b5421d14e68f29cd1@syzkaller.appspotmail.com
-
-IPVS: ftp: loaded support on port[0] = 21
-======================================================
-WARNING: possible circular locking dependency detected
-5.5.0-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor198/9748 is trying to acquire lock:
-ffffe8ffffc49158 (&l->lock){....}, at: bpf_lru_list_push_free kernel/bpf/bpf_lru_list.c:313 [inline]
-ffffe8ffffc49158 (&l->lock){....}, at: bpf_common_lru_push_free kernel/bpf/bpf_lru_list.c:532 [inline]
-ffffe8ffffc49158 (&l->lock){....}, at: bpf_lru_push_free+0xe5/0x5b0 kernel/bpf/bpf_lru_list.c:555
-
-but task is already holding lock:
-ffff88809f6c3b60 (&htab->buckets[i].lock){....}, at: __htab_map_lookup_and_delete_batch+0x617/0x1540 kernel/bpf/hashtab.c:1322
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&htab->buckets[i].lock){....}:
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x95/0xcd kernel/locking/spinlock.c:159
-       htab_lru_map_delete_node+0xce/0x2f0 kernel/bpf/hashtab.c:593
-       __bpf_lru_list_shrink_inactive kernel/bpf/bpf_lru_list.c:220 [inline]
-       __bpf_lru_list_shrink+0xf9/0x470 kernel/bpf/bpf_lru_list.c:266
-       bpf_percpu_lru_pop_free kernel/bpf/bpf_lru_list.c:416 [inline]
-       bpf_lru_pop_free+0xa9f/0x1670 kernel/bpf/bpf_lru_list.c:497
-       prealloc_lru_pop+0x2c/0xa0 kernel/bpf/hashtab.c:132
-       __htab_lru_percpu_map_update_elem+0x67e/0xa90 kernel/bpf/hashtab.c:1069
-       bpf_percpu_hash_update+0x16e/0x210 kernel/bpf/hashtab.c:1585
-       bpf_map_update_value.isra.0+0x2d7/0x8e0 kernel/bpf/syscall.c:181
-       map_update_elem kernel/bpf/syscall.c:1089 [inline]
-       __do_sys_bpf+0x3163/0x41e0 kernel/bpf/syscall.c:3384
-       __se_sys_bpf kernel/bpf/syscall.c:3355 [inline]
-       __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3355
-       do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
-       entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
--> #0 (&l->lock){....}:
-       check_prev_add kernel/locking/lockdep.c:2475 [inline]
-       check_prevs_add kernel/locking/lockdep.c:2580 [inline]
-       validate_chain kernel/locking/lockdep.c:2970 [inline]
-       __lock_acquire+0x2596/0x4a00 kernel/locking/lockdep.c:3954
-       lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4484
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x95/0xcd kernel/locking/spinlock.c:159
-       bpf_lru_list_push_free kernel/bpf/bpf_lru_list.c:313 [inline]
-       bpf_common_lru_push_free kernel/bpf/bpf_lru_list.c:532 [inline]
-       bpf_lru_push_free+0xe5/0x5b0 kernel/bpf/bpf_lru_list.c:555
-       __htab_map_lookup_and_delete_batch+0x8d4/0x1540 kernel/bpf/hashtab.c:1374
-       htab_lru_percpu_map_lookup_and_delete_batch+0x37/0x40 kernel/bpf/hashtab.c:1474
-       bpf_map_do_batch+0x3f5/0x510 kernel/bpf/syscall.c:3348
-       __do_sys_bpf+0x1f7d/0x41e0 kernel/bpf/syscall.c:3456
-       __se_sys_bpf kernel/bpf/syscall.c:3355 [inline]
-       __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3355
-       do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
-       entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&htab->buckets[i].lock);
-                               lock(&l->lock);
-                               lock(&htab->buckets[i].lock);
-  lock(&l->lock);
-
- *** DEADLOCK ***
-
-2 locks held by syz-executor198/9748:
- #0: ffffffff89bac200 (rcu_read_lock){....}, at: __htab_map_lookup_and_delete_batch+0x54b/0x1540 kernel/bpf/hashtab.c:1308
- #1: ffff88809f6c3b60 (&htab->buckets[i].lock){....}, at: __htab_map_lookup_and_delete_batch+0x617/0x1540 kernel/bpf/hashtab.c:1322
-
-stack backtrace:
-CPU: 0 PID: 9748 Comm: syz-executor198 Not tainted 5.5.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x197/0x210 lib/dump_stack.c:118
- print_circular_bug.isra.0.cold+0x163/0x172 kernel/locking/lockdep.c:1684
- check_noncircular+0x32e/0x3e0 kernel/locking/lockdep.c:1808
- check_prev_add kernel/locking/lockdep.c:2475 [inline]
- check_prevs_add kernel/locking/lockdep.c:2580 [inline]
- validate_chain kernel/locking/lockdep.c:2970 [inline]
- __lock_acquire+0x2596/0x4a00 kernel/locking/lockdep.c:3954
- lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4484
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0x95/0xcd kernel/locking/spinlock.c:159
- bpf_lru_list_push_free kernel/bpf/bpf_lru_list.c:313 [inline]
- bpf_common_lru_push_free kernel/bpf/bpf_lru_list.c:532 [inline]
- bpf_lru_push_free+0xe5/0x5b0 kernel/bpf/bpf_lru_list.c:555
- __htab_map_lookup_and_delete_batch+0x8d4/0x1540 kernel/bpf/hashtab.c:1374
- htab_lru_percpu_map_lookup_and_delete_batch+0x37/0x40 kernel/bpf/hashtab.c:1474
- bpf_map_do_batch+0x3f5/0x510 kernel/bpf/syscall.c:3348
- __do_sys_bpf+0x1f7d/0x41e0 kernel/bpf/syscall.c:3456
- __se_sys_bpf kernel/bpf/syscall.c:3355 [inline]
- __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3355
- do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x440c09
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 10 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fff14512e08 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00000000004a2390 RCX: 0000000000440c09
-RDX: 0000000000000038 RSI: 0000000020000100 RDI: 0000000000000019
-RBP: 00000000006cb018 R08: 0000000120080522 R09: 0000000120080522
-R10: 0000000120080522 R11: 0000000000000246 R12: 0000000000402110
-R13: 00000000004021a0 R14: 0000000000000000 R15: 0000000000000000
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 257a1aaaa37d..2a583196fa51 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -209,7 +209,7 @@ define CLANG_BPF_BUILD_RULE
+ 	$(call msg,CLNG-LLC,$(TRUNNER_BINARY),$2)
+ 	($(CLANG) $3 -O2 -target bpf -emit-llvm				\
+ 		-c $1 -o - || echo "BPF obj compilation failed") | 	\
+-	$(LLC) -mattr=dwarfris -march=bpf -mcpu=probe $4 -filetype=obj -o $2
++	$(LLC) -mattr=dwarfris -march=bpf -mcpu=v3 $4 -filetype=obj -o $2
+ endef
+ # Similar to CLANG_BPF_BUILD_RULE, but with disabled alu32
+ define CLANG_NOALU32_BPF_BUILD_RULE
+@@ -223,7 +223,7 @@ define CLANG_NATIVE_BPF_BUILD_RULE
+ 	$(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
+ 	($(CLANG) $3 -O2 -emit-llvm					\
+ 		-c $1 -o - || echo "BPF obj compilation failed") | 	\
+-	$(LLC) -march=bpf -mcpu=probe $4 -filetype=obj -o $2
++	$(LLC) -march=bpf -mcpu=v3 $4 -filetype=obj -o $2
+ endef
+ # Build BPF object using GCC
+ define GCC_BPF_BUILD_RULE
+-- 
+2.17.1
 
