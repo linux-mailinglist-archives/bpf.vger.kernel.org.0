@@ -2,91 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC82163AB0
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 04:03:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D40E163B4E
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 04:31:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728296AbgBSDDF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Feb 2020 22:03:05 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:42100 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728202AbgBSDDF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Feb 2020 22:03:05 -0500
-Received: by mail-lj1-f196.google.com with SMTP id d10so25405036ljl.9;
-        Tue, 18 Feb 2020 19:03:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7wV059MxZJL/ceXzJdSzbWhMkKat8X1C7CgUxvhC/Fs=;
-        b=PKNhjIBs6bvXetw2vIHXvTsf3L5yW59GXkcSVok4M/uU2jBYLgZexysQZkbBtOlWAn
-         hkSwVsB6durXBAeziSw5lmgLLR12XHSqrfQ5TqvMS66rdkUxRz1T6eXc11RynMpCK59n
-         cJkvJOoodL9Enc6a/92XE2LAG8Vwuwi2f/bkfGx0d7CSYsbRajkcxoqdWqw3YGxT6Xsy
-         le4BR7c0aEHEYSl2xelPy2iRFBEHWwsg6Vg3CWX+QYRgNcQMkjPTpc31ZNl5N+iRoXDL
-         CWioCtrHVMHt3S1sq2sCCLlDRKSRNMBTgRTcUUM39p4Cjc8dkI54ZClZtkbvFiSHcz3F
-         a6VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7wV059MxZJL/ceXzJdSzbWhMkKat8X1C7CgUxvhC/Fs=;
-        b=d+NFftlbFSCL5r2AE0Y0FUpoQl6agmUvnrdbIJsSP2eztrnN69LDlVw/QzdGwQpm27
-         OtWphXRAaj1Iwb66ZpJApW4/fED58wd4Xnh1XWzUDfvOrKxcNAhuW6weXl6LjZtepN/f
-         gjYtDXi2qEpSnUXytBLIESGMshj1/BvWOsZBBQ0SERdhMaDB9W/ewupVFe0YflLIEHSA
-         BBJMUFUpn/RIYuTAJzb0dK2wPmePCw6TrQjNgNszFSAmuFhrgoiNmZcwUjQ1zDmP4FLM
-         BblM58igcW8RZyTqlKkhW2liVn6rzA4QUY8OSDj01ZlAHxeHlN/EvHimDDMP0OiOJCOb
-         dBYg==
-X-Gm-Message-State: APjAAAUazwtX+BFY8dVyjXF3049zDqPF3QYkC6qYNkCI3UQYe8AnK5fH
-        YsH4VuGVMbe5aM01VITM0cOHmHEKQTGagC0Ijk1YGA==
-X-Google-Smtp-Source: APXvYqxwmc9iUV03II2uPqdKueW1KryDeg2UkbKuQpAQnmh0IThI3w3k66upIYSWld8XP8vU0N5CZgxMyIxFT+W5fOM=
-X-Received: by 2002:a2e:a404:: with SMTP id p4mr15029723ljn.234.1582081382464;
- Tue, 18 Feb 2020 19:03:02 -0800 (PST)
+        id S1726651AbgBSDbO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Feb 2020 22:31:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42020 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726439AbgBSDbO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Feb 2020 22:31:14 -0500
+Received: from kicinski-fedora-PC1C0HJN (unknown [163.114.132.128])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 12BF024658;
+        Wed, 19 Feb 2020 03:31:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582083073;
+        bh=X4/RKCS1sVnNw4Z8r1AfKIDyTAUh1uAp+I/zVjk2I6U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=n1RO+JGRMuytP7GHr5sjv/RX7Y7BV/+rqkm6x5Cxipm8V5Pl51EW/VAONik7bAWrI
+         evLnBKbLel1xQhU6aAiRza+myTLz8CA37YbqvMh9q+kJpL2WiI5r+Kca7hgP4W/5nk
+         AMKhAYm6Pr5g18+oM31EW5FQ1VtnXuG4V/QP5Emc=
+Date:   Tue, 18 Feb 2020 19:31:11 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     David Miller <davem@davemloft.net>
+Cc:     toke@redhat.com, lorenzo@kernel.org, netdev@vger.kernel.org,
+        ilias.apalodimas@linaro.org, lorenzo.bianconi@redhat.com,
+        andrew@lunn.ch, brouer@redhat.com, dsahern@kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [RFC net-next] net: mvneta: align xdp stats naming scheme to
+ mlx5 driver
+Message-ID: <20200218193111.3b6d6e47@kicinski-fedora-PC1C0HJN>
+In-Reply-To: <20200218.154713.1411536344737312845.davem@davemloft.net>
+References: <526238d9bcc60500ed61da1a4af8b65af1af9583.1581984697.git.lorenzo@kernel.org>
+        <20200218132921.46df7f8b@kicinski-fedora-PC1C0HJN>
+        <87eeury1ph.fsf@toke.dk>
+        <20200218.154713.1411536344737312845.davem@davemloft.net>
 MIME-Version: 1.0
-References: <20200218190224.22508-1-mrostecki@opensuse.org>
-In-Reply-To: <20200218190224.22508-1-mrostecki@opensuse.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 18 Feb 2020 19:02:49 -0800
-Message-ID: <CAADnVQJm_tvMGjhHyVn66feA3rHLSXTdzqCCABu+9tKer89LVA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/6] bpftool: Allow to select sections and filter probes
-To:     Michal Rostecki <mrostecki@opensuse.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 18, 2020 at 11:02 AM Michal Rostecki <mrostecki@opensuse.org> wrote:
->
-> This patch series extend the "bpftool feature" subcommand with the
-> new positional arguments:
->
-> - "section", which allows to select a specific section of probes (i.e.
->   "system_config", "program_types", "map_types");
-> - "filter_in", which allows to select only probes which matches the
->   given regex pattern;
-> - "filter_out", which allows to filter out probes which do not match the
->   given regex pattern.
->
-> The main motivation behind those changes is ability the fact that some
-> probes (for example those related to "trace" or "write_user" helpers)
-> emit dmesg messages which might be confusing for people who are running
-> on production environments. For details see the Cilium issue[0].
->
-> [0] https://github.com/cilium/cilium/issues/10048
+On Tue, 18 Feb 2020 15:47:13 -0800 (PST) David Miller wrote:
+> Really, mistakes happen and a poorly implemented or inserted fexit
+> module should not be a reason to not have access to accurate and
+> working statistics for fundamental events.
+> 
+> I am therefore totally against requiring fexit for this functionality.
+> If you want more sophisticated events or custome ones, sure, but not
+> for this baseline stuff.
+> 
+> I do, however, think we need a way to turn off these counter bumps if
+> the user wishes to do so for maximum performance.
 
-The motivation is clear, but I think the users shouldn't be made
-aware of such implementation details. I think instead of filter_in/out
-it's better to do 'full or safe' mode of probing.
-By default it can do all the probing that doesn't cause
-extra dmesgs and in 'full' mode it can probe everything.
+Yes, this point plus the precedence you mentioned elsewhere are quite
+hard to contend with.
+
+In an ideal world I was wondering if we could have the kernel install
+the fexit hook, a'la what we do with drop monitor using tracepoints
+from within the kernel.
+
+Then have a proper netlink stats group for them, instead of the ethtool
+free-form endlessly bikesheddable strings.
+
+But I guess it could be hard to easily recover the source interface
+pointer without digging through NAPI instances or such :S
+
