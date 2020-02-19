@@ -2,181 +2,208 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B17C164019
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 10:17:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE031640E8
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 10:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726469AbgBSJR3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Feb 2020 04:17:29 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:52541 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726202AbgBSJR3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 19 Feb 2020 04:17:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582103847;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9H+8g76ZRLHoi0QfrBdHaCd9NKX1hy9Hlg4zvECqkTw=;
-        b=jD57zBS02bvfFfawTAaFS5TTxmEpdKcChaca96jXMJnHWSKzT3p9CZCmeWPcy5DbM552XP
-        /zcjkn2FJm8tt23liRxHPtp19AUXjNHK3Uq5YTp5KC6koiFN/L3dpnpfTM60nV41XVz84h
-        PKcypiCJeTo9ast1fuXGDxzVhoKSpzM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-263-dYGvu_u4PTCxgY7AnTj_Cg-1; Wed, 19 Feb 2020 04:17:18 -0500
-X-MC-Unique: dYGvu_u4PTCxgY7AnTj_Cg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726453AbgBSJ5w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Feb 2020 04:57:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726450AbgBSJ5w (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Feb 2020 04:57:52 -0500
+Received: from localhost.localdomain (unknown [151.48.137.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8BE3C101FC60;
-        Wed, 19 Feb 2020 09:17:16 +0000 (UTC)
-Received: from krava (unknown [10.43.17.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B29E062660;
-        Wed, 19 Feb 2020 09:17:13 +0000 (UTC)
-Date:   Wed, 19 Feb 2020 10:17:11 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@redhat.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH 03/18] bpf: Add struct bpf_ksym
-Message-ID: <20200219091711.GD439238@krava>
-References: <20200216193005.144157-1-jolsa@kernel.org>
- <20200216193005.144157-4-jolsa@kernel.org>
- <d61ff7d5-f0a7-8828-cf94-54936670f244@iogearbox.net>
+        by mail.kernel.org (Postfix) with ESMTPSA id 3794521D56;
+        Wed, 19 Feb 2020 09:57:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582106270;
+        bh=HDpGa9t2mlk/qeWGVPL2lJCrLYCMr7KkBb+ZD4aNI/Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YNfJBYcDBmiqf57L2VbwBFTtoAL0s+k4hQGGHwxjoSttctmmIyEeLI0B+6H2u3jo0
+         SqqrEeyCNQ7Sy9NEg0jtxW3x91xzbCKR0XqfkXWAp+tXwvruFXUT/3Rec5z26u1A2P
+         eiRePQLCwuMrZi/+sLcuaszUOrtLn8IYobZBwHys=
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     netdev@vger.kernel.org
+Cc:     ilias.apalodimas@linaro.org, davem@davemloft.net, kuba@kernel.org,
+        lorenzo.bianconi@redhat.com, brouer@redhat.com, dsahern@kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH net-next] net: mvneta: align xdp stats naming scheme to mlx5 driver
+Date:   Wed, 19 Feb 2020 10:57:37 +0100
+Message-Id: <6c5f27aff46e6dd6be92ce29b65bc3670eeabffc.1582105994.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d61ff7d5-f0a7-8828-cf94-54936670f244@iogearbox.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 12:03:49AM +0100, Daniel Borkmann wrote:
-> On 2/16/20 8:29 PM, Jiri Olsa wrote:
-> > Adding 'struct bpf_ksym' object that will carry the
-> > kallsym information for bpf symbol. Adding the start
-> > and end address to begin with. It will be used by
-> > bpf_prog, bpf_trampoline, bpf_dispatcher.
-> > 
-> > Using the bpf_func for program symbol start instead
-> > of the image start, because it will be used later for
-> > kallsyms program value and it makes no difference
-> > (compared to the image start) for sorting bpf programs.
-> > 
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >   include/linux/bpf.h |  6 ++++++
-> >   kernel/bpf/core.c   | 26 +++++++++++---------------
-> >   2 files changed, 17 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index be7afccc9459..5ad8eea1cd37 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -462,6 +462,11 @@ int arch_prepare_bpf_trampoline(void *image, void *image_end,
-> >   u64 notrace __bpf_prog_enter(void);
-> >   void notrace __bpf_prog_exit(struct bpf_prog *prog, u64 start);
-> > +struct bpf_ksym {
-> > +	unsigned long		 start;
-> > +	unsigned long		 end;
-> > +};
-> > +
-> >   enum bpf_tramp_prog_type {
-> >   	BPF_TRAMP_FENTRY,
-> >   	BPF_TRAMP_FEXIT,
-> > @@ -643,6 +648,7 @@ struct bpf_prog_aux {
-> >   	u32 size_poke_tab;
-> >   	struct latch_tree_node ksym_tnode;
-> >   	struct list_head ksym_lnode;
-> > +	struct bpf_ksym ksym;
-> >   	const struct bpf_prog_ops *ops;
-> >   	struct bpf_map **used_maps;
-> >   	struct bpf_prog *prog;
-> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > index 973a20d49749..39a9e4184900 100644
-> > --- a/kernel/bpf/core.c
-> > +++ b/kernel/bpf/core.c
-> > @@ -524,17 +524,15 @@ int bpf_jit_harden   __read_mostly;
-> >   long bpf_jit_limit   __read_mostly;
-> >   static __always_inline void
-> > -bpf_get_prog_addr_region(const struct bpf_prog *prog,
-> > -			 unsigned long *symbol_start,
-> > -			 unsigned long *symbol_end)
-> > +bpf_get_prog_addr_region(const struct bpf_prog *prog)
-> >   {
-> >   	const struct bpf_binary_header *hdr = bpf_jit_binary_hdr(prog);
-> >   	unsigned long addr = (unsigned long)hdr;
-> >   	WARN_ON_ONCE(!bpf_prog_ebpf_jited(prog));
-> > -	*symbol_start = addr;
-> > -	*symbol_end   = addr + hdr->pages * PAGE_SIZE;
-> > +	prog->aux->ksym.start = (unsigned long) prog->bpf_func;
-> 
-> Your commit descriptions are too terse. :/ What does "because it will be used
-> later for kallsyms program value" mean exactly compared to how it's used today
-> for programs?
+Introduce "rx" prefix in the name scheme for xdp counters
+on rx path.
+Differentiate between XDP_TX and ndo_xdp_xmit counters
 
-there's symbol_start/symbol_end values originally used to sort
-bpf_prog objects, and there's prog->bpf_func value used as address
-that is displayed in the /proc/kallsyms
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+---
+Changes since RFC:
+- rename rx_xdp_tx_xmit in rx_xdp_tx
+- move tx stats accounting in mvneta_xdp_xmit_back/mvneta_xdp_xmit
+---
+ drivers/net/ethernet/marvell/mvneta.c | 52 ++++++++++++++++++---------
+ 1 file changed, 36 insertions(+), 16 deletions(-)
 
-I'm putting prog->bpf_func to bpf_ksym->start, so it's later on
-displayed as bpf_prog address in /proc/kallsyms in this patch:
-
-	bpf: Add lnode list node to struct bpf_ksym
-	---
-	@@ -736,13 +736,13 @@ int bpf_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
-			return ret;
-	 
-		rcu_read_lock();
-	-       list_for_each_entry_rcu(aux, &bpf_kallsyms, ksym_lnode) {
-	+       list_for_each_entry_rcu(ksym, &bpf_kallsyms, lnode) {
-			if (it++ != symnum)
-				continue;
-	 
-	-               strncpy(sym, aux->ksym.name, KSYM_NAME_LEN);
-	+               strncpy(sym, ksym->name, KSYM_NAME_LEN);
-	 
-	-               *value = (unsigned long)aux->prog->bpf_func;
-	+               *value = ksym->start;
-			*type  = BPF_SYM_ELF_TYPE;
-
-
-and also the prog->bpf_func value is now used as memory 'start' to
-sort bpf_prog objects, which will do the same job as symbol_start
-
-but maybe we could have 'kallsym' value in 'bpf_ksym' which would be
-used as value to display in /proc/kallsyms kallsyms, like:
-
-  struct bpf_ksym {
-    unsigned long  start;
-    unsigned long  end;
-    unsigned long  kallsyms;
-  }
-
-and keep 'start/end' to be the whole memory bounds for sorting to
-avoid any confusion and surprises in future
-
-> 
-> Is this a requirement to have them point exactly to prog->bpf_func and if so
-> why? My concern is that bpf_func has a random offset from hdr, so even if the
-> /proc/kallsyms would be readable with concrete addresses for !cap_sys_admin
-> users, it's still not the concrete start address being exposed there, but the
-> allocated range instead.
-
-there was last review suggestion from Andrii to display the address
-of the actual code start for trampolines and dispatchers instead
-of the start of the who;e memory image, which is actually what we
-need for perf
-
-jirka
+diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+index b7045b6a15c2..8e1feb678cea 100644
+--- a/drivers/net/ethernet/marvell/mvneta.c
++++ b/drivers/net/ethernet/marvell/mvneta.c
+@@ -344,6 +344,7 @@ enum {
+ 	ETHTOOL_XDP_REDIRECT,
+ 	ETHTOOL_XDP_PASS,
+ 	ETHTOOL_XDP_DROP,
++	ETHTOOL_XDP_XMIT,
+ 	ETHTOOL_XDP_TX,
+ 	ETHTOOL_MAX_STATS,
+ };
+@@ -399,10 +400,11 @@ static const struct mvneta_statistic mvneta_statistics[] = {
+ 	{ ETHTOOL_STAT_EEE_WAKEUP, T_SW, "eee_wakeup_errors", },
+ 	{ ETHTOOL_STAT_SKB_ALLOC_ERR, T_SW, "skb_alloc_errors", },
+ 	{ ETHTOOL_STAT_REFILL_ERR, T_SW, "refill_errors", },
+-	{ ETHTOOL_XDP_REDIRECT, T_SW, "xdp_redirect", },
+-	{ ETHTOOL_XDP_PASS, T_SW, "xdp_pass", },
+-	{ ETHTOOL_XDP_DROP, T_SW, "xdp_drop", },
+-	{ ETHTOOL_XDP_TX, T_SW, "xdp_tx", },
++	{ ETHTOOL_XDP_REDIRECT, T_SW, "rx_xdp_redirect", },
++	{ ETHTOOL_XDP_PASS, T_SW, "rx_xdp_pass", },
++	{ ETHTOOL_XDP_DROP, T_SW, "rx_xdp_drop", },
++	{ ETHTOOL_XDP_TX, T_SW, "rx_xdp_tx", },
++	{ ETHTOOL_XDP_XMIT, T_SW, "tx_xdp_xmit", },
+ };
+ 
+ struct mvneta_stats {
+@@ -414,6 +416,7 @@ struct mvneta_stats {
+ 	u64	xdp_redirect;
+ 	u64	xdp_pass;
+ 	u64	xdp_drop;
++	u64	xdp_xmit;
+ 	u64	xdp_tx;
+ };
+ 
+@@ -2012,7 +2015,6 @@ static int
+ mvneta_xdp_submit_frame(struct mvneta_port *pp, struct mvneta_tx_queue *txq,
+ 			struct xdp_frame *xdpf, bool dma_map)
+ {
+-	struct mvneta_pcpu_stats *stats = this_cpu_ptr(pp->stats);
+ 	struct mvneta_tx_desc *tx_desc;
+ 	struct mvneta_tx_buf *buf;
+ 	dma_addr_t dma_addr;
+@@ -2047,12 +2049,6 @@ mvneta_xdp_submit_frame(struct mvneta_port *pp, struct mvneta_tx_queue *txq,
+ 	tx_desc->buf_phys_addr = dma_addr;
+ 	tx_desc->data_size = xdpf->len;
+ 
+-	u64_stats_update_begin(&stats->syncp);
+-	stats->es.ps.tx_bytes += xdpf->len;
+-	stats->es.ps.tx_packets++;
+-	stats->es.ps.xdp_tx++;
+-	u64_stats_update_end(&stats->syncp);
+-
+ 	mvneta_txq_inc_put(txq);
+ 	txq->pending++;
+ 	txq->count++;
+@@ -2079,8 +2075,17 @@ mvneta_xdp_xmit_back(struct mvneta_port *pp, struct xdp_buff *xdp)
+ 
+ 	__netif_tx_lock(nq, cpu);
+ 	ret = mvneta_xdp_submit_frame(pp, txq, xdpf, false);
+-	if (ret == MVNETA_XDP_TX)
++	if (ret == MVNETA_XDP_TX) {
++		struct mvneta_pcpu_stats *stats = this_cpu_ptr(pp->stats);
++
++		u64_stats_update_begin(&stats->syncp);
++		stats->es.ps.tx_bytes += xdpf->len;
++		stats->es.ps.tx_packets++;
++		stats->es.ps.xdp_tx++;
++		u64_stats_update_end(&stats->syncp);
++
+ 		mvneta_txq_pend_desc_add(pp, txq, 0);
++	}
+ 	__netif_tx_unlock(nq);
+ 
+ 	return ret;
+@@ -2091,10 +2096,11 @@ mvneta_xdp_xmit(struct net_device *dev, int num_frame,
+ 		struct xdp_frame **frames, u32 flags)
+ {
+ 	struct mvneta_port *pp = netdev_priv(dev);
++	struct mvneta_pcpu_stats *stats = this_cpu_ptr(pp->stats);
++	int i, nxmit_byte = 0, nxmit = num_frame;
+ 	int cpu = smp_processor_id();
+ 	struct mvneta_tx_queue *txq;
+ 	struct netdev_queue *nq;
+-	int i, drops = 0;
+ 	u32 ret;
+ 
+ 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
+@@ -2106,9 +2112,11 @@ mvneta_xdp_xmit(struct net_device *dev, int num_frame,
+ 	__netif_tx_lock(nq, cpu);
+ 	for (i = 0; i < num_frame; i++) {
+ 		ret = mvneta_xdp_submit_frame(pp, txq, frames[i], true);
+-		if (ret != MVNETA_XDP_TX) {
++		if (ret == MVNETA_XDP_TX) {
++			nxmit_byte += frames[i]->len;
++		} else {
+ 			xdp_return_frame_rx_napi(frames[i]);
+-			drops++;
++			nxmit--;
+ 		}
+ 	}
+ 
+@@ -2116,7 +2124,13 @@ mvneta_xdp_xmit(struct net_device *dev, int num_frame,
+ 		mvneta_txq_pend_desc_add(pp, txq, 0);
+ 	__netif_tx_unlock(nq);
+ 
+-	return num_frame - drops;
++	u64_stats_update_begin(&stats->syncp);
++	stats->es.ps.tx_bytes += nxmit_byte;
++	stats->es.ps.tx_packets += nxmit;
++	stats->es.ps.xdp_xmit += nxmit;
++	u64_stats_update_end(&stats->syncp);
++
++	return nxmit;
+ }
+ 
+ static int
+@@ -4484,6 +4498,7 @@ mvneta_ethtool_update_pcpu_stats(struct mvneta_port *pp,
+ 		u64 xdp_redirect;
+ 		u64 xdp_pass;
+ 		u64 xdp_drop;
++		u64 xdp_xmit;
+ 		u64 xdp_tx;
+ 
+ 		stats = per_cpu_ptr(pp->stats, cpu);
+@@ -4494,6 +4509,7 @@ mvneta_ethtool_update_pcpu_stats(struct mvneta_port *pp,
+ 			xdp_redirect = stats->es.ps.xdp_redirect;
+ 			xdp_pass = stats->es.ps.xdp_pass;
+ 			xdp_drop = stats->es.ps.xdp_drop;
++			xdp_xmit = stats->es.ps.xdp_xmit;
+ 			xdp_tx = stats->es.ps.xdp_tx;
+ 		} while (u64_stats_fetch_retry_irq(&stats->syncp, start));
+ 
+@@ -4502,6 +4518,7 @@ mvneta_ethtool_update_pcpu_stats(struct mvneta_port *pp,
+ 		es->ps.xdp_redirect += xdp_redirect;
+ 		es->ps.xdp_pass += xdp_pass;
+ 		es->ps.xdp_drop += xdp_drop;
++		es->ps.xdp_xmit += xdp_xmit;
+ 		es->ps.xdp_tx += xdp_tx;
+ 	}
+ }
+@@ -4555,6 +4572,9 @@ static void mvneta_ethtool_update_stats(struct mvneta_port *pp)
+ 			case ETHTOOL_XDP_TX:
+ 				pp->ethtool_stats[i] = stats.ps.xdp_tx;
+ 				break;
++			case ETHTOOL_XDP_XMIT:
++				pp->ethtool_stats[i] = stats.ps.xdp_xmit;
++				break;
+ 			}
+ 			break;
+ 		}
+-- 
+2.24.1
 
