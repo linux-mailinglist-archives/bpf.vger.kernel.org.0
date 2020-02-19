@@ -2,171 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD911163F60
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 09:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B376E163FDF
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 10:01:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727069AbgBSIln (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Feb 2020 03:41:43 -0500
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:28871 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727006AbgBSIln (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 19 Feb 2020 03:41:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582101701;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8elBKO8bz2MbquCOlkktOPvafk4foe0zxZbMQ9OMdfM=;
-        b=G1TvXb+xmYnN3gxbMwRkZftBErIm5P/k6DsH3oWl4jmORvpEXnWdFXOE9I7PPajfuRPe6P
-        i0VQSS53ujZxgvMdEVSAdcMmB1RKe4eVHHWSJpLTis22FI/HchUcSYlgiGj9/b9klP1Sqw
-        BlPeWk9LH0YKAozaNYY3O2NoRs1EnnM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-413-jyzXFO6gMM2J_yhswVGXNQ-1; Wed, 19 Feb 2020 03:41:39 -0500
-X-MC-Unique: jyzXFO6gMM2J_yhswVGXNQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ADF9710CE78E;
-        Wed, 19 Feb 2020 08:41:37 +0000 (UTC)
-Received: from krava (unknown [10.43.17.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CB6885D9E2;
-        Wed, 19 Feb 2020 08:41:34 +0000 (UTC)
-Date:   Wed, 19 Feb 2020 09:41:32 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@redhat.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH 06/18] bpf: Add bpf_ksym_tree tree
-Message-ID: <20200219084132.GC439238@krava>
-References: <20200216193005.144157-1-jolsa@kernel.org>
- <20200216193005.144157-7-jolsa@kernel.org>
- <e869424c-eaf5-d8b1-dfde-86958f437538@iogearbox.net>
+        id S1726480AbgBSJBj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Feb 2020 04:01:39 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:37615 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726202AbgBSJBi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Feb 2020 04:01:38 -0500
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1j4LE1-0000bh-BZ; Wed, 19 Feb 2020 10:00:57 +0100
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 6083A100F56; Wed, 19 Feb 2020 10:00:56 +0100 (CET)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     David Miller <davem@davemloft.net>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Sebastian Sewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Clark Williams <williams@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [RFC patch 09/19] bpf: Use BPF_PROG_RUN_PIN_ON_CPU() at simple call sites.
+In-Reply-To: <87a75ftkwu.fsf@linux.intel.com>
+References: <20200214133917.304937432@linutronix.de> <20200214161503.804093748@linutronix.de> <87a75ftkwu.fsf@linux.intel.com>
+Date:   Wed, 19 Feb 2020 10:00:56 +0100
+Message-ID: <875zg3q7cn.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e869424c-eaf5-d8b1-dfde-86958f437538@iogearbox.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 18, 2020 at 11:34:47PM +0100, Daniel Borkmann wrote:
-> On 2/16/20 8:29 PM, Jiri Olsa wrote:
-> > The bpf_tree is used both for kallsyms iterations and searching
-> > for exception tables of bpf programs, which is needed only for
-> > bpf programs.
-> > 
-> > Adding bpf_ksym_tree that will hold symbols for all bpf_prog
-> > bpf_trampoline and bpf_dispatcher objects and keeping bpf_tree
-> > only for bpf_prog objects to keep it fast.
-> > 
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >   include/linux/bpf.h |  1 +
-> >   kernel/bpf/core.c   | 60 ++++++++++++++++++++++++++++++++++++++++-----
-> >   2 files changed, 55 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index f1174d24c185..5d6649cdc3df 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -468,6 +468,7 @@ struct bpf_ksym {
-> >   	unsigned long		 end;
-> >   	char			 name[KSYM_NAME_LEN];
-> >   	struct list_head	 lnode;
-> > +	struct latch_tree_node	 tnode;
-> >   };
-> >   enum bpf_tramp_prog_type {
-> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > index 604093d2153a..9fb08b4d01f7 100644
-> > --- a/kernel/bpf/core.c
-> > +++ b/kernel/bpf/core.c
-> > @@ -606,8 +606,46 @@ static const struct latch_tree_ops bpf_tree_ops = {
-> >   	.comp	= bpf_tree_comp,
-> >   };
-> > +static unsigned long
-> > +bpf_get_ksym_start(struct latch_tree_node *n)
-> > +{
-> > +	const struct bpf_ksym *ksym;
-> > +
-> > +	ksym = container_of(n, struct bpf_ksym, tnode);
-> > +	return ksym->start;
-> 
-> Small nit, can be simplified to:
-> 
-> 	return container_of(n, struct bpf_ksym, tnode)->start;
+Vinicius Costa Gomes <vinicius.gomes@intel.com> writes:
 
-ok
+Cc+: seccomp folks 
 
-> 
-> > +}
-> > +
-> > +static bool
-> > +bpf_ksym_tree_less(struct latch_tree_node *a,
-> > +		   struct latch_tree_node *b)
-> > +{
-> > +	return bpf_get_ksym_start(a) < bpf_get_ksym_start(b);
-> > +}
-> > +
-> > +static int
-> > +bpf_ksym_tree_comp(void *key, struct latch_tree_node *n)
-> > +{
-> > +	unsigned long val = (unsigned long)key;
-> > +	const struct bpf_ksym *ksym;
-> > +
-> > +	ksym = container_of(n, struct bpf_ksym, tnode);
-> > +
-> > +	if (val < ksym->start)
-> > +		return -1;
-> > +	if (val >= ksym->end)
-> > +		return  1;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct latch_tree_ops bpf_ksym_tree_ops = {
-> > +	.less	= bpf_ksym_tree_less,
-> > +	.comp	= bpf_ksym_tree_comp,
-> > +};
-> > +
-> >   static DEFINE_SPINLOCK(bpf_lock);
-> >   static LIST_HEAD(bpf_kallsyms);
-> > +static struct latch_tree_root bpf_ksym_tree __cacheline_aligned;
-> >   static struct latch_tree_root bpf_tree __cacheline_aligned;
-> 
-> You mention in your commit description performance being the reason on why
-> we need two latch trees. Can't we maintain everything just in a single one?
-> 
-> What does "to keep it fast" mean here in absolute numbers that would affect
-> overall system performance? It feels a bit like premature optimization with
-> the above rationale as-is.
-> 
-> If it is about differentiating the different bpf_ksym symbols for some of the
-> kallsym handling functions (?), can't we simply add an enum bpf_ksym_type {
-> BPF_SYM_PROGRAM, BPF_SYM_TRAMPOLINE, BPF_SYM_DISPATCHER } instead, but still
-> maintain them all in a single latch tree?
+> Thomas Gleixner <tglx@linutronix.de> writes:
+>
+>> From: David Miller <davem@davemloft.net>
 
-the motivation is that up to now stored in the tree only bpf_prog objects,
-and the tree was used both for kallsym and exception table lookups
-(in search_bpf_extables function)
+Leaving content for reference
 
-but if we'd add trampoline and fispatcher objects to the same tree, then
-the exception table lookups would suffer from having to traverse more
-objects within the search, hence the separation of the trees
+>> All of these cases are strictly of the form:
+>>
+>> 	preempt_disable();
+>> 	BPF_PROG_RUN(...);
+>> 	preempt_enable();
+>>
+>> Replace this with BPF_PROG_RUN_PIN_ON_CPU() which wraps BPF_PROG_RUN()
+>> with:
+>>
+>> 	migrate_disable();
+>> 	BPF_PROG_RUN(...);
+>> 	migrate_enable();
+>>
+>> On non RT enabled kernels this maps to preempt_disable/enable() and on RT
+>> enabled kernels this solely prevents migration, which is sufficient as
+>> there is no requirement to prevent reentrancy to any BPF program from a
+>> preempting task. The only requirement is that the program stays on the same
+>> CPU.
+>>
+>> Therefore, this is a trivially correct transformation.
+>>
+>> [ tglx: Converted to BPF_PROG_RUN_PIN_ON_CPU() ]
+>>
+>> Signed-off-by: David S. Miller <davem@davemloft.net>
+>> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+>>
+>> ---
+>>  include/linux/filter.h    |    4 +---
+>>  kernel/seccomp.c          |    4 +---
+>>  net/core/flow_dissector.c |    4 +---
+>>  net/core/skmsg.c          |    8 ++------
+>>  net/kcm/kcmsock.c         |    4 +---
+>>  5 files changed, 6 insertions(+), 18 deletions(-)
+>>
+>> --- a/include/linux/filter.h
+>> +++ b/include/linux/filter.h
+>> @@ -713,9 +713,7 @@ static inline u32 bpf_prog_run_clear_cb(
+>>  	if (unlikely(prog->cb_access))
+>>  		memset(cb_data, 0, BPF_SKB_CB_LEN);
+>>  
+>> -	preempt_disable();
+>> -	res = BPF_PROG_RUN(prog, skb);
+>> -	preempt_enable();
+>> +	res = BPF_PROG_RUN_PIN_ON_CPU(prog, skb);
+>>  	return res;
+>>  }
+>>  
+>> --- a/kernel/seccomp.c
+>> +++ b/kernel/seccomp.c
+>> @@ -268,16 +268,14 @@ static u32 seccomp_run_filters(const str
+>>  	 * All filters in the list are evaluated and the lowest BPF return
+>>  	 * value always takes priority (ignoring the DATA).
+>>  	 */
+>> -	preempt_disable();
+>>  	for (; f; f = f->prev) {
+>> -		u32 cur_ret = BPF_PROG_RUN(f->prog, sd);
+>> +		u32 cur_ret = BPF_PROG_RUN_PIN_ON_CPU(f->prog, sd);
+>>
+>
+> More a question really, isn't the behavior changing here? i.e. shouldn't
+> migrate_disable()/migrate_enable() be moved to outside the loop? Or is
+> running seccomp filters on different cpus not a problem?
 
-I don't have any performance numbers supporting this, just the rationale
-above
+In my understanding this is a list of filters and they are independent
+of each other.
 
-jirka
+Kees, Will. Andy?
 
+Thanks,
+
+        tglx
