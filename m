@@ -2,183 +2,368 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C470F163BC7
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 05:04:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B782163C48
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 05:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbgBSEEL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Feb 2020 23:04:11 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:20182 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726439AbgBSEEL (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 18 Feb 2020 23:04:11 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01J3vJxX002714;
-        Tue, 18 Feb 2020 20:03:30 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=78CLQtV3QFjxONi3GHvA+o6nUAYD+4y+JiRLaXQRRoY=;
- b=mEerubVRuO/0/buph9k0d7WOdv87S02Z6/6a14jWPby87J19NiLlN7rqeAwFL4o43pna
- nt/yiOFj5tdNZOfAJFp60al9waaW/ISba7PwPzlP1RATZy696vf2FD2tF/9wRXe/BJLI
- AnCDhIyoUTDsp3mCEJ+FzseiWo7Aph2124c= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2y8ud18ftq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 18 Feb 2020 20:03:30 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 18 Feb 2020 20:03:29 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CM53FOMDCrbifWFsUCz7360BvfWUNdz5ypbxjkogLfHhx3b55hEB5sgH3HsnZRI9mWU26LsNvogDnXSTNQQC37PhnxdlGAIwiwgS8lgfewKHtiKYRosOAu5A/g6ksT2QoUUqfZOcfDtDa/e1bfVTPv249kyoq0r+OegA7XaGivH35biVZo2yopqQ/SlC3djE/CoFj+hque9tA9PPMFN8G3sJd9HrMyTKpeGrr8ltlphxLqGT/opHk4Ge9Yd5RVK5wm/pUfqMin9OewlwhFNDG7stydAzVdOjwQBwV5nyXWPKom4veIkBtrNM5FPa55M4DbK2X7NWHmYk9latgcHwjA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=78CLQtV3QFjxONi3GHvA+o6nUAYD+4y+JiRLaXQRRoY=;
- b=E6zSQYhJ90sx1vUrBhhPGovbW6b4liGlvTo4w53HTBJydW/PJi5OuPWlaMrjyHy08Yp85fFf2tW7yycCpejLa1sQe+2rYD/F2m9ayUvUFFWde6wjemQzzjmlqnEY+kk80BF76SV8ZOQGX2JPAs1UGTgB6EeTwiYRbJf1T/llNwk1BEOQLu99ZFj2OgLEOZTOx7WqP/TC1Z9L8afaX3Mx/GNoab0UlZPBBG81zlNHs4gJ9pZJUqqJouJzudKqUr3Sf2UYAnOKEMWGCpgGhcs53OwPLTJMAUNaI5TaAw53vUSBU1GeR1lmjYqcRlYIrSoH9FJ2u+SxppgsoY/wWQqH5Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=78CLQtV3QFjxONi3GHvA+o6nUAYD+4y+JiRLaXQRRoY=;
- b=c7buKpAE7ZmDLSkqW9ih0BEwsNH1c+ZZBWJjIg1gXiwk67GwXBn23L0UguiKb/yMk1MWdEkIy7mCu4I8tBQWVhtCGIe5F4SqGxSxChq5x3hyBMbKI0uEOAZk/QzzDQo/rug1jLqkz3kkOSCC/O1wgMDSjw0Dn/l1qyZ5x5rEAwE=
-Received: from DM6PR15MB3001.namprd15.prod.outlook.com (20.178.231.16) by
- DM6PR15MB3912.namprd15.prod.outlook.com (20.181.5.77) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2750.17; Wed, 19 Feb 2020 04:03:28 +0000
-Received: from DM6PR15MB3001.namprd15.prod.outlook.com
- ([fe80::294e:884:76fd:743c]) by DM6PR15MB3001.namprd15.prod.outlook.com
- ([fe80::294e:884:76fd:743c%4]) with mapi id 15.20.2729.032; Wed, 19 Feb 2020
- 04:03:28 +0000
-Subject: Re: possible deadlock in bpf_lru_push_free
-To:     Hillf Danton <hdanton@sina.com>
-CC:     syzbot <syzbot+122b5421d14e68f29cd1@syzkaller.appspotmail.com>,
-        <andriin@fb.com>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <kafai@fb.com>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <songliubraving@fb.com>, <syzkaller-bugs@googlegroups.com>
-References: <20200217052336.5556-1-hdanton@sina.com>
- <dca36c4b-bbf5-b215-faa9-1992240f2b69@fb.com>
- <20200219021542.3304-1-hdanton@sina.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <7e8c1cf0-fccf-1ed9-40ed-3a13b2287cf8@fb.com>
-Date:   Tue, 18 Feb 2020 20:03:06 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.5.0
-In-Reply-To: <20200219021542.3304-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CO1PR15CA0085.namprd15.prod.outlook.com
- (2603:10b6:101:20::29) To DM6PR15MB3001.namprd15.prod.outlook.com
- (2603:10b6:5:13c::16)
+        id S1726510AbgBSEzm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Feb 2020 23:55:42 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:43380 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726496AbgBSEzm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Feb 2020 23:55:42 -0500
+Received: by mail-lj1-f196.google.com with SMTP id a13so25599703ljm.10;
+        Tue, 18 Feb 2020 20:55:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YBSVt/C1uERwOBCw6Tfd2ihfw4ttURW20stCOCuUeeY=;
+        b=hDiZMLUM827hnvN23kSWhwtokR+qs7BHdQeFo/iXV/Opgeito5PofamrpAHQ7MmvQu
+         rJ+9tvLCfZ7bRJvCDAqiCjAJwwP57r4Xt2Ted1hOQpqRUw1s87ObyAu0dxGG14dcZ8o+
+         +VbWSlCgdOASpSlFmU7498F4XmInMG4twKZ7GuqqPjUekHPg/RG5xHbAAz+d8EKA+tXg
+         g0peKf2VdKHc22b2cFr+H9OAJYX6gDerduPlUWZsv7a8BjgFQkraDPpUQxAg9JPkHs4J
+         /PcLcl2e4k2TxSf3DI58ni34oUr4fqNTe8lqIZCP0z/u5BR3tW+QeCkmfEqwrCfWnncv
+         7IyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YBSVt/C1uERwOBCw6Tfd2ihfw4ttURW20stCOCuUeeY=;
+        b=T4BSb92InAsxpjJusETSxCw2XvJiVU4ef5ocn1y09PpljkkSwylfv7CwBmT3kSgSXt
+         rnKOzQLs2zC/rERnHd0PAJq50q095yFD2mnNByk0NwwalJT/zxkqHMS+UARJRYoyZIto
+         o13cXPOkrt/wq9Jk7yxNxBD1R7WsD+wQ8DLFJKdFhXknmQvLIw0M/elZVGG2Zn/SAsy9
+         68LxLJQxGZgUnmG1k6K2XUoGZlFfQIyOV2ay1axVkzzy9dg309K6NraJ37MPJj61/NRu
+         QRf97PoLt+aB8YO8Bmhbr4zn09csJhCrkUUUurw96oatusPsfkpRFgDNFPWgImlNbQ4q
+         dN5Q==
+X-Gm-Message-State: APjAAAXtoVShzy1YBiP6U0HrFW/oVb2EG18xZYQaxeJaCXUCA1Y4sRF+
+        NsbZW74baoYZL2DSZN0c1IVU5iQuoKy8Mjp6xN8Rvw==
+X-Google-Smtp-Source: APXvYqwKSLnMPDyiQXuhjfM2GMJ5AmECyzht+ieGjN5O7mUjvLmgkVi4EWU1Fr2we6RSMPyvukVruvmOmgJge7Q4554=
+X-Received: by 2002:a2e:a490:: with SMTP id h16mr15019961lji.115.1582088139638;
+ Tue, 18 Feb 2020 20:55:39 -0800 (PST)
 MIME-Version: 1.0
-Received: from marksan-mbp.DHCP.thefacebook.com (2620:10d:c090:400::5:982) by CO1PR15CA0085.namprd15.prod.outlook.com (2603:10b6:101:20::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2729.25 via Frontend Transport; Wed, 19 Feb 2020 04:03:26 +0000
-X-Originating-IP: [2620:10d:c090:400::5:982]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9f46ffc7-35e5-4cd3-fd05-08d7b4f0acbb
-X-MS-TrafficTypeDiagnostic: DM6PR15MB3912:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR15MB3912AF900235918EC72A9C11D3100@DM6PR15MB3912.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-Forefront-PRVS: 0318501FAE
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(366004)(396003)(376002)(39860400002)(136003)(346002)(189003)(199004)(66476007)(66556008)(5660300002)(31696002)(16526019)(186003)(2906002)(66946007)(316002)(4326008)(6666004)(6916009)(36756003)(6486002)(6512007)(31686004)(81166006)(81156014)(6506007)(53546011)(8936002)(52116002)(8676002)(478600001)(2616005)(86362001);DIR:OUT;SFP:1102;SCL:1;SRVR:DM6PR15MB3912;H:DM6PR15MB3001.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-Received-SPF: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 17O4NBg10BM+SdzluzwwDZKGBGd9RLflxKr5CYX04RSOkftMDQATc7Fy9I/Pf4VzAiXsO4Uf2HDjOw0kDXg1Fu5JZYVYScyeaxk3xYj3LipISk/wQEmQq3410Tu8JVZGYtKZGE0FB4MaG7uPfyVli8TDnd8s8LjxwAbWEMyhG4kScT+MB3KFbuTsM3aRH3T9RYionXOd+MDFy/ogT39SM3RibiqrcqMeblrn35/Daxuo6Wu6Ts1grdTkkwhxKzMR+31CzFf/5ZY3jV5QeyNc2BFOzAk0jcNXIFu4Ps+48b4SUD3Bvtf01h8rH1P2ss96RJhhkXEB12wS8k/RoZ67/MfpW4xhb7fF9NXenLRIrBx8OQFWCgxUKp0aFe+r0GK383H1qOwXeTA2yWs+qdmYYAq4T+VtbLhvMesEEOk/bMkc6fDIQ/ABiHS2gRjt5BWX
-X-MS-Exchange-AntiSpam-MessageData: OcTdcRVNy3W4QyLXP5Xhydx2Jq7W8FKCcA/eKjHZGlzy8kD+LwP4225V/qKx4qJ6ICj5PoOFZL+s6Jxd8zFyY14BrOofvEpjjzJXGKLPsNBkHen/W+9MIFNo/sFxF5owwFj/5BsX6SOfr9qphkPzBnpCs99eKpIXowSL7VLufbmLmwaVFvcOcEKAZA+Ib0eG
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f46ffc7-35e5-4cd3-fd05-08d7b4f0acbb
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2020 04:03:28.2014
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ncc4PglXqXvHac/KtZJwSdHBrvuGpoXPfeAIURjFdXGea66VtfcNzUW38fB9XqAf
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3912
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-02-18_08:2020-02-18,2020-02-18 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=717
- mlxscore=0 suspectscore=2 lowpriorityscore=0 clxscore=1015 phishscore=0
- adultscore=0 priorityscore=1501 malwarescore=0 bulkscore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002190028
-X-FB-Internal: deliver
+References: <20200217052336.5556-1-hdanton@sina.com> <dca36c4b-bbf5-b215-faa9-1992240f2b69@fb.com>
+ <d7ec13dc-a7e7-9381-9728-9157454cadc9@fb.com>
+In-Reply-To: <d7ec13dc-a7e7-9381-9728-9157454cadc9@fb.com>
+From:   Brian Vazquez <brianvv.kernel@gmail.com>
+Date:   Tue, 18 Feb 2020 20:55:28 -0800
+Message-ID: <CABCgpaWD8HdD29B5nJqHczoJW2zXVK-So7jdHGQmLgc5OxqUUA@mail.gmail.com>
+Subject: Re: possible deadlock in bpf_lru_push_free
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+122b5421d14e68f29cd1@syzkaller.appspotmail.com>,
+        andriin@fb.com, Alexei Starovoitov <ast@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Feb 18, 2020 at 3:56 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 2/18/20 9:44 AM, Yonghong Song wrote:
+> >
+> >
+> > On 2/16/20 9:23 PM, Hillf Danton wrote:
+> >>
+> >> On Sun, 16 Feb 2020 04:17:09 -0800
+> >>> syzbot has found a reproducer for the following crash on:
+> >>>
+> >>> HEAD commit:    2019fc96 Merge
+> >>> git://git.kernel.org/pub/scm/linux/kernel/g..
+> >>> git tree:       net
+> >>> console output:
+> >>> https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__syzkaller.apps=
+pot.com_x_log.txt-3Fx-3D1358bb11e00000&d=3DDwIDAg&c=3D5VD0RTtNlTh3ycd41b3MU=
+w&r=3DDA8e1B5r073vIqRrFz7MRA&m=3Dnpe_gMkFnfxt6F5dGLs6zsNHWkYM30LkMFOk1_ZR1w=
+8&s=3DzrgWcBnddWkMWG2zm-9nC8EwvHMsuqw_-EEXwl23XLg&e=3D
+> >>>
+> >>> kernel config:
+> >>> https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__syzkaller.apps=
+pot.com_x_.config-3Fx-3D735296e4dd620b10&d=3DDwIDAg&c=3D5VD0RTtNlTh3ycd41b3=
+MUw&r=3DDA8e1B5r073vIqRrFz7MRA&m=3Dnpe_gMkFnfxt6F5dGLs6zsNHWkYM30LkMFOk1_ZR=
+1w8&s=3DkbT6Yw89JDoIWSQtlLJ7sjyNoP2Ulud27GNorna1zQk&e=3D
+> >>>
+> >>> dashboard link:
+> >>> https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__syzkaller.apps=
+pot.com_bug-3Fextid-3D122b5421d14e68f29cd1&d=3DDwIDAg&c=3D5VD0RTtNlTh3ycd41=
+b3MUw&r=3DDA8e1B5r073vIqRrFz7MRA&m=3Dnpe_gMkFnfxt6F5dGLs6zsNHWkYM30LkMFOk1_=
+ZR1w8&s=3DU3pdUmrcroaeNsJ9DgFbTlvftQUCUcJ1CW_0NxS8yGA&e=3D
+> >>>
+> >>> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> >>> syz repro:
+> >>> https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__syzkaller.apps=
+pot.com_x_repro.syz-3Fx-3D14b67d6ee00000&d=3DDwIDAg&c=3D5VD0RTtNlTh3ycd41b3=
+MUw&r=3DDA8e1B5r073vIqRrFz7MRA&m=3Dnpe_gMkFnfxt6F5dGLs6zsNHWkYM30LkMFOk1_ZR=
+1w8&s=3DTuSfjosRFQW3ArpQwikTtx-dgLLBSMgJfVKtUltqQBM&e=3D
+> >>>
+> >>>
+> >>> IMPORTANT: if you fix the bug, please add the following tag to the
+> >>> commit:
+> >>> Reported-by: syzbot+122b5421d14e68f29cd1@syzkaller.appspotmail.com
+> >>>
+> >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> >>> WARNING: possible circular locking dependency detected
+> >>> 5.6.0-rc1-syzkaller #0 Not tainted
+> >>> ------------------------------------------------------
+> >>> syz-executor.4/13544 is trying to acquire lock:
+> >>> ffffe8ffffcba0b8 (&loc_l->lock){....}, at: bpf_common_lru_push_free
+> >>> kernel/bpf/bpf_lru_list.c:516 [inline]
+> >>> ffffe8ffffcba0b8 (&loc_l->lock){....}, at:
+> >>> bpf_lru_push_free+0x250/0x5b0 kernel/bpf/bpf_lru_list.c:555
+> >>>
+> >>> but task is already holding lock:
+> >>> ffff888094985960 (&htab->buckets[i].lock){....}, at:
+> >>> __htab_map_lookup_and_delete_batch+0x617/0x1540
+> >>> kernel/bpf/hashtab.c:1322
+> >>>
+> >>> which lock already depends on the new lock.
+> >>>
+> >>>
+> >>> the existing dependency chain (in reverse order) is:
+> >>>
+> >>> -> #2 (&htab->buckets[i].lock){....}:
+> >>>         __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110
+> >>> [inline]
+> >>>         _raw_spin_lock_irqsave+0x95/0xcd kernel/locking/spinlock.c:15=
+9
+> >>>         htab_lru_map_delete_node+0xce/0x2f0 kernel/bpf/hashtab.c:593
+> >>>         __bpf_lru_list_shrink_inactive kernel/bpf/bpf_lru_list.c:220
+> >>> [inline]
+> >>>         __bpf_lru_list_shrink+0xf9/0x470 kernel/bpf/bpf_lru_list.c:26=
+6
+> >>>         bpf_lru_list_pop_free_to_local kernel/bpf/bpf_lru_list.c:340
+> >>> [inline]
+> >>>         bpf_common_lru_pop_free kernel/bpf/bpf_lru_list.c:447 [inline=
+]
+> >>>         bpf_lru_pop_free+0x87c/0x1670 kernel/bpf/bpf_lru_list.c:499
+> >>>         prealloc_lru_pop+0x2c/0xa0 kernel/bpf/hashtab.c:132
+> >>>         __htab_lru_percpu_map_update_elem+0x67e/0xa90
+> >>> kernel/bpf/hashtab.c:1069
+> >>>         bpf_percpu_hash_update+0x16e/0x210 kernel/bpf/hashtab.c:1585
+> >>>         bpf_map_update_value.isra.0+0x2d7/0x8e0 kernel/bpf/syscall.c:=
+181
+> >>>         generic_map_update_batch+0x41f/0x610 kernel/bpf/syscall.c:131=
+9
+> >>>         bpf_map_do_batch+0x3f5/0x510 kernel/bpf/syscall.c:3348
+> >>>         __do_sys_bpf+0x9b7/0x41e0 kernel/bpf/syscall.c:3460
+> >>>         __se_sys_bpf kernel/bpf/syscall.c:3355 [inline]
+> >>>         __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3355
+> >>>         do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+> >>>         entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> >>>
+> >>> -> #1 (&l->lock){....}:
+> >>>         __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+> >>>         _raw_spin_lock+0x2f/0x40 kernel/locking/spinlock.c:151
+> >>>         bpf_lru_list_pop_free_to_local kernel/bpf/bpf_lru_list.c:325
+> >>> [inline]
+> >>>         bpf_common_lru_pop_free kernel/bpf/bpf_lru_list.c:447 [inline=
+]
+> >>>         bpf_lru_pop_free+0x67f/0x1670 kernel/bpf/bpf_lru_list.c:499
+> >>>         prealloc_lru_pop+0x2c/0xa0 kernel/bpf/hashtab.c:132
+> >>>         __htab_lru_percpu_map_update_elem+0x67e/0xa90
+> >>> kernel/bpf/hashtab.c:1069
+> >>>         bpf_percpu_hash_update+0x16e/0x210 kernel/bpf/hashtab.c:1585
+> >>>         bpf_map_update_value.isra.0+0x2d7/0x8e0 kernel/bpf/syscall.c:=
+181
+> >>>         generic_map_update_batch+0x41f/0x610 kernel/bpf/syscall.c:131=
+9
+> >>>         bpf_map_do_batch+0x3f5/0x510 kernel/bpf/syscall.c:3348
+> >>>         __do_sys_bpf+0x9b7/0x41e0 kernel/bpf/syscall.c:3460
+> >>>         __se_sys_bpf kernel/bpf/syscall.c:3355 [inline]
+> >>>         __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3355
+> >>>         do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+> >>>         entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> >>>
+> >>> -> #0 (&loc_l->lock){....}:
+> >>>         check_prev_add kernel/locking/lockdep.c:2475 [inline]
+> >>>         check_prevs_add kernel/locking/lockdep.c:2580 [inline]
+> >>>         validate_chain kernel/locking/lockdep.c:2970 [inline]
+> >>>         __lock_acquire+0x2596/0x4a00 kernel/locking/lockdep.c:3954
+> >>>         lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4484
+> >>>         __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110
+> >>> [inline]
+> >>>         _raw_spin_lock_irqsave+0x95/0xcd kernel/locking/spinlock.c:15=
+9
+> >>>         bpf_common_lru_push_free kernel/bpf/bpf_lru_list.c:516 [inlin=
+e]
+> >>>         bpf_lru_push_free+0x250/0x5b0 kernel/bpf/bpf_lru_list.c:555
+> >>>         __htab_map_lookup_and_delete_batch+0x8d4/0x1540
+> >>> kernel/bpf/hashtab.c:1374
+> >>>         htab_lru_map_lookup_and_delete_batch+0x34/0x40
+> >>> kernel/bpf/hashtab.c:1491
+> >>>         bpf_map_do_batch+0x3f5/0x510 kernel/bpf/syscall.c:3348
+> >>>         __do_sys_bpf+0x1f7d/0x41e0 kernel/bpf/syscall.c:3456
+> >>>         __se_sys_bpf kernel/bpf/syscall.c:3355 [inline]
+> >>>         __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3355
+> >>>         do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+> >>>         entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> >>>
+> >>> other info that might help us debug this:
+> >>>
+> >>> Chain exists of:
+> >>>    &loc_l->lock --> &l->lock --> &htab->buckets[i].lock
+> >>>
+> >>>   Possible unsafe locking scenario:
+> >>>
+> >>>         CPU0                    CPU1
+> >>>         ----                    ----
+> >>>    lock(&htab->buckets[i].lock);
+> >>>                                 lock(&l->lock);
+> >>>                                 lock(&htab->buckets[i].lock);
+> >>>    lock(&loc_l->lock);
+> >>>
+> >>>   *** DEADLOCK ***
+> >>>
+> >>> 2 locks held by syz-executor.4/13544:
+> >>>   #0: ffffffff89bac240 (rcu_read_lock){....}, at:
+> >>> __htab_map_lookup_and_delete_batch+0x54b/0x1540
+> >>> kernel/bpf/hashtab.c:1308
+> >>>   #1: ffff888094985960 (&htab->buckets[i].lock){....}, at:
+> >>> __htab_map_lookup_and_delete_batch+0x617/0x1540
+> >>> kernel/bpf/hashtab.c:1322
+> >>>
+> >>> stack backtrace:
+> >>> CPU: 0 PID: 13544 Comm: syz-executor.4 Not tainted
+> >>> 5.6.0-rc1-syzkaller #0
+> >>> Hardware name: Google Google Compute Engine/Google Compute Engine,
+> >>> BIOS Google 01/01/2011
+> >>> Call Trace:
+> >>>   __dump_stack lib/dump_stack.c:77 [inline]
+> >>>   dump_stack+0x197/0x210 lib/dump_stack.c:118
+> >>>   print_circular_bug.isra.0.cold+0x163/0x172
+> >>> kernel/locking/lockdep.c:1684
+> >>>   check_noncircular+0x32e/0x3e0 kernel/locking/lockdep.c:1808
+> >>>   check_prev_add kernel/locking/lockdep.c:2475 [inline]
+> >>>   check_prevs_add kernel/locking/lockdep.c:2580 [inline]
+> >>>   validate_chain kernel/locking/lockdep.c:2970 [inline]
+> >>>   __lock_acquire+0x2596/0x4a00 kernel/locking/lockdep.c:3954
+> >>>   lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4484
+> >>>   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inlin=
+e]
+> >>>   _raw_spin_lock_irqsave+0x95/0xcd kernel/locking/spinlock.c:159
+> >>>   bpf_common_lru_push_free kernel/bpf/bpf_lru_list.c:516 [inline]
+> >>>   bpf_lru_push_free+0x250/0x5b0 kernel/bpf/bpf_lru_list.c:555
+> >>>   __htab_map_lookup_and_delete_batch+0x8d4/0x1540
+> >>> kernel/bpf/hashtab.c:1374
+> >>>   htab_lru_map_lookup_and_delete_batch+0x34/0x40
+> >>> kernel/bpf/hashtab.c:1491
+> >>>   bpf_map_do_batch+0x3f5/0x510 kernel/bpf/syscall.c:3348
+> >>>   __do_sys_bpf+0x1f7d/0x41e0 kernel/bpf/syscall.c:3456
+> >>>   __se_sys_bpf kernel/bpf/syscall.c:3355 [inline]
+> >>>   __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3355
+> >>>   do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+> >>>   entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> >>
+> >> Reclaim hash table elememt outside bucket lock.
+> >
+> > Thanks for the following patch. Yes, we do have an potential issue
+> > with the above deadlock if LRU hash map is not preallocated.
+> >
+> > I am not a RCU expert, but maybe you could you help clarify
+> > one thing below?
+> >
+> >>
+> >> --- a/kernel/bpf/hashtab.c
+> >> +++ b/kernel/bpf/hashtab.c
+> >> @@ -1259,6 +1259,7 @@ __htab_map_lookup_and_delete_batch(struc
+> >>       u64 elem_map_flags, map_flags;
+> >>       struct hlist_nulls_head *head;
+> >>       struct hlist_nulls_node *n;
+> >> +    struct hlist_nulls_node *node_to_free =3D NULL;
+> >>       unsigned long flags;
+> >>       struct htab_elem *l;
+> >>       struct bucket *b;
+> >> @@ -1370,9 +1371,10 @@ again_nocopy:
+> >>           }
+> >>           if (do_delete) {
+> >>               hlist_nulls_del_rcu(&l->hash_node);
+> >> -            if (is_lru_map)
+> >> -                bpf_lru_push_free(&htab->lru, &l->lru_node);
+> >> -            else
+> >> +            if (is_lru_map) {
+> >> +                l->hash_node.next =3D node_to_free;
+> >> +                node_to_free =3D &l->hash_node;
+> >
+> > Here, we change "next" pointer. How does this may impact the existing
+> > parallel map lookup which does not need to take bucket pointer?
+>
+> Thanks for Martin for explanation! I think changing l->hash_node.next is
+> unsafe here as another thread may execute on a different cpu and
+> traverse the same list. It will see hash_node.next =3D NULL and it is
+> unexpected.
+>
+> How about the following patch?
 
-
-On 2/18/20 6:15 PM, Hillf Danton wrote:
-> 
-> Hey
-> 
-> On Tue, 18 Feb 2020 15:55:02 -0800 Yonghong Song wrote:
->>
->> Thanks for Martin for explanation! I think changing l->hash_node.next is
->> unsafe here as another thread may execute on a different cpu and
->> traverse the same list. It will see hash_node.next = NULL and it is
-> 
-> Good catch.
-> 
->> unexpected.
->>
->> How about the following patch?
->>
-> Looks nicer, thanks :P
-> 
->> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
->> index 2d182c4ee9d9..246ef0f2e985 100644
->> --- a/kernel/bpf/hashtab.c
->> +++ b/kernel/bpf/hashtab.c
->> @@ -56,6 +56,7 @@ struct htab_elem {
->>                           union {
->>                                   struct bpf_htab *htab;
->>                                   struct pcpu_freelist_node fnode;
->> +                               struct htab_elem *link;
->>                           };
->>                   };
->>           };
->> @@ -1256,6 +1257,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
->>           void __user *ukeys = u64_to_user_ptr(attr->batch.keys);
->>           void *ubatch = u64_to_user_ptr(attr->batch.in_batch);
->>           u32 batch, max_count, size, bucket_size;
->> +       struct htab_elem *node_to_free = NULL;
->>           u64 elem_map_flags, map_flags;
->>           struct hlist_nulls_head *head;
->>           struct hlist_nulls_node *n;
->> @@ -1370,9 +1372,14 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
->>                   }
->>                   if (do_delete) {
->>                           hlist_nulls_del_rcu(&l->hash_node);
->> -                       if (is_lru_map)
->> -                               bpf_lru_push_free(&htab->lru, &l->lru_node);
->> -                       else
->> +                       if (is_lru_map) {
->> +                               /* l->hnode overlaps with *l->hash_node.pprev
-> 
-> nit: looks like you mean l->link
-
-Yes, my previous attempt uses "hnode" and later changed to "link" but 
-forget to change the comments.
-
-Will post a patch soon.
-
-> 
->> +                                * in memory. l->hash_node.pprev has been
->> +                                * poisoned and nobody should access it.
->> +                                */
->> +                               l->link = node_to_free;
->> +                               node_to_free = l;
->> +                       } else
->>                                   free_htab_elem(htab, l);
->>                   }
->>                   dst_key += key_size;
-> 
+I think I'm missing some emails here, but overall the patch looks good to m=
+e.
+>
+> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> index 2d182c4ee9d9..246ef0f2e985 100644
+> --- a/kernel/bpf/hashtab.c
+> +++ b/kernel/bpf/hashtab.c
+> @@ -56,6 +56,7 @@ struct htab_elem {
+>                          union {
+>                                  struct bpf_htab *htab;
+>                                  struct pcpu_freelist_node fnode;
+> +                               struct htab_elem *link;
+>                          };
+>                  };
+>          };
+> @@ -1256,6 +1257,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map
+> *map,
+>          void __user *ukeys =3D u64_to_user_ptr(attr->batch.keys);
+>          void *ubatch =3D u64_to_user_ptr(attr->batch.in_batch);
+>          u32 batch, max_count, size, bucket_size;
+> +       struct htab_elem *node_to_free =3D NULL;
+>          u64 elem_map_flags, map_flags;
+>          struct hlist_nulls_head *head;
+>          struct hlist_nulls_node *n;
+> @@ -1370,9 +1372,14 @@ __htab_map_lookup_and_delete_batch(struct bpf_map
+> *map,
+>                  }
+>                  if (do_delete) {
+>                          hlist_nulls_del_rcu(&l->hash_node);
+> -                       if (is_lru_map)
+> -                               bpf_lru_push_free(&htab->lru, &l->lru_nod=
+e);
+> -                       else
+> +                       if (is_lru_map) {
+> +                               /* l->hnode overlaps with *
+> l->hash_node.pprev
+> +                                * in memory. l->hash_node.pprev has been
+> +                                * poisoned and nobody should access it.
+> +                                */
+> +                               l->link =3D node_to_free;
+> +                               node_to_free =3D l;
+> +                       } else
+>                                  free_htab_elem(htab, l);
+>                  }
+>                  dst_key +=3D key_size;
+> @@ -1380,6 +1387,13 @@ __htab_map_lookup_and_delete_batch(struct bpf_map
+> *map,
+>          }
+>
+>          raw_spin_unlock_irqrestore(&b->lock, flags);
+> +
+> +       while (node_to_free) {
+> +               l =3D node_to_free;
+> +               node_to_free =3D node_to_free->link;
+> +               bpf_lru_push_free(&htab->lru, &l->lru_node);
+> +       }
+> +
+>          /* If we are not copying data, we can go to next bucket and avoi=
+d
+>           * unlocking the rcu.
+>           */
+>
+>
