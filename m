@@ -2,96 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6573F16472B
-	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 15:38:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EEFA164848
+	for <lists+bpf@lfdr.de>; Wed, 19 Feb 2020 16:17:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbgBSOiz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Feb 2020 09:38:55 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:34094 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726539AbgBSOiy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Feb 2020 09:38:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582123133;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=bZrSi5zlYelhhln3YVdj6GttxSHJSX9JvDG2NaZdgeA=;
-        b=Gh2zo9YDxDTlHgHw/xRDB+59RgpMWVL+NsBdbyYAWnLDpoItQahRuMfStMOqGF5H1HjoxP
-        m6tJs1WRYZCWpppEY+09JkTvkjKZigLEM1nL39mKW96J928oMGXzpAFrwqvn2mFX4R8ClG
-        +/+3QvYs95tRQcCQ90+XAE5ZGz0tKXA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-43-GXJ7BLpvMNq1XtW27h6ZjQ-1; Wed, 19 Feb 2020 09:38:50 -0500
-X-MC-Unique: GXJ7BLpvMNq1XtW27h6ZjQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF73A800D5F;
-        Wed, 19 Feb 2020 14:38:48 +0000 (UTC)
-Received: from [10.36.116.231] (ovpn-116-231.ams2.redhat.com [10.36.116.231])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C801B5C28D;
-        Wed, 19 Feb 2020 14:38:42 +0000 (UTC)
-From:   "Eelco Chaudron" <echaudro@redhat.com>
-To:     "Alexei Starovoitov" <ast@kernel.org>
-Cc:     Xdp <xdp-newbies@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "Toke =?utf-8?b?SMO4aWxhbmQtSsO4cmdlbnNlbg==?=" <toke@redhat.com>,
-        "Jesper Dangaard Brouer" <brouer@redhat.com>
-Subject: Capture xdp packets in an fentry BPF hook
-Date:   Wed, 19 Feb 2020 15:38:40 +0100
-Message-ID: <F844EC8A-902B-4BF7-95E3-B0D6DC618F1B@redhat.com>
+        id S1726927AbgBSPRb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Feb 2020 10:17:31 -0500
+Received: from mail.efficios.com ([167.114.26.124]:55552 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726691AbgBSPRb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Feb 2020 10:17:31 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id D7BC02490A3;
+        Wed, 19 Feb 2020 10:17:29 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 2MXQCndbR0nH; Wed, 19 Feb 2020 10:17:29 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 946A7248E45;
+        Wed, 19 Feb 2020 10:17:29 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 946A7248E45
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1582125449;
+        bh=E+T2zau6Nrzd/5UrHxBwjFO/z6zZmEyWpKIt0k5o2nw=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=cBhnjQYooRNjkzLDy0EtHNIr0MyHS+be39Ze0qlXO3sCvsU1Yj2PiVygBNOpGqcSp
+         sZ0FgDegopcSsZYkbQtm24enMnm41JSZs7ecwoOJUs7oZANxMC6bpoU1TA/e2utw3v
+         Dvo0sbsYkU/i2V4JINq7iDku3UFIUow25QevcGzOtZRTdeVBYybp+l5pnKyzCfMS/O
+         +zK5ZuBF3QUgpI4f6wSwfkBG5P/b27iiVmnxdngYxcyPvDVMdwbvi20lFCS5kylVCH
+         euvJRAHMDK8ElCyDRlfzPucBAAXCaBMYBpRETN++FOGjkKBAm8F6RAoneYa4TtAlCR
+         qLMwim9QBTteA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id i_e6Jf-_d-MZ; Wed, 19 Feb 2020 10:17:29 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 7F9E2248E3F;
+        Wed, 19 Feb 2020 10:17:29 -0500 (EST)
+Date:   Wed, 19 Feb 2020 10:17:28 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Clark Williams <williams@redhat.com>,
+        rostedt <rostedt@goodmis.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>
+Message-ID: <1127123648.641.1582125448879.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20200218233641.i7fyf36zxocgucap@ast-mbp>
+References: <20200214133917.304937432@linutronix.de> <20200214161504.325142160@linutronix.de> <20200214191126.lbiusetaxecdl3of@localhost> <87imk9t02r.fsf@nanos.tec.linutronix.de> <20200218233641.i7fyf36zxocgucap@ast-mbp>
+Subject: Re: [RFC patch 14/19] bpf: Use migrate_disable() in hashtab code
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3901 (ZimbraWebClient - FF72 (Linux)/8.8.15_GA_3895)
+Thread-Topic: Use migrate_disable() in hashtab code
+Thread-Index: FMpBzgOmPiKRGoH6zx7fdw8jq3/Jnw==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Alexei at al.,
+----- On Feb 18, 2020, at 6:36 PM, Alexei Starovoitov alexei.starovoitov@gmail.com wrote:
 
-I'm getting closer to finally have an xdpdump tool that uses the bpf 
-fentry/fexit tracepoints, but I ran into a final hurdle...
+[...]
 
-To stuff the packet into a perf ring I'll need to use the 
-bpf_perf_event_output(), but unfortunately, this is a program of trace 
-type, and not XDP so the packet data is not added automatically :(
+> If I can use migrate_disable() without RT it will help my work on sleepable
+> BPF programs. I would only have to worry about rcu_read_lock() since
+> preempt_disable() is nicely addressed.
 
-Secondly even trying to pass the actual packet data as a reference to 
-bpf_perf_event_output() will not work as the verifier wants the data to 
-be on the fp.
+Hi Alexei,
 
-Even worse, the trace program gets the XDP info not thought the ctx, but 
-trough the fentry/fexit input value, i.e.:
+You may want to consider using SRCU rather than RCU if you need to sleep while
+holding a RCU read-side lock.
 
-	SEC("fentry/func")
-	int BPF_PROG(trace_on_entry, struct xdp_buff *xdp)...
+This is the synchronization approach I consider for adding the ability to take page
+faults when doing syscall tracing.
 
-	struct net_device {
-	    int ifindex;
-	} __attribute__((preserve_access_index));
+Then you'll be able to replace preempt_disable() by combining SRCU and
+migrate_disable():
 
-	struct xdp_rxq_info {
-	    struct net_device *dev;
-	    __u32 queue_index;
-	} __attribute__((preserve_access_index));
+AFAIU eBPF currently uses preempt_disable() for two reasons:
 
-	struct xdp_buff {
-	    void *data;
-	    void *data_end;
-	    void *data_meta;
-	    void *data_hard_start;
-	    unsigned long handle;
-	    struct xdp_rxq_info *rxq;
-	} __attribute__((preserve_access_index));
+- Ensure the thread is not migrated,
+  -> can be replaced by migrate_disable() in RT
+- Provide RCU existence guarantee through sched-RCU
+  -> can be replaced by SRCU, which allows sleeping and taking page faults.
 
-Hence even trying to copy in bytes to a local buffer is not allowed by 
-the verifier, i.e. __u8 *data = (u8 *)(long)xdp->data;
-
-Can you let me know how you envisioned a BPF entry hook to capture 
-packets from XDP. Am I missing something, or is there something missing 
-from the infrastructure?
+I wonder if it would be acceptable to take a page fault while migration is
+disabled though ?
 
 Thanks,
 
-Eelco
+Mathieu
 
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
