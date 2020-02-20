@@ -2,517 +2,260 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A2516589E
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2020 08:42:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 280811659AE
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2020 09:56:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbgBTHmL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Feb 2020 02:42:11 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:38905 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726783AbgBTHmL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Feb 2020 02:42:11 -0500
-Received: by mail-wm1-f66.google.com with SMTP id a9so882401wmj.3
-        for <bpf@vger.kernel.org>; Wed, 19 Feb 2020 23:42:07 -0800 (PST)
+        id S1726943AbgBTIz6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Feb 2020 03:55:58 -0500
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:38239 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726669AbgBTIz5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Feb 2020 03:55:57 -0500
+Received: by mail-pl1-f194.google.com with SMTP id t6so1290628plj.5;
+        Thu, 20 Feb 2020 00:55:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MrExRVHfCTUA2yAPQFKdTX7r389hISwczuvvDXnDLbI=;
-        b=sIU/Mc5WMqwVU314KSuaJzl5Pq6BEM5wROsfrj/OQsm7tWKpzgJveZxi42zHayBrFO
-         r7giKeC8t1GtCD+i2qAi0Fd50+2tupd/X8ZZyKXdeVKCLms5q1rcQlY0xJqPsKCrBPk8
-         fAmEweVFFzvHP+ejY+KYE0JZIu1nHGbRTpMU7uDzLaGWj0q5rzDQL2Z772aqnZfhTuGx
-         ABS+/dcpW2Lh5+d16GBv0NRO14EctK6RzolCiNO6JATDZRZ7f7Fs7TA70Exq3q+mSczR
-         rhuwisIk62WyRJdbwatMeQ91dUzayndBD+6ZaeyBSr58R7MWTnOfoqZYTs5une/P/KTe
-         ufmQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=dP0Z87CkXINV1ZhQ5TGeCzcU6kns51QhnUdWFKav+rY=;
+        b=valEnfgU/nd2Y4yFnPgzTEIc7dtwMV0slu4mk8Dz8bep0kgP+w+vMhIeKFJ4gS/JSl
+         F/M5PJ2O3/B16f7B4HZrt44YYsaWnWUaxvUD7LjYYA9PXTThG9C9tTKuviZa3EpzoIHf
+         ifuV1JT9Q1LRmOT7n+yftdY22FyfCzkfcVW0QIROM2MBr09yI0lQhDc6EjMFgjP2nRsT
+         8t4ERmTDMPNzhN954vRvM9tA6r7kmSBXChDXEncXMLR6RHMuxOhyDC07rQ/vqHYSP2GX
+         KbYfEUIRc8ROVgh3ay7msTreKOmvdm7IiUIhwjj6ajab396OpXRIddvIjFz4swLWdrCB
+         aE5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MrExRVHfCTUA2yAPQFKdTX7r389hISwczuvvDXnDLbI=;
-        b=rTqWBPmJ/Qn+ieLOG4eOtoVo7HWjWv/ZVagO0FF886S1Z1mDkpwWc94qelYdklo+7G
-         bzD6eaCl6XQfbVFO5vGBLnpsXn9dj9ZRA+kGij7reVMq4i6wm7c8BQrOF0thLU9QXpwb
-         TV/gnlmtFTCJTfz9JkogwoQ0CPPQDKb+Z/OyKoaLIGTxE12pobieZgse+WcqyBN8RWOg
-         vdsk3Um6oUIMe1YAJV0FMwH/V310j8XP0D+qTL0H7y6TONyM0azFDbik+sDJdp3Tj7EH
-         VkVFr3mGvLEj/CHPa9uN5Ko4n0eKXt6jPYkbCuaH4YwApnP4dLV1rcARZC1cKEOqX8Wm
-         UnWg==
-X-Gm-Message-State: APjAAAXUTVB5BIfKb+F9WG6wlF25HVqmxwYMFP8VDiS4asrNybb91ZDx
-        90gMl/XDN4OkSJilUX8V7UjFiA==
-X-Google-Smtp-Source: APXvYqzXJT0ymvqA0333og2fBQPI+h9ZejsFqB6ROkT5iajY7grWfPDkpfV6f49ugWuSKCZgSMOS0A==
-X-Received: by 2002:a05:600c:20f:: with SMTP id 15mr2695232wmi.128.1582184526641;
-        Wed, 19 Feb 2020 23:42:06 -0800 (PST)
-Received: from apalos.home ([2a02:587:4655:3a80:2e56:dcff:fe9a:8f06])
-        by smtp.gmail.com with ESMTPSA id y12sm3265294wrw.88.2020.02.19.23.42.04
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=dP0Z87CkXINV1ZhQ5TGeCzcU6kns51QhnUdWFKav+rY=;
+        b=kJUNZXs3h7CBpplDxDQvb98UrnNvtd3ubi+6q8GfWrGZcCy/6HZdjNIWgO6ebMsbSZ
+         JwIPEyNl8uJ3A+9P+5MmjtRvJU7BEob8AihjcYgEsAkeEdrv64Pfht//Z6xz2Kh6De76
+         dU473sl6/8smuJyuHYAfo1NWBOW2vIF0fdWRt9LPmN8+mqaWF31mXr6giErMm0XxKsKo
+         UaE5i3jrqezHS3x26SlkoRSbGZrMaFyXhSxLH7e1KGMbjp4mijHJfUEcg/UtOq/2PY9j
+         x6UM5KkihwYGlYfT3Fl5XGA4lhBHT8CkbtJTtY3w3tWwLp8/5j0vGPd0qNGy5XnMEuf1
+         kQ/g==
+X-Gm-Message-State: APjAAAWzLh9VQngTv5JpH4FJ4OZrMxaoKNajamuYLghf0hhY6WVwtfuA
+        i8BMnAuHBrCUYEegCC/NApk=
+X-Google-Smtp-Source: APXvYqw6htsz+OYrdOJdOhJcOxfgKL/86sJsV5kZo4Q7KNDgjhrKgeY/WAmQCMOgxjP5exrlq6rQGA==
+X-Received: by 2002:a17:90a:c78f:: with SMTP id gn15mr2358709pjb.64.1582188956706;
+        Thu, 20 Feb 2020 00:55:56 -0800 (PST)
+Received: from localhost.localdomain ([103.202.217.14])
+        by smtp.gmail.com with ESMTPSA id x11sm2386742pfn.53.2020.02.20.00.55.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Feb 2020 23:42:05 -0800 (PST)
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     netdev@vger.kernel.org
-Cc:     jonathan.lemon@gmail.com, lorenzo@kernel.org, toke@redhat.com,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
-Subject: [PATCH net-next v5] net: page_pool: API cleanup and comments
-Date:   Thu, 20 Feb 2020 09:41:55 +0200
-Message-Id: <20200220074155.765234-1-ilias.apalodimas@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Thu, 20 Feb 2020 00:55:56 -0800 (PST)
+From:   Yuya Kusakabe <yuya.kusakabe@gmail.com>
+To:     jasowang@redhat.com
+Cc:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com,
+        netdev@vger.kernel.org, songliubraving@fb.com, yhs@fb.com,
+        yuya.kusakabe@gmail.com
+Subject: [PATCH bpf-next v5] virtio_net: add XDP meta data support
+Date:   Thu, 20 Feb 2020 17:55:49 +0900
+Message-Id: <20200220085549.269795-1-yuya.kusakabe@gmail.com>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <0c5eaba2-dd5a-fc3f-0e8f-154f7ad52881@redhat.com>
+References: <0c5eaba2-dd5a-fc3f-0e8f-154f7ad52881@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Functions starting with __ usually indicate those which are exported,
-but should not be called directly. Update some of those declared in the
-API and make it more readable.
+Implement support for transferring XDP meta data into skb for
+virtio_net driver; before calling into the program, xdp.data_meta points
+to xdp.data, where on program return with pass verdict, we call
+into skb_metadata_set().
 
-page_pool_unmap_page() and page_pool_release_page() were doing
-exactly the same thing calling __page_pool_clean_page().  Let's
-rename __page_pool_clean_page() to page_pool_release_page() and
-export it in order to show up on perf logs and get rid of
-page_pool_unmap_page().
+Tested with the script at
+https://github.com/higebu/virtio_net-xdp-metadata-test.
 
-Finally rename __page_pool_put_page() to page_pool_put_page() since we
-can now directly call it from drivers and rename the existing
-page_pool_put_page() to page_pool_put_full_page() since they do the same
-thing but the latter is trying to sync the full DMA area.
-
-This patch also updates netsec, mvneta and stmmac drivers which use
-those functions.
-
-Suggested-by: Jonathan Lemon <jonathan.lemon@gmail.com>
-Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Fixes: de8f3a83b0a0 ("bpf: add meta pointer for direct access")
+Signed-off-by: Yuya Kusakabe <yuya.kusakabe@gmail.com>
 ---
-Changes since
-v1:
-- Fixed netsec driver compilation error
-v2:
-- Improved comment description of page_pool_put_page()
-v3:
-- Properly define page_pool_release_page() in the header file
-  within an ifdef since xdp.c uses it even if CONFIG_PAGE_POOL is not selected
-- rename __page_pool_clean_page -> page_pool_release_page and get rid of
-another redundant helper
+v5:
+ - page_to_skb(): copy vnet header if hdr_valid without checking metasize.
+ - receive_small(): do not copy vnet header if xdp_prog is availavle.
+ - __virtnet_xdp_xmit_one(): remove the xdp_set_data_meta_invalid().
+ - improve comments.
 v4:
-- Rebase on top of master
+ - improve commit message
+v3:
+ - fix preserve the vnet header in receive_small().
+v2:
+ - keep copy untouched in page_to_skb().
+ - preserve the vnet header in receive_small().
+ - fix indentation.
+---
+ drivers/net/virtio_net.c | 54 ++++++++++++++++++++++++----------------
+ 1 file changed, 33 insertions(+), 21 deletions(-)
 
- drivers/net/ethernet/marvell/mvneta.c         | 19 +++--
- drivers/net/ethernet/socionext/netsec.c       | 23 +++---
- .../net/ethernet/stmicro/stmmac/stmmac_main.c |  4 +-
- include/net/page_pool.h                       | 36 ++++------
- net/core/page_pool.c                          | 70 ++++++++++---------
- net/core/xdp.c                                |  2 +-
- 6 files changed, 74 insertions(+), 80 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index 8e1feb678cea..1c391f63a26f 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -1956,7 +1956,7 @@ static void mvneta_rxq_drop_pkts(struct mvneta_port *pp,
- 		if (!data || !(rx_desc->buf_phys_addr))
- 			continue;
- 
--		page_pool_put_page(rxq->page_pool, data, false);
-+		page_pool_put_full_page(rxq->page_pool, data, false);
- 	}
- 	if (xdp_rxq_info_is_reg(&rxq->xdp_rxq))
- 		xdp_rxq_info_unreg(&rxq->xdp_rxq);
-@@ -2154,9 +2154,9 @@ mvneta_run_xdp(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
- 		err = xdp_do_redirect(pp->dev, xdp, prog);
- 		if (err) {
- 			ret = MVNETA_XDP_DROPPED;
--			__page_pool_put_page(rxq->page_pool,
--					     virt_to_head_page(xdp->data),
--					     len, true);
-+			page_pool_put_page(rxq->page_pool,
-+					   virt_to_head_page(xdp->data), len,
-+					   true);
- 		} else {
- 			ret = MVNETA_XDP_REDIR;
- 			stats->xdp_redirect++;
-@@ -2166,9 +2166,9 @@ mvneta_run_xdp(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
- 	case XDP_TX:
- 		ret = mvneta_xdp_xmit_back(pp, xdp);
- 		if (ret != MVNETA_XDP_TX)
--			__page_pool_put_page(rxq->page_pool,
--					     virt_to_head_page(xdp->data),
--					     len, true);
-+			page_pool_put_page(rxq->page_pool,
-+					   virt_to_head_page(xdp->data), len,
-+					   true);
- 		break;
- 	default:
- 		bpf_warn_invalid_xdp_action(act);
-@@ -2177,9 +2177,8 @@ mvneta_run_xdp(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
- 		trace_xdp_exception(pp->dev, prog, act);
- 		/* fall through */
- 	case XDP_DROP:
--		__page_pool_put_page(rxq->page_pool,
--				     virt_to_head_page(xdp->data),
--				     len, true);
-+		page_pool_put_page(rxq->page_pool,
-+				   virt_to_head_page(xdp->data), len, true);
- 		ret = MVNETA_XDP_DROPPED;
- 		stats->xdp_drop++;
- 		break;
-diff --git a/drivers/net/ethernet/socionext/netsec.c b/drivers/net/ethernet/socionext/netsec.c
-index 6266926fe054..58b9b7ce7195 100644
---- a/drivers/net/ethernet/socionext/netsec.c
-+++ b/drivers/net/ethernet/socionext/netsec.c
-@@ -896,9 +896,9 @@ static u32 netsec_run_xdp(struct netsec_priv *priv, struct bpf_prog *prog,
- 	case XDP_TX:
- 		ret = netsec_xdp_xmit_back(priv, xdp);
- 		if (ret != NETSEC_XDP_TX)
--			__page_pool_put_page(dring->page_pool,
--					     virt_to_head_page(xdp->data),
--					     len, true);
-+			page_pool_put_page(dring->page_pool,
-+					   virt_to_head_page(xdp->data), len,
-+					   true);
- 		break;
- 	case XDP_REDIRECT:
- 		err = xdp_do_redirect(priv->ndev, xdp, prog);
-@@ -906,9 +906,9 @@ static u32 netsec_run_xdp(struct netsec_priv *priv, struct bpf_prog *prog,
- 			ret = NETSEC_XDP_REDIR;
- 		} else {
- 			ret = NETSEC_XDP_CONSUMED;
--			__page_pool_put_page(dring->page_pool,
--					     virt_to_head_page(xdp->data),
--					     len, true);
-+			page_pool_put_page(dring->page_pool,
-+					   virt_to_head_page(xdp->data), len,
-+					   true);
- 		}
- 		break;
- 	default:
-@@ -919,9 +919,8 @@ static u32 netsec_run_xdp(struct netsec_priv *priv, struct bpf_prog *prog,
- 		/* fall through -- handle aborts by dropping packet */
- 	case XDP_DROP:
- 		ret = NETSEC_XDP_CONSUMED;
--		__page_pool_put_page(dring->page_pool,
--				     virt_to_head_page(xdp->data),
--				     len, true);
-+		page_pool_put_page(dring->page_pool,
-+				   virt_to_head_page(xdp->data), len, true);
- 		break;
- 	}
- 
-@@ -1020,8 +1019,8 @@ static int netsec_process_rx(struct netsec_priv *priv, int budget)
- 			 * cache state. Since we paid the allocation cost if
- 			 * building an skb fails try to put the page into cache
- 			 */
--			__page_pool_put_page(dring->page_pool, page,
--					     pkt_len, true);
-+			page_pool_put_page(dring->page_pool, page, pkt_len,
-+					   true);
- 			netif_err(priv, drv, priv->ndev,
- 				  "rx failed to build skb\n");
- 			break;
-@@ -1195,7 +1194,7 @@ static void netsec_uninit_pkt_dring(struct netsec_priv *priv, int id)
- 		if (id == NETSEC_RING_RX) {
- 			struct page *page = virt_to_page(desc->addr);
- 
--			page_pool_put_page(dring->page_pool, page, false);
-+			page_pool_put_full_page(dring->page_pool, page, false);
- 		} else if (id == NETSEC_RING_TX) {
- 			dma_unmap_single(priv->dev, desc->dma_addr, desc->len,
- 					 DMA_TO_DEVICE);
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 5836b21edd7e..37920b4da091 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -1251,11 +1251,11 @@ static void stmmac_free_rx_buffer(struct stmmac_priv *priv, u32 queue, int i)
- 	struct stmmac_rx_buffer *buf = &rx_q->buf_pool[i];
- 
- 	if (buf->page)
--		page_pool_put_page(rx_q->page_pool, buf->page, false);
-+		page_pool_put_full_page(rx_q->page_pool, buf->page, false);
- 	buf->page = NULL;
- 
- 	if (buf->sec_page)
--		page_pool_put_page(rx_q->page_pool, buf->sec_page, false);
-+		page_pool_put_full_page(rx_q->page_pool, buf->sec_page, false);
- 	buf->sec_page = NULL;
- }
- 
-diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-index cfbed00ba7ee..81d7773f96cd 100644
---- a/include/net/page_pool.h
-+++ b/include/net/page_pool.h
-@@ -151,6 +151,7 @@ struct page_pool *page_pool_create(const struct page_pool_params *params);
- #ifdef CONFIG_PAGE_POOL
- void page_pool_destroy(struct page_pool *pool);
- void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)(void *));
-+void page_pool_release_page(struct page_pool *pool, struct page *page);
- #else
- static inline void page_pool_destroy(struct page_pool *pool)
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 2fe7a3188282..4ea0ae60c000 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -371,7 +371,7 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+ 				   struct receive_queue *rq,
+ 				   struct page *page, unsigned int offset,
+ 				   unsigned int len, unsigned int truesize,
+-				   bool hdr_valid)
++				   bool hdr_valid, unsigned int metasize)
  {
-@@ -160,41 +161,32 @@ static inline void page_pool_use_xdp_mem(struct page_pool *pool,
- 					 void (*disconnect)(void *))
- {
- }
-+static inline void page_pool_release_page(struct page_pool *pool,
-+					  struct page *page)
-+{
-+}
- #endif
+ 	struct sk_buff *skb;
+ 	struct virtio_net_hdr_mrg_rxbuf *hdr;
+@@ -393,6 +393,7 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+ 	else
+ 		hdr_padded_len = sizeof(struct padded_vnet_hdr);
  
--/* Never call this directly, use helpers below */
--void __page_pool_put_page(struct page_pool *pool, struct page *page,
--			  unsigned int dma_sync_size, bool allow_direct);
-+void page_pool_put_page(struct page_pool *pool, struct page *page,
-+			unsigned int dma_sync_size, bool allow_direct);
++	/* hdr_valid means no XDP, so we can copy the vnet header */
+ 	if (hdr_valid)
+ 		memcpy(hdr, p, hdr_len);
  
--static inline void page_pool_put_page(struct page_pool *pool,
--				      struct page *page, bool allow_direct)
-+/* Same as above but will try to sync the entire area pool->max_len */
-+static inline void page_pool_put_full_page(struct page_pool *pool,
-+					   struct page *page, bool allow_direct)
- {
- 	/* When page_pool isn't compiled-in, net/core/xdp.c doesn't
- 	 * allow registering MEM_TYPE_PAGE_POOL, but shield linker.
- 	 */
- #ifdef CONFIG_PAGE_POOL
--	__page_pool_put_page(pool, page, -1, allow_direct);
-+	page_pool_put_page(pool, page, -1, allow_direct);
- #endif
- }
--/* Very limited use-cases allow recycle direct */
+@@ -405,6 +406,11 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+ 		copy = skb_tailroom(skb);
+ 	skb_put_data(skb, p, copy);
+ 
++	if (metasize) {
++		__skb_pull(skb, metasize);
++		skb_metadata_set(skb, metasize);
++	}
 +
-+/* Same as above but the caller must guarantee safe context. e.g NAPI */
- static inline void page_pool_recycle_direct(struct page_pool *pool,
- 					    struct page *page)
- {
--	__page_pool_put_page(pool, page, -1, true);
--}
+ 	len -= copy;
+ 	offset += copy;
+ 
+@@ -450,10 +456,6 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
+ 	struct virtio_net_hdr_mrg_rxbuf *hdr;
+ 	int err;
+ 
+-	/* virtqueue want to use data area in-front of packet */
+-	if (unlikely(xdpf->metasize > 0))
+-		return -EOPNOTSUPP;
 -
--/* Disconnects a page (from a page_pool).  API users can have a need
-- * to disconnect a page (from a page_pool), to allow it to be used as
-- * a regular page (that will eventually be returned to the normal
-- * page-allocator via put_page).
-- */
--void page_pool_unmap_page(struct page_pool *pool, struct page *page);
--static inline void page_pool_release_page(struct page_pool *pool,
--					  struct page *page)
--{
--#ifdef CONFIG_PAGE_POOL
--	page_pool_unmap_page(pool, page);
--#endif
-+	page_pool_put_full_page(pool, page, true);
- }
+ 	if (unlikely(xdpf->headroom < vi->hdr_len))
+ 		return -EOVERFLOW;
  
- static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 10d2b255df5e..626db912fce4 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -96,7 +96,7 @@ struct page_pool *page_pool_create(const struct page_pool_params *params)
- }
- EXPORT_SYMBOL(page_pool_create);
+@@ -644,6 +646,7 @@ static struct sk_buff *receive_small(struct net_device *dev,
+ 	unsigned int delta = 0;
+ 	struct page *xdp_page;
+ 	int err;
++	unsigned int metasize = 0;
  
--static void __page_pool_return_page(struct page_pool *pool, struct page *page);
-+static void page_pool_return_page(struct page_pool *pool, struct page *page);
+ 	len -= vi->hdr_len;
+ 	stats->bytes += len;
+@@ -683,8 +686,8 @@ static struct sk_buff *receive_small(struct net_device *dev,
  
- noinline
- static struct page *page_pool_refill_alloc_cache(struct page_pool *pool)
-@@ -136,7 +136,7 @@ static struct page *page_pool_refill_alloc_cache(struct page_pool *pool)
- 			 * (2) break out to fallthrough to alloc_pages_node.
- 			 * This limit stress on page buddy alloactor.
- 			 */
--			__page_pool_return_page(pool, page);
-+			page_pool_return_page(pool, page);
- 			page = NULL;
+ 		xdp.data_hard_start = buf + VIRTNET_RX_PAD + vi->hdr_len;
+ 		xdp.data = xdp.data_hard_start + xdp_headroom;
+-		xdp_set_data_meta_invalid(&xdp);
+ 		xdp.data_end = xdp.data + len;
++		xdp.data_meta = xdp.data;
+ 		xdp.rxq = &rq->xdp_rxq;
+ 		orig_data = xdp.data;
+ 		act = bpf_prog_run_xdp(xdp_prog, &xdp);
+@@ -695,6 +698,7 @@ static struct sk_buff *receive_small(struct net_device *dev,
+ 			/* Recalculate length in case bpf program changed it */
+ 			delta = orig_data - xdp.data;
+ 			len = xdp.data_end - xdp.data;
++			metasize = xdp.data - xdp.data_meta;
  			break;
- 		}
-@@ -274,18 +274,25 @@ static s32 page_pool_inflight(struct page_pool *pool)
- 	return inflight;
- }
+ 		case XDP_TX:
+ 			stats->xdp_tx++;
+@@ -735,11 +739,14 @@ static struct sk_buff *receive_small(struct net_device *dev,
+ 	}
+ 	skb_reserve(skb, headroom - delta);
+ 	skb_put(skb, len);
+-	if (!delta) {
++	if (!xdp_prog) {
+ 		buf += header_offset;
+ 		memcpy(skb_vnet_hdr(skb), buf, vi->hdr_len);
+ 	} /* keep zeroed vnet hdr since packet was changed by bpf */
  
--/* Cleanup page_pool state from page */
--static void __page_pool_clean_page(struct page_pool *pool,
--				   struct page *page)
-+/* Disconnects a page (from a page_pool).  API users can have a need
-+ * to disconnect a page (from a page_pool), to allow it to be used as
-+ * a regular page (that will eventually be returned to the normal
-+ * page-allocator via put_page).
-+ */
-+void page_pool_release_page(struct page_pool *pool, struct page *page)
- {
- 	dma_addr_t dma;
- 	int count;
- 
- 	if (!(pool->p.flags & PP_FLAG_DMA_MAP))
-+		/* Always account for inflight pages, even if we didn't
-+		 * map them
-+		 */
- 		goto skip_dma_unmap;
- 
- 	dma = page->dma_addr;
--	/* DMA unmap */
++	if (metasize)
++		skb_metadata_set(skb, metasize);
 +
-+	/* When page is unmapped, it cannot be returned our pool */
- 	dma_unmap_page_attrs(pool->p.dev, dma,
- 			     PAGE_SIZE << pool->p.order, pool->p.dma_dir,
- 			     DMA_ATTR_SKIP_CPU_SYNC);
-@@ -297,21 +304,12 @@ static void __page_pool_clean_page(struct page_pool *pool,
- 	count = atomic_inc_return(&pool->pages_state_release_cnt);
- 	trace_page_pool_state_release(pool, page, count);
- }
--
--/* unmap the page and clean our state */
--void page_pool_unmap_page(struct page_pool *pool, struct page *page)
--{
--	/* When page is unmapped, this implies page will not be
--	 * returned to page_pool.
--	 */
--	__page_pool_clean_page(pool, page);
--}
--EXPORT_SYMBOL(page_pool_unmap_page);
-+EXPORT_SYMBOL(page_pool_release_page);
+ err:
+ 	return skb;
  
- /* Return a page to the page allocator, cleaning up our state */
--static void __page_pool_return_page(struct page_pool *pool, struct page *page)
-+static void page_pool_return_page(struct page_pool *pool, struct page *page)
+@@ -760,8 +767,8 @@ static struct sk_buff *receive_big(struct net_device *dev,
+ 				   struct virtnet_rq_stats *stats)
  {
--	__page_pool_clean_page(pool, page);
-+	page_pool_release_page(pool, page);
+ 	struct page *page = buf;
+-	struct sk_buff *skb = page_to_skb(vi, rq, page, 0, len,
+-					  PAGE_SIZE, true);
++	struct sk_buff *skb =
++		page_to_skb(vi, rq, page, 0, len, PAGE_SIZE, true, 0);
  
- 	put_page(page);
- 	/* An optimization would be to call __free_pages(page, pool->p.order)
-@@ -320,8 +318,7 @@ static void __page_pool_return_page(struct page_pool *pool, struct page *page)
- 	 */
- }
+ 	stats->bytes += len - vi->hdr_len;
+ 	if (unlikely(!skb))
+@@ -793,6 +800,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+ 	unsigned int truesize;
+ 	unsigned int headroom = mergeable_ctx_to_headroom(ctx);
+ 	int err;
++	unsigned int metasize = 0;
  
--static bool __page_pool_recycle_into_ring(struct page_pool *pool,
--				   struct page *page)
-+static bool page_pool_recycle_in_ring(struct page_pool *pool, struct page *page)
- {
- 	int ret;
- 	/* BH protection not needed if current is serving softirq */
-@@ -338,7 +335,7 @@ static bool __page_pool_recycle_into_ring(struct page_pool *pool,
-  *
-  * Caller must provide appropriate safe context.
-  */
--static bool __page_pool_recycle_direct(struct page *page,
-+static bool page_pool_recycle_in_cache(struct page *page,
- 				       struct page_pool *pool)
- {
- 	if (unlikely(pool->alloc.count == PP_ALLOC_CACHE_SIZE))
-@@ -357,8 +354,14 @@ static bool pool_page_reusable(struct page_pool *pool, struct page *page)
- 	return !page_is_pfmemalloc(page);
- }
+ 	head_skb = NULL;
+ 	stats->bytes += len - vi->hdr_len;
+@@ -839,8 +847,8 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+ 		data = page_address(xdp_page) + offset;
+ 		xdp.data_hard_start = data - VIRTIO_XDP_HEADROOM + vi->hdr_len;
+ 		xdp.data = data + vi->hdr_len;
+-		xdp_set_data_meta_invalid(&xdp);
+ 		xdp.data_end = xdp.data + (len - vi->hdr_len);
++		xdp.data_meta = xdp.data;
+ 		xdp.rxq = &rq->xdp_rxq;
  
--void __page_pool_put_page(struct page_pool *pool, struct page *page,
--			  unsigned int dma_sync_size, bool allow_direct)
-+/* If the page refcnt == 1, this will try to recycle the page.
-+ * if PP_FLAG_DMA_SYNC_DEV is set, we'll try to sync the DMA area for
-+ * the configured size min(dma_sync_size, pool->max_len).
-+ * If the page refcnt != 1, then the page will be returned to memory
-+ * subsystem.
-+ */
-+void page_pool_put_page(struct page_pool *pool, struct page *page,
-+			unsigned int dma_sync_size, bool allow_direct)
- {
- 	/* This allocator is optimized for the XDP mode that uses
- 	 * one-frame-per-page, but have fallbacks that act like the
-@@ -375,12 +378,12 @@ void __page_pool_put_page(struct page_pool *pool, struct page *page,
- 						      dma_sync_size);
+ 		act = bpf_prog_run_xdp(xdp_prog, &xdp);
+@@ -848,24 +856,27 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
  
- 		if (allow_direct && in_serving_softirq())
--			if (__page_pool_recycle_direct(page, pool))
-+			if (page_pool_recycle_in_cache(page, pool))
- 				return;
+ 		switch (act) {
+ 		case XDP_PASS:
++			metasize = xdp.data - xdp.data_meta;
++
+ 			/* recalculate offset to account for any header
+-			 * adjustments. Note other cases do not build an
+-			 * skb and avoid using offset
++			 * adjustments and minus the metasize to copy the
++			 * metadata in page_to_skb(). Note other cases do not
++			 * build an skb and avoid using offset
+ 			 */
+-			offset = xdp.data -
+-					page_address(xdp_page) - vi->hdr_len;
++			offset = xdp.data - page_address(xdp_page) -
++				 vi->hdr_len - metasize;
  
--		if (!__page_pool_recycle_into_ring(pool, page)) {
-+		if (!page_pool_recycle_in_ring(pool, page)) {
- 			/* Cache full, fallback to free pages */
--			__page_pool_return_page(pool, page);
-+			page_pool_return_page(pool, page);
- 		}
- 		return;
+-			/* recalculate len if xdp.data or xdp.data_end were
+-			 * adjusted
++			/* recalculate len if xdp.data, xdp.data_end or
++			 * xdp.data_meta were adjusted
+ 			 */
+-			len = xdp.data_end - xdp.data + vi->hdr_len;
++			len = xdp.data_end - xdp.data + vi->hdr_len + metasize;
+ 			/* We can only create skb based on xdp_page. */
+ 			if (unlikely(xdp_page != page)) {
+ 				rcu_read_unlock();
+ 				put_page(page);
+-				head_skb = page_to_skb(vi, rq, xdp_page,
+-						       offset, len,
+-						       PAGE_SIZE, false);
++				head_skb = page_to_skb(vi, rq, xdp_page, offset,
++						       len, PAGE_SIZE, false,
++						       metasize);
+ 				return head_skb;
+ 			}
+ 			break;
+@@ -921,7 +932,8 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+ 		goto err_skb;
  	}
-@@ -397,12 +400,13 @@ void __page_pool_put_page(struct page_pool *pool, struct page *page,
- 	 * doing refcnt based recycle tricks, meaning another process
- 	 * will be invoking put_page.
- 	 */
--	__page_pool_clean_page(pool, page);
-+	/* Do not replace this with page_pool_return_page() */
-+	page_pool_release_page(pool, page);
- 	put_page(page);
- }
--EXPORT_SYMBOL(__page_pool_put_page);
-+EXPORT_SYMBOL(page_pool_put_page);
  
--static void __page_pool_empty_ring(struct page_pool *pool)
-+static void page_pool_empty_ring(struct page_pool *pool)
- {
- 	struct page *page;
+-	head_skb = page_to_skb(vi, rq, page, offset, len, truesize, !xdp_prog);
++	head_skb = page_to_skb(vi, rq, page, offset, len, truesize, !xdp_prog,
++			       metasize);
+ 	curr_skb = head_skb;
  
-@@ -413,7 +417,7 @@ static void __page_pool_empty_ring(struct page_pool *pool)
- 			pr_crit("%s() page_pool refcnt %d violation\n",
- 				__func__, page_ref_count(page));
- 
--		__page_pool_return_page(pool, page);
-+		page_pool_return_page(pool, page);
- 	}
- }
- 
-@@ -443,7 +447,7 @@ static void page_pool_empty_alloc_cache_once(struct page_pool *pool)
- 	 */
- 	while (pool->alloc.count) {
- 		page = pool->alloc.cache[--pool->alloc.count];
--		__page_pool_return_page(pool, page);
-+		page_pool_return_page(pool, page);
- 	}
- }
- 
-@@ -455,7 +459,7 @@ static void page_pool_scrub(struct page_pool *pool)
- 	/* No more consumers should exist, but producers could still
- 	 * be in-flight.
- 	 */
--	__page_pool_empty_ring(pool);
-+	page_pool_empty_ring(pool);
- }
- 
- static int page_pool_release(struct page_pool *pool)
-@@ -529,7 +533,7 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
- 	/* Flush pool alloc cache, as refill will check NUMA node */
- 	while (pool->alloc.count) {
- 		page = pool->alloc.cache[--pool->alloc.count];
--		__page_pool_return_page(pool, page);
-+		page_pool_return_page(pool, page);
- 	}
- }
- EXPORT_SYMBOL(page_pool_update_nid);
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 8310714c47fd..4c7ea85486af 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -372,7 +372,7 @@ static void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
- 		xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
- 		page = virt_to_head_page(data);
- 		napi_direct &= !xdp_return_frame_no_direct();
--		page_pool_put_page(xa->page_pool, page, napi_direct);
-+		page_pool_put_full_page(xa->page_pool, page, napi_direct);
- 		rcu_read_unlock();
- 		break;
- 	case MEM_TYPE_PAGE_SHARED:
+ 	if (unlikely(!curr_skb))
 -- 
-2.25.1
+2.24.1
 
