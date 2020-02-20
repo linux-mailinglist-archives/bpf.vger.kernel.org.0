@@ -2,26 +2,26 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7D2166948
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2020 21:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CD8616696D
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2020 21:59:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729399AbgBTU5l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Feb 2020 15:57:41 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:44164 "EHLO
+        id S1729516AbgBTU6W (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Feb 2020 15:58:22 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:44156 "EHLO
         Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729211AbgBTU4k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Feb 2020 15:56:40 -0500
+        with ESMTP id S1729177AbgBTU4i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Feb 2020 15:56:38 -0500
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1j4srb-0007TA-D5; Thu, 20 Feb 2020 21:56:03 +0100
+        id 1j4srb-0007TC-JT; Thu, 20 Feb 2020 21:56:03 +0100
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id D3B06104085;
-        Thu, 20 Feb 2020 21:56:02 +0100 (CET)
-Message-Id: <20200220204617.728659044@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 189E710408A;
+        Thu, 20 Feb 2020 21:56:03 +0100 (CET)
+Message-Id: <20200220204617.828122368@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Thu, 20 Feb 2020 21:45:21 +0100
+Date:   Thu, 20 Feb 2020 21:45:22 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     David Miller <davem@davemloft.net>, bpf@vger.kernel.org,
@@ -36,7 +36,7 @@ Cc:     David Miller <davem@davemloft.net>, bpf@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Vinicius Costa Gomes <vinicius.gomes@intel.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [patch V2 04/20] perf/bpf: Remove preempt disable around BPF invocation
+Subject: [patch V2 05/20] bpf: Remove recursion prevention from rcu free callback
 References: <20200220204517.863202864@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,31 +48,34 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The BPF invocation from the perf event overflow handler does not require to
-disable preemption because this is called from NMI or at least hard
-interrupt context which is already non-preemptible.
+If an element is freed via RCU then recursion into BPF instrumentation
+functions is not a concern. The element is already detached from the map
+and the RCU callback does not hold any locks on which a kprobe, perf event
+or tracepoint attached BPF program could deadlock.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/events/core.c |    2 --
- 1 file changed, 2 deletions(-)
+V2: New patch
+---
+ kernel/bpf/hashtab.c |    8 --------
+ 1 file changed, 8 deletions(-)
 
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -9206,7 +9206,6 @@ static void bpf_overflow_handler(struct
- 	int ret = 0;
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -694,15 +694,7 @@ static void htab_elem_free_rcu(struct rc
+ 	struct htab_elem *l = container_of(head, struct htab_elem, rcu);
+ 	struct bpf_htab *htab = l->htab;
  
- 	ctx.regs = perf_arch_bpf_user_pt_regs(regs);
+-	/* must increment bpf_prog_active to avoid kprobe+bpf triggering while
+-	 * we're calling kfree, otherwise deadlock is possible if kprobes
+-	 * are placed somewhere inside of slub
+-	 */
 -	preempt_disable();
- 	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1))
- 		goto out;
- 	rcu_read_lock();
-@@ -9214,7 +9213,6 @@ static void bpf_overflow_handler(struct
- 	rcu_read_unlock();
- out:
- 	__this_cpu_dec(bpf_prog_active);
+-	__this_cpu_inc(bpf_prog_active);
+ 	htab_elem_free(htab, l);
+-	__this_cpu_dec(bpf_prog_active);
 -	preempt_enable();
- 	if (!ret)
- 		return;
+ }
  
+ static void free_htab_elem(struct bpf_htab *htab, struct htab_elem *l)
 
