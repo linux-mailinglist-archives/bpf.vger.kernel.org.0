@@ -2,118 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9B21657A6
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2020 07:31:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0ABE16583E
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2020 08:12:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726856AbgBTGbP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Feb 2020 01:31:15 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:56549 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726735AbgBTGbP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Feb 2020 01:31:15 -0500
-Received: by mail-io1-f69.google.com with SMTP id d13so1905326ioo.23
-        for <bpf@vger.kernel.org>; Wed, 19 Feb 2020 22:31:14 -0800 (PST)
+        id S1726443AbgBTHLN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Feb 2020 02:11:13 -0500
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:36134 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725942AbgBTHLN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Feb 2020 02:11:13 -0500
+Received: by mail-pg1-f193.google.com with SMTP id d9so1467727pgu.3;
+        Wed, 19 Feb 2020 23:11:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=O0zFntr1QJNRBWVbfr3Y3ej4pjF2VbnkF0Ahy+Hu/rg=;
+        b=bGxTc1NZzIJ9/9ID4iL0F94syynnLjynNX83/axWs+Jhvpt/79GB2+kZq24uiW4KkR
+         gu8wfFaKHYZzk8JcIOUk8H/SVXGi/LTnOsk3LEnzz0QKHK9dwBHYYwKqHQ5yJ/IRgvNR
+         U/RiHMoiXa9EqlsnXGZwV+g38W89vQV0RXqMTXMxtSPDAEcJYwGclcgIbzawgBKtREl7
+         fnkseXtv1pPi7v5cQVa8kaXeHgtLn8ceeXl6Up763AhTuhngW5CSFM6CFTVcyOZL7iJr
+         Ehj2rXu3rDY5i9lKpIR+1/1E6DufvqyPaRj+D4bIl5r1GKA7TIgXxKuE1eygdkvnQsX/
+         MpoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=DDqMJ8JPj7oJO/ZR8xGUg6VFAFuonxwUf5QT8gnpMlI=;
-        b=G4QXcfE1XumJmzm5oXWavLfOePbtPDaf0EcLtJUbT0tw4B0H3lGDwjguhP3Tv/Qstq
-         5hSdqUd1k+EYWuF1TFOgbI2UixODdq4sEoHjeeLYzEVeM2DWaRTk4ORQiWuhBZc70Zz+
-         kiLti+gsSrEBrVu6zRK7Q2vUKl0tx57bgdTtz/qSwC/AxASqjLOFQU33G23kmH+arQlC
-         tDCsNdxTrAcKDxvGUt493OyAnYiC7rDn3jbAT8D4iy8g8iIaI6+u7wkfOtMG+TGiwrUy
-         KLFLcUnDvZ0+VSqUr/M1E7zCXcjdTgqgxS0ji6SIYMejIR/+NCgLY+/tGfKnaqCU1wYA
-         yhXg==
-X-Gm-Message-State: APjAAAXQ/pdeG+vNZWl6XwC+7VJWQM3wf4jSabTZ9Vcx2AAbaqNnSV2a
-        naHbQjdLFnMCvcLymofg8ggNd9u3XwtWM+k3kaHTwtjbN8ye
-X-Google-Smtp-Source: APXvYqxOsNiTKh+qdqttr1Rz5Xoag30BA+Qf5UFs3ZfyNMV1nBh7iGpymuj0iWTB8mx5mFnbL62z472NbkKQFR/ecoPKcwCxKaZz
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=O0zFntr1QJNRBWVbfr3Y3ej4pjF2VbnkF0Ahy+Hu/rg=;
+        b=Xde4hUR5Keun6XEbTsptCKeWSPUzu4W2966oI4oXPhV5euIJMNimavf4Qb+eg6f9Ok
+         9gIFLPnGFNX19m1wa90GfEEOMzczZeCdx8Te33Kwm8BEtXvCl8SQHrZGQWMVtz/pW82g
+         UL6TWi2xbc6yQE8PdItuoiOEbIbAisQTI6TWr6Suws59An/yTpO3EmdtrDo0cZZ0ywzq
+         Zzl3//na9TOmFdBOAXbivYaG8QmLesbQqCbhLigvKLRsJlnQvWsRmAVG1apAxYDxRkqF
+         lq2iwWM0FguBRLfFeUEBNrPrrc6/LDDXsaVfbZEwQoPz2p/sECJosOqiEMtiZ7CJs5Vw
+         IcVA==
+X-Gm-Message-State: APjAAAVlriEXPO1q2vroOHC5iJhGZPYrycoLYByevrFNs5o1lQ+lB7EP
+        UtXnx/QMEPt/aoxFbNjlrR1KfmnLm00=
+X-Google-Smtp-Source: APXvYqx2cBvnnmi8Zw+LlnLnXTNACdkhT6TGG1iapS5aVPoYYKvd0/aHTjT2vCAMO3mVdgWLub6XeA==
+X-Received: by 2002:a62:4e42:: with SMTP id c63mr30738042pfb.86.1582182671985;
+        Wed, 19 Feb 2020 23:11:11 -0800 (PST)
+Received: from kernel.rdqbwbcbjylexclmhxlbqg5jve.hx.internal.cloudapp.net ([65.52.171.215])
+        by smtp.gmail.com with ESMTPSA id p4sm2148325pgh.14.2020.02.19.23.11.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Feb 2020 23:11:11 -0800 (PST)
+From:   Lingpeng Chen <forrest0579@gmail.com>
+To:     bpf <bpf@vger.kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Petar Penkov <ppenkov.kernel@gmail.com>,
+        Lingpeng Chen <forrest0579@gmail.com>
+Subject: [PATCH v3 bpf-next 0/3] bpf: Add get_netns_id helper for sock_ops
+Date:   Thu, 20 Feb 2020 07:10:51 +0000
+Message-Id: <20200220071054.12499-1-forrest0579@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <07e2568e-0256-29f5-1656-1ac80a69f229@iogearbox.net>
+References: <07e2568e-0256-29f5-1656-1ac80a69f229@iogearbox.net>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cb8c:: with SMTP id z12mr26095480ilo.5.1582180274590;
- Wed, 19 Feb 2020 22:31:14 -0800 (PST)
-Date:   Wed, 19 Feb 2020 22:31:14 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003cdd26059efc0db3@google.com>
-Subject: KASAN: null-ptr-deref Write in kcm_tx_work
-From:   syzbot <syzbot+867331f5ea7690d840b4@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
-        jslaby@suse.cz, kafai@fb.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, willy@infradead.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Currently 5-tuple(sip+dip+sport+dport+proto) can't identify a
+uniq connection because there may be multi net namespace.
+For example, there may be a chance that netns a and netns b all
+listen on 127.0.0.1:8080 and the client with same port 40782
+connect to them. Without netns number, sock ops program
+can't distinguish them.
+Using bpf_get_netns_id helpers to get current connection
+netns number to distinguish connections.
 
-syzbot found the following crash on:
+Changes in v3:
+- rename sock_ops_get_netns to get_netns_id
 
-HEAD commit:    2019fc96 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=159f2701e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=735296e4dd620b10
-dashboard link: https://syzkaller.appspot.com/bug?extid=867331f5ea7690d840b4
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+Changes in v2:
+- Return u64 instead of u32 for sock_ops_get_netns
+- Fix build bug when CONFIG_NET_NS not set
+- Add selftest for sock_ops_get_netns
 
-Unfortunately, I don't have any reproducer for this crash yet.
+Lingpeng Chen (3):
+  bpf: Add get_netns_id helper function for sock_ops
+  bpf: Sync uapi bpf.h to tools/
+  selftests/bpf: add selftest for get_netns_id helper
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+867331f5ea7690d840b4@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: null-ptr-deref in clear_bit include/asm-generic/bitops/instrumented-atomic.h:41 [inline]
-BUG: KASAN: null-ptr-deref in kcm_tx_work+0x10e/0x170 net/kcm/kcmsock.c:743
-Write of size 8 at addr 0000000000000008 by task kworker/u4:4/280
-
-CPU: 0 PID: 280 Comm: kworker/u4:4 Not tainted 5.6.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: kkcmd kcm_tx_work
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x197/0x210 lib/dump_stack.c:118
- __kasan_report.cold+0x5/0x32 mm/kasan/report.c:510
- kasan_report+0x12/0x20 mm/kasan/common.c:641
- check_memory_region_inline mm/kasan/generic.c:185 [inline]
- check_memory_region+0x134/0x1a0 mm/kasan/generic.c:192
- __kasan_check_write+0x14/0x20 mm/kasan/common.c:101
- clear_bit include/asm-generic/bitops/instrumented-atomic.h:41 [inline]
- kcm_tx_work+0x10e/0x170 net/kcm/kcmsock.c:743
- process_one_work+0xa05/0x17a0 kernel/workqueue.c:2264
- worker_thread+0x98/0xe40 kernel/workqueue.c:2410
- kthread+0x361/0x430 kernel/kthread.c:255
- ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-==================================================================
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 280 Comm: kworker/u4:4 Tainted: G    B             5.6.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: kkcmd kcm_tx_work
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x197/0x210 lib/dump_stack.c:118
- panic+0x2e3/0x75c kernel/panic.c:221
- end_report+0x47/0x4f mm/kasan/report.c:96
- __kasan_report.cold+0xe/0x32 mm/kasan/report.c:513
- kasan_report+0x12/0x20 mm/kasan/common.c:641
- check_memory_region_inline mm/kasan/generic.c:185 [inline]
- check_memory_region+0x134/0x1a0 mm/kasan/generic.c:192
- __kasan_check_write+0x14/0x20 mm/kasan/common.c:101
- clear_bit include/asm-generic/bitops/instrumented-atomic.h:41 [inline]
- kcm_tx_work+0x10e/0x170 net/kcm/kcmsock.c:743
- process_one_work+0xa05/0x17a0 kernel/workqueue.c:2264
- worker_thread+0x98/0xe40 kernel/workqueue.c:2410
- kthread+0x361/0x430 kernel/kthread.c:255
- ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+ include/uapi/linux/bpf.h                      |  9 +++-
+ net/core/filter.c                             | 20 ++++++++
+ tools/include/uapi/linux/bpf.h                |  9 +++-
+ .../selftests/bpf/progs/test_tcpbpf_kern.c    | 11 +++++
+ .../testing/selftests/bpf/test_tcpbpf_user.c  | 46 ++++++++++++++++++-
+ 5 files changed, 92 insertions(+), 3 deletions(-)
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+base-commit bb6d3fb354c5 ("Linux 5.6-rc1")
+-- 
+2.20.1
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
