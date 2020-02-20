@@ -2,219 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F3F16532D
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2020 00:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D352E16534B
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2020 01:04:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726681AbgBSXsC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Feb 2020 18:48:02 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:37608 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726613AbgBSXsC (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 19 Feb 2020 18:48:02 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01JNiU4p022645
-        for <bpf@vger.kernel.org>; Wed, 19 Feb 2020 15:48:01 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=/Drm5VdHj6+Y3cg//pR0/P43pQ378LhEMTUjWD0IaWk=;
- b=ANHk239vGsMc1TPy5ybFpYHWd6HbAxEaJ1tyF1WDUkm6kn+4E3q4m4y0LOAgDV5jXBSu
- DiwpDTeEgDXMsYZkXyVFuzLP9I+/uyfTidzGCrxxs/W459srCzWCq2iDWwf8tNgrwGbh
- 8rMtN/kmShikDyY8SJV2EqJBsKVvrVv3gF4= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 2y9dm30cps-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 19 Feb 2020 15:48:01 -0800
-Received: from intmgw004.08.frc2.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 19 Feb 2020 15:47:59 -0800
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id E769637037D5; Wed, 19 Feb 2020 15:47:57 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Yonghong Song <yhs@fb.com>
-Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf v4] bpf: fix a potential deadlock with bpf_map_do_batch
-Date:   Wed, 19 Feb 2020 15:47:57 -0800
-Message-ID: <20200219234757.3544014-1-yhs@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1726731AbgBTAEX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Feb 2020 19:04:23 -0500
+Received: from www62.your-server.de ([213.133.104.62]:52554 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726691AbgBTAEW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Feb 2020 19:04:22 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j4ZK7-0005ZO-0U; Thu, 20 Feb 2020 01:04:11 +0100
+Received: from [85.7.42.192] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j4ZK6-000T1L-L3; Thu, 20 Feb 2020 01:04:10 +0100
+Subject: Re: [PATCH v2 bpf-next 1/3] bpf: Add sock ops get netns helpers
+To:     Lingpeng Chen <forrest0579@gmail.com>, bpf <bpf@vger.kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Petar Penkov <ppenkov.kernel@gmail.com>
+References: <20200206083515.10334-1-forrest0579@gmail.com>
+ <20200218091541.107371-1-forrest0579@gmail.com>
+ <20200218091541.107371-2-forrest0579@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <07e2568e-0256-29f5-1656-1ac80a69f229@iogearbox.net>
+Date:   Thu, 20 Feb 2020 01:04:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-02-19_07:2020-02-19,2020-02-19 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- impostorscore=0 phishscore=0 mlxscore=0 malwarescore=0 suspectscore=38
- adultscore=0 priorityscore=1501 spamscore=0 mlxlogscore=845 clxscore=1015
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002190173
-X-FB-Internal: deliver
+In-Reply-To: <20200218091541.107371-2-forrest0579@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.1/25728/Wed Feb 19 15:06:20 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit 057996380a42 ("bpf: Add batch ops to all htab bpf map")
-added lookup_and_delete batch operation for hash table.
-The current implementation has bpf_lru_push_free() inside
-the bucket lock, which may cause a deadlock.
+On 2/18/20 10:15 AM, Lingpeng Chen wrote:
+> Currently 5-tuple(sip+dip+sport+dport+proto) can't identify a
+> uniq connection because there may be multi net namespace.
+> For example, there may be a chance that netns a and netns b all
+> listen on 127.0.0.1:8080 and the client with same port 40782
+> connect to them. Without netns number, sock ops program
+> can't distinguish them.
+> Using bpf_sock_ops_get_netns helpers to get current connection
+> netns number to distinguish connections.
+> 
+> Signed-off-by: Lingpeng Chen <forrest0579@gmail.com>
+> ---
+>   include/uapi/linux/bpf.h |  8 +++++++-
+>   net/core/filter.c        | 19 +++++++++++++++++++
+>   2 files changed, 26 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index f1d74a2bd234..3573907d15e0 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -2892,6 +2892,11 @@ union bpf_attr {
+>    *		Obtain the 64bit jiffies
+>    *	Return
+>    *		The 64 bit jiffies
+> + * u64 bpf_sock_ops_get_netns(struct bpf_sock_ops *bpf_socket)
 
-syzbot reports:
-   -> #2 (&htab->buckets[i].lock#2){....}:
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x95/0xcd kernel/locking/spinlock.c:159
-       htab_lru_map_delete_node+0xce/0x2f0 kernel/bpf/hashtab.c:593
-       __bpf_lru_list_shrink_inactive kernel/bpf/bpf_lru_list.c:220 [inline]
-       __bpf_lru_list_shrink+0xf9/0x470 kernel/bpf/bpf_lru_list.c:266
-       bpf_lru_list_pop_free_to_local kernel/bpf/bpf_lru_list.c:340 [inline]
-       bpf_common_lru_pop_free kernel/bpf/bpf_lru_list.c:447 [inline]
-       bpf_lru_pop_free+0x87c/0x1670 kernel/bpf/bpf_lru_list.c:499
-       prealloc_lru_pop+0x2c/0xa0 kernel/bpf/hashtab.c:132
-       __htab_lru_percpu_map_update_elem+0x67e/0xa90 kernel/bpf/hashtab.c:1069
-       bpf_percpu_hash_update+0x16e/0x210 kernel/bpf/hashtab.c:1585
-       bpf_map_update_value.isra.0+0x2d7/0x8e0 kernel/bpf/syscall.c:181
-       generic_map_update_batch+0x41f/0x610 kernel/bpf/syscall.c:1319
-       bpf_map_do_batch+0x3f5/0x510 kernel/bpf/syscall.c:3348
-       __do_sys_bpf+0x9b7/0x41e0 kernel/bpf/syscall.c:3460
-       __se_sys_bpf kernel/bpf/syscall.c:3355 [inline]
-       __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3355
-       do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
-       entry_SYSCALL_64_after_hwframe+0x49/0xbe
+Nit: newline before the new helper signature starts above.
 
-   -> #0 (&loc_l->lock){....}:
-       check_prev_add kernel/locking/lockdep.c:2475 [inline]
-       check_prevs_add kernel/locking/lockdep.c:2580 [inline]
-       validate_chain kernel/locking/lockdep.c:2970 [inline]
-       __lock_acquire+0x2596/0x4a00 kernel/locking/lockdep.c:3954
-       lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4484
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x95/0xcd kernel/locking/spinlock.c:159
-       bpf_common_lru_push_free kernel/bpf/bpf_lru_list.c:516 [inline]
-       bpf_lru_push_free+0x250/0x5b0 kernel/bpf/bpf_lru_list.c:555
-       __htab_map_lookup_and_delete_batch+0x8d4/0x1540 kernel/bpf/hashtab.c:1374
-       htab_lru_map_lookup_and_delete_batch+0x34/0x40 kernel/bpf/hashtab.c:1491
-       bpf_map_do_batch+0x3f5/0x510 kernel/bpf/syscall.c:3348
-       __do_sys_bpf+0x1f7d/0x41e0 kernel/bpf/syscall.c:3456
-       __se_sys_bpf kernel/bpf/syscall.c:3355 [inline]
-       __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3355
-       do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
-       entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> + *  Description
+> + *      Obtain netns id of sock
+> + * Return
+> + *      The current netns inum
+>    */
+>   #define __BPF_FUNC_MAPPER(FN)		\
+>   	FN(unspec),			\
+> @@ -3012,7 +3017,8 @@ union bpf_attr {
+>   	FN(probe_read_kernel_str),	\
+>   	FN(tcp_send_ack),		\
+>   	FN(send_signal_thread),		\
+> -	FN(jiffies64),
+> +	FN(jiffies64),			\
+> +	FN(sock_ops_get_netns),
 
-    Possible unsafe locking scenario:
+Please name this something more generic like FN(get_netns_id) or such. Definitely
+without the 'sock_ops' part so this can be remapped to various other prog types
+for the *_func_proto().
 
-          CPU0                    CPU2
-          ----                    ----
-     lock(&htab->buckets[i].lock#2);
-                                  lock(&l->lock);
-                                  lock(&htab->buckets[i].lock#2);
-     lock(&loc_l->lock);
-
-    *** DEADLOCK ***
-
-To fix the issue, for htab_lru_map_lookup_and_delete_batch() in CPU0,
-let us do bpf_lru_push_free() out of the htab bucket lock. This can
-avoid the above deadlock scenario.
-
-Fixes: 057996380a42 ("bpf: Add batch ops to all htab bpf map")
-Reported-by: syzbot+a38ff3d9356388f2fb83@syzkaller.appspotmail.com
-Reported-by: syzbot+122b5421d14e68f29cd1@syzkaller.appspotmail.com
-Suggested-by: Hillf Danton <hdanton@sina.com>
-Suggested-by: Martin KaFai Lau <kafai@fb.com>
-Acked-by: Brian Vazquez <brianvv@google.com>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- kernel/bpf/hashtab.c | 34 +++++++++++++++++++++++++++++++---
- 1 file changed, 31 insertions(+), 3 deletions(-)
-
-Changelog:
-  v3 -> v4:
-     . rebase on top of the latest bpf tree.
-  v2 -> v3:
-     . changed variable name, fixed reverse Christmas tree
-       coding style and added more comments, from Martin.
-  v1 -> v2:
-     . coding style fix to have braces in both then and else
-       branch, from Jakub.
-
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index ea3bf04a0a7b..a13b04aad12e 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -56,6 +56,7 @@ struct htab_elem {
- 			union {
- 				struct bpf_htab *htab;
- 				struct pcpu_freelist_node fnode;
-+				struct htab_elem *batch_flink;
- 			};
- 		};
- 	};
-@@ -126,6 +127,17 @@ static void htab_free_elems(struct bpf_htab *htab)
- 	bpf_map_area_free(htab->elems);
- }
- 
-+/* The LRU list has a lock (lru_lock). Each htab bucket has a lock
-+ * (bucket_lock). If both locks need to be acquired together, the lock
-+ * order is always lru_lock -> bucket_lock and this only happens in
-+ * bpf_lru_list.c logic. For example, certain code path of
-+ * bpf_lru_pop_free(), which is called by function prealloc_lru_pop(),
-+ * will acquire lru_lock first followed by acquiring bucket_lock.
-+ *
-+ * In hashtab.c, to avoid deadlock, lock acquisition of
-+ * bucket_lock followed by lru_lock is not allowed. In such cases,
-+ * bucket_lock needs to be released first before acquiring lru_lock.
-+ */
- static struct htab_elem *prealloc_lru_pop(struct bpf_htab *htab, void *key,
- 					  u32 hash)
- {
-@@ -1256,6 +1268,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 	void __user *ukeys = u64_to_user_ptr(attr->batch.keys);
- 	void *ubatch = u64_to_user_ptr(attr->batch.in_batch);
- 	u32 batch, max_count, size, bucket_size;
-+	struct htab_elem *node_to_free = NULL;
- 	u64 elem_map_flags, map_flags;
- 	struct hlist_nulls_head *head;
- 	struct hlist_nulls_node *n;
-@@ -1388,10 +1401,18 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 		}
- 		if (do_delete) {
- 			hlist_nulls_del_rcu(&l->hash_node);
--			if (is_lru_map)
--				bpf_lru_push_free(&htab->lru, &l->lru_node);
--			else
-+
-+			/* bpf_lru_push_free() will acquire lru_lock, which
-+			 * may cause deadlock. See comments in function
-+			 * prealloc_lru_pop(). Let us do bpf_lru_push_free()
-+			 * after releasing the bucket lock.
-+			 */
-+			if (is_lru_map) {
-+				l->batch_flink = node_to_free;
-+				node_to_free = l;
-+			} else {
- 				free_htab_elem(htab, l);
-+			}
- 		}
- 		dst_key += key_size;
- 		dst_val += value_size;
-@@ -1399,6 +1420,13 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 
- 	raw_spin_unlock_irqrestore(&b->lock, flags);
- 	locked = false;
-+
-+	while (node_to_free) {
-+		l = node_to_free;
-+		node_to_free = node_to_free->batch_flink;
-+		bpf_lru_push_free(&htab->lru, &l->lru_node);
-+	}
-+
- next_batch:
- 	/* If we are not copying data, we can go to next bucket and avoid
- 	 * unlocking the rcu.
--- 
-2.17.1
+>   
+>   /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+>    * function eBPF program intends to call
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index c180871e606d..f8e946aa46fc 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -4421,6 +4421,23 @@ static const struct bpf_func_proto bpf_sock_ops_cb_flags_set_proto = {
+>   	.arg2_type	= ARG_ANYTHING,
+>   };
+>   
+> +BPF_CALL_1(bpf_sock_ops_get_netns, struct bpf_sock_ops_kern *, bpf_sock)
+> +{
+> +#ifdef CONFIG_NET_NS
+> +	struct sock *sk = bpf_sock->sk;
+> +
+> +	return (u64)sk->sk_net.net->ns.inum;
+> +#endif
+> +	return 0;
+> +}
+> +
+> +static const struct bpf_func_proto bpf_sock_ops_get_netns_proto = {
+> +	.func		= bpf_sock_ops_get_netns,
+> +	.gpl_only	= false,
+> +	.ret_type	= RET_INTEGER,
+> +	.arg1_type	= ARG_PTR_TO_CTX,
+> +};
+> +
+>   const struct ipv6_bpf_stub *ipv6_bpf_stub __read_mostly;
+>   EXPORT_SYMBOL_GPL(ipv6_bpf_stub);
+>   
+> @@ -6218,6 +6235,8 @@ sock_ops_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>   	case BPF_FUNC_tcp_sock:
+>   		return &bpf_tcp_sock_proto;
+>   #endif /* CONFIG_INET */
+> +	case BPF_FUNC_sock_ops_get_netns:
+> +		return &bpf_sock_ops_get_netns_proto;
+>   	default:
+>   		return bpf_base_func_proto(func_id);
+>   	}
+> 
 
