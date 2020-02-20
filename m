@@ -2,127 +2,222 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 756CE165EB9
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2020 14:27:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE91166340
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2020 17:38:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727989AbgBTN1a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Feb 2020 08:27:30 -0500
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:28457 "EHLO
+        id S1728354AbgBTQiC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Feb 2020 11:38:02 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:31970 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727967AbgBTN1a (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 20 Feb 2020 08:27:30 -0500
+        by vger.kernel.org with ESMTP id S1728134AbgBTQiB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 20 Feb 2020 11:38:01 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582205249;
+        s=mimecast20190719; t=1582216679;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=RzKpJW68gmeKH6pJZ0P2aLs3ozr7hD4rnZlMcjop9TI=;
-        b=XVHCx2xPrGaPFR50RzfOm5RkVbP3EtDTEpZG3fSei5ksRv5CImX+e4MJiV0ig1UzO10AtN
-        hkz+N5Mxh+/NBk7j2BOySST7TChvB+SrAdu9hjn/7IkJOZ15ZqPB2YmKUB5/jLb/D2BYIe
-        pBWdhUyaHuFgxN68yG4Fy/LHOIlzc+A=
+        bh=JPLN0ouhhg0blmU2M9hGNXZisumAqDkHlC1AmG0Un74=;
+        b=UTRyRkSdntoX2PFaw8n1gjamNUbZ6/G+3s5quOm1upUdl/qonAfcK39Hx+wEBqrVHiLmkK
+        o0xVN+Sav/sI1PVbfc2pll3gMU5wGj8rAn/KlGNdbIus8t41k1nZcwco78oC4mOtJwso4J
+        dm9Ft5lMZYk/nr2ciZ7RhCwtmeS+qzA=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-70-yGpSIfMNPRanWtLYT7dP4g-1; Thu, 20 Feb 2020 08:27:26 -0500
-X-MC-Unique: yGpSIfMNPRanWtLYT7dP4g-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+ us-mta-290-8c5kERyLNBuMfxt3ogkWqQ-1; Thu, 20 Feb 2020 11:37:55 -0500
+X-MC-Unique: 8c5kERyLNBuMfxt3ogkWqQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 94CBB108442D;
-        Thu, 20 Feb 2020 13:27:24 +0000 (UTC)
-Received: from localhost.localdomain (wsfd-netdev76.ntdv.lab.eng.bos.redhat.com [10.19.188.157])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 23647863A5;
-        Thu, 20 Feb 2020 13:27:21 +0000 (UTC)
-From:   Eelco Chaudron <echaudro@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, andriin@fb.com, toke@redhat.com
-Subject: [PATCH bpf-next v5 3/3] selftests/bpf: update xdp_bpf2bpf test to use new set_attach_target API
-Date:   Thu, 20 Feb 2020 13:26:45 +0000
-Message-Id: <158220520562.127661.14289388017034825841.stgit@xdp-tutorial>
-In-Reply-To: <158220517358.127661.1514720920408191215.stgit@xdp-tutorial>
-References: <158220517358.127661.1514720920408191215.stgit@xdp-tutorial>
-User-Agent: StGit/0.19
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F529477;
+        Thu, 20 Feb 2020 16:37:53 +0000 (UTC)
+Received: from carbon (ovpn-200-26.brq.redhat.com [10.40.200.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F41DF9051B;
+        Thu, 20 Feb 2020 16:37:42 +0000 (UTC)
+Date:   Thu, 20 Feb 2020 17:37:40 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     shuah <shuah@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel =?UTF-8?B?RMOtYXo=?= <daniel.diaz@linaro.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, brouer@redhat.com
+Subject: Re: Kernel 5.5.4 build fail for BPF-selftests with latest LLVM
+Message-ID: <20200220173740.7a3f9ad7@carbon>
+In-Reply-To: <4a26e6c6-500e-7b92-1e26-16e1e0233889@kernel.org>
+References: <20200219133012.7cb6ac9e@carbon>
+        <CAADnVQKQRKtDz0Boy=-cudc4eKGXB-yParGZv6qvYcQR4uMUQQ@mail.gmail.com>
+        <20200219180348.40393e28@carbon>
+        <CAEf4Bza9imKymHfv_LpSFE=kNB5=ZapTS3SCdeZsDdtrUrUGcg@mail.gmail.com>
+        <20200219192854.6b05b807@carbon>
+        <CAEf4BzaRAK6-7aCCVOA6hjTevKuxgvZZnHeVgdj_ZWNn8wibYQ@mail.gmail.com>
+        <20200219210609.20a097fb@carbon>
+        <CAEUSe79Vn8wr=BOh0RzccYij_snZDY=2XGmHmR494wsQBBoo5Q@mail.gmail.com>
+        <20200220002748.kpwvlz5xfmjm5fd5@ast-mbp>
+        <4a26e6c6-500e-7b92-1e26-16e1e0233889@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use the new bpf_program__set_attach_target() API in the xdp_bpf2bpf
-selftest so it can be referenced as an example on how to use it.
+On Wed, 19 Feb 2020 17:47:23 -0700
+shuah <shuah@kernel.org> wrote:
 
-Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
----
- .../testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c |   16 +++++++++++++-=
---
- .../testing/selftests/bpf/progs/test_xdp_bpf2bpf.c |    4 ++--
- 2 files changed, 15 insertions(+), 5 deletions(-)
+> On 2/19/20 5:27 PM, Alexei Starovoitov wrote:
+> > On Wed, Feb 19, 2020 at 03:59:41PM -0600, Daniel D=C3=ADaz wrote: =20
+> >>>
+> >>> When I download a specific kernel release, how can I know what LLVM
+> >>> git-hash or version I need (to use BPF-selftests)? =20
+> >=20
+> > as discussed we're going to add documentation-like file that will
+> > list required commits in tools.
+> > This will be enforced for future llvm/pahole commits.
+> >  =20
+> >>> Do you think it is reasonable to require end-users to compile their o=
+wn
+> >>> bleeding edge version of LLVM, to use BPF-selftests? =20
+> >=20
+> > absolutely. =20
+>=20
+> + linux-kselftest@vger.kernel.org
+>=20
+> End-users in this context are users and not necessarily developers.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c b/tools=
-/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
-index 6b56bdc73ebc..4ba011031d4c 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
-@@ -14,7 +14,7 @@ void test_xdp_bpf2bpf(void)
- 	struct test_xdp *pkt_skel =3D NULL;
- 	struct test_xdp_bpf2bpf *ftrace_skel =3D NULL;
- 	struct vip key4 =3D {.protocol =3D 6, .family =3D AF_INET};
--	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
-+	struct bpf_program *prog;
-=20
- 	/* Load XDP program to introspect */
- 	pkt_skel =3D test_xdp__open_and_load();
-@@ -27,11 +27,21 @@ void test_xdp_bpf2bpf(void)
- 	bpf_map_update_elem(map_fd, &key4, &value4, 0);
-=20
- 	/* Load trace program */
--	opts.attach_prog_fd =3D pkt_fd,
--	ftrace_skel =3D test_xdp_bpf2bpf__open_opts(&opts);
-+	ftrace_skel =3D test_xdp_bpf2bpf__open();
- 	if (CHECK(!ftrace_skel, "__open", "ftrace skeleton failed\n"))
- 		goto out;
-=20
-+	/* Demonstrate the bpf_program__set_attach_target() API rather than
-+	 * the load with options, i.e. opts.attach_prog_fd.
-+	 */
-+	prog =3D ftrace_skel->progs.trace_on_entry;
-+	bpf_program__set_expected_attach_type(prog, BPF_TRACE_FENTRY);
-+	bpf_program__set_attach_target(prog, pkt_fd, "_xdp_tx_iptunnel");
-+
-+	prog =3D ftrace_skel->progs.trace_on_exit;
-+	bpf_program__set_expected_attach_type(prog, BPF_TRACE_FEXIT);
-+	bpf_program__set_attach_target(prog, pkt_fd, "_xdp_tx_iptunnel");
-+
- 	err =3D test_xdp_bpf2bpf__load(ftrace_skel);
- 	if (CHECK(err, "__load", "ftrace skeleton failed\n"))
- 		goto out;
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c b/tools=
-/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c
-index cb8a04ab7a78..b840fc9e3ed5 100644
---- a/tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c
-@@ -28,7 +28,7 @@ struct xdp_buff {
- } __attribute__((preserve_access_index));
-=20
- __u64 test_result_fentry =3D 0;
--SEC("fentry/_xdp_tx_iptunnel")
-+SEC("fentry/FUNC")
- int BPF_PROG(trace_on_entry, struct xdp_buff *xdp)
- {
- 	test_result_fentry =3D xdp->rxq->dev->ifindex;
-@@ -36,7 +36,7 @@ int BPF_PROG(trace_on_entry, struct xdp_buff *xdp)
- }
-=20
- __u64 test_result_fexit =3D 0;
--SEC("fexit/_xdp_tx_iptunnel")
-+SEC("fexit/FUNC")
- int BPF_PROG(trace_on_exit, struct xdp_buff *xdp, int ret)
- {
- 	test_result_fexit =3D ret;
+I agree.  And I worry that we are making it increasingly hard for
+non-developer users.
+
+
+> > If a developer wants to send a patch they must run all selftests and
+> > all of them must pass in their environment.
+> > "but I'm adding a tracing feature and don't care about networking tests
+> > failing"... is not acceptable. =20
+>=20
+> This is a reasonable expectation when a developers sends bpf patches.
+
+Sure. I have several versions on LLVM that I've compiled manually.
+
+> >  =20
+> >>> I do hope that some end-users of BPF-selftests will be CI-systems.
+> >>> That also implies that CI-system maintainers need to constantly do
+> >>> "latest built from sources" of LLVM git-tree to keep up.  Is that a
+> >>> reasonable requirement when buying a CI-system in the cloud? =20
+> >=20
+> > "buying CI-system in the cloud" ?
+> > If I could buy such system I would pay for it out of my own pocket to s=
+ave
+> > maintainer's and developer's time.
+
+And Daniel D=C3=ADaz want to provide his help below (to tests it on arch
+that you likely don't even have access to). That sounds like a good
+offer, and you don't even have to pay.
+
+> >  =20
+> >> We [1] are end users of kselftests and many other test suites [2]. We
+> >> run all of our testing on every git-push on linux-stable-rc, mainline,
+> >> and linux-next -- approximately 1 million tests per week. We have a
+> >> dedicated engineering team looking after this CI infrastructure and
+> >> test results, and as such, I can wholeheartedly echo Jesper's
+> >> sentiment here: We would really like to help kernel maintainers and
+> >> developers by automatically testing their code in real hardware, but
+> >> the BPF kselftests are difficult to work with from a CI perspective.
+> >> We have caught and reported [3] many [4] build [5] failures [6] in the
+> >> past for libbpf/Perf, but building is just one of the pieces. We are
+> >> unable to run the entire BPF kselftests because only a part of the
+> >> code builds, so our testing is very limited there.
+> >>
+> >> We hope that this situation can be improved and that our and everyone
+> >> else's automated testing can help you guys too. For this to work out,
+> >> we need some help. =20
+> >  =20
+>=20
+> It would be helpful understand what "help" is in this context.
+>=20
+> > I don't understand what kind of help you need. Just install the
+> > latest tools. =20
+
+I admire that you want to push *everybody* forward to use the latest
+LLVM, but saying latest is LLVM devel git tree HEAD is too extreme.
+I can support saying latest LLVM release is required.
+
+As soon as your LLVM patches are accepted into llvm-git-tree, you will
+add some BPF selftests that util this. Then CI-systems pull latest
+bpf-next they will start to fail to compile BPF-selftests, and CI
+stops.  Now you want to force CI-system maintainer to recompile LLVM
+from git.  This will likely take some time.  Until that happens
+CI-system doesn't catch stuff. E.g. I really want the ARM tests that
+Linaro can run for us (which isn't run before you apply patches...).
+
+
+> What would be helpful is to write bpf tests such that older tests that
+> worked on older llvm versions continue to work and with some indication
+> on which tests require new bleeding edge tools.
+>=20
+> > Both the latest llvm and the latest pahole are required. =20
+>=20
+> It would be helpful if you can elaborate why latest tools are a
+> requirement.
+>=20
+> > If by 'help' you mean to tweak selftests to skip tests then it's a nack.
+> > We have human driven CI. Every developer must run selftests/bpf before
+> > emailing the patches. Myself and Daniel run them as well before applyin=
+g.
+> > These manual runs is the only thing that keeps bpf tree going.
+> > If selftests get to skip tests humans will miss those errors.
+> > When I don't see '0 SKIPPED, 0 FAILED' I go and investigate.
+> > Anything but zero is a path to broken kernels.
+> >=20
+> > Imagine the tests would get skipped when pahole is too old.
+> > That would mean all of the kernel features from year 2019
+> > would get skipped. Is there a point of running such selftests?
+> > I think the value is not just zero. The value is negative.
+> > Such selftests that run old stuff would give false believe
+> > that they do something meaningful.
+> > "but CI can do build only tests"... If 'helping' such CI means hurting =
+the
+> > key developer/maintainer workflow such CI is on its own.
+> >  =20
+>=20
+> Skipping tests will be useless. I am with you on that. However,
+> figuring out how to maintain some level of backward compatibility
+> to run at least older tests and warn users to upgrade would be
+> helpful.
+
+What I propose is that a BPF-selftest that use a new LLVM feature,
+should return FAIL (or perhaps SKIP), when it is compiled with say one
+release old LLVM. This will allow new-tests to show up in CI-systems
+reports as FAIL, and give everybody breathing room to upgrade their LLVM
+compiler.
+
+> I suspect currently users are ignoring bpf failures because they
+> are unable to keep up with the requirement to install newer tools
+> to run the tests. This isn't great either.
+
+Yes, my worry is also that we are simply making it too difficult for
+non-developer users to run these tests.  And I specifically want to
+attract CI-systems to run these.  And especially Linaro, who have
+dedicated engineering team looking after their CI infrastructure, and
+they explicitly in this email confirm my worry.
+
+
+> Users that care are sharing their pain to see if they can get some
+> help or explanation on why new tools are required every so often.
+> I don't think everybody understands why. :)
+
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
