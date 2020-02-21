@@ -2,133 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6EF167C1D
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 12:29:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD80167C66
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 12:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727629AbgBUL3d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Feb 2020 06:29:33 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:46345 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727150AbgBUL3d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Feb 2020 06:29:33 -0500
-Received: by mail-wr1-f65.google.com with SMTP id z7so1605939wrl.13
-        for <bpf@vger.kernel.org>; Fri, 21 Feb 2020 03:29:32 -0800 (PST)
+        id S1727833AbgBULpD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Feb 2020 06:45:03 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:37850 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726976AbgBULpD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Feb 2020 06:45:03 -0500
+Received: by mail-wm1-f68.google.com with SMTP id a6so1458763wme.2
+        for <bpf@vger.kernel.org>; Fri, 21 Feb 2020 03:45:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ISb1ahsdqyDpNndMm9k4MryKRAmuNFLa5XvM/5lEHrM=;
-        b=dpFq32bbS0i4OObcZqRN90dmE8bmajzsSxDy61W8dRwMlROs5qvrRFewu5bvvNGQwH
-         evC7XBjXob68qVSuMV/FMf4yN3XuF28WTjpUOFuriHFkV7abah/OQ4jbUb9sPFzDwGYB
-         yU7wKUd9dWBI7g+Mq4OI88Hj3IWl+IpYk2PP1N4JGVytif996cxOMj8SU4B7cTewf8aZ
-         AXYvPiHn3UbgKBkRwxBXF2pqjJfMpUxF0nTh5UwWjwZuE2gzSKEcWpawwR/7TcZ68FYs
-         a1FngtGWi1XoJwbhc1fz2QPf8MHto/MwLRz6drRhsvH+kkCAaYBglHURSEsCVdyJ1RSy
-         nH2w==
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=DXupJrMnAWhan34uKDapRUBUNT/taBkKhFiSrKwkXL4=;
+        b=bmN4wS6ug4tZIN6CmBEpm3KsNOT0qg+Ky+IASGb9XYwTAZoP54XjF/fDF1rcvl88KN
+         6ROSbXOmz9HDxO0an5o7/vD05vhM+CPCteyI9eAgdntihtdQchQ/Ae9fY7N8yLpl4hHJ
+         93Wj+F3I1yfKvMQHFpR1/BKVkP8GGQB1IBDlk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ISb1ahsdqyDpNndMm9k4MryKRAmuNFLa5XvM/5lEHrM=;
-        b=dsVMK2+cgXH0w3MsgRNg6Rc+Vk5nSxUbg7PxHHTbrpxPCas/MzITtAAmofd6CeWnuX
-         wfjbKxqmuty7x9lpTm1F/U4pmdU9pq9/GrbDcw6g7CwEcUxjIMNnsGtN/pN2Irno61te
-         s9CmuculnSN5/Q8VYah9txVrInhtOAO8vw1FkGhHHYZMOx+sGzrpmxMDKyBMVL+nKhDR
-         lq5JCrS90B1Dcp6RuwDTGxugsIiAxyweSfFBu15cFV+hgLVFy1Ni2VbRfXH0JHMVxvkL
-         iQpLLdq/8pPcNUxDS/so0M99I9bBGfyJdH2Vt7Grkesh3RM6gEe9BgiUyPlpn/O/eFmE
-         NOog==
-X-Gm-Message-State: APjAAAVMwpuGAzZIY9VNzRPCneEhMOL81o98fgEOpt1WU/fm5DOZEZmP
-        eK/Q8jvfT5ofTYlSyT4mCrkaEpxNwTzPQQ==
-X-Google-Smtp-Source: APXvYqwo/wcsiFTfCaz7K7GiNYnP+aK8Ly6FiMLPGG1YRCamaaEnYkndZlGCFD7DwIS5uBFCL1v9wg==
-X-Received: by 2002:a05:6000:10c:: with SMTP id o12mr49019570wrx.106.1582284571520;
-        Fri, 21 Feb 2020 03:29:31 -0800 (PST)
-Received: from [192.168.1.23] ([91.143.66.155])
-        by smtp.gmail.com with ESMTPSA id b13sm3838699wrq.48.2020.02.21.03.29.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Feb 2020 03:29:31 -0800 (PST)
-Subject: Re: [PATCH bpf-next v2 4/5] bpftool: Update bash completion for
- "bpftool feature" command
-To:     Michal Rostecki <mrostecki@opensuse.org>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-References: <20200221031702.25292-1-mrostecki@opensuse.org>
- <20200221031702.25292-5-mrostecki@opensuse.org>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <7e37246c-a154-1cd6-fbae-ed29497903e8@isovalent.com>
-Date:   Fri, 21 Feb 2020 11:29:30 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=DXupJrMnAWhan34uKDapRUBUNT/taBkKhFiSrKwkXL4=;
+        b=HKQtKdL/YmwMQs644rl3UkjvX73juCxlOEYTZzZrTMal4hEKCnmq5t5TyansZNmjY6
+         ZPVEQOEdTpPC1V7GmE9XbqT/W/H28RKCklU67hah/019FBYLnAor2d59wN2O028oa/3B
+         gLMCmphfvyk2mj3uiyBvMVMLV2Gamhb/h3HsQJH8Rty+aSKq3TNUOOTV4iG0+dG5f20p
+         NrY8gMwqlXnFu5PidccLKqvRurRymKaUWihYoXQSDNahNMZju3LK/jR69d0nhkeR/ScY
+         KSLbem0ItFYYyq5PShHQQgT0AfPuGbwEuj7PSde9Dp2yLsnAz0ZKHnxRcb/hyWa3RwQr
+         wrww==
+X-Gm-Message-State: APjAAAWiAvohAI9eb9mpmmbMJno+pnsM8TJ/99flh1QK5fvCAWBsKEV4
+        1R70fzlDO3lw5BnmCtQfLn0FUg==
+X-Google-Smtp-Source: APXvYqx5RSeRzqmz9bTDHGFwL+wWF+Q6B9vUZec/Wf66az4Xzyek9i8FfG2/QboGFgV60Lo7nNl5jQ==
+X-Received: by 2002:a7b:c5cd:: with SMTP id n13mr3379938wmk.172.1582285500797;
+        Fri, 21 Feb 2020 03:45:00 -0800 (PST)
+Received: from google.com ([2a00:79e0:42:204:8a21:ba0c:bb42:75ec])
+        by smtp.gmail.com with ESMTPSA id v16sm3336675wml.11.2020.02.21.03.45.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Feb 2020 03:45:00 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Fri, 21 Feb 2020 12:44:58 +0100
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     KP Singh <kpsingh@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v4 3/8] bpf: lsm: provide attachment points for
+ BPF LSM programs
+Message-ID: <20200221114458.GA56944@google.com>
+References: <20200220175250.10795-1-kpsingh@chromium.org>
+ <20200220175250.10795-4-kpsingh@chromium.org>
+ <0ef26943-9619-3736-4452-fec536a8d169@schaufler-ca.com>
 MIME-Version: 1.0
-In-Reply-To: <20200221031702.25292-5-mrostecki@opensuse.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0ef26943-9619-3736-4452-fec536a8d169@schaufler-ca.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-02-21 04:16 UTC+0100 ~ Michal Rostecki <mrostecki@opensuse.org>
-> Update bash completion for "bpftool feature" command with the new
-> argument: "full".
+On 20-Feb 15:49, Casey Schaufler wrote:
+> On 2/20/2020 9:52 AM, KP Singh wrote:
+> > From: KP Singh <kpsingh@google.com>
 > 
-> Signed-off-by: Michal Rostecki <mrostecki@opensuse.org>
-> ---
->   tools/bpf/bpftool/bash-completion/bpftool | 27 ++++++++++++++++-------
->   1 file changed, 19 insertions(+), 8 deletions(-)
+> Sorry about the heavy list pruning - the original set
+> blows thunderbird up.
 > 
-> diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-> index 754d8395e451..f2bcc4bacee2 100644
-> --- a/tools/bpf/bpftool/bash-completion/bpftool
-> +++ b/tools/bpf/bpftool/bash-completion/bpftool
-> @@ -981,14 +981,25 @@ _bpftool()
->           feature)
->               case $command in
->                   probe)
-> -                    [[ $prev == "prefix" ]] && return 0
-> -                    if _bpftool_search_list 'macros'; then
-> -                        COMPREPLY+=( $( compgen -W 'prefix' -- "$cur" ) )
-> -                    else
-> -                        COMPREPLY+=( $( compgen -W 'macros' -- "$cur" ) )
-> -                    fi
-> -                    _bpftool_one_of_list 'kernel dev'
-> -                    return 0
-> +                    case $prev in
-> +                        $command)
-> +                            COMPREPLY+=( $( compgen -W 'kernel dev full macros' -- \
-> +                                "$cur" ) )
-> +                            return 0
-> +                            ;;
-> +                        prefix)
-> +                            return 0
-> +                            ;;
-> +                        macros)
-> +                            COMPREPLY+=( $( compgen -W 'prefix' -- "$cur" ) )
-> +                            return 0
-
-I have not tested, but I think because of the "return 0" this will 
-propose only "prefix" after "macros". But "kernel" or "dev" should also 
-be in the list.
-
-Maybe just add "_bpftool_once_attr 'full'" under the 
-"_bpftool_one_of_list 'kernel dev'" instead of changing to the "case 
-$prev in" structure?
-
-> +                            ;;
-> +                        *)
-> +                            _bpftool_one_of_list 'kernel dev'
-> +                            _bpftool_once_attr 'full macros'
-> +                            return 0
-> +                            ;;
-> +                    esac
->                       ;;
->                   *)
->                       [[ $prev == $object ]] && \
+> >
+> > The BPF LSM programs are implemented as fexit trampolines to avoid the
+> > overhead of retpolines. These programs cannot be attached to security_*
+> > wrappers as there are quite a few security_* functions that do more than
+> > just calling the LSM callbacks.
+> >
+> > This was discussed on the lists in:
+> >
+> >   https://lore.kernel.org/bpf/20200123152440.28956-1-kpsingh@chromium.org/T/#m068becce588a0cdf01913f368a97aea4c62d8266
+> >
+> > Adding a NOP callback after all the static LSM callbacks are called has
+> > the following benefits:
+> >
+> > - The BPF programs run at the right stage of the security_* wrappers.
+> > - They run after all the static LSM hooks allowed the operation,
+> >   therefore cannot allow an action that was already denied.
 > 
+> I still say that the special call-out to BPF is unnecessary.
+> I remain unconvinced by the arguments. You aren't doing anything
+> so special that the general mechanism won't work.
 
+The existing mechanism would work functionally, but the cost of an
+indirect call for all the hooks, even those that are completely unused
+is not really acceptable for KRSI’s use cases. It’s easy to avoid and
+I do think that what we’re doing here (with hooks being defined at
+runtime) has significant functional differences from existing LSMs.
+
+- KP
+
+> 
+> >
+> > There are some hooks which do not call call_int_hooks or
+> > call_void_hooks. It's not possible to call the bpf_lsm_* functions
+> > without checking if there is BPF LSM program attached to these hooks.
+> > This is added further in a subsequent patch. For now, these hooks are
+> > marked as NO_BPF (i.e. attachment of BPF programs is not possible).
+> >
+
+[...]
