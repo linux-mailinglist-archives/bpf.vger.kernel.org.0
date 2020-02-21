@@ -2,147 +2,286 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E30F166E6F
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 05:20:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 174DF166E76
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 05:23:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729691AbgBUEUh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Feb 2020 23:20:37 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:3572 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729280AbgBUEUh (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 20 Feb 2020 23:20:37 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01L4KM87016759;
-        Thu, 20 Feb 2020 20:20:23 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=HlGBg6f3POlox6u581Dou65zmViAqTSHc1qphkgr2fE=;
- b=dtABED6rO1FPVdmyhT1r/s+HDHPnLMXfwGjIzTDBPHnJHXGtW3UYgnfyONFf4p+qr5dc
- mbQruWteyRi1LtAdEFCx0cvlVWShGaxsQ2GINskAWogJoWzwj4M3f+y1AGstxYxe4gDt
- T1Fp3MP3YhR3mPxZ/qTj8PPR95NVAYIQJ6o= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2y9y9njcqc-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 20 Feb 2020 20:20:23 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 20 Feb 2020 20:20:06 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fRFUb71GX1ZcHIoCZBYL4CtJePDjTU9ng07J3oSALQw+l8hjGedMvU/F2RKDtOja7tWgK9VB7fUHfjT/6RtqF8/X4ZE6r0KY1cpLDV0p5n11fyqhQyf4nfTsdBiKcqcY94YaG9M4prIP+JEUvqJVtVpcLxfcgqrwrbh26btCreHSIkC26Nm1uB9XGrrSy29+l2nkn3WJsSUxjBNomcoEyYvADxMkFkWFpmG9UD7hcwLGgMo/7qk6EqHrNieWKUd42SirLyc6GZ+qMKRwm0/kq1q7E81YYmsHWXp9SS0XpTYQONqImzaIUBtbVdD+yqi2gDqDifLsCVUSUFzJG65mew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HlGBg6f3POlox6u581Dou65zmViAqTSHc1qphkgr2fE=;
- b=jZ5Nx/NatLuINVyFbh9azVSXROKwHQ0hz660olAMYWsNpIo9CbZ/nAYp3I+rB9R8Sxml4IIXghVxPEL/95dnvUHLZbuF/lk5wCHp4/XZgzARDoYUlf9ZzHUcUELkSAgc4+jjn08iE14VKgCLFX5dLHnhBSUnsziDCDnKnKu7zwaPQtMgzHtSUsQ8WqMuSaitnzphi+mi/xsT0RYf05auev7X8b7kcnWOEhL3oAZpk8H5BXcUDkUB2z0gVYXgfEg1lp7v3gPiRcwR/hZaEySXnF7tWgHq8yjW4wxWKl9UwoFNcyabqDoppk776wngTxWLUn+Cdn8ETeW569lPFi7NdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HlGBg6f3POlox6u581Dou65zmViAqTSHc1qphkgr2fE=;
- b=MY3UudNqMTmna8zmSMupL52cDnxlMWhLJmfmM5CLS0SwNAmOJ/jI3DpwqMVnj2s0jeFTce4o1++9et44Nhza+9SYLP3tP12sP5rfqHDz7sX9VQ91OPOu96Y28q0lpcJ7dFuo9VgpfNvZfDCS7kKejXoanSqKtNqousOER7kyQnc=
-Received: from MW3PR15MB3753.namprd15.prod.outlook.com (20.181.52.17) by
- MW3PR15MB3867.namprd15.prod.outlook.com (20.181.49.72) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2729.25; Fri, 21 Feb 2020 04:20:06 +0000
-Received: from MW3PR15MB3753.namprd15.prod.outlook.com
- ([fe80::5956:e4d6:26a3:343e]) by MW3PR15MB3753.namprd15.prod.outlook.com
- ([fe80::5956:e4d6:26a3:343e%7]) with mapi id 15.20.2750.016; Fri, 21 Feb 2020
- 04:20:06 +0000
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix trampoline_count clean up
- logic
-To:     Song Liu <song@kernel.org>
-CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kernel Team <kernel-team@fb.com>, Jiri Olsa <jolsa@kernel.org>
-References: <20200220230546.769250-1-andriin@fb.com>
- <CAPhsuW60BM0JjTBLyE3mYea+W-5CFPouveMfEwkbMEwQUbNbZg@mail.gmail.com>
-From:   Andrii Nakryiko <andriin@fb.com>
-Message-ID: <c7df7db0-0c47-37a5-0764-ee45864f7e55@fb.com>
-Date:   Thu, 20 Feb 2020 20:20:03 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.5.0
-In-Reply-To: <CAPhsuW60BM0JjTBLyE3mYea+W-5CFPouveMfEwkbMEwQUbNbZg@mail.gmail.com>
+        id S1729649AbgBUEX4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Feb 2020 23:23:56 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:40728 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729280AbgBUEX4 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 20 Feb 2020 23:23:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1582259034;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9uOXUdcAkm4uECVzyjBcZ9Jj9pBC2hIUjFUbk2PSZpc=;
+        b=ebRORc62Af/s8ghmXedaRaB1V05Ms3u8pXxH5h4QqtrYmTZWxnd3IhK544qu26Pj+XTvFx
+        qjgK+Ok2oLjuEDML/smAxZuplEDoXE/tUYw6PAFOq2GQRBXRqQuym3oOlC0jPaLvFUP1e0
+        LlNjnxWpd5UO+u8TU0eIx9q2dCmQaLI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-292-iZ-dekTJOpmppp2BwkCNNA-1; Thu, 20 Feb 2020 23:23:47 -0500
+X-MC-Unique: iZ-dekTJOpmppp2BwkCNNA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EE0BF189F766;
+        Fri, 21 Feb 2020 04:23:44 +0000 (UTC)
+Received: from [10.72.13.208] (ovpn-13-208.pek2.redhat.com [10.72.13.208])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A82835DA76;
+        Fri, 21 Feb 2020 04:23:33 +0000 (UTC)
+Subject: Re: [PATCH bpf-next v5] virtio_net: add XDP meta data support
+To:     Yuya Kusakabe <yuya.kusakabe@gmail.com>
+Cc:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com,
+        netdev@vger.kernel.org, songliubraving@fb.com, yhs@fb.com
+References: <0c5eaba2-dd5a-fc3f-0e8f-154f7ad52881@redhat.com>
+ <20200220085549.269795-1-yuya.kusakabe@gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <5bf11065-6b85-8253-8548-683c01c98ac1@redhat.com>
+Date:   Fri, 21 Feb 2020 12:23:31 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200220085549.269795-1-yuya.kusakabe@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWHPR17CA0096.namprd17.prod.outlook.com
- (2603:10b6:300:c2::34) To MW3PR15MB3753.namprd15.prod.outlook.com
- (2603:10b6:303:50::17)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:2103:51:fde8:f2bb:1332] (2620:10d:c090:400::5:c0d0) by MWHPR17CA0096.namprd17.prod.outlook.com (2603:10b6:300:c2::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2750.17 via Frontend Transport; Fri, 21 Feb 2020 04:20:05 +0000
-X-Originating-IP: [2620:10d:c090:400::5:c0d0]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 225cb21f-f9e7-4685-d26a-08d7b6855447
-X-MS-TrafficTypeDiagnostic: MW3PR15MB3867:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW3PR15MB38672FA64B3633B9A2AF2615C6120@MW3PR15MB3867.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-Forefront-PRVS: 0320B28BE1
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(39860400002)(136003)(396003)(366004)(346002)(376002)(189003)(199004)(52116002)(66556008)(2616005)(66476007)(54906003)(316002)(478600001)(53546011)(31686004)(66946007)(186003)(86362001)(31696002)(16526019)(6916009)(8936002)(36756003)(6486002)(8676002)(5660300002)(81156014)(2906002)(4326008)(81166006);DIR:OUT;SFP:1102;SCL:1;SRVR:MW3PR15MB3867;H:MW3PR15MB3753.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-Received-SPF: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZJQ8A5OII+5jAmQJQn0MgW/1hTPpSNwi8FSEouM5xFxMHXJwqeKIAJn4NNJtzyC9LtduiFgBfTyATZOXkNbSlshhmNmMPfOWi2RdYXpZKhZRFGWhiuzCK9ftkHaTyx/7LY3dic/nN/czj6uEKnEpvrfnr7z52dt380bAJTe1jguNIuWObC3Cx2197yF0Ltnaa1cP2egEMlTylID2d2lvTwpB9vFoUMGe3aMjHfFMroq7XsfaGSap1LpVmDYQwf81zowMxtp6prfKM4Gf4dutGdzsLjmApyhcqpxaIVEzLzIlCWLm3Q7+2Cn9c3lHOxTY/SbtkRfarkimaonbpVX8WhYfWFkOsF3WTeRTRsy2O0GZLQoWIkgSsAq3GK/D8zrzVATIegoxfDfMlzpjSNNEImzyw7awQ8wnvJRQeZE4gV/Vcr+x4tbU2eRv2xnFGI0n
-X-MS-Exchange-AntiSpam-MessageData: QYgh03iyqD/i6vpSa4DNcESSHBmQSpS+IqC8V8m0e52GjffcKkAhJuYUIQ72oePwviCnwZlpF0/gBz+Ky4/ojVJnu6O+hvyZuyogMF1yr5NBt33fMJLyJSSeujFGLBhmTC2HNOuXgz94iWz2ZR3/0sLEMXn3Mk2Aolkiu/DYd0E9QWvotQv1S6REiOv8tv8q
-X-MS-Exchange-CrossTenant-Network-Message-Id: 225cb21f-f9e7-4685-d26a-08d7b6855447
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2020 04:20:05.8795
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uNbB5nr6CVyoT5bLcH42kPIKUKPmgzht0XOymuGkWJyAb1SBq2mgRzIOI/LJfnhD
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3867
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-02-20_19:2020-02-19,2020-02-20 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- priorityscore=1501 lowpriorityscore=0 suspectscore=0 malwarescore=0
- mlxlogscore=999 adultscore=0 bulkscore=0 spamscore=0 impostorscore=0
- mlxscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002210029
-X-FB-Internal: deliver
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/20/20 6:06 PM, Song Liu wrote:
-> On Thu, Feb 20, 2020 at 3:07 PM Andrii Nakryiko <andriin@fb.com> wrote:
->>
->> Libbpf's Travis CI tests caught this issue. Ensure bpf_link and bpf_object
->> clean up is performed correctly.
->>
->> Fixes: d633d57902a5 ("selftest/bpf: Add test for allowed trampolines count")
->> Cc: Jiri Olsa <jolsa@kernel.org>
->> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->> ---
->>   .../bpf/prog_tests/trampoline_count.c         | 25 +++++++++++++------
->>   1 file changed, 18 insertions(+), 7 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
->> index 1f6ccdaed1ac..781c8d11604b 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
->> @@ -55,31 +55,40 @@ void test_trampoline_count(void)
->>          /* attach 'allowed' 40 trampoline programs */
->>          for (i = 0; i < MAX_TRAMP_PROGS; i++) {
->>                  obj = bpf_object__open_file(object, NULL);
->> -               if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj)))
->> +               if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj))) {
->> +                       obj = NULL;
-> 
-> I think we don't need obj and link in cleanup? Did I miss anything?
-> 
 
-We do set obj below (line 87) after this loop, so need to clean it up as 
-well. As for link, yeah, technically link doesn't have to be set to 
-NULL, but I kind of did it for completeness without thinking too much.
+On 2020/2/20 =E4=B8=8B=E5=8D=884:55, Yuya Kusakabe wrote:
+> Implement support for transferring XDP meta data into skb for
+> virtio_net driver; before calling into the program, xdp.data_meta point=
+s
+> to xdp.data, where on program return with pass verdict, we call
+> into skb_metadata_set().
+>
+> Tested with the script at
+> https://github.com/higebu/virtio_net-xdp-metadata-test.
+>
+> Fixes: de8f3a83b0a0 ("bpf: add meta pointer for direct access")
+
+
+I'm not sure this is correct since virtio-net claims to not support=20
+metadata by calling xdp_set_data_meta_invalid()?
+
+
+> Signed-off-by: Yuya Kusakabe <yuya.kusakabe@gmail.com>
+> ---
+> v5:
+>   - page_to_skb(): copy vnet header if hdr_valid without checking metas=
+ize.
+>   - receive_small(): do not copy vnet header if xdp_prog is availavle.
+>   - __virtnet_xdp_xmit_one(): remove the xdp_set_data_meta_invalid().
+>   - improve comments.
+> v4:
+>   - improve commit message
+> v3:
+>   - fix preserve the vnet header in receive_small().
+> v2:
+>   - keep copy untouched in page_to_skb().
+>   - preserve the vnet header in receive_small().
+>   - fix indentation.
+> ---
+>   drivers/net/virtio_net.c | 54 ++++++++++++++++++++++++---------------=
+-
+>   1 file changed, 33 insertions(+), 21 deletions(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 2fe7a3188282..4ea0ae60c000 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -371,7 +371,7 @@ static struct sk_buff *page_to_skb(struct virtnet_i=
+nfo *vi,
+>   				   struct receive_queue *rq,
+>   				   struct page *page, unsigned int offset,
+>   				   unsigned int len, unsigned int truesize,
+> -				   bool hdr_valid)
+> +				   bool hdr_valid, unsigned int metasize)
+>   {
+>   	struct sk_buff *skb;
+>   	struct virtio_net_hdr_mrg_rxbuf *hdr;
+> @@ -393,6 +393,7 @@ static struct sk_buff *page_to_skb(struct virtnet_i=
+nfo *vi,
+>   	else
+>   		hdr_padded_len =3D sizeof(struct padded_vnet_hdr);
+>  =20
+> +	/* hdr_valid means no XDP, so we can copy the vnet header */
+>   	if (hdr_valid)
+>   		memcpy(hdr, p, hdr_len);
+>  =20
+> @@ -405,6 +406,11 @@ static struct sk_buff *page_to_skb(struct virtnet_=
+info *vi,
+>   		copy =3D skb_tailroom(skb);
+>   	skb_put_data(skb, p, copy);
+>  =20
+> +	if (metasize) {
+> +		__skb_pull(skb, metasize);
+> +		skb_metadata_set(skb, metasize);
+> +	}
+> +
+>   	len -=3D copy;
+>   	offset +=3D copy;
+>  =20
+> @@ -450,10 +456,6 @@ static int __virtnet_xdp_xmit_one(struct virtnet_i=
+nfo *vi,
+>   	struct virtio_net_hdr_mrg_rxbuf *hdr;
+>   	int err;
+>  =20
+> -	/* virtqueue want to use data area in-front of packet */
+> -	if (unlikely(xdpf->metasize > 0))
+> -		return -EOPNOTSUPP;
+> -
+>   	if (unlikely(xdpf->headroom < vi->hdr_len))
+>   		return -EOVERFLOW;
+>  =20
+> @@ -644,6 +646,7 @@ static struct sk_buff *receive_small(struct net_dev=
+ice *dev,
+>   	unsigned int delta =3D 0;
+>   	struct page *xdp_page;
+>   	int err;
+> +	unsigned int metasize =3D 0;
+>  =20
+>   	len -=3D vi->hdr_len;
+>   	stats->bytes +=3D len;
+> @@ -683,8 +686,8 @@ static struct sk_buff *receive_small(struct net_dev=
+ice *dev,
+>  =20
+>   		xdp.data_hard_start =3D buf + VIRTNET_RX_PAD + vi->hdr_len;
+>   		xdp.data =3D xdp.data_hard_start + xdp_headroom;
+> -		xdp_set_data_meta_invalid(&xdp);
+>   		xdp.data_end =3D xdp.data + len;
+> +		xdp.data_meta =3D xdp.data;
+>   		xdp.rxq =3D &rq->xdp_rxq;
+>   		orig_data =3D xdp.data;
+>   		act =3D bpf_prog_run_xdp(xdp_prog, &xdp);
+> @@ -695,6 +698,7 @@ static struct sk_buff *receive_small(struct net_dev=
+ice *dev,
+>   			/* Recalculate length in case bpf program changed it */
+>   			delta =3D orig_data - xdp.data;
+>   			len =3D xdp.data_end - xdp.data;
+> +			metasize =3D xdp.data - xdp.data_meta;
+>   			break;
+>   		case XDP_TX:
+>   			stats->xdp_tx++;
+> @@ -735,11 +739,14 @@ static struct sk_buff *receive_small(struct net_d=
+evice *dev,
+>   	}
+>   	skb_reserve(skb, headroom - delta);
+>   	skb_put(skb, len);
+> -	if (!delta) {
+> +	if (!xdp_prog) {
+>   		buf +=3D header_offset;
+>   		memcpy(skb_vnet_hdr(skb), buf, vi->hdr_len);
+>   	} /* keep zeroed vnet hdr since packet was changed by bpf */
+
+
+I prefer to make this an independent patch and cc stable.
+
+Other looks good.
+
+Thanks
+
+
+>  =20
+> +	if (metasize)
+> +		skb_metadata_set(skb, metasize);
+> +
+>   err:
+>   	return skb;
+>  =20
+> @@ -760,8 +767,8 @@ static struct sk_buff *receive_big(struct net_devic=
+e *dev,
+>   				   struct virtnet_rq_stats *stats)
+>   {
+>   	struct page *page =3D buf;
+> -	struct sk_buff *skb =3D page_to_skb(vi, rq, page, 0, len,
+> -					  PAGE_SIZE, true);
+> +	struct sk_buff *skb =3D
+> +		page_to_skb(vi, rq, page, 0, len, PAGE_SIZE, true, 0);
+>  =20
+>   	stats->bytes +=3D len - vi->hdr_len;
+>   	if (unlikely(!skb))
+> @@ -793,6 +800,7 @@ static struct sk_buff *receive_mergeable(struct net=
+_device *dev,
+>   	unsigned int truesize;
+>   	unsigned int headroom =3D mergeable_ctx_to_headroom(ctx);
+>   	int err;
+> +	unsigned int metasize =3D 0;
+>  =20
+>   	head_skb =3D NULL;
+>   	stats->bytes +=3D len - vi->hdr_len;
+> @@ -839,8 +847,8 @@ static struct sk_buff *receive_mergeable(struct net=
+_device *dev,
+>   		data =3D page_address(xdp_page) + offset;
+>   		xdp.data_hard_start =3D data - VIRTIO_XDP_HEADROOM + vi->hdr_len;
+>   		xdp.data =3D data + vi->hdr_len;
+> -		xdp_set_data_meta_invalid(&xdp);
+>   		xdp.data_end =3D xdp.data + (len - vi->hdr_len);
+> +		xdp.data_meta =3D xdp.data;
+>   		xdp.rxq =3D &rq->xdp_rxq;
+>  =20
+>   		act =3D bpf_prog_run_xdp(xdp_prog, &xdp);
+> @@ -848,24 +856,27 @@ static struct sk_buff *receive_mergeable(struct n=
+et_device *dev,
+>  =20
+>   		switch (act) {
+>   		case XDP_PASS:
+> +			metasize =3D xdp.data - xdp.data_meta;
+> +
+>   			/* recalculate offset to account for any header
+> -			 * adjustments. Note other cases do not build an
+> -			 * skb and avoid using offset
+> +			 * adjustments and minus the metasize to copy the
+> +			 * metadata in page_to_skb(). Note other cases do not
+> +			 * build an skb and avoid using offset
+>   			 */
+> -			offset =3D xdp.data -
+> -					page_address(xdp_page) - vi->hdr_len;
+> +			offset =3D xdp.data - page_address(xdp_page) -
+> +				 vi->hdr_len - metasize;
+>  =20
+> -			/* recalculate len if xdp.data or xdp.data_end were
+> -			 * adjusted
+> +			/* recalculate len if xdp.data, xdp.data_end or
+> +			 * xdp.data_meta were adjusted
+>   			 */
+> -			len =3D xdp.data_end - xdp.data + vi->hdr_len;
+> +			len =3D xdp.data_end - xdp.data + vi->hdr_len + metasize;
+>   			/* We can only create skb based on xdp_page. */
+>   			if (unlikely(xdp_page !=3D page)) {
+>   				rcu_read_unlock();
+>   				put_page(page);
+> -				head_skb =3D page_to_skb(vi, rq, xdp_page,
+> -						       offset, len,
+> -						       PAGE_SIZE, false);
+> +				head_skb =3D page_to_skb(vi, rq, xdp_page, offset,
+> +						       len, PAGE_SIZE, false,
+> +						       metasize);
+>   				return head_skb;
+>   			}
+>   			break;
+> @@ -921,7 +932,8 @@ static struct sk_buff *receive_mergeable(struct net=
+_device *dev,
+>   		goto err_skb;
+>   	}
+>  =20
+> -	head_skb =3D page_to_skb(vi, rq, page, offset, len, truesize, !xdp_pr=
+og);
+> +	head_skb =3D page_to_skb(vi, rq, page, offset, len, truesize, !xdp_pr=
+og,
+> +			       metasize);
+>   	curr_skb =3D head_skb;
+>  =20
+>   	if (unlikely(!curr_skb))
+
