@@ -2,126 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D22D6168793
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 20:42:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60ED7168862
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 21:34:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgBUTl4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Feb 2020 14:41:56 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:41349 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726773AbgBUTlz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Feb 2020 14:41:55 -0500
-Received: by mail-wr1-f67.google.com with SMTP id c9so3315455wrw.8
-        for <bpf@vger.kernel.org>; Fri, 21 Feb 2020 11:41:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lF+X01NQeyowOxsjGyQ+K+InDP6nyF3s7HMSuCIuqwU=;
-        b=EjzllT9j0FNgXh1gzp7ZKM8N0I91TP8vAm+bivdngSVLKq+0Euegsefdl+EWU6IdGD
-         JfHB+Oo9gLRRQrSy4UYadFpYIhdU5UzkXn6LbpRsAoT1YKLo7m/QhEGJMp4BVC1oX25h
-         fxQ/ObVXBcP3rVK/4oaOYEep3dzK7dFngxXR4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lF+X01NQeyowOxsjGyQ+K+InDP6nyF3s7HMSuCIuqwU=;
-        b=hpXfyuu67dMl/Vj27W5GZX8akmXDV63TZ4WxlnOiWS/N2bJ62FGjZG5WeOQ/GoglCS
-         AqLLYaGr4qRw6uyU7WzALDSkltWkm7caSVKq0h6V29RnPx3XGYwgqIxw5kJLePSNZ0//
-         aItCtjv0rdtcvrgRI4Zc28CnlI0l4zmvyca4Yh8noSOb42lxbhkxs9Lf0zDGTnGGZQKu
-         QbYaOPH2iBwJi9RqY+dKeIjfmwkQ5sq6RE6uzJ2GxAqwAYqn6oETnrNl7k1E08QSklXv
-         c0eb0zphtiar0YlcxnFmG5tGzqH5KLl5+nykb/eJZdAqR2pVxsnANZPrf3tagFh8qQj9
-         p7dA==
-X-Gm-Message-State: APjAAAUPYaolwUpkoJcEFEyYauQqyBnNGvByMrLhub8JQXtb61KDdB3u
-        iPw4RmLbGNqPfBNy1wyB1r7ngQ==
-X-Google-Smtp-Source: APXvYqyL2tJY+xCx1IxetlPHAreYcfbb2r6BdONhVVQhPwEP6L4cDen3gHqn7ZWgxMe1TyhBVYCdtw==
-X-Received: by 2002:a05:6000:128a:: with SMTP id f10mr52557069wrx.116.1582314111976;
-        Fri, 21 Feb 2020 11:41:51 -0800 (PST)
-Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
-        by smtp.gmail.com with ESMTPSA id 25sm5152414wmi.32.2020.02.21.11.41.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Feb 2020 11:41:51 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Fri, 21 Feb 2020 20:41:49 +0100
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH bpf-next v4 0/8] MAC and Audit policy using eBPF (KRSI)
-Message-ID: <20200221194149.GA9207@chromium.org>
-References: <20200220175250.10795-1-kpsingh@chromium.org>
- <85e89b0c-5f2c-a4b1-17d3-47cc3bdab38b@schaufler-ca.com>
+        id S1726731AbgBUUen (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Feb 2020 15:34:43 -0500
+Received: from 2.mo173.mail-out.ovh.net ([178.33.251.49]:39292 "EHLO
+        2.mo173.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726483AbgBUUen (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Feb 2020 15:34:43 -0500
+X-Greylist: delayed 4200 seconds by postgrey-1.27 at vger.kernel.org; Fri, 21 Feb 2020 15:34:42 EST
+Received: from player791.ha.ovh.net (unknown [10.108.54.74])
+        by mo173.mail-out.ovh.net (Postfix) with ESMTP id 6BDA0132AE0
+        for <bpf@vger.kernel.org>; Fri, 21 Feb 2020 17:58:19 +0100 (CET)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player791.ha.ovh.net (Postfix) with ESMTPSA id 473BFF972430;
+        Fri, 21 Feb 2020 16:58:08 +0000 (UTC)
+From:   Stephen Kitt <steve@sk2.org>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
+Subject: [PATCH] docs: sysctl/kernel: document BPF entries
+Date:   Fri, 21 Feb 2020 17:58:01 +0100
+Message-Id: <20200221165801.32687-1-steve@sk2.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85e89b0c-5f2c-a4b1-17d3-47cc3bdab38b@schaufler-ca.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 876794555126336901
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedugedrkeeggdelhecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejledurdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopegsphhfsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 21-Feb 11:19, Casey Schaufler wrote:
-> On 2/20/2020 9:52 AM, KP Singh wrote:
-> > From: KP Singh <kpsingh@google.com>
-> 
-> Again, apologies for the CC list trimming.
-> 
-> >
-> > # v3 -> v4
-> >
-> >   https://lkml.org/lkml/2020/1/23/515
-> >
-> > * Moved away from allocating a separate security_hook_heads and adding a
-> >   new special case for arch_prepare_bpf_trampoline to using BPF fexit
-> >   trampolines called from the right place in the LSM hook and toggled by
-> >   static keys based on the discussion in:
-> >
-> >     https://lore.kernel.org/bpf/CAG48ez25mW+_oCxgCtbiGMX07g_ph79UOJa07h=o_6B6+Q-u5g@mail.gmail.com/
-> >
-> > * Since the code does not deal with security_hook_heads anymore, it goes
-> >   from "being a BPF LSM" to "BPF program attachment to LSM hooks".
-> 
-> I've finally been able to review the entire patch set.
-> I can't imagine how it can make sense to add this much
-> complexity to the LSM infrastructure in support of this
-> feature. There is macro magic going on that is going to
-> break, and soon. You are introducing dependencies on BPF
-> into the infrastructure, and that's unnecessary and most
-> likely harmful.
+Based on the implementation in kernel/bpf/syscall.c,
+kernel/bpf/trampoline.c, include/linux/filter.h, and the documentation
+in bpftool-prog.rst.
 
-We will be happy to document each of the macros in detail. Do note a
-few things here:
+Signed-off-by: Stephen Kitt <steve@sk2.org>
+---
+ Documentation/admin-guide/sysctl/kernel.rst | 24 +++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-* There is really nothing magical about them though, the LSM hooks are
-  collectively declared in lsm_hook_names.h and are used to delcare
-  the security_list_options and security_hook_heads for the LSM
-  framework (this was previously maitained in two different places):
+diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+index 1c48ab4bfe30..89c70ea7de7c 100644
+--- a/Documentation/admin-guide/sysctl/kernel.rst
++++ b/Documentation/admin-guide/sysctl/kernel.rst
+@@ -102,6 +102,20 @@ See the ``type_of_loader`` and ``ext_loader_ver`` fields in
+ :doc:`/x86/boot` for additional information.
+ 
+ 
++bpf_stats_enabled
++=================
++
++Controls whether the kernel should collect statistics on BPF programs
++(total time spent running, number of times run...). Enabling
++statistics causes a slight reduction in performance on each program
++run. The statistics can be seen using ``bpftool``.
++
++= ===================================
++0 Don't collect statistics (default).
++1 Collect statistics.
++= ===================================
++
++
+ cap_last_cap
+ ============
+ 
+@@ -1152,6 +1166,16 @@ NMI switch that most IA32 servers have fires unknown NMI up, for
+ example.  If a system hangs up, try pressing the NMI switch.
+ 
+ 
++unprivileged_bpf_disabled
++=========================
++
++Writing 1 to this entry will disabled unprivileged calls to ``bpf()``;
++once disabled, calling ``bpf()`` without ``CAP_SYS_ADMIN`` will return
++``-EPERM``.
++
++Once set, this can't be cleared.
++
++
+ watchdog
+ ========
+ 
+-- 
+2.20.1
 
-  For BPF, they declare:
-
-    * bpf_lsm_<name> attachment points and their prototypes.
-    * A static key (bpf_lsm_key_<name>) to enable and disable these
-       hooks with a function to set its value i.e.
-       (bpf_lsm_<name>_set_enabled).
-
-* We have kept the BPF related macros out of security/.
-* All the BPF calls in the LSM infrastructure are guarded by
-  CONFIG_BPF_LSM (there are only two main calls though, i.e.
-  call_int_hook, call_void_hook).
-
-Honestly, the macros aren't any more complicated than
-call_int_progs/call_void_progs.
-
-- KP
-
-> 
-> Would you please drop the excessive optimization? I understand
-> that there's been a lot of discussion and debate about it,
-> but this implementation is out of control, disruptive, and
-> dangerous to the code around it.
-> 
-> 
