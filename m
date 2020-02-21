@@ -2,76 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA07166CA6
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 03:06:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C27166CC0
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 03:18:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729290AbgBUCGm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Feb 2020 21:06:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33720 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728992AbgBUCGl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Feb 2020 21:06:41 -0500
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0DA820659;
-        Fri, 21 Feb 2020 02:06:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582250801;
-        bh=ciW7M4/rpadPpVKzgkZKDKV7BnaACSF1idCdnwPCl3o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MP9a5xmDUW5hQK1KvM9LCnP1gqsoFlDTxTQGjDAn6mQe9ELcu306poIK7AB3hClSn
-         YxpaidMCtDrG5F2UIFij+4+/c1AUD7JH0dYTWJDA/UUUbNhMoTFh/DFBfAgZbnqDNg
-         bXIJwM94iJgYRNxqg3hY0jMX+R9XY+sI4dwGfIQU=
-Received: by mail-lj1-f169.google.com with SMTP id d10so514446ljl.9;
-        Thu, 20 Feb 2020 18:06:40 -0800 (PST)
-X-Gm-Message-State: APjAAAW1CwsUaqGbIhJj5whzitUuBZwkwCoKBSAC3Gz5HdcRYzNzixUv
-        3IaNcosvj1HUUmnXwL2Q0U3N1q/c9Hdvddxl6nM=
-X-Google-Smtp-Source: APXvYqyvqTaR0KZNS11sCSscS9XUGP/WAqsTX/fVy1NDPevEDaEcaOKeJMwiNhyPinin4nlbwpWEtyHARmacvrnpehs=
-X-Received: by 2002:a05:651c:8f:: with SMTP id 15mr1708671ljq.109.1582250798788;
- Thu, 20 Feb 2020 18:06:38 -0800 (PST)
-MIME-Version: 1.0
-References: <20200220230546.769250-1-andriin@fb.com>
-In-Reply-To: <20200220230546.769250-1-andriin@fb.com>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 20 Feb 2020 18:06:27 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW60BM0JjTBLyE3mYea+W-5CFPouveMfEwkbMEwQUbNbZg@mail.gmail.com>
-Message-ID: <CAPhsuW60BM0JjTBLyE3mYea+W-5CFPouveMfEwkbMEwQUbNbZg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix trampoline_count clean up logic
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        id S1729027AbgBUCSB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Feb 2020 21:18:01 -0500
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:45102 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728992AbgBUCSB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Feb 2020 21:18:01 -0500
+Received: by mail-pf1-f195.google.com with SMTP id 2so376204pfg.12;
+        Thu, 20 Feb 2020 18:18:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=aInQ+bV7EjLbwOn5yuSwAB2aHiKLYjiz5SbjsgDviAY=;
+        b=Y9/zM3RMZGOGTJSxfuAMkGqEyNBqNlCEzUVmFk3K84KZUXDsfCMepHCF58vstGFBKB
+         y61eklmJ5eDxwqDpmi+ucrwJadzGnUCt8ZucXxbxoVjpupv48FwGegfMjBeKhijgIZKG
+         HYR7CjCNFapmynIWoJ7n/jAPG+UjgfUOjuVuw9YGCySO5ohewwPom0UXT7eDvpD1cQ3O
+         WpWPF8YRXW1KqKGyo/SnHRMZfmUJKYSGFUa86KbPQi42TuGu6evc/z6u6EKaVLrwi9Y7
+         BXJnSBvX6iVJnYYt7c25N85IpClOo5QrwCJNSHaMqx02cm7ZLWxEo+BrQeKTa8CE3KB6
+         WBug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=aInQ+bV7EjLbwOn5yuSwAB2aHiKLYjiz5SbjsgDviAY=;
+        b=XTZ7sbjn03IY+qPuOw3XbeuijXmVoFZNeyyffF2XJcezc4OSWZC0Ng9VWNRQkUKsuF
+         IxcGlOaIOCrOXmL0ceC4j2UF+oT474bJ1U6hB+vEC1GsnpgS79Qy8XV/Sn8QA5iO2y6R
+         C0LzHtMt1mWKLkCwzEbksdwh75AR+4W0DKqpAfErriKlcdUsfIxDRQq/hNuNtxczn2oy
+         UpEawEXNOQv4VmYmSaHwXh48ZmyE2QdHzO46Y4CAdwVrC+m5JKqhTixbn+husE5ehbff
+         +e2Lix8B178tGw6BFmN9Kr26gwXO3+3BrxLE2AFBTjvl+isPTizYk7wtHXDhY622tqpM
+         4xJA==
+X-Gm-Message-State: APjAAAVtURvHre3Pd9ov0w4kSxAkv+NnB9MxRI2xERIcvDW8AiHrBk9a
+        sGmaPrdqheskwEFdLX+9rks=
+X-Google-Smtp-Source: APXvYqw7sbSpit71nmXnqudgKI725O3kLqAZxewMC1o2xGr1TWmrCEhJZzOoQ7ak89Bs5Y7hhh01pQ==
+X-Received: by 2002:a63:650:: with SMTP id 77mr35068014pgg.102.1582251480255;
+        Thu, 20 Feb 2020 18:18:00 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:500::5:f03d])
+        by smtp.gmail.com with ESMTPSA id z4sm867510pfn.42.2020.02.20.18.17.58
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 20 Feb 2020 18:17:59 -0800 (PST)
+Date:   Thu, 20 Feb 2020 18:17:57 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kernel Team <kernel-team@fb.com>, Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jann Horn <jannh@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH bpf-next v4 5/8] bpf: lsm: Implement attach, detach and
+ execution
+Message-ID: <20200221021755.3z7ifyyeh6seo3zs@ast-mbp>
+References: <20200220175250.10795-1-kpsingh@chromium.org>
+ <20200220175250.10795-6-kpsingh@chromium.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200220175250.10795-6-kpsingh@chromium.org>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 20, 2020 at 3:07 PM Andrii Nakryiko <andriin@fb.com> wrote:
->
-> Libbpf's Travis CI tests caught this issue. Ensure bpf_link and bpf_object
-> clean up is performed correctly.
->
-> Fixes: d633d57902a5 ("selftest/bpf: Add test for allowed trampolines count")
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
->  .../bpf/prog_tests/trampoline_count.c         | 25 +++++++++++++------
->  1 file changed, 18 insertions(+), 7 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-> index 1f6ccdaed1ac..781c8d11604b 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-> @@ -55,31 +55,40 @@ void test_trampoline_count(void)
->         /* attach 'allowed' 40 trampoline programs */
->         for (i = 0; i < MAX_TRAMP_PROGS; i++) {
->                 obj = bpf_object__open_file(object, NULL);
-> -               if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj)))
-> +               if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj))) {
-> +                       obj = NULL;
+On Thu, Feb 20, 2020 at 06:52:47PM +0100, KP Singh wrote:
+> +
+> +	/* This is the first program to be attached to the LSM hook, the hook
+> +	 * needs to be enabled.
+> +	 */
+> +	if (prog->type == BPF_PROG_TYPE_LSM && tr->progs_cnt[kind] == 1)
+> +		err = bpf_lsm_set_enabled(prog->aux->attach_func_name, true);
+>  out:
+>  	mutex_unlock(&tr->mutex);
+>  	return err;
+> @@ -336,7 +348,11 @@ int bpf_trampoline_unlink_prog(struct bpf_prog *prog)
+>  	}
+>  	hlist_del(&prog->aux->tramp_hlist);
+>  	tr->progs_cnt[kind]--;
+> -	err = bpf_trampoline_update(prog->aux->trampoline);
+> +	err = bpf_trampoline_update(prog);
+> +
+> +	/* There are no more LSM programs, the hook should be disabled */
+> +	if (prog->type == BPF_PROG_TYPE_LSM && tr->progs_cnt[kind] == 0)
+> +		err = bpf_lsm_set_enabled(prog->aux->attach_func_name, false);
 
-I think we don't need obj and link in cleanup? Did I miss anything?
+Overall looks good, but I don't think above logic works.
+Consider lsm being attached, then fexit, then lsm detached, then fexit detached.
+Both are kind==fexit and static_key stays enabled.
