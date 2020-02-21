@@ -2,134 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EA8166ABE
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 00:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B05E4166B78
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 01:20:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729336AbgBTXGT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Feb 2020 18:06:19 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:8374 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727135AbgBTXGT (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 20 Feb 2020 18:06:19 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01KN6EvD011379
-        for <bpf@vger.kernel.org>; Thu, 20 Feb 2020 15:06:18 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=MESG69cFfDUetraqyLOHK3/VfUguFDCaDZdCXKWqQRg=;
- b=fUspCS98Y2QUcN5Q5HXRf1doad22OoV5Klo98SHbcfrrq/970DynpQ6fhObx2hGVsaSp
- PbhuhMbcywJb9HERBcmvmHPJOdj+oa7h8Go2kA2W4qbmOz75xzzR+6tK0rxJdc61DR3h
- TVgWb1xpKBAIQegi4sPwSPr6Pq05eG+K268= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2y9y9nhbjv-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 20 Feb 2020 15:06:18 -0800
-Received: from intmgw003.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 20 Feb 2020 15:06:08 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 8FF252EC2C3F; Thu, 20 Feb 2020 15:05:55 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, Jiri Olsa <jolsa@kernel.org>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] selftests/bpf: fix trampoline_count clean up logic
-Date:   Thu, 20 Feb 2020 15:05:46 -0800
-Message-ID: <20200220230546.769250-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1729448AbgBUAUp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Feb 2020 19:20:45 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:44897 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729429AbgBUAUo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Feb 2020 19:20:44 -0500
+Received: by mail-pl1-f193.google.com with SMTP id d9so94516plo.11
+        for <bpf@vger.kernel.org>; Thu, 20 Feb 2020 16:20:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Plslq0a/WlH9+0wsRfxUN/LmRsw3WQkY4fgXi9ixwsc=;
+        b=FkpuTNQLtoitah5hPi0YUKeg08H4CsA2euPhDcAkduZeFH/lBTvyv7io4vwS17q84B
+         l1Sc/iSRu2T1VNHZHJ7j620/J86Ss52l7jHQbG9hZu38KIdCJ4qKJAZb6Zh8B4felH78
+         4AhXAmizgyeP7Po6ZqhRnh/9JAR/OuzwwoVm4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Plslq0a/WlH9+0wsRfxUN/LmRsw3WQkY4fgXi9ixwsc=;
+        b=OUSrn9ECrwANf9NTbabPHD8fBp0IM9x2fCQGPvRfLMr79fO2gjfy9pXq+8DtjcdaUV
+         jWIqldtXSv5tUww3RjsVUIZKE1R6P8IQV7Fsvo1aWuQqOXGum4QIVFScPjOIUJfwb1nU
+         eIq4nfjJofwX5aEauapPbRw+0dBuyL87YsXFxbCzHtSPniwBJvMF8E0HTMGAj6IKUu8O
+         96hzGf3waI/g6LT2Yl6BpsnKGpdPbQIdqruqiV1ngSyZC6BzQ+4xkceIP+mG7YxhmV1g
+         XiiFDLLk0AYSy6uTgr7AvM5SjYMNvbFxD4+56131vxuRehg16mqshtbp1uo53tngwIsB
+         bN+A==
+X-Gm-Message-State: APjAAAWshLk3j6SO40VGczWVKoz0Yi7NtDvlhTqPmg0QxP/mX+c/HCZu
+        6K/5I0UtysKVZsr0FHDU0k37PQ==
+X-Google-Smtp-Source: APXvYqzqh/Pw6jbdTL7oDjQkv3YylBIF/nuO3giT5bTVTu7eSdsKg0IVHAgVcKWmbpqCQoqcpsVKTg==
+X-Received: by 2002:a17:902:321:: with SMTP id 30mr35390771pld.130.1582244442771;
+        Thu, 20 Feb 2020 16:20:42 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f9sm698180pfd.141.2020.02.20.16.20.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Feb 2020 16:20:41 -0800 (PST)
+Date:   Thu, 20 Feb 2020 16:20:40 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Sebastian Sewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Clark Williams <williams@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, Will Drewry <wad@chromium.org>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [RFC patch 09/19] bpf: Use BPF_PROG_RUN_PIN_ON_CPU() at simple
+ call sites.
+Message-ID: <202002201616.21FA55E@keescook>
+References: <20200214133917.304937432@linutronix.de>
+ <20200214161503.804093748@linutronix.de>
+ <87a75ftkwu.fsf@linux.intel.com>
+ <875zg3q7cn.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-02-20_18:2020-02-19,2020-02-20 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- priorityscore=1501 lowpriorityscore=0 suspectscore=8 malwarescore=0
- mlxlogscore=636 adultscore=0 bulkscore=0 spamscore=0 impostorscore=0
- mlxscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002200169
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <875zg3q7cn.fsf@nanos.tec.linutronix.de>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Libbpf's Travis CI tests caught this issue. Ensure bpf_link and bpf_object
-clean up is performed correctly.
+On Wed, Feb 19, 2020 at 10:00:56AM +0100, Thomas Gleixner wrote:
+> Vinicius Costa Gomes <vinicius.gomes@intel.com> writes:
+> 
+> Cc+: seccomp folks 
+> 
+> > Thomas Gleixner <tglx@linutronix.de> writes:
+> >
+> >> From: David Miller <davem@davemloft.net>
+> 
+> Leaving content for reference
+> 
+> >> All of these cases are strictly of the form:
+> >>
+> >> 	preempt_disable();
+> >> 	BPF_PROG_RUN(...);
+> >> 	preempt_enable();
+> >>
+> >> Replace this with BPF_PROG_RUN_PIN_ON_CPU() which wraps BPF_PROG_RUN()
+> >> with:
+> >>
+> >> 	migrate_disable();
+> >> 	BPF_PROG_RUN(...);
+> >> 	migrate_enable();
+> >>
+> >> On non RT enabled kernels this maps to preempt_disable/enable() and on RT
+> >> enabled kernels this solely prevents migration, which is sufficient as
+> >> there is no requirement to prevent reentrancy to any BPF program from a
+> >> preempting task. The only requirement is that the program stays on the same
+> >> CPU.
+> >>
+> >> Therefore, this is a trivially correct transformation.
+> >>
+> >> [ tglx: Converted to BPF_PROG_RUN_PIN_ON_CPU() ]
+> >>
+> >> Signed-off-by: David S. Miller <davem@davemloft.net>
+> >> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> >>
+> >> ---
+> >>  include/linux/filter.h    |    4 +---
+> >>  kernel/seccomp.c          |    4 +---
+> >>  net/core/flow_dissector.c |    4 +---
+> >>  net/core/skmsg.c          |    8 ++------
+> >>  net/kcm/kcmsock.c         |    4 +---
+> >>  5 files changed, 6 insertions(+), 18 deletions(-)
+> >>
+> >> --- a/include/linux/filter.h
+> >> +++ b/include/linux/filter.h
+> >> @@ -713,9 +713,7 @@ static inline u32 bpf_prog_run_clear_cb(
+> >>  	if (unlikely(prog->cb_access))
+> >>  		memset(cb_data, 0, BPF_SKB_CB_LEN);
+> >>  
+> >> -	preempt_disable();
+> >> -	res = BPF_PROG_RUN(prog, skb);
+> >> -	preempt_enable();
+> >> +	res = BPF_PROG_RUN_PIN_ON_CPU(prog, skb);
+> >>  	return res;
+> >>  }
+> >>  
+> >> --- a/kernel/seccomp.c
+> >> +++ b/kernel/seccomp.c
+> >> @@ -268,16 +268,14 @@ static u32 seccomp_run_filters(const str
+> >>  	 * All filters in the list are evaluated and the lowest BPF return
+> >>  	 * value always takes priority (ignoring the DATA).
+> >>  	 */
+> >> -	preempt_disable();
+> >>  	for (; f; f = f->prev) {
+> >> -		u32 cur_ret = BPF_PROG_RUN(f->prog, sd);
+> >> +		u32 cur_ret = BPF_PROG_RUN_PIN_ON_CPU(f->prog, sd);
+> >>
+> >
+> > More a question really, isn't the behavior changing here? i.e. shouldn't
+> > migrate_disable()/migrate_enable() be moved to outside the loop? Or is
+> > running seccomp filters on different cpus not a problem?
+> 
+> In my understanding this is a list of filters and they are independent
+> of each other.
+> 
+> Kees, Will. Andy?
 
-Fixes: d633d57902a5 ("selftest/bpf: Add test for allowed trampolines count")
-Cc: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- .../bpf/prog_tests/trampoline_count.c         | 25 +++++++++++++------
- 1 file changed, 18 insertions(+), 7 deletions(-)
+They're technically independent, but they are related to each
+other. (i.e. order matters, process hierarchy matters, etc). There's no
+reason I can see that we can't switch CPUs between running them, though.
+(AIUI, nothing here would suddenly make these run in parallel, right?)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-index 1f6ccdaed1ac..781c8d11604b 100644
---- a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-+++ b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-@@ -55,31 +55,40 @@ void test_trampoline_count(void)
- 	/* attach 'allowed' 40 trampoline programs */
- 	for (i = 0; i < MAX_TRAMP_PROGS; i++) {
- 		obj = bpf_object__open_file(object, NULL);
--		if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj)))
-+		if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj))) {
-+			obj = NULL;
- 			goto cleanup;
-+		}
- 
- 		err = bpf_object__load(obj);
- 		if (CHECK(err, "obj_load", "err %d\n", err))
- 			goto cleanup;
- 		inst[i].obj = obj;
-+		obj = NULL;
- 
- 		if (rand() % 2) {
--			link = load(obj, fentry_name);
--			if (CHECK(IS_ERR(link), "attach prog", "err %ld\n", PTR_ERR(link)))
-+			link = load(inst[i].obj, fentry_name);
-+			if (CHECK(IS_ERR(link), "attach prog", "err %ld\n", PTR_ERR(link))) {
-+				link = NULL;
- 				goto cleanup;
-+			}
- 			inst[i].link_fentry = link;
- 		} else {
--			link = load(obj, fexit_name);
--			if (CHECK(IS_ERR(link), "attach prog", "err %ld\n", PTR_ERR(link)))
-+			link = load(inst[i].obj, fexit_name);
-+			if (CHECK(IS_ERR(link), "attach prog", "err %ld\n", PTR_ERR(link))) {
-+				link = NULL;
- 				goto cleanup;
-+			}
- 			inst[i].link_fexit = link;
- 		}
- 	}
- 
- 	/* and try 1 extra.. */
- 	obj = bpf_object__open_file(object, NULL);
--	if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj)))
-+	if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj))) {
-+		obj = NULL;
- 		goto cleanup;
-+	}
- 
- 	err = bpf_object__load(obj);
- 	if (CHECK(err, "obj_load", "err %d\n", err))
-@@ -104,7 +113,9 @@ void test_trampoline_count(void)
- cleanup_extra:
- 	bpf_object__close(obj);
- cleanup:
--	while (--i) {
-+	if (i >= MAX_TRAMP_PROGS)
-+		i = MAX_TRAMP_PROGS - 1;
-+	for (; i >= 0; i--) {
- 		bpf_link__destroy(inst[i].link_fentry);
- 		bpf_link__destroy(inst[i].link_fexit);
- 		bpf_object__close(inst[i].obj);
+As long as "current" is still "current", and they run in the same order,
+we'll get the same final result as far as seccomp is concerned.
+
 -- 
-2.17.1
-
+Kees Cook
