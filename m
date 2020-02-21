@@ -2,74 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6C4166C9E
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 03:06:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA07166CA6
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 03:06:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729545AbgBUCGI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Feb 2020 21:06:08 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:35969 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728992AbgBUCGH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Feb 2020 21:06:07 -0500
-Received: by mail-pg1-f196.google.com with SMTP id d9so200046pgu.3
-        for <bpf@vger.kernel.org>; Thu, 20 Feb 2020 18:06:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=o1r3IROrJ9LRxfw9e5YAVMX+zhTQvCAxTuDYKcYkZOs=;
-        b=VYeVWuU6xxQmb5tIFON/WrL+cz1VhNgyAWy8OZ+RzOOs0rq2kgiNyWWxErCPNC5wEc
-         a3iaD28SEOmWqeHYDczThnHqkMWkAO871GwoDeTnLWHasndVnp2XNZkFwuUnQ6cLPA7L
-         /NhTuBxvG+x+Hge6rc+S4ZNh1IRP0U09SImAotSKxi0vwxqfKygk2WmVvln/llK2BDNG
-         uYmd5hAslNihpLQIvoAfFW3ZG5P12fzYEtpXo9ImLI8HDc5789UDv53QkMSDwELLlFFG
-         Haxlj+N/MVlXi+9uI1YI2ipQJDcji6LgOWsaxayNHGbaJahGxLpW+ic/btYNlKpruqex
-         g3Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=o1r3IROrJ9LRxfw9e5YAVMX+zhTQvCAxTuDYKcYkZOs=;
-        b=ZOMasfAoH/Kpb76mu2GV3koX00gd+ylLo3ywsZwBOobVBWF78wnui/6ArOB5Nywrlr
-         HSBWXmmSrH432ut8WURyqODaSYP5YmqIygUKUVSUzJHmQGHU6xbKnyuj3lTcWTcN00r4
-         LWmaIP2FRMJHLJK87ShuPAvGGzSHOmXehLws6VWj8xcwWcUn1NqiJ3osRCOylLTeg2ee
-         IKcOszkXT+eMo8Bm6RTvb94VP8JuwXaApFk485psIZ9KJSvguocUg4XP5Wi0wBgw2Lnd
-         nzs00aQyOODNHgCWFnfjh3jBcwiH1SdPewjgsBnZvyqr58a5/LHHMSEWJ/XqnhG4+OxC
-         HIEg==
-X-Gm-Message-State: APjAAAWWf3BuG8LQDyXgDmxi3MzLqD/8s8v7GTH/exo41bzlM4WHGcDs
-        VGbBIPasM2qJ1sTUQ92RRng=
-X-Google-Smtp-Source: APXvYqxg80Wp+HxQYE4p8mfkRaUubbNSjbzVH4g2TAfkyO99lKMvz24uN8nBKj+ehVqUKpyTmAOfLg==
-X-Received: by 2002:a63:aa09:: with SMTP id e9mr36227093pgf.354.1582250765644;
-        Thu, 20 Feb 2020 18:06:05 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:500::5:f03d])
-        by smtp.gmail.com with ESMTPSA id e6sm866615pfh.32.2020.02.20.18.06.04
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 20 Feb 2020 18:06:04 -0800 (PST)
-Date:   Thu, 20 Feb 2020 18:06:03 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next] docs/bpf: update bpf development Q/A file
-Message-ID: <20200221020602.tetdzvwhuhhurjjh@ast-mbp>
-References: <20200221004354.930952-1-yhs@fb.com>
+        id S1729290AbgBUCGm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Feb 2020 21:06:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33720 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728992AbgBUCGl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Feb 2020 21:06:41 -0500
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A0DA820659;
+        Fri, 21 Feb 2020 02:06:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582250801;
+        bh=ciW7M4/rpadPpVKzgkZKDKV7BnaACSF1idCdnwPCl3o=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MP9a5xmDUW5hQK1KvM9LCnP1gqsoFlDTxTQGjDAn6mQe9ELcu306poIK7AB3hClSn
+         YxpaidMCtDrG5F2UIFij+4+/c1AUD7JH0dYTWJDA/UUUbNhMoTFh/DFBfAgZbnqDNg
+         bXIJwM94iJgYRNxqg3hY0jMX+R9XY+sI4dwGfIQU=
+Received: by mail-lj1-f169.google.com with SMTP id d10so514446ljl.9;
+        Thu, 20 Feb 2020 18:06:40 -0800 (PST)
+X-Gm-Message-State: APjAAAW1CwsUaqGbIhJj5whzitUuBZwkwCoKBSAC3Gz5HdcRYzNzixUv
+        3IaNcosvj1HUUmnXwL2Q0U3N1q/c9Hdvddxl6nM=
+X-Google-Smtp-Source: APXvYqyvqTaR0KZNS11sCSscS9XUGP/WAqsTX/fVy1NDPevEDaEcaOKeJMwiNhyPinin4nlbwpWEtyHARmacvrnpehs=
+X-Received: by 2002:a05:651c:8f:: with SMTP id 15mr1708671ljq.109.1582250798788;
+ Thu, 20 Feb 2020 18:06:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200221004354.930952-1-yhs@fb.com>
-User-Agent: NeoMutt/20180223
+References: <20200220230546.769250-1-andriin@fb.com>
+In-Reply-To: <20200220230546.769250-1-andriin@fb.com>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 20 Feb 2020 18:06:27 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW60BM0JjTBLyE3mYea+W-5CFPouveMfEwkbMEwQUbNbZg@mail.gmail.com>
+Message-ID: <CAPhsuW60BM0JjTBLyE3mYea+W-5CFPouveMfEwkbMEwQUbNbZg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix trampoline_count clean up logic
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kernel Team <kernel-team@fb.com>, Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 20, 2020 at 04:43:54PM -0800, Yonghong Song wrote:
-> bpf now has its own mailing list bpf@vger.kernel.org.
-> Update the bpf_devel_QA.rst file to reflect this.
-> 
-> Also llvm has switch to github with llvm and clang
-> in the same repo https://github.com/llvm/llvm-project.git.
-> Update the QA file with newer build instructions.
-> 
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+On Thu, Feb 20, 2020 at 3:07 PM Andrii Nakryiko <andriin@fb.com> wrote:
+>
+> Libbpf's Travis CI tests caught this issue. Ensure bpf_link and bpf_object
+> clean up is performed correctly.
+>
+> Fixes: d633d57902a5 ("selftest/bpf: Add test for allowed trampolines count")
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
+>  .../bpf/prog_tests/trampoline_count.c         | 25 +++++++++++++------
+>  1 file changed, 18 insertions(+), 7 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
+> index 1f6ccdaed1ac..781c8d11604b 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
+> @@ -55,31 +55,40 @@ void test_trampoline_count(void)
+>         /* attach 'allowed' 40 trampoline programs */
+>         for (i = 0; i < MAX_TRAMP_PROGS; i++) {
+>                 obj = bpf_object__open_file(object, NULL);
+> -               if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj)))
+> +               if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj))) {
+> +                       obj = NULL;
 
-Applied, Thanks
+I think we don't need obj and link in cleanup? Did I miss anything?
