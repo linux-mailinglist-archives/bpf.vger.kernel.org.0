@@ -2,107 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D654166E9C
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 05:45:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EBDD1674F9
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 09:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729607AbgBUEpg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Feb 2020 23:45:36 -0500
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:44778 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729562AbgBUEpg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Feb 2020 23:45:36 -0500
-Received: by mail-qt1-f196.google.com with SMTP id j23so422426qtr.11;
-        Thu, 20 Feb 2020 20:45:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cOC2Qs5I2qPD/IgXM+le/ERJtFRbaaMcedt+UhFwrJA=;
-        b=YjKk1vR8ZINNoHE5CLQOWazFRyPB3oEUrK/Q32zkvfyUseCa34tty+WW3uIstDyqTa
-         2V7WdTap/Sk4bv9O1LdUKTfSYowbLOaeCbFM4F0jwGUZImLOLo4m8cDYcKbXa78vIHwb
-         PRCEep/vlzls0W0glImjDMwZWTuzfyl954xXuurYV05lZ2UdFHYjRbVuq3pKsgJRAhnR
-         aXtk/iWqf3WAEDlqyhzHiBcwGiS9/BmgozKB276Q0/V+kXQAMYYRlsDBw84NV9/NgSuF
-         6DmEzYKazCjmNcmw0I0AvkUVVpRaeoL4sqCAbwV45uev3w5c+s4ef3HWtufc1xsR6Gk4
-         3uuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cOC2Qs5I2qPD/IgXM+le/ERJtFRbaaMcedt+UhFwrJA=;
-        b=BaqABveJFsh3bxzhte9iIgtXWrLpBnILEwTrMtlcPxzrY02pVSv65jA1hrUvChupTg
-         nRGMod3M3yzACjbz15P2+OHg5UzCZzm+JKqzUNQumsCYGErV4K0i+x6VH4dNn8LtZDFD
-         yK5SxPpl9Ol9QvHAqTF824twqnMTSHaszx4+Bxpr9Wiqr1jORB6qsY1ytL7XQDAggOol
-         BwXNlxZbrKKl614iWNHOaezBnKBYgjWkAcz2HJNH4DE/eyHWPHPKeOt6aqo7s73mmeb9
-         AE+7r8O2bKqHu1EuD/rOMgu3jW+ZTlBSex/F5pOF1XN3BznRhHs1wPbWstzxcS9kZqS1
-         OeZw==
-X-Gm-Message-State: APjAAAUd4NEw8c3g8WEwOpQ3bJGaasC0PepojSb3wiXC6usS9RKcHiKW
-        Ug6S0rJrIli00W8YTxPocrQW8jhozs5QBkcMrn0=
-X-Google-Smtp-Source: APXvYqzcGrYL7a41EY2Rs+dmj8c6c4zUFbPH3J2QC7DQIwxIu5ZpwY5/hb2BVR0bZYM4o5HdVU2wKguapG12ijHStLs=
-X-Received: by 2002:ac8:5457:: with SMTP id d23mr28484470qtq.93.1582260334136;
- Thu, 20 Feb 2020 20:45:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20200220230546.769250-1-andriin@fb.com> <CAPhsuW60BM0JjTBLyE3mYea+W-5CFPouveMfEwkbMEwQUbNbZg@mail.gmail.com>
- <c7df7db0-0c47-37a5-0764-ee45864f7e55@fb.com> <51BC422F-DEC7-4CCC-974C-48A6B50022FB@fb.com>
-In-Reply-To: <51BC422F-DEC7-4CCC-974C-48A6B50022FB@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 20 Feb 2020 20:45:23 -0800
-Message-ID: <CAEf4BzbUuv2cnG_sKm-Ok2m4Jw6kC6ghMtccM8pc1i0YtO=h0Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix trampoline_count clean up logic
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, Song Liu <song@kernel.org>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        id S2388174AbgBUIUl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Feb 2020 03:20:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388171AbgBUIUk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Feb 2020 03:20:40 -0500
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 60B3224697;
+        Fri, 21 Feb 2020 08:20:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582273239;
+        bh=+PkrT4iG1T7Rl6JWmdEM27E+WQtpZRSY2P7dpNAA9Wc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=vdErMCkWx6jd9nwhNWY4pG0Bkr4GJtSTye19seYd0BlJ44CHGDDvlCytzMR27onLz
+         oAKXjllKGLsjPqDDWZgk2LEKWEnKx1d5Q0V/ziWPbwWmJdWSMiBEODBtdVBQbRDvXd
+         59xk3t3wvPsnRp5d2SMLWaOFXgloZT0ZbcerDr4I=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Petr Mladek <pmladek@suse.com>, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>, Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 098/191] tools lib api fs: Fix gcc9 stringop-truncation compilation error
+Date:   Fri, 21 Feb 2020 08:41:11 +0100
+Message-Id: <20200221072302.916269809@linuxfoundation.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200221072250.732482588@linuxfoundation.org>
+References: <20200221072250.732482588@linuxfoundation.org>
+User-Agent: quilt/0.66
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 20, 2020 at 8:31 PM Song Liu <songliubraving@fb.com> wrote:
->
->
->
-> > On Feb 20, 2020, at 8:20 PM, Andrii Nakryiko <andriin@fb.com> wrote:
-> >
-> > On 2/20/20 6:06 PM, Song Liu wrote:
-> >> On Thu, Feb 20, 2020 at 3:07 PM Andrii Nakryiko <andriin@fb.com> wrote:
-> >>>
-> >>> Libbpf's Travis CI tests caught this issue. Ensure bpf_link and bpf_object
-> >>> clean up is performed correctly.
-> >>>
-> >>> Fixes: d633d57902a5 ("selftest/bpf: Add test for allowed trampolines count")
-> >>> Cc: Jiri Olsa <jolsa@kernel.org>
-> >>> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> >>> ---
-> >>>  .../bpf/prog_tests/trampoline_count.c         | 25 +++++++++++++------
-> >>>  1 file changed, 18 insertions(+), 7 deletions(-)
-> >>>
-> >>> diff --git a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-> >>> index 1f6ccdaed1ac..781c8d11604b 100644
-> >>> --- a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-> >>> +++ b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-> >>> @@ -55,31 +55,40 @@ void test_trampoline_count(void)
-> >>>         /* attach 'allowed' 40 trampoline programs */
-> >>>         for (i = 0; i < MAX_TRAMP_PROGS; i++) {
-> >>>                 obj = bpf_object__open_file(object, NULL);
-> >>> -               if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj)))
-> >>> +               if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj))) {
-> >>> +                       obj = NULL;
-> >> I think we don't need obj and link in cleanup? Did I miss anything?
-> >
-> > We do set obj below (line 87) after this loop, so need to clean it up as well. As for link, yeah, technically link doesn't have to be set to NULL, but I kind of did it for completeness without thinking too much.
->
-> I meant "obj = NULL;" before "goto cleanup;", as we don't use obj in the
-> cleanup path.
->
-> Anyway, this is not a real issue.
+From: Andrey Zhizhikin <andrey.z@gmail.com>
 
-Ah, I see what you are saying, we skip over that bpf_object__close()
-call, right.
+[ Upstream commit 6794200fa3c9c3e6759dae099145f23e4310f4f7 ]
 
->
-> Thanks,
-> Song
->
+GCC9 introduced string hardening mechanisms, which exhibits the error
+during fs api compilation:
+
+error: '__builtin_strncpy' specified bound 4096 equals destination size
+[-Werror=stringop-truncation]
+
+This comes when the length of copy passed to strncpy is is equal to
+destination size, which could potentially lead to buffer overflow.
+
+There is a need to mitigate this potential issue by limiting the size of
+destination by 1 and explicitly terminate the destination with NULL.
+
+Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andriin@fb.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20191211080109.18765-1-andrey.zhizhikin@leica-geosystems.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ tools/lib/api/fs/fs.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/tools/lib/api/fs/fs.c b/tools/lib/api/fs/fs.c
+index 7aba8243a0e7c..bd021a0eeef8c 100644
+--- a/tools/lib/api/fs/fs.c
++++ b/tools/lib/api/fs/fs.c
+@@ -210,6 +210,7 @@ static bool fs__env_override(struct fs *fs)
+ 	size_t name_len = strlen(fs->name);
+ 	/* name + "_PATH" + '\0' */
+ 	char upper_name[name_len + 5 + 1];
++
+ 	memcpy(upper_name, fs->name, name_len);
+ 	mem_toupper(upper_name, name_len);
+ 	strcpy(&upper_name[name_len], "_PATH");
+@@ -219,7 +220,8 @@ static bool fs__env_override(struct fs *fs)
+ 		return false;
+ 
+ 	fs->found = true;
+-	strncpy(fs->path, override_path, sizeof(fs->path));
++	strncpy(fs->path, override_path, sizeof(fs->path) - 1);
++	fs->path[sizeof(fs->path) - 1] = '\0';
+ 	return true;
+ }
+ 
+-- 
+2.20.1
+
+
+
