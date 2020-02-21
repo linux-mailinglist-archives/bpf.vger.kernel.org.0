@@ -2,162 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B05E4166B78
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 01:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E74166BF7
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 01:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729448AbgBUAUp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Feb 2020 19:20:45 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:44897 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729429AbgBUAUo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Feb 2020 19:20:44 -0500
-Received: by mail-pl1-f193.google.com with SMTP id d9so94516plo.11
-        for <bpf@vger.kernel.org>; Thu, 20 Feb 2020 16:20:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Plslq0a/WlH9+0wsRfxUN/LmRsw3WQkY4fgXi9ixwsc=;
-        b=FkpuTNQLtoitah5hPi0YUKeg08H4CsA2euPhDcAkduZeFH/lBTvyv7io4vwS17q84B
-         l1Sc/iSRu2T1VNHZHJ7j620/J86Ss52l7jHQbG9hZu38KIdCJ4qKJAZb6Zh8B4felH78
-         4AhXAmizgyeP7Po6ZqhRnh/9JAR/OuzwwoVm4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Plslq0a/WlH9+0wsRfxUN/LmRsw3WQkY4fgXi9ixwsc=;
-        b=OUSrn9ECrwANf9NTbabPHD8fBp0IM9x2fCQGPvRfLMr79fO2gjfy9pXq+8DtjcdaUV
-         jWIqldtXSv5tUww3RjsVUIZKE1R6P8IQV7Fsvo1aWuQqOXGum4QIVFScPjOIUJfwb1nU
-         eIq4nfjJofwX5aEauapPbRw+0dBuyL87YsXFxbCzHtSPniwBJvMF8E0HTMGAj6IKUu8O
-         96hzGf3waI/g6LT2Yl6BpsnKGpdPbQIdqruqiV1ngSyZC6BzQ+4xkceIP+mG7YxhmV1g
-         XiiFDLLk0AYSy6uTgr7AvM5SjYMNvbFxD4+56131vxuRehg16mqshtbp1uo53tngwIsB
-         bN+A==
-X-Gm-Message-State: APjAAAWshLk3j6SO40VGczWVKoz0Yi7NtDvlhTqPmg0QxP/mX+c/HCZu
-        6K/5I0UtysKVZsr0FHDU0k37PQ==
-X-Google-Smtp-Source: APXvYqzqh/Pw6jbdTL7oDjQkv3YylBIF/nuO3giT5bTVTu7eSdsKg0IVHAgVcKWmbpqCQoqcpsVKTg==
-X-Received: by 2002:a17:902:321:: with SMTP id 30mr35390771pld.130.1582244442771;
-        Thu, 20 Feb 2020 16:20:42 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id f9sm698180pfd.141.2020.02.20.16.20.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Feb 2020 16:20:41 -0800 (PST)
-Date:   Thu, 20 Feb 2020 16:20:40 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Miller <davem@davemloft.net>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sebastian Sewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Clark Williams <williams@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, Will Drewry <wad@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [RFC patch 09/19] bpf: Use BPF_PROG_RUN_PIN_ON_CPU() at simple
- call sites.
-Message-ID: <202002201616.21FA55E@keescook>
-References: <20200214133917.304937432@linutronix.de>
- <20200214161503.804093748@linutronix.de>
- <87a75ftkwu.fsf@linux.intel.com>
- <875zg3q7cn.fsf@nanos.tec.linutronix.de>
+        id S1729455AbgBUAn6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Feb 2020 19:43:58 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22938 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729419AbgBUAn6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 20 Feb 2020 19:43:58 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01L0hXOX007585
+        for <bpf@vger.kernel.org>; Thu, 20 Feb 2020 16:43:57 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=kjDbiIqCnoVyTemxISZnVpkeVp6Rk3Hp49wUOig0jZs=;
+ b=nKtEY1NNMc35xN2F7BAT5o24yWpON+bUdhiPnna3GbB8iUvgkbe6eUBEFcruQsnyh9q/
+ r4g4zzr2bYKPU+CADNexYyU3sxiWT3OkhOTlu7Fc6+pGaaNjrLPtltmHUgIr7/zkPCXp
+ 3AVxTcohpnWQ/lLsY1NMaoPIZcdRP7kMeaA= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2y9q5dv6d6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 20 Feb 2020 16:43:57 -0800
+Received: from intmgw003.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 20 Feb 2020 16:43:55 -0800
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 35D2137047DF; Thu, 20 Feb 2020 16:43:54 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Yonghong Song <yhs@fb.com>
+Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] docs/bpf: update bpf development Q/A file
+Date:   Thu, 20 Feb 2020 16:43:54 -0800
+Message-ID: <20200221004354.930952-1-yhs@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <875zg3q7cn.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-02-20_19:2020-02-19,2020-02-20 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ malwarescore=0 suspectscore=1 impostorscore=0 mlxlogscore=999 bulkscore=0
+ phishscore=0 lowpriorityscore=0 clxscore=1015 priorityscore=1501
+ mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2002210003
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 10:00:56AM +0100, Thomas Gleixner wrote:
-> Vinicius Costa Gomes <vinicius.gomes@intel.com> writes:
-> 
-> Cc+: seccomp folks 
-> 
-> > Thomas Gleixner <tglx@linutronix.de> writes:
-> >
-> >> From: David Miller <davem@davemloft.net>
-> 
-> Leaving content for reference
-> 
-> >> All of these cases are strictly of the form:
-> >>
-> >> 	preempt_disable();
-> >> 	BPF_PROG_RUN(...);
-> >> 	preempt_enable();
-> >>
-> >> Replace this with BPF_PROG_RUN_PIN_ON_CPU() which wraps BPF_PROG_RUN()
-> >> with:
-> >>
-> >> 	migrate_disable();
-> >> 	BPF_PROG_RUN(...);
-> >> 	migrate_enable();
-> >>
-> >> On non RT enabled kernels this maps to preempt_disable/enable() and on RT
-> >> enabled kernels this solely prevents migration, which is sufficient as
-> >> there is no requirement to prevent reentrancy to any BPF program from a
-> >> preempting task. The only requirement is that the program stays on the same
-> >> CPU.
-> >>
-> >> Therefore, this is a trivially correct transformation.
-> >>
-> >> [ tglx: Converted to BPF_PROG_RUN_PIN_ON_CPU() ]
-> >>
-> >> Signed-off-by: David S. Miller <davem@davemloft.net>
-> >> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> >>
-> >> ---
-> >>  include/linux/filter.h    |    4 +---
-> >>  kernel/seccomp.c          |    4 +---
-> >>  net/core/flow_dissector.c |    4 +---
-> >>  net/core/skmsg.c          |    8 ++------
-> >>  net/kcm/kcmsock.c         |    4 +---
-> >>  5 files changed, 6 insertions(+), 18 deletions(-)
-> >>
-> >> --- a/include/linux/filter.h
-> >> +++ b/include/linux/filter.h
-> >> @@ -713,9 +713,7 @@ static inline u32 bpf_prog_run_clear_cb(
-> >>  	if (unlikely(prog->cb_access))
-> >>  		memset(cb_data, 0, BPF_SKB_CB_LEN);
-> >>  
-> >> -	preempt_disable();
-> >> -	res = BPF_PROG_RUN(prog, skb);
-> >> -	preempt_enable();
-> >> +	res = BPF_PROG_RUN_PIN_ON_CPU(prog, skb);
-> >>  	return res;
-> >>  }
-> >>  
-> >> --- a/kernel/seccomp.c
-> >> +++ b/kernel/seccomp.c
-> >> @@ -268,16 +268,14 @@ static u32 seccomp_run_filters(const str
-> >>  	 * All filters in the list are evaluated and the lowest BPF return
-> >>  	 * value always takes priority (ignoring the DATA).
-> >>  	 */
-> >> -	preempt_disable();
-> >>  	for (; f; f = f->prev) {
-> >> -		u32 cur_ret = BPF_PROG_RUN(f->prog, sd);
-> >> +		u32 cur_ret = BPF_PROG_RUN_PIN_ON_CPU(f->prog, sd);
-> >>
-> >
-> > More a question really, isn't the behavior changing here? i.e. shouldn't
-> > migrate_disable()/migrate_enable() be moved to outside the loop? Or is
-> > running seccomp filters on different cpus not a problem?
-> 
-> In my understanding this is a list of filters and they are independent
-> of each other.
-> 
-> Kees, Will. Andy?
+bpf now has its own mailing list bpf@vger.kernel.org.
+Update the bpf_devel_QA.rst file to reflect this.
 
-They're technically independent, but they are related to each
-other. (i.e. order matters, process hierarchy matters, etc). There's no
-reason I can see that we can't switch CPUs between running them, though.
-(AIUI, nothing here would suddenly make these run in parallel, right?)
+Also llvm has switch to github with llvm and clang
+in the same repo https://github.com/llvm/llvm-project.git.
+Update the QA file with newer build instructions.
 
-As long as "current" is still "current", and they run in the same order,
-we'll get the same final result as far as seccomp is concerned.
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ Documentation/bpf/bpf_devel_QA.rst | 29 ++++++++++++-----------------
+ 1 file changed, 12 insertions(+), 17 deletions(-)
 
+diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
+index c9856b927055..38c15c6fcb14 100644
+--- a/Documentation/bpf/bpf_devel_QA.rst
++++ b/Documentation/bpf/bpf_devel_QA.rst
+@@ -20,11 +20,11 @@ Reporting bugs
+ Q: How do I report bugs for BPF kernel code?
+ --------------------------------------------
+ A: Since all BPF kernel development as well as bpftool and iproute2 BPF
+-loader development happens through the netdev kernel mailing list,
++loader development happens through the bpf kernel mailing list,
+ please report any found issues around BPF to the following mailing
+ list:
+ 
+- netdev@vger.kernel.org
++ bpf@vger.kernel.org
+ 
+ This may also include issues related to XDP, BPF tracing, etc.
+ 
+@@ -46,17 +46,12 @@ Submitting patches
+ 
+ Q: To which mailing list do I need to submit my BPF patches?
+ ------------------------------------------------------------
+-A: Please submit your BPF patches to the netdev kernel mailing list:
++A: Please submit your BPF patches to the bpf kernel mailing list:
+ 
+- netdev@vger.kernel.org
+-
+-Historically, BPF came out of networking and has always been maintained
+-by the kernel networking community. Although these days BPF touches
+-many other subsystems as well, the patches are still routed mainly
+-through the networking community.
++ bpf@vger.kernel.org
+ 
+ In case your patch has changes in various different subsystems (e.g.
+-tracing, security, etc), make sure to Cc the related kernel mailing
++networking, tracing, security, etc), make sure to Cc the related kernel mailing
+ lists and maintainers from there as well, so they are able to review
+ the changes and provide their Acked-by's to the patches.
+ 
+@@ -168,7 +163,7 @@ a BPF point of view.
+ Be aware that this is not a final verdict that the patch will
+ automatically get accepted into net or net-next trees eventually:
+ 
+-On the netdev kernel mailing list reviews can come in at any point
++On the bpf kernel mailing list reviews can come in at any point
+ in time. If discussions around a patch conclude that they cannot
+ get included as-is, we will either apply a follow-up fix or drop
+ them from the trees entirely. Therefore, we also reserve to rebase
+@@ -494,15 +489,15 @@ A: You need cmake and gcc-c++ as build requisites for LLVM. Once you have
+ that set up, proceed with building the latest LLVM and clang version
+ from the git repositories::
+ 
+-     $ git clone http://llvm.org/git/llvm.git
+-     $ cd llvm/tools
+-     $ git clone --depth 1 http://llvm.org/git/clang.git
+-     $ cd ..; mkdir build; cd build
+-     $ cmake .. -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
++     $ git clone https://github.com/llvm/llvm-project.git
++     $ mkdir -p llvm-project/llvm/build/install
++     $ cd llvm-project/llvm/build
++     $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
++                -DLLVM_ENABLE_PROJECTS="clang"    \
+                 -DBUILD_SHARED_LIBS=OFF           \
+                 -DCMAKE_BUILD_TYPE=Release        \
+                 -DLLVM_BUILD_RUNTIME=OFF
+-     $ make -j $(getconf _NPROCESSORS_ONLN)
++     $ ninja
+ 
+ The built binaries can then be found in the build/bin/ directory, where
+ you can point the PATH variable to.
 -- 
-Kees Cook
+2.17.1
+
