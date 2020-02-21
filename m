@@ -2,98 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 60ED7168862
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 21:34:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FEA916896F
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 22:41:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgBUUen (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Feb 2020 15:34:43 -0500
-Received: from 2.mo173.mail-out.ovh.net ([178.33.251.49]:39292 "EHLO
-        2.mo173.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726483AbgBUUen (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Feb 2020 15:34:43 -0500
-X-Greylist: delayed 4200 seconds by postgrey-1.27 at vger.kernel.org; Fri, 21 Feb 2020 15:34:42 EST
-Received: from player791.ha.ovh.net (unknown [10.108.54.74])
-        by mo173.mail-out.ovh.net (Postfix) with ESMTP id 6BDA0132AE0
-        for <bpf@vger.kernel.org>; Fri, 21 Feb 2020 17:58:19 +0100 (CET)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player791.ha.ovh.net (Postfix) with ESMTPSA id 473BFF972430;
-        Fri, 21 Feb 2020 16:58:08 +0000 (UTC)
-From:   Stephen Kitt <steve@sk2.org>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
-Subject: [PATCH] docs: sysctl/kernel: document BPF entries
-Date:   Fri, 21 Feb 2020 17:58:01 +0100
-Message-Id: <20200221165801.32687-1-steve@sk2.org>
-X-Mailer: git-send-email 2.20.1
+        id S1727421AbgBUVlV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Feb 2020 16:41:21 -0500
+Received: from www62.your-server.de ([213.133.104.62]:48852 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726683AbgBUVlV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Feb 2020 16:41:21 -0500
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j5G2w-0002vi-Uj; Fri, 21 Feb 2020 22:41:19 +0100
+Received: from [85.7.42.192] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j5G2w-000Aca-Lk; Fri, 21 Feb 2020 22:41:18 +0100
+Subject: Re: [PATCH bpf-next v7 00/11] Extend SOCKMAP/SOCKHASH to store
+ listening sockets
+To:     Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>, Martin Lau <kafai@fb.com>
+References: <20200218171023.844439-1-jakub@cloudflare.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c86784f5-ef2c-cfd6-cb75-a67af7e11c3c@iogearbox.net>
+Date:   Fri, 21 Feb 2020 22:41:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 876794555126336901
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedugedrkeeggdelhecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejledurdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopegsphhfsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+In-Reply-To: <20200218171023.844439-1-jakub@cloudflare.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.1/25730/Fri Feb 21 13:08:06 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Based on the implementation in kernel/bpf/syscall.c,
-kernel/bpf/trampoline.c, include/linux/filter.h, and the documentation
-in bpftool-prog.rst.
+On 2/18/20 6:10 PM, Jakub Sitnicki wrote:
+> This patch set turns SOCK{MAP,HASH} into generic collections for TCP
+> sockets, both listening and established. Adding support for listening
+> sockets enables us to use these BPF map types with reuseport BPF programs.
+> 
+> Why? SOCKMAP and SOCKHASH, in comparison to REUSEPORT_SOCKARRAY, allow the
+> socket to be in more than one map at the same time.
+> 
+> Having a BPF map type that can hold listening sockets, and gracefully
+> co-exist with reuseport BPF is important if, in the future, we want
+> BPF programs that run at socket lookup time [0]. Cover letter for v1 of
+> this series tells the full story of how we got here [1].
+> 
+> Although SOCK{MAP,HASH} are not a drop-in replacement for SOCKARRAY just
+> yet, because UDP support is lacking, it's a step in this direction. We're
+> working with Lorenz on extending SOCK{MAP,HASH} to hold UDP sockets, and
+> expect to post RFC series for sockmap + UDP in the near future.
+> 
+> I've dropped Acks from all patches that have been touched since v6.
+> 
+> The audit for missing READ_ONCE annotations for access to sk_prot is
+> ongoing. Thus far I've found one location specific to TCP listening sockets
+> that needed annotating. This got fixed it in this iteration. I wonder if
+> sparse checker could be put to work to identify places where we have
+> sk_prot access while not holding sk_lock...
+> 
+> The patch series depends on another one, posted earlier [2], that has been
+> split out of it.
+> 
+> Thanks,
+> jkbs
+> 
+> [0] https://lore.kernel.org/bpf/20190828072250.29828-1-jakub@cloudflare.com/
+> [1] https://lore.kernel.org/bpf/20191123110751.6729-1-jakub@cloudflare.com/
+> [2] https://lore.kernel.org/bpf/20200217121530.754315-1-jakub@cloudflare.com/
+> 
+> v6 -> v7:
+> 
+> - Extended the series to cover SOCKHASH. (patches 4-8, 10-11) (John)
+> 
+> - Rebased onto recent bpf-next. Resolved conflicts in recent fixes to
+>    sk_state checks on sockmap/sockhash update path. (patch 4)
+> 
+> - Added missing READ_ONCE annotation in sock_copy. (patch 1)
+> 
+> - Split out patches that simplify sk_psock_restore_proto [2].
 
-Signed-off-by: Stephen Kitt <steve@sk2.org>
----
- Documentation/admin-guide/sysctl/kernel.rst | 24 +++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-index 1c48ab4bfe30..89c70ea7de7c 100644
---- a/Documentation/admin-guide/sysctl/kernel.rst
-+++ b/Documentation/admin-guide/sysctl/kernel.rst
-@@ -102,6 +102,20 @@ See the ``type_of_loader`` and ``ext_loader_ver`` fields in
- :doc:`/x86/boot` for additional information.
- 
- 
-+bpf_stats_enabled
-+=================
-+
-+Controls whether the kernel should collect statistics on BPF programs
-+(total time spent running, number of times run...). Enabling
-+statistics causes a slight reduction in performance on each program
-+run. The statistics can be seen using ``bpftool``.
-+
-+= ===================================
-+0 Don't collect statistics (default).
-+1 Collect statistics.
-+= ===================================
-+
-+
- cap_last_cap
- ============
- 
-@@ -1152,6 +1166,16 @@ NMI switch that most IA32 servers have fires unknown NMI up, for
- example.  If a system hangs up, try pressing the NMI switch.
- 
- 
-+unprivileged_bpf_disabled
-+=========================
-+
-+Writing 1 to this entry will disabled unprivileged calls to ``bpf()``;
-+once disabled, calling ``bpf()`` without ``CAP_SYS_ADMIN`` will return
-+``-EPERM``.
-+
-+Once set, this can't be cleared.
-+
-+
- watchdog
- ========
- 
--- 
-2.20.1
-
+Applied, thanks!
