@@ -2,94 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FEA916896F
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 22:41:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 128731689E0
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2020 23:15:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727421AbgBUVlV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Feb 2020 16:41:21 -0500
-Received: from www62.your-server.de ([213.133.104.62]:48852 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726683AbgBUVlV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Feb 2020 16:41:21 -0500
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1j5G2w-0002vi-Uj; Fri, 21 Feb 2020 22:41:19 +0100
-Received: from [85.7.42.192] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1j5G2w-000Aca-Lk; Fri, 21 Feb 2020 22:41:18 +0100
-Subject: Re: [PATCH bpf-next v7 00/11] Extend SOCKMAP/SOCKHASH to store
- listening sockets
-To:     Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>, Martin Lau <kafai@fb.com>
-References: <20200218171023.844439-1-jakub@cloudflare.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <c86784f5-ef2c-cfd6-cb75-a67af7e11c3c@iogearbox.net>
-Date:   Fri, 21 Feb 2020 22:41:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1728967AbgBUWPg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Feb 2020 17:15:36 -0500
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:34306 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726725AbgBUWPg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Feb 2020 17:15:36 -0500
+Received: by mail-pg1-f194.google.com with SMTP id j4so1698976pgi.1
+        for <bpf@vger.kernel.org>; Fri, 21 Feb 2020 14:15:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kXLJzM+fudX+dk2vxGD8qXAlS6NHJlq4l43rKFobmIY=;
+        b=Gc7qTHn74XmNFUGT18DRPr/JsTZZEH/R8iCK7yOVNokNvtxMq24mQGS/A3UBa734Oe
+         ok5JEGXxkAGI5niBWfu8iTF3dy3cbSvEQOUiHM5bk8+K/i1B54Ha/ZTIyDMIPNepANzS
+         2JlhVJ9Y4Q5Jos3/06GoKWW6fEoxhqP/wI0ck=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kXLJzM+fudX+dk2vxGD8qXAlS6NHJlq4l43rKFobmIY=;
+        b=Xs5SqQvk3FGCLPBzxuTr9Z1Q0E9eOGfy+U22daajuoDHAB/RdC5KXZr9nNRkcfKn6A
+         mPztvwakHl49qr31Iq8QzqSUkhyn6UkX1dkitvJYcpkyP1+2rCnL1TsZnJ69qKCbfqK+
+         VtD51lOJKcHHqwxOWgtXBgQUq0YWfP7oTlR9gKGqN7OTP2iu9QAbsgpKV85uqMPYkJrt
+         AvE7lU9tUygDuAVZBfIvQmgSlb+8y0dG0NXcA+HLUmdCEl0fFN54KxA7cmjfBYbSSQsi
+         f7LlWkWU2YXLi9UE9YK2dVHMVy2g6xwUK3YMotKw0YGLex7BLyfM95rPAHmY7jCzjyJ/
+         HPLw==
+X-Gm-Message-State: APjAAAU4wcODXoYmXcdDrqKydX9bNhNDVdsYO+52wfRzx7kIXJO7BrMb
+        EqJRxLWsi/bgGrn516x2dhwsmQ==
+X-Google-Smtp-Source: APXvYqw/4KMFiZHKgqWkcx8RiqfqgaEMBsI7aB5y+dpe0h7yWzHYitbJTEbwREjD5aqSPClkV4sogw==
+X-Received: by 2002:a62:36c2:: with SMTP id d185mr41244236pfa.203.1582323334247;
+        Fri, 21 Feb 2020 14:15:34 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k2sm3477608pgk.84.2020.02.21.14.15.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Feb 2020 14:15:33 -0800 (PST)
+Date:   Fri, 21 Feb 2020 14:15:32 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Sebastian Sewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Clark Williams <williams@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, Will Drewry <wad@chromium.org>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [RFC patch 09/19] bpf: Use BPF_PROG_RUN_PIN_ON_CPU() at simple
+ call sites.
+Message-ID: <202002211415.4111F356A@keescook>
+References: <20200214133917.304937432@linutronix.de>
+ <20200214161503.804093748@linutronix.de>
+ <87a75ftkwu.fsf@linux.intel.com>
+ <875zg3q7cn.fsf@nanos.tec.linutronix.de>
+ <202002201616.21FA55E@keescook>
+ <87lfownip5.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20200218171023.844439-1-jakub@cloudflare.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.1/25730/Fri Feb 21 13:08:06 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87lfownip5.fsf@nanos.tec.linutronix.de>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/18/20 6:10 PM, Jakub Sitnicki wrote:
-> This patch set turns SOCK{MAP,HASH} into generic collections for TCP
-> sockets, both listening and established. Adding support for listening
-> sockets enables us to use these BPF map types with reuseport BPF programs.
+On Fri, Feb 21, 2020 at 03:00:54PM +0100, Thomas Gleixner wrote:
+> Kees Cook <keescook@chromium.org> writes:
+> > They're technically independent, but they are related to each
+> > other. (i.e. order matters, process hierarchy matters, etc). There's no
+> > reason I can see that we can't switch CPUs between running them, though.
+> > (AIUI, nothing here would suddenly make these run in parallel, right?)
 > 
-> Why? SOCKMAP and SOCKHASH, in comparison to REUSEPORT_SOCKARRAY, allow the
-> socket to be in more than one map at the same time.
-> 
-> Having a BPF map type that can hold listening sockets, and gracefully
-> co-exist with reuseport BPF is important if, in the future, we want
-> BPF programs that run at socket lookup time [0]. Cover letter for v1 of
-> this series tells the full story of how we got here [1].
-> 
-> Although SOCK{MAP,HASH} are not a drop-in replacement for SOCKARRAY just
-> yet, because UDP support is lacking, it's a step in this direction. We're
-> working with Lorenz on extending SOCK{MAP,HASH} to hold UDP sockets, and
-> expect to post RFC series for sockmap + UDP in the near future.
-> 
-> I've dropped Acks from all patches that have been touched since v6.
-> 
-> The audit for missing READ_ONCE annotations for access to sk_prot is
-> ongoing. Thus far I've found one location specific to TCP listening sockets
-> that needed annotating. This got fixed it in this iteration. I wonder if
-> sparse checker could be put to work to identify places where we have
-> sk_prot access while not holding sk_lock...
-> 
-> The patch series depends on another one, posted earlier [2], that has been
-> split out of it.
-> 
-> Thanks,
-> jkbs
-> 
-> [0] https://lore.kernel.org/bpf/20190828072250.29828-1-jakub@cloudflare.com/
-> [1] https://lore.kernel.org/bpf/20191123110751.6729-1-jakub@cloudflare.com/
-> [2] https://lore.kernel.org/bpf/20200217121530.754315-1-jakub@cloudflare.com/
-> 
-> v6 -> v7:
-> 
-> - Extended the series to cover SOCKHASH. (patches 4-8, 10-11) (John)
-> 
-> - Rebased onto recent bpf-next. Resolved conflicts in recent fixes to
->    sk_state checks on sockmap/sockhash update path. (patch 4)
-> 
-> - Added missing READ_ONCE annotation in sock_copy. (patch 1)
-> 
-> - Split out patches that simplify sk_psock_restore_proto [2].
+> Of course not. If we'd run the same thread on multiple CPUs in parallel
+> the ordering of your BPF programs would be the least of your worries.
 
-Applied, thanks!
+Right, okay, good. I just wanted to be extra sure. :)
+
+-- 
+Kees Cook
