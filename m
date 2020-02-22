@@ -2,133 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A96168C31
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2020 04:36:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7C7168C4F
+	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2020 05:26:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727959AbgBVDgL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Feb 2020 22:36:11 -0500
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:37395 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727186AbgBVDgK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Feb 2020 22:36:10 -0500
-Received: by mail-pl1-f196.google.com with SMTP id c23so1701025plz.4
-        for <bpf@vger.kernel.org>; Fri, 21 Feb 2020 19:36:09 -0800 (PST)
+        id S1726472AbgBVE0H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Feb 2020 23:26:07 -0500
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:46178 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726393AbgBVE0H (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Feb 2020 23:26:07 -0500
+Received: by mail-pg1-f193.google.com with SMTP id y30so1988015pga.13
+        for <bpf@vger.kernel.org>; Fri, 21 Feb 2020 20:26:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Dy4w/JtP1JAdelu+LxOrdV8M+iFt3K5B73WlLdHiOa4=;
-        b=AmrhPy7RumaWH6FOFHW3GNC6kY68F1410q008OJPuXEzc8b4LAhybx6uLh6Twwz4mp
-         TPPbGhdCnnTCDMNdemay7kGwoVq3yb/Lm2y5mAr3HCih8z3Y5MBd4E5dtlFZsluckQvO
-         H7sBTTErYEOs+yTcyLb9t1sxLI8PugM5PtZrI=
+        bh=S04MpDY/ruT9R3530Z87j5UAy18sgkgPvdS5rq+kd3k=;
+        b=HC6tB5/n3jprjIUAPVp7s8TE+lw3DArPemCjTLFf6SZTq8rdljmvjDQKfwnpDCqu9M
+         McuEh8+mx8FGgpNOPUbP/5TCKlQV1w1VEu4/HSjSNXVsfPT9ASGqbZKiIFvVJAlUrr86
+         aZuMUWYfnYI9yYDHnbwRw6bEQzeTrErT1JXZM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Dy4w/JtP1JAdelu+LxOrdV8M+iFt3K5B73WlLdHiOa4=;
-        b=g3ga2BDLPwOhBq1JXNQ7UAtH2DdIkx8W1jhv5Q1jM85EvQXf23Ay20mOqag1gASWDK
-         ryb4WQBlLx3GXk49Wru2TEh0rOyDfe90pAm/NldKo2VVObK5oBK9yqlJDQgy52KJz+g9
-         08LjKLAg+vaWyT5uRpQe+aV1G3Y5qxi4JRJTf5OG5+Gij8KisCNWtB511c6UjaexidOV
-         RUHyIzGTuUsFbog7Ui+ZMzIuC5lC3Z95NpXpCJ2I2nsR3YChDWPrDE8jILWF01bwd3vm
-         5KLUND8vYabwsG/+drxvRuuaCgRVM+TUYSsHXq832FrWN5Wbt+jKYBzP3yTe0JanR9c4
-         bemw==
-X-Gm-Message-State: APjAAAX2AsNHejkJz9IiMbCKTle9zC3kjZ6VgZGNGwVom4yTYvWT5DeN
-        otVX/8i7uCrbN6ZxCKxBgdYRWQ==
-X-Google-Smtp-Source: APXvYqzjTBw/bhvUIWQPCmbF9AleRhd6Oh8HsREouo4o8p5KTXx04i33eeEUh7oMqMk24ma41xQegQ==
-X-Received: by 2002:a17:902:be0e:: with SMTP id r14mr39370446pls.33.1582342568584;
-        Fri, 21 Feb 2020 19:36:08 -0800 (PST)
+        bh=S04MpDY/ruT9R3530Z87j5UAy18sgkgPvdS5rq+kd3k=;
+        b=UW0ChcX9kRgJVoG9kFsm44QsTRdFumddBL9Ey1T9Cy6d1sg31yaLVYoMayFqsI4+Cp
+         kC0nf18nHP3KGH8pWdidGXsMNRIlwUhfCeoPdi34uLh07xWbdn3lyvMaXjmiTQK/OwGL
+         MmDWl6CnH5UkQngN8fuKFvH8GERwiikR/mJcPT8d+V+Y8T7d49TMeyGVb12GagGWavgG
+         /KwoGdM1t6mfn/7iE4Gd+GIxnYmkLb1Kw79H3mE9SsAvgpbOCcRcyBoGSwkwqIdUqLDX
+         nOhjTQPv5KRYNyA9tIV4HE09yNJW6Q/iKSGl+TVEQ5DixdtbPAW7KyfTHVS+XPtRxgu3
+         wdRg==
+X-Gm-Message-State: APjAAAXdHd6HpRh81aThNWWqj5oJFRNQPXDd5rU5cmhSb2JaWqvL9gww
+        m8JmBmtxPYm4tbEXIfC3fMpHeg==
+X-Google-Smtp-Source: APXvYqynLpaT1SHFc7hteRLE/Am8rkGvVcqos0AxtZQFh6Ok/U/TQctt8ObsfFGGlRMXV0KtzIJk4Q==
+X-Received: by 2002:a62:1548:: with SMTP id 69mr41986772pfv.239.1582345566578;
+        Fri, 21 Feb 2020 20:26:06 -0800 (PST)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id dw10sm3908095pjb.11.2020.02.21.19.36.06
+        by smtp.gmail.com with ESMTPSA id c15sm4342928pfo.137.2020.02.21.20.26.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Feb 2020 19:36:07 -0800 (PST)
-Date:   Fri, 21 Feb 2020 19:36:06 -0800
+        Fri, 21 Feb 2020 20:26:05 -0800 (PST)
+Date:   Fri, 21 Feb 2020 20:26:04 -0800
 From:   Kees Cook <keescook@chromium.org>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     KP Singh <kpsingh@chromium.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        James Morris <jmorris@namei.org>
-Subject: Re: [PATCH bpf-next v4 0/8] MAC and Audit policy using eBPF (KRSI)
-Message-ID: <202002211909.10D57A125@keescook>
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>,
+        Thomas Garnier <thgarnie@chromium.org>,
+        Michael Halcrow <mhalcrow@google.com>,
+        Paul Turner <pjt@google.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Jann Horn <jannh@google.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Christian Brauner <christian@brauner.io>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        Andrey Ignatov <rdna@fb.com>, Joe Stringer <joe@wand.net.nz>
+Subject: Re: [PATCH bpf-next v4 4/8] bpf: lsm: Add support for
+ enabling/disabling BPF hooks
+Message-ID: <202002212023.1712A8AB@keescook>
 References: <20200220175250.10795-1-kpsingh@chromium.org>
- <85e89b0c-5f2c-a4b1-17d3-47cc3bdab38b@schaufler-ca.com>
- <20200221194149.GA9207@chromium.org>
- <8a2a2d59-ec4b-80d1-2710-c2ead588e638@schaufler-ca.com>
- <202002211617.28EAC6826@keescook>
- <7fd415e0-35c8-e30e-e4b8-af0ba286f628@schaufler-ca.com>
+ <20200220175250.10795-5-kpsingh@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7fd415e0-35c8-e30e-e4b8-af0ba286f628@schaufler-ca.com>
+In-Reply-To: <20200220175250.10795-5-kpsingh@chromium.org>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 21, 2020 at 05:04:38PM -0800, Casey Schaufler wrote:
-> On 2/21/2020 4:22 PM, Kees Cook wrote:
-> > I really like this approach: it actually _simplifies_ the LSM piece in
-> > that there is no need to keep the union and the hook lists in sync any
-> > more: they're defined once now. (There were already 2 lists, and this
-> > collapses the list into 1 place for all 3 users.) It's very visible in
-> > the diffstat too (~300 lines removed):
-> 
-> Erk. Too many smart people like this. I still don't, but it's possible
-> that I could learn to.
+On Thu, Feb 20, 2020 at 06:52:46PM +0100, KP Singh wrote:
+> index aa111392a700..569cc07d5e34 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -804,6 +804,13 @@ int security_vm_enough_memory_mm(struct mm_struct *mm, long pages)
+>  			break;
+>  		}
+>  	}
+> +#ifdef CONFIG_BPF_LSM
+> +	if (HAS_BPF_LSM_PROG(vm_enough_memory)) {
+> +		rc = bpf_lsm_vm_enough_memory(mm, pages);
+> +		if (rc <= 0)
+> +			cap_sys_admin = 0;
+> +	}
+> +#endif
 
-Well, I admit that I am, perhaps, overly infatuatied with "fancy" macros,
-but in cases like this where we're operating on a list of stuff and doing
-the same thing over and over but with different elements, I've found
-this is actually much nicer way to do it. (E.g. I did something like
-this in drivers/misc/lkdtm/core.c to avoid endless typing, and Mimi did
-something similar in include/linux/fs.h for keeping kernel_read_file_id
-and kernel_read_file_str automatically in sync.) KP's macros are more
-extensive, but I think it's a clever to avoid going crazy as LSM hooks
-evolve.
+This pattern of using #ifdef in code is not considered best practice.
+Using in-code IS_ENABLED(CONFIG_BPF_LSM) is preferred. But since this
+pattern always uses HAS_BPF_LSM_PROG(), you could fold the
+IS_ENABLED() into the definition of HAS_BPF_LSM_PROG itself -- or more
+likely, have the macro defined as:
 
-> > Also, there is no need to worry about divergence: the BPF will always
-> > track the exposed LSM. Backward compat is (AIUI) explicitly a
-> > non-feature.
-> 
-> As written you're correct, it can't diverge. My concern is about
-> what happens when someone decides that they want the BPF and hook
-> to be different. I fear there will be a hideous solution.
+#ifdef CONFIG_BPF_LSM
+# define HAS_BPF_LSM_PROG(x)    ....existing implementation....
+#else
+# define HAS_BPF_LSM_PROG(x)	false
+#endif
 
-This is related to some of the discussion at the last Maintainer's
-Summit and tracepoints: i.e. the exposure of what is basically kernel
-internals to a userspace system. The conclusion there (which, I think,
-has been extended strongly into BPF) is that things that produce BPF are
-accepted to be strongly tied to kernel version, so if a hook changes, so
-much the userspace side. This appears to be proven out in the existing
-BPF world, which gives me some evidence that this claim (close tie to
-kernel version) isn't an empty promise.
-
-> > I don't see why anything here is "harmful"?
-> 
-> Injecting large chucks of code via an #include does nothing
-> for readability. I've seen it fail disastrously many times,
-> usually after the original author has moved on and entrusted
-> the code to someone who missed some of the nuance.
-
-I totally agree about wanting to avoid reduced readability. In this case,
-I actually think readability is improved since the macro "implementation"
-are right above each #include. And then looking at the resulting included
-header, all the metadata is visible in one place. But I agree: it is
-"unusual", but I think on the sum it's an improvement. (But I share some
-of the frustration of the kernel being filled with weird preprocessor
-insanity. I will never get back the weeks I spent on trying to improve
-the min/max macros.... *sob*)
-
-> I'll drop objection to this bit, but still object to making
-> BPF special in the infrastructure. It doesn't need to be and
-> it is exactly the kind of additional complexity we need to
-> avoid.
-
-You mean 3/8's RUN_BPF_LSM_*_PROGS() additions to the call_*_hook()s?
-
-I'll go comment on that thread directly instead of splitting the
-discussion. :)
+Then none of these ifdefs are needed.
 
 -- 
 Kees Cook
