@@ -2,131 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D52B9168DA6
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2020 09:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE24168F34
+	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2020 14:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgBVIkz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sat, 22 Feb 2020 03:40:55 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:47359 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725958AbgBVIkz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 22 Feb 2020 03:40:55 -0500
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1j5QKY-0007U5-Vw; Sat, 22 Feb 2020 09:40:11 +0100
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 50624100BB5; Sat, 22 Feb 2020 09:40:10 +0100 (CET)
-From:   Thomas Gleixner <tglx@linutronix.de>
+        id S1727297AbgBVNt7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 22 Feb 2020 08:49:59 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:39591 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727115AbgBVNt7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 22 Feb 2020 08:49:59 -0500
+Received: by mail-lj1-f194.google.com with SMTP id o15so5214450ljg.6
+        for <bpf@vger.kernel.org>; Sat, 22 Feb 2020 05:49:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=0+clKuYh7KPvWqzrnI6AakWzmOHJogBn0b1gTuFVo7o=;
+        b=FvYszws9VA4gn8vxUjwgHHZiNH5agadj/BOL0SFYiK7f1ixMQMJQA7MchGJwkLDG0Q
+         xClcRoOIoAROktIFwqQvhvwI/ChoVWu3jwE9GvMyhA02qZMTnJk7WGS3zqBqwZOOnsn7
+         ++bHoFvvSJFFQ17KV2drIZA3Ky9NHw5cwXxrc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=0+clKuYh7KPvWqzrnI6AakWzmOHJogBn0b1gTuFVo7o=;
+        b=VHSaRFYAItZ4fMXSJL+5PwKKg1zk8nf0Tus8MMQ1Ynp+1aDDgKSpZfsLga/+yhcozJ
+         EkyeWeMuPAdHD0HiQ1kN++Lgb50vPaJOFNP7nmKf43pMNSTV3N31pr4Hw1s5J73g03MX
+         E5ktXI42PG0gEMbVNJ69SJRenBLJ72kKY0OGoSvoqZaIPFe8q16EtCTyiHW9lkFmdezW
+         K4en39DaPKXkpTwmUkzKD5NLYloF6/VxokxSNyyM87S+FNgpW8miEHGOE1ITzFe5AjLc
+         1761maRcRPr7j487tZFcT3RW0eTFp6nRJt6VqwZvlwmO44cY+Ynuux8sZd988yVm/n5+
+         0C1w==
+X-Gm-Message-State: APjAAAVNsYv6fO/6mKJ1MrDOu8HanSRoWVkhgx/H/HJQ4TSO0HPBvUyh
+        yAkjeyyVOgRxSePnd/mjd8K7Fg==
+X-Google-Smtp-Source: APXvYqy09JWNZOnCO5lbS6bNZy01zOlQiTyFsElMSYd8XaJeRQWhmARC+4HQ62uci8x7lNZnk52Dow==
+X-Received: by 2002:a2e:9110:: with SMTP id m16mr24874270ljg.140.1582379397071;
+        Sat, 22 Feb 2020 05:49:57 -0800 (PST)
+Received: from cloudflare.com (user-5-173-1-230.play-internet.pl. [5.173.1.230])
+        by smtp.gmail.com with ESMTPSA id g25sm3265934ljn.107.2020.02.22.05.49.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 Feb 2020 05:49:56 -0800 (PST)
+References: <20200218171023.844439-1-jakub@cloudflare.com> <c86784f5-ef2c-cfd6-cb75-a67af7e11c3c@iogearbox.net> <CAADnVQJrsfpsT47SqyCTM6=MSkeMESZACZR12Kx+0kRGBnRbvg@mail.gmail.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        David Miller <davem@davemloft.net>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sebastian Sewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Clark Williams <williams@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [patch V2 01/20] bpf: Enforce preallocation for all instrumentation programs
-In-Reply-To: <20200222042916.k3r5dj5njoo2ywyj@ast-mbp>
-Date:   Sat, 22 Feb 2020 09:40:10 +0100
-Message-ID: <87o8tr3thx.fsf@nanos.tec.linutronix.de>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>, Martin Lau <kafai@fb.com>
+Subject: Re: [PATCH bpf-next v7 00/11] Extend SOCKMAP/SOCKHASH to store listening sockets
+In-reply-to: <CAADnVQJrsfpsT47SqyCTM6=MSkeMESZACZR12Kx+0kRGBnRbvg@mail.gmail.com>
+Date:   Sat, 22 Feb 2020 13:49:52 +0000
+Message-ID: <87d0a668an.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei,
+Hi Alexei,
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> On Thu, Feb 20, 2020 at 09:45:18PM +0100, Thomas Gleixner wrote:
->> The assumption that only programs attached to perf NMI events can deadlock
->> on memory allocators is wrong. Assume the following simplified callchain:
->>  	 */
->> -	if (prog->type == BPF_PROG_TYPE_PERF_EVENT) {
->> +	if ((is_tracing_prog_type(prog->type)) {
+On Sat, Feb 22, 2020 at 12:47 AM GMT, Alexei Starovoitov wrote:
+> On Fri, Feb 21, 2020 at 1:41 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>
+>> On 2/18/20 6:10 PM, Jakub Sitnicki wrote:
+>> > This patch set turns SOCK{MAP,HASH} into generic collections for TCP
+>> > sockets, both listening and established. Adding support for listening
+>> > sockets enables us to use these BPF map types with reuseport BPF programs.
+>> >
+>> > Why? SOCKMAP and SOCKHASH, in comparison to REUSEPORT_SOCKARRAY, allow the
+>> > socket to be in more than one map at the same time.
+>> >
+>> > Having a BPF map type that can hold listening sockets, and gracefully
+>> > co-exist with reuseport BPF is important if, in the future, we want
+>> > BPF programs that run at socket lookup time [0]. Cover letter for v1 of
+>> > this series tells the full story of how we got here [1].
+>> >
+>> > Although SOCK{MAP,HASH} are not a drop-in replacement for SOCKARRAY just
+>> > yet, because UDP support is lacking, it's a step in this direction. We're
+>> > working with Lorenz on extending SOCK{MAP,HASH} to hold UDP sockets, and
+>> > expect to post RFC series for sockmap + UDP in the near future.
+>> >
+>> > I've dropped Acks from all patches that have been touched since v6.
+>> >
+>> > The audit for missing READ_ONCE annotations for access to sk_prot is
+>> > ongoing. Thus far I've found one location specific to TCP listening sockets
+>> > that needed annotating. This got fixed it in this iteration. I wonder if
+>> > sparse checker could be put to work to identify places where we have
+>> > sk_prot access while not holding sk_lock...
+>> >
+>> > The patch series depends on another one, posted earlier [2], that has been
+>> > split out of it.
+>> >
+>> > Thanks,
+>> > jkbs
+>> >
+>> > [0] https://lore.kernel.org/bpf/20190828072250.29828-1-jakub@cloudflare.com/
+>> > [1] https://lore.kernel.org/bpf/20191123110751.6729-1-jakub@cloudflare.com/
+>> > [2] https://lore.kernel.org/bpf/20200217121530.754315-1-jakub@cloudflare.com/
+>> >
+>> > v6 -> v7:
+>> >
+>> > - Extended the series to cover SOCKHASH. (patches 4-8, 10-11) (John)
+>> >
+>> > - Rebased onto recent bpf-next. Resolved conflicts in recent fixes to
+>> >    sk_state checks on sockmap/sockhash update path. (patch 4)
+>> >
+>> > - Added missing READ_ONCE annotation in sock_copy. (patch 1)
+>> >
+>> > - Split out patches that simplify sk_psock_restore_proto [2].
+>>
+>> Applied, thanks!
 >
-> This doesn't build.
-> I assumed the typo somehow sneaked in and proceeded, but it broke
-> a bunch of tests:
-> Summary: 1526 PASSED, 0 SKIPPED, 54 FAILED
-> One can argue that the test are unsafe and broken.
-> We used to test all those tests with and without prealloc:
-> map_flags = 0;
-> run_all_tests();
-> map_flags = BPF_F_NO_PREALLOC;
-> run_all_tests();
-> Then 4 years ago commit 5aa5bd14c5f866 switched hashmap to be no_prealloc
-> always and that how it stayed since then. We can adjust the tests to use
-> prealloc with tracing progs, but this breakage shows that there could be plenty
-> of bpf users that also use BPF_F_NO_PREALLOC with tracing. It could simply
-> be because they know that their kprobes are in a safe spot (and kmalloc is ok)
-> and they want to save memory. They could be using large max_entries parameter
-> for worst case hash map usage, but typical load is low. In general hashtables
-> don't perform well after 50%, so prealloc is wasting half of the memory. Since
-> we cannot control where kprobes are placed I'm not sure what is the right fix
-> here. It feels that if we proceed with this patch somebody will complain and we
-> would have to revert, but I'm willing to take this risk if we cannot come up
-> with an alternative fix.
-
-Having something which is known to be broken exposed is not a good option
-either.
-
-Just assume that someone is investigating a kernel issue. BOFH who is
-stuck in the 90's uses perf, kprobes and tracepoints. Now he goes on
-vacation and the new kid in the team decides to flip that over to BPF.
-So now instead of getting information he deadlocks or crashes the
-machine.
-
-You can't just tell him, don't do that then. It's broken by design and
-you really can't tell which probes are safe and which are not because
-the allocator calls out into whatever functions which might look
-completely unrelated.
-
-So one way to phase this out would be:
-
-	if (is_tracing()) {
-        	if (is_perf() || IS_ENABLED(RT))
-                	return -EINVAL;
-                WARN_ONCE(.....)
-        }
-
-And clearly write in the warning that this is dangerous, broken and
-about to be forbidden. Hmm?
-
-> Going further with the patchset.
+> Jakub,
 >
-> Patch 9 "bpf: Use bpf_prog_run_pin_on_cpu() at simple call sites."
-> adds new warning:
-> ../kernel/seccomp.c: In function ‘seccomp_run_filters’:
-> ../kernel/seccomp.c:272:50: warning: passing argument 2 of ‘bpf_prog_run_pin_on_cpu’ discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
->    u32 cur_ret = bpf_prog_run_pin_on_cpu(f->prog, sd);
+> what is going on here?
+> # test_progs -n 40
+> #40 select_reuseport:OK
+> Summary: 1/126 PASSED, 30 SKIPPED, 0 FAILED
+>
+> Does it mean nothing was actually tested?
+> I really don't like to see 30 skipped tests.
+> Is it my environment?
+> If so please make them hard failures.
+> I will fix whatever I need to fix in my setup.
 
-Uurgh. I'm sure I fixed that and then I must have lost it again while
-reshuffling stuff. Sorry about that.
+The UDP tests for sock{map,hash} are marked as skipped, because UDP
+support is not implemented yet. Sorry for the confusion.
 
-> That's where I gave up.
+Having read the recent thread about BPF selftests [0] I now realize that
+this is not the best idea. It sends the wrong signal to the developer.
 
-Fair enough.
+I propose to exclude the UDP tests w/ sock{map,hash} by not registering
+them with test__start_subtest at all. Failing them would indicate a
+regression, which is not true. While skipping them points to a potential
+problem with the test environment, which isn't true, either.
 
-> I pulled sched-for-bpf-2020-02-20 branch from tip and pushed it into bpf-next.
-> Could you please rebase your set on top of bpf-next and repost?
-> The logic in all patches looks good.
+I'll follow up with a patch for this, if that sounds good to you.
 
-Will do.
-
-Thanks,
-
-        tglx
+[0] https://lore.kernel.org/bpf/20200220191845.u62nhohgzngbrpib@ast-mbp/T/#t
