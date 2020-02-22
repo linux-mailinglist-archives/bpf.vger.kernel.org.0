@@ -2,143 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE24168F34
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2020 14:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF3B168F58
+	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2020 15:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727297AbgBVNt7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 22 Feb 2020 08:49:59 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:39591 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727115AbgBVNt7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 22 Feb 2020 08:49:59 -0500
-Received: by mail-lj1-f194.google.com with SMTP id o15so5214450ljg.6
-        for <bpf@vger.kernel.org>; Sat, 22 Feb 2020 05:49:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=0+clKuYh7KPvWqzrnI6AakWzmOHJogBn0b1gTuFVo7o=;
-        b=FvYszws9VA4gn8vxUjwgHHZiNH5agadj/BOL0SFYiK7f1ixMQMJQA7MchGJwkLDG0Q
-         xClcRoOIoAROktIFwqQvhvwI/ChoVWu3jwE9GvMyhA02qZMTnJk7WGS3zqBqwZOOnsn7
-         ++bHoFvvSJFFQ17KV2drIZA3Ky9NHw5cwXxrc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=0+clKuYh7KPvWqzrnI6AakWzmOHJogBn0b1gTuFVo7o=;
-        b=VHSaRFYAItZ4fMXSJL+5PwKKg1zk8nf0Tus8MMQ1Ynp+1aDDgKSpZfsLga/+yhcozJ
-         EkyeWeMuPAdHD0HiQ1kN++Lgb50vPaJOFNP7nmKf43pMNSTV3N31pr4Hw1s5J73g03MX
-         E5ktXI42PG0gEMbVNJ69SJRenBLJ72kKY0OGoSvoqZaIPFe8q16EtCTyiHW9lkFmdezW
-         K4en39DaPKXkpTwmUkzKD5NLYloF6/VxokxSNyyM87S+FNgpW8miEHGOE1ITzFe5AjLc
-         1761maRcRPr7j487tZFcT3RW0eTFp6nRJt6VqwZvlwmO44cY+Ynuux8sZd988yVm/n5+
-         0C1w==
-X-Gm-Message-State: APjAAAVNsYv6fO/6mKJ1MrDOu8HanSRoWVkhgx/H/HJQ4TSO0HPBvUyh
-        yAkjeyyVOgRxSePnd/mjd8K7Fg==
-X-Google-Smtp-Source: APXvYqy09JWNZOnCO5lbS6bNZy01zOlQiTyFsElMSYd8XaJeRQWhmARC+4HQ62uci8x7lNZnk52Dow==
-X-Received: by 2002:a2e:9110:: with SMTP id m16mr24874270ljg.140.1582379397071;
-        Sat, 22 Feb 2020 05:49:57 -0800 (PST)
-Received: from cloudflare.com (user-5-173-1-230.play-internet.pl. [5.173.1.230])
-        by smtp.gmail.com with ESMTPSA id g25sm3265934ljn.107.2020.02.22.05.49.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Feb 2020 05:49:56 -0800 (PST)
-References: <20200218171023.844439-1-jakub@cloudflare.com> <c86784f5-ef2c-cfd6-cb75-a67af7e11c3c@iogearbox.net> <CAADnVQJrsfpsT47SqyCTM6=MSkeMESZACZR12Kx+0kRGBnRbvg@mail.gmail.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>, Martin Lau <kafai@fb.com>
-Subject: Re: [PATCH bpf-next v7 00/11] Extend SOCKMAP/SOCKHASH to store listening sockets
-In-reply-to: <CAADnVQJrsfpsT47SqyCTM6=MSkeMESZACZR12Kx+0kRGBnRbvg@mail.gmail.com>
-Date:   Sat, 22 Feb 2020 13:49:52 +0000
-Message-ID: <87d0a668an.fsf@cloudflare.com>
+        id S1727230AbgBVOfC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 22 Feb 2020 09:35:02 -0500
+Received: from sonic316-11.consmr.mail.bf2.yahoo.com ([74.6.130.121]:42856
+        "EHLO sonic316-11.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727184AbgBVOfB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 22 Feb 2020 09:35:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1582382100; bh=BwDPrsA2+wE7onqC1JBBbTtzaCQs5syyrmDpzadvHSI=; h=Date:From:Reply-To:Subject:References:From:Subject; b=I7B73B7Du/7lfAIQ7VDJ12j7SoIFWMjozRJS2DAT3gb/n7YwS80fqNfTphYTpKgZ+BTpSEya6uX7x/ZMyc+SlzL9uzeZ22Lk5sQ9aFMGqxwo5s97uk4zIlO8GqIAHicbVHUedwkQ0b8ivrJxEebCpW9/OaqoK3geioUimFEQW0tH/eb7s4rIE8LB4JH6nBWXxAmk2fF+/21xvoTcg1ZVneuVmsxlfgh1jd/PSf/ji25J8iXAO/unLl+JOgowofQsKAy0LvDjeu523og0z7EXCCun85qxPSSFucjuwR1KxUl882uQ2qBVKIAJkKqH7O3pyqE18BAfj0MKDqOJ38xADw==
+X-YMail-OSG: 5vtwVsUVM1nlJTe1KwTRUbz3svlc50sfE96KeUL1f0GHnVqSRdxXySekwgAv2yz
+ fXlhDUD9EPAYIKNYwzSxMREI4z0yS3bGXqtQjEOTx1BM1gPZp0a6MJ6ufQ.oyjHfCF4QayTdQKZT
+ gLQh3EyXODKDZ1uscrEtOqIPU0W9diqUBJEQoLVHyO_GG_ElOYacuijsThTKEdqSWWU.pcRFTuL7
+ ZnVW26aJpqnV0MLAhMA4oZDRRi4duZABiJTqYVWcqC04ukoUfgvBGZNKOEctCrV6Jx5AM1FAN5.g
+ Pn5yM3isf9BBAMfnm3tNT1LaZE_CCwvrU2nYOS3o32WQOtOZR4b6ulHjoiq8jgr0PC0beajB4IZq
+ 06jK4ATxbJrJTebjuRuNXckznN0PZSB_ZYgW1n7ECQ6J74B7UsRxzHQAcz4dZsfdAj5kfiztzWYU
+ Enr_go703NYlT7O0DGP3Ukd33lajeh.I9WN9BFxad020FTjWRJ7BM9gb4vh6ww_TniGX8om09EPf
+ jcM.Czq6Kwie52RGMNUQ4sZaKJP8z0jgM4kqBYm5S9sWRV1cxCpZwcSnPCYXN97pJayImd9C3G3p
+ BcE4FVtdyD84W2AFUV.vDg_f4NI4iwXDg2mGd0jE.riECuci0vieuFATicOpfF0CM3omttZ.3Elu
+ ev.6v15Cv6wwwjURcpBpYkFYwAzdPm5FmJGNT2yiXUI2lMDp8rsP_zBG67vjKnHIacsnjTJyv38S
+ Fc.VcG6ACsCX6zXouy4BM00m6gUQelZlHWww_bNKIchXmrd1Uj0GmQs3dfUgmOiC3sGdUnPlGh9F
+ WNq2SPlgESO5NJ6EMXzFIPH.gk_9iOa75FPTP6PGAwLCX8KcZAS2jMRZ9RBKyJgpNP00PW09UCPl
+ 2pW1JMcX4KAsyHb49R11m.yn4pO4OWFyFxQrygTnQh1U546_RFJmWaKRGllWkKneZTgTVSUGzECP
+ E57VATjEGtF86C3cHEY.5H5aem9K_XN7pF4rBflN.lryadd0JgRXBl57Uqn4BVMEQDVY3yY8XbWk
+ ggBsGXyyTJ.mwewPbjGsOISQ4OHPoiw0E5nB0Z5PzK56YjC088sx4hsuijx7Ad5drPqJzcJmLvC9
+ V842T6Iu6Y1UVmzpOPdTcn3AOlsrjEaiCrinG22dpEOFlKnDArMzWbY24mjEpLjerUbCcq4IdKSD
+ FBbxVAxFN8.xKC6qVzJT9vkPkSMx5G_H4VGoew0onZL_G0Bim4uS1tFftgnUIxKkri0.ONisrSSC
+ aSujVejttvPCK00Hg4cd09VTIgkT_5VtBY0yRkfpke2_HvPmPLt4BsslfPL91RAYsVtz1f76Av8p
+ JpQI-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.bf2.yahoo.com with HTTP; Sat, 22 Feb 2020 14:35:00 +0000
+Date:   Sat, 22 Feb 2020 14:34:59 +0000 (UTC)
+From:   Lisa Williams <lw82831@gmail.com>
+Reply-To: lisawilam@yahoo.com
+Message-ID: <1557056426.457732.1582382099727@mail.yahoo.com>
+Subject: Hi Dear
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1557056426.457732.1582382099727.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15280 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:72.0) Gecko/20100101 Firefox/72.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Alexei,
 
-On Sat, Feb 22, 2020 at 12:47 AM GMT, Alexei Starovoitov wrote:
-> On Fri, Feb 21, 2020 at 1:41 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>
->> On 2/18/20 6:10 PM, Jakub Sitnicki wrote:
->> > This patch set turns SOCK{MAP,HASH} into generic collections for TCP
->> > sockets, both listening and established. Adding support for listening
->> > sockets enables us to use these BPF map types with reuseport BPF programs.
->> >
->> > Why? SOCKMAP and SOCKHASH, in comparison to REUSEPORT_SOCKARRAY, allow the
->> > socket to be in more than one map at the same time.
->> >
->> > Having a BPF map type that can hold listening sockets, and gracefully
->> > co-exist with reuseport BPF is important if, in the future, we want
->> > BPF programs that run at socket lookup time [0]. Cover letter for v1 of
->> > this series tells the full story of how we got here [1].
->> >
->> > Although SOCK{MAP,HASH} are not a drop-in replacement for SOCKARRAY just
->> > yet, because UDP support is lacking, it's a step in this direction. We're
->> > working with Lorenz on extending SOCK{MAP,HASH} to hold UDP sockets, and
->> > expect to post RFC series for sockmap + UDP in the near future.
->> >
->> > I've dropped Acks from all patches that have been touched since v6.
->> >
->> > The audit for missing READ_ONCE annotations for access to sk_prot is
->> > ongoing. Thus far I've found one location specific to TCP listening sockets
->> > that needed annotating. This got fixed it in this iteration. I wonder if
->> > sparse checker could be put to work to identify places where we have
->> > sk_prot access while not holding sk_lock...
->> >
->> > The patch series depends on another one, posted earlier [2], that has been
->> > split out of it.
->> >
->> > Thanks,
->> > jkbs
->> >
->> > [0] https://lore.kernel.org/bpf/20190828072250.29828-1-jakub@cloudflare.com/
->> > [1] https://lore.kernel.org/bpf/20191123110751.6729-1-jakub@cloudflare.com/
->> > [2] https://lore.kernel.org/bpf/20200217121530.754315-1-jakub@cloudflare.com/
->> >
->> > v6 -> v7:
->> >
->> > - Extended the series to cover SOCKHASH. (patches 4-8, 10-11) (John)
->> >
->> > - Rebased onto recent bpf-next. Resolved conflicts in recent fixes to
->> >    sk_state checks on sockmap/sockhash update path. (patch 4)
->> >
->> > - Added missing READ_ONCE annotation in sock_copy. (patch 1)
->> >
->> > - Split out patches that simplify sk_psock_restore_proto [2].
->>
->> Applied, thanks!
->
-> Jakub,
->
-> what is going on here?
-> # test_progs -n 40
-> #40 select_reuseport:OK
-> Summary: 1/126 PASSED, 30 SKIPPED, 0 FAILED
->
-> Does it mean nothing was actually tested?
-> I really don't like to see 30 skipped tests.
-> Is it my environment?
-> If so please make them hard failures.
-> I will fix whatever I need to fix in my setup.
 
-The UDP tests for sock{map,hash} are marked as skipped, because UDP
-support is not implemented yet. Sorry for the confusion.
+Hi Dear,
 
-Having read the recent thread about BPF selftests [0] I now realize that
-this is not the best idea. It sends the wrong signal to the developer.
+ How are you doing hope you are fine and OK?
 
-I propose to exclude the UDP tests w/ sock{map,hash} by not registering
-them with test__start_subtest at all. Failing them would indicate a
-regression, which is not true. While skipping them points to a potential
-problem with the test environment, which isn't true, either.
+I was just going through the Internet search when I found your email address, I want to make a new and special friend, so I decided to contact you to see how we can make it work out if we can. Please I wish you will have the desire with me so that we can get to know each other better and see what happens in future.
 
-I'll follow up with a patch for this, if that sounds good to you.
+My name is Lisa Williams, I am an American, but presently I live in the UK, I will be glad to see your reply for us to know each other better to exchange pictures and details about us.
 
-[0] https://lore.kernel.org/bpf/20200220191845.u62nhohgzngbrpib@ast-mbp/T/#t
+Yours
+Lisa.
