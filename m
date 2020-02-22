@@ -2,147 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A20B5168AE8
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2020 01:21:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5CF0168AEA
+	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2020 01:23:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726710AbgBVAVs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Feb 2020 19:21:48 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:38097 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726708AbgBVAVs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Feb 2020 19:21:48 -0500
-Received: by mail-qv1-f68.google.com with SMTP id g6so1781859qvy.5;
-        Fri, 21 Feb 2020 16:21:47 -0800 (PST)
+        id S1726697AbgBVAXC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Feb 2020 19:23:02 -0500
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:39277 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726525AbgBVAXB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Feb 2020 19:23:01 -0500
+Received: by mail-pj1-f67.google.com with SMTP id e9so1505417pjr.4
+        for <bpf@vger.kernel.org>; Fri, 21 Feb 2020 16:23:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yFY3ILLk6reG7reBIyS4OQDforKAa8H5TmzpyxdGoYs=;
-        b=iY9TwESNJ0Sz0tzjeYWX1hVlLm6IxTHRnpTyuxH+4+/MZ4P1n8aSN/eiKZcX99iFDH
-         DIU0YcfDygLOWncRThbyW5oqM6vHZn//0OntLK2kuwjTx3m6v8r5Yk8unIi4nl0WJMby
-         a3yHeTIwYmgthFlwyn43K3mmlJC+jWmuiSYYqqfAPS7U61yknVIhC8MFscOIr8w3nvk8
-         OS4aEvxfuLjvQKiiTgam0KypHqdDXL7fq9T+EQ1DtqqCUGNorGFj0C0l1KETorpUSqz9
-         QcRTQoRIhRewltvQPQABR8oarXVnR8GZFylirRWJA386GjxDuGynzY5o5ZYTlCxWVj6l
-         k4KQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bBY25iQUbzVgktSS3PZnQBwBrockb4rDmUnT5ayY4W0=;
+        b=KYe9SL5tP1bdn68kTqujiJm5up+hzdnsaARmh4bdlCpEz5CTWlJmMqbXF23qXS46t/
+         /xCG+rxjY57VF7MRAZLLWiXEmkIa+y1LEi2FbKI91U1iOyf8BgOJu+x/b9BrQsdL/cuW
+         KaSOFClYDKVbD40o3NLsYQ4NoQmPQVSOdoR78=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yFY3ILLk6reG7reBIyS4OQDforKAa8H5TmzpyxdGoYs=;
-        b=tJ/leETHtVdVoASaQdv/nUhrv4oUPxTNuN85C0JopiV7b2C1GFyxhFz1XziKaqqf7c
-         z5Mnvo5HpUqx7CX49f4Sbt0d9sQ+aNTHLAYrgUaNg/JigbgD0oq2WOSAxupEJCFqAlYd
-         GQ0rEqNs8ifYJoc3XCcCUvw0Plf485dydqhA+1q37bqgNKVJksGpTfDCT9z6sOduTa+Y
-         JUEsYFanGQByYRSxTJSqNJIydBCbRFWofK8WnPDh731hney57CbnU/BQZP39O9XL6FOn
-         nN5uHmvHFTwNGpRLVg5KckuinfkUeIi9y9IRI+cGY86p7FryXb+VQdnSUSgHCGl/cuE+
-         jPQA==
-X-Gm-Message-State: APjAAAXZHoKxlCVSKsh1mixw02Te6KE+gON1oo7Rb4ijri5Et0J4r/Ok
-        YS5wNWfdH8SzZq2ABRDdvBVTgMW8/AWWZ0naw3M=
-X-Google-Smtp-Source: APXvYqxw54q0lr9jdmtBg6+w4Cf5rUNAFAIzSCm5ZWH8MwTY6VO8PNlKPftoNXfuDvXWryRGDAIJt39AnmR7YZRGzMo=
-X-Received: by 2002:a05:6214:8cb:: with SMTP id da11mr31015915qvb.228.1582330906998;
- Fri, 21 Feb 2020 16:21:46 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bBY25iQUbzVgktSS3PZnQBwBrockb4rDmUnT5ayY4W0=;
+        b=I05FtVXj4XxqQQ/urj2nojFT/orNyjddaegJxtu7rOSUHc5i6u3SJcd1tlBU7V2ORo
+         894LhIAB3QcdN50A64i+zdLqRnsvOE/ViaFUcJSTHmD7ue/MuCDgu8fMDZL26WnrCO6C
+         PzjiBSVgPi8SXot3sKTfPPGn/zQGsVdPn+cCP1bL1VzMGjhjWDahdcgWpxW/VsZ8xFyh
+         zAzeloZcwF6VjL31NfOOrM8qLe2Y9yZZG0LUWW8rWZYpXXVgRWsSGmwH2mdPFeQVJhA4
+         1JezOpXOiMGbhj05N7V5xS5M6cLph02mKV4NNDZx923PyoX7hf4mg6KbAW1pZlpvTc/b
+         9N3w==
+X-Gm-Message-State: APjAAAWd9sGPyiMfwP/jtSd4Z64uHDShkRP+ueSo5uG2wBApUocrl5Fe
+        dIGdQLKdee7eDrrV/ZaH4FegZw==
+X-Google-Smtp-Source: APXvYqzNBqha2t5b+jrIcavlt5+4Ugc8asp+93Ys4viKGNMi+g6a97cf6h6+OAgEgFu8gPdr+EDcYA==
+X-Received: by 2002:a17:902:8b88:: with SMTP id ay8mr38040623plb.202.1582330981149;
+        Fri, 21 Feb 2020 16:23:01 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id n2sm3493639pgi.48.2020.02.21.16.23.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Feb 2020 16:23:00 -0800 (PST)
+Date:   Fri, 21 Feb 2020 16:22:59 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     KP Singh <kpsingh@chromium.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        James Morris <jmorris@namei.org>
+Subject: Re: [PATCH bpf-next v4 0/8] MAC and Audit policy using eBPF (KRSI)
+Message-ID: <202002211617.28EAC6826@keescook>
+References: <20200220175250.10795-1-kpsingh@chromium.org>
+ <85e89b0c-5f2c-a4b1-17d3-47cc3bdab38b@schaufler-ca.com>
+ <20200221194149.GA9207@chromium.org>
+ <8a2a2d59-ec4b-80d1-2710-c2ead588e638@schaufler-ca.com>
 MIME-Version: 1.0
-References: <20200220230546.769250-1-andriin@fb.com> <87eeuo5jgg.fsf@cloudflare.com>
-In-Reply-To: <87eeuo5jgg.fsf@cloudflare.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 21 Feb 2020 16:21:36 -0800
-Message-ID: <CAEf4BzYuMr56P3EVyvdr4mvV3qbx496GMgfAU1Gd4aJo5RUR2A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix trampoline_count clean up logic
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>, Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8a2a2d59-ec4b-80d1-2710-c2ead588e638@schaufler-ca.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 21, 2020 at 2:21 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> On Thu, Feb 20, 2020 at 11:05 PM GMT, Andrii Nakryiko wrote:
-> > Libbpf's Travis CI tests caught this issue. Ensure bpf_link and bpf_object
-> > clean up is performed correctly.
+On Fri, Feb 21, 2020 at 02:31:18PM -0800, Casey Schaufler wrote:
+> On 2/21/2020 11:41 AM, KP Singh wrote:
+> > On 21-Feb 11:19, Casey Schaufler wrote:
+> >> On 2/20/2020 9:52 AM, KP Singh wrote:
+> >>> From: KP Singh <kpsingh@google.com>
+> >>> # v3 -> v4
+> >>>
+> >>>   https://lkml.org/lkml/2020/1/23/515
+> >>>
+> >>> * Moved away from allocating a separate security_hook_heads and adding a
+> >>>   new special case for arch_prepare_bpf_trampoline to using BPF fexit
+> >>>   trampolines called from the right place in the LSM hook and toggled by
+> >>>   static keys based on the discussion in:
+> >>>
+> >>>     https://lore.kernel.org/bpf/CAG48ez25mW+_oCxgCtbiGMX07g_ph79UOJa07h=o_6B6+Q-u5g@mail.gmail.com/
+> >>>
+> >>> * Since the code does not deal with security_hook_heads anymore, it goes
+> >>>   from "being a BPF LSM" to "BPF program attachment to LSM hooks".
+> >> I've finally been able to review the entire patch set.
+> >> I can't imagine how it can make sense to add this much
+> >> complexity to the LSM infrastructure in support of this
+> >> feature. There is macro magic going on that is going to
+> >> break, and soon. You are introducing dependencies on BPF
+> >> into the infrastructure, and that's unnecessary and most
+> >> likely harmful.
+> > We will be happy to document each of the macros in detail. Do note a
+> > few things here:
 > >
-> > Fixes: d633d57902a5 ("selftest/bpf: Add test for allowed trampolines count")
-> > Cc: Jiri Olsa <jolsa@kernel.org>
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > ---
-> >  .../bpf/prog_tests/trampoline_count.c         | 25 +++++++++++++------
-> >  1 file changed, 18 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-> > index 1f6ccdaed1ac..781c8d11604b 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-> > @@ -55,31 +55,40 @@ void test_trampoline_count(void)
-> >       /* attach 'allowed' 40 trampoline programs */
-> >       for (i = 0; i < MAX_TRAMP_PROGS; i++) {
-> >               obj = bpf_object__open_file(object, NULL);
-> > -             if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj)))
-> > +             if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj))) {
-> > +                     obj = NULL;
-> >                       goto cleanup;
-> > +             }
-> >
-> >               err = bpf_object__load(obj);
-> >               if (CHECK(err, "obj_load", "err %d\n", err))
-> >                       goto cleanup;
-> >               inst[i].obj = obj;
-> > +             obj = NULL;
-> >
-> >               if (rand() % 2) {
-> > -                     link = load(obj, fentry_name);
-> > -                     if (CHECK(IS_ERR(link), "attach prog", "err %ld\n", PTR_ERR(link)))
-> > +                     link = load(inst[i].obj, fentry_name);
-> > +                     if (CHECK(IS_ERR(link), "attach prog", "err %ld\n", PTR_ERR(link))) {
-> > +                             link = NULL;
-> >                               goto cleanup;
-> > +                     }
-> >                       inst[i].link_fentry = link;
-> >               } else {
-> > -                     link = load(obj, fexit_name);
-> > -                     if (CHECK(IS_ERR(link), "attach prog", "err %ld\n", PTR_ERR(link)))
-> > +                     link = load(inst[i].obj, fexit_name);
-> > +                     if (CHECK(IS_ERR(link), "attach prog", "err %ld\n", PTR_ERR(link))) {
-> > +                             link = NULL;
-> >                               goto cleanup;
-> > +                     }
-> >                       inst[i].link_fexit = link;
-> >               }
-> >       }
-> >
-> >       /* and try 1 extra.. */
-> >       obj = bpf_object__open_file(object, NULL);
-> > -     if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj)))
-> > +     if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj))) {
-> > +             obj = NULL;
-> >               goto cleanup;
-> > +     }
-> >
-> >       err = bpf_object__load(obj);
-> >       if (CHECK(err, "obj_load", "err %d\n", err))
-> > @@ -104,7 +113,9 @@ void test_trampoline_count(void)
-> >  cleanup_extra:
-> >       bpf_object__close(obj);
-> >  cleanup:
-> > -     while (--i) {
-> > +     if (i >= MAX_TRAMP_PROGS)
-> > +             i = MAX_TRAMP_PROGS - 1;
-> > +     for (; i >= 0; i--) {
-> >               bpf_link__destroy(inst[i].link_fentry);
-> >               bpf_link__destroy(inst[i].link_fexit);
-> >               bpf_object__close(inst[i].obj);
->
-> I'm not sure I'm grasping what the fix is about.
->
-> We don't access obj or link from cleanup, so what is the point of
-> setting them to NULL before jumping there?
->
-> Or is it all just an ancillary change to clamping the loop index
-> variable to (MAX_TRAMP_PROGS - 1)?
+> > * There is really nothing magical about them though,
+> 
+> 
+> +#define LSM_HOOK_void(NAME, ...) \
+> +	noinline void bpf_lsm_##NAME(__VA_ARGS__) {}
+> +
+> +#include <linux/lsm_hook_names.h>
+> +#undef LSM_HOOK
+> 
+> I haven't seen anything this ... novel ... in a very long time.
+> I see why you want to do this, but you're tying the two sets
+> of code together unnaturally. When (not if) the two sets diverge
+> you're going to be introducing another clever way to deal with
+> the special case.
 
-Yeah, mostly ancillary. But this is not just clamping to
-MAX_TRAMP_PROGS-1. As Jiri pointed out, it's also handling a case of i
-== 0.
+I really like this approach: it actually _simplifies_ the LSM piece in
+that there is no need to keep the union and the hook lists in sync any
+more: they're defined once now. (There were already 2 lists, and this
+collapses the list into 1 place for all 3 users.) It's very visible in
+the diffstat too (~300 lines removed):
+
+ include/linux/lsm_hook_names.h | 353 +++++++++++++++++++
+ include/linux/lsm_hooks.h      | 622 +--------------------------------
+ 2 files changed, 359 insertions(+), 616 deletions(-)
+
+Also, there is no need to worry about divergence: the BPF will always
+track the exposed LSM. Backward compat is (AIUI) explicitly a
+non-feature.
+
+I don't see why anything here is "harmful"?
+
+-- 
+Kees Cook
