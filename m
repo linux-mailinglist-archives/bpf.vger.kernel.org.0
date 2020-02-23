@@ -2,141 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 53156169A7F
-	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2020 23:40:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC187169A86
+	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2020 23:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727021AbgBWWkw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Feb 2020 17:40:52 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:41912 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgBWWkw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 Feb 2020 17:40:52 -0500
-Received: by mail-pg1-f196.google.com with SMTP id 70so4085572pgf.8;
-        Sun, 23 Feb 2020 14:40:52 -0800 (PST)
+        id S1726534AbgBWWop (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 Feb 2020 17:44:45 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:33606 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726302AbgBWWop (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 23 Feb 2020 17:44:45 -0500
+Received: by mail-lf1-f68.google.com with SMTP id n25so5472006lfl.0;
+        Sun, 23 Feb 2020 14:44:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=j2mYDc1i3ua7STLlJCa6Hdc5WmjYOywz/EKCcFwocXo=;
-        b=mFToI9xjI4QQ9dypWcrCsgTEWlSEJ6HCXy8z1JYt1MFng6K1F8VTZeGlZhW0+SLGA3
-         4Ga5OgTGeaSZwIyGp87GNUhQ01M2Q3GXMhtRdvs1YmCiXaaVk/2GBwL8zWHwrka9Sa2i
-         uP14yCI5z8L+/b1/JbAi6Vzpf8y+kCyitXPVleKmPNsEq3jrBkf2k9GJUKXBNIwbPr8N
-         yXFQKfR0AVJ7lNqiw5XQs0yuRXpBUQGbppEwIDeLwf/y/8UZxhyMtrEDX46Cyxbp4v0o
-         B4W+pB7ia/IFGgBnAK9/vQwqZw+HDTsIkKZxTd2BPaf1vKrs246j/FhiXU4GDz4NWUem
-         IP+w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u+ysc2B2E6ZUA9YFW/pXoZQG71MCNSdNR0YgJk6O1SM=;
+        b=SGsWoRzlKz5TbHCwdxeRMuT/ZmzVjhVrwVYl5Ej+30lhB8VEBWsMAIqZ/2n7Wgbyze
+         eFyaaZkursoA3NGOrm/2+FCBP+M4ThidcQbgKfrHcHTl+H2SYzY/yAOOQ3WzPZs4mEjc
+         xEeqWrVLxjcZIQ6JoVdMxGjuwSLyp5RohslsFrQJbReRm/ALYvoAubNZ17lo/vI3YteI
+         LEv8+f7i42zXbH6Z84a3AFXSgzSCrHIINk5L950Hwb5C574krJ+ffbwVeDyFv0zzdVSE
+         iUIBfOVcgdWK52pVto5KRvc07Lg0talXcJOnqJ/NRf5s27G3lC2jNMfQrc3qvdhjcunq
+         7HLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=j2mYDc1i3ua7STLlJCa6Hdc5WmjYOywz/EKCcFwocXo=;
-        b=ftgzxoVwi34IRoAVWjoN57om8UULRt9ncA2/HYgB90bm3jc3yBIElj5fGUS4CzNlZJ
-         n8N2dY3KrCy0JWf74T6h6ANEvbH5edsf4xwzoyCjc5s2zVH9TP7JrDntsaJjMYf5cg6F
-         SXqXVmoQxmRDJWg9HxZ0rduLxomAgwaO01I0DOOlBhNaR4y5V2btCDo1puok++4+0FCF
-         Ine6xwriumVkmrjgMsJXhQ+eU3imISombplQH2C6XaRTfCL7b+v1r+hsajC+ZZMDN5Ma
-         454FF6nTHhOWvFQAQEO2FeMmzuRYTLsJGV2OyOJoMAU16qS67z5F5Sk41vy0cRQ6uCnS
-         PE5w==
-X-Gm-Message-State: APjAAAU+viqLENDEwv6EXBWrvZZro6YjiTQjPBKD88RTGNA5yxq0JNQE
-        21KYR8Kfk1QFqfV41je4jew=
-X-Google-Smtp-Source: APXvYqxzYVkwsh8iybt5JEDibUnTgddsvfUWsaYYvbMj8IkRablUTnWOw5fdtlt39H18Ky0wJcLsDw==
-X-Received: by 2002:a63:2cd6:: with SMTP id s205mr49190694pgs.258.1582497651814;
-        Sun, 23 Feb 2020 14:40:51 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:400::5:7207])
-        by smtp.gmail.com with ESMTPSA id t19sm9864351pgg.23.2020.02.23.14.40.49
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 23 Feb 2020 14:40:51 -0800 (PST)
-Date:   Sun, 23 Feb 2020 14:40:48 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        David Miller <davem@davemloft.net>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sebastian Sewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Clark Williams <williams@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [patch V2 01/20] bpf: Enforce preallocation for all
- instrumentation programs
-Message-ID: <20200223224046.o6ynykpvg6kl75ar@ast-mbp>
-References: <20200222042916.k3r5dj5njoo2ywyj@ast-mbp>
- <87o8tr3thx.fsf@nanos.tec.linutronix.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u+ysc2B2E6ZUA9YFW/pXoZQG71MCNSdNR0YgJk6O1SM=;
+        b=O8mR9l89odHjGpCj0h79/wcr4wxgqq8gXzR5MBRuVH7XkcIdOOtucgN6XPitE26MbZ
+         PfUq3L/ay+Ss7+5n6EXGeq2WVE3oXKkKijWbWDexy09zJbvngiEMQZAzbfxr0EFFPpGb
+         wMOhrIa4+W3uhsQrQQJOiC9Vl2IHerqIJPY6WWGzjiLSjmEcqXyEzAEkvMP14vL0KgMz
+         eAvC5/Y3t3dOTNUMSWFe/67JdvlmQvhNpCP/RnC+8s9i/l07uSUG4WYOpYh9Qx+8WhZ+
+         6VUTt4E3+USuGbaUV75udmTYs4mmy7nJi49uCuAElh6SehkSwQJUNG42R7g43j19ramC
+         1SSA==
+X-Gm-Message-State: APjAAAUuMzlP+9ZgQ0R2IcQO8WYtkxaIw6X08OUjc/R09gzx+QSb3QYZ
+        Pk9XDcBjl6z3ejU1B+rSDKIyGI0K+zhDFu4Zr0g=
+X-Google-Smtp-Source: APXvYqwrQFQnSqr4ZzfVQy/WTfS4zQozgBwDIgCp+LwGCKZIBgjKogOZz8m3QK+TRv+xbUwl/wHutKmsMIdmiqIYI9Q=
+X-Received: by 2002:a19:8585:: with SMTP id h127mr5024465lfd.196.1582497882620;
+ Sun, 23 Feb 2020 14:44:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o8tr3thx.fsf@nanos.tec.linutronix.de>
-User-Agent: NeoMutt/20180223
+References: <20200221165801.32687-1-steve@sk2.org>
+In-Reply-To: <20200221165801.32687-1-steve@sk2.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sun, 23 Feb 2020 14:44:31 -0800
+Message-ID: <CAADnVQ+QNxFk97fnsY1NL1PQWykdok_ha_KajCc68bRT1BLp2A@mail.gmail.com>
+Subject: Re: [PATCH] docs: sysctl/kernel: document BPF entries
+To:     Stephen Kitt <steve@sk2.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Feb 22, 2020 at 09:40:10AM +0100, Thomas Gleixner wrote:
-> Alexei,
-> 
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> > On Thu, Feb 20, 2020 at 09:45:18PM +0100, Thomas Gleixner wrote:
-> >> The assumption that only programs attached to perf NMI events can deadlock
-> >> on memory allocators is wrong. Assume the following simplified callchain:
-> >>  	 */
-> >> -	if (prog->type == BPF_PROG_TYPE_PERF_EVENT) {
-> >> +	if ((is_tracing_prog_type(prog->type)) {
-> >
-> > This doesn't build.
-> > I assumed the typo somehow sneaked in and proceeded, but it broke
-> > a bunch of tests:
-> > Summary: 1526 PASSED, 0 SKIPPED, 54 FAILED
-> > One can argue that the test are unsafe and broken.
-> > We used to test all those tests with and without prealloc:
-> > map_flags = 0;
-> > run_all_tests();
-> > map_flags = BPF_F_NO_PREALLOC;
-> > run_all_tests();
-> > Then 4 years ago commit 5aa5bd14c5f866 switched hashmap to be no_prealloc
-> > always and that how it stayed since then. We can adjust the tests to use
-> > prealloc with tracing progs, but this breakage shows that there could be plenty
-> > of bpf users that also use BPF_F_NO_PREALLOC with tracing. It could simply
-> > be because they know that their kprobes are in a safe spot (and kmalloc is ok)
-> > and they want to save memory. They could be using large max_entries parameter
-> > for worst case hash map usage, but typical load is low. In general hashtables
-> > don't perform well after 50%, so prealloc is wasting half of the memory. Since
-> > we cannot control where kprobes are placed I'm not sure what is the right fix
-> > here. It feels that if we proceed with this patch somebody will complain and we
-> > would have to revert, but I'm willing to take this risk if we cannot come up
-> > with an alternative fix.
-> 
-> Having something which is known to be broken exposed is not a good option
-> either.
-> 
-> Just assume that someone is investigating a kernel issue. BOFH who is
-> stuck in the 90's uses perf, kprobes and tracepoints. Now he goes on
-> vacation and the new kid in the team decides to flip that over to BPF.
-> So now instead of getting information he deadlocks or crashes the
-> machine.
-> 
-> You can't just tell him, don't do that then. It's broken by design and
-> you really can't tell which probes are safe and which are not because
-> the allocator calls out into whatever functions which might look
-> completely unrelated.
-> 
-> So one way to phase this out would be:
-> 
-> 	if (is_tracing()) {
->         	if (is_perf() || IS_ENABLED(RT))
->                 	return -EINVAL;
->                 WARN_ONCE(.....)
->         }
-> 
-> And clearly write in the warning that this is dangerous, broken and
-> about to be forbidden. Hmm?
+On Fri, Feb 21, 2020 at 10:18 AM Stephen Kitt <steve@sk2.org> wrote:
+>
+> Based on the implementation in kernel/bpf/syscall.c,
+> kernel/bpf/trampoline.c, include/linux/filter.h, and the documentation
+> in bpftool-prog.rst.
+>
+> Signed-off-by: Stephen Kitt <steve@sk2.org>
+> ---
+>  Documentation/admin-guide/sysctl/kernel.rst | 24 +++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+>
+> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+> index 1c48ab4bfe30..89c70ea7de7c 100644
+> --- a/Documentation/admin-guide/sysctl/kernel.rst
+> +++ b/Documentation/admin-guide/sysctl/kernel.rst
+> @@ -102,6 +102,20 @@ See the ``type_of_loader`` and ``ext_loader_ver`` fields in
+>  :doc:`/x86/boot` for additional information.
+>
+>
+> +bpf_stats_enabled
+> +=================
+> +
+> +Controls whether the kernel should collect statistics on BPF programs
+> +(total time spent running, number of times run...). Enabling
+> +statistics causes a slight reduction in performance on each program
+> +run. The statistics can be seen using ``bpftool``.
+> +
+> += ===================================
+> +0 Don't collect statistics (default).
+> +1 Collect statistics.
+> += ===================================
+> +
+> +
+>  cap_last_cap
+>  ============
+>
+> @@ -1152,6 +1166,16 @@ NMI switch that most IA32 servers have fires unknown NMI up, for
+>  example.  If a system hangs up, try pressing the NMI switch.
+>
+>
+> +unprivileged_bpf_disabled
+> +=========================
+> +
+> +Writing 1 to this entry will disabled unprivileged calls to ``bpf()``;
 
-Yeah. Let's start with WARN_ONCE and verbose(env, "dangerous, broken")
-so the users see it in the verifier log and people who maintain
-servers (like kernel-team-s in fb, goog, etc) see it as well
-in their dmesg logs. So the motivation will be on both sides.
-Then in few kernel releases we can flip it to disable.
-Or we'll find a way to make it work without pre-allocating.
+'will disable' ?
+
+It doesn't apply to bpf-next with:
+error: sha1 information is lacking or useless
+(Documentation/admin-guide/sysctl/kernel.rst).
+error: could not build fake ancestor
+Patch failed at 0001 docs: sysctl/kernel: Document BPF entries
