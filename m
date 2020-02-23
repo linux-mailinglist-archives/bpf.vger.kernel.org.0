@@ -2,294 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F181E1696C4
-	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2020 09:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE463169A54
+	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2020 22:43:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbgBWIPC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Feb 2020 03:15:02 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:28418 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725980AbgBWIPC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 Feb 2020 03:15:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582445700;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PwdD0natVuJxLWn8vGJsJeHYLsiMkR1Di0XtxpWtDAY=;
-        b=gMjr2qHJawm2O2Q4JIL0FIQ/Ed38MC1t8z1qqxn2K873ytfx2YCJLU8IkCSNoybJSmvesa
-        X0z3ubJMxGO1teNVCfK+61cOpj3/wNKT7D6W1c5tKguqTT6Gx/Qy1yoqlTZxUpCLezz2wo
-        nBVjM0QcKfbK7c6zRz1wPwzeO4FJoA8=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-374-zUolXEHFPkCrvnvSJ7qJBw-1; Sun, 23 Feb 2020 03:14:50 -0500
-X-MC-Unique: zUolXEHFPkCrvnvSJ7qJBw-1
-Received: by mail-wr1-f70.google.com with SMTP id y28so62802wrd.23
-        for <bpf@vger.kernel.org>; Sun, 23 Feb 2020 00:14:50 -0800 (PST)
+        id S1726740AbgBWVnh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 Feb 2020 16:43:37 -0500
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:45356 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726302AbgBWVnh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 23 Feb 2020 16:43:37 -0500
+Received: by mail-pl1-f194.google.com with SMTP id b22so3184364pls.12;
+        Sun, 23 Feb 2020 13:43:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=EYFt7TCGJFdSzBv48/uvMOjnjmgQwm23vB0vjtbvkQc=;
+        b=gHkNxhjb22CGhIX8m5Y+yevQzK/nm2UrJrtUv8kzQ8orsoVNccXn3SurRR2Ww7xZ4d
+         yxnUYDaHJHAbjcNkdxCXAh+7n2dBl2qZiESjK5tUz0vx2539wVlLvUcY4jQ8V4POgzVS
+         wEI54DXBXEbslGxD1abTUqgJy7quDZqPVEYSHQ8Z6ozfs7HTELZdxOOBROo70UE1L82/
+         Mh3DtxwQN9pYtBJDHcWDSwBXj+S3U+xgY5NtY0mN3jFqVcwmi+H/nKQc9hMBUPfvx3/K
+         pRZdygpO7/yfW7W7/NzLWZ3yhlM+y6lnOd+V10ib3mq9LqUCttN6GSJW/XSoOMmb6B67
+         8wpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=PwdD0natVuJxLWn8vGJsJeHYLsiMkR1Di0XtxpWtDAY=;
-        b=FetNLGajpxqEVwKbe/JxORVjMl5i3PhFCrP7Mz8RWLd1gQ2fVhJD2Z7daAdpOrKVIg
-         m6DggcdqTeg94V5YTOPZ1fegNyMhApPaQtP0FA91YZ+ZBH9f8++JJOHZqzupual1iGBY
-         L30H4+goyPod3AmOLy2wVHKtUMXmSYPXyyOWtlaCWqXyC7kX+8NCGP5ySsNyiJ8vxjwC
-         dx3CLItynZ9hBFmgI1EgKvxhwR93L1OOrGJfGewd3gx6+swA8g5EbcieMIJXzAbGuyIK
-         l+JSfxe37VwxMYketF6H2pNwa1NfbhplhxJvyaDyU3snMt7RI/2FLBtjssRBfQEpEozU
-         4JNA==
-X-Gm-Message-State: APjAAAWhV8+hre75H+mI1slqDqiJhZZV6u3uDZdUfRdc25h+Vm8HLEy9
-        sH03zmpTnPHa/BjLnjKQrzka5Q82q2hXVJAKtySUb3F79v+QPh1QyybHy776fgGdowBwvmilyoC
-        PSB3SBCLe+e7U
-X-Received: by 2002:adf:fa05:: with SMTP id m5mr8951898wrr.352.1582445689541;
-        Sun, 23 Feb 2020 00:14:49 -0800 (PST)
-X-Google-Smtp-Source: APXvYqw4eV7SBMcOtXhDZvtzF7yFJB1onfszcmg2n527AAqxUWr/dFnENHw2O+XbecHUjY91BorlJg==
-X-Received: by 2002:adf:fa05:: with SMTP id m5mr8951854wrr.352.1582445689169;
-        Sun, 23 Feb 2020 00:14:49 -0800 (PST)
-Received: from redhat.com (bzq-79-178-2-214.red.bezeqint.net. [79.178.2.214])
-        by smtp.gmail.com with ESMTPSA id t10sm11858301wmi.40.2020.02.23.00.14.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Feb 2020 00:14:48 -0800 (PST)
-Date:   Sun, 23 Feb 2020 03:14:45 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Yuya Kusakabe <yuya.kusakabe@gmail.com>
-Cc:     Jason Wang <jasowang@redhat.com>, andriin@fb.com, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com, yhs@fb.com
-Subject: Re: [PATCH bpf-next v5] virtio_net: add XDP meta data support
-Message-ID: <20200223031314-mutt-send-email-mst@kernel.org>
-References: <0c5eaba2-dd5a-fc3f-0e8f-154f7ad52881@redhat.com>
- <20200220085549.269795-1-yuya.kusakabe@gmail.com>
- <5bf11065-6b85-8253-8548-683c01c98ac1@redhat.com>
- <8fafd23d-4c80-539d-9f74-bc5cda0d5575@gmail.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=EYFt7TCGJFdSzBv48/uvMOjnjmgQwm23vB0vjtbvkQc=;
+        b=APu6PYSUxxsICB92mF/3aVuB8yxHwL6hYl2tM2BvorRC+gfK5XXeGnbvVGcAJmw7dA
+         CJMxriqMBddyKQei5S83412ZfEgxb11gnL6ECTCCqKG30dN8XCdTPhHA/po3m7/voFT2
+         fqdjf0PfKyoOkjs1d4yPih9zZZ+RxtfIWHdKRu1/D3lhmw3aWvWmBMLDyG33XvtE9Q05
+         Y5XW3+kIeNJhyKac/BEja/6iligWbZYilBNMIsmswLdxbUaeDnG/zZXY8nWo0/ukI/gl
+         a2cSeMNtffR4JsJEm3W4sBVWLV3sqaWdFgGi9LGnPbDenW+hfEjd7WJ4j6xaEdD6R7uE
+         PIOQ==
+X-Gm-Message-State: APjAAAUc0DH8kFToEY8gNrkD52cJelAiCoz8Xi2OAfVaKta7ycS4mOm3
+        31B0ixEbyEiyTIdghNbgOTI=
+X-Google-Smtp-Source: APXvYqzco61O+NZf1hs63O+Y6TeuPW2YCJ2oKs0bMaWBDu1PS8SQvRB3ZqTNSH/mLAc2CjCz0mX8ig==
+X-Received: by 2002:a17:902:8642:: with SMTP id y2mr46231747plt.306.1582494214609;
+        Sun, 23 Feb 2020 13:43:34 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:7207])
+        by smtp.gmail.com with ESMTPSA id o73sm9608971pje.7.2020.02.23.13.43.32
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 23 Feb 2020 13:43:33 -0800 (PST)
+Date:   Sun, 23 Feb 2020 13:43:31 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>, Martin Lau <kafai@fb.com>
+Subject: Re: [PATCH bpf-next v7 00/11] Extend SOCKMAP/SOCKHASH to store
+ listening sockets
+Message-ID: <20200223214329.2djcyztfze3d34g5@ast-mbp>
+References: <20200218171023.844439-1-jakub@cloudflare.com>
+ <c86784f5-ef2c-cfd6-cb75-a67af7e11c3c@iogearbox.net>
+ <CAADnVQJrsfpsT47SqyCTM6=MSkeMESZACZR12Kx+0kRGBnRbvg@mail.gmail.com>
+ <87d0a668an.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8fafd23d-4c80-539d-9f74-bc5cda0d5575@gmail.com>
+In-Reply-To: <87d0a668an.fsf@cloudflare.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 21, 2020 at 05:36:08PM +0900, Yuya Kusakabe wrote:
-> On 2/21/20 1:23 PM, Jason Wang wrote:
-> > 
-> > On 2020/2/20 下午4:55, Yuya Kusakabe wrote:
-> >> Implement support for transferring XDP meta data into skb for
-> >> virtio_net driver; before calling into the program, xdp.data_meta points
-> >> to xdp.data, where on program return with pass verdict, we call
-> >> into skb_metadata_set().
+On Sat, Feb 22, 2020 at 01:49:52PM +0000, Jakub Sitnicki wrote:
+> Hi Alexei,
+> 
+> On Sat, Feb 22, 2020 at 12:47 AM GMT, Alexei Starovoitov wrote:
+> > On Fri, Feb 21, 2020 at 1:41 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
 > >>
-> >> Tested with the script at
-> >> https://github.com/higebu/virtio_net-xdp-metadata-test.
+> >> On 2/18/20 6:10 PM, Jakub Sitnicki wrote:
+> >> > This patch set turns SOCK{MAP,HASH} into generic collections for TCP
+> >> > sockets, both listening and established. Adding support for listening
+> >> > sockets enables us to use these BPF map types with reuseport BPF programs.
+> >> >
+> >> > Why? SOCKMAP and SOCKHASH, in comparison to REUSEPORT_SOCKARRAY, allow the
+> >> > socket to be in more than one map at the same time.
+> >> >
+> >> > Having a BPF map type that can hold listening sockets, and gracefully
+> >> > co-exist with reuseport BPF is important if, in the future, we want
+> >> > BPF programs that run at socket lookup time [0]. Cover letter for v1 of
+> >> > this series tells the full story of how we got here [1].
+> >> >
+> >> > Although SOCK{MAP,HASH} are not a drop-in replacement for SOCKARRAY just
+> >> > yet, because UDP support is lacking, it's a step in this direction. We're
+> >> > working with Lorenz on extending SOCK{MAP,HASH} to hold UDP sockets, and
+> >> > expect to post RFC series for sockmap + UDP in the near future.
+> >> >
+> >> > I've dropped Acks from all patches that have been touched since v6.
+> >> >
+> >> > The audit for missing READ_ONCE annotations for access to sk_prot is
+> >> > ongoing. Thus far I've found one location specific to TCP listening sockets
+> >> > that needed annotating. This got fixed it in this iteration. I wonder if
+> >> > sparse checker could be put to work to identify places where we have
+> >> > sk_prot access while not holding sk_lock...
+> >> >
+> >> > The patch series depends on another one, posted earlier [2], that has been
+> >> > split out of it.
+> >> >
+> >> > Thanks,
+> >> > jkbs
+> >> >
+> >> > [0] https://lore.kernel.org/bpf/20190828072250.29828-1-jakub@cloudflare.com/
+> >> > [1] https://lore.kernel.org/bpf/20191123110751.6729-1-jakub@cloudflare.com/
+> >> > [2] https://lore.kernel.org/bpf/20200217121530.754315-1-jakub@cloudflare.com/
+> >> >
+> >> > v6 -> v7:
+> >> >
+> >> > - Extended the series to cover SOCKHASH. (patches 4-8, 10-11) (John)
+> >> >
+> >> > - Rebased onto recent bpf-next. Resolved conflicts in recent fixes to
+> >> >    sk_state checks on sockmap/sockhash update path. (patch 4)
+> >> >
+> >> > - Added missing READ_ONCE annotation in sock_copy. (patch 1)
+> >> >
+> >> > - Split out patches that simplify sk_psock_restore_proto [2].
 > >>
-> >> Fixes: de8f3a83b0a0 ("bpf: add meta pointer for direct access")
-> > 
-> > 
-> > I'm not sure this is correct since virtio-net claims to not support metadata by calling xdp_set_data_meta_invalid()?
+> >> Applied, thanks!
+> >
+> > Jakub,
+> >
+> > what is going on here?
+> > # test_progs -n 40
+> > #40 select_reuseport:OK
+> > Summary: 1/126 PASSED, 30 SKIPPED, 0 FAILED
+> >
+> > Does it mean nothing was actually tested?
+> > I really don't like to see 30 skipped tests.
+> > Is it my environment?
+> > If so please make them hard failures.
+> > I will fix whatever I need to fix in my setup.
 > 
-> virtio_net doesn't support by calling xdp_set_data_meta_invalid() for now.
+> The UDP tests for sock{map,hash} are marked as skipped, because UDP
+> support is not implemented yet. Sorry for the confusion.
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/drivers/net/virtio_net.c?id=e42da4c62abb547d9c9138e0e7fcd1f36057b5e8#n686
-> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/drivers/net/virtio_net.c?id=e42da4c62abb547d9c9138e0e7fcd1f36057b5e8#n842
+> Having read the recent thread about BPF selftests [0] I now realize that
+> this is not the best idea. It sends the wrong signal to the developer.
 > 
-> And xdp_set_data_meta_invalid() are added by de8f3a83b0a0.
-> 
-> $ git blame ./drivers/net/virtio_net.c | grep xdp_set_data_meta_invalid
-> de8f3a83b0a0f (Daniel Borkmann           2017-09-25 02:25:51 +0200  686)                xdp_set_data_meta_invalid(&xdp);
-> de8f3a83b0a0f (Daniel Borkmann           2017-09-25 02:25:51 +0200  842)                xdp_set_data_meta_invalid(&xdp);
-> 
-> So I added `Fixes: de8f3a83b0a0 ("bpf: add meta pointer for direct access")` to the comment.
-> 
-> > 
-> > 
-> >> Signed-off-by: Yuya Kusakabe <yuya.kusakabe@gmail.com>
-> >> ---
-> >> v5:
-> >>   - page_to_skb(): copy vnet header if hdr_valid without checking metasize.
-> >>   - receive_small(): do not copy vnet header if xdp_prog is availavle.
-> >>   - __virtnet_xdp_xmit_one(): remove the xdp_set_data_meta_invalid().
-> >>   - improve comments.
-> >> v4:
-> >>   - improve commit message
-> >> v3:
-> >>   - fix preserve the vnet header in receive_small().
-> >> v2:
-> >>   - keep copy untouched in page_to_skb().
-> >>   - preserve the vnet header in receive_small().
-> >>   - fix indentation.
-> >> ---
-> >>   drivers/net/virtio_net.c | 54 ++++++++++++++++++++++++----------------
-> >>   1 file changed, 33 insertions(+), 21 deletions(-)
-> >>
-> >> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> >> index 2fe7a3188282..4ea0ae60c000 100644
-> >> --- a/drivers/net/virtio_net.c
-> >> +++ b/drivers/net/virtio_net.c
-> >> @@ -371,7 +371,7 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
-> >>                      struct receive_queue *rq,
-> >>                      struct page *page, unsigned int offset,
-> >>                      unsigned int len, unsigned int truesize,
-> >> -                   bool hdr_valid)
-> >> +                   bool hdr_valid, unsigned int metasize)
-> >>   {
-> >>       struct sk_buff *skb;
-> >>       struct virtio_net_hdr_mrg_rxbuf *hdr;
-> >> @@ -393,6 +393,7 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
-> >>       else
-> >>           hdr_padded_len = sizeof(struct padded_vnet_hdr);
-> >>   +    /* hdr_valid means no XDP, so we can copy the vnet header */
-> >>       if (hdr_valid)
-> >>           memcpy(hdr, p, hdr_len);
-> >>   @@ -405,6 +406,11 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
-> >>           copy = skb_tailroom(skb);
-> >>       skb_put_data(skb, p, copy);
-> >>   +    if (metasize) {
-> >> +        __skb_pull(skb, metasize);
-> >> +        skb_metadata_set(skb, metasize);
-> >> +    }
-> >> +
-> >>       len -= copy;
-> >>       offset += copy;
-> >>   @@ -450,10 +456,6 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
-> >>       struct virtio_net_hdr_mrg_rxbuf *hdr;
-> >>       int err;
-> >>   -    /* virtqueue want to use data area in-front of packet */
-> >> -    if (unlikely(xdpf->metasize > 0))
-> >> -        return -EOPNOTSUPP;
-> >> -
-> >>       if (unlikely(xdpf->headroom < vi->hdr_len))
-> >>           return -EOVERFLOW;
-> >>   @@ -644,6 +646,7 @@ static struct sk_buff *receive_small(struct net_device *dev,
-> >>       unsigned int delta = 0;
-> >>       struct page *xdp_page;
-> >>       int err;
-> >> +    unsigned int metasize = 0;
-> >>         len -= vi->hdr_len;
-> >>       stats->bytes += len;
-> >> @@ -683,8 +686,8 @@ static struct sk_buff *receive_small(struct net_device *dev,
-> >>             xdp.data_hard_start = buf + VIRTNET_RX_PAD + vi->hdr_len;
-> >>           xdp.data = xdp.data_hard_start + xdp_headroom;
-> >> -        xdp_set_data_meta_invalid(&xdp);
-> >>           xdp.data_end = xdp.data + len;
-> >> +        xdp.data_meta = xdp.data;
-> >>           xdp.rxq = &rq->xdp_rxq;
-> >>           orig_data = xdp.data;
-> >>           act = bpf_prog_run_xdp(xdp_prog, &xdp);
-> >> @@ -695,6 +698,7 @@ static struct sk_buff *receive_small(struct net_device *dev,
-> >>               /* Recalculate length in case bpf program changed it */
-> >>               delta = orig_data - xdp.data;
-> >>               len = xdp.data_end - xdp.data;
-> >> +            metasize = xdp.data - xdp.data_meta;
-> >>               break;
-> >>           case XDP_TX:
-> >>               stats->xdp_tx++;
-> >> @@ -735,11 +739,14 @@ static struct sk_buff *receive_small(struct net_device *dev,
-> >>       }
-> >>       skb_reserve(skb, headroom - delta);
-> >>       skb_put(skb, len);
-> >> -    if (!delta) {
-> >> +    if (!xdp_prog) {
-> >>           buf += header_offset;
-> >>           memcpy(skb_vnet_hdr(skb), buf, vi->hdr_len);
-> >>       } /* keep zeroed vnet hdr since packet was changed by bpf */
-> > 
-> > 
-> > I prefer to make this an independent patch and cc stable.
-> > 
-> > Other looks good.
-> > 
-> > Thanks
-> 
-> I see. So I need to revert to delta from xdp_prog?
-> 
-> Thank you.
+> I propose to exclude the UDP tests w/ sock{map,hash} by not registering
+> them with test__start_subtest at all. Failing them would indicate a
+> regression, which is not true. While skipping them points to a potential
+> problem with the test environment, which isn't true, either.
 
-So maybe send a 2 patch series: 1/2 is this chunk with the appropriate
-description. Actually for netdev David prefers that people do not
-cc stable directly, just include Fixes tag and mention in the
-commit log it's also needed for stable. Patch 2/2 is the rest
-handling metadata.
-
-> > 
-> >>   +    if (metasize)
-> >> +        skb_metadata_set(skb, metasize);
-> >> +
-> >>   err:
-> >>       return skb;
-> >>   @@ -760,8 +767,8 @@ static struct sk_buff *receive_big(struct net_device *dev,
-> >>                      struct virtnet_rq_stats *stats)
-> >>   {
-> >>       struct page *page = buf;
-> >> -    struct sk_buff *skb = page_to_skb(vi, rq, page, 0, len,
-> >> -                      PAGE_SIZE, true);
-> >> +    struct sk_buff *skb =
-> >> +        page_to_skb(vi, rq, page, 0, len, PAGE_SIZE, true, 0);
-> >>         stats->bytes += len - vi->hdr_len;
-> >>       if (unlikely(!skb))
-> >> @@ -793,6 +800,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
-> >>       unsigned int truesize;
-> >>       unsigned int headroom = mergeable_ctx_to_headroom(ctx);
-> >>       int err;
-> >> +    unsigned int metasize = 0;
-> >>         head_skb = NULL;
-> >>       stats->bytes += len - vi->hdr_len;
-> >> @@ -839,8 +847,8 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
-> >>           data = page_address(xdp_page) + offset;
-> >>           xdp.data_hard_start = data - VIRTIO_XDP_HEADROOM + vi->hdr_len;
-> >>           xdp.data = data + vi->hdr_len;
-> >> -        xdp_set_data_meta_invalid(&xdp);
-> >>           xdp.data_end = xdp.data + (len - vi->hdr_len);
-> >> +        xdp.data_meta = xdp.data;
-> >>           xdp.rxq = &rq->xdp_rxq;
-> >>             act = bpf_prog_run_xdp(xdp_prog, &xdp);
-> >> @@ -848,24 +856,27 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
-> >>             switch (act) {
-> >>           case XDP_PASS:
-> >> +            metasize = xdp.data - xdp.data_meta;
-> >> +
-> >>               /* recalculate offset to account for any header
-> >> -             * adjustments. Note other cases do not build an
-> >> -             * skb and avoid using offset
-> >> +             * adjustments and minus the metasize to copy the
-> >> +             * metadata in page_to_skb(). Note other cases do not
-> >> +             * build an skb and avoid using offset
-> >>                */
-> >> -            offset = xdp.data -
-> >> -                    page_address(xdp_page) - vi->hdr_len;
-> >> +            offset = xdp.data - page_address(xdp_page) -
-> >> +                 vi->hdr_len - metasize;
-> >>   -            /* recalculate len if xdp.data or xdp.data_end were
-> >> -             * adjusted
-> >> +            /* recalculate len if xdp.data, xdp.data_end or
-> >> +             * xdp.data_meta were adjusted
-> >>                */
-> >> -            len = xdp.data_end - xdp.data + vi->hdr_len;
-> >> +            len = xdp.data_end - xdp.data + vi->hdr_len + metasize;
-> >>               /* We can only create skb based on xdp_page. */
-> >>               if (unlikely(xdp_page != page)) {
-> >>                   rcu_read_unlock();
-> >>                   put_page(page);
-> >> -                head_skb = page_to_skb(vi, rq, xdp_page,
-> >> -                               offset, len,
-> >> -                               PAGE_SIZE, false);
-> >> +                head_skb = page_to_skb(vi, rq, xdp_page, offset,
-> >> +                               len, PAGE_SIZE, false,
-> >> +                               metasize);
-> >>                   return head_skb;
-> >>               }
-> >>               break;
-> >> @@ -921,7 +932,8 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
-> >>           goto err_skb;
-> >>       }
-> >>   -    head_skb = page_to_skb(vi, rq, page, offset, len, truesize, !xdp_prog);
-> >> +    head_skb = page_to_skb(vi, rq, page, offset, len, truesize, !xdp_prog,
-> >> +                   metasize);
-> >>       curr_skb = head_skb;
-> >>         if (unlikely(!curr_skb))
-> > 
-
+So the tests are ready, but kernel support is missing?
+Please don't run those tests then since they're guaranteed to fail atm.
