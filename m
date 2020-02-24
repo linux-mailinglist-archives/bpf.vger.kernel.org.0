@@ -2,261 +2,201 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF68169CDF
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2020 05:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C85169F6B
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2020 08:40:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727210AbgBXEFl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Feb 2020 23:05:41 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42847 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727207AbgBXEFk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 Feb 2020 23:05:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582517138;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ck2F+6cD49f2gEgyPZQSffHDwNaJETMKxaLFkFQbIo0=;
-        b=OOgjdznkZERYaDipj646rRb4lV5OIYvshQQyVA23RjA9vRQmVlKGL7PXR/N3BesxKmKwr0
-        gNXIxr+bHG2x8HbLMhojCPhZlmEwEn4aIuHY8uS4fWj9HzEli8YMh6gdjEaobO0RtNFHsT
-        cFgm4rV/ZX1Xzanj0eiA1pB+0QnSwYw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-473-jSJDtafsMACAytqWFxq-gw-1; Sun, 23 Feb 2020 23:05:29 -0500
-X-MC-Unique: jSJDtafsMACAytqWFxq-gw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDEF018A6EC0;
-        Mon, 24 Feb 2020 04:05:26 +0000 (UTC)
-Received: from [10.72.13.147] (ovpn-13-147.pek2.redhat.com [10.72.13.147])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C153660BF4;
-        Mon, 24 Feb 2020 04:05:18 +0000 (UTC)
-Subject: Re: [PATCH bpf-next v5] virtio_net: add XDP meta data support
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Yuya Kusakabe <yuya.kusakabe@gmail.com>
-Cc:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, yhs@fb.com
-References: <0c5eaba2-dd5a-fc3f-0e8f-154f7ad52881@redhat.com>
- <20200220085549.269795-1-yuya.kusakabe@gmail.com>
- <5bf11065-6b85-8253-8548-683c01c98ac1@redhat.com>
- <8fafd23d-4c80-539d-9f74-bc5cda0d5575@gmail.com>
- <20200223031314-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <7272077b-4cf9-b81b-22b5-22a2b0aceeb6@redhat.com>
-Date:   Mon, 24 Feb 2020 12:05:17 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1727183AbgBXHkO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Feb 2020 02:40:14 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:51465 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727115AbgBXHkO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Feb 2020 02:40:14 -0500
+Received: by mail-io1-f69.google.com with SMTP id c7so14048464ioq.18
+        for <bpf@vger.kernel.org>; Sun, 23 Feb 2020 23:40:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=787IVEtTAp4pm7jHKW0atIbdisWqmLyVEo9pOI1dOQI=;
+        b=KafeSJPnKBWBHXuwKlBcmGHotz7oUqpk87WZjiJ13zeFbxole9H2E7eZ+pnyysE7UD
+         yYwd0IH32w4Ep2DwrVsfHCDbe8NCPytokskgdg8ntwRTyYpl/oGcdwyfyzaSLrMuk70n
+         pba9qMnnKBUlXeBgIsRvnCMiJkAqFJH2tb634e5rvNyzVDE+n2xktwHL++Heq99BioKi
+         RD8VLdjSS0hDPnh2U69aAbtoBHHYiF7klrDlsjY5ivK90iePNe+Nx7L7wQc71bSAUccg
+         cjz2KBVrFZiZF35iKag5xJJ2BYPSL2GYoHsPnGzjHbwL1axZKrVt62oOvhZJoNmmwS6t
+         5UCg==
+X-Gm-Message-State: APjAAAWe82fFljgxCAtaj+6RYBbdKS0ufAakew+aCYxGx2fJim0XyoJC
+        W5GwjtaTbWiLsgXousWPoEJxuaahfbhuiuwwdlbUlRce9ny8
+X-Google-Smtp-Source: APXvYqzJh3mHUMyngPpafir7PkO10lHNmm+YWTAev44v4xWmcR/3wA+00HcZ0KZGFfSTw+SOGPDCV0sVulyssalTAFNQp3RgJDEj
 MIME-Version: 1.0
-In-Reply-To: <20200223031314-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a02:a415:: with SMTP id c21mr48112323jal.45.1582530013025;
+ Sun, 23 Feb 2020 23:40:13 -0800 (PST)
+Date:   Sun, 23 Feb 2020 23:40:13 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000045dc96059f4d7b02@google.com>
+Subject: KASAN: use-after-free Read in tcp_retransmit_timer (5)
+From:   syzbot <syzbot+694120e1002c117747ed@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+        kafai@fb.com, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hello,
 
-On 2020/2/23 =E4=B8=8B=E5=8D=884:14, Michael S. Tsirkin wrote:
-> On Fri, Feb 21, 2020 at 05:36:08PM +0900, Yuya Kusakabe wrote:
->> On 2/21/20 1:23 PM, Jason Wang wrote:
->>> On 2020/2/20 =E4=B8=8B=E5=8D=884:55, Yuya Kusakabe wrote:
->>>> Implement support for transferring XDP meta data into skb for
->>>> virtio_net driver; before calling into the program, xdp.data_meta po=
-ints
->>>> to xdp.data, where on program return with pass verdict, we call
->>>> into skb_metadata_set().
->>>>
->>>> Tested with the script at
->>>> https://github.com/higebu/virtio_net-xdp-metadata-test.
->>>>
->>>> Fixes: de8f3a83b0a0 ("bpf: add meta pointer for direct access")
->>> I'm not sure this is correct since virtio-net claims to not support m=
-etadata by calling xdp_set_data_meta_invalid()?
->> virtio_net doesn't support by calling xdp_set_data_meta_invalid() for =
-now.
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/=
-drivers/net/virtio_net.c?id=3De42da4c62abb547d9c9138e0e7fcd1f36057b5e8#n6=
-86
->> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/=
-drivers/net/virtio_net.c?id=3De42da4c62abb547d9c9138e0e7fcd1f36057b5e8#n8=
-42
->>
->> And xdp_set_data_meta_invalid() are added by de8f3a83b0a0.
->>
->> $ git blame ./drivers/net/virtio_net.c | grep xdp_set_data_meta_invali=
-d
->> de8f3a83b0a0f (Daniel Borkmann           2017-09-25 02:25:51 +0200  68=
-6)                xdp_set_data_meta_invalid(&xdp);
->> de8f3a83b0a0f (Daniel Borkmann           2017-09-25 02:25:51 +0200  84=
-2)                xdp_set_data_meta_invalid(&xdp);
->>
->> So I added `Fixes: de8f3a83b0a0 ("bpf: add meta pointer for direct acc=
-ess")` to the comment.
->>
->>>> Signed-off-by: Yuya Kusakabe<yuya.kusakabe@gmail.com>
->>>> ---
->>>> v5:
->>>>  =C2=A0 - page_to_skb(): copy vnet header if hdr_valid without check=
-ing metasize.
->>>>  =C2=A0 - receive_small(): do not copy vnet header if xdp_prog is av=
-ailavle.
->>>>  =C2=A0 - __virtnet_xdp_xmit_one(): remove the xdp_set_data_meta_inv=
-alid().
->>>>  =C2=A0 - improve comments.
->>>> v4:
->>>>  =C2=A0 - improve commit message
->>>> v3:
->>>>  =C2=A0 - fix preserve the vnet header in receive_small().
->>>> v2:
->>>>  =C2=A0 - keep copy untouched in page_to_skb().
->>>>  =C2=A0 - preserve the vnet header in receive_small().
->>>>  =C2=A0 - fix indentation.
->>>> ---
->>>>  =C2=A0 drivers/net/virtio_net.c | 54 ++++++++++++++++++++++++------=
-----------
->>>>  =C2=A0 1 file changed, 33 insertions(+), 21 deletions(-)
->>>>
->>>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
->>>> index 2fe7a3188282..4ea0ae60c000 100644
->>>> --- a/drivers/net/virtio_net.c
->>>> +++ b/drivers/net/virtio_net.c
->>>> @@ -371,7 +371,7 @@ static struct sk_buff *page_to_skb(struct virtne=
-t_info *vi,
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct receive_queue =
-*rq,
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct page *page, un=
-signed int offset,
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int len, uns=
-igned int truesize,
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool hdr_valid)
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool hdr_valid, unsigned int meta=
-size)
->>>>  =C2=A0 {
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct sk_buff *skb;
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct virtio_net_hdr_mrg_rxbuf *hdr=
-;
->>>> @@ -393,6 +393,7 @@ static struct sk_buff *page_to_skb(struct virtne=
-t_info *vi,
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 else
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 hdr_padded_l=
-en =3D sizeof(struct padded_vnet_hdr);
->>>>  =C2=A0 +=C2=A0=C2=A0=C2=A0 /* hdr_valid means no XDP, so we can cop=
-y the vnet header */
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (hdr_valid)
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memcpy(hdr, =
-p, hdr_len);
->>>>  =C2=A0 @@ -405,6 +406,11 @@ static struct sk_buff *page_to_skb(stru=
-ct virtnet_info *vi,
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 copy =3D skb=
-_tailroom(skb);
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 skb_put_data(skb, p, copy);
->>>>  =C2=A0 +=C2=A0=C2=A0=C2=A0 if (metasize) {
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __skb_pull(skb, metasize=
-);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 skb_metadata_set(skb, me=
-tasize);
->>>> +=C2=A0=C2=A0=C2=A0 }
->>>> +
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 len -=3D copy;
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 offset +=3D copy;
->>>>  =C2=A0 @@ -450,10 +456,6 @@ static int __virtnet_xdp_xmit_one(struc=
-t virtnet_info *vi,
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct virtio_net_hdr_mrg_rxbuf *hdr=
-;
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int err;
->>>>  =C2=A0 -=C2=A0=C2=A0=C2=A0 /* virtqueue want to use data area in-fr=
-ont of packet */
->>>> -=C2=A0=C2=A0=C2=A0 if (unlikely(xdpf->metasize > 0))
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EOPNOTSUPP;
->>>> -
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (unlikely(xdpf->headroom < vi->hd=
-r_len))
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EOVE=
-RFLOW;
->>>>  =C2=A0 @@ -644,6 +646,7 @@ static struct sk_buff *receive_small(str=
-uct net_device *dev,
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int delta =3D 0;
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct page *xdp_page;
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int err;
->>>> +=C2=A0=C2=A0=C2=A0 unsigned int metasize =3D 0;
->>>>  =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 len -=3D vi->hdr_len;
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 stats->bytes +=3D len;
->>>> @@ -683,8 +686,8 @@ static struct sk_buff *receive_small(struct net_=
-device *dev,
->>>>  =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 xdp.d=
-ata_hard_start =3D buf + VIRTNET_RX_PAD + vi->hdr_len;
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 xdp.data =3D=
- xdp.data_hard_start + xdp_headroom;
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 xdp_set_data_meta_invali=
-d(&xdp);
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 xdp.data_end=
- =3D xdp.data + len;
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 xdp.data_meta =3D xdp.da=
-ta;
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 xdp.rxq =3D =
-&rq->xdp_rxq;
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 orig_data =3D=
- xdp.data;
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 act =3D bpf_=
-prog_run_xdp(xdp_prog, &xdp);
->>>> @@ -695,6 +698,7 @@ static struct sk_buff *receive_small(struct net_=
-device *dev,
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 /* Recalculate length in case bpf program changed it */
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 delta =3D orig_data - xdp.data;
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 len =3D xdp.data_end - xdp.data;
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-metasize =3D xdp.data - xdp.data_meta;
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 break;
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case XDP_TX:
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 stats->xdp_tx++;
->>>> @@ -735,11 +739,14 @@ static struct sk_buff *receive_small(struct ne=
-t_device *dev,
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 skb_reserve(skb, headroom - delta);
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 skb_put(skb, len);
->>>> -=C2=A0=C2=A0=C2=A0 if (!delta) {
->>>> +=C2=A0=C2=A0=C2=A0 if (!xdp_prog) {
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 buf +=3D hea=
-der_offset;
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memcpy(skb_v=
-net_hdr(skb), buf, vi->hdr_len);
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } /* keep zeroed vnet hdr since pack=
-et was changed by bpf */
->>> I prefer to make this an independent patch and cc stable.
->>>
->>> Other looks good.
->>>
->>> Thanks
->> I see. So I need to revert to delta from xdp_prog?
->>
->> Thank you.
-> So maybe send a 2 patch series: 1/2 is this chunk with the appropriate
-> description. Actually for netdev David prefers that people do not
-> cc stable directly, just include Fixes tag and mention in the
-> commit log it's also needed for stable. Patch 2/2 is the rest
-> handling metadata.
+syzbot found the following crash on:
+
+HEAD commit:    41f57cfd Merge git://git.kernel.org/pub/scm/linux/kernel/g..
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=1460da7ee00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=768cc3d3e277cc16
+dashboard link: https://syzkaller.appspot.com/bug?extid=694120e1002c117747ed
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+694120e1002c117747ed@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in tcp_retransmit_timer+0x2c51/0x30e0 net/ipv4/tcp_timer.c:500
+Read of size 8 at addr ffff888062cc0338 by task syz-executor.0/18199
+
+CPU: 0 PID: 18199 Comm: syz-executor.0 Not tainted 5.6.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x197/0x210 lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xd4/0x30b mm/kasan/report.c:374
+ __kasan_report.cold+0x1b/0x32 mm/kasan/report.c:506
+ kasan_report+0x12/0x20 mm/kasan/common.c:641
+ __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:135
+ tcp_retransmit_timer+0x2c51/0x30e0 net/ipv4/tcp_timer.c:500
+ tcp_write_timer_handler+0x6be/0x8d0 net/ipv4/tcp_timer.c:611
+ tcp_write_timer+0xac/0x2e0 net/ipv4/tcp_timer.c:631
+ call_timer_fn+0x1ac/0x780 kernel/time/timer.c:1404
+ expire_timers kernel/time/timer.c:1449 [inline]
+ __run_timers kernel/time/timer.c:1773 [inline]
+ __run_timers kernel/time/timer.c:1740 [inline]
+ run_timer_softirq+0x6c3/0x1790 kernel/time/timer.c:1786
+ __do_softirq+0x262/0x98c kernel/softirq.c:292
+ invoke_softirq kernel/softirq.c:373 [inline]
+ irq_exit+0x19b/0x1e0 kernel/softirq.c:413
+ exiting_irq arch/x86/include/asm/apic.h:546 [inline]
+ smp_apic_timer_interrupt+0x1a3/0x610 arch/x86/kernel/apic/apic.c:1146
+ apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:829
+ </IRQ>
+RIP: 0010:arch_local_irq_restore arch/x86/include/asm/paravirt.h:752 [inline]
+RIP: 0010:slab_alloc mm/slab.c:3313 [inline]
+RIP: 0010:__do_kmalloc mm/slab.c:3654 [inline]
+RIP: 0010:__kmalloc+0x2b8/0x770 mm/slab.c:3665
+Code: 7e 0f 85 d6 fe ff ff e8 a7 af 4c ff e9 cc fe ff ff e8 4c 6d c7 ff 48 83 3d dc f5 ff 07 00 0f 84 4f 03 00 00 48 8b 7d c0 57 9d <0f> 1f 44 00 00 e9 5e fe ff ff 31 d2 be 35 02 00 00 48 c7 c7 de dd
+RSP: 0018:ffffc900019675a8 EFLAGS: 00000282 ORIG_RAX: ffffffffffffff13
+RAX: 0000000000000007 RBX: 0000000000000c40 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffff8880569e29d8 RDI: 0000000000000282
+RBP: ffffc90001967620 R08: ffff8880569e2140 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000001000
+R13: 0000000000000c40 R14: ffff8880aa402000 R15: ffff8880962fa000
+ kmalloc include/linux/slab.h:560 [inline]
+ tomoyo_realpath_from_path+0xc5/0x660 security/tomoyo/realpath.c:252
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_check_open_permission+0x2a3/0x3e0 security/tomoyo/file.c:771
+ tomoyo_file_open security/tomoyo/tomoyo.c:319 [inline]
+ tomoyo_file_open+0xa9/0xd0 security/tomoyo/tomoyo.c:314
+ security_file_open+0x71/0x300 security/security.c:1529
+ do_dentry_open+0x37a/0x1380 fs/open.c:784
+ vfs_open+0xa0/0xd0 fs/open.c:914
+ do_last fs/namei.c:3490 [inline]
+ path_openat+0x12ee/0x3490 fs/namei.c:3607
+ do_filp_open+0x192/0x260 fs/namei.c:3637
+ do_sys_openat2+0x5eb/0x7e0 fs/open.c:1149
+ do_sys_open+0xf2/0x180 fs/open.c:1165
+ ksys_open include/linux/syscalls.h:1386 [inline]
+ __do_sys_open fs/open.c:1171 [inline]
+ __se_sys_open fs/open.c:1169 [inline]
+ __x64_sys_open+0x7e/0xc0 fs/open.c:1169
+ do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x4161c0
+Code: 05 48 3d 01 f0 ff ff 0f 83 2d 19 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 83 3d ad 22 87 00 00 75 14 b8 02 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 04 19 00 00 c3 48 83 ec 08 e8 0a fa ff ff
+RSP: 002b:00007ffd846aa178 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 00007ffd846aa1a4 RCX: 00000000004161c0
+RDX: 00007ffd846aa1aa RSI: 0000000000080001 RDI: 00000000004c1fef
+RBP: 00007ffd846aa1a0 R08: 0000000000008040 R09: 0000000000000004
+R10: 0000000000000075 R11: 0000000000000246 R12: 00000000004c1fef
+R13: 00007ffd846aa6c0 R14: 0000000000000000 R15: 00007ffd846aa6d0
+
+Allocated by task 2861:
+ save_stack+0x23/0x90 mm/kasan/common.c:72
+ set_track mm/kasan/common.c:80 [inline]
+ __kasan_kmalloc mm/kasan/common.c:515 [inline]
+ __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:488
+ kasan_kmalloc+0x9/0x10 mm/kasan/common.c:529
+ __do_kmalloc_node mm/slab.c:3616 [inline]
+ __kmalloc_node_track_caller+0x4e/0x70 mm/slab.c:3630
+ __kmalloc_reserve.isra.0+0x40/0xf0 net/core/skbuff.c:142
+ __alloc_skb+0x10b/0x5e0 net/core/skbuff.c:210
+ alloc_skb include/linux/skbuff.h:1081 [inline]
+ nsim_dev_trap_skb_build drivers/net/netdevsim/dev.c:324 [inline]
+ nsim_dev_trap_report drivers/net/netdevsim/dev.c:376 [inline]
+ nsim_dev_trap_report_work+0x25c/0xaf0 drivers/net/netdevsim/dev.c:415
+ process_one_work+0xa05/0x17a0 kernel/workqueue.c:2264
+ worker_thread+0x98/0xe40 kernel/workqueue.c:2410
+ kthread+0x361/0x430 kernel/kthread.c:255
+ ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+
+Freed by task 2861:
+ save_stack+0x23/0x90 mm/kasan/common.c:72
+ set_track mm/kasan/common.c:80 [inline]
+ kasan_set_free_info mm/kasan/common.c:337 [inline]
+ __kasan_slab_free+0x102/0x150 mm/kasan/common.c:476
+ kasan_slab_free+0xe/0x10 mm/kasan/common.c:485
+ __cache_free mm/slab.c:3426 [inline]
+ kfree+0x10a/0x2c0 mm/slab.c:3757
+ skb_free_head+0x93/0xb0 net/core/skbuff.c:590
+ skb_release_data+0x43c/0x8b0 net/core/skbuff.c:610
+ skb_release_all+0x4d/0x60 net/core/skbuff.c:664
+ __kfree_skb net/core/skbuff.c:678 [inline]
+ consume_skb net/core/skbuff.c:837 [inline]
+ consume_skb+0xfb/0x410 net/core/skbuff.c:831
+ nsim_dev_trap_report drivers/net/netdevsim/dev.c:390 [inline]
+ nsim_dev_trap_report_work+0x7cb/0xaf0 drivers/net/netdevsim/dev.c:415
+ process_one_work+0xa05/0x17a0 kernel/workqueue.c:2264
+ worker_thread+0x98/0xe40 kernel/workqueue.c:2410
+ kthread+0x361/0x430 kernel/kthread.c:255
+ ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+
+The buggy address belongs to the object at ffff888062cc0000
+ which belongs to the cache kmalloc-4k of size 4096
+The buggy address is located 824 bytes inside of
+ 4096-byte region [ffff888062cc0000, ffff888062cc1000)
+The buggy address belongs to the page:
+page:ffffea00018b3000 refcount:1 mapcount:0 mapping:ffff8880aa402000 index:0x0 compound_mapcount: 0
+flags: 0xfffe0000010200(slab|head)
+raw: 00fffe0000010200 ffffea00024ce208 ffffea00029a7b08 ffff8880aa402000
+raw: 0000000000000000 ffff888062cc0000 0000000100000001 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888062cc0200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888062cc0280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888062cc0300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                        ^
+ ffff888062cc0380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888062cc0400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
 
-+1
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Thanks
-
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
