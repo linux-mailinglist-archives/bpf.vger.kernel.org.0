@@ -2,198 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B44916ACBE
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2020 18:13:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBE916AD51
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2020 18:26:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727636AbgBXRNJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Feb 2020 12:13:09 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:33229 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727689AbgBXRNJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Feb 2020 12:13:09 -0500
-Received: by mail-wm1-f65.google.com with SMTP id m10so342643wmc.0
-        for <bpf@vger.kernel.org>; Mon, 24 Feb 2020 09:13:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=djq2UzRGDZUviySA8l7HGT0qHQEYWEuCD4uLW+Pmvvs=;
-        b=WAaMkWyorUPlUuI4nRXYbnoDGL7eMtZS5tpi8LV09uUXVKFh7REQoOvUkK7e7el4rQ
-         oWWOnN2++jNfuFzKY1zTUQCyJat1fTLlATlX3vBCBeFPfbMwKhe/f+QW6XvTChbrrrtY
-         4PbOkD+89zTQLmnpGpMMS0qrKSMdfAMjGVrdM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=djq2UzRGDZUviySA8l7HGT0qHQEYWEuCD4uLW+Pmvvs=;
-        b=DFeI8OnswnWMR4Y1goudT0PT00eRPgubotEFM7bjwAh+KJXA9ClG+VHGTQu4mH5MVf
-         x8FhasvXRJ6dft+rJkw6XjAri3JGLDTIoaugJ047NUqPbE1RO64NHTR1CPdQASklyzsp
-         hegqI9brfiCcE1jGOTEPNGpMvTnbxnrTaB4qbJBiRFyxTEJTq4ixrCt7+8KoAxyMLxVO
-         5LZY9ghWkl4j0DysUIxQBvb51HR7PJGNIdFbxxf7E748lUMfW5zrGtkevUf3ykKUtKS8
-         knajkKbtq96xGU7P64TOLXSkdvY5Oa+4Hv+5/Awm5QF3PvubPMEYGWyFKu+BiSlrPl3H
-         cg5g==
-X-Gm-Message-State: APjAAAWeFluqXtFVCWPW0it0OpFCPv/g0c7MVbZF102DcCIgougVkblO
-        w8011+BPn5vjWtH/mwQCVz/Uzw==
-X-Google-Smtp-Source: APXvYqw+txJF+rLovWHEHGiqNzAcu94O+9oGuFuSTTeDeQS+cKKNh0sPeN+HaDKqz1TrcTn35uMIVQ==
-X-Received: by 2002:a1c:dc85:: with SMTP id t127mr95275wmg.16.1582564387555;
-        Mon, 24 Feb 2020 09:13:07 -0800 (PST)
-Received: from chromium.org ([2620:0:105f:fd00:d960:542a:a1d:648a])
-        by smtp.gmail.com with ESMTPSA id g29sm13919879wrb.59.2020.02.24.09.13.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Feb 2020 09:13:07 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Mon, 24 Feb 2020 18:13:05 +0100
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
+        id S1727619AbgBXR0T (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Feb 2020 12:26:19 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:47202 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726806AbgBXR0S (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 24 Feb 2020 12:26:18 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01OHOvRU019878;
+        Mon, 24 Feb 2020 09:25:49 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-id :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=CSDZ1BIy+nXx8LYD3pZvEKtx3AOycVhjH2nuMtaAUMY=;
+ b=QUXPn/ZI35kUgbWrX0bxkGvlRG1O9t3gGBoidG9wcjQ6E5pVx84SddA8lXTsn+uEjRaL
+ z2zrbC1O0khKA5/qiygILeo4A8TXq6CFRWDPAMDVSaLQT28V+tb+LqMSC5p/v7+ziyoD
+ dPogMo1I9jnhphoZLGYQzIUCUeLY6Vporfs= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 2ybnyjnxe6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 24 Feb 2020 09:25:49 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Mon, 24 Feb 2020 09:25:47 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BFhcL7goWDLI2VUXAdewA/eaz+UtHDKh7AJjk2VNT0GoX7x3PtWvA/s2CaDsNvhgy7BiNFiV3BhZYiRiHKPPgc3hgjenA4/f8kaWqIkfwjtCo9GtRVf8BsZHCekreqm+fnIQTi/AQZoqQXDUSW67h2vCwuTbCHEGjAW7Mk4avb0su/hQLIQsqQ3jDV7sqTXtBvPb0TK09uSOqtKqrTXJGk4bQKuFgYhySLupxEX6Jik+9rE5SiyJEtWXtpLTCmcwNGjgi1n31onWxacCf0ylHYeyVXHI7MT50vV4mGULkvcMQpqlQVXbUthX9DJpqpU/AGgaSNVaS9SUmLItvJ7adg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CSDZ1BIy+nXx8LYD3pZvEKtx3AOycVhjH2nuMtaAUMY=;
+ b=Kdel6E6UE/YqS6/y7Q711ax+4MfgILNzoOHio01gTbKFmXHiNbg1CFk0C96rChNM9le/5poox2w16/EcTl+kxOqS34BdgceDYJJ+ihqtswjzf6yyghj3CJ80rVFM4587QYhkqMvdaYzWFTELfzQ5DLStrzSR3swebVI0jptip1urYcCXWzyAwb7boorz7pSSEwJDa8joUlgBs6grNAackss1qmAjaUh2/eljVBn9VYxApY9fZiSMyExnodhMZ5DdB/89OOkodkmTBg6SLqz3wtAsMuKmsZbTAfVyCDVL1Gq3DRmmg3295I+JJ6yM/1h5EH029JqiKaBzz1irARig6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CSDZ1BIy+nXx8LYD3pZvEKtx3AOycVhjH2nuMtaAUMY=;
+ b=dvG05ko+rap6MbiswD138iv2Qx1L0FbyyNimm5SXqo/mvd0cQGhAvGkPop/A+Brg43ymuHJ2ddCCIICPdUORFZEW3ClosyLvmVG1XyFzpNXdtxCahu2xQbwVarX/NDcsF3mb8kk5jz16FSXaS2EOom7cbzCd+uzD05S2I5DXo2w=
+Received: from MW2PR1501MB2171.namprd15.prod.outlook.com
+ (2603:10b6:302:13::27) by MW2PR1501MB2060.namprd15.prod.outlook.com
+ (2603:10b6:302:c::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2750.22; Mon, 24 Feb
+ 2020 17:25:33 +0000
+Received: from MW2PR1501MB2171.namprd15.prod.outlook.com
+ ([fe80::492d:3e00:17dc:6b30]) by MW2PR1501MB2171.namprd15.prod.outlook.com
+ ([fe80::492d:3e00:17dc:6b30%7]) with mapi id 15.20.2729.033; Mon, 24 Feb 2020
+ 17:25:32 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+CC:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        James Morris <jmorris@namei.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v4 3/8] bpf: lsm: provide attachment points for
- BPF LSM programs
-Message-ID: <20200224171305.GA21886@chromium.org>
-References: <20200220175250.10795-1-kpsingh@chromium.org>
- <20200220175250.10795-4-kpsingh@chromium.org>
- <0ef26943-9619-3736-4452-fec536a8d169@schaufler-ca.com>
- <202002211946.A23A987@keescook>
- <20200223220833.wdhonzvven7payaw@ast-mbp>
- <c5c67ece-e5c1-9e8f-3a2b-60d8d002c894@schaufler-ca.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "oss-drivers@netronome.com" <oss-drivers@netronome.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re:   [PATCH][next] netronome: Replace zero-length array with
+ flexible-array member
+Thread-Topic: [PATCH][next] netronome: Replace zero-length array with
+ flexible-array member
+Thread-Index: AQHV6zdqnfPUSLbtxUGp3lWXBMx2Lw==
+Date:   Mon, 24 Feb 2020 17:25:32 +0000
+Message-ID: <D473BD67-78F8-4BDF-91A5-DF90418CAA4C@fb.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [174.194.140.42]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3f6db1a5-e7ef-43cd-dd49-08d7b94e8d8e
+x-ms-traffictypediagnostic: MW2PR1501MB2060:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW2PR1501MB206068A7BBF3F36643E970BFB3EC0@MW2PR1501MB2060.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:1775;
+x-forefront-prvs: 032334F434
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(376002)(136003)(396003)(39860400002)(346002)(366004)(199004)(189003)(66476007)(66446008)(64756008)(66556008)(36756003)(76116006)(91956017)(66946007)(4326008)(54906003)(2616005)(316002)(966005)(6486002)(478600001)(6512007)(33656002)(81156014)(86362001)(8936002)(6506007)(81166006)(26005)(186003)(2906002)(6916009)(5660300002)(53546011)(71200400001)(8676002);DIR:OUT;SFP:1102;SCL:1;SRVR:MW2PR1501MB2060;H:MW2PR1501MB2171.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: sHJ0BzorCPg/z6fZhBwPFZuGpDSeY0qmAim4/NGCQ7FVvSKxSBSl30IdidkeWY79HgMjaBPW6O54lwogSdm9Vq1GmnAq3DOdBDkEAxaS2TP8cOhyOzCMBPiKzIPdzIPo52RUIb/dIj+zISbP9/5mjCaFCsPNNDzRHSwogScG2QxwgbAuFrsCW28YEX7c8BreqxJovtAoXzORMDEQEZqs6ws2jf18XTHTJLAuWyKmDSh/vrfw7YRoo/ryjx+wqul0hOiaskLjVoEylaYsDioWquXO3VsjZNg8YpnyD0zSUSd/jEZpJm7nRN4vvNnjgGu9vCRCVO1Qr9i7636dQUQr+Nnx7PL9aBiz3QJcfrpvNbNpE2UT+7BA2rClPf+GJvqJ1NuaUBJGbHbDz6teklvUkWQnBErqT40vd+lXeIDOq7MUnd01CvugbdK88PcRF9BN44/kOWBdiUcadBaR/G3zqtaJ7QC+L6acxMR9mvZikmbQs0NDYpQjYDEle6x66n+1XB2VsK+IGZmmo3Nvv5geCA==
+x-ms-exchange-antispam-messagedata: ZtQ8tVBwj9PmNFjeeDJQqM6tkLK1gHSunrQ2Bof5qUJ1kZsj4CoIQlQNJBDl3TDfpnmEXhtI8xXhh1VXPToN6Jhi2kM1a/WknMbbvX4eIloHtra65K/SufNohazsqmVUd6Ect3SRJDK+PO9pHKBp1g==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9C69C6367EFFFB4DB4BD0733EDB6F0CC@fb.onmicrosoft.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c5c67ece-e5c1-9e8f-3a2b-60d8d002c894@schaufler-ca.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3f6db1a5-e7ef-43cd-dd49-08d7b94e8d8e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Feb 2020 17:25:32.8792
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: SVIoZTEsLvNqGbJIEntMhVKV6RRziQFUTGcIQA9azJJVN4bwxZ4iI6dRSYCjS2CafHQmXLt6WB1L+1VZKucFtA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR1501MB2060
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-02-24_07:2020-02-21,2020-02-24 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ mlxlogscore=495 phishscore=0 adultscore=0 spamscore=0 clxscore=1011
+ mlxscore=0 impostorscore=0 priorityscore=1501 bulkscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2002240131
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 24-Feb 08:32, Casey Schaufler wrote:
-> On 2/23/2020 2:08 PM, Alexei Starovoitov wrote:
-> > On Fri, Feb 21, 2020 at 08:22:59PM -0800, Kees Cook wrote:
-> >> If I'm understanding this correctly, there are two issues:
-> >>
-> >> 1- BPF needs to be run last due to fexit trampolines (?)
-> > no.
-> > The placement of nop call can be anywhere.
-> > BPF trampoline is automagically converting nop call into a sequence
-> > of directly invoked BPF programs.
-> > No link list traversals and no indirect calls in run-time.
-> 
-> Then why the insistence that it be last?
-
-I think this came out of the discussion about not being able to
-override the other LSMs and introduce a new attack vector with some
-arguments discussed at:
-
-  https://lore.kernel.org/bpf/20200109194302.GA85350@google.com/
-
-Let's say we have SELinux + BPF runnng on the system. BPF should still
-respect any decisions made by SELinux. This hasn't got anything to
-do with the usage of fexit trampolines.
-
-> 
-> >> 2- BPF hooks don't know what may be attached at any given time, so
-> >>    ALL LSM hooks need to be universally hooked. THIS turns out to create
-> >>    a measurable performance problem in that the cost of the indirect call
-> >>    on the (mostly/usually) empty BPF policy is too high.
-> > also no.
-> 
-> Um, then why not use the infrastructure as is?
-
-I think what Kees meant is that BPF allows hooking to all the LSM
-hooks and providing static LSM hook callbacks like traditional LSMs
-has a measurable performance overhead and this is indeed correct. This
-is why we want provide with the following characteristics:
-
-- Without introducing a new attack surface, this was the reason for
-  creating a mutable security_hook_heads in v1 which ran the hook
-  after v1.
-
-  This approach still had the issues of an indirect call and an
-  extra check when not used. So this was not truly zero overhead even
-  after special casing BPF.
-
-- Having a truly zero performance overhead on the system. There are
-  other tracing / attachment mechnaisms in the kernel which provide
-  similar guarrantees (using static keys and direct calls) and it
-  seems regressive for KRSI to not leverage these known patterns and
-  sacrifice performance espeically in hotpaths. This provides users
-  to use KRSI alongside other LSMs without paying extra cost for all
-  the possible hooks.
-
-> 
-> >> So, trying to avoid the indirect calls is, as you say, an optimization,
-> >> but it might be a needed one due to the other limitations.
-> > I'm convinced that avoiding the cost of retpoline in critical path is a
-> > requirement for any new infrastructure in the kernel.
-> 
-> Sorry, I haven't gotten that memo.
-> 
-> > Not only for security, but for any new infra.
-> 
-> The LSM infrastructure ain't new.
-
-But the ability to attach BPF programs to LSM hooks is new. Also, we
-have not had the whole implementation of the LSM hook be mutable
-before and this is essentially what the KRSI provides.
-
-> 
-> > Networking stack converted all such places to conditional calls.
-> > In BPF land we converted indirect calls to direct jumps and direct calls.
-> > It took two years to do so. Adding new indirect calls is not an option.
-> > I'm eagerly waiting for Peter's static_call patches to land to convert
-> > a lot more indirect calls. May be existing LSMs will take advantage
-> > of static_call patches too, but static_call is not an option for BPF.
-> > That's why we introduced BPF trampoline in the last kernel release.
-> 
-> Sorry, but I don't see how BPF is so overwhelmingly special.
-
-My analogy here is that if every tracepoint in the kernel were of the
-type:
-
-if (trace_foo_enabled) // <-- Overhead here, solved with static key
-   trace_foo(a);  // <-- retpoline overhead, solved with fexit trampolines
-
-It would be very hard to justify enabling them on a production system,
-and the same can be said for BPF and KRSI.
-
-- KP
-
-> 
-> >> b) Would there actually be a global benefit to using the static keys
-> >>    optimization for other LSMs?
-> > Yes. Just compiling with CONFIG_SECURITY adds "if (hlist_empty)" check
-> > for every hook.
-> 
-> Err, no, it doesn't. It does an hlish_for_each_entry(), which
-> may be the equivalent on an empty list, but let's not go around
-> spreading misinformation.
-> 
-> >  Some of those hooks are in critical path. This load+cmp
-> > can be avoided with static_key optimization. I think it's worth doing.
-> 
-> I admit to being unfamiliar with the static_key implementation,
-> but if it would work for a list of hooks rather than a singe hook,
-> I'm all ears.
-> 
-> >> If static keys are justified for KRSI
-> > I really like that KRSI costs absolutely zero when it's not enabled.
-> 
-> And I dislike that there's security module specific code in security.c,
-> security.h and/or lsm_hooks.h. KRSI *is not that special*.
-> 
-> > Attaching BPF prog to one hook preserves zero cost for all other hooks.
-> > And when one hook is BPF powered it's using direct call instead of
-> > super expensive retpoline.
-> 
-> I'm not objecting to the good it does for KRSI.
-> I am *strongly* objecting to special casing KRSI.
-> 
-> > Overall this patch set looks good to me. There was a minor issue with prog
-> > accounting. I expect only that bit to be fixed in v5.
-> 
+DQo+IE9uIEZlYiAyNCwgMjAyMCwgYXQgODozNCBBTSwgR3VzdGF2byBBLiBSLiBTaWx2YSA8Z3Vz
+dGF2b0BlbWJlZGRlZG9yLmNvbT4gd3JvdGU6DQo+IA0KPiDvu79UaGUgY3VycmVudCBjb2RlYmFz
+ZSBtYWtlcyB1c2Ugb2YgdGhlIHplcm8tbGVuZ3RoIGFycmF5IGxhbmd1YWdlDQo+IGV4dGVuc2lv
+biB0byB0aGUgQzkwIHN0YW5kYXJkLCBidXQgdGhlIHByZWZlcnJlZCBtZWNoYW5pc20gdG8gZGVj
+bGFyZQ0KPiB2YXJpYWJsZS1sZW5ndGggdHlwZXMgc3VjaCBhcyB0aGVzZSBvbmVzIGlzIGEgZmxl
+eGlibGUgYXJyYXkgbWVtYmVyWzFdWzJdLA0KPiBpbnRyb2R1Y2VkIGluIEM5OToNCj4gDQo+IHN0
+cnVjdCBmb28gew0KPiAgICAgIGludCBzdHVmZjsNCj4gICAgICBzdHJ1Y3QgYm9vIGFycmF5W107
+DQo+IH07DQo+IA0KPiBCeSBtYWtpbmcgdXNlIG9mIHRoZSBtZWNoYW5pc20gYWJvdmUsIHdlIHdp
+bGwgZ2V0IGEgY29tcGlsZXIgd2FybmluZw0KPiBpbiBjYXNlIHRoZSBmbGV4aWJsZSBhcnJheSBk
+b2VzIG5vdCBvY2N1ciBsYXN0IGluIHRoZSBzdHJ1Y3R1cmUsIHdoaWNoDQo+IHdpbGwgaGVscCB1
+cyBwcmV2ZW50IHNvbWUga2luZCBvZiB1bmRlZmluZWQgYmVoYXZpb3IgYnVncyBmcm9tIGJlaW5n
+DQo+IGluYWR2ZXJ0ZW50bHkgaW50cm9kdWNlZFszXSB0byB0aGUgY29kZWJhc2UgZnJvbSBub3cg
+b24uDQo+IA0KPiBBbHNvLCBub3RpY2UgdGhhdCwgZHluYW1pYyBtZW1vcnkgYWxsb2NhdGlvbnMg
+d29uJ3QgYmUgYWZmZWN0ZWQgYnkNCj4gdGhpcyBjaGFuZ2U6DQo+IA0KPiAiRmxleGlibGUgYXJy
+YXkgbWVtYmVycyBoYXZlIGluY29tcGxldGUgdHlwZSwgYW5kIHNvIHRoZSBzaXplb2Ygb3BlcmF0
+b3INCj4gbWF5IG5vdCBiZSBhcHBsaWVkLiBBcyBhIHF1aXJrIG9mIHRoZSBvcmlnaW5hbCBpbXBs
+ZW1lbnRhdGlvbiBvZg0KPiB6ZXJvLWxlbmd0aCBhcnJheXMsIHNpemVvZiBldmFsdWF0ZXMgdG8g
+emVyby4iWzFdDQo+IA0KPiBUaGlzIGlzc3VlIHdhcyBmb3VuZCB3aXRoIHRoZSBoZWxwIG9mIENv
+Y2NpbmVsbGUuDQo+IA0KPiBbMV0gaHR0cHM6Ly9nY2MuZ251Lm9yZy9vbmxpbmVkb2NzL2djYy9a
+ZXJvLUxlbmd0aC5odG1sDQo+IFsyXSBodHRwczovL2dpdGh1Yi5jb20vS1NQUC9saW51eC9pc3N1
+ZXMvMjENCj4gWzNdIGNvbW1pdCA3NjQ5NzczMjkzMmYgKCJjeGdiMy9sMnQ6IEZpeCB1bmRlZmlu
+ZWQgYmVoYXZpb3VyIikNCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEd1c3Rhdm8gQS4gUi4gU2lsdmEg
+PGd1c3Rhdm9AZW1iZWRkZWRvci5jb20+DQoNCkFja2VkLWJ5OiBTb25nIExpdSA8c29uZ2xpdWJy
+YXZpbmdAZmIuY29tPg==
