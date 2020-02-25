@@ -2,101 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A859516B938
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2020 06:43:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF31516B93E
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2020 06:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726587AbgBYFnr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Feb 2020 00:43:47 -0500
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:33912 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725837AbgBYFnr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Feb 2020 00:43:47 -0500
-Received: by mail-lf1-f67.google.com with SMTP id l18so8748808lfc.1;
-        Mon, 24 Feb 2020 21:43:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=p5/5vEBubNjmt22m/UMeJDFdXk5YFn70ecwWdjPyPE8=;
-        b=GdNQZQrARMDie/sTWPxRiOwmun0GRWKpBmT1CnCPcTs7WcNLJae8K6mPa6eFJo/n7U
-         nyFXy5GBFeey2tSZjlCb3bkAwuRVqfJsBiwH2pKxufIMo4crV00Fxkg24dIm/7y+kQCz
-         2oDJEPKBDsWe+ITLLhuZOOTOXZAZbEJ0jzx+r7oARptjNvD4owwRhpEydDUqtQQ9gXZ9
-         lthmfGtiv2GxmHanh0COZMw9FGVC3hUQnzo6YoKC/DAToVqme/MtaVtiQS/YnyiarSk2
-         2TvuzXpdq5D4yGUFPDK5Z+vHhKiluOLZAP2NJnxFRDWSLKCkloIcT2AxekjPrl/8zCPU
-         wCig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=p5/5vEBubNjmt22m/UMeJDFdXk5YFn70ecwWdjPyPE8=;
-        b=hRohDoOX0WPqKkXDN1iB7SYHriKcEYsGnpGS8Vii1IBBtQIMCSZU03k+emigQkTjnb
-         j/9tDaZD8WK1F8x3HE29tuTeg+FhQRltNLmys31fe9dB8y2CPPyE5+BQLlTAVKZri4x6
-         65sHxk8P2e3tkHnAKknO1kfNdfxKIy08x4OzfH1ygRPCecp9qMfcO78jKKF1vGEjRUsS
-         AZZrVPKgB1bQSH/lrnXJajlSIdkqjF5M2ogzrcxh6oam8LfPukVYQNjbcnltYTJsg70z
-         WxS/vJp/nRePHZvZfrcF+xse5H5U61sEPUIo9DAxLF6O9kP22ae1OSt20viTd+hgAjpo
-         H1Iw==
-X-Gm-Message-State: APjAAAWSj42LWa2uz9FGDakboHeNOucIqjbZrBPIsZ81v7AVgWujaOoA
-        56Rg3SOqt7XH1fONLxT4nve7jS14CkovBGiiYq4=
-X-Google-Smtp-Source: APXvYqx+WlziPWsLP6bLP2Ka9u56rRfhqByB/DBn0OjicY5J8svu/TUsBz7aMQWPnU+NZwrE2hzSp+HaK5Vx7ZHzFzQ=
-X-Received: by 2002:a05:6512:304d:: with SMTP id b13mr3576611lfb.134.1582609425105;
- Mon, 24 Feb 2020 21:43:45 -0800 (PST)
+        id S1725837AbgBYFpI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Feb 2020 00:45:08 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:44053 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725788AbgBYFpI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 25 Feb 2020 00:45:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1582609507;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Eko79gUr9+logn8fvR3Vy0N8FeE/3ZDnWVRg/X1bank=;
+        b=XZy5ul8jeTPrlHrDJzWcUkKe397g3vKbP69lTTtJRil8iK1RwX4vpbMHhsj/P9sp/0Z3pl
+        LtbV3OtWQrDH28g+42P5vYXJMpxxa43Ozb2SVlIZ9Ul5EuBvPnk9ITdnYrh1DD8G5q5pEu
+        c5GQf1adOXhoV3fDLOOSGd3QX6wkruk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-386-FwuNFUYyOjyMm7LAhuO5ZA-1; Tue, 25 Feb 2020 00:45:05 -0500
+X-MC-Unique: FwuNFUYyOjyMm7LAhuO5ZA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BFBB28017CC;
+        Tue, 25 Feb 2020 05:45:02 +0000 (UTC)
+Received: from [10.72.13.170] (ovpn-13-170.pek2.redhat.com [10.72.13.170])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6A5821001B09;
+        Tue, 25 Feb 2020 05:44:55 +0000 (UTC)
+Subject: Re: [PATCH bpf-next v6 1/2] virtio_net: keep vnet header zeroed if
+ XDP is loaded for small buffer
+To:     Yuya Kusakabe <yuya.kusakabe@gmail.com>
+Cc:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com,
+        netdev@vger.kernel.org, songliubraving@fb.com, yhs@fb.com
+References: <20200225033103.437305-1-yuya.kusakabe@gmail.com>
+ <20200225033212.437563-1-yuya.kusakabe@gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <1b3045d0-edc0-3f6f-5442-06f6f927ff94@redhat.com>
+Date:   Tue, 25 Feb 2020 13:44:53 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20200221165801.32687-1-steve@sk2.org> <CAADnVQ+QNxFk97fnsY1NL1PQWykdok_ha_KajCc68bRT1BLp2A@mail.gmail.com>
- <20200224205028.0f283991@heffalump.sk2.org>
-In-Reply-To: <20200224205028.0f283991@heffalump.sk2.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 24 Feb 2020 21:43:33 -0800
-Message-ID: <CAADnVQKb-3fzx1xKLwms8pcPiJNLsmFsHyj_gnsE8DKVp1jhYQ@mail.gmail.com>
-Subject: Re: [PATCH] docs: sysctl/kernel: document BPF entries
-To:     Stephen Kitt <steve@sk2.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200225033212.437563-1-yuya.kusakabe@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 24, 2020 at 11:50 AM Stephen Kitt <steve@sk2.org> wrote:
->
-> On Sun, 23 Feb 2020 14:44:31 -0800, Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> > On Fri, Feb 21, 2020 at 10:18 AM Stephen Kitt <steve@sk2.org> wrote:
-> > > @@ -1152,6 +1166,16 @@ NMI switch that most IA32 servers have fires
-> > > unknown NMI up, for example.  If a system hangs up, try pressing the =
-NMI
-> > > switch.
-> > >
-> > >
-> > > +unprivileged_bpf_disabled
-> > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-> > > +
-> > > +Writing 1 to this entry will disabled unprivileged calls to ``bpf()`=
-`;
-> >
-> > 'will disable' ?
->
-> Indeed, thanks.
->
-> > It doesn't apply to bpf-next with:
-> > error: sha1 information is lacking or useless
-> > (Documentation/admin-guide/sysctl/kernel.rst).
-> > error: could not build fake ancestor
-> > Patch failed at 0001 docs: sysctl/kernel: Document BPF entries
->
-> Sorry, I forgot to include the base commit information; this is against
-> 8f21f54b8a95 in docs-next.
->
-> I=E2=80=99ll wait for that to make it to Linus=E2=80=99 tree and re-submi=
-t the patch (with
-> the fix above).
 
-Please use bpf-next tree as a base for your patch.
+On 2020/2/25 =E4=B8=8A=E5=8D=8811:32, Yuya Kusakabe wrote:
+> We do not want to care about the vnet header in receive_small() if XDP
+> is loaded, since we can not know whether or not the packet is modified
+> by XDP.
+>
+> Fixes: f6b10209b90d ("virtio-net: switch to use build_skb() for small b=
+uffer")
+> Signed-off-by: Yuya Kusakabe <yuya.kusakabe@gmail.com>
+> ---
+>   drivers/net/virtio_net.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 2fe7a3188282..f39d0218bdaa 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -735,10 +735,10 @@ static struct sk_buff *receive_small(struct net_d=
+evice *dev,
+>   	}
+>   	skb_reserve(skb, headroom - delta);
+>   	skb_put(skb, len);
+> -	if (!delta) {
+> +	if (!xdp_prog) {
+>   		buf +=3D header_offset;
+>   		memcpy(skb_vnet_hdr(skb), buf, vi->hdr_len);
+> -	} /* keep zeroed vnet hdr since packet was changed by bpf */
+> +	} /* keep zeroed vnet hdr since XDP is loaded */
+>  =20
+>   err:
+>   	return skb;
+
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
