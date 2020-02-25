@@ -2,111 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 89AAD16B7D8
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2020 03:56:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7AE16B819
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2020 04:31:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728779AbgBYC4V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Feb 2020 21:56:21 -0500
-Received: from 14.mo1.mail-out.ovh.net ([178.32.97.215]:57312 "EHLO
-        14.mo1.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728725AbgBYC4V (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Feb 2020 21:56:21 -0500
-X-Greylist: delayed 25200 seconds by postgrey-1.27 at vger.kernel.org; Mon, 24 Feb 2020 21:56:20 EST
-Received: from player750.ha.ovh.net (unknown [10.110.103.121])
-        by mo1.mail-out.ovh.net (Postfix) with ESMTP id 8D4191AF98F
-        for <bpf@vger.kernel.org>; Mon, 24 Feb 2020 20:50:42 +0100 (CET)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player750.ha.ovh.net (Postfix) with ESMTPSA id 1EF42FACCA95;
-        Mon, 24 Feb 2020 19:50:30 +0000 (UTC)
-Date:   Mon, 24 Feb 2020 20:50:28 +0100
-From:   Stephen Kitt <steve@sk2.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] docs: sysctl/kernel: document BPF entries
-Message-ID: <20200224205028.0f283991@heffalump.sk2.org>
-In-Reply-To: <CAADnVQ+QNxFk97fnsY1NL1PQWykdok_ha_KajCc68bRT1BLp2A@mail.gmail.com>
-References: <20200221165801.32687-1-steve@sk2.org>
-        <CAADnVQ+QNxFk97fnsY1NL1PQWykdok_ha_KajCc68bRT1BLp2A@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728901AbgBYDbN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Feb 2020 22:31:13 -0500
+Received: from mail-pl1-f170.google.com ([209.85.214.170]:41606 "EHLO
+        mail-pl1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728843AbgBYDbN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Feb 2020 22:31:13 -0500
+Received: by mail-pl1-f170.google.com with SMTP id t14so4902042plr.8;
+        Mon, 24 Feb 2020 19:31:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SR07YcgBHjEbiX3pylMiKuRM3jiAa6Jpy3Owt8WPWkk=;
+        b=nUtb/iNUfsC7e2IxqgHBkTbS6JzQp9zKUgk9Iu2U0weihcromBfUtuUTXwrKRMoPiK
+         FT/VoZAWiW8RvLHTW/53dXJcn8//c87BVb57U76jwU8IYhpZIa0UeRaiqQj2ZPiouhBQ
+         STHJPm3vehcJSC7XY09Oo1XJUCyTUpcZLEzgCOdg7dhm8S760HRMulwWpeZp8W0tOFl/
+         GqrEDFICOa707ql8oqhjoFvjDGiCQIBZRT0TBfKFq8uTRlp6KbuVVx7QqTVi0dBQ/9uu
+         A7hsqOplN5IWMIz4Q2b1qi64YHeUSQh9P4Y0nrFOwIbUUXmFAQjT+IOzNhqoJlGmWDlb
+         Mz6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SR07YcgBHjEbiX3pylMiKuRM3jiAa6Jpy3Owt8WPWkk=;
+        b=MBkW3fli2LbmzAa8B7fRc1nAQKwjrzuJgfEFKJMe6XPk8lSx3bPQ2Hr6UVEHXsU28A
+         W/XsAMIK+vRiiHJzPRV3ovl1HpTLz/OYN2RiCsrUPsEaEXy5to/sTmWj3hbIVIyRWLMK
+         5Jq+7LPiIsA4W9uJ0oJZAp3CMHGK8eRiRUrqAYj5MSeRx/pApWqrK4xpBc3z5cnZpsqw
+         iFVKHTDSbol6S/27OOs9RiUU7XCTRZskt8vbvxUE+xNIjxXfIz2KI+/naKg5zdb86fJI
+         iFxLxHGWbC+MFEyAVAYe18wBucaITeCgm7hnyCbi/LOTLNcWO4RPJIMo7ZdSzmF9qfVK
+         1GSw==
+X-Gm-Message-State: APjAAAVitAiHwtTkle6jkRsAxoqtZ0q11kD0oALyQKoIx7+SILfqfu1c
+        9kqmhCZMsXN60NWfuePWHkY=
+X-Google-Smtp-Source: APXvYqwuqVmqFcxcal87EhRkAwIpTgJoYOqxktRmhFm4Oj2UuRqpiq5DJJNZ1O+sf4vlPP4MbNTcFA==
+X-Received: by 2002:a17:902:8308:: with SMTP id bd8mr53172354plb.210.1582601472440;
+        Mon, 24 Feb 2020 19:31:12 -0800 (PST)
+Received: from localhost.localdomain ([103.202.217.14])
+        by smtp.gmail.com with ESMTPSA id d73sm14498160pfd.109.2020.02.24.19.31.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Feb 2020 19:31:11 -0800 (PST)
+From:   Yuya Kusakabe <yuya.kusakabe@gmail.com>
+To:     jasowang@redhat.com
+Cc:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com,
+        netdev@vger.kernel.org, songliubraving@fb.com, yhs@fb.com,
+        yuya.kusakabe@gmail.com
+Subject: [PATCH bpf-next v6 0/2] virtio_net: add XDP meta data support
+Date:   Tue, 25 Feb 2020 12:31:03 +0900
+Message-Id: <20200225033103.437305-1-yuya.kusakabe@gmail.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- boundary="Sig_/lBH_=silp1qlYcgdNQGqEQU"; protocol="application/pgp-signature"
-X-Ovh-Tracer-Id: 2959427907037646189
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedugedrledtgddufedvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtsehgtderreertdejnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeehtddrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtohepsghpfhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---Sig_/lBH_=silp1qlYcgdNQGqEQU
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+This patch series has 2 patches.
 
-On Sun, 23 Feb 2020 14:44:31 -0800, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
-> On Fri, Feb 21, 2020 at 10:18 AM Stephen Kitt <steve@sk2.org> wrote:
-> > @@ -1152,6 +1166,16 @@ NMI switch that most IA32 servers have fires
-> > unknown NMI up, for example.  If a system hangs up, try pressing the NMI
-> > switch.
-> >
-> >
-> > +unprivileged_bpf_disabled
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-> > +
-> > +Writing 1 to this entry will disabled unprivileged calls to ``bpf()``;=
- =20
->=20
-> 'will disable' ?
+Patch 1/2: keep vnet header zeroed if XDP is loaded for small buffer
+With this fix, we do not need to care about vnet header in XDP meta data
+support for small buffer, even though XDP meta data uses in front of
+packet as same as vnet header.
+It would be best if this patch goes into stable.
+This patch is based on the feedback by Jason Wang and Michael S. Tsirkin.
+https://lore.kernel.org/netdev/9a0a1469-c8a7-8223-a4d5-dad656a142fc@redhat.com/
+https://lore.kernel.org/netdev/20200223031314-mutt-send-email-mst@kernel.org/
 
-Indeed, thanks.
+Patch 2/2: add XDP meta data support
 
-> It doesn't apply to bpf-next with:
-> error: sha1 information is lacking or useless
-> (Documentation/admin-guide/sysctl/kernel.rst).
-> error: could not build fake ancestor
-> Patch failed at 0001 docs: sysctl/kernel: Document BPF entries
+Thanks to Jason Wang, Daniel Borkmann and Michael S. Tsirkin for the feedback.
 
-Sorry, I forgot to include the base commit information; this is against
-8f21f54b8a95 in docs-next.
+Yuya Kusakabe (2):
+  virtio_net: keep vnet header zeroed if XDP is loaded for small buffer
+  virtio_net: add XDP meta data support
 
-I=E2=80=99ll wait for that to make it to Linus=E2=80=99 tree and re-submit =
-the patch (with
-the fix above).
+ drivers/net/virtio_net.c | 56 ++++++++++++++++++++++++----------------
+ 1 file changed, 34 insertions(+), 22 deletions(-)
 
-Regards,
+-- 
+2.24.1
 
-Stephen
-
---Sig_/lBH_=silp1qlYcgdNQGqEQU
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl5UKQQACgkQgNMC9Yht
-g5z5EQ//Zl8bjwdpgTF5kG/EpgkAQyDPj7ywh5fddVbS3m15ur7ePYWp10JF0wCv
-mNfX6fRXoR9sVaixAR1Zh6fwGO2Ys1g3V2EwBnyVzk3Sge6vaKg39wjT/YudiIEW
-JquM/F4XNz7OwbR2jadEVYhbasg9RJPzGqDJyU3rHtSBGcOxc7ceqrH1P0udmyfE
-dfLlq+u/KMyGxbFtJDxeHNMa3RRgs2ga9HxYosOzNCoL4p01oR3WGMaUjheXhCL8
-QtzzVU2fljAi7lkSt+SI/jt+eYvgc+oUKxe1iPPcoFnUBxbGaDaVg+fHMlioCQ/n
-08NquweGb6QGf7HYi/6NIlwRbcLSxUBTnKeGMpnYaC1SQxSTASw+cNT2hiZTcDqj
-L8jn937vcR/mQWK/gPepVzpRMxYO0iQhNX32+aada1iolz+58BLvlHa3wdqTPR+/
-SFaSbtde1GJMqJubqYLVGRswKQzsPuMZ0djWKiPyEx+BP4clIQnNCB00OyfAvb6j
-SqbUwnPsDboBoPxrcyMQ213YVd1M69NwhwWaAD+N7U7ArFd1wU0yQ1J0Mowxae9W
-jy89cdKGt00IZn6d7rDazAScN8lPC5N4o+5FTlqdoOoOVwE31LRWu8kcKT6uDfJ5
-TJRE+jDZ5Ux4ByABc5l+yFkmVRb+J/ivBgeh2wKUy3CtRxJaf/E=
-=TJvz
------END PGP SIGNATURE-----
-
---Sig_/lBH_=silp1qlYcgdNQGqEQU--
