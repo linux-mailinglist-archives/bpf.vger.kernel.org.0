@@ -2,79 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2AC16F0AB
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2020 21:54:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF74D16F254
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2020 22:58:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729382AbgBYUyp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Feb 2020 15:54:45 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:42791 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728654AbgBYUyp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Feb 2020 15:54:45 -0500
-Received: by mail-wr1-f67.google.com with SMTP id p18so300672wre.9
-        for <bpf@vger.kernel.org>; Tue, 25 Feb 2020 12:54:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=28TDunclJ0ED67dbx8CkZqbh/7wdN9qJRWSOtwdsi1s=;
-        b=UoHTD/6+hk2QYtP059qZLw3RRZ16mc3CjCh2ZZwsu0a7xHxNMua3zoubg3FnJlMpfT
-         h9ft7NT72oICgPc9WavKnXNoQg4dLsDOs92lfQDDJOEaG24d44X339XfYqFwcRKl1+hz
-         FaPA+pFgOHmZtoFQij9N6yoY6Gloe1pEwStUk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=28TDunclJ0ED67dbx8CkZqbh/7wdN9qJRWSOtwdsi1s=;
-        b=fO5R5omWRNjHOHQk/W56G6vGxnRH8BfSKderaJuulfbF7fW6uvPNszxZop9K7cVGf/
-         qp0WgsNRz9AS8y/cuCtxZ0mrX7UZ16sSwQf8W59DP/VC3bE5hR+LAEdpCTXmTE0gv7ve
-         oQKTdnWQ2939AEbAZnDuSL0+gHjSji9PsVV2ix9IF0yTA7817jrgVrV6P6rfQf/2NUEm
-         4RrkQTvsRbvbR7NDpjUGid+4Sh4FZj2oz2To1RaoPFxCMOri7PIr6RSzfgdBEwUvxwds
-         VjeDijH33cU2XRNyD5Axu8JbQCXJfXibTONyexgkKd4FAHuj8pMSse82JE8SzcM4U0kF
-         weiQ==
-X-Gm-Message-State: APjAAAXrpMaRgOE26YnqPuIJVvSHoNGyY1O7lN/js3+UqYXVq56UX1Zx
-        9ZqipRumWjB/RB3bBFD/IQPwPlRnOsEFUonV
-X-Google-Smtp-Source: APXvYqxs5Dht7wCnHgNaDyHKMXo95ql8ZEwhG4lxizSll22ZJBzPc0J3TZ9jyuOGIAHL1lrfaQwGNg==
-X-Received: by 2002:adf:de0b:: with SMTP id b11mr932096wrm.89.1582664082855;
-        Tue, 25 Feb 2020 12:54:42 -0800 (PST)
-Received: from lbrmn-lnxub113.broadcom.net ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id t13sm104852wrw.19.2020.02.25.12.54.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Feb 2020 12:54:42 -0800 (PST)
-From:   Scott Branden <scott.branden@broadcom.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Scott Branden <scott.branden@broadcom.com>
-Subject: [PATCH] scripts/bpf: switch to more portable python3 shebang
-Date:   Tue, 25 Feb 2020 12:54:26 -0800
-Message-Id: <20200225205426.6975-1-scott.branden@broadcom.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728146AbgBYV63 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Feb 2020 16:58:29 -0500
+Received: from www62.your-server.de ([213.133.104.62]:54070 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726421AbgBYV63 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Feb 2020 16:58:29 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j6iDi-0003cv-KN; Tue, 25 Feb 2020 22:58:26 +0100
+Received: from [85.7.42.192] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j6iDi-000JoD-Bn; Tue, 25 Feb 2020 22:58:26 +0100
+Subject: Re: [PATCH v2 bpf-next] selftests/bpf: print backtrace on SIGSEGV in
+ test_progs
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com
+References: <20200225000847.3965188-1-andriin@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f4ae621b-a783-1a77-3a06-b7eb5afdfc4e@iogearbox.net>
+Date:   Tue, 25 Feb 2020 22:58:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20200225000847.3965188-1-andriin@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25734/Tue Feb 25 15:06:17 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Change "/usr/bin/python3" to "/usr/bin/env python3" for
-more portable solution in bpf_helpers_doc.py.
+On 2/25/20 1:08 AM, Andrii Nakryiko wrote:
+> Due to various bugs in tests clean up code (usually), if host system is
+> misconfigured, it happens that test_progs will just crash in the middle of
+> running a test with little to no indication of where and why the crash
+> happened. For cases where coredump is not readily available (e.g., inside
+> a CI), it's very helpful to have a stack trace, which lead to crash, to be
+> printed out. This change adds a signal handler that will capture and print out
+> symbolized backtrace:
+> 
+>    $ sudo ./test_progs -t mmap
+>    test_mmap:PASS:skel_open_and_load 0 nsec
+>    test_mmap:PASS:bss_mmap 0 nsec
+>    test_mmap:PASS:data_mmap 0 nsec
+>    Caught signal #11!
+>    Stack trace:
+>    ./test_progs(crash_handler+0x18)[0x42a888]
+>    /lib64/libpthread.so.0(+0xf5d0)[0x7f2aab5175d0]
+>    ./test_progs(test_mmap+0x3c0)[0x41f0a0]
+>    ./test_progs(main+0x160)[0x407d10]
+>    /lib64/libc.so.6(__libc_start_main+0xf5)[0x7f2aab15d3d5]
+>    ./test_progs[0x407ebc]
+>    [1]    1988412 segmentation fault (core dumped)  sudo ./test_progs -t mmap
+> 
+> Unfortunately, glibc's symbolization support is unable to symbolize static
+> functions, only global ones will be present in stack trace. But it's still a
+> step forward without adding extra libraries to get a better symbolization.
+> 
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
-Signed-off-by: Scott Branden <scott.branden@broadcom.com>
----
- scripts/bpf_helpers_doc.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
-index 90baf7d70911..cebed6fb5bbb 100755
---- a/scripts/bpf_helpers_doc.py
-+++ b/scripts/bpf_helpers_doc.py
-@@ -1,4 +1,4 @@
--#!/usr/bin/python3
-+#!/usr/bin/env python3
- # SPDX-License-Identifier: GPL-2.0-only
- #
- # Copyright (C) 2018-2019 Netronome Systems, Inc.
--- 
-2.17.1
-
+Applied, thanks!
