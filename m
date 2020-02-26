@@ -2,42 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A92CC170CBE
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2020 00:48:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D6A170CDA
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2020 00:57:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727940AbgBZXsc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Feb 2020 18:48:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59710 "EHLO mail.kernel.org"
+        id S1728032AbgBZX5d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Feb 2020 18:57:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727930AbgBZXsc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Feb 2020 18:48:32 -0500
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+        id S1728028AbgBZX5c (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Feb 2020 18:57:32 -0500
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 015D424679;
-        Wed, 26 Feb 2020 23:48:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E85F024672;
+        Wed, 26 Feb 2020 23:57:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582760912;
-        bh=XJHK/UuB/Y2+Ir3mkb0hbeudO3I0uq4AMHLCzh/Nm9c=;
+        s=default; t=1582761452;
+        bh=rXXJ2Bjz6Ebou0bDRrf+3buabSrIvl9Pmlr0oC9KChY=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bU2VOYP2Iihmqpn49HrsDqfiUxTm34PzEjQPqkcZzRikhuBSt11ryORkiA4FuWQB4
-         uN89DJPyVgMr2Ut6xqTapIBO+NYq44jsq3SatHdKXf4hLKRdGfGrvs9WzKIqV7ScpW
-         8un1M1bu66F846fwWYdLUSphDHZXh9Pesm28fWQw=
-Received: by mail-lj1-f182.google.com with SMTP id w1so1162525ljh.5;
-        Wed, 26 Feb 2020 15:48:31 -0800 (PST)
-X-Gm-Message-State: ANhLgQ0rvTq9QaXrr7ALAd3smdiX59RD57y7BurlOblttxgmHitnLMSP
-        sfDPsGQZSUhdidrP8ZYOvz0mCArDM/67hPCuPvM=
-X-Google-Smtp-Source: ADFU+vtfRbPudOCLpjk8N4q/BkcjR0tLKN0N7D9fZMkMGk/6tph7b7GU/DRMWcn50KpTI57loE05bMvbTNXyyxlZGe0=
-X-Received: by 2002:a2e:89d4:: with SMTP id c20mr896413ljk.228.1582760910143;
- Wed, 26 Feb 2020 15:48:30 -0800 (PST)
+        b=nGsrUgstMkN7VF41mFt/7UY2tvbqLbY8n6umY+iLknr1xqFKQHL+uXPKohxVB9F09
+         4HYin1oEw0nwOr00gu8jvwz0mMZedALwjLbzQIHpI6BsFoLTU7jtWmKl0MlIeVS8EA
+         1sgOtigaiHPbiohtx5gnUk+UXj+b6U6hVKarfkD8=
+Received: by mail-lf1-f53.google.com with SMTP id n30so652567lfh.6;
+        Wed, 26 Feb 2020 15:57:31 -0800 (PST)
+X-Gm-Message-State: ANhLgQ3CUyiS5Pi9AzZAvNka/3Gvgkjjke/uUtPEPKIicE12X5LWf/lp
+        QY0kDh/j+HE/aiU7sjElHdnruBoCEsQ8kQDquos=
+X-Google-Smtp-Source: ADFU+vuujt2GZDFlSuvyF5jictR9pKfvGPVuDV+1iNkxWmlf02RUE887JLfGKI5Hq7XyGWoRnn/CbqZ1sFbUn8pitc8=
+X-Received: by 2002:a05:6512:6cb:: with SMTP id u11mr551354lff.69.1582761450125;
+ Wed, 26 Feb 2020 15:57:30 -0800 (PST)
 MIME-Version: 1.0
-References: <20200226130345.209469-1-jolsa@kernel.org> <20200226130345.209469-15-jolsa@kernel.org>
-In-Reply-To: <20200226130345.209469-15-jolsa@kernel.org>
+References: <20200226130345.209469-1-jolsa@kernel.org> <20200226130345.209469-16-jolsa@kernel.org>
+In-Reply-To: <20200226130345.209469-16-jolsa@kernel.org>
 From:   Song Liu <song@kernel.org>
-Date:   Wed, 26 Feb 2020 15:48:19 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW5OH7YitT86i7v2NySM7Nny3kgRWDKbHE02NBXfaEoCbg@mail.gmail.com>
-Message-ID: <CAPhsuW5OH7YitT86i7v2NySM7Nny3kgRWDKbHE02NBXfaEoCbg@mail.gmail.com>
-Subject: Re: [PATCH 14/18] bpf: Add dispatchers to kallsyms
+Date:   Wed, 26 Feb 2020 15:57:18 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW5Xg3Z__-xU8_O1dXSfoAXA0r0aWWXmrGupqM9YoFC7fg@mail.gmail.com>
+Message-ID: <CAPhsuW5Xg3Z__-xU8_O1dXSfoAXA0r0aWWXmrGupqM9YoFC7fg@mail.gmail.com>
+Subject: Re: [PATCH 15/18] bpf: Sort bpf kallsyms symbols
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -57,12 +57,13 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 26, 2020 at 5:07 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Wed, Feb 26, 2020 at 5:06 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding dispatchers to kallsyms. It's displayed as
->   bpf_dispatcher_<NAME>
+> Currently we don't sort bpf_kallsyms and display symbols
+> in proc/kallsyms as they come in via __bpf_ksym_add.
 >
-> where NAME is the name of dispatcher.
+> Using the latch tree to get the next bpf_ksym object
+> and insert the new symbol ahead of it.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
