@@ -2,42 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56DDD170A42
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2020 22:14:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A418170BE2
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2020 23:51:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727483AbgBZVO5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Feb 2020 16:14:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45548 "EHLO mail.kernel.org"
+        id S1727802AbgBZWv1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Feb 2020 17:51:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727446AbgBZVO5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Feb 2020 16:14:57 -0500
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+        id S1727763AbgBZWv1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Feb 2020 17:51:27 -0500
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3859424656;
-        Wed, 26 Feb 2020 21:14:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E44BB2467D;
+        Wed, 26 Feb 2020 22:51:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582751696;
-        bh=p/sXoucheSWlqPHj/N5LhYHZDluCKdFye9IIRMAYsuY=;
+        s=default; t=1582757487;
+        bh=+YWv/+rohBZC7pJpEZSYUsyDYUXcGFFvUizlm3YA5Yw=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CEQTVkz/TzN3ulO9bbpK+sVJQWzzkTst6j+qttPAueQsrP7e+Z23/zxZjHGZzwGlv
-         3M/sWRRiqqiI5VOVAT/pvv/yVtpvQBPvrl3+IFLt4AkDcJmaOO23Wwi9ug959uI11V
-         opxHw4Sl7R0eGYGIzvx0nPRGI3NGpGxdPle7V1bg=
-Received: by mail-lf1-f43.google.com with SMTP id v6so369265lfo.13;
-        Wed, 26 Feb 2020 13:14:56 -0800 (PST)
-X-Gm-Message-State: ANhLgQ2sMfhr73jUkEjGRcSYCn2hg2DSAjCTA1havYui3NxrEZfbvJj2
-        H7WyknxfTNGW4hxru/6GYoHofK1QVaqXObpxEic=
-X-Google-Smtp-Source: ADFU+vv0w5rEvpcQ5wmcSULxTO2bhrBRpNnY/Pk+xfEAX3Wsfk5Rf4pr+O3IJgamuWF89l/msR5j+I1YK5GlsEBOqhQ=
-X-Received: by 2002:ac2:5682:: with SMTP id 2mr292491lfr.138.1582751694259;
- Wed, 26 Feb 2020 13:14:54 -0800 (PST)
+        b=ZgTiZUQ61x3NUjOL5NiPPoVaFM4dhfdAqx1DCQsfeGMbYXe3kLPCmoDFo8Qu7u1AI
+         zUNuuU6Q+H5mPPXMzeejqrGX5c+mI5CvltynClmIWiaHQzo9pUMNG4PyZNq04I5hcQ
+         lU2anuBcsXzJiTJvBfnsxSxIOacoCEjdz5LzkKyU=
+Received: by mail-lf1-f53.google.com with SMTP id n25so583964lfl.0;
+        Wed, 26 Feb 2020 14:51:26 -0800 (PST)
+X-Gm-Message-State: ANhLgQ1fLRFdlbKZLMC2u7pJGmMoLcVYnMFOPsKNHe8lIDyGFtCr6ock
+        +YojV4XG0/fVnAbnXy5a3wY4GyVm3QETe94/naw=
+X-Google-Smtp-Source: ADFU+vulNT+qEuR789y3B6OTGrquPLcLVjoVwOHBZKzWvL/YdHCLiZ9YJrhVo3uJ2ugjAsMqGM9uHx7537LBaQD7W6o=
+X-Received: by 2002:a05:6512:6cb:: with SMTP id u11mr444948lff.69.1582757485012;
+ Wed, 26 Feb 2020 14:51:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20200226130345.209469-1-jolsa@kernel.org> <20200226130345.209469-5-jolsa@kernel.org>
-In-Reply-To: <20200226130345.209469-5-jolsa@kernel.org>
+References: <20200226130345.209469-1-jolsa@kernel.org> <20200226130345.209469-6-jolsa@kernel.org>
+In-Reply-To: <20200226130345.209469-6-jolsa@kernel.org>
 From:   Song Liu <song@kernel.org>
-Date:   Wed, 26 Feb 2020 13:14:43 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW5u=6MEWKU4-Cfdr3VfYn+NuTgX6SezC_W33WZsM3j8ng@mail.gmail.com>
-Message-ID: <CAPhsuW5u=6MEWKU4-Cfdr3VfYn+NuTgX6SezC_W33WZsM3j8ng@mail.gmail.com>
-Subject: Re: [PATCH 04/18] bpf: Add name to struct bpf_ksym
+Date:   Wed, 26 Feb 2020 14:51:14 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW6NCwxW2qQCFcA3qGOeyd=qz0ZHQGUidWfO-oXeen0r2g@mail.gmail.com>
+Message-ID: <CAPhsuW6NCwxW2qQCFcA3qGOeyd=qz0ZHQGUidWfO-oXeen0r2g@mail.gmail.com>
+Subject: Re: [PATCH 05/18] bpf: Add lnode list node to struct bpf_ksym
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -57,20 +57,20 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 26, 2020 at 5:04 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Wed, Feb 26, 2020 at 5:05 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding name to 'struct bpf_ksym' object to carry the name
-> of the symbol for bpf_prog, bpf_trampoline, bpf_dispatcher.
+> Adding lnode list node to 'struct bpf_ksym' object,
+> so the symbol itself can be chained and used in other
+> objects like bpf_trampoline and bpf_dispatcher.
 >
-> The current benefit is that name is now generated only when
-> the symbol is added to the list, so we don't need to generate
-> it every time it's accessed.
+> Changing iterator to bpf_ksym in bpf_get_kallsym.
+>
+> The ksym->start is holding the prog->bpf_func value,
+> so it's ok to use it in bpf_get_kallsym.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-The patch looks good. But I wonder whether we want pay the cost of
-extra 128 bytes per bpf program. Maybe make it a pointer and only
-generate the string when it is first used?
+Acked-by: Song Liu <songliubraving@fb.com>
 
-Thanks,
-Song
+nit: I think we should describe this as "move lnode list node to
+struct bpf_ksym".
