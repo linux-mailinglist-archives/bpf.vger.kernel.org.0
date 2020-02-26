@@ -2,86 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A758716FF13
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2020 13:33:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A3C16FF78
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2020 14:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726747AbgBZMdb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Feb 2020 07:33:31 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:50548 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgBZMdb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Feb 2020 07:33:31 -0500
-Received: by mail-wm1-f68.google.com with SMTP id a5so2880006wmb.0
-        for <bpf@vger.kernel.org>; Wed, 26 Feb 2020 04:33:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0kIIo1lecMssMrTUasr4Z+ioUkeaNygIbZqpO6tuy7U=;
-        b=hfdLuYaaUMr9SBi7O2P91IYzUJ/zTJ2oS0bgVO7G20Gc0lV6lmNPq/5xN/1yLoCaez
-         Z886k1//kTzEvgQADorL1StdQJeX4DGQR8jUCS6NcH9TQ4ajegwlK8MTW8lSAx9x4rQ7
-         JHl9KZSvefslwO/hLtvmU8a/DLORpxStfHfCtwxmM+bDuFE54j0UQ19th6tTAiL2Ojnl
-         wmPMjYPD0FMF3XsqrCEuH3UXNW3YMO7ecvcZNjMqCxRtpRp07Gl2ticJbytLAviZW9eq
-         7cuyBOK/SGF7WKkVXBzN4G4WnMyqe7nQpCgWzl7pV43jy+4h9MsX8cnBOwv85R/yVaPP
-         o2Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0kIIo1lecMssMrTUasr4Z+ioUkeaNygIbZqpO6tuy7U=;
-        b=FeWQrS8X1RVL2H4uOTp+OrOHuvQXFYbPrNVYiozDbhF8Ca24MkY6KtoD6r5NG5GU+3
-         4TVlrJ8Y+qln2jaW3gx8JvahFtk6WWk9lGQrhbvQkHMvnpfrFt8nqK3N9X9H5GzJhacD
-         3hzk0uKcndiMt6IY1uOhlj3IJZzZuSx5BZVIc4a3obrbZTsl/g4UfsG5bM+oc+bNhU0C
-         SJd0l/0TVW9ymrYTopHrfGD9vk0HG7B+d5iR+jRfoYYqL4rl4C4OwGfhQVdLhyt3uOj2
-         9yKo6CyfxKV8QqNawTqCW4WR+JW8gXcZw/ECieKkagNT4ivdJm999VrKEvhxUaUqj40k
-         ArvQ==
-X-Gm-Message-State: APjAAAWTJAPJOZWrpIKiqCW5LjGoMP2WAm2wVt7Ery4JZmTluDRnoBIX
-        DokV1mE1ZV6OAJGn+7L2ADa7EJI+VRc=
-X-Google-Smtp-Source: APXvYqzF4DjO+4GDUDHWRvcM3JgEw8aRfM0WfUIcWWSC7lry6yZFBDyky7ZCIKYhYahJy5QAQ29yoA==
-X-Received: by 2002:a1c:6189:: with SMTP id v131mr5646682wmb.185.1582720409669;
-        Wed, 26 Feb 2020 04:33:29 -0800 (PST)
-Received: from [192.168.1.10] ([194.35.116.65])
-        by smtp.gmail.com with ESMTPSA id a62sm2785097wmh.33.2020.02.26.04.33.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Feb 2020 04:33:29 -0800 (PST)
-Subject: Re: [PATCH bpf-next v3 0/5] bpftool: Make probes which emit dmesg
- warnings optional
-To:     Michal Rostecki <mrostecki@opensuse.org>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S1726917AbgBZND5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 26 Feb 2020 08:03:57 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47283 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726700AbgBZND5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Feb 2020 08:03:57 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-35-Ybz6d5PlP-mlRj41it5Mow-1; Wed, 26 Feb 2020 08:03:52 -0500
+X-MC-Unique: Ybz6d5PlP-mlRj41it5Mow-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A8E1F190B2A0;
+        Wed, 26 Feb 2020 13:03:49 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.43.17.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A985619C7F;
+        Wed, 26 Feb 2020 13:03:46 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        linux-kselftest@vger.kernel.org
-References: <20200225194446.20651-1-mrostecki@opensuse.org>
- <e4929660-21ff-e394-37a0-d72b67a3770a@isovalent.com>
- <0e46d001-a137-97bc-262c-e864cf3f90b8@opensuse.org>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <b638238e-7e35-0ab0-3f0b-315ffd947a8c@isovalent.com>
-Date:   Wed, 26 Feb 2020 12:33:28 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@redhat.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCHv3 00/18] bpf: Add trampoline and dispatcher to /proc/kallsyms
+Date:   Wed, 26 Feb 2020 14:03:27 +0100
+Message-Id: <20200226130345.209469-1-jolsa@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <0e46d001-a137-97bc-262c-e864cf3f90b8@opensuse.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-02-26 13:17 UTC+0100 ~ Michal Rostecki <mrostecki@opensuse.org>
+hi,
+this patchset adds trampoline and dispatcher objects
+to be visible in /proc/kallsyms. The last patch also
+adds sorting for all bpf objects in /proc/kallsyms.
 
-[...]
+  $ sudo cat /proc/kallsyms | tail -20
+  ...
+  ffffffffa050f000 t bpf_prog_5a2b06eab81b8f51    [bpf]
+  ffffffffa0511000 t bpf_prog_6deef7357e7b4530    [bpf]
+  ffffffffa0542000 t bpf_trampoline_13832 [bpf]
+  ffffffffa0548000 t bpf_prog_96f1b5bf4e4cc6dc_mutex_lock [bpf]
+  ffffffffa0572000 t bpf_prog_d1c63e29ad82c4ab_bpf_prog1  [bpf]
+  ffffffffa0585000 t bpf_prog_e314084d332a5338__dissect   [bpf]
+  ffffffffa0587000 t bpf_prog_59785a79eac7e5d2_mutex_unlock       [bpf]
+  ffffffffa0589000 t bpf_prog_d0db6e0cac050163_mutex_lock [bpf]
+  ffffffffa058d000 t bpf_prog_d8f047721e4d8321_bpf_prog2  [bpf]
+  ffffffffa05df000 t bpf_trampoline_25637 [bpf]
+  ffffffffa05e3000 t bpf_prog_d8f047721e4d8321_bpf_prog2  [bpf]
+  ffffffffa05e5000 t bpf_prog_3b185187f1855c4c    [bpf]
+  ffffffffa05e7000 t bpf_prog_d8f047721e4d8321_bpf_prog2  [bpf]
+  ffffffffa05eb000 t bpf_prog_93cebb259dd5c4b2_do_sys_open        [bpf]
+  ffffffffa0677000 t bpf_dispatcher_xdp   [bpf]
 
-> I
-> might follow up with some more tests covering the other subcommands in
-> future.
+v3 changes:
+  - use container_of directly in bpf_get_ksym_start  [Daniel]
+  - add more changelog explanations for ksym addresses [Daniel]
 
-That would be great!
-Thanks,
-Quentin
+v2 changes:
+  - omit extra condition in __bpf_ksym_add for sorting code (Andrii)
+  - rename bpf_kallsyms_tree_ops to bpf_ksym_tree (Andrii)
+  - expose only executable code in kallsyms (Andrii)
+  - use full trampoline key as its kallsyms id (Andrii)
+  - explained the BPF_TRAMP_REPLACE case (Andrii)
+  - small format changes in bpf_trampoline_link_prog/bpf_trampoline_unlink_prog (Andrii)
+  - propagate error value in bpf_dispatcher_update and update kallsym if it's successful (Andrii)
+  - get rid of __always_inline for bpf_ksym_tree callbacks (Andrii)
+  - added KSYMBOL notification for bpf_image add/removal
+  - added perf tools changes to properly display trampoline/dispatcher
+
+
+For perf tool to properly display trampoline/dispatcher you need
+also Arnaldo's perf/urgent branch changes. I merged everything
+into following branch:
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git bpf/kallsyms
+
+thanks,
+jirka
+
+
+---
+Björn Töpel (1):
+      bpf: Add bpf_trampoline_ name prefix for DECLARE_BPF_DISPATCHER
+
+Jiri Olsa (17):
+      x86/mm: Rename is_kernel_text to __is_kernel_text
+      bpf: Add struct bpf_ksym
+      bpf: Add name to struct bpf_ksym
+      bpf: Add lnode list node to struct bpf_ksym
+      bpf: Add bpf_ksym_tree tree
+      bpf: Move bpf_tree add/del from bpf_prog_ksym_node_add/del
+      bpf: Separate kallsyms add/del functions
+      bpf: Add bpf_ksym_add/del functions
+      bpf: Re-initialize lnode in bpf_ksym_del
+      bpf: Rename bpf_tree to bpf_progs_tree
+      bpf: Add trampolines to kallsyms
+      bpf: Return error value in bpf_dispatcher_update
+      bpf: Add dispatchers to kallsyms
+      bpf: Sort bpf kallsyms symbols
+      perf tools: Synthesize bpf_trampoline/dispatcher ksymbol event
+      perf tools: Set ksymbol dso as loaded on arrival
+      perf annotate: Add base support for bpf_image
+
+ arch/x86/mm/init_32.c       |  14 +++++++++-----
+ include/linux/bpf.h         |  55 ++++++++++++++++++++++++++++++++++++++-----------------
+ include/linux/filter.h      |  13 +++----------
+ kernel/bpf/core.c           | 176 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------------------------------------
+ kernel/bpf/dispatcher.c     |  19 ++++++++++++++-----
+ kernel/bpf/trampoline.c     |  38 +++++++++++++++++++++++++++++++++++++-
+ kernel/events/core.c        |   9 ++++-----
+ net/core/filter.c           |   5 ++---
+ tools/perf/util/annotate.c  |  20 ++++++++++++++++++++
+ tools/perf/util/bpf-event.c |  98 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/perf/util/dso.c       |   1 +
+ tools/perf/util/dso.h       |   1 +
+ tools/perf/util/machine.c   |  12 ++++++++++++
+ tools/perf/util/symbol.c    |   1 +
+ 14 files changed, 371 insertions(+), 91 deletions(-)
+
