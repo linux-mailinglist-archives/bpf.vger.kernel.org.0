@@ -2,85 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA3E1705CA
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2020 18:14:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFFA1705EC
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2020 18:21:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726148AbgBZRON (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Feb 2020 12:14:13 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:40101 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726561AbgBZRON (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Feb 2020 12:14:13 -0500
-Received: by mail-wm1-f68.google.com with SMTP id t14so25855wmi.5
-        for <bpf@vger.kernel.org>; Wed, 26 Feb 2020 09:14:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hs1Dnv8OkUX4sAKXU675PNsCaAiph3nxzHoSQ2tz4mY=;
-        b=Fvd0znyFAvs/Z+RQe56DZVCoHHGI0mH5KwABX5dKxqnpfPB7pd+27P572tMfDmx2j3
-         7EF0B55OLQsWoPY1hL5SbRUynxBS/H+uH1GznO+Atf27r7N5lH/asoNTIdVEaSotqztW
-         RmKHurYYiqYble4Xz7rs7l3LBe0IpJ6FEF7+YWLWIxRH+tKdBV+lm2oYFiHn+HL7HQ4w
-         w8BtJiFBtWziNs1/rxN2+YwTbBwcBlfNJBI42jIYoZCpjKtTGO/In6/LOS5w2zYI4XOZ
-         QrTxhoYpWQbdW3UTUOWIVk5tb/ny+k/yxes6JSYrmoI8XoaE8X5R8aVUFMU2h8VB/Fn9
-         3CeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hs1Dnv8OkUX4sAKXU675PNsCaAiph3nxzHoSQ2tz4mY=;
-        b=hTeqZJIMLk5DKBUgIDzzZSnR7VJazi1p1FTlaq0VqE6ZaEsJl5gcdyoDtiuK44iDve
-         ZIHtsurwPxSmqLatPfd82MLfqPFzaILt815VYdAH1pY9Y8Izwx2sGvoScQTpZh98bacB
-         zOzFmt96fDmw3Z2KgAJW18qdnlDhmEnPTpWf5p2/sPY4DkMQazInYJ4reQ+9MI0VcqHR
-         rR5AD5kCnboB38UFi9hNKY8WNY0HQkwgsDNvRW7VWG2xtst6kGGyyjCUAd+lUFzWS891
-         bpY21aR7NCRgghJ9MsODPD4V8xAn5s4hfXY5a29iKRrh/WE/fgXQKMTAWLZMCcRUigAO
-         F1Cw==
-X-Gm-Message-State: APjAAAV6TDCT+ka9H/66/sOl+4Zo2GF2v6B7YYNKuCSCv+thz1hKpKgN
-        K4NuK/W5ldSLnDyCCTEdfGVg/A==
-X-Google-Smtp-Source: APXvYqxVisx0WWuxbZMRqmE/joqQNU3c6aUjq7FmETJiXmXkhS0yvH+WurdWR1QhvsZ+k3KlpLyI2Q==
-X-Received: by 2002:a7b:c8d7:: with SMTP id f23mr6436992wml.173.1582737250916;
-        Wed, 26 Feb 2020 09:14:10 -0800 (PST)
-Received: from localhost.localdomain ([194.35.116.65])
-        by smtp.gmail.com with ESMTPSA id b10sm3962802wrw.61.2020.02.26.09.14.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Feb 2020 09:14:10 -0800 (PST)
-From:   Quentin Monnet <quentin@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf] mailmap: update email address
-Date:   Wed, 26 Feb 2020 17:13:53 +0000
-Message-Id: <20200226171353.18982-1-quentin@isovalent.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726538AbgBZRVp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Feb 2020 12:21:45 -0500
+Received: from www62.your-server.de ([213.133.104.62]:38092 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726148AbgBZRVp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Feb 2020 12:21:45 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j70NK-0001F8-IR; Wed, 26 Feb 2020 18:21:34 +0100
+Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-3.fritz.box)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j70NK-000Suo-97; Wed, 26 Feb 2020 18:21:34 +0100
+Subject: Re: [PATCH bpf-next v2 4/4] bpf: inet_diag: Dump bpf_sk_storages in
+ inet_diag_dump()
+To:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>, kernel-team@fb.com,
+        netdev@vger.kernel.org, eric.dumazet@gmail.com
+References: <20200225230402.1974723-1-kafai@fb.com>
+ <20200225230427.1976129-1-kafai@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <938a0461-fd8d-b4b9-4fef-95d46409c0d6@iogearbox.net>
+Date:   Wed, 26 Feb 2020 18:21:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200225230427.1976129-1-kafai@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25734/Tue Feb 25 15:06:17 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-My Netronome address is no longer active. I am no maintainer, but
-get_maintainer.pl sometimes returns my name for a small number of files
-(BPF-related). Add an entry to .mailmap for good measure.
+On 2/26/20 12:04 AM, Martin KaFai Lau wrote:
+> This patch will dump out the bpf_sk_storages of a sk
+> if the request has the INET_DIAG_REQ_SK_BPF_STORAGES nlattr.
+> 
+> An array of SK_DIAG_BPF_STORAGE_REQ_MAP_FD can be specified in
+> INET_DIAG_REQ_SK_BPF_STORAGES to select which bpf_sk_storage to dump.
+> If no map_fd is specified, all bpf_sk_storages of a sk will be dumped.
+> 
+> bpf_sk_storages can be added to the system at runtime.  It is difficult
+> to find a proper static value for cb->min_dump_alloc.
+> 
+> This patch learns the nlattr size required to dump the bpf_sk_storages
+> of a sk.  If it happens to be the very first nlmsg of a dump and it
+> cannot fit the needed bpf_sk_storages,  it will try to expand the
+> skb by "pskb_expand_head()".
+> 
+> Instead of expanding it in inet_sk_diag_fill(), it is expanded at a
+> sleepable context in __inet_diag_dump() so __GFP_DIRECT_RECLAIM can
+> be used.  In __inet_diag_dump(), it will retry as long as the
+> skb is empty and the cb->min_dump_alloc becomes larger than before.
+> cb->min_dump_alloc is bounded by KMALLOC_MAX_SIZE.  The min_dump_alloc
+> is also changed from 'u16' to 'u32' to accommodate a sk that may have
+> a few large bpf_sk_storages.
+> 
+> The updated cb->min_dump_alloc will also be used to allocate the skb in
+> the next dump.  This logic already exists in netlink_dump().
+> 
+> Here is the sample output of a locally modified 'ss' and it could be made
+> more readable by using BTF later:
+> [root@arch-fb-vm1 ~]# ss --bpf-map-id 14 --bpf-map-id 13 -t6an 'dst [::1]:8989'
+> State Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess
+> ESTAB 0      0              [::1]:51072        [::1]:8989
+> 	 bpf_map_id:14 value:[ 3feb ]
+> 	 bpf_map_id:13 value:[ 3f ]
+> ESTAB 0      0              [::1]:51070        [::1]:8989
+> 	 bpf_map_id:14 value:[ 3feb ]
+> 	 bpf_map_id:13 value:[ 3f ]
+> 
+> [root@arch-fb-vm1 ~]# ~/devshare/github/iproute2/misc/ss --bpf-maps -t6an 'dst [::1]:8989'
+> State         Recv-Q         Send-Q                   Local Address:Port                    Peer Address:Port         Process
+> ESTAB         0              0                                [::1]:51072                          [::1]:8989
+> 	 bpf_map_id:14 value:[ 3feb ]
+> 	 bpf_map_id:13 value:[ 3f ]
+> 	 bpf_map_id:12 value:[ 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000... total:65407 ]
+> ESTAB         0              0                                [::1]:51070                          [::1]:8989
+> 	 bpf_map_id:14 value:[ 3feb ]
+> 	 bpf_map_id:13 value:[ 3f ]
+> 	 bpf_map_id:12 value:[ 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000... total:65407 ]
+> 
+> Acked-by: Song Liu <songliubraving@fb.com>
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
----
- .mailmap | 1 +
- 1 file changed, 1 insertion(+)
+Hmm, the whole approach is not too pleasant to be honest. I can see why you need
+it since the regular sk_storage lookup only takes sock fd as a key and you don't
+have it otherwise available from outside, but then dumping up to KMALLOC_MAX_SIZE
+via netlink skb is not a great experience either. :( Also, are we planning to add
+the BTF dump there in addition to bpftool? Thus resulting in two different lookup
+APIs and several tools needed for introspection instead of one? :/ Also, how do we
+dump task local storage maps in future? Does it need a third lookup interface?
 
-diff --git a/.mailmap b/.mailmap
-index ffb8f28290c7..a0dfce8de1ba 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -225,6 +225,7 @@ Pratyush Anand <pratyush.anand@gmail.com> <pratyush.anand@st.com>
- Praveen BP <praveenbp@ti.com>
- Punit Agrawal <punitagrawal@gmail.com> <punit.agrawal@arm.com>
- Qais Yousef <qsyousef@gmail.com> <qais.yousef@imgtec.com>
-+Quentin Monnet <quentin@isovalent.com> <quentin.monnet@netronome.com>
- Quentin Perret <qperret@qperret.net> <quentin.perret@arm.com>
- Rafael J. Wysocki <rjw@rjwysocki.net> <rjw@sisk.pl>
- Rajesh Shah <rajesh.shah@intel.com>
--- 
-2.20.1
+In your commit logs I haven't read on other approaches and why they won't work;
+I was wondering, given sockets are backed by inodes, couldn't we have a variant
+of iget_locked() (minus the alloc_inode() part from there) where you pass in ino
+number to eventually get to the socket and then dump the map value associated with
+it the regular way from bpf() syscall?
 
+Thanks,
+Daniel
