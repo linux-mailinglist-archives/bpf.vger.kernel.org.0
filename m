@@ -2,100 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B980B16FDFE
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2020 12:41:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1577416FEC4
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2020 13:17:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728224AbgBZLli (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Feb 2020 06:41:38 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:38660 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgBZLlh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Feb 2020 06:41:37 -0500
-Received: by mail-wr1-f67.google.com with SMTP id e8so2599824wrm.5
-        for <bpf@vger.kernel.org>; Wed, 26 Feb 2020 03:41:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=l84kH0yChire5nSS3J18bHwDxVZ3XKF79LqX2Bl4QM4=;
-        b=rWSdu7FlWnB0rFyAV9TnO+iBV+CIfoJhxdvWoS3rbHqcexgRzEx/gvQoqw+6EwdIzB
-         CcIwwftZoFpqxD0EbopTYtooJArBPSxCvmeB3sewuOrGNZ618abeYnWPQ8J4IXCXYoOt
-         J5IOAIgPa+mqKPJPy5EMPYlipchKekhQXkMZEDzjt8VDOpAZ4frWea0wdOI6Br54rF9I
-         QMJtdp83PP5uUyyh4Fq3oJIlnHcua72/f58TZnFm8iyBDlx4NnACgHkBebjai/BbTm0J
-         AWOS1gg6XMC3wBLvmt+aD2zYmBgNWHcocotNk00isxrQzKgDvOk4cChMkKDn0VbPUYXh
-         alKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=l84kH0yChire5nSS3J18bHwDxVZ3XKF79LqX2Bl4QM4=;
-        b=szGp0ybesILCfPLNp/FponDDdGm+NhxveLAKtlQgzZTlAfC+cHELNA+UpjhfgCPi+p
-         fP6FiG1Upyp81WXst1k9qHwpdVd2F82WvoSZW3KRgANZjqnU4D45Rmyvqn1Kd17jx/8t
-         kdj9QUmnKa56C5//e08LyPULgJyNZonyB1d5BYvKKXJ/jdSwUNvB8t9gMcjJd02sTxxk
-         OhDt1pNzi6lU4MiKpsL+H6CWQA6/7x2Y6Qv1a7JahXRdVkW9QDKpoQyv49aSNkVgAF4G
-         GbPKH0lsKdEs/YeBpcQ/NIZpmwF1nItYDGOMUTqJoyK34V5JzUJUKj/yYGYLMb9xidhz
-         jHcA==
-X-Gm-Message-State: APjAAAXCCa5MnMeQMtaQq4iBtNRq5Mfsvo8QheM09ciMS6JHQw9Y05Gf
-        3n0D/4eLkakudbhZtdm9RJTEX8MUzxg=
-X-Google-Smtp-Source: APXvYqw4qt8UkZzzNCN9lgddHiORXUyHiHsD2S0kDv1iSUS5tc8gZFOFByIYNbvg7DtMZq3WUWTTiQ==
-X-Received: by 2002:adf:fac3:: with SMTP id a3mr5177637wrs.370.1582717294040;
-        Wed, 26 Feb 2020 03:41:34 -0800 (PST)
-Received: from [192.168.1.10] ([194.35.116.65])
-        by smtp.gmail.com with ESMTPSA id 133sm2731521wme.32.2020.02.26.03.41.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Feb 2020 03:41:33 -0800 (PST)
-Subject: Re: [PATCH bpf-next] bpftool: Support struct_ops, tracing, ext prog
- types
-To:     Andrey Ignatov <rdna@fb.com>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, kernel-team@fb.com
-References: <20200225223441.689109-1-rdna@fb.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <6ca9d9bf-d7e0-d35b-0a89-b1417b9a9f2d@isovalent.com>
-Date:   Wed, 26 Feb 2020 11:41:32 +0000
+        id S1727177AbgBZMRP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Feb 2020 07:17:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35856 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726334AbgBZMRO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Feb 2020 07:17:14 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 66047ACE8;
+        Wed, 26 Feb 2020 12:17:11 +0000 (UTC)
+Subject: Re: [PATCH bpf-next v3 0/5] bpftool: Make probes which emit dmesg
+ warnings optional
+To:     Quentin Monnet <quentin@isovalent.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        linux-kselftest@vger.kernel.org
+References: <20200225194446.20651-1-mrostecki@opensuse.org>
+ <e4929660-21ff-e394-37a0-d72b67a3770a@isovalent.com>
+From:   Michal Rostecki <mrostecki@opensuse.org>
+Autocrypt: addr=mrostecki@opensuse.org; keydata=
+ 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
+ ZURUUA==
+Message-ID: <0e46d001-a137-97bc-262c-e864cf3f90b8@opensuse.org>
+Date:   Wed, 26 Feb 2020 13:17:10 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200225223441.689109-1-rdna@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <e4929660-21ff-e394-37a0-d72b67a3770a@isovalent.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-02-25 14:34 UTC-0800 ~ Andrey Ignatov <rdna@fb.com>
-> Add support for prog types that were added to kernel but not present in
-> bpftool yet: struct_ops, tracing, ext prog types and corresponding
-> section names.
+On 2/26/20 12:17 PM, Quentin Monnet wrote:
+> 2020-02-25 20:44 UTC+0100 ~ Michal Rostecki <mrostecki@opensuse.org>
+>> Feature probes in bpftool related to bpf_probe_write_user and
+>> bpf_trace_printk helpers emit dmesg warnings which might be confusing
+>> for people running bpftool on production environments. This patch series
+>> addresses that by filtering them out by default and introducing the new
+>> positional argument "full" which enables all available probes.
+>>
+>> The main motivation behind those changes is ability the fact that some
+>> probes (for example those related to "trace" or "write_user" helpers)
+>> emit dmesg messages which might be confusing for people who are running
+>> on production environments. For details see the Cilium issue[0].
+>>
+>> v1 -> v2:
+>> - Do not expose regex filters to users, keep filtering logic internal,
+>> expose only the "full" option for including probes which emit dmesg
+>> warnings.
+>>
+>> v2 -> v3:
+>> - Do not use regex for filtering out probes, use function IDs directly.
+>> - Fix bash completion - in v2 only "prefix" was proposed after "macros",
+>>    "dev" and "kernel" were not.
+>> - Rephrase the man page paragraph, highlight helper function names.
+>> - Remove tests which parse the plain output of bpftool (except the
+>>    header/macros test), focus on testing JSON output instead.
+>> - Add test which compares the output with and without "full" option.
+>>
+>> [0] https://github.com/cilium/cilium/issues/10048
+>>
+>> Michal Rostecki (5):
+>>    bpftool: Move out sections to separate functions
+>>    bpftool: Make probes which emit dmesg warnings optional
+>>    bpftool: Update documentation of "bpftool feature" command
+>>    bpftool: Update bash completion for "bpftool feature" command
+>>    selftests/bpf: Add test for "bpftool feature" command
+>>
+>>   .../bpftool/Documentation/bpftool-feature.rst |  19 +-
+>>   tools/bpf/bpftool/bash-completion/bpftool     |   3 +-
+>>   tools/bpf/bpftool/feature.c                   | 283 +++++++++++-------
+>>   tools/testing/selftests/.gitignore            |   5 +-
+>>   tools/testing/selftests/bpf/Makefile          |   3 +-
+>>   tools/testing/selftests/bpf/test_bpftool.py   | 179 +++++++++++
+>>   tools/testing/selftests/bpf/test_bpftool.sh   |   5 +
+>>   7 files changed, 374 insertions(+), 123 deletions(-)
+>>   create mode 100644 tools/testing/selftests/bpf/test_bpftool.py
+>>   create mode 100755 tools/testing/selftests/bpf/test_bpftool.sh
+>>
 > 
-> Before:
->    # bpftool p l
->    ...
->    184: type 26  name test_subprog3  tag dda135a7dc0daf54  gpl
->            loaded_at 2020-02-25T13:28:33-0800  uid 0
->            xlated 112B  jited 103B  memlock 4096B  map_ids 136
->            btf_id 85
->    185: type 28  name new_get_skb_len  tag d2de5b87d8e5dc49  gpl
->            loaded_at 2020-02-25T13:28:33-0800  uid 0
->            xlated 72B  jited 69B  memlock 4096B  map_ids 136
->            btf_id 85
+> This version looks good to me, thanks!
 > 
-> After:
->    # bpftool p l
->    ...
->    184: tracing  name test_subprog3  tag dda135a7dc0daf54  gpl
->            loaded_at 2020-02-25T13:28:33-0800  uid 0
->            xlated 112B  jited 103B  memlock 4096B  map_ids 136
->            btf_id 85
->    185: ext  name new_get_skb_len  tag d2de5b87d8e5dc49  gpl
->            loaded_at 2020-02-25T13:28:33-0800  uid 0
->            xlated 72B  jited 69B  memlock 4096B  map_ids 136
->            btf_id 85
+> Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 > 
-> Signed-off-by: Andrey Ignatov <rdna@fb.com>
+> (Please keep Acked-by/Reviewed-by tags between versions if there are no
+> significant changes, here for patch 1.)
 
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+Sorry, I will do that next time.
 
-Thanks!
+> That's a lot of tests now that we don't have the regex and filtering is
+> very straightforward, but it does not hurt. I checked and they all pass
+> on my system.
+
+I know that those tests were necessary with the regex implementation and
+now they may seem to be an overkill. But on the other hand, I think that
+having selftests for bpftool in general is a good thing, so I didn't
+want throw them away despite the easier implementation of my patches. I
+might follow up with some more tests covering the other subcommands in
+future.
+
+Cheers,
+Michal
