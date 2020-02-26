@@ -2,126 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE5816F684
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2020 05:35:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4358A16F6F1
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2020 06:15:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbgBZEf2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Feb 2020 23:35:28 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:39883 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726039AbgBZEf2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Feb 2020 23:35:28 -0500
-Received: by mail-qt1-f195.google.com with SMTP id p34so1359480qtb.6;
-        Tue, 25 Feb 2020 20:35:28 -0800 (PST)
+        id S1726386AbgBZFPk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Feb 2020 00:15:40 -0500
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:33878 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725789AbgBZFPk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Feb 2020 00:15:40 -0500
+Received: by mail-wr1-f68.google.com with SMTP id z15so1377175wrl.1
+        for <bpf@vger.kernel.org>; Tue, 25 Feb 2020 21:15:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=vxQWvF+rKCRU7B1Gx1aCuyYmxP3vKtv1siF7Z6n6r+A=;
-        b=OjDy8mWFpPZTqwYMgSj5y8Y1ROEHZn86RsmCYuCiEZVwNom0VHszgbh3QfEDkjZqkx
-         81uJqTX/4YAN5Hnu+zNHdN9TZhnDMkvncyPJfBKNhVmy8SC3fiIZdAHTVhEQJpqZ18Wa
-         cf8PJTW9M6gthZNw3Qsf+pNPvu2WimzaZVUBEGttIZGx/AF3hOxikq645OJXTAUF04ae
-         nT7jq5uhD5ulz6x+hMbz+CEfqJnteH3/O1LYw4IPQpM5UWmVRawGEK/z9LwzAzheD8Z/
-         w35r6KNrha5qlIVjBupr4GJCc0DIC2GN/jwPGaaw+MS3FRWbLzfxqE1ZRb8KsDRr0nqI
-         QP7A==
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=2mmwcPt7FYwEo0xY8XBsaqPBRihA0DEsv6KzigsLQ58=;
+        b=GFtc1XjesUgCXUHiWoX/bNXIOX68YtbiUIv3KeypQbKO5nzN9EtNHzPQKWx0AS5kQJ
+         QisbhnZZnyRyZjREV911pnrbH5+8FGTnjfq8Q5XVQa2GK8NZ2DcgdwFhmh+qZM3Cwlwl
+         Q7kmyK8YZbxd1bbdUd4Kx+IkQ7qvTY57UKgSo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=vxQWvF+rKCRU7B1Gx1aCuyYmxP3vKtv1siF7Z6n6r+A=;
-        b=TNtFGy5Z18ks/O552uTHF7lHJJomQ2juc0EnAya1Nlxdu/DVIVVHIHxRWEaLfJLyN9
-         9kT/NPsC3O/kRcgTzDTXjDWcnrRvC5ZLBxlHqPjaNg/3TtFJ6Lmm9Rk5VlBTl9CjziDP
-         otk1hZrSgK9aOIanR40BwsRQjFwQ9VHmrVgqGga0kTMmIqpQvf5GLHNbBSPSMs2SYckZ
-         Q+0QbSbwNSfw/cMo6vPdZzPpScGxjilgqMhQy66X2rGpQfGEA9yeBMGLR8Ej+IKq4ndB
-         1rPmuNN0NNS+9ntAuVWQyb1Ct9IYgmvTLQTRm5XkjchEytAX97B9xT2jh+mFZkOVS+4E
-         EPTg==
-X-Gm-Message-State: APjAAAUrDPhKSMxhacBIzIm8jvQg8IBT54eqrIHYmS0Pcy2ToCgoCbMi
-        u22WH5cV+5PMv1pCQGQQObsKVj3wcDGClF7QATY=
-X-Google-Smtp-Source: APXvYqz2kovWkenf80ECWnzzux+R+t9j6aeOQ7yftyoeChW4O/28JLTlxKc1cG5OWrjb7UyNiCb7GnS+i29+ScPrfK0=
-X-Received: by 2002:ac8:4050:: with SMTP id j16mr2786956qtl.171.1582691727421;
- Tue, 25 Feb 2020 20:35:27 -0800 (PST)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=2mmwcPt7FYwEo0xY8XBsaqPBRihA0DEsv6KzigsLQ58=;
+        b=NFgJqA6nSH7muO3XzLkdifMGT3vgq8ZAMsrTxcCyA0kv8lcXiNV/1vgCQwEgUtsmyY
+         by9DXdAdl7RS3116BgsP9takHVCVNe5uUjTpK9ichHdqYa8rh3ahfzKjo2n2AEDTSQ3K
+         mIb9837Mb8gEwGv7Cz0CAWTidlSJAZfyzvw4p0tffG/Y5NIuHlDd7Ycm6aJD2FwjRqCD
+         B+Woau25e4HsejdPOehNxp0tYcxPh+UAirK9s5MjZz02SZlgC6zMki0hDsi9YtM0krZN
+         sOGaL400d/nD0cnfXKzBXV1OSsGqrCnaZrXrlMvWnXIHyQXxxqRGhey+h/CFdeAC/jLz
+         kogQ==
+X-Gm-Message-State: APjAAAW85MEapEA02KHjV9EUbiNml86t2y9ik44tdk4KwdhUL9/HSRqn
+        0c7fVBq7vyAvYxi0KO5J0CmnVg==
+X-Google-Smtp-Source: APXvYqz2IaEWwjMKpkbhNY7SJ8fg1XpAhmBgB4RAX5kpwm8067vORT93Ydflic8x7eX4NRlr6w4xtQ==
+X-Received: by 2002:adf:fc85:: with SMTP id g5mr3094802wrr.52.1582694138040;
+        Tue, 25 Feb 2020 21:15:38 -0800 (PST)
+Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
+        by smtp.gmail.com with ESMTPSA id m22sm389298wmc.41.2020.02.25.21.15.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Feb 2020 21:15:37 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Wed, 26 Feb 2020 06:15:35 +0100
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        James Morris <jmorris@namei.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v4 3/8] bpf: lsm: provide attachment points for
+ BPF LSM programs
+Message-ID: <20200226051535.GA17117@chromium.org>
+References: <20200220175250.10795-4-kpsingh@chromium.org>
+ <0ef26943-9619-3736-4452-fec536a8d169@schaufler-ca.com>
+ <202002211946.A23A987@keescook>
+ <20200223220833.wdhonzvven7payaw@ast-mbp>
+ <c5c67ece-e5c1-9e8f-3a2b-60d8d002c894@schaufler-ca.com>
+ <20200224171305.GA21886@chromium.org>
+ <00c216e1-bcfd-b7b1-5444-2a2dfa69190b@schaufler-ca.com>
+ <202002241136.C4F9F7DFF@keescook>
+ <20200225054125.dttrc3fvllzu4mx5@ast-mbp>
+ <4b56177f-8148-177b-e1e5-c98da86b3b01@schaufler-ca.com>
 MIME-Version: 1.0
-References: <CAPhsuW6QkQ8-pXamQVzTXLPzyb4-FCeF_6To7sa_=gd7Ea5VpA@mail.gmail.com>
- <20200225044538.61889-1-forrest0579@gmail.com> <20200225044538.61889-4-forrest0579@gmail.com>
- <CAEf4Bza5k92bxYH=c1DP_rcugF6z3NLos7aPS7DPoi9-3B_JrQ@mail.gmail.com>
- <CAH+Qyb+rQeebkb1TtLuNHPLmf-VRLqj1yvsHXtaqfzHKMA4azQ@mail.gmail.com>
- <CAEf4BzbM3ey=vUobB=H+j9bzAT+H1TgsNFp88MCB3BkOYQ+0Yg@mail.gmail.com> <CAH+Qyb+-Q7OSrobdojRiep5cmnzwfMnGJ2HPfjvEPiTPtse+LQ@mail.gmail.com>
-In-Reply-To: <CAH+Qyb+-Q7OSrobdojRiep5cmnzwfMnGJ2HPfjvEPiTPtse+LQ@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 25 Feb 2020 20:35:16 -0800
-Message-ID: <CAEf4BzabauCm6Z+=EM46=xkAtGxPdLs3H7PhDnJNtrcH-4-iGQ@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 3/3] selftests/bpf: add selftest for
- get_netns_id helper
-To:     Forrest Chen <forrest0579@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Petar Penkov <ppenkov.kernel@gmail.com>,
-        Song Liu <song@kernel.org>, Song Liu <songliubraving@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4b56177f-8148-177b-e1e5-c98da86b3b01@schaufler-ca.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 25, 2020 at 5:20 PM Forrest Chen <forrest0579@gmail.com> wrote:
->
-> Got it. So I think we could first merge this and refactor the tcpbpf test=
-(or maybe also some other tests) in another thread, is that ok with you?
+On 25-Feb 16:30, Casey Schaufler wrote:
+> On 2/24/2020 9:41 PM, Alexei Starovoitov wrote:
+> > On Mon, Feb 24, 2020 at 01:41:19PM -0800, Kees Cook wrote:
+> >> But the LSM subsystem doesn't want special cases (Casey has worked very
+> >> hard to generalize everything there for stacking). It is really hard to
+> >> accept adding a new special case when there are still special cases yet
+> >> to be worked out even in the LSM code itself[2].
+> >> [2] Casey's work to generalize the LSM interfaces continues and it quite
+> >> complex:
+> >> https://lore.kernel.org/linux-security-module/20200214234203.7086-1-casey@schaufler-ca.com/
+> > I think the key mistake we made is that we classified KRSI as LSM.
+> > LSM stacking, lsmblobs that the above set is trying to do are not necessary for KRSI.
+> > I don't see anything in LSM infra that KRSI can reuse.
+> > The only thing BPF needs is a function to attach to.
+> > It can be a nop function or any other.
+> > security_*() functions are interesting from that angle only.
+> > Hence I propose to reconsider what I was suggesting earlier.
+> > No changes to secruity/ directory.
+> > Attach to security_*() funcs via bpf trampoline.
+> > The key observation vs what I was saying earlier is KRSI and LSM are wrong names.
+> > I think "security" is also loaded word that should be avoided.
+> 
+> No argument there.
+> 
+> > I'm proposing to rename BPF_PROG_TYPE_LSM into BPF_PROG_TYPE_OVERRIDE_RETURN.
+> >
+> >> So, unless James is going to take this over Casey's objections, the path
+> >> forward I see here is:
+> >>
+> >> - land a "slow" KRSI (i.e. one that hooks every hook with a stub).
+> >> - optimize calling for all LSMs
+> > I'm very much surprised how 'slow' KRSI is an option at all.
+> > 'slow' KRSI means that CONFIG_SECURITY_KRSI=y adds indirect calls to nop
+> > functions for every place in the kernel that calls security_*().
+> > This is not an acceptable overhead. Even w/o retpoline
+> > this is not something datacenter servers can use.
+> 
+> In the universe I live in data centers will disable hyper-threading,
+> reducing performance substantially, in the face of hypothetical security
+> exploits. That's a massively greater performance impact than the handful
+> of instructions required to do indirect calls. Not to mention the impact
 
-Sure, as long as there is a follow up.
+Indirect calls have worse performance implications than just a few
+instructions and are especially not suitable for hotpaths.
 
-Also, please make sure to reply inline.
+There have been multiple efforts to reduce their usage e.g.:
 
->
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> =E4=BA=8E2020=E5=B9=B42=E6=9C=
-=8826=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8A=E5=8D=881:13=E5=86=99=E9=81=93=
-=EF=BC=9A
->>
->> On Mon, Feb 24, 2020 at 11:20 PM Forrest Chen <forrest0579@gmail.com> wr=
-ote:
->> >
->> > > It would be nice if this selftests becomes part of test_progs.
->> >
->> > You mean the whole tests of tcpbpf or only the changes I made in this =
-test?
->> > If you mean the whole tests of tcpbpf, I think we could fire another t=
-hread
->> > to do this?
->>
->> Yeah, I meant entire tcpbpf test.
->>
->> >
->> > Andrii Nakryiko <andrii.nakryiko@gmail.com> =E4=BA=8E2020=E5=B9=B42=E6=
-=9C=8825=E6=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=882:13=E5=86=99=E9=81=
-=93=EF=BC=9A
->> >>
->> >> On Mon, Feb 24, 2020 at 8:47 PM Lingpeng Chen <forrest0579@gmail.com>=
- wrote:
->> >> >
->> >> > adding selftest for new bpf helper function get_netns_id
->> >> >
->> >> > Signed-off-by: Lingpeng Chen <forrest0579@gmail.com>
->> >> > Acked-by: Song Liu <songliubraving@fb.com>
->> >> > ---
->> >>
->> >> It would be nice if this selftests becomes part of test_progs. That
->> >> way it would be exercised regularly, both by committers, as well as b=
-y
->> >> automated CI in libbpf's Github repo. Using global variables and BPF
->> >> skeleton would also clean up both BPF and user-space code.
->> >>
->> >> It seems like this test runs Python script for server, but doesn't
->> >> seem like that server is doing anything complicated, so writing that
->> >> in C shouldn't be a problem as well. Thoughts?
->> >>
->> >> >  .../selftests/bpf/progs/test_tcpbpf_kern.c    | 11 +++++
->> >> >  .../testing/selftests/bpf/test_tcpbpf_user.c  | 46 +++++++++++++++=
-+++-
->> >> >  2 files changed, 56 insertions(+), 1 deletion(-)
->> >> >
+  - https://lwn.net/Articles/774743/
+  - https://lwn.net/Articles/773985/
 
-[...]
+> of the BPF programs that have been included. Have you ever looked at what
+
+  BPF programs are JIT'ed and optimized to native code.
+
+> happens to system performance when polkitd is enabled?
+
+However, let's discuss all this separately when we follow-up with
+performance improvements after submitting the initial patch-set.
+
+> 
+> 
+> >
+> > Another option is to do this:
+> > diff --git a/include/linux/security.h b/include/linux/security.h
+> > index 64b19f050343..7887ce636fb1 100644
+> > --- a/include/linux/security.h
+> > +++ b/include/linux/security.h
+> > @@ -240,7 +240,7 @@ static inline const char *kernel_load_data_id_str(enum kernel_load_data_id id)
+> >         return kernel_load_data_str[id];
+> >  }
+> >
+> > -#ifdef CONFIG_SECURITY
+> > +#if defined(CONFIG_SECURITY) || defined(CONFIG_BPF_OVERRIDE_RETURN)
+> >
+> > Single line change to security.h and new file kernel/bpf/override_security.c
+> > that will look like:
+> > int security_binder_set_context_mgr(struct task_struct *mgr)
+> > {
+> >         return 0;
+> > }
+> >
+> > int security_binder_transaction(struct task_struct *from,
+> >                                 struct task_struct *to)
+> > {
+> >         return 0;
+> > }
+> > Essentially it will provide BPF side with a set of nop functions.
+> > CONFIG_SECURITY is off. It may seem as a downside that it will force a choice
+> > on kernel users. Either they build the kernel with CONFIG_SECURITY and their
+> > choice of LSMs or build the kernel with CONFIG_BPF_OVERRIDE_RETURN and use
+> > BPF_PROG_TYPE_OVERRIDE_RETURN programs to enforce any kind of policy. I think
+> > it's a pro not a con.
+> 
+> Err, no. All distros use an LSM or two. Unless you can re-implement SELinux
+
+The users mentioned here in this context are (I would assume) the more
+performance sensitive users who would, potentially, disable
+CONFIG_SECURITY because of the current performance characteristics.
+
+We can also discuss this separately and only if we find that we need
+it for the BPF_OVERRIDE_RET type attachment.
+
+- KP
+
+> in BPF (good luck with state transitions) you've built a warp drive without
+> ever having mined dilithium crystals.
+> 
+> 
