@@ -2,235 +2,315 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 202CB170DED
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2020 02:35:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EEE170E75
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2020 03:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgB0BfR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Feb 2020 20:35:17 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:50946 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727964AbgB0BfR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 26 Feb 2020 20:35:17 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 01R1YxJs027289;
-        Wed, 26 Feb 2020 17:35:00 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=Hnom75qaMy4JgV7P7d95ObMgUz2RAWSv5pqB4QSMZ74=;
- b=rJTMTVnVF8MFazayYlMqb+JliTup68fjU9HxJQzeomnQDZ1r44gsURYYui7bEGtcDdLS
- 3tsF6wfNtRdOUxEgVRaaIZghubB4Ekqv7IDHa/mRhkAUqWw2IGVEChs0LR5RlTs+n6Th
- LuqJDVkBNJ6BHOVgVAHzspDnzH/bmPl2rRw= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 2ydckpeffa-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 26 Feb 2020 17:35:00 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+        id S1728211AbgB0CdL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Feb 2020 21:33:11 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:16842 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728164AbgB0CdK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 26 Feb 2020 21:33:10 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01R2VRfu024538
+        for <bpf@vger.kernel.org>; Wed, 26 Feb 2020 18:33:09 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=x0IFhur14U15pRA1fM8+x1TLsYFl94iCgsowgLBTMXc=;
+ b=NcH9dS/yPOgFFZ5nPVz5y8LbcZZTJk3iPPeplbdMJ8FvR7kzQQ5pvW8rRaiu27m4fbCK
+ sNvBOHFJgw/gFW9BHCs++o4A6rvY2cqmdFSe4sCLEv51BiwNxko0UBWBuEeBXRvxaexj
+ ty2Y+a7Z9a5cujoQjSu2771EV3ko/Zmw2SQ= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 2ydckyemd1-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 26 Feb 2020 18:33:09 -0800
+Received: from intmgw004.06.prn3.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 26 Feb 2020 17:34:52 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T7Szerg4yiCQHuRvMSoX2b+cnlYMPLWGlxBgYwkfAT5qh2KyZZydbqPVZPC58I/IXT2n96f8vK/D10JDwpwLZCK0D2bfS3dH0yZ2POBF88SgXNiCyJlr/FNVCDTWJYai8CbB9T3vejzcGUYcrUnh8JAHz3MWX5B4onx+KyQx74MhIa8MeUgUGsailthHnNyhHmi0dCEHnafv5gJNakuPd7B+q9XWTE5yxGmsyc/KCy4+5UJv+ldCgg+LjfsCKrRnZARFUSsBrBM+5kWaJ97EVPMfVkNVi/pY5PcO8NxxJXwhsGbMzouLIvSD0kRRx0osQFz334o2b0t4TWiKATxE0A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hnom75qaMy4JgV7P7d95ObMgUz2RAWSv5pqB4QSMZ74=;
- b=djC1hU9MtBFXnPIBUBpawxj2bLPTXtC1IkIQr2qKwYUs9GqDWfm5O8Nxkdkj0olmI0zaZdO+8DvtZ8S9P5g0OLB75uEo8r/kui3lxMcjbl2D0D5Q6HiIsrspCnThAlDsfBfubSEu9EGY+w9/egCGVt70H0SE9/2cPFrWH13sNvQU2MGo6CZ+FRum+4ekoKpnkwqr1njoy1If+eiFS7HPt480M1hy2j36Aql/on70As//jq6Vk5HmOnQ9Aq6aPg5fAEMfaIGCMOJn4pyi41HzNl8LZhFXQ1K5EMyZG9JePqEIRzCzbuqp7zJaF1XFQLHJFiPjBz6UctVfbQ62Fd7vhA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hnom75qaMy4JgV7P7d95ObMgUz2RAWSv5pqB4QSMZ74=;
- b=CaErsow6EiZAeo6KOMtMWVMr2qMBa1hIt6jywbdC9sX78VewiZtqOKQu99PTwfAFhCW3IpwJnBEX2iTU9oTOcusS+KkEec46FPbo8twwG8vIie4vsKOeLl4GhotUSRNsA9zKGbpiLKBrUqpGxfpJLOi0Q9d1z21Q8W8A95f6uXc=
-Received: from BYAPR15MB2278.namprd15.prod.outlook.com (2603:10b6:a02:8e::17)
- by BYAPR15MB3351.namprd15.prod.outlook.com (2603:10b6:a03:10c::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2750.21; Thu, 27 Feb
- 2020 01:34:51 +0000
-Received: from BYAPR15MB2278.namprd15.prod.outlook.com
- ([fe80::4d5a:6517:802b:5f47]) by BYAPR15MB2278.namprd15.prod.outlook.com
- ([fe80::4d5a:6517:802b:5f47%4]) with mapi id 15.20.2750.021; Thu, 27 Feb 2020
- 01:34:50 +0000
-Date:   Wed, 26 Feb 2020 17:34:48 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>, <kernel-team@fb.com>,
-        <netdev@vger.kernel.org>, <eric.dumazet@gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/4] bpf: inet_diag: Dump bpf_sk_storages in
- inet_diag_dump()
-Message-ID: <20200227013448.srxy5kkpve7yheln@kafai-mbp>
-References: <20200225230402.1974723-1-kafai@fb.com>
- <20200225230427.1976129-1-kafai@fb.com>
- <938a0461-fd8d-b4b9-4fef-95d46409c0d6@iogearbox.net>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <938a0461-fd8d-b4b9-4fef-95d46409c0d6@iogearbox.net>
-User-Agent: NeoMutt/20180716
-X-ClientProxiedBy: MWHPR22CA0041.namprd22.prod.outlook.com
- (2603:10b6:300:69::27) To BYAPR15MB2278.namprd15.prod.outlook.com
- (2603:10b6:a02:8e::17)
+ 15.1.1779.2; Wed, 26 Feb 2020 18:33:06 -0800
+Received: by dev082.prn2.facebook.com (Postfix, from userid 572249)
+        id 80B4E370087B; Wed, 26 Feb 2020 18:33:05 -0800 (PST)
+Smtp-Origin-Hostprefix: dev
+From:   Andrey Ignatov <rdna@fb.com>
+Smtp-Origin-Hostname: dev082.prn2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Andrey Ignatov <rdna@fb.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <osandov@fb.com>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next] bpf: Add drgn script to list progs/maps
+Date:   Wed, 26 Feb 2020 18:32:53 -0800
+Message-ID: <20200227023253.3445221-1-rdna@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp (2620:10d:c090:500::6:ba05) by MWHPR22CA0041.namprd22.prod.outlook.com (2603:10b6:300:69::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2750.18 via Frontend Transport; Thu, 27 Feb 2020 01:34:49 +0000
-X-Originating-IP: [2620:10d:c090:500::6:ba05]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4e77be9a-ffbe-4ede-e83d-08d7bb253cc9
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3351:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3351E3B124489EA4F4ADB3BFD5EB0@BYAPR15MB3351.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
-X-Forefront-PRVS: 03264AEA72
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(136003)(346002)(376002)(39860400002)(366004)(396003)(189003)(199004)(2906002)(316002)(53546011)(52116002)(6496006)(478600001)(54906003)(55016002)(186003)(9686003)(4326008)(1076003)(33716001)(8936002)(81166006)(8676002)(81156014)(5660300002)(16526019)(66476007)(66946007)(6916009)(86362001)(66556008);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3351;H:BYAPR15MB2278.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-Received-SPF: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zSO/CRR1yrdHk0UyBywjNMT5yZ3FxlI1rILKFT0SLpcWW5wP2YJM9hoiDNXu5zG2cmxamwcUYUqXmIeioIDL1eNSH2SQWisYUplSEoJNsiY2tfd4p57aJ3h8x8sCNA1RRk0v2LIQS+72RBKIzVSY7YRzMreLWf5sff67D4y8vZnIaqQqzqx04RDIzedXn+ioLKehiEZiczypIokLU+M4NjjyyyGOoLPZGC/CJbqHlxDAjlLkJlOYA65xjf75LjY/5goJ/D7iJfz6AhWjobmMyPoV9Z7GF4/Zua2Z19ZgIjiZbl4w0FAHdtMpp7ak/lp5zNAm8B0CE+0PZOJgueY8gX37VtiFAi9nxsDnDspTDzDy+r2VKpocRGzc7t0gn5A4v4wximGygxhYxG4gB1qtPMZihNjsFItuFao90a8tjSO2vBJnAcX32nlY7L+NMjQW
-X-MS-Exchange-AntiSpam-MessageData: H/IFtVQ5PRwprUj1y8CYZgLo9AaLpssKMrvgBeqtsWdA0zff/secZzHRCKfCPqGHK1gUFhgotRkN1HqS0uYjLzMwwCTVt2SNq6kG7YNOjsESLttPgCLO95CFp0aPUSqXxfN1EnG4H0lqW2KJhTZy5JL4RCndPz1xkncYg077Xk6Qh1BqbL4dKpCh+GWLJmv0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e77be9a-ffbe-4ede-e83d-08d7bb253cc9
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2020 01:34:50.8291
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: skjGZlG/QqfqcxYWS8/5iN3SPdyx0NuhpcS8OOZxMmqOPvwUIyeLi5tdHbNP94b7
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3351
-X-OriginatorOrg: fb.com
+Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
  definitions=2020-02-26_09:2020-02-26,2020-02-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- lowpriorityscore=0 mlxlogscore=999 adultscore=0 priorityscore=1501
- mlxscore=0 malwarescore=0 spamscore=0 impostorscore=0 phishscore=0
- suspectscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2001150001 definitions=main-2002270008
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 spamscore=0
+ impostorscore=0 suspectscore=1 phishscore=0 lowpriorityscore=0
+ mlxlogscore=668 malwarescore=0 adultscore=0 priorityscore=1501 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2002270016
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 26, 2020 at 06:21:33PM +0100, Daniel Borkmann wrote:
-> On 2/26/20 12:04 AM, Martin KaFai Lau wrote:
-> > This patch will dump out the bpf_sk_storages of a sk
-> > if the request has the INET_DIAG_REQ_SK_BPF_STORAGES nlattr.
-> > 
-> > An array of SK_DIAG_BPF_STORAGE_REQ_MAP_FD can be specified in
-> > INET_DIAG_REQ_SK_BPF_STORAGES to select which bpf_sk_storage to dump.
-> > If no map_fd is specified, all bpf_sk_storages of a sk will be dumped.
-> > 
-> > bpf_sk_storages can be added to the system at runtime.  It is difficult
-> > to find a proper static value for cb->min_dump_alloc.
-> > 
-> > This patch learns the nlattr size required to dump the bpf_sk_storages
-> > of a sk.  If it happens to be the very first nlmsg of a dump and it
-> > cannot fit the needed bpf_sk_storages,  it will try to expand the
-> > skb by "pskb_expand_head()".
-> > 
-> > Instead of expanding it in inet_sk_diag_fill(), it is expanded at a
-> > sleepable context in __inet_diag_dump() so __GFP_DIRECT_RECLAIM can
-> > be used.  In __inet_diag_dump(), it will retry as long as the
-> > skb is empty and the cb->min_dump_alloc becomes larger than before.
-> > cb->min_dump_alloc is bounded by KMALLOC_MAX_SIZE.  The min_dump_alloc
-> > is also changed from 'u16' to 'u32' to accommodate a sk that may have
-> > a few large bpf_sk_storages.
-> > 
-> > The updated cb->min_dump_alloc will also be used to allocate the skb in
-> > the next dump.  This logic already exists in netlink_dump().
-> > 
-> > Here is the sample output of a locally modified 'ss' and it could be made
-> > more readable by using BTF later:
-> > [root@arch-fb-vm1 ~]# ss --bpf-map-id 14 --bpf-map-id 13 -t6an 'dst [::1]:8989'
-> > State Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess
-> > ESTAB 0      0              [::1]:51072        [::1]:8989
-> > 	 bpf_map_id:14 value:[ 3feb ]
-> > 	 bpf_map_id:13 value:[ 3f ]
-> > ESTAB 0      0              [::1]:51070        [::1]:8989
-> > 	 bpf_map_id:14 value:[ 3feb ]
-> > 	 bpf_map_id:13 value:[ 3f ]
-> > 
-> > [root@arch-fb-vm1 ~]# ~/devshare/github/iproute2/misc/ss --bpf-maps -t6an 'dst [::1]:8989'
-> > State         Recv-Q         Send-Q                   Local Address:Port                    Peer Address:Port         Process
-> > ESTAB         0              0                                [::1]:51072                          [::1]:8989
-> > 	 bpf_map_id:14 value:[ 3feb ]
-> > 	 bpf_map_id:13 value:[ 3f ]
-> > 	 bpf_map_id:12 value:[ 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000... total:65407 ]
-> > ESTAB         0              0                                [::1]:51070                          [::1]:8989
-> > 	 bpf_map_id:14 value:[ 3feb ]
-> > 	 bpf_map_id:13 value:[ 3f ]
-> > 	 bpf_map_id:12 value:[ 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000... total:65407 ]
-> > 
-> > Acked-by: Song Liu <songliubraving@fb.com>
-> > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> 
-> Hmm, the whole approach is not too pleasant to be honest. I can see why you need
-> it since the regular sk_storage lookup only takes sock fd as a key and you don't
-> have it otherwise available from outside, but then dumping up to KMALLOC_MAX_SIZE
-> via netlink skb is not a great experience either. :( Also, are we planning to add
-> the BTF dump there in addition to bpftool? Thus resulting in two different lookup
-> APIs and several tools needed for introspection instead of one? :/ Also, how do we
-> dump task local storage maps in future? Does it need a third lookup interface?
-> 
-> In your commit logs I haven't read on other approaches and why they won't work;
-> I was wondering, given sockets are backed by inodes, couldn't we have a variant
-> of iget_locked() (minus the alloc_inode() part from there) where you pass in ino
-> number to eventually get to the socket and then dump the map value associated with
-> it the regular way from bpf() syscall?
-Thanks for the feedback!
+drgn is a debugger that reads kernel memory and uses DWARF to get types
+and symbols. See [1], [2] and [3] for more details on drgn.
 
-I think (1) dumping all sk(s) in a system is different from
-(2) dumping all sk of a bpf_sk_storage_map or lookup a particular
-sk from a bpf_sk_storage_map.
+Since drgn operates on kernel memory it has access to kernel internals
+that user space doesn't. It allows to get extended info about various
+kernel data structures.
 
-This patch is doing (1).  I believe it is useful to make the commonly used
-tools like "ss" (which already shows many useful information of a sk)
-to be able to introspect a kernel struct extended by bpf instead of
-limiting to only the bpftool can show the bpf extended data.
-The plan is to move the bpftool/btf_dumper.c to libbpf.  The libbpf's
-btf_dumper print out format is still TBD and the current target is the drgn
-like format instead of the current semi-json like plain-txt printout.  As
-more kernel struct may be extensible by bpf, having it in libbpf will be
-useful going forward.
+Introduce bpf.py drgn script to list BPF programs and maps and their
+properties unavailable to user space via kernel API.
 
-Re: future kernel struct extended by bpf
-For doing (1), I think we can ride on the existing API to iterate them also.
-bpf can extend a kernel struct but should not stop the current
-iteration API from working or seeing them.  That includes the current
-seq_file API.  The mid-term goal is to extend the seq_file by
-attaching a bpf_prog to (e.g. /proc/net/tcp) to do filtering
-and printing.  Yonghong is looking into that.
+The main use-case bpf.py covers is to show BPF programs attached to
+other BPF programs via freplace/fentry/fexit mechanisms introduced
+recently. There is no user-space API to get this info and e.g. bpftool
+can only show all BPF programs but can't show if program A replaces a
+function in program B.
 
-Re: lookup a bpf_sk_storage_map by socket fd and KMALLOC_MAX_SIZE
-In my config,
-sizeof(tcp_sock) is    2076
-1 MAX sk_storage is   65407 (31x of a tcp_sock)
-KMALLOC_MAX_SIZE is 4194304 (2000x of a tcp_sock)
+Example:
 
-It is a lot of data to extend on a tcp_sock.
-The total bpf_sk_storages that a sk could have is further bounded by
-net.core.optmem_max.  It is a very unusual setup to have a sk
-that has so many bpf_sk_storage data that a skb cannot
-accommodate.
+  % sudo tools/bpf/bpf.py p | grep test_pkt_access
+     650: BPF_PROG_TYPE_SCHED_CLS          test_pkt_access
+     654: BPF_PROG_TYPE_TRACING            test_main                        linked:[650->25: BPF_TRAMP_FEXIT test_pkt_access->test_pkt_access()]
+     655: BPF_PROG_TYPE_TRACING            test_subprog1                    linked:[650->29: BPF_TRAMP_FEXIT test_pkt_access->test_pkt_access_subprog1()]
+     656: BPF_PROG_TYPE_TRACING            test_subprog2                    linked:[650->31: BPF_TRAMP_FEXIT test_pkt_access->test_pkt_access_subprog2()]
+     657: BPF_PROG_TYPE_TRACING            test_subprog3                    linked:[650->21: BPF_TRAMP_FEXIT test_pkt_access->test_pkt_access_subprog3()]
+     658: BPF_PROG_TYPE_EXT                new_get_skb_len                  linked:[650->16: BPF_TRAMP_REPLACE test_pkt_access->get_skb_len()]
+     659: BPF_PROG_TYPE_EXT                new_get_skb_ifindex              linked:[650->23: BPF_TRAMP_REPLACE test_pkt_access->get_skb_ifindex()]
+     660: BPF_PROG_TYPE_EXT                new_get_constant                 linked:[650->19: BPF_TRAMP_REPLACE test_pkt_access->get_constant()]
 
-That said, the current sk_storage_update() does not limit the total
-bpf_sk_storages of a sk to KMALLOC_MAX_SIZE.
+It can be seen that there is a program test_pkt_access, id 650 and there
+are multiple other tracing and ext programs attached to functions in
+test_pkt_access.
 
-I think this limit could be added to the update side now and the chance
-of breaking is very minimal.
+For example the line:
 
-or the netlink can return map_id only when the max-sized skb cannot fit
-all the bpf_sk_storages.  The userspace then do another syscall to
-lookup the data from each individual bpf_sk_storage_map and
-that requires to lookup side support with another key (non-fd).
-IMO, it is weird and a bit opposite of what bpf_sk_storage should be (fast
-bpf_sk_storage lookup while holding a sk).  The iteration API already
-holds the sk but instead it is asking the usespace to go back to find
-out the sk again in order to get the bpf_sk_storages.  I think that
-should be avoided if possible.
+     658: BPF_PROG_TYPE_EXT                new_get_skb_len                  linked:[650->16: BPF_TRAMP_REPLACE test_pkt_access->get_skb_len()]
 
-Regarding i_ino, after looking at sock_alloc() and get_next_ino(),
-hmmm...is it unique?
-If it is, what is the different usecase between i_ino and
-sk->sk_cookie?
+means that BPF program new_get_skb_len, id 658, type BPF_PROG_TYPE_EXT
+replaces (BPF_TRAMP_REPLACE) function get_skb_len() that has BTF id 16
+in BPF program test_pkt_access, prog id 650.
+
+Just very simple output is supported now but it can be extended in the
+future if needed.
+
+The script is extendable and currently implements two subcommands:
+* prog (alias: p) to list all BPF programs;
+* map (alias: m) to list all BPF maps;
+
+Developer can simply tweak the script to print interesting pieces of programs
+or maps.
+
+The name bpf.py is not super authentic. I'm open to better options.
+
+The script can be sent to drgn repo where it's easier to maintain its
+"drgn-ness", but in kernel tree it should be easier to maintain BPF
+functionality itself what can be more important in this case.
+
+The script depends on drgn revision [4] where BPF helpers were added.
+
+More examples of output:
+
+  % sudo tools/bpf/bpf.py p | shuf -n 3
+      81: BPF_PROG_TYPE_CGROUP_SOCK_ADDR   tw_ipt_bind
+      94: BPF_PROG_TYPE_CGROUP_SOCK_ADDR   tw_ipt_bind
+      43: BPF_PROG_TYPE_KPROBE             kprobe__tcp_reno_cong_avoid
+
+  % sudo tools/bpf/bpf.py m | shuf -n 3
+     213: BPF_MAP_TYPE_HASH                errors
+      30: BPF_MAP_TYPE_ARRAY               sslwall_setting
+      41: BPF_MAP_TYPE_LRU_HASH            flow_to_snd
+
+Help:
+
+  % sudo tools/bpf/bpf.py
+  usage: bpf.py [-h] {prog,p,map,m} ...
+
+  drgn script to list BPF programs or maps and their properties
+  unavailable via kernel API.
+
+  See https://github.com/osandov/drgn/ for more details on drgn.
+
+  optional arguments:
+    -h, --help      show this help message and exit
+
+  subcommands:
+    {prog,p,map,m}
+      prog (p)      list BPF programs
+      map (m)       list BPF maps
+
+[1] https://github.com/osandov/drgn/
+[2] https://drgn.readthedocs.io/en/latest/index.html
+[3] https://lwn.net/Articles/789641/
+[4] https://github.com/osandov/drgn/commit/c8ef841768032e36581d45648e42fc2a5489d8f2
+
+Signed-off-by: Andrey Ignatov <rdna@fb.com>
+---
+ tools/bpf/bpf.py | 149 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 149 insertions(+)
+ create mode 100755 tools/bpf/bpf.py
+
+diff --git a/tools/bpf/bpf.py b/tools/bpf/bpf.py
+new file mode 100755
+index 000000000000..a00d112c0486
+--- /dev/null
++++ b/tools/bpf/bpf.py
+@@ -0,0 +1,149 @@
++#!/usr/bin/env drgn
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++#
++# Copyright (c) 2020 Facebook
++
++DESCRIPTION = """
++drgn script to list BPF programs or maps and their properties
++unavailable via kernel API.
++
++See https://github.com/osandov/drgn/ for more details on drgn.
++"""
++
++import argparse
++import sys
++
++from drgn.helpers import enum_type_to_class
++from drgn.helpers.linux import (
++    bpf_map_for_each,
++    bpf_prog_for_each,
++    hlist_for_each_entry,
++)
++
++
++BpfMapType = enum_type_to_class(prog.type("enum bpf_map_type"), "BpfMapType")
++BpfProgType = enum_type_to_class(prog.type("enum bpf_prog_type"), "BpfProgType")
++BpfProgTrampType = enum_type_to_class(
++    prog.type("enum bpf_tramp_prog_type"), "BpfProgTrampType"
++)
++BpfAttachType = enum_type_to_class(
++    prog.type("enum bpf_attach_type"), "BpfAttachType"
++)
++
++
++def get_btf_name(btf, btf_id):
++    type_ = btf.types[btf_id]
++    if type_.name_off < btf.hdr.str_len:
++        return btf.strings[type_.name_off].address_of_().string_().decode()
++    return ""
++
++
++def get_prog_btf_name(bpf_prog):
++    aux = bpf_prog.aux
++    if aux.btf:
++        # func_info[0] points to BPF program function itself.
++        return get_btf_name(aux.btf, aux.func_info[0].type_id)
++    return ""
++
++
++def get_prog_name(bpf_prog):
++    return get_prog_btf_name(bpf_prog) or bpf_prog.aux.name.string_().decode()
++
++
++def attach_type_to_tramp(attach_type):
++    at = BpfAttachType(attach_type)
++
++    if at == BpfAttachType.BPF_TRACE_FENTRY:
++        return BpfProgTrampType.BPF_TRAMP_FENTRY
++
++    if at == BpfAttachType.BPF_TRACE_FEXIT:
++        return BpfProgTrampType.BPF_TRAMP_FEXIT
++
++    return BpfProgTrampType.BPF_TRAMP_REPLACE
++
++
++def get_linked_func(bpf_prog):
++    kind = attach_type_to_tramp(bpf_prog.expected_attach_type)
++
++    linked_prog = bpf_prog.aux.linked_prog
++    linked_btf_id = bpf_prog.aux.attach_btf_id
++
++    linked_prog_id = linked_prog.aux.id.value_()
++    linked_name = "{}->{}()".format(
++        get_prog_name(linked_prog),
++        get_btf_name(linked_prog.aux.btf, linked_btf_id),
++    )
++
++    return "{}->{}: {} {}".format(
++        linked_prog_id, linked_btf_id.value_(), kind.name, linked_name
++    )
++
++
++def get_tramp_progs(bpf_prog):
++    tr = bpf_prog.aux.trampoline
++    if not tr:
++        return
++
++    if tr.extension_prog:
++        yield tr.extension_prog
++    else:
++        for head in tr.progs_hlist:
++            for tramp_aux in hlist_for_each_entry(
++                "struct bpf_prog_aux", head, "tramp_hlist"
++            ):
++                yield tramp_aux.prog
++
++
++def list_bpf_progs(args, prog):
++    for bpf_prog in bpf_prog_for_each(prog):
++        id_ = bpf_prog.aux.id.value_()
++        type_ = BpfProgType(bpf_prog.type).name
++        name = get_prog_name(bpf_prog)
++
++        linked = ", ".join(
++            [get_linked_func(p) for p in get_tramp_progs(bpf_prog)]
++        )
++        if linked:
++            linked = " linked:[{}]".format(linked)
++
++        print("{:>6}: {:32} {:32}{}".format(id_, type_, name, linked))
++
++
++def list_bpf_maps(args, prog):
++    for map_ in bpf_map_for_each(prog):
++        id_ = map_.id.value_()
++        type_ = BpfMapType(map_.map_type).name
++        name_ = map_.name.string_().decode()
++
++        print("{:>6}: {:32} {}".format(id_, type_, name_))
++
++
++def main():
++    parser = argparse.ArgumentParser(
++        description=DESCRIPTION, formatter_class=argparse.RawTextHelpFormatter
++    )
++
++    subparsers = parser.add_subparsers(
++        title="subcommands", dest="subparser_name"
++    )
++
++    prog_parser = subparsers.add_parser(
++        "prog", aliases=["p"], help="list BPF programs"
++    )
++    prog_parser.set_defaults(func=list_bpf_progs)
++
++    map_parser = subparsers.add_parser(
++        "map", aliases=["m"], help="list BPF maps"
++    )
++    map_parser.set_defaults(func=list_bpf_maps)
++
++    args = parser.parse_args()
++    if not args.subparser_name:
++        parser.print_help()
++        sys.exit(2)
++
++    args.func(args, prog)  # prog is global drgn.Program provided by drgn.
++
++
++if __name__ == "__main__":
++    main()
+-- 
+2.17.1
+
