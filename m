@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A89EC171246
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2020 09:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F93171344
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2020 09:50:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728454AbgB0IPg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Feb 2020 03:15:36 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43212 "EHLO
+        id S1728937AbgB0IuR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Feb 2020 03:50:17 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:60692 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728442AbgB0IPg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Feb 2020 03:15:36 -0500
+        with ESMTP id S1728932AbgB0IuR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Feb 2020 03:50:17 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582791335;
+        s=mimecast20190719; t=1582793416;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=7o/p8pDDttSiLBZgxQ9UIjGFY27nTgqHuXNlOOnP6Q0=;
-        b=S5B4xWCUT/7IFMrm1fOLHU0gM7/W0TYWK1+4QH0FzIsa8CzRZvKQHGfM1awfdittH3t1lA
-        MT/zj1y93gxyB0YoGYReSE5XaaotXkOLPXjB+NrK0DqIHUZU5EDewexa2eLHuwlJ+wz3Yb
-        NMm8d/TKiY0lgh4sd5BS2r7B4IsGzzg=
+        bh=1nyeIRe0NrbrLrsRG5PNzKkePAtGFT/fpceGBxaKfv4=;
+        b=ixLdfVbu+SsPkdBKgIrKFhHpw7m9Ngy2sXDUwl4xkhSSWoOS1AS+4UngpUdJbrr4gLPuvW
+        +au23EbxTVSi/ltPSzJyNBBy+xbXH5EzJAn4UxPORLnsiEjVfZJl1WOX/Y1YSNdmcdeRpe
+        4LAKVbroVw+oXkWxcdFvYbzqaCIPOKs=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-405-wqSCsniaN3GE-JPbLaa2HQ-1; Thu, 27 Feb 2020 03:15:31 -0500
-X-MC-Unique: wqSCsniaN3GE-JPbLaa2HQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-435--LypJKN-NSOJBatdsnhItQ-1; Thu, 27 Feb 2020 03:50:12 -0500
+X-MC-Unique: -LypJKN-NSOJBatdsnhItQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4EE1C107B7D7;
-        Thu, 27 Feb 2020 08:15:29 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C17E218B9FC1;
+        Thu, 27 Feb 2020 08:50:09 +0000 (UTC)
 Received: from krava (ovpn-204-93.brq.redhat.com [10.40.204.93])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7894E101D487;
-        Thu, 27 Feb 2020 08:15:25 +0000 (UTC)
-Date:   Thu, 27 Feb 2020 09:15:22 +0100
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D3E225C545;
+        Thu, 27 Feb 2020 08:50:05 +0000 (UTC)
+Date:   Thu, 27 Feb 2020 09:50:02 +0100
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Song Liu <song@kernel.org>
 Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
@@ -47,42 +47,41 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH 05/18] bpf: Add lnode list node to struct bpf_ksym
-Message-ID: <20200227080902.GB34774@krava>
+Subject: Re: [PATCH 04/18] bpf: Add name to struct bpf_ksym
+Message-ID: <20200227085002.GC34774@krava>
 References: <20200226130345.209469-1-jolsa@kernel.org>
- <20200226130345.209469-6-jolsa@kernel.org>
- <CAPhsuW6NCwxW2qQCFcA3qGOeyd=qz0ZHQGUidWfO-oXeen0r2g@mail.gmail.com>
+ <20200226130345.209469-5-jolsa@kernel.org>
+ <CAPhsuW5u=6MEWKU4-Cfdr3VfYn+NuTgX6SezC_W33WZsM3j8ng@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPhsuW6NCwxW2qQCFcA3qGOeyd=qz0ZHQGUidWfO-oXeen0r2g@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <CAPhsuW5u=6MEWKU4-Cfdr3VfYn+NuTgX6SezC_W33WZsM3j8ng@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 26, 2020 at 02:51:14PM -0800, Song Liu wrote:
-> On Wed, Feb 26, 2020 at 5:05 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Wed, Feb 26, 2020 at 01:14:43PM -0800, Song Liu wrote:
+> On Wed, Feb 26, 2020 at 5:04 AM Jiri Olsa <jolsa@kernel.org> wrote:
 > >
-> > Adding lnode list node to 'struct bpf_ksym' object,
-> > so the symbol itself can be chained and used in other
-> > objects like bpf_trampoline and bpf_dispatcher.
+> > Adding name to 'struct bpf_ksym' object to carry the name
+> > of the symbol for bpf_prog, bpf_trampoline, bpf_dispatcher.
 > >
-> > Changing iterator to bpf_ksym in bpf_get_kallsym.
-> >
-> > The ksym->start is holding the prog->bpf_func value,
-> > so it's ok to use it in bpf_get_kallsym.
+> > The current benefit is that name is now generated only when
+> > the symbol is added to the list, so we don't need to generate
+> > it every time it's accessed.
 > >
 > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > 
-> Acked-by: Song Liu <songliubraving@fb.com>
-> 
-> nit: I think we should describe this as "move lnode list node to
-> struct bpf_ksym".
+> The patch looks good. But I wonder whether we want pay the cost of
+> extra 128 bytes per bpf program. Maybe make it a pointer and only
+> generate the string when it is first used?
 
-true, will change
+I thought 128 would not be that bad, also the code is quite
+simple because of that.. if that's really a concern I could
+make the changes, but that would probably mean changing the
+design
 
-thanks,
 jirka
 
