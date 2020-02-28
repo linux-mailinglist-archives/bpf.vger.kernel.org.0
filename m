@@ -2,21 +2,22 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 34809173885
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2020 14:40:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D1E173965
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2020 15:07:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgB1Nkf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Feb 2020 08:40:35 -0500
-Received: from gateway24.websitewelcome.com ([192.185.51.202]:11303 "EHLO
-        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726359AbgB1Nkc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 28 Feb 2020 08:40:32 -0500
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway24.websitewelcome.com (Postfix) with ESMTP id CBCCC81615
-        for <bpf@vger.kernel.org>; Fri, 28 Feb 2020 07:40:30 -0600 (CST)
+        id S1726525AbgB1OD5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Feb 2020 09:03:57 -0500
+Received: from gateway23.websitewelcome.com ([192.185.50.141]:48879 "EHLO
+        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725892AbgB1OD5 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 28 Feb 2020 09:03:57 -0500
+X-Greylist: delayed 1500 seconds by postgrey-1.27 at vger.kernel.org; Fri, 28 Feb 2020 09:03:56 EST
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway23.websitewelcome.com (Postfix) with ESMTP id 05446BF7C
+        for <bpf@vger.kernel.org>; Fri, 28 Feb 2020 07:16:14 -0600 (CST)
 Received: from gator4166.hostgator.com ([108.167.133.22])
         by cmsmtp with SMTP
-        id 7fsUjpCAcEfyq7fsUjuWFk; Fri, 28 Feb 2020 07:40:30 -0600
+        id 7fUzjz5NUXVkQ7fUzjJyqz; Fri, 28 Feb 2020 07:16:14 -0600
 X-Authority-Reason: nr=8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
@@ -24,33 +25,33 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
         List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=vo0s0HHcKUWbR9UQkp85XxEyo8pNBh5ee/gMXGBhILo=; b=g+4fKStdx4DsG5MhPZ1ImJeoAQ
-        nxPmXBYvHhSIK6R/+xXj0oX1FMiZfo/8iRMYOfx1Nws8/MH57qvSkWs0ChCYz09LkM7cYM39s4oYO
-        ub7PMz8jrFSTYz8JvlwmwkEIcLCdW7WeOuTzZRwc4EnSDb8gtc0LL6Y8YC5N+VntqTofnMKWQ9M83
-        rFgslmPY1Qwp3b677NVkxUmvRelrCatITwxdyCqoGIUXGbTSJL3lOdU2IvUXNIxWIXbRTHUzIwekO
-        0uWpJfGWeT0Rh3fEVHLkPFvTX5kOoL4qcH8P7zZy7PsJXwlCCH76ILHktJHSxyyPJ2XJSZuNUEXpQ
-        gEwkk7YA==;
-Received: from [201.162.240.44] (port=19035 helo=embeddedor)
+        bh=RE0pda+OoJ4cL4RKWAP8k9023lNF5IK92xD1bJo2GXE=; b=EZGpzrAjcSTU9tz+KfZHqu3MaD
+        Szx/qQVD/GAzX0ei1A5yn3SEFGEFtfveb/Djj8PebHtnx8f6bMcK4yM01h62XDJuo3pez1f1ujXRC
+        hYME70p+aB3CqunyFFknk14DeKJ2TkgG+cQVdCGIpOs10T40Rqd1nw4hcusDP9PsD/HKIB8nKC/If
+        7omwKqGkNQMvQ6128OO9V1dH3kviLjV6frN5K2qD1HUmucRqDywSKZMdJUt3bhM+EhXwFBYMKO9KP
+        TSeepnIY8xV2HWjOasENBL0Ybv8pI057b22QVKUQha1ySpHOVT4Q/sxztyDBr6y+cJ3fF4S2ZmfL/
+        VAEeWIoA==;
+Received: from [201.162.240.44] (port=6535 helo=embeddedor)
         by gator4166.hostgator.com with esmtpa (Exim 4.92)
         (envelope-from <gustavo@embeddedor.com>)
-        id 1j7fsS-001RcU-L0; Fri, 28 Feb 2020 07:40:29 -0600
-Date:   Fri, 28 Feb 2020 07:43:24 -0600
+        id 1j7fUx-001EPI-Hz; Fri, 28 Feb 2020 07:16:12 -0600
+Date:   Fri, 28 Feb 2020 07:19:07 -0600
 From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     "David S. Miller" <davem@davemloft.net>,
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Neil Horman <nhorman@tuxdriver.com>
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] net: core: Replace zero-length array with
- flexible-array member
-Message-ID: <20200228134324.GA29394@embeddedor>
+Subject: [PATCH][next] xdp: Replace zero-length array with flexible-array
+ member
+Message-ID: <20200228131907.GA17911@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -63,13 +64,13 @@ X-AntiAbuse: Sender Address Domain - embeddedor.com
 X-BWhitelist: no
 X-Source-IP: 201.162.240.44
 X-Source-L: No
-X-Exim-ID: 1j7fsS-001RcU-L0
+X-Exim-ID: 1j7fUx-001EPI-Hz
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
-X-Source-Sender: (embeddedor) [201.162.240.44]:19035
+X-Source-Sender: (embeddedor) [201.162.240.44]:6535
 X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 52
+X-Email-Count: 11
 X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
 X-Local-Domain: yes
 Sender: bpf-owner@vger.kernel.org
@@ -107,50 +108,29 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 ---
- net/core/bpf_sk_storage.c | 2 +-
- net/core/devlink.c        | 2 +-
- net/core/drop_monitor.c   | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ net/xdp/xsk_queue.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
-index 3ab23f698221..427cfbc0d50d 100644
---- a/net/core/bpf_sk_storage.c
-+++ b/net/core/bpf_sk_storage.c
-@@ -60,7 +60,7 @@ struct bpf_sk_storage_data {
- 	 * the number of cachelines access during the cache hit case.
- 	 */
- 	struct bpf_sk_storage_map __rcu *smap;
--	u8 data[0] __aligned(8);
-+	u8 data[] __aligned(8);
+diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+index 89a01ac4e079..b50bb5c76da5 100644
+--- a/net/xdp/xsk_queue.h
++++ b/net/xdp/xsk_queue.h
+@@ -19,13 +19,13 @@ struct xdp_ring {
+ /* Used for the RX and TX queues for packets */
+ struct xdp_rxtx_ring {
+ 	struct xdp_ring ptrs;
+-	struct xdp_desc desc[0] ____cacheline_aligned_in_smp;
++	struct xdp_desc desc[] ____cacheline_aligned_in_smp;
  };
  
- /* Linked to bpf_sk_storage and bpf_sk_storage_map */
-diff --git a/net/core/devlink.c b/net/core/devlink.c
-index f8af5e2d748b..295d761cbfb1 100644
---- a/net/core/devlink.c
-+++ b/net/core/devlink.c
-@@ -4232,7 +4232,7 @@ struct devlink_fmsg_item {
- 	int attrtype;
- 	u8 nla_type;
- 	u16 len;
--	int value[0];
-+	int value[];
+ /* Used for the fill and completion queues for buffers */
+ struct xdp_umem_ring {
+ 	struct xdp_ring ptrs;
+-	u64 desc[0] ____cacheline_aligned_in_smp;
++	u64 desc[] ____cacheline_aligned_in_smp;
  };
  
- struct devlink_fmsg {
-diff --git a/net/core/drop_monitor.c b/net/core/drop_monitor.c
-index d58c1c45a895..8e33cec9fc4e 100644
---- a/net/core/drop_monitor.c
-+++ b/net/core/drop_monitor.c
-@@ -68,7 +68,7 @@ struct net_dm_hw_entry {
- 
- struct net_dm_hw_entries {
- 	u32 num_entries;
--	struct net_dm_hw_entry entries[0];
-+	struct net_dm_hw_entry entries[];
- };
- 
- struct per_cpu_dm_data {
+ struct xsk_queue {
 -- 
 2.25.0
 
