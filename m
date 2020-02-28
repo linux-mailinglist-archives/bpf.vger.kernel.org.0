@@ -2,217 +2,215 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C315174214
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2020 23:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A1E1742D4
+	for <lists+bpf@lfdr.de>; Sat, 29 Feb 2020 00:14:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgB1WkB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Feb 2020 17:40:01 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:20622 "EHLO
+        id S1726954AbgB1XOi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 28 Feb 2020 18:14:38 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:21986 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726603AbgB1WkB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 28 Feb 2020 17:40:01 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01SMX196031212
-        for <bpf@vger.kernel.org>; Fri, 28 Feb 2020 14:40:00 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=qyVhPGmp3ezkdda4gNOK0tREMIZBeQy3ChgkVcwVWZs=;
- b=a7ClLwHuqN+JmCNvUWxQrma8S+WnfvXbp7bXX4+k/ACIsYXJTPdHCxaOkZU6o8LEra0U
- t6W9BzZvAGBm4Bwp7ttN9AS06WT9VjQnfK52VHyIIjyn9ftp8beOgFtAT0Nb3r+pb66U
- w4xIFavb3Tex9ub8+AxG+/iFaVs6LXsuDoQ= 
+        by vger.kernel.org with ESMTP id S1726950AbgB1XOh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 28 Feb 2020 18:14:37 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01SN95jL011765
+        for <bpf@vger.kernel.org>; Fri, 28 Feb 2020 15:14:36 -0800
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 2yepv4p01s-3
+        by mx0a-00082601.pphosted.com with ESMTP id 2yepvp63ja-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 28 Feb 2020 14:40:00 -0800
-Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Fri, 28 Feb 2020 15:14:35 -0800
+Received: from intmgw004.03.ash8.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 28 Feb 2020 14:39:59 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 791672EC2D20; Fri, 28 Feb 2020 14:39:57 -0800 (PST)
+ 15.1.1779.2; Fri, 28 Feb 2020 15:13:59 -0800
+Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
+        id 17734760FD8; Fri, 28 Feb 2020 15:13:54 -0800 (PST)
 Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
+From:   Alexei Starovoitov <ast@kernel.org>
+Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
+To:     <davem@davemloft.net>
+CC:     <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <kernel-team@fb.com>
 Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next 3/3] selftests/bpf: add link pinning selftests
-Date:   Fri, 28 Feb 2020 14:39:48 -0800
-Message-ID: <20200228223948.360936-4-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200228223948.360936-1-andriin@fb.com>
-References: <20200228223948.360936-1-andriin@fb.com>
-X-FB-Internal: Safe
+Subject: pull-request: bpf-next 2020-02-28
+Date:   Fri, 28 Feb 2020 15:13:54 -0800
+Message-ID: <20200228231354.3226583-1-ast@kernel.org>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
  definitions=2020-02-28_08:2020-02-28,2020-02-28 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=955
- mlxscore=0 suspectscore=8 spamscore=0 malwarescore=0 impostorscore=0
- bulkscore=0 adultscore=0 phishscore=0 lowpriorityscore=0 clxscore=1015
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002280162
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ adultscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 suspectscore=4 spamscore=0 mlxlogscore=776
+ mlxscore=0 clxscore=1034 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2002280166
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add selftests validating link pinning/unpinning and associated BPF link
-(attachment) lifetime.
+Hi David,
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- .../selftests/bpf/prog_tests/link_pinning.c   | 105 ++++++++++++++++++
- .../selftests/bpf/progs/test_link_pinning.c   |  25 +++++
- 2 files changed, 130 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/link_pinning.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_link_pinning.c
+The following pull-request contains BPF updates for your *net-next* tree.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/link_pinning.c b/tools/testing/selftests/bpf/prog_tests/link_pinning.c
-new file mode 100644
-index 000000000000..a743288cf384
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/link_pinning.c
-@@ -0,0 +1,105 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Facebook */
-+
-+#include <test_progs.h>
-+#include <sys/stat.h>
-+
-+#include "test_link_pinning.skel.h"
-+
-+static int duration = 0;
-+
-+void test_link_pinning_subtest(struct bpf_program *prog,
-+			       struct test_link_pinning__bss *bss)
-+{
-+	const char *link_pin_path = "/sys/fs/bpf/pinned_link_test";
-+	struct stat statbuf = {};
-+	struct bpf_link *link;
-+	int err, i;
-+
-+	link = bpf_program__attach(prog);
-+	if (CHECK(IS_ERR(link), "link_attach", "err: %ld\n", PTR_ERR(link)))
-+		goto cleanup;
-+
-+	bss->in = 1;
-+	usleep(1);
-+	CHECK(bss->out != 1, "res_check1", "exp %d, got %d\n", 1, bss->out);
-+
-+	/* pin link */
-+	err = bpf_link__pin(link, link_pin_path);
-+	if (CHECK(err, "link_pin", "err: %d\n", err))
-+		goto cleanup;
-+
-+	CHECK(strcmp(link_pin_path, bpf_link__pin_path(link)), "pin_path1",
-+	      "exp %s, got %s\n", link_pin_path, bpf_link__pin_path(link));
-+
-+	/* check that link was pinned */
-+	err = stat(link_pin_path, &statbuf);
-+	if (CHECK(err, "stat_link", "err %d errno %d\n", err, errno))
-+		goto cleanup;
-+
-+	bss->in = 2;
-+	usleep(1);
-+	CHECK(bss->out != 2, "res_check2", "exp %d, got %d\n", 2, bss->out);
-+
-+	/* destroy link, pinned link should keep program attached */
-+	bpf_link__destroy(link);
-+	link = NULL;
-+
-+	bss->in = 3;
-+	usleep(1);
-+	CHECK(bss->out != 3, "res_check3", "exp %d, got %d\n", 3, bss->out);
-+
-+	/* re-open link from BPFFS */
-+	link = bpf_link__open(link_pin_path);
-+	if (CHECK(IS_ERR(link), "link_open", "err: %ld\n", PTR_ERR(link)))
-+		goto cleanup;
-+
-+	CHECK(strcmp(link_pin_path, bpf_link__pin_path(link)), "pin_path2",
-+	      "exp %s, got %s\n", link_pin_path, bpf_link__pin_path(link));
-+
-+	/* unpin link from BPFFS, program still attached */
-+	err = bpf_link__unpin(link);
-+	if (CHECK(err, "link_unpin", "err: %d\n", err))
-+		goto cleanup;
-+
-+	/* still active, as we have FD open now */
-+	bss->in = 4;
-+	usleep(1);
-+	CHECK(bss->out != 4, "res_check4", "exp %d, got %d\n", 4, bss->out);
-+
-+	bpf_link__destroy(link);
-+	link = NULL;
-+
-+	/* Validate it's finally detached.
-+	 * Actual detachment might get delayed a bit, so there is no reliable
-+	 * way to validate it immediately here, let's count up for long enough
-+	 * and see if eventually output stops being updated
-+	 */
-+	for (i = 5; i < 10000; i++) {
-+		bss->in = i;
-+		usleep(1);
-+		if (bss->out == i - 1)
-+			break;
-+	}
-+	CHECK(i == 10000, "link_attached", "got to iteration #%d\n", i);
-+
-+cleanup:
-+	if (!IS_ERR(link))
-+		bpf_link__destroy(link);
-+}
-+
-+void test_link_pinning(void)
-+{
-+	struct test_link_pinning* skel;
-+
-+	skel = test_link_pinning__open_and_load();
-+	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
-+		return;
-+
-+	if (test__start_subtest("pin_raw_tp"))
-+		test_link_pinning_subtest(skel->progs.raw_tp_prog, skel->bss);
-+	if (test__start_subtest("pin_tp_btf"))
-+		test_link_pinning_subtest(skel->progs.tp_btf_prog, skel->bss);
-+
-+	test_link_pinning__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_link_pinning.c b/tools/testing/selftests/bpf/progs/test_link_pinning.c
-new file mode 100644
-index 000000000000..bbf2a5264dc0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_link_pinning.c
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Facebook */
-+
-+#include <stdbool.h>
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+int in = 0;
-+int out = 0;
-+
-+SEC("raw_tp/sys_enter")
-+int raw_tp_prog(const void *ctx)
-+{
-+	out = in;
-+	return 0;
-+}
-+
-+SEC("tp_btf/sys_enter")
-+int tp_btf_prog(const void *ctx)
-+{
-+	out = in;
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.17.1
+We've added 41 non-merge commits during the last 7 day(s) which contain
+a total of 49 files changed, 1383 insertions(+), 499 deletions(-).
 
+The main changes are:
+
+1) BPF and Real-Time nicely co-exist.
+
+2) bpftool feature improvements.
+
+3) retrieve bpf_sk_storage via INET_DIAG.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Alexei Starovoitov, Jason Wang, Martin KaFai Lau, Michael S. Tsirkin, 
+Quentin Monnet, Song Liu, Thomas Gleixner
+
+----------------------------------------------------------------
+
+The following changes since commit 732a0dee501f9a693c9a711730838129f4587041:
+
+  Merge branch 'mlxfw-Improve-error-reporting-and-FW-reactivate-support' (2020-02-21 15:41:10 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
+
+for you to fetch changes up to 812285fa5ab129e3a55682314bf235f701564310:
+
+  Merge branch 'bpf_sk_storage_via_inet_diag' (2020-02-27 18:53:37 -0800)
+
+----------------------------------------------------------------
+Alexei Starovoitov (4):
+      Merge tag 'sched-for-bpf-2020-02-20' of git://git.kernel.org/.../tip/tip into bpf-next
+      bpf: disable preemption for bpf progs attached to uprobe
+      Merge branch 'BPF_and_RT'
+      Merge branch 'bpf_sk_storage_via_inet_diag'
+
+Andrey Ignatov (1):
+      bpftool: Support struct_ops, tracing, ext prog types
+
+Andrii Nakryiko (1):
+      selftests/bpf: Print backtrace on SIGSEGV in test_progs
+
+Daniel Borkmann (1):
+      Merge branch 'bpf-bpftool-probes'
+
+David Miller (5):
+      bpf: Use bpf_prog_run_pin_on_cpu() at simple call sites.
+      bpf/tests: Use migrate disable instead of preempt disable
+      bpf: Use migrate_disable/enabe() in trampoline code.
+      bpf: Use migrate_disable/enable in array macros and cgroup/lirc code.
+      bpf/stackmap: Dont trylock mmap_sem with PREEMPT_RT and interrupts disabled
+
+Gustavo A. R. Silva (1):
+      bpf: Replace zero-length array with flexible-array member
+
+Jakub Sitnicki (2):
+      selftests/bpf: Run reuseport tests only with supported socket types
+      selftests/bpf: Run SYN cookies with reuseport BPF test only for TCP
+
+Martin KaFai Lau (4):
+      inet_diag: Refactor inet_sk_diag_fill(), dump(), and dump_one()
+      inet_diag: Move the INET_DIAG_REQ_BYTECODE nlattr to cb->data
+      bpf: INET_DIAG support in bpf_sk_storage
+      bpf: inet_diag: Dump bpf_sk_storages in inet_diag_dump()
+
+Michal Rostecki (5):
+      bpftool: Move out sections to separate functions
+      bpftool: Make probes which emit dmesg warnings optional
+      bpftool: Update documentation of "bpftool feature" command
+      bpftool: Update bash completion for "bpftool feature" command
+      selftests/bpf: Add test for "bpftool feature" command
+
+Scott Branden (1):
+      scripts/bpf: Switch to more portable python3 shebang
+
+Thomas Gleixner (18):
+      sched: Provide cant_migrate()
+      bpf: Tighten the requirements for preallocated hash maps
+      bpf: Enforce preallocation for instrumentation programs on RT
+      bpf: Update locking comment in hashtab code
+      bpf/tracing: Remove redundant preempt_disable() in __bpf_trace_run()
+      bpf/trace: Remove EXPORT from trace_call_bpf()
+      bpf/trace: Remove redundant preempt_disable from trace_call_bpf()
+      perf/bpf: Remove preempt disable around BPF invocation
+      bpf: Remove recursion prevention from rcu free callback
+      bpf: Dont iterate over possible CPUs with interrupts disabled
+      bpf: Provide bpf_prog_run_pin_on_cpu() helper
+      bpf: Replace cant_sleep() with cant_migrate()
+      bpf: Provide recursion prevention helpers
+      bpf: Use recursion prevention helpers in hashtab code
+      bpf: Replace open coded recursion prevention in sys_bpf()
+      bpf: Factor out hashtab bucket lock operations
+      bpf: Prepare hashtab locking for PREEMPT_RT
+      bpf, lpm: Make locking RT friendly
+
+Yuya Kusakabe (2):
+      virtio_net: Keep vnet header zeroed if XDP is loaded for small buffer
+      virtio_net: Add XDP meta data support
+
+ drivers/net/virtio_net.c                           |  56 ++--
+ include/linux/bpf-cgroup.h                         |   2 +-
+ include/linux/bpf.h                                |  41 ++-
+ include/linux/filter.h                             |  37 ++-
+ include/linux/inet_diag.h                          |  27 +-
+ include/linux/kernel.h                             |   7 +
+ include/linux/netlink.h                            |   4 +-
+ include/linux/preempt.h                            |  30 ++
+ include/net/bpf_sk_storage.h                       |  27 ++
+ include/uapi/linux/bpf.h                           |   2 +-
+ include/uapi/linux/inet_diag.h                     |   5 +-
+ include/uapi/linux/sock_diag.h                     |  26 ++
+ kernel/bpf/bpf_struct_ops.c                        |   2 +-
+ kernel/bpf/hashtab.c                               | 174 ++++++++----
+ kernel/bpf/lpm_trie.c                              |  14 +-
+ kernel/bpf/percpu_freelist.c                       |  20 +-
+ kernel/bpf/stackmap.c                              |  18 +-
+ kernel/bpf/syscall.c                               |  42 +--
+ kernel/bpf/trampoline.c                            |   9 +-
+ kernel/bpf/verifier.c                              |  40 ++-
+ kernel/events/core.c                               |   2 -
+ kernel/seccomp.c                                   |   4 +-
+ kernel/trace/bpf_trace.c                           |   7 +-
+ kernel/trace/trace_uprobe.c                        |  11 +-
+ lib/test_bpf.c                                     |   4 +-
+ net/bpf/test_run.c                                 |   8 +-
+ net/core/bpf_sk_storage.c                          | 283 ++++++++++++++++++-
+ net/core/flow_dissector.c                          |   4 +-
+ net/core/skmsg.c                                   |   8 +-
+ net/dccp/diag.c                                    |   9 +-
+ net/ipv4/inet_diag.c                               | 307 +++++++++++++--------
+ net/ipv4/raw_diag.c                                |  24 +-
+ net/ipv4/tcp_diag.c                                |   8 +-
+ net/ipv4/udp_diag.c                                |  41 ++-
+ net/kcm/kcmsock.c                                  |   4 +-
+ net/sctp/diag.c                                    |   7 +-
+ scripts/bpf_helpers_doc.py                         |   2 +-
+ .../bpf/bpftool/Documentation/bpftool-feature.rst  |  19 +-
+ tools/bpf/bpftool/Documentation/bpftool-prog.rst   |   3 +-
+ tools/bpf/bpftool/bash-completion/bpftool          |   6 +-
+ tools/bpf/bpftool/feature.c                        | 283 +++++++++++--------
+ tools/bpf/bpftool/main.h                           |   3 +
+ tools/bpf/bpftool/prog.c                           |   4 +-
+ tools/testing/selftests/.gitignore                 |   5 +-
+ tools/testing/selftests/bpf/Makefile               |   5 +-
+ .../selftests/bpf/prog_tests/select_reuseport.c    |  30 +-
+ tools/testing/selftests/bpf/test_bpftool.py        | 178 ++++++++++++
+ tools/testing/selftests/bpf/test_bpftool.sh        |   5 +
+ tools/testing/selftests/bpf/test_progs.c           |  25 ++
+ 49 files changed, 1383 insertions(+), 499 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/test_bpftool.py
+ create mode 100755 tools/testing/selftests/bpf/test_bpftool.sh
