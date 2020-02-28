@@ -2,134 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 54932172E78
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2020 03:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 430D1172EF4
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2020 03:58:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730343AbgB1CGR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Feb 2020 21:06:17 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:37059 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726943AbgB1CGR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Feb 2020 21:06:17 -0500
-Received: by mail-pf1-f193.google.com with SMTP id p14so856736pfn.4;
-        Thu, 27 Feb 2020 18:06:16 -0800 (PST)
+        id S1730603AbgB1C6H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Feb 2020 21:58:07 -0500
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:37818 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730445AbgB1C6H (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Feb 2020 21:58:07 -0500
+Received: by mail-lf1-f66.google.com with SMTP id b15so992016lfc.4;
+        Thu, 27 Feb 2020 18:58:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=v4cW/g3fUQ91WwKvWZgmCpE4Uu5W0M0pWvBhsguMerc=;
-        b=OkFr7WdwskVqohIbd4HRcgQv2Ym3y3Vd7MN+9P4GDcECeFy42oV6Kl3iBL1iITlnlY
-         2wPQezDgruBZSwDFwbeHNOH8uhEdL3BfBCZUAvItv9tXF4CVvuTn4nVx3aX2KHWkUbXm
-         V0dhYRtVEmWCIXt7MpQk3P+JHGCoTxcOEyeXUYTDo9Xx2W5/KfrvRe6y7wJVT1XS4zjT
-         ZtKstqtqnwZyzDyu4Kg3jsIuPG3XPnbgxWp7m2nbxPrXTU4sptmPOHVcLDJA4OkQHD8j
-         UTB+ZpnSgMn6XMLDAIhj4dzCt4NIqKhBABlEhy51qg4XJP3cxgHRmIqCtcJqHHoqzryM
-         gudA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G5nc7Ra8Buzd+enRZlcZV/Xbln391xZv5XUvG2qsBDw=;
+        b=DfToJC/AnuEtgeHWi6MRYROd42RgYU59jIVWO+SQwD5qQXwW2toLDeoP6FiLBeSrdV
+         T7xJYlfvqWt5OSTD7Ux0PGHCODgcNiV8RRxRSudGHs45jEdODKeCv6IT6dPE32dtNigx
+         d+FPG+sklEFXIONZ55hNqvJ6wKNGzwvH87zRXtxI+q1YfAy/UEmsvZk0hKtFgf3ydF8z
+         +re7OFt3UpP52MDJWLlFZOmJFYUGQ5551yteLsi3CFu4OdgJ/6gerZQ6kiJOAupXGmOM
+         rSIdi7VRMEguKEvkKo0BJO1X8XtHwLz+0uigrJxZvVrIjfOCu67WZWRzo0W9cHoecwsw
+         u2aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=v4cW/g3fUQ91WwKvWZgmCpE4Uu5W0M0pWvBhsguMerc=;
-        b=INOtpCk+ByfbHZRF7STXFuyjspflvdnlrBdFsfwX3kTF72YW5u1QwBERtHTdOe6VTf
-         abJ3bSvvp8sLiC2lnENlxwK34Sj05+U0IquKRDAH6J6J6d16vKUIz1VGuncEsXWMVtS3
-         ZDx8YJHHw/+pujUn3bhA8+uMa1hhVNXLp2L22c8DFxVnJQJ46SqenRdWf0J0JcHISEGm
-         weFHcymViPBs23DkwTq9cdHsBF7MAAZuqUOmtoeRkzER4+gOPi0+vPFS7qOAKalu4Oj4
-         8T2XBH6vHrM4V1RBt13hr+T0v9vuiex1Nk5YUo7W6fQFmBoaH8DrHdPtE8L/3F0hJJKx
-         nh8Q==
-X-Gm-Message-State: APjAAAVSspEqTNsFTEr4ZaAWbL27zVkMIKyn5sLj4Zl6e1EiXraVc00f
-        zWJBOSC8YsxJ1QB1TQqfTW8=
-X-Google-Smtp-Source: APXvYqwgdyo6WXIrdhbbJVgTMnvQNyrnMA7SFaJ3vEvG46q6qIUupMhVHTjiaVlluvrQ+9OuLqRkQw==
-X-Received: by 2002:a63:4e4a:: with SMTP id o10mr2302846pgl.212.1582855575406;
-        Thu, 27 Feb 2020 18:06:15 -0800 (PST)
-Received: from hpg8-3.kern.oss.ntt.co.jp ([222.151.198.97])
-        by smtp.gmail.com with ESMTPSA id f1sm7533007pjq.31.2020.02.27.18.06.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Feb 2020 18:06:14 -0800 (PST)
-From:   Yoshiki Komachi <komachi.yoshiki@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     Yoshiki Komachi <komachi.yoshiki@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH bpf] bpf: btf: Fix BTF verification of the enum size in struct/union
-Date:   Fri, 28 Feb 2020 11:02:12 +0900
-Message-Id: <20200228020212.16183-1-komachi.yoshiki@gmail.com>
-X-Mailer: git-send-email 2.23.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G5nc7Ra8Buzd+enRZlcZV/Xbln391xZv5XUvG2qsBDw=;
+        b=GGq2BWFSIfKfY431PmzrI5OCOueTGbqT2mZ3DybZTqAbOQzFyI3oFKSLUW7BGU4gUh
+         0g+Hbe7RBrQDeuVi/57G1jPrOrUCaFgldovBX2yUjS0Qhe9fJCYGL+lhEh5Yrzn0I57I
+         0X3llhlHaZBG0NRivBfhqD95h9bttEp8JnWJ8fYtMhGvYYxTSKhj0HLDn+aBiJrktCeS
+         pnSCx02WSIYQetryWz2Lg2JhHiYinGK+cn7UCn4YygnNL9GP3SVKw5iP1JhbYppYpYjf
+         eyei9xt3OEsTb77V3zilWwfwl6YBVLM9cb5eq+PJTxKw0yeGtHNtVcCzb4nGD2GXWHSA
+         5zuw==
+X-Gm-Message-State: ANhLgQ1FHLF0Gf1t1c+tXo9GHwy6N13MbgDG0229NgdGvGTsacHCzXyV
+        DYLi3OzXRG37WUUp60xa+oRTMwaSJMxMtNf4Mvs=
+X-Google-Smtp-Source: ADFU+vv9RYm92ssPFQTn3yIomzfh+Ik6kS/D/rJa+wDPsVBYnxL7/uM/PTUMuWSCMKmrB0LWHmxti3l2eLeaGIwgkvY=
+X-Received: by 2002:a05:6512:304d:: with SMTP id b13mr1349272lfb.134.1582858683187;
+ Thu, 27 Feb 2020 18:58:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200225230402.1974723-1-kafai@fb.com> <20200225230427.1976129-1-kafai@fb.com>
+ <938a0461-fd8d-b4b9-4fef-95d46409c0d6@iogearbox.net> <20200227013448.srxy5kkpve7yheln@kafai-mbp>
+ <ca31484f-4656-fb3e-8982-6a068bcb0738@iogearbox.net>
+In-Reply-To: <ca31484f-4656-fb3e-8982-6a068bcb0738@iogearbox.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 27 Feb 2020 18:57:51 -0800
+Message-ID: <CAADnVQJpb3xL0ynW3+R8ikVpc0L1LwZG_HqzE+6JzEYfZWnZ=w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/4] bpf: inet_diag: Dump bpf_sk_storages in inet_diag_dump()
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Network Development <netdev@vger.kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-btf_enum_check_member() checked if the size of "enum" as a struct
-member exceeded struct_size or not. Then, the function definitely
-compared it with the size of "int" now. Therefore, errors could occur
-when the size of the "enum" type was changed.
+On Thu, Feb 27, 2020 at 3:45 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 2/27/20 2:34 AM, Martin KaFai Lau wrote:
+> > On Wed, Feb 26, 2020 at 06:21:33PM +0100, Daniel Borkmann wrote:
+> >> On 2/26/20 12:04 AM, Martin KaFai Lau wrote:
+> >>> This patch will dump out the bpf_sk_storages of a sk
+> >>> if the request has the INET_DIAG_REQ_SK_BPF_STORAGES nlattr.
+> >>>
+> >>> An array of SK_DIAG_BPF_STORAGE_REQ_MAP_FD can be specified in
+> >>> INET_DIAG_REQ_SK_BPF_STORAGES to select which bpf_sk_storage to dump.
+> >>> If no map_fd is specified, all bpf_sk_storages of a sk will be dumped.
+> >>>
+> >>> bpf_sk_storages can be added to the system at runtime.  It is difficult
+> >>> to find a proper static value for cb->min_dump_alloc.
+> >>>
+> >>> This patch learns the nlattr size required to dump the bpf_sk_storages
+> >>> of a sk.  If it happens to be the very first nlmsg of a dump and it
+> >>> cannot fit the needed bpf_sk_storages,  it will try to expand the
+> >>> skb by "pskb_expand_head()".
+> >>>
+> >>> Instead of expanding it in inet_sk_diag_fill(), it is expanded at a
+> >>> sleepable context in __inet_diag_dump() so __GFP_DIRECT_RECLAIM can
+> >>> be used.  In __inet_diag_dump(), it will retry as long as the
+> >>> skb is empty and the cb->min_dump_alloc becomes larger than before.
+> >>> cb->min_dump_alloc is bounded by KMALLOC_MAX_SIZE.  The min_dump_alloc
+> >>> is also changed from 'u16' to 'u32' to accommodate a sk that may have
+> >>> a few large bpf_sk_storages.
+> >>>
+> >>> The updated cb->min_dump_alloc will also be used to allocate the skb in
+> >>> the next dump.  This logic already exists in netlink_dump().
+> >>>
+> >>> Here is the sample output of a locally modified 'ss' and it could be made
+> >>> more readable by using BTF later:
+> >>> [root@arch-fb-vm1 ~]# ss --bpf-map-id 14 --bpf-map-id 13 -t6an 'dst [::1]:8989'
+> >>> State Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess
+> >>> ESTAB 0      0              [::1]:51072        [::1]:8989
+> >>>      bpf_map_id:14 value:[ 3feb ]
+> >>>      bpf_map_id:13 value:[ 3f ]
+> >>> ESTAB 0      0              [::1]:51070        [::1]:8989
+> >>>      bpf_map_id:14 value:[ 3feb ]
+> >>>      bpf_map_id:13 value:[ 3f ]
+> >>>
+> >>> [root@arch-fb-vm1 ~]# ~/devshare/github/iproute2/misc/ss --bpf-maps -t6an 'dst [::1]:8989'
+> >>> State         Recv-Q         Send-Q                   Local Address:Port                    Peer Address:Port         Process
+> >>> ESTAB         0              0                                [::1]:51072                          [::1]:8989
+> >>>      bpf_map_id:14 value:[ 3feb ]
+> >>>      bpf_map_id:13 value:[ 3f ]
+> >>>      bpf_map_id:12 value:[ 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000... total:65407 ]
+> >>> ESTAB         0              0                                [::1]:51070                          [::1]:8989
+> >>>      bpf_map_id:14 value:[ 3feb ]
+> >>>      bpf_map_id:13 value:[ 3f ]
+> >>>      bpf_map_id:12 value:[ 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000... total:65407 ]
+> >>>
+> >>> Acked-by: Song Liu <songliubraving@fb.com>
+> >>> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> >>
+> >> Hmm, the whole approach is not too pleasant to be honest. I can see why you need
+> >> it since the regular sk_storage lookup only takes sock fd as a key and you don't
+> >> have it otherwise available from outside, but then dumping up to KMALLOC_MAX_SIZE
+> >> via netlink skb is not a great experience either. :( Also, are we planning to add
+> >> the BTF dump there in addition to bpftool? Thus resulting in two different lookup
+> >> APIs and several tools needed for introspection instead of one? :/ Also, how do we
+> >> dump task local storage maps in future? Does it need a third lookup interface?
+> >>
+> >> In your commit logs I haven't read on other approaches and why they won't work;
+> >> I was wondering, given sockets are backed by inodes, couldn't we have a variant
+> >> of iget_locked() (minus the alloc_inode() part from there) where you pass in ino
+> >> number to eventually get to the socket and then dump the map value associated with
+> >> it the regular way from bpf() syscall?
+> > Thanks for the feedback!
+> >
+> > I think (1) dumping all sk(s) in a system is different from
+> > (2) dumping all sk of a bpf_sk_storage_map or lookup a particular
+> > sk from a bpf_sk_storage_map.
+>
+> Yeah, it is; I was mostly brain-storming if there is a cleaner way for (1)
+> by having (2)b resolved as an intermediate step (1) can then build on, but
+> seems it's tricky w/o much extra infra.
+>
+> [...]
+> >
+> > or the netlink can return map_id only when the max-sized skb cannot fit
+> > all the bpf_sk_storages.  The userspace then do another syscall to
+> > lookup the data from each individual bpf_sk_storage_map and
+> > that requires to lookup side support with another key (non-fd).
+> > IMO, it is weird and a bit opposite of what bpf_sk_storage should be (fast
+> > bpf_sk_storage lookup while holding a sk).  The iteration API already
+> > holds the sk but instead it is asking the usespace to go back to find
+> > out the sk again in order to get the bpf_sk_storages.  I think that
+> > should be avoided if possible.
+> >
+> > Regarding i_ino, after looking at sock_alloc() and get_next_ino(),
+> > hmmm...is it unique?
+>
+> It would wrap around after 2^32 allocations, so scratch that thought,
+> iget_locked()/find_inode_fast()-based lookup usage must ensure it's unique.
+>
+> > If it is, what is the different usecase between i_ino and
+> > sk->sk_cookie?
+>
+> Agree that advantage of reusing diag is that you already hold the sk and
+> are able to iterate through all of them, the ugly part is having to place
+> the value data into netlink as an API along with all other socket data as
+> a, for better or worse, bpf sk map lookup/introspection interface given
+> there is no other way to have a fast and global (non-fd based) id->socket
+> lookup interface that we could reuse atm.
+>
+> I was wondering about sk->sk_cookie as well, but it wouldn't make sense
+> to do a ss dump, get (sk cookie, map_id) from the dump and use that for
+> a bpf() lookup if we need to reiterate the diag tables once again in the
+> background just to get the storage data. And I presume it won't make sense
+> either to reuse the diag's walk as a stand-alone for a bpf sk storage dump
+> interface API via bpf() ... at least from ss tool side it would require a
+> correlation based on sk cookie. Not nice either ... so current approach
+> might indeed be the tradeoff. :/
 
-Although the size of "enum" is 4-byte by default, users can change it
-as needed (e.g., the size of the following test variable is not 4-byte
-but 1-byte). It can be used as a struct member as below:
-
-enum test : char {
-	X,
-	Y,
-	Z,
-};
-
-struct {
-	char a;
-	enum test b;
-	char c;
-} tmp;
-
-With the setup above, when I tried to load BTF, the error was given
-as below:
-
-------------------------------------------------------------------
-
-[58] STRUCT (anon) size=3 vlen=3
-	a type_id=55 bits_offset=0
-	b type_id=59 bits_offset=8
-	c type_id=55 bits_offset=16
-[59] ENUM test size=1 vlen=3
-	X val=0
-	Y val=1
-	Z val=2
-
-[58] STRUCT (anon) size=3 vlen=3
-	b type_id=59 bits_offset=8 Member exceeds struct_size
-
-libbpf: Error loading .BTF into kernel: -22.
-
-------------------------------------------------------------------
-
-The related issue was previously fixed by the commit 9eea98497951 ("bpf:
-fix BTF verification of enums"). On the other hand, this patch fixes
-my explained issue by using the correct size of "enum" declared in
-BPF programs.
-
-Fixes: 179cde8cef7e ("bpf: btf: Check members of struct/union")
-Signed-off-by: Yoshiki Komachi <komachi.yoshiki@gmail.com>
----
- kernel/bpf/btf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 7871400..32ab922 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -2418,7 +2418,7 @@ static int btf_enum_check_member(struct btf_verifier_env *env,
- 
- 	struct_size = struct_type->size;
- 	bytes_offset = BITS_ROUNDDOWN_BYTES(struct_bits_off);
--	if (struct_size - bytes_offset < sizeof(int)) {
-+	if (struct_size - bytes_offset < member_type->size) {
- 		btf_verifier_log_member(env, struct_type, member,
- 					"Member exceeds struct_size");
- 		return -EINVAL;
--- 
-1.8.3.1
-
+I agree with all the points above.
+I've applied this set. I think making ss show it via standard way is necessary.
+We should continue thinking on other options.
