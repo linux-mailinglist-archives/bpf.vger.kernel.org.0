@@ -2,120 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C750A17436A
-	for <lists+bpf@lfdr.de>; Sat, 29 Feb 2020 00:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 698651743C8
+	for <lists+bpf@lfdr.de>; Sat, 29 Feb 2020 01:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726796AbgB1XlK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Feb 2020 18:41:10 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:39144 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726744AbgB1XlK (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 28 Feb 2020 18:41:10 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01SNcOqs010896
-        for <bpf@vger.kernel.org>; Fri, 28 Feb 2020 15:41:08 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=j/6SXOvCctfR5eluAvXtIqLImVqnk3gXRJKCdN6HMh8=;
- b=Al7MtMtk4rc4VIIw2XYLxA/qaCPLo+IfepRZ7ep/lP9JzHkcPoaj8SSdzfivuz4lFDbR
- hXOzcY7TwKnWajq61qKnaYPQWwaBW+kLCEHVJ21GfE7gnAAqvBDYPQmXzBI/fPz6+i/q
- OyTymlf/qlIRAVEXhyCmW4azK4PJFlz7BUo= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2yepu8x7ke-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 28 Feb 2020 15:41:08 -0800
-Received: from intmgw001.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 28 Feb 2020 15:41:05 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 3600B62E0BA7; Fri, 28 Feb 2020 15:41:05 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Song Liu <songliubraving@fb.com>
-Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
-To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-CC:     <kernel-team@fb.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <arnaldo.melo@gmail.com>, <jolsa@kernel.org>,
-        Song Liu <songliubraving@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v2 bpf-next 2/2] bpftool: Documentation for bpftool prog profile
-Date:   Fri, 28 Feb 2020 15:40:58 -0800
-Message-ID: <20200228234058.634044-3-songliubraving@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200228234058.634044-1-songliubraving@fb.com>
-References: <20200228234058.634044-1-songliubraving@fb.com>
-X-FB-Internal: Safe
+        id S1726490AbgB2AXx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Feb 2020 19:23:53 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:42536 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726359AbgB2AXx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Feb 2020 19:23:53 -0500
+Received: by mail-qt1-f194.google.com with SMTP id r5so3414173qtt.9;
+        Fri, 28 Feb 2020 16:23:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MiQaTVw+NEXi6UZVua5Gb5oGF/n2CDbDGU7d6kef8X4=;
+        b=IOqBli+8eMXqXIl24zDSLiuX5dwknHb8PffBOFfGaRRdfd0FcsWP1HxDuwlDjaaifw
+         7JImQhpp2hLAzslfx+0grIZ68rnFtoXDeIh5wTB5XzjxHe70Nv1UKtbE5Kin+fVMJmDD
+         aKw5+ZlM2Qz7xMiRvzYkKXCmY4E6Qo5y+1wtdcV2pzHtx0gtyoucG9USq9zCziiEQ/5a
+         TBHesKYVWZJ4iBoJRlZOHG7x7Dp4QKxcEvmN+cBlTr8sIEqW/HR1qkJTGNziazb2QzDO
+         UvY7Am9xPPINZg/S2RW34Rn2t/pKYF1MPw6htTtw6+q1IgeQdCH7E3hCCpTswKW3RyLP
+         rCyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MiQaTVw+NEXi6UZVua5Gb5oGF/n2CDbDGU7d6kef8X4=;
+        b=VOLEBdPm+zEK29SElqRlDQwJvF3D1/iETJLUB/U35R5Ys3omlBQ47GAp2kPMRAYDyv
+         iWkGi4Jk7+QGypbuLGVyR4+lvrpP6reZAtxL6Buj7AJ/8k7aDlYcCJmjOgiJQuGJaWYE
+         S5aNNzM4qQNzrdXyOjBbuAP0l9zr8suiBHP+56WC6vbLuQ0eTMbpZC/KLS1L4c3l3Ji3
+         lC/CmHRzB5Xe0hBDSg0JghSJBb478uZIUFLPFHTf+S0FpcfeEYd8S6iB5uQ+QZ5NJml4
+         HoZo/YTyPrh+Vw1FvVy1YtdNZNgYD3EakDsCK2THQ3Tsg+ucUetzadrJj2yfJAz1xV5O
+         FJAQ==
+X-Gm-Message-State: APjAAAV986BYxfCxd+mbr0HsCk7oX6Ctt9TV9glLk/AanzpcYoYa2u1d
+        y8w2xV6AZf3QTuVAuvp9XVB68kGniddDdWJv1rY=
+X-Google-Smtp-Source: APXvYqwBDifEhSSUWTgsvv2LuzVQ7lhkZ02Psr6krpxKJnYa/EcZ+hrNlWS+TX8h0OjLzY2AvvAza249k7ORdHQPTxw=
+X-Received: by 2002:ac8:5457:: with SMTP id d23mr6140156qtq.93.1582935832248;
+ Fri, 28 Feb 2020 16:23:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-02-28_09:2020-02-28,2020-02-28 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- bulkscore=0 phishscore=0 malwarescore=0 adultscore=0 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 mlxlogscore=999 clxscore=1015
- mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002280172
-X-FB-Internal: deliver
+References: <20200228020212.16183-1-komachi.yoshiki@gmail.com>
+In-Reply-To: <20200228020212.16183-1-komachi.yoshiki@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 28 Feb 2020 16:23:41 -0800
+Message-ID: <CAEf4Bza9J3e=dfzDud6KY7_=4Qv77YqW2srfdxKg9ieiUCJgXw@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: btf: Fix BTF verification of the enum size in struct/union
+To:     Yoshiki Komachi <komachi.yoshiki@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add documentation for the new bpftool prog profile command.
+On Thu, Feb 27, 2020 at 6:07 PM Yoshiki Komachi
+<komachi.yoshiki@gmail.com> wrote:
+>
+> btf_enum_check_member() checked if the size of "enum" as a struct
+> member exceeded struct_size or not. Then, the function definitely
+> compared it with the size of "int" now. Therefore, errors could occur
+> when the size of the "enum" type was changed.
+>
+> Although the size of "enum" is 4-byte by default, users can change it
+> as needed (e.g., the size of the following test variable is not 4-byte
+> but 1-byte). It can be used as a struct member as below:
+>
+> enum test : char {
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- .../bpf/bpftool/Documentation/bpftool-prog.rst  | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+you can't specify that in pure C, but this will work for C:
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-index 46862e85fed2..1e2549dcd926 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-@@ -30,6 +30,7 @@ PROG COMMANDS
- |	**bpftool** **prog detach** *PROG* *ATTACH_TYPE* [*MAP*]
- |	**bpftool** **prog tracelog**
- |	**bpftool** **prog run** *PROG* **data_in** *FILE* [**data_out** *FILE* [**data_size_out** *L*]] [**ctx_in** *FILE* [**ctx_out** *FILE* [**ctx_size_out** *M*]]] [**repeat** *N*]
-+|	**bpftool** **prog profile** [*DURATION*] *PROG* *METRICs*
- |	**bpftool** **prog help**
- |
- |	*MAP* := { **id** *MAP_ID* | **pinned** *FILE* }
-@@ -48,6 +49,9 @@ PROG COMMANDS
- |       *ATTACH_TYPE* := {
- |		**msg_verdict** | **stream_verdict** | **stream_parser** | **flow_dissector**
- |	}
-+|	*METRIC* := {
-+|		**cycles** | **instructions** | **l1d_loads** | **llc_misses**
-+|	}
- 
- 
- DESCRIPTION
-@@ -189,6 +193,10 @@ DESCRIPTION
- 		  not all of them can take the **ctx_in**/**ctx_out**
- 		  arguments. bpftool does not perform checks on program types.
- 
-+	**bpftool prog profile** *DURATION* *PROG* *METRICs*
-+		  Profile *METRICs* for bpf program *PROG* for *DURATION*
-+		  seconds.
-+
- 	**bpftool prog help**
- 		  Print short help message.
- 
-@@ -311,6 +319,15 @@ EXAMPLES
- 
- **# rm /sys/fs/bpf/xdp1**
- 
-+|
-+| **# bpftool prog profile 10 id 337 cycles instructions llc_misses**
-+
-+::
-+         51397 run_cnt
-+      40176203 cycles                                                 (83.05%)
-+      42518139 instructions    #   1.06 insn per cycle                (83.39%)
-+           123 llc_misses      #   2.89 LLC misses per million isns   (83.15%)
-+
- SEE ALSO
- ========
- 	**bpf**\ (2),
--- 
-2.17.1
+struct {
+    enum { X, Y, Z } __attribute__((packed)) e;
+} tmp;
 
+Please add such a selftest, as part of fixing this bug. Thanks!
+
+Otherwise logic looks good.
+
+>         X,
+>         Y,
+>         Z,
+> };
+>
+> struct {
+>         char a;
+>         enum test b;
+>         char c;
+> } tmp;
+>
+> With the setup above, when I tried to load BTF, the error was given
+> as below:
+>
+> ------------------------------------------------------------------
+>
+> [58] STRUCT (anon) size=3 vlen=3
+>         a type_id=55 bits_offset=0
+>         b type_id=59 bits_offset=8
+>         c type_id=55 bits_offset=16
+> [59] ENUM test size=1 vlen=3
+>         X val=0
+>         Y val=1
+>         Z val=2
+>
+> [58] STRUCT (anon) size=3 vlen=3
+>         b type_id=59 bits_offset=8 Member exceeds struct_size
+>
+> libbpf: Error loading .BTF into kernel: -22.
+>
+> ------------------------------------------------------------------
+>
+> The related issue was previously fixed by the commit 9eea98497951 ("bpf:
+> fix BTF verification of enums"). On the other hand, this patch fixes
+> my explained issue by using the correct size of "enum" declared in
+> BPF programs.
+>
+> Fixes: 179cde8cef7e ("bpf: btf: Check members of struct/union")
+> Signed-off-by: Yoshiki Komachi <komachi.yoshiki@gmail.com>
+> ---
+>  kernel/bpf/btf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 7871400..32ab922 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -2418,7 +2418,7 @@ static int btf_enum_check_member(struct btf_verifier_env *env,
+>
+>         struct_size = struct_type->size;
+>         bytes_offset = BITS_ROUNDDOWN_BYTES(struct_bits_off);
+> -       if (struct_size - bytes_offset < sizeof(int)) {
+> +       if (struct_size - bytes_offset < member_type->size) {
+>                 btf_verifier_log_member(env, struct_type, member,
+>                                         "Member exceeds struct_size");
+>                 return -EINVAL;
+> --
+> 1.8.3.1
+>
