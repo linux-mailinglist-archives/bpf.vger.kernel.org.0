@@ -2,87 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 45540174C05
-	for <lists+bpf@lfdr.de>; Sun,  1 Mar 2020 07:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D25174C33
+	for <lists+bpf@lfdr.de>; Sun,  1 Mar 2020 09:11:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725768AbgCAGYx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 1 Mar 2020 01:24:53 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:50782 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725970AbgCAGYx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 1 Mar 2020 01:24:53 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0216OpLT005104
-        for <bpf@vger.kernel.org>; Sat, 29 Feb 2020 22:24:52 -0800
+        id S1725877AbgCAILA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 1 Mar 2020 03:11:00 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:19374 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725874AbgCAILA (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 1 Mar 2020 03:11:00 -0500
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0217uai4014774
+        for <bpf@vger.kernel.org>; Sun, 1 Mar 2020 00:10:59 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=c/QX5W/r2mwr9/SDP1vw/TZfdqkWHOQPMXu2BQAiUy8=;
- b=IgXbBlJWF/1ULeJyms8SlntDxSUnzbHsKadG7SmfwHbba7Y1LcdEp7UH+rfXvOssrfXT
- HOdip+YvYSGHp3wiUe+YILOMyQUvpFoUzyW/cbzxJMsPWxYwlhqk0ZGcrZIGEjuMx8fH
- wkKXP/LzsQ4GAgOEnk48Ce4wa4oKyboV/OE= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 2yfmguk7un-4
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=gDqq8IiNOxV1qEwKOcVq+A4uVyewA40yjvZXoIJKIXI=;
+ b=UP9fN1O8xPKm90V+Oqt2U85kFZDvg27MMnwFfj2PhSriLKhDSnOLqFaVvQs14adK5W5U
+ h6s6vfHGAy3iGlRIAuVJjbMku8zpf0ysGqbTh99aN/3pPAhI73C4X1poTzuo4ZDZ/W0e
+ 7w1yIA0bt/Mteze1cQv2CuUUoA1C3kAmPu4= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yg8x781yb-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sat, 29 Feb 2020 22:24:52 -0800
-Received: from intmgw004.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Sun, 01 Mar 2020 00:10:59 -0800
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Sat, 29 Feb 2020 22:24:16 -0800
+ 15.1.1779.2; Sun, 1 Mar 2020 00:10:58 -0800
 Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 153CC2EC2CFD; Sat, 29 Feb 2020 22:24:15 -0800 (PST)
+        id EAEBD2EC2D1F; Sun,  1 Mar 2020 00:10:51 -0800 (PST)
 Smtp-Origin-Hostprefix: devbig
 From:   Andrii Nakryiko <andriin@fb.com>
 Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
 To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
+        <daniel@iogearbox.net>, <ethercflow@gmail.com>
 CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
         Andrii Nakryiko <andriin@fb.com>
 Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v2 bpf-next 3/3] tools/runqslower: drop copy/pasted BPF_F_CURRENT_CPU definiton
-Date:   Sat, 29 Feb 2020 22:24:05 -0800
-Message-ID: <20200301062405.2850114-4-andriin@fb.com>
+Subject: [PATCH bpf-next 0/3] Improve raw tracepoint BTF types preservation
+Date:   Sun, 1 Mar 2020 00:10:42 -0800
+Message-ID: <20200301081045.3491005-1-andriin@fb.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200301062405.2850114-1-andriin@fb.com>
-References: <20200301062405.2850114-1-andriin@fb.com>
 X-FB-Internal: Safe
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-03-01_01:2020-02-28,2020-03-01 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- clxscore=1015 malwarescore=0 suspectscore=8 impostorscore=0
- mlxlogscore=775 mlxscore=0 bulkscore=0 adultscore=0 lowpriorityscore=0
- phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2003010050
+ definitions=2020-03-01_02:2020-02-28,2020-03-01 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ adultscore=0 suspectscore=8 bulkscore=0 impostorscore=0 priorityscore=1501
+ spamscore=0 phishscore=0 mlxlogscore=546 clxscore=1015 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2003010063
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With BPF_F_CURRENT_CPU being an enum, it is now captured in vmlinux.h and is
-readily usable by runqslower. So drop local copy/pasted definition in favor of
-the one coming from vmlinux.h.
+Fix issue with not preserving btf_trace_##call structs when compiled under
+Clang. Additionally, capture raw tracepoint arguments in raw_tp_##call
+structs, directly usable from BPF programs. Convert runqslower to use those
+for proof of concept and to simplify code further.
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/bpf/runqslower/runqslower.bpf.c | 3 ---
- 1 file changed, 3 deletions(-)
+Andrii Nakryiko (3):
+  bpf: reliably preserve btf_trace_xxx types
+  bpf: generate directly-usable raw_tp_##call structs for raw
+    tracepoints
+  tools/runqslower: simplify BPF code by using raw_tp_xxx structs
 
-diff --git a/tools/bpf/runqslower/runqslower.bpf.c b/tools/bpf/runqslower/runqslower.bpf.c
-index 48a39f72fadf..0ba501305bad 100644
---- a/tools/bpf/runqslower/runqslower.bpf.c
-+++ b/tools/bpf/runqslower/runqslower.bpf.c
-@@ -6,9 +6,6 @@
- 
- #define TASK_RUNNING 0
- 
--#define BPF_F_INDEX_MASK		0xffffffffULL
--#define BPF_F_CURRENT_CPU		BPF_F_INDEX_MASK
--
- const volatile __u64 min_us = 0;
- const volatile pid_t targ_pid = 0;
- 
+ include/trace/bpf_probe.h             | 37 ++++++++++++++++++++++-----
+ tools/bpf/runqslower/runqslower.bpf.c | 22 ++++++----------
+ 2 files changed, 38 insertions(+), 21 deletions(-)
+
 -- 
 2.17.1
 
