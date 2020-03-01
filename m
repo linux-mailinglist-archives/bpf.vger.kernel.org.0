@@ -2,162 +2,213 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3B7174FE4
-	for <lists+bpf@lfdr.de>; Sun,  1 Mar 2020 22:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 959B117509B
+	for <lists+bpf@lfdr.de>; Sun,  1 Mar 2020 23:37:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726490AbgCAV0r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 1 Mar 2020 16:26:47 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:41684 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726465AbgCAV0r (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 1 Mar 2020 16:26:47 -0500
-Received: by mail-lf1-f68.google.com with SMTP id y17so6306297lfe.8
-        for <bpf@vger.kernel.org>; Sun, 01 Mar 2020 13:26:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=9ChqPHQH4n+KZdKDaLvbA3opt3V3GK36fgbVk5eUyaw=;
-        b=QG1FQ1WSUPpC1BKqu4S3LzB4MaSsyG4SaBm1uKbNf6uXXOsphx5tWjADzinWEFwZrA
-         6IGJu7qmOCOtLlP3TkcOAZhwVUAroApkE/kBx5fpeKg1t1grhjmOF3hrfjb6/88uU6qk
-         8I05sbn09Mg8+EaPphR5iU7H9lYNFHG04dvnc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=9ChqPHQH4n+KZdKDaLvbA3opt3V3GK36fgbVk5eUyaw=;
-        b=gc+K0adwJRG2EPb4ULwcTNk0nZ7rsqJEYhCZDQs/SQBT2iiZNH3FLb7PBi36av4dIa
-         EJJLOaeyDGac277otlhXU7L5IXGXk+l9cEB3WS7rTrgNM0Ytqh8jonMF+ONfnKNBz+f9
-         bo8P4op/iv7ChmERDMV3+z0osJsUqFhb9O+pg1JzSQFe4O2mi0ylHP6hwA6r9YLoJsAk
-         v4JxHj9fS8DW7SDCsD1mRA/xhieD6Awztui6qJzHg9Xtadbjg4Rd0QSdCYFb35/FL9Y4
-         AUap5BeE/5i2parl2Hrdus/bkImX+74E9nQdltvmp8C9UOajWotFm3Q96UmjeNd9MPyB
-         nlFA==
-X-Gm-Message-State: ANhLgQ0Z1jVZJhNskYykbYI77Rzzn3QF4/cStxoHOM/mpbh4YWIMR4U2
-        1yZ5+cvmsFN7WjxtZvKSS20zaQ0F/+Ni/w==
-X-Google-Smtp-Source: ADFU+vupC7v8Os2lX3z7yQH8PaugHzGwlvbsdW6JexF1dUKO7vyGmY0AWftVPTojH+98t+0VhuiwgA==
-X-Received: by 2002:ac2:599e:: with SMTP id w30mr4964572lfn.80.1583098003137;
-        Sun, 01 Mar 2020 13:26:43 -0800 (PST)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id z67sm9396409lfa.50.2020.03.01.13.26.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Mar 2020 13:26:42 -0800 (PST)
-References: <20200228115344.17742-1-lmb@cloudflare.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     john.fastabend@gmail.com, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        kernel-team@cloudflare.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 0/9] bpf: sockmap, sockhash: support storing UDP sockets
-In-reply-to: <20200228115344.17742-1-lmb@cloudflare.com>
-Date:   Sun, 01 Mar 2020 22:26:40 +0100
-Message-ID: <875zfndawf.fsf@cloudflare.com>
+        id S1726418AbgCAWhW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 1 Mar 2020 17:37:22 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:6748 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726050AbgCAWhW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 1 Mar 2020 17:37:22 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 021MYEBZ012192;
+        Sun, 1 Mar 2020 14:37:08 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=L2DqkoUGsjMxBFQpu7SQfxSPRyZzhphnDqYoLl9z1Pk=;
+ b=q1LgQoL7a5FgBL+IjaYIVGWDyHTZnurC3oLJKBWOspFEElshgpRZ1/boggPtPum2hsFd
+ 1eDLFzrgZ0OXDmyDZVVCE5OVo6tkPyWWV6f9ipUI00E4FrAkC1keEuijwgpYeWpTrlZt
+ JTr9JiIdZNqFxLDpSr9GsKJOFjvZSJYxjT8= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yg8kw9yp8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sun, 01 Mar 2020 14:37:08 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Sun, 1 Mar 2020 14:37:07 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z7SY+tByfIm2Frcxl99U6KXJpAZepF5kAdgpauXYEHaRsxrpZgiwgi/z3e/pR19C7ANRlnpk/T8taRxwHWKM9KnRv0L9YUYvHpK8MSMDkLEds94gCtDtRVK2aFQmZV3Jhq+Dba8J0McnlZDfaTsHkqDHuCiPoH1bGfHBzDPQsWw+ZdVgv0H8IucFHkpa3gjHFvTLADycdH1YKsVKgxSfBAXhsKitf9NFiVtVuY1sjc45A0HOdzhjWlU6rKdyNiKWoKc2aLScPpiXKD3f045nU7sRs9tguFwD6naCG8b5E1LL4eRepGlAK/2oRhRLe+BbkaV7543oVYoDiDI7CyElzg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L2DqkoUGsjMxBFQpu7SQfxSPRyZzhphnDqYoLl9z1Pk=;
+ b=CwDQtD1ER7rrNmzcFgYRDpuMsf1dfCWIlx1OfhrF5QgBDpfqfg0I+3F0rnTMhlBZb9bkVGQ6PtCVZQa4+8cdjKUp0NceuDitzQxL+GqyWm9TsemlwY9f9SCzvzas87W9+QrrGaNDLAux8Px63SYUCXODXdiuma4ew3CRw7dJT30HfzNsPICQKiR/BUUl0M78+tLQJo8R4vfVJ2spDaedpN7SCFMMh4fI3KbgrOGoG8YeIA2A1P3GPMXx9KN/4smgc1H4jlbVS80fFDe3Kgoh/3nhK9FoOYWMiWM33DbkC8+EVOeUAUuMynXWCEBT2kU+13H4oly3OFhfz/T2Ka5M3w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L2DqkoUGsjMxBFQpu7SQfxSPRyZzhphnDqYoLl9z1Pk=;
+ b=HXff7YBoOhSeMFFpLjofjYMco97/JGBaTs316XXrdkndYS2szGxTAIlp+IrvPPSxQ72H9CJc/nWP4q+6FWexcPO552TrpOYrsXkFDHTiEcr5LgdvAcC2bai7EkFv+lvF8fAC51NdZf02WA5eoNcv68N4Fg9S2qTIIQf9qZw14TY=
+Received: from MW3PR15MB3882.namprd15.prod.outlook.com (2603:10b6:303:49::11)
+ by MW3PR15MB3980.namprd15.prod.outlook.com (2603:10b6:303:48::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2772.15; Sun, 1 Mar
+ 2020 22:37:06 +0000
+Received: from MW3PR15MB3882.namprd15.prod.outlook.com
+ ([fe80::c570:6c46:cc47:5ca5]) by MW3PR15MB3882.namprd15.prod.outlook.com
+ ([fe80::c570:6c46:cc47:5ca5%5]) with mapi id 15.20.2772.019; Sun, 1 Mar 2020
+ 22:37:06 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+CC:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "Kernel Team" <Kernel-team@fb.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "arnaldo.melo@gmail.com" <arnaldo.melo@gmail.com>,
+        "jolsa@kernel.org" <jolsa@kernel.org>
+Subject: Re: [PATCH v2 bpf-next 1/2] bpftool: introduce "prog profile" command
+Thread-Topic: [PATCH v2 bpf-next 1/2] bpftool: introduce "prog profile"
+ command
+Thread-Index: AQHV7pCRwZ1HBc6vtU2QEGEJ7IlYy6gzHKIAgAE6GwA=
+Date:   Sun, 1 Mar 2020 22:37:06 +0000
+Message-ID: <2FFDA2FF-55D3-41EC-8D6C-34A7D1C93025@fb.com>
+References: <20200228234058.634044-1-songliubraving@fb.com>
+ <20200228234058.634044-2-songliubraving@fb.com>
+ <07478dd7-99e2-3399-3c75-db83a283e754@fb.com>
+In-Reply-To: <07478dd7-99e2-3399-3c75-db83a283e754@fb.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.60.0.2.5)
+x-originating-ip: [2620:10d:c091:480::1:fe2d]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9a9571cb-22fd-41de-25e8-08d7be311269
+x-ms-traffictypediagnostic: MW3PR15MB3980:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW3PR15MB3980EA15AD13BA8A5CB78348B3E60@MW3PR15MB3980.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 0329B15C8A
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(346002)(366004)(136003)(39860400002)(376002)(199004)(189003)(2906002)(66946007)(6512007)(186003)(8936002)(86362001)(33656002)(478600001)(36756003)(66556008)(6636002)(71200400001)(6506007)(66476007)(81156014)(53546011)(8676002)(81166006)(37006003)(54906003)(316002)(6862004)(6486002)(4326008)(5660300002)(76116006)(64756008)(66446008)(91956017)(2616005);DIR:OUT;SFP:1102;SCL:1;SRVR:MW3PR15MB3980;H:MW3PR15MB3882.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 52V5OvdK1qvDhnedo7wpeMneGOGoFN3ova1HKL32ek5xb588rNSJATsuy6Q2vvBN53NMvcLqHsbJqLbR1YIPFBjpj7M+w+BXOvm7199WvXMSJvfSq8uHWmF9YtNIrwmVfFxG55jeI/yLP8wcEm9dGP/9mOWChnaCubUbuhY6cyeyf2cIAWl4Dn3JId829zFLG3YcWjo9UgMuwMTgArT0DxypUwjHfH6F8GOq3zVvrFPOFJ4F5shpeOPeRkiOwHeQmSqVTYqQq1hC7S1Wdlny70TSj2aCnJr/kU3reo+PmLFlS7ecIjr6+O5F9OLW86r/gXil++/d68iQSYn5eQMtp+3gZahM9Db9lJ67e+s1KIDXCw9KePNx+J9BExDBT7terup2JpS7R02ucjmxMySoq19kfVKzVjYYanV4NIJOfaSRUXVZR/nMLCfKgTnYqBLZ
+x-ms-exchange-antispam-messagedata: oVdAKRq/q33Ci7hzdmtZhiAO7QmjX1ZtvMQZHmkQBD7Nr/8BpOFJ3Pz40bbRInqArEo0CNQavszLzjtlWsWtOtNZ1CJ1CWRG39Xiq3BHfhawb1P4cmDw19bjVYYWlMalak5uKN+9fwIy1LAV2G/RQYieuv0A3U/OXWNjovhV9AWtScpDDqMdxQPZxXIwgdz/
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <9448B294FF8E7043BB383C7AF67C5A77@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a9571cb-22fd-41de-25e8-08d7be311269
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Mar 2020 22:37:06.6087
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /JlvJwvODOugOBgRQh4722pGBvm0O9kNlsClV0RBCBoLqIiRPTO6+PVG90Hcw+Fqffh2S54qLZ/FGVQBC+PbIA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3980
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-03-01_08:2020-02-28,2020-03-01 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ bulkscore=0 mlxlogscore=999 mlxscore=0 spamscore=0 impostorscore=0
+ clxscore=1015 lowpriorityscore=0 suspectscore=0 phishscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2003010180
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 28, 2020 at 12:53 PM CET, Lorenz Bauer wrote:
-> Thanks for all the reviews so far! I've fixed the identified bug and addressed
-> feedback as much as possible.
->
-> I've not taken up Jakub's suggestion to get rid of sk_psock_hooks_init. My
-> intention is to encapsulate initializing both v4 and v6 protos. Really, it's
-> down to personal preference, and I'm happy to remove it if others prefer
-> Jakub's approach. I'm also still eager for a solution that requires less
-> machinery.
 
-I was going to do expenses but this seemed more fun. Challenge accepted.
 
-I think we can massage tcp_bpf to extract sk_prot initialization bits
-out of it into skmsg, and have skmsg call back into tcp/udp_bpf.
+> On Feb 29, 2020, at 7:52 PM, Yonghong Song <yhs@fb.com> wrote:
+>=20
+>=20
+>=20
+> On 2/28/20 3:40 PM, Song Liu wrote:
+>> With fentry/fexit programs, it is possible to profile BPF program with
+>> hardware counters. Introduce bpftool "prog profile", which measures key
+>> metrics of a BPF program.
+>> bpftool prog profile command creates per-cpu perf events. Then it attach=
+es
+>> fentry/fexit programs to the target BPF program. The fentry program save=
+s
+>> perf event value to a map. The fexit program reads the perf event again,
+>> and calculates the difference, which is the instructions/cycles used by
+>> the target program.
+>> Example input and output:
+>>   ./bpftool prog profile 3 id 337 cycles instructions llc_misses
+>>         4228 run_cnt
+>>      3403698 cycles                                              (84.08%=
+)
+>>      3525294 instructions   #  1.04 insn per cycle               (84.05%=
+)
+>>           13 llc_misses     #  3.69 LLC misses per million isns  (83.50%=
+)
+>> This command measures cycles and instructions for BPF program with id
+>> 337 for 3 seconds. The program has triggered 4228 times. The rest of the
+>> output is similar to perf-stat. In this example, the counters were only
+>> counting ~84% of the time because of time multiplexing of perf counters.
+>> Note that, this approach measures cycles and instructions in very small
+>> increments. So the fentry/fexit programs introduce noticeable errors to
+>> the measurement results.
+>> The fentry/fexit programs are generated with BPF skeletons. Therefore, w=
+e
+>> build bpftool twice. The first time _bpftool is built without skeletons.
+>> Then, _bpftool is used to generate the skeletons. The second time, bpfto=
+ol
+>> is built with skeletons.
+>> Signed-off-by: Song Liu <songliubraving@fb.com>
+>> ---
+>>  tools/bpf/bpftool/Makefile                |  18 +
+>>  tools/bpf/bpftool/prog.c                  | 428 +++++++++++++++++++++-
+>>  tools/bpf/bpftool/skeleton/profiler.bpf.c | 171 +++++++++
+>>  tools/bpf/bpftool/skeleton/profiler.h     |  47 +++
+>>  tools/scripts/Makefile.include            |   1 +
+>>  5 files changed, 664 insertions(+), 1 deletion(-)
+>>  create mode 100644 tools/bpf/bpftool/skeleton/profiler.bpf.c
+>>  create mode 100644 tools/bpf/bpftool/skeleton/profiler.h
+>> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+>> index c4e810335810..c035fc107027 100644
+>> --- a/tools/bpf/bpftool/Makefile
+>> +++ b/tools/bpf/bpftool/Makefile
+>> @@ -59,6 +59,7 @@ LIBS =3D $(LIBBPF) -lelf -lz
+>>    INSTALL ?=3D install
+>>  RM ?=3D rm -f
+>> +CLANG ?=3D clang
+>>    FEATURE_USER =3D .bpftool
+>>  FEATURE_TESTS =3D libbfd disassembler-four-args reallocarray zlib
+>> @@ -110,6 +111,22 @@ SRCS +=3D $(BFD_SRCS)
+>>  endif
+>>    OBJS =3D $(patsubst %.c,$(OUTPUT)%.o,$(SRCS)) $(OUTPUT)disasm.o
+>> +_OBJS =3D $(filter-out $(OUTPUT)prog.o,$(OBJS)) $(OUTPUT)_prog.o
+>> +
+>> +$(OUTPUT)_prog.o: prog.c
+>> +	$(QUIET_CC)$(COMPILE.c) -MMD -DBPFTOOL_WITHOUT_SKELETONS -o $@ $<
+>> +
+>> +$(OUTPUT)_bpftool: $(_OBJS) $(LIBBPF)
+>> +	$(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(_OBJS) $(LIBS)
+>> +
+>> +skeleton/profiler.bpf.o: skeleton/profiler.bpf.c
+>> +	$(QUIET_CLANG)$(CLANG) -g -O2 -target bpf -c $< -o $@
+>=20
+> With a fresh checkout, applying this patch and just selftests like
+>  make -C tools/testing/selftests/bpf
+>=20
+> I got the following build error:
+>=20
+> make[2]: Leaving directory `/data/users/yhs/work/net-next/tools/lib/bpf'
+> clang -g -O2 -target bpf -c skeleton/profiler.bpf.c -o skeleton/profiler.=
+bpf.o
+> skeleton/profiler.bpf.c:5:10: fatal error: 'bpf/bpf_helpers.h' file not f=
+ound
+> #include <bpf/bpf_helpers.h>
+>         ^~~~~~~~~~~~~~~~~~~
+> 1 error generated.
+> make[1]: *** [skeleton/profiler.bpf.o] Error 1
+>=20
+> I think Makefile should be tweaked to avoid selftest failure.
 
-3 callbacks from skmsg back to tcp/udp_bpf would be needed to get there:
+Hmm... I am not seeing this error. The build succeeded in the test.=20
 
- - assert_proto_ops
- - check_v6_needs_rebuild
- - get_proto (akin to choose_proto in this series)
-
-With that in place we could go for a direct dispatch based on sock type:
-
-#define sk_psock_assert_proto_ops(sk, ops)		\
-	(sk->sk_type == SOCK_STREAM			\
-	 ? tcp_bpf_assert_proto_ops(ops)		\
-	 : udp_bpf_assert_proto_ops(ops))
-
-The steps to get there would be:
-
- 1. extract tcp_bpf_get_proto
- 2. fold tcp_bpf_update_sk_prot
- 3. move tcp_bpf_init -> sk_psock_init_proto
- 4. fold tcp_bpf_reinit_sk_prot
- 5. move tcp_bpf_reinit -> sk_psock_reinit_proto
- 6. add macros for callbacks into tcp_bpf
- 7. add udp_bpf
-
-... which I've given a shot at, mixing it into your patches:
-
-  https://github.com/jsitnicki/linux/commits/extract-sk-psock-proto
-
-Note, I didn't make an effort to share the code for rebuilding v6 proto
-between tcp_bpf and udp_bpf. This construct seems hard to read already
-as is without making it generic.
-
-Final thought, I would probably place the bits common between tcp_bpf
-and udp_bpf in skmsg under sk_psock_* namespace, instead of sockmap.
-
-It is just my interpretation, but I think that was the idea outlined in
-commit 604326b41a6f ("bpf, sockmap: convert to generic sk_msg
-interface"):
-
-    The code itself has been split and refactored into three bigger
-    pieces: i) the generic sk_msg API which deals with managing the
-    scatter gather ring, providing helpers for walking and mangling,
-    transferring application data from user space into it, and preparing
-    it for BPF pre/post-processing, ii) the plain sock map itself
-    where sockets can be attached to or detached from; these bits
-    are independent of i) which can now be used also without sock
-    map, and iii) the integration with plain TCP as one protocol
-    to be used for processing L7 application data (later this could
-    e.g. also be extended to other protocols like UDP).
-
-As skmsg already hosts some sk_psock_* functions used by tcp_bpf, and
-they share the same build toggle NET_SK_MSG, that seems natural.
-
->
-> Changes since v1:
-> - Check newsk->sk_prot in tcp_bpf_clone
-> - Fix compilation with BPF_STREAM_PARSER disabled
-> - Use spin_lock_init instead of static initializer
-> - Elaborate on TCPF_SYN_RECV
-> - Cosmetic changes to TEST macros, and more tests
-> - Add Jakub and me as maintainers
->
-> Lorenz Bauer (9):
->   bpf: sockmap: only check ULP for TCP sockets
->   bpf: tcp: guard declarations with CONFIG_NET_SOCK_MSG
->   bpf: sockmap: move generic sockmap hooks from BPF TCP
->   skmsg: introduce sk_psock_hooks
->   bpf: sockmap: allow UDP sockets
->   selftests: bpf: don't listen() on UDP sockets
->   selftests: bpf: add tests for UDP sockets in sockmap
->   selftests: bpf: enable UDP sockmap reuseport tests
->   bpf, doc: update maintainers for L7 BPF
->
->  MAINTAINERS                                   |   3 +
->  include/linux/bpf.h                           |   4 +-
->  include/linux/skmsg.h                         |  72 +++----
->  include/linux/udp.h                           |   4 +
->  include/net/tcp.h                             |  18 +-
->  net/core/skmsg.c                              |  55 +++++
->  net/core/sock_map.c                           | 160 ++++++++++----
->  net/ipv4/Makefile                             |   1 +
->  net/ipv4/tcp_bpf.c                            | 169 +++------------
->  net/ipv4/udp_bpf.c                            |  53 +++++
->  .../bpf/prog_tests/select_reuseport.c         |   6 -
->  .../selftests/bpf/prog_tests/sockmap_listen.c | 204 +++++++++++++-----
->  12 files changed, 465 insertions(+), 284 deletions(-)
->  create mode 100644 net/ipv4/udp_bpf.c
+Thanks,
+Song=
