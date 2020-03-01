@@ -2,101 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1083A174EF6
-	for <lists+bpf@lfdr.de>; Sun,  1 Mar 2020 19:31:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3B7174FE4
+	for <lists+bpf@lfdr.de>; Sun,  1 Mar 2020 22:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726146AbgCASbu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 1 Mar 2020 13:31:50 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:43529 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726418AbgCASbu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 1 Mar 2020 13:31:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1583087508;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KDH61zEqTkfSRUoPHaRxUIdXy1ZoZJl+/pi5nX+flFM=;
-        b=cnVhI0QwT9xGX7xIg5TQ/AK6cqshkaJYguQ8mGqCgZgYFI3Aayab/tB9k6SK17ay0Uvrnz
-        BhF0oqR5XjOKl3zcTQiAVpLWznp29Ahhkt1IAmE3Kti1ortWjosp7StxX7k5UDCnIufhZ4
-        zmbAtRqPEAuElpvL4/k2msDehyMQKJg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-476-5IMCXbJRO121tFcv9_PgTA-1; Sun, 01 Mar 2020 13:31:45 -0500
-X-MC-Unique: 5IMCXbJRO121tFcv9_PgTA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EAF55100550E;
-        Sun,  1 Mar 2020 18:31:42 +0000 (UTC)
-Received: from krava (ovpn-204-60.brq.redhat.com [10.40.204.60])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AAF7B399;
-        Sun,  1 Mar 2020 18:31:32 +0000 (UTC)
-Date:   Sun, 1 Mar 2020 19:31:30 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Song Liu <song@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S1726490AbgCAV0r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 1 Mar 2020 16:26:47 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:41684 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726465AbgCAV0r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 1 Mar 2020 16:26:47 -0500
+Received: by mail-lf1-f68.google.com with SMTP id y17so6306297lfe.8
+        for <bpf@vger.kernel.org>; Sun, 01 Mar 2020 13:26:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=9ChqPHQH4n+KZdKDaLvbA3opt3V3GK36fgbVk5eUyaw=;
+        b=QG1FQ1WSUPpC1BKqu4S3LzB4MaSsyG4SaBm1uKbNf6uXXOsphx5tWjADzinWEFwZrA
+         6IGJu7qmOCOtLlP3TkcOAZhwVUAroApkE/kBx5fpeKg1t1grhjmOF3hrfjb6/88uU6qk
+         8I05sbn09Mg8+EaPphR5iU7H9lYNFHG04dvnc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=9ChqPHQH4n+KZdKDaLvbA3opt3V3GK36fgbVk5eUyaw=;
+        b=gc+K0adwJRG2EPb4ULwcTNk0nZ7rsqJEYhCZDQs/SQBT2iiZNH3FLb7PBi36av4dIa
+         EJJLOaeyDGac277otlhXU7L5IXGXk+l9cEB3WS7rTrgNM0Ytqh8jonMF+ONfnKNBz+f9
+         bo8P4op/iv7ChmERDMV3+z0osJsUqFhb9O+pg1JzSQFe4O2mi0ylHP6hwA6r9YLoJsAk
+         v4JxHj9fS8DW7SDCsD1mRA/xhieD6Awztui6qJzHg9Xtadbjg4Rd0QSdCYFb35/FL9Y4
+         AUap5BeE/5i2parl2Hrdus/bkImX+74E9nQdltvmp8C9UOajWotFm3Q96UmjeNd9MPyB
+         nlFA==
+X-Gm-Message-State: ANhLgQ0Z1jVZJhNskYykbYI77Rzzn3QF4/cStxoHOM/mpbh4YWIMR4U2
+        1yZ5+cvmsFN7WjxtZvKSS20zaQ0F/+Ni/w==
+X-Google-Smtp-Source: ADFU+vupC7v8Os2lX3z7yQH8PaugHzGwlvbsdW6JexF1dUKO7vyGmY0AWftVPTojH+98t+0VhuiwgA==
+X-Received: by 2002:ac2:599e:: with SMTP id w30mr4964572lfn.80.1583098003137;
+        Sun, 01 Mar 2020 13:26:43 -0800 (PST)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id z67sm9396409lfa.50.2020.03.01.13.26.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Mar 2020 13:26:42 -0800 (PST)
+References: <20200228115344.17742-1-lmb@cloudflare.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     john.fastabend@gmail.com, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@redhat.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH 04/18] bpf: Add name to struct bpf_ksym
-Message-ID: <20200301183130.GA165525@krava>
-References: <20200226130345.209469-1-jolsa@kernel.org>
- <20200226130345.209469-5-jolsa@kernel.org>
- <CAPhsuW5u=6MEWKU4-Cfdr3VfYn+NuTgX6SezC_W33WZsM3j8ng@mail.gmail.com>
- <20200227085002.GC34774@krava>
- <CAPhsuW78oZ=g51B55z0etMzYyotztFC+4kMaYPOUaMVD-=mOvg@mail.gmail.com>
+        kernel-team@cloudflare.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 0/9] bpf: sockmap, sockhash: support storing UDP sockets
+In-reply-to: <20200228115344.17742-1-lmb@cloudflare.com>
+Date:   Sun, 01 Mar 2020 22:26:40 +0100
+Message-ID: <875zfndawf.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPhsuW78oZ=g51B55z0etMzYyotztFC+4kMaYPOUaMVD-=mOvg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 27, 2020 at 10:59:57AM -0800, Song Liu wrote:
-> On Thu, Feb 27, 2020 at 12:50 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Wed, Feb 26, 2020 at 01:14:43PM -0800, Song Liu wrote:
-> > > On Wed, Feb 26, 2020 at 5:04 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > >
-> > > > Adding name to 'struct bpf_ksym' object to carry the name
-> > > > of the symbol for bpf_prog, bpf_trampoline, bpf_dispatcher.
-> > > >
-> > > > The current benefit is that name is now generated only when
-> > > > the symbol is added to the list, so we don't need to generate
-> > > > it every time it's accessed.
-> > > >
-> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > >
-> > > The patch looks good. But I wonder whether we want pay the cost of
-> > > extra 128 bytes per bpf program. Maybe make it a pointer and only
-> > > generate the string when it is first used?
-> >
-> > I thought 128 would not be that bad, also the code is quite
-> > simple because of that.. if that's really a concern I could
-> > make the changes, but that would probably mean changing the
-> > design
-> 
-> I guess this is OK. We can further optimize it if needed.
-> 
-> Acked-by: Song Liu <songliubraving@fb.com>
+On Fri, Feb 28, 2020 at 12:53 PM CET, Lorenz Bauer wrote:
+> Thanks for all the reviews so far! I've fixed the identified bug and addressed
+> feedback as much as possible.
 >
+> I've not taken up Jakub's suggestion to get rid of sk_psock_hooks_init. My
+> intention is to encapsulate initializing both v4 and v6 protos. Really, it's
+> down to personal preference, and I'm happy to remove it if others prefer
+> Jakub's approach. I'm also still eager for a solution that requires less
+> machinery.
 
-ok, thanks for the review, I still have to make some changes,
-so I'll keep your acked-by on patches that won't be changed,
-please scream otherwise ;-)
+I was going to do expenses but this seemed more fun. Challenge accepted.
 
-thanks,
-jirka
+I think we can massage tcp_bpf to extract sk_prot initialization bits
+out of it into skmsg, and have skmsg call back into tcp/udp_bpf.
 
+3 callbacks from skmsg back to tcp/udp_bpf would be needed to get there:
+
+ - assert_proto_ops
+ - check_v6_needs_rebuild
+ - get_proto (akin to choose_proto in this series)
+
+With that in place we could go for a direct dispatch based on sock type:
+
+#define sk_psock_assert_proto_ops(sk, ops)		\
+	(sk->sk_type == SOCK_STREAM			\
+	 ? tcp_bpf_assert_proto_ops(ops)		\
+	 : udp_bpf_assert_proto_ops(ops))
+
+The steps to get there would be:
+
+ 1. extract tcp_bpf_get_proto
+ 2. fold tcp_bpf_update_sk_prot
+ 3. move tcp_bpf_init -> sk_psock_init_proto
+ 4. fold tcp_bpf_reinit_sk_prot
+ 5. move tcp_bpf_reinit -> sk_psock_reinit_proto
+ 6. add macros for callbacks into tcp_bpf
+ 7. add udp_bpf
+
+... which I've given a shot at, mixing it into your patches:
+
+  https://github.com/jsitnicki/linux/commits/extract-sk-psock-proto
+
+Note, I didn't make an effort to share the code for rebuilding v6 proto
+between tcp_bpf and udp_bpf. This construct seems hard to read already
+as is without making it generic.
+
+Final thought, I would probably place the bits common between tcp_bpf
+and udp_bpf in skmsg under sk_psock_* namespace, instead of sockmap.
+
+It is just my interpretation, but I think that was the idea outlined in
+commit 604326b41a6f ("bpf, sockmap: convert to generic sk_msg
+interface"):
+
+    The code itself has been split and refactored into three bigger
+    pieces: i) the generic sk_msg API which deals with managing the
+    scatter gather ring, providing helpers for walking and mangling,
+    transferring application data from user space into it, and preparing
+    it for BPF pre/post-processing, ii) the plain sock map itself
+    where sockets can be attached to or detached from; these bits
+    are independent of i) which can now be used also without sock
+    map, and iii) the integration with plain TCP as one protocol
+    to be used for processing L7 application data (later this could
+    e.g. also be extended to other protocols like UDP).
+
+As skmsg already hosts some sk_psock_* functions used by tcp_bpf, and
+they share the same build toggle NET_SK_MSG, that seems natural.
+
+>
+> Changes since v1:
+> - Check newsk->sk_prot in tcp_bpf_clone
+> - Fix compilation with BPF_STREAM_PARSER disabled
+> - Use spin_lock_init instead of static initializer
+> - Elaborate on TCPF_SYN_RECV
+> - Cosmetic changes to TEST macros, and more tests
+> - Add Jakub and me as maintainers
+>
+> Lorenz Bauer (9):
+>   bpf: sockmap: only check ULP for TCP sockets
+>   bpf: tcp: guard declarations with CONFIG_NET_SOCK_MSG
+>   bpf: sockmap: move generic sockmap hooks from BPF TCP
+>   skmsg: introduce sk_psock_hooks
+>   bpf: sockmap: allow UDP sockets
+>   selftests: bpf: don't listen() on UDP sockets
+>   selftests: bpf: add tests for UDP sockets in sockmap
+>   selftests: bpf: enable UDP sockmap reuseport tests
+>   bpf, doc: update maintainers for L7 BPF
+>
+>  MAINTAINERS                                   |   3 +
+>  include/linux/bpf.h                           |   4 +-
+>  include/linux/skmsg.h                         |  72 +++----
+>  include/linux/udp.h                           |   4 +
+>  include/net/tcp.h                             |  18 +-
+>  net/core/skmsg.c                              |  55 +++++
+>  net/core/sock_map.c                           | 160 ++++++++++----
+>  net/ipv4/Makefile                             |   1 +
+>  net/ipv4/tcp_bpf.c                            | 169 +++------------
+>  net/ipv4/udp_bpf.c                            |  53 +++++
+>  .../bpf/prog_tests/select_reuseport.c         |   6 -
+>  .../selftests/bpf/prog_tests/sockmap_listen.c | 204 +++++++++++++-----
+>  12 files changed, 465 insertions(+), 284 deletions(-)
+>  create mode 100644 net/ipv4/udp_bpf.c
