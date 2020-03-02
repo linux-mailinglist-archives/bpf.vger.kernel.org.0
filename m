@@ -2,106 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F6D176188
-	for <lists+bpf@lfdr.de>; Mon,  2 Mar 2020 18:48:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B641761D9
+	for <lists+bpf@lfdr.de>; Mon,  2 Mar 2020 19:05:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727291AbgCBRsn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Mar 2020 12:48:43 -0500
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:42860 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727268AbgCBRsn (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 2 Mar 2020 12:48:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1583171322;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yYoO8Pf0iaS8yqXQ7PzQ3SXf+GOBTbXUKsbsFwGRIxA=;
-        b=E75IE/np7hmZftlHAwvqJaez5FmurU+CJJKIMBfK5MbqQxAK/t48qkQ0kJ/IeAwKMzWA6h
-        NiAgxKwNtqd+lybdjvwcgV9TbIwAqcJKjGu3PPg9dS0YXCQCmvpULQfgtWMG88p0v0O7Rv
-        t94lWpBTFUlFNEi6RkPzIsRRSJkQPVw=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-435-jN4fgftXPCmFON0L5lzrPg-1; Mon, 02 Mar 2020 12:48:40 -0500
-X-MC-Unique: jN4fgftXPCmFON0L5lzrPg-1
-Received: by mail-wr1-f69.google.com with SMTP id 72so36101wrc.6
-        for <bpf@vger.kernel.org>; Mon, 02 Mar 2020 09:48:40 -0800 (PST)
+        id S1727093AbgCBSFf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Mar 2020 13:05:35 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:33126 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726451AbgCBSFe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Mar 2020 13:05:34 -0500
+Received: by mail-qk1-f195.google.com with SMTP id p62so618340qkb.0;
+        Mon, 02 Mar 2020 10:05:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qJtedBXtNKxE2zN5cPAiqCVjbBcZCO+pRfOQvUMHjvQ=;
+        b=dmnPdTD9+fLSEuPbuYhNCczqUhiu+OxfKHQ8EqZg2MB7d4FeUj1sR/wzWHaGyovB7u
+         M1wTne/Jl4CP8TJQ07NfY/E5j17IpEu1KPrHoNJA82RboY84X1CaOAwXcjh126CInmbS
+         CVqaVroduzjvwEk6VJntVO5XPG1W7F7B6McD3LDzzH+ltb1WoBycHvGrOFYnFpanHZxb
+         EDVDE6hQNskKazFeKNMuRCu4TwbgBqyyJ39kwVuqNilg7xeqgVf0Z1MysP67r3hrGM58
+         Ep3SY/PMFRi5JE3vMjDyO0wkcQqR2BOq1frOFuhGGuO1fr7bmI+Pso2iSQPY6QTEbbVq
+         wVow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=yYoO8Pf0iaS8yqXQ7PzQ3SXf+GOBTbXUKsbsFwGRIxA=;
-        b=a15TPiyr5MLsN0q0LsI5DGR6r8KudEvpLMOb5VIrv+NNeR4lae5ygDMhrdcbzMd/Is
-         JjDwdMBTDK0Oax/qklz2Dfpeqb19Ha6Vj1qpACuvjD7R2JiOWPtOX6o2pKoRIrzR7fTu
-         wMeBJOXyX94cuqhnuRHRFeoCIAXZLtTO5Gt5dhiltkNmDjE99ZXxk0NY8PYPI18XwPJC
-         snck26pRB/YKHpKdraZkQTzn2bKOh+jhkpVMaTMB7NIPSe9bTHsAO6BmO9yaiGAVsLEm
-         7vSaVc73UNAIiBenE0TUwQqbd2tWlzs9UqxDAKugNZl9d3kJ8WQReJiXfdp7UrrI+ieZ
-         H5TQ==
-X-Gm-Message-State: ANhLgQ1ucVHozVK8H2MRRDEco+M/02/WfiZTMI6bN9yYkPPgc9Lnrdm3
-        kdm0L/ZLHUD3ze0iOeJL0nZTSWfgmMk1/Rq87zVSAUd69KDUPFWFWNEZ47ADfzG+YWyqfBFTKc4
-        w8gvamiR1g/cj
-X-Received: by 2002:a1c:f214:: with SMTP id s20mr187880wmc.57.1583171319583;
-        Mon, 02 Mar 2020 09:48:39 -0800 (PST)
-X-Google-Smtp-Source: ADFU+vuFuwv9A8HJWG5R6iN5L+nwAy67CNZMFHfXdsU75VwKauWFcoCH2NbSQgNP/P/L5pym++m0DQ==
-X-Received: by 2002:a1c:f214:: with SMTP id s20mr187871wmc.57.1583171319386;
-        Mon, 02 Mar 2020 09:48:39 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id g7sm29090107wrq.21.2020.03.02.09.48.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Mar 2020 09:48:38 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 28D56180362; Mon,  2 Mar 2020 18:48:38 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrey Ignatov <rdna@fb.com>
-Cc:     daniel@iogearbox.net, ast@fb.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf] selftests/bpf: Declare bpf_log_buf variables as static
-In-Reply-To: <20200302165831.GA84713@rdna-mbp>
-References: <20200302145348.559177-1-toke@redhat.com> <20200302165831.GA84713@rdna-mbp>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 02 Mar 2020 18:48:38 +0100
-Message-ID: <87blpetzpl.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qJtedBXtNKxE2zN5cPAiqCVjbBcZCO+pRfOQvUMHjvQ=;
+        b=BVMO1fSHnDPn86agWOLUim97L1WXY94tl4GG9n1goazZykM8wwOo1P5ZrjQgvblNCQ
+         ypF3I0TzSsIEn2/fgtj7MRAEOce6UiDWziUQaozBVuTScZ3QF2YKTMO5EXtxnt4SUP1j
+         QQywbXkLUZVwF4P81rVds0YCjnX4w7qmoJxrDJw9gqGXIdWy+W+jbeNlBL6eW6fWjbJU
+         33Aj3A7DzVIeYPmB+BLgXpDZJh8d3j9hD8CXn5vAWWsZk8U72FIt01PZMVVh7DKKgu70
+         DCKL7C3Hp/3mDyKsfdY6/p6zPPTEK2Bepsj55AOlbQIF8KoZPR+I3OHNI5qQV9tdFoNa
+         WVOQ==
+X-Gm-Message-State: ANhLgQ0dctCZrINzxdqhVdvHcrCfiGVd71OijAYipDdcYbIpN195DL47
+        +CsoQ8ZRMznV7AF7ZV2piFioTg1XvsFWqBEABH+SGSJ2
+X-Google-Smtp-Source: ADFU+vsAdbEHC0zURtRFB423X6a31ZcVMiReMomtW05rByufE2RJb5K0ZLcWneTVXAcRjtRIG3Ix6hDkXAgeT0trUyk=
+X-Received: by 2002:a37:6716:: with SMTP id b22mr435028qkc.437.1583172333270;
+ Mon, 02 Mar 2020 10:05:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20200228223948.360936-1-andriin@fb.com> <87mu8zt6a8.fsf@toke.dk>
+In-Reply-To: <87mu8zt6a8.fsf@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 2 Mar 2020 10:05:22 -0800
+Message-ID: <CAEf4BzZGn9FcUdEOSR_ouqSNvzY2AdJA=8ffMV5mTmJQS-10VA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/3] Introduce pinnable bpf_link kernel abstraction
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrey Ignatov <rdna@fb.com> writes:
-
-> Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> [Mon, 2020-03-02 06:54=
- -0800]:
->> The cgroup selftests did not declare the bpf_log_buf variable as static,=
- leading
->> to a linker error with GCC 10 (which defaults to -fno-common). Fix this =
-by
->> adding the missing static declarations.
->>=20
->> Fixes: 257c88559f36 ("selftests/bpf: Convert test_cgroup_attach to prog_=
-tests")
+On Mon, Mar 2, 2020 at 2:12 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com> wrote:
 >
-> Hi Toke,
+> Andrii Nakryiko <andriin@fb.com> writes:
 >
-> Thanks for the fix.
+> > This patch series adds bpf_link abstraction, analogous to libbpf's alre=
+ady
+> > existing bpf_link abstraction. This formalizes and makes more uniform e=
+xisting
+> > bpf_link-like BPF program link (attachment) types (raw tracepoint and t=
+racing
+> > links), which are FD-based objects that are automatically detached when=
+ last
+> > file reference is closed. These types of BPF program links are switched=
+ to
+> > using bpf_link framework.
+> >
+> > FD-based bpf_link approach provides great safety guarantees, by ensurin=
+g there
+> > is not going to be an abandoned BPF program attached, if user process s=
+uddenly
+> > exits or forgets to clean up after itself. This is especially important=
+ in
+> > production environment and is what all the recent new BPF link types fo=
+llowed.
+> >
+> > One of the previously existing  inconveniences of FD-based approach, th=
+ough,
+> > was the scenario in which user process wants to install BPF link and ex=
+it, but
+> > let attached BPF program run. Now, with bpf_link abstraction in place, =
+it's
+> > easy to support pinning links in BPF FS, which is done as part of the s=
+ame
+> > patch #1. This allows FD-based BPF program links to survive exit of a u=
+ser
+> > process and original file descriptor being closed, by creating an file =
+entry
+> > in BPF FS. This provides great safety by default, with simple way to op=
+t out
+> > for cases where it's needed.
 >
-> My 257c88559f36 commit was just a split that simply moved this
-> bpf_log_buf from tools/testing/selftests/bpf/test_cgroup_attach.c to all
-> new three files as is among many other things. Before that it was moved
-> as is from samples/ in
-> ba0c0cc05dda ("selftests/bpf: convert test_cgrp2_attach2 example into kse=
-lftest")
-> and before that it was introduced in
-> d40fc181ebec ("samples/bpf: Make samples more libbpf-centric")
+> While being able to pin the fds returned by bpf_raw_tracepoint_open()
+> certainly helps, I still feel like this is the wrong abstraction for
+> freplace(): When I'm building a program using freplace to put in new
+> functions (say, an XDP multi-prog dispatcher :)), I really want the
+> 'new' functions (i.e., the freplace'd bpf_progs) to share their lifetime
+> with the calling BPF program. I.e., I want to be able to do something
+> like:
+
+freplace programs will take refcount on a BPF program they are
+replacing, so in that sense they do share lifetime, except dependency
+is opposite to what you describe: rootlet/dispatcher program can't go
+away as long it has at least one freplace program attached. It
+(dispatcher) might get detached, though, but freplace, technically,
+will still be attached to now-detached dispatcher (so won't be
+invoked, yet still attached). I hope that makes sense :)
+
 >
-> Though since these are new files I guess having just 257c88559f36 in the
-> tag should be fine(?) so:
+> prog_fd =3D sys_bpf(BPF_PROG_LOAD, ...); // dispatcher
+> func_fd =3D sys_bpf(BPF_PROG_LOAD, ...); // replacement func
+> err =3D sys_bpf(BPF_PROG_REPLACE_FUNC, prog_fd, btf_id, func_fd); // does=
+ *not* return an fd
+>
+> That last call should make the ref-counting be in the prog_fd -> func_fd
+> direction, so that when prog_fd is released, it will do
+> bpf_prog_put(func_fd). There could be an additional call like
+> sys_bpf(BPF_PROG_REPLACE_FUNC_DETACH, prog_fd, btf_id) for explicit
+> detach as well, of course.
 
-Yeah, I did realise you didn't write the original code, but this Fixes
-tag should at least make the patch be picked up by any stable trees
-after you moved things around, so I guess that's good enough :)
+Taking this additional refcount will create a dependency loop (see
+above), so that's why it wasn't done, I think.
 
--Toke
+With FD-based bpf_link, though, you'll be able to "transfer ownership"
+from application that installed freplace program in the first place,
+to the program that eventually will unload/replace dispatcher BPF
+program. You do that by pinning freplace program in BPFFS location,
+that's known to this libxdp library, and when you need to detach and
+unload XDP dispatcher and overriden XDP programs, the "admin process"
+which manages XDP dispatcher, will be able to just go and unpin and
+detach everything, if necessary.
 
+>
+> With such an API, lifecycle management for an XDP program keeps being
+> obvious: There's an fd for the root program attached to the interface,
+> and that's it. When that is released the whole thing disappears. Whereas
+> with the bpf_raw_tracepoint_open() API, the userspace program suddenly
+> has to make sure all the component function FDs are pinned, which seems
+> cumbersome and error-prone...
+
+I thought that's what libxdp is supposed to do (among other things).
+So for user applications it will be all hidden inside the library API,
+no?
+
+>
+> I'll try to propose patches for what this could look like; I think it
+> could co-exist with this bpf_link abstraction, though, so no need to
+> hold up this series...
+
+Yeah, either way, this is important and is desired behavior not just
+for freplace cases.
+
+>
+> -Toke
+>
