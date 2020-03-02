@@ -2,116 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F39BB1755EC
-	for <lists+bpf@lfdr.de>; Mon,  2 Mar 2020 09:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14705175805
+	for <lists+bpf@lfdr.de>; Mon,  2 Mar 2020 11:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727084AbgCBIXj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Mar 2020 03:23:39 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:35454 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726887AbgCBIXj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Mar 2020 03:23:39 -0500
-Received: by mail-oi1-f193.google.com with SMTP id b18so9505399oie.2;
-        Mon, 02 Mar 2020 00:23:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=pBpc6wsvkGRBZXRQXOedwVEHxms2DjtLUfW89sueDZk=;
-        b=okqs2mhjiUO8JIivGpHzGNh4pIuPDewCc5jHqCWNk3mXAICeBnBlgyw1pt/TYySTJs
-         Cx3hvd6NaY/B4X5JiEoWRdQUdQqbiXUJmfQEaMPGr56Z0L98VUHaML0+nBxeiqv8L3uM
-         gv1wXxEqjUa2MpkIENLLKCZzGEMKLAFN7XmzH8Nd56Sp3wzjl18T5W4BorZzv9T/ZdHb
-         wZzhO/Us/Ivix09RsrYRZf6qjB27U/C0I1qZ2QnVWT5tyWv76UE9RN7WcpAfjQoPLNbx
-         Rk9wYzYay8QYR6xTDg3+bm5m9foQxDMdcXcJ7fzOxNLVhx7yayVjVX2IomQTDi6G+rnw
-         4HdA==
+        id S1726889AbgCBKME (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Mar 2020 05:12:04 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:52231 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726674AbgCBKME (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Mar 2020 05:12:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1583143923;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LaXbm6o9ACOSIA/4eITRQbVMVOSyHXSsuYyUe3P7gC8=;
+        b=DLyWyQ344hxFGqaZyUreCyqeWvOyXue0fLfuaSLc09ImOZuZSH7iVUcLlSQkDUkNkj7Q1g
+        X33h1W50wcRKJcV5rf4fxoisejXMmAbZGeqUYIAS5eeB4esL+BWR35QBhEoRx5bBETBi5l
+        fGUFHPIwTc/wkpQqsaFPqlbCGcfHPPA=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-7-8y-K_0PsOTeG4MghAL2gCA-1; Mon, 02 Mar 2020 05:12:02 -0500
+X-MC-Unique: 8y-K_0PsOTeG4MghAL2gCA-1
+Received: by mail-wm1-f71.google.com with SMTP id w12so1786353wmc.3
+        for <bpf@vger.kernel.org>; Mon, 02 Mar 2020 02:12:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pBpc6wsvkGRBZXRQXOedwVEHxms2DjtLUfW89sueDZk=;
-        b=L/w2PgaVMiUyHNaltMN5h31Y95QWVHuo2cYjKtIQYA4k7kIkhFNjDQijMv8ncVgdyD
-         cd4KqaiTwiHa0DhA8WhP+2vscbuBboCIKdvhAS4Lx2+dLvZ8pK7wVdvQDYVjEJaPFQfA
-         rFVjvh0LVBqlBbH/NHyCGJNnsflabEgv+oKenVeTkQTMGSKUgeTkrxpqV0pL8rtr7HFK
-         827wOhfAlYpdManZ3bIaSbQf5EOidvsxUIVTUZEsDZPZ/qMsI09mba0e/+HyoxFz8t9l
-         8r1uR16tIynq2GudzR1tX+RQEVLgXcoNwfBVuGZYEY3Jf0SDjwqbzCH7d90y9QcYCxqm
-         SxaA==
-X-Gm-Message-State: ANhLgQ3A62hESsgPwriQa6IGG67BCgi1WfBLHPTtf78oDNovnkvirvqB
-        3twVwqNEwrMIwuXtfL6MJlGCiNKbuQBf8K5JgVv4OtDr
-X-Google-Smtp-Source: ADFU+vumIHFWn/QAq65GRphsbc3M4dJy5+RcZogwja8X4eBJdfyeXz6KjxK3bWQwBTrbTcb+aEFPp1fRpnLNQpY2vVc=
-X-Received: by 2002:aca:5109:: with SMTP id f9mr2280532oib.14.1583137416872;
- Mon, 02 Mar 2020 00:23:36 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=LaXbm6o9ACOSIA/4eITRQbVMVOSyHXSsuYyUe3P7gC8=;
+        b=RmRugq1edtZywDF2Dt7ISfnV6kM0KYQ/Y7vnJqOgKf8hYQlGqdkwo2E8bMq1boXzoW
+         JwQskL4eiCqwkw+HHFI77GAqv2b0LUpvxhuTgxo2xVRUwLvq7bWS8PhrEQC4B8NRyqbT
+         qjjCn+fKSe5RjFSOiArcNYQ2KX9N/C3Fo4JB7fJpBNDct4j+ywkhIXAorvlOlyTnF9cA
+         ULAnIvbB90i3MDepBDvhWnSwcFXN+TnzP0dr36HGEEg2Sehu3TC0Pq/sOKaEty6gRWjB
+         7nKRGfpMJ04ItisSqUFZ1hVd9M79d6psZ9vdKUvo1L1pQWlO84Kya38BKWf9VTLtncy3
+         6zhA==
+X-Gm-Message-State: ANhLgQ3QAFyrf8TqTG+Aueqm0E0rvyCkJKrN3rCvuPfMTW7FB9kX7mEq
+        swCFu5Au+Wtds++pO/AYHI7mBiZJjZSdukKsr6lN/6q369zceCWsz7/fqjO3pKyrClOxS09f+44
+        sGxhbDYLUXd4F
+X-Received: by 2002:a5d:5411:: with SMTP id g17mr2130089wrv.4.1583143921192;
+        Mon, 02 Mar 2020 02:12:01 -0800 (PST)
+X-Google-Smtp-Source: ADFU+vtczJDy8x17jZMxyB+m7H9GwlALs0hqXR1gDMRMeSn/R/xAKgrk+S6RchUXVJBR4SQZ6hYmYQ==
+X-Received: by 2002:a5d:5411:: with SMTP id g17mr2130064wrv.4.1583143920907;
+        Mon, 02 Mar 2020 02:12:00 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id t124sm16657264wmg.13.2020.03.02.02.11.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Mar 2020 02:11:59 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 6942D180362; Mon,  2 Mar 2020 11:11:59 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH bpf-next 0/3] Introduce pinnable bpf_link kernel abstraction
+In-Reply-To: <20200228223948.360936-1-andriin@fb.com>
+References: <20200228223948.360936-1-andriin@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 02 Mar 2020 11:11:59 +0100
+Message-ID: <87mu8zt6a8.fsf@toke.dk>
 MIME-Version: 1.0
-References: <CAPhsuW6QkQ8-pXamQVzTXLPzyb4-FCeF_6To7sa_=gd7Ea5VpA@mail.gmail.com>
- <20200225044538.61889-1-forrest0579@gmail.com>
-In-Reply-To: <20200225044538.61889-1-forrest0579@gmail.com>
-From:   Forrest Chen <forrest0579@gmail.com>
-Date:   Mon, 2 Mar 2020 16:23:24 +0800
-Message-ID: <CAH+QybLZZwQ8QORPghOZtHyQABQRygGVF9h8i9wsCY6LnADuvg@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 0/3] bpf: Add get_netns_id helper for sock_ops
-To:     bpf <bpf@vger.kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Petar Penkov <ppenkov.kernel@gmail.com>,
-        Song Liu <song@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Find that all three commits are acked by the maintainer. Could we
-merge this to the upstream? Or do we have any other comments?
+Andrii Nakryiko <andriin@fb.com> writes:
 
+> This patch series adds bpf_link abstraction, analogous to libbpf's already
+> existing bpf_link abstraction. This formalizes and makes more uniform existing
+> bpf_link-like BPF program link (attachment) types (raw tracepoint and tracing
+> links), which are FD-based objects that are automatically detached when last
+> file reference is closed. These types of BPF program links are switched to
+> using bpf_link framework.
+>
+> FD-based bpf_link approach provides great safety guarantees, by ensuring there
+> is not going to be an abandoned BPF program attached, if user process suddenly
+> exits or forgets to clean up after itself. This is especially important in
+> production environment and is what all the recent new BPF link types followed.
+>
+> One of the previously existing  inconveniences of FD-based approach, though,
+> was the scenario in which user process wants to install BPF link and exit, but
+> let attached BPF program run. Now, with bpf_link abstraction in place, it's
+> easy to support pinning links in BPF FS, which is done as part of the same
+> patch #1. This allows FD-based BPF program links to survive exit of a user
+> process and original file descriptor being closed, by creating an file entry
+> in BPF FS. This provides great safety by default, with simple way to opt out
+> for cases where it's needed.
 
-Lingpeng Chen <forrest0579@gmail.com> =E4=BA=8E2020=E5=B9=B42=E6=9C=8825=E6=
-=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=8812:46=E5=86=99=E9=81=93=EF=BC=9A
->
-> Currently 5-tuple(sip+dip+sport+dport+proto) can't identify a
-> uniq connection because there may be multi net namespace.
-> For example, there may be a chance that netns a and netns b all
-> listen on 127.0.0.1:8080 and the client with same port 40782
-> connect to them. Without netns number, sock ops program
-> can't distinguish them.
-> Using bpf_get_netns_id helpers to get current connection
-> netns number to distinguish connections.
->
-> Changes in v4:
-> - rename get_netns_id_sock_ops to get_getns_id
-> - rebase from bpf-next
->
-> Changes in v3:
-> - rename sock_ops_get_netns to get_netns_id
->
-> Changes in v2:
-> - Return u64 instead of u32 for sock_ops_get_netns
-> - Fix build bug when CONFIG_NET_NS not set
-> - Add selftest for sock_ops_get_netns
->
-> Lingpeng Chen (3):
->   bpf: Add get_netns_id helper function for sock_ops
->   bpf: Sync uapi bpf.h to tools/
->   selftests/bpf: add selftest for get_netns_id helper
->
->  include/uapi/linux/bpf.h                      |  9 +++-
->  net/core/filter.c                             | 20 ++++++++
->  tools/include/uapi/linux/bpf.h                |  9 +++-
->  .../selftests/bpf/progs/test_tcpbpf_kern.c    | 11 +++++
->  .../testing/selftests/bpf/test_tcpbpf_user.c  | 46 ++++++++++++++++++-
->  5 files changed, 92 insertions(+), 3 deletions(-)
->
->
-> base-commit e0360423d020
-> ("selftests/bpf: Run SYN cookies with reuseport BPF test only for TCP")
-> --
-> 2.20.1
->
+While being able to pin the fds returned by bpf_raw_tracepoint_open()
+certainly helps, I still feel like this is the wrong abstraction for
+freplace(): When I'm building a program using freplace to put in new
+functions (say, an XDP multi-prog dispatcher :)), I really want the
+'new' functions (i.e., the freplace'd bpf_progs) to share their lifetime
+with the calling BPF program. I.e., I want to be able to do something
+like:
 
+prog_fd = sys_bpf(BPF_PROG_LOAD, ...); // dispatcher
+func_fd = sys_bpf(BPF_PROG_LOAD, ...); // replacement func
+err = sys_bpf(BPF_PROG_REPLACE_FUNC, prog_fd, btf_id, func_fd); // does *not* return an fd
 
---=20
-Beijing University of Posts and Telecommunications
-forrest0579@gmail.com
+That last call should make the ref-counting be in the prog_fd -> func_fd
+direction, so that when prog_fd is released, it will do
+bpf_prog_put(func_fd). There could be an additional call like
+sys_bpf(BPF_PROG_REPLACE_FUNC_DETACH, prog_fd, btf_id) for explicit
+detach as well, of course.
+
+With such an API, lifecycle management for an XDP program keeps being
+obvious: There's an fd for the root program attached to the interface,
+and that's it. When that is released the whole thing disappears. Whereas
+with the bpf_raw_tracepoint_open() API, the userspace program suddenly
+has to make sure all the component function FDs are pinned, which seems
+cumbersome and error-prone...
+
+I'll try to propose patches for what this could look like; I think it
+could co-exist with this bpf_link abstraction, though, so no need to
+hold up this series...
+
+-Toke
+
