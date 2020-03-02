@@ -2,72 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5CF1751F0
-	for <lists+bpf@lfdr.de>; Mon,  2 Mar 2020 03:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1E317525E
+	for <lists+bpf@lfdr.de>; Mon,  2 Mar 2020 04:43:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbgCBCtZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 1 Mar 2020 21:49:25 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:39403 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726755AbgCBCtZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 1 Mar 2020 21:49:25 -0500
-Received: by mail-pg1-f196.google.com with SMTP id s2so3799904pgv.6;
-        Sun, 01 Mar 2020 18:49:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=0NofAwk6/gofm0ZtbpEqy9CKZ5U8Ih9bpHz674FTpSM=;
-        b=ihboOrOYDXmF282dE2LFhg6M/czhAiK8sAt2Nl7Wk6oh5yRPNv7RJeJqjdu5hDc7Oj
-         GA14V7GJf8aOsNGixvykNFuvkWIJV7QM96fxYL6/ih6qm4kf5REmVyNXUZja+TNhY+hS
-         yIm7ycJQ7Qogej8ft79ladW9foRzceXVEIW7dBWl+6m/JvMyI/cCfH1Zri4JM1hfr+pH
-         iDXD6+/hjAhzMuSlpFFvV8V0Zw7B+kFIysr3ta7dXZbv0UegSwoocx0iVBd4VltHdJXL
-         Sh1ByBWwMQsbDZuovGmffTmxQavMuTEYy2npmicLafLJ33n/wYu9WZFFyoVhNJbciE07
-         kv5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0NofAwk6/gofm0ZtbpEqy9CKZ5U8Ih9bpHz674FTpSM=;
-        b=bUm6NAVx5NJusvbhiE+di/yrbhiSHsDiw5ZkQJa5HOSTGusYNFyCWt6d3TfJVP7BVM
-         mhoJEAqeMCrRgmUN3LAR4RWJC3rKQ0KDr83xdUKCGtKg3R+cn9OiVFoQFqxN7EQNltY2
-         FyFGzp/xJby1T4MjWyBvbSMj0AlDmNnSL2acR6QM8Hit5qunaT8OwHpLbUqs7RqFkelJ
-         pZWptU+7O5cr1KjVgdgPAcTYF8RYi2hm/JtointbpBm3UoEYOIvzvLpUdCN11L1kbqfH
-         HdZu+GWgooBX8fPkvO397Bj6wn3MIdVybZpl+9XRjMRnMSemNS1dPLyi41ZPXwfV/1dv
-         Dh8A==
-X-Gm-Message-State: APjAAAV4uioQgMqP3GCp+nzIc6tlOJZQ6T1fcdFOmkyWzbjEo6jVtcww
-        +MSryDt9RK6Sz2nV1j2Dw3U=
-X-Google-Smtp-Source: APXvYqynew8Q5uLXEudfffolHsWkuGu/AKb+Kn+ChXp1Ma1RNlFnYYBIwVjR4JCxsCzk27GndT88yQ==
-X-Received: by 2002:a63:7e56:: with SMTP id o22mr16643636pgn.136.1583117363238;
-        Sun, 01 Mar 2020 18:49:23 -0800 (PST)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id 5sm6066380pfw.179.2020.03.01.18.49.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 01 Mar 2020 18:49:22 -0800 (PST)
-Subject: Re: WARNING: refcount bug in __sk_destruct
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-To:     syzbot <syzbot+dd803bc0e8adf0003261@syzkaller.appspotmail.com>,
-        andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
-        hawk@kernel.org, jasowang@redhat.com, jhs@mojatatu.com,
-        jiri@resnulli.us, john.fastabend@gmail.com, kafai@fb.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, xiyou.wangcong@gmail.com,
-        yhs@fb.com
-References: <000000000000a0ed74059fd52b8d@google.com>
- <17ea3816-7c96-0092-d686-e89fbb4db7d8@gmail.com>
- <44fae4d8-5d9f-9ac4-8b3d-51b67e10d32d@gmail.com>
-Message-ID: <1590f540-cbbb-0503-93ec-0eba4da02f77@gmail.com>
-Date:   Sun, 1 Mar 2020 18:49:20 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <44fae4d8-5d9f-9ac4-8b3d-51b67e10d32d@gmail.com>
-Content-Type: text/plain; charset=utf-8
+        id S1726775AbgCBDn1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 1 Mar 2020 22:43:27 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:3354 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726758AbgCBDn1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 1 Mar 2020 22:43:27 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0223fDrV014317;
+        Sun, 1 Mar 2020 19:43:14 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=6benZCZL+BM5g8ycZwqof67mKu2rhZKZMl1IR59E+BM=;
+ b=XXLb/7AV0Rhho+fJvZvOFiMZBHtR9Q7jtBtgPFXnOBSwEzzZ3RrRK3Hur2LJjTYu8Jo1
+ 3fIia4bieihA/YT/GZs70XMCkNtYAyCJcM/9kvPi6f++C2tKOJnJXdFUrh/hU5q0Np0i
+ iJklGU6i4RElqrqzoIQnvfPjI3Vx8w4qaJU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yfpjvdm64-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sun, 01 Mar 2020 19:43:14 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Sun, 1 Mar 2020 19:43:13 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XrUzxVL+KZydUOuQkp3mwEJKxhj0H31Jdymo6y311eJSqU8JzhDzoEfybquwCCfp82/tYytJgMYPuD+GLe1HaBcmbU2BoAYburlQ95k60yeRCcjYHONV5LoPSXJRHpyG2J8OiA/SRJm3eAiP1nkEJztSbjrWTNEEbNNdL1A+2rmblc6SZX90dwoAQIrom8jbltwEQ/V+Js4Rp5mQNtgt07UGhQG63PbU0rhwZrVqGZfD3CgEIxZ6nrk8N6tL6y4FikqyOkIJCvEJCekWOzbVdZ0gjo/RLNMeekuDd08zfkOIfDX9BtbxspJ5t+NIEF4aKmiF8kyBe+XyFkpQn5r57Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6benZCZL+BM5g8ycZwqof67mKu2rhZKZMl1IR59E+BM=;
+ b=ncc2lfbMJJIwMEYtl87sPVg/9PrdS50PuktDBhlvZyDFX4lokmi5X82c3fEs14nYpBf1yJp2BN+fX2YqDrhmSgjQ9tlO9y7ec49IF+cMHHQNaPBlHOL2Dq+66zET2kpf36Y92t/Wep2czNZ1eK4QP/mMReGjiCYB7fPcZPY0AHhSrgObbq8+I97J9Oh1BhlMFF7/2vWtEBjgh2l5bBN3KnCEdNiOBwQs5Z7dOuoBROSn9DORFk4PnBPh1CrCOQGPGrBircYlADsVPzMY+Stry5lfcJc8ZVmW+YPfagUp8IA9CfY9AH+rpskJNg8LlVYq5NopFpt9LXYxZ0AiFxT9pg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6benZCZL+BM5g8ycZwqof67mKu2rhZKZMl1IR59E+BM=;
+ b=V7KdUu2J+jlJLQVrrV3JhXerd3mBzm3uiBQiwO6gWxWvgnqgl2xngrdCnJ9i0oyA9OiqbwC5ETuVTloGApQm6LOQQeG1fM8i9J4Dxk+9M51F9tTxwnyLpvgp71TpnljE/YyIrPDRaD9O1lqNcqN+2KOnlppyVS2wkJ/3zHPJMj4=
+Received: from DM6PR15MB3001.namprd15.prod.outlook.com (2603:10b6:5:13c::16)
+ by DM6PR15MB3372.namprd15.prod.outlook.com (2603:10b6:5:16b::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2772.18; Mon, 2 Mar
+ 2020 03:43:10 +0000
+Received: from DM6PR15MB3001.namprd15.prod.outlook.com
+ ([fe80::294e:884:76fd:743c]) by DM6PR15MB3001.namprd15.prod.outlook.com
+ ([fe80::294e:884:76fd:743c%4]) with mapi id 15.20.2772.019; Mon, 2 Mar 2020
+ 03:43:10 +0000
+Subject: Re: [PATCH v2 bpf-next 1/2] bpftool: introduce "prog profile" command
+To:     Song Liu <songliubraving@fb.com>
+CC:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "arnaldo.melo@gmail.com" <arnaldo.melo@gmail.com>,
+        "jolsa@kernel.org" <jolsa@kernel.org>
+References: <20200228234058.634044-1-songliubraving@fb.com>
+ <20200228234058.634044-2-songliubraving@fb.com>
+ <07478dd7-99e2-3399-3c75-db83a283e754@fb.com>
+ <2FFDA2FF-55D3-41EC-8D6C-34A7D1C93025@fb.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <10ccbad0-0198-eeba-a24e-8090818d8f0a@fb.com>
+Date:   Sun, 1 Mar 2020 19:42:51 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
+In-Reply-To: <2FFDA2FF-55D3-41EC-8D6C-34A7D1C93025@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR11CA0015.namprd11.prod.outlook.com (10.172.48.153) To
+ DM6PR15MB3001.namprd15.prod.outlook.com (20.178.231.16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from MacBook-Pro-52.local (2620:10d:c090:400::5:bc5a) by MWHPR11CA0015.namprd11.prod.outlook.com (10.172.48.153) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2772.14 via Frontend Transport; Mon, 2 Mar 2020 03:43:08 +0000
+X-Originating-IP: [2620:10d:c090:400::5:bc5a]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 82825af8-f9d4-4f42-7378-08d7be5bd391
+X-MS-TrafficTypeDiagnostic: DM6PR15MB3372:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR15MB337242932B04046F57C36682D3E70@DM6PR15MB3372.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 033054F29A
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(346002)(376002)(396003)(136003)(39860400002)(366004)(199004)(189003)(16526019)(186003)(36756003)(2616005)(6636002)(316002)(2906002)(81156014)(37006003)(8676002)(54906003)(31686004)(81166006)(8936002)(53546011)(6506007)(31696002)(6666004)(6512007)(86362001)(6862004)(4326008)(5660300002)(478600001)(66556008)(52116002)(66476007)(6486002)(66946007);DIR:OUT;SFP:1102;SCL:1;SRVR:DM6PR15MB3372;H:DM6PR15MB3001.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+Received-SPF: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WlLnQ6ryhVRpGbVuL0tJPhXUWE7NtUX73HwiuLuu66tphB6maa5QuYOBEMWD+vSC9aRDsLtIWDjXupZEUXwlqVuDnTLbxSkSVPzt3W+xNRO6kr2oDQZADag5tgJgMoXq8agjgxvj7DVIbpNOqniinsTGgZhuNfNiJi3Kh0pBXBezYxb/Rb7abI7UcgUZNIydgHuy0GFakvJmHWEiDuWHxOb0Trdr/+UanzTLIMtGGdgOLXdPRHhFnFHcz2S5c0lmghcM/4+Hhx99BVmZihuCB0vKPc3vYu5Yqg/ts7j0mBaCiSn3kzVW/itVNccM7ILKwdDJYiX7yNZEP5LV7ANOPBe1IUeOH0bDH8LIK3YXfgfjJCCnqmA7FocLjKdDCmkNYBi3amOvC2+W5xp4YewawX9ccUUC7RNKPHBC87u2vRGX33gx1+hsdQ4uMYuIib4f
+X-MS-Exchange-AntiSpam-MessageData: aU+VTWmjYKAgIraaIcj2Xpehs6dpcWO6ns92sjMdBT5P6IOlEOrDdLLvkRqJmC+gW2FtUD4OaiLyZNq2ALvV1VYWbA+iTZUTLmxwbIahim81v87bM0KYx0zF+02gHIjZqYvA0pcBohRg2c3aE2prHOQiwhqn5ipNA8DLJjn0JPduzXFUTqDAElxjhkEtcHcK
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82825af8-f9d4-4f42-7378-08d7be5bd391
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2020 03:43:10.0288
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GcIRKQo71+npOSVcymGquMDD33m3q73uYfgX11ZI/DIY6tZ3XbUqYglomQDxFRhh
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3372
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-03-01_09:2020-02-28,2020-03-01 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ mlxlogscore=999 suspectscore=0 adultscore=0 priorityscore=1501 bulkscore=0
+ mlxscore=0 spamscore=0 impostorscore=0 phishscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2003020027
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -75,214 +119,108 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 3/1/20 6:38 PM, Eric Dumazet wrote:
+On 3/1/20 2:37 PM, Song Liu wrote:
 > 
 > 
-> On 3/1/20 6:22 PM, Eric Dumazet wrote:
+>> On Feb 29, 2020, at 7:52 PM, Yonghong Song <yhs@fb.com> wrote:
 >>
 >>
->> On 3/1/20 5:33 PM, syzbot wrote:
->>> Hello,
->>>
->>> syzbot found the following crash on:
->>>
->>> HEAD commit:    fd786fb1 net: convert suitable drivers to use phy_do_ioctl..
->>> git tree:       net-next
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=14e9726ee00000
->>> kernel config:  https://syzkaller.appspot.com/x/.config?x=7f93900a7904130d
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=dd803bc0e8adf0003261
->>> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
->>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12af9369e00000
->>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10583d76e00000
->>>
->>> The bug was bisected to:
->>>
->>> commit 14215108a1fd7e002c0a1f9faf8fbaf41fdda50d
->>> Author: Cong Wang <xiyou.wangcong@gmail.com>
->>> Date:   Thu Feb 21 05:37:42 2019 +0000
->>>
->>>     net_sched: initialize net pointer inside tcf_exts_init()
->>>
->>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=175b66bee00000
->>> final crash:    https://syzkaller.appspot.com/x/report.txt?x=14db66bee00000
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=10db66bee00000
->>>
->>> IMPORTANT: if you fix the bug, please add the following tag to the commit:
->>> Reported-by: syzbot+dd803bc0e8adf0003261@syzkaller.appspotmail.com
->>> Fixes: 14215108a1fd ("net_sched: initialize net pointer inside tcf_exts_init()")
->>>
->>> RBP: 0000000000000000 R08: 0000000000000002 R09: 00000000bb1414ac
->>> R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffff
->>> R13: 0000000000000009 R14: 0000000000000000 R15: 0000000000000000
->>> ------------[ cut here ]------------
->>> refcount_t: underflow; use-after-free.
->>> WARNING: CPU: 1 PID: 9577 at lib/refcount.c:28 refcount_warn_saturate+0x1dc/0x1f0 lib/refcount.c:28
->>> Kernel panic - not syncing: panic_on_warn set ...
->>> CPU: 1 PID: 9577 Comm: syz-executor327 Not tainted 5.5.0-rc6-syzkaller #0
->>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->>> Call Trace:
->>>  __dump_stack lib/dump_stack.c:77 [inline]
->>>  dump_stack+0x197/0x210 lib/dump_stack.c:118
->>>  panic+0x2e3/0x75c kernel/panic.c:221
->>>  __warn.cold+0x2f/0x3e kernel/panic.c:582
->>>  report_bug+0x289/0x300 lib/bug.c:195
->>>  fixup_bug arch/x86/kernel/traps.c:174 [inline]
->>>  fixup_bug arch/x86/kernel/traps.c:169 [inline]
->>>  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:267
->>>  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:286
->>>  invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
->>> RIP: 0010:refcount_warn_saturate+0x1dc/0x1f0 lib/refcount.c:28
->>> Code: e9 d8 fe ff ff 48 89 df e8 c1 f8 16 fe e9 85 fe ff ff e8 a7 77 d8 fd 48 c7 c7 e0 44 71 88 c6 05 9e 86 db 06 01 e8 93 27 a9 fd <0f> 0b e9 ac fe ff ff 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 55 48
->>> RSP: 0018:ffffc9000c067b00 EFLAGS: 00010282
->>> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
->>> RDX: 0000000000000000 RSI: ffffffff815e5dd6 RDI: fffff5200180cf52
->>> RBP: ffffc9000c067b10 R08: ffff8880a8630340 R09: ffffed1015d26621
->>> R10: ffffed1015d26620 R11: ffff8880ae933107 R12: 0000000000000003
->>> R13: ffff888090256000 R14: ffff8880a7e5c040 R15: ffff8880a7e5c044
->>>  refcount_sub_and_test include/linux/refcount.h:261 [inline]
->>>  refcount_dec_and_test include/linux/refcount.h:281 [inline]
->>>  put_net include/net/net_namespace.h:259 [inline]
->>>  __sk_destruct+0x6d8/0x7f0 net/core/sock.c:1723
->>>  sk_destruct+0xd5/0x110 net/core/sock.c:1739
->>>  __sk_free+0xfb/0x3f0 net/core/sock.c:1750
->>>  sk_free+0x83/0xb0 net/core/sock.c:1761
->>>  sock_put include/net/sock.h:1719 [inline]
->>>  __tun_detach+0xbe0/0x1150 drivers/net/tun.c:728
->>>  tun_detach drivers/net/tun.c:740 [inline]
->>>  tun_chr_close+0xe0/0x180 drivers/net/tun.c:3455
->>>  __fput+0x2ff/0x890 fs/file_table.c:280
->>>  ____fput+0x16/0x20 fs/file_table.c:313
->>>  task_work_run+0x145/0x1c0 kernel/task_work.c:113
->>>  exit_task_work include/linux/task_work.h:22 [inline]
->>>  do_exit+0xba9/0x2f50 kernel/exit.c:801
->>>  do_group_exit+0x135/0x360 kernel/exit.c:899
->>>  __do_sys_exit_group kernel/exit.c:910 [inline]
->>>  __se_sys_exit_group kernel/exit.c:908 [inline]
->>>  __x64_sys_exit_group+0x44/0x50 kernel/exit.c:908
->>>  do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
->>>  entry_SYSCALL_64_after_hwframe+0x49/0xbe
->>> RIP: 0033:0x441a48
->>> Code: Bad RIP value.
->>> RSP: 002b:00007fffe55809a8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
->>> RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 0000000000441a48
->>> RDX: 0000000000000001 RSI: 000000000000003c RDI: 0000000000000001
->>> RBP: 00000000004c8430 R08: 00000000000000e7 R09: ffffffffffffffd0
->>> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
->>> R13: 00000000006dba80 R14: 0000000000000000 R15: 0000000000000000
->>> Kernel Offset: disabled
->>> Rebooting in 86400 seconds..
->>>
->>>
+>>
+>> On 2/28/20 3:40 PM, Song Liu wrote:
+>>> With fentry/fexit programs, it is possible to profile BPF program with
+>>> hardware counters. Introduce bpftool "prog profile", which measures key
+>>> metrics of a BPF program.
+>>> bpftool prog profile command creates per-cpu perf events. Then it attaches
+>>> fentry/fexit programs to the target BPF program. The fentry program saves
+>>> perf event value to a map. The fexit program reads the perf event again,
+>>> and calculates the difference, which is the instructions/cycles used by
+>>> the target program.
+>>> Example input and output:
+>>>    ./bpftool prog profile 3 id 337 cycles instructions llc_misses
+>>>          4228 run_cnt
+>>>       3403698 cycles                                              (84.08%)
+>>>       3525294 instructions   #  1.04 insn per cycle               (84.05%)
+>>>            13 llc_misses     #  3.69 LLC misses per million isns  (83.50%)
+>>> This command measures cycles and instructions for BPF program with id
+>>> 337 for 3 seconds. The program has triggered 4228 times. The rest of the
+>>> output is similar to perf-stat. In this example, the counters were only
+>>> counting ~84% of the time because of time multiplexing of perf counters.
+>>> Note that, this approach measures cycles and instructions in very small
+>>> increments. So the fentry/fexit programs introduce noticeable errors to
+>>> the measurement results.
+>>> The fentry/fexit programs are generated with BPF skeletons. Therefore, we
+>>> build bpftool twice. The first time _bpftool is built without skeletons.
+>>> Then, _bpftool is used to generate the skeletons. The second time, bpftool
+>>> is built with skeletons.
+>>> Signed-off-by: Song Liu <songliubraving@fb.com>
 >>> ---
->>> This bug is generated by a bot. It may contain errors.
->>> See https://goo.gl/tpsmEJ for more information about syzbot.
->>> syzbot engineers can be reached at syzkaller@googlegroups.com.
->>>
->>> syzbot will keep track of this bug report. See:
->>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->>> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
->>> syzbot can test patches for this bug, for details see:
->>> https://goo.gl/tpsmEJ#testing-patches
->>>
+>>>   tools/bpf/bpftool/Makefile                |  18 +
+>>>   tools/bpf/bpftool/prog.c                  | 428 +++++++++++++++++++++-
+>>>   tools/bpf/bpftool/skeleton/profiler.bpf.c | 171 +++++++++
+>>>   tools/bpf/bpftool/skeleton/profiler.h     |  47 +++
+>>>   tools/scripts/Makefile.include            |   1 +
+>>>   5 files changed, 664 insertions(+), 1 deletion(-)
+>>>   create mode 100644 tools/bpf/bpftool/skeleton/profiler.bpf.c
+>>>   create mode 100644 tools/bpf/bpftool/skeleton/profiler.h
+>>> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+>>> index c4e810335810..c035fc107027 100644
+>>> --- a/tools/bpf/bpftool/Makefile
+>>> +++ b/tools/bpf/bpftool/Makefile
+>>> @@ -59,6 +59,7 @@ LIBS = $(LIBBPF) -lelf -lz
+>>>     INSTALL ?= install
+>>>   RM ?= rm -f
+>>> +CLANG ?= clang
+>>>     FEATURE_USER = .bpftool
+>>>   FEATURE_TESTS = libbfd disassembler-four-args reallocarray zlib
+>>> @@ -110,6 +111,22 @@ SRCS += $(BFD_SRCS)
+>>>   endif
+>>>     OBJS = $(patsubst %.c,$(OUTPUT)%.o,$(SRCS)) $(OUTPUT)disasm.o
+>>> +_OBJS = $(filter-out $(OUTPUT)prog.o,$(OBJS)) $(OUTPUT)_prog.o
+>>> +
+>>> +$(OUTPUT)_prog.o: prog.c
+>>> +	$(QUIET_CC)$(COMPILE.c) -MMD -DBPFTOOL_WITHOUT_SKELETONS -o $@ $<
+>>> +
+>>> +$(OUTPUT)_bpftool: $(_OBJS) $(LIBBPF)
+>>> +	$(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(_OBJS) $(LIBS)
+>>> +
+>>> +skeleton/profiler.bpf.o: skeleton/profiler.bpf.c
+>>> +	$(QUIET_CLANG)$(CLANG) -g -O2 -target bpf -c $< -o $@
 >>
+>> With a fresh checkout, applying this patch and just selftests like
+>>   make -C tools/testing/selftests/bpf
 >>
->> Hmmm... maybe this patch would fix it ?
+>> I got the following build error:
 >>
->> diff --git a/include/net/pkt_cls.h b/include/net/pkt_cls.h
->> index a972244ab1931a2fd52a41efa4f7a6cd78d8746a..6e258a6c1328e38a757d9711f4116a6672995b8f 100644
->> --- a/include/net/pkt_cls.h
->> +++ b/include/net/pkt_cls.h
->> @@ -206,11 +206,12 @@ static inline int tcf_exts_init(struct tcf_exts *exts, struct net *net,
->>  #ifdef CONFIG_NET_CLS_ACT
->>         exts->type = 0;
->>         exts->nr_actions = 0;
->> -       exts->net = net;
->> +       exts->net = NULL;
->>         exts->actions = kcalloc(TCA_ACT_MAX_PRIO, sizeof(struct tc_action *),
->>                                 GFP_KERNEL);
->>         if (!exts->actions)
->>                 return -ENOMEM;
->> +       exts->net = net;
->>  #endif
->>         exts->action = action;
->>         exts->police = police;
+>> make[2]: Leaving directory `/data/users/yhs/work/net-next/tools/lib/bpf'
+>> clang -g -O2 -target bpf -c skeleton/profiler.bpf.c -o skeleton/profiler.bpf.o
+>> skeleton/profiler.bpf.c:5:10: fatal error: 'bpf/bpf_helpers.h' file not found
+>> #include <bpf/bpf_helpers.h>
+>>          ^~~~~~~~~~~~~~~~~~~
+>> 1 error generated.
+>> make[1]: *** [skeleton/profiler.bpf.o] Error 1
 >>
+>> I think Makefile should be tweaked to avoid selftest failure.
 > 
-> Hmm no.
-> 
-> Instead, make sure cls_u32 gets a reference so that calls
-> to u32_destroy_key(new, false); do not end up decrementing netns refcount.
-> 
-> 
-> diff --git a/net/sched/cls_u32.c b/net/sched/cls_u32.c
-> index e15ff335953deef36e55901d8f4ce34e15ed676f..587d71def49157680cf54f84558c4f4e5dad37f1 100644
-> --- a/net/sched/cls_u32.c
-> +++ b/net/sched/cls_u32.c
-> @@ -898,6 +898,7 @@ static int u32_change(struct net *net, struct sk_buff *in_skb,
->                 new = u32_init_knode(net, tp, n);
->                 if (!new)
->                         return -ENOMEM;
-> +               tcf_exts_get_net(&new->exts);
->  
->                 err = u32_set_parms(net, tp, base, new, tb,
->                                     tca[TCA_RATE], ovr, extack);
-> @@ -918,7 +919,6 @@ static int u32_change(struct net *net, struct sk_buff *in_skb,
->  
->                 u32_replace_knode(tp, tp_c, new);
->                 tcf_unbind_filter(tp, &n->res);
-> -               tcf_exts_get_net(&n->exts);
->                 tcf_queue_work(&n->rwork, u32_delete_key_work);
->                 return 0;
->         }
-> 
-> 
+> Hmm... I am not seeing this error. The build succeeded in the test.
 
-Another possibility would be to have two different pointers to reduce
-possibility of a refcount mismatch in some complex error paths.
+Just tried again with a *fresh* checkout of tools/ directory with the patch.
+   -bash-4.4$ make -C tools/testing/selftests/bpf
+   ...
+   LINK 
+/data/users/yhs/work/net-next/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/libbpf.a
+   LINK 
+/data/users/yhs/work/net-next/tools/testing/selftests/bpf/tools/build/bpftool/_bpftool
+make[1]: *** No rule to make target `skeleton/profiler.bpf.c', needed by 
+`skeleton/profiler.bpf.o'.  Stop.
+make: *** 
+[/data/users/yhs/work/net-next/tools/testing/selftests/bpf/tools/sbin/bpftool] 
+Error 2
+make: Leaving directory 
+`/data/users/yhs/work/net-next/tools/testing/selftests/bpf
 
-tcf_exts_put_net() would have no effect if no prior
-call to tcf_exts_get_net() has been done.
+The error is different from my previous try, but the build still fails.
 
-diff --git a/include/net/pkt_cls.h b/include/net/pkt_cls.h
-index a972244ab1931a2fd52a41efa4f7a6cd78d8746a..163caee65cd4ff07ce32699beab287ceffae0916 100644
---- a/include/net/pkt_cls.h
-+++ b/include/net/pkt_cls.h
-@@ -192,6 +192,7 @@ struct tcf_exts {
-        int nr_actions;
-        struct tc_action **actions;
-        struct net *net;
-+       struct net *ref_net;
- #endif
-        /* Map to export classifier specific extension TLV types to the
-         * generic extensions API. Unsupported extensions must be set to 0.
-@@ -207,6 +208,7 @@ static inline int tcf_exts_init(struct tcf_exts *exts, struct net *net,
-        exts->type = 0;
-        exts->nr_actions = 0;
-        exts->net = net;
-+       exts->ref_net = NULL;
-        exts->actions = kcalloc(TCA_ACT_MAX_PRIO, sizeof(struct tc_action *),
-                                GFP_KERNEL);
-        if (!exts->actions)
-@@ -224,8 +226,9 @@ static inline int tcf_exts_init(struct tcf_exts *exts, struct net *net,
- static inline bool tcf_exts_get_net(struct tcf_exts *exts)
- {
- #ifdef CONFIG_NET_CLS_ACT
--       exts->net = maybe_get_net(exts->net);
--       return exts->net != NULL;
-+       WARN_ON_ONCE(exts->ref_net);
-+       exts->ref_net = maybe_get_net(exts->net);
-+       return exts->ref_net != NULL;
- #else
-        return true;
- #endif
-@@ -234,8 +237,8 @@ static inline bool tcf_exts_get_net(struct tcf_exts *exts)
- static inline void tcf_exts_put_net(struct tcf_exts *exts)
- {
- #ifdef CONFIG_NET_CLS_ACT
--       if (exts->net)
--               put_net(exts->net);
-+       if (exts->ref_net)
-+               put_net(exts->ref_net);
- #endif
- }
- 
+> 
+> Thanks,
+> Song
+> 
