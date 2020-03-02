@@ -2,227 +2,210 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B41191766D6
-	for <lists+bpf@lfdr.de>; Mon,  2 Mar 2020 23:25:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA434176786
+	for <lists+bpf@lfdr.de>; Mon,  2 Mar 2020 23:38:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726744AbgCBWZE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Mar 2020 17:25:04 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:21683 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725781AbgCBWZD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 2 Mar 2020 17:25:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1583187901;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9hRBKtE+c+GniMKyGrkqhdyv1XsV6MxZ4SgNtQszIdk=;
-        b=h/LIIMf/1GGSs2PqrEN1urzJml6emTkZO3Wa26469aqRTRyKMJ+JPdsqQBoWPLjJyvJZW4
-        +hKEkRx5CxHv5/Gg6Zr037IAOY8xagcx3z6Rjq5Ky490rKfZvh6ekEVMvj71G2ds2a+O/n
-        ketRL9pXeV4PQbrC5R+cVpBCj9Hb7yY=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-45-CAWIl0gVOduI7DMvCCYy9g-1; Mon, 02 Mar 2020 17:25:00 -0500
-X-MC-Unique: CAWIl0gVOduI7DMvCCYy9g-1
-Received: by mail-wm1-f69.google.com with SMTP id c5so271383wmd.8
-        for <bpf@vger.kernel.org>; Mon, 02 Mar 2020 14:24:59 -0800 (PST)
+        id S1726951AbgCBWhy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Mar 2020 17:37:54 -0500
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:34544 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726752AbgCBWhx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Mar 2020 17:37:53 -0500
+Received: by mail-pf1-f196.google.com with SMTP id y21so428761pfp.1;
+        Mon, 02 Mar 2020 14:37:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=E4j2khFom9WbWJYI0JJ4Oj4FfVAH6TUg09opZHP3DUQ=;
+        b=VK5km7mC2B7BPdDbwLDq1SFNyVpvEk28HXfPktKbKCcn5P71cZ8mg70Hy6BuTohZk2
+         QZj5FtQJfYfUcCr70N++5IY8Eh/WJOSYja+1U2MH9qCQaBxrsFqdGGlG6UPAO+hQsEyb
+         c2bhlTmhnHS8P8/SimbLzveMZuy/Xmoy+BIYfyljVv453rXrkIA18Ajmvfzjl2uUsw7x
+         xXN4zJFSukJnFLjJsPeIdyUcdYyXcuVHMeRH6XmC96NTdwFlblPJLRJMmS/BqJWoLw6/
+         2JZV3aCsabi/fNm1qV3tygTTG1qNpPFml3I88S9M3AfAdO5JqqjoGmZcY9C4AOV4vtEF
+         ULyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=9hRBKtE+c+GniMKyGrkqhdyv1XsV6MxZ4SgNtQszIdk=;
-        b=os6AVXYUDFpsXYwlsXkr80Mo0EVQOZ8E0mIiK7/k11pOLhYWrgr8AffTfgOrBrKLqk
-         sBNdWKtwBSfU03XpAwftSuzFaxoRolg/m3VNA+COAgGsRmZO+3Jpbydj6Qn2chfFxkNG
-         D967s5yZEUd1bU5J5OlnFZms1TgvIbKcEOdLtPx659F7H98t9ttzVyBT/d43Pa8oMExW
-         Cfglgr4f6L7wPADSjLUoqFwxhmLahoAcGWviIf5eneb4r+CAHn7r9oGLeOjjtqSanfDm
-         KLkhYUdFfSt2HKetP0iE476qdPxe88lTy6RF65wdx7TxmWx6EHvp30xl0Fna3j/l5nYe
-         JRuw==
-X-Gm-Message-State: ANhLgQ1ESgjUsqMyPJdbFw7CXMhKVAdx5IDhNpZBcCTsqfvWekeUIfBv
-        vkoqL+3cgS8BPdg4xXWHWKd+HrAI/23J+B0pV+KH+KINgHg9zoDyhJRcclfwF3ChZ8Ug8Jf76Op
-        LwJdZOQFjC7Cg
-X-Received: by 2002:adf:e98f:: with SMTP id h15mr1611417wrm.263.1583187898889;
-        Mon, 02 Mar 2020 14:24:58 -0800 (PST)
-X-Google-Smtp-Source: ADFU+vuAbuSsx0O1zNIkxBIHyrRcg7hxX1SzEWLl9MR22QqpnbKcgKFRz1C5BsRmuNY0YXa0oMVdmA==
-X-Received: by 2002:adf:e98f:: with SMTP id h15mr1611399wrm.263.1583187898481;
-        Mon, 02 Mar 2020 14:24:58 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id f127sm606808wma.4.2020.03.02.14.24.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Mar 2020 14:24:57 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 27BD1180362; Mon,  2 Mar 2020 23:24:57 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 0/3] Introduce pinnable bpf_link kernel abstraction
-In-Reply-To: <CAEf4BzZGn9FcUdEOSR_ouqSNvzY2AdJA=8ffMV5mTmJQS-10VA@mail.gmail.com>
-References: <20200228223948.360936-1-andriin@fb.com> <87mu8zt6a8.fsf@toke.dk> <CAEf4BzZGn9FcUdEOSR_ouqSNvzY2AdJA=8ffMV5mTmJQS-10VA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 02 Mar 2020 23:24:57 +0100
-Message-ID: <87imjms8cm.fsf@toke.dk>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=E4j2khFom9WbWJYI0JJ4Oj4FfVAH6TUg09opZHP3DUQ=;
+        b=e/3jQw/Z/eK7ZdYJJ92c04if2SxfCntwLpNMeUT0p1WvWqSO5dZETEI5ZLP2HB1OXK
+         xIjyoe4Z+GOJckby9Z9WvO6kxtUV3/QEQRXNgJzaBfzSFkDa8FkIz8IED5bo/OdsUr+o
+         mQvvtJ7noQBuVYJ01811RdqROc7HSLDlRuaV+y4Tl9cdgEP6YR0LRnupDS3iUd/ck6pW
+         tI9cYhBbGw5OPB2IIOCA+33XFHqCALWRYcYWvuciIRbvDKv0Io44ar8Xb/jTXZwOr+mK
+         NNOyZF9NQ+nbTfG+zmkkKKsKbwLMPx3k7smYNiwhxhU/GBLbEht9VFoUIjue8Dmyf0j0
+         gF6A==
+X-Gm-Message-State: ANhLgQ04VRzXnuiqb/MfKRkBBrTGHiU8Q1BgYcQmUSpcJOxpaRSvnbPO
+        9gjKBQMkV9YWusRWT5fbbnI=
+X-Google-Smtp-Source: ADFU+vtJA4RWyPwKkN1uOqkCAK/JWk5Gv8JXlQ/+CxP6k9X9t73Ci1S1Yrh5UyzAX98tOkToeqKi+w==
+X-Received: by 2002:a63:78c4:: with SMTP id t187mr1103798pgc.88.1583188672403;
+        Mon, 02 Mar 2020 14:37:52 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:500::7:1db6])
+        by smtp.gmail.com with ESMTPSA id h7sm23258300pfq.36.2020.03.02.14.37.50
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 02 Mar 2020 14:37:51 -0800 (PST)
+Date:   Mon, 2 Mar 2020 14:37:49 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
+Subject: Re: [PATCH v2 bpf-next 1/3] bpf: switch BPF UAPI #define constants
+ to enums
+Message-ID: <20200302223748.v4omummx43pejzfn@ast-mbp>
+References: <20200301062405.2850114-1-andriin@fb.com>
+ <20200301062405.2850114-2-andriin@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200301062405.2850114-2-andriin@fb.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On Sat, Feb 29, 2020 at 10:24:03PM -0800, Andrii Nakryiko wrote:
+> Switch BPF UAPI constants, previously defined as #define macro, to anonymous
+> enum values. This preserves constants values and behavior in expressions, but
+> has added advantaged of being captured as part of DWARF and, subsequently, BTF
+> type info. Which, in turn, greatly improves usefulness of generated vmlinux.h
+> for BPF applications, as it will not require BPF users to copy/paste various
+> flags and constants, which are frequently used with BPF helpers.
+> 
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
+>  include/uapi/linux/bpf.h              | 272 +++++++++++++++----------
+>  include/uapi/linux/bpf_common.h       |  86 ++++----
+>  include/uapi/linux/btf.h              |  60 +++---
+>  tools/include/uapi/linux/bpf.h        | 274 ++++++++++++++++----------
+>  tools/include/uapi/linux/bpf_common.h |  86 ++++----
+>  tools/include/uapi/linux/btf.h        |  60 +++---
+>  6 files changed, 497 insertions(+), 341 deletions(-)
 
-> On Mon, Mar 2, 2020 at 2:12 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
-hat.com> wrote:
->>
->> Andrii Nakryiko <andriin@fb.com> writes:
->>
->> > This patch series adds bpf_link abstraction, analogous to libbpf's alr=
-eady
->> > existing bpf_link abstraction. This formalizes and makes more uniform =
-existing
->> > bpf_link-like BPF program link (attachment) types (raw tracepoint and =
-tracing
->> > links), which are FD-based objects that are automatically detached whe=
-n last
->> > file reference is closed. These types of BPF program links are switche=
-d to
->> > using bpf_link framework.
->> >
->> > FD-based bpf_link approach provides great safety guarantees, by ensuri=
-ng there
->> > is not going to be an abandoned BPF program attached, if user process =
-suddenly
->> > exits or forgets to clean up after itself. This is especially importan=
-t in
->> > production environment and is what all the recent new BPF link types f=
-ollowed.
->> >
->> > One of the previously existing  inconveniences of FD-based approach, t=
-hough,
->> > was the scenario in which user process wants to install BPF link and e=
-xit, but
->> > let attached BPF program run. Now, with bpf_link abstraction in place,=
- it's
->> > easy to support pinning links in BPF FS, which is done as part of the =
-same
->> > patch #1. This allows FD-based BPF program links to survive exit of a =
-user
->> > process and original file descriptor being closed, by creating an file=
- entry
->> > in BPF FS. This provides great safety by default, with simple way to o=
-pt out
->> > for cases where it's needed.
->>
->> While being able to pin the fds returned by bpf_raw_tracepoint_open()
->> certainly helps, I still feel like this is the wrong abstraction for
->> freplace(): When I'm building a program using freplace to put in new
->> functions (say, an XDP multi-prog dispatcher :)), I really want the
->> 'new' functions (i.e., the freplace'd bpf_progs) to share their lifetime
->> with the calling BPF program. I.e., I want to be able to do something
->> like:
->
-> freplace programs will take refcount on a BPF program they are
-> replacing, so in that sense they do share lifetime, except dependency
-> is opposite to what you describe: rootlet/dispatcher program can't go
-> away as long it has at least one freplace program attached. It
-> (dispatcher) might get detached, though, but freplace, technically,
-> will still be attached to now-detached dispatcher (so won't be
-> invoked, yet still attached). I hope that makes sense :)
+I see two reasons why converting #define to enum is useful:
+1. bpf progs can use them from vmlinux.h as evident in patch 3.
+2. "bpftool feature probe" can be replaced with
+  bpftool btf dump file /sys/kernel/btf/vmlinux |grep BPF_CGROUP_SETSOCKOPT
 
-Yes, I realise that; I just think it's the wrong way 'round :)
+The second use case is already possible, since bpf_prog_type,
+bpf_attach_type, bpf_cmd, bpf_func_id are all enums.
+So kernel is already self describing most bpf features.
+Does kernel support bpf_probe_read_user() ? Answer is:
+bpftool btf dump file /sys/kernel/btf/vmlinux | grep BPF_FUNC_probe_read_user
 
->> prog_fd =3D sys_bpf(BPF_PROG_LOAD, ...); // dispatcher
->> func_fd =3D sys_bpf(BPF_PROG_LOAD, ...); // replacement func
->> err =3D sys_bpf(BPF_PROG_REPLACE_FUNC, prog_fd, btf_id, func_fd); // doe=
-s *not* return an fd
->>
->> That last call should make the ref-counting be in the prog_fd -> func_fd
->> direction, so that when prog_fd is released, it will do
->> bpf_prog_put(func_fd). There could be an additional call like
->> sys_bpf(BPF_PROG_REPLACE_FUNC_DETACH, prog_fd, btf_id) for explicit
->> detach as well, of course.
->
-> Taking this additional refcount will create a dependency loop (see
-> above), so that's why it wasn't done, I think.
+The only bit missing is supported kernel flags and instructions.
 
-Right, that's why I want the new operation to 'flip' the direction of
-the refcnt inside the kernel, so there would no longer be a reference
-from the replacement to the dispatcher, only the other way (so no
-loops).
+I think for now I would only convert flags that are going to be
+used from bpf program and see whether 1st use case works well.
+Later we can convert flags that are used out of user space too.
 
-> With FD-based bpf_link, though, you'll be able to "transfer ownership"
-> from application that installed freplace program in the first place,
-> to the program that eventually will unload/replace dispatcher BPF
-> program. You do that by pinning freplace program in BPFFS location,
-> that's known to this libxdp library, and when you need to detach and
-> unload XDP dispatcher and overriden XDP programs, the "admin process"
-> which manages XDP dispatcher, will be able to just go and unpin and
-> detach everything, if necessary.
+In other words:
 
-Yes, so let's assume we want to do it this way (with replacement
-programs pinned in a known location in bpffs). First off, that will
-introduce a hard dependency on bpffs for XDP; so now your networking
-program also needs access to mounting filesystems, or you need to rely
-on the system (including your container runtime) to set this up right
-for you.
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 8e98ced0963b..03e08f256bd1 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -14,34 +14,36 @@
+>  /* Extended instruction set based on top of classic BPF */
+>  
+>  /* instruction classes */
+> -#define BPF_JMP32	0x06	/* jmp mode in word width */
+> -#define BPF_ALU64	0x07	/* alu mode in double word width */
+> +enum {
+> +	BPF_JMP32	= 0x06,	/* jmp mode in word width */
+> +	BPF_ALU64	= 0x07,	/* alu mode in double word width */
 
-Assuming that has been solved, the steps to replace an existing set of
-programs with a new one would be something like:
+not those.
 
-0. We assume that we already have /sys/fs/bpf/xdp/eth0/mainprog,
-   /sys/fs/bpf/xdp/eth0/prog1, /sys/fs/bpf/xdp/eth0/prog2, and that
-   mainprog is attached to eth0
-=20=20=20
-1. Create new dispatcher, attach programs, pin replacement progs
-   somewhere (/sys/fs/bpf/xdp/eth0.new/{mainprog,prog1,prog2,prog3}?)
+> -#define BPF_F_ALLOW_OVERRIDE	(1U << 0)
+> -#define BPF_F_ALLOW_MULTI	(1U << 1)
+> -#define BPF_F_REPLACE		(1U << 2)
+> +enum {
+> +	BPF_F_ALLOW_OVERRIDE	= (1U << 0),
+> +	BPF_F_ALLOW_MULTI	= (1U << 1),
+> +	BPF_F_REPLACE		= (1U << 2),
+> +};
 
-2. Attach new mainprog to eth0, replacing the old one
+not those either. These are the flags for user space. Not for the prog.
 
-3. `mv /sys/fs/bpf/xdp/eth0 /sys/fs/bpf/xdp/eth0.old`
+>  /* flags for BPF_MAP_UPDATE_ELEM command */
+> -#define BPF_ANY		0 /* create new element or update existing */
+> -#define BPF_NOEXIST	1 /* create new element if it didn't exist */
+> -#define BPF_EXIST	2 /* update existing element */
+> -#define BPF_F_LOCK	4 /* spin_lock-ed map_lookup/map_update */
+> +enum {
+> +	BPF_ANY		= 0, /* create new element or update existing */
+> +	BPF_NOEXIST	= 1, /* create new element if it didn't exist */
+> +	BPF_EXIST	= 2, /* update existing element */
+> +	BPF_F_LOCK	= 4, /* spin_lock-ed map_lookup/map_update */
+> +};
 
-4. `mv /sys/fs/bpf/xdp/eth0.new /sys/fs/bpf/xdp/eth0`
+yes to these.
 
-5. `rm -r /sys/fs/bpf/xdp/eth0.old`
+>  /* BPF_FUNC_skb_store_bytes flags. */
+> -#define BPF_F_RECOMPUTE_CSUM		(1ULL << 0)
+> -#define BPF_F_INVALIDATE_HASH		(1ULL << 1)
+> +enum {
+> +	BPF_F_RECOMPUTE_CSUM		= (1ULL << 0),
+> +	BPF_F_INVALIDATE_HASH		= (1ULL << 1),
+> +};
 
+yes.
 
-Or you could switch steps 2 and 3. Either way, there is no way to do
-steps 2..4 as one atomic operation; so you can end up in an inconsistent
-state.
+>  /* BPF_FUNC_l3_csum_replace and BPF_FUNC_l4_csum_replace flags.
+>   * First 4 bits are for passing the header field size.
+>   */
+> -#define BPF_F_HDR_FIELD_MASK		0xfULL
+> +enum {
+> +	BPF_F_HDR_FIELD_MASK		= 0xfULL,
+> +};
 
-Oh, and what happens if the netdevice moves namespaces while it has an
-XDP program attached? Then you can end up with the bpffs where you
-pinned the programs originally not being available at all anymore.
+yes.
 
-Contrast this to the case where the replacement programs are just
-referenced from the main prog: none of the above will be necessary, and
-replacement will just be one atomic operation on the interface.
+>  /* flags for both BPF_FUNC_get_stackid and BPF_FUNC_get_stack. */
+> -#define BPF_F_SKIP_FIELD_MASK		0xffULL
+> -#define BPF_F_USER_STACK		(1ULL << 8)
+> +enum {
+> +	BPF_F_SKIP_FIELD_MASK		= 0xffULL,
+> +	BPF_F_USER_STACK		= (1ULL << 8),
+>  /* flags used by BPF_FUNC_get_stackid only. */
+> -#define BPF_F_FAST_STACK_CMP		(1ULL << 9)
+> -#define BPF_F_REUSE_STACKID		(1ULL << 10)
+> +	BPF_F_FAST_STACK_CMP		= (1ULL << 9),
+> +	BPF_F_REUSE_STACKID		= (1ULL << 10),
+>  /* flags used by BPF_FUNC_get_stack only. */
+> -#define BPF_F_USER_BUILD_ID		(1ULL << 11)
+> +	BPF_F_USER_BUILD_ID		= (1ULL << 11),
+> +};
 
->> With such an API, lifecycle management for an XDP program keeps being
->> obvious: There's an fd for the root program attached to the interface,
->> and that's it. When that is released the whole thing disappears. Whereas
->> with the bpf_raw_tracepoint_open() API, the userspace program suddenly
->> has to make sure all the component function FDs are pinned, which seems
->> cumbersome and error-prone...
->
-> I thought that's what libxdp is supposed to do (among other things).
-> So for user applications it will be all hidden inside the library API,
-> no?
+yes.
 
-Sure, but that also means that even if we somehow manage to write a
-library without any bugs, it will still be called from arbitrary
-applications that may crash between two operations and leave things in
-an inconsistent state.
+>  /* BPF_FUNC_skb_set_tunnel_key flags. */
+> -#define BPF_F_ZERO_CSUM_TX		(1ULL << 1)
+> -#define BPF_F_DONT_FRAGMENT		(1ULL << 2)
+> -#define BPF_F_SEQ_NUMBER		(1ULL << 3)
+> +enum {
+> +	BPF_F_ZERO_CSUM_TX		= (1ULL << 1),
+> +	BPF_F_DONT_FRAGMENT		= (1ULL << 2),
+> +	BPF_F_SEQ_NUMBER		= (1ULL << 3),
+> +};
+>  
+>  /* BPF_FUNC_perf_event_output, BPF_FUNC_perf_event_read and
+>   * BPF_FUNC_perf_event_read_value flags.
+>   */
+> -#define BPF_F_INDEX_MASK		0xffffffffULL
+> -#define BPF_F_CURRENT_CPU		BPF_F_INDEX_MASK
+> +enum {
+> +	BPF_F_INDEX_MASK		= 0xffffffffULL,
+> +	BPF_F_CURRENT_CPU		= BPF_F_INDEX_MASK,
+>  /* BPF_FUNC_perf_event_output for sk_buff input context. */
+> -#define BPF_F_CTXLEN_MASK		(0xfffffULL << 32)
+> +	BPF_F_CTXLEN_MASK		= (0xfffffULL << 32),
+> +};
 
-So I guess what I'm saying is that while it most likely is *possible* to
-build the multi-prog facility using bpf_raw_tracepoint_open() + pinning,
-I believe that the result will be brittle, and that we would be better
-served with a different kernel primitive.
+yes.
 
-Do you see what I mean? Or am I missing something obvious here?
-
--Toke
-
+In all such cases I don't think we need #define FOO FOO
+trick. These are the flags used within bpf program.
+I don't think any user is doing #ifdef logic there.
+I cannot come up with a use case of anything useful this way.
