@@ -2,139 +2,291 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE3F17654A
-	for <lists+bpf@lfdr.de>; Mon,  2 Mar 2020 21:48:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C24176622
+	for <lists+bpf@lfdr.de>; Mon,  2 Mar 2020 22:40:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbgCBUsZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Mar 2020 15:48:25 -0500
-Received: from www62.your-server.de ([213.133.104.62]:58558 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726791AbgCBUsZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Mar 2020 15:48:25 -0500
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1j8rzB-0006Z2-MW; Mon, 02 Mar 2020 21:48:21 +0100
-Received: from [85.7.42.192] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1j8rzB-000UnY-Am; Mon, 02 Mar 2020 21:48:21 +0100
-Subject: Re: [PATCH v2 bpf-next 1/3] bpf: switch BPF UAPI #define constants to
- enums
-To:     Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+        id S1726859AbgCBVkn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Mar 2020 16:40:43 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:40143 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726700AbgCBVkn (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 2 Mar 2020 16:40:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1583185241;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cSbWfXtt0wfQJphDjnyDtA0R+HfCF/kyEHKSihZFDj4=;
+        b=etpFTxmhiumnZNZiQwGh134SGcnA9gRpFbGFtN0/FdV2US7FP8v+jhX1ctR+iUocyXr6Tt
+        DSKx8M9+n9s8rmJf154fQn0B1oQ5LrWFRuFDfCE2JdX2gDnkeLgkJdP4Jl03LYFEAAibEZ
+        q6TdBUY1ZCf3JXleTjeg1ya3yS6jihI=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-403-Gom7f9aHO6qz4xlHCx0aHA-1; Mon, 02 Mar 2020 16:40:39 -0500
+X-MC-Unique: Gom7f9aHO6qz4xlHCx0aHA-1
+Received: by mail-wm1-f69.google.com with SMTP id c18so259420wml.0
+        for <bpf@vger.kernel.org>; Mon, 02 Mar 2020 13:40:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=cSbWfXtt0wfQJphDjnyDtA0R+HfCF/kyEHKSihZFDj4=;
+        b=R5Wmltv0mKZv2xE7rmGYaRznKQcKc0PBM/Vr49scVRkls56kXhDMnAmVbK1y4BOXZ0
+         iY37wCTRk02+Nq9enPaqcJn0Y+nnKjkLsEMNM8aAFXjNKKAr98wMzCmPfwf6M95lPolw
+         bQgFvrS5FpZ8JGmivJpumMd6rvwdB/dV0THcdbJ6Ft00ZUl3HsCMDXwdESbELi1/bZiz
+         Zl3agWINQJyvzhCtlHjXWJlPiyBbuwZte93NtWxW7YsP+NWclWrsjkhc/ZyKgLvwNPi/
+         SvZbnm4Cuk7s9QeB1B3HRDvUvreE2oHxnJTqLpLhlcQRf4j+cTWChMAkT5cOAkZey+9t
+         th1Q==
+X-Gm-Message-State: ANhLgQ13ojizHxbF3ZjkRKG/xhCnit9f6DslAbaMFJlJqA42reSJayhZ
+        soL/MtBGaRTc/txoOOpbAoSjXzcDi2w7rzMv4dmxjEugLTuAQ5WoQ+8l3n89X9soaAbzgSxMxpb
+        GFB04p5SZ126D
+X-Received: by 2002:a5d:6385:: with SMTP id p5mr1425907wru.167.1583185238156;
+        Mon, 02 Mar 2020 13:40:38 -0800 (PST)
+X-Google-Smtp-Source: ADFU+vsro6sgC5/pFDosqxpSiak1LaPzUR7QtdmrIkcPz8UOEXQPRId3VdJuCHtG456kmBG1SwY40g==
+X-Received: by 2002:a5d:6385:: with SMTP id p5mr1425888wru.167.1583185237803;
+        Mon, 02 Mar 2020 13:40:37 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id j12sm30661607wrt.35.2020.03.02.13.40.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Mar 2020 13:40:36 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 420F2180362; Mon,  2 Mar 2020 22:40:36 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
-References: <20200301062405.2850114-1-andriin@fb.com>
- <20200301062405.2850114-2-andriin@fb.com>
- <b57cdf6d-0849-2d54-982e-352886f86201@fb.com>
- <CAEf4BzZspu-wXMr6v=Sd-_m-XzXJwJHyU9zd0ydEiWmch8F9GQ@mail.gmail.com>
- <af9e3e1e-e1e9-0462-88a4-93fd06c40957@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <6b5d7686-428b-5812-75c7-c9d38847f48c@iogearbox.net>
-Date:   Mon, 2 Mar 2020 21:48:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+Subject: Re: [PATCH bpf-next 1/3] bpf: introduce pinnable bpf_link abstraction
+In-Reply-To: <CAEf4BzY_2rLNS4rJnySGr_44e315SGs0FMBNh1010YYBX8OBmg@mail.gmail.com>
+References: <20200228223948.360936-1-andriin@fb.com> <20200228223948.360936-2-andriin@fb.com> <87k143t682.fsf@toke.dk> <CAEf4BzY_2rLNS4rJnySGr_44e315SGs0FMBNh1010YYBX8OBmg@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 02 Mar 2020 22:40:36 +0100
+Message-ID: <87r1yasaej.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <af9e3e1e-e1e9-0462-88a4-93fd06c40957@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25739/Mon Mar  2 13:09:00 2020)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/2/20 7:33 PM, Yonghong Song wrote:
-> On 3/2/20 10:25 AM, Andrii Nakryiko wrote:
->> On Mon, Mar 2, 2020 at 8:22 AM Yonghong Song <yhs@fb.com> wrote:
->>> On 2/29/20 10:24 PM, Andrii Nakryiko wrote:
->>>> Switch BPF UAPI constants, previously defined as #define macro, to anonymous
->>>> enum values. This preserves constants values and behavior in expressions, but
->>>> has added advantaged of being captured as part of DWARF and, subsequently, BTF
->>>> type info. Which, in turn, greatly improves usefulness of generated vmlinux.h
->>>> for BPF applications, as it will not require BPF users to copy/paste various
->>>> flags and constants, which are frequently used with BPF helpers.
->>>>
->>>> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->>>> ---
->>>>    include/uapi/linux/bpf.h              | 272 +++++++++++++++----------
->>>>    include/uapi/linux/bpf_common.h       |  86 ++++----
->>>>    include/uapi/linux/btf.h              |  60 +++---
->>>>    tools/include/uapi/linux/bpf.h        | 274 ++++++++++++++++----------
->>>>    tools/include/uapi/linux/bpf_common.h |  86 ++++----
->>>>    tools/include/uapi/linux/btf.h        |  60 +++---
->>>>    6 files changed, 497 insertions(+), 341 deletions(-)
->>>>
->>>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->>>> index 8e98ced0963b..03e08f256bd1 100644
->>>> --- a/include/uapi/linux/bpf.h
->>>> +++ b/include/uapi/linux/bpf.h
->>>> @@ -14,34 +14,36 @@
->>>>    /* Extended instruction set based on top of classic BPF */
->>>>
->>>>    /* instruction classes */
->>>> -#define BPF_JMP32    0x06    /* jmp mode in word width */
->>>> -#define BPF_ALU64    0x07    /* alu mode in double word width */
->>>> +enum {
->>>> +     BPF_JMP32       = 0x06, /* jmp mode in word width */
->>>> +     BPF_ALU64       = 0x07, /* alu mode in double word width */
->>>
->>> Not sure whether we have uapi backward compatibility or not.
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-We do, after all it's uapi. I think the only expectation people might have is that
-if they use custom stuff with BPF_ prefix in their own code that there could potentially
-be collisions with future additions to this uapi header, but otherwise existing constructs
-in their own code that rely on existing (e.g.) defines in this header must not break.
+> On Mon, Mar 2, 2020 at 2:13 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
+hat.com> wrote:
+>>
+>> Andrii Nakryiko <andriin@fb.com> writes:
+>>
+>> > Introduce bpf_link abstraction, representing an attachment of BPF prog=
+ram to
+>> > a BPF hook point (e.g., tracepoint, perf event, etc). bpf_link encapsu=
+lates
+>> > ownership of attached BPF program, reference counting of a link itself=
+, when
+>> > reference from multiple anonymous inodes, as well as ensures that rele=
+ase
+>> > callback will be called from a process context, so that users can safe=
+ly take
+>> > mutex locks and sleep.
+>> >
+>> > Additionally, with a new abstraction it's now possible to generalize p=
+inning
+>> > of a link object in BPF FS, allowing to explicitly prevent BPF program
+>> > detachment on process exit by pinning it in a BPF FS and let it open f=
+rom
+>> > independent other process to keep working with it.
+>> >
+>> > Convert two existing bpf_link-like objects (raw tracepoint and tracing=
+ BPF
+>> > program attachments) into utilizing bpf_link framework, making them pi=
+nnable
+>> > in BPF FS. More FD-based bpf_links will be added in follow up patches.
+>> >
+>> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+>> > ---
+>> >  include/linux/bpf.h  |  13 +++
+>> >  kernel/bpf/inode.c   |  42 ++++++++-
+>> >  kernel/bpf/syscall.c | 209 ++++++++++++++++++++++++++++++++++++-------
+>> >  3 files changed, 226 insertions(+), 38 deletions(-)
+>> >
+>> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> > index 6015a4daf118..f13c78c6f29d 100644
+>> > --- a/include/linux/bpf.h
+>> > +++ b/include/linux/bpf.h
+>> > @@ -1056,6 +1056,19 @@ extern int sysctl_unprivileged_bpf_disabled;
+>> >  int bpf_map_new_fd(struct bpf_map *map, int flags);
+>> >  int bpf_prog_new_fd(struct bpf_prog *prog);
+>> >
+>> > +struct bpf_link;
+>> > +
+>> > +struct bpf_link_ops {
+>> > +     void (*release)(struct bpf_link *link);
+>> > +};
+>> > +
+>> > +void bpf_link_init(struct bpf_link *link, const struct bpf_link_ops *=
+ops,
+>> > +                struct bpf_prog *prog);
+>> > +void bpf_link_inc(struct bpf_link *link);
+>> > +void bpf_link_put(struct bpf_link *link);
+>> > +int bpf_link_new_fd(struct bpf_link *link);
+>> > +struct bpf_link *bpf_link_get_from_fd(u32 ufd);
+>> > +
+>> >  int bpf_obj_pin_user(u32 ufd, const char __user *pathname);
+>> >  int bpf_obj_get_user(const char __user *pathname, int flags);
+>> >
+>> > diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+>> > index 5e40e7fccc21..95087d9f4ed3 100644
+>> > --- a/kernel/bpf/inode.c
+>> > +++ b/kernel/bpf/inode.c
+>> > @@ -25,6 +25,7 @@ enum bpf_type {
+>> >       BPF_TYPE_UNSPEC =3D 0,
+>> >       BPF_TYPE_PROG,
+>> >       BPF_TYPE_MAP,
+>> > +     BPF_TYPE_LINK,
+>> >  };
+>> >
+>> >  static void *bpf_any_get(void *raw, enum bpf_type type)
+>> > @@ -36,6 +37,9 @@ static void *bpf_any_get(void *raw, enum bpf_type ty=
+pe)
+>> >       case BPF_TYPE_MAP:
+>> >               bpf_map_inc_with_uref(raw);
+>> >               break;
+>> > +     case BPF_TYPE_LINK:
+>> > +             bpf_link_inc(raw);
+>> > +             break;
+>> >       default:
+>> >               WARN_ON_ONCE(1);
+>> >               break;
+>> > @@ -53,6 +57,9 @@ static void bpf_any_put(void *raw, enum bpf_type typ=
+e)
+>> >       case BPF_TYPE_MAP:
+>> >               bpf_map_put_with_uref(raw);
+>> >               break;
+>> > +     case BPF_TYPE_LINK:
+>> > +             bpf_link_put(raw);
+>> > +             break;
+>> >       default:
+>> >               WARN_ON_ONCE(1);
+>> >               break;
+>> > @@ -63,20 +70,32 @@ static void *bpf_fd_probe_obj(u32 ufd, enum bpf_ty=
+pe *type)
+>> >  {
+>> >       void *raw;
+>> >
+>> > -     *type =3D BPF_TYPE_MAP;
+>> >       raw =3D bpf_map_get_with_uref(ufd);
+>> > -     if (IS_ERR(raw)) {
+>> > +     if (!IS_ERR(raw)) {
+>> > +             *type =3D BPF_TYPE_MAP;
+>> > +             return raw;
+>> > +     }
+>> > +
+>> > +     raw =3D bpf_prog_get(ufd);
+>> > +     if (!IS_ERR(raw)) {
+>> >               *type =3D BPF_TYPE_PROG;
+>> > -             raw =3D bpf_prog_get(ufd);
+>> > +             return raw;
+>> >       }
+>> >
+>> > -     return raw;
+>> > +     raw =3D bpf_link_get_from_fd(ufd);
+>> > +     if (!IS_ERR(raw)) {
+>> > +             *type =3D BPF_TYPE_LINK;
+>> > +             return raw;
+>> > +     }
+>> > +
+>> > +     return ERR_PTR(-EINVAL);
+>> >  }
+>> >
+>> >  static const struct inode_operations bpf_dir_iops;
+>> >
+>> >  static const struct inode_operations bpf_prog_iops =3D { };
+>> >  static const struct inode_operations bpf_map_iops  =3D { };
+>> > +static const struct inode_operations bpf_link_iops  =3D { };
+>> >
+>> >  static struct inode *bpf_get_inode(struct super_block *sb,
+>> >                                  const struct inode *dir,
+>> > @@ -114,6 +133,8 @@ static int bpf_inode_type(const struct inode *inod=
+e, enum bpf_type *type)
+>> >               *type =3D BPF_TYPE_PROG;
+>> >       else if (inode->i_op =3D=3D &bpf_map_iops)
+>> >               *type =3D BPF_TYPE_MAP;
+>> > +     else if (inode->i_op =3D=3D &bpf_link_iops)
+>> > +             *type =3D BPF_TYPE_LINK;
+>> >       else
+>> >               return -EACCES;
+>> >
+>> > @@ -335,6 +356,12 @@ static int bpf_mkmap(struct dentry *dentry, umode=
+_t mode, void *arg)
+>> >                            &bpffs_map_fops : &bpffs_obj_fops);
+>> >  }
+>> >
+>> > +static int bpf_mklink(struct dentry *dentry, umode_t mode, void *arg)
+>> > +{
+>> > +     return bpf_mkobj_ops(dentry, mode, arg, &bpf_link_iops,
+>> > +                          &bpffs_obj_fops);
+>> > +}
+>> > +
+>> >  static struct dentry *
+>> >  bpf_lookup(struct inode *dir, struct dentry *dentry, unsigned flags)
+>> >  {
+>> > @@ -411,6 +438,9 @@ static int bpf_obj_do_pin(const char __user *pathn=
+ame, void *raw,
+>> >       case BPF_TYPE_MAP:
+>> >               ret =3D vfs_mkobj(dentry, mode, bpf_mkmap, raw);
+>> >               break;
+>> > +     case BPF_TYPE_LINK:
+>> > +             ret =3D vfs_mkobj(dentry, mode, bpf_mklink, raw);
+>> > +             break;
+>> >       default:
+>> >               ret =3D -EPERM;
+>> >       }
+>> > @@ -487,6 +517,8 @@ int bpf_obj_get_user(const char __user *pathname, =
+int flags)
+>> >               ret =3D bpf_prog_new_fd(raw);
+>> >       else if (type =3D=3D BPF_TYPE_MAP)
+>> >               ret =3D bpf_map_new_fd(raw, f_flags);
+>> > +     else if (type =3D=3D BPF_TYPE_LINK)
+>> > +             ret =3D bpf_link_new_fd(raw);
+>> >       else
+>> >               return -ENOENT;
+>> >
+>> > @@ -504,6 +536,8 @@ static struct bpf_prog *__get_prog_inode(struct in=
+ode *inode, enum bpf_prog_type
+>> >
+>> >       if (inode->i_op =3D=3D &bpf_map_iops)
+>> >               return ERR_PTR(-EINVAL);
+>> > +     if (inode->i_op =3D=3D &bpf_link_iops)
+>> > +             return ERR_PTR(-EINVAL);
+>> >       if (inode->i_op !=3D &bpf_prog_iops)
+>> >               return ERR_PTR(-EACCES);
+>> >
+>> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+>> > index c536c65256ad..fca8de7e7872 100644
+>> > --- a/kernel/bpf/syscall.c
+>> > +++ b/kernel/bpf/syscall.c
+>> > @@ -2173,23 +2173,153 @@ static int bpf_obj_get(const union bpf_attr *=
+attr)
+>> >                               attr->file_flags);
+>> >  }
+>> >
+>> > -static int bpf_tracing_prog_release(struct inode *inode, struct file =
+*filp)
+>> > +struct bpf_link {
+>> > +     atomic64_t refcnt;
+>>
+>> refcount_t ?
+>
+> Both bpf_map and bpf_prog stick to atomic64 for their refcounting, so
+> I'd like to stay consistent and use refcount that can't possible leak
+> resources (which refcount_t can, if it's overflown).
 
->>> One possibility is to add
->>>     #define BPF_ALU64 BPF_ALU64
->>> this way, people uses macros will continue to work.
+refcount_t is specifically supposed to turn a possible use-after-free on
+under/overflow into a warning, isn't it? Not going to insist or anything
+here, just found it odd that you'd prefer the other...
 
-Yep. :-/
+-Toke
 
->> This is going to be a really ugly solution, though. I wonder if it was
->> ever an expected behavior of UAPI constants to be able to do #ifdef on
->> them.
-
-Yes, that will be quite ugly. We still would have the freedom to split the giant bpf.h
-into smaller chunks e.g. under include/uapi/linux/bpf/ and perhaps trying to get some
-systematic order that way. Like splitting out include/uapi/linux/bpf/insns.h where we
-do this enum/define only for the insns etc. While that doesn't change the fact that this
-would be needed, it at least doesn't look too random/chaotic all over the place in bpf.h.
-
->> Do you know any existing application that relies on those constants
->> being #defines?
-> 
-> I did not have enough experience to work with system level applications.
-> But in linux/in.h we have
-> 
-> #if __UAPI_DEF_IN_IPPROTO
-> /* Standard well-defined IP protocols.  */
-> enum {
->    IPPROTO_IP = 0,               /* Dummy protocol for TCP               */
-> #define IPPROTO_IP              IPPROTO_IP
->    IPPROTO_ICMP = 1,             /* Internet Control Message Protocol    */
-> #define IPPROTO_ICMP            IPPROTO_ICMP
->    IPPROTO_IGMP = 2,             /* Internet Group Management Protocol   */
-> #define IPPROTO_IGMP            IPPROTO_IGMP
->    IPPROTO_IPIP = 4,             /* IPIP tunnels (older KA9Q tunnels use 94) */
-> #define IPPROTO_IPIP            IPPROTO_IPIP
->    IPPROTO_TCP = 6,              /* Transmission Control Protocol        */
-> #define IPPROTO_TCP             IPPROTO_TCP
->    IPPROTO_EGP = 8,              /* Exterior Gateway Protocol            */
-> #define IPPROTO_EGP             IPPROTO_EGP
->    IPPROTO_PUP = 12,             /* PUP protocol                         */
-> #define IPPROTO_PUP             IPPROTO_PUP
->    IPPROTO_UDP = 17,             /* User Datagram Protocol               */
-> #define IPPROTO_UDP             IPPROTO_UDP
->    IPPROTO_IDP = 22,             /* XNS IDP protocol                     */
-> #define IPPROTO_IDP             IPPROTO_IDP
-> 
-> ...
