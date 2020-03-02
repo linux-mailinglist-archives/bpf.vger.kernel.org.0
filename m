@@ -2,142 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD85176209
-	for <lists+bpf@lfdr.de>; Mon,  2 Mar 2020 19:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3CFE176299
+	for <lists+bpf@lfdr.de>; Mon,  2 Mar 2020 19:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726997AbgCBSKM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Mar 2020 13:10:12 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:34114 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726451AbgCBSKM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Mar 2020 13:10:12 -0500
-Received: by mail-qk1-f193.google.com with SMTP id 11so635698qkd.1;
-        Mon, 02 Mar 2020 10:10:10 -0800 (PST)
+        id S1727126AbgCBS0L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Mar 2020 13:26:11 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:44036 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727255AbgCBS0L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Mar 2020 13:26:11 -0500
+Received: by mail-qk1-f195.google.com with SMTP id f198so603956qke.11;
+        Mon, 02 Mar 2020 10:26:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NyTuMNwp07K/3UvNv2t2JcR/iqnA3cd9SFwDpJQ0EOM=;
-        b=RLMnc9KBRdUhc9av4WdOeWxzOuqPJ77WJYY58/k5HXhccWkjjJfsc/BFvoyAJUDCpU
-         TAOG9iXEKHS+GJX3KXwbbGooj34Vh1PDuwKFQWTqX+rZ6rvSn9HthSus9cHB1wzH9lCU
-         UTtvEtXzNTb75jKWsmqHb9Qy+TwTmEV/PeMbZWc0LYTj3cm3qzyYE0Av8mggsb+PTo8V
-         nk+ViKoWbWU0/xniSreo2TumPzKZFXE7icG8uTfGRVAPraPQ2wNPdpwdQl/ui7B6MVjB
-         mk4znbVj+ErhmOwcT2GKg3RV7DS/AZNaPUbY9isFV5xUTlh0p0TidiSMmC/k1lLjOJjF
-         JRBw==
+         :cc;
+        bh=UJlr4oBO3UMUPF2onmKLJ0zkcX25GwCDTuSzFH9TffE=;
+        b=E2Ftr5r5AIZeEnhoSnNkykd09T53E//ZvQOnPbvAlGFcfmadARn4Kf4ki7/uqI6aEk
+         7I53IBAxAjUU3BzyQaE2KpoEZctV2IXLKkxSga94N3fSi4On7Jdl9e5+b4ZaN1ittZ2O
+         fn7S0Nsdrh9aen94wStqZc3vp+nN63Ca7jcQIYFUHFBMrT0D12TRf+/y3AtPcEsctdY8
+         M1ZIiVFH+x+CQiM1sXlh4iUPgOZHdgTlGL4d5LHPaq76io7YNH79/u4fb/n9YCAit6QQ
+         IXf3MZhq8f3RhObkbSld1H3+YcRikkEdswfcd6X3ph+duDpJmRXoBdMRjj5TNvgykHb1
+         i9iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NyTuMNwp07K/3UvNv2t2JcR/iqnA3cd9SFwDpJQ0EOM=;
-        b=bRClpnQrKWHWPOAy/BKnreyKQz2/zBIWIyO7qYeDqXWjokUxP/INn8FH0KfmyoMJkZ
-         /pVmuRe2PsHyFn1/RXfXxMbWKBfcUfwngbvZXPVRx/FiHswrO+ZEW+KFHz+b+3/is7uG
-         R8gshG5re7mR+XRJPSqDGt8fc39fxMRte54uN95sdGTipmzMkcHNWkFAlfcLCk2fvslJ
-         DnU807XRyE80aYugGFRifiKbULE7/ooP6e+ItumQFu6NUE/QzkIVfsOzkwU2ttzi7lUs
-         9XnhLF7lpBMR8iKMJo61OYdDStydwAbRkhZ93xerYxqEteL5daQbqcolyqaUS+PSm2xo
-         QCEw==
-X-Gm-Message-State: ANhLgQ1LGNSI3WSaJszF1mkdQl5L1p30ctfiEFBGj3S52Za/kF353Yh7
-        D8kqvleRQBraFUaD/iChmHLiP51a2MSiNeYBnos=
-X-Google-Smtp-Source: ADFU+vv48PxnvlBfFGkp9goCia2yFmBd2c7tdKvtHq4GETGjt3J7xXV5XqEqoKC22ROicR8vcHlPk+67KjLTBB7qiQI=
-X-Received: by 2002:a37:6716:: with SMTP id b22mr454339qkc.437.1583172610268;
- Mon, 02 Mar 2020 10:10:10 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=UJlr4oBO3UMUPF2onmKLJ0zkcX25GwCDTuSzFH9TffE=;
+        b=JeyAmaxOjt5vaiEhNdgRZjXDDweMac/HJ0MPqRjkwKXXAmkgz1qLPR1qYUkKlq9ZhE
+         IizXnsWRud+Q4E7W0yb1XRmnktsHdWle9ES7qTQiH5DbImg/KiItm4GChXakZeCxdHXh
+         EmQP8+WWletJ88dWIfDowm3c8TceXJzSeH5u/uGT6nxVA1XYeg4tQgq497Ll431DIZMz
+         t6Xm29oSP7csf+FWUzblsbbCvWUglx8N8cwYRA8gG8WKORpnTdAOTjNhQM5VVTByWykJ
+         sWSqWF4EsSy0luwa5n9gE+3GQdiyBbwPi+xV1d2j6RY/lso1jtfu+PGthb6aFORPfj2B
+         BkYQ==
+X-Gm-Message-State: ANhLgQ3VZG7nh5/qHzP5weKXcVvfNDYcSL1I451GCvTqsWYUsc9Q17kA
+        5r25v2e6xJavFfGb3OJvVje6eUza7HdqfU2ICgJZ+lwj
+X-Google-Smtp-Source: ADFU+vvDYzCoi4Gojb/uRKud/WoT6IZQf/2NXmE+Y8DvKRa7O4uHHnQPCG59TP4nS6LjExXXKsp48sRM9nyIVN6qXg0=
+X-Received: by 2002:a37:a70c:: with SMTP id q12mr597148qke.36.1583173569936;
+ Mon, 02 Mar 2020 10:26:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20200228223948.360936-1-andriin@fb.com> <20200228223948.360936-3-andriin@fb.com>
- <87h7z7t620.fsf@toke.dk>
-In-Reply-To: <87h7z7t620.fsf@toke.dk>
+References: <20200301062405.2850114-1-andriin@fb.com> <20200301062405.2850114-2-andriin@fb.com>
+ <b57cdf6d-0849-2d54-982e-352886f86201@fb.com>
+In-Reply-To: <b57cdf6d-0849-2d54-982e-352886f86201@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 2 Mar 2020 10:09:59 -0800
-Message-ID: <CAEf4BzakHPjOHcyf=idh+kMUVhk0jr=Zqd2px8vfxU5N1MV3Rg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] libbpf: add bpf_link pinning/unpinning
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Date:   Mon, 2 Mar 2020 10:25:58 -0800
+Message-ID: <CAEf4BzZspu-wXMr6v=Sd-_m-XzXJwJHyU9zd0ydEiWmch8F9GQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/3] bpf: switch BPF UAPI #define constants to enums
+To:     Yonghong Song <yhs@fb.com>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 2, 2020 at 2:17 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
-t.com> wrote:
+On Mon, Mar 2, 2020 at 8:22 AM Yonghong Song <yhs@fb.com> wrote:
 >
-> Andrii Nakryiko <andriin@fb.com> writes:
 >
-> > With bpf_link abstraction supported by kernel explicitly, add
-> > pinning/unpinning API for links. Also allow to create (open) bpf_link f=
-rom BPF
-> > FS file.
-> >
-> > This API allows to have an "ephemeral" FD-based BPF links (like raw tra=
-cepoint
-> > or fexit/freplace attachments) surviving user process exit, by pinning =
-them in
-> > a BPF FS, which is an important use case for long-running BPF programs.
-> >
-> > As part of this, expose underlying FD for bpf_link. While legacy bpf_li=
-nk's
-> > might not have a FD associated with them (which will be expressed as
-> > a bpf_link with fd=3D-1), kernel's abstraction is based around FD-based=
- usage,
-> > so match it closely. This, subsequently, allows to have a generic
-> > pinning/unpinning API for generalized bpf_link. For some types of bpf_l=
-inks
-> > kernel might not support pinning, in which case bpf_link__pin() will re=
-turn
-> > error.
-> >
-> > With FD being part of generic bpf_link, also get rid of bpf_link_fd in =
-favor
-> > of using vanialla bpf_link.
+>
+> On 2/29/20 10:24 PM, Andrii Nakryiko wrote:
+> > Switch BPF UAPI constants, previously defined as #define macro, to anonymous
+> > enum values. This preserves constants values and behavior in expressions, but
+> > has added advantaged of being captured as part of DWARF and, subsequently, BTF
+> > type info. Which, in turn, greatly improves usefulness of generated vmlinux.h
+> > for BPF applications, as it will not require BPF users to copy/paste various
+> > flags and constants, which are frequently used with BPF helpers.
 > >
 > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 > > ---
-> >  tools/lib/bpf/libbpf.c   | 131 +++++++++++++++++++++++++++++++--------
-> >  tools/lib/bpf/libbpf.h   |   5 ++
-> >  tools/lib/bpf/libbpf.map |   5 ++
-> >  3 files changed, 114 insertions(+), 27 deletions(-)
+> >   include/uapi/linux/bpf.h              | 272 +++++++++++++++----------
+> >   include/uapi/linux/bpf_common.h       |  86 ++++----
+> >   include/uapi/linux/btf.h              |  60 +++---
+> >   tools/include/uapi/linux/bpf.h        | 274 ++++++++++++++++----------
+> >   tools/include/uapi/linux/bpf_common.h |  86 ++++----
+> >   tools/include/uapi/linux/btf.h        |  60 +++---
+> >   6 files changed, 497 insertions(+), 341 deletions(-)
 > >
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 996162801f7a..f8c4042e5855 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -6931,6 +6931,8 @@ int bpf_prog_load_xattr(const struct bpf_prog_loa=
-d_attr *attr,
-> >  struct bpf_link {
-> >       int (*detach)(struct bpf_link *link);
-> >       int (*destroy)(struct bpf_link *link);
-> > +     char *pin_path;         /* NULL, if not pinned */
-> > +     int fd;                 /* hook FD, -1 if not applicable */
-> >       bool disconnected;
-> >  };
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 8e98ced0963b..03e08f256bd1 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -14,34 +14,36 @@
+> >   /* Extended instruction set based on top of classic BPF */
 > >
-> > @@ -6960,26 +6962,109 @@ int bpf_link__destroy(struct bpf_link *link)
-> >               err =3D link->detach(link);
-> >       if (link->destroy)
-> >               link->destroy(link);
-> > +     if (link->pin_path)
-> > +             free(link->pin_path);
+> >   /* instruction classes */
+> > -#define BPF_JMP32    0x06    /* jmp mode in word width */
+> > -#define BPF_ALU64    0x07    /* alu mode in double word width */
+> > +enum {
+> > +     BPF_JMP32       = 0x06, /* jmp mode in word width */
+> > +     BPF_ALU64       = 0x07, /* alu mode in double word width */
 >
-> This will still detach the link even if it's pinned, won't it? What's
+> Not sure whether we have uapi backward compatibility or not.
+> One possibility is to add
+>    #define BPF_ALU64 BPF_ALU64
+> this way, people uses macros will continue to work.
 
-No, this will just free pin_path string memory.
+This is going to be a really ugly solution, though. I wonder if it was
+ever an expected behavior of UAPI constants to be able to do #ifdef on
+them.
 
-> the expectation, that the calling application just won't call
-> bpf_link__destroy() if it pins the link? But then it will leak memory?
-> Or is it just that __destroy() will close the fd, but if it's pinned the
-> kernel won't actually detach anything? In that case, it seems like the
-> function name becomes somewhat misleading?
-
-Yes, the latter, it will close its own FD, but if someone else has
-open other FD against the same bpf_link (due to pinning or if you
-shared FD with child process, etc), then kernel will keep it.
-bpf_link__destroy() is more of a "sever the link my process has" or
-"destroy my local link". Maybe not ideal name, but should be close
-enough, I think.
+Do you know any existing application that relies on those constants
+being #defines?
 
 >
-> -Toke
+> If this is an acceptable solution, we have a lot of constants
+> in net related headers and will benefit from this conversion for
+> kprobe/tracepoint of networking related functions.
 >
+> >
+> >   /* ld/ldx fields */
+> > -#define BPF_DW               0x18    /* double word (64-bit) */
+> > -#define BPF_XADD     0xc0    /* exclusive add */
+> > +     BPF_DW          = 0x18, /* double word (64-bit) */
+> > +     BPF_XADD        = 0xc0, /* exclusive add */
+> >
+> >   /* alu/jmp fields */
+> > -#define BPF_MOV              0xb0    /* mov reg to reg */
+> > -#define BPF_ARSH     0xc0    /* sign extending arithmetic shift right */
+> > +     BPF_MOV         = 0xb0, /* mov reg to reg */
+> > +     BPF_ARSH        = 0xc0, /* sign extending arithmetic shift right */
+> >
+> >   /* change endianness of a register */
+> > -#define BPF_END              0xd0    /* flags for endianness conversion: */
+> > -#define BPF_TO_LE    0x00    /* convert to little-endian */
+> > -#define BPF_TO_BE    0x08    /* convert to big-endian */
+> > -#define BPF_FROM_LE  BPF_TO_LE
+> > -#define BPF_FROM_BE  BPF_TO_BE
+> > +     BPF_END         = 0xd0, /* flags for endianness conversion: */
+> > +     BPF_TO_LE       = 0x00, /* convert to little-endian */
+> > +     BPF_TO_BE       = 0x08, /* convert to big-endian */
+> > +     BPF_FROM_LE     = BPF_TO_LE,
+> > +     BPF_FROM_BE     = BPF_TO_BE,
+> >
+> >   /* jmp encodings */
+> > -#define BPF_JNE              0x50    /* jump != */
+> > -#define BPF_JLT              0xa0    /* LT is unsigned, '<' */
+> > -#define BPF_JLE              0xb0    /* LE is unsigned, '<=' */
+> > -#define BPF_JSGT     0x60    /* SGT is signed '>', GT in x86 */
+> > -#define BPF_JSGE     0x70    /* SGE is signed '>=', GE in x86 */
+> > -#define BPF_JSLT     0xc0    /* SLT is signed, '<' */
+> > -#define BPF_JSLE     0xd0    /* SLE is signed, '<=' */
+> > -#define BPF_CALL     0x80    /* function call */
+> > -#define BPF_EXIT     0x90    /* function return */
+> > +     BPF_JNE         = 0x50, /* jump != */
+> > +     BPF_JLT         = 0xa0, /* LT is unsigned, '<' */
+> > +     BPF_JLE         = 0xb0, /* LE is unsigned, '<=' */
+> > +     BPF_JSGT        = 0x60, /* SGT is signed '>', GT in x86 */
+> > +     BPF_JSGE        = 0x70, /* SGE is signed '>=', GE in x86 */
+> > +     BPF_JSLT        = 0xc0, /* SLT is signed, '<' */
+> > +     BPF_JSLE        = 0xd0, /* SLE is signed, '<=' */
+> > +     BPF_CALL        = 0x80, /* function call */
+> > +     BPF_EXIT        = 0x90, /* function return */
+> > +};
+> >
+> [...]
