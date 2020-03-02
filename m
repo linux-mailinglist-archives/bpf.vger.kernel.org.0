@@ -2,59 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE7917542E
-	for <lists+bpf@lfdr.de>; Mon,  2 Mar 2020 07:57:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F39BB1755EC
+	for <lists+bpf@lfdr.de>; Mon,  2 Mar 2020 09:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726436AbgCBG5u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Mar 2020 01:57:50 -0500
-Received: from mail-io1-f67.google.com ([209.85.166.67]:39332 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726390AbgCBG5u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Mar 2020 01:57:50 -0500
-Received: by mail-io1-f67.google.com with SMTP id h3so10319622ioj.6;
-        Sun, 01 Mar 2020 22:57:50 -0800 (PST)
+        id S1727084AbgCBIXj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Mar 2020 03:23:39 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:35454 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726887AbgCBIXj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Mar 2020 03:23:39 -0500
+Received: by mail-oi1-f193.google.com with SMTP id b18so9505399oie.2;
+        Mon, 02 Mar 2020 00:23:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=nrFu2KKyZmxCAHYq/fyE1aIbF4fy/TeMjczCnvnCazg=;
-        b=YldOFDCehBVoWqYwHpoq4EsVquC+KOD4ScKdxAzbtLlwP+gy+k4/dY2jtVh8VjNlEE
-         Bk8BsJhPUIZ8Y3HPFSdzPiqLqtQPLKsPlmJXScfPT4k/dIR8KWV2eYTJgMK7XId4STn8
-         RsT8rm0m3xCGlfwrwjiWYqov43Qx3nSUX2B/Dp988zYm448u19AwKg99WyG/Uk0nxu2i
-         2b10BVGcp/y7CndtYd+VxYK3q2mBN1guPlR5qwxX0J6aEbJ/oZyDdSOOfm3GMCyzj+JX
-         9of2iU9BuMUjl+j4A4+ZtCxw9p2/fu4YVOoC2z96tSzQZOyNpQi/YjOeWjK4cpds8dTY
-         qGCg==
+        bh=pBpc6wsvkGRBZXRQXOedwVEHxms2DjtLUfW89sueDZk=;
+        b=okqs2mhjiUO8JIivGpHzGNh4pIuPDewCc5jHqCWNk3mXAICeBnBlgyw1pt/TYySTJs
+         Cx3hvd6NaY/B4X5JiEoWRdQUdQqbiXUJmfQEaMPGr56Z0L98VUHaML0+nBxeiqv8L3uM
+         gv1wXxEqjUa2MpkIENLLKCZzGEMKLAFN7XmzH8Nd56Sp3wzjl18T5W4BorZzv9T/ZdHb
+         wZzhO/Us/Ivix09RsrYRZf6qjB27U/C0I1qZ2QnVWT5tyWv76UE9RN7WcpAfjQoPLNbx
+         Rk9wYzYay8QYR6xTDg3+bm5m9foQxDMdcXcJ7fzOxNLVhx7yayVjVX2IomQTDi6G+rnw
+         4HdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nrFu2KKyZmxCAHYq/fyE1aIbF4fy/TeMjczCnvnCazg=;
-        b=LlD3lKpjxdlEoRVzkEJGI7FI7GaOdzA+XfRL2bQLgvlRmvhf3993IAKjjRefQs1otr
-         AqYO3og82nOSBP99kMJl1WzemXMfGrbK6/ON2Z6PsJ+WsZfrAi+3rVpHZgYgsVnFFwid
-         TlZ+8DUjdHgeA3A9yjI4KtOEgG+xKNzkcC6oC5Cr/QB1axMXnZtUhZbeZ5L7DMKKKyUM
-         OhXIUg1NoyH27eWurTyTNo648oWxJtZDjg1Fh8z3xHEoJ09pIFhxe4fyvjU9XlikRBhZ
-         y/OU0/lwQZaga0VFKqAZ7Vs3aalWpsgRJwCH0gDH0/4gmgCFk9EpbSyzb6/BDnB14kq5
-         AiSg==
-X-Gm-Message-State: APjAAAXvGJZ6rvAQRHFLIbAMeRHR2d/SPSWX5GasdYe8vD6fvUd9/gb9
-        FwPqJieprI+gs4penap+FpdH2Syflj9iAmk+CtdAN/Yo
-X-Google-Smtp-Source: APXvYqz5+hEEUCW548huA2G7W5d1Sh76hIwgHn+5VBIvXwkZ19HiKX5XJpdkni808XHuzA7Gfe6Lg1hPIOK7NBMkSWA=
-X-Received: by 2002:a02:a795:: with SMTP id e21mr12502166jaj.1.1583132269817;
- Sun, 01 Mar 2020 22:57:49 -0800 (PST)
+        bh=pBpc6wsvkGRBZXRQXOedwVEHxms2DjtLUfW89sueDZk=;
+        b=L/w2PgaVMiUyHNaltMN5h31Y95QWVHuo2cYjKtIQYA4k7kIkhFNjDQijMv8ncVgdyD
+         cd4KqaiTwiHa0DhA8WhP+2vscbuBboCIKdvhAS4Lx2+dLvZ8pK7wVdvQDYVjEJaPFQfA
+         rFVjvh0LVBqlBbH/NHyCGJNnsflabEgv+oKenVeTkQTMGSKUgeTkrxpqV0pL8rtr7HFK
+         827wOhfAlYpdManZ3bIaSbQf5EOidvsxUIVTUZEsDZPZ/qMsI09mba0e/+HyoxFz8t9l
+         8r1uR16tIynq2GudzR1tX+RQEVLgXcoNwfBVuGZYEY3Jf0SDjwqbzCH7d90y9QcYCxqm
+         SxaA==
+X-Gm-Message-State: ANhLgQ3A62hESsgPwriQa6IGG67BCgi1WfBLHPTtf78oDNovnkvirvqB
+        3twVwqNEwrMIwuXtfL6MJlGCiNKbuQBf8K5JgVv4OtDr
+X-Google-Smtp-Source: ADFU+vumIHFWn/QAq65GRphsbc3M4dJy5+RcZogwja8X4eBJdfyeXz6KjxK3bWQwBTrbTcb+aEFPp1fRpnLNQpY2vVc=
+X-Received: by 2002:aca:5109:: with SMTP id f9mr2280532oib.14.1583137416872;
+ Mon, 02 Mar 2020 00:23:36 -0800 (PST)
 MIME-Version: 1.0
-References: <20200228020212.16183-1-komachi.yoshiki@gmail.com> <CAEf4Bza9J3e=dfzDud6KY7_=4Qv77YqW2srfdxKg9ieiUCJgXw@mail.gmail.com>
-In-Reply-To: <CAEf4Bza9J3e=dfzDud6KY7_=4Qv77YqW2srfdxKg9ieiUCJgXw@mail.gmail.com>
-From:   Yoshiki Komachi <komachi.yoshiki@gmail.com>
-Date:   Mon, 2 Mar 2020 15:57:39 +0900
-Message-ID: <CAA6waGKtG_fE3Q+Dig9K1L3D9FRErQmpoMtMbPzuzkyODYXV7A@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: btf: Fix BTF verification of the enum size in struct/union
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <CAPhsuW6QkQ8-pXamQVzTXLPzyb4-FCeF_6To7sa_=gd7Ea5VpA@mail.gmail.com>
+ <20200225044538.61889-1-forrest0579@gmail.com>
+In-Reply-To: <20200225044538.61889-1-forrest0579@gmail.com>
+From:   Forrest Chen <forrest0579@gmail.com>
+Date:   Mon, 2 Mar 2020 16:23:24 +0800
+Message-ID: <CAH+QybLZZwQ8QORPghOZtHyQABQRygGVF9h8i9wsCY6LnADuvg@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 0/3] bpf: Add get_netns_id helper for sock_ops
+To:     bpf <bpf@vger.kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        John Fastabend <john.fastabend@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Petar Penkov <ppenkov.kernel@gmail.com>,
+        Song Liu <song@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
@@ -62,96 +64,54 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020=E5=B9=B42=E6=9C=8829=E6=97=A5(=E5=9C=9F) 9:23 Andrii Nakryiko <andrii.=
-nakryiko@gmail.com>:
->
-> On Thu, Feb 27, 2020 at 6:07 PM Yoshiki Komachi
-> <komachi.yoshiki@gmail.com> wrote:
-> >
-> > btf_enum_check_member() checked if the size of "enum" as a struct
-> > member exceeded struct_size or not. Then, the function definitely
-> > compared it with the size of "int" now. Therefore, errors could occur
-> > when the size of the "enum" type was changed.
-> >
-> > Although the size of "enum" is 4-byte by default, users can change it
-> > as needed (e.g., the size of the following test variable is not 4-byte
-> > but 1-byte). It can be used as a struct member as below:
-> >
-> > enum test : char {
->
-> you can't specify that in pure C, but this will work for C:
->
-> struct {
->     enum { X, Y, Z } __attribute__((packed)) e;
-> } tmp;
->
-> Please add such a selftest, as part of fixing this bug. Thanks!
->
-> Otherwise logic looks good.
+Find that all three commits are acked by the maintainer. Could we
+merge this to the upstream? Or do we have any other comments?
 
-Thank you for kind comments!
-I will add a selftest program, and submit the next version later.
 
-Best regards,
+Lingpeng Chen <forrest0579@gmail.com> =E4=BA=8E2020=E5=B9=B42=E6=9C=8825=E6=
+=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=8812:46=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Currently 5-tuple(sip+dip+sport+dport+proto) can't identify a
+> uniq connection because there may be multi net namespace.
+> For example, there may be a chance that netns a and netns b all
+> listen on 127.0.0.1:8080 and the client with same port 40782
+> connect to them. Without netns number, sock ops program
+> can't distinguish them.
+> Using bpf_get_netns_id helpers to get current connection
+> netns number to distinguish connections.
+>
+> Changes in v4:
+> - rename get_netns_id_sock_ops to get_getns_id
+> - rebase from bpf-next
+>
+> Changes in v3:
+> - rename sock_ops_get_netns to get_netns_id
+>
+> Changes in v2:
+> - Return u64 instead of u32 for sock_ops_get_netns
+> - Fix build bug when CONFIG_NET_NS not set
+> - Add selftest for sock_ops_get_netns
+>
+> Lingpeng Chen (3):
+>   bpf: Add get_netns_id helper function for sock_ops
+>   bpf: Sync uapi bpf.h to tools/
+>   selftests/bpf: add selftest for get_netns_id helper
+>
+>  include/uapi/linux/bpf.h                      |  9 +++-
+>  net/core/filter.c                             | 20 ++++++++
+>  tools/include/uapi/linux/bpf.h                |  9 +++-
+>  .../selftests/bpf/progs/test_tcpbpf_kern.c    | 11 +++++
+>  .../testing/selftests/bpf/test_tcpbpf_user.c  | 46 ++++++++++++++++++-
+>  5 files changed, 92 insertions(+), 3 deletions(-)
+>
+>
+> base-commit e0360423d020
+> ("selftests/bpf: Run SYN cookies with reuseport BPF test only for TCP")
+> --
+> 2.20.1
+>
 
-> >         X,
-> >         Y,
-> >         Z,
-> > };
-> >
-> > struct {
-> >         char a;
-> >         enum test b;
-> >         char c;
-> > } tmp;
-> >
-> > With the setup above, when I tried to load BTF, the error was given
-> > as below:
-> >
-> > ------------------------------------------------------------------
-> >
-> > [58] STRUCT (anon) size=3D3 vlen=3D3
-> >         a type_id=3D55 bits_offset=3D0
-> >         b type_id=3D59 bits_offset=3D8
-> >         c type_id=3D55 bits_offset=3D16
-> > [59] ENUM test size=3D1 vlen=3D3
-> >         X val=3D0
-> >         Y val=3D1
-> >         Z val=3D2
-> >
-> > [58] STRUCT (anon) size=3D3 vlen=3D3
-> >         b type_id=3D59 bits_offset=3D8 Member exceeds struct_size
-> >
-> > libbpf: Error loading .BTF into kernel: -22.
-> >
-> > ------------------------------------------------------------------
-> >
-> > The related issue was previously fixed by the commit 9eea98497951 ("bpf=
-:
-> > fix BTF verification of enums"). On the other hand, this patch fixes
-> > my explained issue by using the correct size of "enum" declared in
-> > BPF programs.
-> >
-> > Fixes: 179cde8cef7e ("bpf: btf: Check members of struct/union")
-> > Signed-off-by: Yoshiki Komachi <komachi.yoshiki@gmail.com>
-> > ---
-> >  kernel/bpf/btf.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index 7871400..32ab922 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-> > @@ -2418,7 +2418,7 @@ static int btf_enum_check_member(struct btf_verif=
-ier_env *env,
-> >
-> >         struct_size =3D struct_type->size;
-> >         bytes_offset =3D BITS_ROUNDDOWN_BYTES(struct_bits_off);
-> > -       if (struct_size - bytes_offset < sizeof(int)) {
-> > +       if (struct_size - bytes_offset < member_type->size) {
-> >                 btf_verifier_log_member(env, struct_type, member,
-> >                                         "Member exceeds struct_size");
-> >                 return -EINVAL;
-> > --
-> > 1.8.3.1
-> >
+
+--=20
+Beijing University of Posts and Telecommunications
+forrest0579@gmail.com
