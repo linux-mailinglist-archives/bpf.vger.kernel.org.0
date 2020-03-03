@@ -2,123 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 02AD9176EF8
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 06:51:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD427176F21
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 07:10:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725763AbgCCFvs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 00:51:48 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:43425 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725879AbgCCFvs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Mar 2020 00:51:48 -0500
-Received: by mail-qk1-f193.google.com with SMTP id q18so2244196qki.10;
-        Mon, 02 Mar 2020 21:51:47 -0800 (PST)
+        id S1725440AbgCCGK4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 01:10:56 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:46123 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725308AbgCCGK4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Mar 2020 01:10:56 -0500
+Received: by mail-lj1-f196.google.com with SMTP id h18so2094157ljl.13;
+        Mon, 02 Mar 2020 22:10:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=iLzATktCHrodymTRFz9+R7sYgPZp2WR4t6sVmb9CoD8=;
-        b=Y2/8tjTwomcDfnQI4CrB9vsGgA7c+4gX+IPFpd6xie0Z+y05cpijap953GnF9rFdDE
-         SC5lG7GF2G3PVsUtRjKkdoT/Ze/PUnTEq3Fp0SuRLCRlY2D75jheQ6UZimcFGlnljq0J
-         /VFoBpOQm3TpF8oQg/HORVe6NM0jM5iMz7EYDxfXEozYsByK2Uib08tkiok/TiR3OsGC
-         dBUYXF0m9aqi6VjdIEpJ0JBTvBHO4+L5xE+wPyR7Wy2DlqAPHui9X6mrLwCT6gmE1GAC
-         uCGgoI83igJ6k60HRp1HdkQhyymY2TlMabb+xNGmW2INVOSI7/W97Q3fP0Xkr4s6tA/d
-         2d6Q==
+         :cc;
+        bh=L44R33MZfBo7EJfh7yHeMAVpYiCz+bW7Ff5nJ/4YCbA=;
+        b=mDGa3l0iB+Fa9PTGs6OTbYeBy/ampfYZk7C1RYlTpL5OoFt8b+uXUEpUEXcHVdqIva
+         SRzcCxP4HA2y5CE4D9xgZexYgTdAIt8ewGax5jf2aorMSiYG1xJuKodHR9cK8/K9JGld
+         zB5zLyi96CN4BPi4qGNMSu5ctyHtYFVehiLxBW8BdT58O91MwPqFrbTkwA4ES48rsOSV
+         U68bhRgJwqRBi0KuLkhVyFr8xQlrt20MWM4Sil0TwVXHrO5SWRVmpBSCdOM8GecUKa7t
+         xWJ15KBZhcS0wuSrm0PnZT90T6dD0oMNJeFqW8AJflIDNb1vIuwPweEM8CS5Yij5QuIG
+         8hXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=iLzATktCHrodymTRFz9+R7sYgPZp2WR4t6sVmb9CoD8=;
-        b=p4fzjfKiYHO20Ewq2sbd8Bx9BmhTjGFv2Rdet3e0oXM7uTfM4LVelJQ4+jvrNq6vHm
-         recVQvY9KJRlQMjemPFNpf8GA5hZPkCXQxYlGy/VgnjOvHtuAtVr/VueryO+jSRYW5VS
-         Dgz/bA0dPkivo9AN6HP76QnnZyoNTPFswvIcbIVmbD97A1JMoeIqDVVQhr85PFssYmte
-         rew4RCl99i3iyi0OQKX2z4ZSWeaZbKZ5qgetktJdEAwqvn3aq0kjFnLjH8J+49e8w7Ln
-         dqq/kFCicrW34OZ1aENtRSklztu5dlZoflXCyHfyVszs7N5lhsRwsVwuUKdeFsPR9ClD
-         CbLg==
-X-Gm-Message-State: ANhLgQ0AudiK1YPrDIIxctuKgJO057ko2eRqRr2jXivOInLXIFld8bZw
-        8PrTjExW+7eAofdxJQuAnvmkQtrRKE3R71E6WnI=
-X-Google-Smtp-Source: ADFU+vsAdJwHeWN+xr+Wfk3ncx3mNSNxdcg74ESWiG+tMxczIt6h5phl3xQyAyIyAR3X2SefIi3fSE5nmggLdi9ocbM=
-X-Received: by 2002:a37:8046:: with SMTP id b67mr2625917qkd.218.1583214706980;
- Mon, 02 Mar 2020 21:51:46 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=L44R33MZfBo7EJfh7yHeMAVpYiCz+bW7Ff5nJ/4YCbA=;
+        b=tupakajuELr6tfiGRSrrg9zs2Tkgb24Z4zswurm8lIyP7XZjVlvdajv2kUZTKxcbWU
+         PDUPczdRZ/mkIkivamlzOivZYoZSPWUKL+VZYAP/Pykza7WpCJxxcOi+pruSoA3Wwzti
+         OH9ZzizFNq2MjWaaZJeJ86Q9ViSURYD3vLe2LOM8LNYrCJKHh6ZYYM/k1ZAN6syWoxSo
+         eWR5VOhka2IseYyN1AZYMRAMtq7aRt6NFcygGAWZRXPepRK2JxxzinNZ7ivcWCKIA7kD
+         e8FeuKhP0VO1q0TZW5wmNAnWbKiL5D8KVasSpFVAP4+1L/xNt82SVwgQMRx8mSV+Bh64
+         JbCg==
+X-Gm-Message-State: ANhLgQ3pL15e00vOPUNMJHQOB3uYHzf0ez9G39XeGWCT3EiO4bd8aBDA
+        eEDxw26jB52GiI6NoOeYYrUDS2zNcdnqLzeYm2wfYOga
+X-Google-Smtp-Source: ADFU+vvBKj4kk/DGPu4e3EEo1JpMgvtQZJ67R+QKzPSOu5NVGyjMBBheD6boVCTDo8w0Yjt+bdDfmDw8ZFlvl+4PJz4=
+X-Received: by 2002:a2e:84d0:: with SMTP id q16mr1492785ljh.138.1583215854320;
+ Mon, 02 Mar 2020 22:10:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20200303005035.13814-1-luke.r.nels@gmail.com> <20200303005035.13814-5-luke.r.nels@gmail.com>
-In-Reply-To: <20200303005035.13814-5-luke.r.nels@gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Tue, 3 Mar 2020 06:51:35 +0100
-Message-ID: <CAJ+HfNhJJeEewW+Zj2gyH_fprvM25kWCMJP1kmA3Udpjj0MNYQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 4/4] MAINTAINERS: Add entry for RV32G BPF JIT
-To:     Luke Nelson <lukenels@cs.washington.edu>
-Cc:     bpf <bpf@vger.kernel.org>, Luke Nelson <luke.r.nels@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Xi Wang <xi.wang@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, linux-riscv@lists.infradead.org
+References: <202002242114.CBED7F1@keescook> <202003022046.4185359A@keescook>
+In-Reply-To: <202003022046.4185359A@keescook>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 2 Mar 2020 22:10:42 -0800
+Message-ID: <CAADnVQKgQWmMgcxynzTRhGv1dZ=6oJDB79txrc8tmGy5sPejTg@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: Remove debug info from kallsyms linking
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 3 Mar 2020 at 01:50, Luke Nelson <lukenels@cs.washington.edu> wrote=
-:
+On Mon, Mar 2, 2020 at 8:48 PM Kees Cook <keescook@chromium.org> wrote:
 >
-> Cc: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>
-> Signed-off-by: Xi Wang <xi.wang@gmail.com>
-> Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
-> ---
->  MAINTAINERS | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
+> On Mon, Feb 24, 2020 at 09:16:17PM -0800, Kees Cook wrote:
+> > When CONFIG_DEBUG_INFO is enabled, the two kallsyms linking steps spend
+> > time collecting and writing the dwarf sections to the temporary output
+> > files. kallsyms does not need this information, and leaving it off
+> > halves their linking time. This is especially noticeable without
+> > CONFIG_DEBUG_INFO_REDUCED. The BTF linking stage, however, does still
+> > need those details.
+> >
+> > Refactor the BTF and kallsyms generation stages slightly for more
+> > regularized temporary names. Skip debug during kallsyms links.
+> >
+> > For a full debug info build with BTF, my link time goes from 1m06s to
+> > 0m54s, saving about 12 seconds, or 18%.
+> >
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
 >
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 8f27f40d22bb..fdd8b99f18db 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3213,11 +3213,20 @@ L:      bpf@vger.kernel.org
->  S:     Maintained
->  F:     arch/powerpc/net/
->
-> -BPF JIT for RISC-V (RV64G)
-> +BPF JIT for 32-bit RISC-V (RV32G)
-> +M:     Luke Nelson <luke.r.nels@gmail.com>
-> +M:     Xi Wang <xi.wang@gmail.com>
-> +L:     bpf@vger.kernel.org
-> +S:     Maintained
-> +F:     arch/riscv/net/
-> +X:     arch/riscv/net/bpf_jit_comp.c
-> +
-> +BPF JIT for 64-bit RISC-V (RV64G)
->  M:     Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>
-> -L:     netdev@vger.kernel.org
-> +L:     bpf@vger.kernel.org
->  S:     Maintained
->  F:     arch/riscv/net/
-> +X:     arch/riscv/net/bpf_jit_comp32.c
->
+> Ping. Masahiro what do you think of this? It saves me a fair bit of time
+> on the link stage... I bet the BPF folks would be interested too. :)
 
-Empty commit message body, but maybe that's OK. The removal of netdev
-list is following the new guidelines from commit e42da4c62abb
-("docs/bpf: Update bpf development Q/A file").
-
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>
-
->  BPF JIT for S390
->  M:     Ilya Leoshkevich <iii@linux.ibm.com>
-> --
-> 2.20.1
->
+The build time improvement sound great.
+Could you please resubmit for bpf-next tree?
+So we can test and apply properly?
+Thanks!
