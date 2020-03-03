@@ -2,118 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F30E5177673
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 13:55:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 161171776A2
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 14:06:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728350AbgCCMyx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 07:54:53 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:53460 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727817AbgCCMyx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Mar 2020 07:54:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1583240092;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=A0B7on4le/NFx5xViwWLfbthPnLFia00P/lYC9i1PXo=;
-        b=QyVh7LKP0eo5DpvKoXs2K2KGyFm/n894YXceHZa+nEGjiosefRkjDrCYltJfkLYDkT85BE
-        NFBpTRKqRzxSX2l452LSbSCwc6UgGZGGm3xLdq7BrLqMuEHWpeOP/WYq5DpzfKEBqCZniD
-        1u6qSLvLhn0Rup0f3Lo+1CxST6WGX0k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-458-Y176D40_NzKvvBMqF96r9Q-1; Tue, 03 Mar 2020 07:54:51 -0500
-X-MC-Unique: Y176D40_NzKvvBMqF96r9Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8895F1005513;
-        Tue,  3 Mar 2020 12:54:49 +0000 (UTC)
-Received: from carbon (ovpn-200-19.brq.redhat.com [10.40.200.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A468D8D563;
-        Tue,  3 Mar 2020 12:54:40 +0000 (UTC)
-Date:   Tue, 3 Mar 2020 13:54:39 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc:     bpf@vger.kernel.org, gamemann@gflclan.com, lrizzo@google.com,
-        netdev@vger.kernel.org,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        brouer@redhat.com
-Subject: Re: [bpf-next PATCH] xdp: accept that XDP headroom isn't always
- equal XDP_PACKET_HEADROOM
-Message-ID: <20200303135439.76605e59@carbon>
-In-Reply-To: <874kv563ja.fsf@toke.dk>
-References: <158323601793.2048441.8715862429080864020.stgit@firesoul>
-        <874kv563ja.fsf@toke.dk>
+        id S1727741AbgCCNGd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 08:06:33 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:33066 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727577AbgCCNGd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Mar 2020 08:06:33 -0500
+Received: by mail-qt1-f193.google.com with SMTP id d22so1342407qtn.0;
+        Tue, 03 Mar 2020 05:06:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5qtkGUAKyjubxoGCBuIb+d1TqkEissSGWcA4/L90vak=;
+        b=jGwukuuyw2BJzDh3eUvHzsAS+MoG3rLt/q2jfga5Xo1oF3ZJU6PVAfTOnumzmV3vnn
+         Cks+siixxzUAAfNrj30dS6Uw1GPOuJDmClS+Ibezv6gea90tld+ThX04jGyxxc3aVMwo
+         h9EI8KqMmvei8Reqsp9/beW7nTGqaerRq6JW5r0CIMI9+K0ct0UqEus5zq//ntDi32PH
+         2IfwbExWLEtfwcIK9eghhmWO8qg4ClcP8jx567DAd3PHNTgm29UKOUWwuUoIeorVvUXg
+         OOWPLmElN3qyygxJUjCsz2zGAqD7lXw9gBE9gFrIGC6QCB3uZV4DhnGc6nQ+SW7jwT9v
+         au7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5qtkGUAKyjubxoGCBuIb+d1TqkEissSGWcA4/L90vak=;
+        b=eqSO0FbDZNYrDtpWtSHnrT2GcmGuFanEbPfOJLV6LEF0oL0KfDPm+rwGzmOSuElGfl
+         GHU3bR2d93iJ+a390Hg8SnVisaWNgpuJrAo84fvnyhvoiA1MxPn/zwlfFX6dt3mc9icb
+         /7AikAntfNaYbIrRkdbCKngwriP0nPfaSjNPrDS7ikUDicgqeZOAUEb5mIE4U91dm4w+
+         qScFNOnYDIXXihNvD3f/5AK8x0KlgEgTS2Zr0saojqESUSk+rgPgPsaPsHfMtDTDNv9M
+         i73yP5ZW8nS7uWWh82OD9okcelvn/wNDz1qzEqzxaixK6u9tNGWza8hIO8B4WXFtW7X+
+         YzNw==
+X-Gm-Message-State: ANhLgQ34+mXZH0MaSv6pUMDQ02VYkhN8IDjAKU4GbyboqlF5rvuGWE81
+        6vrT3EL+LTrPbetg3UQVFExVDpNtjdk=
+X-Google-Smtp-Source: ADFU+vuNBnyaMlnUy9gO9hs6c/Y6hWRH5Ibz7Ixg4w6/ZL9cGhSM7AH/pRjE913rKwBgn5D/c3HWWA==
+X-Received: by 2002:aed:38c2:: with SMTP id k60mr4151566qte.103.1583240792222;
+        Tue, 03 Mar 2020 05:06:32 -0800 (PST)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id l2sm5470950qtq.16.2020.03.03.05.06.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Mar 2020 05:06:31 -0800 (PST)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1DCEB403AD; Tue,  3 Mar 2020 10:06:29 -0300 (-03)
+Date:   Tue, 3 Mar 2020 10:06:29 -0300
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Yonghong Song <yhs@fb.com>, Networking <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>, Andi Kleen <andi@firstfloor.org>
+Subject: Re: [PATCH v2 bpf-next 1/2] bpftool: introduce "prog profile" command
+Message-ID: <20200303130629.GA13702@kernel.org>
+References: <20200228234058.634044-1-songliubraving@fb.com>
+ <20200228234058.634044-2-songliubraving@fb.com>
+ <367483bd-87ff-02f4-71f6-c2694579dda4@fb.com>
+ <67921C65-D391-47C9-9582-C9D6060161A1@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <67921C65-D391-47C9-9582-C9D6060161A1@fb.com>
+X-Url:  http://acmel.wordpress.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 03 Mar 2020 13:12:09 +0100
-Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
+Em Tue, Mar 03, 2020 at 12:10:50AM +0000, Song Liu escreveu:
+> > On Mar 1, 2020, at 8:24 PM, Yonghong Song <yhs@fb.com> wrote:
+> >> +	},
+> >> +	{
+> >> +		.name = "instructions",
+> >> +		.attr = {
+> >> +			.freq = 0,
+> >> +			.sample_period = SAMPLE_PERIOD,
+> >> +			.inherit = 0,
+> >> +			.type = PERF_TYPE_HARDWARE,
+> >> +			.read_format = 0,
+> >> +			.sample_type = 0,
+> >> +			.config = PERF_COUNT_HW_INSTRUCTIONS,
+> >> +		},
+> >> +		.ratio_metric = 1,
+> >> +		.ratio_mul = 1.0,
+> >> +		.ratio_desc = "insn per cycle",
+> >> +	},
+> >> +	{
+> >> +		.name = "l1d_loads",
+> >> +		.attr = {
+> >> +			.freq = 0,
+> >> +			.sample_period = SAMPLE_PERIOD,
+> >> +			.inherit = 0,
+> >> +			.type = PERF_TYPE_HW_CACHE,
+> >> +			.read_format = 0,
+> >> +			.sample_type = 0,
+> >> +			.config =
+> >> +				PERF_COUNT_HW_CACHE_L1D |
+> >> +				(PERF_COUNT_HW_CACHE_OP_READ << 8) |
+> >> +				(PERF_COUNT_HW_CACHE_RESULT_ACCESS << 16),
+> >> +		},
+> > 
+> > why we do not have metric here?
+> 
+> This follows perf-stat design: some events have another event to compare 
+> against, like instructions per cycle, etc. 
+> 
+> > 
+> >> +	},
+> >> +	{
+> >> +		.name = "llc_misses",
+> >> +		.attr = {
+> >> +			.freq = 0,
+> >> +			.sample_period = SAMPLE_PERIOD,
+> >> +			.inherit = 0,
+> >> +			.type = PERF_TYPE_HW_CACHE,
+> >> +			.read_format = 0,
+> >> +			.sample_type = 0,
+> >> +			.config =
+> >> +				PERF_COUNT_HW_CACHE_LL |
+> >> +				(PERF_COUNT_HW_CACHE_OP_READ << 8) |
+> >> +				(PERF_COUNT_HW_CACHE_RESULT_MISS << 16),
+> >> +		},
+> >> +		.ratio_metric = 2,
+> >> +		.ratio_mul = 1e6,
+> >> +		.ratio_desc = "LLC misses per million isns",
+> >> +	},
+> >> +};
 
-> Jesper Dangaard Brouer <brouer@redhat.com> writes:
->=20
-> > The Intel based drivers (ixgbe + i40e) have implemented XDP with
-> > headroom 192 bytes and not the recommended 256 bytes defined by
-> > XDP_PACKET_HEADROOM.  For generic-XDP, accept that this headroom
-> > is also a valid size.
-> >
-> > Still for generic-XDP if headroom is less, still expand headroom to
-> > XDP_PACKET_HEADROOM as this is the default in most XDP drivers.
-> >
-> > Tested on ixgbe with xdp_rxq_info --skb-mode and --action XDP_DROP:
-> > - Before: 4,816,430 pps
-> > - After : 7,749,678 pps
-> > (Note that ixgbe in native mode XDP_DROP 14,704,539 pps)
-> >
-> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > ---
-> >  include/uapi/linux/bpf.h |    1 +
-> >  net/core/dev.c           |    4 ++--
-> >  2 files changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 906e9f2752db..14dc4f9fb3c8 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -3312,6 +3312,7 @@ struct bpf_xdp_sock {
-> >  };
-> > =20
-> >  #define XDP_PACKET_HEADROOM 256
-> > +#define XDP_PACKET_HEADROOM_MIN 192 =20
->=20
-> Do we need a comment here explaining why there are two values?
+> > icache miss and itlb miss might be useful as well as the code will jump
+> > to a different physical page. I think we should addd them. dtlb_miss
+> > probably not a big problem, but it would be good to be an option.
 
-Good point, but I want to take it even further, lets discuss what these
-defines should be used for (which is what the comment should say ;-)).
+> I plan to add more events later on. 
 
-Maybe we should name it to reflect that this is used by generic XDP?
-Or do we also want to change ixgbe and i40e to use this value?
-(Looking at ixgbe code this is semi-dynamic xgbe_rx_offset(rx_ring) ->
-IXGBE_SKB_PAD -> ixgbe_skb_pad())
+> > For ratio_metric, we explicitly assign a slot here. Any specific reason?
+> > We can just say this metric *permits* ratio_metric and then ratio_matric
+> > is assigned dynamically by the user command line options?
 
+> > I am thinking how we could support *all* metrics the underlying system
+> > support based on `perf list`. This can be the future work though.
+ 
+> We are also thinking about adding similar functionality to perf-stat, 
+> which will be more flexible. 
 
-An orthogonal question is why does XDP-generic have this limit?
-(Luigi Rizzo's patch in this area is not adhering to this...)
+Yeah, being able to count events bpf programs using the technique you're
+using here but instead using 'perf stat' to set it up and then use what
+is already in 'perf stat' would be really great, having the same
+interface for BPF programs as we have for tid, pid, cgroups, system
+wide, etc.
 
-XDP-native use headroom area for xdp_frame and metadata. The xdp_frame
-is not relevant/used in XDP-generic.  The metadata is still relevant
-for XDP-generic, as it's a communication channel to TC-BPF, but its
-only 32 bytes.  IHMO it should be safe to reduce to 128 bytes.
+If you try it and find any problems with the codebase I'll be happy to
+help as I think others working with 'perf stat' will too,
 
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Cheers,
 
+- Arnaldo
