@@ -2,130 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B0A17859B
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 23:26:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D11F1785A0
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 23:27:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727870AbgCCW0W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 17:26:22 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:38074 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727769AbgCCW0W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Mar 2020 17:26:22 -0500
-Received: by mail-qk1-f196.google.com with SMTP id h22so5142407qke.5;
-        Tue, 03 Mar 2020 14:26:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wagrVCzS/XTiayLok4nktlIE6b9GM+kU+mOoA/5BUNQ=;
-        b=Imebv53X2yi2WO2vBjXJnc2vvyk3l9qMBZXaUJaOUOgVd0pHdwWbRO8ViUIGKuFEya
-         k3cBuospCwoqTF8lPuQofzal2lkaGUwsaw96sH1TrytGrqawdqkvDq2op7vcPso25yq2
-         iZi3BsykiP20586JqH3pd3J+M5kx/F39T0F2Ef6RpPyvGQnwFEYFeTF2i0TfnwlgBz7O
-         3uUutbiMzQc9XD4rZmBXqfTuWctktVmS+kssFTpj+n7FuBzvkXGZhUOiDun2ND+/VVCr
-         b4vnW/SVEMNvgqMN50J/CfTUcFMTnIdaC/TpVcnCK/J5jBUwQZjkNTOZaAMr+zmaoOS9
-         OxsQ==
+        id S1727459AbgCCW1U (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 17:27:20 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:30067 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727304AbgCCW1U (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 3 Mar 2020 17:27:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1583274439;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CC20LT4gr80OBqkXVh4lxEL7vGOkI1o+Imq0RomSfwc=;
+        b=QwfWPrkUlt9jdUOM4iza46l4ZE03oG+H1nHnKY1M5niypzq42i+v+GumfVtBG0wk5eRFx2
+        hG3AgBMuwOE0EyxDT04MAfQjxGrhVFOwMeMDPn2EZicgD/raiwJJe7pcVWsUVQmDIqKKYq
+        wgZWmFWUsd5dxyPWIVGhx/cFRab4XoU=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-452-nnlwa4rDOgGzAXPJp65Chw-1; Tue, 03 Mar 2020 17:27:17 -0500
+X-MC-Unique: nnlwa4rDOgGzAXPJp65Chw-1
+Received: by mail-wm1-f72.google.com with SMTP id 7so27104wmo.7
+        for <bpf@vger.kernel.org>; Tue, 03 Mar 2020 14:27:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wagrVCzS/XTiayLok4nktlIE6b9GM+kU+mOoA/5BUNQ=;
-        b=eBLJZ4dgXs08JOqjGf8GmdBHDIpV/p+89HgXRxTZReC5QP8fGayuaABmNAlp60d/ex
-         CIVznFW6DWkNX20mGgzx6Ht8OjueSoau1YIiqnxmCdPWZRA56NA2OU2Rz+NBt1Sb7X+z
-         Y9CkBPpOeKlpTKr5+0DvJUgtVm2SbzFtHE1Z+ktOURuQPRTBRJYdQ8zTDCa4nEmXQHfR
-         QQ38kCwfQFPRlDem315QcxUbQvrCbSAUQsWTbf7Z5nipYRjeZzU1+VzpuIIZTItJ0ogT
-         Ki641z1+y8D1/ngFn1TmvvHU0pEI6IwxxzAQeufjwXm27wJ/4RmC+XAGvsf16HleTgQj
-         rxJg==
-X-Gm-Message-State: ANhLgQ16hO1Jl4bGguS6Q640LzEaBds4m0GrSb4CAB7vnEP6KGUYScbG
-        +wOW64ABfrZoeGuI/J+ARbHhHjG/4RUeOuBpcFM=
-X-Google-Smtp-Source: ADFU+vvV2oNfqztGhuZHjThFr3r5hmgjU00PGxySl8X9BewWNLNQv3zc5Elq9UNraKBA9K6n4/Y9SqH3Z3Fj4IK0I18=
-X-Received: by 2002:a05:620a:99d:: with SMTP id x29mr231581qkx.39.1583274380969;
- Tue, 03 Mar 2020 14:26:20 -0800 (PST)
-MIME-Version: 1.0
-References: <20200303140950.6355-1-kpsingh@chromium.org> <20200303140950.6355-3-kpsingh@chromium.org>
-In-Reply-To: <20200303140950.6355-3-kpsingh@chromium.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 3 Mar 2020 14:26:09 -0800
-Message-ID: <CAEf4BzZJ2E2rmyz7k4F7s=EXPbaAX7XncvUcHukX_FYDWeD7BA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/7] bpf: JIT helpers for fmod_ret progs
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=CC20LT4gr80OBqkXVh4lxEL7vGOkI1o+Imq0RomSfwc=;
+        b=gPwV0DPtVzgJFX+YaY/cSjQogaF6u/mxMtXXst/LhchlLVdjlWm/UbrEt0F3v4gXGB
+         yMkir9MEreJoKJ7bHllmNEBgg3d2UL6Ln2bdZdelh4HeVL4XptwP4gvWb1zfZEsVssRn
+         PYkfcyHb/aT0FLafdtzuzAN36rvQD3c6W69cWxwATK0+1JSaXzVXtuURsVu9bWbBzHIo
+         8+f1Pyp+Rcc1cDJ6J2CCZtCopGvOvxWynGnf9V1UPjjgpQP5dC1Zb9N2iRi0A5bbT2y9
+         rJqegGMoZhLWfvhP/Mh8qBPWAA7Ow2booVsXEjBZ0mkxImCyV9qLrl4K5pkHuZRSpAK0
+         j0Wg==
+X-Gm-Message-State: ANhLgQ1PxShjwXPBLjgAm6uy/AOM2KZ+aRnGtFZcTkhY0DAUavbAOo1t
+        PqLKHCtP7CDMQnuWjMfbQb9/byGUU2jtRmB70JK4IOL6uKzwhxszy4Gq+/Y5M8PbuxW28fwXRUH
+        4fBudIaIYsvB3
+X-Received: by 2002:a1c:7c08:: with SMTP id x8mr600238wmc.71.1583274436144;
+        Tue, 03 Mar 2020 14:27:16 -0800 (PST)
+X-Google-Smtp-Source: ADFU+vsbvpULOHdHx+tHskEmx01R65AAJkIgYQLYGgtpLfs6wgbIIEoW3/UrkNRu1IiZKcmpd7I5xQ==
+X-Received: by 2002:a1c:7c08:: with SMTP id x8mr600224wmc.71.1583274435881;
+        Tue, 03 Mar 2020 14:27:15 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id o11sm24861430wrn.6.2020.03.03.14.27.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Mar 2020 14:27:15 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 9C2AE180331; Tue,  3 Mar 2020 23:27:13 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 0/3] Introduce pinnable bpf_link kernel abstraction
+In-Reply-To: <ccbc1e49-45c1-858b-1ad5-ee503e0497f2@fb.com>
+References: <20200228223948.360936-1-andriin@fb.com> <87mu8zt6a8.fsf@toke.dk> <CAEf4BzZGn9FcUdEOSR_ouqSNvzY2AdJA=8ffMV5mTmJQS-10VA@mail.gmail.com> <87imjms8cm.fsf@toke.dk> <094a8c0f-d781-d2a2-d4cd-721b20d75edd@iogearbox.net> <e9a4351a-4cf9-120a-1ae1-94a707a6217f@fb.com> <8083c916-ac2c-8ce0-2286-4ea40578c47f@iogearbox.net> <CAEf4BzbokCJN33Nw_kg82sO=xppXnKWEncGTWCTB9vGCmLB6pw@mail.gmail.com> <87pndt4268.fsf@toke.dk> <ab2f98f6-c712-d8a2-1fd3-b39abbaa9f64@iogearbox.net> <ccbc1e49-45c1-858b-1ad5-ee503e0497f2@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 03 Mar 2020 23:27:13 +0100
+Message-ID: <87k1413whq.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 3, 2020 at 6:13 AM KP Singh <kpsingh@chromium.org> wrote:
+Alexei Starovoitov <ast@fb.com> writes:
+
+> On 3/3/20 12:53 PM, Daniel Borkmann wrote:
+>> 
+>> I think it depends on the environment, and yes, whether the orchestrator
+>> of those progs controls the host [networking] as in case of Cilium. We
+>> actually had cases where a large user in prod was accidentally removing
+>> the Cilium k8s daemon set (and hence the user space agent as well) and only
+>> noticed 1hrs later since everything just kept running in the data path as
+>> expected w/o causing them an outage. So I think both attachment semantics
+>> have pros and cons. ;)
 >
-> From: KP Singh <kpsingh@google.com>
+> of course. that's why there is pinning of FD-based links.
+> There are cases where pinning is useful and there are cases where
+> pinning will cause outages.
+> During app restart temporary pinning might be useful too.
 >
-> * Split the invoke_bpf program to prepare for special handling of
->   fmod_ret programs introduced in a subsequent patch.
-> * Move the definition of emit_cond_near_jump and emit_nops as they are
->   needed for fmod_ret.
-> * Refactor branch target alignment into its own function
->   align16_branch_target.
+>> But then are you also expecting that netlink requests which drop that tc
+>> filter that holds this BPF prog would get rejected given it has a bpf_link,
+>> is active & pinned and traffic goes through? If not the case, then what
+>> would be the point? If it is the case, then this seems rather complex to
+>> realize for rather little gain given there are two uapi interfaces (bpf,
+>> tc/netlink) which then mess around with the same underlying object in
+>> different ways.
 >
-> Signed-off-by: KP Singh <kpsingh@google.com>
-> ---
->  arch/x86/net/bpf_jit_comp.c | 158 ++++++++++++++++++++----------------
->  1 file changed, 90 insertions(+), 68 deletions(-)
->
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 15c7d28bc05c..475e354c2e88 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -1361,35 +1361,100 @@ static void restore_regs(const struct btf_func_model *m, u8 **prog, int nr_args,
->                          -(stack_size - i * 8));
->  }
->
+> Legacy api for tc, xdp, cgroup will not be able to override FD-based
+> link. For TC it's easy. cls-bpf allows multi-prog, so netlink
+> adding/removing progs will not be able to touch progs that are
+> attached via FD-based link.
+> Same thing for cgroups. FD-based link will be similar to 'multi' mode.
+> The owner of the link has a guarantee that their program will
+> stay attached to cgroup.
+> XDP is also easy. Since it has only one prog. Attaching FD-based link
+> will prevent netlink from overriding it.
 
-[...]
+So what happens if the device goes away?
 
-> +
-> +/* From Intel 64 and IA-32 Architectures Optimization
-> + * Reference Manual, 3.4.1.4 Code Alignment, Assembly/Compiler
-> + * Coding Rule 11: All branch targets should be 16-byte
-> + * aligned.
-> + */
-> +static void align16_branch_target(u8 **pprog)
-> +{
-> +       u8 *target, *prog = *pprog;
-> +
-> +       target = PTR_ALIGN(prog, 16);
-> +       if (target != prog)
-> +               emit_nops(&prog, target - prog);
-> +       if (target != prog)
-> +               pr_err("calcultion error\n");
+> This way the rootlet prog installed by libxdp (let's find a better name
+> for it) will stay attached.
 
-this wasn't in the original code, do you feel like it's more important
-to check this and print error?
+Dispatcher prog?
 
-also typo: calculation error, but then it's a bit brief and
-uninformative message. So I don't know, maybe just drop it?
+> libxdp can choose to pin it in some libxdp specific location, so other
+> libxdp-enabled applications can find it in the same location, detach,
+> replace, modify, but random app that wants to hack an xdp prog won't
+> be able to mess with it.
 
-> +}
-> +
-> +static int emit_cond_near_jump(u8 **pprog, void *func, void *ip, u8 jmp_cond)
-> +{
-> +       u8 *prog = *pprog;
-> +       int cnt = 0;
-> +       s64 offset;
-> +
-> +       offset = func - (ip + 2 + 4);
-> +       if (!is_simm32(offset)) {
-> +               pr_err("Target %p is out of range\n", func);
-> +               return -EINVAL;
-> +       }
-> +       EMIT2_off32(0x0F, jmp_cond + 0x10, offset);
-> +       *pprog = prog;
-> +       return 0;
-> +}
-> +
+What if that "random app" comes first, and keeps holding on to the link
+fd? Then the admin essentially has to start killing processes until they
+find the one that has the device locked, no?
 
-[...]
+And what about the case where the link fd is pinned on a bpffs that is
+no longer available? I.e., if a netdevice with an XDP program moves
+namespaces and no longer has access to the original bpffs, that XDP
+program would essentially become immutable?
+
+> We didn't come up with these design choices overnight. It came from
+> hard lessons learned while deploying xdp, tc and cgroup in production.
+> Legacy apis will not be deprecated, of course.
+
+Not deprecated, just less privileged?
+
+-Toke
+
