@@ -2,162 +2,301 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 161171776A2
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 14:06:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A31517784B
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 15:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727741AbgCCNGd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 08:06:33 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:33066 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727577AbgCCNGd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Mar 2020 08:06:33 -0500
-Received: by mail-qt1-f193.google.com with SMTP id d22so1342407qtn.0;
-        Tue, 03 Mar 2020 05:06:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5qtkGUAKyjubxoGCBuIb+d1TqkEissSGWcA4/L90vak=;
-        b=jGwukuuyw2BJzDh3eUvHzsAS+MoG3rLt/q2jfga5Xo1oF3ZJU6PVAfTOnumzmV3vnn
-         Cks+siixxzUAAfNrj30dS6Uw1GPOuJDmClS+Ibezv6gea90tld+ThX04jGyxxc3aVMwo
-         h9EI8KqMmvei8Reqsp9/beW7nTGqaerRq6JW5r0CIMI9+K0ct0UqEus5zq//ntDi32PH
-         2IfwbExWLEtfwcIK9eghhmWO8qg4ClcP8jx567DAd3PHNTgm29UKOUWwuUoIeorVvUXg
-         OOWPLmElN3qyygxJUjCsz2zGAqD7lXw9gBE9gFrIGC6QCB3uZV4DhnGc6nQ+SW7jwT9v
-         au7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5qtkGUAKyjubxoGCBuIb+d1TqkEissSGWcA4/L90vak=;
-        b=eqSO0FbDZNYrDtpWtSHnrT2GcmGuFanEbPfOJLV6LEF0oL0KfDPm+rwGzmOSuElGfl
-         GHU3bR2d93iJ+a390Hg8SnVisaWNgpuJrAo84fvnyhvoiA1MxPn/zwlfFX6dt3mc9icb
-         /7AikAntfNaYbIrRkdbCKngwriP0nPfaSjNPrDS7ikUDicgqeZOAUEb5mIE4U91dm4w+
-         qScFNOnYDIXXihNvD3f/5AK8x0KlgEgTS2Zr0saojqESUSk+rgPgPsaPsHfMtDTDNv9M
-         i73yP5ZW8nS7uWWh82OD9okcelvn/wNDz1qzEqzxaixK6u9tNGWza8hIO8B4WXFtW7X+
-         YzNw==
-X-Gm-Message-State: ANhLgQ34+mXZH0MaSv6pUMDQ02VYkhN8IDjAKU4GbyboqlF5rvuGWE81
-        6vrT3EL+LTrPbetg3UQVFExVDpNtjdk=
-X-Google-Smtp-Source: ADFU+vuNBnyaMlnUy9gO9hs6c/Y6hWRH5Ibz7Ixg4w6/ZL9cGhSM7AH/pRjE913rKwBgn5D/c3HWWA==
-X-Received: by 2002:aed:38c2:: with SMTP id k60mr4151566qte.103.1583240792222;
-        Tue, 03 Mar 2020 05:06:32 -0800 (PST)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id l2sm5470950qtq.16.2020.03.03.05.06.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Mar 2020 05:06:31 -0800 (PST)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1DCEB403AD; Tue,  3 Mar 2020 10:06:29 -0300 (-03)
-Date:   Tue, 3 Mar 2020 10:06:29 -0300
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Yonghong Song <yhs@fb.com>, Networking <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>, Andi Kleen <andi@firstfloor.org>
-Subject: Re: [PATCH v2 bpf-next 1/2] bpftool: introduce "prog profile" command
-Message-ID: <20200303130629.GA13702@kernel.org>
-References: <20200228234058.634044-1-songliubraving@fb.com>
- <20200228234058.634044-2-songliubraving@fb.com>
- <367483bd-87ff-02f4-71f6-c2694579dda4@fb.com>
- <67921C65-D391-47C9-9582-C9D6060161A1@fb.com>
+        id S1729468AbgCCOIt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 3 Mar 2020 09:08:49 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:21069 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728882AbgCCOIs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Mar 2020 09:08:48 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-3-Hf3xMLEJPhqgU7Yp7xR7Dw-1; Tue, 03 Mar 2020 09:08:43 -0500
+X-MC-Unique: Hf3xMLEJPhqgU7Yp7xR7Dw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 53DED8017CC;
+        Tue,  3 Mar 2020 14:08:41 +0000 (UTC)
+Received: from krava.redhat.com (ovpn-206-59.brq.redhat.com [10.40.206.59])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7452091D6E;
+        Tue,  3 Mar 2020 14:08:38 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>
+Subject: [RFC] libbpf,selftests: Question on btf_dump__emit_type_decl for BTF_KIND_FUNC
+Date:   Tue,  3 Mar 2020 15:08:37 +0100
+Message-Id: <20200303140837.90056-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <67921C65-D391-47C9-9582-C9D6060161A1@fb.com>
-X-Url:  http://acmel.wordpress.com
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Tue, Mar 03, 2020 at 12:10:50AM +0000, Song Liu escreveu:
-> > On Mar 1, 2020, at 8:24 PM, Yonghong Song <yhs@fb.com> wrote:
-> >> +	},
-> >> +	{
-> >> +		.name = "instructions",
-> >> +		.attr = {
-> >> +			.freq = 0,
-> >> +			.sample_period = SAMPLE_PERIOD,
-> >> +			.inherit = 0,
-> >> +			.type = PERF_TYPE_HARDWARE,
-> >> +			.read_format = 0,
-> >> +			.sample_type = 0,
-> >> +			.config = PERF_COUNT_HW_INSTRUCTIONS,
-> >> +		},
-> >> +		.ratio_metric = 1,
-> >> +		.ratio_mul = 1.0,
-> >> +		.ratio_desc = "insn per cycle",
-> >> +	},
-> >> +	{
-> >> +		.name = "l1d_loads",
-> >> +		.attr = {
-> >> +			.freq = 0,
-> >> +			.sample_period = SAMPLE_PERIOD,
-> >> +			.inherit = 0,
-> >> +			.type = PERF_TYPE_HW_CACHE,
-> >> +			.read_format = 0,
-> >> +			.sample_type = 0,
-> >> +			.config =
-> >> +				PERF_COUNT_HW_CACHE_L1D |
-> >> +				(PERF_COUNT_HW_CACHE_OP_READ << 8) |
-> >> +				(PERF_COUNT_HW_CACHE_RESULT_ACCESS << 16),
-> >> +		},
-> > 
-> > why we do not have metric here?
-> 
-> This follows perf-stat design: some events have another event to compare 
-> against, like instructions per cycle, etc. 
-> 
-> > 
-> >> +	},
-> >> +	{
-> >> +		.name = "llc_misses",
-> >> +		.attr = {
-> >> +			.freq = 0,
-> >> +			.sample_period = SAMPLE_PERIOD,
-> >> +			.inherit = 0,
-> >> +			.type = PERF_TYPE_HW_CACHE,
-> >> +			.read_format = 0,
-> >> +			.sample_type = 0,
-> >> +			.config =
-> >> +				PERF_COUNT_HW_CACHE_LL |
-> >> +				(PERF_COUNT_HW_CACHE_OP_READ << 8) |
-> >> +				(PERF_COUNT_HW_CACHE_RESULT_MISS << 16),
-> >> +		},
-> >> +		.ratio_metric = 2,
-> >> +		.ratio_mul = 1e6,
-> >> +		.ratio_desc = "LLC misses per million isns",
-> >> +	},
-> >> +};
+hi,
+for bpftrace I'd like to print BTF functions (BTF_KIND_FUNC)
+declarations together with their names.
 
-> > icache miss and itlb miss might be useful as well as the code will jump
-> > to a different physical page. I think we should addd them. dtlb_miss
-> > probably not a big problem, but it would be good to be an option.
+I saw we have btf_dump__emit_type_decl and added BTF_KIND_FUNC,
+where it seemed to be missing, so it prints out something now
+(not sure it's the right fix though).
 
-> I plan to add more events later on. 
+Anyway, would you be ok with adding some flag/bool to struct
+btf_dump_emit_type_decl_opts, so I could get output like:
 
-> > For ratio_metric, we explicitly assign a slot here. Any specific reason?
-> > We can just say this metric *permits* ratio_metric and then ratio_matric
-> > is assigned dynamically by the user command line options?
+  kfunc:ksys_readahead(int fd, long long int offset, long unsigned int count) = ssize_t
+  kfunc:ksys_read(unsigned int fd, char buf, long unsigned int count) = size_t
 
-> > I am thinking how we could support *all* metrics the underlying system
-> > support based on `perf list`. This can be the future work though.
+... to be able to the arguments and return type separated,
+so I could easily get to something like above?
+
+Current interface is just vfprintf callback and I'm not sure
+I can rely that it will allywas be called with same arguments,
+like having separated calls for parsed atoms like 'return type',
+'(', ')', '(', 'arg type', 'arg name', ...
+
+I'm open to any suggestion ;-)
+
+thanks,
+jirka
+
+
+---
+ tools/lib/bpf/btf_dump.c                      |  4 ++++
+ .../selftests/bpf/prog_tests/btf_dump.c       | 21 +++++++++++++++++++
+ .../bpf/progs/btf_dump_test_case_bitfields.c  | 10 +++++++++
+ .../bpf/progs/btf_dump_test_case_multidim.c   |  3 +++
+ .../progs/btf_dump_test_case_namespacing.c    | 19 +++++++++++++++++
+ .../bpf/progs/btf_dump_test_case_ordering.c   |  3 +++
+ .../bpf/progs/btf_dump_test_case_packing.c    | 16 ++++++++++++++
+ .../bpf/progs/btf_dump_test_case_padding.c    | 15 +++++++++++++
+ .../bpf/progs/btf_dump_test_case_syntax.c     |  3 +++
+ 9 files changed, 94 insertions(+)
+
+diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+index bd09ed1710f1..40c7491424eb 100644
+--- a/tools/lib/bpf/btf_dump.c
++++ b/tools/lib/bpf/btf_dump.c
+@@ -1068,6 +1068,7 @@ static void btf_dump_emit_type_decl(struct btf_dump *d, __u32 id,
+ 		case BTF_KIND_CONST:
+ 		case BTF_KIND_RESTRICT:
+ 		case BTF_KIND_FUNC_PROTO:
++		case BTF_KIND_FUNC:
+ 			id = t->type;
+ 			break;
+ 		case BTF_KIND_ARRAY:
+@@ -1307,6 +1308,9 @@ static void btf_dump_emit_type_chain(struct btf_dump *d,
+ 			btf_dump_printf(d, ")");
+ 			return;
+ 		}
++		case BTF_KIND_FUNC:
++			/* All work is done via BTF_KIND_FUNC_PROTO already. */
++			break;
+ 		default:
+ 			pr_warn("unexpected type in decl chain, kind:%u, id:[%u]\n",
+ 				kind, id);
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+index 7390d3061065..adcd0abcec5c 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+@@ -26,6 +26,9 @@ static struct btf_dump_test_case {
+ static int btf_dump_all_types(const struct btf *btf,
+ 			      const struct btf_dump_opts *opts)
+ {
++	DECLARE_LIBBPF_OPTS(btf_dump_emit_type_decl_opts, decl_opts,
++		.field_name = "",
++	);
+ 	size_t type_cnt = btf__get_nr_types(btf);
+ 	struct btf_dump *d;
+ 	int err = 0, id;
+@@ -35,9 +38,27 @@ static int btf_dump_all_types(const struct btf *btf,
+ 		return PTR_ERR(d);
  
-> We are also thinking about adding similar functionality to perf-stat, 
-> which will be more flexible. 
+ 	for (id = 1; id <= type_cnt; id++) {
++		const struct btf_type *type;
++
+ 		err = btf_dump__dump_type(d, id);
+ 		if (err)
+ 			goto done;
++
++		type = btf__type_by_id(btf, id);
++
++		if (BTF_INFO_KIND(type->info) != BTF_KIND_FUNC)
++			continue;
++
++		err = btf_dump__emit_type_decl(d, id, &decl_opts);
++		if (err)
++			goto done;
++
++		/*
++		 * There's no newline at the end of the declaration dumped
++		 * by btf_dump__emit_type_decl, so doing an extra *one, so
++		 * we can have 'expected' counter part with newline.
++		 */
++		fprintf(opts->ctx, "\n");
+ 	}
+ 
+ done:
+diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_bitfields.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_bitfields.c
+index 8f44767a75fa..4d911cab7012 100644
+--- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_bitfields.c
++++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_bitfields.c
+@@ -82,6 +82,16 @@ struct bitfield_flushed {
+ 	long b: 16;
+ };
+ 
++/* ----- START-EXPECTED-OUTPUT ----- */
++/*
++ *int ()(struct {
++ *	struct bitfields_only_mixed_types _1;
++ *	struct bitfield_mixed_with_others _2;
++ *	struct bitfield_flushed _3;
++ *} *_)
++ */
++/* ------ END-EXPECTED-OUTPUT ------ */
++
+ int f(struct {
+ 	struct bitfields_only_mixed_types _1;
+ 	struct bitfield_mixed_with_others _2;
+diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_multidim.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_multidim.c
+index ba97165bdb28..97e189e8246a 100644
+--- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_multidim.c
++++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_multidim.c
+@@ -27,6 +27,9 @@ struct root_struct {
+ 	fn_ptr_multiarr_t _6;
+ };
+ 
++/*
++ *int ()(struct root_struct *s)
++ */
+ /* ------ END-EXPECTED-OUTPUT ------ */
+ 
+ int f(struct root_struct *s)
+diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_namespacing.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_namespacing.c
+index 92a4ad428710..ac4141a611bf 100644
+--- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_namespacing.c
++++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_namespacing.c
+@@ -49,6 +49,25 @@ typedef int Y;
+ 
+ typedef int Z;
+ 
++/*
++ *int ()(struct {
++ *	struct S _1;
++ *	S _2;
++ *	union U _3;
++ *	U _4;
++ *	enum E _5;
++ *	E _6;
++ *	struct A a;
++ *	union B b;
++ *	enum C c;
++ *	struct X x;
++ *	union Y y;
++ *	enum Z *z;
++ *	X xx;
++ *	Y yy;
++ *	Z zz;
++ *} *_)
++ */
+ /*------ END-EXPECTED-OUTPUT ------ */
+ 
+ int f(struct {
+diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_ordering.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_ordering.c
+index 7c95702ee4cb..2687ca94025d 100644
+--- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_ordering.c
++++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_ordering.c
+@@ -55,6 +55,9 @@ struct root_struct {
+ 	struct callback_head cb;
+ };
+ 
++/*
++ *int ()(struct root_struct *root)
++ */
+ /*------ END-EXPECTED-OUTPUT ------ */
+ 
+ int f(struct root_struct *root)
+diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_packing.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_packing.c
+index 1cef3bec1dc7..88bae49bdbbb 100644
+--- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_packing.c
++++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_packing.c
+@@ -58,6 +58,22 @@ union jump_code_union {
+ 	} __attribute__((packed));
+ };
+ 
++/*
++ *int ()(struct {
++ *	struct packed_trailing_space _1;
++ *	short: 16;
++ *	struct non_packed_trailing_space _2;
++ *	struct packed_fields _3;
++ *	short: 16;
++ *	struct non_packed_fields _4;
++ *	struct nested_packed _5;
++ *	short: 16;
++ *	union union_is_never_packed _6;
++ *	union union_does_not_need_packing _7;
++ *	union jump_code_union _8;
++ *	int: 24;
++ *} __attribute__((packed)) *_)
++ */
+ /*------ END-EXPECTED-OUTPUT ------ */
+ 
+ int f(struct {
+diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
+index 35c512818a56..581349bb0c2f 100644
+--- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
++++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
+@@ -102,6 +102,21 @@ struct zone {
+ 	struct zone_padding __pad__;
+ };
+ 
++/* ----- START-EXPECTED-OUTPUT ----- */
++/*
++ *int ()(struct {
++ *	struct padded_implicitly _1;
++ *	struct padded_explicitly _2;
++ *	struct padded_a_lot _3;
++ *	struct padded_cache_line _4;
++ *	struct zone _5;
++ *	long: 64;
++ *	long: 64;
++ *	long: 64;
++ *} *_)
++ */
++/* ------ END-EXPECTED-OUTPUT ------ */
++
+ int f(struct {
+ 	struct padded_implicitly _1;
+ 	struct padded_explicitly _2;
+diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
+index d4a02fe44a12..b110eea7ffd2 100644
+--- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
++++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
+@@ -221,6 +221,9 @@ struct root_struct {
+ 	struct struct_with_embedded_stuff _14;
+ };
+ 
++/*
++ *int ()(struct root_struct *s)
++ */
+ /* ------ END-EXPECTED-OUTPUT ------ */
+ 
+ int f(struct root_struct *s)
+-- 
+2.24.1
 
-Yeah, being able to count events bpf programs using the technique you're
-using here but instead using 'perf stat' to set it up and then use what
-is already in 'perf stat' would be really great, having the same
-interface for BPF programs as we have for tid, pid, cgroups, system
-wide, etc.
-
-If you try it and find any problems with the codebase I'll be happy to
-help as I think others working with 'perf stat' will too,
-
-Cheers,
-
-- Arnaldo
