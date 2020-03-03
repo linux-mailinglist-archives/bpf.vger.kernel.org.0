@@ -2,117 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 78E89176D5F
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 04:03:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9971176DD7
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 05:10:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727359AbgCCCqX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Mar 2020 21:46:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40606 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727053AbgCCCqX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Mar 2020 21:46:23 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B3EA2467B;
-        Tue,  3 Mar 2020 02:46:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583203582;
-        bh=IL3/wicU8vS8fr/u2xEEigJhcMcCof++SwVTStaXe0s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D1n1+3pNCKFLN4z5GnicxGFpN4E/EZFV/9OVRs4tXFDrUF44qOKdSp4RBggA620YD
-         j7JQ0xCiws513uEpbFA3DgSrvSViBP1y2y6ef9iKrRzHDBIDWV8jpSqZ/3Bf/6qECj
-         hzQQHUU9qyGk7bPYaeaEPXr0VNVhF8+BrszQjpRk=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jiri Benc <jbenc@redhat.com>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 05/66] selftests: fix too long argument
-Date:   Mon,  2 Mar 2020 21:45:14 -0500
-Message-Id: <20200303024615.8889-5-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200303024615.8889-1-sashal@kernel.org>
-References: <20200303024615.8889-1-sashal@kernel.org>
+        id S1726956AbgCCEKa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Mar 2020 23:10:30 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:44401 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726974AbgCCEKa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Mar 2020 23:10:30 -0500
+Received: by mail-qk1-f193.google.com with SMTP id f198so2083834qke.11;
+        Mon, 02 Mar 2020 20:10:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HZUPzltpb1MhPGYawcxqf6E3vIzmzD/aySyYRsUpF78=;
+        b=iJlVFGNJrfzqntN1RFQBgHyiOoSnFEqdY7K4SmfS59jcqIUtQcJbUV77Zmm4WRdGZe
+         aF/3jdZ4HygLWCNi+zpATNnDIIkY4b3ET077Qm0nbzQPGGRGPyj/zAX0Gvk85VFFdVXQ
+         Oq4zrdRpt7amYl5m9u6/KmrUc5zYi7ccCL9oOLIBeN6HzvB3uS1Q4VT2NipOm1zDzCeG
+         DYom1QwrZFmLvMpiUydX914kL2H0hOed0fQO3ZnMgG+LkFGQ+dfQatTAIsEoUjtRYuWp
+         oMB7JxQZQssSY6MBpZVSOv7Qi7NhquCXiRSU/ZrtvZoENLvk/5OgiZFjW9xrJzMXjfTN
+         D1FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HZUPzltpb1MhPGYawcxqf6E3vIzmzD/aySyYRsUpF78=;
+        b=hvviDyhBua+JCvP6mL8rBigsADg+aWssNDTTfXqR3u1ZdtviLh1SeDhwDNrOVdw36j
+         OcYDyt6TI50YpCvDMKBqhGd5EcOqpFDABP/E4yRzIg+HJYlyHt+jhDNW423HA453UEr5
+         VTFypZW0VrEnDqN21AnJJEigtcnTt75F689Ej3EL61xGPv4bIkZvucJrtmWGqRdgSA7H
+         ajam+VG+OWZ77/ob7H0+mZ0WN6yaw/kxgcE55GJML9ReiLf6qERnoF1Yzpn7AK6UVpnl
+         fFKkuqyBXz5wvJwLvJKVcTjSjJ3oShzc8N1msc75SRfwIm6ONjy0fkuRiSqPioCwO3jv
+         lRcQ==
+X-Gm-Message-State: ANhLgQ0+PErvEURxu8soRtbmEBCbf/a00Bs2NJoSXc9GmxUuexZXY0Fh
+        S25PGyWNQsUP5mgo0cbre46BR5prhPW5O3vdkTA=
+X-Google-Smtp-Source: ADFU+vuDfOkAv1glNnndguGb3d6zO3nERyaQqVyAFqD7BCVmsaKIrsF+DpwmPXSEXIPbJvu8FGPdpwr9w0t/0o5BQ9s=
+X-Received: by 2002:a37:a2d6:: with SMTP id l205mr2419825qke.92.1583208628905;
+ Mon, 02 Mar 2020 20:10:28 -0800 (PST)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20200301081045.3491005-1-andriin@fb.com> <20200303005951.72szj5sb5rveh4xp@ast-mbp>
+In-Reply-To: <20200303005951.72szj5sb5rveh4xp@ast-mbp>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 2 Mar 2020 20:10:17 -0800
+Message-ID: <CAEf4BzYsC-5j_+je1pZ_JNsyuPV9_JrLSzpp6tfUvm=3KBNL-A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/3] Improve raw tracepoint BTF types preservation
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Wenbo Zhang <ethercflow@gmail.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jiri Benc <jbenc@redhat.com>
+On Mon, Mar 2, 2020 at 4:59 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Sun, Mar 01, 2020 at 12:10:42AM -0800, Andrii Nakryiko wrote:
+> > Fix issue with not preserving btf_trace_##call structs when compiled under
+> > Clang. Additionally, capture raw tracepoint arguments in raw_tp_##call
+> > structs, directly usable from BPF programs. Convert runqslower to use those
+> > for proof of concept and to simplify code further.
+>
+> Not only folks compile kernel with clang they use the latest BPF/BTF features
+> with it. This is very nice to see!
+> I've applied 1st patch to make clang compiled kernel emit proper BTF.
+>
+> As far as patch 2 I'm not sure about 'raw_tp_' prefix. tp_btf type of progs can
+> use the same structs. So I think there could be a better name. Also bpftool can
+> generate them as well while emitting vmlinux.h. I think that will avoid adding
+> few kilobytes to vmlinux BTF that kernel isn't going to use atm.
 
-[ Upstream commit c363eb48ada5cf732b3f489fab799fc881097842 ]
-
-With some shells, the command construed for install of bpf selftests becomes
-too large due to long list of files:
-
-make[1]: execvp: /bin/sh: Argument list too long
-make[1]: *** [../lib.mk:73: install] Error 127
-
-Currently, each of the file lists is replicated three times in the command:
-in the shell 'if' condition, in the 'echo' and in the 'rsync'. Reduce that
-by one instance by using make conditionals and separate the echo and rsync
-into two shell commands. (One would be inclined to just remove the '@' at
-the beginning of the rsync command and let 'make' echo it by itself;
-unfortunately, it appears that the '@' in the front of mkdir silences output
-also for the following commands.)
-
-Also, separate handling of each of the lists to its own shell command.
-
-The semantics of the makefile is unchanged before and after the patch. The
-ability of individual test directories to override INSTALL_RULE is retained.
-
-Reported-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Tested-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Signed-off-by: Jiri Benc <jbenc@redhat.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/testing/selftests/lib.mk | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
-
-diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-index 1c8a1963d03f8..3ed0134a764d4 100644
---- a/tools/testing/selftests/lib.mk
-+++ b/tools/testing/selftests/lib.mk
-@@ -83,17 +83,20 @@ else
- 	$(call RUN_TESTS, $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS) $(TEST_PROGS))
- endif
- 
-+define INSTALL_SINGLE_RULE
-+	$(if $(INSTALL_LIST),@mkdir -p $(INSTALL_PATH))
-+	$(if $(INSTALL_LIST),@echo rsync -a $(INSTALL_LIST) $(INSTALL_PATH)/)
-+	$(if $(INSTALL_LIST),@rsync -a $(INSTALL_LIST) $(INSTALL_PATH)/)
-+endef
-+
- define INSTALL_RULE
--	@if [ "X$(TEST_PROGS)$(TEST_PROGS_EXTENDED)$(TEST_FILES)" != "X" ]; then					\
--		mkdir -p ${INSTALL_PATH};										\
--		echo "rsync -a $(TEST_PROGS) $(TEST_PROGS_EXTENDED) $(TEST_FILES) $(INSTALL_PATH)/";	\
--		rsync -a $(TEST_PROGS) $(TEST_PROGS_EXTENDED) $(TEST_FILES) $(INSTALL_PATH)/;		\
--	fi
--	@if [ "X$(TEST_GEN_PROGS)$(TEST_CUSTOM_PROGS)$(TEST_GEN_PROGS_EXTENDED)$(TEST_GEN_FILES)" != "X" ]; then					\
--		mkdir -p ${INSTALL_PATH};										\
--		echo "rsync -a $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS) $(TEST_GEN_PROGS_EXTENDED) $(TEST_GEN_FILES) $(INSTALL_PATH)/";	\
--		rsync -a $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS) $(TEST_GEN_PROGS_EXTENDED) $(TEST_GEN_FILES) $(INSTALL_PATH)/;		\
--	fi
-+	$(eval INSTALL_LIST = $(TEST_PROGS)) $(INSTALL_SINGLE_RULE)
-+	$(eval INSTALL_LIST = $(TEST_PROGS_EXTENDED)) $(INSTALL_SINGLE_RULE)
-+	$(eval INSTALL_LIST = $(TEST_FILES)) $(INSTALL_SINGLE_RULE)
-+	$(eval INSTALL_LIST = $(TEST_GEN_PROGS)) $(INSTALL_SINGLE_RULE)
-+	$(eval INSTALL_LIST = $(TEST_CUSTOM_PROGS)) $(INSTALL_SINGLE_RULE)
-+	$(eval INSTALL_LIST = $(TEST_GEN_PROGS_EXTENDED)) $(INSTALL_SINGLE_RULE)
-+	$(eval INSTALL_LIST = $(TEST_GEN_FILES)) $(INSTALL_SINGLE_RULE)
- endef
- 
- install: all
--- 
-2.20.1
-
+Fair enough, I'll follow up with bpftool changes to generate such
+structs. I'm thinking to use tp_args_xxx name pattern, unless someone
+has a better idea :)
