@@ -2,45 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64127177865
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 15:12:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF4B17786A
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 15:12:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729636AbgCCOKJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 09:10:09 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:34115 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729113AbgCCOKI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        id S1728482AbgCCOKR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 09:10:17 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:46672 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729581AbgCCOKI (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 3 Mar 2020 09:10:08 -0500
-Received: by mail-wr1-f65.google.com with SMTP id z15so4548509wrl.1
-        for <bpf@vger.kernel.org>; Tue, 03 Mar 2020 06:10:06 -0800 (PST)
+Received: by mail-wr1-f67.google.com with SMTP id j7so4432643wrp.13
+        for <bpf@vger.kernel.org>; Tue, 03 Mar 2020 06:10:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=mRf380gCjqe4alZuLnMaxxzFBc+AqRnBlFcvwwhHWC0=;
-        b=hbixUXyBaaORrzzEIiKFrtJ+mMEAiQMvDNTT45rSQFg1rL1LHHxHmm3S8j0IsVJaZd
-         EqXjpqKOEquH3PHROZp0udeBh1skI9NgVNYmjABso5c1qmWtiuKGaKGg4+3WB2KizGaO
-         y3xeeNGTSt2UELLSBncYQFcAp+Q3e3w0vvO3U=
+        bh=rjj2AUiojfdL3aSmwoSiGLpePTvBoxxUzefZJf0lBxI=;
+        b=bQqCSEzMzaOIY36ctJ1G9ckpnHqwyRAYQ0d/bc3qPqZY+tBOHW8m98mKF1cPguCLmh
+         3aTeYTr3Md5IZcIL/tRAKOutCXKMxyQwkVAEXArXwC3Y7eM9+dxpwfGGRMzmHcCVQ1oU
+         aV0W7S7yMlqU1DddlAHBErNpcJK+Qgu5Wal8I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mRf380gCjqe4alZuLnMaxxzFBc+AqRnBlFcvwwhHWC0=;
-        b=RaNmD2yoF+ft0soi27GqjI5g9rgCiILjPSWg/4HZoEmGT+lVivIOS7BQWH+gql+yze
-         vM2OqoemDNS2ig8RZjdzKmjylO0w9mDrS6qetvW8To6E+AQU+j1E0G2yqyQmZYo3rQ7s
-         NQwHz1bSZ0LPVWuTulBafbjWeqJkaa8gc3hf82xpus7jXvWNVi5veHB05DF+8mxcmfYz
-         L6ZGEzMEuYUodPpQG8Of9MMmIqCkArw04AdJ3wljiuQEeUG5L6Xa9RKEM/IVs/sT4tuR
-         hf7R/QxDeWiHbQrGn7Quq7OcKCnWG+fegc3T9YDJsxtr+U5OYO1abtO9yRB7Xc6IvUPC
-         IclQ==
-X-Gm-Message-State: ANhLgQ1DdLIxDzgmIJjlgUOB5+DjoRbCHpa7RGigItFWzinqBPjESwHv
-        lJHiTxe7Hqla0U5wSaWMSKf0Kw==
-X-Google-Smtp-Source: ADFU+vuofvRQ6CujsrnR0TgSZQKYmu1ZhTXg3/OpsKyxPX7aTOpGBvs6uJ3ZbB9w3UYMbIuAOaYYUA==
-X-Received: by 2002:adf:cc82:: with SMTP id p2mr5542603wrj.11.1583244605862;
-        Tue, 03 Mar 2020 06:10:05 -0800 (PST)
+        bh=rjj2AUiojfdL3aSmwoSiGLpePTvBoxxUzefZJf0lBxI=;
+        b=jhscoT3y18b5E0DQIu+aHd+fyR2WXd3eRB9IUE0M0+y6TAaScLL1ZFC7DbY/RDayP2
+         2TJ4NePbg3zW2j1KCMBNHzU5r2K/dJAUReFRNjlGBYtuxpsWOGyH76aGm9EhEYd+enG2
+         DCWNsU7BJ8fVHZvwF392oOo/WpuM8AK4cK0xcaOr6686QBJqDDez/66Q6sC2dUbcu60P
+         zpSlM74lFpl2IjY92d3reXxzwL4SE3tD17wxjL/ZfIFxl7ZJYoPV3D4pi7SE3pYnZm0F
+         gFK4/zF8Xs5DPGL7GmU1w8uKhe6FZv9hdOeF41MAEyPk0Pw+/mvjpBz+6jUcEOVxQk6q
+         17pw==
+X-Gm-Message-State: ANhLgQ1Y7dQTaTDdracRyfvxyq1IZ127W/wO2ghSbE+Slsy2VgJ8YGen
+        VzuFKwwCVdPzkhyjztTUKKvrig==
+X-Google-Smtp-Source: ADFU+vtO/WKI1Lwi3aVh17KEDOsr7UjQXTmaJdVsa2Y9uy6308LrUiySCgGn/3R19yzNjv0bD09xXQ==
+X-Received: by 2002:adf:ef4e:: with SMTP id c14mr5432964wrp.335.1583244606551;
+        Tue, 03 Mar 2020 06:10:06 -0800 (PST)
 Received: from kpsingh-kernel.localdomain ([2a00:79e1:abc:308:2811:c80d:9375:bf8a])
-        by smtp.gmail.com with ESMTPSA id h20sm11746823wrc.47.2020.03.03.06.10.04
+        by smtp.gmail.com with ESMTPSA id h20sm11746823wrc.47.2020.03.03.06.10.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Mar 2020 06:10:05 -0800 (PST)
+        Tue, 03 Mar 2020 06:10:06 -0800 (PST)
 From:   KP Singh <kpsingh@chromium.org>
 To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -48,9 +48,9 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Paul Turner <pjt@google.com>,
         Florent Revest <revest@chromium.org>,
         Brendan Jackman <jackmanb@chromium.org>
-Subject: [PATCH bpf-next 6/7] bpf: Add test ops for BPF_PROG_TYPE_TRACING
-Date:   Tue,  3 Mar 2020 15:09:49 +0100
-Message-Id: <20200303140950.6355-7-kpsingh@chromium.org>
+Subject: [PATCH bpf-next 7/7] bpf: Add selftests for BPF_MODIFY_RETURN
+Date:   Tue,  3 Mar 2020 15:09:50 +0100
+Message-Id: <20200303140950.6355-8-kpsingh@chromium.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200303140950.6355-1-kpsingh@chromium.org>
 References: <20200303140950.6355-1-kpsingh@chromium.org>
@@ -63,298 +63,213 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: KP Singh <kpsingh@google.com>
 
-The current fexit and fentry tests rely on a different program to
-exercise the functions they attach to. Instead of doing this, implement
-the test operations for tracing which will also be used for
-BPF_OVERRIDE_RETURN in a subsequent patch.
+Test for two scenarios:
 
-Also, clean up the fexit test to use the generated skeleton.
+  * When the fmod_ret program returns 0, the original function should
+    be called along with fentry and fexit programs.
+  * When the fmod_ret program returns a non-zero value, the original
+    function should not be called, no side effect should be observed and
+    fentry and fexit programs should be called.
+
+The result from the kernel function call and whether a side-effect is
+observed is returned via the retval attr of the BPF_PROG_TEST_RUN (bpf)
+syscall.
 
 Signed-off-by: KP Singh <kpsingh@google.com>
 ---
- include/linux/bpf.h                           | 10 +++
- kernel/trace/bpf_trace.c                      |  1 +
- net/bpf/test_run.c                            | 38 +++++++---
- .../selftests/bpf/prog_tests/fentry_fexit.c   | 12 +---
- .../selftests/bpf/prog_tests/fentry_test.c    | 14 ++--
- .../selftests/bpf/prog_tests/fexit_test.c     | 69 ++++++-------------
- 6 files changed, 68 insertions(+), 76 deletions(-)
+ net/bpf/test_run.c                            | 23 ++++++-
+ .../selftests/bpf/prog_tests/modify_return.c  | 65 +++++++++++++++++++
+ .../selftests/bpf/progs/modify_return.c       | 49 ++++++++++++++
+ 3 files changed, 135 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/modify_return.c
+ create mode 100644 tools/testing/selftests/bpf/progs/modify_return.c
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 3cfdc216a2f4..c00919025532 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1156,6 +1156,9 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
- 			  union bpf_attr __user *uattr);
- int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
- 			  union bpf_attr __user *uattr);
-+int bpf_prog_test_run_tracing(struct bpf_prog *prog,
-+			      const union bpf_attr *kattr,
-+			      union bpf_attr __user *uattr);
- int bpf_prog_test_run_flow_dissector(struct bpf_prog *prog,
- 				     const union bpf_attr *kattr,
- 				     union bpf_attr __user *uattr);
-@@ -1313,6 +1316,13 @@ static inline int bpf_prog_test_run_skb(struct bpf_prog *prog,
- 	return -ENOTSUPP;
- }
- 
-+static inline int bpf_prog_test_run_tracing(struct bpf_prog *prog,
-+					    const union bpf_attr *kattr,
-+					    union bpf_attr __user *uattr)
-+{
-+	return -ENOTSUPP;
-+}
-+
- static inline int bpf_prog_test_run_flow_dissector(struct bpf_prog *prog,
- 						   const union bpf_attr *kattr,
- 						   union bpf_attr __user *uattr)
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 07764c761073..363e0a2c75cf 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1266,6 +1266,7 @@ const struct bpf_verifier_ops tracing_verifier_ops = {
- };
- 
- const struct bpf_prog_ops tracing_prog_ops = {
-+	.test_run = bpf_prog_test_run_tracing,
- };
- 
- static bool raw_tp_writable_prog_is_valid_access(int off, int size,
 diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 562443f94133..fb54b45285b4 100644
+index fb54b45285b4..642b6a46210b 100644
 --- a/net/bpf/test_run.c
 +++ b/net/bpf/test_run.c
-@@ -160,18 +160,38 @@ static void *bpf_test_init(const union bpf_attr *kattr, u32 size,
- 		kfree(data);
- 		return ERR_PTR(-EFAULT);
- 	}
--	if (bpf_fentry_test1(1) != 2 ||
--	    bpf_fentry_test2(2, 3) != 5 ||
--	    bpf_fentry_test3(4, 5, 6) != 15 ||
--	    bpf_fentry_test4((void *)7, 8, 9, 10) != 34 ||
--	    bpf_fentry_test5(11, (void *)12, 13, 14, 15) != 65 ||
--	    bpf_fentry_test6(16, (void *)17, 18, 19, (void *)20, 21) != 111) {
--		kfree(data);
--		return ERR_PTR(-EFAULT);
--	}
-+
- 	return data;
+@@ -10,6 +10,7 @@
+ #include <net/bpf_sk_storage.h>
+ #include <net/sock.h>
+ #include <net/tcp.h>
++#include <linux/error-injection.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/bpf_test_run.h>
+@@ -143,6 +144,14 @@ int noinline bpf_fentry_test6(u64 a, void *b, short c, int d, void *e, u64 f)
+ 	return a + (long)b + c + d + (long)e + f;
  }
  
-+int bpf_prog_test_run_tracing(struct bpf_prog *prog,
-+			      const union bpf_attr *kattr,
-+			      union bpf_attr __user *uattr)
++int noinline bpf_modify_return_test(int a, int *b)
 +{
-+	int err = -EFAULT;
-+
-+	switch (prog->expected_attach_type) {
-+	case BPF_TRACE_FENTRY:
-+	case BPF_TRACE_FEXIT:
-+		if (bpf_fentry_test1(1) != 2 ||
-+		    bpf_fentry_test2(2, 3) != 5 ||
-+		    bpf_fentry_test3(4, 5, 6) != 15 ||
-+		    bpf_fentry_test4((void *)7, 8, 9, 10) != 34 ||
-+		    bpf_fentry_test5(11, (void *)12, 13, 14, 15) != 65 ||
-+		    bpf_fentry_test6(16, (void *)17, 18, 19, (void *)20, 21) != 111)
-+			goto out;
-+		break;
-+	default:
-+		goto out;
-+	}
-+
-+	return 0;
-+
-+out:
-+	trace_bpf_test_finish(&err);
-+	return err;
++	*b += 1;
++	return a + *b;
 +}
 +
- static void *bpf_ctx_init(const union bpf_attr *kattr, u32 max_size)
++ALLOW_ERROR_INJECTION(bpf_modify_return_test, ERRNO);
++
+ static void *bpf_test_init(const union bpf_attr *kattr, u32 size,
+ 			   u32 headroom, u32 tailroom)
  {
- 	void __user *data_in = u64_to_user_ptr(kattr->test.ctx_in);
-diff --git a/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c b/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c
-index 235ac4f67f5b..83493bd5745c 100644
---- a/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c
-@@ -1,22 +1,17 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2019 Facebook */
- #include <test_progs.h>
--#include "test_pkt_access.skel.h"
- #include "fentry_test.skel.h"
- #include "fexit_test.skel.h"
- 
- void test_fentry_fexit(void)
+@@ -168,7 +177,9 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
+ 			      const union bpf_attr *kattr,
+ 			      union bpf_attr __user *uattr)
  {
--	struct test_pkt_access *pkt_skel = NULL;
- 	struct fentry_test *fentry_skel = NULL;
- 	struct fexit_test *fexit_skel = NULL;
- 	__u64 *fentry_res, *fexit_res;
- 	__u32 duration = 0, retval;
--	int err, pkt_fd, i;
-+	int err, prog_fd, i;
+-	int err = -EFAULT;
++	u16 side_effect = 0, ret = 0;
++	int b = 2, err = -EFAULT;
++	u32 retval = 0;
  
--	pkt_skel = test_pkt_access__open_and_load();
--	if (CHECK(!pkt_skel, "pkt_skel_load", "pkt_access skeleton failed\n"))
--		return;
- 	fentry_skel = fentry_test__open_and_load();
- 	if (CHECK(!fentry_skel, "fentry_skel_load", "fentry skeleton failed\n"))
- 		goto close_prog;
-@@ -31,8 +26,8 @@ void test_fentry_fexit(void)
- 	if (CHECK(err, "fexit_attach", "fexit attach failed: %d\n", err))
- 		goto close_prog;
- 
--	pkt_fd = bpf_program__fd(pkt_skel->progs.test_pkt_access);
--	err = bpf_prog_test_run(pkt_fd, 1, &pkt_v6, sizeof(pkt_v6),
-+	prog_fd = bpf_program__fd(fexit_skel->progs.test1);
-+	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
- 				NULL, NULL, &retval, &duration);
- 	CHECK(err || retval, "ipv6",
- 	      "err %d errno %d retval %d duration %d\n",
-@@ -49,7 +44,6 @@ void test_fentry_fexit(void)
+ 	switch (prog->expected_attach_type) {
+ 	case BPF_TRACE_FENTRY:
+@@ -181,12 +192,20 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
+ 		    bpf_fentry_test6(16, (void *)17, 18, 19, (void *)20, 21) != 111)
+ 			goto out;
+ 		break;
++	case BPF_MODIFY_RETURN:
++		ret = bpf_modify_return_test(1, &b);
++		if (b != 2)
++			side_effect = 1;
++		break;
+ 	default:
+ 		goto out;
  	}
  
- close_prog:
--	test_pkt_access__destroy(pkt_skel);
- 	fentry_test__destroy(fentry_skel);
- 	fexit_test__destroy(fexit_skel);
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/fentry_test.c b/tools/testing/selftests/bpf/prog_tests/fentry_test.c
-index 5cc06021f27d..04ebbf1cb390 100644
---- a/tools/testing/selftests/bpf/prog_tests/fentry_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fentry_test.c
-@@ -1,20 +1,15 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2019 Facebook */
- #include <test_progs.h>
--#include "test_pkt_access.skel.h"
- #include "fentry_test.skel.h"
+-	return 0;
++	retval = (u32)side_effect << 16 | ret;
++	if (copy_to_user(&uattr->test.retval, &retval, sizeof(retval)))
++		goto out;
  
- void test_fentry_test(void)
- {
--	struct test_pkt_access *pkt_skel = NULL;
- 	struct fentry_test *fentry_skel = NULL;
--	int err, pkt_fd, i;
-+	int err, prog_fd, i;
- 	__u32 duration = 0, retval;
- 	__u64 *result;
- 
--	pkt_skel = test_pkt_access__open_and_load();
--	if (CHECK(!pkt_skel, "pkt_skel_load", "pkt_access skeleton failed\n"))
--		return;
- 	fentry_skel = fentry_test__open_and_load();
- 	if (CHECK(!fentry_skel, "fentry_skel_load", "fentry skeleton failed\n"))
- 		goto cleanup;
-@@ -23,10 +18,10 @@ void test_fentry_test(void)
- 	if (CHECK(err, "fentry_attach", "fentry attach failed: %d\n", err))
- 		goto cleanup;
- 
--	pkt_fd = bpf_program__fd(pkt_skel->progs.test_pkt_access);
--	err = bpf_prog_test_run(pkt_fd, 1, &pkt_v6, sizeof(pkt_v6),
-+	prog_fd = bpf_program__fd(fentry_skel->progs.test1);
-+	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
- 				NULL, NULL, &retval, &duration);
--	CHECK(err || retval, "ipv6",
-+	CHECK(err || retval, "test_run",
- 	      "err %d errno %d retval %d duration %d\n",
- 	      err, errno, retval, duration);
- 
-@@ -39,5 +34,4 @@ void test_fentry_test(void)
- 
- cleanup:
- 	fentry_test__destroy(fentry_skel);
--	test_pkt_access__destroy(pkt_skel);
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_test.c b/tools/testing/selftests/bpf/prog_tests/fexit_test.c
-index d2c3655dd7a3..78d7a2765c27 100644
---- a/tools/testing/selftests/bpf/prog_tests/fexit_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fexit_test.c
-@@ -1,64 +1,37 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2019 Facebook */
- #include <test_progs.h>
-+#include "fexit_test.skel.h"
- 
- void test_fexit_test(void)
- {
--	struct bpf_prog_load_attr attr = {
--		.file = "./fexit_test.o",
--	};
--
--	char prog_name[] = "fexit/bpf_fentry_testX";
--	struct bpf_object *obj = NULL, *pkt_obj;
--	int err, pkt_fd, kfree_skb_fd, i;
--	struct bpf_link *link[6] = {};
--	struct bpf_program *prog[6];
-+	struct fexit_test *fexit_skel = NULL;
-+	int err, prog_fd, i;
- 	__u32 duration = 0, retval;
--	struct bpf_map *data_map;
--	const int zero = 0;
--	u64 result[6];
-+	__u64 *result;
- 
--	err = bpf_prog_load("./test_pkt_access.o", BPF_PROG_TYPE_SCHED_CLS,
--			    &pkt_obj, &pkt_fd);
--	if (CHECK(err, "prog_load sched cls", "err %d errno %d\n", err, errno))
--		return;
--	err = bpf_prog_load_xattr(&attr, &obj, &kfree_skb_fd);
--	if (CHECK(err, "prog_load fail", "err %d errno %d\n", err, errno))
--		goto close_prog;
-+	fexit_skel = fexit_test__open_and_load();
-+	if (CHECK(!fexit_skel, "fexit_skel_load", "fexit skeleton failed\n"))
++	return 0;
+ out:
+ 	trace_bpf_test_finish(&err);
+ 	return err;
+diff --git a/tools/testing/selftests/bpf/prog_tests/modify_return.c b/tools/testing/selftests/bpf/prog_tests/modify_return.c
+new file mode 100644
+index 000000000000..beab9a37f35c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/modify_return.c
+@@ -0,0 +1,65 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/*
++ * Copyright 2020 Google LLC.
++ */
++
++#include <test_progs.h>
++#include "modify_return.skel.h"
++
++#define LOWER(x) (x & 0xffff)
++#define UPPER(x) (x >> 16)
++
++
++static void run_test(__u32 input_retval, __u16 want_side_effect, __s16 want_ret)
++{
++	struct modify_return *skel = NULL;
++	int err, prog_fd;
++	__u32 duration = 0, retval;
++	__u16 side_effect;
++	__s16 ret;
++
++	skel = modify_return__open_and_load();
++	if (CHECK(!skel, "skel_load", "modify_return skeleton failed\n"))
 +		goto cleanup;
- 
--	for (i = 0; i < 6; i++) {
--		prog_name[sizeof(prog_name) - 2] = '1' + i;
--		prog[i] = bpf_object__find_program_by_title(obj, prog_name);
--		if (CHECK(!prog[i], "find_prog", "prog %s not found\n", prog_name))
--			goto close_prog;
--		link[i] = bpf_program__attach_trace(prog[i]);
--		if (CHECK(IS_ERR(link[i]), "attach_trace", "failed to link\n"))
--			goto close_prog;
--	}
--	data_map = bpf_object__find_map_by_name(obj, "fexit_te.bss");
--	if (CHECK(!data_map, "find_data_map", "data map not found\n"))
--		goto close_prog;
-+	err = fexit_test__attach(fexit_skel);
-+	if (CHECK(err, "fexit_attach", "fexit attach failed: %d\n", err))
++
++	err = modify_return__attach(skel);
++	if (CHECK(err, "modify_return", "attach failed: %d\n", err))
 +		goto cleanup;
- 
--	err = bpf_prog_test_run(pkt_fd, 1, &pkt_v6, sizeof(pkt_v6),
-+	prog_fd = bpf_program__fd(fexit_skel->progs.test1);
-+	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
- 				NULL, NULL, &retval, &duration);
--	CHECK(err || retval, "ipv6",
-+	CHECK(err || retval, "test_run",
- 	      "err %d errno %d retval %d duration %d\n",
- 	      err, errno, retval, duration);
- 
--	err = bpf_map_lookup_elem(bpf_map__fd(data_map), &zero, &result);
--	if (CHECK(err, "get_result",
--		  "failed to get output data: %d\n", err))
--		goto close_prog;
--
--	for (i = 0; i < 6; i++)
--		if (CHECK(result[i] != 1, "result", "bpf_fentry_test%d failed err %ld\n",
--			  i + 1, result[i]))
--			goto close_prog;
-+	result = (__u64 *)fexit_skel->bss;
-+	for (i = 0; i < 6; i++) {
-+		if (CHECK(result[i] != 1, "result",
-+			  "fexit_test%d failed err %lld\n", i + 1, result[i]))
-+			goto cleanup;
-+	}
- 
--close_prog:
--	for (i = 0; i < 6; i++)
--		if (!IS_ERR_OR_NULL(link[i]))
--			bpf_link__destroy(link[i]);
--	bpf_object__close(obj);
--	bpf_object__close(pkt_obj);
++
++	skel->bss->input_retval = input_retval;
++	prog_fd = bpf_program__fd(skel->progs.fmod_ret_test);
++	err = bpf_prog_test_run(prog_fd, 1, NULL, 0, NULL, 0,
++				&retval, &duration);
++
++	CHECK(err, "test_run", "err %d errno %d\n", err, errno);
++
++	side_effect = UPPER(retval);
++	ret  = LOWER(retval);
++
++	CHECK(ret != want_ret, "test_run",
++	      "unexpected ret: %d, expected: %d\n", ret, want_ret);
++	CHECK(side_effect != want_side_effect, "modify_return",
++	      "unexpected side_effect: %d\n", side_effect);
++
++	CHECK(skel->bss->fentry_result != 1, "modify_return",
++	      "fentry failed\n");
++	CHECK(skel->bss->fexit_result != 1, "modify_return",
++	      "fexit failed\n");
++	CHECK(skel->bss->fmod_ret_result != 1, "modify_return",
++	      "fmod_ret failed\n");
++
 +cleanup:
-+	fexit_test__destroy(fexit_skel);
- }
++	modify_return__destroy(skel);
++}
++
++void test_modify_return(void)
++{
++	run_test(0 /* input_retval */,
++		 1 /* want_side_effect */,
++		 4 /* want_ret */);
++	run_test(-EINVAL /* input_retval */,
++		 0 /* want_side_effect */,
++		 -EINVAL /* want_ret */);
++}
++
+diff --git a/tools/testing/selftests/bpf/progs/modify_return.c b/tools/testing/selftests/bpf/progs/modify_return.c
+new file mode 100644
+index 000000000000..8b7466a15c6b
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/modify_return.c
+@@ -0,0 +1,49 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/*
++ * Copyright 2020 Google LLC.
++ */
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") = "GPL";
++
++static int sequence = 0;
++__s32 input_retval = 0;
++
++__u64 fentry_result = 0;
++SEC("fentry/bpf_modify_return_test")
++int BPF_PROG(fentry_test, int a, __u64 b)
++{
++	sequence++;
++	fentry_result = (sequence == 1);
++	return 0;
++}
++
++__u64 fmod_ret_result = 0;
++SEC("fmod_ret/bpf_modify_return_test")
++int BPF_PROG(fmod_ret_test, int a, int *b, int ret)
++{
++	sequence++;
++	/* This is the first fmod_ret program, the ret passed should be 0 */
++	fmod_ret_result = (sequence == 2 && ret == 0);
++	return input_retval;
++}
++
++__u64 fexit_result = 0;
++SEC("fexit/bpf_modify_return_test")
++int BPF_PROG(fexit_test, int a, __u64 b, int ret)
++{
++	sequence++;
++	/* If the input_reval is non-zero a successful modification should have
++	 * occurred.
++	 */
++	if (input_retval)
++		fexit_result = (sequence == 3 && ret == input_retval);
++	else
++		fexit_result = (sequence == 3 && ret == 4);
++
++	return 0;
++}
 -- 
 2.20.1
 
