@@ -2,115 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8014817818C
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 20:02:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A57178218
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 20:03:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733252AbgCCSDY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 13:03:24 -0500
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:35776 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731209AbgCCSDX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Mar 2020 13:03:23 -0500
-Received: by mail-pj1-f66.google.com with SMTP id s8so1694463pjq.0;
-        Tue, 03 Mar 2020 10:03:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=B2tO/wgwTAbnKTMa9LXV6z5RfQ9U8qBcZe2mtEefEd8=;
-        b=oyYwHdCWUZM9dSQP5KlhU2UTUoti7X2xuoY4bHIdm6RJKAjTqEkJub1A5PjXgJPfm6
-         bKmeD0FERtQiPQ8YmL29UMwWpJr0uVBtscS7QGhU6Wv12eb6utpD2WK3dpapZAajRQNe
-         pHUdXiOel7GfvDEVfNdAEJ/Ag7D4LcseUgAVUV7cg6oYGBtAQ4q1kv/0EWt9QiuFI8fu
-         7gZme/SyqvK/a2fc+jjKRrzEf02eR5cF1DzqCq8yrvx+qsl5XqbqbJWpZNfrYWf23x/w
-         NZnvKHszf4JGO6eC1UZcxgSbGDjgGxEF2z1+loWr1gUo1BfW8r79CPGsQbbHm6dt6q2K
-         IjRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=B2tO/wgwTAbnKTMa9LXV6z5RfQ9U8qBcZe2mtEefEd8=;
-        b=tDyTCjJKT3igyD+cDnOZ+IoznHnSTIJtzxyUL0tNtJRm4jpw2dSdqgRumQY0CydHtN
-         DCcyTQpHZrwCByBTsWO0AzrI9OCOGvJYGUKQDkStiTF1PUo8d7XkGk31kkqgBKQeg3v+
-         WBjdDiuFqUGT4VsXGn/EKSCslIN/7HkwwfiGh78iTr6qqRzihBgaKawmnttO/KNQ8q3p
-         JIMApm9qLdhZ//0ZI6++7bNY/Q9+ezbBIitFZq5Yteao8owUhJLRzmrYGahQjbChE7IF
-         5eB4IEDJ2+SEd1VLRhukoT+HAcTfY2H6p42CvTz9XonGCdbFLwjSLDEZYPLygfAY2/eU
-         jxaQ==
-X-Gm-Message-State: ANhLgQ2qCTAEGh4SZ+WVJxmpz2tG8tuL6jkdIIfuG/AjlE9cpXXcuTnS
-        7t2JBN8yS9HkFFKjlxxfBYimYTCr
-X-Google-Smtp-Source: ADFU+vsC8+NCCJYXxI6hJi5y/Ir0r3L87i0ScL7C3YQCLkS4zxRONRWlqXTc0kh+Op9b9zCLTbM/Nw==
-X-Received: by 2002:a17:90a:2a0c:: with SMTP id i12mr5173066pjd.149.1583258602673;
-        Tue, 03 Mar 2020 10:03:22 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:500::4:a0de])
-        by smtp.gmail.com with ESMTPSA id b4sm26257540pfd.18.2020.03.03.10.03.20
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 03 Mar 2020 10:03:21 -0800 (PST)
-Date:   Tue, 3 Mar 2020 10:03:19 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@redhat.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Song Liu <song@kernel.org>
-Subject: Re: [PATCH 06/15] bpf: Add bpf_ksym_tree tree
-Message-ID: <20200303180318.vblj7izq2miken6e@ast-mbp>
-References: <20200302143154.258569-1-jolsa@kernel.org>
- <20200302143154.258569-7-jolsa@kernel.org>
+        id S1731869AbgCCSM6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 13:12:58 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:62638 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731384AbgCCSM5 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 3 Mar 2020 13:12:57 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 023IB2dL024549
+        for <bpf@vger.kernel.org>; Tue, 3 Mar 2020 10:12:56 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=x3ns7LX866GaJPokoQl7Qwx3KYe5wetFn4H1AsT3LYg=;
+ b=HV2o9U9Kmc3n9sJR/vJjKd4TX87lcY+qRXvSqbOXf0bASwbK5Ph286S6RTnhkAemBIAO
+ wHvd8g7OeA+bapIRjgd5jeN+CYBr1XyNq+QMNkuqSc7XL3GmS9T3CsaWsfdZyx219jIj
+ ED9V6nj6vDxXasBlj7ZnAwKKe1w7KRD4P2E= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yht6y0uje-18
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 03 Mar 2020 10:12:56 -0800
+Received: from intmgw002.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 3 Mar 2020 10:08:07 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 681792EC29A2; Tue,  3 Mar 2020 10:08:03 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] libbpf: fix handling of optional field_name in btf_dump__emit_type_decl
+Date:   Tue, 3 Mar 2020 10:08:00 -0800
+Message-ID: <20200303180800.3303471-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200302143154.258569-7-jolsa@kernel.org>
-User-Agent: NeoMutt/20180223
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-03-03_06:2020-03-03,2020-03-03 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=686
+ spamscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0
+ priorityscore=1501 phishscore=0 impostorscore=0 bulkscore=0 mlxscore=0
+ suspectscore=8 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2001150001 definitions=main-2003030122
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 02, 2020 at 03:31:45PM +0100, Jiri Olsa wrote:
-> The bpf_tree is used both for kallsyms iterations and searching
-> for exception tables of bpf programs, which is needed only for
-> bpf programs.
-> 
-> Adding bpf_ksym_tree that will hold symbols for all bpf_prog
-> bpf_trampoline and bpf_dispatcher objects and keeping bpf_tree
-> only for bpf_prog objects to keep it fast.
+Internal functions, used by btf_dump__emit_type_decl(), assume field_name is
+never going to be NULL. Ensure it's always the case.
 
-...
+Fixes: 9f81654eebe8 ("libbpf: Expose BTF-to-C type declaration emitting API")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/lib/bpf/btf_dump.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->  static void bpf_prog_ksym_node_add(struct bpf_prog_aux *aux)
-> @@ -616,6 +650,7 @@ static void bpf_prog_ksym_node_add(struct bpf_prog_aux *aux)
->  	WARN_ON_ONCE(!list_empty(&aux->ksym.lnode));
->  	list_add_tail_rcu(&aux->ksym.lnode, &bpf_kallsyms);
->  	latch_tree_insert(&aux->ksym_tnode, &bpf_tree, &bpf_tree_ops);
-> +	latch_tree_insert(&aux->ksym.tnode, &bpf_ksym_tree, &bpf_ksym_tree_ops);
->  }
->  
->  static void bpf_prog_ksym_node_del(struct bpf_prog_aux *aux)
-> @@ -624,6 +659,7 @@ static void bpf_prog_ksym_node_del(struct bpf_prog_aux *aux)
->  		return;
->  
->  	latch_tree_erase(&aux->ksym_tnode, &bpf_tree, &bpf_tree_ops);
-> +	latch_tree_erase(&aux->ksym.tnode, &bpf_ksym_tree, &bpf_ksym_tree_ops);
+diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+index bd09ed1710f1..dc451e4de5ad 100644
+--- a/tools/lib/bpf/btf_dump.c
++++ b/tools/lib/bpf/btf_dump.c
+@@ -1030,7 +1030,7 @@ int btf_dump__emit_type_decl(struct btf_dump *d, __u32 id,
+ 	if (!OPTS_VALID(opts, btf_dump_emit_type_decl_opts))
+ 		return -EINVAL;
+ 
+-	fname = OPTS_GET(opts, field_name, NULL);
++	fname = OPTS_GET(opts, field_name, "");
+ 	lvl = OPTS_GET(opts, indent_level, 0);
+ 	btf_dump_emit_type_decl(d, id, fname, lvl);
+ 	return 0;
+-- 
+2.17.1
 
-I have to agree with Daniel here.
-Having bpf prog in two latch trees is unnecessary.
-Especially looking at the patch 7 that moves update to the other tree.
-The whole thing becomes assymetrical and harder to follow.
-Consider that walking extable is slow anyway. It's a page fault.
-Having trampoline and dispatch in the same tree will not be measurable
-on the speed of search_bpf_extables->bpf_prog_kallsyms_find.
-So please consolidate.
-
-Also I don't see a hunk that deletes tnode from 'struct bpf_image'.
-These patches suppose to generalize it too, no?
-And at the end kernel_text_address() suppose to call
-is_bpf_text_address() only, right?
-Instead of is_bpf_text_address() || is_bpf_image_address() ?
-That _will_ actually speed up backtrace collection.
