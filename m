@@ -2,97 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC4D176E3B
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 05:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02AD9176EF8
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 06:51:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbgCCE7h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Mar 2020 23:59:37 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:36761 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726928AbgCCE7h (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Mar 2020 23:59:37 -0500
-Received: by mail-qt1-f195.google.com with SMTP id t13so1922951qto.3;
-        Mon, 02 Mar 2020 20:59:36 -0800 (PST)
+        id S1725763AbgCCFvs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 00:51:48 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:43425 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725879AbgCCFvs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Mar 2020 00:51:48 -0500
+Received: by mail-qk1-f193.google.com with SMTP id q18so2244196qki.10;
+        Mon, 02 Mar 2020 21:51:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3ejAnt+uAyqn1WHZqMXh9jskwSigm+jlynlcBsOlBXc=;
-        b=YloKxOZqHVIxy6syxSZwM+lbqjeDFy6KxpkO/6K3bbZn0uIAyJfqlb6ZSDB/9h2MK3
-         AO1ZwJuB4L62GJKcL/dRd2prxX5rhm/YxWlPLjwp7R/31Xx8R8AxdZTJxgD/bIVt10ZW
-         9TeZWwpOYw6eepWIdN8DU9MRGXbUvVx/lAWllcmd0JbpBQbY0iwqBIH8iusvG8p45WkM
-         QQRXc9o7rwHFZN99Z7B19IS28qIe0RPILCTXhnySGgK9GjTsvdbd1W+fotEdsoeDkPPw
-         NFFJf7QSzu1TKb6atRM8ee4Hk5ZhAbucgGYojnz2SVK2tJYQEYogxnXLrj5KQv3JJjLx
-         pGnA==
+         :cc:content-transfer-encoding;
+        bh=iLzATktCHrodymTRFz9+R7sYgPZp2WR4t6sVmb9CoD8=;
+        b=Y2/8tjTwomcDfnQI4CrB9vsGgA7c+4gX+IPFpd6xie0Z+y05cpijap953GnF9rFdDE
+         SC5lG7GF2G3PVsUtRjKkdoT/Ze/PUnTEq3Fp0SuRLCRlY2D75jheQ6UZimcFGlnljq0J
+         /VFoBpOQm3TpF8oQg/HORVe6NM0jM5iMz7EYDxfXEozYsByK2Uib08tkiok/TiR3OsGC
+         dBUYXF0m9aqi6VjdIEpJ0JBTvBHO4+L5xE+wPyR7Wy2DlqAPHui9X6mrLwCT6gmE1GAC
+         uCGgoI83igJ6k60HRp1HdkQhyymY2TlMabb+xNGmW2INVOSI7/W97Q3fP0Xkr4s6tA/d
+         2d6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3ejAnt+uAyqn1WHZqMXh9jskwSigm+jlynlcBsOlBXc=;
-        b=hABQVHfpCSJ6SuKi9bea/eHvjfwLwkNYnWjtguTJm/yX9grbfTZc04wr0XOx/Aoud5
-         cFHtrDMsxIOdrIpbM+3BjRpwjsLuJNryIF40mCyotqhxspzv55WWUadiL6efubF0H2kY
-         SjR38+cSoyXFGl61t3gE/bbSZvpId15XYApATEDaTSAOublmNXdfDVDNDPybz7j+6whT
-         Vv6CVFZHqyDJvTJMN18ydYl0+0Mj9DVwhB/WBNiuEHX5eAtVThAeVjCWT0PTq9Ak7g8z
-         J45lqPX7aqhBziNOsieLdSdL7lF3o+szQ8ZxJxtzGmR2ez2qlD1DbiWOlwOQpRErCCS9
-         ye4Q==
-X-Gm-Message-State: ANhLgQ0zuMsjFmkRveA1DJO3yjjk66auJ9aGm+algwnUdWAPbJL3l+ek
-        IIoq2tGpS7bEfrNkO7sP4O2cViF8zmztT7ue2IQ=
-X-Google-Smtp-Source: ADFU+vtqmDbp5mzDx5UV/rhQYMaaTOfgvfK+dBtgdJSBs0z+K22Ip5cO/Nr/k0tbIYrU8l5YAbN7VUNq7mVp5IqFfHA=
-X-Received: by 2002:ac8:4d4b:: with SMTP id x11mr2787467qtv.171.1583211575848;
- Mon, 02 Mar 2020 20:59:35 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iLzATktCHrodymTRFz9+R7sYgPZp2WR4t6sVmb9CoD8=;
+        b=p4fzjfKiYHO20Ewq2sbd8Bx9BmhTjGFv2Rdet3e0oXM7uTfM4LVelJQ4+jvrNq6vHm
+         recVQvY9KJRlQMjemPFNpf8GA5hZPkCXQxYlGy/VgnjOvHtuAtVr/VueryO+jSRYW5VS
+         Dgz/bA0dPkivo9AN6HP76QnnZyoNTPFswvIcbIVmbD97A1JMoeIqDVVQhr85PFssYmte
+         rew4RCl99i3iyi0OQKX2z4ZSWeaZbKZ5qgetktJdEAwqvn3aq0kjFnLjH8J+49e8w7Ln
+         dqq/kFCicrW34OZ1aENtRSklztu5dlZoflXCyHfyVszs7N5lhsRwsVwuUKdeFsPR9ClD
+         CbLg==
+X-Gm-Message-State: ANhLgQ0AudiK1YPrDIIxctuKgJO057ko2eRqRr2jXivOInLXIFld8bZw
+        8PrTjExW+7eAofdxJQuAnvmkQtrRKE3R71E6WnI=
+X-Google-Smtp-Source: ADFU+vsAdJwHeWN+xr+Wfk3ncx3mNSNxdcg74ESWiG+tMxczIt6h5phl3xQyAyIyAR3X2SefIi3fSE5nmggLdi9ocbM=
+X-Received: by 2002:a37:8046:: with SMTP id b67mr2625917qkd.218.1583214706980;
+ Mon, 02 Mar 2020 21:51:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20200301081045.3491005-1-andriin@fb.com> <20200303005951.72szj5sb5rveh4xp@ast-mbp>
- <CAEf4BzYsC-5j_+je1pZ_JNsyuPV9_JrLSzpp6tfUvm=3KBNL-A@mail.gmail.com>
-In-Reply-To: <CAEf4BzYsC-5j_+je1pZ_JNsyuPV9_JrLSzpp6tfUvm=3KBNL-A@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 2 Mar 2020 20:59:24 -0800
-Message-ID: <CAEf4Bza+oHc4eJESnPCQh0rRcKtPWqu3SYkzP52B4BLu2O0=6w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/3] Improve raw tracepoint BTF types preservation
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+References: <20200303005035.13814-1-luke.r.nels@gmail.com> <20200303005035.13814-5-luke.r.nels@gmail.com>
+In-Reply-To: <20200303005035.13814-5-luke.r.nels@gmail.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Tue, 3 Mar 2020 06:51:35 +0100
+Message-ID: <CAJ+HfNhJJeEewW+Zj2gyH_fprvM25kWCMJP1kmA3Udpjj0MNYQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 4/4] MAINTAINERS: Add entry for RV32G BPF JIT
+To:     Luke Nelson <lukenels@cs.washington.edu>
+Cc:     bpf <bpf@vger.kernel.org>, Luke Nelson <luke.r.nels@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        Kernel Team <kernel-team@fb.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Xi Wang <xi.wang@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, linux-riscv@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 2, 2020 at 8:10 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, 3 Mar 2020 at 01:50, Luke Nelson <lukenels@cs.washington.edu> wrote=
+:
 >
-> On Mon, Mar 2, 2020 at 4:59 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Sun, Mar 01, 2020 at 12:10:42AM -0800, Andrii Nakryiko wrote:
-> > > Fix issue with not preserving btf_trace_##call structs when compiled under
-> > > Clang. Additionally, capture raw tracepoint arguments in raw_tp_##call
-> > > structs, directly usable from BPF programs. Convert runqslower to use those
-> > > for proof of concept and to simplify code further.
-> >
-> > Not only folks compile kernel with clang they use the latest BPF/BTF features
-> > with it. This is very nice to see!
-> > I've applied 1st patch to make clang compiled kernel emit proper BTF.
-> >
-> > As far as patch 2 I'm not sure about 'raw_tp_' prefix. tp_btf type of progs can
-> > use the same structs. So I think there could be a better name. Also bpftool can
-> > generate them as well while emitting vmlinux.h. I think that will avoid adding
-> > few kilobytes to vmlinux BTF that kernel isn't going to use atm.
+> Cc: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>
+> Signed-off-by: Xi Wang <xi.wang@gmail.com>
+> Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+> ---
+>  MAINTAINERS | 13 +++++++++++--
+>  1 file changed, 11 insertions(+), 2 deletions(-)
 >
-> Fair enough, I'll follow up with bpftool changes to generate such
-> structs. I'm thinking to use tp_args_xxx name pattern, unless someone
-> has a better idea :)
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 8f27f40d22bb..fdd8b99f18db 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3213,11 +3213,20 @@ L:      bpf@vger.kernel.org
+>  S:     Maintained
+>  F:     arch/powerpc/net/
+>
+> -BPF JIT for RISC-V (RV64G)
+> +BPF JIT for 32-bit RISC-V (RV32G)
+> +M:     Luke Nelson <luke.r.nels@gmail.com>
+> +M:     Xi Wang <xi.wang@gmail.com>
+> +L:     bpf@vger.kernel.org
+> +S:     Maintained
+> +F:     arch/riscv/net/
+> +X:     arch/riscv/net/bpf_jit_comp.c
+> +
+> +BPF JIT for 64-bit RISC-V (RV64G)
+>  M:     Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>
+> -L:     netdev@vger.kernel.org
+> +L:     bpf@vger.kernel.org
+>  S:     Maintained
+>  F:     arch/riscv/net/
+> +X:     arch/riscv/net/bpf_jit_comp32.c
+>
 
-Bad news. BTF_KIND_FUNC_PROTOs don't capture argument names and having
-something like:
+Empty commit message body, but maybe that's OK. The removal of netdev
+list is following the new guidelines from commit e42da4c62abb
+("docs/bpf: Update bpf development Q/A file").
 
-struct tp_args_sched_switch {
-    bool arg1;
-    struct task_struct *arg2;
-    struct task_struct *arg3;
-};
+Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>
 
-doesn't seem like a good solution...
+>  BPF JIT for S390
+>  M:     Ilya Leoshkevich <iii@linux.ibm.com>
+> --
+> 2.20.1
+>
