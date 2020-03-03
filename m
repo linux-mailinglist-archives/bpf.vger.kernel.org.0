@@ -2,301 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A31517784B
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 15:09:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0625717785B
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 15:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729468AbgCCOIt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 3 Mar 2020 09:08:49 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:21069 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728882AbgCCOIs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Mar 2020 09:08:48 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-3-Hf3xMLEJPhqgU7Yp7xR7Dw-1; Tue, 03 Mar 2020 09:08:43 -0500
-X-MC-Unique: Hf3xMLEJPhqgU7Yp7xR7Dw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 53DED8017CC;
-        Tue,  3 Mar 2020 14:08:41 +0000 (UTC)
-Received: from krava.redhat.com (ovpn-206-59.brq.redhat.com [10.40.206.59])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7452091D6E;
-        Tue,  3 Mar 2020 14:08:38 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        id S1729060AbgCCOKC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 09:10:02 -0500
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:34103 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727972AbgCCOKC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Mar 2020 09:10:02 -0500
+Received: by mail-wr1-f68.google.com with SMTP id z15so4548171wrl.1
+        for <bpf@vger.kernel.org>; Tue, 03 Mar 2020 06:10:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JL2Fpw/lCnaQ/XUN6zAHALWLaBMkxZHS+mEJ+EF0ZVY=;
+        b=laBzjI5h6krI1uPEgUkHv/ZKSQ+Z8ids/RVkJijNF9hmmkdASTBoYnB/7xl7Hgb1Mg
+         BubzGGprkGLSjK6uC17l7JKFmAuNKQAe7mebom121Rb1ZX7t8afUG1d1oG5ksP4iW46a
+         WR8Rvo74RTKxnPZPwBPH3sMykyYqZfLGRC0mc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JL2Fpw/lCnaQ/XUN6zAHALWLaBMkxZHS+mEJ+EF0ZVY=;
+        b=KnV4dR0Uie/DGadFuyxZNwbvJg+qwa0ogArZ3q1piY0V6P5dwOSHeu7x//HZtkBUtB
+         E0asFscsLAi2P6ZdZ1gE9EaM5Q3/PAvxOFWrOGZD6Hr9VRu0tld061M8yUXBRdAtdlSX
+         eO//1nrFt8ZaLO0BfKQD803SH8xogU1zJAfXaamgZX6L6DSCOtts5SHAHchHrh9wI1yZ
+         M4abed/dlbPjzB2HAjyGrn4rSiKW7ZICeSHBaFDOEZZB2vzIOFLz/Dv/S2URyy3VByfz
+         sNTgZVW41J5a1tcvFgZbzHyM5mosenVzjp6sPAZxcH0VHmRBlO072eHskPBNqKLhJxQt
+         0WBA==
+X-Gm-Message-State: ANhLgQ3goVh4nC2ZZWK7TmwXBKCSQ9X4U7y757G3Xgcy1PU/LLti6HGe
+        pSjOKjfVmLWLCxz+qMZnnoPJyg==
+X-Google-Smtp-Source: ADFU+vuL6Zt9apvq5/5BIeAmC8CeHZPk64Alb7HZEf7e0A/TFMw48bXS8bAGo5m+C3cCwKs6DCLf0Q==
+X-Received: by 2002:a05:6000:10c8:: with SMTP id b8mr5438416wrx.287.1583244600891;
+        Tue, 03 Mar 2020 06:10:00 -0800 (PST)
+Received: from kpsingh-kernel.localdomain ([2a00:79e1:abc:308:2811:c80d:9375:bf8a])
+        by smtp.gmail.com with ESMTPSA id h20sm11746823wrc.47.2020.03.03.06.10.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Mar 2020 06:10:00 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Subject: [RFC] libbpf,selftests: Question on btf_dump__emit_type_decl for BTF_KIND_FUNC
-Date:   Tue,  3 Mar 2020 15:08:37 +0100
-Message-Id: <20200303140837.90056-1-jolsa@kernel.org>
+        Paul Turner <pjt@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Subject: [PATCH bpf-next 0/7] Introduce BPF_MODIFY_RET tracing progs.
+Date:   Tue,  3 Mar 2020 15:09:43 +0100
+Message-Id: <20200303140950.6355-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-hi,
-for bpftrace I'd like to print BTF functions (BTF_KIND_FUNC)
-declarations together with their names.
+From: KP Singh <kpsingh@google.com>
 
-I saw we have btf_dump__emit_type_decl and added BTF_KIND_FUNC,
-where it seemed to be missing, so it prints out something now
-(not sure it's the right fix though).
+This was brought up in the KRSI v4 discussion and found to be useful
+both for security and tracing programs.
 
-Anyway, would you be ok with adding some flag/bool to struct
-btf_dump_emit_type_decl_opts, so I could get output like:
+  https://lore.kernel.org/bpf/20200225193108.GB22391@chromium.org/
 
-  kfunc:ksys_readahead(int fd, long long int offset, long unsigned int count) = ssize_t
-  kfunc:ksys_read(unsigned int fd, char buf, long unsigned int count) = size_t
+The modify_return programs are allowed for security hooks (with an
+extra CAP_MAC_ADMIN check) and functions whitelisted for error
+injection (ALLOW_ERROR_INJECTION).
 
-... to be able to the arguments and return type separated,
-so I could easily get to something like above?
+The "security_" check is expected to be cleaned up with the KRSI patch
+series.
 
-Current interface is just vfprintf callback and I'm not sure
-I can rely that it will allywas be called with same arguments,
-like having separated calls for parsed atoms like 'return type',
-'(', ')', '(', 'arg type', 'arg name', ...
+Here is an example of how a fmod_ret program behaves:
 
-I'm open to any suggestion ;-)
+int func_to_be_attached(int a, int b)
+{  <--- do_fentry
 
-thanks,
-jirka
+do_fmod_ret:
+   <update ret by calling fmod_ret>
+   if (ret != 0)
+        goto do_fexit;
 
+original_function:
 
----
- tools/lib/bpf/btf_dump.c                      |  4 ++++
- .../selftests/bpf/prog_tests/btf_dump.c       | 21 +++++++++++++++++++
- .../bpf/progs/btf_dump_test_case_bitfields.c  | 10 +++++++++
- .../bpf/progs/btf_dump_test_case_multidim.c   |  3 +++
- .../progs/btf_dump_test_case_namespacing.c    | 19 +++++++++++++++++
- .../bpf/progs/btf_dump_test_case_ordering.c   |  3 +++
- .../bpf/progs/btf_dump_test_case_packing.c    | 16 ++++++++++++++
- .../bpf/progs/btf_dump_test_case_padding.c    | 15 +++++++++++++
- .../bpf/progs/btf_dump_test_case_syntax.c     |  3 +++
- 9 files changed, 94 insertions(+)
+    <side_effects_happen_here>
 
-diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-index bd09ed1710f1..40c7491424eb 100644
---- a/tools/lib/bpf/btf_dump.c
-+++ b/tools/lib/bpf/btf_dump.c
-@@ -1068,6 +1068,7 @@ static void btf_dump_emit_type_decl(struct btf_dump *d, __u32 id,
- 		case BTF_KIND_CONST:
- 		case BTF_KIND_RESTRICT:
- 		case BTF_KIND_FUNC_PROTO:
-+		case BTF_KIND_FUNC:
- 			id = t->type;
- 			break;
- 		case BTF_KIND_ARRAY:
-@@ -1307,6 +1308,9 @@ static void btf_dump_emit_type_chain(struct btf_dump *d,
- 			btf_dump_printf(d, ")");
- 			return;
- 		}
-+		case BTF_KIND_FUNC:
-+			/* All work is done via BTF_KIND_FUNC_PROTO already. */
-+			break;
- 		default:
- 			pr_warn("unexpected type in decl chain, kind:%u, id:[%u]\n",
- 				kind, id);
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-index 7390d3061065..adcd0abcec5c 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-@@ -26,6 +26,9 @@ static struct btf_dump_test_case {
- static int btf_dump_all_types(const struct btf *btf,
- 			      const struct btf_dump_opts *opts)
- {
-+	DECLARE_LIBBPF_OPTS(btf_dump_emit_type_decl_opts, decl_opts,
-+		.field_name = "",
-+	);
- 	size_t type_cnt = btf__get_nr_types(btf);
- 	struct btf_dump *d;
- 	int err = 0, id;
-@@ -35,9 +38,27 @@ static int btf_dump_all_types(const struct btf *btf,
- 		return PTR_ERR(d);
- 
- 	for (id = 1; id <= type_cnt; id++) {
-+		const struct btf_type *type;
-+
- 		err = btf_dump__dump_type(d, id);
- 		if (err)
- 			goto done;
-+
-+		type = btf__type_by_id(btf, id);
-+
-+		if (BTF_INFO_KIND(type->info) != BTF_KIND_FUNC)
-+			continue;
-+
-+		err = btf_dump__emit_type_decl(d, id, &decl_opts);
-+		if (err)
-+			goto done;
-+
-+		/*
-+		 * There's no newline at the end of the declaration dumped
-+		 * by btf_dump__emit_type_decl, so doing an extra *one, so
-+		 * we can have 'expected' counter part with newline.
-+		 */
-+		fprintf(opts->ctx, "\n");
- 	}
- 
- done:
-diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_bitfields.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_bitfields.c
-index 8f44767a75fa..4d911cab7012 100644
---- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_bitfields.c
-+++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_bitfields.c
-@@ -82,6 +82,16 @@ struct bitfield_flushed {
- 	long b: 16;
- };
- 
-+/* ----- START-EXPECTED-OUTPUT ----- */
-+/*
-+ *int ()(struct {
-+ *	struct bitfields_only_mixed_types _1;
-+ *	struct bitfield_mixed_with_others _2;
-+ *	struct bitfield_flushed _3;
-+ *} *_)
-+ */
-+/* ------ END-EXPECTED-OUTPUT ------ */
-+
- int f(struct {
- 	struct bitfields_only_mixed_types _1;
- 	struct bitfield_mixed_with_others _2;
-diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_multidim.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_multidim.c
-index ba97165bdb28..97e189e8246a 100644
---- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_multidim.c
-+++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_multidim.c
-@@ -27,6 +27,9 @@ struct root_struct {
- 	fn_ptr_multiarr_t _6;
- };
- 
-+/*
-+ *int ()(struct root_struct *s)
-+ */
- /* ------ END-EXPECTED-OUTPUT ------ */
- 
- int f(struct root_struct *s)
-diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_namespacing.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_namespacing.c
-index 92a4ad428710..ac4141a611bf 100644
---- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_namespacing.c
-+++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_namespacing.c
-@@ -49,6 +49,25 @@ typedef int Y;
- 
- typedef int Z;
- 
-+/*
-+ *int ()(struct {
-+ *	struct S _1;
-+ *	S _2;
-+ *	union U _3;
-+ *	U _4;
-+ *	enum E _5;
-+ *	E _6;
-+ *	struct A a;
-+ *	union B b;
-+ *	enum C c;
-+ *	struct X x;
-+ *	union Y y;
-+ *	enum Z *z;
-+ *	X xx;
-+ *	Y yy;
-+ *	Z zz;
-+ *} *_)
-+ */
- /*------ END-EXPECTED-OUTPUT ------ */
- 
- int f(struct {
-diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_ordering.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_ordering.c
-index 7c95702ee4cb..2687ca94025d 100644
---- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_ordering.c
-+++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_ordering.c
-@@ -55,6 +55,9 @@ struct root_struct {
- 	struct callback_head cb;
- };
- 
-+/*
-+ *int ()(struct root_struct *root)
-+ */
- /*------ END-EXPECTED-OUTPUT ------ */
- 
- int f(struct root_struct *root)
-diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_packing.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_packing.c
-index 1cef3bec1dc7..88bae49bdbbb 100644
---- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_packing.c
-+++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_packing.c
-@@ -58,6 +58,22 @@ union jump_code_union {
- 	} __attribute__((packed));
- };
- 
-+/*
-+ *int ()(struct {
-+ *	struct packed_trailing_space _1;
-+ *	short: 16;
-+ *	struct non_packed_trailing_space _2;
-+ *	struct packed_fields _3;
-+ *	short: 16;
-+ *	struct non_packed_fields _4;
-+ *	struct nested_packed _5;
-+ *	short: 16;
-+ *	union union_is_never_packed _6;
-+ *	union union_does_not_need_packing _7;
-+ *	union jump_code_union _8;
-+ *	int: 24;
-+ *} __attribute__((packed)) *_)
-+ */
- /*------ END-EXPECTED-OUTPUT ------ */
- 
- int f(struct {
-diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
-index 35c512818a56..581349bb0c2f 100644
---- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
-+++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
-@@ -102,6 +102,21 @@ struct zone {
- 	struct zone_padding __pad__;
- };
- 
-+/* ----- START-EXPECTED-OUTPUT ----- */
-+/*
-+ *int ()(struct {
-+ *	struct padded_implicitly _1;
-+ *	struct padded_explicitly _2;
-+ *	struct padded_a_lot _3;
-+ *	struct padded_cache_line _4;
-+ *	struct zone _5;
-+ *	long: 64;
-+ *	long: 64;
-+ *	long: 64;
-+ *} *_)
-+ */
-+/* ------ END-EXPECTED-OUTPUT ------ */
-+
- int f(struct {
- 	struct padded_implicitly _1;
- 	struct padded_explicitly _2;
-diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
-index d4a02fe44a12..b110eea7ffd2 100644
---- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
-+++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
-@@ -221,6 +221,9 @@ struct root_struct {
- 	struct struct_with_embedded_stuff _14;
- };
- 
-+/*
-+ *int ()(struct root_struct *s)
-+ */
- /* ------ END-EXPECTED-OUTPUT ------ */
- 
- int f(struct root_struct *s)
+}  <--- do_fexit
+
+ALLOW_ERROR_INJECTION(func_to_be_attached, ERRNO)
+
+The fmod_ret program attached to this function can be defined as:
+
+SEC("fmod_ret/func_to_be_attached")
+BPF_PROG(func_name, int a, int b, int ret)
+{
+        // This will skip the original function logic.
+        return -1;
+}
+
+KP Singh (7):
+  bpf: Refactor trampoline update code
+  bpf: JIT helpers for fmod_ret progs
+  bpf: Introduce BPF_MODIFY_RETURN
+  bpf: Attachment verification for BPF_MODIFY_RETURN
+  tools/libbpf: Add support for BPF_MODIFY_RETURN
+  bpf: Add test ops for BPF_PROG_TYPE_TRACING
+  bpf: Add selftests for BPF_MODIFY_RETURN
+
+ arch/x86/net/bpf_jit_comp.c                   | 261 +++++++++++++-----
+ include/linux/bpf.h                           |  24 +-
+ include/uapi/linux/bpf.h                      |   1 +
+ kernel/bpf/bpf_struct_ops.c                   |  13 +-
+ kernel/bpf/btf.c                              |  27 +-
+ kernel/bpf/syscall.c                          |   1 +
+ kernel/bpf/trampoline.c                       |  66 +++--
+ kernel/bpf/verifier.c                         |  32 +++
+ kernel/trace/bpf_trace.c                      |   1 +
+ net/bpf/test_run.c                            |  57 +++-
+ tools/include/uapi/linux/bpf.h                |   1 +
+ tools/lib/bpf/libbpf.c                        |   4 +
+ .../selftests/bpf/prog_tests/fentry_fexit.c   |  12 +-
+ .../selftests/bpf/prog_tests/fentry_test.c    |  14 +-
+ .../selftests/bpf/prog_tests/fexit_test.c     |  69 ++---
+ .../selftests/bpf/prog_tests/modify_return.c  |  65 +++++
+ .../selftests/bpf/progs/modify_return.c       |  49 ++++
+ 17 files changed, 509 insertions(+), 188 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/modify_return.c
+ create mode 100644 tools/testing/selftests/bpf/progs/modify_return.c
+
 -- 
-2.24.1
+2.20.1
 
