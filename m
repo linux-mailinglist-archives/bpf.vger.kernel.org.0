@@ -2,206 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B580F17810B
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 20:01:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8014817818C
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 20:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733254AbgCCSAQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 13:00:16 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:39075 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733249AbgCCSAQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Mar 2020 13:00:16 -0500
-Received: by mail-qk1-f193.google.com with SMTP id e16so4296139qkl.6;
-        Tue, 03 Mar 2020 10:00:14 -0800 (PST)
+        id S1733252AbgCCSDY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 13:03:24 -0500
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:35776 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731209AbgCCSDX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Mar 2020 13:03:23 -0500
+Received: by mail-pj1-f66.google.com with SMTP id s8so1694463pjq.0;
+        Tue, 03 Mar 2020 10:03:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lhQvd1T146KkjohFRaXEevnYThNA7CvsdsB9dL6DCfc=;
-        b=efHA5ATwoWEKr9agC/gjw8iAo22w6qV5ne2qun3QGreq3DA1M+8aIQCMTPOChlLVMq
-         9341Tbn9nEunnPMfogCqmZLN8/FhzEPj1r21hqlKtOE21De9//mmyQb8731hWrg5tzBw
-         sNrW/nPnP+VYMAqHNri0PtEVQgimUii85k3bt70oULP5NMPh5uLWXFXZZVfMofnloiLm
-         Q53JmXbGh2f71LLQ42rK6iU+B19CEAt+O6wXFW6Hk8/udqYmY++yJUGAWgNyIEtK8RLQ
-         paVxSKhNmwfEjDeSCeoeJ3wQOG6CPrqQp4sXTVAYyIc6kW717bMMIdsqLLIjjr2qTiSR
-         VIXg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=B2tO/wgwTAbnKTMa9LXV6z5RfQ9U8qBcZe2mtEefEd8=;
+        b=oyYwHdCWUZM9dSQP5KlhU2UTUoti7X2xuoY4bHIdm6RJKAjTqEkJub1A5PjXgJPfm6
+         bKmeD0FERtQiPQ8YmL29UMwWpJr0uVBtscS7QGhU6Wv12eb6utpD2WK3dpapZAajRQNe
+         pHUdXiOel7GfvDEVfNdAEJ/Ag7D4LcseUgAVUV7cg6oYGBtAQ4q1kv/0EWt9QiuFI8fu
+         7gZme/SyqvK/a2fc+jjKRrzEf02eR5cF1DzqCq8yrvx+qsl5XqbqbJWpZNfrYWf23x/w
+         NZnvKHszf4JGO6eC1UZcxgSbGDjgGxEF2z1+loWr1gUo1BfW8r79CPGsQbbHm6dt6q2K
+         IjRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lhQvd1T146KkjohFRaXEevnYThNA7CvsdsB9dL6DCfc=;
-        b=nSpmARNHSZVK+EbWxAVuTSZjVnUznBFsgpHsDLm62AHuA95NIhY3+8+tiBXHWSWVDB
-         uLdZIyEnyXNxEcf6Vfk2kmdgi7ytsjoukqQu5oXprS+Pn8VlRwmDYJmfS4d5gN45S211
-         jHJjURDDjKCEheGtfjKgiSkwzMXrmEUi5ntDuJ2Zot+dDMN7mT0RQgsB4y1suXwEvkLO
-         QEJVOaOHcnSlRQu8f3EXs7SYhWIqHOEXsxPCBZot7rVek4lRkgGQ0eLmvtjGDEJ7kc1w
-         NQAdy+p+ffUI7iBN+hbLHfxpV+T9dXkwTM7eIg9Uu7uSdjN+VPQoqFRG4kK3B79q+2zL
-         aMAg==
-X-Gm-Message-State: ANhLgQ1Qf0ptzBeKcPnmNviIkDOfwObzLAM09xeZ/zU7x3uh8wGTTnHJ
-        bv+Zn9533Jur2c/e2US7yCnMIr6pmOOMhbAfuEk=
-X-Google-Smtp-Source: ADFU+vvw+Qmt+XQABhVzsUM2Hu2ShOQTqx/ZqBjFt+cq9iAh9G82uJi8/Sw4Owi7lGeGpr/olZ4hBLfKEBneM3WR+vA=
-X-Received: by 2002:a37:6716:: with SMTP id b22mr5417929qkc.437.1583258413678;
- Tue, 03 Mar 2020 10:00:13 -0800 (PST)
-MIME-Version: 1.0
-References: <20200303140837.90056-1-jolsa@kernel.org> <CAEf4BzY8_=wcL3N96eS-jcSPBL=ueMgQg+m=Fxiw+o0Tc7F23Q@mail.gmail.com>
- <20200303173314.GA74093@krava>
-In-Reply-To: <20200303173314.GA74093@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 3 Mar 2020 10:00:02 -0800
-Message-ID: <CAEf4BzYQYJJwLUNhDoKcdgKsMijf9R5vG-vbOBYA-nUAgNs1qA@mail.gmail.com>
-Subject: Re: [RFC] libbpf,selftests: Question on btf_dump__emit_type_decl for BTF_KIND_FUNC
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=B2tO/wgwTAbnKTMa9LXV6z5RfQ9U8qBcZe2mtEefEd8=;
+        b=tDyTCjJKT3igyD+cDnOZ+IoznHnSTIJtzxyUL0tNtJRm4jpw2dSdqgRumQY0CydHtN
+         DCcyTQpHZrwCByBTsWO0AzrI9OCOGvJYGUKQDkStiTF1PUo8d7XkGk31kkqgBKQeg3v+
+         WBjdDiuFqUGT4VsXGn/EKSCslIN/7HkwwfiGh78iTr6qqRzihBgaKawmnttO/KNQ8q3p
+         JIMApm9qLdhZ//0ZI6++7bNY/Q9+ezbBIitFZq5Yteao8owUhJLRzmrYGahQjbChE7IF
+         5eB4IEDJ2+SEd1VLRhukoT+HAcTfY2H6p42CvTz9XonGCdbFLwjSLDEZYPLygfAY2/eU
+         jxaQ==
+X-Gm-Message-State: ANhLgQ2qCTAEGh4SZ+WVJxmpz2tG8tuL6jkdIIfuG/AjlE9cpXXcuTnS
+        7t2JBN8yS9HkFFKjlxxfBYimYTCr
+X-Google-Smtp-Source: ADFU+vsC8+NCCJYXxI6hJi5y/Ir0r3L87i0ScL7C3YQCLkS4zxRONRWlqXTc0kh+Op9b9zCLTbM/Nw==
+X-Received: by 2002:a17:90a:2a0c:: with SMTP id i12mr5173066pjd.149.1583258602673;
+        Tue, 03 Mar 2020 10:03:22 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:500::4:a0de])
+        by smtp.gmail.com with ESMTPSA id b4sm26257540pfd.18.2020.03.03.10.03.20
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 03 Mar 2020 10:03:21 -0800 (PST)
+Date:   Tue, 3 Mar 2020 10:03:19 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
         Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
         Jakub Kicinski <kuba@kernel.org>,
         David Miller <davem@redhat.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Song Liu <song@kernel.org>
+Subject: Re: [PATCH 06/15] bpf: Add bpf_ksym_tree tree
+Message-ID: <20200303180318.vblj7izq2miken6e@ast-mbp>
+References: <20200302143154.258569-1-jolsa@kernel.org>
+ <20200302143154.258569-7-jolsa@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200302143154.258569-7-jolsa@kernel.org>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 3, 2020 at 9:33 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Tue, Mar 03, 2020 at 09:09:38AM -0800, Andrii Nakryiko wrote:
-> > On Tue, Mar 3, 2020 at 6:12 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > >
-> > > hi,
-> > > for bpftrace I'd like to print BTF functions (BTF_KIND_FUNC)
-> > > declarations together with their names.
-> > >
-> > > I saw we have btf_dump__emit_type_decl and added BTF_KIND_FUNC,
-> > > where it seemed to be missing, so it prints out something now
-> > > (not sure it's the right fix though).
-> > >
-> > > Anyway, would you be ok with adding some flag/bool to struct
-> > > btf_dump_emit_type_decl_opts, so I could get output like:
-> > >
-> > >   kfunc:ksys_readahead(int fd, long long int offset, long unsigned int count) = ssize_t
-> > >   kfunc:ksys_read(unsigned int fd, char buf, long unsigned int count) = size_t
-> > >
-> > > ... to be able to the arguments and return type separated,
-> > > so I could easily get to something like above?
-> > >
-> > > Current interface is just vfprintf callback and I'm not sure
-> > > I can rely that it will allywas be called with same arguments,
-> > > like having separated calls for parsed atoms like 'return type',
-> > > '(', ')', '(', 'arg type', 'arg name', ...
-> > >
-> > > I'm open to any suggestion ;-)
-> >
-> > Hey Jiri!
-> >
-> > Can you please elaborate on the use case and problem you are trying to solve?
-> >
-> > I think we can (and probably even should) add such option and support
-> > to dump functions, but whatever we do it should be a valid C syntax
-> > and should be compilable.
-> > Example above:
-> >
-> > kfunc:ksys_read(unsigned int fd, char buf, long unsigned int count) = size_t
-> >
-> > Is this really the syntax you need to get? I think btf_dump, when
-> > (optionally) emitting function declaration, will have to emit that
-> > particular one as:
-> >
-> > size_t ksys_read(unsigned int fd, char buf, long unsigned int count);
-> >
-> > But I'd like to hear the use case before we add this. Thanks!
->
-> the use case is just for the 'bpftrace -l' output, which displays
-> the probe names that could be used.. for kernel BTF kernel functions
-> it's 'kfunc:function(args)'
->
->         software:task-clock:
->         hardware:backend-stalls:
->         hardware:branch-instructions:
->         ...
->         tracepoint:kvmmmu:kvm_mmu_pagetable_walk
->         tracepoint:kvmmmu:kvm_mmu_paging_element
->         ...
->         kprobe:console_on_rootfs
->         kprobe:trace_initcall_start_cb
->         kprobe:run_init_process
->         kprobe:try_to_run_init_process
->         ...
->         kfunc:x86_reserve_hardware
->         kfunc:hw_perf_lbr_event_destroy
->         kfunc:x86_perf_event_update
->
-> I dont want to print the return type as is in C, because it would
-> mess up the whole output, hence the '= <return type>'
->
->         kfunc:ksys_readahead(int fd, long long int offset, long unsigned int count) = ssize_t
->         kfunc:ksys_read(unsigned int fd, char buf, long unsigned int count) = size_t
->
-> also possible only in verbose mode ;-)
->
-> the final shape of the format will be decided in a bpftrace review,
-> but in any case I think I'll need some way to get these bits:
->   <args> <return type>
->
+On Mon, Mar 02, 2020 at 03:31:45PM +0100, Jiri Olsa wrote:
+> The bpf_tree is used both for kallsyms iterations and searching
+> for exception tables of bpf programs, which is needed only for
+> bpf programs.
+> 
+> Adding bpf_ksym_tree that will hold symbols for all bpf_prog
+> bpf_trampoline and bpf_dispatcher objects and keeping bpf_tree
+> only for bpf_prog objects to keep it fast.
 
-Ok, I think for your use case it's better for you to implement it
-customly, I don't think this fits btf_dump() C output as is. But you
-have all the right high-level APIs anyways. There is nothing irregular
-about function declarations, thankfully. Pointers to functions are way
-more involved, syntactically, which is already abstracted from you in
-btf_dump__emit_type_decl(). Here's the code:
+...
 
-static int dump_funcs(const struct btf *btf, struct btf_dump *d)
-{
-        int err = 0, i, j, cnt = btf__get_nr_types(btf);
-        const struct btf_type *t;
-        const struct btf_param *p;
-        const char *name;
+>  static void bpf_prog_ksym_node_add(struct bpf_prog_aux *aux)
+> @@ -616,6 +650,7 @@ static void bpf_prog_ksym_node_add(struct bpf_prog_aux *aux)
+>  	WARN_ON_ONCE(!list_empty(&aux->ksym.lnode));
+>  	list_add_tail_rcu(&aux->ksym.lnode, &bpf_kallsyms);
+>  	latch_tree_insert(&aux->ksym_tnode, &bpf_tree, &bpf_tree_ops);
+> +	latch_tree_insert(&aux->ksym.tnode, &bpf_ksym_tree, &bpf_ksym_tree_ops);
+>  }
+>  
+>  static void bpf_prog_ksym_node_del(struct bpf_prog_aux *aux)
+> @@ -624,6 +659,7 @@ static void bpf_prog_ksym_node_del(struct bpf_prog_aux *aux)
+>  		return;
+>  
+>  	latch_tree_erase(&aux->ksym_tnode, &bpf_tree, &bpf_tree_ops);
+> +	latch_tree_erase(&aux->ksym.tnode, &bpf_ksym_tree, &bpf_ksym_tree_ops);
 
-        for (i = 1; i <= cnt; i++) {
-                t = btf__type_by_id(btf, i);
-                if (!btf_is_func(t))
-                        continue;
+I have to agree with Daniel here.
+Having bpf prog in two latch trees is unnecessary.
+Especially looking at the patch 7 that moves update to the other tree.
+The whole thing becomes assymetrical and harder to follow.
+Consider that walking extable is slow anyway. It's a page fault.
+Having trampoline and dispatch in the same tree will not be measurable
+on the speed of search_bpf_extables->bpf_prog_kallsyms_find.
+So please consolidate.
 
-                name = btf__name_by_offset(btf, t->name_off);
-                t = btf__type_by_id(btf, t->type);
-                if (!btf_is_func_proto(t))
-                        return -EINVAL;
-
-                printf("kfunc:%s(", name);
-                for (j = 0, p = btf_params(t); j < btf_vlen(t); j++, p++) {
-                        err = btf_dump__emit_type_decl(d, p->type, NULL);
-                        if (err)
-                                return err;
-                }
-                printf(") = ");
-
-                err = btf_dump__emit_type_decl(d, t->type, NULL);
-                if (err)
-                        return err;
-
-                printf(";\n");
-        }
-        return 0;
-}
-
-Beware, this will crash right now due to NULL field_name, but I'm
-fixing that with a tiny patch in just a second.
-
-Also beware, there are no argument names captures for func_protos...
-
-So with the above (and btf_dump__emit_type_decl() fix for NULL
-field_name), this will produce output:
-
-kfunc:num_digits(int) = int;
-kfunc:copy_from_user_nmi(void *const void *long unsigned int) = long
-unsigned int;
-kfunc:arch_wb_cache_pmem(void *size_t) = void;
-kfunc:__clear_user(void *long unsigned int) = long unsigned int;
-
-
->
-> thanks,
-> jirka
->
+Also I don't see a hunk that deletes tnode from 'struct bpf_image'.
+These patches suppose to generalize it too, no?
+And at the end kernel_text_address() suppose to call
+is_bpf_text_address() only, right?
+Instead of is_bpf_text_address() || is_bpf_image_address() ?
+That _will_ actually speed up backtrace collection.
