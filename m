@@ -2,84 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A57178218
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 20:03:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAD5178295
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 20:03:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731869AbgCCSM6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 13:12:58 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:62638 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731384AbgCCSM5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 3 Mar 2020 13:12:57 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 023IB2dL024549
-        for <bpf@vger.kernel.org>; Tue, 3 Mar 2020 10:12:56 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=x3ns7LX866GaJPokoQl7Qwx3KYe5wetFn4H1AsT3LYg=;
- b=HV2o9U9Kmc3n9sJR/vJjKd4TX87lcY+qRXvSqbOXf0bASwbK5Ph286S6RTnhkAemBIAO
- wHvd8g7OeA+bapIRjgd5jeN+CYBr1XyNq+QMNkuqSc7XL3GmS9T3CsaWsfdZyx219jIj
- ED9V6nj6vDxXasBlj7ZnAwKKe1w7KRD4P2E= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2yht6y0uje-18
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 03 Mar 2020 10:12:56 -0800
-Received: from intmgw002.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 3 Mar 2020 10:08:07 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 681792EC29A2; Tue,  3 Mar 2020 10:08:03 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] libbpf: fix handling of optional field_name in btf_dump__emit_type_decl
-Date:   Tue, 3 Mar 2020 10:08:00 -0800
-Message-ID: <20200303180800.3303471-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1727064AbgCCSn5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 13:43:57 -0500
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:35445 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725796AbgCCSn5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Mar 2020 13:43:57 -0500
+Received: by mail-pj1-f67.google.com with SMTP id s8so1746420pjq.0;
+        Tue, 03 Mar 2020 10:43:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=o2s52Qbl0PNhCadCB1otS0CYR1jnvtic2xAxRNSIjBg=;
+        b=X7BfWGriW03csmGwkOK/EPLk6X/O3ojb1VmDipegqUUkTSABR777OpYleaW0jD22HU
+         qxiGRSFjglAQ431Cd14AReuBcxWFR30+zjBalLrYGngIYzduhONovZl0Nqn5Ay0EjXkv
+         sP/K6/QpycEnh+pb3/8CxSAWn6o5YmhSTj6Qaxvhvb+o02L+K9Ref98WvvyV3Fhk+gbC
+         g3ClOdMOrFxes2NaPDabHuCpyjzFodjMEgRW1hcv1cL0scGpXz8bBuh186+uuWExz9+s
+         Qem0HV3eKL8nboh63KVAz8wh4NJ2+bvoD+B+iTQM9SYOHa5jD7lEVz5W0HhiGkdjOHPq
+         lU9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=o2s52Qbl0PNhCadCB1otS0CYR1jnvtic2xAxRNSIjBg=;
+        b=XOTIpCwTmObtmV15y01dRAvYdPTATXzuJEMa/GvKZI7Vj0A40kuMrlmXhud6X5fX9j
+         ef9VTFHo/4B8lYDeCK81VFokqsbEUbs4Dm82+6sZ5J5FgY99LcyAQ1bd3+ZoHyZscP5I
+         uPMLhteBDn5DyHmj7QkR1pxKZE48Hd/dMwI7ZzbXzf3wKnq0oQeb4qRZr5B5JkrXp7Fv
+         3C9mSMVkqaNWS45QUGFpbgVXakxMZr/SavVNT3RYWizJ+CBRNklEfMU/CcgJVb6Q+TIo
+         xXjZhwnOCdTGb1rtMKwnXdvn6siB9O7MgA6QfyFLPdpUn3WVAVGXiH2JmRFk3ONq+ASx
+         kLWA==
+X-Gm-Message-State: ANhLgQ0rmnctlQftXLYqvGYikMguuzeniyXoYomSxhj0lQ323NVjT7Mk
+        sWnQ+E3s2CwkMO+wx7ku0N0=
+X-Google-Smtp-Source: ADFU+vsUyny+fBfrVhpEUVaZmXQduHWlJv7RRyAiZAxZJOGHDQVtwsB8Qu47ECO7SbtnHHKWSGFjvQ==
+X-Received: by 2002:a17:90b:1904:: with SMTP id mp4mr5595251pjb.110.1583261034899;
+        Tue, 03 Mar 2020 10:43:54 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:500::4:a0de])
+        by smtp.gmail.com with ESMTPSA id 196sm25561435pfy.86.2020.03.03.10.43.53
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 03 Mar 2020 10:43:53 -0800 (PST)
+Date:   Tue, 3 Mar 2020 10:43:51 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf@vger.kernel.org, gamemann@gflclan.com, lrizzo@google.com,
+        netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Subject: Re: [bpf-next PATCH] xdp: accept that XDP headroom isn't always
+ equal XDP_PACKET_HEADROOM
+Message-ID: <20200303184350.66uzruobalf3y76f@ast-mbp>
+References: <158323601793.2048441.8715862429080864020.stgit@firesoul>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-03-03_06:2020-03-03,2020-03-03 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=686
- spamscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0
- priorityscore=1501 phishscore=0 impostorscore=0 bulkscore=0 mlxscore=0
- suspectscore=8 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2001150001 definitions=main-2003030122
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <158323601793.2048441.8715862429080864020.stgit@firesoul>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Internal functions, used by btf_dump__emit_type_decl(), assume field_name is
-never going to be NULL. Ensure it's always the case.
+On Tue, Mar 03, 2020 at 12:46:58PM +0100, Jesper Dangaard Brouer wrote:
+> The Intel based drivers (ixgbe + i40e) have implemented XDP with
+> headroom 192 bytes and not the recommended 256 bytes defined by
+> XDP_PACKET_HEADROOM.  For generic-XDP, accept that this headroom
+> is also a valid size.
+> 
+> Still for generic-XDP if headroom is less, still expand headroom to
+> XDP_PACKET_HEADROOM as this is the default in most XDP drivers.
+> 
+> Tested on ixgbe with xdp_rxq_info --skb-mode and --action XDP_DROP:
+> - Before: 4,816,430 pps
+> - After : 7,749,678 pps
+> (Note that ixgbe in native mode XDP_DROP 14,704,539 pps)
+> 
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
+>  include/uapi/linux/bpf.h |    1 +
+>  net/core/dev.c           |    4 ++--
+>  2 files changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 906e9f2752db..14dc4f9fb3c8 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3312,6 +3312,7 @@ struct bpf_xdp_sock {
+>  };
+>  
+>  #define XDP_PACKET_HEADROOM 256
+> +#define XDP_PACKET_HEADROOM_MIN 192
 
-Fixes: 9f81654eebe8 ("libbpf: Expose BTF-to-C type declaration emitting API")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/lib/bpf/btf_dump.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+why expose it in uapi?
 
-diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-index bd09ed1710f1..dc451e4de5ad 100644
---- a/tools/lib/bpf/btf_dump.c
-+++ b/tools/lib/bpf/btf_dump.c
-@@ -1030,7 +1030,7 @@ int btf_dump__emit_type_decl(struct btf_dump *d, __u32 id,
- 	if (!OPTS_VALID(opts, btf_dump_emit_type_decl_opts))
- 		return -EINVAL;
- 
--	fname = OPTS_GET(opts, field_name, NULL);
-+	fname = OPTS_GET(opts, field_name, "");
- 	lvl = OPTS_GET(opts, indent_level, 0);
- 	btf_dump_emit_type_decl(d, id, fname, lvl);
- 	return 0;
--- 
-2.17.1
+>  /* User return codes for XDP prog type.
+>   * A valid XDP program must return one of these defined values. All other
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 4770dde3448d..9c941cd38b13 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -4518,11 +4518,11 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
+>  		return XDP_PASS;
+>  
+>  	/* XDP packets must be linear and must have sufficient headroom
+> -	 * of XDP_PACKET_HEADROOM bytes. This is the guarantee that also
+> +	 * of XDP_PACKET_HEADROOM_MIN bytes. This is the guarantee that also
+>  	 * native XDP provides, thus we need to do it here as well.
+>  	 */
+>  	if (skb_cloned(skb) || skb_is_nonlinear(skb) ||
+> -	    skb_headroom(skb) < XDP_PACKET_HEADROOM) {
+> +	    skb_headroom(skb) < XDP_PACKET_HEADROOM_MIN) {
+>  		int hroom = XDP_PACKET_HEADROOM - skb_headroom(skb);
 
+this looks odd. It's comparing against 192, but doing math with 256.
+I guess that's ok, but needs a clear comment.
+How about just doing 'skb_headroom(skb) < 192' here.
+Or #define 192 right before this function with a comment about ixgbe?
