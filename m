@@ -2,85 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD427176F21
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 07:10:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 132D7176F2D
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 07:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725440AbgCCGK4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 01:10:56 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:46123 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725308AbgCCGK4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Mar 2020 01:10:56 -0500
-Received: by mail-lj1-f196.google.com with SMTP id h18so2094157ljl.13;
-        Mon, 02 Mar 2020 22:10:55 -0800 (PST)
+        id S1725879AbgCCGP3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 01:15:29 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:34331 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725763AbgCCGP3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Mar 2020 01:15:29 -0500
+Received: by mail-lj1-f193.google.com with SMTP id x7so2194841ljc.1;
+        Mon, 02 Mar 2020 22:15:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=L44R33MZfBo7EJfh7yHeMAVpYiCz+bW7Ff5nJ/4YCbA=;
-        b=mDGa3l0iB+Fa9PTGs6OTbYeBy/ampfYZk7C1RYlTpL5OoFt8b+uXUEpUEXcHVdqIva
-         SRzcCxP4HA2y5CE4D9xgZexYgTdAIt8ewGax5jf2aorMSiYG1xJuKodHR9cK8/K9JGld
-         zB5zLyi96CN4BPi4qGNMSu5ctyHtYFVehiLxBW8BdT58O91MwPqFrbTkwA4ES48rsOSV
-         U68bhRgJwqRBi0KuLkhVyFr8xQlrt20MWM4Sil0TwVXHrO5SWRVmpBSCdOM8GecUKa7t
-         xWJ15KBZhcS0wuSrm0PnZT90T6dD0oMNJeFqW8AJflIDNb1vIuwPweEM8CS5Yij5QuIG
-         8hXQ==
+        bh=7afxNQvt/DolNWukaehAE3e8EEVdHHDuEOwhCMvsPm0=;
+        b=YY3/CVuZ0tw5W/s6w94CK9bWDsqd5IK3b6M6w78GF5X3mGqE/Y5VUNsIqa/13h9RWg
+         OVvfWH3xqyU+1EPMXYqZfN86rXOlor2jKCOjshyNawcUKdddrG4hLqojvh0RH7KW85jP
+         KfVQ9tZN0rRzB/WyEzdeQ6Cf7O0FaDnn1JEskLahTvdXv7lSxnEAxPx8k1o04qNWgH8u
+         fpAB8LBQWjRE1niHOUAyIV4re9V239SiGG8iZDqR+Cn/zQhf6GKBOMOLP2aONIL8NzHY
+         QJpcCboG1iCzpEaImGOOkGI9aoW/t6czREx+EdtkmyZQ3vvio8fNpwCVRATaib+Bb2R2
+         +FSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=L44R33MZfBo7EJfh7yHeMAVpYiCz+bW7Ff5nJ/4YCbA=;
-        b=tupakajuELr6tfiGRSrrg9zs2Tkgb24Z4zswurm8lIyP7XZjVlvdajv2kUZTKxcbWU
-         PDUPczdRZ/mkIkivamlzOivZYoZSPWUKL+VZYAP/Pykza7WpCJxxcOi+pruSoA3Wwzti
-         OH9ZzizFNq2MjWaaZJeJ86Q9ViSURYD3vLe2LOM8LNYrCJKHh6ZYYM/k1ZAN6syWoxSo
-         eWR5VOhka2IseYyN1AZYMRAMtq7aRt6NFcygGAWZRXPepRK2JxxzinNZ7ivcWCKIA7kD
-         e8FeuKhP0VO1q0TZW5wmNAnWbKiL5D8KVasSpFVAP4+1L/xNt82SVwgQMRx8mSV+Bh64
-         JbCg==
-X-Gm-Message-State: ANhLgQ3pL15e00vOPUNMJHQOB3uYHzf0ez9G39XeGWCT3EiO4bd8aBDA
-        eEDxw26jB52GiI6NoOeYYrUDS2zNcdnqLzeYm2wfYOga
-X-Google-Smtp-Source: ADFU+vvBKj4kk/DGPu4e3EEo1JpMgvtQZJ67R+QKzPSOu5NVGyjMBBheD6boVCTDo8w0Yjt+bdDfmDw8ZFlvl+4PJz4=
-X-Received: by 2002:a2e:84d0:: with SMTP id q16mr1492785ljh.138.1583215854320;
- Mon, 02 Mar 2020 22:10:54 -0800 (PST)
+        bh=7afxNQvt/DolNWukaehAE3e8EEVdHHDuEOwhCMvsPm0=;
+        b=Xa6MkKmbqkHhLkPe8qBmsBquwAjVkQD2ixBXt54mN0pyGgmzTYRObiv1+1+iVlHXAe
+         NXNX3gckz2Ru2dZKh2jra6AhSoKSTWrOhgQ8Vo/IpwVLj3JTQxK6sp3Wj+aDZcK4jn9l
+         LEPLOEvG4IcFOp5pGdj5oMcbcGoMc6Io6m298J78XnfUBtLdCrM1Hxum7SFyLRautN7t
+         Bzdm1pGtzLGskU8RxrVGhHSZxGm0LcZ5esyw7QG17l95WxiTz0HGEukG/4Vp/m6lmvx1
+         7pSKxuoODBAZttatTb9nhLw0iMbpUx4UYoyaBcofiYCTTfl41GWGU+tfO2fThPRWHjN7
+         bDxA==
+X-Gm-Message-State: ANhLgQ2EhWvfPvpIij7Sh9uRiZExPuhWQm9GsUEUvNKlAa1InSc9LokU
+        VqoRo+91grOB95COuVCG1b6gotft9GwkBe6P6Wk=
+X-Google-Smtp-Source: ADFU+vtY6eggRVnVN4NMp/hZRWEhBBMdFtdQ6Eav2tUhPVOJuxLghnNhvM8rV2948tk1+lPC0k3t0YF0wUbl2XmIWBA=
+X-Received: by 2002:a2e:b5a2:: with SMTP id f2mr406897ljn.212.1583216127352;
+ Mon, 02 Mar 2020 22:15:27 -0800 (PST)
 MIME-Version: 1.0
-References: <202002242114.CBED7F1@keescook> <202003022046.4185359A@keescook>
-In-Reply-To: <202003022046.4185359A@keescook>
+References: <20200303043159.323675-1-andriin@fb.com>
+In-Reply-To: <20200303043159.323675-1-andriin@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 2 Mar 2020 22:10:42 -0800
-Message-ID: <CAADnVQKgQWmMgcxynzTRhGv1dZ=6oJDB79txrc8tmGy5sPejTg@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: Remove debug info from kallsyms linking
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>
+Date:   Mon, 2 Mar 2020 22:15:16 -0800
+Message-ID: <CAADnVQLBrrWtJ036DpJL5H4XK0RbB08F1sWEYQ54LAkijLObAg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 0/3] Introduce pinnable bpf_link kernel abstraction
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 2, 2020 at 8:48 PM Kees Cook <keescook@chromium.org> wrote:
+On Mon, Mar 2, 2020 at 8:32 PM Andrii Nakryiko <andriin@fb.com> wrote:
 >
-> On Mon, Feb 24, 2020 at 09:16:17PM -0800, Kees Cook wrote:
-> > When CONFIG_DEBUG_INFO is enabled, the two kallsyms linking steps spend
-> > time collecting and writing the dwarf sections to the temporary output
-> > files. kallsyms does not need this information, and leaving it off
-> > halves their linking time. This is especially noticeable without
-> > CONFIG_DEBUG_INFO_REDUCED. The BTF linking stage, however, does still
-> > need those details.
-> >
-> > Refactor the BTF and kallsyms generation stages slightly for more
-> > regularized temporary names. Skip debug during kallsyms links.
-> >
-> > For a full debug info build with BTF, my link time goes from 1m06s to
-> > 0m54s, saving about 12 seconds, or 18%.
-> >
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> This patch series adds bpf_link abstraction, analogous to libbpf's already
+> existing bpf_link abstraction. This formalizes and makes more uniform existing
+> bpf_link-like BPF program link (attachment) types (raw tracepoint and tracing
+> links), which are FD-based objects that are automatically detached when last
+> file reference is closed. These types of BPF program links are switched to
+> using bpf_link framework.
 >
-> Ping. Masahiro what do you think of this? It saves me a fair bit of time
-> on the link stage... I bet the BPF folks would be interested too. :)
+> FD-based bpf_link approach provides great safety guarantees, by ensuring there
+> is not going to be an abandoned BPF program attached, if user process suddenly
+> exits or forgets to clean up after itself. This is especially important in
+> production environment and is what all the recent new BPF link types followed.
+>
+> One of the previously existing  inconveniences of FD-based approach, though,
+> was the scenario in which user process wants to install BPF link and exit, but
+> let attached BPF program run. Now, with bpf_link abstraction in place, it's
+> easy to support pinning links in BPF FS, which is done as part of the same
+> patch #1. This allows FD-based BPF program links to survive exit of a user
+> process and original file descriptor being closed, by creating an file entry
+> in BPF FS. This provides great safety by default, with simple way to opt out
+> for cases where it's needed.
+>
+> Corresponding libbpf APIs are added in the same patch set, as well as
+> selftests for this functionality.
+>
+> Other types of BPF program attachments (XDP, cgroup, perf_event, etc) are
+> going to be converted in subsequent patches to follow similar approach.
 
-The build time improvement sound great.
-Could you please resubmit for bpf-next tree?
-So we can test and apply properly?
-Thanks!
+Applied. Thanks.
