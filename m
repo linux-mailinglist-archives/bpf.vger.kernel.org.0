@@ -2,188 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A216117863A
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 00:21:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE15017863F
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 00:24:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727888AbgCCXV4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 18:21:56 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:35924 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727274AbgCCXV4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Mar 2020 18:21:56 -0500
-Received: by mail-wm1-f67.google.com with SMTP id g83so4689506wme.1
-        for <bpf@vger.kernel.org>; Tue, 03 Mar 2020 15:21:54 -0800 (PST)
+        id S1728079AbgCCXYm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 18:24:42 -0500
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:44283 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727942AbgCCXYm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Mar 2020 18:24:42 -0500
+Received: by mail-qv1-f67.google.com with SMTP id b13so150260qvt.11;
+        Tue, 03 Mar 2020 15:24:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=FQrFyte0eQhkHV1ZGTXUg6vu0R7T0FUdhPvhOFpCIYA=;
-        b=iPsFgD2jDudXd8oLP5/RlUPiFg4J+72znOLJ5Ska9NJYuN99ZocKhyYTnQVFFC/LYp
-         u6mNao0Vp2XS2KzVSf1XBteBO+5kJ7EANKwnUK6BiGc/5vvrMIYMgMuBXVgy8gXML8s7
-         d6qQHWKI2j/SbPHE1yEpdE+jr78Ln7Kzjfk7c=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bWN5IUJGOQfIUGMad4x8J8i4hJVW+OFlm5YQcMXxXmo=;
+        b=tArsZ0554C/9yj1OCkC4GgHlHTLbqTX4oe0lFHYDh2g9OXg3wWAAsF5RzA/t436KKW
+         +m26YtM9u3epLL5ZoIuL14nHFAGJH9R34EJZ2ZDnDLIA3IRos1U6gGiRVpeie+jCLu1U
+         c47dFetOnp1OHYsvTVmJct4qweb+2rh/Y+2tRX35djUIVz8kjcFfor+MBY5BlAj0zLQY
+         TLAAlIensp4Z/5A5/YsGvADzbTH4bMxtEqRLOvXJxZzRHHMiPrPCpZX5B1D9/Yluv6rl
+         BPSYeF+5HMsdcSQCmG5cfNl/4J/RlWzF0GAtOLhsAPSipcEPqTGdvm1DBaI+tbdVF3n+
+         WZ2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=FQrFyte0eQhkHV1ZGTXUg6vu0R7T0FUdhPvhOFpCIYA=;
-        b=aVLaU3OFLy+HgdU1iRYDH8lM/5yb5ZW3s6Hx4zqpNTnt1ydk3olOc1AziD99g+JPF0
-         XWw8xooetNGuK5knpLIJesjkuAY0u+7s6fmv6o1zFmKtQu0rHy9YYzHSZSR4Cvoe4Y71
-         CzRhCNpvKfMzogDVdL5vFpqWjPEZLJ7WNnChTwO4UUONZP9zJ4bkM1Y64/xSMHxGsRz4
-         r9UZ7RdM0hI0Ey61uBqbLe5B61foD1ZW+RajyWgXF8iqdDRuREgtC5vy0pUSEUgzhvr7
-         kT+HaA4v0szDpXZUKck3Cy900iREi2+vsg98t/en78VahDXWJPU6yE+Xl5CwTzKFkbMs
-         lrPw==
-X-Gm-Message-State: ANhLgQ2KtyQGCv1VZMQdv7xRrUd5m1yJ4QoLKzpyUXL9g11tpTrm0CLj
-        CK/HWkHUEk+qoc0GYkHtIhF2ng==
-X-Google-Smtp-Source: ADFU+vvjC5U+4JJoqO1RDHDrLaBawo0DQx0B1WnD4mQ0pQbrjsUiuJb5tW5VfgKM87eZBTlna4UbcA==
-X-Received: by 2002:a05:600c:2c44:: with SMTP id r4mr24028wmg.140.1583277713458;
-        Tue, 03 Mar 2020 15:21:53 -0800 (PST)
-Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
-        by smtp.gmail.com with ESMTPSA id y139sm983960wmd.24.2020.03.03.15.21.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Mar 2020 15:21:53 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Wed, 4 Mar 2020 00:21:51 +0100
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Subject: Re: [PATCH bpf-next 4/7] bpf: Attachment verification for
- BPF_MODIFY_RETURN
-Message-ID: <20200303232151.GB17103@chromium.org>
-References: <20200303140950.6355-1-kpsingh@chromium.org>
- <20200303140950.6355-5-kpsingh@chromium.org>
- <CAEf4BzaviDB+WGUsg1+aO5GAtkJuQ6aYSiB8VaKL0CoQRPs8Xw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bWN5IUJGOQfIUGMad4x8J8i4hJVW+OFlm5YQcMXxXmo=;
+        b=qLZijARRaID6YH+TYyqBZA8eIPrORwjcF/a86JEZ9rD3ms8FVZpeJ23Ldxt919C4pc
+         15ZIrjfYMJT5iUoH+wnpy2y+9WLDYV0wxlUaX+JK0tpriJ7E+7wsVdnAdauaQ89bsEwc
+         50P5Jfk3qoxD4H4O9OmpvzX9ebwQj9ODb4DqCAw4Pa1s3TQJztUPPmTgEAnDneFcVJXK
+         RglCixxoVic+VV/0s66yyZcX2PpEuohWWy+Q7p8GgMvRW1e/SMXvJ0EJaS8V9MEhJbZc
+         +0mG2l/KJMqoJThd+u+MkItrZcnStiEGSI+WBJNKW7URqoMCQwnssr9g1KPcf9PgrSlI
+         cCFg==
+X-Gm-Message-State: ANhLgQ0P70rtx25zhWLzWtupxgjqMiXhtfPRvVjmQM6ZFUcqpa3TlAZF
+        H4NiDpC1j6WJWXwnj8Zv7XKa4J3y5l9U3J+Fb4mcm5VQfmk=
+X-Google-Smtp-Source: ADFU+vvSp6YzuA5U30PquYoTMXERG6Im6u0XXWEAHK4kLMETxistbaJyuOr2YoSuvXcRNpyMO3K3TldkGSUEHG7usiE=
+X-Received: by 2002:ad4:4993:: with SMTP id t19mr6112366qvx.224.1583277879690;
+ Tue, 03 Mar 2020 15:24:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzaviDB+WGUsg1+aO5GAtkJuQ6aYSiB8VaKL0CoQRPs8Xw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200303003233.3496043-1-andriin@fb.com> <20200303003233.3496043-2-andriin@fb.com>
+ <fb80ddac-d104-d0b7-8bed-694d20b62d61@iogearbox.net>
+In-Reply-To: <fb80ddac-d104-d0b7-8bed-694d20b62d61@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 3 Mar 2020 15:24:28 -0800
+Message-ID: <CAEf4BzZWXRX_TrFSPb=ORcfun8B+GdGOAF6C29B-3xB=NaJO7A@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 1/3] bpf: switch BPF UAPI #define constants
+ used from BPF program side to enums
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 03-Mär 14:44, Andrii Nakryiko wrote:
-> On Tue, Mar 3, 2020 at 6:12 AM KP Singh <kpsingh@chromium.org> wrote:
+On Tue, Mar 3, 2020 at 3:01 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 3/3/20 1:32 AM, Andrii Nakryiko wrote:
+> > Switch BPF UAPI constants, previously defined as #define macro, to anonymous
+> > enum values. This preserves constants values and behavior in expressions, but
+> > has added advantaged of being captured as part of DWARF and, subsequently, BTF
+> > type info. Which, in turn, greatly improves usefulness of generated vmlinux.h
+> > for BPF applications, as it will not require BPF users to copy/paste various
+> > flags and constants, which are frequently used with BPF helpers. Only those
+> > constants that are used/useful from BPF program side are converted.
 > >
-> > From: KP Singh <kpsingh@google.com>
-> >
-> > - Functions that are whitlisted by for error injection i.e.
-> >   within_error_injection_list.
-> > - Security hooks, this is expected to be cleaned up after the KRSI
-> >   patches introduce the LSM_HOOK macro:
-> >
-> >     https://lore.kernel.org/bpf/20200220175250.10795-1-kpsingh@chromium.org/
-> 
-> Commit message can use a bit more work for sure. Why (and even what)
-> of the changes is not really explained well.
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+>
+> Just thinking out loud, is there some way this could be resolved generically
+> either from compiler side or via additional tooling where this ends up as BTF
+> data and thus inside vmlinux.h as anon enum eventually? bpf.h is one single
+> header and worst case libbpf could also ship a copy of it (?), but what about
+> all the other things one would need to redefine e.g. for tracing? Small example
+> that comes to mind are all these TASK_* defines in sched.h etc, and there's
+> probably dozens of other similar stuff needed too depending on the particular
+> case; would be nice to have some generic catch-all, hmm.
 
-Added some more details.
+Enum convertion seems to be the simplest and cleanest way,
+unfortunately (as far as I know). DWARF has some extensions capturing
+#defines, but values are strings (and need to be parsed, which is pain
+already for "1 << 1ULL"), and it's some obscure extension, not a
+standard thing. I agree would be nice not to have and change all UAPI
+headers for this, but I'm not aware of the solution like that.
 
-> 
-> >
-> > - The attachment is currently limited to functions that return an int.
-> >   This can be extended later other types (e.g. PTR).
-> >
-> > Signed-off-by: KP Singh <kpsingh@google.com>
+>
 > > ---
-> >  kernel/bpf/btf.c      | 28 ++++++++++++++++++++--------
-> >  kernel/bpf/verifier.c | 31 +++++++++++++++++++++++++++++++
-> >  2 files changed, 51 insertions(+), 8 deletions(-)
+> >   include/uapi/linux/bpf.h       | 175 ++++++++++++++++++++------------
+> >   tools/include/uapi/linux/bpf.h | 177 ++++++++++++++++++++-------------
+> >   2 files changed, 219 insertions(+), 133 deletions(-)
 > >
-
-[...]
-
-> > +                       t = btf_type_skip_modifiers(btf, t->type, NULL);
-> > +                       if (!btf_type_is_int(t)) {
-> 
-> Should the size of int be verified here? E.g., if some function
-> returns u8, is that ok for BPF program to return, say, (1<<30) ?
-
-Would this work?
-
-       if (size != t->size) {
-               bpf_log(log,
-                       "size accessed = %d should be %d\n",
-                       size, t->size);
-               return false;
-       }
-
-- KP
-
-> 
-> > +                               bpf_log(log,
-> > +                                       "ret type %s not allowed for fmod_ret\n",
-> > +                                       btf_kind_str[BTF_INFO_KIND(t->info)]);
-> > +                               return false;
-> > +                       }
-> > +               }
-> >         } else if (arg >= nr_args) {
-> >                 bpf_log(log, "func '%s' doesn't have %d-th argument\n",
-> >                         tname, arg + 1);
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 2460c8e6b5be..ae32517d4ccd 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -19,6 +19,7 @@
-> >  #include <linux/sort.h>
-> >  #include <linux/perf_event.h>
-> >  #include <linux/ctype.h>
-> > +#include <linux/error-injection.h>
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 8e98ced0963b..3ce4e8759661 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -325,44 +325,46 @@ enum bpf_attach_type {
+> >   #define BPF_PSEUDO_CALL             1
 > >
-> >  #include "disasm.h"
-> >
-> > @@ -9800,6 +9801,33 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
-> >
-> >         return 0;
-> >  }
-> > +#define SECURITY_PREFIX "security_"
-> > +
-> > +static int check_attach_modify_return(struct bpf_verifier_env *env)
-> > +{
-> > +       struct bpf_prog *prog = env->prog;
-> > +       unsigned long addr = (unsigned long) prog->aux->trampoline->func.addr;
-> > +
-> > +       if (within_error_injection_list(addr))
-> > +               return 0;
-> > +
-> > +       /* This is expected to be cleaned up in the future with the KRSI effort
-> > +        * introducing the LSM_HOOK macro for cleaning up lsm_hooks.h.
-> > +        */
-> > +       if (!strncmp(SECURITY_PREFIX, prog->aux->attach_func_name,
-> > +                    sizeof(SECURITY_PREFIX) - 1)) {
-> > +
-> > +               if (!capable(CAP_MAC_ADMIN))
-> > +                       return -EPERM;
-> > +
-> > +               return 0;
-> > +       }
-> > +
-> > +       verbose(env, "fmod_ret attach_btf_id %u (%s) is not modifiable\n",
-> > +               prog->aux->attach_btf_id, prog->aux->attach_func_name);
-> > +
-> > +       return -EINVAL;
-> > +}
-> >
-> >  static int check_attach_btf_id(struct bpf_verifier_env *env)
-> >  {
-> > @@ -10000,6 +10028,9 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
-> >                 }
-> >                 tr->func.addr = (void *)addr;
-> >                 prog->aux->trampoline = tr;
-> > +
-> > +               if (prog->expected_attach_type == BPF_MODIFY_RETURN)
-> > +                       ret = check_attach_modify_return(env);
-> >  out:
-> >                 mutex_unlock(&tr->mutex);
-> >                 if (ret)
-> > --
-> > 2.20.1
-> >
+> >   /* flags for BPF_MAP_UPDATE_ELEM command */
+> > -#define BPF_ANY              0 /* create new element or update existing */
+> > -#define BPF_NOEXIST  1 /* create new element if it didn't exist */
+> > -#define BPF_EXIST    2 /* update existing element */
+> > -#define BPF_F_LOCK   4 /* spin_lock-ed map_lookup/map_update */
+> > +enum {
+> > +     BPF_ANY         = 0, /* create new element or update existing */
+> > +     BPF_NOEXIST     = 1, /* create new element if it didn't exist */
+> > +     BPF_EXIST       = 2, /* update existing element */
+> > +     BPF_F_LOCK      = 4, /* spin_lock-ed map_lookup/map_update */
+> > +};
+> [...]
