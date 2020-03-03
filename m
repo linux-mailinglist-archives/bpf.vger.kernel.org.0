@@ -2,91 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 132D7176F2D
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 07:15:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D61A9177012
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 08:27:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725879AbgCCGP3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 01:15:29 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:34331 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725763AbgCCGP3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Mar 2020 01:15:29 -0500
-Received: by mail-lj1-f193.google.com with SMTP id x7so2194841ljc.1;
-        Mon, 02 Mar 2020 22:15:28 -0800 (PST)
+        id S1727540AbgCCH1n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 02:27:43 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:35581 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727498AbgCCH1n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Mar 2020 02:27:43 -0500
+Received: by mail-qk1-f194.google.com with SMTP id 145so2476041qkl.2;
+        Mon, 02 Mar 2020 23:27:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7afxNQvt/DolNWukaehAE3e8EEVdHHDuEOwhCMvsPm0=;
-        b=YY3/CVuZ0tw5W/s6w94CK9bWDsqd5IK3b6M6w78GF5X3mGqE/Y5VUNsIqa/13h9RWg
-         OVvfWH3xqyU+1EPMXYqZfN86rXOlor2jKCOjshyNawcUKdddrG4hLqojvh0RH7KW85jP
-         KfVQ9tZN0rRzB/WyEzdeQ6Cf7O0FaDnn1JEskLahTvdXv7lSxnEAxPx8k1o04qNWgH8u
-         fpAB8LBQWjRE1niHOUAyIV4re9V239SiGG8iZDqR+Cn/zQhf6GKBOMOLP2aONIL8NzHY
-         QJpcCboG1iCzpEaImGOOkGI9aoW/t6czREx+EdtkmyZQ3vvio8fNpwCVRATaib+Bb2R2
-         +FSQ==
+         :cc:content-transfer-encoding;
+        bh=EPMkUwZp6KV2zQtOQ/HDG4J9jIuHDQrBU740Rw3sZEw=;
+        b=rvJ+YaWGiQIUHJTTbjQXHsU+qz27tkISaqJdwTMGHwOpQ6XBcywdlcljo9qFTxSUUF
+         T57+8xyeBd1i9PX1cxoEWcpWNwf3wEzuOqAggFO/kU28QptTCfI22G1SmtpxN+zIBE84
+         ts6a7JvevtVNF39MVqhgWJXxOZQ74GsfIzIlS6C2ZxWs1MxbhAoRuCPFFNCUwixaUd5W
+         3ywUkrmMrk1XC5WJ1q2JUNOElGJX1h8Tz0yYJcvX4/ofdz13/hTPOEPq4FT99t01wsUr
+         AtQl1ET64hv4hGwZpom4H35P23kLU+YJsfG/lWK14+6nbVbvMl6fc/coHBqtW8QUKzcy
+         R6HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7afxNQvt/DolNWukaehAE3e8EEVdHHDuEOwhCMvsPm0=;
-        b=Xa6MkKmbqkHhLkPe8qBmsBquwAjVkQD2ixBXt54mN0pyGgmzTYRObiv1+1+iVlHXAe
-         NXNX3gckz2Ru2dZKh2jra6AhSoKSTWrOhgQ8Vo/IpwVLj3JTQxK6sp3Wj+aDZcK4jn9l
-         LEPLOEvG4IcFOp5pGdj5oMcbcGoMc6Io6m298J78XnfUBtLdCrM1Hxum7SFyLRautN7t
-         Bzdm1pGtzLGskU8RxrVGhHSZxGm0LcZ5esyw7QG17l95WxiTz0HGEukG/4Vp/m6lmvx1
-         7pSKxuoODBAZttatTb9nhLw0iMbpUx4UYoyaBcofiYCTTfl41GWGU+tfO2fThPRWHjN7
-         bDxA==
-X-Gm-Message-State: ANhLgQ2EhWvfPvpIij7Sh9uRiZExPuhWQm9GsUEUvNKlAa1InSc9LokU
-        VqoRo+91grOB95COuVCG1b6gotft9GwkBe6P6Wk=
-X-Google-Smtp-Source: ADFU+vtY6eggRVnVN4NMp/hZRWEhBBMdFtdQ6Eav2tUhPVOJuxLghnNhvM8rV2948tk1+lPC0k3t0YF0wUbl2XmIWBA=
-X-Received: by 2002:a2e:b5a2:: with SMTP id f2mr406897ljn.212.1583216127352;
- Mon, 02 Mar 2020 22:15:27 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EPMkUwZp6KV2zQtOQ/HDG4J9jIuHDQrBU740Rw3sZEw=;
+        b=oRKG+X+jqAhyk9bFFhs/Bl1nkbaMecg052RIY+Z3rVyhQ3mCwbCAC2g/C+JHHVUuxc
+         gKJj7aFP8FKlNG9Gp6BlrrI0L4mcALb1wEc0QI33AYcSeEdDs4i7vW/sdKG/jjeeDJ+F
+         zzyeQrE70+r+OTV5UpGKdmNF585g3aPcI5Xt2e4v3RikIcIK1WiriVtTFyNXJkrN99rM
+         8RJQasp2X2dw+1l8Bsf0HmcWuEna97qLg0o/JVQMiQP+pXzPh83K/bvsaaA4/mmPVpLe
+         pfBnj5WgKZL2lwVYDDNIY6du3vVRP0BvitN4k7mLQAJuH9gNKy5HYRCHpl9QpI4ae3VO
+         lm3w==
+X-Gm-Message-State: ANhLgQ3E8GPak/3/ckxhOYUro6o8BMEkty4ntYQaNS77F5nk+h5v6+uf
+        JXZsgeBUwyl82CbOZn7ZVThfmeTzsCFwlozCFgzhIxCYSxCnqA==
+X-Google-Smtp-Source: ADFU+vtPLeYYw40rLd76IFgdK//etfwn2dnKzi5huN2O0NR+iLdTt9fmsfVhcO38RDt6XnlZ/2hvsaA3mKubpSUXX44=
+X-Received: by 2002:a05:620a:1210:: with SMTP id u16mr2857096qkj.493.1583220461898;
+ Mon, 02 Mar 2020 23:27:41 -0800 (PST)
 MIME-Version: 1.0
-References: <20200303043159.323675-1-andriin@fb.com>
-In-Reply-To: <20200303043159.323675-1-andriin@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 2 Mar 2020 22:15:16 -0800
-Message-ID: <CAADnVQLBrrWtJ036DpJL5H4XK0RbB08F1sWEYQ54LAkijLObAg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 0/3] Introduce pinnable bpf_link kernel abstraction
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+References: <20200303005035.13814-1-luke.r.nels@gmail.com> <20200303005035.13814-4-luke.r.nels@gmail.com>
+In-Reply-To: <20200303005035.13814-4-luke.r.nels@gmail.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Tue, 3 Mar 2020 08:27:30 +0100
+Message-ID: <CAJ+HfNhQaW8V6qiSf3XO0f7hMViEUsYFyyctKYVm1QEB20-N6Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 3/4] bpf, doc: add BPF JIT for RV32G to BPF documentation
+To:     Luke Nelson <lukenels@cs.washington.edu>
+Cc:     bpf <bpf@vger.kernel.org>, Luke Nelson <luke.r.nels@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kernel Team <kernel-team@fb.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Xi Wang <xi.wang@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, linux-riscv@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 2, 2020 at 8:32 PM Andrii Nakryiko <andriin@fb.com> wrote:
+On Tue, 3 Mar 2020 at 01:50, Luke Nelson <lukenels@cs.washington.edu> wrote=
+:
+> Update filter.txt and admin-guide to mention the BPF JIT for RV32G.
 >
-> This patch series adds bpf_link abstraction, analogous to libbpf's already
-> existing bpf_link abstraction. This formalizes and makes more uniform existing
-> bpf_link-like BPF program link (attachment) types (raw tracepoint and tracing
-> links), which are FD-based objects that are automatically detached when last
-> file reference is closed. These types of BPF program links are switched to
-> using bpf_link framework.
->
-> FD-based bpf_link approach provides great safety guarantees, by ensuring there
-> is not going to be an abandoned BPF program attached, if user process suddenly
-> exits or forgets to clean up after itself. This is especially important in
-> production environment and is what all the recent new BPF link types followed.
->
-> One of the previously existing  inconveniences of FD-based approach, though,
-> was the scenario in which user process wants to install BPF link and exit, but
-> let attached BPF program run. Now, with bpf_link abstraction in place, it's
-> easy to support pinning links in BPF FS, which is done as part of the same
-> patch #1. This allows FD-based BPF program links to survive exit of a user
-> process and original file descriptor being closed, by creating an file entry
-> in BPF FS. This provides great safety by default, with simple way to opt out
-> for cases where it's needed.
->
-> Corresponding libbpf APIs are added in the same patch set, as well as
-> selftests for this functionality.
->
-> Other types of BPF program attachments (XDP, cgroup, perf_event, etc) are
-> going to be converted in subsequent patches to follow similar approach.
+> Co-developed-by: Xi Wang <xi.wang@gmail.com>
+> Signed-off-by: Xi Wang <xi.wang@gmail.com>
+> Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
 
-Applied. Thanks.
+Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>
+
+> ---
+>  Documentation/admin-guide/sysctl/net.rst | 3 ++-
+>  Documentation/networking/filter.txt      | 2 +-
+>  2 files changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/sysctl/net.rst b/Documentation/adm=
+in-guide/sysctl/net.rst
+> index 287b98708a40..e043c9213388 100644
+> --- a/Documentation/admin-guide/sysctl/net.rst
+> +++ b/Documentation/admin-guide/sysctl/net.rst
+> @@ -67,7 +67,8 @@ two flavors of JITs, the newer eBPF JIT currently suppo=
+rted on:
+>    - sparc64
+>    - mips64
+>    - s390x
+> -  - riscv
+> +  - riscv64
+> +  - riscv32
+>
+>  And the older cBPF JIT supported on the following archs:
+>
+> diff --git a/Documentation/networking/filter.txt b/Documentation/networki=
+ng/filter.txt
+> index c4a328f2d57a..2f0f8b17dade 100644
+> --- a/Documentation/networking/filter.txt
+> +++ b/Documentation/networking/filter.txt
+> @@ -606,7 +606,7 @@ before a conversion to the new layout is being done b=
+ehind the scenes!
+>
+>  Currently, the classic BPF format is being used for JITing on most
+>  32-bit architectures, whereas x86-64, aarch64, s390x, powerpc64,
+> -sparc64, arm32, riscv (RV64G) perform JIT compilation from eBPF
+> +sparc64, arm32, riscv64, riscv32 perform JIT compilation from eBPF
+>  instruction set.
+>
+>  Some core changes of the new internal format:
