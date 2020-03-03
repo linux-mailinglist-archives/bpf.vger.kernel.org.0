@@ -2,99 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7840E177BE2
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 17:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92320177CD8
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 18:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730293AbgCCQ16 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 11:27:58 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:38067 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729598AbgCCQ16 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Mar 2020 11:27:58 -0500
-Received: by mail-lj1-f195.google.com with SMTP id w1so4211939ljh.5;
-        Tue, 03 Mar 2020 08:27:56 -0800 (PST)
+        id S1729404AbgCCRJx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 12:09:53 -0500
+Received: from mail-qv1-f48.google.com ([209.85.219.48]:46275 "EHLO
+        mail-qv1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727050AbgCCRJw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Mar 2020 12:09:52 -0500
+Received: by mail-qv1-f48.google.com with SMTP id m2so1984032qvu.13;
+        Tue, 03 Mar 2020 09:09:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=6NizXeEgQtj7OHhrUvzWf+RxeVKw/MJ7E7M98rZwZHs=;
-        b=TCvbfOWaHFL5PVcFhg/r11H9lRIUO8AsKlizzW42uIt5o25qkU+WaujtaCqOh5gJhp
-         UTHhGUEFxjI44knsQlP/JDv4oNDhuJeUiFsEZeT1rIzo2QL0uqXKzWk4657jgj1DYpqj
-         mHh+CjpUo39eMGoVtpcY0olZmbR0cejpAFQw8n1ydX/JP48bS2Vf403nVv2App1kXXMv
-         sgQTj6V17qgpaZ0HuooNtvs6fUgZIHu2BJuqmttKr6/r8zFzXC5je8JhyokvR2FPQicV
-         KwKBs6kwh+JUT+xrLOYjXTUsQ3spxvXJ0kSsuTDinUUMumFaOnw05gZwxFg7zawdl9H8
-         44nw==
+         :cc;
+        bh=aLjcjiO4Yvr0GGf3W+CwTmDAVxWUFSRxq+aiq86/wA4=;
+        b=ByR3cWMpBWm6gLGyBsOOD7qzoN3x08lt2dmw3xF9oo2xdUZ0NFXCJE90ibqUYZpAPP
+         jpUFnrtJqY8HBEd9JhGXczG6gAUorDEK/Af5VP9HdFBMQ/8rjxxnFeOtMQqTVvA3GcLB
+         1/7x5t9sG4tPsh8ERnu8Ya1psREA5jtspGLrpbp0WtmcacNCUWT3BTruS0yVW2+uK/lS
+         J0hpzNP0OrdrrESiwLk9p6MC8n9/3bjRHsmQ8WWataLhASz0uWR8/QeIBOYjxTFd/3n3
+         JxqlfztCdEe4wW8txBy2v90Szyw4glDtZQa1SnqQ2/YFDW7nDyPWcqzg6AYcVZfUGw66
+         E1WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6NizXeEgQtj7OHhrUvzWf+RxeVKw/MJ7E7M98rZwZHs=;
-        b=OALELv/PFkSODB5pWb8dZWbLmS1kAeYitiB39rnv/DV0fTYEGvBCfZCf5jVqabNA59
-         aGNHGKJDJhRMaF0fKnM540o9QxMn1hYPH+IEiiPHp2qrH7NTTxW5OrybhB1FL63h1h8K
-         0vpR13M816kf7ZGjiv64g/Rr9ZG9Vd9XQFZrvnDW/ZtIDe9e6FdDO0CxNICNn2AU0Thp
-         KETW3gGIr+COgsjIuO7xx0D1EzAiptQjgQLS6ZoAxELtSaPMV0ULq4FBpc1TcHQzMvrP
-         GT5F6DjMpCUQTH34Irpm2DJBIsahRjNLtM9vdJ5jzL5ifTindRAXOctZD2HoTjcRje8F
-         +5Dg==
-X-Gm-Message-State: ANhLgQ0KVPs0cynkjryT9q4Y9+5Xf3g8kc2+wjnRN7GITYMU0olz0LBl
-        TFnGTg7CLqIgvC/KFYt6K91J9w42KyeR2r41PbXFOw==
-X-Google-Smtp-Source: ADFU+vtIuyG1I0sIW/QxxXIzpv7RjBRoe1+fMP6EsFfrW42qEGO8uAlBouyWB2w5F2eRgESa0j2fiXC4tbgKa1AszRo=
-X-Received: by 2002:a2e:b80b:: with SMTP id u11mr3005972ljo.143.1583252875902;
- Tue, 03 Mar 2020 08:27:55 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=aLjcjiO4Yvr0GGf3W+CwTmDAVxWUFSRxq+aiq86/wA4=;
+        b=kWmzZqC0q3ly+KBkOd6Z5EMl51/BpHu+AoMxhLzjranWHVT4Kw6PivWsjSANsr2BAP
+         TBHe6XDeizEiL3DnABqDLl25yCqY8v2AbX1N2oDx9gs8J+E/MpEVsMmDpOw46yKOeUcz
+         YjpBKqmAipMeuDQWDqZ42HRxA59IV5HUtwy/Kwjjhh6PNiXkgPS/x6d07pMN+aEZ1qGM
+         sEEkDhRxoQl9feTMLyu5S9DIGr6lw4d8qxQT9rdrU5vh+0zkyNGg2/VsMatYc//vMaaV
+         fJxdMI6epsgHnKQZJIoZuEcJPADZdMuIZHd47r2SMfgCnjoQQyWGwKh9r6CagBjyoyjk
+         DTXA==
+X-Gm-Message-State: ANhLgQ0NRHg3jCWM+Bmw5uCqq+zffRgLxrTnNO1OH5GxJPm1Tb+i/NR0
+        Bmx+mLIVv9l9vmOO0N2w7xE+tsOyAWcDY3mZ+ZzdNV2biv8=
+X-Google-Smtp-Source: ADFU+vsgHaGZa9bWuPzMFSOlBQ+ujHAAJ+EzkTPIXygSXSXNa9rNTYqS25OTf066tJkrrA4bRRFyZrAZrLXr6KQs880=
+X-Received: by 2002:a0c:f381:: with SMTP id i1mr1056592qvk.163.1583255390017;
+ Tue, 03 Mar 2020 09:09:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20200302145348.559177-1-toke@redhat.com> <20200303010311.bg6hh4ah5thu5q2c@ast-mbp>
- <87d09tsvu1.fsf@toke.dk>
-In-Reply-To: <87d09tsvu1.fsf@toke.dk>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 3 Mar 2020 08:27:44 -0800
-Message-ID: <CAADnVQKKBpSGZ3vQWy_Y5vLqJsyY3cCnwmeW9hU1Xu0L_9zqiQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] selftests/bpf: Declare bpf_log_buf variables as static
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Andrey Ignatov <rdna@fb.com>
+References: <20200303140837.90056-1-jolsa@kernel.org>
+In-Reply-To: <20200303140837.90056-1-jolsa@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 3 Mar 2020 09:09:38 -0800
+Message-ID: <CAEf4BzY8_=wcL3N96eS-jcSPBL=ueMgQg+m=Fxiw+o0Tc7F23Q@mail.gmail.com>
+Subject: Re: [RFC] libbpf,selftests: Question on btf_dump__emit_type_decl for BTF_KIND_FUNC
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 3, 2020 at 12:10 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
+On Tue, Mar 3, 2020 at 6:12 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+> hi,
+> for bpftrace I'd like to print BTF functions (BTF_KIND_FUNC)
+> declarations together with their names.
 >
-> > On Mon, Mar 02, 2020 at 03:53:48PM +0100, Toke H=C3=83=C2=B8iland-J=C3=
-=83=C2=B8rgensen wrote:
-> >> The cgroup selftests did not declare the bpf_log_buf variable as stati=
-c, leading
-> >> to a linker error with GCC 10 (which defaults to -fno-common). Fix thi=
-s by
-> >> adding the missing static declarations.
-> >>
-> >> Fixes: 257c88559f36 ("selftests/bpf: Convert test_cgroup_attach to pro=
-g_tests")
-> >> Signed-off-by: Toke H=C3=83=C2=B8iland-J=C3=83=C2=B8rgensen <toke@redh=
-at.com>
-> >
-> > Applied to bpf-next.
-> > It's hardly a fix. Fixes tag doesn't make it a fix in my mind.
+> I saw we have btf_dump__emit_type_decl and added BTF_KIND_FUNC,
+> where it seemed to be missing, so it prints out something now
+> (not sure it's the right fix though).
 >
-> It fixes a compile error of selftests with GCC 10; how is that not a
-> fix? We found it while setting up a CI test compiling Linus' tree on
-> Fedora rawhide, so it does happen in the wild.
+> Anyway, would you be ok with adding some flag/bool to struct
+> btf_dump_emit_type_decl_opts, so I could get output like:
 >
-> > I really see no point rushing it into bpf->net->Linus's tree at this po=
-int.
+>   kfunc:ksys_readahead(int fd, long long int offset, long unsigned int count) = ssize_t
+>   kfunc:ksys_read(unsigned int fd, char buf, long unsigned int count) = size_t
 >
-> Well if you're not pushing any other fixes then OK, sure, no reason to
-> go through the whole process just for this. But if you end up pushing
-> another round of fixes anyway, please include this as well. If not, I
-> guess we can wait :)
+> ... to be able to the arguments and return type separated,
+> so I could easily get to something like above?
+>
+> Current interface is just vfprintf callback and I'm not sure
+> I can rely that it will allywas be called with same arguments,
+> like having separated calls for parsed atoms like 'return type',
+> '(', ')', '(', 'arg type', 'arg name', ...
+>
+> I'm open to any suggestion ;-)
 
-CI stands for Continuous Integration =3D=3D development.
-stable tree is not for development.
-If you want to develop anything or accommodate the tree
-for external development you need to use development tree.
-Which is bpf-next.
+Hey Jiri!
+
+Can you please elaborate on the use case and problem you are trying to solve?
+
+I think we can (and probably even should) add such option and support
+to dump functions, but whatever we do it should be a valid C syntax
+and should be compilable.
+Example above:
+
+kfunc:ksys_read(unsigned int fd, char buf, long unsigned int count) = size_t
+
+Is this really the syntax you need to get? I think btf_dump, when
+(optionally) emitting function declaration, will have to emit that
+particular one as:
+
+size_t ksys_read(unsigned int fd, char buf, long unsigned int count);
+
+But I'd like to hear the use case before we add this. Thanks!
+
+>
+> thanks,
+> jirka
+>
+>
+> ---
+>  tools/lib/bpf/btf_dump.c                      |  4 ++++
+>  .../selftests/bpf/prog_tests/btf_dump.c       | 21 +++++++++++++++++++
+>  .../bpf/progs/btf_dump_test_case_bitfields.c  | 10 +++++++++
+>  .../bpf/progs/btf_dump_test_case_multidim.c   |  3 +++
+>  .../progs/btf_dump_test_case_namespacing.c    | 19 +++++++++++++++++
+>  .../bpf/progs/btf_dump_test_case_ordering.c   |  3 +++
+>  .../bpf/progs/btf_dump_test_case_packing.c    | 16 ++++++++++++++
+>  .../bpf/progs/btf_dump_test_case_padding.c    | 15 +++++++++++++
+>  .../bpf/progs/btf_dump_test_case_syntax.c     |  3 +++
+>  9 files changed, 94 insertions(+)
+>
+
+[...]
+
+>
+> +/*
+> + *int ()(struct {
+> + *     struct packed_trailing_space _1;
+> + *     short: 16;
+> + *     struct non_packed_trailing_space _2;
+> + *     struct packed_fields _3;
+> + *     short: 16;
+> + *     struct non_packed_fields _4;
+> + *     struct nested_packed _5;
+> + *     short: 16;
+> + *     union union_is_never_packed _6;
+> + *     union union_does_not_need_packing _7;
+> + *     union jump_code_union _8;
+> + *     int: 24;
+> + *} __attribute__((packed)) *_)
+> + */
+
+This clearly isn't compilable, right?
+
+>  /*------ END-EXPECTED-OUTPUT ------ */
+>
+>  int f(struct {
+> diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
+> index 35c512818a56..581349bb0c2f 100644
+> --- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
+> +++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
+> @@ -102,6 +102,21 @@ struct zone {
+>         struct zone_padding __pad__;
+>  };
+>
+
+[...]
