@@ -2,115 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE15017863F
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 00:24:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC851786BE
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 00:56:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728079AbgCCXYm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 18:24:42 -0500
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:44283 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727942AbgCCXYm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Mar 2020 18:24:42 -0500
-Received: by mail-qv1-f67.google.com with SMTP id b13so150260qvt.11;
-        Tue, 03 Mar 2020 15:24:40 -0800 (PST)
+        id S1727429AbgCCX4K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 18:56:10 -0500
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:40271 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727707AbgCCX4K (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Mar 2020 18:56:10 -0500
+Received: by mail-pf1-f196.google.com with SMTP id l184so2329724pfl.7;
+        Tue, 03 Mar 2020 15:56:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bWN5IUJGOQfIUGMad4x8J8i4hJVW+OFlm5YQcMXxXmo=;
-        b=tArsZ0554C/9yj1OCkC4GgHlHTLbqTX4oe0lFHYDh2g9OXg3wWAAsF5RzA/t436KKW
-         +m26YtM9u3epLL5ZoIuL14nHFAGJH9R34EJZ2ZDnDLIA3IRos1U6gGiRVpeie+jCLu1U
-         c47dFetOnp1OHYsvTVmJct4qweb+2rh/Y+2tRX35djUIVz8kjcFfor+MBY5BlAj0zLQY
-         TLAAlIensp4Z/5A5/YsGvADzbTH4bMxtEqRLOvXJxZzRHHMiPrPCpZX5B1D9/Yluv6rl
-         BPSYeF+5HMsdcSQCmG5cfNl/4J/RlWzF0GAtOLhsAPSipcEPqTGdvm1DBaI+tbdVF3n+
-         WZ2g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=y8gDt4+hKLFEVUT2875HZHL2GUBm9at3uoIUJ/mCCI4=;
+        b=EWc6ytjvGgIM9CPsIuRtdRj7fSSnF3G0MyQk/9TJkcVNCTJcp8ob0LqyblK66ZjQ/y
+         hArGfUegHFur9Flsc1QdJdVrI25B8ycSY5oBB6K2c8bv7zDQATa/DI3E0xux1EejQafW
+         s/Psl9Dn5u6QMtFhpLs1MvV6FQSuGoS9ZkIaFIAmbbN3DfFUhAeXSqS/ZB0K9OS4wMEx
+         ZKO+lD3dLySP0/Q2Ua2PwsQCfeynrKfoBvvK6jFiUEgT0gK7fE7nStmFZiRpOQcQRCPu
+         ShyndO2nUCe/gUhrGR5ElWkW4zxmwkccuxBJXCZ/ma3FHmL1+pkMVL1sYtFwKYjMMxs2
+         V1nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bWN5IUJGOQfIUGMad4x8J8i4hJVW+OFlm5YQcMXxXmo=;
-        b=qLZijARRaID6YH+TYyqBZA8eIPrORwjcF/a86JEZ9rD3ms8FVZpeJ23Ldxt919C4pc
-         15ZIrjfYMJT5iUoH+wnpy2y+9WLDYV0wxlUaX+JK0tpriJ7E+7wsVdnAdauaQ89bsEwc
-         50P5Jfk3qoxD4H4O9OmpvzX9ebwQj9ODb4DqCAw4Pa1s3TQJztUPPmTgEAnDneFcVJXK
-         RglCixxoVic+VV/0s66yyZcX2PpEuohWWy+Q7p8GgMvRW1e/SMXvJ0EJaS8V9MEhJbZc
-         +0mG2l/KJMqoJThd+u+MkItrZcnStiEGSI+WBJNKW7URqoMCQwnssr9g1KPcf9PgrSlI
-         cCFg==
-X-Gm-Message-State: ANhLgQ0P70rtx25zhWLzWtupxgjqMiXhtfPRvVjmQM6ZFUcqpa3TlAZF
-        H4NiDpC1j6WJWXwnj8Zv7XKa4J3y5l9U3J+Fb4mcm5VQfmk=
-X-Google-Smtp-Source: ADFU+vvSp6YzuA5U30PquYoTMXERG6Im6u0XXWEAHK4kLMETxistbaJyuOr2YoSuvXcRNpyMO3K3TldkGSUEHG7usiE=
-X-Received: by 2002:ad4:4993:: with SMTP id t19mr6112366qvx.224.1583277879690;
- Tue, 03 Mar 2020 15:24:39 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=y8gDt4+hKLFEVUT2875HZHL2GUBm9at3uoIUJ/mCCI4=;
+        b=C7b+2X6gbrEpxRHwxZRpzmG1YwQ0rmyhpmt4Kx3eq3Wenf0KR46PFhN7vfv6/F13OE
+         4QAjkYG1/zJfTynwnzEyw5tm7yLEVTXB2hciffSvuoAgRjZk2A57/+CTas3jfmONqkZ2
+         P4OsYVroI9XoBwn0YSJ54i61GjRaW3iEU2MqEnqm7DAfyU7WSumWE5mXNSTY938pM9p9
+         A7jb/2fluSW/tKlJidmmXhfCkAbwH2T+4/vbZfzIyP0Wuxd7Y+KWWpWDDndhEEvxgWM5
+         NzlRp/N8y1w88OiEuVDU8rSH6CWcasNYTd/R6MzIx8P8NMQDhpUaPIhHCRMI53cWSVEv
+         ebpg==
+X-Gm-Message-State: ANhLgQ3Z5FJJJlMyP1GSibhcP1zEQMNJLvzaaohwnp21CSq3bxJWJZTE
+        Uxkg2q7j/Js6sddwJkEuNfhNZkM+
+X-Google-Smtp-Source: ADFU+vsAaImrpowO4my/J2luF3xHzX9kk5ExySiUOtQqOLJulGboUZgtWWuVBm3+VadjOoaf57hKsA==
+X-Received: by 2002:aa7:9a96:: with SMTP id w22mr232054pfi.210.1583279768806;
+        Tue, 03 Mar 2020 15:56:08 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:500::4:a0de])
+        by smtp.gmail.com with ESMTPSA id u5sm3262803pfb.153.2020.03.03.15.56.07
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 03 Mar 2020 15:56:07 -0800 (PST)
+Date:   Tue, 3 Mar 2020 15:56:05 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Paul Turner <pjt@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Subject: Re: [PATCH bpf-next 2/7] bpf: JIT helpers for fmod_ret progs
+Message-ID: <20200303235604.mdlamwx4z2ws3fzy@ast-mbp>
+References: <20200303140950.6355-1-kpsingh@chromium.org>
+ <20200303140950.6355-3-kpsingh@chromium.org>
+ <CAEf4BzZJ2E2rmyz7k4F7s=EXPbaAX7XncvUcHukX_FYDWeD7BA@mail.gmail.com>
+ <20200303222812.GA5265@chromium.org>
 MIME-Version: 1.0
-References: <20200303003233.3496043-1-andriin@fb.com> <20200303003233.3496043-2-andriin@fb.com>
- <fb80ddac-d104-d0b7-8bed-694d20b62d61@iogearbox.net>
-In-Reply-To: <fb80ddac-d104-d0b7-8bed-694d20b62d61@iogearbox.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 3 Mar 2020 15:24:28 -0800
-Message-ID: <CAEf4BzZWXRX_TrFSPb=ORcfun8B+GdGOAF6C29B-3xB=NaJO7A@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 1/3] bpf: switch BPF UAPI #define constants
- used from BPF program side to enums
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200303222812.GA5265@chromium.org>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 3, 2020 at 3:01 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 3/3/20 1:32 AM, Andrii Nakryiko wrote:
-> > Switch BPF UAPI constants, previously defined as #define macro, to anonymous
-> > enum values. This preserves constants values and behavior in expressions, but
-> > has added advantaged of being captured as part of DWARF and, subsequently, BTF
-> > type info. Which, in turn, greatly improves usefulness of generated vmlinux.h
-> > for BPF applications, as it will not require BPF users to copy/paste various
-> > flags and constants, which are frequently used with BPF helpers. Only those
-> > constants that are used/useful from BPF program side are converted.
-> >
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->
-> Just thinking out loud, is there some way this could be resolved generically
-> either from compiler side or via additional tooling where this ends up as BTF
-> data and thus inside vmlinux.h as anon enum eventually? bpf.h is one single
-> header and worst case libbpf could also ship a copy of it (?), but what about
-> all the other things one would need to redefine e.g. for tracing? Small example
-> that comes to mind are all these TASK_* defines in sched.h etc, and there's
-> probably dozens of other similar stuff needed too depending on the particular
-> case; would be nice to have some generic catch-all, hmm.
+On Tue, Mar 03, 2020 at 11:28:12PM +0100, KP Singh wrote:
+> > > +static void align16_branch_target(u8 **pprog)
+> > > +{
+> > > +       u8 *target, *prog = *pprog;
+> > > +
+> > > +       target = PTR_ALIGN(prog, 16);
+> > > +       if (target != prog)
+> > > +               emit_nops(&prog, target - prog);
+> > > +       if (target != prog)
+> > > +               pr_err("calcultion error\n");
+> > 
+> > this wasn't in the original code, do you feel like it's more important
+> > to check this and print error?
+> > 
+> > also typo: calculation error, but then it's a bit brief and
+> > uninformative message. So I don't know, maybe just drop it?
+> 
+> Ah, good catch! this is deinitely not intended to be here.
+> It's a debug artifact and needs to dropped indeed.
 
-Enum convertion seems to be the simplest and cleanest way,
-unfortunately (as far as I know). DWARF has some extensions capturing
-#defines, but values are strings (and need to be parsed, which is pain
-already for "1 << 1ULL"), and it's some obscure extension, not a
-standard thing. I agree would be nice not to have and change all UAPI
-headers for this, but I'm not aware of the solution like that.
-
->
-> > ---
-> >   include/uapi/linux/bpf.h       | 175 ++++++++++++++++++++------------
-> >   tools/include/uapi/linux/bpf.h | 177 ++++++++++++++++++++-------------
-> >   2 files changed, 219 insertions(+), 133 deletions(-)
-> >
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 8e98ced0963b..3ce4e8759661 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -325,44 +325,46 @@ enum bpf_attach_type {
-> >   #define BPF_PSEUDO_CALL             1
-> >
-> >   /* flags for BPF_MAP_UPDATE_ELEM command */
-> > -#define BPF_ANY              0 /* create new element or update existing */
-> > -#define BPF_NOEXIST  1 /* create new element if it didn't exist */
-> > -#define BPF_EXIST    2 /* update existing element */
-> > -#define BPF_F_LOCK   4 /* spin_lock-ed map_lookup/map_update */
-> > +enum {
-> > +     BPF_ANY         = 0, /* create new element or update existing */
-> > +     BPF_NOEXIST     = 1, /* create new element if it didn't exist */
-> > +     BPF_EXIST       = 2, /* update existing element */
-> > +     BPF_F_LOCK      = 4, /* spin_lock-ed map_lookup/map_update */
-> > +};
-> [...]
+That spurious pr_err() caught my attention as well.
+After further analysis there is a bug here.
+The function is missing last line:
+        *pprog = prog;
+Without it the nop insertion is actually not happenning.
+Nops are being written, but next insns will overwrite them.
+When I noticed it by code review I applied the patches to my tree
+and run the tests and, as expected, all tests passed.
+The existing test_xdp_veth.sh emits the most amount of unaligned
+branches. Since then I've been thinking whether we could add a test
+to catch things like this and couldn't come up with a way to test it
+without burning a lot of code on it. So let's fix it and move on.
+Could you rename this helper? May be emit_align() and pass 16 into it?
+The code is not branch target specific. It's aligning the start
+of the next instruction.
+Also could you add a comment to:
+        align16_branch_target(&prog);
+        for (i = 0; i < fmod_ret->nr_progs; i++)
+                emit_cond_near_jump(&branches[i], prog, branches[i],
+                                    X86_JNE);
+        kfree(branches);
+to say that the loop is updating prior location to jump to aligned
+branch target ?
