@@ -2,274 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF4B17786A
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 15:12:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6EC2177AE6
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 16:48:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728482AbgCCOKR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 09:10:17 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:46672 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729581AbgCCOKI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Mar 2020 09:10:08 -0500
-Received: by mail-wr1-f67.google.com with SMTP id j7so4432643wrp.13
-        for <bpf@vger.kernel.org>; Tue, 03 Mar 2020 06:10:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rjj2AUiojfdL3aSmwoSiGLpePTvBoxxUzefZJf0lBxI=;
-        b=bQqCSEzMzaOIY36ctJ1G9ckpnHqwyRAYQ0d/bc3qPqZY+tBOHW8m98mKF1cPguCLmh
-         3aTeYTr3Md5IZcIL/tRAKOutCXKMxyQwkVAEXArXwC3Y7eM9+dxpwfGGRMzmHcCVQ1oU
-         aV0W7S7yMlqU1DddlAHBErNpcJK+Qgu5Wal8I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rjj2AUiojfdL3aSmwoSiGLpePTvBoxxUzefZJf0lBxI=;
-        b=jhscoT3y18b5E0DQIu+aHd+fyR2WXd3eRB9IUE0M0+y6TAaScLL1ZFC7DbY/RDayP2
-         2TJ4NePbg3zW2j1KCMBNHzU5r2K/dJAUReFRNjlGBYtuxpsWOGyH76aGm9EhEYd+enG2
-         DCWNsU7BJ8fVHZvwF392oOo/WpuM8AK4cK0xcaOr6686QBJqDDez/66Q6sC2dUbcu60P
-         zpSlM74lFpl2IjY92d3reXxzwL4SE3tD17wxjL/ZfIFxl7ZJYoPV3D4pi7SE3pYnZm0F
-         gFK4/zF8Xs5DPGL7GmU1w8uKhe6FZv9hdOeF41MAEyPk0Pw+/mvjpBz+6jUcEOVxQk6q
-         17pw==
-X-Gm-Message-State: ANhLgQ1Y7dQTaTDdracRyfvxyq1IZ127W/wO2ghSbE+Slsy2VgJ8YGen
-        VzuFKwwCVdPzkhyjztTUKKvrig==
-X-Google-Smtp-Source: ADFU+vtO/WKI1Lwi3aVh17KEDOsr7UjQXTmaJdVsa2Y9uy6308LrUiySCgGn/3R19yzNjv0bD09xXQ==
-X-Received: by 2002:adf:ef4e:: with SMTP id c14mr5432964wrp.335.1583244606551;
-        Tue, 03 Mar 2020 06:10:06 -0800 (PST)
-Received: from kpsingh-kernel.localdomain ([2a00:79e1:abc:308:2811:c80d:9375:bf8a])
-        by smtp.gmail.com with ESMTPSA id h20sm11746823wrc.47.2020.03.03.06.10.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Mar 2020 06:10:06 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Subject: [PATCH bpf-next 7/7] bpf: Add selftests for BPF_MODIFY_RETURN
-Date:   Tue,  3 Mar 2020 15:09:50 +0100
-Message-Id: <20200303140950.6355-8-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200303140950.6355-1-kpsingh@chromium.org>
-References: <20200303140950.6355-1-kpsingh@chromium.org>
+        id S1729517AbgCCPrd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 10:47:33 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:2732 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728291AbgCCPrd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 3 Mar 2020 10:47:33 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 023FYpT6020481;
+        Tue, 3 Mar 2020 07:47:19 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=t4vNZDvqrEnZjBSQxeEPL7GH/BcSPq8YhKEni6uqzpE=;
+ b=XeNk9NbvNDn53dj/AdIkB5l4CKviLtYbz6MFliYDDjvgJpgOkcSaMTPBOSHhOLr0rb7l
+ R/Kc8GfCE7QJFRT0ptU35FZYBqJ/32ZeKO6CKoIh6XLzLgWEKZ1A8Wu0lxzMr4T9qA0g
+ K6Fd8RBw6+LE/dFJ05zMcZpQ5G4CG9MvC9g= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yhpfwh4ys-9
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 03 Mar 2020 07:47:19 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 3 Mar 2020 07:47:14 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aOYRuQXTWEzEtlE74v5V6rLtsvYhjSreNfDUtPI3RBhggix42ueCht3plDC9Oxz+baa+rsMV6mKFtJ/FefvSDEU6tt57BJldfIhCfoKZQkO42uTfbZpHKYAwcswkeRDwH/90qZczdY60KzAj1pVrgWAVMj2k/zgBCydKR4qwC7320OmT2HtXRp8stdXGFCRybNOyrBui8nVnur8qvE6ibXPOWscnpavDKp8e51wyZki2LZVEadWa0w65uwq+9FJzSRTCMmM4FFVIPIpZ//Z1NgorLyxH49+TgWNUS5AJiCvRGyNt+zm0Iwg3R+P9MoXYo1lGag/UWJ6jU0yp/HS79g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=t4vNZDvqrEnZjBSQxeEPL7GH/BcSPq8YhKEni6uqzpE=;
+ b=fEN3OnfOr58haJuAlwlz6HjOvGz4+w51seo9PF/o+O8tqKv2eyqANShAiiikrCNCgbEF0dZRVSTCmxIRSJ+IjhNhc31vLOW/8FbsBg5eSFIRNLK5lHB4eDmB0Rk8uItm/TpQnA5h0+dOloRjRhZSXH1IYUKHN1XAb6v3DsuDU3Xw7dPfmnHLxvOGJ9Iry4b9fuz7QM2Gzsse/3BQ8qtjz5p/elYoekyw88Kjw/2wEPsE4QTiTjwT4bYoucPn0gWRxpk6GfE9WSjwbfGCg5op4Z6XxbciUekgGkyn9KDVEcTo/wpDxmarPGsud15GBZIewgzk7KTgzUz6s1NvZMlWRw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=t4vNZDvqrEnZjBSQxeEPL7GH/BcSPq8YhKEni6uqzpE=;
+ b=BcURt7ifY5HAUGNKROKbeCvo0cXr2o1Vg+ahHAZFCeYiIBVqEJX0GUXw9fN+Pex3gTa/p7cXkua/bPW5EI3+NvlmG5Zs3V4Ja5e3Tb+UF0HSX4APrkseS2BSONPsO6kSedC88rQ3zOYbJ/l6SwCuk8xUpFwUkt5oMFhj4/aK1Fc=
+Received: from BYAPR15MB2232.namprd15.prod.outlook.com (2603:10b6:a02:89::31)
+ by BYAPR15MB2263.namprd15.prod.outlook.com (2603:10b6:a02:87::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2772.15; Tue, 3 Mar
+ 2020 15:46:58 +0000
+Received: from BYAPR15MB2232.namprd15.prod.outlook.com
+ ([fe80::6536:60f4:3846:e5c0]) by BYAPR15MB2232.namprd15.prod.outlook.com
+ ([fe80::6536:60f4:3846:e5c0%5]) with mapi id 15.20.2772.019; Tue, 3 Mar 2020
+ 15:46:58 +0000
+Subject: Re: [PATCH bpf-next 0/3] Introduce pinnable bpf_link kernel
+ abstraction
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+References: <20200228223948.360936-1-andriin@fb.com> <87mu8zt6a8.fsf@toke.dk>
+ <CAEf4BzZGn9FcUdEOSR_ouqSNvzY2AdJA=8ffMV5mTmJQS-10VA@mail.gmail.com>
+ <87imjms8cm.fsf@toke.dk> <094a8c0f-d781-d2a2-d4cd-721b20d75edd@iogearbox.net>
+From:   Alexei Starovoitov <ast@fb.com>
+Message-ID: <e9a4351a-4cf9-120a-1ae1-94a707a6217f@fb.com>
+Date:   Tue, 3 Mar 2020 07:46:54 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
+In-Reply-To: <094a8c0f-d781-d2a2-d4cd-721b20d75edd@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: CO2PR04CA0124.namprd04.prod.outlook.com
+ (2603:10b6:104:7::26) To BYAPR15MB2232.namprd15.prod.outlook.com
+ (2603:10b6:a02:89::31)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21d6::1252] (2620:10d:c090:400::5:88bb) by CO2PR04CA0124.namprd04.prod.outlook.com (2603:10b6:104:7::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2772.18 via Frontend Transport; Tue, 3 Mar 2020 15:46:57 +0000
+X-Originating-IP: [2620:10d:c090:400::5:88bb]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3e76e313-6fcd-414b-fc6b-08d7bf8a1b8c
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2263:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB22635FEC011342657D67F98CD7E40@BYAPR15MB2263.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Forefront-PRVS: 03319F6FEF
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(39860400002)(136003)(366004)(376002)(346002)(396003)(189003)(199004)(54906003)(110136005)(52116002)(31686004)(316002)(53546011)(31696002)(86362001)(6486002)(8936002)(6666004)(36756003)(8676002)(81166006)(81156014)(4326008)(16526019)(2616005)(5660300002)(2906002)(66476007)(186003)(478600001)(66556008)(66946007);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2263;H:BYAPR15MB2232.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+Received-SPF: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YGqXw1ck5JpRLiqUT0rsZHYY5Ukc8/alGLzz3RjOQrO29Cw/M7PXP4tIND97Q6dFat5p8jUx/t40GoyUO0lYYiAGxPqOK0QG10QPqIJWzEK3ySz/8hrD2pkC3sdGZhuEJUKXi2CItDn27d1lKGUK8VTzUIeYvz2yPcsrVTvYun//YE/QbstaRWwKUYTOP56f3QcRi6imCFDJPbzSvRUe9TcPAAer55OArLxstU0n0DzVK3+MD2IAK3ts0B89z8zhv8BJNIxtmPG8g8JMTfEM4AMxkJXFuJsNHYRs/XBcGwkUfdgxDbmxKLM//FD3j8+EEucM5A0WAGiasaR9Vr7jHhnM5XzSpRBNVqT4g2BabXopLic6kMzVKVrbQ6qc/1AC6RvoRz1sukkrLYApj8gCqW037LuOJQJdGDCpx+7kK5C5cQ9z0iE2/nVb65pz/YvX
+X-MS-Exchange-AntiSpam-MessageData: KZDe1WP0dOGv3n2iQcP3hgi9Z4FTmCYMQxgn7s3GLK9QubBTmCZcrTPUh00cGIBUcFpxY/GJ79ajGxdzpv8ONn+Ty93cKMvMBN/R/AvX30qfXym/XQofL9aMED5o8ymgOGyZPm5O40ERDA6ATbdCiFHbhGPPQl9uCN1/Cnz/Zq5oTT2TdSfkrWKQ1HQiDK41
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3e76e313-6fcd-414b-fc6b-08d7bf8a1b8c
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2020 15:46:58.7079
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5mLR0wJNPSTuEIvhhGkDTsxbeHXNjBdWLD3wRgg35IJUQcX3uAii/zUsqOTaxKZu
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2263
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-03-03_05:2020-03-03,2020-03-03 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ mlxscore=0 clxscore=1011 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=730 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2003030113
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+On 3/3/20 12:12 AM, Daniel Borkmann wrote:
+> 
+> I can see the motivation for this abstraction in particular for tracing, 
+> but given
+> the goal of bpf_link is to formalize and make the various program 
+> attachment types
+> more uniform, how is this going to solve e.g. the tc/BPF case? There is 
+> no guarantee
+> that while you create a link with the prog attached to cls_bpf that 
+> someone else is
+> going to replace that qdisc underneath you, and hence you end up with 
+> the same case
+> as if you would have only pinned the program itself (and not a link). So 
+> bpf_link
+> then gives a wrong impression that something is still attached and 
+> active while it
+> is not. What is the plan for these types?
 
-Test for two scenarios:
 
-  * When the fmod_ret program returns 0, the original function should
-    be called along with fentry and fexit programs.
-  * When the fmod_ret program returns a non-zero value, the original
-    function should not be called, no side effect should be observed and
-    fentry and fexit programs should be called.
-
-The result from the kernel function call and whether a side-effect is
-observed is returned via the retval attr of the BPF_PROG_TEST_RUN (bpf)
-syscall.
-
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- net/bpf/test_run.c                            | 23 ++++++-
- .../selftests/bpf/prog_tests/modify_return.c  | 65 +++++++++++++++++++
- .../selftests/bpf/progs/modify_return.c       | 49 ++++++++++++++
- 3 files changed, 135 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/modify_return.c
- create mode 100644 tools/testing/selftests/bpf/progs/modify_return.c
-
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index fb54b45285b4..642b6a46210b 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -10,6 +10,7 @@
- #include <net/bpf_sk_storage.h>
- #include <net/sock.h>
- #include <net/tcp.h>
-+#include <linux/error-injection.h>
- 
- #define CREATE_TRACE_POINTS
- #include <trace/events/bpf_test_run.h>
-@@ -143,6 +144,14 @@ int noinline bpf_fentry_test6(u64 a, void *b, short c, int d, void *e, u64 f)
- 	return a + (long)b + c + d + (long)e + f;
- }
- 
-+int noinline bpf_modify_return_test(int a, int *b)
-+{
-+	*b += 1;
-+	return a + *b;
-+}
-+
-+ALLOW_ERROR_INJECTION(bpf_modify_return_test, ERRNO);
-+
- static void *bpf_test_init(const union bpf_attr *kattr, u32 size,
- 			   u32 headroom, u32 tailroom)
- {
-@@ -168,7 +177,9 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
- 			      const union bpf_attr *kattr,
- 			      union bpf_attr __user *uattr)
- {
--	int err = -EFAULT;
-+	u16 side_effect = 0, ret = 0;
-+	int b = 2, err = -EFAULT;
-+	u32 retval = 0;
- 
- 	switch (prog->expected_attach_type) {
- 	case BPF_TRACE_FENTRY:
-@@ -181,12 +192,20 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
- 		    bpf_fentry_test6(16, (void *)17, 18, 19, (void *)20, 21) != 111)
- 			goto out;
- 		break;
-+	case BPF_MODIFY_RETURN:
-+		ret = bpf_modify_return_test(1, &b);
-+		if (b != 2)
-+			side_effect = 1;
-+		break;
- 	default:
- 		goto out;
- 	}
- 
--	return 0;
-+	retval = (u32)side_effect << 16 | ret;
-+	if (copy_to_user(&uattr->test.retval, &retval, sizeof(retval)))
-+		goto out;
- 
-+	return 0;
- out:
- 	trace_bpf_test_finish(&err);
- 	return err;
-diff --git a/tools/testing/selftests/bpf/prog_tests/modify_return.c b/tools/testing/selftests/bpf/prog_tests/modify_return.c
-new file mode 100644
-index 000000000000..beab9a37f35c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/modify_return.c
-@@ -0,0 +1,65 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright 2020 Google LLC.
-+ */
-+
-+#include <test_progs.h>
-+#include "modify_return.skel.h"
-+
-+#define LOWER(x) (x & 0xffff)
-+#define UPPER(x) (x >> 16)
-+
-+
-+static void run_test(__u32 input_retval, __u16 want_side_effect, __s16 want_ret)
-+{
-+	struct modify_return *skel = NULL;
-+	int err, prog_fd;
-+	__u32 duration = 0, retval;
-+	__u16 side_effect;
-+	__s16 ret;
-+
-+	skel = modify_return__open_and_load();
-+	if (CHECK(!skel, "skel_load", "modify_return skeleton failed\n"))
-+		goto cleanup;
-+
-+	err = modify_return__attach(skel);
-+	if (CHECK(err, "modify_return", "attach failed: %d\n", err))
-+		goto cleanup;
-+
-+	skel->bss->input_retval = input_retval;
-+	prog_fd = bpf_program__fd(skel->progs.fmod_ret_test);
-+	err = bpf_prog_test_run(prog_fd, 1, NULL, 0, NULL, 0,
-+				&retval, &duration);
-+
-+	CHECK(err, "test_run", "err %d errno %d\n", err, errno);
-+
-+	side_effect = UPPER(retval);
-+	ret  = LOWER(retval);
-+
-+	CHECK(ret != want_ret, "test_run",
-+	      "unexpected ret: %d, expected: %d\n", ret, want_ret);
-+	CHECK(side_effect != want_side_effect, "modify_return",
-+	      "unexpected side_effect: %d\n", side_effect);
-+
-+	CHECK(skel->bss->fentry_result != 1, "modify_return",
-+	      "fentry failed\n");
-+	CHECK(skel->bss->fexit_result != 1, "modify_return",
-+	      "fexit failed\n");
-+	CHECK(skel->bss->fmod_ret_result != 1, "modify_return",
-+	      "fmod_ret failed\n");
-+
-+cleanup:
-+	modify_return__destroy(skel);
-+}
-+
-+void test_modify_return(void)
-+{
-+	run_test(0 /* input_retval */,
-+		 1 /* want_side_effect */,
-+		 4 /* want_ret */);
-+	run_test(-EINVAL /* input_retval */,
-+		 0 /* want_side_effect */,
-+		 -EINVAL /* want_ret */);
-+}
-+
-diff --git a/tools/testing/selftests/bpf/progs/modify_return.c b/tools/testing/selftests/bpf/progs/modify_return.c
-new file mode 100644
-index 000000000000..8b7466a15c6b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/modify_return.c
-@@ -0,0 +1,49 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright 2020 Google LLC.
-+ */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+static int sequence = 0;
-+__s32 input_retval = 0;
-+
-+__u64 fentry_result = 0;
-+SEC("fentry/bpf_modify_return_test")
-+int BPF_PROG(fentry_test, int a, __u64 b)
-+{
-+	sequence++;
-+	fentry_result = (sequence == 1);
-+	return 0;
-+}
-+
-+__u64 fmod_ret_result = 0;
-+SEC("fmod_ret/bpf_modify_return_test")
-+int BPF_PROG(fmod_ret_test, int a, int *b, int ret)
-+{
-+	sequence++;
-+	/* This is the first fmod_ret program, the ret passed should be 0 */
-+	fmod_ret_result = (sequence == 2 && ret == 0);
-+	return input_retval;
-+}
-+
-+__u64 fexit_result = 0;
-+SEC("fexit/bpf_modify_return_test")
-+int BPF_PROG(fexit_test, int a, __u64 b, int ret)
-+{
-+	sequence++;
-+	/* If the input_reval is non-zero a successful modification should have
-+	 * occurred.
-+	 */
-+	if (input_retval)
-+		fexit_result = (sequence == 3 && ret == input_retval);
-+	else
-+		fexit_result = (sequence == 3 && ret == 4);
-+
-+	return 0;
-+}
--- 
-2.20.1
-
+TC is not easy to handle, right, but I don't see a 'wrong impression' 
+part. The link will keep the program attached to qdisc. The admin
+may try to remove qdisc for netdev, but that's a separate issue.
+Same thing with xdp. The link will keep xdp program attached,
+but admin may do ifconfig down and no packets will be flowing.
+Similar with cgroups. The link will keep prog attached to a cgroup,
+but admin can still do rmdir and cgroup will be in 'dying' state.
+In case of tracing there is no intermediate entity between programs
+and the kernel. In case of networking there are layers.
+Netdevs, qdiscs, etc. May be dev_hold is a way to go.
