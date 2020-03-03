@@ -2,199 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD7B176E2C
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 05:49:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC4D176E3B
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 05:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726859AbgCCEtC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Mar 2020 23:49:02 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:41393 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727312AbgCCEtB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Mar 2020 23:49:01 -0500
-Received: by mail-pf1-f196.google.com with SMTP id j9so816554pfa.8
-        for <bpf@vger.kernel.org>; Mon, 02 Mar 2020 20:48:58 -0800 (PST)
+        id S1726970AbgCCE7h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Mar 2020 23:59:37 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:36761 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726928AbgCCE7h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Mar 2020 23:59:37 -0500
+Received: by mail-qt1-f195.google.com with SMTP id t13so1922951qto.3;
+        Mon, 02 Mar 2020 20:59:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Sics0B7EoHCtat3/CO1pwyp/swYRXD7UJx80Cjp454c=;
-        b=iHnPg7BcPecEdHYB95AV1YGmFaTE8e6ruVjUoK73IQbKQmU1NJROEx6/7ho6yrgcVX
-         plBRasUX+u9rqCk4siHPbGty2/YnfeBVzIAx+ckfm8TTZvumSLIIwdkS9803ZCkUgIZz
-         OPdz/MnVjYzXW3pMqrOU9QbDB7LjmXePfmKgs=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3ejAnt+uAyqn1WHZqMXh9jskwSigm+jlynlcBsOlBXc=;
+        b=YloKxOZqHVIxy6syxSZwM+lbqjeDFy6KxpkO/6K3bbZn0uIAyJfqlb6ZSDB/9h2MK3
+         AO1ZwJuB4L62GJKcL/dRd2prxX5rhm/YxWlPLjwp7R/31Xx8R8AxdZTJxgD/bIVt10ZW
+         9TeZWwpOYw6eepWIdN8DU9MRGXbUvVx/lAWllcmd0JbpBQbY0iwqBIH8iusvG8p45WkM
+         QQRXc9o7rwHFZN99Z7B19IS28qIe0RPILCTXhnySGgK9GjTsvdbd1W+fotEdsoeDkPPw
+         NFFJf7QSzu1TKb6atRM8ee4Hk5ZhAbucgGYojnz2SVK2tJYQEYogxnXLrj5KQv3JJjLx
+         pGnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Sics0B7EoHCtat3/CO1pwyp/swYRXD7UJx80Cjp454c=;
-        b=lLiSDyCMKzaY+dd7JyUNlcs3Ib8y3g7ykChL4b2DT72O7ET4XDGienFWJUXavHfT+r
-         0yNWZ+O1tLqEE7lNhb7Xvh9SxQGETtSrZ8EzUsJ4zpFFtO+qrvCpW0wsu77n13R0OFCn
-         tSf+C0xFax80h1vSdFS69gorkaYcWZUGfSCgwgUMebkvA9ZCgBlFCbrhHDTS9T4ZY+if
-         MW4QeG/6TsXDhq4E7+3Kh+hA+mUazStrmLa3nZKXzd/HY8EX+TlteHoareCMzhwNXz5F
-         SGCp4AVKTEVGCCXAZPNx0v+WeWalLt+kptrAPAoPwlb3WCSc7rpjC5sFzFxCFxLXI4sM
-         Y/2Q==
-X-Gm-Message-State: ANhLgQ2zzp1HzJUIzkooAmWghjNVJkrb2xV3pDvTZiMzGABHS30r/I9L
-        JECIcvxlth35MR3neULuQ82IXWdNRag=
-X-Google-Smtp-Source: ADFU+vt2+qrCj2iXmaEVSCgXbvrK/ZVYtlXXb3TycWpDX8A69+F5QF37dyu0h7y6sOHRsE/xRKnU4A==
-X-Received: by 2002:a62:342:: with SMTP id 63mr2377981pfd.19.1583210938225;
-        Mon, 02 Mar 2020 20:48:58 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q3sm13264664pgj.92.2020.03.02.20.48.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Mar 2020 20:48:57 -0800 (PST)
-Date:   Mon, 2 Mar 2020 20:48:56 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH] kbuild: Remove debug info from kallsyms linking
-Message-ID: <202003022046.4185359A@keescook>
-References: <202002242114.CBED7F1@keescook>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3ejAnt+uAyqn1WHZqMXh9jskwSigm+jlynlcBsOlBXc=;
+        b=hABQVHfpCSJ6SuKi9bea/eHvjfwLwkNYnWjtguTJm/yX9grbfTZc04wr0XOx/Aoud5
+         cFHtrDMsxIOdrIpbM+3BjRpwjsLuJNryIF40mCyotqhxspzv55WWUadiL6efubF0H2kY
+         SjR38+cSoyXFGl61t3gE/bbSZvpId15XYApATEDaTSAOublmNXdfDVDNDPybz7j+6whT
+         Vv6CVFZHqyDJvTJMN18ydYl0+0Mj9DVwhB/WBNiuEHX5eAtVThAeVjCWT0PTq9Ak7g8z
+         J45lqPX7aqhBziNOsieLdSdL7lF3o+szQ8ZxJxtzGmR2ez2qlD1DbiWOlwOQpRErCCS9
+         ye4Q==
+X-Gm-Message-State: ANhLgQ0zuMsjFmkRveA1DJO3yjjk66auJ9aGm+algwnUdWAPbJL3l+ek
+        IIoq2tGpS7bEfrNkO7sP4O2cViF8zmztT7ue2IQ=
+X-Google-Smtp-Source: ADFU+vtqmDbp5mzDx5UV/rhQYMaaTOfgvfK+dBtgdJSBs0z+K22Ip5cO/Nr/k0tbIYrU8l5YAbN7VUNq7mVp5IqFfHA=
+X-Received: by 2002:ac8:4d4b:: with SMTP id x11mr2787467qtv.171.1583211575848;
+ Mon, 02 Mar 2020 20:59:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202002242114.CBED7F1@keescook>
+References: <20200301081045.3491005-1-andriin@fb.com> <20200303005951.72szj5sb5rveh4xp@ast-mbp>
+ <CAEf4BzYsC-5j_+je1pZ_JNsyuPV9_JrLSzpp6tfUvm=3KBNL-A@mail.gmail.com>
+In-Reply-To: <CAEf4BzYsC-5j_+je1pZ_JNsyuPV9_JrLSzpp6tfUvm=3KBNL-A@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 2 Mar 2020 20:59:24 -0800
+Message-ID: <CAEf4Bza+oHc4eJESnPCQh0rRcKtPWqu3SYkzP52B4BLu2O0=6w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/3] Improve raw tracepoint BTF types preservation
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Wenbo Zhang <ethercflow@gmail.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 24, 2020 at 09:16:17PM -0800, Kees Cook wrote:
-> When CONFIG_DEBUG_INFO is enabled, the two kallsyms linking steps spend
-> time collecting and writing the dwarf sections to the temporary output
-> files. kallsyms does not need this information, and leaving it off
-> halves their linking time. This is especially noticeable without
-> CONFIG_DEBUG_INFO_REDUCED. The BTF linking stage, however, does still
-> need those details.
-> 
-> Refactor the BTF and kallsyms generation stages slightly for more
-> regularized temporary names. Skip debug during kallsyms links.
-> 
-> For a full debug info build with BTF, my link time goes from 1m06s to
-> 0m54s, saving about 12 seconds, or 18%.
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On Mon, Mar 2, 2020 at 8:10 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Mon, Mar 2, 2020 at 4:59 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Sun, Mar 01, 2020 at 12:10:42AM -0800, Andrii Nakryiko wrote:
+> > > Fix issue with not preserving btf_trace_##call structs when compiled under
+> > > Clang. Additionally, capture raw tracepoint arguments in raw_tp_##call
+> > > structs, directly usable from BPF programs. Convert runqslower to use those
+> > > for proof of concept and to simplify code further.
+> >
+> > Not only folks compile kernel with clang they use the latest BPF/BTF features
+> > with it. This is very nice to see!
+> > I've applied 1st patch to make clang compiled kernel emit proper BTF.
+> >
+> > As far as patch 2 I'm not sure about 'raw_tp_' prefix. tp_btf type of progs can
+> > use the same structs. So I think there could be a better name. Also bpftool can
+> > generate them as well while emitting vmlinux.h. I think that will avoid adding
+> > few kilobytes to vmlinux BTF that kernel isn't going to use atm.
+>
+> Fair enough, I'll follow up with bpftool changes to generate such
+> structs. I'm thinking to use tp_args_xxx name pattern, unless someone
+> has a better idea :)
 
-Ping. Masahiro what do you think of this? It saves me a fair bit of time
-on the link stage... I bet the BPF folks would be interested too. :)
+Bad news. BTF_KIND_FUNC_PROTOs don't capture argument names and having
+something like:
 
--Kees
+struct tp_args_sched_switch {
+    bool arg1;
+    struct task_struct *arg2;
+    struct task_struct *arg3;
+};
 
-> ---
->  scripts/link-vmlinux.sh | 28 +++++++++++++++++++---------
->  1 file changed, 19 insertions(+), 9 deletions(-)
-> 
-> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> index dd484e92752e..ac569e197bfa 100755
-> --- a/scripts/link-vmlinux.sh
-> +++ b/scripts/link-vmlinux.sh
-> @@ -63,12 +63,18 @@ vmlinux_link()
->  	local lds="${objtree}/${KBUILD_LDS}"
->  	local output=${1}
->  	local objects
-> +	local strip_debug
->  
->  	info LD ${output}
->  
->  	# skip output file argument
->  	shift
->  
-> +	# The kallsyms linking does not need debug symbols included.
-> +	if [ "$output" != "${output#.tmp_vmlinux.kallsyms}" ] ; then
-> +		strip_debug=-Wl,--strip-debug
-> +	fi
-> +
->  	if [ "${SRCARCH}" != "um" ]; then
->  		objects="--whole-archive			\
->  			${KBUILD_VMLINUX_OBJS}			\
-> @@ -79,6 +85,7 @@ vmlinux_link()
->  			${@}"
->  
->  		${LD} ${KBUILD_LDFLAGS} ${LDFLAGS_vmlinux}	\
-> +			${strip_debug#-Wl,}			\
->  			-o ${output}				\
->  			-T ${lds} ${objects}
->  	else
-> @@ -91,6 +98,7 @@ vmlinux_link()
->  			${@}"
->  
->  		${CC} ${CFLAGS_vmlinux}				\
-> +			${strip_debug}				\
->  			-o ${output}				\
->  			-Wl,-T,${lds}				\
->  			${objects}				\
-> @@ -106,6 +114,8 @@ gen_btf()
->  {
->  	local pahole_ver
->  	local bin_arch
-> +	local bin_format
-> +	local bin_file
->  
->  	if ! [ -x "$(command -v ${PAHOLE})" ]; then
->  		echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
-> @@ -118,8 +128,9 @@ gen_btf()
->  		return 1
->  	fi
->  
-> -	info "BTF" ${2}
->  	vmlinux_link ${1}
-> +
-> +	info "BTF" ${2}
->  	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
->  
->  	# dump .BTF section into raw binary file to link with final vmlinux
-> @@ -127,11 +138,12 @@ gen_btf()
->  		cut -d, -f1 | cut -d' ' -f2)
->  	bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
->  		awk '{print $4}')
-> +	bin_file=.btf.vmlinux.bin
->  	${OBJCOPY} --change-section-address .BTF=0 \
->  		--set-section-flags .BTF=alloc -O binary \
-> -		--only-section=.BTF ${1} .btf.vmlinux.bin
-> +		--only-section=.BTF ${1} $bin_file
->  	${OBJCOPY} -I binary -O ${bin_format} -B ${bin_arch} \
-> -		--rename-section .data=.BTF .btf.vmlinux.bin ${2}
-> +		--rename-section .data=.BTF $bin_file ${2}
->  }
->  
->  # Create ${2} .o file with all symbols from the ${1} object file
-> @@ -166,8 +178,8 @@ kallsyms()
->  kallsyms_step()
->  {
->  	kallsymso_prev=${kallsymso}
-> -	kallsymso=.tmp_kallsyms${1}.o
-> -	kallsyms_vmlinux=.tmp_vmlinux${1}
-> +	kallsyms_vmlinux=.tmp_vmlinux.kallsyms${1}
-> +	kallsymso=${kallsyms_vmlinux}.o
->  
->  	vmlinux_link ${kallsyms_vmlinux} "${kallsymso_prev}" ${btf_vmlinux_bin_o}
->  	kallsyms ${kallsyms_vmlinux} ${kallsymso}
-> @@ -190,7 +202,6 @@ cleanup()
->  {
->  	rm -f .btf.*
->  	rm -f .tmp_System.map
-> -	rm -f .tmp_kallsyms*
->  	rm -f .tmp_vmlinux*
->  	rm -f System.map
->  	rm -f vmlinux
-> @@ -257,9 +268,8 @@ tr '\0' '\n' < modules.builtin.modinfo | sed -n 's/^[[:alnum:]:_]*\.file=//p' |
->  
->  btf_vmlinux_bin_o=""
->  if [ -n "${CONFIG_DEBUG_INFO_BTF}" ]; then
-> -	if gen_btf .tmp_vmlinux.btf .btf.vmlinux.bin.o ; then
-> -		btf_vmlinux_bin_o=.btf.vmlinux.bin.o
-> -	else
-> +	btf_vmlinux_bin_o=.btf.vmlinux.bin.o
-> +	if ! gen_btf .tmp_vmlinux.btf $btf_vmlinux_bin_o ; then
->  		echo >&2 "Failed to generate BTF for vmlinux"
->  		echo >&2 "Try to disable CONFIG_DEBUG_INFO_BTF"
->  		exit 1
-> -- 
-> 2.20.1
-> 
-> 
-> -- 
-> Kees Cook
-
--- 
-Kees Cook
+doesn't seem like a good solution...
