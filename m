@@ -2,217 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED05176E11
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 05:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD7B176E2C
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 05:49:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727420AbgCCEc3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Mar 2020 23:32:29 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:18440 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727417AbgCCEc2 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 2 Mar 2020 23:32:28 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0234Sve4003473
-        for <bpf@vger.kernel.org>; Mon, 2 Mar 2020 20:32:28 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=qyVhPGmp3ezkdda4gNOK0tREMIZBeQy3ChgkVcwVWZs=;
- b=IypjOSupI49cOdKjcibyIRGNL7VlRcQEGgBUQAvFgCgruywP9CPhmIf5vjVbaj08ltNN
- jOaFlgndHZcz0EADoSBOTxQg2a4JnMiGjdWBIO9gc3UUcDr6yVpK7QEQg0Et1fv0gnHI
- IYSU/l2/yAkGxNDOoVhogj1yRArH372GIN4= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 2yfmb6v0pt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 02 Mar 2020 20:32:27 -0800
-Received: from intmgw001.03.ash8.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 2 Mar 2020 20:32:26 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id D7B8B2EC2DD1; Mon,  2 Mar 2020 20:32:10 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v2 bpf-next 3/3] selftests/bpf: add link pinning selftests
-Date:   Mon, 2 Mar 2020 20:31:59 -0800
-Message-ID: <20200303043159.323675-4-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200303043159.323675-1-andriin@fb.com>
-References: <20200303043159.323675-1-andriin@fb.com>
-X-FB-Internal: Safe
+        id S1726859AbgCCEtC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Mar 2020 23:49:02 -0500
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:41393 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727312AbgCCEtB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Mar 2020 23:49:01 -0500
+Received: by mail-pf1-f196.google.com with SMTP id j9so816554pfa.8
+        for <bpf@vger.kernel.org>; Mon, 02 Mar 2020 20:48:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Sics0B7EoHCtat3/CO1pwyp/swYRXD7UJx80Cjp454c=;
+        b=iHnPg7BcPecEdHYB95AV1YGmFaTE8e6ruVjUoK73IQbKQmU1NJROEx6/7ho6yrgcVX
+         plBRasUX+u9rqCk4siHPbGty2/YnfeBVzIAx+ckfm8TTZvumSLIIwdkS9803ZCkUgIZz
+         OPdz/MnVjYzXW3pMqrOU9QbDB7LjmXePfmKgs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Sics0B7EoHCtat3/CO1pwyp/swYRXD7UJx80Cjp454c=;
+        b=lLiSDyCMKzaY+dd7JyUNlcs3Ib8y3g7ykChL4b2DT72O7ET4XDGienFWJUXavHfT+r
+         0yNWZ+O1tLqEE7lNhb7Xvh9SxQGETtSrZ8EzUsJ4zpFFtO+qrvCpW0wsu77n13R0OFCn
+         tSf+C0xFax80h1vSdFS69gorkaYcWZUGfSCgwgUMebkvA9ZCgBlFCbrhHDTS9T4ZY+if
+         MW4QeG/6TsXDhq4E7+3Kh+hA+mUazStrmLa3nZKXzd/HY8EX+TlteHoareCMzhwNXz5F
+         SGCp4AVKTEVGCCXAZPNx0v+WeWalLt+kptrAPAoPwlb3WCSc7rpjC5sFzFxCFxLXI4sM
+         Y/2Q==
+X-Gm-Message-State: ANhLgQ2zzp1HzJUIzkooAmWghjNVJkrb2xV3pDvTZiMzGABHS30r/I9L
+        JECIcvxlth35MR3neULuQ82IXWdNRag=
+X-Google-Smtp-Source: ADFU+vt2+qrCj2iXmaEVSCgXbvrK/ZVYtlXXb3TycWpDX8A69+F5QF37dyu0h7y6sOHRsE/xRKnU4A==
+X-Received: by 2002:a62:342:: with SMTP id 63mr2377981pfd.19.1583210938225;
+        Mon, 02 Mar 2020 20:48:58 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q3sm13264664pgj.92.2020.03.02.20.48.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Mar 2020 20:48:57 -0800 (PST)
+Date:   Mon, 2 Mar 2020 20:48:56 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH] kbuild: Remove debug info from kallsyms linking
+Message-ID: <202003022046.4185359A@keescook>
+References: <202002242114.CBED7F1@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-03-02_09:2020-03-02,2020-03-02 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- impostorscore=0 mlxscore=0 priorityscore=1501 lowpriorityscore=0
- malwarescore=0 phishscore=0 clxscore=1015 mlxlogscore=962 suspectscore=8
- spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2003030033
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202002242114.CBED7F1@keescook>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add selftests validating link pinning/unpinning and associated BPF link
-(attachment) lifetime.
+On Mon, Feb 24, 2020 at 09:16:17PM -0800, Kees Cook wrote:
+> When CONFIG_DEBUG_INFO is enabled, the two kallsyms linking steps spend
+> time collecting and writing the dwarf sections to the temporary output
+> files. kallsyms does not need this information, and leaving it off
+> halves their linking time. This is especially noticeable without
+> CONFIG_DEBUG_INFO_REDUCED. The BTF linking stage, however, does still
+> need those details.
+> 
+> Refactor the BTF and kallsyms generation stages slightly for more
+> regularized temporary names. Skip debug during kallsyms links.
+> 
+> For a full debug info build with BTF, my link time goes from 1m06s to
+> 0m54s, saving about 12 seconds, or 18%.
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- .../selftests/bpf/prog_tests/link_pinning.c   | 105 ++++++++++++++++++
- .../selftests/bpf/progs/test_link_pinning.c   |  25 +++++
- 2 files changed, 130 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/link_pinning.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_link_pinning.c
+Ping. Masahiro what do you think of this? It saves me a fair bit of time
+on the link stage... I bet the BPF folks would be interested too. :)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/link_pinning.c b/tools/testing/selftests/bpf/prog_tests/link_pinning.c
-new file mode 100644
-index 000000000000..a743288cf384
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/link_pinning.c
-@@ -0,0 +1,105 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Facebook */
-+
-+#include <test_progs.h>
-+#include <sys/stat.h>
-+
-+#include "test_link_pinning.skel.h"
-+
-+static int duration = 0;
-+
-+void test_link_pinning_subtest(struct bpf_program *prog,
-+			       struct test_link_pinning__bss *bss)
-+{
-+	const char *link_pin_path = "/sys/fs/bpf/pinned_link_test";
-+	struct stat statbuf = {};
-+	struct bpf_link *link;
-+	int err, i;
-+
-+	link = bpf_program__attach(prog);
-+	if (CHECK(IS_ERR(link), "link_attach", "err: %ld\n", PTR_ERR(link)))
-+		goto cleanup;
-+
-+	bss->in = 1;
-+	usleep(1);
-+	CHECK(bss->out != 1, "res_check1", "exp %d, got %d\n", 1, bss->out);
-+
-+	/* pin link */
-+	err = bpf_link__pin(link, link_pin_path);
-+	if (CHECK(err, "link_pin", "err: %d\n", err))
-+		goto cleanup;
-+
-+	CHECK(strcmp(link_pin_path, bpf_link__pin_path(link)), "pin_path1",
-+	      "exp %s, got %s\n", link_pin_path, bpf_link__pin_path(link));
-+
-+	/* check that link was pinned */
-+	err = stat(link_pin_path, &statbuf);
-+	if (CHECK(err, "stat_link", "err %d errno %d\n", err, errno))
-+		goto cleanup;
-+
-+	bss->in = 2;
-+	usleep(1);
-+	CHECK(bss->out != 2, "res_check2", "exp %d, got %d\n", 2, bss->out);
-+
-+	/* destroy link, pinned link should keep program attached */
-+	bpf_link__destroy(link);
-+	link = NULL;
-+
-+	bss->in = 3;
-+	usleep(1);
-+	CHECK(bss->out != 3, "res_check3", "exp %d, got %d\n", 3, bss->out);
-+
-+	/* re-open link from BPFFS */
-+	link = bpf_link__open(link_pin_path);
-+	if (CHECK(IS_ERR(link), "link_open", "err: %ld\n", PTR_ERR(link)))
-+		goto cleanup;
-+
-+	CHECK(strcmp(link_pin_path, bpf_link__pin_path(link)), "pin_path2",
-+	      "exp %s, got %s\n", link_pin_path, bpf_link__pin_path(link));
-+
-+	/* unpin link from BPFFS, program still attached */
-+	err = bpf_link__unpin(link);
-+	if (CHECK(err, "link_unpin", "err: %d\n", err))
-+		goto cleanup;
-+
-+	/* still active, as we have FD open now */
-+	bss->in = 4;
-+	usleep(1);
-+	CHECK(bss->out != 4, "res_check4", "exp %d, got %d\n", 4, bss->out);
-+
-+	bpf_link__destroy(link);
-+	link = NULL;
-+
-+	/* Validate it's finally detached.
-+	 * Actual detachment might get delayed a bit, so there is no reliable
-+	 * way to validate it immediately here, let's count up for long enough
-+	 * and see if eventually output stops being updated
-+	 */
-+	for (i = 5; i < 10000; i++) {
-+		bss->in = i;
-+		usleep(1);
-+		if (bss->out == i - 1)
-+			break;
-+	}
-+	CHECK(i == 10000, "link_attached", "got to iteration #%d\n", i);
-+
-+cleanup:
-+	if (!IS_ERR(link))
-+		bpf_link__destroy(link);
-+}
-+
-+void test_link_pinning(void)
-+{
-+	struct test_link_pinning* skel;
-+
-+	skel = test_link_pinning__open_and_load();
-+	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
-+		return;
-+
-+	if (test__start_subtest("pin_raw_tp"))
-+		test_link_pinning_subtest(skel->progs.raw_tp_prog, skel->bss);
-+	if (test__start_subtest("pin_tp_btf"))
-+		test_link_pinning_subtest(skel->progs.tp_btf_prog, skel->bss);
-+
-+	test_link_pinning__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_link_pinning.c b/tools/testing/selftests/bpf/progs/test_link_pinning.c
-new file mode 100644
-index 000000000000..bbf2a5264dc0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_link_pinning.c
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Facebook */
-+
-+#include <stdbool.h>
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+int in = 0;
-+int out = 0;
-+
-+SEC("raw_tp/sys_enter")
-+int raw_tp_prog(const void *ctx)
-+{
-+	out = in;
-+	return 0;
-+}
-+
-+SEC("tp_btf/sys_enter")
-+int tp_btf_prog(const void *ctx)
-+{
-+	out = in;
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+-Kees
+
+> ---
+>  scripts/link-vmlinux.sh | 28 +++++++++++++++++++---------
+>  1 file changed, 19 insertions(+), 9 deletions(-)
+> 
+> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+> index dd484e92752e..ac569e197bfa 100755
+> --- a/scripts/link-vmlinux.sh
+> +++ b/scripts/link-vmlinux.sh
+> @@ -63,12 +63,18 @@ vmlinux_link()
+>  	local lds="${objtree}/${KBUILD_LDS}"
+>  	local output=${1}
+>  	local objects
+> +	local strip_debug
+>  
+>  	info LD ${output}
+>  
+>  	# skip output file argument
+>  	shift
+>  
+> +	# The kallsyms linking does not need debug symbols included.
+> +	if [ "$output" != "${output#.tmp_vmlinux.kallsyms}" ] ; then
+> +		strip_debug=-Wl,--strip-debug
+> +	fi
+> +
+>  	if [ "${SRCARCH}" != "um" ]; then
+>  		objects="--whole-archive			\
+>  			${KBUILD_VMLINUX_OBJS}			\
+> @@ -79,6 +85,7 @@ vmlinux_link()
+>  			${@}"
+>  
+>  		${LD} ${KBUILD_LDFLAGS} ${LDFLAGS_vmlinux}	\
+> +			${strip_debug#-Wl,}			\
+>  			-o ${output}				\
+>  			-T ${lds} ${objects}
+>  	else
+> @@ -91,6 +98,7 @@ vmlinux_link()
+>  			${@}"
+>  
+>  		${CC} ${CFLAGS_vmlinux}				\
+> +			${strip_debug}				\
+>  			-o ${output}				\
+>  			-Wl,-T,${lds}				\
+>  			${objects}				\
+> @@ -106,6 +114,8 @@ gen_btf()
+>  {
+>  	local pahole_ver
+>  	local bin_arch
+> +	local bin_format
+> +	local bin_file
+>  
+>  	if ! [ -x "$(command -v ${PAHOLE})" ]; then
+>  		echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
+> @@ -118,8 +128,9 @@ gen_btf()
+>  		return 1
+>  	fi
+>  
+> -	info "BTF" ${2}
+>  	vmlinux_link ${1}
+> +
+> +	info "BTF" ${2}
+>  	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
+>  
+>  	# dump .BTF section into raw binary file to link with final vmlinux
+> @@ -127,11 +138,12 @@ gen_btf()
+>  		cut -d, -f1 | cut -d' ' -f2)
+>  	bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
+>  		awk '{print $4}')
+> +	bin_file=.btf.vmlinux.bin
+>  	${OBJCOPY} --change-section-address .BTF=0 \
+>  		--set-section-flags .BTF=alloc -O binary \
+> -		--only-section=.BTF ${1} .btf.vmlinux.bin
+> +		--only-section=.BTF ${1} $bin_file
+>  	${OBJCOPY} -I binary -O ${bin_format} -B ${bin_arch} \
+> -		--rename-section .data=.BTF .btf.vmlinux.bin ${2}
+> +		--rename-section .data=.BTF $bin_file ${2}
+>  }
+>  
+>  # Create ${2} .o file with all symbols from the ${1} object file
+> @@ -166,8 +178,8 @@ kallsyms()
+>  kallsyms_step()
+>  {
+>  	kallsymso_prev=${kallsymso}
+> -	kallsymso=.tmp_kallsyms${1}.o
+> -	kallsyms_vmlinux=.tmp_vmlinux${1}
+> +	kallsyms_vmlinux=.tmp_vmlinux.kallsyms${1}
+> +	kallsymso=${kallsyms_vmlinux}.o
+>  
+>  	vmlinux_link ${kallsyms_vmlinux} "${kallsymso_prev}" ${btf_vmlinux_bin_o}
+>  	kallsyms ${kallsyms_vmlinux} ${kallsymso}
+> @@ -190,7 +202,6 @@ cleanup()
+>  {
+>  	rm -f .btf.*
+>  	rm -f .tmp_System.map
+> -	rm -f .tmp_kallsyms*
+>  	rm -f .tmp_vmlinux*
+>  	rm -f System.map
+>  	rm -f vmlinux
+> @@ -257,9 +268,8 @@ tr '\0' '\n' < modules.builtin.modinfo | sed -n 's/^[[:alnum:]:_]*\.file=//p' |
+>  
+>  btf_vmlinux_bin_o=""
+>  if [ -n "${CONFIG_DEBUG_INFO_BTF}" ]; then
+> -	if gen_btf .tmp_vmlinux.btf .btf.vmlinux.bin.o ; then
+> -		btf_vmlinux_bin_o=.btf.vmlinux.bin.o
+> -	else
+> +	btf_vmlinux_bin_o=.btf.vmlinux.bin.o
+> +	if ! gen_btf .tmp_vmlinux.btf $btf_vmlinux_bin_o ; then
+>  		echo >&2 "Failed to generate BTF for vmlinux"
+>  		echo >&2 "Try to disable CONFIG_DEBUG_INFO_BTF"
+>  		exit 1
+> -- 
+> 2.20.1
+> 
+> 
+> -- 
+> Kees Cook
+
 -- 
-2.17.1
-
+Kees Cook
