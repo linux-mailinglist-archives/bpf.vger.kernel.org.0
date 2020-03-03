@@ -2,141 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 946C7178376
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 20:56:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F4E17839B
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 21:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731422AbgCCT4J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 14:56:09 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:22446 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731420AbgCCT4J (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 3 Mar 2020 14:56:09 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 023JtFaf031487
-        for <bpf@vger.kernel.org>; Tue, 3 Mar 2020 11:56:08 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=cw2duZ+922g/UCLQ0XOQV1XlDNxJBbO0wW10OnBcjXo=;
- b=SUBjKwjUwpiCT5B1sgyBPlraq0RhsrdvoqxMZGCKwc0SEn7q/sgdGoh8XwzocgjBrb+3
- TJG6kvRodHUieMAWDQYCwFFS6IZTAdcPfIKDLkveNK3j4Iq4aaGpbXBK2nNNyY+QhIzE
- 0qLsr/KJj/kYBU4o0C3+jzIfoVeklvfTbUY= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 2yhv7vgmpu-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 03 Mar 2020 11:56:08 -0800
-Received: from intmgw002.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 3 Mar 2020 11:56:07 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 7BFD262E3363; Tue,  3 Mar 2020 11:56:05 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Song Liu <songliubraving@fb.com>
-Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
-To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-CC:     <quentin@isovalent.com>, <kernel-team@fb.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <arnaldo.melo@gmail.com>,
-        <jolsa@kernel.org>, Song Liu <songliubraving@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v3 bpf-next 3/3] bpftool: bash completion for "bpftool prog profile"
-Date:   Tue, 3 Mar 2020 11:55:55 -0800
-Message-ID: <20200303195555.1309028-4-songliubraving@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200303195555.1309028-1-songliubraving@fb.com>
-References: <20200303195555.1309028-1-songliubraving@fb.com>
-X-FB-Internal: Safe
+        id S1731091AbgCCUFK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 15:05:10 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:38883 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728787AbgCCUFJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Mar 2020 15:05:09 -0500
+Received: by mail-qk1-f193.google.com with SMTP id h22so4731006qke.5;
+        Tue, 03 Mar 2020 12:05:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c2K6BAwGj3FC5N5znWE5+GD6Ye83Rz4tnyHf9aqTUl8=;
+        b=tgU0aql004PTeTTbF6pSvwuD2O8vinGL33sbkqU2otxXvjK1VeIP/tc3LWLM+6hi3C
+         MVZ6mZil+KWym7pVVqyLqD+liZVZxZUj4ICKTP7C1NjwONnJOYWiJmybGheH8xMxoysR
+         F31xnJ0t4jhU6Vde5O/39yCneFpzg63gD+bN8CRA555HOT9B47vDcrTysZMYGmpxuQX6
+         AERGQrDMv6ZVA8L8wAtiMrvEJFMky2T+oo+K4pScD0Exd2xtyeYA6jCom0WIqVrZyayd
+         ZrnM4u9KpiByj7Jqjd2igZ+9ZkaYvChsLdd4f0eIkJBBkNSlTuDBYzuIJmLjW+GvyVqj
+         Mg7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c2K6BAwGj3FC5N5znWE5+GD6Ye83Rz4tnyHf9aqTUl8=;
+        b=cUD0R3lhXbib/ZujB8pVWWSVVUxhIovFhGRSt2tgYxKwj+fMjY5weFFBg/nngPDYik
+         7NhBhEiG+54IxbRJHbrZp0j4es9zdYJDjp/7YaHZQOoa5Vjx8D4gse/ZEvNcfmEZhqKb
+         DiywZE9iwTnfxWY/ajlfJ/5hz9j25ASrWDZ0rYh55i0fh0DB5ciyu6uJ3xojppo7VZck
+         ZivhKRgkr96AXVFmR1GjyHcGjEru0RTk3zzwOfkqHyt8GGicwtJ2uCV8Bz8MrBRJJvGr
+         VaeKxVOwztVObgZmnJhxyK6JlNrczKk6bToPGJnTsHWET0KzqXU4mVvQRIcdqkoyjQOB
+         unbw==
+X-Gm-Message-State: ANhLgQ13Vkz5AqG4cZaD74Ue/eUCce5eaKbqpvS8vDmgRrekoFXOadm1
+        uN7Oz7Nlln1hmHHl7CmF9v1gPp3l
+X-Google-Smtp-Source: ADFU+vuRuUUnfuIK2U0RZ3AMJJLlK8GM7piA4IPqD81BaS7i7+wPEfGdy9q11Wlz/YfZr1brfMaNZA==
+X-Received: by 2002:a37:349:: with SMTP id 70mr5691931qkd.91.1583265906819;
+        Tue, 03 Mar 2020 12:05:06 -0800 (PST)
+Received: from willemb.nyc.corp.google.com ([2620:0:1003:312:37b5:dd03:b905:30ea])
+        by smtp.gmail.com with ESMTPSA id d7sm9846281qkg.62.2020.03.03.12.05.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Mar 2020 12:05:06 -0800 (PST)
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        Willem de Bruijn <willemb@google.com>
+Subject: [PATCH bpf-next 0/3] add gso_size to __sk_buff
+Date:   Tue,  3 Mar 2020 15:05:00 -0500
+Message-Id: <20200303200503.226217-1-willemdebruijn.kernel@gmail.com>
+X-Mailer: git-send-email 2.25.0.265.gbab2e86ba0-goog
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-03-03_06:2020-03-03,2020-03-03 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 adultscore=0
- mlxlogscore=999 mlxscore=0 lowpriorityscore=0 spamscore=0 suspectscore=0
- clxscore=1015 bulkscore=0 impostorscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2003030127
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add bash completion for "bpftool prog profile" command.
+From: Willem de Bruijn <willemb@google.com>
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- tools/bpf/bpftool/bash-completion/bpftool | 45 ++++++++++++++++++++++-
- 1 file changed, 44 insertions(+), 1 deletion(-)
+See first patch for details.
 
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index f2838a658339..e54f36c0c973 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -337,6 +337,7 @@ _bpftool()
- 
-             local PROG_TYPE='id pinned tag name'
-             local MAP_TYPE='id pinned name'
-+            local METRIC_TYPE='cycles instructions l1d_loads llc_misses'
-             case $command in
-                 show|list)
-                     [[ $prev != "$command" ]] && return 0
-@@ -498,6 +499,48 @@ _bpftool()
-                 tracelog)
-                     return 0
-                     ;;
-+                profile)
-+                    case $cword in
-+                        3)
-+                            COMPREPLY=( $( compgen -W "$PROG_TYPE" -- "$cur" ) )
-+                            return 0
-+                            ;;
-+                        4)
-+			    case $prev in
-+                                id)
-+                                    _bpftool_get_prog_ids
-+                                    ;;
-+                                name)
-+                                    _bpftool_get_map_names
-+                                    ;;
-+                                pinned)
-+                                    _filedir
-+                                    ;;
-+			    esac
-+			    return 0
-+			    ;;
-+			5)
-+			    COMPREPLY=( $( compgen -W "$METRIC_TYPE duration" -- "$cur" ) )
-+			    return 0
-+			    ;;
-+                        6)
-+			    case $prev in
-+                                duration)
-+				    return 0
-+                                    ;;
-+                                *)
-+				    COMPREPLY=( $( compgen -W "$METRIC_TYPE" -- "$cur" ) )
-+				    return 0
-+                                    ;;
-+			    esac
-+			    return 0
-+			    ;;
-+                        *)
-+			    COMPREPLY=( $( compgen -W "$METRIC_TYPE" -- "$cur" ) )
-+			    return 0
-+			    ;;
-+		    esac
-+                    ;;
-                 run)
-                     if [[ ${#words[@]} -lt 5 ]]; then
-                         _filedir
-@@ -525,7 +568,7 @@ _bpftool()
-                 *)
-                     [[ $prev == $object ]] && \
-                         COMPREPLY=( $( compgen -W 'dump help pin attach detach \
--                            load loadall show list tracelog run' -- "$cur" ) )
-+                            load loadall show list tracelog run profile' -- "$cur" ) )
-                     ;;
-             esac
-             ;;
+Patch split across three parts { kernel feature, uapi header, tools }
+following the custom for such __sk_buff changes.
+
+Willem de Bruijn (3):
+  bpf: add gso_size to __sk_buff
+  bpf: Sync uapi bpf.h to tools/
+  selftests/bpf: test new __sk_buff field gso_size
+
+ include/uapi/linux/bpf.h                      |  1 +
+ net/bpf/test_run.c                            |  7 +++
+ net/core/filter.c                             | 44 +++++++++++------
+ tools/include/uapi/linux/bpf.h                |  1 +
+ .../selftests/bpf/prog_tests/skb_ctx.c        |  1 +
+ .../selftests/bpf/progs/test_skb_ctx.c        |  2 +
+ .../testing/selftests/bpf/verifier/ctx_skb.c  | 47 +++++++++++++++++++
+ 7 files changed, 89 insertions(+), 14 deletions(-)
+
 -- 
-2.17.1
+2.25.0.265.gbab2e86ba0-goog
 
