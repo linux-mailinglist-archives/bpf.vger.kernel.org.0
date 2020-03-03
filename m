@@ -2,146 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F18521785A6
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 23:28:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C51EC1785BA
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 23:38:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgCCW2R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 17:28:17 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:45063 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727335AbgCCW2R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Mar 2020 17:28:17 -0500
-Received: by mail-wr1-f65.google.com with SMTP id v2so6418374wrp.12
-        for <bpf@vger.kernel.org>; Tue, 03 Mar 2020 14:28:16 -0800 (PST)
+        id S1726747AbgCCWiL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 17:38:11 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:34846 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727274AbgCCWiL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Mar 2020 17:38:11 -0500
+Received: by mail-qk1-f195.google.com with SMTP id 145so5197812qkl.2;
+        Tue, 03 Mar 2020 14:38:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=e4V+8aTWhdIlLEzf4Eox/9Ord8vKJnS3U23eYxJI4AQ=;
-        b=KXqGqes3H3m8InAE8AGrElj7zAvDMD6xwXVFASzk6WwjuCdFaB4vMPGC2jaTP1ee28
-         35OsUP23/42wx2xoQArttVKCiXPzhmAaFjJdOSCM1/+hSxiItYlTXPpd12zHHTVpnPQx
-         /hKiRvHeqRGFZ/uA8E+RhYTTuO/5+L3wxwB6c=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=88lKfSfxqeKfW9gPmeZNxU/n5BEhm6ow0JX/FjM1ow0=;
+        b=Eea/ossAaGke+BXBqhzBcqWt7LcYZFg+xJy+lW2C2M2TgoHjybgnVxdmtMzivSYm6f
+         rDA8MYlpP2JV7LM+hN4Wqv78PCUnLlLHYkciQHGyLh02hFZ/OVNhKPB39a+/LFsPpPEF
+         EwEJIKoNuEQdPeRP9V0BhSYq2ZeNFTbXaAPLIgoSw8pwj7SP5bGy29QbA3Ec1ZrThLQ1
+         ylzofUVzUdYcGB3u62u5OOr4owR8TLDxaM1EiJyiaebVQaKCeWek0Rj9vfM3FB62abLS
+         fe2Y+flireZmGdceY3SBZr2li29R3VktpJN8RRQH2o14wpSFXHDvlwJmhAhj36rznadq
+         WQ4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=e4V+8aTWhdIlLEzf4Eox/9Ord8vKJnS3U23eYxJI4AQ=;
-        b=GRP6s8mtcT5VUxBeS9YkeX9wmzBk5o6W0Av6Ts8s8O14FT21Jqct9IN3IAjfkaCXtf
-         pfQfafC+wRtdqz3OabFKFl6V0wLhPe1KbOZTvDlh0MoxdqNGDcvb/FXGh1tPacYlB5Wk
-         QvZ5KzY/pvj/Su+z/FxQTxNl/4NuN7oO3T+U+G24YHbuodrOKnS32EKr9lvcD6W3J3yW
-         vRGRWEC1sFpN4V+5QF6kpKizizfjyaLxK7JdyuVln1uAe0BCF4ItQ01tJriW1SxqlEoL
-         kGdLAd896nWCFlesvZF5hrQSdPFSScnKM+9cFslTFbxMn3AVnk5sOm2Yigjy0RJrHqIZ
-         lV+w==
-X-Gm-Message-State: ANhLgQ0zdV8J1ia2bapxSowJQ0PmAoNBCfOodqmJmjml62kScAQDi0ap
-        cijh5My3iK+qJKya0+MgLMunWQ==
-X-Google-Smtp-Source: ADFU+vsO7rRWvBSAQDxjBwGmKgf0DoG0NPF8tyeTqymolzH6Fse1dadJP4xsklXMM6Et8L73vKrO0w==
-X-Received: by 2002:a5d:608b:: with SMTP id w11mr198197wrt.366.1583274495670;
-        Tue, 03 Mar 2020 14:28:15 -0800 (PST)
-Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
-        by smtp.gmail.com with ESMTPSA id n13sm773557wmd.21.2020.03.03.14.28.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Mar 2020 14:28:15 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Tue, 3 Mar 2020 23:28:12 +0100
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=88lKfSfxqeKfW9gPmeZNxU/n5BEhm6ow0JX/FjM1ow0=;
+        b=NNDHx+UgdGocl7pIO8Y3PYp+L+OW3ttgvEFM3sDuTpGvRhHUIpbbCbXyLWssCeyIGx
+         mbVNZIxr5+eWXy3Ep164grHupch8D4NS5ImY5Y4c5QOC5b8Rw1Ww9oXjafcqSyb9bvYm
+         SlAVbQMMxneSyDoFYalwvR1dS8CyR1TTTp6FRBjkJeUpoNbCbHPkVs1hf2F0rbNG/VAF
+         xMwnbNnOLRv0C0/rfNjo/W6iXjdm2XCvCJH6SUxsAvmYr2S17eca8X1KEZZGDVTpTAvm
+         s+/J+NQfqSWVPykE7FJrBPCQz5Jom3OQ6ELznMK8kLLYZd4aUuILXXT94wP9JXGZoWsl
+         BpuQ==
+X-Gm-Message-State: ANhLgQ2HS2H4NyARHip0O+klRVzrj4k2Xy2ARj+0JoRFAR3aeVDeVI/X
+        cGBF/wmKrnE9AoHKu3TVevpJMR5DWkDumskDDtQ=
+X-Google-Smtp-Source: ADFU+vvegmGWnsIiWRqtrOWlAq083f+jCj/g1rN8KnGNlDatrhclHcbcOE/PPvDweniboXXOP0dPiikYM09L0uigyDw=
+X-Received: by 2002:a05:620a:99d:: with SMTP id x29mr270802qkx.39.1583275090204;
+ Tue, 03 Mar 2020 14:38:10 -0800 (PST)
+MIME-Version: 1.0
+References: <20200303140950.6355-1-kpsingh@chromium.org> <20200303140950.6355-4-kpsingh@chromium.org>
+In-Reply-To: <20200303140950.6355-4-kpsingh@chromium.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 3 Mar 2020 14:37:58 -0800
+Message-ID: <CAEf4BzZVV12WoHDnQSfOKpndr3qVLEAz8itMcdqnQq8Q4njc0w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/7] bpf: Introduce BPF_MODIFY_RETURN
+To:     KP Singh <kpsingh@chromium.org>
 Cc:     open list <linux-kernel@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Paul Turner <pjt@google.com>,
         Florent Revest <revest@chromium.org>,
         Brendan Jackman <jackmanb@chromium.org>
-Subject: Re: [PATCH bpf-next 2/7] bpf: JIT helpers for fmod_ret progs
-Message-ID: <20200303222812.GA5265@chromium.org>
-References: <20200303140950.6355-1-kpsingh@chromium.org>
- <20200303140950.6355-3-kpsingh@chromium.org>
- <CAEf4BzZJ2E2rmyz7k4F7s=EXPbaAX7XncvUcHukX_FYDWeD7BA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZJ2E2rmyz7k4F7s=EXPbaAX7XncvUcHukX_FYDWeD7BA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 03-Mär 14:26, Andrii Nakryiko wrote:
-> On Tue, Mar 3, 2020 at 6:13 AM KP Singh <kpsingh@chromium.org> wrote:
-> >
-> > From: KP Singh <kpsingh@google.com>
-> >
-> > * Split the invoke_bpf program to prepare for special handling of
-> >   fmod_ret programs introduced in a subsequent patch.
-> > * Move the definition of emit_cond_near_jump and emit_nops as they are
-> >   needed for fmod_ret.
-> > * Refactor branch target alignment into its own function
-> >   align16_branch_target.
-> >
-> > Signed-off-by: KP Singh <kpsingh@google.com>
-> > ---
-> >  arch/x86/net/bpf_jit_comp.c | 158 ++++++++++++++++++++----------------
-> >  1 file changed, 90 insertions(+), 68 deletions(-)
-> >
-> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> > index 15c7d28bc05c..475e354c2e88 100644
-> > --- a/arch/x86/net/bpf_jit_comp.c
-> > +++ b/arch/x86/net/bpf_jit_comp.c
-> > @@ -1361,35 +1361,100 @@ static void restore_regs(const struct btf_func_model *m, u8 **prog, int nr_args,
-> >                          -(stack_size - i * 8));
-> >  }
-> >
-> 
-> [...]
-> 
-> > +
-> > +/* From Intel 64 and IA-32 Architectures Optimization
-> > + * Reference Manual, 3.4.1.4 Code Alignment, Assembly/Compiler
-> > + * Coding Rule 11: All branch targets should be 16-byte
-> > + * aligned.
-> > + */
-> > +static void align16_branch_target(u8 **pprog)
-> > +{
-> > +       u8 *target, *prog = *pprog;
-> > +
-> > +       target = PTR_ALIGN(prog, 16);
-> > +       if (target != prog)
-> > +               emit_nops(&prog, target - prog);
-> > +       if (target != prog)
-> > +               pr_err("calcultion error\n");
-> 
-> this wasn't in the original code, do you feel like it's more important
-> to check this and print error?
-> 
-> also typo: calculation error, but then it's a bit brief and
-> uninformative message. So I don't know, maybe just drop it?
+On Tue, Mar 3, 2020 at 6:12 AM KP Singh <kpsingh@chromium.org> wrote:
+>
+> From: KP Singh <kpsingh@google.com>
+>
+> When multiple programs are attached, each program receives the return
+> value from the previous program on the stack and the last program
+> provides the return value to the attached function.
+>
+> The fmod_ret bpf programs are run after the fentry programs and before
+> the fexit programs. The original function is only called if all the
+> fmod_ret programs return 0 to avoid any unintended side-effects. The
+> success value, i.e. 0 is not currently configurable but can be made so
+> where user-space can specify it at load time.
+>
+> For example:
+>
+> int func_to_be_attached(int a, int b)
+> {  <--- do_fentry
+>
+> do_fmod_ret:
+>    <update ret by calling fmod_ret>
+>    if (ret != 0)
+>         goto do_fexit;
+>
+> original_function:
+>
+>     <side_effects_happen_here>
+>
+> }  <--- do_fexit
+>
+> The fmod_ret program attached to this function can be defined as:
+>
+> SEC("fmod_ret/func_to_be_attached")
+> BPF_PROG(func_name, int a, int b, int ret)
 
-Ah, good catch! this is deinitely not intended to be here.
-It's a debug artifact and needs to dropped indeed.
+same as on cover letter, return type is missing
 
-- KP
+> {
+>         // This will skip the original function logic.
+>         return 1;
+> }
+>
+> The first fmod_ret program is passed 0 in its return argument.
+>
+> Signed-off-by: KP Singh <kpsingh@google.com>
+> ---
+>  arch/x86/net/bpf_jit_comp.c    | 96 ++++++++++++++++++++++++++++++++--
+>  include/linux/bpf.h            |  1 +
+>  include/uapi/linux/bpf.h       |  1 +
+>  kernel/bpf/btf.c               |  3 +-
+>  kernel/bpf/syscall.c           |  1 +
+>  kernel/bpf/trampoline.c        |  5 +-
+>  kernel/bpf/verifier.c          |  1 +
+>  tools/include/uapi/linux/bpf.h |  1 +
+>  8 files changed, 103 insertions(+), 6 deletions(-)
+>
 
-> 
-> > +}
-> > +
-> > +static int emit_cond_near_jump(u8 **pprog, void *func, void *ip, u8 jmp_cond)
-> > +{
-> > +       u8 *prog = *pprog;
-> > +       int cnt = 0;
-> > +       s64 offset;
-> > +
-> > +       offset = func - (ip + 2 + 4);
-> > +       if (!is_simm32(offset)) {
-> > +               pr_err("Target %p is out of range\n", func);
-> > +               return -EINVAL;
-> > +       }
-> > +       EMIT2_off32(0x0F, jmp_cond + 0x10, offset);
-> > +       *pprog = prog;
-> > +       return 0;
-> > +}
-> > +
-> 
-> [...]
+[...]
+
+>
+> +       if (fmod_ret->nr_progs) {
+> +               branches = kcalloc(fmod_ret->nr_progs, sizeof(u8 *),
+> +                                  GFP_KERNEL);
+> +               if (!branches)
+> +                       return -ENOMEM;
+> +               if (invoke_bpf_mod_ret(m, &prog, fmod_ret, stack_size,
+> +                                      branches))
+
+branches leaks here
+
+> +                       return -EINVAL;
+> +       }
+> +
+>         if (flags & BPF_TRAMP_F_CALL_ORIG) {
+> -               if (fentry->nr_progs)
+> +               if (fentry->nr_progs || fmod_ret->nr_progs)
+>                         restore_regs(m, &prog, nr_args, stack_size);
+>
+>                 /* call original function */
+> @@ -1573,6 +1649,14 @@ int arch_prepare_bpf_trampoline(void *image, void *image_end,
+
+there is early return one line above here, you need to free branches
+in that case to not leak memory
+
+So I guess it's better to do goto cleanup approach at this point?
+
+>                 emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
+>         }
+>
+> +       if (fmod_ret->nr_progs) {
+> +               align16_branch_target(&prog);
+> +               for (i = 0; i < fmod_ret->nr_progs; i++)
+> +                       emit_cond_near_jump(&branches[i], prog, branches[i],
+> +                                           X86_JNE);
+> +               kfree(branches);
+> +       }
+> +
+
+[...]
