@@ -2,191 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 742B6178634
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 00:16:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A216117863A
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 00:21:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727888AbgCCXQL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 18:16:11 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:49554 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727805AbgCCXQL (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 3 Mar 2020 18:16:11 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 023NG1at008514
-        for <bpf@vger.kernel.org>; Tue, 3 Mar 2020 15:16:10 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=dUVsZGIuYu1PknvR7nj8kRx+fvImNpIcrU82e9s1z+g=;
- b=jhV6bvn/bOZe7Ub9aHbDJnBVwPj8IK9O6Oub4DbI/8Te8RtCmRuGhqX30/tUQ7OCM4+0
- X6P2XUQazgw1nLU0+9kcOc9XSwckF4sDVLNn5E9uPkrh3xiDSscR/VDeDZL37OKlp4/G
- PtiJyHF13GUE9iDIoQfnAXXxrJ2xTqr+lDo= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 2yhs5g2ud3-11
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 03 Mar 2020 15:16:10 -0800
-Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 3 Mar 2020 15:16:00 -0800
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 1B3593701059; Tue,  3 Mar 2020 15:15:56 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Yonghong Song <yhs@fb.com>
-Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Rik van Riel <riel@surriel.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf 2/2] bpf: avoid irq_work for bpf_send_signal() if CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG
-Date:   Tue, 3 Mar 2020 15:15:56 -0800
-Message-ID: <20200303231556.2553287-1-yhs@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200303231554.2553105-1-yhs@fb.com>
-References: <20200303231554.2553105-1-yhs@fb.com>
-X-FB-Internal: Safe
+        id S1727888AbgCCXV4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 18:21:56 -0500
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:35924 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727274AbgCCXV4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Mar 2020 18:21:56 -0500
+Received: by mail-wm1-f67.google.com with SMTP id g83so4689506wme.1
+        for <bpf@vger.kernel.org>; Tue, 03 Mar 2020 15:21:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=FQrFyte0eQhkHV1ZGTXUg6vu0R7T0FUdhPvhOFpCIYA=;
+        b=iPsFgD2jDudXd8oLP5/RlUPiFg4J+72znOLJ5Ska9NJYuN99ZocKhyYTnQVFFC/LYp
+         u6mNao0Vp2XS2KzVSf1XBteBO+5kJ7EANKwnUK6BiGc/5vvrMIYMgMuBXVgy8gXML8s7
+         d6qQHWKI2j/SbPHE1yEpdE+jr78Ln7Kzjfk7c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=FQrFyte0eQhkHV1ZGTXUg6vu0R7T0FUdhPvhOFpCIYA=;
+        b=aVLaU3OFLy+HgdU1iRYDH8lM/5yb5ZW3s6Hx4zqpNTnt1ydk3olOc1AziD99g+JPF0
+         XWw8xooetNGuK5knpLIJesjkuAY0u+7s6fmv6o1zFmKtQu0rHy9YYzHSZSR4Cvoe4Y71
+         CzRhCNpvKfMzogDVdL5vFpqWjPEZLJ7WNnChTwO4UUONZP9zJ4bkM1Y64/xSMHxGsRz4
+         r9UZ7RdM0hI0Ey61uBqbLe5B61foD1ZW+RajyWgXF8iqdDRuREgtC5vy0pUSEUgzhvr7
+         kT+HaA4v0szDpXZUKck3Cy900iREi2+vsg98t/en78VahDXWJPU6yE+Xl5CwTzKFkbMs
+         lrPw==
+X-Gm-Message-State: ANhLgQ2KtyQGCv1VZMQdv7xRrUd5m1yJ4QoLKzpyUXL9g11tpTrm0CLj
+        CK/HWkHUEk+qoc0GYkHtIhF2ng==
+X-Google-Smtp-Source: ADFU+vvjC5U+4JJoqO1RDHDrLaBawo0DQx0B1WnD4mQ0pQbrjsUiuJb5tW5VfgKM87eZBTlna4UbcA==
+X-Received: by 2002:a05:600c:2c44:: with SMTP id r4mr24028wmg.140.1583277713458;
+        Tue, 03 Mar 2020 15:21:53 -0800 (PST)
+Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
+        by smtp.gmail.com with ESMTPSA id y139sm983960wmd.24.2020.03.03.15.21.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Mar 2020 15:21:53 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Wed, 4 Mar 2020 00:21:51 +0100
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Paul Turner <pjt@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Subject: Re: [PATCH bpf-next 4/7] bpf: Attachment verification for
+ BPF_MODIFY_RETURN
+Message-ID: <20200303232151.GB17103@chromium.org>
+References: <20200303140950.6355-1-kpsingh@chromium.org>
+ <20200303140950.6355-5-kpsingh@chromium.org>
+ <CAEf4BzaviDB+WGUsg1+aO5GAtkJuQ6aYSiB8VaKL0CoQRPs8Xw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-03-03_08:2020-03-03,2020-03-03 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- mlxlogscore=999 malwarescore=0 adultscore=0 suspectscore=13 phishscore=0
- mlxscore=0 lowpriorityscore=0 spamscore=0 priorityscore=1501
- impostorscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2001150001 definitions=main-2003030152
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzaviDB+WGUsg1+aO5GAtkJuQ6aYSiB8VaKL0CoQRPs8Xw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is an optimization. In task_work_add(), we have
-the following loop:
-        do {
-                head = READ_ONCE(task->task_works);
-                if (unlikely(head == &work_exited))
-                        return -ESRCH;
-                work->next = head;
-        } while (cmpxchg(&task->task_works, head, work) != head);
+On 03-Mär 14:44, Andrii Nakryiko wrote:
+> On Tue, Mar 3, 2020 at 6:12 AM KP Singh <kpsingh@chromium.org> wrote:
+> >
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > - Functions that are whitlisted by for error injection i.e.
+> >   within_error_injection_list.
+> > - Security hooks, this is expected to be cleaned up after the KRSI
+> >   patches introduce the LSM_HOOK macro:
+> >
+> >     https://lore.kernel.org/bpf/20200220175250.10795-1-kpsingh@chromium.org/
+> 
+> Commit message can use a bit more work for sure. Why (and even what)
+> of the changes is not really explained well.
 
-If CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG, even in the
-nmi context, we are safe to call task_work_add().
-In such cases, irq_work() can be avoided, to avoid
-the intermediate step to set up the task_work.
+Added some more details.
 
-Suggested-by: Jens Axboe <axboe@kernel.dk>
-Cc: Rik van Riel <riel@surriel.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- kernel/trace/bpf_trace.c | 52 +++++++++++++++++++++++++++-------------
- 1 file changed, 35 insertions(+), 17 deletions(-)
+> 
+> >
+> > - The attachment is currently limited to functions that return an int.
+> >   This can be extended later other types (e.g. PTR).
+> >
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+> > ---
+> >  kernel/bpf/btf.c      | 28 ++++++++++++++++++++--------
+> >  kernel/bpf/verifier.c | 31 +++++++++++++++++++++++++++++++
+> >  2 files changed, 51 insertions(+), 8 deletions(-)
+> >
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index db7b6194e38a..b7bb11c0e5b0 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -713,21 +713,26 @@ static void do_send_signal_work(struct callback_head *twork)
- 	kfree(twcb);
- }
- 
--static void add_send_signal_task_work(u32 sig, enum pid_type type)
-+static int add_send_signal_task_work(u32 sig, enum pid_type type)
- {
- 	struct send_signal_work_cb *twcb;
-+	int ret;
- 
- 	twcb = kzalloc(sizeof(*twcb), GFP_ATOMIC);
- 	if (!twcb)
--		return;
-+		return -ENOMEM;
- 
- 	twcb->sig = sig;
- 	twcb->type = type;
- 	init_task_work(&twcb->twork, do_send_signal_work);
--	if (task_work_add(current, &twcb->twork, true))
-+	ret = task_work_add(current, &twcb->twork, true);
-+	if (ret)
- 		kfree(twcb);
-+
-+	return ret;
- }
- 
-+#ifndef CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG
- struct send_signal_irq_work {
- 	struct irq_work irq_work;
- 	struct task_struct *task;
-@@ -748,10 +753,29 @@ static void do_bpf_send_signal(struct irq_work *entry)
- 	put_task_struct(work->task);
- }
- 
--static int bpf_send_signal_common(u32 sig, enum pid_type type)
-+static int add_send_signal_irq_work(u32 sig, enum pid_type type)
- {
- 	struct send_signal_irq_work *work = NULL;
- 
-+	work = this_cpu_ptr(&send_signal_work);
-+	if (atomic_read(&work->irq_work.flags) & IRQ_WORK_BUSY)
-+		return -EBUSY;
-+
-+	/* Add the current task, which is the target of sending signal,
-+	 * to the irq_work. The current task may change when queued
-+	 * irq works get executed.
-+	 */
-+	work->task = get_task_struct(current);
-+	work->sig = sig;
-+	work->type = type;
-+	irq_work_queue(&work->irq_work);
-+
-+	return 0;
-+}
-+#endif
-+
-+static int bpf_send_signal_common(u32 sig, enum pid_type type)
-+{
- 	/* Similar to bpf_probe_write_user, task needs to be
- 	 * in a sound condition and kernel memory access be
- 	 * permitted in order to send signal to the current
-@@ -771,19 +795,11 @@ static int bpf_send_signal_common(u32 sig, enum pid_type type)
- 		if (unlikely(!valid_signal(sig)))
- 			return -EINVAL;
- 
--		work = this_cpu_ptr(&send_signal_work);
--		if (atomic_read(&work->irq_work.flags) & IRQ_WORK_BUSY)
--			return -EBUSY;
--
--		/* Add the current task, which is the target of sending signal,
--		 * to the irq_work. The current task may change when queued
--		 * irq works get executed.
--		 */
--		work->task = get_task_struct(current);
--		work->sig = sig;
--		work->type = type;
--		irq_work_queue(&work->irq_work);
--		return 0;
-+#ifndef CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG
-+		return add_send_signal_irq_work(sig, type);
-+#else
-+		return add_send_signal_task_work(sig, type);
-+#endif
- 	}
- 
- 	return group_send_sig_info(sig, SEND_SIG_PRIV, current, type);
-@@ -1673,6 +1689,7 @@ int bpf_get_perf_event_info(const struct perf_event *event, u32 *prog_id,
- 	return err;
- }
- 
-+#ifndef CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG
- static int __init send_signal_irq_work_init(void)
- {
- 	int cpu;
-@@ -1686,6 +1703,7 @@ static int __init send_signal_irq_work_init(void)
- }
- 
- subsys_initcall(send_signal_irq_work_init);
-+#endif
- 
- #ifdef CONFIG_MODULES
- static int bpf_event_notify(struct notifier_block *nb, unsigned long op,
--- 
-2.17.1
+[...]
 
+> > +                       t = btf_type_skip_modifiers(btf, t->type, NULL);
+> > +                       if (!btf_type_is_int(t)) {
+> 
+> Should the size of int be verified here? E.g., if some function
+> returns u8, is that ok for BPF program to return, say, (1<<30) ?
+
+Would this work?
+
+       if (size != t->size) {
+               bpf_log(log,
+                       "size accessed = %d should be %d\n",
+                       size, t->size);
+               return false;
+       }
+
+- KP
+
+> 
+> > +                               bpf_log(log,
+> > +                                       "ret type %s not allowed for fmod_ret\n",
+> > +                                       btf_kind_str[BTF_INFO_KIND(t->info)]);
+> > +                               return false;
+> > +                       }
+> > +               }
+> >         } else if (arg >= nr_args) {
+> >                 bpf_log(log, "func '%s' doesn't have %d-th argument\n",
+> >                         tname, arg + 1);
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 2460c8e6b5be..ae32517d4ccd 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -19,6 +19,7 @@
+> >  #include <linux/sort.h>
+> >  #include <linux/perf_event.h>
+> >  #include <linux/ctype.h>
+> > +#include <linux/error-injection.h>
+> >
+> >  #include "disasm.h"
+> >
+> > @@ -9800,6 +9801,33 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
+> >
+> >         return 0;
+> >  }
+> > +#define SECURITY_PREFIX "security_"
+> > +
+> > +static int check_attach_modify_return(struct bpf_verifier_env *env)
+> > +{
+> > +       struct bpf_prog *prog = env->prog;
+> > +       unsigned long addr = (unsigned long) prog->aux->trampoline->func.addr;
+> > +
+> > +       if (within_error_injection_list(addr))
+> > +               return 0;
+> > +
+> > +       /* This is expected to be cleaned up in the future with the KRSI effort
+> > +        * introducing the LSM_HOOK macro for cleaning up lsm_hooks.h.
+> > +        */
+> > +       if (!strncmp(SECURITY_PREFIX, prog->aux->attach_func_name,
+> > +                    sizeof(SECURITY_PREFIX) - 1)) {
+> > +
+> > +               if (!capable(CAP_MAC_ADMIN))
+> > +                       return -EPERM;
+> > +
+> > +               return 0;
+> > +       }
+> > +
+> > +       verbose(env, "fmod_ret attach_btf_id %u (%s) is not modifiable\n",
+> > +               prog->aux->attach_btf_id, prog->aux->attach_func_name);
+> > +
+> > +       return -EINVAL;
+> > +}
+> >
+> >  static int check_attach_btf_id(struct bpf_verifier_env *env)
+> >  {
+> > @@ -10000,6 +10028,9 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+> >                 }
+> >                 tr->func.addr = (void *)addr;
+> >                 prog->aux->trampoline = tr;
+> > +
+> > +               if (prog->expected_attach_type == BPF_MODIFY_RETURN)
+> > +                       ret = check_attach_modify_return(env);
+> >  out:
+> >                 mutex_unlock(&tr->mutex);
+> >                 if (ret)
+> > --
+> > 2.20.1
+> >
