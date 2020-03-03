@@ -2,105 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 679A91784A4
-	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 22:10:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 820A7178527
+	for <lists+bpf@lfdr.de>; Tue,  3 Mar 2020 23:01:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732212AbgCCVKy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 16:10:54 -0500
-Received: from mail-yw1-f65.google.com ([209.85.161.65]:40614 "EHLO
-        mail-yw1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730274AbgCCVKy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Mar 2020 16:10:54 -0500
-Received: by mail-yw1-f65.google.com with SMTP id t192so97775ywe.7
-        for <bpf@vger.kernel.org>; Tue, 03 Mar 2020 13:10:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Jhw2/hBTqqb08+XbLqFc1lQG7+XacrKgacG+f+lhHlw=;
-        b=UuswdbwtGUq/KOpTGPSUcHmuRFxUeMPpUUcP4c3+mgsuAAZ1wqfnSivQRMp7zhqP2i
-         yvBWIw6bqMhNA/DPbB71aQ0wCjAsjDNSGE4vvK+62X9DlD438J/f+Nj2df/aPLkpKMfF
-         5ocn7OG+YEKPkfrWpPgr+GcwXyvyAQ/mWC5rmoLddKOt9BLvUI7SMHMb7Fw9CVC1Brwp
-         7oBlwlgyME+tIP2gNltFHprtxkzqmd46EM7RAj60QXtKXqz8qLiEzu7thzKr+f14dQCa
-         wqB5jjXoBB8PCTZRigPCyuFoqbQRvn1jgnb6lYeX9vn9ADIMgGrH9qfcDDR7AZ4WBOg6
-         zscQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jhw2/hBTqqb08+XbLqFc1lQG7+XacrKgacG+f+lhHlw=;
-        b=QqCn2/zEXWvGBm8BZoyvM+R6OcPFpbtAkQXLA3X/bcvqcnQDVxAxm3Ol8vuMtUZfVG
-         tjt7GpaoEyCkRYdge0POXgnkR0mTeacRQuvlgzv/6N3Z6tIC/Jo7OR5+YgTDCSQZ6oK2
-         ahw0MfQa+9ZAD4akAc00luoXWEjN40A7bWr0AI17MWFRrDoEXulqWfLg5toiDLI3FvOy
-         7dc+Z2o8UTC+jnFAENJMCO8nDzi9JgijeGfYu8aJO/j0x8P65dnP0Z8/ghzI7vNpu9Sa
-         DUXBN8MszsKTtML1dZybxrAeBD4oai2cj6N8eokLslqR8rVUAY1WPgz6uT399rYNd2NZ
-         6ImA==
-X-Gm-Message-State: ANhLgQ0Rbtc/jaFtb85VSs+O6SsQlMFyLQF8MSRlLCeCycIXkjGzY+H9
-        YIwXgyl6oAiCWSDt4M3t4wq4R6zd
-X-Google-Smtp-Source: ADFU+vsGS5u4e4rR8O395j/mGi2DAauRi2gpOKZb7pq0/7IHrTdO5JH/cX2WAGuMXcSfus5porVgwA==
-X-Received: by 2002:a25:d056:: with SMTP id h83mr5831964ybg.23.1583269852965;
-        Tue, 03 Mar 2020 13:10:52 -0800 (PST)
-Received: from mail-yw1-f47.google.com (mail-yw1-f47.google.com. [209.85.161.47])
-        by smtp.gmail.com with ESMTPSA id z197sm2137675ywd.97.2020.03.03.13.10.51
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Mar 2020 13:10:51 -0800 (PST)
-Received: by mail-yw1-f47.google.com with SMTP id y62so55737ywd.13
-        for <bpf@vger.kernel.org>; Tue, 03 Mar 2020 13:10:51 -0800 (PST)
-X-Received: by 2002:a0d:d68d:: with SMTP id y135mr2472118ywd.117.1583269851243;
- Tue, 03 Mar 2020 13:10:51 -0800 (PST)
+        id S1726004AbgCCWBe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 17:01:34 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43982 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725932AbgCCWBe (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 3 Mar 2020 17:01:34 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 023Lwtc5029467;
+        Tue, 3 Mar 2020 14:01:18 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=174sRP3w6o7kVhtxFMc3j8DlHtrMAJsYyQjCVj3Wnus=;
+ b=UdowaZ9/sk0zEnasB4WcgEefycwS3BoXqSesl0CaqDAh7K0T3Ix+uvWtRDOODD+bKoAp
+ CtnsGS9tFAYFSmzohnsSYa1tfKfUPgj+aNDolatFkge/qlurQDbezY2h8ZTRMsFkK+Ah
+ mQNsUJ2HktvvXmC1B16jPD9gJqwgBvRgj9A= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yhpfwkarc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 03 Mar 2020 14:01:17 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 3 Mar 2020 14:01:15 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YO5E0WouidVtEr7/sVyP4vvl37X289kCSdA+acxSqyVTIObRPXC6hhbS1Kv1IAoUPKkReDNEvLhs+0H9uzjnOR02IvPLMhg3cYgv4zKasDGQLvY5Qf36mCTAaEuBxKO8ZvwZS2dnaCzo8nKgqN3PsthhMn5Ug5ZpWj9dhFttDyMgGoDsBY3ZPcOYVx2v2uP/RH7VmxoxqgqS4UZ2eYjeat4iR0Qaflc6vkjDb5JgbzhoT+L/k8M2cxBkJgkS62AxJ1uLlVllaC7pPDD0ol8qOuheJzEeqGKOGi0O1Qg6R4oFdUj5+8O+r9N+i+a6u7ZpQ8ti6UG55flrKM6zYxyTlQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=174sRP3w6o7kVhtxFMc3j8DlHtrMAJsYyQjCVj3Wnus=;
+ b=ghM9TXR6JRYSjNKZOt0nxL/vSOC6o2eScWahP6HtF1+q+PsDy123XepId1gzTJSnfL6grzVXJL+KsHLMmkdV7XfsCK+FlPzT4a7LKFgpD86E/UCsHqFHkP85wY4GBDy2BsrOwPv4+/DkL2t3eVBHZAEZx+HcHCMUZ1g9JSceiwQO2Z7apBxM1fit+e/7nvv2W9o0JSTeHU0I+Y8ey39jz2R+SSX2RHV7bkvVjOOJ5A1MepH1MqAn5EzhM42NP2pTIQ8+bdK9mJXKeckj4Sza7qgn6lHEcj4Yj4SP6r51jB4dKE3T6A5I2zY4MjskxK1B65FsPKlGjKlUxpXTzzS0pw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=174sRP3w6o7kVhtxFMc3j8DlHtrMAJsYyQjCVj3Wnus=;
+ b=Tm47h+YbKzRpR8+RXqGVL2uvmJJS19afybbQv7P6ePLmFkH/0ofmCqpiC5BKFZGnLZ32b6uf4MgVs1CdeSDSg+3Sn/MQTiWgrpgNFHixpF2t/aWvGARfrGH/xRh9VF7/W0xd74SBRZq3sLRKx17Dl30cEUJkiK5ml/RSUxrvSHw=
+Received: from BYAPR15MB2232.namprd15.prod.outlook.com (2603:10b6:a02:89::31)
+ by BYAPR15MB2680.namprd15.prod.outlook.com (2603:10b6:a03:155::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2772.15; Tue, 3 Mar
+ 2020 22:01:12 +0000
+Received: from BYAPR15MB2232.namprd15.prod.outlook.com
+ ([fe80::6536:60f4:3846:e5c0]) by BYAPR15MB2232.namprd15.prod.outlook.com
+ ([fe80::6536:60f4:3846:e5c0%5]) with mapi id 15.20.2772.019; Tue, 3 Mar 2020
+ 22:01:12 +0000
+Subject: Re: [PATCH bpf-next 0/3] Introduce pinnable bpf_link kernel
+ abstraction
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+References: <20200228223948.360936-1-andriin@fb.com> <87mu8zt6a8.fsf@toke.dk>
+ <CAEf4BzZGn9FcUdEOSR_ouqSNvzY2AdJA=8ffMV5mTmJQS-10VA@mail.gmail.com>
+ <87imjms8cm.fsf@toke.dk> <094a8c0f-d781-d2a2-d4cd-721b20d75edd@iogearbox.net>
+ <e9a4351a-4cf9-120a-1ae1-94a707a6217f@fb.com>
+ <8083c916-ac2c-8ce0-2286-4ea40578c47f@iogearbox.net>
+ <CAEf4BzbokCJN33Nw_kg82sO=xppXnKWEncGTWCTB9vGCmLB6pw@mail.gmail.com>
+ <87pndt4268.fsf@toke.dk> <ab2f98f6-c712-d8a2-1fd3-b39abbaa9f64@iogearbox.net>
+From:   Alexei Starovoitov <ast@fb.com>
+Message-ID: <ccbc1e49-45c1-858b-1ad5-ee503e0497f2@fb.com>
+Date:   Tue, 3 Mar 2020 14:01:09 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
+In-Reply-To: <ab2f98f6-c712-d8a2-1fd3-b39abbaa9f64@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR1701CA0017.namprd17.prod.outlook.com
+ (2603:10b6:301:14::27) To BYAPR15MB2232.namprd15.prod.outlook.com
+ (2603:10b6:a02:89::31)
 MIME-Version: 1.0
-References: <20200228105435.75298-1-lrizzo@google.com> <20200228110043.2771fddb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CA+FuTSfd80pZroxtqZDsTeEz4FaronC=pdgjeaBBfYqqi5HiyQ@mail.gmail.com>
- <3c27d9c0-eb17-b20f-2d10-01f3bdf8c0d6@iogearbox.net> <20200303125020.2baef01b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200303125020.2baef01b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Tue, 3 Mar 2020 16:10:14 -0500
-X-Gmail-Original-Message-ID: <CA+FuTSeL_psqzpB6hxSh6f1HnO_SrpED=71Y3HcyDweG2Y3sdg@mail.gmail.com>
-Message-ID: <CA+FuTSeL_psqzpB6hxSh6f1HnO_SrpED=71Y3HcyDweG2Y3sdg@mail.gmail.com>
-Subject: Re: [PATCH v4] netdev attribute to control xdpgeneric skb linearization
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Luigi Rizzo <lrizzo@google.com>,
-        Network Development <netdev@vger.kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        David Miller <davem@davemloft.net>, hawk@kernel.org,
-        "Jubran, Samih" <sameehj@amazon.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c083:1309:77:d9e:39cc:ea0d] (2620:10d:c090:500::4:a0de) by MWHPR1701CA0017.namprd17.prod.outlook.com (2603:10b6:301:14::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2772.15 via Frontend Transport; Tue, 3 Mar 2020 22:01:11 +0000
+X-Originating-IP: [2620:10d:c090:500::4:a0de]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 57af3c55-69fe-4a2a-bf0a-08d7bfbe62d3
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2680:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2680E3D52B15994345BE1CCCD7E40@BYAPR15MB2680.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Forefront-PRVS: 03319F6FEF
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(346002)(396003)(366004)(136003)(376002)(39860400002)(199004)(189003)(66556008)(2906002)(8936002)(4326008)(186003)(16526019)(81156014)(66476007)(53546011)(8676002)(478600001)(81166006)(66946007)(52116002)(54906003)(316002)(110136005)(6486002)(2616005)(31686004)(86362001)(36756003)(5660300002)(31696002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2680;H:BYAPR15MB2232.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+Received-SPF: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UzOilk/4Q79FfNs+ULWgtBaKiygk+qHH4xG6c2uX++bJCebe2PRMv+dk75lxybwOtlielr/Fk7Exmrgj+xgVwOHzmqqgenF4dW15kokM9UA05tUdy+KNCaMwqAvWbbPIMKGveOUVh6uLev/FeQmqnNpTx8wbN87JlvVW104Tnp3zVP83Mu9YvVlxpjVOf1wC081SYsw6Z8fM7Ar7CytvWrL5MnjVQsShwx40TVTeKoyg+7mt6K6XjpczdPc4NrvGCn3EDrT/oesSNaCL+k3zOaTnY1OZ1pc3iegam/CbuLI7kxHRuiQzKRue9mtoCWokIp0ydl5v7wHl/R23A9k7ja4T+Pa0b/M36b5FuukhomqiAY/k3/8NokOhEUHqA2dvQmdB1bXeYCd3DhUz8aVU4zIV79ujXRevJh5mkaAkP+wGN8srY9Fg2qTkmNL5Udjg
+X-MS-Exchange-AntiSpam-MessageData: taTFXJWHQa/BRgyrkqE4W2Lml81yxfBEcqmpoM1tTsjW2zkDwe8yAIMUkD5KyuL2RGwXowQ5Wyl1T3ZPN/mbfnReXyYvbwFTTiHUA5yJHn/UeZQA7f30tU8VgtkYaDk4sYDSh75YMEzz83wY0QFePYc/YxMEy6LR4DCH6CfIpDKhgfRMa6y/mgYi5W1vb2BE
+X-MS-Exchange-CrossTenant-Network-Message-Id: 57af3c55-69fe-4a2a-bf0a-08d7bfbe62d3
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2020 22:01:12.0139
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +BgZcHbuICLX9uy6pcawnTJzB5x9URQ0mQuJJJtoa9iJQhzqZypLVNj6ragXShWf
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2680
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-03-03_07:2020-03-03,2020-03-03 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ mlxscore=0 clxscore=1015 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2003030141
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 3, 2020 at 3:50 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Tue, 3 Mar 2020 20:46:55 +0100 Daniel Borkmann wrote:
-> > Thus, when the data/data_end test fails in generic XDP, the user can
-> > call e.g. bpf_xdp_pull_data(xdp, 64) to make sure we pull in as much as
-> > is needed w/o full linearization and once done the data/data_end can be
-> > repeated to proceed. Native XDP will leave xdp->rxq->skb as NULL, but
-> > later we could perhaps reuse the same bpf_xdp_pull_data() helper for
-> > native with skb-less backing. Thoughts?
+On 3/3/20 12:53 PM, Daniel Borkmann wrote:
+> 
+> I think it depends on the environment, and yes, whether the orchestrator
+> of those progs controls the host [networking] as in case of Cilium. We
+> actually had cases where a large user in prod was accidentally removing
+> the Cilium k8s daemon set (and hence the user space agent as well) and only
+> noticed 1hrs later since everything just kept running in the data path as
+> expected w/o causing them an outage. So I think both attachment semantics
+> have pros and cons. ;)
 
-Something akin to pskb_may_pull sounds like a great solution to me.
+of course. that's why there is pinning of FD-based links.
+There are cases where pinning is useful and there are cases where
+pinning will cause outages.
+During app restart temporary pinning might be useful too.
 
-Another approach would be a new xdp_action XDP_NEED_LINEARIZED that
-causes the program to be restarted after linearization. But that is both
-more expensive and less elegant.
+> But then are you also expecting that netlink requests which drop that tc
+> filter that holds this BPF prog would get rejected given it has a bpf_link,
+> is active & pinned and traffic goes through? If not the case, then what
+> would be the point? If it is the case, then this seems rather complex to
+> realize for rather little gain given there are two uapi interfaces (bpf,
+> tc/netlink) which then mess around with the same underlying object in
+> different ways.
 
-Instead of a sysctl or device option, is this an optimization that
-could be taken based on the program? Specifically, would XDP_FLAGS be
-a path to pass a SUPPORT_SG flag along with the program? I'm not
-entirely familiar with the XDP setup code, so this may be a totally
-off. But from a quick read it seems like generic_xdp_install could
-transfer such a flag to struct net_device.
-
-> I'm curious why we consider a xdpgeneric-only addition. Is attaching
-> a cls_bpf program noticeably slower than xdpgeneric?
-
-This just should not be xdp*generic* only, but allow us to use any XDP
-with large MTU sizes and without having to disable GRO. I'd still like a
-way to be able to drop or modify packets before GRO, or to signal that
-a type of packet should skip GRO.
+Legacy api for tc, xdp, cgroup will not be able to override FD-based
+link. For TC it's easy. cls-bpf allows multi-prog, so netlink
+adding/removing progs will not be able to touch progs that are
+attached via FD-based link.
+Same thing for cgroups. FD-based link will be similar to 'multi' mode.
+The owner of the link has a guarantee that their program will
+stay attached to cgroup.
+XDP is also easy. Since it has only one prog. Attaching FD-based link
+will prevent netlink from overriding it.
+This way the rootlet prog installed by libxdp (let's find a better name
+for it) will stay attached. libxdp can choose to pin it in some libxdp
+specific location, so other libxdp-enabled applications can find it
+in the same location, detach, replace, modify, but random app that
+wants to hack an xdp prog won't be able to mess with it.
+We didn't come up with these design choices overnight. It came from
+hard lessons learned while deploying xdp, tc and cgroup in production.
+Legacy apis will not be deprecated, of course.
