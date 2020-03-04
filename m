@@ -2,116 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DBE9178E49
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 11:22:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9C7178F10
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 11:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728998AbgCDKWB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Mar 2020 05:22:01 -0500
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:37773 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728301AbgCDKWA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Mar 2020 05:22:00 -0500
-Received: by mail-pg1-f193.google.com with SMTP id z12so783242pgl.4;
-        Wed, 04 Mar 2020 02:21:59 -0800 (PST)
+        id S2387820AbgCDK7k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Mar 2020 05:59:40 -0500
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:40348 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387762AbgCDK7k (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Mar 2020 05:59:40 -0500
+Received: by mail-wr1-f68.google.com with SMTP id r17so1817442wrj.7
+        for <bpf@vger.kernel.org>; Wed, 04 Mar 2020 02:59:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=I473f1xOp0xcoMWJcjpZgjb3E6lfpmms9lzoIFvnCxw=;
-        b=oBPRt+y4oU6gnbNSeAk4XBIEVcAjxjMq228H+/Kf1FVzxqZPtbXDx2lA2jlKcj/biY
-         fG/RGMGcmrEFCg9dDC7ty3/HE0WtyL19YMCDaBKexJvIsCgBtG6nDkvJMeA0UcAa4Yat
-         mlT8AjN/Ihe6sSztMgQILbSACeIXn0r4gKZbjjQxtn4uKXukNLwGp2cIHOB4tQMWi1O8
-         /q5EcQTNJfhWWrmLgM+tfHSDgF1zxInkynQDfYwyiI+Jfuv7S9MpK/hMrxKPsooH7ES9
-         l9OR5F3KSOAuQxuGccvg9gZxHVJspJxKWvjARF6aTmNR/nHxtUUSX8a1rY+uIlnzblVe
-         cqPw==
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5+lxMHSrWpaZWIvGG7ROz8dnvJme1icgxoGYCvDIO5o=;
+        b=tFj+U53tyfluwcxiziZWLUcNqlVMhQ2WzhZZs4lRVdFUAiCzSnTZiXaRFs2y/1nY+k
+         zWLgQ2iWenV9WSRUhT5oRpmSH2d7QVPeG/hMZGCuEWsT48VY5tD0mpvYb2ZNH9kzPhLa
+         lfs+YeiQthX8hg9UnSgCD84yoh22LZ9WPSNHcfl27pTKQTVI5K0C+rrrgi8NmEcmvg2r
+         JqRZHlbo8UfGIBdeRdngcmrlxJC97UwphxdMWq4c2+ih8KjRk7hNJx103UpFE3gPhWtf
+         O6MUZduDct1sikoTC5sQm7D8AEftNdxD+AC0xLg0e06Nurq3C48AHowlnkw70CNyjaVZ
+         zpUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=I473f1xOp0xcoMWJcjpZgjb3E6lfpmms9lzoIFvnCxw=;
-        b=fUEtRry1qYUgZs85mLdAYrvubdHB0IIn8QzYg6dpNBUwUbrJmUToB4ZyO71YBwrRN+
-         XPssowdYO8Wg9JX8Yev3O+bVpNWg/1QUUsNcZND1Utj0PuLg49KEQHCZd03DnuLaQH5E
-         92+Jd1KpPkd86oK+6SqBZKNUNCIe6ooze3IBItGCFAZENHKq65U95wRtogm8JBDXS7tj
-         9Rm/JePM06TJKwHVsf94ZRpR2AGpQ7AFSGyMwxtb3h3CbGBx181h2IAqQA2Al97TBWFR
-         Hsu3/oH25ZnH029TCkRHPk02aZtyQbBPRyuhY67RKwm0Jae89HtTHZwKP2tDXueEDFF+
-         kn7g==
-X-Gm-Message-State: ANhLgQ3ehtei3+V3io1rU/JTr74OGF9mouixGPBE+iFDv+3nnXm3XAg+
-        vMsvdI8QwnC9QdGakd3Z7tKeBiWC5d0WfDELtSM=
-X-Google-Smtp-Source: ADFU+vsSfrM9BQwFeyP+XfNzdF7yaI72ARkLmWTSOk+5nI1rJvvwH2iEy8/o/nVhEv9EKoIYE2/Tn2seuagHTt0BorI=
-X-Received: by 2002:a63:1246:: with SMTP id 6mr1947203pgs.4.1583317319277;
- Wed, 04 Mar 2020 02:21:59 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5+lxMHSrWpaZWIvGG7ROz8dnvJme1icgxoGYCvDIO5o=;
+        b=Fis5RkM26Aalhp4FAaWf6LYlGS3Ep8aXxQ/cMCpWNbe39dxnGXPGAh3A7PaP1H86Ug
+         dJEcCCKJt1aYK6hPO78T1a4ckEw1Nna0O5uTBQEJ40j2gdJ2lqrMHqKaJX0ROXPrY+ss
+         4vNlvv+QuY6M8kAuxpdlyjInA+4sM3xBfiDkbmi56VQQbbhNuQWvrpA5/1jcrCY1EOwA
+         xo1e8MBNV9wqOmoLDQM8AyVnMYiZZhcFKu3rDQhNiP+U4B9R3HgGxEtfP3YgHt9ups5x
+         OuTyi+fDASQRvNsTxLbFx7wrJllXqcVsou85414OWNRqiIRd9niK73Ph8oS62aAlNPoA
+         VpeQ==
+X-Gm-Message-State: ANhLgQ2mlb16g6QEvRXm9HiCeS6Uo0YznT1IN1vZhRSsv7u2QgywV2UX
+        UKGMXszSeSSc1p02SHDnus4MZQ==
+X-Google-Smtp-Source: ADFU+vvGUvigrXWW0Y6f/jajpdZLo8/9UR4q3nv8vYKYYhgqGiiWKEx1uaPMjgrqoS3UhJ1roztFOw==
+X-Received: by 2002:a5d:5188:: with SMTP id k8mr3532426wrv.265.1583319576860;
+        Wed, 04 Mar 2020 02:59:36 -0800 (PST)
+Received: from [192.168.1.10] ([194.35.118.106])
+        by smtp.gmail.com with ESMTPSA id i1sm17823667wrs.18.2020.03.04.02.59.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Mar 2020 02:59:36 -0800 (PST)
+Subject: Re: [PATCH v3 bpf-next 1/3] bpftool: introduce "prog profile" command
+To:     Song Liu <songliubraving@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     kernel-team@fb.com, ast@kernel.org, daniel@iogearbox.net,
+        arnaldo.melo@gmail.com, jolsa@kernel.org
+References: <20200303195555.1309028-1-songliubraving@fb.com>
+ <20200303195555.1309028-2-songliubraving@fb.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <0140e565-55c0-7025-dfbb-88f644532c6a@isovalent.com>
+Date:   Wed, 4 Mar 2020 10:59:35 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20200303005035.13814-1-luke.r.nels@gmail.com> <20200303005035.13814-5-luke.r.nels@gmail.com>
- <20200303100228.GJ1224808@smile.fi.intel.com> <CADasFoCq7S2KRYg+ghAKt1e+hELzEMJaNH74sGdjM7E=z3KcnQ@mail.gmail.com>
-In-Reply-To: <CADasFoCq7S2KRYg+ghAKt1e+hELzEMJaNH74sGdjM7E=z3KcnQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 4 Mar 2020 12:21:51 +0200
-Message-ID: <CAHp75VezOTk4kURAkS6OQqPjdiYsPE292ix+WHAPvs8vGpCfGg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 4/4] MAINTAINERS: Add entry for RV32G BPF JIT
-To:     Luke Nelson <lukenels@cs.washington.edu>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        bpf <bpf@vger.kernel.org>, Luke Nelson <luke.r.nels@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200303195555.1309028-2-songliubraving@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 4, 2020 at 4:34 AM Luke Nelson <lukenels@cs.washington.edu> wro=
-te:
-> On Tue, Mar 3, 2020 at 2:02 AM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > > -BPF JIT for RISC-V (RV64G)
-> > > +BPF JIT for 32-bit RISC-V (RV32G)
-> > > +M:   Luke Nelson <luke.r.nels@gmail.com>
-> > > +M:   Xi Wang <xi.wang@gmail.com>
-> > > +L:   bpf@vger.kernel.org
-> > > +S:   Maintained
-> > > +F:   arch/riscv/net/
-> > > +X:   arch/riscv/net/bpf_jit_comp.c
-> > > +
-> > > +BPF JIT for 64-bit RISC-V (RV64G)
-> > >  M:   Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>
-> > > -L:   netdev@vger.kernel.org
-> > > +L:   bpf@vger.kernel.org
-> > >  S:   Maintained
-> > >  F:   arch/riscv/net/
-> > > +X:   arch/riscv/net/bpf_jit_comp32.c
-> >
-> > Obviously this breaks an order. Please, fix.
-> > Hint: run parse-maintainers.pl after the change.
+2020-03-03 11:55 UTC-0800 ~ Song Liu <songliubraving@fb.com>
+> With fentry/fexit programs, it is possible to profile BPF program with
+> hardware counters. Introduce bpftool "prog profile", which measures key
+> metrics of a BPF program.
+> 
+> bpftool prog profile command creates per-cpu perf events. Then it attaches
+> fentry/fexit programs to the target BPF program. The fentry program saves
+> perf event value to a map. The fexit program reads the perf event again,
+> and calculates the difference, which is the instructions/cycles used by
+> the target program.
+> 
+> Example input and output:
+> 
+>   ./bpftool prog profile id 337 duration 3 cycles instructions llc_misses
+> 
+>         4228 run_cnt
+>      3403698 cycles                                              (84.08%)
+>      3525294 instructions   #  1.04 insn per cycle               (84.05%)
+>           13 llc_misses     #  3.69 LLC misses per million isns  (83.50%)
+> 
+> This command measures cycles and instructions for BPF program with id
+> 337 for 3 seconds. The program has triggered 4228 times. The rest of the
+> output is similar to perf-stat. In this example, the counters were only
+> counting ~84% of the time because of time multiplexing of perf counters.
+> 
+> Note that, this approach measures cycles and instructions in very small
+> increments. So the fentry/fexit programs introduce noticeable errors to
+> the measurement results.
+> 
+> The fentry/fexit programs are generated with BPF skeletons. Therefore, we
+> build bpftool twice. The first time _bpftool is built without skeletons.
+> Then, _bpftool is used to generate the skeletons. The second time, bpftool
+> is built with skeletons.
+> 
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
 
-> Thanks for the comment!
->
-> I'll change the entry names in v5 to be "BPF JIT for RISC-V (32-bit)"
-> and "BPF JIT for RISC-V (64-bit)", similar to the x86 JIT entries.
-> This will pass parse-maintainers.pl and the entries are still in
-> order.
+Hi Song, thank you for all the changes! Just found a couple more things
+below, sorry I missed them on the v2.
 
-Thank you!
+[...]
 
---=20
-With Best Regards,
-Andy Shevchenko
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+
+[...]
+
+> +static int profile_open_perf_events(struct profiler_bpf *obj)
+> +{
+> +	unsigned int cpu, m;
+> +	int map_fd, pmu_fd;
+> +
+> +	profile_perf_events = calloc(
+> +		sizeof(int), obj->rodata->num_cpu * obj->rodata->num_metric);
+> +	if (!profile_perf_events) {
+> +		p_err("failed to allocate memory for perf_event array: %s",
+> +		      strerror(errno));
+> +		return -1;
+> +	}
+> +	map_fd = bpf_map__fd(obj->maps.events);
+> +	if (map_fd < 0) {
+> +		p_err("failed to get fd for events map");
+> +		return -1;
+> +	}
+> +
+> +	for (m = 0; m < ARRAY_SIZE(metrics); m++) {
+> +		if (!metrics[m].selected)
+> +			continue;
+> +		for (cpu = 0; cpu < obj->rodata->num_cpu; cpu++) {
+> +			pmu_fd = syscall(__NR_perf_event_open, &metrics[m].attr,
+> +					 -1/*pid*/, cpu, -1/*group_fd*/, 0);
+> +			if (pmu_fd < 0 ||
+> +			    bpf_map_update_elem(map_fd, &profile_perf_event_cnt,
+> +						&pmu_fd, BPF_ANY) ||
+> +			    ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0)) {
+> +				p_err("failed to create event %s on cpu %d",
+> +				      metrics[m].name, cpu);
+> +				goto err;
+
+You can probably simply return here...
+
+> +			}
+> +			profile_perf_events[profile_perf_event_cnt++] = pmu_fd;
+> +		}
+> +	}
+> +	return 0;
+> +err:
+> +	profile_close_perf_events(profile_obj);
+> +	return -1;
+
+... and remove the "err:" label here, because if I understand correctly
+the only call to profile_open_perf_events() is in do_profile() (below),
+and if it fails, "profile_close_perf_events(profile_obj);" is called there.
+
+> +}
+
+[...]
+
+> +static int do_profile(int argc, char **argv)
+> +{
+
+[...]
+
+> +	err = profile_open_perf_events(profile_obj);
+> +	if (err) {
+> +		p_err("failed to open perf events");
+
+Also do you think we can remove this p_err() (or move the text in
+profile_open_perf_events() error messages)? This is because
+profile_open_perf_events() already prints something if it fails, and
+error messages work best with JSON if there is just one at a time.
+
+Would also apply to profile_target_name() a few lines above.
+
+> +		goto out;
+> +	}
+> +
+> +	err = profiler_bpf__attach(profile_obj);
+> +	if (err) {
+> +		p_err("failed to attach profile_obj");
+> +		goto out;
+> +	}
+> +	signal(SIGINT, int_exit);
+> +
+> +	sleep(duration);
+> +	profile_print_and_cleanup();
+> +	return 0;
+> +
+> +out:
+> +	profile_close_perf_events(profile_obj);
+> +	if (profile_obj)
+> +		profiler_bpf__destroy(profile_obj);
+> +	close(profile_tgt_fd);
+> +	free(profile_tgt_name);
+> +	return err;
+> +}
