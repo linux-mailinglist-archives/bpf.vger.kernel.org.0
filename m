@@ -2,232 +2,252 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8C217958F
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 17:43:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18224179737
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 18:53:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387969AbgCDQnm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Mar 2020 11:43:42 -0500
-Received: from sonic305-27.consmr.mail.ne1.yahoo.com ([66.163.185.153]:44069
-        "EHLO sonic305-27.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388019AbgCDQnm (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 4 Mar 2020 11:43:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1583340220; bh=pF8i3jQaBWYW0YSqWSIJCOBBZOg8hm9R3c40ED3EfUY=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=jn1INvtjhx/6Klddo6IRhJHCa+9Yq8vxcAFrDPKiwfvRdSrWt9PB23xyDj3FZ95SVkq7pMkzweffdix+nkzVVkuLC2ozsfpU03cM6Dkgv94RS7pCmmyK6zAlFtbARPdzuXESIR5M+sfblPC1InqJYdZ+hjiut0/Jow+y15gCHeJDznIc3n6ILfvPNRHLjpwstn9qQP950FAfg6xmUEuqM2ed2ndQrf9GsPCT2LZKOr8Ns6+RMhjGzeFLf1XwiDB8CVcZWeaALRlz8ZwLWWIcDrhEqXXKCg7uyugSEDCJX/Uu81ke7kRU5IAFVLB92SZZExIm+iYf81qIE1ACJxeR9w==
-X-YMail-OSG: TPOFwEAVM1nQAtbrfj4cYBlDmImPXELIvy53tsXWE.VpuhYdt4uIbl9whySuXrD
- Vw9aksTL2_zsqyJ4XMj3W2Yjay5_LQ8P5ZZpF8wVW4la0hORaPSoIiNwFHd__hoSkJApAr3XmIFH
- CG7pIb7emEvVvNDbpL9ReFcyATkos61esyWAb0LfvP67bSkK8m7coaPv1lSqSlZ.JLcfX8Kx6Q.c
- P5HDkzEYgm6NkQ1upwWUEnWCgwmOE5MSify843FYvIw48NTPI4tSzNgV6YK1siMv1QEP9u7LdQtM
- KggWaT3AI2GpBDj2mjaxoFbLnIzesko0c2ST4dfV52jVoCL_P8A72XDTorn_OUp5sZyQLTEkWiD0
- K9SsZVYBFCwEZ_.6FeeP7UMJh6HzpSmAoL4QlseX6NZ.uRXmioIN3L4xIe4k_smSm7UPAseQs__W
- fq_kkp0j1jYBoGwTJSeEiTIpKyCKKYXO.hzr45Tw6_IEDpgasXEPTtHBAdc0O5AMpLKHt8BFsEjB
- OWkebkZV4uIZourIfRaOH4XL4bj3EvkwPHTS3jd5NRMmdl6NwhyHHPwYWzgpQvsk5PXNxbMFvLGg
- KqrUjc4jEnhmuNkcu5Di2uf8npjh4ieEXpIWjgxVjq5V8OtkcE3j0nMRgcnzbATmCJE4IyaflJ5v
- rbOhf0svGGOXyT3zJ0850FOGf9AdlETWqPV85QpklBKCczwZ9CdFkO7wqGuM0gTeozazwVoxmAPG
- jOcDT60GYs4SURZxQoBlw6MdzHVXidInxTQ7WdLgBOUDs8s8PieKtBwjR7LFXwUssehjwRTUv_8K
- 2TywW2lMYKb1X_VEtVvxJYrGiQMoQx3jPhUzUT0_GgGMfSrnpgrSmIlDbyFueae8r25WjDW0MAdE
- jvHuuIzpji1xT3EH7uxCjisF4jBJ51LCT6FrrcNXNPic2E7rRf0Owa2lFqpxKbCGjW1vsyBre_i2
- GcBY7P3FqWULcQXcgkERWhRVYt5PFn6YJ65mNSAKIJShFaPlHIUMK_5pQuLjT4YwnuWlEooOyPEC
- RLLjqa6tEJcv4zYX7uHUknLe5qWo.rt4dlS1feDCqAvPqUekGFs1dAZRDbc8TsFJqPT5lbYzF6T_
- aWhFck6769VyiqlH3b9RK0aI6gufLP.XPlhvsmb5XTb_ZrL2hv8hgCZMEG6Pi.9E0t3q7rAk6MWR
- hndCUvRT_xONVF2u.WQZ57WKv6o2JM2v_Jm3dF25kMrCC7dY.2j3Jueyxu8797mMR6a5u4mvwUP0
- h42XzUOMGBskS3ebrZqYRX5O9dxCd421s3dMEf4ROn8Q8ZWmYchrHgkHD6ZZqioEfeZvY27vVPS5
- KiraA47RPUFAOCBUUYg5JsI75gFPtj_Wuqf.GtNUF2SSViLqUhrNsEkBhAVkekWuvRoFjxodU2LB
- WkIsCgSDBKUHQZTJq91mZsrv0h91O
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.ne1.yahoo.com with HTTP; Wed, 4 Mar 2020 16:43:40 +0000
-Received: by smtp402.mail.bf1.yahoo.com (Oath Hermes SMTP Server) with ESMTPA ID fae7d59caaea2c03bfc0d7411cba6386;
-          Wed, 04 Mar 2020 16:43:36 +0000 (UTC)
-Subject: Re: [PATCH bpf-next v3 4/7] bpf: Attachment verification for
- BPF_MODIFY_RETURN
-To:     KP Singh <kpsingh@chromium.org>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-References: <20200304154747.23506-1-kpsingh@chromium.org>
- <20200304154747.23506-5-kpsingh@chromium.org>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Autocrypt: addr=casey@schaufler-ca.com; keydata=
- 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
- abzjfg==
-Message-ID: <cf599ab4-c291-56bc-4ec2-958387d9930e@schaufler-ca.com>
-Date:   Wed, 4 Mar 2020 08:43:35 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726561AbgCDRxQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Mar 2020 12:53:16 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:20030 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727804AbgCDRxQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 4 Mar 2020 12:53:16 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 024HiFI1026677
+        for <bpf@vger.kernel.org>; Wed, 4 Mar 2020 09:53:15 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=facebook; bh=Leff6EBwDZsW4WXwtdvF7icBVvTeHeXJQYMruPJwuw8=;
+ b=qViD7w+igSwD6fxzntuEKx+HiVlJ0FuPv53argoSa5meeDsOx2/GoWholoyhnr267/bg
+ zms/RtALrZrykSqXHe3kigbLHrsfW9Ye3ss4QPzWgLoGBRQPcH5wb0hwmhMR7SHKv7Nr
+ q4I2Q+ILlBKFIHtSbKtMU4xBwf1CQYLAYto= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yht6473c9-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 04 Mar 2020 09:53:15 -0800
+Received: from intmgw004.08.frc2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 4 Mar 2020 09:53:13 -0800
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 7CA723701184; Wed,  4 Mar 2020 09:53:10 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Yonghong Song <yhs@fb.com>
+Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Song Liu <songliubraving@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf v2 1/2] bpf: Fix deadlock with rq_lock in bpf_send_signal()
+Date:   Wed, 4 Mar 2020 09:53:10 -0800
+Message-ID: <20200304175310.2389917-1-yhs@fb.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200304175310.2389842-1-yhs@fb.com>
+References: <20200304175310.2389842-1-yhs@fb.com>
+X-FB-Internal: Safe
 MIME-Version: 1.0
-In-Reply-To: <20200304154747.23506-5-kpsingh@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Mailer: WebService/1.1.15302 hermes Apache-HttpAsyncClient/4.1.4 (Java/1.8.0_241)
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-03-04_07:2020-03-04,2020-03-04 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ bulkscore=0 clxscore=1015 malwarescore=0 phishscore=0 adultscore=0
+ mlxscore=0 impostorscore=0 priorityscore=1501 mlxlogscore=999 spamscore=0
+ suspectscore=43 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2003040123
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/4/2020 7:47 AM, KP Singh wrote:
-> From: KP Singh <kpsingh@google.com>
->
-> - Allow BPF_MODIFY_RETURN attachment only to functions that are:
->
->     * Whitelisted for error injection by checking
->       within_error_injection_list. Similar discussions happened for the
->       bpf_override_return helper.
->
->     * security hooks, this is expected to be cleaned up with the LSM
->       changes after the KRSI patches introduce the LSM_HOOK macro:
->
->         https://lore.kernel.org/bpf/20200220175250.10795-1-kpsingh@chromium.org/
+When experimenting with bpf_send_signal() helper in our production
+environment (5.2 based), we experienced a deadlock in NMI mode:
+   #5 [ffffc9002219f770] queued_spin_lock_slowpath at ffffffff8110be24
+   #6 [ffffc9002219f770] _raw_spin_lock_irqsave at ffffffff81a43012
+   #7 [ffffc9002219f780] try_to_wake_up at ffffffff810e7ecd
+   #8 [ffffc9002219f7e0] signal_wake_up_state at ffffffff810c7b55
+   #9 [ffffc9002219f7f0] __send_signal at ffffffff810c8602
+  #10 [ffffc9002219f830] do_send_sig_info at ffffffff810ca31a
+  #11 [ffffc9002219f868] bpf_send_signal at ffffffff8119d227
+  #12 [ffffc9002219f988] bpf_overflow_handler at ffffffff811d4140
+  #13 [ffffc9002219f9e0] __perf_event_overflow at ffffffff811d68cf
+  #14 [ffffc9002219fa10] perf_swevent_overflow at ffffffff811d6a09
+  #15 [ffffc9002219fa38] ___perf_sw_event at ffffffff811e0f47
+  #16 [ffffc9002219fc30] __schedule at ffffffff81a3e04d
+  #17 [ffffc9002219fc90] schedule at ffffffff81a3e219
+  #18 [ffffc9002219fca0] futex_wait_queue_me at ffffffff8113d1b9
+  #19 [ffffc9002219fcd8] futex_wait at ffffffff8113e529
+  #20 [ffffc9002219fdf0] do_futex at ffffffff8113ffbc
+  #21 [ffffc9002219fec0] __x64_sys_futex at ffffffff81140d1c
+  #22 [ffffc9002219ff38] do_syscall_64 at ffffffff81002602
+  #23 [ffffc9002219ff50] entry_SYSCALL_64_after_hwframe at ffffffff81c00068
 
-Be careful with this forward reference. Changes suggested to LSM_HOOK
-macros remain contentious.
+The above call stack is actually very similar to an issue
+reported by Commit eac9153f2b58 ("bpf/stackmap: Fix deadlock with
+rq_lock in bpf_get_stack()") by Song Liu. The only difference is
+bpf_send_signal() helper instead of bpf_get_stack() helper.
 
->
-> - The attachment is currently limited to functions that return an int.
->   This can be extended later other types (e.g. PTR).
->
-> Signed-off-by: KP Singh <kpsingh@google.com>
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> ---
->  kernel/bpf/btf.c      | 28 ++++++++++++++++++++--------
->  kernel/bpf/verifier.c | 31 +++++++++++++++++++++++++++++++
->  2 files changed, 51 insertions(+), 8 deletions(-)
->
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 30841fb8b3c0..50080add2ab9 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -3710,14 +3710,26 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
->  		nr_args--;
->  	}
->  
-> -	if ((prog->expected_attach_type == BPF_TRACE_FEXIT ||
-> -	     prog->expected_attach_type == BPF_MODIFY_RETURN) &&
-> -	    arg == nr_args) {
-> -		if (!t)
-> -			/* Default prog with 5 args. 6th arg is retval. */
-> -			return true;
-> -		/* function return type */
-> -		t = btf_type_by_id(btf, t->type);
-> +	if (arg == nr_args) {
-> +		if (prog->expected_attach_type == BPF_TRACE_FEXIT) {
-> +			if (!t)
-> +				return true;
-> +			t = btf_type_by_id(btf, t->type);
-> +		} else if (prog->expected_attach_type == BPF_MODIFY_RETURN) {
-> +			/* For now the BPF_MODIFY_RETURN can only be attached to
-> +			 * functions that return an int.
-> +			 */
-> +			if (!t)
-> +				return false;
-> +
-> +			t = btf_type_skip_modifiers(btf, t->type, NULL);
-> +			if (!btf_type_is_int(t)) {
-> +				bpf_log(log,
-> +					"ret type %s not allowed for fmod_ret\n",
-> +					btf_kind_str[BTF_INFO_KIND(t->info)]);
-> +				return false;
-> +			}
-> +		}
->  	} else if (arg >= nr_args) {
->  		bpf_log(log, "func '%s' doesn't have %d-th argument\n",
->  			tname, arg + 1);
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 2460c8e6b5be..ae32517d4ccd 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -19,6 +19,7 @@
->  #include <linux/sort.h>
->  #include <linux/perf_event.h>
->  #include <linux/ctype.h>
-> +#include <linux/error-injection.h>
->  
->  #include "disasm.h"
->  
-> @@ -9800,6 +9801,33 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
->  
->  	return 0;
->  }
-> +#define SECURITY_PREFIX "security_"
-> +
-> +static int check_attach_modify_return(struct bpf_verifier_env *env)
-> +{
-> +	struct bpf_prog *prog = env->prog;
-> +	unsigned long addr = (unsigned long) prog->aux->trampoline->func.addr;
-> +
-> +	if (within_error_injection_list(addr))
-> +		return 0;
-> +
-> +	/* This is expected to be cleaned up in the future with the KRSI effort
-> +	 * introducing the LSM_HOOK macro for cleaning up lsm_hooks.h.
-> +	 */
-> +	if (!strncmp(SECURITY_PREFIX, prog->aux->attach_func_name,
-> +		     sizeof(SECURITY_PREFIX) - 1)) {
-> +
-> +		if (!capable(CAP_MAC_ADMIN))
-> +			return -EPERM;
-> +
-> +		return 0;
-> +	}
-> +
-> +	verbose(env, "fmod_ret attach_btf_id %u (%s) is not modifiable\n",
-> +		prog->aux->attach_btf_id, prog->aux->attach_func_name);
-> +
-> +	return -EINVAL;
-> +}
->  
->  static int check_attach_btf_id(struct bpf_verifier_env *env)
->  {
-> @@ -10000,6 +10028,9 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
->  		}
->  		tr->func.addr = (void *)addr;
->  		prog->aux->trampoline = tr;
-> +
-> +		if (prog->expected_attach_type == BPF_MODIFY_RETURN)
-> +			ret = check_attach_modify_return(env);
->  out:
->  		mutex_unlock(&tr->mutex);
->  		if (ret)
+The above deadlock is triggered with a perf_sw_event.
+Similar to Commit eac9153f2b58, the above reproducer used tracepoint
+point sched/sched_switch so the issue can be easily catched.
+  /* stress_test.c */
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <sys/mman.h>
+  #include <pthread.h>
+  #include <sys/types.h>
+  #include <sys/stat.h>
+  #include <fcntl.h>
+
+  #define THREAD_COUNT 1000
+  char *filename;
+  void *worker(void *p)
+  {
+        void *ptr;
+        int fd;
+        char *pptr;
+
+        fd = open(filename, O_RDONLY);
+        if (fd < 0)
+                return NULL;
+        while (1) {
+                struct timespec ts = {0, 1000 + rand() % 2000};
+
+                ptr = mmap(NULL, 4096 * 64, PROT_READ, MAP_PRIVATE, fd, 0);
+                usleep(1);
+                if (ptr == MAP_FAILED) {
+                        printf("failed to mmap\n");
+                        break;
+                }
+                munmap(ptr, 4096 * 64);
+                usleep(1);
+                pptr = malloc(1);
+                usleep(1);
+                pptr[0] = 1;
+                usleep(1);
+                free(pptr);
+                usleep(1);
+                nanosleep(&ts, NULL);
+        }
+        close(fd);
+        return NULL;
+  }
+
+  int main(int argc, char *argv[])
+  {
+        void *ptr;
+        int i;
+        pthread_t threads[THREAD_COUNT];
+
+        if (argc < 2)
+                return 0;
+
+        filename = argv[1];
+
+        for (i = 0; i < THREAD_COUNT; i++) {
+                if (pthread_create(threads + i, NULL, worker, NULL)) {
+                        fprintf(stderr, "Error creating thread\n");
+                        return 0;
+                }
+        }
+
+        for (i = 0; i < THREAD_COUNT; i++)
+                pthread_join(threads[i], NULL);
+        return 0;
+  }
+and the following command:
+  1. run `stress_test /bin/ls` in one windown
+  2. hack bcc trace.py with the following change:
+     --- a/tools/trace.py
+     +++ b/tools/trace.py
+     @@ -513,6 +513,7 @@ BPF_PERF_OUTPUT(%s);
+              __data.tgid = __tgid;
+              __data.pid = __pid;
+              bpf_get_current_comm(&__data.comm, sizeof(__data.comm));
+     +        bpf_send_signal(10);
+      %s
+      %s
+              %s.perf_submit(%s, &__data, sizeof(__data));
+  3. in a different window run
+     ./trace.py -p $(pidof stress_test) t:sched:sched_switch
+
+The deadlock can be reproduced.
+
+Similar to Song's fix, the fix is to delay sending signal if
+irqs is disabled to avoid deadlocks involving with rq_lock.
+With this change, my above stress-test in our production system
+won't cause deadlock any more.
+
+I also implemented a scale-down version of reproducer in the
+selftest (a subsequent commit). With latest bpf-next,
+it complains for the following deadlock.
+  [   32.832450] -> #1 (&p->pi_lock){-.-.}:
+  [   32.833100]        _raw_spin_lock_irqsave+0x44/0x80
+  [   32.833696]        task_rq_lock+0x2c/0xa0
+  [   32.834182]        task_sched_runtime+0x59/0xd0
+  [   32.834721]        thread_group_cputime+0x250/0x270
+  [   32.835304]        thread_group_cputime_adjusted+0x2e/0x70
+  [   32.835959]        do_task_stat+0x8a7/0xb80
+  [   32.836461]        proc_single_show+0x51/0xb0
+  ...
+  [   32.839512] -> #0 (&(&sighand->siglock)->rlock){....}:
+  [   32.840275]        __lock_acquire+0x1358/0x1a20
+  [   32.840826]        lock_acquire+0xc7/0x1d0
+  [   32.841309]        _raw_spin_lock_irqsave+0x44/0x80
+  [   32.841916]        __lock_task_sighand+0x79/0x160
+  [   32.842465]        do_send_sig_info+0x35/0x90
+  [   32.842977]        bpf_send_signal+0xa/0x10
+  [   32.843464]        bpf_prog_bc13ed9e4d3163e3_send_signal_tp_sched+0x465/0x1000
+  [   32.844301]        trace_call_bpf+0x115/0x270
+  [   32.844809]        perf_trace_run_bpf_submit+0x4a/0xc0
+  [   32.845411]        perf_trace_sched_switch+0x10f/0x180
+  [   32.846014]        __schedule+0x45d/0x880
+  [   32.846483]        schedule+0x5f/0xd0
+  ...
+
+  [   32.853148] Chain exists of:
+  [   32.853148]   &(&sighand->siglock)->rlock --> &p->pi_lock --> &rq->lock
+  [   32.853148]
+  [   32.854451]  Possible unsafe locking scenario:
+  [   32.854451]
+  [   32.855173]        CPU0                    CPU1
+  [   32.855745]        ----                    ----
+  [   32.856278]   lock(&rq->lock);
+  [   32.856671]                                lock(&p->pi_lock);
+  [   32.857332]                                lock(&rq->lock);
+  [   32.857999]   lock(&(&sighand->siglock)->rlock);
+
+  Deadlock happens on CPU0 when it tries to acquire &sighand->siglock
+  but it has been held by CPU1 and CPU1 tries to grab &rq->lock
+  and cannot get it.
+
+  This is not exactly the callstack in our production environment,
+  but sympotom is similar and both locks are using spin_lock_irqsave()
+  to acquire the lock, and both involves rq_lock. The fix to delay
+  sending signal when irq is disabled also fixed this issue.
+
+Cc: Song Liu <songliubraving@fb.com>
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ kernel/trace/bpf_trace.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 07764c761073..43ccfdbacb03 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -730,7 +730,10 @@ static int bpf_send_signal_common(u32 sig, enum pid_type type)
+ 	if (unlikely(!nmi_uaccess_okay()))
+ 		return -EPERM;
+ 
+-	if (in_nmi()) {
++	/* Delay sending signal if irq is disabled. Otherwise,
++	 * we risk deadlock with rq_lock.
++	 */
++	if (irqs_disabled()) {
+ 		/* Do an early check on signal validity. Otherwise,
+ 		 * the error is lost in deferred irq_work.
+ 		 */
+-- 
+2.17.1
+
