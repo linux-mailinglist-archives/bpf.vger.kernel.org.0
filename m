@@ -2,87 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2585179788
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 19:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A379179790
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 19:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730068AbgCDSHg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Mar 2020 13:07:36 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:63590 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728361AbgCDSHf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 4 Mar 2020 13:07:35 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 024I6DOe019973
-        for <bpf@vger.kernel.org>; Wed, 4 Mar 2020 10:07:35 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=oZ9feTVsk79ERSNDwlBDt37K72Qzyp1AA2ALqmXIEvY=;
- b=qH2YBAkExyPxoJJMZqMmFjQEdXyq/NywTZ75vRHr8mbKmliA2MbBRi3QeuOVbBT06xnA
- wS/GodhrmmGmdcfpWMAjKXik6IHpPwHqp0eaSQBvMouFgpDSwVOzbmAY4fm36rr/z37h
- Cn4wvDYq0vpiDlvh1Fec0CxcSJc2LKnCgPw= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2yj2gj44bf-16
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 04 Mar 2020 10:07:35 -0800
-Received: from intmgw004.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 4 Mar 2020 10:07:27 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 1D11F62E3375; Wed,  4 Mar 2020 10:07:23 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Song Liu <songliubraving@fb.com>
-Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
-To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-CC:     <quentin@isovalent.com>, <kernel-team@fb.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <arnaldo.melo@gmail.com>,
-        <jolsa@kernel.org>, Song Liu <songliubraving@fb.com>,
-        Paul Chaignon <paul.chaignon@orange.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v4 bpf-next 4/4] bpftool: fix typo in bash-completion
-Date:   Wed, 4 Mar 2020 10:07:10 -0800
-Message-ID: <20200304180710.2677695-5-songliubraving@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200304180710.2677695-1-songliubraving@fb.com>
-References: <20200304180710.2677695-1-songliubraving@fb.com>
-X-FB-Internal: Safe
+        id S1729662AbgCDSJB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Mar 2020 13:09:01 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:42702 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725795AbgCDSJB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Mar 2020 13:09:01 -0500
+Received: by mail-qk1-f196.google.com with SMTP id e11so2545890qkg.9
+        for <bpf@vger.kernel.org>; Wed, 04 Mar 2020 10:09:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/HQDI8W38B2b+ITmuYUoXj4RE85qyJ6t4qnrDBeqmUs=;
+        b=IK1Ob35Q0/yI4KvBkYzF9HrHtf+Tuws1IrNp/hymBLuBj6h6fBrpEZl/8ym7eFB4kF
+         fRtHPLtalndVtTRqreAgF8PwKK3awOZZcn0HsMYLBQDkjBlRBD4o9fTD6gmmQDeqNaR4
+         Bj5OAVmBBOmhDHiB4eBaB8l0ZMTKfrzZIkXO2u+U4i/mJ/1sXXWe+D04j+WKcpt21NDn
+         XzWAQfpHh1sHPL6JmAFWOnVXsNVP3R+0ZXH20VtGvFChsSXmFY19yonftidP8tY8lyts
+         ATIiv5jRM/eCbnDWNJjZ+iyvDLDCvq7xV4SCTm8hyfcVfcS2OhB/kyg25TpOIzQRof2W
+         +lGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/HQDI8W38B2b+ITmuYUoXj4RE85qyJ6t4qnrDBeqmUs=;
+        b=p7ZXMRi6fxOTzsR2OmGaYhgo0oAajuNSN3tI5rATqqUrpuqyr5LUHBQG73ddwDG1AW
+         X7bs76Sw4ISiBiKxxY2MCcXhdJoKVg9emJPuwYwN2u0N1uUgUiixkgAOVc0ih1eQmdt6
+         I8xK8faChWQK2HqdYYT47FfsnL9gIgXZqyISamU8TXKZ2jLZH6WVpVp4f63Ef3L6Rkh1
+         P8mhEmXuCVlzxCiPZCekl1UdjGmRd37VcC8HmaPX3nRy96a/rAebfShNRsm22qxFhmEj
+         XfOsHj3CpYyotXZzqAtpNEqLHaTxpD+9nYokSPMM9dQiPQkXuypXH9GRhmpXYrsc3QPM
+         d3AQ==
+X-Gm-Message-State: ANhLgQ0ZnfYKhMcB+SQ6RyjV2frKIxyv4ZYiGXNMvTM0+qALwX2kpMLL
+        jUbzhg5GpBbi5zVk1eGvz2QTgt8ixxikV2Rtb2GOqDr9NaU=
+X-Google-Smtp-Source: ADFU+vvBj4PEpLzh3WDIPRo3UYScobthD5hElGbo3Ieit4Ss8rDvSYH9V7zLHVoITsyW0FcxLaWYZNHvTMulRxnYqsw=
+X-Received: by 2002:a05:620a:99d:: with SMTP id x29mr4160118qkx.39.1583345339947;
+ Wed, 04 Mar 2020 10:08:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-03-04_07:2020-03-04,2020-03-04 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- impostorscore=0 suspectscore=0 priorityscore=1501 lowpriorityscore=0
- adultscore=0 bulkscore=0 phishscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=743 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2003040124
-X-FB-Internal: deliver
+References: <20200304175310.2389842-1-yhs@fb.com> <20200304175311.2389987-1-yhs@fb.com>
+In-Reply-To: <20200304175311.2389987-1-yhs@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 4 Mar 2020 10:08:48 -0800
+Message-ID: <CAEf4BzZxwAbdMA+SPNkA_ZoBGd_q0Pr1jC5xT1hPdUq3pC+v3A@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 2/2] selftests/bpf: add send_signal_sched_switch test
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Song Liu <songliubraving@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-_bpftool_get_map_names => _bpftool_get_prog_names for prog-attach|detach.
+On Wed, Mar 4, 2020 at 9:53 AM Yonghong Song <yhs@fb.com> wrote:
+>
+> Added one test, send_signal_sched_switch, to test bpf_send_signal()
+> helper triggered by sched/sched_switch tracepoint. This test can be used
+> to verify kernel deadlocks fixed by the previous commit. The test itself
+> is heavily borrowed from Commit eac9153f2b58 ("bpf/stackmap: Fix deadlock
+> with rq_lock in bpf_get_stack()").
+>
+> Cc: Song Liu <songliubraving@fb.com>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  .../bpf/prog_tests/send_signal_sched_switch.c | 89 +++++++++++++++++++
+>  .../bpf/progs/test_send_signal_kern.c         |  6 ++
+>  2 files changed, 95 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/send_signal_sched_switch.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal_sched_switch.c b/tools/testing/selftests/bpf/prog_tests/send_signal_sched_switch.c
+> new file mode 100644
+> index 000000000000..f5c9dbdeb173
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/send_signal_sched_switch.c
+> @@ -0,0 +1,89 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <test_progs.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <sys/mman.h>
+> +#include <pthread.h>
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +#include <fcntl.h>
+> +#include "test_send_signal_kern.skel.h"
+> +
+> +static void sigusr1_handler(int signum)
+> +{
+> +}
+> +
+> +#define THREAD_COUNT 100
+> +
+> +static char *filename;
+> +
+> +static void *worker(void *p)
+> +{
+> +       int err, fd, i = 0;
+> +       u32 duration = 0;
+> +       char *pptr;
+> +       void *ptr;
+> +
+> +       fd = open(filename, O_RDONLY);
+> +       if (CHECK(fd < 0, "open", "open failed %s\n", strerror(errno)))
+> +               return NULL;
+> +
+> +       while (i < 100) {
+> +               struct timespec ts = {0, 1000 + rand() % 2000};
+> +
+> +               ptr = mmap(NULL, 4096 * 64, PROT_READ, MAP_PRIVATE, fd, 0);
+> +               err = errno;
+> +               usleep(1);
+> +               if (CHECK(ptr == MAP_FAILED, "mmap", "mmap failed: %s\n",
+> +                         strerror(err)))
+> +                       break;
+> +
+> +               munmap(ptr, 4096 * 64);
+> +               usleep(1);
+> +               pptr = malloc(1);
+> +               usleep(1);
+> +               pptr[0] = 1;
+> +               usleep(1);
+> +               free(pptr);
+> +               usleep(1);
+> +               nanosleep(&ts, NULL);
+> +               i++;
 
-Fixes: 99f9863a0c45 ("bpftool: Match maps by name")
-Cc: Paul Chaignon <paul.chaignon@orange.com>
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- tools/bpf/bpftool/bash-completion/bpftool | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index 49f4ab2f67e3..a9cce9d3745a 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -389,7 +389,7 @@ _bpftool()
-                                     _bpftool_get_prog_ids
-                                     ;;
-                                 name)
--                                    _bpftool_get_map_names
-+                                    _bpftool_get_prog_names
-                                     ;;
-                                 pinned)
-                                     _filedir
--- 
-2.17.1
+Any specific reason to do mmap()/munmap() in a loop? Would, say,
+getpid syscall work just fine as well to trigger a bunch of context
+switches? Or event just usleep(1) alone?
 
+> +       }
+> +       close(fd);
+> +       return NULL;
+> +}
+> +
+> +void test_send_signal_sched_switch(void)
+> +{
+> +       struct test_send_signal_kern *skel;
+> +       pthread_t threads[THREAD_COUNT];
+> +       u32 duration = 0;
+> +       int i, err;
+> +
+> +       filename = "/bin/ls";
+> +       signal(SIGUSR1, sigusr1_handler);
+> +
+> +       skel = test_send_signal_kern__open_and_load();
+> +       if (CHECK(!skel, "skel_open_and_load", "skeleton open_and_load failed\n"))
+> +               return;
+> +
+> +       skel->bss->pid = getpid();
+> +       skel->bss->sig = SIGUSR1;
+> +
+> +       err = test_send_signal_kern__attach(skel);
+> +       if (CHECK(err, "skel_attach", "skeleton attach failed\n"))
+> +               goto destroy_skel;
+> +
+> +       for (i = 0; i < THREAD_COUNT; i++) {
+> +               err = pthread_create(threads + i, NULL, worker, NULL);
+> +               if (CHECK(err, "pthread_create", "Error creating thread, %s\n",
+> +                         strerror(errno)))
+> +                       goto destroy_skel;
+> +       }
+> +
+> +       for (i = 0; i < THREAD_COUNT; i++)
+> +               pthread_join(threads[i], NULL);
+> +
+> +destroy_skel:
+> +       test_send_signal_kern__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
+> index 1acc91e87bfc..b4233d3efac2 100644
+> --- a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
+> +++ b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
+> @@ -31,6 +31,12 @@ int send_signal_tp(void *ctx)
+>         return bpf_send_signal_test(ctx);
+>  }
+>
+> +SEC("tracepoint/sched/sched_switch")
+> +int send_signal_tp_sched(void *ctx)
+> +{
+> +       return bpf_send_signal_test(ctx);
+> +}
+> +
+>  SEC("perf_event")
+>  int send_signal_perf(void *ctx)
+>  {
+> --
+> 2.17.1
+>
