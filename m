@@ -2,75 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC7A7179971
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 21:02:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D75E71799A6
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 21:21:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729302AbgCDUCp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Mar 2020 15:02:45 -0500
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:39875 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729348AbgCDUCp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Mar 2020 15:02:45 -0500
-Received: by mail-lf1-f66.google.com with SMTP id n30so2556623lfh.6;
-        Wed, 04 Mar 2020 12:02:43 -0800 (PST)
+        id S1727835AbgCDUV3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Mar 2020 15:21:29 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:44482 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727137AbgCDUV3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Mar 2020 15:21:29 -0500
+Received: by mail-qt1-f194.google.com with SMTP id h16so2396800qtr.11
+        for <bpf@vger.kernel.org>; Wed, 04 Mar 2020 12:21:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0++ND2QOO8ryntJ6kV2i7bFQ/MLLMaAr8V/FDQd9ZNE=;
-        b=Q0JkuMyvk2i2EJtm9+V9H3KSA2tIRKa6MsHiEozbQU9VIduA/JbfIA89U/zvuTPxRU
-         f1y3NqIrV3Xsfd+WJzzzJ8Sl856hJtljrc7aLYre7D8yF7056Iun3qnL17o4Kd19aQjZ
-         8MEJ+GVB/GuiJ0c8C/1gA5QwBYwhws4S4eIkBFILrw1Ma2m3B4oqNbGLVkxhG7Fb4iMx
-         Unqq1KRXEHBR+Xh7nqB3PnfmTfmOHVVGaRp2a8T6dv6IJzKc5xsiEq36pWYZrYZ0ZNmI
-         GdEx783ltWAGPdpCw4vi1EvS97YTiyEfR4ytiF6BuVX6YAOlQhDdX1z03z8FIbaeGNVt
-         8vfw==
+        bh=Torqc2hw6eTqzTBLMreD9yKyrOC2qtCB9FiPqIOS1FQ=;
+        b=MRVbhvIxUh+RPFiEjW91ktqkipdHMiAcRU5vMgCn8qRG6Yp0EFdjK4P1aNDv+aMV82
+         khWQ9Lzlzl3LJitNSTR8G2uEDz98I7yHAPHg6t0l5FYKKKbnr+Y2qXhqa1mQ2mShZ83X
+         XvYqfH8Z3sU8+0xTZ4ctny9YhMNXrrClfR9bqK0xb11IoY/KRAaZ9ALcmmlonWotVxJ+
+         6V7eHbW8Ri1xXT31O+1pLJBhgWLssSoryOtdhBk40Hm1ceivv0AXOoQDO0qL+49bATZz
+         o15+82m73loyJ9JGsZ3Z/y8WHPdN41JInB4Yxvs4FyAoWCU/RVdUS/qKOYwULqU6Oz5L
+         oJ8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0++ND2QOO8ryntJ6kV2i7bFQ/MLLMaAr8V/FDQd9ZNE=;
-        b=Plz7GlWcwxOzT6jKfVXQhEYye1xkC0QUdqLOpwebzckU2DzsEVNjeRIJORMNCOfU3y
-         R/bSbTVDtffPWxRZvxjcj8wv80XIPqQnB7UzUldPOhV2fZDHKq5Y1fVKMvjI3qjaB+r1
-         088lm6GQa3zNlw8foUsdj2Joiigm7+QuB5atyAtm9q5JLvsEBAsCWa5MsTtatIm8YdmG
-         ydhMnJ4CuT2e5CKYKjeAxTnM9D2rm976B9+dL5qbHimuilKhgtYpsCbbZ33hq7lwirxp
-         mBJeUQqNfoAkdXK9GKdnPqi8272oXC/EIONU61gt2EtWupDncX+f24C7fEzNeTyNRa6h
-         0riw==
-X-Gm-Message-State: ANhLgQ1Yo9RbQg9AZzxntOAgQjssfoOH5bxe+9L4IawIuuuQgU8hA45p
-        aKt8eBsp8X3E2NHMeQ1iYF/N9YtUnVhG0oBhYttvkw==
-X-Google-Smtp-Source: ADFU+vs50JL8TetTjaRbrMZJRNANdv0Eo+Zw0Sh+1rgX2MPVqtlMoPd7rpfNwy+CMLqGADpMgGIGmpsb9n7WiN8uEvg=
-X-Received: by 2002:ac2:442e:: with SMTP id w14mr2848835lfl.119.1583352162786;
- Wed, 04 Mar 2020 12:02:42 -0800 (PST)
+        bh=Torqc2hw6eTqzTBLMreD9yKyrOC2qtCB9FiPqIOS1FQ=;
+        b=hmcdEj2RSm/ML/5Hi0+3yT8CY+i+KKnKICCmRip603qqYJTWT02gzG3CzrrRuKClRy
+         E5eWi5xcwCmHW4E5JZWyJ+MgLiZfU2rtsQG93kgl8vsmBbJoMdTOcp80aFL9IM1KtLLv
+         6gyT0qzSNLAeYWAISwJqyBsT0MsQh6S85EdgL+YFQYwsXXOStSLcSMb9fZhx7DCa1A7w
+         dPX9zdjJBYCoJ1ZFpFwI5/Em76TdGxlc5Yb+ZJNjVginQrGCkZyAKfJ+iNPZ9xaLFOZZ
+         UaRRIU4sgfwCkh/NfB6vt+YB3MAD0XfRnmcN9815wx4QRUobaoVERl90fodqK3KIA8Fk
+         EGLg==
+X-Gm-Message-State: ANhLgQ0sinaeC31pGzQ3SJiWqW2Z4D9mrhWMMPTzECTSFu4+HhlxBLed
+        D1H8BoW1wxaJALASO3xP4AqrzCofjc7Yf5wvjJc=
+X-Google-Smtp-Source: ADFU+vsabLtjcPcHn2jFQzTu9eYSziklvZtvJ70DfVHnIO7BqJZZXM96IEMMYPz/9xM93BmIJqwLSKPzy8oSVPJfan8=
+X-Received: by 2002:ac8:140c:: with SMTP id k12mr4022064qtj.117.1583353286640;
+ Wed, 04 Mar 2020 12:21:26 -0800 (PST)
 MIME-Version: 1.0
-References: <20200304184336.165766-1-andriin@fb.com>
-In-Reply-To: <20200304184336.165766-1-andriin@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 4 Mar 2020 12:02:30 -0800
-Message-ID: <CAADnVQJucGSPyJJmH2wJ_B96cWHVmRqkXK0vRwqhkpNz2NTY7g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: support out-of-tree vmlinux
- builds for VMLINUX_BTF
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+References: <20200304191104.2796444-1-yhs@fb.com> <20200304191105.2796601-1-yhs@fb.com>
+In-Reply-To: <20200304191105.2796601-1-yhs@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 4 Mar 2020 12:21:15 -0800
+Message-ID: <CAEf4BzaVoMg+gPxFb539jFsHP3A5j-ogbUtGQFOYzHVu5_dnWQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v3 2/2] selftests/bpf: add send_signal_sched_switch test
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kernel Team <kernel-team@fb.com>
+        Kernel Team <kernel-team@fb.com>,
+        Song Liu <songliubraving@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 4, 2020 at 10:43 AM Andrii Nakryiko <andriin@fb.com> wrote:
+On Wed, Mar 4, 2020 at 11:11 AM Yonghong Song <yhs@fb.com> wrote:
 >
-> Add detection of out-of-tree built vmlinux image for the purpose of
-> VMLINUX_BTF detection. According to Documentation/kbuild/kbuild.rst, O takes
-> precedence over KBUILD_OUTPUT.
+> Added one test, send_signal_sched_switch, to test bpf_send_signal()
+> helper triggered by sched/sched_switch tracepoint. This test can be used
+> to verify kernel deadlocks fixed by the previous commit. The test itself
+> is heavily borrowed from Commit eac9153f2b58 ("bpf/stackmap: Fix deadlock
+> with rq_lock in bpf_get_stack()").
 >
-> Also ensure ~/path/to/build/dir also works by relying on wildcard's resolution
-> first, but then applying $(abspath) at the end to also handle
-> O=../../whatever cases.
->
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> Cc: Song Liu <songliubraving@fb.com>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
 
-Applied. Thanks for fixing a build.
+LGTM.
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  .../bpf/prog_tests/send_signal_sched_switch.c | 60 +++++++++++++++++++
+>  .../bpf/progs/test_send_signal_kern.c         |  6 ++
+>  2 files changed, 66 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/send_signal_sched_switch.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal_sched_switch.c b/tools/testing/selftests/bpf/prog_tests/send_signal_sched_switch.c
+> new file mode 100644
+> index 000000000000..189a34a7addb
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/send_signal_sched_switch.c
+> @@ -0,0 +1,60 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <test_progs.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <sys/mman.h>
+> +#include <pthread.h>
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +#include <fcntl.h>
+> +#include "test_send_signal_kern.skel.h"
+> +
+> +static void sigusr1_handler(int signum)
+> +{
+> +}
+> +
+> +#define THREAD_COUNT 100
+> +
+> +static void *worker(void *p)
+> +{
+> +       int i;
+> +
+> +       for ( i = 0; i < 1000; i++)
+> +               usleep(1);
+> +
+> +       return NULL;
+> +}
+> +
+> +void test_send_signal_sched_switch(void)
+> +{
+> +       struct test_send_signal_kern *skel;
+> +       pthread_t threads[THREAD_COUNT];
+> +       u32 duration = 0;
+> +       int i, err;
+> +
+> +       signal(SIGUSR1, sigusr1_handler);
+> +
+> +       skel = test_send_signal_kern__open_and_load();
+> +       if (CHECK(!skel, "skel_open_and_load", "skeleton open_and_load failed\n"))
+> +               return;
+> +
+> +       skel->bss->pid = getpid();
+> +       skel->bss->sig = SIGUSR1;
+> +
+> +       err = test_send_signal_kern__attach(skel);
+> +       if (CHECK(err, "skel_attach", "skeleton attach failed\n"))
+> +               goto destroy_skel;
+> +
+> +       for (i = 0; i < THREAD_COUNT; i++) {
+> +               err = pthread_create(threads + i, NULL, worker, NULL);
+> +               if (CHECK(err, "pthread_create", "Error creating thread, %s\n",
+> +                         strerror(errno)))
+> +                       goto destroy_skel;
+> +       }
+> +
+> +       for (i = 0; i < THREAD_COUNT; i++)
+> +               pthread_join(threads[i], NULL);
+> +
+> +destroy_skel:
+> +       test_send_signal_kern__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
+> index 1acc91e87bfc..b4233d3efac2 100644
+> --- a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
+> +++ b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
+> @@ -31,6 +31,12 @@ int send_signal_tp(void *ctx)
+>         return bpf_send_signal_test(ctx);
+>  }
+>
+> +SEC("tracepoint/sched/sched_switch")
+> +int send_signal_tp_sched(void *ctx)
+> +{
+> +       return bpf_send_signal_test(ctx);
+> +}
+> +
+>  SEC("perf_event")
+>  int send_signal_perf(void *ctx)
+>  {
+> --
+> 2.17.1
+>
