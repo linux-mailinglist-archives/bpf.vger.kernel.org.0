@@ -2,99 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 572A3179345
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 16:24:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F13717937A
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 16:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726764AbgCDPYy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Mar 2020 10:24:54 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:38776 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728432AbgCDPYy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Mar 2020 10:24:54 -0500
-Received: by mail-wm1-f68.google.com with SMTP id u9so2297603wml.3
-        for <bpf@vger.kernel.org>; Wed, 04 Mar 2020 07:24:53 -0800 (PST)
+        id S2388042AbgCDPfG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Mar 2020 10:35:06 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:34020 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388024AbgCDPfF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Mar 2020 10:35:05 -0500
+Received: by mail-qk1-f193.google.com with SMTP id f3so2007830qkh.1;
+        Wed, 04 Mar 2020 07:35:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ZmLS9qnO1Q66v/wtUwX9VxbxLnQwytCVRya2k8J6vNI=;
-        b=FQPR4T3fjY4rOCvwbAQ0z8QbhMr1ZjWh/xFw9Lzc6W6+ZG7u3WI8Ah6jcGVr/7iX06
-         PwPe9WEyKHVL3xuyryUBVKXmU47z4QmcSlCbFjOVUp4BD1ILDAbH8mc0KFDN/IyJyIUA
-         UCIVqbT+3CO8S6wCXr7gfGksuTKj7jCzv4fV8=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c4RuF7jp06Gdp9+c9iYskCOTXb6vXMZn80rDacpfYvA=;
+        b=nYfm1EWfWF3B3Cl2NTdBNc6KwOTd3NqyvdqdbP1UtzWsetwd25N3fgCGmwOgXoFH8e
+         sg2DMNr5Rrd5iZzD6kqyoC+QLoAJMggnQQx9zbDWeohjgr++N6WUtJYQSKla5ceUoOUA
+         Skh42L/yaoo8RAxVJOzjjYlvoi1SkAowVwj/lII2QK1T0YtFR3FXbQUoXRlibq86m8MI
+         d4sEi0sCh23sKXXn288akG5A04JmoY4GdYsLk19PZxV0Mdq7pqQshbAzJU8Jc9ql6myP
+         WebJ/DlCJm0mCUDZ2YXeKsbRAXom0pH8XBo/hITIzTAQDyEgigX5Ii6mxsAHxgohkBx0
+         PZgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZmLS9qnO1Q66v/wtUwX9VxbxLnQwytCVRya2k8J6vNI=;
-        b=GpWn0JL6JLj8f55Vyz7PHA+6iq2gH1BnkUxRaReTNTQNhR+FEvrXWoTGq0cri/ZlPR
-         83jjPJmGxwJm4b1TYwfBlbprfhEG9InPBxDZFUtLSXdUyKUyohhNPSTIOVpw43eCvkLA
-         Fc9iYbcObfV9jti3W9k1dFp44iqKIiXr6eWTysQvHnTgMzORdXL7z+KDvv8HfZU9SQqe
-         97Y+5hJIMnw/rV63DHDQ2DVkTcTzFm0N8IDTeHmojJrmmu2s637WFqSfkW5uLr3F1X27
-         oVYIj5hSpOS99uyGYzJHRdCVoRMvc6nlctw0V0ph2nCKCiweRkfGVRNss2u+VF6/A3Uv
-         tRWA==
-X-Gm-Message-State: ANhLgQ0s/7breCX7BrK/S2Ta/Cc9gyJOrGAr5N82pu2GJ/+Uywb8cura
-        fYDwdRMPILJPprW2bnjSKe83tg==
-X-Google-Smtp-Source: ADFU+vtzSljSP9Rf+4htWw0ktNMsb3VloEd6kKjoSEQOggRPiPdIX37a5amcCVkEUychGquYG0F2wg==
-X-Received: by 2002:a7b:c857:: with SMTP id c23mr4209940wml.68.1583335492265;
-        Wed, 04 Mar 2020 07:24:52 -0800 (PST)
-Received: from google.com ([2a00:79e0:42:204:8a21:ba0c:bb42:75ec])
-        by smtp.gmail.com with ESMTPSA id z10sm4687059wmk.31.2020.03.04.07.24.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Mar 2020 07:24:51 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Wed, 4 Mar 2020 16:24:50 +0100
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     KP Singh <kpsingh@chromium.org>,
-        linux-security-module@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Subject: Re: [PATCH bpf-next v2 2/7] bpf: JIT helpers for fmod_ret progs
-Message-ID: <20200304152450.GA53576@google.com>
-References: <20200304015528.29661-1-kpsingh@chromium.org>
- <20200304015528.29661-3-kpsingh@chromium.org>
- <CAEf4Bzah9CpWJ1vLuy+V1K26Ka1ovKvvAnbRuYBJ1GF-xcQbJQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c4RuF7jp06Gdp9+c9iYskCOTXb6vXMZn80rDacpfYvA=;
+        b=IPbkncYZDBswWFwi1Z3WWqUIKxhTPqjBgJNiqUxS1rHTmjL9qJKcXgHPTRBAXJq4tZ
+         uj3IV09HpJItTDCdvhglibk0FsiNRgbiZg7lkhuvhJ0f9ntdKOvIhFC2r4SfU0jL4Eu0
+         /suexAbnbPL8GNqwAg/EaD/l8K3APrG9P9dIjPU//8JxIb7Q7GZ/4n1t3+X7fAvDxHhB
+         iud02FguPDRld1E0t+V3NlJiGW3Vb+642fi6ZB6zs9g05CoznXjgLNAh1T8cjeGIgBOu
+         /hYptHiGPlZAWd79ZjKrBz6tQXnEJu/alGiyGPdVfYk7/hE1dJcTUK9Dv/4/loFK45X0
+         WDgQ==
+X-Gm-Message-State: ANhLgQ3pz8a6Mtr/E+Dcw6gnUwpmz2n6Lt1FnDIAWRn1QUQzU/NyI+eY
+        T0w9D+rXhcWhEoaH4uK3RGZH5kokMA7sQVyxrKs=
+X-Google-Smtp-Source: ADFU+vsfF6f/QsPVQD8JAsdWPqh3ED1MmSoB4yziYJP4/R5Jfvnw4k+GhEKPA4TN+IN9dV7x3kvVqt9lKpc1mbGJULA=
+X-Received: by 2002:a05:620a:99d:: with SMTP id x29mr3476120qkx.39.1583336104782;
+ Wed, 04 Mar 2020 07:35:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzah9CpWJ1vLuy+V1K26Ka1ovKvvAnbRuYBJ1GF-xcQbJQ@mail.gmail.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+References: <20200303003233.3496043-1-andriin@fb.com> <47bbaa27-a112-b4a5-6251-d8aad31937a5@iogearbox.net>
+In-Reply-To: <47bbaa27-a112-b4a5-6251-d8aad31937a5@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 4 Mar 2020 07:34:53 -0800
+Message-ID: <CAEf4BzZjboTyWE9LjdnRu+5ja2WqtHZRgEtMJc4w8B0F_wY-kw@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 0/3] Convert BPF UAPI constants into enum values
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 03-Mar 20:52, Andrii Nakryiko wrote:
-> On Tue, Mar 3, 2020 at 5:56 PM KP Singh <kpsingh@chromium.org> wrote:
+On Wed, Mar 4, 2020 at 7:21 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 3/3/20 1:32 AM, Andrii Nakryiko wrote:
+> > Convert BPF-related UAPI constants, currently defined as #define macro, into
+> > anonymous enums. This has no difference in terms of usage of such constants in
+> > C code (they are still could be used in all the compile-time contexts that
+> > `#define`s can), but they are recorded as part of DWARF type info, and
+> > subsequently get recorded as part of kernel's BTF type info. This allows those
+> > constants to be emitted as part of vmlinux.h auto-generated header file and be
+> > used from BPF programs. Which is especially convenient for all kinds of BPF
+> > helper flags and makes CO-RE BPF programs nicer to write.
 > >
-> > From: KP Singh <kpsingh@google.com>
+> > libbpf's btf_dump logic currently assumes enum values are signed 32-bit
+> > values, but that doesn't match a typical case, so switch it to emit unsigned
+> > values. Once BTF encoding of BTF_KIND_ENUM is extended to capture signedness
+> > properly, this will be made more flexible.
 > >
-> > * Split the invoke_bpf program to prepare for special handling of
-> >   fmod_ret programs introduced in a subsequent patch.
-> > * Move the definition of emit_cond_near_jump and emit_nops as they are
-> >   needed for fmod_ret.
-> > * Refactor branch target alignment into its own function
-> >   align16_branch_target.
+> > As an immediate validation of the approach, runqslower's copy of
+> > BPF_F_CURRENT_CPU #define is dropped in favor of its enum variant from
+> > vmlinux.h.
+> >
+> > v2->v3:
+> > - convert only constants usable from BPF programs (BPF helper flags, map
+> >    create flags, etc) (Alexei);
+> >
+> > v1->v2:
+> > - fix up btf_dump test to use max 32-bit unsigned value instead of negative one.
+> >
+> >
+> > Andrii Nakryiko (3):
+> >    bpf: switch BPF UAPI #define constants used from BPF program side to
+> >      enums
+> >    libbpf: assume unsigned values for BTF_KIND_ENUM
+> >    tools/runqslower: drop copy/pasted BPF_F_CURRENT_CPU definiton
+> >
+> >   include/uapi/linux/bpf.h                      | 175 ++++++++++-------
+> >   tools/bpf/runqslower/runqslower.bpf.c         |   3 -
+> >   tools/include/uapi/linux/bpf.h                | 177 +++++++++++-------
+> >   tools/lib/bpf/btf_dump.c                      |   8 +-
+> >   .../bpf/progs/btf_dump_test_case_syntax.c     |   2 +-
+> >   5 files changed, 224 insertions(+), 141 deletions(-)
+> >
+>
+> Applied, thanks!
 
-I updated this as well, as we changed it to emit_align.
-
-- KP
-
-> >
-> > Signed-off-by: KP Singh <kpsingh@google.com>
-> > ---
-> 
-> I trust invoke_bpf_prog logic didn't change, code was just moved around, right?
-> 
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> 
-> 
-> >  arch/x86/net/bpf_jit_comp.c | 148 +++++++++++++++++++++---------------
-> >  1 file changed, 85 insertions(+), 63 deletions(-)
-> >
-> 
-> [...]
+Great, thanks! This is a huge usability boost for BPF programs relying
+on vmlinux.h!
