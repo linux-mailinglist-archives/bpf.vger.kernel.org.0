@@ -2,116 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0921798A2
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 20:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB761798A6
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 20:09:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387847AbgCDTIS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Mar 2020 14:08:18 -0500
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:32802 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729397AbgCDTIS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 4 Mar 2020 14:08:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1583348897;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9EDXoQq4R6l+0FmkujJv/4v71dbejsKVNKvhBqG1Z9o=;
-        b=ZgSOfamI3aC8gVfr1L79652UNofuF89e30gfPplsJSHX4JLPYZ8ap5X7cRQ7C/7Q7us+7t
-        Ivyyi2jUKqrV5f1ux7cfUd6CUI2r0Uz1o+8hylV3A++gF8KAuy275vNz5+0hHjA5S3fvNh
-        3IuWmcwjagW6iDoYE+PXfC7ojVOGuE8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-163-RNwvfwFkPgeVK9u8l_wNVQ-1; Wed, 04 Mar 2020 14:08:13 -0500
-X-MC-Unique: RNwvfwFkPgeVK9u8l_wNVQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0A946800D4E;
-        Wed,  4 Mar 2020 19:08:12 +0000 (UTC)
-Received: from krava (ovpn-205-10.brq.redhat.com [10.40.205.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0BDF25C219;
-        Wed,  4 Mar 2020 19:08:09 +0000 (UTC)
-Date:   Wed, 4 Mar 2020 20:08:07 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, quentin@isovalent.com,
-        kernel-team@fb.com, ast@kernel.org, daniel@iogearbox.net,
-        arnaldo.melo@gmail.com, jolsa@kernel.org
-Subject: Re: [PATCH v4 bpf-next 0/4] bpftool: introduce prog profile
-Message-ID: <20200304190807.GA168640@krava>
-References: <20200304180710.2677695-1-songliubraving@fb.com>
+        id S1728926AbgCDTI7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Mar 2020 14:08:59 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:42160 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727835AbgCDTI7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Mar 2020 14:08:59 -0500
+Received: by mail-wr1-f65.google.com with SMTP id v11so1882252wrm.9
+        for <bpf@vger.kernel.org>; Wed, 04 Mar 2020 11:08:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=3SS4fekyQGzGk+bEcZn0ToSHy9OyXafStxdmWHS/l5c=;
+        b=g1F21JnaXgZ/b+fqRbHrmibZXuy6uq7quiVcj8o9bY3mtdTjKW3DwnytkGBBhsYcBz
+         uurPUDZheKBecYlKZ3hwqF8Cb18i0zHW+C8J92SS+gHJqjOdtmI/z5qi78VIzgn5ovdf
+         OctW/J68R2IVHrpLo6q3sEsBevRAWmSywJ3Vw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=3SS4fekyQGzGk+bEcZn0ToSHy9OyXafStxdmWHS/l5c=;
+        b=L4dfMyETnEuF+HlZTJWDqzcbHgu/fQnR9vaGiS+9Hw62JemJVqmJfO7M18HAkAktCZ
+         3FRTHqVGDZPMvj+M85xZeHVEA3WUCBz0B2BX8OBt6TgJdNx1lzkzKbHtQ/Z0rGWfLZsV
+         0J+LBHsdHYFcf7LYh9avMmqiOhf3mvf40J5o8fGKhh7GbrbpSWme0loz2VZzFmceD3kT
+         WWENuaiXw9w7EvrN/XdRI6pkWU1IedJxNlQLeJAmWff84/Ole+itnidcwDLAZHmOBrXX
+         OjwUitRHPzw1BVBUzVWOPNdLtlTgMaLpvhkEtSyXNiqVwGyNYdF7/WzQyibh5M4kHlJ0
+         1bDg==
+X-Gm-Message-State: ANhLgQ0+2xF0qR2QbA2hZBo6XXsvtPFJ8CyQGDnHzKmX79CkJgEBv5//
+        ds/Tq8Px3ylxOpsOOi4lDuaw4Q==
+X-Google-Smtp-Source: ADFU+vvQX/rymjiQTTfmrRp8pXMzu+YTmiwg5naE9OKjaOSx1gH5F4Y92Cp+WVSUK0MJ9+BB0OphxQ==
+X-Received: by 2002:adf:b189:: with SMTP id q9mr4679569wra.169.1583348937825;
+        Wed, 04 Mar 2020 11:08:57 -0800 (PST)
+Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
+        by smtp.gmail.com with ESMTPSA id j14sm41257638wrn.32.2020.03.04.11.08.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Mar 2020 11:08:57 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Wed, 4 Mar 2020 20:08:55 +0100
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        linux-security-module@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Subject: Re: [PATCH bpf-next v3 1/7] bpf: Refactor trampoline update code
+Message-ID: <20200304190855.GA31073@chromium.org>
+References: <20200304154747.23506-1-kpsingh@chromium.org>
+ <20200304154747.23506-2-kpsingh@chromium.org>
+ <cb54c137-6d8e-b4e5-bd17-e0a05368c3eb@iogearbox.net>
+ <20200304184441.GA25392@chromium.org>
+ <CAEf4Bza4y_H+Avry=OdQ=j6Ey-niTYLafKUwicVeutmQ3X5g=g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200304180710.2677695-1-songliubraving@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4Bza4y_H+Avry=OdQ=j6Ey-niTYLafKUwicVeutmQ3X5g=g@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 04, 2020 at 10:07:06AM -0800, Song Liu wrote:
-> This set introduces bpftool prog profile command, which uses hardware
-> counters to profile BPF programs.
+On 04-Mär 10:47, Andrii Nakryiko wrote:
+> On Wed, Mar 4, 2020 at 10:44 AM KP Singh <kpsingh@chromium.org> wrote:
+> >
+> > On 04-Mär 19:37, Daniel Borkmann wrote:
+> > > On 3/4/20 4:47 PM, KP Singh wrote:
+> > > > From: KP Singh <kpsingh@google.com>
+> > > >
+> > > > As we need to introduce a third type of attachment for trampolines, the
+> > > > flattened signature of arch_prepare_bpf_trampoline gets even more
+> > > > complicated.
+> > > >
+> > > > Refactor the prog and count argument to arch_prepare_bpf_trampoline to
+> > > > use bpf_tramp_progs to simplify the addition and accounting for new
+> > > > attachment types.
+> > > >
+> > > > Signed-off-by: KP Singh <kpsingh@google.com>
+> > > > Acked-by: Andrii Nakryiko <andriin@fb.com>
+> > >
+> > > [...]
+> > > > diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+> > > > index c498f0fffb40..9f7e0328a644 100644
+> > > > --- a/kernel/bpf/bpf_struct_ops.c
+> > > > +++ b/kernel/bpf/bpf_struct_ops.c
+> > > > @@ -320,6 +320,7 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+> > > >     struct bpf_struct_ops_value *uvalue, *kvalue;
+> > > >     const struct btf_member *member;
+> > > >     const struct btf_type *t = st_ops->type;
+> > > > +   struct bpf_tramp_progs *tprogs = NULL;
+> > > >     void *udata, *kdata;
+> > > >     int prog_fd, err = 0;
+> > > >     void *image;
+> > > > @@ -425,10 +426,18 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+> > > >                     goto reset_unlock;
+> > > >             }
+> > > > +           tprogs = kcalloc(BPF_TRAMP_MAX, sizeof(*tprogs), GFP_KERNEL);
+> > > > +           if (!tprogs) {
+> > > > +                   err = -ENOMEM;
+> > > > +                   goto reset_unlock;
+> > > > +           }
+> > > > +
+> > >
+> > > Looking over the code again, I'm quite certain that here's a memleak
+> > > since the kcalloc() is done in the for_each_member() loop in the ops
+> > > update but then going out of scope and in the exit path we only kfree
+> > > the last tprogs.
+> >
+> > You're right, nice catch. Fixing it.
 > 
-> This command attaches fentry/fexit programs to a target program. These two
-> programs read hardware counters before and after the target program and
-> calculate the difference.
-> 
-> Changes v3 => v4:
-> 1. Simplify err handling in profile_open_perf_events() (Quentin);
-> 2. Remove redundant p_err() (Quentin);
-> 3. Replace tab with space in bash-completion; (Quentin);
-> 4. Fix typo _bpftool_get_map_names => _bpftool_get_prog_names (Quentin).
+> There is probably no need to do many allocations as well, just one
+> outside of the loop and reuse?
 
-hum, I'm getting:
+Yeah moved it out of the loop and before we grab the mutex, returning
+an -ENOMEM directly.
 
-	[jolsa@dell-r440-01 bpftool]$ pwd
-	/home/jolsa/linux-perf/tools/bpf/bpftool
-	[jolsa@dell-r440-01 bpftool]$ make
-	...
-	make[1]: Leaving directory '/home/jolsa/linux-perf/tools/lib/bpf'
-	  LINK     _bpftool
-	make: *** No rule to make target 'skeleton/profiler.bpf.c', needed by 'skeleton/profiler.bpf.o'.  Stop.
+Thanks for noticing this. Sending v4 now.
 
-jirka
+- KP
 
 > 
-> Changes v2 => v3:
-> 1. Change order of arguments (Quentin), as:
->      bpftool prog profile PROG [duration DURATION] METRICs
-> 2. Add bash-completion for bpftool prog profile (Quentin);
-> 3. Fix build of selftests (Yonghong);
-> 4. Better handling of bpf_map_lookup_elem() returns (Yonghong);
-> 5. Improve clean up logic of do_profile() (Yonghong);
-> 6. Other smaller fixes/cleanups.
-> 
-> Changes RFC => v2:
-> 1. Use new bpf_program__set_attach_target() API;
-> 2. Update output format to be perf-stat like (Alexei);
-> 3. Incorporate skeleton generation into Makefile;
-> 4. Make DURATION optional and Allow Ctrl-C (Alexei);
-> 5. Add calcated values "insn per cycle" and "LLC misses per million isns".
-> 
-> Song Liu (4):
->   bpftool: introduce "prog profile" command
->   bpftool: Documentation for bpftool prog profile
->   bpftool: bash completion for "bpftool prog profile"
->   bpftool: fix typo in bash-completion
-> 
->  .../bpftool/Documentation/bpftool-prog.rst    |  19 +
->  tools/bpf/bpftool/Makefile                    |  18 +
->  tools/bpf/bpftool/bash-completion/bpftool     |  47 +-
->  tools/bpf/bpftool/prog.c                      | 425 +++++++++++++++++-
->  tools/bpf/bpftool/skeleton/profiler.bpf.c     | 171 +++++++
->  tools/bpf/bpftool/skeleton/profiler.h         |  47 ++
->  tools/scripts/Makefile.include                |   1 +
->  7 files changed, 725 insertions(+), 3 deletions(-)
->  create mode 100644 tools/bpf/bpftool/skeleton/profiler.bpf.c
->  create mode 100644 tools/bpf/bpftool/skeleton/profiler.h
-> 
-> --
-> 2.17.1
-> 
-
+> >
+> > - KP
+> >
+> > >
+> > > > +           tprogs[BPF_TRAMP_FENTRY].progs[0] = prog;
+> > > > +           tprogs[BPF_TRAMP_FENTRY].nr_progs = 1;
+> > > >             err = arch_prepare_bpf_trampoline(image,
+> > > >                                               st_map->image + PAGE_SIZE,
+> > > >                                               &st_ops->func_models[i], 0,
+> > > > -                                             &prog, 1, NULL, 0, NULL);
+> > > > +                                             tprogs, NULL);
+> > > >             if (err < 0)
+> > > >                     goto reset_unlock;
+> > > > @@ -469,6 +478,7 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+> > > >     memset(uvalue, 0, map->value_size);
+> > > >     memset(kvalue, 0, map->value_size);
+> > > >   unlock:
+> > > > +   kfree(tprogs);
+> > > >     mutex_unlock(&st_map->lock);
+> > > >     return err;
+> > > >   }
