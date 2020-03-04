@@ -2,143 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E58FB179AD6
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 22:24:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD5E179AEC
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 22:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387398AbgCDVYm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Mar 2020 16:24:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53116 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726440AbgCDVYm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Mar 2020 16:24:42 -0500
-Received: from kicinski-fedora-PC1C0HJN (unknown [163.114.132.128])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2388338AbgCDV3q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Mar 2020 16:29:46 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:44425 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2388327AbgCDV3q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Mar 2020 16:29:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1583357385;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wJI8QQF7/OEZKkEHa78AcqUTru7oSuK0u2/Zvt+yl1s=;
+        b=dSBGpcvOH0vM/OjeVKdUCXAOPtDHxlIym4usR622Wx9iQ/xkRQiaOXw1qX+UP965JFurcH
+        HnRCFgmP0bwHMwEIREFpbpSgke6GACgA1atycPyRLCq27sMk1p44vPI+DnyVfD18CP7oJc
+        j0Sc7Bp145p4NZ+gPNBlRDfvGuDZelo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-438-sruHRiTCP7OGO-1CblhqNw-1; Wed, 04 Mar 2020 16:29:37 -0500
+X-MC-Unique: sruHRiTCP7OGO-1CblhqNw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 220B020828;
-        Wed,  4 Mar 2020 21:24:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583357081;
-        bh=dfmTHkwlwQakAbFT//PBtEviWAaBp5CQXM9A5mIYCXY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=N3GpPy0QLSK6r7O8dw3i+or7nSW+x2bTnwl+EILn+6HP0/uMYP/HNiUbpLQVjCedh
-         YQ1UXwwnY3ojMiw8zk04/vploK+dNRKf45Spsq+PmOkQeWIo+IRt3R/Qx4MfNEZ3Hj
-         ROXHr9QvoluJcG1iAjyBnHWmI+S27BRhR6SSgWjo=
-Date:   Wed, 4 Mar 2020 13:24:39 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 0/3] Introduce pinnable bpf_link kernel
- abstraction
-Message-ID: <20200304132439.6abadbe3@kicinski-fedora-PC1C0HJN>
-In-Reply-To: <20200304204506.wli3enu5w25b35h7@ast-mbp>
-References: <094a8c0f-d781-d2a2-d4cd-721b20d75edd@iogearbox.net>
-        <e9a4351a-4cf9-120a-1ae1-94a707a6217f@fb.com>
-        <8083c916-ac2c-8ce0-2286-4ea40578c47f@iogearbox.net>
-        <CAEf4BzbokCJN33Nw_kg82sO=xppXnKWEncGTWCTB9vGCmLB6pw@mail.gmail.com>
-        <87pndt4268.fsf@toke.dk>
-        <ab2f98f6-c712-d8a2-1fd3-b39abbaa9f64@iogearbox.net>
-        <ccbc1e49-45c1-858b-1ad5-ee503e0497f2@fb.com>
-        <87k1413whq.fsf@toke.dk>
-        <20200304043643.nqd2kzvabkrzlolh@ast-mbp>
-        <20200304114000.56888dac@kicinski-fedora-PC1C0HJN>
-        <20200304204506.wli3enu5w25b35h7@ast-mbp>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D227800D50;
+        Wed,  4 Mar 2020 21:29:35 +0000 (UTC)
+Received: from krava (ovpn-205-10.brq.redhat.com [10.40.205.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 754708AC36;
+        Wed,  4 Mar 2020 21:29:33 +0000 (UTC)
+Date:   Wed, 4 Mar 2020 22:29:31 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "quentin@isovalent.com" <quentin@isovalent.com>,
+        Kernel Team <Kernel-team@fb.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "arnaldo.melo@gmail.com" <arnaldo.melo@gmail.com>,
+        "jolsa@kernel.org" <jolsa@kernel.org>
+Subject: Re: [PATCH v4 bpf-next 0/4] bpftool: introduce prog profile
+Message-ID: <20200304212931.GE168640@krava>
+References: <20200304180710.2677695-1-songliubraving@fb.com>
+ <20200304190807.GA168640@krava>
+ <20200304204158.GD168640@krava>
+ <C7C4E8E1-9176-48DC-8089-D4AEDE86E720@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <C7C4E8E1-9176-48DC-8089-D4AEDE86E720@fb.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 4 Mar 2020 12:45:07 -0800 Alexei Starovoitov wrote:
-> On Wed, Mar 04, 2020 at 11:41:58AM -0800, Jakub Kicinski wrote:
-> > On Tue, 3 Mar 2020 20:36:45 -0800 Alexei Starovoitov wrote:  
-> > > > > libxdp can choose to pin it in some libxdp specific location, so other
-> > > > > libxdp-enabled applications can find it in the same location, detach,
-> > > > > replace, modify, but random app that wants to hack an xdp prog won't
-> > > > > be able to mess with it.    
-> > > > 
-> > > > What if that "random app" comes first, and keeps holding on to the link
-> > > > fd? Then the admin essentially has to start killing processes until they
-> > > > find the one that has the device locked, no?    
-> > > 
-> > > Of course not. We have to provide an api to make it easy to discover
-> > > what process holds that link and where it's pinned.  
-> > 
-> > That API to discover ownership would be useful but it's on the BPF side.  
-> 
-> it's on bpf side because it's bpf specific.
-> 
-> > We have netlink notifications in networking world. The application
-> > which doesn't want its program replaced should simply listen to the
-> > netlink notifications and act if something goes wrong.  
-> 
-> instead of locking the bike let's setup a camera and monitor the bike
-> when somebody steals it.
-> and then what? chase the thief and bring the bike back?
+On Wed, Mar 04, 2020 at 09:16:29PM +0000, Song Liu wrote:
+>=20
+>=20
+> > On Mar 4, 2020, at 12:41 PM, Jiri Olsa <jolsa@redhat.com> wrote:
+> >=20
+> > On Wed, Mar 04, 2020 at 08:08:07PM +0100, Jiri Olsa wrote:
+> >> On Wed, Mar 04, 2020 at 10:07:06AM -0800, Song Liu wrote:
+> >>> This set introduces bpftool prog profile command, which uses hardwa=
+re
+> >>> counters to profile BPF programs.
+> >>>=20
+> >>> This command attaches fentry/fexit programs to a target program. Th=
+ese two
+> >>> programs read hardware counters before and after the target program=
+ and
+> >>> calculate the difference.
+> >>>=20
+> >>> Changes v3 =3D> v4:
+> >>> 1. Simplify err handling in profile_open_perf_events() (Quentin);
+> >>> 2. Remove redundant p_err() (Quentin);
+> >>> 3. Replace tab with space in bash-completion; (Quentin);
+> >>> 4. Fix typo _bpftool_get_map_names =3D> _bpftool_get_prog_names (Qu=
+entin).
+> >>=20
+> >> hum, I'm getting:
+> >>=20
+> >> 	[jolsa@dell-r440-01 bpftool]$ pwd
+> >> 	/home/jolsa/linux-perf/tools/bpf/bpftool
+> >> 	[jolsa@dell-r440-01 bpftool]$ make
+> >> 	...
+> >> 	make[1]: Leaving directory '/home/jolsa/linux-perf/tools/lib/bpf'
+> >> 	  LINK     _bpftool
+> >> 	make: *** No rule to make target 'skeleton/profiler.bpf.c', needed =
+by 'skeleton/profiler.bpf.o'.  Stop.
+> >=20
+> > ok, I had to apply your patches by hand, because 'git am' refused to
+> > due to fuzz.. so some of you new files did not make it to my tree ;-)
+> >=20
+> > anyway I hit another error now:
+> >=20
+> > 	  CC       prog.o
+> > 	In file included from prog.c:1553:
+> > 	profiler.skel.h: In function =E2=80=98profiler_bpf__create_skeleton=E2=
+=80=99:
+> > 	profiler.skel.h:136:35: error: =E2=80=98struct profiler_bpf=E2=80=99=
+ has no member named =E2=80=98rodata=E2=80=99
+> > 	  136 |  s->maps[4].mmaped =3D (void **)&obj->rodata;
+> > 	      |                                   ^~
+> > 	prog.c: In function =E2=80=98profile_read_values=E2=80=99:
+> > 	prog.c:1650:29: error: =E2=80=98struct profiler_bpf=E2=80=99 has no =
+member named =E2=80=98rodata=E2=80=99
+> > 	 1650 |  __u32 m, cpu, num_cpu =3D obj->rodata->num_cpu;
+> >=20
+> > I'll try to figure it out.. might be error on my end
+> >=20
+> > do you have git repo with these changes?
+>=20
+> I pushed it to=20
+>=20
+> https://git.kernel.org/pub/scm/linux/kernel/git/song/linux.git/tree/?h=3D=
+bpf-per-prog-stats
 
-:) Is the bike the BPF program? It's more like thief is stealing our
-parking spot, we still have the program :)
+still the same:
 
-Maybe also the thief should not have CAP_ADMIN in the first place?
-And ask a daemon to perform its actions..
+	[jolsa@dell-r440-01 bpftool]$ git show --oneline HEAD | head -1
+	7bbda5cca00a bpftool: fix typo in bash-completion
+	[jolsa@dell-r440-01 bpftool]$ make=20
+	make[1]: Entering directory '/home/jolsa/linux-perf/tools/lib/bpf'
+	make[1]: Leaving directory '/home/jolsa/linux-perf/tools/lib/bpf'
+	  CC       prog.o
+	In file included from prog.c:1553:
+	profiler.skel.h: In function =E2=80=98profiler_bpf__create_skeleton=E2=80=
+=99:
+	profiler.skel.h:136:35: error: =E2=80=98struct profiler_bpf=E2=80=99 has=
+ no member named =E2=80=98rodata=E2=80=99
+	  136 |  s->maps[4].mmaped =3D (void **)&obj->rodata;
+	      |                                   ^~
+	prog.c: In function =E2=80=98profile_read_values=E2=80=99:
+	prog.c:1650:29: error: =E2=80=98struct profiler_bpf=E2=80=99 has no memb=
+er named =E2=80=98rodata=E2=80=99
+	 1650 |  __u32 m, cpu, num_cpu =3D obj->rodata->num_cpu;
+	      |                             ^~
+	prog.c: In function =E2=80=98profile_open_perf_events=E2=80=99:
+	prog.c:1810:19: error: =E2=80=98struct profiler_bpf=E2=80=99 has no memb=
+er named =E2=80=98rodata=E2=80=99
+	 1810 |   sizeof(int), obj->rodata->num_cpu * obj->rodata->num_metric);
+	      |                   ^~
+	prog.c:1810:42: error: =E2=80=98struct profiler_bpf=E2=80=99 has no memb=
+er named =E2=80=98rodata=E2=80=99
+	 1810 |   sizeof(int), obj->rodata->num_cpu * obj->rodata->num_metric);
+	      |                                          ^~
+	prog.c:1825:26: error: =E2=80=98struct profiler_bpf=E2=80=99 has no memb=
+er named =E2=80=98rodata=E2=80=99
+	 1825 |   for (cpu =3D 0; cpu < obj->rodata->num_cpu; cpu++) {
+	      |                          ^~
+	prog.c: In function =E2=80=98do_profile=E2=80=99:
+	prog.c:1904:13: error: =E2=80=98struct profiler_bpf=E2=80=99 has no memb=
+er named =E2=80=98rodata=E2=80=99
+	 1904 |  profile_obj->rodata->num_cpu =3D num_cpu;
+	      |             ^~
+	prog.c:1905:13: error: =E2=80=98struct profiler_bpf=E2=80=99 has no memb=
+er named =E2=80=98rodata=E2=80=99
+	 1905 |  profile_obj->rodata->num_metric =3D num_metric;
+	      |             ^~
+	make: *** [Makefile:129: prog.o] Error 1
 
-> > > But if we go with notifier approach none of it is an issue.  
-> > 
-> > Sorry, what's the notifier approach? You mean netdev notifier chain 
-> > or something new?  
-> 
-> that's tbd.
-> 
-> > > Whether target obj is held or notifier is used everything I said before still
-> > > stands. "random app" that uses netlink after libdispatcher got its link FD will
-> > > not be able to mess with carefully orchestrated setup done by libdispatcher.
-> > > 
-> > > Also either approach will guarantee that infamous message:
-> > > "unregister_netdevice: waiting for %s to become free. Usage count"
-> > > users will never see.
-> > >  
-> > > > And what about the case where the link fd is pinned on a bpffs that is
-> > > > no longer available? I.e., if a netdevice with an XDP program moves
-> > > > namespaces and no longer has access to the original bpffs, that XDP
-> > > > program would essentially become immutable?    
-> > > 
-> > > 'immutable' will not be possible.
-> > > I'm not clear to me how bpffs is going to disappear. What do you mean
-> > > exactly?
-> > >   
-> > > > > We didn't come up with these design choices overnight. It came from
-> > > > > hard lessons learned while deploying xdp, tc and cgroup in production.
-> > > > > Legacy apis will not be deprecated, of course.    
-> > 
-> > This sounds like a version of devm_* helpers for configuration.
-> > Why are current user space APIs insufficient?   
-> 
-> current xdp, tc, cgroup apis don't have the concept of the link
-> and owner of that link.
 
-Why do the attachment points have to have a concept of an owner and 
-not the program itself?
+jirka
 
-Link is a very overloaded term, I may not comprehend very well that 
-it models because of that.
-
-> > Surely all of this can 
-> > be done from user space.  
-> 
-> with a camera for theft monitoring. that will work well.
-> 
-> > And we will need a centralized daemon for XDP
-> > dispatch, so why is it not a part of a daemon?  
-> 
-> current design of libdispatcher doesn't need the deamon.
-
-Which is flawed. Why do we want to solve a distributed problem 
-of multiple applications with potentially a different version 
-of a library cooperating. When we can make it a daemon.
