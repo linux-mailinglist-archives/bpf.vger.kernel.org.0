@@ -2,147 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E09B1789AA
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 05:36:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 518E01789BA
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 05:49:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbgCDEgu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 23:36:50 -0500
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:45784 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726204AbgCDEgu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Mar 2020 23:36:50 -0500
-Received: by mail-pl1-f195.google.com with SMTP id b22so422135pls.12;
-        Tue, 03 Mar 2020 20:36:49 -0800 (PST)
+        id S1725861AbgCDEtP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 23:49:15 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:44924 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725773AbgCDEtP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Mar 2020 23:49:15 -0500
+Received: by mail-qk1-f196.google.com with SMTP id f198so380317qke.11;
+        Tue, 03 Mar 2020 20:49:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=7O2LRTpM2yhNi2dntMNIgwz/oqhGVqyhb0AH7YvMO0E=;
-        b=dTp0TAkPOCGPHV0zuHwDY0VK0Z0n/j5+xoMcShsuhx5oVPpJvwMh6WC/vCJtdSQX31
-         q6eJpFH33gxfnR9WlD5aqzdflxFfSlA1bH3IltvCR2JReJLCn6JcRgmufNfZLaDJzH7/
-         DHKhKiLNi97mdXrMLRUKIQOOBjsc+GGhSpum8Rb6J2tz9KHXBLvAI0VYHjEdowvEaBbT
-         FZ5c3zVmzuOwJHio9Bc70X4ygvZxGXqpXLgIxFax+4cWGDvB8RXHlsYI3LZsmu5LMrQ4
-         N2h/9ekJQeZNIM2zZjJ5wEAbs25ysRw/YXuQvPIKNpzChY21bFyXGohl+8iIJsRNQR6p
-         0JQQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tLh2t8ZxrQBaE7gNcsphAEc0sv2uDeMMUkAe4uCR56E=;
+        b=HCInrvUhEUF02OYcK6mqXOlHVZL0s9reDN2rTvIbiPTBOSzaRK9Do71mx1576p4F+N
+         bv4uKyqWe2Dr4Thtu9gu7hJ/aoKMqPA4k5XFCGbzIonR6tQwc/wCkisy4UAVSSp5GA6c
+         fUjhUDxXy59ieUrYiBZeVCe18ewiyzVkjgDOhuCuqAIXNL9UdT39sUACcpiLSvbWde2q
+         GmtVJ5ubTTylyiKCpK2c6xvjXBMpsUwjg4kc33x42yU/cbS5p4yWfyjVoGIYViZ3A1N4
+         tvx7t9/6Hx/2KooiORFGr3cwgkdANj8RYKjt62MrvYQZW+YehRpuhrooViVvgOapYnoM
+         QG9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=7O2LRTpM2yhNi2dntMNIgwz/oqhGVqyhb0AH7YvMO0E=;
-        b=QWPOfbtCtcFJwDBfSBMNXg9lOYN0AZaO8xD4GqbhPe++7hRxvtcReWAnTEylv5x66W
-         Oz+ExXkoIqqpYQRV1/BhHBd2zZKVYjMXTx2o2gtipnh6U/ONsRG0PNYtvxeYcSbQuNCF
-         OevfhWJe3k8IWbmkSuTh4X9m13mekkPaySomIHuj+2rrcV2pUNOMQtc2kKkrev1d3PdC
-         27OE9eG7Wps9omLIkFTlddTXHjgPWJpfHwIDH8tYJ4ES+4J4/yQeeaKZ+1wZ0rNpFR2U
-         MGdHojKMDP4cdg3Uih2JnLGTnfk+GEm1wxMg0cv3++00CPE09BHczrh9nZp1QKrTtKc2
-         g7Rg==
-X-Gm-Message-State: ANhLgQ0GzC+JJkXwuyoVgIWwI7ZylBrtJ6ZKy00+ktSabteuhnPNzdUg
-        S19BYxce56W0FUxp1dqapZ0=
-X-Google-Smtp-Source: ADFU+vs86keVc3R9GW2WlHj/r0yzu6HdXq/cUGX8C4azVI25ILshXIk+weU6XCjMh4ohkYSdxKUnNg==
-X-Received: by 2002:a17:902:ac83:: with SMTP id h3mr1365905plr.86.1583296608918;
-        Tue, 03 Mar 2020 20:36:48 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:400::5:f17b])
-        by smtp.gmail.com with ESMTPSA id h132sm22429033pfe.118.2020.03.03.20.36.46
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 03 Mar 2020 20:36:48 -0800 (PST)
-Date:   Tue, 3 Mar 2020 20:36:45 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 0/3] Introduce pinnable bpf_link kernel
- abstraction
-Message-ID: <20200304043643.nqd2kzvabkrzlolh@ast-mbp>
-References: <CAEf4BzZGn9FcUdEOSR_ouqSNvzY2AdJA=8ffMV5mTmJQS-10VA@mail.gmail.com>
- <87imjms8cm.fsf@toke.dk>
- <094a8c0f-d781-d2a2-d4cd-721b20d75edd@iogearbox.net>
- <e9a4351a-4cf9-120a-1ae1-94a707a6217f@fb.com>
- <8083c916-ac2c-8ce0-2286-4ea40578c47f@iogearbox.net>
- <CAEf4BzbokCJN33Nw_kg82sO=xppXnKWEncGTWCTB9vGCmLB6pw@mail.gmail.com>
- <87pndt4268.fsf@toke.dk>
- <ab2f98f6-c712-d8a2-1fd3-b39abbaa9f64@iogearbox.net>
- <ccbc1e49-45c1-858b-1ad5-ee503e0497f2@fb.com>
- <87k1413whq.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tLh2t8ZxrQBaE7gNcsphAEc0sv2uDeMMUkAe4uCR56E=;
+        b=IuLD8ynFmDa0GGsCPLz+TnmRoWYoUROvDVFwlpdrUyxwjQ0mrczbvV2vml41Do5vAf
+         kW9m7oxHDs5cKQ5CbJM/90wT93OKEduzfKhbUVaYsAdym6dJKq130Bmw9TIOekMkDah6
+         +cmsZZnrZDKVSyYsOaJHTPhPQxL2DqbbTSnJ7j+bRDlZHMs7MVha6nZCRQWZnjkteQTx
+         LB3CI4D3wZF37bkp4XXGiiujD0Xe/h2xC5NFvo/Q86J/+fqzqifNN7mBPzrSO6Rp5jVq
+         VkBfP9ttfAe20vhF1S/Vi22Ia4tRuphWfqOz0pfTEsYzCIUlAbWDDd+u1TszxucGQxzO
+         fjDw==
+X-Gm-Message-State: ANhLgQ1O0PJrPIqHGYN7dUKf+6UU5ZRk5upgYR2Jn1VXXrzsSg/xodQL
+        T5ix6uAg83VSXNUzbI2K/5FQzDnwZA+bRkfv1NU=
+X-Google-Smtp-Source: ADFU+vsd9kw2Aw/vR4b8MZQEChp3C4LPMq0HGJoVad+NcWeQ67Fguaa5Imjp/4V9DWD7WH+znJfMXEJmiAk273+dS6g=
+X-Received: by 2002:a37:a2d6:: with SMTP id l205mr1319554qke.92.1583297353989;
+ Tue, 03 Mar 2020 20:49:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87k1413whq.fsf@toke.dk>
-User-Agent: NeoMutt/20180223
+References: <20200304015528.29661-1-kpsingh@chromium.org> <20200304015528.29661-2-kpsingh@chromium.org>
+In-Reply-To: <20200304015528.29661-2-kpsingh@chromium.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 3 Mar 2020 20:49:02 -0800
+Message-ID: <CAEf4BzZ58iymCdqqCe=p-7BSF_kt+Dd19taEjTJBEt_ZBZz0=Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/7] bpf: Refactor trampoline update code
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     linux-security-module@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 03, 2020 at 11:27:13PM +0100, Toke Høiland-Jørgensen wrote:
-> Alexei Starovoitov <ast@fb.com> writes:
-> >
-> > Legacy api for tc, xdp, cgroup will not be able to override FD-based
-> > link. For TC it's easy. cls-bpf allows multi-prog, so netlink
-> > adding/removing progs will not be able to touch progs that are
-> > attached via FD-based link.
-> > Same thing for cgroups. FD-based link will be similar to 'multi' mode.
-> > The owner of the link has a guarantee that their program will
-> > stay attached to cgroup.
-> > XDP is also easy. Since it has only one prog. Attaching FD-based link
-> > will prevent netlink from overriding it.
-> 
-> So what happens if the device goes away?
+On Tue, Mar 3, 2020 at 5:56 PM KP Singh <kpsingh@chromium.org> wrote:
+>
+> From: KP Singh <kpsingh@google.com>
+>
+> As we need to introduce a third type of attachment for trampolines, the
+> flattened signature of arch_prepare_bpf_trampoline gets even more
+> complicated.
+>
+> Refactor the prog and count argument to arch_prepare_bpf_trampoline to
+> use bpf_tramp_progs to simplify the addition and accounting for new
+> attachment types.
+>
+> Signed-off-by: KP Singh <kpsingh@google.com>
+> ---
 
-I'm not sure yet whether it's cleaner to make netdev, qdisc, cgroup to be held
-by the link or use notifier approach. There are pros and cons to both.
+See note about const-ification of trampoline and naming suggestion,
+but looks good overall:
 
-> > This way the rootlet prog installed by libxdp (let's find a better name
-> > for it) will stay attached.
-> 
-> Dispatcher prog?
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-would be great, but 'bpf_dispatcher' name is already used in the kernel.
-I guess we can still call the library libdispatcher and dispatcher prog?
-Alternatives:
-libchainer and chainer prog
-libaggregator and aggregator prog?
-libpolicer kinda fits too, but could be misleading.
-libxdp is very confusing. It's not xdp specific.
 
-> > libxdp can choose to pin it in some libxdp specific location, so other
-> > libxdp-enabled applications can find it in the same location, detach,
-> > replace, modify, but random app that wants to hack an xdp prog won't
-> > be able to mess with it.
-> 
-> What if that "random app" comes first, and keeps holding on to the link
-> fd? Then the admin essentially has to start killing processes until they
-> find the one that has the device locked, no?
+>  arch/x86/net/bpf_jit_comp.c | 31 ++++++++++---------
+>  include/linux/bpf.h         | 13 ++++++--
+>  kernel/bpf/bpf_struct_ops.c | 12 ++++++-
+>  kernel/bpf/trampoline.c     | 62 +++++++++++++++++++++----------------
+>  4 files changed, 73 insertions(+), 45 deletions(-)
+>
 
-Of course not. We have to provide an api to make it easy to discover
-what process holds that link and where it's pinned.
-But if we go with notifier approach none of it is an issue.
-Whether target obj is held or notifier is used everything I said before still
-stands. "random app" that uses netlink after libdispatcher got its link FD will
-not be able to mess with carefully orchestrated setup done by libdispatcher.
+[...]
 
-Also either approach will guarantee that infamous message:
-"unregister_netdevice: waiting for %s to become free. Usage count"
-users will never see.
+> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> index 704fa787fec0..cfe96d4cd89f 100644
+> --- a/kernel/bpf/trampoline.c
+> +++ b/kernel/bpf/trampoline.c
+> @@ -190,40 +190,49 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
+>         return ret;
+>  }
+>
+> -/* Each call __bpf_prog_enter + call bpf_func + call __bpf_prog_exit is ~50
+> - * bytes on x86.  Pick a number to fit into BPF_IMAGE_SIZE / 2
+> - */
+> -#define BPF_MAX_TRAMP_PROGS 40
+> +static struct bpf_tramp_progs *
+> +bpf_trampoline_update_progs(struct bpf_trampoline *tr, int *total)
 
-> And what about the case where the link fd is pinned on a bpffs that is
-> no longer available? I.e., if a netdevice with an XDP program moves
-> namespaces and no longer has access to the original bpffs, that XDP
-> program would essentially become immutable?
+reading the code again, seems like bpf_trampoline_update_progs is
+really more like bpf_trampoline_get_progs, no? It doesn't modify
+trampoline itself, so might as well mark tr as const pointer.
 
-'immutable' will not be possible.
-I'm not clear to me how bpffs is going to disappear. What do you mean
-exactly?
 
-> > We didn't come up with these design choices overnight. It came from
-> > hard lessons learned while deploying xdp, tc and cgroup in production.
-> > Legacy apis will not be deprecated, of course.
-> 
-> Not deprecated, just less privileged?
+> +{
+> +       struct bpf_tramp_progs *tprogs;
+> +       struct bpf_prog **progs;
+> +       struct bpf_prog_aux *aux;
+> +       int kind;
+> +
 
-No idea what you're referring to.
+[...]
