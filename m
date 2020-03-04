@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2098D1789E2
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 06:13:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E541789E9
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 06:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725822AbgCDFNK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Mar 2020 00:13:10 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:41316 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725271AbgCDFNK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Mar 2020 00:13:10 -0500
-Received: by mail-qk1-f194.google.com with SMTP id b5so430261qkh.8;
-        Tue, 03 Mar 2020 21:13:09 -0800 (PST)
+        id S1725283AbgCDFPC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Mar 2020 00:15:02 -0500
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:35603 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725271AbgCDFPC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Mar 2020 00:15:02 -0500
+Received: by mail-qv1-f67.google.com with SMTP id u10so266473qvi.2;
+        Tue, 03 Mar 2020 21:15:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HxfKMRYycoYJCMjo+bMFWJRwnGnU13AVvKUckPyxeSo=;
-        b=K5Fn7w8SmnIBj8Lc9FZok49SJWB6g/q/Iga7hGwmiFt+PvrkBDKrKfNigTp77YxG9X
-         DPuvoDPY+71aruC/wBH3cVGt1rRCaJEXKOLVpxMsDTPajmm72QvPDOWHNN8zLSHzdtuG
-         KFoCJVbiTmToQ5WIewb6q7t96jAnIeGAcol4qQRWHd994e9P/bnG8+ryfXWaHqoMcBTO
-         dMml4IRUX9PPz/kzdO5V5UgWu4+yMXt3B8I3WPmTxvJhNurnND1C9wqIdue+KZk564qh
-         OzvlIfr4noAmNfAOCdekZQe6ygE8ZqthS2f8MWN1pKfkJ9S6bLCEZ8aozzFOImi6VKr2
-         gk8w==
+        bh=AW1It91eB41MJO8tcBMXkpdl3fk8Ujf8yzHplhBGqgE=;
+        b=KPNpz7cvO23TdqYA/PVi4Bl5I351QFJV4eyXzQmEmMtC/AyQ+OduXCd3sHguKmPKKU
+         LxYp/fPEB5OTW3c31Hb4u2BI3vLUSIIGgspwGCnXB3EfLHZxqGG79XUVBhKgc8zo40Wa
+         IrjyPFvv8rGzOluGbd+tD+J6PRXXX+Ylg+VfJ64PPif0ZiA8IkMQfzxwDHMzsSDlh98F
+         v0w5IN66vUtdYAKFR9LOfEwiksV8tnFxiTg+du+/5Fq3F+iQBHzM8BwEMjiLWZ3wfkgn
+         fbrl4uzw2W+/ohzZsvqv1cESwFa3Z4VMVRxOycGn0eoaPxFReAqrVo7/SSNvV02CSswS
+         H8iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HxfKMRYycoYJCMjo+bMFWJRwnGnU13AVvKUckPyxeSo=;
-        b=q5XfS03CdwdaB2aTikw8fhf7cSPbL4WijAv5cuPt8yoNtTcPNVMNSKscl2dSvbdc7D
-         aV1+bioHBAAheDZkiZMpr2SiYyxtaFOGdXpNRvcEiQ+S82oGZLoIvEtnKmyovyG7XX15
-         Rw0wXpdf+vYFlbg5uAGPj9Amk9eNV0VmM1hIxvq/lR8NoDcCsgV2pXSPYTWJyU7B7VPJ
-         4Bg1RcVa6VWoCiw0iHDsBzYKlfXp/7gKzZyk0z+jJJxMT3uDS5H6tiapxLjY+8SjmCjn
-         8U60+VEmye88sm0PdzWI0fu4Mu5ChVSOUNqMZjcPZ8fAM7Anwn22KKZZ55b7PGnspoI9
-         FYJg==
-X-Gm-Message-State: ANhLgQ3ZwlnfXDm1E756thEnsakdJg95MPextP80aiVImWFSc5aubxSs
-        VWdNqvmsZuXK9N55vYWZxTQlCleeOb17Iz16C6Q=
-X-Google-Smtp-Source: ADFU+vtzCLI06uGJU75QdLWpADbjaRR4sP9m7GAksEwL9DWlE1GZMxFgdM8Vtf8bZY4MVdtet9MF9YvtDv9Tkt89qoY=
-X-Received: by 2002:a37:a70c:: with SMTP id q12mr1440438qke.36.1583298789150;
- Tue, 03 Mar 2020 21:13:09 -0800 (PST)
+        bh=AW1It91eB41MJO8tcBMXkpdl3fk8Ujf8yzHplhBGqgE=;
+        b=Vc2ADQdVoGJf0HIpglOmMS6+G6SyAgJhdibxWv5ld5h1wMbGbWBzLbPX5kjONNFqW+
+         ZBSNfwHxUX5Vb6vUwz/VXGhJu4E9EVIUvzx5fc6rKCn9EKV8vSVaVSoO07okCEhA3Gxg
+         1dcgcAmLR5RO1uQluN4qsx+tIj9PEL0gKJL5SYusjy3fVCHk3kb2n6zRGQn6+W/UlGuh
+         wL2spZzM5PRg2Lg/OT0lcwtbPVxdNqgYrKTo5PGciEhmmf7HzrRMJmqBMgu5nWruUYLl
+         w5hevchcRsVdTaH8bY0w9Mn4QnhCSuwx7JAz0nC/z5RLakvSoKy7aalXRFLOUZ7jkBW7
+         WoIQ==
+X-Gm-Message-State: ANhLgQ14hBGovBcT5bJWr24gOUVRHlQ2OJpf7wi/cjo+HFJQNtvP9aad
+        Xpw9OuRWSl3n7VNjG4g1OXshQmeh+cx0MOuINLo=
+X-Google-Smtp-Source: ADFU+vvcesLjPCKTVi0KVX1E1u9L/QZwr7MaTk66Ir/3c0pEeCN2wK4si//1F9ccw4rlIxoqa9prYeUJTg4o2+mt9Ek=
+X-Received: by 2002:a05:6214:8cb:: with SMTP id da11mr733937qvb.228.1583298901139;
+ Tue, 03 Mar 2020 21:15:01 -0800 (PST)
 MIME-Version: 1.0
-References: <20200304015528.29661-1-kpsingh@chromium.org> <20200304015528.29661-5-kpsingh@chromium.org>
-In-Reply-To: <20200304015528.29661-5-kpsingh@chromium.org>
+References: <20200304015528.29661-1-kpsingh@chromium.org> <20200304015528.29661-7-kpsingh@chromium.org>
+In-Reply-To: <20200304015528.29661-7-kpsingh@chromium.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 3 Mar 2020 21:12:57 -0800
-Message-ID: <CAEf4BzZdR-PTFZT5VJ7kMw=FNhsCUpbQvdypEWSF1JNuaye6Kw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/7] bpf: Attachment verification for BPF_MODIFY_RETURN
+Date:   Tue, 3 Mar 2020 21:14:50 -0800
+Message-ID: <CAEf4Bzbg8TZVfctYQCe+d9kkUaJPU-Vnso-BWeOu=VecnikPJQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 6/7] bpf: Add test ops for BPF_PROG_TYPE_TRACING
 To:     KP Singh <kpsingh@chromium.org>
 Cc:     linux-security-module@vger.kernel.org,
         open list <linux-kernel@vger.kernel.org>,
@@ -65,31 +65,25 @@ On Tue, Mar 3, 2020 at 5:56 PM KP Singh <kpsingh@chromium.org> wrote:
 >
 > From: KP Singh <kpsingh@google.com>
 >
-> - Allow BPF_MODIFY_RETURN attachment only to functions that are:
+> The current fexit and fentry tests rely on a different program to
+> exercise the functions they attach to. Instead of doing this, implement
+> the test operations for tracing which will also be used for
+> BPF_MODIFY_RETURN in a subsequent patch.
 >
->     * Whitelisted by for error injection i.e. by checking
->       within_error_injection_list. Similar disucssions happened for the
->       bpf_overrie_return helper.
-
-2 typos: discussions and bpf_override_return ;)
-
->
->     * security hooks, this is expected to be cleaned up with the LSM
->       changes after the KRSI patches introduce the LSM_HOOK macro:
->
->         https://lore.kernel.org/bpf/20200220175250.10795-1-kpsingh@chromium.org/
->
-> - The attachment is currently limited to functions that return an int.
->   This can be extended later other types (e.g. PTR).
+> Also, clean up the fexit test to use the generated skeleton.
 >
 > Signed-off-by: KP Singh <kpsingh@google.com>
 > ---
 
 Acked-by: Andrii Nakryiko <andriin@fb.com>
 
->  kernel/bpf/btf.c      | 28 ++++++++++++++++++++--------
->  kernel/bpf/verifier.c | 31 +++++++++++++++++++++++++++++++
->  2 files changed, 51 insertions(+), 8 deletions(-)
+>  include/linux/bpf.h                           | 10 +++
+>  kernel/trace/bpf_trace.c                      |  1 +
+>  net/bpf/test_run.c                            | 37 +++++++---
+>  .../selftests/bpf/prog_tests/fentry_fexit.c   | 12 +---
+>  .../selftests/bpf/prog_tests/fentry_test.c    | 14 ++--
+>  .../selftests/bpf/prog_tests/fexit_test.c     | 69 ++++++-------------
+>  6 files changed, 67 insertions(+), 76 deletions(-)
 >
 
 [...]
