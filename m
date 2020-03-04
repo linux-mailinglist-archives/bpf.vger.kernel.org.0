@@ -2,68 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5FB17981E
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 19:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49AF7179833
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 19:43:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730141AbgCDSkI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Mar 2020 13:40:08 -0500
-Received: from www62.your-server.de ([213.133.104.62]:58484 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730004AbgCDSkI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Mar 2020 13:40:08 -0500
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1j9Yw9-0006kb-UP; Wed, 04 Mar 2020 19:40:05 +0100
-Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux.fritz.box)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1j9Yw9-000A66-LO; Wed, 04 Mar 2020 19:40:05 +0100
-Subject: Re: [PATCH bpf-next v2] kbuild: Remove debug info from kallsyms
- linking
-To:     Kees Cook <keescook@chromium.org>, bpf@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        linux-kbuild@vger.kernel.org, andriin@fb.com
-References: <202003031814.4AEA3351@keescook>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9dd690e8-868d-d463-6b85-14270fdcc210@iogearbox.net>
-Date:   Wed, 4 Mar 2020 19:40:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1729600AbgCDSnr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Mar 2020 13:43:47 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:36574 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727137AbgCDSnr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 4 Mar 2020 13:43:47 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 024ITiHN022424
+        for <bpf@vger.kernel.org>; Wed, 4 Mar 2020 10:43:46 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=rXVNnDc2b0N43zIsSnrY4qwJop2dhCpuxuYn7MyhGnU=;
+ b=oRYDK1KgO032Utky49pXKwPd5SuFt+Pyl8W1jZMgwWC17AWeA/62eztzqxR0UcnETK/q
+ 5JohBZxSAMf9I7sbWMg6YFRJBcV8IGzJJzytpigOpf0T28u7CzVJPNR6sbyIAbyvyW4T
+ GpJyzfq4WAhp6wYlhXsDwQdxWdUWP0NIh3I= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yhbxwtyr7-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 04 Mar 2020 10:43:46 -0800
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 4 Mar 2020 10:43:45 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 8BAAA2EC2D4D; Wed,  4 Mar 2020 10:43:41 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] selftests/bpf: support out-of-tree vmlinux builds for VMLINUX_BTF
+Date:   Wed, 4 Mar 2020 10:43:36 -0800
+Message-ID: <20200304184336.165766-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-In-Reply-To: <202003031814.4AEA3351@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25741/Wed Mar  4 15:15:26 2020)
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-03-04_07:2020-03-04,2020-03-04 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ mlxscore=0 lowpriorityscore=0 spamscore=0 phishscore=0 adultscore=0
+ mlxlogscore=862 bulkscore=0 malwarescore=0 suspectscore=8 clxscore=1015
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2003040125
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/4/20 3:18 AM, Kees Cook wrote:
-> When CONFIG_DEBUG_INFO is enabled, the two kallsyms linking steps spend
-> time collecting and writing the dwarf sections to the temporary output
-> files. kallsyms does not need this information, and leaving it off
-> halves their linking time. This is especially noticeable without
-> CONFIG_DEBUG_INFO_REDUCED. The BTF linking stage, however, does still
-> need those details.
-> 
-> Refactor the BTF and kallsyms generation stages slightly for more
-> regularized temporary names. Skip debug during kallsyms links.
-> Additionally move "info BTF" to the correct place since commit
-> 8959e39272d6 ("kbuild: Parameterize kallsyms generation and correct
-> reporting"), which added "info LD ..." to vmlinux_link calls.
-> 
-> For a full debug info build with BTF, my link time goes from 1m06s to
-> 0m54s, saving about 12 seconds, or 18%.
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
+Add detection of out-of-tree built vmlinux image for the purpose of
+VMLINUX_BTF detection. According to Documentation/kbuild/kbuild.rst, O takes
+precedence over KBUILD_OUTPUT.
 
-Applied, thanks!
+Also ensure ~/path/to/build/dir also works by relying on wildcard's resolution
+first, but then applying $(abspath) at the end to also handle
+O=../../whatever cases.
+
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/testing/selftests/bpf/Makefile | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 2d7f5df33f04..ee4ad34adb4a 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -129,10 +129,13 @@ $(OUTPUT)/test_stub.o: test_stub.c $(BPFOBJ)
+ 	$(call msg,CC,,$@)
+ 	$(CC) -c $(CFLAGS) -o $@ $<
+ 
+-VMLINUX_BTF_PATHS := $(abspath ../../../../vmlinux)			\
+-			       /sys/kernel/btf/vmlinux			\
+-			       /boot/vmlinux-$(shell uname -r)
+-VMLINUX_BTF:= $(firstword $(wildcard $(VMLINUX_BTF_PATHS)))
++VMLINUX_BTF_PATHS := $(if $(O),$(O)/vmlinux)				\
++		     $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)	\
++		     ../../../../vmlinux				\
++		     /sys/kernel/btf/vmlinux				\
++		     /boot/vmlinux-$(shell uname -r)
++VMLINUX_BTF:= $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
++
+ $(OUTPUT)/runqslower: $(BPFOBJ)
+ 	$(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower	\
+ 		    OUTPUT=$(SCRATCH_DIR)/ VMLINUX_BTF=$(VMLINUX_BTF)   \
+-- 
+2.17.1
+
