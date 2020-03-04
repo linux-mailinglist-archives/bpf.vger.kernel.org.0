@@ -2,135 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C050117877B
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 02:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2DF817878C
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 02:26:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387411AbgCDBIT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 20:08:19 -0500
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:38616 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387406AbgCDBIT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Mar 2020 20:08:19 -0500
-Received: by mail-pj1-f65.google.com with SMTP id a16so131225pju.3
-        for <bpf@vger.kernel.org>; Tue, 03 Mar 2020 17:08:16 -0800 (PST)
+        id S1728032AbgCDB0G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 20:26:06 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:36720 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727958AbgCDB0G (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Mar 2020 20:26:06 -0500
+Received: by mail-wr1-f67.google.com with SMTP id j16so333562wrt.3
+        for <bpf@vger.kernel.org>; Tue, 03 Mar 2020 17:26:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2oPr2bCnStcn9BfjbWcrCixY+w+Q4VlTpzBUMNd48ZE=;
-        b=W98iNawSUNKH+s74be5MBZwvMxmfhq4SGrxTP6ZXvAo60Rh0oInLzYxlCHjJhLfvVg
-         huqrAo6ZL9at5pJZYFvw8ZgHCZ6U54VDaYxwBj8Xr+4gH9d/q5wZVr9Y85M4ix9R6v14
-         8LOPJsUBIh5jzH5SxFa/LhogW712EGVZdAjnoYcDd1xrfopbQpfB6NffysZRVEnhEEum
-         OivjS4WuIAjp7A+Dr2/CMnumJ/9KKUkl15J+z+miMfF9MIL/qv42m+CkD1EGeNisvgEl
-         YbVP6eJW+ijttIj6M4lw9aYgFLtLGVfJHPsxiNtGEsw1oV8BullOFI89VUHRRmPBpoyq
-         pu+A==
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=jrmU0aUpyeiczxdUe8N4p4XFs4SNd8CWnE3coIhgCAs=;
+        b=AJEN3CitJU/4Z0JTnLw/ey04m43KyIRnf3pgOjFiKT+U6iwItjQytak+e97bRM59WH
+         /0mVfLRbbbWjrEoZdKJ2NorfsJk6k0MxZ+XYdVn3HRYRu8t1OiF+5xjVv5AnRqQTqp7R
+         ztjHJUEORGnsiclnTsjGRYXYq5bRfPhxJq2I0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2oPr2bCnStcn9BfjbWcrCixY+w+Q4VlTpzBUMNd48ZE=;
-        b=TGl7jQwQihZx2wNIC9V3QpBIg6Tbyo2B3XDPUbdxEwgx0UY2DoPGStRtFLWYEqfDsk
-         fWqqMd3cgYRnDwwMUQJuQyR4R5KPXnXNcZU5j/R5sqa7Te3aq69YpIe9bL/v9HUR+D1M
-         plXmKnzvjJLP0mOeqrSoOuKT/2PYfL67avwYbbzP/ZwgkmV0nQ3udiCPq8+IUvOc8nPr
-         pSrvr2Wyl2GZUkzzAGjFwGjegNWnmvGADycut33e2KTuBNegTGWexEbNeDfPUhXZN3cB
-         UhtfQ61q2Zko6OlkkI8VB3IUdhP/Iz7cDF3+L8+lFt57R82//Jw6YH9aqPzomBN2I9HS
-         vMMQ==
-X-Gm-Message-State: ANhLgQ3p4orc32whP2Myw3biO2JypmpmIBReUKSS2kIJB8ShZe2rQ+eG
-        8aSOvI9ycDtmrRJQe2ZP9vFD3Z7D
-X-Google-Smtp-Source: ADFU+vu+CcGEYVnbx2FCemZy6AK4PvJhPrb8enIa6DNGxycFL/uuuBY3iF3XXhlGfGzMpAHd5YxN+w==
-X-Received: by 2002:a17:902:8f94:: with SMTP id z20mr675466plo.62.1583284095960;
-        Tue, 03 Mar 2020 17:08:15 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:500::4:a0de])
-        by smtp.gmail.com with ESMTPSA id r8sm356260pjo.22.2020.03.03.17.08.14
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 03 Mar 2020 17:08:15 -0800 (PST)
-Date:   Tue, 3 Mar 2020 17:08:12 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        Rik van Riel <riel@surriel.com>
-Subject: Re: [PATCH bpf 1/2] bpf: fix
- bpf_send_signal()/bpf_send_signal_thread() helper in NMI mode
-Message-ID: <20200304010811.rfzdhvnyogib3woj@ast-mbp>
-References: <20200303231554.2553105-1-yhs@fb.com>
- <20200303231554.2553178-1-yhs@fb.com>
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=jrmU0aUpyeiczxdUe8N4p4XFs4SNd8CWnE3coIhgCAs=;
+        b=n8w0wsnEvSvyt/dH7+FixBKf++8fMjYVp5BNGX9pCNz6HYwxCWxcTbmcrS0dVqEme2
+         JoekOqNTTnduwC/eZ1k450YQ1RCa5UVfRX4dxLlDmbTLYgTIaFjZyRSdeIPShMOTnZkR
+         DyiBhazTETD/urQy74rwywc2eS6/9LhYPrIRymwJPK1uW6I5q6xRCIC3WSGyMVdZySLv
+         AIo5GSnrY7KZi0C5Whh291AGRhCGggBMZEwo1G/ZWCrKrMWslTs1h1d1nloAO9/srBvF
+         lE0r/ZaAupxc9dXUVQ+bYQdX0bq3g0t30c8wjzLd0weW+2KMb1pHgIbxA5rK4JKLl0CO
+         i8dQ==
+X-Gm-Message-State: ANhLgQ0GrTfSOMFZhdwjtfCg5zwKx6HmDjnpITHN6qOEXy/x9e2nTnVL
+        KhV2w42bpVk1TP6Dz/h5JgSjDQ==
+X-Google-Smtp-Source: ADFU+vtMtYSgZIYl+yREwwcH4jOyLaoAv0iOxtAoJ1Pwlhws2x7ue8V4D25DPLPrqKgrQk6X81VErQ==
+X-Received: by 2002:a5d:4ec4:: with SMTP id s4mr964900wrv.157.1583285164578;
+        Tue, 03 Mar 2020 17:26:04 -0800 (PST)
+Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
+        by smtp.gmail.com with ESMTPSA id j4sm25875474wrr.0.2020.03.03.17.26.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Mar 2020 17:26:04 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Wed, 4 Mar 2020 02:26:02 +0100
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Paul Turner <pjt@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Subject: Re: [PATCH bpf-next 2/7] bpf: JIT helpers for fmod_ret progs
+Message-ID: <20200304012602.GB14634@chromium.org>
+References: <20200303140950.6355-1-kpsingh@chromium.org>
+ <20200303140950.6355-3-kpsingh@chromium.org>
+ <CAEf4BzZJ2E2rmyz7k4F7s=EXPbaAX7XncvUcHukX_FYDWeD7BA@mail.gmail.com>
+ <20200303222812.GA5265@chromium.org>
+ <20200303235604.mdlamwx4z2ws3fzy@ast-mbp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200303231554.2553178-1-yhs@fb.com>
-User-Agent: NeoMutt/20180223
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200303235604.mdlamwx4z2ws3fzy@ast-mbp>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 03, 2020 at 03:15:54PM -0800, Yonghong Song wrote:
-> When experimenting with bpf_send_signal() helper in our production environment,
-> we experienced a deadlock in NMI mode:
->    #0 [fffffe000046be58] crash_nmi_callback at ffffffff8103f48b
->    #1 [fffffe000046be60] nmi_handle at ffffffff8101feed
->    #2 [fffffe000046beb8] default_do_nmi at ffffffff8102027e
->    #3 [fffffe000046bed8] do_nmi at ffffffff81020434
->    #4 [fffffe000046bef0] end_repeat_nmi at ffffffff81c01093
->       [exception RIP: queued_spin_lock_slowpath+68]
->       RIP: ffffffff8110be24  RSP: ffffc9002219f770  RFLAGS: 00000002
->       RAX: 0000000000000101  RBX: 0000000000000046  RCX: 000000000000002a
->       RDX: 0000000000000000  RSI: 0000000000000000  RDI: ffff88871c96c044
->       RBP: 0000000000000000   R8: ffff88870f11f040   R9: 0000000000000000
->       R10: 0000000000000008  R11: 00000000acd93e4d  R12: ffff88871c96c044
->       R13: 0000000000000000  R14: 0000000000000000  R15: 0000000000000001
->       ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
->   --- <NMI exception stack> ---
->    #5 [ffffc9002219f770] queued_spin_lock_slowpath at ffffffff8110be24
->    #6 [ffffc9002219f770] _raw_spin_lock_irqsave at ffffffff81a43012
->    #7 [ffffc9002219f780] try_to_wake_up at ffffffff810e7ecd
->    #8 [ffffc9002219f7e0] signal_wake_up_state at ffffffff810c7b55
->    #9 [ffffc9002219f7f0] __send_signal at ffffffff810c8602
->   #10 [ffffc9002219f830] do_send_sig_info at ffffffff810ca31a
->   #11 [ffffc9002219f868] bpf_send_signal at ffffffff8119d227
->   #12 [ffffc9002219f988] bpf_overflow_handler at ffffffff811d4140
->   #13 [ffffc9002219f9e0] __perf_event_overflow at ffffffff811d68cf
->   #14 [ffffc9002219fa10] perf_swevent_overflow at ffffffff811d6a09
->   #15 [ffffc9002219fa38] ___perf_sw_event at ffffffff811e0f47
->   #16 [ffffc9002219fc30] __schedule at ffffffff81a3e04d
->   #17 [ffffc9002219fc90] schedule at ffffffff81a3e219
->   #18 [ffffc9002219fca0] futex_wait_queue_me at ffffffff8113d1b9
->   #19 [ffffc9002219fcd8] futex_wait at ffffffff8113e529
->   #20 [ffffc9002219fdf0] do_futex at ffffffff8113ffbc
->   #21 [ffffc9002219fec0] __x64_sys_futex at ffffffff81140d1c
->   #22 [ffffc9002219ff38] do_syscall_64 at ffffffff81002602
->   #23 [ffffc9002219ff50] entry_SYSCALL_64_after_hwframe at ffffffff81c00068
+On 03-Mär 15:56, Alexei Starovoitov wrote:
+> On Tue, Mar 03, 2020 at 11:28:12PM +0100, KP Singh wrote:
+> > > > +static void align16_branch_target(u8 **pprog)
+> > > > +{
+> > > > +       u8 *target, *prog = *pprog;
+> > > > +
+> > > > +       target = PTR_ALIGN(prog, 16);
+> > > > +       if (target != prog)
+> > > > +               emit_nops(&prog, target - prog);
+> > > > +       if (target != prog)
+> > > > +               pr_err("calcultion error\n");
+> > > 
+> > > this wasn't in the original code, do you feel like it's more important
+> > > to check this and print error?
+> > > 
+> > > also typo: calculation error, but then it's a bit brief and
+> > > uninformative message. So I don't know, maybe just drop it?
+> > 
+> > Ah, good catch! this is deinitely not intended to be here.
+> > It's a debug artifact and needs to dropped indeed.
 > 
-> Basically, when task->pi_lock is taken, a NMI happens, bpf program executes,
-> which calls bpf program. The bpf program calls bpf_send_signal() helper,
-> which will call group_send_sig_info() in irq_work, which will try to
-> grab task->pi_lock again and failed due to deadlock.
-> 
-> To break the deadlock, group_send_sig_info() call should be delayed
-> until it is safe to do.
-> 
-> This patch registers a task_work callback inside the irq_work so
-> group_send_sig_info() in the task_work can be called later safely.
-> 
-> This patch also fixed a potential issue where the "current"
-> task in nmi context is gone when the actual irq_work is triggered.
-> Hold a reference to the task and drop the reference inside
-> the irq_work to ensure the task is not gone.
-> 
-> Fixes: 8482941f0906 ("bpf: Add bpf_send_signal_thread() helper")
-> Fixes: 8b401f9ed244 ("bpf: implement bpf_send_signal() helper")
-> Cc: Rik van Riel <riel@surriel.com>
-> Suggested-by: Jens Axboe <axboe@kernel.dk>
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+> That spurious pr_err() caught my attention as well.
+> After further analysis there is a bug here.
+> The function is missing last line:
+>         *pprog = prog;
 
-I don't think that fixes it.
-The stack trace is not doing nmi.
-It's a sw event and 'if (in_nmi())' is false.
-try_to_wake_up() is safe to do from irq_work for both current and other tasks.
-I don't think task_work() is necessary here.
-It's a very similar issue that was addressed by
-commit eac9153f2b58 ("bpf/stackmap: Fix deadlock with rq_lock in bpf_get_stack()")
-Imo the same approach will work here.
-Please craft a reproducer first though.
-I think the one Song did for the above commit may be adopted for this case too.
+Great catch! Fixed.
+
+> Without it the nop insertion is actually not happenning.
+> Nops are being written, but next insns will overwrite them.
+> When I noticed it by code review I applied the patches to my tree
+> and run the tests and, as expected, all tests passed.
+> The existing test_xdp_veth.sh emits the most amount of unaligned
+> branches. Since then I've been thinking whether we could add a test
+> to catch things like this and couldn't come up with a way to test it
+> without burning a lot of code on it. So let's fix it and move on.
+> Could you rename this helper? May be emit_align() and pass 16 into it?
+
+Seems reasonable. Done.
+
+> The code is not branch target specific. It's aligning the start
+> of the next instruction.
+> Also could you add a comment to:
+
+Done. Sending v2 out.
+
+- KP
+
+>         align16_branch_target(&prog);
+>         for (i = 0; i < fmod_ret->nr_progs; i++)
+>                 emit_cond_near_jump(&branches[i], prog, branches[i],
+>                                     X86_JNE);
+>         kfree(branches);
+> to say that the loop is updating prior location to jump to aligned
+> branch target ?
