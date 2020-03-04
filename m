@@ -2,71 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6273817940E
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 16:50:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF92179428
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 16:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727835AbgCDPue (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Mar 2020 10:50:34 -0500
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:33769 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727084AbgCDPud (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Mar 2020 10:50:33 -0500
-Received: by mail-lf1-f67.google.com with SMTP id c20so1932649lfb.0;
-        Wed, 04 Mar 2020 07:50:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OBYCuoBLY5+NeCQ8btRKM4ahbrPedZvSO1tq9tM4tMI=;
-        b=qBANVzxV7w+ympSCrE8ndF4HV/U+X6xoOtxtX5Kpp2S3iVFZ8gdCTz09djhgwTPsrP
-         zQXdfX3wfTor5S/4bMPHCh1yedh/f8mTd0Lyeb22b8g24KPgOJrLTny66PaCvAagPe4F
-         dzYQmnwK9x6S3cIkoYCnEZm6WQOU75Ptk+1wij3ioRy0Xnj7jTnzu729OlOXv+c6idwM
-         goWLigmMhLUHiKl0Shjs4zS+BxMdeOYFMrZ0uaBRfkpn2GBvoiVrb5DWIPOJsyVOnctP
-         0EIXMb5rnM7c9r60UzSXarkuysEZhJnsSzshja3FHEeSgk8ibMf+cjJ4yfbM7V0sBiGz
-         1ySw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OBYCuoBLY5+NeCQ8btRKM4ahbrPedZvSO1tq9tM4tMI=;
-        b=F71K6bQJjSDjLG3Zj2/l7B7IEI0ybobNCHkKIyP+xn014K4fJ6vKJGP9Iz9CUJ4yp+
-         r9TwNGDQvsj655AYIfHUWwKpXEGLeCz0LIMCbLI855oWNzejptD11MHNDwELZ21tgNGd
-         REYcKDJlxS4cfGTE6qXowYtRjU2tUeJE2AIPZ8QjabXHMk3McC2pLL0iUeP0K1f33g26
-         68K9xuWQBmDB73bQV8R8el63m+MDmc2ptRiVhAURsTIdeSdBffPF08s2o+KmXZBU4xaL
-         PhP/eFCCe85xJyhMx5IgwJ+UNpmnL3ZtmY1D/rKdiI3cx/+Hcx6cJRjSDz44K1oLXDhi
-         i2NA==
-X-Gm-Message-State: ANhLgQ0AiXdGa7UMECLkkDEFeH/un26+IpG+K2hYdI1uTXR8yzAe30IE
-        gwM2warB1GDqSRVDI6Gq129rxuvi9mAOlqCI7GI=
-X-Google-Smtp-Source: ADFU+vu/zmV33R5WG1qsWW282XglHRgxL9NLwFAJHp8D1eeHKQ6QQUMuGtgILE/tGz3x9BIqA70TXAYRp4aPNbDlK4U=
-X-Received: by 2002:ac2:4211:: with SMTP id y17mr2340642lfh.157.1583337031447;
- Wed, 04 Mar 2020 07:50:31 -0800 (PST)
-MIME-Version: 1.0
-References: <20200303003233.3496043-1-andriin@fb.com> <20200303003233.3496043-2-andriin@fb.com>
- <fb80ddac-d104-d0b7-8bed-694d20b62d61@iogearbox.net> <CAEf4BzZWXRX_TrFSPb=ORcfun8B+GdGOAF6C29B-3xB=NaJO7A@mail.gmail.com>
- <87blpc4g14.fsf@toke.dk> <945cf1c4-78bb-8d3c-10e3-273d100ce41c@iogearbox.net>
-In-Reply-To: <945cf1c4-78bb-8d3c-10e3-273d100ce41c@iogearbox.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 4 Mar 2020 07:50:20 -0800
-Message-ID: <CAADnVQK4uJRNQzPChvQ==sL02nXHEELFJL_ehqYssuD_xeQx+A@mail.gmail.com>
+        id S2388024AbgCDP5x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Mar 2020 10:57:53 -0500
+Received: from www62.your-server.de ([213.133.104.62]:46886 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388019AbgCDP5x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Mar 2020 10:57:53 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j9WP5-0000yr-I9; Wed, 04 Mar 2020 16:57:47 +0100
+Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux.fritz.box)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j9WP5-0005OE-85; Wed, 04 Mar 2020 16:57:47 +0100
 Subject: Re: [PATCH v3 bpf-next 1/3] bpf: switch BPF UAPI #define constants
  used from BPF program side to enums
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+References: <20200303003233.3496043-1-andriin@fb.com>
+ <20200303003233.3496043-2-andriin@fb.com>
+ <fb80ddac-d104-d0b7-8bed-694d20b62d61@iogearbox.net>
+ <CAEf4BzZWXRX_TrFSPb=ORcfun8B+GdGOAF6C29B-3xB=NaJO7A@mail.gmail.com>
+ <87blpc4g14.fsf@toke.dk> <945cf1c4-78bb-8d3c-10e3-273d100ce41c@iogearbox.net>
+Message-ID: <c742d2d4-6596-3178-3d03-809270e67183@iogearbox.net>
+Date:   Wed, 4 Mar 2020 16:57:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <945cf1c4-78bb-8d3c-10e3-273d100ce41c@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25741/Wed Mar  4 15:15:26 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 4, 2020 at 7:39 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
+On 3/4/20 4:38 PM, Daniel Borkmann wrote:
+> On 3/4/20 10:37 AM, Toke Høiland-Jørgensen wrote:
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>> On Tue, Mar 3, 2020 at 3:01 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>>>
+>>>> On 3/3/20 1:32 AM, Andrii Nakryiko wrote:
+>>>>> Switch BPF UAPI constants, previously defined as #define macro, to anonymous
+>>>>> enum values. This preserves constants values and behavior in expressions, but
+>>>>> has added advantaged of being captured as part of DWARF and, subsequently, BTF
+>>>>> type info. Which, in turn, greatly improves usefulness of generated vmlinux.h
+>>>>> for BPF applications, as it will not require BPF users to copy/paste various
+>>>>> flags and constants, which are frequently used with BPF helpers. Only those
+>>>>> constants that are used/useful from BPF program side are converted.
+>>>>>
+>>>>> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+>>>>
+>>>> Just thinking out loud, is there some way this could be resolved generically
+>>>> either from compiler side or via additional tooling where this ends up as BTF
+>>>> data and thus inside vmlinux.h as anon enum eventually? bpf.h is one single
+>>>> header and worst case libbpf could also ship a copy of it (?), but what about
+>>>> all the other things one would need to redefine e.g. for tracing? Small example
+>>>> that comes to mind are all these TASK_* defines in sched.h etc, and there's
+>>>> probably dozens of other similar stuff needed too depending on the particular
+>>>> case; would be nice to have some generic catch-all, hmm.
+>>>
+>>> Enum convertion seems to be the simplest and cleanest way,
+>>> unfortunately (as far as I know). DWARF has some extensions capturing
+>>> #defines, but values are strings (and need to be parsed, which is pain
+>>> already for "1 << 1ULL"), and it's some obscure extension, not a
+>>> standard thing. I agree would be nice not to have and change all UAPI
+>>> headers for this, but I'm not aware of the solution like that.
+>>
+>> Since this is a UAPI header, are we sure that no userspace programs are
+>> using these defines in #ifdefs or something like that?
+> 
+> Hm, yes, anyone doing #ifdefs on them would get build issues. Simple example:
+> 
+> enum {
+>          FOO = 42,
+> //#define FOO   FOO
+> };
+> 
+> #ifndef FOO
+> # warning "bar"
+> #endif
+> 
+> int main(int argc, char **argv)
+> {
+>          return FOO;
+> }
+> 
+> $ gcc -Wall -O2 foo.c
+> foo.c:7:3: warning: #warning "bar" [-Wcpp]
+>      7 | # warning "bar"
+>        |   ^~~~~~~
+> 
+> Commenting #define FOO FOO back in fixes it as we discussed in v2:
+> 
+> $ gcc -Wall -O2 foo.c
+> $
+> 
+> There's also a flag_enum attribute, but with the experiments I tried yesterday
+> night I couldn't get a warning to trigger for anonymous enums at least, so that
+> part should be ok.
+> 
 > I was about to push the series out, but agree that there may be a risk for #ifndefs
 > in the BPF C code. If we want to be on safe side, #define FOO FOO would be needed.
 
-There is really no risk.
-Let's not be paranoid about it and uglify bpf.h for no reason.
+I checked Cilium, LLVM, bcc, bpftrace code, and various others at least there it
+seems okay with the current approach, meaning no such if{,n}def seen that would
+cause a build warning. Also suricata seems to ship the BPF header itself. But
+iproute2 had the following in include/bpf_util.h:
+
+#ifndef BPF_PSEUDO_MAP_FD
+# define BPF_PSEUDO_MAP_FD      1
+#endif
+
+It's still not what was converted though. I would expect risk might be rather low.
+Toke, is there anything on your side affected?
+
+Thanks,
+Daniel
