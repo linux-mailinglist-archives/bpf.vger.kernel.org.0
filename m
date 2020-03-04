@@ -2,121 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB041793B0
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 16:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF708179401
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 16:48:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729169AbgCDPiI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Mar 2020 10:38:08 -0500
-Received: from www62.your-server.de ([213.133.104.62]:41454 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726752AbgCDPiI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Mar 2020 10:38:08 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1j9W5y-0007cP-BH; Wed, 04 Mar 2020 16:38:02 +0100
-Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux.fritz.box)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1j9W5y-0002AM-0p; Wed, 04 Mar 2020 16:38:02 +0100
-Subject: Re: [PATCH v3 bpf-next 1/3] bpf: switch BPF UAPI #define constants
- used from BPF program side to enums
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
-References: <20200303003233.3496043-1-andriin@fb.com>
- <20200303003233.3496043-2-andriin@fb.com>
- <fb80ddac-d104-d0b7-8bed-694d20b62d61@iogearbox.net>
- <CAEf4BzZWXRX_TrFSPb=ORcfun8B+GdGOAF6C29B-3xB=NaJO7A@mail.gmail.com>
- <87blpc4g14.fsf@toke.dk>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <945cf1c4-78bb-8d3c-10e3-273d100ce41c@iogearbox.net>
-Date:   Wed, 4 Mar 2020 16:38:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1729797AbgCDPsA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Mar 2020 10:48:00 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:43337 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729675AbgCDPr6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Mar 2020 10:47:58 -0500
+Received: by mail-wr1-f65.google.com with SMTP id h9so2970137wrr.10
+        for <bpf@vger.kernel.org>; Wed, 04 Mar 2020 07:47:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z+5Ez1qQKbcq42hwIwx4yVFRxKG7D39lDDrIw5grt88=;
+        b=YErib6GT5VIIjobJDwl9AXipjtvMVlEa8r6u9Hly9IMNXd5MmxEqhrwhRkpAFBpTw5
+         kELU0rxnmH6iBy+gIjs3ppyM9Qh/D1EadCQo0x9uAjwco/bcEDII91nFtCg7XTJJCrok
+         kqEGCzYCiJ4puupd27CxK+S1bxke5gCb3OtAc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z+5Ez1qQKbcq42hwIwx4yVFRxKG7D39lDDrIw5grt88=;
+        b=OC4BEslNJTolv0euTxXV2CYdgNzg/zU3fA+UFXv7DcT5bmaLcgj4vtpOPXuJnhbSJ0
+         22DGk1xQCg6K/349RNywJRpUBiJ3t2xVS86uhyQq8ONwYr5kOIqWt2gMyCIhdxwQnltt
+         8CQLUYiaU66L53DhXSvWjF8ctI/QajSYm42W4nifjXy74eoveTQyqmNDFN3ZYIMgBfBz
+         U0p+liFhS2T0PR5mr6kWh5Q6h+RAXI2qL8tKxUCKRbJWKy4ZfRicOrG+/rqDRsQzTPxC
+         pt5LCKlJH8FVK35PWgfMrgnHHo55UA2tdZ/fT5s/4R2uBjRSwM93guXwhfOd4snCWV0s
+         Td+Q==
+X-Gm-Message-State: ANhLgQ3iCLKE+d20xC5wVdBsUJxtEf4evBIgChSupGC5EX9gWqqgkzKC
+        VjOOFD+Sf4u0mxXebDgawdRlFw==
+X-Google-Smtp-Source: ADFU+vsUxjzbIEX9R914KDjsI/HzBW8ale8XFSqRRCX4A8/y6Mft3ya7FgdMIWOlY+OErYCIPhFEPQ==
+X-Received: by 2002:a5d:4692:: with SMTP id u18mr4722577wrq.206.1583336874872;
+        Wed, 04 Mar 2020 07:47:54 -0800 (PST)
+Received: from kpsingh-kernel.localdomain ([2a00:79e1:abc:308:8ca0:6f80:af01:b24])
+        by smtp.gmail.com with ESMTPSA id u25sm4816091wml.17.2020.03.04.07.47.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Mar 2020 07:47:54 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+To:     linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Subject: [PATCH bpf-next v3 0/7] Introduce BPF_MODIFY_RET tracing progs
+Date:   Wed,  4 Mar 2020 16:47:40 +0100
+Message-Id: <20200304154747.23506-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <87blpc4g14.fsf@toke.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25741/Wed Mar  4 15:15:26 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/4/20 10:37 AM, Toke Høiland-Jørgensen wrote:
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->> On Tue, Mar 3, 2020 at 3:01 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>>
->>> On 3/3/20 1:32 AM, Andrii Nakryiko wrote:
->>>> Switch BPF UAPI constants, previously defined as #define macro, to anonymous
->>>> enum values. This preserves constants values and behavior in expressions, but
->>>> has added advantaged of being captured as part of DWARF and, subsequently, BTF
->>>> type info. Which, in turn, greatly improves usefulness of generated vmlinux.h
->>>> for BPF applications, as it will not require BPF users to copy/paste various
->>>> flags and constants, which are frequently used with BPF helpers. Only those
->>>> constants that are used/useful from BPF program side are converted.
->>>>
->>>> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->>>
->>> Just thinking out loud, is there some way this could be resolved generically
->>> either from compiler side or via additional tooling where this ends up as BTF
->>> data and thus inside vmlinux.h as anon enum eventually? bpf.h is one single
->>> header and worst case libbpf could also ship a copy of it (?), but what about
->>> all the other things one would need to redefine e.g. for tracing? Small example
->>> that comes to mind are all these TASK_* defines in sched.h etc, and there's
->>> probably dozens of other similar stuff needed too depending on the particular
->>> case; would be nice to have some generic catch-all, hmm.
->>
->> Enum convertion seems to be the simplest and cleanest way,
->> unfortunately (as far as I know). DWARF has some extensions capturing
->> #defines, but values are strings (and need to be parsed, which is pain
->> already for "1 << 1ULL"), and it's some obscure extension, not a
->> standard thing. I agree would be nice not to have and change all UAPI
->> headers for this, but I'm not aware of the solution like that.
-> 
-> Since this is a UAPI header, are we sure that no userspace programs are
-> using these defines in #ifdefs or something like that?
+From: KP Singh <kpsingh@google.com>
 
-Hm, yes, anyone doing #ifdefs on them would get build issues. Simple example:
+v2 -> v3:
 
-enum {
-         FOO = 42,
-//#define FOO   FOO
-};
+* bpf_trampoline_update_progs -> bpf_trampoline_get_progs + const
+  qualification.
+* Typos in commit messages.
+* Added Andrii's Acks.
 
-#ifndef FOO
-# warning "bar"
-#endif
+v1 -> v2:
 
-int main(int argc, char **argv)
+* Adressed Andrii's feedback.
+* Fixed a bug that Alexei noticed about nop generation.
+* Rebase.
+
+This was brought up in the KRSI v4 discussion and found to be useful
+both for security and tracing programs.
+
+  https://lore.kernel.org/bpf/20200225193108.GB22391@chromium.org/
+
+The modify_return programs are allowed for security hooks (with an
+extra CAP_MAC_ADMIN check) and functions whitelisted for error
+injection (ALLOW_ERROR_INJECTION).
+
+The "security_" check is expected to be cleaned up with the KRSI patch
+series.
+
+Here is an example of how a fmod_ret program behaves:
+
+int func_to_be_attached(int a, int b)
+{  <--- do_fentry
+
+do_fmod_ret:
+   <update ret by calling fmod_ret>
+   if (ret != 0)
+        goto do_fexit;
+
+original_function:
+
+    <side_effects_happen_here>
+
+}  <--- do_fexit
+
+ALLOW_ERROR_INJECTION(func_to_be_attached, ERRNO)
+
+The fmod_ret program attached to this function can be defined as:
+
+SEC("fmod_ret/func_to_be_attached")
+int BPF_PROG(func_name, int a, int b, int ret)
 {
-         return FOO;
+        // This will skip the original function logic.
+        return -1;
 }
 
-$ gcc -Wall -O2 foo.c
-foo.c:7:3: warning: #warning "bar" [-Wcpp]
-     7 | # warning "bar"
-       |   ^~~~~~~
+KP Singh (7):
+  bpf: Refactor trampoline update code
+  bpf: JIT helpers for fmod_ret progs
+  bpf: Introduce BPF_MODIFY_RETURN
+  bpf: Attachment verification for BPF_MODIFY_RETURN
+  tools/libbpf: Add support for BPF_MODIFY_RETURN
+  bpf: Add test ops for BPF_PROG_TYPE_TRACING
+  bpf: Add selftests for BPF_MODIFY_RETURN
 
-Commenting #define FOO FOO back in fixes it as we discussed in v2:
+ arch/x86/net/bpf_jit_comp.c                   | 279 +++++++++++++-----
+ include/linux/bpf.h                           |  24 +-
+ include/uapi/linux/bpf.h                      |   1 +
+ kernel/bpf/bpf_struct_ops.c                   |  12 +-
+ kernel/bpf/btf.c                              |  27 +-
+ kernel/bpf/syscall.c                          |   1 +
+ kernel/bpf/trampoline.c                       |  65 ++--
+ kernel/bpf/verifier.c                         |  32 ++
+ kernel/trace/bpf_trace.c                      |   1 +
+ net/bpf/test_run.c                            |  57 +++-
+ tools/include/uapi/linux/bpf.h                |   1 +
+ tools/lib/bpf/libbpf.c                        |   4 +
+ .../selftests/bpf/prog_tests/fentry_fexit.c   |  12 +-
+ .../selftests/bpf/prog_tests/fentry_test.c    |  14 +-
+ .../selftests/bpf/prog_tests/fexit_test.c     |  69 ++---
+ .../selftests/bpf/prog_tests/modify_return.c  |  65 ++++
+ .../selftests/bpf/progs/modify_return.c       |  49 +++
+ 17 files changed, 526 insertions(+), 187 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/modify_return.c
+ create mode 100644 tools/testing/selftests/bpf/progs/modify_return.c
 
-$ gcc -Wall -O2 foo.c
-$
+-- 
+2.20.1
 
-There's also a flag_enum attribute, but with the experiments I tried yesterday
-night I couldn't get a warning to trigger for anonymous enums at least, so that
-part should be ok.
-
-I was about to push the series out, but agree that there may be a risk for #ifndefs
-in the BPF C code. If we want to be on safe side, #define FOO FOO would be needed.
-
-Thanks,
-Daniel
