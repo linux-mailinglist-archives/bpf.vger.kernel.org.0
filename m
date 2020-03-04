@@ -2,100 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D5B1179B90
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 23:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5CD179B9F
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 23:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388513AbgCDWOX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Mar 2020 17:14:23 -0500
-Received: from mail-io1-f68.google.com ([209.85.166.68]:42655 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388483AbgCDWOW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Mar 2020 17:14:22 -0500
-Received: by mail-io1-f68.google.com with SMTP id q128so4192358iof.9
-        for <bpf@vger.kernel.org>; Wed, 04 Mar 2020 14:14:20 -0800 (PST)
+        id S2388312AbgCDWRf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Mar 2020 17:17:35 -0500
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:46609 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387931AbgCDWRf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Mar 2020 17:17:35 -0500
+Received: by mail-pg1-f193.google.com with SMTP id y30so1655683pga.13;
+        Wed, 04 Mar 2020 14:17:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0yZwBZUwL8PIwAcU8o7bWc8CP5XNPRFSTvCyJ7jQ5mQ=;
-        b=I4UUtFHvX08Sx91UacVsT5PS2tj7qzVvr6l/ln4WrvjZxc/i8jv/oFJQOcNxDSmPBd
-         ybh5nq8cpARJYCIJvgXwLurW1TEnq2g9Nv81GdPBn4liETzXdczFoTIvy6Zw3R1y+sam
-         aa2bFrPARsOlrcGFyug0jM1U6XwTvVb4XBbbs=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=SeLK1u6XZQiNjm/hVW01wDa1blPflVVcyrMnhEyc6lQ=;
+        b=NMU2vjdlKGiHucUtsyG5rog2PzW9dzSnvDzdLKNICZRP2PNr8ScfWCQFerCD8Ahp2u
+         vcUeFNhQG8fPfXQ0gGiJdVRFNTvcogp34MrK6zryQm4gwiI6JQQpIdQ70ZDrOevveruT
+         BUe+wIukIMUlRudvg0bo9jOQ3aE/yM6Xt5AGi8DirwFPvk4bGYJWgAZuvsYum+0rAKHn
+         6GnluaBJFp+g3s93SOqNX9+N5XBSJLxrHLxBFvm02VytTQBXtJyyR6sG/XdfxLCZJaZ9
+         qnywdqfsF0Xw5akcQdU3OnELDza+MQ0cDUe8rlVoEcm/uz//hHG87CAd4sSMiWCxa6F3
+         2hOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0yZwBZUwL8PIwAcU8o7bWc8CP5XNPRFSTvCyJ7jQ5mQ=;
-        b=hVZcnkATYfrqFvoJTfY4IncwQwbhyzmKbZ+A6c2vCB0gP+h5dN+NK5HBSe7JPJ9C+9
-         DOUCchihCpSCKvfDGo0ZSgop6bK2LgwXhO60tBS2/aqxCQENEuvmbvvyzlqPIsgVxfq0
-         1RyJ/MIwyRmIvVFxqVx57Ob1dBnYfVq/utxmvwTqdOuOPW5uidUJL0VPSUHRjlSIUTYS
-         4Rf8AaEujy1CPSJucs5wHzoUu/60HN3x0NhWNw9+Oty8G2zZCuIFxfixYPgm8pXVqARi
-         eCAhBJ1Vkih7iedUs4D94InV4wX6pI7k1YywFK+/VuZQexNWovK7o+pjvA/wG0NCLimR
-         eeUw==
-X-Gm-Message-State: ANhLgQ3+JdaH8lgbeSiN/qt3G0VY58zx8KOjS77X4SXJt3nVlqLyPoXa
-        clF0Yg7TCqP2O/eCZ8XArZJjBg==
-X-Google-Smtp-Source: ADFU+vu9yfqsq5F9oa+zo3RCZeuK0hGfEJ8oFClTaKU0IJAaGmFuBoMBmSAKAqtJ7WlWRbKZ5R7jew==
-X-Received: by 2002:a5d:9697:: with SMTP id m23mr4104634ion.45.1583360060224;
-        Wed, 04 Mar 2020 14:14:20 -0800 (PST)
-Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id g12sm6850409iom.5.2020.03.04.14.14.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Mar 2020 14:14:19 -0800 (PST)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     shuah@kernel.org, keescook@chromium.org, luto@amacapital.net,
-        wad@chromium.org, daniel@iogearbox.net, kafai@fb.com, yhs@fb.com,
-        andriin@fb.com, gregkh@linuxfoundation.org, tglx@linutronix.de
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, khilman@baylibre.com,
-        mpe@ellerman.id.au, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH 2/4] selftests: Fix seccomp to support relocatable build (O=objdir)
-Date:   Wed,  4 Mar 2020 15:13:33 -0700
-Message-Id: <11967e5f164f0cd717921bd382ff9c13ef740146.1583358715.git.skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1583358715.git.skhan@linuxfoundation.org>
-References: <cover.1583358715.git.skhan@linuxfoundation.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=SeLK1u6XZQiNjm/hVW01wDa1blPflVVcyrMnhEyc6lQ=;
+        b=bG6M4Ut0DGtIAS90bJTpz/Q8MVcZiNfptw0jOjs2FTmHIERtv1RcTL8D29YO67gED2
+         rnZafOBPhPi3Wt2c4EGfDaGeYbOotQZzBIPv5jasu9n+Gjc5vjb/8OxvOYukUNNUgLIz
+         WQWp863ZQEMqzw9o5JVqQjztEuCkXbYNW9CIKqou1ceMHSQaRGc3UharcA6T0BCpwVpj
+         hrg0GqBaw6wVpZ/KAU+61KZMcX98nxjlB3w5q7RD1OWySSc+NqK9aBW7HmwGzERLD/IE
+         09encumyvcLVEYWELgwq0PwXtEjNNN2vDJ2pEqEcofgh9cVSjp7sMG+Wcttc6S76ObaE
+         ezhg==
+X-Gm-Message-State: ANhLgQ1GqPhZe8dNnHqU3nC2LcFbw72aGvr3fpSRVu6mx19XNRjPH3z4
+        qM3ukmgBYHMHgucfYv3H4zTOTTzA
+X-Google-Smtp-Source: ADFU+vvKbQM5v+o2ycE8rww55wXTCIhFEwn13T6g0O69i6FRGcqst85HQWxGYDGPUnt5gDi8TljC5Q==
+X-Received: by 2002:a63:2323:: with SMTP id j35mr4466654pgj.440.1583360253961;
+        Wed, 04 Mar 2020 14:17:33 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:500::4:c694])
+        by smtp.gmail.com with ESMTPSA id d186sm11160532pfc.8.2020.03.04.14.17.32
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 04 Mar 2020 14:17:33 -0800 (PST)
+Date:   Wed, 4 Mar 2020 14:17:31 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Subject: Re: [PATCH bpf-next v4 0/7] Introduce BPF_MODIFY_RET tracing progs
+Message-ID: <20200304221729.d6omw6tltqhbw5xr@ast-mbp>
+References: <20200304191853.1529-1-kpsingh@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200304191853.1529-1-kpsingh@chromium.org>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix seccomp relocatable builds. This is a simple fix to use the
-right lib.mk variable TEST_GEN_PROGS for objects to leverage
-lib.mk common framework for relocatable builds.
+On Wed, Mar 04, 2020 at 08:18:46PM +0100, KP Singh wrote:
+> 
+> Here is an example of how a fmod_ret program behaves:
+> 
+> int func_to_be_attached(int a, int b)
+V> {  <--- do_fentry
+> 
+> do_fmod_ret:
+>    <update ret by calling fmod_ret>
+>    if (ret != 0)
+>         goto do_fexit;
+> 
+> original_function:
+> 
+>     <side_effects_happen_here>
+> 
+> }  <--- do_fexit
+> 
+> ALLOW_ERROR_INJECTION(func_to_be_attached, ERRNO)
+> 
+> The fmod_ret program attached to this function can be defined as:
+> 
+> SEC("fmod_ret/func_to_be_attached")
+> int BPF_PROG(func_name, int a, int b, int ret)
+> {
+>         // This will skip the original function logic.
+>         return -1;
+> }
 
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
- tools/testing/selftests/seccomp/Makefile | 16 +++-------------
- 1 file changed, 3 insertions(+), 13 deletions(-)
+Applied to bpf-next. Thanks.
 
-diff --git a/tools/testing/selftests/seccomp/Makefile b/tools/testing/selftests/seccomp/Makefile
-index 1760b3e39730..a8a9717fc1be 100644
---- a/tools/testing/selftests/seccomp/Makefile
-+++ b/tools/testing/selftests/seccomp/Makefile
-@@ -1,17 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
--all:
--
--include ../lib.mk
--
--.PHONY: all clean
--
--BINARIES := seccomp_bpf seccomp_benchmark
- CFLAGS += -Wl,-no-as-needed -Wall
-+LDFLAGS += -lpthread
- 
--seccomp_bpf: seccomp_bpf.c ../kselftest_harness.h
--	$(CC) $(CFLAGS) $(LDFLAGS) $< -lpthread -o $@
--
--TEST_PROGS += $(BINARIES)
--EXTRA_CLEAN := $(BINARIES)
-+TEST_GEN_PROGS := seccomp_bpf seccomp_benchmark
- 
--all: $(BINARIES)
-+include ../lib.mk
--- 
-2.20.1
+I think it sets up a great base to parallelize further work.
 
+1. I'm rebasing my sleepable BPF patches on top.
+It's necessary to read enviroment variables without the
+'opportunistic copy before hand' hack I saw in your github tree
+to do bpf_get_env_var() helper.
+
+2. please continue on LSM_HOOK patches to go via security tree.
+
+3. we need a volunteer to generalize bpf_sk_storage to task and inode structs.
+This work will be super useful for all bpf tracing too.
+Sleepable progs are useful for tracing as well.
