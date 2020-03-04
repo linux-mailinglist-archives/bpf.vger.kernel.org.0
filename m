@@ -2,77 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B56617870A
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 01:31:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F1517871E
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 01:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727854AbgCDAbx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 19:31:53 -0500
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:40498 "EHLO
+        id S1727854AbgCDAms (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 19:42:48 -0500
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:40580 "EHLO
         mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727429AbgCDAbx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Mar 2020 19:31:53 -0500
-Received: by mail-lf1-f66.google.com with SMTP id p5so4355562lfc.7;
-        Tue, 03 Mar 2020 16:31:52 -0800 (PST)
+        with ESMTP id S1727864AbgCDAms (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Mar 2020 19:42:48 -0500
+Received: by mail-lf1-f66.google.com with SMTP id p5so7835lfc.7;
+        Tue, 03 Mar 2020 16:42:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0535QGjciwSzjRFczO8hMlo3JpfPidZ1FORuAyueRYY=;
-        b=Pdxgwp2q8OaHvBozqu4AbhMdVXPLkLhWYzqxroyWFYmwUIYQcgZzOyP1+TXB0oxqGO
-         Sux2ChcPrb7y8Ys71fi4OuTIynL4EwNbYS98em9pvH9+dpjLrMQQ7CArXxt2FabMjyve
-         KDO25Gf7c2Tk/MApcFTcPuRTjRRXkHn5ZZPxEhVPvTN7h28RGfd1c9wExlYcXUP6j0yC
-         Tle4IoHI3BOTd8QoqLXae7pnOFPx317lca7b9eVvx2a0TG0oP4ybTLFcoptsIlmzdNq8
-         U0ovUOrxgIIBOmbKsq/m+5b6fz1QEJSaFkOGFz1MH3aQmXkKUl9Yvo/1DWVgqcWuPtbN
-         NtlA==
+        bh=p37AmYrcEaUmAdk2JpsrGtIIoJlVrnXD9L/48H7szRQ=;
+        b=rhbFu6Aclm0dQJ92oSOFQLPq7/dTdxEpt0sMgzqSe4xHQ/CmfgsqnMXoEBTVpHu/aF
+         HH8hqfEMAxKG+lxOOb0n07YcA48JqKK7SXZns78kwLwgHXxhSsX3RQT7JPTsRHrj83nN
+         XaLcx+sHXGE52KILWPJTIg+s7iffAAv97w4T9uxtom2FRzfDjyjScnPImrTRpNm9p2DZ
+         0RIsbPvdOdM+spCra89MM8ZSvvWhCjcZQq4iipsNPrGivdoOXBClrDZpGQvX+EWy/Qb3
+         E0PB8l8RflVu6sIRr2NBc9OCD9iywFcmI3Rzu9qX3RHW0U9bymKOBwtVZGBLrSwiz+qY
+         Ckrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0535QGjciwSzjRFczO8hMlo3JpfPidZ1FORuAyueRYY=;
-        b=f7oTpEM1TjZ40boOczaIOrUKCbVCJ9vq2TWduuSBE3NB/FNe2HM7jRnCXfnRJ62dmv
-         fzl9LpUsdXhpGAJs/xgDz2Mdj3mK8a/59FM1enia1RHC+bJOUTZlYKJ7XuDYZqo8/lB5
-         6AFxtjNZeSJVkXyCbIvxZr9m3JQR3HFQfQ2f9vCsV53cXncFg8JwNUysMh/csFBYzpru
-         Ngo8XBn8g/JqHhQBOc1SZHOXNbCJxkAc6kWPOxB5+WJWTBMPNb3Ebtv+LMRy6jiPjp9X
-         0A14I9vyME2SgwMzx070JgmuQsO8uxV39d1Gt26L0xrOGfgm07GtRgbVwXNnkwe88gXe
-         1OAA==
-X-Gm-Message-State: ANhLgQ1u6lJGEAF9kJ7WsSoAvQS4Z/LWfNE3Uhq+V13fUlMVPFysZkll
-        gYIlikM3FJjug5MiltDx3LdawV9pVhz9QZffbGYQog==
-X-Google-Smtp-Source: ADFU+vs9VE5TLCPK+qRWVrvaL2BnKsZ59PC3uMzG6DbCGWVhNAMhkXsyVdnc/of2HgQpAyOzG7Ncy6Pt/r4Ft/Oruoo=
-X-Received: by 2002:ac2:5df9:: with SMTP id z25mr315643lfq.8.1583281911470;
- Tue, 03 Mar 2020 16:31:51 -0800 (PST)
+        bh=p37AmYrcEaUmAdk2JpsrGtIIoJlVrnXD9L/48H7szRQ=;
+        b=Ct+CxxE45N1n3xOPxbKeWALxVS4XhU7a+XfQYd6i5JFplOYBE1AK/CyXxbiO9DQ71y
+         DIfj6KLA0fxTYgB4assEO3zgg8vPtDaNGo4ma3KrKSeS3nWpbt/+TDYZ67Dm1mMW3khC
+         XL41QPXw/nu1cLFyi+kj7xI5Mruqi0iIDSUBfyuptkDHuU2qti4CpJVlnPQWFrXNEIcA
+         fQ4AobSFejxwhRZKUZVOV1rIAod0EEDrpFKkI8p+u6OxHTHo3vG0EDEUqlw2X+PL27oH
+         mxgQPDVLyIH+VhkSYwxQbDMd7ufaLusfswXSWDE8R/KpZtvoi8d9jqkAAKVuqyPl5Gtd
+         EUWQ==
+X-Gm-Message-State: ANhLgQ1+qjxsH6/6PYW9G258kL9SJeG89Li+vFiRCiGolf7eyBkcGUDi
+        Dq2tdb/tkhungGXZbttT1bRQFPwZz41Tp12X8sk=
+X-Google-Smtp-Source: ADFU+vszYebjffzDoRvj8YIgxx4Mxn0KStNsIcZieqEjUkcHOzOvZVal+MB4yaGEZ0NhXxyGmdyT1FCEzQgnlq6SHXI=
+X-Received: by 2002:ac2:5df9:: with SMTP id z25mr334928lfq.8.1583282566156;
+ Tue, 03 Mar 2020 16:42:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20200303200503.226217-1-willemdebruijn.kernel@gmail.com> <CAGdtWsSd8sDoxTfW_Jcwc9u4sfHECKMzxt_GNjMTkWCbvKBr0A@mail.gmail.com>
-In-Reply-To: <CAGdtWsSd8sDoxTfW_Jcwc9u4sfHECKMzxt_GNjMTkWCbvKBr0A@mail.gmail.com>
+References: <20200303180800.3303471-1-andriin@fb.com>
+In-Reply-To: <20200303180800.3303471-1-andriin@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 3 Mar 2020 16:31:39 -0800
-Message-ID: <CAADnVQ+zbBuM1TYQ93CaGA3nKqVCS0ESKuo8M5NrXEQPPOEWvg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/3] add gso_size to __sk_buff
-To:     Petar Penkov <ppenkov.kernel@gmail.com>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+Date:   Tue, 3 Mar 2020 16:42:34 -0800
+Message-ID: <CAADnVQ+6xhGRj=SRPXTx9XoNHaJ4Uut0DCQ4=wLa7G8b9j4_ow@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: fix handling of optional field_name in btf_dump__emit_type_decl
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Willem de Bruijn <willemb@google.com>
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 3, 2020 at 2:56 PM Petar Penkov <ppenkov.kernel@gmail.com> wrote:
+On Tue, Mar 3, 2020 at 10:13 AM Andrii Nakryiko <andriin@fb.com> wrote:
 >
-> For the series: Acked-by: Petar Penkov <ppenkov@google.com>
-
-please don't top post.
-
-> On Tue, Mar 3, 2020 at 1:46 PM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
-> >
-> > From: Willem de Bruijn <willemb@google.com>
-> >
-> > See first patch for details.
-> >
-> > Patch split across three parts { kernel feature, uapi header, tools }
-> > following the custom for such __sk_buff changes.
+> Internal functions, used by btf_dump__emit_type_decl(), assume field_name is
+> never going to be NULL. Ensure it's always the case.
+>
+> Fixes: 9f81654eebe8 ("libbpf: Expose BTF-to-C type declaration emitting API")
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
 Applied. Thanks
