@@ -2,131 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE9BF178D41
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 10:19:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31494178D91
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 10:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728767AbgCDJTN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Mar 2020 04:19:13 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27819 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726137AbgCDJTN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Mar 2020 04:19:13 -0500
+        id S1729118AbgCDJhg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Mar 2020 04:37:36 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:44131 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729018AbgCDJhf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 4 Mar 2020 04:37:35 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1583313552;
+        s=mimecast20190719; t=1583314654;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=FI5hMv/arl4qoCeh1Zs40mfxO3eHqAJDiq6mor5YF9w=;
-        b=eS32pJK1Ef6kM9MYhZVDfjzO5BBI7ijWG/5LFq9jhd6IMKN1Ne7yc4cS7Y3h1eg2jyEb3j
-        IAl+VrBgMm/A7e3Q4nuOFwT1zG51hT5fosdBpiSp8e7hi0mF+o6ivTZ/MF0xZL97VxKHVi
-        2x+RgSz6l90C3csST5VkIy6Gomts9+g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-79-g8imVRMWMAy_rwQX3efAQg-1; Wed, 04 Mar 2020 04:19:08 -0500
-X-MC-Unique: g8imVRMWMAy_rwQX3efAQg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 650CF1005514;
-        Wed,  4 Mar 2020 09:19:06 +0000 (UTC)
-Received: from carbon (ovpn-200-19.brq.redhat.com [10.40.200.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 985709CA3;
-        Wed,  4 Mar 2020 09:18:56 +0000 (UTC)
-Date:   Wed, 4 Mar 2020 10:18:53 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     brouer@redhat.com, Jakub Kicinski <kuba@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Luigi Rizzo <lrizzo@google.com>,
-        Network Development <netdev@vger.kernel.org>,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdl?= =?UTF-8?B?bnNlbg==?= 
-        <toke@redhat.com>, David Miller <davem@davemloft.net>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        "Jubran, Samih" <sameehj@amazon.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH v4] netdev attribute to control xdpgeneric skb
- linearization
-Message-ID: <20200304101853.760034dc@carbon>
-In-Reply-To: <CA+FuTSeL_psqzpB6hxSh6f1HnO_SrpED=71Y3HcyDweG2Y3sdg@mail.gmail.com>
-References: <20200228105435.75298-1-lrizzo@google.com>
-        <20200228110043.2771fddb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CA+FuTSfd80pZroxtqZDsTeEz4FaronC=pdgjeaBBfYqqi5HiyQ@mail.gmail.com>
-        <3c27d9c0-eb17-b20f-2d10-01f3bdf8c0d6@iogearbox.net>
-        <20200303125020.2baef01b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CA+FuTSeL_psqzpB6hxSh6f1HnO_SrpED=71Y3HcyDweG2Y3sdg@mail.gmail.com>
+        bh=0IrcE3YXDvxtZ3La+d/Q/pPChnMHlDDNnxDU+QIM4DE=;
+        b=bvW/ALnLqZ6L/ZC8dnsnz/X7zrddzNKfeOshJvjoz8xKSrtFaqR6SJqYOhyEVmZc0JTyw4
+        NxuLhBiAyf9bdNEg1lzk5XUSZwNioetgGDRRp6bDVQs+FxWUzYg8QrtLZvCbia2DIbqc5P
+        oS2XnnMUY3nLlyHDtc+/pUyqWwr3AJo=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-289-4aJ4KC-hOMKtSTpEzjio8g-1; Wed, 04 Mar 2020 04:37:31 -0500
+X-MC-Unique: 4aJ4KC-hOMKtSTpEzjio8g-1
+Received: by mail-wr1-f72.google.com with SMTP id q18so615963wrw.5
+        for <bpf@vger.kernel.org>; Wed, 04 Mar 2020 01:37:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=0IrcE3YXDvxtZ3La+d/Q/pPChnMHlDDNnxDU+QIM4DE=;
+        b=JmDrhZ1kd8JJAcYAV+2vQ8K+FkaKULSjHqhtmYtBnjtXxpYkX6GgBV2if4bt2Upelr
+         Qwfq5/u/w4DdGTxiJNbFhvLwEJHmg8iNNJcwfCCGie8tKVz3ANiO0mLBGqa1v+ZHOziA
+         HHkYLEVjZKdxEI2GLOgPVUxtkopjV/+oPM3zEXuyUmcGdKVTwO2kout3IoU+f2K7IX9q
+         BFb0j0pDzV18wydfiqSP9L8ZEBJPbCEHWpDCY8nZZ+kyjCSlSf8N1a7D/TXxDU7kK/NI
+         GAxMA/PLJmi/Q5FK5SwFjPPaLMDpVgTuZOvFl75H5N5WRMkOO291HAGWEk9kTjgCnRCj
+         plsA==
+X-Gm-Message-State: ANhLgQ3tJ7xg3tXSx4ZUvLRJGUlAlLPnltWAB6IbSkIp01aKKnFLFVXQ
+        r7hvaYRSrew6k76auGeD4rvDs0kN3+zMSk11TFU5e/oWTRRp06hUfLoQhbPp2pXUOrX5g21z9fs
+        HjkksOCDzSRsR
+X-Received: by 2002:adf:f588:: with SMTP id f8mr3343990wro.188.1583314650338;
+        Wed, 04 Mar 2020 01:37:30 -0800 (PST)
+X-Google-Smtp-Source: ADFU+vuCeDL3/OPOWGkyWWV5EFXJuUOMBPOiO8AVCfBsPGnKuTu2rCdFgvUy0flCNFO0RIrzVHkoNA==
+X-Received: by 2002:adf:f588:: with SMTP id f8mr3343974wro.188.1583314650144;
+        Wed, 04 Mar 2020 01:37:30 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id k66sm644113wmf.0.2020.03.04.01.37.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Mar 2020 01:37:29 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id C635A180331; Wed,  4 Mar 2020 10:37:27 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH v3 bpf-next 1/3] bpf: switch BPF UAPI #define constants used from BPF program side to enums
+In-Reply-To: <CAEf4BzZWXRX_TrFSPb=ORcfun8B+GdGOAF6C29B-3xB=NaJO7A@mail.gmail.com>
+References: <20200303003233.3496043-1-andriin@fb.com> <20200303003233.3496043-2-andriin@fb.com> <fb80ddac-d104-d0b7-8bed-694d20b62d61@iogearbox.net> <CAEf4BzZWXRX_TrFSPb=ORcfun8B+GdGOAF6C29B-3xB=NaJO7A@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 04 Mar 2020 10:37:27 +0100
+Message-ID: <87blpc4g14.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 3 Mar 2020 16:10:14 -0500
-Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-> On Tue, Mar 3, 2020 at 3:50 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> >
-> > On Tue, 3 Mar 2020 20:46:55 +0100 Daniel Borkmann wrote:  
-> > > Thus, when the data/data_end test fails in generic XDP, the user can
-> > > call e.g. bpf_xdp_pull_data(xdp, 64) to make sure we pull in as much as
-> > > is needed w/o full linearization and once done the data/data_end can be
-> > > repeated to proceed. Native XDP will leave xdp->rxq->skb as NULL, but
-> > > later we could perhaps reuse the same bpf_xdp_pull_data() helper for
-> > > native with skb-less backing. Thoughts?  
-> 
-> Something akin to pskb_may_pull sounds like a great solution to me.
-> 
-> Another approach would be a new xdp_action XDP_NEED_LINEARIZED that
-> causes the program to be restarted after linearization. But that is both
-> more expensive and less elegant.
-> 
-> Instead of a sysctl or device option, is this an optimization that
-> could be taken based on the program? Specifically, would XDP_FLAGS be
-> a path to pass a SUPPORT_SG flag along with the program? I'm not
-> entirely familiar with the XDP setup code, so this may be a totally
-> off. But from a quick read it seems like generic_xdp_install could
-> transfer such a flag to struct net_device.
-> 
-> > I'm curious why we consider a xdpgeneric-only addition. Is attaching
-> > a cls_bpf program noticeably slower than xdpgeneric?  
-> 
-> This just should not be xdp*generic* only, but allow us to use any XDP
-> with large MTU sizes and without having to disable GRO.
+> On Tue, Mar 3, 2020 at 3:01 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>
+>> On 3/3/20 1:32 AM, Andrii Nakryiko wrote:
+>> > Switch BPF UAPI constants, previously defined as #define macro, to anonymous
+>> > enum values. This preserves constants values and behavior in expressions, but
+>> > has added advantaged of being captured as part of DWARF and, subsequently, BTF
+>> > type info. Which, in turn, greatly improves usefulness of generated vmlinux.h
+>> > for BPF applications, as it will not require BPF users to copy/paste various
+>> > flags and constants, which are frequently used with BPF helpers. Only those
+>> > constants that are used/useful from BPF program side are converted.
+>> >
+>> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+>>
+>> Just thinking out loud, is there some way this could be resolved generically
+>> either from compiler side or via additional tooling where this ends up as BTF
+>> data and thus inside vmlinux.h as anon enum eventually? bpf.h is one single
+>> header and worst case libbpf could also ship a copy of it (?), but what about
+>> all the other things one would need to redefine e.g. for tracing? Small example
+>> that comes to mind are all these TASK_* defines in sched.h etc, and there's
+>> probably dozens of other similar stuff needed too depending on the particular
+>> case; would be nice to have some generic catch-all, hmm.
+>
+> Enum convertion seems to be the simplest and cleanest way,
+> unfortunately (as far as I know). DWARF has some extensions capturing
+> #defines, but values are strings (and need to be parsed, which is pain
+> already for "1 << 1ULL"), and it's some obscure extension, not a
+> standard thing. I agree would be nice not to have and change all UAPI
+> headers for this, but I'm not aware of the solution like that.
 
-This is an important point: "should not be xdp*generic* only".
+Since this is a UAPI header, are we sure that no userspace programs are
+using these defines in #ifdefs or something like that?
 
-I really want to see this work for XDP-native *first*, and it seems
-that with Daniel's idea, it can can also work for XDP-generic.  As Jakub
-also hinted, it seems strange that people are trying to implement this
-for XDP-generic, as I don't think there is any performance advantage
-over cls_bpf.  We really want this to work from XDP-native.
-
-
-> I'd still like a way to be able to drop or modify packets before GRO,
-> or to signal that a type of packet should skip GRO.
-
-That is a use-case, that we should remember to support.
-
-Samih (cc'ed) is working on adding multi-frame support[1] to XDP-native.
-Given the huge interest this thread shows, I think I will dedicate
-some of my time to help him out on the actual coding.
-
-For my idea to work[1], we first have storage space for the multi-buffer
-references, and I propose we use the skb_shared_info area, that is
-available anyhow for XDP_PASS that calls build_skb().  Thus, we first
-need to standardize across all XDP drivers, how and where this memory
-area is referenced/offset.
-
-
-[1] https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp-multi-buffer01-design.org
-[2] https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp-multi-buffer01-design.org#storage-space-for-multi-buffer-referencessegments
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+-Toke
 
