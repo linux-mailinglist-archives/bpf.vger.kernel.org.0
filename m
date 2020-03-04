@@ -2,275 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C72811793ED
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 16:48:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49CF31793F5
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 16:48:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388212AbgCDPsE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Mar 2020 10:48:04 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:45281 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388174AbgCDPsE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Mar 2020 10:48:04 -0500
-Received: by mail-wr1-f66.google.com with SMTP id v2so2963292wrp.12
-        for <bpf@vger.kernel.org>; Wed, 04 Mar 2020 07:48:02 -0800 (PST)
+        id S2388245AbgCDPsM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Mar 2020 10:48:12 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:42308 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388183AbgCDPsD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Mar 2020 10:48:03 -0500
+Received: by mail-pl1-f193.google.com with SMTP id u3so1168492plr.9;
+        Wed, 04 Mar 2020 07:48:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JH3iKdoX60vBDf5RPVZX6I6Dg2qntJTjRhn9rqqRbkU=;
-        b=ce65Ks4eMK1y7cjThJcC8xe2T0GpZxp0Y+G35ZaB+P0atYcbffyjFrn2rV5D+ghDVU
-         A4GZnpbhNKizq6u4X16MSbcKPlq1vVvO3PSxW+87YBkymRC/1qwwWikmt8GEexTzo2tg
-         B7RhyEdQ+sXdUVuV3tsaj+MgXW5XPgmLgFxzw=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=lsWAeXZgBvBbCxC4IAxRGnZoAnoDvQlT1AZte/UXDV0=;
+        b=NsuuqGjkya7feqvFBE6g6oY52nnBVNFxBNljmZ2YA9w5jjAogqrB3Jaoe07dHLuRBw
+         wNPNMTCR68hUQyn1q0Gomp2VDlF5pbVi5ZrwcHkjmcG6G3EOP0ksxXpGqpLoDWNaTIMv
+         r9tlrHqiFjTfMgRbtVdFjVKWZaxPb8W/1Jd+1JMnzu7VfNmAJME63PEHG2Lp+vx7jdry
+         U0RrZDvT9dmrm1lJBZ6A9MZaD24iAAw7HSsK+zok3VpGn8jmCXf6czjCMI7qkiFGKqd/
+         lG38AttRuHIIeH4RcQINYe2Op8mMLpRVuMrQzEbDdozCp0up/F7woMCMNXyUm3y9rW/1
+         RxZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JH3iKdoX60vBDf5RPVZX6I6Dg2qntJTjRhn9rqqRbkU=;
-        b=DSaLZaTlJlHn4CZ829Z2D2/kQANEK6OCEGHGK1h9YxcWDi/5j2+Yw2FAxLlJqEr73+
-         2E23p+8PkD5aCU0mM3NBQZpa9YDIbo82svIKv34386eY11g6kxH/pbP33e1VPKujdrTu
-         Z3sYR1NIKlm8CSkf3JFCieCtAi4G8oYwPNPwvmRMPjfqiuRJ0Y4Mn2NAIz0nsdl3WWTw
-         RI+/7X54VxiRa5DOpyolOunnwT/SxK8/zfwtcnxcfDYJ+omNgnQk00BkCazR5SHgXB1b
-         iiIzSObN7YZbBABHddIEb5rs4KLE//K2Ahje6cwxDhqZ9Do27TBVSdRbyKqKv48n0C8e
-         8Afw==
-X-Gm-Message-State: ANhLgQ138HETcOQuGxgPugODyEa2zuvMYQjl7+5GmZUucCEWThsbrJnN
-        EI41ZzdGVSj3fbQYyWUcrC3ykg==
-X-Google-Smtp-Source: ADFU+vtR4KyEGJ2cO/OPp0l9p4ynjqVAQjux5fRnVlx1siYw/whKL46bRLgi6BO7eEqFZVwwZt+RuQ==
-X-Received: by 2002:adf:c44a:: with SMTP id a10mr4453283wrg.279.1583336882040;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=lsWAeXZgBvBbCxC4IAxRGnZoAnoDvQlT1AZte/UXDV0=;
+        b=Elz0bCMLMv6WQ8uZz0raAttVtgoaSMzZBjkwic6wFyMM52A5n/LDlYthwtI/udlrG1
+         pfoVayMNYczQhAcwi6nTZCRXfAxTjgbtPyJ69+Sb9Ht+CcEsOn5y4rV5MXijKMVJ5cmz
+         UiKPt4qdWREHzJ4IFpodA1Bcd+2oaEJfNvCP85iG9EflVFF/IhE5j2lkvoSqIr4xHcpM
+         Rzl6RulTwVu4eQdbNQEgliTyfHI4t2ZpRtzG9v0dcv+IX55ST/GU6Gm+Hf4vfHDfzbnQ
+         UZ9LFM16HAIqMwST3nUPYAAnCmBl5yfhhhAUkCO4WqmY/GLyw2eZqNKd+PLYRzNUc4fO
+         M/oQ==
+X-Gm-Message-State: ANhLgQ3BF1PuF+Z2AKUVPmKVQomdtdazSuC8TKT+FueGerBf6b1wjjch
+        AfHFP0DhXr2ea2/rTY1+AN8=
+X-Google-Smtp-Source: ADFU+vvbx0EnyqEzXhldgMhINMlenuDyh18RuOp21ymS/wutAr6VqgEy0CQJQMogybcgm6n2tWd8cg==
+X-Received: by 2002:a17:902:7007:: with SMTP id y7mr3490155plk.208.1583336882172;
         Wed, 04 Mar 2020 07:48:02 -0800 (PST)
-Received: from kpsingh-kernel.localdomain ([2a00:79e1:abc:308:8ca0:6f80:af01:b24])
-        by smtp.gmail.com with ESMTPSA id u25sm4816091wml.17.2020.03.04.07.48.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+Received: from ast-mbp ([2620:10d:c090:500::4:c694])
+        by smtp.gmail.com with ESMTPSA id s7sm27917016pgp.44.2020.03.04.07.48.00
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
         Wed, 04 Mar 2020 07:48:01 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 4 Mar 2020 07:47:59 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Subject: [PATCH bpf-next v3 7/7] bpf: Add selftests for BPF_MODIFY_RETURN
-Date:   Wed,  4 Mar 2020 16:47:47 +0100
-Message-Id: <20200304154747.23506-8-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200304154747.23506-1-kpsingh@chromium.org>
-References: <20200304154747.23506-1-kpsingh@chromium.org>
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 0/3] Introduce pinnable bpf_link kernel
+ abstraction
+Message-ID: <20200304154757.3tydkiteg3vekyth@ast-mbp>
+References: <094a8c0f-d781-d2a2-d4cd-721b20d75edd@iogearbox.net>
+ <e9a4351a-4cf9-120a-1ae1-94a707a6217f@fb.com>
+ <8083c916-ac2c-8ce0-2286-4ea40578c47f@iogearbox.net>
+ <CAEf4BzbokCJN33Nw_kg82sO=xppXnKWEncGTWCTB9vGCmLB6pw@mail.gmail.com>
+ <87pndt4268.fsf@toke.dk>
+ <ab2f98f6-c712-d8a2-1fd3-b39abbaa9f64@iogearbox.net>
+ <ccbc1e49-45c1-858b-1ad5-ee503e0497f2@fb.com>
+ <87k1413whq.fsf@toke.dk>
+ <20200304043643.nqd2kzvabkrzlolh@ast-mbp>
+ <87h7z44l3z.fsf@toke.dk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <87h7z44l3z.fsf@toke.dk>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+On Wed, Mar 04, 2020 at 08:47:44AM +0100, Toke Høiland-Jørgensen wrote:
+> >
+> >> And what about the case where the link fd is pinned on a bpffs that is
+> >> no longer available? I.e., if a netdevice with an XDP program moves
+> >> namespaces and no longer has access to the original bpffs, that XDP
+> >> program would essentially become immutable?
+> >
+> > 'immutable' will not be possible.
+> > I'm not clear to me how bpffs is going to disappear. What do you mean
+> > exactly?
+> 
+> # stat /sys/fs/bpf | grep Device
+> Device: 1fh/31d	Inode: 1013963     Links: 2
+> # mkdir /sys/fs/bpf/test; ls /sys/fs/bpf
+> test
+> # ip netns add test
+> # ip netns exec test stat /sys/fs/bpf/test
+> stat: cannot stat '/sys/fs/bpf/test': No such file or directory
+> # ip netns exec test stat /sys/fs/bpf | grep Device
+> Device: 3fh/63d	Inode: 12242       Links: 2
+> 
+> It's a different bpffs instance inside the netns, so it won't have
+> access to anything pinned in the outer one...
 
-Test for two scenarios:
+Toke, please get your facts straight.
 
-  * When the fmod_ret program returns 0, the original function should
-    be called along with fentry and fexit programs.
-  * When the fmod_ret program returns a non-zero value, the original
-    function should not be called, no side effect should be observed and
-    fentry and fexit programs should be called.
+> # stat /sys/fs/bpf | grep Device
+> Device: 1fh/31d	Inode: 1013963     Links: 2
 
-The result from the kernel function call and whether a side-effect is
-observed is returned via the retval attr of the BPF_PROG_TEST_RUN (bpf)
-syscall.
+Inode != 1 means that this is not bpffs.
+I guess this is still sysfs.
 
-Signed-off-by: KP Singh <kpsingh@google.com>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
----
- net/bpf/test_run.c                            | 22 ++++++-
- .../selftests/bpf/prog_tests/modify_return.c  | 65 +++++++++++++++++++
- .../selftests/bpf/progs/modify_return.c       | 49 ++++++++++++++
- 3 files changed, 135 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/modify_return.c
- create mode 100644 tools/testing/selftests/bpf/progs/modify_return.c
+> # mkdir /sys/fs/bpf/test; ls /sys/fs/bpf
+> test
+> # ip netns add test
+> # ip netns exec test stat /sys/fs/bpf/test
+> stat: cannot stat '/sys/fs/bpf/test': No such file or directory
+> # ip netns exec test stat /sys/fs/bpf | grep Device
+> Device: 3fh/63d	Inode: 12242       Links: 2
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 3600f098e7c6..4c921f5154e0 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -10,6 +10,7 @@
- #include <net/bpf_sk_storage.h>
- #include <net/sock.h>
- #include <net/tcp.h>
-+#include <linux/error-injection.h>
- 
- #define CREATE_TRACE_POINTS
- #include <trace/events/bpf_test_run.h>
-@@ -143,6 +144,14 @@ int noinline bpf_fentry_test6(u64 a, void *b, short c, int d, void *e, u64 f)
- 	return a + (long)b + c + d + (long)e + f;
- }
- 
-+int noinline bpf_modify_return_test(int a, int *b)
-+{
-+	*b += 1;
-+	return a + *b;
-+}
-+
-+ALLOW_ERROR_INJECTION(bpf_modify_return_test, ERRNO);
-+
- static void *bpf_test_init(const union bpf_attr *kattr, u32 size,
- 			   u32 headroom, u32 tailroom)
- {
-@@ -168,7 +177,9 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
- 			      const union bpf_attr *kattr,
- 			      union bpf_attr __user *uattr)
- {
--	int err = -EFAULT;
-+	u16 side_effect = 0, ret = 0;
-+	int b = 2, err = -EFAULT;
-+	u32 retval = 0;
- 
- 	switch (prog->expected_attach_type) {
- 	case BPF_TRACE_FENTRY:
-@@ -181,10 +192,19 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
- 		    bpf_fentry_test6(16, (void *)17, 18, 19, (void *)20, 21) != 111)
- 			goto out;
- 		break;
-+	case BPF_MODIFY_RETURN:
-+		ret = bpf_modify_return_test(1, &b);
-+		if (b != 2)
-+			side_effect = 1;
-+		break;
- 	default:
- 		goto out;
- 	}
- 
-+	retval = ((u32)side_effect << 16) | ret;
-+	if (copy_to_user(&uattr->test.retval, &retval, sizeof(retval)))
-+		goto out;
-+
- 	err = 0;
- out:
- 	trace_bpf_test_finish(&err);
-diff --git a/tools/testing/selftests/bpf/prog_tests/modify_return.c b/tools/testing/selftests/bpf/prog_tests/modify_return.c
-new file mode 100644
-index 000000000000..97fec70c600b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/modify_return.c
-@@ -0,0 +1,65 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright 2020 Google LLC.
-+ */
-+
-+#include <test_progs.h>
-+#include "modify_return.skel.h"
-+
-+#define LOWER(x) ((x) & 0xffff)
-+#define UPPER(x) ((x) >> 16)
-+
-+
-+static void run_test(__u32 input_retval, __u16 want_side_effect, __s16 want_ret)
-+{
-+	struct modify_return *skel = NULL;
-+	int err, prog_fd;
-+	__u32 duration = 0, retval;
-+	__u16 side_effect;
-+	__s16 ret;
-+
-+	skel = modify_return__open_and_load();
-+	if (CHECK(!skel, "skel_load", "modify_return skeleton failed\n"))
-+		goto cleanup;
-+
-+	err = modify_return__attach(skel);
-+	if (CHECK(err, "modify_return", "attach failed: %d\n", err))
-+		goto cleanup;
-+
-+	skel->bss->input_retval = input_retval;
-+	prog_fd = bpf_program__fd(skel->progs.fmod_ret_test);
-+	err = bpf_prog_test_run(prog_fd, 1, NULL, 0, NULL, 0,
-+				&retval, &duration);
-+
-+	CHECK(err, "test_run", "err %d errno %d\n", err, errno);
-+
-+	side_effect = UPPER(retval);
-+	ret  = LOWER(retval);
-+
-+	CHECK(ret != want_ret, "test_run",
-+	      "unexpected ret: %d, expected: %d\n", ret, want_ret);
-+	CHECK(side_effect != want_side_effect, "modify_return",
-+	      "unexpected side_effect: %d\n", side_effect);
-+
-+	CHECK(skel->bss->fentry_result != 1, "modify_return",
-+	      "fentry failed\n");
-+	CHECK(skel->bss->fexit_result != 1, "modify_return",
-+	      "fexit failed\n");
-+	CHECK(skel->bss->fmod_ret_result != 1, "modify_return",
-+	      "fmod_ret failed\n");
-+
-+cleanup:
-+	modify_return__destroy(skel);
-+}
-+
-+void test_modify_return(void)
-+{
-+	run_test(0 /* input_retval */,
-+		 1 /* want_side_effect */,
-+		 4 /* want_ret */);
-+	run_test(-EINVAL /* input_retval */,
-+		 0 /* want_side_effect */,
-+		 -EINVAL /* want_ret */);
-+}
-+
-diff --git a/tools/testing/selftests/bpf/progs/modify_return.c b/tools/testing/selftests/bpf/progs/modify_return.c
-new file mode 100644
-index 000000000000..8b7466a15c6b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/modify_return.c
-@@ -0,0 +1,49 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright 2020 Google LLC.
-+ */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+static int sequence = 0;
-+__s32 input_retval = 0;
-+
-+__u64 fentry_result = 0;
-+SEC("fentry/bpf_modify_return_test")
-+int BPF_PROG(fentry_test, int a, __u64 b)
-+{
-+	sequence++;
-+	fentry_result = (sequence == 1);
-+	return 0;
-+}
-+
-+__u64 fmod_ret_result = 0;
-+SEC("fmod_ret/bpf_modify_return_test")
-+int BPF_PROG(fmod_ret_test, int a, int *b, int ret)
-+{
-+	sequence++;
-+	/* This is the first fmod_ret program, the ret passed should be 0 */
-+	fmod_ret_result = (sequence == 2 && ret == 0);
-+	return input_retval;
-+}
-+
-+__u64 fexit_result = 0;
-+SEC("fexit/bpf_modify_return_test")
-+int BPF_PROG(fexit_test, int a, __u64 b, int ret)
-+{
-+	sequence++;
-+	/* If the input_reval is non-zero a successful modification should have
-+	 * occurred.
-+	 */
-+	if (input_retval)
-+		fexit_result = (sequence == 3 && ret == input_retval);
-+	else
-+		fexit_result = (sequence == 3 && ret == 4);
-+
-+	return 0;
-+}
--- 
-2.20.1
+This is your new sysfs after ip netns exec.
 
+netns has nothing do with bpffs despite your claims.
+
+Try this instead:
+# mkdir /tmp/bpf
+# mount -t bpf bpf /tmp/bpf
+# stat /tmp/bpf|grep Device
+Device: 1eh/30d	Inode: 1           Links: 2
+# stat -f /tmp/bpf|grep Type
+    ID: 0        Namelen: 255     Type: bpf_fs
+# mkdir /tmp/bpf/test
+# ip netns add my
+# ip netns exec my stat /tmp/bpf|grep Device
+Device: 1eh/30d	Inode: 1           Links: 3
+# ip netns exec my stat -f /tmp/bpf|grep Type
+    ID: 0        Namelen: 255     Type: bpf_fs
+# ip netns exec my ls /tmp/bpf/
+test
+
+Having said that we do allow remounting bpffs on top of existing one:
+# mount -t bpf bpf /var/aa
+# mkdir /var/aa/bb
+# stat -f /var/aa/bb|grep Type
+    ID: 0        Namelen: 255     Type: bpf_fs
+# mount -t bpf bpf /var/aa
+# stat -f /var/aa/bb|grep Type
+stat: cannot read file system information for '/var/aa/bb': No such file or directory
+# umount /var/aa
+# stat -f /var/aa/bb|grep Type
+    ID: 0        Namelen: 255     Type: bpf_fs
+
+Still that doesn't mean that pinned link is 'immutable'.
