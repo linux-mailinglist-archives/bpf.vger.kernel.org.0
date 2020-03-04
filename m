@@ -2,92 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A4A1786CD
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 01:03:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A93B178711
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 01:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727823AbgCDADc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Mar 2020 19:03:32 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:42590 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727604AbgCDADb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Mar 2020 19:03:31 -0500
-Received: by mail-pg1-f196.google.com with SMTP id h8so72285pgs.9;
-        Tue, 03 Mar 2020 16:03:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Cg+Bk6p3ng/oCqeB9jAP5HpcQ6wBIVVyIyzT0MMNq0k=;
-        b=Wtdw/bpDAHegTWVPqPiInwTRdc+XxDNKZV5OyxUdLlV7JnWYcKCYo5WwcOqZBwoZgR
-         lCMRDanCykEaZjdNDLpO9T5CqO7BcZg7jnRfbK4HKgL0nmUTQbR2CSv9dU3LQrWdftHN
-         Ok2JGkqTvgMzihWyEv4rDsCvtgunV7D2BpPu2+FdHSA61Fo2ozHR7we/hDStKntnGNU3
-         yTaKQw5sIuR7Mb+sPgJue9DY26rhlMPuqGcVxhT3opQ9hKRVyjtmJ3Za+jzdRN06xyaY
-         5raGwMxS83abexPR9tjLNaRRvARn3H7mJcJfNYoQCe0IT9YYvseds7bNeO9X1HksqvWl
-         hFLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Cg+Bk6p3ng/oCqeB9jAP5HpcQ6wBIVVyIyzT0MMNq0k=;
-        b=pkHhtqN1ljR9QQrxQUrQDLnvnDZyfQtO0gCdy1JpjHjVOdKsNhvpuMeAWpg05ImXAS
-         hOHFdB2HTfn1lLI6wGkgAiciYAXpFizqhQ+Z+koarU1Wl3FpDR86/Ae6n4q/49i46JWf
-         VPeDweelFt59hQmtoTF0QPC15+CKPW0hdjS7L+/RxGpjP+FhqwIvICEo0lThUQPgfqNm
-         fh7Awy8vicFbfvvk/W7pyxGkYrcdBO0kL5DmaaznaB522UcBZ/d9Y6bDJg2oi09FT7FG
-         lGNS9PNaqTCFYinPFTR5yKSCdYFFENMuMGZF95WA2Oh5Xx6vBETdgABeC3zzp+xVtciZ
-         or2A==
-X-Gm-Message-State: ANhLgQ0LINO0jpmCgd+kWaHnkPF9YRnx4AisherIovrOSXhodLW1o7XR
-        ceKpHKi4y50cw6JYu4LfllA=
-X-Google-Smtp-Source: ADFU+vvLke/PQpWmYNEZBsbhWp2sSTWm813w2K3TO0HseVYhvp+AY3D8KiClhK8qArj0CeTWoS6W/g==
-X-Received: by 2002:a63:4103:: with SMTP id o3mr5683444pga.199.1583280210838;
-        Tue, 03 Mar 2020 16:03:30 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:500::4:a0de])
-        by smtp.gmail.com with ESMTPSA id z22sm4937779pgn.19.2020.03.03.16.03.28
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 03 Mar 2020 16:03:29 -0800 (PST)
-Date:   Tue, 3 Mar 2020 16:03:27 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Subject: Re: [PATCH bpf-next 4/7] bpf: Attachment verification for
- BPF_MODIFY_RETURN
-Message-ID: <20200304000326.nk7jmkgxazl3umbh@ast-mbp>
-References: <20200303140950.6355-1-kpsingh@chromium.org>
- <20200303140950.6355-5-kpsingh@chromium.org>
- <CAEf4BzaviDB+WGUsg1+aO5GAtkJuQ6aYSiB8VaKL0CoQRPs8Xw@mail.gmail.com>
- <20200303232151.GB17103@chromium.org>
+        id S1727903AbgCDAfD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Mar 2020 19:35:03 -0500
+Received: from walmailout01.yourhostingaccount.com ([65.254.253.166]:42867
+        "EHLO walmailout01.yourhostingaccount.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727725AbgCDAfD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 3 Mar 2020 19:35:03 -0500
+X-Greylist: delayed 1814 seconds by postgrey-1.27 at vger.kernel.org; Tue, 03 Mar 2020 19:35:02 EST
+Received: from mailscan11.yourhostingaccount.com ([10.1.15.11] helo=walmailscan11.yourhostingaccount.com)
+        by walmailout01.yourhostingaccount.com with esmtp (Exim)
+        id 1j9HWn-0003Xw-I1; Tue, 03 Mar 2020 19:04:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gmail.com;
+         s=dkim; h=Sender:Content-Transfer-Encoding:Content-Type:MIME-Version:
+        Reply-To:From:Subject:Date:Message-ID:To:Cc:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=; b=DHrvzK3FbRKjB2R+af+wdZ76H4
+        kgpPBFKC6YWaLrEzI16ZRt5DX9DOE80sOpq+N43vgPCTvjQB3l/BHIwOovFG8Fu9B/q76cgnD7obT
+        sBbjQJS+DPr06ZmZMN73zNuJns3kOBp7IlcR6MDepUcNdVIvRPmrBI7aZaDCijnze/xHJVnjYCD2F
+        v23gk+yZLofB6+S6Qkzd008gA9uDU+KIseHKeYBs9v5nlO1O6aWqhlRvBGfZbnc4k8dc5FUkSjM+O
+        Y8YAjTBF5mbthE3e5OTe8WKNBBlwWUv/2xZC2Wi3dnJQJSH9wQFzZ6tXtEIXPaI32Tyv9P/lNkm38
+        S8zzNzOw==;
+Received: from [10.114.3.31] (helo=walimpout11)
+        by walmailscan11.yourhostingaccount.com with esmtp (Exim)
+        id 1j9HWn-0004nH-FF; Tue, 03 Mar 2020 19:04:45 -0500
+Received: from walwebmail04.yourhostingaccount.com ([10.1.16.4])
+        by walimpout11 with 
+        id A04i2200105FYhm0104lZ2; Tue, 03 Mar 2020 19:04:45 -0500
+X-Authority-Analysis: v=2.2 cv=cKKQihWN c=1 sm=1 tr=0
+ a=YjmNDDI+0hkeRrrZ2pZTjw==:117 a=Osa5sBIyHKdXETJeBJVB3g==:17
+ a=9cW_t1CCXrUA:10 a=jR-r3FO1uioA:10 a=8nJEP1OIZ-IA:10 a=x7bEGLp0ZPQA:10
+ a=ZKAUjeuh08YA:10 a=SS2py6AdgQ4A:10 a=tclcd6dtLQvEqt9_mmAA:9
+ a=wPNLvfGTeEIA:10 a=aOQmkusZXmwLL3XI3Ryd:22
+Received: from [127.0.0.1] (helo=email.powweb.com)
+        by walwebmail04.yourhostingaccount.com with esmtp (Exim)
+        id 1j9HWj-0003Je-QH; Tue, 03 Mar 2020 19:04:41 -0500
+Received: from 176.113.72.84
+        (SquirrelMail authenticated user enggpmc@precimeasure.com)
+        by email.powweb.com with HTTP;
+        Tue, 3 Mar 2020 19:04:41 -0500
+Message-ID: <d0e3bfcddfa2596313b5959dfe698cba.squirrel@email.powweb.com>
+Date:   Tue, 3 Mar 2020 19:04:41 -0500
+Subject: Urgent!!! I am still waiting for your response. did you get my 
+ previous email ?
+From:   "Patrick Edem" <patrickedemchamberss@gmail.com>
+Reply-To: patrickedemchamberss@gmail.com
+User-Agent: SquirrelMail/1.4.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200303232151.GB17103@chromium.org>
-User-Agent: NeoMutt/20180223
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+X-Priority: 3 (Normal)
+Importance: Normal
+X-EN-AuthUser: enggpmc@precimeasure.com
+To:     unlisted-recipients:; (no To-header on input)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 04, 2020 at 12:21:51AM +0100, KP Singh wrote:
-> 
-> > > +                       t = btf_type_skip_modifiers(btf, t->type, NULL);
-> > > +                       if (!btf_type_is_int(t)) {
-> > 
-> > Should the size of int be verified here? E.g., if some function
-> > returns u8, is that ok for BPF program to return, say, (1<<30) ?
-> 
-> Would this work?
-> 
->        if (size != t->size) {
->                bpf_log(log,
->                        "size accessed = %d should be %d\n",
->                        size, t->size);
->                return false;
->        }
 
-It will cause spurious failures later when llvm optimizes
-if (ret & 0xff) into u8 load.
-I think btf_type_is_int() is enough as-is.
+
