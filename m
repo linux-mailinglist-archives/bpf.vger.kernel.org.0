@@ -2,181 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA96B178E02
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 11:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9378B178E18
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 11:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbgCDKGb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Mar 2020 05:06:31 -0500
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:33003 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387719AbgCDKGa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Mar 2020 05:06:30 -0500
-Received: by mail-ed1-f65.google.com with SMTP id c62so1628169edf.0
-        for <bpf@vger.kernel.org>; Wed, 04 Mar 2020 02:06:27 -0800 (PST)
+        id S1729256AbgCDKNj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Mar 2020 05:13:39 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:37661 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728946AbgCDKNj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Mar 2020 05:13:39 -0500
+Received: by mail-lj1-f195.google.com with SMTP id q23so1352645ljm.4
+        for <bpf@vger.kernel.org>; Wed, 04 Mar 2020 02:13:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qvjAotCReIalwn7hfhRA/t4b2Gvv6W6FE/RxEgqf7t8=;
-        b=TlS//aLMBwYMpsokQs4f+uhkB8/BG6XV1ID6SLScsSnRde6IV1KEaVzUesz7X0HS48
-         sIqEqXZkY/mPsymtHOURw4GXi3q66hWqhz2+X9RmD1Tt6GIOl5oQyAoTRaDV+5sRRvhv
-         IvnergFq3KB0EY3wYxA/Gb3RTzWpD64yfgeDV3JxMSWKZo+ch1ImmDmVc8jJLAtePuTN
-         5+J8TBDTgjG5wlwCK7CmVA+ykJI20Yp+CqZVyJsr1sUMeh2NpynuAmioA6YLOSuZCp3t
-         ktALDGuW+aAoYRgsy3D1e9JSlCS0FPG0GzdP12OhnzaiM45ZI2LYw36sH6Z1KBVgRgP7
-         DORg==
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l5VLUtAhfgBsOg4rLlIPQN68IyjJbYsnM/8jmzkLZnQ=;
+        b=RIInD9Rl9eoyZ0sJ0STDuAF22JibGvVr3aRcUtVhDkdBnSbVOmtRAX9+5echD6mm63
+         BnMTtLnvWMZ5nvEaAcOHY0ztXNuETcLi3xcKEr/Rr4X6c9a2XveXcTG4bdsEyJPaaKRr
+         kucRLSIfDPte4frBdgzDikLSyUI2mmKdbWQaw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qvjAotCReIalwn7hfhRA/t4b2Gvv6W6FE/RxEgqf7t8=;
-        b=QYOO1rtKTWODkBRIFFRsaPZ/MtS5LoQIoMskr/8OsiCBZVPDZ+mAVsWduHN9ijsANz
-         rqIA5VO8r8LjKuvSoM+vJCMJwGZL9Brka17+F6hAcAnUx9poEB3b3uHg4QCJxwAR9KaB
-         a7UZWCFETseIUTq14XXKx2Z2uFp9/ahIAmtboPzW2ygzZJVkSDgVbMidVpBh1vI727Ny
-         Dtr2MDiEL1rBZnFTg9ld3enEQDPzQto9CSNMY9HPzRP4LFc0nKVspwmsSXvNhKww4/EA
-         FK+ybnfZLiS9Yj3ULtB5lIXujxPCsxQvBLZZvm7n363v6ehg3VdEPek5Mp6G7vFslZem
-         GNew==
-X-Gm-Message-State: ANhLgQ2eAtENoH59crBBS8/LUOm1kfqOFOFlk8skfWg9h34p+xoagrwq
-        g4ckcvyiPQrms4Gdf4/964lS5dswMFRN/cBNku7o2Q==
-X-Google-Smtp-Source: ADFU+vsOS1A0XyioMVvDKG5rYZHg689H6J6a0RrbmZGMdwpvoTGbmXSr6HznowYHxLngFqxStbYPiqT+Uq3K7hbs3qQ=
-X-Received: by 2002:a17:906:15c2:: with SMTP id l2mr1771475ejd.302.1583316386498;
- Wed, 04 Mar 2020 02:06:26 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l5VLUtAhfgBsOg4rLlIPQN68IyjJbYsnM/8jmzkLZnQ=;
+        b=mZ6LXPBN+Q7+vS5RujdBioeImX8q70QWFOh7u5shsvZ2HgENe8gpcuK9jTmvZskTJ0
+         +CJ+umWASauGcd70tIYz3xD63zbrdBslZXUAL+xR7ixa5BNMg0rbZGX6UOnxHYt/Tzbw
+         Dp3L1sM9Nexe7SGdyko5/qSXabRumMkEDzD1o5iJniThOVn8h8qzXy0Uaao3o+xIyroJ
+         ndnD5FtbWmEIkQf0PHg6VGXDrzcnXZeuya6ZYTzpagPPgaDNc3WchSPytyiEgHWQkW6a
+         ERFXiScSRUGqwyoe3crrEbvNP6MxU7AVFt1CTkac1XhO4DKiSalsHZLEGIdfjCsq63DF
+         N0Ow==
+X-Gm-Message-State: ANhLgQ33JjI9wF9LRKp6E0rScxKMXru2k8DON92/OtBihnvtLbTahgYF
+        y4MPaj+/ppQPd3eDj9uP2XakX3HyDVqfZ0Vv
+X-Google-Smtp-Source: ADFU+vuLnv++HnjkYrEVdCsFq4UJneukNpbkIfLrDxxcsvSJgk5pm6VKCjO5OpHJYP4UubwzN/Y1IQ==
+X-Received: by 2002:a2e:3812:: with SMTP id f18mr1511119lja.129.1583316815678;
+        Wed, 04 Mar 2020 02:13:35 -0800 (PST)
+Received: from localhost.localdomain ([176.221.114.230])
+        by smtp.gmail.com with ESMTPSA id l7sm341777lfk.65.2020.03.04.02.13.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Mar 2020 02:13:35 -0800 (PST)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     john.fastabend@gmail.com, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next v3 00/12] bpf: sockmap, sockhash: support storing UDP sockets
+Date:   Wed,  4 Mar 2020 11:13:05 +0100
+Message-Id: <20200304101318.5225-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20200228105435.75298-1-lrizzo@google.com> <20200228110043.2771fddb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CA+FuTSfd80pZroxtqZDsTeEz4FaronC=pdgjeaBBfYqqi5HiyQ@mail.gmail.com> <3c27d9c0-eb17-b20f-2d10-01f3bdf8c0d6@iogearbox.net>
-In-Reply-To: <3c27d9c0-eb17-b20f-2d10-01f3bdf8c0d6@iogearbox.net>
-From:   Luigi Rizzo <lrizzo@google.com>
-Date:   Wed, 4 Mar 2020 02:06:15 -0800
-Message-ID: <CAMOZA0+T3k25ndRKpSwDZ9vHkMaJUz4XhtfGFGNn=sPrGoSQ4Q@mail.gmail.com>
-Subject: Re: [PATCH v4] netdev attribute to control xdpgeneric skb linearization
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Jubran, Samih" <sameehj@amazon.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, ast@kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-[taking one message in the thread to answer multiple issues]
+Thanks to Jakub's suggestion I was able to eliminate sk_psock_hooks!
+Now TCP and UDP only need to export a single function get_proto,
+which is called from the sockmap code. This reduced the amount of
+boilerplate a bit. The downside is that the IPv6 proto rebuild is
+copied and pasted from TCP, but I think I can live with that.
 
-On Tue, Mar 3, 2020 at 11:47 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 2/29/20 12:53 AM, Willem de Bruijn wrote:
-> > On Fri, Feb 28, 2020 at 2:01 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> >> On Fri, 28 Feb 2020 02:54:35 -0800 Luigi Rizzo wrote:
-> >>> Add a netdevice flag to control skb linearization in generic xdp mode.
-> >>>
-> >>> The attribute can be modified through
-> >>>        /sys/class/net/<DEVICE>/xdpgeneric_linearize
-> >>> The default is 1 (on)
-...
-> >>> ns/pkt                   RECEIVER                 SENDER
-> >>>
-> >>>                      p50     p90     p99       p50   p90    p99
-> >>>
-> >>> LINEARIZATION:    600ns  1090ns  4900ns     149ns 249ns  460ns
-> >>> NO LINEARIZATION:  40ns    59ns    90ns      40ns  50ns  100ns
-...
-> >> Just load your program in cls_bpf. No extensions or knobs needed.
+Changes since v2:
+- Remove sk_psock_hooks based on Jakub's idea
+- Fix reference to tcp_bpf_clone in commit message
+- Add inet_csk_has_ulp helper
 
-Yes this is indeed an option, perhaps the only downside is that
-it acts after packet taps, so if, say, the program is there to filter unwanted
-traffic we would miss that protection.
+Changes since v1:
+- Check newsk->sk_prot in tcp_bpf_clone
+- Fix compilation with BPF_STREAM_PARSER disabled
+- Use spin_lock_init instead of static initializer
+- Elaborate on TCPF_SYN_RECV
+- Cosmetic changes to TEST macros, and more tests
+- Add Jakub and me as maintainers
 
-...
-> >> Making xdpgeneric-only extensions without touching native XDP makes
-> >> no sense to me. Is this part of some greater vision?
-> >
-> > Yes, native xdp has the same issue when handling packets that exceed a
-> > page (4K+ MTU) or otherwise consist of multiple segments. The issue is
-> > just more acute in generic xdp. But agreed that both need to be solved
-> > together.
-> >
-> > Many programs need only access to the header. There currently is not a
-> > way to express this, or for xdp to convey that the buffer covers only
-> > part of the packet.
->
-> Right, my only question I had earlier was that when users ship their
-> application with /sys/class/net/<DEVICE>/xdpgeneric_linearize turned off,
-> how would they know how much of the data is actually pulled in? Afaik,
+Jakub Sitnicki (2):
+  bpf: add sockmap hooks for UDP sockets
+  bpf: sockmap: add UDP support
 
-The short answer is that before turning linearization off, the sysadmin should
-make sure that the linear section contains enough data for the program
-to operate.
-In doubt, leave linearization on and live with the cost.
+Lorenz Bauer (10):
+  bpf: sockmap: only check ULP for TCP sockets
+  skmsg: update saved hooks only once
+  bpf: tcp: move assertions into tcp_bpf_get_proto
+  bpf: tcp: guard declarations with CONFIG_NET_SOCK_MSG
+  bpf: sockmap: move generic sockmap hooks from BPF TCP
+  bpf: sockmap: simplify sock_map_init_proto
+  selftests: bpf: don't listen() on UDP sockets
+  selftests: bpf: add tests for UDP sockets in sockmap
+  selftests: bpf: enable UDP sockmap reuseport tests
+  bpf, doc: update maintainers for L7 BPF
 
-The long answer (which probably repeats things I already discussed
-with some of you):
-clearly this patch is not perfect, as it lacks ways for the kernel and
-bpf program to
-communicate
-a) whether there is a non-linear section, and
-b) whether the bpf program understands non-linear/partial packets and how much
-linear data (and headroom) it expects.
+ MAINTAINERS                                   |   3 +
+ include/linux/bpf.h                           |   4 +-
+ include/linux/skmsg.h                         |  56 ++---
+ include/net/tcp.h                             |  20 +-
+ include/net/udp.h                             |   5 +
+ net/core/sock_map.c                           | 158 +++++++++++---
+ net/ipv4/Makefile                             |   1 +
+ net/ipv4/tcp_bpf.c                            | 114 ++--------
+ net/ipv4/udp_bpf.c                            |  53 +++++
+ .../bpf/prog_tests/select_reuseport.c         |   6 -
+ .../selftests/bpf/prog_tests/sockmap_listen.c | 204 +++++++++++++-----
+ 11 files changed, 399 insertions(+), 225 deletions(-)
+ create mode 100644 net/ipv4/udp_bpf.c
 
-Adding these two features needs some agreement on the details.
-We had a thread a few weeks ago about multi-segment xdp support, I am not sure
-we reached a conclusion, and I am concerned that we may end up reimplementing
-sg lists or simplified-skbs for use in bpf programs where perhaps we
-could just live
-with pull_up/accessor for occasional access to the non-linear part,
-and some hints
-that the program can pass to the driver/xdpgeneric to specify
-requirements. for #b
+-- 
+2.20.1
 
-Specifically:
-#a is trivial -- add a field to the xdp_buff, and a helper to read it
-from the bpf program;
-#b is a bit less clear -- it involves a helper to either pull_up or
-access the non linear data
-(which one is preferable probably depends on the use case and we may want both),
-and some attribute that the program passes to the kernel at load time,
-to control
-when linearization should be applied. I have hacked the 'license'
-section to pass this
-information on a per-program basis, but we need a cleaner way.
-
-My reasoning for suggesting this patch, as an interim solution, is that
-being completely opt-in, one can carefully evaluate when it is safe to use
-even without having #b implemented.
-For #a, the program might infer (but not reliably) that some data are
-missing by looking
-at the payload length which may be present in some of the headers. We
-could mitigate
-abuse by e.g. forcing XDP_REDIRECT and XDP_TX in xdpgeneric only
-accept linear packets.
-
-cheers
-luigi
-
-> some drivers might only have a linear section that covers the eth header
-> and that is it. What should the BPF prog do in such case? Drop the skb
-> since it does not have the rest of the data to e.g. make a XDP_PASS
-> decision or fallback to tc/BPF altogether? I hinted earlier, one way to
-> make this more graceful is to add a skb pointer inside e.g. struct
-> xdp_rxq_info and then enable an bpf_skb_pull_data()-like helper e.g. as:
->
-> BPF_CALL_2(bpf_xdp_pull_data, struct xdp_buff *, xdp, u32, len)
-> {
->          struct sk_buff *skb = xdp->rxq->skb;
->
->          return skb ? bpf_try_make_writable(skb, len ? :
->                                             skb_headlen(skb)) : -ENOTSUPP;
-> }
->
-> Thus, when the data/data_end test fails in generic XDP, the user can
-> call e.g. bpf_xdp_pull_data(xdp, 64) to make sure we pull in as much as
-> is needed w/o full linearization and once done the data/data_end can be
-> repeated to proceed. Native XDP will leave xdp->rxq->skb as NULL, but
-> later we could perhaps reuse the same bpf_xdp_pull_data() helper for
-> native with skb-less backing. Thoughts?
->
-> Thanks,
-> Daniel
