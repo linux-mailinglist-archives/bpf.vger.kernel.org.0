@@ -2,110 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 82660179311
-	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 16:13:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA52517932F
+	for <lists+bpf@lfdr.de>; Wed,  4 Mar 2020 16:21:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387497AbgCDPNl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Mar 2020 10:13:41 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:38024 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726748AbgCDPNl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Mar 2020 10:13:41 -0500
-Received: by mail-wr1-f67.google.com with SMTP id t11so2845826wrw.5
-        for <bpf@vger.kernel.org>; Wed, 04 Mar 2020 07:13:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=fsgJGQMpQ1G9tftbB0Mps00ljMhlrkE3dAL7nSnd3vo=;
-        b=SUIT7ybvralMQlOhJIjHu6ly0ZrFuMBji/zcuoM0lUme2+qnQIfCnvpMGvJy4bjzqE
-         jjLsZAJziFoMM3AKjRXlddNWJPUuwwfWaOPOVzfgJtf0tPyS9kXqW/KaApFrz19w6HHu
-         nskZiLoYB7+X9+SdAd9lrYl3Rtsa3eW2hwYXI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=fsgJGQMpQ1G9tftbB0Mps00ljMhlrkE3dAL7nSnd3vo=;
-        b=peFQotgysZkkw7OZP4RyhNvjgTvjfIsW+v4w2JKzf9XNypwbEJpazsmLvexxdJsviu
-         gYs59oIk8kXW67Ug6t4IoDEkrhlXu8IM9iHTNnJWDrxfnxab9P1FR2KWykZ28FfQKKT9
-         V5/enFkIST5bmeoj4brqeGPs7SLYgZFzFnnKkdnthUZN6UGz4KLUUrovbrnb9d4KzzmF
-         qWKvRW4NcAQIJW2NzzyJUye9IezEqJxdYlAnKCy2E6ZGFKklfPTA0iBczGf1qjCFWE8Q
-         g9MxGDATh2PWRhZzmra5147wpQ8QSZSWK6vZVS27488ZtDaYLhN5rc0cKxIE3w8TD5Xq
-         Ecqw==
-X-Gm-Message-State: ANhLgQ0/Vp9MdL5HwQQlJXL4FpOljf4lB1SexL6GD4Gn4Le5Y77dZ1/d
-        YPpvna5DuAo0VEH52WiJ1wPZUQ==
-X-Google-Smtp-Source: ADFU+vuLe5ALaEm7h3gtz45GbwJ5nu0Ea3aTrgxaP+bm5Zu/T7rBxy4ewEXTQPFiSC0nAd34IQszeA==
-X-Received: by 2002:a5d:6086:: with SMTP id w6mr4494482wrt.224.1583334819160;
-        Wed, 04 Mar 2020 07:13:39 -0800 (PST)
-Received: from chromium.org ([2a00:79e1:abc:308:8ca0:6f80:af01:b24])
-        by smtp.gmail.com with ESMTPSA id x13sm69264wmi.35.2020.03.04.07.13.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Mar 2020 07:13:38 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Wed, 4 Mar 2020 16:13:37 +0100
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     linux-security-module@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Subject: Re: [PATCH bpf-next v2 4/7] bpf: Attachment verification for
- BPF_MODIFY_RETURN
-Message-ID: <20200304151337.GD9984@chromium.org>
-References: <20200304015528.29661-1-kpsingh@chromium.org>
- <20200304015528.29661-5-kpsingh@chromium.org>
- <CAEf4BzZdR-PTFZT5VJ7kMw=FNhsCUpbQvdypEWSF1JNuaye6Kw@mail.gmail.com>
+        id S1727930AbgCDPVg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Mar 2020 10:21:36 -0500
+Received: from www62.your-server.de ([213.133.104.62]:37718 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727024AbgCDPVg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Mar 2020 10:21:36 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j9Vq1-0006ZB-Sb; Wed, 04 Mar 2020 16:21:34 +0100
+Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux.fritz.box)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j9Vq1-000ReH-JH; Wed, 04 Mar 2020 16:21:33 +0100
+Subject: Re: [PATCH v3 bpf-next 0/3] Convert BPF UAPI constants into enum
+ values
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com
+References: <20200303003233.3496043-1-andriin@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <47bbaa27-a112-b4a5-6251-d8aad31937a5@iogearbox.net>
+Date:   Wed, 4 Mar 2020 16:21:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZdR-PTFZT5VJ7kMw=FNhsCUpbQvdypEWSF1JNuaye6Kw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200303003233.3496043-1-andriin@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25741/Wed Mar  4 15:15:26 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 03-Mär 21:12, Andrii Nakryiko wrote:
-> On Tue, Mar 3, 2020 at 5:56 PM KP Singh <kpsingh@chromium.org> wrote:
-> >
-> > From: KP Singh <kpsingh@google.com>
-> >
-> > - Allow BPF_MODIFY_RETURN attachment only to functions that are:
-> >
-> >     * Whitelisted by for error injection i.e. by checking
-> >       within_error_injection_list. Similar disucssions happened for the
-> >       bpf_overrie_return helper.
+On 3/3/20 1:32 AM, Andrii Nakryiko wrote:
+> Convert BPF-related UAPI constants, currently defined as #define macro, into
+> anonymous enums. This has no difference in terms of usage of such constants in
+> C code (they are still could be used in all the compile-time contexts that
+> `#define`s can), but they are recorded as part of DWARF type info, and
+> subsequently get recorded as part of kernel's BTF type info. This allows those
+> constants to be emitted as part of vmlinux.h auto-generated header file and be
+> used from BPF programs. Which is especially convenient for all kinds of BPF
+> helper flags and makes CO-RE BPF programs nicer to write.
 > 
-> 2 typos: discussions and bpf_override_return ;)
+> libbpf's btf_dump logic currently assumes enum values are signed 32-bit
+> values, but that doesn't match a typical case, so switch it to emit unsigned
+> values. Once BTF encoding of BTF_KIND_ENUM is extended to capture signedness
+> properly, this will be made more flexible.
+> 
+> As an immediate validation of the approach, runqslower's copy of
+> BPF_F_CURRENT_CPU #define is dropped in favor of its enum variant from
+> vmlinux.h.
+> 
+> v2->v3:
+> - convert only constants usable from BPF programs (BPF helper flags, map
+>    create flags, etc) (Alexei);
+> 
+> v1->v2:
+> - fix up btf_dump test to use max 32-bit unsigned value instead of negative one.
+> 
+> 
+> Andrii Nakryiko (3):
+>    bpf: switch BPF UAPI #define constants used from BPF program side to
+>      enums
+>    libbpf: assume unsigned values for BTF_KIND_ENUM
+>    tools/runqslower: drop copy/pasted BPF_F_CURRENT_CPU definiton
+> 
+>   include/uapi/linux/bpf.h                      | 175 ++++++++++-------
+>   tools/bpf/runqslower/runqslower.bpf.c         |   3 -
+>   tools/include/uapi/linux/bpf.h                | 177 +++++++++++-------
+>   tools/lib/bpf/btf_dump.c                      |   8 +-
+>   .../bpf/progs/btf_dump_test_case_syntax.c     |   2 +-
+>   5 files changed, 224 insertions(+), 141 deletions(-)
+> 
 
-/me bows his head in shame ;) Fixed.
-
- -KP
-
-> 
-> >
-> >     * security hooks, this is expected to be cleaned up with the LSM
-> >       changes after the KRSI patches introduce the LSM_HOOK macro:
-> >
-> >         https://lore.kernel.org/bpf/20200220175250.10795-1-kpsingh@chromium.org/
-> >
-> > - The attachment is currently limited to functions that return an int.
-> >   This can be extended later other types (e.g. PTR).
-> >
-> > Signed-off-by: KP Singh <kpsingh@google.com>
-> > ---
-> 
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> 
-> >  kernel/bpf/btf.c      | 28 ++++++++++++++++++++--------
-> >  kernel/bpf/verifier.c | 31 +++++++++++++++++++++++++++++++
-> >  2 files changed, 51 insertions(+), 8 deletions(-)
-> >
-> 
-> [...]
+Applied, thanks!
