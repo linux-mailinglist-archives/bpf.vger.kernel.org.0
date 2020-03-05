@@ -2,86 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FA217AAF3
-	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 17:53:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B09C17AC82
+	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 18:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726090AbgCEQx3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Mar 2020 11:53:29 -0500
-Received: from mail-qv1-f66.google.com ([209.85.219.66]:40392 "EHLO
-        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726083AbgCEQx3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Mar 2020 11:53:29 -0500
-Received: by mail-qv1-f66.google.com with SMTP id u17so1398237qvv.7;
-        Thu, 05 Mar 2020 08:53:28 -0800 (PST)
+        id S1727532AbgCERVL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Mar 2020 12:21:11 -0500
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:36795 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726917AbgCERVK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Mar 2020 12:21:10 -0500
+Received: by mail-pl1-f196.google.com with SMTP id g12so2914597plo.3;
+        Thu, 05 Mar 2020 09:21:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=npcqK+CtPgKOdYKCLUdw238cgWR2tdAWLJ+s57xZf+Y=;
-        b=jFX60U1lxCSBOa8t/1PdSfb/kdQVkSZh8Mk5VzCBsZTJbt2yo44hS6AtFCV/WHqQpx
-         3qbwM6aYWdIajwbaZZ5EhZp4fO+lmJ1e4PZSf/j6PN0nf0VFxyZEKSkBZx3DVD+I9MKa
-         xrM4cZ6xC9OoiW7EkAZUI7RYde5/gJi4Mth4cQLIcHl+rewqFyoNnoJMhOUqzbaKaPI2
-         U9VBpWGRHvk3QJh6QzrxxibeO+VwGGg4y40MpCL6actTzyPTm1TwfNkLyxEg/XuARz3Q
-         Rsa0amnG5coKjjJlF+LpckLtPCNZqvxeoTWlNxc+YliNEl9N/xcqn//D1T2pO8COBC+9
-         d6Vw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=N0N64ckCOqKc6ZJK0qMwyg/Ulb95IE0OLYm4Irt4HYc=;
+        b=q5In8rRR5y1BoKW12FK5C/a2p+hq/qxV3kRp3nGR64MvPMni5V0e8jQ8JpOBzgxx1O
+         csDdockVi0QpV/jYm7UwOehUxp9iqgpUHqureOBeNrQODecMWFGFpmJZQ37E1hQ57GoJ
+         WOqAnAoMOz51ARLYGg17SsB/IBrJ0Fa87ssJNs6OgBmbDdF5cl3MAnDuuu0ioc8II0rH
+         yfnHFDEzhn5OvKcHf46QOKx9nR4McQI7dbj7ht1JEGlHI0AMXlDpEEtuLNzfVixnMB6g
+         2vddGMidnAXZU8RKn+ywjF3ZfzosaWGjW+7ehDvS2q6OO6vjIA3ZGPsjqxHy93OxaCha
+         bESg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=npcqK+CtPgKOdYKCLUdw238cgWR2tdAWLJ+s57xZf+Y=;
-        b=ajbBZk15DSiKZw2CYsGfBPWMnClC+PbpHLxyRayvQRN85COc1bz+3X4Wemapzs7OAN
-         VP/r5E4r7JxgMXIBbOKVaxCc94ygwqiv6FOcdJAK0WQbxqVpkiwzdybCR4rcup+wax3K
-         53cBgQ7bafjBVdFZ7Fkwpi0CjW5cceslht3BHA2thUFEzrDT+uFMOn9lzd2APFAbjd8g
-         WDDJkSyWW1JF97r8AzKSSXOZYUKlAkLBu4JaP4chTrTBLx7O1kmhjnIs/DWduweD8UzK
-         Bt4S+U1VqGG02XLABaLsNu3Eym9lp0W+z3ipmZKD0OLbtUUmld0jf2vxaVHeb7wcZqIB
-         fOSQ==
-X-Gm-Message-State: ANhLgQ2jYI+EOpbGaMMq4vE86qKkIpd4A9cBn2LlahFzbptGUfM9Ed9R
-        q0TNfQLT6FGO/7Ibhwgd1XQZLpDW0vInaZzXchM=
-X-Google-Smtp-Source: ADFU+vviwKS4MeppDNv2kpImVhSonDJ24hNChwGak/JUqVXaYc2hp5YiGqyd8YCmOP3NKhW87RY1O4IxPy8g8zMdixs=
-X-Received: by 2002:a0c:f985:: with SMTP id t5mr7387374qvn.127.1583427207904;
- Thu, 05 Mar 2020 08:53:27 -0800 (PST)
-MIME-Version: 1.0
-References: <20200305050207.4159-1-luke.r.nels@gmail.com> <CAJ+HfNjrUxVqpBgC-WLHbZX7_7Gd-Lk7ghrmASTmaNySuXVUfg@mail.gmail.com>
- <4633123d-dc61-ab79-d2ee-e0cef66e4cea@iogearbox.net>
-In-Reply-To: <4633123d-dc61-ab79-d2ee-e0cef66e4cea@iogearbox.net>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Thu, 5 Mar 2020 17:53:16 +0100
-Message-ID: <CAJ+HfNg_cP8DC+C0UGHnumde6+YhqBoTB909A9XwFMPv82tqWw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 0/4] eBPF JIT for RV32G
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Luke Nelson <lukenels@cs.washington.edu>,
-        bpf <bpf@vger.kernel.org>, Luke Nelson <luke.r.nels@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=N0N64ckCOqKc6ZJK0qMwyg/Ulb95IE0OLYm4Irt4HYc=;
+        b=NXeGsdfKb4x1Iy+sfz5R//jdtQpuqVfVdQ9g+aorxn1PjdxXFV8su58bRZ2UecFM2v
+         Z0EBr+fxcH7nhamI9Y9AYHd+pJ4GnZWembtR/gpr/BD8BgY9GqaEL7KZgR30LGj3coFw
+         EKYJ+12n3qN8Dx90f+6esDXhNkRWpCCMYBCRRSYFPs7RU8GVgeb5lcIb7GEOFkU/QavX
+         HuWTzrVpduFnFq4/0PTeyByoewivPaStC60b5/AQP3eG6eie24BNoG7SUIKa633prg7i
+         Nl7DVbp4i7i7FI3t6ZCGUD7OKtHgVwF+pI88frihw648wsqE7RXWxOaieeO48vUdcZeD
+         szJQ==
+X-Gm-Message-State: ANhLgQ2L6dyuH1vTbHdkSimcD4da8dbwWlrjtcaf2YbUbd9bMd/yCS6N
+        kLa2F84/DYQexeaVUyY1+pQ=
+X-Google-Smtp-Source: ADFU+vtUW6mCHYJ00vUXWecjWj9VK7jBQBpZHz6iJxYZf0iSdfevdG45412meQQxE170SObQvgTPYA==
+X-Received: by 2002:a17:902:bd42:: with SMTP id b2mr9344237plx.34.1583428869489;
+        Thu, 05 Mar 2020 09:21:09 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:f0e7])
+        by smtp.gmail.com with ESMTPSA id s12sm9994271pgv.73.2020.03.05.09.21.07
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 05 Mar 2020 09:21:08 -0800 (PST)
+Date:   Thu, 5 Mar 2020 09:21:05 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Stephen Smalley <stephen.smalley.work@gmail.com>
+Cc:     KP Singh <kpsingh@chromium.org>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Xi Wang <xi.wang@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Paul Moore <paul@paul-moore.com>, jmorris@namei.org
+Subject: Re: [PATCH bpf-next v4 4/7] bpf: Attachment verification for
+ BPF_MODIFY_RETURN
+Message-ID: <20200305172103.uet5kf6uj5sudeie@ast-mbp>
+References: <20200304191853.1529-1-kpsingh@chromium.org>
+ <20200304191853.1529-5-kpsingh@chromium.org>
+ <CAEjxPJ4G4sp5_zHXxhe+crafNGV-oZZZ2YYbbMb61BZx0F_ujw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEjxPJ4G4sp5_zHXxhe+crafNGV-oZZZ2YYbbMb61BZx0F_ujw@mail.gmail.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 5 Mar 2020 at 16:19, Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-[...]
-> Applied, thanks everyone!
->
-> P.s.: I fixed the MAINTAINERS entry in the last one to have both netdev and bpf
-> to be consistent with all the other JIT entries there.
+On Thu, Mar 05, 2020 at 08:43:11AM -0500, Stephen Smalley wrote:
+> On Wed, Mar 4, 2020 at 2:20 PM KP Singh <kpsingh@chromium.org> wrote:
+> >
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > - Allow BPF_MODIFY_RETURN attachment only to functions that are:
+> >
+> >     * Whitelisted for error injection by checking
+> >       within_error_injection_list. Similar discussions happened for the
+> >       bpf_override_return helper.
+> >
+> >     * security hooks, this is expected to be cleaned up with the LSM
+> >       changes after the KRSI patches introduce the LSM_HOOK macro:
+> >
+> >         https://lore.kernel.org/bpf/20200220175250.10795-1-kpsingh@chromium.org/
+> >
+> > - The attachment is currently limited to functions that return an int.
+> >   This can be extended later other types (e.g. PTR).
+> >
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+> > Acked-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 2460c8e6b5be..ae32517d4ccd 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -9800,6 +9801,33 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
+> >
+> >         return 0;
+> >  }
+> > +#define SECURITY_PREFIX "security_"
+> > +
+> > +static int check_attach_modify_return(struct bpf_verifier_env *env)
+> > +{
+> > +       struct bpf_prog *prog = env->prog;
+> > +       unsigned long addr = (unsigned long) prog->aux->trampoline->func.addr;
+> > +
+> > +       if (within_error_injection_list(addr))
+> > +               return 0;
+> > +
+> > +       /* This is expected to be cleaned up in the future with the KRSI effort
+> > +        * introducing the LSM_HOOK macro for cleaning up lsm_hooks.h.
+> > +        */
+> > +       if (!strncmp(SECURITY_PREFIX, prog->aux->attach_func_name,
+> > +                    sizeof(SECURITY_PREFIX) - 1)) {
+> > +
+> > +               if (!capable(CAP_MAC_ADMIN))
+> > +                       return -EPERM;
+> 
+> CAP_MAC_ADMIN was originally introduced for Smack and is not
+> all-powerful wrt SELinux, so this is not a sufficient check for
+> SELinux.
 
-Ah, I asked specifically Xi and Luke to *remove* the netdev entry, due
-to the bpf_devel_QA.rst change. :-)
+I think you're misunderstanding the intent here.
+This facility is just a faster version of kprobe based fault injection.
+It doesn't care about LSM. Security is not a focus here.
+It can fault inject in a lot of places in the kernel: syscalls,
+kmalloc, page_alloc, fs internals, etc
+I think above capable() check created this confusion and
+we should remove it.
