@@ -2,124 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B42817A6BC
-	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 14:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDCA17A8B8
+	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 16:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726020AbgCENup (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Mar 2020 08:50:45 -0500
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:38338 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725991AbgCENup (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Mar 2020 08:50:45 -0500
-Received: by mail-oi1-f196.google.com with SMTP id x75so5990445oix.5;
-        Thu, 05 Mar 2020 05:50:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fcCTfa/+b2H8bD6/l2jkw8E4TRC6mBDpyhRVH0rkeuw=;
-        b=bob5i7Hx/1c84xrjeDHggoA7v1P27/LaFo+Tv1+2TxOFFyU6cuvCSz7SHlOOspW8Fs
-         AgDpkhqBum4Tb5nRKQP5LEZNWteQW+XO5aV2rLWhs7C3kVnZWlXBBFpTW815/ib5loHl
-         Lte9VAzb954Y+9kOYs3Zoj3CIawohp39tvMtbhkPH073pg8hSpC5HeRbJ9gsHlQIM2mA
-         MMzNaJVtN1XHin5uT4UKfWT7HOlnGQCsSptHEWHriu7ByFd8D4K/wv66VvC+76qbNJGW
-         i1XWeWsA6B67rMal1OugqQJWDfFLuDAGtWFC6tOloj7dkiBD7nAjtqjXz1c6lGuGJJZR
-         ouFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fcCTfa/+b2H8bD6/l2jkw8E4TRC6mBDpyhRVH0rkeuw=;
-        b=jHULGypSb6U4xMr3J0gXv7rjwXJVycoP79vibY8OzyWbSgr5v00N71xnBppfQqytcE
-         cM+fWNlZGXEPPBdYkHl+U8nEN92Od9Ms5BrwlDnr1J1pSNTDr00W4u7znIOq3VewQ+mc
-         Shb4WoDkQIkal9YQnm3LnRPNobbFFS7s9fi2wTKA5fSV49xZ8GdWarTZBwYal2qdkpGS
-         huF3I90mY5+AV/MtVXioxY+kdC82mRnRr624VM3vZTHJZz2Bh7430DYAIIfb7kPFdZKJ
-         XiFJGvnWw4z7SORdHGRNC6lftc0wydX2USFHYWMDmo051H01MskkTpW5JHuhP1sS0NPa
-         m+7w==
-X-Gm-Message-State: ANhLgQ3ZaozaziZsff7vSgM1CUHcuCKyCqn0tRB97wEBAbjH6zq3mzSy
-        hyE2cR+uF3O2dSAb/tVgtbcuTvfWGMVReTiRqGE=
-X-Google-Smtp-Source: ADFU+vtIByz2R0kLCeIr1TlairntfhCiMv9MbVfDdAkVKlBSQ+hpH0fDPPDbLe5Vog30q1evW1THoDq5tC/2YlQmzv4=
-X-Received: by 2002:aca:3544:: with SMTP id c65mr5488952oia.160.1583416244454;
- Thu, 05 Mar 2020 05:50:44 -0800 (PST)
-MIME-Version: 1.0
-References: <20200304191853.1529-1-kpsingh@chromium.org> <20200304191853.1529-4-kpsingh@chromium.org>
-In-Reply-To: <20200304191853.1529-4-kpsingh@chromium.org>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Date:   Thu, 5 Mar 2020 08:51:58 -0500
-Message-ID: <CAEjxPJ4+aW5JVC9QjJywjNUS=+cVJeaWwRHLwOssLsZyhX3siw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 3/7] bpf: Introduce BPF_MODIFY_RETURN
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Andrii Nakryiko <andriin@fb.com>,
+        id S1726358AbgCEPTr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Mar 2020 10:19:47 -0500
+Received: from www62.your-server.de ([213.133.104.62]:39268 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726142AbgCEPTq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Mar 2020 10:19:46 -0500
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j9sHZ-000311-Dl; Thu, 05 Mar 2020 16:19:29 +0100
+Received: from [85.7.42.192] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j9sHY-000BjU-MB; Thu, 05 Mar 2020 16:19:28 +0100
+Subject: Re: [PATCH bpf-next v5 0/4] eBPF JIT for RV32G
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Luke Nelson <lukenels@cs.washington.edu>
+Cc:     bpf <bpf@vger.kernel.org>, Luke Nelson <luke.r.nels@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>, jmorris@namei.org,
-        Paul Moore <paul@paul-moore.com>, casey@schaufler-ca.com
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Xi Wang <xi.wang@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, linux-riscv@lists.infradead.org
+References: <20200305050207.4159-1-luke.r.nels@gmail.com>
+ <CAJ+HfNjrUxVqpBgC-WLHbZX7_7Gd-Lk7ghrmASTmaNySuXVUfg@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <4633123d-dc61-ab79-d2ee-e0cef66e4cea@iogearbox.net>
+Date:   Thu, 5 Mar 2020 16:19:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <CAJ+HfNjrUxVqpBgC-WLHbZX7_7Gd-Lk7ghrmASTmaNySuXVUfg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25742/Thu Mar  5 15:10:18 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 4, 2020 at 2:20 PM KP Singh <kpsingh@chromium.org> wrote:
->
-> From: KP Singh <kpsingh@google.com>
->
-> When multiple programs are attached, each program receives the return
-> value from the previous program on the stack and the last program
-> provides the return value to the attached function.
->
-> The fmod_ret bpf programs are run after the fentry programs and before
-> the fexit programs. The original function is only called if all the
-> fmod_ret programs return 0 to avoid any unintended side-effects. The
-> success value, i.e. 0 is not currently configurable but can be made so
-> where user-space can specify it at load time.
->
-> For example:
->
-> int func_to_be_attached(int a, int b)
-> {  <--- do_fentry
->
-> do_fmod_ret:
->    <update ret by calling fmod_ret>
->    if (ret != 0)
->         goto do_fexit;
->
-> original_function:
->
->     <side_effects_happen_here>
->
-> }  <--- do_fexit
->
-> The fmod_ret program attached to this function can be defined as:
->
-> SEC("fmod_ret/func_to_be_attached")
-> int BPF_PROG(func_name, int a, int b, int ret)
-> {
->         // This will skip the original function logic.
->         return 1;
-> }
->
-> The first fmod_ret program is passed 0 in its return argument.
->
-> Signed-off-by: KP Singh <kpsingh@google.com>
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
+On 3/5/20 6:40 AM, Björn Töpel wrote:
+> On Thu, 5 Mar 2020 at 06:02, Luke Nelson <lukenels@cs.washington.edu> wrote:
+>>
+>> This series adds an eBPF JIT for 32-bit RISC-V (RV32G) to the kernel,
+>> adapted from the RV64 JIT and the 32-bit ARM JIT.
+>>
+> 
+> Nice work! Thanks for hanging in there!
+> 
+> For the series,
+> Acked-by: Björn Töpel <bjorn.topel@gmail.com>
+> Reviewed-by: Björn Töpel <bjorn.topel@gmail.com>
 
-IIUC you've switched from a model where the BPF program would be
-invoked after the original function logic
-and the BPF program is skipped if the original function logic returns
-non-zero to a model where the BPF program is invoked first and
-the original function logic is skipped if the BPF program returns
-non-zero.  I'm not keen on that for userspace-loaded code attached
-to LSM hooks; it means that userspace BPF programs can run even if
-SELinux would have denied access and SELinux hooks get
-skipped entirely if the BPF program returns an error.  I think Casey
-may have wrongly pointed you in this direction on the grounds
-it can already happen with the base DAC checking logic.  But that's
-kernel DAC checking logic, not userspace-loaded code.
-And the existing checking on attachment is not sufficient for SELinux
-since CAP_MAC_ADMIN is not all powerful to SELinux.
-Be careful about designing your mechanisms around Smack because Smack
-is not the only LSM.
+Applied, thanks everyone!
+
+P.s.: I fixed the MAINTAINERS entry in the last one to have both netdev and bpf
+to be consistent with all the other JIT entries there.
