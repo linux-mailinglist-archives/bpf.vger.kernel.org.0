@@ -2,150 +2,401 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3FE17B05E
-	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 22:16:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE4517B0DF
+	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 22:50:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725991AbgCEVQu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Mar 2020 16:16:50 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:54809 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726080AbgCEVQu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Mar 2020 16:16:50 -0500
-Received: by mail-wm1-f66.google.com with SMTP id i9so110772wml.4
-        for <bpf@vger.kernel.org>; Thu, 05 Mar 2020 13:16:47 -0800 (PST)
+        id S1726128AbgCEVuW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Mar 2020 16:50:22 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:37314 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726067AbgCEVuW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Mar 2020 16:50:22 -0500
+Received: by mail-qk1-f196.google.com with SMTP id y126so395755qke.4;
+        Thu, 05 Mar 2020 13:50:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=rFYE9qU6hfZLMjbuv+Lw+SiZtkHRJmxeQZgCYrPMhQA=;
-        b=isUdIXzz1WywdtIB6ayzczG6D27adzp5OvZ+mwE5OAioulxSPjDaDutrYz88lS5//h
-         8gDvO0A0RNZ+xrP4i3PSqfYZQizRnLpAk1S7jcK2ysbU7KL5FXPhBQSp6wMbgWrIKgnG
-         as59ZuFJ+uo1o9AqL2xYldyROmTL5aIFXgVSA=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gVF04oFX2dW/NQ2Xfyde00nV8RIHAfk7rBY6uJtkYPw=;
+        b=aEnXEN5N+9T4pnsYkIK+aNOl4xqI846SvI7Y5+soDSeN51i+V29jh4LwHvRdgCQEUq
+         2TL7RInpZEHmIYE292JWFDFZXvCOvxCQxAF+quPepU/9CS8kT4Efe+b5UsZrz5txz55C
+         svORe55I2iLeJAK0N3jCKQHAvsG3Yd8Vkx7qa4PbjukpYgNmzHM8BUYT+YOBd5gsWF3r
+         KS3ie6vn8v7hBmIGspF2sTXyifO6FH6QNVf++jiHsg4I0cCQzi7J6Pw4zL57otntCYrG
+         TR64+UrVPRnbKz4AAQ2JGiOUSRf3I0Sx+S7P87DgpnYKM3NrUi6C16ODumATS8pl9Evf
+         r0vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=rFYE9qU6hfZLMjbuv+Lw+SiZtkHRJmxeQZgCYrPMhQA=;
-        b=XfxAwNkLF+qZYjoT72xly3ZlbLOGfZlaydAVTU3fBj/3eU6bGbPShs2zspCx0ON4j5
-         wgwuXWruaJz5bsn5eUx74pZvS0VE0hU91Bpiq65aw8AjKTUMX4MmDubftK2TwUv6j7w2
-         m+shoJlGP3nBZXtzXcLJ4gu566eg4T+EE6j4O1VYOte7e2CxY43ziznypkdTLU1Ok19f
-         W07tw679zlAGdRTOndjbwMZsrLmJgiKURnQXPHGIV+ZFxbm6SXh9PMzOPqqoWkEAxpxW
-         ig0kDdxrNuQ7g3vxLh8lokhNgDz1YK7cEWMrev1sP2QXP/glxhRLZKjrg/zEZ7v84Cz2
-         L95A==
-X-Gm-Message-State: ANhLgQ0Bn4kV5YpHhfRF2MhZzkVXbhHMhqT9nDpbQbacsWMw9gly+TTr
-        O9rQoemxMaUa8KknGoJ/1VaFWw==
-X-Google-Smtp-Source: ADFU+vuwbPUqEfT9MYVYDIUGPBhYImhXKM8fUAOSLCzk+p4JfLVCw9oSKX/YzU7LYBOvnLdNGrs3gg==
-X-Received: by 2002:a05:600c:218d:: with SMTP id e13mr686605wme.127.1583443006355;
-        Thu, 05 Mar 2020 13:16:46 -0800 (PST)
-Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
-        by smtp.gmail.com with ESMTPSA id j5sm10577968wmi.33.2020.03.05.13.16.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Mar 2020 13:16:45 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Thu, 5 Mar 2020 22:16:43 +0100
-To:     Stephen Smalley <stephen.smalley.work@gmail.com>
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>, jmorris@namei.org,
-        Paul Moore <paul@paul-moore.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Subject: Re: [PATCH bpf-next v4 3/7] bpf: Introduce BPF_MODIFY_RETURN
-Message-ID: <20200305211643.GA12094@chromium.org>
-References: <20200304191853.1529-1-kpsingh@chromium.org>
- <20200304191853.1529-4-kpsingh@chromium.org>
- <CAEjxPJ4+aW5JVC9QjJywjNUS=+cVJeaWwRHLwOssLsZyhX3siw@mail.gmail.com>
- <20200305155421.GA209155@google.com>
- <CAEjxPJ5u7tsa_9-7Oq_Wi28mZD_aDC1tVWj5Tb8ud=bfEYsY9Q@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gVF04oFX2dW/NQ2Xfyde00nV8RIHAfk7rBY6uJtkYPw=;
+        b=plKXPKMiAit04U5QPWMRTD8E46N4UEO2blb5h3AscRbtNO2LJNyZq9I2akC12DhMr7
+         /iQHY42LLzDsf6warxJeycB2O4rhpTLz1YQsL3TO8PTqb1HZGXqqhUWA1lRes1t54qyA
+         9FkZ1VdmW7GXwiHR/IfoCUvDnnxn94q9AtG2cIQoHIt3zdcAkKT6FEBGm347By5rf+yl
+         Ek7o+Lp2UEe513B4upku7LzNLJ0U18B65abOR3aFobMGy9DBIR6K6JKJEbsptuzsmtud
+         oezIQfGBgbr0y7AgT4YwDVa62TGMaYJL5PubbMdAD0uSASb2pmtYI5dWaypz2YQzcdtm
+         i6HQ==
+X-Gm-Message-State: ANhLgQ0PG87gy8e1fkJW2cyV3WvTokV2kabJADuuomgMrdfvgodbGvN3
+        yigXJBqUYUUk7KBW/9hgtHCjlsZFQ1z6ks3PCYA=
+X-Google-Smtp-Source: ADFU+vsckWlyB13SdB0JOAuW6Ayhd6XdUTRJjXgZ6a54qOvRwNXjBwrbgahLFEf6ogP68iDJwaOLG4PMTwzdMHFeBdA=
+X-Received: by 2002:a37:9104:: with SMTP id t4mr79597qkd.449.1583445019185;
+ Thu, 05 Mar 2020 13:50:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEjxPJ5u7tsa_9-7Oq_Wi28mZD_aDC1tVWj5Tb8ud=bfEYsY9Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200305192146.589093-1-eric@sage.org>
+In-Reply-To: <20200305192146.589093-1-eric@sage.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 5 Mar 2020 13:50:07 -0800
+Message-ID: <CAEf4Bzb6FP4germQketqZ7NyOMMYEQ_qjVeqrngKMnQCNeokOA@mail.gmail.com>
+Subject: Re: [PATCH] [bpf] Make bpf program autoloading optional
+To:     Eric Sage <eric@sage.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05-Mär 14:43, Stephen Smalley wrote:
-> On Thu, Mar 5, 2020 at 10:54 AM KP Singh <kpsingh@chromium.org> wrote:
-> >
-> > On 05-Mar 08:51, Stephen Smalley wrote:
-> > > IIUC you've switched from a model where the BPF program would be
-> > > invoked after the original function logic
-> > > and the BPF program is skipped if the original function logic returns
-> > > non-zero to a model where the BPF program is invoked first and
-> > > the original function logic is skipped if the BPF program returns
-> > > non-zero.  I'm not keen on that for userspace-loaded code attached
-> >
-> > We do want to continue the KRSI series and the effort to implement a
-> > proper BPF LSM. In the meantime, the tracing + error injection
-> > solution helps us to:
-> >
-> >   * Provide better debug capabilities.
-> >   * And parallelize the effort to come up with the right helpers
-> >     for our LSM work and work on sleepable BPF which is also essential
-> >     for some of the helpers.
-> >
-> > As you noted, in the KRSI v4 series, we mentioned that we would like
-> > to have the user-space loaded BPF programs be unable to override the
-> > decision made by the in-kernel logic/LSMs, but this got shot down:
-> >
-> >    https://lore.kernel.org/bpf/00c216e1-bcfd-b7b1-5444-2a2dfa69190b@schaufler-ca.com
-> >
-> > I would like to continue this discussion when we post the v5 series
-> > for KRSI as to what the correct precedence order should be for the
-> > BPF_PROG_TYPE_LSM and would appreciate if you also bring it up there.
-> 
-> That's fine but I guess I don't see why you or anyone else would
-> bother with introducing a BPF_PROG_TYPE_LSM
-> if BPF_PROG_MODIFY_RETURN is accepted and is allowed to attach to the
-> LSM hooks.  What's the benefit to you
-> if you can achieve your goals directly with MODIFY_RETURN?
+On Thu, Mar 5, 2020 at 11:22 AM Eric Sage <eric@sage.org> wrote:
+>
+> Adds bpf_program__set_autoload which can be used to disable loading
+> a bpf_prog when loading the bpf_object that contains it after the
+> bpf_object has been opened. This behavior affect calling load directly
+> and loading through BPF skel. A single flag is added to bpf_prog
+> to make this work.
+>
+> Signed-off-by: Eric Sage <eric@sage.org>
+> ---
 
-There is still value in being a proper LSM, as I had mentioned in KRSI
-v3 that not all security_* wrappers simply call the attached hooks and
-return their exit code.
+This is a very useful feature for complicated scenarios, thanks for
+working on this! You've based it off bpf tree, but all the new
+features should go through bpf-next, please rebase.
 
-It's also okay, taking into consideration Casey's objections and Kees'
-suggestion, to be properly registered with the LSM framework (even if
-it is with LSM_ORDER_LAST) and work towards improving some of the
-performance bottle-necks in the framework. It would be a positive
-outcome for all LSMs.
+>  tools/lib/bpf/libbpf.c                        |   9 +
+>  tools/lib/bpf/libbpf.h                        |   2 +
+>  tools/lib/bpf/libbpf.map                      |   5 +
+>  tools/testing/selftests/bpf/Makefile          |   2 +-
+>  .../selftests/bpf/progs/test_autoload_kern.c  |  24 +++
+>  tools/testing/selftests/bpf/test_autoload.c   | 158 ++++++++++++++++++
+>  6 files changed, 199 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_autoload_kern.c
+>  create mode 100644 tools/testing/selftests/bpf/test_autoload.c
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 514b1a524abb..fe156ca10d16 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -222,6 +222,7 @@ struct bpf_program {
+>         bpf_program_prep_t preprocessor;
+>
+>         struct bpf_object *obj;
+> +       bool autoload;
 
-BPF_MODIFY_RETURN is just a first step which lays the foundation for
-BPF_PROG_TYPE_LSM and facilitates us to build BPF infrastructure for
-it.
+this will create unnecessarily 7 bytes of padding. Let's move this
+field after `enum bpf_prog_type type;` few lines above, it will take
+part of 4 byte padding there.
 
-- KP
+>         void *priv;
+>         bpf_program_clear_priv_t clear_priv;
+>
+> @@ -499,6 +500,7 @@ bpf_program__init(void *data, size_t size, char *section_name, int idx,
+>         prog->instances.fds = NULL;
+>         prog->instances.nr = -1;
+>         prog->type = BPF_PROG_TYPE_UNSPEC;
+> +       prog->autoload = true;
+>
+>         return 0;
+>  errout:
+> @@ -4933,6 +4935,11 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
+>         return ret;
+>  }
+>
+> +void bpf_program__set_autoload(struct bpf_program *prog, bool autoload)
+> +{
+> +       prog->autoload = autoload;
+> +}
+> +
+>  static int libbpf_find_attach_btf_id(struct bpf_program *prog);
+>
+>  int bpf_program__load(struct bpf_program *prog, char *license, __u32 kern_ver)
+> @@ -5030,6 +5037,8 @@ bpf_object__load_progs(struct bpf_object *obj, int log_level)
+>         int err;
+>
+>         for (i = 0; i < obj->nr_programs; i++) {
+> +               if (!obj->programs[i].autoload)
+> +                       continue;
+>                 if (bpf_program__is_function_storage(&obj->programs[i], obj))
+>                         continue;
+>                 obj->programs[i].log_level |= log_level;
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 3fe12c9d1f92..e5f30f70bac1 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -204,6 +204,8 @@ LIBBPF_API const char *bpf_program__title(const struct bpf_program *prog,
+>  /* returns program size in bytes */
+>  LIBBPF_API size_t bpf_program__size(const struct bpf_program *prog);
+>
+> +LIBBPF_API void bpf_program__set_autoload(struct bpf_program *prog, bool autoload);
+> +
+>  LIBBPF_API int bpf_program__load(struct bpf_program *prog, char *license,
+>                                  __u32 kern_version);
+>  LIBBPF_API int bpf_program__fd(const struct bpf_program *prog);
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index b035122142bb..1d7572806981 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -235,3 +235,8 @@ LIBBPF_0.0.7 {
+>                 btf__align_of;
+>                 libbpf_find_kernel_btf;
+>  } LIBBPF_0.0.6;
+> +
+> +LIBBPF_0.0.8 {
+> +  global:
+> +    bpf_program__set_autoload;
+> +} LIBBPF_0.0.7;
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 257a1aaaa37d..1ee62911992d 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -29,7 +29,7 @@ LDLIBS += -lcap -lelf -lz -lrt -lpthread
+>  # Order correspond to 'make run_tests' order
+>  TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test_progs \
+>         test_align test_verifier_log test_dev_cgroup test_tcpbpf_user \
+> -       test_sock test_btf test_sockmap get_cgroup_id_user test_socket_cookie \
+> +       test_sock test_btf test_sockmap test_autoload get_cgroup_id_user test_socket_cookie \
 
-> 
-> > > to LSM hooks; it means that userspace BPF programs can run even if
-> > > SELinux would have denied access and SELinux hooks get
-> > > skipped entirely if the BPF program returns an error.  I think Casey
-> > > may have wrongly pointed you in this direction on the grounds
-> > > it can already happen with the base DAC checking logic.  But that's
-> >
-> > What we can do for this tracing/modify_ret series, is to remove
-> > the special casing for "security_" functions in the BPF code and add
-> > ALLOW_ERROR_INJECTION calls to the security hooks. This way, if
-> > someone needs to disable the BPF programs being able to modify
-> > security hooks, they can disable error injection. If that's okay, we
-> > can send a patch.
-> 
-> Realistically distros tend to enable lots of developer-friendly
-> options including error injection, and most users don't build their
-> own kernels
-> and distros won't support them when they do. So telling users they can
-> just rebuild their kernel without error injection if they care about
-> BPF programs being able to modify security hooks isn't really viable.
-> The security modules need a way to veto it based on their policies.
-> That's why I suggested a security hook here.
+We normally add new tests into test_progs framework, can you please
+add it there? See some notes regarding testing below as well.
+
+>         test_cgroup_storage \
+>         test_netcnt test_tcpnotify_user test_sock_fields test_sysctl test_hashmap \
+>         test_progs-no_alu32
+> diff --git a/tools/testing/selftests/bpf/progs/test_autoload_kern.c b/tools/testing/selftests/bpf/progs/test_autoload_kern.c
+> new file mode 100644
+> index 000000000000..e4cfe9b90606
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_autoload_kern.c
+
+nit: we usually name BPF programs as progs/test_<whatever> and their
+user-space counterparts as prog_tests/<whatever>.c. _kern suffix is
+rarely used now.
+
+> @@ -0,0 +1,24 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +//
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +
+> +SEC("xdp_prog_0")
+> +int prog_0(struct xdp_md *xdp)
+> +{
+> +       return XDP_PASS;
+> +}
+> +
+> +SEC("xdp_prog_1")
+> +int prog_1(struct xdp_md *xdp)
+> +{
+> +       return XDP_PASS;
+> +}
+> +
+> +SEC("xdp_prog_2")
+> +int prog_2(struct xdp_md *xdp)
+> +{
+> +       return XDP_PASS;
+> +}
+> +
+
+I've found that it's easiest to test BPF programs of
+SEC("raw_tp/sys_enter") type, you can trigger them, e.g., with
+usleep(1). I'd suggest switching them to that type, and each setting
+its own global variable from 0 to 1. Then on user-space side you can
+just validate that one of them wasn't triggered, while other(s) were.
+No need for more code to check that program was loaded, etc.
+
+> +char _license[] SEC("license") = "GPL";
+> diff --git a/tools/testing/selftests/bpf/test_autoload.c b/tools/testing/selftests/bpf/test_autoload.c
+> new file mode 100644
+> index 000000000000..3294c167bbfd
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/test_autoload.c
+> @@ -0,0 +1,158 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <errno.h>
+> +#include <stdlib.h>
+> +#include <stdio.h>
+> +#include <sys/resource.h>
+> +
+> +#include <bpf/bpf.h>
+> +#include <bpf/libbpf.h>
+> +
+> +#include "test_autoload_kern.skel.h"
+> +
+> +#define AUTOLOAD_KERN "test_autoload_kern.o"
+> +#define TEST_NO_AUTOLOAD_PROG "prog_2"
+> +
+> +int print_libbpf_log(enum libbpf_print_level lvl, const char *fmt, va_list args)
+> +{
+> +       return 0;
+> +}
+> +
+> +int test_libbpf(void)
+> +{
+> +       struct bpf_object *obj;
+> +       struct bpf_program *unloaded_prog, *prog;
+> +       struct bpf_prog_info *info;
+> +       __u32 info_len;
+> +       int prog_fd;
+> +
+> +       obj = bpf_object__open(AUTOLOAD_KERN);
+> +       if (obj == NULL) {
+> +               fprintf(stderr, "failed to load %s\n", AUTOLOAD_KERN);
+> +               return -1;
+> +       }
+> +
+> +       unloaded_prog =
+> +               bpf_object__find_program_by_name(obj, TEST_NO_AUTOLOAD_PROG);
+> +       if (unloaded_prog == NULL) {
+> +               fprintf(stderr, "failed to find test xdp prog %s\n",
+> +                       TEST_NO_AUTOLOAD_PROG);
+> +               goto fail;
+> +       }
+> +
+> +       bpf_program__set_autoload(unloaded_prog, false);
+> +
+> +       bpf_object__load(obj);
+> +
+> +       bpf_object__for_each_program(prog, obj) {
+> +               prog_fd = bpf_program__fd(prog);
+> +
+> +               if (unloaded_prog == prog) {
+> +                       if (-prog_fd != EINVAL) {
+> +                               fprintf(stderr,
+> +                                       "non-autoloaded prog should not be loaded\n");
+> +                               goto fail;
+> +                       }
+> +                       continue;
+> +               }
+> +
+> +               info_len = sizeof(struct bpf_prog_info);
+> +               info = calloc(1, info_len);
+> +
+> +               if (bpf_obj_get_info_by_fd(prog_fd, info, &info_len) < 0) {
+> +                       fprintf(stderr, "could not get bpf prog info\n");
+> +                       goto fail;
+> +               }
+> +
+> +               if (info->id == 0) {
+> +                       fprintf(stderr, "expected valid prog id\n");
+> +                       goto fail;
+> +               }
+> +       }
+> +
+> +       bpf_object__close(obj);
+> +       return 0;
+> +fail:
+> +       bpf_object__close(obj);
+> +       return -1;
+> +}
+> +
+> +int test_skel(void)
+> +{
+> +       struct test_autoload_kern *kern;
+> +       struct bpf_object *obj;
+> +       struct bpf_program *unloaded_prog, *prog;
+> +       struct bpf_prog_info *info;
+> +       __u32 info_len;
+> +       int prog_fd;
+> +
+> +       kern = test_autoload_kern__open();
+
+I think there's no need to test skeleton-based and
+bpf_object__open()-based variants. Skeleton is using
+bpf_object__open() either way, so I'd just use shorter skeleton
+variant. See above about program type and global variables, that makes
+test programs more concise.
+
+> +       if (kern == NULL) {
+> +               fprintf(stderr, "failed to autoload skel\n");
+> +               return -1;
+> +       }
+> +
+> +       obj = kern->obj;
+> +
+> +       unloaded_prog =
+> +               bpf_object__find_program_by_name(obj, TEST_NO_AUTOLOAD_PROG);
+> +       if (unloaded_prog == NULL) {
+> +               fprintf(stderr, "failed to find test xdp prog %s\n",
+> +                       TEST_NO_AUTOLOAD_PROG);
+> +               goto fail;
+> +       }
+> +
+> +       bpf_program__set_autoload(unloaded_prog, false);
+> +
+> +       bpf_object__load(obj);
+
+CHECK that load succeeded?
+
+> +
+> +       bpf_object__for_each_program(prog, obj) {
+> +               prog_fd = bpf_program__fd(prog);
+> +
+> +               if (unloaded_prog == prog) {
+> +                       if (-prog_fd != EINVAL) {
+> +                               fprintf(stderr,
+> +                                       "non-autoloaded prog should not be loaded\n");
+> +                               goto fail;
+> +                       }
+> +                       continue;
+> +               }
+> +
+> +               info_len = sizeof(struct bpf_prog_info);
+> +               info = calloc(1, info_len);
+> +
+> +               if (bpf_obj_get_info_by_fd(prog_fd, info, &info_len) < 0) {
+> +                       fprintf(stderr, "could not get bpf prog info\n");
+> +                       goto fail;
+> +               }
+> +
+> +               if (info->id == 0) {
+> +                       fprintf(stderr, "expected valid prog id\n");
+> +                       goto fail;
+> +               }
+> +       }
+> +
+> +       test_autoload_kern__destroy(kern);
+> +       return 0;
+> +fail:
+> +       test_autoload_kern__destroy(kern);
+> +       return -1;
+> +}
+> +
+> +int main(void)
+> +{
+> +       struct rlimit r = { RLIM_INFINITY, RLIM_INFINITY };
+> +
+> +       if (setrlimit(RLIMIT_MEMLOCK, &r)) {
+> +               perror("setrlimit(RLIMIT_MEMLOCK)");
+> +               return EXIT_FAILURE;
+> +       }
+> +
+> +       libbpf_set_print(print_libbpf_log);
+> +
+
+all this is taken care of in test_progs framework
+
+> +       if (test_libbpf() < 0)
+> +               return EXIT_FAILURE;
+> +
+> +       if (test_skel() < 0)
+> +               return EXIT_FAILURE;
+> +}
+> --
+> 2.24.1
+>
