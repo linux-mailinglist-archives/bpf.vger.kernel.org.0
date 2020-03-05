@@ -2,100 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F06517B114
-	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 23:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5203717B127
+	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 23:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726243AbgCEWBi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Mar 2020 17:01:38 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:35784 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726145AbgCEWBi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Mar 2020 17:01:38 -0500
-Received: by mail-wr1-f65.google.com with SMTP id r7so29128wro.2
-        for <bpf@vger.kernel.org>; Thu, 05 Mar 2020 14:01:37 -0800 (PST)
+        id S1726191AbgCEWFE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Mar 2020 17:05:04 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:38778 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726178AbgCEWFE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Mar 2020 17:05:04 -0500
+Received: by mail-wm1-f65.google.com with SMTP id u9so242919wml.3
+        for <bpf@vger.kernel.org>; Thu, 05 Mar 2020 14:05:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QRs769N8QUo0slXGjoV/bE6quT349p8P4cDyvi5+xSs=;
-        b=OyN0As3WtsQyPWrtZ0mTiBeTZecUOCo749mffQpTDmTx69lKJuE4osS24tJYR/gpHX
-         9VrzXIzE920xZDE0WeBQEVk4jHfPgbL+L8RNeX1VBPd6m95OUXVDG4faYkaORxj/wR5E
-         oXvLlM71z+RvpZVtk0IWK8zhjSZ6NIBdrlVwA=
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=EhKBVdcz866K4wnwDswHBvfCjaO9wEJhCH3XfiyKgH0=;
+        b=MYUSp1yyHIyfUQoBkSk++6L+gN9r2CwS6n7XkTuy1COjDTQP+RfiPbvYpgCWNB/Dv8
+         sb5vDOYw1Z7pFoHO5thDajUFJAo6C4pYdDrdygO3xiE8rrUEFoFH01hJcxq+Nqgjrdgy
+         OXDziGaw1xQ8TuYPiJ3kjXynyA6ecUiNdvFOU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QRs769N8QUo0slXGjoV/bE6quT349p8P4cDyvi5+xSs=;
-        b=EStZSU62BHmYUld9Lo+hNWgIZ/YoVfey4Kb1M+/WMcDmlmhPS8aQezmnBJyRHXK2kV
-         gvqDQhU6lJO/1aka3xJSG4zaU3p2weUxpAx2TPHFHCm4jU1NARUW5zM9fbNCKmhygHWs
-         DHCw/2ZSPmtFXUmLWNAsGJVaw1U8H02uFMKx+TJdOdT+F7rCPaT9jfBB1x9KUkb4Bw2T
-         f97Zu50Qtn/Tv9cmbpmCcqWpVe+vmNuODjz+nLYnAk+ym9RuUqZ80vqIx0I9NWK4V1LQ
-         GRnVvVTJzQpvYExxN4ETO0iFmG1QqYr0r6A/XEaRCG6ERoND5WYdFjDV4z7KXZ3kZ0mL
-         dRmg==
-X-Gm-Message-State: ANhLgQ3+MxGSaMlcmTxaxe/034ZHbv6VIdAWWZ3NJuv3YX6k0FRHjNEm
-        nFbK31O5vlpLPtH/CMBSEsD44A==
-X-Google-Smtp-Source: ADFU+vuNWeddf1HH7nZX+stJXAplqB1550B+DJXHvxhEuJ8KddsSUGbg7If5vezjuGur7ZvPeojLkw==
-X-Received: by 2002:adf:d4d2:: with SMTP id w18mr66826wrk.180.1583445696430;
-        Thu, 05 Mar 2020 14:01:36 -0800 (PST)
-Received: from kpsingh-kernel.localdomain (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
-        by smtp.gmail.com with ESMTPSA id x9sm5002641wrx.0.2020.03.05.14.01.35
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=EhKBVdcz866K4wnwDswHBvfCjaO9wEJhCH3XfiyKgH0=;
+        b=GcuU69FImu39bpbce0KUFK59+apsSua7+GZOHnOkgglvNp9sKCSadoxygOAtW+xkWD
+         WKFioB04pK+DvFukVLgew3uTdjcvIltOtHRTuEgKO9QU8q7uiR31r5DvzJiEVaNiqXA0
+         7zlUEl50uUk8l+M4KX9OAB9ssiFILP2oCqoUqhI9dtUW1i8RCm9OWofg5e/D4nm0Cskq
+         r1G5+aVJaOkDL8p/idRzDj9NBmoAMi5Kw22FAJJEx/PQ0zmm1BE55O4JBdW3duu9oWYt
+         WB1A/5EQSJuan+HWVwJfjFPSsoXGCYG0Y9d+vosmrPUzcq2VIrHu+XNFjtlAeatO8897
+         WRRA==
+X-Gm-Message-State: ANhLgQ0RQw0revRN9daaA4W8+xiY2WPUr3WIKMTnDEa8fBguKTpnUE5i
+        UccSra0btmb0zk8SACtZnCdhWQ==
+X-Google-Smtp-Source: ADFU+vt6t8EoUGCNV2n58jrEKH2onN0n0W2VGeqOhMgZzwWhHn5Ke5k36KI3cmY21zNutLgVSU0kHA==
+X-Received: by 2002:a1c:e918:: with SMTP id q24mr865012wmc.25.1583445902100;
+        Thu, 05 Mar 2020 14:05:02 -0800 (PST)
+Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
+        by smtp.gmail.com with ESMTPSA id p16sm46052523wrw.15.2020.03.05.14.05.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Mar 2020 14:01:35 -0800 (PST)
+        Thu, 05 Mar 2020 14:05:01 -0800 (PST)
 From:   KP Singh <kpsingh@chromium.org>
-To:     linux-security-module@vger.kernel.org, linux-next@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Thu, 5 Mar 2020 23:04:59 +0100
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
         Stephen Rothwell <sfr@canb.auug.org.au>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Subject: [PATCH bpf-next] bpf: Fix bpf_prog_test_run_tracing for !CONFIG_NET
-Date:   Thu,  5 Mar 2020 23:01:27 +0100
-Message-Id: <20200305220127.29109-1-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.20.1
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: linux-next: Tree for Mar 5 (bpf_trace)
+Message-ID: <20200305220459.GA29785@chromium.org>
+References: <20200305175528.5b3ccc09@canb.auug.org.au>
+ <715919f5-e256-fbd1-44ff-8934bda78a71@infradead.org>
+ <CAADnVQ+TYiVu+Ksstj4LmYa=+UPwbv-dv-tscRaKn_0FcpstBg@mail.gmail.com>
+ <CACYkzJ4ks6VgxeGpJApvqJdx6Q-8PZwk-r=q4ySWsDBDy1jp+g@mail.gmail.com>
+ <CACYkzJ5_8yQV2JPHFz_ZE0vYdASmrAes3Boy_sjbicX6LuiORw@mail.gmail.com>
+ <CAADnVQ+K4Vc2_=tB7COFFBy3uswike-TERoSF=1=GdnWFDUutQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQ+K4Vc2_=tB7COFFBy3uswike-TERoSF=1=GdnWFDUutQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+On 05-Mär 09:38, Alexei Starovoitov wrote:
+> On Thu, Mar 5, 2020 at 9:32 AM KP Singh <kpsingh@chromium.org> wrote:
+> >
+> > This fails as we added bpf_test_run_tracing in net/bpf/test_run.c
+> > which gets built only CONFIG_NET is enabled. Which, this particular
+> > config, disables.
+> >
+> > Alexei, if it's okay with you. I can send a patch that separates the
+> > tracing test code into kernel/bpf/test_run_trace.c which depends
+> > only on CONFIG_BPF_SYSCALL.
+> 
+> In such situation we typically add __weak dummy call.
 
-test_run.o is not built when CONFIG_NET is not set and
-bpf_prog_test_run_tracing being referenced in bpf_trace.o causes the
-linker error:
+I would prefer this. Less chances for breaking something. Sent:
 
-ld: kernel/trace/bpf_trace.o:(.rodata+0x38): undefined reference to
- `bpf_prog_test_run_tracing'
+  https://lore.kernel.org/bpf/20200305220127.29109-1-kpsingh@chromium.org/T/#u
 
-Add a __weak function in bpf_trace.c to handle this.
+> May be split will work too.
 
-Fixes: da00d2f117a0 ("bpf: Add test ops for BPF_PROG_TYPE_TRACING")
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- kernel/trace/bpf_trace.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+We can do that separately (if needed).
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 363e0a2c75cf..6a490d8ce9de 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1252,6 +1252,13 @@ static bool tracing_prog_is_valid_access(int off, int size,
- 	return btf_ctx_access(off, size, type, prog, info);
- }
- 
-+int __weak bpf_prog_test_run_tracing(struct bpf_prog *prog,
-+				     const union bpf_attr *kattr,
-+				     union bpf_attr __user *uattr)
-+{
-+	return -ENOTSUPP;
-+}
-+
- const struct bpf_verifier_ops raw_tracepoint_verifier_ops = {
- 	.get_func_proto  = raw_tp_prog_func_proto,
- 	.is_valid_access = raw_tp_prog_is_valid_access,
--- 
-2.20.1
+- KP
 
+> or move tracing_prog_ops to kernel/bpf/core.c ?
