@@ -2,85 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB3D17B19E
-	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 23:43:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C0BD17B1DD
+	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 23:47:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726162AbgCEWnU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Mar 2020 17:43:20 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:36086 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726128AbgCEWnU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Mar 2020 17:43:20 -0500
-Received: by mail-pf1-f196.google.com with SMTP id i13so92669pfe.3;
-        Thu, 05 Mar 2020 14:43:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jA8p1VP2pt+JFWnPp+edirLjgTdOXHSljdFxDv1Za7g=;
-        b=VVk9njl/Z7IPKK7+37XT+aObuQJtyevHOfm9ww2KAU8DY5xN2+hsFugWK5Ojh5MQuj
-         5vx+8Ld8/LATRnhUv+IniR1NOsPDoXiCRyF5JX/o7M21UgJopSVbFomOMuwBAiWNd4u4
-         jO7eDdbTkII28GQm6aS++5e3CRlwLEZiGklNOJMtJmspY+5xILJF3+I2T6j/uJ9CKiXs
-         E54YCzd8yEXAEVLe6sGUrSvC9THlvKR/TAlRVRGzrYGk6fXuURl7ZtUy3Eiguj4uBJUy
-         lWTyI/9uJQowsxyOn3Ao+fn3l9dzUEL0KilFXDgcjWHPhKiJDSR2APQIaPThlorgostA
-         KHHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jA8p1VP2pt+JFWnPp+edirLjgTdOXHSljdFxDv1Za7g=;
-        b=GjIQpH0VGUtKyjStxuOPu6N0IoP7fdBML5f3bzXw7acokBu8pnsi6cFdHc9H8TE4KV
-         J97HeNaa9HEqDGpeBt8LQw4FzTYtGj8qvhTQq0KnYrTWRl8ILJoxfU2E+KJJIJbug+J+
-         q9rVAEXRXbdluMFquryqRSmtascyGDiCjDOxztXZ0S8XoFt4xawU4/0pAZ1xvYE8N3qu
-         PebLEw7zLl38bM0B1Hm1UYXzQ/os4VqWh8V0p/NvfGrcki62QAcKeHzk1120w4Fa9PKC
-         PUOq+W+mIwzwQE0rpvzxauhbZLAZyGTLWHQI8uNZuA3xgkAu+8TitwbIzSFmrlVtrOyw
-         m4Vw==
-X-Gm-Message-State: ANhLgQ3fg/SR8SnLXUZVRFjbhRdDOxDwSyw+WjqBrilb+ezvvrshOJLk
-        kZPBextAptmpxedtUWTkxbc=
-X-Google-Smtp-Source: ADFU+vvleMQSez6lc/fdx5SiFd17q0R3BrugPniE+eI/y2FdayIn84wcAqemUuX8tx5E/KZNeAmrig==
-X-Received: by 2002:a63:5713:: with SMTP id l19mr387069pgb.216.1583448199145;
-        Thu, 05 Mar 2020 14:43:19 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:400::5:f0e7])
-        by smtp.gmail.com with ESMTPSA id e30sm33471914pga.6.2020.03.05.14.43.17
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Mar 2020 14:43:18 -0800 (PST)
-Date:   Thu, 5 Mar 2020 14:43:16 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     linux-security-module@vger.kernel.org, linux-next@vger.kernel.org,
-        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Subject: Re: [PATCH bpf-next] bpf: Fix bpf_prog_test_run_tracing for
- !CONFIG_NET
-Message-ID: <20200305224315.i4wfxfrugcey22mm@ast-mbp>
-References: <20200305220127.29109-1-kpsingh@chromium.org>
+        id S1727186AbgCEWrU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Mar 2020 17:47:20 -0500
+Received: from www62.your-server.de ([213.133.104.62]:51744 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726674AbgCEWrO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Mar 2020 17:47:14 -0500
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j9zGd-0007qj-P2; Thu, 05 Mar 2020 23:46:59 +0100
+Received: from [85.7.42.192] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j9zGd-000UwR-1P; Thu, 05 Mar 2020 23:46:59 +0100
+Subject: Re: [PATCH bpf-next v5 0/4] eBPF JIT for RV32G
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Luke Nelson <lukenels@cs.washington.edu>,
+        bpf <bpf@vger.kernel.org>, Luke Nelson <luke.r.nels@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Xi Wang <xi.wang@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, linux-riscv@lists.infradead.org
+References: <20200305050207.4159-1-luke.r.nels@gmail.com>
+ <CAJ+HfNjrUxVqpBgC-WLHbZX7_7Gd-Lk7ghrmASTmaNySuXVUfg@mail.gmail.com>
+ <4633123d-dc61-ab79-d2ee-e0cef66e4cea@iogearbox.net>
+ <CAJ+HfNg_cP8DC+C0UGHnumde6+YhqBoTB909A9XwFMPv82tqWw@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <d95a83aa-d91c-6e5f-b9ec-0de0af23770a@iogearbox.net>
+Date:   Thu, 5 Mar 2020 23:46:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200305220127.29109-1-kpsingh@chromium.org>
-User-Agent: NeoMutt/20180223
+In-Reply-To: <CAJ+HfNg_cP8DC+C0UGHnumde6+YhqBoTB909A9XwFMPv82tqWw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25742/Thu Mar  5 15:10:18 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 05, 2020 at 11:01:27PM +0100, KP Singh wrote:
-> From: KP Singh <kpsingh@google.com>
+On 3/5/20 5:53 PM, Björn Töpel wrote:
+> On Thu, 5 Mar 2020 at 16:19, Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>
+> [...]
+>> Applied, thanks everyone!
+>>
+>> P.s.: I fixed the MAINTAINERS entry in the last one to have both netdev and bpf
+>> to be consistent with all the other JIT entries there.
 > 
-> test_run.o is not built when CONFIG_NET is not set and
-> bpf_prog_test_run_tracing being referenced in bpf_trace.o causes the
-> linker error:
-> 
-> ld: kernel/trace/bpf_trace.o:(.rodata+0x38): undefined reference to
->  `bpf_prog_test_run_tracing'
-> 
-> Add a __weak function in bpf_trace.c to handle this.
-> 
-> Fixes: da00d2f117a0 ("bpf: Add test ops for BPF_PROG_TYPE_TRACING")
-> Signed-off-by: KP Singh <kpsingh@google.com>
+> Ah, I asked specifically Xi and Luke to *remove* the netdev entry, due
+> to the bpf_devel_QA.rst change. :-)
 
-Applied. Thanks
+Ah right, although all the BPF entries in MAINTAINERS file have both lists
+mentioned today. I think it doesn't hurt to have potentially more eyes for
+reviews.
+
+Thanks,
+Daniel
