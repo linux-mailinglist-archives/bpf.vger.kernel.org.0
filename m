@@ -2,70 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7176A17B162
-	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 23:25:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FEC417B18A
+	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 23:34:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726178AbgCEWZ1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Mar 2020 17:25:27 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:36059 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726128AbgCEWZ1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Mar 2020 17:25:27 -0500
-Received: by mail-pg1-f194.google.com with SMTP id d9so107136pgu.3;
-        Thu, 05 Mar 2020 14:25:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=uLTHblL9WJrI4bK/g8rOhHMekmLiYgOywSz4cT5UQRU=;
-        b=s/DlhYrVQWhR3pqeK3ZpXSz3uX/GosdxK/lVBFc7VlPQ2epM5dZ/cwUkedOqiwRWo7
-         KP2rNHKDcYAVxQggqvUs34/RI6i+DIGz0nJ4Ohr8F2fHeg/mj+KdT9hY1+Q4YqrL5n7P
-         yze0MIoYRvJSyyJj+8jXcNxCm4dvrk1dhx3mKWCTHlaGA/WKfbsJiXFmI2+McjIfUu51
-         5wzmRU7z8UEl4oAinIhU4CxPby+6Jc3RLbmjBian7vqkTKl7bY1tmk7uob6dyOLlRNa2
-         4aj3oFA2xUKUGSEKBCJnVG6YefDT8kJg1LjNWBJ809gdthKxIcG9VVvJEY7YrzrixDM9
-         SGJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=uLTHblL9WJrI4bK/g8rOhHMekmLiYgOywSz4cT5UQRU=;
-        b=Mky4OmMeXAtjWs2oJE91VKigNDFva0tKhv8RmdphnDBGSmP4lvKEySXprikLMv6F0m
-         k2CAkyhnu9oHsZ1CpTYDTDU+hRtyD6Ha3ZkyXcj9/36iH8s1kVs22vGBMTy7r1ZAvV7k
-         jFLmp/gEwbrGFqQq/lcW3l3bq4XyjY7n1HEBGc+BOypf/FwXWO6jN64IYTDAFJyqm71j
-         41NG26WTWV32bdzpI03/b8Wlo7Ysw/qmw25B8fgTDio6WuYJR/eLeWeQACFIu3c2gxiv
-         Ul8jKDcFzLt2WtvpqInbeqZTn0ki9UWLpzHgeB4ZLiSp4UvHmoKNuLC1Tf60OUzzChqy
-         zrBw==
-X-Gm-Message-State: ANhLgQ1D7NEbN3T1o5ADg3RxDATiU3vBPgqT6sUF5M7811Xtw3RCtE7M
-        sQJ5yQBu7HCOKGCci4heqgo=
-X-Google-Smtp-Source: ADFU+vsLYW/QY/Jc2QvP+uFFKosot/16oSqLQ7d3NCNrvoGrr36EcFXRIZ4wPH54NL0WKzSDNrT4zA==
-X-Received: by 2002:a63:c00a:: with SMTP id h10mr296608pgg.31.1583447126218;
-        Thu, 05 Mar 2020 14:25:26 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:400::5:f0e7])
-        by smtp.gmail.com with ESMTPSA id d22sm7505334pja.14.2020.03.05.14.25.24
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Mar 2020 14:25:25 -0800 (PST)
-Date:   Thu, 5 Mar 2020 14:25:23 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>, kernel-team@fb.com,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf 0/2] bpf: A few struct_ops fixes
-Message-ID: <20200305222521.tscksbsxwuui6d7a@ast-mbp>
-References: <20200305013437.534961-1-kafai@fb.com>
+        id S1726178AbgCEWe0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Mar 2020 17:34:26 -0500
+Received: from www62.your-server.de ([213.133.104.62]:49510 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726080AbgCEWeZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Mar 2020 17:34:25 -0500
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j9z4N-0006dU-FQ; Thu, 05 Mar 2020 23:34:19 +0100
+Received: from [85.7.42.192] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1j9z4N-0006hN-60; Thu, 05 Mar 2020 23:34:19 +0100
+Subject: Re: [PATCH bpf-next 0/3] Introduce pinnable bpf_link kernel
+ abstraction
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+References: <8083c916-ac2c-8ce0-2286-4ea40578c47f@iogearbox.net>
+ <CAEf4BzbokCJN33Nw_kg82sO=xppXnKWEncGTWCTB9vGCmLB6pw@mail.gmail.com>
+ <87pndt4268.fsf@toke.dk> <ab2f98f6-c712-d8a2-1fd3-b39abbaa9f64@iogearbox.net>
+ <ccbc1e49-45c1-858b-1ad5-ee503e0497f2@fb.com> <87k1413whq.fsf@toke.dk>
+ <20200304043643.nqd2kzvabkrzlolh@ast-mbp> <87h7z44l3z.fsf@toke.dk>
+ <20200304154757.3tydkiteg3vekyth@ast-mbp> <874kv33x60.fsf@toke.dk>
+ <20200305163444.6e3w3u3a5ufphwhp@ast-mbp>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <473a3e8a-03ea-636c-f054-3c960bf0fdbd@iogearbox.net>
+Date:   Thu, 5 Mar 2020 23:34:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200305013437.534961-1-kafai@fb.com>
-User-Agent: NeoMutt/20180223
+In-Reply-To: <20200305163444.6e3w3u3a5ufphwhp@ast-mbp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25742/Thu Mar  5 15:10:18 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 04, 2020 at 05:34:37PM -0800, Martin KaFai Lau wrote:
-> This set addresses a few struct_ops issues.
-> Please see individual patch for details.
+On 3/5/20 5:34 PM, Alexei Starovoitov wrote:
+> On Thu, Mar 05, 2020 at 11:37:11AM +0100, Toke Høiland-Jørgensen wrote:
+>> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>>> On Wed, Mar 04, 2020 at 08:47:44AM +0100, Toke Høiland-Jørgensen wrote:
+[...]
+>> Anyway, what I was trying to express:
+>>
+>>> Still that doesn't mean that pinned link is 'immutable'.
+>>
+>> I don't mean 'immutable' in the sense that it cannot be removed ever.
+>> Just that we may end up in a situation where an application can see a
+>> netdev with an XDP program attached, has the right privileges to modify
+>> it, but can't because it can't find the pinned bpf_link. Right? Or am I
+>> misunderstanding your proposal?
+>>
+>> Amending my example from before, this could happen by:
+>>
+>> 1. Someone attaches a program to eth0, and pins the bpf_link to
+>>     /sys/fs/bpf/myprog
+>>
+>> 2. eth0 is moved to a different namespace which mounts a new sysfs at
+>>     /sys
+>>
+>> 3. Inside that namespace, /sys/fs/bpf/myprog is no longer accessible, so
+>>     xdp-loader can't get access to the original bpf_link; but the XDP
+>>     program is still attached to eth0.
+> 
+> The key to decide is whether moving netdev across netns should be allowed
+> when xdp attached. I think it should be denied. Even when legacy xdp
+> program is attached, since it will confuse user space managing part.
 
-Applied to bpf tree without this cover letter, since it's too terse.
+There are perfectly valid use cases where this is done already today (minus
+bpf_link), for example, consider an orchestrator that is setting up the BPF
+program on the device, moving to the newly created application pod during
+the CNI call in k8s, such that the new pod does not have the /sys/fs/bpf/
+mount instance and if unprivileged cannot remove the BPF prog from the dev
+either. We do something like this in case of ipvlan, meaning, we attach a
+rootlet prog that calls into single slot of a tail call map, move it to the
+application pod, and only out of Cilium's own pod and it's pod-local bpf fs
+instance we manage the pinned tail call map to update the main programs in
+that single slot w/o having to switch any netns later on.
+
+Thanks,
+Daniel
