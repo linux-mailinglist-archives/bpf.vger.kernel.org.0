@@ -2,166 +2,221 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 98579179DC6
-	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 03:20:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA97F179ED1
+	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 06:02:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725903AbgCECUt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Mar 2020 21:20:49 -0500
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:52555 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgCECUs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Mar 2020 21:20:48 -0500
-Received: by mail-pj1-f68.google.com with SMTP id lt1so1799872pjb.2
-        for <bpf@vger.kernel.org>; Wed, 04 Mar 2020 18:20:48 -0800 (PST)
+        id S1725893AbgCEFCR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Mar 2020 00:02:17 -0500
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:35786 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgCEFCR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Mar 2020 00:02:17 -0500
+Received: by mail-pf1-f193.google.com with SMTP id i19so2160447pfa.2
+        for <bpf@vger.kernel.org>; Wed, 04 Mar 2020 21:02:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=o7EoAC0uRM8GPyBvo7DIt0uzNdUVYvkGswKAIdWl07g=;
-        b=Ymv11zsoqj+1jPfTSuqq1+O5QZKNyI1Zpv3lSfH5TkQPlk9VjfVJ75WHgXD3D9eWaZ
-         pALGV+GU0/1woinJclUpH+wq+coH/o67/15kiSpuFGUy0GTYVaE7xSUYZo0M0lGjMlBM
-         ysd1WVAvhITtOUGS5hQB3UnogP+VoFec4vz64=
+        d=cs.washington.edu; s=goo201206;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YpOwyrb2WE/CDlzT3QThQwLnDNsGkooSRHNga96mtQc=;
+        b=D4mP+M6uKURXP9HP9xpBxfbWTwS2sXLCAH4XXiVTLLBY2AHKEG4zJCDy0WZMfc5Cdf
+         0vWrb8YgmglaHdbSRbvzwy0Ud+GY5kjFjJG5svoO6WbDsiVnX1N3h3+BPsGpiXZjFXIt
+         IjlL0igv8nG47EYU1nWRvSzj9kcDGs1Mwl6Xc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=o7EoAC0uRM8GPyBvo7DIt0uzNdUVYvkGswKAIdWl07g=;
-        b=UV7Joti2PFluwcXNAAb1oncwkuytNaVsPFWxpn2ragQVFs0gVBfW2WbhQABylZTKIG
-         WmvvnMQPcWOyk375HUe14NU6Wu2Wyoj3n/D+uDpnoNvZ/G0PKibPQjR4drIDhX2hoCix
-         Oewut3UQYJ02S1dGJN6JrmJRI4RBjaI1zcM90mHxtUSmHSqjs1v6eXAw4Rz1TV1prwnF
-         NtZ2HZKxywEm7OAGaNE/I2hkylGjX+nQNncPVY4CF/0pvxmdj8rHHj+XcY2JsHmfSiwF
-         XjG/5/GQ6ZheiVh5FHVDmgVChDIEoEmANP5uktnme5/bWpf9qaLYH0yEL+VdUz8kgxZa
-         ZvVw==
-X-Gm-Message-State: ANhLgQ2YVXECOXJoNAGCoXleycURLBlHgSGQArWlr1j0UbA5Qy2SzVTp
-        KiiA68bXERG7vJ7nJT8JSqw53A==
-X-Google-Smtp-Source: ADFU+vsYvHRJ7Or2bcedq/UlSMlYWHcozxCBOy/f+j+Ny96xn3FvobNbqYF1wBvt1WxXN7QWfnNysA==
-X-Received: by 2002:a17:90a:8a09:: with SMTP id w9mr6257968pjn.0.1583374847828;
-        Wed, 04 Mar 2020 18:20:47 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a9sm4006971pjk.1.2020.03.04.18.20.46
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YpOwyrb2WE/CDlzT3QThQwLnDNsGkooSRHNga96mtQc=;
+        b=WxAhC7e2WimdG4ebA5/RGzQltjDZyX0XurWDIU8QisJwzIQ/oSob3EAwgWfPMKVkYD
+         38nsCOzUFYf2/VdUlBXThPQcr32JIZdzOw4XWB5WYSJ+/IF7BGckzcy1rCjNNTW0lG6F
+         HVy1oLMadecAXANvLfTPFraZbPrl4dpWQrEmK5TRvCpe9BybDBvvukYk4op6TSUfHy0R
+         EKekKXCFYyxWHC8HRf00MWvpN2wv191V3EIbJFHJKkURpo4q2764JA+3j5FCM1InJmdS
+         car6gmX/L4iAF2QtbiSyjedbJLqzJQdIWI45FZgv+wA72z5eIiws9TfNmgbtoReIFfG5
+         WszA==
+X-Gm-Message-State: ANhLgQ23EnK0XeMrTWEfKBaypfqxzAYawJUIQWcmswOcDcdJBssK5OnO
+        5AQ2QgxMVEOwYWDuYdbBvJy2jF+zK0tM9Q==
+X-Google-Smtp-Source: ADFU+vtsPUj4UrzYUbkDsFFzdcapU3JttJFjuZrekealA4hSmKDIUgQOkMkXBsfF9VaQPKePqPog4A==
+X-Received: by 2002:a63:4a19:: with SMTP id x25mr5914511pga.167.1583384535762;
+        Wed, 04 Mar 2020 21:02:15 -0800 (PST)
+Received: from ryzen.cs.washington.edu ([2607:4000:200:11:e9fe:faad:3d84:58ea])
+        by smtp.gmail.com with ESMTPSA id y7sm17820466pfq.15.2020.03.04.21.02.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Mar 2020 18:20:46 -0800 (PST)
-Date:   Wed, 4 Mar 2020 18:20:45 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     shuah@kernel.org, luto@amacapital.net, wad@chromium.org,
-        daniel@iogearbox.net, kafai@fb.com, yhs@fb.com, andriin@fb.com,
-        gregkh@linuxfoundation.org, tglx@linutronix.de,
-        khilman@baylibre.com, mpe@ellerman.id.au,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] selftests: Fix seccomp to support relocatable
- build (O=objdir)
-Message-ID: <202003041815.B8C73DEC@keescook>
-References: <20200305003627.31900-1-skhan@linuxfoundation.org>
+        Wed, 04 Mar 2020 21:02:14 -0800 (PST)
+From:   Luke Nelson <lukenels@cs.washington.edu>
+X-Google-Original-From: Luke Nelson <luke.r.nels@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Luke Nelson <luke.r.nels@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: [PATCH bpf-next v5 0/4] eBPF JIT for RV32G
+Date:   Wed,  4 Mar 2020 21:02:03 -0800
+Message-Id: <20200305050207.4159-1-luke.r.nels@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200305003627.31900-1-skhan@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 04, 2020 at 05:36:27PM -0700, Shuah Khan wrote:
-> Fix seccomp relocatable builds. This is a simple fix to use the
-> right lib.mk variable TEST_CUSTOM_PROGS to continue to do custom
-> build to preserve dependency on kselftest_harness.h local header.
-> This change applies cutom rule to seccomp_bpf seccomp_benchmark
-> for a simpler logic. 
-> 
-> Uses $(OUTPUT) defined in lib.mk to handle build relocation.
-> 
-> The following use-cases work with this change:
-> 
-> In seccomp directory:
-> make all and make clean
+This series adds an eBPF JIT for 32-bit RISC-V (RV32G) to the kernel,
+adapted from the RV64 JIT and the 32-bit ARM JIT.
 
-This works.
+There are two main changes required for this to work compared to
+the RV64 JIT.
 
-> 
-> From top level from main Makefile:
-> make kselftest-install O=objdir ARCH=arm64 HOSTCC=gcc \
->  CROSS_COMPILE=aarch64-linux-gnu- TARGETS=seccomp
+First, eBPF registers are 64-bit, while RV32G registers are 32-bit.
+BPF registers either map directly to 2 RISC-V registers, or reside
+in stack scratch space and are saved and restored when used.
 
-This fails for me:
+Second, many 64-bit ALU operations do not trivially map to 32-bit
+operations. Operations that move bits between high and low words,
+such as ADD, LSH, MUL, and others must emulate the 64-bit behavior
+in terms of 32-bit instructions.
 
-$ make kselftest-install O=objdir ARCH=arm64 HOSTCC=gcc CROSS_COMPILE=aarch64-linux-gnu- TARGETS=seccomp
-make[1]: Entering directory '/home/kees/src/linux/objdir'
-make --no-builtin-rules INSTALL_HDR_PATH=$BUILD/usr \
-        ARCH=arm64 -C ../../.. headers_install
-make[4]: ../scripts/Makefile.build: No such file or directory
-make[4]: *** No rule to make target '../scripts/Makefile.build'.  Stop.
-make[3]: *** [Makefile:501: scripts_basic] Error 2
-make[2]: *** [Makefile:151: khdr] Error 2
-make[1]: *** [/home/kees/src/linux/Makefile:1221: kselftest-install] Error 2
-make[1]: Leaving directory '/home/kees/src/linux/objdir'
-make: *** [Makefile:180: sub-make] Error 2
+Supported features:
 
-(My "objdir" is empty)
+The RV32 JIT supports the same features and instructions as the
+RV64 JIT, with the following exceptions:
 
-If I remove O=objdir everything is fine. And see below...
+- ALU64 DIV/MOD: Requires loops to implement on 32-bit hardware.
 
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> ---
->  tools/testing/selftests/seccomp/Makefile | 19 +++++++++----------
->  1 file changed, 9 insertions(+), 10 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/seccomp/Makefile b/tools/testing/selftests/seccomp/Makefile
-> index 1760b3e39730..355bcbc0394a 100644
-> --- a/tools/testing/selftests/seccomp/Makefile
-> +++ b/tools/testing/selftests/seccomp/Makefile
-> @@ -1,17 +1,16 @@
->  # SPDX-License-Identifier: GPL-2.0
-> -all:
-> -
-> -include ../lib.mk
-> +CFLAGS += -Wl,-no-as-needed -Wall
-> +LDFLAGS += -lpthread
->  
->  .PHONY: all clean
->  
-> -BINARIES := seccomp_bpf seccomp_benchmark
-> -CFLAGS += -Wl,-no-as-needed -Wall
-> +include ../lib.mk
-> +
-> +# OUTPUT set by lib.mk
-> +TEST_CUSTOM_PROGS := $(OUTPUT)/seccomp_bpf $(OUTPUT)/seccomp_benchmark
->  
-> -seccomp_bpf: seccomp_bpf.c ../kselftest_harness.h
-> -	$(CC) $(CFLAGS) $(LDFLAGS) $< -lpthread -o $@
-> +$(TEST_CUSTOM_PROGS): ../kselftest_harness.h
->  
-> -TEST_PROGS += $(BINARIES)
-> -EXTRA_CLEAN := $(BINARIES)
-> +all: $(TEST_CUSTOM_PROGS)
->  
-> -all: $(BINARIES)
-> +EXTRA_CLEAN := $(TEST_CUSTOM_PROGS)
-> -- 
-> 2.20.1
-> 
+- BPF_XADD | BPF_DW: There's no 8-byte atomic instruction in RV32.
 
-Instead of the TEST_CUSTOM_PROGS+all dance, you can just add an explicit
-dependency, with the final seccomp/Makefile looking like this:
+These features are also unsupported on other BPF JITs for 32-bit
+architectures.
 
+Testing:
 
-# SPDX-License-Identifier: GPL-2.0
-CFLAGS += -Wl,-no-as-needed -Wall
-LDFLAGS += -lpthread
+- lib/test_bpf.c
+test_bpf: Summary: 378 PASSED, 0 FAILED, [349/366 JIT'ed]
+test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
 
-TEST_GEN_PROGS := seccomp_bpf seccomp_benchmark
+The tests that are not JITed are all due to use of 64-bit div/mod
+or 64-bit xadd.
 
-include ../lib.mk
+- tools/testing/selftests/bpf/test_verifier.c
+Summary: 1415 PASSED, 122 SKIPPED, 43 FAILED
 
-# Additional dependencies
-$(OUTPUT)/seccomp_bpf: ../kselftest_harness.h
+Tested both with and without BPF JIT hardening.
 
+This is the same set of tests that pass using the BPF interpreter
+with the JIT disabled.
 
-(Though this fails in the same way as above when run from the top-level
-directory.)
+Running the BPF kernel tests / selftests on riscv32 is non-trivial,
+to help others reproduce the test results I made a guide here:
+https://github.com/lukenels/meta-linux-utils/tree/master/rv32-linux
 
--Kees
+Verification and synthesis:
+
+We developed the RV32 JIT using our automated verification tool,
+Serval. We have used Serval in the past to verify patches to the
+RV64 JIT. We also used Serval to superoptimize the resulting code
+through program synthesis.
+
+You can find the tool and a guide to the approach and results here:
+https://github.com/uw-unsat/serval-bpf/tree/rv32-jit-v5
+
+Thanks again for all the comments!
+
+Changelog:
+
+v4 -> v5:
+  * Factored common code (build_body, bpf_int_jit_compile, etc)
+    to bpf_jit_core.c (Björn Töpel).
+  * Moved RV32-specific changes to bpf_jit.h from patch 1 to patch 2
+    (Björn Töpel).
+  * Removed "_rv32_" from function names in JIT as it is
+    redundant (Björn Töpel).
+  * Added commit message to MAINTAINERS and made sure to keep
+    entries in order (Andy Shevchenko).
+
+v3 -> v4:
+  * Added more comments and cleaned up style nits (Björn Töpel).
+  * Factored common code in RV64 and RV32 JITs into a separate header
+    (Song Liu, Björn Töpel).
+  * Added an optimization in the BPF_ALU64 BPF_ADD BPF_X case.
+  * Updated MAINTAINERS and kernel documentation (Björn Töpel).
+
+v2 -> v3:
+  * Added support for far jumps / branches similar to RV64 JIT.
+  * Added support for tail calls.
+  * Cleaned up code with more optimizations and comments.
+  * Removed special zero-extension instruction from BPF_ALU64
+    case (Jiong Wang).
+
+v1 -> v2:
+  * Added support for far conditional branches.
+  * Added the zero-extension optimization (Jiong Wang).
+  * Added more optimizations for operations with an immediate operand.
+
+Luke Nelson (4):
+  riscv, bpf: factor common RISC-V JIT code
+  riscv, bpf: add RV32G eBPF JIT
+  bpf, doc: add BPF JIT for RV32G to BPF documentation
+  MAINTAINERS: add entry for RV32G BPF JIT
+
+ Documentation/admin-guide/sysctl/net.rst      |    3 +-
+ Documentation/networking/filter.txt           |    2 +-
+ MAINTAINERS                                   |   13 +-
+ arch/riscv/Kconfig                            |    2 +-
+ arch/riscv/net/Makefile                       |    9 +-
+ arch/riscv/net/bpf_jit.h                      |  514 +++++++
+ arch/riscv/net/bpf_jit_comp32.c               | 1310 +++++++++++++++++
+ .../net/{bpf_jit_comp.c => bpf_jit_comp64.c}  |  605 +-------
+ arch/riscv/net/bpf_jit_core.c                 |  166 +++
+ 9 files changed, 2018 insertions(+), 606 deletions(-)
+ create mode 100644 arch/riscv/net/bpf_jit.h
+ create mode 100644 arch/riscv/net/bpf_jit_comp32.c
+ rename arch/riscv/net/{bpf_jit_comp.c => bpf_jit_comp64.c} (69%)
+ create mode 100644 arch/riscv/net/bpf_jit_core.c
+
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: Andrii Nakryiko <andriin@fb.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: "Björn Töpel" <bjorn.topel@gmail.com>
+Cc: Luke Nelson <luke.r.nels@gmail.com>
+Cc: Xi Wang <xi.wang@gmail.com>
+Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc: Stephen Hemminger <stephen@networkplumber.org>
+Cc: Rob Herring <robh@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org
+Cc: linux-riscv@lists.infradead.org
 
 -- 
-Kees Cook
+2.20.1
+
