@@ -2,97 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1529017ADC6
-	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 19:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F96E17ADE7
+	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 19:13:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726049AbgCESCV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Mar 2020 13:02:21 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:35724 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgCESCV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Mar 2020 13:02:21 -0500
-Received: by mail-ot1-f68.google.com with SMTP id v10so6631460otp.2;
-        Thu, 05 Mar 2020 10:02:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bImCa8e75imP5OBiFn4OIcu9vGwfjFkhcN3Jk6EQf9c=;
-        b=UBjwhXXB7Z3eO7J/9T0RT1RI8fpcwomIFdsfs667Q3w3V4MrEqj1JxGClS1nCzLXtu
-         OB4WkpY+EooNfPTvjY0qr7DuPSuAt7D3SqzFKq/ellIgtaM3DY5QKKfXbjyCEvvEnz4t
-         hQgjGwsVgvNtcF/t15XaM8sJ0DczcuyEFDLQngNw/LaGa25bryQxdbXRJXbFyqwVr35S
-         4mc7xyA/NQFFk/74kv7IXPPe0E+jcGUm/mVR+WQR/dRZWyEB6xBf164GWiu62359avCj
-         pNLVz2qmkVV68i19jQxzYExh6ecLV9Wd0N80e0/2f1v7GC1yxe8B96jBPoj4u9BcY+5t
-         eiqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bImCa8e75imP5OBiFn4OIcu9vGwfjFkhcN3Jk6EQf9c=;
-        b=nq0pSMsCcs7ZolZI5OpvXhCVJW6FXOtzhdFe6GrDCYNaCRPQGXgER8mmS1TbzKvpaS
-         ycUV0tQWSsNS8cYIo7B2IFDoe2iCoMhRvGobiYE3xHxHAdulWCVCOFDwmCTpfI3AIB1e
-         rHIWl9v8zjpIZGcvusBqR6l5XyHDmpm5qWvo6pyKs5ZEjRYtJK3iSslBldsZjdjrkmkr
-         rx/PliuQ7U13hW0uRuIVEczDUYYN7w4J2SflhmUqNWWLF0OtO+nouM7PkiJPUIqlUDFM
-         jFVZ0CwL04xqb85hB7R3V+rgoayogYqg5J7a+pGUGfNznBia/Ieh6vjwUqP0Q4WA31vN
-         dpQQ==
-X-Gm-Message-State: ANhLgQ2P87WWWV8yZfXHMFQxw4OqxHF+VWFGmozxS9TP1IRHIT66U7nq
-        QBFGEqI3lWIfvfomGVQXOIuxTm8SAbNoe+nXjJs=
-X-Google-Smtp-Source: ADFU+vsvbQuqzn8gGOtAxjPNVm9WpKEFdkyFDU2gticZVw82S72hfRFT62HlHzFLjnhAG5wKOwfQ5MHvENi4XGLAZXw=
-X-Received: by 2002:a05:6830:22f2:: with SMTP id t18mr7959676otc.165.1583431340611;
- Thu, 05 Mar 2020 10:02:20 -0800 (PST)
-MIME-Version: 1.0
-References: <20200304191853.1529-1-kpsingh@chromium.org> <20200304191853.1529-4-kpsingh@chromium.org>
- <CAEjxPJ4+aW5JVC9QjJywjNUS=+cVJeaWwRHLwOssLsZyhX3siw@mail.gmail.com>
- <20200305155421.GA209155@google.com> <d7615424-48cb-1131-3c5d-f2a0b4adfaf7@schaufler-ca.com>
-In-Reply-To: <d7615424-48cb-1131-3c5d-f2a0b4adfaf7@schaufler-ca.com>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Date:   Thu, 5 Mar 2020 13:03:26 -0500
-Message-ID: <CAEjxPJ7EQjq2J8AGn+b90=yMG9H5CaNErk1PqtTz8T3CwdAvJw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 3/7] bpf: Introduce BPF_MODIFY_RETURN
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     KP Singh <kpsingh@chromium.org>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1726080AbgCESNp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Mar 2020 13:13:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726036AbgCESNp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Mar 2020 13:13:45 -0500
+Received: from kicinski-fedora-PC1C0HJN (unknown [163.114.132.128])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 72AD3208C3;
+        Thu,  5 Mar 2020 18:13:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1583432024;
+        bh=MmGDQGgUx19Dykruo0Cq7gbv2FwEMbYDwZcR4vu6+Os=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Vz1BUssI0NEhzosLWpEr+RiciXDS6RcTrXWqtOuq2RPYzTY5rymONNq9lI4RGNtQM
+         qto0N2RD1cqfHfq11AylBRGbbdSC8LYtVCbmTlkuFXiujZ0jWnnYeyEM65z0ndIGxM
+         DzNHwvojzKghXagVnyIxRSnc0IgUCPnxWI6rUcBA=
+Date:   Thu, 5 Mar 2020 10:13:42 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>, jmorris@namei.org,
-        Paul Moore <paul@paul-moore.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 0/3] Introduce pinnable bpf_link kernel
+ abstraction
+Message-ID: <20200305101342.01427a2a@kicinski-fedora-PC1C0HJN>
+In-Reply-To: <87tv332hak.fsf@toke.dk>
+References: <8083c916-ac2c-8ce0-2286-4ea40578c47f@iogearbox.net>
+        <CAEf4BzbokCJN33Nw_kg82sO=xppXnKWEncGTWCTB9vGCmLB6pw@mail.gmail.com>
+        <87pndt4268.fsf@toke.dk>
+        <ab2f98f6-c712-d8a2-1fd3-b39abbaa9f64@iogearbox.net>
+        <ccbc1e49-45c1-858b-1ad5-ee503e0497f2@fb.com>
+        <87k1413whq.fsf@toke.dk>
+        <20200304043643.nqd2kzvabkrzlolh@ast-mbp>
+        <20200304114000.56888dac@kicinski-fedora-PC1C0HJN>
+        <20200304204506.wli3enu5w25b35h7@ast-mbp>
+        <20200304132439.6abadbe3@kicinski-fedora-PC1C0HJN>
+        <20200305010706.dk7zedpyj5pb5jcv@ast-mbp>
+        <20200305001620.204c292e@cakuba.hsd1.ca.comcast.net>
+        <87tv332hak.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 5, 2020 at 12:35 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> I believe that I have stated that order isn't my issue.
-> Go first, last or as specified in the lsm list, I really
-> don't care. We'll talk about what does matter in the KRSI
-> thread.
+On Thu, 05 Mar 2020 12:05:23 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> Jakub Kicinski <kuba@kernel.org> writes:
+> > On Wed, 4 Mar 2020 17:07:08 -0800, Alexei Starovoitov wrote: =20
+> >> > Maybe also the thief should not have CAP_ADMIN in the first place?
+> >> > And ask a daemon to perform its actions..   =20
+> >>=20
+> >> a daemon idea keeps coming back in circles.
+> >> With FD-based kprobe/uprobe/tracepoint/fexit/fentry that problem is go=
+ne,
+> >> but xdp, tc, cgroup still don't have the owner concept.
+> >> Some people argued that these three need three separate daemons.
+> >> Especially since cgroups are mainly managed by systemd plus container
+> >> manager it's quite different from networking (xdp, tc) where something
+> >> like 'networkd' might makes sense.
+> >> But if you take this line of thought all the ways systemd should be th=
+at
+> >> single daemon to coordinate attaching to xdp, tc, cgroup because
+> >> in many cases cgroup and tc progs have to coordinate the work. =20
+> >
+> > The feature creep could happen, but Toke's proposal has a fairly simple
+> > feature set, which should be easy to cover by a stand alone daemon.
+> >
+> > Toke, I saw that in the library discussion there was no mention of=20
+> > a daemon, what makes a daemon solution unsuitable? =20
+>=20
+> Quoting from the last discussion[0]:
+>=20
+> > - Introducing a new, separate code base that we'll have to write, suppo=
+rt
+> >   and manage updates to.
+> >
+> > - Add a new dependency to using XDP (now you not only need the kernel
+> >   and libraries, you'll also need the daemon).
+> >
+> > - Have to duplicate or wrap functionality currently found in the kernel;
+> >   at least:
+> >  =20
+> >     - Keeping track of which XDP programs are loaded and attached to
+> >       each interface (as well as the "new state" of their attachment
+> >       order).
+> >
+> >     - Some kind of interface with the verifier; if an app does
+> >       xdpd_rpc_load(prog), how is the verifier result going to get back
+> >       to the caller?
+> >
+> > - Have to deal with state synchronisation issues (how does xdpd handle
+> >   kernel state changing from underneath it?).
+> >=20
+> > While these are issues that are (probably) all solvable, I think the
+> > cost of solving them is far higher than putting the support into the
+> > kernel. Which is why I think kernel support is the best solution :) =20
+>=20
+> The context was slightly different, since this was before we had
+> freplace support in the kernel. But apart from the point about the
+> verifier, I think the arguments still stand. In fact, now that we have
+> that, we don't even need userspace linking, so basically a daemon's only
+> task would be to arbitrate access to the XDP hook? In my book,
+> arbitrating access to resources is what the kernel is all about...
 
-Order matters when the security module logic (in this case, the BPF
-program) is loaded from userspace and
-the userspace process isn't already required to be fully privileged
-with respect to the in-kernel security modules.
-CAP_MAC_ADMIN was their (not unreasonable) attempt to check that
-requirement; it just doesn't happen to convey
-the same meaning for SELinux since SELinux predates the introduction
-of CAP_MAC_ADMIN (in Linux at least) and
-since SELinux was designed to confine even processes with capabilities.
+You said that like the library doesn't arbitrate access and manage
+resources.. It does exactly the same work the daemon would do.
 
-> Then I'm fine with using the LSM ordering mechanisms that Kees
-> thought through to run the BPF last. Although I think it's somewhat
-> concerning that SELinux cares what other security models might be
-> in place. If BPF programs can violate SELinux (or traditional DAC)
-> policies there are bigger issues than ordering.
+Your prog chaining in the kernel proposal, now that would be a kernel
+mechanism, but that's not what we're discussing here.
 
-It is only safe for Smack because CAP_MAC_ADMIN already conveys all
-privileges with respect to Smack.
-Otherwise, the BPF program can access information about the object
-attributes, e.g. inode attributes,
-and leak that information to userspace even if SELinux would have
-denied the process that loaded the BPF
-program permissions to directly obtain that information.  This is also
-why Landlock has to be last in the LSM list.
+Daemon just trades off the complexity of making calls for the complexity
+of the system and serializing/de-serializing the state.
