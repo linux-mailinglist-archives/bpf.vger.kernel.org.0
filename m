@@ -2,120 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A28A817AD72
-	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 18:42:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F5D17AD77
+	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 18:43:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725963AbgCERmQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Mar 2020 12:42:16 -0500
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:34321 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbgCERmQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Mar 2020 12:42:16 -0500
-Received: by mail-pf1-f194.google.com with SMTP id y21so3109370pfp.1
-        for <bpf@vger.kernel.org>; Thu, 05 Mar 2020 09:42:16 -0800 (PST)
+        id S1725974AbgCERng (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Mar 2020 12:43:36 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:38230 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725948AbgCERng (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Mar 2020 12:43:36 -0500
+Received: by mail-wr1-f67.google.com with SMTP id t11so8080757wrw.5
+        for <bpf@vger.kernel.org>; Thu, 05 Mar 2020 09:43:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WO9CL2c1w4olgPjEPwS6Ra/FLfu00HcXGcMtO9zfexo=;
-        b=PIZuvBOBbK3Zt8CK4II7StLN9lnSky75gasV00eDluG4GZVnGAqsV8rtG2DADakRIV
-         QwSayYbgDZLPql+x0FSzCZf58gV1W67fETimxIpXAEO0CASpdr9y1wzHwq8v9Rt81cES
-         7eaM4UY2J/43MX9y2LuYLagFwi6m425NaHOEg=
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=bHAy6+6uVDKeAvvnXhbkpLjB9BJYv+SeoKQESBQgb5A=;
+        b=B7ByMAXR5naWc1+YE2RUrPsLSK32XIdadhkGFNwpvWzfffhIEjyiJWifTv9SKmv2bO
+         n6BsQ128MM+4tDd6R+anpfCUKI51CQNcGsIvj3p8zlFWuNrhBJ1v8KHRYadbIalTqT3o
+         pSjWXL9ZcF3jRR+fpXN7Kbt9KAIy/VkoiKneU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WO9CL2c1w4olgPjEPwS6Ra/FLfu00HcXGcMtO9zfexo=;
-        b=JlO5K9Ix8EGE2fI9rvuPE0CSLbICilw2Zcj3HP+qLcd0AVc56A/QZcX5h1Si9J2gZu
-         Iqx4tU3ltIHlIBZB0ipNdyoNrbm8ywE8jY5Qz8swVaXstxtfmv2GhxCbvITMAjXLqM02
-         joIZMRzSFKzDXo6SIP2AmOcUju+8jGADECikUqtGj6aaxncDk0Z0aKUV7r7/9WdDEVQ3
-         9ueE85dabjhiXc1t6o751YZ0lMi4PjHJST3vhBnxlyrTymrLe1MdFnLTD6jYmkekREpf
-         AseEnvIP2xOWHy31daO1hW6EAtFteNiWkYT91Pnnz+DxinCHIgzRdXip3No/wceMRqct
-         JFIA==
-X-Gm-Message-State: ANhLgQ1e8o0ke1OKo2j2rZei5Rr7PG0KUv0GSMPTNChTzVHvOxx5Db69
-        hfIzcATgUzu20A/s/eEXJ5jzHw==
-X-Google-Smtp-Source: ADFU+vtufGH9z7DYE4GsADQLUgiWusxt/h6jaf64E8QlBevYNQbgpzzrcR6B/vZM0EejVK/cGcN8Bw==
-X-Received: by 2002:a63:4a58:: with SMTP id j24mr8860917pgl.166.1583430135757;
-        Thu, 05 Mar 2020 09:42:15 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id cq15sm6975221pjb.31.2020.03.05.09.42.14
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bHAy6+6uVDKeAvvnXhbkpLjB9BJYv+SeoKQESBQgb5A=;
+        b=ud5KDdrapBeZPdck5ZfPwnoUebW4P53NRQZnF3KMQvZVC1lnlJDwb7VOHN4CwrCmJM
+         YVsF2blbxvo+MqRVq3F17cLpeLCOIzoJl6PPySwog8BxjN7vERPxLpxxM5IEGLwWAOwb
+         qw9ZA4y6MXxUttb7TC3DG3pv1RAvT4KEj8gmcDiMr80ke4cU+vpArXyplp1yXrFeSTn5
+         8BXi4Ljbg9GM/afnlzAo4ywGOluLw16Lcd7FhfKdU+OOxNN74IEpWIrTyFkUyctM6Msr
+         rePQyefFJhhsfzjWaCboyKhz8mqLcKz5Loyss/agfuZgREvLH+MVnA+zoe9d3xzbcIq/
+         YVfw==
+X-Gm-Message-State: ANhLgQ3wPC7rvlGofy6w5u2eVsy8VUFhxBAjBSy8zbuuNrT5kUFAUAUT
+        9FFsD6NbVdnt5OBEZVseHGFYzQ==
+X-Google-Smtp-Source: ADFU+vuBaQeq7T+aAwt7sz91tfVB0ZAv9LkjOxPLyX/Y+ANhz2j+FsQMTsQ8cYSfkzQK1svpOp3/Tg==
+X-Received: by 2002:adf:f20f:: with SMTP id p15mr44839wro.219.1583430214477;
+        Thu, 05 Mar 2020 09:43:34 -0800 (PST)
+Received: from google.com ([2a00:79e0:42:204:8a21:ba0c:bb42:75ec])
+        by smtp.gmail.com with ESMTPSA id k66sm7470957wmf.0.2020.03.05.09.43.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Mar 2020 09:42:14 -0800 (PST)
-Date:   Thu, 5 Mar 2020 09:42:13 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     shuah@kernel.org, luto@amacapital.net, wad@chromium.org,
-        daniel@iogearbox.net, kafai@fb.com, yhs@fb.com, andriin@fb.com,
-        gregkh@linuxfoundation.org, tglx@linutronix.de,
-        khilman@baylibre.com, mpe@ellerman.id.au,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] selftests: Fix seccomp to support relocatable
- build (O=objdir)
-Message-ID: <202003050937.BA14B70DEB@keescook>
-References: <20200305003627.31900-1-skhan@linuxfoundation.org>
- <202003041815.B8C73DEC@keescook>
- <f4cf1527-4565-9f08-a8a2-9f51022eac63@linuxfoundation.org>
+        Thu, 05 Mar 2020 09:43:33 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Thu, 5 Mar 2020 18:43:32 +0100
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     KP Singh <kpsingh@chromium.org>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Subject: Re: [PATCH bpf-next v4 0/7] Introduce BPF_MODIFY_RET tracing progs
+Message-ID: <20200305174332.GA167686@google.com>
+References: <20200304191853.1529-1-kpsingh@chromium.org>
+ <20200304221729.d6omw6tltqhbw5xr@ast-mbp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f4cf1527-4565-9f08-a8a2-9f51022eac63@linuxfoundation.org>
+In-Reply-To: <20200304221729.d6omw6tltqhbw5xr@ast-mbp>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 05, 2020 at 09:41:34AM -0700, Shuah Khan wrote:
-> On 3/4/20 7:20 PM, Kees Cook wrote:
-> > Instead of the TEST_CUSTOM_PROGS+all dance, you can just add an explicit
-> > dependency, with the final seccomp/Makefile looking like this:
+On 04-Mar 14:17, Alexei Starovoitov wrote:
+> On Wed, Mar 04, 2020 at 08:18:46PM +0100, KP Singh wrote:
 > > 
+> > Here is an example of how a fmod_ret program behaves:
 > > 
-> > # SPDX-License-Identifier: GPL-2.0
-> > CFLAGS += -Wl,-no-as-needed -Wall
-> > LDFLAGS += -lpthread
+> > int func_to_be_attached(int a, int b)
+> V> {  <--- do_fentry
 > > 
-> > TEST_GEN_PROGS := seccomp_bpf seccomp_benchmark
+> > do_fmod_ret:
+> >    <update ret by calling fmod_ret>
+> >    if (ret != 0)
+> >         goto do_fexit;
 > > 
+> > original_function:
+> > 
+> >     <side_effects_happen_here>
+> > 
+> > }  <--- do_fexit
+> > 
+> > ALLOW_ERROR_INJECTION(func_to_be_attached, ERRNO)
+> > 
+> > The fmod_ret program attached to this function can be defined as:
+> > 
+> > SEC("fmod_ret/func_to_be_attached")
+> > int BPF_PROG(func_name, int a, int b, int ret)
+> > {
+> >         // This will skip the original function logic.
+> >         return -1;
+> > }
 > 
-> TEST_CUSTOM_PROGS is for differentiating test programs that
-> can't use lib.mk generic rules. It is appropriate to use
-> for seccomp_bpf
+> Applied to bpf-next. Thanks.
 
-I don't follow? This suggested Makefile works for me (i.e. it can use
-the lib.mk generic rules since CFLAGS and LDFLAGS can be customized
-first, and it just adds an additional dependency).
+Thanks.
 
-> > include ../lib.mk
-> > 
-> > # Additional dependencies
-> > $(OUTPUT)/seccomp_bpf: ../kselftest_harness.h
-
-BTW, I see a lot of other targets that use kselftest_harness.h appear to
-be missing this Makefile dependency, but that's a different problem. :)
-
-> > (Though this fails in the same way as above when run from the top-level
-> > directory.)
-> > 
 > 
-> I didn't see this because I have been the same directory I used
-> for relocated cross-build kernel. :(
+> I think it sets up a great base to parallelize further work.
+
+Totally Agreed!
+
 > 
-> Thanks for testing this. I know the problem here. all is a dependency
-> for install step and $(OUTPUT) is referencing the objdir before it
-> gets created. It is a Makefile/lib.mk problem to fix.
+> 1. I'm rebasing my sleepable BPF patches on top.
+> It's necessary to read enviroment variables without the
+> 'opportunistic copy before hand' hack I saw in your github tree
+
+:) Sleepable BPF would indeed make it much simpler.
+
+> to do bpf_get_env_var() helper.
 > 
-> I will do a separate patch for this. This will show up in any test
-> that is using $(OUTPUT) to relocate objects mainly the ones that
-> require custom build rule like seeccomp.
+> 2. please continue on LSM_HOOK patches to go via security tree.
+> 
+> 3. we need a volunteer to generalize bpf_sk_storage to task and inode structs.
 
-Okay, cool. It looked to me like it lost track of the top level source
-directory (i.e. "make: entering $output" ... "can't find
-../other/files")
+This is quite important, especially for some of the examples we had
+brought up.
 
-Anyway, I look forward to the next version and I'll get it tested. :)
-Thanks for fixing this! I really like having a top-level "make" command
-that can extract a single selftest; that's very handy!
+I can take a look at the generalization of bpf_sk_storage.
 
--- 
-Kees Cook
+Thanks!
+- KP
+
+> This work will be super useful for all bpf tracing too.
+> Sleepable progs are useful for tracing as well.
