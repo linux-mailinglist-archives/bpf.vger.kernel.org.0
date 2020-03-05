@@ -2,97 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5203717B127
-	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 23:05:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B3C17B149
+	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 23:15:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726191AbgCEWFE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Mar 2020 17:05:04 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:38778 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgCEWFE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Mar 2020 17:05:04 -0500
-Received: by mail-wm1-f65.google.com with SMTP id u9so242919wml.3
-        for <bpf@vger.kernel.org>; Thu, 05 Mar 2020 14:05:02 -0800 (PST)
+        id S1726177AbgCEWPC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Mar 2020 17:15:02 -0500
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:41849 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726142AbgCEWPC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Mar 2020 17:15:02 -0500
+Received: by mail-pg1-f195.google.com with SMTP id b1so85617pgm.8
+        for <bpf@vger.kernel.org>; Thu, 05 Mar 2020 14:15:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=EhKBVdcz866K4wnwDswHBvfCjaO9wEJhCH3XfiyKgH0=;
-        b=MYUSp1yyHIyfUQoBkSk++6L+gN9r2CwS6n7XkTuy1COjDTQP+RfiPbvYpgCWNB/Dv8
-         sb5vDOYw1Z7pFoHO5thDajUFJAo6C4pYdDrdygO3xiE8rrUEFoFH01hJcxq+Nqgjrdgy
-         OXDziGaw1xQ8TuYPiJ3kjXynyA6ecUiNdvFOU=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YXtXVGnw/rdUkMdchaUKYh8i7+iFm8TZLMeA14iPaVQ=;
+        b=Dl+jILlq4M0aF+BrFxwMGxatMlyiWGg0HPJnYs1SA0OFyR2Dc5RUGeqYWYMLNuuuTR
+         feLknUY6Yjnkz+f713Qj5opgom7Pr6S3gtKxPQoAJTSWdLkotm/5A5khVx499cXSaQaY
+         KD7RLvtjB94F6Wbiif2XNWX+cvlgfSscFpdGUNZoChl2/OOMw1SzBRtwuSpLBlW23B/m
+         ggZqpBzQEiaBbOz9aZR/8tpI1r3G+qUsJ+lW1Qe+AhKs0DsUSqYgBAWMTluqhHvsSyP5
+         KnboNBG+PbclJXna5uvynysjU7x1ZmdtdVhI3XSh0ho18I3EXUO1hqvAx3aNah31qMR0
+         PZMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=EhKBVdcz866K4wnwDswHBvfCjaO9wEJhCH3XfiyKgH0=;
-        b=GcuU69FImu39bpbce0KUFK59+apsSua7+GZOHnOkgglvNp9sKCSadoxygOAtW+xkWD
-         WKFioB04pK+DvFukVLgew3uTdjcvIltOtHRTuEgKO9QU8q7uiR31r5DvzJiEVaNiqXA0
-         7zlUEl50uUk8l+M4KX9OAB9ssiFILP2oCqoUqhI9dtUW1i8RCm9OWofg5e/D4nm0Cskq
-         r1G5+aVJaOkDL8p/idRzDj9NBmoAMi5Kw22FAJJEx/PQ0zmm1BE55O4JBdW3duu9oWYt
-         WB1A/5EQSJuan+HWVwJfjFPSsoXGCYG0Y9d+vosmrPUzcq2VIrHu+XNFjtlAeatO8897
-         WRRA==
-X-Gm-Message-State: ANhLgQ0RQw0revRN9daaA4W8+xiY2WPUr3WIKMTnDEa8fBguKTpnUE5i
-        UccSra0btmb0zk8SACtZnCdhWQ==
-X-Google-Smtp-Source: ADFU+vt6t8EoUGCNV2n58jrEKH2onN0n0W2VGeqOhMgZzwWhHn5Ke5k36KI3cmY21zNutLgVSU0kHA==
-X-Received: by 2002:a1c:e918:: with SMTP id q24mr865012wmc.25.1583445902100;
-        Thu, 05 Mar 2020 14:05:02 -0800 (PST)
-Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
-        by smtp.gmail.com with ESMTPSA id p16sm46052523wrw.15.2020.03.05.14.05.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Mar 2020 14:05:01 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Thu, 5 Mar 2020 23:04:59 +0100
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: linux-next: Tree for Mar 5 (bpf_trace)
-Message-ID: <20200305220459.GA29785@chromium.org>
-References: <20200305175528.5b3ccc09@canb.auug.org.au>
- <715919f5-e256-fbd1-44ff-8934bda78a71@infradead.org>
- <CAADnVQ+TYiVu+Ksstj4LmYa=+UPwbv-dv-tscRaKn_0FcpstBg@mail.gmail.com>
- <CACYkzJ4ks6VgxeGpJApvqJdx6Q-8PZwk-r=q4ySWsDBDy1jp+g@mail.gmail.com>
- <CACYkzJ5_8yQV2JPHFz_ZE0vYdASmrAes3Boy_sjbicX6LuiORw@mail.gmail.com>
- <CAADnVQ+K4Vc2_=tB7COFFBy3uswike-TERoSF=1=GdnWFDUutQ@mail.gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YXtXVGnw/rdUkMdchaUKYh8i7+iFm8TZLMeA14iPaVQ=;
+        b=AI9B3mN5+bdW4KvOlQ1PNR0+4ruUF60Lxa5/AzlpmZL9IWIOaaGiCBDAtkAlvLQDMx
+         tOMLX82JXZcVpiIEwV3RGJ+yn6J+kYE434o2aXRqHGtn6M3AXdF46fEKTKzZsa98LfXN
+         ZVMbc8RHZk7wSnl9Ue3QaS6NhW8nVr0gLWyTEU/0tBt90+zaAzWHNU/ys5DyLUFnTWsy
+         iHrmYoi6knL0oTnlX58yB+e62zdH1TNckJUCyQgePuBtlEGXNBubaCWt/StyLgIfyT6f
+         /PijEBaxvALAN4fSbb2spJN+3lNyCsuAZr3WWajzrx0TguwdBzq821hGkQNtOjYmRv4F
+         7/Ow==
+X-Gm-Message-State: ANhLgQ0l4abkSMzSbeYUCKp7jZ3O/5dL1nJR0nG80U077+3aaCC8wJVC
+        qNtxGES0KVyGlw5qvatWvw5exMIb
+X-Google-Smtp-Source: ADFU+vv7DwgFKpQ/FTFNyb6Yjm+lkYLVB1AlukNqVopB1cBsW091BQcPVScCvB/xhnlytrwddbnuig==
+X-Received: by 2002:aa7:8d82:: with SMTP id i2mr476730pfr.179.1583446501663;
+        Thu, 05 Mar 2020 14:15:01 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:f0e7])
+        by smtp.gmail.com with ESMTPSA id w30sm1612606pfj.33.2020.03.05.14.15.00
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 05 Mar 2020 14:15:00 -0800 (PST)
+Date:   Thu, 5 Mar 2020 14:14:58 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        Song Liu <songliubraving@fb.com>
+Subject: Re: [PATCH bpf v3 1/2] bpf: Fix deadlock with rq_lock in
+ bpf_send_signal()
+Message-ID: <20200305221456.mh72lwvp55l32rfm@ast-mbp>
+References: <20200304191104.2796444-1-yhs@fb.com>
+ <20200304191104.2796501-1-yhs@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQ+K4Vc2_=tB7COFFBy3uswike-TERoSF=1=GdnWFDUutQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200304191104.2796501-1-yhs@fb.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05-Mär 09:38, Alexei Starovoitov wrote:
-> On Thu, Mar 5, 2020 at 9:32 AM KP Singh <kpsingh@chromium.org> wrote:
-> >
-> > This fails as we added bpf_test_run_tracing in net/bpf/test_run.c
-> > which gets built only CONFIG_NET is enabled. Which, this particular
-> > config, disables.
-> >
-> > Alexei, if it's okay with you. I can send a patch that separates the
-> > tracing test code into kernel/bpf/test_run_trace.c which depends
-> > only on CONFIG_BPF_SYSCALL.
-> 
-> In such situation we typically add __weak dummy call.
+On Wed, Mar 04, 2020 at 11:11:04AM -0800, Yonghong Song wrote:
+>  
+> -	if (in_nmi()) {
+> +	/* Delay sending signal if irq is disabled. Otherwise,
+> +	 * we risk deadlock with rq_lock.
+> +	 */
 
-I would prefer this. Less chances for breaking something. Sent:
-
-  https://lore.kernel.org/bpf/20200305220127.29109-1-kpsingh@chromium.org/T/#u
-
-> May be split will work too.
-
-We can do that separately (if needed).
-
-- KP
-
-> or move tracing_prog_ops to kernel/bpf/core.c ?
+This comment read in isolation is confusing. It's not clear how irq
+has anything to do with rq_lock and why deadlock is possible.
+But commit log has very nice summary,
+so I've just deleted that comment and applied to bpf tree.
+The patch 2 did reproduce the lockdep splat for me. Which was great.
+Running test_progs few times before and after I noticed that older
+send_signal tests are flaky and fail from time to time.
+It's unrelated to this patch, but please take a look.
