@@ -2,122 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8213D17AF13
-	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 20:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFFD517AF53
+	for <lists+bpf@lfdr.de>; Thu,  5 Mar 2020 21:03:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725946AbgCETl5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Mar 2020 14:41:57 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:45483 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgCETl5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Mar 2020 14:41:57 -0500
-Received: by mail-ot1-f67.google.com with SMTP id f21so6480otp.12;
-        Thu, 05 Mar 2020 11:41:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xgpZmEtXtUnXzdjflmvnfXtJf2QN3RICWNEoFCC9Fuo=;
-        b=kz1O1/KvzwF2FSey5oAcJkszo7ONwn8pPWHFyYeLWcpUpkjs7tJj9K6d7KFHPbvbJr
-         xyBwFwxkxbtwZ+M19iBnX36SqjN+Xefce93rjQYiNhHKcwieOvTO+H7Ub9h6I+HlTT0O
-         B/PAEjljcL3dem0afDYZ1K95cmKrxO4gZTQxDqy3ho/pbnreEFUA5SFU/EgWMTirG4Qs
-         bmm/pu4pWDtGioihnEey3Q8s1kvW3OHjEE0tIOodKCEcZR6QqhVASW7E1y9eS5GC1Yi4
-         Oz8DeVaeI5LPwCDrvFtyIA++6XYLAN6P6vI396fyZO9s9PGN9Q94M0m9oG5fb2WYN4T7
-         n6aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xgpZmEtXtUnXzdjflmvnfXtJf2QN3RICWNEoFCC9Fuo=;
-        b=LOYF3qT1ERirWoUgh0sfNTwLKlMFJ94/YM/gvq43kdvRZ1jqBr2T9rsiW0LpQMGn/o
-         MDuNtNwGdehO724gpiBZcbghawlyFXB8KsN5Fr8/398HyCaO+GeELA+wwNwHr8QXvl/R
-         WZ7j7RBiYu5CfNeEmm/6I1ieJaZQX0emHpsTsLgikbBPKduzOQ5+WN150AJXRX+WPdfF
-         G8gw+O21z6UDtjROMfokm2MR9ngWsEKlb/Ztpq+oHdlHbinvANOyKmNla5JvJC6HiYTw
-         TaAynxy77tfuyd7GT8FZsAhgsiyvU7CPh9zdX25X6KCidiuOQKJy9q9GTSOCLmpPqcwb
-         Sg0Q==
-X-Gm-Message-State: ANhLgQ2fsWL6n5UgnCHUx58KAjz0k9P/DhoSk8HzvqkuZmfsNRmXS1Vb
-        JXy+i1fIPpPO2K45D3d2UeN/u1tqr/isvZ3cg94=
-X-Google-Smtp-Source: ADFU+vuF6qr530ZXMU50IfbbDKehJtz6mxtmhJ13ocNVHx1IdRrwZlYKkFbXkb3nGtgwQ7VbR3+WVNXV0ktTy6Mme4E=
-X-Received: by 2002:a9d:6457:: with SMTP id m23mr93769otl.162.1583437315076;
- Thu, 05 Mar 2020 11:41:55 -0800 (PST)
+        id S1726565AbgCEUDU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Mar 2020 15:03:20 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:15404 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726183AbgCEUDU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 5 Mar 2020 15:03:20 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 025JxQLJ007714;
+        Thu, 5 Mar 2020 12:03:04 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=RgEVZj7MUT1TG9sAxzK95CnPGcWERvcTcUhcmslh24s=;
+ b=brbzCyq6lTsZs80jN15M/kqrrhpWZp8ckg4QwY/iuZErv+JCbb3pbTpJrj+dzt5yTo42
+ OjyraKrN+iO3Nz/tEnuCJBD3wSnup+CQCF3ooFFXn2fN1Ed9yI0LtbJbkxRHOQRAVFUa
+ KUim4GvE/WFSiZ1uq+ynO3bG+/8lIthAEJE= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yjurfunr7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 05 Mar 2020 12:03:04 -0800
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Thu, 5 Mar 2020 12:03:03 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HREMAOctD3YnYKsfyLRn9DH5mwuYJK0MTGPj/p2DPt7jk37k+g6fTH4lyjp9DM1A5GXqG0qRSkniTipwnB7Cp8iRyY718rkE+x1cE4GnvBENyK7CECerE/Oqqp/nFx1NQR1WzSTVFiMhAQf/m0xASQK3gsCOTbtLytuMo3OTahd+zcWN61l1jE9zG2ffQzkp8jfe003LQ2IWMnOdIk6l5xiN8YeOz0x4tGFMFsdUAgEv32M0mzTmcLrOJqZ9V+6GM0mm65f9FgQxXZ0l72A3xSRjklo/h3qthVfOZoxY/j9TsS+PIC25ztLwkCdOzdK9rNupFtObVARCRpzg6ZBmKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RgEVZj7MUT1TG9sAxzK95CnPGcWERvcTcUhcmslh24s=;
+ b=e3ZF7fBwe23yFrUElFXacvkB7Fe2ZPqV/miwvKn2wOc9tOhErYc5PrGPsnJh6BebxrnmO3fhQK5Soq/os1kXCok3i4j6QqBUj6obuMPWIqp7iwokzvQUXWkvUbEy9TmKHKWzCH/VKltIMO28pSi14V7G1aD8gKggA994BCbxhwc1Oavi3YYsgmAIbqmHtSlL7EhUPAp+fz4Fa5PgtGlREndzihoJKUpIf7AyjA3aQ5kE4LFjZLPNAuCi7TaY3AhgRhJXjCPEzyKmeEM9m+mSkzGqAXz3FobBPigbCUC6PpzAAQa4NVqnTesGTg9oJQyeJBBMYq09TVhaSpuoVw52gw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RgEVZj7MUT1TG9sAxzK95CnPGcWERvcTcUhcmslh24s=;
+ b=GzGwj3vUUbd2txVqsGrDrEeUzggjhnPb4zMIabp+fFlMUgnExoY/MfLxLzwpROZRsNh9YI6fqtTrWn0Aihl1H/aY0vs18rVFTT6sSwl36CB9jBDprZ9Sbz4YcARZ3vlcJ94Um9eN6MGDmiIxfInbEot2tGMbWOt3z4uHF+Hva/c=
+Received: from MW3PR15MB3882.namprd15.prod.outlook.com (2603:10b6:303:49::11)
+ by MW3PR15MB3913.namprd15.prod.outlook.com (2603:10b6:303:42::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2772.14; Thu, 5 Mar
+ 2020 20:03:02 +0000
+Received: from MW3PR15MB3882.namprd15.prod.outlook.com
+ ([fe80::c570:6c46:cc47:5ca5]) by MW3PR15MB3882.namprd15.prod.outlook.com
+ ([fe80::c570:6c46:cc47:5ca5%5]) with mapi id 15.20.2772.019; Thu, 5 Mar 2020
+ 20:03:02 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Jiri Olsa <jolsa@redhat.com>
+CC:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "Quentin Monnet" <quentin@isovalent.com>,
+        Kernel Team <Kernel-team@fb.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "arnaldo.melo@gmail.com" <arnaldo.melo@gmail.com>,
+        "jolsa@kernel.org" <jolsa@kernel.org>
+Subject: Re: [PATCH v4 bpf-next 1/4] bpftool: introduce "prog profile" command
+Thread-Topic: [PATCH v4 bpf-next 1/4] bpftool: introduce "prog profile"
+ command
+Thread-Index: AQHV8k/mDsDjDFnh2UKZj3OeScEaTag45RSAgAGIcYA=
+Date:   Thu, 5 Mar 2020 20:03:02 +0000
+Message-ID: <5BAF92A4-6CE4-4578-8481-96678D4E1201@fb.com>
+References: <20200304180710.2677695-1-songliubraving@fb.com>
+ <20200304180710.2677695-2-songliubraving@fb.com>
+ <20200304203825.GC168640@krava>
+In-Reply-To: <20200304203825.GC168640@krava>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.60.0.2.5)
+x-originating-ip: [2620:10d:c090:400::5:f61b]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0951acc6-30dc-4e12-2242-08d7c140361c
+x-ms-traffictypediagnostic: MW3PR15MB3913:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW3PR15MB3913EA410180433CDE3BF9EFB3E20@MW3PR15MB3913.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:1060;
+x-forefront-prvs: 03333C607F
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(366004)(376002)(136003)(346002)(396003)(199004)(189003)(66476007)(64756008)(66446008)(66556008)(6512007)(478600001)(6486002)(66946007)(2906002)(8676002)(186003)(81166006)(8936002)(81156014)(86362001)(4326008)(76116006)(54906003)(53546011)(6506007)(6916009)(36756003)(33656002)(2616005)(71200400001)(5660300002)(4744005)(316002);DIR:OUT;SFP:1102;SCL:1;SRVR:MW3PR15MB3913;H:MW3PR15MB3882.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: kUFAo3ylQtCiQwOBrCmJyfO0m7mJ0rg+Wj5bHNUyPD+x5oj1NHpBHsEQxvHqn7shldWSWg/f+Baqg6gR8W5ks71sczHX5Y329vYobwOha3KEl2l7AeMD7LLzWg8woXooXh2YogiR5y7biop3cT7S3vGBto7XDrxBDczhikIKMmopQJ3XM1fyh+aihgClRlHCoo6M7XgXzY2J73L5Q0MUNHmZNUE3wPKet3QPi/FxeGl690l9Gc4fA3br4d706AXK82yKXYi+ZOcbJb9poJJn8Kd3EEEpAKOVxlNY8nkvWZvX9C+FO88OR7McT1plTIeGaV/4IiiQwdVV8Ds3ztz6w4DAa3xPjMH9XElvp/HbKR9penLaIISHdMaIJTEJ7Vder7zlHOuaRMjdWXaqP6YbzZO/D/lPhvb08BkjVJI2zNrixUt8Ba4Kfv/D00cjlrUH
+x-ms-exchange-antispam-messagedata: cHw+zXKDeH8gMRD/7U3PeLjUo4hHP2MR6cwsYv05jr52TDTHbyXckGzR2xtTm0JQZ42OLd8Mv20TGuskqA+IZhmfXNn/S2qcwGmKFps98kbcRqP82yV2eoyg8TTCyBnpSylJOex5H5WkSWeQMCLbm/r+mWq4Jc68OmZlBxwSadPY09ufbZOGv5/gv2RBeLSw
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <53340D223C1A9344B2A31BF2D0F5D8A8@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20200304191853.1529-1-kpsingh@chromium.org> <20200304191853.1529-4-kpsingh@chromium.org>
- <CAEjxPJ4+aW5JVC9QjJywjNUS=+cVJeaWwRHLwOssLsZyhX3siw@mail.gmail.com> <20200305155421.GA209155@google.com>
-In-Reply-To: <20200305155421.GA209155@google.com>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Date:   Thu, 5 Mar 2020 14:43:01 -0500
-Message-ID: <CAEjxPJ5u7tsa_9-7Oq_Wi28mZD_aDC1tVWj5Tb8ud=bfEYsY9Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 3/7] bpf: Introduce BPF_MODIFY_RETURN
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>, jmorris@namei.org,
-        Paul Moore <paul@paul-moore.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0951acc6-30dc-4e12-2242-08d7c140361c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Mar 2020 20:03:02.4273
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kxlLoJbZZpvGhNrscJeIZSH1dVpf+X66ZeYfMvc+oxG3vQAhdWFYjZIhWD66I9cBjb2NJMlefSvL9WrPQkk6Lw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3913
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-03-05_06:2020-03-05,2020-03-05 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ adultscore=0 impostorscore=0 mlxscore=0 suspectscore=0 spamscore=0
+ clxscore=1015 bulkscore=0 priorityscore=1501 malwarescore=0 phishscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2003050116
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 5, 2020 at 10:54 AM KP Singh <kpsingh@chromium.org> wrote:
->
-> On 05-Mar 08:51, Stephen Smalley wrote:
-> > IIUC you've switched from a model where the BPF program would be
-> > invoked after the original function logic
-> > and the BPF program is skipped if the original function logic returns
-> > non-zero to a model where the BPF program is invoked first and
-> > the original function logic is skipped if the BPF program returns
-> > non-zero.  I'm not keen on that for userspace-loaded code attached
->
-> We do want to continue the KRSI series and the effort to implement a
-> proper BPF LSM. In the meantime, the tracing + error injection
-> solution helps us to:
->
->   * Provide better debug capabilities.
->   * And parallelize the effort to come up with the right helpers
->     for our LSM work and work on sleepable BPF which is also essential
->     for some of the helpers.
->
-> As you noted, in the KRSI v4 series, we mentioned that we would like
-> to have the user-space loaded BPF programs be unable to override the
-> decision made by the in-kernel logic/LSMs, but this got shot down:
->
->    https://lore.kernel.org/bpf/00c216e1-bcfd-b7b1-5444-2a2dfa69190b@schaufler-ca.com
->
-> I would like to continue this discussion when we post the v5 series
-> for KRSI as to what the correct precedence order should be for the
-> BPF_PROG_TYPE_LSM and would appreciate if you also bring it up there.
 
-That's fine but I guess I don't see why you or anyone else would
-bother with introducing a BPF_PROG_TYPE_LSM
-if BPF_PROG_MODIFY_RETURN is accepted and is allowed to attach to the
-LSM hooks.  What's the benefit to you
-if you can achieve your goals directly with MODIFY_RETURN?
 
-> > to LSM hooks; it means that userspace BPF programs can run even if
-> > SELinux would have denied access and SELinux hooks get
-> > skipped entirely if the BPF program returns an error.  I think Casey
-> > may have wrongly pointed you in this direction on the grounds
-> > it can already happen with the base DAC checking logic.  But that's
->
-> What we can do for this tracing/modify_ret series, is to remove
-> the special casing for "security_" functions in the BPF code and add
-> ALLOW_ERROR_INJECTION calls to the security hooks. This way, if
-> someone needs to disable the BPF programs being able to modify
-> security hooks, they can disable error injection. If that's okay, we
-> can send a patch.
+> On Mar 4, 2020, at 12:38 PM, Jiri Olsa <jolsa@redhat.com> wrote:
+>=20
+> On Wed, Mar 04, 2020 at 10:07:07AM -0800, Song Liu wrote:
+>=20
+> SNIP
+>=20
+>> +
+>> +#include "profiler.skel.h"
+>> +
+>> +#define SAMPLE_PERIOD  0x7fffffffffffffffULL
+>> +struct profile_metric {
+>> +	const char *name;
+>> +	struct bpf_perf_event_value val;
+>> +	struct perf_event_attr attr;
+>> +	bool selected;
+>> +
+>> +	/* calculate ratios like instructions per cycle */
+>> +	const int ratio_metric; /* 0 for N/A, 1 for index 0 (cycles) */
+>> +	const char *ratio_desc;
+>> +	const float ratio_mul;
+>> +} metrics[] =3D {
+>> +	{
+>> +		.name =3D "cycles",
+>> +		.attr =3D {
+>> +			.sample_period =3D SAMPLE_PERIOD,
+>=20
+> I don't think you need to set sample_period for counting.. why?
+>=20
+>> +			.type =3D PERF_TYPE_HARDWARE,
+>> +			.config =3D PERF_COUNT_HW_CPU_CYCLES,
+>=20
+> you could also add .exclude_user =3D 1
 
-Realistically distros tend to enable lots of developer-friendly
-options including error injection, and most users don't build their
-own kernels
-and distros won't support them when they do. So telling users they can
-just rebuild their kernel without error injection if they care about
-BPF programs being able to modify security hooks isn't really viable.
-The security modules need a way to veto it based on their policies.
-That's why I suggested a security hook here.
+Fixed this in v5. Thanks!
+Song
+
