@@ -2,92 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5E817C2B6
-	for <lists+bpf@lfdr.de>; Fri,  6 Mar 2020 17:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6820217C2EF
+	for <lists+bpf@lfdr.de>; Fri,  6 Mar 2020 17:29:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbgCFQQw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Mar 2020 11:16:52 -0500
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:40465 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725873AbgCFQQv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Mar 2020 11:16:51 -0500
-Received: by mail-ed1-f65.google.com with SMTP id a13so3139944edu.7
-        for <bpf@vger.kernel.org>; Fri, 06 Mar 2020 08:16:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6Dap1kc1qiXmbZugAe2o1JqyM0eTLYcQXaxHWvf2Qr8=;
-        b=crvnJ2PSX5ggVaj+80DEgKsvarhTWwcMoI+N7ZC5iu8gm2lV6mIINrQdAKkUSe645q
-         1A2xLnhM0rYLSZRRM2vByGfv63PoXMgHNYyhTgF1jbk+RuOJrth+rt/+v80+RSjGfyHO
-         DD8cIT6XcoScNsZQmP5AQQsacUKtJx2aYvwgTjvLgbnNtvn7QwUKRN/dwaINYiGV+9Kk
-         J1fpu+16yIcHcAQZ7OcqxYX/kloQGwVenvXWj4yUBgm3MgW8xHCS6C6vZjNi0OKMpxvM
-         QWkLvsNLaC1rvdhDH8ZUF17KFvM8zrIKBG/2is6vx7BkNW0RgcJz/j/HUk51elSuHYUQ
-         BF6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6Dap1kc1qiXmbZugAe2o1JqyM0eTLYcQXaxHWvf2Qr8=;
-        b=sam9QMFJ8V4s03LzdgouXc7n+4PTa0iC9mbgggIaDUx6xoLHg7KI+EXB3SG7XOhQII
-         nO39OGLax5mWbTBLne9Snj7Um9dgXKudxWkwe9eLqZObRR5Oosvi1Q0WjZVhHKNaOxcr
-         X7c1gvAjalNZFfLhie07eJ3mG4kghtMR3q9OC/pcmpHDF/1cSLe9v4QT2RepnJnrc+69
-         Ky7nMMtmFp7ddub8dvT2UwDgWB1eyCznfYWJf6J2MC6mIz8i6s58DOXeb3LbHgdd98Kk
-         9rqeZRYndCENvprHO+ggASpUHAGHzN3oAeacZTov7hr82XbjDIwb5FbmHKDaXlr83ymF
-         xb5A==
-X-Gm-Message-State: ANhLgQ1LCxT3pie+xo9ueJ49WCSUgPu93kjWRJ/ypz/rPxKBjLxQrkDe
-        GENAeK0r/Axsr3zIGEfejyH1uYmmHrxe01k89dTqcg==
-X-Google-Smtp-Source: ADFU+vtEBorqMGpAvx/lz0TjI8aL/1bRpAFzeQnJglZFtVSKM2Ic7kyQA+cbQPzHfBniT9bOq7NfEsXupa/zAnOu+Bg=
-X-Received: by 2002:a17:906:15c2:: with SMTP id l2mr3568358ejd.302.1583511409398;
- Fri, 06 Mar 2020 08:16:49 -0800 (PST)
+        id S1726314AbgCFQ3E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Mar 2020 11:29:04 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:60305 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726231AbgCFQ3E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Mar 2020 11:29:04 -0500
+Received: from ip-109-40-130-104.web.vodafone.de ([109.40.130.104] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jAFqN-0000CM-K3; Fri, 06 Mar 2020 16:28:59 +0000
+Date:   Fri, 6 Mar 2020 17:28:58 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        lsf-pc <lsf-pc@lists.linuxfoundation.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>, bpf@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [LSFMMBPF TOPIC] Killing LSFMMBPF
+Message-ID: <20200306162858.zy6u3tvutxvf27yw@wittgenstein>
+References: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
+ <1583511310.3653.33.camel@HansenPartnership.com>
 MIME-Version: 1.0
-References: <158323601793.2048441.8715862429080864020.stgit@firesoul>
- <20200303184350.66uzruobalf3y76f@ast-mbp> <5e62750bd8c9f_17502acca07205b42a@john-XPS-13-9370.notmuch>
-In-Reply-To: <5e62750bd8c9f_17502acca07205b42a@john-XPS-13-9370.notmuch>
-From:   Luigi Rizzo <lrizzo@google.com>
-Date:   Fri, 6 Mar 2020 17:16:38 +0100
-Message-ID: <CAMOZA0LzKZczQBcGFO8q44QJ1=6rv-61nruqxRK4k05-gFWaGw@mail.gmail.com>
-Subject: Re: [bpf-next PATCH] xdp: accept that XDP headroom isn't always equal XDP_PACKET_HEADROOM
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        bpf@vger.kernel.org, gamemann@gflclan.com,
-        Network Development <netdev@vger.kernel.org>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@toke.dk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1583511310.3653.33.camel@HansenPartnership.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 6, 2020 at 5:06 PM John Fastabend <john.fastabend@gmail.com> wrote:
->
-> Alexei Starovoitov wrote:
-> > On Tue, Mar 03, 2020 at 12:46:58PM +0100, Jesper Dangaard Brouer wrote:
-...
-> > > Tested on ixgbe with xdp_rxq_info --skb-mode and --action XDP_DROP:
-> > > - Before: 4,816,430 pps
-> > > - After : 7,749,678 pps
-> > > (Note that ixgbe in native mode XDP_DROP 14,704,539 pps)
-> > >
->
-> But why do we care about generic-XDP performance? Seems users should
-> just use XDP proper on ixgbe and i40e its supported.
+On Fri, Mar 06, 2020 at 08:15:10AM -0800, James Bottomley wrote:
+> On Fri, 2020-03-06 at 09:35 -0500, Josef Bacik wrote:
+> > Many people have suggested this elsewhere, but I think we really need
+> > to seriously consider it.  Most of us all go to the Linux Plumbers
+> > conference.  We could accomplish our main goals with Plumbers without
+> > having to deal with all of the above problems.
+> 
+> [I'm on the Plumbers PC, but not speaking for them, just making general
+> observations based on my long history helping to run Plumbers]
+> 
+> Plumbers has basically reached the size where we can't realistically
+> expand without moving to the bigger venues and changing our evening
+> events ... it's already been a huge struggle in Lisbon and Halifax
+> trying to find a Restaurant big enough for the closing party.
+> 
+> The other reason for struggling to keep Plumbers around 500 is that the
+> value of simply running into people and having an accidental hallway
+> track, which is seen as a huge benefit of plumbers, starts diminishing.
+>  In fact, having a working hallway starts to become a problem as well
+> as we go up in numbers (plus in that survey we keep sending out those
+> who reply don't want plumbers to grow too much in size).
+> 
+> The other problem is content: you're a 3 day 4 track event and we're a
+> 3 day 6 track event.  We get enough schedule angst from 6 tracks ... 10
+> would likely become hugely difficult.  If we move to 5 days, we'd have
+> to shove the Maintainer Summit on the Weekend (you can explain that one
+> to Linus) but we'd still be in danger of the day 4 burn out people used
+> to complain about when OLS and KS were co-located.
+> 
+> So, before you suggest Plumbers as the magic answer consider that the
+> problems you cite below don't magically go away, they just become
+> someone else's headache.
+> 
+> That's not to say this isn't a good idea, it's just to execute it we'd
+> have to transform Plumbers and we should have a community conversation
+> about that involving the current Plumbers PC before deciding it's the
+> best option.
 
-I think the point was to show the performance benefit of skipping the
-normalization (admittedly for a specific workload, tinygrams;
-my other patch to control xdpgeneric_linearize covered a different range
-of packet sizes).
-
-On a side note I think it would be more useful to report times in ns/pkt,
-as they can be applied to other drivers too. Specifically here I would
-have written:
-
-  Before: average 207 ns/pkt (1s / 4.816 Mpps)
-  After:  average 129 ns/pkt (1s / 7.750 Mpps)
-
-cheers
-luigi
+It's unlikely that this could still be done given that we're also facing
+a little uncertainty for Plumbers. It seems like a lot of additional
+syncing would be needed.
+But the main concern I have is that co-locating both is probably quite
+challenging for anyone attending both especially when organizing
+something like a microconference.
