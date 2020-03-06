@@ -2,157 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CAAEC17BA23
-	for <lists+bpf@lfdr.de>; Fri,  6 Mar 2020 11:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F30717BB24
+	for <lists+bpf@lfdr.de>; Fri,  6 Mar 2020 12:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726256AbgCFKZI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Mar 2020 05:25:08 -0500
-Received: from www62.your-server.de ([213.133.104.62]:35300 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726240AbgCFKZI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Mar 2020 05:25:08 -0500
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jAAAB-0006HL-0B; Fri, 06 Mar 2020 11:25:03 +0100
-Received: from [85.7.42.192] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jAAAA-000VG3-Me; Fri, 06 Mar 2020 11:25:02 +0100
-Subject: Re: [PATCH bpf-next 0/3] Introduce pinnable bpf_link kernel
- abstraction
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-References: <87pndt4268.fsf@toke.dk>
- <ab2f98f6-c712-d8a2-1fd3-b39abbaa9f64@iogearbox.net>
- <ccbc1e49-45c1-858b-1ad5-ee503e0497f2@fb.com> <87k1413whq.fsf@toke.dk>
- <20200304043643.nqd2kzvabkrzlolh@ast-mbp> <87h7z44l3z.fsf@toke.dk>
- <20200304154757.3tydkiteg3vekyth@ast-mbp> <874kv33x60.fsf@toke.dk>
- <20200305163444.6e3w3u3a5ufphwhp@ast-mbp>
- <473a3e8a-03ea-636c-f054-3c960bf0fdbd@iogearbox.net>
- <20200305225027.nazs3gtlcw3gjjvn@ast-mbp>
- <7b674384-1131-59d4-ee2f-5a17824c1eca@iogearbox.net> <878skd3mw4.fsf@toke.dk>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <374e23b6-572a-8dac-88cb-855069535917@iogearbox.net>
-Date:   Fri, 6 Mar 2020 11:25:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726533AbgCFLFi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Mar 2020 06:05:38 -0500
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:44926 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726382AbgCFLFi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Mar 2020 06:05:38 -0500
+Received: by mail-lf1-f67.google.com with SMTP id i10so1541380lfg.11
+        for <bpf@vger.kernel.org>; Fri, 06 Mar 2020 03:05:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=z1++nVFGTuI4yzatq/XiQaAMDI3Yr8HfGAnBFDQYjxE=;
+        b=yhHO63LGLvumz8zfcMSFQtWWI9++F1D9YMSXxR/ESnKu7b/fVSO/kPj6H6BHBiRKqP
+         i1auvJ4T6nE9eSuluk16UYNh9+m2YsQxHBoGOXQ6yWJYm3DhUhTHbQB7LIiZlrdiQn+k
+         BK21k/KfL/XpjM7uwL6NwbMop2ZtQ01MH7qsboNSuIAeVKV+B0Nc+BtxyEsYem1e5n6p
+         bthbcWs9L1JVXRShfrDhxSPMConWHWPD11xzGJuhlpIrWKDITOhpHDwB58FVUPq872OA
+         ChIV2VNAlWwxsISWGUQlRPMqNLFCvHXqAcs7TLY++jI3DGtlK/0FsP3DjIXrhl5drfn5
+         1RQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=z1++nVFGTuI4yzatq/XiQaAMDI3Yr8HfGAnBFDQYjxE=;
+        b=slPyLlF0D1Pn2QuVDfstijJQMmIs1WEWL17yCOnQzaJyZZuzUz1/wLn5NzryrDvtPS
+         IXcTZ2Hvao/+w+TJUwftBtSCiQGTZeJBCYWcckprbqPulU+sg+45sa37Z4hWhUxDJKW8
+         ZpbvHxlwJfmZzvrNIroQaneV7Vp/BouGuEBkTK9KDevnY7yMeV/pmeoi7WY4kuPOmO2p
+         W3pbcd/J/5pDHBWB69cdXD9sGSgl0ot6v//vqkXbtOLxMzAKMhyD9aMtBzWIr1oR9lrQ
+         +Ocp83hQRLyRuKqwCLp+uAk/ieSvPxFkK6sfas4hMAv5nnsgaWuqyP7AVv/npReRcTbh
+         F2ow==
+X-Gm-Message-State: ANhLgQ2j08+nTSVEOX22FERyCCTIj7HZqD6DjOQedtEJBAt5IgQNYMe2
+        uUOLSY4Qvz1/VwEB7V37c2sofaTkKBVyjSBeO7zmMA==
+X-Google-Smtp-Source: ADFU+vvEdrqidqw7zeBJMr22MkzExrfq8xo3qipCGVQTRrZpyDQOZAgJuCn9C4KHZCPaIlkOvD+ENrUHgfUs9g5TN88=
+X-Received: by 2002:a05:6512:3ab:: with SMTP id v11mr1621059lfp.82.1583492734327;
+ Fri, 06 Mar 2020 03:05:34 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <878skd3mw4.fsf@toke.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25742/Thu Mar  5 15:10:18 2020)
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 6 Mar 2020 16:35:22 +0530
+Message-ID: <CA+G9fYvORFZm1s89OU9DV9ckSgk4rWj6tRdUTYh3WPrBnzeRgw@mail.gmail.com>
+Subject: WARNING: kernel/bpf/verifier.c:8186 bpf_check+0x2332/0x30a4
+To:     Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        lkft-triage@lists.linaro.org, Shuah Khan <shuah@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/6/20 9:31 AM, Toke Høiland-Jørgensen wrote:
-> Daniel Borkmann <daniel@iogearbox.net> writes:
->> On 3/5/20 11:50 PM, Alexei Starovoitov wrote:
->>> On Thu, Mar 05, 2020 at 11:34:18PM +0100, Daniel Borkmann wrote:
->>>> On 3/5/20 5:34 PM, Alexei Starovoitov wrote:
->>>>> On Thu, Mar 05, 2020 at 11:37:11AM +0100, Toke Høiland-Jørgensen wrote:
->>>>>> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->>>>>>> On Wed, Mar 04, 2020 at 08:47:44AM +0100, Toke Høiland-Jørgensen wrote:
->>>> [...]
->>>>>> Anyway, what I was trying to express:
->>>>>>
->>>>>>> Still that doesn't mean that pinned link is 'immutable'.
->>>>>>
->>>>>> I don't mean 'immutable' in the sense that it cannot be removed ever.
->>>>>> Just that we may end up in a situation where an application can see a
->>>>>> netdev with an XDP program attached, has the right privileges to modify
->>>>>> it, but can't because it can't find the pinned bpf_link. Right? Or am I
->>>>>> misunderstanding your proposal?
->>>>>>
->>>>>> Amending my example from before, this could happen by:
->>>>>>
->>>>>> 1. Someone attaches a program to eth0, and pins the bpf_link to
->>>>>>       /sys/fs/bpf/myprog
->>>>>>
->>>>>> 2. eth0 is moved to a different namespace which mounts a new sysfs at
->>>>>>       /sys
->>>>>>
->>>>>> 3. Inside that namespace, /sys/fs/bpf/myprog is no longer accessible, so
->>>>>>       xdp-loader can't get access to the original bpf_link; but the XDP
->>>>>>       program is still attached to eth0.
->>>>>
->>>>> The key to decide is whether moving netdev across netns should be allowed
->>>>> when xdp attached. I think it should be denied. Even when legacy xdp
->>>>> program is attached, since it will confuse user space managing part.
->>>>
->>>> There are perfectly valid use cases where this is done already today (minus
->>>> bpf_link), for example, consider an orchestrator that is setting up the BPF
->>>> program on the device, moving to the newly created application pod during
->>>> the CNI call in k8s, such that the new pod does not have the /sys/fs/bpf/
->>>> mount instance and if unprivileged cannot remove the BPF prog from the dev
->>>> either. We do something like this in case of ipvlan, meaning, we attach a
->>>> rootlet prog that calls into single slot of a tail call map, move it to the
->>>> application pod, and only out of Cilium's own pod and it's pod-local bpf fs
->>>> instance we manage the pinned tail call map to update the main programs in
->>>> that single slot w/o having to switch any netns later on.
->>>
->>> Right. You mentioned this use case before, but I managed to forget about it.
->>> Totally makes sense for prog to stay attached to netdev when it's moved.
->>> I think pod manager would also prefer that pod is not able to replace
->>> xdp prog from inside the container. It sounds to me that steps 1,2,3 above
->>> is exactly the desired behavior. Otherwise what stops some application
->>> that started in a pod to override it?
->>
->> Generally, yes, and it shouldn't need to care nor see what is happening in
->> /sys/fs/bpf/ from the orchestrator at least (or could potentially have its
->> own private mount under /sys/fs/bpf/ or elsewhere). Ideally, the behavior
->> should be that orchestrator does all the setup out of its own namespace,
->> then moves everything over to the newly created target namespace and e.g.
->> only if the pod has the capable(cap_sys_admin) permissions, it could mess
->> around with anything attached there, or via similar model as done in [0]
->> when there is a master device.
-> 
-> Yup, I can see how this can be a reasonable use case where you *would*
-> want the locking. However, my concern is that there should be a way for
-> an admin to recover from this (say, if it happens by mistake, or a
-> misbehaving application). Otherwise, I fear we'll end up with support
-> cases where the only answer is "try rebooting", which is obviously not
-> ideal.
+This is an informative email report,
 
-I'm not quite sure I follow the concern, if you're an admin and have the right
-permissions, then you should be able to introspect and change settings like with
-anything else there is today.
+On linux-next while running kselftest bpf test_verifier, the following
+kernel warning reported. But this seems to be NOT a kernel regression
+after reading the commit log.
 
->> Last time I looked, there is a down/up cycle on the dev upon netns
->> migration and it flushes e.g. attached qdiscs afaik, so there are
->> limitations that still need to be addressed. Not sure atm if same is
->> happening to XDP right now.
-> 
-> XDP programs will stay attached. devmaps (for redirect) have a notifier
-> that will remove devices when they move out of a namespace. Not sure if
-> there are any other issues with netns moves somewhere.
-> 
->> In this regards veth devices are a bit nicer to work with since
->> everything can be attached on hostns ingress w/o needing to worry on
->> the peer dev in the pod's netns.
-> 
-> Presumably the XDP EGRESS hook that David Ahern is working on will make
-> this doable for XDP on veth as well?
+Started noticing from 5.6.0-rc3-next-20200226 and still happening on
+5.6.0-rc4-next-20200306.
 
-I'm not sure I see a use-case for XDP egress for Cilium yet, but maybe I'm still
-lacking a clear picture on why one should use it. We currently use various
-layers where we orchestrate our BPF programs from the agent. XDP/rx on the phys
-nic on the one end, BPF sock progs attached to cgroups on the other end of the
-spectrum. The processing in between on virtual devices is mainly tc/BPF-based
-since everything is skb based anyway and more flexible also with interaction
-with the rest of the stack. There is also not this pain of having to linearize
-all the skbs, but at least there's a path to tackle that.
+Suspecting patch,
+commit id 94dacdbd5d2dfa2cffd308f128d78c99f855f5be
+"
+bpf: Tighten the requirements for preallocated hash maps
+<>
+So preallocation _must_ be enforced for all variants of intrusive
+instrumentation.
 
-Thanks,
-Daniel
+Unfortunately immediate enforcement would break backwards compatibility, so
+for now such programs still are allowed to run, but a one time warning is
+emitted in dmesg and the verifier emits a warning in the verifier log as
+well so developers are made aware about this and can fix their programs
+before the enforcement becomes mandatory.
+
+Link: https://lore.kernel.org/bpf/20200224145642.540542802@linutronix.de
+"
+steps to reproduce:
+          steps:
+          - cd /opt/kselftests/default-in-kernel/bpf
+          - ./test_verifier || true
+
+
+[    0.000000] Linux version 5.6.0-rc3-next-20200226 (oe-user@oe-host)
+(gcc version 7.3.0 (GCC)) #1 SMP Wed Feb 26 04:46:18 UTC 2020
+<Trim>
+[   54.263845] trace type BPF program uses run-time allocation
+[   54.269438] WARNING: CPU: 1 PID: 473 at
+/usr/src/kernel/kernel/bpf/verifier.c:8186 bpf_check+0x2332/0x30a4
+[   54.280445] Modules linked in: x86_pkg_temp_thermal fuse
+[   54.285759] CPU: 1 PID: 473 Comm: test_verifier Not tainted
+5.6.0-rc3-next-20200226 #1
+[   54.293669] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+2.2 05/23/2018
+[   54.301054] RIP: 0010:bpf_check+0x2332/0x30a4
+[   54.305412] Code: ff ff 48 c7 c7 b8 91 5e a8 4c 89 85 10 ff ff ff
+48 89 95 18 ff ff ff 48 89 85 20 ff ff ff c6 05 e1 54 98 01 01 e8 4e
+16 ea ff <0f> 0b 4c 8b 85 10 ff ff ff 48 8b 95 18 ff ff ff 48 8b 85 20
+ff ff
+[   54.324149] RSP: 0018:ffffbf708061bc48 EFLAGS: 00010282
+[   54.329365] RAX: 0000000000000000 RBX: ffffa0a66b5ad200 RCX: 0000000000000000
+[   54.336489] RDX: 0000000000000001 RSI: ffffa0a66fa98d48 RDI: ffffa0a66fa98d48
+[   54.343614] RBP: ffffbf708061bd48 R08: 0000000000000000 R09: 0000000000000000
+[   54.350736] R10: 0000000000000000 R11: 0000000000000000 R12: ffffa0a667a90000
+[   54.357863] R13: 0000000000000004 R14: 0000000000000000 R15: ffffbf7080069058
+[   54.364993] FS:  00007fd8b7cd4740(0000) GS:ffffa0a66fa80000(0000)
+knlGS:0000000000000000
+[   54.373070] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   54.378807] CR2: 000000000098e65c CR3: 0000000231bf6001 CR4: 00000000003606e0
+[   54.385931] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   54.393054] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   54.400180] Call Trace:
+[   54.402633]  ? lockdep_hardirqs_on+0xf6/0x190
+[   54.406993]  ? ktime_get_with_offset+0x7a/0x130
+[   54.411525]  ? trace_hardirqs_on+0x4c/0x100
+[   54.415714]  bpf_prog_load+0x57d/0x6f0
+[   54.419466]  ? __might_fault+0x3e/0x90
+[   54.423221]  ? selinux_bpf+0x5a/0x80
+[   54.426806]  __do_sys_bpf+0xd69/0x1cd0
+[   54.430565]  __x64_sys_bpf+0x1a/0x20
+[   54.434146]  do_syscall_64+0x55/0x200
+[   54.437812]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+[   54.442862] RIP: 0033:0x7fd8b6d9af59
+[   54.446441] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00
+00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24
+08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 0f ff 2b 00 f7 d8 64 89
+01 48
+[   54.465179] RSP: 002b:00007ffd5bac5238 EFLAGS: 00000202 ORIG_RAX:
+0000000000000141
+[   54.472743] RAX: ffffffffffffffda RBX: 00007ffd5bac53ec RCX: 00007fd8b6d9af59
+[   54.479867] RDX: 0000000000000078 RSI: 00007ffd5bac52b0 RDI: 0000000000000005
+[   54.486991] RBP: 00007ffd5bac5250 R08: 00007ffd5bac53f8 R09: 00007ffd5bac52b0
+[   54.494115] R10: 000000000098e638 R11: 0000000000000202 R12: 0000000000000005
+[   54.501239] R13: 000000000098e630 R14: 0000000000000001 R15: 0000000000000000
+[   54.508368] irq event stamp: 82014
+[   54.511770] hardirqs last  enabled at (82013): [<ffffffffa6f775ed>]
+console_unlock+0x45d/0x5c0
+[   54.520374] hardirqs last disabled at (82014): [<ffffffffa6e01f3b>]
+trace_hardirqs_off_thunk+0x1a/0x1c
+[   54.529666] softirqs last  enabled at (82000): [<ffffffffa8000338>]
+__do_softirq+0x338/0x43a
+[   54.538096] softirqs last disabled at (81963): [<ffffffffa6f04588>]
+irq_exit+0xb8/0xc0
+[   54.545999] ---[ end trace 75d82c4cbb8fc047 ]---
+
+metadata:
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+  git branch: master
+  git describe: next-20200226
+  make_kernelversion: 5.6.0-rc3
+  kernel-config:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/intel-corei7-64/lkft/linux-next/712/config
+
+Full test log,
+https://lkft.validation.linaro.org/scheduler/job/1251016#L1416
+https://lkft.validation.linaro.org/scheduler/job/1269522#L1509
+https://lkft.validation.linaro.org/scheduler/job/1269575#L1501
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
