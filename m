@@ -2,103 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A9D17C509
-	for <lists+bpf@lfdr.de>; Fri,  6 Mar 2020 19:06:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0BBB17C513
+	for <lists+bpf@lfdr.de>; Fri,  6 Mar 2020 19:09:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbgCFSGV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Mar 2020 13:06:21 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:36955 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726676AbgCFSGU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Mar 2020 13:06:20 -0500
-Received: by mail-qt1-f193.google.com with SMTP id l20so720029qtp.4
-        for <bpf@vger.kernel.org>; Fri, 06 Mar 2020 10:06:20 -0800 (PST)
+        id S1726259AbgCFSJa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Mar 2020 13:09:30 -0500
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:42448 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726178AbgCFSJ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Mar 2020 13:09:29 -0500
+Received: by mail-qv1-f67.google.com with SMTP id e7so1348538qvy.9;
+        Fri, 06 Mar 2020 10:09:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=R+D+YVFzBpab/a/oETyd8JOhX8+iIXuD/xsu7I7jDGU=;
-        b=ZKn4HsWX/wihRX43168ygKelXIq7IyE6tQUrLFthMbVhuNo7Np6HDZi+yjviWK7i7o
-         xe/EaRY5KIB7ZCsWyxufmuNZdirAQ/w5ARb1cz9E1dohLSB/1gUUV2zj7dHI5vKR925n
-         UaTlj/KVOXAOuE/Kuk1LO572OHELhFxdgKtrGMWhnwU4kI1pNMTYeEY7Dm7yM7GnnVJF
-         BW+BYMUjrZdcqOgN3TLdcIYtyPQWN0KkvSCalbphWlbjppqfNiYn/lKOaGZgHUZuO++8
-         QCRACRYdjE3sYwA/XX/uDMTS1FJ5SicmD/+V2mjtfD6AwDv6yS9/TlfF5asP/D2rxV2o
-         O6Nw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XqmnoWxGYhvRpRQvm/LkWgDTT6TYNcRDSo11h7efasM=;
+        b=RpP2n3g+oikJ67LYVOGABCmUvu+JMh7r+aEY0xbxhxemGd53Wo+//7CpgWvarUCiQm
+         PgV7dvZhAMg5i4pkon7sZ9xubxNej2S0WzWVfq06UGeOhgftiOspWXkecyFezhLn8ndV
+         E8J9lUTeWdMq+Jjr4PwVhyWveo5KVQVA1ZDd/Xr43XwaGKIn9DP9N2OUPW+aasz7J8Rr
+         N2kOFgCz6DI7mFeADjfvpYi6wIhAr+njoP6N09kBzpicq2rW7BxTZLRKXNhOXL+F8zpn
+         41HXfGs0lesR9ZXPsbQI/YbFYK/kebCjiq6xFsVoyIPl4RPTS65nijRS2xD8WtOXEs7h
+         UbjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=R+D+YVFzBpab/a/oETyd8JOhX8+iIXuD/xsu7I7jDGU=;
-        b=MpvTnnvpOxM3oISM+IJTJRzj2XpBN5LNd85hoBNtA8RGKKW44/5thGUPPUtQ5X9rFt
-         nCstPDIuDoa3Z2oAhokcFnw5M0/Xf1XZrEpgXIfHNB1qNUHAi7ugVKWaDgY74Nn8Oz+1
-         Q8zezD1QKTCSz85nmxsQz5Ia1635vvdum8QNV5tbpxjJqKc5GXCp3hxGdtjL4+P2Ew9f
-         X/4mjMukuaaOfxY8AKKHcdGLYXvw4WunIScppE2reDkKdbxkUMtLOqoCeax+i8hAstTQ
-         CSNyyzYfEUfnLcoKmd+1KuE2U5G5JEZkHTB2rFHnxioyPRk4xOI9lyYxJ/iyKVZQKEos
-         o+JA==
-X-Gm-Message-State: ANhLgQ2eJmRtWM1PUVyOf/AdObHULnvukPqLHzl23CFa580DwtznK+7b
-        hzNUODAyP4iGGryZG6Uh7n2THg==
-X-Google-Smtp-Source: ADFU+vtq9tuPue0e9HMIEhPhxGZdSyNFOdSSTFY4idpbWjNKVga+V85943xnitNqOUvFR/ZFt7kPFA==
-X-Received: by 2002:ac8:130d:: with SMTP id e13mr2323731qtj.363.1583517979511;
-        Fri, 06 Mar 2020 10:06:19 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id z4sm15670862qtm.69.2020.03.06.10.06.18
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 06 Mar 2020 10:06:18 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jAHMY-0006GF-E1; Fri, 06 Mar 2020 14:06:18 -0400
-Date:   Fri, 6 Mar 2020 14:06:18 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        lsf-pc <lsf-pc@lists.linuxfoundation.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>, bpf@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [LSFMMBPF TOPIC] Killing LSFMMBPF
-Message-ID: <20200306180618.GN31668@ziepe.ca>
-References: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
- <20200306160548.GB25710@bombadil.infradead.org>
- <1583516279.3653.71.camel@HansenPartnership.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XqmnoWxGYhvRpRQvm/LkWgDTT6TYNcRDSo11h7efasM=;
+        b=hg9ZKyLiu/+TMjIp2SFE+2jtVqQLTSravY6R78C/8nIfiuG4+ybttsX5Fmaru2esiv
+         7+aJL56g0NAljI/vgLjOdTcHknSiZq22/lnLBLfXist1daLbqvZinUN0cThMkHqBCce4
+         KgCfVBpTVpkFAM1iyEe0Qep9w5De2CBN1XSCcMMo2JxnS2XrwamdfbMgPBMbBhReQsUp
+         5RA7v0dZF9cHvYJH9wf6vn8z+BtQxcZvxYybD1mbLOPJcQZOgsaCy619CL7V8sAy2e1J
+         5UJN9Mwd93OpjeWzSevnyj3K3sccxYOBNOgdIYw0mRL3LW4muaMHSU0zW7nJyrOrOY6S
+         ZQ9w==
+X-Gm-Message-State: ANhLgQ32CbI6wF74DhR+a6fW9rmz3as0sHwqq4P6Waq0O1eepuDkhk0/
+        AfFKWsY7aAgdxRHLYX6hXvQ=
+X-Google-Smtp-Source: ADFU+vup7KypBKRBv7m2JZA0QvDEfgywgHPVN6UHaoh8ChEB+3PGgMrS8fTZUHpBYX35kragrSEcJg==
+X-Received: by 2002:a05:6214:18f4:: with SMTP id ep20mr3995379qvb.76.1583518168967;
+        Fri, 06 Mar 2020 10:09:28 -0800 (PST)
+Received: from ?IPv6:2601:282:803:7700:3900:366a:948b:9628? ([2601:282:803:7700:3900:366a:948b:9628])
+        by smtp.googlemail.com with ESMTPSA id g3sm2513184qke.89.2020.03.06.10.09.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Mar 2020 10:09:28 -0800 (PST)
+Subject: Re: [PATCH bpf-next 0/3] Introduce pinnable bpf_link kernel
+ abstraction
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+References: <87pndt4268.fsf@toke.dk>
+ <ab2f98f6-c712-d8a2-1fd3-b39abbaa9f64@iogearbox.net>
+ <ccbc1e49-45c1-858b-1ad5-ee503e0497f2@fb.com> <87k1413whq.fsf@toke.dk>
+ <20200304043643.nqd2kzvabkrzlolh@ast-mbp> <87h7z44l3z.fsf@toke.dk>
+ <20200304154757.3tydkiteg3vekyth@ast-mbp> <874kv33x60.fsf@toke.dk>
+ <20200305163444.6e3w3u3a5ufphwhp@ast-mbp>
+ <473a3e8a-03ea-636c-f054-3c960bf0fdbd@iogearbox.net>
+ <20200305225027.nazs3gtlcw3gjjvn@ast-mbp>
+ <7b674384-1131-59d4-ee2f-5a17824c1eca@iogearbox.net> <878skd3mw4.fsf@toke.dk>
+ <374e23b6-572a-8dac-88cb-855069535917@iogearbox.net>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <38347de1-2564-0184-e126-218a5f2a4b95@gmail.com>
+Date:   Fri, 6 Mar 2020 11:09:26 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1583516279.3653.71.camel@HansenPartnership.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <374e23b6-572a-8dac-88cb-855069535917@iogearbox.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 06, 2020 at 09:37:59AM -0800, James Bottomley wrote:
-> On Fri, 2020-03-06 at 08:05 -0800, Matthew Wilcox wrote:
-> [...]
-> > 2. Charge attendees $300 for a 3-day conference.  This seems to be
-> > the going rate (eg BSDCan, PGCon).  This allows the conference to be
-> > self-funding without sponsors, and any sponsorship can go towards
-> > evening events, food, travel bursaries, etc.
+On 3/6/20 3:25 AM, Daniel Borkmann wrote:
+>>
+>> Presumably the XDP EGRESS hook that David Ahern is working on will make
+>> this doable for XDP on veth as well?
 > 
-> Can I just inject a dose of reality here:  The most costly thing is
-> Venue rental (which comes with a F&B minimum) and the continuous Tea
-> and Coffee.  Last year for Plumbers, the venue cost us $37k and the
-> breaks $132k (including a lunch buffet, which was a requirement of the
-> venue rental).  Given we had 500 attendees, that, alone is $340 per
-> head already.  Now we could cut out the continuous tea and coffee ...
-> and the espresso machines you all raved about last year cost us about
-> $7 per shot.  But it's not just this, it's also AV (microphones and
-> projectors) and recording, and fast internet access.  That all came to
-> about $100k last year (or an extra $200 per head).  So you can see,
-> running at the level Plumbers does you're already looking at $540 a
-> head, which, co-incidentally is close to our attendee fee.  To get to
-> $300 per head, you lot will have to give up something in addition to
-> the espresso machines, what is it to be?
+> I'm not sure I see a use-case for XDP egress for Cilium yet, but maybe
+> I'm still
+> lacking a clear picture on why one should use it. We currently use various
+> layers where we orchestrate our BPF programs from the agent. XDP/rx on
+> the phys
+> nic on the one end, BPF sock progs attached to cgroups on the other end
+> of the
+> spectrum. The processing in between on virtual devices is mainly
+> tc/BPF-based
+> since everything is skb based anyway and more flexible also with
+> interaction
+> with the rest of the stack. There is also not this pain of having to
+> linearize
+> all the skbs, but at least there's a path to tackle that.
+> 
 
-Yes, I can confirm this from another smaller hotel-style conference
-I've been involved organizing on occasion. $600-$800 is required to
-break even without major sponsorship $$ for the ~100 people mark, and
-that is without the usual food and venue perks we see at
-plumbers/lsfmm.
 
-Jason
+{ veth-host } <----> { veth-container }
+
+If you are currently putting an XDP program on veth-container, it is run
+on the "Rx" of the packet from the host. That program is visible to the
+container, but is managed by the host.
+
+With XDP Tx you can put the same program on veth-host.
+
+For containers, sure, maybe you don't care since you control all aspects
+of the networking devices. For VMs, the host does not have access to or
+control of the "other end" in the guest. Putting a program on the tap's
+"Tx" side allows host managed, per-VM programs.
