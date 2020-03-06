@@ -2,83 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C263F17C1C4
-	for <lists+bpf@lfdr.de>; Fri,  6 Mar 2020 16:29:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7539A17C1C7
+	for <lists+bpf@lfdr.de>; Fri,  6 Mar 2020 16:29:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbgCFP3b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1727050AbgCFP3b (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Fri, 6 Mar 2020 10:29:31 -0500
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:41563 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725835AbgCFP3a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Mar 2020 10:29:30 -0500
-Received: by mail-pg1-f193.google.com with SMTP id b1so1228091pgm.8;
-        Fri, 06 Mar 2020 07:29:29 -0800 (PST)
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:43260 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726682AbgCFP3b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Mar 2020 10:29:31 -0500
+Received: by mail-qk1-f194.google.com with SMTP id q18so2613911qki.10
+        for <bpf@vger.kernel.org>; Fri, 06 Mar 2020 07:29:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=UmltvUS81tbIumWX3xGTWP1jdQyhyXf9smX/ZD9oma8=;
-        b=I6guR87axLmn3FfIaT47Xsrqq+ZPGWKuczGyzwal0Njw4274I+g/9/ZK3B4SUgM9F8
-         KRJ7nuuzryB0YxS2xOo7sJsw5W8uEkeQAEjWk32LRU1nH5faBij+qVnamVLZ08+9cBPU
-         kyFpOHfAzmhhS5C54eTSoSwjdDQGpNVevAuLjId8r4mhqpjUlccTWSAKTs1fLgM79n3u
-         yCpu1izZv2nAZnnKysDL1GFwkomk3juFwO3DVGWBjHGJrwtfTOZDwxnVfH/7vOjpOD9s
-         whPMKG+Ml5gybm+zqXIcRfy2tVBw4Sb0Vcr+yEI/H/NBBVekZ9Tq491L+rKwF2+LXN5r
-         YNDg==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=PbvQp0mcFJZRWUllfmz/rnyregscayhvYgNCNOwQuE0=;
+        b=VwS4+eK1QrC1jlaCH8Vi8peEQ4BnOpLpGX9oNqzVLxIc9ewD3vXR6VVYIPuxFLXpIc
+         2c3xuas2S7wbkctyBKbOljO4VhdF7/jbqKKjoBUucc5+G0eU1BhTkfUhr04OY6yTz9dM
+         Y4LQxMvGWP8dqttZ1UF646uiuNLrc8tPy69mJ4mD890sMQAZ6+E3e81c16oSh8HG2/ym
+         Z644E2xP359Wms/WlKH+uISKE6MviGUEwZpk8ivXjWPoou2ehCkGgzSxnCmeF6m0/L52
+         /lmWJuqxtUClZIYuTLFuvVeQCcezokCuINwMAnA/ddlyftMV2Qa9wSVmej4cL4VZCX6l
+         sU2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=UmltvUS81tbIumWX3xGTWP1jdQyhyXf9smX/ZD9oma8=;
-        b=Y5AVvvpxQo4JvFWZqPffgtyUHjHF3PAFcvRMe2/e9pBHgtxlvnh0Ljt3wuagQeczaN
-         ZBNVvnm2mtBYFOshNVTYznCafk7TmKo9txTRwXFyFSvnfHsmMYQp1R+is+OT8e4vC6Hi
-         xkonYFdNrpxkNxGuB4KKdypK7s6k5+wUV8jsqz0YRQn7GSUM6Qf6vlAuW6l//Byw+LMe
-         /vlDcFM3ygJmXhuF4qZfwJufv/07vUadm6bYD0UcHyjZCg63rH+LZO4qh10FTfaZWlnF
-         062wjXHqhCzPTUea9AZXho9YGzE6g5vTQ82oHroDuhEeNBdWEQobFcJ4aBZlIsmUMKbe
-         dJNw==
-X-Gm-Message-State: ANhLgQ0z3Grprir+12ka2NC3GtLocO7M9afg2Lw+2P5DWmC74BnYc0ke
-        Uq11roL+wVDM6J4SWPU+VGw=
-X-Google-Smtp-Source: ADFU+vtNAQvM9mvw1j0YD7Oq2MQHqOoY5Ki8nvrqeuryXuYLyINM6b6ff3XpXncoeoy0RT/9ngSUrQ==
-X-Received: by 2002:a63:ce0a:: with SMTP id y10mr3765889pgf.44.1583508569030;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PbvQp0mcFJZRWUllfmz/rnyregscayhvYgNCNOwQuE0=;
+        b=fZMMkF1fiM7K4OOcvFOfzJw2m4RK3sgCp0pcU1491D8kRMGRMZ8zeoFTDhMuCjpIpf
+         n/1uogTF/ebKbulI7N+wHVYnDjHzpT3UrEtzn7NQ/hBmiQjvqlHlHW3Q5YrsZl6l7H7X
+         g4QX/dQr3HK9TYt88h54QSwnyj1t7bqXKyfSQLRGGwEN99xDV7+ZFJQ4ka+a9HiPli5A
+         3c214p3EzdpL1PJSMoIKcz4tJ1GNusVjkrOyLzcQxlZOoFHHxfsbGJpYn4A514vjtLsj
+         9xTlzeD4tb6KLBq9MxVDJn80zGcF9xT3Efyueg14/G0kYg/dFRPlFR51LEWlI4Eyr3ah
+         Xfqg==
+X-Gm-Message-State: ANhLgQ0BmOa1ot1S0n2y6wReblvLgekHkV53WTv53VAVE4jwYMmu0oMk
+        5FB0h41/wH8XFbfqq9d2EX9y9w==
+X-Google-Smtp-Source: ADFU+vvZz4swHN8hgN+Sb7HSKQietOBMfwnEFzAXiiNITZAjmI/a+uSsA239li41AE2+e0r2LZJNkQ==
+X-Received: by 2002:a05:620a:16d4:: with SMTP id a20mr3558798qkn.168.1583508569931;
         Fri, 06 Mar 2020 07:29:29 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id f4sm698041pfn.116.2020.03.06.07.29.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Mar 2020 07:29:28 -0800 (PST)
-Date:   Fri, 06 Mar 2020 07:29:20 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>, john.fastabend@gmail.com,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     kernel-team@cloudflare.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <5e626c50bb947_17502acca07205b47@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200304101318.5225-7-lmb@cloudflare.com>
-References: <20200304101318.5225-1-lmb@cloudflare.com>
- <20200304101318.5225-7-lmb@cloudflare.com>
-Subject: RE: [PATCH bpf-next v3 06/12] bpf: sockmap: simplify
- sock_map_init_proto
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id d35sm16733291qtc.21.2020.03.06.07.29.28
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 06 Mar 2020 07:29:29 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jAEum-0004LB-Bj; Fri, 06 Mar 2020 11:29:28 -0400
+Date:   Fri, 6 Mar 2020 11:29:28 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     lsf-pc <lsf-pc@lists.linuxfoundation.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>, bpf@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [LSFMMBPF TOPIC] Killing LSFMMBPF
+Message-ID: <20200306152928.GL31668@ziepe.ca>
+References: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Lorenz Bauer wrote:
-> We can take advantage of the fact that both callers of
-> sock_map_init_proto are holding a RCU read lock, and
-> have verified that psock is valid.
-> 
-> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> ---
->  net/core/sock_map.c | 19 ++++---------------
->  1 file changed, 4 insertions(+), 15 deletions(-)
-> 
+On Fri, Mar 06, 2020 at 09:35:41AM -0500, Josef Bacik wrote:
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+> 1) The invitation process.  This goes away.  The people/companies that want
+> to discuss things with the rest of us can all get to plumbers the normal
+> way.  We get new blood that we may miss through the invitation process
+> because they can simply register for Plumbers on their own.
+
+At last year at plumbers there were many people who could not get
+tickets, it has been full the last few years, I think.
+
+IMHO LPC is about at the size now where it is almost as large as it
+can be in a mid-sized hotel setting..
+
+> 4) Planning becomes much simpler.  I've organized miniconf's at plumbers
+> before, it is far simpler than LSFMMBPF.  You only have to worry about one
+> thing, is this presentation useful.  I no longer have to worry about am I
+> inviting the right people, do we have enough money to cover the space.  Is
+> there enough space for everybody?  Etc.
+
+LPC does a great job at making miniconfs 'easy' - really fantastic
+actually. I really appreciate how great a job they do on getting video
+out and trying hard to mic everything so the freewheeling discussions
+are audible to everyone.
+
+Maybe something to think about is to keep the LSFMMBPF time slot but
+instead of building a conference from scratch, copy LPC - same venue,
+contracts, format, etc, etc. Ie two LPC style conferences a year, but
+without having to plan two completely different sites from scratch.
+
+IIRC when LPC was in Vancouver the LF used the same venue for several
+conferences, I wonder how that worked out?
+
+Jason
