@@ -2,143 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A744D17C289
-	for <lists+bpf@lfdr.de>; Fri,  6 Mar 2020 17:06:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA3917C297
+	for <lists+bpf@lfdr.de>; Fri,  6 Mar 2020 17:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726271AbgCFQGq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Mar 2020 11:06:46 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:39232 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726269AbgCFQGq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Mar 2020 11:06:46 -0500
-Received: by mail-pf1-f193.google.com with SMTP id w65so774310pfb.6;
-        Fri, 06 Mar 2020 08:06:45 -0800 (PST)
+        id S1726635AbgCFQIk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Mar 2020 11:08:40 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:36214 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726140AbgCFQIk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Mar 2020 11:08:40 -0500
+Received: by mail-qt1-f194.google.com with SMTP id m33so2085370qtb.3
+        for <bpf@vger.kernel.org>; Fri, 06 Mar 2020 08:08:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=FoB8pbaMTn7xOtcRI5SxHt5Alps13ndzQ42kdvedz7Y=;
-        b=ihzpSXp2nCZ8RrF30KFh4yW5xSeSG3hoJhPmuoePt+3ipzI1vyh/vWyQLcWb7vsIIY
-         C7pFSvP6yTMHaCU7m0hbQ0uLx4JugMKs4qE3BaXhPM874Nj93dVVLzFYwjXU1BZbHufr
-         B23JdRbd5mf/iIM7R/XQK6VTl9MbiWtPqaJm7F5lhppOL8qKe1GzTiMBAPLHspsztuAK
-         A0/n/DUaeYk/onkr296AhmOvWCblAIajsboCBbUlfW2Cluwqbu+suUSau3LeIavZ2SFp
-         FlGDkTNs08xzTwwGE3nu2Ynb8eb/19kOLEruTbHxhQOFKlS+M4RbbIHaCFdN4YzXWh/J
-         25ow==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bKjjoKS2T/q2pwOzdPEgk28ZK6vwf0Cp/W1ojk+aNxI=;
+        b=suzTUJ0rRf5960m06RBzjBCAnb4svatr0bn0EiS4JneAE0k5HF7YYx6h6I/G3u0zz7
+         m96ZG9h1Pd3ArvPVXZNxDOX6plQKDTFUja6qgm5dN7KLDiN/kgmTaZbCE/56xH0Ywn6E
+         cbYT95e/4A63SjcnU9EOAMIJKduLA9kwkZ8CBqJBG478VWdnD7kIs27f0HPnMnaIP7TS
+         BgZ/r2CISnPn+4LMMjcPwbXDKfJnsTiFlVc1r4+0xcGC1ZAgsoaC5bQH5Uu4ECKW/5uy
+         Z2/A7XopDa/7rCk5xu5WEGYxIGesVc8vZI7tQ248eHo2Ly6r48AO5tiKN8UP6W9Rjk8l
+         +F6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=FoB8pbaMTn7xOtcRI5SxHt5Alps13ndzQ42kdvedz7Y=;
-        b=otcSRce0WeUg0nFwGpyl2wEWDkJDplPShcwd01o2jZp9wBgGLg+qQ0Yku+neoniVxQ
-         6xkG30IUXlTtPn985BM/pZAdYKSYAZHZp44bqRLCYnUL0jIBCi9JtSGmsskj/ABxqww5
-         M6/cFLsPxJyrGYKV53BnVTUYlq/RdfEYruse1yo+/rJjF4SHu816R+5FgwQDs4zsoSIp
-         RxY7VO/Ug3r4DRhi4HT5MvFwoRKHSZeeKj/N8SOftWpysW2Hhd1pOxHCTpIFKopTzvBr
-         z+ppuUlcNhQEoQ85/pBY/5P294jf/yHCXZG4U/EhiEzqqoEAyPoo/pZWCofDOdZvOdWM
-         f1/g==
-X-Gm-Message-State: ANhLgQ0RhBOUxNX+s7WAmfzZlGlPIMMrzBd4V24W/pCohcO6nG1Bo7Ts
-        K7sYpX/ecmd+MVuC7icn1/U=
-X-Google-Smtp-Source: ADFU+vu7gIZk2JCIbkqnw6jTmVXB5bp//n2guZI8aroipP0FrUGzdHAs4+72s+tEfvjXC0U7FmzRxA==
-X-Received: by 2002:a65:5c46:: with SMTP id v6mr4160952pgr.333.1583510804612;
-        Fri, 06 Mar 2020 08:06:44 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id 4sm38519642pfn.90.2020.03.06.08.06.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Mar 2020 08:06:43 -0800 (PST)
-Date:   Fri, 06 Mar 2020 08:06:35 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf@vger.kernel.org, gamemann@gflclan.com, lrizzo@google.com,
-        netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@toke.dk>
-Message-ID: <5e62750bd8c9f_17502acca07205b42a@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200303184350.66uzruobalf3y76f@ast-mbp>
-References: <158323601793.2048441.8715862429080864020.stgit@firesoul>
- <20200303184350.66uzruobalf3y76f@ast-mbp>
-Subject: Re: [bpf-next PATCH] xdp: accept that XDP headroom isn't always equal
- XDP_PACKET_HEADROOM
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bKjjoKS2T/q2pwOzdPEgk28ZK6vwf0Cp/W1ojk+aNxI=;
+        b=gbHYhH7KwlqIARO2GmNtWhtaKWrsMNlpYMNe2VjsVrA5h1WeRBvzYor/Uq5vAhSB4S
+         bEFgpT8TyUae49PzyMQyBgaB+cpPARrWH6Xjb4HdlJblBgd6RrIdujeeujadWhzd9pJ1
+         JuAu8Q08cxUhdr7scjUjrRGG/5zWv9k8DV+p3QH1xjoAfjRBIdwxDF7tzokHMmMIfKFU
+         Hdi3zvgdcbO8L1L4WWuXdQDvuceIZtc6ierWR2pFBeBEcvVIJvg9EdvJTriDYTQWXAed
+         Lkl+P+tqrmNWDpRlQt4iod7TX8i4vUiNOZqwmTU5lU61WsK5M21kDww20os1kWS+ZmS4
+         eSqQ==
+X-Gm-Message-State: ANhLgQ2vRmbw1n191TvK2fsL9WGh4e4gFqd6ztj2BlDDyGp9WKim8tZe
+        V4bAiZkDg9L8JFWH1jC1BQLMjQ==
+X-Google-Smtp-Source: ADFU+vtz2X7WRHc2rQE/mqPpG+Shd2ceCs6iuKNfvLRNmthFTpAKQGUMSM9LnAA3V0GzqXTOmroBUA==
+X-Received: by 2002:ac8:6ec1:: with SMTP id f1mr3636659qtv.378.1583510918016;
+        Fri, 06 Mar 2020 08:08:38 -0800 (PST)
+Received: from [192.168.1.106] ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id p38sm1677376qtf.50.2020.03.06.08.08.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Mar 2020 08:08:37 -0800 (PST)
+Subject: Re: [LSFMMBPF TOPIC] Killing LSFMMBPF
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     lsf-pc <lsf-pc@lists.linuxfoundation.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>, bpf@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
+References: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
+ <20200306155611.GA167883@mit.edu>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <72708005-0810-1957-1e58-5b70779ab6db@toxicpanda.com>
+Date:   Fri, 6 Mar 2020 11:08:36 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
+MIME-Version: 1.0
+In-Reply-To: <20200306155611.GA167883@mit.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov wrote:
-> On Tue, Mar 03, 2020 at 12:46:58PM +0100, Jesper Dangaard Brouer wrote:
-> > The Intel based drivers (ixgbe + i40e) have implemented XDP with
-> > headroom 192 bytes and not the recommended 256 bytes defined by
-> > XDP_PACKET_HEADROOM.  For generic-XDP, accept that this headroom
-> > is also a valid size.
-
-The reason is to fit two packets on a 4k page. The driver itself
-is fairly flexible at this point. I think we should reconsider
-pushing down the headroom required in the program metadata and
-configuring it at runtime. At the moment the drivers are wasting
-half a page for no good reason in most cases I suspect. What is the
-use case for >192B headroom? I've not found an actual user who
-has complained yet.
-
-Resurrecting an old debate here so probably doesn't need to
-stall this patch.
-
-> > 
-> > Still for generic-XDP if headroom is less, still expand headroom to
-> > XDP_PACKET_HEADROOM as this is the default in most XDP drivers.
-> > 
-> > Tested on ixgbe with xdp_rxq_info --skb-mode and --action XDP_DROP:
-> > - Before: 4,816,430 pps
-> > - After : 7,749,678 pps
-> > (Note that ixgbe in native mode XDP_DROP 14,704,539 pps)
-> > 
-
-But why do we care about generic-XDP performance? Seems users should
-just use XDP proper on ixgbe and i40e its supported.
-
-> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > ---
-> >  include/uapi/linux/bpf.h |    1 +
-> >  net/core/dev.c           |    4 ++--
-> >  2 files changed, 3 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 906e9f2752db..14dc4f9fb3c8 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -3312,6 +3312,7 @@ struct bpf_xdp_sock {
-> >  };
-> >  
-> >  #define XDP_PACKET_HEADROOM 256
-> > +#define XDP_PACKET_HEADROOM_MIN 192
+On 3/6/20 10:56 AM, Theodore Y. Ts'o wrote:
+> On Fri, Mar 06, 2020 at 09:35:41AM -0500, Josef Bacik wrote:
+>> This has been a topic that I've been thinking about a lot recently, mostly
+>> because of the giant amount of work that has been organizing LSFMMBPF.  I
+>> was going to wait until afterwards to bring it up, hoping that maybe it was
+>> just me being done with the whole process and that time would give me a
+>> different perspective, but recent discussions has made it clear I'm not the
+>> only one.....
 > 
-> why expose it in uapi?
+> I suggest that we try to decouple the question of should we have
+> LSF/MM/BPF in 2020 and COVID-19, with the question of what should
+> LSF/MM/BPF (perhaps in some transfigured form) should look like in
+> 2021 and in the future.
 > 
-> >  /* User return codes for XDP prog type.
-> >   * A valid XDP program must return one of these defined values. All other
-> > diff --git a/net/core/dev.c b/net/core/dev.c
-> > index 4770dde3448d..9c941cd38b13 100644
-> > --- a/net/core/dev.c
-> > +++ b/net/core/dev.c
-> > @@ -4518,11 +4518,11 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
-> >  		return XDP_PASS;
-> >  
-> >  	/* XDP packets must be linear and must have sufficient headroom
-> > -	 * of XDP_PACKET_HEADROOM bytes. This is the guarantee that also
-> > +	 * of XDP_PACKET_HEADROOM_MIN bytes. This is the guarantee that also
-> >  	 * native XDP provides, thus we need to do it here as well.
-> >  	 */
-> >  	if (skb_cloned(skb) || skb_is_nonlinear(skb) ||
-> > -	    skb_headroom(skb) < XDP_PACKET_HEADROOM) {
-> > +	    skb_headroom(skb) < XDP_PACKET_HEADROOM_MIN) {
-> >  		int hroom = XDP_PACKET_HEADROOM - skb_headroom(skb);
-> 
-> this looks odd. It's comparing against 192, but doing math with 256.
-> I guess that's ok, but needs a clear comment.
-> How about just doing 'skb_headroom(skb) < 192' here.
-> Or #define 192 right before this function with a comment about ixgbe?
 
-Or just let ixgbe/i40e be slow? I guess I'm missing some context?
+Yes this is purely about 2021 and the future, not 2020.
+
+> A lot of the the concerns expressed in this e-mails are ones that I
+> have been concerned about, especially:
+> 
+>> 2) There are so many of us....
+> 
+>> 3) Half the people I want to talk to aren't even in the room.  This may be a
+>> uniquely file system track problem, but most of my work is in btrfs, and I
+>> want to talk to my fellow btrfs developers....
+> 
+>> 4) Presentations....
+> 
+> These *exactly* mirror the dynamic that we saw with the Kernel Summit,
+> and how we've migrated to a the Maintainer's Summit with a Kernel
+> centric track which is currently colocated with Plumbers.
+> 
+> I think it is still useful to have something where we reach consensus
+> on multi-subsystem contentious changes.  But I think those topics
+> could probably fit within a day or maybe a half day.  Does that sound
+> familiar?  That's essentially what we now have with the Maintainer'st
+> Summit.
+> 
+> The problem with Plumbers is that it's really, really full.  Not
+> having invitations doesn't magically go away; Plumbers last year had
+> to deal with long waitlist, and strugglinig to make sure that all of
+> the critical people who need be present so that the various Miniconfs
+> could be successful.
+
+Ah ok, I haven't done plumbers in a few years, I knew they would get full but I 
+didn't think it was that bad.
+
+> 
+> This is why I've been pushing so hard for a second Linux systems
+> focused event in the first half of the year.  I think if we colocate
+> the set of topics which are currently in LSF/MM, the more file system
+> specific presentations, the ext4/xfs/btrfs mini-summits/working
+> sessions, and the maintainer's summit / kernel summit, we would have
+> critical mass.  And I am sure there will be *plenty* of topics left
+> over for Plumbers.
+>
+
+I'd be down for this.  Would you leave the thing open so anybody can register, 
+or would you still have an invitation system?  I really, really despise the 
+invitation system just because it's inherently self limiting.  However I do want 
+to make sure we are getting relevant people in the room, and not making it this 
+"oh shit, I forgot to register, and now the conference is full" sort of 
+situations.  Thanks,
+
+Josef
