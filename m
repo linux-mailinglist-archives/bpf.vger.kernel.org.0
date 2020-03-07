@@ -2,174 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5243C17CB74
-	for <lists+bpf@lfdr.de>; Sat,  7 Mar 2020 04:14:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F78F17CFA8
+	for <lists+bpf@lfdr.de>; Sat,  7 Mar 2020 19:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726368AbgCGDOs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Mar 2020 22:14:48 -0500
-Received: from mail-yw1-f48.google.com ([209.85.161.48]:37876 "EHLO
-        mail-yw1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726245AbgCGDOs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Mar 2020 22:14:48 -0500
-Received: by mail-yw1-f48.google.com with SMTP id i1so39350ywf.4;
-        Fri, 06 Mar 2020 19:14:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aZEHHT6lAR6svoMasB13SgNuVP0MyXR1N2GanpY6GnE=;
-        b=JWZbawBN+AvkFClWdbF9gaYKLkGD+MiEj3bA/grN4IT7mezq5F8r8qyrWuvH6DJyAd
-         k1NpQCsqIzkRn9yPsH7Yt8jY6O+71AS5vYRqRTcjD9ZuSjjUa0Dq6pQ2H8laXyATOUn4
-         HDg3yOA6C1H/+qoRlczbbGnt8ThWPfmV7uou6jiw5aHaPE6PoI/3We+RpiizN1/ESjcL
-         r7hk4JX7OuGRu/yyiT8TsP3RACXbcBqTVhtszcj3LwEqlv5s0eyvNg9YlT8/gwkCK+g6
-         UX4A8E+EWrVbzDefMxHkx4JoOPQgmLWDNTMe/zVW6gO+T7/z4pQ43Od8UewolW59znzh
-         8SjQ==
+        id S1726138AbgCGSy0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 7 Mar 2020 13:54:26 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:37727 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbgCGSy0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 7 Mar 2020 13:54:26 -0500
+Received: by mail-pg1-f196.google.com with SMTP id z12so2724249pgl.4;
+        Sat, 07 Mar 2020 10:54:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aZEHHT6lAR6svoMasB13SgNuVP0MyXR1N2GanpY6GnE=;
-        b=BNi/rN9ER2qDm+OaS7WiJgvRklTBDya5H/vIsEXFuDkDricUby8+Xfr57pjdYwggoV
-         Y3Pjvi4ov41834qmZ0HMx/YTvWT/DA0gimA+YM89tIluDsB8SPOuGb3Gq/RsvYBndcXQ
-         OM8BlMHtmI9itzZArvBCzyKgSoVPqH/iKU14IOfw20/DaAPMnPUKyapqtxIrNnUA52aR
-         s0p0ZvMzN3TyflEA3NqjOzWLwPIiZEpHmfa2RaDtkpARGddBY81goHze1RCzdsiJ1pIU
-         ROj9n1r5/B8dZ/9aGLhwHCFmLm1UJeG5p9nhtYwFfF34Zxtl7OG3+kRkqGXnCgQbrb/F
-         vrDw==
-X-Gm-Message-State: ANhLgQ146Nf20Tlal6AhQrE1UCmKOWfRKppLRA11HyGnpDdmupYmgP2m
-        p25oRVgVBXZ+He7fde1SnB5EHJbREEsMppgzDIgrnYNh
-X-Google-Smtp-Source: ADFU+vv1lbhShZquHVK69ApmFg8EyJmgI9xs6Kpib/27Oz8EplISUurSto5A/rirLzgeUMlkWQzIJWqDS4ECqgOsgQA=
-X-Received: by 2002:a25:e805:: with SMTP id k5mr7218096ybd.14.1583550886710;
- Fri, 06 Mar 2020 19:14:46 -0800 (PST)
-MIME-Version: 1.0
-References: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
-In-Reply-To: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Fri, 6 Mar 2020 21:14:35 -0600
-Message-ID: <CAH2r5ms6epOL0sXRfNNTM_J=K-dnGYNS_wK1rgw1VBqipM6kxQ@mail.gmail.com>
-Subject: Re: [LSFMMBPF TOPIC] Killing LSFMMBPF
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     lsf-pc <lsf-pc@lists.linuxfoundation.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hgakR1k+etmqZ1qtI59Bn7lxRJAnw6BxyTHQ7NAwUHc=;
+        b=uhMblmTA0gX11AWupAZO+iGi+z3N5+PbErYvU06nzHheULhKlLU7o12MayFK/xNYMx
+         MBEBhANDUwyHFpETZIDWw6tcj8NUNk/HYI1rXC0cGc4xvueJsVIk2wJwFXW0HXdD+Qk/
+         9MFVRiDaJ/bB1S4pTl2VRYXZIC/6tSjkcVA3D8dihysyEhX/cC7GM1qII1gWdyCL8De5
+         /gYwu1z0KtB2MU0Nz36d698ph9HCglg/Du9or1pTkew7/sFdNXyRc8RLxEK+vuCt+nFX
+         YKH7yajeRUqIz3PwR3TeKSNLQKQdjLn7q2+EabYPbokdMgHr8dLqCN6NIataf6hkdFSJ
+         cjAg==
+X-Gm-Message-State: ANhLgQ2fPJIpL/dwWmXIrM2e8WZWMNIq1xnwvIdAPdaDS0vy+AtydM89
+        4GlrnOOzSUlLu9VnA2R2tAg=
+X-Google-Smtp-Source: ADFU+vsSwnhn+TzuxM7ZREWEte+cfby1aTALdsgpcss9+r26bax0PftHXg/ANCN0NXOqwbB0K3fjHA==
+X-Received: by 2002:aa7:9f1c:: with SMTP id g28mr7357608pfr.140.1583607262396;
+        Sat, 07 Mar 2020 10:54:22 -0800 (PST)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id z15sm4451875pfg.152.2020.03.07.10.54.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Mar 2020 10:54:21 -0800 (PST)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 68F55401A8; Sat,  7 Mar 2020 18:54:20 +0000 (UTC)
+Date:   Sat, 7 Mar 2020 18:54:20 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        lsf-pc <lsf-pc@lists.linuxfoundation.org>,
         Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>, bpf@vger.kernel.org,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-block@vger.kernel.org, CIFS <linux-cifs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [LSFMMBPF TOPIC] LSFMMBPF 2020 COVID-19 status update
+Message-ID: <20200307185420.GG2236@42.do-not-panic.com>
+References: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
+ <20200306155611.GA167883@mit.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200306155611.GA167883@mit.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Don't forget about Vault - there were some very useful hallway
-discussions at Vault this year as well ... even if a bit smaller than
-it should be ...
+On Fri, Mar 06, 2020 at 10:56:11AM -0500, Theodore Y. Ts'o wrote:
+> Should we have LSF/MM/BPF in 2020 and COVID-19?
 
-On Fri, Mar 6, 2020 at 8:36 AM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> Hello,
->
-> This has been a topic that I've been thinking about a lot recently, mostly
-> because of the giant amount of work that has been organizing LSFMMBPF.  I was
-> going to wait until afterwards to bring it up, hoping that maybe it was just me
-> being done with the whole process and that time would give me a different
-> perspective, but recent discussions has made it clear I'm not the only one.
->
-> LSFMMBPF is not useful to me personally, and not an optimal use of the
-> communities time.  The things that we want to get out of LSFMMBPF are (generally)
->
-> 1) Reach consensus on any multi-subsystem contentious changes that have come up
-> over the past year.
->
-> 2) Inform our fellow developers of new things that we are working on that we
-> would like help with, or need to think about for the upcoming year.
->
-> 3) "Hallway track".  We are after all a community, and I for one like spending
-> time with developers that I don't get to interact with on a daily basis.
->
-> 4) Provide a way to help integrate new developers into the community with face
-> time.  It is far easier to work with people once you can put a face to a name,
-> and this is especially valuable for new developers.
->
-> These are all really good goals, and why we love the idea of LSFMMBPF.  But
-> having attended these things every year for the last 13 years, it has become
-> less and less of these things, at least from my perspective.  A few problems (as
-> I see them) are
->
-> 1) The invitation process.  We've tried many different things, and I think we
-> generally do a good job here, but the fact is if I don't know somebody I'm not
-> going to give them a very high rating, making it difficult to actually bring in
-> new people.
->
-> 2) There are so many of us.  Especially with the addition of the BPF crowd we
-> are now larger than ever.  This makes problem #1 even more apparent, even if I
-> weighted some of the new people higher who's slot should they take instead?  I
-> have 0 problems finding 20 people in the FS community who should absolutely be
-> in the room.  But now I'm trying to squeeze in 1-5 extra people.  Propagate that
-> across all the tracks and now we're at an extra 20ish people.
->
-> 3) Half the people I want to talk to aren't even in the room.  This may be a
-> uniquely file system track problem, but most of my work is in btrfs, and I want
-> to talk to my fellow btrfs developers.  But again, we're trying to invite an
-> entire community, so many of them simply don't request invitations, or just
-> don't get invited.
->
-> 3) Sponsorships.  This is still the best way to get to all of the core
-> developers, so we're getting more and more sponsors in order to buy their slots
-> to get access to people.  This is working as intended, and I'm not putting down
-> our awesome sponsors, but this again adds to the amount of people that are
-> showing up at what is supposed to be a working conference.
->
-> 4) Presentations.  90% of the conference is 1-2 people standing at the front of
-> the room, talking to a room of 20-100 people, with only a few people in the
-> audience who cares.  We do our best to curate the presentations so we're not
-> wasting peoples time, but in the end I don't care what David Howells is doing
-> with mount, I trust him to do the right thing and he really just needs to trap
-> Viro in a room to work it out, he doesn't need all of us.
->
-> 5) Actually planning this thing.  I have been on the PC for at least the last 5
-> years, and this year I'm running the whole thing.  We specifically laid out
-> plans to rotate in new blood so this sort of thing stopped happening, and this
-> year we've done a good job of that.  However it is a giant amount of work for
-> anybody involved, especially for the whole conference chair.  Add in something
-> like COVID-19 to the mix and now I just want to burn the whole thing to the
-> ground.  Planning this thing is not free, it does require work and effort.
->
-> So what do I propose?  I propose we kill LSFMMBPF.
->
-> Many people have suggested this elsewhere, but I think we really need to
-> seriously consider it.  Most of us all go to the Linux Plumbers conference.  We
-> could accomplish our main goals with Plumbers without having to deal with all of
-> the above problems.
->
-> 1) The invitation process.  This goes away.  The people/companies that want to
-> discuss things with the rest of us can all get to plumbers the normal way.  We
-> get new blood that we may miss through the invitation process because they can
-> simply register for Plumbers on their own.
->
-> 2) Presentations.  We can have track miniconfs where we still curate talks, but
-> there could be much less of them and we could just use the time to do what
-> LSFMMBPF was meant to do, put us all in a room so we can hack on things together.
->
-> 3) BOFs.  Now all of the xfs/btrfs/ext4 guys can show up, because again they
-> don't have to worry about some invitation process, and now real meetings can
-> happen between people that really want to talk to each other face to face.
->
-> 4) Planning becomes much simpler.  I've organized miniconf's at plumbers before,
-> it is far simpler than LSFMMBPF.  You only have to worry about one thing, is
-> this presentation useful.  I no longer have to worry about am I inviting the
-> right people, do we have enough money to cover the space.  Is there enough space
-> for everybody?  Etc.
->
-> I think this is worth a discussion at the very least.  Maybe killing LSFMMBPF is
-> too drastic, maybe there are some other ideas that would address the same
-> problems.  I'd love to hear the whole communities thoughts on this, because
-> after all this is supposed to be a community event, and we should all be heard.
-> Thanks,
->
+I'll try to take a proactive approach by doing my own digging, where
+is what I have found, and few other proactive thoughts which might help:
 
+The latest update posted on the LSFMM page from March 2 states things
+are moving along as planned. After that on March 4th officials from the
+county made a trip to Coachella Valley (22 minutes away from the LSFFMM
+venue hotel) "to quell public fears about the spread of the novel
+coronavirus", and announced that "there are no plans to cancel any of
+the upcoming large events like Coachella, Stagecoach and the BNP" [0].
 
--- 
-Thanks,
+So, hippies are still getting together.
 
-Steve
+How about our brethren?
+
+If we have to learn from efforts required to continue on with the in
+light of the risks, we can look at what SCALE 18 is doing, taking place
+right now in Pasadena [1], their page lists a list of proactive measures
+required on their part to help alleviate fears and just good best
+practices at this point in time.
+
+The landscape seems positive, if we want, to move forward in Palm Springs then.
+
+When are attendees supposed to get notifications if they are invited?
+
+Since the nature of the conference however is unique in that it is
+world-wide and invite-only it makes me wonder if the value is reduced
+because of this and if we should cancel.
+
+Does the latency involved on the confirmation of attending decrease
+the value due to the current haphazard situation with COVID-19?
+
+I am involved in other conferences and am seeing personal driven
+cancelations for general concerns. For folks in the US it would be
+easier / less risky to travel, so my concerns would be less than others.
+But -- would we have higher personal cancelations from EU folks? What
+are folks thoughts on this right now? Is anyone in the EU not coming
+at all due to concerns who wouldn't mind voicing their concerns even
+if LSFMM continues?
+
+And then there is the other question: can we cancel? Or is that
+economically just  too late at this point?
+
+[0] https://kesq.com/news/2020/03/04/palm-springs-officials-to-hold-coronavirus-news-conference-on-thursday/
+[1] https://www.socallinuxexpo.org/scale/18x
+
+  Luis
