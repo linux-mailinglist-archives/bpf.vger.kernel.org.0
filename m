@@ -2,59 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A4D417C9A8
-	for <lists+bpf@lfdr.de>; Sat,  7 Mar 2020 01:23:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAAEE17CB59
+	for <lists+bpf@lfdr.de>; Sat,  7 Mar 2020 03:57:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726300AbgCGAXE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Mar 2020 19:23:04 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:39394 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726259AbgCGAXE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Mar 2020 19:23:04 -0500
-Received: by mail-pf1-f195.google.com with SMTP id w65so1345774pfb.6;
-        Fri, 06 Mar 2020 16:23:01 -0800 (PST)
+        id S1726259AbgCGC5K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Mar 2020 21:57:10 -0500
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:38933 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726245AbgCGC5K (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Mar 2020 21:57:10 -0500
+Received: by mail-pf1-f196.google.com with SMTP id w65so1476552pfb.6;
+        Fri, 06 Mar 2020 18:57:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=aHXwjj4kqoC1SEgDerAO76ZAkBN7HkBzq57ChieIJ0U=;
-        b=Nz2RQ4qFr+9ebYLlKZqNkzxODM4KqVdJ9x3GWVD8X9Vd+K1ft67MwvMxweebPcZ4kX
-         1fM8iIX0AxpLvCjuaVQcvo0F4vKXd1L698xkxPVAWWyKtAoAwYTLe1l022iQW4c91g74
-         8PeB2LarCdInXICZCnLiTvVDjyPS8sLGpagWCRRRT7/bFDsZsp0Fl/FtKu/2ZkEqm7O/
-         bS7a72XKbfjsGXoLYSNARDgOrAAfV7B6rOn1TlepgI9DwQzzAr03kb0nnTGpJbsMm3I8
-         yLmNmHoXQhs2X7u/uVpsQfTS9HnJHWSitx+5VEXZzB+ykUaTcnsQcW38pK2lBp24ksJD
-         I3Gg==
+        bh=/L6/iGkj1kByXgIY4L/2D8oQym7mkFksfifoaI+e6tk=;
+        b=TYDhPoTdoywK92PBXuQhg4xSTASJ+Me0CRdeS/P/STBeK4zQYR+ba3X8azegJ8DSh4
+         E0Vk0UCEAvF8UqgfN+o71Memj3WzibyhhiDArvXGDtHJ95RuNJi3S0qF1PIJOjY2bXNn
+         0HwL3OMH73Xq6BkSHnq8uLGAQaUrM8IYQwnqX2BbUsm5wyRUAd5pflevwVaYADPklgwZ
+         uFhu1PGuCPyONp+/kZL4hEf8eFwH2SsoFiIuaiS0H1hSYiF2aJFOLAaO5kuMKzVFzXhR
+         XwlIRY0KB7dyQlzbQgZuo7l8n13BfJs4cYhvxxByvQQ86zweth5RI474tbvkXOCjw6nt
+         HsMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=aHXwjj4kqoC1SEgDerAO76ZAkBN7HkBzq57ChieIJ0U=;
-        b=R0y0jaaN4UTmG6gW7erT/r3CxlkaJ9UTeYKKlTcWmWMz5EWZI9poATsOF+g4qEtLRl
-         ndlH03V4nx6FUAwwGaOaf1nImUROWUbiQDBGAT3Op/GaShdl/n7XS4rII+K0Oi2HVNUx
-         Un/cyNKm4uOk1eBhgP4D6zT/HsGHJQkJ/o/ona0HYYfxMubMpW6r8VOyZR6B6YUSa97j
-         Ip4Bw+6uFC97WPw43LCI0btWTt21Zd4QQP0bFr56vcu7og5YPG+UH60jmH44eCbdovI9
-         PFVj2CdpRVHvM5SuqjBhbcCBNObzsLA84thjgsTP6JTWessfTEwt/Qb+wbn/uOqh1Dwz
-         fPJw==
-X-Gm-Message-State: ANhLgQ1YPWjr1dlWozdBW1JnzUOq4p+cF/nEGRPPRmP81C6L8jApG6h7
-        WrqSkRcD/GDVFqQEikekYUofzpFU
-X-Google-Smtp-Source: ADFU+vujmznr/FvN03NvGVp2ibfa+vFuZgMXugCLA83SB+CvO+9opTgcLLAKri4Pjw5o1u46X0nzFg==
-X-Received: by 2002:aa7:8ad9:: with SMTP id b25mr6336042pfd.70.1583540581121;
-        Fri, 06 Mar 2020 16:23:01 -0800 (PST)
+        bh=/L6/iGkj1kByXgIY4L/2D8oQym7mkFksfifoaI+e6tk=;
+        b=Es3XXWedJ8HcXLxlOl3KbpCLncFikF57FTO5XoWQ/gI+hTV9Y0cXhxi0VqUo3ybMIJ
+         lxtAWrbMWG0qtg2jngghxmuX/dFHP2O4YYcati4W2lk61gNYC49JbUsfI1sJ8vi41yyt
+         FeNvCU19i6boV9egVGJ1zjTIfi7qfcEpGog/JzYy700eelPCSiwvg8bjwgADe6SrEwKI
+         H3U0D/RNmyhEeRjUjf5Y49YLobhfrmtD+49y8sBUxBrrf0xJnPIRTZxjz9ktEVeibPuy
+         BSLZUKPeceonuGajyt3Ez6Aik8mc/9wlUigmuXzUuQzzhu3DKKg6O8VB5+ybjpqLCxTP
+         soZw==
+X-Gm-Message-State: ANhLgQ3fuEjxBAyXi2ZvD0HjDCgs3YIGfqprnBTwkm1VzNQrBDMv7uGG
+        CA/qwsIT2njyCxft2StWB58=
+X-Google-Smtp-Source: ADFU+vs6aDbQ3Up3AGhvd2Rp5nhTrKCDv5+Wg5bG2lHtySbNtjUZKCrw/3FSdNwqXy/WXEeLBleeWQ==
+X-Received: by 2002:aa7:84c6:: with SMTP id x6mr6386156pfn.181.1583549829289;
+        Fri, 06 Mar 2020 18:57:09 -0800 (PST)
 Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id 72sm26260687pgd.86.2020.03.06.16.22.58
+        by smtp.gmail.com with ESMTPSA id r11sm8823975pfh.176.2020.03.06.18.57.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Mar 2020 16:23:00 -0800 (PST)
-Date:   Fri, 06 Mar 2020 16:22:51 -0800
+        Fri, 06 Mar 2020 18:57:08 -0800 (PST)
+Date:   Fri, 06 Mar 2020 18:57:00 -0800
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>, yhs@fb.com,
-        alexei.starovoitov@gmail.com, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        john.fastabend@gmail.com
-Message-ID: <5e62e95b61bdf_5f672ade5903a5b83c@john-XPS-13-9370.notmuch>
-In-Reply-To: <158353986285.3451.6986018098665897886.stgit@ubuntu3-kvm2>
-References: <158353965971.3451.14666851223845760316.stgit@ubuntu3-kvm2>
- <158353986285.3451.6986018098665897886.stgit@ubuntu3-kvm2>
-Subject: RE: [RFC PATCH 2/4] bpf: verifier, do explicit u32 bounds tracking
+To:     Eelco Chaudron <echaudro@redhat.com>, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, andriin@fb.com, toke@redhat.com
+Message-ID: <5e630d7c42319_5f672ade5903a5b8c5@john-XPS-13-9370.notmuch>
+In-Reply-To: <158348514556.2239.11050972434793741444.stgit@xdp-tutorial>
+References: <158348514556.2239.11050972434793741444.stgit@xdp-tutorial>
+Subject: RE: [PATCH bpf-next] bpf: add bpf_xdp_output() helper
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -64,122 +63,61 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-John Fastabend wrote:
-> It is not possible for the current verifier to track u32 alu ops and jmps
-> correctly. This can result in the verifier aborting with errors even though
-> the program should be verifiable. Cilium code base has hit this but worked
-> around it by changing int variables to u64 variables and marking a few
-> things volatile. It would be better to avoid these tricks.
-
-Quick bit of clarification, originally I tried to just track u32 hence
-the title and above u32 reference. After runnning some programs I realized
-this wasn't really enough to handle all cases so I added the signed 32-bit
-bounds tracker. If I missed some spots in the descriptions that was just
-because I missed it in the proof reading here. u32 above should be 32-bit
-subreg.
-
-I also forgot to give Yonhong credit. Sorry Yonghong! The original alu ops
-tracking patch came from him.
-
+Eelco Chaudron wrote:
+> Introduce new helper that reuses existing xdp perf_event output
+> implementation, but can be called from raw_tracepoint programs
+> that receive 'struct xdp_buff *' as a tracepoint argument.
 > 
-> But, the main reason to address this now is do_refine_retval_range() was
-> assuming return values could not be negative. Once we fix this in the
-> next patches code that was previously working will no longer work.
-> See do_refine_retval_range() patch for details.
+> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+> ---
+>  include/uapi/linux/bpf.h                           |   27 ++++++++++
+>  kernel/bpf/verifier.c                              |    4 +-
+>  kernel/trace/bpf_trace.c                           |    3 +
+>  net/core/filter.c                                  |   16 ++++++
+>  tools/include/uapi/linux/bpf.h                     |   27 ++++++++++
+>  .../testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c |   53 ++++++++++++++++++++
+>  .../testing/selftests/bpf/progs/test_xdp_bpf2bpf.c |   24 +++++++++
+>  7 files changed, 150 insertions(+), 4 deletions(-)
 > 
-> The simplest example code snippet that illustrates the problem is likelyy
-> this,
-> 
->  53: w8 = w0                    // r8 <- [0, S32_MAX],
->                                 // w8 <- [-S32_MIN, X]
->  54: w8 <s 0                    // r8 <- [0, U32_MAX]
->                                 // w8 <- [0, X]
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 40b2d9476268..41a90e2d5821 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -2914,6 +2914,30 @@ union bpf_attr {
+>   *		of sizeof(struct perf_branch_entry).
+>   *
+>   *		**-ENOENT** if architecture does not support branch records.
+> + *
+> + * int bpf_xdp_output(void *ctx, struct bpf_map *map, u64 flags, void *data, u64 size)
+> + *	Description
 
-[...]
- 
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index 5406e6e96585..66126c411d52 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -114,6 +114,7 @@ struct bpf_reg_state {
->  	 * with the same id as us.
->  	 */
->  	struct tnum var_off;
-> +	struct tnum var32_off;
->  	/* Used to determine if any memory access using this register will
->  	 * result in a bad access.
->  	 * These refer to the same value as var_off, not necessarily the actual
-> @@ -123,6 +124,10 @@ struct bpf_reg_state {
->  	s64 smax_value; /* maximum possible (s64)value */
->  	u64 umin_value; /* minimum possible (u64)value */
->  	u64 umax_value; /* maximum possible (u64)value */
-> +	s32 s32_min_value; /* minimum possible (s32)value */
-> +	s32 s32_max_value; /* maximum possible (s32)value */
-> +	u32 u32_min_value; /* minimum possible (u32)value */
-> +	u32 u32_max_value; /* maximum possible (u32)value */
->  	/* parentage chain for liveness checking */
->  	struct bpf_reg_state *parent;
->  	/* Inside the callee two registers can be both PTR_TO_STACK like
-> diff --git a/include/linux/limits.h b/include/linux/limits.h
-> index 76afcd24ff8c..0d3de82dd354 100644
-> --- a/include/linux/limits.h
-> +++ b/include/linux/limits.h
-> @@ -27,6 +27,7 @@
->  #define S16_MAX		((s16)(U16_MAX >> 1))
->  #define S16_MIN		((s16)(-S16_MAX - 1))
->  #define U32_MAX		((u32)~0U)
-> +#define U32_MIN		((u32)0)
+feels a bit odd to have flags in the middle of a signature but it follows
+bpf_perf_event_output() so I guess its better to have the two use the
+same signature vs break it here.
 
-I like using U32_MIN and U64_MIN defines, I think it reads better
-but not necessary and could be pushed into bpf-next perhaps.
+> + *		Write raw *data* blob into a special BPF perf event held by
+> + *		*map* of type **BPF_MAP_TYPE_PERF_EVENT_ARRAY**. This perf
+> + *		event must have the following attributes: **PERF_SAMPLE_RAW**
+> + *		as **sample_type**, **PERF_TYPE_SOFTWARE** as **type**, and
+> + *		**PERF_COUNT_SW_BPF_OUTPUT** as **config**.
+> + *
+> + *		The *flags* are used to indicate the index in *map* for which
+> + *		the value must be put, masked with **BPF_F_INDEX_MASK**.
+> + *		Alternatively, *flags* can be set to **BPF_F_CURRENT_CPU**
+> + *		to indicate that the index of the current CPU core should be
+> + *		used.
+> + *
+> + *		The value to write, of *size*, is passed through eBPF stack and
+> + *		pointed by *data*.
+> + *
+> + *		*ctx* is a pointer to in-kernel struct xdp_buff.
+> + *
+> + *		This helper is similar to **bpf_perf_eventoutput**\ () but
+> + *		restricted to raw_tracepoint bpf programs.
+> + *	Return
+> + *		0 on success, or a negative error in case of failure.
+>   */
 
->  #define S32_MAX		((s32)(U32_MAX >> 1))
->  #define S32_MIN		((s32)(-S32_MAX - 1))
->  #define U64_MAX		((u64)~0ULL)
-> diff --git a/include/linux/tnum.h b/include/linux/tnum.h
+Otherwise,
 
-[...]
-
-> diff --git a/kernel/bpf/tnum.c b/kernel/bpf/tnum.c
-> index d4f335a9a899..a444f77fb169 100644
-> --- a/kernel/bpf/tnum.c
-> +++ b/kernel/bpf/tnum.c
-> @@ -12,6 +12,8 @@
->  #define TNUM(_v, _m)	(struct tnum){.value = _v, .mask = _m}
->  /* A completely unknown value */
->  const struct tnum tnum_unknown = { .value = 0, .mask = -1 };
-> +/* should we have a proper 32-bit tnum so math works without hacks? */
-> +const struct tnum tnum32_unknown = { .value = 0, .mask = 0xffffffff };
->  
->  struct tnum tnum_const(u64 value)
->  {
-
-Per commit message comment ^^^^ here is the tnum logic that I suspect
-should be made 32 bit types although maybe not harmful as is.
-
->  
->  	/* detect if R == 0 where R is returned from bpf_map_lookup_elem().
-> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-> index 87eaa49609a0..97463ad255ac 100644
-> --- a/tools/testing/selftests/bpf/test_verifier.c
-> +++ b/tools/testing/selftests/bpf/test_verifier.c
-> @@ -943,7 +943,7 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
->  	attr.insns = prog;
->  	attr.insns_cnt = prog_len;
->  	attr.license = "GPL";
-> -	attr.log_level = verbose || expected_ret == VERBOSE_ACCEPT ? 1 : 4;
-> +	attr.log_level = verbose || expected_ret == VERBOSE_ACCEPT ? 2 : 4;
-
-This is just test code I'll push something to bpf-next so we can make
-test_verifier more verbose. I found this helpful when debugging errors.
-Seems probably useful upstream as well seeing I do this often I'm
-guessing others probably do as well. Probably 'test_verifier -vv' should
-do the trick.
-
-
->  	attr.prog_flags = pflags;
->  
->  	fd_prog = bpf_load_program_xattr(&attr, bpf_vlog, sizeof(bpf_vlog));
-> 
-
-
+Acked-by: John Fastabend <john.fastabend@gmail.com>
