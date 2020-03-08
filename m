@@ -2,104 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C21EC17CFC5
-	for <lists+bpf@lfdr.de>; Sat,  7 Mar 2020 20:12:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 168FD17D23A
+	for <lists+bpf@lfdr.de>; Sun,  8 Mar 2020 08:30:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726138AbgCGTMW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 7 Mar 2020 14:12:22 -0500
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:48764 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726116AbgCGTMV (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 7 Mar 2020 14:12:21 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id D37C58EE0FD;
-        Sat,  7 Mar 2020 11:12:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1583608340;
-        bh=OTExqST3EIQqKYzie7fnIaR9F29Rbki864Xhub7443Q=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=lILO1w8M5X5MwVyf0UEV37EwwviKKsvMyy4/5iphxqtCwYMOHDpAIjCX1N3HBcACW
-         paVYE2nnpzAA6emW6A2rS2m1Ngr4nuk0SD5mL3oP0zYojh+pQUZsbn82C/A2ycnNej
-         EUvA3YXNlXdt1T6udIPdWAR2Rz05afODy1IufW54=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id jvVAu3loizWQ; Sat,  7 Mar 2020 11:12:20 -0800 (PST)
-Received: from [153.66.254.194] (unknown [50.35.76.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id E099B8EE0D7;
-        Sat,  7 Mar 2020 11:12:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1583608340;
-        bh=OTExqST3EIQqKYzie7fnIaR9F29Rbki864Xhub7443Q=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=lILO1w8M5X5MwVyf0UEV37EwwviKKsvMyy4/5iphxqtCwYMOHDpAIjCX1N3HBcACW
-         paVYE2nnpzAA6emW6A2rS2m1Ngr4nuk0SD5mL3oP0zYojh+pQUZsbn82C/A2ycnNej
-         EUvA3YXNlXdt1T6udIPdWAR2Rz05afODy1IufW54=
-Message-ID: <1583608338.20291.28.camel@HansenPartnership.com>
-Subject: Re: [LSFMMBPF TOPIC] LSFMMBPF 2020 COVID-19 status update
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        lsf-pc <lsf-pc@lists.linuxfoundation.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>, bpf@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
-Date:   Sat, 07 Mar 2020 11:12:18 -0800
-In-Reply-To: <20200307185420.GG2236@42.do-not-panic.com>
-References: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
-         <20200306155611.GA167883@mit.edu>
-         <20200307185420.GG2236@42.do-not-panic.com>
+        id S1725904AbgCHHaS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 8 Mar 2020 03:30:18 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:46955 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725854AbgCHHaS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 8 Mar 2020 03:30:18 -0400
+Received: by mail-lf1-f68.google.com with SMTP id v6so5056944lfo.13
+        for <bpf@vger.kernel.org>; Sat, 07 Mar 2020 23:30:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=A5uwbVNlVnD1jPdyNQ3S+fHBG7krpklmOU7YgqC3OSQ=;
+        b=dpkU6y6oZO8JB7XjlvpIIgpNlpbo40DHIe4Qksdnm2Q/ICOqyKFo/PJi650gpjtTDC
+         y7ZpSLWnp5QmD+fBMdC0KZNFDSaR/CR8/mpnLzbSMvWAmLt92P/9vjTWMCx04X2XCClN
+         cVQNSty7bOiOa/XtAoxxJJSKne9W9ZfxZXbW6WN5zwcjamtyzjXU59i40md8Vol+SfeU
+         BPI6Czd4jh7zj2mmIYyA6VHLwHn7nBtnAwhqSzyzg25nesktfSyaQ1H8JhwwdbCAerIR
+         hdGtrVqEyuCKa1WSEclyGvxxdnMYasDKC0ucEjp0r2vTFQ+U95oBn+WHBoVggjz2zEG4
+         nC3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=A5uwbVNlVnD1jPdyNQ3S+fHBG7krpklmOU7YgqC3OSQ=;
+        b=gulvWR/0xQJnqn/dvlPB5TF2hEqMQ1HNq8ATAf9UFi5OnV9cOONbrskvXX9VdSpy3N
+         6XlSRT7IPa8dLv4bnBZx0pCADaQe4IxgmcZokXYWOxHHkQukVdzJPv1UgJL3d2SyMOk6
+         K0r7ANhxN8WLopO7R5U6Fk74gbjYBkRTkp4rdE/YpKgURlnoHojtiR0QU/wQBjC3ujpa
+         uo+8YQekDgjpSiO2Ax1gDWiwyI1fLYi8+pnyc22UwvYIgsAHYEGLD+M0a14UlRvashQ2
+         pdsF0iAoKa6nMJEy4Acf6w1J60ca4ORTI/lGwe/W8BMpp5QPuMJJm58FHohmbwKezm/I
+         086Q==
+X-Gm-Message-State: ANhLgQ0+ezJpWxsHi8igNQigeRVmmcUVfo+N7qEfqtYD7Z2Vcl8WZFla
+        ti3kAXl0CF3+4TllMz3JZaY99pz9sEJ/E1/ARfE=
+X-Google-Smtp-Source: ADFU+vt6C+UaLNoZQ7385dCc3Kv/HKSbg+cVhk8gsgxJ8kXoemO0DCEv0lcS+QLAF/vlNm8BPUlppMLXQZgiXr9Bof8=
+X-Received: by 2002:ac2:4c29:: with SMTP id u9mr6157101lfq.141.1583652615969;
+ Sat, 07 Mar 2020 23:30:15 -0800 (PST)
+MIME-Version: 1.0
+Received: by 2002:a2e:8e73:0:0:0:0:0 with HTTP; Sat, 7 Mar 2020 23:30:15 -0800 (PST)
+Reply-To: xinclark@gmail.com
+From:   EDWIN CLARK <fedrickmawuyo@gmail.com>
+Date:   Sun, 8 Mar 2020 08:30:15 +0100
+Message-ID: <CAFmgu1uJZstmryD5aueE_B8N7NRvuGAFbvqG5=sfh_XWiSGKzQ@mail.gmail.com>
+Subject: Hello,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 2020-03-07 at 18:54 +0000, Luis Chamberlain wrote:
-> On Fri, Mar 06, 2020 at 10:56:11AM -0500, Theodore Y. Ts'o wrote:
-> > Should we have LSF/MM/BPF in 2020 and COVID-19?
-[...]
-> If we have to learn from efforts required to continue on with the in
-> light of the risks, we can look at what SCALE 18 is doing, taking
-> place right now in Pasadena [1], their page lists a list of proactive
-> measures required on their part to help alleviate fears and just good
-> best practices at this point in time.
+Hello,
 
-I agree Scale18x is the poster child for following WHO advice to the
-letter, but there are crucial differences:
+I am Barrister Edwin Clark,writing you in respect of my deceased
+client who died in 2009 along with his entire family.I have been
+trying to locate any member of his family to assist in repatriating
+the fund he deposited in a bank here,the said client is from your
+country and also bears the same last name with you.I would like you to
+contact me so that i can give you the details concerning the claim.I
+am looking forward to hear from you soon.
 
-   1. Scale18x has a lot of local attendees, so the conference can go
-      ahead somewhat easily with local content and local attendees.  We
-      have no-one for LSF/MM/BPF in Palm Springs.
-   2. Scale18x did have some issues with non-local content because of
-      corporate travel bans.  The whole of LSF/MM/BPF is non-local content
-      and would thus be significantly disrupted.
-
-The big problem with 2. is that a lot of corporate policies at the
-moment are unconsidered blanket bans.  Even corporations who do
-consider better might still be stricter than the WHO advice.  So my
-company, IBM, is saying events >1000 cancel and events <1000 use your
-own discretion provided they're promising to obey all the health
-guidelines.  If I'd been presenting at Scale18x I'd have had to cancel,
-even though under our guidelines I can still go to LSF/MM/BPF
-
-> The landscape seems positive, if we want, to move forward in Palm
-> Springs then.
-
-For a counter example, just look at the LF Member summit which was due
-to happen just after Scale18x:
-
-https://events.linuxfoundation.org/lf-member-summit/
-
-and that's a smaller event than Scale18x.  Remember too that the LF
-runs LSF/MM so if they decide to cancel, there's not much the
-organizing committee can do about it.
-
-James
-
+Best Regards,
+Barrister Edwin Clark.
+Whatsapp Number: +228-96862601.
