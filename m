@@ -2,74 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BFD017D978
-	for <lists+bpf@lfdr.de>; Mon,  9 Mar 2020 07:58:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E744517DB37
+	for <lists+bpf@lfdr.de>; Mon,  9 Mar 2020 09:39:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbgCIG6D (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Mar 2020 02:58:03 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:49275 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726403AbgCIG6D (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Mar 2020 02:58:03 -0400
-Received: by mail-il1-f197.google.com with SMTP id b72so6751887ilg.16
-        for <bpf@vger.kernel.org>; Sun, 08 Mar 2020 23:58:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=3vbHTdYQ67mib1pqhw7RfSE7n4B7fPNmRK2m1Cb8iPU=;
-        b=KVvxHOv2XO+ZvWeaRU9gMy110OHVbklaNy1an+J1GCRNTFHDtQLHnn/k5vM4c3CNfa
-         eSg4LsAYNu3BoQwAB8swVVqgYJv19l9zVOFLhvPK/MdxpkOAoQP6J2n6QAt/k/MRmPFq
-         MXkXp9v8ZXO0Eqp9f9iSpJQ2bpDOX4m9mIKSbKX8UFu3n1qXN96dPIkRM5KeFDxGzeq5
-         NgvaaEHUuAPuws5m//O2qp+ygPHqrL/YIuGUUcGTaryKGdZAmudq3/S7UByPQitCsTH8
-         8JNhTT96e4GDP5jhNtUTbsf45dTOE5YIqUlCQkoSx/57cye18tbwR3ov/Rd0A3TXK11k
-         8TyQ==
-X-Gm-Message-State: ANhLgQ2uc8aWoNumRgTtGxR8cGyRk5yMkv70DyqVO5CbHbWeD6iiQYr2
-        vo4P2cGZATt3lQYfeEMNHNoG42Sh5HmfNS7mghkZTm1aRypz
-X-Google-Smtp-Source: ADFU+vtRpURm6U4wUgm5w3Q/LMCwhNNEMjTRsTn2XqAL2qLJHVJT0lEdDhwiPvd5cYSVN+QMhS0AUF7kTWiMSzfA+d9Rg3PvE9EA
+        id S1726383AbgCIIjq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Mar 2020 04:39:46 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28387 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725956AbgCIIjq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Mar 2020 04:39:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1583743185;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y27k9B0xIugnyoUhDQSY/7wZSNse5Mph632zdP/weW0=;
+        b=HwdoHR6fx7PLAq4pd/wNRmZI4Kq1JdG9nW+71EXnVpayC37BinDCUghDFZ4enjvDzrfTr5
+        b696FKtEwFD/9QcLtk7IuTtyRWCtAIPAHUis7nhVffmSYiWfPVYfEDlLg5jGMZyl+tme+n
+        sltL8gqxD6TYxZOWafddhZNvQoGC628=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-493-hNdsKe99OGiSDw3pVrgGwA-1; Mon, 09 Mar 2020 04:39:42 -0400
+X-MC-Unique: hNdsKe99OGiSDw3pVrgGwA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EC86E107ACC9;
+        Mon,  9 Mar 2020 08:39:39 +0000 (UTC)
+Received: from carbon (ovpn-200-32.brq.redhat.com [10.40.200.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E2DF510027AC;
+        Mon,  9 Mar 2020 08:39:33 +0000 (UTC)
+Date:   Mon, 9 Mar 2020 09:39:32 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf@vger.kernel.org, gamemann@gflclan.com, lrizzo@google.com,
+        netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNl?= =?UTF-8?B?bg==?= 
+        <toke@toke.dk>, brouer@redhat.com
+Subject: Re: [bpf-next PATCH] xdp: accept that XDP headroom isn't always
+ equal XDP_PACKET_HEADROOM
+Message-ID: <20200309093932.2a738ab1@carbon>
+In-Reply-To: <5e62750bd8c9f_17502acca07205b42a@john-XPS-13-9370.notmuch>
+References: <158323601793.2048441.8715862429080864020.stgit@firesoul>
+        <20200303184350.66uzruobalf3y76f@ast-mbp>
+        <5e62750bd8c9f_17502acca07205b42a@john-XPS-13-9370.notmuch>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9bc8:: with SMTP id d8mr12563436ion.142.1583737083027;
- Sun, 08 Mar 2020 23:58:03 -0700 (PDT)
-Date:   Sun, 08 Mar 2020 23:58:03 -0700
-In-Reply-To: <000000000000161ee805a039a49e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000406a7f05a066861d@google.com>
-Subject: Re: possible deadlock in siw_create_listen
-From:   syzbot <syzbot+3fbea977bd382a4e6140@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bmt@zurich.ibm.com, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, dledford@redhat.com,
-        dsahern@gmail.com, hawk@kernel.org, jakub.kicinski@netronome.com,
-        jgg@ziepe.ca, jiri@mellanox.com, johannes.berg@intel.com,
-        john.fastabend@gmail.com, kafai@fb.com,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        mkubecek@suse.cz, netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has bisected this bug to:
+On Fri, 06 Mar 2020 08:06:35 -0800
+John Fastabend <john.fastabend@gmail.com> wrote:
 
-commit bfcccfe78b361f5f6ef48554aed5bcd30c72f67f
-Author: Jakub Kicinski <jakub.kicinski@netronome.com>
-Date:   Tue Nov 5 21:26:11 2019 +0000
+> Alexei Starovoitov wrote:
+> > On Tue, Mar 03, 2020 at 12:46:58PM +0100, Jesper Dangaard Brouer wrote:  
+[...]
+> > > 
+> > > Still for generic-XDP if headroom is less, still expand headroom to
+> > > XDP_PACKET_HEADROOM as this is the default in most XDP drivers.
+> > > 
+> > > Tested on ixgbe with xdp_rxq_info --skb-mode and --action XDP_DROP:
+> > > - Before: 4,816,430 pps
+> > > - After : 7,749,678 pps
+> > > (Note that ixgbe in native mode XDP_DROP 14,704,539 pps)
+> > >   
+> 
+> But why do we care about generic-XDP performance? Seems users should
+> just use XDP proper on ixgbe and i40e its supported.
+>
+[...]
+> 
+> Or just let ixgbe/i40e be slow? I guess I'm missing some context?
 
-    netdevsim: drop code duplicated by a merge
+The context originates from an email thread[1] on XDP-newbies list, that
+had a production setup (anycast routing of gaming traffic[3]) that used
+XDP and they used XDP-generic (actually without realizing it).  They
+were using Intel igb driver (that don't have native-XDP), and changing
+to e.g. ixgbe (or i40e) is challenging given it requires physical access
+to the PoP (Points of Presence) and upgrading to a 10G port at the PoP
+also have costs associated.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=166d11c3e00000
-start commit:   425c075d Merge branch 'tun-debug'
-git tree:       net-next
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=156d11c3e00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=116d11c3e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=598678fc6e800071
-dashboard link: https://syzkaller.appspot.com/bug?extid=3fbea977bd382a4e6140
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10e3df31e00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=163d0439e00000
+Why not simply use TC-BPF (cls_bpf) instead of XDP.  I've actually been
+promoting that more people should use TC-BPF, and also in combination[2].
+The reason it makes sense to stick with XDP here is to allow them to
+deploy the same software on their PoP servers, regardless of which
+NIC driver is available.
 
-Reported-by: syzbot+3fbea977bd382a4e6140@syzkaller.appspotmail.com
-Fixes: bfcccfe78b36 ("netdevsim: drop code duplicated by a merge")
+Performance wise, I will admit that I've explicitly chosen not to
+optimize XDP-generic, and I've even seen it as a good thing that we
+have this reallocation penalty.  Given the uniform software deployment
+argument and my measurements in[1] I've changed my mind.  For the igb
+driver I'm not motivated to implement XDP-native, because a newer Intel
+CPU can handle wirespeed even-with the reallocations, but it is just
+wasteful to do these reallocations.  "Allowing" these 1Gbit/s NICs to
+work more optimally with XDP-generic, will allow us to ignore
+converting these drivers to XDP-native, and as HW gets upgraded they
+will transition seamlessly to XDP-native.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+[1] https://www.spinics.net/lists/xdp-newbies/msg01548.html
+[2] https://github.com/xdp-project/xdp-cpumap-tc
+[3] https://gitlab.com/Dreae/compressor/
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
