@@ -2,82 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A3DAC17DCEB
-	for <lists+bpf@lfdr.de>; Mon,  9 Mar 2020 11:06:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4E317DE4D
+	for <lists+bpf@lfdr.de>; Mon,  9 Mar 2020 12:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726391AbgCIKGp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Mar 2020 06:06:45 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:34816 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725962AbgCIKGp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Mar 2020 06:06:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1583748404;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5pVffw3WEJdN/t3fxfYggMKUlU5RNvR//cUlYZSKZw8=;
-        b=BXzqqP7/BwI3pzK5pCw1iLwk4OheGd/UCDpm0Qp2gbhY5pPs242br7JuEw8flmB+eP7Y/k
-        LXnsPhZWfa3HEaXF5dBXT9wJEymS+2NiQnDf8Ff9PoRF6zBbXKzBTHmAF/w3mpFyxbPYGO
-        5hpvwhyfzPgL0wMt9Sw+3i4QzY4q29k=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-88-vaSVqj_kNvuDQ36mO72yKQ-1; Mon, 09 Mar 2020 06:06:43 -0400
-X-MC-Unique: vaSVqj_kNvuDQ36mO72yKQ-1
-Received: by mail-wr1-f72.google.com with SMTP id c6so4933347wrm.18
-        for <bpf@vger.kernel.org>; Mon, 09 Mar 2020 03:06:42 -0700 (PDT)
+        id S1726217AbgCILNK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Mar 2020 07:13:10 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:45439 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725956AbgCILNK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Mar 2020 07:13:10 -0400
+Received: by mail-wr1-f67.google.com with SMTP id m9so1516002wro.12
+        for <bpf@vger.kernel.org>; Mon, 09 Mar 2020 04:13:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CYROj5HsRYbnBFzlK0FzkrwDUfzZsnteghLz6nqHevI=;
+        b=t6D3f0aQpn8rgusmcwNDPyMX4Ge1CTlojGAW1FhMP3gEWYZRKqAZt4BA17FONeKtds
+         Z1N4Wn1IFMIT9GTUDcCH22VQXy9q4nOeNuLfAH5SFuGW8/M7KlonMp0ekhOCEW9IGosy
+         KWUNUkrLo7v+MgPV8MV5d1OupI6+HJj5LcRu0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=5pVffw3WEJdN/t3fxfYggMKUlU5RNvR//cUlYZSKZw8=;
-        b=ZQfXjemvk7Kj2QTaVTWxIfy6lxb4+P7mof/tG3RewoLq18en+umj+8QoS7JrZZbPww
-         Thf1fzw7aXkhLxoc4ZO8FJg8UcGbqMEHcGEIOhKJ/DuJjmYVMzFYyomLboMCChRuoKip
-         7mle7msNcGE/8ajYdVuN9QNgXTdypYVSuupQdLM0nqocHUyGOVvNXI4p4murhQk6WB7Z
-         oTTLJOneuDw8qbQ5ujnJnRNPI6DyUSAENrm9fKqlNfRSdgpFx7hy6qzy/aRJ+SyggbzS
-         p1dQc068LrJ94n57iKuh6rLvXLTENg7lHT618asXx11FpLNfUpifr3BmQxEWZ/wp0+/M
-         NO2w==
-X-Gm-Message-State: ANhLgQ3SP1a/T6mYnh1JSMg+TwbleCGgO2ez6REMTQ8H82zTeojkGYAv
-        vBxq2jD+gDrMSOCjMV0/ai8PGT4p2moHac/bBpJLP2Yzx2Cyy0JC5bETiZu2vuqpx+TzoO6L3iu
-        rwpYlSxadot4D
-X-Received: by 2002:a1c:8103:: with SMTP id c3mr13893973wmd.166.1583748402080;
-        Mon, 09 Mar 2020 03:06:42 -0700 (PDT)
-X-Google-Smtp-Source: ADFU+vsGKUaZexq9c7r3nw7dAdzYDqo8N9O8HFYpRjT3YC3C8khqjG/LN06T7s3/+ot0hMM+ZgBBRQ==
-X-Received: by 2002:a1c:8103:: with SMTP id c3mr13893949wmd.166.1583748401833;
-        Mon, 09 Mar 2020 03:06:41 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id l64sm3298717wmf.30.2020.03.09.03.06.40
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CYROj5HsRYbnBFzlK0FzkrwDUfzZsnteghLz6nqHevI=;
+        b=cGgQPjMzF+uDKfBPP/fmGxZJqRqUHcklgYLtxSsN6tl0nzybgLQddFIiqxxTJboSt8
+         EAbgCyi3gHJf3etdbs5V4RdMJDWuoM3/DRd0RWYGd6Z3qLH+nfoFQk821tJWEEEmuJkj
+         jFdnYFNECWW3IXKxQ83oX4HQnjWpEnVwb1JcD9r2cwh3VR4sCxcq8f+myKZJAHFLfGx/
+         aG7CqmRYE5K99oYCD59ykoZwpzRTnV8psWM4QEass1DklBrd1nSY4kuMV4h750mVvXEU
+         SSFjgvrRfnlFFGbft1UOCu2LfrkJ6Z/sWnFt+v1OOaqsOp2MA5QNg6N9rZtUPCgUkzVA
+         4VHg==
+X-Gm-Message-State: ANhLgQ2HUmGBM1aN8bB9ajXzO8ItqU+41CsxIo6ZxLJwKJowPczYXYEz
+        t70Qk/21nqC8jSj7A7DH8j5/xw==
+X-Google-Smtp-Source: ADFU+vuEqABspoMtH2L9hlsNVwAkxs96SFOjG9gFG/lIYA1AV6FZOaFo4wEnzdIyJGKwCALNb1nvAA==
+X-Received: by 2002:a05:6000:1187:: with SMTP id g7mr19940280wrx.382.1583752388090;
+        Mon, 09 Mar 2020 04:13:08 -0700 (PDT)
+Received: from localhost.localdomain ([2a06:98c0:1000:8250:3dcc:c1d:7f05:4873])
+        by smtp.gmail.com with ESMTPSA id a5sm25732846wmb.37.2020.03.09.04.13.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Mar 2020 03:06:41 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id B196C18034F; Mon,  9 Mar 2020 11:06:38 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Eelco Chaudron <echaudro@redhat.com>, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, andriin@fb.com
-Subject: Re: [PATCH bpf-next] bpf: add bpf_xdp_output() helper
-In-Reply-To: <158348514556.2239.11050972434793741444.stgit@xdp-tutorial>
-References: <158348514556.2239.11050972434793741444.stgit@xdp-tutorial>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 09 Mar 2020 11:06:38 +0100
-Message-ID: <87r1y1266p.fsf@toke.dk>
+        Mon, 09 Mar 2020 04:13:07 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next v4 00/12] bpf: sockmap, sockhash: support storing UDP sockets
+Date:   Mon,  9 Mar 2020 11:12:31 +0000
+Message-Id: <20200309111243.6982-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Eelco Chaudron <echaudro@redhat.com> writes:
+I've adressed John's nit in patch 3, and added the reviews and acks.
 
-> Introduce new helper that reuses existing xdp perf_event output
-> implementation, but can be called from raw_tracepoint programs
-> that receive 'struct xdp_buff *' as a tracepoint argument.
->
-> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+Changes since v3:
+- Clarify !psock check in sock_map_link_no_progs
 
-Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+Changes since v2:
+- Remove sk_psock_hooks based on Jakub's idea
+- Fix reference to tcp_bpf_clone in commit message
+- Add inet_csk_has_ulp helper
+
+Changes since v1:
+- Check newsk->sk_prot in tcp_bpf_clone
+- Fix compilation with BPF_STREAM_PARSER disabled
+- Use spin_lock_init instead of static initializer
+- Elaborate on TCPF_SYN_RECV
+- Cosmetic changes to TEST macros, and more tests
+- Add Jakub and me as maintainers
+
+Lorenz Bauer (12):
+  bpf: sockmap: only check ULP for TCP sockets
+  skmsg: update saved hooks only once
+  bpf: tcp: move assertions into tcp_bpf_get_proto
+  bpf: tcp: guard declarations with CONFIG_NET_SOCK_MSG
+  bpf: sockmap: move generic sockmap hooks from BPF TCP
+  bpf: sockmap: simplify sock_map_init_proto
+  bpf: add sockmap hooks for UDP sockets
+  bpf: sockmap: add UDP support
+  selftests: bpf: don't listen() on UDP sockets
+  selftests: bpf: add tests for UDP sockets in sockmap
+  selftests: bpf: enable UDP sockmap reuseport tests
+  bpf, doc: update maintainers for L7 BPF
+
+ MAINTAINERS                                   |   3 +
+ include/linux/bpf.h                           |   4 +-
+ include/linux/skmsg.h                         |  56 ++---
+ include/net/inet_connection_sock.h            |   6 +
+ include/net/tcp.h                             |  20 +-
+ include/net/udp.h                             |   5 +
+ net/core/sock_map.c                           | 157 +++++++++++---
+ net/ipv4/Makefile                             |   1 +
+ net/ipv4/tcp_bpf.c                            | 114 ++--------
+ net/ipv4/tcp_ulp.c                            |   7 -
+ net/ipv4/udp_bpf.c                            |  53 +++++
+ .../bpf/prog_tests/select_reuseport.c         |   6 -
+ .../selftests/bpf/prog_tests/sockmap_listen.c | 204 +++++++++++++-----
+ 13 files changed, 402 insertions(+), 234 deletions(-)
+ create mode 100644 net/ipv4/udp_bpf.c
+
+-- 
+2.20.1
 
