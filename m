@@ -2,473 +2,247 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C95D717ECA8
-	for <lists+bpf@lfdr.de>; Tue, 10 Mar 2020 00:29:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E58E617ECF2
+	for <lists+bpf@lfdr.de>; Tue, 10 Mar 2020 00:58:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727143AbgCIX3t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Mar 2020 19:29:49 -0400
-Received: from mail-qk1-f169.google.com ([209.85.222.169]:44954 "EHLO
-        mail-qk1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727125AbgCIX3s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Mar 2020 19:29:48 -0400
-Received: by mail-qk1-f169.google.com with SMTP id f198so11025167qke.11
-        for <bpf@vger.kernel.org>; Mon, 09 Mar 2020 16:29:47 -0700 (PDT)
+        id S1727370AbgCIX6f (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Mar 2020 19:58:35 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:39565 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727143AbgCIX6e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Mar 2020 19:58:34 -0400
+Received: by mail-pl1-f195.google.com with SMTP id j20so4658205pll.6;
+        Mon, 09 Mar 2020 16:58:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Dmsqdq+N9uKlrxjutqakGp20IHk1agEKP8A2ZFVPPdw=;
-        b=iXwpewjl2oBCJ/19fKYYs92ghCXJd1TZudLtwR9coKkwF7U47T1v6ky/1lrxkVXbHl
-         7ag3IMz+gmrf215wHA41YPKmIWbSnVFUGbL0zAnQ3ZM9uyqbQM2yRl6qWEOWkS7wDBZ+
-         ojaIX2/2EePr+Bvp88O4wBrJR4h92YuQHVVcwfmf1/Ou33GLkwSvtqi8KiU8kYnvtUt1
-         DHHpW5EznzQ/XMSWaqs/kb9N6WBCBdH8/iEQd9k3wgal8BuHqJNrIfFCwHI6Q9N8op/M
-         G6VNH3kfP7tbNpLNmdV7xwEFVZXYaA4ZTZEgK4oeDby/6VFjXz82FTXHIzd+iHI8YoyQ
-         v7aA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=NmQYWpcTP8I5Ko3cbga3LrE5MI1w4+kEnJc7a8Uw8ZY=;
+        b=vb9F1idfpU/2F0ZxpMPcPcph7a9LbP23tSsk6YLSAeZ/dr8Sg+iWck5r0+LJtnZT0v
+         MUEh6IsbWyJMTJUkwb8lu8X/phs/r8DmkoosPZFGsagpivf2QsjYPDpAfVhn3pmCJMet
+         L4mp+61TJfU4iUqkoyo993oGmWl8OBEAs8mGpdAaEdvWTAbTPZhiPgnm9TMEBk48JD02
+         LGnviGL2QiHvIiwnI0qDkyTrJkZFaUAWYb57cqn10X+g9+a65Ar91/00ba0UVJKiwkaU
+         ykvazET8vPBmDw7NHE5zHqCHaNF7e84wlbYN23Un3DnBmnT0AEtLmSBlWDyWTDakYKJ9
+         MlWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Dmsqdq+N9uKlrxjutqakGp20IHk1agEKP8A2ZFVPPdw=;
-        b=T5SBKLql/vqNyEW9zIdZgYRjOTPp5num18nfcT7k9ILXAv7l2L1qbZjFIrhVDkYSiY
-         rL+dhJr6+SAwavLKTvA006+y3/J4WeTb1NlkFGadeOpBvqD0DGLIufDMv418uxXmhTHP
-         3BMMYemmIebIfwMfI3lZx0n5LuyTG98V1tXUFu+AJoyMxm5LpR4VwoK60XY6+bBErchB
-         OscHSVJPnMgPhxWD1HHN7iAYIQh7znos7oR2qTwBhpyA20F7iL0A2kCLZlrkoQKpUZxG
-         gS44hYZAOKLNsc24IoQ2izkT4Z/AnslLjtrXQk9pDadSiTqVozbcd4oFol9lGt4Oap47
-         iDfw==
-X-Gm-Message-State: ANhLgQ14vf71geWl6nzzXdVcRQPEpFQ2PacJlA44PSnGmoQDmMAnbDKF
-        ggq7W5/TeakW4o6a1E4hGQcoMJx8PS6EwRUzEHEF2f11
-X-Google-Smtp-Source: ADFU+vvTNCtD4iSS9vshN2poCb0ls3qGQbX05UACHBXs8s7GSMJcwXUg2n3xEslVd5GtCN7e4RaK2SLaamIWh0ZJzo8=
-X-Received: by 2002:ae9:c011:: with SMTP id u17mr15629709qkk.92.1583796586595;
- Mon, 09 Mar 2020 16:29:46 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=NmQYWpcTP8I5Ko3cbga3LrE5MI1w4+kEnJc7a8Uw8ZY=;
+        b=KBZtDEdGGb7KH5xGmGiiHWD/N13h6BMRnDkqvRiuQfSOpXH9tNqSuqP6J4nr6eNMm2
+         qYjeOag2bAvWibB2dYaRDD1NVTed1c4/YFNVs6IjkA28vw1bsFA9iM3l2wx40Dk8US3o
+         ZSlK8nXkbuL55x10hDkUpbFiRIo5Gin+B6mePZXPqDSS4mBiMjNE42KLKE6wnq7drTrB
+         +kc3h8aiAFhHJo4VajSuI0s0Vabr7lepUXncUmD5alk7x8LF4U7CMCpSuxM8UkpxQ8GS
+         CGuPnjv7xBp6+vCbgidr6QyOXAJ8Fe3kzlnggO26f1pHqkECzPUc/+pl4gjH9wFUwfTi
+         A+GQ==
+X-Gm-Message-State: ANhLgQ3Vo7kh7pwVmx5KkFhKkEr9QKCioQXgXKLvAFDZ5MY7e0/hUyWL
+        ccYxhEHqHVf5/cJ0n3k480I=
+X-Google-Smtp-Source: ADFU+vuIahbi5Tm/dpCxb9mVp2ryjilIS2BS7KYsA5C0coiSTh1qPj5eKuElgFxKevRUe5JYEjVZMA==
+X-Received: by 2002:a17:90a:240f:: with SMTP id h15mr1929252pje.176.1583798313493;
+        Mon, 09 Mar 2020 16:58:33 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:500::7:4bc0])
+        by smtp.gmail.com with ESMTPSA id s21sm17720586pfd.99.2020.03.09.16.58.31
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 09 Mar 2020 16:58:31 -0700 (PDT)
+Date:   Mon, 9 Mar 2020 16:58:30 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     yhs@fb.com, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [RFC PATCH 2/4] bpf: verifier, do explicit u32 bounds tracking
+Message-ID: <20200309235828.wldukb66bdwy2dzd@ast-mbp>
+References: <158353965971.3451.14666851223845760316.stgit@ubuntu3-kvm2>
+ <158353986285.3451.6986018098665897886.stgit@ubuntu3-kvm2>
 MIME-Version: 1.0
-References: <CAKRbtyVJ2bq5Tafmyd-Juo7Tu2yneLUdbPJ7w13c5wvJih9bBQ@mail.gmail.com>
-In-Reply-To: <CAKRbtyVJ2bq5Tafmyd-Juo7Tu2yneLUdbPJ7w13c5wvJih9bBQ@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 9 Mar 2020 16:29:35 -0700
-Message-ID: <CAEf4BzYe0WS-aixmxp06reoQoEmFms_wkyxR_bYN3+_gPYMS-g@mail.gmail.com>
-Subject: Re: LIBBPF Bugs
-To:     eric@regit.org
-Cc:     bpf <bpf@vger.kernel.org>, Benjamin Nilsen <bcnilsen@ucdavis.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <158353986285.3451.6986018098665897886.stgit@ubuntu3-kvm2>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 6, 2020 at 1:50 AM Benjamin Nilsen <bcnilsen@ucdavis.edu> wrote:
->
-> Hello,
->
-> Here is a follow up to the previous email with a more in-depth look at the bugs.  I should have some more in the following days that detail the bugs found earlier and some new ones as well.
->
-> Attached is a C class and some binary files to trigger the corresponding bugs.
-> (These methods may be called in an unconventional way as I designed it with a fuzzer in mind).
->
-> The terminal output should be useful in tracing the bug.
->
-> To run, compile C program and run: ./executable id:000000
->
->
-> Regards,
-> Ben
->
+On Sat, Mar 07, 2020 at 12:11:02AM +0000, John Fastabend wrote:
+> It is not possible for the current verifier to track u32 alu ops and jmps
+> correctly. This can result in the verifier aborting with errors even though
+> the program should be verifiable. Cilium code base has hit this but worked
+> around it by changing int variables to u64 variables and marking a few
+> things volatile. It would be better to avoid these tricks.
+> 
+> But, the main reason to address this now is do_refine_retval_range() was
+> assuming return values could not be negative. Once we fix this in the
+> next patches code that was previously working will no longer work.
+> See do_refine_retval_range() patch for details.
+> 
+> The simplest example code snippet that illustrates the problem is likelyy
+> this,
+> 
+>  53: w8 = w0                    // r8 <- [0, S32_MAX],
+>                                 // w8 <- [-S32_MIN, X]
+>  54: w8 <s 0                    // r8 <- [0, U32_MAX]
+>                                 // w8 <- [0, X]
+> 
+> The expected 64-bit and 32-bit bounds after each line are shown on the
+> right. The current issue is without the w* bounds we are forced to use
+> the worst case bound of [0, U32_MAX]. To resolve this type of case,
+> jmp32 creating divergent 32-bit bounds from 64-bit bounds, we add explicit
+> 32-bit register bounds s32_{min|max}_value, u32_{min|max}_value, and
+> var32_off. Then from branch_taken logic creating new bounds we can
+> track 32-bit bounds explicitly.
+> 
+> The next case we observed is ALU ops after the jmp32,
+> 
+>  53: w8 = w0                    // r8 <- [0, S32_MAX],
+>                                 // w8 <- [-S32_MIN, X]
+>  54: w8 <s 0                    // r8 <- [0, U32_MAX]
+>                                 // w8 <- [0, X]
+>  55: w8 += 1                    // r8 <- [0, U32_MAX+1]
+>                                 // w8 <- [0, X+1]
+> 
+> In order to keep the bounds accurate at this point we also need to track
+> ALU32 ops. To do this we add explicit alu32 logic for each of the alu
+> ops, mov, add, sub, etc.
+> 
+> Finally there is a question of how and when to merge bounds. The cases
+> enumerate here,
+> 
+> 1. MOV ALU32   - zext 32-bit -> 64-bit
+> 2. MOV ALU64   - copy 64-bit -> 32-bit
+> 3. op  ALU32   - zext 32-bit -> 64-bit
+> 4. op  ALU64   - n/a
+> 5. jmp ALU32   - 64-bit: var32_off | var64_off
+> 6. jmp ALU64   - 32-bit: (>> (<< var64_off))
+> 
+> Details for each case,
+> 
+> For "MOV ALU32" BPF arch zero extends so we simply copy the bounds
+> from 32-bit into 64-bit ensuring we cast the var32_off. See zext_32_to_64.
+> 
+> For "MOV ALU64" copy all bounds including 32-bit into new register. If
+> the src register had 32-bit bounds the dst register will as well.
+> 
+> For "op ALU32" zero extend 32-bit into 64-bit, see zext_32_to_64.
+> 
+> For "op ALU64" calculate both 32-bit and 64-bit bounds no merging
+> is done here. Except we have a special case. When RSH or ARSH is
+> done we can't simply ignore shifting bits from 64-bit reg into the
+> 32-bit subreg. So currently just push bounds from 64-bit into 32-bit.
+> This will be correct in the sense that they will represent a valid
+> state of the register. However we could lose some accuracy if an
+> ARSH is following a jmp32 operation. We can handle this special
+> case in a follow up series.
+> 
+> For "jmp ALU32" mark 64-bit reg unknown and recalculate 64-bit bounds
+> from tnum by setting var_off to ((<<(>>var_off)) | var32_off). We
+> special case if 64-bit bounds has zero'd upper 32bits at which point
+> wee can simply copy 32-bit bounds into 64-bit register. This catches
+> a common compiler trick where upper 32-bits are zeroed and then
+> 32-bit ops are used followed by a 64-bit compare or 64-bit op on
+> a pointer. See __reg_combine_64_into_32().
+> 
+> For "jmp ALU64" cast the bounds of the 64bit to their 32-bit
+> counterpart. For example s32_min_value = (s32)reg->smin_value. For
+> tnum use only the lower 32bits via, (>>(<<var_off)). See
+> __reg_combine_64_into_32().
+> 
+> Some questions and TBDs aka the RFC part,
+> 
+>  0) opinions on the approach?
 
-Thanks Benjamin!
+thanks a lot for working it!
+That's absolutely essential verifier improvement.
 
-Eric, you seem to have done most work on netlink-related parts of
-libbpf. Do you mind taking a look at these bug reports?
+s32_{min|max}_value, u32_{min|max}_value are necessary, for sure.
+but could you explain why permanent var32_off is necessary too?
+It seems to me var32_off is always temporary and doesn't need to
+be part of bpf_reg_state.
+It seems scalar32_min_max_sub/add/... funcs can operate on var_off
+with 32-bit masking or they can accept 'struct tnum *' as
+another argument and adjust_scalar_min_max_vals() can have
+stack local var32_off that gets adjusted similar to what you have:
+  if (alu32)
+    zext_32_to_64(dst_reg);
+at the end?
+but with local var32_off passed into zext_32_to_64().
 
-> Bug 1: error with libbpf_nla_dump_errormsg()
-> The binary file: "id:000000" causes this crash.
->
-> From terminal:
->
-> Calling libbpf_nla_dump_errormsg
->
->
-> Value of nla_len = 13619
->
-> AddressSanitizer:DEADLYSIGNAL
->
-> =================================================================
->
-> ==28356==ERROR: AddressSanitizer: stack-overflow on address 0x7ffe555d74c0 (pc 0x55f1f9765b38 bp 0x7f20ebfb6c24 sp 0x7ffe555d3da0 T0)
->
->     #0 0x55f1f9765b37 in nla_ok /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c
->
->     #1 0x55f1f9765b37 in libbpf_nla_parse /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:112
->
->     #2 0x55f1f97674df in libbpf_nla_dump_errormsg /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:183:6
->
->     #3 0x55f1f9767c82 in main /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:249:1
->
->     #4 0x7f20eabddb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)
->
->     #5 0x55f1f96332d9 in _start (/home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.fast+0x272d9)
->
->
-> SUMMARY: AddressSanitizer: stack-overflow /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c in nla_ok
->
-> ==28356==ABORTING
->
->
->
->
->
->
->
-> Bug 2: error with libbpf_nla_parse_nested()
->
-> The binary file "id:000001" causes this crash.
->
->
-> From Terminal:
->
-> libbpf_nla_parse_nested
->
-> =================================================================
->
-> ==51153==ERROR: AddressSanitizer: negative-size-param: (size=-2952410560)
->
->     #0 0x563779c9bdf1 in __asan_memset /tmp/final/llvm.src/projects/compiler-rt/lib/asan/asan_interceptors_memintrinsics.cc:27:3
->
->     #1 0x563779d274ea in libbpf_nla_parse /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:110:2
->
->     #2 0x563779d29d2a in libbpf_nla_parse_nested /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:153:9
->
->     #3 0x563779d29d2a in main /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:253
->
->     #4 0x7f85e283fb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)
->
->     #5 0x563779bf52d9 in _start (/home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.fast+0x272d9)
->
->
-> Address 0x7ffe120ab478 is located in stack of thread T0 at offset 56 in frame
->
->
->
->
-> Bug 3: error with libbpf_nla_dump_errormsg()
-> The binary file "id:000003" causes this crash.
->
-> From Terminal:
->
-> Calling libbpf_nla_dump_errormsg
->
->
-> AddressSanitizer:DEADLYSIGNAL
->
-> =================================================================
->
-> ==31841==ERROR: AddressSanitizer: SEGV on unknown address 0x7ffe6a8e1e51 (pc 0x55e81517d505 bp 0x7ffe083b3e80 sp 0x7ffe083b3dc0 T0)
->
-> ==31841==The signal is caused by a READ memory access.
->
->     #0 0x55e81517d504 in nla_ok /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c
->
->     #1 0x55e81517d504 in libbpf_nla_parse /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:112
->
->     #2 0x55e81517f4df in libbpf_nla_dump_errormsg /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:183:6
->
->     #3 0x55e81517fc82 in main /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:249:1
->
->     #4 0x7f887b165b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)
->
->     #5 0x55e81504b2d9 in _start (/home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.fast+0x272d9)
->
->
-> AddressSanitizer can not provide additional info.
->
-> SUMMARY: AddressSanitizer: SEGV /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c in nla_ok
->
-> ==31841==ABORTING
->
->
->
->
-> Bug 4: error with libbpf_nla_parse_nested()
-> The binary file "id:000004" causes this crash.
->
-> From Terminal:
->
-> Calling libbpf_nla_dump_errormsg
->
->
-> Value of nla_len = 1
->
-> Kernel error message: (null)
->
-> libbpf_nla_parse_nested
->
-> =================================================================
->
-> ==5753==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7fffb86702f8 at pc 0x55f5e071fedf bp 0x7fffb8670230 sp 0x7fffb866f9e0
->
-> WRITE of size 206576 at 0x7fffb86702f8 thread T0
->
->     #0 0x55f5e071fede in __asan_memset /tmp/final/llvm.src/projects/compiler-rt/lib/asan/asan_interceptors_memintrinsics.cc:27:3
->
->     #1 0x55f5e07ab4ea in libbpf_nla_parse /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:110:2
->
->     #2 0x55f5e07add2a in libbpf_nla_parse_nested /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:153:9
->
->     #3 0x55f5e07add2a in main /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:253
->
->     #4 0x7f634d278b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)
->
->     #5 0x55f5e06792d9 in _start (/home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.fast+0x272d9)
->
->
-> Address 0x7fffb86702f8 is located in stack of thread T0 at offset 88 in frame
->
->     #0 0x55f5e07ad9ff in main /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:200
->
->
->   This frame has 1 object(s):
->
->     [32, 88) 'pta' (line 219) <== Memory access at offset 88 overflows this variable
->
-> HINT: this may be a false positive if your program uses some custom stack unwind mechanism, swapcontext or vfork
->
->       (longjmp and C++ exceptions *are* supported)
->
-> SUMMARY: AddressSanitizer: stack-buffer-overflow /tmp/final/llvm.src/projects/compiler-rt/lib/asan/asan_interceptors_memintrinsics.cc:27:3 in __asan_memset
->
-> Shadow bytes around the buggy address:
->
->   0x1000770c6000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->
->   0x1000770c6010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->
->   0x1000770c6020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->
->   0x1000770c6030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->
->   0x1000770c6040: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->
-> =>0x1000770c6050: 00 00 00 00 f1 f1 f1 f1 00 00 00 00 00 00 00[f3]
->
->   0x1000770c6060: f3 f3 f3 f3 00 00 00 00 00 00 00 00 00 00 00 00
->
->   0x1000770c6070: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->
->   0x1000770c6080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->
->   0x1000770c6090: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->
->   0x1000770c60a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->
->
->
->
->
->
-> Bug 5:
-> The binary file "id:000006" causes this crash.
->
-> From Terminal:
->
-> Calling libbpf_nla_dump_errormsg
->
->
-> Value of nla_len = 64
->
-> Value of nla_len = 32765
->
-> Attribute of type 0 found multiple times in message, previous attribute is being ignored.
->
-> AddressSanitizer:DEADLYSIGNAL
->
-> =================================================================
->
-> ==55647==ERROR: AddressSanitizer: stack-overflow on address 0x7ffdf2ecd6cc (pc 0x55f55cc87b38 bp 0x7fc57936bc24 sp 0x7ffdf2ec54a0 T0)
->
->     #0 0x55f55cc87b37 in nla_ok /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c
->
->     #1 0x55f55cc87b37 in libbpf_nla_parse /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:112
->
->     #2 0x55f55cc894df in libbpf_nla_dump_errormsg /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:183:6
->
->     #3 0x55f55cc89c82 in main /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:249:1
->
->     #4 0x7fc577f92b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)
->
->     #5 0x55f55cb552d9 in _start (/home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.fast+0x272d9)
->
->
->
-> Bug 6: error with libbpf_nla_parse()
-> The binary file "id:000009" causes this crash.
->
-> From Terminal:
->
-> Calling libbpf_nla_dump_errormsg
->
->
-> libbpf_nla_parse_nested
->
-> Value of nla_len = 64052
->
-> libbpf_nla_parse
->
-> Value of nla_len = 13619
->
-> AddressSanitizer:DEADLYSIGNAL
->
-> =================================================================
->
-> ==45753==ERROR: AddressSanitizer: stack-overflow on address 0x7ffd12cc54fe (pc 0x556d02baeb38 bp 0x7f80f4a19c24 sp 0x7ffd12cc1f20 T0)
->
->     #0 0x556d02baeb37 in nla_ok /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c
->
->     #1 0x556d02baeb37 in libbpf_nla_parse /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:112
->
->     #2 0x556d02bb0da9 in main /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:257:1
->
->     #3 0x7f80f3640b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)
->
->     #4 0x556d02a7c2d9 in _start (/home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.fast+0x272d9)
->
->
->
-> Bug 7:
->
-> The binary file "id:000014" causes this crash.
->
->
-> From Terminal:
->
-> Calling libbpf_nla_dump_errormsg
->
->
-> Value of nla_len = 51253
->
-> Kernel error message: (null)
->
-> libbpf_nla_parse_nested
->
-> =================================================================
->
-> ==56762==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7ffd9f8521b8 at pc 0x55585aa85edf bp 0x7ffd9f8520f0 sp 0x7ffd9f8518a0
->
-> WRITE of size 224 at 0x7ffd9f8521b8 thread T0
->
->     #0 0x55585aa85ede in __asan_memset /tmp/final/llvm.src/projects/compiler-rt/lib/asan/asan_interceptors_memintrinsics.cc:27:3
->
->     #1 0x55585ab114ea in libbpf_nla_parse /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:110:2
->
->     #2 0x55585ab13d2a in libbpf_nla_parse_nested /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:153:9
->
->     #3 0x55585ab13d2a in main /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:253
->
->     #4 0x7f5b104b9b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)
->
->     #5 0x55585a9df2d9 in _start (/home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.fast+0x272d9)
->
->
-> Address 0x7ffd9f8521b8 is located in stack of thread T0 at offset 88 in frame
->
->     #0 0x55585ab139ff in main /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:200
->
->
->   This frame has 1 object(s):
->
->     [32, 88) 'pta' (line 219) <== Memory access at offset 88 overflows this variable
->
->
->
->
-> Bug 8: Error with validate_nla
-> The binary file "id:000019" causes this crash.
->
-> From Terminal:
->
-> Calling libbpf_nla_dump_errormsg
->
->
-> Value of nla_len = 0
->
-> Kernel error message: (null)
->
-> libbpf_nla_parse_nested
->
-> Value of nla_len = 54375
->
-> libbpf_nla_parse
->
-> Value of nla_len = 2758
->
-> Value of nla_len = 0
->
-> validate_nla
->
-> AddressSanitizer:DEADLYSIGNAL
->
-> =================================================================
->
-> ==16614==ERROR: AddressSanitizer: stack-overflow on address 0x7ffddbaa8ac2 (pc 0x55af14a70660 bp 0x7fee9b192c24 sp 0x7ffddba98c70 T0)
->
->     #0 0x55af14a7065f in validate_nla /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:57:10
->
->     #1 0x55af14a71dfb in main /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:261:1
->
->     #2 0x7fee99db9b96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)
->
->     #3 0x55af1493d2d9 in _start (/home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.fast+0x272d9)
->
->
-> SUMMARY: AddressSanitizer: stack-overflow /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:57:10 in validate_nla
->
-> ==16614==ABORTING
->
->
->
-> Bug 9:
->
-> The binary file "id:000023" causes this crash.
->
-> From Terminal:
->
-> Calling libbpf_nla_dump_errormsg
->
->
-> Value of nla_len = 1519
->
-> Value of nla_len = 0
->
-> Kernel error message:
->
-> libbpf_nla_parse_nested
->
-> =================================================================
->
-> ==78237==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7ffed48f3398 at pc 0x55e8e9a61edf bp 0x7ffed48f32d0 sp 0x7ffed48f2a80
->
-> WRITE of size 30033832 at 0x7ffed48f3398 thread T0
->
->     #0 0x55e8e9a61ede in __asan_memset /tmp/final/llvm.src/projects/compiler-rt/lib/asan/asan_interceptors_memintrinsics.cc:27:3
->
->     #1 0x55e8e9aed4ea in libbpf_nla_parse /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:110:2
->
->     #2 0x55e8e9aefd2a in libbpf_nla_parse_nested /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:153:9
->
->     #3 0x55e8e9aefd2a in main /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:253
->
->     #4 0x7f593cf0eb96 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b96)
->
->     #5 0x55e8e99bb2d9 in _start (/home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.fast+0x272d9)
->
->
-> Address 0x7ffed48f3398 is located in stack of thread T0 at offset 88 in frame
->
->     #0 0x55e8e9aef9ff in main /home/bcnilsen/bcc/src/cc/libbpf/srcRemote/nlattrFuzz.c:200
->
->
->   This frame has 1 object(s):
->
->     [32, 88) 'pta' (line 219) <== Memory access at offset 88 overflows this variable
->
->
->
->
->
+In a bunch of places the verifier looks at var_off directly and
+I don't think it needs to look at var32_off.
+Thinking about it differently... var_off is a bit representation of
+64-bit register. So that bit representation doesn't really have
+32 or 16-bit chunks. It's a full 64-bit register. I think all alu32
+and jmp32 ops can update var_off without losing information.
+
+Surely having var32_off in reg_state makes copy-pasting scalar_min_max
+into scalar32_min_max easier, but with temporary var_off it should
+be just as easy to copy-paste...
+
+>  1) We currently tnum always has 64-bits even for the 32-bit tnum
+>     tracking. I think ideally we convert the tnum var32_off to a
+>     32-bit type so the types are correct both in the verifier and
+>     from what it is tracking. But this in turn means we end up
+>     with tnum32 ops. It seems to not be strictly needed though so
+>     I'm saving it for a follow up series. Any thoughts?
+> 
+>     struct tnum {
+>        u64 value;
+>        u64 mask;
+>     }
+> 
+>     struct tnum32 {
+>        u32 value;
+>        u32 mask;
+>     }
+
+I wouldn't bother.
+
+>  2) I guess this patch could be split into two and still be
+>     workable. First patch to do alu32 logic and second to
+>     do jmp32 logic. I slightly prefer the single big patch
+>     to keep all the logic in one patch but it makes for a
+>     large change. I'll tear it into two if folks care.
+
+single patch is fine by me.
+
+>  3) This is passing test_verifier I need to run test_progs
+>     all the way through still. My test box missed a few tests
+>     due to kernel feature flags.
+> 
+>  4) I'm testing Cilium now as well to be sure we are still
+>     working there.
+> 
+>  5) Do we like this approach? Should we push it all the way
+>     through to stable? We need something for stable and I
+>     haven't found a better solution yet. Its a good chunk
+>     of code though if we do that we probably want the fuzzers
+>     to run over it first.
+
+eventually we can send it to older releases.
+With this much extra verifier code it has to bake in for
+a release or two.
+
+>  6) I need to do another review pass.
+> 
+>  7) I'm writing a set of verifier tests to exercise some of
+>     the more subtle 32 vs 64-bit cases now.
+
++1
+
+>  		}
+> +		scalar32_min_max_add(dst_reg, &src_reg);
+>  		scalar_min_max_add(dst_reg, &src_reg);
+>  		break;
+>  	case BPF_SUB:
+> @@ -5131,25 +5635,19 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
+>  			verbose(env, "R%d tried to sub from different pointers or scalars\n", dst);
+>  			return ret;
+>  		}
+> +		scalar32_min_max_sub(dst_reg, &src_reg);
+>  		scalar_min_max_sub(dst_reg, &src_reg);
+>  		break;
+>  	case BPF_MUL:
+> +		scalar32_min_max_mul(dst_reg, &src_reg);
+>  		scalar_min_max_mul(dst_reg, &src_reg);
+
+I think it's correct to keep adjusting 64-bit and 32-bit min/max
+individually for every alu, but it feels that var_off should be common.
