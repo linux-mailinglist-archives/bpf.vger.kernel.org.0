@@ -2,61 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE0717DE75
-	for <lists+bpf@lfdr.de>; Mon,  9 Mar 2020 12:14:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F95917DE69
+	for <lists+bpf@lfdr.de>; Mon,  9 Mar 2020 12:14:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726379AbgCILOT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Mar 2020 07:14:19 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:35592 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726444AbgCILNN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Mar 2020 07:13:13 -0400
-Received: by mail-wr1-f66.google.com with SMTP id r7so10552762wro.2
-        for <bpf@vger.kernel.org>; Mon, 09 Mar 2020 04:13:12 -0700 (PDT)
+        id S1726811AbgCILNS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Mar 2020 07:13:18 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:43841 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726742AbgCILNR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Mar 2020 07:13:17 -0400
+Received: by mail-wr1-f65.google.com with SMTP id v9so10505658wrf.10
+        for <bpf@vger.kernel.org>; Mon, 09 Mar 2020 04:13:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bXYQbvQcpVVfxQJOftOtLbw866myUq7cAFw4ms5hCzI=;
-        b=xFcofdtjFoUwBtvCbSm2iPdfivasWRGJkR53WQmyBVLv04AbNSdHAfQQzmbA5OE88U
-         Xt8vdTlWliLZDQUymfBQ2a3NH8if6G8qj3NeUYwyvFq4bURnnlr8GWPtcsjfqcLDcDfk
-         UF9KyEq4LGXwQHSjcsfqCE1p9eoq5cN2bVGZI=
+        bh=l0ktpDWRQDpySqc55O3ycjYmqR9R3A/TAGAj92uhxn4=;
+        b=lsDFCtzXoGyzp8BojMVT0mpbNB9e5AzYEbZF7+Vflwqw/Yu6HaPKpfJFS9jfR4DUrx
+         s3AkLVbeMXqYviEixKJlNtUkFGZM5yHLT8Kd1JBBB6bUoEzRvqGHLAKzSlNRxq0hiN3C
+         RdVOYhNPXTEh3G0Qe0Y4eiC61rnfsrHOsYpyY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bXYQbvQcpVVfxQJOftOtLbw866myUq7cAFw4ms5hCzI=;
-        b=SL6Q/+z5jUvOeRYMsCTUlD9pzUUv++MxrtYMYJN0pwV7rvWtWRLWIi8Zvvl0od6h4V
-         70j117+BfhJmiUS/+D5wCzMO6o9ez4Nj2jArV1ZoF3r7ggRJpH9fGm8yzXeglKenSrBI
-         pm17J8cA/ecaMO7y82GgBjZwe2ZzJxp7OG0sRbrAMFJR9ZU9Q2hT2coQzEKVyL6E8B3s
-         fFtnuhgn16lty86U41Qeu39eT0fX2wM+4AryDo4H3ACfHVPifgQ8g/L+UIBTpX95EUCf
-         AP2kcqfi8Xu+qhGXhqq/HFbRde8S0qUJrD0nU9BX9PrZ0FS2pdxvOmERzvha8xuxEJU1
-         4o4w==
-X-Gm-Message-State: ANhLgQ0N4HlzUVlcEtDx3QhxBPNfBdcYhszkU8cotOOfvEowl2zS3WXF
-        ON/JbkK363/n9IqIJIy8+LPQMA==
-X-Google-Smtp-Source: ADFU+vt7604NF4aclxTrcoVHcTHYp7wb/YpuXMQtBXRHz5ddOg6tyku4iGXZWaw8xkvrhcLh77Zqpw==
-X-Received: by 2002:a05:6000:12c9:: with SMTP id l9mr21767238wrx.25.1583752392194;
-        Mon, 09 Mar 2020 04:13:12 -0700 (PDT)
+        bh=l0ktpDWRQDpySqc55O3ycjYmqR9R3A/TAGAj92uhxn4=;
+        b=ud6uHnrUqP94BK6urw2QvWRPxPxZpoU+R5XHQoAh/dGSByy9Np3WcjEh/25Gbf1Egs
+         1LsANTht8aHa9yTUaujHAYntgO4waiYNGonz/qqCqrWxyMFiLsdYm++YxSQMNuMI6gJu
+         jTD7CDV07+aGmqdE3rFt25eiDp4cCbBhO2lTl0vWQ6YG2qXLXtPdQ9oY931+ltshJUM0
+         jV7X1Ljm0EqGRGciqGwu/Y8FQ6g0jV0lMIAvzKqEjYMJ+5SnPx6Os5L1voGSaVRZlXld
+         m6cnfMLaPzxu6JEfJFwV8qVuLJd/dzDS5rbcmFVp8JFCEkfq5a6loQDf/3WwQ8T8EIQM
+         JhFw==
+X-Gm-Message-State: ANhLgQ13XYrDAXGx+DSVrYvqSzWi9KU4yYXJi25uH9IiqzZb/zrqGl0B
+        Z+1rTQBGhlSqLiy4i6Sf3/LCxA==
+X-Google-Smtp-Source: ADFU+vuZLy9l5fDEExjlVjYsQqqtTJX6BELy9Vyk7fsm0xfvThaVLXjqvV3FD10xTBBoJsm1XPY6hA==
+X-Received: by 2002:a5d:550f:: with SMTP id b15mr20607372wrv.19.1583752394074;
+        Mon, 09 Mar 2020 04:13:14 -0700 (PDT)
 Received: from localhost.localdomain ([2a06:98c0:1000:8250:3dcc:c1d:7f05:4873])
-        by smtp.gmail.com with ESMTPSA id a5sm25732846wmb.37.2020.03.09.04.13.10
+        by smtp.gmail.com with ESMTPSA id a5sm25732846wmb.37.2020.03.09.04.13.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Mar 2020 04:13:11 -0700 (PDT)
+        Mon, 09 Mar 2020 04:13:13 -0700 (PDT)
 From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
+To:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Jakub Sitnicki <jakub@cloudflare.com>,
         Lorenz Bauer <lmb@cloudflare.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
         Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
         Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>
 Cc:     kernel-team@cloudflare.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v4 02/12] skmsg: update saved hooks only once
-Date:   Mon,  9 Mar 2020 11:12:33 +0000
-Message-Id: <20200309111243.6982-3-lmb@cloudflare.com>
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next v4 03/12] bpf: tcp: move assertions into tcp_bpf_get_proto
+Date:   Mon,  9 Mar 2020 11:12:34 +0000
+Message-Id: <20200309111243.6982-4-lmb@cloudflare.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200309111243.6982-1-lmb@cloudflare.com>
 References: <20200309111243.6982-1-lmb@cloudflare.com>
@@ -67,83 +67,168 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Only update psock->saved_* if psock->sk_proto has not been initialized
-yet. This allows us to get rid of tcp_bpf_reinit_sk_prot.
+We need to ensure that sk->sk_prot uses certain callbacks, so that
+code that directly calls e.g. tcp_sendmsg in certain corner cases
+works. To avoid spurious asserts, we must to do this only if
+sk_psock_update_proto has not yet been called. The same invariants
+apply for tcp_bpf_check_v6_needs_rebuild, so move the call as well.
+
+Doing so allows us to merge tcp_bpf_init and tcp_bpf_reinit.
 
 Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
 Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
 Acked-by: John Fastabend <john.fastabend@gmail.com>
 ---
- include/linux/skmsg.h | 20 ++++++++++++++++----
- net/ipv4/tcp_bpf.c    | 16 +---------------
- 2 files changed, 17 insertions(+), 19 deletions(-)
+ include/net/tcp.h   |  1 -
+ net/core/sock_map.c | 25 +++++++++----------------
+ net/ipv4/tcp_bpf.c  | 42 ++++++++++++++++++++++--------------------
+ 3 files changed, 31 insertions(+), 37 deletions(-)
 
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index 4d3d75d63066..2be51b7a5800 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -347,11 +347,23 @@ static inline void sk_psock_update_proto(struct sock *sk,
- 					 struct sk_psock *psock,
- 					 struct proto *ops)
- {
--	psock->saved_unhash = sk->sk_prot->unhash;
--	psock->saved_close = sk->sk_prot->close;
--	psock->saved_write_space = sk->sk_write_space;
-+	/* Initialize saved callbacks and original proto only once, since this
-+	 * function may be called multiple times for a psock, e.g. when
-+	 * psock->progs.msg_parser is updated.
-+	 *
-+	 * Since we've not installed the new proto, psock is not yet in use and
-+	 * we can initialize it without synchronization.
-+	 */
-+	if (!psock->sk_proto) {
-+		struct proto *orig = READ_ONCE(sk->sk_prot);
-+
-+		psock->saved_unhash = orig->unhash;
-+		psock->saved_close = orig->close;
-+		psock->saved_write_space = sk->sk_write_space;
-+
-+		psock->sk_proto = orig;
-+	}
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index 07f947cc80e6..ccf39d80b695 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -2196,7 +2196,6 @@ struct sk_msg;
+ struct sk_psock;
  
--	psock->sk_proto = sk->sk_prot;
- 	/* Pairs with lockless read in sk_clone_lock() */
- 	WRITE_ONCE(sk->sk_prot, ops);
- }
+ int tcp_bpf_init(struct sock *sk);
+-void tcp_bpf_reinit(struct sock *sk);
+ int tcp_bpf_sendmsg_redir(struct sock *sk, struct sk_msg *msg, u32 bytes,
+ 			  int flags);
+ int tcp_bpf_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index cb8f740f7949..fafcbd22ecba 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -145,8 +145,8 @@ static int sock_map_link(struct bpf_map *map, struct sk_psock_progs *progs,
+ 			 struct sock *sk)
+ {
+ 	struct bpf_prog *msg_parser, *skb_parser, *skb_verdict;
+-	bool skb_progs, sk_psock_is_new = false;
+ 	struct sk_psock *psock;
++	bool skb_progs;
+ 	int ret;
+ 
+ 	skb_verdict = READ_ONCE(progs->skb_verdict);
+@@ -191,18 +191,14 @@ static int sock_map_link(struct bpf_map *map, struct sk_psock_progs *progs,
+ 			ret = -ENOMEM;
+ 			goto out_progs;
+ 		}
+-		sk_psock_is_new = true;
+ 	}
+ 
+ 	if (msg_parser)
+ 		psock_set_prog(&psock->progs.msg_parser, msg_parser);
+-	if (sk_psock_is_new) {
+-		ret = tcp_bpf_init(sk);
+-		if (ret < 0)
+-			goto out_drop;
+-	} else {
+-		tcp_bpf_reinit(sk);
+-	}
++
++	ret = tcp_bpf_init(sk);
++	if (ret < 0)
++		goto out_drop;
+ 
+ 	write_lock_bh(&sk->sk_callback_lock);
+ 	if (skb_progs && !psock->parser.enabled) {
+@@ -239,15 +235,12 @@ static int sock_map_link_no_progs(struct bpf_map *map, struct sock *sk)
+ 	if (IS_ERR(psock))
+ 		return PTR_ERR(psock);
+ 
+-	if (psock) {
+-		tcp_bpf_reinit(sk);
+-		return 0;
++	if (!psock) {
++		psock = sk_psock_init(sk, map->numa_node);
++		if (!psock)
++			return -ENOMEM;
+ 	}
+ 
+-	psock = sk_psock_init(sk, map->numa_node);
+-	if (!psock)
+-		return -ENOMEM;
+-
+ 	ret = tcp_bpf_init(sk);
+ 	if (ret < 0)
+ 		sk_psock_put(sk, psock);
 diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index 7d6e1b75d4d4..3327afa05c3d 100644
+index 3327afa05c3d..ed8a8f3c9afe 100644
 --- a/net/ipv4/tcp_bpf.c
 +++ b/net/ipv4/tcp_bpf.c
-@@ -637,20 +637,6 @@ static void tcp_bpf_update_sk_prot(struct sock *sk, struct sk_psock *psock)
- 	sk_psock_update_proto(sk, psock, &tcp_bpf_prots[family][config]);
+@@ -629,14 +629,6 @@ static int __init tcp_bpf_v4_build_proto(void)
  }
+ core_initcall(tcp_bpf_v4_build_proto);
  
--static void tcp_bpf_reinit_sk_prot(struct sock *sk, struct sk_psock *psock)
+-static void tcp_bpf_update_sk_prot(struct sock *sk, struct sk_psock *psock)
 -{
 -	int family = sk->sk_family == AF_INET6 ? TCP_BPF_IPV6 : TCP_BPF_IPV4;
 -	int config = psock->progs.msg_parser   ? TCP_BPF_TX   : TCP_BPF_BASE;
 -
--	/* Reinit occurs when program types change e.g. TCP_BPF_TX is removed
--	 * or added requiring sk_prot hook updates. We keep original saved
--	 * hooks in this case.
--	 *
--	 * Pairs with lockless read in sk_clone_lock().
--	 */
--	WRITE_ONCE(sk->sk_prot, &tcp_bpf_prots[family][config]);
+-	sk_psock_update_proto(sk, psock, &tcp_bpf_prots[family][config]);
 -}
 -
  static int tcp_bpf_assert_proto_ops(struct proto *ops)
  {
  	/* In order to avoid retpoline, we make assumptions when we call
-@@ -670,7 +656,7 @@ void tcp_bpf_reinit(struct sock *sk)
+@@ -648,34 +640,44 @@ static int tcp_bpf_assert_proto_ops(struct proto *ops)
+ 	       ops->sendpage == tcp_sendpage ? 0 : -ENOTSUPP;
+ }
+ 
+-void tcp_bpf_reinit(struct sock *sk)
++static struct proto *tcp_bpf_get_proto(struct sock *sk, struct sk_psock *psock)
+ {
+-	struct sk_psock *psock;
++	int family = sk->sk_family == AF_INET6 ? TCP_BPF_IPV6 : TCP_BPF_IPV4;
++	int config = psock->progs.msg_parser   ? TCP_BPF_TX   : TCP_BPF_BASE;
+ 
+-	sock_owned_by_me(sk);
++	if (!psock->sk_proto) {
++		struct proto *ops = READ_ONCE(sk->sk_prot);
+ 
+-	rcu_read_lock();
+-	psock = sk_psock(sk);
+-	tcp_bpf_update_sk_prot(sk, psock);
+-	rcu_read_unlock();
++		if (tcp_bpf_assert_proto_ops(ops))
++			return ERR_PTR(-EINVAL);
++
++		tcp_bpf_check_v6_needs_rebuild(sk, ops);
++	}
++
++	return &tcp_bpf_prots[family][config];
+ }
+ 
+ int tcp_bpf_init(struct sock *sk)
+ {
+-	struct proto *ops = READ_ONCE(sk->sk_prot);
+ 	struct sk_psock *psock;
++	struct proto *prot;
+ 
+ 	sock_owned_by_me(sk);
  
  	rcu_read_lock();
  	psock = sk_psock(sk);
--	tcp_bpf_reinit_sk_prot(sk, psock);
-+	tcp_bpf_update_sk_prot(sk, psock);
+-	if (unlikely(!psock || psock->sk_proto ||
+-		     tcp_bpf_assert_proto_ops(ops))) {
++	if (unlikely(!psock)) {
+ 		rcu_read_unlock();
+ 		return -EINVAL;
+ 	}
+-	tcp_bpf_check_v6_needs_rebuild(sk, ops);
+-	tcp_bpf_update_sk_prot(sk, psock);
++
++	prot = tcp_bpf_get_proto(sk, psock);
++	if (IS_ERR(prot)) {
++		rcu_read_unlock();
++		return PTR_ERR(prot);
++	}
++
++	sk_psock_update_proto(sk, psock, prot);
  	rcu_read_unlock();
+ 	return 0;
  }
- 
 -- 
 2.20.1
 
