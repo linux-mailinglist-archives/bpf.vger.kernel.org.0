@@ -2,149 +2,213 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 557DB180401
-	for <lists+bpf@lfdr.de>; Tue, 10 Mar 2020 17:54:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C53E180445
+	for <lists+bpf@lfdr.de>; Tue, 10 Mar 2020 18:04:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbgCJQym (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Mar 2020 12:54:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53074 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726477AbgCJQym (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Mar 2020 12:54:42 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97F9420873;
-        Tue, 10 Mar 2020 16:54:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583859281;
-        bh=XQQa0PLtN8swMBCXZL8OPpBHL06E8seSbXfVlS1Sc9Q=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=RKDipRUKJ4U3391gbaAHXUKR1S+8mTtl+uFLWAbWba+gU8n0RpHJr/1SIjXTSIhU0
-         Bm4OOqSdpTzZJBCaQMFaWl3ktQZzcHMcTH4BR+B5EdFhtKMFQlMlFubU0T+tj3F3ss
-         zeD4uis+T1/Zbf8eS4tKJtPq20m+lfLf5kPScK94=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 7617F35229CC; Tue, 10 Mar 2020 09:54:41 -0700 (PDT)
-Date:   Tue, 10 Mar 2020 09:54:41 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Frederic Weisbecker <frederic@kernel.org>, bpf@vger.kernel.org
-Subject: Re: Instrumentation and RCU
-Message-ID: <20200310165441.GE2935@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <87mu8p797b.fsf@nanos.tec.linutronix.de>
- <1403546357.21810.1583779060302.JavaMail.zimbra@efficios.com>
- <20200310014043.4dbagqbr2wsbuarm@ast-mbp>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200310014043.4dbagqbr2wsbuarm@ast-mbp>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726315AbgCJREJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Mar 2020 13:04:09 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:34603 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726295AbgCJREJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Mar 2020 13:04:09 -0400
+Received: by mail-pg1-f195.google.com with SMTP id t3so6586961pgn.1;
+        Tue, 10 Mar 2020 10:04:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=lrG3ZucMdCcyeqyrVpI+vBHvy4Tg83he6u8Wj9VL7EA=;
+        b=vfTezu0+R0NfBVEwSWE0hLsYLe4O3zJsZ0wgOJd2hqkcJ9j0h51dQnNuDNKPLYaN0A
+         kqBfLKC9x6yNwZJuHc/aOx9jEtnPlSbyiiy8bxWtKmnkhgO+7WO7939ORhc8OsWK1hog
+         oZ7vE5admdVZeh0YagmbKeSbIGVUWHbbH4PeqlXATCsy/PgP4+KyMqw2YIxgJWe2rXzZ
+         d6+9gnILZ8qLxOgjLQIKPBLzImG63ZCGrQe2qECRRkA+AuOHjYQhxoDRY9ZpbfAwiuO/
+         Fyf9W0efAdfw2IVuHnts4hvhuUY+pwNA0cGMos4bV4OVnfqfqnSLWWiLDvmxuSE27lZt
+         vDFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=lrG3ZucMdCcyeqyrVpI+vBHvy4Tg83he6u8Wj9VL7EA=;
+        b=YmLWt6VCG3dpLzb/Z7Po5ADsCfoHGZTiGumNPop0RGvOcUSFSGRcBUWgfQ8uGFsMvM
+         FSnqF+cDXD6C4gah6n72zWr1pS9GCSJ+XhZJ8oHi+GQs5DrCWdQtSkehFJYNH4S+uSR6
+         NsQitt6FsJolMRXRGEsU96fMiQb+oDOudpy32XVOXRKpVTenBfqUaM/zgyf6oaaeJ/77
+         Eo6eg5HwE98IKG8vUpKZR6w/z7Nf1iBpsqLOHVzv/7Xp1cXh9V6oeaTdm2kqa4FNJG/d
+         i7NfuH/RUuoNw5szT52zlq4K4Im6MRxVGLBHKwc4suVuEZ/sWLnwevcrEYDpKQT4JGa2
+         80PQ==
+X-Gm-Message-State: ANhLgQ3lLcfIf60HPl76porWjYKS/Adn8yXVrL/KBdGhYQAzeHTUu7Bg
+        XMq6YbMgVEt5Z4qjXP8OPKg=
+X-Google-Smtp-Source: ADFU+vv9KvcYMdxwNxd5rfv0Rh7dedLesnQACNDnW1qSeq23OcaJmLRxWYAANdPOnnpTJiR1X0yisQ==
+X-Received: by 2002:a62:194c:: with SMTP id 73mr2281669pfz.159.1583859848018;
+        Tue, 10 Mar 2020 10:04:08 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id k16sm10589062pfa.10.2020.03.10.10.04.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Mar 2020 10:04:07 -0700 (PDT)
+Date:   Tue, 10 Mar 2020 10:04:00 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     yhs@fb.com, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Message-ID: <5e67c8802f8e9_1e8a2b0e88e0a5bcc@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200309235828.wldukb66bdwy2dzd@ast-mbp>
+References: <158353965971.3451.14666851223845760316.stgit@ubuntu3-kvm2>
+ <158353986285.3451.6986018098665897886.stgit@ubuntu3-kvm2>
+ <20200309235828.wldukb66bdwy2dzd@ast-mbp>
+Subject: Re: [RFC PATCH 2/4] bpf: verifier, do explicit u32 bounds tracking
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 09, 2020 at 06:40:45PM -0700, Alexei Starovoitov wrote:
-> On Mon, Mar 09, 2020 at 02:37:40PM -0400, Mathieu Desnoyers wrote:
-> > > 
-> > >    But what's relevant is the tracer overhead which is e.g. inflicted
-> > >    with todays trace_hardirqs_off/on() implementation because that
-> > >    unconditionally uses the rcuidle variant with the scru/rcu_irq dance
-> > >    around every tracepoint.
+Alexei Starovoitov wrote:
+> On Sat, Mar 07, 2020 at 12:11:02AM +0000, John Fastabend wrote:
+> > It is not possible for the current verifier to track u32 alu ops and jmps
+> > correctly. This can result in the verifier aborting with errors even though
+> > the program should be verifiable. Cilium code base has hit this but worked
+> > around it by changing int variables to u64 variables and marking a few
+> > things volatile. It would be better to avoid these tricks.
 > > 
-> > I think one of the big issues here is that most of the uses of
-> > trace_hardirqs_off() are from sites which already have RCU watching,
-> > so we are doing heavy-weight operations for nothing.
-> 
-> I think kernel/trace/trace_preemptirq.c created too many problems for the
-> kernel without providing tangible benefits. My understanding no one is using it
-> in production. It's a tool to understand how kernel works. And such debugging
-> tool can and should be removed.
-> 
-> One of Thomas's patches mentioned that bpf can be invoked from hardirq and
-> preempt tracers. This connection doesn't exist in a direct way, but
-> theoretically it's possible. There is no practical use though and I would be
-> happy to blacklist such bpf usage at a minimum.
-> 
-> > We could use the approach proposed by Peterz's and Steven's patches to basically
-> > do a lightweight "is_rcu_watching()" check for rcuidle tracepoint, and only enable
-> > RCU for those cases. We could then simply go back on using regular RCU like so:
+> > But, the main reason to address this now is do_refine_retval_range() was
+> > assuming return values could not be negative. Once we fix this in the
+> > next patches code that was previously working will no longer work.
+> > See do_refine_retval_range() patch for details.
 > > 
-> > #define __DO_TRACE(tp, proto, args, cond, rcuidle)                      \
-> >         do {                                                            \
-> >                 struct tracepoint_func *it_func_ptr;                    \
-> >                 void *it_func;                                          \
-> >                 void *__data;                                           \
-> >                 bool exit_rcu = false;                                  \
-> >                                                                         \
-> >                 if (!(cond))                                            \
-> >                         return;                                         \
-> >                                                                         \
-> >                 if (rcuidle && !rcu_is_watching()) {                    \
-> >                         rcu_irq_enter_irqson();                         \
-> >                         exit_rcu = true;                                \
-> >                 }                                                       \
-> >                 preempt_disable_notrace();                              \
-> >                 it_func_ptr = rcu_dereference_raw((tp)->funcs);         \
-> >                 if (it_func_ptr) {                                      \
-> >                         do {                                            \
-> >                                 it_func = (it_func_ptr)->func;          \
-> >                                 __data = (it_func_ptr)->data;           \
-> >                                 ((void(*)(proto))(it_func))(args);      \
-> >                         } while ((++it_func_ptr)->func);                \
-> >                 }                                                       \
-> >                 preempt_enable_notrace();                               \
-> >                 if (exit_rcu)                                           \
-> >                         rcu_irq_exit_irqson();                          \
-> >         } while (0)
+
+[...]
+
+> > Some questions and TBDs aka the RFC part,
+> > 
+> >  0) opinions on the approach?
 > 
-> I think it's a fine approach interim.
+> thanks a lot for working it!
+> That's absolutely essential verifier improvement.
+
+Agreed, this works nicely with some of our codes and removes a
+bunch of hacks we had to get C code verified, using uint64_t
+unnecessarily for example and some scattered volatiles.
+
 > 
-> Long term sounds like Paul is going to provide sleepable and low overhead
-> rcu_read_lock_for_tracers() that will include bpf.
+> s32_{min|max}_value, u32_{min|max}_value are necessary, for sure.
+> but could you explain why permanent var32_off is necessary too?
+> It seems to me var32_off is always temporary and doesn't need to
+> be part of bpf_reg_state.
+> It seems scalar32_min_max_sub/add/... funcs can operate on var_off
+> with 32-bit masking or they can accept 'struct tnum *' as
+> another argument and adjust_scalar_min_max_vals() can have
+> stack local var32_off that gets adjusted similar to what you have:
+>   if (alu32)
+>     zext_32_to_64(dst_reg);
+> at the end?
+> but with local var32_off passed into zext_32_to_64().
 
-It now builds without errors, so the obvious problems are taken care of...
+Seems better to me. Will use a temporary variable.
 
-Working on the less-obvious errors as rcutorture encounters them.
+> 
+> In a bunch of places the verifier looks at var_off directly and
+> I don't think it needs to look at var32_off.
+> Thinking about it differently... var_off is a bit representation of
+> 64-bit register. So that bit representation doesn't really have
+> 32 or 16-bit chunks. It's a full 64-bit register. I think all alu32
+> and jmp32 ops can update var_off without losing information.
 
-> My understanding that this new rcu flavor won't have "idle" issues,
-> so rcu_is_watching() checks will not be necessary.
++1
 
-True.  However, if the from-idle code invokes other code relying on
-vanilla RCU, such checks are still required.  But I must let others
-weigh in on this.
+> 
+> Surely having var32_off in reg_state makes copy-pasting scalar_min_max
+> into scalar32_min_max easier, but with temporary var_off it should
+> be just as easy to copy-paste...
 
-> And if we remove trace_preemptirq.c the only thing left will be Thomas's points
-> 1 (low level entry) and 2 (breakpoints) that can be addressed without
-> creating fancy .text annotations and teach objtool about it.
+Doesn't really make the code any harder to read/write imo
 
-And the intent is to cover these cases as well.  Of course, we all know
-which road is paved with good intentions.  ;-)
+> 
+> >  1) We currently tnum always has 64-bits even for the 32-bit tnum
+> >     tracking. I think ideally we convert the tnum var32_off to a
+> >     32-bit type so the types are correct both in the verifier and
+> >     from what it is tracking. But this in turn means we end up
+> >     with tnum32 ops. It seems to not be strictly needed though so
+> >     I'm saving it for a follow up series. Any thoughts?
+> > 
+> >     struct tnum {
+> >        u64 value;
+> >        u64 mask;
+> >     }
+> > 
+> >     struct tnum32 {
+> >        u32 value;
+> >        u32 mask;
+> >     }
+> 
+> I wouldn't bother.
 
-> In the mean time I've benchmarked srcu for sleepable bpf and it's quite heavy.
-> srcu_read_lock+unlock roughly adds 10x execution cost to trivial bpf prog.
-> I'm proceeding with it anyway, but really hoping that
-> rcu_read_lock_for_tracers() will materialize soon.
+Per above we can skip adding tnum32 to registers but I think we need
+to have 32-bit tnum ops.
 
-OK, 10x is a bit on the painful side!
+For example, BPF_ADD will do a tnum_add() this is a different
+operation when overflows happen compared to tnum32_add(). Simply
+truncating tnum_add result to 32-bits is not the same operation.
 
-							Thanx, Paul
+> 
+> >  2) I guess this patch could be split into two and still be
+> >     workable. First patch to do alu32 logic and second to
+> >     do jmp32 logic. I slightly prefer the single big patch
+> >     to keep all the logic in one patch but it makes for a
+> >     large change. I'll tear it into two if folks care.
+> 
+> single patch is fine by me.
 
-> In general I'm sceptical that .text annotations will work. Let's say all of
-> idle is a red zone. But a ton of normal functions are called when idle. So
-> objtool will go and mark them as red zone too. This way large percent of the
-> kernel will be off limits for tracers. Which is imo not a good trade off. I
-> think addressing 1 and 2 with explicit notrace/nokprobe annotations will cover
-> all practical cases where people can shot themselves in a foot with a tracer. I
-> realize that there will be forever whack-a-mole game and these annotations will
-> never reach 100%. I think it's a fine trade off. Security is never 100% either.
-> Tracing is never going to be 100% safe too.
+good, not clear to me that ripping them apart adds anything or
+is even bisectable.
+
+> 
+> >  3) This is passing test_verifier I need to run test_progs
+> >     all the way through still. My test box missed a few tests
+> >     due to kernel feature flags.
+> > 
+> >  4) I'm testing Cilium now as well to be sure we are still
+> >     working there.
+> > 
+> >  5) Do we like this approach? Should we push it all the way
+> >     through to stable? We need something for stable and I
+> >     haven't found a better solution yet. Its a good chunk
+> >     of code though if we do that we probably want the fuzzers
+> >     to run over it first.
+> 
+> eventually we can send it to older releases.
+> With this much extra verifier code it has to bake in for
+> a release or two.
+
+Makes sense to me.
+
+> 
+> >  6) I need to do another review pass.
+> > 
+> >  7) I'm writing a set of verifier tests to exercise some of
+> >     the more subtle 32 vs 64-bit cases now.
+> 
+> +1
+> 
+> >  		}
+> > +		scalar32_min_max_add(dst_reg, &src_reg);
+> >  		scalar_min_max_add(dst_reg, &src_reg);
+> >  		break;
+> >  	case BPF_SUB:
+> > @@ -5131,25 +5635,19 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
+> >  			verbose(env, "R%d tried to sub from different pointers or scalars\n", dst);
+> >  			return ret;
+> >  		}
+> > +		scalar32_min_max_sub(dst_reg, &src_reg);
+> >  		scalar_min_max_sub(dst_reg, &src_reg);
+> >  		break;
+> >  	case BPF_MUL:
+> > +		scalar32_min_max_mul(dst_reg, &src_reg);
+> >  		scalar_min_max_mul(dst_reg, &src_reg);
+> 
+> I think it's correct to keep adjusting 64-bit and 32-bit min/max
+> individually for every alu, but it feels that var_off should be common.
+
++1.
