@@ -2,86 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E6F180B06
-	for <lists+bpf@lfdr.de>; Tue, 10 Mar 2020 23:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C311180B76
+	for <lists+bpf@lfdr.de>; Tue, 10 Mar 2020 23:25:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726273AbgCJWAu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Mar 2020 18:00:50 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:35728 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726271AbgCJWAu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Mar 2020 18:00:50 -0400
-Received: by mail-pl1-f194.google.com with SMTP id g6so79213plt.2;
-        Tue, 10 Mar 2020 15:00:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=Ajqcsyyjo9Nu5o9/ld/JF2Oi7jupD5+flWV0QzEfiQw=;
-        b=cObZ80srtLkhcHp4rJar8SidBKfjS4nEh3obKVnOrXHfOw3/a99Ko6KzViUIi0RKWj
-         +M+JC//Qnu0WKlg+b33KxBzHQaFcX0bi4ctHenyZ4Cem9k9LHIXG9LKqx5cAO5zsSjl6
-         5jqaLYUBRY7G7xzred+udqDBUS2PSOEuV1+XAsMsxhzPejcE4SywqfYf+vxqea7oHL6m
-         9Ui0crtd3gWeVc7pwyqEa0bok1P20cXd1He+dqvJdgv41pMLfTfaF92SYVRjxzIOZQgK
-         DQoPDIryry/cM/g+CojuPwAMdg0m/3wIUrFWVDzJG132b7jwrmKQ5jt4SuePcf9H6FUy
-         +cQg==
+        id S1727726AbgCJWZO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Mar 2020 18:25:14 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:46085 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727642AbgCJWZN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Mar 2020 18:25:13 -0400
+Received: by mail-il1-f199.google.com with SMTP id a2so10920967ill.13
+        for <bpf@vger.kernel.org>; Tue, 10 Mar 2020 15:25:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=Ajqcsyyjo9Nu5o9/ld/JF2Oi7jupD5+flWV0QzEfiQw=;
-        b=JhxKHXi00N3YoME/glwFk/JmED8WnHBYLmNXUtia2f2mB0dHTEmAeYuScU9YsqpXqA
-         TK+D+mEFaflnTpHa1NPXs1EpsfeN6Vs2nrSf0sM56RF1G0CQs680YIW8W2rp2UKuyilY
-         HbX1Y1U4usJBLd5foChIkgqjjK/kBHuvmTA6obSw9AoFnCj2Hi8X0lnbGCmlXieR1y1d
-         XbYUZUcARNFt7YbI6c59yc+8Byvg3CTMFTvtj0Lihk1vppCEXTBlq9H9tYcrFKwsOqEK
-         L+5YJ+o56I5XirJcyikfplRN/FTwPB/EV2i+kOj/N+FhvOv2rfsBkggcOq9NQzvOER9W
-         5p5A==
-X-Gm-Message-State: ANhLgQ33XMyr/zBMKiHq/HIK6/+NYsec+8ylsQL01oz78HyX3vTBAcRH
-        VaRF9ZDuxJKU2n7/bj+ASSQ=
-X-Google-Smtp-Source: ADFU+vvsfgNFKJx9vPTpUiP9R8YpQ01vzx8WuvcVDVSseRHrtqYBTIotuo4dXVKTXAtOaWxSV1uitA==
-X-Received: by 2002:a17:902:8303:: with SMTP id bd3mr28189plb.171.1583877648097;
-        Tue, 10 Mar 2020 15:00:48 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id o19sm3763311pjr.2.2020.03.10.15.00.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Mar 2020 15:00:47 -0700 (PDT)
-Date:   Tue, 10 Mar 2020 15:00:37 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Song Liu <songliubraving@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     quentin@isovalent.com, kernel-team@fb.com, ast@kernel.org,
-        daniel@iogearbox.net, arnaldo.melo@gmail.com, jolsa@kernel.org,
-        Song Liu <songliubraving@fb.com>
-Message-ID: <5e680e05a8667_74702b1610cf25b4b4@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200310183624.441788-1-songliubraving@fb.com>
-References: <20200310183624.441788-1-songliubraving@fb.com>
-Subject: RE: [PATCH bpf-next 0/2] Fixes for bpftool-prog-profile
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=YK4us6S3rHVM3ZCUln7pn5acEHLvNfpppJP3Tl5JLaI=;
+        b=CRUjegiIDHYfg+Ee+2tVym1YRxWiEdP0Jozqr+75OS7f6H1dC//zxzZP/37sb72XjE
+         QOoBoBGSkHImQkhnWxBR5hZ3IMXGMplyBXO8EUdkntuglII+tDJp9q00yakp+686nI1L
+         e7yNIxnkfTHRs21L7UZEvOCDaNt9sXU6JVobmhiX8Jrud1bRyi/PGJekq8g8h+1Psoo2
+         HV7Yn1En6Oc4cGTwqTpjSk242d0f1m2dtaSkEsngAgVYs3h/jojvl99aOqwFv0hWhlPg
+         K9Z9nGaNtcoWCTenm8hHlp8w85D2iFykNjCpR/BrOUgFW2eAj+QBQYr6CVBV/Na7hShj
+         KBHA==
+X-Gm-Message-State: ANhLgQ0gPw36mWayOuYbnetjTk2ta0kOWEe/aln0e2EGIrDg9QV/fa/k
+        tpkaODoADht+e/1mQem5fIAWK7JYPziU9/V8mOF7VVr0x2Jl
+X-Google-Smtp-Source: ADFU+vsbHDvOK3ZhO4KPpwg47fVYouJdf9b35bnWqbIRwg4l8EHhytl8g4WWFJelLdpfU8RjMH6a8h2ivS4Tup4yYBniagkP1hIq
+MIME-Version: 1.0
+X-Received: by 2002:a6b:6a02:: with SMTP id x2mr257400iog.20.1583879113261;
+ Tue, 10 Mar 2020 15:25:13 -0700 (PDT)
+Date:   Tue, 10 Mar 2020 15:25:13 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e9ca5105a08797f2@google.com>
+Subject: WARNING: refcount bug in sk_alloc (2)
+From:   syzbot <syzbot+b1212b1215db82ff9211@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, kafai@fb.com,
+        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Song Liu wrote:
-> 1. Fix build for older clang;
-> 2. Fix skeleton's dependency on libbpf.
-> 
-> Song Liu (2):
->   bpftool: only build bpftool-prog-profile with clang >= v11
->   bpftool: skeleton should depend on libbpf
-> 
->  tools/bpf/bpftool/Makefile | 15 ++++++++++++---
->  tools/bpf/bpftool/prog.c   |  2 ++
->  2 files changed, 14 insertions(+), 3 deletions(-)
-> 
-> --
-> 2.17.1
+Hello,
 
-Maybe instead of "Please recompile" -> "Please build" sounds a bit better
-to me but that is probably a matter of preference and doesn't matter much.
+syzbot found the following crash on:
 
-Anyways for the series,
+HEAD commit:    6132c1d9 net: core: devlink.c: Hold devlink->lock from the..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=101c7a81e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3b8906eb6a7d6028
+dashboard link: https://syzkaller.appspot.com/bug?extid=b1212b1215db82ff9211
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10110d29e00000
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+b1212b1215db82ff9211@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+refcount_t: addition on 0; use-after-free.
+WARNING: CPU: 0 PID: 10120 at lib/refcount.c:25 refcount_warn_saturate+0x174/0x1f0 lib/refcount.c:25
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 10120 Comm: syz-executor.2 Not tainted 5.6.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x197/0x210 lib/dump_stack.c:118
+ panic+0x2e3/0x75c kernel/panic.c:221
+ __warn.cold+0x2f/0x3e kernel/panic.c:582
+ report_bug+0x289/0x300 lib/bug.c:195
+ fixup_bug arch/x86/kernel/traps.c:174 [inline]
+ fixup_bug arch/x86/kernel/traps.c:169 [inline]
+ do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:267
+ do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:286
+ invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+RIP: 0010:refcount_warn_saturate+0x174/0x1f0 lib/refcount.c:25
+Code: 06 31 ff 89 de e8 9c 00 d3 fd 84 db 0f 85 33 ff ff ff e8 4f ff d2 fd 48 c7 c7 20 98 91 88 c6 05 61 81 fe 06 01 e8 6b 50 a3 fd <0f> 0b e9 14 ff ff ff e8 30 ff d2 fd 0f b6 1d 46 81 fe 06 31 ff 89
+RSP: 0018:ffffc9000648fd18 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff815eae46 RDI: fffff52000c91f95
+RBP: ffffc9000648fd28 R08: ffff88809e674240 R09: ffffed1015d06659
+R10: ffffed1015d06658 R11: ffff8880ae8332c7 R12: 0000000000000002
+R13: 0000000000000000 R14: ffff888094174084 R15: ffff8880a9adcc88
+ refcount_add include/linux/refcount.h:191 [inline]
+ refcount_inc include/linux/refcount.h:228 [inline]
+ get_net include/net/net_namespace.h:241 [inline]
+ sk_alloc+0xeb0/0xfd0 net/core/sock.c:1669
+ inet_create net/ipv4/af_inet.c:321 [inline]
+ inet_create+0x363/0xe10 net/ipv4/af_inet.c:247
+ __sock_create+0x3ce/0x730 net/socket.c:1433
+ sock_create net/socket.c:1484 [inline]
+ __sys_socket+0x103/0x220 net/socket.c:1526
+ __do_sys_socket net/socket.c:1535 [inline]
+ __se_sys_socket net/socket.c:1533 [inline]
+ __x64_sys_socket+0x73/0xb0 net/socket.c:1533
+ do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x45ef97
+Code: 00 00 00 49 89 ca b8 36 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 4a 8b fb ff c3 66 0f 1f 84 00 00 00 00 00 b8 29 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 2d 8b fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffeba043be8 EFLAGS: 00000246 ORIG_RAX: 0000000000000029
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045ef97
+RDX: 0000000000000006 RSI: 0000000000000001 RDI: 0000000000000002
+RBP: 0000000000000041 R08: 0000000000000000 R09: 000000000000000a
+R10: 0000000000000075 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffeba044300 R14: 000000000001c8c0 R15: 00007ffeba044310
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
