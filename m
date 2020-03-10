@@ -2,163 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9085E180C1A
-	for <lists+bpf@lfdr.de>; Wed, 11 Mar 2020 00:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6F8180C4D
+	for <lists+bpf@lfdr.de>; Wed, 11 Mar 2020 00:27:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727311AbgCJXLu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Mar 2020 19:11:50 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:33864 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726380AbgCJXLu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Mar 2020 19:11:50 -0400
-Received: by mail-il1-f194.google.com with SMTP id c8so250729ilm.1
-        for <bpf@vger.kernel.org>; Tue, 10 Mar 2020 16:11:50 -0700 (PDT)
+        id S1726604AbgCJX1G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Mar 2020 19:27:06 -0400
+Received: from mail-pl1-f174.google.com ([209.85.214.174]:46324 "EHLO
+        mail-pl1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726463AbgCJX1F (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Mar 2020 19:27:05 -0400
+Received: by mail-pl1-f174.google.com with SMTP id w12so142108pll.13;
+        Tue, 10 Mar 2020 16:27:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7EYAI63zd18SBq8FB4fUfNf0NU8spud30w3445VcWaM=;
-        b=SOuRvF3fvTblm9CeWolyerj2zGaD3saqUhIuWhjObHc3jGGTBh/v+0w6d+z78Y503p
-         QYu4SglBDGCKdB5ZGG73RSsATC3wnkZEXsCFmLvix43Fa+fpdLPCVWYl5b4EXLJk1Q3Y
-         ew0AE4RdaYLyWgeuhoV35GaoA5m2bPOwMHDj8=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Vqu372+wyYGU1//RGQIbr/u5Pxw1Th01BZ7JHYVPhmk=;
+        b=VLnNhw1ZQN8qAWeFKtcJSQ0XwYIsMeOj+SGTkRpxbp7UFlETXuJ5y3N4mO2fkkdRoG
+         BO0vdvfDaQLEK/c3RSMrUo31IV/iG5/QV6XbFV4YLWbicTIE3c5IXsmmog7SxntnBHe2
+         pJUsmIXbKEhedxOnuCfEiCXoGMwe+TIDF/U5a6ckt/clbEp/yrXrYRo+FbYiZn8VfBAG
+         QfbyarNwsKheFFNSFlXXftixTHgk2GKRF21Lma00c+hPKs90yV3qi855hBlZZDKR0iQT
+         u35OVrYigS4sM88BvpAM145ca9sjLzM2XCwMl2egVAdcyGyx6AOy+R4eykou55pNz8D9
+         jpvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=7EYAI63zd18SBq8FB4fUfNf0NU8spud30w3445VcWaM=;
-        b=WkILY4HWunndZOB9hkREs6Bfetis815fJLhuHTOAp9RnX3xLvJjXMXAhCaGdLdOIg8
-         hOVGehtoNN08HIoQQ4x9Sm7yWZCoMXzYoiIkuLjoeQbR8eS+7nmH45gB1073HGCWvnJp
-         Fv0ynJmZ0e4B4xBNfM3anbpbOGelSOL1QJqMXoBMN50JP6FBczecGcTX7/LKcdQcmCd0
-         Flwvkzfe4WLK7OSFfNHMhN5y+AjtCeR75tBzfXiWZlF+27PYXisr81acF0a0ovZNfyZu
-         8GknLyssBSEx7ZmzbDj/GOvCvK70DAV3R3YBk5xOxJK7N21DjTCnHgDt+knNqLaq9XEc
-         xqiQ==
-X-Gm-Message-State: ANhLgQ2caXtIe/C8sKDm2HFolN0+R0I9BVqNqegougIsLt0mn2Sv19DK
-        bo6uklDPnZyD3G8m+YbkNC5v/A==
-X-Google-Smtp-Source: ADFU+vuKjc/Vi167HrNsokZgPEQVficFdi3AwhXRn8+hgEKbKqkwlsSrlMStlkPyqiz7BfLaie+1fw==
-X-Received: by 2002:a92:5c5c:: with SMTP id q89mr382168ilb.195.1583881909799;
-        Tue, 10 Mar 2020 16:11:49 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id z14sm8703570iln.17.2020.03.10.16.11.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Mar 2020 16:11:49 -0700 (PDT)
-Subject: Re: [PATCH v2 2/4] selftests: Fix seccomp to support relocatable
- build (O=objdir)
-To:     Kees Cook <keescook@chromium.org>
-Cc:     shuah@kernel.org, luto@amacapital.net, wad@chromium.org,
-        daniel@iogearbox.net, kafai@fb.com, yhs@fb.com, andriin@fb.com,
-        gregkh@linuxfoundation.org, tglx@linutronix.de,
-        khilman@baylibre.com, mpe@ellerman.id.au,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        "skh >> Shuah Khan" <skhan@linuxfoundation.org>
-References: <20200305003627.31900-1-skhan@linuxfoundation.org>
- <202003041815.B8C73DEC@keescook>
- <f4cf1527-4565-9f08-a8a2-9f51022eac63@linuxfoundation.org>
- <202003050937.BA14B70DEB@keescook>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <d125a38f-50aa-dbf1-0fcf-59d4ad4a1441@linuxfoundation.org>
-Date:   Tue, 10 Mar 2020 17:11:47 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        bh=Vqu372+wyYGU1//RGQIbr/u5Pxw1Th01BZ7JHYVPhmk=;
+        b=LPQt0erFVjqmbxz6W1+Sdj6qmS9n9OWszWrTsOl/UcZDaraMV2wYQpUkoQMP01Hg1x
+         yDTs/Bij+R04we0nY7z2oJMRwqWcSZLTUrue1xPA6mWnwvBfyqB08FWMoKtk1/fZGCTr
+         gBo7wWIIGc9uZoURZPsshkqpXrhQr/dyuqYcTUixTb20WC6OnnfM3t04ELnYUsBxCwWz
+         n4Lvys37CQYTAFflJ4a0B1zWH+2+hBycIWhcAUg1y8d4GSItLjEt3RsvMD7UWTB1xyk9
+         eiv1GOyzisYz70M9fD0Zsu1dXqCTcP9d9zPpToSKoFUdxKbptbjKihqOBFoYTZeB3uHY
+         m11w==
+X-Gm-Message-State: ANhLgQ0ML3H/7VONXLSD0WRvtMzsXG/cPrUui9aOsyrHh8poqVeYefqS
+        /mICy1MjWB0odU5rl3PKew==
+X-Google-Smtp-Source: ADFU+vv2B22P0AW554ggcflQZLZC6ukTGa1MiiJEEz3QKSXhQVgAxnrKQFIbvaAKA7VzJewXJpZpuQ==
+X-Received: by 2002:a17:90a:9501:: with SMTP id t1mr383872pjo.108.1583882824240;
+        Tue, 10 Mar 2020 16:27:04 -0700 (PDT)
+Received: from localhost.localdomain ([110.35.161.54])
+        by smtp.gmail.com with ESMTPSA id x6sm48263668pfi.83.2020.03.10.16.27.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Mar 2020 16:27:03 -0700 (PDT)
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/2] Refactor perf_event sample user program with libbpf bpf_link
+Date:   Wed, 11 Mar 2020 08:26:45 +0900
+Message-Id: <20200310232647.27777-1-danieltimlee@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <202003050937.BA14B70DEB@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/5/20 10:42 AM, Kees Cook wrote:
-> On Thu, Mar 05, 2020 at 09:41:34AM -0700, Shuah Khan wrote:
->> On 3/4/20 7:20 PM, Kees Cook wrote:
->>> Instead of the TEST_CUSTOM_PROGS+all dance, you can just add an explicit
->>> dependency, with the final seccomp/Makefile looking like this:
->>>
->>>
->>> # SPDX-License-Identifier: GPL-2.0
->>> CFLAGS += -Wl,-no-as-needed -Wall
->>> LDFLAGS += -lpthread
->>>
->>> TEST_GEN_PROGS := seccomp_bpf seccomp_benchmark
->>>
->>
->> TEST_CUSTOM_PROGS is for differentiating test programs that
->> can't use lib.mk generic rules. It is appropriate to use
->> for seccomp_bpf
-> 
-> I don't follow? This suggested Makefile works for me (i.e. it can use
-> the lib.mk generic rules since CFLAGS and LDFLAGS can be customized
-> first, and it just adds an additional dependency).
-> 
+Currently, some samples are using ioctl for enabling perf_event and
+attaching BPF programs to this event. However, the bpf_program__attach
+of libbpf(using bpf_link) is much more intuitive than the previous
+method using ioctl.
 
-Yeah. TEST_CUSTOM_PROGS isn't really needed for this custom case.
-I can refine it and get rid of the dependency.
+bpf_program__attach_perf_event manages the enable of perf_event and
+attach of BPF programs to it, so there's no neeed to do this
+directly with ioctl.
 
->>> include ../lib.mk
->>>
->>> # Additional dependencies
->>> $(OUTPUT)/seccomp_bpf: ../kselftest_harness.h
-> 
-> BTW, I see a lot of other targets that use kselftest_harness.h appear to
-> be missing this Makefile dependency, but that's a different problem. :)
-> 
->>> (Though this fails in the same way as above when run from the top-level
->>> directory.)
->>>
->>
->> I didn't see this because I have been the same directory I used
->> for relocated cross-build kernel. :(
->>
->> Thanks for testing this. I know the problem here. all is a dependency
->> for install step and $(OUTPUT) is referencing the objdir before it
->> gets created. It is a Makefile/lib.mk problem to fix.
->>
+In addition, bpf_link provides consistency in the use of API because it
+allows disable (detach, destroy) for multiple events to be treated as
+one bpf_link__destroy.
 
-I was way off with my analysis. :(
+To refactor samples with using this libbpf API, the bpf_load in the
+samples were removed and migrated to libbbpf. Because read_trace_pipe
+is used in bpf_load, multiple samples cannot be migrated to libbpf,
+this function was moved to trace_helpers.
 
->> I will do a separate patch for this. This will show up in any test
->> that is using $(OUTPUT) to relocate objects mainly the ones that
->> require custom build rule like seeccomp.
-> 
-> Okay, cool. It looked to me like it lost track of the top level source
-> directory (i.e. "make: entering $output" ... "can't find
-> ../other/files")
-> 
+Changes in v2:
+ - check memory allocation is successful
+ - clean up allocated memory on error
 
-Odd that you would have empty objdir in the cross-compile case.
+Daniel T. Lee (2):
+  samples: bpf: move read_trace_pipe to trace_helpers
+  samples: bpf: refactor perf_event user program with libbpf bpf_link
 
-In the cross-compile case, you would have cross-built kernel first in
-the object directory. Your objdir won't be empty.
+ samples/bpf/Makefile                        |  8 +--
+ samples/bpf/bpf_load.c                      | 20 ------
+ samples/bpf/bpf_load.h                      |  1 -
+ samples/bpf/sampleip_user.c                 | 76 ++++++++++++++-------
+ samples/bpf/trace_event_user.c              | 63 ++++++++++++-----
+ samples/bpf/tracex1_user.c                  |  1 +
+ samples/bpf/tracex5_user.c                  |  1 +
+ tools/testing/selftests/bpf/trace_helpers.c | 23 +++++++
+ tools/testing/selftests/bpf/trace_helpers.h |  1 +
+ 9 files changed, 125 insertions(+), 69 deletions(-)
 
-This is no different from kselftest build dependency on kernel build
-even when srcdir=objdir
-
-So for cross-build case, the following  is the workflow to build kernel
-first and then the tests:
-
-make O=/../objdir ARCH=arm64 HOSTCC=gcc CROSS_COMPILE=aarch64-linux-gnu- 
-defconfig
-
-make O=/../objdir ARCH=arm64 HOSTCC=gcc CROSS_COMPILE=aarch64-linux-gnu- all
-
-make kselftest-install O=/../objdir ARCH=arm64 HOSTCC=gcc 
-CROSS_COMPILE=aarch64-linux-gnu- TARGETS=seccomp
-
-You can isolate a single test when you are do native build:
-
-make kselftest-install O=/../objdir TARGETS=seccomp
-
-The above won't fail even if objdir doesn't exist and/or empty.
-
-thanks,
--- Shuah
-
-
-
-
-
-
+-- 
+2.25.1
 
