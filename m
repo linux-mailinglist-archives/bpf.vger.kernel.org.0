@@ -2,101 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2FC17F781
-	for <lists+bpf@lfdr.de>; Tue, 10 Mar 2020 13:33:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA0D17FBB7
+	for <lists+bpf@lfdr.de>; Tue, 10 Mar 2020 14:16:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726252AbgCJMd5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Mar 2020 08:33:57 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:17690 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726295AbgCJMdw (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 10 Mar 2020 08:33:52 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02ACLZBp064295
-        for <bpf@vger.kernel.org>; Tue, 10 Mar 2020 08:33:51 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2ynr9kv8a5-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 10 Mar 2020 08:33:51 -0400
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <svens@linux.ibm.com>;
-        Tue, 10 Mar 2020 12:33:49 -0000
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 10 Mar 2020 12:33:44 -0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 02ACXh9i29753594
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 10 Mar 2020 12:33:43 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C05504204F;
-        Tue, 10 Mar 2020 12:33:43 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B58D24204C;
-        Tue, 10 Mar 2020 12:33:43 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 10 Mar 2020 12:33:43 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55390)
-        id 289ABE19C3; Tue, 10 Mar 2020 13:33:43 +0100 (CET)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH] seccomp: add compat_ioctl for seccomp notify
-Date:   Tue, 10 Mar 2020 13:33:32 +0100
-X-Mailer: git-send-email 2.17.1
-X-TM-AS-GCONF: 00
-x-cbid: 20031012-0020-0000-0000-000003B24E93
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20031012-0021-0000-0000-0000220A9A2B
-Message-Id: <20200310123332.42255-1-svens@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-03-10_06:2020-03-10,2020-03-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- spamscore=0 suspectscore=0 impostorscore=0 bulkscore=0 malwarescore=0
- priorityscore=1501 lowpriorityscore=0 phishscore=0 mlxlogscore=999
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2003100083
+        id S1731760AbgCJNNo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Mar 2020 09:13:44 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:34638 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731754AbgCJNNo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Mar 2020 09:13:44 -0400
+Received: by mail-wr1-f65.google.com with SMTP id z15so15836251wrl.1;
+        Tue, 10 Mar 2020 06:13:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Oa5g113veU2Vu4AlqhwVidAaDnTAra7gNy7bFO70rZc=;
+        b=GnIUrpQU/Sg7r8b+BedJ8CqwUlYG4xQ2Lo54cn98G0oZD/7TcNZKnVJDvT1FAMfcVY
+         U3SbiBvNca+R67nKlVdk9P4ZVWNnuT6CRdxrsYUOhWbG74AkEg+rxo1qTSE9DrlzlR5N
+         p1HkCTFNNHMvwd3s03CkzX+TEGLa1xqObZVUiBlioHNf81GSFQ5Gxc+MLF0iodhd/qsZ
+         t+H9xTeFZ3TVdN8Ux36lTosj+PnkQmo1kZxh7vZVvrS8vp17GGYuBjnJPzpjikoaKIc2
+         RzNkOr2OGaCk2AATfKBAUqBm1bbj85N5j2dpBvwDORMGu3Y1n5rYNa9YHRGKmoY4SHJH
+         a78w==
+X-Gm-Message-State: ANhLgQ00EKtXi9yYYkZp+12KuA9cK9EpP4PC82OuSWc5s0qaOSV4yxTG
+        m4Oo8sQO5vP2EnH61qIacCN5X/ZH5VE=
+X-Google-Smtp-Source: ADFU+vuoqLKuNCFV1S8JMIVLIpzM6ZHX7oSMYDAvFAe+RDvvRUTcPFeCW1aEmNfzgKcgFP+a7BaerA==
+X-Received: by 2002:a5d:4685:: with SMTP id u5mr26336545wrq.69.1583846022170;
+        Tue, 10 Mar 2020 06:13:42 -0700 (PDT)
+Received: from localhost (prg-ext-pat.suse.com. [213.151.95.130])
+        by smtp.gmail.com with ESMTPSA id l83sm4132454wmf.43.2020.03.10.06.13.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Mar 2020 06:13:41 -0700 (PDT)
+Date:   Tue, 10 Mar 2020 14:13:39 +0100
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     lsf-pc <lsf-pc@lists.linuxfoundation.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>, bpf@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [LSFMMBPF TOPIC] Killing LSFMMBPF
+Message-ID: <20200310131339.GJ8447@dhcp22.suse.cz>
+References: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Fri 06-03-20 09:35:41, Josef Bacik wrote:
+> Hello,
+> 
+> This has been a topic that I've been thinking about a lot recently, mostly
+> because of the giant amount of work that has been organizing LSFMMBPF.
 
-executing the seccomp_bpf testsuite with 32 bit userland (both s390 and x86)
-doesn't work because there's no compat_ioctl handler defined. Is that something
-that is supposed to work? Disclaimer: I don't know enough about seccomp to judge
-whether there would be some adjustments required in the compat ioctl handler.
-Just setting it to seccomp_notify_ioctl() makes the testsuite pass, but i'm not
-sure whether that's correct.
+There is undoubtedly a lot of work to make a great conference. I have hard
+time imagine this could be ever done without a lot of time and effort on
+the organizing side. I do not believe we can simply outsource a highly
+technical conference to somebody outside of the community. LF is doing a
+lot of great work to help with the venue and related stuff but content
+wise it is still on the community IMHO.
 
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
----
- kernel/seccomp.c | 1 +
- 1 file changed, 1 insertion(+)
+[...]
+> These are all really good goals, and why we love the idea of LSFMMBPF.  But
+> having attended these things every year for the last 13 years, it has become
+> less and less of these things, at least from my perspective.  A few problems
+> (as I see them) are
+> 
+> 1) The invitation process.  We've tried many different things, and I think
+> we generally do a good job here, but the fact is if I don't know somebody
+> I'm not going to give them a very high rating, making it difficult to
+> actually bring in new people.
 
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index b6ea3dcb57bf..683c81e4861e 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -1221,6 +1221,7 @@ static const struct file_operations seccomp_notify_ops = {
- 	.poll = seccomp_notify_poll,
- 	.release = seccomp_notify_release,
- 	.unlocked_ioctl = seccomp_notify_ioctl,
-+	.compat_ioctl = seccomp_notify_ioctl,
- };
- 
- static struct file *init_listener(struct seccomp_filter *filter)
+My experience from the MM track involvement last few years is slightly
+different. We have always had a higher demand than seats available
+for the track. We have tried really hard to bring people who could
+contribute the most requested topic into the room. We have also tried to
+bring new contributors in. There are always compromises to be made but
+my recollection is that discussions were usually very useful and moved
+topics forward. The room size played an important role in that regard.
+
+> 2) There are so many of us.  Especially with the addition of the BPF crowd
+> we are now larger than ever.  This makes problem #1 even more apparent, even
+> if I weighted some of the new people higher who's slot should they take
+> instead?  I have 0 problems finding 20 people in the FS community who should
+> absolutely be in the room.  But now I'm trying to squeeze in 1-5 extra
+> people.  Propagate that across all the tracks and now we're at an extra
+> 20ish people.
+
+Yes, BPF track made the conference larger indeed. This might be problem
+for funding but it didn't really cause much more work for tracks
+organization (well for MM at least).
+
+> 3) Half the people I want to talk to aren't even in the room.  This may be a
+> uniquely file system track problem, but most of my work is in btrfs, and I
+> want to talk to my fellow btrfs developers.  But again, we're trying to
+> invite an entire community, so many of them simply don't request
+> invitations, or just don't get invited.
+
+I do not have the same experience on the MM track. Even though the whole
+community is hard to fit into the room, there tends to be a sufficient
+mass to move a topic forward usually. Even if we cannot conclude many
+topics there are usually many action items as an outcome.
+
+[...]
+
+> So what do I propose?  I propose we kill LSFMMBPF.
+
+This would be really unfortunate. LSFMMBPF has been the most attractive
+conference for me exactly because of the size and cost/benefit. I do
+realize we are growing and that should be somehow reflected in the
+future. I do not have good answers how to do that yet unfortunately.
+Maybe we really need to split the core agenda and topics which could be
+discussed/presented on other conferences. Or collocate with another
+conference but I have a feeling that we could cover more since LSFMMBPF
 -- 
-2.17.1
-
+Michal Hocko
+SUSE Labs
