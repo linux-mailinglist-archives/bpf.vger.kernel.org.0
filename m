@@ -2,240 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B20C317F64D
-	for <lists+bpf@lfdr.de>; Tue, 10 Mar 2020 12:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFCCE17F752
+	for <lists+bpf@lfdr.de>; Tue, 10 Mar 2020 13:22:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726197AbgCJLat (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Mar 2020 07:30:49 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:35667 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726268AbgCJLas (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Mar 2020 07:30:48 -0400
-Received: by mail-wm1-f66.google.com with SMTP id m3so943652wmi.0
-        for <bpf@vger.kernel.org>; Tue, 10 Mar 2020 04:30:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=BDa1YO2/RALGyErbrpZqUvTc6Odd/nO7uq3xDCn4cZA=;
-        b=v2WCplYnUmir2Hd+CRsiDhzdlxgRXVzLn0q1HefaCTWrQr3E+VJDBDXWDpyKkeQzXr
-         SwIGlgY/qANjHq0YLBijILCbnolyD9dIOlz6lL1w/Co08KrChWJszTEUcLjaENYgJuGz
-         MFBOAfMr/VyVKwmwFKO40HigPTbYod9HydOII=
+        id S1726252AbgCJMWl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Mar 2020 08:22:41 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60055 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726224AbgCJMWl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Mar 2020 08:22:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1583842959;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HUqaOQyD8111sqhLYIu3c8eoonnzyP/fK860jh3cL6c=;
+        b=c6P3EHQtTCzj1bGmaC5ifbMHb6r3yXPHlyXA/ZQHImykHasFkEzZFfhIOGFK1vzt1NAK+N
+        6j6qiZDYERIYDTJGcHgeYQwwbED/s+hkBGMwCGLGvhzT/4l/Do5t2KwqzgGQJNLbsjjokM
+        2sNBcP8v2VlADH+Srsqo33WUAhr5dWs=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-394-TcznSHApOdyNBOxkcphdig-1; Tue, 10 Mar 2020 08:22:38 -0400
+X-MC-Unique: TcznSHApOdyNBOxkcphdig-1
+Received: by mail-wm1-f72.google.com with SMTP id e26so327991wmk.8
+        for <bpf@vger.kernel.org>; Tue, 10 Mar 2020 05:22:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=BDa1YO2/RALGyErbrpZqUvTc6Odd/nO7uq3xDCn4cZA=;
-        b=XCbi00fVnHdGEIb7Fyh9Idkocrd4p7gtB9rgS4e08nsuqO7S3ium97dSjSMsV02l8U
-         qWZRB2PFBkOGi+1WwVjPa1eJO6K5dtvviX5gYdv/9kwLzb5hBX7sO1x2GJqg2JYKDHIN
-         8CwaouGxYvtdTNVRMkrfhw1tdtTLm8z/mXJsJG5pCtCgIb8yqIWuaLZAW01/sPjsdZju
-         9HfE0zdvdxJOWOsK+BUKS6Xuc3us5ndKrTSVibDlrwRGLd3GTJuhGr5jgTyqk9qWmwVG
-         cFEgWcL/P2puwr3hpdp8rrnqA9dIev2CtkyAd9TkFeDzfcLki7pcXg2ZeWsldTSV0bDl
-         ODyQ==
-X-Gm-Message-State: ANhLgQ23uwmIjQ1lKF5Fr3EPO93TYuIjzKb6c2j+BgFaRuBOwc4oJ0qN
-        lkjfI/WVAJkRyvSDLBZQsiHKFw==
-X-Google-Smtp-Source: ADFU+vvyXGNiUOQ5Vw9lPs7cqtd6F+Y5z6OqOuWXLNjEPFr3304/XHYd17a0/PQA10bULKpERAUPxw==
-X-Received: by 2002:a7b:c118:: with SMTP id w24mr1758114wmi.77.1583839844432;
-        Tue, 10 Mar 2020 04:30:44 -0700 (PDT)
-Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id x17sm26547932wrt.31.2020.03.10.04.30.43
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=HUqaOQyD8111sqhLYIu3c8eoonnzyP/fK860jh3cL6c=;
+        b=GoXiQQvsZZuyTGYV4OlGPllKkmH+Vioee5T4pBX3cK5iNmWKu7yVcGuWDNvXPxQd0Y
+         ddAg4zqmnv+KlVfgpRcrTezYflu6HlfNKZwZbw1URQ4BfpPYFMvuStXzJAq6PSnGDsMF
+         ZoVRPNGhUbr4kTrhQO1262H8hkTPD+mS2eRmTTC3hCsIZ3+q6Eb3qLArDD9v6iddhrHS
+         0ZMqqdpBby/jdk9IzSPSk8x/Ezvr6oU2i2LOGb7UhXPIRB8wa7WiUcU/sDCqk/m7JWkU
+         KpFEbl4e5YTUD3fycblTIWu5j1Qd26fgvnmOLYVQ61UaKIRYIIKc4cArJ/feZcZCtiYJ
+         KsOg==
+X-Gm-Message-State: ANhLgQ0/wpmH7cZzTraESSiO/Gk5zQyB/WveIVqXU2Whickcz9PLxuDe
+        I060EKTFRxeGDA8Qre1YXKLsZfLiVQa3N9AStxurb1BW/gbQrpDwb1MuXtxmD4pnNKs877RjVUf
+        ++veP79RkjwI+
+X-Received: by 2002:a5d:498a:: with SMTP id r10mr10682362wrq.278.1583842956396;
+        Tue, 10 Mar 2020 05:22:36 -0700 (PDT)
+X-Google-Smtp-Source: ADFU+vsg/VdLmQ4q9p8wwcZWAaHayMPNd/mPl7prf66OYmQX/nTuUFxqyoxMN+qlt4+MP0mLt0jX3Q==
+X-Received: by 2002:a5d:498a:: with SMTP id r10mr10682350wrq.278.1583842956163;
+        Tue, 10 Mar 2020 05:22:36 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id f9sm14526225wrc.71.2020.03.10.05.22.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Mar 2020 04:30:43 -0700 (PDT)
-References: <20200206111652.694507-1-jakub@cloudflare.com> <5e3c6c7f8730e_22ad2af2cbd0a5b4a4@john-XPS-13-9370.notmuch>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-team@cloudflare.com
-Subject: Re: [PATCH bpf 0/3] Fix locking order and synchronization on sockmap/sockhash tear-down
-In-reply-to: <5e3c6c7f8730e_22ad2af2cbd0a5b4a4@john-XPS-13-9370.notmuch>
-Date:   Tue, 10 Mar 2020 12:30:42 +0100
-Message-ID: <8736agzbtp.fsf@cloudflare.com>
+        Tue, 10 Mar 2020 05:22:35 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id AEDA318033D; Tue, 10 Mar 2020 13:22:34 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 0/3] Introduce pinnable bpf_link kernel abstraction
+In-Reply-To: <20200309115043.17b2d6ef@kicinski-fedora-PC1C0HJN>
+References: <8083c916-ac2c-8ce0-2286-4ea40578c47f@iogearbox.net> <CAEf4BzbokCJN33Nw_kg82sO=xppXnKWEncGTWCTB9vGCmLB6pw@mail.gmail.com> <87pndt4268.fsf@toke.dk> <ab2f98f6-c712-d8a2-1fd3-b39abbaa9f64@iogearbox.net> <ccbc1e49-45c1-858b-1ad5-ee503e0497f2@fb.com> <87k1413whq.fsf@toke.dk> <20200304043643.nqd2kzvabkrzlolh@ast-mbp> <20200304114000.56888dac@kicinski-fedora-PC1C0HJN> <20200304204506.wli3enu5w25b35h7@ast-mbp> <20200304132439.6abadbe3@kicinski-fedora-PC1C0HJN> <20200305010706.dk7zedpyj5pb5jcv@ast-mbp> <20200305001620.204c292e@cakuba.hsd1.ca.comcast.net> <87tv332hak.fsf@toke.dk> <20200305101342.01427a2a@kicinski-fedora-PC1C0HJN> <87d09l21t1.fsf@toke.dk> <20200309115043.17b2d6ef@kicinski-fedora-PC1C0HJN>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 10 Mar 2020 13:22:34 +0100
+Message-ID: <87eeu0qu0l.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 06, 2020 at 08:43 PM CET, John Fastabend wrote:
-> Jakub Sitnicki wrote:
->> Couple of fixes that came from recent discussion [0] on commit
->> 7e81a3530206 ("bpf: Sockmap, ensure sock lock held during tear down").
->>
->> This series doesn't address the sleeping while holding a spinlock
->> problem. We're still trying to decide how to fix that [1].
->>
->> Until then sockmap users might see the following warnings:
->>
->> | BUG: sleeping function called from invalid context at net/core/sock.c:2935
->> | in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 62, name: kworker/0:1
->> | 3 locks held by kworker/0:1/62:
->> |  #0: ffff88813b019748 ((wq_completion)events){+.+.}, at: process_one_work+0x1d7/0x5e0
->> |  #1: ffffc900000abe50 ((work_completion)(&map->work)){+.+.}, at: process_one_work+0x1d7/0x5e0
->> |  #2: ffff8881381f6df8 (&stab->lock){+...}, at: sock_map_free+0x26/0x180
->> | CPU: 0 PID: 62 Comm: kworker/0:1 Not tainted 5.5.0-04008-g7b083332376e #454
->> | Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
->> | Workqueue: events bpf_map_free_deferred
->> | Call Trace:
->> |  dump_stack+0x71/0xa0
->> |  ___might_sleep.cold+0xa6/0xb6
->> |  lock_sock_nested+0x28/0x90
->> |  sock_map_free+0x5f/0x180
->> |  bpf_map_free_deferred+0x58/0x80
->> |  process_one_work+0x260/0x5e0
->> |  worker_thread+0x4d/0x3e0
->> |  kthread+0x108/0x140
->> |  ? process_one_work+0x5e0/0x5e0
->> |  ? kthread_park+0x90/0x90
->> |  ret_from_fork+0x3a/0x50
->> |
->> | ======================================================
->> | WARNING: possible circular locking dependency detected
->> | 5.5.0-04008-g7b083332376e #454 Tainted: G        W
->> | ------------------------------------------------------
->> | kworker/0:1/62 is trying to acquire lock:
->> | ffff88813b280130 (sk_lock-AF_INET){+.+.}, at: sock_map_free+0x5f/0x180
->> |
->> | but task is already holding lock:
->> | ffff8881381f6df8 (&stab->lock){+...}, at: sock_map_free+0x26/0x180
->> |
->> | which lock already depends on the new lock.
->> |
->> |
->> | the existing dependency chain (in reverse order) is:
->> |
->> | -> #1 (&stab->lock){+...}:
->> |        _raw_spin_lock_bh+0x39/0x80
->> |        sock_map_update_common+0xdc/0x300
->> |        sock_map_update_elem+0xc3/0x150
->> |        __do_sys_bpf+0x1285/0x1620
->> |        do_syscall_64+0x6d/0x690
->> |        entry_SYSCALL_64_after_hwframe+0x49/0xbe
->> |
->> | -> #0 (sk_lock-AF_INET){+.+.}:
->> |        __lock_acquire+0xe2f/0x19f0
->> |        lock_acquire+0x95/0x190
->> |        lock_sock_nested+0x6b/0x90
->> |        sock_map_free+0x5f/0x180
->> |        bpf_map_free_deferred+0x58/0x80
->> |        process_one_work+0x260/0x5e0
->> |        worker_thread+0x4d/0x3e0
->> |        kthread+0x108/0x140
->> |        ret_from_fork+0x3a/0x50
->> |
->> | other info that might help us debug this:
->> |
->> |  Possible unsafe locking scenario:
->> |
->> |        CPU0                    CPU1
->> |        ----                    ----
->> |   lock(&stab->lock);
->> |                                lock(sk_lock-AF_INET);
->> |                                lock(&stab->lock);
->> |   lock(sk_lock-AF_INET);
->> |
->> |  *** DEADLOCK ***
->> |
->> | 3 locks held by kworker/0:1/62:
->> |  #0: ffff88813b019748 ((wq_completion)events){+.+.}, at: process_one_work+0x1d7/0x5e0
->> |  #1: ffffc900000abe50 ((work_completion)(&map->work)){+.+.}, at: process_one_work+0x1d7/0x5e0
->> |  #2: ffff8881381f6df8 (&stab->lock){+...}, at: sock_map_free+0x26/0x180
->> |
->> | stack backtrace:
->> | CPU: 0 PID: 62 Comm: kworker/0:1 Tainted: G        W         5.5.0-04008-g7b083332376e #454
->> | Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
->> | Workqueue: events bpf_map_free_deferred
->> | Call Trace:
->> |  dump_stack+0x71/0xa0
->> |  check_noncircular+0x176/0x190
->> |  __lock_acquire+0xe2f/0x19f0
->> |  lock_acquire+0x95/0x190
->> |  ? sock_map_free+0x5f/0x180
->> |  lock_sock_nested+0x6b/0x90
->> |  ? sock_map_free+0x5f/0x180
->> |  sock_map_free+0x5f/0x180
->> |  bpf_map_free_deferred+0x58/0x80
->> |  process_one_work+0x260/0x5e0
->> |  worker_thread+0x4d/0x3e0
->> |  kthread+0x108/0x140
->> |  ? process_one_work+0x5e0/0x5e0
->> |  ? kthread_park+0x90/0x90
->> |  ret_from_fork+0x3a/0x50
->
-> Hi Jakub,
->
-> Untested at the moment, but this should also be fine per your suggestion
-> (if I read it correctly).  The reason we have stab->lock and bucket->locks
-> here is to handle checking EEXIST in update/delete cases. We need to
-> be careful that when an update happens and we check for EEXIST that the
-> socket is added/removed during this check. So both map_update_common and
-> sock_map_delete need to guard from being run together potentially deleting
-> an entry we are checking, etc. But by the time we get here we just did
-> a synchronize_rcu() in the line above so no updates/deletes should be
-> in flight. So it seems safe to drop these locks because of the condition
-> no updates in flight.
->
-> So with patch below we keep the sync rcu but that is fine IMO these
-> map free's are rare. Take a look and make sure it seems sane to you
-> as well.
->
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index f36e13e577a3..1d56ec20330c 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -233,8 +233,11 @@ static void sock_map_free(struct bpf_map *map)
->  	struct bpf_stab *stab = container_of(map, struct bpf_stab, map);
->  	int i;
->
-> +	/* After the sync no updates or deletes will be in-flight so it
-> +	 * is safe to walk map and remove entries without risking a race
-> +	 * in EEXIST update case.
-> +	 */
->  	synchronize_rcu();
-> -	raw_spin_lock_bh(&stab->lock);
->  	for (i = 0; i < stab->map.max_entries; i++) {
->  		struct sock **psk = &stab->sks[i];
->  		struct sock *sk;
-> @@ -248,7 +251,6 @@ static void sock_map_free(struct bpf_map *map)
->  			release_sock(sk);
->  		}
->  	}
-> -	raw_spin_unlock_bh(&stab->lock);
->
->  	/* wait for psock readers accessing its map link */
->  	synchronize_rcu();
-> @@ -859,10 +861,13 @@ static void sock_hash_free(struct bpf_map *map)
->  	struct hlist_node *node;
->  	int i;
->
-> +	/* After the sync no updates or deletes will be in-flight so it
-> +	 * is safe to walk hash and remove entries without risking a race
-> +	 * in EEXIST update case.
-> +	 */
->  	synchronize_rcu();
->  	for (i = 0; i < htab->buckets_num; i++) {
->  		bucket = sock_hash_select_bucket(htab, i);
-> -		raw_spin_lock_bh(&bucket->lock);
->  		hlist_for_each_entry_safe(elem, node, &bucket->head, node) {
->  			hlist_del_rcu(&elem->node);
->  			lock_sock(elem->sk);
-> @@ -871,7 +876,6 @@ static void sock_hash_free(struct bpf_map *map)
->  			rcu_read_unlock();
->  			release_sock(elem->sk);
->  		}
-> -		raw_spin_unlock_bh(&bucket->lock);
->  	}
->
->  	/* wait for psock readers accessing its map link */
+Jakub Kicinski <kuba@kernel.org> writes:
 
-Hi John,
+> On Mon, 09 Mar 2020 12:41:14 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> > You said that like the library doesn't arbitrate access and manage
+>> > resources.. It does exactly the same work the daemon would do.=20=20
+>>=20
+>> Sure, the logic is in the library, but the state (which programs are
+>> loaded) and synchronisation primitives (atomic replace of attached
+>> program) are provided by the kernel.=20
+>
+> I see your point of view. The state in the kernel which the library has
+> to read out every time is what I was thinking of as deserialization.
 
-We would like to get rid of lockdep splats we are seeing in testing.
+Ohh, right. I consider the BTF-embedded data as 'configuration data'
+which is different to 'state' in my mind. So hence my confusion about
+what you were talking about re: state :)
 
-Mind if I submit the above fix for bpf-next on your behalf?
+> The library has to take some lock, and then read the state from the
+> kernel, and then construct its internal state based on that. I think
+> you have some cleverness there to stuff everything in BTF so far, but
+> I'd expect if the library grows that may become cumbersome and
+> wasteful (it's pinned memory after all).
+>
+> Parsing the packet once could be an example of something that could be
+> managed by the library to avoid wasted cycles. Then programs would have
+> to describe their requirements, and library may need to do rewrites of
+> the bytecode.
 
-That is, of course, unless you have cycles to tend to it yourself.
+Hmm, I've been trying to make libxdp fairly minimal in scope. It seems
+like you are assuming that we'll end up with lots of additional
+functionality? Do you have anything in particular in mind, or are you
+talking in general terms here?
 
-Thanks,
--jkbs
+> I guess everything can be stuffed into BTF, but I'm not 100% sure
+> kernel is supposed to be a database either.
+
+I actually started out with the BTF approach because I wanted something
+that could be part of the program bytecode (instead of, say, an external
+config file that had to be carried along with the .o file). That it
+survives a round-trip into the kernel turned out to be a nice bonus :)
+
+I do agree with you in general terms, though: There's probably a limit
+to how much stuff we can stick into this. The obvious better-suited
+storage mechanism for more data is a BPF map, isn't it? I'm not sure
+there's any point in moving to that before we have actual use cases for
+richer state/metadata, though?
+
+> Note that the atomic replace may not sufficient for safe operation, as
+> reading the state from the kernel is also not atomic.
+
+Yeah, there's a potential for read-update-write races. However, assuming
+that the dispatcher program itself is not modified after initial setup
+(i.e., we build a new one every time), I think this can be solved with a
+"cmpxchg" operation where userspace includes the fd of the program it
+thinks it is replacing, and the kernel refuses the operation if this
+doesn't match. Do you disagree that this would be sufficient?
+
+-Toke
+
