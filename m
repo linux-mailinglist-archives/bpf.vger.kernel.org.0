@@ -2,148 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D3F1803D5
-	for <lists+bpf@lfdr.de>; Tue, 10 Mar 2020 17:44:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 136871803E3
+	for <lists+bpf@lfdr.de>; Tue, 10 Mar 2020 17:46:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgCJQof (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Mar 2020 12:44:35 -0400
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:39310 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726437AbgCJQof (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Mar 2020 12:44:35 -0400
-Received: by mail-pj1-f68.google.com with SMTP id d8so662943pje.4;
-        Tue, 10 Mar 2020 09:44:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=0p2YVHGL6lp61uxRv5NLn1qmIWDP6yCfI2xh2i2Pm1Y=;
-        b=MhtgLRAuKpplE/whqcWb0A+tJmDYwcN+T0MomFscn4nogXG70v6ONNEJkWAoFg9cxs
-         y927uwFcvheWjnhF0lso+saMMxrxoIp/ARhJIftlWAN+Wtu+nWh4Ji4aQvuRON3U49kU
-         hp04Pjjy78GE8WGlJsieGR5r4LoH5PtxzoQ5ZGhAAdNhXBRPCLAnVw+Nr033kY32ttiZ
-         Xb9wMQLNdxn9hFGfPhhXeOBbivFEdGwbxbyzTTY4aIbqfZ8QESGtfDkrxIOzfJ9rWJV4
-         EVwxJ2gtosyBTKq6QqwrsMzRcTbrOf8qLjblVNvWYq37BUGe21mTsjD3laSWYLxybtEl
-         Dbkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=0p2YVHGL6lp61uxRv5NLn1qmIWDP6yCfI2xh2i2Pm1Y=;
-        b=nrP2DrO05a4eJ5KfItJTWdLkgKtgSm+/VkJ6OXLpYHfs0EnBqdtaHvW3ZUMJdxZvuc
-         GKT+jRAxWLy31THfV224zcLJ35uZwm59YNs3BYPX3UN4TGFelZoHFrU+hmCX4wVrmjJh
-         WvimnZpgcvBSt8IYX9/IhUnGySbHm9Oz8/2OvuIS82/AdaGVTIrR2MU18Hx5Y16AuckT
-         NW3U5vJd+/iaimhj7bGkMVICfDvSSGUn6vP3CtAPUzYS63ucMw8jL3phIkZZ6FAn/0RZ
-         c1i9RKiEbdYlq+FfMX3YgD9UYGnrveu40hvJjjvK7RqOrpOkj1kju4q0mr9R4mon7XK0
-         k4Pw==
-X-Gm-Message-State: ANhLgQ2axQDvUMwT9DOLNAtPSj1GlAduFYIkBisuPrviHIcX72XfPJ+9
-        sEbb0b9Z2g99KItkJefqV0g=
-X-Google-Smtp-Source: ADFU+vt4mBe5DFPGkaJimj5kiEB7fPJIEIY3ZiotNS6jos3AKvEiYYYFgihfBZgWgbhy91+ZzDTY/w==
-X-Received: by 2002:a17:902:74cc:: with SMTP id f12mr13133943plt.232.1583858672512;
-        Tue, 10 Mar 2020 09:44:32 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id 8sm8579106pfp.67.2020.03.10.09.44.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Mar 2020 09:44:31 -0700 (PDT)
-Date:   Tue, 10 Mar 2020 09:44:24 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-team@cloudflare.com
-Message-ID: <5e67c3e83fb25_1e8a2b0e88e0a5bc84@john-XPS-13-9370.notmuch>
-In-Reply-To: <87zhdun0ay.fsf@cloudflare.com>
-References: <20200206111652.694507-1-jakub@cloudflare.com>
- <5e3c6c7f8730e_22ad2af2cbd0a5b4a4@john-XPS-13-9370.notmuch>
- <87zhdun0ay.fsf@cloudflare.com>
-Subject: Re: [PATCH bpf 0/3] Fix locking order and synchronization on
- sockmap/sockhash tear-down
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1726545AbgCJQqz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Mar 2020 12:46:55 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:54908 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726269AbgCJQqz (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 10 Mar 2020 12:46:55 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02AGYMLi019795;
+        Tue, 10 Mar 2020 09:46:37 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=tcqK5Eq2wAzx4dmg19YSjpdRFPwAQK4BVtIoIkii7Zk=;
+ b=nJlyvKvmTRQQj21WY+J/skBBDpG70nBdRZFbGJwANK9p7ti8q+6PnwC7rNRVRDCUBwkK
+ Xzv5c2fYgORrGcYYv87cYtxFBirNHvvVSBhczejxtI9fwAOWbcqLu2UEa8kQWQB1J5Oa
+ zsg+wZ7QaYCxeR6wbaOJcZqa8h7MBVoGIOc= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yntmuddk4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 10 Mar 2020 09:46:37 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Tue, 10 Mar 2020 09:46:36 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FosTndJtC+lCZKrGZOrKDd4vCv9G2IM7PjOsz9jMY9Qnm+4P0Oi6Wvp+U0TRkWrrgjXbXHnoK9Tj2LyXYDJfFkZpdKON5SgKEmcW3PuRDgSJzkrPNKeT/NWqGSeDFzGZtkQl/FbWs+4xXUT47UjZZxJNx3KYtfXiGwchhV0578AAeXmAjXZosUVDQrSjFVyuoNU1wI81J+9ISzLhwSDpO5gqIP43bjnZNPdvho3uMxrqdfh6CnduUOp2cBFCmQg0V/DEg3+h7+49GjUqpNpS+TpfTPFn5TwFhMLIOydXjFbj6u15C56QqjYcSD7k+WNd2IdT5vu40EBZ73OLFofrDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tcqK5Eq2wAzx4dmg19YSjpdRFPwAQK4BVtIoIkii7Zk=;
+ b=k4Acx73i2yynI+Sd0Xzb4RQRAfwbaHgjKdAFIq8sqVcWcJS/afZqyxYr3WHGfSgyDA+SCX59x9Pij21YeqpF+YLLJDvsvV94kdPTKsXGTXCsnxl9hglo57AcJjHqkM1CWZTxpZ13EBavB4yhlPkeFU4W7XiuY0pE0yYFRNDCIdgfSnpxndL6dlwt+6UAkANzbOLynUG10VwLrArRux3n4Ww+tzdYiyIeObnKpHzpus2dub16A4oH92uxU1SbdFb7RKngFjEbA140jxo4SI5FUeS2m8rhgtSWvkp50i1GdmxaDHIBR0Hc7QLFFdmaVsiD8mYM+9qP7ZmC/nNikWyvCA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tcqK5Eq2wAzx4dmg19YSjpdRFPwAQK4BVtIoIkii7Zk=;
+ b=AIe820trcXUfEvsTOFFZtJFGgYTd0OxDRHNc/UjFKQA7HycqCXxapTyQJzJW++a4yRkhyQHU3eJQWQQK4LGFTLFd8LgLZm4BfX22uVSyuvAAdjZtSmhU5ILlMi9OPxXJAmswmP3CahJHj07F9puMO0NfWZXvsadpQTPHG4icu2Q=
+Received: from BYAPR15MB2278.namprd15.prod.outlook.com (2603:10b6:a02:8e::17)
+ by BYAPR15MB3429.namprd15.prod.outlook.com (2603:10b6:a03:10c::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2793.17; Tue, 10 Mar
+ 2020 16:46:35 +0000
+Received: from BYAPR15MB2278.namprd15.prod.outlook.com
+ ([fe80::4d5a:6517:802b:5f47]) by BYAPR15MB2278.namprd15.prod.outlook.com
+ ([fe80::4d5a:6517:802b:5f47%4]) with mapi id 15.20.2793.018; Tue, 10 Mar 2020
+ 16:46:35 +0000
+Date:   Tue, 10 Mar 2020 09:46:27 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Yoshiki Komachi <komachi.yoshiki@gmail.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+Subject: Re: [PATCH v2 bpf 0/2] Fix BTF verification of enum members with a
+ selftest
+Message-ID: <20200310164627.zb3pponhlsweqk45@kafai-mbp>
+References: <1583825550-18606-1-git-send-email-komachi.yoshiki@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1583825550-18606-1-git-send-email-komachi.yoshiki@gmail.com>
+User-Agent: NeoMutt/20180716
+X-ClientProxiedBy: CO2PR06CA0062.namprd06.prod.outlook.com
+ (2603:10b6:104:3::20) To BYAPR15MB2278.namprd15.prod.outlook.com
+ (2603:10b6:a02:8e::17)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp (2620:10d:c090:400::5:f2f3) by CO2PR06CA0062.namprd06.prod.outlook.com (2603:10b6:104:3::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2793.14 via Frontend Transport; Tue, 10 Mar 2020 16:46:34 +0000
+X-Originating-IP: [2620:10d:c090:400::5:f2f3]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f4767a69-f074-48ea-16aa-08d7c5129866
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3429:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB342929C806D4C809D7934977D5FF0@BYAPR15MB3429.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
+X-Forefront-PRVS: 033857D0BD
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(346002)(366004)(136003)(39860400002)(376002)(396003)(199004)(189003)(9686003)(1076003)(16526019)(478600001)(33716001)(86362001)(15650500001)(2906002)(55016002)(6496006)(5660300002)(52116002)(8936002)(186003)(66556008)(66946007)(6916009)(54906003)(81156014)(6666004)(81166006)(4326008)(8676002)(66476007)(316002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3429;H:BYAPR15MB2278.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+Received-SPF: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /uvJdqALQyKT5bLT7IcqsIUIypaiOA01slljSwBGKZ732m7S08SYtsaQPY2ZTyuLMFSW7Lpy41g/icQRoUz4GAoaOg0afrvi8WXYtNcEUGh0LyEZVUCRHvw4fzEcqBYHpaZREd5+u/7JVG0DIh5YBpV2rP5qnW38jf31ugRkJw10/N7Pa1Fb2X6WaPePUsHvXKJDFnz8ElOCs38embOwrUs0aFCqujbshBFPdeL+zWve5n5l2awcqyaN24NYXUwg1DB9Od+jVMBN37D5bDOgARfFVyRQVlj77N7qdvp9nj2jC/YcQ7ym4JRci9uEOE7jIIkhCc6V7IRzpt6uwKRDOFd4sau07sN1DOA5DBS+dcV1/hFt0ClaiDvp0eNCsm46ys7P4NZuAGX7xkMutcQxEQK+XJeve8M0ys5jjRGrhgdYNa0pQyQ7GLjdj4n+6ano
+X-MS-Exchange-AntiSpam-MessageData: /MikHsI9XmYcPoN49cp8fWyZbGX9RpG5QBOklt9jiv06/muizC4hlkY3I/6KWHY6gr0DMk+OE0l9Evf5hpJqOugH5fkfrCb5KTnJ66MNBbcIesoeoqPwqRy9MmIV034A6d7ho5NgUNDsKyz7a3hGthUEPoo9R0aMz3fVRH7bQ/nHhpkyeXy0pV9m+LNYLumd
+X-MS-Exchange-CrossTenant-Network-Message-Id: f4767a69-f074-48ea-16aa-08d7c5129866
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2020 16:46:35.5123
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BiSlNCbMvFuRu3q8GAJix5tEh9DVR1b1PqJW6n2K9INHIGId7W82WLoKZwr6UiXC
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3429
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-03-10_11:2020-03-10,2020-03-10 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ phishscore=0 mlxscore=0 clxscore=1011 suspectscore=0 priorityscore=1501
+ adultscore=0 malwarescore=0 impostorscore=0 spamscore=0 mlxlogscore=999
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2003100103
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Sitnicki wrote:
-> On Thu, Feb 06, 2020 at 08:43 PM CET, John Fastabend wrote:
-> > Jakub Sitnicki wrote:
-> >> Couple of fixes that came from recent discussion [0] on commit
-> >> 7e81a3530206 ("bpf: Sockmap, ensure sock lock held during tear down").
-> >>
-> >> This series doesn't address the sleeping while holding a spinlock
-> >> problem. We're still trying to decide how to fix that [1].
-> >>
-> >> Until then sockmap users might see the following warnings:
-> >>
-> >> | BUG: sleeping function called from invalid context at net/core/sock.c:2935
+On Tue, Mar 10, 2020 at 04:32:28PM +0900, Yoshiki Komachi wrote:
+> btf_enum_check_member() checked if the size of "enum" as a struct
+> member exceeded struct_size or not. Then, the function compared it
+> with the size of "int". Although the size of "enum" is 4-byte by
+> default (i.e., equivalent to "int"), the packing feature enables
+> us to reduce it, as illustrated by the following example:
 > 
-
-[...]
-
-> Hey John,
-
-Patch sent.
-
+> struct A {
+>         char m;
+>         enum { E0, E1 } __attribute__((packed)) n;
+> };
 > 
-> > Untested at the moment, but this should also be fine per your suggestion
-> > (if I read it correctly).  The reason we have stab->lock and bucket->locks
-> > here is to handle checking EEXIST in update/delete cases. We need to
-> > be careful that when an update happens and we check for EEXIST that the
-> > socket is added/removed during this check. So both map_update_common and
-> > sock_map_delete need to guard from being run together potentially deleting
-> > an entry we are checking, etc.
+> With such a setup above, the bpf loader gave an error attempting
+> to load it:
 > 
-> Okay, thanks for explanation. IOW, we're serializing map writers.
+> ------------------------------------------------------------------
+> ...
 > 
-> > But by the time we get here we just did a synchronize_rcu() in the
-> > line above so no updates/deletes should be in flight. So it seems safe
-> > to drop these locks because of the condition no updates in flight.
+> [3] ENUM (anon) size=1 vlen=2
+>         E0 val=0
+>         E1 val=1
+> [4] STRUCT A size=2 vlen=2
+>         m type_id=2 bits_offset=0
+>         n type_id=3 bits_offset=8
 > 
-> This part is not clear to me. I might be missing something.
+> [4] STRUCT A size=2 vlen=2
+>         n type_id=3 bits_offset=8 Member exceeds struct_size
 > 
-> Here's my thinking - for any map writes (update/delete) to start,
-> map->refcnt needs to be > 0, and the ref is not dropped until the write
-> operation has finished.
+> libbpf: Error loading .BTF into kernel: -22.
 > 
-> Map FDs hold a ref to map until the FD gets released. And BPF progs hold
-> refs to maps until the prog gets unloaded.
+> ------------------------------------------------------------------
 > 
-> This would mean that map_free will get scheduled from __bpf_map_put only
-> when no one is holding a map ref, and could start a write that would be
-> happening concurrently with sock_{map,hash}_free:
-
-Sorry bringing back this old thread I'm not sure I followed the couple
-paragraphs here. Is this with regards to the lock or the rcu? II didn't
-want to just drop this thanks.
-
-We can't have new updates/lookups/deletes happening while we are free'ing
-a map that would cause all sorts of problems, use after free's, etc.
-
+> The related issue was previously fixed by the commit 9eea98497951 ("bpf:
+> fix BTF verification of enums"). On the other hand, this series fixes
+> this issue as well, and adds a selftest program for it.
 > 
-> /* decrement map refcnt and schedule it for freeing via workqueue
->  * (unrelying map implementation ops->map_free() might sleep)
->  */
-> static void __bpf_map_put(struct bpf_map *map, bool do_idr_lock)
-> {
-> 	if (atomic64_dec_and_test(&map->refcnt)) {
-> 		/* bpf_map_free_id() must be called first */
-> 		bpf_map_free_id(map, do_idr_lock);
-> 		btf_put(map->btf);
-> 		INIT_WORK(&map->work, bpf_map_free_deferred);
-> 		schedule_work(&map->work);
-> 	}
-> }
-> 
-> > So with patch below we keep the sync rcu but that is fine IMO these
-> > map free's are rare. Take a look and make sure it seems sane to you
-> > as well.
-> 
-> I can't vouch for the need to keep synchronize_rcu here because I don't
-> understand that part, but otherwise the change LGTM.
-> 
-> -jkbs
->
-
-[...]
+> Changes in v2:
+> - change an example in commit message based on Andrii's review
+> - add a selftest program for packed "enum" type members in struct/union
+Acked-by: Martin KaFai Lau <kafai@fb.com>
