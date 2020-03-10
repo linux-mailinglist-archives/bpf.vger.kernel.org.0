@@ -2,122 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F96180210
-	for <lists+bpf@lfdr.de>; Tue, 10 Mar 2020 16:40:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F562180288
+	for <lists+bpf@lfdr.de>; Tue, 10 Mar 2020 16:55:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726426AbgCJPkM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Mar 2020 11:40:12 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:35743 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbgCJPkM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Mar 2020 11:40:12 -0400
-Received: by mail-io1-f68.google.com with SMTP id h8so13233490iob.2;
-        Tue, 10 Mar 2020 08:40:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/2Nc7EO5K8qowxgiDrjJZXV6Z7Z9/191yVE6G6w18cE=;
-        b=PQf3SBsQNP1oB6jtzPQiiK7TDcfsUrs/F407VPm1MnNVt7Y4krhvssfjrRV1ipo5TA
-         gIMwBoLuT2kIgmaUzYKz916Up/N8PoaeZaI1LY04foLSZ/kHE9yccVWiCHcv7Y9+WZxy
-         G+218WPcguwcBtI6mRsUj47EiL+zkbULRt53bJrAxFTwo2/vV0Ih+kAHP9Je1RMcb/X6
-         F6dMkivS90gQwRJX18UujKdUlDIqo7H4reKFNfwLh4ZJIvLrMOG1piI2ixWT+a1Gd8d8
-         L+ait9nelBbGTW+Z7RMTk4cIqWCW0h2CFfMi1/F2IuOoS3A6TZUfja9Kk6q9MdTr+iMz
-         r/hg==
+        id S1726558AbgCJPzQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Mar 2020 11:55:16 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:52068 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726353AbgCJPzP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Mar 2020 11:55:15 -0400
+Received: by mail-il1-f198.google.com with SMTP id c12so10106354ilr.18
+        for <bpf@vger.kernel.org>; Tue, 10 Mar 2020 08:55:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/2Nc7EO5K8qowxgiDrjJZXV6Z7Z9/191yVE6G6w18cE=;
-        b=CeNuQzAyxaMbreqiqE9QPkvClC8kclS77LzvNy3nolmRohL+oy4crUZa49mNPw9VoT
-         xpp4bd4jt/AsGyOOx+FT078gNN8a7S1iXeXzqOtsRkwIVkzbRLKyTI1XpCMVqIUrdFeO
-         z1+0ura6Ahx7gTY8MgJ3FI6waSUvi4+Dl5m1SToGtfxjnHT7xlkIJ94X1uAAHVjmZ4Cy
-         VP2zPvwgKzeAdvDXL30bSVjCo0v3DXg9L0C5bDILRwlMbUeeCT4aMMynbVec3MALtkO1
-         rwnH/m5VurRz72O0MNwJizD0qmdVYD9u83cFSaA7RQXMjZGKtArqbBJ0BOCP5zouJMfr
-         jmbA==
-X-Gm-Message-State: ANhLgQ2dquUShYE7mAGAvGztIt64kjFf++nEDapib5LV/jXnUa+vX+pF
-        CFEZDQ95eFtAsIiLxbMafEnX28HPL0QseppLg9A=
-X-Google-Smtp-Source: ADFU+vtZDKlQ+VnzgcTE5iOycELBoO27ZmSqMCAEeQrTNoeNdxJpQr+T1u4KtJrnH3x06Ce3sJyeVbxvM9YJ61iJ9Uc=
-X-Received: by 2002:a6b:dd14:: with SMTP id f20mr5740184ioc.32.1583854809734;
- Tue, 10 Mar 2020 08:40:09 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=hfYTmFBUkj/aSmF7eDTw4L8JGcK+jo9iAAdS7lmp/P4=;
+        b=Gr4tozu5nDAkVmFyp6jJOsrZwjXZivvDd+5JXw79ykx1lUeoHjn9gNG+s34VqgmIZx
+         tpEz/b5l4wBUaQOCVhQIvvM6Rq8Aib8s+xw4I1lDbf1DKXI5jXMQWuZKnsO+pW/D8Mss
+         J/aANa0gZVjVhH2Xkw8wXsqSe2qljyqRJCV/7Kkm7R3DMDT/z9a32G+kYNuzXBQyG8HO
+         1K2kPVF+0+gfIW5SpYFgsVFCyhkNJ8BvbzaDLHcczhkHVp7CeAMXdbKaKMMVrjXHZPNs
+         rldbwhnycX5D7GBPU3WS93nU9R5/TD85tOc8vr/vSKkuetPoQJsNwarDercxnGSIwiwA
+         k5KA==
+X-Gm-Message-State: ANhLgQ0BrlIeUmqacmg30CawmEGOMR7UGjZwK2MNhBA0EoD+OAth8dDG
+        HGjSsPpH/sVRLHJ+OjKuq8VdQGKcZHYFX9J3ObUV7ebXbySy
+X-Google-Smtp-Source: ADFU+vtz6Cs7cd1vZftsLF+QYyCNMfxK6cInkd9CJ0phSyyysB1E7J7LSMbEsoUq3oywLDSov4QpZz6r4Qf+9630a68/ON9/SOSW
 MIME-Version: 1.0
-References: <1583825550-18606-1-git-send-email-komachi.yoshiki@gmail.com>
-In-Reply-To: <1583825550-18606-1-git-send-email-komachi.yoshiki@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 10 Mar 2020 08:39:58 -0700
-Message-ID: <CAEf4BzYnuaeZ7s-yo7kAtHczcO5Ryc8ZGKYxWYWoFU-+WE0BRw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf 0/2] Fix BTF verification of enum members with a selftest
-To:     Yoshiki Komachi <komachi.yoshiki@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+X-Received: by 2002:a6b:fb01:: with SMTP id h1mr18251940iog.16.1583855714812;
+ Tue, 10 Mar 2020 08:55:14 -0700 (PDT)
+Date:   Tue, 10 Mar 2020 08:55:14 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000041c6c205a08225dc@google.com>
+Subject: KASAN: slab-out-of-bounds Read in cgroup_file_notify
+From:   syzbot <syzbot+cac0c4e204952cf449b1@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, almasrymina@google.com, andriin@fb.com,
+        ast@kernel.org, bpf@vger.kernel.org, cgroups@vger.kernel.org,
+        christian@brauner.io, daniel@iogearbox.net, hannes@cmpxchg.org,
+        kafai@fb.com, linux-kernel@vger.kernel.org, lizefan@huawei.com,
+        netdev@vger.kernel.org, sfr@canb.auug.org.au,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        tj@kernel.org, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 10, 2020 at 12:32 AM Yoshiki Komachi
-<komachi.yoshiki@gmail.com> wrote:
->
-> btf_enum_check_member() checked if the size of "enum" as a struct
-> member exceeded struct_size or not. Then, the function compared it
-> with the size of "int". Although the size of "enum" is 4-byte by
-> default (i.e., equivalent to "int"), the packing feature enables
-> us to reduce it, as illustrated by the following example:
->
-> struct A {
->         char m;
->         enum { E0, E1 } __attribute__((packed)) n;
-> };
->
-> With such a setup above, the bpf loader gave an error attempting
-> to load it:
->
-> ------------------------------------------------------------------
-> ...
->
-> [3] ENUM (anon) size=1 vlen=2
->         E0 val=0
->         E1 val=1
-> [4] STRUCT A size=2 vlen=2
->         m type_id=2 bits_offset=0
->         n type_id=3 bits_offset=8
->
-> [4] STRUCT A size=2 vlen=2
->         n type_id=3 bits_offset=8 Member exceeds struct_size
->
-> libbpf: Error loading .BTF into kernel: -22.
->
-> ------------------------------------------------------------------
->
-> The related issue was previously fixed by the commit 9eea98497951 ("bpf:
-> fix BTF verification of enums"). On the other hand, this series fixes
-> this issue as well, and adds a selftest program for it.
->
-> Changes in v2:
-> - change an example in commit message based on Andrii's review
-> - add a selftest program for packed "enum" type members in struct/union
->
-> Yoshiki Komachi (2):
->   bpf/btf: Fix BTF verification of enum members in struct/union
->   selftests/bpf: Add test for the packed enum member in struct/union
->
->  kernel/bpf/btf.c                       |  2 +-
->  tools/testing/selftests/bpf/test_btf.c | 42 ++++++++++++++++++++++++++++++++++
->  2 files changed, 43 insertions(+), 1 deletion(-)
->
-> --
-> 1.8.3.1
->
+Hello,
 
-You should have updated patch prefix for patch #1 and #2 to [PATCH v2
-bpf] as well, please do it next time,
+syzbot found the following crash on:
 
-For the series:
+HEAD commit:    c99b17ac Add linux-next specific files for 20200225
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1610d70de00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6b7ebe4bd0931c45
+dashboard link: https://syzkaller.appspot.com/bug?extid=cac0c4e204952cf449b1
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1242e1fde00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1110d70de00000
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+The bug was bisected to:
+
+commit 6863de00e5400b534cd4e3869ffbc8f94da41dfc
+Author: Mina Almasry <almasrymina@google.com>
+Date:   Thu Feb 20 03:55:30 2020 +0000
+
+    hugetlb_cgroup: add accounting for shared mappings
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12a17f0de00000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=11a17f0de00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16a17f0de00000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+cac0c4e204952cf449b1@syzkaller.appspotmail.com
+Fixes: 6863de00e540 ("hugetlb_cgroup: add accounting for shared mappings")
+
+==================================================================
+BUG: KASAN: slab-out-of-bounds in cgroup_file_notify+0x16a/0x1b0 kernel/cgroup/cgroup.c:4084
+Read of size 8 at addr ffff88821b77c4c8 by task syz-executor540/9589
+
+CPU: 0 PID: 9589 Comm: syz-executor540 Not tainted 5.6.0-rc3-next-20200225-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x197/0x210 lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xd4/0x30b mm/kasan/report.c:374
+ __kasan_report.cold+0x1b/0x32 mm/kasan/report.c:506
+ kasan_report+0x12/0x20 mm/kasan/common.c:641
+ __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:135
+ cgroup_file_notify+0x16a/0x1b0 kernel/cgroup/cgroup.c:4084
+ hugetlb_event mm/hugetlb_cgroup.c:224 [inline]
+ __hugetlb_cgroup_charge_cgroup+0x88c/0xf10 mm/hugetlb_cgroup.c:262
+ hugetlb_cgroup_charge_cgroup_rsvd+0x2b/0x40 mm/hugetlb_cgroup.c:286
+ hugetlb_reserve_pages+0x2c2/0xce0 mm/hugetlb.c:4891
+ hugetlb_file_setup+0x26a/0x671 fs/hugetlbfs/inode.c:1423
+ newseg+0x4a3/0xf40 ipc/shm.c:652
+ ipcget_new ipc/util.c:344 [inline]
+ ipcget+0x105/0xd40 ipc/util.c:643
+ ksys_shmget ipc/shm.c:742 [inline]
+ __do_sys_shmget ipc/shm.c:747 [inline]
+ __se_sys_shmget ipc/shm.c:745 [inline]
+ __x64_sys_shmget+0x146/0x1d0 ipc/shm.c:745
+ do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x440119
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 fb 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffd5e1db3e8 EFLAGS: 00000246 ORIG_RAX: 000000000000001d
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440119
+RDX: 0000000000004800 RSI: fffffffffeffffff RDI: 0000000000000000
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000020ffc000 R11: 0000000000000246 R12: 00000000004019a0
+R13: 0000000000401a30 R14: 0000000000000000 R15: 0000000000000000
+
+Allocated by task 0:
+ save_stack+0x23/0x90 mm/kasan/common.c:72
+ set_track mm/kasan/common.c:80 [inline]
+ __kasan_kmalloc mm/kasan/common.c:515 [inline]
+ __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:488
+ kasan_kmalloc+0x9/0x10 mm/kasan/common.c:529
+ kmem_cache_alloc_trace+0x158/0x790 mm/slab.c:3551
+ kmalloc include/linux/slab.h:555 [inline]
+ kzalloc include/linux/slab.h:669 [inline]
+ hugetlb_cgroup_css_alloc+0x4f/0x320 mm/hugetlb_cgroup.c:138
+ cgroup_init_subsys+0x1d9/0x4a7 kernel/cgroup/cgroup.c:5582
+ cgroup_init+0x34a/0xa4c kernel/cgroup/cgroup.c:5708
+ start_kernel+0xe2d/0xe8f init/main.c:987
+ x86_64_start_reservations+0x29/0x2b arch/x86/kernel/head64.c:490
+ x86_64_start_kernel+0x77/0x7b arch/x86/kernel/head64.c:471
+ secondary_startup_64+0xa4/0xb0 arch/x86/kernel/head_64.S:242
+
+Freed by task 0:
+(stack is not available)
+
+The buggy address belongs to the object at ffff88821b77c000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 1224 bytes inside of
+ 2048-byte region [ffff88821b77c000, ffff88821b77c800)
+The buggy address belongs to the page:
+page:ffffea00086ddf00 refcount:1 mapcount:0 mapping:000000005a8512d0 index:0x0
+flags: 0x57ffe0000000200(slab)
+raw: 057ffe0000000200 ffffea00086dde48 ffffea00086ddf88 ffff8880aa400e00
+raw: 0000000000000000 ffff88821b77c000 0000000100000001 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88821b77c380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88821b77c400: 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc
+>ffff88821b77c480: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+                                              ^
+ ffff88821b77c500: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88821b77c580: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
