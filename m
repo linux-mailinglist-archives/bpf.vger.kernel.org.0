@@ -2,119 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C098180A9E
-	for <lists+bpf@lfdr.de>; Tue, 10 Mar 2020 22:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B68180AC3
+	for <lists+bpf@lfdr.de>; Tue, 10 Mar 2020 22:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727313AbgCJVjg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Mar 2020 17:39:36 -0400
-Received: from mail-ua1-f65.google.com ([209.85.222.65]:43352 "EHLO
-        mail-ua1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726271AbgCJVjg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Mar 2020 17:39:36 -0400
-Received: by mail-ua1-f65.google.com with SMTP id o42so5257211uad.10
-        for <bpf@vger.kernel.org>; Tue, 10 Mar 2020 14:39:35 -0700 (PDT)
+        id S1727588AbgCJVqD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Mar 2020 17:46:03 -0400
+Received: from mail-pl1-f177.google.com ([209.85.214.177]:35893 "EHLO
+        mail-pl1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726283AbgCJVqD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Mar 2020 17:46:03 -0400
+Received: by mail-pl1-f177.google.com with SMTP id g12so62365plo.3;
+        Tue, 10 Mar 2020 14:46:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GdlXGBu011eILr6E7BKeOR6UiLq6Vdo/qhWhU5E0PbY=;
-        b=qow1Yly0Eo6wNCVCAXCutaqv7CgN7WaQcfi68e6dnzv9swNvIzu6OER4ZCvTlqsND0
-         v/wSUS0v8kJvwGnHBDvYrjU3aL1TVqj1p8lgA60b+qp0HENgTLb+f9Kd0py+Z1tnFnPu
-         4oj7QZuEgxniGPxwYyBRmG/Asfmc41HbYw9i+H5IuuLAVAcNxQN0lZE/LiC3uw6+w6SC
-         VytsXj/SMfOm5I3i8dxSxO3ukRTE9VzrnqduCBzKbYwFatcJezX15OG0D0I5/L6bBnoO
-         uaRDM/xM6Y1p1fLIouawRKNZadIjdXjfmkxW2UYmlOg5Y7++zGD7F/xYSx+5wsKlVUUr
-         GiFw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=0QWUlQ6TAxo5AJHtPDkRjusgzM7PzqNClJfu4qAMvk4=;
+        b=M9hJQ505ZvW1Y+u+YQS+KXAjabukxbA/oKuyRsmBp1aImuOp6rDwgxuCtMjT7T5FRe
+         we6+osO4WHEZMh4TGZjf+q+g6Tmx+25sJryOfYaR7TsgK1dKWYjLY6Bxq/jayG6VT/x9
+         XSRDa8lQuZvwXXvMfnDFj9vg9aNQAlpqVLWKgP/x73ojAk9NUl89Mz69enRCkoV5gD5m
+         ThmxnRPS64fzptLd71Shrr9wcsjktZFZynJs8syXpOoJOD2G1QN2q/pQ/PZvVV4YAfGd
+         4KuvOC1rRsvMrWq0j0BJRnl0K3+e8qiklxfkUPWlVhEvUmpyGF1+YVWsx8sq3BxxK6Q8
+         8Biw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GdlXGBu011eILr6E7BKeOR6UiLq6Vdo/qhWhU5E0PbY=;
-        b=VhgBq50+mTk8fvnOim/rbPIRcdTh+ndSHv7toFM75RrdTStYIR2qVPFFVRakJyewIL
-         7HRqznQWxuAgEVKISDNwaqrL4uRAoItf7foDTC8XDQ250nsRP/wRBrBpJYl7RnZXQgQy
-         qqAFrmPWZDQiiuUeZUsHFTR4fmLwGrxB3SJ7WIjQVE6+QSnipj8sVnSLp9ixh1mqj1f/
-         rqtJ2v5D36wJPA/WCol5WQ+fpLGiY9gVgNuRKoiMJOIuHEYbsaHwjHtUHG+DEK5UtAz2
-         j08+mDncWkedlDohSHmQZJZuE65sxzhsYmhTAk35HnqK9pR1wB8cA7HCWT775Ny9Zjh1
-         MJqg==
-X-Gm-Message-State: ANhLgQ1NCp5xwJaQl7wC/TpLV/6lZLlLruFgwzlcwyU/bmDOXo8uaBLv
-        B6K4J6VRSu6aTzxuH9GN6rlea2yrGSFwdk6TdA7Axw==
-X-Google-Smtp-Source: ADFU+vvrCP8710FwovNQiq3TRDaasFyzXucpbPikePRLc6w5tbh734JpqREX6WUJxdQfuVbpX+V0ftICxermILFQWdA=
-X-Received: by 2002:ab0:2851:: with SMTP id c17mr13587156uaq.63.1583876374973;
- Tue, 10 Mar 2020 14:39:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200310185003.57344-1-irogers@google.com> <20200310195915.GA1676879@tassilo.jf.intel.com>
-In-Reply-To: <20200310195915.GA1676879@tassilo.jf.intel.com>
-From:   Stephane Eranian <eranian@google.com>
-Date:   Tue, 10 Mar 2020 14:39:23 -0700
-Message-ID: <CABPqkBRQo=bEOiCFGFjwcM8TZaXMFyaL7o1hcFd6Bc3w+LhJQA@mail.gmail.com>
-Subject: Re: [PATCH] perf tools: add support for lipfm4
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiwei Sun <jiwei.sun@windriver.com>,
-        yuzhoujian <yuzhoujian@didichuxing.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=0QWUlQ6TAxo5AJHtPDkRjusgzM7PzqNClJfu4qAMvk4=;
+        b=Np8Q1cFHElRFScOlRggNHcviTwDjQMYTIvL9HUaIUbPxMSt+3ssbXVr865wgAgvsp7
+         fRxwe/x6PjtHYpDKDqHy+uTvQ7z53jh7eZGHuwBlHwuBFXvdzciI2BypUORG91zLgBba
+         TnMi/lpCEfk0ihtOLfPx3AYL4heGs9VvtG9sdkm2/sC0dAVZviyrz7BpEQ230NjPRcov
+         +3MVoe9epLwvFbi28k9TOm/mXXNbL1o9QXNXWG07ycAN+IZm5so4RFMWQjVVA5GJFqCU
+         1zu+jt+Q1Lf4ERFQTOQj4H2gpqGjvvcuF6yp8GD89yCsW7Ef+nON3t32GvdlNhnloy6P
+         OPxw==
+X-Gm-Message-State: ANhLgQ0ZENStlNB31l1/mWpsYzgtHg8po2DZ5jaWbckgSw50nAnmmrvU
+        RsXP8wYH8aTCe8gOaSIqS/0=
+X-Google-Smtp-Source: ADFU+vswKhqitiydc/ruHGRUrB3YiWWwuMnw9ZsntI12ntAk9jHkp7nhsyHyVwillSfTDPwRQBH6YA==
+X-Received: by 2002:a17:90a:9515:: with SMTP id t21mr51003pjo.14.1583876760868;
+        Tue, 10 Mar 2020 14:46:00 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id w206sm6150524pfc.54.2020.03.10.14.45.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Mar 2020 14:46:00 -0700 (PDT)
+Date:   Tue, 10 Mar 2020 14:45:52 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
+        Andrii Nakryiko <andriin@fb.com>
+Message-ID: <5e680a909371e_586d2b10f16785b8c9@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200309231051.1270337-1-andriin@fb.com>
+References: <20200309231051.1270337-1-andriin@fb.com>
+Subject: RE: [PATCH bpf-next] bpf: add bpf_link_new_file that doesn't install
+ FD
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 10, 2020 at 12:59 PM Andi Kleen <ak@linux.intel.com> wrote:
->
-> On Tue, Mar 10, 2020 at 11:50:03AM -0700, Ian Rogers wrote:
-> > This patch links perf with the libpfm4 library.
-> > This library contains all the hardware event tables for all
-> > processors supported by perf_events. This is a helper library
-> > that help convert from a symbolic event name to the event
-> > encoding required by the underlying kernel interface. This
-> > library is open-source and available from: http://perfmon2.sf.net.
->
-> For most CPUs the builtin perf JSON event support should make
-> this redundant.
->
-We decided to post this patch to propose an alternative to the JSON
-file approach. It could be an option during the build.
-The libpfm4 library has been around for 15 years now. Therefore, it
-supports a lot of processors core and uncore and it  is very portable.
-The key value add I see is that this is a library that can be, and has
-been, used by tool developers directly in their apps. It can
-work with more than Linux perf_events interface. It is not tied to the
-interface. It has well defined and documented entry points.
-We do use libpfm4 extensively at Google in both the perf tool and
-applications. The PAPI toolkit also relies on this library.
+Andrii Nakryiko wrote:
+> Add bpf_link_new_file() API for cases when we need to ensure anon_inode is
+> successfully created before we proceed with expensive BPF program attachment
+> procedure, which will require equally (if not more so) expensive and
+> potentially failing compensation detachment procedure just because anon_inode
+> creation failed. This API allows to simplify code by ensuring first that
+> anon_inode is created and after BPF program is attached proceed with
+> fd_install() that can't fail.
+> 
+> After anon_inode file is created, link can't be just kfree()'d anymore,
+> because its destruction will be performed by deferred file_operations->release
+> call. For this, bpf_link API required specifying two separate operations:
+> release() and dealloc(), former performing detachment only, while the latter
+> frees memory used by bpf_link itself. dealloc() needs to be specified, because
+> struct bpf_link is frequently embedded into link type-specific container
+> struct (e.g., struct bpf_raw_tp_link), so bpf_link itself doesn't know how to
+> properly free the memory. In case when anon_inode file was successfully
+> created, but subsequent BPF attachment failed, bpf_link needs to be marked as
+> "defunct", so that file's release() callback will perform only memory
+> deallocation, but no detachment.
+> 
+> Convert raw tracepoint and tracing attachment to new API and eliminate
+> detachment from error handling path.
+> 
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
 
-I don't see this as competing with the JSON approach. It is just an
-option I'd like to offer to users especially those familiar
-with it in their apps.
+LGTM
 
-> Perhaps you could list what CPUs it actually supports over
-> the existing JSON tables.
->
-> If it's only a few it would be likely better to add
-> appropiate json files.
->
-> If it's a massive number it might be useful, although
-> JSON support would be better for those too.
->
-> -Andi
+Acked-by: John Fastabend <john.fastabend@gmail.com>
