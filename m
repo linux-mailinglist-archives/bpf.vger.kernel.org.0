@@ -2,87 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B24FC180481
-	for <lists+bpf@lfdr.de>; Tue, 10 Mar 2020 18:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1681804B5
+	for <lists+bpf@lfdr.de>; Tue, 10 Mar 2020 18:26:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgCJRMs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Mar 2020 13:12:48 -0400
-Received: from dispatch1-us1.ppe-hosted.com ([148.163.129.52]:51462 "EHLO
-        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726488AbgCJRMs (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 10 Mar 2020 13:12:48 -0400
-X-Virus-Scanned: Proofpoint Essentials engine
-Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1-us3.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id DA1A160006E;
-        Tue, 10 Mar 2020 17:12:45 +0000 (UTC)
-Received: from [10.17.20.203] (10.17.20.203) by ukex01.SolarFlarecom.com
- (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Tue, 10 Mar
- 2020 17:12:34 +0000
-Subject: Re: [RFC PATCH 2/4] bpf: verifier, do explicit u32 bounds tracking
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-CC:     <yhs@fb.com>, <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-References: <158353965971.3451.14666851223845760316.stgit@ubuntu3-kvm2>
- <158353986285.3451.6986018098665897886.stgit@ubuntu3-kvm2>
- <20200309235828.wldukb66bdwy2dzd@ast-mbp>
-From:   Edward Cree <ecree@solarflare.com>
-Message-ID: <3f80b587-c5b0-0446-8cbc-eff1758496e9@solarflare.com>
-Date:   Tue, 10 Mar 2020 17:12:31 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1726414AbgCJR0S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Mar 2020 13:26:18 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:46624 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726271AbgCJR0S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Mar 2020 13:26:18 -0400
+Received: by mail-lf1-f65.google.com with SMTP id l7so2570423lfe.13;
+        Tue, 10 Mar 2020 10:26:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZJVFRR1IQX+hmizs9RBYTNxtZNffeaA9KYRc68CKjIo=;
+        b=sk03k7pWteCNHL8E35y7QOy7vNYjPCxYpcWvJVWUNWSED8yUld3tjsXtRg1lqwiAzU
+         8qkL2Dw4qFdMhMwWjz2yuR4PCd0fe1Jy1o/myV02JBZTKyMeESQUCzHRoI6Fm8o8ZeZM
+         59IUFXUhIUXGH/xEVRf+BcOj3uqiyDAYHnsT4aW+oqVD/naVswDDHLGIJh0obaMvFwHn
+         IbbYGAQHzGHlsOMYmLxK2Wj6kqFkO7bOxeAObVx5vS7WUnX6Ee6nrPX1EWN4TSb+Vh9c
+         DhkcqgD6tJryXHeu5WMnoAd0O12YabN5MdZufkuvjoN2ZaOcbwD2LNvPPqIHBaXHrsiG
+         CYKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZJVFRR1IQX+hmizs9RBYTNxtZNffeaA9KYRc68CKjIo=;
+        b=ihiK2uzNMay95fVWErE8SaS/I/jN8wBtbL9g16QcqpO4wL6P8v+3PnzNymN9FzCuMC
+         dXcok9LbK3ov42TOOkiadT3Pob//GonTjDhp5UZYCOHQw5DityLUJux/iQ1TqWypC1n5
+         /ziAKxabliX+jSvec8OIdMDSj3dPyGgocCNWGlssRp2yNUZ0DFLTUYuZH2SqYjRedPDe
+         he6Q2phMzyYX9hRyDb4s0x7ROHosLGUU0Qi4upIZeFGJJoJYwvEGJhulYVmHRqQJYTC4
+         lWmXKT91RuLkbZS8v4t/N4XmvF8RCtpp+GfLKoNyX7w7TzY4Qv8qQMZzxAv78jZ9KJmm
+         XU/A==
+X-Gm-Message-State: ANhLgQ1+c639RL1HGch8zfhecAYT4Rixptm0A6rQP3vXbnyjsZQa+RUt
+        7+RvCIQixswhasJC78EKbAlQeMsP6YTjHxd69TQ=
+X-Google-Smtp-Source: ADFU+vtpFMCvx4Cn0IdQGZIRB8PDw1PGVOs42uPfsrNRSeYUBmm2xVMMulcrzGBLeKu2ouJ8J02rX8ftRK4uqHYOgN0=
+X-Received: by 2002:a19:a40c:: with SMTP id q12mr6940906lfc.73.1583861175618;
+ Tue, 10 Mar 2020 10:26:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200309235828.wldukb66bdwy2dzd@ast-mbp>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.17.20.203]
-X-ClientProxiedBy: ocex03.SolarFlarecom.com (10.20.40.36) To
- ukex01.SolarFlarecom.com (10.17.10.4)
-X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1020-25280.003
-X-TM-AS-Result: No-2.247000-8.000000-10
-X-TMASE-MatchedRID: HXSqh3WYKfvmLzc6AOD8DcEU6KRYGcYdTJDl9FKHbrkWeIgR+ERzLAQ9
-        n8U23GDfZhgUf9KGx0qyBxCwqqjAnuMgV7FXaWc0/1dEgwtQ6NC7xmCZDXrutbu1Sf94ro4p3Mj
-        q1xDTdMTBZXeE39CjUXNyq0Gwang3FqXLH1tGOWYcLuEDP+gqcuP6p+9mEWlCe4qzNyQgC2omSk
-        SBaVwPga0+31c4kc33DdzWRveIwGOkQ4dFqDSK9WhQCsqhuTNiRjqOkKPmpa4aQNdCmy53TaPFj
-        JEFr+olSXhbxZVQ5H+OhzOa6g8KrXTle4Z3W3gmV2klpsCc77dw8IfGUlnVed/udOQ+cbnI0GEs
-        K/p/1/Eb7b9IgF4bujSfn3I9O1FnFc6hb6P/T4rBgXpZvrVy7eL59MzH0po2K2yzo9Rrj9wPoYC
-        35RuihKPUI7hfQSp53zHerOgw3HE=
-X-TM-AS-User-Approved-Sender: Yes
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--2.247000-8.000000
-X-TMASE-Version: SMEX-12.5.0.1300-8.5.1020-25280.003
-X-MDID: 1583860366-Q1159t4NNiBO
+References: <1583825550-18606-1-git-send-email-komachi.yoshiki@gmail.com> <20200310164627.zb3pponhlsweqk45@kafai-mbp>
+In-Reply-To: <20200310164627.zb3pponhlsweqk45@kafai-mbp>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 10 Mar 2020 10:26:04 -0700
+Message-ID: <CAADnVQ+o-TA6WtKk6f5z-T2xO6A6VXhcWCv2uqFA7=EqCh647A@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf 0/2] Fix BTF verification of enum members with a selftest
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Yoshiki Komachi <komachi.yoshiki@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 09/03/2020 23:58, Alexei Starovoitov wrote:> Thinking about it differently... var_off is a bit representation of
-> 64-bit register. So that bit representation doesn't really have
-> 32 or 16-bit chunks. It's a full 64-bit register. I think all alu32
-> and jmp32 ops can update var_off without losing information.
-Agreed; AFAICT the 32-bit var_off should always just be the bottom
- 32 bits of the full var_off.
-In fact, it seems like the only situations where 32-bit bounds are
- needed are (a) the high and low halves of a 64-bit register are
- being used separately, so e.g. r0 = (x << 32) | y with small known
- bounds on y you want to track, or (b) 32-bit signed arithmetic.
-(a) doesn't seem like it's in scope to be supported, and (b) should
- (I'm naïvely imagining) only need the s32 bounds, not the u32 or
- var32.
+On Tue, Mar 10, 2020 at 9:46 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Tue, Mar 10, 2020 at 04:32:28PM +0900, Yoshiki Komachi wrote:
+> > btf_enum_check_member() checked if the size of "enum" as a struct
+> > member exceeded struct_size or not. Then, the function compared it
+> > with the size of "int". Although the size of "enum" is 4-byte by
+> > default (i.e., equivalent to "int"), the packing feature enables
+> > us to reduce it, as illustrated by the following example:
+> >
+> > struct A {
+> >         char m;
+> >         enum { E0, E1 } __attribute__((packed)) n;
+> > };
+> >
+> > With such a setup above, the bpf loader gave an error attempting
+> > to load it:
+> >
+> > ------------------------------------------------------------------
+> > ...
+> >
+> > [3] ENUM (anon) size=1 vlen=2
+> >         E0 val=0
+> >         E1 val=1
+> > [4] STRUCT A size=2 vlen=2
+> >         m type_id=2 bits_offset=0
+> >         n type_id=3 bits_offset=8
+> >
+> > [4] STRUCT A size=2 vlen=2
+> >         n type_id=3 bits_offset=8 Member exceeds struct_size
+> >
+> > libbpf: Error loading .BTF into kernel: -22.
+> >
+> > ------------------------------------------------------------------
+> >
+> > The related issue was previously fixed by the commit 9eea98497951 ("bpf:
+> > fix BTF verification of enums"). On the other hand, this series fixes
+> > this issue as well, and adds a selftest program for it.
+> >
+> > Changes in v2:
+> > - change an example in commit message based on Andrii's review
+> > - add a selftest program for packed "enum" type members in struct/union
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
 
-John Fastabend wrote:
-> For example, BPF_ADD will do a tnum_add() this is a different
-> operation when overflows happen compared to tnum32_add(). Simply
-> truncating tnum_add result to 32-bits is not the same operation.
-I don't see why.  Overflows from the low (tracked) 32 bits can only
- affect the high 32.  Truncation should be a homomorphism from
- Z_2^n to Z_2^m wrt. both addition and multiplication, and tnums
- are just (a particular class of) subsets of those rings.
-Can you construct an example of a tnum addition that breaks the
- homomorphism?
-
--ed
+Applied to bpf tree. Thanks
