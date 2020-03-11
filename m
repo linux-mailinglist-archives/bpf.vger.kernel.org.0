@@ -2,75 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE43181BE6
-	for <lists+bpf@lfdr.de>; Wed, 11 Mar 2020 16:00:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 437C9181C21
+	for <lists+bpf@lfdr.de>; Wed, 11 Mar 2020 16:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729810AbgCKPAg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Mar 2020 11:00:36 -0400
-Received: from sym2.noone.org ([178.63.92.236]:50156 "EHLO sym2.noone.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729742AbgCKPAg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Mar 2020 11:00:36 -0400
-Received: by sym2.noone.org (Postfix, from userid 1002)
-        id 48cwBB24r2zvjdX; Wed, 11 Mar 2020 16:00:34 +0100 (CET)
-Date:   Wed, 11 Mar 2020 16:00:33 +0100
-From:   Tobias Klauser <tklauser@distanz.ch>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] bpftool: fix iprofiler build on systems without
- /usr/include/asm symlink
-Message-ID: <20200311150033.t5uj4pz7fwp2wz5v@distanz.ch>
-References: <20200311123421.3634-1-tklauser@distanz.ch>
- <87tv2voy32.fsf@toke.dk>
- <20200311125336.3gatuo6tr7l5unog@distanz.ch>
- <87ftefotpk.fsf@toke.dk>
+        id S1729511AbgCKPPp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Mar 2020 11:15:45 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:39927 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729408AbgCKPPp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Mar 2020 11:15:45 -0400
+Received: by mail-qk1-f194.google.com with SMTP id e16so2402644qkl.6
+        for <bpf@vger.kernel.org>; Wed, 11 Mar 2020 08:15:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=8+41engWsi9UoZh82ULHGWmLZ87Gc36Sb5PUQS0Hglg=;
+        b=YzGAA2/Yx4cGcjMX6es7Pchi0Ndd7QQ01SCV6Y8F7Y0L75D17Gc2DrNb39FRqVUh9Z
+         HGT/97GGFKmC6Z0Y+WN6boGgBjMTRPo1fkV17l2ApMaYI3otBzQIQTL07/Q1Sp5G7+F2
+         hlxA2cO3V2rhzqOFYOrpOU5TUyMUDeMF7oQhvj9ULsnXuAk7+08aaB9/4dCG2Pj2Gs8s
+         6Ry8CiW8TX5PLBBDPEAiZVhDoXFkVWz+gIW22UPAGx6nnRdXPeaoZQizg2f/PJRJ6pNY
+         DKPCkIKoBQXm3vwPz32tLxpjdOVs/NlNu87NOvQGq4MyeFdTvjI8CEIkZhwLquOA1FG3
+         A7Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8+41engWsi9UoZh82ULHGWmLZ87Gc36Sb5PUQS0Hglg=;
+        b=tPVUBbstqplk5lpFH9oYDrtBbuBUeV/BdOgX4nuXLT6C9owsJgC0vI+aReD4f/DIqx
+         7LtFjV1klpWPn+bJ9bOq9Z1dMBxA/VSTztzNnLhnDpmK3n4Na6jAD5i9UK3M0h2kV4h1
+         o75UPv0UtmvNl5N+cwNtq/rnTW7NirkTDrATLJkQbdqhzJjVhNxwvWVB1MK0mWsadbI4
+         Hy+TsrgEgY5RjSXVHGtEikYsfAnifa0YIounzJJEW3MdClsW0eow1RIr6D1cAkpVDhOh
+         Y+6HbW7dF0lltrCKSxfugK9aoMBHXf8sRaNQlnFpjos2mhWaBHzUs2LnQNNvRoXC3xqe
+         fWbA==
+X-Gm-Message-State: ANhLgQ1BH6mtyHyr2hFFrqRZwxwPb2zmKVRam55vKBYe1vyUEfZ0/Euk
+        PoUT0W6pbTZYxUGmJdgi7vvvyXUHLK4EJuRSJWw=
+X-Google-Smtp-Source: ADFU+vu72uwN90JjWBzsYhGPYUvE3v/4V4FH8VJ+qPA6hKVsCFjFnSlAWm1V54W7nIATHYbwAZ0ADNh09FhFnzQyGS4=
+X-Received: by 2002:a37:e40d:: with SMTP id y13mr3268469qkf.39.1583939744144;
+ Wed, 11 Mar 2020 08:15:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87ftefotpk.fsf@toke.dk>
-User-Agent: NeoMutt/20170113 (1.7.2)
+References: <libbpf/libbpf/issues/138@github.com>
+In-Reply-To: <libbpf/libbpf/issues/138@github.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 11 Mar 2020 08:15:33 -0700
+Message-ID: <CAEf4BzY7Qsu1aoN__nxyis4OgWvwWi5XJ9XJe3gOeEHJGdGFRw@mail.gmail.com>
+Subject: Re: [libbpf/libbpf] Is it possible to do SHARED_UMEM between
+ processes? (#138)
+To:     "libbpf/libbpf" 
+        <reply+AAD4BK6TLXS3OGWEWHS5PTF4OTGSDEVBNHHCFBYSRA@reply.github.com>,
+        bpf <bpf@vger.kernel.org>
+Cc:     "libbpf/libbpf" <libbpf@noreply.github.com>,
+        Subscribed <subscribed@noreply.github.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-03-11 at 15:24:23 +0100, Toke Høiland-Jørgensen <toke@redhat.com> wrote:
-> Tobias Klauser <tklauser@distanz.ch> writes:
-> 
-> > On 2020-03-11 at 13:49:53 +0100, Toke Høiland-Jørgensen <toke@redhat.com> wrote:
-> >> Tobias Klauser <tklauser@distanz.ch> writes:
-> >> 
-> >> > When compiling bpftool on a system where the /usr/include/asm symlink
-> >> > doesn't exist (e.g. on an Ubuntu system without gcc-multilib installed),
-> >> > the build fails with:
-> >> >
-> >> >     CLANG    skeleton/profiler.bpf.o
-> >> >   In file included from skeleton/profiler.bpf.c:4:
-> >> >   In file included from /usr/include/linux/bpf.h:11:
-> >> >   /usr/include/linux/types.h:5:10: fatal error: 'asm/types.h' file not found
-> >> >   #include <asm/types.h>
-> >> >            ^~~~~~~~~~~~~
-> >> >   1 error generated.
-> >> >   make: *** [Makefile:123: skeleton/profiler.bpf.o] Error 1
-> >> >
-> >> > To fix this, add /usr/include/$(uname -m)-linux-gnu to the clang search
-> >> > path so <asm/types.h> can be found.
-> >> 
-> >> Isn't the right thing here to just install gcc-multilib?
-> >
-> > For a container build we would like to avoid installing gcc-multilib
-> > which pulls in additional dependencies which are otherwise not needed to
-> > build bpftool. This patch would allow that.
-> 
-> Ah, right. Well, stating that use case in the commit message would have
-> been nice :)
+Adding bpf@vger.kernel.org, it's a better place to ask questions about
+bpf and libbpf.
 
-Agree. Can also do a v2 if needed adding that rationale to the commit
-message. There's anyway a typo in the patch subject
-(s/iprofiler/profiler) which I could also fix :)
-
-Tobias
+On Wed, Mar 11, 2020 at 6:48 AM Maximilian Gaul
+<notifications@github.com> wrote:
+>
+> I am struggling with my project to get SHARED_UMEM running between two or=
+ more processes. I made some changes to the lib in order to be able to copy=
+ struct xsk_umem into shared memory.
+>
+> But now I get the error:
+>
+> symbol lookup error: /lib/x86_64-linux-gnu/libpthread.so.0: undefined sym=
+bol: _dl_allocate_tls, version GLIBC_PRIVATE
+>
+> In my opinion, a working example for SHARED_UMEM is strongly required. Th=
+e only information I find about this topic is an e-mail from Nov, 2019 in t=
+he linux mailing list and two sentences from here : https://www.kernel.org/=
+doc/html/latest/networking/af_xdp.html#xdp-shared-umem-bind-flag
+>
+> Please!!
+>
+> =E2=80=94
+> You are receiving this because you are subscribed to this thread.
+> Reply to this email directly, view it on GitHub, or unsubscribe.
