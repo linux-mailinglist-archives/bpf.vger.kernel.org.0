@@ -2,171 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BAF181D0C
-	for <lists+bpf@lfdr.de>; Wed, 11 Mar 2020 16:56:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD48181D11
+	for <lists+bpf@lfdr.de>; Wed, 11 Mar 2020 16:58:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729887AbgCKP4A (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Mar 2020 11:56:00 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:19012 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729841AbgCKP4A (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 11 Mar 2020 11:56:00 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02BFtNEj015980;
-        Wed, 11 Mar 2020 08:55:43 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=8q1WGkNgMR7rH3HqNGPPvxsqUPmO/HgAbR8KLJLx3z4=;
- b=LGzfTU4CYKdDALvI7ToArVOP9BaCPNYyv3DE52vkKIgy18QTlopJDAUC8+mR3Q2KCCIv
- HcIRnuYIqPlxiXpTfJP6JBFIXoU+yWyjWZVYxKwBidH8M0ssV6HZTkXd8cpMOfMpEOKb
- r7cOqPTmVYvOtUOEo3oLevnNUsDxEoSLsXc= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2yp7t2qn6e-18
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 11 Mar 2020 08:55:43 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Wed, 11 Mar 2020 08:55:39 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aZFkP7fqUs0ZDlJF/PFav5dc4JhHLhCtRRvJ9LbMGQfpMmXJA/DrPC98Z8nApyGbLx96OYKgkAEf3WguWMJZgiasXoF6tdoTOfWhYKrjRT//U1xZgD09Po5etxO9IawtT5PT4eu/w6AgHFxaMWkF14X8GfM6e2cJKAl/VB6Zl7Q3D5iD0jLI3pM3GcI9ZkmSsT86GxTW6uHQOwmi3htdhK96nX2Npa7nP3Oxn2WjPydd3tuh6pDtSQSoHi58Oq5A7fbA5itxbGYHcLE2cxpMgDgYq90qmvErrpvJ1q50Aqa6DCIzpRQJi58RWTxvxhV0CMKIs9dtJI72xTdhNtBGKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8q1WGkNgMR7rH3HqNGPPvxsqUPmO/HgAbR8KLJLx3z4=;
- b=Cl9sH1bbwQsTypQqrL868gdsbc61l6VMFwsdqPTaXGwv8JA+DbwmgWGL9GY6djAYK48i0ORs433hXk8LKWIbu/Zv1mTVlggTNnjGfmeIjBSK/F36gGngFkKM2h+ELtULk67aSyjR34HKvU1BApsCRcYDQhLg1uUzN4/cBSpLYI8oqkvi8pD+ECxALpMoT+9htm4RitVuTJp05rL216SkdsErxxh9jXqkiw97w4YnXya0+euS1Xa/B5JaJS6/bwsI1APLXLRVfqFqIZGRWGSUuDwLU8Up061zLF1JPqHr4VvPf/g83yRuQON9ZVjtvc8bXNH/ZznjOrRTYmW+AufVQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8q1WGkNgMR7rH3HqNGPPvxsqUPmO/HgAbR8KLJLx3z4=;
- b=G/xdHHWcET4Xo59poyYOtYIk3uxkkJBybTC9hpg9YYc8z7XWFB4EKqTYJOiv3XCzvf3PL566/OkMrJa4VsZnfK0n+LJ5io5CVGZeJ5Jku7ADfZDerzOxve/pEdN2D8QB597ZYJuqaZfY80JGgXYrYjNJIB/BiQKqsS6pyoup0Sg=
-Received: from MW3PR15MB3882.namprd15.prod.outlook.com (2603:10b6:303:49::11)
- by MW3PR15MB3820.namprd15.prod.outlook.com (2603:10b6:303:4c::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2793.17; Wed, 11 Mar
- 2020 15:55:38 +0000
-Received: from MW3PR15MB3882.namprd15.prod.outlook.com
- ([fe80::c570:6c46:cc47:5ca5]) by MW3PR15MB3882.namprd15.prod.outlook.com
- ([fe80::c570:6c46:cc47:5ca5%5]) with mapi id 15.20.2793.018; Wed, 11 Mar 2020
- 15:55:38 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Tobias Klauser <tklauser@distanz.ch>
-CC:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        "Yonghong Song" <yhs@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH] bpftool: fix iprofiler build on systems without
- /usr/include/asm symlink
-Thread-Topic: [PATCH] bpftool: fix iprofiler build on systems without
- /usr/include/asm symlink
-Thread-Index: AQHV96F+kIrYsrBv60+x9uyT9neeNahDi8EA
-Date:   Wed, 11 Mar 2020 15:55:38 +0000
-Message-ID: <D8E0C5BC-E724-4788-86DA-EF8110237B6E@fb.com>
-References: <20200311123421.3634-1-tklauser@distanz.ch>
-In-Reply-To: <20200311123421.3634-1-tklauser@distanz.ch>
-Accept-Language: en-US
-Content-Language: en-US
+        id S1730026AbgCKP6g convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 11 Mar 2020 11:58:36 -0400
+Received: from postout1.mail.lrz.de ([129.187.255.137]:37065 "EHLO
+        postout1.mail.lrz.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729841AbgCKP6g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Mar 2020 11:58:36 -0400
+Received: from lxmhs51.srv.lrz.de (localhost [127.0.0.1])
+        by postout1.mail.lrz.de (Postfix) with ESMTP id 48cxT57048zyS6
+        for <bpf@vger.kernel.org>; Wed, 11 Mar 2020 16:58:33 +0100 (CET)
+X-Virus-Scanned: by amavisd-new at lrz.de in lxmhs51.srv.lrz.de
+X-Spam-Flag: NO
+X-Spam-Score: -0.585
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.585 tagged_above=-999 required=5
+        tests=[ALL_TRUSTED=-1, BAYES_00=-1.9, LRZ_CT_PLAIN_ISO8859_1=0.001,
+        LRZ_DATE_TZ_0000=0.001, LRZ_DKIM_DESTROY_MTA=0.001,
+        LRZ_DMARC_OVERWRITE=0.001, LRZ_ENVFROM_FROM_ALIGNED_STRICT=0.001,
+        LRZ_ENVFROM_FROM_MATCH=0.001, LRZ_FROM_AP_PHRASE=0.001,
+        LRZ_FROM_HAS_A=0.001, LRZ_FROM_HAS_MDOM=0.001, LRZ_FROM_HAS_MX=0.001,
+        LRZ_FROM_HOSTED_DOMAIN=0.001, LRZ_FROM_NAME_IN_ADDR=0.001,
+        LRZ_FROM_PHRASE=0.001, LRZ_FWD_MS_EX=0.001, LRZ_HAS_CLANG=0.001,
+        LRZ_HAS_THREAD_INDEX=0.001, LRZ_HAS_URL_HTTP=0.001,
+        LRZ_HAS_X_ORIG_IP=0.001, LRZ_MSGID_HL32=0.001,
+        LRZ_RCVD_BADWLRZ_EXCH=0.001, LRZ_RCVD_MS_EX=0.001, LRZ_RDNS_NONE=1.5,
+        RDNS_NONE=0.793, SPF_HELO_NONE=0.001] autolearn=no autolearn_force=no
+Received: from postout1.mail.lrz.de ([127.0.0.1])
+        by lxmhs51.srv.lrz.de (lxmhs51.srv.lrz.de [127.0.0.1]) (amavisd-new, port 20024)
+        with LMTP id fL8_aa3vDtXp for <bpf@vger.kernel.org>;
+        Wed, 11 Mar 2020 16:58:33 +0100 (CET)
+Received: from BADWLRZ-SWMBX03.ads.mwn.de (BADWLRZ-SWMBX03.ads.mwn.de [IPv6:2001:4ca0:0:108::159])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (Client CN "BADWLRZ-SWMBX03", Issuer "BADWLRZ-SWMBX03" (not verified))
+        by postout1.mail.lrz.de (Postfix) with ESMTPS id 48cxT55195zyZl
+        for <bpf@vger.kernel.org>; Wed, 11 Mar 2020 16:58:33 +0100 (CET)
+Received: from BADWLRZ-SWMBX03.ads.mwn.de (2001:4ca0:0:108::159) by
+ BADWLRZ-SWMBX03.ads.mwn.de (2001:4ca0:0:108::159) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Wed, 11 Mar 2020 16:58:33 +0100
+Received: from BADWLRZ-SWMBX03.ads.mwn.de ([fe80::b83a:fd44:92bb:7e5e]) by
+ BADWLRZ-SWMBX03.ads.mwn.de ([fe80::b83a:fd44:92bb:7e5e%13]) with mapi id
+ 15.01.1913.007; Wed, 11 Mar 2020 16:58:33 +0100
+From:   "Gaul, Maximilian" <maximilian.gaul@hm.edu>
+To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Shared Umem between processes
+Thread-Topic: Shared Umem between processes
+Thread-Index: AQHV973HYXLoSjdqpUaKyJTfUanHqA==
+Date:   Wed, 11 Mar 2020 15:58:33 +0000
+Message-ID: <fd5e40efd5c1426cb4a5942682407ea2@hm.edu>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Exchange-Organization-AuthAs: Internal
+X-MS-Exchange-Organization-AuthMechanism: 04
+X-MS-Exchange-Organization-AuthSource: BADWLRZ-SWMBX03.ads.mwn.de
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.60.0.2.5)
-x-originating-ip: [2620:10d:c090:400::5:71d3]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 97a3f734-fca9-427f-836a-08d7c5d4a4e8
-x-ms-traffictypediagnostic: MW3PR15MB3820:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW3PR15MB3820F57CA9B7E0BCD2D9184FB3FC0@MW3PR15MB3820.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:2399;
-x-forefront-prvs: 0339F89554
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(396003)(376002)(136003)(39860400002)(346002)(199004)(6916009)(6486002)(6512007)(33656002)(4326008)(6506007)(53546011)(71200400001)(2906002)(186003)(2616005)(54906003)(316002)(76116006)(5660300002)(478600001)(66446008)(64756008)(66476007)(66556008)(66946007)(8676002)(36756003)(81156014)(81166006)(86362001)(8936002);DIR:OUT;SFP:1102;SCL:1;SRVR:MW3PR15MB3820;H:MW3PR15MB3882.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1zIsijKDDI/vskp5RyR/6YGHPlrkqtuFLA/salTbB3rpYgOtZDMGEEzcgSe4RAR1qPrh8HnSTnrsJqAomxxFZvnnH1+b3OQBypLx8MOotOlPl/zL0T8tGUHCpLCeSKPjLicXGM6iIFfyCYtDVj/hEcU0CVEEhO1SjUfHhRt1A+GgDI4/3/ZsRcTCe2n+5KcYdbj3cFWwgzyvgr88C5SjutL32laukKrU/+GaftK1IiMm9jiuZRvLX2fju9hGGHFLBWu8xA5ePwl721k6FDx6L03+5LV/g8W32Zp+gnsdEPI6CsXWbxZ36JYPryoB1oRrCxq6b6ABqaUSy1s6jBegZc096Lc5dK0Yfg63BCXG+YxYCe25ZsXwMzcdmjECEQ1FX0xofsImIsJQ2whfVbSHEmSeePz1mAUi4GPmouLQjCXEF/zb04+WxPbbimdDFSij
-x-ms-exchange-antispam-messagedata: YaezKMgAO4zEs/iVnsWnI5kgWO3Dgjupe4KKSnB0SHlLClHeX75E9W5MfFTg8Bmz9hG6hHUbc9zBJPJqlici3YLwjLJ4Vh9eJbKny+jzN5QHC1i+vh85uJ8QZWvAAP8L2su685XLH9/TC/+XtACiKbaH2xGF83H9dGC9tXMXebCNgJfFfAWY5lAqo9Abfuux
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <C5DB509CC7F53B4EBB66814F364ABB97@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+x-originating-ip: [80.246.32.33]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 97a3f734-fca9-427f-836a-08d7c5d4a4e8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Mar 2020 15:55:38.4708
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Ir2BtHMf7e31DmBvLNNPUbqmWUNvGM6cz3Y3Hp+LWekqBZvFS+ywrIH0GhIDKlYwNypQtVNyWxL74Y9Fio9TCw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3820
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-03-11_06:2020-03-11,2020-03-11 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- malwarescore=0 mlxscore=0 adultscore=0 clxscore=1011 suspectscore=0
- impostorscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2003110098
-X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hello everyone,
 
 
-> On Mar 11, 2020, at 5:34 AM, Tobias Klauser <tklauser@distanz.ch> wrote:
->=20
-> When compiling bpftool on a system where the /usr/include/asm symlink
-> doesn't exist (e.g. on an Ubuntu system without gcc-multilib installed),
-> the build fails with:
->=20
->    CLANG    skeleton/profiler.bpf.o
->  In file included from skeleton/profiler.bpf.c:4:
->  In file included from /usr/include/linux/bpf.h:11:
->  /usr/include/linux/types.h:5:10: fatal error: 'asm/types.h' file not fou=
-nd
->  #include <asm/types.h>
->           ^~~~~~~~~~~~~
->  1 error generated.
->  make: *** [Makefile:123: skeleton/profiler.bpf.o] Error 1
->=20
-> To fix this, add /usr/include/$(uname -m)-linux-gnu to the clang search
-> path so <asm/types.h> can be found.
->=20
-> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+I am not sure if this is the correct address for my question / problem but I was forwarded to this e-mail from the libbpf github-issue section, so this is my excuse.
 
-Looks good, with a nit below.=20
 
-Acked-by: Song Liu <songliubraving@fb.com>
+Just a few information at the start of this e-mail: My program is largely based on: https://github.com/xdp-project/xdp-tutorial/tree/master/advanced03-AF_XDP and I am using libbpf: https://github.com/libbpf/libbpf
 
-> ---
-> tools/bpf/bpftool/Makefile | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> index 20a90d8450f8..3cc0644fd91e 100644
-> --- a/tools/bpf/bpftool/Makefile
-> +++ b/tools/bpf/bpftool/Makefile
-> @@ -120,7 +120,7 @@ $(OUTPUT)_bpftool: $(_OBJS) $(LIBBPF)
-> 	$(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(_OBJS) $(LIBS)
->=20
-> skeleton/profiler.bpf.o: skeleton/profiler.bpf.c
-> -	$(QUIET_CLANG)$(CLANG) -I$(srctree)/tools/lib -g -O2 -target bpf -c $< =
--o $@
-> +	$(QUIET_CLANG)$(CLANG) -I/usr/include/$(shell uname -m)-linux-gnu -I$(s=
-rctree)/tools/lib -g -O2 -target bpf -c $< -o $@
 
-Nit: this line is too long. It is better to break it into two lines.=20
+I am currently trying to build an application that enables me to process multiple udp-multicast streams at once in parallel (each with up to several ten-thousands of packets per second).
 
->=20
-> profiler.skel.h: $(OUTPUT)_bpftool skeleton/profiler.bpf.o
-> 	$(QUIET_GEN)$(OUTPUT)./_bpftool gen skeleton skeleton/profiler.bpf.o > $=
-@
-> --=20
-> 2.25.1
->=20
 
+My first solution was to steer each multicast-stream on a separate RX-Queue on my NIC via `ethtool -N <if> flow-type udp4 ...` and to spawn as much user-space processes (each with a separate AF-XDP socket connected to one of the RX-Queues) as there are streams to process.
+
+
+But because this solution is limited to the amount of RX-Queues the NIC has and I wanted to build something hardware-independent, I looked around a bit and found a feature called `XDP_SHARED_UMEM`.
+
+
+
+As far as I understand (please correct me if I am wrong), at the moment libbpf only supports shared umem between threads of a process but not between processes - right?
+
+I ran unto the problem, that `struct xsk_umem` is hidden in `xsk.c`. This prevents me from copying the content from the original socket / umem into shared memory. I am not sure, what information the sub-process (the one which is using the umem from another process) needs so I figured the simplest solution would be to just copy the whole umem struct.
+
+
+
+So I went with the "quick-fix" to just move the definition of `struct xsk_umem` into `xsk.h` and to copy the umem-information from the original process into a shared memory. This process then calls `fork()` thus spawning a sub-process. This sub-process then reads the previously written umem-information from shared memory and passes it into `xsk_configure_socket` (af_xdp_user.c) which then eventually calls `xsk_socket__create` in `xsk.c`. This function then checks for `umem->refcount` and sets the flags for shared umem accordingly.
+
+
+
+After returning from `xsk_socket__create` (we are still in `xsk_configure_socket` in af_xdp_user.c), `bpf_get_link_xdp_id` is called (I don't know if that's necessary). But after that call I exit the function `xsk_socket__create` in the sub-process because I figured it is probably bad to configure the umem a second time by calling `xsk_ring_prod__reserve` after that:
+
+
+
+
+static struct xsk_socket_info *xsk_configure_socket(struct config *cfg, struct xsk_umem_info *umem) {
+
+struct xsk_socket_config xsk_cfg;
+struct xsk_socket_info *xsk_info;
+uint32_t idx;
+uint32_t prog_id = 0;
+int i;
+int ret;
+
+xsk_info = calloc(1, sizeof(*xsk_info));
+if (!xsk_info)
+return NULL;
+
+xsk_info->umem = umem;
+xsk_cfg.rx_size = XSK_RING_CONS__DEFAULT_NUM_DESCS;
+xsk_cfg.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS;
+xsk_cfg.libbpf_flags = 0;
+xsk_cfg.xdp_flags = cfg->xdp_flags;
+xsk_cfg.bind_flags = cfg->xsk_bind_flags;
+ret = xsk_socket__create(&xsk_info->xsk, cfg->ifname, cfg->xsk_if_queue, umem->umem, &xsk_info->rx, &xsk_info->tx, &xsk_cfg);
+
+if (ret) {
+fprintf(stderr, "FAIL 1\n");
+goto error_exit;
+}
+
+ret = bpf_get_link_xdp_id(cfg->ifindex, &prog_id, cfg->xdp_flags);
+if (ret) {
+fprintf(stderr, "FAIL 2\n");
+goto error_exit;
+}
+
+/* Initialize umem frame allocation */
+for (i = 0; i < NUM_FRAMES; i++)
+xsk_info->umem_frame_addr[i] = i * FRAME_SIZE;
+
+xsk_info->umem_frame_free = NUM_FRAMES;
+
+if(cfg->use_shrd_umem) {
+return xsk_info;
+}
+        ...
+}
+
+Somehow what I am doing doesn't work because my sub-process dies in `xsk_configure_socket`. I am not able to debug it properly with GDB though. Another point I don't understand is the statement:
+
+However, note that you need to supply the XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD libbpf_flag with the xsk_socket__create calls and load your own XDP program as there is no built in one in libbpf that will route the traffic for you.
+
+from https://www.kernel.org/doc/html/latest/networking/af_xdp.html#xdp-shared-umem-bind-flag
+
+I didn't know that libbpf loads a XDP-program? Why would it do that? I am using my own af-xdp program which filters for udp-packets. If I set `xsk_cfg.libbpf_flags = XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD;` in `xsk_configure_socket`, the af-xdp-socket fd is not put into the kernel `xsks-map` which basically means that I don't receive any packets.
+
+As you probably already noticed, I am overstrained with the concept of Shared Umem and I have to say, there is no documentation about it besides the two sentences in https://www.kernel.org/doc/html/latest/networking/af_xdp.html#xdp-shared-umem-bind-flag and a mail in a linux mailbox from Nov. 2019 stating that this feature is now implemented.
+
+Can you please help?
+
+Best regards
+
+Max
