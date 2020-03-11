@@ -2,160 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB1B181C36
-	for <lists+bpf@lfdr.de>; Wed, 11 Mar 2020 16:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BAF181D0C
+	for <lists+bpf@lfdr.de>; Wed, 11 Mar 2020 16:56:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729650AbgCKPWL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Mar 2020 11:22:11 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:43941 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729408AbgCKPWK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Mar 2020 11:22:10 -0400
-Received: by mail-qt1-f195.google.com with SMTP id l13so1812144qtv.10;
-        Wed, 11 Mar 2020 08:22:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+XuEC6YpsVyHyILAIOZV81/k0zuEtXi/W/9shV+FDZY=;
-        b=vcRq3YncvaNTTHaCYdaeDDF6B21k5AKx6Wpud88znCXg9psVExItvQwg03Stw0APZ9
-         e5ZrYywvWM1N91b7Nb8oULMndqhBMBNTBAqFYFGg4OYJXa6ykFuKsvfnF7tTwgBjrsAO
-         RUTnsNuuGCfJtj9Oco376etvq6vhCcPtaX5q11CJWX3g6AfkWO5i355ub5Ty9S5bolIm
-         mjpQzus9eurc6HIqJxmNHmAKnje2muhP7w7KG61+FJv3YZG+vZZNp/VfJojc1p1Ls9wv
-         KEwHq3WfJINq2QCn/OgYl28QzbBAYee6zF2kYSNTHOaaqIB6wf02d7oKdztbX2ka8lOu
-         lPWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+XuEC6YpsVyHyILAIOZV81/k0zuEtXi/W/9shV+FDZY=;
-        b=F9G3GSdpVLE3NtAuEqmtxFXEvaYGk7D9OwmsBWj6jXuWatSrBeD5aRiobTw9OrouwM
-         d6eIiYuygkp0Rq6e9J50NBgJyy9C6M8Er48AtEsjZlJnu5T9X0eeFoZkzl+MhFPMxFc9
-         EAn+d4+EbBomvdKPtWYxVWE9ZY0J5hUE/N3Q3Nh0AGgu4hkKU0y/y8nlqXkEoMxG19MF
-         08V9JC2XrHguyqycjSDdRME+ZtHtLzmMmBj1066184GFV7eaNTjr1xiUTWQJnfc+BxFX
-         RK4CKyoVPyzEXAdHiTrhv+gXxzPsvLzIZ10RQWvkSsbgdVPYrrb4G0m1EYFw7DF2r6S7
-         +lIA==
-X-Gm-Message-State: ANhLgQ2hLtOxc7XfKUGlxItge19mSAS49bTxY4mpDIqzvAlqQQYV4KXo
-        z32ZJV0Q+z+OjQNecajpSBUBskEQbtlynsZ49w0=
-X-Google-Smtp-Source: ADFU+vu5PjyZshowGTeFR0/IH2JAKGr6iZLxo5cTaZMf7pWDqBLv3ZhuaDcIVYbDW3g9u1AJFaLwc6ChU1vH8VZTzqk=
-X-Received: by 2002:ac8:1865:: with SMTP id n34mr2982890qtk.93.1583940127817;
- Wed, 11 Mar 2020 08:22:07 -0700 (PDT)
+        id S1729887AbgCKP4A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Mar 2020 11:56:00 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:19012 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729841AbgCKP4A (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 11 Mar 2020 11:56:00 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02BFtNEj015980;
+        Wed, 11 Mar 2020 08:55:43 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=8q1WGkNgMR7rH3HqNGPPvxsqUPmO/HgAbR8KLJLx3z4=;
+ b=LGzfTU4CYKdDALvI7ToArVOP9BaCPNYyv3DE52vkKIgy18QTlopJDAUC8+mR3Q2KCCIv
+ HcIRnuYIqPlxiXpTfJP6JBFIXoU+yWyjWZVYxKwBidH8M0ssV6HZTkXd8cpMOfMpEOKb
+ r7cOqPTmVYvOtUOEo3oLevnNUsDxEoSLsXc= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yp7t2qn6e-18
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 11 Mar 2020 08:55:43 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Wed, 11 Mar 2020 08:55:39 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aZFkP7fqUs0ZDlJF/PFav5dc4JhHLhCtRRvJ9LbMGQfpMmXJA/DrPC98Z8nApyGbLx96OYKgkAEf3WguWMJZgiasXoF6tdoTOfWhYKrjRT//U1xZgD09Po5etxO9IawtT5PT4eu/w6AgHFxaMWkF14X8GfM6e2cJKAl/VB6Zl7Q3D5iD0jLI3pM3GcI9ZkmSsT86GxTW6uHQOwmi3htdhK96nX2Npa7nP3Oxn2WjPydd3tuh6pDtSQSoHi58Oq5A7fbA5itxbGYHcLE2cxpMgDgYq90qmvErrpvJ1q50Aqa6DCIzpRQJi58RWTxvxhV0CMKIs9dtJI72xTdhNtBGKw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8q1WGkNgMR7rH3HqNGPPvxsqUPmO/HgAbR8KLJLx3z4=;
+ b=Cl9sH1bbwQsTypQqrL868gdsbc61l6VMFwsdqPTaXGwv8JA+DbwmgWGL9GY6djAYK48i0ORs433hXk8LKWIbu/Zv1mTVlggTNnjGfmeIjBSK/F36gGngFkKM2h+ELtULk67aSyjR34HKvU1BApsCRcYDQhLg1uUzN4/cBSpLYI8oqkvi8pD+ECxALpMoT+9htm4RitVuTJp05rL216SkdsErxxh9jXqkiw97w4YnXya0+euS1Xa/B5JaJS6/bwsI1APLXLRVfqFqIZGRWGSUuDwLU8Up061zLF1JPqHr4VvPf/g83yRuQON9ZVjtvc8bXNH/ZznjOrRTYmW+AufVQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8q1WGkNgMR7rH3HqNGPPvxsqUPmO/HgAbR8KLJLx3z4=;
+ b=G/xdHHWcET4Xo59poyYOtYIk3uxkkJBybTC9hpg9YYc8z7XWFB4EKqTYJOiv3XCzvf3PL566/OkMrJa4VsZnfK0n+LJ5io5CVGZeJ5Jku7ADfZDerzOxve/pEdN2D8QB597ZYJuqaZfY80JGgXYrYjNJIB/BiQKqsS6pyoup0Sg=
+Received: from MW3PR15MB3882.namprd15.prod.outlook.com (2603:10b6:303:49::11)
+ by MW3PR15MB3820.namprd15.prod.outlook.com (2603:10b6:303:4c::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2793.17; Wed, 11 Mar
+ 2020 15:55:38 +0000
+Received: from MW3PR15MB3882.namprd15.prod.outlook.com
+ ([fe80::c570:6c46:cc47:5ca5]) by MW3PR15MB3882.namprd15.prod.outlook.com
+ ([fe80::c570:6c46:cc47:5ca5%5]) with mapi id 15.20.2793.018; Wed, 11 Mar 2020
+ 15:55:38 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Tobias Klauser <tklauser@distanz.ch>
+CC:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        "Yonghong Song" <yhs@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH] bpftool: fix iprofiler build on systems without
+ /usr/include/asm symlink
+Thread-Topic: [PATCH] bpftool: fix iprofiler build on systems without
+ /usr/include/asm symlink
+Thread-Index: AQHV96F+kIrYsrBv60+x9uyT9neeNahDi8EA
+Date:   Wed, 11 Mar 2020 15:55:38 +0000
+Message-ID: <D8E0C5BC-E724-4788-86DA-EF8110237B6E@fb.com>
+References: <20200311123421.3634-1-tklauser@distanz.ch>
+In-Reply-To: <20200311123421.3634-1-tklauser@distanz.ch>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.60.0.2.5)
+x-originating-ip: [2620:10d:c090:400::5:71d3]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 97a3f734-fca9-427f-836a-08d7c5d4a4e8
+x-ms-traffictypediagnostic: MW3PR15MB3820:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW3PR15MB3820F57CA9B7E0BCD2D9184FB3FC0@MW3PR15MB3820.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:2399;
+x-forefront-prvs: 0339F89554
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(396003)(376002)(136003)(39860400002)(346002)(199004)(6916009)(6486002)(6512007)(33656002)(4326008)(6506007)(53546011)(71200400001)(2906002)(186003)(2616005)(54906003)(316002)(76116006)(5660300002)(478600001)(66446008)(64756008)(66476007)(66556008)(66946007)(8676002)(36756003)(81156014)(81166006)(86362001)(8936002);DIR:OUT;SFP:1102;SCL:1;SRVR:MW3PR15MB3820;H:MW3PR15MB3882.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1zIsijKDDI/vskp5RyR/6YGHPlrkqtuFLA/salTbB3rpYgOtZDMGEEzcgSe4RAR1qPrh8HnSTnrsJqAomxxFZvnnH1+b3OQBypLx8MOotOlPl/zL0T8tGUHCpLCeSKPjLicXGM6iIFfyCYtDVj/hEcU0CVEEhO1SjUfHhRt1A+GgDI4/3/ZsRcTCe2n+5KcYdbj3cFWwgzyvgr88C5SjutL32laukKrU/+GaftK1IiMm9jiuZRvLX2fju9hGGHFLBWu8xA5ePwl721k6FDx6L03+5LV/g8W32Zp+gnsdEPI6CsXWbxZ36JYPryoB1oRrCxq6b6ABqaUSy1s6jBegZc096Lc5dK0Yfg63BCXG+YxYCe25ZsXwMzcdmjECEQ1FX0xofsImIsJQ2whfVbSHEmSeePz1mAUi4GPmouLQjCXEF/zb04+WxPbbimdDFSij
+x-ms-exchange-antispam-messagedata: YaezKMgAO4zEs/iVnsWnI5kgWO3Dgjupe4KKSnB0SHlLClHeX75E9W5MfFTg8Bmz9hG6hHUbc9zBJPJqlici3YLwjLJ4Vh9eJbKny+jzN5QHC1i+vh85uJ8QZWvAAP8L2su685XLH9/TC/+XtACiKbaH2xGF83H9dGC9tXMXebCNgJfFfAWY5lAqo9Abfuux
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <C5DB509CC7F53B4EBB66814F364ABB97@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20200309231051.1270337-1-andriin@fb.com> <7467529c-b712-5314-ebbe-13f73ac01bdb@iogearbox.net>
-In-Reply-To: <7467529c-b712-5314-ebbe-13f73ac01bdb@iogearbox.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 11 Mar 2020 08:21:56 -0700
-Message-ID: <CAEf4BzaKF17LeV8jaFJ74vS4v4vJ3ri1Pv_d48Umvr3bXN+vew@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: add bpf_link_new_file that doesn't install FD
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-Network-Message-Id: 97a3f734-fca9-427f-836a-08d7c5d4a4e8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Mar 2020 15:55:38.4708
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Ir2BtHMf7e31DmBvLNNPUbqmWUNvGM6cz3Y3Hp+LWekqBZvFS+ywrIH0GhIDKlYwNypQtVNyWxL74Y9Fio9TCw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3820
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-03-11_06:2020-03-11,2020-03-11 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ malwarescore=0 mlxscore=0 adultscore=0 clxscore=1011 suspectscore=0
+ impostorscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2003110098
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 11, 2020 at 6:22 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 3/10/20 12:10 AM, Andrii Nakryiko wrote:
-> > Add bpf_link_new_file() API for cases when we need to ensure anon_inode is
-> > successfully created before we proceed with expensive BPF program attachment
-> > procedure, which will require equally (if not more so) expensive and
-> > potentially failing compensation detachment procedure just because anon_inode
-> > creation failed. This API allows to simplify code by ensuring first that
-> > anon_inode is created and after BPF program is attached proceed with
-> > fd_install() that can't fail.
-> >
-> > After anon_inode file is created, link can't be just kfree()'d anymore,
-> > because its destruction will be performed by deferred file_operations->release
-> > call. For this, bpf_link API required specifying two separate operations:
-> > release() and dealloc(), former performing detachment only, while the latter
-> > frees memory used by bpf_link itself. dealloc() needs to be specified, because
-> > struct bpf_link is frequently embedded into link type-specific container
-> > struct (e.g., struct bpf_raw_tp_link), so bpf_link itself doesn't know how to
-> > properly free the memory. In case when anon_inode file was successfully
-> > created, but subsequent BPF attachment failed, bpf_link needs to be marked as
-> > "defunct", so that file's release() callback will perform only memory
-> > deallocation, but no detachment.
-> >
-> > Convert raw tracepoint and tracing attachment to new API and eliminate
-> > detachment from error handling path.
-> >
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->
-> Applied, but ...
->
-> [...]
-> > @@ -2337,20 +2374,24 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog)
-> >       }
-> >       bpf_link_init(&link->link, &bpf_tracing_link_lops, prog);
-> >
-> > -     err = bpf_trampoline_link_prog(prog);
-> > -     if (err)
-> > -             goto out_free_link;
-> > +     link_file = bpf_link_new_file(&link->link, &link_fd);
-> > +     if (IS_ERR(link_file)) {
-> > +             kfree(link);
-> > +             err = PTR_ERR(link_file);
-> > +             goto out_put_prog;
-> > +     }
-> >
-> > -     link_fd = bpf_link_new_fd(&link->link);
-> > -     if (link_fd < 0) {
-> > -             WARN_ON_ONCE(bpf_trampoline_unlink_prog(prog));
-> > -             err = link_fd;
-> > -             goto out_free_link;
-> > +     err = bpf_trampoline_link_prog(prog);
-> > +     if (err) {
-> > +             bpf_link_defunct(&link->link);
-> > +             fput(link_file);
-> > +             put_unused_fd(link_fd);
->
-> Given the tear-down in error case requires 3 manual steps here, I think this begs
-> for a small helper.
 
-Sounds good, will follow up. Thanks for applying!
 
->
-> > +             goto out_put_prog;
-> >       }
-> > +
-> > +     fd_install(link_fd, link_file);
-> >       return link_fd;
-> >
-> [...]
-> > @@ -2431,28 +2481,32 @@ static int bpf_raw_tracepoint_open(const union bpf_attr *attr)
-> >               goto out_put_prog;
-> >       }
-> >
-> [...]
-> >
-> > -     link_fd = bpf_link_new_fd(&raw_tp->link);
-> > -     if (link_fd < 0) {
-> > -             bpf_probe_unregister(raw_tp->btp, prog);
-> > -             err = link_fd;
-> > -             goto out_free_tp;
-> > +     err = bpf_probe_register(link->btp, prog);
-> > +     if (err) {
-> > +             bpf_link_defunct(&link->link);
-> > +             fput(link_file);
-> > +             put_unused_fd(link_fd);
->
-> Especially since you need it in multiple places; please follow-up.
->
-> > +             goto out_put_btp;
-> >       }
-> > +
-> > +     fd_install(link_fd, link_file);
-> >       return link_fd;
-> >
-> > -out_free_tp:
-> > -     kfree(raw_tp);
-> >   out_put_btp:
-> >       bpf_put_raw_tracepoint(btp);
-> >   out_put_prog:
-> >
->
+> On Mar 11, 2020, at 5:34 AM, Tobias Klauser <tklauser@distanz.ch> wrote:
+>=20
+> When compiling bpftool on a system where the /usr/include/asm symlink
+> doesn't exist (e.g. on an Ubuntu system without gcc-multilib installed),
+> the build fails with:
+>=20
+>    CLANG    skeleton/profiler.bpf.o
+>  In file included from skeleton/profiler.bpf.c:4:
+>  In file included from /usr/include/linux/bpf.h:11:
+>  /usr/include/linux/types.h:5:10: fatal error: 'asm/types.h' file not fou=
+nd
+>  #include <asm/types.h>
+>           ^~~~~~~~~~~~~
+>  1 error generated.
+>  make: *** [Makefile:123: skeleton/profiler.bpf.o] Error 1
+>=20
+> To fix this, add /usr/include/$(uname -m)-linux-gnu to the clang search
+> path so <asm/types.h> can be found.
+>=20
+> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+
+Looks good, with a nit below.=20
+
+Acked-by: Song Liu <songliubraving@fb.com>
+
+> ---
+> tools/bpf/bpftool/Makefile | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> index 20a90d8450f8..3cc0644fd91e 100644
+> --- a/tools/bpf/bpftool/Makefile
+> +++ b/tools/bpf/bpftool/Makefile
+> @@ -120,7 +120,7 @@ $(OUTPUT)_bpftool: $(_OBJS) $(LIBBPF)
+> 	$(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(_OBJS) $(LIBS)
+>=20
+> skeleton/profiler.bpf.o: skeleton/profiler.bpf.c
+> -	$(QUIET_CLANG)$(CLANG) -I$(srctree)/tools/lib -g -O2 -target bpf -c $< =
+-o $@
+> +	$(QUIET_CLANG)$(CLANG) -I/usr/include/$(shell uname -m)-linux-gnu -I$(s=
+rctree)/tools/lib -g -O2 -target bpf -c $< -o $@
+
+Nit: this line is too long. It is better to break it into two lines.=20
+
+>=20
+> profiler.skel.h: $(OUTPUT)_bpftool skeleton/profiler.bpf.o
+> 	$(QUIET_GEN)$(OUTPUT)./_bpftool gen skeleton skeleton/profiler.bpf.o > $=
+@
+> --=20
+> 2.25.1
+>=20
+
