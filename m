@@ -2,154 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D2D1824D6
-	for <lists+bpf@lfdr.de>; Wed, 11 Mar 2020 23:27:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 537651824E8
+	for <lists+bpf@lfdr.de>; Wed, 11 Mar 2020 23:31:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729991AbgCKW16 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Mar 2020 18:27:58 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:62288 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729518AbgCKW15 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 11 Mar 2020 18:27:57 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02BMQj8J019950
-        for <bpf@vger.kernel.org>; Wed, 11 Mar 2020 15:27:56 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=3Xo6yw4I3artDOKR/vU4FromBUK+37Stk/VpgvedPqE=;
- b=leCuJS8tDCSZQyvc7QD7WY4d+5qdUEdnP7rAddlyOuyajks6bZZ/7EO6HCevG/J/5M/c
- GGf4nzgieIyeqbDvgWIhqzpZlrPU/QBnTQLXht3HNUjWNVLvHkA1h7fHbLeK0C6JphLy
- qTwh1kAlSZWJtc9aXTvQQxhXZaryUU7VwFQ= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 2ypn9g57cu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 11 Mar 2020 15:27:56 -0700
-Received: from intmgw004.03.ash8.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Wed, 11 Mar 2020 15:27:54 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 32B1D2EC2C9E; Wed, 11 Mar 2020 15:27:52 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>, <sdf@google.com>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v2 bpf-next] selftests/bpf: make tcp_rtt test more robust to failures
-Date:   Wed, 11 Mar 2020 15:27:49 -0700
-Message-ID: <20200311222749.458015-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-03-11_11:2020-03-11,2020-03-11 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- priorityscore=1501 impostorscore=0 malwarescore=0 clxscore=1015
- bulkscore=0 phishscore=0 adultscore=0 suspectscore=8 spamscore=0
- lowpriorityscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2001150001 definitions=main-2003110126
-X-FB-Internal: deliver
+        id S1729919AbgCKWbw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Mar 2020 18:31:52 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:39787 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729846AbgCKWbw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Mar 2020 18:31:52 -0400
+Received: by mail-pf1-f196.google.com with SMTP id w65so2159737pfb.6;
+        Wed, 11 Mar 2020 15:31:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=Xn6MB1heFARkj47MUS06hvpuiFejBHCyNyM2A97lp38=;
+        b=ME3qlUCpD+uZx5CzsmmCxJfA/nvhO4/f9xMrBhdy3dp4MjyJOjz/UENZ5xyhNWMM4q
+         PZGeUpaTYRQE3N+tI7fWhk81ohPXh1BUPxESzvfzVAk6GakE/g9n550Qzape34j8tR+e
+         HTLgR2/FHy6Twde0CC2cQBy/TJsaXEBiUKo0C78sQTLiFqmE0hPYAUFW6HMU/vcaOV5w
+         5YZd0CJXN4MCbhZ7ENaheI3DFFNVf81IEcASx/s1lBgvjvMlCl0IQ+QdkdrwdM6cWvks
+         FjTaFeL+rcR7vFJt0tNsFZi2AyKo/5aunben7fepygk0itxUNmqOZzzDLECMgR6aASqm
+         KxCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=Xn6MB1heFARkj47MUS06hvpuiFejBHCyNyM2A97lp38=;
+        b=E2VA15L6qzynSIBLPq62voWQzuUMufV9SPZqhkO19bZ1pHhy/tUmw//slDRBDJPj84
+         g9mupwMtByGPPHaz9nnvna7QP09qJT3Gdngzh8t1FPXpiArwn8uHHw1BnA2KvqEFDl2F
+         OLBBbMmSsYCY5wHZDmTRPfPo/Sjh5+u/kU7U46k0CMfYqoMc6+rsmhksfUzVHVWIdhE3
+         8QlvV1yX9Vb9/4dAlRPD1GW7uaa4WwHY93o98DHzIHciHp05OB57IFO9Crr+v9VZNDC0
+         QDeYVl1wsB19LNrY1nSiwmh+Hzj63ripweBwKXg8jKPAs6yFN+U99UpfIgJS4MRK2/4F
+         vIsg==
+X-Gm-Message-State: ANhLgQ2VDYKuegIASgJRATLpG98IiIJkEH0UbatzwvurcUDx8R73zhoB
+        LWQKSFcdc09yoGT6IRr6DYioZjN3
+X-Google-Smtp-Source: ADFU+vuIbFFAEy+voWHZZAmTAvV46ApiZefWEqyqOwI+8KhN5D0sWieVI8wn5IC/voI+dw2wUNR9Cw==
+X-Received: by 2002:a62:6490:: with SMTP id y138mr4911265pfb.96.1583965911346;
+        Wed, 11 Mar 2020 15:31:51 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id s21sm44195782pfm.186.2020.03.11.15.31.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Mar 2020 15:31:50 -0700 (PDT)
+Date:   Wed, 11 Mar 2020 15:31:41 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        kernel-team@cloudflare.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <5e6966cdf1f27_20552ab9153405b4bf@john-XPS-13-9370.notmuch>
+In-Reply-To: <87tv2vxa7a.fsf@cloudflare.com>
+References: <20200310174711.7490-1-lmb@cloudflare.com>
+ <20200310174711.7490-3-lmb@cloudflare.com>
+ <87tv2vxa7a.fsf@cloudflare.com>
+Subject: Re: [PATCH 2/5] bpf: convert queue and stack map to map_copy_value
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Switch to non-blocking accept and wait for server thread to exit before
-proceeding. I noticed that sometimes tcp_rtt server thread failure would
-"spill over" into other tests (that would run after tcp_rtt), probably just
-because server thread exits much later and tcp_rtt doesn't wait for it.
+Jakub Sitnicki wrote:
+> On Tue, Mar 10, 2020 at 06:47 PM CET, Lorenz Bauer wrote:
+> > Migrate BPF_MAP_TYPE_QUEUE and BPF_MAP_TYPE_STACK to map_copy_value,
+> > by introducing small wrappers that discard the (unused) key argument.
+> >
+> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> > ---
+> >  kernel/bpf/queue_stack_maps.c | 18 ++++++++++++++++++
+> >  kernel/bpf/syscall.c          |  5 +----
+> >  2 files changed, 19 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/kernel/bpf/queue_stack_maps.c b/kernel/bpf/queue_stack_maps.c
+> > index f697647ceb54..5c89b7583cd2 100644
+> > --- a/kernel/bpf/queue_stack_maps.c
+> > +++ b/kernel/bpf/queue_stack_maps.c
+> > @@ -262,11 +262,28 @@ static int queue_stack_map_get_next_key(struct bpf_map *map, void *key,
+> >  	return -EINVAL;
+> >  }
+> >
+> > +/* Called from syscall */
+> > +static int queue_map_copy_value(struct bpf_map *map, void *key, void *value)
+> > +{
+> > +	(void)key;
+> 
+> Alternatively, there's is the __always_unused compiler attribute from
+> include/linux/compiler_attributes.h that seems to be in wide use.
+> 
 
-v1->v2:
-  - add usleep() while waiting on initial non-blocking accept() (Stanislav);
++1 use the attribute its much nicer imo.
 
-Fixes: 8a03222f508b ("selftests/bpf: test_progs: fix client/server race in tcp_rtt")
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- .../selftests/bpf/prog_tests/tcp_rtt.c        | 32 ++++++++++++-------
- 1 file changed, 20 insertions(+), 12 deletions(-)
+> > +
+> > +	return queue_map_peek_elem(map, value);
+> > +}
+> > +
+> > +/* Called from syscall */
+> > +static int stack_map_copy_value(struct bpf_map *map, void *key, void *value)
+> > +{
+> > +	(void)key;
+> > +
+> > +	return stack_map_peek_elem(map, value);
+> > +}
+> > +
+> >  const struct bpf_map_ops queue_map_ops = {
+> >  	.map_alloc_check = queue_stack_map_alloc_check,
+> >  	.map_alloc = queue_stack_map_alloc,
+> >  	.map_free = queue_stack_map_free,
+> >  	.map_lookup_elem = queue_stack_map_lookup_elem,
+> > +	.map_copy_value = queue_map_copy_value,
+> >  	.map_update_elem = queue_stack_map_update_elem,
+> >  	.map_delete_elem = queue_stack_map_delete_elem,
+> >  	.map_push_elem = queue_stack_map_push_elem,
+> > @@ -280,6 +297,7 @@ const struct bpf_map_ops stack_map_ops = {
+> >  	.map_alloc = queue_stack_map_alloc,
+> >  	.map_free = queue_stack_map_free,
+> >  	.map_lookup_elem = queue_stack_map_lookup_elem,
+> > +	.map_copy_value = stack_map_copy_value,
+> >  	.map_update_elem = queue_stack_map_update_elem,
+> >  	.map_delete_elem = queue_stack_map_delete_elem,
+> >  	.map_push_elem = queue_stack_map_push_elem,
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index 6503824e81e9..20c6cdace275 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -218,10 +218,7 @@ static int bpf_map_copy_value(struct bpf_map *map, void *key, void *value,
+> >  		return bpf_map_offload_lookup_elem(map, key, value);
+> >
+> >  	bpf_disable_instrumentation();
+> > -	if (map->map_type == BPF_MAP_TYPE_QUEUE ||
+> > -	    map->map_type == BPF_MAP_TYPE_STACK) {
+> > -		err = map->ops->map_peek_elem(map, value);
+> > -	} else if (map->ops->map_copy_value) {
+> > +	if (map->ops->map_copy_value) {
+> >  		err = map->ops->map_copy_value(map, key, value);
+> >  	} else {
+> >  		rcu_read_lock();
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-index f4cd60d6fba2..e08f6bb17700 100644
---- a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-@@ -188,7 +188,7 @@ static int start_server(void)
- 	};
- 	int fd;
- 
--	fd = socket(AF_INET, SOCK_STREAM, 0);
-+	fd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
- 	if (fd < 0) {
- 		log_err("Failed to create server socket");
- 		return -1;
-@@ -205,6 +205,7 @@ static int start_server(void)
- 
- static pthread_mutex_t server_started_mtx = PTHREAD_MUTEX_INITIALIZER;
- static pthread_cond_t server_started = PTHREAD_COND_INITIALIZER;
-+static volatile bool server_done = false;
- 
- static void *server_thread(void *arg)
- {
-@@ -222,23 +223,24 @@ static void *server_thread(void *arg)
- 
- 	if (CHECK_FAIL(err < 0)) {
- 		perror("Failed to listed on socket");
--		return NULL;
-+		return ERR_PTR(err);
- 	}
- 
--	client_fd = accept(fd, (struct sockaddr *)&addr, &len);
-+	while (!server_done) {
-+		client_fd = accept(fd, (struct sockaddr *)&addr, &len);
-+		if (client_fd == -1 && errno == EAGAIN) {
-+			usleep(50);
-+			continue;
-+		}
-+		break;
-+	}
- 	if (CHECK_FAIL(client_fd < 0)) {
- 		perror("Failed to accept client");
--		return NULL;
-+		return ERR_PTR(err);
- 	}
- 
--	/* Wait for the next connection (that never arrives)
--	 * to keep this thread alive to prevent calling
--	 * close() on client_fd.
--	 */
--	if (CHECK_FAIL(accept(fd, (struct sockaddr *)&addr, &len) >= 0)) {
--		perror("Unexpected success in second accept");
--		return NULL;
--	}
-+	while (!server_done)
-+		usleep(50);
- 
- 	close(client_fd);
- 
-@@ -249,6 +251,7 @@ void test_tcp_rtt(void)
- {
- 	int server_fd, cgroup_fd;
- 	pthread_t tid;
-+	void *server_res;
- 
- 	cgroup_fd = test__join_cgroup("/tcp_rtt");
- 	if (CHECK_FAIL(cgroup_fd < 0))
-@@ -267,6 +270,11 @@ void test_tcp_rtt(void)
- 	pthread_mutex_unlock(&server_started_mtx);
- 
- 	CHECK_FAIL(run_test(cgroup_fd, server_fd));
-+
-+	server_done = true;
-+	pthread_join(tid, &server_res);
-+	CHECK_FAIL(IS_ERR(server_res));
-+
- close_server_fd:
- 	close(server_fd);
- close_cgroup_fd:
--- 
-2.17.1
 
