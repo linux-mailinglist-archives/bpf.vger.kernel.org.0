@@ -2,155 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F27181F54
-	for <lists+bpf@lfdr.de>; Wed, 11 Mar 2020 18:25:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1D3181F65
+	for <lists+bpf@lfdr.de>; Wed, 11 Mar 2020 18:26:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730468AbgCKRZL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Mar 2020 13:25:11 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:41557 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730364AbgCKRZL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Mar 2020 13:25:11 -0400
-Received: by mail-ot1-f66.google.com with SMTP id s15so2852148otq.8
-        for <bpf@vger.kernel.org>; Wed, 11 Mar 2020 10:25:11 -0700 (PDT)
+        id S1730193AbgCKR0z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Mar 2020 13:26:55 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:46257 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730386AbgCKR0z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Mar 2020 13:26:55 -0400
+Received: by mail-pg1-f195.google.com with SMTP id y30so1549692pga.13
+        for <bpf@vger.kernel.org>; Wed, 11 Mar 2020 10:26:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A72FMDEMFI/PWSo7NEjukyYc/xIp+ZKKEp1Vw5reguA=;
-        b=f4NPjv9Kh5RQg8A2ZphMM8k4y/Wqzy++zz4Smc4ns7kb4mTZY5b0MquVoo0oaexG8m
-         KrG4IP7LWnuJLt4DT5ftocqv4S8NUxnJs1n6VKk/nJFqtEd9LZkJ3dRhryovuziWOfjC
-         J1fsmPTGQdVTY4YnZS9hRrCrVnSql9Ru/Y1sw=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6DKjGI4X4OQ6qCX1w/gYFecM6PgqTtpRMuTNL+Kji+w=;
+        b=K1ekukOe9CJewW08HwO+84B/ZOFHNak07HRIKDpnQ4asstPnsNUw432tBiYGqmOrQX
+         QGOfYSObO/M/NGUPPCKxMwBf+dfPbjZpXnM0mMYRB7yQDo2Gzeo2aOYlgOgduDBebTDC
+         +dH1arrub3omMk9fLNqX1neBpSkST0Admla8ntpzRIFUkkZn9o6izeQFTvg1VkyajmY3
+         rr+s1fiq9X/4zHTfu4swcodkK5Cquo9nCD+Th72JBiWOE5/CvO7AyNPPYKsJ+YfTeYZe
+         sqgOi4YSUzEyhtnN48Bma5vNppa9782F8y3Ke3Oe/2EdBMX/dfLxnxEcnG5Wm4SXFzU/
+         Z3FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A72FMDEMFI/PWSo7NEjukyYc/xIp+ZKKEp1Vw5reguA=;
-        b=dkr39M3x2y+NE2Ew2sbfDLgArtH0U5NGFhUSe7eyJUKT+/cUW9/1lm7wKJq4YU21OS
-         jb1iRgUKb1HBEoN6YqoWxQlq042MB7dSrfCFJ/pFTyWZEPvreTdB+q44Gz7bwg3HHUWL
-         s+hvDAYDv7djVcvKCpcj2y6m1Y3fdLzK9yNImZqAt666WZWlQwIT6gKkLvLaOXG5n78C
-         mAbtJTFFPpoZauxURMTeoaK37sOj4VYAzT6QMWIj3RKBKhdrO+r6Q05rBcbib6bN4EFE
-         tprUyc/HoLmBgrevhf1KwehzLIAejTf5mPu9ydaPYBnRHX6XLgl3OQ5yBMmZB7hRcZYs
-         C0oA==
-X-Gm-Message-State: ANhLgQ0abJF83c88U7j8it1Dg2fK19NARQJgigpPKoDSiroMs98aLZt3
-        NuhkRxu7YeGcZ41tO1JwaHj7Ddv5awqvZDwXNG1K1sxM
-X-Google-Smtp-Source: ADFU+vtnHEnOBiDu3qXi9GBfF3N93KhAg6bGngtzbVZAuuxAr+3h2KDdAnDf5Jg5otnqUiCg3Co0ZRiZ+uCff88sbto=
-X-Received: by 2002:a05:6820:128:: with SMTP id i8mr1024041ood.45.1583947510588;
- Wed, 11 Mar 2020 10:25:10 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6DKjGI4X4OQ6qCX1w/gYFecM6PgqTtpRMuTNL+Kji+w=;
+        b=O2qs57Ookj0FdFSJM1c37YlAVaQyXo736C7gBiQfQJ1Y7kt4M7wplXmtR7ogfM9Boo
+         8mg08KU6JfeipoAectTBL9nN3jTHOsVtDP6EN63priNEpaCvQaLMAXpk4ym/7t3zdXBp
+         MiHi2zskTj9jlsvHKF5vhPepl2XzFPAFY/F8omYpW7gDGFFEBJmuURcmm7dDkcsy91g6
+         hxk1abhmWLoWSraDzA8uEbIrnhys/4u3rb4eqx45JHoP9PysC1J7dAxpGmHmmwyEP2Hm
+         MX+vzTPW019ejcZOergjrRK9LdlteXULB2Na0quKF/o/qzCyrBC3aFPexeKxi/yOGgFN
+         tNCw==
+X-Gm-Message-State: ANhLgQ1Y/4qTQDkY0CkuorakIk3Rp/aiSDzpxrrRDhc/ZKuykeV6+YoL
+        +rv0XMYBb4HlttjHgPaYtEg=
+X-Google-Smtp-Source: ADFU+vtwBH264i9OomcgZFPJtn+9xB5fy7wM72uoHS79vK5dQgt//6MMdaDFCWymyxziLLJ9sY+i1A==
+X-Received: by 2002:aa7:93cd:: with SMTP id y13mr3850317pff.213.1583947613562;
+        Wed, 11 Mar 2020 10:26:53 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:500::4:c1c5])
+        by smtp.gmail.com with ESMTPSA id q12sm51813359pfh.158.2020.03.11.10.26.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Mar 2020 10:26:52 -0700 (PDT)
+Date:   Wed, 11 Mar 2020 10:26:50 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Tobias Klauser <tklauser@distanz.ch>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2] bpftool: fix profiler build on systems
+ without /usr/include/asm symlink
+Message-ID: <20200311172650.r3gfkqbyftc32iax@ast-mbp.dhcp.thefacebook.com>
+References: <20200311123421.3634-1-tklauser@distanz.ch>
+ <20200311161459.6310-1-tklauser@distanz.ch>
 MIME-Version: 1.0
-References: <20200310174711.7490-1-lmb@cloudflare.com> <20200310174711.7490-6-lmb@cloudflare.com>
- <87wo7rxal4.fsf@cloudflare.com>
-In-Reply-To: <87wo7rxal4.fsf@cloudflare.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 11 Mar 2020 17:24:59 +0000
-Message-ID: <CACAyw9_DC5ewgLX=Qrvmbs3i3YvtuLBFbe1Hr6SJtbE+L1P2eQ@mail.gmail.com>
-Subject: Re: [PATCH 5/5] bpf: sockmap, sockhash: test looking up fds
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        kernel-team <kernel-team@cloudflare.com>,
-        linux-kselftest@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200311161459.6310-1-tklauser@distanz.ch>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 11 Mar 2020 at 13:52, Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> On Tue, Mar 10, 2020 at 06:47 PM CET, Lorenz Bauer wrote:
-> > Make sure that looking up an element from the map succeeds,
-> > and that the fd is valid by using it an fcntl call.
-> >
-> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> > ---
-> >  .../selftests/bpf/prog_tests/sockmap_listen.c | 26 ++++++++++++++-----
-> >  1 file changed, 20 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-> > index 52aa468bdccd..929e1e77ecc6 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-> > @@ -453,7 +453,7 @@ static void test_lookup_after_delete(int family, int sotype, int mapfd)
-> >       xclose(s);
-> >  }
-> >
-> > -static void test_lookup_32_bit_value(int family, int sotype, int mapfd)
-> > +static void test_lookup_fd(int family, int sotype, int mapfd)
-> >  {
-> >       u32 key, value32;
-> >       int err, s;
-> > @@ -466,7 +466,7 @@ static void test_lookup_32_bit_value(int family, int sotype, int mapfd)
-> >                              sizeof(value32), 1, 0);
-> >       if (mapfd < 0) {
-> >               FAIL_ERRNO("map_create");
-> > -             goto close;
-> > +             goto close_sock;
-> >       }
-> >
-> >       key = 0;
-> > @@ -475,11 +475,25 @@ static void test_lookup_32_bit_value(int family, int sotype, int mapfd)
-> >
-> >       errno = 0;
-> >       err = bpf_map_lookup_elem(mapfd, &key, &value32);
-> > -     if (!err || errno != ENOSPC)
-> > -             FAIL_ERRNO("map_lookup: expected ENOSPC");
-> > +     if (err) {
-> > +             FAIL_ERRNO("map_lookup");
-> > +             goto close_map;
-> > +     }
-> >
-> > +     if ((int)value32 == s) {
-> > +             FAIL("return value is identical");
-> > +             goto close;
-> > +     }
-> > +
-> > +     err = fcntl(value32, F_GETFD);
-> > +     if (err == -1)
-> > +             FAIL_ERRNO("fcntl");
->
-> I would call getsockopt()/getsockname() to assert that the FD lookup
-> succeeded.  We want to know not only that it's an FD (-EBADFD case), but
-> also that it's associated with a socket (-ENOTSOCK).
->
-> We can go even further, and compare socket cookies to ensure we got an
-> FD for the expected socket.
+On Wed, Mar 11, 2020 at 05:14:59PM +0100, Tobias Klauser wrote:
+> When compiling bpftool on a system where the /usr/include/asm symlink
+> doesn't exist (e.g. on an Ubuntu system without gcc-multilib installed),
+> the build fails with:
+> 
+>     CLANG    skeleton/profiler.bpf.o
+>   In file included from skeleton/profiler.bpf.c:4:
+>   In file included from /usr/include/linux/bpf.h:11:
+>   /usr/include/linux/types.h:5:10: fatal error: 'asm/types.h' file not found
+>   #include <asm/types.h>
+>            ^~~~~~~~~~~~~
+>   1 error generated.
 
-Good idea, thanks!
+I think the issue is different.
+profiler.bpf.c should have picked up
+tools/include/uapi/linux/bpf.h (instead of global from /usr/inclde)
+which should have included
+tools/include/linux/types.h (instead of /usr/include/linux/types.h)
 
-> Also, I'm wondering if we could keep the -ENOSPC case test-covered by
-> temporarily dropping NET_ADMIN capability.
+we also have a workaround for some cases:
+./tools/testing/selftests/bpf/include/uapi/linux/types.h
 
-You mean EPERM? ENOSPC isn't reachable, since the map can only be created
-with a map_value of 4 or 8.
+>   make: *** [Makefile:123: skeleton/profiler.bpf.o] Error 1
+> 
+> In certain cases (e.g. for container builds), installing gcc-multilib
+> and all its dependencies - which are otherwise not needed to build
+> bpftool - unnecessarily increases the image size.
+> 
+> Thus, fix this by adding /usr/include/$(uname -m)-linux-gnu to the
+> clang search path so <asm/types.h> can be found.
 
->
-> > +
-> > +close:
-> > +     xclose(value32);
-> > +close_map:
-> >       xclose(mapfd);
-> > -close:
-> > +close_sock:
-> >       xclose(s);
-> >  }
-> >
-> > @@ -1456,7 +1470,7 @@ static void test_ops(struct test_sockmap_listen *skel, struct bpf_map *map,
-> >               /* lookup */
-> >               TEST(test_lookup_after_insert),
-> >               TEST(test_lookup_after_delete),
-> > -             TEST(test_lookup_32_bit_value),
-> > +             TEST(test_lookup_fd),
-> >               /* update */
-> >               TEST(test_update_existing),
-> >               /* races with insert/delete */
-
-
-
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+In general perf builds fine on all sorts of distros and configs.
+I think bpftool should use the same includes from tools/
+and skeleton too.
