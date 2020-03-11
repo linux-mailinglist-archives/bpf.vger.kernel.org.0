@@ -2,121 +2,237 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCC3180D9A
-	for <lists+bpf@lfdr.de>; Wed, 11 Mar 2020 02:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A65180DDE
+	for <lists+bpf@lfdr.de>; Wed, 11 Mar 2020 03:12:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727588AbgCKBk7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Mar 2020 21:40:59 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:35958 "EHLO
+        id S1727528AbgCKCMj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Mar 2020 22:12:39 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:52662 "EHLO
         mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727484AbgCKBk6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Mar 2020 21:40:58 -0400
-Received: by mail-wm1-f65.google.com with SMTP id g62so351077wme.1;
-        Tue, 10 Mar 2020 18:40:55 -0700 (PDT)
+        with ESMTP id S1727506AbgCKCMj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Mar 2020 22:12:39 -0400
+Received: by mail-wm1-f65.google.com with SMTP id 11so393037wmo.2
+        for <bpf@vger.kernel.org>; Tue, 10 Mar 2020 19:12:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=AFzWa9AtXFLGIfoMPoJK6d5wfqfho8/Wj5PljPDOXn0=;
-        b=Eb8DoaMtU5ZDMN3aXl+rooK4nC4/8oKVRnqHuvpGBrNcv3iwWZlTZlHDPvfyGZxdC+
-         QgxC6UkYzdh2PzToUODgu1xeKLl5Pv+5r5RZO0q0zzBgQ9ebjwJg102FoahafrfdwEr+
-         reHIm9KVkZ/1jGb2hUDghsBkI5zAeDoucHdC6z2Oi8T8Swl//It0jAn8GjEH5R5pcOgd
-         TK+o0d7LkuF7pt4GIyPWRDyv2lAAXoRZvQWayYSDeABb+YmRa5E0TYYu1J9MBjxh3esu
-         XMHgiL4EBnhr/EVOug8RGSpd1NqK0ffNYqHyM0gjHJCrfkkEMTI+yxl/OXAis24Adpw0
-         u4AQ==
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u3fV4GJZtcSb2sQMglSsUz56vJfyXq9KJXAU1tEwCic=;
+        b=Zyai6AlecnZcpv78v2Dneo+BXmEfCkV7MhMbUZjlMoLY/NJfApbSamSSxrIlk/C2I4
+         OJmTNApd7zSsjM/HK6E03TJS78j4o6f9HNwXFM9K5vgZD+uwEJmch+4XRu4TLLA98U3l
+         //0ilB9ZteSjV4zrqaokylhIUI1SM5LcOkQ73SMyx9kwJq55DlUJCBslU65Iyq/IH6g8
+         tYQrFMik3gryb7CERKD7xjnzs7xV7bEG+5+KJRlB/MzHk6d0mTRFzG0a3u8Z718C96F4
+         j3usKN5aWudZcmjkpHt3ulQSR2Jf/6mx1O1L65r5RKXRZJyyNLmu6I1V/I6Pe7w/3V8U
+         xQVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=AFzWa9AtXFLGIfoMPoJK6d5wfqfho8/Wj5PljPDOXn0=;
-        b=fxfGKGXIzq4m6RhOfnWIgtsNX8l76aEm4iz0oFgPjZvb3OEHP76b941ZyZs25IiaJK
-         IFr8NoxNL0rCUvtgFWmZuEfzN4zVO+cpUwgyWoXkLRRFm+mCc/Go4iaOIkD5/560mYmm
-         GJ1/SZHjDFR+aIAjOUOCnyJK6zNK2zR7cLBGmoVNvXgNq1yzhtHWi+9L8Dku7wEWKO0D
-         qsBDsBsP4FiWeIcUbdthBT6XKW0MznYJ9mvy7rTIrRKrPYWQerVn2wxjSw9J9SBqNUjJ
-         /UgW5S9NcZX9Igv8rgdD4kZ6WjtnF1lZuHK2AhFNoHUo8iY7P8Fax4/HfMWa+SUShS6C
-         SQkQ==
-X-Gm-Message-State: ANhLgQ1E3kF41DhmZcrxFETtFxT24CBsVEy0IyA1tOqe0XLf338kVCKA
-        n+d5EuxAt0Z0Cnj59Ev3iA==
-X-Google-Smtp-Source: ADFU+vtExS5R99lSAnOMRnhr9zYw+HepbUPC60GDI+elRvjPDxKh/YqmV1aApbFNg6aSzIRZEj75+A==
-X-Received: by 2002:a05:600c:2:: with SMTP id g2mr586617wmc.18.1583890854648;
-        Tue, 10 Mar 2020 18:40:54 -0700 (PDT)
-Received: from ninjahub.lan (host-2-102-15-144.as13285.net. [2.102.15.144])
-        by smtp.gmail.com with ESMTPSA id m11sm21774262wrn.92.2020.03.10.18.40.52
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u3fV4GJZtcSb2sQMglSsUz56vJfyXq9KJXAU1tEwCic=;
+        b=NrZJTuFf3DLhrflxYXYNOn1bfkLiNOmvAIY57jDNZWkDfl4aiXHuH4L7Rpd7JEbX3d
+         tsbScruimS4/FcJlpFmSYFxypgrlS5G4PyInPKWnOnmeettOTPCVGr7hugMq6y8axSpi
+         jqGArtQjZygerkY7d5nxZ4J9EgQY7Bu6AEXHYyw0JH5PRENyOaAp7rgGkZo5ovaPvAJU
+         tawpH3zDumYppcvI6nerT8siucfAEi7ZEFEjISwv7MkbL5T7B1hQkXQJ1nLYelSD1ZTK
+         NPi+wI/g487wB9EFXW4VnwELXa/51Ors+JmxbgFhHo48PsIJVNIxCVyoh8Xf37TKP/lV
+         Z2TQ==
+X-Gm-Message-State: ANhLgQ0WZo7W6GWiJlaS4qSStrai7eMweR/osDnsE8LxZJLDjeSZYr1h
+        MjjetdGXyfWRGa5Xuxg4+eyqOw==
+X-Google-Smtp-Source: ADFU+vu/OnD5YoOF/g98giyycp/IGgcQDSW2aISBYcRiNG6GNLNLakMxsUyl05P6Mg7F94QQ35Hrag==
+X-Received: by 2002:a1c:a750:: with SMTP id q77mr722420wme.120.1583892757537;
+        Tue, 10 Mar 2020 19:12:37 -0700 (PDT)
+Received: from localhost.localdomain ([194.35.118.214])
+        by smtp.gmail.com with ESMTPSA id x17sm6120635wmi.28.2020.03.10.19.12.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Mar 2020 18:40:54 -0700 (PDT)
-From:   Jules Irenge <jbi.octave@gmail.com>
-X-Google-Original-From: Jules Irenge <maxx@ninjahub.org>
-Date:   Wed, 11 Mar 2020 01:40:46 +0000 (GMT)
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-cc:     Jules Irenge <jbi.octave@gmail.com>, boqun.feng@gmail.com,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH 2/8] raw: Add missing annotations to raw_seq_start() and
- raw_seq_stop()
-In-Reply-To: <af9016d1-c224-ea61-3290-330ed0fe8d60@gmail.com>
-Message-ID: <alpine.LFD.2.21.2003110138120.3619@ninjahub.org>
-References: <0/8> <20200311010908.42366-1-jbi.octave@gmail.com> <20200311010908.42366-3-jbi.octave@gmail.com> <af9016d1-c224-ea61-3290-330ed0fe8d60@gmail.com>
+        Tue, 10 Mar 2020 19:12:37 -0700 (PDT)
+From:   Quentin Monnet <quentin@isovalent.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Quentin Monnet <quentin@isovalent.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: [PATCH bpf-next] tools: bpftool: restore message on failure to guess program type
+Date:   Wed, 11 Mar 2020 02:12:05 +0000
+Message-Id: <20200311021205.9755-1-quentin@isovalent.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+In commit 4a3d6c6a6e4d ("libbpf: Reduce log level for custom section
+names"), log level for messages for libbpf_attach_type_by_name() and
+libbpf_prog_type_by_name() was downgraded from "info" to "debug". The
+latter function, in particular, is used by bpftool when attempting to
+load programs, and this change caused bpftool to exit with no hint or
+error message when it fails to detect the type of the program to load
+(unless "-d" option was provided).
 
+To help users understand why bpftool fails to load the program, let's do
+a second run of the function with log level in "debug" mode in case of
+failure.
 
-On Tue, 10 Mar 2020, Eric Dumazet wrote:
+Before:
 
-> 
-> 
-> On 3/10/20 6:09 PM, Jules Irenge wrote:
-> > Sparse reports warnings at raw_seq_start() and raw_seq_stop()
-> > 
-> > warning: context imbalance in raw_seq_start() - wrong count at exit
-> > warning: context imbalance in raw_seq_stop() - unexpected unlock
-> > 
-> > The root cause is the missing annotations at raw_seq_start()
-> > 	and raw_seq_stop()
-> > Add the missing __acquires(&h->lock) annotation
-> > Add the missing __releases(&h->lock) annotation
-> > 
-> > Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
-> > ---
-> >  net/ipv4/raw.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/net/ipv4/raw.c b/net/ipv4/raw.c
-> > index 3183413ebc6c..47665919048f 100644
-> > --- a/net/ipv4/raw.c
-> > +++ b/net/ipv4/raw.c
-> > @@ -1034,6 +1034,7 @@ static struct sock *raw_get_idx(struct seq_file *seq, loff_t pos)
-> >  }
-> >  
-> >  void *raw_seq_start(struct seq_file *seq, loff_t *pos)
-> > +	__acquires(&h->lock)
-> 
-> I dunno, h variable is not yet defined/declared at this point,
-> this looks weird.
-> 
-> >  {
-> >  	struct raw_hashinfo *h = PDE_DATA(file_inode(seq->file));
-> >  
-> > @@ -1056,6 +1057,7 @@ void *raw_seq_next(struct seq_file *seq, void *v, loff_t *pos)
-> >  EXPORT_SYMBOL_GPL(raw_seq_next);
-> >  
-> >  void raw_seq_stop(struct seq_file *seq, void *v)
-> > +	__releases(&h->lock)
-> >  {
-> >  	struct raw_hashinfo *h = PDE_DATA(file_inode(seq->file));
-> >  
-> > 
-> 
-Thanks for the feedback,
+    # bpftool prog load sample_ret0.o /sys/fs/bpf/sample_ret0
+    # echo $?
+    255
 
-I think h is a pointer of type struct raw_hashinfo, in which member lock 
-is initialized on line number 89. 
+Or really verbose with -d flag:
 
-Kind regards
+    # bpftool -d prog load sample_ret0.o /sys/fs/bpf/sample_ret0
+    libbpf: loading sample_ret0.o
+    libbpf: section(1) .strtab, size 134, link 0, flags 0, type=3
+    libbpf: skip section(1) .strtab
+    libbpf: section(2) .text, size 16, link 0, flags 6, type=1
+    libbpf: found program .text
+    libbpf: section(3) .debug_abbrev, size 55, link 0, flags 0, type=1
+    libbpf: skip section(3) .debug_abbrev
+    libbpf: section(4) .debug_info, size 75, link 0, flags 0, type=1
+    libbpf: skip section(4) .debug_info
+    libbpf: section(5) .rel.debug_info, size 32, link 14, flags 0, type=9
+    libbpf: skip relo .rel.debug_info(5) for section(4)
+    libbpf: section(6) .debug_str, size 150, link 0, flags 30, type=1
+    libbpf: skip section(6) .debug_str
+    libbpf: section(7) .BTF, size 155, link 0, flags 0, type=1
+    libbpf: section(8) .BTF.ext, size 80, link 0, flags 0, type=1
+    libbpf: section(9) .rel.BTF.ext, size 32, link 14, flags 0, type=9
+    libbpf: skip relo .rel.BTF.ext(9) for section(8)
+    libbpf: section(10) .debug_frame, size 40, link 0, flags 0, type=1
+    libbpf: skip section(10) .debug_frame
+    libbpf: section(11) .rel.debug_frame, size 16, link 14, flags 0, type=9
+    libbpf: skip relo .rel.debug_frame(11) for section(10)
+    libbpf: section(12) .debug_line, size 74, link 0, flags 0, type=1
+    libbpf: skip section(12) .debug_line
+    libbpf: section(13) .rel.debug_line, size 16, link 14, flags 0, type=9
+    libbpf: skip relo .rel.debug_line(13) for section(12)
+    libbpf: section(14) .symtab, size 96, link 1, flags 0, type=2
+    libbpf: looking for externs among 4 symbols...
+    libbpf: collected 0 externs total
+    libbpf: failed to guess program type from ELF section '.text'
+    libbpf: supported section(type) names are: socket sk_reuseport kprobe/ [...]
+
+After:
+
+    # bpftool prog load sample_ret0.o /sys/fs/bpf/sample_ret0
+    libbpf: failed to guess program type from ELF section '.text'
+    libbpf: supported section(type) names are: socket sk_reuseport kprobe/ [...]
+
+Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+---
+ tools/bpf/bpftool/common.c |  7 +++++++
+ tools/bpf/bpftool/main.c   |  7 -------
+ tools/bpf/bpftool/main.h   |  5 +++++
+ tools/bpf/bpftool/prog.c   | 27 +++++++++++++++++++++++----
+ 4 files changed, 35 insertions(+), 11 deletions(-)
+
+diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+index b75b8ec5469c..4512f7fb9adb 100644
+--- a/tools/bpf/bpftool/common.c
++++ b/tools/bpf/bpftool/common.c
+@@ -597,3 +597,10 @@ int parse_u32_arg(int *argc, char ***argv, __u32 *val, const char *what)
+ 
+ 	return 0;
+ }
++
++int __printf(2, 0)
++print_all_levels(__maybe_unused enum libbpf_print_level level,
++		 const char *format, va_list args)
++{
++	return vfprintf(stderr, format, args);
++}
+diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+index 6d41bbfc6459..06449e846e4b 100644
+--- a/tools/bpf/bpftool/main.c
++++ b/tools/bpf/bpftool/main.c
+@@ -79,13 +79,6 @@ static int do_version(int argc, char **argv)
+ 	return 0;
+ }
+ 
+-static int __printf(2, 0)
+-print_all_levels(__maybe_unused enum libbpf_print_level level,
+-		 const char *format, va_list args)
+-{
+-	return vfprintf(stderr, format, args);
+-}
+-
+ int cmd_select(const struct cmd *cmds, int argc, char **argv,
+ 	       int (*help)(int argc, char **argv))
+ {
+diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+index 724ef9d941d3..555e822203c5 100644
+--- a/tools/bpf/bpftool/main.h
++++ b/tools/bpf/bpftool/main.h
+@@ -14,6 +14,8 @@
+ #include <linux/hashtable.h>
+ #include <tools/libc_compat.h>
+ 
++#include <bpf/libbpf.h>
++
+ #include "json_writer.h"
+ 
+ #define ptr_to_u64(ptr)	((__u64)(unsigned long)(ptr))
+@@ -229,4 +231,7 @@ struct tcmsg;
+ int do_xdp_dump(struct ifinfomsg *ifinfo, struct nlattr **tb);
+ int do_filter_dump(struct tcmsg *ifinfo, struct nlattr **tb, const char *kind,
+ 		   const char *devname, int ifindex);
++
++int print_all_levels(__maybe_unused enum libbpf_print_level level,
++		     const char *format, va_list args);
+ #endif
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index 576ddd82bc96..9faf4efd36d4 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -1247,6 +1247,25 @@ static int do_run(int argc, char **argv)
+ 	return err;
+ }
+ 
++static int
++get_prog_type_by_name(const char *name, enum bpf_prog_type *prog_type,
++		      enum bpf_attach_type *expected_attach_type)
++{
++	libbpf_print_fn_t print_backup;
++	int ret;
++
++	ret = libbpf_prog_type_by_name(name, prog_type, expected_attach_type);
++	if (!ret)
++		return ret;
++
++	/* libbpf_prog_type_by_name() failed, let's re-run with debug level */
++	print_backup = libbpf_set_print(print_all_levels);
++	ret = libbpf_prog_type_by_name(name, prog_type, expected_attach_type);
++	libbpf_set_print(print_backup);
++
++	return ret;
++}
++
+ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ {
+ 	enum bpf_prog_type common_prog_type = BPF_PROG_TYPE_UNSPEC;
+@@ -1296,8 +1315,8 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 			strcat(type, *argv);
+ 			strcat(type, "/");
+ 
+-			err = libbpf_prog_type_by_name(type, &common_prog_type,
+-						       &expected_attach_type);
++			err = get_prog_type_by_name(type, &common_prog_type,
++						    &expected_attach_type);
+ 			free(type);
+ 			if (err < 0)
+ 				goto err_free_reuse_maps;
+@@ -1396,8 +1415,8 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 		if (prog_type == BPF_PROG_TYPE_UNSPEC) {
+ 			const char *sec_name = bpf_program__title(pos, false);
+ 
+-			err = libbpf_prog_type_by_name(sec_name, &prog_type,
+-						       &expected_attach_type);
++			err = get_prog_type_by_name(sec_name, &prog_type,
++						    &expected_attach_type);
+ 			if (err < 0)
+ 				goto err_close_obj;
+ 		}
+-- 
+2.25.1
+
