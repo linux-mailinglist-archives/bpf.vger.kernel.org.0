@@ -2,61 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64E8D18251E
-	for <lists+bpf@lfdr.de>; Wed, 11 Mar 2020 23:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA8E1825D6
+	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 00:27:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730199AbgCKWky (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Mar 2020 18:40:54 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:47026 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729956AbgCKWky (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Mar 2020 18:40:54 -0400
-Received: by mail-pg1-f196.google.com with SMTP id y30so1969924pga.13;
-        Wed, 11 Mar 2020 15:40:52 -0700 (PDT)
+        id S1731446AbgCKX1x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Mar 2020 19:27:53 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:32989 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731392AbgCKX1w (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Mar 2020 19:27:52 -0400
+Received: by mail-pg1-f194.google.com with SMTP id m5so2053012pgg.0;
+        Wed, 11 Mar 2020 16:27:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=9SRTk6Qjjk1tP01EZ8totvHB8j0f9Ncy1D8Goqn/0Y4=;
-        b=m9xOawrqvlJHFzsBp6vzwIzlaeE/ayvB8eHf6iDbhwErGvNLbDqj2OmmFgSNi9ceB4
-         72HT+gHZL95NE7E9KZS/QygKbWdK+Js5hLbZtQmV/8OiK5x/YlnyoWwvU/JK4W4yrrkZ
-         rIHulPL/meujfaqlej+fj4dIdeLVs0QEw/snHuwkIscDMXn8kudxQf0kqarqd2vuqSzw
-         lRsUDARxs5ENKq8GEkH7FEWf7tHdkxGMTILoiDhHr8phgtusLFgqFv0GXXl2Ay+3htCo
-         McW8/iouPDg86ebQCwfO6flhktLwjNA5EnE1H9OWd+V7aIy507N+0w02Wf6pI+m1y/RP
-         SXBw==
+        bh=5R3NN9uod3puJ0jWV50H8GmRPXUpheE41lirnX7p648=;
+        b=pUb+BoV8jLVjeU16S4PEOg3tBCYrl5lqKfkvCxyc+ZfjKZgAaINNZ8KJ/1oTikFe8s
+         mPDwEAOF5NDA0lxRp36m7kCFnwbrHMHhiYJxbiwcJ5Qljsv/chgvvzxjYblRFDayLY3s
+         0RRjmrXiN+op5rNo9h1txoctx3RBu1uVQM3899eVOktFKtV+MZx4WEVNkCj8TNFZasE+
+         oO7Uya6N8CwDWFMJaL9PzIkXIrQa+9nceOo2fRZ8IrJOdnKvZUtxb/2h8gEW2ynMfFew
+         LdP3kLU3b2xGOILVhG0SzNi4c+/3oBFEp+ovA7zCLYW23q22bP2UgA3HI+tb3g2Gv/Lg
+         Eh5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=9SRTk6Qjjk1tP01EZ8totvHB8j0f9Ncy1D8Goqn/0Y4=;
-        b=auU7oKe1pB7IWN9xlqny0Qy8qQyfMpG9Geugr+FtJ6G9msqLbaI1kJ7B4VmfaT5ES3
-         9/YyXUcI1HL1T4f9KliFyYKndl1xzwqnkp+8/TLYlCPIONcIX3/GzbPEcEvpz8R2Mg7Q
-         OlurUNehRwdYOrIOtnXHK1Aept1RpuVeJhNtYayorDkA9JcrzQtwDZT95KmUBKzoYEZ/
-         BzySbBPnMQD0PDd/cEo0QG62AHdpEXIOABHS4IWQ0xV4xXDknVVAnBbkHapYkEv+bGLz
-         ATrYVO2dMxihSzIDuJ8EOQt1zpKeCXCDA67SSNGjcrynuog/iS3+k2oQPlMtIk/XsnXH
-         mfCQ==
-X-Gm-Message-State: ANhLgQ2jO76X5doUQZaMcR5NWQSOFh3X51sSs3yl8rpbu6FJMfGi7v1X
-        nUcaE+JFTGZrRXxFn17oTekGbI8Y
-X-Google-Smtp-Source: ADFU+vvpHWFqeJUKUlvQTkEOJHFRg8TclUxUyMK06u67ywTIf7wefljUep7uXke4/z51voptdbSxDQ==
-X-Received: by 2002:aa7:8f36:: with SMTP id y22mr5064328pfr.162.1583966451153;
-        Wed, 11 Mar 2020 15:40:51 -0700 (PDT)
+        bh=5R3NN9uod3puJ0jWV50H8GmRPXUpheE41lirnX7p648=;
+        b=k06GApmRV5i0kT8YZSSESuezdXZwFRvOW3Xlf7wjghVpfGJqMFgBZhikbR0axHmHq0
+         NgriyldMbjLooZjJKY82ae1u+UWel6hQtGfr3N4vRLtYXwGbx8e7VADeGTaWUNoxlxS6
+         Y9DrwSUsmtjAxyybRz4Mz3RQmmHJuGDyoxA5kKYPhc0oh43fxeI6mdeONqbTLbGBOtXg
+         QBWWpfj2KDB+3a3gyyjsNYPTOo9OHdFPYPpknUi5KeBY86+yOV8os/6zDWBqma8iWw/e
+         SvfUkn8aSs6HXNhpTka1hmxS9qIH9r0fO5ldzL/YYBH9r6qRZEBOPVywtM+B9edSBw2M
+         8ExQ==
+X-Gm-Message-State: ANhLgQ08mWuqKd9xq5SRPs8byTuxGOK5y7FVUifZDnuoPz3ClHqvJ8CK
+        Op8rv679zPGvE8vpOusR2KQ=
+X-Google-Smtp-Source: ADFU+vv6GiZ+6i0Ggxj8wOsDrW2Db/Q/QKiHSDPVYXlxRL+9oE8tICzz8OwXEDaeg2yNeK7CmNyYoA==
+X-Received: by 2002:a62:cdcc:: with SMTP id o195mr3095617pfg.323.1583969271400;
+        Wed, 11 Mar 2020 16:27:51 -0700 (PDT)
 Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id n5sm170747pfq.35.2020.03.11.15.40.49
+        by smtp.gmail.com with ESMTPSA id s18sm6479240pjp.24.2020.03.11.16.27.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Mar 2020 15:40:50 -0700 (PDT)
-Date:   Wed, 11 Mar 2020 15:40:43 -0700
+        Wed, 11 Mar 2020 16:27:50 -0700 (PDT)
+Date:   Wed, 11 Mar 2020 16:27:41 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>,
+To:     Lorenz Bauer <lmb@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Lorenz Bauer <lmb@cloudflare.com>, kernel-team@cloudflare.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Message-ID: <5e6968eb5c09c_20552ab9153405b419@john-XPS-13-9370.notmuch>
-In-Reply-To: <87y2s7xayn.fsf@cloudflare.com>
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     kernel-team@cloudflare.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <5e6973ed90f8d_20552ab9153405b4ca@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200310174711.7490-5-lmb@cloudflare.com>
 References: <20200310174711.7490-1-lmb@cloudflare.com>
- <87y2s7xayn.fsf@cloudflare.com>
-Subject: Re: [PATCH 0/5] Return fds from privileged sockhash/sockmap lookup
+ <20200310174711.7490-5-lmb@cloudflare.com>
+Subject: RE: [PATCH 4/5] bpf: sockmap, sockhash: return file descriptors from
+ privileged lookup
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -66,44 +71,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Sitnicki wrote:
-> On Tue, Mar 10, 2020 at 06:47 PM CET, Lorenz Bauer wrote:
-> > We want to use sockhash and sockmap to build the control plane for
-> > our upcoming BPF socket dispatch work. We realised that it's
-> > difficult to resize or otherwise rebuild these maps if needed,
-> > because there is no way to get at their contents. This patch set
-> > allows a privileged user to retrieve fds from these map types,
-> > which removes this obstacle.
+Lorenz Bauer wrote:
+> Allow callers with CAP_NET_ADMIN to retrieve file descriptors from a
+> sockmap and sockhash. O_CLOEXEC is enforced on all fds.
 > 
-> Since it takes just a few lines of code to get an FD for a sock:
+> Without this, it's difficult to resize or otherwise rebuild existing
+> sockmap or sockhashes.
 > 
-> 	fd = get_unused_fd_flags(O_CLOEXEC);
-> 	if (unlikely(fd < 0))
-> 		return fd;
->         fd_install(fd, get_file(sk->sk_socket->file));
+> Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> ---
+>  net/core/sock_map.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
 > 
-> ... I can't help but wonder where's the catch?
-> 
-> IOW, why wasn't this needed so far?
-> How does Cilium avoid resizing & rebuilding sockmaps?
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index 03e04426cd21..3228936aa31e 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -347,12 +347,31 @@ static void *sock_map_lookup(struct bpf_map *map, void *key)
+>  static int __sock_map_copy_value(struct bpf_map *map, struct sock *sk,
+>  				 void *value)
+>  {
+> +	struct file *file;
+> +	int fd;
+> +
+>  	switch (map->value_size) {
+>  	case sizeof(u64):
+>  		sock_gen_cookie(sk);
+>  		*(u64 *)value = atomic64_read(&sk->sk_cookie);
+>  		return 0;
+>  
+> +	case sizeof(u32):
+> +		if (!capable(CAP_NET_ADMIN))
+> +			return -EPERM;
+> +
+> +		fd = get_unused_fd_flags(O_CLOEXEC);
+> +		if (unlikely(fd < 0))
+> +			return fd;
+> +
+> +		read_lock_bh(&sk->sk_callback_lock);
+> +		file = get_file(sk->sk_socket->file);
+> +		read_unlock_bh(&sk->sk_callback_lock);
+> +
+> +		fd_install(fd, file);
+> +		*(u32 *)value = fd;
+> +		return 0;
+> +
 
-I build a map at init time and pin it for the lifetime of the daemon.
-If we overrun the sockmap we can always fall back to the normal case
-so there has never been a reason to resize.
+Hi Lorenz, Can you say something about what happens if the sk
+is deleted from the map or the sock is closed/unhashed ideally
+in the commit message so we have it for later reference. I guess
+because we are in an rcu block here the sk will be OK and psock
+reference will exist until after the rcu block at least because
+of call_rcu(). If the psock is destroyed from another path then
+the fd will still point at the sock. correct?
 
-I guess being able to change the map size at runtime would be a nice
-to have but we don't do this with any other maps, e.g. connection
-tracking, load balancing, etc. We expect good-sizing upfront. 
-
-@Lorenz, Would it be possible to provide some more details where a
-resize would be used? I guess if the map is nearly full you could
-rebuild a bigger one and migrate? One thing I explored at one point
-is to just create a new map and use multiple maps in the datapath
-but that required extra lookups and for hashing might not be ideal.
-
-> 
-> Just asking out of curiosity.
-> 
-> [...]
-
-
+Thanks.
