@@ -2,180 +2,228 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 52EA618114B
-	for <lists+bpf@lfdr.de>; Wed, 11 Mar 2020 08:01:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3AD718171B
+	for <lists+bpf@lfdr.de>; Wed, 11 Mar 2020 12:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbgCKHAN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Mar 2020 03:00:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726160AbgCKHAN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Mar 2020 03:00:13 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EAE0C20873;
-        Wed, 11 Mar 2020 07:00:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583910012;
-        bh=/6cQd4hts3gfr9WVs9lQpGGunRJhWCCe0xntAfrfvD0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D6lf+ymlypW+82IE80OgN42xS32HuZY/X4LY2NhGp6LknZ7ojoSXz7e3uoY+YDTBX
-         OFdI2vMa9WwS5KStwzDRZztdMmrwGWUblgjBUzhhVovsgXY8Ylfp/VsJKo70GTynGp
-         3dx76vymYve2EWiJgSLGPHj0HqrM17Y3yetqPqso=
-Date:   Wed, 11 Mar 2020 09:00:08 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Saeed Mahameed <saeedm@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH -next 003/491] MELLANOX MLX5 core VPI driver: Use
- fallthrough;
-Message-ID: <20200311070008.GE4215@unreal>
-References: <cover.1583896344.git.joe@perches.com>
- <3ce4519315294b9738abe6a78e2737f49af9a653.1583896347.git.joe@perches.com>
+        id S1729016AbgCKLvh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Mar 2020 07:51:37 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:37936 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729185AbgCKLvh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Mar 2020 07:51:37 -0400
+Received: by mail-wr1-f65.google.com with SMTP id t11so2231107wrw.5
+        for <bpf@vger.kernel.org>; Wed, 11 Mar 2020 04:51:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=F9YqyxkpsJZqxm08epCGraQiOdpbKiUajj+F4VREnH0=;
+        b=d145IYBz4FxbCwYvbej+jvQ3tfnL1WDas1nB+gt9/SVMpSOdgrcOl/hTRDDwrvyqIb
+         jQOW1t9VWK1sDtuKDxT8WY4JPiKYEUnL8/ZW1KVLE0uSeTM7O7wpPhCQf62/VqsAOSji
+         1EWleqohld93k0BmJlQbywowIoa/vSssvqVGA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=F9YqyxkpsJZqxm08epCGraQiOdpbKiUajj+F4VREnH0=;
+        b=hH64KG5ed6UhNAG46+E7yKEG1lrxFk8Sz0S1jxJ7FMJtRyJe7KkL7GcU3/qIKj2wCa
+         iX6Bh2XIoVLCRPwLo6qSYsDowRqtge6GnLS6/lV4Q0YzrTWgnYe+NZeo4fpqH0otHFoZ
+         bVpksb1+h72nrEM/hGqtbPFLSS4Nfgw3Gc4tTkf+sX7ykKceUBPEImcXlM0q4WN+xlQr
+         QaBOTQ7n4T0qaJG8pc7S+yZPSp/lvrgbYP/wuiYKnYH2nXfNbsT9zllKofSgAAl9q0nb
+         OGK7lEmMvDRZw+tW3etIxU/0rlJzYKCNOvdA4X54ur8tuhSJumy+M1LTlvHWl+4uKo+a
+         sghQ==
+X-Gm-Message-State: ANhLgQ1XogVFXSFEYGRko88WNU7QjAty00GxuTctPrH+4EmL5uF7qn8d
+        0JvDpwyOQSYFf4Lzr9bzh6aI1w==
+X-Google-Smtp-Source: ADFU+vs5OpDO1A9pI5Vah3xDK5puctyg29o2llanncn4GpklrkFlvpOjILPdWbbYnwgqbo1eShv1Lg==
+X-Received: by 2002:adf:ed06:: with SMTP id a6mr4135797wro.346.1583927494211;
+        Wed, 11 Mar 2020 04:51:34 -0700 (PDT)
+Received: from cloudflare.com ([176.221.114.230])
+        by smtp.gmail.com with ESMTPSA id t193sm8429892wmt.14.2020.03.11.04.51.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Mar 2020 04:51:33 -0700 (PDT)
+References: <20200206111652.694507-1-jakub@cloudflare.com> <5e3c6c7f8730e_22ad2af2cbd0a5b4a4@john-XPS-13-9370.notmuch> <87zhdun0ay.fsf@cloudflare.com> <5e67c3e83fb25_1e8a2b0e88e0a5bc84@john-XPS-13-9370.notmuch>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com
+Subject: Re: [PATCH bpf 0/3] Fix locking order and synchronization on sockmap/sockhash tear-down
+In-reply-to: <5e67c3e83fb25_1e8a2b0e88e0a5bc84@john-XPS-13-9370.notmuch>
+Date:   Wed, 11 Mar 2020 12:51:32 +0100
+Message-ID: <87zhcnxg6z.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3ce4519315294b9738abe6a78e2737f49af9a653.1583896347.git.joe@perches.com>
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 10, 2020 at 09:51:17PM -0700, Joe Perches wrote:
-> Convert the various uses of fallthrough comments to fallthrough;
+On Tue, Mar 10, 2020 at 05:44 PM CET, John Fastabend wrote:
+> Jakub Sitnicki wrote:
+>> On Thu, Feb 06, 2020 at 08:43 PM CET, John Fastabend wrote:
+>> > Jakub Sitnicki wrote:
+>> >> Couple of fixes that came from recent discussion [0] on commit
+>> >> 7e81a3530206 ("bpf: Sockmap, ensure sock lock held during tear down").
+>> >>
+>> >> This series doesn't address the sleeping while holding a spinlock
+>> >> problem. We're still trying to decide how to fix that [1].
+>> >>
+>> >> Until then sockmap users might see the following warnings:
+>> >>
+>> >> | BUG: sleeping function called from invalid context at net/core/sock.c:2935
+>>
 >
-> Done via script
-> Link: https://lore.kernel.org/lkml/b56602fcf79f849e733e7b521bb0e17895d390fa.1582230379.git.joe.com/
+> [...]
 >
-> Signed-off-by: Joe Perches <joe@perches.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h         | 2 +-
->  drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c          | 4 ++--
->  drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c      | 2 +-
->  .../net/ethernet/mellanox/mlx5/core/eswitch_offloads.c    | 2 +-
->  drivers/net/ethernet/mellanox/mlx5/core/lag_mp.c          | 8 ++++----
->  drivers/net/ethernet/mellanox/mlx5/core/vport.c           | 2 +-
->  6 files changed, 10 insertions(+), 10 deletions(-)
+>> Hey John,
 >
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h b/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
-> index a226277..2a1cc2 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
-> @@ -223,7 +223,7 @@ mlx5e_set_eseg_swp(struct sk_buff *skb, struct mlx5_wqe_eth_seg *eseg,
->  	switch (swp_spec->tun_l4_proto) {
->  	case IPPROTO_UDP:
->  		eseg->swp_flags |= MLX5_ETH_WQE_SWP_INNER_L4_UDP;
-> -		/* fall through */
-> +		fallthrough;
->  	case IPPROTO_TCP:
->  		eseg->swp_inner_l4_offset = skb_inner_transport_offset(skb) / 2;
->  		break;
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> index f049e0a..f74e50 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> @@ -167,11 +167,11 @@ bool mlx5e_xdp_handle(struct mlx5e_rq *rq, struct mlx5e_dma_info *di,
->  		return true;
->  	default:
->  		bpf_warn_invalid_xdp_action(act);
-> -		/* fall through */
-> +		fallthrough;
->  	case XDP_ABORTED:
->  xdp_abort:
->  		trace_xdp_exception(rq->netdev, prog, act);
-> -		/* fall through */
-> +		fallthrough;
->  	case XDP_DROP:
->  		rq->stats->xdp_drop++;
->  		return true;
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-> index 01539b8..8a3376a 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-> @@ -225,7 +225,7 @@ int mlx5e_ethtool_get_sset_count(struct mlx5e_priv *priv, int sset)
->  		return MLX5E_NUM_PFLAGS;
->  	case ETH_SS_TEST:
->  		return mlx5e_self_test_num(priv);
-> -	/* fallthrough */
-> +		fallthrough;
+> Patch sent.
 
-This should be removed, there is return before.
+Thanks!
 
->  	default:
->  		return -EOPNOTSUPP;
->  	}
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-> index 4b5b661..033454 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-> @@ -2426,7 +2426,7 @@ int mlx5_devlink_eswitch_inline_mode_set(struct devlink *devlink, u8 mode,
->  	case MLX5_CAP_INLINE_MODE_NOT_REQUIRED:
->  		if (mode == DEVLINK_ESWITCH_INLINE_MODE_NONE)
->  			return 0;
-> -		/* fall through */
-> +		fallthrough;
->  	case MLX5_CAP_INLINE_MODE_L2:
->  		NL_SET_ERR_MSG_MOD(extack, "Inline mode can't be set");
->  		return -EOPNOTSUPP;
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag_mp.c b/drivers/net/ethernet/mellanox/mlx5/core/lag_mp.c
-> index 416676..a40e43 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/lag_mp.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lag_mp.c
-> @@ -199,13 +199,13 @@ static void mlx5_lag_fib_update(struct work_struct *work)
->  	/* Protect internal structures from changes */
->  	rtnl_lock();
->  	switch (fib_work->event) {
-> -	case FIB_EVENT_ENTRY_REPLACE: /* fall through */
-> +	case FIB_EVENT_ENTRY_REPLACE:
->  	case FIB_EVENT_ENTRY_DEL:
->  		mlx5_lag_fib_route_event(ldev, fib_work->event,
->  					 fib_work->fen_info.fi);
->  		fib_info_put(fib_work->fen_info.fi);
->  		break;
-> -	case FIB_EVENT_NH_ADD: /* fall through */
-> +	case FIB_EVENT_NH_ADD:
->  	case FIB_EVENT_NH_DEL:
->  		fib_nh = fib_work->fnh_info.fib_nh;
->  		mlx5_lag_fib_nexthop_event(ldev,
-> @@ -256,7 +256,7 @@ static int mlx5_lag_fib_event(struct notifier_block *nb,
->  		return NOTIFY_DONE;
 >
->  	switch (event) {
-> -	case FIB_EVENT_ENTRY_REPLACE: /* fall through */
-> +	case FIB_EVENT_ENTRY_REPLACE:
->  	case FIB_EVENT_ENTRY_DEL:
->  		fen_info = container_of(info, struct fib_entry_notifier_info,
->  					info);
-> @@ -279,7 +279,7 @@ static int mlx5_lag_fib_event(struct notifier_block *nb,
->  		 */
->  		fib_info_hold(fib_work->fen_info.fi);
->  		break;
-> -	case FIB_EVENT_NH_ADD: /* fall through */
-> +	case FIB_EVENT_NH_ADD:
->  	case FIB_EVENT_NH_DEL:
->  		fnh_info = container_of(info, struct fib_nh_notifier_info,
->  					info);
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/vport.c b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
-> index 1faac31f..aea1065 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/vport.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
-> @@ -125,7 +125,7 @@ void mlx5_query_min_inline(struct mlx5_core_dev *mdev,
->  	case MLX5_CAP_INLINE_MODE_VPORT_CONTEXT:
->  		if (!mlx5_query_nic_vport_min_inline(mdev, 0, min_inline_mode))
->  			break;
-> -		/* fall through */
-> +		fallthrough;
->  	case MLX5_CAP_INLINE_MODE_L2:
->  		*min_inline_mode = MLX5_INLINE_MODE_L2;
->  		break;
-> --
-> 2.24.0
+>>
+>> > Untested at the moment, but this should also be fine per your suggestion
+>> > (if I read it correctly).  The reason we have stab->lock and bucket->locks
+>> > here is to handle checking EEXIST in update/delete cases. We need to
+>> > be careful that when an update happens and we check for EEXIST that the
+>> > socket is added/removed during this check. So both map_update_common and
+>> > sock_map_delete need to guard from being run together potentially deleting
+>> > an entry we are checking, etc.
+>>
+>> Okay, thanks for explanation. IOW, we're serializing map writers.
+>>
+>> > But by the time we get here we just did a synchronize_rcu() in the
+>> > line above so no updates/deletes should be in flight. So it seems safe
+>> > to drop these locks because of the condition no updates in flight.
+>>
+>> This part is not clear to me. I might be missing something.
+>>
+>> Here's my thinking - for any map writes (update/delete) to start,
+>> map->refcnt needs to be > 0, and the ref is not dropped until the write
+>> operation has finished.
+>>
+>> Map FDs hold a ref to map until the FD gets released. And BPF progs hold
+>> refs to maps until the prog gets unloaded.
+>>
+>> This would mean that map_free will get scheduled from __bpf_map_put only
+>> when no one is holding a map ref, and could start a write that would be
+>> happening concurrently with sock_{map,hash}_free:
 >
+> Sorry bringing back this old thread I'm not sure I followed the couple
+> paragraphs here. Is this with regards to the lock or the rcu? II didn't
+> want to just drop this thanks.
+>
+> We can't have new updates/lookups/deletes happening while we are free'ing
+> a map that would cause all sorts of problems, use after free's, etc.
+
+Happy to pick up the discussion back up.
+
+Sorry for the delay in my reply. I wanted to take another hard look at
+the code and make sure I'm not getting ahead of myself here.
+
+Let me back up a little and try to organize the access paths to sockmap
+we have, and when they happen in relation to sock_map_free.
+
+A) Access via bpf_map_ops
+
+When bpf_map, and its backing object - bpf_stab, is accessed via map ops
+(map_update_elem, map_delete_elem, map_lookup_elem), either (i) a
+process has an FD for the map, or (ii) a loaded BPF prog holds a map
+reference. Also, we always grab a map ref when creating an FD for it.
+
+This means that map->refcnt is > 0 while a call to one of the map_ops is
+in progress.
+
+Hence, bpf_map_free_deferred -> sock_map_free won't get called during
+these operations. This fact allowed us to get rid of locking the stab in
+sock_map_free.
+
+B) Access via bpf_{sk|msg}_redirect_map
+
+Similar to previous case. BPF prog invoking these helpers must hold a
+map reference, so we know that map->refcnt is > 0, and sock_map_free
+can't be in progress the same time.
+
+C) Access via sk_psock_link
+
+sk_psock_link has a pointer to bpf_map (link->map) and to an entry in
+stab->sks (link->link_raw), but doesn't hold a ref to the map.
+
+We need to ensure bpf_stab doesn't go away, while tcp_bpf_remove ->
+sk_psock_unlink -> sock_{map|hash}_delete_from_link call chain is in
+progress.
+
+That explains why in sock_map_free, after walking the map and destroying
+all links, we wait for the RCU grace period to end with a call to
+synchronize_rcu before freeing the map:
+
+	/* wait for psock readers accessing its map link */
+	synchronize_rcu();
+
+	bpf_map_area_free(stab->sks);
+	kfree(stab);
+
+
+What is tripping me up, however, is that we also have another call to
+synchronize_rcu before walking the map:
+
+	/* After the sync no updates or deletes will be in-flight so it
+	 * is safe to walk map and remove entries without risking a race
+	 * in EEXIST update case.
+	 */
+	synchronize_rcu(); // <-- Is it needed?
+	for (i = 0; i < stab->map.max_entries; i++) {
+		// ...
+	}
+
+	/* wait for psock readers accessing its map link */
+	synchronize_rcu();
+
+
+I'm not grasping what purpose the 1st synchronize_rcu call serves.
+
+New readers can start accessing the map after the 1st synchronize_rcu,
+and this seems fine since the map will not be freed until after the 2nd
+synchronize_rcu call.
+
+
+Okay, so we can have deletes in-flight, which the explanatory comment
+for the 1st synchronize_rcu mentions. What about updates in-flight?
+
+I don't think they can happen with (A) being the only case I know of
+when we update the map.
+
+Sorry this was a bit long. So the question is what am I missing?
+Can updates happen despite no refs to the map being held?
+
+Thanks,
+-jkbs
+
+>
+>>
+>> /* decrement map refcnt and schedule it for freeing via workqueue
+>>  * (unrelying map implementation ops->map_free() might sleep)
+>>  */
+>> static void __bpf_map_put(struct bpf_map *map, bool do_idr_lock)
+>> {
+>> 	if (atomic64_dec_and_test(&map->refcnt)) {
+>> 		/* bpf_map_free_id() must be called first */
+>> 		bpf_map_free_id(map, do_idr_lock);
+>> 		btf_put(map->btf);
+>> 		INIT_WORK(&map->work, bpf_map_free_deferred);
+>> 		schedule_work(&map->work);
+>> 	}
+>> }
+>>
+>> > So with patch below we keep the sync rcu but that is fine IMO these
+>> > map free's are rare. Take a look and make sure it seems sane to you
+>> > as well.
+>>
+>> I can't vouch for the need to keep synchronize_rcu here because I don't
+>> understand that part, but otherwise the change LGTM.
+>>
+>> -jkbs
+>>
+>
+> [...]
