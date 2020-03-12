@@ -2,98 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C02183B05
-	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 22:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91BAE183B77
+	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 22:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726882AbgCLVHC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Mar 2020 17:07:02 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:45199 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726910AbgCLVG7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Mar 2020 17:06:59 -0400
-Received: by mail-ot1-f65.google.com with SMTP id e9so639281otr.12
-        for <bpf@vger.kernel.org>; Thu, 12 Mar 2020 14:06:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gjIF8laC9ymQN6dGPb1ZYido+iVLQSJ80e27qnd6uTA=;
-        b=f+l+gXIKYD8ZqIsbSKM4dLqAUjD21JGnao8P6oy+6Zmm9Rb8AXN6l/tS4s9RT9ecgP
-         8OTh+Gt18uKCXrL2agzWwd/jaz4kTY1PcHwRp8AM/PzPPozlKad5X4ZfeHipH/tIBjxa
-         99BbLEDknWH+7czLa5Ds6pxh1qQr+8L/YyNq5vH159Q93v9ftJQBMYn9MTLI0ylozz0g
-         SxF6JBvVR6aRYy+G/pWJCbP5kvTgAoAwODj4DnUgeTdzCZUniI5BUzeE45A4/CVcJor4
-         PJTNqoA2uuZZ4WpMILVN15YTIvUc7nqvO81ayj7Ez+wssmSZmgvM6o862uS0AIZwCaSh
-         XIig==
+        id S1726695AbgCLVhP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Mar 2020 17:37:15 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:49487 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726481AbgCLVhO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Mar 2020 17:37:14 -0400
+Received: by mail-il1-f198.google.com with SMTP id b72so4986104ilg.16
+        for <bpf@vger.kernel.org>; Thu, 12 Mar 2020 14:37:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gjIF8laC9ymQN6dGPb1ZYido+iVLQSJ80e27qnd6uTA=;
-        b=pRIHdkEI7U7k15R5Y+dcVTJj5murkn0+ZcknOx98nx+3xgK6jUd4c1Bz2nZ/ytklbM
-         Z9zE25/z5G6OggcXKw+jdpaz9BNwKGwmnxPoa4xI5Zq6h2voZBFiwOO5ogHYQCh572q0
-         LVnM9Wtfd3YCmF9nXXq/gw8XRgjFR8H32I3ymaBp+gkljknRwBXAFRt1sVAKvrfjV7kG
-         +qE9yLhsDoj9ardSHdCw2KoySyejzt8nVuCpH1FR/LAPrp2QCv99O8ZYInlB3UE9iPwM
-         MMw+BXr4ysvkXwiYa7SjEIcYM5i49u5gpyrP44+HLWmXdgR3klGpH07TL2qeV5yOEwVg
-         2CUQ==
-X-Gm-Message-State: ANhLgQ2R6mZ7gWMSh4KS55K8i5uvG6MYc+Vg+jlOIdJB4K5dxAmct4Or
-        qS2fBvmOZ6cS6PKPpA2yHTtlw/3c9MfLjz75/vJC+A==
-X-Google-Smtp-Source: ADFU+vuorKp4Am1Eft4fdcP1G8Nf7OvlWyXXPJjJAuw2HysSDIhCcZVTlSzqZ6RrA6JxKhMxZ3B+h9vZHTYAu4IJG2I=
-X-Received: by 2002:a9d:c24:: with SMTP id 33mr8191344otr.355.1584047218074;
- Thu, 12 Mar 2020 14:06:58 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=otDTyif1JxNxdhkmFkrhZBBAigUQx1pxkqJwd5II138=;
+        b=TYG4xZjJUGRKoUSuSTl4mjmJbeo3a2aSZRDTAlr0qHR1Kn1w45fgId9xu2wFv8ZkCc
+         uIohNvNw+eJAXFtHX+VsHr2gEa7jREl8Npw8tzh6WIGSP5rjrKMIxMEwt1lEpnbE7pXG
+         JoHRTB1SpUwI6rJiYx0dkDkLHBg5jQOaliSfNVSRCbSqY50IFX/0zq6gJlDcd6OzaX0U
+         w1zfP7GcFKVeJYIdWL5O7afBtGP7D4lS66KgDRW7v/DYWEaTX+iaCB6C6k+c53RGuXxm
+         dn7P9jXejikLAOHEgMy68Afyw2b42SHBDWQJOmrXphoVSM/oIHe5sPsnEkX8IUIjsVNm
+         /WTw==
+X-Gm-Message-State: ANhLgQ3+yPFxetitQ1/pO1G+9S2SxaInXNsczMAmhBKt+kzwHnWhZQux
+        i0jzJ6C9R0RTX/5og+toTv0lSkrk+Cpp3Vfz3ZHlm3DeSRBH
+X-Google-Smtp-Source: ADFU+vvqMDGrrjUv2iUkYwJaB5U6vfSQvaKwU93+Tw2aJqefc794DfGTD3jwIErkI2rFXjwv1VXusTuBATT4bD+0PhjI6HGU4hCI
 MIME-Version: 1.0
-References: <00000000000041c6c205a08225dc@google.com> <20200312182826.GG79873@mtj.duckdns.org>
-In-Reply-To: <20200312182826.GG79873@mtj.duckdns.org>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Thu, 12 Mar 2020 14:06:47 -0700
-Message-ID: <CAHS8izPySSO07dHi3OZ_1uXjmMCGnNMWey+o-qwFM7GnD7oSHw@mail.gmail.com>
-Subject: Re: KASAN: slab-out-of-bounds Read in cgroup_file_notify
-To:     Tejun Heo <tj@kernel.org>
-Cc:     syzbot <syzbot+cac0c4e204952cf449b1@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, andriin@fb.com,
-        ast@kernel.org, bpf@vger.kernel.org, cgroups@vger.kernel.org,
-        christian@brauner.io, daniel@iogearbox.net,
-        Johannes Weiner <hannes@cmpxchg.org>, kafai@fb.com,
-        open list <linux-kernel@vger.kernel.org>,
-        Li Zefan <lizefan@huawei.com>, netdev@vger.kernel.org,
-        sfr@canb.auug.org.au, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
+X-Received: by 2002:a92:5b56:: with SMTP id p83mr10329254ilb.70.1584049032035;
+ Thu, 12 Mar 2020 14:37:12 -0700 (PDT)
+Date:   Thu, 12 Mar 2020 14:37:12 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000dc81b705a0af279c@google.com>
+Subject: WARNING in bpf_check (3)
+From:   syzbot <syzbot+245129539c27fecf099a@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com, daniel@iogearbox.net,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        kafai@fb.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 12, 2020 at 11:28 AM Tejun Heo <tj@kernel.org> wrote:
->
-> On Tue, Mar 10, 2020 at 08:55:14AM -0700, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following crash on:
-> >
-> > HEAD commit:    c99b17ac Add linux-next specific files for 20200225
-> > git tree:       linux-next
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=1610d70de00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=6b7ebe4bd0931c45
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=cac0c4e204952cf449b1
-> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1242e1fde00000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1110d70de00000
-> >
-> > The bug was bisected to:
-> >
-> > commit 6863de00e5400b534cd4e3869ffbc8f94da41dfc
-> > Author: Mina Almasry <almasrymina@google.com>
-> > Date:   Thu Feb 20 03:55:30 2020 +0000
-> >
-> >     hugetlb_cgroup: add accounting for shared mappings
->
-> Mina, can you please take a look at this?
->
+Hello,
 
-Gah, I missed the original syzbot email but I just saw this. I'll take a look.
+syzbot found the following crash on:
 
-> Thanks.
+HEAD commit:    13fac1d8 bpf: Fix trampoline generation for fmod_ret progr..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=167ba061e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=888f81f5410adfa2
+dashboard link: https://syzkaller.appspot.com/bug?extid=245129539c27fecf099a
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12ba39c3e00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12bbb981e00000
 
->
-> --
-> tejun
+The bug was bisected to:
+
+commit 94dacdbd5d2dfa2cffd308f128d78c99f855f5be
+Author: Thomas Gleixner <tglx@linutronix.de>
+Date:   Mon Feb 24 14:01:32 2020 +0000
+
+    bpf: Tighten the requirements for preallocated hash maps
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1300a2b1e00000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=1080a2b1e00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1700a2b1e00000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+245129539c27fecf099a@syzkaller.appspotmail.com
+Fixes: 94dacdbd5d2d ("bpf: Tighten the requirements for preallocated hash maps")
+
+------------[ cut here ]------------
+trace type BPF program uses run-time allocation
+WARNING: CPU: 1 PID: 9523 at kernel/bpf/verifier.c:8187 check_map_prog_compatibility kernel/bpf/verifier.c:8187 [inline]
+WARNING: CPU: 1 PID: 9523 at kernel/bpf/verifier.c:8187 replace_map_fd_with_map_ptr kernel/bpf/verifier.c:8282 [inline]
+WARNING: CPU: 1 PID: 9523 at kernel/bpf/verifier.c:8187 bpf_check+0x6dcb/0xa49b kernel/bpf/verifier.c:10112
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 9523 Comm: syz-executor700 Not tainted 5.6.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x188/0x20d lib/dump_stack.c:118
+ panic+0x2e3/0x75c kernel/panic.c:221
+ __warn.cold+0x2f/0x35 kernel/panic.c:582
+ report_bug+0x27b/0x2f0 lib/bug.c:195
+ fixup_bug arch/x86/kernel/traps.c:174 [inline]
+ fixup_bug arch/x86/kernel/traps.c:169 [inline]
+ do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:267
+ do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
+ invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+RIP: 0010:check_map_prog_compatibility kernel/bpf/verifier.c:8187 [inline]
+RIP: 0010:replace_map_fd_with_map_ptr kernel/bpf/verifier.c:8282 [inline]
+RIP: 0010:bpf_check+0x6dcb/0xa49b kernel/bpf/verifier.c:10112
+Code: ff 48 8b bd 20 fe ff ff e8 02 56 2c 00 e9 bc cf ff ff e8 88 a0 ef ff 48 c7 c7 c0 8c 11 88 c6 05 c0 c7 de 08 01 e8 bd b3 c1 ff <0f> 0b e9 f3 ae ff ff c7 85 c0 fe ff ff f4 ff ff ff e9 d3 c6 ff ff
+RSP: 0018:ffffc90001ec7990 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff815bfd81 RDI: fffff520003d8f24
+RBP: ffffc90001ec7b90 R08: ffff88809ae22380 R09: ffffed1015ce45c9
+R10: ffffed1015ce45c8 R11: ffff8880ae722e43 R12: 0000000000000002
+R13: ffffc90000d36048 R14: ffff88809a7d4800 R15: dffffc0000000000
+ bpf_prog_load+0xd92/0x15f0 kernel/bpf/syscall.c:2105
+ __do_sys_bpf+0x16f2/0x4020 kernel/bpf/syscall.c:3594
+ do_syscall_64+0xf6/0x790 arch/x86/entry/common.c:294
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x440539
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 fb 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffdd65517e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440539
+RDX: 0000000000000014 RSI: 0000000020fed000 RDI: 0000000000000005
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 00000000004002c8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401dc0
+R13: 0000000000401e50 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
