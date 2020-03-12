@@ -2,150 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1959D183820
-	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 19:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9524A18387C
+	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 19:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgCLSAH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Mar 2020 14:00:07 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:41916 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726127AbgCLSAH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Mar 2020 14:00:07 -0400
-Received: by mail-qt1-f195.google.com with SMTP id l21so5096807qtr.8
-        for <bpf@vger.kernel.org>; Thu, 12 Mar 2020 11:00:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vO7UxzMkajIaQhwuJsiFb8YBPZ6HsrvS9yZLO689IxY=;
-        b=jBM4RfiISyPVaQ2tz0cZMNYPDB4Nb/uabwKEBcZALNXM09Vma8hT72mQGPNv0fFR10
-         zLLF2cUKp26Kxp++n5bJbMBpNAu2FdS2EU2fsGm7tZGTzAr6QzviNJ1Jb/WmbqyXYnc1
-         FsTej/uMXQ9SWrmajTlSFUgIBzP1ZiJ0vbjy29A3Mmx6FDY6FMMkXyJkd8MZrq4S9w7X
-         kLK8XfB79w06771PJkFV2uevsI/ex9AQVyoVhLw5zU8CH2HYfuuSvticiBDKArtw3SUo
-         HqY97kYbqsim9nwIl1xHgfUvI4aykJKzwZEmh+AsTzWowI8NF3SBM3rdSxm9ARyh94xa
-         qcOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vO7UxzMkajIaQhwuJsiFb8YBPZ6HsrvS9yZLO689IxY=;
-        b=k7IP9apo+UoK3tk31Ju3m7Q5AV8xFmlUdnZiicl8GpS2wRjJhBMAqysPW72tuLSetQ
-         1DODv5X8E54FFaWoq+eqp+E+urs5Uv1DqBnQgaQ7U6J4OkopGRChxBeXodK0NU7FVKri
-         GGk5j2fhN7zoUQ1F2UZ+KlO43uImJoca9j/YyV13XKOVNBfxUvKleuHu/MgFNt2GTRbO
-         /a7Lf9z769C1Df4bFwdG1icyiMAPnhdv79ptGlTnI21PjFXS82kq2XeTdcPFDYKn9IWN
-         2mcl8TVX98Bl0K6K7SD4F+txB6+zPT2HXPpJm0oJX2CmDyhlN3Vu3ixiC9JkbUe5Bm3c
-         jykQ==
-X-Gm-Message-State: ANhLgQ2hgleMy+x8JJ43GpOSvPC38ycsJyREFZYj8nrFHhnVqL13ZlF0
-        Rz49CiO0d40JPESGAGiZhQvWPSyAr9IIG0yc/baSINTwsRs=
-X-Google-Smtp-Source: ADFU+vsKYxnKhXY1Z7SS2Te6xy4naXwrPGQ0YPhKv7ODFKZdJZxY13cLqTyWraaTxW7Y5TQD0A10jTw+Ya6DEruAsMs=
-X-Received: by 2002:ac8:3f62:: with SMTP id w31mr1064467qtk.171.1584036006218;
- Thu, 12 Mar 2020 11:00:06 -0700 (PDT)
+        id S1726650AbgCLSVO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Mar 2020 14:21:14 -0400
+Received: from www62.your-server.de ([213.133.104.62]:44030 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726647AbgCLSVO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Mar 2020 14:21:14 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jCSSF-0006GZ-A8; Thu, 12 Mar 2020 19:21:11 +0100
+Received: from [85.7.42.192] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jCSSE-000JOa-UF; Thu, 12 Mar 2020 19:21:11 +0100
+Subject: Re: [PATCH bpf] libbpf: add null pointer check in
+ bpf_object__init_user_btf_maps()
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Michal Rostecki <mrostecki@opensuse.org>
+References: <20200312140357.20174-1-quentin@isovalent.com>
+ <1fff03e7-e52b-edcc-d427-f912bf0a4af2@iogearbox.net>
+ <CAEf4BzaQdv8s4cGp=ouitxczzWV1E1WeuxktDTp5JFkXXkRU=w@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <4a17add0-6756-a60c-7c5b-9ffe45ff4060@iogearbox.net>
+Date:   Thu, 12 Mar 2020 19:21:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20200312105335.10465-1-tklauser@distanz.ch> <20200312130330.32239-1-tklauser@distanz.ch>
-In-Reply-To: <20200312130330.32239-1-tklauser@distanz.ch>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 12 Mar 2020 10:59:55 -0700
-Message-ID: <CAEf4BzakzbN4+PVa4TFsOhH=Pnt_4mhPknH74kwsRkOApkKhOg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpftool: use linux/types.h from source tree
- for profiler build
-To:     Tobias Klauser <tklauser@distanz.ch>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Quentin Monnet <quentin@isovalent.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAEf4BzaQdv8s4cGp=ouitxczzWV1E1WeuxktDTp5JFkXXkRU=w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25749/Thu Mar 12 14:09:06 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 12, 2020 at 6:04 AM Tobias Klauser <tklauser@distanz.ch> wrote:
->
-> When compiling bpftool on a system where the /usr/include/asm symlink
-> doesn't exist (e.g. on an Ubuntu system without gcc-multilib installed),
-> the build fails with:
->
->     CLANG    skeleton/profiler.bpf.o
->   In file included from skeleton/profiler.bpf.c:4:
->   In file included from /usr/include/linux/bpf.h:11:
->   /usr/include/linux/types.h:5:10: fatal error: 'asm/types.h' file not found
->   #include <asm/types.h>
->            ^~~~~~~~~~~~~
->   1 error generated.
->   make: *** [Makefile:123: skeleton/profiler.bpf.o] Error 1
->
-> This indicates that the build is using linux/types.h from system headers
-> instead of source tree headers.
->
-> To fix this, adjust the clang search path to include the necessary
-> headers from tools/testing/selftests/bpf/include/uapi and
-> tools/include/uapi. Also use __bitwise__ instead of __bitwise in
-> skeleton/profiler.h to avoid clashing with the definition in
-> tools/testing/selftests/bpf/include/uapi/linux/types.h.
->
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Cc: Quentin Monnet <quentin@isovalent.com>
-> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
-> ---
->  tools/bpf/bpftool/Makefile            |  5 ++++-
->  tools/bpf/bpftool/skeleton/profiler.h | 17 ++++++++---------
->  2 files changed, 12 insertions(+), 10 deletions(-)
->
-> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> index 20a90d8450f8..f294f6c1e795 100644
-> --- a/tools/bpf/bpftool/Makefile
-> +++ b/tools/bpf/bpftool/Makefile
-> @@ -120,7 +120,10 @@ $(OUTPUT)_bpftool: $(_OBJS) $(LIBBPF)
->         $(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(_OBJS) $(LIBS)
->
->  skeleton/profiler.bpf.o: skeleton/profiler.bpf.c
-> -       $(QUIET_CLANG)$(CLANG) -I$(srctree)/tools/lib -g -O2 -target bpf -c $< -o $@
-> +       $(QUIET_CLANG)$(CLANG) \
-> +               -I$(srctree)/tools/include/uapi/ \
-> +               -I$(srctree)/tools/testing/selftests/bpf/include/uapi \
+On 3/12/20 6:54 PM, Andrii Nakryiko wrote:
+> On Thu, Mar 12, 2020 at 8:38 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 3/12/20 3:03 PM, Quentin Monnet wrote:
+>>> When compiling bpftool with clang 7, after the addition of its recent
+>>> "bpftool prog profile" feature, Michal reported a segfault. This
+>>> occurred while the build process was attempting to generate the
+>>> skeleton needed for the profiling program, with the following command:
+>>>
+>>>       ./_bpftool gen skeleton skeleton/profiler.bpf.o > profiler.skel.h
+>>>
+>>> Tracing the error showed that bpf_object__init_user_btf_maps() does no
+>>> verification on obj->btf before passing it to btf__get_nr_types(), where
+>>> btf is dereferenced. Libbpf considers BTF information should be here
+>>> because of the presence of a ".maps" section in the object file (hence
+>>> the check on "obj->efile.btf_maps_shndx < 0" fails and we do not exit
+>>> from the function early), but it was unable to load BTF info as there is
+>>> no .BTF section.
+>>>
+>>> Add a null pointer check and error out if the pointer is null. The final
+>>> bpftool executable still fails to build, but at least we have a proper
+>>> error and no more segfault.
+>>>
+>>> Fixes: abd29c931459 ("libbpf: allow specifying map definitions using BTF")
+>>> Cc: Andrii Nakryiko <andriin@fb.com>
+>>> Reported-by: Michal Rostecki <mrostecki@opensuse.org>
+>>> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+>>
+>> Applied to bpf-next, thanks! Note ...
+> 
+> I don't think this is the right fix. The problem was in my
+> 5327644614a1 ("libbpf: Relax check whether BTF is mandatory") commit.
+> I've removed "mandatory" status of BTF if .maps is present. But that's
+> not right. We have the need for BTF at two levels: for libbpf itself
+> and for kernel, those are overlapping, but not exactly the same. BTF
+> is needed for libbpf when .maps, .struct_ops and externs are present.
+> But kernel needs it only for when .struct_ops are present. Right now
+> those checks are conflated together. Proper fix would be to separate
+> them. Can we please undo this patch? I'll post a proper fix shortly.
 
-Seems like I'm spoiling all the fun today :) But why are we ok with
-bpftool build depending on selftests? This just makes it even harder
-to have a stand-alone bpftool build eventually (similar to libbpf's
-Github).
-
-> +               -I$(srctree)/tools/lib -g -O2 -target bpf -c $< -o $@
->
->  profiler.skel.h: $(OUTPUT)_bpftool skeleton/profiler.bpf.o
->         $(QUIET_GEN)$(OUTPUT)./_bpftool gen skeleton skeleton/profiler.bpf.o > $@
-> diff --git a/tools/bpf/bpftool/skeleton/profiler.h b/tools/bpf/bpftool/skeleton/profiler.h
-> index e03b53eae767..1f767e9510f7 100644
-> --- a/tools/bpf/bpftool/skeleton/profiler.h
-> +++ b/tools/bpf/bpftool/skeleton/profiler.h
-> @@ -32,16 +32,15 @@ enum {
->  #else
->  #define __bitwise__
->  #endif
-> -#define __bitwise __bitwise__
->
-> -typedef __u16 __bitwise __le16;
-> -typedef __u16 __bitwise __be16;
-> -typedef __u32 __bitwise __le32;
-> -typedef __u32 __bitwise __be32;
-> -typedef __u64 __bitwise __le64;
-> -typedef __u64 __bitwise __be64;
-> +typedef __u16 __bitwise__ __le16;
-> +typedef __u16 __bitwise__ __be16;
-> +typedef __u32 __bitwise__ __le32;
-> +typedef __u32 __bitwise__ __be32;
-> +typedef __u64 __bitwise__ __le64;
-> +typedef __u64 __bitwise__ __be64;
->
-> -typedef __u16 __bitwise __sum16;
-> -typedef __u32 __bitwise __wsum;
-> +typedef __u16 __bitwise__ __sum16;
-> +typedef __u32 __bitwise__ __wsum;
->
->  #endif /* __PROFILER_H */
-> --
-> 2.25.1
->
+Ok, please send a proper fix for 5327644614a1 then. Tossed off the tree.
