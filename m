@@ -2,112 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 493AA1838D0
-	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 19:39:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F261838D2
+	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 19:39:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726443AbgCLSjF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Mar 2020 14:39:05 -0400
-Received: from www62.your-server.de ([213.133.104.62]:47438 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbgCLSjF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Mar 2020 14:39:05 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jCSjU-0007c9-Uk; Thu, 12 Mar 2020 19:39:00 +0100
-Received: from [85.7.42.192] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jCSjU-000JbU-KP; Thu, 12 Mar 2020 19:39:00 +0100
-Subject: Re: [PATCH bpf-next v2] bpftool: use linux/types.h from source tree
- for profiler build
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Tobias Klauser <tklauser@distanz.ch>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Quentin Monnet <quentin@isovalent.com>
-References: <20200312105335.10465-1-tklauser@distanz.ch>
- <20200312130330.32239-1-tklauser@distanz.ch>
- <CAEf4BzakzbN4+PVa4TFsOhH=Pnt_4mhPknH74kwsRkOApkKhOg@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <40a2c6fc-6bea-21d2-b285-04b319eccea6@iogearbox.net>
-Date:   Thu, 12 Mar 2020 19:38:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726510AbgCLSjX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Mar 2020 14:39:23 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:39962 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726362AbgCLSjV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Mar 2020 14:39:21 -0400
+Received: by mail-wr1-f65.google.com with SMTP id f3so1837989wrw.7
+        for <bpf@vger.kernel.org>; Thu, 12 Mar 2020 11:39:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=y0ZCWlS3yLmJMb+ofnT38Ty+2TiaE9d36FZc9DTR+KQ=;
+        b=f1ehBLAMmur073GBWLUKYN9ejmR+BhlHD5gAz3HPYBwxLb28vay05g/F00Oa9TQ9Zi
+         lSr9CCmkVJ8iZW8XTQjW3rJAFPRWAtY5Lw/Hzrr0gxuuUaC1vjCVKpUBr2anqufol3jM
+         MfN/7Sfq5ogdDydXvTFjZneNfHUpQJeSc3baVt2BP8tG+88bNhhwyfFMWJlLYsI6x08P
+         gthjfMKHbpHy0XcMm3JMWIgDUNGGqF0/haKUjROv+78dKezFLonFWSTO5fTCOSyC3y2y
+         jZrSXVZnPEa3Fn5HbFfhs6iptggG7nIzwuMr4qtskVxBFhw1PO5FdcLPBLJwVKXJ31Ca
+         qepQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=y0ZCWlS3yLmJMb+ofnT38Ty+2TiaE9d36FZc9DTR+KQ=;
+        b=rlYxPoeBZqgjm6URlkS8pf28cGdBuMISoYhrroDBORfBUKt6lkp3QiDnKfpBpr9me6
+         C06fIW7GV2/1vbo+nbnL10sOBctDxyAAXbpEmXDDP8vbvwpstgITjVvDfO9ArMCtBdZ8
+         XbI1nCN9eGwY4xoWnbj6bntGkgHYtER2kyg5FqfRINL4RhclQPBIVwpYqYME7Y0VoU2Q
+         aSjdaABr9+V2+Lx62o7UaSbtfKMfwBrHnFNw/q9qUsR/NW6GwI7YYjDP0lAM3GEDbNZI
+         R2Yy5qhU2YEyzXxrHzo8cQLUU7uy7CrYdnwcRF+vNd7pL07SnGQnZ4JKcucnNAiDcITW
+         IFAA==
+X-Gm-Message-State: ANhLgQ3SSiAIFW3/cVY0QgwyAWXIQAec5YrCz+G5sSrmNZEqqn+yvhnX
+        UR8KOB9DHgxZRAATM3OKBqQCuA==
+X-Google-Smtp-Source: ADFU+vuoDBq0mANVI/ETrZ1VuSvWqY9q/xSZ5wMjyGZWU47Zg+/2quR3tLVvRE8N8khWfHLN7LfJfA==
+X-Received: by 2002:adf:b317:: with SMTP id j23mr12440570wrd.413.1584038359099;
+        Thu, 12 Mar 2020 11:39:19 -0700 (PDT)
+Received: from [192.168.1.10] ([194.35.118.177])
+        by smtp.gmail.com with ESMTPSA id 9sm13518165wmo.38.2020.03.12.11.39.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Mar 2020 11:39:18 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 1/2] tools: bpftool: allow all prog/map handles
+ for pinning objects
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20200312182555.945-1-quentin@isovalent.com>
+ <20200312182555.945-2-quentin@isovalent.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <c1e31b68-203c-9cc8-77fa-f65f9fac97f0@isovalent.com>
+Date:   Thu, 12 Mar 2020 18:39:18 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzakzbN4+PVa4TFsOhH=Pnt_4mhPknH74kwsRkOApkKhOg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20200312182555.945-2-quentin@isovalent.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25749/Thu Mar 12 14:09:06 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/12/20 6:59 PM, Andrii Nakryiko wrote:
-> On Thu, Mar 12, 2020 at 6:04 AM Tobias Klauser <tklauser@distanz.ch> wrote:
->>
->> When compiling bpftool on a system where the /usr/include/asm symlink
->> doesn't exist (e.g. on an Ubuntu system without gcc-multilib installed),
->> the build fails with:
->>
->>      CLANG    skeleton/profiler.bpf.o
->>    In file included from skeleton/profiler.bpf.c:4:
->>    In file included from /usr/include/linux/bpf.h:11:
->>    /usr/include/linux/types.h:5:10: fatal error: 'asm/types.h' file not found
->>    #include <asm/types.h>
->>             ^~~~~~~~~~~~~
->>    1 error generated.
->>    make: *** [Makefile:123: skeleton/profiler.bpf.o] Error 1
->>
->> This indicates that the build is using linux/types.h from system headers
->> instead of source tree headers.
->>
->> To fix this, adjust the clang search path to include the necessary
->> headers from tools/testing/selftests/bpf/include/uapi and
->> tools/include/uapi. Also use __bitwise__ instead of __bitwise in
->> skeleton/profiler.h to avoid clashing with the definition in
->> tools/testing/selftests/bpf/include/uapi/linux/types.h.
->>
->> Cc: Daniel Borkmann <daniel@iogearbox.net>
->> Cc: Song Liu <songliubraving@fb.com>
->> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
->> Cc: Quentin Monnet <quentin@isovalent.com>
->> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
->> ---
->>   tools/bpf/bpftool/Makefile            |  5 ++++-
->>   tools/bpf/bpftool/skeleton/profiler.h | 17 ++++++++---------
->>   2 files changed, 12 insertions(+), 10 deletions(-)
->>
->> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
->> index 20a90d8450f8..f294f6c1e795 100644
->> --- a/tools/bpf/bpftool/Makefile
->> +++ b/tools/bpf/bpftool/Makefile
->> @@ -120,7 +120,10 @@ $(OUTPUT)_bpftool: $(_OBJS) $(LIBBPF)
->>          $(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(_OBJS) $(LIBS)
->>
->>   skeleton/profiler.bpf.o: skeleton/profiler.bpf.c
->> -       $(QUIET_CLANG)$(CLANG) -I$(srctree)/tools/lib -g -O2 -target bpf -c $< -o $@
->> +       $(QUIET_CLANG)$(CLANG) \
->> +               -I$(srctree)/tools/include/uapi/ \
->> +               -I$(srctree)/tools/testing/selftests/bpf/include/uapi \
+2020-03-12 18:25 UTC+0000 ~ Quentin Monnet <quentin@isovalent.com>
+> Documentation and interactive help for bpftool have always explained
+> that the regular handles for programs (id|name|tag|pinned) and maps
+> (id|name|pinned) can be passed to the utility when attempting to pin
+> objects (bpftool prog pin PROG / bpftool map pin MAP).
 > 
-> Seems like I'm spoiling all the fun today :) But why are we ok with
-> bpftool build depending on selftests? This just makes it even harder
-> to have a stand-alone bpftool build eventually (similar to libbpf's
-> Github).
+> THIS IS A LIE!! The tool actually accepts only ids, as the parsing is
+> done in do_pin_any() in common.c instead of reusing the parsing
+> functions that have long been generic for program and map handles.
+> 
+> Instead of fixing the doc, fix the code. It is trivial to reuse the
+> generic parsing, and to simplify do_pin_any() in the process.
+> 
+> Do not accept to pin multiple objects at the same time with
+> prog_parse_fds() or map_parse_fds() (this would require a more complex
+> syntax for passing multiple sysfs paths and validating that they
+> correspond to the number of e.g. programs we find for a given name or
+> tag).
+> 
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> ---
+>  tools/bpf/bpftool/common.c | 39 +++++---------------------------------
+>  tools/bpf/bpftool/main.h   |  2 +-
+>  tools/bpf/bpftool/map.c    |  2 +-
+>  tools/bpf/bpftool/prog.c   |  2 +-
+>  4 files changed, 8 insertions(+), 37 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+> index b75b8ec5469c..92e51a62bd72 100644
+> --- a/tools/bpf/bpftool/common.c
+> +++ b/tools/bpf/bpftool/common.c
+> @@ -211,44 +211,15 @@ int do_pin_fd(int fd, const char *name)
+>  	return err;
+>  }
+>  
+> -int do_pin_any(int argc, char **argv, int (*get_fd_by_id)(__u32))
+> +int do_pin_any(int argc, char **argv, int (*get_fd)(int *, char ***))
+>  {
+> -	unsigned int id;
+> -	char *endptr;
+> -	int err;
+>  	int fd;
+>  
+> -	if (argc < 3) {
+> -		p_err("too few arguments, id ID and FILE path is required");
+> -		return -1;
+> -	} else if (argc > 3) {
+> -		p_err("too many arguments");
+> -		return -1;
+> -	}
+> -
+> -	if (!is_prefix(*argv, "id")) {
+> -		p_err("expected 'id' got %s", *argv);
+> -		return -1;
+> -	}
+> -	NEXT_ARG();
+> -
+> -	id = strtoul(*argv, &endptr, 0);
+> -	if (*endptr) {
+> -		p_err("can't parse %s as ID", *argv);
+> -		return -1;
+> -	}
+> -	NEXT_ARG();
+> -
+> -	fd = get_fd_by_id(id);
+> -	if (fd < 0) {
+> -		p_err("can't open object by id (%u): %s", id, strerror(errno));
+> -		return -1;
+> -	}
+> -
+> -	err = do_pin_fd(fd, *argv);
+> +	fd = get_fd(&argc, &argv);
+> +	if (fd < 0)
+> +		return fd;
+>  
+> -	close(fd);
+> -	return err;
+> +	return do_pin_fd(fd, *argv);
 
-I suspect the Github copy of bpftool would have its own include infra like
-in case of libbpf [0]?
+Looks like someone trimmed too much and forgot to close his fd. Will
+send v2.
 
-Agree in any case that it's not an optimal situation with this dependency;
-I suspect we might need the tools/testing/selftests/bpf/include/uapi/ under
-tools/include/uapi/ in a proper way.
-
-   [0] https://github.com/libbpf/libbpf/tree/master/include
+>  }
+>  
