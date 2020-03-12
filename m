@@ -2,118 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA29183697
-	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 17:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 913BC1836F4
+	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 18:11:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgCLQvG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Mar 2020 12:51:06 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:44543 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726194AbgCLQvD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Mar 2020 12:51:03 -0400
-Received: by mail-wr1-f65.google.com with SMTP id l18so8352247wru.11
-        for <bpf@vger.kernel.org>; Thu, 12 Mar 2020 09:51:01 -0700 (PDT)
+        id S1726437AbgCLRLK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Mar 2020 13:11:10 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:42533 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726254AbgCLRLJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Mar 2020 13:11:09 -0400
+Received: by mail-lj1-f194.google.com with SMTP id q19so7278271ljp.9
+        for <bpf@vger.kernel.org>; Thu, 12 Mar 2020 10:11:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MhydNQiE/AolI5ojwjBPP77Pewh/KDq1Wx+Fw4AlEOg=;
-        b=1XXRGWhMfakwGa7OjKjEXl2QbqbDYMZUFuj1wHxxGcRKD+tYvDLV/8V7fKjDeW/cSX
-         9e9IhZh2uSHCSxR/CQpRycGEHk+Wvfk3KH/94+kwYHFQcrXge3qTiAg4pdqAdT+IrV1A
-         fpxHZSzIbzMyfDY1K4YEOaKbmYUapfscYr7+6i+/T4Pv10DRAf095gHmvvmCEF+qdaul
-         MTSsWl82VulDa2m+hUdk9+Mirdxqgp4rT9z91jY7q3/6WupOBH4KJEDAgjd1w3IGw0dk
-         mxUxX9p8Yg0xUQaGxf+zWWmeb7O1c6YZzxCkZdDigMM9ooEBWkK6Hi5UeoqQghB5uvMP
-         zFww==
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oSb08jUO1PscpcMIat6OsbfjKhx8HZRSxYG1uKCNpGA=;
+        b=VTyQbz7CogS4i8LRp25C8xqU565gko6MZ2QJ7gLXVpCP10Xnzxykmw5YbXRr+38anQ
+         aFjiaVOR0WSuJOIRaOAY9lvTB04fMzk/lMFyA3kbChDm2u/F8/uAZ9r+HSkXcxJCawT2
+         nploHEqS4PbGR1v59WOe9CmjCcTbCG4Yhp524=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=MhydNQiE/AolI5ojwjBPP77Pewh/KDq1Wx+Fw4AlEOg=;
-        b=DFA7VEX8MfN2sXpMX4Mw5Vok+/p6W4tC+wOOudcaryyZRVH69pm1qFYX2DiwXad5du
-         +hjn245r+XkR7rVVKKE1Rziklb3oK64DVmJ5lBVVV1J51wuQMNx6xQcOiDoU3Jqgz4Xc
-         ncQpcgahFG1RiFlQnH9Ph12Tg+fHLVfSeDFsxEk86Zyt76+r37veCnU8vY4yJiRcIMUw
-         yfvRO4O8DEZzXb3mLGVAVmmynwEU1cLTt/svbz2C13Wtrly1vX/yBwxeMMfCqQuZ79Wf
-         0Mr0kGAdaMsyDNMIOYCfeCiqaxtGPl0XfR4FmZOLRMTcvgo9K147Xe88+q4Dii49UBj1
-         yebQ==
-X-Gm-Message-State: ANhLgQ3zsD+PIsdxQIuIsoBG/pK88Hu/IuBbAzqpurGkpezTEwy79I3R
-        eSrzfsEoSqdDmrMfnugiktIsP5b4DbU=
-X-Google-Smtp-Source: ADFU+vvgRnJNSp3x/iZ+21m6GXFgn7v1+QvuITDT3mpBoMlsKdXn7/FU4I3Sqjjvpp+80rnwgtve6Q==
-X-Received: by 2002:a5d:4f85:: with SMTP id d5mr11820776wru.130.1584031860879;
-        Thu, 12 Mar 2020 09:51:00 -0700 (PDT)
-Received: from [192.168.1.10] ([194.35.118.177])
-        by smtp.gmail.com with ESMTPSA id c2sm13412161wma.39.2020.03.12.09.51.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Mar 2020 09:51:00 -0700 (PDT)
-Subject: Re: [PATCH bpf] libbpf: add null pointer check in
- bpf_object__init_user_btf_maps()
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Andrii Nakryiko <andriin@fb.com>,
-        Michal Rostecki <mrostecki@opensuse.org>
-References: <20200312140357.20174-1-quentin@isovalent.com>
- <1fff03e7-e52b-edcc-d427-f912bf0a4af2@iogearbox.net>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <cb65f021-35e6-a5b2-cacb-06be89aebccf@isovalent.com>
-Date:   Thu, 12 Mar 2020 16:50:59 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        bh=oSb08jUO1PscpcMIat6OsbfjKhx8HZRSxYG1uKCNpGA=;
+        b=N2h0+j4rQDn8KiiZ8hQJJ181qK4sZ2NO29M/yMMdhjLaKUvwXLKLSffzZM0dzBOZtm
+         al0nRU5xNImF4d6+K2LQtNohs3KNXdtbrFCdk+n1tmrFVlzJ6z8eWCjDn/OMqWGxl5Fk
+         gK8zEMe8Bj1rZMf4TWiN0zMbr5htwp3ps50nRohbF5zSJCxJRTVOfjirmU0PQ40u95T/
+         QeVcVIeMQtViGfyCl04/b06OUu3eJApBW0o5pWzNVaEpi1lv9lFiczExceCD4sUe/H2I
+         G1jFxkFpb6DhHtaG70bUWr3VDKqwBvJmYg/ShDRavigwgv8i4i+xmdtRMBHP2YYW40pR
+         nIdw==
+X-Gm-Message-State: ANhLgQ2IwwvK79XxfOIPkZuZC5PWJAtWGLIFsuC//i2h8R09IHln3toG
+        C1KM1auhnM1R4fWY6NwyMeVe0a40we7ihw==
+X-Google-Smtp-Source: ADFU+vu8LRkR2Bzu5HvGDFDcq1brASp+4hF+OWsdHkIwSscgK15ylMbBtXNufmGlzjEfHVnaOn85uw==
+X-Received: by 2002:a2e:a318:: with SMTP id l24mr5665871lje.41.1584033067205;
+        Thu, 12 Mar 2020 10:11:07 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id a2sm25863908ljn.50.2020.03.12.10.11.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Mar 2020 10:11:06 -0700 (PDT)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: [PATCH bpf-next] selftests/bpf: Fix spurious failures in accept due to EAGAIN
+Date:   Thu, 12 Mar 2020 18:11:05 +0100
+Message-Id: <20200312171105.533690-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <1fff03e7-e52b-edcc-d427-f912bf0a4af2@iogearbox.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-03-12 16:37 UTC+0100 ~ Daniel Borkmann <daniel@iogearbox.net>
-> On 3/12/20 3:03 PM, Quentin Monnet wrote:
->> When compiling bpftool with clang 7, after the addition of its recent
->> "bpftool prog profile" feature, Michal reported a segfault. This
->> occurred while the build process was attempting to generate the
->> skeleton needed for the profiling program, with the following command:
->>
->>      ./_bpftool gen skeleton skeleton/profiler.bpf.o > profiler.skel.h
->>
->> Tracing the error showed that bpf_object__init_user_btf_maps() does no
->> verification on obj->btf before passing it to btf__get_nr_types(), where
->> btf is dereferenced. Libbpf considers BTF information should be here
->> because of the presence of a ".maps" section in the object file (hence
->> the check on "obj->efile.btf_maps_shndx < 0" fails and we do not exit
->> from the function early), but it was unable to load BTF info as there is
->> no .BTF section.
->>
->> Add a null pointer check and error out if the pointer is null. The final
->> bpftool executable still fails to build, but at least we have a proper
->> error and no more segfault.
->>
->> Fixes: abd29c931459 ("libbpf: allow specifying map definitions using
->> BTF")
->> Cc: Andrii Nakryiko <andriin@fb.com>
->> Reported-by: Michal Rostecki <mrostecki@opensuse.org>
->> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> 
-> Applied to bpf-next, thanks! Note ...
-> 
->> ---
->>   tools/lib/bpf/libbpf.c | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index 223be01dc466..19c0c40e8a80 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -2140,6 +2140,10 @@ static int
->> bpf_object__init_user_btf_maps(struct bpf_object *obj, bool strict,
->>           return -EINVAL;
->>       }
->>   +    if (!obj->btf) {
->> +        pr_warn("failed to retrieve BTF for map");
-> 
-> I've added a '\n' here
+Andrii Nakryiko reports that sockmap_listen test suite is frequently
+failing due to accept() calls erroring out with EAGAIN:
 
-Sorry about that, thank you Daniel!
-Quentin
+  ./test_progs:connect_accept_thread:733: accept: Resource temporarily unavailable
+  connect_accept_thread:FAIL:733
+
+This is because we are needlessly putting the listening TCP sockets in
+non-blocking mode.
+
+Fix it by using the default blocking mode in all tests in this suite.
+
+Fixes: 44d28be2b8d4 ("selftests/bpf: Tests for sockmap/sockhash holding listening sockets")
+Reported-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+---
+ tools/testing/selftests/bpf/prog_tests/sockmap_listen.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+index 52aa468bdccd..90271ec90388 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+@@ -754,7 +754,7 @@ static void test_syn_recv_insert_delete(int family, int sotype, int mapfd)
+ 	int err, s;
+ 	u64 value;
+ 
+-	s = socket_loopback(family, sotype | SOCK_NONBLOCK);
++	s = socket_loopback(family, sotype);
+ 	if (s < 0)
+ 		return;
+ 
+@@ -896,7 +896,7 @@ static void redir_to_connected(int family, int sotype, int sock_mapfd,
+ 
+ 	zero_verdict_count(verd_mapfd);
+ 
+-	s = socket_loopback(family, sotype | SOCK_NONBLOCK);
++	s = socket_loopback(family, sotype);
+ 	if (s < 0)
+ 		return;
+ 
+@@ -1028,7 +1028,7 @@ static void redir_to_listening(int family, int sotype, int sock_mapfd,
+ 
+ 	zero_verdict_count(verd_mapfd);
+ 
+-	s = socket_loopback(family, sotype | SOCK_NONBLOCK);
++	s = socket_loopback(family, sotype);
+ 	if (s < 0)
+ 		return;
+ 
+-- 
+2.24.1
+
