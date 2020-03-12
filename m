@@ -2,102 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D1118329B
-	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 15:15:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D641832C6
+	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 15:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727507AbgCLOPS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Mar 2020 10:15:18 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:37902 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727208AbgCLOPS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Mar 2020 10:15:18 -0400
-Received: by mail-wr1-f65.google.com with SMTP id x11so2916631wrv.5
-        for <bpf@vger.kernel.org>; Thu, 12 Mar 2020 07:15:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VMEvwyC77GXnGO2rSUyO+xui8zJErMGcDBUsFB0iwHk=;
-        b=Cog5P0XOgKXw/oVes6R/jzu9Y0dN+s4ErOv74KWTZL4oprATUFNp6UBkpAIyGnjOvB
-         w7LCXG4SaEpnNnaupguvNrlkTtr4HrnwUAoAJVyC0oBG3ZvDQ8lMAo2uc4YRehNnDysd
-         ZQOcXCJ1cqS5Q+ppS1VsP8GHcQVaetUKW8tMjdyldRxWpAs6x/9EYOUBfcUj25KXr3wd
-         A+zCG0N0hNbfH0r5DXXyqc9PBHILAYMPLdg/1zeDXoZS+myvTsYLXGtJZvUiJdF/WB/D
-         Akk5YfpCOv7UyG9jTQ3NcboGbhO+pGGvG+HuZ0MOA0r4NT1R7Euswewbb7JVaDShyLI2
-         djbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VMEvwyC77GXnGO2rSUyO+xui8zJErMGcDBUsFB0iwHk=;
-        b=mpRuTMikpScnStj0B09lY9KVJEKh9wNN6/nbBUNCEwATYK8VX0xzOOFWV17nCQvRQp
-         4H2UNKfXIn7zcIGfsnuKAXbo9sH+tBWmm7sRv0OO7a3M0jU/a8R/izbod0ZwfFhrP2YK
-         QWujP6BoRDwyL0o5aZgmmXqKJqq3G6EDEGDRrKzpHEwqx/F9JsTG91m/gvcZTLp5Hxat
-         09xuijILm6Xs0+vUpmO1kfN0VSUblfaeAxEd1l/4sE9ur6PoW1j9fPv4RN4SaXNAHgrC
-         qaUWuLHB7C+6WGT9ucDaxHgstEngydtKOiF6l43Q8Dj7bRWFSrWnW9dAe0LFHWW08+b8
-         0+rg==
-X-Gm-Message-State: ANhLgQ22Y945aSuCa0sYrG9CGOzfnH0bG4lRnfQiWIQcpqfPEgUTISAF
-        0v4b8rK5mn2UO8kIAcycLpJMlQ==
-X-Google-Smtp-Source: ADFU+vu9/OBTYCLMNLSZjYlP33eK+0eZJYcHOitu6lHMYx86ehCwVBprXkhCjfyGuCUmIwZVUEpxow==
-X-Received: by 2002:adf:f00d:: with SMTP id j13mr11776282wro.207.1584022516208;
-        Thu, 12 Mar 2020 07:15:16 -0700 (PDT)
-Received: from [192.168.1.10] ([194.35.118.177])
-        by smtp.gmail.com with ESMTPSA id o9sm78196201wrw.20.2020.03.12.07.15.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Mar 2020 07:15:15 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v2] bpftool: use linux/types.h from source tree
- for profiler build
-To:     Tobias Klauser <tklauser@distanz.ch>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-References: <20200312105335.10465-1-tklauser@distanz.ch>
- <20200312130330.32239-1-tklauser@distanz.ch>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <a01e3ca9-0787-2537-3cb4-91a869929aaf@isovalent.com>
-Date:   Thu, 12 Mar 2020 14:15:09 +0000
+        id S1727364AbgCLOWi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Mar 2020 10:22:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60482 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727320AbgCLOWi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Mar 2020 10:22:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id D06EFAE95;
+        Thu, 12 Mar 2020 14:22:35 +0000 (UTC)
+Subject: Re: [PATCH bpf] libbpf: add null pointer check in
+ bpf_object__init_user_btf_maps()
+To:     Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Andrii Nakryiko <andriin@fb.com>
+References: <20200312140357.20174-1-quentin@isovalent.com>
+From:   Michal Rostecki <mrostecki@opensuse.org>
+Autocrypt: addr=mrostecki@opensuse.org; keydata=
+ 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
+ ZURUUA==
+Message-ID: <8fbbc494-6df9-bf14-7abc-86548aa49070@opensuse.org>
+Date:   Thu, 12 Mar 2020 15:22:35 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200312130330.32239-1-tklauser@distanz.ch>
+In-Reply-To: <20200312140357.20174-1-quentin@isovalent.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-03-12 14:03 UTC+0100 ~ Tobias Klauser <tklauser@distanz.ch>
-> When compiling bpftool on a system where the /usr/include/asm symlink
-> doesn't exist (e.g. on an Ubuntu system without gcc-multilib installed),
-> the build fails with:
+On 3/12/20 3:03 PM, Quentin Monnet wrote:
+> When compiling bpftool with clang 7, after the addition of its recent
+> "bpftool prog profile" feature, Michal reported a segfault. This
+> occurred while the build process was attempting to generate the
+> skeleton needed for the profiling program, with the following command:
 > 
->     CLANG    skeleton/profiler.bpf.o
->   In file included from skeleton/profiler.bpf.c:4:
->   In file included from /usr/include/linux/bpf.h:11:
->   /usr/include/linux/types.h:5:10: fatal error: 'asm/types.h' file not found
->   #include <asm/types.h>
->            ^~~~~~~~~~~~~
->   1 error generated.
->   make: *** [Makefile:123: skeleton/profiler.bpf.o] Error 1
+>     ./_bpftool gen skeleton skeleton/profiler.bpf.o > profiler.skel.h
 > 
-> This indicates that the build is using linux/types.h from system headers
-> instead of source tree headers.
+> Tracing the error showed that bpf_object__init_user_btf_maps() does no
+> verification on obj->btf before passing it to btf__get_nr_types(), where
+> btf is dereferenced. Libbpf considers BTF information should be here
+> because of the presence of a ".maps" section in the object file (hence
+> the check on "obj->efile.btf_maps_shndx < 0" fails and we do not exit
+> from the function early), but it was unable to load BTF info as there is
+> no .BTF section.
 > 
-> To fix this, adjust the clang search path to include the necessary
-> headers from tools/testing/selftests/bpf/include/uapi and
-> tools/include/uapi. Also use __bitwise__ instead of __bitwise in
-> skeleton/profiler.h to avoid clashing with the definition in
-> tools/testing/selftests/bpf/include/uapi/linux/types.h.
+> Add a null pointer check and error out if the pointer is null. The final
+> bpftool executable still fails to build, but at least we have a proper
+> error and no more segfault.
 > 
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Cc: Quentin Monnet <quentin@isovalent.com>
-> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+> Fixes: abd29c931459 ("libbpf: allow specifying map definitions using BTF")
+> Cc: Andrii Nakryiko <andriin@fb.com>
+> Reported-by: Michal Rostecki <mrostecki@opensuse.org>
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 223be01dc466..19c0c40e8a80 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -2140,6 +2140,10 @@ static int bpf_object__init_user_btf_maps(struct bpf_object *obj, bool strict,
+>  		return -EINVAL;
+>  	}
+>  
+> +	if (!obj->btf) {
+> +		pr_warn("failed to retrieve BTF for map");
+> +		return -EINVAL;
+> +	}
+>  	nr_types = btf__get_nr_types(obj->btf);
+>  	for (i = 1; i <= nr_types; i++) {
+>  		t = btf__type_by_id(obj->btf, i);
+> 
 
-Looks good, thanks!
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+Tested-by: Michal Rostecki <mrostecki@opensuse.org>
+
+Thanks!
