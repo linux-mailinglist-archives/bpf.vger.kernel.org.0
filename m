@@ -2,105 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B33E91825FB
-	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 00:42:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F03D61826E2
+	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 02:58:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731412AbgCKXmW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Mar 2020 19:42:22 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:45391 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726194AbgCKXmW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Mar 2020 19:42:22 -0400
-Received: by mail-pl1-f194.google.com with SMTP id b22so1838785pls.12;
-        Wed, 11 Mar 2020 16:42:21 -0700 (PDT)
+        id S2387588AbgCLB61 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Mar 2020 21:58:27 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:46784 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387501AbgCLB61 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Mar 2020 21:58:27 -0400
+Received: by mail-pl1-f196.google.com with SMTP id w12so1967306pll.13;
+        Wed, 11 Mar 2020 18:58:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=B2KIOZXAKL4mhVnKlXociLNQKh63L3RnkEVoYPvSaZI=;
-        b=qtg1+XsATpphmdJ8wIZRGtXLq7JnFCODxrNZY0IV4fzYbHkXaNughHfuxRGSGmnOpC
-         69HG14eUyOQej8cz/XjagBE7PkulWeOkW9zezk69ucfUzBqWq0D98bMNCq85icx3Fy9W
-         2QdiaaA7pi9rEJxuR/pdcJ0RpiPwRdDtedmD0tIpAKUZExaHjEMGdxsOQMOcHIUcOw/n
-         mi2UO1Y0I6+p2+dmYwobB+CWXvmdtJIsYxfzq422ApYHgmz8Xxgz2Qyp+hLmqVCfdZ45
-         392XnzpjzGDLyeBZ7HKip79jyg/Y8YAozT5DwyhmfbbIiEqDCaymXTiE6hNO/Sx3BpVF
-         lGCA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dWvFdO44Kj54hlSYxXpeiqKsW+JU3dNGWlR7+2Sm0+g=;
+        b=ctBO863dW2CnnEwYFKPcxYyHIU4eQPldoh3fMM+a6qMZk0gX5FqcHKo8rZ15B5CriG
+         C0EKw2eDmdXfsP+7IhZpztKkAKTbUpIoZA+mkp4QCAdEetjPVJsaKqoJpO53aOcIm8A4
+         alaTMyIi5wR3/Ni2wqYbqS2TLsegHf3kE9pHHNFljeLvbw7MOkwdwnqMhHEGSIrvFIaf
+         Whib6P/5PJaalsdbh7NDS6kFOXuc9sPZ6KgI4OZrOtyX/HPXVSkHx+3YBy3eA5LDVDAd
+         +sbc7j+1Stjon5v2Xp2TmBjlL1rTyLCww0DkWMRH759BQr2OZMYl9QcnVUzfIWDRhXTb
+         77UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=B2KIOZXAKL4mhVnKlXociLNQKh63L3RnkEVoYPvSaZI=;
-        b=b0KyyPBrOKWXZcdEDzWFHz/UsCltUvS3v1pHeQQZ2FqiuSCUwGnu/QhmkWKn7RAMNh
-         DNkFjcYu0DMKNKhbZs+SznrxTP/NMuM4/Uok8YhlvOzvEOZ1Zba97vwUuGi5lL6aTa5S
-         Hpjoh0Iz0uosj0yW90Np0cwoYwt/GfY7PNF4d9hO26DZ98hyx2onZ1M9jiXXB1jJvryi
-         wwPube27DCB9tvNVkQt4SXrlEndyMX4kLxw5WqswBo8j5rV8YiD28xBYKRDcfxNiLUQX
-         VW4FHnef0haVk/XGo0cM9t1iRDVRcT6bhZC28iHm7SGUvGMpTuDMbE/EFV3UL/gC5TTP
-         HBmg==
-X-Gm-Message-State: ANhLgQ1wilvJ2SNr+B8Ix4TzjKEpw0mcZA1lJRRVAm2om1qX9Ehmqz5B
-        ++DG0PcqSTSRYHqh1+7qLvQS7Z8a
-X-Google-Smtp-Source: ADFU+vvVKwmvSA0tssq/GJ7H5tQMhwjYpDAuZBGAy4rMKk3EsWdXr1YwK+tXL3a/PHw+OUbyOUfGoQ==
-X-Received: by 2002:a17:90b:124a:: with SMTP id gx10mr1148213pjb.117.1583970140839;
-        Wed, 11 Mar 2020 16:42:20 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id i5sm34068457pfo.173.2020.03.11.16.42.18
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dWvFdO44Kj54hlSYxXpeiqKsW+JU3dNGWlR7+2Sm0+g=;
+        b=Ph4ShzGAtIMgqD+19Eth4yUsITXeg/89KGTjnmi3+EBkAyndKY+waYtPOOB1PrVmfH
+         xDQd1cXk7nQYb5NPIa/639/d6yeNX+WRwbzVi/+rBq7798lhp129t5udNjkpqmVxQaC4
+         3Rj0/Ntr035/ZukF2YtV/JQrJDeXn74YDlIfqBhExKjhJoRhO9NgdlsKd/s6mTZMARZf
+         VXGhmHBnShnUc9owO+FUP62G+w0R4Zf1+HXE5FgkxtQBvQ+pmBeIuDovOFF4MUJt2AiB
+         qZym+yjMwkbFR/j0llqmRJt5pQcjI5Kpro/kFstw38YH5otAbS6f38wdt4aB+Dbn7P2y
+         j79Q==
+X-Gm-Message-State: ANhLgQ12r3YfyxEMgBODBnylw8HIKnylP2YiBSn+qJvvRQqPPyx/yjk8
+        Qy1GCgMRHjFvbfLeTr9u6NNjCIqE
+X-Google-Smtp-Source: ADFU+vvIo+wMmnV71g5J6fSq9m5ap5omMtG+rrVqWBf6Jvg2f9GwhWZCE5mmbgGD5sX6op+lxpYKDg==
+X-Received: by 2002:a17:902:8307:: with SMTP id bd7mr5618919plb.74.1583978305728;
+        Wed, 11 Mar 2020 18:58:25 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:500::7:6792])
+        by smtp.gmail.com with ESMTPSA id 70sm7100686pjz.45.2020.03.11.18.58.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Mar 2020 16:42:20 -0700 (PDT)
-Date:   Wed, 11 Mar 2020 16:42:14 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Quentin Monnet <quentin@isovalent.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Message-ID: <5e69775639097_20552ab9153405b46b@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200311021205.9755-1-quentin@isovalent.com>
-References: <20200311021205.9755-1-quentin@isovalent.com>
-Subject: RE: [PATCH bpf-next] tools: bpftool: restore message on failure to
- guess program type
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Wed, 11 Mar 2020 18:58:24 -0700 (PDT)
+Date:   Wed, 11 Mar 2020 18:58:22 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        kernel-team@cloudflare.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 0/5] Return fds from privileged sockhash/sockmap lookup
+Message-ID: <20200312015822.bhu6ptkx5jpabkr6@ast-mbp.dhcp.thefacebook.com>
+References: <20200310174711.7490-1-lmb@cloudflare.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200310174711.7490-1-lmb@cloudflare.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Quentin Monnet wrote:
-> In commit 4a3d6c6a6e4d ("libbpf: Reduce log level for custom section
-> names"), log level for messages for libbpf_attach_type_by_name() and
-> libbpf_prog_type_by_name() was downgraded from "info" to "debug". The
-> latter function, in particular, is used by bpftool when attempting to
-> load programs, and this change caused bpftool to exit with no hint or
-> error message when it fails to detect the type of the program to load
-> (unless "-d" option was provided).
+On Tue, Mar 10, 2020 at 05:47:06PM +0000, Lorenz Bauer wrote:
+> We want to use sockhash and sockmap to build the control plane for
+> our upcoming BPF socket dispatch work. We realised that it's
+> difficult to resize or otherwise rebuild these maps if needed,
+> because there is no way to get at their contents. This patch set
+> allows a privileged user to retrieve fds from these map types,
+> which removes this obstacle.
 > 
-> To help users understand why bpftool fails to load the program, let's do
-> a second run of the function with log level in "debug" mode in case of
-> failure.
-> 
-> Before:
-> 
->     # bpftool prog load sample_ret0.o /sys/fs/bpf/sample_ret0
->     # echo $?
->     255
-> 
-> Or really verbose with -d flag:
-> 
->     # bpftool -d prog load sample_ret0.o /sys/fs/bpf/sample_ret0
->     libbpf: loading sample_ret0.o
->     libbpf: section(1) .strtab, size 134, link 0, flags 0, type=3
+> The approach here is different than that of program arrays and
+> nested maps, which return an ID that can be turned into an fd
+> using the BPF_*_GET_FD_BY_ID syscall. Sockets have IDs in the
+> form of cookies, however there seems to be no way to go from
+> a socket cookie to struct socket or struct file. Hence we
+> return an fd directly.
 
-[...]
-
-> After:
-> 
->     # bpftool prog load sample_ret0.o /sys/fs/bpf/sample_ret0
->     libbpf: failed to guess program type from ELF section '.text'
->     libbpf: supported section(type) names are: socket sk_reuseport kprobe/ [...]
-> 
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-
-lgtm
-
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+we do store the socket FD into a sockmap, but returning new FD to that socket
+feels weird. The user space suppose to hold those sockets. If it was bpf prog
+that stored a socket then what does user space want to do with that foreign
+socket? It likely belongs to some other process. Stealing it from other process
+doesn't feel right.
+Sounds like the use case is to take sockets one by one from one map, allocate
+another map and store them there? The whole process has plenty of races. I
+think it's better to tackle the problem from resize perspective. imo making it
+something like sk_local_storage (which is already resizable pseudo map of
+sockets) is a better way forward.
