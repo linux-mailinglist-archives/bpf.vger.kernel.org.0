@@ -2,119 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FEAC183D0A
-	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 00:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA565183D12
+	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 00:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbgCLXIa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Mar 2020 19:08:30 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:58705 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726710AbgCLXIa (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 12 Mar 2020 19:08:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1584054509;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=h4wdU2a9XoFrutcCJNoK3uetDhXcg3rLVvbtWHaFulA=;
-        b=bvju6hx1UPnwzfQvOV/dgPNYBoUthv9xdCNTekULK/aT9amNV+f8hh+pz2NpLc/uZMOQ/g
-        pkzRB9Zxq46X/1p7q1tOaPOrRZHPsMRan0SgQtgNMzM/FHOTqRnMxximbh3nkGruTP1F2h
-        mip0UmbasBKWOZwWGiY+3Ez75vvghkg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-444-DfpokljDPvucxZeEsqrfkg-1; Thu, 12 Mar 2020 19:08:27 -0400
-X-MC-Unique: DfpokljDPvucxZeEsqrfkg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D02AA107ACC9;
-        Thu, 12 Mar 2020 23:08:25 +0000 (UTC)
-Received: from localhost (ovpn-121-102.rdu2.redhat.com [10.10.121.102])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 859551001902;
-        Thu, 12 Mar 2020 23:08:22 +0000 (UTC)
-From:   Bruno Meneguele <bmeneg@redhat.com>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     GLin@suse.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, Bruno Meneguele <bmeneg@redhat.com>
-Subject: [PATCH v2] net/bpfilter: fix dprintf usage for /dev/kmsg
-Date:   Thu, 12 Mar 2020 20:08:20 -0300
-Message-Id: <20200312230820.2132069-1-bmeneg@redhat.com>
+        id S1726788AbgCLXLo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Mar 2020 19:11:44 -0400
+Received: from www62.your-server.de ([213.133.104.62]:39600 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726710AbgCLXLn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Mar 2020 19:11:43 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jCWzO-0007Fr-5x; Fri, 13 Mar 2020 00:11:42 +0100
+Received: from [85.7.42.192] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jCWzN-000NsL-RV; Fri, 13 Mar 2020 00:11:41 +0100
+Subject: Re: [PATCH v3 bpf-next 0/3] Fixes for bpftool-prog-profile
+To:     Song Liu <songliubraving@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     john.fastabend@gmail.com, quentin@isovalent.com,
+        kernel-team@fb.com, ast@kernel.org, arnaldo.melo@gmail.com,
+        jolsa@kernel.org
+References: <20200312182332.3953408-1-songliubraving@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <9a91e2a9-1668-99fc-927a-39b2f1188477@iogearbox.net>
+Date:   Fri, 13 Mar 2020 00:11:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200312182332.3953408-1-songliubraving@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25749/Thu Mar 12 14:09:06 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bpfilter UMH code was recently changed to log its informative message=
-s to
-/dev/kmsg, however this interface doesn't support SEEK_CUR yet, used by
-dprintf(). As result dprintf() returns -EINVAL and doesn't log anything.
+On 3/12/20 7:23 PM, Song Liu wrote:
+> 1. Fix build for older clang;
+> 2. Fix skeleton's dependency on libbpf;
+> 3. Add files to .gitignore.
+> 
+> Changes v2 => v3:
+> 1. Add -I$(LIBBPF_PATH) to Makefile (Quentin);
+> 2. Use p_err() for error message (Quentin).
+> 
+> Changes v1 => v2:
+> 1. Rewrite patch 1 with real feature detection (Quentin, Alexei).
+> 2. Add files to .gitignore (Andrii).
+> 
+> Song Liu (3):
+>    bpftool: only build bpftool-prog-profile if supported by clang
+>    bpftool: skeleton should depend on libbpf
+>    bpftool: add _bpftool and profiler.skel.h to .gitignore
+> 
+>   tools/bpf/bpftool/.gitignore                  |  2 ++
+>   tools/bpf/bpftool/Makefile                    | 20 +++++++++++++------
+>   tools/bpf/bpftool/prog.c                      |  1 +
+>   tools/build/feature/Makefile                  |  9 ++++++++-
+>   .../build/feature/test-clang-bpf-global-var.c |  4 ++++
+>   5 files changed, 29 insertions(+), 7 deletions(-)
+>   create mode 100644 tools/build/feature/test-clang-bpf-global-var.c
 
-However there already had some discussions about supporting SEEK_CUR into
-/dev/kmsg interface in the past it wasn't concluded. Since the only user =
-of
-that from userspace perspective inside the kernel is the bpfilter UMH
-(userspace) module it's better to correct it here instead waiting a concl=
-usion
-on the interface.
-
-Fixes: 36c4357c63f3 ("net: bpfilter: print umh messages to /dev/kmsg")
-Signed-off-by: Bruno Meneguele <bmeneg@redhat.com>
----
- net/bpfilter/main.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
-
-diff --git a/net/bpfilter/main.c b/net/bpfilter/main.c
-index 77396a098fbe..efea4874743e 100644
---- a/net/bpfilter/main.c
-+++ b/net/bpfilter/main.c
-@@ -10,7 +10,7 @@
- #include <asm/unistd.h>
- #include "msgfmt.h"
-=20
--int debug_fd;
-+FILE *debug_f;
-=20
- static int handle_get_cmd(struct mbox_request *cmd)
- {
-@@ -35,9 +35,10 @@ static void loop(void)
- 		struct mbox_reply reply;
- 		int n;
-=20
-+		fprintf(debug_f, "testing the buffer\n");
- 		n =3D read(0, &req, sizeof(req));
- 		if (n !=3D sizeof(req)) {
--			dprintf(debug_fd, "invalid request %d\n", n);
-+			fprintf(debug_f, "invalid request %d\n", n);
- 			return;
- 		}
-=20
-@@ -47,7 +48,7 @@ static void loop(void)
-=20
- 		n =3D write(1, &reply, sizeof(reply));
- 		if (n !=3D sizeof(reply)) {
--			dprintf(debug_fd, "reply failed %d\n", n);
-+			fprintf(debug_f, "reply failed %d\n", n);
- 			return;
- 		}
- 	}
-@@ -55,9 +56,10 @@ static void loop(void)
-=20
- int main(void)
- {
--	debug_fd =3D open("/dev/kmsg", 00000002);
--	dprintf(debug_fd, "Started bpfilter\n");
-+	debug_f =3D fopen("/dev/kmsg", "w");
-+	setvbuf(debug_f, 0, _IOLBF, 0);
-+	fprintf(debug_f, "Started bpfilter\n");
- 	loop();
--	close(debug_fd);
-+	fclose(debug_f);
- 	return 0;
- }
---=20
-2.24.1
-
+Tested with clang-7 and clang-11; looks good, applied, thanks!
