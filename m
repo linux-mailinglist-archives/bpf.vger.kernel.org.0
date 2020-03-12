@@ -2,152 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F261838D2
-	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 19:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E301838F3
+	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 19:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbgCLSjX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Mar 2020 14:39:23 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:39962 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbgCLSjV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Mar 2020 14:39:21 -0400
-Received: by mail-wr1-f65.google.com with SMTP id f3so1837989wrw.7
-        for <bpf@vger.kernel.org>; Thu, 12 Mar 2020 11:39:19 -0700 (PDT)
+        id S1727001AbgCLSq0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Mar 2020 14:46:26 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:43081 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726475AbgCLSqZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Mar 2020 14:46:25 -0400
+Received: by mail-wr1-f66.google.com with SMTP id b2so2627206wrj.10
+        for <bpf@vger.kernel.org>; Thu, 12 Mar 2020 11:46:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=y0ZCWlS3yLmJMb+ofnT38Ty+2TiaE9d36FZc9DTR+KQ=;
-        b=f1ehBLAMmur073GBWLUKYN9ejmR+BhlHD5gAz3HPYBwxLb28vay05g/F00Oa9TQ9Zi
-         lSr9CCmkVJ8iZW8XTQjW3rJAFPRWAtY5Lw/Hzrr0gxuuUaC1vjCVKpUBr2anqufol3jM
-         MfN/7Sfq5ogdDydXvTFjZneNfHUpQJeSc3baVt2BP8tG+88bNhhwyfFMWJlLYsI6x08P
-         gthjfMKHbpHy0XcMm3JMWIgDUNGGqF0/haKUjROv+78dKezFLonFWSTO5fTCOSyC3y2y
-         jZrSXVZnPEa3Fn5HbFfhs6iptggG7nIzwuMr4qtskVxBFhw1PO5FdcLPBLJwVKXJ31Ca
-         qepQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wHahHzzB1M6+8JJ7CuCuHPOxvXEu0XndSLd5n2mjxiM=;
+        b=uqjUIowAJXYCGXsxX5gUJnJiRkx/uj06Ivjh0nNzP1LvWSfSIGo2eoitaeNL0Do24/
+         FjwVtH8tK9gUQZPpa/4Zr93Dce1kADQ9ucQzHfJbHVRd6cc1Np09x4cANumhWSEAnaKK
+         XCzi5rHy3qqEW9hUnqnzeyhrI5yp7KL9xk/XvsF5DjXL8heF53tVdhD/2LWAOlkxcg33
+         2UAKS5HMmdRp7mZ+4cwSrn9osRNIr4nEyO9stqFaacOJuIK6V0dZl/j7IgClemtJBihU
+         dHwwS8mdhOH7oKgGMpwKewflEHgDzv70XtZVGltwYxdek9pS6Alsu7zTO+QNmUraFilf
+         11Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=y0ZCWlS3yLmJMb+ofnT38Ty+2TiaE9d36FZc9DTR+KQ=;
-        b=rlYxPoeBZqgjm6URlkS8pf28cGdBuMISoYhrroDBORfBUKt6lkp3QiDnKfpBpr9me6
-         C06fIW7GV2/1vbo+nbnL10sOBctDxyAAXbpEmXDDP8vbvwpstgITjVvDfO9ArMCtBdZ8
-         XbI1nCN9eGwY4xoWnbj6bntGkgHYtER2kyg5FqfRINL4RhclQPBIVwpYqYME7Y0VoU2Q
-         aSjdaABr9+V2+Lx62o7UaSbtfKMfwBrHnFNw/q9qUsR/NW6GwI7YYjDP0lAM3GEDbNZI
-         R2Yy5qhU2YEyzXxrHzo8cQLUU7uy7CrYdnwcRF+vNd7pL07SnGQnZ4JKcucnNAiDcITW
-         IFAA==
-X-Gm-Message-State: ANhLgQ3SSiAIFW3/cVY0QgwyAWXIQAec5YrCz+G5sSrmNZEqqn+yvhnX
-        UR8KOB9DHgxZRAATM3OKBqQCuA==
-X-Google-Smtp-Source: ADFU+vuoDBq0mANVI/ETrZ1VuSvWqY9q/xSZ5wMjyGZWU47Zg+/2quR3tLVvRE8N8khWfHLN7LfJfA==
-X-Received: by 2002:adf:b317:: with SMTP id j23mr12440570wrd.413.1584038359099;
-        Thu, 12 Mar 2020 11:39:19 -0700 (PDT)
-Received: from [192.168.1.10] ([194.35.118.177])
-        by smtp.gmail.com with ESMTPSA id 9sm13518165wmo.38.2020.03.12.11.39.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Mar 2020 11:39:18 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 1/2] tools: bpftool: allow all prog/map handles
- for pinning objects
+        bh=wHahHzzB1M6+8JJ7CuCuHPOxvXEu0XndSLd5n2mjxiM=;
+        b=MtxpFJXlJ5ua+IsSFXVzLpN0W5ud0ZdB0j02MIDnr3+aws0NalSDj5Rbwn2yApI9pz
+         3jgA80zTzUbsmvzKudy/aEUoVlQhFaFIboD80x4AECThrdeT+v4aIyUDtAZxKkPn6xyt
+         OzfQZpzZEG0C0K6CXD7HR4Qdfcj1EaY6yomASXwz6VubLHyRuN9eidA6FuU29rTr7Flr
+         crISEvygwaxi+aP7V+rc1D4DYn7HhfdohkJBqBZI03b+Wi4WSuHZIjqr6QCCv4RkhFBK
+         G9gmYwmqK2r8kUtP+wVsGss87NwIEZ7mgFtb0IlaRVM91eTcCUrVwQ0SEY3NoTNXPJyv
+         OZ/w==
+X-Gm-Message-State: ANhLgQ1m3zm1Ry2IAgVX2sNcUPo3YoGa0uPhlixwQ9Nk1rLsKsAKNxoz
+        nhw5e3SR5pyfHeMgxBB43EaaWQ==
+X-Google-Smtp-Source: ADFU+vueKDG1/hYIOSadvAMIOn9AlXAxKy54UOlSYRwnLgl1RLlutSjMQkTzwPTaRprEU2MndYPEvw==
+X-Received: by 2002:a5d:4a10:: with SMTP id m16mr11852192wrq.333.1584038784201;
+        Thu, 12 Mar 2020 11:46:24 -0700 (PDT)
+Received: from localhost.localdomain ([194.35.118.177])
+        by smtp.gmail.com with ESMTPSA id b12sm50019665wro.66.2020.03.12.11.46.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Mar 2020 11:46:23 -0700 (PDT)
+From:   Quentin Monnet <quentin@isovalent.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20200312182555.945-1-quentin@isovalent.com>
- <20200312182555.945-2-quentin@isovalent.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <c1e31b68-203c-9cc8-77fa-f65f9fac97f0@isovalent.com>
-Date:   Thu, 12 Mar 2020 18:39:18 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: [PATCH bpf-next v2 0/2] tools: bpftool: fix object pinning and bash
+Date:   Thu, 12 Mar 2020 18:46:06 +0000
+Message-Id: <20200312184608.12050-1-quentin@isovalent.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200312182555.945-2-quentin@isovalent.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-03-12 18:25 UTC+0000 ~ Quentin Monnet <quentin@isovalent.com>
-> Documentation and interactive help for bpftool have always explained
-> that the regular handles for programs (id|name|tag|pinned) and maps
-> (id|name|pinned) can be passed to the utility when attempting to pin
-> objects (bpftool prog pin PROG / bpftool map pin MAP).
-> 
-> THIS IS A LIE!! The tool actually accepts only ids, as the parsing is
-> done in do_pin_any() in common.c instead of reusing the parsing
-> functions that have long been generic for program and map handles.
-> 
-> Instead of fixing the doc, fix the code. It is trivial to reuse the
-> generic parsing, and to simplify do_pin_any() in the process.
-> 
-> Do not accept to pin multiple objects at the same time with
-> prog_parse_fds() or map_parse_fds() (this would require a more complex
-> syntax for passing multiple sysfs paths and validating that they
-> correspond to the number of e.g. programs we find for a given name or
-> tag).
-> 
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> ---
->  tools/bpf/bpftool/common.c | 39 +++++---------------------------------
->  tools/bpf/bpftool/main.h   |  2 +-
->  tools/bpf/bpftool/map.c    |  2 +-
->  tools/bpf/bpftool/prog.c   |  2 +-
->  4 files changed, 8 insertions(+), 37 deletions(-)
-> 
-> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-> index b75b8ec5469c..92e51a62bd72 100644
-> --- a/tools/bpf/bpftool/common.c
-> +++ b/tools/bpf/bpftool/common.c
-> @@ -211,44 +211,15 @@ int do_pin_fd(int fd, const char *name)
->  	return err;
->  }
->  
-> -int do_pin_any(int argc, char **argv, int (*get_fd_by_id)(__u32))
-> +int do_pin_any(int argc, char **argv, int (*get_fd)(int *, char ***))
->  {
-> -	unsigned int id;
-> -	char *endptr;
-> -	int err;
->  	int fd;
->  
-> -	if (argc < 3) {
-> -		p_err("too few arguments, id ID and FILE path is required");
-> -		return -1;
-> -	} else if (argc > 3) {
-> -		p_err("too many arguments");
-> -		return -1;
-> -	}
-> -
-> -	if (!is_prefix(*argv, "id")) {
-> -		p_err("expected 'id' got %s", *argv);
-> -		return -1;
-> -	}
-> -	NEXT_ARG();
-> -
-> -	id = strtoul(*argv, &endptr, 0);
-> -	if (*endptr) {
-> -		p_err("can't parse %s as ID", *argv);
-> -		return -1;
-> -	}
-> -	NEXT_ARG();
-> -
-> -	fd = get_fd_by_id(id);
-> -	if (fd < 0) {
-> -		p_err("can't open object by id (%u): %s", id, strerror(errno));
-> -		return -1;
-> -	}
-> -
-> -	err = do_pin_fd(fd, *argv);
-> +	fd = get_fd(&argc, &argv);
-> +	if (fd < 0)
-> +		return fd;
->  
-> -	close(fd);
-> -	return err;
-> +	return do_pin_fd(fd, *argv);
+The first patch of this series improves user experience by allowing to pass
+all kinds of handles for programs and maps (id, tag, name, pinned path)
+instead of simply ids when pinning them with "bpftool (prog|map) pin".
 
-Looks like someone trimmed too much and forgot to close his fd. Will
-send v2.
+The second patch improves or fix bash completion, including for object
+pinning.
 
->  }
->  
+v2: Restore close() on file descriptor after pinning the object.
+
+Quentin Monnet (2):
+  tools: bpftool: allow all prog/map handles for pinning objects
+  tools: bpftool: fix minor bash completion mistakes
+
+ tools/bpf/bpftool/bash-completion/bpftool | 29 ++++++++++++++------
+ tools/bpf/bpftool/common.c                | 33 +++--------------------
+ tools/bpf/bpftool/main.h                  |  2 +-
+ tools/bpf/bpftool/map.c                   |  2 +-
+ tools/bpf/bpftool/prog.c                  |  2 +-
+ 5 files changed, 28 insertions(+), 40 deletions(-)
+
+-- 
+2.20.1
+
