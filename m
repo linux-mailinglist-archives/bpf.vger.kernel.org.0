@@ -2,100 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D191838B1
-	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 19:29:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6251838C8
+	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 19:35:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726523AbgCLS3a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Mar 2020 14:29:30 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:34423 "EHLO
+        id S1726736AbgCLSfC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Mar 2020 14:35:02 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:46052 "EHLO
         mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726299AbgCLS33 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Mar 2020 14:29:29 -0400
-Received: by mail-wr1-f66.google.com with SMTP id z15so8799284wrl.1
-        for <bpf@vger.kernel.org>; Thu, 12 Mar 2020 11:29:28 -0700 (PDT)
+        with ESMTP id S1726406AbgCLSfB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Mar 2020 14:35:01 -0400
+Received: by mail-wr1-f66.google.com with SMTP id m9so8775812wro.12
+        for <bpf@vger.kernel.org>; Thu, 12 Mar 2020 11:35:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BRHCWhmFlQPURHq+pBoLkGTysC+hecjyJW1t2JsHSNo=;
-        b=0F+83U6vTNMbdxCfzp+9BGDCgJ+jfRfz+fpPiZtdHECW9DgBIRQvXb3oigJ2D5OBnD
-         AFjjkcURKEUON/mmfIg6jBuYe/v0dMKdsCrzmssotT49QQ5xatloFHcHsrmNNzxpAQPp
-         4/Aw5sXbxlKLvslU+ZRqkszwZEI1ZALuxx/qeILfrZgvWUt/NYAo0pZkASqJV5cIrdwr
-         nUx84v5gVJMNbF+kpHQUX4zYy1WgZKHy8ssIPsTB5wxIkjkii+z2iO2fL0Duj+yvyL88
-         zF80qSys1rAKitNELa5z08LXsV3Hr6VvWDtLk5KOI5Rb7uwyiz+l2h76AQopCRjAe3yh
-         8H3g==
+        bh=vqOH/ApzhE1GsStgWa3AN9KCXAWaVnm1Zj8Pwlsg60E=;
+        b=fP9KuflxrryIn+5pZozn4Q28vactWefA94r7J0yreVYrF83YmcErDDOxqbe1/6X6BG
+         LfXM5L9kNfquEW+wWqhU6Qa9AT3cz65TQuUXFLQr0PVMsYO92d47NyKCwEi/mQebrVr+
+         Oz06h05hkdu1jDLDwbRTKTS7tPDoxKBAwL75c7uZhtHn80c6+Ylq2/9RO7BOcLTkMty0
+         cMQg/srni7Emy5NuNgqC7pxXyqBZK44LSvfoHdQpYRSAA3o8K7lYlPmyU28yuAvrRacr
+         J6RTbzfCgFW/a/ccU7Sy5VKf7NomC/I2zloLhGGXE0DbfIra+jUKS5EsWIVFRVv9tHYZ
+         k6nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=BRHCWhmFlQPURHq+pBoLkGTysC+hecjyJW1t2JsHSNo=;
-        b=o3eJfEdtMpBbn4KrRfb4cUSSYI3mXtSNk9Ye12XEQN3467tjSu1YMke7RVrlOY12KK
-         wiwVK3JWI1JiJHkmXIYPjpxJes+LoKxiDEYk6UIjxfexGuV9dqOzXOcF62IrT3DDrkg+
-         g9RxFme5cmD0TXhwgxqohKdRrQqqmAvw5S9SwgXBiP0MV7MDQXpCNXtvmJKjMzq77T/x
-         2YuWsvT6BnSOsFKucsB5m7r/n2aekCn7nZB4wKWIfRPrXDtDd/23zmL50AD0pRseTuD3
-         eGfHp7A8ZGm1deQyb9YILtP85LOroLneFDwD0YQDZDfYwQgeMb1NMsdC5Jj2m3/UtzDs
-         qNiQ==
-X-Gm-Message-State: ANhLgQ1c8Z/6c5v1wt5bZfAopW+hlpxRyqYkC9CaSD1HY6AfyD0LLbv/
-        2D9wk8k9d6q7JzeeqA9plUk32g==
-X-Google-Smtp-Source: ADFU+vvnu5jhezFpKMT+q/UzwIwyGAsFngjVM2cWS8rR8k8ojNctNy1ZNn6SEm0BEXqVT+ko0vT/yQ==
-X-Received: by 2002:a5d:52d0:: with SMTP id r16mr11893374wrv.379.1584037767514;
-        Thu, 12 Mar 2020 11:29:27 -0700 (PDT)
+        bh=vqOH/ApzhE1GsStgWa3AN9KCXAWaVnm1Zj8Pwlsg60E=;
+        b=d94UiVyF3byewHQG8Bxr4n6npAcRUmj4cs2UsI3dNiKqmva/JubFX0mOHN+5YsZqm2
+         5rcvVK/wLlBiCAIFmsELwIloIRL4IjnBdLKjqMUxeyXP/U49i7MPPGRCAwbG4RkiWqb6
+         eK6HOektDL6Y04MfKpeuZPDSVpAW0UBe33vFZymgYmHBj2stxF4Au9+w3V5EQHBqjA43
+         P2ySaNC8xwdyHqpbvKO9eM5jA1pBv3rpc5sBXPbwqIVqeUyuTjXIvkaIP3c0q6o+kF2V
+         2boIxH24HwICJTQIbXbfmD9+AaEJgxwhLpsiKuoJ1NR6dIVmtLn5VDl3yZcv+2I2gd9b
+         +eLQ==
+X-Gm-Message-State: ANhLgQ3IEw5a8gSDTpYkN5rM7DOO+6SzKe9hd5Wr/rEMnZXpby29AqoH
+        G5r1aXbopegeqQYHE95jiPzSOg==
+X-Google-Smtp-Source: ADFU+vue+qZSYgrylO5YludGLK2vjjWa1843ejQFzf2MNUsjd3lZfjOsK3ZG7u+Pmx/HFVP+ne/3oQ==
+X-Received: by 2002:adf:de8b:: with SMTP id w11mr8153955wrl.258.1584038099806;
+        Thu, 12 Mar 2020 11:34:59 -0700 (PDT)
 Received: from [192.168.1.10] ([194.35.118.177])
-        by smtp.gmail.com with ESMTPSA id e22sm13237842wme.45.2020.03.12.11.29.26
+        by smtp.gmail.com with ESMTPSA id k12sm16547357wrv.88.2020.03.12.11.34.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Mar 2020 11:29:27 -0700 (PDT)
-Subject: Re: [PATCH v3 bpf-next 0/3] Fixes for bpftool-prog-profile
-To:     Song Liu <songliubraving@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     john.fastabend@gmail.com, kernel-team@fb.com, ast@kernel.org,
-        daniel@iogearbox.net, arnaldo.melo@gmail.com, jolsa@kernel.org
-References: <20200312182332.3953408-1-songliubraving@fb.com>
+        Thu, 12 Mar 2020 11:34:59 -0700 (PDT)
+Subject: Re: [PATCH bpf] libbpf: add null pointer check in
+ bpf_object__init_user_btf_maps()
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Michal Rostecki <mrostecki@opensuse.org>
+References: <20200312140357.20174-1-quentin@isovalent.com>
+ <1fff03e7-e52b-edcc-d427-f912bf0a4af2@iogearbox.net>
+ <CAEf4BzaQdv8s4cGp=ouitxczzWV1E1WeuxktDTp5JFkXXkRU=w@mail.gmail.com>
+ <4a17add0-6756-a60c-7c5b-9ffe45ff4060@iogearbox.net>
 From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <461f01a8-1506-97c9-11db-4f1f1bad092b@isovalent.com>
-Date:   Thu, 12 Mar 2020 18:29:26 +0000
+Message-ID: <bbf55383-7f20-2a4a-52c6-ffe26c153006@isovalent.com>
+Date:   Thu, 12 Mar 2020 18:34:58 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200312182332.3953408-1-songliubraving@fb.com>
+In-Reply-To: <4a17add0-6756-a60c-7c5b-9ffe45ff4060@iogearbox.net>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-03-12 11:23 UTC-0700 ~ Song Liu <songliubraving@fb.com>
-> 1. Fix build for older clang;
-> 2. Fix skeleton's dependency on libbpf;
-> 3. Add files to .gitignore.
+2020-03-12 19:21 UTC+0100 ~ Daniel Borkmann <daniel@iogearbox.net>
+> On 3/12/20 6:54 PM, Andrii Nakryiko wrote:
+>> On Thu, Mar 12, 2020 at 8:38 AM Daniel Borkmann <daniel@iogearbox.net>
+>> wrote:
+>>> On 3/12/20 3:03 PM, Quentin Monnet wrote:
+>>>> When compiling bpftool with clang 7, after the addition of its recent
+>>>> "bpftool prog profile" feature, Michal reported a segfault. This
+>>>> occurred while the build process was attempting to generate the
+>>>> skeleton needed for the profiling program, with the following command:
+>>>>
+>>>>       ./_bpftool gen skeleton skeleton/profiler.bpf.o > profiler.skel.h
+>>>>
+>>>> Tracing the error showed that bpf_object__init_user_btf_maps() does no
+>>>> verification on obj->btf before passing it to btf__get_nr_types(),
+>>>> where
+>>>> btf is dereferenced. Libbpf considers BTF information should be here
+>>>> because of the presence of a ".maps" section in the object file (hence
+>>>> the check on "obj->efile.btf_maps_shndx < 0" fails and we do not exit
+>>>> from the function early), but it was unable to load BTF info as
+>>>> there is
+>>>> no .BTF section.
+>>>>
+>>>> Add a null pointer check and error out if the pointer is null. The
+>>>> final
+>>>> bpftool executable still fails to build, but at least we have a proper
+>>>> error and no more segfault.
+>>>>
+>>>> Fixes: abd29c931459 ("libbpf: allow specifying map definitions using
+>>>> BTF")
+>>>> Cc: Andrii Nakryiko <andriin@fb.com>
+>>>> Reported-by: Michal Rostecki <mrostecki@opensuse.org>
+>>>> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+>>>
+>>> Applied to bpf-next, thanks! Note ...
+>>
+>> I don't think this is the right fix. The problem was in my
+>> 5327644614a1 ("libbpf: Relax check whether BTF is mandatory") commit.
+>> I've removed "mandatory" status of BTF if .maps is present. But that's
+>> not right. We have the need for BTF at two levels: for libbpf itself
+>> and for kernel, those are overlapping, but not exactly the same. BTF
+>> is needed for libbpf when .maps, .struct_ops and externs are present.
+>> But kernel needs it only for when .struct_ops are present. Right now
+>> those checks are conflated together. Proper fix would be to separate
+>> them. Can we please undo this patch? I'll post a proper fix shortly.
 > 
-> Changes v2 => v3:
-> 1. Add -I$(LIBBPF_PATH) to Makefile (Quentin);
-> 2. Use p_err() for error message (Quentin).
-> 
-> Changes v1 => v2:
-> 1. Rewrite patch 1 with real feature detection (Quentin, Alexei).
-> 2. Add files to .gitignore (Andrii).
-> 
-> Song Liu (3):
->   bpftool: only build bpftool-prog-profile if supported by clang
->   bpftool: skeleton should depend on libbpf
->   bpftool: add _bpftool and profiler.skel.h to .gitignore
-> 
->  tools/bpf/bpftool/.gitignore                  |  2 ++
->  tools/bpf/bpftool/Makefile                    | 20 +++++++++++++------
->  tools/bpf/bpftool/prog.c                      |  1 +
->  tools/build/feature/Makefile                  |  9 ++++++++-
->  .../build/feature/test-clang-bpf-global-var.c |  4 ++++
->  5 files changed, 29 insertions(+), 7 deletions(-)
->  create mode 100644 tools/build/feature/test-clang-bpf-global-var.c
-> 
-> --
-> 2.17.1
-> 
+> Ok, please send a proper fix for 5327644614a1 then. Tossed off the tree.
 
-Series looks great, thank you!
+I suspected there was something like this and was only mildly satisfied
+with my solution to be honest... Thank you Andrii for taking over!
 
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+Quentin
