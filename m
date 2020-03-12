@@ -2,132 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E46183ABA
-	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 21:39:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C02183B05
+	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 22:07:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727101AbgCLUjY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Mar 2020 16:39:24 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:37380 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725268AbgCLUjY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 12 Mar 2020 16:39:24 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02CKamOI012009
-        for <bpf@vger.kernel.org>; Thu, 12 Mar 2020 13:39:23 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=hNAhhkRkX8ceIfEnDVNVq+tZtnYedopipiplFBAT+ds=;
- b=OaTurX6YhsXw1iLl33+XLI/j5DgQxWxA7muZxyXO7Fm9S8yVGNSWoLJwogQ6+l5BxUyC
- k8i2pd+0Z4hviD+STUnjUp+jDPwhCwyn/2dcRSnvxbT4fU7fGzE/MKoFYz72NL8SNOgw
- 2SV+Bo0mN/Bew3FYnsRzb8DzvhNQxXL7aGU= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 2yqt80rnnm-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 12 Mar 2020 13:39:23 -0700
-Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 12 Mar 2020 13:39:22 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 6D9C62EC2E6D; Thu, 12 Mar 2020 13:39:20 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] bpf: abstract away entire bpf_link clean up procedure
-Date:   Thu, 12 Mar 2020 13:39:14 -0700
-Message-ID: <20200312203914.1195762-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1726882AbgCLVHC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Mar 2020 17:07:02 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:45199 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726910AbgCLVG7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Mar 2020 17:06:59 -0400
+Received: by mail-ot1-f65.google.com with SMTP id e9so639281otr.12
+        for <bpf@vger.kernel.org>; Thu, 12 Mar 2020 14:06:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gjIF8laC9ymQN6dGPb1ZYido+iVLQSJ80e27qnd6uTA=;
+        b=f+l+gXIKYD8ZqIsbSKM4dLqAUjD21JGnao8P6oy+6Zmm9Rb8AXN6l/tS4s9RT9ecgP
+         8OTh+Gt18uKCXrL2agzWwd/jaz4kTY1PcHwRp8AM/PzPPozlKad5X4ZfeHipH/tIBjxa
+         99BbLEDknWH+7czLa5Ds6pxh1qQr+8L/YyNq5vH159Q93v9ftJQBMYn9MTLI0ylozz0g
+         SxF6JBvVR6aRYy+G/pWJCbP5kvTgAoAwODj4DnUgeTdzCZUniI5BUzeE45A4/CVcJor4
+         PJTNqoA2uuZZ4WpMILVN15YTIvUc7nqvO81ayj7Ez+wssmSZmgvM6o862uS0AIZwCaSh
+         XIig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gjIF8laC9ymQN6dGPb1ZYido+iVLQSJ80e27qnd6uTA=;
+        b=pRIHdkEI7U7k15R5Y+dcVTJj5murkn0+ZcknOx98nx+3xgK6jUd4c1Bz2nZ/ytklbM
+         Z9zE25/z5G6OggcXKw+jdpaz9BNwKGwmnxPoa4xI5Zq6h2voZBFiwOO5ogHYQCh572q0
+         LVnM9Wtfd3YCmF9nXXq/gw8XRgjFR8H32I3ymaBp+gkljknRwBXAFRt1sVAKvrfjV7kG
+         +qE9yLhsDoj9ardSHdCw2KoySyejzt8nVuCpH1FR/LAPrp2QCv99O8ZYInlB3UE9iPwM
+         MMw+BXr4ysvkXwiYa7SjEIcYM5i49u5gpyrP44+HLWmXdgR3klGpH07TL2qeV5yOEwVg
+         2CUQ==
+X-Gm-Message-State: ANhLgQ2R6mZ7gWMSh4KS55K8i5uvG6MYc+Vg+jlOIdJB4K5dxAmct4Or
+        qS2fBvmOZ6cS6PKPpA2yHTtlw/3c9MfLjz75/vJC+A==
+X-Google-Smtp-Source: ADFU+vuorKp4Am1Eft4fdcP1G8Nf7OvlWyXXPJjJAuw2HysSDIhCcZVTlSzqZ6RrA6JxKhMxZ3B+h9vZHTYAu4IJG2I=
+X-Received: by 2002:a9d:c24:: with SMTP id 33mr8191344otr.355.1584047218074;
+ Thu, 12 Mar 2020 14:06:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-03-12_14:2020-03-11,2020-03-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=8
- malwarescore=0 clxscore=1015 adultscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 phishscore=0 mlxlogscore=736 mlxscore=0
- bulkscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2003120103
-X-FB-Internal: deliver
+References: <00000000000041c6c205a08225dc@google.com> <20200312182826.GG79873@mtj.duckdns.org>
+In-Reply-To: <20200312182826.GG79873@mtj.duckdns.org>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Thu, 12 Mar 2020 14:06:47 -0700
+Message-ID: <CAHS8izPySSO07dHi3OZ_1uXjmMCGnNMWey+o-qwFM7GnD7oSHw@mail.gmail.com>
+Subject: Re: KASAN: slab-out-of-bounds Read in cgroup_file_notify
+To:     Tejun Heo <tj@kernel.org>
+Cc:     syzbot <syzbot+cac0c4e204952cf449b1@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, andriin@fb.com,
+        ast@kernel.org, bpf@vger.kernel.org, cgroups@vger.kernel.org,
+        christian@brauner.io, daniel@iogearbox.net,
+        Johannes Weiner <hannes@cmpxchg.org>, kafai@fb.com,
+        open list <linux-kernel@vger.kernel.org>,
+        Li Zefan <lizefan@huawei.com>, netdev@vger.kernel.org,
+        sfr@canb.auug.org.au, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Instead of requiring users to do three steps for cleaning up bpf_link, its
-anon_inode file, and unused fd, abstract that away into bpf_link_cleanup()
-helper. bpf_link_defunct() is removed, as it shouldn't be needed as an
-individual operation anymore.
+On Thu, Mar 12, 2020 at 11:28 AM Tejun Heo <tj@kernel.org> wrote:
+>
+> On Tue, Mar 10, 2020 at 08:55:14AM -0700, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following crash on:
+> >
+> > HEAD commit:    c99b17ac Add linux-next specific files for 20200225
+> > git tree:       linux-next
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=1610d70de00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=6b7ebe4bd0931c45
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=cac0c4e204952cf449b1
+> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1242e1fde00000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1110d70de00000
+> >
+> > The bug was bisected to:
+> >
+> > commit 6863de00e5400b534cd4e3869ffbc8f94da41dfc
+> > Author: Mina Almasry <almasrymina@google.com>
+> > Date:   Thu Feb 20 03:55:30 2020 +0000
+> >
+> >     hugetlb_cgroup: add accounting for shared mappings
+>
+> Mina, can you please take a look at this?
+>
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- include/linux/bpf.h  |  3 ++-
- kernel/bpf/syscall.c | 18 +++++++++++-------
- 2 files changed, 13 insertions(+), 8 deletions(-)
+Gah, I missed the original syzbot email but I just saw this. I'll take a look.
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 4fd91b7c95ea..358f3eb07c01 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1075,7 +1075,8 @@ struct bpf_link_ops {
- 
- void bpf_link_init(struct bpf_link *link, const struct bpf_link_ops *ops,
- 		   struct bpf_prog *prog);
--void bpf_link_defunct(struct bpf_link *link);
-+void bpf_link_cleanup(struct bpf_link *link, struct file *link_file,
-+		      int link_fd);
- void bpf_link_inc(struct bpf_link *link);
- void bpf_link_put(struct bpf_link *link);
- int bpf_link_new_fd(struct bpf_link *link);
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index b2f73ecacced..d2f49ae225b0 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2188,9 +2188,17 @@ void bpf_link_init(struct bpf_link *link, const struct bpf_link_ops *ops,
- 	link->prog = prog;
- }
- 
--void bpf_link_defunct(struct bpf_link *link)
-+/* Clean up bpf_link and corresponding anon_inode file and FD. After
-+ * anon_inode is created, bpf_link can't be just kfree()'d due to deferred
-+ * anon_inode's release() call. This helper manages marking bpf_link as
-+ * defunct, releases anon_inode file and puts reserved FD.
-+ */
-+void bpf_link_cleanup(struct bpf_link *link, struct file *link_file,
-+		      int link_fd)
- {
- 	link->prog = NULL;
-+	fput(link_file);
-+	put_unused_fd(link_fd);
- }
- 
- void bpf_link_inc(struct bpf_link *link)
-@@ -2383,9 +2391,7 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog)
- 
- 	err = bpf_trampoline_link_prog(prog);
- 	if (err) {
--		bpf_link_defunct(&link->link);
--		fput(link_file);
--		put_unused_fd(link_fd);
-+		bpf_link_cleanup(&link->link, link_file, link_fd);
- 		goto out_put_prog;
- 	}
- 
-@@ -2498,9 +2504,7 @@ static int bpf_raw_tracepoint_open(const union bpf_attr *attr)
- 
- 	err = bpf_probe_register(link->btp, prog);
- 	if (err) {
--		bpf_link_defunct(&link->link);
--		fput(link_file);
--		put_unused_fd(link_fd);
-+		bpf_link_cleanup(&link->link, link_file, link_fd);
- 		goto out_put_btp;
- 	}
- 
--- 
-2.17.1
+> Thanks.
 
+>
+> --
+> tejun
