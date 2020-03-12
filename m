@@ -2,149 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7CA8183899
-	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 19:26:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 012A71838A9
+	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 19:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbgCLS0K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Mar 2020 14:26:10 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:32920 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726599AbgCLS0I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Mar 2020 14:26:08 -0400
-Received: by mail-wr1-f66.google.com with SMTP id a25so8803077wrd.0
-        for <bpf@vger.kernel.org>; Thu, 12 Mar 2020 11:26:06 -0700 (PDT)
+        id S1726523AbgCLS2c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Mar 2020 14:28:32 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:46198 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726299AbgCLS2c (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Mar 2020 14:28:32 -0400
+Received: by mail-qk1-f196.google.com with SMTP id f28so7891523qkk.13;
+        Thu, 12 Mar 2020 11:28:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Gc4XGbEnsdtIWPY34ern2lcaBJ5zVKAE3vmO2e4SFfQ=;
-        b=L9bfE9GCb6NjbSuBecBwDG3/L2SzwVf7WX6omWK5LB9sYYGRx2OxozR7+GM8SpzI4k
-         KwEWOWnq9Xwf6aUE0zK293OtBlktg2iiRYyePAloIJlMOmufl+2JOfEXIhL4Fek3e7PY
-         rdnL4PPZRtvIHozsX1MEB60fKIVdTLA08R28Krn6HwoKk10+V/wVu3DQtbfNovL125Bp
-         Yx3ST8DRBpl1uNwPZKi7Kc1R9gvnhvFVtOnvwlTdBUEdLLOiv9va4rIR5DZid2ZjOj0C
-         tRwMdz5odi/iQghF9mMXSQITm8MJYezmzMsAyTe9a66rVOPkRIdae71VfrhDC6i0Xnc1
-         TW7A==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Z1+jrFk0l780LY82KtgQMlOjuOPnOSNUeBpKHT6Qy6g=;
+        b=Im3J3CT7QT/G7DEOXBPU5qa5NpzXZfgFk285tuuYBMicpySswnkSvESZnO6jErqFRd
+         UPjDpp+0r/vIODgW1k2ShKCiqBy9MmTZB95AFcHg6b7GeSpKBLUrNugoVoATGkaO79DP
+         mcRtqwQ/zX3X63/A+7p6exSokHYdR7eIJBUgv5B5sY+P2DtU9pohuGZNPHsQfo0VFSI2
+         VxQkQ/6aIBCgeOjZES4EHfdnoV985yMvsQIIreKQVnp8LIh6qsdqDWBCyvkBNnEKbegw
+         eLunF7LsF0q/MWSdI3ei6mjKA8959FeSB1VKEpCNXBnaDb99LSD6iiIueYU9p8geMzQv
+         814Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Gc4XGbEnsdtIWPY34ern2lcaBJ5zVKAE3vmO2e4SFfQ=;
-        b=gRUCiN2u+lWnezAf5X4chcQddJUBFm0vimiz1yG9uSjPj1hfVILxDDuJTT2PQWROdl
-         TO//mNyQiYUL1t9pB6X0dkJOi1KR8E3jujdPzSQtL0y1kJkf3xrB6RmJspb/Rru1fyY+
-         /A9UTT1F/DehMBnZL+QGS4dbdIulCo2u31gUyx8Ta40fBzifUIAQ0VcR72/M8uf8UQNH
-         0rJNkS9pdAO8d0ySHwkWBRQyxahh8YD9ACpQAJho3d4iUK3D449XfNxLKjE6T3fC9ybt
-         uxKKdqGorBOQZqrnYQdlBevLc6kdHlhRDwoeVIwaltGP96dO338oFx8hhuGnDmSqOCpQ
-         W6nw==
-X-Gm-Message-State: ANhLgQ3GmKbF/aZFpH5KwldowHLLCo0cMqCDBHAzdi1SIZLVI0IwwCOp
-        82EtjLRbDPjKUvvG/Je/F/qIyg==
-X-Google-Smtp-Source: ADFU+vuh+0RDXEwnDckgZwLvjvJuPOv4mibsESf5PLhgeyLJfmwidcZ5J2frTLxelsaYxug/cDGCeg==
-X-Received: by 2002:adf:f708:: with SMTP id r8mr12259839wrp.221.1584037566162;
-        Thu, 12 Mar 2020 11:26:06 -0700 (PDT)
-Received: from localhost.localdomain ([194.35.118.177])
-        by smtp.gmail.com with ESMTPSA id r9sm6379134wma.47.2020.03.12.11.26.05
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Z1+jrFk0l780LY82KtgQMlOjuOPnOSNUeBpKHT6Qy6g=;
+        b=I8ZDFnRMX4pvkgU2j0u0yY/djLRsHaPgEUY9wJNY4owkPY555l7HuYl3/q2Y9egQVO
+         k8YiEj4CC0vC55Vji9SY1XbZc7J/OL9Iv+QT6BxMbHVXNFqc2ce9U0ViWHLOXFlzaxPP
+         M+6r2cR457B/quC8+6wqWCxjBjkK43ZP1872rJuvehmqy+urzd2oIRDz3LU0cmTVDIXH
+         TeSJRV7x2vj1IjPKDAKNjb5SgY4TlcuVwqtqwmlGaRqAeBTkxqAFV44L9zTK3sjWGkMq
+         gCy4xpnOqjlYJYOCWP23JPNOoaA/X7mayP5ca0X0j7IPXg7bz8au34RN1w8iPClQnojl
+         794w==
+X-Gm-Message-State: ANhLgQ3Xp8s1GHOhRqkUNmUwrspEKU0pHJQqMLwkI20oP+2ydtW5vSb/
+        a8LgbCy0AlzPugVi/mbIbW4=
+X-Google-Smtp-Source: ADFU+vt9JCwr3OZM0QDXDy3zEeWocBIU5GDRQ52/xx5BmZffX9syssLvIR6XyxNZEWqjxRiPw4/j+w==
+X-Received: by 2002:a37:b146:: with SMTP id a67mr1341985qkf.473.1584037710282;
+        Thu, 12 Mar 2020 11:28:30 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::fec8])
+        by smtp.gmail.com with ESMTPSA id h5sm11049665qkc.118.2020.03.12.11.28.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Mar 2020 11:26:05 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next 2/2] tools: bpftool: fix minor bash completion mistakes
-Date:   Thu, 12 Mar 2020 18:25:55 +0000
-Message-Id: <20200312182555.945-3-quentin@isovalent.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200312182555.945-1-quentin@isovalent.com>
-References: <20200312182555.945-1-quentin@isovalent.com>
+        Thu, 12 Mar 2020 11:28:29 -0700 (PDT)
+Date:   Thu, 12 Mar 2020 14:28:26 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     almasrymina@google.com,
+        syzbot <syzbot+cac0c4e204952cf449b1@syzkaller.appspotmail.com>
+Cc:     akpm@linux-foundation.org, andriin@fb.com, ast@kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org, christian@brauner.io,
+        daniel@iogearbox.net, hannes@cmpxchg.org, kafai@fb.com,
+        linux-kernel@vger.kernel.org, lizefan@huawei.com,
+        netdev@vger.kernel.org, sfr@canb.auug.org.au,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Subject: Re: KASAN: slab-out-of-bounds Read in cgroup_file_notify
+Message-ID: <20200312182826.GG79873@mtj.duckdns.org>
+References: <00000000000041c6c205a08225dc@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000041c6c205a08225dc@google.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Minor fixes for bash completion: addition of program name completion for
-two subcommands, and correction for program test-runs and map pinning.
+On Tue, Mar 10, 2020 at 08:55:14AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following crash on:
+> 
+> HEAD commit:    c99b17ac Add linux-next specific files for 20200225
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1610d70de00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=6b7ebe4bd0931c45
+> dashboard link: https://syzkaller.appspot.com/bug?extid=cac0c4e204952cf449b1
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1242e1fde00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1110d70de00000
+> 
+> The bug was bisected to:
+> 
+> commit 6863de00e5400b534cd4e3869ffbc8f94da41dfc
+> Author: Mina Almasry <almasrymina@google.com>
+> Date:   Thu Feb 20 03:55:30 2020 +0000
+> 
+>     hugetlb_cgroup: add accounting for shared mappings
 
-The completion for the following commands is fixed or improved:
+Mina, can you please take a look at this?
 
-    # bpftool prog run [TAB]
-    # bpftool prog pin [TAB]
-    # bpftool map pin [TAB]
-    # bpftool net attach xdp name [TAB]
+Thanks.
 
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
----
- tools/bpf/bpftool/bash-completion/bpftool | 29 ++++++++++++++++-------
- 1 file changed, 21 insertions(+), 8 deletions(-)
-
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index a9cce9d3745a..9b0534f558f1 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -542,8 +542,8 @@ _bpftool()
-                     esac
-                     ;;
-                 run)
--                    if [[ ${#words[@]} -lt 5 ]]; then
--                        _filedir
-+                    if [[ ${#words[@]} -eq 4 ]]; then
-+                        COMPREPLY=( $( compgen -W "$PROG_TYPE" -- "$cur" ) )
-                         return 0
-                     fi
-                     case $prev in
-@@ -551,6 +551,10 @@ _bpftool()
-                             _bpftool_get_prog_ids
-                             return 0
-                             ;;
-+                        name)
-+                            _bpftool_get_prog_names
-+                            return 0
-+                            ;;
-                         data_in|data_out|ctx_in|ctx_out)
-                             _filedir
-                             return 0
-@@ -756,11 +760,17 @@ _bpftool()
-                     esac
-                     ;;
-                 pin)
--                    if [[ $prev == "$command" ]]; then
--                        COMPREPLY=( $( compgen -W "$PROG_TYPE" -- "$cur" ) )
--                    else
--                        _filedir
--                    fi
-+                    case $prev in
-+                        $command)
-+                            COMPREPLY=( $( compgen -W "$MAP_TYPE" -- "$cur" ) )
-+                            ;;
-+                        id)
-+                            _bpftool_get_map_ids
-+                            ;;
-+                        name)
-+                            _bpftool_get_map_names
-+                            ;;
-+                    esac
-                     return 0
-                     ;;
-                 event_pipe)
-@@ -887,7 +897,7 @@ _bpftool()
-             case $command in
-                 skeleton)
-                     _filedir
--		    ;;
-+                    ;;
-                 *)
-                     [[ $prev == $object ]] && \
-                         COMPREPLY=( $( compgen -W 'skeleton help' -- "$cur" ) )
-@@ -987,6 +997,9 @@ _bpftool()
-                                 id)
-                                     _bpftool_get_prog_ids
-                                     ;;
-+                                name)
-+                                    _bpftool_get_prog_names
-+                                    ;;
-                                 pinned)
-                                     _filedir
-                                     ;;
 -- 
-2.20.1
-
+tejun
