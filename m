@@ -2,169 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A1418397C
-	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 20:32:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F4F1839EC
+	for <lists+bpf@lfdr.de>; Thu, 12 Mar 2020 20:56:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726824AbgCLTcf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Mar 2020 15:32:35 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:46265 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726483AbgCLTcf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Mar 2020 15:32:35 -0400
-Received: by mail-pl1-f195.google.com with SMTP id w12so3045052pll.13;
-        Thu, 12 Mar 2020 12:32:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=izv74EIFJAd5AGmNCfghT95FAJ1SApIUXkaNrYzmzNU=;
-        b=V72R2UfI/HtBVr73JBp7RFz09yYtu7V79vcpak1u5VXEjzE+fTvR8N+9uSYd4AlekA
-         MRmcFJaTyg4gUWhfEv2PotPscZbwiYNgfc8OlcvKg0KKLlG0ocXJzEuH/Ycry66X0UUh
-         mBsFEzDKQD9Oc/f3jGLLXaIQKcrChZVAx+PUDmqb9QSqHQF6Fxw7vLVlkphBJfbKOOKs
-         1IcDzEMhg7XQLXlnRC00B2vQx/Mn2TbZ+JyS1YUWE+oOD/vay+sWiLlXmAkQ2SfAYbl8
-         MYRwTqaePpj0KeikQaCyfbm8wAIRPZH6x8CmuWKJrZFsjP7mnrMN+T5i8zXFqvwrhKqC
-         ORNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=izv74EIFJAd5AGmNCfghT95FAJ1SApIUXkaNrYzmzNU=;
-        b=dMzMuv3DrcYOB9kkT4IZXCeecx5IPLkjLPTvssm9LX5A/lSt2d1F2pIPMpVqJkE4Tz
-         iGGvVRMG4CZLUuCrX8bwVCGHWRNpkItv0CPkQpLxalLIurWtp307axSfewqyuGCvBe+h
-         M7Aeh+K/7N78lyoObjeULqf+6kveZdf62+zqLgs/1hnBZK0wRjI/mpXGTBY+AxELzHBc
-         0B7tL4bfFL7HvwavLTKJtw7BnlHmFl0AfOzoZ5mxtDjFL5cKdyIXtnI6GqfkV/1lJfb2
-         rYUO/E2o+FqR7UHFxo4Dw+7QXz9+44yrJ4E0mhjp5piHNnFYpFl60OPIEE11ftdVCMg7
-         N7mg==
-X-Gm-Message-State: ANhLgQ2jxnImsrDjcaGH439/VPEo00kKigdyVgFE2h4y6E2Rdy4NBFn5
-        KscOrSbqYG/fcAfSA3Au8js=
-X-Google-Smtp-Source: ADFU+vs/thMaidWm8SAkag15zpbiWeks3p8yJ1ks9X7Q+F/T+dlE7GFglqsr8tQLozxHbLrltCvA8g==
-X-Received: by 2002:a17:90a:345:: with SMTP id 5mr5725700pjf.134.1584041552178;
-        Thu, 12 Mar 2020 12:32:32 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id 23sm55813139pfh.28.2020.03.12.12.32.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Mar 2020 12:32:31 -0700 (PDT)
-Date:   Thu, 12 Mar 2020 12:32:24 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Message-ID: <5e6a8e48240a9_6a322aac933b85c029@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200312175828.xenznhgituyi25kj@ast-mbp>
-References: <20200310174711.7490-1-lmb@cloudflare.com>
- <20200312015822.bhu6ptkx5jpabkr6@ast-mbp.dhcp.thefacebook.com>
- <CACAyw9-Ui5FECjAaehP8raRjcRJVx2nQAj5=XPu=zXME2acMhg@mail.gmail.com>
- <20200312175828.xenznhgituyi25kj@ast-mbp>
-Subject: Re: [PATCH 0/5] Return fds from privileged sockhash/sockmap lookup
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1726569AbgCLT4V convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 12 Mar 2020 15:56:21 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:36332 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726558AbgCLT4U (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 12 Mar 2020 15:56:20 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-205-VBfo_sYGNJaTpY-o8thzFg-1; Thu, 12 Mar 2020 15:56:17 -0400
+X-MC-Unique: VBfo_sYGNJaTpY-o8thzFg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3CB64DB62;
+        Thu, 12 Mar 2020 19:56:15 +0000 (UTC)
+Received: from krava.redhat.com (ovpn-204-40.brq.redhat.com [10.40.204.40])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 32AA05D9C5;
+        Thu, 12 Mar 2020 19:56:10 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@redhat.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Song Liu <song@kernel.org>
+Subject: [PATCHv5 00/15] bpf: Add trampoline and dispatcher to /proc/kallsyms
+Date:   Thu, 12 Mar 2020 20:55:55 +0100
+Message-Id: <20200312195610.346362-1-jolsa@kernel.org>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov wrote:
-> On Thu, Mar 12, 2020 at 09:16:34AM +0000, Lorenz Bauer wrote:
-> > On Thu, 12 Mar 2020 at 01:58, Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > we do store the socket FD into a sockmap, but returning new FD to that socket
-> > > feels weird. The user space suppose to hold those sockets. If it was bpf prog
-> > > that stored a socket then what does user space want to do with that foreign
-> > > socket? It likely belongs to some other process. Stealing it from other process
-> > > doesn't feel right.
-> > 
-> > For our BPF socket dispatch control plane this is true by design: all sockets
-> > belong to another process. The privileged user space is the steward of these,
-> > and needs to make sure traffic is steered to them. I agree that stealing them is
-> > weird, but after all this is CAP_NET_ADMIN only. pidfd_getfd allows you to
-> > really steal an fd from another process, so that cat is out of the bag ;)
-> 
-> but there it goes through ptrace checks and lsm hoooks, whereas here similar
-> security model cannot be enforced. bpf prog can put any socket into sockmap and
-> from bpf_lookup_elem side there is no way to figure out the owner task of the
-> socket to do ptrace checks. Just doing it all under CAP_NET_ADMIN is not a
-> great security answer.
-> 
-> > Marek wrote a PoC control plane: https://github.com/majek/inet-tool
-> > It is a CLI tool and not a service, so it can't hold on to any sockets.
-> > 
-> > You can argue that we should turn it into a service, but that leads to another
-> > problem: there is no way of recovering these fds if the service crashes for
-> > some reason. The only solution would be to restart all services, which in
-> > our set up is the same as rebooting a machine really.
-> > 
-> > > Sounds like the use case is to take sockets one by one from one map, allocate
-> > > another map and store them there? The whole process has plenty of races.
-> > 
-> > It doesn't have to race. Our user space can do the appropriate locking to ensure
-> > that operations are atomic wrt. dispatching to sockets:
-> > 
-> > - lock
-> > - read sockets from sockmap
-> > - write sockets into new sockmap
-> 
-> but bpf side may still need to insert them into old.
-> you gonna solve it with a flag for the prog to stop doing its job?
-> Or the prog will know that it needs to put sockets into second map now?
-> It's really the same problem as with classic so_reuseport
-> which was solved with BPF_MAP_TYPE_REUSEPORT_SOCKARRAY.
-> 
-> > > I think it's better to tackle the problem from resize perspective. imo making it
-> > > something like sk_local_storage (which is already resizable pseudo map of
-> > > sockets) is a better way forward.
-> > 
-> > Resizing is only one aspect. We may also need to shuffle services around,
-> > think "defragmentation", and I think there will be other cases as we gain more
-> > experience with the control plane. Being able to recover fds from the sockmap
-> > will make it more resilient. Adding a special API for every one of these cases
-> > seems cumbersome.
-> 
-> I think sockmap needs a redesign. Consider that today all sockets can be in any
-> number of sk_local_storage pseudo maps. They are 'defragmented' and resizable.
-> I think plugging socket redirect to use sk_local_storage-like infra is the
-> answer.
+hi,
+this patchset adds trampoline and dispatcher objects
+to be visible in /proc/kallsyms. The last patch also
+adds sorting for all bpf objects in /proc/kallsyms.
 
-socket redirect today can use any number of maps and redirect to any sock
-in any map. There is no restriction on only being able to redirect to socks
-in the same map. Further, the same sock can be in the multiple maps or even
-the same map in multiple slots. I think its fairly similar to sk local
-storage in this way.
+  $ sudo cat /proc/kallsyms | tail -20
+  ...
+  ffffffffa050f000 t bpf_prog_5a2b06eab81b8f51    [bpf]
+  ffffffffa0511000 t bpf_prog_6deef7357e7b4530    [bpf]
+  ffffffffa0542000 t bpf_trampoline_13832 [bpf]
+  ffffffffa0548000 t bpf_prog_96f1b5bf4e4cc6dc_mutex_lock [bpf]
+  ffffffffa0572000 t bpf_prog_d1c63e29ad82c4ab_bpf_prog1  [bpf]
+  ffffffffa0585000 t bpf_prog_e314084d332a5338__dissect   [bpf]
+  ffffffffa0587000 t bpf_prog_59785a79eac7e5d2_mutex_unlock       [bpf]
+  ffffffffa0589000 t bpf_prog_d0db6e0cac050163_mutex_lock [bpf]
+  ffffffffa058d000 t bpf_prog_d8f047721e4d8321_bpf_prog2  [bpf]
+  ffffffffa05df000 t bpf_trampoline_25637 [bpf]
+  ffffffffa05e3000 t bpf_prog_d8f047721e4d8321_bpf_prog2  [bpf]
+  ffffffffa05e5000 t bpf_prog_3b185187f1855c4c    [bpf]
+  ffffffffa05e7000 t bpf_prog_d8f047721e4d8321_bpf_prog2  [bpf]
+  ffffffffa05eb000 t bpf_prog_93cebb259dd5c4b2_do_sys_open        [bpf]
+  ffffffffa0677000 t bpf_dispatcher_xdp   [bpf]
 
-The restriction that the maps can not grow/shrink is perhaps limiting a
-bit. I can see how resizing might be useful. In my original load balancer
-case a single application owned all the socks so there was no need to
-ever pull them back out of the map. We "knew" where they were. I think
-resize ops could be added without to much redesign. Or a CREATE flag could
-be used to add it as a new entry if needed. At some point I guess someone
-will request it as a feature for Cilium for example. OTOH I'm not sure
-off-hand how to use a dynamically sized table for load balancing. I
-should know the size because I want to say something about the hash
-distribution and if the size is changing do I still know this? I really
-haven't considered it much.
+v5 changes:
+  - keeping just 1 bpf_tree for all the objects and adding flag
+    to recognize bpf_objects when searching for exception tables [Alexei]
+  - no need for is_bpf_image_address call in kernel_text_address [Alexei]
+  - removed the bpf_image tree, because it's no longer needed
 
-As an aside redirect helper could work with anything of sock type not just
-socks from maps. Now that we have BTF infra to do it we could just type
-check that we have a sock and do the redirect regardless of if the sock
-is in a map or not. The map really provides two functions, first a
-way to attach programs to the socks and second a stable array to hash
-over if needed.
+v4 changes:
+  - add trampoline and dispatcher to kallsyms once the it's allocated [Alexei]
+  - omit the symbols sorting for kallsyms [Alexei]
+  - small title change in one patch [Song]
+  - some function renames:
+     bpf_get_prog_name to bpf_prog_ksym_set_name
+     bpf_get_prog_addr_region to bpf_prog_ksym_set_addr
+  - added acks to changelogs
+  - I checked and there'll be conflict on perftool side with
+    upcoming changes from Adrian Hunter (text poke events),
+    so I think it's better if Arnaldo takes the perf changes
+    via perf tree and we will solve all conflicts there
 
-Rather than expose the fd's to user space would a map copy api be
-useful? I could imagine some useful cases where copy might be used 
+v3 changes:
+  - use container_of directly in bpf_get_ksym_start  [Daniel]
+  - add more changelog explanations for ksym addresses [Daniel]
 
- map_copy(map *A, map *B, map_key *key)
+v2 changes:
+  - omit extra condition in __bpf_ksym_add for sorting code (Andrii)
+  - rename bpf_kallsyms_tree_ops to bpf_ksym_tree (Andrii)
+  - expose only executable code in kallsyms (Andrii)
+  - use full trampoline key as its kallsyms id (Andrii)
+  - explained the BPF_TRAMP_REPLACE case (Andrii)
+  - small format changes in bpf_trampoline_link_prog/bpf_trampoline_unlink_prog (Andrii)
+  - propagate error value in bpf_dispatcher_update and update kallsym if it's successful (Andrii)
+  - get rid of __always_inline for bpf_ksym_tree callbacks (Andrii)
+  - added KSYMBOL notification for bpf_image add/removal
+  - added perf tools changes to properly display trampoline/dispatcher
 
-would need to sort out what to do with key/value size changes. But
-I can imagine for upgrades this might be useful.
 
-Another option I've been considering the need for a garbage collection
-thread trigger at regular intervals. This BPF program could do the
-copy from map to map in kernel space never exposing fds out of kernel
+For perf tool to properly display trampoline/dispatcher you need
+also Arnaldo's perf/urgent branch changes. I merged everything
+into following branch:
 
-Thanks.
+  git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git bpf/kallsyms
+
+thanks,
+jirka
+
+
+---
+Björn Töpel (1):
+      bpf: Add bpf_trampoline_ name prefix for DECLARE_BPF_DISPATCHER
+
+Jiri Olsa (14):
+      x86/mm: Rename is_kernel_text to __is_kernel_text
+      bpf: Add struct bpf_ksym
+      bpf: Add name to struct bpf_ksym
+      bpf: Move lnode list node to struct bpf_ksym
+      bpf: Move ksym_tnode to bpf_ksym
+      bpf: Add bpf_ksym_find function
+      bpf: Add prog flag to struct bpf_ksym object
+      bpf: Add bpf_ksym_add/del functions
+      bpf: Add trampolines to kallsyms
+      bpf: Add dispatchers to kallsyms
+      bpf: Remove bpf_image tree
+      perf tools: Synthesize bpf_trampoline/dispatcher ksymbol event
+      perf tools: Set ksymbol dso as loaded on arrival
+      perf annotate: Add base support for bpf_image
+
+ arch/x86/mm/init_32.c       |  14 +++++++++-----
+ include/linux/bpf.h         |  65 ++++++++++++++++++++++++++++++++++++++++-------------------------
+ include/linux/filter.h      |  15 ++++-----------
+ kernel/bpf/core.c           | 120 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--------------------------------------------------------
+ kernel/bpf/dispatcher.c     |   5 +++--
+ kernel/bpf/trampoline.c     |  85 +++++++++++++++++++++++++------------------------------------------------------------
+ kernel/events/core.c        |   9 ++++-----
+ kernel/extable.c            |   2 --
+ net/core/filter.c           |   5 ++---
+ tools/perf/util/annotate.c  |  20 ++++++++++++++++++++
+ tools/perf/util/bpf-event.c |  92 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/perf/util/dso.c       |   1 +
+ tools/perf/util/dso.h       |   1 +
+ tools/perf/util/machine.c   |  12 ++++++++++++
+ tools/perf/util/symbol.c    |   1 +
+ 15 files changed, 278 insertions(+), 169 deletions(-)
+
