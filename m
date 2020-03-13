@@ -2,106 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A95184E9B
-	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 19:31:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED143184EE1
+	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 19:47:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgCMSbL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Mar 2020 14:31:11 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:34568 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726477AbgCMSbL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Mar 2020 14:31:11 -0400
-Received: by mail-qk1-f193.google.com with SMTP id f3so14225799qkh.1;
-        Fri, 13 Mar 2020 11:31:10 -0700 (PDT)
+        id S1727148AbgCMSrf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Mar 2020 14:47:35 -0400
+Received: from mail-qt1-f179.google.com ([209.85.160.179]:41183 "EHLO
+        mail-qt1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726866AbgCMSrf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Mar 2020 14:47:35 -0400
+Received: by mail-qt1-f179.google.com with SMTP id l21so8402062qtr.8
+        for <bpf@vger.kernel.org>; Fri, 13 Mar 2020 11:47:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=n7VWF42YYsHVvqKfOU1rBH3ohimrnDdc8FeNphBNmgI=;
-        b=Dyyem0UTC6SMSM9r14h83UV6z2n+gZZnr9BvL0gcMtIHi81ej0Y7X4o1BkJg87atRv
-         SvAj4M4DZG9OXpa8bDF6J7u90Fu1KM8i1x/D1A+2WTZNmDCXO2Tju1g01WXSZnwC1jD6
-         /fv6gZTuEX0Mb/KPIM3X+FEQSCe5eEnnq1ygtNcOMgdaWfqpHMBMP2uK7luR3/IVuu1W
-         wFRbxhFIuKZT0xzkRfdHUL1lcNop6CGO27VYlvVKmdGqh446ClcvlAr2MhL1RM5IfYLn
-         5eREWR7yRljOPJvtFb5Ci7h/O/+zccKTwUL8QojvgioEWY/iUr3bXM9f1L1YhZRu1BUr
-         4cGQ==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=mj7rGF7ON3Eo/FvVmngslw/F8fURXQu1EMn3nTTBUPQ=;
+        b=Mw+VFPC1w0UbdRMWSYVpgl8XZWcn/xyU7HjgZBjymT1LdxHLk54OdU9J7RryeWrV6G
+         pmCAsvxCw6XBIrR2Z5DSa9CfEeJcGKuh/zQ62J5GrmsM23BnS/TkQOWWIGVCT/cPUhnP
+         mm/zvQEUeE+q3yK42lamLdvqmphm2Ot6wWUJv1CQBEctQWHl5XrvfaJBRTO78Y/uEQWX
+         1l7qCdw3dlmrC8UvDgfJkqLAkCDAm4l7/mSIUZHe+CJjQxziWFJmZIyA+x8UAD/HVCqX
+         kJqpDXv5yS7j0ShkpKY8fpwCpz07OokC7FALZ+xhU7HVgk00IIS+O4y9al6ahGYBMuiP
+         ykgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n7VWF42YYsHVvqKfOU1rBH3ohimrnDdc8FeNphBNmgI=;
-        b=gvfxWBSBYWHDoKwIP4EqS/5IaD3FmkDMVeuAKN3M5a1HQL5U67rXEn8a4M5czmuS9T
-         YjItIYlYxSCZ0eRHm73ch4QFSoWawaXM+hS0pV1k2OlEgCDLL9Q2shCGTSLE2xwFLz/J
-         9Ly6Q7JjzkU+BKqcqSgwbYIM8SBUMjwwM5xxHZ0JbGFPRGNAhhIxYcX//kPs1L6f7Fsn
-         oEUn21MW5jTcB7wRRAr9SWqP9/0P/Jx5BMev93UtKRfsx+cShxV0hPyahg/VdnD5/UeH
-         uQGoiLvS/chRpQw1lpxFvdTEGzN9VGOt/cfmbJ2x6++QKLPtObjPr6+RxVGxYJ+RvT3Z
-         0JKA==
-X-Gm-Message-State: ANhLgQ2Jfo83Xa8PZtrjDZLy+DPt0VwhcLwIdo4p0LfFDEg3UBj9Yr/4
-        jWPRSounwzARIq8Fhfmy339UVkV/XsbVZgJFIuw=
-X-Google-Smtp-Source: ADFU+vsp90k5VaHLBeVJ49Sj9t/ytCKejZhJmL33Mj5xtkTiHq6ZopR6NN2IRwueenrZO13WRehUFLIkQfaK+LgG+kE=
-X-Received: by 2002:a37:6411:: with SMTP id y17mr14841147qkb.437.1584124269698;
- Fri, 13 Mar 2020 11:31:09 -0700 (PDT)
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=mj7rGF7ON3Eo/FvVmngslw/F8fURXQu1EMn3nTTBUPQ=;
+        b=LDx25Yt/jpfdN8tA/0IY04wxnxIlmR4/Ufn97/0mc7kvYPafHli4n8ckoUl/KEm9Em
+         +ADviB6rFZ2cKtY2OA0dxNayNJjxuWEQx0PezDOVc2cw8vFbhJs8K/FBLWZdkatqBUa1
+         DsjzQHdwkadq0QFfH0gxcID6DhjGSNJwcZBw4GOeM8q9hRpvBlOxYMqx8Fo1ZiKCatNL
+         UbTlYHXP6TaoG/t/lscXCXXLNZsqEv6RsE/lKJUmTTDLnzw6eTIVn8ijEV9n/iSE1wDb
+         B9eE5n6eumbMwYMXvevDs0laKaCL2dh9T9KxCcdLYuFhIQwn1S9fItuijPmmIytYmH5e
+         DNBA==
+X-Gm-Message-State: ANhLgQ3BxII8eQj8sBxcQxkjZYJiLUFqyE/2utfUwvOCuj5VoapYLfjU
+        ezr5+j0/H+n1b8U9ISo26+g1STgv6DbkHw==
+X-Google-Smtp-Source: ADFU+vt5NDaayPMUHsXSY8k4ZwE0SyPb1aBxsDRcUQaLRF+uXaXF3f1cbfLoYMcPhiB48Es6cJN9Mg==
+X-Received: by 2002:aed:2202:: with SMTP id n2mr14466967qtc.4.1584125254322;
+        Fri, 13 Mar 2020 11:47:34 -0700 (PDT)
+Received: from [192.168.1.106] ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id w1sm14917915qkc.117.2020.03.13.11.47.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Mar 2020 11:47:33 -0700 (PDT)
+To:     lsf-pc <lsf-pc@lists.linuxfoundation.org>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-nvme@vger.kernel.org" <linux-nvme@vger.kernel.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Subject: LSF/MM/BPF 2020: Postponement announcement
+Message-ID: <e4f390c7-3b25-67c8-5d6d-d7e87ba1c072@toxicpanda.com>
+Date:   Fri, 13 Mar 2020 14:47:32 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20200312171105.533690-1-jakub@cloudflare.com> <CAEf4BzbsDMbmury9Z-+j=egsfJf4uKxsu0Fsdr4YpP1FgvBiiQ@mail.gmail.com>
- <87o8t0xl37.fsf@cloudflare.com>
-In-Reply-To: <87o8t0xl37.fsf@cloudflare.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 13 Mar 2020 11:30:58 -0700
-Message-ID: <CAEf4BzbJENxR6nrL47tKa+mL8Cxf7JtTjkX7ysBSE0iYB0Ey5Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix spurious failures in accept
- due to EAGAIN
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team@cloudflare.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 13, 2020 at 9:42 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> On Thu, Mar 12, 2020 at 06:57 PM CET, Andrii Nakryiko wrote:
-> > Thanks for looking into this. Can you please verify that test
-> > successfully fails (not hangs) when, say, network is down (do `ip link
-> > set lo down` before running test?). The reason I'm asking is that I
-> > just fixed a problem in tcp_rtt selftest, in which accept() would
-> > block forever, even if listening socket was closed.
->
-> While on the topic writing network tests with test_progs.
->
-> There are a couple pain points because all tests run as one process:
->
-> 1) resource cleanup on failure
->
->    Tests can't simply exit(), abort(), or error() on failure. Instead
->    they need to clean up all resources, like opened file descriptors and
->    memory allocations, and propagate the error up to the main test
->    function so it can return to the test runner.
->
-> 2) terminating in timely fashion
->
->    We don't have an option of simply setting alarm() to terminate after
->    a reasnable timeout without worrying about I/O syscalls in blocking
->    mode being stuck.
+Hello,
 
-I agree, those APIs suck, unfortunately.
+Unfortunately given the escalating nature of the response to COVID-19 we are
+making the decision to change the original LSF/MM/BPF dates in April 2020.  We
+currently do not have concrete plans about how we will reschedule, the Linux
+Foundation is working very hard at getting us alternative dates as we speak.
+Once the new plans are concretely made we will notify everyone again with the
+new plans.
 
->
-> Careful error and timeout handling makes test code more complicated that
-> it really needs to be, IMHO. Making writing as well as maintaing them
-> harder.
+The tentative plan is to keep the attendees as they are if we reschedule within
+2020.  This includes anybody that declined for travel related concerns.  We will
+re-send all invitations again to the original invitees so it's clear that you
+have been invited.
 
-Well, I think it's actually a good thing. Tests are as important as
-features, if not more, so it pays to invest in having reliable tests.
+If we have to reschedule into 2021 then we will redo the CFP once we are closer
+to the actual date again and redo all of the invites and topics so we're as up
+to date as possible with the current state of the community.
 
->
-> What if we extended test_progs runner to support process-per-test
-> execution model? Perhaps as an opt-in for selected tests.
->
-> Is that in line with the plans/vision for BPF selftests?
+We will keep the current program committee and I will continue to chair until we
+have the next LSF/MM/BPF.
 
-It would be nice indeed, though I'd still maintain that tests
-shouldn't be sloppy. But having that would allow parallelizing tests,
-which would be awesome. So yeah, it would be good to have, IMO.
+Thank you on behalf of the program committee:
+
+         Josef Bacik (Filesystems)
+         Amir Goldstein (Filesystems)
+         Martin K. Petersen (Storage)
+         Omar Sandoval (Storage)
+         Michal Hocko (MM)
+         Dan Williams (MM)
+         Alexei Starovoitov (BPF)
+         Daniel Borkmann (BPF)
