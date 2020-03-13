@@ -2,106 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C5D1851BF
-	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 23:43:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43474185225
+	for <lists+bpf@lfdr.de>; Sat, 14 Mar 2020 00:16:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbgCMWnV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Mar 2020 18:43:21 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:35390 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726534AbgCMWnU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Mar 2020 18:43:20 -0400
-Received: by mail-oi1-f196.google.com with SMTP id k8so9759571oik.2
-        for <bpf@vger.kernel.org>; Fri, 13 Mar 2020 15:43:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MFjCvufz4qYwDEr+hp+Lr4gi77q6/a3rGxqdBQ0RGh0=;
-        b=hXcW2YUeO7771pgMZQkpwWmDZERH1p2Fm3PKienj099vaUMe3Qcl+GfrrGnyRTugmy
-         hOnPmmf61cOuY/9YM1n1YJDgIF/bzZkQ/SKe2ooZAlXOFVBwIbdf8NnqTwiRIUPwuyDu
-         gq3dsr7QjFlNCbKk0FVRt2dnIYW73J+gylAUjLTdaMQSAQ/34Wi3jetakzQOmExGLLbw
-         8OEa3IZy8OX7Im6ZIDSkOYCwptISjIO0eg7A4GLNypa3yVBcCLvJb7t8YlEPeGHfRL5j
-         ldPvDbHUiWlCrcDekAFVZa0WqguFkec5Hxe/880sV0TtxrYvDnRso7ck3UIuBr42iaBG
-         4qsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MFjCvufz4qYwDEr+hp+Lr4gi77q6/a3rGxqdBQ0RGh0=;
-        b=lqZSu7reY0U4Xkb9OFBv8ljvWkthex6FI6nJSpMevK4aX/RlFZIA8V5xsk6nGHDiSk
-         dK72mFm3anLxr+iDrxjEG4an9LS0ksZ8kJ9KSyJdCauhTHupZMUk8uA3jYQzp8+QM3DG
-         CCWo+ULLU1yJVMQvjeVVnN4Brnww479hdeyZNctmHBzMPBFcSWF3Pe06/qv7JrDWhPen
-         o4OGZnYmVfrdhBXqy1qKTfZ8IXbwQcG3yH9ISjp3KrJQn9/+OFLcHuLr9aVonUAJiYpP
-         ySXYBl8JJ7s/6gTlliu20E5louSR5q+RSB+zX/VzoHULoaWaGrryiV8jjoPw1L1QzSnV
-         mHog==
-X-Gm-Message-State: ANhLgQ3LUZI3mfUq90iWujRAGHmgGwJsKwJcW4VzS7ZZKZiDvbSy4FRz
-        TB93IvkI8a669ZWXGEZoPBHdldfFF1o0F923Yc+5eA==
-X-Google-Smtp-Source: ADFU+vu+OfEsMq89LMh75rmdjIo6Q7EXHa3Lgmr7926DPHs9q0A+YwV4vMORWl7jzo+TXKve5DGWJy0n+ni2SxD6TA0=
-X-Received: by 2002:aca:5155:: with SMTP id f82mr9178692oib.103.1584139399757;
- Fri, 13 Mar 2020 15:43:19 -0700 (PDT)
+        id S1727275AbgCMXQN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Mar 2020 19:16:13 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:55164 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726534AbgCMXQN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 13 Mar 2020 19:16:13 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02DNAuch009996
+        for <bpf@vger.kernel.org>; Fri, 13 Mar 2020 16:16:12 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=C0x2CUw7bCzL5b3a307IDu0E3CdYixifm5zmdEMJQxM=;
+ b=Tuvh7w5eIQ1bOpFYQaZ9LZ5XdrnwWdESGjlI2WqFuaS6za7l9oJVQ1fI61ro2mtv+VXo
+ Zl52s4kHFdr2ykE7DBTfdUbYqe//iidtqjpqp1sodsdxRIoYbfoYtiwxNXzUVjkyCsgZ
+ gxTj8Ekh9yJhkBe050DN3SY0cVjDBUdtDAA= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yqt80xupt-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 13 Mar 2020 16:16:12 -0700
+Received: from intmgw001.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 13 Mar 2020 16:16:09 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 96B112EC2D2A; Fri, 13 Mar 2020 16:15:58 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] selftest/bpf: fix compilation warning in sockmap_parse_prog.c
+Date:   Fri, 13 Mar 2020 16:07:15 -0700
+Message-ID: <20200313230715.3287973-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <00000000000041c6c205a08225dc@google.com> <20200312182826.GG79873@mtj.duckdns.org>
- <CAHS8izPySSO07dHi3OZ_1uXjmMCGnNMWey+o-qwFM7GnD7oSHw@mail.gmail.com>
-In-Reply-To: <CAHS8izPySSO07dHi3OZ_1uXjmMCGnNMWey+o-qwFM7GnD7oSHw@mail.gmail.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Fri, 13 Mar 2020 15:43:08 -0700
-Message-ID: <CAHS8izMpBXsv_fvy5Qw8CcjBivpfgec+r39+aFScgNDtUTdSqA@mail.gmail.com>
-Subject: Re: KASAN: slab-out-of-bounds Read in cgroup_file_notify
-To:     Tejun Heo <tj@kernel.org>, Giuseppe Scrivano <gscrivan@redhat.com>
-Cc:     syzbot <syzbot+cac0c4e204952cf449b1@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, andriin@fb.com,
-        ast@kernel.org, bpf@vger.kernel.org, cgroups@vger.kernel.org,
-        christian@brauner.io, daniel@iogearbox.net,
-        Johannes Weiner <hannes@cmpxchg.org>, kafai@fb.com,
-        open list <linux-kernel@vger.kernel.org>,
-        Li Zefan <lizefan@huawei.com>, netdev@vger.kernel.org,
-        sfr@canb.auug.org.au, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-03-13_11:2020-03-12,2020-03-13 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=8
+ malwarescore=0 clxscore=1015 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 impostorscore=0 phishscore=0 mlxlogscore=898 mlxscore=0
+ bulkscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2003130103
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 12, 2020 at 2:06 PM Mina Almasry <almasrymina@google.com> wrote:
->
-> On Thu, Mar 12, 2020 at 11:28 AM Tejun Heo <tj@kernel.org> wrote:
-> >
-> > On Tue, Mar 10, 2020 at 08:55:14AM -0700, syzbot wrote:
-> > > Hello,
-> > >
-> > > syzbot found the following crash on:
-> > >
-> > > HEAD commit:    c99b17ac Add linux-next specific files for 20200225
-> > > git tree:       linux-next
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=1610d70de00000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=6b7ebe4bd0931c45
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=cac0c4e204952cf449b1
-> > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1242e1fde00000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1110d70de00000
-> > >
-> > > The bug was bisected to:
-> > >
-> > > commit 6863de00e5400b534cd4e3869ffbc8f94da41dfc
-> > > Author: Mina Almasry <almasrymina@google.com>
-> > > Date:   Thu Feb 20 03:55:30 2020 +0000
-> > >
-> > >     hugetlb_cgroup: add accounting for shared mappings
-> >
-> > Mina, can you please take a look at this?
-> >
->
-> Gah, I missed the original syzbot email but I just saw this. I'll take a look.
->
+Cast void * to long before casting to 32-bit __u32 to avoid compilation
+warning.
 
-This was easy enough to track down, I just sent out a fix:
-https://lore.kernel.org/linux-mm/20200313223920.124230-1-almasrymina@google.com
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/testing/selftests/bpf/progs/sockmap_parse_prog.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-BTW, even though this was bisected to my patch, the root cause seems
-to be a mistake in commit faced7e0806cf ("mm: hugetlb controller for
-cgroups v2"), which is not only in linux-next but also in linus's tree
-(I did not check if it's in stable). If my fix is reviewed, the patch
-should be sent there as well. I'll make the same comment on the above
-thread as well.
+diff --git a/tools/testing/selftests/bpf/progs/sockmap_parse_prog.c b/tools/testing/selftests/bpf/progs/sockmap_parse_prog.c
+index a5c6d5903b22..a9c2bdbd841e 100644
+--- a/tools/testing/selftests/bpf/progs/sockmap_parse_prog.c
++++ b/tools/testing/selftests/bpf/progs/sockmap_parse_prog.c
+@@ -12,7 +12,7 @@ int bpf_prog1(struct __sk_buff *skb)
+ 	__u32 lport = skb->local_port;
+ 	__u32 rport = skb->remote_port;
+ 	__u8 *d = data;
+-	__u32 len = (__u32) data_end - (__u32) data;
++	__u32 len = (__u32)(long)data_end - (__u32)(long)data;
+ 	int err;
+ 
+ 	if (data + 10 > data_end) {
+-- 
+2.17.1
+
