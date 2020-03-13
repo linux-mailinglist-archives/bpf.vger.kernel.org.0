@@ -2,40 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D7337184FF4
-	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 21:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC184185033
+	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 21:21:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726528AbgCMUNH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Mar 2020 16:13:07 -0400
-Received: from www62.your-server.de ([213.133.104.62]:47192 "EHLO
+        id S1726591AbgCMUVD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Mar 2020 16:21:03 -0400
+Received: from www62.your-server.de ([213.133.104.62]:48456 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726480AbgCMUNH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Mar 2020 16:13:07 -0400
+        with ESMTP id S1726528AbgCMUVD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Mar 2020 16:21:03 -0400
 Received: from sslproxy02.your-server.de ([78.47.166.47])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jCqg4-0006tE-AZ; Fri, 13 Mar 2020 21:13:04 +0100
+        id 1jCqnk-0000G8-Gk; Fri, 13 Mar 2020 21:21:00 +0100
 Received: from [85.7.42.192] (helo=pc-9.home)
         by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jCqg4-0007uO-0X; Fri, 13 Mar 2020 21:13:04 +0100
-Subject: Re: [PATCH bpf-next] bpf_helpers_doc.py: Fix warning when compiling
- bpftool.
-To:     Carlos Antonio Neira Bustos <cneirabustos@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Cc:     netdev@vger.kernel.org, yhs@fb.com, quentin@isovalent.com,
-        ebiederm@xmission.com, brouer@redhat.com, bpf@vger.kernel.org
-References: <20200313154650.13366-1-cneirabustos@gmail.com>
- <20200313172119.3vflwxlbikvqdcqh@kafai-mbp> <20200313182319.GA13630@bpf-dev>
+        id 1jCqnk-0009P1-68; Fri, 13 Mar 2020 21:21:00 +0100
+Subject: Re: [PATCH bpf-next] tools/bpf: move linux/types.h for selftests and
+ bpftool
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Tobias Klauser <tklauser@distanz.ch>
+Cc:     Alexei Starovoitov <ast@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>, arnaldo.melo@gmail.com
+References: <20200313113105.6918-1-tklauser@distanz.ch>
+ <CAEf4BzZS9mrJAhQaDOXvYG+3Hob0ntRu3rWNffHTJ82TDN6x6A@mail.gmail.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <2ac3730c-123c-df3e-0ec8-45957bbf8d8a@iogearbox.net>
-Date:   Fri, 13 Mar 2020 21:13:02 +0100
+Message-ID: <5beb49b7-f73e-5160-38ce-1087e7ee75dc@iogearbox.net>
+Date:   Fri, 13 Mar 2020 21:20:59 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20200313182319.GA13630@bpf-dev>
+In-Reply-To: <CAEf4BzZS9mrJAhQaDOXvYG+3Hob0ntRu3rWNffHTJ82TDN6x6A@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -46,21 +49,42 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/13/20 7:23 PM, Carlos Antonio Neira Bustos wrote:
-> On Fri, Mar 13, 2020 at 10:21:19AM -0700, Martin KaFai Lau wrote:
->> On Fri, Mar 13, 2020 at 12:46:50PM -0300, Carlos Neira wrote:
->>>
->>> When compiling bpftool the following warning is found:
->>> "declaration of 'struct bpf_pidns_info' will not be visible outside of this function."
->>> This patch adds struct bpf_pidns_info to type_fwds array to fix this.
->>>
->>> Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
->> Fixes: b4490c5c4e02 ("bpf: Added new helper bpf_get_ns_current_pid_tgid")
->> Acked-by: Martin KaFai Lau <kafai@fb.com>
->>
->> Please add the Fixes tag next time.  Other than tracking,
->> it will be easier for review purpose also.
-> 
-> Thanks, I will do that in the future.
+[ +acme ]
 
-Applied, thanks!
+On 3/13/20 5:52 PM, Andrii Nakryiko wrote:
+> On Fri, Mar 13, 2020 at 4:31 AM Tobias Klauser <tklauser@distanz.ch> wrote:
+>>
+>> Commit fe4eb069edb7 ("bpftool: Use linux/types.h from source tree for
+>> profiler build") added a build dependency on tools/testing/selftests/bpf
+>> to tools/bpf/bpftool. This is suboptimal with respect to a possible
+>> stand-alone build of bpftool.
+>>
+>> Fix this by moving
+>> tools/testing/selftests/bpf/include/uapi/linux/types.h to
+>> tools/include/uapi/linux/types.h
+>>
+>> This requires an adjustment in the include search path order for the
+>> tests in tools/testing/selftests/bpf so that tools/include/linux/types.h
+>> is selected when building host binaries and
+>> tools/include/uapi/linux/types.h is selected when building bpf binaries.
+>>
+>> Verified by compiling bpftool and the bpf selftests on x86_64 with this
+>> change.
+> 
+> Thanks for following up!
+> 
+> My only concern is that tools/include/uapi/ is also used at least by
+> perf and libperf, we need to double check that they are fine with this
+> as well.
+> 
+> Given this is needed for BPF target compilation only, one way to limit
+> the scope of this change would be to have a `#if defined(__bpf__)`
+> check and falling back to "normal" uapi/linux/types.h. Alternatively,
+> we could have a bpf-specific subdirectory and put this header into
+> tools/include/bpf/uapi/linux/types.h.
+> 
+> I don't have any strong preferences, whatever maintainers are happy with.
+
+I would prefer to keep it generic if possible before we take measures of
+making special cases for bpf in tools include infra. Compilation of perf
+and libperf seems fine on my side as well, so I've applied it, thanks!
