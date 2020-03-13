@@ -2,179 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E4018526D
-	for <lists+bpf@lfdr.de>; Sat, 14 Mar 2020 00:38:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE8218527E
+	for <lists+bpf@lfdr.de>; Sat, 14 Mar 2020 00:53:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726397AbgCMXiL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Mar 2020 19:38:11 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:41865 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727661AbgCMXiL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Mar 2020 19:38:11 -0400
-Received: by mail-io1-f67.google.com with SMTP id m25so11289615ioo.8
-        for <bpf@vger.kernel.org>; Fri, 13 Mar 2020 16:38:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AEYTIWb3PsO0Xiy9lFeTw55fvTUc8SpDmWDxLNij3EI=;
-        b=AZBPzEz+sVo8yBM4hg1vSfNVaQSf1ZCEQOzTtCnGyKP6kpCxpgQzMfDZfC/hlumeJB
-         H/M+VKrZWOnwvI/ZhAPUue2dmP7rLPTy9/dnLYou2GNQJap+ecCzp7AKH7jDszgNYMpu
-         DQrn9zcCvVAol8DWF7NjMxpl6ZaoxSEtS12NA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AEYTIWb3PsO0Xiy9lFeTw55fvTUc8SpDmWDxLNij3EI=;
-        b=izrVr0hjtLzHF6YRFYwU65fKfnkilyPRPJVu6CufGzJXTHccFMAVw1rxdK0aaz7zts
-         zl0AoSX7uTyoYTiJ590A+9W+tDz1MuLFjDnTGLdUMGfZd34kW6+slNehj6q/x1p/YBT5
-         4ZGJQrBxzbxrbQvSAs/5lx2lOpfw7Jdi3e02vHva3sIQs/81WP3/bsdXCaODDv2HtbB9
-         Y1kQ81cQBmBb0o8ZAGGAfZpdpWQ3iJlQzohTcjr+W7lRVLd+6BLIm2gLKbR2lZPnFknN
-         RmaMlFYvCnwIRa7mOEsqcR9IeTNKJXOldZroK1k/qE8OR1DGeVcgQ6VpE0lG0YDInwmg
-         cwNg==
-X-Gm-Message-State: ANhLgQ0AKm8XTuMAxmBDvSMU7GFdDR1jHz3QlIGZm0QpU/ShjWjhKsqg
-        1YnT51c0588SXKCTOmrLYGDYiQ==
-X-Google-Smtp-Source: ADFU+vvhPkb47WbezsVfdMzGW05L/L+RkHkhr/9KYtdLXeiKp0HMu3qMmn003dqkkH31Sb1bc2QXLA==
-X-Received: by 2002:a6b:7504:: with SMTP id l4mr14774812ioh.184.1584142688753;
-        Fri, 13 Mar 2020 16:38:08 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id j75sm9067501ilf.86.2020.03.13.16.38.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Mar 2020 16:38:08 -0700 (PDT)
-Subject: Re: [PATCH v3] selftests: Fix seccomp to support relocatable build
- (O=objdir)
-To:     Kees Cook <keescook@chromium.org>
-Cc:     shuah@kernel.org, luto@amacapital.net, wad@chromium.org,
-        daniel@iogearbox.net, kafai@fb.com, yhs@fb.com, andriin@fb.com,
-        gregkh@linuxfoundation.org, tglx@linutronix.de,
-        khilman@baylibre.com, mpe@ellerman.id.au,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20200313212404.24552-1-skhan@linuxfoundation.org>
- <202003131615.D132E9E9@keescook>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <85ce71dc-e7f8-74ed-f495-dcb46255908a@linuxfoundation.org>
-Date:   Fri, 13 Mar 2020 17:38:06 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1726534AbgCMXx1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Mar 2020 19:53:27 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:51888 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726397AbgCMXx1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 13 Mar 2020 19:53:27 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 02DNm0Xv006337;
+        Fri, 13 Mar 2020 16:53:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=ML3QaVATkvIS0VGABYkk9PGrQ7bV9aCpUzSm1QOa4mk=;
+ b=D0IzVtFjlx6mQUNzaoirVSXi5idDSUSgXpyteKytXMhAKvmxpIdMfVDJYsyBacbJPLMZ
+ H8Sk2E8hfjKthBu+cnCJ1sI5jpt5dK1rzl1nB+wZwTDQ/ktW374ZmBUBzepNN4TsdlNS
+ gfHCJW4NvtRSgiE+1TUnokk/A8NmCDpHYXY= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 2yqt89f13y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 13 Mar 2020 16:53:15 -0700
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 13 Mar 2020 16:53:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PDnmi0M0hjUQAWqqWvboQQ4lnweqxnb2B50ihJEBCBf2KI96/iIF3Ee0LyKlfCfLOghRfELpHCP9nnNMU9JXmSM4b+b3zjTmNBEYHUUTCAII0ds5n/Nknz8XyBIvyUT9cpTyVNnyb4j0slcnvQCx8KTXjeOiaQ368UfpwHSAHe0wshCZfaPsFbmYTwpSwyTiGwOap5nrlR8zAjUoq/9O8iAYiwwgtAOKu4ANNBVBml0xDRlUTXTZ8TvKqKxkjWmugvYumNvCKcFvuQFvJk8RZHSOXqtb8MDMQi1GOWo9xlsj7hdZ2oms6WWi2+fXfZd4cPW/mNC5/vT8nmUChTtCgQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ML3QaVATkvIS0VGABYkk9PGrQ7bV9aCpUzSm1QOa4mk=;
+ b=LbzduLEaqkKBe1KQoRUr084+osvmDpHJmDxeJ3Ib7J/c1gt6x14r+2NDmnuM79u/5TR7QKUVFDU+r7u6ZC9ILr+jg/xyPq9i3WZYMmewlPFau6li5pwTL703FxaL4BancAfOH+G5sEqpQo6H3NTgtuM06X+jeW23jkmMWrvHbS7cu7MpE10twWp3hCVjKtEvX/+1HQWrrESEW/Dd8qwoz+72gw9Wb7WPsu+hTyWVSWGDebFHzdmJL56u+FD/TtRYFl9WKz7ARdVpLgXce66/gZcIwyoFRQ9kj4RIyNAX76GTpSzG8qLaFJFrKDFMIjwqrgCOqDqUgIwX2lSDHPYJIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ML3QaVATkvIS0VGABYkk9PGrQ7bV9aCpUzSm1QOa4mk=;
+ b=W/cddvzepqff2nzKvTE1oLZp0v/8wH2Y/InfIgtiliHfJbwDnkgql2V9WMmDzOH/8zfu/s8Mn2/BryvjjC3MnN/aP21UH6lRU2+pF6ub4zv92ovAGt5625143NeNyyASg3P7R63pznvbeh7susvMpx3eQR/ZZp1jHS7D3jFfd1o=
+Received: from BYAPR15MB2278.namprd15.prod.outlook.com (2603:10b6:a02:8e::17)
+ by BYAPR15MB2792.namprd15.prod.outlook.com (2603:10b6:a03:15c::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2814.13; Fri, 13 Mar
+ 2020 23:53:13 +0000
+Received: from BYAPR15MB2278.namprd15.prod.outlook.com
+ ([fe80::4d5a:6517:802b:5f47]) by BYAPR15MB2278.namprd15.prod.outlook.com
+ ([fe80::4d5a:6517:802b:5f47%4]) with mapi id 15.20.2793.018; Fri, 13 Mar 2020
+ 23:53:13 +0000
+Date:   Fri, 13 Mar 2020 16:53:09 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <andrii.nakryiko@gmail.com>,
+        <kernel-team@fb.com>
+Subject: Re: [Potential Spoof] [PATCH bpf-next] selftest/bpf: fix compilation
+ warning in sockmap_parse_prog.c
+Message-ID: <20200313235309.34matqh7iaahawkf@kafai-mbp>
+References: <20200313230715.3287973-1-andriin@fb.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200313230715.3287973-1-andriin@fb.com>
+User-Agent: NeoMutt/20180716
+X-ClientProxiedBy: MWHPR11CA0025.namprd11.prod.outlook.com
+ (2603:10b6:300:115::11) To BYAPR15MB2278.namprd15.prod.outlook.com
+ (2603:10b6:a02:8e::17)
 MIME-Version: 1.0
-In-Reply-To: <202003131615.D132E9E9@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp (2620:10d:c090:400::5:ad28) by MWHPR11CA0025.namprd11.prod.outlook.com (2603:10b6:300:115::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2793.15 via Frontend Transport; Fri, 13 Mar 2020 23:53:12 +0000
+X-Originating-IP: [2620:10d:c090:400::5:ad28]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2aa004af-4cce-4a43-9bcc-08d7c7a9b0d8
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2792:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2792DF372D67C3F2780C5FF0D5FA0@BYAPR15MB2792.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
+X-Forefront-PRVS: 034119E4F6
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(39860400002)(376002)(136003)(366004)(346002)(396003)(199004)(6636002)(6666004)(81156014)(81166006)(8676002)(6862004)(66476007)(66556008)(33716001)(5660300002)(86362001)(66946007)(2906002)(55016002)(6496006)(186003)(16526019)(9686003)(316002)(52116002)(1076003)(4744005)(478600001)(4326008)(8936002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2792;H:BYAPR15MB2278.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
+Received-SPF: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XziMyJ+D8fUJC1WFY3TceSx1WO1yKHvVljBnDoNjd7dgKSUeyRxKbQVcJbWocQtPr/VnG++0tTGHCqd2ZpFdxsF7itfmw4aMV2JBbnNyww8UNHZCn3vZ2AuUeb6xSq3SXSKzVj8VHKaH1QbP2xZgp1w2IZhd6hWz4CITekD7m5ychGqjIXKTOJgL46LQbAQneEYYvzkBSaKxJOvHmXOtEsTfCu9l6M47qm/B9Fu3/wR34yNN40Jfr12iXyF98/SG5sDklxOMRWLQqwLqFhnNPTlO1vjAzgxfzicvfpGBQlP7Z9e5AESRLbTYFHichoPQfFNn/bvEcsRsI0oyi56mf5d10WWkw39zZg1RGuBRz/YCliedchIqLHkA0OkUFB+ymeB3Mz+0I/JZjti8bpLkfm64Invqv31TnFrBTz1rgnKWJYliD9Jlccj6YDE6OfBT
+X-MS-Exchange-AntiSpam-MessageData: 8gqhq7z8DCI0IpaeZXtzWFKJ76u4M1Jc+FH33cmOw74b43R/9T5TfUyhhzAtWsF4qCkkDC+AE2ojNGuHaEy73bcFeyzm0qGTZU3cEUfAt/pU9WuKAb3nnSunYUbsHcnNOqsHHSrGq1QCXbWDLVRYbpolNzFQaRBfjCgkiWq3xOinjKpEicw6s0WpdNHwpgqz
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2aa004af-4cce-4a43-9bcc-08d7c7a9b0d8
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Mar 2020 23:53:13.0718
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gWtnekDdva6Ns9Yl6jQ6Af3feyf/t0ZfITBydj97IMHMsMP74JwoVEn92ySgsDQH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2792
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-03-13_12:2020-03-12,2020-03-13 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ clxscore=1015 malwarescore=0 bulkscore=0 impostorscore=0 mlxscore=0
+ suspectscore=0 priorityscore=1501 spamscore=0 adultscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2003130105
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/13/20 5:18 PM, Kees Cook wrote:
-> On Fri, Mar 13, 2020 at 03:24:04PM -0600, Shuah Khan wrote:
->> Fix seccomp relocatable builds. This is a simple fix to use the right
->> lib.mk variable TEST_GEN_PROGS with dependency on kselftest_harness.h
->> header, and defining LDFLAGS for pthread lib.
->>
->> Removes custom clean rule which is no longer necessary with the use of
->> TEST_GEN_PROGS.
->>
->> Uses $(OUTPUT) defined in lib.mk to handle build relocation.
->>
->> The following use-cases work with this change:
->>
->> In seccomp directory:
->> make all and make clean
->>
->>  From top level from main Makefile:
->> make kselftest-install O=objdir ARCH=arm64 HOSTCC=gcc \
->>   CROSS_COMPILE=aarch64-linux-gnu- TARGETS=seccomp
->>
->> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
->> ---
->>
->> Changes since v2:
->> -- Using TEST_GEN_PROGS is sufficient to generate objects.
->>     Addresses review comments from Kees Cook.
->>
->>   tools/testing/selftests/seccomp/Makefile | 18 ++++++++----------
->>   1 file changed, 8 insertions(+), 10 deletions(-)
->>
->> diff --git a/tools/testing/selftests/seccomp/Makefile b/tools/testing/selftests/seccomp/Makefile
->> index 1760b3e39730..a0388fd2c3f2 100644
->> --- a/tools/testing/selftests/seccomp/Makefile
->> +++ b/tools/testing/selftests/seccomp/Makefile
->> @@ -1,17 +1,15 @@
->>   # SPDX-License-Identifier: GPL-2.0
->> -all:
->> -
->> -include ../lib.mk
->> +CFLAGS += -Wl,-no-as-needed -Wall
->> +LDFLAGS += -lpthread
->>   
->>   .PHONY: all clean
+On Fri, Mar 13, 2020 at 04:07:15PM -0700, Andrii Nakryiko wrote:
+> Cast void * to long before casting to 32-bit __u32 to avoid compilation
+> warning.
 > 
-> Isn't this line redundant to ../lib.mk's?
->
->>   
->> -BINARIES := seccomp_bpf seccomp_benchmark
->> -CFLAGS += -Wl,-no-as-needed -Wall
->> +include ../lib.mk
->> +
->> +# OUTPUT set by lib.mk
->> +TEST_GEN_PROGS := $(OUTPUT)/seccomp_bpf $(OUTPUT)/seccomp_benchmark
->>   
->> -seccomp_bpf: seccomp_bpf.c ../kselftest_harness.h
->> -	$(CC) $(CFLAGS) $(LDFLAGS) $< -lpthread -o $@
->> +$(TEST_GEN_PROGS): ../kselftest_harness.h
->>   
->> -TEST_PROGS += $(BINARIES)
->> -EXTRA_CLEAN := $(BINARIES)
->> +all: $(TEST_GEN_PROGS)
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
+>  tools/testing/selftests/bpf/progs/sockmap_parse_prog.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> And isn't this one too?
+> diff --git a/tools/testing/selftests/bpf/progs/sockmap_parse_prog.c b/tools/testing/selftests/bpf/progs/sockmap_parse_prog.c
+> index a5c6d5903b22..a9c2bdbd841e 100644
+> --- a/tools/testing/selftests/bpf/progs/sockmap_parse_prog.c
+> +++ b/tools/testing/selftests/bpf/progs/sockmap_parse_prog.c
+> @@ -12,7 +12,7 @@ int bpf_prog1(struct __sk_buff *skb)
+>  	__u32 lport = skb->local_port;
+>  	__u32 rport = skb->remote_port;
+>  	__u8 *d = data;
+> -	__u32 len = (__u32) data_end - (__u32) data;
+I think this line can be removed.  "len" is not used.
 
-make in seccomp directory won't work. lib.mk won't build it.
-One reason why I wanted to clearly call this out as CUSTOM
-program.
+> +	__u32 len = (__u32)(long)data_end - (__u32)(long)data;
 
-But it does make sense to reduce additional EXTRA_CLEAN by
-just using TEST_GEN_PROGS.
+>  	int err;
+>  
+>  	if (data + 10 > data_end) {
+> -- 
+> 2.17.1
 > 
-> I think if those are removed it should all still work? Regardless:
-> 
-diff Makefile
-diff --git a/tools/testing/selftests/seccomp/Makefile 
-b/tools/testing/selftests/seccomp/Makefile
-index a0388fd2c3f2..d3d256654cb1 100644
---- a/tools/testing/selftests/seccomp/Makefile
-+++ b/tools/testing/selftests/seccomp/Makefile
-@@ -2,7 +2,7 @@
-  CFLAGS += -Wl,-no-as-needed -Wall
-  LDFLAGS += -lpthread
-
--.PHONY: all clean
-+#.PHONY: all clean
-
-  include ../lib.mk
-
-@@ -11,5 +11,5 @@ TEST_GEN_PROGS := $(OUTPUT)/seccomp_bpf 
-$(OUTPUT)/seccomp_benchmark
-
-  $(TEST_GEN_PROGS): ../kselftest_harness.h
-
--all: $(TEST_GEN_PROGS)
-+#$all: $(TEST_GEN_PROGS)
-
-With this:
-
-make
-make: Nothing to be done for 'all'.
-
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> 
-
-I am addressing your comment about other tests that de[end on
-kselftest_harness.h. I have a few patches ready to be sent.
-
-thanks,
--- Shuah
