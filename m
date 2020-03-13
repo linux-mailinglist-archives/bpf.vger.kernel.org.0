@@ -2,116 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C26B184572
-	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 12:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 682521845F9
+	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 12:31:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726464AbgCMLDl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Mar 2020 07:03:41 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:38380 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726364AbgCMLDl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Mar 2020 07:03:41 -0400
-Received: by mail-ot1-f66.google.com with SMTP id t28so6991581ott.5
-        for <bpf@vger.kernel.org>; Fri, 13 Mar 2020 04:03:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P1J3zQtyM8ZuzD0RXk1OAoOwjOfilKeAQsgTok7/sH8=;
-        b=ynMKNJNHiAPET+F0bqhByFlrpx9k59VQi4n6aOf7fPc1FUKJiQVDxr/+sSz0opaIC5
-         zjglT/t3ambf/ru1n4FCu6/iQwBztatiQj6LixrivxJhnWH/VVxjE9sCWX94h9il8GiJ
-         CHdOeFl0gC+714vfWdvsKu3h0O1J5mlpw/MOQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P1J3zQtyM8ZuzD0RXk1OAoOwjOfilKeAQsgTok7/sH8=;
-        b=lQCju2rawzPWI/teFaPR9v6HZ1dt9uIVPTDefj3RcZ9WuqmD12XMdwFxipDQtBkvOO
-         7A9D5813nhbTNqmZKWr+NyeQrXdWcJE2hLTu8u9d16R6JJkMXv20AFOuCXlp2ZixalPv
-         6Y3b57+skxq7bAeogJaVl8w4RTiEV7pwgEJ/oR8v/G05fjVYJa13A8lKmU62SAb99cgE
-         xCZMdCUMo2wH5lIHC9PQzbFw6G5Eo3Y4Z9THnxRWzKUb9f5SMqgZXspC2m3oTnTa2Qbk
-         e7A9pTgh+pJfGknoEaeJa5qxbzdhcuR4e91/Snm6pB06z+dIuaHcGpIWzbMTGWmT76xp
-         NXrA==
-X-Gm-Message-State: ANhLgQ2ICd1umiaAw8VWLcqjeWtftj//0B6kuQ4vp9Z5m42j/m4OtpLZ
-        JGfSNw0ME6SaFkRpmOoqEVCNu5JDBDyRQ5ygh3By2Q==
-X-Google-Smtp-Source: ADFU+vtHYLjMqgS/LYEKUe6BDFXT1dPa+LK0zjmtRo78EeJY+uNKGtMyss2ExI7N60MqW6CJx9PSsa67V+E35Z+sPI4=
-X-Received: by 2002:a9d:10d:: with SMTP id 13mr10921021otu.334.1584097419903;
- Fri, 13 Mar 2020 04:03:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200310174711.7490-1-lmb@cloudflare.com> <20200312015822.bhu6ptkx5jpabkr6@ast-mbp.dhcp.thefacebook.com>
- <CACAyw9-Ui5FECjAaehP8raRjcRJVx2nQAj5=XPu=zXME2acMhg@mail.gmail.com>
- <20200312175828.xenznhgituyi25kj@ast-mbp> <5e6a8e48240a9_6a322aac933b85c029@john-XPS-13-9370.notmuch>
-In-Reply-To: <5e6a8e48240a9_6a322aac933b85c029@john-XPS-13-9370.notmuch>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Fri, 13 Mar 2020 11:03:26 +0000
-Message-ID: <CACAyw989zaAe2UDHcOPODbSo=WDPpQzD6kX1h5z_4xBfKP+oQg@mail.gmail.com>
-Subject: Re: [PATCH 0/5] Return fds from privileged sockhash/sockmap lookup
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726414AbgCMLbK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Mar 2020 07:31:10 -0400
+Received: from sym2.noone.org ([178.63.92.236]:38440 "EHLO sym2.noone.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726492AbgCMLbJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Mar 2020 07:31:09 -0400
+Received: by sym2.noone.org (Postfix, from userid 1002)
+        id 48f3RY57VNzvjdW; Fri, 13 Mar 2020 12:31:05 +0100 (CET)
+From:   Tobias Klauser <tklauser@distanz.ch>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: [PATCH bpf-next] tools/bpf: move linux/types.h for selftests and bpftool
+Date:   Fri, 13 Mar 2020 12:31:05 +0100
+Message-Id: <20200313113105.6918-1-tklauser@distanz.ch>
+X-Mailer: git-send-email 2.11.0
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 12 Mar 2020 at 19:32, John Fastabend <john.fastabend@gmail.com> wrote:
->
-> The restriction that the maps can not grow/shrink is perhaps limiting a
-> bit. I can see how resizing might be useful. In my original load balancer
-> case a single application owned all the socks so there was no need to
-> ever pull them back out of the map. We "knew" where they were. I think
-> resize ops could be added without to much redesign. Or a CREATE flag could
-> be used to add it as a new entry if needed. At some point I guess someone
-> will request it as a feature for Cilium for example. OTOH I'm not sure
-> off-hand how to use a dynamically sized table for load balancing. I
-> should know the size because I want to say something about the hash
-> distribution and if the size is changing do I still know this? I really
-> haven't considered it much.
+Commit fe4eb069edb7 ("bpftool: Use linux/types.h from source tree for
+profiler build") added a build dependency on tools/testing/selftests/bpf
+to tools/bpf/bpftool. This is suboptimal with respect to a possible
+stand-alone build of bpftool.
 
-I agree, magically changing the size of a sockmap isn't useful. We don't
-want to do load-balancing, but still need stable indices into the map:
+Fix this by moving
+tools/testing/selftests/bpf/include/uapi/linux/types.h to
+tools/include/uapi/linux/types.h
 
-- derive some sort of ID from the skb
-- look up the ID in the sockmap
-- return the socket as the result of the program
+This requires an adjustment in the include search path order for the
+tests in tools/testing/selftests/bpf so that tools/include/linux/types.h
+is selected when building host binaries and
+tools/include/uapi/linux/types.h is selected when building bpf binaries.
 
-If the ID changes we need to coordinate this with the eBPF, or at least
-update some other map in a race-free way.
+Verified by compiling bpftool and the bpf selftests on x86_64 with this
+change.
 
-[...]
+Fixes: fe4eb069edb7 ("bpftool: Use linux/types.h from source tree for profiler build")
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Quentin Monnet <quentin@isovalent.com>
+Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+---
+ tools/bpf/bpftool/Makefile                                 | 1 -
+ .../{testing/selftests/bpf => }/include/uapi/linux/types.h | 0
+ tools/testing/selftests/bpf/Makefile                       | 7 ++++---
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+ rename tools/{testing/selftests/bpf => }/include/uapi/linux/types.h (100%)
 
->
-> Rather than expose the fd's to user space would a map copy api be
-> useful? I could imagine some useful cases where copy might be used
->
->  map_copy(map *A, map *B, map_key *key)
->
-> would need to sort out what to do with key/value size changes. But
-> I can imagine for upgrades this might be useful.
-
-I guess that would be a way to approach it. I'd probably find a primitive
-to copy a whole map atomically more useful, but haven't really thought
-about it much.
-
->
-> Another option I've been considering the need for a garbage collection
-> thread trigger at regular intervals. This BPF program could do the
-> copy from map to map in kernel space never exposing fds out of kernel
-
-So, have a dummy prog that has both maps, and copies from old to new.
-Invoke that from user space via BPF_PROG_TEST_RUN?
-
-I guess that would work, but falls back to being "protected" by
-CAP_SYS_ADMIN. It's just more cumbersome than doing it in user space!
-
-Lorenz
-
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index 9ca3bfbb9ac4..f584d1fdfc64 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -129,7 +129,6 @@ $(OUTPUT)_bpftool: $(_OBJS) $(LIBBPF)
+ skeleton/profiler.bpf.o: skeleton/profiler.bpf.c $(LIBBPF)
+ 	$(QUIET_CLANG)$(CLANG) \
+ 		-I$(srctree)/tools/include/uapi/ \
+-		-I$(srctree)/tools/testing/selftests/bpf/include/uapi \
+ 		-I$(LIBBPF_PATH) -I$(srctree)/tools/lib \
+ 		-g -O2 -target bpf -c $< -o $@
+ 
+diff --git a/tools/testing/selftests/bpf/include/uapi/linux/types.h b/tools/include/uapi/linux/types.h
+similarity index 100%
+rename from tools/testing/selftests/bpf/include/uapi/linux/types.h
+rename to tools/include/uapi/linux/types.h
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index da4389dde9f7..074a05efd1ca 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -20,8 +20,9 @@ CLANG		?= clang
+ LLC		?= llc
+ LLVM_OBJCOPY	?= llvm-objcopy
+ BPF_GCC		?= $(shell command -v bpf-gcc;)
+-CFLAGS += -g -rdynamic -Wall -O2 $(GENFLAGS) -I$(CURDIR) -I$(APIDIR)	\
++CFLAGS += -g -rdynamic -Wall -O2 $(GENFLAGS) -I$(CURDIR)		\
+ 	  -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR) -I$(TOOLSINCDIR)	\
++	  -I$(APIDIR)							\
+ 	  -Dbpf_prog_load=bpf_prog_test_load				\
+ 	  -Dbpf_load_program=bpf_test_load_program
+ LDLIBS += -lcap -lelf -lz -lrt -lpthread
+@@ -194,8 +195,8 @@ MENDIAN=$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
+ 
+ CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
+ BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN) 			\
+-	     -I$(INCLUDE_DIR) -I$(CURDIR) -I$(CURDIR)/include/uapi	\
+-	     -I$(APIDIR) -I$(abspath $(OUTPUT)/../usr/include)
++	     -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR)			\
++	     -I$(abspath $(OUTPUT)/../usr/include)
+ 
+ CLANG_CFLAGS = $(CLANG_SYS_INCLUDES) \
+ 	       -Wno-compare-distinct-pointer-types
 -- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+2.24.0
 
-www.cloudflare.com
