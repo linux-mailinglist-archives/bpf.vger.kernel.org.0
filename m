@@ -2,92 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ED5F2183F2D
-	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 03:39:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE5A184027
+	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 06:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgCMCjd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Mar 2020 22:39:33 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:40006 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726246AbgCMCjc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Mar 2020 22:39:32 -0400
-Received: by mail-pl1-f196.google.com with SMTP id h11so3489227plk.7;
-        Thu, 12 Mar 2020 19:39:32 -0700 (PDT)
+        id S1726194AbgCMFFE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Mar 2020 01:05:04 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:33689 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbgCMFFE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Mar 2020 01:05:04 -0400
+Received: by mail-qt1-f195.google.com with SMTP id d22so6575035qtn.0;
+        Thu, 12 Mar 2020 22:05:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Rs1oqWipH70EqXQPZoCyLHHvdHZcK5yX7KipafNzHgo=;
-        b=fTihegLmnOtNBXny+Jn9Qu7R+3y3R1QNpb0QRLf4CwbwNTK8BGA3OtJLKMtEbQGZ2u
-         MUZ56T++lciXe6odpK+LWItTj42+GZxM2dRa+LEnSr3Tk6D1Oj+H2p2gMgnSTlbyXHQj
-         NLIsDFTlsrjyt8sM9MRN8NyGrO566G+kOdAkkqKEqrVMXMMoJQzC72ul2b8jJntKDzJb
-         Ha3n3Ar0FuJoIy32b+bsyFUviu3OWz7LFdGe12KbNtA+IKMAUXPLss5d24QNHdvdvv4Q
-         VVnpRT9w1rFHG3+RkCE6EEBAu1q/81Q5onKd4GaKh6mVPfa1llv03VRqg5c6jh+R8lSS
-         ke0Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AUaZGhJAuPgsqCt+gzP7za/ND86lb8iuR1Q7yAHj3Do=;
+        b=NTGozvAEt9psPcn7tqNfkkwFLbr9xbEU4/wTtR0bCtECsULxQotz6onZcW2TR1/md3
+         Yzri91/5qoqr3jtt7tuJSXK9nDggOo+dsKRtyW3Cr3MSJCRex5m8FQormenfRS6wSeRb
+         1o+NH70LgyPgADT7WBj9DOaT5UzihzUecGqBCqjB3w0K3B/mjgA9hsnfihr7w6BOBiIn
+         w4Mz59SzYOrepAK6VFgWaQVPxfCs+1hDhadrJERhOKvzvRKIWBjigVLtlFyvmq3pK06d
+         +V/ptptELAIkmUHo2RbfGBo1js2TbJJ09JYYwTmoIYtDP6vWE8yDO7Kh0u8yMKXoIVsr
+         gYbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Rs1oqWipH70EqXQPZoCyLHHvdHZcK5yX7KipafNzHgo=;
-        b=n5pvriatbKrzaM4K5F1DehISWCcfiT1SL6OQN9wGzg+MpE4kPwiHsqgVWPyPM4XGMo
-         Cc9BolSm/FF6G5ulQhdkx7yoJKPOP00jze03/1V6KhPIZsS7EhWBAtSn6LLyiNnlmfj7
-         x1IgzNaAUG0Ttf/iaI0/9CUBUDsQZQmGSuyapJ6/jr/wQZ5eDkI1WRmvW/WZj4wRzZ0j
-         /TgZzKjv4HsNLWXGDPm6y5nrH+UbMJyDHgnzeFthee2XVhmzIQs9qI3/pBeqDRzzCQL7
-         5nZa7jc1EVN57bkfmmD/dhC0uSx7ZE5rKSfXJqYqjiwggyB8i2BxlA1/wGUQkSOSxwuv
-         Plzw==
-X-Gm-Message-State: ANhLgQ3PbiCX4ZfDf4R0KRyIIIp0XSNoyKNccQQ+buUYwY1oPtpwNJZn
-        CHOGameH7e78c0O4QooLAC4=
-X-Google-Smtp-Source: ADFU+vtN4yL9qUHvbzyq1p40z4iEFHQlcLn80n6s/5i495YXE7lv6/J6aTYMCfxZ/XdpuzZm1zEv8w==
-X-Received: by 2002:a17:90a:a48b:: with SMTP id z11mr7487175pjp.1.1584067171717;
-        Thu, 12 Mar 2020 19:39:31 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:df27])
-        by smtp.gmail.com with ESMTPSA id f4sm20951554pfn.116.2020.03.12.19.39.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Mar 2020 19:39:30 -0700 (PDT)
-Date:   Thu, 12 Mar 2020 19:39:27 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@redhat.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Song Liu <song@kernel.org>
-Subject: Re: [PATCHv5 00/15] bpf: Add trampoline and dispatcher to
- /proc/kallsyms
-Message-ID: <20200313023927.ejv6aubwzjht55cf@ast-mbp>
-References: <20200312195610.346362-1-jolsa@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AUaZGhJAuPgsqCt+gzP7za/ND86lb8iuR1Q7yAHj3Do=;
+        b=Ie66dM9p8EV0ej6UVLyC7ks2iecGLv9kYd/3ExfNyCI5FW3aPviAkNZ6G/0RXC5jDE
+         IrhmU7njGM/IGDwA+ixrwmwKbRowcXqYywnMJLoNEjcsD7SNlivTo57lG1uVBxw3EwSX
+         9Vq7wc6QmTUD65m3kiLTq1VSRkb7J9XQQz1myqK3auDkzEbTHJGMs7zsGrmsR3MoTB3H
+         vQ7z3+6fRlsrXxyTgGNN05K0TDEH3KKT6chbE6Nr35BqFQyKWtLRHDsTRnm2SHCWc2gh
+         Nk/kFexv9Rs42CiuJOwgEVYddkOw2h2E5HBjJw4yffBrSxSJ5beYsrcRELBujMKdHmEp
+         MSdw==
+X-Gm-Message-State: ANhLgQ2bo5quXRtW2Vudj/xfha7yF39rPNl9kK9OWVC3cr6+Z85/C2Ln
+        d7OwBds4aeMWYP8duU/FPWaMp8tayVCJdzhTzG0hyH3NB9I=
+X-Google-Smtp-Source: ADFU+vs5xMqV9P5mWjyu2r49mJPOsXwZ7ZPs9waEYa2hTimbvPOyNHE+SjazigDE7WgFraeJYC1i9cTihosN7yk/NM4=
+X-Received: by 2002:ac8:3f62:: with SMTP id w31mr3226742qtk.171.1584075901583;
+ Thu, 12 Mar 2020 22:05:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200312195610.346362-1-jolsa@kernel.org>
+References: <20200313002128.2028680-1-andriin@fb.com> <20200313015012.nejdagphpe44k27i@ast-mbp>
+In-Reply-To: <20200313015012.nejdagphpe44k27i@ast-mbp>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 12 Mar 2020 22:04:50 -0700
+Message-ID: <CAEf4BzbjqhX5sgoRZX1k-=WjSsvCAXxYs6WN3j4nBzja0ZbTnw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] bpf: abstract away entire bpf_link clean up procedure
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 12, 2020 at 08:55:55PM +0100, Jiri Olsa wrote:
-> hi,
-> this patchset adds trampoline and dispatcher objects
-> to be visible in /proc/kallsyms. The last patch also
-> adds sorting for all bpf objects in /proc/kallsyms.
+On Thu, Mar 12, 2020 at 6:50 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Mar 12, 2020 at 05:21:28PM -0700, Andrii Nakryiko wrote:
+> > Instead of requiring users to do three steps for cleaning up bpf_link, its
+> > anon_inode file, and unused fd, abstract that away into bpf_link_cleanup()
+> > helper. bpf_link_defunct() is removed, as it shouldn't be needed as an
+> > individual operation anymore.
+> >
+> > v1->v2:
+> > - keep bpf_link_cleanup() static for now (Daniel).
+> >
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+>
+> Applied.
+>
+> But noticed that the test is now sporadically failing:
+> ./test_progs -n 24
+> test_link_pinning:PASS:skel_open 0 nsec
+> test_link_pinning_subtest:PASS:link_attach 0 nsec
+> test_link_pinning_subtest:PASS:res_check1 0 nsec
+> test_link_pinning_subtest:PASS:link_pin 0 nsec
+> test_link_pinning_subtest:PASS:pin_path1 0 nsec
+> test_link_pinning_subtest:PASS:stat_link 0 nsec
+> test_link_pinning_subtest:PASS:res_check2 0 nsec
+> test_link_pinning_subtest:PASS:res_check3 0 nsec
+> test_link_pinning_subtest:PASS:link_open 0 nsec
+> test_link_pinning_subtest:PASS:pin_path2 0 nsec
+> test_link_pinning_subtest:PASS:link_unpin 0 nsec
+> test_link_pinning_subtest:PASS:res_check4 0 nsec
+> test_link_pinning_subtest:FAIL:link_attached got to iteration #10000
+> #24/1 pin_raw_tp:FAIL
+> test_link_pinning_subtest:PASS:link_attach 0 nsec
+> test_link_pinning_subtest:PASS:res_check1 0 nsec
+> test_link_pinning_subtest:PASS:link_pin 0 nsec
+> test_link_pinning_subtest:PASS:pin_path1 0 nsec
+> test_link_pinning_subtest:PASS:stat_link 0 nsec
+> test_link_pinning_subtest:PASS:res_check2 0 nsec
+> test_link_pinning_subtest:PASS:res_check3 0 nsec
+> test_link_pinning_subtest:PASS:link_open 0 nsec
+> test_link_pinning_subtest:PASS:pin_path2 0 nsec
+> test_link_pinning_subtest:PASS:link_unpin 0 nsec
+> test_link_pinning_subtest:PASS:res_check4 0 nsec
+> test_link_pinning_subtest:FAIL:link_attached got to iteration #10000
+> #24/2 pin_tp_btf:FAIL
+> #24 link_pinning:FAIL
+> Summary: 0/0 PASSED, 0 SKIPPED, 3 FAILED
+>
+> it's failing more often than passing, actually.
 
-I removed second sentence from the cover letter and
-applied the first 12 patches.
-Thanks a lot!
+Can't repro this even with 2 parallel kernel builds and running this
+test in VM in a loop. I can bump waiting time a little bit or can drop
+that check, because it's inherently non-deterministic...
+>
+> The #64 tcp_rtt also started to fail sporadically.
+> But I wonder whether it's leftover from 24. shrug.
 
-> For perf tool to properly display trampoline/dispatcher you need
-> also Arnaldo's perf/urgent branch changes. I merged everything
-> into following branch:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git bpf/kallsyms
-
-It sounds that you folks want to land the last three patches via Arnaldo's tree
-to avoid conflicts?
-Right?
+Can you please paste log from #64 failure?
