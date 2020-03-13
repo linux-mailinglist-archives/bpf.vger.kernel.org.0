@@ -2,82 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F838184E8A
-	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 19:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A95184E9B
+	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 19:31:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgCMSX2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Mar 2020 14:23:28 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:45515 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726303AbgCMSX2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Mar 2020 14:23:28 -0400
-Received: by mail-qt1-f195.google.com with SMTP id z8so4975024qto.12;
-        Fri, 13 Mar 2020 11:23:26 -0700 (PDT)
+        id S1726676AbgCMSbL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Mar 2020 14:31:11 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:34568 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726477AbgCMSbL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Mar 2020 14:31:11 -0400
+Received: by mail-qk1-f193.google.com with SMTP id f3so14225799qkh.1;
+        Fri, 13 Mar 2020 11:31:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=JEIIgjyB6rWxiG5f1Y72uJLPk0KOENTJH6GO0rKfix4=;
-        b=JEDxRXUI9RKh3fEaHHJwACSYkbHQSxSK3DFjijVngVf0Cel/8RDLSQZKXi4hE8uwEZ
-         /dXrEnGwN7gG17cFowiVXDA8cmv21FVPBc79+3MFQtMbIkEIEmrCZL4EvJV4ftyMebZS
-         b9Y9lg2I5byFQxulwCz57ept9RhZuVkShzAwdSREQXbnyuCFviBKmnXN+AvEHtHHwzRc
-         2PbpZInJhwVh9LN++tnDvQ+3Paon7PPIn+O//zgzJX4GqD22NhSX7WOocRWKB7POOlYj
-         msItE/7h1SuBj/Ymz39rT1XzrE0zXlH2aslbGXqL9TF1krb4Unze5OTbwqjshONM0s/e
-         DXDg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n7VWF42YYsHVvqKfOU1rBH3ohimrnDdc8FeNphBNmgI=;
+        b=Dyyem0UTC6SMSM9r14h83UV6z2n+gZZnr9BvL0gcMtIHi81ej0Y7X4o1BkJg87atRv
+         SvAj4M4DZG9OXpa8bDF6J7u90Fu1KM8i1x/D1A+2WTZNmDCXO2Tju1g01WXSZnwC1jD6
+         /fv6gZTuEX0Mb/KPIM3X+FEQSCe5eEnnq1ygtNcOMgdaWfqpHMBMP2uK7luR3/IVuu1W
+         wFRbxhFIuKZT0xzkRfdHUL1lcNop6CGO27VYlvVKmdGqh446ClcvlAr2MhL1RM5IfYLn
+         5eREWR7yRljOPJvtFb5Ci7h/O/+zccKTwUL8QojvgioEWY/iUr3bXM9f1L1YhZRu1BUr
+         4cGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=JEIIgjyB6rWxiG5f1Y72uJLPk0KOENTJH6GO0rKfix4=;
-        b=jx1FYWVFdCHUNzmfLyeovZK6MOiSXIqy6KtnAEMHn+yfUZmP7UbBuGVTl/YGuUseSE
-         BvYcTtvHzIyPg8mBdS95D4DU6tOwlyb6pdiZ4HDdCCwNKe1fE/cjVK/F1aIC3lkGaNqw
-         EKmsCoFXSY0MonUMepVz/y6VKafwcuvAhDPHLs6XZbVbf+DPP0hTA15j8zpFAE/8QAGx
-         7U7EzElehHr74XkAGngmcCS6XF9O5sRxNVbxCG7l96SLtTjk2g7Kz2xFSPKB4jKE9pV+
-         srY2z/9C20ICmDNW3BRi9EfRxsRM+NFijsp93Ie7IF7TAQ1v7CZCE+KXYtIA2HjSc8O6
-         aHMQ==
-X-Gm-Message-State: ANhLgQ3CuPd0UL7pSStqjqd50z1OfUz9t2Nn0DiQCYiJuDdxn83h02ca
-        AWrcbdcLMS5giTk1hGN6wdk=
-X-Google-Smtp-Source: ADFU+vsgVFqdFe0DbOgJYswuauF9F6pjVyEkZyVzFN6eYKB43gdLd9yZEZyvqyuhsDZs0jdOkVj4KQ==
-X-Received: by 2002:ac8:4784:: with SMTP id k4mr5663917qtq.78.1584123805731;
-        Fri, 13 Mar 2020 11:23:25 -0700 (PDT)
-Received: from bpf-dev (pc-184-104-160-190.cm.vtr.net. [190.160.104.184])
-        by smtp.gmail.com with ESMTPSA id 10sm9551602qtt.65.2020.03.13.11.23.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Mar 2020 11:23:25 -0700 (PDT)
-Date:   Fri, 13 Mar 2020 15:23:21 -0300
-From:   Carlos Antonio Neira Bustos <cneirabustos@gmail.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     netdev@vger.kernel.org, yhs@fb.com, quentin@isovalent.com,
-        ebiederm@xmission.com, brouer@redhat.com, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next] bpf_helpers_doc.py: Fix warning when compiling
- bpftool.
-Message-ID: <20200313182319.GA13630@bpf-dev>
-References: <20200313154650.13366-1-cneirabustos@gmail.com>
- <20200313172119.3vflwxlbikvqdcqh@kafai-mbp>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n7VWF42YYsHVvqKfOU1rBH3ohimrnDdc8FeNphBNmgI=;
+        b=gvfxWBSBYWHDoKwIP4EqS/5IaD3FmkDMVeuAKN3M5a1HQL5U67rXEn8a4M5czmuS9T
+         YjItIYlYxSCZ0eRHm73ch4QFSoWawaXM+hS0pV1k2OlEgCDLL9Q2shCGTSLE2xwFLz/J
+         9Ly6Q7JjzkU+BKqcqSgwbYIM8SBUMjwwM5xxHZ0JbGFPRGNAhhIxYcX//kPs1L6f7Fsn
+         oEUn21MW5jTcB7wRRAr9SWqP9/0P/Jx5BMev93UtKRfsx+cShxV0hPyahg/VdnD5/UeH
+         uQGoiLvS/chRpQw1lpxFvdTEGzN9VGOt/cfmbJ2x6++QKLPtObjPr6+RxVGxYJ+RvT3Z
+         0JKA==
+X-Gm-Message-State: ANhLgQ2Jfo83Xa8PZtrjDZLy+DPt0VwhcLwIdo4p0LfFDEg3UBj9Yr/4
+        jWPRSounwzARIq8Fhfmy339UVkV/XsbVZgJFIuw=
+X-Google-Smtp-Source: ADFU+vsp90k5VaHLBeVJ49Sj9t/ytCKejZhJmL33Mj5xtkTiHq6ZopR6NN2IRwueenrZO13WRehUFLIkQfaK+LgG+kE=
+X-Received: by 2002:a37:6411:: with SMTP id y17mr14841147qkb.437.1584124269698;
+ Fri, 13 Mar 2020 11:31:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200313172119.3vflwxlbikvqdcqh@kafai-mbp>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200312171105.533690-1-jakub@cloudflare.com> <CAEf4BzbsDMbmury9Z-+j=egsfJf4uKxsu0Fsdr4YpP1FgvBiiQ@mail.gmail.com>
+ <87o8t0xl37.fsf@cloudflare.com>
+In-Reply-To: <87o8t0xl37.fsf@cloudflare.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 13 Mar 2020 11:30:58 -0700
+Message-ID: <CAEf4BzbJENxR6nrL47tKa+mL8Cxf7JtTjkX7ysBSE0iYB0Ey5Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix spurious failures in accept
+ due to EAGAIN
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        kernel-team@cloudflare.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 13, 2020 at 10:21:19AM -0700, Martin KaFai Lau wrote:
-> On Fri, Mar 13, 2020 at 12:46:50PM -0300, Carlos Neira wrote:
-> > 
-> > When compiling bpftool the following warning is found: 
-> > "declaration of 'struct bpf_pidns_info' will not be visible outside of this function."
-> > This patch adds struct bpf_pidns_info to type_fwds array to fix this.
-> > 
-> > Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
-> Fixes: b4490c5c4e02 ("bpf: Added new helper bpf_get_ns_current_pid_tgid")
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
-> 
-> Please add the Fixes tag next time.  Other than tracking,
-> it will be easier for review purpose also.
+On Fri, Mar 13, 2020 at 9:42 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>
+> On Thu, Mar 12, 2020 at 06:57 PM CET, Andrii Nakryiko wrote:
+> > Thanks for looking into this. Can you please verify that test
+> > successfully fails (not hangs) when, say, network is down (do `ip link
+> > set lo down` before running test?). The reason I'm asking is that I
+> > just fixed a problem in tcp_rtt selftest, in which accept() would
+> > block forever, even if listening socket was closed.
+>
+> While on the topic writing network tests with test_progs.
+>
+> There are a couple pain points because all tests run as one process:
+>
+> 1) resource cleanup on failure
+>
+>    Tests can't simply exit(), abort(), or error() on failure. Instead
+>    they need to clean up all resources, like opened file descriptors and
+>    memory allocations, and propagate the error up to the main test
+>    function so it can return to the test runner.
+>
+> 2) terminating in timely fashion
+>
+>    We don't have an option of simply setting alarm() to terminate after
+>    a reasnable timeout without worrying about I/O syscalls in blocking
+>    mode being stuck.
 
-Thanks, I will do that in the future.
+I agree, those APIs suck, unfortunately.
 
-Bests
+>
+> Careful error and timeout handling makes test code more complicated that
+> it really needs to be, IMHO. Making writing as well as maintaing them
+> harder.
+
+Well, I think it's actually a good thing. Tests are as important as
+features, if not more, so it pays to invest in having reliable tests.
+
+>
+> What if we extended test_progs runner to support process-per-test
+> execution model? Perhaps as an opt-in for selected tests.
+>
+> Is that in line with the plans/vision for BPF selftests?
+
+It would be nice indeed, though I'd still maintain that tests
+shouldn't be sloppy. But having that would allow parallelizing tests,
+which would be awesome. So yeah, it would be good to have, IMO.
