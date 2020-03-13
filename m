@@ -2,124 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 793F8183D82
-	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 00:47:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 385F2183DD3
+	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 01:21:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgCLXrV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Mar 2020 19:47:21 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:32816 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726772AbgCLXrV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Mar 2020 19:47:21 -0400
-Received: by mail-qt1-f196.google.com with SMTP id d22so6059164qtn.0;
-        Thu, 12 Mar 2020 16:47:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Lpl2QV0RKXwDmI8MubsMiuk111nEHMnLP4UT1DO8Mho=;
-        b=bxNqYPT5JTuXMck79mwmNTqg6v/lFRntWvwyUfLe7bCEyTuZQmDMiTqeLk+5vW5vJ9
-         zyd1D1dBF4IhTTC6BcACfywkZbYncuerakEg/CRBc53Pmiy/twKRywSrrQs1RdGzD0eh
-         StgUWd1sSI2ZVTp7HXyiE9GY9CCkLul9A+ADpxqY3T9nHtWZ3AZMABn+pxvmPqJiRnFM
-         56RHeK7OCUeWGP0Pq7xUEMYpOo0fHb1ftF6XLqYOmwEwk4QSBCKvwjGMLNFjFL4ElNEF
-         Vbr22K+7aJFb0pIBekirqzrTTsQbTR8NmGeQUYb9/JDs4q58J/6eO/Q7ssrcHRePt9Oq
-         ZXfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Lpl2QV0RKXwDmI8MubsMiuk111nEHMnLP4UT1DO8Mho=;
-        b=VtTlmt7qhxTGtYbfQtlJu4UHhpxvbKyLbplTOWpACtrKleBmh+3Pzrlr0fFfLZLfzu
-         8EWy3QdtDRp8q76cQSLQKmfLEhOhfhQRB6FuMQ1axOZhjmlQ59KsUdc8e2+ZpAksM5EO
-         uRnHW3gbU6eQqr9ol2u4Qn3CWyCsxPE1j1rYTCj15yQKkfwJ/fxhBbCe9utnYm0+TjP0
-         9mBj7SAaslaj3Soe1PUcWZ5aLymEaXocgkko2oj7E1ZJJw6rQQ18lB+q1IQ7firQE0az
-         7QPIgK5kbB6mCASI+49YCOuTjzogR4KN6o0jhpX7b7YUIIElqTl3nh7jGcoL5eYhfguk
-         JwOg==
-X-Gm-Message-State: ANhLgQ1KN9Oa5GKJI/O/TbzMoThwMwBUn5kqQ/HyFSmOAdfHSO4L4MQv
-        UkOMtU+zl7JIJ7QrBxwlsLA1OrhXpef0j2/mK+o=
-X-Google-Smtp-Source: ADFU+vst1ucxeTOlWGXd+1TVcOO/Ws08yxiRqBrllUjsR7tYAi6+VzVvMvgL1TaHLdJ8fMfUlwDCGO4333nX6izqcw0=
-X-Received: by 2002:ac8:4e14:: with SMTP id c20mr9736769qtw.141.1584056839320;
- Thu, 12 Mar 2020 16:47:19 -0700 (PDT)
+        id S1726620AbgCMAVh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Mar 2020 20:21:37 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:42028 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726830AbgCMAVg (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 12 Mar 2020 20:21:36 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02D0JuVn010489
+        for <bpf@vger.kernel.org>; Thu, 12 Mar 2020 17:21:35 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=fvcRNntQMMkTA/GVquF6OBoXfs3H9zh3ARF8GXcr6Ww=;
+ b=W5F22ZVPtxVBCozbCV7lt3zNzMUWhj4nUbU/bet0m3AoeBnaQ/hdZpKlMGm1xd+oFDFQ
+ aWmjTfrgWX7h/w4XLLzuV0yFJ5w5dt0kc/xyGDJH4mG5JMyG4eq5/A2VVlOIBnPAby58
+ 9CewRK0iOkEngQI9Czx7ShGThcTTIhO0yK4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yqt7fhmg2-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 12 Mar 2020 17:21:35 -0700
+Received: from intmgw004.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Thu, 12 Mar 2020 17:21:34 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id B4CD02EC2E74; Thu, 12 Mar 2020 17:21:30 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf-next] bpf: abstract away entire bpf_link clean up procedure
+Date:   Thu, 12 Mar 2020 17:21:28 -0700
+Message-ID: <20200313002128.2028680-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20200312203914.1195762-1-andriin@fb.com> <2d6ae192-fe22-0239-54c7-142ec21b7794@iogearbox.net>
- <CAEf4BzbcSC3LXckg3ksRhTN27g4sAXp_9-GgJFog21ZWAJU-DQ@mail.gmail.com> <e8845220-9817-6364-ffa8-f7195241881c@iogearbox.net>
-In-Reply-To: <e8845220-9817-6364-ffa8-f7195241881c@iogearbox.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 12 Mar 2020 16:47:08 -0700
-Message-ID: <CAEf4BzbjbXEBpYuhn_yQdHOb5Q3_WovEo87k0i+cu2BtCa_eOA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: abstract away entire bpf_link clean up procedure
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-03-12_19:2020-03-11,2020-03-12 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=765
+ clxscore=1015 malwarescore=0 adultscore=0 suspectscore=8
+ priorityscore=1501 bulkscore=0 phishscore=0 impostorscore=0 spamscore=0
+ mlxscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2003020000 definitions=main-2003130000
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 12, 2020 at 4:41 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 3/13/20 12:27 AM, Andrii Nakryiko wrote:
-> > On Thu, Mar 12, 2020 at 4:23 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >> On 3/12/20 9:39 PM, Andrii Nakryiko wrote:
-> >>> Instead of requiring users to do three steps for cleaning up bpf_link, its
-> >>> anon_inode file, and unused fd, abstract that away into bpf_link_cleanup()
-> >>> helper. bpf_link_defunct() is removed, as it shouldn't be needed as an
-> >>> individual operation anymore.
-> >>>
-> >>> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> >>> ---
-> >>>    include/linux/bpf.h  |  3 ++-
-> >>>    kernel/bpf/syscall.c | 18 +++++++++++-------
-> >>>    2 files changed, 13 insertions(+), 8 deletions(-)
-> >>>
-> >>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> >>> index 4fd91b7c95ea..358f3eb07c01 100644
-> >>> --- a/include/linux/bpf.h
-> >>> +++ b/include/linux/bpf.h
-> >>> @@ -1075,7 +1075,8 @@ struct bpf_link_ops {
-> >>>
-> >>>    void bpf_link_init(struct bpf_link *link, const struct bpf_link_ops *ops,
-> >>>                   struct bpf_prog *prog);
-> >>> -void bpf_link_defunct(struct bpf_link *link);
-> >>> +void bpf_link_cleanup(struct bpf_link *link, struct file *link_file,
-> >>> +                   int link_fd);
-> >>>    void bpf_link_inc(struct bpf_link *link);
-> >>>    void bpf_link_put(struct bpf_link *link);
-> >>>    int bpf_link_new_fd(struct bpf_link *link);
-> >>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> >>> index b2f73ecacced..d2f49ae225b0 100644
-> >>> --- a/kernel/bpf/syscall.c
-> >>> +++ b/kernel/bpf/syscall.c
-> >>> @@ -2188,9 +2188,17 @@ void bpf_link_init(struct bpf_link *link, const struct bpf_link_ops *ops,
-> >>>        link->prog = prog;
-> >>>    }
-> >>>
-> >>> -void bpf_link_defunct(struct bpf_link *link)
-> >>> +/* Clean up bpf_link and corresponding anon_inode file and FD. After
-> >>> + * anon_inode is created, bpf_link can't be just kfree()'d due to deferred
-> >>> + * anon_inode's release() call. This helper manages marking bpf_link as
-> >>> + * defunct, releases anon_inode file and puts reserved FD.
-> >>> + */
-> >>> +void bpf_link_cleanup(struct bpf_link *link, struct file *link_file,
-> >>> +                   int link_fd)
-> >>
-> >> Looks good, but given it is only used here this should be static instead.
-> >
-> > This is part of bpf_link internal API. I have patches locally for
-> > cgroup bpf_link that use this for clean up as well already, other
-> > bpf_link types will also use this.
->
-> Meaning it's a logical part of your future series. When you added the bpf_link_*
-> stuff only the symbols should have been in bpf.h that are actually used in the
-> tree outside of syscall.c, and when you extend the series in future /then/ we
-> can export more as needed, so everything is kept self-contained. This is common
-> practice.
+Instead of requiring users to do three steps for cleaning up bpf_link, its
+anon_inode file, and unused fd, abstract that away into bpf_link_cleanup()
+helper. bpf_link_defunct() is removed, as it shouldn't be needed as an
+individual operation anymore.
 
-Alright, will remove in v2.
+v1->v2:
+- keep bpf_link_cleanup() static for now (Daniel).
 
->
-> Thanks,
-> Daniel
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ include/linux/bpf.h  |  1 -
+ kernel/bpf/syscall.c | 18 +++++++++++-------
+ 2 files changed, 11 insertions(+), 8 deletions(-)
+
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 4fd91b7c95ea..49389ddb948f 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1075,7 +1075,6 @@ struct bpf_link_ops {
+ 
+ void bpf_link_init(struct bpf_link *link, const struct bpf_link_ops *ops,
+ 		   struct bpf_prog *prog);
+-void bpf_link_defunct(struct bpf_link *link);
+ void bpf_link_inc(struct bpf_link *link);
+ void bpf_link_put(struct bpf_link *link);
+ int bpf_link_new_fd(struct bpf_link *link);
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index b2f73ecacced..85567a6ea5f9 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2188,9 +2188,17 @@ void bpf_link_init(struct bpf_link *link, const struct bpf_link_ops *ops,
+ 	link->prog = prog;
+ }
+ 
+-void bpf_link_defunct(struct bpf_link *link)
++/* Clean up bpf_link and corresponding anon_inode file and FD. After
++ * anon_inode is created, bpf_link can't be just kfree()'d due to deferred
++ * anon_inode's release() call. This helper manages marking bpf_link as
++ * defunct, releases anon_inode file and puts reserved FD.
++ */
++static void bpf_link_cleanup(struct bpf_link *link, struct file *link_file,
++			     int link_fd)
+ {
+ 	link->prog = NULL;
++	fput(link_file);
++	put_unused_fd(link_fd);
+ }
+ 
+ void bpf_link_inc(struct bpf_link *link)
+@@ -2383,9 +2391,7 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog)
+ 
+ 	err = bpf_trampoline_link_prog(prog);
+ 	if (err) {
+-		bpf_link_defunct(&link->link);
+-		fput(link_file);
+-		put_unused_fd(link_fd);
++		bpf_link_cleanup(&link->link, link_file, link_fd);
+ 		goto out_put_prog;
+ 	}
+ 
+@@ -2498,9 +2504,7 @@ static int bpf_raw_tracepoint_open(const union bpf_attr *attr)
+ 
+ 	err = bpf_probe_register(link->btp, prog);
+ 	if (err) {
+-		bpf_link_defunct(&link->link);
+-		fput(link_file);
+-		put_unused_fd(link_fd);
++		bpf_link_cleanup(&link->link, link_file, link_fd);
+ 		goto out_put_btp;
+ 	}
+ 
+-- 
+2.17.1
+
