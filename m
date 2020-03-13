@@ -2,93 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D8886184CB6
-	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 17:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82FFE184D01
+	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 17:52:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727079AbgCMQmk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Mar 2020 12:42:40 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:45863 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726979AbgCMQmk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Mar 2020 12:42:40 -0400
-Received: by mail-lf1-f66.google.com with SMTP id b13so8411544lfb.12
-        for <bpf@vger.kernel.org>; Fri, 13 Mar 2020 09:42:38 -0700 (PDT)
+        id S1726550AbgCMQwx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Mar 2020 12:52:53 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:46082 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbgCMQwx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Mar 2020 12:52:53 -0400
+Received: by mail-qk1-f196.google.com with SMTP id f28so13598443qkk.13;
+        Fri, 13 Mar 2020 09:52:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=Z1VxIXBv35KeFZt3+dBi/tUwb8bgwLuhRxYuPlHgzsc=;
-        b=Xz98X0yXEPe1LumV9Ei3+6l9IIXcGbZ9Tw2yKHMJtVt5EZ3iEt6Q53kXCqmmRcCGBy
-         mRa8pOOFhlmqeObpdCTx3FTCBLagJ0YGOlTGv+dwL4pCe9iYVHX8v8Vyl4YeGK/PxEMz
-         wWZbDOys7OkLqQrmcL+fNCUm4AfwyAUAedFpQ=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hw7w18TjYA8oyS87aWSXG4xrDUqIeBoGEOVum37Dwvg=;
+        b=OXL9FulLHRECcvQssP7NLWnSIeEZJJloO3J9n36oQ1b8CpbXCNWHocnGc9Vd5f6Jl6
+         JPi7i/8+5wUcktMN864fZy09gqTh94jgeacc3a0mgu07gEZIJ8LkbYMPAY+DAS0EPiYB
+         Ezi1et17NPcdWEbvhEw73UcZBdE9wrJpk3qvxJTxQssc0fipKQwmj2/j0WOQw+pxg6/R
+         q8IcsVcWCTzAwkmvbmIvjILzgqg3fOpb3X6qayccfWdyPzHuJ6pyAByqNM+XmL5z8uEY
+         4KCOOdyqTgZ8LVcMlFUfEY4bDAEgQtREh1by825aoqu2J4fqspSrr7vg6Du6G2LDl2KU
+         v5Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=Z1VxIXBv35KeFZt3+dBi/tUwb8bgwLuhRxYuPlHgzsc=;
-        b=Frgsdo5ELMjMQ74QxkU4nK7OywWKFVz8IxDhXGFb96/1TLgESdul2gEVlUkraU07wx
-         4IfxmCjrno/93leEP33Hfv2CbnVTFp3FGj2nlqRnr8CZoCVHcUNymG0lDbOB5fWUyOLv
-         QVRBiU64wx/bkpNJ1rA/Y0vGLivA4oip1s/pqSVg7JZQWGuCtvvuwVH4PmxzF1HLMvqb
-         VLp/a2eRanGw0DWWqEqwZLoGFgX0CcFQh/UHIirsYzzsNhDZ5+KViiaNQ93K9OOVd5WN
-         RHgOYWjCkdT4pTuOiMMhHVeeIqJGrOrMd0Bp3jCdpGG/8pxCBEMG9TLUjPWtwCnA9HJl
-         0wLw==
-X-Gm-Message-State: ANhLgQ0dcnGSNWmXKsPQL2TjTkfMjM3Zm7GDwxGE2hC8CLLBVKuex0jJ
-        UuICXPDbaM5QooH5Yu6Eq71qBQ==
-X-Google-Smtp-Source: ADFU+vvvHY+hBwL7hPxvU+2mWXJQMUNzP5RPqDtQnTqSKVc6jkn4FyByjXpa8bqK0+yNAS+N+VuyNg==
-X-Received: by 2002:a19:a401:: with SMTP id q1mr8860478lfc.157.1584117757875;
-        Fri, 13 Mar 2020 09:42:37 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id y6sm2496989lfy.38.2020.03.13.09.42.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Mar 2020 09:42:37 -0700 (PDT)
-References: <20200312171105.533690-1-jakub@cloudflare.com> <CAEf4BzbsDMbmury9Z-+j=egsfJf4uKxsu0Fsdr4YpP1FgvBiiQ@mail.gmail.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team@cloudflare.com
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix spurious failures in accept due to EAGAIN
-In-reply-to: <CAEf4BzbsDMbmury9Z-+j=egsfJf4uKxsu0Fsdr4YpP1FgvBiiQ@mail.gmail.com>
-Date:   Fri, 13 Mar 2020 17:42:36 +0100
-Message-ID: <87o8t0xl37.fsf@cloudflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hw7w18TjYA8oyS87aWSXG4xrDUqIeBoGEOVum37Dwvg=;
+        b=OzMTVg0ifoLpbA2Db8eGbU+elfTK7GbOmIezw6bKbQe7eywwQjgnTTFJawJ/Ocwas7
+         jWylJTHOZ1jUCKMlG1S5KhFWvhDo+Fnc9Dt3ZoB8nXKOf0tip5TO64KUBHuoG/zFAv1L
+         qXbHrecQyTvrDa9UDsP1TMqRel8jrG2MkyV1n4FYRipAaF+Ye7JUauv4H7O6cRfNctjd
+         QO7w7tw2omXSri+f6u0Zz6ZkkHvbpbrulBxmr95Fpa+u7/kNol4H6z4dXTyWxEw2vXze
+         N56fxs4FD/MJaLo1gl34ErdetxG/CP4JeZlw5LsKDTLzBBbTNvJfP4FoZkjP5a3gxNtm
+         qj/g==
+X-Gm-Message-State: ANhLgQ3qHBIs3XJm5SLVdIrA8SJRiTKSYwpd25urSS/KY5JAj4JrEG4t
+        2uhUXwl6yJ3vWJrB3K5QeyZqgfD9Lb7Z+wgnqBzeQRpO
+X-Google-Smtp-Source: ADFU+vvvMpQn4G3tcfR0eyOUwaX8SwFGPYS6Ay7kr23kOejKIDRtRFpg2giK2VyM9axo5Dim5IzkicHT3fGsBVj7d9s=
+X-Received: by 2002:a37:e40d:: with SMTP id y13mr14094279qkf.39.1584118371515;
+ Fri, 13 Mar 2020 09:52:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200313113105.6918-1-tklauser@distanz.ch>
+In-Reply-To: <20200313113105.6918-1-tklauser@distanz.ch>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 13 Mar 2020 09:52:40 -0700
+Message-ID: <CAEf4BzZS9mrJAhQaDOXvYG+3Hob0ntRu3rWNffHTJ82TDN6x6A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] tools/bpf: move linux/types.h for selftests and bpftool
+To:     Tobias Klauser <tklauser@distanz.ch>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 12, 2020 at 06:57 PM CET, Andrii Nakryiko wrote:
-> Thanks for looking into this. Can you please verify that test
-> successfully fails (not hangs) when, say, network is down (do `ip link
-> set lo down` before running test?). The reason I'm asking is that I
-> just fixed a problem in tcp_rtt selftest, in which accept() would
-> block forever, even if listening socket was closed.
+On Fri, Mar 13, 2020 at 4:31 AM Tobias Klauser <tklauser@distanz.ch> wrote:
+>
+> Commit fe4eb069edb7 ("bpftool: Use linux/types.h from source tree for
+> profiler build") added a build dependency on tools/testing/selftests/bpf
+> to tools/bpf/bpftool. This is suboptimal with respect to a possible
+> stand-alone build of bpftool.
+>
+> Fix this by moving
+> tools/testing/selftests/bpf/include/uapi/linux/types.h to
+> tools/include/uapi/linux/types.h
+>
+> This requires an adjustment in the include search path order for the
+> tests in tools/testing/selftests/bpf so that tools/include/linux/types.h
+> is selected when building host binaries and
+> tools/include/uapi/linux/types.h is selected when building bpf binaries.
+>
+> Verified by compiling bpftool and the bpf selftests on x86_64 with this
+> change.
+>
 
-While on the topic writing network tests with test_progs.
+Thanks for following up!
 
-There are a couple pain points because all tests run as one process:
+My only concern is that tools/include/uapi/ is also used at least by
+perf and libperf, we need to double check that they are fine with this
+as well.
 
-1) resource cleanup on failure
+Given this is needed for BPF target compilation only, one way to limit
+the scope of this change would be to have a `#if defined(__bpf__)`
+check and falling back to "normal" uapi/linux/types.h. Alternatively,
+we could have a bpf-specific subdirectory and put this header into
+tools/include/bpf/uapi/linux/types.h.
 
-   Tests can't simply exit(), abort(), or error() on failure. Instead
-   they need to clean up all resources, like opened file descriptors and
-   memory allocations, and propagate the error up to the main test
-   function so it can return to the test runner.
+I don't have any strong preferences, whatever maintainers are happy with.
 
-2) terminating in timely fashion
-
-   We don't have an option of simply setting alarm() to terminate after
-   a reasnable timeout without worrying about I/O syscalls in blocking
-   mode being stuck.
-
-Careful error and timeout handling makes test code more complicated that
-it really needs to be, IMHO. Making writing as well as maintaing them
-harder.
-
-What if we extended test_progs runner to support process-per-test
-execution model? Perhaps as an opt-in for selected tests.
-
-Is that in line with the plans/vision for BPF selftests?
+> Fixes: fe4eb069edb7 ("bpftool: Use linux/types.h from source tree for profiler build")
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Quentin Monnet <quentin@isovalent.com>
+> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+> ---
+>  tools/bpf/bpftool/Makefile                                 | 1 -
+>  .../{testing/selftests/bpf => }/include/uapi/linux/types.h | 0
+>  tools/testing/selftests/bpf/Makefile                       | 7 ++++---
+>  3 files changed, 4 insertions(+), 4 deletions(-)
+>  rename tools/{testing/selftests/bpf => }/include/uapi/linux/types.h (100%)
+>
+> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> index 9ca3bfbb9ac4..f584d1fdfc64 100644
+> --- a/tools/bpf/bpftool/Makefile
+> +++ b/tools/bpf/bpftool/Makefile
+> @@ -129,7 +129,6 @@ $(OUTPUT)_bpftool: $(_OBJS) $(LIBBPF)
+>  skeleton/profiler.bpf.o: skeleton/profiler.bpf.c $(LIBBPF)
+>         $(QUIET_CLANG)$(CLANG) \
+>                 -I$(srctree)/tools/include/uapi/ \
+> -               -I$(srctree)/tools/testing/selftests/bpf/include/uapi \
+>                 -I$(LIBBPF_PATH) -I$(srctree)/tools/lib \
+>                 -g -O2 -target bpf -c $< -o $@
+>
+> diff --git a/tools/testing/selftests/bpf/include/uapi/linux/types.h b/tools/include/uapi/linux/types.h
+> similarity index 100%
+> rename from tools/testing/selftests/bpf/include/uapi/linux/types.h
+> rename to tools/include/uapi/linux/types.h
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index da4389dde9f7..074a05efd1ca 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -20,8 +20,9 @@ CLANG         ?= clang
+>  LLC            ?= llc
+>  LLVM_OBJCOPY   ?= llvm-objcopy
+>  BPF_GCC                ?= $(shell command -v bpf-gcc;)
+> -CFLAGS += -g -rdynamic -Wall -O2 $(GENFLAGS) -I$(CURDIR) -I$(APIDIR)   \
+> +CFLAGS += -g -rdynamic -Wall -O2 $(GENFLAGS) -I$(CURDIR)               \
+>           -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR) -I$(TOOLSINCDIR)     \
+> +         -I$(APIDIR)                                                   \
+>           -Dbpf_prog_load=bpf_prog_test_load                            \
+>           -Dbpf_load_program=bpf_test_load_program
+>  LDLIBS += -lcap -lelf -lz -lrt -lpthread
+> @@ -194,8 +195,8 @@ MENDIAN=$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
+>
+>  CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
+>  BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)                  \
+> -            -I$(INCLUDE_DIR) -I$(CURDIR) -I$(CURDIR)/include/uapi      \
+> -            -I$(APIDIR) -I$(abspath $(OUTPUT)/../usr/include)
+> +            -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR)                   \
+> +            -I$(abspath $(OUTPUT)/../usr/include)
+>
+>  CLANG_CFLAGS = $(CLANG_SYS_INCLUDES) \
+>                -Wno-compare-distinct-pointer-types
+> --
+> 2.24.0
+>
