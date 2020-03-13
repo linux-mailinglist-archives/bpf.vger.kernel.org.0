@@ -2,89 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC184185033
-	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 21:21:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 386DA185107
+	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 22:24:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726591AbgCMUVD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Mar 2020 16:21:03 -0400
-Received: from www62.your-server.de ([213.133.104.62]:48456 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726528AbgCMUVD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Mar 2020 16:21:03 -0400
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jCqnk-0000G8-Gk; Fri, 13 Mar 2020 21:21:00 +0100
-Received: from [85.7.42.192] (helo=pc-9.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jCqnk-0009P1-68; Fri, 13 Mar 2020 21:21:00 +0100
-Subject: Re: [PATCH bpf-next] tools/bpf: move linux/types.h for selftests and
- bpftool
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Tobias Klauser <tklauser@distanz.ch>
-Cc:     Alexei Starovoitov <ast@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>, arnaldo.melo@gmail.com
-References: <20200313113105.6918-1-tklauser@distanz.ch>
- <CAEf4BzZS9mrJAhQaDOXvYG+3Hob0ntRu3rWNffHTJ82TDN6x6A@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <5beb49b7-f73e-5160-38ce-1087e7ee75dc@iogearbox.net>
-Date:   Fri, 13 Mar 2020 21:20:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1727564AbgCMVYI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Mar 2020 17:24:08 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:37481 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727562AbgCMVYI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Mar 2020 17:24:08 -0400
+Received: by mail-il1-f195.google.com with SMTP id a6so10491883ilc.4
+        for <bpf@vger.kernel.org>; Fri, 13 Mar 2020 14:24:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nh1n7M+VPSrWcMXPYIV91GLW2l6TAX14rIs4m1q72Xw=;
+        b=Efks9xuN/oML/BqvA8mL5/SGY7ASxmBkfpBAscYoHao8obdSNy14z5ctKJ/W9oel+D
+         Y/vAz9m+Efw7hAsy6BcaEKiS4tQFLBGtQGmLVLAm2ZFhf8eGvlu38VJ8OF6T30m5TzyH
+         SAu2lauGOxX81iwxVtgjsYUKlVbdYx57cgbj4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nh1n7M+VPSrWcMXPYIV91GLW2l6TAX14rIs4m1q72Xw=;
+        b=bZHYlJhJfI5C+Fl0EBJvDCxUEfAbn6WTwbORier5wVmoyiIMGUukJhEn35pPBLI7GH
+         Pz2T0/wcw1X6YqOi2PScQczMueKMeVpOhFCCFyuAHF4wOBRykwhDZ5gggYN7ul3mZFPe
+         oWUZa5DIvtYZmX0Nsx8KCQjlWE+yMdtLLM9fvr3W4MnIv0uNDQyT34uNagELbP2vaDso
+         sun/hGJgcRxCAUSTms28qY2E/Tv0YjwzyqOxO4oGUBA8vCkTdpYMq+JfnugHYGvKgVQu
+         OCTFxhiqwvQKIgM6lQYDsL/HkMZRpLlGYo1TzCtWHQGI+3LvR6hM84ommHteNT3rp/ag
+         6pyg==
+X-Gm-Message-State: ANhLgQ2NLSe1H0ZMIWhRK+ZtYtBpklYYty6oAXUOX8SxR1MdeqxiO411
+        D7Xc8x+JxzVNENG2a31WDMTtTg==
+X-Google-Smtp-Source: ADFU+vuNMKlTjRy366EcWR9ptiTfmLmVzeHxrmdb75AGQiAghLVYgPBSaZofsKRoLtZ4NCp+pGIgbw==
+X-Received: by 2002:a92:5fc5:: with SMTP id i66mr15532167ill.303.1584134646641;
+        Fri, 13 Mar 2020 14:24:06 -0700 (PDT)
+Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id y8sm6824029iot.14.2020.03.13.14.24.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Mar 2020 14:24:05 -0700 (PDT)
+From:   Shuah Khan <skhan@linuxfoundation.org>
+To:     shuah@kernel.org, keescook@chromium.org, luto@amacapital.net,
+        wad@chromium.org, daniel@iogearbox.net, kafai@fb.com, yhs@fb.com,
+        andriin@fb.com, gregkh@linuxfoundation.org, tglx@linutronix.de
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, khilman@baylibre.com,
+        mpe@ellerman.id.au, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH v3] selftests: Fix seccomp to support relocatable build (O=objdir)
+Date:   Fri, 13 Mar 2020 15:24:04 -0600
+Message-Id: <20200313212404.24552-1-skhan@linuxfoundation.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzZS9mrJAhQaDOXvYG+3Hob0ntRu3rWNffHTJ82TDN6x6A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25750/Fri Mar 13 14:03:09 2020)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-[ +acme ]
+Fix seccomp relocatable builds. This is a simple fix to use the right
+lib.mk variable TEST_GEN_PROGS with dependency on kselftest_harness.h
+header, and defining LDFLAGS for pthread lib.
 
-On 3/13/20 5:52 PM, Andrii Nakryiko wrote:
-> On Fri, Mar 13, 2020 at 4:31 AM Tobias Klauser <tklauser@distanz.ch> wrote:
->>
->> Commit fe4eb069edb7 ("bpftool: Use linux/types.h from source tree for
->> profiler build") added a build dependency on tools/testing/selftests/bpf
->> to tools/bpf/bpftool. This is suboptimal with respect to a possible
->> stand-alone build of bpftool.
->>
->> Fix this by moving
->> tools/testing/selftests/bpf/include/uapi/linux/types.h to
->> tools/include/uapi/linux/types.h
->>
->> This requires an adjustment in the include search path order for the
->> tests in tools/testing/selftests/bpf so that tools/include/linux/types.h
->> is selected when building host binaries and
->> tools/include/uapi/linux/types.h is selected when building bpf binaries.
->>
->> Verified by compiling bpftool and the bpf selftests on x86_64 with this
->> change.
-> 
-> Thanks for following up!
-> 
-> My only concern is that tools/include/uapi/ is also used at least by
-> perf and libperf, we need to double check that they are fine with this
-> as well.
-> 
-> Given this is needed for BPF target compilation only, one way to limit
-> the scope of this change would be to have a `#if defined(__bpf__)`
-> check and falling back to "normal" uapi/linux/types.h. Alternatively,
-> we could have a bpf-specific subdirectory and put this header into
-> tools/include/bpf/uapi/linux/types.h.
-> 
-> I don't have any strong preferences, whatever maintainers are happy with.
+Removes custom clean rule which is no longer necessary with the use of
+TEST_GEN_PROGS. 
 
-I would prefer to keep it generic if possible before we take measures of
-making special cases for bpf in tools include infra. Compilation of perf
-and libperf seems fine on my side as well, so I've applied it, thanks!
+Uses $(OUTPUT) defined in lib.mk to handle build relocation.
+
+The following use-cases work with this change:
+
+In seccomp directory:
+make all and make clean
+
+From top level from main Makefile:
+make kselftest-install O=objdir ARCH=arm64 HOSTCC=gcc \
+ CROSS_COMPILE=aarch64-linux-gnu- TARGETS=seccomp
+
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+---
+
+Changes since v2:
+-- Using TEST_GEN_PROGS is sufficient to generate objects.
+   Addresses review comments from Kees Cook.
+
+ tools/testing/selftests/seccomp/Makefile | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
+
+diff --git a/tools/testing/selftests/seccomp/Makefile b/tools/testing/selftests/seccomp/Makefile
+index 1760b3e39730..a0388fd2c3f2 100644
+--- a/tools/testing/selftests/seccomp/Makefile
++++ b/tools/testing/selftests/seccomp/Makefile
+@@ -1,17 +1,15 @@
+ # SPDX-License-Identifier: GPL-2.0
+-all:
+-
+-include ../lib.mk
++CFLAGS += -Wl,-no-as-needed -Wall
++LDFLAGS += -lpthread
+ 
+ .PHONY: all clean
+ 
+-BINARIES := seccomp_bpf seccomp_benchmark
+-CFLAGS += -Wl,-no-as-needed -Wall
++include ../lib.mk
++
++# OUTPUT set by lib.mk
++TEST_GEN_PROGS := $(OUTPUT)/seccomp_bpf $(OUTPUT)/seccomp_benchmark
+ 
+-seccomp_bpf: seccomp_bpf.c ../kselftest_harness.h
+-	$(CC) $(CFLAGS) $(LDFLAGS) $< -lpthread -o $@
++$(TEST_GEN_PROGS): ../kselftest_harness.h
+ 
+-TEST_PROGS += $(BINARIES)
+-EXTRA_CLEAN := $(BINARIES)
++all: $(TEST_GEN_PROGS)
+ 
+-all: $(BINARIES)
+-- 
+2.20.1
+
