@@ -2,122 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 386DA185107
-	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 22:24:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B24E61851AF
+	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 23:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727564AbgCMVYI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Mar 2020 17:24:08 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:37481 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727562AbgCMVYI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Mar 2020 17:24:08 -0400
-Received: by mail-il1-f195.google.com with SMTP id a6so10491883ilc.4
-        for <bpf@vger.kernel.org>; Fri, 13 Mar 2020 14:24:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nh1n7M+VPSrWcMXPYIV91GLW2l6TAX14rIs4m1q72Xw=;
-        b=Efks9xuN/oML/BqvA8mL5/SGY7ASxmBkfpBAscYoHao8obdSNy14z5ctKJ/W9oel+D
-         Y/vAz9m+Efw7hAsy6BcaEKiS4tQFLBGtQGmLVLAm2ZFhf8eGvlu38VJ8OF6T30m5TzyH
-         SAu2lauGOxX81iwxVtgjsYUKlVbdYx57cgbj4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nh1n7M+VPSrWcMXPYIV91GLW2l6TAX14rIs4m1q72Xw=;
-        b=bZHYlJhJfI5C+Fl0EBJvDCxUEfAbn6WTwbORier5wVmoyiIMGUukJhEn35pPBLI7GH
-         Pz2T0/wcw1X6YqOi2PScQczMueKMeVpOhFCCFyuAHF4wOBRykwhDZ5gggYN7ul3mZFPe
-         oWUZa5DIvtYZmX0Nsx8KCQjlWE+yMdtLLM9fvr3W4MnIv0uNDQyT34uNagELbP2vaDso
-         sun/hGJgcRxCAUSTms28qY2E/Tv0YjwzyqOxO4oGUBA8vCkTdpYMq+JfnugHYGvKgVQu
-         OCTFxhiqwvQKIgM6lQYDsL/HkMZRpLlGYo1TzCtWHQGI+3LvR6hM84ommHteNT3rp/ag
-         6pyg==
-X-Gm-Message-State: ANhLgQ2NLSe1H0ZMIWhRK+ZtYtBpklYYty6oAXUOX8SxR1MdeqxiO411
-        D7Xc8x+JxzVNENG2a31WDMTtTg==
-X-Google-Smtp-Source: ADFU+vuNMKlTjRy366EcWR9ptiTfmLmVzeHxrmdb75AGQiAghLVYgPBSaZofsKRoLtZ4NCp+pGIgbw==
-X-Received: by 2002:a92:5fc5:: with SMTP id i66mr15532167ill.303.1584134646641;
-        Fri, 13 Mar 2020 14:24:06 -0700 (PDT)
-Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id y8sm6824029iot.14.2020.03.13.14.24.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Mar 2020 14:24:05 -0700 (PDT)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     shuah@kernel.org, keescook@chromium.org, luto@amacapital.net,
-        wad@chromium.org, daniel@iogearbox.net, kafai@fb.com, yhs@fb.com,
-        andriin@fb.com, gregkh@linuxfoundation.org, tglx@linutronix.de
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, khilman@baylibre.com,
-        mpe@ellerman.id.au, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH v3] selftests: Fix seccomp to support relocatable build (O=objdir)
-Date:   Fri, 13 Mar 2020 15:24:04 -0600
-Message-Id: <20200313212404.24552-1-skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.20.1
+        id S1726834AbgCMWfS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Mar 2020 18:35:18 -0400
+Received: from www62.your-server.de ([213.133.104.62]:42446 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726643AbgCMWfS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Mar 2020 18:35:18 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jCstf-0002du-7h; Fri, 13 Mar 2020 23:35:15 +0100
+Received: from [85.7.42.192] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jCste-000QQu-Vn; Fri, 13 Mar 2020 23:35:15 +0100
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: Fix spurious failures in
+ accept due to EAGAIN
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Stanislav Fomichev <sdf@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        kernel-team@cloudflare.com
+References: <20200313161049.677700-1-jakub@cloudflare.com>
+ <CAEf4Bza493cXh+ffS7KHtgGnVDYwyxwDXQ_G6Ps1Bfm4WVRLQA@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <22e262a7-d7e7-f020-f98b-55d7512660f5@iogearbox.net>
+Date:   Fri, 13 Mar 2020 23:35:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4Bza493cXh+ffS7KHtgGnVDYwyxwDXQ_G6Ps1Bfm4WVRLQA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25750/Fri Mar 13 14:03:09 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix seccomp relocatable builds. This is a simple fix to use the right
-lib.mk variable TEST_GEN_PROGS with dependency on kselftest_harness.h
-header, and defining LDFLAGS for pthread lib.
+On 3/13/20 8:01 PM, Andrii Nakryiko wrote:
+> On Fri, Mar 13, 2020 at 9:10 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>> Andrii Nakryiko reports that sockmap_listen test suite is frequently
+>> failing due to accept() calls erroring out with EAGAIN:
+>>
+>>    ./test_progs:connect_accept_thread:733: accept: Resource temporarily unavailable
+>>    connect_accept_thread:FAIL:733
+>>
+>> This is because we are using a non-blocking listening TCP socket to
+>> accept() connections without polling on the socket.
+>>
+>> While at first switching to blocking mode seems like the right thing to do,
+>> this could lead to test process blocking indefinitely in face of a network
+>> issue, like loopback interface being down, as Andrii pointed out.
+>>
+>> Hence, stick to non-blocking mode for TCP listening sockets but with
+>> polling for incoming connection for a limited time before giving up.
+>>
+>> Apply this approach to all socket I/O calls in the test suite that we
+>> expect to block indefinitely, that is accept() for TCP and recv() for UDP.
+>>
+>> Fixes: 44d28be2b8d4 ("selftests/bpf: Tests for sockmap/sockhash holding listening sockets")
+>> Reported-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+>> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+> 
+> This looks good. Unfortunately can't repro the issue locally anymore.
+> But once this gets into bpf-next and we update libbpf in Github, I'll
+> enable sockmap_listen tests again and see if it's still flaky. Thanks
+> for following up!
 
-Removes custom clean rule which is no longer necessary with the use of
-TEST_GEN_PROGS. 
-
-Uses $(OUTPUT) defined in lib.mk to handle build relocation.
-
-The following use-cases work with this change:
-
-In seccomp directory:
-make all and make clean
-
-From top level from main Makefile:
-make kselftest-install O=objdir ARCH=arm64 HOSTCC=gcc \
- CROSS_COMPILE=aarch64-linux-gnu- TARGETS=seccomp
-
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
-
-Changes since v2:
--- Using TEST_GEN_PROGS is sufficient to generate objects.
-   Addresses review comments from Kees Cook.
-
- tools/testing/selftests/seccomp/Makefile | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
-
-diff --git a/tools/testing/selftests/seccomp/Makefile b/tools/testing/selftests/seccomp/Makefile
-index 1760b3e39730..a0388fd2c3f2 100644
---- a/tools/testing/selftests/seccomp/Makefile
-+++ b/tools/testing/selftests/seccomp/Makefile
-@@ -1,17 +1,15 @@
- # SPDX-License-Identifier: GPL-2.0
--all:
--
--include ../lib.mk
-+CFLAGS += -Wl,-no-as-needed -Wall
-+LDFLAGS += -lpthread
- 
- .PHONY: all clean
- 
--BINARIES := seccomp_bpf seccomp_benchmark
--CFLAGS += -Wl,-no-as-needed -Wall
-+include ../lib.mk
-+
-+# OUTPUT set by lib.mk
-+TEST_GEN_PROGS := $(OUTPUT)/seccomp_bpf $(OUTPUT)/seccomp_benchmark
- 
--seccomp_bpf: seccomp_bpf.c ../kselftest_harness.h
--	$(CC) $(CFLAGS) $(LDFLAGS) $< -lpthread -o $@
-+$(TEST_GEN_PROGS): ../kselftest_harness.h
- 
--TEST_PROGS += $(BINARIES)
--EXTRA_CLEAN := $(BINARIES)
-+all: $(TEST_GEN_PROGS)
- 
--all: $(BINARIES)
--- 
-2.20.1
-
+Ok, applied, thanks!
