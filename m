@@ -2,90 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8FD184624
-	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 12:45:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD3F18463F
+	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 12:52:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726395AbgCMLpJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Mar 2020 07:45:09 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:33944 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726216AbgCMLpJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Mar 2020 07:45:09 -0400
-Received: by mail-wr1-f68.google.com with SMTP id z15so11682306wrl.1
-        for <bpf@vger.kernel.org>; Fri, 13 Mar 2020 04:45:08 -0700 (PDT)
+        id S1726674AbgCMLwq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Mar 2020 07:52:46 -0400
+Received: from mail-pj1-f52.google.com ([209.85.216.52]:53139 "EHLO
+        mail-pj1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726650AbgCMLwq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Mar 2020 07:52:46 -0400
+Received: by mail-pj1-f52.google.com with SMTP id f15so4042996pjq.2;
+        Fri, 13 Mar 2020 04:52:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dgczSmAqVEJOutEhe8hoKbtoOKkA2cKA5aZcMZeUt7M=;
-        b=UD5SixymeIdkCPNBEKM6X0ZsncWUrK1nGU65RM9f+VyOlBFoPr91ErZu4D6VfKARM0
-         z+hsdamo+rFQVrmdvBKMGL8EuUg8WU6WrRoMmR8DUr2qIGiuJ41UF3gTmnFgy/IVq2g0
-         szQS03Dt4ldXw7klloG6Uzco9zcZMQR1GzhMy3WbmaAJea80ZHn6pFXwKQsP5YzV/ST+
-         pMqjlB0CB1gg2RsXP3XyqlsUmKYKD/+yriKZzJmIiFGThU3uF1zLh7Kh/gFEnHh+TaDq
-         g+2zbTSgHgnh633zpNkrCdkhZFJImsPVmY/vg0uogFE55wiCXMtAq7CQeMbqzDuLEdXP
-         3sLQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TUCicgYIc2oMmv7M1SM03HejGtN5KLm5jOrCLhI2rPI=;
+        b=oOqQQl8xLk5TSxVixPC6dfmu2PYHJeQC7eYgkucmi90Rb9mi34pSuZl2GJQ/3auOfe
+         qE6SRTdP+9Tu4Ydu+O3sWHjFGWhuxtCC6ss57rkH5S7KLd0sZvvL2ThA5+9NcKCRhT7r
+         /Di8fZFPsK5GA+54GQVZufVFUKcwdTx1wORjO6FN8fbeaGMOEyRBP8aTxwApvPfM31dc
+         PidbKybhKaFRBNAB0fdplTyW81ic2I/d+mK70r+cBfy94LVKvE6TLFwO3U2KfM8mnTd2
+         8OxEDSggCcs7U1S/HeSOyrIMy3d2SGf5ccg5IE1ZiAsKr6XHxShZizulMZpYvAHSEBFo
+         DILw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=dgczSmAqVEJOutEhe8hoKbtoOKkA2cKA5aZcMZeUt7M=;
-        b=lWqF0HcpqYX/CKIkurUZdTJqL/x2u76xWzoty9na+jvSOefdBkoSTEvm4Cqgor5ijh
-         eMUGvL3/uO9U6p30HpiU6Uzkoc5HTbqCdGuW7T1tb1R7E9A5ORgcK6HL6jWoNA2Cx7H5
-         OJF6M0Xp8XB98+f8Mif4ONW8iZkkzqVPDifBG0DGwNRglVWZ8qTB7TiKKKLzE/F2ok/F
-         +Ct+IOX/9k8VJYhqz/M91AALUosp1lcOze4ESwlXUYzq52Y6Pg2ldKPy6LKB0NlKAAwh
-         oU837hU42Z2sHg3UpFTQ/urHkHNHwBgKyxDUQ05g2Ex7iJCS1omihP1aPkGSP4pvXy3A
-         nTZQ==
-X-Gm-Message-State: ANhLgQ1b1Yv9HY3axN8HU1B9eJTy/kIYT3AhT8Fb/TCdJd2lNgMleG5u
-        jtMJ1f1JMnDECIDJ/UMNB+sqoA==
-X-Google-Smtp-Source: ADFU+vsFcFvVhNYRTCm5ZSliJazxZsWFUHwpM16BAXz4Mnd+bWt88EWTKrmY4oEXFZncdcyAw1dPhg==
-X-Received: by 2002:adf:e3cc:: with SMTP id k12mr13352414wrm.266.1584099907848;
-        Fri, 13 Mar 2020 04:45:07 -0700 (PDT)
-Received: from [192.168.1.10] ([194.35.118.102])
-        by smtp.gmail.com with ESMTPSA id d7sm5784478wrc.25.2020.03.13.04.45.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Mar 2020 04:45:07 -0700 (PDT)
-Subject: Re: [PATCH bpf-next] tools/bpf: move linux/types.h for selftests and
- bpftool
-To:     Tobias Klauser <tklauser@distanz.ch>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        bh=TUCicgYIc2oMmv7M1SM03HejGtN5KLm5jOrCLhI2rPI=;
+        b=TUAegqBmiLqg7a2WeqxaBaZyn+DRDv4IsOx527nHkY+T03pxUZR4JYqZgKpq6qcKMc
+         WRi1j2zAXRqnZWIVn6YMlBbTguBujGp2y54/1/zmqKSSEFa4PgVH93IIiQGJRzFPMBar
+         2TRhJ/tqymsmtO04SCyV/50UtqIyJ9e3usyiixXVJeL0LTCvq2aBF56xDST+YBAnv20L
+         jRIjY412J/qn2JoNOLUAv3xPAxVxAbUvoSlkzuNL89DFsyeeKr7lPwEni6agUD6/acdf
+         Im6o+JoRDyRlP8+sloytSupM0G6A8DNdiw9QMWJzoGlUmgSitsMOSkBFjpmLWi7jkN0r
+         nnyQ==
+X-Gm-Message-State: ANhLgQ3tLJFBzN57rseMwSt/pJdylXKEsp0ERZk3+joIeSou3oMepUj1
+        L205+dA5NqA8szzQ5a43WQ==
+X-Google-Smtp-Source: ADFU+vsdESDqQP02qqUCDMIW1a6K8iiz1h0UqgA1i8gZkeh6NRkqU5XfR7pVUMkawZNMr4ny3630vg==
+X-Received: by 2002:a17:902:8502:: with SMTP id bj2mr10390887plb.72.1584100364827;
+        Fri, 13 Mar 2020 04:52:44 -0700 (PDT)
+Received: from localhost.localdomain ([110.35.161.54])
+        by smtp.gmail.com with ESMTPSA id r14sm2095151pjj.48.2020.03.13.04.52.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Mar 2020 04:52:44 -0700 (PDT)
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>
-Cc:     Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-References: <20200313113105.6918-1-tklauser@distanz.ch>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <9dd3dc71-90b6-1557-4459-2b99183bf6a7@isovalent.com>
-Date:   Fri, 13 Mar 2020 11:45:06 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next v3 0/2] Refactor perf_event sample user program with libbpf bpf_link
+Date:   Fri, 13 Mar 2020 20:52:18 +0900
+Message-Id: <20200313115220.29073-1-danieltimlee@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200313113105.6918-1-tklauser@distanz.ch>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-03-13 12:31 UTC+0100 ~ Tobias Klauser <tklauser@distanz.ch>
-> Commit fe4eb069edb7 ("bpftool: Use linux/types.h from source tree for
-> profiler build") added a build dependency on tools/testing/selftests/bpf
-> to tools/bpf/bpftool. This is suboptimal with respect to a possible
-> stand-alone build of bpftool.
-> 
-> Fix this by moving
-> tools/testing/selftests/bpf/include/uapi/linux/types.h to
-> tools/include/uapi/linux/types.h
-> 
-> This requires an adjustment in the include search path order for the
-> tests in tools/testing/selftests/bpf so that tools/include/linux/types.h
-> is selected when building host binaries and
-> tools/include/uapi/linux/types.h is selected when building bpf binaries.
-> 
-> Verified by compiling bpftool and the bpf selftests on x86_64 with this
-> change.
+Currently, some samples are using ioctl for enabling perf_event and
+attaching BPF programs to this event. However, the bpf_program__attach
+of libbpf(using bpf_link) is much more intuitive than the previous
+method using ioctl.
 
-Compiles on my setup too.
+bpf_program__attach_perf_event manages the enable of perf_event and
+attach of BPF programs to it, so there's no neeed to do this
+directly with ioctl.
 
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+In addition, bpf_link provides consistency in the use of API because it
+allows disable (detach, destroy) for multiple events to be treated as
+one bpf_link__destroy.
+
+To refactor samples with using this libbpf API, the bpf_load in the
+samples were removed and migrated to libbbpf. Because read_trace_pipe
+is used in bpf_load, multiple samples cannot be migrated to libbpf,
+this function was moved to trace_helpers.
+
+Changes in v2:
+ - check memory allocation is successful
+ - clean up allocated memory on error
+
+Changes in v3:
+ - Improve pointer error check (IS_ERR())
+ - change to calloc for easier destroy of bpf_link
+ - remove perf_event fd list since bpf_link handles fd
+ - use newer bpf_object__{open/load} API instead of bpf_prog_load
+ - perf_event for _SC_NPROCESSORS_ONLN instead of _SC_NPROCESSORS_CONF
+ - sample specific chagnes...
+
+Daniel T. Lee (2):
+  samples: bpf: move read_trace_pipe to trace_helpers
+  samples: bpf: refactor perf_event user program with libbpf bpf_link
+
+ samples/bpf/Makefile                        |   8 +-
+ samples/bpf/bpf_load.c                      |  20 ----
+ samples/bpf/bpf_load.h                      |   1 -
+ samples/bpf/sampleip_user.c                 | 100 +++++++++++++-------
+ samples/bpf/trace_event_user.c              |  89 ++++++++++++-----
+ samples/bpf/tracex1_user.c                  |   1 +
+ samples/bpf/tracex5_user.c                  |   1 +
+ tools/testing/selftests/bpf/trace_helpers.c |  23 +++++
+ tools/testing/selftests/bpf/trace_helpers.h |   1 +
+ 9 files changed, 159 insertions(+), 85 deletions(-)
+
+-- 
+2.25.1
+
