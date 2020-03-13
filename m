@@ -2,115 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 307B018472D
-	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 13:48:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F0C184B9A
+	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 16:48:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbgCMMsJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Mar 2020 08:48:09 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:38360 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726216AbgCMMsJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Mar 2020 08:48:09 -0400
-Received: by mail-qt1-f196.google.com with SMTP id e20so7323260qto.5;
-        Fri, 13 Mar 2020 05:48:08 -0700 (PDT)
+        id S1726726AbgCMPsZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Mar 2020 11:48:25 -0400
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:41370 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726446AbgCMPsY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Mar 2020 11:48:24 -0400
+Received: by mail-qv1-f68.google.com with SMTP id a10so4802823qvq.8;
+        Fri, 13 Mar 2020 08:48:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4Wtym2YpAZl93It7kAZtFwQHk1xaqjgeb6Ayg9t19Y8=;
-        b=hP3abGFm6IO3Gax7hTipVqI4ommOPDEojXy+lJDXZtoOYohtpeZI5zKln5lKv4Gr+J
-         vHJEdpfBF92MaOInJoUSvxhMaJmhFeYfJNVgxwQoKKtsNKPF8rYYs7s8eBtdOulXJ/5n
-         6LgDn1NPaQ5IRDEoGcAh7DhgpKcuHjGIHVaBSem/I7M3RbLdyqJlDNMZlMx5FQpUgRrx
-         8EbGFD9IRDCqIbdbMmomh9BScdHrWEtnCZYS+HYRhEnYRnbglrnidI1E/WBt+8xPmCpG
-         WtroHqURvBzbTSrbUF5r3F7gqNm4ZQnyIiJRr1qOazlrkxgO5gNFDw+jwCWVNyUE9Bhb
-         9tlA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1fjdWYaARiMbD5URtOSuvWLjsUmRZ4Mp3HLmBzQW/kM=;
+        b=OlpNUfGOqKNwfcKusKki8o85abd9opIo74cZ9U6Pj+Cgs+oB1tSiLTFQWvOoJlX1Nk
+         BZ4izs2ZbVrYjO/5z+8mKjAH26iRUnZ9SNhMAwCGNJELccfJszsB0yQu7sRJKSjp61tY
+         QUFeTIZ73BYINgCKrAghFJwexBwjKhTCioFD2bdndCCJS8SIZaq85mUEsNPgqtsdHxX+
+         1UBZnjwKhX16cdgtv3c5vqtzI4LCKZgZ9brpoS8PdJnHHq0P5pScRzHixWtzjOLJ9czt
+         6W8tGvbjg3Y9pYci+Gb9RSxL/Vn45N1G1YCC1w00LnPtS2kZOPvraznH8vweFB3AbJW8
+         ScPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4Wtym2YpAZl93It7kAZtFwQHk1xaqjgeb6Ayg9t19Y8=;
-        b=ZfprLtTpC2aBj/TyryzC4ic2y8so2B/1kiCuNG4WuKxd3aBBz4l6AUUkBSgQc+1BVo
-         esd0UMiM6v2xYeQ7fncLC8PHBjPqmO3XP7lK7x9/CFpaa3FV03Te+1TM4SxYiJAGHjIh
-         J1EatheI+2rJnuVBBKfjZ0ZmxwWRHfH9ZDbeQ5ZWpFf6FFHil3oeDhb4TNQPZ+Xdb2ZP
-         vGdShQkioKz8gYulbS5gLgoOvFvjv+0tXSO3Furr0rvTfYFcVj9f5Nm2ppNvPEHEZTLm
-         B42lFy1mpNOdtSbClmTlWpsoIzIjfXDgaX9QrV2mJGtb6v8E2AfxKzo3AzYxZ3PI2sH5
-         dXfw==
-X-Gm-Message-State: ANhLgQ1QiJhZ6Q2XqQwD0f5Dyxan9eU/miSmWtA2pX6Z4oyejG2dtMFZ
-        8Cy7NipI86SQI0utVDoCims=
-X-Google-Smtp-Source: ADFU+vsmR6tgaz/whYXSoJ6nLmlZTE1LKH95FJdyBqxQMM81A8OiPpLua9lXuIbQeXcCnqUnBThEqg==
-X-Received: by 2002:ac8:1114:: with SMTP id c20mr11913640qtj.126.1584103687781;
-        Fri, 13 Mar 2020 05:48:07 -0700 (PDT)
-Received: from bpf-dev (pc-184-104-160-190.cm.vtr.net. [190.160.104.184])
-        by smtp.gmail.com with ESMTPSA id h25sm8721532qkg.87.2020.03.13.05.48.05
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1fjdWYaARiMbD5URtOSuvWLjsUmRZ4Mp3HLmBzQW/kM=;
+        b=B6j6j/exKiLDbShkOd5sW7vJJwLNDfi6iONgaK1M7NvMLwp162VltwBHhCP+mKCMYR
+         WumQazF/p5fd7WwhvJ+UoTOxrbA3D9MKxaKwo/H0NXyiNajttwVmCMtlZerOF5YMqRQy
+         ysdOjngpfdps9J6r6nHucIRtYmsZsI7RrgCK09XIj4Qyxdwt/FaldFLlZtuOHXnTQyz0
+         o2WatO2vzzomiBpsrqObylhUI+pnIdVvYoDhKmtXwDBbAAAwTnI6q6dI2jTV3EKIJPJq
+         oj+XBR9wvupUjWhmxu6PAt++fdEE8zSX5jZ9HO8u5MINGV3mzYCCc1GAmuDivbkP4Dy3
+         YB7A==
+X-Gm-Message-State: ANhLgQ2SdbUlK/9Y2bRRQZ4iSMk0sy3HWW1c2F7fJ5lORe194MpFzDOU
+        /0BLabSwVRFMGCXkrpKVvsq+ClXF8GyGxKLs
+X-Google-Smtp-Source: ADFU+vsQ5fmp9gmkM5tX7JbcggSnBTA5OKGHgShhhU7XIfSe/+4eyeP6F8XxxDpPg+MovX7YB3Z6DA==
+X-Received: by 2002:a0c:e450:: with SMTP id d16mr13178869qvm.195.1584114503027;
+        Fri, 13 Mar 2020 08:48:23 -0700 (PDT)
+Received: from localhost.localdomain (pc-184-104-160-190.cm.vtr.net. [190.160.104.184])
+        by smtp.googlemail.com with ESMTPSA id m6sm4600281qkh.33.2020.03.13.08.48.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Mar 2020 05:48:07 -0700 (PDT)
-Date:   Fri, 13 Mar 2020 09:48:03 -0300
-From:   Carlos Antonio Neira Bustos <cneirabustos@gmail.com>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH v17 0/3] BPF: New helper to obtain namespace data from
- current task
-Message-ID: <20200313124802.GB1309@bpf-dev>
-References: <20200304204157.58695-1-cneirabustos@gmail.com>
- <CAADnVQL4GR2kOoiLE0aTorvYzTPWrOCV4yKMh1BasYTVHkKxcg@mail.gmail.com>
- <33447490-7fa2-f56d-3622-d61c9c2046e5@isovalent.com>
+        Fri, 13 Mar 2020 08:48:22 -0700 (PDT)
+From:   Carlos Neira <cneirabustos@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     yhs@fb.com, quentin@isovalent.com, ebiederm@xmission.com,
+        brouer@redhat.com, bpf@vger.kernel.org, cneirabustos@gmail.com
+Subject: [PATCH bpf-next] bpf_helpers_doc.py: Fix warning when compiling bpftool.
+Date:   Fri, 13 Mar 2020 12:46:50 -0300
+Message-Id: <20200313154650.13366-1-cneirabustos@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <33447490-7fa2-f56d-3622-d61c9c2046e5@isovalent.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 13, 2020 at 10:39:41AM +0000, Quentin Monnet wrote:
-> 2020-03-12 17:45 UTC-0700 ~ Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> > On Wed, Mar 4, 2020 at 12:42 PM Carlos Neira <cneirabustos@gmail.com> wrote:
-> >>
-> >> Currently bpf_get_current_pid_tgid(), is used to do pid filtering in bcc's
-> >> scripts but this helper returns the pid as seen by the root namespace which is
-> >> fine when a bcc script is not executed inside a container.
-> >> When the process of interest is inside a container, pid filtering will not work
-> >> if bpf_get_current_pid_tgid() is used.
-> >> This helper addresses this limitation returning the pid as it's seen by the current
-> >> namespace where the script is executing.
-> >>
-> >> In the future different pid_ns files may belong to different devices, according to the
-> >> discussion between Eric Biederman and Yonghong in 2017 Linux plumbers conference.
-> >> To address that situation the helper requires inum and dev_t from /proc/self/ns/pid.
-> >> This helper has the same use cases as bpf_get_current_pid_tgid() as it can be
-> >> used to do pid filtering even inside a container.
-> > 
-> > Applied. Thanks.
-> > There was one spurious trailing whitespace that I fixed in patch 3
-> > and missing .gitignore update for test_current_pid_tgid_new_ns.
-> > Could you please follow up with another patch to fold
-> > test_current_pid_tgid_new_ns into test_progs.
-> > I'd really like to consolidate all tests into single binary.
-> > 
-> 
-> Compiling bpftool (with libbpf now relying on bpf_helper_defs.h
-> generated from helpers documentation), I observe the following
-> warning:
-> 
->     .output/bpf_helper_defs.h:2834:72: warning: declaration of 'struct bpf_pidns_info' will not be visible outside of this function [-Wvisibility]
->     static int (*bpf_get_ns_current_pid_tgid)(__u64 dev, __u64 ino, struct bpf_pidns_info *nsdata, __u32 size) = (void *) 120;
-> 
-> Would it be possible to address this as part of the follow-up too,
-> please? I think the fix would be to add "struct bpf_pidns_info"
-> to type_fds (I see it was added to known_types already) in
-> scripts/bpf_helpers_doc.py.
-> 
-> Thanks,
-> Quentin
 
-Thanks for checking this out Quentin,
-I'm sorry I'll start working on this follow-up patch to fix this.
+When compiling bpftool the following warning is found: 
+"declaration of 'struct bpf_pidns_info' will not be visible outside of this function."
+This patch adds struct bpf_pidns_info to type_fwds array to fix this.
 
-Bests
+Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
+---
+ scripts/bpf_helpers_doc.py | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
+index c1e2b5410faa..f43d193aff3a 100755
+--- a/scripts/bpf_helpers_doc.py
++++ b/scripts/bpf_helpers_doc.py
+@@ -400,6 +400,7 @@ class PrinterHelpers(Printer):
+             'struct bpf_fib_lookup',
+             'struct bpf_perf_event_data',
+             'struct bpf_perf_event_value',
++            'struct bpf_pidns_info',
+             'struct bpf_sock',
+             'struct bpf_sock_addr',
+             'struct bpf_sock_ops',
+-- 
+2.20.1
+
