@@ -2,99 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75366184C41
-	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 17:20:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8886184CB6
+	for <lists+bpf@lfdr.de>; Fri, 13 Mar 2020 17:42:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726461AbgCMQUH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Mar 2020 12:20:07 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:40767 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726676AbgCMQUH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Mar 2020 12:20:07 -0400
-Received: by mail-wr1-f67.google.com with SMTP id f3so5855050wrw.7
-        for <bpf@vger.kernel.org>; Fri, 13 Mar 2020 09:20:06 -0700 (PDT)
+        id S1727079AbgCMQmk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Mar 2020 12:42:40 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:45863 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726979AbgCMQmk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Mar 2020 12:42:40 -0400
+Received: by mail-lf1-f66.google.com with SMTP id b13so8411544lfb.12
+        for <bpf@vger.kernel.org>; Fri, 13 Mar 2020 09:42:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9yAuat/22fNvrLQHtVwJOuXJKdfyxNZNaC4y6TiV+Rc=;
-        b=B7sB/m8QnCzsW/O5BFA6AjN8CaY3UzbWxEwN/khlowudBy/e7Jhtto+AE6YEiV8VdN
-         WMBJdvfJdLw0/ydX6n6/OKFUivmhJYwT8GRm+xmE7Zd0Krt4rCGiaGG1sDegoUUpdczD
-         L7DFoiVkSPIbhhZp78YPE/1yUzFaWLm1v9lGpZMYpwmN2smyhfX7dBeTnzICqQMNVuz+
-         84+j445iQ6+s4j6jnnEvlaMxMSK5o5VP8+6TAuJlZsbN7OFfPkrg/iUPmeZMg05Sj5Xs
-         wLmxO2PURtw2J2Z3Td3szH6avZEBAhUVPJ0Wh3Ifb05VipUFIxsK0JCAzKJ1Ouworuqs
-         AjbA==
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=Z1VxIXBv35KeFZt3+dBi/tUwb8bgwLuhRxYuPlHgzsc=;
+        b=Xz98X0yXEPe1LumV9Ei3+6l9IIXcGbZ9Tw2yKHMJtVt5EZ3iEt6Q53kXCqmmRcCGBy
+         mRa8pOOFhlmqeObpdCTx3FTCBLagJ0YGOlTGv+dwL4pCe9iYVHX8v8Vyl4YeGK/PxEMz
+         wWZbDOys7OkLqQrmcL+fNCUm4AfwyAUAedFpQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9yAuat/22fNvrLQHtVwJOuXJKdfyxNZNaC4y6TiV+Rc=;
-        b=QE3knUwHzHiscXPFYdMcSZg1pKsrbGqjaIw29foiUJVgrMSVD7SAfolm0BMQKGe1Iu
-         60GsK4BIgaCbziG3EKRu85jnA5MSL0/lXHo4uhBoIVgbfJk4g0h2+/mK51s72Oe3EMtt
-         aqBVfb/i6Ltf8REoF71nikaqRvQNsjRS1rB6nN4OZDXpmU0FsnOwEgMAziBWoCNNxoHU
-         /h6w5PEnUVnU7GM7emA/Hx9XB+9QAtuRPFKeZmUjJyogMPwfaHZqC2Ln2HYg3mC24oWj
-         IrILwFxjwYwVO64elePm6LrYpeF6d9W8jFubW97Kil/8u2KqjyC2QkwWbFRvwgWFgSYm
-         kAsg==
-X-Gm-Message-State: ANhLgQ3C2VN7MAaQ9J/KF+K5L/xIh87VG9FkTZxpGuuQIDOHwd4bdXHg
-        VOkdDQcXVtB0OjIrk9fhSdePj/TQ25M=
-X-Google-Smtp-Source: ADFU+vvW95OwsBswiJRiJS7hwm11qgjSosIqo5QDvCnw+u5d9QvIUy45j2V1wA/ZZj+Q3PmRIx//aw==
-X-Received: by 2002:adf:f847:: with SMTP id d7mr17807816wrq.31.1584116404760;
-        Fri, 13 Mar 2020 09:20:04 -0700 (PDT)
-Received: from [192.168.1.10] ([194.35.118.102])
-        by smtp.gmail.com with ESMTPSA id n1sm35833275wrj.77.2020.03.13.09.20.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Mar 2020 09:20:04 -0700 (PDT)
-Subject: Re: [PATCH bpf-next] bpf_helpers_doc.py: Fix warning when compiling
- bpftool.
-To:     Carlos Neira <cneirabustos@gmail.com>, netdev@vger.kernel.org
-Cc:     yhs@fb.com, ebiederm@xmission.com, brouer@redhat.com,
-        bpf@vger.kernel.org
-References: <20200313154650.13366-1-cneirabustos@gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <a71d42ca-662d-d057-6939-60ad2bc44e1d@isovalent.com>
-Date:   Fri, 13 Mar 2020 16:20:03 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=Z1VxIXBv35KeFZt3+dBi/tUwb8bgwLuhRxYuPlHgzsc=;
+        b=Frgsdo5ELMjMQ74QxkU4nK7OywWKFVz8IxDhXGFb96/1TLgESdul2gEVlUkraU07wx
+         4IfxmCjrno/93leEP33Hfv2CbnVTFp3FGj2nlqRnr8CZoCVHcUNymG0lDbOB5fWUyOLv
+         QVRBiU64wx/bkpNJ1rA/Y0vGLivA4oip1s/pqSVg7JZQWGuCtvvuwVH4PmxzF1HLMvqb
+         VLp/a2eRanGw0DWWqEqwZLoGFgX0CcFQh/UHIirsYzzsNhDZ5+KViiaNQ93K9OOVd5WN
+         RHgOYWjCkdT4pTuOiMMhHVeeIqJGrOrMd0Bp3jCdpGG/8pxCBEMG9TLUjPWtwCnA9HJl
+         0wLw==
+X-Gm-Message-State: ANhLgQ0dcnGSNWmXKsPQL2TjTkfMjM3Zm7GDwxGE2hC8CLLBVKuex0jJ
+        UuICXPDbaM5QooH5Yu6Eq71qBQ==
+X-Google-Smtp-Source: ADFU+vvvHY+hBwL7hPxvU+2mWXJQMUNzP5RPqDtQnTqSKVc6jkn4FyByjXpa8bqK0+yNAS+N+VuyNg==
+X-Received: by 2002:a19:a401:: with SMTP id q1mr8860478lfc.157.1584117757875;
+        Fri, 13 Mar 2020 09:42:37 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id y6sm2496989lfy.38.2020.03.13.09.42.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Mar 2020 09:42:37 -0700 (PDT)
+References: <20200312171105.533690-1-jakub@cloudflare.com> <CAEf4BzbsDMbmury9Z-+j=egsfJf4uKxsu0Fsdr4YpP1FgvBiiQ@mail.gmail.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        kernel-team@cloudflare.com
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix spurious failures in accept due to EAGAIN
+In-reply-to: <CAEf4BzbsDMbmury9Z-+j=egsfJf4uKxsu0Fsdr4YpP1FgvBiiQ@mail.gmail.com>
+Date:   Fri, 13 Mar 2020 17:42:36 +0100
+Message-ID: <87o8t0xl37.fsf@cloudflare.com>
 MIME-Version: 1.0
-In-Reply-To: <20200313154650.13366-1-cneirabustos@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-03-13 12:46 UTC-0300 ~ Carlos Neira <cneirabustos@gmail.com>
-> 
-> When compiling bpftool the following warning is found: 
-> "declaration of 'struct bpf_pidns_info' will not be visible outside of this function."
-> This patch adds struct bpf_pidns_info to type_fwds array to fix this.
-> 
-> Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
-> ---
->  scripts/bpf_helpers_doc.py | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
-> index c1e2b5410faa..f43d193aff3a 100755
-> --- a/scripts/bpf_helpers_doc.py
-> +++ b/scripts/bpf_helpers_doc.py
-> @@ -400,6 +400,7 @@ class PrinterHelpers(Printer):
->              'struct bpf_fib_lookup',
->              'struct bpf_perf_event_data',
->              'struct bpf_perf_event_value',
-> +            'struct bpf_pidns_info',
->              'struct bpf_sock',
->              'struct bpf_sock_addr',
->              'struct bpf_sock_ops',
-> 
+On Thu, Mar 12, 2020 at 06:57 PM CET, Andrii Nakryiko wrote:
+> Thanks for looking into this. Can you please verify that test
+> successfully fails (not hangs) when, say, network is down (do `ip link
+> set lo down` before running test?). The reason I'm asking is that I
+> just fixed a problem in tcp_rtt selftest, in which accept() would
+> block forever, even if listening socket was closed.
 
-Note that the warning is not specific to bpftool (I just happened to
-spot it when compiling this tool), it's for anything that uses libbpf,
-or more generally, the generated header for helpers.
+While on the topic writing network tests with test_progs.
 
-It is fixed by your patch, thank you!
+There are a couple pain points because all tests run as one process:
 
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+1) resource cleanup on failure
+
+   Tests can't simply exit(), abort(), or error() on failure. Instead
+   they need to clean up all resources, like opened file descriptors and
+   memory allocations, and propagate the error up to the main test
+   function so it can return to the test runner.
+
+2) terminating in timely fashion
+
+   We don't have an option of simply setting alarm() to terminate after
+   a reasnable timeout without worrying about I/O syscalls in blocking
+   mode being stuck.
+
+Careful error and timeout handling makes test code more complicated that
+it really needs to be, IMHO. Making writing as well as maintaing them
+harder.
+
+What if we extended test_progs runner to support process-per-test
+execution model? Perhaps as an opt-in for selected tests.
+
+Is that in line with the plans/vision for BPF selftests?
