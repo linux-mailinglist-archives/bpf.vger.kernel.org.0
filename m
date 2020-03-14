@@ -2,223 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA695185982
-	for <lists+bpf@lfdr.de>; Sun, 15 Mar 2020 04:00:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5678D1859D6
+	for <lists+bpf@lfdr.de>; Sun, 15 Mar 2020 04:50:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbgCODAE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 14 Mar 2020 23:00:04 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:46192 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726809AbgCODAE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 14 Mar 2020 23:00:04 -0400
-Received: by mail-qk1-f196.google.com with SMTP id f28so20074662qkk.13;
-        Sat, 14 Mar 2020 20:00:03 -0700 (PDT)
+        id S1727563AbgCODuS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 14 Mar 2020 23:50:18 -0400
+Received: from mail-vk1-f196.google.com ([209.85.221.196]:33523 "EHLO
+        mail-vk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726668AbgCODuS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 14 Mar 2020 23:50:18 -0400
+Received: by mail-vk1-f196.google.com with SMTP id d11so2168215vko.0;
+        Sat, 14 Mar 2020 20:50:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Hy6Hpt/byxt7YG6bMmh5Wt+6YXRWMDbd956TqtsgPoM=;
-        b=N1SIIptkyVu0bnPRr1X+9vB10u5VxtKKSPeaKf82MARMaGgJhRNtm/YOUuVoaj6mWy
-         TKHsS3Fyt6O7e+A9qhmU9dLG7khsqVbPNX40G8FmCpUn9166xHGyCzbaJkYuo3Z5o/Zn
-         mQs8pMTYjJYrQsHF4arniVZ76I1MPtC8PibwOuepTon9Sid6hMcvybCvkJU1a5iR1cme
-         ncZl8DV12gGcSysif0cc5gPJUjLqHzneXnXk2ZN5pS2AxAKtdvjDrLNkhVjLh5eR92Im
-         YMnKMer+q/9K8Pighm+rMqeUtSNuF7Js3rCoMcUguTnQztvzldhBKg2aH33sEvpb6uKU
-         xOZg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dPG+5nHaG+yMaeQo2rL7AF5LO5E5t2o4wvjjJ/5g6Ww=;
+        b=i9qLu0Db3D3Rf/N4q8UxSjIt0hPhJSynIn3pXNM0cLts9JJqqfWknz38IyX1g5ikJf
+         hMBvpPo1qVVFoKVyv1YLbvKI5+9Vc+ARQFj9u0CM+dziY+QBh+kBe0JUCJy3qHgeHGkt
+         IQtNexkWb/iQz92NR/cNs+WXFI3y4eM0WhlfgVQu18QcIZNUTVfuQ3aH0cf5r+wzoWPB
+         R4mCYy6InbcdHDAYM0sSDFtEm4uiqJLxaz/LKEltHaU3SF3fUteAYzGu7ElhW0PXB49R
+         l7WPMJVCOaH2REB0iO9KLYk4i8Yjn05BhA7XSjFTeAIBbPhYNKKTpvqPF7ZrYRzwAUmd
+         l5Ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Hy6Hpt/byxt7YG6bMmh5Wt+6YXRWMDbd956TqtsgPoM=;
-        b=dQ1iLY7XTFemCP78tZ+KyD8z7HDoTs+qX2B0ebu6fxG8YuectY+7nIeyh5Sq/ASeCz
-         eYwDQcXuOG+lYYAJZN5QUtwrvmloZ5l1tv8BM6fOEVXuVrIrekLcwCfCwJa/QbxIvBjj
-         1PiVByVgCFtd/CMbgfShT8R2AzQy/ABjUY2p9hPnlDU7ddyGCJFbgLIatcmhCO3k0OAt
-         JAkxQDXtWu8Ykx2GQNtez0Fndb08n8A4W8vTgVJgOuD/5+huHQhefRc2989bOAkYgVbB
-         glas6uBK73H524F8RiSvm9+rucXKwXVrooVfjOHpMrcDpp8C4bt2jr5GX+k0f3d9J8tU
-         VUig==
-X-Gm-Message-State: ANhLgQ1CV0xPNhuNyEJq2X2ffL5vWza3UkhsqdOGiCtmAu9SNLKyEbdD
-        5OYOBAWDLxLxFG8vpZTqzsTFv3uCz+53lOQoCw==
-X-Google-Smtp-Source: ADFU+vuNEzUMw87pGiKUDhatJT5ZIPWK4VhX8lP5NrXYEalTcpu76nrzuSJdzsMsZkasN8A22YE8r+NgFGN+Wy0BqBY=
-X-Received: by 2002:a25:1485:: with SMTP id 127mr26357959ybu.464.1584241202467;
- Sat, 14 Mar 2020 20:00:02 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dPG+5nHaG+yMaeQo2rL7AF5LO5E5t2o4wvjjJ/5g6Ww=;
+        b=Hu+DFCkHPaNhanJT+M+PGS3D4dqMfOobdKvpfb5K5lgxcGlE3ulVt/AWMyDHeJ8Sfe
+         IJ72YxapzBbF4c/30YER4UD/z1aYTM24/5Zel8EHHi6RYU+bXLn3V9RBeAgrdKtGH6xa
+         vQktv/Asum4hrxlC/hJ7IRLDt0Mvh3iXoNf0H2p1gNBFd8P4PErX6rXpScSrHm1q4wmb
+         Z0/sqw6A3M0yoU228K2mdlmL/+PBrW7cBV4TjaX8O/P/XDRqtY4RnazC1gW86f8hnFQK
+         Mm7HYGZlE7YkV/ex62rXvxTDLh6jHso8mJtfBFoWAw14JCgolnp7YAr8k4PFPU+XKgga
+         YlAQ==
+X-Gm-Message-State: ANhLgQ0u/ON5Dmz1xXUNSjfg/I7sJKll/Is+jzRlLQRgya8xtYBV3vDt
+        ddBFjFPDvv+ZZvC1Oyu6afdJEIst
+X-Google-Smtp-Source: ADFU+vsN+N2CoUaX39Eq9MU2Ptt8MTH4IEoo5sPUITDknirnwoXpWrZPAj1e8cFqTl5/yOBaPKm4Tg==
+X-Received: by 2002:a17:902:780b:: with SMTP id p11mr18508190pll.61.1584201427240;
+        Sat, 14 Mar 2020 08:57:07 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:1356])
+        by smtp.gmail.com with ESMTPSA id 13sm61342367pfi.78.2020.03.14.08.57.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Mar 2020 08:57:06 -0700 (PDT)
+Date:   Sat, 14 Mar 2020 08:57:03 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "yzaikin@google.com" <yzaikin@google.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "mingo@kernel.org" <mingo@kernel.org>
+Subject: Re: [RFC bpf-next 0/2] sharing bpf runtime stats with /dev/bpf_stats
+Message-ID: <20200314155703.bmtojqeofzxbqqhu@ast-mbp>
+References: <20200314003518.3114452-1-songliubraving@fb.com>
+ <20200314024322.vymr6qkxsf6nzpum@ast-mbp.dhcp.thefacebook.com>
+ <E7BBB6E4-F911-47D4-A4BC-3DF3D29B557B@fb.com>
 MIME-Version: 1.0
-References: <20200314034456.26847-1-danieltimlee@gmail.com>
- <20200314034456.26847-3-danieltimlee@gmail.com> <CAEf4BzZHk38KZRx5VstpPXYnFjM8OMOr1cUiSsnr_zY6v2AdJw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZHk38KZRx5VstpPXYnFjM8OMOr1cUiSsnr_zY6v2AdJw@mail.gmail.com>
-From:   "Daniel T. Lee" <danieltimlee@gmail.com>
-Date:   Sun, 15 Mar 2020 11:59:48 +0900
-Message-ID: <CAEKGpzi82ugDtCULWvFr4h19wTZMFQt6-QTUPNT_xkQWFSkbnQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/2] samples: bpf: refactor perf_event user
- program with libbpf bpf_link
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <E7BBB6E4-F911-47D4-A4BC-3DF3D29B557B@fb.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Mar 15, 2020 at 5:07 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, Mar 13, 2020 at 8:45 PM Daniel T. Lee <danieltimlee@gmail.com> wrote:
-> >
-> > The bpf_program__attach of libbpf(using bpf_link) is much more intuitive
-> > than the previous method using ioctl.
-> >
-> > bpf_program__attach_perf_event manages the enable of perf_event and
-> > attach of BPF programs to it, so there's no neeed to do this
-> > directly with ioctl.
-> >
-> > In addition, bpf_link provides consistency in the use of API because it
-> > allows disable (detach, destroy) for multiple events to be treated as
-> > one bpf_link__destroy. Also, bpf_link__destroy manages the close() of
-> > perf_event fd.
-> >
-> > This commit refactors samples that attach the bpf program to perf_event
-> > by using libbbpf instead of ioctl. Also the bpf_load in the samples were
-> > removed and migrated to use libbbpf API.
-> >
-> > Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
-> > ---
-> > Changes in v2:
-> >  - check memory allocation is successful
-> >  - clean up allocated memory on error
-> >
-> > Changes in v3:
-> >  - Improve pointer error check (IS_ERR())
-> >  - change to calloc for easier destroy of bpf_link
-> >  - remove perf_event fd list since bpf_link handles fd
-> >  - use newer bpf_object__{open/load} API instead of bpf_prog_load
-> >  - perf_event for _SC_NPROCESSORS_ONLN instead of _SC_NPROCESSORS_CONF
-> >  - find program with name explicitly instead of bpf_program__next
-> >  - unconditional bpf_link__destroy() on cleanup
-> >
-> > Changes in v4:
-> >  - bpf_link *, bpf_object * set NULL on init & err for easier destroy
-> >  - close bpf object with bpf_object__close()
-> >
-> >  samples/bpf/Makefile           |   4 +-
-> >  samples/bpf/sampleip_user.c    |  98 +++++++++++++++++++----------
-> >  samples/bpf/trace_event_user.c | 112 ++++++++++++++++++++++-----------
-> >  3 files changed, 143 insertions(+), 71 deletions(-)
-> >
->
-> Few more int_exit() problems, sorry I didn't catch it first few times,
-> I'm not very familiar with all these bpf samples.
->
+On Sat, Mar 14, 2020 at 03:47:50AM +0000, Song Liu wrote:
+> 
+> 
+> > On Mar 13, 2020, at 7:43 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > 
+> > On Fri, Mar 13, 2020 at 05:35:16PM -0700, Song Liu wrote:
+> >> Motivation (copied from 2/2):
+> >> 
+> >> ======================= 8< =======================
+> >> Currently, sysctl kernel.bpf_stats_enabled controls BPF runtime stats.
+> >> Typical userspace tools use kernel.bpf_stats_enabled as follows:
+> >> 
+> >>  1. Enable kernel.bpf_stats_enabled;
+> >>  2. Check program run_time_ns;
+> >>  3. Sleep for the monitoring period;
+> >>  4. Check program run_time_ns again, calculate the difference;
+> >>  5. Disable kernel.bpf_stats_enabled.
+> >> 
+> >> The problem with this approach is that only one userspace tool can toggle
+> >> this sysctl. If multiple tools toggle the sysctl at the same time, the
+> >> measurement may be inaccurate.
+> >> 
+> >> To fix this problem while keep backward compatibility, introduce
+> >> /dev/bpf_stats. sysctl kernel.bpf_stats_enabled will only change the
+> >> lowest bit of the static key. /dev/bpf_stats, on the other hand, adds 2
+> >> to the static key for each open fd. The runtime stats is enabled when
+> >> kernel.bpf_stats_enabled == 1 or there is open fd to /dev/bpf_stats.
+> >> 
+> >> With /dev/bpf_stats, user space tool would have the following flow:
+> >> 
+> >>  1. Open a fd to /dev/bpf_stats;
+> >>  2. Check program run_time_ns;
+> >>  3. Sleep for the monitoring period;
+> >>  4. Check program run_time_ns again, calculate the difference;
+> >>  5. Close the fd.
+> >> ======================= 8< =======================
+> >> 
+> >> 1/2 adds a few new API to jump_label.
+> >> 2/2 adds the /dev/bpf_stats and adjust kernel.bpf_stats_enabled handler.
+> >> 
+> >> Please share your comments.
+> > 
+> > Conceptually makes sense to me. Few comments:
+> > 1. I don't understand why +2 logic is necessary.
+> > Just do +1 for every FD and change proc_do_static_key() from doing
+> > explicit enable/disable to do +1/-1 as well on transition from 0->1 and 1->0.
+> > The handler would need to check that 1->1 and 0->0 is a nop.
+> 
+> With the +2/-2 logic, we use the lowest bit of the counter to remember 
+> the value of the sysctl. Otherwise, we cannot tell whether we are making
+> 0->1 transition or 1->1 transition. 
 
-No, you've catch the exact problem.
-In previous patch, it was int_exit(error) but I've revert back on this version.
-I'll explain more later.
+that can be another static int var in the handler.
+and no need for patch 1.
 
+> > 
+> > 2. /dev is kinda awkward. May be introduce a new bpf command that returns fd?
+> 
+> Yeah, I also feel /dev is awkward. fd from bpf command sounds great. 
+> 
+> > 
+> > 3. Instead of 1 and 2 tweak sysctl to do ++/-- unconditionally?
+> > Like repeated sysctl kernel.bpf_stats_enabled=1 will keep incrementing it
+> > and would need equal amount of sysctl kernel.bpf_stats_enabled=0 to get
+> > it back to zero where it will stay zero even if users keep spamming
+> > sysctl kernel.bpf_stats_enabled=0.
+> > This way current services that use sysctl will keep working as-is.
+> > Multiple services that currently collide on sysctl will magically start
+> > working without any changes to them. It is still backwards compatible.
+> 
+> I think this is not fully backwards compatible. With current logic, the 
+> following sequence disables stats eventually. 
+> 
+>   sysctl kernel.bpf_stats_enabled=1
+>   sysctl kernel.bpf_stats_enabled=1
+>   sysctl kernel.bpf_stats_enabled=0
+> 
+> The same sequence will not disable stats with the ++/-- sysctl. 
 
-> [...]
->
-> >  all_cpu_err:
-> > -       for (i--; i >= 0; i--) {
-> > -               ioctl(pmu_fd[i], PERF_EVENT_IOC_DISABLE);
-> > -               close(pmu_fd[i]);
-> > -       }
-> > -       free(pmu_fd);
-> > +       for (i--; i >= 0; i--)
-> > +               bpf_link__destroy(links[i]);
-> > +err:
-> > +       free(links);
-> >         if (error)
-> >                 int_exit(0);
->
-> if (error) you should exit with error, no?
->
-> >  }
-> >
-> >  static void test_perf_event_task(struct perf_event_attr *attr)
-> >  {
->
-> [...]
->
-> >  err:
-> > -       ioctl(pmu_fd, PERF_EVENT_IOC_DISABLE);
-> > -       close(pmu_fd);
-> > +       bpf_link__destroy(link);
-> >         if (error)
-> >                 int_exit(0);
->
-> same comment about exiting with error
->
-> >  }
-> > @@ -282,7 +297,9 @@ static void test_bpf_perf_event(void)
->
-> [...]
->
-> > @@ -305,6 +343,10 @@ int main(int argc, char **argv)
-> >                 return 0;
-> >         }
-> >         test_bpf_perf_event();
-> > +       error = 0;
-> > +
-> > +cleanup:
-> > +       bpf_object__close(obj);
-> >         int_exit(0);
->
-> here and in previous sample int_exit for whatever purpose sends KILL
-> signal and exits with 0, that seems weird. Any idea why it was done
-> that way?
->
-
-I'm not sure why the code was written like that previously. However, IMHO,
-int_exit() is used as signal handler (not only this, other samples too)
-and this function is mainly used like this.
-
-signal(SIGINT, int_exit);
-
-When the signal occurs, the function will receive signal number as first
-parameter. So the reason why I've reverted int_exit(error) to int_exit(0) is,
-
-Considering that this function is used as a signal handler,
-one function will be used for two purposes.
-
-static void int_exit(int sig)
-{
-        kill(0, SIGKILL);
-        exit(0);
-}
-
-Passing error argument will make this function to indicate error on exit or
-to indicate signal on exit. Also it is weird to pass extra argument which is
-not signal to signal handler.
-
-Actually when this int_exit() called, it will end before exit(0) and parent and
-child process will be killed with SIGKILL and the return code will be 137,
-which is 128 + 9 (SIGKILL).
-
-# ./trace_event
-# echo $?
-137
-
-One option is to remove the int_exit() that was used to terminate during the
-process, not as a signal handler and change the logic to propagate the error
-to main. However, this can be somewhat awkward in semantics because a
-in trace_event_user.c function such as print_stacks() uses int_exit().
-(Error propagated from printing stacks? not look good to me)
-
-I not sure what is the best practice in this situation, so I just
-reverted it to original.
-Any ideas or suggestion is welcome.
-
-> > -       return 0;
-> > +       return error;
->
-> so with that int_ext() implementation you will never get to this error
->
-> >  }
-> > --
-> > 2.25.1
-> >
-
-Thank you for your time and effort for the review :)
-
-Best,
-Daniel
+sure, but if a process holding an fd 'sysctl kernel.bpf_stats_enabled=0'
+won't disable stats either. So it's also not backwards compatible. imo it's a
+change in behavior whichever way, but either approach doesn't break user space.
+An advantage of not doing an fd is that some user that really wants to have
+stats disabled for performance benchmarking can do
+'sysctl kernel.bpf_stats_enabled=0' few times and the stats will be off.
+We can also make 'sysctl kernel.bpf_stats_enabled' to return current counter,
+so humans can see how many daemons are doing stats collection at that very
+moment.
+We can also do both new fd via bpf syscall and ++/-- via sysctl, but imo
+++/-- via sysctl is enough to address the issue of multiple stats collecting
+daemons. The patch would be small enough that we can push it via bpf tree
+and into older kernels as arguable 'fix'.
