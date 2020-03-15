@@ -2,113 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 206AC185C58
-	for <lists+bpf@lfdr.de>; Sun, 15 Mar 2020 13:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB980185EB7
+	for <lists+bpf@lfdr.de>; Sun, 15 Mar 2020 18:23:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728469AbgCOM1M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 15 Mar 2020 08:27:12 -0400
-Received: from 14.mo1.mail-out.ovh.net ([178.32.97.215]:42651 "EHLO
-        14.mo1.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728485AbgCOM1M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 15 Mar 2020 08:27:12 -0400
-Received: from player692.ha.ovh.net (unknown [10.108.35.74])
-        by mo1.mail-out.ovh.net (Postfix) with ESMTP id 0BE881B4505
-        for <bpf@vger.kernel.org>; Sun, 15 Mar 2020 13:27:09 +0100 (CET)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player692.ha.ovh.net (Postfix) with ESMTPSA id 2285A104E0990;
-        Sun, 15 Mar 2020 12:26:53 +0000 (UTC)
-From:   Stephen Kitt <steve@sk2.org>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, linux-doc@vger.kernel.org
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Kitt <steve@sk2.org>
-Subject: [PATCH v4] docs: sysctl/kernel: document BPF entries
-Date:   Sun, 15 Mar 2020 13:26:48 +0100
-Message-Id: <20200315122648.20558-1-steve@sk2.org>
-X-Mailer: git-send-email 2.20.1
+        id S1728887AbgCORX6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 15 Mar 2020 13:23:58 -0400
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:45761 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728628AbgCORX5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 15 Mar 2020 13:23:57 -0400
+Received: by mail-qv1-f68.google.com with SMTP id h20so3595722qvr.12;
+        Sun, 15 Mar 2020 10:23:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZHiQ/FbU3EdxXuqVxa5G2UB3JyQ0NaBOT17ObRpJXD0=;
+        b=pUiKBfaIwyeOAXGDP0+mpHpCwhrIA6jU6+lpo/JkovuqgMPgvdOZOaNoYOcLgTRICe
+         FqPyH+LGL4bnSMwlwJ5s+fPVAJk46d3DB2t9hTa84R5DJQ7zFnpRbjvOzS1F9PXHH36u
+         DHshudx7MQKMf2ycEPJMluDcvGF/oJ/XJD5veKve3pnhU1AZhARUDYvmwP5x3dlEPN8g
+         E7FwS58HNbxdfNyIVGpwz3Jllq6z2dTjwsC6A8X/8mW3CJIPdaoE60BPNl0v87t7VNMk
+         fw1VPJno8tHti1dToI/binHShA2Ci6u0wvwZejXa9gdKDRov/Kfn8t8qMpIGdeTGTQPa
+         wgpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZHiQ/FbU3EdxXuqVxa5G2UB3JyQ0NaBOT17ObRpJXD0=;
+        b=cg7Q6HIhdL0EunPteajHhIonH51/CCMmD4vyKWwYXZZekTH54L0KKZsh2z+GnEstFr
+         BpU3A5pG+A/wUL65sjCmppHcna4TQLH8FScr1eTH2V/RuNwiramEO8QsBIv6wqV3tNuc
+         d+/cYOw2XqACU6WUUJ1YP3bXGLq7rSlwz0c5NyDPZ5gyag0TMF8pxciHJltK48dLQF9h
+         xqEUwsIZTqVhuyJSSETHpsEEx82xH5/zIeQE/hH1kwtcub6wvQEUSc+Q2K7wL8g3xvnU
+         iNH3VIWJmHPnUrpDTzLISCF5fYdTFjWURk7mFuUrVGYpUnB7LmG8+jApZqS0eV1xMjX3
+         v1UQ==
+X-Gm-Message-State: ANhLgQ0cYA1CZUQxAWyyHdztgdIO5z7ia4Ex9Vn57GcQ2qc4VjZBR+5h
+        IhMnzMabga9m9uIP9JzcA1mdZXXwpX+KpP2QuV0=
+X-Google-Smtp-Source: ADFU+vs1kQbaXoe0ESnJiLH5ThUoe0xTraHFpqQXe0B02jW0yITeO6oA12uj43GPA1ZDCtASi1JM8nvHaDEyWxvtW48=
+X-Received: by 2002:a0c:ecc3:: with SMTP id o3mr22113047qvq.163.1584293036467;
+ Sun, 15 Mar 2020 10:23:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 2241948192757337477
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedugedrudeftddgudehjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrheiledvrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopegsphhfsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+References: <20200315083252.22274-1-ethercflow@gmail.com>
+In-Reply-To: <20200315083252.22274-1-ethercflow@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sun, 15 Mar 2020 10:23:45 -0700
+Message-ID: <CAEf4BzbOKM+o-BmwZDkixF6y3bY57ch3x8J1os1+GGUTKbC1uA@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Fix ___bpf_kretprobe_args1(x) macro definition.
+To:     Wenbo Zhang <ethercflow@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Based on the implementation in kernel/bpf/syscall.c,
-kernel/bpf/trampoline.c, include/linux/filter.h, and the documentation
-in bpftool-prog.rst.
+On Sun, Mar 15, 2020 at 1:33 AM Wenbo Zhang <ethercflow@gmail.com> wrote:
+>
+> Use PT_REGS_RC instead of PT_REGS_RET to get ret currectly.
+>
+> Signed-off-by: Wenbo Zhang <ethercflow@gmail.com>
+> ---
 
-Signed-off-by: Stephen Kitt <steve@sk2.org>
----
+Thanks!
 
-Notes:
-    This patch is intended for docs-next, but I'd appreciate reviews from
-    BPF developers.
-    
-    Changes since v3:
-    - moved back to docs-next.
-    
-    Changes since v2:
-    - fixed "will disabled" typo.
-    
-    Changes since v1:
-    - rebased on bpf-next instead of docs-next.
+Fixes: df8ff35311c8 ("libbpf: Merge selftests' bpf_trace_helpers.h
+into libbpf's bpf_tracing.h")
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
- Documentation/admin-guide/sysctl/kernel.rst | 24 +++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-index 335696d3360d..88c51c0a5ce6 100644
---- a/Documentation/admin-guide/sysctl/kernel.rst
-+++ b/Documentation/admin-guide/sysctl/kernel.rst
-@@ -102,6 +102,20 @@ See the ``type_of_loader`` and ``ext_loader_ver`` fields in
- :doc:`/x86/boot` for additional information.
- 
- 
-+bpf_stats_enabled
-+=================
-+
-+Controls whether the kernel should collect statistics on BPF programs
-+(total time spent running, number of times run...). Enabling
-+statistics causes a slight reduction in performance on each program
-+run. The statistics can be seen using ``bpftool``.
-+
-+= ===================================
-+0 Don't collect statistics (default).
-+1 Collect statistics.
-+= ===================================
-+
-+
- cap_last_cap
- ============
- 
-@@ -1166,6 +1180,16 @@ NMI switch that most IA32 servers have fires unknown NMI up, for
- example.  If a system hangs up, try pressing the NMI switch.
- 
- 
-+unprivileged_bpf_disabled
-+=========================
-+
-+Writing 1 to this entry will disable unprivileged calls to ``bpf()``;
-+once disabled, calling ``bpf()`` without ``CAP_SYS_ADMIN`` will return
-+``-EPERM``.
-+
-+Once set, this can't be cleared.
-+
-+
- watchdog
- ========
- 
-
-base-commit: 7d3d3254adaa61cba896f71497f56901deb618e5
--- 
-2.20.1
-
+>  tools/lib/bpf/bpf_tracing.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+> index b0c9ae5c73b5..f3f3c3fb98cb 100644
+> --- a/tools/lib/bpf/bpf_tracing.h
+> +++ b/tools/lib/bpf/bpf_tracing.h
+> @@ -390,7 +390,7 @@ ____##name(struct pt_regs *ctx, ##args)
+>
+>  #define ___bpf_kretprobe_args0() ctx
+>  #define ___bpf_kretprobe_args1(x) \
+> -       ___bpf_kretprobe_args0(), (void *)PT_REGS_RET(ctx)
+> +       ___bpf_kretprobe_args0(), (void *)PT_REGS_RC(ctx)
+>  #define ___bpf_kretprobe_args(args...) \
+>         ___bpf_apply(___bpf_kretprobe_args, ___bpf_narg(args))(args)
+>
+> --
+> 2.17.1
+>
