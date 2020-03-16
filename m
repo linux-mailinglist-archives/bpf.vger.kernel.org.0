@@ -2,205 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A29AF187475
-	for <lists+bpf@lfdr.de>; Mon, 16 Mar 2020 22:06:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC21E1874A8
+	for <lists+bpf@lfdr.de>; Mon, 16 Mar 2020 22:23:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732621AbgCPVF7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Mar 2020 17:05:59 -0400
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:32908 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732567AbgCPVF7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Mar 2020 17:05:59 -0400
-Received: by mail-pj1-f65.google.com with SMTP id dw20so4365018pjb.0
-        for <bpf@vger.kernel.org>; Mon, 16 Mar 2020 14:05:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=y3IGmPwiq4wbs+3Nm8nYfgQPnK4Ox4cRsRDlqMwvWZw=;
-        b=Uq0m1LsnsVeUh9mPhVQCxIpjl7uOSEiupEU1sQZhy+FXtQmH1zskZYSnn8rE3/NVm5
-         2YnRwPm+TxZQrC7dYoyhE079DxdG8uJoO9kKvzPXCUP6Ele4cT31xVBvi/S6ffU/Z5BH
-         qCHqVQLZkw6PhpSRJN2PSIwyjLj49R+no6jR4=
+        id S1732636AbgCPVXk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Mar 2020 17:23:40 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:38196 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732567AbgCPVXk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Mar 2020 17:23:40 -0400
+Received: by mail-wr1-f67.google.com with SMTP id s1so1365480wrv.5;
+        Mon, 16 Mar 2020 14:23:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=y3IGmPwiq4wbs+3Nm8nYfgQPnK4Ox4cRsRDlqMwvWZw=;
-        b=sXZ76BwtSdHFqsKjps1TQMyH0oRkv6C7wkphUUU7MN0E6/LRz+6Y7id9UUr5pmm+XP
-         1QbX27u2xZGAyayEAezRDZG7uAW+CzUslp8BRmIpRs30eTYnUAvpQpwAQqMJOEgjjAeT
-         e+A7eMMF8Jj8d6MjKPXB+R2oN4aLwcA+mDUlk3XLrE7E/hFBjKkiJyx/vg7hzZcZw4ha
-         FN0LbIDHqkp0XXvdHceoBdwGndsJJav/nhT/ViWFfUlgSsfmwNCiOXajKvLjLenv7cAc
-         5rCEFc7g04uz7yfy5UKcYq2Qo5btdkJY8OtFzW9VuXATCiTFoAu0o7Q5wVqah0nANFQG
-         9Kyg==
-X-Gm-Message-State: ANhLgQ0L1O28BopKYHOt/Y6Uk733OuF1Z4FlzgJY1shGV1WZ+qMt1PY1
-        tk6ytMSp/SqWUNp402Dq8pBCMg==
-X-Google-Smtp-Source: ADFU+vvTUDyDUjCUl26KBVoud41E3T/YXGVRV8yipj/Wi5LH4KGqaXAvRVMdbUrjOQc3cY7SYA2png==
-X-Received: by 2002:a17:90a:8d81:: with SMTP id d1mr1460363pjo.63.1584392758209;
-        Mon, 16 Mar 2020 14:05:58 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c201sm785900pfc.73.2020.03.16.14.05.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Mar 2020 14:05:57 -0700 (PDT)
-Date:   Mon, 16 Mar 2020 14:05:56 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org,
-        luto@amacapital.net, wad@chromium.org, daniel@iogearbox.net,
-        kafai@fb.com, yhs@fb.com, andriin@fb.com,
-        gregkh@linuxfoundation.org, tglx@linutronix.de,
-        khilman@baylibre.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v3] selftests: Fix seccomp to support relocatable build
- (O=objdir)
-Message-ID: <202003161404.934CCE0@keescook>
-References: <20200313212404.24552-1-skhan@linuxfoundation.org>
- <8736a8qz06.fsf@mpe.ellerman.id.au>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QDOgkrVz8ewx9AciRaUk8U8O72lBJhXXGq2eSOJbIms=;
+        b=CysS+J/i1RqZibfePOqmh1m97X3WfSUNIVjtrTt5/qoh2vD+kPGzmuYJQQtwgkCDd1
+         rhfOEIsts33FMSL5HkzZclER3V9ucJd/N1kj5Rhg3OiPhZO25+gvRUbGvZP48oRi5YG3
+         JmyUs8gudBAsEQNkbrbLWjkzXJd4mjsKXkcjA11Asa+BVia+ct0wXgXK6+wTUMpL2txc
+         D1McV9ynFlszIqKLZdV1IbKlfuC3dVJvtMvnizd9VHn0WnjUv65gsaNdJ9BUcNm4Njlz
+         aJKZvLIZ/C7zpEc1BRnGX3adsXgkfVKvOARU/qk75Z3s9/1nfVnDx0/SzvkX1Nwn3Oeu
+         bPRg==
+X-Gm-Message-State: ANhLgQ1aiEl9TrdyakvDjCTf+T7sj+iklQwWEAe9TrWSjNVpP1h6QNVI
+        5ciX7SSCZoVyiH92i/qTu3KE3pjurhM/4hbTuGo=
+X-Google-Smtp-Source: ADFU+vsGy7pvEgviPlRLc2PPHqUj5DkK0c547LMbJhTzJDJYCKzcw/tZdjXhLgaoACIImlVAMzM0p9U0XT8q9XK9mC0=
+X-Received: by 2002:adf:ce8e:: with SMTP id r14mr1330915wrn.415.1584393818504;
+ Mon, 16 Mar 2020 14:23:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8736a8qz06.fsf@mpe.ellerman.id.au>
+References: <20200312233648.1767-1-joe@wand.net.nz> <20200312233648.1767-4-joe@wand.net.nz>
+ <87mu8gy5m6.fsf@cloudflare.com>
+In-Reply-To: <87mu8gy5m6.fsf@cloudflare.com>
+From:   Joe Stringer <joe@wand.net.nz>
+Date:   Mon, 16 Mar 2020 14:23:24 -0700
+Message-ID: <CAOftzPiUKa87U4UtxFMvWPpZYTTjvfgyb5E=u110jRCsjUh--g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/7] bpf: Add socket assign support
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     Joe Stringer <joe@wand.net.nz>, bpf@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Florian Westphal <fw@strlen.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 16, 2020 at 11:12:57PM +1100, Michael Ellerman wrote:
-> Shuah Khan <skhan@linuxfoundation.org> writes:
-> > Fix seccomp relocatable builds. This is a simple fix to use the right
-> > lib.mk variable TEST_GEN_PROGS with dependency on kselftest_harness.h
-> > header, and defining LDFLAGS for pthread lib.
+On Mon, Mar 16, 2020 at 3:08 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>
+> [+CC Florian]
+>
+> Hey Joe,
+>
+> On Fri, Mar 13, 2020 at 12:36 AM CET, Joe Stringer wrote:
+> > Add support for TPROXY via a new bpf helper, bpf_sk_assign().
 > >
-> > Removes custom clean rule which is no longer necessary with the use of
-> > TEST_GEN_PROGS. 
-> >
-> > Uses $(OUTPUT) defined in lib.mk to handle build relocation.
-> >
-> > The following use-cases work with this change:
-> >
-> > In seccomp directory:
-> > make all and make clean
-> >
-> > From top level from main Makefile:
-> > make kselftest-install O=objdir ARCH=arm64 HOSTCC=gcc \
-> >  CROSS_COMPILE=aarch64-linux-gnu- TARGETS=seccomp
-> >
-> > Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> > ---
-> >
-> > Changes since v2:
-> > -- Using TEST_GEN_PROGS is sufficient to generate objects.
-> >    Addresses review comments from Kees Cook.
-> >
-> >  tools/testing/selftests/seccomp/Makefile | 18 ++++++++----------
-> >  1 file changed, 8 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/seccomp/Makefile b/tools/testing/selftests/seccomp/Makefile
-> > index 1760b3e39730..a0388fd2c3f2 100644
-> > --- a/tools/testing/selftests/seccomp/Makefile
-> > +++ b/tools/testing/selftests/seccomp/Makefile
-> > @@ -1,17 +1,15 @@
-> >  # SPDX-License-Identifier: GPL-2.0
-> > -all:
-> > -
-> > -include ../lib.mk
-> > +CFLAGS += -Wl,-no-as-needed -Wall
-> > +LDFLAGS += -lpthread
-> >  
-> >  .PHONY: all clean
-> >  
-> > -BINARIES := seccomp_bpf seccomp_benchmark
-> > -CFLAGS += -Wl,-no-as-needed -Wall
-> > +include ../lib.mk
-> > +
-> > +# OUTPUT set by lib.mk
-> > +TEST_GEN_PROGS := $(OUTPUT)/seccomp_bpf $(OUTPUT)/seccomp_benchmark
-> >  
-> > -seccomp_bpf: seccomp_bpf.c ../kselftest_harness.h
-> > -	$(CC) $(CFLAGS) $(LDFLAGS) $< -lpthread -o $@
-> > +$(TEST_GEN_PROGS): ../kselftest_harness.h
-> >  
-> > -TEST_PROGS += $(BINARIES)
-> > -EXTRA_CLEAN := $(BINARIES)
-> > +all: $(TEST_GEN_PROGS)
-> >  
-> > -all: $(BINARIES)
-> 
-> 
-> It shouldn't be that complicated. We just need to define TEST_GEN_PROGS
-> before including lib.mk, and then add the dependency on the harness
-> after we include lib.mk (so that TEST_GEN_PROGS has been updated to
-> prefix $(OUTPUT)).
-> 
-> eg:
-> 
->   # SPDX-License-Identifier: GPL-2.0
->   CFLAGS += -Wl,-no-as-needed -Wall
->   LDFLAGS += -lpthread
->   
->   TEST_GEN_PROGS := seccomp_bpf seccomp_benchmark
->   
->   include ../lib.mk
->   
->   $(TEST_GEN_PROGS): ../kselftest_harness.h
+> > This helper requires the BPF program to discover the socket via a call
+> > to bpf_sk*_lookup_*(), then pass this socket to the new helper. The
+> > helper takes its own reference to the socket in addition to any existing
+> > reference that may or may not currently be obtained for the duration of
+> > BPF processing. For the destination socket to receive the traffic, the
+> > traffic must be routed towards that socket via local route, the socket
+> > must have the transparent option enabled out-of-band, and the socket
+> > must not be closing. If all of these conditions hold, the socket will be
+> > assigned to the skb to allow delivery to the socket.
+>
+> My impression from the last time we have been discussing TPROXY is that
+> the check for IP_TRANSPARENT on ingress doesn't serve any purpose [0].
+>
+> The socket option only has effect on output, when there is a need to
+> source traffic from a non-local address.
+>
+> Setting IP_TRANSPARENT requires CAP_NET_{RAW|ADMIN}, which grant a wider
+> range of capabilities than needed to build a transparent proxy app. This
+> is problematic because you to lock down your application with seccomp.
+>
+> It seems it should be enough to use a port number from a privileged
+> range, if you want to ensure that only the designed process can receive
+> the proxied traffic.
 
-Exactly. This (with an extra comment) is precisely what I suggested during
-v2 review:
-https://lore.kernel.org/lkml/202003041815.B8C73DEC@keescook/
+Thanks for looking this over. You're right, I neglected to fix up the
+commit message here from an earlier iteration that enforced this
+constraint. I can fix this up in a v2.
 
--Kees
+> Or, alternatively, instead of using socket lookup + IP_TRANSPARENT
+> check, get the socket from sockmap and apply control to who can update
+> the BPF map.
 
-> 
-> 
-> Normal in-tree build:
-> 
->   selftests$ make TARGETS=seccomp
->   make[1]: Entering directory '/home/michael/linux/tools/testing/selftests/seccomp'
->   gcc -Wl,-no-as-needed -Wall  -lpthread  seccomp_bpf.c ../kselftest_harness.h  -o /home/michael/linux/tools/testing/selftests/seccomp/seccomp_bpf
->   gcc -Wl,-no-as-needed -Wall  -lpthread  seccomp_benchmark.c ../kselftest_harness.h  -o /home/michael/linux/tools/testing/selftests/seccomp/seccomp_benchmark
->   make[1]: Leaving directory '/home/michael/linux/tools/testing/selftests/seccomp'
->   
->   selftests$ ls -l seccomp/
->   total 388
->   -rw-rw-r-- 1 michael michael     41 Jan  9 12:00 config
->   -rw-rw-r-- 1 michael michael    201 Mar 16 23:04 Makefile
->   -rwxrwxr-x 1 michael michael  70824 Mar 16 23:07 seccomp_benchmark*
->   -rw-rw-r-- 1 michael michael   2289 Feb 17 21:39 seccomp_benchmark.c
->   -rwxrwxr-x 1 michael michael 290520 Mar 16 23:07 seccomp_bpf*
->   -rw-rw-r-- 1 michael michael  94778 Mar  5 23:33 seccomp_bpf.c
-> 
-> 
-> O= build:
-> 
->   selftests$ make TARGETS=seccomp O=$PWD/build
->   make[1]: Entering directory '/home/michael/linux/tools/testing/selftests/seccomp'
->   gcc -Wl,-no-as-needed -Wall  -lpthread  seccomp_bpf.c ../kselftest_harness.h  -o /home/michael/linux/tools/testing/selftests/build/seccomp/seccomp_bpf
->   gcc -Wl,-no-as-needed -Wall  -lpthread  seccomp_benchmark.c ../kselftest_harness.h  -o /home/michael/linux/tools/testing/selftests/build/seccomp/seccomp_benchmark
->   make[1]: Leaving directory '/home/michael/linux/tools/testing/selftests/seccomp'
->   
->   selftests$ ls -l build/seccomp/
->   total 280
->   -rwxrwxr-x 1 michael michael  70824 Mar 16 23:05 seccomp_benchmark*
->   -rwxrwxr-x 1 michael michael 290520 Mar 16 23:05 seccomp_bpf*
-> 
-> 
-> Build in the directory itself:
->   selftests$ cd seccomp
->   seccomp$ make
->   gcc -Wl,-no-as-needed -Wall  -lpthread  seccomp_bpf.c ../kselftest_harness.h  -o /home/michael/linux/tools/testing/selftests/seccomp/seccomp_bpf
->   gcc -Wl,-no-as-needed -Wall  -lpthread  seccomp_benchmark.c ../kselftest_harness.h  -o /home/michael/linux/tools/testing/selftests/seccomp/seccomp_benchmark
->   
->   seccomp$ ls -l
->   total 388
->   -rw-rw-r-- 1 michael michael     41 Jan  9 12:00 config
->   -rw-rw-r-- 1 michael michael    201 Mar 16 23:04 Makefile
->   -rwxrwxr-x 1 michael michael  70824 Mar 16 23:06 seccomp_benchmark*
->   -rw-rw-r-- 1 michael michael   2289 Feb 17 21:39 seccomp_benchmark.c
->   -rwxrwxr-x 1 michael michael 290520 Mar 16 23:06 seccomp_bpf*
->   -rw-rw-r-- 1 michael michael  94778 Mar  5 23:33 seccomp_bpf.c
-> 
-> 
-> cheers
+There's no IP_TRANSPARENT check in this iteration of the series.
 
--- 
-Kees Cook
+Cheers,
+Joe
