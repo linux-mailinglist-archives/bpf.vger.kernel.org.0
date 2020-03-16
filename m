@@ -2,97 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC21E1874A8
-	for <lists+bpf@lfdr.de>; Mon, 16 Mar 2020 22:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE131874AA
+	for <lists+bpf@lfdr.de>; Mon, 16 Mar 2020 22:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732636AbgCPVXk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Mar 2020 17:23:40 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:38196 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732567AbgCPVXk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Mar 2020 17:23:40 -0400
-Received: by mail-wr1-f67.google.com with SMTP id s1so1365480wrv.5;
-        Mon, 16 Mar 2020 14:23:39 -0700 (PDT)
+        id S1732667AbgCPVYC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Mar 2020 17:24:02 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:55363 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732567AbgCPVYC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Mar 2020 17:24:02 -0400
+Received: by mail-pj1-f65.google.com with SMTP id mj6so8844174pjb.5
+        for <bpf@vger.kernel.org>; Mon, 16 Mar 2020 14:24:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=k6XAwrWDY/zsycDAo2K53Vl70GhIjA99tBrFA4ZGhTE=;
+        b=Z4fiWqfQ8XqKDmI6T07Gvt9pSMGVDJUgyS7JXSsUrxYXw5wRk0V8uSAvIqRruGXw0p
+         HJuR1b+QA5U1tbigOvOVLQ4OgbkYu4GefP+XZUhBtOVBKbOY/TueH94wGRDdLo1r9nve
+         DPmbJMLt1BiluEmWC3f8a1Tkp1qIPaTIIKm9w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QDOgkrVz8ewx9AciRaUk8U8O72lBJhXXGq2eSOJbIms=;
-        b=CysS+J/i1RqZibfePOqmh1m97X3WfSUNIVjtrTt5/qoh2vD+kPGzmuYJQQtwgkCDd1
-         rhfOEIsts33FMSL5HkzZclER3V9ucJd/N1kj5Rhg3OiPhZO25+gvRUbGvZP48oRi5YG3
-         JmyUs8gudBAsEQNkbrbLWjkzXJd4mjsKXkcjA11Asa+BVia+ct0wXgXK6+wTUMpL2txc
-         D1McV9ynFlszIqKLZdV1IbKlfuC3dVJvtMvnizd9VHn0WnjUv65gsaNdJ9BUcNm4Njlz
-         aJKZvLIZ/C7zpEc1BRnGX3adsXgkfVKvOARU/qk75Z3s9/1nfVnDx0/SzvkX1Nwn3Oeu
-         bPRg==
-X-Gm-Message-State: ANhLgQ1aiEl9TrdyakvDjCTf+T7sj+iklQwWEAe9TrWSjNVpP1h6QNVI
-        5ciX7SSCZoVyiH92i/qTu3KE3pjurhM/4hbTuGo=
-X-Google-Smtp-Source: ADFU+vsGy7pvEgviPlRLc2PPHqUj5DkK0c547LMbJhTzJDJYCKzcw/tZdjXhLgaoACIImlVAMzM0p9U0XT8q9XK9mC0=
-X-Received: by 2002:adf:ce8e:: with SMTP id r14mr1330915wrn.415.1584393818504;
- Mon, 16 Mar 2020 14:23:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=k6XAwrWDY/zsycDAo2K53Vl70GhIjA99tBrFA4ZGhTE=;
+        b=AtOS7u3FegFy46+4am/zRAl6rBkSZ6cCp4wx9EsPXppUvWdV5F8ZHygOJWgmfyyPp1
+         1Xf9y53aYW9iuqywb00i9RoGG+fqj9e4H7b66LTxPw1fY91rx8jbrxLHWkd+W/VQV5AJ
+         +PZvP70/5Zf8aAVPopd38Dh6rojFmYaCNODueMYqr+pWUtuUJnBRFZaxeP+pNp8koh4o
+         huy9IU0W7g8rJzPJNgod8vQ/7NuKyNRuSsA/h59LV9d7YkoczEf5X8pI+43fsC6Tk3bK
+         tOifJjoxHVyiKob7OEfv6PPujP4+rxDdrw7Pja5iSz6glRCrY4ve36wNe9baXIcr3TOe
+         d6JA==
+X-Gm-Message-State: ANhLgQ1WC1vYfk3JjDF2Y7w+6raa/hOXZOLoB7tOmP1VGX+bJmImMn5F
+        JwqwscU10Ha9GHlF9UGXOym3Ng==
+X-Google-Smtp-Source: ADFU+vs68X9RkPUqkATV2iQxMOvZU1EVi/eKUQuxzDFOyagTnzRG37PM75ufsijB+ukeVItkeM7R/g==
+X-Received: by 2002:a17:90a:c08f:: with SMTP id o15mr1552021pjs.155.1584393841314;
+        Mon, 16 Mar 2020 14:24:01 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u26sm749763pfh.193.2020.03.16.14.24.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Mar 2020 14:24:00 -0700 (PDT)
+Date:   Mon, 16 Mar 2020 14:23:59 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Anton Protopopov <a.s.protopopov@gmail.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
+Subject: Re: [PATCH] seccomp: allow BPF_MOD ALU instructions
+Message-ID: <202003161423.B51FDA8083@keescook>
+References: <20200316163646.2465-1-a.s.protopopov@gmail.com>
 MIME-Version: 1.0
-References: <20200312233648.1767-1-joe@wand.net.nz> <20200312233648.1767-4-joe@wand.net.nz>
- <87mu8gy5m6.fsf@cloudflare.com>
-In-Reply-To: <87mu8gy5m6.fsf@cloudflare.com>
-From:   Joe Stringer <joe@wand.net.nz>
-Date:   Mon, 16 Mar 2020 14:23:24 -0700
-Message-ID: <CAOftzPiUKa87U4UtxFMvWPpZYTTjvfgyb5E=u110jRCsjUh--g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/7] bpf: Add socket assign support
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     Joe Stringer <joe@wand.net.nz>, bpf@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Florian Westphal <fw@strlen.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200316163646.2465-1-a.s.protopopov@gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 16, 2020 at 3:08 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> [+CC Florian]
->
-> Hey Joe,
->
-> On Fri, Mar 13, 2020 at 12:36 AM CET, Joe Stringer wrote:
-> > Add support for TPROXY via a new bpf helper, bpf_sk_assign().
-> >
-> > This helper requires the BPF program to discover the socket via a call
-> > to bpf_sk*_lookup_*(), then pass this socket to the new helper. The
-> > helper takes its own reference to the socket in addition to any existing
-> > reference that may or may not currently be obtained for the duration of
-> > BPF processing. For the destination socket to receive the traffic, the
-> > traffic must be routed towards that socket via local route, the socket
-> > must have the transparent option enabled out-of-band, and the socket
-> > must not be closing. If all of these conditions hold, the socket will be
-> > assigned to the skb to allow delivery to the socket.
->
-> My impression from the last time we have been discussing TPROXY is that
-> the check for IP_TRANSPARENT on ingress doesn't serve any purpose [0].
->
-> The socket option only has effect on output, when there is a need to
-> source traffic from a non-local address.
->
-> Setting IP_TRANSPARENT requires CAP_NET_{RAW|ADMIN}, which grant a wider
-> range of capabilities than needed to build a transparent proxy app. This
-> is problematic because you to lock down your application with seccomp.
->
-> It seems it should be enough to use a port number from a privileged
-> range, if you want to ensure that only the designed process can receive
-> the proxied traffic.
+On Mon, Mar 16, 2020 at 04:36:46PM +0000, Anton Protopopov wrote:
+> The BPF_MOD ALU instructions could be utilized by seccomp classic BPF filters,
+> but were missing from the explicit list of allowed calls since its introduction
+> in the original e2cfabdfd075 ("seccomp: add system call filtering using BPF")
+> commit.  Add support for these instructions by adding them to the allowed list
+> in the seccomp_check_filter function.
+> 
+> Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
 
-Thanks for looking this over. You're right, I neglected to fix up the
-commit message here from an earlier iteration that enforced this
-constraint. I can fix this up in a v2.
+This has been suggested in the past, but was deemed ultimately redundant:
+https://lore.kernel.org/lkml/201908121035.06695C79F@keescook/
 
-> Or, alternatively, instead of using socket lookup + IP_TRANSPARENT
-> check, get the socket from sockmap and apply control to who can update
-> the BPF map.
+Is there a strong reason it's needed?
 
-There's no IP_TRANSPARENT check in this iteration of the series.
+Thanks!
 
-Cheers,
-Joe
+-Kees
+
+> ---
+>  kernel/seccomp.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index b6ea3dcb57bf..cae7561b44d4 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -206,6 +206,8 @@ static int seccomp_check_filter(struct sock_filter *filter, unsigned int flen)
+>  		case BPF_ALU | BPF_MUL | BPF_X:
+>  		case BPF_ALU | BPF_DIV | BPF_K:
+>  		case BPF_ALU | BPF_DIV | BPF_X:
+> +		case BPF_ALU | BPF_MOD | BPF_K:
+> +		case BPF_ALU | BPF_MOD | BPF_X:
+>  		case BPF_ALU | BPF_AND | BPF_K:
+>  		case BPF_ALU | BPF_AND | BPF_X:
+>  		case BPF_ALU | BPF_OR | BPF_K:
+> -- 
+> 2.19.1
+
+-- 
+Kees Cook
