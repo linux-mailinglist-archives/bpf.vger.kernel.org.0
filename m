@@ -2,91 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 99F2F186A6B
-	for <lists+bpf@lfdr.de>; Mon, 16 Mar 2020 12:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C36CF186AAB
+	for <lists+bpf@lfdr.de>; Mon, 16 Mar 2020 13:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730900AbgCPLyp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Mar 2020 07:54:45 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:47095 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730878AbgCPLyp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Mar 2020 07:54:45 -0400
-Received: by mail-wr1-f68.google.com with SMTP id w16so4405752wrv.13
-        for <bpf@vger.kernel.org>; Mon, 16 Mar 2020 04:54:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=b4wbERxNv8RZWLFLe13UCpyoSyj0S8X+u+4q/v40Rao=;
-        b=fGSsapZhSNwYH4H5qMgUNzkReSBlyKeQy7QZndUMt9iVMe+/ekJsbvo/xps7YBU65j
-         kPShadYM3GDvyEtUUwwLePmwn/edx3A+9B27Wl9Zkm+K+WeKIabwFMdjiTdN6wSBsOBg
-         2czWUMAOwbqI9+KY9eyG5GKAQ8n5oJRM7YQalha4vHRjZdnadVPfbuRjAvs8yN/JhrLF
-         l4hJYT+a5Qg79ljDCs05SUP+yKhgI0k4DnMZ4Vpe4HgJDDODC8PaoO2lckcLDEMv6SFM
-         nihu7Gbt6LeoVDnbFSgsLH85hq7G+OgJ4OV7Z1DDLDH6KRCvWw4DJduVXLjAW3pMmn1V
-         IRSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=b4wbERxNv8RZWLFLe13UCpyoSyj0S8X+u+4q/v40Rao=;
-        b=uFP/vIcbZA4deWK31hQfMVIhf6hO5lF+kDB9BBX6I4B4l+4tf3aXflj404y4gFXAwP
-         jaYZZae/NWgKadCQEhl1tmdZ8Kh9eRVtGb9+0NIsF3Uq4NAK0/Btci9oOaCwbqov5LAV
-         JsXr6okJfBxTo7lym4hOazotcBoJxoVTS1He8D/TigVUcPQhWOLaqosnY6AF2PSnMWYF
-         BPODOrpJ9Nkq/EScNX3v7VWuZJsypttutv49X9udWsPfIbTAKLB/zO9lGzs77oP3H4xX
-         uykQ+aPLXCD4K+66aQ2oI4KVgoOjzwlhi0jIMw/tSzgCTTwPoXuh4keM591b+LRJ5j4a
-         VRXA==
-X-Gm-Message-State: ANhLgQ1kqMd13LuZAnQPooCCkxZjosF3eqBz89ttNqquJhPHkbe1hgUh
-        H4c3Gj/m4GX3K80AsOkGEGPQbA==
-X-Google-Smtp-Source: ADFU+vtENKPA5sUNNPaz/3cz91ETbHr7oBefgC5vVgGRGS7XuNZAx1sHK5imk7Km4ngH9y+FuheCLA==
-X-Received: by 2002:a5d:474c:: with SMTP id o12mr18400158wrs.156.1584359683265;
-        Mon, 16 Mar 2020 04:54:43 -0700 (PDT)
-Received: from [192.168.1.10] ([194.35.118.24])
-        by smtp.gmail.com with ESMTPSA id n10sm3438630wro.14.2020.03.16.04.54.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Mar 2020 04:54:42 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 0/4] bpftool: Add struct_ops support
-To:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        netdev@vger.kernel.org
-References: <20200316005559.2952646-1-kafai@fb.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <5db1351a-f197-f792-04ef-231811edef53@isovalent.com>
-Date:   Mon, 16 Mar 2020 11:54:41 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1730940AbgCPMNH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Mar 2020 08:13:07 -0400
+Received: from ozlabs.org ([203.11.71.1]:36911 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730931AbgCPMNG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Mar 2020 08:13:06 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 48gwDX5qGrz9sPR;
+        Mon, 16 Mar 2020 23:13:00 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1584360783;
+        bh=snOsoTHH+Aabb2P355c26XBFeN4O7bKpJryxsh2JuUM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=nQPS5z3PnaQYTsTt7P/efS/59UTCNapp72VHWbUlw6Boi8EHWDevOs0BAo7bzLfe5
+         69gBYNoWSNfIfk6v1m3ENsZMn8BcodFjz/lCWpBAmCI1nzcIGUjcwN8Ig8jQ2uPAf3
+         UVJvfSCS+iMkpZJUEPPGfZsabq5aPSvSmHJ/CkfIpaegrhvk2ulyj8SpbtDLuJxA8R
+         +tWR6HC/UnIB9M/LLb+FakMYq7wRQH0ZziMOBjCSxFW+Ey6K2M/N4MXRz/2+h3F9O7
+         +gI+L2/8/7CoQMqZTCHt430UgCq5hHGa73aiV1jubhatUfSNQalXY+JxM1p9HluHvj
+         UsFiCFb3egm4w==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org,
+        keescook@chromium.org, luto@amacapital.net, wad@chromium.org,
+        daniel@iogearbox.net, kafai@fb.com, yhs@fb.com, andriin@fb.com,
+        gregkh@linuxfoundation.org, tglx@linutronix.de
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, khilman@baylibre.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v3] selftests: Fix seccomp to support relocatable build (O=objdir)
+In-Reply-To: <20200313212404.24552-1-skhan@linuxfoundation.org>
+References: <20200313212404.24552-1-skhan@linuxfoundation.org>
+Date:   Mon, 16 Mar 2020 23:12:57 +1100
+Message-ID: <8736a8qz06.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <20200316005559.2952646-1-kafai@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-03-15 17:55 UTC-0700 ~ Martin KaFai Lau <kafai@fb.com>
-> This set adds "struct_ops" support to bpftool.
-> 
-> The first two patches improve the btf_dumper in bpftool.
-> Patch 1: print the enum's name (if it is found) instead of the
->          enum's value.
-> Patch 2: print a char[] as a string if all characters are printable.
-> 
-> "struct_ops" stores the prog_id in a func ptr.
-> Instead of printing a prog_id,
-> patch 3 adds an option to btf_dumper to allow a func ptr's value
-> to be printed with the full func_proto info and the prog_name.
-> 
-> Patch 4 implements the "struct_ops" bpftool command.
+Shuah Khan <skhan@linuxfoundation.org> writes:
+> Fix seccomp relocatable builds. This is a simple fix to use the right
+> lib.mk variable TEST_GEN_PROGS with dependency on kselftest_harness.h
+> header, and defining LDFLAGS for pthread lib.
+>
+> Removes custom clean rule which is no longer necessary with the use of
+> TEST_GEN_PROGS. 
+>
+> Uses $(OUTPUT) defined in lib.mk to handle build relocation.
+>
+> The following use-cases work with this change:
+>
+> In seccomp directory:
+> make all and make clean
+>
+> From top level from main Makefile:
+> make kselftest-install O=objdir ARCH=arm64 HOSTCC=gcc \
+>  CROSS_COMPILE=aarch64-linux-gnu- TARGETS=seccomp
+>
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> ---
+>
+> Changes since v2:
+> -- Using TEST_GEN_PROGS is sufficient to generate objects.
+>    Addresses review comments from Kees Cook.
+>
+>  tools/testing/selftests/seccomp/Makefile | 18 ++++++++----------
+>  1 file changed, 8 insertions(+), 10 deletions(-)
+>
+> diff --git a/tools/testing/selftests/seccomp/Makefile b/tools/testing/selftests/seccomp/Makefile
+> index 1760b3e39730..a0388fd2c3f2 100644
+> --- a/tools/testing/selftests/seccomp/Makefile
+> +++ b/tools/testing/selftests/seccomp/Makefile
+> @@ -1,17 +1,15 @@
+>  # SPDX-License-Identifier: GPL-2.0
+> -all:
+> -
+> -include ../lib.mk
+> +CFLAGS += -Wl,-no-as-needed -Wall
+> +LDFLAGS += -lpthread
+>  
+>  .PHONY: all clean
+>  
+> -BINARIES := seccomp_bpf seccomp_benchmark
+> -CFLAGS += -Wl,-no-as-needed -Wall
+> +include ../lib.mk
+> +
+> +# OUTPUT set by lib.mk
+> +TEST_GEN_PROGS := $(OUTPUT)/seccomp_bpf $(OUTPUT)/seccomp_benchmark
+>  
+> -seccomp_bpf: seccomp_bpf.c ../kselftest_harness.h
+> -	$(CC) $(CFLAGS) $(LDFLAGS) $< -lpthread -o $@
+> +$(TEST_GEN_PROGS): ../kselftest_harness.h
+>  
+> -TEST_PROGS += $(BINARIES)
+> -EXTRA_CLEAN := $(BINARIES)
+> +all: $(TEST_GEN_PROGS)
+>  
+> -all: $(BINARIES)
 
-Hi Martin, I have a few very small nits on patch 4 -- please see related
-message -- but other than this your series looks good to me.
 
-Acked-by: Quentin Monnet <quentin@isovalent.com>
+It shouldn't be that complicated. We just need to define TEST_GEN_PROGS
+before including lib.mk, and then add the dependency on the harness
+after we include lib.mk (so that TEST_GEN_PROGS has been updated to
+prefix $(OUTPUT)).
 
-(I did not test it, though.)
+eg:
 
-Thanks,
-Quentin
+  # SPDX-License-Identifier: GPL-2.0
+  CFLAGS += -Wl,-no-as-needed -Wall
+  LDFLAGS += -lpthread
+  
+  TEST_GEN_PROGS := seccomp_bpf seccomp_benchmark
+  
+  include ../lib.mk
+  
+  $(TEST_GEN_PROGS): ../kselftest_harness.h
+
+
+Normal in-tree build:
+
+  selftests$ make TARGETS=seccomp
+  make[1]: Entering directory '/home/michael/linux/tools/testing/selftests/seccomp'
+  gcc -Wl,-no-as-needed -Wall  -lpthread  seccomp_bpf.c ../kselftest_harness.h  -o /home/michael/linux/tools/testing/selftests/seccomp/seccomp_bpf
+  gcc -Wl,-no-as-needed -Wall  -lpthread  seccomp_benchmark.c ../kselftest_harness.h  -o /home/michael/linux/tools/testing/selftests/seccomp/seccomp_benchmark
+  make[1]: Leaving directory '/home/michael/linux/tools/testing/selftests/seccomp'
+  
+  selftests$ ls -l seccomp/
+  total 388
+  -rw-rw-r-- 1 michael michael     41 Jan  9 12:00 config
+  -rw-rw-r-- 1 michael michael    201 Mar 16 23:04 Makefile
+  -rwxrwxr-x 1 michael michael  70824 Mar 16 23:07 seccomp_benchmark*
+  -rw-rw-r-- 1 michael michael   2289 Feb 17 21:39 seccomp_benchmark.c
+  -rwxrwxr-x 1 michael michael 290520 Mar 16 23:07 seccomp_bpf*
+  -rw-rw-r-- 1 michael michael  94778 Mar  5 23:33 seccomp_bpf.c
+
+
+O= build:
+
+  selftests$ make TARGETS=seccomp O=$PWD/build
+  make[1]: Entering directory '/home/michael/linux/tools/testing/selftests/seccomp'
+  gcc -Wl,-no-as-needed -Wall  -lpthread  seccomp_bpf.c ../kselftest_harness.h  -o /home/michael/linux/tools/testing/selftests/build/seccomp/seccomp_bpf
+  gcc -Wl,-no-as-needed -Wall  -lpthread  seccomp_benchmark.c ../kselftest_harness.h  -o /home/michael/linux/tools/testing/selftests/build/seccomp/seccomp_benchmark
+  make[1]: Leaving directory '/home/michael/linux/tools/testing/selftests/seccomp'
+  
+  selftests$ ls -l build/seccomp/
+  total 280
+  -rwxrwxr-x 1 michael michael  70824 Mar 16 23:05 seccomp_benchmark*
+  -rwxrwxr-x 1 michael michael 290520 Mar 16 23:05 seccomp_bpf*
+
+
+Build in the directory itself:
+  selftests$ cd seccomp
+  seccomp$ make
+  gcc -Wl,-no-as-needed -Wall  -lpthread  seccomp_bpf.c ../kselftest_harness.h  -o /home/michael/linux/tools/testing/selftests/seccomp/seccomp_bpf
+  gcc -Wl,-no-as-needed -Wall  -lpthread  seccomp_benchmark.c ../kselftest_harness.h  -o /home/michael/linux/tools/testing/selftests/seccomp/seccomp_benchmark
+  
+  seccomp$ ls -l
+  total 388
+  -rw-rw-r-- 1 michael michael     41 Jan  9 12:00 config
+  -rw-rw-r-- 1 michael michael    201 Mar 16 23:04 Makefile
+  -rwxrwxr-x 1 michael michael  70824 Mar 16 23:06 seccomp_benchmark*
+  -rw-rw-r-- 1 michael michael   2289 Feb 17 21:39 seccomp_benchmark.c
+  -rwxrwxr-x 1 michael michael 290520 Mar 16 23:06 seccomp_bpf*
+  -rw-rw-r-- 1 michael michael  94778 Mar  5 23:33 seccomp_bpf.c
+
+
+cheers
