@@ -2,332 +2,371 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 754A21868B5
-	for <lists+bpf@lfdr.de>; Mon, 16 Mar 2020 11:08:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 174FF186A69
+	for <lists+bpf@lfdr.de>; Mon, 16 Mar 2020 12:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730478AbgCPKI0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Mar 2020 06:08:26 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:44874 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730497AbgCPKIZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Mar 2020 06:08:25 -0400
-Received: by mail-lj1-f193.google.com with SMTP id w4so3192545lji.11
-        for <bpf@vger.kernel.org>; Mon, 16 Mar 2020 03:08:20 -0700 (PDT)
+        id S1730845AbgCPLye (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Mar 2020 07:54:34 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:50431 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730878AbgCPLyd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Mar 2020 07:54:33 -0400
+Received: by mail-wm1-f67.google.com with SMTP id z13so1262280wml.0
+        for <bpf@vger.kernel.org>; Mon, 16 Mar 2020 04:54:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=wiPq37TQcmv/j8DXzF82UVls7gLD7nfxkRjphi/xnhQ=;
-        b=a3EEd1ZoH77ZtJyojDDciIWfx0K+gfSuEQa80gQ+k9Sg8vcpLF7kfuymsl3fY+hn/c
-         H/+NGRu4McYttlAAxFgjWm8cBMmHB5Z34LCMHAJ7ORFSErJ6R/1TKQS/AytaUhI7dJzF
-         X386bLZfXrpxs25+7f4ahKvTTldEq3bT+ysmM=
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YoqxlxRoyaSC6sJA8xOZEDltFxdNmTdNldjtgcprq6U=;
+        b=yfkRo2f6OHfidU5R8GrlPTAd3CrowkUfEHHU759Ga6SZ77QOIQuqke0AmMe7KH/HfP
+         vVty8iLMb9emEDdE+OX3WCecSwaLChMGlSMGgmJ+EQQh4Or3wQvQFqUEYMylE53fhOfs
+         fb+mvmfJVyoo8vBSAwkt5NUNDgQUl2u8fwtAfbzeNSTX2tR8XF2UyxVf4ly72+viXt3H
+         ZUJ/Y4+hSHJ8JFG1ul02Y7vpORvYB/ojkijYLElm7vdT4JbnX3Ys+FiPtcPcyOujVd7+
+         tydZOauEjh49NF+bN4/Pprzkom72Qlc2Y1TIs4yDPV4ZCorMBAQeayRY/3ghQz9nD2fv
+         EoUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=wiPq37TQcmv/j8DXzF82UVls7gLD7nfxkRjphi/xnhQ=;
-        b=d41o6BypKDLYCRUKgprS+Zzye+D0Hhq/4RTtkhIasdoeYh2CLMJ2a0hgnu5/rM7Iw7
-         97chUGzSWDoRDIykjOUuMxxhhiUbu7KDV7YOzPCZ0CvZOht1WYZCd1D9MZDBFp+ErG06
-         7X7hWk4hb0WzeojGZkjiOCVsu0mE1dj9t8zhKdqBdmE4oiNBy8D1jk9geVMKlTC71l1G
-         BgJ0+n4Zxq7iuZf5cQrQ/0S9s4zo3gbPtEB5gZmv2S0vWFfdM/5Xae+Hm8dWQh/Uhaka
-         K0Tl+10AWOEXoRgpIEKRs7GFn2XNU+M17N2MPJzHd/8wJsUdrilPmXtOfqyeo9FP8JpJ
-         Lpxg==
-X-Gm-Message-State: ANhLgQ00r7Po1tK5Bypx2RZIlXi9cSLypaHNU1vXONpE9LS+DfVK6CdC
-        y/A4sYgoLXd0YLnCGsw7Qi7vcg==
-X-Google-Smtp-Source: ADFU+vu18xobEfN8sFNIDLEVd+xzp0/BQLPfyDuKUUEutLRlyTQzFrs6hMVm7lfKDA5ZB1kP74e5Qw==
-X-Received: by 2002:a2e:b88d:: with SMTP id r13mr15140800ljp.66.1584353299513;
-        Mon, 16 Mar 2020 03:08:19 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id y18sm34344515ljm.93.2020.03.16.03.08.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Mar 2020 03:08:18 -0700 (PDT)
-References: <20200312233648.1767-1-joe@wand.net.nz> <20200312233648.1767-4-joe@wand.net.nz>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Joe Stringer <joe@wand.net.nz>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
-        ast@kernel.org, eric.dumazet@gmail.com, lmb@cloudflare.com,
-        Florian Westphal <fw@strlen.de>
-Subject: Re: [PATCH bpf-next 3/7] bpf: Add socket assign support
-In-reply-to: <20200312233648.1767-4-joe@wand.net.nz>
-Date:   Mon, 16 Mar 2020 11:08:17 +0100
-Message-ID: <87mu8gy5m6.fsf@cloudflare.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YoqxlxRoyaSC6sJA8xOZEDltFxdNmTdNldjtgcprq6U=;
+        b=KwwuAQaB+i7WwHv+LuhqrbBL0lnxvACobJ5ykbAyy57nYG2cBnrYgmVwlBS/oo06Vn
+         ato3+r6qYItmfAO4G68GtIwOVBVUH5z7iWkQYtzG/GrC+cxje1LjpboMduE5xAqLneqm
+         w5tMQkEJnsMKuxEWLv8Kh5awrd/yfDipW1hK34kVdwpI2aLoCN7IBrnvL956iVYWTz66
+         PIkcv7poc7j5DcgzBzKE57d1gkN38zEiZn0+kSYV8N6zTm7dr6u3AS70Vapg1me3/XKi
+         jtZkNW/DHWSWG4RYrrkxE6ngRDBbQ9Utkg9raHZAyb3+ZJasTwYQFDn5o7zqivcuf+R8
+         CmYQ==
+X-Gm-Message-State: ANhLgQ3kxEdxuF1SGhr3Zfcqoj4ypGL42v/+egiGKHbpdL3BEidSP3D3
+        EERnmrFqyhPEJPvd2Mcc6o6TRxYG+zY=
+X-Google-Smtp-Source: ADFU+vtn4uUCivvgWVvmRAOgQoaHooHPFQyAQNtgjM6CNXRs5pw2yu8+5ML0hGkyG/P/QV2FEqtvnQ==
+X-Received: by 2002:a7b:cf33:: with SMTP id m19mr18849290wmg.168.1584359669782;
+        Mon, 16 Mar 2020 04:54:29 -0700 (PDT)
+Received: from [192.168.1.10] ([194.35.118.24])
+        by smtp.gmail.com with ESMTPSA id c4sm29930147wml.7.2020.03.16.04.54.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Mar 2020 04:54:29 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 4/4] bpftool: Add struct_ops support
+To:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        netdev@vger.kernel.org
+References: <20200316005559.2952646-1-kafai@fb.com>
+ <20200316005624.2954179-1-kafai@fb.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <da2d5a6c-3023-bb27-7c45-96224c8f4334@isovalent.com>
+Date:   Mon, 16 Mar 2020 11:54:28 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200316005624.2954179-1-kafai@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-[+CC Florian]
+2020-03-15 17:56 UTC-0700 ~ Martin KaFai Lau <kafai@fb.com>
+> This patch adds struct_ops support to the bpftool.
 
-Hey Joe,
+[...]
 
-On Fri, Mar 13, 2020 at 12:36 AM CET, Joe Stringer wrote:
-> Add support for TPROXY via a new bpf helper, bpf_sk_assign().
->
-> This helper requires the BPF program to discover the socket via a call
-> to bpf_sk*_lookup_*(), then pass this socket to the new helper. The
-> helper takes its own reference to the socket in addition to any existing
-> reference that may or may not currently be obtained for the duration of
-> BPF processing. For the destination socket to receive the traffic, the
-> traffic must be routed towards that socket via local route, the socket
-> must have the transparent option enabled out-of-band, and the socket
-> must not be closing. If all of these conditions hold, the socket will be
-> assigned to the skb to allow delivery to the socket.
-
-My impression from the last time we have been discussing TPROXY is that
-the check for IP_TRANSPARENT on ingress doesn't serve any purpose [0].
-
-The socket option only has effect on output, when there is a need to
-source traffic from a non-local address.
-
-Setting IP_TRANSPARENT requires CAP_NET_{RAW|ADMIN}, which grant a wider
-range of capabilities than needed to build a transparent proxy app. This
-is problematic because you to lock down your application with seccomp.
-
-It seems it should be enough to use a port number from a privileged
-range, if you want to ensure that only the designed process can receive
-the proxied traffic.
-
-Or, alternatively, instead of using socket lookup + IP_TRANSPARENT
-check, get the socket from sockmap and apply control to who can update
-the BPF map.
-
-Thanks,
--jkbs
-
-[0] https://lore.kernel.org/bpf/20190621125155.2sdw7pugepj3ityx@breakpoint.cc/
-
->
-> The recently introduced dst_sk_prefetch is used to communicate from the
-> TC layer to the IP receive layer that the socket should be retained
-> across the receive. The dst_sk_prefetch destination wraps any existing
-> destination (if available) and stores it temporarily in a per-cpu var.
->
-> To ensure that no dst references held by the skb prior to sk_assign()
-> are lost, they are stored in the per-cpu variable associated with
-> dst_sk_prefetch. When the BPF program invocation from the TC action
-> completes, we check the return code against TC_ACT_OK and if any other
-> return code is used, we restore the dst to avoid unintentionally leaking
-> the reference held in the per-CPU variable. If the packet is cloned or
-> dropped before reaching ip{,6}_rcv_core(), the original dst will also be
-> restored from the per-cpu variable to avoid the leak; if the packet makes
-> its way to the receive function for the protocol, then the destination
-> (if any) will be restored to the packet at that point.
->
-> Signed-off-by: Joe Stringer <joe@wand.net.nz>
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 > ---
->  include/uapi/linux/bpf.h       | 23 ++++++++++++++++++++++-
->  net/core/filter.c              | 28 ++++++++++++++++++++++++++++
->  net/core/skbuff.c              |  3 +++
->  net/ipv4/ip_input.c            |  5 ++++-
->  net/ipv6/ip6_input.c           |  5 ++++-
->  net/sched/act_bpf.c            |  3 +++
->  tools/include/uapi/linux/bpf.h | 18 +++++++++++++++++-
->  7 files changed, 81 insertions(+), 4 deletions(-)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 40b2d9476268..35f282cc745e 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -2914,6 +2914,26 @@ union bpf_attr {
->   *		of sizeof(struct perf_branch_entry).
->   *
->   *		**-ENOENT** if architecture does not support branch records.
-> + *
-> + * int bpf_sk_assign(struct sk_buff *skb, struct bpf_sock *sk, u64 flags)
-> + *	Description
-> + *		Assign the *sk* to the *skb*. When combined with appropriate
-> + *		routing configuration to receive the packet towards the socket,
-> + *		will cause *skb* to be delivered to the specified socket.
-> + *		Subsequent redirection of *skb* via  **bpf_redirect**\ (),
-> + *		**bpf_clone_redirect**\ () or other methods outside of BPF may
-> + *		interfere with successful delivery to the socket.
-> + *
-> + *		This operation is only valid from TC ingress path.
-> + *
-> + *		The *flags* argument must be zero.
-> + *	Return
-> + *		0 on success, or a negative errno in case of failure.
-> + *
-> + *		* **-EINVAL**		Unsupported flags specified.
-> + *		* **-EOPNOTSUPP**:	Unsupported operation, for example a
-> + *					call from outside of TC ingress.
-> + *		* **-ENOENT**		The socket cannot be assigned.
->   */
->  #define __BPF_FUNC_MAPPER(FN)		\
->  	FN(unspec),			\
-> @@ -3035,7 +3055,8 @@ union bpf_attr {
->  	FN(tcp_send_ack),		\
->  	FN(send_signal_thread),		\
->  	FN(jiffies64),			\
-> -	FN(read_branch_records),
-> +	FN(read_branch_records),	\
-> +	FN(sk_assign),
->
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
->   * function eBPF program intends to call
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index cd0a532db4e7..bae0874289d8 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -5846,6 +5846,32 @@ static const struct bpf_func_proto bpf_tcp_gen_syncookie_proto = {
->  	.arg5_type	= ARG_CONST_SIZE,
->  };
->
-> +BPF_CALL_3(bpf_sk_assign, struct sk_buff *, skb, struct sock *, sk, u64, flags)
+>  .../Documentation/bpftool-struct_ops.rst      | 106 ++++
+>  tools/bpf/bpftool/bash-completion/bpftool     |  28 +
+>  tools/bpf/bpftool/main.c                      |   3 +-
+>  tools/bpf/bpftool/main.h                      |   1 +
+>  tools/bpf/bpftool/struct_ops.c                | 595 ++++++++++++++++++
+>  5 files changed, 732 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/bpf/bpftool/Documentation/bpftool-struct_ops.rst
+>  create mode 100644 tools/bpf/bpftool/struct_ops.c
+> 
+> diff --git a/tools/bpf/bpftool/Documentation/bpftool-struct_ops.rst b/tools/bpf/bpftool/Documentation/bpftool-struct_ops.rst
+> new file mode 100644
+> index 000000000000..27aae5bc632e
+> --- /dev/null
+> +++ b/tools/bpf/bpftool/Documentation/bpftool-struct_ops.rst
+> @@ -0,0 +1,106 @@
+> +==================
+> +bpftool-struct_ops
+> +==================
+> +-------------------------------------------------------------------------------
+> +tool to register/unregister/introspect BPF struct_ops
+> +-------------------------------------------------------------------------------
+> +
+> +:Manual section: 8
+> +
+> +SYNOPSIS
+> +========
+> +
+> +	**bpftool** [*OPTIONS*] **struct_ops** *COMMAND*
+> +
+> +	*OPTIONS* := { { **-j** | **--json** } [{ **-p** | **--pretty** }] }
+> +
+> +	*COMMANDS* :=
+> +	{ **show** | **list** | **dump** | **register** | **unregister** | **help** }
+> +
+> +STRUCT_OPS COMMANDS
+> +===================
+> +
+> +|	**bpftool** **struct_ops { show | list }** [*STRUCT_OPS_MAP*]
+> +|	**bpftool** **struct_ops dump** [*STRUCT_OPS_MAP*]
+> +|	**bpftool** **struct_ops register** *OBJ*
+> +|	**bpftool** **struct_ops unregister** *STRUCT_OPS_MAP*
+> +|	**bpftool** **struct_ops help**
+> +|
+> +|	*STRUCT_OPS_MAP* := { **id** *STRUCT_OPS_MAP_ID* | **name** *STRUCT_OPS_MAP_NAME* }
+> +|	*OBJ* := /a/file/of/bpf_struct_ops.o
+> +
+> +
+> +DESCRIPTION
+> +===========
+> +	**bpftool struct_ops { show | list }** [*STRUCT_OPS_MAP*]
+> +		  Show brief information about the struct_ops in the system.
+> +		  If *STRUCT_OPS_MAP* is specified, it shows information only
+> +		  for the given struct_ops.  Otherwise, it lists all struct_ops
+> +		  currently exists in the system.
+
+Typo: s/exists/existing/
+
+> +
+> +		  Output will start with struct_ops map ID, followed by its map
+> +		  name and its struct_ops's kernel type.
+> +
+> +	**bpftool struct_ops dump** [*STRUCT_OPS_MAP*]
+> +		  Dump details information about the struct_ops in the system.
+> +		  If *STRUCT_OPS_MAP* is specified, it dumps information only
+> +		  for the given struct_ops.  Otherwise, it dumps all struct_ops
+> +		  currently exists in the system.
+
+Same here.
+
+> +
+> +	**bpftool struct_ops register** *OBJ*
+> +		  Register bpf struct_ops from *OBJ*.  All struct_ops under
+> +		  the ELF section ".struct_ops" will be registered to
+> +		  its kernel subsystem.
+> +
+> +	**bpftool struct_ops unregister**  *STRUCT_OPS_MAP*
+> +		  Unregister the *STRUCT_OPS_MAP* from the kernel subsystem.
+> +
+> +	**bpftool struct_ops help**
+> +		  Print short help message.
+> +
+> +OPTIONS
+> +=======
+> +	-h, --help
+> +		  Print short generic help message (similar to **bpftool help**).
+> +
+> +	-V, --version
+> +		  Print version number (similar to **bpftool version**).
+> +
+> +	-j, --json
+> +		  Generate JSON output. For commands that cannot produce JSON, this
+> +		  option has no effect.
+> +
+> +	-p, --pretty
+> +		  Generate human-readable JSON output. Implies **-j**.
+> +
+> +	-d, --debug
+> +		  Print all logs available, even debug-level information. This
+> +		  includes logs from libbpf as well as from the verifier, when
+> +		  attempting to load programs.
+> +
+> +EXAMPLES
+> +========
+> +**# bpftool struct_ops show**
+> +
+> +::
+> +
+> +    100: dctcp           tcp_congestion_ops
+> +    105: cubic           tcp_congestion_ops
+> +
+> +**# bpftool struct_ops unregister id 105**
+> +
+> +::
+> +
+> +   Unregistered tcp_congestion_ops cubic id 105
+> +
+> +**# bpftool struct_ops register bpf_cubic.o**
+> +
+> +::
+> +
+> +   Registered tcp_congestion_ops cubic id 110
+> +
+> +
+> +SEE ALSO
+> +========
+> +	**bpftool-map**\ (8)
+> +	**bpftool-prog**\ (8)
+
+Other man pages link to all available bpftool-* pages. If you do not
+want to do that, could you at least link to bpf(2) and bpftool(8) please?
+
+[...]
+
+> diff --git a/tools/bpf/bpftool/struct_ops.c b/tools/bpf/bpftool/struct_ops.c
+> new file mode 100644
+> index 000000000000..ba145e3d0d5d
+> --- /dev/null
+> +++ b/tools/bpf/bpftool/struct_ops.c
+> @@ -0,0 +1,595 @@
+> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +/* Copyright (C) 2020 Facebook */
+> +
+> +#include <unistd.h>
+> +#include <stdio.h>
+> +#include <errno.h>
+> +
+> +#include <linux/err.h>
+
+Nit: line break here, please
+
+> +#include <bpf/libbpf.h>
+> +#include <bpf/bpf.h>
+> +#include <bpf/btf.h>
+
+Nit again: Could you please have the includes in each block ordered
+alphabetically?
+
+> +
+> +#include "json_writer.h"
+> +#include "main.h"
+> +
+> +#define STRUCT_OPS_VALUE_PREFIX "bpf_struct_ops_"
+> +
+
+[...]
+
+> +static struct bpf_map_info *map_info_alloc(__u32 *alloc_len)
 > +{
-> +	if (flags != 0)
-> +		return -EINVAL;
-> +	if (!skb_at_tc_ingress(skb))
-> +		return -EOPNOTSUPP;
-> +	if (unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
-> +		return -ENOENT;
+> +	struct bpf_map_info *info;
 > +
-> +	skb_orphan(skb);
-> +	skb->sk = sk;
-> +	skb->destructor = sock_edemux;
-> +	dst_sk_prefetch_store(skb);
+> +	if (get_map_info_type_id() < 0)
+> +		return NULL;
 > +
-> +	return 0;
+> +	info = calloc(1, map_info_alloc_len);
+> +	if (!info)
+> +		p_err("mem alloc failed");
+> +	else
+> +		*alloc_len = map_info_alloc_len;
+> +
+> +	return info;
 > +}
 > +
-> +static const struct bpf_func_proto bpf_sk_assign_proto = {
-> +	.func		= bpf_sk_assign,
-> +	.gpl_only	= false,
-> +	.ret_type	= RET_INTEGER,
-> +	.arg1_type      = ARG_PTR_TO_CTX,
-> +	.arg2_type      = ARG_PTR_TO_SOCK_COMMON,
-> +	.arg3_type	= ARG_ANYTHING,
-> +};
+> +/* It iterates all struct_ops maps of the system.
+> + * It returns the fd in "*res_fd" and map_info in "*info".
+> + * In the very first iteration, info->id should be 0.
+> + * An optional map "*name" filter can be specified.
+> + * The filter can be made more flexibile in the future.
+
+Typo: flexible
+
+> + * e.g. filter by kernel-struct-ops-name, regex-name, glob-name, ...etc.
+> + *
+> + * Return value:
+> + *     1: A struct_ops map found.  It is returned in "*res_fd" and "*info".
+> + *	  The caller can continue to call get_next in the future.
+> + *     0: No struct_ops map is returned.
+> + *        All struct_ops map has been found.
+> + *    -1: Error and the caller should abort the iteration.
+> + */
+> +static int get_next_struct_ops_map(const char *name, int *res_fd,
+> +				   struct bpf_map_info *info, __u32 info_len)
+> +{
+> +	__u32 id = info->id;
+> +	int err, fd;
 > +
->  #endif /* CONFIG_INET */
->
->  bool bpf_helper_changes_pkt_data(void *func)
-> @@ -6139,6 +6165,8 @@ tc_cls_act_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->  		return &bpf_skb_ecn_set_ce_proto;
->  	case BPF_FUNC_tcp_gen_syncookie:
->  		return &bpf_tcp_gen_syncookie_proto;
-> +	case BPF_FUNC_sk_assign:
-> +		return &bpf_sk_assign_proto;
->  #endif
->  	default:
->  		return bpf_base_func_proto(func_id);
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index 6b2798450fd4..80ee8f7b6a19 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -63,6 +63,7 @@
->
->  #include <net/protocol.h>
->  #include <net/dst.h>
-> +#include <net/dst_metadata.h>
->  #include <net/sock.h>
->  #include <net/checksum.h>
->  #include <net/ip6_checksum.h>
-> @@ -1042,6 +1043,7 @@ EXPORT_SYMBOL_GPL(alloc_skb_for_msg);
->   */
->  void skb_dst_drop(struct sk_buff *skb)
->  {
-> +	dst_sk_prefetch_reset(skb);
->  	if (skb->_skb_refdst) {
->  		refdst_drop(skb->_skb_refdst);
->  		skb->_skb_refdst = 0UL;
-> @@ -1466,6 +1468,7 @@ struct sk_buff *skb_clone(struct sk_buff *skb, gfp_t gfp_mask)
->  		n->fclone = SKB_FCLONE_UNAVAILABLE;
->  	}
->
-> +	dst_sk_prefetch_reset(skb);
->  	return __skb_clone(n, skb);
->  }
->  EXPORT_SYMBOL(skb_clone);
-> diff --git a/net/ipv4/ip_input.c b/net/ipv4/ip_input.c
-> index aa438c6758a7..9bd4858d20fc 100644
-> --- a/net/ipv4/ip_input.c
-> +++ b/net/ipv4/ip_input.c
-> @@ -509,7 +509,10 @@ static struct sk_buff *ip_rcv_core(struct sk_buff *skb, struct net *net)
->  	IPCB(skb)->iif = skb->skb_iif;
->
->  	/* Must drop socket now because of tproxy. */
-> -	skb_orphan(skb);
-> +	if (skb_dst_is_sk_prefetch(skb))
-> +		dst_sk_prefetch_fetch(skb);
-> +	else
-> +		skb_orphan(skb);
->
->  	return skb;
->
-> diff --git a/net/ipv6/ip6_input.c b/net/ipv6/ip6_input.c
-> index 7b089d0ac8cd..f7b42adca9d0 100644
-> --- a/net/ipv6/ip6_input.c
-> +++ b/net/ipv6/ip6_input.c
-> @@ -285,7 +285,10 @@ static struct sk_buff *ip6_rcv_core(struct sk_buff *skb, struct net_device *dev,
->  	rcu_read_unlock();
->
->  	/* Must drop socket now because of tproxy. */
-> -	skb_orphan(skb);
-> +	if (skb_dst_is_sk_prefetch(skb))
-> +		dst_sk_prefetch_fetch(skb);
-> +	else
-> +		skb_orphan(skb);
->
->  	return skb;
->  err:
-> diff --git a/net/sched/act_bpf.c b/net/sched/act_bpf.c
-> index 46f47e58b3be..b4c557e6158d 100644
-> --- a/net/sched/act_bpf.c
-> +++ b/net/sched/act_bpf.c
-> @@ -11,6 +11,7 @@
->  #include <linux/filter.h>
->  #include <linux/bpf.h>
->
-> +#include <net/dst_metadata.h>
->  #include <net/netlink.h>
->  #include <net/pkt_sched.h>
->  #include <net/pkt_cls.h>
-> @@ -53,6 +54,8 @@ static int tcf_bpf_act(struct sk_buff *skb, const struct tc_action *act,
->  		bpf_compute_data_pointers(skb);
->  		filter_res = BPF_PROG_RUN(filter, skb);
->  	}
-> +	if (filter_res != TC_ACT_OK)
-> +		dst_sk_prefetch_reset(skb);
->  	rcu_read_unlock();
->
->  	/* A BPF program may overwrite the default action opcode.
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index 40b2d9476268..546e9e1368ff 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -2914,6 +2914,21 @@ union bpf_attr {
->   *		of sizeof(struct perf_branch_entry).
->   *
->   *		**-ENOENT** if architecture does not support branch records.
-> + *
-> + * int bpf_sk_assign(struct sk_buff *skb, struct bpf_sock *sk, u64 flags)
-> + *	Description
-> + *		Assign the *sk* to the *skb*.
-> + *
-> + *		This operation is only valid from TC ingress path.
-> + *
-> + *		The *flags* argument must be zero.
-> + *	Return
-> + *		0 on success, or a negative errno in case of failure.
-> + *
-> + *		* **-EINVAL**		Unsupported flags specified.
-> + *		* **-EOPNOTSUPP**:	Unsupported operation, for example a
-> + *					call from outside of TC ingress.
-> + *		* **-ENOENT**		The socket cannot be assigned.
->   */
->  #define __BPF_FUNC_MAPPER(FN)		\
->  	FN(unspec),			\
-> @@ -3035,7 +3050,8 @@ union bpf_attr {
->  	FN(tcp_send_ack),		\
->  	FN(send_signal_thread),		\
->  	FN(jiffies64),			\
-> -	FN(read_branch_records),
-> +	FN(read_branch_records),	\
-> +	FN(sk_assign),
->
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
->   * function eBPF program intends to call
+> +	while (true) {
+> +		err = bpf_map_get_next_id(id, &id);
+> +		if (err) {
+> +			if (errno == ENOENT)
+> +				return 0;
+> +			p_err("can't get next map %s", strerror(errno));
+
+Nit: Add a colon before "%s"?
+
+> +			return -1;
+> +		}
+> +
+> +		fd = bpf_map_get_fd_by_id(id);
+> +		if (fd < 0) {
+> +			if (errno == ENOENT)
+> +				continue;
+> +			p_err("can't get map by id (%u): %s",
+> +			      id, strerror(errno));
+> +			return -1;
+> +		}
+> +
+> +		err = bpf_obj_get_info_by_fd(fd, info, &info_len);
+> +		if (err) {
+> +			p_err("can't get map info: %s", strerror(errno));
+> +			close(fd);
+> +			return -1;
+> +		}
+> +
+> +		if (info->type == BPF_MAP_TYPE_STRUCT_OPS &&
+> +		    (!name || !strcmp(name, info->name))) {
+> +			*res_fd = fd;
+> +			return 1;
+> +		}
+> +		close(fd);
+> +	}
+> +}
+
+[...]
+
+> +static int do_unregister(int argc, char **argv)
+> +{
+> +	const char *search_type, *search_term;
+> +	struct res res;
+> +
+> +	if (argc != 2)
+> +		usage();
+
+Or you could reuse the macros in main.h, for more consistency with other
+subcommands:
+
+	if (!REQ_ARGS(2))
+		return -1;
+
+> +
+> +	search_type = argv[0];
+> +	search_term = argv[1];
+
+	search_type = GET_ARG();
+	search_term = GET_ARG();
+
+> +
+> +	res = do_work_on_struct_ops(search_type, search_term,
+> +				    __do_unregister, NULL, NULL);
+> +
+> +	return cmd_retval(&res, true);
+> +}
+> +
+> +static int do_register(int argc, char **argv)
+> +{
+> +	const struct bpf_map_def *def;
+> +	struct bpf_map_info info = {};
+> +	__u32 info_len = sizeof(info);
+> +	int nr_errs = 0, nr_maps = 0;
+> +	struct bpf_object *obj;
+> +	struct bpf_link *link;
+> +	struct bpf_map *map;
+> +	const char *file;
+> +
+> +	if (argc != 1)
+> +		usage();
+
+(Same remark here.)
+
+> +
+> +	file = argv[0];
+> +
+> +	obj = bpf_object__open(file);
+> +	if (IS_ERR_OR_NULL(obj))
+> +		return -1;
+
+[...]
