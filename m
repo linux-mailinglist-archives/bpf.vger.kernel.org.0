@@ -2,139 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF2AA187570
-	for <lists+bpf@lfdr.de>; Mon, 16 Mar 2020 23:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7C8187583
+	for <lists+bpf@lfdr.de>; Mon, 16 Mar 2020 23:25:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732749AbgCPWRr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Mar 2020 18:17:47 -0400
-Received: from mail-ua1-f67.google.com ([209.85.222.67]:40554 "EHLO
-        mail-ua1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732739AbgCPWRq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Mar 2020 18:17:46 -0400
-Received: by mail-ua1-f67.google.com with SMTP id t20so7236768uao.7;
-        Mon, 16 Mar 2020 15:17:45 -0700 (PDT)
+        id S1732745AbgCPWZW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Mar 2020 18:25:22 -0400
+Received: from mail-pf1-f201.google.com ([209.85.210.201]:54779 "EHLO
+        mail-pf1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732652AbgCPWZW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Mar 2020 18:25:22 -0400
+Received: by mail-pf1-f201.google.com with SMTP id v14so13872125pfm.21
+        for <bpf@vger.kernel.org>; Mon, 16 Mar 2020 15:25:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wJo7ZmZmH0TiIejQdryJ3EHusk8AK7atRTT/qElU8mk=;
-        b=pY8PI3pwZdpq6nPZYjoZpnYpZau8JaiUZE7gfRwRPOV/h9kAcg7RP43uhPrimETyP3
-         AiLLjMLeB9OEyc6K+ZwYL2NpOE6s8qUyZxod9xA2xI18QVBNBSNKHTtBMfXRRxEa+A75
-         63szQXFHTT5/dUHMrKmGeFoQ13EGUVswQssgoVZJZeWVoJ861d7sH+nLMKA4nY4PTq02
-         9rbDElTNlvOZ6ihb1lsegGACNw8ih0+7FtrbjGogLvb1TvEpFN4yQNX2+JqekF51TSNJ
-         AHuGUV9olfL0EcJHCCavgvdnN8hiJadhAQp3+gRuOHFjddUY3DYdozbUa3gACSrPt4Uh
-         b/rA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=CDSTXSoz8JLvnbI4Rvpwb3UtnFj/UPBOq4cipKiHAa8=;
+        b=mfudS3gFLjCVkxeKqKuIti5kPRwYSFzRUQXaEKSHT2SBuaKTMjz4B2nEV0DChQ09hs
+         jSStQPdDtrxV/y9xuUa4fv0Vqi0LjNFMjlXKBMfWhmZ914PhJowPNwAAZQhvfgjJwVCD
+         3CuKszPZEhXOVFK+RYTRwlW8lXDHKZsua/wTvL0umNojwdAncQOeQHYO+KT//TjLcilb
+         Y4TsaV1va7HT4Z9CZrCMDxVbXkQdALo30MEPdokZ3wHKdvVu/jWllq2ieItEXavSYc+y
+         PAEyGtKkZyqTAAl+lvSIMbzAOAddDp9Cwq68S8V+ZIfLE8Ks8GSEowoDFHFo75Q3LKEw
+         y2mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wJo7ZmZmH0TiIejQdryJ3EHusk8AK7atRTT/qElU8mk=;
-        b=JR4J+DE2Za4IyixE8w44ThaslJnVVuyA6wWtDC+Lggot49y8OE9BaU2yVruwYcQhij
-         rZ4KzMljeneMDngLedUumjjQiOYtB7A2rRhJ1OrIGXZviuHU/2zf9DJopGkDZ9KpTnC/
-         ThSSjE9XaAA3at+FuS1xZYdEaNAEkN6QC94lX8IV1C0Fcl1M+qUOGEyYkdugcGOn5SNp
-         M3Kz50PledaGXSvHEhjdO2F0otvTJLKH5wYOLxWPCU+coa3UGKemBw1P/X6DiF/+zDjo
-         3QLbfeOAQKhPTpLesA028iY0qRxDnxMsQHo+/pAGPmY7y5Da8CscHjjnjXJuxddB1TVv
-         ATAw==
-X-Gm-Message-State: ANhLgQ0MhAZYtWenW7Uch+J1j7GaLLKASlC/ohHscfLakiZNuo6bNCHJ
-        0KNhycN6MypGWsyLKFpIjNYmjZdfRhL4HD0x5WQa1n4O
-X-Google-Smtp-Source: ADFU+vuoQ/kRCsq5ARO98ctp//Ll6c0fNXHY/6edADTBa7RcUdzw4y4Go7Ey4w/OkSBRbLy+vcGAG3yEOFZiaB4O6zI=
-X-Received: by 2002:ab0:344f:: with SMTP id a15mr1771389uaq.2.1584397065487;
- Mon, 16 Mar 2020 15:17:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200316163646.2465-1-a.s.protopopov@gmail.com> <202003161423.B51FDA8083@keescook>
-In-Reply-To: <202003161423.B51FDA8083@keescook>
-From:   Anton Protopopov <a.s.protopopov@gmail.com>
-Date:   Mon, 16 Mar 2020 18:17:34 -0400
-Message-ID: <CAGn_itw594Q_-4gC8=3jjRGF-wx90GeXMWBAz54X-UEer9pbtA@mail.gmail.com>
-Subject: Re: [PATCH] seccomp: allow BPF_MOD ALU instructions
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=CDSTXSoz8JLvnbI4Rvpwb3UtnFj/UPBOq4cipKiHAa8=;
+        b=H5Ueg8yjWCp3uo8ux5J51265XBanJRtvBWiXNaS6ggjrnjVuuXvIP7x5BSIJ8/TPJc
+         ASpuBuXuIIpCP47PMLPZUVLS14puSrv7u1YWkEOpo6AECejphJL07zsdcN/MEBkleQXl
+         1i49xeMhWD5gCTXns7ZVDZAalWELP+nCGRJSvk+tPg8RNdLK/YbQFy4DZzXKjAcFLvSi
+         0LCvtguSpnaM0S6QM4wwkeiEjuL/7ZLnPo3nrY5mESv0VmP/yZihn8ojpPHqnQ6lQBuO
+         waIWbuzKr+WtxCsYxExv1BjCZFG++/l0th3Phk7uHLUBULoRZ3/KUycKqoI/S6H1D8vv
+         OfTw==
+X-Gm-Message-State: ANhLgQ2i5ZyvFE+bycmbYOGcWmS8o+z3JjRW4Bf6frVVJX2xigP8ROug
+        RqrWJKz1+JmiP8DDao1dmcsoK0Q=
+X-Google-Smtp-Source: ADFU+vtg+o9KJH/sNGo1ZSxUm97WYU4MunF3koiZCvSAQPSsFPYxKlf2EL51qt/hdH3VSOSoTO5/z+s=
+X-Received: by 2002:a63:8342:: with SMTP id h63mr2003915pge.141.1584397521541;
+ Mon, 16 Mar 2020 15:25:21 -0700 (PDT)
+Date:   Mon, 16 Mar 2020 15:25:18 -0700
+Message-Id: <20200316222518.191601-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.25.1.481.gfbce0eb801-goog
+Subject: [PATCH bpf] bpf: Support llvm-objcopy for vmlinux BTF
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-=D0=BF=D0=BD, 16 =D0=BC=D0=B0=D1=80. 2020 =D0=B3. =D0=B2 17:24, Kees Cook <=
-keescook@chromium.org>:
->
-> On Mon, Mar 16, 2020 at 04:36:46PM +0000, Anton Protopopov wrote:
-> > The BPF_MOD ALU instructions could be utilized by seccomp classic BPF f=
-ilters,
-> > but were missing from the explicit list of allowed calls since its intr=
-oduction
-> > in the original e2cfabdfd075 ("seccomp: add system call filtering using=
- BPF")
-> > commit.  Add support for these instructions by adding them to the allow=
-ed list
-> > in the seccomp_check_filter function.
-> >
-> > Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
->
-> This has been suggested in the past, but was deemed ultimately redundant:
-> https://lore.kernel.org/lkml/201908121035.06695C79F@keescook/
+Commit da5fb18225b4 ("bpf: Support pre-2.25-binutils objcopy for vmlinux
+BTF") switched from --dump-section to
+--only-section/--change-section-address for BTF export assuming
+those ("legacy") options should cover all objcopy versions.
 
-Yeah, Paul told me this right after I submitted the patch.
+Turns out llvm-objcopy doesn't implement --change-section-address [1],
+but it does support --dump-section. Let's partially roll back and
+try to use --dump-section first and fall back to
+--only-section/--change-section-address for the older binutils.
 
-> Is there a strong reason it's needed?
+1. https://bugs.llvm.org/show_bug.cgi?id=45217
 
-I really don't have such a strong need in BPF_MOD, but let me tell why
-I wanted to use it in the first place.
+Fixes: df786c9b9476 ("bpf: Force .BTF section start to zero when dumping from vmlinux")
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/871
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ scripts/link-vmlinux.sh | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-I've used this operation to speedup processing linear blacklist
-filters. Namely, if you have a list of syscall numbers to blacklist,
-you can do, say,
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index dd484e92752e..8ddf57cbc439 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -127,6 +127,16 @@ gen_btf()
+ 		cut -d, -f1 | cut -d' ' -f2)
+ 	bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
+ 		awk '{print $4}')
++
++	# Compatibility issues:
++	# - pre-2.25 binutils objcopy doesn't support --dump-section
++	# - llvm-objcopy doesn't support --change-section-address, but
++	#   does support --dump-section
++	#
++	# Try to use --dump-section which should cover both recent
++	# binutils and llvm-objcopy and fall back to --only-section
++	# for pre-2.25 binutils.
++	${OBJCOPY} --dump-section .BTF=$bin_file ${1} 2>/dev/null || \
+ 	${OBJCOPY} --change-section-address .BTF=0 \
+ 		--set-section-flags .BTF=alloc -O binary \
+ 		--only-section=.BTF ${1} .btf.vmlinux.bin
+-- 
+2.25.1.481.gfbce0eb801-goog
 
-ldw [0]
-mod #4
-jeq #1, case1
-jeq #1, case2
-jeq #1, case3
-case0:
-...
-
-and in every case to walk only a corresponding factor-list. In my case
-I had a list of ~40 syscall numbers and after this change filter
-executed in 17.25 instructions on average per syscall vs. 45
-instructions for the linear filter (so this removes about 30
-instructions penalty per every syscall). To replace "mod #4" I
-actually used "and #3", but this obviously doesn't work for
-non-power-of-two divisors. If I would use "mod 5", then it would give
-me about 15.5 instructions on average.
-
-Thanks,
-Anton
-
->
-> Thanks!
->
-> -Kees
->
-> > ---
-> >  kernel/seccomp.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> > index b6ea3dcb57bf..cae7561b44d4 100644
-> > --- a/kernel/seccomp.c
-> > +++ b/kernel/seccomp.c
-> > @@ -206,6 +206,8 @@ static int seccomp_check_filter(struct sock_filter =
-*filter, unsigned int flen)
-> >               case BPF_ALU | BPF_MUL | BPF_X:
-> >               case BPF_ALU | BPF_DIV | BPF_K:
-> >               case BPF_ALU | BPF_DIV | BPF_X:
-> > +             case BPF_ALU | BPF_MOD | BPF_K:
-> > +             case BPF_ALU | BPF_MOD | BPF_X:
-> >               case BPF_ALU | BPF_AND | BPF_K:
-> >               case BPF_ALU | BPF_AND | BPF_X:
-> >               case BPF_ALU | BPF_OR | BPF_K:
-> > --
-> > 2.19.1
->
-> --
-> Kees Cook
