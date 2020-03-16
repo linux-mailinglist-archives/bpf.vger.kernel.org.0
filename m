@@ -2,262 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD53187418
-	for <lists+bpf@lfdr.de>; Mon, 16 Mar 2020 21:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A29AF187475
+	for <lists+bpf@lfdr.de>; Mon, 16 Mar 2020 22:06:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732538AbgCPUdh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Mar 2020 16:33:37 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:1388 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732486AbgCPUdh (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 16 Mar 2020 16:33:37 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02GKLFJX006793
-        for <bpf@vger.kernel.org>; Mon, 16 Mar 2020 13:33:36 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=YAUYFyGl8iNhKU1xcSzkPALlFq5jHZIIxk/ZsP735eY=;
- b=QxJOZogHLnWyh13Ha6d3duikzhmBko4RiaAAgOKWi68NhGA+rgw/fqFjOjrunxkY9Lj0
- Ce+BElqZUc6TS2GBCk1vxQd3JKdDLF5xzKV4qtS9KhNmdvVIrc6A0SceRcLo1q0PGb/l
- Hv/1YjbJoLkUqp0TUzLHo4LACD9ZoWXUG8E= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2ysf9qpqq8-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 16 Mar 2020 13:33:36 -0700
-Received: from intmgw003.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Mon, 16 Mar 2020 13:33:34 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 2AD5362E20F8; Mon, 16 Mar 2020 13:33:31 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Song Liu <songliubraving@fb.com>
-Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
-To:     <linux-fsdevel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     <kernel-team@fb.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <mcgrof@kernel.org>, <keescook@chromium.org>, <yzaikin@google.com>,
-        Song Liu <songliubraving@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v2 bpf-next] bpf: sharing bpf runtime stats with /dev/bpf_stats
-Date:   Mon, 16 Mar 2020 13:33:29 -0700
-Message-ID: <20200316203329.2747779-1-songliubraving@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1732621AbgCPVF7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Mar 2020 17:05:59 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:32908 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732567AbgCPVF7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Mar 2020 17:05:59 -0400
+Received: by mail-pj1-f65.google.com with SMTP id dw20so4365018pjb.0
+        for <bpf@vger.kernel.org>; Mon, 16 Mar 2020 14:05:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=y3IGmPwiq4wbs+3Nm8nYfgQPnK4Ox4cRsRDlqMwvWZw=;
+        b=Uq0m1LsnsVeUh9mPhVQCxIpjl7uOSEiupEU1sQZhy+FXtQmH1zskZYSnn8rE3/NVm5
+         2YnRwPm+TxZQrC7dYoyhE079DxdG8uJoO9kKvzPXCUP6Ele4cT31xVBvi/S6ffU/Z5BH
+         qCHqVQLZkw6PhpSRJN2PSIwyjLj49R+no6jR4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=y3IGmPwiq4wbs+3Nm8nYfgQPnK4Ox4cRsRDlqMwvWZw=;
+        b=sXZ76BwtSdHFqsKjps1TQMyH0oRkv6C7wkphUUU7MN0E6/LRz+6Y7id9UUr5pmm+XP
+         1QbX27u2xZGAyayEAezRDZG7uAW+CzUslp8BRmIpRs30eTYnUAvpQpwAQqMJOEgjjAeT
+         e+A7eMMF8Jj8d6MjKPXB+R2oN4aLwcA+mDUlk3XLrE7E/hFBjKkiJyx/vg7hzZcZw4ha
+         FN0LbIDHqkp0XXvdHceoBdwGndsJJav/nhT/ViWFfUlgSsfmwNCiOXajKvLjLenv7cAc
+         5rCEFc7g04uz7yfy5UKcYq2Qo5btdkJY8OtFzW9VuXATCiTFoAu0o7Q5wVqah0nANFQG
+         9Kyg==
+X-Gm-Message-State: ANhLgQ0L1O28BopKYHOt/Y6Uk733OuF1Z4FlzgJY1shGV1WZ+qMt1PY1
+        tk6ytMSp/SqWUNp402Dq8pBCMg==
+X-Google-Smtp-Source: ADFU+vvTUDyDUjCUl26KBVoud41E3T/YXGVRV8yipj/Wi5LH4KGqaXAvRVMdbUrjOQc3cY7SYA2png==
+X-Received: by 2002:a17:90a:8d81:: with SMTP id d1mr1460363pjo.63.1584392758209;
+        Mon, 16 Mar 2020 14:05:58 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c201sm785900pfc.73.2020.03.16.14.05.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Mar 2020 14:05:57 -0700 (PDT)
+Date:   Mon, 16 Mar 2020 14:05:56 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, shuah@kernel.org,
+        luto@amacapital.net, wad@chromium.org, daniel@iogearbox.net,
+        kafai@fb.com, yhs@fb.com, andriin@fb.com,
+        gregkh@linuxfoundation.org, tglx@linutronix.de,
+        khilman@baylibre.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v3] selftests: Fix seccomp to support relocatable build
+ (O=objdir)
+Message-ID: <202003161404.934CCE0@keescook>
+References: <20200313212404.24552-1-skhan@linuxfoundation.org>
+ <8736a8qz06.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
- definitions=2020-03-16_09:2020-03-12,2020-03-16 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 adultscore=0
- bulkscore=0 suspectscore=0 clxscore=1015 malwarescore=0 mlxlogscore=999
- impostorscore=0 mlxscore=0 lowpriorityscore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2003160086
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8736a8qz06.fsf@mpe.ellerman.id.au>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, sysctl kernel.bpf_stats_enabled controls BPF runtime stats.
-Typical userspace tools use kernel.bpf_stats_enabled as follows:
+On Mon, Mar 16, 2020 at 11:12:57PM +1100, Michael Ellerman wrote:
+> Shuah Khan <skhan@linuxfoundation.org> writes:
+> > Fix seccomp relocatable builds. This is a simple fix to use the right
+> > lib.mk variable TEST_GEN_PROGS with dependency on kselftest_harness.h
+> > header, and defining LDFLAGS for pthread lib.
+> >
+> > Removes custom clean rule which is no longer necessary with the use of
+> > TEST_GEN_PROGS. 
+> >
+> > Uses $(OUTPUT) defined in lib.mk to handle build relocation.
+> >
+> > The following use-cases work with this change:
+> >
+> > In seccomp directory:
+> > make all and make clean
+> >
+> > From top level from main Makefile:
+> > make kselftest-install O=objdir ARCH=arm64 HOSTCC=gcc \
+> >  CROSS_COMPILE=aarch64-linux-gnu- TARGETS=seccomp
+> >
+> > Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> > ---
+> >
+> > Changes since v2:
+> > -- Using TEST_GEN_PROGS is sufficient to generate objects.
+> >    Addresses review comments from Kees Cook.
+> >
+> >  tools/testing/selftests/seccomp/Makefile | 18 ++++++++----------
+> >  1 file changed, 8 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/seccomp/Makefile b/tools/testing/selftests/seccomp/Makefile
+> > index 1760b3e39730..a0388fd2c3f2 100644
+> > --- a/tools/testing/selftests/seccomp/Makefile
+> > +++ b/tools/testing/selftests/seccomp/Makefile
+> > @@ -1,17 +1,15 @@
+> >  # SPDX-License-Identifier: GPL-2.0
+> > -all:
+> > -
+> > -include ../lib.mk
+> > +CFLAGS += -Wl,-no-as-needed -Wall
+> > +LDFLAGS += -lpthread
+> >  
+> >  .PHONY: all clean
+> >  
+> > -BINARIES := seccomp_bpf seccomp_benchmark
+> > -CFLAGS += -Wl,-no-as-needed -Wall
+> > +include ../lib.mk
+> > +
+> > +# OUTPUT set by lib.mk
+> > +TEST_GEN_PROGS := $(OUTPUT)/seccomp_bpf $(OUTPUT)/seccomp_benchmark
+> >  
+> > -seccomp_bpf: seccomp_bpf.c ../kselftest_harness.h
+> > -	$(CC) $(CFLAGS) $(LDFLAGS) $< -lpthread -o $@
+> > +$(TEST_GEN_PROGS): ../kselftest_harness.h
+> >  
+> > -TEST_PROGS += $(BINARIES)
+> > -EXTRA_CLEAN := $(BINARIES)
+> > +all: $(TEST_GEN_PROGS)
+> >  
+> > -all: $(BINARIES)
+> 
+> 
+> It shouldn't be that complicated. We just need to define TEST_GEN_PROGS
+> before including lib.mk, and then add the dependency on the harness
+> after we include lib.mk (so that TEST_GEN_PROGS has been updated to
+> prefix $(OUTPUT)).
+> 
+> eg:
+> 
+>   # SPDX-License-Identifier: GPL-2.0
+>   CFLAGS += -Wl,-no-as-needed -Wall
+>   LDFLAGS += -lpthread
+>   
+>   TEST_GEN_PROGS := seccomp_bpf seccomp_benchmark
+>   
+>   include ../lib.mk
+>   
+>   $(TEST_GEN_PROGS): ../kselftest_harness.h
 
-  1. Enable kernel.bpf_stats_enabled;
-  2. Check program run_time_ns;
-  3. Sleep for the monitoring period;
-  4. Check program run_time_ns again, calculate the difference;
-  5. Disable kernel.bpf_stats_enabled.
+Exactly. This (with an extra comment) is precisely what I suggested during
+v2 review:
+https://lore.kernel.org/lkml/202003041815.B8C73DEC@keescook/
 
-The problem with this approach is that only one userspace tool can toggle
-this sysctl. If multiple tools toggle the sysctl at the same time, the
-measurement may be inaccurate.
+-Kees
 
-To fix this problem while keep backward compatibility, introduce a new
-bpf command BPF_ENABLE_RUNTIME_STATS. On success, this command enables
-run_time_ns stats and returns a valid fd.
+> 
+> 
+> Normal in-tree build:
+> 
+>   selftests$ make TARGETS=seccomp
+>   make[1]: Entering directory '/home/michael/linux/tools/testing/selftests/seccomp'
+>   gcc -Wl,-no-as-needed -Wall  -lpthread  seccomp_bpf.c ../kselftest_harness.h  -o /home/michael/linux/tools/testing/selftests/seccomp/seccomp_bpf
+>   gcc -Wl,-no-as-needed -Wall  -lpthread  seccomp_benchmark.c ../kselftest_harness.h  -o /home/michael/linux/tools/testing/selftests/seccomp/seccomp_benchmark
+>   make[1]: Leaving directory '/home/michael/linux/tools/testing/selftests/seccomp'
+>   
+>   selftests$ ls -l seccomp/
+>   total 388
+>   -rw-rw-r-- 1 michael michael     41 Jan  9 12:00 config
+>   -rw-rw-r-- 1 michael michael    201 Mar 16 23:04 Makefile
+>   -rwxrwxr-x 1 michael michael  70824 Mar 16 23:07 seccomp_benchmark*
+>   -rw-rw-r-- 1 michael michael   2289 Feb 17 21:39 seccomp_benchmark.c
+>   -rwxrwxr-x 1 michael michael 290520 Mar 16 23:07 seccomp_bpf*
+>   -rw-rw-r-- 1 michael michael  94778 Mar  5 23:33 seccomp_bpf.c
+> 
+> 
+> O= build:
+> 
+>   selftests$ make TARGETS=seccomp O=$PWD/build
+>   make[1]: Entering directory '/home/michael/linux/tools/testing/selftests/seccomp'
+>   gcc -Wl,-no-as-needed -Wall  -lpthread  seccomp_bpf.c ../kselftest_harness.h  -o /home/michael/linux/tools/testing/selftests/build/seccomp/seccomp_bpf
+>   gcc -Wl,-no-as-needed -Wall  -lpthread  seccomp_benchmark.c ../kselftest_harness.h  -o /home/michael/linux/tools/testing/selftests/build/seccomp/seccomp_benchmark
+>   make[1]: Leaving directory '/home/michael/linux/tools/testing/selftests/seccomp'
+>   
+>   selftests$ ls -l build/seccomp/
+>   total 280
+>   -rwxrwxr-x 1 michael michael  70824 Mar 16 23:05 seccomp_benchmark*
+>   -rwxrwxr-x 1 michael michael 290520 Mar 16 23:05 seccomp_bpf*
+> 
+> 
+> Build in the directory itself:
+>   selftests$ cd seccomp
+>   seccomp$ make
+>   gcc -Wl,-no-as-needed -Wall  -lpthread  seccomp_bpf.c ../kselftest_harness.h  -o /home/michael/linux/tools/testing/selftests/seccomp/seccomp_bpf
+>   gcc -Wl,-no-as-needed -Wall  -lpthread  seccomp_benchmark.c ../kselftest_harness.h  -o /home/michael/linux/tools/testing/selftests/seccomp/seccomp_benchmark
+>   
+>   seccomp$ ls -l
+>   total 388
+>   -rw-rw-r-- 1 michael michael     41 Jan  9 12:00 config
+>   -rw-rw-r-- 1 michael michael    201 Mar 16 23:04 Makefile
+>   -rwxrwxr-x 1 michael michael  70824 Mar 16 23:06 seccomp_benchmark*
+>   -rw-rw-r-- 1 michael michael   2289 Feb 17 21:39 seccomp_benchmark.c
+>   -rwxrwxr-x 1 michael michael 290520 Mar 16 23:06 seccomp_bpf*
+>   -rw-rw-r-- 1 michael michael  94778 Mar  5 23:33 seccomp_bpf.c
+> 
+> 
+> cheers
 
-With BPF_ENABLE_RUNTIME_STATS, user space tool would have the following
-flow:
-
-  1. Get a fd with BPF_ENABLE_RUNTIME_STATS, and make sure it is valid;
-  2. Check program run_time_ns;
-  3. Sleep for the monitoring period;
-  4. Check program run_time_ns again, calculate the difference;
-  5. Close the fd.
-
-Signed-off-by: Song Liu <songliubraving@fb.com>
-
----
-Changes RFC => v2:
-1. Add a new bpf command instead of /dev/bpf_stats;
-2. Remove the jump_label patch, which is no longer needed;
-3. Add a static variable to save previous value of the sysctl.
----
- include/linux/bpf.h            |  1 +
- include/uapi/linux/bpf.h       |  1 +
- kernel/bpf/syscall.c           | 43 ++++++++++++++++++++++++++++++++++
- kernel/sysctl.c                | 36 +++++++++++++++++++++++++++-
- tools/include/uapi/linux/bpf.h |  1 +
- 5 files changed, 81 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 4fd91b7c95ea..d542349771df 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -970,6 +970,7 @@ _out:							\
- 
- #ifdef CONFIG_BPF_SYSCALL
- DECLARE_PER_CPU(int, bpf_prog_active);
-+extern struct mutex bpf_stats_enabled_mutex;
- 
- /*
-  * Block execution of BPF programs attached to instrumentation (perf,
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 40b2d9476268..8285ff37210c 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -111,6 +111,7 @@ enum bpf_cmd {
- 	BPF_MAP_LOOKUP_AND_DELETE_BATCH,
- 	BPF_MAP_UPDATE_BATCH,
- 	BPF_MAP_DELETE_BATCH,
-+	BPF_ENABLE_RUNTIME_STATS,
- };
- 
- enum bpf_map_type {
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index b2f73ecacced..823dc9de7953 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -24,6 +24,9 @@
- #include <linux/ctype.h>
- #include <linux/nospec.h>
- #include <linux/audit.h>
-+#include <linux/miscdevice.h>
-+#include <linux/fs.h>
-+#include <linux/jump_label.h>
- #include <uapi/linux/btf.h>
- 
- #define IS_FD_ARRAY(map) ((map)->map_type == BPF_MAP_TYPE_PERF_EVENT_ARRAY || \
-@@ -3550,6 +3553,43 @@ static int bpf_map_do_batch(const union bpf_attr *attr,
- 	return err;
- }
- 
-+DEFINE_MUTEX(bpf_stats_enabled_mutex);
-+
-+static int bpf_stats_release(struct inode *inode, struct file *file)
-+{
-+	mutex_lock(&bpf_stats_enabled_mutex);
-+	static_key_slow_dec(&bpf_stats_enabled_key.key);
-+	mutex_unlock(&bpf_stats_enabled_mutex);
-+	return 0;
-+}
-+
-+static const struct file_operations bpf_stats_fops = {
-+	.release = bpf_stats_release,
-+};
-+
-+static int bpf_enable_runtime_stats(void)
-+{
-+	int fd;
-+
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	mutex_lock(&bpf_stats_enabled_mutex);
-+	/* Set a very high limit to avoid overflow */
-+	if (static_key_count(&bpf_stats_enabled_key.key) > INT_MAX / 2) {
-+		mutex_unlock(&bpf_stats_enabled_mutex);
-+		return -EBUSY;
-+	}
-+
-+	fd = anon_inode_getfd("bpf-stats", &bpf_stats_fops, NULL, 0);
-+	if (fd >= 0)
-+		static_key_slow_inc(&bpf_stats_enabled_key.key);
-+
-+	mutex_unlock(&bpf_stats_enabled_mutex);
-+	return fd;
-+}
-+
-+
- SYSCALL_DEFINE3(bpf, int, cmd, union bpf_attr __user *, uattr, unsigned int, size)
- {
- 	union bpf_attr attr = {};
-@@ -3660,6 +3700,9 @@ SYSCALL_DEFINE3(bpf, int, cmd, union bpf_attr __user *, uattr, unsigned int, siz
- 	case BPF_MAP_DELETE_BATCH:
- 		err = bpf_map_do_batch(&attr, uattr, BPF_MAP_DELETE_BATCH);
- 		break;
-+	case BPF_ENABLE_RUNTIME_STATS:
-+		err = bpf_enable_runtime_stats();
-+		break;
- 	default:
- 		err = -EINVAL;
- 		break;
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index ad5b88a53c5a..14613d1e0b88 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -316,6 +316,40 @@ static int min_extfrag_threshold;
- static int max_extfrag_threshold = 1000;
- #endif
- 
-+#ifdef CONFIG_BPF_SYSCALL
-+static int bpf_stats_handler(struct ctl_table *table, int write,
-+			     void __user *buffer, size_t *lenp,
-+			     loff_t *ppos)
-+{
-+	struct static_key *key = (struct static_key *)table->data;
-+	int val, ret;
-+	static int saved_val;
-+	struct ctl_table tmp = {
-+		.data   = &val,
-+		.maxlen = sizeof(val),
-+		.mode   = table->mode,
-+		.extra1 = SYSCTL_ZERO,
-+		.extra2 = SYSCTL_ONE,
-+	};
-+
-+	if (write && !capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	mutex_lock(&bpf_stats_enabled_mutex);
-+	val = saved_val;
-+	ret = proc_dointvec_minmax(&tmp, write, buffer, lenp, ppos);
-+	if (write && !ret && val != saved_val) {
-+		if (val)
-+			static_key_slow_inc(key);
-+		else
-+			static_key_slow_dec(key);
-+		saved_val = val;
-+	}
-+	mutex_unlock(&bpf_stats_enabled_mutex);
-+	return ret;
-+}
-+#endif
-+
- static struct ctl_table kern_table[] = {
- 	{
- 		.procname	= "sched_child_runs_first",
-@@ -1256,7 +1290,7 @@ static struct ctl_table kern_table[] = {
- 		.data		= &bpf_stats_enabled_key.key,
- 		.maxlen		= sizeof(bpf_stats_enabled_key),
- 		.mode		= 0644,
--		.proc_handler	= proc_do_static_key,
-+		.proc_handler	= bpf_stats_handler,
- 	},
- #endif
- #if defined(CONFIG_TREE_RCU)
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 40b2d9476268..8285ff37210c 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -111,6 +111,7 @@ enum bpf_cmd {
- 	BPF_MAP_LOOKUP_AND_DELETE_BATCH,
- 	BPF_MAP_UPDATE_BATCH,
- 	BPF_MAP_DELETE_BATCH,
-+	BPF_ENABLE_RUNTIME_STATS,
- };
- 
- enum bpf_map_type {
 -- 
-2.17.1
-
+Kees Cook
