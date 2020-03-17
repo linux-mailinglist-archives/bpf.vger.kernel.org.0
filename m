@@ -2,125 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B8B18780A
-	for <lists+bpf@lfdr.de>; Tue, 17 Mar 2020 04:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21FAE187838
+	for <lists+bpf@lfdr.de>; Tue, 17 Mar 2020 04:37:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726842AbgCQDSQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Mar 2020 23:18:16 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:34065 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726803AbgCQDSQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Mar 2020 23:18:16 -0400
-Received: by mail-wm1-f66.google.com with SMTP id x3so14669457wmj.1;
-        Mon, 16 Mar 2020 20:18:14 -0700 (PDT)
+        id S1726132AbgCQDhH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Mar 2020 23:37:07 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:42679 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgCQDhH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Mar 2020 23:37:07 -0400
+Received: by mail-pl1-f193.google.com with SMTP id t3so8975436plz.9
+        for <bpf@vger.kernel.org>; Mon, 16 Mar 2020 20:37:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yA+sOfTo6eaYV72YV9c/n33EKYaKnOg8YUVIhA7CJQI=;
+        b=EDZKf/O34udiLq1SZ/JDBsIZu7fsrG3yfDZtdfRETtZlvWDR8aqv/ocHujvNoLy4O7
+         1LxcH6YOwIl4KnqCMUUDftFDHiK1kroFyEtNeC0oB9U5rFxv06U3b/PrJ5tRS01wD+mA
+         CCO4fQDswsA94BOBSWW9LSvjjOOwhsMdzJ2KsQ4dERBA4efIOL2EuhqEqGnUwbsbMLTA
+         MzqsEvsSeNNw7nqRMmiM/flHXt9QmKxZO3zdJbu0OMyDiZIMqmAEdmqbZUkoB3X56CE+
+         R/wnZSuEZOHo3DV/LvmEEyuNNxKOOUWLCr8UNcUKjp1O0eQAGw1k1i1LC6Q58SRkroMm
+         XTTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YQGjvHknB6zDlVk+ed/YittlC9xBHcBBwyN5Yg1ksag=;
-        b=K0NEheKD/j1cplTNeJaRm5ZHYGMSRfiXuP/Ik4Y+XjrtljcvYssqW7I4FsdW8DQpwM
-         CvvqfBnVTZzY4lBFdm5l9kJn135/1SmHtMN4woSXPrr7t60k49KMer9yL1UJvtJxU0/h
-         AmBBvdHIirNY2F6HkL9DOVVlREbj1l5+Y9YtwPlSytYEJJJ7CJTx1rzfSe0uwqX32qiK
-         3Vv/mIvGdWrfW4bO5HaKy96h4Cky8QKu+nAVaLJf5g6yZkanVCvsLRi6QkTalI7zPc6x
-         mmuW1zzS32veSQp2J/vXoWA3OsaD6aG1NuPHo1IvzKVVccGc+Pg59V9q72kBkcn0/RQR
-         KLZg==
-X-Gm-Message-State: ANhLgQ2Fv/tK3WcNztmzHD+9KAr9xdSEXgJfAMyF4U9OkZuOUF2fMh5K
-        y+8LDCqxyhctlLZZT2Oq1BnA1aergrMdOh2Y3ZQ=
-X-Google-Smtp-Source: ADFU+vu2j2iPXnw+5nE+9yYnQR8ga9l/jUSj6eic7p39KqgHl7rSS09+u93gO8OuWVOf+8Venz6rGeYNcxi4YMiumM8=
-X-Received: by 2002:a7b:c208:: with SMTP id x8mr2437860wmi.136.1584415093884;
- Mon, 16 Mar 2020 20:18:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200312233648.1767-1-joe@wand.net.nz> <20200312233648.1767-5-joe@wand.net.nz>
- <20200316230312.oxgsjpyzhp5iiyyx@kafai-mbp>
-In-Reply-To: <20200316230312.oxgsjpyzhp5iiyyx@kafai-mbp>
-From:   Joe Stringer <joe@wand.net.nz>
-Date:   Mon, 16 Mar 2020 20:17:59 -0700
-Message-ID: <CAOftzPjMO2Y=efeqYZCzYd2JX8JZULfvCNw2mc-io1anxNYgGA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/7] dst: Prefetch established socket destinations
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Joe Stringer <joe@wand.net.nz>, bpf@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yA+sOfTo6eaYV72YV9c/n33EKYaKnOg8YUVIhA7CJQI=;
+        b=fbak41MGoTgRoIH2bIZsMRPoLpaZrAHJarca2HDGY+33aBAdy5FvGG9dd2sdFu1Dh5
+         Ji2WpgK+k0norXqXATOkZfpzIGl7fW1sLCqUV7dDMQ6Xn6g6Yg4tCUIfk8T04YlvhJjm
+         9ULu8reT8zEn0gz2s2GvE+tF67vk9laB2iZ98X6K9m2JER8wuYiVTBe4ZFywDNoi7dAE
+         wLnXvmu6Bru8N+n0TlmWRbRBepUgtW2VMr8Oqe7kHfu1bIcLkjtuYqB321V4WReIApXS
+         VmrMqXPMn5XKc/flGGDHjqPFXDZKrYBiKDc7SWFGy4P8rYp0QHwOIYC6gm4M8DeMCAYy
+         PVsw==
+X-Gm-Message-State: ANhLgQ3EsycMGQ1O+NC4wCcxeo+2luao+sjMVnatZuYhs/eRRVrj9dz5
+        iXbB5XYii9LcyVqEEt2xrc5orw==
+X-Google-Smtp-Source: ADFU+vuQ5CWrM9J6J5lg5FcbFr+PPIdgoQYEnR+D+/vygODN6kN4W7RxWVUZ1wX2JFblVNoR8Pbi3w==
+X-Received: by 2002:a17:90a:d156:: with SMTP id t22mr2914076pjw.138.1584416225394;
+        Mon, 16 Mar 2020 20:37:05 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:0:9efe:9f1:9267:2b27])
+        by smtp.gmail.com with ESMTPSA id c1sm1008492pje.24.2020.03.16.20.37.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Mar 2020 20:37:04 -0700 (PDT)
+Date:   Mon, 16 Mar 2020 20:37:01 -0700
+From:   Fangrui Song <maskray@google.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        clang-built-linux@googlegroups.com,
+        Stanislav Fomichev <sdf@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: [PATCH bpf v2] bpf: Support llvm-objcopy and llvm-objdump for
+ vmlinux BTF
+Message-ID: <20200317033701.w7jwos7mvfnde2t2@google.com>
+References: <20200317011654.zkx5r7so53skowlc@google.com>
+ <CAEf4BzYTJqWU++QnQupxFBWGSMPfGt6r-5u9jbeLnEF2ipw+Mw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYTJqWU++QnQupxFBWGSMPfGt6r-5u9jbeLnEF2ipw+Mw@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 16, 2020 at 4:03 PM Martin KaFai Lau <kafai@fb.com> wrote:
+On 2020-03-16, Andrii Nakryiko wrote:
+>On Mon, Mar 16, 2020 at 6:17 PM Fangrui Song <maskray@google.com> wrote:
+>>
+>> Simplify gen_btf logic to make it work with llvm-objcopy and
+>> llvm-objdump.  We just need to retain one section .BTF. To do so, we can
+>> use a simple objcopy --only-section=.BTF instead of jumping all the
+>> hoops via an architecture-less binary file.
+>>
+>> We use a dd comment to change the e_type field in the ELF header from
+>> ET_EXEC to ET_REL so that .btf.vmlinux.bin.o will be accepted by lld.
+>>
+>> Fixes: df786c9b9476 ("bpf: Force .BTF section start to zero when dumping from vmlinux")
+>> Cc: Stanislav Fomichev <sdf@google.com>
+>> Cc: Nick Desaulniers <ndesaulniers@google.com>
+>> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+>> Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+>> Link: https://github.com/ClangBuiltLinux/linux/issues/871
+>> Signed-off-by: Fangrui Song <maskray@google.com>
+>> ---
+>>  scripts/link-vmlinux.sh | 13 ++-----------
+>>  1 file changed, 2 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+>> index dd484e92752e..84be8d7c361d 100755
+>> --- a/scripts/link-vmlinux.sh
+>> +++ b/scripts/link-vmlinux.sh
+>> @@ -120,18 +120,9 @@ gen_btf()
+>>
+>>         info "BTF" ${2}
+>>         vmlinux_link ${1}
+>> -       LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
 >
-> On Thu, Mar 12, 2020 at 04:36:45PM -0700, Joe Stringer wrote:
-> > Enhance the dst_sk_prefetch logic to temporarily store the socket
-> > receive destination, to save the route lookup later on. The dst
-> > reference is kept alive by the caller's socket reference.
-> >
-> > Suggested-by: Daniel Borkmann <daniel@iogearbox.net>
-> > Signed-off-by: Joe Stringer <joe@wand.net.nz>
-> > ---
-> >  include/net/dst_metadata.h |  2 +-
-> >  net/core/dst.c             | 20 +++++++++++++++++---
-> >  net/core/filter.c          |  2 +-
-> >  3 files changed, 19 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/include/net/dst_metadata.h b/include/net/dst_metadata.h
-> > index 31574c553a07..4f16322b08d5 100644
-> > --- a/include/net/dst_metadata.h
-> > +++ b/include/net/dst_metadata.h
-> > @@ -230,7 +230,7 @@ static inline bool skb_dst_is_sk_prefetch(const struct sk_buff *skb)
-> >       return dst_is_sk_prefetch(skb_dst(skb));
-> >  }
-> >
-> > -void dst_sk_prefetch_store(struct sk_buff *skb);
-> > +void dst_sk_prefetch_store(struct sk_buff *skb, struct sock *sk);
-> >  void dst_sk_prefetch_fetch(struct sk_buff *skb);
-> >
-> >  /**
-> > diff --git a/net/core/dst.c b/net/core/dst.c
-> > index cf1a1d5b6b0a..5068d127d9c2 100644
-> > --- a/net/core/dst.c
-> > +++ b/net/core/dst.c
-> > @@ -346,11 +346,25 @@ EXPORT_SYMBOL(dst_sk_prefetch);
-> >
-> >  DEFINE_PER_CPU(unsigned long, dst_sk_prefetch_dst);
-> >
-> > -void dst_sk_prefetch_store(struct sk_buff *skb)
-> > +void dst_sk_prefetch_store(struct sk_buff *skb, struct sock *sk)
-> >  {
-> > -     unsigned long refdst;
-> > +     unsigned long refdst = 0L;
-> > +
-> > +     WARN_ON(!rcu_read_lock_held() &&
-> > +             !rcu_read_lock_bh_held());
-> > +     if (sk_fullsock(sk)) {
-> > +             struct dst_entry *dst = READ_ONCE(sk->sk_rx_dst);
-> > +
-> > +             if (dst)
-> > +                     dst = dst_check(dst, 0);
-> v6 requires a cookie.  tcp_v6_early_demux() could be a good example.
+>Is it really tested? Seems like you just dropped .BTF generation step
+>completely...
 
-Nice catch. I plan to roll in the following incremental for v2:
+Sorry, dropped the whole line:/
+I don't know how to test .BTF . I can only check readelf -S...
 
-diff --git a/net/core/dst.c b/net/core/dst.c
-index 5068d127d9c2..b60f85227247 100644
---- a/net/core/dst.c
-+++ b/net/core/dst.c
-@@ -354,9 +354,14 @@ void dst_sk_prefetch_store(struct sk_buff *skb,
-struct sock *sk)
-                !rcu_read_lock_bh_held());
-        if (sk_fullsock(sk)) {
-                struct dst_entry *dst = READ_ONCE(sk->sk_rx_dst);
-+               u32 cookie = 0;
+Attached the new patch.
 
-+#if IS_ENABLED(CONFIG_IPV6)
-+               if (sk->sk_family == AF_INET6)
-+                       cookie = inet6_sk(sk)->rx_dst_cookie;
-+#endif
-                if (dst)
--                       dst = dst_check(dst, 0);
-+                       dst = dst_check(dst, cookie);
-                if (dst)
-                        refdst = (unsigned long)dst | SKB_DST_NOREF;
-        }
+
+ From 02afb9417d4f0f8d2175c94fc3797a94a95cc248 Mon Sep 17 00:00:00 2001
+From: Fangrui Song <maskray@google.com>
+Date: Mon, 16 Mar 2020 18:02:31 -0700
+Subject: [PATCH bpf v2] bpf: Support llvm-objcopy and llvm-objdump for
+  vmlinux BTF
+
+Simplify gen_btf logic to make it work with llvm-objcopy and llvm-objdump.
+We use a dd comment to change the e_type field in the ELF header from
+ET_EXEC to ET_REL so that .btf.vmlinux.bin.o can be accepted by lld.
+
+Fixes: df786c9b9476 ("bpf: Force .BTF section start to zero when dumping from vmlinux")
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/871
+Signed-off-by: Fangrui Song <maskray@google.com>
+---
+  scripts/link-vmlinux.sh | 14 +++-----------
+  1 file changed, 3 insertions(+), 11 deletions(-)
+
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index dd484e92752e..b23313944c89 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -120,18 +120,10 @@ gen_btf()
+  
+  	info "BTF" ${2}
+  	vmlinux_link ${1}
+-	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
++	${PAHOLE} -J ${1}
+  
+-	# dump .BTF section into raw binary file to link with final vmlinux
+-	bin_arch=$(LANG=C ${OBJDUMP} -f ${1} | grep architecture | \
+-		cut -d, -f1 | cut -d' ' -f2)
+-	bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
+-		awk '{print $4}')
+-	${OBJCOPY} --change-section-address .BTF=0 \
+-		--set-section-flags .BTF=alloc -O binary \
+-		--only-section=.BTF ${1} .btf.vmlinux.bin
+-	${OBJCOPY} -I binary -O ${bin_format} -B ${bin_arch} \
+-		--rename-section .data=.BTF .btf.vmlinux.bin ${2}
++	# Extract .BTF section, change e_type to ET_REL, to link with final vmlinux
++	${OBJCOPY} --only-section=.BTF ${1} ${2} && printf '\1' | dd of=${2} conv=notrunc bs=1 seek=16
+  }
+  
+  # Create ${2} .o file with all symbols from the ${1} object file
+-- 
+2.25.1.481.gfbce0eb801-goog
+
