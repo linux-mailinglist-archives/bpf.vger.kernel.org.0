@@ -2,50 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 783771890C1
-	for <lists+bpf@lfdr.de>; Tue, 17 Mar 2020 22:51:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0D91890DA
+	for <lists+bpf@lfdr.de>; Tue, 17 Mar 2020 22:55:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgCQVvE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Mar 2020 17:51:04 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:43914 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726388AbgCQVvD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Mar 2020 17:51:03 -0400
-Received: by mail-pf1-f195.google.com with SMTP id f206so1681054pfa.10
-        for <bpf@vger.kernel.org>; Tue, 17 Mar 2020 14:51:02 -0700 (PDT)
+        id S1727082AbgCQVzd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Mar 2020 17:55:33 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:38093 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727050AbgCQVzd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Mar 2020 17:55:33 -0400
+Received: by mail-pl1-f196.google.com with SMTP id w3so10218141plz.5
+        for <bpf@vger.kernel.org>; Tue, 17 Mar 2020 14:55:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=G8ak8AESDzh6e3M3i5Q2LPitDfjwSZZdOv21drjByw8=;
-        b=FEkQxtHI6tEEiJwlbwFi52EsMTXZpIUXioR7S7Wr4xWk9Ghi74KS+svtNioAOoPRky
-         tF6ghSZgTzROe7lEebfnJW9vFSVSIHjrIBaTvJ0l4Uffiyq7HsAuOUnwQiwfmVrc+iwc
-         D3v9rzffln59+PynNDLqx+gBuCK888KsmPuOMdJoJPEVbvBTEYNwdgpuyJ8jhoTfLbRG
-         oFyg+vvjuyDHUeHqoEaQNj4RJ60TYXKUck/UgspMwtN57QE+h4ColetmC/uXsSYsDkfq
-         oR5rtEun/pbcUpfx2gQZSblEmUS/o98xjLI6HYucgKPUCULKr+kaK3kHQPaZI4GRaFlO
-         qDHw==
+         :content-disposition:in-reply-to;
+        bh=zn81+2/mHk8JESolQzJ6TzVtfsQLsPwXnqDsT+ejuXo=;
+        b=kvPHVjN5VLJkY+zPwBfaI5ugUbGUW07j5+5opHWYkQGT4WA/KGQKux1S124XYMUSv2
+         K1ZokW++9IUPnAV+pBMkNj0u6mXPgOcfA4YezcauwrKvu+AmUzLUVpfYZC0HfiQ04caQ
+         wuLtUJld5XJkXQ0+ZYDsg1InZOs6yNdKCKrUU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=G8ak8AESDzh6e3M3i5Q2LPitDfjwSZZdOv21drjByw8=;
-        b=VNq7fjQYtCeNDzLstQcmHWMRbkdC5Sx8J9Q5CN01IllphaKDw/3x284kEr6eU+cWub
-         wOR7HhTCVaKTHtt41pxwRgEakJ6D7xlvSPCW++6bwXtxt0w2ypXv68UiSntUJ5wL5oU3
-         iJ5kn0YzZLAlJclefy+IFtUFFN7jV9yADXK4hd88K67w1KnPeWg13q2qsfmP7yV7eMSo
-         WsoZCAd4sZS60+mB2rlEl6Gq+gaM/tp8yNhSreNUI3xh/tq0jgvjU5Gaaxa9WzUEe6Lf
-         MKSx2S+DSL6/FOL3fFSmdLAlIJtaNBjWWNuYboyI+1LWeG9ZiNvH6KYRxeaPH4EngvaN
-         wbaQ==
-X-Gm-Message-State: ANhLgQ02HlFH5Lkwbhme8PFlnitPGzbym/vjd/VN820rJ+2KtT7DGnc8
-        oCZkqZsS4KCaEOjbEKBdjVzW1mhyC8U=
-X-Google-Smtp-Source: ADFU+vvIwGvcCUWXXx1DFbXkGaPEZZPpFDtT/IbqssY3XSl/aFqb3/1zeYKv3I82as6Sxpsrs09b/Q==
-X-Received: by 2002:aa7:9416:: with SMTP id x22mr915918pfo.100.1584481862039;
-        Tue, 17 Mar 2020 14:51:02 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id q12sm3957215pfh.158.2020.03.17.14.51.00
+         :mime-version:content-disposition:in-reply-to;
+        bh=zn81+2/mHk8JESolQzJ6TzVtfsQLsPwXnqDsT+ejuXo=;
+        b=jUYVI1CPlqA8YfXZ5HQz/qy9GwDCq+Lv/NGCRlpTy+Y/qCesOhi+aKomP7EYX9Kgg9
+         dkJywyoHK6ZynoGZPHEFoUYqqHgV03tt5UxjjOSkAsux9y2nGaQfz253YzThLjSjjkoi
+         85Qyh/9EK6jhTke50/61/eeALuNpP3kqBwzFfhoCR3t4AG5d1TqkrroWY0LL5GLrROPo
+         OFWb7CVELh2eH6UIyYZQftqX/cVU3y3J3StvYcl0TbQrObxmKd11W1O2q2iANG4JIbMG
+         rxIzD1gYD97v9L7Rno0L88tnHMl6QTvpL+EOc93o58uXI0EYg92CaUhiTyqPsElKaltk
+         e8Bg==
+X-Gm-Message-State: ANhLgQ3fGRQDWbTfSCurKGNXrN8YZJWQOnwwfICXGbe5wXTMkrI666kI
+        W6gb2wyDuUr4jqRukjPL32f9tA==
+X-Google-Smtp-Source: ADFU+vuDoOd7dNeJ1bq2Y8mMWgKcKIJumLJz07tfVH+Hr+m45zVJeDmANfwyhsAW8q5z87Z+gY14kA==
+X-Received: by 2002:a17:902:7298:: with SMTP id d24mr778151pll.134.1584482131815;
+        Tue, 17 Mar 2020 14:55:31 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g2sm3507364pgi.20.2020.03.17.14.55.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Mar 2020 14:51:01 -0700 (PDT)
-Date:   Tue, 17 Mar 2020 14:51:00 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
+        Tue, 17 Mar 2020 14:55:31 -0700 (PDT)
+Date:   Tue, 17 Mar 2020 14:55:30 -0700
+From:   Kees Cook <keescook@chromium.org>
 To:     Fangrui Song <maskray@google.com>
 Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
@@ -55,30 +52,24 @@ Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         clang-built-linux@googlegroups.com,
         Stanislav Fomichev <sdf@google.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Kees Cook <keescook@chromium.org>
+        Alexei Starovoitov <ast@kernel.org>
 Subject: Re: [PATCH bpf-next v5] bpf: Support llvm-objcopy and llvm-objdump
  for vmlinux BTF
-Message-ID: <20200317215100.GC2459609@mini-arch.hsd1.ca.comcast.net>
+Message-ID: <202003171451.6B11E25636@keescook>
 References: <20200317211649.o4fzaxrzy6qxvz4f@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20200317211649.o4fzaxrzy6qxvz4f@google.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 03/17, Fangrui Song wrote:
+On Tue, Mar 17, 2020 at 02:16:49PM -0700, Fangrui Song wrote:
 > Simplify gen_btf logic to make it work with llvm-objcopy and llvm-objdump.
 > The existing 'file format' and 'architecture' parsing logic is brittle
 > and does not work with llvm-objcopy/llvm-objdump.
-Thanks, it all makes sense and looks much better/portable (too much
-dependence on binutils :-).
-I've left a bunch of questions/nits below.
-
 > 
 > .BTF in .tmp_vmlinux.btf is non-SHF_ALLOC. Add the SHF_ALLOC flag and
 > rename .BTF to BTF so that C code can reference the section via linker
@@ -87,6 +78,11 @@ I've left a bunch of questions/nits below.
 > synthesized symbols _binary__btf_vmlinux_bin_start and
 > _binary__btf_vmlinux_bin_start (not used elsewhere) are replaced with
 > more common __start_BTF and __stop_BTF.
+
+I'm glad to see the name change benefit here. Just reducing the number
+of execs in this path is only worth this change, IMO. Going from 2
+objdump and 2 objcopy calls to a single objcopy is very nice. :)
+
 > 
 > Add 2>/dev/null because GNU objcopy (but not llvm-objcopy) warns
 > "empty loadable segment detected at vaddr=0xffffffff81000000, is this intentional?"
@@ -95,38 +91,21 @@ I've left a bunch of questions/nits below.
 > ET_EXEC to ET_REL so that lld will accept .btf.vmlinux.bin.o.  Accepting
 > ET_EXEC as an input file is an extremely rare GNU ld feature that lld
 > does not intend to support, because this is error-prone.
-Please keep small changelog here, for example:
 
-v5:
-* rebased on top of bpfnext
+Nice ELF trick. :)
 
-Btw, I tried to pull and test it and failed:
-$ curl -LO https://lore.kernel.org/bpf/20200317211649.o4fzaxrzy6qxvz4f@google.com/raw
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  9627  100  9627    0     0  47191      0 --:--:-- --:--:-- --:--:-- 47191
-$ git am raw
-warning: Patch sent with format=flowed; space at the end of lines might
-be lost.
-Applying: bpf: Support llvm-objcopy and llvm-objdump for vmlinux BTF
-error: corrupt patch at line 20
-Patch failed at 0001 bpf: Support llvm-objcopy and llvm-objdump for
-vmlinux BTF
-hint: Use 'git am --show-current-patch' to see the failed patch
-When you have resolved this problem, run "git am --continue".
-If you prefer to skip this patch, run "git am --skip" instead.
-To restore the original branch and stop patching, run "git am --abort".
-$ git describe
-v5.6-rc5-1621-g230021539e8c
-
-Are you sure it's on top of the bpf-next? Or am I doing something wrong?
-
+> 
 > Fixes: df786c9b9476 ("bpf: Force .BTF section start to zero when dumping from vmlinux")
 > Cc: Stanislav Fomichev <sdf@google.com>
 > Cc: Nick Desaulniers <ndesaulniers@google.com>
 > Reported-by: Nathan Chancellor <natechancellor@gmail.com>
 > Link: https://github.com/ClangBuiltLinux/linux/issues/871
 > Signed-off-by: Fangrui Song <maskray@google.com>
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-Kees
+
 > ---
 >  kernel/bpf/btf.c        |  9 ++++-----
 >  kernel/bpf/sysfs_btf.c  | 11 +++++------
@@ -203,11 +182,6 @@ Are you sure it's on top of the bpf-next? Or am I doing something wrong?
 > -	bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
 > -		awk '{print $4}')
 > -	bin_file=.btf.vmlinux.bin
-We still have the following in gen_btf that you need to remove:
-	local bin_arch
-	local bin_format
-	local bin_file
-
 > -	${OBJCOPY} --change-section-address .BTF=0 \
 > -		--set-section-flags .BTF=alloc -O binary \
 > -		--only-section=.BTF ${1} $bin_file
@@ -219,23 +193,10 @@ We still have the following in gen_btf that you need to remove:
 > +	${OBJCOPY} --only-section=.BTF --set-section-flags .BTF=alloc,readonly \
 > +		--rename-section .BTF=BTF ${1} ${2} 2>/dev/null && \
 > +		printf '\1' | dd of=${2} conv=notrunc bs=1 seek=16 status=none
-	We have 'set -e' so && can be omitted. Maybe it will be a bit
-	more clear:
-
-	# Extract .BTF, add SHF_ALLOC, rename to BTF so that we can reference
-	# it via linker synthesized __start_BTF and __stop_BTF.
-	${OBJCOPY} --only-section=.BTF --set-section-flags .BTF=alloc,readonly \
-		--rename-section .BTF=BTF ${1} ${2} 2>/dev/null
-
-	# Change e_type to ET_REL (0x01) so that it can be used to link final
-	# vmlinux.
-	printf '\1' | dd of=${2} conv=notrunc bs=1 seek=16 status=none
-
-	^^^ maybe also point out that this is required for llvm's ldd.
-	I know you point it out in the commit message, but still nice
-	to have as a comment here.
-
 >  }
 >  # Create ${2} .o file with all symbols from the ${1} object file
 > -- 
 > 2.25.1.481.gfbce0eb801-goog
+
+-- 
+Kees Cook
