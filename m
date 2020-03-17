@@ -2,133 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A126F188DCB
-	for <lists+bpf@lfdr.de>; Tue, 17 Mar 2020 20:14:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE04188E04
+	for <lists+bpf@lfdr.de>; Tue, 17 Mar 2020 20:30:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726452AbgCQTOW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Mar 2020 15:14:22 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:35664 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726388AbgCQTOW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Mar 2020 15:14:22 -0400
-Received: by mail-qk1-f194.google.com with SMTP id d8so34526850qka.2;
-        Tue, 17 Mar 2020 12:14:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=XV4ApXaEYXYRiwR3HMlKSbs60CuugfX5sLZu0E5ypyc=;
-        b=eNAbwJ/wQQ5jkXW1B4/03eNtA1Veh7qduBfIdB5kug2ey7Wl2PfLsq7BdP/0SiM/9I
-         jBlwxduW8lO8cvli+W3SKSS70FkfUt4JPUSWWStuj7NTnlWCHCYpnYJhUMp/5mM9nM5P
-         A6InzYJvsQbw7OEtUR9iHB6C5PDzsKNWwFLTmoYMx1SPcISuJQrMvKve1Qoq9WmoinRy
-         ZjAj5qP6untfWaT6b4ByUIiz/OrMIZVP3rTeY/0adyQ4qG/k3UPQb4D4I6sJ/PGIhHS5
-         EwkK6SGB4PIV2eDJWpmCURAD3X95zLEE1KVpuu0SSj4KtjzJQMvkYT3ptOUbTkHggIlP
-         vlkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XV4ApXaEYXYRiwR3HMlKSbs60CuugfX5sLZu0E5ypyc=;
-        b=i4T33Akqq4HhvqDMU6KiW2PhPFlmeCxKDp5pyTt3ft50lbiq1Dbksi11+vuWj/reO1
-         Jc09lvYkPJTqSC5RuX/xLCnFH2OUj3C9pFErwr/y/LtYyPbSs/LXy2WwcS10xDV4ECrw
-         xADk8+YyZQMU+CFPOwB18KrwQID5bMS2o1hEPtz/15iaO8fRECr0lpEZAIfPors4bP4t
-         sXVH9ufmO60t1ad1O3yqaWKeTOkR3+Z+mn5QIQOIiU82qI/OnjmdqP3wlobBOXbAqfyp
-         frP09pWavN18InMNW4/B5GppgM8txUcbWltnPbJGw+u6873W1+FPAYccMJ2tsBwAy8iQ
-         5ZUw==
-X-Gm-Message-State: ANhLgQ3+BoOANHzJWeAHh0aTJrf4IE6e7tJU6fPagA5c7G+b07wGH7RN
-        dw7TWb+bXlTB8iATzStoOxiEV1L8qPCE/wpKdw0=
-X-Google-Smtp-Source: ADFU+vsd8mwB+Yh1N4a9/NDu5lu8T2Blj+rDCmLzBPiHsNFcZKHqVbNLiA2N1vF3F5ps8w3eHR2jnAdn1ttALd2Sh4o=
-X-Received: by 2002:a37:8046:: with SMTP id b67mr434146qkd.218.1584472460809;
- Tue, 17 Mar 2020 12:14:20 -0700 (PDT)
+        id S1726491AbgCQTaf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Mar 2020 15:30:35 -0400
+Received: from www62.your-server.de ([213.133.104.62]:37880 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726476AbgCQTaf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Mar 2020 15:30:35 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jEHv6-0005Gw-7l; Tue, 17 Mar 2020 20:30:32 +0100
+Received: from [85.7.42.192] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jEHv5-000HzY-S0; Tue, 17 Mar 2020 20:30:31 +0100
+Subject: Re: [PATCH v2 bpf-next] bpf: sharing bpf runtime stats with
+ /dev/bpf_stats
+To:     Song Liu <songliubraving@fb.com>, linux-fsdevel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     kernel-team@fb.com, ast@kernel.org, mcgrof@kernel.org,
+        keescook@chromium.org, yzaikin@google.com
+References: <20200316203329.2747779-1-songliubraving@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <eb31bed3-3be4-501e-4340-bd558b31ead2@iogearbox.net>
+Date:   Tue, 17 Mar 2020 20:30:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20200120092149.13775-1-bjorn.topel@gmail.com> <28b2b6ba-7f43-6cab-9b3a-174fc71d5a62@iogearbox.net>
- <CAJ+HfNj6dWLgODuHN82H5pXZgzYjx3cLi5WvGSoMg57TgYuRbg@mail.gmail.com> <20200316184423.GA14143@willie-the-truck>
-In-Reply-To: <20200316184423.GA14143@willie-the-truck>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Tue, 17 Mar 2020 20:14:09 +0100
-Message-ID: <CAJ+HfNh=XuCU3QBSbJZ-qEj-fx+JrB_iiJGpqKQmOwEjvAROpg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] xsk: update rings for load-acquire/store-release semantics
-To:     Will Deacon <will@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Netdev <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>, mark.rutland@arm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200316203329.2747779-1-songliubraving@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25754/Tue Mar 17 14:09:15 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 16 Mar 2020 at 19:44, Will Deacon <will@kernel.org> wrote:
->
-> On Tue, Jan 21, 2020 at 12:50:23PM +0100, Bj=C3=B6rn T=C3=B6pel wrote:
-> > On Tue, 21 Jan 2020 at 00:51, Daniel Borkmann <daniel@iogearbox.net> wr=
-ote:
-> > >
-> > > On 1/20/20 10:21 AM, Bj=C3=B6rn T=C3=B6pel wrote:
-> > > > From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> > > >
-> > > > Currently, the AF_XDP rings uses fences for the kernel-side
-> > > > produce/consume functions. By updating rings for
-> > > > load-acquire/store-release semantics, the full barrier (smp_mb()) o=
-n
-> > > > the consumer side can be replaced.
-> > > >
-> > > > Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> > >
-> > > If I'm not missing something from the ring update scheme, don't you a=
-lso need
-> > > to adapt to STORE.rel ->producer with matching barrier in tools/lib/b=
-pf/xsk.h ?
-> > >
-> >
-> > Daniel/John,
-> >
-> > Hmm, I was under the impression that *wasn't* the case. Quoting
-> > memory-barriers.txt:
-> >
-> > --8<--
-> > When dealing with CPU-CPU interactions, certain types of memory
-> > barrier should always be paired.  A lack of appropriate pairing is
-> > almost certainly an error.
-> >
-> > General barriers pair with each other, though they also pair with most
-> > other types of barriers, albeit without multicopy atomicity.  An
-> > acquire barrier pairs with a release barrier, but both may also pair
-> > with other barriers, including of course general barriers.  A write
-> > barrier pairs with a data dependency barrier, a control dependency, an
-> > acquire barrier, a release barrier, a read barrier, or a general
-> > barrier.  Similarly a read barrier, control dependency, or a data
-> > dependency barrier pairs with a write barrier, an acquire barrier, a
-> > release barrier, or a general barrier:
-> > -->8--
->
-> The key part here is "albeit without multicopy atomicity". I don't think
-> you care about that at all for these rings as you're very clearly passing=
- a
-> message from the producer side to the consumer side in a point-to-point l=
-ike
-> manner, so I think you're ok to change the kernel independently from
-> userspace (but I would still recommend updating both eventually).
->
-> The only thing you might run into is if anybody is relying on the smp_mb(=
-)
-> in the consumer to order other unrelated stuff either side of the consume
-> operation (or even another consume operation to a different ring!), but i=
-t
-> looks like you can't rely on that in the xsk queue implementation anyway
-> because you cache the global state and so the barriers are conditional.
->
+On 3/16/20 9:33 PM, Song Liu wrote:
+> Currently, sysctl kernel.bpf_stats_enabled controls BPF runtime stats.
+> Typical userspace tools use kernel.bpf_stats_enabled as follows:
+> 
+>    1. Enable kernel.bpf_stats_enabled;
+>    2. Check program run_time_ns;
+>    3. Sleep for the monitoring period;
+>    4. Check program run_time_ns again, calculate the difference;
+>    5. Disable kernel.bpf_stats_enabled.
+> 
+> The problem with this approach is that only one userspace tool can toggle
+> this sysctl. If multiple tools toggle the sysctl at the same time, the
+> measurement may be inaccurate.
+> 
+> To fix this problem while keep backward compatibility, introduce a new
+> bpf command BPF_ENABLE_RUNTIME_STATS. On success, this command enables
+> run_time_ns stats and returns a valid fd.
+> 
+> With BPF_ENABLE_RUNTIME_STATS, user space tool would have the following
+> flow:
+> 
+>    1. Get a fd with BPF_ENABLE_RUNTIME_STATS, and make sure it is valid;
+>    2. Check program run_time_ns;
+>    3. Sleep for the monitoring period;
+>    4. Check program run_time_ns again, calculate the difference;
+>    5. Close the fd.
+> 
+> Signed-off-by: Song Liu <songliubraving@fb.com>
 
-Thanks for getting back, and for the clarification! I'll do a respin
-(as part of a another series) that include the userland changes.
+Hmm, I see no relation to /dev/bpf_stats anymore, yet the subject still talks
+about it?
 
-Cheers,
-Bj=C3=B6rn
+Also, should this have bpftool integration now that we have `bpftool prog profile`
+support? Would be nice to then fetch the related stats via bpf_prog_info, so users
+can consume this in an easy way.
 
-> Will
+> Changes RFC => v2:
+> 1. Add a new bpf command instead of /dev/bpf_stats;
+> 2. Remove the jump_label patch, which is no longer needed;
+> 3. Add a static variable to save previous value of the sysctl.
+> ---
+>   include/linux/bpf.h            |  1 +
+>   include/uapi/linux/bpf.h       |  1 +
+>   kernel/bpf/syscall.c           | 43 ++++++++++++++++++++++++++++++++++
+>   kernel/sysctl.c                | 36 +++++++++++++++++++++++++++-
+>   tools/include/uapi/linux/bpf.h |  1 +
+>   5 files changed, 81 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 4fd91b7c95ea..d542349771df 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -970,6 +970,7 @@ _out:							\
+>   
+>   #ifdef CONFIG_BPF_SYSCALL
+>   DECLARE_PER_CPU(int, bpf_prog_active);
+> +extern struct mutex bpf_stats_enabled_mutex;
+>   
+>   /*
+>    * Block execution of BPF programs attached to instrumentation (perf,
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 40b2d9476268..8285ff37210c 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -111,6 +111,7 @@ enum bpf_cmd {
+>   	BPF_MAP_LOOKUP_AND_DELETE_BATCH,
+>   	BPF_MAP_UPDATE_BATCH,
+>   	BPF_MAP_DELETE_BATCH,
+> +	BPF_ENABLE_RUNTIME_STATS,
+>   };
+>   
+>   enum bpf_map_type {
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index b2f73ecacced..823dc9de7953 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -24,6 +24,9 @@
+>   #include <linux/ctype.h>
+>   #include <linux/nospec.h>
+>   #include <linux/audit.h>
+> +#include <linux/miscdevice.h>
+
+Is this still needed?
+
+> +#include <linux/fs.h>
+> +#include <linux/jump_label.h>
+>   #include <uapi/linux/btf.h>
+>   
+>   #define IS_FD_ARRAY(map) ((map)->map_type == BPF_MAP_TYPE_PERF_EVENT_ARRAY || \
+> @@ -3550,6 +3553,43 @@ static int bpf_map_do_batch(const union bpf_attr *attr,
+>   	return err;
+>   }
+>   
+
+Thanks,
+Daniel
