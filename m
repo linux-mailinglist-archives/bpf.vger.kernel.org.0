@@ -2,49 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9D71889C2
-	for <lists+bpf@lfdr.de>; Tue, 17 Mar 2020 17:05:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF11C188A1E
+	for <lists+bpf@lfdr.de>; Tue, 17 Mar 2020 17:24:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726781AbgCQQFU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Mar 2020 12:05:20 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:43580 "EHLO
+        id S1726549AbgCQQYK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Mar 2020 12:24:10 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:44648 "EHLO
         mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbgCQQFT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Mar 2020 12:05:19 -0400
-Received: by mail-pg1-f195.google.com with SMTP id u12so11973805pgb.10
-        for <bpf@vger.kernel.org>; Tue, 17 Mar 2020 09:05:17 -0700 (PDT)
+        with ESMTP id S1726207AbgCQQYK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Mar 2020 12:24:10 -0400
+Received: by mail-pg1-f195.google.com with SMTP id 37so12001470pgm.11
+        for <bpf@vger.kernel.org>; Tue, 17 Mar 2020 09:24:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=fomichev-me.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=0fe+6CUwzbiQ8d1E1j8IqRqgWqyoAVB18XoQMWs5ZAM=;
-        b=S911caeIj9AdJQpRgY1A0JtWKuRsNfR+zSL4mp58SX8MwjNiE2DIo5s7dmYhzIJ7bM
-         UhPrPKWIMJbt3g5xMrGuuDJhZW0oFQTT3l9xMbUS4EeDF17gRgKUL/C8l0tucG3MTsyX
-         Zn2HyU3ngbMdAyjRFWoeavASiVwo3On4hCXy1p2MFeG/aJfZRbMEqAV6Tv/+msGRoEFj
-         oSUiPgyz7MhDl8ZbIu2QcoPtfSpUUCl5pRfp0/vs3hIFefUNF8i8sg2SatHdWyFO4oIf
-         nSAD6wJ0umDnLhWz4mg9R3sGe7yJ+laXyvF/y6JwE7bKzaV7RkxsKaeh+y1ksWcYyEiG
-         tSyg==
+        bh=3gLHCw1k1vgin5ImJr7e+a6EB7LHD7UzoYRzly3/8qo=;
+        b=EgT9v/aR37CWq7iFaT0oY9LSc6BsugpDhQ7/fV9k59U/ro8irWn7ex6HLrOw4Mt5OL
+         7xcIzOwrIwKHqugjTlDJrmkjx/PLsJ9pN9/hMlEGvgVnaQe9KFJkgL9BkkXRx1cKq3Pg
+         /at+xO6E6LJGlNoKpUfusRqPDE7WTt533GNouZA9HGG7jQtO1wY1VnszWSo69BKNzvk1
+         1jyI8LbJ4T2JjQXEKFgFAtC9H37wmlu432UurOQSJY8HqYIy7mzWAMO8oYG5coJ32ipi
+         ImDcFjTJNKOtcwYMTLHwuExg1Kve6LLfvzZR8M87FQOEvlfP8YXIjJQs1fyMdYbO0hBM
+         ijqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0fe+6CUwzbiQ8d1E1j8IqRqgWqyoAVB18XoQMWs5ZAM=;
-        b=taiSOuOq0yCZxyQ2BVSKPdqhEdnJnyzwn6J62hoDBuJs50vHVm0/F90+PaQ/RYjqOK
-         g/w/qSkUc3YloLymKE7L/0bfnCjZTYHOI/ApXcuHKoLTSkBfC19h21jTkVY3HenK7CKo
-         IG+N5bHR4Sx+GmfKWMEt4SO4e2egMEK+3NpVDMhnsam04Tgf19mMcufjEg/UUHHuI7K2
-         zlgct1ydx/r/EUeJDZ6a0s1j0gtxaa1NNlGCQo4GBWO/ZpWnzvb7X4G3GF1M4m5iRfxE
-         oyaVMRrlrQ7QSjIIRRmArhhIcIDh6++9OL50FQlBUUaLCFhZ7M1UdUyey2FcVD4qGKoz
-         Y9GQ==
-X-Gm-Message-State: ANhLgQ0J8ySUwBYntYDp8ViE9RgMBGb1PNQdvgRp+g55PuZ8O8xxm/G5
-        iI7W301nAYmOBOU+5sz9CEzXeQ==
-X-Google-Smtp-Source: ADFU+vsjvp9ANlE3hq9XBKsNMc2OON/6Swy1KD/IZwyUCj7gJvSjAF6p1XfZBhpbP5+U3guMPSvevw==
-X-Received: by 2002:a62:1513:: with SMTP id 19mr5877005pfv.85.1584461116885;
-        Tue, 17 Mar 2020 09:05:16 -0700 (PDT)
+        bh=3gLHCw1k1vgin5ImJr7e+a6EB7LHD7UzoYRzly3/8qo=;
+        b=PQm76R5VeDqWFXVpLIvZ4UigIZ3i+M4hXS88yWYPNpCcnDgNIA85dZpHlh1GVsbvaK
+         cxDtqH/FL2hIP09LIcy3I5GC2jJLcq0IskvOJQonM5H2W/dbgm0X6nNyrPtd/R+IsqFd
+         TKXECEWn+CL2XoMSGYNrR4PuhuNRykq/RZajJld16NZ5diV/n9/LdsoQW5dYln0oju0D
+         dGdoybc6R+DeXGmUYOcjUrTDdqlRo1WAM4dVlWvngLY8W3hXHljsMWeZoqDBbzlFRFav
+         W+xLLhC2DFfcaIfEJQvYY4+bttGX2X5PFH2+U9eN+I00USfQvhXrlIuDwWQiEl24admX
+         Qq2w==
+X-Gm-Message-State: ANhLgQ0U2x5p9fN8cTtUef2StmSxuZeoDBN9Egc0v5s+ihhB3/KPPyqE
+        a2EomTshu+/DLVVsYce5gl9f/Q==
+X-Google-Smtp-Source: ADFU+vu3ccDtnSUmt2sRX4YsJ3IGwbVyko3v299XzImXGkiQTr3h57D88UbgQpM5ciNsKHhnNzj5oQ==
+X-Received: by 2002:a63:d255:: with SMTP id t21mr46599pgi.114.1584462247864;
+        Tue, 17 Mar 2020 09:24:07 -0700 (PDT)
 Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id c207sm3665064pfb.47.2020.03.17.09.05.15
+        by smtp.gmail.com with ESMTPSA id d6sm3303583pjz.39.2020.03.17.09.24.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Mar 2020 09:05:15 -0700 (PDT)
-Date:   Tue, 17 Mar 2020 09:05:15 -0700
+        Tue, 17 Mar 2020 09:24:07 -0700 (PDT)
+Date:   Tue, 17 Mar 2020 09:24:05 -0700
 From:   Stanislav Fomichev <sdf@fomichev.me>
 To:     Fangrui Song <maskray@google.com>
 Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
@@ -58,7 +58,7 @@ Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>
 Subject: Re: [PATCH bpf v3] bpf: Support llvm-objcopy and llvm-objdump for
  vmlinux BTF
-Message-ID: <20200317160515.GA2459609@mini-arch.hsd1.ca.comcast.net>
+Message-ID: <20200317162405.GB2459609@mini-arch.hsd1.ca.comcast.net>
 References: <20200317011654.zkx5r7so53skowlc@google.com>
  <CAEf4BzYTJqWU++QnQupxFBWGSMPfGt6r-5u9jbeLnEF2ipw+Mw@mail.gmail.com>
  <20200317033701.w7jwos7mvfnde2t2@google.com>
@@ -217,8 +217,7 @@ On 03/16, Fangrui Song wrote:
 > ET_EXEC to ET_REL so that .btf.vmlinux.bin.o can be accepted by lld.
 > Accepting ET_EXEC as an input file is an extremely rare GNU ld feature
 > that lld does not intend to support, because this is very error-prone.
-I'm testing this with binutils objcopy, will update with the results.
-
+> 
 > Fixes: df786c9b9476 ("bpf: Force .BTF section start to zero when dumping from vmlinux")
 > Cc: Stanislav Fomichev <sdf@google.com>
 > Cc: Nick Desaulniers <ndesaulniers@google.com>
@@ -241,8 +240,6 @@ I'm testing this with binutils objcopy, will update with the results.
 > -		cut -d, -f1 | cut -d' ' -f2)
 > -	bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
 > -		awk '{print $4}')
-Should you also remove 'local bin_arch' on top?
-
 > -	${OBJCOPY} --change-section-address .BTF=0 \
 > -		--set-section-flags .BTF=alloc -O binary \
 > -		--only-section=.BTF ${1} .btf.vmlinux.bin
@@ -250,7 +247,24 @@ Should you also remove 'local bin_arch' on top?
 > -		--rename-section .data=.BTF .btf.vmlinux.bin ${2}
 > +	# Extract .BTF section, change e_type to ET_REL, to link with final vmlinux
 > +	${OBJCOPY} --only-section=.BTF ${1} ${2} 2> /dev/null && printf '\1' | dd of=${2} conv=notrunc bs=1 seek=16
-nit: maybe split this into multiple lines? and drop space in '2>/dev/null'?
-	${OBJCOPY} .... 2>/dev/null && \
-		printf '\1' | dd ....
-?
+No, it doesn't work unfortunately, I get "in-kernel BTF is malformed"
+from the kernel.
+
+I think that's because -O binary adds the following:
+$ nm .btf.vmxlinux.bin
+00000000002f7bc9 D _binary__btf_vmlinux_bin_end
+00000000002f7bc9 A _binary__btf_vmlinux_bin_size
+0000000000000000 D _binary__btf_vmlinux_bin_start
+
+While non-binary mode doesn't:
+$ nm .btf.vmxlinux.bin
+
+We don't add them manually in the linker map and expect objcopy to add
+them, see:
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/kernel/bpf/btf.c#n3480
+
+>  }
+>  # Create ${2} .o file with all symbols from the ${1} object file
+> -- 
+> 2.25.1.481.gfbce0eb801-goog
+> 
