@@ -2,166 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44585188CA5
-	for <lists+bpf@lfdr.de>; Tue, 17 Mar 2020 18:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F4E188CF1
+	for <lists+bpf@lfdr.de>; Tue, 17 Mar 2020 19:16:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726549AbgCQR4Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Mar 2020 13:56:16 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:43802 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726545AbgCQR4Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Mar 2020 13:56:16 -0400
-Received: by mail-qk1-f196.google.com with SMTP id x18so13915144qki.10
-        for <bpf@vger.kernel.org>; Tue, 17 Mar 2020 10:56:15 -0700 (PDT)
+        id S1726506AbgCQSQ2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Mar 2020 14:16:28 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:33814 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726498AbgCQSQ2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Mar 2020 14:16:28 -0400
+Received: by mail-pf1-f194.google.com with SMTP id 23so12413064pfj.1;
+        Tue, 17 Mar 2020 11:16:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7RNpd6M/2oQakPhwyqPFEbJMn7TU7SvV4L7GUJPMayA=;
-        b=nnS+OKk02P7VrQnABseQC4bOefYsCTSgtCEVhn7bBP0xNNyU4h6TGDww0Ia+ZGRgPH
-         boa465SNvwmiQ5FN+Psrnr4sEkhPXcOfxBj7YAnaN7K5ZwrPFG96jeRtcZHMVEaVdH1j
-         CsBmOnW92RJkeEnjXzblhSds9to/fnaLkmdgk=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=GPligt8SZ4vmyiqPXrOfMISNtA3jKedmIN0OJu/cq/k=;
+        b=au03j/eHp4oDf86PBtb0jkX/mGTVoyM379kX+93nx3wKMkf+la9MBZCaQsFD54cBCA
+         aCV55pzqQ+X0/Ci8qp7nIqhkrn+TRb1G0t63II+SEcabyPgZWJllk7LkdwHk08f3QNpk
+         zKEHpCr5jQ0fwm5kwnqBJJrNWUEnqnH9rVnL4eVnVV+YnVynHZtE8aychr1mRpcR89fo
+         n9b8BtyC743GyKu0TwZY+DA3KT8L9EOJm06FjmPMDjhdc0Egqsvvp8TphMYm/lXw1FOf
+         ZM7/hsxq4kl2H5MfhS+sun8PifDdwzRL/kVv0N+qXUWucLCC92J3hfsHv3ajaTjnZPGY
+         Nj5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7RNpd6M/2oQakPhwyqPFEbJMn7TU7SvV4L7GUJPMayA=;
-        b=RdN1WUwRTKeESt6m02Xk156UzI8Z6PRWtqcuvjpbUmMrmPxq6zgWxR4fM3kEXFfj0B
-         5779Cbh666FiET3hYhAoh0dfR72TYdsNo1lfoOc3k9Cp7Jl7P3mL1How0s+Hzq94RW4Q
-         npGck8mnummiffHysN0y1rJP5sXBKgbT8UyO9Igi4GehGu+3SLMEDLMQHqBLRllFktz7
-         li8UDMtaHKq+tKqS+k/uAJgWYAlqp3I+Jl8V7zhIpWPTniQLg/+fFH1GXDGJi1cckLua
-         WnYuBlORHRK6tJtsnxxltLIU7aOjaHGBjV23brEcrCyMRa2xLFAw2kd+EvZo+kEkTvA1
-         QaaA==
-X-Gm-Message-State: ANhLgQ0QzgElHJm0JAUHEQK6bNnvwgywOMaD6gDeQ7vYJ2NoACO7N41K
-        kUBjEQScnJGPTRjUejOlsRK+VA==
-X-Google-Smtp-Source: ADFU+vtD4t5gVr9EMvYH+WW9ETFmrA1c0LKslzF/783C+M/FpQwopvv+KORN6IKdnpsIUS7F3AYXRA==
-X-Received: by 2002:a37:648:: with SMTP id 69mr13718qkg.353.1584467775182;
-        Tue, 17 Mar 2020 10:56:15 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id t55sm2754304qte.24.2020.03.17.10.56.14
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=GPligt8SZ4vmyiqPXrOfMISNtA3jKedmIN0OJu/cq/k=;
+        b=oPvp06daiJL6e4KChmo9J5Nn3xp6+MXxugdjOoYgsBjfNZdC2aI3qSvuGOWi2iJG2T
+         2VpBIjjKz35o//pmoO48Ua2KSi/XfI91BSrU9nw4lTrmYeTdbneQiAm8/albCi127Car
+         UVEUD63lSryP/00UMg56O8oiYGQDSrjTKOXZ4IUWKwXjzAaTnYJ8JvCIx05iNkcHzrLw
+         XJhhTeQszuFuI+MOn3R/3lsiXt7D/IO9sPy5T/CCABjGvaMGCkapry+YLqcAb16DOGLk
+         dMxK7Gq9teGJjjMVIpUIAdNS+Mqxhom/GebuzkV+iHz6g+tchZObfHsQrl6aKxysRnrQ
+         yX0Q==
+X-Gm-Message-State: ANhLgQ3kLTpPt3ZsMbJyInmOeDHtaIelqs7Xn+qFxUYdITfzz15E5+iQ
+        yldgQJY+TDwHUM1UvYWWKwY=
+X-Google-Smtp-Source: ADFU+vtgIxIuv8CicRbTAz6PU9jTobQMQhzhVZ+qBAMcxLxoh5KdzoKvJN8QgYG1CkUPo0oSY57d1A==
+X-Received: by 2002:a63:4c5d:: with SMTP id m29mr480393pgl.376.1584468986648;
+        Tue, 17 Mar 2020 11:16:26 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id x66sm3510220pgb.9.2020.03.17.11.16.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Mar 2020 10:56:14 -0700 (PDT)
-Date:   Tue, 17 Mar 2020 13:56:14 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tue, 17 Mar 2020 11:16:25 -0700 (PDT)
+Date:   Tue, 17 Mar 2020 11:16:17 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        paulmck <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>, bpf@vger.kernel.org
-Subject: Re: Instrumentation and RCU
-Message-ID: <20200317175614.GA13090@google.com>
-References: <87mu8p797b.fsf@nanos.tec.linutronix.de>
- <1403546357.21810.1583779060302.JavaMail.zimbra@efficios.com>
- <20200310014043.4dbagqbr2wsbuarm@ast-mbp>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200310014043.4dbagqbr2wsbuarm@ast-mbp>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+        kernel-team@cloudflare.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <5e7113f16e7c6_278b2b1b264c65b445@john-XPS-13-9370.notmuch>
+In-Reply-To: <87imj3xb5t.fsf@cloudflare.com>
+References: <20200310174711.7490-1-lmb@cloudflare.com>
+ <20200310174711.7490-5-lmb@cloudflare.com>
+ <87imj3xb5t.fsf@cloudflare.com>
+Subject: Re: [PATCH 4/5] bpf: sockmap, sockhash: return file descriptors from
+ privileged lookup
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 09, 2020 at 06:40:45PM -0700, Alexei Starovoitov wrote:
-> On Mon, Mar 09, 2020 at 02:37:40PM -0400, Mathieu Desnoyers wrote:
-> > > 
-> > >    But what's relevant is the tracer overhead which is e.g. inflicted
-> > >    with todays trace_hardirqs_off/on() implementation because that
-> > >    unconditionally uses the rcuidle variant with the scru/rcu_irq dance
-> > >    around every tracepoint.
-> > 
-> > I think one of the big issues here is that most of the uses of
-> > trace_hardirqs_off() are from sites which already have RCU watching,
-> > so we are doing heavy-weight operations for nothing.
+Jakub Sitnicki wrote:
+> On Tue, Mar 10, 2020 at 06:47 PM CET, Lorenz Bauer wrote:
+> > Allow callers with CAP_NET_ADMIN to retrieve file descriptors from a
+> > sockmap and sockhash. O_CLOEXEC is enforced on all fds.
+> >
+> > Without this, it's difficult to resize or otherwise rebuild existing
+> > sockmap or sockhashes.
+> >
+> > Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
+> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> > ---
+> >  net/core/sock_map.c | 19 +++++++++++++++++++
+> >  1 file changed, 19 insertions(+)
+> >
+> > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> > index 03e04426cd21..3228936aa31e 100644
+> > --- a/net/core/sock_map.c
+> > +++ b/net/core/sock_map.c
+> > @@ -347,12 +347,31 @@ static void *sock_map_lookup(struct bpf_map *map, void *key)
+> >  static int __sock_map_copy_value(struct bpf_map *map, struct sock *sk,
+> >  				 void *value)
+> >  {
+> > +	struct file *file;
+> > +	int fd;
+> > +
+> >  	switch (map->value_size) {
+> >  	case sizeof(u64):
+> >  		sock_gen_cookie(sk);
+> >  		*(u64 *)value = atomic64_read(&sk->sk_cookie);
+> >  		return 0;
+> >
+> > +	case sizeof(u32):
+> > +		if (!capable(CAP_NET_ADMIN))
+> > +			return -EPERM;
+> > +
+> > +		fd = get_unused_fd_flags(O_CLOEXEC);
+> > +		if (unlikely(fd < 0))
+> > +			return fd;
+> > +
+> > +		read_lock_bh(&sk->sk_callback_lock);
+> > +		file = get_file(sk->sk_socket->file);
 > 
-> I think kernel/trace/trace_preemptirq.c created too many problems for the
-> kernel without providing tangible benefits. My understanding no one is using it
-> in production.
-
-Hi Alexei,
-There are various people use the preempt/irq disable tracepoints for last 2
-years at Google and ARM. There's also a BPF tool (in BCC) that uses those for
-tracing critical sections. Also Daniel Bristot's entire Preempt-IRQ formal
-verification stuff depends on it.
-
-> It's a tool to understand how kernel works. And such debugging
-> tool can and should be removed.
-
-If we go by that line of reasoning, then function tracing also should be
-removed from the kernel.
-
-I am glad Thomas and Peter are working on it and looking forward to seeing
-the patches,
-
-thanks,
-
- - Joel
-
-
-> One of Thomas's patches mentioned that bpf can be invoked from hardirq and
-> preempt tracers. This connection doesn't exist in a direct way, but
-> theoretically it's possible. There is no practical use though and I would be
-> happy to blacklist such bpf usage at a minimum.
+> I think this deserves a second look.
 > 
-> > We could use the approach proposed by Peterz's and Steven's patches to basically
-> > do a lightweight "is_rcu_watching()" check for rcuidle tracepoint, and only enable
-> > RCU for those cases. We could then simply go back on using regular RCU like so:
-> > 
-> > #define __DO_TRACE(tp, proto, args, cond, rcuidle)                      \
-> >         do {                                                            \
-> >                 struct tracepoint_func *it_func_ptr;                    \
-> >                 void *it_func;                                          \
-> >                 void *__data;                                           \
-> >                 bool exit_rcu = false;                                  \
-> >                                                                         \
-> >                 if (!(cond))                                            \
-> >                         return;                                         \
-> >                                                                         \
-> >                 if (rcuidle && !rcu_is_watching()) {                    \
-> >                         rcu_irq_enter_irqson();                         \
-> >                         exit_rcu = true;                                \
-> >                 }                                                       \
-> >                 preempt_disable_notrace();                              \
-> >                 it_func_ptr = rcu_dereference_raw((tp)->funcs);         \
-> >                 if (it_func_ptr) {                                      \
-> >                         do {                                            \
-> >                                 it_func = (it_func_ptr)->func;          \
-> >                                 __data = (it_func_ptr)->data;           \
-> >                                 ((void(*)(proto))(it_func))(args);      \
-> >                         } while ((++it_func_ptr)->func);                \
-> >                 }                                                       \
-> >                 preempt_enable_notrace();                               \
-> >                 if (exit_rcu)                                           \
-> >                         rcu_irq_exit_irqson();                          \
-> >         } while (0)
+> We don't lock the sock, so what if tcp_close orphans it before we enter
+> this critical section? Looks like sk->sk_socket might be NULL.
 > 
-> I think it's a fine approach interim.
+> I'd find a test that tries to trigger the race helpful, like:
 > 
-> Long term sounds like Paul is going to provide sleepable and low overhead
-> rcu_read_lock_for_tracers() that will include bpf.
-> My understanding that this new rcu flavor won't have "idle" issues,
-> so rcu_is_watching() checks will not be necessary.
-> And if we remove trace_preemptirq.c the only thing left will be Thomas's points
-> 1 (low level entry) and 2 (breakpoints) that can be addressed without
-> creating fancy .text annotations and teach objtool about it.
+>   thread A: loop in lookup FD from map
+>   thread B: loop in insert FD into map, close FD
+
+Agreed, this was essentially my question above as well.
+
+When the psock is created we call sock_hold() and will only do a sock_put()
+after an rcu grace period when its removed. So at least if you have the
+sock here it should have a sk_refcnt. (Note the user data is set to NULL
+so if you do reference psock you need to check its non-null.)
+
+Is that enough to ensure sk_socket? Seems not to me, tcp_close for example
+will still happen and call sock_orphan(sk) based on my admittddly quick
+look.
+
+Further, even if you do check sk->sk_socket is non-null what does it mean
+to return a file with a socket that is closed, deleted from the sock_map
+and psock removed? At this point is it just a dangling reference?
+
+Still a bit confused as well what would or should happen when the sock is closed
+after you have the file reference? I could probably dig up what exactly
+would happen but I think we need it in the commiit message so we understand
+it. I also didn't dig up the details here but if the receiver of the
+fd crashes or otherwise disappears this hopefully all get cleaned up?
+
 > 
-> In the mean time I've benchmarked srcu for sleepable bpf and it's quite heavy.
-> srcu_read_lock+unlock roughly adds 10x execution cost to trivial bpf prog.
-> I'm proceeding with it anyway, but really hoping that
-> rcu_read_lock_for_tracers() will materialize soon.
-> 
-> In general I'm sceptical that .text annotations will work. Let's say all of
-> idle is a red zone. But a ton of normal functions are called when idle. So
-> objtool will go and mark them as red zone too. This way large percent of the
-> kernel will be off limits for tracers. Which is imo not a good trade off. I
-> think addressing 1 and 2 with explicit notrace/nokprobe annotations will cover
-> all practical cases where people can shot themselves in a foot with a tracer. I
-> realize that there will be forever whack-a-mole game and these annotations will
-> never reach 100%. I think it's a fine trade off. Security is never 100% either.
-> Tracing is never going to be 100% safe too.
+> > +		read_unlock_bh(&sk->sk_callback_lock);
+> > +
+> > +		fd_install(fd, file);
+> > +		*(u32 *)value = fd;
+> > +		return 0;
+> > +
+> >  	default:
+> >  		return -ENOSPC;
+> >  	}
