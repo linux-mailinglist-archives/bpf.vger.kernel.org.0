@@ -2,105 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6505F187DD5
-	for <lists+bpf@lfdr.de>; Tue, 17 Mar 2020 11:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B63187E00
+	for <lists+bpf@lfdr.de>; Tue, 17 Mar 2020 11:17:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726057AbgCQKKA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Mar 2020 06:10:00 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:45045 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbgCQKKA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Mar 2020 06:10:00 -0400
-Received: by mail-oi1-f196.google.com with SMTP id d62so21015174oia.11
-        for <bpf@vger.kernel.org>; Tue, 17 Mar 2020 03:10:00 -0700 (PDT)
+        id S1726189AbgCQKRu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Mar 2020 06:17:50 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:44893 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbgCQKRu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Mar 2020 06:17:50 -0400
+Received: by mail-ot1-f67.google.com with SMTP id a49so18252062otc.11
+        for <bpf@vger.kernel.org>; Tue, 17 Mar 2020 03:17:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zY+jAY+qdQxZ+F5t7p1CA/78xID9/3zkK+z8LvOljUs=;
-        b=merkNONVwbgLTn4A0WuVaVQf/As6fkhmZCT3gypLsCCSPSF4m5m4nHRO1B0QzZ4GTf
-         sOdJI4cZ4MDwr74sn/cjiGq23ut0cV7qDmH1BSKPvE91CXiyv1GTGjC9S1OfnwS4/XKR
-         iuO6guY/WlJ9du643roULwmQV5bsMaQ2sxM20=
+        bh=oDa8VM8GdllhFAvMRWp4hpupCPaz/QUO5MsZDtEiqs0=;
+        b=ltYysL5WIC7dpKo4GMaDU8Ml3B6mi7mjaGVG65T2DEiDiGYOgzRyMLCrxrRWChP5HS
+         yTQFrSduvcsM0xNp1YBTAIiflKZ/sMN8pGWZae/ArhXNCikTtXesCEck8fUXUCEp/w/C
+         Iw+LoUythKxvdhc9mhmIz2zs2mGoFetgsadTo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zY+jAY+qdQxZ+F5t7p1CA/78xID9/3zkK+z8LvOljUs=;
-        b=kbdBJVTDUgHv6CW0E3K1lDVvjdq4xa90k0DPIBs6akovwFIRoK6pYDjE+f/zMD5U5P
-         fgeMo3sGxCfnFFDjCdgBwE+hVWEC1knpYiN+YmgaUgkPlN0PGOPycD8ilavduqTUNrNq
-         c/6JwEqC0sHKwaQ2zM7y/Fq1O1acLM4TTzOJrGfdLbvKzjiEmi/sIqphaOKLGRzo/r2y
-         ZJaowjalfY6hb5zglMQ6GA7TUsxDcsq1/taNNNaYiwIaNUxYJrc+ugROct1tH16qQ+ck
-         vVhIQfmXnyYU1mlkU9I4W04FojlzQ0bBdHcBdcoV6cQ8IchSGX4mrR7OomqNP8mDqM8v
-         5olg==
-X-Gm-Message-State: ANhLgQ1sGLqT7a+4GY0Dhof8dnksgVgfrRt2hGQdCVt1lBS+cHH0qPFE
-        6IFpp478WU6AmuqCDMOAdJWxhDCJYH1h4Y44aoS88g==
-X-Google-Smtp-Source: ADFU+vvk+n+qR+SAhKCdtybK7rkpmFJOg0loURcCwqFjFCCRkP3JAff5oG76ZwMmgcLwbPQIe+UIWgmXWpR6S1wgjeA=
-X-Received: by 2002:aca:f541:: with SMTP id t62mr2930491oih.172.1584439799759;
- Tue, 17 Mar 2020 03:09:59 -0700 (PDT)
+        bh=oDa8VM8GdllhFAvMRWp4hpupCPaz/QUO5MsZDtEiqs0=;
+        b=KZkxaEpXe0W9xSOFCRmwsfUhjkD9z3vRH9Rfp5oRypc9VrAIy4LOJT57+TUqSkq3ge
+         /hO6r/fa2tG/y4nTEMmCtG7ag+cLwJkSdoVl1Va+QlZ0ZPk8LCd93oQaz7lFKkhyzyE6
+         TzwYCPnHgtkiTADGHGBrNBcI1IcCqTKlzwG8sEXTex9iqDCu1hMqsaV0HoYOvx1gOPlx
+         Bvsw1hcJNIUJ58bGY0L1N6akKLXORBMPP91ava6BXoSrJVT3Dpj/aYl/7Xj4SrBpfsnR
+         DI92yIzLrIbKosteCJ7Nw14MG1EvMEQAIYvIbINYBvptmMdq4bvX03kKRucjn1Pl81nt
+         wVeg==
+X-Gm-Message-State: ANhLgQ1EB8xJnQdd11tHFlmlZq8KwayqdYVyfd1uLmkz7gtU5U0BFJfy
+        Ek3a7ExBrbVy6R81Uo2diYpBsGrSKg5TdH3kzJ8wRQ==
+X-Google-Smtp-Source: ADFU+vuLKvREZqrIEBvOy9oEphIEL8EarmOXVsUtthjxfzzfXXP7vVtCLR/q+kK0AHEL4R5JJBkITw0OWnska0E6pcA=
+X-Received: by 2002:a9d:30c7:: with SMTP id r7mr2911068otg.289.1584440268438;
+ Tue, 17 Mar 2020 03:17:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200312233648.1767-1-joe@wand.net.nz> <20200312233648.1767-4-joe@wand.net.nz>
- <20200316225729.kd4hmz3oco5l7vn4@kafai-mbp> <CAOftzPgsVOqCLZatjytBXdQxH-DqJxiycXWN2d4C_-BjR5v1Kw@mail.gmail.com>
-In-Reply-To: <CAOftzPgsVOqCLZatjytBXdQxH-DqJxiycXWN2d4C_-BjR5v1Kw@mail.gmail.com>
+References: <20200310174711.7490-1-lmb@cloudflare.com> <20200310174711.7490-5-lmb@cloudflare.com>
+ <5e6973ed90f8d_20552ab9153405b4ca@john-XPS-13-9370.notmuch>
+In-Reply-To: <5e6973ed90f8d_20552ab9153405b4ca@john-XPS-13-9370.notmuch>
 From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Tue, 17 Mar 2020 10:09:48 +0000
-Message-ID: <CACAyw9_zt-wetBiFWXtpQOOv79QCFR12dA9jx1UDEya=0_poyQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/7] bpf: Add socket assign support
-To:     Joe Stringer <joe@wand.net.nz>
-Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+Date:   Tue, 17 Mar 2020 10:17:37 +0000
+Message-ID: <CACAyw9_4wvOdE+enxxJPPTMXbfFmWfMo8qcaRtu6j0y4W=E9HQ@mail.gmail.com>
+Subject: Re: [PATCH 4/5] bpf: sockmap, sockhash: return file descriptors from
+ privileged lookup
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>
+        kernel-team <kernel-team@cloudflare.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 17 Mar 2020 at 03:06, Joe Stringer <joe@wand.net.nz> wrote:
+On Wed, 11 Mar 2020 at 23:27, John Fastabend <john.fastabend@gmail.com> wrote:
 >
-> On Mon, Mar 16, 2020 at 3:58 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> Lorenz Bauer wrote:
+> > Allow callers with CAP_NET_ADMIN to retrieve file descriptors from a
+> > sockmap and sockhash. O_CLOEXEC is enforced on all fds.
 > >
-> > On Thu, Mar 12, 2020 at 04:36:44PM -0700, Joe Stringer wrote:
-> > > Add support for TPROXY via a new bpf helper, bpf_sk_assign().
-> > >
-> > > This helper requires the BPF program to discover the socket via a call
-> > > to bpf_sk*_lookup_*(), then pass this socket to the new helper. The
-> > > helper takes its own reference to the socket in addition to any existing
-> > > reference that may or may not currently be obtained for the duration of
-> > > BPF processing. For the destination socket to receive the traffic, the
-> > > traffic must be routed towards that socket via local route, the socket
-> > I also missed where is the local route check in the patch.
-> > Is it implied by a sk can be found in bpf_sk*_lookup_*()?
+> > Without this, it's difficult to resize or otherwise rebuild existing
+> > sockmap or sockhashes.
+> >
+> > Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
+> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> > ---
+> >  net/core/sock_map.c | 19 +++++++++++++++++++
+> >  1 file changed, 19 insertions(+)
+> >
+> > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> > index 03e04426cd21..3228936aa31e 100644
+> > --- a/net/core/sock_map.c
+> > +++ b/net/core/sock_map.c
+> > @@ -347,12 +347,31 @@ static void *sock_map_lookup(struct bpf_map *map, void *key)
+> >  static int __sock_map_copy_value(struct bpf_map *map, struct sock *sk,
+> >                                void *value)
+> >  {
+> > +     struct file *file;
+> > +     int fd;
+> > +
+> >       switch (map->value_size) {
+> >       case sizeof(u64):
+> >               sock_gen_cookie(sk);
+> >               *(u64 *)value = atomic64_read(&sk->sk_cookie);
+> >               return 0;
+> >
+> > +     case sizeof(u32):
+> > +             if (!capable(CAP_NET_ADMIN))
+> > +                     return -EPERM;
+> > +
+> > +             fd = get_unused_fd_flags(O_CLOEXEC);
+> > +             if (unlikely(fd < 0))
+> > +                     return fd;
+> > +
+> > +             read_lock_bh(&sk->sk_callback_lock);
+> > +             file = get_file(sk->sk_socket->file);
+> > +             read_unlock_bh(&sk->sk_callback_lock);
+> > +
+> > +             fd_install(fd, file);
+> > +             *(u32 *)value = fd;
+> > +             return 0;
+> > +
 >
-> This is a requirement for traffic redirection, it's not enforced by
-> the patch. If the operator does not configure routing for the relevant
-> traffic to ensure that the traffic is delivered locally, then after
-> the eBPF program terminates, it will pass up through ip_rcv() and
-> friends and be subject to the whims of the routing table. (or
-> alternatively if the BPF program redirects somewhere else then this
-> reference will be dropped).
+> Hi Lorenz, Can you say something about what happens if the sk
+> is deleted from the map or the sock is closed/unhashed ideally
+> in the commit message so we have it for later reference. I guess
+> because we are in an rcu block here the sk will be OK and psock
+> reference will exist until after the rcu block at least because
+> of call_rcu(). If the psock is destroyed from another path then
+> the fd will still point at the sock. correct?
 
-Can you elaborate what "an appropriate routing configuration" would be?
-I'm not well versed with how routing works, sorry.
+This is how I understand it:
+* sk is protected by rcu_read_lock (as you point out)
+* sk->sk_callback_lock protects against sk->sk_socket being
+  modified by sock_orphan, sock_graft, etc. via sk_set_socket
+* get_file increments the refcount on the file
 
-Do you think being subject to the routing table is desirable, or is it an
-implementation trade-off?
-
->
-> I think this is a general bpf_sk*_lookup_*() question, previous
-> discussion[0] settled on avoiding that complexity before a use case
-> arises, for both TC and XDP versions of these helpers; I still don't
-> have a specific use case in mind for such functionality. If we were to
-> do it, I would presume that the socket lookup caller would need to
-> pass a dedicated flag (supported at TC and likely not at XDP) to
-> communicate that SO_ATTACH_REUSEPORT_EBPF progs should be respected
-> and used to select the reuseport socket.
-
-I was surprised that both TC and XDP don't run the reuseport program!
-So far I assumed that TC did pass the skb. I understand that you don't want
-to tackle this issue, but is it possible to reject reuseport sockets from
-sk_assign in that case?
+I'm not sure how the psock figures into this, maybe you can
+elaborate a little?
 
 -- 
 Lorenz Bauer  |  Systems Engineer
