@@ -2,130 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B71418767C
-	for <lists+bpf@lfdr.de>; Tue, 17 Mar 2020 01:01:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BCB1876BB
+	for <lists+bpf@lfdr.de>; Tue, 17 Mar 2020 01:25:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732996AbgCQABj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Mar 2020 20:01:39 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:33413 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732932AbgCQABj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Mar 2020 20:01:39 -0400
-Received: by mail-pg1-f193.google.com with SMTP id m5so10682460pgg.0
-        for <bpf@vger.kernel.org>; Mon, 16 Mar 2020 17:01:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VdSp5SmhE7XqZw+dnWWnNJFiQVXpqITbQV0ebAQiP7I=;
-        b=BoyKGv7Igni30S/FCKVFiurpLK2iu4pmjMNZdA8xDib0LQwhisvj8E2N+zwspH/lll
-         fPQgsE2ZY3hxsXQ9LswLTCzrXUGK98rY7/38OdVWgRIiM/7OH/59Z31XuCq8ALRl9hkV
-         l0o/SLFIvA32YMjZo26+7eB6RxUjtFSipZI0GRA5/Y9fKFOO7I6SNJwUgnbOn+p2Xw74
-         rsmG+NiZS0ZaKaI9xFRxzzXjOYk24/UqbUPb/Rf+dXebS8HzUkwqN8+5cFQ1+Lc4URv5
-         Bq+p5bA/ps3IfjtBqFrad7CVQ9NL7UruWI+/DtX9jHsEdbuHR+QajVwaS2RlKO+kUPLh
-         aUzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VdSp5SmhE7XqZw+dnWWnNJFiQVXpqITbQV0ebAQiP7I=;
-        b=V4zQ/Vw+KMQt7dJ+O9JvijVFmhb9QJuMeToJWQfevMd7guH1tPWneIXM6fw3RgmSso
-         aSafFoiExfwlAkmg6LCP+AuIue9Wd29CAJtZi1Wc8LBFjmR/seVgiPflAuK6CAe4NdIT
-         0r3ys2P3WhMWDO8JAa8001ZQzajwmEtLIJs0HjsRDQhpr0uoGJFXVaXIZpuJNnAWWLVz
-         jgnP3oDwwVmfqSRioUYEnBpVKPXuhTeV3OKlh8/awQkCj62afa81lzmmUBGOp2wr71FK
-         c6LIatRCrfGguKt1W7urxTWYKb/HsUEDbLGRwCux+SBBo3KzQpVGa5bfhGhc+iRS7+DP
-         cYSQ==
-X-Gm-Message-State: ANhLgQ23glLFAnpxM65YdbV8omfAtvkHyO2Fp2RXSheCn/SJx7nJObiE
-        Dj2sAwTq3SLObvIvO29NHzLIxg==
-X-Google-Smtp-Source: ADFU+vvx2rWuTfSay06flokPDiVFR1lQKgnX07KLrwgMFkYXDfZPdu1+py7ifawFmMPEfx2AY/Erkg==
-X-Received: by 2002:aa7:848b:: with SMTP id u11mr2189605pfn.76.1584403296885;
-        Mon, 16 Mar 2020 17:01:36 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id e187sm958824pfe.50.2020.03.16.17.01.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Mar 2020 17:01:36 -0700 (PDT)
-Date:   Mon, 16 Mar 2020 17:01:35 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
-        daniel@iogearbox.net, Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH bpf] bpf: Support llvm-objcopy for vmlinux BTF
-Message-ID: <20200317000135.GD2179110@mini-arch.hsd1.ca.comcast.net>
-References: <20200316222518.191601-1-sdf@google.com>
- <20200316235725.GA43392@ubuntu-m2-xlarge-x86>
-MIME-Version: 1.0
+        id S1733142AbgCQAZL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Mar 2020 20:25:11 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:62356 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1733127AbgCQAZL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 16 Mar 2020 20:25:11 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02H0BFKZ012645;
+        Mon, 16 Mar 2020 17:24:57 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=Z+djIjS5ccmtlVsCHXl/1VDwHsQ6UjX+93LyMcNxosk=;
+ b=j93u8trNcJTgUeIhITapEmmfBDrf3eUi8Us1JGZR17dMbt2nYcK7xSQzWUePD+lDQk1q
+ Zbv+/SuE90ndcZjoGgFhl/nqlBZ3EBoDp1gOsD7smiWb7nxLcFWkYtLdkpiWfLtD+Z1u
+ E7cCuwyOoKNLsGHkLJvZ1yIeFCvlN38TW/U= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 2ysf36yk3v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 16 Mar 2020 17:24:57 -0700
+Received: from NAM04-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Mon, 16 Mar 2020 17:24:56 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cZ6lY4V8U32udqD9EuHNgLeLqg/nbIjfpCyVvLmgycyJKwwLNW7/Uq9KU9OKxUUTvXwZnZDQ2IXJlPq/TQnmgfpyQIMi07iUPcKZPYyLUpLOubaNLzfdjbUHaRIUvXqqVICdV/dXgcb3HXqhOydO3COOMZvNKo1mz/4o+mMrkXJ/960X5lbzGkCzQEqjlU9egaL0sAB6uR/G91JYYZ7zyOAmZrzkTo0p5X7Vuh3af8M6V2ju+XrUySYZCSkIkbgY0VHa7IigeyNbmNbCvfghjq+mYJhkwhmo9dRcI1hy4ocgbIu80yPjGepoTX/qX+n5gGbdm4nsx4SQlRPYgM7wHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z+djIjS5ccmtlVsCHXl/1VDwHsQ6UjX+93LyMcNxosk=;
+ b=hlx4e24h2tNXyFSIm2VaNOWn0zHVH2U+wo2CL41gEposOEbMsl/4jFtUi/VuZf+B/4d9wYa7afQQmPYeaEbTKvoqQHWeYGc3XKvhxXjc4M7uVRilppzf43yjBiphyEhb2ZlzDW/mswn48t2Wu9oXfOQsVX4zk8UFsv683L+dti1thReTJPhUhbb5PZAYq7jcYkmEZB2UvWz0gxiVeIMHh6xodYmzKAyFQ7zTlyerpGDW7DqXadkxPCYREghD22pVKdynrh3cL9YEwNXYdeOhr+vEMKZ+qn++tRyCxsEpuy+xnXNFjGt1TbN1AX7vT+/gBl+2kAHhgasRvkYLbvKKXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z+djIjS5ccmtlVsCHXl/1VDwHsQ6UjX+93LyMcNxosk=;
+ b=QTcAbtlGrvO2RKxPM+VJL3gOEcPVdH5lhYFNpbYHoFcnru8Zp2SWhIj/fD21hgXeoKySzM5eXOzGV60CTJ3g1oyHZesJwbZ2AbYHd3cHsVfJDicjWuDRIFwRzdmDV+i9/dA327G5QBqtwbDZVAxc/eXiqSwDAEay+43BnIh7OpI=
+Received: from BYAPR15MB2278.namprd15.prod.outlook.com (2603:10b6:a02:8e::17)
+ by BYAPR15MB2727.namprd15.prod.outlook.com (2603:10b6:a03:15b::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2814.21; Tue, 17 Mar
+ 2020 00:24:55 +0000
+Received: from BYAPR15MB2278.namprd15.prod.outlook.com
+ ([fe80::4d5a:6517:802b:5f47]) by BYAPR15MB2278.namprd15.prod.outlook.com
+ ([fe80::4d5a:6517:802b:5f47%4]) with mapi id 15.20.2814.021; Tue, 17 Mar 2020
+ 00:24:55 +0000
+Date:   Mon, 16 Mar 2020 17:24:52 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Quentin Monnet <quentin@isovalent.com>
+CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 4/4] bpftool: Add struct_ops support
+Message-ID: <20200317002452.a4w2pu6vbv4cvsid@kafai-mbp>
+References: <20200316005559.2952646-1-kafai@fb.com>
+ <20200316005624.2954179-1-kafai@fb.com>
+ <da2d5a6c-3023-bb27-7c45-96224c8f4334@isovalent.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200316235725.GA43392@ubuntu-m2-xlarge-x86>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+In-Reply-To: <da2d5a6c-3023-bb27-7c45-96224c8f4334@isovalent.com>
+User-Agent: NeoMutt/20180716
+X-ClientProxiedBy: CO2PR05CA0065.namprd05.prod.outlook.com
+ (2603:10b6:102:2::33) To BYAPR15MB2278.namprd15.prod.outlook.com
+ (2603:10b6:a02:8e::17)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp (2620:10d:c090:400::5:e745) by CO2PR05CA0065.namprd05.prod.outlook.com (2603:10b6:102:2::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.12 via Frontend Transport; Tue, 17 Mar 2020 00:24:54 +0000
+X-Originating-IP: [2620:10d:c090:400::5:e745]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 95aa7314-8a36-4741-df33-08d7ca099e07
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2727:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB27275658E647A903799BBEECD5F60@BYAPR15MB2727.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-Forefront-PRVS: 0345CFD558
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(396003)(39860400002)(376002)(346002)(366004)(136003)(199004)(4326008)(6496006)(9686003)(55016002)(8936002)(81156014)(81166006)(2906002)(8676002)(1076003)(16526019)(186003)(86362001)(6916009)(52116002)(316002)(66476007)(4744005)(478600001)(66946007)(54906003)(66556008)(5660300002)(33716001);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2727;H:BYAPR15MB2278.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
+Received-SPF: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: J61zT6kRU5JQeKE4M0iuRjg8T2tv0myia9K4D4dosI705GXfalKsSWD4MSGuGefOuGX5wa8OYtw3X5dqQOjVtyeDunz3hUUy9bDw2XmtHozyl4f8JM9KYBkmvpULqyBPQWospyXoXcvnFxdvDIHyaSVXHTmwWOeCjkDycvxtyjJAErMRhVznF4fKx8tsWUNEoHwtFO+hvEkHpLNeOqmKe1lKQbYvIi4G9GKBx/125v3AkcCc77+r5Hfd4i7FNqANib7G1Ia+HdoOMtzk/Axr4HPVYggmJvaigjHRGAN0NXuWfkANVa+SUfds0ceDBzGhtKlkNPb6GStQIck3+SBpbzqrD5pm+ft0nvtZ03FCRtkvKDGJkRlemztOOqeycEmz29xwRr4AyAEnhaurHv3RzmU5daltnK9MggaXFeQPtrASO51W8bh2qQAOkuA9IItA
+X-MS-Exchange-AntiSpam-MessageData: rCfAA59bBygmV7VewEXEiANU/vh0WVzolmLMNRc5nfwG+SBFaHfAaxfiItAR8B6XkzTeueplR1XPV2bODEkS64M6pXHBKAMhq5/SiMFLvwI86pF8fwu5rxJIZEgIZTm/ghbkuvhZx+O7fAXaQyvGYTa195n0o7wk8R6qF1lH0bLAxHf1CJpcdhhhKmxNwf2P
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95aa7314-8a36-4741-df33-08d7ca099e07
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2020 00:24:55.4654
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cgIMVRANv6sPxXgevJnz/CGvmlT4ccHg5N0f8ObdhuZjm8J7y4kU8L31Yu4BJtCY
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2727
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
+ definitions=2020-03-16_11:2020-03-12,2020-03-16 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=989
+ adultscore=0 bulkscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
+ clxscore=1015 mlxscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2003160098
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 03/16, Nathan Chancellor wrote:
-> On Mon, Mar 16, 2020 at 03:25:18PM -0700, Stanislav Fomichev wrote:
-> > Commit da5fb18225b4 ("bpf: Support pre-2.25-binutils objcopy for vmlinux
-> > BTF") switched from --dump-section to
-> > --only-section/--change-section-address for BTF export assuming
-> > those ("legacy") options should cover all objcopy versions.
-> > 
-> > Turns out llvm-objcopy doesn't implement --change-section-address [1],
-> > but it does support --dump-section. Let's partially roll back and
-> > try to use --dump-section first and fall back to
-> > --only-section/--change-section-address for the older binutils.
-> > 
-> > 1. https://bugs.llvm.org/show_bug.cgi?id=45217
-> > 
-> > Fixes: df786c9b9476 ("bpf: Force .BTF section start to zero when dumping from vmlinux")
-> > Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-> > Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/871
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  scripts/link-vmlinux.sh | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> > 
-> > diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> > index dd484e92752e..8ddf57cbc439 100755
-> > --- a/scripts/link-vmlinux.sh
-> > +++ b/scripts/link-vmlinux.sh
-> > @@ -127,6 +127,16 @@ gen_btf()
-> >  		cut -d, -f1 | cut -d' ' -f2)
-> >  	bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
-> >  		awk '{print $4}')
+On Mon, Mar 16, 2020 at 11:54:28AM +0000, Quentin Monnet wrote:
+
+> [...]
+> 
+> > +static int do_unregister(int argc, char **argv)
+> > +{
+> > +	const char *search_type, *search_term;
+> > +	struct res res;
 > > +
-> > +	# Compatibility issues:
-> > +	# - pre-2.25 binutils objcopy doesn't support --dump-section
-> > +	# - llvm-objcopy doesn't support --change-section-address, but
-> > +	#   does support --dump-section
-> > +	#
-> > +	# Try to use --dump-section which should cover both recent
-> > +	# binutils and llvm-objcopy and fall back to --only-section
-> > +	# for pre-2.25 binutils.
-> > +	${OBJCOPY} --dump-section .BTF=$bin_file ${1} 2>/dev/null || \
-> >  	${OBJCOPY} --change-section-address .BTF=0 \
-> >  		--set-section-flags .BTF=alloc -O binary \
-> >  		--only-section=.BTF ${1} .btf.vmlinux.bin
-> > -- 
-> > 2.25.1.481.gfbce0eb801-goog
-> > 
+> > +	if (argc != 2)
+> > +		usage();
 > 
-> Hi Stanislav,
+> Or you could reuse the macros in main.h, for more consistency with other
+> subcommands:
 > 
-> Thank you for the patch! This is targeting the bpf tree but it uses the
-> bin_file variable that comes from commit af73d78bd384 ("kbuild: Remove
-> debug info from kallsyms linking") in the bpf-next tree. In this form,
-> when applied to mainline, the first command fails because $bin_file
-> doesn't exist and falls back to the second command, which results in no
-> net change for llvm-objcopy.
-> 
-> When manually applied to next-20200316 or applied to mainline with
-> $bin_file replaced with .btf.vmlinux.bin, x86_64 and aarch64 successfully
->  generate BTF with tip of tree llvm-objcopy.
-> 
-> Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Oops, sorry, I did it on top of bpf-next, but then blindly cherry-picked
-on top of bpf tree. In this case, should we put in only in bpf-next?
-Do we need a stable backport for the older versions?
+> 	if (!REQ_ARGS(2))
+> 		return -1;
+Thanks for the review!
+
+I prefer to print out "usage();" whenever possible but then "-j" gave
+me a 'null' after a json error mesage ...
+
+# bpftool -j struct_ops unregister
+{"error":"'unregister' needs at least 2 arguments, 0 found"},null
+
+Then I went without REQ_ARGS(2) which is similar to a few existing
+cases like do_dump(), do_updaate()...etc in map.c.
+
+That was my consideration.  However, I can go back to use REQ_ARGS(2)
+and return -1 without printing usage.  no strong preference here.
