@@ -2,71 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E19188F2F
-	for <lists+bpf@lfdr.de>; Tue, 17 Mar 2020 21:42:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82AA9188FE0
+	for <lists+bpf@lfdr.de>; Tue, 17 Mar 2020 21:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726756AbgCQUmq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Mar 2020 16:42:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726388AbgCQUmq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Mar 2020 16:42:46 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACF7D20409;
-        Tue, 17 Mar 2020 20:42:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584477765;
-        bh=B3p7yslXOyHXr36SX2vD9T3TopY7rt7/c3b/W0a0NYk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=I/S7Amiqf6frvq3odIGURYdwSnlhram+S0eVseo8qYaNtyxe6zbevFvkHvEivfgAL
-         NeM14/dImpuNmr+X+rjFnajHb/q0OFsx2HnIdsByr/R6VtJGvVePax1mNRfofYcjLP
-         stuoqQ7fASbbFm9AoK75niJLnacqh+wGC4MGbOKc=
-Date:   Tue, 17 Mar 2020 13:42:43 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     sameehj@amazon.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        zorik@amazon.com, akiyano@amazon.com, gtzalik@amazon.com,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@toke.dk>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        David Ahern <dsahern@gmail.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>
-Subject: Re: [PATCH RFC v1 01/15] xdp: add frame size to xdp_buff
-Message-ID: <20200317134243.3c29a324@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <158446615272.702578.2884467013936153419.stgit@firesoul>
-References: <158446612466.702578.2795159620575737080.stgit@firesoul>
-        <158446615272.702578.2884467013936153419.stgit@firesoul>
+        id S1726730AbgCQU4Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Mar 2020 16:56:25 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:53258 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726549AbgCQU4Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Mar 2020 16:56:25 -0400
+Received: by mail-wm1-f65.google.com with SMTP id 25so834875wmk.3;
+        Tue, 17 Mar 2020 13:56:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3FEKnVDxyBC9ZlonFYbDTDfp7q0thhaySUYzcO5Plhs=;
+        b=rNnIOSEiDEHYLAFIC5nv85oBwmdLSyT9O2RLbJhHiHwNCNE74i3PA/2uH5iu+b9a43
+         3a85kMDa6wRSb9gp/NSP6ZkpthTFbNd8fR2vBiSm9wguyJDdct2ch6HwzYI/7JX2ij2D
+         /hJ/hYW2mS6VvdIE7a7KUjHMTeFFbaxGRHUaZJUP4C2DgJ/V+nd6NKM5pnlb2k0yKd+M
+         GN/PDawFvYsMkYkwqdgmplCW0E1k01L6JuejSqb/NTWP+IDktUBZ4OoPVrNLVnV7bNAw
+         cfgSdmvenShuTZad4ut/SLk9p0H9J+gHo87eHlJbVOs63kSD0HzZIJ/pxUHsQaA37ylp
+         pilA==
+X-Gm-Message-State: ANhLgQ2sSD8s7PEoji6co3tVJ6/E87LiTIWCpDVsEc2VqMWoeEMHmpvx
+        QWv1dC4fjRf2iMIGOeOX2Vx4YHy9cAzquuh5ZUo=
+X-Google-Smtp-Source: ADFU+vu7edJpkkTIs7GHSis4k97jkv9UyDrGmidkARgAlfZwmdUsM20wjxLnUB9tTPJikbhlTtkpoOjPW5SaK5j8doU=
+X-Received: by 2002:a7b:cb50:: with SMTP id v16mr906245wmj.74.1584478583562;
+ Tue, 17 Mar 2020 13:56:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200312233648.1767-1-joe@wand.net.nz> <20200312233648.1767-6-joe@wand.net.nz>
+ <20200317063044.l4csdcag7l74ehut@kafai-mbp>
+In-Reply-To: <20200317063044.l4csdcag7l74ehut@kafai-mbp>
+From:   Joe Stringer <joe@wand.net.nz>
+Date:   Tue, 17 Mar 2020 13:56:12 -0700
+Message-ID: <CAOftzPjBo6r2nymjUn4qr=N4Zd7rF=03=n45HDvyXfSXfDnBtg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 5/7] selftests: bpf: add test for sk_assign
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Joe Stringer <joe@wand.net.nz>, bpf@vger.kernel.org,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        netdev <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 17 Mar 2020 18:29:12 +0100 Jesper Dangaard Brouer wrote:
-> XDP have evolved to support several frame sizes, but xdp_buff was not
-> updated with this information. The frame size (frame_sz) member of
-> xdp_buff is introduced to know the real size of the memory the frame is
-> delivered in.
-> 
-> When introducing this also make it clear that some tailroom is
-> reserved/required when creating SKBs using build_skb().
-> 
-> It would also have been an option to introduce a pointer to
-> data_hard_end (with reserved offset). The advantage with frame_sz is
-> that (like rxq) drivers only need to setup/assign this value once per
-> NAPI cycle. Due to XDP-generic (and some drivers) it's not possible to
-> store frame_sz inside xdp_rxq_info, because it's varies per packet as it
-> can be based/depend on packet length.
+On Tue, Mar 17, 2020 at 12:31 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Thu, Mar 12, 2020 at 04:36:46PM -0700, Joe Stringer wrote:
+> > From: Lorenz Bauer <lmb@cloudflare.com>
+> >
+> > Attach a tc direct-action classifier to lo in a fresh network
+> > namespace, and rewrite all connection attempts to localhost:4321
+> > to localhost:1234.
+> >
+> > Keep in mind that both client to server and server to client traffic
+> > passes the classifier.
+> >
+> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> > Signed-off-by: Joe Stringer <joe@wand.net.nz>
+> > ---
+> >  tools/testing/selftests/bpf/.gitignore        |   1 +
+> >  tools/testing/selftests/bpf/Makefile          |   3 +-
+> >  .../selftests/bpf/progs/test_sk_assign.c      | 127 +++++++++++++
+> >  tools/testing/selftests/bpf/test_sk_assign.c  | 176 ++++++++++++++++++
+> Can this test be put under the test_progs.c framework?
 
-Do you reckon it would be too ugly to make xdp-generic suffer and have
-it set the length in rxq per packet? We shouldn't handle multiple
-packets from the same rxq in parallel, no?
+I'm not sure, how does the test_progs.c framework handle the logic in
+"tools/testing/selftests/bpf/test_sk_assign.sh"?
+
+Specifically I'm looking for:
+* Unique netns to avoid messing with host networking stack configuration
+* Control over routes
+* Attaching loaded bpf programs to ingress qdisc of a device
+
+These are each trivial one-liners in the supplied shell script
+(admittedly building on existing shell infrastructure in the tests dir
+and iproute2 package). Seems like maybe the netns parts aren't so bad
+looking at flow_dissector_reattach.c but anything involving netlink
+configuration would either require pulling in a netlink library
+dependency somewhere or shelling out to the existing binaries. At that
+point I wonder if we're trying to achieve integration of this test
+into some automated prog runner, is there a simpler way like a place I
+can just add a one-liner to run the test_sk_assign.sh script?
+
+> >  tools/testing/selftests/bpf/test_sk_assign.sh |  19 ++
