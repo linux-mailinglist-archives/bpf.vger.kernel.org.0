@@ -2,173 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7720D18A370
-	for <lists+bpf@lfdr.de>; Wed, 18 Mar 2020 21:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9A818A4FF
+	for <lists+bpf@lfdr.de>; Wed, 18 Mar 2020 21:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726930AbgCRUEj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Mar 2020 16:04:39 -0400
-Received: from mga18.intel.com ([134.134.136.126]:8973 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726872AbgCRUEj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Mar 2020 16:04:39 -0400
-IronPort-SDR: dWxRQZvPDLCVAAoZOWKvPD6Te2meMX4qaclF9rX3V0hzkh6+60K355nu/A7BVlorAqLFXmnPl4
- BF0bHjYFAzoA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2020 13:04:38 -0700
-IronPort-SDR: sAcU/bJLcTSdQ73nlQ5AbVcU7mnh6s/3F/FzZlonUldslalYkoO7W9K9nDnRSYjYZYcL96hG2q
- Djm4o3ltWELg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,568,1574150400"; 
-   d="scan'208";a="233950259"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga007.jf.intel.com with ESMTP; 18 Mar 2020 13:04:34 -0700
-Date:   Wed, 18 Mar 2020 21:03:00 +0100
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     sameehj@amazon.com, Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, zorik@amazon.com,
-        akiyano@amazon.com, gtzalik@amazon.com,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@toke.dk>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        David Ahern <dsahern@gmail.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, bjorn.topel@intel.com,
-        kuba@kernel.org
-Subject: Re: [PATCH RFC v1 05/15] ixgbe: add XDP frame size to driver
-Message-ID: <20200318200300.GA18295@ranger.igk.intel.com>
-References: <158446612466.702578.2795159620575737080.stgit@firesoul>
- <158446617307.702578.17057660405507953624.stgit@firesoul>
+        id S1727828AbgCRU6L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Mar 2020 16:58:11 -0400
+Received: from www62.your-server.de ([213.133.104.62]:44520 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728181AbgCRU6L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Mar 2020 16:58:11 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jEflQ-00077f-Lh; Wed, 18 Mar 2020 21:58:08 +0100
+Received: from [85.7.42.192] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jEflQ-0007WN-Ax; Wed, 18 Mar 2020 21:58:08 +0100
+Subject: Re: [PATCH v2 bpf-next] bpf: sharing bpf runtime stats with
+ /dev/bpf_stats
+To:     Song Liu <songliubraving@fb.com>
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "yzaikin@google.com" <yzaikin@google.com>
+References: <20200316203329.2747779-1-songliubraving@fb.com>
+ <eb31bed3-3be4-501e-4340-bd558b31ead2@iogearbox.net>
+ <920839AF-AC7A-4CD3-975F-111C3C6F75B9@fb.com>
+ <a69245f8-c70f-857c-b109-556d1bc267f7@iogearbox.net>
+ <C126A009-516F-451A-9A83-31BC8F67AA11@fb.com>
+ <53f8973f-4b3e-08fe-2363-2300027c8f9d@iogearbox.net>
+ <C624907B-22DB-4505-9C9E-1F8A96013AC7@fb.com>
+ <6D317BBF-093E-41DC-9838-D685C39F6DAB@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <ba62e0be-6de6-036c-a836-178c1a9c079a@iogearbox.net>
+Date:   Wed, 18 Mar 2020 21:58:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <158446617307.702578.17057660405507953624.stgit@firesoul>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <6D317BBF-093E-41DC-9838-D685C39F6DAB@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25755/Wed Mar 18 14:14:00 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 17, 2020 at 06:29:33PM +0100, Jesper Dangaard Brouer wrote:
-> The ixgbe driver uses different memory models depending on PAGE_SIZE at
-> compile time. For PAGE_SIZE 4K it uses page splitting, meaning for
-> normal MTU frame size is 2048 bytes (and headroom 192 bytes).
-
-To be clear the 2048 is the size of buffer given to HW and we slice it up
-in a following way:
-- 192 bytes dedicated for headroom
-- 1500 is max allowed MTU for this setup
-- 320 bytes for tailroom (skb shinfo)
-
-In case you go with higher MTU then 3K buffer would be used and it would
-came from order1 page and we still do the half split. Just FYI all of this
-is for PAGE_SIZE == 4k and L1$ size == 64.
-
-> For PAGE_SIZE larger than 4K, driver advance its rx_buffer->page_offset
-> with the frame size "truesize".
-
-Alex, couldn't we base the truesize here somehow on ixgbe_rx_bufsz() since
-these are the sizes that we are passing to hw? I must admit I haven't been
-in touch with systems with PAGE_SIZE > 4K.
-
+On 3/18/20 7:33 AM, Song Liu wrote:
+>> On Mar 17, 2020, at 4:08 PM, Song Liu <songliubraving@fb.com> wrote:
+>>> On Mar 17, 2020, at 2:47 PM, Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>>>>
+>>>>> Hm, true as well. Wouldn't long-term extending "bpftool prog profile" fentry/fexit
+>>>>> programs supersede this old bpf_stats infrastructure? Iow, can't we implement the
+>>>>> same (or even more elaborate stats aggregation) in BPF via fentry/fexit and then
+>>>>> potentially deprecate bpf_stats counters?
+>>>> I think run_time_ns has its own value as a simple monitoring framework. We can
+>>>> use it in tools like top (and variations). It will be easier for these tools to
+>>>> adopt run_time_ns than using fentry/fexit.
+>>>
+>>> Agree that this is easier; I presume there is no such official integration today
+>>> in tools like top, right, or is there anything planned?
+>>
+>> Yes, we do want more supports in different tools to increase the visibility.
+>> Here is the effort for atop: https://github.com/Atoptool/atop/pull/88 .
+>>
+>> I wasn't pushing push hard on this one mostly because the sysctl interface requires
+>> a user space "owner".
+>>
+>>>> On the other hand, in long term, we may include a few fentry/fexit based programs
+>>>> in the kernel binary (or the rpm), so that these tools can use them easily. At
+>>>> that time, we can fully deprecate run_time_ns. Maybe this is not too far away?
+>>>
+>>> Did you check how feasible it is to have something like `bpftool prog profile top`
+>>> which then enables fentry/fexit for /all/ existing BPF programs in the system? It
+>>> could then sort the sample interval by run_cnt, cycles, cache misses, aggregated
+>>> runtime, etc in a top-like output. Wdyt?
+>>
+>> I wonder whether we can achieve this with one bpf prog (or a trampoline) that covers
+>> all BPF programs, like a trampoline inside __BPF_PROG_RUN()?
+>>
+>> For long term direction, I think we could compare two different approaches: add new
+>> tools (like bpftool prog profile top) vs. add BPF support to existing tools. The
+>> first approach is easier. The latter approach would show BPF information to users
+>> who are not expecting BPF programs in the systems. For many sysadmins, seeing BPF
+>> programs in top/ps, and controlling them via kill is more natural than learning
+>> bpftool. What's your thought on this?
 > 
-> When driver enable XDP it uses build_skb() which provides the necessary
-> tailroom for XDP-redirect.
+> More thoughts on this.
+> 
+> If we have a special trampoline that attach to all BPF programs at once, we really
+> don't need the run_time_ns stats anymore. Eventually, tools that monitor BPF
+> programs will depend on libbpf, so using fentry/fexit to monitor BPF programs doesn't
+> introduce extra dependency. I guess we also need a way to include BPF program in
+> libbpf.
+> 
+> To summarize this plan, we need:
+> 
+> 1) A global trampoline that attaches to all BPF programs at once;
 
-We still allow to load XDP prog when ring is not using build_skb(). I have
-a feeling that we should drop this case now.
+Overall sounds good, I think the `at once` part might be tricky, at least it would
+need to patch one prog after another, each prog also needs to store its own metrics
+somewhere for later collection. The start-to-sample could be a shared global var (aka
+shared map between all the programs) which would flip the switch though.
 
-Alex/John/Bjorn WDYT?
+> 2) Embed fentry/fexit program in libbpf, which will be used by tools for monitoring;
+> 3) BPF helpers to read time, which replaces current run_time_ns.
+> 
+> Does this look reasonable?
+> 
+> Thanks,
+> Song
+> 
 
-> 
-> When XDP frame size doesn't depend on RX packet size (4K case), then
-> xdp.frame_sz can be updated once outside the main NAPI loop.
-> 
-> Cc: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
->  drivers/net/ethernet/intel/ixgbe/ixgbe.h      |   17 +++++++++++++++++
->  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |   18 ++++++++++--------
->  2 files changed, 27 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe.h b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-> index 2833e4f041ce..943b643b6ed8 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-> @@ -417,6 +417,23 @@ static inline unsigned int ixgbe_rx_pg_order(struct ixgbe_ring *ring)
->  }
->  #define ixgbe_rx_pg_size(_ring) (PAGE_SIZE << ixgbe_rx_pg_order(_ring))
->  
-> +static inline unsigned int ixgbe_rx_frame_truesize(struct ixgbe_ring *rx_ring,
-> +						   unsigned int size)
-> +{
-> +	unsigned int truesize;
-> +
-> +#if (PAGE_SIZE < 8192)
-> +	truesize = ixgbe_rx_pg_size(rx_ring) / 2; /* Must be power-of-2 */
-> +#else
-> +	/* Notice XDP must use build_skb() mode */
-> +	truesize = ring_uses_build_skb(rx_ring) ?
-> +		SKB_DATA_ALIGN(IXGBE_SKB_PAD + size) +
-> +		SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) :
-> +		SKB_DATA_ALIGN(size);
-> +#endif
-> +	return truesize;
-> +}
-> +
->  #define IXGBE_ITR_ADAPTIVE_MIN_INC	2
->  #define IXGBE_ITR_ADAPTIVE_MIN_USECS	10
->  #define IXGBE_ITR_ADAPTIVE_MAX_USECS	126
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> index ea6834bae04c..f505ed8c9dc1 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> @@ -2248,16 +2248,10 @@ static void ixgbe_rx_buffer_flip(struct ixgbe_ring *rx_ring,
->  				 struct ixgbe_rx_buffer *rx_buffer,
->  				 unsigned int size)
->  {
-> +	unsigned int truesize = ixgbe_rx_frame_truesize(rx_ring, size);
->  #if (PAGE_SIZE < 8192)
-> -	unsigned int truesize = ixgbe_rx_pg_size(rx_ring) / 2;
-> -
->  	rx_buffer->page_offset ^= truesize;
->  #else
-> -	unsigned int truesize = ring_uses_build_skb(rx_ring) ?
-> -				SKB_DATA_ALIGN(IXGBE_SKB_PAD + size) +
-> -				SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) :
-> -				SKB_DATA_ALIGN(size);
-> -
->  	rx_buffer->page_offset += truesize;
->  #endif
->  }
-> @@ -2291,6 +2285,11 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
->  
->  	xdp.rxq = &rx_ring->xdp_rxq;
->  
-> +	/* Frame size depend on rx_ring setup when PAGE_SIZE=4K */
-> +#if (PAGE_SIZE < 8192)
-> +	xdp.frame_sz = ixgbe_rx_frame_truesize(rx_ring, 0);
-> +#endif
-> +
->  	while (likely(total_rx_packets < budget)) {
->  		union ixgbe_adv_rx_desc *rx_desc;
->  		struct ixgbe_rx_buffer *rx_buffer;
-> @@ -2324,7 +2323,10 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
->  			xdp.data_hard_start = xdp.data -
->  					      ixgbe_rx_offset(rx_ring);
->  			xdp.data_end = xdp.data + size;
-> -
-> +#if (PAGE_SIZE > 4096)
-> +			/* At larger PAGE_SIZE, frame_sz depend on size */
-> +			xdp.frame_sz = ixgbe_rx_frame_truesize(rx_ring, size);
-> +#endif
->  			skb = ixgbe_run_xdp(adapter, rx_ring, &xdp);
->  		}
->  
-> 
-> 
