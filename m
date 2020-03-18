@@ -2,293 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED1B18A817
-	for <lists+bpf@lfdr.de>; Wed, 18 Mar 2020 23:27:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99FCD18A82D
+	for <lists+bpf@lfdr.de>; Wed, 18 Mar 2020 23:29:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726663AbgCRW1x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Mar 2020 18:27:53 -0400
-Received: from mail-pj1-f73.google.com ([209.85.216.73]:34835 "EHLO
-        mail-pj1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726912AbgCRW1x (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Mar 2020 18:27:53 -0400
-Received: by mail-pj1-f73.google.com with SMTP id o10so115659pjt.0
-        for <bpf@vger.kernel.org>; Wed, 18 Mar 2020 15:27:52 -0700 (PDT)
+        id S1726975AbgCRW34 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Mar 2020 18:29:56 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:40839 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726663AbgCRW34 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Mar 2020 18:29:56 -0400
+Received: by mail-pl1-f195.google.com with SMTP id h11so126730plk.7
+        for <bpf@vger.kernel.org>; Wed, 18 Mar 2020 15:29:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=nN6aQ3y/30UMEsizdFRT3dSbqqosMtSBUXgTVV4iZgg=;
-        b=SabMdH/aEPPH9G5GOOCKLyLz4vo2LpDFg8VnLyjThVbp9aOqsw0MjlPKmzOERDiXFk
-         oaRhABLZidwRp1LI8jbIpa/F3YV8gp3KWYAy0UHg7bJ4Z0/s6qTOz6v4vkqhXA/BvD+B
-         /lWKTLCqoXD6P78IAqZZAOwTLmib6WsELLo1enae4+NYxCd+8VWdZmBQ2TzMj6pDew+J
-         m1egRHaCut8qQJHiNWe6AX+Jhe9FQ/lQgq+bpL/obqGFbQbd3ZjKXCSa32Y42UCpzgy2
-         PPj6IE2eoDig5ISKDCSzhEtC6O7PadRy9SH3W4IWLREbwPcMqFGVPdYLg4Q7f3xNny+Y
-         A3uw==
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=DZz1wswZhNQLIl0+JBgP3SsqWuba02REf62jhG9S3ZI=;
+        b=Kku5KUClqyuaPhatO7sm88N4uvJ68/0OFkYJ9qsIHPBfUFHj4PRSzn0UUwX/SjJU9p
+         wXtu9h2DMmGO1yFrIL8DnA+dXiTDKgagqCZznXWzrCVkiHKXDeUBX97JCnQr/fUwcTm0
+         yXbVLYNc9Az/fkIeHKLfrYj4j2or4f2WXbd7Wwtkx5FOiyJ9CvYQfjPv5fwBPdJ/VtUN
+         CI2MwMGqO7KeCJ/Aio99qHV9t9+PZuKg4HLGZV0wEteWOkddHRiXyBgWN2FPMEGxB8DM
+         VxKHNbGtgwnGlKF/UZENR9ngDJRQbI0U7FFOweyEspXd3Gfs1ArM+FA5be93h6mIBKi6
+         w7XQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=nN6aQ3y/30UMEsizdFRT3dSbqqosMtSBUXgTVV4iZgg=;
-        b=J7Q7Gu/5Ds7zrsTXsRvbcFKZYmvjDQByEZPV+sWtxZb+2JGv6NO2wX50mtJdxSWNrf
-         FxxkKv/MD1ZOgz46ZH2sOnC2KY3SSO+DfjWPce/2PY736MUwufMgsHFLPSte7cBi+HbF
-         dojU9ww6wj8uCtMr4UGoeSTwh4TwB4cecY1sxfzRES/Rz4bIccfdRhhJh5kHfDfgXl6g
-         zkAMG/gF2GFFK+cVS06dNaA4KGkmuLI4WcT7INPCegQlVUsmpW+iX7cLQbr3auVS99Lv
-         ccEML362hstjH6pbGtvD3tBIwJlyuCOTt983RJXRc1zkrxbCUoLo2p35xGvcpJEJtDz/
-         Pt6w==
-X-Gm-Message-State: ANhLgQ0e+fA8kgarUHy9zZagyoyzsgOu2bFiiPnA+iDREDHdPGnL0EEr
-        LYGrI1dBLhFhmx2tFCq05EWwMsF+0sNb0Up+owFMzotK+70jLhPYjIcIFnKk1fq3/lrf0wYaOax
-        bGWwu00XkLHyBSvkskTzFI5IKz5/IuYZVdh+8mDCnwCCzzaHcqX/dkmaIxLYk
-X-Google-Smtp-Source: ADFU+vs96MMfrtTE2sHLcZO6Jg2S8mQKaB771LRZ1K0iUEKncWxJF82UCP0DNs2ux/X8rlIhCSUdzog5fRqk
-X-Received: by 2002:a17:90a:1697:: with SMTP id o23mr444303pja.62.1584570471108;
- Wed, 18 Mar 2020 15:27:51 -0700 (PDT)
-Date:   Wed, 18 Mar 2020 15:27:46 -0700
-Message-Id: <20200318222746.173648-1-maskray@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.25.1.481.gfbce0eb801-goog
-Subject: [PATCH bpf-next v6] bpf: Support llvm-objcopy for vmlinux BTF
-From:   Fangrui Song <maskray@google.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Fangrui Song <maskray@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=DZz1wswZhNQLIl0+JBgP3SsqWuba02REf62jhG9S3ZI=;
+        b=U1GV5lRbUQfpzJQl0JsF8lvF3wfyEfFy0XuLaxuK7vz10XzN8CIacpzIZqlZXnq6lH
+         PlZTuigL0ZBXQf4vllMU7qHRGFgdqWa16rTiUcAGwc2cc3eg5ZpfuPKXfRPFLmQddaOi
+         AFJpmiBj/y74Chvk3B3pR2kr6pvqwzxKUX6KM9+4cjtsEiXB6WspdtFnLyh/rIpKTW5u
+         YrNXjzK8f7WDtyCeitPw0AG/Sn/2LSYERleXtLkHR0VXFU15m0VFfjmed4CRZz+yAWsO
+         feWav8ljAp5zFt3tZOsrjEmSASXIsKxzMqwKdRvF4GGeCn3ZONWfhqFvb56+fPvU7rZq
+         zlzA==
+X-Gm-Message-State: ANhLgQ0f4yqJw4FO3IJPPKVZZyyrevgzs+5DglNMHNkJ7DLLTWq758b6
+        yCe19qZS9eodb09Pj/LTqtsX0g==
+X-Google-Smtp-Source: ADFU+vtlXyEadaWQM3lrXsl2cWkWaOIIV8ypmJy1U2crVXb+REthiCnFJWD8JnoPHi9b2fDGnzAFHQ==
+X-Received: by 2002:a17:902:8a88:: with SMTP id p8mr489182plo.56.1584570594534;
+        Wed, 18 Mar 2020 15:29:54 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id k4sm73764pfh.0.2020.03.18.15.29.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Mar 2020 15:29:54 -0700 (PDT)
+Date:   Wed, 18 Mar 2020 15:29:53 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "yzaikin@google.com" <yzaikin@google.com>
+Subject: Re: [PATCH v2 bpf-next] bpf: sharing bpf runtime stats with
+ /dev/bpf_stats
+Message-ID: <20200318222953.GA2507308@mini-arch.hsd1.ca.comcast.net>
+References: <20200316203329.2747779-1-songliubraving@fb.com>
+ <eb31bed3-3be4-501e-4340-bd558b31ead2@iogearbox.net>
+ <920839AF-AC7A-4CD3-975F-111C3C6F75B9@fb.com>
+ <a69245f8-c70f-857c-b109-556d1bc267f7@iogearbox.net>
+ <C126A009-516F-451A-9A83-31BC8F67AA11@fb.com>
+ <53f8973f-4b3e-08fe-2363-2300027c8f9d@iogearbox.net>
+ <C624907B-22DB-4505-9C9E-1F8A96013AC7@fb.com>
+ <6D317BBF-093E-41DC-9838-D685C39F6DAB@fb.com>
+ <ba62e0be-6de6-036c-a836-178c1a9c079a@iogearbox.net>
+ <3E03D914-36FA-4956-AF14-CAFD784D013A@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3E03D914-36FA-4956-AF14-CAFD784D013A@fb.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Simplify gen_btf logic to make it work with llvm-objcopy. The existing
-'file format' and 'architecture' parsing logic is brittle and does not
-work with llvm-objcopy/llvm-objdump.
-'file format' output of llvm-objdump>=11 will match GNU objdump, but
-'architecture' (bfdarch) may not.
-
-.BTF in .tmp_vmlinux.btf is non-SHF_ALLOC. Add the SHF_ALLOC flag
-because it is part of vmlinux image used for introspection. C code can
-reference the section via linker script defined __start_BTF and
-__stop_BTF. This fixes a small problem that previous .BTF had the
-SHF_WRITE flag (objcopy -I binary -O elf* synthesized .data).
-
-Additionally, `objcopy -I binary` synthesized symbols
-_binary__btf_vmlinux_bin_start and _binary__btf_vmlinux_bin_stop (not
-used elsewhere) are replaced with more commonplace __start_BTF and
-__stop_BTF.
-
-Add 2>/dev/null because GNU objcopy (but not llvm-objcopy) warns
-"empty loadable segment detected at vaddr=0xffffffff81000000, is this intentional?"
-
-We use a dd command to change the e_type field in the ELF header from
-ET_EXEC to ET_REL so that lld will accept .btf.vmlinux.bin.o.  Accepting
-ET_EXEC as an input file is an extremely rare GNU ld feature that lld
-does not intend to support, because this is error-prone.
-
-The output section description .BTF in include/asm-generic/vmlinux.lds.h
-avoids potential subtle orphan section placement issues and suppresses
---orphan-handling=warn warnings.
-
-v6:
-- drop llvm-objdump from the title. We don't run objdump now
-- delete unused local variables: bin_arch, bin_format and bin_file
-- mention in the comment that lld does not allow an ET_EXEC input
-- rename BTF back to .BTF . The section name is assumed by bpftool
-- add output section description to include/asm-generic/vmlinux.lds.h
-- mention cb0cc635c7a9 ("powerpc: Include .BTF section")
-
-v5:
-- rebase on top of bpf-next/master
-- rename .BTF to BTF
-
-Fixes: df786c9b9476 ("bpf: Force .BTF section start to zero when dumping from vmlinux")
-Fixes: cb0cc635c7a9 ("powerpc: Include .BTF section")
-Link: https://github.com/ClangBuiltLinux/linux/issues/871
-Signed-off-by: Fangrui Song <maskray@google.com>
-Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
-Tested-by: Stanislav Fomichev <sdf@google.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: clang-built-linux@googlegroups.com
----
- arch/powerpc/kernel/vmlinux.lds.S |  6 ------
- include/asm-generic/vmlinux.lds.h | 15 +++++++++++++++
- kernel/bpf/btf.c                  |  9 ++++-----
- kernel/bpf/sysfs_btf.c            | 11 +++++------
- scripts/link-vmlinux.sh           | 24 ++++++++++--------------
- 5 files changed, 34 insertions(+), 31 deletions(-)
-
-diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
-index a32d478a7f41..b4c89a1acebb 100644
---- a/arch/powerpc/kernel/vmlinux.lds.S
-+++ b/arch/powerpc/kernel/vmlinux.lds.S
-@@ -303,12 +303,6 @@ SECTIONS
- 		*(.branch_lt)
- 	}
- 
--#ifdef CONFIG_DEBUG_INFO_BTF
--	.BTF : AT(ADDR(.BTF) - LOAD_OFFSET) {
--		*(.BTF)
--	}
--#endif
--
- 	.opd : AT(ADDR(.opd) - LOAD_OFFSET) {
- 		__start_opd = .;
- 		KEEP(*(.opd))
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index e00f41aa8ec4..39da8d8b561d 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -535,6 +535,7 @@
- 									\
- 	RO_EXCEPTION_TABLE						\
- 	NOTES								\
-+	BTF								\
- 									\
- 	. = ALIGN((align));						\
- 	__end_rodata = .;
-@@ -621,6 +622,20 @@
- 		__stop___ex_table = .;					\
- 	}
- 
-+/*
-+ * .BTF
-+ */
-+#ifdef CONFIG_DEBUG_INFO_BTF
-+#define BTF								\
-+	.BTF : AT(ADDR(.BTF) - LOAD_OFFSET) {				\
-+		__start_BTF = .;					\
-+		*(.BTF)							\
-+		__stop_BTF = .;						\
-+	}
-+#else
-+#define BTF
-+#endif
-+
- /*
-  * Init task
-  */
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 50080add2ab9..6f397c4da05e 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -3477,8 +3477,8 @@ static struct btf *btf_parse(void __user *btf_data, u32 btf_data_size,
- 	return ERR_PTR(err);
- }
- 
--extern char __weak _binary__btf_vmlinux_bin_start[];
--extern char __weak _binary__btf_vmlinux_bin_end[];
-+extern char __weak __start_BTF[];
-+extern char __weak __stop_BTF[];
- extern struct btf *btf_vmlinux;
- 
- #define BPF_MAP_TYPE(_id, _ops)
-@@ -3605,9 +3605,8 @@ struct btf *btf_parse_vmlinux(void)
- 	}
- 	env->btf = btf;
- 
--	btf->data = _binary__btf_vmlinux_bin_start;
--	btf->data_size = _binary__btf_vmlinux_bin_end -
--		_binary__btf_vmlinux_bin_start;
-+	btf->data = __start_BTF;
-+	btf->data_size = __stop_BTF - __start_BTF;
- 
- 	err = btf_parse_hdr(env);
- 	if (err)
-diff --git a/kernel/bpf/sysfs_btf.c b/kernel/bpf/sysfs_btf.c
-index 7ae5dddd1fe6..3b495773de5a 100644
---- a/kernel/bpf/sysfs_btf.c
-+++ b/kernel/bpf/sysfs_btf.c
-@@ -9,15 +9,15 @@
- #include <linux/sysfs.h>
- 
- /* See scripts/link-vmlinux.sh, gen_btf() func for details */
--extern char __weak _binary__btf_vmlinux_bin_start[];
--extern char __weak _binary__btf_vmlinux_bin_end[];
-+extern char __weak __start_BTF[];
-+extern char __weak __stop_BTF[];
- 
- static ssize_t
- btf_vmlinux_read(struct file *file, struct kobject *kobj,
- 		 struct bin_attribute *bin_attr,
- 		 char *buf, loff_t off, size_t len)
- {
--	memcpy(buf, _binary__btf_vmlinux_bin_start + off, len);
-+	memcpy(buf, __start_BTF + off, len);
- 	return len;
- }
- 
-@@ -30,15 +30,14 @@ static struct kobject *btf_kobj;
- 
- static int __init btf_vmlinux_init(void)
- {
--	if (!_binary__btf_vmlinux_bin_start)
-+	if (!__start_BTF)
- 		return 0;
- 
- 	btf_kobj = kobject_create_and_add("btf", kernel_kobj);
- 	if (!btf_kobj)
- 		return -ENOMEM;
- 
--	bin_attr_btf_vmlinux.size = _binary__btf_vmlinux_bin_end -
--				    _binary__btf_vmlinux_bin_start;
-+	bin_attr_btf_vmlinux.size = __stop_BTF - __start_BTF;
- 
- 	return sysfs_create_bin_file(btf_kobj, &bin_attr_btf_vmlinux);
- }
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index ac569e197bfa..d09ab4afbda4 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -113,9 +113,6 @@ vmlinux_link()
- gen_btf()
- {
- 	local pahole_ver
--	local bin_arch
--	local bin_format
--	local bin_file
- 
- 	if ! [ -x "$(command -v ${PAHOLE})" ]; then
- 		echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
-@@ -133,17 +130,16 @@ gen_btf()
- 	info "BTF" ${2}
- 	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
- 
--	# dump .BTF section into raw binary file to link with final vmlinux
--	bin_arch=$(LANG=C ${OBJDUMP} -f ${1} | grep architecture | \
--		cut -d, -f1 | cut -d' ' -f2)
--	bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
--		awk '{print $4}')
--	bin_file=.btf.vmlinux.bin
--	${OBJCOPY} --change-section-address .BTF=0 \
--		--set-section-flags .BTF=alloc -O binary \
--		--only-section=.BTF ${1} $bin_file
--	${OBJCOPY} -I binary -O ${bin_format} -B ${bin_arch} \
--		--rename-section .data=.BTF $bin_file ${2}
-+	# Create ${2} which contains just .BTF section but no symbols. Add
-+	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
-+	# deletes all symbols including __start_BTF and __stop_BTF, which will
-+	# be redefined in the linker script. Add 2>/dev/null to suppress GNU
-+	# objcopy warnings: "empty loadable segment detected at ..."
-+	${OBJCOPY} --only-section=.BTF --set-section-flags .BTF=alloc,readonly \
-+		--strip-all ${1} ${2} 2>/dev/null
-+	# Change e_type to ET_REL so that it can be used to link final vmlinux.
-+	# Unlike GNU ld, lld does not allow an ET_EXEC input.
-+	printf '\1' | dd of=${2} conv=notrunc bs=1 seek=16 status=none
- }
- 
- # Create ${2} .o file with all symbols from the ${1} object file
--- 
-2.25.1.481.gfbce0eb801-goog
-
+On 03/18, Song Liu wrote:
+> 
+> 
+> > On Mar 18, 2020, at 1:58 PM, Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > 
+> > On 3/18/20 7:33 AM, Song Liu wrote:
+> >>> On Mar 17, 2020, at 4:08 PM, Song Liu <songliubraving@fb.com> wrote:
+> >>>> On Mar 17, 2020, at 2:47 PM, Daniel Borkmann <daniel@iogearbox.net> wrote:
+> >>>>>> 
+> >>>>>> Hm, true as well. Wouldn't long-term extending "bpftool prog profile" fentry/fexit
+> >>>>>> programs supersede this old bpf_stats infrastructure? Iow, can't we implement the
+> >>>>>> same (or even more elaborate stats aggregation) in BPF via fentry/fexit and then
+> >>>>>> potentially deprecate bpf_stats counters?
+> >>>>> I think run_time_ns has its own value as a simple monitoring framework. We can
+> >>>>> use it in tools like top (and variations). It will be easier for these tools to
+> >>>>> adopt run_time_ns than using fentry/fexit.
+> >>>> 
+> >>>> Agree that this is easier; I presume there is no such official integration today
+> >>>> in tools like top, right, or is there anything planned?
+> >>> 
+> >>> Yes, we do want more supports in different tools to increase the visibility.
+> >>> Here is the effort for atop: https://github.com/Atoptool/atop/pull/88 .
+> >>> 
+> >>> I wasn't pushing push hard on this one mostly because the sysctl interface requires
+> >>> a user space "owner".
+> >>> 
+> >>>>> On the other hand, in long term, we may include a few fentry/fexit based programs
+> >>>>> in the kernel binary (or the rpm), so that these tools can use them easily. At
+> >>>>> that time, we can fully deprecate run_time_ns. Maybe this is not too far away?
+> >>>> 
+> >>>> Did you check how feasible it is to have something like `bpftool prog profile top`
+> >>>> which then enables fentry/fexit for /all/ existing BPF programs in the system? It
+> >>>> could then sort the sample interval by run_cnt, cycles, cache misses, aggregated
+> >>>> runtime, etc in a top-like output. Wdyt?
+> >>> 
+> >>> I wonder whether we can achieve this with one bpf prog (or a trampoline) that covers
+> >>> all BPF programs, like a trampoline inside __BPF_PROG_RUN()?
+> >>> 
+> >>> For long term direction, I think we could compare two different approaches: add new
+> >>> tools (like bpftool prog profile top) vs. add BPF support to existing tools. The
+> >>> first approach is easier. The latter approach would show BPF information to users
+> >>> who are not expecting BPF programs in the systems. For many sysadmins, seeing BPF
+> >>> programs in top/ps, and controlling them via kill is more natural than learning
+> >>> bpftool. What's your thought on this?
+> >> More thoughts on this.
+> >> If we have a special trampoline that attach to all BPF programs at once, we really
+> >> don't need the run_time_ns stats anymore. Eventually, tools that monitor BPF
+> >> programs will depend on libbpf, so using fentry/fexit to monitor BPF programs doesn't
+> >> introduce extra dependency. I guess we also need a way to include BPF program in
+> >> libbpf.
+> >> To summarize this plan, we need:
+> >> 1) A global trampoline that attaches to all BPF programs at once;
+> > 
+> > Overall sounds good, I think the `at once` part might be tricky, at least it would
+> > need to patch one prog after another, each prog also needs to store its own metrics
+> > somewhere for later collection. The start-to-sample could be a shared global var (aka
+> > shared map between all the programs) which would flip the switch though.
+> 
+> I was thinking about adding bpf_global_trampoline and use it in __BPF_PROG_RUN. 
+> Something like:
+> 
+> diff --git i/include/linux/filter.h w/include/linux/filter.h
+> index 9b5aa5c483cc..ac9497d1fa7b 100644
+> --- i/include/linux/filter.h
+> +++ w/include/linux/filter.h
+> @@ -559,9 +559,14 @@ struct sk_filter {
+> 
+>  DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
+> 
+> +extern struct bpf_trampoline *bpf_global_trampoline;
+> +DECLARE_STATIC_KEY_FALSE(bpf_global_tr_active);
+> +
+>  #define __BPF_PROG_RUN(prog, ctx, dfunc)       ({                      \
+>         u32 ret;                                                        \
+>         cant_migrate();                                                 \
+> +       if (static_branch_unlikely(&bpf_global_tr_active))              \
+> +               run_the_trampoline();                                   \
+>         if (static_branch_unlikely(&bpf_stats_enabled_key)) {           \
+>                 struct bpf_prog_stats *stats;                           \
+>                 u64 start = sched_clock();                              \
+> 
+> 
+> I am not 100% sure this is OK. 
+> 
+> I am also not sure whether this is an overkill. Do we really want more complex
+> metric for all BPF programs? Or run_time_ns is enough? 
+I was thinking about exporting a real distribution of the prog runtimes
+instead of doing an average. It would be interesting to see
+50%/95%/99%/max stats.
