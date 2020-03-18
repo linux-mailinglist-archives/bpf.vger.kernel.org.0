@@ -2,510 +2,278 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C529518A259
-	for <lists+bpf@lfdr.de>; Wed, 18 Mar 2020 19:30:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5AC18A297
+	for <lists+bpf@lfdr.de>; Wed, 18 Mar 2020 19:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgCRSa0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Mar 2020 14:30:26 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:39942 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726506AbgCRSa0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Mar 2020 14:30:26 -0400
-Received: by mail-qk1-f195.google.com with SMTP id j2so27620189qkl.7;
-        Wed, 18 Mar 2020 11:30:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GqroxdAEbJb7dVXW+7ArkprwDF9g8bc8eBF5e5MyfUc=;
-        b=CSgePkrDoRaehIHLBMr5LNC48l4sstX4nZrBhrnnNsMc+CNuAo7UIBPCKLS3BViWcy
-         89/ZPSkob1TLtSeaRO662CC0mUftLdP2o11jJsysAWdOJaqAOxHqk9KYXeMY1wX5FQtr
-         YXP216xCgyw3lI4r9XZsUTaNL6KAVFPFGnM3L1NQVap6iTtmLF6F5vedvrgrOS5D3U1d
-         ZKOfYnzB4NPauORc/RFzzgTAIb7KyjfCbE7dgp4zWwGhJ1P+Wa6Da4/lLS1iSV1h3hxa
-         9h2M5Y0iGadUsujg0LnUBnOATqyjaD5EQOM/SyadT6Mumo5Z7dVbpf71Y3VTBrOD+AAf
-         wdBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GqroxdAEbJb7dVXW+7ArkprwDF9g8bc8eBF5e5MyfUc=;
-        b=Z6GOKl4qFfEIz8BTr7yymwJdJX5PrwY7EeRT6QoQ5l4k0j8oWegsiwNzRjI79FKla/
-         8IFWZ1Y38Osv4hS57kCGtdDSBv44oQh4q8i6MpHbVqSdHDGcgBw46yS65Kuu3a3dgUuH
-         mI8CNarRyeyTDHaIIjRaEX72LfYQRRKPRkUEz9e3maap661BoM5qiAXUIlslyX2yFdaI
-         TzG+OF04RgaCDP8j/NKQ+ejSUeEUyGBLlCFJ66ceP9Pbi3GnvxbN1KChKZ0Fq9LhdBIp
-         l98txCgNq87+UwLgwLEntcApdIdf0VFcXqovSHL6tUJeiCgSy2RUbTVsbwxFYFDppszb
-         iEpQ==
-X-Gm-Message-State: ANhLgQ0+4GsbzJxwzKXstMsc9lClUhGaE2ROOF53UDzYusEtUTwt6Ddh
-        /QbxdmPzm51+8du/+nCH0Y968xsNifnNFHMZwA4Fb5FuSCM=
-X-Google-Smtp-Source: ADFU+vta9+LHEq3pqS27yDWphAmxGJaQ9Xp/Jjs4xchJyOCL3fFj023bz/DAmkJ/RAoX13/OjBI9kqPO6Jl7NFZm8wo=
-X-Received: by 2002:a37:e40d:: with SMTP id y13mr5531432qkf.39.1584556224525;
- Wed, 18 Mar 2020 11:30:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200317011654.zkx5r7so53skowlc@google.com> <CAEf4BzYTJqWU++QnQupxFBWGSMPfGt6r-5u9jbeLnEF2ipw+Mw@mail.gmail.com>
- <20200317033701.w7jwos7mvfnde2t2@google.com> <CAEf4BzYyimAo2_513kW6hrDWwmzSDhNjTYksjy01ugKKTPt+qA@mail.gmail.com>
- <20200317052120.diawg3a75kxl5hkn@google.com> <CAEf4BzYepRs4uB9vd1SCFY81H5S1kbvw2n9bKNeh-ORK_kutSg@mail.gmail.com>
- <20200317054359.snyyojyf6gjxufij@google.com> <20200317162405.GB2459609@mini-arch.hsd1.ca.comcast.net>
- <20200317205832.lna5phig2ed3bf2n@google.com> <CAEf4BzY8uzcpS8t0JW70V-DrrZ4MbeXOyEtCrpTtQyHW+uQcRg@mail.gmail.com>
- <20200318175918.ulpzopsao4sm6aei@google.com>
-In-Reply-To: <20200318175918.ulpzopsao4sm6aei@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 18 Mar 2020 11:30:13 -0700
-Message-ID: <CAEf4BzYBgG4dyhL7Bj21CU4HO9qpm_N7SZkQekTTK6pJBA1ZJA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4] bpf: Support llvm-objcopy and llvm-objdump
- for vmlinux BTF
-To:     Fangrui Song <maskray@google.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        id S1726619AbgCRStO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Mar 2020 14:49:14 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:3030 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726506AbgCRStO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 18 Mar 2020 14:49:14 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02IIb40P018507;
+        Wed, 18 Mar 2020 11:48:58 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=73T5B5k0bki4g0W/EAMH4tu0M02evZiS1Ed6O+rMInc=;
+ b=VFte6w/5tQSV86Nd5THareK7B5zT9SrFxm/PbNX9cLnAeGQdjOCEX/4sJ1qCO7qE6+bk
+ nz4Z5lvGICkT1h8W5t2fx+msbQpJV+d0i2u78I1CfwWejkuRXODKVRIGj0npwKpxWdRm
+ /2dQAnfTqOUJ6QmOgifMQ7Fl7pBH6jsNevQ= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yu7j24hr2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 18 Mar 2020 11:48:57 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Wed, 18 Mar 2020 11:48:56 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DMwB9aYJ4aVCyIBGtQfOsh4lqbUESHRWRynrub/o2+l6k3kM7B3MbnJ9LImHqzm6e/p8NRLb96CNsVQ/2C+Nspb68OTyGM0BFds6Fb5rYmT0BQYP+wj4CKBxF/5JpL7pihvwCP1a1vDigeFaQ8RbhVSXdIgerFYmkiQ6dgKlLNH/Qo7SAKpVyPqUnk9njRr2H6om7cX99B/e9p6YI+za6hCZsyWh+WmeJnzFfVb1iNxxrLPFSCVIfAqBLH7BttLFWCAXW6DWlYboZualFYNuLF61xnQOQuwYHU74aaBhj4XaU2v5zsmVkrmlBF0zEXpTP4apKl6hHAdTHW/9STtyjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=73T5B5k0bki4g0W/EAMH4tu0M02evZiS1Ed6O+rMInc=;
+ b=I1kY8zD4Azo6l+8K1hxFYy4Q9bla9q5PAJcES5t9s8ypgkLqUc5gjCIULdvGRHWnO+dDjxM8fhmrkOQj08X59gGucqAmvqaDpQ3cG8T4i4bii8KYxHDhKvNAiT1Dw9hdJDeA1hcw3qX6iR5GTIHaLKEnA+YuoRMlkkuzGEFMmGqH5lUThL5cNI7uJmOfBvjbT7Oi8+6sE29pEwx+HKf9BXi9WwJrWZH7ZDZ+xvVum1MPcriSoFFavrfvxKgnsNBfe2GHzQekA5E5amMO8tdnlNPFoccBrRnVrUi9q61M6eNfEprWzZU7P+tiHzgT05fOtTUzU0O38cgTTaGgSAMQGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=73T5B5k0bki4g0W/EAMH4tu0M02evZiS1Ed6O+rMInc=;
+ b=KnDZHKPZmV7oN4/UKqYlVUoDRLfY1eCLRquEUWt/Bq4pK/EWO0fjzmNxvBH6jvwMO7JxUVYH57eeZIa3CgJGqtJ7r63g0jJGdTcPhzMN/9pNNct+Zq/2n1fK4GfBywP3yHZTBwF3Ay/srDmab3DqHOKLIY12JhnXk83N2hvcV2Q=
+Received: from BYAPR15MB2278.namprd15.prod.outlook.com (2603:10b6:a02:8e::17)
+ by BYAPR15MB2933.namprd15.prod.outlook.com (2603:10b6:a03:f6::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2814.13; Wed, 18 Mar
+ 2020 18:48:55 +0000
+Received: from BYAPR15MB2278.namprd15.prod.outlook.com
+ ([fe80::4d5a:6517:802b:5f47]) by BYAPR15MB2278.namprd15.prod.outlook.com
+ ([fe80::4d5a:6517:802b:5f47%4]) with mapi id 15.20.2814.021; Wed, 18 Mar 2020
+ 18:48:55 +0000
+Date:   Wed, 18 Mar 2020 11:48:52 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Joe Stringer <joe@wand.net.nz>
+CC:     <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        clang-built-linux@googlegroups.com,
-        Stanislav Fomichev <sdf@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: Re: [PATCH bpf-next 3/7] bpf: Add socket assign support
+Message-ID: <20200318184852.vwzuc4esqemsn7gx@kafai-mbp>
+References: <20200312233648.1767-1-joe@wand.net.nz>
+ <20200312233648.1767-4-joe@wand.net.nz>
+ <20200316225729.kd4hmz3oco5l7vn4@kafai-mbp>
+ <CAOftzPgsVOqCLZatjytBXdQxH-DqJxiycXWN2d4C_-BjR5v1Kw@mail.gmail.com>
+ <20200317062623.y5v2hejgtdbvexnz@kafai-mbp>
+ <CAOftzPjXexvng-+77b-4Yw0pEBHXchsNVwrx+h9vV+5XBQzy-g@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOftzPjXexvng-+77b-4Yw0pEBHXchsNVwrx+h9vV+5XBQzy-g@mail.gmail.com>
+User-Agent: NeoMutt/20180716
+X-ClientProxiedBy: CO2PR05CA0103.namprd05.prod.outlook.com
+ (2603:10b6:104:1::29) To BYAPR15MB2278.namprd15.prod.outlook.com
+ (2603:10b6:a02:8e::17)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp (2620:10d:c090:400::5:9ce5) by CO2PR05CA0103.namprd05.prod.outlook.com (2603:10b6:104:1::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.11 via Frontend Transport; Wed, 18 Mar 2020 18:48:54 +0000
+X-Originating-IP: [2620:10d:c090:400::5:9ce5]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b86cdc06-e3d6-4446-afb9-08d7cb6d0280
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2933:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2933BDDC55DBC143BD3ED9C0D5F70@BYAPR15MB2933.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-Forefront-PRVS: 03468CBA43
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(346002)(366004)(376002)(136003)(39860400002)(396003)(199004)(66556008)(66476007)(4326008)(81166006)(966005)(33716001)(5660300002)(81156014)(66946007)(86362001)(8676002)(1076003)(8936002)(54906003)(55016002)(53546011)(9686003)(6496006)(316002)(2906002)(6916009)(186003)(16526019)(478600001)(52116002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2933;H:BYAPR15MB2278.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
+Received-SPF: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Uq72oJoGHm0/cKv4TNEl+/WKsiUEEwdrgCZ4Y3gvbHO3yXVXrxTNZSlFnZlsFbeSMEkcimWuYvg2rLR6JGD2hWVY2a4HIw4W1mWYim3dy9mFI3Tk/PBjTfedruEJ+P24qeEK5+/9W2kbTnR0zzQ7CD6/nErtI2bmlbh+LTW5KXWFmybKYOo4PbCZ7AmV1uz62+GjsOi8kdF98hetX4iPSsCJLn2Y8GA5bueoOhLEIlJq99mGg5KMv/xHcIyUyVKPjxJUgWhFZ5OL+8lEHdkJAprQ1wMCGArpDN47VdUHQfR45++dYmlLEy4ob4vqaacy5GUm54Or76VLFhwGSPcmzNjNovbkdNrUhQOpiW2G8gz2zC2idgmvb0hc96INwC1ej/GB66ruHSxOJEVlSfqHI7EXx1kj3ItfiF2zpDY8POmUl1BNLx37LH33TBXhg+xVMFWSPE1P4DjHleSnL55M7lAYvJrpksc8cusv9bpQQBo7+c5V04NZPUpnK/2FJbXC0SOZDoihBZE7ZrDu4g7DAA==
+X-MS-Exchange-AntiSpam-MessageData: 3Ohz4Ej0cPVP8GrB1R+XO80Fq+0ufuVLfy3m0H7YIOGKzTnqi4Nz8WbCJf6ZN2BQO8tWApuOM4VbQ8FvvgUv3Y+j89rVVaIlo5N709dfD7pwIeNfAeXd7eUgMoZjQz07V86Gklt/yzeDhN45ixHfbWj+wMfoRrK+w9YhhDXLrpFvgpTsuW+7HriuH16ciX+2
+X-MS-Exchange-CrossTenant-Network-Message-Id: b86cdc06-e3d6-4446-afb9-08d7cb6d0280
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2020 18:48:55.1785
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CKRbC9l+ffRo64Ht6/yYxxHfd4Ym5wIZ2pxnYbcqjqLoFu0OuZkdzsXY4s0BPjB+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2933
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
+ definitions=2020-03-18_07:2020-03-18,2020-03-18 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 adultscore=0
+ malwarescore=0 suspectscore=0 priorityscore=1501 phishscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 bulkscore=0 impostorscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2003180083
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 18, 2020 at 10:59 AM Fangrui Song <maskray@google.com> wrote:
->
->
-> On 2020-03-17, Andrii Nakryiko wrote:
-> >On Tue, Mar 17, 2020 at 1:58 PM Fangrui Song <maskray@google.com> wrote:
-> >>
-> >>
-> >> On 2020-03-17, Stanislav Fomichev wrote:
-> >> >On 03/16, Fangrui Song wrote:
-> >> >> On 2020-03-16, Andrii Nakryiko wrote:
-> >> >> > On Mon, Mar 16, 2020 at 10:21 PM Fangrui Song <maskray@google.com> wrote:
-> >> >> > >
-> >> >> > >
-> >> >> > > On 2020-03-16, Andrii Nakryiko wrote:
-> >> >> > > >On Mon, Mar 16, 2020 at 8:37 PM Fangrui Song <maskray@google.com> wrote:
-> >> >> > > >>
-> >> >> > > >> On 2020-03-16, Andrii Nakryiko wrote:
-> >> >> > > >> >On Mon, Mar 16, 2020 at 6:17 PM Fangrui Song <maskray@google.com> wrote:
-> >> >> > > >> >>
-> >> >> > > >> >> Simplify gen_btf logic to make it work with llvm-objcopy and
-> >> >> > > >> >> llvm-objdump.  We just need to retain one section .BTF. To do so, we can
-> >> >> > > >> >> use a simple objcopy --only-section=.BTF instead of jumping all the
-> >> >> > > >> >> hoops via an architecture-less binary file.
-> >> >> > > >> >>
-> >> >> > > >> >> We use a dd comment to change the e_type field in the ELF header from
-> >> >> > > >> >> ET_EXEC to ET_REL so that .btf.vmlinux.bin.o will be accepted by lld.
-> >> >> > > >> >>
-> >> >> > > >> >> Fixes: df786c9b9476 ("bpf: Force .BTF section start to zero when dumping from vmlinux")
-> >> >> > > >> >> Cc: Stanislav Fomichev <sdf@google.com>
-> >> >> > > >> >> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> >> >> > > >> >> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-> >> >> > > >> >> Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-> >> >> > > >> >> Link: https://github.com/ClangBuiltLinux/linux/issues/871
-> >> >> > > >> >> Signed-off-by: Fangrui Song <maskray@google.com>
-> >> >> > > >> >> ---
-> >> >> > > >> >>  scripts/link-vmlinux.sh | 13 ++-----------
-> >> >> > > >> >>  1 file changed, 2 insertions(+), 11 deletions(-)
-> >> >> > > >> >>
-> >> >> > > >> >> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> >> >> > > >> >> index dd484e92752e..84be8d7c361d 100755
-> >> >> > > >> >> --- a/scripts/link-vmlinux.sh
-> >> >> > > >> >> +++ b/scripts/link-vmlinux.sh
-> >> >> > > >> >> @@ -120,18 +120,9 @@ gen_btf()
-> >> >> > > >> >>
-> >> >> > > >> >>         info "BTF" ${2}
-> >> >> > > >> >>         vmlinux_link ${1}
-> >> >> > > >> >> -       LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
-> >> >> > > >> >
-> >> >> > > >> >Is it really tested? Seems like you just dropped .BTF generation step
-> >> >> > > >> >completely...
-> >> >> > > >>
-> >> >> > > >> Sorry, dropped the whole line:/
-> >> >> > > >> I don't know how to test .BTF . I can only check readelf -S...
-> >> >> > > >>
-> >> >> > > >> Attached the new patch.
-> >> >> > > >>
-> >> >> > > >>
-> >> >> > > >>  From 02afb9417d4f0f8d2175c94fc3797a94a95cc248 Mon Sep 17 00:00:00 2001
-> >> >> > > >> From: Fangrui Song <maskray@google.com>
-> >> >> > > >> Date: Mon, 16 Mar 2020 18:02:31 -0700
-> >> >> > > >> Subject: [PATCH bpf v2] bpf: Support llvm-objcopy and llvm-objdump for
-> >> >> > > >>   vmlinux BTF
-> >> >> > > >>
-> >> >> > > >> Simplify gen_btf logic to make it work with llvm-objcopy and llvm-objdump.
-> >> >> > > >> We use a dd comment to change the e_type field in the ELF header from
-> >> >> > > >> ET_EXEC to ET_REL so that .btf.vmlinux.bin.o can be accepted by lld.
-> >> >> > > >>
-> >> >> > > >> Fixes: df786c9b9476 ("bpf: Force .BTF section start to zero when dumping from vmlinux")
-> >> >> > > >> Cc: Stanislav Fomichev <sdf@google.com>
-> >> >> > > >> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> >> >> > > >> Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-> >> >> > > >> Link: https://github.com/ClangBuiltLinux/linux/issues/871
-> >> >> > > >> Signed-off-by: Fangrui Song <maskray@google.com>
-> >> >> > > >> ---
-> >> >> > > >>   scripts/link-vmlinux.sh | 14 +++-----------
-> >> >> > > >>   1 file changed, 3 insertions(+), 11 deletions(-)
-> >> >> > > >>
-> >> >> > > >> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> >> >> > > >> index dd484e92752e..b23313944c89 100755
-> >> >> > > >> --- a/scripts/link-vmlinux.sh
-> >> >> > > >> +++ b/scripts/link-vmlinux.sh
-> >> >> > > >> @@ -120,18 +120,10 @@ gen_btf()
-> >> >> > > >>
-> >> >> > > >>         info "BTF" ${2}
-> >> >> > > >>         vmlinux_link ${1}
-> >> >> > > >> -       LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
-> >> >> > > >> +       ${PAHOLE} -J ${1}
-> >> >> > > >
-> >> >> > > >I'm not sure why you are touching this line at all. LLVM_OBJCOPY part
-> >> >> > > >is necessary, pahole assumes llvm-objcopy by default, but that can
-> >> >> > > >(and should for objcopy) be overridden with LLVM_OBJCOPY.
-> >> >> > >
-> >> >> > > Why is LLVM_OBJCOPY assumed? What if llvm-objcopy is not available?
-> >> >> >
-> >> >> > It's pahole assumption that we have to live with. pahole assumes
-> >> >> > llvm-objcopy internally, unless it is overriden with LLVM_OBJCOPY env
-> >> >> > var. So please revert this line otherwise you are breaking it for GCC
-> >> >> > objcopy case.
-> >> >>
-> >> >> Acknowledged. Uploaded v3.
-> >> >>
-> >> >> I added back 2>/dev/null which was removed by a previous change, to
-> >> >> suppress GNU objcopy warnings. The warnings could be annoying in V=1
-> >> >> output.
-> >> >>
-> >> >> > > This is confusing that one tool assumes llvm-objcopy while the block
-> >> >> > > below immediately uses GNU objcopy (without this patch).
-> >> >> > >
-> >> >> > > e83b9f55448afce3fe1abcd1d10db9584f8042a6 "kbuild: add ability to
-> >> >> > > generate BTF type info for vmlinux" does not say why LLVM_OBJCOPY is
-> >> >> > > set.
-> >> >> > >
-> >> >> > > >>
-> >> >> > > >> -       # dump .BTF section into raw binary file to link with final vmlinux
-> >> >> > > >> -       bin_arch=$(LANG=C ${OBJDUMP} -f ${1} | grep architecture | \
-> >> >> > > >> -               cut -d, -f1 | cut -d' ' -f2)
-> >> >> > > >> -       bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
-> >> >> > > >> -               awk '{print $4}')
-> >> >> > > >> -       ${OBJCOPY} --change-section-address .BTF=0 \
-> >> >> > > >> -               --set-section-flags .BTF=alloc -O binary \
-> >> >> > > >> -               --only-section=.BTF ${1} .btf.vmlinux.bin
-> >> >> > > >> -       ${OBJCOPY} -I binary -O ${bin_format} -B ${bin_arch} \
-> >> >> > > >> -               --rename-section .data=.BTF .btf.vmlinux.bin ${2}
-> >> >> > > >> +       # Extract .BTF section, change e_type to ET_REL, to link with final vmlinux
-> >> >> > > >> +       ${OBJCOPY} --only-section=.BTF ${1} ${2} && printf '\1' | dd of=${2} conv=notrunc bs=1 seek=16
-> >> >> > > >>   }
-> >> >> > > >>
-> >> >> > > >>   # Create ${2} .o file with all symbols from the ${1} object file
-> >> >> > > >> --
-> >> >> > > >> 2.25.1.481.gfbce0eb801-goog
-> >> >> > > >>
-> >> >>
-> >> >> From ca3597477542453e9f63185c27c162da081a4baf Mon Sep 17 00:00:00 2001
-> >> >> From: Fangrui Song <maskray@google.com>
-> >> >> Date: Mon, 16 Mar 2020 22:38:23 -0700
-> >> >> Subject: [PATCH bpf v3] bpf: Support llvm-objcopy and llvm-objdump for
-> >> >>  vmlinux BTF
-> >> >>
-> >> >> Simplify gen_btf logic to make it work with llvm-objcopy and llvm-objdump.
-> >> >> Add 2>/dev/null to suppress GNU objcopy (but not llvm-objcopy) warnings
-> >> >> "empty loadable segment detected at vaddr=0xffffffff81000000, is this intentional?"
-> >> >> Our use of --only-section drops many SHF_ALLOC sections which will essentially nullify
-> >> >> program headers. When used as linker input, program headers are simply
-> >> >> ignored.
-> >> >>
-> >> >> We use a dd command to change the e_type field in the ELF header from
-> >> >> ET_EXEC to ET_REL so that .btf.vmlinux.bin.o can be accepted by lld.
-> >> >> Accepting ET_EXEC as an input file is an extremely rare GNU ld feature
-> >> >> that lld does not intend to support, because this is very error-prone.
-> >> >>
-> >> >> Fixes: df786c9b9476 ("bpf: Force .BTF section start to zero when dumping from vmlinux")
-> >> >> Cc: Stanislav Fomichev <sdf@google.com>
-> >> >> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> >> >> Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-> >> >> Link: https://github.com/ClangBuiltLinux/linux/issues/871
-> >> >> Signed-off-by: Fangrui Song <maskray@google.com>
-> >> >> ---
-> >> >>  scripts/link-vmlinux.sh | 12 ++----------
-> >> >>  1 file changed, 2 insertions(+), 10 deletions(-)
-> >> >>
-> >> >> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> >> >> index dd484e92752e..c3e808a89d4a 100755
-> >> >> --- a/scripts/link-vmlinux.sh
-> >> >> +++ b/scripts/link-vmlinux.sh
-> >> >> @@ -122,16 +122,8 @@ gen_btf()
-> >> >>      vmlinux_link ${1}
-> >> >>      LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
-> >> >> -    # dump .BTF section into raw binary file to link with final vmlinux
-> >> >> -    bin_arch=$(LANG=C ${OBJDUMP} -f ${1} | grep architecture | \
-> >> >> -            cut -d, -f1 | cut -d' ' -f2)
-> >> >> -    bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
-> >> >> -            awk '{print $4}')
-> >> >> -    ${OBJCOPY} --change-section-address .BTF=0 \
-> >> >> -            --set-section-flags .BTF=alloc -O binary \
-> >> >> -            --only-section=.BTF ${1} .btf.vmlinux.bin
-> >> >> -    ${OBJCOPY} -I binary -O ${bin_format} -B ${bin_arch} \
-> >> >> -            --rename-section .data=.BTF .btf.vmlinux.bin ${2}
-> >> >> +    # Extract .BTF section, change e_type to ET_REL, to link with final vmlinux
-> >> >> +    ${OBJCOPY} --only-section=.BTF ${1} ${2} 2> /dev/null && printf '\1' | dd of=${2} conv=notrunc bs=1 seek=16
-> >> >No, it doesn't work unfortunately, I get "in-kernel BTF is malformed"
-> >> >from the kernel.
-> >> >
-> >> >I think that's because -O binary adds the following:
-> >> >$ nm .btf.vmxlinux.bin
-> >> >00000000002f7bc9 D _binary__btf_vmlinux_bin_end
-> >> >00000000002f7bc9 A _binary__btf_vmlinux_bin_size
-> >> >0000000000000000 D _binary__btf_vmlinux_bin_start
-> >> >
-> >> >While non-binary mode doesn't:
-> >> >$ nm .btf.vmxlinux.bin
-> >> >
-> >> >We don't add them manually in the linker map and expect objcopy to add
-> >> >them, see:
-> >> >https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/kernel/bpf/btf.c#n3480
-> >>
-> >> Attached v4.
-> >>
-> >> * Added status=none to the dd command to suppress stderr output.
-> >> * `objcopy -I binary` synthesized symbols are only used in BTF, not
-> >> elsewhere. I think we can replace it with a more common trick,
-> >> __start_$sectionname __stop_$sectionname.
-> >> * GNU ld<2.23 can define __start_BTF and __stop_BTF as SHN_ABS.
-> >>    I think it is totally fine for a SHN_ABS symbol to be referenced by an
-> >>    R_X86_64_32S (absolute relocation), but arch/x86/tools/relocs.c
-> >>    contains an unnecessarily rigid check that rejects this.
-> >>
-> >>    ...
-> >>    Invalid absolute R_X86_64_32S relocation: __start_BTF
-> >>    make[3]: *** [arch/x86/boot/compressed/Makefile:123:
-> >>    arch/x86/boot/compressed/vmlinux.relocs] Error 1
-> >>
-> >>    Since we are going to bump binutils version requirement to 2.23, which
-> >>    will completely avoid the issue. I will not mention it again.
-> >>    https://lore.kernel.org/lkml/202003161354.538479F16@keescook/
-> >>
-> >> * I should mention that an orphan BTF (previously .BTF) could trigger
-> >>    a --orphan-handling=warn warning. So eventually we might need to
-> >>    add an output section description
-> >>
-> >>      BTF : { *(BTF) }
-> >>
-> >>    to the vmlinux linker script for every arch.
-> >>    I'll not do that in this patch, though.
-> >>
-> >> >
-> >> >>  }
-> >> >>  # Create ${2} .o file with all symbols from the ${1} object file
-> >> >> --
-> >> >> 2.25.1.481.gfbce0eb801-goog
-> >> >>
-> >>
-> >>  From 9b694d68fefe041464eccb948f6d246fab67942d Mon Sep 17 00:00:00 2001
-> >> From: Fangrui Song <maskray@google.com>
-> >> Date: Tue, 17 Mar 2020 13:51:04 -0700
-> >> Subject: [PATCH bpf-next v4] bpf: Support llvm-objcopy and
-> >>   llvm-objdump for vmlinux BTF
-> >>
-> >> Simplify gen_btf logic to make it work with llvm-objcopy and llvm-objdump.
-> >> The existing 'file format' and 'architecture' parsing logic is brittle
-> >> and does not work with llvm-objcopy/llvm-objdump.
-> >>
-> >> .BTF in .tmp_vmlinux.btf is non-SHF_ALLOC. Add the SHF_ALLOC flag and
-> >> rename .BTF to BTF so that C code can reference the section via linker
-> >> synthesized __start_BTF and __stop_BTF. This fixes a small problem that
-> >> previous .BTF had the SHF_WRITE flag. Additionally, `objcopy -I binary`
-> >> synthesized symbols _binary__btf_vmlinux_bin_start and
-> >> _binary__btf_vmlinux_bin_start (not used elsewhere) are replaced with
-> >> more common __start_BTF and __stop_BTF.
-> >>
-> >> Add 2>/dev/null because GNU objcopy (but not llvm-objcopy) warns
-> >> "empty loadable segment detected at vaddr=0xffffffff81000000, is this intentional?"
-> >>
-> >> We use a dd command to change the e_type field in the ELF header from
-> >> ET_EXEC to ET_REL so that lld will accept .btf.vmlinux.bin.o.  Accepting
-> >> ET_EXEC as an input file is an extremely rare GNU ld feature that lld
-> >> does not intend to support, because this is error-prone.
-> >>
-> >> Fixes: df786c9b9476 ("bpf: Force .BTF section start to zero when dumping from vmlinux")
-> >> Cc: Stanislav Fomichev <sdf@google.com>
-> >> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> >> Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-> >> Link: https://github.com/ClangBuiltLinux/linux/issues/871
-> >> Signed-off-by: Fangrui Song <maskray@google.com>
-> >> ---
-> >>   kernel/bpf/btf.c        |  9 ++++-----
-> >>   kernel/bpf/sysfs_btf.c  | 11 +++++------
-> >>   scripts/link-vmlinux.sh | 16 ++++++----------
-> >>   3 files changed, 15 insertions(+), 21 deletions(-)
-> >>
-> >> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> >> index 787140095e58..51fff49de561 100644
-> >> --- a/kernel/bpf/btf.c
-> >> +++ b/kernel/bpf/btf.c
-> >> @@ -3477,8 +3477,8 @@ static struct btf *btf_parse(void __user *btf_data, u32 btf_data_size,
-> >>         return ERR_PTR(err);
-> >>   }
-> >>
-> >> -extern char __weak _binary__btf_vmlinux_bin_start[];
-> >> -extern char __weak _binary__btf_vmlinux_bin_end[];
-> >> +extern char __weak __start_BTF[];
-> >> +extern char __weak __stop_BTF[];
-> >>   extern struct btf *btf_vmlinux;
-> >>
-> >>   #define BPF_MAP_TYPE(_id, _ops)
-> >> @@ -3605,9 +3605,8 @@ struct btf *btf_parse_vmlinux(void)
-> >>         }
-> >>         env->btf = btf;
-> >>
-> >> -       btf->data = _binary__btf_vmlinux_bin_start;
-> >> -       btf->data_size = _binary__btf_vmlinux_bin_end -
-> >> -               _binary__btf_vmlinux_bin_start;
-> >> +       btf->data = __start_BTF;
-> >> +       btf->data_size = __stop_BTF - __start_BTF;
-> >>
-> >>         err = btf_parse_hdr(env);
-> >>         if (err)
-> >> diff --git a/kernel/bpf/sysfs_btf.c b/kernel/bpf/sysfs_btf.c
-> >> index 7ae5dddd1fe6..3b495773de5a 100644
-> >> --- a/kernel/bpf/sysfs_btf.c
-> >> +++ b/kernel/bpf/sysfs_btf.c
-> >> @@ -9,15 +9,15 @@
-> >>   #include <linux/sysfs.h>
-> >>
-> >>   /* See scripts/link-vmlinux.sh, gen_btf() func for details */
-> >> -extern char __weak _binary__btf_vmlinux_bin_start[];
-> >> -extern char __weak _binary__btf_vmlinux_bin_end[];
-> >> +extern char __weak __start_BTF[];
-> >> +extern char __weak __stop_BTF[];
-> >>
-> >>   static ssize_t
-> >>   btf_vmlinux_read(struct file *file, struct kobject *kobj,
-> >>                  struct bin_attribute *bin_attr,
-> >>                  char *buf, loff_t off, size_t len)
-> >>   {
-> >> -       memcpy(buf, _binary__btf_vmlinux_bin_start + off, len);
-> >> +       memcpy(buf, __start_BTF + off, len);
-> >>         return len;
-> >>   }
-> >>
-> >> @@ -30,15 +30,14 @@ static struct kobject *btf_kobj;
-> >>
-> >>   static int __init btf_vmlinux_init(void)
-> >>   {
-> >> -       if (!_binary__btf_vmlinux_bin_start)
-> >> +       if (!__start_BTF)
-> >>                 return 0;
-> >>
-> >>         btf_kobj = kobject_create_and_add("btf", kernel_kobj);
-> >>         if (!btf_kobj)
-> >>                 return -ENOMEM;
-> >>
-> >> -       bin_attr_btf_vmlinux.size = _binary__btf_vmlinux_bin_end -
-> >> -                                   _binary__btf_vmlinux_bin_start;
-> >> +       bin_attr_btf_vmlinux.size = __stop_BTF - __start_BTF;
-> >>
-> >>         return sysfs_create_bin_file(btf_kobj, &bin_attr_btf_vmlinux);
-> >>   }
-> >> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> >> index dd484e92752e..c0d2ecf1bff7 100755
-> >> --- a/scripts/link-vmlinux.sh
-> >> +++ b/scripts/link-vmlinux.sh
-> >> @@ -122,16 +122,12 @@ gen_btf()
-> >>         vmlinux_link ${1}
-> >>         LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
-> >>
-> >> -       # dump .BTF section into raw binary file to link with final vmlinux
-> >> -       bin_arch=$(LANG=C ${OBJDUMP} -f ${1} | grep architecture | \
-> >> -               cut -d, -f1 | cut -d' ' -f2)
-> >> -       bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
-> >> -               awk '{print $4}')
-> >> -       ${OBJCOPY} --change-section-address .BTF=0 \
-> >> -               --set-section-flags .BTF=alloc -O binary \
-> >> -               --only-section=.BTF ${1} .btf.vmlinux.bin
-> >> -       ${OBJCOPY} -I binary -O ${bin_format} -B ${bin_arch} \
-> >> -               --rename-section .data=.BTF .btf.vmlinux.bin ${2}
-> >> +       # Extract .BTF, add SHF_ALLOC, rename to BTF so that we can reference
-> >> +       # it via linker synthesized __start_BTF and __stop_BTF. Change e_type
-> >> +       # to ET_REL so that it can be used to link final vmlinux.
-> >> +       ${OBJCOPY} --only-section=.BTF --set-section-flags .BTF=alloc,readonly \
-> >> +               --rename-section .BTF=BTF ${1} ${2} 2>/dev/null && \
+On Tue, Mar 17, 2020 at 05:46:58PM -0700, Joe Stringer wrote:
+> On Mon, Mar 16, 2020 at 11:27 PM Martin KaFai Lau <kafai@fb.com> wrote:
 > >
-> >You can't just rename .BTF into BTF. ".BTF" is part of BTF
-> >specification, tools like bpftool rely on that specific name. Libbpf
-> >relies on this name as well. It cannot be changed. Please stop making
-> >arbitrary changes and breaking stuff, please.
->
-> I can't find anything which really assumes ".BTF" under tools/bpf/bpftool
-
-It's in libbpf, which bpftool uses to load and work with BTF. See
-tools/lib/bpf/btf.{c,h}. And at this point there are other tools and
-apps that rely on .BTF section, so there is absolutely no way we are
-going to rename this, I'm sorry.
-
->
-> % grep -r '\.BTF'
-> Documentation/bpftool-btf.rst:            .BTF section with well-defined BTF binary format data,
->
+> > On Mon, Mar 16, 2020 at 08:06:38PM -0700, Joe Stringer wrote:
+> > > On Mon, Mar 16, 2020 at 3:58 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > > >
+> > > > On Thu, Mar 12, 2020 at 04:36:44PM -0700, Joe Stringer wrote:
+> > > > > Add support for TPROXY via a new bpf helper, bpf_sk_assign().
+> > > > >
+> > > > > This helper requires the BPF program to discover the socket via a call
+> > > > > to bpf_sk*_lookup_*(), then pass this socket to the new helper. The
+> > > > > helper takes its own reference to the socket in addition to any existing
+> > > > > reference that may or may not currently be obtained for the duration of
+> > > > > BPF processing. For the destination socket to receive the traffic, the
+> > > > > traffic must be routed towards that socket via local route, the socket
+> > > > I also missed where is the local route check in the patch.
+> > > > Is it implied by a sk can be found in bpf_sk*_lookup_*()?
+> > >
+> > > This is a requirement for traffic redirection, it's not enforced by
+> > > the patch. If the operator does not configure routing for the relevant
+> > > traffic to ensure that the traffic is delivered locally, then after
+> > > the eBPF program terminates, it will pass up through ip_rcv() and
+> > > friends and be subject to the whims of the routing table. (or
+> > > alternatively if the BPF program redirects somewhere else then this
+> > > reference will be dropped).
+> > >
+> > > Maybe there's a path to simplifying this configuration path in future
+> > > to loosen this requirement, but for now I've kept the series as
+> > > minimal as possible on that front.
+> > >
+> > > > [ ... ]
+> > > >
+> > > > > diff --git a/net/core/filter.c b/net/core/filter.c
+> > > > > index cd0a532db4e7..bae0874289d8 100644
+> > > > > --- a/net/core/filter.c
+> > > > > +++ b/net/core/filter.c
+> > > > > @@ -5846,6 +5846,32 @@ static const struct bpf_func_proto bpf_tcp_gen_syncookie_proto = {
+> > > > >       .arg5_type      = ARG_CONST_SIZE,
+> > > > >  };
+> > > > >
+> > > > > +BPF_CALL_3(bpf_sk_assign, struct sk_buff *, skb, struct sock *, sk, u64, flags)
+> > > > > +{
+> > > > > +     if (flags != 0)
+> > > > > +             return -EINVAL;
+> > > > > +     if (!skb_at_tc_ingress(skb))
+> > > > > +             return -EOPNOTSUPP;
+> > > > > +     if (unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
+> > > > > +             return -ENOENT;
+> > > > > +
+> > > > > +     skb_orphan(skb);
+> > > > > +     skb->sk = sk;
+> > > > sk is from the bpf_sk*_lookup_*() which does not consider
+> > > > the bpf_prog installed in SO_ATTACH_REUSEPORT_EBPF.
+> > > > However, the use-case is currently limited to sk inspection.
+> > > >
+> > > > It now supports selecting a particular sk to receive traffic.
+> > > > Any plan in supporting that?
+> > >
+> > > I think this is a general bpf_sk*_lookup_*() question, previous
+> > > discussion[0] settled on avoiding that complexity before a use case
+> > > arises, for both TC and XDP versions of these helpers; I still don't
+> > > have a specific use case in mind for such functionality. If we were to
+> > > do it, I would presume that the socket lookup caller would need to
+> > > pass a dedicated flag (supported at TC and likely not at XDP) to
+> > > communicate that SO_ATTACH_REUSEPORT_EBPF progs should be respected
+> > > and used to select the reuseport socket.
+> > It is more about the expectation on the existing SO_ATTACH_REUSEPORT_EBPF
+> > usecase.  It has been fine because SO_ATTACH_REUSEPORT_EBPF's bpf prog
+> > will still be run later (e.g. from tcp_v4_rcv) to decide which sk to
+> > recieve the skb.
 > >
-> >> +               printf '\1' | dd of=${2} conv=notrunc bs=1 seek=16 status=none
+> > If the bpf@tc assigns a TCP_LISTEN sk in bpf_sk_assign(),
+> > will the SO_ATTACH_REUSEPORT_EBPF's bpf still be run later
+> > to make the final sk decision?
+> 
+> I don't believe so, no:
+> 
+> ip_local_deliver()
+> -> ...
+> -> ip_protocol_deliver_rcu()
+> -> tcp_v4_rcv()
+> -> __inet_lookup_skb()
+> -> skb_steal_sock(skb)
+> 
+> But this will only affect you if you are running both the bpf@tc
+> program with sk_assign() and the reuseport BPF sock programs at the
+> same time.
+I don't think it is the right answer to ask the user to be careful and
+only use either bpf_sk_assign()@tc or bpf_prog@so_reuseport.
+
+> This is why I link it back to the bpf_sk*_lookup_*()
+> functions: If the socket lookup in the initial step respects reuseport
+> BPF prog logic and returns the socket using the same logic, then the
+> packet will be directed to the socket you expect. Just like how
+> non-BPF reuseport would work with this series today.
+Changing bpf_sk*_lookup_*() is a way to solve it but I don't know what it
+may run into when recurring bpf_prog, i.e. running bpf@so-reuseport inside
+bpf@tc. That may need a closer look.
+
+> 
+> > >
+> > > > > diff --git a/net/ipv6/ip6_input.c b/net/ipv6/ip6_input.c
+> > > > > index 7b089d0ac8cd..f7b42adca9d0 100644
+> > > > > --- a/net/ipv6/ip6_input.c
+> > > > > +++ b/net/ipv6/ip6_input.c
+> > > > > @@ -285,7 +285,10 @@ static struct sk_buff *ip6_rcv_core(struct sk_buff *skb, struct net_device *dev,
+> > > > >       rcu_read_unlock();
+> > > > >
+> > > > >       /* Must drop socket now because of tproxy. */
+> > > > > -     skb_orphan(skb);
+> > > > > +     if (skb_dst_is_sk_prefetch(skb))
+> > > > > +             dst_sk_prefetch_fetch(skb);
+> > > > > +     else
+> > > > > +             skb_orphan(skb);
+> > > > If I understand it correctly, this new test is to skip
+> > > > the skb_orphan() call for locally routed skb.
+> > > > Others cases (forward?) still depend on skb_orphan() to be called here?
+> > >
+> > > Roughly yes. 'locally routed skb' is a bit loose wording though, at
+> > > this point the BPF program only prefetched the socket to let the stack
+> > > know that it should deliver the skb to that socket, assuming that it
+> > > passes the upcoming routing check.
+> > Which upcoming routing check?  I think it is the part I am missing.
 > >
-> >I wonder if there is any less hacky and more obvious way to achieve this?..
->
-> No. As a maintainer of lld/ELF, I abandoned https://reviews.llvm.org/D76174 .
-> Also as a maintainer of LLVM binary utilities, I have to complain the whole
-> scheme is really hacky and did not get enough scrutiny when they were merged.
->
-> A previous comment said pahole somehow relied on llvm-objcopy so LLVM_OBJCOPY
-> is used, while llvm-objcopy/llvm-objdump are not really supported...  Note, on
+> > In patch 4, let say the dst_check() returns NULL (may be due to a route
+> > change).  Later in the upper stack, it does a route lookup
+> > (ip_route_input_noref() or ip6_route_input()).  Could it return
+> > a forward route? and I assume missing a skb_orphan() call
+> > here will still be fine?
+> 
+> Yes it could return a forward route, in that case:
+> 
+> ip_forward()
+> -> if (unlikely(skb->sk)) goto drop;
+> 
+> Note that you'd have to get a socket reference to get to this point in
+It is another question that I have.  The TCP_LISTEN sk will suffer
+from this extra refcnt, e.g. SYNFLOOD.  Can something smarter
+be done in skb->destructor?
 
-pahole relies on llvm-objcopy internally to add/replace .BTF section.
-Instead of doubting everything I'm saying, you could just have grepped
-for 'llvm-objcopy' in pahole sources. It can be done differently, I'm
-sure, but we'll need to support old versions of pahole anyways, so
-LLVM_OBJCOPY=${OBJCOPY} parts stays, however confusing it might look.
+In general, it took me a while to wrap my head around thinking
+how a skb->_skb_refdst is related to assigning a sk to skb->sk.
+My understanding is it is a way to tell when not to call
+skb_orphan() here.  Have you considered other options (e.g.
+using a bit in skb->sk)?   It will be useful to explain
+them in the commit message.
 
-> March 16, I just pushed https://reviews.llvm.org/D76046 to make llvm-objdump
-> print bfdnames to some part of the existing hacks happy...
->
-> I am trying my best to make this stuff better.
-> BTF, when merged into LLVM in December 2018, was not really the best example demonstrating how a subproject should be merged...
-> OK, I'll stop complaining here.
-
-We should make sure that we are not making it worse first, don't you
-agree? I think it's more important, because there are many happy users
-already and breaking them is not an option. It's v5 of your patch and
-every single revision is broken, so I'm not sure you are the one to
-complain here. The least you can do to test this is to build kernel
-with BTF and run selftests/bpf, not just throw your patch out in hopes
-that others will point out all the issues.
-
->
-> commit cb0cc635c7a9fa8a3a0f75d4d896721819c63add "powerpc: Include .BTF section"
-> places .BTF somewhere in the writable section area, so if you insist on ".BTF",
-> I'll make a similar change and add some stuff to arch/x86/kernel/vmlinux.lds.S
->
-> >Also, this script has `set -e` at the top, so you don't have to chain
-> >all command with &&, you put this on separate line with the same
-> >effect, but it will look less confusing.
->
-> Not using section "BTF" has the downside that we have to add
->
-> .BTF : {
->    PROVIDE(__start_BTF = .);
->    *(.BTF)
->    PROVIDE(__stop_BTF = .);
-> }
->
-> to every arch/*/kernel/vmlinux.lds.S which can use BTF.
-
-It doesn't look all that terrible, so why not, I guess? But just
-curious, why this is not required for "BTF", but required for ".BTF"?
-Not very familiar with linker scripts setup in kernel.
-
->
-> >>   }
-> >>
-> >>   # Create ${2} .o file with all symbols from the ${1} object file
-> >> --
-> >> 2.25.1.481.gfbce0eb801-goog
-> >>
+> the first place. I see two options:
+> * BPF program operator didn't set up the routes correctly for local
+> socket destination
+> * BPF program looks up socket in another netns and tries to assign it.
+> 
+> For the latter case I could introduce a netns validation check to
+> ensure it matches the netns of the device.
+> 
+> > >
+> > > For more discussion on the other cases, there is the previous
+> > > thread[1] and in particular the child thread discussion with Florian,
+> > > Eric and Daniel.
+> > >
+> > > [0] https://urldefense.proofpoint.com/v2/url?u=https-3A__www.mail-2Darchive.com_netdev-40vger.kernel.org_msg253250.html&d=DwIBaQ&c=5VD0RTtNlTh3ycd41b3MUw&r=VQnoQ7LvghIj0gVEaiQSUw&m=mX45GxyUJ_HfsBIJTVMZY9ztD5rVViDuOIQ0pXtyJcM&s=z5lZSVTonmhT5OeyxsefzUC2fMqDEwFvlEV1qkyrULg&e=
+> > > [1] https://urldefense.proofpoint.com/v2/url?u=https-3A__www.spinics.net_lists_netdev_msg580058.html&d=DwIBaQ&c=5VD0RTtNlTh3ycd41b3MUw&r=VQnoQ7LvghIj0gVEaiQSUw&m=mX45GxyUJ_HfsBIJTVMZY9ztD5rVViDuOIQ0pXtyJcM&s=oFYt8cTKQEc-wEfY5YSsjfVN3QqBlFGfrrT7DTKw1rc&e=
