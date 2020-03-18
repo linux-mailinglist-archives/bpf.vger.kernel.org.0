@@ -2,101 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E282189392
-	for <lists+bpf@lfdr.de>; Wed, 18 Mar 2020 02:12:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E442C1893DD
+	for <lists+bpf@lfdr.de>; Wed, 18 Mar 2020 03:03:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727197AbgCRBMM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Mar 2020 21:12:12 -0400
-Received: from mail-ua1-f67.google.com ([209.85.222.67]:44762 "EHLO
-        mail-ua1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727496AbgCRBMK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Mar 2020 21:12:10 -0400
-Received: by mail-ua1-f67.google.com with SMTP id a33so8817056uad.11;
-        Tue, 17 Mar 2020 18:12:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YQUxQsKTflSf1jqqu7EXyaCvYDjM7rXV3AdTgILyGLc=;
-        b=Ka9KVMMXYype3zBtxFLeMETam2trwKLJi84DPgEkEazxab2hIpGlSXAk3szajTm6qm
-         nWmjvC22N441B7WvyYSrdMVA7Y/f4C8IlFanyael2OElgg3YzAi9q4RWSQ2LtfymLiVh
-         7NqreOoagLOdU9Zldx9NT1IvEvrcKzAg9jdRVBifLdoWOFCm6WUefHck3H7aK46H+RGk
-         SL79LRVqTy/Yr1Z/fJyjjBY6K3Upnlxr4rWiUVeg1AQ7VwHlJcYalAPBaDwiXdxzKYTP
-         YyioKXyiSqKMFBVHDxVSc2fszLWoVxxqEcEBQnfUNW9KbkFe1tKI3N3NCVEMbTj1oA/p
-         dycw==
+        id S1727069AbgCRCD7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Mar 2020 22:03:59 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:37970 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726871AbgCRCD7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Mar 2020 22:03:59 -0400
+Received: by mail-wm1-f68.google.com with SMTP id t13so1506940wmi.3;
+        Tue, 17 Mar 2020 19:03:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YQUxQsKTflSf1jqqu7EXyaCvYDjM7rXV3AdTgILyGLc=;
-        b=YQVEhAgm8tyLqws313nOmSY8nV1quRlNMF1yG34NV0GW3/Whm3c5zDA1f+dXi/nynB
-         EInivxPkq2eD92si98ktgL/OFT3aRuXqIK4C4f7R2hnUnV+kHW9oYesyeo7Z+ZyVanAa
-         qmRDYMHkfiDLEKivGscs8PnKjU8WnxOKuGWKORBANmohlDL6Va65qwRy5c8edlopeEvZ
-         NadNrukTD25wwPAGsUeb9Zr0C1/AU30jn2xg+86jhLIUmFOS594pq2Aj4vKkURP1BMQ6
-         HdsfY/eqjdI19y4fVA5+LjNEiMcUiwmsomQnM3ONw73jQ5G7RFIJEJGrGzcWAC4VTHwW
-         nX6w==
-X-Gm-Message-State: ANhLgQ1yS5smouGGc25UfFpax6e70oEyKrk1YZMsqVxbY7i7OjMFi4LF
-        q6edWuULt27bMqJ2iP2LV6mOP4AXDxqQOCf1pOc=
-X-Google-Smtp-Source: ADFU+vveNKEgyfn+pXyNzSHLXVXMVYZf1qY4AqaVW6j1CQugHCxtDn/EHyqWR7bwHrM9prMnRlCcXUjadRSVFEoDyPg=
-X-Received: by 2002:a9f:2f08:: with SMTP id x8mr1387838uaj.49.1584493928730;
- Tue, 17 Mar 2020 18:12:08 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=FABasMwMskF7foIZI74WnbbUanagtErXSwxfbZA1fzE=;
+        b=ug4fGgOg5X8gtg6iHr63X5hKzVmpphbqE+gf7qUbPloiEreLQE/cIy64WDkNT5OdyM
+         kt8W/Swfnq8S60xkLuJWfdPoOEjfOZ/TBWtos3ZS423a3A3lkXFGXuiynHVKFd9wtqGA
+         RCZZPJDjln7okgrleBJuG8Ex79qEq+OFAXrWYt5FaWf3JY5ms4duqQ9qfK685vnYu6rG
+         puAvxbUsZjFrqSWLWb6sXMrcACDdkRXQozoNhwOWLJ1EPYdmDbDYmlnqBoPIpPFxvhnj
+         FoyAFebEQYtPktOuPeZEEjrIxnaCcb/Nw+PkkSqBcQQmmP9miGoFQynUxyI4vL6XZ5GF
+         Vi6Q==
+X-Gm-Message-State: ANhLgQ3AmQcZGZ9EWlT95s3Ha20t+AUS6wTeWHyikid7oHM8zLTXs2dJ
+        PKDiMQ92hKtcB/49EPIBqYXfgESN3VSAHuaKl00=
+X-Google-Smtp-Source: ADFU+vsw82WXRu0BqjkZhF7t+00pdye6vztVtWOdcHEdze2KolKLSoWmR0SfOIvjUW7sIp/JtISdahlGzpzoDpiaQOs=
+X-Received: by 2002:a7b:cb50:: with SMTP id v16mr2074239wmj.74.1584497037073;
+ Tue, 17 Mar 2020 19:03:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200316163646.2465-1-a.s.protopopov@gmail.com>
- <202003161423.B51FDA8083@keescook> <CAGn_itw594Q_-4gC8=3jjRGF-wx90GeXMWBAz54X-UEer9pbtA@mail.gmail.com>
- <202003171314.387F3F187D@keescook>
-In-Reply-To: <202003171314.387F3F187D@keescook>
-From:   Anton Protopopov <a.s.protopopov@gmail.com>
-Date:   Tue, 17 Mar 2020 21:11:57 -0400
-Message-ID: <CAGn_itz7jgoP5J1pjJ7BLaeh4my=JY2yQ7T8ssoYrqPOWvwKug@mail.gmail.com>
-Subject: Re: [PATCH] seccomp: allow BPF_MOD ALU instructions
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
+References: <20200312233648.1767-1-joe@wand.net.nz> <20200312233648.1767-4-joe@wand.net.nz>
+ <20200316225729.kd4hmz3oco5l7vn4@kafai-mbp> <CAOftzPgsVOqCLZatjytBXdQxH-DqJxiycXWN2d4C_-BjR5v1Kw@mail.gmail.com>
+ <CACAyw9_zt-wetBiFWXtpQOOv79QCFR12dA9jx1UDEya=0_poyQ@mail.gmail.com> <CAOftzPjeO4QJJnOBHjhzDmJRwqRztYaHLuKEOB_7a4KwDxgAHw@mail.gmail.com>
+In-Reply-To: <CAOftzPjeO4QJJnOBHjhzDmJRwqRztYaHLuKEOB_7a4KwDxgAHw@mail.gmail.com>
+From:   Joe Stringer <joe@wand.net.nz>
+Date:   Tue, 17 Mar 2020 19:03:45 -0700
+Message-ID: <CAOftzPj+H1fep3D2E=zZr_ys=cdwT9Ci7=evHQirzc8C6toqfA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/7] bpf: Add socket assign support
+To:     Joe Stringer <joe@wand.net.nz>
+Cc:     Lorenz Bauer <lmb@cloudflare.com>, Martin KaFai Lau <kafai@fb.com>,
+        bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-=D0=B2=D1=82, 17 =D0=BC=D0=B0=D1=80. 2020 =D0=B3. =D0=B2 16:21, Kees Cook <=
-keescook@chromium.org>:
+On Tue, Mar 17, 2020 at 6:10 PM Joe Stringer <joe@wand.net.nz> wrote:
 >
-> On Mon, Mar 16, 2020 at 06:17:34PM -0400, Anton Protopopov wrote:
-> > and in every case to walk only a corresponding factor-list. In my case
-> > I had a list of ~40 syscall numbers and after this change filter
-> > executed in 17.25 instructions on average per syscall vs. 45
-> > instructions for the linear filter (so this removes about 30
-> > instructions penalty per every syscall). To replace "mod #4" I
-> > actually used "and #3", but this obviously doesn't work for
-> > non-power-of-two divisors. If I would use "mod 5", then it would give
-> > me about 15.5 instructions on average.
+> On Tue, Mar 17, 2020 at 3:10 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> >
+> > On Tue, 17 Mar 2020 at 03:06, Joe Stringer <joe@wand.net.nz> wrote:
+> > >
+> > > On Mon, Mar 16, 2020 at 3:58 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > > >
+> > > > On Thu, Mar 12, 2020 at 04:36:44PM -0700, Joe Stringer wrote:
+> > > > > Add support for TPROXY via a new bpf helper, bpf_sk_assign().
+> > > > >
+> > > > > This helper requires the BPF program to discover the socket via a call
+> > > > > to bpf_sk*_lookup_*(), then pass this socket to the new helper. The
+> > > > > helper takes its own reference to the socket in addition to any existing
+> > > > > reference that may or may not currently be obtained for the duration of
+> > > > > BPF processing. For the destination socket to receive the traffic, the
+> > > > > traffic must be routed towards that socket via local route, the socket
+> > > > I also missed where is the local route check in the patch.
+> > > > Is it implied by a sk can be found in bpf_sk*_lookup_*()?
+> > >
+> > > This is a requirement for traffic redirection, it's not enforced by
+> > > the patch. If the operator does not configure routing for the relevant
+> > > traffic to ensure that the traffic is delivered locally, then after
+> > > the eBPF program terminates, it will pass up through ip_rcv() and
+> > > friends and be subject to the whims of the routing table. (or
+> > > alternatively if the BPF program redirects somewhere else then this
+> > > reference will be dropped).
+> >
+> > Can you elaborate what "an appropriate routing configuration" would be?
+> > I'm not well versed with how routing works, sorry.
 >
-> Gotcha. My real concern is with breaking the ABI here -- using BPF_MOD
-> would mean a process couldn't run on older kernels without some tricks
-> on the seccomp side.
-
-Yes, I understood. Could you tell what would you do exactly if there
-was a real need in a new instruction?
-
-> Since the syscall list is static for a given filter, why not arrange it
-> as a binary search? That should get even better average instructions
-> as O(log n) instead of O(n).
-
-Right, thanks! This saves about 4 more instructions for my case and
-works 1-2 ns faster.
-
-> Though frankly I've also been considering an ABI version bump for adding
-> a syscall bitmap feature: the vast majority of seccomp filters are just
-> binary yes/no across a list of syscalls. Only the special cases need
-> special handling (arg inspection, fd notification, etc). Then these
-> kinds of filters could run as O(1).
+> [...]
 >
-> --
-> Kees Cook
+> > Do you think being subject to the routing table is desirable, or is it an
+> > implementation trade-off?
+>
+> I think it's an implementation trade-off.
 
-Thanks,
-Anton
+Perhaps it's worth expanding on this a bit more. There's always the
+tradeoff of solving your specific problem vs. introducing
+functionality that will integrate with the rest of the stack. In some
+sense, I would like a notion here of "shortcut this traffic directly
+to the socket", it will solve my problem but it's quite specific to
+that so there's not much room for sharing the usage. It could still be
+very useful to some use cases, but alternatives may support use cases
+you hadn't thought of in the first place. Maybe there's a more
+incremental path to achieving my goal through an implementation like
+this.
+
+The current design of bpf_sk_assign() in this series defers to the
+stack a bit more than alternatives may do (thinking eg a socket
+redirect function "bpf_sk_redirect()"). It says "this is best-effort";
+if you wanted to, you could still override this functionality with
+iptables tproxy rules. You could choose to route the traffic
+differently (although through the exploration with Martin above for
+now this will have fairly limited options unless we make additional
+changes..). Glancing through the existing eBPF API, you could assign
+the socket to the skb then subsequently use things like
+bpf_get_socket_cookie() to fetch the cookie out. For all I know,
+someone will come up with some nifty future idea that makes use of the
+idea "we associate the socket with the skb" to solve a use case I
+haven't thought of, and that could exist either within the bpf@tc hook
+or after.
