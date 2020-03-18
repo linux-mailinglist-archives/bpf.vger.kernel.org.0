@@ -2,114 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E442C1893DD
-	for <lists+bpf@lfdr.de>; Wed, 18 Mar 2020 03:03:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1329718944D
+	for <lists+bpf@lfdr.de>; Wed, 18 Mar 2020 04:15:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727069AbgCRCD7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Mar 2020 22:03:59 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:37970 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726871AbgCRCD7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Mar 2020 22:03:59 -0400
-Received: by mail-wm1-f68.google.com with SMTP id t13so1506940wmi.3;
-        Tue, 17 Mar 2020 19:03:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FABasMwMskF7foIZI74WnbbUanagtErXSwxfbZA1fzE=;
-        b=ug4fGgOg5X8gtg6iHr63X5hKzVmpphbqE+gf7qUbPloiEreLQE/cIy64WDkNT5OdyM
-         kt8W/Swfnq8S60xkLuJWfdPoOEjfOZ/TBWtos3ZS423a3A3lkXFGXuiynHVKFd9wtqGA
-         RCZZPJDjln7okgrleBJuG8Ex79qEq+OFAXrWYt5FaWf3JY5ms4duqQ9qfK685vnYu6rG
-         puAvxbUsZjFrqSWLWb6sXMrcACDdkRXQozoNhwOWLJ1EPYdmDbDYmlnqBoPIpPFxvhnj
-         FoyAFebEQYtPktOuPeZEEjrIxnaCcb/Nw+PkkSqBcQQmmP9miGoFQynUxyI4vL6XZ5GF
-         Vi6Q==
-X-Gm-Message-State: ANhLgQ3AmQcZGZ9EWlT95s3Ha20t+AUS6wTeWHyikid7oHM8zLTXs2dJ
-        PKDiMQ92hKtcB/49EPIBqYXfgESN3VSAHuaKl00=
-X-Google-Smtp-Source: ADFU+vsw82WXRu0BqjkZhF7t+00pdye6vztVtWOdcHEdze2KolKLSoWmR0SfOIvjUW7sIp/JtISdahlGzpzoDpiaQOs=
-X-Received: by 2002:a7b:cb50:: with SMTP id v16mr2074239wmj.74.1584497037073;
- Tue, 17 Mar 2020 19:03:57 -0700 (PDT)
+        id S1726713AbgCRDO7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Mar 2020 23:14:59 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23772 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726597AbgCRDO7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 17 Mar 2020 23:14:59 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02I3EuNd016397
+        for <bpf@vger.kernel.org>; Tue, 17 Mar 2020 20:14:58 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=+kFPsMVhi9HZlxqWgOCcpftHZOADrXWFHmYOJVT+9RM=;
+ b=lPlRBCG3Has7Mn+YxVISrLO8HmF4p8rHKHoGGmOYTXb8yo0nIgzrsU8av50DnrllD1tk
+ LAZcSEXudRBGbtBT5048zw8OnevV9wM2DQ9VHMsoCkKoWxfzR7QBhhQz72gfRAy51Qak
+ 2rFtI135r8oYAmq+0igyGVUZ0Td44CuLdLY= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yua0wra2u-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 17 Mar 2020 20:14:58 -0700
+Received: from intmgw004.08.frc2.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Tue, 17 Mar 2020 20:14:35 -0700
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id 713F7294307C; Tue, 17 Mar 2020 20:14:31 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v3 bpf-next 0/4] bpftool: Add struct_ops support
+Date:   Tue, 17 Mar 2020 20:14:31 -0700
+Message-ID: <20200318031431.1256036-1-kafai@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20200312233648.1767-1-joe@wand.net.nz> <20200312233648.1767-4-joe@wand.net.nz>
- <20200316225729.kd4hmz3oco5l7vn4@kafai-mbp> <CAOftzPgsVOqCLZatjytBXdQxH-DqJxiycXWN2d4C_-BjR5v1Kw@mail.gmail.com>
- <CACAyw9_zt-wetBiFWXtpQOOv79QCFR12dA9jx1UDEya=0_poyQ@mail.gmail.com> <CAOftzPjeO4QJJnOBHjhzDmJRwqRztYaHLuKEOB_7a4KwDxgAHw@mail.gmail.com>
-In-Reply-To: <CAOftzPjeO4QJJnOBHjhzDmJRwqRztYaHLuKEOB_7a4KwDxgAHw@mail.gmail.com>
-From:   Joe Stringer <joe@wand.net.nz>
-Date:   Tue, 17 Mar 2020 19:03:45 -0700
-Message-ID: <CAOftzPj+H1fep3D2E=zZr_ys=cdwT9Ci7=evHQirzc8C6toqfA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/7] bpf: Add socket assign support
-To:     Joe Stringer <joe@wand.net.nz>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>, Martin KaFai Lau <kafai@fb.com>,
-        bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
+ definitions=2020-03-17_10:2020-03-17,2020-03-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=420
+ priorityscore=1501 impostorscore=0 bulkscore=0 adultscore=0
+ lowpriorityscore=0 phishscore=0 malwarescore=0 spamscore=0 clxscore=1015
+ suspectscore=13 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2003180016
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 17, 2020 at 6:10 PM Joe Stringer <joe@wand.net.nz> wrote:
->
-> On Tue, Mar 17, 2020 at 3:10 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> >
-> > On Tue, 17 Mar 2020 at 03:06, Joe Stringer <joe@wand.net.nz> wrote:
-> > >
-> > > On Mon, Mar 16, 2020 at 3:58 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > > >
-> > > > On Thu, Mar 12, 2020 at 04:36:44PM -0700, Joe Stringer wrote:
-> > > > > Add support for TPROXY via a new bpf helper, bpf_sk_assign().
-> > > > >
-> > > > > This helper requires the BPF program to discover the socket via a call
-> > > > > to bpf_sk*_lookup_*(), then pass this socket to the new helper. The
-> > > > > helper takes its own reference to the socket in addition to any existing
-> > > > > reference that may or may not currently be obtained for the duration of
-> > > > > BPF processing. For the destination socket to receive the traffic, the
-> > > > > traffic must be routed towards that socket via local route, the socket
-> > > > I also missed where is the local route check in the patch.
-> > > > Is it implied by a sk can be found in bpf_sk*_lookup_*()?
-> > >
-> > > This is a requirement for traffic redirection, it's not enforced by
-> > > the patch. If the operator does not configure routing for the relevant
-> > > traffic to ensure that the traffic is delivered locally, then after
-> > > the eBPF program terminates, it will pass up through ip_rcv() and
-> > > friends and be subject to the whims of the routing table. (or
-> > > alternatively if the BPF program redirects somewhere else then this
-> > > reference will be dropped).
-> >
-> > Can you elaborate what "an appropriate routing configuration" would be?
-> > I'm not well versed with how routing works, sorry.
->
-> [...]
->
-> > Do you think being subject to the routing table is desirable, or is it an
-> > implementation trade-off?
->
-> I think it's an implementation trade-off.
+This set adds "struct_ops" support to bpftool.
 
-Perhaps it's worth expanding on this a bit more. There's always the
-tradeoff of solving your specific problem vs. introducing
-functionality that will integrate with the rest of the stack. In some
-sense, I would like a notion here of "shortcut this traffic directly
-to the socket", it will solve my problem but it's quite specific to
-that so there's not much room for sharing the usage. It could still be
-very useful to some use cases, but alternatives may support use cases
-you hadn't thought of in the first place. Maybe there's a more
-incremental path to achieving my goal through an implementation like
-this.
+The first two patches improve the btf_dumper in bpftool.
+Patch 1: print the enum's name (if it is found) instead of the
+         enum's value.
+Patch 2: print a char[] as a string if all characters are printable.
 
-The current design of bpf_sk_assign() in this series defers to the
-stack a bit more than alternatives may do (thinking eg a socket
-redirect function "bpf_sk_redirect()"). It says "this is best-effort";
-if you wanted to, you could still override this functionality with
-iptables tproxy rules. You could choose to route the traffic
-differently (although through the exploration with Martin above for
-now this will have fairly limited options unless we make additional
-changes..). Glancing through the existing eBPF API, you could assign
-the socket to the skb then subsequently use things like
-bpf_get_socket_cookie() to fetch the cookie out. For all I know,
-someone will come up with some nifty future idea that makes use of the
-idea "we associate the socket with the skb" to solve a use case I
-haven't thought of, and that could exist either within the bpf@tc hook
-or after.
+"struct_ops" stores the prog_id in a func ptr.
+Instead of printing a prog_id,
+patch 3 adds an option to btf_dumper to allow a func ptr's value
+to be printed with the full func_proto info and the prog_name.
+
+Patch 4 implements the "struct_ops" bpftool command.
+
+v3:
+- Check for "case 1:" in patch 1 (Andrii)
+
+v2:
+- Typo fixes in comment and doc in patch 4 (Quentin)
+- Link to a few other man pages in doc in patch 4 (Quentin)
+- Alphabet ordering in include files in patch 4 (Quentin)
+- Use GET_ARG() in patch 4 (Quentin)
+
+Martin KaFai Lau (4):
+  bpftool: Print the enum's name instead of value
+  bpftool: Print as a string for char array
+  bpftool: Translate prog_id to its bpf prog_name
+  bpftool: Add struct_ops support
+
+ .../Documentation/bpftool-struct_ops.rst      | 116 ++++
+ tools/bpf/bpftool/bash-completion/bpftool     |  28 +
+ tools/bpf/bpftool/btf_dumper.c                | 198 +++++-
+ tools/bpf/bpftool/main.c                      |   3 +-
+ tools/bpf/bpftool/main.h                      |   2 +
+ tools/bpf/bpftool/struct_ops.c                | 596 ++++++++++++++++++
+ 6 files changed, 927 insertions(+), 16 deletions(-)
+ create mode 100644 tools/bpf/bpftool/Documentation/bpftool-struct_ops.rst
+ create mode 100644 tools/bpf/bpftool/struct_ops.c
+
+-- 
+2.17.1
+
