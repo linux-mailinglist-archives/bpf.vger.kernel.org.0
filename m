@@ -2,113 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7DA189941
-	for <lists+bpf@lfdr.de>; Wed, 18 Mar 2020 11:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3489F189C86
+	for <lists+bpf@lfdr.de>; Wed, 18 Mar 2020 14:06:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727415AbgCRKZ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Mar 2020 06:25:58 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([216.205.24.74]:58038 "EHLO
+        id S1726623AbgCRNGi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Mar 2020 09:06:38 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:52829 "EHLO
         us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727281AbgCRKZ6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 18 Mar 2020 06:25:58 -0400
+        by vger.kernel.org with ESMTP id S1726775AbgCRNGh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 18 Mar 2020 09:06:37 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1584527157;
+        s=mimecast20190719; t=1584536796;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wvmm8cvSX4GASnaBENip1stdZK7IgfzpSVzDAOI0z/I=;
-        b=IodJzz/NH/ocb+ea89lPNML8n1Uwg1lhHmoXaiuiYTyUULyRNYFqP7jdBOv789ZyGoJH7o
-        RsNl6UGAMWSF5ROwqh6A5xd34G1zOueAIJIXkipHGTWK4cFEVfGyyVOxDWDKKb1lTjwUT8
-        kvSJNRABq1absIipEqwkCv9gVaonxuA=
+         content-transfer-encoding:content-transfer-encoding;
+        bh=WuBZ3MfgqU4i3xCT80ZvXwaJs5bDpAGNY72tPGGaLDc=;
+        b=YTl6J2biIpY06wp3RZf3z5eVOeX6JEwIjUwtW1EMSpHLt91HV4fbmYQ3xpC83NXBohp2ov
+        bQztFxZk1xe/1a8TST7V85rbPrRMFlriYC+RObPvOoSthAZOUb4/upmXYYE/WYeXWxIvA8
+        7YivavxuBF8x8+NBFVbbsrZ9V0e4c+I=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-245-ZcQyYdRXNSK1V_NGiWQOgA-1; Wed, 18 Mar 2020 06:25:53 -0400
-X-MC-Unique: ZcQyYdRXNSK1V_NGiWQOgA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+ us-mta-426-N9pzjCeUNnWrXTHmcrUOTQ-1; Wed, 18 Mar 2020 09:06:34 -0400
+X-MC-Unique: N9pzjCeUNnWrXTHmcrUOTQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F131107ACCA;
-        Wed, 18 Mar 2020 10:25:51 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9F5085D9E2;
-        Wed, 18 Mar 2020 10:25:40 +0000 (UTC)
-Date:   Wed, 18 Mar 2020 11:25:39 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc:     sameehj@amazon.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        zorik@amazon.com, akiyano@amazon.com, gtzalik@amazon.com,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        David Ahern <dsahern@gmail.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, brouer@redhat.com
-Subject: Re: [PATCH RFC v1 09/15] xdp: clear grow memory in
- bpf_xdp_adjust_tail()
-Message-ID: <20200318112539.6b595142@carbon>
-In-Reply-To: <87v9n2koqt.fsf@toke.dk>
-References: <158446612466.702578.2795159620575737080.stgit@firesoul>
-        <158446619342.702578.1522482431365026926.stgit@firesoul>
-        <87v9n2koqt.fsf@toke.dk>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AB6F78C7265;
+        Wed, 18 Mar 2020 13:06:06 +0000 (UTC)
+Received: from localhost.localdomain (wsfd-netdev76.ntdv.lab.eng.bos.redhat.com [10.19.188.157])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 12D2C28D11;
+        Wed, 18 Mar 2020 13:06:04 +0000 (UTC)
+From:   Eelco Chaudron <echaudro@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, andriin@fb.com
+Subject: [RFC PATCH bpf-next 0/3] bpf: add tracing for XDP programs using the BPF_PROG_TEST_RUN API
+Date:   Wed, 18 Mar 2020 13:06:00 +0000
+Message-Id: <158453675319.3043.5779623595270458781.stgit@xdp-tutorial>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 18 Mar 2020 10:15:38 +0100
-Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
+I sent out this RFC to get an idea if the approach suggested here
+would be something other people would also like to see. In addition,
+this cover letter mentions some concerns and questions that need
+answers before we can move to an acceptable implementation.
 
-> Jesper Dangaard Brouer <brouer@redhat.com> writes:
->=20
-> > To reviewers: Need some opinions if this is needed?
-> >
-> > (TODO: Squash patch)
-> > ---
-> >  net/core/filter.c |    6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 0ceddee0c678..669f29992177 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -3432,6 +3432,12 @@ BPF_CALL_2(bpf_xdp_adjust_tail, struct xdp_buff =
-*, xdp, int, offset)
-> >  	if (unlikely(data_end < xdp->data + ETH_HLEN))
-> >  		return -EINVAL;
-> > =20
-> > +	// XXX: To reviewers: How paranoid are we? Do we really need to
-> > +	/* clear memory area on grow, as in-theory can contain uninit kmem */
-> > +	if (offset > 0) {
-> > +		memset(xdp->data_end, 0, offset);
-> > +	} =20
->=20
-> This memory will usually be recycled through page_pool or equivalent,
-> right? So couldn't we clear the pages when they are first allocated?
-> That way, the only data that would be left there would be packet data
-> from previous packets...
+This patch adds support for tracing eBPF XDP programs that get
+executed using the __BPF_PROG_RUN syscall. This is done by switching
+from JIT (if enabled) to executing the program using the interpreter
+and record each executed instruction.
 
-Yes, that is another option, to clear pages on "real" alloc (not
-recycle alloc), but it is a bit harder to implement (when not using
-page_pool).
+For now, the execution history is printed to the kernel ring buffer
+using pr_info(), the final version should have enough data stored in a
+user-supplied buffer to reconstruct this output. This should probably
+be part of bpftool, i.e. dump a similar output, and the ability to
+store all this in an elf-like format for dumping/analyzing/replaying
+at a later stage.
 
-And yes, this area will very likely just contain old packet data, but
-we cannot be 100% sure.
+This patch does not dump the XDP packet content before and after
+execution, however, this data is available to the caller of the API.
 
-Previously Alexei have argued that we should not leak pointer values in
-XDP.  Which is why we have xdp_scrub_frame(), but this is not 100% the
-same.  So, I would like to hear Alexei's opinion ?
+The __bpf_prog_run_trace() interpreter is a copy of __bpf_prog_run()
+and we probably need a smarter way to re-use the code rather than a
+blind copy with some changes.
 
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Enabling the interpreter opens up the kernel for spectre variant 2,
+guess that's why the BPF_JIT_ALWAYS_ON option was introduced (commit
+290af86629b2). Enabling it for debugging in the field does not sound
+like an option (talking to people doing kernel distributions).
+Any idea how to work around this (lfence before any call this will
+slow down, but I guess for debugging this does not matter)? I need to
+research this more as I'm no expert in this area. But I think this
+needs to be solved as I see this as a show stopper. So any input is
+welcome.
+
+To allow bpf_call support for tracing currently the general
+interpreter is enabled. See the fixup_call_args() function for why
+this is needed. We might need to find a way to fix this (see the above
+section on spectre).
+
+Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
 
