@@ -2,214 +2,293 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8C318A6E3
-	for <lists+bpf@lfdr.de>; Wed, 18 Mar 2020 22:23:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED1B18A817
+	for <lists+bpf@lfdr.de>; Wed, 18 Mar 2020 23:27:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726647AbgCRVXW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Mar 2020 17:23:22 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:42291 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726619AbgCRVXW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Mar 2020 17:23:22 -0400
-Received: by mail-il1-f193.google.com with SMTP id p2so232037ile.9;
-        Wed, 18 Mar 2020 14:23:21 -0700 (PDT)
+        id S1726663AbgCRW1x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Mar 2020 18:27:53 -0400
+Received: from mail-pj1-f73.google.com ([209.85.216.73]:34835 "EHLO
+        mail-pj1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726912AbgCRW1x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Mar 2020 18:27:53 -0400
+Received: by mail-pj1-f73.google.com with SMTP id o10so115659pjt.0
+        for <bpf@vger.kernel.org>; Wed, 18 Mar 2020 15:27:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4DobP8Ph4M483KSHS2xL3BwO/0GChASXSjrLTPBUYck=;
-        b=N4yvk9P/GV+Vmr7QJY3Zlq0fxR/+gNw1r0MzOi6cU78xNZdiLmBr6UD8ioT8x+eHzy
-         WIO9ijofHE5C1Yw7DQAmnN3RFkHKb3Q5gHnk6ccotCzWMMp+spR+S+4l3tds7KW3rKSx
-         M5EfCWEjYhgagTm0UAuT9NMRGyngGgrw68BWb6CEXYZDlXdYJxbWBNxACDA1UvidGfUC
-         b8fTzzgRCF8Knm79+EYWXUg8ldWrutZwfRk5WhMnY/46gObqeZ13gonOSNQDBW0/w7ou
-         XTcflAU5tx+YMJzfhi5Lp3SKuqKAChGFu8a67XBTkKC8/bKA3CZtzO8Oj2SOibZeizYP
-         duVg==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=nN6aQ3y/30UMEsizdFRT3dSbqqosMtSBUXgTVV4iZgg=;
+        b=SabMdH/aEPPH9G5GOOCKLyLz4vo2LpDFg8VnLyjThVbp9aOqsw0MjlPKmzOERDiXFk
+         oaRhABLZidwRp1LI8jbIpa/F3YV8gp3KWYAy0UHg7bJ4Z0/s6qTOz6v4vkqhXA/BvD+B
+         /lWKTLCqoXD6P78IAqZZAOwTLmib6WsELLo1enae4+NYxCd+8VWdZmBQ2TzMj6pDew+J
+         m1egRHaCut8qQJHiNWe6AX+Jhe9FQ/lQgq+bpL/obqGFbQbd3ZjKXCSa32Y42UCpzgy2
+         PPj6IE2eoDig5ISKDCSzhEtC6O7PadRy9SH3W4IWLREbwPcMqFGVPdYLg4Q7f3xNny+Y
+         A3uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4DobP8Ph4M483KSHS2xL3BwO/0GChASXSjrLTPBUYck=;
-        b=hakI1tasS6znEuvtopFblALDlUoTsjB7Zs/QcAGDHUaL/YMFCG78JVcsSTBK5u3rjR
-         Qqy0n4TjEw07Qc8qTUhPMlTIc+NTv2hA8MEIa3tFIcBjfcgRFVr4a1JelHR1BUxkM0V4
-         e5v/LubNwuwNLEjYM43TyV/BZKcj+eHqWqgFJ7ji7EcTf6Tyhp1oGaA/B/o+9LEzXGZ/
-         ovglrNkVonbWYG9TLciQlkl7bthCc+E7AQpEH5mhybPz3BtCh34UB+0/rrVrKEhxviJH
-         Yx5N89/JO5GjM+9T39+Sln8bMUG8Z/DLtFG534b3fEJllNx8lZoabZ/DvjhKEFKt3uAA
-         xPcw==
-X-Gm-Message-State: ANhLgQ3lijYb5E+mLc0xUQYedMSbp0jkkv08sXvMySrYefr8m4+nmU/g
-        kXN4TIg2Xl5g8h1HbCNLnYnlOLjo7fLycr83XlQ=
-X-Google-Smtp-Source: ADFU+vsDaE6sp5Uoj2tvcJH5EhlXOWhUUuf4Zt6mP4ZjssD7SN9tDbKBY4xtr0CVk73M6HjWbnw6MKOPV+ZClHRPilw=
-X-Received: by 2002:a92:358b:: with SMTP id c11mr98235ilf.64.1584566601106;
- Wed, 18 Mar 2020 14:23:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <158446612466.702578.2795159620575737080.stgit@firesoul>
- <158446617307.702578.17057660405507953624.stgit@firesoul> <20200318200300.GA18295@ranger.igk.intel.com>
-In-Reply-To: <20200318200300.GA18295@ranger.igk.intel.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Wed, 18 Mar 2020 14:23:09 -0700
-Message-ID: <CAKgT0UeV7OHsu=E11QVrQ-HvUe83-ZL2Mo+CKg5Bw4v8REEoew@mail.gmail.com>
-Subject: Re: [PATCH RFC v1 05/15] ixgbe: add XDP frame size to driver
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        "Jubran, Samih" <sameehj@amazon.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        zorik@amazon.com, akiyano@amazon.com, gtzalik@amazon.com,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@toke.dk>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        David Ahern <dsahern@gmail.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        kuba@kernel.org
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=nN6aQ3y/30UMEsizdFRT3dSbqqosMtSBUXgTVV4iZgg=;
+        b=J7Q7Gu/5Ds7zrsTXsRvbcFKZYmvjDQByEZPV+sWtxZb+2JGv6NO2wX50mtJdxSWNrf
+         FxxkKv/MD1ZOgz46ZH2sOnC2KY3SSO+DfjWPce/2PY736MUwufMgsHFLPSte7cBi+HbF
+         dojU9ww6wj8uCtMr4UGoeSTwh4TwB4cecY1sxfzRES/Rz4bIccfdRhhJh5kHfDfgXl6g
+         zkAMG/gF2GFFK+cVS06dNaA4KGkmuLI4WcT7INPCegQlVUsmpW+iX7cLQbr3auVS99Lv
+         ccEML362hstjH6pbGtvD3tBIwJlyuCOTt983RJXRc1zkrxbCUoLo2p35xGvcpJEJtDz/
+         Pt6w==
+X-Gm-Message-State: ANhLgQ0e+fA8kgarUHy9zZagyoyzsgOu2bFiiPnA+iDREDHdPGnL0EEr
+        LYGrI1dBLhFhmx2tFCq05EWwMsF+0sNb0Up+owFMzotK+70jLhPYjIcIFnKk1fq3/lrf0wYaOax
+        bGWwu00XkLHyBSvkskTzFI5IKz5/IuYZVdh+8mDCnwCCzzaHcqX/dkmaIxLYk
+X-Google-Smtp-Source: ADFU+vs96MMfrtTE2sHLcZO6Jg2S8mQKaB771LRZ1K0iUEKncWxJF82UCP0DNs2ux/X8rlIhCSUdzog5fRqk
+X-Received: by 2002:a17:90a:1697:: with SMTP id o23mr444303pja.62.1584570471108;
+ Wed, 18 Mar 2020 15:27:51 -0700 (PDT)
+Date:   Wed, 18 Mar 2020 15:27:46 -0700
+Message-Id: <20200318222746.173648-1-maskray@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.25.1.481.gfbce0eb801-goog
+Subject: [PATCH bpf-next v6] bpf: Support llvm-objcopy for vmlinux BTF
+From:   Fangrui Song <maskray@google.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Fangrui Song <maskray@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 18, 2020 at 1:04 PM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
->
-> On Tue, Mar 17, 2020 at 06:29:33PM +0100, Jesper Dangaard Brouer wrote:
-> > The ixgbe driver uses different memory models depending on PAGE_SIZE at
-> > compile time. For PAGE_SIZE 4K it uses page splitting, meaning for
-> > normal MTU frame size is 2048 bytes (and headroom 192 bytes).
->
-> To be clear the 2048 is the size of buffer given to HW and we slice it up
-> in a following way:
-> - 192 bytes dedicated for headroom
-> - 1500 is max allowed MTU for this setup
-> - 320 bytes for tailroom (skb shinfo)
->
-> In case you go with higher MTU then 3K buffer would be used and it would
-> came from order1 page and we still do the half split. Just FYI all of this
-> is for PAGE_SIZE == 4k and L1$ size == 64.
+Simplify gen_btf logic to make it work with llvm-objcopy. The existing
+'file format' and 'architecture' parsing logic is brittle and does not
+work with llvm-objcopy/llvm-objdump.
+'file format' output of llvm-objdump>=11 will match GNU objdump, but
+'architecture' (bfdarch) may not.
 
-True, but for most people this is the most common case since these are
-the standard for x86.
+.BTF in .tmp_vmlinux.btf is non-SHF_ALLOC. Add the SHF_ALLOC flag
+because it is part of vmlinux image used for introspection. C code can
+reference the section via linker script defined __start_BTF and
+__stop_BTF. This fixes a small problem that previous .BTF had the
+SHF_WRITE flag (objcopy -I binary -O elf* synthesized .data).
 
-> > For PAGE_SIZE larger than 4K, driver advance its rx_buffer->page_offset
-> > with the frame size "truesize".
->
-> Alex, couldn't we base the truesize here somehow on ixgbe_rx_bufsz() since
-> these are the sizes that we are passing to hw? I must admit I haven't been
-> in touch with systems with PAGE_SIZE > 4K.
+Additionally, `objcopy -I binary` synthesized symbols
+_binary__btf_vmlinux_bin_start and _binary__btf_vmlinux_bin_stop (not
+used elsewhere) are replaced with more commonplace __start_BTF and
+__stop_BTF.
 
-With a page size greater than 4K we can actually get many more uses
-out of a page by using the frame size to determine the truesize of the
-packet. The truesize is the memory footprint currently being held by
-the packet. So once the packet is filled we just have to add the
-headroom and tailroom to whatever the hardware wrote instead of having
-to use what we gave to the hardware. That gives us better efficiency,
-if we used ixgbe_rx_bufsz() we would penalize small packets and that
-in turn would likely hurt performance.
+Add 2>/dev/null because GNU objcopy (but not llvm-objcopy) warns
+"empty loadable segment detected at vaddr=0xffffffff81000000, is this intentional?"
 
-> >
-> > When driver enable XDP it uses build_skb() which provides the necessary
-> > tailroom for XDP-redirect.
->
-> We still allow to load XDP prog when ring is not using build_skb(). I have
-> a feeling that we should drop this case now.
->
-> Alex/John/Bjorn WDYT?
+We use a dd command to change the e_type field in the ELF header from
+ET_EXEC to ET_REL so that lld will accept .btf.vmlinux.bin.o.  Accepting
+ET_EXEC as an input file is an extremely rare GNU ld feature that lld
+does not intend to support, because this is error-prone.
 
-The comment Jesper had about using using build_skb() when XDP is in
-use is incorrect. The two are not correlated. The underlying buffer is
-the same, however we drop the headroom and tailroom if we are in
-_RX_LEGACY mode. We default to build_skb and the option of switching
-to legacy Rx is controlled via the device private flags.
+The output section description .BTF in include/asm-generic/vmlinux.lds.h
+avoids potential subtle orphan section placement issues and suppresses
+--orphan-handling=warn warnings.
 
-However with that said the change itself is mostly harmless, and
-likely helps to resolve issues that would be seen if somebody were to
-enable XDP while having the RX_LEGACY flag set.
+v6:
+- drop llvm-objdump from the title. We don't run objdump now
+- delete unused local variables: bin_arch, bin_format and bin_file
+- mention in the comment that lld does not allow an ET_EXEC input
+- rename BTF back to .BTF . The section name is assumed by bpftool
+- add output section description to include/asm-generic/vmlinux.lds.h
+- mention cb0cc635c7a9 ("powerpc: Include .BTF section")
 
-> >
-> > When XDP frame size doesn't depend on RX packet size (4K case), then
-> > xdp.frame_sz can be updated once outside the main NAPI loop.
-> >
-> > Cc: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > ---
-> >  drivers/net/ethernet/intel/ixgbe/ixgbe.h      |   17 +++++++++++++++++
-> >  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |   18 ++++++++++--------
-> >  2 files changed, 27 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe.h b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-> > index 2833e4f041ce..943b643b6ed8 100644
-> > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-> > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-> > @@ -417,6 +417,23 @@ static inline unsigned int ixgbe_rx_pg_order(struct ixgbe_ring *ring)
-> >  }
-> >  #define ixgbe_rx_pg_size(_ring) (PAGE_SIZE << ixgbe_rx_pg_order(_ring))
-> >
-> > +static inline unsigned int ixgbe_rx_frame_truesize(struct ixgbe_ring *rx_ring,
-> > +                                                unsigned int size)
-> > +{
-> > +     unsigned int truesize;
-> > +
-> > +#if (PAGE_SIZE < 8192)
-> > +     truesize = ixgbe_rx_pg_size(rx_ring) / 2; /* Must be power-of-2 */
-> > +#else
-> > +     /* Notice XDP must use build_skb() mode */
-> > +     truesize = ring_uses_build_skb(rx_ring) ?
-> > +             SKB_DATA_ALIGN(IXGBE_SKB_PAD + size) +
-> > +             SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) :
-> > +             SKB_DATA_ALIGN(size);
-> > +#endif
-> > +     return truesize;
-> > +}
-> > +
-> >  #define IXGBE_ITR_ADAPTIVE_MIN_INC   2
-> >  #define IXGBE_ITR_ADAPTIVE_MIN_USECS 10
-> >  #define IXGBE_ITR_ADAPTIVE_MAX_USECS 126
-> > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > index ea6834bae04c..f505ed8c9dc1 100644
-> > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > @@ -2248,16 +2248,10 @@ static void ixgbe_rx_buffer_flip(struct ixgbe_ring *rx_ring,
-> >                                struct ixgbe_rx_buffer *rx_buffer,
-> >                                unsigned int size)
-> >  {
-> > +     unsigned int truesize = ixgbe_rx_frame_truesize(rx_ring, size);
-> >  #if (PAGE_SIZE < 8192)
-> > -     unsigned int truesize = ixgbe_rx_pg_size(rx_ring) / 2;
-> > -
-> >       rx_buffer->page_offset ^= truesize;
-> >  #else
-> > -     unsigned int truesize = ring_uses_build_skb(rx_ring) ?
-> > -                             SKB_DATA_ALIGN(IXGBE_SKB_PAD + size) +
-> > -                             SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) :
-> > -                             SKB_DATA_ALIGN(size);
-> > -
-> >       rx_buffer->page_offset += truesize;
-> >  #endif
-> >  }
-> > @@ -2291,6 +2285,11 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
-> >
-> >       xdp.rxq = &rx_ring->xdp_rxq;
-> >
-> > +     /* Frame size depend on rx_ring setup when PAGE_SIZE=4K */
-> > +#if (PAGE_SIZE < 8192)
-> > +     xdp.frame_sz = ixgbe_rx_frame_truesize(rx_ring, 0);
-> > +#endif
-> > +
-> >       while (likely(total_rx_packets < budget)) {
-> >               union ixgbe_adv_rx_desc *rx_desc;
-> >               struct ixgbe_rx_buffer *rx_buffer;
-> > @@ -2324,7 +2323,10 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
-> >                       xdp.data_hard_start = xdp.data -
-> >                                             ixgbe_rx_offset(rx_ring);
-> >                       xdp.data_end = xdp.data + size;
-> > -
-> > +#if (PAGE_SIZE > 4096)
-> > +                     /* At larger PAGE_SIZE, frame_sz depend on size */
-> > +                     xdp.frame_sz = ixgbe_rx_frame_truesize(rx_ring, size);
-> > +#endif
-> >                       skb = ixgbe_run_xdp(adapter, rx_ring, &xdp);
-> >               }
-> >
-> >
-> >
+v5:
+- rebase on top of bpf-next/master
+- rename .BTF to BTF
+
+Fixes: df786c9b9476 ("bpf: Force .BTF section start to zero when dumping from vmlinux")
+Fixes: cb0cc635c7a9 ("powerpc: Include .BTF section")
+Link: https://github.com/ClangBuiltLinux/linux/issues/871
+Signed-off-by: Fangrui Song <maskray@google.com>
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Stanislav Fomichev <sdf@google.com>
+Tested-by: Stanislav Fomichev <sdf@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: clang-built-linux@googlegroups.com
+---
+ arch/powerpc/kernel/vmlinux.lds.S |  6 ------
+ include/asm-generic/vmlinux.lds.h | 15 +++++++++++++++
+ kernel/bpf/btf.c                  |  9 ++++-----
+ kernel/bpf/sysfs_btf.c            | 11 +++++------
+ scripts/link-vmlinux.sh           | 24 ++++++++++--------------
+ 5 files changed, 34 insertions(+), 31 deletions(-)
+
+diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
+index a32d478a7f41..b4c89a1acebb 100644
+--- a/arch/powerpc/kernel/vmlinux.lds.S
++++ b/arch/powerpc/kernel/vmlinux.lds.S
+@@ -303,12 +303,6 @@ SECTIONS
+ 		*(.branch_lt)
+ 	}
+ 
+-#ifdef CONFIG_DEBUG_INFO_BTF
+-	.BTF : AT(ADDR(.BTF) - LOAD_OFFSET) {
+-		*(.BTF)
+-	}
+-#endif
+-
+ 	.opd : AT(ADDR(.opd) - LOAD_OFFSET) {
+ 		__start_opd = .;
+ 		KEEP(*(.opd))
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index e00f41aa8ec4..39da8d8b561d 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -535,6 +535,7 @@
+ 									\
+ 	RO_EXCEPTION_TABLE						\
+ 	NOTES								\
++	BTF								\
+ 									\
+ 	. = ALIGN((align));						\
+ 	__end_rodata = .;
+@@ -621,6 +622,20 @@
+ 		__stop___ex_table = .;					\
+ 	}
+ 
++/*
++ * .BTF
++ */
++#ifdef CONFIG_DEBUG_INFO_BTF
++#define BTF								\
++	.BTF : AT(ADDR(.BTF) - LOAD_OFFSET) {				\
++		__start_BTF = .;					\
++		*(.BTF)							\
++		__stop_BTF = .;						\
++	}
++#else
++#define BTF
++#endif
++
+ /*
+  * Init task
+  */
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 50080add2ab9..6f397c4da05e 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -3477,8 +3477,8 @@ static struct btf *btf_parse(void __user *btf_data, u32 btf_data_size,
+ 	return ERR_PTR(err);
+ }
+ 
+-extern char __weak _binary__btf_vmlinux_bin_start[];
+-extern char __weak _binary__btf_vmlinux_bin_end[];
++extern char __weak __start_BTF[];
++extern char __weak __stop_BTF[];
+ extern struct btf *btf_vmlinux;
+ 
+ #define BPF_MAP_TYPE(_id, _ops)
+@@ -3605,9 +3605,8 @@ struct btf *btf_parse_vmlinux(void)
+ 	}
+ 	env->btf = btf;
+ 
+-	btf->data = _binary__btf_vmlinux_bin_start;
+-	btf->data_size = _binary__btf_vmlinux_bin_end -
+-		_binary__btf_vmlinux_bin_start;
++	btf->data = __start_BTF;
++	btf->data_size = __stop_BTF - __start_BTF;
+ 
+ 	err = btf_parse_hdr(env);
+ 	if (err)
+diff --git a/kernel/bpf/sysfs_btf.c b/kernel/bpf/sysfs_btf.c
+index 7ae5dddd1fe6..3b495773de5a 100644
+--- a/kernel/bpf/sysfs_btf.c
++++ b/kernel/bpf/sysfs_btf.c
+@@ -9,15 +9,15 @@
+ #include <linux/sysfs.h>
+ 
+ /* See scripts/link-vmlinux.sh, gen_btf() func for details */
+-extern char __weak _binary__btf_vmlinux_bin_start[];
+-extern char __weak _binary__btf_vmlinux_bin_end[];
++extern char __weak __start_BTF[];
++extern char __weak __stop_BTF[];
+ 
+ static ssize_t
+ btf_vmlinux_read(struct file *file, struct kobject *kobj,
+ 		 struct bin_attribute *bin_attr,
+ 		 char *buf, loff_t off, size_t len)
+ {
+-	memcpy(buf, _binary__btf_vmlinux_bin_start + off, len);
++	memcpy(buf, __start_BTF + off, len);
+ 	return len;
+ }
+ 
+@@ -30,15 +30,14 @@ static struct kobject *btf_kobj;
+ 
+ static int __init btf_vmlinux_init(void)
+ {
+-	if (!_binary__btf_vmlinux_bin_start)
++	if (!__start_BTF)
+ 		return 0;
+ 
+ 	btf_kobj = kobject_create_and_add("btf", kernel_kobj);
+ 	if (!btf_kobj)
+ 		return -ENOMEM;
+ 
+-	bin_attr_btf_vmlinux.size = _binary__btf_vmlinux_bin_end -
+-				    _binary__btf_vmlinux_bin_start;
++	bin_attr_btf_vmlinux.size = __stop_BTF - __start_BTF;
+ 
+ 	return sysfs_create_bin_file(btf_kobj, &bin_attr_btf_vmlinux);
+ }
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index ac569e197bfa..d09ab4afbda4 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -113,9 +113,6 @@ vmlinux_link()
+ gen_btf()
+ {
+ 	local pahole_ver
+-	local bin_arch
+-	local bin_format
+-	local bin_file
+ 
+ 	if ! [ -x "$(command -v ${PAHOLE})" ]; then
+ 		echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
+@@ -133,17 +130,16 @@ gen_btf()
+ 	info "BTF" ${2}
+ 	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
+ 
+-	# dump .BTF section into raw binary file to link with final vmlinux
+-	bin_arch=$(LANG=C ${OBJDUMP} -f ${1} | grep architecture | \
+-		cut -d, -f1 | cut -d' ' -f2)
+-	bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
+-		awk '{print $4}')
+-	bin_file=.btf.vmlinux.bin
+-	${OBJCOPY} --change-section-address .BTF=0 \
+-		--set-section-flags .BTF=alloc -O binary \
+-		--only-section=.BTF ${1} $bin_file
+-	${OBJCOPY} -I binary -O ${bin_format} -B ${bin_arch} \
+-		--rename-section .data=.BTF $bin_file ${2}
++	# Create ${2} which contains just .BTF section but no symbols. Add
++	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
++	# deletes all symbols including __start_BTF and __stop_BTF, which will
++	# be redefined in the linker script. Add 2>/dev/null to suppress GNU
++	# objcopy warnings: "empty loadable segment detected at ..."
++	${OBJCOPY} --only-section=.BTF --set-section-flags .BTF=alloc,readonly \
++		--strip-all ${1} ${2} 2>/dev/null
++	# Change e_type to ET_REL so that it can be used to link final vmlinux.
++	# Unlike GNU ld, lld does not allow an ET_EXEC input.
++	printf '\1' | dd of=${2} conv=notrunc bs=1 seek=16 status=none
+ }
+ 
+ # Create ${2} .o file with all symbols from the ${1} object file
+-- 
+2.25.1.481.gfbce0eb801-goog
+
