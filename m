@@ -2,139 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE3418C393
-	for <lists+bpf@lfdr.de>; Fri, 20 Mar 2020 00:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8897418C3EB
+	for <lists+bpf@lfdr.de>; Fri, 20 Mar 2020 00:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727258AbgCSXZI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Mar 2020 19:25:08 -0400
-Received: from mail-qv1-f65.google.com ([209.85.219.65]:33308 "EHLO
-        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727103AbgCSXZI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Mar 2020 19:25:08 -0400
-Received: by mail-qv1-f65.google.com with SMTP id cz10so2056493qvb.0
-        for <bpf@vger.kernel.org>; Thu, 19 Mar 2020 16:25:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=xDCuhuLfm9YoYWOlfeyY36sXFmH/iwUgla7d8KHfDF0=;
-        b=lk0dT8vPheiEYjwtqv3cryTQjCnAu4RwiLhFB54sK+9oIkHL5iVTzew0To8ukyRdFS
-         iDWHIgJaNPQYEO8lekxKRPq+9XKOTh6xl9TZrj0JadmxAZe6k3m23K/u443UK8WwK/SU
-         12sI4yHvdAGu8ShYu9oVe5siUFf5ihGeAJBmSGIMMm3ZhNrY+22H3Oz/Tq/M6oMtsrxC
-         p4vs854eXRLHqzdHIbAbGLPBs+PbyZHb9CCev0OhLB/GbWAabMCeVpHTHDmIrqnSc9ir
-         W6I52DU1uyABiNrmR3/hSO/PDadv+X8ubnm42ao4eFyH+RHpQeHwR+pUU0uGYH25UNH+
-         jWTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=xDCuhuLfm9YoYWOlfeyY36sXFmH/iwUgla7d8KHfDF0=;
-        b=XwBhAn2shUkS/d4TIdiO7WgKSNpXXBIYcDQavR4aka7V4RAmkUnK0Ox9t7fdPkabKQ
-         L1O7l93k3WjSdCxiry2mGIGUy4eOJ6y0ktfUfAeNIdWJLfqFQy4P+AwuIhlIKHtDpjEf
-         ZHFRL+1gapxasjCJQwacTE9XAyn8zksqhTRd0jIEqSBvaUn0PfvWgXBJzFPnkMNzqCj0
-         xu+azvW3wwpYpqXbeioO3EFqFLHVGMAcws2BZEJYehDgtyfFIKU/9aGCEiX0BwU157JU
-         X/CarlIoq0vQrCUEi7QiNoGe9FWPvQlTHhbRmz/WBBgeo9Q7GcKl0WEGU/DvLTjT1jga
-         WrUA==
-X-Gm-Message-State: ANhLgQ2zwmzou7mEfmmbEErbvMowmdwXUvaEFUhtA/2dzVFIIgjbAaHo
-        Iv98A9BM2Ul1QVSoHZ+qPHm0pj1I6CP49t0PuGf5WLesk9I=
-X-Google-Smtp-Source: ADFU+vuc3hHY9f7sxaJL1+74EamkUSwTwU7Z/Rx3QGVOjJQiQbo0B5XE8NTQDBRyAPUtYoVSyRJkutMKYJr8rq62wfQ=
-X-Received: by 2002:a0c:bd2a:: with SMTP id m42mr5691250qvg.163.1584660306598;
- Thu, 19 Mar 2020 16:25:06 -0700 (PDT)
+        id S1726663AbgCSXuA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Mar 2020 19:50:00 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:2686 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726827AbgCSXt7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 19 Mar 2020 19:49:59 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02JNjHY8025255
+        for <bpf@vger.kernel.org>; Thu, 19 Mar 2020 16:49:58 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=c8biSNUc3qCdbHNV0/3rTooJ2yYM9OQBX8C2WXCyeuA=;
+ b=YvzeVMG8B4KV94ZicBYEFNKg3P12PsUdcTJ55M8pE6UiZGB1JOCJNVBKpUBGTI6Yxuwg
+ WJ+/MhpOg3SepXAoLTC3iJFEwMTHU57ec9TlxG2zS/HAMJd788/0y3WY0EPgBWIqxPaY
+ k7tJoTIIrsPDjsHQxWcbsx06uF5vk7tEuxQ= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yvg258rnu-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 19 Mar 2020 16:49:58 -0700
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Thu, 19 Mar 2020 16:49:57 -0700
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id D47492942DAE; Thu, 19 Mar 2020 16:49:55 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 0/2] bpf: Add bpf_sk_storage support to bpf_tcp_ca
+Date:   Thu, 19 Mar 2020 16:49:55 -0700
+Message-ID: <20200319234955.2933540-1-kafai@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 19 Mar 2020 16:24:55 -0700
-Message-ID: <CAEf4BzZX76w6Dhkgi6HkQzgvLjoNDsSJ8zg9HQ5yirKj_PDgAw@mail.gmail.com>
-Subject: [ANNOUNCEMENT] Automated multi-kernel libbpf testing
-To:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Julia Kartseva <hex@fb.com>, osandov@fb.com,
-        Kernel Team <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
+ definitions=2020-03-19_10:2020-03-19,2020-03-19 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=754
+ impostorscore=0 suspectscore=13 adultscore=0 malwarescore=0 clxscore=1015
+ spamscore=0 phishscore=0 mlxscore=0 priorityscore=1501 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2003190095
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Libbpf is the important part of the BPF ecosystem and it defines
-modern ways to build and run BPF applications. As such, it=E2=80=99s crucia=
-l
-that it is well-tested, reliable, and seamlessly works across multiple
-kernels. Until recently, the only testing that was performed were BPF
-selftests, run manually by BPF maintainers against the bleeding edge
-versions of kernel. As diligent as maintainers are, this setup is not
-perfect, requiring a lot of manual work, and could still miss
-regressions and bugs due to kernel and environment differences.
-Catching regressions on old kernels was especially ominous leading to
-real problems in production at Facebook.
+This set adds bpf_sk_storage support to bpf_tcp_ca.
+That will allow bpf-tcp-cc to share sk's private data with other
+bpf_progs and also allow bpf-tcp-cc to use extra private
+storage if the existing icsk_ca_priv is not enough.
 
-This seemed like a problem that needed automation. We took the idea of
-our internal VMTEST framework, which allows to run application
-integration tests against a range of kernels to catch problems, and
-applied it to open-source Github mirror [0] of libbpf. We built upon
-Omar Sandoval=E2=80=99s <osandov@fb.com> initial implementation for his drg=
-n
-tool [1] and adapted it to libbpf needs. It saved many hours of
-tinkering with generic qemu/Linux image setup! Julia Kartseva <hex@fb.com>
-spent lots of time and efforts on bringing this workflow to libbpf
-and making process robust and maintainable.
+Martin KaFai Lau (2):
+  bpf: Add bpf_sk_storage support to bpf_tcp_ca
+  bpf: Add tests for bpf_sk_storage to bpf_tcp_ca
 
-Now, with each change to libbpf, we=E2=80=99ll pull and compile the latest
-kernel and the latest BPF selftests using libbpf with patches to be
-tested. Next, a VM with that kernel will start and will run a battery
-of tests (test_progs, test_verifier, and test_maps), verifying that
-both libbpf and the kernel are still working as expected. Further, to
-verify libbpf didn=E2=80=99t regress on older kernels, we=E2=80=99ll downlo=
-ad a set of
-older kernels and will perform a supported subset of tests against
-each of those kernels. This gives us confidence that no matter how
-bleeding-edge libbpf library you use, it will still work fine across
-all kernels. Check out a typical Travis CI test run [2] to get a
-better idea. You can also see an annotated list [3] of blacklisted
-tests for older kernel.
+ net/ipv4/bpf_tcp_ca.c                         | 33 +++++++++++++++++++
+ .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 28 ++++++++++++++--
+ tools/testing/selftests/bpf/progs/bpf_dctcp.c | 16 +++++++++
+ 3 files changed, 74 insertions(+), 3 deletions(-)
 
-# Why does this matter?
+-- 
+2.17.1
 
-- It=E2=80=99s all about confidence when making BPF changes and about
-maintaining user trust. Automated, repeatable testing on **every**
-change to libbpf is crucial for allowing BPF developers to move fast
-and iterate quickly, while ensuring there is no inadvertent breakage
-of BPF applications. The more libbpf is integrated into critical
-applications (systemd, iproute2, bpftool, BCC tools, as well as
-multitude of internal apps across private companies), the more
-important this becomes.
-
-- Well-tested and maintained libbpf Github mirror (as opposed to
-building from kernel sources) as a single source of truth is important
-for package maintainers to ensure consistent libbpf versioning across
-different Linux distributions. This results in better user experience
-overall and everyone wins from this consistency.
-
-- This is also a good base for a more general kernel testing, given
-that this test setup exercises not just libbpf, but the kernel itself
-as well. With a bit more automation, it is possible to proactively
-apply upstream patches and test kernel changes, saving tons of BPF
-maintainers time and speeding up the patch review process.
-
-In a short time we=E2=80=99ve had this running, this setup already caught
-kernel, libbpf, and selftests bugs (and undoubtedly will catch more):
-- BPF trampoline assembly bug [4];
-- Kprobe tests triggering bug [5];
-- Test cleanup crashes [6];
-- Tests flakiness [7];
-- Quite a few libbpf-specific problems we=E2=80=99ve never got to track exp=
-licitly...
-
-  [0] https://github.com/libbpf/libbpf
-  [1] https://github.com/osandov/drgn
-  [2] https://travis-ci.org/github/libbpf/libbpf/builds/663674948
-  [3] https://github.com/libbpf/libbpf/blob/master/travis-ci/vmtest/configs=
-/blacklist/BLACKLIST-5.5.0
-  [4] https://lore.kernel.org/netdev/20200311003906.3643037-1-ast@kernel.or=
-g/
-  [5] https://patchwork.ozlabs.org/patch/1254743/
-  [6] https://lore.kernel.org/netdev/20200220230546.769250-1-andriin@fb.com=
-/
-  [7] https://lore.kernel.org/bpf/20200314024855.ugbvrmqkfq7kao75@ast-mbp.d=
-hcp.thefacebook.com/T/#ma733d8e9840d9f91ce20d1143a429aa0d6650959
