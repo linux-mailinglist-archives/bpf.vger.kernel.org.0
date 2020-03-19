@@ -2,154 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D97B718B777
-	for <lists+bpf@lfdr.de>; Thu, 19 Mar 2020 14:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B27818BB3D
+	for <lists+bpf@lfdr.de>; Thu, 19 Mar 2020 16:38:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727377AbgCSNdj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Mar 2020 09:33:39 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:55729 "EHLO
-        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729149AbgCSNNW (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 19 Mar 2020 09:13:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1584623601;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=M4dRrS/fWrSqKKRd6oOKfmva/Wbg7A8r+k8nfZOWXeY=;
-        b=eh5cIG77J5yHmHTJkD0RW/oBXu75O/+JQGs3fjH7dCKvSvfZJK167nw8B3z5azGHxm4/fH
-        kRzEHmEOhJ1JnkXrjegMlIJYeAn9DsFYjmkp6Dkg8U6om5PfTsvV8QA8kxepI5LRPi1QT5
-        9HMlbbJlfI1Rf+ffdkMzuNvnJGJNkqA=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-4-0i-YLELENMiljJTgKle4ng-1; Thu, 19 Mar 2020 09:13:20 -0400
-X-MC-Unique: 0i-YLELENMiljJTgKle4ng-1
-Received: by mail-wr1-f70.google.com with SMTP id d17so975961wrw.19
-        for <bpf@vger.kernel.org>; Thu, 19 Mar 2020 06:13:19 -0700 (PDT)
+        id S1727632AbgCSPiO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Mar 2020 11:38:14 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:37557 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727462AbgCSPiO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Mar 2020 11:38:14 -0400
+Received: by mail-ot1-f68.google.com with SMTP id i12so2821377otp.4
+        for <bpf@vger.kernel.org>; Thu, 19 Mar 2020 08:38:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=seCAy6xYY0ujQIsNH75m2599DrTdig4Y4u9evBOvPIA=;
+        b=Xy4Hv9B1Q/8NsaVAgg5N3Z6vnoVUApM/gVfQN6OhHKjRA8QBEmOawruEKVCVz0LAkt
+         CeJpe/zz4rUmz3J+2o4fdngDWigvxvl51Jn1Wq68BGK8s02vJJkjhxw/SrcJn/aVn83w
+         DGUsdQ4R0giuJKSGh/IMUtDG7szQcVjT6SMV4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=M4dRrS/fWrSqKKRd6oOKfmva/Wbg7A8r+k8nfZOWXeY=;
-        b=Q2zQELhOaCDluXAyh6srzccGtW74mZyjGuHWMEF/e1f7t2sAAZMOifODJhz8/fAPyZ
-         CWK5QdWrrSIa+IgPZiKQbSwyR9tuSAkahUSbvXn+2E5HS9qBHQ+N+h+oCFCxdRWCIBw0
-         3por4h7Iew6RGdlCIcWGTlE/ReWPD+pp5wT73Xn9pTYqepF4v/A/WzXhIdM62dt7kHVU
-         /goqR7nTl1l0sJLG7dqSc0ihq3YzLj2oO5MGLfUcGwm3pGnh6hcUVocWc8s6LyagNJSe
-         FKTlP35Oqoi8s/7gJu38S2LZ5eW1aXHJ37RzHviZo/SdwQb8YZOngfiTy4TxBNOXwPfH
-         nVvQ==
-X-Gm-Message-State: ANhLgQ12G+awXCSwHWz0oskcribE38363OpGCME0nHxOYm7asYwIaq2h
-        sJhFyhUmE7W16dZg2WUmWxK6NatTEQjTbF+EtMWh9xjUt2ZluH2RxD+QRQI5TvId2LcU4g73T6W
-        6Fe99O2eR7WvY
-X-Received: by 2002:a1c:a950:: with SMTP id s77mr3663120wme.176.1584623598881;
-        Thu, 19 Mar 2020 06:13:18 -0700 (PDT)
-X-Google-Smtp-Source: ADFU+vtQGbZqPfcT159lnrEmvTWmj54va8IAqg8WwLw1ki+Kq5yPWHrr+ir5aCmBAe/AbeidmulhTw==
-X-Received: by 2002:a1c:a950:: with SMTP id s77mr3663084wme.176.1584623598665;
-        Thu, 19 Mar 2020 06:13:18 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id i1sm3293742wrq.89.2020.03.19.06.13.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Mar 2020 06:13:17 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 6D2D7180371; Thu, 19 Mar 2020 14:13:16 +0100 (CET)
-Subject: [PATCH bpf-next 4/4] selftests/bpf: Add tests for attaching XDP
- programs
-From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Andrey Ignatov <rdna@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Date:   Thu, 19 Mar 2020 14:13:16 +0100
-Message-ID: <158462359640.164779.1404778744339993026.stgit@toke.dk>
-In-Reply-To: <158462359206.164779.15902346296781033076.stgit@toke.dk>
-References: <158462359206.164779.15902346296781033076.stgit@toke.dk>
-User-Agent: StGit/0.22
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=seCAy6xYY0ujQIsNH75m2599DrTdig4Y4u9evBOvPIA=;
+        b=BWZhO+1BijDyqDjdNYuNpdHkxEzYNLJ+fgXYqmazfB0VdU2Eu1Un5NgSOtGHOdsS2o
+         Z1LHEU+OAdas/nsC2VEChcBqoryzW8VOzmMcFQRcCzFL2kk/FRHuDFQ5pDT5q5Jwo53J
+         l3tQsQ3fnDvUYzuV1BUBtcQOlAW18Y5k7JOLdbAVqq0Z2DpiI/g/7moMLEJhIgHPfoo2
+         9duaHnoBYpvds/bNdCV7/kM692ovBxp382LXJfJoTNLTnwwETE3ZtPN6P7Pegv1pMo20
+         7eZLlLvE4mm2e1VcRtxRxknMJW4F6Qm9jo/1K5azUt6jwMNUSpyLa99Ux2vZZl+nb1rS
+         J1Kw==
+X-Gm-Message-State: ANhLgQ2SZG65itEuGkVI9bxOdY2ER8YO2uMhHxpnW9umAnaOiY7XeCsB
+        xaLTrbYR2wd0Kvt5zT7+2myG7Jgcr2Qs7DJnNCWYnw==
+X-Google-Smtp-Source: ADFU+vub2oGGaZwK6dqB/jd4b8EpyH4/obAagvR+weJB1BPBkFBrFv81Vmk8W+ZBTFzEINX6QykYl8LH1mYocO4UqFc=
+X-Received: by 2002:a9d:6310:: with SMTP id q16mr2598495otk.147.1584632293068;
+ Thu, 19 Mar 2020 08:38:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20200319124631.58432-1-yuehaibing@huawei.com>
+In-Reply-To: <20200319124631.58432-1-yuehaibing@huawei.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Thu, 19 Mar 2020 15:38:00 +0000
+Message-ID: <CACAyw9_B+qNYHPrDPfYszjOwJbiV92vehT7BA_NGuFtzkj0D0w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: tcp: Fix unused function warnings
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+On Thu, 19 Mar 2020 at 12:47, YueHaibing <yuehaibing@huawei.com> wrote:
+>
+> If BPF_STREAM_PARSER is not set, gcc warns:
+>
+> net/ipv4/tcp_bpf.c:483:12: warning: 'tcp_bpf_sendpage' defined but not used [-Wunused-function]
+> net/ipv4/tcp_bpf.c:395:12: warning: 'tcp_bpf_sendmsg' defined but not used [-Wunused-function]
+> net/ipv4/tcp_bpf.c:13:13: warning: 'tcp_bpf_stream_read' defined but not used [-Wunused-function]
+>
+> Moves the unused functions into the #ifdef
 
-This adds tests for the various replacement operations using
-IFLA_XDP_EXPECTED_FD.
+Thanks for fixing this.
 
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- .../testing/selftests/bpf/prog_tests/xdp_attach.c  |   55 ++++++++++++++++++++
- 1 file changed, 55 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_attach.c
+Reviewed-by: Lorenz Bauer <lmb@cloudflare.com>
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_attach.c b/tools/testing/selftests/bpf/prog_tests/xdp_attach.c
-new file mode 100644
-index 000000000000..ad974b677e74
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_attach.c
-@@ -0,0 +1,55 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+
-+#define IFINDEX_LO 1
-+
-+void test_xdp_attach(void)
-+{
-+	struct bpf_object *obj1, *obj2, *obj3;
-+	const char *file = "./test_xdp.o";
-+	int err, fd1, fd2, fd3;
-+        __u32 duration = 0;
-+
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj1, &fd1);
-+	if (CHECK_FAIL(err))
-+		return;
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj2, &fd2);
-+	if (CHECK_FAIL(err))
-+		goto out_1;
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj3, &fd3);
-+	if (CHECK_FAIL(err))
-+		goto out_2;
-+
-+        err = bpf_set_link_xdp_fd_replace(IFINDEX_LO, fd1, -1, 0);
-+        if (CHECK(err, "load_ok", "initial load failed"))
-+                goto out_close;
-+
-+        err = bpf_set_link_xdp_fd_replace(IFINDEX_LO, fd2, -1, 0);
-+        if (CHECK(!err, "load_fail", "load with expected fd didn't fail"))
-+                goto out;
-+
-+        err = bpf_set_link_xdp_fd_replace(IFINDEX_LO, fd2, fd1, 0);
-+        if (CHECK(err, "replace_ok", "replace valid old_fd failed"))
-+                goto out;
-+
-+        err = bpf_set_link_xdp_fd_replace(IFINDEX_LO, fd3, fd1, 0);
-+        if (CHECK(!err, "replace_fail", "replace invalid old_fd didn't fail"))
-+                goto out;
-+
-+        err = bpf_set_link_xdp_fd_replace(IFINDEX_LO, -1, fd1, 0);
-+        if (CHECK(!err, "remove_fail", "remove invalid old_fd didn't fail"))
-+                goto out;
-+
-+        err = bpf_set_link_xdp_fd_replace(IFINDEX_LO, -1, fd2, 0);
-+        if (CHECK(err, "remove_ok", "remove valid old_fd failed"))
-+                goto out;
-+
-+out:
-+        bpf_set_link_xdp_fd(IFINDEX_LO, -1, 0);
-+out_close:
-+	bpf_object__close(obj3);
-+out_2:
-+	bpf_object__close(obj2);
-+out_1:
-+	bpf_object__close(obj1);
-+}
 
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>  net/ipv4/tcp_bpf.c | 28 ++++++++++++++--------------
+>  1 file changed, 14 insertions(+), 14 deletions(-)
+>
+> diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+> index fe7b4fbc31c1..37c91f25cae3 100644
+> --- a/net/ipv4/tcp_bpf.c
+> +++ b/net/ipv4/tcp_bpf.c
+> @@ -10,19 +10,6 @@
+>  #include <net/inet_common.h>
+>  #include <net/tls.h>
+>
+> -static bool tcp_bpf_stream_read(const struct sock *sk)
+> -{
+> -       struct sk_psock *psock;
+> -       bool empty = true;
+> -
+> -       rcu_read_lock();
+> -       psock = sk_psock(sk);
+> -       if (likely(psock))
+> -               empty = list_empty(&psock->ingress_msg);
+> -       rcu_read_unlock();
+> -       return !empty;
+> -}
+> -
+>  static int tcp_bpf_wait_data(struct sock *sk, struct sk_psock *psock,
+>                              int flags, long timeo, int *err)
+>  {
+> @@ -298,6 +285,20 @@ int tcp_bpf_sendmsg_redir(struct sock *sk, struct sk_msg *msg,
+>  }
+>  EXPORT_SYMBOL_GPL(tcp_bpf_sendmsg_redir);
+>
+> +#ifdef CONFIG_BPF_STREAM_PARSER
+> +static bool tcp_bpf_stream_read(const struct sock *sk)
+> +{
+> +       struct sk_psock *psock;
+> +       bool empty = true;
+> +
+> +       rcu_read_lock();
+> +       psock = sk_psock(sk);
+> +       if (likely(psock))
+> +               empty = list_empty(&psock->ingress_msg);
+> +       rcu_read_unlock();
+> +       return !empty;
+> +}
+> +
+>  static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
+>                                 struct sk_msg *msg, int *copied, int flags)
+>  {
+> @@ -528,7 +529,6 @@ static int tcp_bpf_sendpage(struct sock *sk, struct page *page, int offset,
+>         return copied ? copied : err;
+>  }
+>
+> -#ifdef CONFIG_BPF_STREAM_PARSER
+>  enum {
+>         TCP_BPF_IPV4,
+>         TCP_BPF_IPV6,
+> --
+> 2.17.1
+>
+>
+
+
+--
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
