@@ -2,143 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD4C18ABF8
-	for <lists+bpf@lfdr.de>; Thu, 19 Mar 2020 06:11:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAF3418AC32
+	for <lists+bpf@lfdr.de>; Thu, 19 Mar 2020 06:27:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725767AbgCSFLJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Mar 2020 01:11:09 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:40267 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbgCSFLJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Mar 2020 01:11:09 -0400
-Received: by mail-qt1-f193.google.com with SMTP id i9so146697qtw.7;
-        Wed, 18 Mar 2020 22:11:08 -0700 (PDT)
+        id S1726970AbgCSF1n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Mar 2020 01:27:43 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:33195 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbgCSF1m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Mar 2020 01:27:42 -0400
+Received: by mail-lf1-f67.google.com with SMTP id c20so592517lfb.0;
+        Wed, 18 Mar 2020 22:27:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=CifRFPL7G9zhduy+K2WKQkbWfN5Wt24clk5Fo4/QKqA=;
-        b=GRG+EFCldvZhznE3C8KM0R8ZPiB6QakCzOd23gxvHeqIUg/91nYFSiYbPvRlF/5MIb
-         xYyJoBfXiEJbBJyUg/dLRtVB2qnRW60JVmXciWvPELH7G3gSD3kHjJ1bFLKOHEM5KEgd
-         fIAUBkap8YPp4k3ACuw2Lc29ihOtm1R100OJUL3nJoBMbXzfODT86DysDNVs3cYfpfF1
-         s1IYNEvlIKvQm1G65LRzrqYmnB4YTFgvjpMoZNG0LllGw2OnQocKsbOQFUPx3sfNupr9
-         H8tKXpYn4F0EuUa2P7ZALIj5GYyGJNtOnYkAhZBVOYxo+gEV7TuPuKn/cPqh0NY5zDEP
-         bawg==
+        bh=v/iKqoxWaZ+Tkks580ZgQreSF47JyquklZOAbcKvE+0=;
+        b=i7ZATe696JfpmC5Se4TMQM5EfN1jCMLVKl9zKk/30WYniXfC/KjodFDUq4WNeg4E3I
+         5ApAl57gYYf+Tqrc/A2ElSw1b+YLcSIzEHuwNtEu7lmtYyeeT0iKT2Sw25ZhLq2yfuZJ
+         XoF5ytnrY2QWiX+zgt49nMrgX1Uf5WDpYWUCQSpwBA7mugiWawYiHko2c3MvPmyGVJi2
+         ZRRep1J+TfbP/Vp6kLiqK4IDwyTS7gNiH+ooh0g9q7QqiSVkAKBbM4Bdxve1jbc5ZQm2
+         5mLI6WMBHzmMYNhWCImOlCQf/aK35whjkvoazbcDRMvfYqt7ULeCUJ6jNTIlzO/snUS3
+         61Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CifRFPL7G9zhduy+K2WKQkbWfN5Wt24clk5Fo4/QKqA=;
-        b=HDdtQ4OcTg7uei1bzT6rX3aEtjzDu9xEn6DWwpHFRr/6h7tEr9iU+gHx2e7rmsYmPg
-         TpLw8AnfjoigTHgwstcAr11zIPxw3GKRw1KL13j2RXkRCxS+dQGVyIcZPhfaOxZv6kQ1
-         Oi3P1TPm2vqYb7+yWP5CmSitNcnt3VwpRZRcvpyjc3eJVOZMUf0eZIBxkRoaH+7SswDK
-         VkNf5d6k9yZFWv62+YVLfyIntxejsrkOt9sUXEcJPvr43nIC/x31t6Z9j3BFhNiBCp6S
-         LfLzGUM37pB2BlpBjihn440ZB9F/s15fG9n6Foa9A1RsXECBkPNFzS+KDnpIjzqYyFJv
-         p4PQ==
-X-Gm-Message-State: ANhLgQ16CYYw5EsuHN7bcEFkA7mZc+Fj66HajLIfQsqT9M9LOt6CVfhN
-        w6TQqsbuvlr9G98WD+GYA0jXqMjUqf/dAgyc9g8=
-X-Google-Smtp-Source: ADFU+vu5vkoZ00IvdcwmUORyaXyf5rUDI5J5AtwELVd3n5hON/5WIx2LDdNJc+S+CRyducg2f3JQTc/GkML1ceMrvEI=
-X-Received: by 2002:ac8:3f62:: with SMTP id w31mr1138688qtk.171.1584594667691;
- Wed, 18 Mar 2020 22:11:07 -0700 (PDT)
+        bh=v/iKqoxWaZ+Tkks580ZgQreSF47JyquklZOAbcKvE+0=;
+        b=Oi01KOtf/Ntc8lMQrpaNzL4EQOKMwN8wD5eaRYfRzAu/YS5KEiKAVSOMrMjGAygDIl
+         4LERexM3SqLyoppuERoD90Skcg2goCsHnaZwgWJ73oIpj3nL5rlfBOmNsFHVJ4/JhOYc
+         RcKv9dP0y4JVKuSPv/v2zJK8EsOss5Ka6+q4m9D77mdKkUlbdXZYlEFvQOoPgih3iXa8
+         LJPqPC/gnkjB04+HYi0pSbQFPdBxP/8wX0SQHO9KFqfPE6RVyZsf2mOCJlAQX0NxiypU
+         m28rQn/o5q+zuckAriJd3FbNsgbVNB1iccZsuw69uAc6RVlqHjgG4xoq6rFidGh+nwB9
+         1ibA==
+X-Gm-Message-State: ANhLgQ0ULB3/MCovAmskolguh5NnEYCJ7HuO0CX9VPmcA9g6iSvmFxXv
+        he9IZWlUg7OmBwgnebYVq1bBFZksVvgRhNhsXw8=
+X-Google-Smtp-Source: ADFU+vvhVCDWyEVnXCmwPD4XzhHK3C5uf8Wgv8zRkF0h382PkmGGmgSe+R198UtCb8XR6Pq6Hy9a+L5QPBOQ2GBvNWY=
+X-Received: by 2002:ac2:46d9:: with SMTP id p25mr982593lfo.174.1584595659830;
+ Wed, 18 Mar 2020 22:27:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200318222746.173648-1-maskray@google.com>
-In-Reply-To: <20200318222746.173648-1-maskray@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 18 Mar 2020 22:10:56 -0700
-Message-ID: <CAEf4BzYJ2+y2SkjJME6f0duhG0GTo1BWqs5qdLK=F4=wBhxc9w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6] bpf: Support llvm-objcopy for vmlinux BTF
-To:     Fangrui Song <maskray@google.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com
+References: <20200317213222.421100128@goodmis.org>
+In-Reply-To: <20200317213222.421100128@goodmis.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 18 Mar 2020 19:27:28 -1000
+Message-ID: <CAADnVQ+hpVnsfKUNNeJWs8X0ogvsR8uNKrEzz5CK2XRdqn+80A@mail.gmail.com>
+Subject: Re: [RFC][PATCH 00/11] ring-buffer/tracing: Remove disabling of ring
+ buffer while reading trace file
+To:     Steven Rostedt <rostedt@goodmis.org>, bpf <bpf@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Wu <peter@lekensteyn.nl>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Tom Zanussi <zanussi@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 18, 2020 at 3:27 PM Fangrui Song <maskray@google.com> wrote:
+On Tue, Mar 17, 2020 at 11:34 AM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> Simplify gen_btf logic to make it work with llvm-objcopy. The existing
-> 'file format' and 'architecture' parsing logic is brittle and does not
-> work with llvm-objcopy/llvm-objdump.
-> 'file format' output of llvm-objdump>=11 will match GNU objdump, but
-> 'architecture' (bfdarch) may not.
+> When the ring buffer was first written for ftrace, there was two
+> human readable files to read it. One was a standard "producer/consumer"
+> file (trace_pipe), which would consume data from the ring buffer as
+> it read it, and the other was a "static iterator" that would not
+> consume the events, such that the file could be read multiple times
+> and return the same output each time.
 >
-> .BTF in .tmp_vmlinux.btf is non-SHF_ALLOC. Add the SHF_ALLOC flag
-> because it is part of vmlinux image used for introspection. C code can
-> reference the section via linker script defined __start_BTF and
-> __stop_BTF. This fixes a small problem that previous .BTF had the
-> SHF_WRITE flag (objcopy -I binary -O elf* synthesized .data).
+> The "static iterator" was never meant to be read while there was an
+> active writer to the ring buffer. If writing was enabled, then it
+> would disable the writer when the trace file was opened.
 >
-> Additionally, `objcopy -I binary` synthesized symbols
-> _binary__btf_vmlinux_bin_start and _binary__btf_vmlinux_bin_stop (not
-> used elsewhere) are replaced with more commonplace __start_BTF and
-> __stop_BTF.
+> There has been some complaints about this by the BPF folks, that did
+> not realize this little bit of information and it was requested that
+> the "trace" file does not stop the writing to the ring buffer.
 >
-> Add 2>/dev/null because GNU objcopy (but not llvm-objcopy) warns
-> "empty loadable segment detected at vaddr=0xffffffff81000000, is this intentional?"
->
-> We use a dd command to change the e_type field in the ELF header from
-> ET_EXEC to ET_REL so that lld will accept .btf.vmlinux.bin.o.  Accepting
-> ET_EXEC as an input file is an extremely rare GNU ld feature that lld
-> does not intend to support, because this is error-prone.
->
-> The output section description .BTF in include/asm-generic/vmlinux.lds.h
-> avoids potential subtle orphan section placement issues and suppresses
-> --orphan-handling=warn warnings.
->
-> v6:
-> - drop llvm-objdump from the title. We don't run objdump now
-> - delete unused local variables: bin_arch, bin_format and bin_file
-> - mention in the comment that lld does not allow an ET_EXEC input
-> - rename BTF back to .BTF . The section name is assumed by bpftool
-> - add output section description to include/asm-generic/vmlinux.lds.h
-> - mention cb0cc635c7a9 ("powerpc: Include .BTF section")
->
-> v5:
-> - rebase on top of bpf-next/master
-> - rename .BTF to BTF
->
-> Fixes: df786c9b9476 ("bpf: Force .BTF section start to zero when dumping from vmlinux")
-> Fixes: cb0cc635c7a9 ("powerpc: Include .BTF section")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/871
-> Signed-off-by: Fangrui Song <maskray@google.com>
-> Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-> Reviewed-by: Stanislav Fomichev <sdf@google.com>
-> Tested-by: Stanislav Fomichev <sdf@google.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: David S. Miller <davem@davemloft.net>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: clang-built-linux@googlegroups.com
-> ---
+> This patch series attempts to satisfy that request, by creating a
+> temporary buffer in each of the per cpu iterators to place the
+> read event into, such that it can be passed to users without worrying
+> about a writer to corrupt the event while it was being written out.
+> It also uses the fact that the ring buffer is broken up into pages,
+> where each page has its own timestamp that gets updated when a
+> writer crosses over to it. By copying it to the temp buffer, and
+> doing a "before and after" test of the time stamp with memory barriers,
+> can allow the events to be saved.
 
-Thanks for detailed commit message and comments in the script, that's
-very helpful. Looks good to me, I've tested with my local setup and
-everything works across bpftool, selftests and my private BTF tool,
-which doesn't use libbpf.
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Tested-by: Andrii Nakryiko <andriin@fb.com>
-
->  arch/powerpc/kernel/vmlinux.lds.S |  6 ------
->  include/asm-generic/vmlinux.lds.h | 15 +++++++++++++++
->  kernel/bpf/btf.c                  |  9 ++++-----
->  kernel/bpf/sysfs_btf.c            | 11 +++++------
->  scripts/link-vmlinux.sh           | 24 ++++++++++--------------
->  5 files changed, 34 insertions(+), 31 deletions(-)
-
-[...]
+Awesome. Thank you so much for working on it.
+Looks like it addresses all the issues bpf folks reported.
+cc-ing bpf list for visibility.
