@@ -2,115 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA2C18B2EC
-	for <lists+bpf@lfdr.de>; Thu, 19 Mar 2020 13:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6542018B3AD
+	for <lists+bpf@lfdr.de>; Thu, 19 Mar 2020 13:47:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727027AbgCSMEv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Mar 2020 08:04:51 -0400
-Received: from www62.your-server.de ([213.133.104.62]:47298 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726589AbgCSMEv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Mar 2020 08:04:51 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jEtum-0005Mt-Qx; Thu, 19 Mar 2020 13:04:44 +0100
-Received: from [85.7.42.192] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jEtum-0004Xo-D4; Thu, 19 Mar 2020 13:04:44 +0100
-Subject: Re: [PATCH bpf-next v6] bpf: Support llvm-objcopy for vmlinux BTF
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Fangrui Song <maskray@google.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Kees Cook <keescook@chromium.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com
-References: <20200318222746.173648-1-maskray@google.com>
- <87tv2kd4hn.fsf@mpe.ellerman.id.au>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <b5d153ad-23fe-a367-100b-ea9f19ae6958@iogearbox.net>
-Date:   Thu, 19 Mar 2020 13:04:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726934AbgCSMrE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Mar 2020 08:47:04 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12102 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726589AbgCSMrE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Mar 2020 08:47:04 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 9810353EC2277E87DC44;
+        Thu, 19 Mar 2020 20:46:57 +0800 (CST)
+Received: from localhost (10.173.223.234) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Thu, 19 Mar 2020
+ 20:46:51 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <lmb@cloudflare.com>, <daniel@iogearbox.net>,
+        <jakub@cloudflare.com>, <john.fastabend@gmail.com>
+CC:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH bpf-next] bpf: tcp: Fix unused function warnings
+Date:   Thu, 19 Mar 2020 20:46:31 +0800
+Message-ID: <20200319124631.58432-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-In-Reply-To: <87tv2kd4hn.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25755/Wed Mar 18 14:14:00 2020)
+Content-Type: text/plain
+X-Originating-IP: [10.173.223.234]
+X-CFilter-Loop: Reflected
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/19/20 11:27 AM, Michael Ellerman wrote:
-> Fangrui Song <maskray@google.com> writes:
->> Simplify gen_btf logic to make it work with llvm-objcopy. The existing
->> 'file format' and 'architecture' parsing logic is brittle and does not
->> work with llvm-objcopy/llvm-objdump.
->> 'file format' output of llvm-objdump>=11 will match GNU objdump, but
->> 'architecture' (bfdarch) may not.
->>
->> .BTF in .tmp_vmlinux.btf is non-SHF_ALLOC. Add the SHF_ALLOC flag
->> because it is part of vmlinux image used for introspection. C code can
->> reference the section via linker script defined __start_BTF and
->> __stop_BTF. This fixes a small problem that previous .BTF had the
->> SHF_WRITE flag (objcopy -I binary -O elf* synthesized .data).
->>
->> Additionally, `objcopy -I binary` synthesized symbols
->> _binary__btf_vmlinux_bin_start and _binary__btf_vmlinux_bin_stop (not
->> used elsewhere) are replaced with more commonplace __start_BTF and
->> __stop_BTF.
->>
->> Add 2>/dev/null because GNU objcopy (but not llvm-objcopy) warns
->> "empty loadable segment detected at vaddr=0xffffffff81000000, is this intentional?"
->>
->> We use a dd command to change the e_type field in the ELF header from
->> ET_EXEC to ET_REL so that lld will accept .btf.vmlinux.bin.o.  Accepting
->> ET_EXEC as an input file is an extremely rare GNU ld feature that lld
->> does not intend to support, because this is error-prone.
->>
->> The output section description .BTF in include/asm-generic/vmlinux.lds.h
->> avoids potential subtle orphan section placement issues and suppresses
->> --orphan-handling=warn warnings.
->>
->> v6:
->> - drop llvm-objdump from the title. We don't run objdump now
->> - delete unused local variables: bin_arch, bin_format and bin_file
->> - mention in the comment that lld does not allow an ET_EXEC input
->> - rename BTF back to .BTF . The section name is assumed by bpftool
->> - add output section description to include/asm-generic/vmlinux.lds.h
->> - mention cb0cc635c7a9 ("powerpc: Include .BTF section")
->>
->> v5:
->> - rebase on top of bpf-next/master
->> - rename .BTF to BTF
->>
->> Fixes: df786c9b9476 ("bpf: Force .BTF section start to zero when dumping from vmlinux")
->> Fixes: cb0cc635c7a9 ("powerpc: Include .BTF section")
->> Link: https://github.com/ClangBuiltLinux/linux/issues/871
->> Signed-off-by: Fangrui Song <maskray@google.com>
->> Reported-by: Nathan Chancellor <natechancellor@gmail.com>
->> Reviewed-by: Stanislav Fomichev <sdf@google.com>
->> Tested-by: Stanislav Fomichev <sdf@google.com>
->> Cc: Alexei Starovoitov <ast@kernel.org>
->> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
->> Cc: Daniel Borkmann <daniel@iogearbox.net>
->> Cc: David S. Miller <davem@davemloft.net>
->> Cc: Kees Cook <keescook@chromium.org>
->> Cc: Michael Ellerman <mpe@ellerman.id.au>
->> Cc: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
->> Cc: Nick Desaulniers <ndesaulniers@google.com>
->> Cc: clang-built-linux@googlegroups.com
+If BPF_STREAM_PARSER is not set, gcc warns:
 
-Applied, thanks everyone!
+net/ipv4/tcp_bpf.c:483:12: warning: 'tcp_bpf_sendpage' defined but not used [-Wunused-function]
+net/ipv4/tcp_bpf.c:395:12: warning: 'tcp_bpf_sendmsg' defined but not used [-Wunused-function]
+net/ipv4/tcp_bpf.c:13:13: warning: 'tcp_bpf_stream_read' defined but not used [-Wunused-function]
+
+Moves the unused functions into the #ifdef
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ net/ipv4/tcp_bpf.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index fe7b4fbc31c1..37c91f25cae3 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -10,19 +10,6 @@
+ #include <net/inet_common.h>
+ #include <net/tls.h>
+ 
+-static bool tcp_bpf_stream_read(const struct sock *sk)
+-{
+-	struct sk_psock *psock;
+-	bool empty = true;
+-
+-	rcu_read_lock();
+-	psock = sk_psock(sk);
+-	if (likely(psock))
+-		empty = list_empty(&psock->ingress_msg);
+-	rcu_read_unlock();
+-	return !empty;
+-}
+-
+ static int tcp_bpf_wait_data(struct sock *sk, struct sk_psock *psock,
+ 			     int flags, long timeo, int *err)
+ {
+@@ -298,6 +285,20 @@ int tcp_bpf_sendmsg_redir(struct sock *sk, struct sk_msg *msg,
+ }
+ EXPORT_SYMBOL_GPL(tcp_bpf_sendmsg_redir);
+ 
++#ifdef CONFIG_BPF_STREAM_PARSER
++static bool tcp_bpf_stream_read(const struct sock *sk)
++{
++	struct sk_psock *psock;
++	bool empty = true;
++
++	rcu_read_lock();
++	psock = sk_psock(sk);
++	if (likely(psock))
++		empty = list_empty(&psock->ingress_msg);
++	rcu_read_unlock();
++	return !empty;
++}
++
+ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
+ 				struct sk_msg *msg, int *copied, int flags)
+ {
+@@ -528,7 +529,6 @@ static int tcp_bpf_sendpage(struct sock *sk, struct page *page, int offset,
+ 	return copied ? copied : err;
+ }
+ 
+-#ifdef CONFIG_BPF_STREAM_PARSER
+ enum {
+ 	TCP_BPF_IPV4,
+ 	TCP_BPF_IPV6,
+-- 
+2.17.1
+
+
