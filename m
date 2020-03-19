@@ -2,118 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E2A18ABA8
-	for <lists+bpf@lfdr.de>; Thu, 19 Mar 2020 05:15:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD4C18ABF8
+	for <lists+bpf@lfdr.de>; Thu, 19 Mar 2020 06:11:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbgCSEPb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Mar 2020 00:15:31 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:36183 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbgCSEPa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Mar 2020 00:15:30 -0400
-Received: by mail-qk1-f194.google.com with SMTP id d11so1217455qko.3
-        for <bpf@vger.kernel.org>; Wed, 18 Mar 2020 21:15:28 -0700 (PDT)
+        id S1725767AbgCSFLJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Mar 2020 01:11:09 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:40267 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbgCSFLJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Mar 2020 01:11:09 -0400
+Received: by mail-qt1-f193.google.com with SMTP id i9so146697qtw.7;
+        Wed, 18 Mar 2020 22:11:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ACBUKYFz56rYSMbOM+EDRADHwdlHl87he6dVYm6MK9o=;
-        b=CwG+gh5sXV9wy+tdYlPTnwWLm7qgqOCz3P6COc+q7457NMW2P3ILqA9s/+6QWv+8vy
-         8poFHRcQ2iyu2WQoT18uwC8irch5rPRHfJfOodCtaENVCtj6wEn968TulTeVlJv+TbHa
-         lSCnkp95AKtM8YcmZIgPfhV9Ao1mY69toKjri1Jvi/ZmATilfCNSDhkj4YI5/KwutmEx
-         RqV0jUabNY0F8wmHlO0NXWuLke34ieFdeKAnbh5MQqOM67EM1lw8qUc5GpJ0NEEICGhy
-         o2slQW9GqFNFy49gCEo1pT+d3GSIbd1sz30KuWJzFArsch87jxN8L7VJ0JIh/rAjUCU1
-         CO1A==
+        bh=CifRFPL7G9zhduy+K2WKQkbWfN5Wt24clk5Fo4/QKqA=;
+        b=GRG+EFCldvZhznE3C8KM0R8ZPiB6QakCzOd23gxvHeqIUg/91nYFSiYbPvRlF/5MIb
+         xYyJoBfXiEJbBJyUg/dLRtVB2qnRW60JVmXciWvPELH7G3gSD3kHjJ1bFLKOHEM5KEgd
+         fIAUBkap8YPp4k3ACuw2Lc29ihOtm1R100OJUL3nJoBMbXzfODT86DysDNVs3cYfpfF1
+         s1IYNEvlIKvQm1G65LRzrqYmnB4YTFgvjpMoZNG0LllGw2OnQocKsbOQFUPx3sfNupr9
+         H8tKXpYn4F0EuUa2P7ZALIj5GYyGJNtOnYkAhZBVOYxo+gEV7TuPuKn/cPqh0NY5zDEP
+         bawg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ACBUKYFz56rYSMbOM+EDRADHwdlHl87he6dVYm6MK9o=;
-        b=Sz2ZqEaXgtms3LbU0ALxHeufY7UriJ3Kj2qpe+zFyNNw9Lm1N+c9lsxUpHb2MpY+v5
-         DlTqsuo4UgN3zguNdFcoXwExiCxAVlBV/9gIe+V3TYjmM8p3XNgCk26+QR0U9hwxtCGz
-         6vH3xKbmR/S7SIbc+Gvj2PcVJT+DcZUlBkhSw3scnYaZCKduWirxs6+P+icFhDrfZDmT
-         6x2f/91DTNnBJ2X8XBhKhbOL9vuOD8s1TRg3uvA8S5Tp2Ej46zHGK7YSAt3pybJtgIrs
-         p+vgGn7DEzmoPMGvoP86wMya/KlHjsjLGfedtdySxltcZtWm0I0nByKM08qM3kxPf9qO
-         kHFw==
-X-Gm-Message-State: ANhLgQ0tLELo3BKaI3zPGgR/8HSto4LCgCthtHjZmumUbaVPuu7fxKV9
-        HV7A3JHAKWRKetjIuoVVHBOY+duO+KinzydOqVLS9Q==
-X-Google-Smtp-Source: ADFU+vudYeq0nk20DXy4ZGbabaOUyEUw0/1aXSBXmC1cJBFh0dfvNlUlDrZx/nKddUUhI80erV587MhYrbNlUcW6c2Q=
-X-Received: by 2002:a25:bb89:: with SMTP id y9mr1675045ybg.324.1584591327469;
- Wed, 18 Mar 2020 21:15:27 -0700 (PDT)
+        bh=CifRFPL7G9zhduy+K2WKQkbWfN5Wt24clk5Fo4/QKqA=;
+        b=HDdtQ4OcTg7uei1bzT6rX3aEtjzDu9xEn6DWwpHFRr/6h7tEr9iU+gHx2e7rmsYmPg
+         TpLw8AnfjoigTHgwstcAr11zIPxw3GKRw1KL13j2RXkRCxS+dQGVyIcZPhfaOxZv6kQ1
+         Oi3P1TPm2vqYb7+yWP5CmSitNcnt3VwpRZRcvpyjc3eJVOZMUf0eZIBxkRoaH+7SswDK
+         VkNf5d6k9yZFWv62+YVLfyIntxejsrkOt9sUXEcJPvr43nIC/x31t6Z9j3BFhNiBCp6S
+         LfLzGUM37pB2BlpBjihn440ZB9F/s15fG9n6Foa9A1RsXECBkPNFzS+KDnpIjzqYyFJv
+         p4PQ==
+X-Gm-Message-State: ANhLgQ16CYYw5EsuHN7bcEFkA7mZc+Fj66HajLIfQsqT9M9LOt6CVfhN
+        w6TQqsbuvlr9G98WD+GYA0jXqMjUqf/dAgyc9g8=
+X-Google-Smtp-Source: ADFU+vu5vkoZ00IvdcwmUORyaXyf5rUDI5J5AtwELVd3n5hON/5WIx2LDdNJc+S+CRyducg2f3JQTc/GkML1ceMrvEI=
+X-Received: by 2002:ac8:3f62:: with SMTP id w31mr1138688qtk.171.1584594667691;
+ Wed, 18 Mar 2020 22:11:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200311213613.210749-1-irogers@google.com> <20200318102254.GC821557@krava>
-In-Reply-To: <20200318102254.GC821557@krava>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 18 Mar 2020 21:15:16 -0700
-Message-ID: <CAP-5=fU0AAmW7B5Qw+mmA9PhLYgMxKtiuxo3UcPbbowKJPhg8A@mail.gmail.com>
-Subject: Re: [PATCH v3] perf tools: add support for libpfm4
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+References: <20200318222746.173648-1-maskray@google.com>
+In-Reply-To: <20200318222746.173648-1-maskray@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 18 Mar 2020 22:10:56 -0700
+Message-ID: <CAEf4BzYJ2+y2SkjJME6f0duhG0GTo1BWqs5qdLK=F4=wBhxc9w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6] bpf: Support llvm-objcopy for vmlinux BTF
+To:     Fangrui Song <maskray@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jiwei Sun <jiwei.sun@windriver.com>,
-        yuzhoujian <yuzhoujian@didichuxing.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
+        "David S . Miller" <davem@davemloft.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 18, 2020 at 3:23 AM Jiri Olsa <jolsa@redhat.com> wrote:
+On Wed, Mar 18, 2020 at 3:27 PM Fangrui Song <maskray@google.com> wrote:
 >
-> On Wed, Mar 11, 2020 at 02:36:13PM -0700, Ian Rogers wrote:
-> > This patch links perf with the libpfm4 library if it is available and
-> > NO_LIBPFM4 isn't passed to the build. The libpfm4 library contains hardware
-> > event tables for all processors supported by perf_events. It is a helper
-> > library that helps convert from a symbolic event name to the event
-> > encoding required by the underlying kernel interface. This
-> > library is open-source and available from: http://perfmon2.sf.net.
-> >
-> > With this patch, it is possible to specify full hardware events
-> > by name. Hardware filters are also supported. Events must be
-> > specified via the --pfm-events and not -e option. Both options
-> > are active at the same time and it is possible to mix and match:
-> >
-> > $ perf stat --pfm-events inst_retired:any_p:c=1:i -e cycles ....
-> >
-> > v3 is against acme/perf/core removes a diagnostic warning
-> > v2 of this patch makes the --pfm-events man page documentation
-> > conditional on libpfm4 behing configured. It tidies some of the
-> > documentation and adds the feature test missed in the v1 patch.
-> >
-> > Author: Stephane Eranian <eranian@google.com>
-> > Signed-off-by: Ian Rogers <irogers@google.com>
+> Simplify gen_btf logic to make it work with llvm-objcopy. The existing
+> 'file format' and 'architecture' parsing logic is brittle and does not
+> work with llvm-objcopy/llvm-objdump.
+> 'file format' output of llvm-objdump>=11 will match GNU objdump, but
+> 'architecture' (bfdarch) may not.
 >
-> hi,
-> is this the latest version? I can't apply it on Arnaldo's perf/core
+> .BTF in .tmp_vmlinux.btf is non-SHF_ALLOC. Add the SHF_ALLOC flag
+> because it is part of vmlinux image used for introspection. C code can
+> reference the section via linker script defined __start_BTF and
+> __stop_BTF. This fixes a small problem that previous .BTF had the
+> SHF_WRITE flag (objcopy -I binary -O elf* synthesized .data).
 >
-> jirka
+> Additionally, `objcopy -I binary` synthesized symbols
+> _binary__btf_vmlinux_bin_start and _binary__btf_vmlinux_bin_stop (not
+> used elsewhere) are replaced with more commonplace __start_BTF and
+> __stop_BTF.
+>
+> Add 2>/dev/null because GNU objcopy (but not llvm-objcopy) warns
+> "empty loadable segment detected at vaddr=0xffffffff81000000, is this intentional?"
+>
+> We use a dd command to change the e_type field in the ELF header from
+> ET_EXEC to ET_REL so that lld will accept .btf.vmlinux.bin.o.  Accepting
+> ET_EXEC as an input file is an extremely rare GNU ld feature that lld
+> does not intend to support, because this is error-prone.
+>
+> The output section description .BTF in include/asm-generic/vmlinux.lds.h
+> avoids potential subtle orphan section placement issues and suppresses
+> --orphan-handling=warn warnings.
+>
+> v6:
+> - drop llvm-objdump from the title. We don't run objdump now
+> - delete unused local variables: bin_arch, bin_format and bin_file
+> - mention in the comment that lld does not allow an ET_EXEC input
+> - rename BTF back to .BTF . The section name is assumed by bpftool
+> - add output section description to include/asm-generic/vmlinux.lds.h
+> - mention cb0cc635c7a9 ("powerpc: Include .BTF section")
+>
+> v5:
+> - rebase on top of bpf-next/master
+> - rename .BTF to BTF
+>
+> Fixes: df786c9b9476 ("bpf: Force .BTF section start to zero when dumping from vmlinux")
+> Fixes: cb0cc635c7a9 ("powerpc: Include .BTF section")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/871
+> Signed-off-by: Fangrui Song <maskray@google.com>
+> Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+> Reviewed-by: Stanislav Fomichev <sdf@google.com>
+> Tested-by: Stanislav Fomichev <sdf@google.com>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: David S. Miller <davem@davemloft.net>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: clang-built-linux@googlegroups.com
+> ---
 
+Thanks for detailed commit message and comments in the script, that's
+very helpful. Looks good to me, I've tested with my local setup and
+everything works across bpftool, selftests and my private BTF tool,
+which doesn't use libbpf.
 
-Sorry, I'd failed to re-add the feature test when I shifted branches.
-The complete patch should be here:
-https://lkml.org/lkml/2020/3/19/4
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Tested-by: Andrii Nakryiko <andriin@fb.com>
 
-Thanks,
-Ian
+>  arch/powerpc/kernel/vmlinux.lds.S |  6 ------
+>  include/asm-generic/vmlinux.lds.h | 15 +++++++++++++++
+>  kernel/bpf/btf.c                  |  9 ++++-----
+>  kernel/bpf/sysfs_btf.c            | 11 +++++------
+>  scripts/link-vmlinux.sh           | 24 ++++++++++--------------
+>  5 files changed, 34 insertions(+), 31 deletions(-)
+
+[...]
