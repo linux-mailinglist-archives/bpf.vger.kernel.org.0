@@ -2,211 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A180718C586
-	for <lists+bpf@lfdr.de>; Fri, 20 Mar 2020 03:57:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 791BB18C5EC
+	for <lists+bpf@lfdr.de>; Fri, 20 Mar 2020 04:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726646AbgCTC5U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Mar 2020 22:57:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33852 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726596AbgCTC5T (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Mar 2020 22:57:19 -0400
-Received: from devnote (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D63BC2075E;
-        Fri, 20 Mar 2020 02:57:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584673038;
-        bh=u3NNHla7i6K1v4Yu8SZ8kPaO5s4znKPKQXRXhFC96Dc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AlVGXjBqEyB7LDU/VZCDjse6dIlc6V6xtlqMMhw74gCBZeWyDnMvjy5uq2Qb0wGTd
-         Y90Xj1sIE4cqYsNjyrJS4qAEVdNHD5ppCJyYy1R2/m+0eLUnxO569OEGmsyX3lgVxw
-         I6xmTwbs/TH4le/Iq3NZ3p7Vzh7FXsWQgxGyLU1c=
-Date:   Fri, 20 Mar 2020 11:57:14 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Peter Wu <peter@lekensteyn.nl>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Shuah Khan <shuahkhan@gmail.com>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH 02/12 v2] tracing: Save off entry when peeking at next
- entry
-Message-Id: <20200320115714.0600d86e094fdbb32615abc1@kernel.org>
-In-Reply-To: <20200319232731.799117803@goodmis.org>
-References: <20200319232219.446480829@goodmis.org>
-        <20200319232731.799117803@goodmis.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1726774AbgCTDj0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Mar 2020 23:39:26 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:55546 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726103AbgCTDj0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 19 Mar 2020 23:39:26 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02K3GKPd023180;
+        Thu, 19 Mar 2020 20:39:13 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=xmoGOLCpTOwge/eUlAvkJe5LjrE6YJVUaUNFmGNenkI=;
+ b=NF6j2gdPGXHf8mCkthwgX76Samd2ERxXfet5/3mhVq9F0WdVVEjLlrb26Urcpf6cfPqR
+ zxD5H6P3vY9YvpwBSEQdxJy9xwCQ2Tw9LdNOfgpPdejgW8pYSr/1kOxD3/R7kANhZdJe
+ 4QdR+hsdJiJxlXpOcOp4XEvdAuG/ITk8FVs= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yu8x3uve0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 19 Mar 2020 20:39:13 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Thu, 19 Mar 2020 20:39:11 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DEOReWGVSFwDN4m2yel0b0MxGdd9LQH1UYjoYG1WVfn0Vb8V6YbACeNRMtfw6LzoPTTeZarYD9RzCktUS3N4Hy02co/znJyIdbobGXfTXGsqjCCmgo0GDlG0dNIgCvNY4fx9DJCvMZSR+7VA8ldaA8Qyzw6tanV4LZaXv8qr8uj+0bRiqd4L74VneoNXWJh00UR4JEiqWCGKnDLnDcnFu5jWz9agleLgw6nR7vpb+CHyFMVV+9mhc8C+vFB6TPbtSx/RZiCk3mBP0OlBheWrkce9DrXTQlr5TBj2Q2VHfdoMgATIrSZPFL3cMw+ol4v+2MQesOIYovJlPllNVXtrpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xmoGOLCpTOwge/eUlAvkJe5LjrE6YJVUaUNFmGNenkI=;
+ b=TDaQUQSv3fXuQhpFbOkEUXgxnEhs+ZjyH3xHOjHXX0PJ3L5YzbwxDN2k06f4o1VCvRflAYY56YjepLzrvBkvrdRGgaCSsv8WLEL3eqsqxRZ6Seg0C6NRmu5CQ7xqG7xD9kJq23+nK84D1nesBSomTjrieJsF9H2inZuXWEBaNqv2T0JslIGJASF2PKu6fGA47Nj22nO3TedvEF4dX84F0evra5Owz9p2fSRroyA2Qz0pUGS8XMZnKMXVYAAgYZjV3Rf80CrsUeaceJThBZ/eCCGAc6I+BgfIyF1EKWUM6t33XhjGV1vzD8e/zkBvO9RRNj924Fbg1h5k8lGSz3DqVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xmoGOLCpTOwge/eUlAvkJe5LjrE6YJVUaUNFmGNenkI=;
+ b=QvI6DafyFmCI6mQD6Ys1OE9i3cm8doUudys6opW3CplP72qczzEp4U4ucl3Zs35ZJyLXE2y8VtYj3FdRyxuldOvfHT67tWKiBJ9s14fmrfgcwVZwbLbM5yJtYCPewV4ehWYBrTp1mSBE5vsDYYt56D5L8NFMo2r1+UimMP3Q0bg=
+Received: from MW3PR15MB3883.namprd15.prod.outlook.com (2603:10b6:303:51::22)
+ by MW3PR15MB3868.namprd15.prod.outlook.com (2603:10b6:303:40::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.19; Fri, 20 Mar
+ 2020 03:39:10 +0000
+Received: from MW3PR15MB3883.namprd15.prod.outlook.com
+ ([fe80::a49b:8546:912f:dd98]) by MW3PR15MB3883.namprd15.prod.outlook.com
+ ([fe80::a49b:8546:912f:dd98%5]) with mapi id 15.20.2835.017; Fri, 20 Mar 2020
+ 03:39:10 +0000
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add bpf_sk_storage support to
+ bpf_tcp_ca
+To:     Martin KaFai Lau <kafai@fb.com>, <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>
+References: <20200319234955.2933540-1-kafai@fb.com>
+ <20200319235002.2939713-1-kafai@fb.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <d393606e-7d10-cb48-7924-c0441b815db2@fb.com>
+Date:   Thu, 19 Mar 2020 20:39:07 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.6.0
+In-Reply-To: <20200319235002.2939713-1-kafai@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW2PR2101CA0027.namprd21.prod.outlook.com
+ (2603:10b6:302:1::40) To MW3PR15MB3883.namprd15.prod.outlook.com
+ (2603:10b6:303:51::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from MacBook-Pro-52.local (2620:10d:c090:400::5:c5b) by MW2PR2101CA0027.namprd21.prod.outlook.com (2603:10b6:302:1::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2856.2 via Frontend Transport; Fri, 20 Mar 2020 03:39:09 +0000
+X-Originating-IP: [2620:10d:c090:400::5:c5b]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4c844c87-8f07-433b-6e35-08d7cc80400e
+X-MS-TrafficTypeDiagnostic: MW3PR15MB3868:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MW3PR15MB38688AD2E4E10639E1D1E08AD3F50@MW3PR15MB3868.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-Forefront-PRVS: 03484C0ABF
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(366004)(376002)(346002)(396003)(136003)(39860400002)(199004)(86362001)(2906002)(31686004)(316002)(52116002)(31696002)(478600001)(8936002)(53546011)(81156014)(54906003)(6506007)(8676002)(81166006)(66946007)(5660300002)(66476007)(2616005)(66556008)(4744005)(36756003)(186003)(4326008)(6512007)(16526019)(6486002);DIR:OUT;SFP:1102;SCL:1;SRVR:MW3PR15MB3868;H:MW3PR15MB3883.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
+Received-SPF: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: F8sUMwPd64a4CqdyqSeIQzh/xf56Z7QFqL2my5wQQKQ2pXrrgKMZrjSJq4mV2rXtrkofcXWheSFw6Go/E0Rq/AagMCD+seET44EaKzN++hfyGR9Pgj8dUicFVYkdJ5aKw5FNWr3J4xRIjmOm9Jk0fKM5TEyNez38y26A8FCxg0x/HMkkKx3UQIvx3vyyWKA/LQF8oXYPrmDkd6+t3otmKcB9iFBkvp7uLinUuTBVaZULjIqdJpj3WKujBXwpTiDwDhWkKvJXiXZUw2HdVZX3XuTuJEFsnX6zk33yETDwa1Vna45jpvZzw8qmHTeq7VXf5LyYqZaYfDTEtaDXxjuWiSK296L+GA2P5mYmnuNnWM4573NOjPTmMv2YTyU+x+adhjP0A84blE8jxKlw3XD+oOKwrahxB7US0UKABVmRPVaZYkpWe4FFZ7BeMwHlMu0r
+X-MS-Exchange-AntiSpam-MessageData: Y89sUM8/4xNzyYXaYv3Z4kh5ZBmvSUiNdLz734NPa4jopq3k0CvjLitLeC34Rbd+aOqA/ugLWakD05zNRW0RK51fuAZeQzcUUS3+uQXeBuh/6rHer0tYCgSNMt7jJvDO4tIdc7cwIw/FrlkW0I5i3VoyMJt7Ub8GbqERxVIFP2ey8DRb1A+phlpMdVcnQv1H
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4c844c87-8f07-433b-6e35-08d7cc80400e
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2020 03:39:10.3820
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3AWy4Rei6ZN9SCKYIKuZ6SWo5cZU4XhgMZUXodFR+JhGxYB2kHP/i3wXuSZN0MAv
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3868
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
+ definitions=2020-03-19_10:2020-03-19,2020-03-19 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ mlxlogscore=988 malwarescore=0 phishscore=0 spamscore=0 suspectscore=0
+ clxscore=1015 mlxscore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2003020000 definitions=main-2003200014
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 19 Mar 2020 19:22:21 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> 
-> In order to have the iterator read the buffer even when it's still updating,
-> it requires that the ring buffer iterator saves each event in a separate
-> location outside the ring buffer such that its use is immutable.
-> 
-> There's one use case that saves off the event returned from the ring buffer
-> interator and calls it again to look at the next event, before going back to
-> use the first event. As the ring buffer iterator will only have a single
-> copy, this use case will no longer be supported.
-> 
-> Instead, have the one use case create its own buffer to store the first
-> event when looking at the next event. This way, when looking at the first
-> event again, it wont be corrupted by the second read.
-
-OK, this looks good to me.
-
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you,
-
-> 
-> Link: http://lkml.kernel.org/r/20200317213415.722539921@goodmis.org
-> 
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  include/linux/trace_events.h |  2 ++
->  kernel/trace/trace.c         | 40 +++++++++++++++++++++++++++++++++++-
->  kernel/trace/trace_output.c  | 15 ++++++--------
->  3 files changed, 47 insertions(+), 10 deletions(-)
-> 
-> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-> index 6c7a10a6d71e..5c6943354049 100644
-> --- a/include/linux/trace_events.h
-> +++ b/include/linux/trace_events.h
-> @@ -85,6 +85,8 @@ struct trace_iterator {
->  	struct mutex		mutex;
->  	struct ring_buffer_iter	**buffer_iter;
->  	unsigned long		iter_flags;
-> +	void			*temp;	/* temp holder */
-> +	unsigned int		temp_size;
->  
->  	/* trace_seq for __print_flags() and __print_symbolic() etc. */
->  	struct trace_seq	tmp_seq;
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 02be4ddd4ad5..819e31d0d66c 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -3466,7 +3466,31 @@ __find_next_entry(struct trace_iterator *iter, int *ent_cpu,
->  struct trace_entry *trace_find_next_entry(struct trace_iterator *iter,
->  					  int *ent_cpu, u64 *ent_ts)
->  {
-> -	return __find_next_entry(iter, ent_cpu, NULL, ent_ts);
-> +	/* __find_next_entry will reset ent_size */
-> +	int ent_size = iter->ent_size;
-> +	struct trace_entry *entry;
-> +
-> +	/*
-> +	 * The __find_next_entry() may call peek_next_entry(), which may
-> +	 * call ring_buffer_peek() that may make the contents of iter->ent
-> +	 * undefined. Need to copy iter->ent now.
-> +	 */
-> +	if (iter->ent && iter->ent != iter->temp) {
-> +		if (!iter->temp || iter->temp_size < iter->ent_size) {
-> +			kfree(iter->temp);
-> +			iter->temp = kmalloc(iter->ent_size, GFP_KERNEL);
-> +			if (!iter->temp)
-> +				return NULL;
-> +		}
-> +		memcpy(iter->temp, iter->ent, iter->ent_size);
-> +		iter->temp_size = iter->ent_size;
-> +		iter->ent = iter->temp;
-> +	}
-> +	entry = __find_next_entry(iter, ent_cpu, NULL, ent_ts);
-> +	/* Put back the original ent_size */
-> +	iter->ent_size = ent_size;
-> +
-> +	return entry;
->  }
->  
->  /* Find the next real entry, and increment the iterator to the next entry */
-> @@ -4197,6 +4221,18 @@ __tracing_open(struct inode *inode, struct file *file, bool snapshot)
->  	if (!iter->buffer_iter)
->  		goto release;
->  
-> +	/*
-> +	 * trace_find_next_entry() may need to save off iter->ent.
-> +	 * It will place it into the iter->temp buffer. As most
-> +	 * events are less than 128, allocate a buffer of that size.
-> +	 * If one is greater, then trace_find_next_entry() will
-> +	 * allocate a new buffer to adjust for the bigger iter->ent.
-> +	 * It's not critical if it fails to get allocated here.
-> +	 */
-> +	iter->temp = kmalloc(128, GFP_KERNEL);
-> +	if (iter->temp)
-> +		iter->temp_size = 128;
-> +
->  	/*
->  	 * We make a copy of the current tracer to avoid concurrent
->  	 * changes on it while we are reading.
-> @@ -4269,6 +4305,7 @@ __tracing_open(struct inode *inode, struct file *file, bool snapshot)
->   fail:
->  	mutex_unlock(&trace_types_lock);
->  	kfree(iter->trace);
-> +	kfree(iter->temp);
->  	kfree(iter->buffer_iter);
->  release:
->  	seq_release_private(inode, file);
-> @@ -4344,6 +4381,7 @@ static int tracing_release(struct inode *inode, struct file *file)
->  
->  	mutex_destroy(&iter->mutex);
->  	free_cpumask_var(iter->started);
-> +	kfree(iter->temp);
->  	kfree(iter->trace);
->  	kfree(iter->buffer_iter);
->  	seq_release_private(inode, file);
-> diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-> index e25a7da79c6b..9a121e147102 100644
-> --- a/kernel/trace/trace_output.c
-> +++ b/kernel/trace/trace_output.c
-> @@ -617,22 +617,19 @@ int trace_print_context(struct trace_iterator *iter)
->  
->  int trace_print_lat_context(struct trace_iterator *iter)
->  {
-> +	struct trace_entry *entry, *next_entry;
->  	struct trace_array *tr = iter->tr;
-> -	/* trace_find_next_entry will reset ent_size */
-> -	int ent_size = iter->ent_size;
->  	struct trace_seq *s = &iter->seq;
-> -	u64 next_ts;
-> -	struct trace_entry *entry = iter->ent,
-> -			   *next_entry = trace_find_next_entry(iter, NULL,
-> -							       &next_ts);
->  	unsigned long verbose = (tr->trace_flags & TRACE_ITER_VERBOSE);
-> +	u64 next_ts;
->  
-> -	/* Restore the original ent_size */
-> -	iter->ent_size = ent_size;
-> -
-> +	next_entry = trace_find_next_entry(iter, NULL, &next_ts);
->  	if (!next_entry)
->  		next_ts = iter->ts;
->  
-> +	/* trace_find_next_entry() may change iter->ent */
-> +	entry = iter->ent;
-> +
->  	if (verbose) {
->  		char comm[TASK_COMM_LEN];
->  
-> -- 
-> 2.25.1
-> 
-> 
 
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+On 3/19/20 4:50 PM, Martin KaFai Lau wrote:
+> This patch adds bpf_sk_storage_get() and bpf_sk_storage_delete()
+> helper to the bpf_tcp_ca's struct_ops.  That would allow
+> bpf-tcp-cc to:
+> 1) share sk private data with other bpf progs.
+> 2) use bpf_sk_storage as a private storage for a bpf-tcp-cc
+>     if the existing icsk_ca_priv is not big enough.
+> 
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+
+Acked-by: Yonghong Song <yhs@fb.com>
