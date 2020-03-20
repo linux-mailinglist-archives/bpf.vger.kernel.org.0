@@ -2,260 +2,226 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F8D318C677
-	for <lists+bpf@lfdr.de>; Fri, 20 Mar 2020 05:29:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED34318C70B
+	for <lists+bpf@lfdr.de>; Fri, 20 Mar 2020 06:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726527AbgCTE3Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Mar 2020 00:29:16 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:33714 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725996AbgCTE3Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Mar 2020 00:29:16 -0400
-Received: by mail-wm1-f66.google.com with SMTP id r7so6306667wmg.0;
-        Thu, 19 Mar 2020 21:29:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aOnZYrbtwM/KacLVxpJ0erdvUD+ggrAoZ17IQn52GEw=;
-        b=Y26Cx+Bf+jQ4z0IMy9KyRxznh/aJIHWZVPg8f8bIWRUjOFdcDG6deTSAGwEnorQ1u0
-         1pTxLPbK2oqKluCmlwy4xC7JTR0vn/jxaqWq+giOHc6n0xkaF2agIuaOVOXSXCfBta4h
-         fORQXHyeYuSnnQFXdvkQ7zZUOJxF2Q7wnuxrRdqeqOtgiftVfBDRz3GrT84sFbCtRP1e
-         /TaItAqmV79Jl7/hMdHvqbqg5+fxBJrctOf6tSLrM8MHJHJNLdK8lrKMkVu2xVQCn2kV
-         lTDllhZdffaHcNl6RNGE7JaLsPVBH3FmREfyLwbX/p7TadzxHOfzOJQacZfj8dtDIpcZ
-         vx7A==
-X-Gm-Message-State: ANhLgQ1K2CFRZpZV7ritwqQ4WOHQa9+Q52lT4V62SxJ8Yq5mrNSFA+rR
-        03V5I4yJnCH7tO9t2MWXsuCBKOGYVtU0wbPi2J2xfRFw
-X-Google-Smtp-Source: ADFU+vsYkoU26QknZoSAbMIqLQRQAvsxdxFDEVMw+cIJlN9xGuNED7sBUD3TBpjUSGOAtC9CPwl6/WMGgW1XENw9u7c=
-X-Received: by 2002:a1c:acc8:: with SMTP id v191mr7971900wme.185.1584678552706;
- Thu, 19 Mar 2020 21:29:12 -0700 (PDT)
+        id S1726030AbgCTFeS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Mar 2020 01:34:18 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:50660 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725883AbgCTFeS (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 20 Mar 2020 01:34:18 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02K5QTAY000508;
+        Thu, 19 Mar 2020 22:34:05 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=qPMqL8gw4bZd5CW6DSK9yvCKmjepeDI0NRJAwp2MUbY=;
+ b=gtXZ3bakOfCKEh8gr6K4JftTnFonUi4DMCDOaefIyndptIzos+2oBBOX7TadYobfB6WP
+ S4SovhMhynHkBT/4GMwYhzDbJhyJPZZ6N/EBVFQ1wVQwTwoAda1BrpXpV0YwW2eIbY00
+ 90jBqYZrMU4151kkQJ+BAF5kwEO+h84gyCk= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yu7qamh44-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 19 Mar 2020 22:34:04 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Thu, 19 Mar 2020 22:34:03 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RRhGYGIS5yDLjjC1FPnQQmgoO5NuEs3K7ZlIZ6uXYV74nXMFZ74l/hxC3Rc3DgcEZRwJWZ6bsQEG+n9LoEJKZABob2pTfXcgMJxTCzorYIIimw6PaUOWRSAXEeb4AOR/oA6oR0EpjEtyhzW5JjPEO5VckreVKNGjpXynh/lbo1mX04vIZ0pBxjjrX5vDtMQGKCEWBvgToqmKHyvCtkoFmYO8oWyadvoHBc5+jcyhiCBL54VMKKc8gMtGbqs7SX1shPVmeX0O3x3mHE2PsQhNW2TWeF6G53hDxlVEBZbMcS//DtXABqjBume61Mt/0V/uzVd6XrQHZtoZJoiu7/87ug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qPMqL8gw4bZd5CW6DSK9yvCKmjepeDI0NRJAwp2MUbY=;
+ b=aCfh3Az5YHsxEimHT77cv9ce0vgaF7QfzX0kFgxZUq2PLMPQdW6WQqG6NdSuYHuoKo06aMOYtro9AF5Ihfch6cyStyFzigQqUEsHLWXS2pbYc/3c9FIF6DRzwRaOnODkfzv5HCCUAR7Poev0rtu52VGgtCqpHQDgbP2zRkwQctB0wAcGuWwZF8sJhWqzNHTm3RHIAn6QBdJXDfJUz6qoX4PfO7M7meLe+sEDGUUtdXfeX/mRyzddYPsxGEu1lreT413R3IybpWxGrL3vSGf/Ch+GJ6Jgj2MnQMMqjM3DViD6WltJZP6eZK6h1DNYYcOXR8eElP//F1lvA//PdZzWTQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qPMqL8gw4bZd5CW6DSK9yvCKmjepeDI0NRJAwp2MUbY=;
+ b=ZBGP8tLRFfGaINKnBXkvcRVyRzI5Rh7FguHdafUFVbp+mVdrDOzc1Z4Fl8GKguqwSXcBwve22UFJCQ1kyam6tVgRCG/vswkhLNtwkpGO+eC+wemn9iQJni4P6lPR2j5IoEqZ1vYVGVu/OtCTg1XSuANqsIwX6R8tV3uT8wcUzdU=
+Received: from BYAPR15MB2278.namprd15.prod.outlook.com (2603:10b6:a02:8e::17)
+ by BYAPR15MB3125.namprd15.prod.outlook.com (2603:10b6:a03:fc::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.19; Fri, 20 Mar
+ 2020 05:34:01 +0000
+Received: from BYAPR15MB2278.namprd15.prod.outlook.com
+ ([fe80::4d5a:6517:802b:5f47]) by BYAPR15MB2278.namprd15.prod.outlook.com
+ ([fe80::4d5a:6517:802b:5f47%4]) with mapi id 15.20.2814.021; Fri, 20 Mar 2020
+ 05:34:01 +0000
+Date:   Thu, 19 Mar 2020 22:33:58 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 2/2] bpf: Add tests for bpf_sk_storage to
+ bpf_tcp_ca
+Message-ID: <20200320053358.kkjljdhd4wh6l5nc@kafai-mbp>
+References: <20200319234955.2933540-1-kafai@fb.com>
+ <20200319235008.2940124-1-kafai@fb.com>
+ <dbf97cdd-9daa-6164-50d4-576dbb9ed3e4@fb.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dbf97cdd-9daa-6164-50d4-576dbb9ed3e4@fb.com>
+User-Agent: NeoMutt/20180716
+X-ClientProxiedBy: MWHPR12CA0030.namprd12.prod.outlook.com
+ (2603:10b6:301:2::16) To BYAPR15MB2278.namprd15.prod.outlook.com
+ (2603:10b6:a02:8e::17)
 MIME-Version: 1.0
-References: <20200312233648.1767-1-joe@wand.net.nz> <20200312233648.1767-4-joe@wand.net.nz>
- <20200316225729.kd4hmz3oco5l7vn4@kafai-mbp> <CAOftzPgsVOqCLZatjytBXdQxH-DqJxiycXWN2d4C_-BjR5v1Kw@mail.gmail.com>
- <20200317062623.y5v2hejgtdbvexnz@kafai-mbp> <CAOftzPjXexvng-+77b-4Yw0pEBHXchsNVwrx+h9vV+5XBQzy-g@mail.gmail.com>
- <20200318184852.vwzuc4esqemsn7gx@kafai-mbp> <CAOftzPivg9nxsvvcza7v8Q-pgqZb3wy5gT9U19eGoBtzVzPPmA@mail.gmail.com>
- <20200320015438.t4qguub2jd5lfqch@kafai-mbp>
-In-Reply-To: <20200320015438.t4qguub2jd5lfqch@kafai-mbp>
-From:   Joe Stringer <joe@wand.net.nz>
-Date:   Thu, 19 Mar 2020 21:28:49 -0700
-Message-ID: <CAOftzPg+uZVNvpBHhBKcL3Dh7+PbezE2YPhYrNV5+2f8cf=oYw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/7] bpf: Add socket assign support
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Joe Stringer <joe@wand.net.nz>, bpf <bpf@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp (2620:10d:c090:400::5:e366) by MWHPR12CA0030.namprd12.prod.outlook.com (2603:10b6:301:2::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.15 via Frontend Transport; Fri, 20 Mar 2020 05:34:00 +0000
+X-Originating-IP: [2620:10d:c090:400::5:e366]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6a32ab19-9294-4b3e-0ca5-08d7cc904b9e
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3125:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB31259405CE42E4B3D9FE49C6D5F50@BYAPR15MB3125.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-Forefront-PRVS: 03484C0ABF
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(396003)(376002)(39860400002)(136003)(366004)(346002)(199004)(478600001)(186003)(1076003)(55016002)(66946007)(5660300002)(66476007)(9686003)(66556008)(16526019)(4326008)(316002)(6862004)(86362001)(53546011)(2906002)(8676002)(52116002)(33716001)(81156014)(8936002)(54906003)(6636002)(6496006)(81166006);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3125;H:BYAPR15MB2278.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
+Received-SPF: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jQwCEQD2XRm2DKLEvvk7C1F29cJse40cP7UModPZGWS0gAwU+mvJfImu6DE4CFT0OB3KcuBO/gG1FbQDKZ8QhO2co+n01VGZ2wunW37SvkL7zQG+F6eUeksg/ztEDB72kkBAHG4zM0xX+mxacnLzHzESalYfJbvE/lXZYTKyIFS6Ln6YmI4hvyG23oDHE3B2fiej6rKXYMGokVS7a1lxcT4D0hF/nmCDluhZRIbm0BxlfY7ibI9/yo0W776UrsUPi2a8/o24QXr5LVJUSzL3HTqIS640IrP+fGKd4MjM3ai2mmV02xEugoFVJyHqyOpMmTAe/xZGFIe1KbYgDWPVTsheSeFw3oLgSiY6SReXhVXEw8p5hC2KJV0QlWB8o9/TNLVJPp76QLH2F97x0M22xTHZ+7RHT/DcIWl0Pi2IVe8OmhhprY/YYHlbwnOfcp8I
+X-MS-Exchange-AntiSpam-MessageData: tLR350dCAJ/XuV9enwAPjjM3dkbEgjjnAcYJ2MzQolJ/wQtlLmd+/xxnzUJJ72X8XNq6Ttbo5YOZGRNYyhjCRhP1AiJyEzPXxg4+0MrNXEPfweg0A1mU3MOTcvtXaoeEmvmco+L3u1eG8Ngm//fIJNJa1ThIThQ9qRBcYyHawEII3D/s75SElXHRQ2q2IOfH
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a32ab19-9294-4b3e-0ca5-08d7cc904b9e
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2020 05:34:01.6128
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XNLHoaohfg/LJ7VzkBC9P4Z4clgKRy00pmP+qsFtVhDcb+8E6SOw5gMDs/aoTEjD
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3125
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
+ definitions=2020-03-20_01:2020-03-19,2020-03-20 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ impostorscore=0 spamscore=0 clxscore=1015 suspectscore=0 adultscore=0
+ mlxscore=0 phishscore=0 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2003020000 definitions=main-2003200023
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 19, 2020 at 6:55 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Wed, Mar 18, 2020 at 11:24:11PM -0700, Joe Stringer wrote:
-> > On Wed, Mar 18, 2020 at 11:49 AM Martin KaFai Lau <kafai@fb.com> wrote:
-> > >
-> > > On Tue, Mar 17, 2020 at 05:46:58PM -0700, Joe Stringer wrote:
-> > > > On Mon, Mar 16, 2020 at 11:27 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > > > >
-> > > > > On Mon, Mar 16, 2020 at 08:06:38PM -0700, Joe Stringer wrote:
-> > > > > > On Mon, Mar 16, 2020 at 3:58 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > > > > > >
-> > > > > > > On Thu, Mar 12, 2020 at 04:36:44PM -0700, Joe Stringer wrote:
-> > > > > > > > Add support for TPROXY via a new bpf helper, bpf_sk_assign().
-> > > > > > > >
-> > > > > > > > This helper requires the BPF program to discover the socket via a call
-> > > > > > > > to bpf_sk*_lookup_*(), then pass this socket to the new helper. The
-> > > > > > > > helper takes its own reference to the socket in addition to any existing
-> > > > > > > > reference that may or may not currently be obtained for the duration of
-> > > > > > > > BPF processing. For the destination socket to receive the traffic, the
-> > > > > > > > traffic must be routed towards that socket via local route, the socket
-> > > > > > > I also missed where is the local route check in the patch.
-> > > > > > > Is it implied by a sk can be found in bpf_sk*_lookup_*()?
-> > > > > >
-> > > > > > This is a requirement for traffic redirection, it's not enforced by
-> > > > > > the patch. If the operator does not configure routing for the relevant
-> > > > > > traffic to ensure that the traffic is delivered locally, then after
-> > > > > > the eBPF program terminates, it will pass up through ip_rcv() and
-> > > > > > friends and be subject to the whims of the routing table. (or
-> > > > > > alternatively if the BPF program redirects somewhere else then this
-> > > > > > reference will be dropped).
-> > > > > >
-> > > > > > Maybe there's a path to simplifying this configuration path in future
-> > > > > > to loosen this requirement, but for now I've kept the series as
-> > > > > > minimal as possible on that front.
-> > > > > >
-> > > > > > > [ ... ]
-> > > > > > >
-> > > > > > > > diff --git a/net/core/filter.c b/net/core/filter.c
-> > > > > > > > index cd0a532db4e7..bae0874289d8 100644
-> > > > > > > > --- a/net/core/filter.c
-> > > > > > > > +++ b/net/core/filter.c
-> > > > > > > > @@ -5846,6 +5846,32 @@ static const struct bpf_func_proto bpf_tcp_gen_syncookie_proto = {
-> > > > > > > >       .arg5_type      = ARG_CONST_SIZE,
-> > > > > > > >  };
-> > > > > > > >
-> > > > > > > > +BPF_CALL_3(bpf_sk_assign, struct sk_buff *, skb, struct sock *, sk, u64, flags)
-> > > > > > > > +{
-> > > > > > > > +     if (flags != 0)
-> > > > > > > > +             return -EINVAL;
-> > > > > > > > +     if (!skb_at_tc_ingress(skb))
-> > > > > > > > +             return -EOPNOTSUPP;
-> > > > > > > > +     if (unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
-> > > > > > > > +             return -ENOENT;
-> > > > > > > > +
-> > > > > > > > +     skb_orphan(skb);
-> > > > > > > > +     skb->sk = sk;
-> > > > > > > sk is from the bpf_sk*_lookup_*() which does not consider
-> > > > > > > the bpf_prog installed in SO_ATTACH_REUSEPORT_EBPF.
-> > > > > > > However, the use-case is currently limited to sk inspection.
-> > > > > > >
-> > > > > > > It now supports selecting a particular sk to receive traffic.
-> > > > > > > Any plan in supporting that?
-> > > > > >
-> > > > > > I think this is a general bpf_sk*_lookup_*() question, previous
-> > > > > > discussion[0] settled on avoiding that complexity before a use case
-> > > > > > arises, for both TC and XDP versions of these helpers; I still don't
-> > > > > > have a specific use case in mind for such functionality. If we were to
-> > > > > > do it, I would presume that the socket lookup caller would need to
-> > > > > > pass a dedicated flag (supported at TC and likely not at XDP) to
-> > > > > > communicate that SO_ATTACH_REUSEPORT_EBPF progs should be respected
-> > > > > > and used to select the reuseport socket.
-> > > > > It is more about the expectation on the existing SO_ATTACH_REUSEPORT_EBPF
-> > > > > usecase.  It has been fine because SO_ATTACH_REUSEPORT_EBPF's bpf prog
-> > > > > will still be run later (e.g. from tcp_v4_rcv) to decide which sk to
-> > > > > recieve the skb.
-> > > > >
-> > > > > If the bpf@tc assigns a TCP_LISTEN sk in bpf_sk_assign(),
-> > > > > will the SO_ATTACH_REUSEPORT_EBPF's bpf still be run later
-> > > > > to make the final sk decision?
-> > > >
-> > > > I don't believe so, no:
-> > > >
-> > > > ip_local_deliver()
-> > > > -> ...
-> > > > -> ip_protocol_deliver_rcu()
-> > > > -> tcp_v4_rcv()
-> > > > -> __inet_lookup_skb()
-> > > > -> skb_steal_sock(skb)
-> > > >
-> > > > But this will only affect you if you are running both the bpf@tc
-> > > > program with sk_assign() and the reuseport BPF sock programs at the
-> > > > same time.
-> > > I don't think it is the right answer to ask the user to be careful and
-> > > only use either bpf_sk_assign()@tc or bpf_prog@so_reuseport.
-> >
-> > Applying a restriction on reuseport sockets until we sort this out per
-> > my other email should resolve this concern.
-> >
-> > > > This is why I link it back to the bpf_sk*_lookup_*()
-> > > > functions: If the socket lookup in the initial step respects reuseport
-> > > > BPF prog logic and returns the socket using the same logic, then the
-> > > > packet will be directed to the socket you expect. Just like how
-> > > > non-BPF reuseport would work with this series today.
-> > > Changing bpf_sk*_lookup_*() is a way to solve it but I don't know what it
-> > > may run into when recurring bpf_prog, i.e. running bpf@so-reuseport inside
-> > > bpf@tc. That may need a closer look.
-> >
-> > Right, that's my initial concern as well.
-> >
-> > One alternative might be something like: in the helper implementation,
-> > store some bit somewhere to say "we need to resolve the reuseport
-> > later" and then when the TC BPF program returns, check this bit and if
-> > reuseport is necessary, trigger the BPF program for it and fix up the
-> > socket after-the-fact.
-> skb_dst_is_sk_prefetch() could be that bit.  One major thing
-> is that bpf@so_reuseport is currently run at the transport layer
-> and expecting skb->data pointing to udp/tcp hdr.  The ideal
-> place is to run it there.
+On Thu, Mar 19, 2020 at 08:49:22PM -0700, Yonghong Song wrote:
+> 
+> 
+> On 3/19/20 4:50 PM, Martin KaFai Lau wrote:
+> > This patch adds test to exercise the bpf_sk_storage_get()
+> > and bpf_sk_storage_delete() helper from the bpf_dctcp.c.
+> > 
+> > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> > ---
+> >   .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 28 +++++++++++++++++--
+> >   tools/testing/selftests/bpf/progs/bpf_dctcp.c | 16 +++++++++++
+> >   2 files changed, 41 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+> > index 8482bbc67eec..9aaecce0bc3c 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+> > @@ -11,6 +11,7 @@
+> >   static const unsigned int total_bytes = 10 * 1024 * 1024;
+> >   static const struct timeval timeo_sec = { .tv_sec = 10 };
+> >   static const size_t timeo_optlen = sizeof(timeo_sec);
+> > +static int expected_stg = 0xeB9F;
+> >   static int stop, duration;
+> >   static int settimeo(int fd)
+> > @@ -88,7 +89,7 @@ static void *server(void *arg)
+> >   	return NULL;
+> >   }
+> > -static void do_test(const char *tcp_ca)
+> > +static void do_test(const char *tcp_ca, const struct bpf_map *sk_stg_map)
+> >   {
+> >   	struct sockaddr_in6 sa6 = {};
+> >   	ssize_t nr_recv = 0, bytes = 0;
+> > @@ -110,6 +111,14 @@ static void do_test(const char *tcp_ca)
+> >   		return;
+> >   	}
+> > +	if (sk_stg_map) {
+> > +		err = bpf_map_update_elem(bpf_map__fd(sk_stg_map), &fd,
+> > +					  &expected_stg, BPF_NOEXIST);
+> > +		if (CHECK(err, "bpf_map_update_elem(sk_stg_map)",
+> > +			  "err:%d errno:%d\n", err, errno))
+> > +			goto done;
+> > +	}
+> > +
+> >   	if (settcpca(lfd, tcp_ca) || settcpca(fd, tcp_ca) ||
+> >   	    settimeo(lfd) || settimeo(fd))
+> >   		goto done;
+> > @@ -149,6 +158,16 @@ static void do_test(const char *tcp_ca)
+> >   	CHECK(bytes != total_bytes, "recv", "%zd != %u nr_recv:%zd errno:%d\n",
+> >   	      bytes, total_bytes, nr_recv, errno);
+> 
+> Should the control go to "wait_thread" here if failure?
+Thanks for the review!
 
-My initial thought above was much simpler - just holding it long
-enough to exit the current BPF program so we know that the tc@bpf
-program terminates, then preparing & running the so_reuseport program.
+I did think about that.  I did not bail on this because the
+sk_stg_map check below does not depend on the about check.
+Hence, I didn't bail here.  I moved the sk_stg_map test
+to the very bottom is for this reason also.
 
-> However, the skb_dst_is_sk_prefetch() bit
-> is currently lost at ip[6]_rcv_core.
+Since you asked, I think it makes sense to go back to my first
+approach which is to do the below test immediately after
+connect() and just bail there.
 
-Yeah, I think this is tricky. Here's three paths I'm tracking right now:
-* Loopback destination is already assigned to skb, so we wrap that
-with the dst_sk_prefetch in sk_assign. We unwrap it again currently in
-ip[6]_rcv_core, but if we retained it, we'd need to convince
-ip[6]_rcv_finish_core() to respect the metadata dst, then convince
-ip[6]_rcv_finish() to call the right receive destination function.
-* In the connected case of patch #4 in this series, we wrap the
-rx_dst. Needs similar treatment.
-* In the regular initial packet case for non-loopback destination, we
-don't actually have a destination yet so the routing check would need
-to track this bit and ensure it's propagated through that routing
-check and again back out to ip[6]_rcv_finish() and call the right
-destination receive.
+I will also take this chance to postpone the thread creation
+after connect().
 
-Even if we get through all of that and we get up to the transport
-layer, one of the main points of this feature is to guide the packet
-to a socket that may be associated with a different tuple, so AFAIK we
-end up needing another path even up at the transport layer to check
-this bit and jump straight to the reuseport_select_sock() call.
-Looking at __udp4_lib_rcv() path I'm eyeing the conditional branch
-after stealing the socket, in there we'd need more special casing for
-the new call to select the reuseport socket.
-
-Following that rabbit-hole, it seems less invasive to either get the
-exact right reuseport socket in the first place or something closer to
-the simpler approach above.
-
-> > A bit uglier though, also not sure how socket
-> > refcounting would work there; maybe we can avoid the refcount in the
-> > socket lookup and then fix it up in the later execution.
-> That should not be an issue if refcnt is not taken for
-> SOCK_RCU_FREE (e.g. TCP_LISTEN) in the first place.
-
-This is likely the part that I was missing---I assumed that all bets
-were off when we rcu_read_unlock(). But it sounds like you're saying
-it's actually the RCU grace period, and that won't happen before we
-enqueue the skb at the socket?
-
-> >
-> > > [...]
-> > > It is another question that I have.  The TCP_LISTEN sk will suffer
-> > > from this extra refcnt, e.g. SYNFLOOD.  Can something smarter
-> > > be done in skb->destructor?
-> >
-> > Can you elaborate a bit more on the idea you have here?
-> I am thinking can skb->destructor do something like bpf_sk_release()?
-> This patch reuses tcp sock_edemux which currently only lookups the
-> established sk.
-
-I can try it out.
-
-> >
-> > Looking at the BPF API, it seems like the writer of the program can
-> > use bpf_tcp_gen_syncookie() / bpf_tcp_check_syncookie() to generate
-> > and check syn cookies to mitigate this kind of attack. This at least
-> > provides an option beyond what existing tproxy implementations
-> > provide.
-> When the SYNACK comes back, it will still be served by a TCP_LISTEN sk.
-> I know refcnt sucks on synflood test.  I don't know what the effect
-> may be on serving those valid synack since there is no need
-> to measure after SOCK_RCU_FREE is in ;)
->
-> UDP is also in SOCK_RCU_FREE.  I think only early_demux, which
-> seems to be for connected only,  takes a refnct.
-> btw, it may be a good idea to add a udp test.
-
-UDP was next on my list, in my local testing I needed a new
-skc_lookup_udp() to find the right sockets. That patch series is more
-straightforward than this one so I thought it'd be better to get the
-feedback on this socket assign approach first then follow up with UDP
-support.
-
-> I am fine to push them to optimize/support later bucket
-> It is still good to explore a little more such that we don't
-> regret later.
-
-I'll dig around a bit.
-
-Thanks for the feedback,
-Joe
+> 
+> > +	if (sk_stg_map) {
+> > +		int tmp_stg;
+> > +
+> > +		err = bpf_map_lookup_elem(bpf_map__fd(sk_stg_map), &fd,
+> > +					  &tmp_stg);
+> > +		CHECK(!err || errno != ENOENT,
+> > +		      "bpf_map_lookup_elem(sk_stg_map)",
+> > +		      "err:%d errno:%d\n", err, errno);
+> > +	}
+> > +
+> >   wait_thread:
+> >   	WRITE_ONCE(stop, 1);
+> >   	pthread_join(srv_thread, &thread_ret);
+> > @@ -175,7 +194,7 @@ static void test_cubic(void)
+> >   		return;
+> >   	}
+> > -	do_test("bpf_cubic");
+> > +	do_test("bpf_cubic", NULL);
+> >   	bpf_link__destroy(link);
+> >   	bpf_cubic__destroy(cubic_skel);
+> > @@ -197,7 +216,10 @@ static void test_dctcp(void)
+> >   		return;
+> >   	}
+> > -	do_test("bpf_dctcp");
+> > +	do_test("bpf_dctcp", dctcp_skel->maps.sk_stg_map);
+> > +	CHECK(dctcp_skel->bss->stg_result != expected_stg,
+> > +	      "Unexpected stg_result", "stg_result (%x) != expected_stg (%x)\n",
+> > +	      dctcp_skel->bss->stg_result, expected_stg);
+> >   	bpf_link__destroy(link);
+> >   	bpf_dctcp__destroy(dctcp_skel);
+> > diff --git a/tools/testing/selftests/bpf/progs/bpf_dctcp.c b/tools/testing/selftests/bpf/progs/bpf_dctcp.c
+> > index 127ea762a062..5c1fc584f3ae 100644
+> > --- a/tools/testing/selftests/bpf/progs/bpf_dctcp.c
+> > +++ b/tools/testing/selftests/bpf/progs/bpf_dctcp.c
+> > @@ -6,6 +6,7 @@
+> >    * the kernel BPF logic.
+> >    */
+> > +#include <stddef.h>
+> >   #include <linux/bpf.h>
+> >   #include <linux/types.h>
+> >   #include <bpf/bpf_helpers.h>
+> > @@ -14,6 +15,15 @@
+> >   char _license[] SEC("license") = "GPL";
+> > +static volatile int stg_result;
+> 
+> "int stg_result = 0;" should work too.
+will use.
