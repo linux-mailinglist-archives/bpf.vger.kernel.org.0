@@ -2,131 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CE10E18D449
-	for <lists+bpf@lfdr.de>; Fri, 20 Mar 2020 17:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0129418D510
+	for <lists+bpf@lfdr.de>; Fri, 20 Mar 2020 17:56:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727295AbgCTQXB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Mar 2020 12:23:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727232AbgCTQXB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Mar 2020 12:23:01 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3FEC620724;
-        Fri, 20 Mar 2020 16:23:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584721380;
-        bh=lv5dc5lyvfZeoMUgtuTZ8bzmyZe5g6+qYJhcqv6T9H4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XfRCgcWXuedy3Bn5EMaQ6y0SROMPmy3X3wmAmPLiGGByiiErxDcrSTbAmY3zZa11u
-         AoJUJiP98hoo7XRqTS+oFm9IM31dcUfEOuACdITsJtOgO78KwrFbOefVfDdS8U7vpt
-         OVJ91PgYCMQ9i+zWola632ATrMbJXHzucMJMPBuc=
-Date:   Fri, 20 Mar 2020 17:22:58 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1727546AbgCTQ4O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Mar 2020 12:56:14 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:48577 "EHLO
+        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727101AbgCTQ4O (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 20 Mar 2020 12:56:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1584723372;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0Dog7Bihu/EtIkqW4Ws4dWoROrng8jKbNX56m++cX6U=;
+        b=JKPEYdW6JIZbRw31t/Ruqocjfi/PNZ8eU4qcOO5bJqV4FOhhuTX2WRtfqiNn4oKfnS7+IJ
+        03u9sUYKQcW0gI6PCK2Pc7TIQ/d2CSaBpfvWDItjWn2vRfRwndzD2RJLSpSnBkQRN6Gb1a
+        8XxqKu6whTru7WK977JbC4ngp1tanpk=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-438-uyWZa27zNxGbu-bCf87ngg-1; Fri, 20 Mar 2020 12:56:10 -0400
+X-MC-Unique: uyWZa27zNxGbu-bCf87ngg-1
+Received: by mail-wr1-f69.google.com with SMTP id r9so767867wrs.13
+        for <bpf@vger.kernel.org>; Fri, 20 Mar 2020 09:56:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=0Dog7Bihu/EtIkqW4Ws4dWoROrng8jKbNX56m++cX6U=;
+        b=aZy3kI1lyzrJCtWNyqH+u6i9MdxaQWX8mDeimp4OB9YFZJ68Kquun+UyAcj2Hac9H3
+         vrofNl5WxTYphZ1PjTgrY9nrh3EhiwVIYNx8lr6WdD2yZeCGYYthdnpxSSUC6+9Jqi8a
+         X9BqbtWCVyL2vTdd6hZn3vcPXVcuOfrm7oF88WccxvD8FxsFRomww7LjbPyn6jPbxifP
+         0yoXpvKjsgGSOh1930w21+qbFBvlXqa5suvwbL3/TGfM446f3MnzqyhIAZuTTujY0xGC
+         Qz3fPblr1bi9vXrhP3hWQZXLTDzKDcm5XJnZNoXZeAhiM/gd9Nq3qk3dFDjAM52y44DD
+         pKBg==
+X-Gm-Message-State: ANhLgQ0dXmymZUc9dO8l1QiV9UWPaTLm0x58nj/cMAgTiKOT1aOh1jPP
+        4rlaFNu0g0pLwV3rGhL+Pz+llnXjMSDldPObIqcaUah9+ABX4JBBdK+hC3lKvbkgay9u5OEUiOL
+        X7P+kdFH/tggD
+X-Received: by 2002:a7b:c08a:: with SMTP id r10mr11128376wmh.130.1584723369175;
+        Fri, 20 Mar 2020 09:56:09 -0700 (PDT)
+X-Google-Smtp-Source: ADFU+vuwnC1MjfCP56QbU/oSMYcrjbejzGjrLIhpH6bRbAERBK9s05zy6jTJACfMejmrSUPUp5/KZQ==
+X-Received: by 2002:a7b:c08a:: with SMTP id r10mr11128356wmh.130.1584723368974;
+        Fri, 20 Mar 2020 09:56:08 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id l17sm2491615wrm.57.2020.03.20.09.56.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Mar 2020 09:56:08 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 8E2F2180371; Fri, 20 Mar 2020 17:56:07 +0100 (CET)
+Subject: [PATCH bpf-next v2 0/4] XDP: Support atomic replacement of XDP
+ interface attachments
+From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Alexander Potapenko <glider@google.com>,
-        Alistair Delva <adelva@google.com>
-Subject: [PATCH] bpf: explicitly memset some bpf info structures declared on
- the stack
-Message-ID: <20200320162258.GA794295@kroah.com>
-References: <20200320094813.GA421650@kroah.com>
- <3bcf52da-0930-a27f-60f9-28a40e639949@iogearbox.net>
- <20200320154518.GA765793@kroah.com>
- <d55983b3-0f94-cc7f-2055-a0b4ab8075ed@iogearbox.net>
- <20200320161515.GA778529@kroah.com>
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Andrey Ignatov <rdna@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Date:   Fri, 20 Mar 2020 17:56:07 +0100
+Message-ID: <158472336748.296548.5028326196275429565.stgit@toke.dk>
+User-Agent: StGit/0.22
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200320161515.GA778529@kroah.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Trying to initialize a structure with "= {};" will not always clean out
-all padding locations in a structure.  So be explicit and call memset to
-initialize everything for a number of bpf information structures that
-are then copied from userspace, sometimes from smaller memory locations
-than the size of the structure.
+This series adds support for atomically replacing the XDP program loaded on an
+interface. This is achieved by means of a new netlink attribute that can specify
+the expected previous program to replace on the interface. If set, the kernel
+will compare this "expected fd" attribute with the program currently loaded on
+the interface, and reject the operation if it does not match.
 
-Reported-by: Daniel Borkmann <daniel@iogearbox.net
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+With this primitive, userspace applications can avoid stepping on each other's
+toes when simultaneously updating the loaded XDP program.
+
+Changelog:
+
+v2:
+- Fix checkpatch nits and add .strict_start_type to netlink policy (Jakub)
+
 ---
 
-Note, this is separate from my previous patch, both are needed.
+Toke Høiland-Jørgensen (4):
+      xdp: Support specifying expected existing program when attaching XDP
+      tools: Add EXPECTED_FD-related definitions in if_link.h
+      libbpf: Add function to set link XDP fd while specifying old fd
+      selftests/bpf: Add tests for attaching XDP programs
 
- kernel/bpf/btf.c     | 3 ++-
- kernel/bpf/syscall.c | 6 ++++--
- 2 files changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 787140095e58..2fc945fcf952 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -4564,7 +4564,7 @@ int btf_get_info_by_fd(const struct btf *btf,
- 		       union bpf_attr __user *uattr)
- {
- 	struct bpf_btf_info __user *uinfo;
--	struct bpf_btf_info info = {};
-+	struct bpf_btf_info info;
- 	u32 info_copy, btf_copy;
- 	void __user *ubtf;
- 	u32 uinfo_len;
-@@ -4573,6 +4573,7 @@ int btf_get_info_by_fd(const struct btf *btf,
- 	uinfo_len = attr->info.info_len;
- 
- 	info_copy = min_t(u32, uinfo_len, sizeof(info));
-+	memset(&info, 0, sizeof(info));
- 	if (copy_from_user(&info, uinfo, info_copy))
- 		return -EFAULT;
- 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index a4b1de8ea409..84213cc5d016 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2787,7 +2787,7 @@ static int bpf_prog_get_info_by_fd(struct bpf_prog *prog,
- 				   union bpf_attr __user *uattr)
- {
- 	struct bpf_prog_info __user *uinfo = u64_to_user_ptr(attr->info.info);
--	struct bpf_prog_info info = {};
-+	struct bpf_prog_info info;
- 	u32 info_len = attr->info.info_len;
- 	struct bpf_prog_stats stats;
- 	char __user *uinsns;
-@@ -2799,6 +2799,7 @@ static int bpf_prog_get_info_by_fd(struct bpf_prog *prog,
- 		return err;
- 	info_len = min_t(u32, sizeof(info), info_len);
- 
-+	memset(&info, 0, sizeof(info));
- 	if (copy_from_user(&info, uinfo, info_len))
- 		return -EFAULT;
- 
-@@ -3062,7 +3063,7 @@ static int bpf_map_get_info_by_fd(struct bpf_map *map,
- 				  union bpf_attr __user *uattr)
- {
- 	struct bpf_map_info __user *uinfo = u64_to_user_ptr(attr->info.info);
--	struct bpf_map_info info = {};
-+	struct bpf_map_info info;
- 	u32 info_len = attr->info.info_len;
- 	int err;
- 
-@@ -3071,6 +3072,7 @@ static int bpf_map_get_info_by_fd(struct bpf_map *map,
- 		return err;
- 	info_len = min_t(u32, sizeof(info), info_len);
- 
-+	memset(&info, 0, sizeof(info));
- 	info.type = map->map_type;
- 	info.id = map->id;
- 	info.key_size = map->key_size;
--- 
-2.25.2
+ include/linux/netdevice.h                          |  2 +-
+ include/uapi/linux/if_link.h                       |  4 +-
+ net/core/dev.c                                     | 26 ++++++++--
+ net/core/rtnetlink.c                               | 13 +++++
+ tools/include/uapi/linux/if_link.h                 |  4 +-
+ tools/lib/bpf/libbpf.h                             |  2 +
+ tools/lib/bpf/libbpf.map                           |  1 +
+ tools/lib/bpf/netlink.c                            | 22 ++++++++-
+ .../testing/selftests/bpf/prog_tests/xdp_attach.c  | 55 ++++++++++++++++++++++
+ 9 files changed, 120 insertions(+), 9 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_attach.c
 
