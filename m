@@ -2,144 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5200018DB3E
-	for <lists+bpf@lfdr.de>; Fri, 20 Mar 2020 23:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B58718DC1A
+	for <lists+bpf@lfdr.de>; Sat, 21 Mar 2020 00:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbgCTWhp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Mar 2020 18:37:45 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:41859 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726855AbgCTWhp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Mar 2020 18:37:45 -0400
-Received: by mail-il1-f194.google.com with SMTP id l14so7146490ilj.8;
-        Fri, 20 Mar 2020 15:37:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mv3aJeyhuEku1/wFNlvhM4zQ3A1VS2RgclSf1FwrTqI=;
-        b=pvnjPaEtV/PqdY0ggPFY2FuNiWcvJem452JCtxLdM7a5gFHFpHjzAAVcNfWPfjGQ3Y
-         rwndnEUs50UCDx7pty8Eu8rpDb2u/nAF0upT1CpAvzfLOKqu892BZspwhf/0yYIPrqES
-         BaY/OWUhfUNd4VkGxIUqreOZGrHpYLmL/bfywQSq2aUDNscd2kEjUPus/sscJdfNKYfM
-         2D8wyT/Imq3mzAxzB9EralHJ043mm8ufGZCtJqwoOktLF254V+ysDKthRUK9C2lEnzeD
-         /pBovSi4lN7BpleFzDtk+BkfWYpATNl0ILHe4t0Orj4vQgRl7uJPW9sz5GfxsCSKS/YF
-         1EDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mv3aJeyhuEku1/wFNlvhM4zQ3A1VS2RgclSf1FwrTqI=;
-        b=L9IWlWVYQnZ+oIcAa2XAo3v5fd2vKNnhwMMVJrUKyzUg6D8w+soN/x7hesWo4BI6sC
-         zoSDJOMQV3YUqXolvSSTRu5VXFaH7dtFfYkFuBe4UwLHphChe53qQXr+5pR7l1H/FW6m
-         bGuQYR8Hvuiu5+Kf334e6mdTMMXngndBeaNipuTUxwzYHwKPEVyBkxL7kvswmRahkR3B
-         90/5lBH0GopmHE8U8iP6FmqKqETPDWz4kRks1LOeTEf3cg2DiaGHGOaD1NK49rXcRKfq
-         YxC363PjbyioporiiXZRM5Fz/T50XrItEJ7LQv5wuQMlR+S//mo3i7/jrYfqdvj3ujiM
-         /Vig==
-X-Gm-Message-State: ANhLgQ1cV3XefgUw8yz9U2doHP6HVWGkSESSa/eRg6vcEaSt8xl/IKOG
-        5Awil/k02UvOhhswAxK073k1AgEwd/4fAO9Almc=
-X-Google-Smtp-Source: ADFU+vtWUHgwpGisFSSssTICwbFcd4JZH208sJCp5ZNFIJwTyhBeZRxqO9maSbzEBkrhBUCSJPepgPYbJxAhY6rH1O8=
-X-Received: by 2002:a92:8f91:: with SMTP id r17mr9583538ilk.97.1584743864027;
- Fri, 20 Mar 2020 15:37:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <158446612466.702578.2795159620575737080.stgit@firesoul>
- <158446617307.702578.17057660405507953624.stgit@firesoul> <20200318200300.GA18295@ranger.igk.intel.com>
- <CAKgT0UeV7OHsu=E11QVrQ-HvUe83-ZL2Mo+CKg5Bw4v8REEoew@mail.gmail.com> <20200320224437.10ef858c@carbon>
-In-Reply-To: <20200320224437.10ef858c@carbon>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Fri, 20 Mar 2020 15:37:33 -0700
-Message-ID: <CAKgT0Uc=ML2jWkmN=d_UuJJoEeeLitT8LZtak93ULc60=nC0Gg@mail.gmail.com>
-Subject: Re: [PATCH RFC v1 05/15] ixgbe: add XDP frame size to driver
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        "Jubran, Samih" <sameehj@amazon.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        zorik@amazon.com, akiyano@amazon.com, gtzalik@amazon.com,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@toke.dk>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        id S1727032AbgCTXfR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Mar 2020 19:35:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44466 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726738AbgCTXfR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Mar 2020 19:35:17 -0400
+Received: from kicinski-fedora-PC1C0HJN (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0335320714;
+        Fri, 20 Mar 2020 23:35:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1584747316;
+        bh=rhwn6qeTqAe225E+kLoz/+4Ql4VI3OGBbm8jRVxHZDY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=saJBFcmjrpm5m5RSTNjxDpbEgRDHcUYXF9OLIuCQtJvmxJV4JjjSHJPe1PQESuBuw
+         Tk4xSOISYaaqD0cyJQUYg2WrdYwF8wIDRAoVuC6xGgP2eHq7VNWVah2An+g3t1+Yf7
+         Zh5jHoxt3kxBCdDaUzrRsGmdbWPtLIViSHulVfs0=
+Date:   Fri, 20 Mar 2020 16:35:14 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        David Ahern <dsahern@gmail.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        kuba@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Andrey Ignatov <rdna@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
+ program when attaching XDP
+Message-ID: <20200320163514.5f26d547@kicinski-fedora-PC1C0HJN>
+In-Reply-To: <3aca04e2-4034-f41a-8e98-f40471601dff@iogearbox.net>
+References: <158462359206.164779.15902346296781033076.stgit@toke.dk>
+        <158462359315.164779.13931660750493121404.stgit@toke.dk>
+        <20200319155236.3d8537c5@kicinski-fedora-PC1C0HJN>
+        <875zez76ph.fsf@toke.dk>
+        <ad09e018-377f-9864-60eb-cf4291f49d41@iogearbox.net>
+        <80235a44-8f01-6733-0638-c70c51cd1b90@iogearbox.net>
+        <20200320143014.4dde2868@kicinski-fedora-PC1C0HJN>
+        <3aca04e2-4034-f41a-8e98-f40471601dff@iogearbox.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 20, 2020 at 2:44 PM Jesper Dangaard Brouer
-<brouer@redhat.com> wrote:
->
-> On Wed, 18 Mar 2020 14:23:09 -0700
-> Alexander Duyck <alexander.duyck@gmail.com> wrote:
->
-> > On Wed, Mar 18, 2020 at 1:04 PM Maciej Fijalkowski
-> > <maciej.fijalkowski@intel.com> wrote:
-> > >
-> > > On Tue, Mar 17, 2020 at 06:29:33PM +0100, Jesper Dangaard Brouer wrote:
-> > > > The ixgbe driver uses different memory models depending on PAGE_SIZE at
-> > > > compile time. For PAGE_SIZE 4K it uses page splitting, meaning for
-> > > > normal MTU frame size is 2048 bytes (and headroom 192 bytes).
-> > >
-> > > To be clear the 2048 is the size of buffer given to HW and we slice it up
-> > > in a following way:
-> > > - 192 bytes dedicated for headroom
-> > > - 1500 is max allowed MTU for this setup
-> > > - 320 bytes for tailroom (skb shinfo)
-> > >
-> > > In case you go with higher MTU then 3K buffer would be used and it would
-> > > came from order1 page and we still do the half split. Just FYI all of this
-> > > is for PAGE_SIZE == 4k and L1$ size == 64.
-> >
-> > True, but for most people this is the most common case since these are
-> > the standard for x86.
-> >
-> > > > For PAGE_SIZE larger than 4K, driver advance its rx_buffer->page_offset
-> > > > with the frame size "truesize".
-> > >
-> > > Alex, couldn't we base the truesize here somehow on ixgbe_rx_bufsz() since
-> > > these are the sizes that we are passing to hw? I must admit I haven't been
-> > > in touch with systems with PAGE_SIZE > 4K.
-> >
-> > With a page size greater than 4K we can actually get many more uses
-> > out of a page by using the frame size to determine the truesize of the
-> > packet. The truesize is the memory footprint currently being held by
-> > the packet. So once the packet is filled we just have to add the
-> > headroom and tailroom to whatever the hardware wrote instead of having
-> > to use what we gave to the hardware. That gives us better efficiency,
-> > if we used ixgbe_rx_bufsz() we would penalize small packets and that
-> > in turn would likely hurt performance.
-> >
-> > > >
-> > > > When driver enable XDP it uses build_skb() which provides the necessary
-> > > > tailroom for XDP-redirect.
-> > >
-> > > We still allow to load XDP prog when ring is not using build_skb(). I have
-> > > a feeling that we should drop this case now.
-> > >
-> > > Alex/John/Bjorn WDYT?
-> >
-> > The comment Jesper had about using using build_skb() when XDP is in
-> > use is incorrect. The two are not correlated. The underlying buffer is
-> > the same, however we drop the headroom and tailroom if we are in
-> > _RX_LEGACY mode. We default to build_skb and the option of switching
-> > to legacy Rx is controlled via the device private flags.
->
-> Thanks for catching that.
->
-> > However with that said the change itself is mostly harmless, and
-> > likely helps to resolve issues that would be seen if somebody were to
-> > enable XDP while having the RX_LEGACY flag set.
->
-> So what is the path forward(?).  Are you/Intel okay with disallowing
-> XDP when the RX_LEGACY flag is set?
+On Fri, 20 Mar 2020 22:55:43 +0100 Daniel Borkmann wrote:
+> >> Another aspect that falls into this atomic replacement is also that the programs can
+> >> actually be atomically replaced at runtime. Last time I looked, some drivers still do
+> >> a down/up cycle on replacement and hence traffic would be interrupted. I would argue
+> >> that such /atomic/ swap operation on bpf_link would cover a guarantee of not having to
+> >> perform this as well (workaround today would be a simple tail call map as entry point).  
+> > 
+> > I don't think that's the case. Drivers generally have a fast path
+> > for the active-active replace.
+> > 
+> > Up/Down is only done to remap DMA buffers and change RX buffer
+> > allocation scheme. That's when program is installed or removed,
+> > not replaced.  
+> 
+> I know; though it seems not all adhere to that scheme sadly. I don't have that HW so can
+> only judge on the code, but one example that looked suspicious enough to me is qede_xdp().
+> It calls qede_xdp_set(), which does a qede_reload() for /every/ prog update. The latter
+> basically does ...
+> 
+>      if (edev->state == QEDE_STATE_OPEN) {
+>          qede_unload(edev, QEDE_UNLOAD_NORMAL, true);
+>          if (args)
+>              args->func(edev, args);               <-- prog replace here
+>          qede_load(edev, QEDE_LOAD_RELOAD, true);
+>          [...]
+>      }
 
-Why would we need to disallow it? It won't work for the redirect use
-case, but other use cases should work just fine. I thought with this
-patch set you were correctly reporting the headroom or tailroom so
-that we would either reallocate or just drop the frame if it cannot be
-handled.
+Ack, one day maybe we can restructure things enough so that drivers
+don't have to copy/paste this dance :(
+
+> ... now that is one driver. I haven't checked all the others (aside from i40e/ixgbe/mlx4/
+> mlx5/nfp), but in any case it's also fixable in the driver w/o the extra need for bpf_link.
+
+Agreed
