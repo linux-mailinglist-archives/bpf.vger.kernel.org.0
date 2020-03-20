@@ -2,354 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D142F18D98B
-	for <lists+bpf@lfdr.de>; Fri, 20 Mar 2020 21:36:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DFF18D98F
+	for <lists+bpf@lfdr.de>; Fri, 20 Mar 2020 21:39:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727141AbgCTUgr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Mar 2020 16:36:47 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44984 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727425AbgCTUgq (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 20 Mar 2020 16:36:46 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 02KKSSPW010928
-        for <bpf@vger.kernel.org>; Fri, 20 Mar 2020 13:36:44 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=xb2zNQQ9s+9OAa5gQk3OMr9/2hfZTnETJ+AePiA2oeU=;
- b=EO4xqcfzoPfJAPa5hb74qsBtETfo3xQaXLHY7/7hcjuqn5FHmjBw0BNh+bUVz2VUUR+H
- Pd8BmfkBRJvTNCeJLc/UNDDQV7VwzIk9lbe/4NKxzB4I1nUDbsvy47lquqqm4VNvV630
- lEZ8/W9s4sfA20u6OIqpVEvgcfSzPZcAITQ= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 2yu7yp0b5u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 20 Mar 2020 13:36:44 -0700
-Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Fri, 20 Mar 2020 13:36:43 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id A541E2EC2E57; Fri, 20 Mar 2020 13:36:32 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next 6/6] selftests/bpf: test FD-based cgroup attachment
-Date:   Fri, 20 Mar 2020 13:36:14 -0700
-Message-ID: <20200320203615.1519013-7-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200320203615.1519013-1-andriin@fb.com>
-References: <20200320203615.1519013-1-andriin@fb.com>
-X-FB-Internal: Safe
+        id S1726979AbgCTUjO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Mar 2020 16:39:14 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:35961 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726829AbgCTUjO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Mar 2020 16:39:14 -0400
+Received: by mail-qt1-f196.google.com with SMTP id m33so6220332qtb.3;
+        Fri, 20 Mar 2020 13:39:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=aU/f7OsSuaYYN0ak53X2K4ccWpx/Sz3zQomd0t0Ur1Y=;
+        b=Vr/hkjmzhM0CtjsDKNhTaUpSec9nYh51Ch/B1IHBC1qo1bKL583I00LKIk+y6O+kO3
+         eHV+326SQZPS1wFOllcbbswoppQmtUykJrNswIo4RQs2qvD/pNuvQdPQwrz4K5H0TKGt
+         4QdsXSPWZCHQ/kizs3jZUTAeR3I/JAHJMZ0i5DUlc3uhWWwu+7L1Phy2vhswXZ4CR0Gw
+         2E51w1exrU89/LB5U/6GX3wdljwxwttdJldY5W/6bHH9lBP7Gi2KCBVW4hoK+H4yRwIa
+         gND6YNZfqo4BVdeREzgCcEawAxpSfmBeFGncthcemcxi66fWdiWAn0hN08dGV9PY3Hw7
+         asqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=aU/f7OsSuaYYN0ak53X2K4ccWpx/Sz3zQomd0t0Ur1Y=;
+        b=CyIuR6VHGMZZtPx+FtUYBP4PMWiinbB2xURQp5jl1mdLfcB+AoibZD+s6HJQocUkK+
+         3N9tnlwVb6ECwZfw7EyqVisk6bMOgjK6+oGsOSScFmQjlxLEUwtnx+R0+QXICcRUHUl6
+         t3pnCym1mFmliiFRuxsjqdb61hgW/roPSmvjnSgaEq0MNXCyGHb56NLSQV2KKXqhS5V6
+         Ronw8rBwBpl1vsCwmjSQ6OiSY9aF7wVVioZDqiuROdPONWAUWEqNyN4v3G07hKptkdl9
+         NXN0oww6A6zqy643bAMNs0oVRyCapSR0reiVro8Yi9agj56Vij/fFSlNskO09NZCE9J9
+         mdpg==
+X-Gm-Message-State: ANhLgQ0FipzID8AMVbsbnSxm7U0jtJihdPweuQpqI9+qrfjjiC4ZqrBI
+        ZFxf3ZOcg+z2bloZRDyH426e/9f+CFKRD7/C9wS6Mo3d
+X-Google-Smtp-Source: ADFU+vsgglMRdUuFeveU+nHS7dbO0bzdETud3rvXCi/+c5Vb2+7fAuIm3xpe/yKK6Zpd51eluKKHJKyMeIcA4i87t5o=
+X-Received: by 2002:ac8:7448:: with SMTP id h8mr10221262qtr.117.1584736751359;
+ Fri, 20 Mar 2020 13:39:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
- definitions=2020-03-20_07:2020-03-20,2020-03-20 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- suspectscore=8 bulkscore=0 impostorscore=0 adultscore=0 mlxlogscore=869
- clxscore=1015 mlxscore=0 spamscore=0 malwarescore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2003200081
-X-FB-Internal: deliver
+References: <158462359206.164779.15902346296781033076.stgit@toke.dk>
+ <158462359315.164779.13931660750493121404.stgit@toke.dk> <20200319155236.3d8537c5@kicinski-fedora-PC1C0HJN>
+ <875zez76ph.fsf@toke.dk>
+In-Reply-To: <875zez76ph.fsf@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 20 Mar 2020 13:39:00 -0700
+Message-ID: <CAEf4BzYGZz7hdd-_x+uyE0OF8h_3vJxNjF-Qkd5QhOWpaB8bbQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
+ program when attaching XDP
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add selftests to exercise FD-based cgroup BPF program attachments and their
-intermixing with legacy stateful cgroup BPF attachments. Auto-detachment and
-program replacement (both unconditional and cmpxchng-like) are tested as well.
+On Fri, Mar 20, 2020 at 1:48 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Jakub Kicinski <kuba@kernel.org> writes:
+>
+> > On Thu, 19 Mar 2020 14:13:13 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wro=
+te:
+> >> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> >>
+> >> While it is currently possible for userspace to specify that an existi=
+ng
+> >> XDP program should not be replaced when attaching to an interface, the=
+re is
+> >> no mechanism to safely replace a specific XDP program with another.
+> >>
+> >> This patch adds a new netlink attribute, IFLA_XDP_EXPECTED_FD, which c=
+an be
+> >> set along with IFLA_XDP_FD. If set, the kernel will check that the pro=
+gram
+> >> currently loaded on the interface matches the expected one, and fail t=
+he
+> >> operation if it does not. This corresponds to a 'cmpxchg' memory opera=
+tion.
+> >>
+> >> A new companion flag, XDP_FLAGS_EXPECT_FD, is also added to explicitly
+> >> request checking of the EXPECTED_FD attribute. This is needed for user=
+space
+> >> to discover whether the kernel supports the new attribute.
+> >>
+> >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> >
+> > I didn't know we wanted to go ahead with this...
+>
+> Well, I'm aware of the bpf_link discussion, obviously. Not sure what's
+> happening with that, though. So since this is a straight-forward
+> extension of the existing API, that doesn't carry a high implementation
+> cost, I figured I'd just go ahead with this. Doesn't mean we can't have
+> something similar in bpf_link as well, of course.
+>
+> > If we do please run this thru checkpatch, set .strict_start_type,
+>
+> Will do.
+>
+> > and make the expected fd unsigned. A negative expected fd makes no
+> > sense.
+>
+> A negative expected_fd corresponds to setting the UPDATE_IF_NOEXIST
+> flag. I guess you could argue that since we have that flag, setting a
+> negative expected_fd is not strictly needed. However, I thought it was
+> weird to have a "this is what I expect" API that did not support
+> expressing "I expect no program to be attached".
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- .../selftests/bpf/prog_tests/cgroup_link.c    | 242 ++++++++++++++++++
- .../selftests/bpf/progs/test_cgroup_link.c    |  24 ++
- 2 files changed, 266 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_link.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_cgroup_link.c
+For BPF syscall it seems the typical approach when optional FD is
+needed is to have extra flag (e.g., BPF_F_REPLACE for cgroups) and if
+it's not specified - enforce zero for that optional fd. That handles
+backwards compatibility cases well as well.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_link.c b/tools/testing/selftests/bpf/prog_tests/cgroup_link.c
-new file mode 100644
-index 000000000000..9596aa5f2c07
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_link.c
-@@ -0,0 +1,242 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+#include "cgroup_helpers.h"
-+#include "test_cgroup_link.skel.h"
-+
-+static __u32 duration = 0;
-+#define PING_CMD	"ping -q -c1 -w1 127.0.0.1 > /dev/null"
-+
-+void test_cgroup_link(void)
-+{
-+	struct test_cgroup_link *skel;
-+	struct {
-+		const char *path;
-+		int fd;
-+	} cgs[] = {
-+		{ "/cg1" },
-+		{ "/cg1/cg2" },
-+		{ "/cg1/cg2/cg3" },
-+	};
-+	int last_cg = ARRAY_SIZE(cgs) - 1, cg_nr = ARRAY_SIZE(cgs);
-+	DECLARE_LIBBPF_OPTS(bpf_link_update_opts, link_upd_opts);
-+	struct bpf_link *links[ARRAY_SIZE(cgs)] = {};
-+	__u32 prog_ids[5], prog_cnt = 0, attach_flags;
-+	int i = 0, err, prog_fd;
-+	bool detach_legacy = false;
-+
-+	skel = test_cgroup_link__open_and_load();
-+	if (CHECK(!skel, "skel_open_load", "failed to open/load skeleton\n"))
-+		return;
-+	prog_fd = bpf_program__fd(skel->progs.egress);
-+
-+	err = setup_cgroup_environment();
-+	if (CHECK(err, "cg_init", "failed: %d\n", err))
-+		goto cleanup;
-+
-+	for (i = 0; i < cg_nr; i++) {
-+		cgs[i].fd = create_and_get_cgroup(cgs[i].path);
-+		if (CHECK(cgs[i].fd < 0, "cg_create", "fail: %d\n", cgs[i].fd))
-+			goto cleanup;
-+	}
-+
-+	err = join_cgroup(cgs[last_cg].path);
-+	if (CHECK(err, "cg_join", "fail: %d\n", err))
-+		goto cleanup;
-+
-+	for (i = 0; i < cg_nr; i++) {
-+		links[i] = bpf_program__attach_cgroup(skel->progs.egress,
-+						      cgs[i].fd);
-+		if (CHECK(IS_ERR(links[i]), "cg_attach", "i: %d, err: %ld\n",
-+				 i, PTR_ERR(links[i])))
-+			goto cleanup;
-+	}
-+
-+	CHECK_FAIL(system(PING_CMD));
-+	if (CHECK(skel->bss->calls != cg_nr, "call_cnt", "exp %d, got %d\n",
-+		  cg_nr, skel->bss->calls))
-+		goto cleanup;
-+
-+	/* query the number of effective progs in last cg */
-+	CHECK_FAIL(bpf_prog_query(cgs[last_cg].fd, BPF_CGROUP_INET_EGRESS,
-+				  BPF_F_QUERY_EFFECTIVE, NULL, NULL,
-+				  &prog_cnt));
-+	if (CHECK(prog_cnt != cg_nr, "effect_cnt", "exp %d, got %d\n",
-+		  cg_nr, prog_cnt))
-+		goto cleanup;
-+	/* query the effective prog IDs in last cg */
-+	CHECK_FAIL(bpf_prog_query(cgs[last_cg].fd, BPF_CGROUP_INET_EGRESS,
-+				  BPF_F_QUERY_EFFECTIVE, &attach_flags,
-+				  prog_ids, &prog_cnt));
-+	if (CHECK(prog_cnt != cg_nr, "effect_cnt", "exp %d, got %d\n",
-+		  cg_nr, prog_cnt))
-+		goto cleanup;
-+	CHECK_FAIL(attach_flags != BPF_F_ALLOW_MULTI);
-+	for (i = 1; i < prog_cnt; i++)
-+		CHECK(prog_ids[i - 1] != prog_ids[i], "prod_id_check",
-+		      "idx %d, prev id %d, cur id %d\n",
-+		      i, prog_ids[i - 1], prog_ids[i]);
-+
-+	/* detach bottom program and ping again */
-+	bpf_link__destroy(links[last_cg]);
-+	links[last_cg] = NULL;
-+
-+	skel->bss->calls = 0;
-+	CHECK_FAIL(system(PING_CMD));
-+	if (CHECK(skel->bss->calls != cg_nr - 1, "call_cnt", "exp %d, got %d\n",
-+		  cg_nr - 1, skel->bss->calls))
-+		goto cleanup;
-+
-+	/* mix in with non link-based multi-attachments */
-+	err = bpf_prog_attach(prog_fd, cgs[last_cg].fd,
-+			      BPF_CGROUP_INET_EGRESS, BPF_F_ALLOW_MULTI);
-+	if (CHECK(err, "cg_attach_legacy", "errno=%d\n", errno))
-+		goto cleanup;
-+	detach_legacy = true;
-+
-+	links[last_cg] = bpf_program__attach_cgroup(skel->progs.egress,
-+						    cgs[last_cg].fd);
-+	if (CHECK(IS_ERR(links[last_cg]), "cg_attach", "err: %ld\n",
-+		  PTR_ERR(links[last_cg])))
-+		goto cleanup;
-+
-+	skel->bss->calls = 0;
-+	CHECK_FAIL(system(PING_CMD));
-+	CHECK(skel->bss->calls != cg_nr + 1, "call_cnt", "exp %d, got %d\n",
-+	      cg_nr + 1, skel->bss->calls);
-+
-+	bpf_link__destroy(links[last_cg]);
-+	links[last_cg] = NULL;
-+
-+	if (CHECK(bpf_prog_detach2(prog_fd, cgs[last_cg].fd,
-+		  BPF_CGROUP_INET_EGRESS), "cg_detach_legacy",
-+		  "errno=%d\n", errno))
-+		goto cleanup;
-+	detach_legacy = false;
-+
-+	/* attempt to mix in with legacy exclusive prog attachment */
-+	err = bpf_prog_attach(prog_fd, cgs[last_cg].fd,
-+			      BPF_CGROUP_INET_EGRESS, 0);
-+	if (CHECK(err, "cg_attach_exclusive", "errno=%d\n", errno))
-+		goto cleanup;
-+	detach_legacy = true;
-+
-+	links[last_cg] = bpf_program__attach_cgroup(skel->progs.egress,
-+						    cgs[last_cg].fd);
-+	if (CHECK(!IS_ERR(links[last_cg]), "cg_attach_fail", "unexpected success\n"))
-+		goto cleanup;
-+
-+	skel->bss->calls = 0;
-+	CHECK_FAIL(system(PING_CMD));
-+	CHECK(skel->bss->calls != cg_nr, "call_cnt", "exp %d, got %d\n",
-+	      cg_nr, skel->bss->calls);
-+
-+	if (CHECK(bpf_prog_detach2(prog_fd, cgs[last_cg].fd, BPF_CGROUP_INET_EGRESS),
-+		  "cg_detach_exclusive", "errno=%d\n", errno))
-+		goto cleanup;
-+	detach_legacy = false;
-+
-+	/* re-attach last bpf_link to finish off test */
-+	links[last_cg] = bpf_program__attach_cgroup(skel->progs.egress,
-+						    cgs[last_cg].fd);
-+	if (CHECK(IS_ERR(links[last_cg]), "cg_attach", "err: %ld\n",
-+		  PTR_ERR(links[last_cg])))
-+		goto cleanup;
-+
-+	skel->bss->calls = 0;
-+	CHECK_FAIL(system(PING_CMD));
-+	if (CHECK(skel->bss->calls != cg_nr, "call_cnt", "exp %d, got %d\n",
-+		  cg_nr, skel->bss->calls))
-+		goto cleanup;
-+	if (CHECK(skel->bss->alt_calls != 0, "alt_call_cnt", "exp %d, got %d\n",
-+		  0, skel->bss->alt_calls))
-+		goto cleanup;
-+
-+	/* replace BPF programs inside their links for all but first link */
-+	for (i = 1; i < cg_nr; i++) {
-+		err = bpf_link__update_program(links[i], skel->progs.egress_alt);
-+		if (CHECK(err, "prog_upd", "link #%d\n", i))
-+			goto cleanup;
-+	}
-+
-+	skel->bss->calls = 0;
-+	skel->bss->alt_calls = 0;
-+	CHECK_FAIL(system(PING_CMD));
-+	if (CHECK(skel->bss->calls != 1, "call_cnt",
-+		  "exp %d, got %d\n", 1, skel->bss->calls))
-+		goto cleanup;
-+	if (CHECK(skel->bss->alt_calls != cg_nr - 1, "alt_call_cnt",
-+		  "exp %d, got %d\n", cg_nr - 1, skel->bss->alt_calls))
-+		goto cleanup;
-+
-+	/* Attempt program update with wrong expected BPF program */
-+	link_upd_opts.old_prog_fd = bpf_program__fd(skel->progs.egress_alt);
-+	link_upd_opts.flags = BPF_F_REPLACE;
-+	err = bpf_link_update(bpf_link__fd(links[0]),
-+			      bpf_program__fd(skel->progs.egress_alt),
-+			      &link_upd_opts);
-+	if (CHECK(err == 0 || errno != EPERM, "prog_cmpxchg1",
-+		  "unexpectedly succeeded, err %d, errno %d\n", err, -errno))
-+		goto cleanup;
-+
-+	/* Compare-exchange single link program from egress to egress_alt */
-+	link_upd_opts.old_prog_fd = bpf_program__fd(skel->progs.egress);
-+	link_upd_opts.flags = BPF_F_REPLACE;
-+	err = bpf_link_update(bpf_link__fd(links[0]),
-+			      bpf_program__fd(skel->progs.egress_alt),
-+			      &link_upd_opts);
-+	if (CHECK(err, "prog_cmpxchg2", "errno %d\n", -errno))
-+		goto cleanup;
-+
-+	skel->bss->calls = 0;
-+	skel->bss->alt_calls = 0;
-+	CHECK_FAIL(system(PING_CMD));
-+	if (CHECK(skel->bss->calls != 0, "call_cnt",
-+		  "exp %d, got %d\n", 0, skel->bss->calls))
-+		goto cleanup;
-+	if (CHECK(skel->bss->alt_calls != cg_nr, "alt_call_cnt",
-+		  "exp %d, got %d\n", cg_nr, skel->bss->alt_calls))
-+		goto cleanup;
-+
-+	/* close cgroup FDs before detaching links */
-+	for (i = 0; i < cg_nr; i++) {
-+		if (cgs[i].fd > 0) {
-+			close(cgs[i].fd);
-+			cgs[i].fd = -1;
-+		}
-+	}
-+
-+	/* BPF programs should still get called */
-+	skel->bss->alt_calls = 0;
-+	CHECK_FAIL(system(PING_CMD));
-+	if (CHECK(skel->bss->alt_calls != cg_nr, "alt_all_cnt",
-+		  "exp %d, got %d\n", cg_nr, skel->bss->alt_calls))
-+		goto cleanup;
-+
-+	/* leave cgroup and remove them, don't detach programs */
-+	cleanup_cgroup_environment();
-+
-+	/* BPF programs should have been auto-detached */
-+	skel->bss->alt_calls = 0;
-+	CHECK_FAIL(system(PING_CMD));
-+	if (CHECK(skel->bss->alt_calls, "alt_call_cnt", "exp %d, got %d\n",
-+		  cg_nr, skel->bss->alt_calls))
-+		goto cleanup;
-+
-+cleanup:
-+	if (detach_legacy)
-+		bpf_prog_detach2(prog_fd, cgs[last_cg].fd,
-+				 BPF_CGROUP_INET_EGRESS);
-+
-+	for (i = 0; i < cg_nr; i++) {
-+		if (!IS_ERR(links[i]))
-+			bpf_link__destroy(links[i]);
-+	}
-+	test_cgroup_link__destroy(skel);
-+
-+	for (i = 0; i < cg_nr; i++) {
-+		if (cgs[i].fd > 0)
-+			close(cgs[i].fd);
-+	}
-+	cleanup_cgroup_environment();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_cgroup_link.c b/tools/testing/selftests/bpf/progs/test_cgroup_link.c
-new file mode 100644
-index 000000000000..77e47b9e4446
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_cgroup_link.c
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+int calls = 0;
-+int alt_calls = 0;
-+
-+SEC("cgroup_skb/egress1")
-+int egress(struct __sk_buff *skb)
-+{
-+	__sync_fetch_and_add(&calls, 1);
-+	return 1;
-+}
-+
-+SEC("cgroup_skb/egress2")
-+int egress_alt(struct __sk_buff *skb)
-+{
-+	__sync_fetch_and_add(&alt_calls, 1);
-+	return 1;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-+
--- 
-2.17.1
-
+>
+> -Toke
+>
