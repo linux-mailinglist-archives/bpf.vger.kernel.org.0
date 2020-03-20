@@ -2,217 +2,211 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6BC18C560
-	for <lists+bpf@lfdr.de>; Fri, 20 Mar 2020 03:38:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A180718C586
+	for <lists+bpf@lfdr.de>; Fri, 20 Mar 2020 03:57:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgCTCil (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Mar 2020 22:38:41 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:39086 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725856AbgCTCik (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Mar 2020 22:38:40 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 41D6693372D32ECF8ABA;
-        Fri, 20 Mar 2020 10:38:37 +0800 (CST)
-Received: from localhost (10.173.223.234) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Fri, 20 Mar 2020
- 10:38:29 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <lmb@cloudflare.com>, <daniel@iogearbox.net>,
-        <jakub@cloudflare.com>, <john.fastabend@gmail.com>
-CC:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <andrii.nakryiko@gmail.com>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH bpf-next 2/2] bpf: tcp: Make tcp_bpf_recvmsg static
-Date:   Fri, 20 Mar 2020 10:34:26 +0800
-Message-ID: <20200320023426.60684-3-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-In-Reply-To: <20200320023426.60684-1-yuehaibing@huawei.com>
-References: <20200319124631.58432-1-yuehaibing@huawei.com>
- <20200320023426.60684-1-yuehaibing@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.173.223.234]
-X-CFilter-Loop: Reflected
+        id S1726646AbgCTC5U (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Mar 2020 22:57:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726596AbgCTC5T (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Mar 2020 22:57:19 -0400
+Received: from devnote (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D63BC2075E;
+        Fri, 20 Mar 2020 02:57:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1584673038;
+        bh=u3NNHla7i6K1v4Yu8SZ8kPaO5s4znKPKQXRXhFC96Dc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AlVGXjBqEyB7LDU/VZCDjse6dIlc6V6xtlqMMhw74gCBZeWyDnMvjy5uq2Qb0wGTd
+         Y90Xj1sIE4cqYsNjyrJS4qAEVdNHD5ppCJyYy1R2/m+0eLUnxO569OEGmsyX3lgVxw
+         I6xmTwbs/TH4le/Iq3NZ3p7Vzh7FXsWQgxGyLU1c=
+Date:   Fri, 20 Mar 2020 11:57:14 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Peter Wu <peter@lekensteyn.nl>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Shuah Khan <shuahkhan@gmail.com>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH 02/12 v2] tracing: Save off entry when peeking at next
+ entry
+Message-Id: <20200320115714.0600d86e094fdbb32615abc1@kernel.org>
+In-Reply-To: <20200319232731.799117803@goodmis.org>
+References: <20200319232219.446480829@goodmis.org>
+        <20200319232731.799117803@goodmis.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-After commit f747632b608f ("bpf: sockmap: Move generic sockmap
-hooks from BPF TCP"), tcp_bpf_recvmsg() is not used out of
-tcp_bpf.c, so make it static and remove it from tcp.h. Also move
-it to BPF_STREAM_PARSER #ifdef to fix unused function warnings.
+On Thu, 19 Mar 2020 19:22:21 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- include/net/tcp.h  |   2 -
- net/ipv4/tcp_bpf.c | 124 ++++++++++++++++++++++-----------------------
- 2 files changed, 62 insertions(+), 64 deletions(-)
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> 
+> In order to have the iterator read the buffer even when it's still updating,
+> it requires that the ring buffer iterator saves each event in a separate
+> location outside the ring buffer such that its use is immutable.
+> 
+> There's one use case that saves off the event returned from the ring buffer
+> interator and calls it again to look at the next event, before going back to
+> use the first event. As the ring buffer iterator will only have a single
+> copy, this use case will no longer be supported.
+> 
+> Instead, have the one use case create its own buffer to store the first
+> event when looking at the next event. This way, when looking at the first
+> event again, it wont be corrupted by the second read.
 
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index 43fa07a36fa6..5fa9eacd965a 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -2207,8 +2207,6 @@ static inline void tcp_bpf_clone(const struct sock *sk, struct sock *newsk)
- #ifdef CONFIG_NET_SOCK_MSG
- int tcp_bpf_sendmsg_redir(struct sock *sk, struct sk_msg *msg, u32 bytes,
- 			  int flags);
--int tcp_bpf_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
--		    int nonblock, int flags, int *addr_len);
- int __tcp_bpf_recvmsg(struct sock *sk, struct sk_psock *psock,
- 		      struct msghdr *msg, int len, int flags);
- #endif /* CONFIG_NET_SOCK_MSG */
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index 37c91f25cae3..5a05327f97c1 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -10,25 +10,6 @@
- #include <net/inet_common.h>
- #include <net/tls.h>
- 
--static int tcp_bpf_wait_data(struct sock *sk, struct sk_psock *psock,
--			     int flags, long timeo, int *err)
--{
--	DEFINE_WAIT_FUNC(wait, woken_wake_function);
--	int ret = 0;
--
--	if (!timeo)
--		return ret;
--
--	add_wait_queue(sk_sleep(sk), &wait);
--	sk_set_bit(SOCKWQ_ASYNC_WAITDATA, sk);
--	ret = sk_wait_event(sk, &timeo,
--			    !list_empty(&psock->ingress_msg) ||
--			    !skb_queue_empty(&sk->sk_receive_queue), &wait);
--	sk_clear_bit(SOCKWQ_ASYNC_WAITDATA, sk);
--	remove_wait_queue(sk_sleep(sk), &wait);
--	return ret;
--}
--
- int __tcp_bpf_recvmsg(struct sock *sk, struct sk_psock *psock,
- 		      struct msghdr *msg, int len, int flags)
- {
-@@ -102,49 +83,6 @@ int __tcp_bpf_recvmsg(struct sock *sk, struct sk_psock *psock,
- }
- EXPORT_SYMBOL_GPL(__tcp_bpf_recvmsg);
- 
--int tcp_bpf_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
--		    int nonblock, int flags, int *addr_len)
--{
--	struct sk_psock *psock;
--	int copied, ret;
--
--	psock = sk_psock_get(sk);
--	if (unlikely(!psock))
--		return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
--	if (unlikely(flags & MSG_ERRQUEUE))
--		return inet_recv_error(sk, msg, len, addr_len);
--	if (!skb_queue_empty(&sk->sk_receive_queue) &&
--	    sk_psock_queue_empty(psock))
--		return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
--	lock_sock(sk);
--msg_bytes_ready:
--	copied = __tcp_bpf_recvmsg(sk, psock, msg, len, flags);
--	if (!copied) {
--		int data, err = 0;
--		long timeo;
--
--		timeo = sock_rcvtimeo(sk, nonblock);
--		data = tcp_bpf_wait_data(sk, psock, flags, timeo, &err);
--		if (data) {
--			if (!sk_psock_queue_empty(psock))
--				goto msg_bytes_ready;
--			release_sock(sk);
--			sk_psock_put(sk, psock);
--			return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
--		}
--		if (err) {
--			ret = err;
--			goto out;
--		}
--		copied = -EAGAIN;
--	}
--	ret = copied;
--out:
--	release_sock(sk);
--	sk_psock_put(sk, psock);
--	return ret;
--}
--
- static int bpf_tcp_ingress(struct sock *sk, struct sk_psock *psock,
- 			   struct sk_msg *msg, u32 apply_bytes, int flags)
- {
-@@ -299,6 +237,68 @@ static bool tcp_bpf_stream_read(const struct sock *sk)
- 	return !empty;
- }
- 
-+static int tcp_bpf_wait_data(struct sock *sk, struct sk_psock *psock,
-+			     int flags, long timeo, int *err)
-+{
-+	DEFINE_WAIT_FUNC(wait, woken_wake_function);
-+	int ret = 0;
-+
-+	if (!timeo)
-+		return ret;
-+
-+	add_wait_queue(sk_sleep(sk), &wait);
-+	sk_set_bit(SOCKWQ_ASYNC_WAITDATA, sk);
-+	ret = sk_wait_event(sk, &timeo,
-+			    !list_empty(&psock->ingress_msg) ||
-+			    !skb_queue_empty(&sk->sk_receive_queue), &wait);
-+	sk_clear_bit(SOCKWQ_ASYNC_WAITDATA, sk);
-+	remove_wait_queue(sk_sleep(sk), &wait);
-+	return ret;
-+}
-+
-+static int tcp_bpf_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
-+		    int nonblock, int flags, int *addr_len)
-+{
-+	struct sk_psock *psock;
-+	int copied, ret;
-+
-+	psock = sk_psock_get(sk);
-+	if (unlikely(!psock))
-+		return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
-+	if (unlikely(flags & MSG_ERRQUEUE))
-+		return inet_recv_error(sk, msg, len, addr_len);
-+	if (!skb_queue_empty(&sk->sk_receive_queue) &&
-+	    sk_psock_queue_empty(psock))
-+		return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
-+	lock_sock(sk);
-+msg_bytes_ready:
-+	copied = __tcp_bpf_recvmsg(sk, psock, msg, len, flags);
-+	if (!copied) {
-+		int data, err = 0;
-+		long timeo;
-+
-+		timeo = sock_rcvtimeo(sk, nonblock);
-+		data = tcp_bpf_wait_data(sk, psock, flags, timeo, &err);
-+		if (data) {
-+			if (!sk_psock_queue_empty(psock))
-+				goto msg_bytes_ready;
-+			release_sock(sk);
-+			sk_psock_put(sk, psock);
-+			return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
-+		}
-+		if (err) {
-+			ret = err;
-+			goto out;
-+		}
-+		copied = -EAGAIN;
-+	}
-+	ret = copied;
-+out:
-+	release_sock(sk);
-+	sk_psock_put(sk, psock);
-+	return ret;
-+}
-+
- static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
- 				struct sk_msg *msg, int *copied, int flags)
- {
+OK, this looks good to me.
+
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you,
+
+> 
+> Link: http://lkml.kernel.org/r/20200317213415.722539921@goodmis.org
+> 
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+>  include/linux/trace_events.h |  2 ++
+>  kernel/trace/trace.c         | 40 +++++++++++++++++++++++++++++++++++-
+>  kernel/trace/trace_output.c  | 15 ++++++--------
+>  3 files changed, 47 insertions(+), 10 deletions(-)
+> 
+> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+> index 6c7a10a6d71e..5c6943354049 100644
+> --- a/include/linux/trace_events.h
+> +++ b/include/linux/trace_events.h
+> @@ -85,6 +85,8 @@ struct trace_iterator {
+>  	struct mutex		mutex;
+>  	struct ring_buffer_iter	**buffer_iter;
+>  	unsigned long		iter_flags;
+> +	void			*temp;	/* temp holder */
+> +	unsigned int		temp_size;
+>  
+>  	/* trace_seq for __print_flags() and __print_symbolic() etc. */
+>  	struct trace_seq	tmp_seq;
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index 02be4ddd4ad5..819e31d0d66c 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -3466,7 +3466,31 @@ __find_next_entry(struct trace_iterator *iter, int *ent_cpu,
+>  struct trace_entry *trace_find_next_entry(struct trace_iterator *iter,
+>  					  int *ent_cpu, u64 *ent_ts)
+>  {
+> -	return __find_next_entry(iter, ent_cpu, NULL, ent_ts);
+> +	/* __find_next_entry will reset ent_size */
+> +	int ent_size = iter->ent_size;
+> +	struct trace_entry *entry;
+> +
+> +	/*
+> +	 * The __find_next_entry() may call peek_next_entry(), which may
+> +	 * call ring_buffer_peek() that may make the contents of iter->ent
+> +	 * undefined. Need to copy iter->ent now.
+> +	 */
+> +	if (iter->ent && iter->ent != iter->temp) {
+> +		if (!iter->temp || iter->temp_size < iter->ent_size) {
+> +			kfree(iter->temp);
+> +			iter->temp = kmalloc(iter->ent_size, GFP_KERNEL);
+> +			if (!iter->temp)
+> +				return NULL;
+> +		}
+> +		memcpy(iter->temp, iter->ent, iter->ent_size);
+> +		iter->temp_size = iter->ent_size;
+> +		iter->ent = iter->temp;
+> +	}
+> +	entry = __find_next_entry(iter, ent_cpu, NULL, ent_ts);
+> +	/* Put back the original ent_size */
+> +	iter->ent_size = ent_size;
+> +
+> +	return entry;
+>  }
+>  
+>  /* Find the next real entry, and increment the iterator to the next entry */
+> @@ -4197,6 +4221,18 @@ __tracing_open(struct inode *inode, struct file *file, bool snapshot)
+>  	if (!iter->buffer_iter)
+>  		goto release;
+>  
+> +	/*
+> +	 * trace_find_next_entry() may need to save off iter->ent.
+> +	 * It will place it into the iter->temp buffer. As most
+> +	 * events are less than 128, allocate a buffer of that size.
+> +	 * If one is greater, then trace_find_next_entry() will
+> +	 * allocate a new buffer to adjust for the bigger iter->ent.
+> +	 * It's not critical if it fails to get allocated here.
+> +	 */
+> +	iter->temp = kmalloc(128, GFP_KERNEL);
+> +	if (iter->temp)
+> +		iter->temp_size = 128;
+> +
+>  	/*
+>  	 * We make a copy of the current tracer to avoid concurrent
+>  	 * changes on it while we are reading.
+> @@ -4269,6 +4305,7 @@ __tracing_open(struct inode *inode, struct file *file, bool snapshot)
+>   fail:
+>  	mutex_unlock(&trace_types_lock);
+>  	kfree(iter->trace);
+> +	kfree(iter->temp);
+>  	kfree(iter->buffer_iter);
+>  release:
+>  	seq_release_private(inode, file);
+> @@ -4344,6 +4381,7 @@ static int tracing_release(struct inode *inode, struct file *file)
+>  
+>  	mutex_destroy(&iter->mutex);
+>  	free_cpumask_var(iter->started);
+> +	kfree(iter->temp);
+>  	kfree(iter->trace);
+>  	kfree(iter->buffer_iter);
+>  	seq_release_private(inode, file);
+> diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+> index e25a7da79c6b..9a121e147102 100644
+> --- a/kernel/trace/trace_output.c
+> +++ b/kernel/trace/trace_output.c
+> @@ -617,22 +617,19 @@ int trace_print_context(struct trace_iterator *iter)
+>  
+>  int trace_print_lat_context(struct trace_iterator *iter)
+>  {
+> +	struct trace_entry *entry, *next_entry;
+>  	struct trace_array *tr = iter->tr;
+> -	/* trace_find_next_entry will reset ent_size */
+> -	int ent_size = iter->ent_size;
+>  	struct trace_seq *s = &iter->seq;
+> -	u64 next_ts;
+> -	struct trace_entry *entry = iter->ent,
+> -			   *next_entry = trace_find_next_entry(iter, NULL,
+> -							       &next_ts);
+>  	unsigned long verbose = (tr->trace_flags & TRACE_ITER_VERBOSE);
+> +	u64 next_ts;
+>  
+> -	/* Restore the original ent_size */
+> -	iter->ent_size = ent_size;
+> -
+> +	next_entry = trace_find_next_entry(iter, NULL, &next_ts);
+>  	if (!next_entry)
+>  		next_ts = iter->ts;
+>  
+> +	/* trace_find_next_entry() may change iter->ent */
+> +	entry = iter->ent;
+> +
+>  	if (verbose) {
+>  		char comm[TASK_COMM_LEN];
+>  
+> -- 
+> 2.25.1
+> 
+> 
+
+
 -- 
-2.17.1
-
-
+Masami Hiramatsu <mhiramat@kernel.org>
