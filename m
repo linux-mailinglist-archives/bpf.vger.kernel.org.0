@@ -2,69 +2,218 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D84618D243
-	for <lists+bpf@lfdr.de>; Fri, 20 Mar 2020 16:01:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F8718D295
+	for <lists+bpf@lfdr.de>; Fri, 20 Mar 2020 16:13:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726997AbgCTPBr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Mar 2020 11:01:47 -0400
-Received: from www62.your-server.de ([213.133.104.62]:50940 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgCTPBr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Mar 2020 11:01:47 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jFJ9R-0004Ty-AF; Fri, 20 Mar 2020 16:01:33 +0100
-Received: from [85.7.42.192] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jFJ9Q-000LQU-Ua; Fri, 20 Mar 2020 16:01:32 +0100
-Subject: Re: [PATCH bpf-next 1/2] bpf: tcp: Fix unused function warnings
-To:     Yonghong Song <yhs@fb.com>, YueHaibing <yuehaibing@huawei.com>,
-        lmb@cloudflare.com, jakub@cloudflare.com, john.fastabend@gmail.com
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, andrii.nakryiko@gmail.com
-References: <20200319124631.58432-1-yuehaibing@huawei.com>
- <20200320023426.60684-1-yuehaibing@huawei.com>
- <20200320023426.60684-2-yuehaibing@huawei.com>
- <d18a19a0-f147-03ad-b8a5-4b502199cd72@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <71161d44-da82-b4ae-ee9e-8291d9d03021@iogearbox.net>
-Date:   Fri, 20 Mar 2020 16:01:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1727190AbgCTPNA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Mar 2020 11:13:00 -0400
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:41418 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726773AbgCTPNA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Mar 2020 11:13:00 -0400
+Received: by mail-oi1-f172.google.com with SMTP id b17so6789581oic.8
+        for <bpf@vger.kernel.org>; Fri, 20 Mar 2020 08:12:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lakkRVPgutY0AF3sqGIgV2JNUBsA85UrHquoYSV0MIA=;
+        b=ON1x6OxRLLz4qWPJjXk9OK7G03nXX+FSp9wf3XXWabnll2HLXRRpytcat9E9QLEz/9
+         2/qHEh9ubJRn15oBgAaccouwdo7N+C3eO4Hmfc+0lIZ/RqUZNpsYRQgB+Z9nJ4+QCjzj
+         LWDIb3nWzdttR4Q/pO81nz1JuRN7Kp/OAWFIM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lakkRVPgutY0AF3sqGIgV2JNUBsA85UrHquoYSV0MIA=;
+        b=rYWPt9a7tOKYkbQ4ii3FLCwawhmBxc8Ig4OC95uiroryNnpR9eiyNCZGS9qGhnwV/B
+         m92FaunS875ubxtpVbzoX3DK3nhGgOoPJPOm2s0nKlGvQC/SvgBIVb7WVxUg4lBW2mN7
+         94yhJ9x5bu3AOVCuOIWw4AwfgLouhbdT/GYXaXRDdqJlREP9UjeW8+yLv8XLAIE7wrl1
+         vWght0deCa4a0PipfGV8wK6Dm0Zw0LVwDOgRgAqWuAlfarnvX8okUuJRpKk+0rRKa6Z/
+         aToV9+T6qqmS++499tyBF3eN+NkJ4h3eyoiX9abH8G5RHYJ9LQF4Ho97KwgynN6fgnP8
+         tCkw==
+X-Gm-Message-State: ANhLgQ00/K6YPgOy5ve5vHmY0TEyz6fd/g4KKe6XbTGQRvvgpfevoJga
+        qGOM0f4KYgp0yzVpOzzg8wMJJ3ErIMtMz5nqLY0B8Q==
+X-Google-Smtp-Source: ADFU+vu1MxXZ2KwiLfOP51fB7zuMESQ1qEuVah2RXWu6rGBuvlwcqMwZsdrduC2xfy0rKb97jKCqHLA3UiCv2q08oKg=
+X-Received: by 2002:aca:b60a:: with SMTP id g10mr6673637oif.102.1584717177616;
+ Fri, 20 Mar 2020 08:12:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d18a19a0-f147-03ad-b8a5-4b502199cd72@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25757/Fri Mar 20 14:13:59 2020)
+References: <20200310174711.7490-1-lmb@cloudflare.com> <20200312015822.bhu6ptkx5jpabkr6@ast-mbp.dhcp.thefacebook.com>
+ <CACAyw9-Ui5FECjAaehP8raRjcRJVx2nQAj5=XPu=zXME2acMhg@mail.gmail.com>
+ <20200312175828.xenznhgituyi25kj@ast-mbp> <CACAyw98cp2we2w_L=YgEj+BbCqA5_3HvSML1VZzyNeF8mVfEEQ@mail.gmail.com>
+ <20200314025832.3ffdgkva65dseoec@ast-mbp.dhcp.thefacebook.com>
+ <CACAyw99HC70=wYBzZAiQVyUi56y_0x-6saGkp_KHBpjQuva1KA@mail.gmail.com> <5e711f6ed4f6c_278b2b1b264c65b4bd@john-XPS-13-9370.notmuch>
+In-Reply-To: <5e711f6ed4f6c_278b2b1b264c65b4bd@john-XPS-13-9370.notmuch>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Fri, 20 Mar 2020 15:12:44 +0000
+Message-ID: <CACAyw9_J2Nc74hA6tQrWrvQ1Q61994YRaQUPu_2=rKYr9LUFYQ@mail.gmail.com>
+Subject: Re: [PATCH 0/5] Return fds from privileged sockhash/sockmap lookup
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/20/20 5:21 AM, Yonghong Song wrote:
-> On 3/19/20 7:34 PM, YueHaibing wrote:
->> If BPF_STREAM_PARSER is not set, gcc warns:
->>
->> net/ipv4/tcp_bpf.c:483:12: warning: 'tcp_bpf_sendpage' defined but not used [-Wunused-function]
->> net/ipv4/tcp_bpf.c:395:12: warning: 'tcp_bpf_sendmsg' defined but not used [-Wunused-function]
->> net/ipv4/tcp_bpf.c:13:13: warning: 'tcp_bpf_stream_read' defined but not used [-Wunused-function]
->>
->> Moves the unused functions into the #ifdef
-> 
-> Maybe explicit "into the #ifdef CONFIG_BPF_STREAM_PARSER"?
-> 
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Fixes: f747632b608f ("bpf: sockmap: Move generic sockmap hooks from BPF TCP")
->> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->> Reviewed-by: Lorenz Bauer <lmb@cloudflare.com>
->> Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
-> 
-> Acked-by: Yonghong Song <yhs@fb.com>
+On Tue, 17 Mar 2020 at 19:05, John Fastabend <john.fastabend@gmail.com> wrote:
+>
+> Lorenz Bauer wrote:
+> > On Sat, 14 Mar 2020 at 02:58, Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > I'm not following. There is skb->sk. Why do you need to lookup sk ? Because
+> > > your hook is before demux and skb->sk is not set? Then move your hook to after?
+> > >
+> > > I think we're arguing in circles because in this thread I haven't seen the
+> > > explanation of the problem you're trying to solve. We argued about your
+> > > proposed solution and got stuck. Can we restart from the beginning with all
+> > > details?
+> >
+> > Yes, that's a good idea. I mentioned this in passing in my cover
+> > letter, but should
+> > have provided more context.
+> >
+> > Jakub is working on a patch series to add a BPF hook to socket dispatch [1] aka
+> > the inet_lookup function. The core idea is to control skb->sk via a BPF program.
+> > Hence, we can't use skb->sk.
+> >
+> > Introducing this hook poses another problem: we need to get the struct sk from
+> > somewhere. The canonical way in BPF is to use the lookup_sk helpers. Of course
+> > that doesn't work, since our hook would invoke itself. So we need a
+> > data structure
+> > that can hold sockets, to be used by programs attached on the new hook.
+> >
+> > Jakub's RFC patch set used REUSEPORT_SOCKARRAY for this. During LPC '19
+> > we got feedback that sockmap is probably the better choice. As a
+> > result, Jakub started
+> > working on extending sockmap TCP support and after a while I joined to add UDP.
+> >
+> > Now, we are looking at what our control plane could look like. Based
+> > on the inet-tool
+> > work that Marek Majkowski has done [2], we currently have the following set up:
+> >
+> > * An LPM map that goes from IP prefix and port to an index in a sockmap
+>
+> As an aside we could do a LPM version of sockmap to avoid the extra lookup,
+> but thats just an optimization for later.
+>
+> > * A sockmap that holds sockets
+> > * A BPF program that performs the business logic
+> >
+> > inet-tool is used to update the two maps to add and remove mappings on the fly.
+> > Essentially, services donate their sockets either via fork+exec or SCM_RIGHTS on
+> > a Unix socket.
+>
+> This looks a lot like one of the LBs we prototyped early on.
+>
+> >
+> > Once we have inserted a socket in the sockmap, it's not possible to
+> > retrieve it again.
+> > This makes it impossible to change the position of a socket in the
+> > map, to resize the
+> > map, etc. with our current design.
+>
+> Is it fair to say then that you don't actually need/care about the fd it
+> just happens to be something stable you could grab relatively easy from
+> the sockmap side and push back at a sockmap?
 
-Both applied and addressed feedback from Yonghong, thanks!
+I think that falls a bit short. I'd like to have an fd because it is the
+user space representation of a socket. I can do useful things like get
+the address
+family, etc. from it. I can use this to provide meaningful semantics
+to users: you can't redirect UDP traffic into a SOCK_STREAM, etc.
+
+So, we'd definitely have to add some sort of getsockopt wrapper for this
+bpf sock, which sounds kind of complex?
+
+>
+> >
+> > One way to work around this is to add a persistent component to our
+> > control plane:
+> > a process can hold on to the sockets and re-build the map when necessary. The
+> > downsides are that upgrading the service is non-trivial (since we need
+> > to pass the
+> > socket fds) and that a failure of this service is catastrophic. Once
+> > it happens, we
+> > probably have to reboot the machine to get it into a workable state again.
+>
+> Agreed this is not a good place to be in. We use the kernel maps for
+> persistence in many cases today, such as updates or when the application
+> crashes we have the nice property that the datapath keeps working without
+> interruption.
+>
+> >
+> > We'd like to avoid a persistent service if we can. By allowing to look
+> > up fds from the
+> > sockmap, we could make this part of our control plane more robust.
+> >
+> > 1: https://www.youtube.com/watch?v=qRDoUpqvYjY
+> > 2: https://github.com/majek/inet-tool
+> >
+> > I hope this explanation helps, sorry for not being more thorough in the original
+> > cover letter!
+>
+> Helps a lot for me at least.
+>
+> So instead of fd how about,
+>
+>   sock_map_lookup returns bpf_sock
+>   sock_map_update can consume an fd or a bpf_sock
+>
+> Userland can do a dump of the sock_map then get a set of bpf_socks and
+> push them into another map via updates. Nothing too special compared
+> to other maps. In cilium for example I could plug this into our normal
+> flows and we would get rid of the current corner case where upgrades
+> and crashes lose sockmap state.
+
+I thought that bpf_sock is just used to document the BPF UAPI? How
+would you turn this into a refcountable thing?
+
+>
+> The update hooks in sock_map already know how to deal with socks so
+> the trick would be to do the lookup from bpf_sock to a real sock. For
+> that I think we can just use sk_lookup(). Maybe bpf_sock needs to
+> additionally include the cookie? Including the cookie in bpf_sock
+> seems generally useful as well. I would probably use it outside
+> of sock_map for example.
+>
+> Thoughts? I think it helps with Alexei's concern around passing fds.
+
+I like that it's a tangible way forward, but I'm worried that adding a
+new "thing"
+that's kind of like a socket (but not really) is going to be quite complex.
+
+Another way around this might be to add a way to go from socket cookie to
+socket, and not touch sockmap. I suspect that is an even steeper hill to climb,
+especially if it means adding a new syscall.
+
+Thank you for your thoughts, I'll need to go and ruminate on this some more.
+Specifically I'll flesh out the control plane some more, which should help me
+get a more focused understanding of what I need.
+
+
+
+
+>
+> >
+> > Lorenz
+> >
+> > --
+> > Lorenz Bauer  |  Systems Engineer
+> > 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+> >
+> > www.cloudflare.com
+>
+>
+
+
+--
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
