@@ -2,89 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F56F18E3DB
-	for <lists+bpf@lfdr.de>; Sat, 21 Mar 2020 20:14:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7AA418E40A
+	for <lists+bpf@lfdr.de>; Sat, 21 Mar 2020 20:41:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727224AbgCUTOE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sat, 21 Mar 2020 15:14:04 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:51284 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727264AbgCUTOE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 21 Mar 2020 15:14:04 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-258-5dLg6k9dMdWiOUfVgdYHTg-1; Sat, 21 Mar 2020 19:13:59 +0000
-X-MC-Unique: 5dLg6k9dMdWiOUfVgdYHTg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sat, 21 Mar 2020 19:13:51 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sat, 21 Mar 2020 19:13:51 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Steven Rostedt' <rostedt@goodmis.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Peter Wu <peter@lekensteyn.nl>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Shuah Khan <shuahkhan@gmail.com>, bpf <bpf@vger.kernel.org>
-Subject: RE: [PATCH 00/12 v2] ring-buffer/tracing: Remove disabling of ring
- buffer while reading trace file
-Thread-Topic: [PATCH 00/12 v2] ring-buffer/tracing: Remove disabling of ring
- buffer while reading trace file
-Thread-Index: AQHV/kYCQIwPxRMFlk+UdEERk+KYoKhTa8kQ
-Date:   Sat, 21 Mar 2020 19:13:51 +0000
-Message-ID: <2a7f96545945457cade216aa3c736bcc@AcuMS.aculab.com>
-References: <20200319232219.446480829@goodmis.org>
-In-Reply-To: <20200319232219.446480829@goodmis.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1727428AbgCUTlF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 21 Mar 2020 15:41:05 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:39263 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727573AbgCUTlF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 21 Mar 2020 15:41:05 -0400
+Received: by mail-qk1-f193.google.com with SMTP id b62so1635021qkf.6;
+        Sat, 21 Mar 2020 12:41:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L6YfcU5ciYiVu9dVxdXUXzsZPZvcMDslIUHUIQLiIJM=;
+        b=kFe/VmiMS1X5q6jbvhGEXTmiwIwdXjtkSuWV9Jk21f3KTrX4K32Bb+oLXn0a0V0+5q
+         un0rdMhKRKvJd3M7Xv1ha3/OJJUoVAPTjibmF5ZP5fDTFjh7FHzPX7mcXo4r5Yu4+lLW
+         diJeFSzmDmaxqpVr0KM0sPiaPPP2DzNxLSWsofvfvK61Jiys4fatxbeULlG9x/i88GEF
+         UifC9VfedbyqQLQYgR52Sn122KC85RGSer8T+hX+U0Y9CSdEKxqTIBHxkbQT79wLOBOA
+         y+AP1p550F8uYRp2eUlFT4t1//1Sy+XRyBmCaH+H+auPxthUkrprS77iyxrZGcOiymw+
+         6BvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L6YfcU5ciYiVu9dVxdXUXzsZPZvcMDslIUHUIQLiIJM=;
+        b=J/asvO7nbqiuDGtdmozuL8FVDhrUgNppl6sA2za7825NY4/ncWHfy0+MrMrVb8Pl3u
+         MXgSRTnYvQ3HubxXyoTYTWyRIiwMNKD3uD3oZ5bAxbCFJAiOhAGaxNTYkGknRlHNp/K3
+         YANDMDQU9ZjLGpJQJvbGCTtHHi4KjJHD8efFGvbkBRTNb4LbMaFNTXG8v2os/qAzfEKM
+         OaZrrPEVp2PaSoKUYNXLM1XHb2VJ4YzwtxFNKPfw41/Hqo5xcYGPMOLD46CzOFmW+rE+
+         mn7vVTvnmbQnRYhBNXIWqMZwWLMcpqNLBkHhx5XKFLP9Sy2rD+6QeWPMwL8o6JQugFFi
+         Dp0Q==
+X-Gm-Message-State: ANhLgQ0kExkOa0g+CtS/WWqkq12yg/lrD+MQQ0z/2HdGLQEmFbJh9Yp3
+        vpveDSuurrdR9cWsc7KJpVBLYSqomSAs6vGrDzV1hA==
+X-Google-Smtp-Source: ADFU+vsT8PuBCSkIqzr9o/1m72QPPpyLOoTl31Qf7msFlf1wYybvOvtKh+Eez/wXI7e8kwjK0/XZtXKgwynzzwKSjDM=
+X-Received: by 2002:a37:6411:: with SMTP id y17mr14556052qkb.437.1584819663923;
+ Sat, 21 Mar 2020 12:41:03 -0700 (PDT)
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20200321100424.1593964-1-danieltimlee@gmail.com> <20200321100424.1593964-2-danieltimlee@gmail.com>
+In-Reply-To: <20200321100424.1593964-2-danieltimlee@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sat, 21 Mar 2020 12:40:53 -0700
+Message-ID: <CAEf4BzZZgpwVNMEnH72-dQXL+W9ROKSdX2+pmExhgXAGSjT02A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/2] samples: bpf: move read_trace_pipe to trace_helpers
+To:     "Daniel T. Lee" <danieltimlee@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Steven Rostedt
-> Sent: 19 March 2020 23:22
-...
-> 
-> This patch series attempts to satisfy that request, by creating a
-> temporary buffer in each of the per cpu iterators to place the
-> read event into, such that it can be passed to users without worrying
-> about a writer to corrupt the event while it was being written out.
-> It also uses the fact that the ring buffer is broken up into pages,
-> where each page has its own timestamp that gets updated when a
-> writer crosses over to it. By copying it to the temp buffer, and
-> doing a "before and after" test of the time stamp with memory barriers,
-> can allow the events to be saved.
+On Sat, Mar 21, 2020 at 3:04 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
+>
+> To reduce the reliance of trace samples (trace*_user) on bpf_load,
+> move read_trace_pipe to trace_helpers. By moving this bpf_loader helper
+> elsewhere, trace functions can be easily migrated to libbbpf.
+>
+> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> ---
 
-Does this mean the you will no longer be able to look at a snapshot
-of the trace by running 'less trace' (and typically going to the end
-to get info for all cpus).
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-A lot of the time trace is being written far too fast for it to make
-any sense to try to read it continuously.
+>  samples/bpf/Makefile                        |  4 ++--
+>  samples/bpf/bpf_load.c                      | 20 ------------------
+>  samples/bpf/bpf_load.h                      |  1 -
+>  samples/bpf/tracex1_user.c                  |  1 +
+>  samples/bpf/tracex5_user.c                  |  1 +
+>  tools/testing/selftests/bpf/trace_helpers.c | 23 +++++++++++++++++++++
+>  tools/testing/selftests/bpf/trace_helpers.h |  1 +
+>  7 files changed, 28 insertions(+), 23 deletions(-)
+>
 
-Also, if BPF start using ftrace, no one will be able to use it for
-'normal debugging' on such systems.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+[...]
