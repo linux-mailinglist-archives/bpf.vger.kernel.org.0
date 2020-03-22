@@ -2,124 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BFDA718E953
-	for <lists+bpf@lfdr.de>; Sun, 22 Mar 2020 15:09:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0610C18EB5B
+	for <lists+bpf@lfdr.de>; Sun, 22 Mar 2020 19:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbgCVOJQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 22 Mar 2020 10:09:16 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:42539 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbgCVOJP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 22 Mar 2020 10:09:15 -0400
-Received: by mail-ed1-f67.google.com with SMTP id b21so13201824edy.9;
-        Sun, 22 Mar 2020 07:09:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pBi9Z1+WU4iatz2iMB4jF1UwMBCBTv6eef7cooUFzms=;
-        b=TJIxq9L5ba4cEhBvxABO8RbqK99o+J/uKW5K1NX4zXF9+ccmgGCPN9xMUi3ODDtmLB
-         PBcy2vAXjGmcFRLGDazaFjQZvbJh+C9y+uSB775OZQa/Bt5Ggi0yydC2VFFqBXH7gj52
-         LqUsLpN7NtK+REuoB0Nv2mBg0qVXg+k4aMoRmFVo+m6xiMAgWrlFo8W/hI4JadSMvf7J
-         bhqnmhjnGg9m1dsznfGJ6HxlhaTKBtn0UWLHwW+Ec8zCodR4zlWgkqxU1ENYrBPSsQ9d
-         UHQONLyRmz2kJCTh6MrOG+d2qEE7dNmpMg8y2pJLEqAK5KvYotdGwiZn02+j2embB16p
-         W3UA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pBi9Z1+WU4iatz2iMB4jF1UwMBCBTv6eef7cooUFzms=;
-        b=J1DcsnXm0zWPVxh2lHFMBcVbWxxwbsnarohsNTjO6RrtJGuYFTwtJGs/2OhcfrXOzS
-         RlBS/Omeza/s6TmtostNIrP4t8e4q39hZlIu8FqEhfA4Wq7VyIEw+kr5JUZlK2eCb2mq
-         SG0EDCTNrQ8BteQJK99BuqMQY4d6k24rJlTYSXPi7UeB0GEWifl8NOMDTu1n3JHXKEJG
-         dm8ZVyS3G7q2cszI2bhGCtIv8lN9JNFwrbBXZyaVBAEjNi0mvQl8rVwy2z3tb8nMvKjg
-         VocdeRbzbMI+JFHC5A7yxaeYsN5z2+aIIZPtnFgadOazp0T1XWQKx/QrCRCaK7TaXHwl
-         eWjQ==
-X-Gm-Message-State: ANhLgQ3D/unUw2dHkkCNc5RqTAWsiaaVgPNebeYhYgcNOu1H/e8JtZ6M
-        DOI7I/rhScA+JTHebTqELMV66jGgG14=
-X-Google-Smtp-Source: ADFU+vuhSK4TFcDIFhTkZwOxUmu0pr1ErNd/GgOB/C6SQTrQ+k1F8Ju8FjeneoUiS7JIUf/BaHIP1g==
-X-Received: by 2002:a17:906:34db:: with SMTP id h27mr15609447ejb.111.1584886152225;
-        Sun, 22 Mar 2020 07:09:12 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:21b0:9002:6131:e6f7:db0e:d6e9:e56e])
-        by smtp.googlemail.com with ESMTPSA id q21sm223858ejb.47.2020.03.22.07.09.11
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 22 Mar 2020 07:09:11 -0700 (PDT)
-From:   Jean-Philippe Menil <jpmenil@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, jpmenil@gmail.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] bpf: fix build warning - missing prototype
-Date:   Sun, 22 Mar 2020 15:08:44 +0100
-Message-Id: <20200322140844.4674-1-jpmenil@gmail.com>
-X-Mailer: git-send-email 2.25.2
+        id S1726137AbgCVSH7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 22 Mar 2020 14:07:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725881AbgCVSH7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 22 Mar 2020 14:07:59 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F61E2072E;
+        Sun, 22 Mar 2020 18:07:57 +0000 (UTC)
+Date:   Sun, 22 Mar 2020 14:07:56 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Peter Wu <peter@lekensteyn.nl>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Shuah Khan <shuahkhan@gmail.com>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH 00/12 v2] ring-buffer/tracing: Remove disabling of ring
+ buffer while reading trace file
+Message-ID: <20200322140756.7257b867@gandalf.local.home>
+In-Reply-To: <2a7f96545945457cade216aa3c736bcc@AcuMS.aculab.com>
+References: <20200319232219.446480829@goodmis.org>
+        <2a7f96545945457cade216aa3c736bcc@AcuMS.aculab.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix build warning when building net/bpf/test_run.o with W=1 due
-to missing prototype for bpf_fentry_test{1..6}.
+On Sat, 21 Mar 2020 19:13:51 +0000
+David Laight <David.Laight@ACULAB.COM> wrote:
 
-These functions are only used in test_run.c so just make them static.
-Therefore inline keyword should sit between storage class and type.
+> From: Steven Rostedt
+> > Sent: 19 March 2020 23:22  
+> ...
+> > 
+> > This patch series attempts to satisfy that request, by creating a
+> > temporary buffer in each of the per cpu iterators to place the
+> > read event into, such that it can be passed to users without worrying
+> > about a writer to corrupt the event while it was being written out.
+> > It also uses the fact that the ring buffer is broken up into pages,
+> > where each page has its own timestamp that gets updated when a
+> > writer crosses over to it. By copying it to the temp buffer, and
+> > doing a "before and after" test of the time stamp with memory barriers,
+> > can allow the events to be saved.  
+> 
+> Does this mean the you will no longer be able to look at a snapshot
+> of the trace by running 'less trace' (and typically going to the end
+> to get info for all cpus).
 
-Signed-off-by: Jean-Philippe Menil <jpmenil@gmail.com>
----
- net/bpf/test_run.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+If there's a use case for this, it will be trivial to add an option to
+bring back the old behavior. If you want that, I can do that, and even add
+a config that makes it the default.
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index d555c0d8657d..c0dcd29f682c 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -113,32 +113,32 @@ static int bpf_test_finish(const union bpf_attr *kattr,
-  * architecture dependent calling conventions. 7+ can be supported in the
-  * future.
-  */
--int noinline bpf_fentry_test1(int a)
-+static noinline int bpf_fentry_test1(int a)
- {
- 	return a + 1;
- }
- 
--int noinline bpf_fentry_test2(int a, u64 b)
-+static noinline int bpf_fentry_test2(int a, u64 b)
- {
- 	return a + b;
- }
- 
--int noinline bpf_fentry_test3(char a, int b, u64 c)
-+static noinline int bpf_fentry_test3(char a, int b, u64 c)
- {
- 	return a + b + c;
- }
- 
--int noinline bpf_fentry_test4(void *a, char b, int c, u64 d)
-+static noinline int bpf_fentry_test4(void *a, char b, int c, u64 d)
- {
- 	return (long)a + b + c + d;
- }
- 
--int noinline bpf_fentry_test5(u64 a, void *b, short c, int d, u64 e)
-+static noinline int bpf_fentry_test5(u64 a, void *b, short c, int d, u64 e)
- {
- 	return a + (long)b + c + d + e;
- }
- 
--int noinline bpf_fentry_test6(u64 a, void *b, short c, int d, void *e, u64 f)
-+static noinline int bpf_fentry_test6(u64 a, void *b, short c, int d, void *e, u64 f)
- {
- 	return a + (long)b + c + d + (long)e + f;
- }
--- 
-2.25.2
+> 
+> A lot of the time trace is being written far too fast for it to make
+> any sense to try to read it continuously.
+> 
+> Also, if BPF start using ftrace, no one will be able to use it for
+> 'normal debugging' on such systems.
 
+I believe its used for debugging bpf, not for normal tracing. BPF only
+uses this when it has their trace_printk() using it. Which gives that nasty
+"THIS IS A DEBUG KERNEL" message ;-)   Thus, I don't think you need to
+worry about bpf having this in production.
+
+-- Steve
