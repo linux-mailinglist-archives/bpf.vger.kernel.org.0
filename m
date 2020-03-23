@@ -2,67 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AFFD190082
-	for <lists+bpf@lfdr.de>; Mon, 23 Mar 2020 22:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66770190091
+	for <lists+bpf@lfdr.de>; Mon, 23 Mar 2020 22:44:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726955AbgCWVjA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Mar 2020 17:39:00 -0400
-Received: from www62.your-server.de ([213.133.104.62]:43762 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726618AbgCWVjA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Mar 2020 17:39:00 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jGUmg-0004Eh-EY; Mon, 23 Mar 2020 22:38:58 +0100
-Received: from [85.7.42.192] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jGUmg-000FKT-5E; Mon, 23 Mar 2020 22:38:58 +0100
-Subject: Re: [PATCH bpf-next v5 0/2] Refactor perf_event sample user program
- with libbpf bpf_link
-To:     "Daniel T. Lee" <danieltimlee@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20200321100424.1593964-1-danieltimlee@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <5eb37262-60d8-0604-377d-e08835b42ce3@iogearbox.net>
-Date:   Mon, 23 Mar 2020 22:38:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1727005AbgCWVoL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Mar 2020 17:44:11 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:39086 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727107AbgCWVoJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Mar 2020 17:44:09 -0400
+Received: by mail-pl1-f196.google.com with SMTP id m1so6495737pll.6
+        for <bpf@vger.kernel.org>; Mon, 23 Mar 2020 14:44:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hEOCvDpxyBMwengYvfMIe1pWY5IozmG+/5v8TyzWx7E=;
+        b=cY31lTq7BOxMLd+B6z8dKX7c1GMJuNhCFQ2Bvdkmy/khdCyZG1FsLovWzwfE2X4puE
+         RptITITDWaegsUZT6yoqeuJNa76WgCG1fH5jgsi1As+AtzwHN7iuUOnSYCIdpRoGwUb5
+         Wnqi55UYFSoUBKmaBg5PSmjcREgFlzmrKx9d8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hEOCvDpxyBMwengYvfMIe1pWY5IozmG+/5v8TyzWx7E=;
+        b=YNus51WkThdXrRhn1LJ3+XkFh84wED+/2TsIzzkmbR0L4qpP03YL3VMdcjlwTcYtcR
+         cICXtOZSA8Uai493bM8Db9oIIkE5Q+ku8PeExF7SDUQsMILaCTj10O9nJpoJDUmY8Q2L
+         xu03UE25TD4t/S13xqzrf7AjX352DVRLLVUcVm15F34H7Ppv+pY3+LRVu51IqY+Cqn5j
+         z0J0ThwQmPIeSk5LTdar3U6brVzdoY/3QcwFXyxMo8YX7eZyQyt62CeyekN+/szcG++W
+         zHQXEpOxHydY+GG6fXDcHsVcKyj8gfCqU+bMjLnoBaFTtXdmfd4x9StNEUvM8fbD83uW
+         MVIw==
+X-Gm-Message-State: ANhLgQ16dtsytD7+16QE/ebJoT23W78eK70wiyzdLBDlrBF6eTmiBSdm
+        nNna2bHWk81alBLivbeE+tiDog==
+X-Google-Smtp-Source: ADFU+vs4T4+am9OY7T5Vrd+slkVkXOF1hX/R220W6qPtnU8hpwLQ94vxad44ILyHFDs7R6x2GRtQNA==
+X-Received: by 2002:a17:90a:346f:: with SMTP id o102mr1542753pjb.162.1584999847690;
+        Mon, 23 Mar 2020 14:44:07 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 73sm13685819pgg.90.2020.03.23.14.44.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Mar 2020 14:44:06 -0700 (PDT)
+Date:   Mon, 23 Mar 2020 14:44:05 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH bpf-next v5 5/7] bpf: lsm: Initialize the BPF LSM hooks
+Message-ID: <202003231354.1454ED92EC@keescook>
+References: <20200323164415.12943-1-kpsingh@chromium.org>
+ <20200323164415.12943-6-kpsingh@chromium.org>
+ <202003231237.F654B379@keescook>
+ <0655d820-4c42-cf9a-23d3-82dc4fdeeceb@schaufler-ca.com>
 MIME-Version: 1.0
-In-Reply-To: <20200321100424.1593964-1-danieltimlee@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25760/Mon Mar 23 14:12:45 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0655d820-4c42-cf9a-23d3-82dc4fdeeceb@schaufler-ca.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/21/20 11:04 AM, Daniel T. Lee wrote:
-> Currently, some samples are using ioctl for enabling perf_event and
-> attaching BPF programs to this event. However, the bpf_program__attach
-> of libbpf(using bpf_link) is much more intuitive than the previous
-> method using ioctl.
+On Mon, Mar 23, 2020 at 01:47:29PM -0700, Casey Schaufler wrote:
+> On 3/23/2020 12:44 PM, Kees Cook wrote:
+> > On Mon, Mar 23, 2020 at 05:44:13PM +0100, KP Singh wrote:
+> >> +/* Some LSM hooks do not have 0 as their default return values. Override the
+> >> + * __weak definitons generated by default for these hooks
+> > If you wanted to avoid this, couldn't you make the default return value
+> > part of lsm_hooks.h?
+> >
+> > e.g.:
+> >
+> > LSM_HOOK(int, -EOPNOTSUPP, inode_getsecurity, struct inode *inode,
+> > 	 const char *name, void **buffer, bool alloc)
 > 
-> bpf_program__attach_perf_event manages the enable of perf_event and
-> attach of BPF programs to it, so there's no neeed to do this
-> directly with ioctl.
-> 
-> In addition, bpf_link provides consistency in the use of API because it
-> allows disable (detach, destroy) for multiple events to be treated as
-> one bpf_link__destroy.
-> 
-> To refactor samples with using this libbpf API, the bpf_load in the
-> samples were removed and migrated to libbbpf. Because read_trace_pipe
-> is used in bpf_load, multiple samples cannot be migrated to libbpf,
-> this function was moved to trace_helpers.
+> If you're going to do that you'll have to keep lsm_hooks.h and security.c
+> default values in sync somehow. Note that the four functions you've called
+> out won't be using call_int_hook() after the next round of stacking. I'm not
+> nixing the idea, I just don't want the default return for the security_
+> functions defined in two places.
 
-Applied, thanks!
+Yeah, I actually went looking for this after I sent the email, realizing
+that the defaults were also used in security.c. I've been pondering how
+to keep them from being duplicated. I'm working on some ideas.
+
+The four are:
+
+inode_getsecurity
+inode_setsecurity
+task_prctl
+xfrm_state_pol_flow_match
+
+None of these are already just calling call_int_hook(), but I assume
+they'll need further tweaks in the coming stacking.
+
+To leave things as open-code-able as possible while still benefiting
+from the macro consolidation, how about something like this:
+
+lsm_hook_names.h:
+
+LSM_HOOK(int, -EOPNOTSUPP, inode_getsecurity,
+	 struct inode *inode, const char *name, void **buffer, bool alloc)
+
+...
+
+security.c:
+
+#define LSM_RET_DEFAULT_void(DEFAULT, NAME)	/* */
+#define LSM_RET_DEFAULT_int(DEFAULT, NAME)
+	static const int NAME#_default = (DEFAULT);
+
+#define LSM_HOOK(RET, DEFAULT, NAME, ...)	\
+	LSM_RET_DEFAULT_#RET(DEFAULT, NAME)
+#include <linux/lsm_hook_names.h>
+#undef LSM_HOOK
+...
+
+Then -EOPNOTSUPP is available as "inode_getsecurity_default":
+
+int security_inode_getsecurity(struct inode *inode, const char *name,
+			       void **buffer, bool alloc)
+{
+        struct security_hook_list *hp;
+        int rc;
+
+        if (unlikely(IS_PRIVATE(inode)))
+                return inode_getsecurity_default;
+        /*
+         * Only one module will provide an attribute with a given name.
+         */
+        hlist_for_each_entry(hp, &security_hook_heads.inode_getsecurity, list) {
+                rc = hp->hook.inode_getsecurity(inode, name, buffer, alloc);
+                if (rc != inode_getsecurity_default)
+                        return rc;
+        }
+        return inode_getsecurity_default;
+}
+
+
+On the other hand, it's only 4 non-default return codes, so maybe the
+sync burden isn't very high?
+
+-- 
+Kees Cook
