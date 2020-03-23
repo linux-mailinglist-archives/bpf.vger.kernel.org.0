@@ -2,185 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 260DB19012E
-	for <lists+bpf@lfdr.de>; Mon, 23 Mar 2020 23:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B82C19024D
+	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 00:55:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725990AbgCWWrl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Mar 2020 18:47:41 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:52232 "EHLO
+        id S1727314AbgCWXzG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Mar 2020 19:55:06 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:31746 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725897AbgCWWrl (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 23 Mar 2020 18:47:41 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02NMknSQ010465;
-        Mon, 23 Mar 2020 15:47:25 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=cmmnAhag9s/DBDgpcbnGp3bd8u/UsUmP0s47LrwWdlw=;
- b=nMlIfZ3xk7kzwft5bBi88AQhAVc84q+52jzZPT2MzcLnF2huTYo+NAMtOIO76kmeK00/
- 2HW7iokUWRyvUDcgkb5L5/pu6p9VFFcJSfb71Cq1H1kObMPdTYBKgK8Uje775j300QFD
- rwB6fviCqxnqBWDDlEnp4nSMdp7cMPTER/Y= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2yx2xnqmkc-1
+        by vger.kernel.org with ESMTP id S1727234AbgCWXzG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 23 Mar 2020 19:55:06 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02NNkphu022271;
+        Mon, 23 Mar 2020 16:54:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=facebook;
+ bh=Xs+DBXGJ8Nqd6jYjH0KFEex+F3pvtcrQreifwC8tohM=;
+ b=gZyPUIukAIKDuFvr+Lslp2SGBfhBVuxG62l2/lR+YubDaoTEZMV5aujP1FrRk7w9arWS
+ t5CeVy1KEqWsI7pKiTi1gZTs6CRkPqNr+nANu0+Ah6sEqJ5RuOEBTFa+0r64ppdvK/Ew
+ ZWBk72GRRo2/peabaKRWZ66vKv+ViSKqg1E= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yx32wfvmf-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 23 Mar 2020 15:47:25 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+        Mon, 23 Mar 2020 16:54:49 -0700
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Mon, 23 Mar 2020 15:47:24 -0700
+ 15.1.1847.3; Mon, 23 Mar 2020 16:54:48 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QjmEEguYfg4QelT1gh2nht4zvENIx1xMZzR8YLpspEDsyE01n4181GOaWURz/+ks42ny6mkefz+KzUmED7v2fQYEXDYWNQY9IVy0ai6Ge0hRABYQliEkyRFP1t1JMYqRkExvaQWNwxATp8bW5eUlUUoRniNuX2gdn18ZvxtUb8g3nz7/IpM211cNnvmewbO3LicMByVtQTdTAhevc7wf/dvb3BYR97kvrl7y6YcvmRzmzVlZ5xuhcdiWs5Z0Njc1ZikbFLRYfS19GATx5Vi53bnkSHgbFIhUDxv9Ke5/f6JD8BBisfPvx/iCMzCbRUxSz6+u9zODYOpfUhqchdmm6A==
+ b=XUe6rzT/zRHJsX6y57dFAIuLiE3fsi8iCjmgKQtPfhfR/ZT6CNBzMQpgPo39V6bo6HjQJhdTGBQ7kWP+N9kFsMEfCxa5ADRPYbVuC3gPsuWRLXtX7n2F1ODoB+Ckkpx8WF4YbO5Dq+IuC5UfKwvd6Jdfh5GYiHFedMoJLqr5t1Oe3oDdoHEl2C0yuT1to3XEpf6rx/Le4s7VVQKvANZRJV4VNvqwaRmJWElvCFUX6jhasZEy6OyLSIUl5GPd/6xeZGUFFaB47gUAzmfYxqQn9pz92QW2ip0UE9GM3x/+pA7P1g3mQ9mrL5E6OeNVMXs/YInb3+liWKIneovWgOfPgg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cmmnAhag9s/DBDgpcbnGp3bd8u/UsUmP0s47LrwWdlw=;
- b=NTQgd5v9CCebgTKzOipa8qftkDGWT+UDto2QuZnsNL9Fn+91y1CNQMd6lGrCSDS+olv9c2B6/3sEekJvOtnQSWchARBa+ws/8e8EmlUCUDgA6ceOZ5K9d5o1whha0RLxuJZ8YTzkyKFGi0FrkYRwHbIOeuEJMPCPBWDgeLJk+FaMl2Qc1+/qxunNp/OHZaznU47K7Zy1QK6VNreSyJ/cP3qamMk1Hjz8O8hpPTE1KFxtHF4XcxQrW6XUNZk+o4fhXECLtEMgm9sUAwJIO3le8Az7aja1UiBbKJz0EaZnrY5CTJJACqDS2RWFM4+VJtZ+VRAyTPR6p4Pnfop+4ZgkAg==
+ bh=Xs+DBXGJ8Nqd6jYjH0KFEex+F3pvtcrQreifwC8tohM=;
+ b=IedgBJStHTy6E9BMKw7QpOFoZ2OwdHgRXYJQ5VzfnRNs159snXalQ5KRSsJz2htk8meyRLqiSqYVbPX/5Of1aH4lzaqYCfi5wiIYcd8tepChzhiOCbUIB4XqILrv7peNHw3tj0Nw93k60DQDwDdTh048khzZxeaCb4+LpSlhqqXKIsRS/SPDV4x8XXUAXSX+auo6hpW9JhEN6GfqKmr/nIKY2MZBXVMgTqu+xw1ybq/mRD/HgStsJEaqNzHE8u5kLXnCmX2Bf/CyLOuFIGZxlvRIRL61098zDyM69BAx8VYh6jjLRMULmDZeAR++sqlzOjSBcl1LpSMs+jxF0Hg8Qg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cmmnAhag9s/DBDgpcbnGp3bd8u/UsUmP0s47LrwWdlw=;
- b=H56eDKPohogmAVxMcwreXogUIiwDv0xn88qd4zr0wWddsO5lxPz0RZjuuD0tGjK4Tms6P9clOYWr05MiX91D3FpVIV+B6Gf2KXIa/ONnSSiSaJVYfrqorxCcTawrGkgTbr7le1ugpuOKs4cr/8W6I4BoQ2rM4nqCWfrUaKlq+JQ=
-Received: from MW3PR15MB3883.namprd15.prod.outlook.com (2603:10b6:303:51::22)
- by MW3PR15MB3914.namprd15.prod.outlook.com (2603:10b6:303:41::10) with
+ bh=Xs+DBXGJ8Nqd6jYjH0KFEex+F3pvtcrQreifwC8tohM=;
+ b=S1RFoueYUrbuRKngwQbHb0qHueRaPR73mn9ktCwdTf7egdUHPWJFA0ipKav1l73CKzLNveEotSx4M2X/omexzHxwMxYWYg1psssDjwqaek40nYY+Fpb634Sd6qomQIOsR3Fq2Wx+mWrjQxL6qV0mgYED69kIBpl/RQ7q9+srNBQ=
+Received: from BYAPR15MB4119.namprd15.prod.outlook.com (2603:10b6:a02:cd::20)
+ by BYAPR15MB2294.namprd15.prod.outlook.com (2603:10b6:a02:8a::32) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2814.13; Mon, 23 Mar
- 2020 22:47:23 +0000
-Received: from MW3PR15MB3883.namprd15.prod.outlook.com
- ([fe80::a49b:8546:912f:dd98]) by MW3PR15MB3883.namprd15.prod.outlook.com
- ([fe80::a49b:8546:912f:dd98%5]) with mapi id 15.20.2835.021; Mon, 23 Mar 2020
- 22:47:23 +0000
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: add tracing for XDP programs using
- the BPF_PROG_TEST_RUN API
-To:     Eelco Chaudron <echaudro@redhat.com>, <bpf@vger.kernel.org>
-CC:     <davem@davemloft.net>, <netdev@vger.kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <andriin@fb.com>
-References: <158453675319.3043.5779623595270458781.stgit@xdp-tutorial>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <819b1b3a-c801-754b-e805-7ec8266e5dfa@fb.com>
-Date:   Mon, 23 Mar 2020 15:47:19 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.6.0
-In-Reply-To: <158453675319.3043.5779623595270458781.stgit@xdp-tutorial>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CO2PR04CA0098.namprd04.prod.outlook.com
- (2603:10b6:104:6::24) To MW3PR15MB3883.namprd15.prod.outlook.com
- (2603:10b6:303:51::22)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.20; Mon, 23 Mar
+ 2020 23:54:47 +0000
+Received: from BYAPR15MB4119.namprd15.prod.outlook.com
+ ([fe80::90d6:ec75:fde:e992]) by BYAPR15MB4119.namprd15.prod.outlook.com
+ ([fe80::90d6:ec75:fde:e992%7]) with mapi id 15.20.2835.021; Mon, 23 Mar 2020
+ 23:54:47 +0000
+Date:   Mon, 23 Mar 2020 16:54:41 -0700
+From:   Andrey Ignatov <rdna@fb.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+CC:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
+ program when attaching XDP
+Message-ID: <20200323235441.GA33093@rdna-mbp>
+References: <158462359206.164779.15902346296781033076.stgit@toke.dk>
+ <158462359315.164779.13931660750493121404.stgit@toke.dk>
+ <20200319155236.3d8537c5@kicinski-fedora-PC1C0HJN>
+ <875zez76ph.fsf@toke.dk>
+ <CAEf4BzYGZz7hdd-_x+uyE0OF8h_3vJxNjF-Qkd5QhOWpaB8bbQ@mail.gmail.com>
+ <87r1xj48ko.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87r1xj48ko.fsf@toke.dk>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-ClientProxiedBy: MWHPR19CA0086.namprd19.prod.outlook.com
+ (2603:10b6:320:1f::24) To BYAPR15MB4119.namprd15.prod.outlook.com
+ (2603:10b6:a02:cd::20)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from MacBook-Pro-52.local (2620:10d:c090:400::5:8ed8) by CO2PR04CA0098.namprd04.prod.outlook.com (2603:10b6:104:6::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.20 via Frontend Transport; Mon, 23 Mar 2020 22:47:22 +0000
-X-Originating-IP: [2620:10d:c090:400::5:8ed8]
+Received: from localhost (2620:10d:c090:400::5:8baa) by MWHPR19CA0086.namprd19.prod.outlook.com (2603:10b6:320:1f::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.19 via Frontend Transport; Mon, 23 Mar 2020 23:54:45 +0000
+X-Originating-IP: [2620:10d:c090:400::5:8baa]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c46bedf5-d1a2-4503-5adf-08d7cf7c26c1
-X-MS-TrafficTypeDiagnostic: MW3PR15MB3914:
+X-MS-Office365-Filtering-Correlation-Id: 6ec60fe8-d62b-4026-4cf8-08d7cf859119
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2294:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW3PR15MB39145E8F29B1C8753D37B50DD3F00@MW3PR15MB3914.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2294911A52B5EAA5F8AFB14BA8F00@BYAPR15MB2294.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-Forefront-PRVS: 0351D213B3
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(346002)(366004)(396003)(136003)(376002)(39860400002)(5660300002)(6506007)(8676002)(2906002)(6486002)(8936002)(81166006)(66476007)(52116002)(81156014)(53546011)(31686004)(316002)(6512007)(6666004)(186003)(4326008)(16526019)(478600001)(36756003)(31696002)(66946007)(66556008)(86362001)(2616005);DIR:OUT;SFP:1102;SCL:1;SRVR:MW3PR15MB3914;H:MW3PR15MB3883.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(7916004)(136003)(366004)(346002)(396003)(39850400004)(376002)(66556008)(316002)(53546011)(66574012)(66476007)(5660300002)(1076003)(54906003)(33656002)(478600001)(2906002)(6666004)(66946007)(9686003)(81166006)(16526019)(6916009)(186003)(4326008)(52116002)(6496006)(86362001)(33716001)(7416002)(8936002)(81156014)(6486002)(8676002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2294;H:BYAPR15MB4119.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;
 Received-SPF: None (protection.outlook.com: fb.com does not designate
  permitted sender hosts)
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: udujm4rgLsCPYt1YxTqekF/h6rVthI/efuXwXH3TEG/VaLG03/qYN8DGF8YwdaAeTOZBO+DGESMRC6j+6N+wotMRvpwnpI+Ra1lo/peZpjvMnblVAsNQ3TY/ztx17TURRk4ZOpdCZusCnofklsDCha/w73e7NpDSBDDtDSiYd9SbU6+P5Kr2Mg2RKeldAoqfqOJKgy2k1+OV3vhSUqaagPCbXsfXJFbnYaBogoGXqD5zsuIjipMfsnfHWWBZk8feqA2uVn3Gu4eSxwJGXLzq02tfq55dhLwZ7yk2sB5EqKB0QHaWM626RPYPmp2CFzGpN6R/oiwgNY6empjaxFZ2t3PDCgo+TCKb14dVJmAbJzq/a+anL23ANsvAiL2mtiV+flQJ4VoWnJqQDR/pJ9YJ9dL7TYk9gour9OCeHazHOA0MjuiFBpTUkTYCPOeawJ/U
-X-MS-Exchange-AntiSpam-MessageData: fr3ORv0T4joAcCKbiTc0XSo6NPCe3yzJY2nY7wF8MwMXkSbZbFYN4N6OakBb/kNR8CC8waYngXaqYhUPCsH9jw5zGrImL3a4wNo/6yq85IkHgKfDVsHWUhECMYSk2xsMkOmFHrlv/s4CY25oLz4LNSVOC//eZkdwTZw90QFaP9cSw+ZuhZPsNaeZ8qVGrTua
-X-MS-Exchange-CrossTenant-Network-Message-Id: c46bedf5-d1a2-4503-5adf-08d7cf7c26c1
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2020 22:47:23.1485
+X-Microsoft-Antispam-Message-Info: aKb1nL3mMnWbqXLeT5OonI/SMzzmOPMTu50D73KR6JPNA2/LmZlPL2wR8b7w2Kykkq1nOJ9X71SVv2tvMQ86Nj8gHwsZbwANomQksJ1gMAhkQtBmIe8oYoIiMoxsPZwyb8Gjv/xmxz5m9aK7F6bRHIOIXA7YlSPkWTnKOkZMMSNG4TCO0QIkud2/ZCkV5inotrh7Cf5RA4eshRnR+A+tJ9Wa4ZCc7DvcBNZu+c19fT02DYu0UvAI1OH2UVONbpj0v4R/B1A3zZHbo9ZthKaCfqYpM6fCc3zOVP19f3eGBPtlZboRpxLMhB6z2bDBPu2oLaGpJZvp3W75Z2wcZklgi4kdocnqPJ0W0banmIxXe3aSIGxgrr5p2pNi75VoK/a2sV9d4/L9rkqwiLK+jYyVfyWOVACvYjEDoQC7CntrMIVRCMtgrtDNVIqQepnv/uTI
+X-MS-Exchange-AntiSpam-MessageData: pzF9JOGa4mKcMOeHwEqRNs+rbCmOqZjnNYIYeX+HwhjLcQgpqpPTVz4C8962oNrZ6FvY+W7oFGmbu1dTzryovubK/hwprbeafsvwqVW4Cu7FfV8sT0ws4KicijyCJ1ADKlJJZwv2wHu1vNOlpxgFsYBazDuXNcO+g8b8o0duyEu28I60YOExAJGez+nMOqOf
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ec60fe8-d62b-4026-4cf8-08d7cf859119
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2020 23:54:47.0117
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HwsJpJCAR3QKy4zbBFudQHp70GLVGC9Ea6QFpFVgGyGFHRdeElSLd8BrlCMLYsJf
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3914
+X-MS-Exchange-CrossTenant-UserPrincipalName: V+8S7vapyYW5iZnTQHWT0UivXgfornYFD4WQoU2zLcrL2x9kReyh7gfKokmD8mjY
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2294
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
- definitions=2020-03-23_09:2020-03-23,2020-03-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- priorityscore=1501 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
- spamscore=0 impostorscore=0 malwarescore=0 clxscore=1011 adultscore=0
- bulkscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2003230112
+ definitions=2020-03-23_10:2020-03-23,2020-03-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ impostorscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 lowpriorityscore=0
+ adultscore=0 clxscore=1015 phishscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2003230118
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 3/18/20 6:06 AM, Eelco Chaudron wrote:
-> I sent out this RFC to get an idea if the approach suggested here
-> would be something other people would also like to see. In addition,
-> this cover letter mentions some concerns and questions that need
-> answers before we can move to an acceptable implementation.
+Toke Høiland-Jørgensen <toke@redhat.com> [Mon, 2020-03-23 04:25 -0700]:
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 > 
-> This patch adds support for tracing eBPF XDP programs that get
-> executed using the __BPF_PROG_RUN syscall. This is done by switching
-> from JIT (if enabled) to executing the program using the interpreter
-> and record each executed instruction.
-
-Thanks for working on this! I think this is a useful feature
-to do semi single step in a safe environment. The initial input,
-e.g., packet or some other kernel context, may be captured
-in production error path. People can use this to easily
-do some post analysis. This feature can also be used for
-initial single-step debugging with better bpftool support.
-
+> > On Fri, Mar 20, 2020 at 1:48 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+> >>
+> >> Jakub Kicinski <kuba@kernel.org> writes:
+> >>
+> >> > On Thu, 19 Mar 2020 14:13:13 +0100 Toke Høiland-Jørgensen wrote:
+> >> >> From: Toke Høiland-Jørgensen <toke@redhat.com>
+> >> >>
+> >> >> While it is currently possible for userspace to specify that an existing
+> >> >> XDP program should not be replaced when attaching to an interface, there is
+> >> >> no mechanism to safely replace a specific XDP program with another.
+> >> >>
+> >> >> This patch adds a new netlink attribute, IFLA_XDP_EXPECTED_FD, which can be
+> >> >> set along with IFLA_XDP_FD. If set, the kernel will check that the program
+> >> >> currently loaded on the interface matches the expected one, and fail the
+> >> >> operation if it does not. This corresponds to a 'cmpxchg' memory operation.
+> >> >>
+> >> >> A new companion flag, XDP_FLAGS_EXPECT_FD, is also added to explicitly
+> >> >> request checking of the EXPECTED_FD attribute. This is needed for userspace
+> >> >> to discover whether the kernel supports the new attribute.
+> >> >>
+> >> >> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> >> >
+> >> > I didn't know we wanted to go ahead with this...
+> >>
+> >> Well, I'm aware of the bpf_link discussion, obviously. Not sure what's
+> >> happening with that, though. So since this is a straight-forward
+> >> extension of the existing API, that doesn't carry a high implementation
+> >> cost, I figured I'd just go ahead with this. Doesn't mean we can't have
+> >> something similar in bpf_link as well, of course.
+> >>
+> >> > If we do please run this thru checkpatch, set .strict_start_type,
+> >>
+> >> Will do.
+> >>
+> >> > and make the expected fd unsigned. A negative expected fd makes no
+> >> > sense.
+> >>
+> >> A negative expected_fd corresponds to setting the UPDATE_IF_NOEXIST
+> >> flag. I guess you could argue that since we have that flag, setting a
+> >> negative expected_fd is not strictly needed. However, I thought it was
+> >> weird to have a "this is what I expect" API that did not support
+> >> expressing "I expect no program to be attached".
+> >
+> > For BPF syscall it seems the typical approach when optional FD is
+> > needed is to have extra flag (e.g., BPF_F_REPLACE for cgroups) and if
+> > it's not specified - enforce zero for that optional fd. That handles
+> > backwards compatibility cases well as well.
 > 
-> For now, the execution history is printed to the kernel ring buffer
-> using pr_info(), the final version should have enough data stored in a
-> user-supplied buffer to reconstruct this output. This should probably
-> be part of bpftool, i.e. dump a similar output, and the ability to
-> store all this in an elf-like format for dumping/analyzing/replaying
-> at a later stage.
-> 
-> This patch does not dump the XDP packet content before and after
-> execution, however, this data is available to the caller of the API.
+> Never did understand how that is supposed to square with 0 being a valid
+> fd number?
 
-I would like to see the feature is implemented in a way to apply
-to all existing test_run program types and extensible to future
-program types.
+In BPF_F_REPLACE case (since it was used as an example in this thread)
+it's all pretty clear:
 
-There are different ways to send data back to user. User buffer
-is one way, ring buffer is another way, seq_file can also be used.
-Performance is not a concern here, so we can choose the one with best
-usability.
+* if the flag is set, use fd from attr.replace_bpf_fd that can be anything
+  (incl. zero, since indeed it's valid fd) no problem with that;
+* if flag is not set, ignore replace_bpf_fd completely.
 
-> 
-> The __bpf_prog_run_trace() interpreter is a copy of __bpf_prog_run()
-> and we probably need a smarter way to re-use the code rather than a
-> blind copy with some changes.
+It's descirbed in commit log in 7dd68b3279f1:
 
-Yes, reusing the code is a must. Using existing interpreter framework
-is the easiest for semi single step support.
+    ...
 
-> 
-> Enabling the interpreter opens up the kernel for spectre variant 2,
-> guess that's why the BPF_JIT_ALWAYS_ON option was introduced (commit
-> 290af86629b2). Enabling it for debugging in the field does not sound
-> like an option (talking to people doing kernel distributions).
-> Any idea how to work around this (lfence before any call this will
-> slow down, but I guess for debugging this does not matter)? I need to
-> research this more as I'm no expert in this area. But I think this
-> needs to be solved as I see this as a show stopper. So any input is
-> welcome.
+    BPF_F_REPLACE is introduced to make the user intent clear, since
+    replace_bpf_fd alone can't be used for this (its default value, 0, is a
+    valid fd). BPF_F_REPLACE also makes it possible to extend the API in the
+    future (e.g. add BPF_F_BEFORE and BPF_F_AFTER if needed).
 
-lfence for indirect call is okay here for test_run. Just need to be
-careful to no introduce any performance penalty for non-test-run
-prog run.
+    ...
 
-> 
-> To allow bpf_call support for tracing currently the general
-> interpreter is enabled. See the fixup_call_args() function for why
-> this is needed. We might need to find a way to fix this (see the above
-> section on spectre).
-> 
-> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
-> 
+, i.e. flag presense is important, not the fd attribute being zero.
+
+Hope it clarifies.
+
+
+-- 
+Andrey Ignatov
