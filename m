@@ -2,53 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 574B418EF9A
-	for <lists+bpf@lfdr.de>; Mon, 23 Mar 2020 06:59:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC80A18EFE6
+	for <lists+bpf@lfdr.de>; Mon, 23 Mar 2020 07:48:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725924AbgCWF7h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Mar 2020 01:59:37 -0400
-Received: from frisell.zx2c4.com ([192.95.5.64]:32977 "EHLO frisell.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725930AbgCWF7g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Mar 2020 01:59:36 -0400
-Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTP id ce0b89dc;
-        Mon, 23 Mar 2020 05:52:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :references:in-reply-to:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=WGVu87ZQHczmXiU67hTSuzatHAo=; b=zSP9Zm
-        WUXLzVQbEwKRdvEoh5ukKhmqrINAfkRC1gGeI3jCMxKP5MfpeVaATXJnfpvtjvLw
-        smfyAgm1vlUTPg4EbZ0hhIwbXXWIrOI2uQPoezg5MZKB04b5snK7VvXwpjmBrTrS
-        F3OIqc4NuM4qmc8U1Vr8vfqStA2/MDoB1jlN9ZhavmwJWaal6BmTV9RKIelgescc
-        knbSA2NBANlWninhJQFFIbMUxiQsR63+MVCDAjR8iH4aRNQJOGu9J06khdvvkFCR
-        V/cZCuomy6jXWZyz+tMMUsqg5TnSM86y0YGl6cP/IlTeBSfwVu+QQXEkydUH32ru
-        f4BV/jnJzvXQHcxA==
-Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id d88e9016 (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256:NO);
-        Mon, 23 Mar 2020 05:52:36 +0000 (UTC)
-Received: by mail-io1-f43.google.com with SMTP id k9so2200433iov.7;
-        Sun, 22 Mar 2020 22:59:33 -0700 (PDT)
-X-Gm-Message-State: ANhLgQ0Uo4TzQ+qdDYyapmtqxSnBAkIL9EOD487TEwqTT16S1dWVmUjK
-        9ri67Rsh90tZMCLUK4d4O3GG9nacyAjx0GiaIS8=
-X-Google-Smtp-Source: ADFU+vuS6lmYSQJZ4wcu6LiQ2nO9kUZ2TdbidnYPjVlBmBOnTiMb5KaneGoPl4TYqZHi4GoDrbke+7cgnNZ9PDR+YpY=
-X-Received: by 2002:a5d:851a:: with SMTP id q26mr9616021ion.25.1584943173125;
- Sun, 22 Mar 2020 22:59:33 -0700 (PDT)
+        id S1727290AbgCWGsU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Mar 2020 02:48:20 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:56286 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726142AbgCWGsT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Mar 2020 02:48:19 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 7B578D4A8DDD5F88AC1A;
+        Mon, 23 Mar 2020 14:48:11 +0800 (CST)
+Received: from huawei.com (10.175.113.25) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Mon, 23 Mar 2020
+ 14:48:04 +0800
+From:   Zheng Zengkai <zhengzengkai@huawei.com>
+To:     <sgoutham@marvell.com>, <rrichter@marvell.com>,
+        <davem@davemloft.net>, <ast@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <zhengzengkai@huawei.com>
+Subject: [PATCH net-next] net: thunderx: remove set but not used variable 'tail'
+Date:   Mon, 23 Mar 2020 14:51:16 +0800
+Message-ID: <20200323065116.45399-1-zhengzengkai@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <CAHmME9ptzBzzn+jOo=azZagB=TTFbc2vzdcYurfsE0_1nvKF+g@mail.gmail.com>
- <50c6bd77-fb16-852a-adcc-3976550f6f81@fb.com>
-In-Reply-To: <50c6bd77-fb16-852a-adcc-3976550f6f81@fb.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Sun, 22 Mar 2020 23:59:22 -0600
-X-Gmail-Original-Message-ID: <CAHmME9r+anBCRihmhi-Jsy6o8bcZkbwiRRW2ZYytUd5uTrha-w@mail.gmail.com>
-Message-ID: <CAHmME9r+anBCRihmhi-Jsy6o8bcZkbwiRRW2ZYytUd5uTrha-w@mail.gmail.com>
-Subject: Re: using libbpf in external projects
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, nicolas@serveur.io,
-        linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thanks! That's much nicer to use:
+From: Zheng zengkai <zhengzengkai@huawei.com>
 
-https://git.zx2c4.com/netifexec/commit/?id=8a39f70c981264500d27e90bbd5e3baf8f2d10d3
+Fixes gcc '-Wunused-but-set-variable' warning:
+
+drivers/net/ethernet/cavium/thunder/nicvf_queues.c: In function nicvf_sq_free_used_descs:
+drivers/net/ethernet/cavium/thunder/nicvf_queues.c:1182:12: warning:
+ variable tail set but not used [-Wunused-but-set-variable]
+
+It's not used since commit 4863dea3fab01("net: Adding support for Cavium ThunderX network controller"),
+so remove it.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zheng zengkai <zhengzengkai@huawei.com>
+---
+ drivers/net/ethernet/cavium/thunder/nicvf_queues.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/cavium/thunder/nicvf_queues.c b/drivers/net/ethernet/cavium/thunder/nicvf_queues.c
+index 4ab57d33a87e..069e7413f1ef 100644
+--- a/drivers/net/ethernet/cavium/thunder/nicvf_queues.c
++++ b/drivers/net/ethernet/cavium/thunder/nicvf_queues.c
+@@ -1179,13 +1179,12 @@ void nicvf_sq_disable(struct nicvf *nic, int qidx)
+ void nicvf_sq_free_used_descs(struct net_device *netdev, struct snd_queue *sq,
+ 			      int qidx)
+ {
+-	u64 head, tail;
++	u64 head;
+ 	struct sk_buff *skb;
+ 	struct nicvf *nic = netdev_priv(netdev);
+ 	struct sq_hdr_subdesc *hdr;
+ 
+ 	head = nicvf_queue_reg_read(nic, NIC_QSET_SQ_0_7_HEAD, qidx) >> 4;
+-	tail = nicvf_queue_reg_read(nic, NIC_QSET_SQ_0_7_TAIL, qidx) >> 4;
+ 	while (sq->head != head) {
+ 		hdr = (struct sq_hdr_subdesc *)GET_SQ_DESC(sq, sq->head);
+ 		if (hdr->subdesc_type != SQ_DESC_TYPE_HEADER) {
+-- 
+2.18.1
+
