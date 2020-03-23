@@ -2,227 +2,202 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE3618FE9E
-	for <lists+bpf@lfdr.de>; Mon, 23 Mar 2020 21:18:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5F718FEA2
+	for <lists+bpf@lfdr.de>; Mon, 23 Mar 2020 21:19:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbgCWUSd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Mar 2020 16:18:33 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:44438 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725914AbgCWUSd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Mar 2020 16:18:33 -0400
-Received: by mail-il1-f196.google.com with SMTP id j69so14609578ila.11
-        for <bpf@vger.kernel.org>; Mon, 23 Mar 2020 13:18:32 -0700 (PDT)
+        id S1726643AbgCWUTH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Mar 2020 16:19:07 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:33236 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgCWUTH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Mar 2020 16:19:07 -0400
+Received: by mail-qk1-f195.google.com with SMTP id v7so7269900qkc.0;
+        Mon, 23 Mar 2020 13:19:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YLK+0MXB1YCUxEYtc8f13Y1fsHrfKc3dAmXJsyrL2Do=;
-        b=MGvfT/ZCDfekdgX8JfbS9dRhNv7TsWG45BVuA7cScrf/g2hAtpZMDVOH4JFd9FmJIz
-         UNq2Ctb9kX0KkGRMqGdKuQLxEpr7eObJYYK7K8HYUH04od7/EUHF/Xkm1SJxcyvYr82x
-         vZ44Kwvp1Zi49aSESmABiuDDl9lZXcwE13wak=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TZ+ZwfTMYYsGD6syPZhmYKv+gyxadYlXHYerkec/Prc=;
+        b=MuGyBhSE7OGl8aZJaCuWgDEd5sIIQ085S1F5HqBLnJoCv13/Zxds8/CWAFZYTt8/9J
+         S840MrwKl0aeLkDA8pfk7R5jAyjYojOp6foFlae/XPQZf5nLwd/5/q5iHYxyAEFUKWeZ
+         /je1mmdRsTf0C2Ype/Ht09cqC9bE3WSU9+MS/GjSn8uYJVF6PvDEsem6wh7+W9EPTH0i
+         fbqQ97VnVOYnp0XQ9JUq6P72J+8z2r7IDsoNvUj2edBPIIzcVVItedYbKP/GoatZxyag
+         olGaneNwEWpjfjuk46k39KmpbnhieLBIA2xrZRFhDLcKiu7nLamj7QtNpYXHIqbodcXa
+         rX3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YLK+0MXB1YCUxEYtc8f13Y1fsHrfKc3dAmXJsyrL2Do=;
-        b=teIgUUcXKkj7xJdM8uvYOKBf9VZY9UKE6y2PRYQRjN4JZDXnT6jp0rA3Wd7dR2edsO
-         +52Np5Rz0BVZkacXwu5qrk+jFE4Doc/K7AUdt3jsNev4wVwNyfiB+1oqNkTN0ZcMX7r+
-         Bpw9KHXUb92pvK+GlFAEcQoL61SP5ugirisYYLYelqa4Y1+uhr0T3euYO70QDAPIyspz
-         nYHAQsFBKkTeyI7RuJYqbRE+Z1v0hQRs7A8teA6fMk0eIvRgfKF1UnRF2XbQKuitdJwh
-         nFQOcwhrpVnllbxKSOl3FXIhx10n4cTvYKMQt+v7DzMutSDqL0f/YOKyuBMP5NubvuVj
-         F0Iw==
-X-Gm-Message-State: ANhLgQ0QUKqKVAkqMVvlF/sJhrOcluErFU61w1Lv8TqCGVxqbcuX7HKG
-        POHfc++jovLMLUftM8ObMnLy64E/mEU=
-X-Google-Smtp-Source: ADFU+vu3Y3DQH33iLh270INKEB5slnS+0DWkO38NONLJhYtp9IFpWkBQ72+D2lCkujplpJK+kPlHeA==
-X-Received: by 2002:a92:91da:: with SMTP id e87mr21546890ill.183.1584994711567;
-        Mon, 23 Mar 2020 13:18:31 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id a5sm3363352ioq.43.2020.03.23.13.18.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Mar 2020 13:18:30 -0700 (PDT)
-Subject: Re: [PATCH v3] selftests: Fix seccomp to support relocatable build
- (O=objdir)
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Kees Cook <keescook@chromium.org>
-Cc:     shuah@kernel.org, luto@amacapital.net, wad@chromium.org,
-        daniel@iogearbox.net, kafai@fb.com, yhs@fb.com, andriin@fb.com,
-        gregkh@linuxfoundation.org, tglx@linutronix.de,
-        khilman@baylibre.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20200313212404.24552-1-skhan@linuxfoundation.org>
- <8736a8qz06.fsf@mpe.ellerman.id.au> <202003161404.934CCE0@keescook>
- <87h7yldohs.fsf@mpe.ellerman.id.au>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <eb90dd83-7988-b3ac-1ee6-bf16c0aacc10@linuxfoundation.org>
-Date:   Mon, 23 Mar 2020 14:18:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TZ+ZwfTMYYsGD6syPZhmYKv+gyxadYlXHYerkec/Prc=;
+        b=IrgZVHZaQ90htltCOkZ2lhTQkLVp6e0H/mL6kbtEga+BmHCagvSv/AZgjRLqq+hcAn
+         ruTBPAKoirHAH7nU6AGcFLoTwNVjR3Vt0AnOjIOx6Y5k4D8RAM1LTFEgMeordsEmekX7
+         PxwIhkZraSfDfg49BP3EnYYBZo5vrQ6QtOKAI0znwVV0PYKNqrAf9gj9vDdWLkNYxYNE
+         qKDzpJmF0bcaAKKScHBvx+tQpPVTmYRw8eQb1VoyEwQLvYbKI7NjwUz8bijZU2esiODJ
+         ptDsoXYEWze5/DE5gnsBYy5xc4ECjrEvXi1Ye0GNNhSUEms+EfhO18UzdWvMWkxR3shw
+         g4IA==
+X-Gm-Message-State: ANhLgQ0ps0HKX6jROyTCyD5i3H09Td1eiyds/LzNcHcvC7+kDd2npzkj
+        e3tEwSUERNK8e7d3Wj2ghTevwxE1BNYCZvVWYSo=
+X-Google-Smtp-Source: ADFU+vsHBUxL6es42p14wjLjJwEUAXo+ilHYJpl09AVNoQ6QYphYryIlVRToeHqmy7Gxz1bQ/1tZVVgMcOW5Vfq5RYo=
+X-Received: by 2002:a37:e40d:: with SMTP id y13mr22599759qkf.39.1584994744820;
+ Mon, 23 Mar 2020 13:19:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87h7yldohs.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200323164415.12943-1-kpsingh@chromium.org> <20200323164415.12943-5-kpsingh@chromium.org>
+In-Reply-To: <20200323164415.12943-5-kpsingh@chromium.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 23 Mar 2020 13:18:54 -0700
+Message-ID: <CAEf4BzaceUCEw+-s9EM3rvz+KbLrvBbUfa5e0CSbtkOytF+RsQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 4/7] bpf: lsm: Implement attach, detach and execution
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Michael and Kees,
+On Mon, Mar 23, 2020 at 9:45 AM KP Singh <kpsingh@chromium.org> wrote:
+>
+> From: KP Singh <kpsingh@google.com>
+>
+> JITed BPF programs are dynamically attached to the LSM hooks
+> using BPF trampolines. The trampoline prologue generates code to handle
+> conversion of the signature of the hook to the appropriate BPF context.
+>
+> The allocated trampoline programs are attached to the nop functions
+> initialized as LSM hooks.
+>
+> BPF_PROG_TYPE_LSM programs must have a GPL compatible license and
+> and need CAP_SYS_ADMIN (required for loading eBPF programs).
+>
+> Upon attachment:
+>
+> * A BPF fexit trampoline is used for LSM hooks with a void return type.
+> * A BPF fmod_ret trampoline is used for LSM hooks which return an
+>   int. The attached programs can override the return value of the
+>   bpf LSM hook to indicate a MAC Policy decision.
+>
+> Signed-off-by: KP Singh <kpsingh@google.com>
+> Reviewed-by: Brendan Jackman <jackmanb@google.com>
+> Reviewed-by: Florent Revest <revest@google.com>
+> ---
+>  include/linux/bpf.h     |  4 ++++
+>  include/linux/bpf_lsm.h | 11 +++++++++++
+>  kernel/bpf/bpf_lsm.c    | 29 +++++++++++++++++++++++++++++
+>  kernel/bpf/btf.c        |  9 ++++++++-
+>  kernel/bpf/syscall.c    | 26 ++++++++++++++++++++++----
+>  kernel/bpf/trampoline.c | 17 +++++++++++++----
+>  kernel/bpf/verifier.c   | 19 +++++++++++++++----
+>  7 files changed, 102 insertions(+), 13 deletions(-)
+>
 
-On 3/18/20 9:15 PM, Michael Ellerman wrote:
-> Kees Cook <keescook@chromium.org> writes:
->> On Mon, Mar 16, 2020 at 11:12:57PM +1100, Michael Ellerman wrote:
->>> Shuah Khan <skhan@linuxfoundation.org> writes:
->>>> Fix seccomp relocatable builds. This is a simple fix to use the right
->>>> lib.mk variable TEST_GEN_PROGS with dependency on kselftest_harness.h
->>>> header, and defining LDFLAGS for pthread lib.
->>>>
->>>> Removes custom clean rule which is no longer necessary with the use of
->>>> TEST_GEN_PROGS.
->>>>
->>>> Uses $(OUTPUT) defined in lib.mk to handle build relocation.
->>>>
->>>> The following use-cases work with this change:
->>>>
->>>> In seccomp directory:
->>>> make all and make clean
->>>>
->>>>  From top level from main Makefile:
->>>> make kselftest-install O=objdir ARCH=arm64 HOSTCC=gcc \
->>>>   CROSS_COMPILE=aarch64-linux-gnu- TARGETS=seccomp
->>>>
->>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
->>>> ---
->>>>
->>>> Changes since v2:
->>>> -- Using TEST_GEN_PROGS is sufficient to generate objects.
->>>>     Addresses review comments from Kees Cook.
->>>>
->>>>   tools/testing/selftests/seccomp/Makefile | 18 ++++++++----------
->>>>   1 file changed, 8 insertions(+), 10 deletions(-)
->>>>
->>>> diff --git a/tools/testing/selftests/seccomp/Makefile b/tools/testing/selftests/seccomp/Makefile
->>>> index 1760b3e39730..a0388fd2c3f2 100644
->>>> --- a/tools/testing/selftests/seccomp/Makefile
->>>> +++ b/tools/testing/selftests/seccomp/Makefile
->>>> @@ -1,17 +1,15 @@
->>>>   # SPDX-License-Identifier: GPL-2.0
->>>> -all:
->>>> -
->>>> -include ../lib.mk
->>>> +CFLAGS += -Wl,-no-as-needed -Wall
->>>> +LDFLAGS += -lpthread
->>>>   
->>>>   .PHONY: all clean
->>>>   
->>>> -BINARIES := seccomp_bpf seccomp_benchmark
->>>> -CFLAGS += -Wl,-no-as-needed -Wall
->>>> +include ../lib.mk
->>>> +
->>>> +# OUTPUT set by lib.mk
->>>> +TEST_GEN_PROGS := $(OUTPUT)/seccomp_bpf $(OUTPUT)/seccomp_benchmark
->>>>   
->>>> -seccomp_bpf: seccomp_bpf.c ../kselftest_harness.h
->>>> -	$(CC) $(CFLAGS) $(LDFLAGS) $< -lpthread -o $@
->>>> +$(TEST_GEN_PROGS): ../kselftest_harness.h
->>>>   
->>>> -TEST_PROGS += $(BINARIES)
->>>> -EXTRA_CLEAN := $(BINARIES)
->>>> +all: $(TEST_GEN_PROGS)
->>>>   
->>>> -all: $(BINARIES)
->>>
->>>
->>> It shouldn't be that complicated. We just need to define TEST_GEN_PROGS
->>> before including lib.mk, and then add the dependency on the harness
->>> after we include lib.mk (so that TEST_GEN_PROGS has been updated to
->>> prefix $(OUTPUT)).
->>>
->>> eg:
->>>
->>>    # SPDX-License-Identifier: GPL-2.0
->>>    CFLAGS += -Wl,-no-as-needed -Wall
->>>    LDFLAGS += -lpthread
->>>    
->>>    TEST_GEN_PROGS := seccomp_bpf seccomp_benchmark
->>>    
->>>    include ../lib.mk
->>>    
->>>    $(TEST_GEN_PROGS): ../kselftest_harness.h
->>
->> Exactly. This (with an extra comment) is precisely what I suggested during
->> v2 review:
->> https://lore.kernel.org/lkml/202003041815.B8C73DEC@keescook/
-> 
-> Oh sorry, I missed that.
+[...]
 
-Sorry. I missed it as well.
+>
+> +#define BPF_LSM_SYM_PREFX  "bpf_lsm_"
+> +
+> +int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+> +                       const struct bpf_prog *prog)
+> +{
+> +       /* Only CAP_MAC_ADMIN users are allowed to make changes to LSM hooks
+> +        */
+> +       if (!capable(CAP_MAC_ADMIN))
+> +               return -EPERM;
+> +
+> +       if (!prog->gpl_compatible) {
+> +               bpf_log(vlog,
+> +                       "LSM programs must have a GPL compatible license\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       if (strncmp(BPF_LSM_SYM_PREFX, prog->aux->attach_func_name,
+> +                   strlen(BPF_LSM_SYM_PREFX))) {
 
-> 
-> OK so I think we know what the right solution is.
-> 
+sizeof(BPF_LSM_SYM_PREFIX) - 1?
 
-I am picking this back up after time off.
+> +               bpf_log(vlog, "attach_btf_id %u points to wrong type name %s\n",
+> +                       prog->aux->attach_btf_id, prog->aux->attach_func_name);
+> +               return -EINVAL;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
 
-The proposed change by you works for seccomp. There are at least 10+
-tests that have dependencies on kselftest_harness.h and several that
-have dependency on kselftest.h and kselftest_module.h
+[...]
 
-Enforcing this local header dependency in lib.mk makes sense so we
-don't have to change the test make files.
+> @@ -2367,10 +2369,24 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog)
+>         struct file *link_file;
+>         int link_fd, err;
+>
+> -       if (prog->expected_attach_type != BPF_TRACE_FENTRY &&
+> -           prog->expected_attach_type != BPF_TRACE_FEXIT &&
+> -           prog->expected_attach_type != BPF_MODIFY_RETURN &&
+> -           prog->type != BPF_PROG_TYPE_EXT) {
+> +       switch (prog->type) {
+> +       case BPF_PROG_TYPE_TRACING:
+> +               if (prog->expected_attach_type != BPF_TRACE_FENTRY &&
+> +                   prog->expected_attach_type != BPF_TRACE_FEXIT &&
+> +                   prog->expected_attach_type != BPF_MODIFY_RETURN) {
+> +                       err = -EINVAL;
+> +                       goto out_put_prog;
+> +               }
+> +               break;
+> +       case BPF_PROG_TYPE_EXT:
 
-Add dependency to libk.mk on local headers. This enforces the dependency
-blindly even when a test doesn't include the file, with the benefit of a
-simpler enforcement without requiring individual tests to have special
-rule for it.
+It looks like an omission that we don't enforce expected_attach_type
+to be 0 here. Should we fix it until it's too late?
 
-The following two changes work. You both have better make foo than
-I do. Can you see any issues with this proposal? I can send patch
-to do this, so we can do a larger test.
-
---------------------------------------------------------------
-diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-index 3ed0134a764d..54caa9a4ec8a 100644
---- a/tools/testing/selftests/lib.mk
-+++ b/tools/testing/selftests/lib.mk
-@@ -137,7 +137,7 @@ endif
-  # Selftest makefiles can override those targets by setting
-  # OVERRIDE_TARGETS = 1.
-  ifeq ($(OVERRIDE_TARGETS),)
--$(OUTPUT)/%:%.c
-+$(OUTPUT)/%:%.c ../kselftest_harness.h ../kselftest.h
-         $(LINK.c) $^ $(LDLIBS) -o $@
-
-  $(OUTPUT)/%.o:%.S
+> +               break;
+> +       case BPF_PROG_TYPE_LSM:
+> +               if (prog->expected_attach_type != BPF_LSM_MAC) {
+> +                       err = -EINVAL;
+> +                       goto out_put_prog;
+> +               }
+> +               break;
+> +       default:
+>                 err = -EINVAL;
+>                 goto out_put_prog;
+>         }
+> @@ -2452,12 +2468,14 @@ static int bpf_raw_tracepoint_open(const union bpf_attr *attr)
+>         if (prog->type != BPF_PROG_TYPE_RAW_TRACEPOINT &&
+>             prog->type != BPF_PROG_TYPE_TRACING &&
+>             prog->type != BPF_PROG_TYPE_EXT &&
+> +           prog->type != BPF_PROG_TYPE_LSM &&
+>             prog->type != BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE) {
+>                 err = -EINVAL;
+>                 goto out_put_prog;
+>         }
+>
+>         if (prog->type == BPF_PROG_TYPE_TRACING ||
+> +           prog->type == BPF_PROG_TYPE_LSM ||
+>             prog->type == BPF_PROG_TYPE_EXT) {
 
 
-diff --git a/tools/testing/selftests/seccomp/Makefile 
-b/tools/testing/selftests/seccomp/Makefile
-index a0388fd2c3f2..0ebfe8b0e147 100644
---- a/tools/testing/selftests/seccomp/Makefile
-+++ b/tools/testing/selftests/seccomp/Makefile
-@@ -2,14 +2,5 @@
-  CFLAGS += -Wl,-no-as-needed -Wall
-  LDFLAGS += -lpthread
+can you please refactor this into a nicer explicit switch instead of
+combination of if/elses?
 
--.PHONY: all clean
--
-+TEST_GEN_PROGS := seccomp_bpf seccomp_benchmark
-  include ../lib.mk
--
--# OUTPUT set by lib.mk
--TEST_GEN_PROGS := $(OUTPUT)/seccomp_bpf $(OUTPUT)/seccomp_benchmark
--
--$(TEST_GEN_PROGS): ../kselftest_harness.h
--
--all: $(TEST_GEN_PROGS)
--
---------------------------------------------------------------
+>                 if (attr->raw_tracepoint.name) {
+>                         /* The attach point for this category of programs
+> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> index f30bca2a4d01..9be85aa4ec5f 100644
+> --- a/kernel/bpf/trampoline.c
+> +++ b/kernel/bpf/trampoline.c
+> @@ -6,6 +6,7 @@
+>  #include <linux/ftrace.h>
+>  #include <linux/rbtree_latch.h>
+>  #include <linux/perf_event.h>
+> +#include <linux/btf.h>
+>
 
-thanks,
--- Shuah
-
-
+[...]
