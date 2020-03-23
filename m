@@ -2,151 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 112F718FE07
-	for <lists+bpf@lfdr.de>; Mon, 23 Mar 2020 20:48:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D8318FE41
+	for <lists+bpf@lfdr.de>; Mon, 23 Mar 2020 20:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725830AbgCWTsG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Mar 2020 15:48:06 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:33886 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725839AbgCWTsG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Mar 2020 15:48:06 -0400
-Received: by mail-wr1-f66.google.com with SMTP id 65so1958249wrl.1
-        for <bpf@vger.kernel.org>; Mon, 23 Mar 2020 12:48:03 -0700 (PDT)
+        id S1725899AbgCWT4u (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Mar 2020 15:56:50 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:44269 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725839AbgCWT4u (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Mar 2020 15:56:50 -0400
+Received: by mail-qk1-f194.google.com with SMTP id j4so16688880qkc.11;
+        Mon, 23 Mar 2020 12:56:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=DpJzr60RYH1YHVeyAiSvNUlbvp8CoyZnIEyzGyGJIf0=;
-        b=YYYArvhMrddRhLjVhyEYKPKfh4GTqwNmNMEUs45MCXfUsTsARG0MPtNgY4fo2iT6Y1
-         ouXyxE842tFyWhJ5Levjm/QqUPGpTUIj6KunvmQKz4JnVZvP8mVCWgzhHyBUBgdRiXze
-         qAkqWKvEKYkfvAr+IP9NRLtF7ING9QoSE/QCk=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O7igelSqnZSzby+9Agw+dKmcrgK2R8ajZWmZKikiDho=;
+        b=ZyQUyKFaEKEmFfsZZGGcpVLCY0rdoDcXD4zCVsS+DgCffo3uQdBYftPv9A3/cFjzvg
+         JFKdIy5CKVRWPXrx59DJhXtz7S+IpYdEtq5rSdV8YO+GxrEDHDrjBXxjLWCV9k6HB15/
+         VNZYAgWnrLlcKLCTxwkco4cJvfXlv9tytCQJnd7l3sWGPcsgnyDf6OLck2xJtnU7Z9pp
+         tPg+oJAwbEXvTBeWkKUfNu4LDfcvPJVOlsrN6wkrNsqly5Ajl6cpgp/R62a5m3bp7BlG
+         /Eiu4kdXD6AYVl550u98b798SiNPPtnMetTIrLGAIcMDJRRatccFCKoVSe37lckkmXbl
+         bjGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=DpJzr60RYH1YHVeyAiSvNUlbvp8CoyZnIEyzGyGJIf0=;
-        b=K0nsen/1FCzgJI57/CRr0/vZv5f5khbt5QZwgl4VNmGUiuR4rFJACh7dPebT6BfOZU
-         UEKVmvs848dEXzla27EdiBH9AquezfyR9LVZyafTaCBG9W34S3mQ9RHVlHHCxteNZQk/
-         oU3yin9CAsADg3LoCuDGfn+ApjtxVnxza07E3yd0mJF6hWeauxuuykDgtro2kssxr61q
-         OOcCzCGOzdn+Ly80Bx88bukcT9XMXYMoATVi6/2997NO4qkdLniQlfFcj9Icv8rVY/i+
-         nsude/R77NTIBmkfk9guJ0YDlsP/YAFQTPLG9meKOXJWi/bPgcxLyggjc6pvDyOCjvEX
-         Dn1Q==
-X-Gm-Message-State: ANhLgQ3MEzUYU3RV2dzIiEBuyBxIUk/BpA/MyenhF8i6ax5hkPZgUH9F
-        zaQDdQ4FA1gyn9Qo5o/aAAePAw==
-X-Google-Smtp-Source: ADFU+vv1U6VIAdemYMnEy9FSr5lCJAP64BaIJKTie9ZvD3AjbyfxtN8VblU78oyqhuq7U1TPCzFMPA==
-X-Received: by 2002:adf:b31d:: with SMTP id j29mr17628886wrd.218.1584992882202;
-        Mon, 23 Mar 2020 12:48:02 -0700 (PDT)
-Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
-        by smtp.gmail.com with ESMTPSA id s7sm24212509wri.61.2020.03.23.12.48.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Mar 2020 12:48:01 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Mon, 23 Mar 2020 20:47:59 +0100
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O7igelSqnZSzby+9Agw+dKmcrgK2R8ajZWmZKikiDho=;
+        b=cMW7yionHRpEQNC3o9xeE5nPUqOs6OaWtQTdRei8DzzkQxnGU5LX/5rUchpnEXsRvh
+         9toGf05LyGOPFq9KnHyKZybncFMTt2tvHayKlhWtiP+yUrzP3sFJaaQpLSIcacqmp8BT
+         4b6AuLs3Fh6fa/iVkqr12wHbTh48VFlGSoNIBTWqkV4GFWY7oWfYRT2PbkoynkYv/qFn
+         nXfqp1lkQbKpnqNl3NiWYnG2oTWdUVdGsYLVR8Us76uVQRqKNE2QgMDV+uGQK79zWXJH
+         TMeNZQmSe2JWpjxpnb1mQEbpjKhY8CA3VHnyPNaJ0me5VGYVG2xIDBGfTrHnz2dbqMw7
+         vQNw==
+X-Gm-Message-State: ANhLgQ0OWJhhAr4OxVRvw/7gFkeO41zJE4Wzf/uEA+4oqkb6DPBG3shz
+        nwTPhWzaq8wuxYP357/Cmym0gQJ6+pVBt2VQ8HI=
+X-Google-Smtp-Source: ADFU+vuNk+XojfkD2ANEtHWgonqRE45FobN+3bk7jLbXRujpqxIfFOz+ZhAN35zK9Cfgh1TYjbwqXMhx7RXBO8eHaQs=
+X-Received: by 2002:a37:992:: with SMTP id 140mr23091475qkj.36.1584993408656;
+ Mon, 23 Mar 2020 12:56:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200323164415.12943-1-kpsingh@chromium.org> <20200323164415.12943-3-kpsingh@chromium.org>
+In-Reply-To: <20200323164415.12943-3-kpsingh@chromium.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 23 Mar 2020 12:56:37 -0700
+Message-ID: <CAEf4Bza67kM0KiX464yB+iV83aV96TyD7iLEZJccXyH-Od0QTQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 2/7] security: Refactor declaration of LSM hooks
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
         Brendan Jackman <jackmanb@google.com>,
         Florent Revest <revest@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>, Paul Turner <pjt@google.com>,
-        Jann Horn <jannh@google.com>,
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
         Florent Revest <revest@chromium.org>,
         Brendan Jackman <jackmanb@chromium.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH bpf-next v5 5/7] bpf: lsm: Initialize the BPF LSM hooks
-Message-ID: <20200323194759.GB18787@chromium.org>
-References: <20200323164415.12943-1-kpsingh@chromium.org>
- <20200323164415.12943-6-kpsingh@chromium.org>
- <202003231237.F654B379@keescook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <202003231237.F654B379@keescook>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 23-Mär 12:44, Kees Cook wrote:
-> On Mon, Mar 23, 2020 at 05:44:13PM +0100, KP Singh wrote:
-> > From: KP Singh <kpsingh@google.com>
-> > 
-> > The bpf_lsm_ nops are initialized into the LSM framework like any other
-> > LSM.  Some LSM hooks do not have 0 as their default return value. The
-> > __weak symbol for these hooks is overridden by a corresponding
-> > definition in security/bpf/hooks.c
-> > 
-> > The LSM can be enabled / disabled with CONFIG_LSM.
-> > 
-> > Signed-off-by: KP Singh <kpsingh@google.com>
-> 
-> Nice! This is super clean on the LSM side of things. :)
-> 
-> One note below...
-> 
-> > Reviewed-by: Brendan Jackman <jackmanb@google.com>
+On Mon, Mar 23, 2020 at 9:45 AM KP Singh <kpsingh@chromium.org> wrote:
+>
+> From: KP Singh <kpsingh@google.com>
+>
+> The information about the different types of LSM hooks is scattered
+> in two locations i.e. union security_list_options and
+> struct security_hook_heads. Rather than duplicating this information
+> even further for BPF_PROG_TYPE_LSM, define all the hooks with the
+> LSM_HOOK macro in lsm_hook_names.h which is then used to generate all
+> the data structures required by the LSM framework.
+>
+> Signed-off-by: KP Singh <kpsingh@google.com>
+> Reviewed-by: Brendan Jackman <jackmanb@google.com>
+> Reviewed-by: Florent Revest <revest@google.com>
+> ---
+>  include/linux/lsm_hook_names.h | 354 +++++++++++++++++++
+>  include/linux/lsm_hooks.h      | 622 +--------------------------------
+>  2 files changed, 360 insertions(+), 616 deletions(-)
+>  create mode 100644 include/linux/lsm_hook_names.h
+>
+> diff --git a/include/linux/lsm_hook_names.h b/include/linux/lsm_hook_names.h
+> new file mode 100644
+> index 000000000000..412e4ca24c9b
+> --- /dev/null
+> +++ b/include/linux/lsm_hook_names.h
+
+It's not really just hook names, it's full hook definitions, no? So
+lsm_hook_defs.h seems a bit more appropriate. Just for consideration,
+not that I care that strongly :)
+
 
 [...]
-
-> > +
-> > +/*
-> > + * Copyright (C) 2020 Google LLC.
-> > + */
-> > +#include <linux/lsm_hooks.h>
-> > +#include <linux/bpf_lsm.h>
-> > +
-> > +/* Some LSM hooks do not have 0 as their default return values. Override the
-> > + * __weak definitons generated by default for these hooks
-> 
-> If you wanted to avoid this, couldn't you make the default return value
-> part of lsm_hooks.h?
-> 
-> e.g.:
-> 
-> LSM_HOOK(int, -EOPNOTSUPP, inode_getsecurity, struct inode *inode,
-> 	 const char *name, void **buffer, bool alloc)
-> 
-> ...
-> 
-> #define LSM_HOOK(RET, DEFAULT, NAME, ...)	\
-> 	LSM_HOOK_##RET(NAME, DEFAULT, __VA_ARGS__)
-> ...
-> #define LSM_HOOK_int(NAME, DEFAULT, ...)	\
-> noinline int bpf_lsm_##NAME(__VA_ARGS__)	\
-> {						\
-> 	return (DEFAULT);			\
-> }
-> 
-> Then all the __weak stuff is gone, and the following 4 functions don't
-> need to be written out, and the information is available to the macros
-> if anyone else might ever want it.
-
-Thanks, I like it!
-
-If no-one objects, I will update it in the next revision.
-
-- KP
-
-> 
-> -Kees
-> 
-> > + */
-> > +noinline int bpf_lsm_inode_getsecurity(struct inode *inode, const char *name,
-> > +				       void **buffer, bool alloc)
-> > +};
-
-[...]
-
-> > -- 
-> > 2.20.1
-> > 
-> 
-> -- 
-> Kees Cook
