@@ -2,202 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5F718FEA2
-	for <lists+bpf@lfdr.de>; Mon, 23 Mar 2020 21:19:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C6F18FEA6
+	for <lists+bpf@lfdr.de>; Mon, 23 Mar 2020 21:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726643AbgCWUTH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Mar 2020 16:19:07 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:33236 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgCWUTH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Mar 2020 16:19:07 -0400
-Received: by mail-qk1-f195.google.com with SMTP id v7so7269900qkc.0;
-        Mon, 23 Mar 2020 13:19:05 -0700 (PDT)
+        id S1725912AbgCWUVP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Mar 2020 16:21:15 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:36399 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgCWUVO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Mar 2020 16:21:14 -0400
+Received: by mail-qk1-f194.google.com with SMTP id d11so16879619qko.3;
+        Mon, 23 Mar 2020 13:21:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TZ+ZwfTMYYsGD6syPZhmYKv+gyxadYlXHYerkec/Prc=;
-        b=MuGyBhSE7OGl8aZJaCuWgDEd5sIIQ085S1F5HqBLnJoCv13/Zxds8/CWAFZYTt8/9J
-         S840MrwKl0aeLkDA8pfk7R5jAyjYojOp6foFlae/XPQZf5nLwd/5/q5iHYxyAEFUKWeZ
-         /je1mmdRsTf0C2Ype/Ht09cqC9bE3WSU9+MS/GjSn8uYJVF6PvDEsem6wh7+W9EPTH0i
-         fbqQ97VnVOYnp0XQ9JUq6P72J+8z2r7IDsoNvUj2edBPIIzcVVItedYbKP/GoatZxyag
-         olGaneNwEWpjfjuk46k39KmpbnhieLBIA2xrZRFhDLcKiu7nLamj7QtNpYXHIqbodcXa
-         rX3Q==
+         :cc:content-transfer-encoding;
+        bh=dq2e7ENlb6avmGzEnYBHkNZ9DRnXGKNiPYpj0AW5dUg=;
+        b=uu1xFpLO5YSYuS2vANvLsWqcoNgOTTn9WC1QypwzdjM3kTUkdmt6EUFZrZx3rRBRcX
+         8bX2LVpHMgmGUolIQ6HFEA4X+66E+q5NQetZrr75cs+GYTfEtVMz7BGWALSzlEw1c0rw
+         KRVZ9eDJL9OSoZTSbDxI+TzPufHpnWwQYxuOyObi01ERpflJ5/+ft4JnSmxKL8tZp0dk
+         INhZVTXEJYcUq7arBtuwT6XTlbbNe3heEz8RDNzwyvUtp8RZHiJ7MqkuADnFq89R/YSp
+         BNs5HVvaAv4eLQbdbEaPN33MTXQAPovB+SWUPMoslKlfeyiNFQdCF5UfQ9/+S6tuxg5k
+         fjgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TZ+ZwfTMYYsGD6syPZhmYKv+gyxadYlXHYerkec/Prc=;
-        b=IrgZVHZaQ90htltCOkZ2lhTQkLVp6e0H/mL6kbtEga+BmHCagvSv/AZgjRLqq+hcAn
-         ruTBPAKoirHAH7nU6AGcFLoTwNVjR3Vt0AnOjIOx6Y5k4D8RAM1LTFEgMeordsEmekX7
-         PxwIhkZraSfDfg49BP3EnYYBZo5vrQ6QtOKAI0znwVV0PYKNqrAf9gj9vDdWLkNYxYNE
-         qKDzpJmF0bcaAKKScHBvx+tQpPVTmYRw8eQb1VoyEwQLvYbKI7NjwUz8bijZU2esiODJ
-         ptDsoXYEWze5/DE5gnsBYy5xc4ECjrEvXi1Ye0GNNhSUEms+EfhO18UzdWvMWkxR3shw
-         g4IA==
-X-Gm-Message-State: ANhLgQ0ps0HKX6jROyTCyD5i3H09Td1eiyds/LzNcHcvC7+kDd2npzkj
-        e3tEwSUERNK8e7d3Wj2ghTevwxE1BNYCZvVWYSo=
-X-Google-Smtp-Source: ADFU+vsHBUxL6es42p14wjLjJwEUAXo+ilHYJpl09AVNoQ6QYphYryIlVRToeHqmy7Gxz1bQ/1tZVVgMcOW5Vfq5RYo=
-X-Received: by 2002:a37:e40d:: with SMTP id y13mr22599759qkf.39.1584994744820;
- Mon, 23 Mar 2020 13:19:04 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=dq2e7ENlb6avmGzEnYBHkNZ9DRnXGKNiPYpj0AW5dUg=;
+        b=OAh6aswAtJ41/KmAuo4RgXPWPlIgiNgQv9s++aoGlwtNsJAKON7wzr/jWF38yUwhBg
+         VZeoehXe10nSXgKWhIgU8gJAepshYjW55iJ32yF4UqHY2vMtAC8TXwJht0P79htXcfXi
+         t/MmYJy3BjNU6NOH5Pv1T1DEaQCgcAhNj/WOuzSj3flL45uSdk92OS/+h6eT18VpLPgf
+         Oqei+IIdQQy7i+pD0Uy4qoEeuXF3VRGINDpggy5QFeCifK7ITm9i+vH6najaU3NYLVAp
+         ekMw/M9onyeu2Lpg9fFWzylvtVqHdAsi7d6nDv6hIT2uyY6tmXPeZQeuKn8VtoP2XH7R
+         NMUw==
+X-Gm-Message-State: ANhLgQ2pK+aN1iOYw6J/djTUmNaMXHbIT3NHv62hsDhTKnEmG7pCPGEn
+        Oye7h3kJY+91hgLwZiE3cascuh37UIQCPt2XqAU=
+X-Google-Smtp-Source: ADFU+vvVtBthwjRyrs5hStcwgajio70+DWdEHq4ZkATtjshFoMokv3FExtoOv5+t9MDaR6Ya6IWPHO1MqUxxgRmEMJY=
+X-Received: by 2002:a37:e40d:: with SMTP id y13mr22608204qkf.39.1584994873559;
+ Mon, 23 Mar 2020 13:21:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200323164415.12943-1-kpsingh@chromium.org> <20200323164415.12943-5-kpsingh@chromium.org>
-In-Reply-To: <20200323164415.12943-5-kpsingh@chromium.org>
+References: <20200323164415.12943-1-kpsingh@chromium.org> <20200323164415.12943-6-kpsingh@chromium.org>
+ <202003231237.F654B379@keescook> <20200323194759.GB18787@chromium.org>
+In-Reply-To: <20200323194759.GB18787@chromium.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 23 Mar 2020 13:18:54 -0700
-Message-ID: <CAEf4BzaceUCEw+-s9EM3rvz+KbLrvBbUfa5e0CSbtkOytF+RsQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/7] bpf: lsm: Implement attach, detach and execution
+Date:   Mon, 23 Mar 2020 13:21:02 -0700
+Message-ID: <CAEf4BzZTsssnKgRFEzZBOnBMjCxk2wzkq7j_bOHmPpt5RmhqKA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 5/7] bpf: lsm: Initialize the BPF LSM hooks
 To:     KP Singh <kpsingh@chromium.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
+Cc:     Kees Cook <keescook@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
         Brendan Jackman <jackmanb@google.com>,
         Florent Revest <revest@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        James Morris <jmorris@namei.org>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>,
         Florent Revest <revest@chromium.org>,
         Brendan Jackman <jackmanb@chromium.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 23, 2020 at 9:45 AM KP Singh <kpsingh@chromium.org> wrote:
+On Mon, Mar 23, 2020 at 12:48 PM KP Singh <kpsingh@chromium.org> wrote:
 >
-> From: KP Singh <kpsingh@google.com>
+> On 23-M=C3=A4r 12:44, Kees Cook wrote:
+> > On Mon, Mar 23, 2020 at 05:44:13PM +0100, KP Singh wrote:
+> > > From: KP Singh <kpsingh@google.com>
+> > >
+> > > The bpf_lsm_ nops are initialized into the LSM framework like any oth=
+er
+> > > LSM.  Some LSM hooks do not have 0 as their default return value. The
+> > > __weak symbol for these hooks is overridden by a corresponding
+> > > definition in security/bpf/hooks.c
+> > >
+> > > The LSM can be enabled / disabled with CONFIG_LSM.
+> > >
+> > > Signed-off-by: KP Singh <kpsingh@google.com>
+> >
+> > Nice! This is super clean on the LSM side of things. :)
+> >
+> > One note below...
+> >
+> > > Reviewed-by: Brendan Jackman <jackmanb@google.com>
 >
-> JITed BPF programs are dynamically attached to the LSM hooks
-> using BPF trampolines. The trampoline prologue generates code to handle
-> conversion of the signature of the hook to the appropriate BPF context.
+> [...]
 >
-> The allocated trampoline programs are attached to the nop functions
-> initialized as LSM hooks.
+> > > +
+> > > +/*
+> > > + * Copyright (C) 2020 Google LLC.
+> > > + */
+> > > +#include <linux/lsm_hooks.h>
+> > > +#include <linux/bpf_lsm.h>
+> > > +
+> > > +/* Some LSM hooks do not have 0 as their default return values. Over=
+ride the
+> > > + * __weak definitons generated by default for these hooks
+> >
+> > If you wanted to avoid this, couldn't you make the default return value
+> > part of lsm_hooks.h?
+> >
+> > e.g.:
+> >
+> > LSM_HOOK(int, -EOPNOTSUPP, inode_getsecurity, struct inode *inode,
+> >        const char *name, void **buffer, bool alloc)
+> >
+> > ...
+> >
+> > #define LSM_HOOK(RET, DEFAULT, NAME, ...)     \
+> >       LSM_HOOK_##RET(NAME, DEFAULT, __VA_ARGS__)
+> > ...
+> > #define LSM_HOOK_int(NAME, DEFAULT, ...)      \
+> > noinline int bpf_lsm_##NAME(__VA_ARGS__)      \
+> > {                                             \
+> >       return (DEFAULT);                       \
+> > }
+> >
+> > Then all the __weak stuff is gone, and the following 4 functions don't
+> > need to be written out, and the information is available to the macros
+> > if anyone else might ever want it.
 >
-> BPF_PROG_TYPE_LSM programs must have a GPL compatible license and
-> and need CAP_SYS_ADMIN (required for loading eBPF programs).
+> Thanks, I like it!
 >
-> Upon attachment:
->
-> * A BPF fexit trampoline is used for LSM hooks with a void return type.
-> * A BPF fmod_ret trampoline is used for LSM hooks which return an
->   int. The attached programs can override the return value of the
->   bpf LSM hook to indicate a MAC Policy decision.
->
-> Signed-off-by: KP Singh <kpsingh@google.com>
-> Reviewed-by: Brendan Jackman <jackmanb@google.com>
-> Reviewed-by: Florent Revest <revest@google.com>
-> ---
->  include/linux/bpf.h     |  4 ++++
->  include/linux/bpf_lsm.h | 11 +++++++++++
->  kernel/bpf/bpf_lsm.c    | 29 +++++++++++++++++++++++++++++
->  kernel/bpf/btf.c        |  9 ++++++++-
->  kernel/bpf/syscall.c    | 26 ++++++++++++++++++++++----
->  kernel/bpf/trampoline.c | 17 +++++++++++++----
->  kernel/bpf/verifier.c   | 19 +++++++++++++++----
->  7 files changed, 102 insertions(+), 13 deletions(-)
->
-
-[...]
-
->
-> +#define BPF_LSM_SYM_PREFX  "bpf_lsm_"
-> +
-> +int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
-> +                       const struct bpf_prog *prog)
-> +{
-> +       /* Only CAP_MAC_ADMIN users are allowed to make changes to LSM hooks
-> +        */
-> +       if (!capable(CAP_MAC_ADMIN))
-> +               return -EPERM;
-> +
-> +       if (!prog->gpl_compatible) {
-> +               bpf_log(vlog,
-> +                       "LSM programs must have a GPL compatible license\n");
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (strncmp(BPF_LSM_SYM_PREFX, prog->aux->attach_func_name,
-> +                   strlen(BPF_LSM_SYM_PREFX))) {
-
-sizeof(BPF_LSM_SYM_PREFIX) - 1?
-
-> +               bpf_log(vlog, "attach_btf_id %u points to wrong type name %s\n",
-> +                       prog->aux->attach_btf_id, prog->aux->attach_func_name);
-> +               return -EINVAL;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-
-[...]
-
-> @@ -2367,10 +2369,24 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog)
->         struct file *link_file;
->         int link_fd, err;
->
-> -       if (prog->expected_attach_type != BPF_TRACE_FENTRY &&
-> -           prog->expected_attach_type != BPF_TRACE_FEXIT &&
-> -           prog->expected_attach_type != BPF_MODIFY_RETURN &&
-> -           prog->type != BPF_PROG_TYPE_EXT) {
-> +       switch (prog->type) {
-> +       case BPF_PROG_TYPE_TRACING:
-> +               if (prog->expected_attach_type != BPF_TRACE_FENTRY &&
-> +                   prog->expected_attach_type != BPF_TRACE_FEXIT &&
-> +                   prog->expected_attach_type != BPF_MODIFY_RETURN) {
-> +                       err = -EINVAL;
-> +                       goto out_put_prog;
-> +               }
-> +               break;
-> +       case BPF_PROG_TYPE_EXT:
-
-It looks like an omission that we don't enforce expected_attach_type
-to be 0 here. Should we fix it until it's too late?
-
-> +               break;
-> +       case BPF_PROG_TYPE_LSM:
-> +               if (prog->expected_attach_type != BPF_LSM_MAC) {
-> +                       err = -EINVAL;
-> +                       goto out_put_prog;
-> +               }
-> +               break;
-> +       default:
->                 err = -EINVAL;
->                 goto out_put_prog;
->         }
-> @@ -2452,12 +2468,14 @@ static int bpf_raw_tracepoint_open(const union bpf_attr *attr)
->         if (prog->type != BPF_PROG_TYPE_RAW_TRACEPOINT &&
->             prog->type != BPF_PROG_TYPE_TRACING &&
->             prog->type != BPF_PROG_TYPE_EXT &&
-> +           prog->type != BPF_PROG_TYPE_LSM &&
->             prog->type != BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE) {
->                 err = -EINVAL;
->                 goto out_put_prog;
->         }
->
->         if (prog->type == BPF_PROG_TYPE_TRACING ||
-> +           prog->type == BPF_PROG_TYPE_LSM ||
->             prog->type == BPF_PROG_TYPE_EXT) {
-
-
-can you please refactor this into a nicer explicit switch instead of
-combination of if/elses?
-
->                 if (attr->raw_tracepoint.name) {
->                         /* The attach point for this category of programs
-> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> index f30bca2a4d01..9be85aa4ec5f 100644
-> --- a/kernel/bpf/trampoline.c
-> +++ b/kernel/bpf/trampoline.c
-> @@ -6,6 +6,7 @@
->  #include <linux/ftrace.h>
->  #include <linux/rbtree_latch.h>
->  #include <linux/perf_event.h>
-> +#include <linux/btf.h>
+> If no-one objects, I will update it in the next revision.
 >
 
-[...]
+I was about to propose the same, explicit default value seems like a
+much cleaner and more straightforward way to do this.
+
+> - KP
+>
+> >
+> > -Kees
+> >
+> > > + */
+> > > +noinline int bpf_lsm_inode_getsecurity(struct inode *inode, const ch=
+ar *name,
+> > > +                                  void **buffer, bool alloc)
+> > > +};
+>
+> [...]
+>
+> > > --
+> > > 2.20.1
+> > >
+> >
+> > --
+> > Kees Cook
