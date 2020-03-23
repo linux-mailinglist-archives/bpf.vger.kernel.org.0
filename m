@@ -2,139 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C79918FD87
-	for <lists+bpf@lfdr.de>; Mon, 23 Mar 2020 20:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F321818FD8F
+	for <lists+bpf@lfdr.de>; Mon, 23 Mar 2020 20:23:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727640AbgCWTVx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Mar 2020 15:21:53 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:9796 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727479AbgCWTVx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 23 Mar 2020 15:21:53 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 02NJLKNY023310;
-        Mon, 23 Mar 2020 12:21:36 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=kspl+/Vr3R+euAZFlRMaJNG6sb6mhZKWN3GWnLtSr78=;
- b=nUiOjHHhumBpHSAn7n9ih6K2HI4pmm2xuiU80DZlsetvhDn3dD0uA26aYnP3qplkEwqY
- k2DIT9Y8EZxpKV2nroHo1Ui7yrNwn/tmiLEwugIA4RcXD7Jz8LL+CVT8wouLk6U+wjdk
- Qi2qpnyAbkkLwgIbVEfPqNxK1DRBCZ9p2tk= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 2ywedxsyjf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 23 Mar 2020 12:21:36 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Mon, 23 Mar 2020 12:21:35 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=msD1lB3X4FxL3XXrXt3JWTJlZmlK8RRU67/wj6dvlxoh5tSTjlbC83ZetDSftHXlp3OBnGYdHKMlpNt7Ii7A4fIwIQJiJN5OXlxyIeTQy3GP6KfZTllaOQ4QxVithu2PQhCc42yhhsE982+xY/oTaZx25U2Q3hG0/2fLAgwzsI7+7jHfe275NXYexsNR3WS/jAFlk//zylOpI9EDgBp5czpXmJ4+PFAToqh7R1Gb8oF7RUan0XvIUwSz/gKLz4cuqff7n+JKl6gpTqgNKtMEpkJHrbjAyNvjg5NOKEL7wLTvczGUUL1rdaqOJOsvkXU+UIAVY87B5TNf9ftiVdyWkA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kspl+/Vr3R+euAZFlRMaJNG6sb6mhZKWN3GWnLtSr78=;
- b=SRB0z2hc6da3ZjHjjYFEDv23Gh0COIZbcZtstVq8c55AdZ0jCf/DpznWuSttnP/SJRGnv1dFg3gOdTs04Qef5hqYH4RZe8ItcFsWb0AGrxXfzaSrWRarkA54+OU+QmHzlE4BVlgQYfUK3BS0GfXjuf6lbcu6Nwb8sSu/QsR6GWKLQwClKUzWERVCzuEAA++SV46BDxJv0/UCZ9PbcrmpVyUBrFn3Tnq8hIuBLS0LA7HHYqwLtEA22M4vW0lKqjwMOIXHPYo3IWwdiDa9htMFoWRwLH5QkiLFJyQ5im2Do0H0TD04MMcPphZ/jPKF23H00lyrJ081JVUtS1ogA9+vCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kspl+/Vr3R+euAZFlRMaJNG6sb6mhZKWN3GWnLtSr78=;
- b=kRv5rTrRLTzerEVXEgLFFCdLtwzY6eqK9XwRbzNvrQjmjLCX+mKxtE7ghmebZ3tqcTo00tpvnH5N5p4PoSZnbZQ+SuKY78YO3tDDiqzQTv9d0mPGmW0Ig/QNRLurjUhibcxma5Q4lnwVXBPPTIjsWR7aNNbw5QTYsHr2loFGt44=
-Received: from MW3PR15MB3883.namprd15.prod.outlook.com (2603:10b6:303:51::22)
- by MW3PR15MB3915.namprd15.prod.outlook.com (2603:10b6:303:4a::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.22; Mon, 23 Mar
- 2020 19:21:34 +0000
-Received: from MW3PR15MB3883.namprd15.prod.outlook.com
- ([fe80::a49b:8546:912f:dd98]) by MW3PR15MB3883.namprd15.prod.outlook.com
- ([fe80::a49b:8546:912f:dd98%5]) with mapi id 15.20.2835.021; Mon, 23 Mar 2020
- 19:21:34 +0000
-Subject: Re: [PATCH bpf-next v5 6/7] tools/libbpf: Add support for
- BPF_PROG_TYPE_LSM
-To:     KP Singh <kpsingh@chromium.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linux-security-module@vger.kernel.org>
-CC:     Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@google.com>,
+        id S1727798AbgCWTXw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Mar 2020 15:23:52 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([216.205.24.74]:44180 "EHLO
+        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727479AbgCWTXw (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 23 Mar 2020 15:23:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1584991429;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sakKaflsLrDe24XNF6k9Vrs8VA+Mytggp7wb+pRxMUs=;
+        b=FuM1ELHXs8O18pohgWH+HROpc1WdMgsJXz7NVkOID8vDG95qTvA7vIJVq2WzXoilHDLTJ/
+        7DTSomWaLLUwZN0XMs8hKuwXsqQOmmnS92rNjGUvQt2Y58oGUsyGnUDrDIIccD7P/bO1cY
+        ku9BrAb8bWPBx2TlnXOY1ATFFd64CIc=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-51-4lVjpS0fPcW3EGHggBOdAg-1; Mon, 23 Mar 2020 15:23:48 -0400
+X-MC-Unique: 4lVjpS0fPcW3EGHggBOdAg-1
+Received: by mail-wr1-f71.google.com with SMTP id y1so2860937wrn.10
+        for <bpf@vger.kernel.org>; Mon, 23 Mar 2020 12:23:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=sakKaflsLrDe24XNF6k9Vrs8VA+Mytggp7wb+pRxMUs=;
+        b=f9Ci2txzWMi+YND9Zsf3noDhGn9N8ILSnd9sRuDipZkziZXJRDBrA/NYYviDJO9d6L
+         CBQx9FZr/sHi7DHDam7dMX9oiWUvZyGynpHogQTwPYtnMv0rlEQDwj61EiTlQEd7W/96
+         Dzb8FxnVmB5xXBtTiC2ftgdHuwvP3NU+EiB+VuUMzC1F1NlrhhBZ5WvlivhEDsTx9ZaJ
+         WgfDNPz6N7j87MDDQzWFdNs1bqxx2it9geUWNjL9QQr0gPpw9O5HCwSCGwbt9A0iT9eo
+         EPuBzgoLt7ZXbYU/j0XZTc75Ej8swblVYMRnlSGmNHnhMOjpOkJyHyhvD+zj0oTJoST5
+         F+KQ==
+X-Gm-Message-State: ANhLgQ3ExAFE9GPSuS1i5NwccIeKUfZWm3WjVW81VtOk3nYn9NP9n+/4
+        k+qmFtE7l5z1wgP8RJaKUA8jKXYY6azzZLlA+z+jKD6WAN7sQP4UwAGAebfPbZKwZR9121sgTqy
+        398H1hHLB0Uql
+X-Received: by 2002:a5d:4705:: with SMTP id y5mr29656029wrq.288.1584991426875;
+        Mon, 23 Mar 2020 12:23:46 -0700 (PDT)
+X-Google-Smtp-Source: ADFU+vvvOtJGA5GrgcpIM3SSLXZJui62WMklTk7Rrc/XsL5ITD2a1EbhjCCy8b7bpJskKgJFEaRxYA==
+X-Received: by 2002:a5d:4705:: with SMTP id y5mr29656001wrq.288.1584991426605;
+        Mon, 23 Mar 2020 12:23:46 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id c7sm13957904wrn.49.2020.03.23.12.23.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Mar 2020 12:23:45 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 56714180371; Mon, 23 Mar 2020 20:23:44 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20200323164415.12943-1-kpsingh@chromium.org>
- <20200323164415.12943-7-kpsingh@chromium.org>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <5790d135-1a66-eb33-4eca-3f710e08a675@fb.com>
-Date:   Mon, 23 Mar 2020 12:21:31 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.6.0
-In-Reply-To: <20200323164415.12943-7-kpsingh@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWHPR22CA0046.namprd22.prod.outlook.com
- (2603:10b6:300:69::32) To MW3PR15MB3883.namprd15.prod.outlook.com
- (2603:10b6:303:51::22)
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing program when attaching XDP
+In-Reply-To: <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com>
+References: <158462359206.164779.15902346296781033076.stgit@toke.dk> <158462359315.164779.13931660750493121404.stgit@toke.dk> <20200319155236.3d8537c5@kicinski-fedora-PC1C0HJN> <875zez76ph.fsf@toke.dk> <20200320103530.2853c573@kicinski-fedora-PC1C0HJN> <5e750bd4ebf8d_233f2ab4c81425c4ce@john-XPS-13-9370.notmuch> <CAEf4BzbWa8vdyLuzr_nxFM3BtT+hhzjCe9UQF8Y5cN+sVqa72g@mail.gmail.com> <87tv2f48lp.fsf@toke.dk> <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 23 Mar 2020 20:23:44 +0100
+Message-ID: <87h7ye3mf3.fsf@toke.dk>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from MacBook-Pro-52.local (2620:10d:c090:400::5:2131) by MWHPR22CA0046.namprd22.prod.outlook.com (2603:10b6:300:69::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.19 via Frontend Transport; Mon, 23 Mar 2020 19:21:33 +0000
-X-Originating-IP: [2620:10d:c090:400::5:2131]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 788c2215-64de-489a-1102-08d7cf5f6681
-X-MS-TrafficTypeDiagnostic: MW3PR15MB3915:
-X-Microsoft-Antispam-PRVS: <MW3PR15MB3915F4662EC25B2EF27B27BBD3F00@MW3PR15MB3915.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:1332;
-X-Forefront-PRVS: 0351D213B3
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(366004)(396003)(39860400002)(136003)(376002)(346002)(199004)(316002)(4326008)(52116002)(31696002)(4744005)(66476007)(81166006)(8936002)(53546011)(66946007)(66556008)(8676002)(6506007)(81156014)(478600001)(6486002)(2616005)(36756003)(6512007)(2906002)(86362001)(54906003)(186003)(31686004)(7416002)(5660300002)(16526019);DIR:OUT;SFP:1102;SCL:1;SRVR:MW3PR15MB3915;H:MW3PR15MB3883.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
-Received-SPF: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wDsVsOwVCXd9/0KtBhNc+FciF2UAY60wdn6rfQ9m5IkWMWn0d1pv/IDLA95cHmrHoRMAP6EtMo7zv3+4Fm/KiGcDPPT16+sXKMh1tzpQxwfohbuhi/4E8nHLsflL+l9h8ET2pbe8ezgGQJjZI9BwuvhgXKtdoRjQfbJ59z/wX0zwjSvo6HoGmdbawZsju6asyawuVKQfqNr0uGkSpAdwm2JBVqi2JTODpVAiYw9Ha/9q3w9m08MVYargnUHypN5YkZIIxdLf4CqZKtsMxy6aFNulVqnbutGDalO5+0xw8Ukn5PDw+KM5XXBgBmeNqFMUy5IvPCTwNbvMq4T7w/fhQ+RNPb3VN2O4OePLYdmc4loogLhCrLsLgwIUNmg+d8fC44c5Gzli4vMkUHeeZLaBSfeObpyUiaof+Q4t02OyPsOOwZVikj/tt60aDMIBvBWx
-X-MS-Exchange-AntiSpam-MessageData: KoP3kHJdkwz7CYKa3dnyvtjbDynq9pn+tz2MDEgyOnU5BTzkUBbJg7eJ0oltYp1bmn9JcR9DilLBeVOXJC2GzwAvjgcwrl8afz0aRJrjG6lueIOMOl+MlSwmEJ9m+csxHganv6bSBZ+vEzk5pZWf7PGl2nWNOnc5cLu4rYD3AXeo6X0l5eJox8UJih1M/KX0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 788c2215-64de-489a-1102-08d7cf5f6681
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2020 19:21:34.7251
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WQJuTfrVYeCxV0akOSZ8PJuuS1ynQtax8kgVDdo5Rw2Hf+6sVcjitbiREvFCp8I0
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3915
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
- definitions=2020-03-23_08:2020-03-23,2020-03-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- suspectscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0
- mlxlogscore=927 impostorscore=0 adultscore=0 mlxscore=0 priorityscore=1501
- phishscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2003230097
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
+> On Mon, Mar 23, 2020 at 4:24 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>
+>> > On Fri, Mar 20, 2020 at 11:31 AM John Fastabend
+>> > <john.fastabend@gmail.com> wrote:
+>> >>
+>> >> Jakub Kicinski wrote:
+>> >> > On Fri, 20 Mar 2020 09:48:10 +0100 Toke H=C3=B8iland-J=C3=B8rgensen=
+ wrote:
+>> >> > > Jakub Kicinski <kuba@kernel.org> writes:
+>> >> > > > On Thu, 19 Mar 2020 14:13:13 +0100 Toke H=C3=B8iland-J=C3=B8rge=
+nsen wrote:
+>> >> > > >> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> >> > > >>
+>> >> > > >> While it is currently possible for userspace to specify that a=
+n existing
+>> >> > > >> XDP program should not be replaced when attaching to an interf=
+ace, there is
+>> >> > > >> no mechanism to safely replace a specific XDP program with ano=
+ther.
+>> >> > > >>
+>> >> > > >> This patch adds a new netlink attribute, IFLA_XDP_EXPECTED_FD,=
+ which can be
+>> >> > > >> set along with IFLA_XDP_FD. If set, the kernel will check that=
+ the program
+>> >> > > >> currently loaded on the interface matches the expected one, an=
+d fail the
+>> >> > > >> operation if it does not. This corresponds to a 'cmpxchg' memo=
+ry operation.
+>> >> > > >>
+>> >> > > >> A new companion flag, XDP_FLAGS_EXPECT_FD, is also added to ex=
+plicitly
+>> >> > > >> request checking of the EXPECTED_FD attribute. This is needed =
+for userspace
+>> >> > > >> to discover whether the kernel supports the new attribute.
+>> >> > > >>
+>> >> > > >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.c=
+om>
+>> >> > > >
+>> >> > > > I didn't know we wanted to go ahead with this...
+>> >> > >
+>> >> > > Well, I'm aware of the bpf_link discussion, obviously. Not sure w=
+hat's
+>> >> > > happening with that, though. So since this is a straight-forward
+>> >> > > extension of the existing API, that doesn't carry a high implemen=
+tation
+>> >> > > cost, I figured I'd just go ahead with this. Doesn't mean we can'=
+t have
+>> >> > > something similar in bpf_link as well, of course.
+>> >> >
+>> >> > I'm not really in the loop, but from what I overheard - I think the
+>> >> > bpf_link may be targeting something non-networking first.
+>> >>
+>> >> My preference is to avoid building two different APIs one for XDP and=
+ another
+>> >> for everything else. If we have userlands that already understand lin=
+ks and
+>> >> pinning support is on the way imo lets use these APIs for networking =
+as well.
+>> >
+>> > I agree here. And yes, I've been working on extending bpf_link into
+>> > cgroup and then to XDP. We are still discussing some cgroup-specific
+>> > details, but the patch is ready. I'm going to post it as an RFC to get
+>> > the discussion started, before we do this for XDP.
+>>
+>> Well, my reason for being skeptic about bpf_link and proposing the
+>> netlink-based API is actually exactly this, but in reverse: With
+>> bpf_link we will be in the situation that everything related to a netdev
+>> is configured over netlink *except* XDP.
+>
+> One can argue that everything related to use of BPF is going to be
+> uniform and done through BPF syscall? Given variety of possible BPF
+> hooks/targets, using custom ways to attach for all those many cases is
+> really bad as well, so having a unifying concept and single entry to
+> do this is good, no?
 
-On 3/23/20 9:44 AM, KP Singh wrote:
-> From: KP Singh <kpsingh@google.com>
-> 
-> Since BPF_PROG_TYPE_LSM uses the same attaching mechanism as
-> BPF_PROG_TYPE_TRACING, the common logic is refactored into a static
-> function bpf_program__attach_btf.
-> 
-> A new API call bpf_program__attach_lsm is still added to avoid userspace
-> conflicts if this ever changes in the future.
-> 
-> Signed-off-by: KP Singh <kpsingh@google.com>
-> Reviewed-by: Brendan Jackman <jackmanb@google.com>
-> Reviewed-by: Florent Revest <revest@google.com>
+Well, it depends on how you view the BPF subsystem's relation to the
+rest of the kernel, I suppose. I tend to view it as a subsystem that
+provides a bunch of functionality, which you can setup (using "internal"
+BPF APIs), and then attach that object to a different subsystem
+(networking) using that subsystem's configuration APIs.
 
-Acked-by: Yonghong Song <yhs@fb.com>
+Seeing as this really boils down to a matter of taste, though, I'm not
+sure we'll find agreement on this :)
+
+>> Other than that, I don't see any reason why the bpf_link API won't work.
+>> So I guess that if no one else has any problem with BPF insisting on
+>> being a special snowflake, I guess I can live with it as well... *shrugs=
+* :)
+>
+> Apart from derogatory remark,
+
+Yeah, should have left out the 'snowflake' bit, sorry about that...
+
+> BPF is a bit special here, because it requires every potential BPF
+> hook (be it cgroups, xdp, perf_event, etc) to be aware of BPF
+> program(s) and execute them with special macro. So like it or not, it
+> is special and each driver supporting BPF needs to implement this BPF
+> wiring.
+
+All that is about internal implementation, though. I'm bothered by the
+API discrepancy (i.e., from the user PoV we'll end up with: "netlink is
+what you use to configure your netdev except if you want to attach an
+XDP program to it").
+
+-Toke
+
