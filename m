@@ -2,380 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 115F8191DC9
-	for <lists+bpf@lfdr.de>; Wed, 25 Mar 2020 00:55:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4C9191DCF
+	for <lists+bpf@lfdr.de>; Wed, 25 Mar 2020 00:59:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727107AbgCXXzM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Mar 2020 19:55:12 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:34258 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727008AbgCXXzM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Mar 2020 19:55:12 -0400
-Received: by mail-qt1-f194.google.com with SMTP id 10so677482qtp.1;
-        Tue, 24 Mar 2020 16:55:10 -0700 (PDT)
+        id S1727054AbgCXX7l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Mar 2020 19:59:41 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:37256 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727189AbgCXX7l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Mar 2020 19:59:41 -0400
+Received: by mail-pl1-f195.google.com with SMTP id x1so79381plm.4
+        for <bpf@vger.kernel.org>; Tue, 24 Mar 2020 16:59:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x4taz7mXl8pptyKy6vTsxg6OtEjU4FBkuE1nJ/DIKuA=;
-        b=RoJn6fp1RJn8aZlfOCSg3bf8t0mKDJrGg4m+LHhDBZQFbF20gzLqL9NlP5RqwqGpXz
-         evGuJZIK10Jngzmu4bLBPmwZ3Dkj64w0RLl/1nBW31qbA77gaKhyNLsURbDB4cvqcElw
-         ijZ2dWBJMsT6oMsn6SM3dawVros6CKVA4P6vJKavXXqvdDvMrlm8RYmgVJ6RRu1Yr4Zd
-         bzsz2H29+FhNg+B81wCZ24Ktiv0MnP60a1YY0MpSL+aVEwVsNVlvzdNdDkbORqKoX6G1
-         C2bhcN/htFQH6W/2ga0awyd675P1FYrwpGvJczFhWVfbARM8xdaxDjHG2eFCAZljtLoh
-         H6cg==
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zoADOvMNHptTBoGslSX+n4kBaQJztbrsX0ScjuUx7E8=;
+        b=HYYku5DnqLNyWu+DQPSge/YBY2qiiiwOR8KCu4jcI5US4tWBxJVW1AVqwOXP7PIpjM
+         AtJq0D74L34QFtD1VjGI23bOUY8u/+nvBw322GHskCX9jZMj9yd3zzWxL0V/k3gQXHVr
+         vi9U760LnSpTgvCL9ce+CcRnBledwtCWyPIzR5QLEDAF87I5aKqmQhuWJVDdqVgU+JRd
+         7rL/ANopYYn16kQELIDGmig5ZjKQ+/VteUxD2/mb3lxWRryP+dYDjMhtyGk8YWsW/FDi
+         6ixglC21z6yTX1qqEjD17M/GoQTL+7zjwKK86T8evBRUCDqCBonRRBfgkNxtD/fkYBEm
+         RJAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x4taz7mXl8pptyKy6vTsxg6OtEjU4FBkuE1nJ/DIKuA=;
-        b=C/6q2o2f2Rh1x+KzmRD1ojYLSz7lRkGUSjWIGVcVMvi0oWt7c4dGwCZ/XmthHVEyz2
-         L/lmrND9YIqErSEhWfQ3otdcsrcQpFaGsaLYPnN/Cw6Wj5IangbQmKz1eqAp9w3fUw4e
-         wGY2dv0FQn1ge2vVCudVYT3+kONOGv7nYbP0MtoLHBP+MF89xXkJEtAhzalMcEZNCsAQ
-         hWVmhvNf+wPUhxoWf/GgvYxkeSyh3RVG0RR+FnvpHZxW7DrQZ2QMNk7GYDkayWduwpMD
-         mQMmzwvbg8UK49KQ6sWHdzVZ9hsZfJwdcAQvtlg0MmTuT1NKxXm06aqN2puYrocPTsPn
-         UsSQ==
-X-Gm-Message-State: ANhLgQ2q9zgvRbFUXrPfNlkOCfCIHc2alV3ocdSH6pQJ+aemNcEz5iAG
-        7c2OXoP2dnsi/ZzZYWBU9lt+qjRWgEKrS9SA97w=
-X-Google-Smtp-Source: ADFU+vvjtuH2GgiZHGdGFZLEpP9ltYzxWBH9++ulCCIuTz1xtjwtmXEQpwGNTPGEc1XYNHIHWCdk5Em7vkw3NQu8ZFM=
-X-Received: by 2002:ac8:6f1b:: with SMTP id g27mr431798qtv.117.1585094109999;
- Tue, 24 Mar 2020 16:55:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200323164415.12943-1-kpsingh@chromium.org> <20200323164415.12943-8-kpsingh@chromium.org>
-In-Reply-To: <20200323164415.12943-8-kpsingh@chromium.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 24 Mar 2020 16:54:59 -0700
-Message-ID: <CAEf4BzZCVqpUDqGetxa=Nx1ZC7Q+2yX2D9FMwywWkFDoN8JHDA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 7/7] bpf: lsm: Add selftests for BPF_PROG_TYPE_LSM
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
-        Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@google.com>,
-        Thomas Garnier <thgarnie@google.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zoADOvMNHptTBoGslSX+n4kBaQJztbrsX0ScjuUx7E8=;
+        b=X1WV8WrQevkRJHICJOY5RKOAxKp9NKLiFYIeaEkvgRf70IuzKFOQJMGfbfDwxYUaN8
+         piBKjjqgCiPW8/AIBGvVD0liJ1JlFCy4z2V9T9Lewk/la0IL4YOrQ3C3iIu8WowUu/Qk
+         FUprwJZGxKx4PVj/WhQMSMVZ8q4smRwYRtmDWzP6yAdMfEaGY03zAo6z12hcAW5cfBEm
+         zvHN1mXyUq2/Nq1hHLofqqH6isoOnh+HjnJEbcIiHmhVvxcWNSs5+YZUkNRa9ro3n9bI
+         HeVZGNwvqhAT2uA1vUcrG9dmDyqn26ynehxwFqqx483oLqwKCjns7lWLd16VB19fLXSQ
+         8ioA==
+X-Gm-Message-State: ANhLgQ28kKGIFUGKjjFKDn0v/G1qRf+W2vPvxbChJoEJ3DW/SLRLKSr/
+        BkBe7wlCWX3FejQU8TSVBEQ4XQ==
+X-Google-Smtp-Source: ADFU+vuHvE3AAHXxKlE2OrBSeeCGbEy52NmWD53AYbht0Ycw+lsw1lDQlutLAuEesg+IiJeTYQnSiA==
+X-Received: by 2002:a17:90a:33c1:: with SMTP id n59mr490312pjb.4.1585094380054;
+        Tue, 24 Mar 2020 16:59:40 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id f3sm14949656pgg.46.2020.03.24.16.59.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Mar 2020 16:59:39 -0700 (PDT)
+Date:   Tue, 24 Mar 2020 16:59:38 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf-next] libbpf: don't allocate 16M for log buffer by
+ default
+Message-ID: <20200324235938.GA2805006@mini-arch.hsd1.ca.comcast.net>
+References: <20200324233120.66314-1-sdf@google.com>
+ <CAEf4BzbFOjSDw9YvsoZGtzWVbZykg62atNAgzt19audTXmvprw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbFOjSDw9YvsoZGtzWVbZykg62atNAgzt19audTXmvprw@mail.gmail.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 23, 2020 at 9:45 AM KP Singh <kpsingh@chromium.org> wrote:
->
-> From: KP Singh <kpsingh@google.com>
->
-> * Load/attach a BPF program to the file_mprotect (int) and
->   bprm_committed_creds (void) LSM hooks.
-> * Perform an action that triggers the hook.
-> * Verify if the audit event was received using a shared global
->   result variable.
->
-> Signed-off-by: KP Singh <kpsingh@google.com>
-> Reviewed-by: Brendan Jackman <jackmanb@google.com>
-> Reviewed-by: Florent Revest <revest@google.com>
-> Reviewed-by: Thomas Garnier <thgarnie@google.com>
-> ---
->  tools/testing/selftests/bpf/lsm_helpers.h     |  19 +++
->  .../selftests/bpf/prog_tests/lsm_test.c       | 112 ++++++++++++++++++
->  .../selftests/bpf/progs/lsm_int_hook.c        |  54 +++++++++
->  .../selftests/bpf/progs/lsm_void_hook.c       |  41 +++++++
->  4 files changed, 226 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/lsm_helpers.h
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/lsm_test.c
->  create mode 100644 tools/testing/selftests/bpf/progs/lsm_int_hook.c
->  create mode 100644 tools/testing/selftests/bpf/progs/lsm_void_hook.c
->
-> diff --git a/tools/testing/selftests/bpf/lsm_helpers.h b/tools/testing/selftests/bpf/lsm_helpers.h
-> new file mode 100644
-> index 000000000000..3de230df93db
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/lsm_helpers.h
-> @@ -0,0 +1,19 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +/*
-> + * Copyright (C) 2020 Google LLC.
-> + */
-> +#ifndef _LSM_HELPERS_H
-> +#define _LSM_HELPERS_H
-> +
-> +struct lsm_prog_result {
-> +       /* This ensures that the LSM Hook only monitors the PID requested
-> +        * by the loader
-> +        */
-> +       __u32 monitored_pid;
-> +       /* The number of calls to the prog for the monitored PID.
-> +        */
-> +       __u32 count;
-> +};
-> +
+On 03/24, Andrii Nakryiko wrote:
+> On Tue, Mar 24, 2020 at 4:31 PM Stanislav Fomichev <sdf@google.com> wrote:
+> >
+> > For each prog/btf load we allocate and free 16 megs of verifier buffer.
+> > On production systems it doesn't really make sense because the
+> > programs/btf have gone through extensive testing and (mostly) guaranteed
+> > to successfully load.
+> >
+> > Let's switch to a much smaller buffer by default (128 bytes, sys_bpf
+> > doesn't accept smaller log buffer) and resize it if the kernel returns
+> > ENOSPC. On the first ENOSPC error we resize the buffer to BPF_LOG_BUF_SIZE
+> > and then, on each subsequent ENOSPC, we keep doubling the buffer.
+> >
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  tools/lib/bpf/btf.c             | 10 +++++++++-
+> >  tools/lib/bpf/libbpf.c          | 10 ++++++++--
+> >  tools/lib/bpf/libbpf_internal.h |  2 ++
+> >  3 files changed, 19 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> > index 3d1c25fc97ae..53c7efc3b347 100644
+> > --- a/tools/lib/bpf/btf.c
+> > +++ b/tools/lib/bpf/btf.c
+> > @@ -657,13 +657,14 @@ int btf__finalize_data(struct bpf_object *obj, struct btf *btf)
+> >
+> >  int btf__load(struct btf *btf)
+> >  {
+> > -       __u32 log_buf_size = BPF_LOG_BUF_SIZE;
+> > +       __u32 log_buf_size = BPF_MIN_LOG_BUF_SIZE;
+> >         char *log_buf = NULL;
+> >         int err = 0;
+> >
+> >         if (btf->fd >= 0)
+> >                 return -EEXIST;
+> >
+> > +retry_load:
+> >         log_buf = malloc(log_buf_size);
+> >         if (!log_buf)
+> >                 return -ENOMEM;
+> 
+> I'd argue that on first try we shouldn't allocate log_buf at all, then
+> start allocating it using reasonable starting size (see below).
+Agreed, makes sense.
 
-Having this extra header just for this simple struct... On BPF side
-it's easier and nicer to just use global variables. Can you please
-drop helper and just pass two variables in prog_test part?
+> > @@ -673,6 +674,13 @@ int btf__load(struct btf *btf)
+> >         btf->fd = bpf_load_btf(btf->data, btf->data_size,
+> >                                log_buf, log_buf_size, false);
+> >         if (btf->fd < 0) {
+> > +               if (errno == ENOSPC) {
+> > +                       log_buf_size = max((__u32)BPF_LOG_BUF_SIZE,
+> > +                                          log_buf_size << 1);
+> > +                       free(log_buf);
+> > +                       goto retry_load;
+> > +               }
+> > +
+> >                 err = -errno;
+> >                 pr_warn("Error loading BTF: %s(%d)\n", strerror(errno), errno);
+> >                 if (*log_buf)
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index 085e41f9b68e..793c81b35ccc 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -4855,7 +4855,7 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
+> >  {
+> >         struct bpf_load_program_attr load_attr;
+> >         char *cp, errmsg[STRERR_BUFSIZE];
+> > -       int log_buf_size = BPF_LOG_BUF_SIZE;
+> > +       size_t log_buf_size = BPF_MIN_LOG_BUF_SIZE;
+> >         char *log_buf;
+> >         int btf_fd, ret;
+> >
+> > @@ -4911,7 +4911,13 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
+> >         }
+> >
+> >         if (errno == ENOSPC) {
+> 
+> same, doing if (!log_buf || errno == ENOSPC) should handle this
+> without any other major changes?
+Yeah, I don't see why it shouldn't. Let me try to see if I hit something
+in the selftests with that approach.
 
-> +#endif /* _LSM_HELPERS_H */
-> diff --git a/tools/testing/selftests/bpf/prog_tests/lsm_test.c b/tools/testing/selftests/bpf/prog_tests/lsm_test.c
-> new file mode 100644
-> index 000000000000..5fd6b8f569f7
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/lsm_test.c
-> @@ -0,0 +1,112 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +/*
-> + * Copyright (C) 2020 Google LLC.
-> + */
-> +
-> +#include <test_progs.h>
-> +#include <sys/mman.h>
-> +#include <sys/wait.h>
-> +#include <unistd.h>
-> +#include <malloc.h>
-> +#include <stdlib.h>
-> +
-> +#include "lsm_helpers.h"
-> +#include "lsm_void_hook.skel.h"
-> +#include "lsm_int_hook.skel.h"
-> +
-> +char *LS_ARGS[] = {"true", NULL};
-> +
-> +int heap_mprotect(void)
-> +{
-> +       void *buf;
-> +       long sz;
-> +
-> +       sz = sysconf(_SC_PAGESIZE);
-> +       if (sz < 0)
-> +               return sz;
-> +
-> +       buf = memalign(sz, 2 * sz);
-> +       if (buf == NULL)
-> +               return -ENOMEM;
-> +
-> +       return mprotect(buf, sz, PROT_READ | PROT_EXEC);
-> +}
-> +
-> +int exec_ls(struct lsm_prog_result *result)
-> +{
-> +       int child_pid;
-> +
-> +       child_pid = fork();
-> +       if (child_pid == 0) {
-> +               result->monitored_pid = getpid();
-
-monitored_pid needed here only
-
-> +               execvp(LS_ARGS[0], LS_ARGS);
-> +               return -EINVAL;
-> +       } else if (child_pid > 0)
-> +               return wait(NULL);
-> +
-> +       return -EINVAL;
-> +}
-> +
-> +void test_lsm_void_hook(void)
-> +{
-> +       struct lsm_prog_result *result;
-> +       struct lsm_void_hook *skel = NULL;
-> +       int err, duration = 0;
-> +
-> +       skel = lsm_void_hook__open_and_load();
-> +       if (CHECK(!skel, "skel_load", "lsm_void_hook skeleton failed\n"))
-> +               goto close_prog;
-> +
-> +       err = lsm_void_hook__attach(skel);
-> +       if (CHECK(err, "attach", "lsm_void_hook attach failed: %d\n", err))
-> +               goto close_prog;
-> +
-> +       result = &skel->bss->result;
-
-if you define variables directly, you'll access them easily as
-skel->bss->monitored_pid and skel->bss->count, no problem, right?
-
-> +
-> +       err = exec_ls(result);
-> +       if (CHECK(err < 0, "exec_ls", "err %d errno %d\n", err, errno))
-> +               goto close_prog;
-> +
-> +       if (CHECK(result->count != 1, "count", "count = %d", result->count))
-> +               goto close_prog;
-> +
-> +       CHECK_FAIL(result->count != 1);
-> +
-> +close_prog:
-> +       lsm_void_hook__destroy(skel);
-> +}
-> +
-> +void test_lsm_int_hook(void)
-> +{
-> +       struct lsm_prog_result *result;
-> +       struct lsm_int_hook *skel = NULL;
-> +       int err, duration = 0;
-> +
-> +       skel = lsm_int_hook__open_and_load();
-> +       if (CHECK(!skel, "skel_load", "lsm_int_hook skeleton failed\n"))
-> +               goto close_prog;
-> +
-> +       err = lsm_int_hook__attach(skel);
-> +       if (CHECK(err, "attach", "lsm_int_hook attach failed: %d\n", err))
-> +               goto close_prog;
-> +
-> +       result = &skel->bss->result;
-> +       result->monitored_pid = getpid();
-> +
-> +       err = heap_mprotect();
-> +       if (CHECK(errno != EPERM, "heap_mprotect", "want errno=EPERM, got %d\n",
-> +                 errno))
-> +               goto close_prog;
-> +
-> +       CHECK_FAIL(result->count != 1);
-> +
-> +close_prog:
-> +       lsm_int_hook__destroy(skel);
-> +}
-> +
-> +void test_lsm_test(void)
-> +{
-> +       test_lsm_void_hook();
-> +       test_lsm_int_hook();
-
-These should be subtests (see test__start_subtest() usage). Also, I'm
-not sure why you need two separate BPF programs, why not create one
-and use it for two subtests?
-
-
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/lsm_int_hook.c b/tools/testing/selftests/bpf/progs/lsm_int_hook.c
-> new file mode 100644
-> index 000000000000..1c5028ddca61
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/lsm_int_hook.c
-
-consider it a nit because not every test follows this, but using
-progs/test_whatever.c for BPF side and prog_test/whatever.c makes my
-life a bit easier.
-
-
-> @@ -0,0 +1,54 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +/*
-> + * Copyright 2020 Google LLC.
-> + */
-> +
-> +#include <linux/bpf.h>
-> +#include <stdbool.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include  <errno.h>
-> +#include "lsm_helpers.h"
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +struct lsm_prog_result result = {
-> +       .monitored_pid = 0,
-> +       .count = 0,
-> +};
-> +
-> +/*
-> + * Define some of the structs used in the BPF program.
-> + * Only the field names and their sizes need to be the
-> + * same as the kernel type, the order is irrelevant.
-> + */
-> +struct mm_struct {
-> +       unsigned long start_brk, brk;
-> +} __attribute__((preserve_access_index));
-> +
-> +struct vm_area_struct {
-> +       unsigned long vm_start, vm_end;
-> +       struct mm_struct *vm_mm;
-> +} __attribute__((preserve_access_index));
-
-Why not just using vmlinux.h instead?
-
-> +
-> +SEC("lsm/file_mprotect")
-> +int BPF_PROG(test_int_hook, struct vm_area_struct *vma,
-> +            unsigned long reqprot, unsigned long prot, int ret)
-> +{
-> +       if (ret != 0)
-> +               return ret;
-> +
-> +       __u32 pid = bpf_get_current_pid_tgid();
-> +       int is_heap = 0;
-> +
-> +       is_heap = (vma->vm_start >= vma->vm_mm->start_brk &&
-> +                  vma->vm_end <= vma->vm_mm->brk);
-> +
-> +       if (is_heap && result.monitored_pid == pid) {
-> +               result.count++;
-> +               ret = -EPERM;
-> +       }
-> +
-> +       return ret;
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/lsm_void_hook.c b/tools/testing/selftests/bpf/progs/lsm_void_hook.c
-> new file mode 100644
-> index 000000000000..4d01a8536413
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/lsm_void_hook.c
-> @@ -0,0 +1,41 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +/*
-> + * Copyright (C) 2020 Google LLC.
-> + */
-> +
-> +#include <linux/bpf.h>
-> +#include <stdbool.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include  <errno.h>
-> +#include "lsm_helpers.h"
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +struct lsm_prog_result result = {
-> +       .monitored_pid = 0,
-> +       .count = 0,
-> +};
-> +
-> +/*
-> + * Define some of the structs used in the BPF program.
-> + * Only the field names and their sizes need to be the
-> + * same as the kernel type, the order is irrelevant.
-> + */
-> +struct linux_binprm {
-> +       const char *filename;
-> +} __attribute__((preserve_access_index));
-> +
-> +SEC("lsm/bprm_committed_creds")
-> +int BPF_PROG(test_void_hook, struct linux_binprm *bprm)
-> +{
-> +       __u32 pid = bpf_get_current_pid_tgid();
-> +       char fmt[] = "lsm(bprm_committed_creds): process executed %s\n";
-
-Try static char fmt[] = "..." instead and then compare BPF assembly
-before and after, you'll be amazed ;)
-
-> +
-> +       bpf_trace_printk(fmt, sizeof(fmt), bprm->filename);
-
-is this part of test?
-
-> +       if (result.monitored_pid == pid)
-> +               result.count++;
-> +
-> +       return 0;
-> +}
-> --
-> 2.20.1
->
+> > -               log_buf_size <<= 1;
+> > +               if (errno == ENOSPC) {
+> > +                       log_buf_size = max((size_t)BPF_LOG_BUF_SIZE,
+> > +                                          log_buf_size << 1);
+> > +                       free(log_buf);
+> > +                       goto retry_load;
+> > +               }
+> > +
+> >                 free(log_buf);
+> >                 goto retry_load;
+> >         }
+> > diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+> > index 8c3afbd97747..2720f3366798 100644
+> > --- a/tools/lib/bpf/libbpf_internal.h
+> > +++ b/tools/lib/bpf/libbpf_internal.h
+> > @@ -23,6 +23,8 @@
+> >  #define BTF_PARAM_ENC(name, type) (name), (type)
+> >  #define BTF_VAR_SECINFO_ENC(type, offset, size) (type), (offset), (size)
+> >
+> > +#define BPF_MIN_LOG_BUF_SIZE 128
+> 
+> This seems way too low, if there is some error it almost certainly
+> will be too short, probably for few iterations, just causing waste.
+> Let's make it something a bit more reasonable, like 32KB or something?
+In this case, maybe start with the existing 16M BPF_LOG_BUF_SIZE?
+My goal here is optimize for the successful case. If there is an error the
+size shouldn't matter that much.
