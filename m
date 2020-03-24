@@ -2,172 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 232581918B2
-	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 19:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 291791918C8
+	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 19:20:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbgCXSNH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Mar 2020 14:13:07 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:55001 "EHLO
-        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727672AbgCXSNE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 24 Mar 2020 14:13:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585073583;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R3Wa07YAd+zFovCvokyH5i/22yVWoZ1gMGqsMWsRY8s=;
-        b=QX0jNF+FsuYf1JIYegpbHkV0jP8+bp91Z2VC1ezU5wFKqaSU4wdKKMwd1GazQkjJKLFjo3
-        ve/0XpFm8YG/QkGfo7OImBCeto9oYmZKsyNyR3pF40jToQoO4qO8H10zMnMvLC/DQxQb6/
-        A4+lXQoO9wrYYONPXHL+G5Z+A/gLk/E=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470-TQEtcRN0O2aDI_7hvLv7Hg-1; Tue, 24 Mar 2020 14:13:02 -0400
-X-MC-Unique: TQEtcRN0O2aDI_7hvLv7Hg-1
-Received: by mail-wr1-f69.google.com with SMTP id v6so9513631wrg.22
-        for <bpf@vger.kernel.org>; Tue, 24 Mar 2020 11:13:02 -0700 (PDT)
+        id S1727443AbgCXSUV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Mar 2020 14:20:21 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:37668 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727379AbgCXSUV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Mar 2020 14:20:21 -0400
+Received: by mail-oi1-f196.google.com with SMTP id w13so19439983oih.4;
+        Tue, 24 Mar 2020 11:20:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=QAsNqo91AZeBDE6F+SBZ53GrNbBmODwiTL6H1PjXDaY=;
+        b=nDPahvsxANLN/fCqy3jJsk5S4SDwZAZh3QOv6ulH4PESbA0kR6J5qkTP7HWSy6BEW1
+         X/Q32jC3wNDPfa7iFm7XMtXwwBXIO39cxoJBgpREBxAZFrZ6g5vCBcOBRCtMaAQUjJIn
+         PUeMNR1ubkrzX7LcAq7KtJ7OeU2GbHdTsckA2Q9MxLHxrF+gPePvSccJvifd2GA/EnZD
+         jA5CEWRHRUsLjBB4VH7Rz+CDALpVQVgVHxg2y0xqqE38hmor/aPO5hxziFl54TucYtIA
+         C0LAU/7IW+PF3nWO4ttq3MjfJgEUYxf5pOI+/2YzOTkuMg0fZu4YDGF2B8KTrX/hzepO
+         qsUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=R3Wa07YAd+zFovCvokyH5i/22yVWoZ1gMGqsMWsRY8s=;
-        b=ihduuBfjhQ9lCs33BjcQwNTwSB+W1nZrH9NeR6m2lGF0kWur6fM/FxLvBGwEyK4DkL
-         2t+4SuT0qjObiBgMwfP+qq9YsYWYzLN1ARsvJArAash4OqwaZiRKKNTRkoWDrQHe3hC9
-         tYv+cKLZrcAkl0Fk7h0P4A0UH+TES8S6Oasgp42+jACxi7c7C2VAdRmNmW5rismwFJEP
-         nHPGFkMg/VAhTGJ9YaxBVneWv8Im3psdcsLuyEguhBMG4OL6LbTTUsbS0Y2FcrQXzYO7
-         SuDfR3lNc0Y0Aa4688Ar+DxXF2rpa4jM9QJlb2BZdi9P0auN8dNp6V6/MKpIxBUoLs4O
-         61uA==
-X-Gm-Message-State: ANhLgQ32txm2a0dpGf1mMQZr3y30Lmuv1wIn7cu/Wwt1aZHGBbkDWiW+
-        gGHHDF6+Q3n/2ge+t+b0wQ6XImSjoU4kD7/2JNL7LyCuPbqkwe55nx/rM49b6snOptpEtQLTuZ5
-        K3GFsLU0G2qwM
-X-Received: by 2002:a05:600c:2101:: with SMTP id u1mr7012071wml.177.1585073581084;
-        Tue, 24 Mar 2020 11:13:01 -0700 (PDT)
-X-Google-Smtp-Source: ADFU+vvpNYRWpV6uRP+NqVy6W9zqRQjKTec8plOaPvuVG45PE92D30xfQiDfaCz8oZmdrLiInBErZw==
-X-Received: by 2002:a05:600c:2101:: with SMTP id u1mr7012049wml.177.1585073580838;
-        Tue, 24 Mar 2020 11:13:00 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id j2sm13308840wrs.64.2020.03.24.11.12.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Mar 2020 11:12:57 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 5C64118158B; Tue, 24 Mar 2020 19:12:56 +0100 (CET)
-Subject: [PATCH bpf-next v3 4/4] selftests/bpf: Add tests for attaching XDP
- programs
-From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>, Andrey Ignatov <rdna@fb.com>
-Date:   Tue, 24 Mar 2020 19:12:56 +0100
-Message-ID: <158507357632.6925.5524660251258919856.stgit@toke.dk>
-In-Reply-To: <158507357205.6925.17804771242752938867.stgit@toke.dk>
-References: <158507357205.6925.17804771242752938867.stgit@toke.dk>
-User-Agent: StGit/0.22
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=QAsNqo91AZeBDE6F+SBZ53GrNbBmODwiTL6H1PjXDaY=;
+        b=VCNRplK3b88b7x2YP4if3u9/AnsBQ01QZfUWa5OpMVVnA0OwYuFVktaKfL4Ge7GqER
+         fRFoQzVYzhrx6CWR1/aqGa6jTLO97qgJto/Y9ur//PqFJkipeF9h1f0D7dSAGZu1CuMD
+         wb919KzkYLyiHnAhopNKjd3XUEfWgjHagWjwreZE/AUQ34vbUyyW7Rxh6NuVgvTaFcjH
+         eIboDgoqA8jBLu7HNlnw08JAmGZsFlgJLgDhw7wzox3eX/EFzmsNhDCeLBQbVsgwJn6Y
+         5GC2un04U13NHHMOdbbuaGCH8CB44vUu61xPy5wceJRNV/6qYVSBv0Zk9DuSnsyTtYVm
+         17TQ==
+X-Gm-Message-State: ANhLgQ13o9RuLvVeTohxa6rfYbs0TYrVteox7MHjoZlRz3of9etyiI8a
+        Vwqj7D6CAczwZOvmWfR/9euPUBekaGTBHklO1z4=
+X-Google-Smtp-Source: ADFU+vsTTzOBEbslZ/jOchNxTsXwqzLL2kJQC2QNM2a0aY01y0dTE5CfqmANuyu7O3+wSM4ccC7AALy8hhTlaiFk5oo=
+X-Received: by 2002:aca:b803:: with SMTP id i3mr4303855oif.92.1585074020348;
+ Tue, 24 Mar 2020 11:20:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20200323164415.12943-1-kpsingh@chromium.org> <20200323164415.12943-5-kpsingh@chromium.org>
+ <CAEjxPJ4MukexdmAD=py0r7vkE6vnn6T1LVcybP_GSJYsAdRuxA@mail.gmail.com>
+ <20200324145003.GA2685@chromium.org> <CAEjxPJ4YnCCeQUTK36Ao550AWProHrkrW1a6K5RKuKYcPcfhyA@mail.gmail.com>
+ <d578d19f-1d3b-f60d-f803-2fcb46721a4a@schaufler-ca.com> <CAEjxPJ59wijpB=wa4ZhPyX_PRXrRAX2+PO6e8+f25wrb9xndRA@mail.gmail.com>
+ <202003241100.279457EF@keescook> <20200324180652.GA11855@chromium.org>
+In-Reply-To: <20200324180652.GA11855@chromium.org>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Tue, 24 Mar 2020 14:21:30 -0400
+Message-ID: <CAEjxPJ7ebh1FHBjfuoWquFLJi0TguipfRq5ozaSepLVt8+qaMQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 4/7] bpf: lsm: Implement attach, detach and execution
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Paul Moore <paul@paul-moore.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+On Tue, Mar 24, 2020 at 2:06 PM KP Singh <kpsingh@chromium.org> wrote:
+>
+> On 24-M=C3=A4r 11:01, Kees Cook wrote:
+> > On Tue, Mar 24, 2020 at 01:49:34PM -0400, Stephen Smalley wrote:
+> > > On Tue, Mar 24, 2020 at 12:25 PM Casey Schaufler <casey@schaufler-ca.=
+com> wrote:
+> > > >
+> > > > On 3/24/2020 7:58 AM, Stephen Smalley wrote:
+> > > > > On Tue, Mar 24, 2020 at 10:50 AM KP Singh <kpsingh@chromium.org> =
+wrote:
+> > > > >> On 24-M=C3=A4r 10:35, Stephen Smalley wrote:
+> > > > >>> On Mon, Mar 23, 2020 at 12:46 PM KP Singh <kpsingh@chromium.org=
+> wrote:
+> > > > >>>> From: KP Singh <kpsingh@google.com>
+> > > > >>>> diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> > > > >>>> index 530d137f7a84..2a8131b640b8 100644
+> > > > >>>> --- a/kernel/bpf/bpf_lsm.c
+> > > > >>>> +++ b/kernel/bpf/bpf_lsm.c
+> > > > >>>> @@ -9,6 +9,9 @@
+> > > > >>>>  #include <linux/btf.h>
+> > > > >>>>  #include <linux/lsm_hooks.h>
+> > > > >>>>  #include <linux/bpf_lsm.h>
+> > > > >>>> +#include <linux/jump_label.h>
+> > > > >>>> +#include <linux/kallsyms.h>
+> > > > >>>> +#include <linux/bpf_verifier.h>
+> > > > >>>>
+> > > > >>>>  /* For every LSM hook  that allows attachment of BPF programs=
+, declare a NOP
+> > > > >>>>   * function where a BPF program can be attached as an fexit t=
+rampoline.
+> > > > >>>> @@ -27,6 +30,32 @@ noinline __weak void bpf_lsm_##NAME(__VA_AR=
+GS__) {}
+> > > > >>>>  #include <linux/lsm_hook_names.h>
+> > > > >>>>  #undef LSM_HOOK
+> > > > >>>>
+> > > > >>>> +#define BPF_LSM_SYM_PREFX  "bpf_lsm_"
+> > > > >>>> +
+> > > > >>>> +int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+> > > > >>>> +                       const struct bpf_prog *prog)
+> > > > >>>> +{
+> > > > >>>> +       /* Only CAP_MAC_ADMIN users are allowed to make change=
+s to LSM hooks
+> > > > >>>> +        */
+> > > > >>>> +       if (!capable(CAP_MAC_ADMIN))
+> > > > >>>> +               return -EPERM;
+> > > > >>> I had asked before, and will ask again: please provide an expli=
+cit LSM
+> > > > >>> hook for mediating whether one can make changes to the LSM hook=
+s.
+> > > > >>> Neither CAP_MAC_ADMIN nor CAP_SYS_ADMIN suffices to check this =
+for SELinux.
+> > > > >> What do you think about:
+> > > > >>
+> > > > >>   int security_check_mutable_hooks(void)
+> > > > >>
+> > > > >> Do you have any suggestions on the signature of this hook? Does =
+this
+> > > > >> hook need to be BPF specific?
+> > > > > I'd do something like int security_bpf_prog_attach_security(const
+> > > > > struct bpf_prog *prog) or similar.
+> > > > > Then the security module can do a check based on the current task
+> > > > > and/or the prog.  We already have some bpf-specific hooks.
+> > > >
+> > > > I *strongly* disagree with Stephen on this. KRSI and SELinux are pe=
+ers.
+> > > > Just as Yama policy is independent of SELinux policy so KRSI policy=
+ should
+> > > > be independent of SELinux policy. I understand the argument that BD=
+F programs
+> > > > ought to be constrained by SELinux, but I don't think it's right. F=
+urther,
+> > > > we've got unholy layering when security modules call security_ func=
+tions.
+> > > > I'm not saying there is no case where it would be appropriate, but =
+this is not
+> > > > one of them.
+> > >
+> > > I explained this previously.  The difference is that the BPF programs
+> > > are loaded from a userspace
+> > > process, not a kernel-resident module.  They already recognize there
+> > > is a difference here or
+> > > they wouldn't have the CAP_MAC_ADMIN check above in their patch.  The
+> > > problem with that
+> > > check is just that CAP_MAC_ADMIN doesn't necessarily mean fully
+> > > privileged with respect to
+> > > SELinux, which is why I want an explicit hook.  This gets a NAK from
+> > > me until there is such a hook.
+> >
+> > Doesn't the existing int (*bpf_prog)(struct bpf_prog *prog); cover
+> > SELinux's need here? I.e. it can already examine that a hook is being
+> > created for the LSM (since it has a distinct type, etc)?
+>
+> I was about to say the same, specifically for the BPF use-case, we do
+> have the "bpf_prog" i.e. :
+>
+> "Do a check when the kernel generate and return a file descriptor for
+> eBPF programs."
+>
+> SELinux can implement its policy logic for BPF_PROG_TYPE_LSM by
+> providing a callback for this hook.
 
-This adds tests for the various replacement operations using
-IFLA_XDP_EXPECTED_ID.
-
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- .../testing/selftests/bpf/prog_tests/xdp_attach.c  |   74 ++++++++++++++++++++
- 1 file changed, 74 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_attach.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_attach.c b/tools/testing/selftests/bpf/prog_tests/xdp_attach.c
-new file mode 100644
-index 000000000000..190df7599107
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_attach.c
-@@ -0,0 +1,74 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+
-+#define IFINDEX_LO 1
-+#define XDP_FLAGS_EXPECT_ID		(1U << 4)
-+
-+void test_xdp_attach(void)
-+{
-+	struct bpf_object *obj1, *obj2, *obj3;
-+	const char *file = "./test_xdp.o";
-+	struct bpf_prog_info info = {};
-+	__u32 duration = 0, id1, id2;
-+	__u32 len = sizeof(info);
-+	int err, fd1, fd2, fd3;
-+	DECLARE_LIBBPF_OPTS(bpf_xdp_set_link_opts, opts);
-+
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj1, &fd1);
-+	if (CHECK_FAIL(err))
-+		return;
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj2, &fd2);
-+	if (CHECK_FAIL(err))
-+		goto out_1;
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj3, &fd3);
-+	if (CHECK_FAIL(err))
-+		goto out_2;
-+
-+	err = bpf_obj_get_info_by_fd(fd1, &info, &len);
-+	if (CHECK_FAIL(err))
-+		goto out_2;
-+	id1 = info.id;
-+
-+	memset(&info, 0, sizeof(info));
-+	err = bpf_obj_get_info_by_fd(fd2, &info, &len);
-+	if (CHECK_FAIL(err))
-+		goto out_2;
-+	id2 = info.id;
-+
-+	err = bpf_set_link_xdp_fd_opts(IFINDEX_LO, fd1, XDP_FLAGS_EXPECT_ID,
-+				       &opts);
-+	if (CHECK(err, "load_ok", "initial load failed"))
-+		goto out_close;
-+
-+	err = bpf_set_link_xdp_fd_opts(IFINDEX_LO, fd2, XDP_FLAGS_EXPECT_ID,
-+				       &opts);
-+	if (CHECK(!err, "load_fail", "load with expected id didn't fail"))
-+		goto out;
-+
-+	opts.old_id = id1;
-+	err = bpf_set_link_xdp_fd_opts(IFINDEX_LO, fd2, 0, &opts);
-+	if (CHECK(err, "replace_ok", "replace valid old_id failed"))
-+		goto out;
-+
-+	err = bpf_set_link_xdp_fd_opts(IFINDEX_LO, fd3, 0, &opts);
-+	if (CHECK(!err, "replace_fail", "replace invalid old_id didn't fail"))
-+		goto out;
-+
-+	err = bpf_set_link_xdp_fd_opts(IFINDEX_LO, -1, 0, &opts);
-+	if (CHECK(!err, "remove_fail", "remove invalid old_id didn't fail"))
-+		goto out;
-+
-+	opts.old_id = id2;
-+	err = bpf_set_link_xdp_fd_opts(IFINDEX_LO, -1, 0, &opts);
-+	if (CHECK(err, "remove_ok", "remove valid old_id failed"))
-+		goto out;
-+
-+out:
-+	bpf_set_link_xdp_fd(IFINDEX_LO, -1, 0);
-+out_close:
-+	bpf_object__close(obj3);
-+out_2:
-+	bpf_object__close(obj2);
-+out_1:
-+	bpf_object__close(obj1);
-+}
-
+Ok.  In that case do we really need the capable() check here at all?
