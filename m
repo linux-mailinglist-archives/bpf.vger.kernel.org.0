@@ -2,147 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7179A191472
-	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 16:31:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 384351915A4
+	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 17:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728219AbgCXPaI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Mar 2020 11:30:08 -0400
-Received: from mail-yb1-f195.google.com ([209.85.219.195]:46515 "EHLO
-        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727826AbgCXPaH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Mar 2020 11:30:07 -0400
-Received: by mail-yb1-f195.google.com with SMTP id r16so9360901ybs.13
-        for <bpf@vger.kernel.org>; Tue, 24 Mar 2020 08:30:05 -0700 (PDT)
+        id S1727426AbgCXQGX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Mar 2020 12:06:23 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:54181 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727579AbgCXQGX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Mar 2020 12:06:23 -0400
+Received: by mail-wm1-f65.google.com with SMTP id b12so3827673wmj.3
+        for <bpf@vger.kernel.org>; Tue, 24 Mar 2020 09:06:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zGzJT4lBRDfMWrKAV6fIWvWA81QqY+N9vkGkVfG1dSI=;
-        b=cj0bP8gpGKJn/JLKLOYgOvr5+PBMMSJ12OC9J7p8NDzfW63ZtQ3qjg1ulm/VMRIATc
-         gHw0Zdc0GyNqCWiw0HBB3VsJKvx9I5VYKwq0rX+E07BixdR2ulr1SebptImtTguxzVur
-         bDYUMF1XZSgWQfB9rT5UF/FgSFHturPQNTf4zRLkw0lJfmTZUVe734stY/hlXspDws89
-         UNucCbkOtar1rHP1GrTLS4RVxyV/FTXQuiVCxjAcUSaiW5sis2n1W94zZ8qGRbplanOL
-         MEbpuvXDzpDefV1pdplKTJf5UQ2U1exibbHw2EsVJuS2H6Yae22K4pXnPHLyOke1pMSJ
-         HoVg==
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=1N/kkCsXiaUZJR6Cb6g+LjBhvjr5lmjI4mokCR0tVqI=;
+        b=KYQKDx8DyzUAnuq2yoc8TeWYg6u2d9G1EnJpysHS23i/nJtDUTJ1EGMDA+yLtc+3Ne
+         ttb5axfZ4dXbmiVTOnc+IEEDAk9zxj2cXn99YKJpGZc93ZuBmxvzsUq8qH6oTtP5O3Yq
+         fGk1pmxtTvy5X+ioEB3lY2DmwDertoipWkA38=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zGzJT4lBRDfMWrKAV6fIWvWA81QqY+N9vkGkVfG1dSI=;
-        b=WOPZxOLxwxfSssFTR6CCUEeSbZc8gsT9Wq4SU9tMovBYcECXfat7tURUgyDESXcXZe
-         4hRKl5E97wsB5bdpCvno8EqmqNvuebgg2yd4Lf3gS3MUhct77xZEXQr8lU9TyggCMTgm
-         Y9FUCfvxZ8lky0KLvc5eZQLrUh6qfurG01szCml+lFQbOEq4e5Hgyx1UNK1yKMaDGgO3
-         0X+lXVD9YsEASsOTaOThqKfhPmcIq8rToCpzmgZvlJXjJIHdtnzrV8BLuQ3XIueO4aKR
-         cL5eLEg6XgXf8a2obOiHD+Ofd77XgiVSp9wKfRoEQkATvCrQ7ShfcY2zuQQ8kH7u56wG
-         gt2g==
-X-Gm-Message-State: ANhLgQ0GLjH481ziuwJUKspBmng9i/w3eGAvXY/zNCNukR5BbC32pXPv
-        3nluD81imEB6MVmfE/x0XfvfFz6on6OsKs/QeAumRg==
-X-Google-Smtp-Source: ADFU+vuZ2elnKuVqU7qZYZUw8dJvvBH8C6kAq3JJauRXax/QrAStpFqR/zNRSbeNxIbm7pHs2pOGoEIScHClbipbCGU=
-X-Received: by 2002:a25:b0a1:: with SMTP id f33mr41103167ybj.403.1585063804733;
- Tue, 24 Mar 2020 08:30:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200323235846.104937-1-irogers@google.com> <20200324102732.GR1534489@krava>
-In-Reply-To: <20200324102732.GR1534489@krava>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 24 Mar 2020 08:29:53 -0700
-Message-ID: <CAP-5=fVi3dNzXE9R3HniSfD3w97dPebbuO1zUKoPXv4Wag-JDA@mail.gmail.com>
-Subject: Re: [PATCH v5] perf tools: add support for libpfm4
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=1N/kkCsXiaUZJR6Cb6g+LjBhvjr5lmjI4mokCR0tVqI=;
+        b=DyzrXTYeJAFiTTYGDZQ56R6VHko0wEAOFZfF/U8PXTisObde8bAVkDLgnAb3SEwAVC
+         G0qYjttVMoPxt2J2ljygYB9XlEgeJBZxIEmUD3HVgDTrKbqXnxKNNLXL7ESq+t4SnlgM
+         jeAkR1gxCZ/2JXVm9TS5vkNap37iRo2VLLhBRorZt/qlZyfFN03EOK2eiFoJ4CoFL0wJ
+         oXtql75slMyCEKLylX/hpy3fJzaYS0RJApNiHMalQn9DIJD6cm9UWdqP7JISHU/F/Khy
+         z/CttFKIe/L8YOkqqHYP7w722xSM+RTaUDsq0EoP3Gx+yxqsKzFsdVodB9b+XqhA463m
+         Z1eQ==
+X-Gm-Message-State: ANhLgQ0RTkTMqWj4IA4VAVCtBCAW9mG9rCWLe5Nti0gtLRLi96JFtPRS
+        8ShLV1+oOcOida+hIXnOg+2HNQ==
+X-Google-Smtp-Source: ADFU+vuG4lJMdGuOPi6DXgu5JzM407RSy855bnUG1UuTb5xJvxQ+7aP+XEs6ZftW2sAQYdGUDfywtg==
+X-Received: by 2002:a7b:cf19:: with SMTP id l25mr6240257wmg.131.1585065980936;
+        Tue, 24 Mar 2020 09:06:20 -0700 (PDT)
+Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
+        by smtp.gmail.com with ESMTPSA id u204sm4887603wmg.40.2020.03.24.09.06.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Mar 2020 09:06:18 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Tue, 24 Mar 2020 17:06:16 +0100
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jiwei Sun <jiwei.sun@windriver.com>,
-        yuzhoujian <yuzhoujian@didichuxing.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH bpf-next v5 2/7] security: Refactor declaration of LSM
+ hooks
+Message-ID: <20200324160616.GA9173@chromium.org>
+References: <20200323164415.12943-1-kpsingh@chromium.org>
+ <20200323164415.12943-3-kpsingh@chromium.org>
+ <CAEf4Bza67kM0KiX464yB+iV83aV96TyD7iLEZJccXyH-Od0QTQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4Bza67kM0KiX464yB+iV83aV96TyD7iLEZJccXyH-Od0QTQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 24, 2020 at 3:28 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Mon, Mar 23, 2020 at 04:58:46PM -0700, Ian Rogers wrote:
-> > This patch links perf with the libpfm4 library if it is available and
-> > NO_LIBPFM4 isn't passed to the build. The libpfm4 library contains hardware
-> > event tables for all processors supported by perf_events. It is a helper
-> > library that helps convert from a symbolic event name to the event
-> > encoding required by the underlying kernel interface. This
-> > library is open-source and available from: http://perfmon2.sf.net.
+On 23-Mär 12:56, Andrii Nakryiko wrote:
+> On Mon, Mar 23, 2020 at 9:45 AM KP Singh <kpsingh@chromium.org> wrote:
 > >
-> > With this patch, it is possible to specify full hardware events
-> > by name. Hardware filters are also supported. Events must be
-> > specified via the --pfm-events and not -e option. Both options
-> > are active at the same time and it is possible to mix and match:
+> > From: KP Singh <kpsingh@google.com>
 > >
-> > $ perf stat --pfm-events inst_retired:any_p:c=1:i -e cycles ....
+> > The information about the different types of LSM hooks is scattered
+> > in two locations i.e. union security_list_options and
+> > struct security_hook_heads. Rather than duplicating this information
+> > even further for BPF_PROG_TYPE_LSM, define all the hooks with the
+> > LSM_HOOK macro in lsm_hook_names.h which is then used to generate all
+> > the data structures required by the LSM framework.
 > >
-> > v5 is a rebase.
-> > v4 is a rebase on git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git
-> >    branch perf/core and re-adds the tools/build/feature/test-libpfm4.c
-> >    missed in v3.
-> > v3 is against acme/perf/core and removes a diagnostic warning.
-> > v2 of this patch makes the --pfm-events man page documentation
-> > conditional on libpfm4 behing configured. It tidies some of the
-> > documentation and adds the feature test missed in the v1 patch.
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+> > Reviewed-by: Brendan Jackman <jackmanb@google.com>
+> > Reviewed-by: Florent Revest <revest@google.com>
+> > ---
+> >  include/linux/lsm_hook_names.h | 354 +++++++++++++++++++
+> >  include/linux/lsm_hooks.h      | 622 +--------------------------------
+> >  2 files changed, 360 insertions(+), 616 deletions(-)
+> >  create mode 100644 include/linux/lsm_hook_names.h
 > >
-> > Author: Stephane Eranian <eranian@google.com>
-> > Signed-off-by: Ian Rogers <irogers@google.com>
->
-> I still have some conflicts, but I merged it by hand
->
->
->         patching file tools/build/Makefile.feature
->         patching file tools/build/feature/Makefile
->         patching file tools/build/feature/test-libpfm4.c
->         patching file tools/perf/Documentation/Makefile
->         patching file tools/perf/Documentation/perf-record.txt
->         patching file tools/perf/Documentation/perf-stat.txt
->         patching file tools/perf/Documentation/perf-top.txt
->         patching file tools/perf/Makefile.config
->         patching file tools/perf/Makefile.perf
->         Hunk #3 FAILED at 834.
->         1 out of 3 hunks FAILED -- saving rejects to file tools/perf/Makefile.perf.rej
->         patching file tools/perf/builtin-list.c
->         patching file tools/perf/builtin-record.c
->         patching file tools/perf/builtin-stat.c
->         patching file tools/perf/builtin-top.c
->         Hunk #2 succeeded at 1549 (offset 2 lines).
->         Hunk #3 succeeded at 1567 (offset 2 lines).
->         patching file tools/perf/util/evsel.c
->         patching file tools/perf/util/evsel.h
->         patching file tools/perf/util/parse-events.c
->         patching file tools/perf/util/parse-events.h
->         patching file tools/perf/util/pmu.c
->         Hunk #1 succeeded at 869 (offset 5 lines).
->         patching file tools/perf/util/pmu.h
->         Hunk #1 succeeded at 65 (offset 1 line).
->
-> jirka
+> > diff --git a/include/linux/lsm_hook_names.h b/include/linux/lsm_hook_names.h
+> > new file mode 100644
+> > index 000000000000..412e4ca24c9b
+> > --- /dev/null
+> > +++ b/include/linux/lsm_hook_names.h
+> 
+> It's not really just hook names, it's full hook definitions, no? So
+> lsm_hook_defs.h seems a bit more appropriate. Just for consideration,
+> not that I care that strongly :)
 
-Thanks! I did a clone of acme's linux.git branch perf/core and applied
-the change with git am, then built and tested. Perhaps you are using a
-different tree or branch? Anyway, hopefully this is resolved now :-)
+I like lsm_hook_defs.h better too :) Updated.
 
-Thanks again,
-Ian
+- KP
+
+> 
+> 
+> [...]
