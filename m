@@ -2,174 +2,237 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 95CCD190B40
-	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 11:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1911B190B9C
+	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 11:57:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727130AbgCXKjR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Mar 2020 06:39:17 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:33022 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727066AbgCXKjQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Mar 2020 06:39:16 -0400
-Received: by mail-wr1-f67.google.com with SMTP id a25so20790593wrd.0
-        for <bpf@vger.kernel.org>; Tue, 24 Mar 2020 03:39:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=WNURfYwUOPAnuz+U3UbPZyrljqXKCvMA7vRxyxXRqHM=;
-        b=h5BvdxgSXNE2/jma/jYDLUTdGPiB158yhJaCdf6uihjZuDF6ED9XbYBj9gs+33cFnL
-         BR1q8lLb2zZjJ4RN+Z9haG820tRE9+3+kaOsQwpzzfqSE2Up3YZf6krsbiTbZGf9WN4m
-         xsvkfvQuQ/lQQBEIFooS67t8NoZu9oZvSpcBE=
+        id S1727262AbgCXK5w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Mar 2020 06:57:52 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:22599 "EHLO
+        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727201AbgCXK5v (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 24 Mar 2020 06:57:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585047470;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LC9l7Li+aAiPkflXrEAqsPo4FFm0kCWfpVlh5oPxAo0=;
+        b=GkHkATFGk5tb6lUAn+DpcnQHxmugOSfHH0K31TK/lnLT+eNoYwGX2o/A+FDQ9fiJqTKW01
+        9iTAPmiMCDlUkfgrt5iBTRNegOGdXMOtGQ+l0xOiLkFb/4jIKBxjUWwOXInFXkJtDkkHq5
+        /4DGwgLehEj3RhZN26nL+MgdjBgu4z4=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-106-lzRBxjhTMLq4QNEOXj6Img-1; Tue, 24 Mar 2020 06:57:49 -0400
+X-MC-Unique: lzRBxjhTMLq4QNEOXj6Img-1
+Received: by mail-wm1-f70.google.com with SMTP id m4so1156390wme.0
+        for <bpf@vger.kernel.org>; Tue, 24 Mar 2020 03:57:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=WNURfYwUOPAnuz+U3UbPZyrljqXKCvMA7vRxyxXRqHM=;
-        b=uAs8hjh4sgVvKJsV9NNEf81ExvjsXSBuQ6Kj7eq3nBy67CAXaGsGjyCuSyk3Zh8mmC
-         ACKdM+D3oJtEf9WqFlYmvwSEzQvfplPEATvtwaXWSFmu1yzeysGPfiAYN6kN5oZXvfTu
-         6fJABC2Eb8b63af6iIm5O7zM+zDziLbzXTDzbA4ARautpKEiFYm6KcZK6uOS1EuLOwMX
-         2b64tNXTwJ9ioxq/gzvVbP67dLi7PLuQNXvsnQFHkF1cDoAeExeU80yS64YtxummyIxV
-         DjVJF1Yt5k//gYAo/JqkQbJ+2KCwhEGAx/7Lw0LCazon2m8bZQDe0vXRzRcA83sVQHSy
-         3J+Q==
-X-Gm-Message-State: ANhLgQ0270t4kNfCQfqtR9r8W+JlfpeldR6cIg3wgcD6bPSOT76Cwq/T
-        9C2WAIh5vA1O/VAmxEywifmFBg==
-X-Google-Smtp-Source: ADFU+vutESD3P5pBkNWr+6YYHHHInBJvKSWgEdKsOHk7IwwLDwihiRPSXNB3MeFkJv8Gax2/4ZxY2A==
-X-Received: by 2002:a5d:6187:: with SMTP id j7mr12220191wru.419.1585046353498;
-        Tue, 24 Mar 2020 03:39:13 -0700 (PDT)
-Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
-        by smtp.gmail.com with ESMTPSA id b187sm3828624wmb.42.2020.03.24.03.39.12
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=LC9l7Li+aAiPkflXrEAqsPo4FFm0kCWfpVlh5oPxAo0=;
+        b=fgx5dTSxnbaM/HtapdSKbtn3n5VtbNVKhApzENh8h4u2ZHonnIv7HDP2VCgKA+BLtn
+         GycvRbitOWtXrUygQJHYtjsbDda++O6X081Pn3b3oITsgZQkIjhoSoSApTrM3Yy/Y8iv
+         jgSRhSIcIsWpgcLjxpuePE4rWFkXM6+CqXnSZThH470AVwSFyTXfXR6qnPvKJIOMUU6T
+         /KOioX3uiBPohxv5wSkS4UyX/PMrmymgQ3Q84KQosqflhmd3c3iykoLFO+5BfFUr6KbI
+         4KOukJt3eUv9AqnJGnyHWmgndTbB24T8S7Uk7eEDDSsJvOLxvqf3LY3NuLE9lT+RY3mT
+         MHKw==
+X-Gm-Message-State: ANhLgQ35O16MKKAm3PSybjFU1CWNAIxYwijyN5OoEjvwCIjVN2IoUjBQ
+        xidfus6Bk+yOtlA11wq4dV2oOCXtOnKXnHkjed5zgLIpjV2riOXhoj7m1+r7HfX2Pb2wUyswNXS
+        rfPAEjcMdmwTT
+X-Received: by 2002:adf:efc2:: with SMTP id i2mr34116635wrp.420.1585047467876;
+        Tue, 24 Mar 2020 03:57:47 -0700 (PDT)
+X-Google-Smtp-Source: ADFU+vttxUinZJhM+f7WrjTI7ebaW4vekUwZBwow5I1/zq6DtF1DLtWvC1oTo3JMfal4CeDaJ0f4bQ==
+X-Received: by 2002:adf:efc2:: with SMTP id i2mr34116597wrp.420.1585047467579;
+        Tue, 24 Mar 2020 03:57:47 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id d5sm18994540wrh.40.2020.03.24.03.57.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Mar 2020 03:39:12 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Tue, 24 Mar 2020 11:39:10 +0100
+        Tue, 24 Mar 2020 03:57:46 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id ACD89180371; Tue, 24 Mar 2020 11:57:45 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
-        Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@google.com>,
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH bpf-next v5 3/7] bpf: lsm: provide attachment points for
- BPF LSM programs
-Message-ID: <20200324103910.GA7135@chromium.org>
-References: <20200323164415.12943-1-kpsingh@chromium.org>
- <20200323164415.12943-4-kpsingh@chromium.org>
- <CAEf4BzbRivYO=gVjuQw8Z8snN+RFwXswvNxs67c=5g6U3o9rmw@mail.gmail.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing program when attaching XDP
+In-Reply-To: <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com>
+References: <158462359206.164779.15902346296781033076.stgit@toke.dk> <158462359315.164779.13931660750493121404.stgit@toke.dk> <20200319155236.3d8537c5@kicinski-fedora-PC1C0HJN> <875zez76ph.fsf@toke.dk> <20200320103530.2853c573@kicinski-fedora-PC1C0HJN> <5e750bd4ebf8d_233f2ab4c81425c4ce@john-XPS-13-9370.notmuch> <CAEf4BzbWa8vdyLuzr_nxFM3BtT+hhzjCe9UQF8Y5cN+sVqa72g@mail.gmail.com> <87tv2f48lp.fsf@toke.dk> <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com> <87h7ye3mf3.fsf@toke.dk> <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 24 Mar 2020 11:57:45 +0100
+Message-ID: <87tv2e10ly.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbRivYO=gVjuQw8Z8snN+RFwXswvNxs67c=5g6U3o9rmw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 23-Mär 12:59, Andrii Nakryiko wrote:
-> On Mon, Mar 23, 2020 at 9:45 AM KP Singh <kpsingh@chromium.org> wrote:
-> >
-> > From: KP Singh <kpsingh@google.com>
-> >
-> > When CONFIG_BPF_LSM is enabled, nops functions, bpf_lsm_<hook_name>, are
-> > generated for each LSM hook. These nops are initialized as LSM hooks in
-> > a subsequent patch.
-> >
-> > Signed-off-by: KP Singh <kpsingh@google.com>
-> > Reviewed-by: Brendan Jackman <jackmanb@google.com>
-> > Reviewed-by: Florent Revest <revest@google.com>
-> > ---
-> >  include/linux/bpf_lsm.h | 21 +++++++++++++++++++++
-> >  kernel/bpf/bpf_lsm.c    | 19 +++++++++++++++++++
-> >  2 files changed, 40 insertions(+)
-> >  create mode 100644 include/linux/bpf_lsm.h
-> >
-> > diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
-> > new file mode 100644
-> > index 000000000000..c6423a140220
-> > --- /dev/null
-> > +++ b/include/linux/bpf_lsm.h
-> > @@ -0,0 +1,21 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +
-> > +/*
-> > + * Copyright (C) 2020 Google LLC.
-> > + */
-> > +
-> > +#ifndef _LINUX_BPF_LSM_H
-> > +#define _LINUX_BPF_LSM_H
-> > +
-> > +#include <linux/bpf.h>
-> > +#include <linux/lsm_hooks.h>
-> > +
-> > +#ifdef CONFIG_BPF_LSM
-> > +
-> > +#define LSM_HOOK(RET, NAME, ...) RET bpf_lsm_##NAME(__VA_ARGS__);
-> > +#include <linux/lsm_hook_names.h>
-> > +#undef LSM_HOOK
-> > +
-> > +#endif /* CONFIG_BPF_LSM */
-> > +
-> > +#endif /* _LINUX_BPF_LSM_H */
-> > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-> > index 82875039ca90..530d137f7a84 100644
-> > --- a/kernel/bpf/bpf_lsm.c
-> > +++ b/kernel/bpf/bpf_lsm.c
-> > @@ -7,6 +7,25 @@
-> >  #include <linux/filter.h>
-> >  #include <linux/bpf.h>
-> >  #include <linux/btf.h>
-> > +#include <linux/lsm_hooks.h>
-> > +#include <linux/bpf_lsm.h>
-> > +
-> > +/* For every LSM hook  that allows attachment of BPF programs, declare a NOP
-> > + * function where a BPF program can be attached as an fexit trampoline.
-> > + */
-> > +#define LSM_HOOK(RET, NAME, ...) LSM_HOOK_##RET(NAME, __VA_ARGS__)
-> > +
-> > +#define LSM_HOOK_int(NAME, ...)                        \
-> > +noinline __weak int bpf_lsm_##NAME(__VA_ARGS__)        \
-> > +{                                              \
-> > +       return 0;                               \
-> > +}
-> > +
-> > +#define LSM_HOOK_void(NAME, ...) \
-> > +noinline __weak void bpf_lsm_##NAME(__VA_ARGS__) {}
-> > +
-> 
-> Could unify with:
-> 
-> #define LSM_HOOK(RET, NAME, ...) noinline __weak RET bpf_lsm_##NAME(__VA_ARGS__)
-> {
->     return (RET)0;
-> }
-> 
-> then you don't need LSM_HOOK_int and LSM_HOOK_void.
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-Nice.
+> On Mon, Mar 23, 2020 at 12:23 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
+edhat.com> wrote:
+>>
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>
+>> > On Mon, Mar 23, 2020 at 4:24 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
+@redhat.com> wrote:
+>> >>
+>> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>> >>
+>> >> > On Fri, Mar 20, 2020 at 11:31 AM John Fastabend
+>> >> > <john.fastabend@gmail.com> wrote:
+>> >> >>
+>> >> >> Jakub Kicinski wrote:
+>> >> >> > On Fri, 20 Mar 2020 09:48:10 +0100 Toke H=C3=B8iland-J=C3=B8rgen=
+sen wrote:
+>> >> >> > > Jakub Kicinski <kuba@kernel.org> writes:
+>> >> >> > > > On Thu, 19 Mar 2020 14:13:13 +0100 Toke H=C3=B8iland-J=C3=B8=
+rgensen wrote:
+>> >> >> > > >> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> >> >> > > >>
+>> >> >> > > >> While it is currently possible for userspace to specify tha=
+t an existing
+>> >> >> > > >> XDP program should not be replaced when attaching to an int=
+erface, there is
+>> >> >> > > >> no mechanism to safely replace a specific XDP program with =
+another.
+>> >> >> > > >>
+>> >> >> > > >> This patch adds a new netlink attribute, IFLA_XDP_EXPECTED_=
+FD, which can be
+>> >> >> > > >> set along with IFLA_XDP_FD. If set, the kernel will check t=
+hat the program
+>> >> >> > > >> currently loaded on the interface matches the expected one,=
+ and fail the
+>> >> >> > > >> operation if it does not. This corresponds to a 'cmpxchg' m=
+emory operation.
+>> >> >> > > >>
+>> >> >> > > >> A new companion flag, XDP_FLAGS_EXPECT_FD, is also added to=
+ explicitly
+>> >> >> > > >> request checking of the EXPECTED_FD attribute. This is need=
+ed for userspace
+>> >> >> > > >> to discover whether the kernel supports the new attribute.
+>> >> >> > > >>
+>> >> >> > > >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com>
+>> >> >> > > >
+>> >> >> > > > I didn't know we wanted to go ahead with this...
+>> >> >> > >
+>> >> >> > > Well, I'm aware of the bpf_link discussion, obviously. Not sur=
+e what's
+>> >> >> > > happening with that, though. So since this is a straight-forwa=
+rd
+>> >> >> > > extension of the existing API, that doesn't carry a high imple=
+mentation
+>> >> >> > > cost, I figured I'd just go ahead with this. Doesn't mean we c=
+an't have
+>> >> >> > > something similar in bpf_link as well, of course.
+>> >> >> >
+>> >> >> > I'm not really in the loop, but from what I overheard - I think =
+the
+>> >> >> > bpf_link may be targeting something non-networking first.
+>> >> >>
+>> >> >> My preference is to avoid building two different APIs one for XDP =
+and another
+>> >> >> for everything else. If we have userlands that already understand =
+links and
+>> >> >> pinning support is on the way imo lets use these APIs for networki=
+ng as well.
+>> >> >
+>> >> > I agree here. And yes, I've been working on extending bpf_link into
+>> >> > cgroup and then to XDP. We are still discussing some cgroup-specific
+>> >> > details, but the patch is ready. I'm going to post it as an RFC to =
+get
+>> >> > the discussion started, before we do this for XDP.
+>> >>
+>> >> Well, my reason for being skeptic about bpf_link and proposing the
+>> >> netlink-based API is actually exactly this, but in reverse: With
+>> >> bpf_link we will be in the situation that everything related to a net=
+dev
+>> >> is configured over netlink *except* XDP.
+>> >
+>> > One can argue that everything related to use of BPF is going to be
+>> > uniform and done through BPF syscall? Given variety of possible BPF
+>> > hooks/targets, using custom ways to attach for all those many cases is
+>> > really bad as well, so having a unifying concept and single entry to
+>> > do this is good, no?
+>>
+>> Well, it depends on how you view the BPF subsystem's relation to the
+>> rest of the kernel, I suppose. I tend to view it as a subsystem that
+>> provides a bunch of functionality, which you can setup (using "internal"
+>> BPF APIs), and then attach that object to a different subsystem
+>> (networking) using that subsystem's configuration APIs.
+>>
+>> Seeing as this really boils down to a matter of taste, though, I'm not
+>> sure we'll find agreement on this :)
+>
+> Yeah, seems like so. But then again, your view and reality don't seem
+> to correlate completely. cgroup, a lot of tracing,
+> flow_dissector/lirc_mode2 attachments all are done through BPF
+> syscall.
 
-But, given that we are adding default values and that
-they are only needed for int hooks, we will need to keep the macros
-separate for int and void. Or, Am I missing a trick here?
+Well, I wasn't talking about any of those subsystems, I was talking
+about networking :)
 
-- KP
+In particular, networking already has a consistent and fairly
+well-designed configuration mechanism (i.e., netlink) that we are
+generally trying to move more functionality *towards* not *away from*
+(see, e.g., converting ethtool to use netlink).
 
-> 
-> > +#include <linux/lsm_hook_names.h>
-> > +#undef LSM_HOOK
-> >
-> >  const struct bpf_prog_ops lsm_prog_ops = {
-> >  };
-> > --
-> > 2.20.1
-> >
+> LINK_CREATE provides an opportunity to finally unify all those
+> different ways to achieve the same "attach my BPF program to some
+> target object" semantics.
+
+Well I also happen to think that "attach a BPF program to an object" is
+the wrong way to think about XDP. Rather, in my mind the model is
+"instruct the netdevice to execute this piece of BPF code".
+
+>> >> Other than that, I don't see any reason why the bpf_link API won't wo=
+rk.
+>> >> So I guess that if no one else has any problem with BPF insisting on
+>> >> being a special snowflake, I guess I can live with it as well... *shr=
+ugs* :)
+>> >
+>> > Apart from derogatory remark,
+>>
+>> Yeah, should have left out the 'snowflake' bit, sorry about that...
+>>
+>> > BPF is a bit special here, because it requires every potential BPF
+>> > hook (be it cgroups, xdp, perf_event, etc) to be aware of BPF
+>> > program(s) and execute them with special macro. So like it or not, it
+>> > is special and each driver supporting BPF needs to implement this BPF
+>> > wiring.
+>>
+>> All that is about internal implementation, though. I'm bothered by the
+>> API discrepancy (i.e., from the user PoV we'll end up with: "netlink is
+>> what you use to configure your netdev except if you want to attach an
+>> XDP program to it").
+>>
+>
+> See my reply to David. Depends on where you define user API. Is it
+> libbpf API, which is what most users are using? Or kernel API?
+
+Well I'm talking about the kernel<->userspace API, obviously :)
+
+> If everyone is using libbpf, does kernel system (bpf syscall vs
+> netlink) matter all that much?
+
+This argument works the other way as well, though: If libbpf can
+abstract the subsystem differences and provide a consistent interface to
+"the BPF world", why does BPF need to impose its own syscall API on the
+networking subsystem?
+
+-Toke
+
