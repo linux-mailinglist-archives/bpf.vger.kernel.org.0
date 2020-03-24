@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2BDA190AE2
-	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 11:26:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 679F1190AE7
+	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 11:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727161AbgCXK0M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Mar 2020 06:26:12 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([216.205.24.74]:58091 "EHLO
+        id S1727145AbgCXK0u (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Mar 2020 06:26:50 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:47377 "EHLO
         us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727130AbgCXK0M (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 24 Mar 2020 06:26:12 -0400
+        by vger.kernel.org with ESMTP id S1726524AbgCXK0t (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 24 Mar 2020 06:26:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585045571;
+        s=mimecast20190719; t=1585045608;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=TI9J12sTDb0Vpr1mpuy5hfvmrFn3PMyYGmmiVFdQMGA=;
-        b=eCuK6A3rmH8KdfrmFnpiUhavUywfo7K8ULBEVGHDHCWIl1ChLDuicgx9zIICvF5BH/rgoZ
-        ijw/Fz3iI8hsVpOefWTXokd9dO5Z323SYpyANK6GJwFCZ3PibaTll/+aYvz8ZKU4hTHxcA
-        hxKP6xrunuM791HHQUFi63mPIeZzTu8=
+        bh=sioQHJ/gqYmdZ2quk2XdjeUt1wNNtFtGmhdgWYbayjc=;
+        b=fk3QCSW1dQFkytTmNG68uggJQZgF1D6DBaMO48dtntSwcEEzK8zYWXaTU4USZdCx6z4KL6
+        T9usSrYah0WfqJN/TXOShl57qkR3RrIgiB8LkFh2E6ooco3lt6arbF6bEfQlC5s2UCGj7t
+        KMj/NXpXa2eEz15w32nCFEbnHrP6+zQ=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-215-gMheyZxdMLWKB16HPk3-Lw-1; Tue, 24 Mar 2020 06:26:09 -0400
-X-MC-Unique: gMheyZxdMLWKB16HPk3-Lw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-470-rZ0geVkpMPGbklEvQJuDlA-1; Tue, 24 Mar 2020 06:26:47 -0400
+X-MC-Unique: rZ0geVkpMPGbklEvQJuDlA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6A016107ACC7;
-        Tue, 24 Mar 2020 10:26:05 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF63C800D54;
+        Tue, 24 Mar 2020 10:26:43 +0000 (UTC)
 Received: from krava (unknown [10.40.192.119])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 97B6A60BE0;
-        Tue, 24 Mar 2020 10:25:59 +0000 (UTC)
-Date:   Tue, 24 Mar 2020 11:25:57 +0100
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E0E25A0A60;
+        Tue, 24 Mar 2020 10:26:24 +0000 (UTC)
+Date:   Tue, 24 Mar 2020 11:26:20 +0100
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Ian Rogers <irogers@google.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -62,13 +62,13 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
         Stephane Eranian <eranian@google.com>
 Subject: Re: [PATCH v5] perf tools: add support for libpfm4
-Message-ID: <20200324102557.GN1534489@krava>
+Message-ID: <20200324102620.GO1534489@krava>
 References: <20200323235846.104937-1-irogers@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20200323235846.104937-1-irogers@google.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -78,37 +78,27 @@ On Mon, Mar 23, 2020 at 04:58:46PM -0700, Ian Rogers wrote:
 
 SNIP
 
-> +		/* no event */
-> +		if (*q == '\0')
-> +			continue;
-> +
-> +		memset(&attr, 0, sizeof(attr));
-> +		event_attr_init(&attr);
-> +
-> +		ret = parse_libpfm_event(q, &attr);
-> +		if (ret != PFM_SUCCESS) {
-> +			fprintf(stderr, "failed to parse event %s : %s\n", str, pfm_strerror(ret));
-> +			goto error;
-> +		}
-> +
-> +		evsel = perf_evsel__new_idx(&attr, evlist->core.nr_entries);
-> +		if (evsel == NULL)
-> +			goto error;
-> +
-> +		evsel->name = strdup(q);
-> +		if (!evsel->name) {
-> +			evsel__delete(evsel);
-> +			goto error;
-> +		}
-> +		evsel->is_libpfm_event = true;
-> +
-> +		pmu = perf_pmu__find_by_type((unsigned)attr.type);
-> +		if (pmu)
-> +			evsel->core.own_cpus = perf_cpu_map__get(pmu->cpus);
+>  INTERACTIVE PROMPTING KEYS
+>  --------------------------
+> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+> index 80e55e796be9..571aa6b1af40 100644
+> --- a/tools/perf/Makefile.config
+> +++ b/tools/perf/Makefile.config
+> @@ -999,6 +999,18 @@ ifdef LIBCLANGLLVM
+>    endif
+>  endif
+>  
+> +ifndef NO_LIBPFM4
+> +  ifeq ($(feature-libpfm4), 1)
+> +    CFLAGS += -DHAVE_LIBPFM
+> +    EXTLIBS += -lpfm
+> +    ASCIIDOC_EXTRA = -aHAVE_LIBPFM=1
+> +    $(call detected,CONFIG_LIBPFM4)
 
-I think you need to do more setup in here, like in __add_event function
-would be great to factor those bits from __add_event function and call
-it from here, so it's all in one place
+you don't use CONFIG_LIBPFM4
+
+but I was wondering if we should put it all in separate
+object like util/pfm.c to get rid of some of those ifdefs
 
 jirka
 
