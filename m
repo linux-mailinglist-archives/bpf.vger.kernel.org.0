@@ -2,75 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9325D1903AD
-	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 03:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4111904AA
+	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 05:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727234AbgCXCrI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Mar 2020 22:47:08 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:39275 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727047AbgCXCrF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Mar 2020 22:47:05 -0400
-Received: by mail-io1-f71.google.com with SMTP id v13so11434551iox.6
-        for <bpf@vger.kernel.org>; Mon, 23 Mar 2020 19:47:03 -0700 (PDT)
+        id S1725922AbgCXExm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Mar 2020 00:53:42 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:43126 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725827AbgCXExl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Mar 2020 00:53:41 -0400
+Received: by mail-qk1-f193.google.com with SMTP id o10so12306995qki.10;
+        Mon, 23 Mar 2020 21:53:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=IvaYJ1XnXGHPe27WQZkUuZhxihBKOs9VY8C07B9yEtc=;
+        b=YSofh0ixcItzY1hCTU95+xJJbgvWPrCfXUamGcZffe9LcFlkcNsA3XbO/dOOF+U5X1
+         rW6Qv/H3BS3UGsDB9VmQoCdhD/2looREHK/bqvBxsMrrAnheGUQhrGDVx7w36Ij40Jkb
+         UO0FpVFiIDsQnZohprjFaM0XzyFA2b7hvX1FJUrRvbg2ga7G3EE2mih3VBZx42gHF0pz
+         /Hh/5po0Kz4dNEe3murKclutm1CVkJAHkdvUPSLkZhPO6Bt3jqHbW1VpmV7zV/+p117O
+         GyzcUnCA+esI0KByuHVf40W55fyNUr5pDFdgQFvXsNlr/4Y5yRw/7DhcQuXWGwJ/ZvNp
+         BRJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=LOv2WyxOQNJMMiel1AjLpQJL3nLG4+bZfZZebAkOi9k=;
-        b=n37W6W65g7ZKvxM1CazULg87/vqfm/hf6zLxb6Qar2PTsVAlLQReEPPo/0xf0daJ80
-         v+hWZ1Q7sthemeO+H6HxQvcGTTo+0ZnZm0Mkkuu03k4r8j5+E6JbyIK5GnXaB2ltZcfl
-         WEr8JS4EU0LiLW/6UahdDb0WU/pQwtC7L9YimbIktG4WhUnD71kRgm9bLzpU6raanFEg
-         +GsYk9oWlcrTqwlaVpWFJhuAI8sDILATU3MirUwm5aAMMT/LsNKFvZrhdbXZDSfVhEtI
-         r+QuVTLqMofgGc7zygFcmTMk/zPwg459dRqOeDpSaify6Lpf0qBgCOthF7tAywF+9ino
-         +m/w==
-X-Gm-Message-State: ANhLgQ3Z5oYsvkckEUhsjjeYnYYvo/f2+08+Cc+AmnQdgypI9ZfgoZ+R
-        9f3mv5QHJf12t/Wpl4KqWKM5ctzzuwILk0YtxOpwHlMKf5FK
-X-Google-Smtp-Source: ADFU+vstiI7NkY8P0sLiaAwA1tlgY+DAUVfkvxxrtQc1GUcIriiMD4ZAGZsTUHBhY7pwHk2p3ulODfmE2r7ZpymGWtd3GqW4WeUB
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=IvaYJ1XnXGHPe27WQZkUuZhxihBKOs9VY8C07B9yEtc=;
+        b=Y7jxq9+62h+neuFSwtxRRNpZsTAZtr1IVdQtHg2uD2P1WbfGgk+0HoiVsXPJzNSMrl
+         2q/8xopiqOXlJxlslRID/LPCb4NhYWBmYmqnQv7avpz/bKuMoThwRIYsxZ7IgjNopBld
+         BvQghhy9uAGBostEHdIv147SAUZuO1vwQm8G8r4S/USVjodAvqJkkk32QPgyM0vEzYGx
+         yrri1D85DE5cuJNylAFSqiLGppWqgvOegyj/r2Kphrp5pzK7tl23+CNB30LXVrRbzQko
+         JpnWfQp+3SrESC5Xgon8aKoQNbMUyZVhUcKBKfliy5fINIeS1MHK2ibokrfALj7Px6HJ
+         eRag==
+X-Gm-Message-State: ANhLgQ0MKejmsoLFDO26t8u/upxNbwSjAOzo9jsARqExeOCgDQFroL6K
+        2qKl4bBNuxm44LIiA4jVUVYwckXeVxLDTQLo4+Q=
+X-Google-Smtp-Source: ADFU+vtBtT+xud4VWucJrhJxHSb+2W+H0mZLbatGMPMjGuGByp1/zz1tkSu7QMyBfkeG7ZbBNOxst2yEkz18EiAe+z8=
+X-Received: by 2002:a37:e40d:: with SMTP id y13mr24084004qkf.39.1585025620414;
+ Mon, 23 Mar 2020 21:53:40 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a02:6cd5:: with SMTP id w204mr22866930jab.43.1585018023533;
- Mon, 23 Mar 2020 19:47:03 -0700 (PDT)
-Date:   Mon, 23 Mar 2020 19:47:03 -0700
-In-Reply-To: <000000000000a6f2030598bbe38c@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004162e805a190c456@google.com>
-Subject: Re: WARNING in wp_page_copy
-From:   syzbot <syzbot+9301f2f33873407d5b33@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andriin@fb.com, ast@kernel.org,
-        bjorn.topel@intel.com, bpf@vger.kernel.org,
-        catalin.marinas@arm.com, daniel@iogearbox.net, davem@davemloft.net,
-        hawk@kernel.org, jakub.kicinski@netronome.com, jmoyer@redhat.com,
-        john.fastabend@gmail.com, jonathan.lemon@gmail.com,
-        justin.he@arm.com, kafai@fb.com, kirill.shutemov@linux.intel.com,
-        kirill@shutemov.name, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, magnus.karlsson@gmail.com,
-        magnus.karlsson@intel.com, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        torvalds@linux-foundation.org, yhs@fb.com
+References: <158462359206.164779.15902346296781033076.stgit@toke.dk>
+ <158462359315.164779.13931660750493121404.stgit@toke.dk> <20200319155236.3d8537c5@kicinski-fedora-PC1C0HJN>
+ <875zez76ph.fsf@toke.dk> <20200320103530.2853c573@kicinski-fedora-PC1C0HJN>
+ <5e750bd4ebf8d_233f2ab4c81425c4ce@john-XPS-13-9370.notmuch>
+ <CAEf4BzbWa8vdyLuzr_nxFM3BtT+hhzjCe9UQF8Y5cN+sVqa72g@mail.gmail.com>
+ <87tv2f48lp.fsf@toke.dk> <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com>
+ <87h7ye3mf3.fsf@toke.dk> <1dfae7b8-4f80-13b8-c67c-82fe0a34f42a@gmail.com>
+In-Reply-To: <1dfae7b8-4f80-13b8-c67c-82fe0a34f42a@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 23 Mar 2020 21:53:29 -0700
+Message-ID: <CAEf4BzbT=vC8OF8cwFX8H5vphn8-dyWRjRSPq50t0Cg8onmYhA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
+ program when attaching XDP
+To:     David Ahern <dsahern@gmail.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot suspects this bug was fixed by commit:
+On Mon, Mar 23, 2020 at 6:01 PM David Ahern <dsahern@gmail.com> wrote:
+>
+> On 3/23/20 1:23 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> >>>> I agree here. And yes, I've been working on extending bpf_link into
+> >>>> cgroup and then to XDP. We are still discussing some cgroup-specific
+> >>>> details, but the patch is ready. I'm going to post it as an RFC to g=
+et
+> >>>> the discussion started, before we do this for XDP.
+> >>>
+> >>> Well, my reason for being skeptic about bpf_link and proposing the
+> >>> netlink-based API is actually exactly this, but in reverse: With
+> >>> bpf_link we will be in the situation that everything related to a net=
+dev
+> >>> is configured over netlink *except* XDP.
+>
+> +1
 
-commit c3e5ea6ee574ae5e845a40ac8198de1fb63bb3ab
-Author: Kirill A. Shutemov <kirill@shutemov.name>
-Date:   Fri Mar 6 06:28:32 2020 +0000
+Hm... so using **libbpf**'s bpf_set_link_xdp_fd() API (notice "bpf" in
+the name of the library and function, and notice no "netlink"), which
+exposes absolutely nothing about netlink (it's just an internal
+implementation detail and can easily change), is ok. But actually
+switching to libbpf's bpf_link would be out of ordinary? Especially
+considering that to use freplace programs (for libxdp and chaining)
+with libbpf you will use bpf_program and bpf_link abstractions
+anyways.
 
-    mm: avoid data corruption on CoW fault into PFN-mapped VMA
+>
+> >>
+> >> One can argue that everything related to use of BPF is going to be
+> >> uniform and done through BPF syscall? Given variety of possible BPF
+> >> hooks/targets, using custom ways to attach for all those many cases is
+> >> really bad as well, so having a unifying concept and single entry to
+> >> do this is good, no?
+> >
+> > Well, it depends on how you view the BPF subsystem's relation to the
+> > rest of the kernel, I suppose. I tend to view it as a subsystem that
+> > provides a bunch of functionality, which you can setup (using "internal=
+"
+> > BPF APIs), and then attach that object to a different subsystem
+> > (networking) using that subsystem's configuration APIs.
+> >
+>
+> again, +1.
+>
+> bpf syscall is used for program related manipulations like load and
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1170c813e00000
-start commit:   e31736d9 Merge tag 'nios2-v5.5-rc2' of git://git.kernel.or..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=79f79de2a27d3e3d
-dashboard link: https://syzkaller.appspot.com/bug?extid=9301f2f33873407d5b33
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10fd9fb1e00000
+bpf syscall is used for way more than that, actually...
 
-If the result looks correct, please mark the bug fixed by replying with:
+> unload. Attaching that program to an object has a type unique solution -
+> e.g., netlink for XDP and ioctl for perf_events.
 
-#syz fix: mm: avoid data corruption on CoW fault into PFN-mapped VMA
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+That's not true and hasn't been true for at least a while now. cgroup
+programs, flow_dissector, lirc_mode2 (whatever that is, I have no
+idea) are attached with BPF_PROG_ATTACH. raw_tracepoint and all the
+fentry/fexit/fmod_ret/freplace attachments are done also through bpf
+syscall. For perf_event related stuff it's done through ioctls right
+now, but with bpf_link unification I wouldn't be surprised if it will
+be done through the same LINK_CREATE command soon, as is done for
+cgroup and *other* tracing bpf_links. Because consistent API and
+semantics is good, rather than having to do it N different ways for N
+different subsystems.
