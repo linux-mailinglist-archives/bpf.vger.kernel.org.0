@@ -2,73 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CFA8191D24
-	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 23:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65047191D3B
+	for <lists+bpf@lfdr.de>; Wed, 25 Mar 2020 00:06:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727395AbgCXW4i (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Mar 2020 18:56:38 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:38883 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727250AbgCXW4i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Mar 2020 18:56:38 -0400
-Received: by mail-qk1-f196.google.com with SMTP id h14so472863qke.5;
-        Tue, 24 Mar 2020 15:56:37 -0700 (PDT)
+        id S1727384AbgCXXGI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Mar 2020 19:06:08 -0400
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:38682 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727389AbgCXXGI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Mar 2020 19:06:08 -0400
+Received: by mail-qv1-f67.google.com with SMTP id p60so32182qva.5;
+        Tue, 24 Mar 2020 16:06:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=nO/TUCfXH5JcNgVw6b7mJqj4Q7gXzucj0OwtiHw4z9U=;
-        b=LKjYTYYbd6Jvw89UzteiChaY/tu/aEvKxuXjl1W1/7lBT2ouEA7qvlHbVojT0wY1uf
-         EVtLd6bV3KYbzNRznPeQl+auWi972Ql+hx0FJcCS6lJM6nszPe1wht2bL51dvhAmXeWk
-         PSL3OeLM1eryztJRk4ymtOLS7svKOe2yF34ufV5MHnR/nq2nIAKU885WrqbFudEjsa9X
-         PEd+SOLmo/RkARRwV/WdPs9tg2+pSPHG8WS2ZGHW0cN0xiviPSjvYjfa8MWMCfHi45a7
-         idtvHhuuZpXRp6XO5Ik4TJ/xJH0APp++3YkHvYDEC3Vnhjyzh1y7adgGgBIDTkoXSLEA
-         gIZw==
+        bh=4pOTjOQ4CSoPPo4R3m6oFz097HCDHa07yFZ3G/jCU5o=;
+        b=GWJDDNjgep4dQ0GbncFL2YA5COqLO968gn9y5l4ZLmde6uD/Sg8Hw4Vh8iSKZ+SQE1
+         SumjLEZwXMFCMxEJXOJZeI9KCe0thkXnLA+FkgiyK+2mtoEFeQFvy4E2oO6dgUAiMMxB
+         RA59qCwIT/1bFpoptvrhuC+4R89RjjsLezZ5HxTjJyK/UOkZRYImugyVqJcyGNDqSRIp
+         1QB2UfilbqYyceeTupaBaRz8wyjhO1G9FHaSzqDv65FVuDMdbCVL0tMo/NeLU1mr0oob
+         cYuOj8epSLaBoJvpjtUWKjuJ89SrQsh0/AbaEET6r9LA06Y9adh7bJP3lCDZVrYPs/fc
+         ZqaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nO/TUCfXH5JcNgVw6b7mJqj4Q7gXzucj0OwtiHw4z9U=;
-        b=XaTE6AE1bRwlHibRG1rrX9avh+UADX0D+89ceh8L+cRUcnrWgWxN28ttl+HWfDmWR6
-         5gocYIPL0ogNo+608P8ZHuYsxm4qiqR4eDwoGdOitw2Jc8eFZFDeM/n6J9AirWofAhoJ
-         w8KPmKb3IYnNJnq0YRCt4MNKZVuuRMWb+Er/b80T9bHGHCwQOAKu518AFz2Yuw5fCidl
-         g9WRi+hGAJgfBhk/nhuW4WZkSzKBEs3eM5M6tCQM4l7FL8mv+Z+um3NMAdNr5jjSKQtG
-         yr7kzvZwUnu5NbD1ZHJ/u3ncxHSsTEJtwNFiYvkWuvBMI/Kgq+I/9Hg+r7BthwGoisXt
-         2hLw==
-X-Gm-Message-State: ANhLgQ3fUzX+Qs9e3d4kt2W0mpgkvRPkF2BPkFGho3M/oq1ldXbW6eL8
-        3l6eazat4LWZKxdCqo7zYqqXgihhp8ROLnEbkRE=
-X-Google-Smtp-Source: ADFU+vuADKlIX96nXnst8T/cc15Jvjirvqzx4w4zE2aSI7Cn3L8Xtn/E0fmrtODUPVQotdOvZo4WIrr0NHKmnjvL1OQ=
-X-Received: by 2002:a37:6411:: with SMTP id y17mr214211qkb.437.1585090596506;
- Tue, 24 Mar 2020 15:56:36 -0700 (PDT)
+        bh=4pOTjOQ4CSoPPo4R3m6oFz097HCDHa07yFZ3G/jCU5o=;
+        b=aC7w8+AwB0iV13LY2u9svg7iFjijV4VD2WHndZH/Xo5rdjxCOJ8WNksIEgLkFFLICl
+         qsLrWTVVnzTht4XKUges8V+wucUtRiZH1wi7n8/wAFXUhgiu0niwsMbqmEh99KHF7lT+
+         sxqQDa/kOcUibVujBvJXIpfTdFFn/YLS632gzg9hAgA1wVsyz7ap09Xk/1KG7c1lIaJA
+         ZZjnulYjkCq/TS9K16flzp/BJSI514Yf1xmf93Ink5vJtdhBwYHO7tZg8ypIkvaEQTI9
+         vnOn6CcJscTLQSma58mDEgmIODhPSN4xCefM2wy6U4AYZEiZDR0EwVRDNFrJnNsukKJh
+         AG5A==
+X-Gm-Message-State: ANhLgQ1aYluwQTe9qCKlDtHlrwGV3T6HiN+3XoukaYb68Bc4APnVoew1
+        Gfj65rIwNy02sUak9xUCb9mTNUNgpI15eZ3zcPc=
+X-Google-Smtp-Source: ADFU+vtIjXjAcaLmeV0nxzde93764w9RX27hT/rQo1hoxo/HZak5M33rGGtvhxs04+Qks8WfXK62NNa96PFLfKwJlZQ=
+X-Received: by 2002:a0c:bd2a:: with SMTP id m42mr543269qvg.163.1585091166624;
+ Tue, 24 Mar 2020 16:06:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <158462359206.164779.15902346296781033076.stgit@toke.dk>
- <158462359315.164779.13931660750493121404.stgit@toke.dk> <20200319155236.3d8537c5@kicinski-fedora-PC1C0HJN>
- <875zez76ph.fsf@toke.dk> <20200320103530.2853c573@kicinski-fedora-PC1C0HJN>
- <5e750bd4ebf8d_233f2ab4c81425c4ce@john-XPS-13-9370.notmuch>
- <CAEf4BzbWa8vdyLuzr_nxFM3BtT+hhzjCe9UQF8Y5cN+sVqa72g@mail.gmail.com>
- <87tv2f48lp.fsf@toke.dk> <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com>
- <87h7ye3mf3.fsf@toke.dk> <1dfae7b8-4f80-13b8-c67c-82fe0a34f42a@gmail.com>
- <CAEf4BzbT=vC8OF8cwFX8H5vphn8-dyWRjRSPq50t0Cg8onmYhA@mail.gmail.com> <3b6d6f73-26b2-6ef8-dfac-2bd28e361458@gmail.com>
-In-Reply-To: <3b6d6f73-26b2-6ef8-dfac-2bd28e361458@gmail.com>
+References: <20200320203615.1519013-1-andriin@fb.com> <20200320203615.1519013-6-andriin@fb.com>
+ <87wo7b49mn.fsf@toke.dk> <CAEf4Bzbt7-A+2dH0kSAM11mjwX+ZDV8JBhJZDArAU=Q9+y79mw@mail.gmail.com>
+ <87blom3m2w.fsf@toke.dk>
+In-Reply-To: <87blom3m2w.fsf@toke.dk>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 24 Mar 2020 15:56:25 -0700
-Message-ID: <CAEf4BzZFL6h7auopO+HEaarWb3RNAcAvsMn+aUcskBhamHwWyg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
- program when attaching XDP
-To:     David Ahern <dsahern@gmail.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 24 Mar 2020 16:05:55 -0700
+Message-ID: <CAEf4Bzb5=tg+mYs+V6=fTzhxCYmx2qAVSTXAuJud-6Q92au80g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 5/6] libbpf: add support for bpf_link-based
+ cgroup attachment
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
@@ -76,127 +63,200 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 24, 2020 at 1:55 PM David Ahern <dsahern@gmail.com> wrote:
+On Mon, Mar 23, 2020 at 12:31 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
+hat.com> wrote:
 >
-> On 3/23/20 10:53 PM, Andrii Nakryiko wrote:
-> > On Mon, Mar 23, 2020 at 6:01 PM David Ahern <dsahern@gmail.com> wrote:
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>
+> > On Mon, Mar 23, 2020 at 4:02 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
 > >>
-> >> On 3/23/20 1:23 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> >>>>>> I agree here. And yes, I've been working on extending bpf_link int=
-o
-> >>>>>> cgroup and then to XDP. We are still discussing some cgroup-specif=
-ic
-> >>>>>> details, but the patch is ready. I'm going to post it as an RFC to=
- get
-> >>>>>> the discussion started, before we do this for XDP.
-> >>>>>
-> >>>>> Well, my reason for being skeptic about bpf_link and proposing the
-> >>>>> netlink-based API is actually exactly this, but in reverse: With
-> >>>>> bpf_link we will be in the situation that everything related to a n=
-etdev
-> >>>>> is configured over netlink *except* XDP.
+> >> Andrii Nakryiko <andriin@fb.com> writes:
 > >>
-> >> +1
-> >
-> > Hm... so using **libbpf**'s bpf_set_link_xdp_fd() API (notice "bpf" in
-> > the name of the library and function, and notice no "netlink"), which
-> > exposes absolutely nothing about netlink (it's just an internal
-> > implementation detail and can easily change), is ok. But actually
-> > switching to libbpf's bpf_link would be out of ordinary? Especially
-> > considering that to use freplace programs (for libxdp and chaining)
-> > with libbpf you will use bpf_program and bpf_link abstractions
-> > anyways.
->
-> It seems to me you are conflating libbpf api with the kernel uapi.
-
-I'm not, as you can see in other email where I explicitly asked about
-which ones we care in this discussion the most.
-
-> Making libbpf user friendly certainly encourages standardization on its
-> use, but there is no requirement that use of bpf means use of libbpf.
-
-Agree, we can't force anyone to use libbpf. But it seems a pretty
-popular choice in practice.
-
->
-> >
+> >> > Add bpf_program__attach_cgroup(), which uses BPF_LINK_CREATE subcomm=
+and to
+> >> > create an FD-based kernel bpf_link. Also add low-level bpf_link_crea=
+te() API.
+> >> >
+> >> > If expected_attach_type is not specified explicitly with
+> >> > bpf_program__set_expected_attach_type(), libbpf will try to determin=
+e proper
+> >> > attach type from BPF program's section definition.
+> >> >
+> >> > Also add support for bpf_link's underlying BPF program replacement:
+> >> >   - unconditional through high-level bpf_link__update_program() API;
+> >> >   - cmpxchg-like with specifying expected current BPF program throug=
+h
+> >> >     low-level bpf_link_update() API.
+> >> >
+> >> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> >> > ---
+> >> >  tools/include/uapi/linux/bpf.h | 12 +++++++++
+> >> >  tools/lib/bpf/bpf.c            | 34 +++++++++++++++++++++++++
+> >> >  tools/lib/bpf/bpf.h            | 19 ++++++++++++++
+> >> >  tools/lib/bpf/libbpf.c         | 46 +++++++++++++++++++++++++++++++=
++++
+> >> >  tools/lib/bpf/libbpf.h         |  8 +++++-
+> >> >  tools/lib/bpf/libbpf.map       |  4 +++
+> >> >  6 files changed, 122 insertions(+), 1 deletion(-)
+> >> >
+> >> > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/lin=
+ux/bpf.h
+> >> > index fad9f79bb8f1..fa944093f9fc 100644
+> >> > --- a/tools/include/uapi/linux/bpf.h
+> >> > +++ b/tools/include/uapi/linux/bpf.h
+> >> > @@ -112,6 +112,7 @@ enum bpf_cmd {
+> >> >       BPF_MAP_UPDATE_BATCH,
+> >> >       BPF_MAP_DELETE_BATCH,
+> >> >       BPF_LINK_CREATE,
+> >> > +     BPF_LINK_UPDATE,
+> >> >  };
+> >> >
+> >> >  enum bpf_map_type {
+> >> > @@ -574,6 +575,17 @@ union bpf_attr {
+> >> >               __u32           target_fd;      /* object to attach to=
+ */
+> >> >               __u32           attach_type;    /* attach type */
+> >> >       } link_create;
+> >> > +
+> >> > +     struct { /* struct used by BPF_LINK_UPDATE command */
+> >> > +             __u32           link_fd;        /* link fd */
+> >> > +             /* new program fd to update link with */
+> >> > +             __u32           new_prog_fd;
+> >> > +             __u32           flags;          /* extra flags */
+> >> > +             /* expected link's program fd; is specified only if
+> >> > +              * BPF_F_REPLACE flag is set in flags */
+> >> > +             __u32           old_prog_fd;
+> >> > +     } link_update;
+> >> > +
+> >> >  } __attribute__((aligned(8)));
+> >> >
+> >> >  /* The description below is an attempt at providing documentation t=
+o eBPF
+> >> > diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> >> > index c6dafe563176..35c34fc81bd0 100644
+> >> > --- a/tools/lib/bpf/bpf.c
+> >> > +++ b/tools/lib/bpf/bpf.c
+> >> > @@ -584,6 +584,40 @@ int bpf_prog_detach2(int prog_fd, int target_fd=
+, enum bpf_attach_type type)
+> >> >       return sys_bpf(BPF_PROG_DETACH, &attr, sizeof(attr));
+> >> >  }
+> >> >
+> >> > +int bpf_link_create(int prog_fd, int target_fd,
+> >> > +                 enum bpf_attach_type attach_type,
+> >> > +                 const struct bpf_link_create_opts *opts)
+> >> > +{
+> >> > +     union bpf_attr attr;
+> >> > +
+> >> > +     if (!OPTS_VALID(opts, bpf_link_create_opts))
+> >> > +             return -EINVAL;
+> >> > +
+> >> > +     memset(&attr, 0, sizeof(attr));
+> >> > +     attr.link_create.prog_fd =3D prog_fd;
+> >> > +     attr.link_create.target_fd =3D target_fd;
+> >> > +     attr.link_create.attach_type =3D attach_type;
+> >> > +
+> >> > +     return sys_bpf(BPF_LINK_CREATE, &attr, sizeof(attr));
+> >> > +}
+> >> > +
+> >> > +int bpf_link_update(int link_fd, int new_prog_fd,
+> >> > +                 const struct bpf_link_update_opts *opts)
+> >> > +{
+> >> > +     union bpf_attr attr;
+> >> > +
+> >> > +     if (!OPTS_VALID(opts, bpf_link_update_opts))
+> >> > +             return -EINVAL;
+> >> > +
+> >> > +     memset(&attr, 0, sizeof(attr));
+> >> > +     attr.link_update.link_fd =3D link_fd;
+> >> > +     attr.link_update.new_prog_fd =3D new_prog_fd;
+> >> > +     attr.link_update.flags =3D OPTS_GET(opts, flags, 0);
+> >> > +     attr.link_update.old_prog_fd =3D OPTS_GET(opts, old_prog_fd, 0=
+);
+> >> > +
+> >> > +     return sys_bpf(BPF_LINK_UPDATE, &attr, sizeof(attr));
+> >> > +}
+> >> > +
+> >> >  int bpf_prog_query(int target_fd, enum bpf_attach_type type, __u32 =
+query_flags,
+> >> >                  __u32 *attach_flags, __u32 *prog_ids, __u32 *prog_c=
+nt)
+> >> >  {
+> >> > diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+> >> > index b976e77316cc..46d47afdd887 100644
+> >> > --- a/tools/lib/bpf/bpf.h
+> >> > +++ b/tools/lib/bpf/bpf.h
+> >> > @@ -168,6 +168,25 @@ LIBBPF_API int bpf_prog_detach(int attachable_f=
+d, enum bpf_attach_type type);
+> >> >  LIBBPF_API int bpf_prog_detach2(int prog_fd, int attachable_fd,
+> >> >                               enum bpf_attach_type type);
+> >> >
+> >> > +struct bpf_link_create_opts {
+> >> > +     size_t sz; /* size of this struct for forward/backward compati=
+bility */
+> >> > +};
+> >> > +#define bpf_link_create_opts__last_field sz
+> >> > +
+> >> > +LIBBPF_API int bpf_link_create(int prog_fd, int target_fd,
+> >> > +                            enum bpf_attach_type attach_type,
+> >> > +                            const struct bpf_link_create_opts *opts=
+);
+> >> > +
+> >> > +struct bpf_link_update_opts {
+> >> > +     size_t sz; /* size of this struct for forward/backward compati=
+bility */
+> >> > +     __u32 flags;       /* extra flags */
+> >> > +     __u32 old_prog_fd; /* expected old program FD */
+> >> > +};
+> >> > +#define bpf_link_update_opts__last_field old_prog_fd
+> >> > +
+> >> > +LIBBPF_API int bpf_link_update(int link_fd, int new_prog_fd,
+> >> > +                            const struct bpf_link_update_opts *opts=
+);
+> >> > +
+> >> >  struct bpf_prog_test_run_attr {
+> >> >       int prog_fd;
+> >> >       int repeat;
+> >> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> >> > index 085e41f9b68e..8b23c70033d3 100644
+> >> > --- a/tools/lib/bpf/libbpf.c
+> >> > +++ b/tools/lib/bpf/libbpf.c
+> >> > @@ -6951,6 +6951,12 @@ struct bpf_link {
+> >> >       bool disconnected;
+> >> >  };
+> >> >
+> >> > +/* Replace link's underlying BPF program with the new one */
+> >> > +int bpf_link__update_program(struct bpf_link *link, struct bpf_prog=
+ram *prog)
+> >> > +{
+> >> > +     return bpf_link_update(bpf_link__fd(link), bpf_program__fd(pro=
+g), NULL);
+> >> > +}
 > >>
-> >>>>
-> >>>> One can argue that everything related to use of BPF is going to be
-> >>>> uniform and done through BPF syscall? Given variety of possible BPF
-> >>>> hooks/targets, using custom ways to attach for all those many cases =
-is
-> >>>> really bad as well, so having a unifying concept and single entry to
-> >>>> do this is good, no?
-> >>>
-> >>> Well, it depends on how you view the BPF subsystem's relation to the
-> >>> rest of the kernel, I suppose. I tend to view it as a subsystem that
-> >>> provides a bunch of functionality, which you can setup (using "intern=
-al"
-> >>> BPF APIs), and then attach that object to a different subsystem
-> >>> (networking) using that subsystem's configuration APIs.
-> >>>
+> >> I would expect bpf_link to keep track of the previous program and
+> >> automatically fill it in with this operation. I.e., it should be
+> >> possible to do something like:
 > >>
-> >> again, +1.
-> >>
-> >> bpf syscall is used for program related manipulations like load and
+> >> link =3D bpf_link__open("/sys/fs/bpf/my_link");
+> >> prog =3D bpf_link__get_prog(link);
 > >
-> > bpf syscall is used for way more than that, actually...
-> >
-> >> unload. Attaching that program to an object has a type unique solution=
- -
-> >> e.g., netlink for XDP and ioctl for perf_events.
-> >
-> > That's not true and hasn't been true for at least a while now. cgroup
-> > programs, flow_dissector, lirc_mode2 (whatever that is, I have no
-> > idea) are attached with BPF_PROG_ATTACH. raw_tracepoint and all the
-> > fentry/fexit/fmod_ret/freplace attachments are done also through bpf
-> > syscall. For perf_event related stuff it's done through ioctls right
-> > now, but with bpf_link unification I wouldn't be surprised if it will
+> > I don't think libbpf is able to construct struct bpf_program from link
+> > info. It can get program FD, of course, but struct bpf_program is much
+> > more than that and not sure kernel has all the necessary info. Some
+> > parts of bpf_program is coming from ELF file, which is gone by this
+> > time.
 >
-> and it always will be able to. Kernel uapi will not be revoked because a
-> new way to do something comes along.
+> Hmm, sure, maybe, but it could still get enough information (such as the
+> prog fd, and everything returned by GET_PROG_INFO) for userspace could
+> do something meaningful with the result. So that would turn the above
+> into bpf_link__get_prog_fd(), and struct bpf_link would contain the fd
+> of the currently-attached program so it can be supplied in any future
+> replacement calls.
 
-Good that we are in agreement that BPF attachment is not really a type
-unique solution.
-
-Also, I didn't say any of the existing APIs will go away. But to
-support pinnable/queryable bpf_link, we'll need a new API for
-perf_event. And I believe it should be done through bpf syscall, not
-through more ioctls. Which is what we are discussing here w.r.t. XDP
-as well. Existing way of attaching BPF program directly (with no
-bpf_link created, no way to pin and query that bpf_link, etc) won't go
-away anywhere, of course. But there is no need to duplicate
-bpf_link-related APIs in netlink, if we are going to do it as part of
-bpf syscall.
+Yes, at that will probably be implementation if we go with "expected
+always required" as a default. But I'm still not sure that's the right
+default.
 
 >
-> > be done through the same LINK_CREATE command soon, as is done for
-> > cgroup and *other* tracing bpf_links. Because consistent API and
-> > semantics is good, rather than having to do it N different ways for N
-> > different subsystems.
-> >
+> -Toke
 >
-> That's a bpf / libbpf centric perspective. What Toke and I are saying is
-> the networking centric perspective matters to and networking uses
-> netlink for configuration.
-
-It's BPF-centric because BPF is much wider than networking which
-allows to keep things in perspective beyond networking world. It's
-about cost of maintaining UAPIs and consistency across whole range of
-BPF program types. I don't see a good reason to maintain duplicate
-APIs. We are going to have bpf_link API through bpf syscall (because
-cgroups, tracing, etc) and it is going to be generic. So what's the
-upside to duplicating it in netlink as well?
-
-Can one work with XDP without bpf syscall? No, one cannot. So we are
-not adding a new "syscall dependency" or anything like that.
-
-On the other hand, as a developer, can I develop XDP application
-without using netlink API at all? Funnily enough, I could if BPF
-syscall allowed attaching to ifindex, couldn't I? If I develop some
-monitoring application using XDP and not intending to configure any
-network interface, just attach my BPF program and let it run for a
-bit. Why would I bother with implementing entire netlink protocol just
-to attach BPF program? But I also don't subscribe to a notion of
-"attaching BPF program is configuration", so...
