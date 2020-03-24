@@ -2,112 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 73AD7190266
-	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 01:02:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6051E190322
+	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 02:01:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727385AbgCXABl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Mar 2020 20:01:41 -0400
-Received: from mail-yb1-f195.google.com ([209.85.219.195]:38730 "EHLO
-        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727382AbgCXABl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Mar 2020 20:01:41 -0400
-Received: by mail-yb1-f195.google.com with SMTP id 204so929246ybw.5
-        for <bpf@vger.kernel.org>; Mon, 23 Mar 2020 17:01:40 -0700 (PDT)
+        id S1727119AbgCXBBj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Mar 2020 21:01:39 -0400
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:42930 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727031AbgCXBBj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Mar 2020 21:01:39 -0400
+Received: by mail-qv1-f66.google.com with SMTP id ca9so8402301qvb.9;
+        Mon, 23 Mar 2020 18:01:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PpHg6A0qBvHeYAoS3znW8ChdqVWLNG15i4VtkhtKeds=;
-        b=TykLrEPC1T/syug6sDXqf2lbmbGt1th+/KLFfGxqBwMcR4R2V0e7tP9XGWAit2YuBn
-         CBLFU1tMrIu/0GaUd4RjD+rQR1waeVy0WdkHO9w8EpapngMh6UX7Qlz7qYGq4fJ1ngHJ
-         f3xpWt/6PTIFpnzjJkL1cBQ10b+ufOtF7C+MT2J6Ss8lqD6SsgLVyXv1QfVCFlV0aX/w
-         b2GJObAIGzoEsr0kUStaDDojVuy4IJ1c86bLnv2pv+XoUs7exxurYL4a6qK0S2kziuVy
-         BQsXjcuJKi/xnxtvaW7qkdcrqNFXn6vyQcqov/NsYIWOnZpYYb6ncHv/NraOJuaI9a3I
-         iJ+Q==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TW2jB9QMtDw8rM7J2WGbhFFxXgWFrEfp6IZyuoY8VXM=;
+        b=RlQ5gzu3JCGrstWPMCfs6GQqLRZEyIIY9v5bfYSPyfGUZWxCDNj5nAGznzYcVdGFcp
+         O8mQIJM9MCTeSDa+xeoNHBLBUdKIsfM7OdDrvGmJbdIAPNWKvltgI+whtwjIcCVyLPJY
+         572bG5bLHBicyZuikqI0xMka/bCKJ8TmmDZ5wMxLL6D22Qkm9oRQ2z+6qpaji5Ote/DL
+         wdquibPmq2ZP0JUuvW3J1s/JAJoRcmFwgvlS9Jya7aoRsYKlMgrcQCHMRA8WjmH/1J6n
+         rwtu8j0Vej4WiRbK/jV0IfVRfvrLlVQ8VGxjgdmKrDRkBnlIk9Cqf+SPUR+Q91ba0yCY
+         bWLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PpHg6A0qBvHeYAoS3znW8ChdqVWLNG15i4VtkhtKeds=;
-        b=ntw0mc9y6jIKwEx5RjMkvaHvxG+07BVT3JCBC9hwIal017aStDnJJhQoErRfuSupkQ
-         35bfVcQeHqpm/l41DTKlOysycDsKzydIPIOOryWXliLZUvG6+81NbmSITdE1KfpywWrz
-         lcgl2ZKasgpZj3024tO7CJnxRlmLlJqhnIaCP6pIGLTOnKBOcSoe2W8bo8GRvTVAQlrP
-         wV2eRUY5dNRISKJoz42mRj3emUKT69UWU83+J/Tkr9M+mgbvzaNHj4c2DF94FIdsiE6R
-         +v2PDfAm36T6oU6mDz5r6hZ7L3/Gg0sYeB/89iwa9M/NEZigGXl3zUjjIK2mqw9Xr0y7
-         MsLQ==
-X-Gm-Message-State: ANhLgQ2yWZtKRBQb7Hy3W591HdQaMLMfGIVsUQmkqZ1jZfhtlS2X0727
-        zw2PgY2otFn4BcSA75PULmbEf01byA544IH8tWJgdA==
-X-Google-Smtp-Source: ADFU+vtShWGNVSWFCHAoZ4d8nr9jmZfNonZS9rk3oRYaDE1iOzpQ7rHayM9VPy3ueWsY+WNCZ3a5umZVNGKF9kDqLdc=
-X-Received: by 2002:a25:b0a1:: with SMTP id f33mr36112602ybj.403.1585008099753;
- Mon, 23 Mar 2020 17:01:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200319041134.116241-1-irogers@google.com> <20200323105656.GC1534489@krava>
-In-Reply-To: <20200323105656.GC1534489@krava>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 23 Mar 2020 17:01:28 -0700
-Message-ID: <CAP-5=fXDef4J=mEB1WES7Oc6pvhAjRnHwND0JzAPPYw26Gfx3w@mail.gmail.com>
-Subject: Re: [PATCH v4] perf tools: add support for libpfm4
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TW2jB9QMtDw8rM7J2WGbhFFxXgWFrEfp6IZyuoY8VXM=;
+        b=Oe6mdE7AnezYXxdbAb7o271xb3Wf6cWENuAtFnzqx/FSZNnFgl03NTD4kBPrBJtWMm
+         oxVDN7SFg14yfKZGde3B9U/RDirscgd3B5DlZQuqbNYxzXtw4IfKjfVDjbBTB94qTORh
+         59eDpL/37mv71KVF2USP9C4pghwEn//0I6gVNwDXI7WMgg+o+cUG6/yZq745I/gUZso1
+         4oVQh7gZtPX/Hb9+I68sKNv4P04vVjOdltnOlzICT7NJG0S0gVTCOjeHSADdjj/7Ts6m
+         ApnHYhA+sjbd0AkV7C3MvPlidVHaUR7oLLB4ZpiJqlrwywdDVol4/ScWjTZHE2MGCOqJ
+         oVzg==
+X-Gm-Message-State: ANhLgQ3uUIo/AyNPjWLtL+xMJ6cs+4EPTsNwpur4JmHW9m3+jhXYU1Kl
+        uwEJ48gVBoU7pEQZqmdATwd6WkWZ
+X-Google-Smtp-Source: ADFU+vsaORhCP1+yZaDUM9Zx7HApp1Vp3mkR4I3AR1Vsy5LQER45AWRmnUpPynaDOu/Iwkj71HkcEg==
+X-Received: by 2002:a05:6214:20c:: with SMTP id i12mr23658937qvt.48.1585011696266;
+        Mon, 23 Mar 2020 18:01:36 -0700 (PDT)
+Received: from ?IPv6:2601:282:803:7700:ec36:91c:efc1:e971? ([2601:282:803:7700:ec36:91c:efc1:e971])
+        by smtp.googlemail.com with ESMTPSA id f16sm13683783qtk.61.2020.03.23.18.01.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Mar 2020 18:01:35 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
+ program when attaching XDP
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jiwei Sun <jiwei.sun@windriver.com>,
-        yuzhoujian <yuzhoujian@didichuxing.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <158462359206.164779.15902346296781033076.stgit@toke.dk>
+ <158462359315.164779.13931660750493121404.stgit@toke.dk>
+ <20200319155236.3d8537c5@kicinski-fedora-PC1C0HJN> <875zez76ph.fsf@toke.dk>
+ <20200320103530.2853c573@kicinski-fedora-PC1C0HJN>
+ <5e750bd4ebf8d_233f2ab4c81425c4ce@john-XPS-13-9370.notmuch>
+ <CAEf4BzbWa8vdyLuzr_nxFM3BtT+hhzjCe9UQF8Y5cN+sVqa72g@mail.gmail.com>
+ <87tv2f48lp.fsf@toke.dk>
+ <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com>
+ <87h7ye3mf3.fsf@toke.dk>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <1dfae7b8-4f80-13b8-c67c-82fe0a34f42a@gmail.com>
+Date:   Mon, 23 Mar 2020 19:01:33 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <87h7ye3mf3.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 23, 2020 at 3:57 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Wed, Mar 18, 2020 at 09:11:34PM -0700, Ian Rogers wrote:
-> > This patch links perf with the libpfm4 library if it is available and
-> > NO_LIBPFM4 isn't passed to the build. The libpfm4 library contains hardware
-> > event tables for all processors supported by perf_events. It is a helper
-> > library that helps convert from a symbolic event name to the event
-> > encoding required by the underlying kernel interface. This
-> > library is open-source and available from: http://perfmon2.sf.net.
-> >
-> > With this patch, it is possible to specify full hardware events
-> > by name. Hardware filters are also supported. Events must be
-> > specified via the --pfm-events and not -e option. Both options
-> > are active at the same time and it is possible to mix and match:
-> >
-> > $ perf stat --pfm-events inst_retired:any_p:c=1:i -e cycles ....
-> >
-> > v4 is a rebase on git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git
-> >    branch perf/core and re-adds the tools/build/feature/test-libpfm4.c
-> >    missed in v3.
->
-> ugh.. I might have waited too long, but I can't apply it
-> anymore on Arnaldo's perf/core, sorry
->
-> jirka
+On 3/23/20 1:23 PM, Toke Høiland-Jørgensen wrote:
+>>>> I agree here. And yes, I've been working on extending bpf_link into
+>>>> cgroup and then to XDP. We are still discussing some cgroup-specific
+>>>> details, but the patch is ready. I'm going to post it as an RFC to get
+>>>> the discussion started, before we do this for XDP.
+>>>
+>>> Well, my reason for being skeptic about bpf_link and proposing the
+>>> netlink-based API is actually exactly this, but in reverse: With
+>>> bpf_link we will be in the situation that everything related to a netdev
+>>> is configured over netlink *except* XDP.
 
-No worries, rebase here:
-https://lkml.org/lkml/2020/3/23/1054
++1
 
-Thanks!
-Ian
+>>
+>> One can argue that everything related to use of BPF is going to be
+>> uniform and done through BPF syscall? Given variety of possible BPF
+>> hooks/targets, using custom ways to attach for all those many cases is
+>> really bad as well, so having a unifying concept and single entry to
+>> do this is good, no?
+> 
+> Well, it depends on how you view the BPF subsystem's relation to the
+> rest of the kernel, I suppose. I tend to view it as a subsystem that
+> provides a bunch of functionality, which you can setup (using "internal"
+> BPF APIs), and then attach that object to a different subsystem
+> (networking) using that subsystem's configuration APIs.
+> 
+
+again, +1.
+
+bpf syscall is used for program related manipulations like load and
+unload. Attaching that program to an object has a type unique solution -
+e.g., netlink for XDP and ioctl for perf_events.
