@@ -2,53 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6551913A9
-	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 15:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0C61913BD
+	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 15:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728218AbgCXOwA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Mar 2020 10:52:00 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:35435 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727453AbgCXOwA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Mar 2020 10:52:00 -0400
-Received: by mail-wm1-f68.google.com with SMTP id m3so3812195wmi.0
-        for <bpf@vger.kernel.org>; Tue, 24 Mar 2020 07:51:58 -0700 (PDT)
+        id S1727168AbgCXO5F (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Mar 2020 10:57:05 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:37563 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727065AbgCXO5E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Mar 2020 10:57:04 -0400
+Received: by mail-ot1-f65.google.com with SMTP id i12so17292381otp.4;
+        Tue, 24 Mar 2020 07:57:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=7e4KDLTmWgu/QQJEIVFCVN/w7UIWM4C7k1L+cgO3etw=;
-        b=ACG7Xe7QJOeqLq9nxQgo/2Hmd7TANG6OyUfm9KlhXXEDFRJCJA5UGjhkxMgV5E3HlJ
-         lcKpAHAeeWRt9+4yASeJo8ob176WIaXSIzV0Hv0Ni0SNxelTVnxKe57ObyCHBbqq5Pmr
-         Kofe0bXI1xmqL8NJfeXLDIyJrJ40lD8Aicbd4=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=TXBnjDifQKdfM7kTTXCmgN+P2xxaBCRGAnS974vBCQE=;
+        b=N9X36YP7/pr+5GUNPbcafUcjwhtGpWgcm4+Q0/mMc6EfB6ffCn0EJVOm1QXkyXAjFF
+         3OmvUEPfVELgXnm1YFqmFBe+88cfqHkCnYeGcsTlKSzRZVs/+ZlryjU+btigyF+MB/Z1
+         aeaGYTiXsTF0IXpFjcFSA3CWIhtAHQL7KSJwaznCQYzokxO1bofyU5RhnThAJpg1660U
+         1DFcU6f6UtCmwf+zIH34wiwO+6rSeEoYyfowfY9PyUpYQFz03xfRf2lquZOZCaiaIDKf
+         jTK7XsHgl20p2wRcu2X8+o5GgihIbktJEeNr1VWpFeelKxQgeZmrX+NelzmAL7bGK02u
+         KgdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=7e4KDLTmWgu/QQJEIVFCVN/w7UIWM4C7k1L+cgO3etw=;
-        b=JzeaHgRKwjm6jXN/oVwjRAJGoyipgYfUUgkwlztJkQ9IzqoDTfIE/76MqMhenItcF+
-         mcPBpNZF/gi6C3fDmzJaaPERMGEreOxVJRlnby4SIBa+3GFDCb8bgos3oe4mdogC3IDa
-         Zv1YiyPJxQb+GBH9Yxw9JMYY7Qhlo6C85U0hfNXeSycEiG7jVL4vUMY4gd1QqihOICU6
-         Up8HHq3qM84YJ/sov+J4kOWrXG3ZO4Ueu07HZKmLy6flGjx3SaAW7XmFELEGY0m5a2P6
-         ZsC2edriumv2GyVBsrf1raArEVmWV3NdbsvphFSUvzSlx9C9QHQ027EHMTIsqpZ80046
-         V96g==
-X-Gm-Message-State: ANhLgQ3TpiQZY5GFIk1I1yJrWeXoZphcGzPOZuFuk3VvoggzJvjraQVb
-        Zn5Tpet57iow3V3UN1O8cs8Lpg==
-X-Google-Smtp-Source: ADFU+vum9D07o2DYTLiqEmlmU481OTm0K/ZD8B4oN/2zUqHNg6zKveeWlRzSLOOalwgn2Y/BsRssRA==
-X-Received: by 2002:a1c:26c4:: with SMTP id m187mr5927248wmm.43.1585061518182;
-        Tue, 24 Mar 2020 07:51:58 -0700 (PDT)
-Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
-        by smtp.gmail.com with ESMTPSA id t5sm22977367wrr.93.2020.03.24.07.51.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Mar 2020 07:51:57 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Tue, 24 Mar 2020 15:51:55 +0100
-To:     Stephen Smalley <stephen.smalley.work@gmail.com>
-Cc:     Casey Schaufler <casey@schaufler-ca.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=TXBnjDifQKdfM7kTTXCmgN+P2xxaBCRGAnS974vBCQE=;
+        b=GuhjUACO3Wi51xD+rJHFw5vDPQNoNytP5PWA4B7UoZlOHnf/do4en/6Q+ODoB+Y3vF
+         iQHmDq92i7A6cAU/o8yWV2npVXzmcfXS0RhRUiXfk25IpllS0y0JhveLePPRUiNxwpQk
+         x85zd/LCmWwKBYqR54ymPR852XHhmY/oGTCYKkg81NoVvrt1fh313u2Q7aYVQRS7j4AM
+         ywMiimusUlOwKHDFmESfgoi/BT6HrG42MKO+TSdxg8Geir5ym5RXmMzeY5dGL/Y5nD7O
+         lGK5dzxw38Nbcq1viZup3JQkHXv2/Wc+yU0T59DU+sCYs9HAl93hW6mtI0yu/ou0TpwQ
+         w13Q==
+X-Gm-Message-State: ANhLgQ3/yL0FGNpFfW0yGMqi6h9svmyW8EUoX+o0FkgRHtQxOKtjQKOI
+        9fD7YiYtY5mn+8pQI8+v9qLhNmXl5dDxd67LWUM=
+X-Google-Smtp-Source: ADFU+vvMJYpZPF2dKZFxIiIrls13Aj3amBsItxE2v2IYhDIJaBlSw/VDvVPiToinPeOYwx/4EdpXsgtJhVLKm8rZM0M=
+X-Received: by 2002:a05:6830:1f39:: with SMTP id e25mr7273682oth.135.1585061823695;
+ Tue, 24 Mar 2020 07:57:03 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200323164415.12943-1-kpsingh@chromium.org> <20200323164415.12943-5-kpsingh@chromium.org>
+ <CAEjxPJ4MukexdmAD=py0r7vkE6vnn6T1LVcybP_GSJYsAdRuxA@mail.gmail.com> <20200324145003.GA2685@chromium.org>
+In-Reply-To: <20200324145003.GA2685@chromium.org>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Tue, 24 Mar 2020 10:58:12 -0400
+Message-ID: <CAEjxPJ4YnCCeQUTK36Ao550AWProHrkrW1a6K5RKuKYcPcfhyA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 4/7] bpf: lsm: Implement attach, detach and execution
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         LSM List <linux-security-module@vger.kernel.org>,
         Brendan Jackman <jackmanb@google.com>,
         Florent Revest <revest@google.com>,
@@ -59,65 +60,66 @@ Cc:     Casey Schaufler <casey@schaufler-ca.com>,
         Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
         Florent Revest <revest@chromium.org>,
         Brendan Jackman <jackmanb@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH bpf-next v5 5/7] bpf: lsm: Initialize the BPF LSM hooks
-Message-ID: <20200324145155.GB2685@chromium.org>
-References: <20200323164415.12943-1-kpsingh@chromium.org>
- <20200323164415.12943-6-kpsingh@chromium.org>
- <6d45de0d-c59d-4ca7-fcc5-3965a48b5997@schaufler-ca.com>
- <20200324015217.GA28487@chromium.org>
- <CAEjxPJ7LCZYDXN1rYMBA2rko0zbTp0UU0THx0bhsAnv0Eg4Ptg@mail.gmail.com>
- <20200324144214.GA1040@chromium.org>
- <CAEjxPJ7GDA2PvYkoFhnE7gjr_n=ADCjy3XOwacfELY7evVJtJw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEjxPJ7GDA2PvYkoFhnE7gjr_n=ADCjy3XOwacfELY7evVJtJw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Paul Moore <paul@paul-moore.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 24-Mär 10:51, Stephen Smalley wrote:
-> On Tue, Mar 24, 2020 at 10:42 AM KP Singh <kpsingh@chromium.org> wrote:
-> >
-> > On 24-Mär 10:37, Stephen Smalley wrote:
-> > > On Mon, Mar 23, 2020 at 9:52 PM KP Singh <kpsingh@chromium.org> wrote:
-> > > >
-> > > > On 23-Mär 18:13, Casey Schaufler wrote:
-> > > > > Have you given up on the "BPF must be last" requirement?
-> > > >
-> > > > Yes, we dropped it for as the BPF programs require CAP_SYS_ADMIN
-> > > > anwyays so the position ~shouldn't~ matter. (based on some of the
-> > > > discussions we had on the BPF_MODIFY_RETURN patches).
-> > > >
-> > > > However, This can be added later (in a separate patch) if really
-> > > > deemed necessary.
+On Tue, Mar 24, 2020 at 10:50 AM KP Singh <kpsingh@chromium.org> wrote:
+>
+> On 24-M=C3=A4r 10:35, Stephen Smalley wrote:
+> > On Mon, Mar 23, 2020 at 12:46 PM KP Singh <kpsingh@chromium.org> wrote:
 > > >
-> > > It matters for SELinux, as I previously explained.  A process that has
-> > > CAP_SYS_ADMIN is not assumed to be able to circumvent MAC policy.
-> > > And executing prior to SELinux allows the bpf program to access and
-> > > potentially leak to userspace information that wouldn't be visible to
-> > > the
-> > > process itself. However, I thought you were handling the order issue
-> > > by putting it last in the list of lsms?
+> > > From: KP Singh <kpsingh@google.com>
+> > > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> > > index 530d137f7a84..2a8131b640b8 100644
+> > > --- a/kernel/bpf/bpf_lsm.c
+> > > +++ b/kernel/bpf/bpf_lsm.c
+> > > @@ -9,6 +9,9 @@
+> > >  #include <linux/btf.h>
+> > >  #include <linux/lsm_hooks.h>
+> > >  #include <linux/bpf_lsm.h>
+> > > +#include <linux/jump_label.h>
+> > > +#include <linux/kallsyms.h>
+> > > +#include <linux/bpf_verifier.h>
+> > >
+> > >  /* For every LSM hook  that allows attachment of BPF programs, decla=
+re a NOP
+> > >   * function where a BPF program can be attached as an fexit trampoli=
+ne.
+> > > @@ -27,6 +30,32 @@ noinline __weak void bpf_lsm_##NAME(__VA_ARGS__) {=
+}
+> > >  #include <linux/lsm_hook_names.h>
+> > >  #undef LSM_HOOK
+> > >
+> > > +#define BPF_LSM_SYM_PREFX  "bpf_lsm_"
+> > > +
+> > > +int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+> > > +                       const struct bpf_prog *prog)
+> > > +{
+> > > +       /* Only CAP_MAC_ADMIN users are allowed to make changes to LS=
+M hooks
+> > > +        */
+> > > +       if (!capable(CAP_MAC_ADMIN))
+> > > +               return -EPERM;
 > >
-> > We can still do that if it does not work for SELinux.
-> >
-> > Would it be okay to add bpf as LSM_ORDER_LAST?
-> >
-> > LSMs like Landlock can then add LSM_ORDER_UNPRIVILEGED to even end up
-> > after bpf?
-> 
-> I guess the question is whether we need an explicit LSM_ORDER_LAST or
-> can just handle it via the default
-> values for the lsm= parameter, where you are already placing bpf last
-> IIUC?  If someone can mess with the kernel boot
-> parameters, they already have options to mess with SELinux, so it is no worse...
+> > I had asked before, and will ask again: please provide an explicit LSM
+> > hook for mediating whether one can make changes to the LSM hooks.
+> > Neither CAP_MAC_ADMIN nor CAP_SYS_ADMIN suffices to check this for SELi=
+nux.
+>
+> What do you think about:
+>
+>   int security_check_mutable_hooks(void)
+>
+> Do you have any suggestions on the signature of this hook? Does this
+> hook need to be BPF specific?
 
-Yeah, we do add BPF as the last LSM in the default list. So, I will
-avoid adding LSM_ORDER_LAST for now.
-
-- KP
+I'd do something like int security_bpf_prog_attach_security(const
+struct bpf_prog *prog) or similar.
+Then the security module can do a check based on the current task
+and/or the prog.  We already have some bpf-specific hooks.
