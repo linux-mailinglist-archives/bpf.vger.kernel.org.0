@@ -2,124 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 690B819062E
-	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 08:22:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8343E190A77
+	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 11:16:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727407AbgCXHW6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Mar 2020 03:22:58 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:46608 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727304AbgCXHW6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Mar 2020 03:22:58 -0400
-Received: by mail-ed1-f68.google.com with SMTP id cf14so10381409edb.13;
-        Tue, 24 Mar 2020 00:22:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xbAGFRUEc8WSi1m7tXd4QfoMkZSNw03YADtsowLEzJc=;
-        b=QyOmm5ahPvMwOgaXbRvjRYuAGztnFHABZ1ay5NdVP4sQfwveT2bJtwcHD/pdhafXym
-         U3nmrRDDkm5CH57XGUjkFfhcFTqtJ75wBKA3D/xK7YIDkeLMc+peRX1DdELLta4aIJYW
-         PFvq29PXNTvktpqhI6OftKvvikVNkcVqeCnHmKBAmUndElIMXBm0eo+GM/ZOdieYzlY6
-         25Bz8T61jhZNAQv0c3H5ISif/2X9CWiVJKD38SFMLDkdG+a0Zw7ZjFJf9y7h1xWkdq6C
-         oJbZGXWj7p7T3mP82mNa9QxOQMm4/t33FJyobBTT2RRm+liOgYAGhAMxZ3DlNvxHm0Rm
-         MntA==
+        id S1727152AbgCXKQO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Mar 2020 06:16:14 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:22524 "EHLO
+        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727145AbgCXKQN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 24 Mar 2020 06:16:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585044971;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/1wY4En0yDB+cGvUu+J0YQ/O0nGvtOSgxUaiPAKKcj4=;
+        b=OEvILK6vglIlkeFk2jW8z+5SeqPqXG5Ipe/NVtyH3H+ZO2jNytwWkGKpYi6KWIUluFQDdz
+        qpXv8uEnLlGlISdGHG00HQ16dj7YLYqZuq4Eh+JuVKmWxohm7dMLqo9QKy7AnMuETeD3jC
+        aFbAjf512cwYe/TzT4Ni//4du64DZcg=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-76-rN0z_7ozMsK7SouQcBElFQ-1; Tue, 24 Mar 2020 06:16:10 -0400
+X-MC-Unique: rN0z_7ozMsK7SouQcBElFQ-1
+Received: by mail-wm1-f71.google.com with SMTP id g9so1120251wmh.1
+        for <bpf@vger.kernel.org>; Tue, 24 Mar 2020 03:16:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xbAGFRUEc8WSi1m7tXd4QfoMkZSNw03YADtsowLEzJc=;
-        b=giSg/4H0Rp8ieq2yvdC558N9SSIXkeI8LZVDf77iP5YbeYQhFiK45//aAH6kbLdcIA
-         SNhpKf63DONfi99DwPaktb6ctIgJ9M3OwVvirm0GrEY2HG2tGPzftIZxrh9sysyzKKOx
-         /uEYe6vNjLypDnDAqUImBju05c5zpbxQTw3qZR8ig81cXrm/fJfHwyQrQV0jXXa/RA60
-         vlDAqFkNhJNaJKD1Lfp29kAZN3jAg9vI8yy1Tuhj1VBOye2QEYTiobiX5WIaVwvJYcjF
-         7i5NoTFJbVeR5L7xbkVtvHV8BH7BwA8OVVSrufTaaxuJMDaGY4jkCq6kcndsmNzUz9jr
-         yW8g==
-X-Gm-Message-State: ANhLgQ26HIFIEtH1tRKcgivVNOeaNFSDPJsLo24FUnlUIVjdvY9vbgZo
-        u2tD+TadmdYrHvaBax0NKMg=
-X-Google-Smtp-Source: ADFU+vvv3nq9kXL78yrg4zvv6t3eZQV3/PwSXUQ6OlTRVy235ugMyeReRt5WE1ttXU1U9XZsmbHKeA==
-X-Received: by 2002:a17:906:5c43:: with SMTP id c3mr21253612ejr.3.1585034576216;
-        Tue, 24 Mar 2020 00:22:56 -0700 (PDT)
-Received: from localhost.localdomain (45.239.197.178.dynamic.wless.lssmb00p-cgnat.res.cust.swisscom.ch. [178.197.239.45])
-        by smtp.googlemail.com with ESMTPSA id bc11sm12420edb.34.2020.03.24.00.22.55
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 24 Mar 2020 00:22:55 -0700 (PDT)
-From:   Jean-Philippe Menil <jpmenil@gmail.com>
-To:     yhs@fb.com
-Cc:     kernel-janitors@vger.kernel.org, jpmenil@gmail.com,
-        "David S. Miller" <davem@davemloft.net>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=/1wY4En0yDB+cGvUu+J0YQ/O0nGvtOSgxUaiPAKKcj4=;
+        b=qGohNLn5xEwp5JlS6S3om5Rt19QaAzg6pwpnQ3EpOcwtowm4nxZnzswhHRud+123X3
+         NQaxiijOIpdZS4cLOotyIBfDwtH4/9l6KAdJCEhH4yuQVzRQ5rcMFMDxmHFdV8Q5PMVt
+         rbyykJPsEOGZLheRvdi8LC0jA5e+9ieP2eCtRViqOf76oaKdB0iKRomJxYIXLnMowQMX
+         lVzVocUSrNQF/KqfVPcb7LDAnPXeR6tgR/qPVb3PtDmWkU8CiqCsiQxBDlVKGL5j4jtg
+         qJQV8j1smxaFSfTx1PAY9VzXqCjBKIm0imwlOBg7PIPIK42u0zSRbl8BoG7y/4R01FM+
+         CNGg==
+X-Gm-Message-State: ANhLgQ2sCVl+vb6MANRM1zPI6mx7xkfKRiG9hhB7bZRXypREc1kTJhhC
+        cY+pz58+iihohettb50qC5UO9EbnPSaS5w+QH3oPFOeIgRNFzVTErV1OdGV7IelLFbA6Iban2iC
+        e/XAAfF2byGIL
+X-Received: by 2002:a5d:6045:: with SMTP id j5mr34114912wrt.401.1585044969083;
+        Tue, 24 Mar 2020 03:16:09 -0700 (PDT)
+X-Google-Smtp-Source: ADFU+vt4fxw3WQlcrSpfYVY6EUzmKWp+2/hFVX/ZlQ7yZFHspc85MIgrLtEPxWoN8Rr5x79q54R6OQ==
+X-Received: by 2002:a5d:6045:: with SMTP id j5mr34114878wrt.401.1585044968861;
+        Tue, 24 Mar 2020 03:16:08 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id u13sm11839118wru.88.2020.03.24.03.16.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Mar 2020 03:16:07 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 29A13180371; Tue, 24 Mar 2020 11:16:06 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrey Ignatov <rdna@fb.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] bpf: fix build warning - missing prototype
-Date:   Tue, 24 Mar 2020 08:22:31 +0100
-Message-Id: <20200324072231.5780-1-jpmenil@gmail.com>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <7c27e51f-6a64-7374-b705-450cad42146c@fb.com>
-References: <7c27e51f-6a64-7374-b705-450cad42146c@fb.com>
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing program when attaching XDP
+In-Reply-To: <20200323235441.GA33093@rdna-mbp>
+References: <158462359206.164779.15902346296781033076.stgit@toke.dk> <158462359315.164779.13931660750493121404.stgit@toke.dk> <20200319155236.3d8537c5@kicinski-fedora-PC1C0HJN> <875zez76ph.fsf@toke.dk> <CAEf4BzYGZz7hdd-_x+uyE0OF8h_3vJxNjF-Qkd5QhOWpaB8bbQ@mail.gmail.com> <87r1xj48ko.fsf@toke.dk> <20200323235441.GA33093@rdna-mbp>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 24 Mar 2020 11:16:06 +0100
+Message-ID: <87369y2h3t.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix build warnings when building net/bpf/test_run.o with W=1 due
-to missing prototype for bpf_fentry_test{1..6}.
+Andrey Ignatov <rdna@fb.com> writes:
 
-Declare prototypes in order to silence warnings.
+> Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> [Mon, 2020-03-23 04:25=
+ -0700]:
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>=20
+>> > On Fri, Mar 20, 2020 at 1:48 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
+@redhat.com> wrote:
+>> >>
+>> >> Jakub Kicinski <kuba@kernel.org> writes:
+>> >>
+>> >> > On Thu, 19 Mar 2020 14:13:13 +0100 Toke H=C3=B8iland-J=C3=B8rgensen=
+ wrote:
+>> >> >> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> >> >>
+>> >> >> While it is currently possible for userspace to specify that an ex=
+isting
+>> >> >> XDP program should not be replaced when attaching to an interface,=
+ there is
+>> >> >> no mechanism to safely replace a specific XDP program with another.
+>> >> >>
+>> >> >> This patch adds a new netlink attribute, IFLA_XDP_EXPECTED_FD, whi=
+ch can be
+>> >> >> set along with IFLA_XDP_FD. If set, the kernel will check that the=
+ program
+>> >> >> currently loaded on the interface matches the expected one, and fa=
+il the
+>> >> >> operation if it does not. This corresponds to a 'cmpxchg' memory o=
+peration.
+>> >> >>
+>> >> >> A new companion flag, XDP_FLAGS_EXPECT_FD, is also added to explic=
+itly
+>> >> >> request checking of the EXPECTED_FD attribute. This is needed for =
+userspace
+>> >> >> to discover whether the kernel supports the new attribute.
+>> >> >>
+>> >> >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> >> >
+>> >> > I didn't know we wanted to go ahead with this...
+>> >>
+>> >> Well, I'm aware of the bpf_link discussion, obviously. Not sure what's
+>> >> happening with that, though. So since this is a straight-forward
+>> >> extension of the existing API, that doesn't carry a high implementati=
+on
+>> >> cost, I figured I'd just go ahead with this. Doesn't mean we can't ha=
+ve
+>> >> something similar in bpf_link as well, of course.
+>> >>
+>> >> > If we do please run this thru checkpatch, set .strict_start_type,
+>> >>
+>> >> Will do.
+>> >>
+>> >> > and make the expected fd unsigned. A negative expected fd makes no
+>> >> > sense.
+>> >>
+>> >> A negative expected_fd corresponds to setting the UPDATE_IF_NOEXIST
+>> >> flag. I guess you could argue that since we have that flag, setting a
+>> >> negative expected_fd is not strictly needed. However, I thought it was
+>> >> weird to have a "this is what I expect" API that did not support
+>> >> expressing "I expect no program to be attached".
+>> >
+>> > For BPF syscall it seems the typical approach when optional FD is
+>> > needed is to have extra flag (e.g., BPF_F_REPLACE for cgroups) and if
+>> > it's not specified - enforce zero for that optional fd. That handles
+>> > backwards compatibility cases well as well.
+>>=20
+>> Never did understand how that is supposed to square with 0 being a valid
+>> fd number?
+>
+> In BPF_F_REPLACE case (since it was used as an example in this thread)
+> it's all pretty clear:
+>
+> * if the flag is set, use fd from attr.replace_bpf_fd that can be anything
+>   (incl. zero, since indeed it's valid fd) no problem with that;
+> * if flag is not set, ignore replace_bpf_fd completely.
+>
+> It's descirbed in commit log in 7dd68b3279f1:
+>
+>     ...
+>
+>     BPF_F_REPLACE is introduced to make the user intent clear, since
+>     replace_bpf_fd alone can't be used for this (its default value, 0, is=
+ a
+>     valid fd). BPF_F_REPLACE also makes it possible to extend the API in =
+the
+>     future (e.g. add BPF_F_BEFORE and BPF_F_AFTER if needed).
+>
+>     ...
+>
+> , i.e. flag presense is important, not the fd attribute being zero.
+>
+> Hope it clarifies.
 
-Signed-off-by: Jean-Philippe Menil <jpmenil@gmail.com>
----
- net/bpf/test_run.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Yup, it does, thanks! My confusion stemmed from having seen '!=3D 0' tests
+for FDs in various places and wondered how that was supposed to work.
+Didn't realise this was handled by way of an accompanying flag, that
+does make sense :)
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index d555c0d8657d..cdf87fb0b6eb 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -113,31 +113,37 @@ static int bpf_test_finish(const union bpf_attr *kattr,
-  * architecture dependent calling conventions. 7+ can be supported in the
-  * future.
-  */
-+int noinline bpf_fentry_test1(int a);
- int noinline bpf_fentry_test1(int a)
- {
- 	return a + 1;
- }
- 
-+int noinline bpf_fentry_test2(int a, u64 b);
- int noinline bpf_fentry_test2(int a, u64 b)
- {
- 	return a + b;
- }
- 
-+int noinline bpf_fentry_test3(char a, int b, u64 c);
- int noinline bpf_fentry_test3(char a, int b, u64 c)
- {
- 	return a + b + c;
- }
- 
-+int noinline bpf_fentry_test4(void *a, char b, int c, u64 d);
- int noinline bpf_fentry_test4(void *a, char b, int c, u64 d)
- {
- 	return (long)a + b + c + d;
- }
- 
-+int noinline bpf_fentry_test5(u64 a, void *b, short c, int d, u64 e);
- int noinline bpf_fentry_test5(u64 a, void *b, short c, int d, u64 e)
- {
- 	return a + (long)b + c + d + e;
- }
- 
-+int noinline bpf_fentry_test6(u64 a, void *b, short c, int d, void *e, u64 f);
- int noinline bpf_fentry_test6(u64 a, void *b, short c, int d, void *e, u64 f)
- {
- 	return a + (long)b + c + d + (long)e + f;
--- 
-2.25.2
+-Toke
 
