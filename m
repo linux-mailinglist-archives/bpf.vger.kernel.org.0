@@ -2,181 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8343E190A77
-	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 11:16:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83CEE190ADA
+	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 11:25:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727152AbgCXKQO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Mar 2020 06:16:14 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:22524 "EHLO
+        id S1726524AbgCXKZ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Mar 2020 06:25:29 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([216.205.24.74]:20208 "EHLO
         us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727145AbgCXKQN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 24 Mar 2020 06:16:13 -0400
+        by vger.kernel.org with ESMTP id S1726697AbgCXKZ3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 24 Mar 2020 06:25:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585044971;
+        s=mimecast20190719; t=1585045528;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/1wY4En0yDB+cGvUu+J0YQ/O0nGvtOSgxUaiPAKKcj4=;
-        b=OEvILK6vglIlkeFk2jW8z+5SeqPqXG5Ipe/NVtyH3H+ZO2jNytwWkGKpYi6KWIUluFQDdz
-        qpXv8uEnLlGlISdGHG00HQ16dj7YLYqZuq4Eh+JuVKmWxohm7dMLqo9QKy7AnMuETeD3jC
-        aFbAjf512cwYe/TzT4Ni//4du64DZcg=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-76-rN0z_7ozMsK7SouQcBElFQ-1; Tue, 24 Mar 2020 06:16:10 -0400
-X-MC-Unique: rN0z_7ozMsK7SouQcBElFQ-1
-Received: by mail-wm1-f71.google.com with SMTP id g9so1120251wmh.1
-        for <bpf@vger.kernel.org>; Tue, 24 Mar 2020 03:16:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=/1wY4En0yDB+cGvUu+J0YQ/O0nGvtOSgxUaiPAKKcj4=;
-        b=qGohNLn5xEwp5JlS6S3om5Rt19QaAzg6pwpnQ3EpOcwtowm4nxZnzswhHRud+123X3
-         NQaxiijOIpdZS4cLOotyIBfDwtH4/9l6KAdJCEhH4yuQVzRQ5rcMFMDxmHFdV8Q5PMVt
-         rbyykJPsEOGZLheRvdi8LC0jA5e+9ieP2eCtRViqOf76oaKdB0iKRomJxYIXLnMowQMX
-         lVzVocUSrNQF/KqfVPcb7LDAnPXeR6tgR/qPVb3PtDmWkU8CiqCsiQxBDlVKGL5j4jtg
-         qJQV8j1smxaFSfTx1PAY9VzXqCjBKIm0imwlOBg7PIPIK42u0zSRbl8BoG7y/4R01FM+
-         CNGg==
-X-Gm-Message-State: ANhLgQ2sCVl+vb6MANRM1zPI6mx7xkfKRiG9hhB7bZRXypREc1kTJhhC
-        cY+pz58+iihohettb50qC5UO9EbnPSaS5w+QH3oPFOeIgRNFzVTErV1OdGV7IelLFbA6Iban2iC
-        e/XAAfF2byGIL
-X-Received: by 2002:a5d:6045:: with SMTP id j5mr34114912wrt.401.1585044969083;
-        Tue, 24 Mar 2020 03:16:09 -0700 (PDT)
-X-Google-Smtp-Source: ADFU+vt4fxw3WQlcrSpfYVY6EUzmKWp+2/hFVX/ZlQ7yZFHspc85MIgrLtEPxWoN8Rr5x79q54R6OQ==
-X-Received: by 2002:a5d:6045:: with SMTP id j5mr34114878wrt.401.1585044968861;
-        Tue, 24 Mar 2020 03:16:08 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id u13sm11839118wru.88.2020.03.24.03.16.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Mar 2020 03:16:07 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 29A13180371; Tue, 24 Mar 2020 11:16:06 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrey Ignatov <rdna@fb.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        bh=1uFndSPegRG+EuvCEPo50gmlgFaTjR12UYyGMB2agT0=;
+        b=NCT1c9JzZTdXZU5nI1c8BM/W9GeQumOt92j0ptyIZUhYJ7M55VURfHZx/oaNp2lmnC68O4
+        p/otxVwo/N5Kn1cLHviBsn//K/Plxjphj1zRB5F6COhal5cvzFCDXIjQyYlqCpE4TE6Q4j
+        RtyynQdzkS11Hx4wXWx8OprYQNDe/NA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-383-fs7X8Db2OW-RqLYsS2OVOg-1; Tue, 24 Mar 2020 06:25:26 -0400
+X-MC-Unique: fs7X8Db2OW-RqLYsS2OVOg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B67F1088383;
+        Tue, 24 Mar 2020 10:25:22 +0000 (UTC)
+Received: from krava (unknown [10.40.192.119])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C3E915DA66;
+        Tue, 24 Mar 2020 10:25:05 +0000 (UTC)
+Date:   Tue, 24 Mar 2020 11:24:59 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing program when attaching XDP
-In-Reply-To: <20200323235441.GA33093@rdna-mbp>
-References: <158462359206.164779.15902346296781033076.stgit@toke.dk> <158462359315.164779.13931660750493121404.stgit@toke.dk> <20200319155236.3d8537c5@kicinski-fedora-PC1C0HJN> <875zez76ph.fsf@toke.dk> <CAEf4BzYGZz7hdd-_x+uyE0OF8h_3vJxNjF-Qkd5QhOWpaB8bbQ@mail.gmail.com> <87r1xj48ko.fsf@toke.dk> <20200323235441.GA33093@rdna-mbp>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 24 Mar 2020 11:16:06 +0100
-Message-ID: <87369y2h3t.fsf@toke.dk>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jiwei Sun <jiwei.sun@windriver.com>,
+        yuzhoujian <yuzhoujian@didichuxing.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.garry@huawei.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v5] perf tools: add support for libpfm4
+Message-ID: <20200324102459.GL1534489@krava>
+References: <20200323235846.104937-1-irogers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200323235846.104937-1-irogers@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrey Ignatov <rdna@fb.com> writes:
+On Mon, Mar 23, 2020 at 04:58:46PM -0700, Ian Rogers wrote:
 
-> Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> [Mon, 2020-03-23 04:25=
- -0700]:
->> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->>=20
->> > On Fri, Mar 20, 2020 at 1:48 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
-@redhat.com> wrote:
->> >>
->> >> Jakub Kicinski <kuba@kernel.org> writes:
->> >>
->> >> > On Thu, 19 Mar 2020 14:13:13 +0100 Toke H=C3=B8iland-J=C3=B8rgensen=
- wrote:
->> >> >> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> >> >>
->> >> >> While it is currently possible for userspace to specify that an ex=
-isting
->> >> >> XDP program should not be replaced when attaching to an interface,=
- there is
->> >> >> no mechanism to safely replace a specific XDP program with another.
->> >> >>
->> >> >> This patch adds a new netlink attribute, IFLA_XDP_EXPECTED_FD, whi=
-ch can be
->> >> >> set along with IFLA_XDP_FD. If set, the kernel will check that the=
- program
->> >> >> currently loaded on the interface matches the expected one, and fa=
-il the
->> >> >> operation if it does not. This corresponds to a 'cmpxchg' memory o=
-peration.
->> >> >>
->> >> >> A new companion flag, XDP_FLAGS_EXPECT_FD, is also added to explic=
-itly
->> >> >> request checking of the EXPECTED_FD attribute. This is needed for =
-userspace
->> >> >> to discover whether the kernel supports the new attribute.
->> >> >>
->> >> >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> >> >
->> >> > I didn't know we wanted to go ahead with this...
->> >>
->> >> Well, I'm aware of the bpf_link discussion, obviously. Not sure what's
->> >> happening with that, though. So since this is a straight-forward
->> >> extension of the existing API, that doesn't carry a high implementati=
-on
->> >> cost, I figured I'd just go ahead with this. Doesn't mean we can't ha=
-ve
->> >> something similar in bpf_link as well, of course.
->> >>
->> >> > If we do please run this thru checkpatch, set .strict_start_type,
->> >>
->> >> Will do.
->> >>
->> >> > and make the expected fd unsigned. A negative expected fd makes no
->> >> > sense.
->> >>
->> >> A negative expected_fd corresponds to setting the UPDATE_IF_NOEXIST
->> >> flag. I guess you could argue that since we have that flag, setting a
->> >> negative expected_fd is not strictly needed. However, I thought it was
->> >> weird to have a "this is what I expect" API that did not support
->> >> expressing "I expect no program to be attached".
->> >
->> > For BPF syscall it seems the typical approach when optional FD is
->> > needed is to have extra flag (e.g., BPF_F_REPLACE for cgroups) and if
->> > it's not specified - enforce zero for that optional fd. That handles
->> > backwards compatibility cases well as well.
->>=20
->> Never did understand how that is supposed to square with 0 being a valid
->> fd number?
->
-> In BPF_F_REPLACE case (since it was used as an example in this thread)
-> it's all pretty clear:
->
-> * if the flag is set, use fd from attr.replace_bpf_fd that can be anything
->   (incl. zero, since indeed it's valid fd) no problem with that;
-> * if flag is not set, ignore replace_bpf_fd completely.
->
-> It's descirbed in commit log in 7dd68b3279f1:
->
->     ...
->
->     BPF_F_REPLACE is introduced to make the user intent clear, since
->     replace_bpf_fd alone can't be used for this (its default value, 0, is=
- a
->     valid fd). BPF_F_REPLACE also makes it possible to extend the API in =
-the
->     future (e.g. add BPF_F_BEFORE and BPF_F_AFTER if needed).
->
->     ...
->
-> , i.e. flag presense is important, not the fd attribute being zero.
->
-> Hope it clarifies.
+SNIP
 
-Yup, it does, thanks! My confusion stemmed from having seen '!=3D 0' tests
-for FDs in various places and wondered how that was supposed to work.
-Didn't realise this was handled by way of an accompanying flag, that
-does make sense :)
+> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> index 10107747b361..31ed184566c8 100644
+> --- a/tools/perf/util/parse-events.c
+> +++ b/tools/perf/util/parse-events.c
+> @@ -37,6 +37,11 @@
+>  #include "util/evsel_config.h"
+>  #include "util/event.h"
+>  
+> +#ifdef HAVE_LIBPFM
+> +#include <perfmon/pfmlib_perf_event.h>
+> +static void print_libpfm_events(bool name_only);
+> +#endif
+> +
+>  #define MAX_NAME_LEN 100
+>  
+>  #ifdef PARSER_DEBUG
+> @@ -2794,6 +2799,10 @@ void print_events(const char *event_glob, bool name_only, bool quiet_flag,
+>  	print_sdt_events(NULL, NULL, name_only);
+>  
+>  	metricgroup__print(true, true, NULL, name_only, details_flag);
+> +
+> +#ifdef HAVE_LIBPFM
+> +	print_libpfm_events(name_only);
 
--Toke
+
+we should make some effort to fit this into our current list shape,
+currently it looks like:
+
+	$ perf list
+	...
+
+	TopdownL1_SMT:
+	  Backend_Bound_SMT
+	       [This category represents fraction of slots where no uops are being delivered due to a lack of required resources for accepting new uops in the Backend>
+	  Bad_Speculation_SMT
+	       [This category represents fraction of slots wasted due to incorrect speculations. SMT version; use when SMT is enabled and measuring per logical CPU]
+	  Frontend_Bound_SMT
+	       [This category represents fraction of slots where the processor's Frontend undersupplies its Backend. SMT version; use when SMT is enabled and measurin>
+	  Retiring_SMT
+	       [This category represents fraction of slots utilized by useful work i.e. issued uops that eventually get retired. SMT version; use when SMT is enabled >
+
+
+	Name  : UNHALTED_CORE_CYCLES
+	PMU   : ix86arch
+	Desc  : count core clock cycles whenever the clock signal on the specific core is running (not halted)
+	Equiv : None
+	Code  : 0x3c
+	Modif : PMU: [e] : edge level (may require counter-mask >= 1) (boolean)
+	Modif : PMU: [i] : invert (boolean)
+	Modif : PMU: [c] : counter-mask in range [0-255] (integer)
+	Modif : PMU: [t] : measure any thread (boolean)
+	Modif : PMU: [intx] : monitor only inside transactional memory region (boolean)
+	Modif : PMU: [intxcp] : do not count occurrences inside aborted transactional memory region (boolean)
+	Modif : perf_event: [u] : monitor at user level (boolean)
+	Modif : perf_event: [k] : monitor at kernel level (boolean)
+	Modif : perf_event: [period] : sampling period (integer)
+	Modif : perf_event: [freq] : sampling frequency (Hz) (integer)
+	Modif : perf_event: [excl] : exclusive access (boolean)
+	Modif : perf_event: [mg] : monitor guest execution (boolean)
+	Modif : perf_event: [mh] : monitor host execution (boolean)
+	Modif : perf_event: [cpu] : CPU to program (integer)
+	Modif : perf_event: [pinned] : pin event to counters (boolean)
+
+it needs some header like 'libpfm events:' and then
+probably just name and doc for basic list and more
+verbose for -v
+
+jirka
 
