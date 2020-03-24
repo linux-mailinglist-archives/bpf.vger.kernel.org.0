@@ -2,124 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0C61913BD
-	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 15:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7179A191472
+	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 16:31:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727168AbgCXO5F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Mar 2020 10:57:05 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:37563 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727065AbgCXO5E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Mar 2020 10:57:04 -0400
-Received: by mail-ot1-f65.google.com with SMTP id i12so17292381otp.4;
-        Tue, 24 Mar 2020 07:57:04 -0700 (PDT)
+        id S1728219AbgCXPaI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Mar 2020 11:30:08 -0400
+Received: from mail-yb1-f195.google.com ([209.85.219.195]:46515 "EHLO
+        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727826AbgCXPaH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Mar 2020 11:30:07 -0400
+Received: by mail-yb1-f195.google.com with SMTP id r16so9360901ybs.13
+        for <bpf@vger.kernel.org>; Tue, 24 Mar 2020 08:30:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=TXBnjDifQKdfM7kTTXCmgN+P2xxaBCRGAnS974vBCQE=;
-        b=N9X36YP7/pr+5GUNPbcafUcjwhtGpWgcm4+Q0/mMc6EfB6ffCn0EJVOm1QXkyXAjFF
-         3OmvUEPfVELgXnm1YFqmFBe+88cfqHkCnYeGcsTlKSzRZVs/+ZlryjU+btigyF+MB/Z1
-         aeaGYTiXsTF0IXpFjcFSA3CWIhtAHQL7KSJwaznCQYzokxO1bofyU5RhnThAJpg1660U
-         1DFcU6f6UtCmwf+zIH34wiwO+6rSeEoYyfowfY9PyUpYQFz03xfRf2lquZOZCaiaIDKf
-         jTK7XsHgl20p2wRcu2X8+o5GgihIbktJEeNr1VWpFeelKxQgeZmrX+NelzmAL7bGK02u
-         KgdQ==
+         :cc;
+        bh=zGzJT4lBRDfMWrKAV6fIWvWA81QqY+N9vkGkVfG1dSI=;
+        b=cj0bP8gpGKJn/JLKLOYgOvr5+PBMMSJ12OC9J7p8NDzfW63ZtQ3qjg1ulm/VMRIATc
+         gHw0Zdc0GyNqCWiw0HBB3VsJKvx9I5VYKwq0rX+E07BixdR2ulr1SebptImtTguxzVur
+         bDYUMF1XZSgWQfB9rT5UF/FgSFHturPQNTf4zRLkw0lJfmTZUVe734stY/hlXspDws89
+         UNucCbkOtar1rHP1GrTLS4RVxyV/FTXQuiVCxjAcUSaiW5sis2n1W94zZ8qGRbplanOL
+         MEbpuvXDzpDefV1pdplKTJf5UQ2U1exibbHw2EsVJuS2H6Yae22K4pXnPHLyOke1pMSJ
+         HoVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TXBnjDifQKdfM7kTTXCmgN+P2xxaBCRGAnS974vBCQE=;
-        b=GuhjUACO3Wi51xD+rJHFw5vDPQNoNytP5PWA4B7UoZlOHnf/do4en/6Q+ODoB+Y3vF
-         iQHmDq92i7A6cAU/o8yWV2npVXzmcfXS0RhRUiXfk25IpllS0y0JhveLePPRUiNxwpQk
-         x85zd/LCmWwKBYqR54ymPR852XHhmY/oGTCYKkg81NoVvrt1fh313u2Q7aYVQRS7j4AM
-         ywMiimusUlOwKHDFmESfgoi/BT6HrG42MKO+TSdxg8Geir5ym5RXmMzeY5dGL/Y5nD7O
-         lGK5dzxw38Nbcq1viZup3JQkHXv2/Wc+yU0T59DU+sCYs9HAl93hW6mtI0yu/ou0TpwQ
-         w13Q==
-X-Gm-Message-State: ANhLgQ3/yL0FGNpFfW0yGMqi6h9svmyW8EUoX+o0FkgRHtQxOKtjQKOI
-        9fD7YiYtY5mn+8pQI8+v9qLhNmXl5dDxd67LWUM=
-X-Google-Smtp-Source: ADFU+vvMJYpZPF2dKZFxIiIrls13Aj3amBsItxE2v2IYhDIJaBlSw/VDvVPiToinPeOYwx/4EdpXsgtJhVLKm8rZM0M=
-X-Received: by 2002:a05:6830:1f39:: with SMTP id e25mr7273682oth.135.1585061823695;
- Tue, 24 Mar 2020 07:57:03 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=zGzJT4lBRDfMWrKAV6fIWvWA81QqY+N9vkGkVfG1dSI=;
+        b=WOPZxOLxwxfSssFTR6CCUEeSbZc8gsT9Wq4SU9tMovBYcECXfat7tURUgyDESXcXZe
+         4hRKl5E97wsB5bdpCvno8EqmqNvuebgg2yd4Lf3gS3MUhct77xZEXQr8lU9TyggCMTgm
+         Y9FUCfvxZ8lky0KLvc5eZQLrUh6qfurG01szCml+lFQbOEq4e5Hgyx1UNK1yKMaDGgO3
+         0X+lXVD9YsEASsOTaOThqKfhPmcIq8rToCpzmgZvlJXjJIHdtnzrV8BLuQ3XIueO4aKR
+         cL5eLEg6XgXf8a2obOiHD+Ofd77XgiVSp9wKfRoEQkATvCrQ7ShfcY2zuQQ8kH7u56wG
+         gt2g==
+X-Gm-Message-State: ANhLgQ0GLjH481ziuwJUKspBmng9i/w3eGAvXY/zNCNukR5BbC32pXPv
+        3nluD81imEB6MVmfE/x0XfvfFz6on6OsKs/QeAumRg==
+X-Google-Smtp-Source: ADFU+vuZ2elnKuVqU7qZYZUw8dJvvBH8C6kAq3JJauRXax/QrAStpFqR/zNRSbeNxIbm7pHs2pOGoEIScHClbipbCGU=
+X-Received: by 2002:a25:b0a1:: with SMTP id f33mr41103167ybj.403.1585063804733;
+ Tue, 24 Mar 2020 08:30:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200323164415.12943-1-kpsingh@chromium.org> <20200323164415.12943-5-kpsingh@chromium.org>
- <CAEjxPJ4MukexdmAD=py0r7vkE6vnn6T1LVcybP_GSJYsAdRuxA@mail.gmail.com> <20200324145003.GA2685@chromium.org>
-In-Reply-To: <20200324145003.GA2685@chromium.org>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Date:   Tue, 24 Mar 2020 10:58:12 -0400
-Message-ID: <CAEjxPJ4YnCCeQUTK36Ao550AWProHrkrW1a6K5RKuKYcPcfhyA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/7] bpf: lsm: Implement attach, detach and execution
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@google.com>,
+References: <20200323235846.104937-1-irogers@google.com> <20200324102732.GR1534489@krava>
+In-Reply-To: <20200324102732.GR1534489@krava>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 24 Mar 2020 08:29:53 -0700
+Message-ID: <CAP-5=fVi3dNzXE9R3HniSfD3w97dPebbuO1zUKoPXv4Wag-JDA@mail.gmail.com>
+Subject: Re: [PATCH v5] perf tools: add support for libpfm4
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Paul Moore <paul@paul-moore.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jiwei Sun <jiwei.sun@windriver.com>,
+        yuzhoujian <yuzhoujian@didichuxing.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.garry@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 24, 2020 at 10:50 AM KP Singh <kpsingh@chromium.org> wrote:
+On Tue, Mar 24, 2020 at 3:28 AM Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> On 24-M=C3=A4r 10:35, Stephen Smalley wrote:
-> > On Mon, Mar 23, 2020 at 12:46 PM KP Singh <kpsingh@chromium.org> wrote:
-> > >
-> > > From: KP Singh <kpsingh@google.com>
-> > > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-> > > index 530d137f7a84..2a8131b640b8 100644
-> > > --- a/kernel/bpf/bpf_lsm.c
-> > > +++ b/kernel/bpf/bpf_lsm.c
-> > > @@ -9,6 +9,9 @@
-> > >  #include <linux/btf.h>
-> > >  #include <linux/lsm_hooks.h>
-> > >  #include <linux/bpf_lsm.h>
-> > > +#include <linux/jump_label.h>
-> > > +#include <linux/kallsyms.h>
-> > > +#include <linux/bpf_verifier.h>
-> > >
-> > >  /* For every LSM hook  that allows attachment of BPF programs, decla=
-re a NOP
-> > >   * function where a BPF program can be attached as an fexit trampoli=
-ne.
-> > > @@ -27,6 +30,32 @@ noinline __weak void bpf_lsm_##NAME(__VA_ARGS__) {=
-}
-> > >  #include <linux/lsm_hook_names.h>
-> > >  #undef LSM_HOOK
-> > >
-> > > +#define BPF_LSM_SYM_PREFX  "bpf_lsm_"
-> > > +
-> > > +int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
-> > > +                       const struct bpf_prog *prog)
-> > > +{
-> > > +       /* Only CAP_MAC_ADMIN users are allowed to make changes to LS=
-M hooks
-> > > +        */
-> > > +       if (!capable(CAP_MAC_ADMIN))
-> > > +               return -EPERM;
+> On Mon, Mar 23, 2020 at 04:58:46PM -0700, Ian Rogers wrote:
+> > This patch links perf with the libpfm4 library if it is available and
+> > NO_LIBPFM4 isn't passed to the build. The libpfm4 library contains hardware
+> > event tables for all processors supported by perf_events. It is a helper
+> > library that helps convert from a symbolic event name to the event
+> > encoding required by the underlying kernel interface. This
+> > library is open-source and available from: http://perfmon2.sf.net.
 > >
-> > I had asked before, and will ask again: please provide an explicit LSM
-> > hook for mediating whether one can make changes to the LSM hooks.
-> > Neither CAP_MAC_ADMIN nor CAP_SYS_ADMIN suffices to check this for SELi=
-nux.
+> > With this patch, it is possible to specify full hardware events
+> > by name. Hardware filters are also supported. Events must be
+> > specified via the --pfm-events and not -e option. Both options
+> > are active at the same time and it is possible to mix and match:
+> >
+> > $ perf stat --pfm-events inst_retired:any_p:c=1:i -e cycles ....
+> >
+> > v5 is a rebase.
+> > v4 is a rebase on git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git
+> >    branch perf/core and re-adds the tools/build/feature/test-libpfm4.c
+> >    missed in v3.
+> > v3 is against acme/perf/core and removes a diagnostic warning.
+> > v2 of this patch makes the --pfm-events man page documentation
+> > conditional on libpfm4 behing configured. It tidies some of the
+> > documentation and adds the feature test missed in the v1 patch.
+> >
+> > Author: Stephane Eranian <eranian@google.com>
+> > Signed-off-by: Ian Rogers <irogers@google.com>
 >
-> What do you think about:
+> I still have some conflicts, but I merged it by hand
 >
->   int security_check_mutable_hooks(void)
 >
-> Do you have any suggestions on the signature of this hook? Does this
-> hook need to be BPF specific?
+>         patching file tools/build/Makefile.feature
+>         patching file tools/build/feature/Makefile
+>         patching file tools/build/feature/test-libpfm4.c
+>         patching file tools/perf/Documentation/Makefile
+>         patching file tools/perf/Documentation/perf-record.txt
+>         patching file tools/perf/Documentation/perf-stat.txt
+>         patching file tools/perf/Documentation/perf-top.txt
+>         patching file tools/perf/Makefile.config
+>         patching file tools/perf/Makefile.perf
+>         Hunk #3 FAILED at 834.
+>         1 out of 3 hunks FAILED -- saving rejects to file tools/perf/Makefile.perf.rej
+>         patching file tools/perf/builtin-list.c
+>         patching file tools/perf/builtin-record.c
+>         patching file tools/perf/builtin-stat.c
+>         patching file tools/perf/builtin-top.c
+>         Hunk #2 succeeded at 1549 (offset 2 lines).
+>         Hunk #3 succeeded at 1567 (offset 2 lines).
+>         patching file tools/perf/util/evsel.c
+>         patching file tools/perf/util/evsel.h
+>         patching file tools/perf/util/parse-events.c
+>         patching file tools/perf/util/parse-events.h
+>         patching file tools/perf/util/pmu.c
+>         Hunk #1 succeeded at 869 (offset 5 lines).
+>         patching file tools/perf/util/pmu.h
+>         Hunk #1 succeeded at 65 (offset 1 line).
+>
+> jirka
 
-I'd do something like int security_bpf_prog_attach_security(const
-struct bpf_prog *prog) or similar.
-Then the security module can do a check based on the current task
-and/or the prog.  We already have some bpf-specific hooks.
+Thanks! I did a clone of acme's linux.git branch perf/core and applied
+the change with git am, then built and tested. Perhaps you are using a
+different tree or branch? Anyway, hopefully this is resolved now :-)
+
+Thanks again,
+Ian
