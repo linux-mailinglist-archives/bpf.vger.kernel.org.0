@@ -2,111 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A15F191CA6
-	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 23:31:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B58D8191CF7
+	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 23:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728282AbgCXWbK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Mar 2020 18:31:10 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:46771 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728227AbgCXWbK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Mar 2020 18:31:10 -0400
-Received: by mail-qk1-f196.google.com with SMTP id u4so346608qkj.13;
-        Tue, 24 Mar 2020 15:31:09 -0700 (PDT)
+        id S1728227AbgCXWjR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Mar 2020 18:39:17 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:41844 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728282AbgCXWjR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Mar 2020 18:39:17 -0400
+Received: by mail-wr1-f67.google.com with SMTP id h9so620527wrc.8
+        for <bpf@vger.kernel.org>; Tue, 24 Mar 2020 15:39:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ZVBNkmQ6KNSiQ9imF34wczZJOjW1q9SSGP6SBaBKNY4=;
-        b=R1Om5kXeha14u6MpD7gSO8OM7ArVvPGInc7J6L8AyaCrZrWFLKoMjLaEic/E80CeZ3
-         ZUapHQXdHT6vgcuNDz321Y2SQeJlpGdk5+pSOG3kitHzyGervHVBvBzxck6dApmQ+W4M
-         N6e7ZMeoGHZss02j80DFwWEzUo93m/N+6Qul1r0xy2tOQGl7RM/XEZu7k0HdgTdym1md
-         mfLZZu/viVB9/JX+qtS1Ad/WmEne7wUk1lF6rdR7wmK0vu1t5v18eOKIB8I4QQ0m1lCp
-         9oKwSJhd2h6+AQGTsnHDvvbsd48EmBzfvsah4fwY8CsHiNB6TTDPmLHIUxwrqRJzepWj
-         63Pg==
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=CsJTvGpVPmav8scr1f+8vGqJnRDlYhqVnGsY3dWNugM=;
+        b=eFbp7iaJn1hT6hxrzF9p2+uV+G3iYIs+RbR8w+oGK0SWl0M4CdoFe9D5CI8MNBfLsT
+         FhwxLc9CyARUimd4HUlZZOKRqVlcuOlFSP9Za+9D9NKccTdhiyawFfOKdUwa0n4aVQut
+         bdVmJFSTEIUwO6Of5kw0HNRVyFy7EgOsn8Cy8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZVBNkmQ6KNSiQ9imF34wczZJOjW1q9SSGP6SBaBKNY4=;
-        b=E9pwPjJEqicBXPvqQhp/WErWvXoGKVISMBUTGXoXMDvDTyc58XqwpWTLBbhnUlrStM
-         njlm0+83n4/bxIOHCijzwTpWTJ4HJIjR9TTyPGPiJIIkM3JzQ8dtQAZUqqgzkhgvfS8y
-         GC/Gu5YMeM1/87TVAWWqCBvfrQuGwFD2Y6nRqORNVTQNHnB62i18KxMX4ApmAf7rmLBP
-         p3crY1DdT+Q8TZ9a+kISRR8iBvvIYiplDcyKmtUJJYJaEgmBI+tyMtimvy1upw+s0wSB
-         ex0G/WXQzQv+FdEpqhNz8FF0sAi3O0SS4jxBpNHJ4skmasRkyqSGdoChvcU1wLrmJy8f
-         M0dg==
-X-Gm-Message-State: ANhLgQ3h0KZt4IMIn7EhbqfYEo4T3l3+fmEa7R3PQstZ2akntPm+ZIRh
-        gjaPAzCZ8SKRYjXvjbNm516iISaHPDdx2BUcUTw=
-X-Google-Smtp-Source: ADFU+vt7jbWpWic5LSgwTwL2UxAfd9oqqaxeMFJfScwEx/yIjufmLZBcmPAg+yTYu/z2iu8OIgsF6jcyZbv2XcvL+Bg=
-X-Received: by 2002:a37:e40d:: with SMTP id y13mr152356qkf.39.1585089069087;
- Tue, 24 Mar 2020 15:31:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <158462359206.164779.15902346296781033076.stgit@toke.dk>
- <158462359315.164779.13931660750493121404.stgit@toke.dk> <20200319155236.3d8537c5@kicinski-fedora-PC1C0HJN>
- <875zez76ph.fsf@toke.dk> <20200320103530.2853c573@kicinski-fedora-PC1C0HJN>
- <5e750bd4ebf8d_233f2ab4c81425c4ce@john-XPS-13-9370.notmuch>
- <CAEf4BzbWa8vdyLuzr_nxFM3BtT+hhzjCe9UQF8Y5cN+sVqa72g@mail.gmail.com>
- <87tv2f48lp.fsf@toke.dk> <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com>
- <87h7ye3mf3.fsf@toke.dk> <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com>
- <87tv2e10ly.fsf@toke.dk> <20200324115349.6447f99b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200324115349.6447f99b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 24 Mar 2020 15:30:58 -0700
-Message-ID: <CAEf4Bzb=FuVVw1wwLbGW1LU05heAFoUiJjm71=Qqxr+dS78qyQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
- program when attaching XDP
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=CsJTvGpVPmav8scr1f+8vGqJnRDlYhqVnGsY3dWNugM=;
+        b=q5oumPECbe5wwKf5nwqwlh3D0Osjrlm0Hfa+MMjpxf/pueiwasohSyA/Y8aPJk2qYB
+         70Ka4iEaJU6DtDsrFlVrT61cZ8Esyx9QqReguuKcYhrMx5H75iywHa2W6DAOfp3izGPL
+         MWJ6Sr/NNFjvfaeR+m66SjSd4qrRgwEuJ8jr4QyoPW35pG/1K5jtZoZ6Qzo3wwjhIOcL
+         6sTl9XPr1drUCnXjrdjBCcawVwupOr7ClNT0bGYAF1dbSbMgHMHGLO6qo8D4mA4jR6si
+         aoKV4zUB1BTjQSni7yas8llpVOER2tBAdQRwlraMTB1VXY9bEodQFMQKUEe5gBwn+sVP
+         EjiQ==
+X-Gm-Message-State: ANhLgQ1zKjpH2YMXQqg1/4UWhPw6tIyqldSL6LkWo8OKb7PC4S8Jhbvs
+        zGi5oUYRZg4c/3Wf5HtRkNTPEw==
+X-Google-Smtp-Source: ADFU+vvmq9phB+TJsSu5PlZjdZhx430KLaniYgGVncHAKBv0pYcKZqkSfT8jbwXzYfaMKem6odSqdQ==
+X-Received: by 2002:adf:9322:: with SMTP id 31mr39623063wro.297.1585089553456;
+        Tue, 24 Mar 2020 15:39:13 -0700 (PDT)
+Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
+        by smtp.gmail.com with ESMTPSA id c21sm5509329wmb.13.2020.03.24.15.39.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Mar 2020 15:39:12 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Tue, 24 Mar 2020 23:39:10 +0100
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH bpf-next v5 3/7] bpf: lsm: provide attachment points for
+ BPF LSM programs
+Message-ID: <20200324223910.GA5448@chromium.org>
+References: <20200323164415.12943-1-kpsingh@chromium.org>
+ <20200323164415.12943-4-kpsingh@chromium.org>
+ <CAEf4BzbRivYO=gVjuQw8Z8snN+RFwXswvNxs67c=5g6U3o9rmw@mail.gmail.com>
+ <20200324103910.GA7135@chromium.org>
+ <20200324161211.GA11227@chromium.org>
+ <CAEf4BzZZLBf3xRsV4khGCFdTxDFV61KbFfV1mHwM5yiCr4P37w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzZZLBf3xRsV4khGCFdTxDFV61KbFfV1mHwM5yiCr4P37w@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 24, 2020 at 11:53 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Tue, 24 Mar 2020 11:57:45 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote=
-:
-> > > If everyone is using libbpf, does kernel system (bpf syscall vs
-> > > netlink) matter all that much?
+On 24-Mär 14:26, Andrii Nakryiko wrote:
+> On Tue, Mar 24, 2020 at 9:12 AM KP Singh <kpsingh@chromium.org> wrote:
 > >
-> > This argument works the other way as well, though: If libbpf can
-> > abstract the subsystem differences and provide a consistent interface t=
-o
-> > "the BPF world", why does BPF need to impose its own syscall API on the
-> > networking subsystem?
->
-> Hitting the nail on the head there, again :)
->
-> Once upon a time when we were pushing for libbpf focus & unification,
-> one of my main motivations was that a solid library that most people
-> use give us the ability to provide user space abstractions.
+> > On 24-Mär 11:39, KP Singh wrote:
+> > > On 23-Mär 12:59, Andrii Nakryiko wrote:
+> > > > On Mon, Mar 23, 2020 at 9:45 AM KP Singh <kpsingh@chromium.org> wrote:
+> > > > >
+> > > > > From: KP Singh <kpsingh@google.com>
+> > > > >
+> > > > > When CONFIG_BPF_LSM is enabled, nops functions, bpf_lsm_<hook_name>, are
+> > > > > generated for each LSM hook. These nops are initialized as LSM hooks in
+> > > > > a subsequent patch.
+> > > > >
+> > > > > Signed-off-by: KP Singh <kpsingh@google.com>
+> > > > > Reviewed-by: Brendan Jackman <jackmanb@google.com>
+> > > > > Reviewed-by: Florent Revest <revest@google.com>
+> > > > > ---
+> > > > >  include/linux/bpf_lsm.h | 21 +++++++++++++++++++++
+> > > > >  kernel/bpf/bpf_lsm.c    | 19 +++++++++++++++++++
+> > > > >  2 files changed, 40 insertions(+)
+> > > > >  create mode 100644 include/linux/bpf_lsm.h
+> > > > >
+> > > > > diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
+> > > > > new file mode 100644
+> > > > > index 000000000000..c6423a140220
+> > > > > --- /dev/null
+> > > > > +++ b/include/linux/bpf_lsm.h
+> > > > > @@ -0,0 +1,21 @@
+> > > > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > > > +
+> > > > > +/*
+> > > > > + * Copyright (C) 2020 Google LLC.
+> > > > > + */
+> > > > > +
+> > > > > +#ifndef _LINUX_BPF_LSM_H
+> > > > > +#define _LINUX_BPF_LSM_H
+> > > > > +
+> > > > > +#include <linux/bpf.h>
+> > > > > +#include <linux/lsm_hooks.h>
+> > > > > +
+> > > > > +#ifdef CONFIG_BPF_LSM
+> > > > > +
+> > > > > +#define LSM_HOOK(RET, NAME, ...) RET bpf_lsm_##NAME(__VA_ARGS__);
+> > > > > +#include <linux/lsm_hook_names.h>
+> > > > > +#undef LSM_HOOK
+> > > > > +
+> > > > > +#endif /* CONFIG_BPF_LSM */
+> > > > > +
+> > > > > +#endif /* _LINUX_BPF_LSM_H */
+> > > > > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> > > > > index 82875039ca90..530d137f7a84 100644
+> > > > > --- a/kernel/bpf/bpf_lsm.c
+> > > > > +++ b/kernel/bpf/bpf_lsm.c
+> > > > > @@ -7,6 +7,25 @@
+> > > > >  #include <linux/filter.h>
+> > > > >  #include <linux/bpf.h>
+> > > > >  #include <linux/btf.h>
+> > > > > +#include <linux/lsm_hooks.h>
+> > > > > +#include <linux/bpf_lsm.h>
+> > > > > +
+> > > > > +/* For every LSM hook  that allows attachment of BPF programs, declare a NOP
+> > > > > + * function where a BPF program can be attached as an fexit trampoline.
+> > > > > + */
+> > > > > +#define LSM_HOOK(RET, NAME, ...) LSM_HOOK_##RET(NAME, __VA_ARGS__)
+> > > > > +
+> > > > > +#define LSM_HOOK_int(NAME, ...)                        \
+> > > > > +noinline __weak int bpf_lsm_##NAME(__VA_ARGS__)        \
+> > > > > +{                                              \
+> > > > > +       return 0;                               \
+> > > > > +}
+> > > > > +
+> > > > > +#define LSM_HOOK_void(NAME, ...) \
+> > > > > +noinline __weak void bpf_lsm_##NAME(__VA_ARGS__) {}
+> > > > > +
+> > > >
+> > > > Could unify with:
+> > > >
+> > > > #define LSM_HOOK(RET, NAME, ...) noinline __weak RET bpf_lsm_##NAME(__VA_ARGS__)
+> > > > {
+> > > >     return (RET)0;
+> > > > }
+> > > >
+> > > > then you don't need LSM_HOOK_int and LSM_HOOK_void.
+> > >
+> > > Nice.
+> > >
+> > > But, given that we are adding default values and that
+> > > they are only needed for int hooks, we will need to keep the macros
+> > > separate for int and void. Or, Am I missing a trick here?
+> > >
+> > > - KP
+> >
+> > Actually, was able to get it work. not setting a default for void
+> > hooks makes the macros messier. So i just set it void. For example:
+> >
+> >   LSM_HOOK(void, void, bprm_committing_creds, struct linux_binprm *bprm)
+> 
+> surprised this works, was going to propose to specify `(void)0` as
+> default value :)
 
-Yes, but bpf_link is not a user-space abstraction only anymore. It
-started that way and we quickly realized that we still will need
-kernel support. Not everything can be abstracted in user-space only.
-So I don't see any contradiction here, that's still libbpf focus.
+Yeah, you are right that does not work. so I added:
 
->
-> As much as adding new kernel interfaces "to rule them all" is fun, it
-> has a real cost.
+  LSM_HOOK(void, LSM_RET_VOID, bprm_committed_creds, struct linux_binprm *bprm)
 
-We are adding kernel interface regardless of XDP (for cgroups and
-tracing, then perf_events, etc). The real point and real cost here is
-to not have another duplication of same functionality just for XDP use
-case. That's the real cost, not the other way around. Don't know how
-to emphasize this further.
+and as you suggested defined LSM_RET_VOID in lsm_hooks.h:
 
-And there is very little fun involved from my side, believe it or not...
+  /* LSM_RET_VOID is used as the default value in LSM_HOOK definitions for void
+   * for void LSM hooks (in include/linux/lsm_hook_defs.h).
+   */
+  #define LSM_RET_VOID ((void) 0)
+
+I also noticed a few other hooks that were passing an initial return
+value to call_int_hook which were missed in this revision. Have fixed
+these for the next one.
+
+- KP
+
+> 
+> >
+> > This also allows me to use the cleanup you suggested and not having
+> > to split every usage into int and void.
+> >
+> 
+> Nice, one of the reasons for proposing this.
+> 
+> > - KP
+> >
+> > >
+> > > >
+> > > > > +#include <linux/lsm_hook_names.h>
+> > > > > +#undef LSM_HOOK
+> > > > >
+> > > > >  const struct bpf_prog_ops lsm_prog_ops = {
+> > > > >  };
+> > > > > --
+> > > > > 2.20.1
+> > > > >
