@@ -2,133 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF4E3190AF5
-	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 11:29:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95CCD190B40
+	for <lists+bpf@lfdr.de>; Tue, 24 Mar 2020 11:39:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727389AbgCXK2F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Mar 2020 06:28:05 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([216.205.24.74]:56971 "EHLO
-        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727385AbgCXK2E (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 24 Mar 2020 06:28:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585045684;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fb+k064Enl6GEK9uiujgF/I3NuLpU7i+xLE00RoVePc=;
-        b=BYs7FNPOqIO7wB2wq5erWsw3fAz7R7av2E+StrP0w0P/JzYhb+WdvA+ramfHCPad0kJeAe
-        6+Z2tEIq0pYHkKsK96NEWG8lG0oowZRI+WWOiMmv3gwpjNkEvnf7IIDJwXmVyHMjwYUzeJ
-        t/ebjozpSxlf/psBJfbBFx69W8k1fTc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-183-5b9ot_9dM2OYVVo-MmeC0A-1; Tue, 24 Mar 2020 06:28:00 -0400
-X-MC-Unique: 5b9ot_9dM2OYVVo-MmeC0A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 07048149C1;
-        Tue, 24 Mar 2020 10:27:56 +0000 (UTC)
-Received: from krava (unknown [10.40.192.119])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EE4BD60BF3;
-        Tue, 24 Mar 2020 10:27:36 +0000 (UTC)
-Date:   Tue, 24 Mar 2020 11:27:32 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        id S1727130AbgCXKjR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Mar 2020 06:39:17 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:33022 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727066AbgCXKjQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Mar 2020 06:39:16 -0400
+Received: by mail-wr1-f67.google.com with SMTP id a25so20790593wrd.0
+        for <bpf@vger.kernel.org>; Tue, 24 Mar 2020 03:39:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=WNURfYwUOPAnuz+U3UbPZyrljqXKCvMA7vRxyxXRqHM=;
+        b=h5BvdxgSXNE2/jma/jYDLUTdGPiB158yhJaCdf6uihjZuDF6ED9XbYBj9gs+33cFnL
+         BR1q8lLb2zZjJ4RN+Z9haG820tRE9+3+kaOsQwpzzfqSE2Up3YZf6krsbiTbZGf9WN4m
+         xsvkfvQuQ/lQQBEIFooS67t8NoZu9oZvSpcBE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=WNURfYwUOPAnuz+U3UbPZyrljqXKCvMA7vRxyxXRqHM=;
+        b=uAs8hjh4sgVvKJsV9NNEf81ExvjsXSBuQ6Kj7eq3nBy67CAXaGsGjyCuSyk3Zh8mmC
+         ACKdM+D3oJtEf9WqFlYmvwSEzQvfplPEATvtwaXWSFmu1yzeysGPfiAYN6kN5oZXvfTu
+         6fJABC2Eb8b63af6iIm5O7zM+zDziLbzXTDzbA4ARautpKEiFYm6KcZK6uOS1EuLOwMX
+         2b64tNXTwJ9ioxq/gzvVbP67dLi7PLuQNXvsnQFHkF1cDoAeExeU80yS64YtxummyIxV
+         DjVJF1Yt5k//gYAo/JqkQbJ+2KCwhEGAx/7Lw0LCazon2m8bZQDe0vXRzRcA83sVQHSy
+         3J+Q==
+X-Gm-Message-State: ANhLgQ0270t4kNfCQfqtR9r8W+JlfpeldR6cIg3wgcD6bPSOT76Cwq/T
+        9C2WAIh5vA1O/VAmxEywifmFBg==
+X-Google-Smtp-Source: ADFU+vutESD3P5pBkNWr+6YYHHHInBJvKSWgEdKsOHk7IwwLDwihiRPSXNB3MeFkJv8Gax2/4ZxY2A==
+X-Received: by 2002:a5d:6187:: with SMTP id j7mr12220191wru.419.1585046353498;
+        Tue, 24 Mar 2020 03:39:13 -0700 (PDT)
+Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
+        by smtp.gmail.com with ESMTPSA id b187sm3828624wmb.42.2020.03.24.03.39.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Mar 2020 03:39:12 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Tue, 24 Mar 2020 11:39:10 +0100
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jiwei Sun <jiwei.sun@windriver.com>,
-        yuzhoujian <yuzhoujian@didichuxing.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v5] perf tools: add support for libpfm4
-Message-ID: <20200324102732.GR1534489@krava>
-References: <20200323235846.104937-1-irogers@google.com>
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH bpf-next v5 3/7] bpf: lsm: provide attachment points for
+ BPF LSM programs
+Message-ID: <20200324103910.GA7135@chromium.org>
+References: <20200323164415.12943-1-kpsingh@chromium.org>
+ <20200323164415.12943-4-kpsingh@chromium.org>
+ <CAEf4BzbRivYO=gVjuQw8Z8snN+RFwXswvNxs67c=5g6U3o9rmw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200323235846.104937-1-irogers@google.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzbRivYO=gVjuQw8Z8snN+RFwXswvNxs67c=5g6U3o9rmw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 23, 2020 at 04:58:46PM -0700, Ian Rogers wrote:
-> This patch links perf with the libpfm4 library if it is available and
-> NO_LIBPFM4 isn't passed to the build. The libpfm4 library contains hardware
-> event tables for all processors supported by perf_events. It is a helper
-> library that helps convert from a symbolic event name to the event
-> encoding required by the underlying kernel interface. This
-> library is open-source and available from: http://perfmon2.sf.net.
+On 23-Mär 12:59, Andrii Nakryiko wrote:
+> On Mon, Mar 23, 2020 at 9:45 AM KP Singh <kpsingh@chromium.org> wrote:
+> >
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > When CONFIG_BPF_LSM is enabled, nops functions, bpf_lsm_<hook_name>, are
+> > generated for each LSM hook. These nops are initialized as LSM hooks in
+> > a subsequent patch.
+> >
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+> > Reviewed-by: Brendan Jackman <jackmanb@google.com>
+> > Reviewed-by: Florent Revest <revest@google.com>
+> > ---
+> >  include/linux/bpf_lsm.h | 21 +++++++++++++++++++++
+> >  kernel/bpf/bpf_lsm.c    | 19 +++++++++++++++++++
+> >  2 files changed, 40 insertions(+)
+> >  create mode 100644 include/linux/bpf_lsm.h
+> >
+> > diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
+> > new file mode 100644
+> > index 000000000000..c6423a140220
+> > --- /dev/null
+> > +++ b/include/linux/bpf_lsm.h
+> > @@ -0,0 +1,21 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +
+> > +/*
+> > + * Copyright (C) 2020 Google LLC.
+> > + */
+> > +
+> > +#ifndef _LINUX_BPF_LSM_H
+> > +#define _LINUX_BPF_LSM_H
+> > +
+> > +#include <linux/bpf.h>
+> > +#include <linux/lsm_hooks.h>
+> > +
+> > +#ifdef CONFIG_BPF_LSM
+> > +
+> > +#define LSM_HOOK(RET, NAME, ...) RET bpf_lsm_##NAME(__VA_ARGS__);
+> > +#include <linux/lsm_hook_names.h>
+> > +#undef LSM_HOOK
+> > +
+> > +#endif /* CONFIG_BPF_LSM */
+> > +
+> > +#endif /* _LINUX_BPF_LSM_H */
+> > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> > index 82875039ca90..530d137f7a84 100644
+> > --- a/kernel/bpf/bpf_lsm.c
+> > +++ b/kernel/bpf/bpf_lsm.c
+> > @@ -7,6 +7,25 @@
+> >  #include <linux/filter.h>
+> >  #include <linux/bpf.h>
+> >  #include <linux/btf.h>
+> > +#include <linux/lsm_hooks.h>
+> > +#include <linux/bpf_lsm.h>
+> > +
+> > +/* For every LSM hook  that allows attachment of BPF programs, declare a NOP
+> > + * function where a BPF program can be attached as an fexit trampoline.
+> > + */
+> > +#define LSM_HOOK(RET, NAME, ...) LSM_HOOK_##RET(NAME, __VA_ARGS__)
+> > +
+> > +#define LSM_HOOK_int(NAME, ...)                        \
+> > +noinline __weak int bpf_lsm_##NAME(__VA_ARGS__)        \
+> > +{                                              \
+> > +       return 0;                               \
+> > +}
+> > +
+> > +#define LSM_HOOK_void(NAME, ...) \
+> > +noinline __weak void bpf_lsm_##NAME(__VA_ARGS__) {}
+> > +
 > 
-> With this patch, it is possible to specify full hardware events
-> by name. Hardware filters are also supported. Events must be
-> specified via the --pfm-events and not -e option. Both options
-> are active at the same time and it is possible to mix and match:
+> Could unify with:
 > 
-> $ perf stat --pfm-events inst_retired:any_p:c=1:i -e cycles ....
+> #define LSM_HOOK(RET, NAME, ...) noinline __weak RET bpf_lsm_##NAME(__VA_ARGS__)
+> {
+>     return (RET)0;
+> }
 > 
-> v5 is a rebase.
-> v4 is a rebase on git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git
->    branch perf/core and re-adds the tools/build/feature/test-libpfm4.c
->    missed in v3.
-> v3 is against acme/perf/core and removes a diagnostic warning.
-> v2 of this patch makes the --pfm-events man page documentation
-> conditional on libpfm4 behing configured. It tidies some of the
-> documentation and adds the feature test missed in the v1 patch.
+> then you don't need LSM_HOOK_int and LSM_HOOK_void.
+
+Nice.
+
+But, given that we are adding default values and that
+they are only needed for int hooks, we will need to keep the macros
+separate for int and void. Or, Am I missing a trick here?
+
+- KP
+
 > 
-> Author: Stephane Eranian <eranian@google.com>
-> Signed-off-by: Ian Rogers <irogers@google.com>
-
-I still have some conflicts, but I merged it by hand
-
-
-	patching file tools/build/Makefile.feature
-	patching file tools/build/feature/Makefile
-	patching file tools/build/feature/test-libpfm4.c
-	patching file tools/perf/Documentation/Makefile
-	patching file tools/perf/Documentation/perf-record.txt
-	patching file tools/perf/Documentation/perf-stat.txt
-	patching file tools/perf/Documentation/perf-top.txt
-	patching file tools/perf/Makefile.config
-	patching file tools/perf/Makefile.perf
-	Hunk #3 FAILED at 834.
-	1 out of 3 hunks FAILED -- saving rejects to file tools/perf/Makefile.perf.rej
-	patching file tools/perf/builtin-list.c
-	patching file tools/perf/builtin-record.c
-	patching file tools/perf/builtin-stat.c
-	patching file tools/perf/builtin-top.c
-	Hunk #2 succeeded at 1549 (offset 2 lines).
-	Hunk #3 succeeded at 1567 (offset 2 lines).
-	patching file tools/perf/util/evsel.c
-	patching file tools/perf/util/evsel.h
-	patching file tools/perf/util/parse-events.c
-	patching file tools/perf/util/parse-events.h
-	patching file tools/perf/util/pmu.c
-	Hunk #1 succeeded at 869 (offset 5 lines).
-	patching file tools/perf/util/pmu.h
-	Hunk #1 succeeded at 65 (offset 1 line).
-
-jirka
-
+> > +#include <linux/lsm_hook_names.h>
+> > +#undef LSM_HOOK
+> >
+> >  const struct bpf_prog_ops lsm_prog_ops = {
+> >  };
+> > --
+> > 2.20.1
+> >
