@@ -2,194 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9245C19316C
-	for <lists+bpf@lfdr.de>; Wed, 25 Mar 2020 20:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AFE9193172
+	for <lists+bpf@lfdr.de>; Wed, 25 Mar 2020 20:55:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727259AbgCYTsM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Mar 2020 15:48:12 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:41327 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727281AbgCYTsL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Mar 2020 15:48:11 -0400
-Received: by mail-pl1-f194.google.com with SMTP id t16so1207763plr.8
-        for <bpf@vger.kernel.org>; Wed, 25 Mar 2020 12:48:09 -0700 (PDT)
+        id S1727401AbgCYTzZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Mar 2020 15:55:25 -0400
+Received: from mail-ua1-f73.google.com ([209.85.222.73]:54678 "EHLO
+        mail-ua1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727355AbgCYTzZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Mar 2020 15:55:25 -0400
+Received: by mail-ua1-f73.google.com with SMTP id v20so1332817ual.21
+        for <bpf@vger.kernel.org>; Wed, 25 Mar 2020 12:55:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=gNRk+AqHgbXI95es83rWVUIu+SAdUK4LqSHgrKC0U/A=;
-        b=idXhkfkRTzW/YU35N2RHQoAWbNQ8TgDGenwD6d35Bu+J11tN77O5UX0CtlkVCR1fvz
-         gpUg36VydnIvN8mAYpMkKhQ9UyFD+6WD5rC2+uw7rbhXBoN4tg/d1XHoU+LsTXQ3+7Iy
-         /WHvPiV/0E9wZ1Jangg9K223n8joWGB8x3XNXh8Jtc/7+dvZ3xwjCFZzZvt4GAw7thMU
-         Q4oHI0DWXIRamR0fm+eOH6zqOtMnqN45h8R9ETVWJYg3p1Mu6G5x6012U6jNysrEdNwn
-         y5xui2FzK9jkteISc9IvagqYRiOmIM+IKDNmwMxRcMJJe8sdOKEqL65afXxgk0EARmmM
-         UFPw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=cH0tJYs53PTCLsdOYQQz/gzKpECnsr9ruFmx+0XDr8s=;
+        b=cqua3BHYK0VDcoJgQQtAMLLLfQq3Mx0ig0iQYlc5He92FiAS0zrySvSFgsvbFdhm7q
+         qlt7DnMaCjyUwCgqpfB/MKLfNWp5Djp5cvfOkRaajAKmXynCQ4xA376oGA52QPoignuQ
+         D2qa3fyDFEoLNv87rRFpxE1Vo/TvnR+SNilWs3Zug4O1NDha3JQj7gdkS2PDccn+mL1y
+         pxWktWtHpT670UEVMl2r+m/1P/CKXor+bFMChluwiszoZLXc4CIk5NGP9f+0ou0d3guO
+         g6WpSPmItXylURM0dsyQJt4BlLeQoyuXgPeENlZu34+2zIoJn9GHCvBn524wML9tWWWV
+         wh/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gNRk+AqHgbXI95es83rWVUIu+SAdUK4LqSHgrKC0U/A=;
-        b=JWl1lYEr3xG+MmwC+0SeKlA5/+hv+g/o284qHJakGi8D2NW8h1rc2dseZXn6nuTH94
-         FiLWUlWF1Zr8XbXe95RwKHEk15TY+QMUGAgRQUEipKZUe9xi9JgDeuYHTIChvIhNfdZC
-         MHw55I1HK4BZZq30GLLSvER5+cQUvlQyxFncJcYGgSk2BZRvm3ug0etqLklpcY9PjKcX
-         jf3x3Z09TTkj2M91u3LU4VbdCMGaVTjQUayjhFDm1c12PM5D9Hiq+Dr91a3+oTsuz50K
-         eDrkR2HuXj1e0xbUQu2HFMHJfe3houIOk6To6HbxbOdgYVbbALCLMDb3eNhDYwUxeF2K
-         /ptQ==
-X-Gm-Message-State: ANhLgQ3cB4WOsqAMWM4j8iEoxE+G9VrKitm78GmPMPHsUyjD3azHONzA
-        0vlnevXF1YLtXnZ9qg5myv4Xdg==
-X-Google-Smtp-Source: ADFU+vsZjYZXQ0igbU1mabKTgvelhgYxrvogp20XzVi/eoGE0KTKsg5vF2H1Y8KqZlhurIYEC0I6oA==
-X-Received: by 2002:a17:90a:36e5:: with SMTP id t92mr5644174pjb.51.1585165688666;
-        Wed, 25 Mar 2020 12:48:08 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id g16sm18274201pgb.54.2020.03.25.12.48.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Mar 2020 12:48:08 -0700 (PDT)
-Date:   Wed, 25 Mar 2020 12:48:07 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [PATCH bpf-next v2] libbpf: don't allocate 16M for log buffer by
- default
-Message-ID: <20200325194807.GB2805006@mini-arch.hsd1.ca.comcast.net>
-References: <20200325162026.254799-1-sdf@google.com>
- <CAEf4BzbEuWdb-77nm=o5doGfYbpWxbTe+U2mM+KH1hw6CnYuww@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbEuWdb-77nm=o5doGfYbpWxbTe+U2mM+KH1hw6CnYuww@mail.gmail.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=cH0tJYs53PTCLsdOYQQz/gzKpECnsr9ruFmx+0XDr8s=;
+        b=tUNafLi739lCPEOJqUHz+6wdUpzq0BFHK5Q46ZzPkeaerNPWwQh9utjEgrGOfOD8S6
+         mjFlKfJiIU5ixlMsy+i2V5FpXMjD7b6C+YPGWDRqKNJDxvRpyceZctO/tKe6m26Pb2oq
+         siVCM8k7FSU16Qk4fFRA85oOjoGsy3PKUJte70sM/sWmIEKzXhTW34fUxHV/jqM82epW
+         ZmCeg32oydhpffc2bxQzx5PpR2wA72STJ/mYFHuU/DvfmfTOkwWeDjKQ0tAQZn/ZMK2r
+         dreXGezQCIDj9ryfgZ/nK+lunZ6o48IaPiq3jaoV1pt7OnWXO0wiRTwUiYEkOEvM6LXp
+         /90g==
+X-Gm-Message-State: ANhLgQ3F5AAzDVRhamNDPOVEpI7l5jpsgDVqw7KcPACEBxa6m8KA6opu
+        Bw8lWCYmBGo0tsPu895wI77wbH4=
+X-Google-Smtp-Source: ADFU+vv/TKtKqKQaugxqBf2p0AnT6IIfxkvar691odeHNmOBVevRXicl+XRMs58xgopTmvm9zwCsbz8=
+X-Received: by 2002:a1f:ac91:: with SMTP id v139mr3772908vke.91.1585166123439;
+ Wed, 25 Mar 2020 12:55:23 -0700 (PDT)
+Date:   Wed, 25 Mar 2020 12:55:21 -0700
+Message-Id: <20200325195521.112210-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.25.1.696.g5e7596f4ac-goog
+Subject: [PATCH bpf-next v3] libbpf: don't allocate 16M for log buffer by default
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 03/25, Andrii Nakryiko wrote:
-> On Wed, Mar 25, 2020 at 9:20 AM Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > For each prog/btf load we allocate and free 16 megs of verifier buffer.
-> > On production systems it doesn't really make sense because the
-> > programs/btf have gone through extensive testing and (mostly) guaranteed
-> > to successfully load.
-> >
-> > Let's assume successful case by default and skip buffer allocation
-> > on the first try. If there is an error, start with BPF_LOG_BUF_SIZE
-> > and double it on each ENOSPC iteration.
-> >
-> > v2:
-> > * Don't allocate the buffer at all on the first try (Andrii Nakryiko)
-> >
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  tools/lib/bpf/btf.c    | 20 +++++++++++++++-----
-> >  tools/lib/bpf/libbpf.c | 22 ++++++++++++++--------
-> >  2 files changed, 29 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> > index 3d1c25fc97ae..bfef3d606b54 100644
-> > --- a/tools/lib/bpf/btf.c
-> > +++ b/tools/lib/bpf/btf.c
-> > @@ -657,22 +657,32 @@ int btf__finalize_data(struct bpf_object *obj, struct btf *btf)
-> >
-> >  int btf__load(struct btf *btf)
-> >  {
-> > -       __u32 log_buf_size = BPF_LOG_BUF_SIZE;
-> > +       __u32 log_buf_size = 0;
-> >         char *log_buf = NULL;
-> >         int err = 0;
-> >
-> >         if (btf->fd >= 0)
-> >                 return -EEXIST;
-> >
-> > -       log_buf = malloc(log_buf_size);
-> > -       if (!log_buf)
-> > -               return -ENOMEM;
-> > +retry_load:
-> > +       if (log_buf_size) {
-> > +               log_buf = malloc(log_buf_size);
-> > +               if (!log_buf)
-> > +                       return -ENOMEM;
-> >
-> > -       *log_buf = 0;
-> > +               *log_buf = 0;
-> > +       }
-> >
-> >         btf->fd = bpf_load_btf(btf->data, btf->data_size,
-> >                                log_buf, log_buf_size, false);
-> >         if (btf->fd < 0) {
-> > +               if (!log_buf || errno == ENOSPC) {
-> > +                       log_buf_size = max((__u32)BPF_LOG_BUF_SIZE,
-> > +                                          log_buf_size << 1);
-> > +                       free(log_buf);
-> > +                       goto retry_load;
-> > +               }
-> > +
-> >                 err = -errno;
-> >                 pr_warn("Error loading BTF: %s(%d)\n", strerror(errno), errno);
-> >                 if (*log_buf)
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 085e41f9b68e..b2fd43a03708 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -4855,8 +4855,8 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
-> >  {
-> >         struct bpf_load_program_attr load_attr;
-> >         char *cp, errmsg[STRERR_BUFSIZE];
-> > -       int log_buf_size = BPF_LOG_BUF_SIZE;
-> > -       char *log_buf;
-> > +       size_t log_buf_size = 0;
-> > +       char *log_buf = NULL;
-> >         int btf_fd, ret;
-> >
-> >         if (!insns || !insns_cnt)
-> > @@ -4896,22 +4896,28 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
-> >         load_attr.prog_flags = prog->prog_flags;
-> >
-> >  retry_load:
-> > -       log_buf = malloc(log_buf_size);
-> > -       if (!log_buf)
-> > -               pr_warn("Alloc log buffer for bpf loader error, continue without log\n");
-> > +       if (log_buf_size) {
-> > +               log_buf = malloc(log_buf_size);
-> > +               if (!log_buf)
-> > +                       pr_warn("Alloc log buffer for bpf loader error, continue without log\n");
-> > +
-> 
-> considering that log_buf is not allocated first time, if it fails to
-> allocate on retry then it should be an error, no?
-> 
-> Otherwise looks good, please add my ack after fixing this:
-> 
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-Thx, will respin a v3. Returning -ENOMEM also makes it more consistent with
-btf retry logic.
+For each prog/btf load we allocate and free 16 megs of verifier buffer.
+On production systems it doesn't really make sense because the
+programs/btf have gone through extensive testing and (mostly) guaranteed
+to successfully load.
 
-> > +               *log_buf = 0;
-> > +       }
-> >
-> >         ret = bpf_load_program_xattr(&load_attr, log_buf, log_buf_size);
-> >
-> >         if (ret >= 0) {
-> > -               if (load_attr.log_level)
-> > +               if (log_buf && load_attr.log_level)
-> >                         pr_debug("verifier log:\n%s", log_buf);
-> >                 *pfd = ret;
-> >                 ret = 0;
-> >                 goto out;
-> >         }
-> >
-> > -       if (errno == ENOSPC) {
-> > -               log_buf_size <<= 1;
-> > +       if (!log_buf || errno == ENOSPC) {
-> > +               log_buf_size = max((size_t)BPF_LOG_BUF_SIZE,
-> > +                                  log_buf_size << 1);
-> > +
-> >                 free(log_buf);
-> >                 goto retry_load;
-> >         }
-> > --
-> > 2.25.1.696.g5e7596f4ac-goog
-> >
+Let's assume successful case by default and skip buffer allocation
+on the first try. If there is an error, start with BPF_LOG_BUF_SIZE
+and double it on each ENOSPC iteration.
+
+v3:
+* Return -ENOMEM when can't allocate log buffer (Andrii Nakryiko)
+
+v2:
+* Don't allocate the buffer at all on the first try (Andrii Nakryiko)
+
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/lib/bpf/btf.c    | 20 +++++++++++++++-----
+ tools/lib/bpf/libbpf.c | 22 ++++++++++++++--------
+ 2 files changed, 29 insertions(+), 13 deletions(-)
+
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 3d1c25fc97ae..bfef3d606b54 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -657,22 +657,32 @@ int btf__finalize_data(struct bpf_object *obj, struct btf *btf)
+ 
+ int btf__load(struct btf *btf)
+ {
+-	__u32 log_buf_size = BPF_LOG_BUF_SIZE;
++	__u32 log_buf_size = 0;
+ 	char *log_buf = NULL;
+ 	int err = 0;
+ 
+ 	if (btf->fd >= 0)
+ 		return -EEXIST;
+ 
+-	log_buf = malloc(log_buf_size);
+-	if (!log_buf)
+-		return -ENOMEM;
++retry_load:
++	if (log_buf_size) {
++		log_buf = malloc(log_buf_size);
++		if (!log_buf)
++			return -ENOMEM;
+ 
+-	*log_buf = 0;
++		*log_buf = 0;
++	}
+ 
+ 	btf->fd = bpf_load_btf(btf->data, btf->data_size,
+ 			       log_buf, log_buf_size, false);
+ 	if (btf->fd < 0) {
++		if (!log_buf || errno == ENOSPC) {
++			log_buf_size = max((__u32)BPF_LOG_BUF_SIZE,
++					   log_buf_size << 1);
++			free(log_buf);
++			goto retry_load;
++		}
++
+ 		err = -errno;
+ 		pr_warn("Error loading BTF: %s(%d)\n", strerror(errno), errno);
+ 		if (*log_buf)
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 085e41f9b68e..00570d8bd388 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4855,8 +4855,8 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
+ {
+ 	struct bpf_load_program_attr load_attr;
+ 	char *cp, errmsg[STRERR_BUFSIZE];
+-	int log_buf_size = BPF_LOG_BUF_SIZE;
+-	char *log_buf;
++	size_t log_buf_size = 0;
++	char *log_buf = NULL;
+ 	int btf_fd, ret;
+ 
+ 	if (!insns || !insns_cnt)
+@@ -4896,22 +4896,28 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
+ 	load_attr.prog_flags = prog->prog_flags;
+ 
+ retry_load:
+-	log_buf = malloc(log_buf_size);
+-	if (!log_buf)
+-		pr_warn("Alloc log buffer for bpf loader error, continue without log\n");
++	if (log_buf_size) {
++		log_buf = malloc(log_buf_size);
++		if (!log_buf)
++			return -ENOMEM;
++
++		*log_buf = 0;
++	}
+ 
+ 	ret = bpf_load_program_xattr(&load_attr, log_buf, log_buf_size);
+ 
+ 	if (ret >= 0) {
+-		if (load_attr.log_level)
++		if (log_buf && load_attr.log_level)
+ 			pr_debug("verifier log:\n%s", log_buf);
+ 		*pfd = ret;
+ 		ret = 0;
+ 		goto out;
+ 	}
+ 
+-	if (errno == ENOSPC) {
+-		log_buf_size <<= 1;
++	if (!log_buf || errno == ENOSPC) {
++		log_buf_size = max((size_t)BPF_LOG_BUF_SIZE,
++				   log_buf_size << 1);
++
+ 		free(log_buf);
+ 		goto retry_load;
+ 	}
+-- 
+2.25.1.696.g5e7596f4ac-goog
+
