@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E7673192FF0
-	for <lists+bpf@lfdr.de>; Wed, 25 Mar 2020 18:55:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2EAF192FF5
+	for <lists+bpf@lfdr.de>; Wed, 25 Mar 2020 18:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727358AbgCYRzh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Mar 2020 13:55:37 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:39509 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727006AbgCYRzh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Mar 2020 13:55:37 -0400
-Received: by mail-pg1-f194.google.com with SMTP id b22so1504992pgb.6;
-        Wed, 25 Mar 2020 10:55:35 -0700 (PDT)
+        id S1727358AbgCYR5D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Mar 2020 13:57:03 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:35681 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727357AbgCYR5D (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Mar 2020 13:57:03 -0400
+Received: by mail-pl1-f193.google.com with SMTP id g6so1106557plt.2;
+        Wed, 25 Mar 2020 10:57:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ZV1CqF++eOLoAGcfvlmYWXRZOSEy7vu8gNuIXPymwVY=;
-        b=nL5rfKtj1wm/41AcVuQsjNn19ps5/C45NEjlUJAR6h1TUtnpMIqCHtMEi/7tRG0pRD
-         0SR760Hl7TPyU+jwZ8TQt81oowAtynnLB7uJZeJ5lJEDevuI3eGAJSNJ8ewwBRyGHf3/
-         SYyyn5/A0o/2YcT7DsV+AiH8If1tmIhrS4H4uAwufZCs9kn93jmq1Wi0vgG2fdRLun6x
-         K55ajw1aLnwmyFMuOzwG59JYC3YHV3HNN6vzhOqlvlHmM2cW8nWz/AJmi3Jh2xAtahSJ
-         yh2hlud8Arhi1CUdG4W0q7FmNO2Ks8Mue0dWs3c75feSHnifmNCVp4PEuCvFJzsoseaw
-         FjCw==
+        bh=LcnFLGNBmm0IVLGhfPKr1/VuZRnu6FpgzCF+UvqP0dg=;
+        b=PJPXcwrs1iBQ1K6mKKHgQyRGiROzE6kyMNZhGg2cDVCU7kiEafl+1O7Qhv3DPSIz8p
+         Xmai1C2uEmOPLBPJ+I4SsZ2xDYM+eWewEDVUKZCwlEPAv7SSIqYfscn/sW7/d+5i+4IX
+         xNWNWVrZDm8dPLm+J1sWqdMqP7rSiY5Ci53HJcwjUuaYX1nFaEYKWa2XV7CeQBCfzykv
+         eMS4GRn0MKb1EyoprRgCk+X+I3bjO9LcJPKMrDrQN7wjKa8SoH6n3atjxeX2bFvI4BlV
+         wE8xR/RnpU5HAncKphVv2vXTj10fzofC96NWpniNRWImw5agEv9jJz/exrhKNNEH3Qkq
+         1GVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=ZV1CqF++eOLoAGcfvlmYWXRZOSEy7vu8gNuIXPymwVY=;
-        b=KpIa9XN62/t0BaxjcO3M3+ZGZjWqg+uaGfA9hFB7pFma9SodEsMvbH2k+Lq+S6if8x
-         Fr9j/ntq15G0JtGuNyu+LtjOomq9k8H9zxUQzgwoR8fgQCLEGLFIMOCT3G2fpbpDoZFJ
-         zju/YGGxVRLfcK+n2PCmSp934GlOhQ25b2zv5uTccUNiIUbADxsxKX4A44Gt0y6Du8Cf
-         /naBGrBsvwp2IcL+7AZTxpW0yPEMX/hizj+Ch0P3sx3vyGGMWa717AAWsA0LQ1+229bE
-         eaODOcuTu0DReXJXo8SLyzGHYNr0XIGHl91mPDXLPqnsBQnwuu715WiyE4dfoRCJnh3/
-         3MOA==
-X-Gm-Message-State: ANhLgQ32WBuga5q/135GnZ/PvijzoWQ0YaLFygI67D9qsWaJwRySDPrN
-        39qNKkPgahVbZuOudcxcOSg=
-X-Google-Smtp-Source: ADFU+vuaLB1Z4N2UHL/BUAckqo+GcqWgVsjB1l2zt73fOH8TRiLz64eMYf72yJickCc5HZPcBxDeOQ==
-X-Received: by 2002:a63:7b5e:: with SMTP id k30mr4169626pgn.209.1585158935341;
-        Wed, 25 Mar 2020 10:55:35 -0700 (PDT)
+        bh=LcnFLGNBmm0IVLGhfPKr1/VuZRnu6FpgzCF+UvqP0dg=;
+        b=JQzSFx5BC9u8yUPDmf814EP9ps0Fq41b2fS1BLrvK3Xww4utvoGG2txRCaxm4yRyDx
+         XOb/TwLuzUf7TUwQjN/IgNZRGuMaCYKc88EN1X9eT+VIMO83souc9N8HRqUfJxSdYjRa
+         NGItdrCaJ3/zVBSWsMYULbxRHO26+k/v9KDIOeQaMifSqZJXnyWc9j+qym3QlCZZEq/K
+         Pv+0rWewURrricWWbeSAtrh5f61BWfE/dDJgrXYRb56siTzeg1a6oC9ys8ZgFjJNgnzQ
+         sNJThgbumdpKrjsYr/U8taerhh4PSH6LcX3HXgnPAjnfPm4IhGscYsyyw4C80DobprqI
+         poag==
+X-Gm-Message-State: ANhLgQ2bvpvlEkXPsPZAY+ONPRlh6XIDof+GRoQsH9KZN3LwgTaTN5Mf
+        W9BrU/yHLMNhnkSZeeaz4Zk=
+X-Google-Smtp-Source: ADFU+vvAbOxqcKt5RF7xOVnMxNSR4YmyrH64+IGiP1Bw17oAl7edlNDS7MO9MmbmG8Iwy66ff8TsXg==
+X-Received: by 2002:a17:90a:14f:: with SMTP id z15mr4888654pje.137.1585159019204;
+        Wed, 25 Mar 2020 10:56:59 -0700 (PDT)
 Received: from ast-mbp ([2620:10d:c090:400::5:b339])
-        by smtp.gmail.com with ESMTPSA id c128sm18574855pfa.11.2020.03.25.10.55.32
+        by smtp.gmail.com with ESMTPSA id g30sm630952pgn.40.2020.03.25.10.56.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Mar 2020 10:55:34 -0700 (PDT)
-Date:   Wed, 25 Mar 2020 10:55:31 -0700
+        Wed, 25 Mar 2020 10:56:57 -0700 (PDT)
+Date:   Wed, 25 Mar 2020 10:56:54 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -63,7 +63,7 @@ Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
  program when attaching XDP
-Message-ID: <20200325175531.iqut7m5cxafdasiz@ast-mbp>
+Message-ID: <20200325175654.i4cyhtauyogvzvgf@ast-mbp>
 References: <20200320103530.2853c573@kicinski-fedora-PC1C0HJN>
  <5e750bd4ebf8d_233f2ab4c81425c4ce@john-XPS-13-9370.notmuch>
  <CAEf4BzbWa8vdyLuzr_nxFM3BtT+hhzjCe9UQF8Y5cN+sVqa72g@mail.gmail.com>
@@ -72,44 +72,24 @@ References: <20200320103530.2853c573@kicinski-fedora-PC1C0HJN>
  <87h7ye3mf3.fsf@toke.dk>
  <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com>
  <87tv2e10ly.fsf@toke.dk>
- <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com>
- <87369wrcyv.fsf@toke.dk>
+ <5e7a5e07d85e8_74a82ad21f7a65b88d@john-XPS-13-9370.notmuch>
+ <87zhc4pw08.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87369wrcyv.fsf@toke.dk>
+In-Reply-To: <87zhc4pw08.fsf@toke.dk>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 25, 2020 at 10:38:32AM +0100, Toke Høiland-Jørgensen wrote:
-> >
-> > As for having netlink interface for creating link only for XDP. Why
-> > duplicating and maintaining 2 interfaces?
+On Wed, Mar 25, 2020 at 11:30:15AM +0100, Toke Høiland-Jørgensen wrote:
 > 
-> Totally agree; why do we need two interfaces? Let's keep the one we
-> already have - the netlink interface! :)
+> From a BPF application developer PoV I can totally understand the desire
+> for unified APIs. But that unification can still be achieved at the
+> libbpf level, while keeping network interface configuration done through
+> netlink.
 
-it's not about netlink vs something else.
-I already explained that the ownership concept is missing.
-
-> > All the other subsystems will go through bpf syscall, only XDP wants
-> > to (also) have this through netlink. This means duplication of UAPI
-> > for no added benefit. It's a LINK_CREATE operations, as well as
-> > LINK_UPDATE operations. Do we need to duplicate LINK_QUERY (once its
-> > implemented)? What if we'd like to support some other generic bpf_link
-> > functionality, would it be ok to add it only to bpf syscall, or we
-> > need to duplicate this in netlink as well?
-> 
-> You're saying that like we didn't already have the netlink API. We
-> essentially already have (the equivalent of) LINK_CREATE and LINK_QUERY,
-> this is just adding LINK_UPDATE. It's a straight-forward fix of an
-> existing API; essentially you're saying we should keep the old API in a
-> crippled state in order to promote your (proposed) new API.
-
-It's not a fix. It papers over a giant issue with all existing attaching
-apis regardless of the form (netlink, syscall, etc)
-The commit 7dd68b3279f1 ("bpf: Support replacing cgroup-bpf program in MULTI mode")
-is the same paper-over. It's not a fix for broken api. I regret applying it.
+it cannot be done at libbpf level. The kernel is missing the ownership concept.
+netlink vs other is irrelevant.
