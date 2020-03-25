@@ -2,300 +2,262 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8137F193337
-	for <lists+bpf@lfdr.de>; Wed, 25 Mar 2020 23:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D79E1933AC
+	for <lists+bpf@lfdr.de>; Wed, 25 Mar 2020 23:16:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727358AbgCYWAz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Mar 2020 18:00:55 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:13364 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727351AbgCYWAy (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 25 Mar 2020 18:00:54 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02PM0Z8t026053;
-        Wed, 25 Mar 2020 15:00:38 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=j9lP7biWVcpDHd/m17NQAskZyLPn0KFzfWClGmaJ9lY=;
- b=mmeAqU1s9lq8wj83iWch/lrjlHh9XqJ0PkJRJMCYVqIMLM375NFynKZjvn8OOwhkbiiS
- y4nFm7EPk2OUtSkC/CO2lWiama9wtufmGBCmWsDUMLBPCzCmbGhR52cgyJM2vEfNSZ2Q
- Qx5lQBuu3wHFHdOdQZwhNsbZ9Zgli0DJpNo= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2ywgem6auy-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 25 Mar 2020 15:00:38 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Wed, 25 Mar 2020 15:00:27 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QXmOJFRHEPsJ/a2DFjXuWPWuZrZDjxzTuwR4cPXnAnGiVq9k9vDWTvWM9hn68vjugpqKhHYZkAb9jHguigrSnugMNgXAGLwUjpw/05qcERLypTbjAA7nL5fnzmn3+OkUZaHLxNFzliBne6gfUXRdfcYqLyE3+AVErmEx04H+rpfH7HXY945U5RwbZX3kYL6EGb+BNjuwArf3inAOptfScugsdJeTENV6bz85TzTbCCCfjlQYUfou4CRIN+XdtNvb6Et8SqlS6Vosz06Ly9FFwsuST2+mVxEDm8Sks0mA2RQg1AHUkUnco0KzWZsGzN3a2KAxFjSVj8cEQF1Wqy1Ccg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j9lP7biWVcpDHd/m17NQAskZyLPn0KFzfWClGmaJ9lY=;
- b=PRvM7MIwshFjiRDRzGOu1o7CKQIpq2FIagOucRFo0yUWS6YusapYYTyp1A5+pfWowKI+p4SyX2lO0ZMS03iE2gObCAu+3wns5gaajwLecke9qE8lCSqScAMWl+4799O6JQJ8uscu8xY9tIDyoacGdnRMHP5Y2cjd6FsfyO8Ia0iE+6gXegLiAgJCnKNYILpxXv+XZWJCIUsYmgCKknzHZOvoBiReqVvValIH2InKkkLYOaZl1oSso1Fq0Hu7GAHsaXm04LfDGqqlS7KE3MlzeoykRCsEioGAUeyth+A1NaQPaJlQkBsZwWQ/bAiDr7TAlMjswEVwjedkI75rbnb+yQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j9lP7biWVcpDHd/m17NQAskZyLPn0KFzfWClGmaJ9lY=;
- b=d01WXsRzU3m0fNKePDnEJWQDvCXzcu/izICsRXPlPWUV4ViHofnIgUMIbynYa8YLPtLARk/7xkgA2JGv5JKCzGHSfuD2s6LqbUD+8zkISE25QIeHjmMR2FfOuqNdlNCe23Eyy5WC7zpowQ4w9cW/jACHjAbX31TkWZMGM4ABDxg=
-Received: from MW3PR15MB3883.namprd15.prod.outlook.com (2603:10b6:303:51::22)
- by MW3PR15MB4057.namprd15.prod.outlook.com (2603:10b6:303:47::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.20; Wed, 25 Mar
- 2020 22:00:26 +0000
-Received: from MW3PR15MB3883.namprd15.prod.outlook.com
- ([fe80::a49b:8546:912f:dd98]) by MW3PR15MB3883.namprd15.prod.outlook.com
- ([fe80::a49b:8546:912f:dd98%5]) with mapi id 15.20.2835.023; Wed, 25 Mar 2020
- 22:00:26 +0000
-Subject: Re: [PATCHv2 bpf-next 5/5] selftests: bpf: add test for sk_assign
-To:     Joe Stringer <joe@wand.net.nz>
-CC:     bpf <bpf@vger.kernel.org>, Lorenz Bauer <lmb@cloudflare.com>,
-        netdev <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>
-References: <20200325055745.10710-1-joe@wand.net.nz>
- <20200325055745.10710-6-joe@wand.net.nz>
- <82e8d147-b334-3d29-0312-7b087ac908f3@fb.com>
- <CAOftzPiJHOW7BnCmc1MDm-TOwqYYK6V2VHhsiYVd6qZu4jH_+Q@mail.gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <6d92317a-5274-5718-c78e-fb7b309cdee7@fb.com>
-Date:   Wed, 25 Mar 2020 15:00:14 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.6.0
-In-Reply-To: <CAOftzPiJHOW7BnCmc1MDm-TOwqYYK6V2VHhsiYVd6qZu4jH_+Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWHPR1401CA0017.namprd14.prod.outlook.com
- (2603:10b6:301:4b::27) To MW3PR15MB3883.namprd15.prod.outlook.com
- (2603:10b6:303:51::22)
+        id S1727402AbgCYWQY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Mar 2020 18:16:24 -0400
+Received: from mail-ua1-f66.google.com ([209.85.222.66]:42583 "EHLO
+        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727358AbgCYWQX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Mar 2020 18:16:23 -0400
+Received: by mail-ua1-f66.google.com with SMTP id m18so1392194uap.9
+        for <bpf@vger.kernel.org>; Wed, 25 Mar 2020 15:16:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=zGD85hIlniFz+5musW3L+gkuJTQ3f/PYOYr9OKHfHF0=;
+        b=jyxjYgw8bKKAd801FdPMttohXqBjY2cs6VgaPCSZ1g/GNaxPtSjutaWUIWIlSbk+zZ
+         KyGTyaGkHM3hDhVrOFf8PuROqVQ+6itcpqQ9U5fjdrkKTILztEHW2qr1wneTZ2eMIY9m
+         LPg1eVRyS2858WajXU+H7QKWOMLiKf6CvqrKxMKouKCWjSWQsgqxaGZaTGhvRklcJhCJ
+         bFAi7P55eoi6qrAdoWM83fpWfoE8xtHJQ0LC94Rd4pKFQAOe6Ngr8EgD8s/orGYRo+oq
+         ACxTH6oxwwx5L6c3z+TTywetzZFEOE2OZeDQFGKK+1UN+TToLx6L6wOn/gDCH7RHcy+F
+         Mpng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=zGD85hIlniFz+5musW3L+gkuJTQ3f/PYOYr9OKHfHF0=;
+        b=Wimg24ZibfwaneI7cEVW+va6k1qoWCMpKVG3SZmJ4kWwpmehhTfWIliWpkYljjiQUi
+         0HiWjFAEIIEHS1YgTYyyaZvCc8l+u7w94sjXDN0Su7QJ7f0xs8YyTmnSC326bXlZtuTy
+         DUBHblzqYDd3isKrbbSQBoChTxA6PT6BYkn7BAj3oQoegMu3XRgao6BVNnqRNOqX/egv
+         L8KVIjwCcm2KfaIvsGe5L3Y4d0LbmJSONmhUlKGBTCE7Ebl66IpADQfhhUyWunNguv4x
+         UHqH+vi9nGlqLlxmQjz26VP6i3pCNfTFKLkH+YfaWond/aUh3XagsxYzBsGkyrSJguHv
+         QcJw==
+X-Gm-Message-State: ANhLgQ0USsJRcHR09NOG9IeJtve0QIzf7VXn6rfGRnauMB/jnsrg5tqu
+        fkngj55Hsud22rN+cinrWkCU0erCuP1uvspR4YSw7AOt
+X-Google-Smtp-Source: ADFU+vu71zcDxfFqhF+SYXQv1ZM6WOo5A4cT795GnqbA4Nc51byvs/1CATectwE2LbaJgJUI6EAarWRDGSg68Ja6KG4=
+X-Received: by 2002:ab0:5e44:: with SMTP id a4mr4200901uah.4.1585174581644;
+ Wed, 25 Mar 2020 15:16:21 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from MacBook-Pro-52.local (2620:10d:c090:400::5:8424) by MWHPR1401CA0017.namprd14.prod.outlook.com (2603:10b6:301:4b::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2856.19 via Frontend Transport; Wed, 25 Mar 2020 22:00:25 +0000
-X-Originating-IP: [2620:10d:c090:400::5:8424]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1f5d02e1-0c03-40bf-5049-08d7d107eccd
-X-MS-TrafficTypeDiagnostic: MW3PR15MB4057:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW3PR15MB4057DA61876CD6408DA6B873D3CE0@MW3PR15MB4057.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:2150;
-X-Forefront-PRVS: 0353563E2B
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(396003)(136003)(376002)(366004)(346002)(39860400002)(6666004)(36756003)(86362001)(2906002)(5660300002)(478600001)(31686004)(2616005)(31696002)(52116002)(186003)(16526019)(81156014)(6506007)(316002)(81166006)(6916009)(8936002)(8676002)(66946007)(6512007)(66476007)(66556008)(6486002)(53546011)(54906003)(4326008);DIR:OUT;SFP:1102;SCL:1;SRVR:MW3PR15MB4057;H:MW3PR15MB3883.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;
-Received-SPF: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: k3bM0C95ev3jTjB8Bn1tKKokznBYoVcmuEiqoYiCHzyJWiomZWnZ0SLKWfqfsHEAOYfaXpUVOAS2TeB7LJ3jx5ZXUaxp3S1CJw4aNyPXnJ17OFmEoItk4nDqEv3m1zWbQPsHM9gCQnpvbeevEF8UtKG7V4JltQG/wEagmhcA4vsXULDVsnhuwo2EnX+ul2/0TKT3dn6wLeMKMKmqf8uDorqAafH1JZ1eLKRxShk5bP24uZB598Fbv4DbrYW7DoAq/Hz3J66okEH7jo3cPW2ZpLZ4MRsUaAVcaCAJOL8gsPPzKUWuk74arcHkocmLGTHp7ZFAW50thYk1jV3w+o1kqOY/wZ+EDtLGtNAioSEwh3m3T/xT6lpH3IM5TMneZJ3aS4Wy2B2gT8A5LOb1OrBXjXtVhGyJLzcK6iCH4Eopw4OTTAdH++7Vz6KEa+V+Wrfr
-X-MS-Exchange-AntiSpam-MessageData: u9JqsMVZueve4VflRgySCSKM6MMUJJVMkBC3DZywGoOVqXkbenA7TePcM8sLerDY1F4721soe+q7+FTJZtdGUYf9HWluxXAUc122P84qMFVTlDsc75FdPYGnb+Jt8APwlfpL3GKccMyYdOdyGiM20FfepQ838q7r5+7YzI8f75Q7oPXC7dNx+3tWkA/toaKZ
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f5d02e1-0c03-40bf-5049-08d7d107eccd
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2020 22:00:26.5851
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bMpDBqJomfvmvezHw7OOYYeT57wOS+wFZizlvOkAPn7L3hnqXNSIz37gQcgi0osd
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB4057
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
- definitions=2020-03-25_13:2020-03-24,2020-03-25 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- bulkscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
- priorityscore=1501 mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=999
- malwarescore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2003250168
-X-FB-Internal: deliver
+From:   Matt Cover <werekraken@gmail.com>
+Date:   Wed, 25 Mar 2020 15:16:10 -0700
+Message-ID: <CAGyo_hqRCs6hp7w6zWEf5RzEZF6zyXj_Bb_AgXVKgab7tg06NQ@mail.gmail.com>
+Subject: libbpf/BTF loading issue with fentry/fexit selftests
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+I'm looking to explore the bpf trampoline Alexei introduced for
+tracing progs, but am encountering a libbpf/BTF issue with loading
+the selftests. Hoping you guys might have a pointer or two.
+
+The kernel build used pahole 1.15. All llvm-project components used
+in compiling the selftests were 10.0.0-rc6.
+
+I believe the following confirms that BTF is indeed present in this kernel.
 
 
-On 3/25/20 2:20 PM, Joe Stringer wrote:
-> On Wed, Mar 25, 2020 at 11:18 AM Yonghong Song <yhs@fb.com> wrote:
->>
->>
->>
->> On 3/24/20 10:57 PM, Joe Stringer wrote:
->>> From: Lorenz Bauer <lmb@cloudflare.com>
->>>
->>> Attach a tc direct-action classifier to lo in a fresh network
->>> namespace, and rewrite all connection attempts to localhost:4321
->>> to localhost:1234 (for port tests) and connections to unreachable
->>> IPv4/IPv6 IPs to the local socket (for address tests).
->>>
->>> Keep in mind that both client to server and server to client traffic
->>> passes the classifier.
->>>
->>> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
->>> Co-authored-by: Joe Stringer <joe@wand.net.nz>
->>> Signed-off-by: Joe Stringer <joe@wand.net.nz>
->>> ---
->>> v2: Rebase onto test_progs infrastructure
->>> v1: Initial commit
->>> ---
->>>    tools/testing/selftests/bpf/Makefile          |   2 +-
->>>    .../selftests/bpf/prog_tests/sk_assign.c      | 244 ++++++++++++++++++
->>>    .../selftests/bpf/progs/test_sk_assign.c      | 127 +++++++++
->>>    3 files changed, 372 insertions(+), 1 deletion(-)
->>>    create mode 100644 tools/testing/selftests/bpf/prog_tests/sk_assign.c
->>>    create mode 100644 tools/testing/selftests/bpf/progs/test_sk_assign.c
->>>
->>> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
->>> index 7729892e0b04..4f7f83d059ca 100644
->>> --- a/tools/testing/selftests/bpf/Makefile
->>> +++ b/tools/testing/selftests/bpf/Makefile
->>> @@ -76,7 +76,7 @@ TEST_PROGS_EXTENDED := with_addr.sh \
->>>    # Compile but not part of 'make run_tests'
->>>    TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
->>>        flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
->>> -     test_lirc_mode2_user xdping test_cpp runqslower
->>> +     test_lirc_mode2_user xdping test_cpp runqslower test_sk_assign
->>
->> No test_sk_assign any more as the test is integrated into test_progs, right?
-> 
-> I'll fix it up.
-> 
->>> +static __u32 duration;
->>> +
->>> +static bool configure_stack(int self_net)
->>
->> self_net parameter is not used.
-> 
-> Hrm, why didn't the compiler tell me this..? Will fix.
-> 
->>> +{
->>> +     /* Move to a new networking namespace */
->>> +     if (CHECK_FAIL(unshare(CLONE_NEWNET)))
->>> +             return false;
->>
->> You can use CHECK to encode better error messages. Thhis is what
->> most test_progs tests are using.
-> 
-> I was going back and forth on this when I was writing this bit.
-> CHECK_FAIL() already prints the line that fails, so when debugging
-> it's pretty clear what call went wrong if you dig into the code.
-> Combine with perror() and you actually get a readable string of the
-> error, whereas the common form for CHECK() seems to be just printing
-> the error code which the developer then has to do symbol lookup to
-> interpret..
-> 
->      if (CHECK(efd < 0, "open", "err %d errno %d\n", efd, errno))
-> 
-> Example output with CHECK_FAIL / perror approach:
-> 
->      # ./test_progs -t assign
->      ...
->      Timed out while connecting to server
->      connect_to_server:FAIL:90
->      Cannot connect to server: Interrupted system call
->      #46/1 ipv4 port redir:FAIL
->      #46 sk_assign:FAIL
->      Summary: 0/0 PASSED, 0 SKIPPED, 2 FAILED
+[vagrant@localhost bpf]$ uname -r
+5.5.9-1.btf.el7.x86_64
+[vagrant@localhost bpf]$ grep CONFIG_DEBUG_INFO_BTF /boot/config-`uname -r`
+CONFIG_DEBUG_INFO_BTF=y
+[vagrant@localhost bpf]$ ~/bpftool btf dump file ~/vmlinux-`uname -r`
+| grep -i fexit
+    'BPF_TRAMP_FEXIT' val=1
+    'BPF_TRACE_FEXIT' val=25
+[vagrant@localhost bpf]$ ~/bpftool btf dump file
+/sys/kernel/btf/vmlinux | grep -i fexit
+    'BPF_TRAMP_FEXIT' val=1
+    'BPF_TRACE_FEXIT' val=25
 
-I won't insist since CHECK_FAIL should roughly provide enough
-information for failure. CHECK might be more useful if you want
-to provide more context, esp. if the same routine is called
-in multiple places and you can have a marker to differentiate
-which call site caused the problem.
 
-But again, just a suggestion. CHECK_FAIL is okay to me.
+The fexit_test.o file also has BTF information.
 
-> 
-> Diff to make this happen is just connect to a port that the BPF
-> program doesn't redirect:
-> 
-> $ git diff
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-> b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-> index 1f0afcc20c48..ba661145518a 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-> @@ -192,7 +191,7 @@ static int do_sk_assign(void)
->                  goto out;
-> 
->          /* Connect to unbound ports */
-> -       addr4.sin_port = htons(TEST_DPORT);
-> +       addr4.sin_port = htons(666);
->          addr6.sin6_port = htons(TEST_DPORT);
-> 
->          test__start_subtest("ipv4 port redir");
-> 
-> (I had to drop the kill() call as well, but that's part of the next
-> revision of this series..)
-> 
->>> +static int connect_to_server(const struct sockaddr *addr, socklen_t len)
->>> +{
->>> +     int fd = -1;
->>> +
->>> +     fd = socket(addr->sa_family, SOCK_STREAM, 0);
->>> +     if (CHECK_FAIL(fd == -1))
->>> +             goto out;
->>> +     if (CHECK_FAIL(sigaction(SIGALRM, &timeout_action, NULL)))
->>> +             goto out;
->>
->> should this goto close_out?
-> 
-> Will fix.
-> 
->>> +void test_sk_assign(void)
->>> +{
->>> +     int self_net;
->>> +
->>> +     self_net = open(NS_SELF, O_RDONLY);
->>> +     if (CHECK_FAIL(self_net < 0)) {
->>> +             perror("Unable to open "NS_SELF);
->>> +             return;
->>> +     }
->>> +
->>> +     if (!configure_stack(self_net)) {
->>> +             perror("configure_stack");
->>> +             goto cleanup;
->>> +     }
->>> +
->>> +     do_sk_assign();
->>> +
->>> +cleanup:
->>> +     close(self_net);
->>
->> Did we exit the newly unshared net namespace and restored the previous
->> namespace?
-> 
-> Ah I've mainly just been running this test so it didn't affect me but
-> I realise now I dropped the hunks that were intended to do this
-> cleanup. Will fix.
-> 
->>> +     /* We can't do a single skc_lookup_tcp here, because then the compiler
->>> +      * will likely spill tuple_len to the stack. This makes it lose all
->>> +      * bounds information in the verifier, which then rejects the call as
->>> +      * unsafe.
->>> +      */
->>
->> This is a known issue. For scalars, only constant is restored properly
->> in verifier at this moment. I did some hacking before to enable any
->> scalars. The fear is this will make pruning performs worse. More
->> study is needed here.
-> 
-> Thanks for the background. Do you want me to refer to any specific
-> release version or date or commit for this comment or it's fine to
-> leave as-is?
 
-Maybe add a "workaround:" marker in the comments so later we can search
-and find these examples if we have compiler/verifier improvements.
+[vagrant@localhost bpf]$ ~/bpftool btf dump file fexit_test.o | grep FUNC_PROTO
+[4] FUNC_PROTO '(anon)' ret_type_id=5 vlen=1
+[7] FUNC_PROTO '(anon)' ret_type_id=5 vlen=1
+[9] FUNC_PROTO '(anon)' ret_type_id=5 vlen=1
+[11] FUNC_PROTO '(anon)' ret_type_id=5 vlen=1
+[13] FUNC_PROTO '(anon)' ret_type_id=5 vlen=1
+[15] FUNC_PROTO '(anon)' ret_type_id=5 vlen=1
 
--bash-4.4$ egrep -ri workaround
-test_get_stack_rawtp.c: * This is an acceptable workaround since there 
-is one entry here.
-test_seg6_loop.c:       // workaround: define induction variable "i" as 
-"long" instead
-test_sysctl_loop1.c:    /* a workaround to prevent compiler from generating
--bash-4.4$
+
+However, I get libbpf/BTF load errors when trying to run any
+fentry/fexit tests.
+
+
+[vagrant@localhost bpf]$ sudo ./test_progs -t fexit_test | grep '^libbpf\|FAIL'
+libbpf: Error loading BTF: Invalid argument(22)
+libbpf: magic: 0xeb9f
+libbpf: Error loading .BTF into kernel: -22.
+libbpf: Error loading BTF: Invalid argument(22)
+libbpf: magic: 0xeb9f
+libbpf: Error loading .BTF into kernel: -22.
+libbpf: fexit/bpf_fentry_test1 is not found in vmlinux BTF
+test_fexit_test:FAIL:prog_load fail err -2 errno 22
+#10 fexit_test:FAIL
+Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+
+
+I saw in a similar thread that -vvv output was requested. Figured the
+same applies here.
+
+
+[vagrant@localhost bpf]$ sudo ./test_progs -vvv -t fexit_test | grep
+'^libbpf\|FAIL'
+libbpf: loading ./test_pkt_access.o
+libbpf: section(1) .strtab, size 290, link 0, flags 0, type=3
+libbpf: skip section(1) .strtab
+libbpf: section(2) .text, size 48, link 0, flags 6, type=1
+libbpf: found program .text
+libbpf: section(3) classifier/test_pkt_access, size 448, link 0, flags 6, type=1
+libbpf: found program classifier/test_pkt_access
+libbpf: section(4) .relclassifier/test_pkt_access, size 32, link 22,
+flags 0, type=9
+libbpf: section(5) version, size 4, link 0, flags 3, type=1
+libbpf: kernel version of ./test_pkt_access.o is 1
+libbpf: section(6) .debug_str, size 1151, link 0, flags 30, type=1
+libbpf: skip section(6) .debug_str
+libbpf: section(7) .debug_loc, size 605, link 0, flags 0, type=1
+libbpf: skip section(7) .debug_loc
+libbpf: section(8) .rel.debug_loc, size 144, link 22, flags 0, type=9
+libbpf: skip relo .rel.debug_loc(8) for section(7)
+libbpf: section(9) .debug_abbrev, size 390, link 0, flags 0, type=1
+libbpf: skip section(9) .debug_abbrev
+libbpf: section(10) .debug_info, size 2122, link 0, flags 0, type=1
+libbpf: skip section(10) .debug_info
+libbpf: section(11) .rel.debug_info, size 128, link 22, flags 0, type=9
+libbpf: skip relo .rel.debug_info(11) for section(10)
+libbpf: section(12) .debug_ranges, size 48, link 0, flags 0, type=1
+libbpf: skip section(12) .debug_ranges
+libbpf: section(13) .rel.debug_ranges, size 64, link 22, flags 0, type=9
+libbpf: skip relo .rel.debug_ranges(13) for section(12)
+libbpf: section(14) .BTF, size 2070, link 0, flags 0, type=1
+libbpf: section(15) .rel.BTF, size 16, link 22, flags 0, type=9
+libbpf: skip relo .rel.BTF(15) for section(14)
+libbpf: section(16) .BTF.ext, size 752, link 0, flags 0, type=1
+libbpf: section(17) .rel.BTF.ext, size 704, link 22, flags 0, type=9
+libbpf: skip relo .rel.BTF.ext(17) for section(16)
+libbpf: section(18) .debug_frame, size 88, link 0, flags 0, type=1
+libbpf: skip section(18) .debug_frame
+libbpf: section(19) .rel.debug_frame, size 48, link 22, flags 0, type=9
+libbpf: skip relo .rel.debug_frame(19) for section(18)
+libbpf: section(20) .debug_line, size 496, link 0, flags 0, type=1
+libbpf: skip section(20) .debug_line
+libbpf: section(21) .rel.debug_line, size 32, link 22, flags 0, type=9
+libbpf: skip relo .rel.debug_line(21) for section(20)
+libbpf: section(22) .symtab, size 288, link 1, flags 0, type=2
+libbpf: Error loading BTF: Invalid argument(22)
+libbpf: magic: 0xeb9f
+libbpf: Error loading .BTF into kernel: -22.
+libbpf: collecting relocating info for: 'classifier/test_pkt_access'
+libbpf: relo for shdr 2, symb 8, value 0, type 3, bind 0, name 0 (''), insn 32
+libbpf: relo for shdr 2, symb 8, value 0, type 3, bind 0, name 0 (''), insn 37
+libbpf: added 6 insn from .text to prog classifier/test_pkt_access
+libbpf: verifier log:
+libbpf: loading ./fexit_test.o
+libbpf: section(1) .strtab, size 503, link 0, flags 0, type=3
+libbpf: skip section(1) .strtab
+libbpf: section(2) .text, size 0, link 0, flags 6, type=1
+libbpf: skip section(2) .text
+libbpf: section(3) fexit/bpf_fentry_test1, size 112, link 0, flags 6, type=1
+libbpf: found program fexit/bpf_fentry_test1
+libbpf: section(4) .relfexit/bpf_fentry_test1, size 16, link 33, flags 0, type=9
+libbpf: section(5) fexit/bpf_fentry_test2, size 152, link 0, flags 6, type=1
+libbpf: found program fexit/bpf_fentry_test2
+libbpf: section(6) .relfexit/bpf_fentry_test2, size 16, link 33, flags 0, type=9
+libbpf: section(7) fexit/bpf_fentry_test3, size 200, link 0, flags 6, type=1
+libbpf: found program fexit/bpf_fentry_test3
+libbpf: section(8) .relfexit/bpf_fentry_test3, size 16, link 33, flags 0, type=9
+libbpf: section(9) fexit/bpf_fentry_test4, size 152, link 0, flags 6, type=1
+libbpf: found program fexit/bpf_fentry_test4
+libbpf: section(10) .relfexit/bpf_fentry_test4, size 16, link 33,
+flags 0, type=9
+libbpf: section(11) fexit/bpf_fentry_test5, size 168, link 0, flags 6, type=1
+libbpf: found program fexit/bpf_fentry_test5
+libbpf: section(12) .relfexit/bpf_fentry_test5, size 16, link 33,
+flags 0, type=9
+libbpf: section(13) fexit/bpf_fentry_test6, size 184, link 0, flags 6, type=1
+libbpf: found program fexit/bpf_fentry_test6
+libbpf: section(14) .relfexit/bpf_fentry_test6, size 16, link 33,
+flags 0, type=9
+libbpf: section(15) license, size 4, link 0, flags 3, type=1
+libbpf: license of ./fexit_test.o is GPL
+libbpf: section(16) .bss, size 48, link 0, flags 3, type=8
+libbpf: section(17) .debug_str, size 362, link 0, flags 30, type=1
+libbpf: skip section(17) .debug_str
+libbpf: section(18) .debug_loc, size 1326, link 0, flags 0, type=1
+libbpf: skip section(18) .debug_loc
+libbpf: section(19) .rel.debug_loc, size 416, link 33, flags 0, type=9
+libbpf: skip relo .rel.debug_loc(19) for section(18)
+libbpf: section(20) .debug_abbrev, size 211, link 0, flags 0, type=1
+libbpf: skip section(20) .debug_abbrev
+libbpf: section(21) .debug_info, size 1170, link 0, flags 0, type=1
+libbpf: skip section(21) .debug_info
+libbpf: section(22) .rel.debug_info, size 208, link 33, flags 0, type=9
+libbpf: skip relo .rel.debug_info(22) for section(21)
+libbpf: section(23) .debug_ranges, size 544, link 0, flags 0, type=1
+libbpf: skip section(23) .debug_ranges
+libbpf: section(24) .rel.debug_ranges, size 864, link 33, flags 0, type=9
+libbpf: skip relo .rel.debug_ranges(24) for section(23)
+libbpf: section(25) .BTF, size 1732, link 0, flags 0, type=1
+libbpf: section(26) .rel.BTF, size 112, link 33, flags 0, type=9
+libbpf: skip relo .rel.BTF(26) for section(25)
+libbpf: section(27) .BTF.ext, size 1208, link 0, flags 0, type=1
+libbpf: section(28) .rel.BTF.ext, size 1120, link 33, flags 0, type=9
+libbpf: skip relo .rel.BTF.ext(28) for section(27)
+libbpf: section(29) .debug_frame, size 160, link 0, flags 0, type=1
+libbpf: skip section(29) .debug_frame
+libbpf: section(30) .rel.debug_frame, size 96, link 33, flags 0, type=9
+libbpf: skip relo .rel.debug_frame(30) for section(29)
+libbpf: section(31) .debug_line, size 494, link 0, flags 0, type=1
+libbpf: skip section(31) .debug_line
+libbpf: section(32) .rel.debug_line, size 96, link 33, flags 0, type=9
+libbpf: skip relo .rel.debug_line(32) for section(31)
+libbpf: section(33) .symtab, size 792, link 1, flags 0, type=2
+libbpf: map 'fexit_te.bss' (global data): at sec_idx 16, offset 0, flags 400.
+libbpf: map 0 is "fexit_te.bss"
+libbpf: Error loading BTF: Invalid argument(22)
+libbpf: magic: 0xeb9f
+libbpf: Error loading .BTF into kernel: -22.
+libbpf: collecting relocating info for: 'fexit/bpf_fentry_test1'
+libbpf: relo for shdr 16, symb 22, value 0, type 1, bind 1, name 99
+('test1_result'), insn 9
+libbpf: found data map 0 (fexit_te.bss, sec 16, off 0) for insn 9
+libbpf: collecting relocating info for: 'fexit/bpf_fentry_test2'
+libbpf: relo for shdr 16, symb 24, value 8, type 1, bind 1, name 86
+('test2_result'), insn 14
+libbpf: found data map 0 (fexit_te.bss, sec 16, off 0) for insn 14
+libbpf: collecting relocating info for: 'fexit/bpf_fentry_test3'
+libbpf: relo for shdr 16, symb 26, value 16, type 1, bind 1, name 73
+('test3_result'), insn 20
+libbpf: found data map 0 (fexit_te.bss, sec 16, off 0) for insn 20
+libbpf: collecting relocating info for: 'fexit/bpf_fentry_test4'
+libbpf: relo for shdr 16, symb 28, value 24, type 1, bind 1, name 60
+('test4_result'), insn 14
+libbpf: found data map 0 (fexit_te.bss, sec 16, off 0) for insn 14
+libbpf: collecting relocating info for: 'fexit/bpf_fentry_test5'
+libbpf: relo for shdr 16, symb 30, value 32, type 1, bind 1, name 47
+('test5_result'), insn 16
+libbpf: found data map 0 (fexit_te.bss, sec 16, off 0) for insn 16
+libbpf: collecting relocating info for: 'fexit/bpf_fentry_test6'
+libbpf: relo for shdr 16, symb 32, value 40, type 1, bind 1, name 34
+('test6_result'), insn 18
+libbpf: found data map 0 (fexit_te.bss, sec 16, off 0) for insn 18
+libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
+libbpf: fexit/bpf_fentry_test1 is not found in vmlinux BTF
+test_fexit_test:FAIL:prog_load fail err -2 errno 22
+#10 fexit_test:FAIL
+Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+
+
+Any hints on the issue?
+
+-Matt C.
