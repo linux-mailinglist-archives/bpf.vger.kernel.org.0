@@ -2,151 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8E51924BE
-	for <lists+bpf@lfdr.de>; Wed, 25 Mar 2020 10:54:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E50A192592
+	for <lists+bpf@lfdr.de>; Wed, 25 Mar 2020 11:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726043AbgCYJy2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Mar 2020 05:54:28 -0400
-Received: from www62.your-server.de ([213.133.104.62]:36544 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726225AbgCYJyZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Mar 2020 05:54:25 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jH2jq-0000bX-Uw; Wed, 25 Mar 2020 10:54:18 +0100
-Received: from [85.7.42.192] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jH2jq-000Erx-L4; Wed, 25 Mar 2020 10:54:18 +0100
-Subject: Re: [PATCH bpf-next] libbpf: don't allocate 16M for log buffer by
- default
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Stanislav Fomichev <sdf@fomichev.me>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>
-References: <20200324233120.66314-1-sdf@google.com>
- <CAEf4BzbFOjSDw9YvsoZGtzWVbZykg62atNAgzt19audTXmvprw@mail.gmail.com>
- <20200324235938.GA2805006@mini-arch.hsd1.ca.comcast.net>
- <CAEf4BzbF+QmKAmkhrNMn2EEo0nPMmyb0T=BwLvDm+KFE1ZrhrA@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <e4ea4eef-c889-b007-31ea-27c8d57e7115@iogearbox.net>
-Date:   Wed, 25 Mar 2020 10:54:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726154AbgCYK3V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Mar 2020 06:29:21 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:35291 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726073AbgCYK3V (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Mar 2020 06:29:21 -0400
+Received: by mail-oi1-f193.google.com with SMTP id t25so1623017oij.2
+        for <bpf@vger.kernel.org>; Wed, 25 Mar 2020 03:29:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ArGaL1h7B+uizWByH2ecHPkkaz+ufkoL2A1NpiYZMWw=;
+        b=MGkrp3crCz02Zou4Kbw+IeWIplHO9B4i6uKlT8FrlMU4GzWqDFXTGDsSQgObcmMKhX
+         QK5DDYDhCQZYgpQBR2d099djotzniKhg3QjN/rG86K4vN5xvAG67qpIl+fZthQGotEV0
+         nRWa5gAglWtUiLxdWNcwjdTyGond4/ZGvrbWE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ArGaL1h7B+uizWByH2ecHPkkaz+ufkoL2A1NpiYZMWw=;
+        b=bmHy3SJFzFUbmceD6wt8Mh47EUEtRzQmxXaLBaF/6i0L/2p0+2Ow4rFISd9205DIGe
+         WaRggIiSLE603TtEcQT4bt6Fy6g6J2F+o/qey/eBKj57Bempl1fHKI5SdFAccicvovHc
+         rVeMIiOxw1ty2GjuGZvxTHIFVrxbZz4KT4TSqBAwX62ACkeJRgiJ/feu7zp75szdCS6/
+         XDQLWu4rkMC3AYsUMfUHdUOhwHOi82dV2Sj8pZlYtjLGPZuMr2LP4xxAkPxSxqNLYv3c
+         j+r0VwZvEdGA5Qrlo3WFgLaTE8pfps7imxH31Dy+27B5+6ZC5eNFpXCb93VO0DAc/8hp
+         Pnjw==
+X-Gm-Message-State: ANhLgQ1z9F0VaJSFayAnopDsdxkRmHTGTtmUFVe+27nVnLZPnGsXcdEh
+        8Seix1HzXBJhF543VqP/Lc+pVoIAy35ax/buDGGbmg==
+X-Google-Smtp-Source: ADFU+vvSQ7A6GMcAmlm90Ozjh9afhgk93UcE4xmlJOSTqKDnyupqvozm0dz2MpJOdS2RG+jb0vQ7OOZE6/AwPcNbsxM=
+X-Received: by 2002:a05:6808:8f:: with SMTP id s15mr2028349oic.110.1585132159276;
+ Wed, 25 Mar 2020 03:29:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzbF+QmKAmkhrNMn2EEo0nPMmyb0T=BwLvDm+KFE1ZrhrA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25761/Tue Mar 24 15:55:35 2020)
+References: <20200325055745.10710-1-joe@wand.net.nz> <20200325055745.10710-5-joe@wand.net.nz>
+In-Reply-To: <20200325055745.10710-5-joe@wand.net.nz>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Wed, 25 Mar 2020 10:29:08 +0000
+Message-ID: <CACAyw9_17E3TNCFsnXzQ4K2zSmwn8J+BcZqbjiK==WQH=zNzvg@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next 4/5] bpf: Don't refcount LISTEN sockets in sk_assign()
+To:     Joe Stringer <joe@wand.net.nz>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Martin Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/25/20 1:08 AM, Andrii Nakryiko wrote:
-> On Tue, Mar 24, 2020 at 4:59 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
->> On 03/24, Andrii Nakryiko wrote:
->>> On Tue, Mar 24, 2020 at 4:31 PM Stanislav Fomichev <sdf@google.com> wrote:
->>>>
->>>> For each prog/btf load we allocate and free 16 megs of verifier buffer.
->>>> On production systems it doesn't really make sense because the
->>>> programs/btf have gone through extensive testing and (mostly) guaranteed
->>>> to successfully load.
->>>>
->>>> Let's switch to a much smaller buffer by default (128 bytes, sys_bpf
->>>> doesn't accept smaller log buffer) and resize it if the kernel returns
->>>> ENOSPC. On the first ENOSPC error we resize the buffer to BPF_LOG_BUF_SIZE
->>>> and then, on each subsequent ENOSPC, we keep doubling the buffer.
->>>>
->>>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
->>>> ---
->>>>   tools/lib/bpf/btf.c             | 10 +++++++++-
->>>>   tools/lib/bpf/libbpf.c          | 10 ++++++++--
->>>>   tools/lib/bpf/libbpf_internal.h |  2 ++
->>>>   3 files changed, 19 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
->>>> index 3d1c25fc97ae..53c7efc3b347 100644
->>>> --- a/tools/lib/bpf/btf.c
->>>> +++ b/tools/lib/bpf/btf.c
->>>> @@ -657,13 +657,14 @@ int btf__finalize_data(struct bpf_object *obj, struct btf *btf)
->>>>
->>>>   int btf__load(struct btf *btf)
->>>>   {
->>>> -       __u32 log_buf_size = BPF_LOG_BUF_SIZE;
->>>> +       __u32 log_buf_size = BPF_MIN_LOG_BUF_SIZE;
->>>>          char *log_buf = NULL;
->>>>          int err = 0;
->>>>
->>>>          if (btf->fd >= 0)
->>>>                  return -EEXIST;
->>>>
->>>> +retry_load:
->>>>          log_buf = malloc(log_buf_size);
->>>>          if (!log_buf)
->>>>                  return -ENOMEM;
->>>
->>> I'd argue that on first try we shouldn't allocate log_buf at all, then
->>> start allocating it using reasonable starting size (see below).
->> Agreed, makes sense.
+On Wed, 25 Mar 2020 at 05:58, Joe Stringer <joe@wand.net.nz> wrote:
+>
+> Avoid taking a reference on listen sockets by checking the socket type
+> in the sk_assign and in the corresponding skb_steal_sock() code in the
+> the transport layer, and by ensuring that the prefetch free (sock_pfree)
+> function uses the same logic to check whether the socket is refcounted.
+>
+> Suggested-by: Martin KaFai Lau <kafai@fb.com>
+> Signed-off-by: Joe Stringer <joe@wand.net.nz>
+> ---
+> v2: Initial version
+> ---
+>  include/net/sock.h | 25 +++++++++++++++++--------
+>  net/core/filter.c  |  6 +++---
+>  net/core/sock.c    |  3 ++-
+>  3 files changed, 22 insertions(+), 12 deletions(-)
+>
+> diff --git a/include/net/sock.h b/include/net/sock.h
+> index 1ca2e808cb8e..3ec1865f173e 100644
+> --- a/include/net/sock.h
+> +++ b/include/net/sock.h
+> @@ -2533,6 +2533,21 @@ skb_sk_is_prefetched(struct sk_buff *skb)
+>         return skb->destructor == sock_pfree;
+>  }
+>
+> +/* This helper checks if a socket is a full socket,
+> + * ie _not_ a timewait or request socket.
+> + */
+> +static inline bool sk_fullsock(const struct sock *sk)
+> +{
+> +       return (1 << sk->sk_state) & ~(TCPF_TIME_WAIT | TCPF_NEW_SYN_RECV);
+> +}
+> +
+> +static inline bool
+> +sk_is_refcounted(struct sock *sk)
+> +{
+> +       /* Only full sockets have sk->sk_flags. */
+> +       return !sk_fullsock(sk) || !sock_flag(sk, SOCK_RCU_FREE);
+> +}
+> +
+>  /**
+>   * skb_steal_sock
+>   * @skb to steal the socket from
+> @@ -2545,6 +2560,8 @@ skb_steal_sock(struct sk_buff *skb, bool *refcounted)
+>                 struct sock *sk = skb->sk;
+>
+>                 *refcounted = true;
+> +               if (skb_sk_is_prefetched(skb))
+> +                       *refcounted = sk_is_refcounted(sk);
+>                 skb->destructor = NULL;
+>                 skb->sk = NULL;
+>                 return sk;
+> @@ -2553,14 +2570,6 @@ skb_steal_sock(struct sk_buff *skb, bool *refcounted)
+>         return NULL;
+>  }
+>
+> -/* This helper checks if a socket is a full socket,
+> - * ie _not_ a timewait or request socket.
+> - */
+> -static inline bool sk_fullsock(const struct sock *sk)
+> -{
+> -       return (1 << sk->sk_state) & ~(TCPF_TIME_WAIT | TCPF_NEW_SYN_RECV);
+> -}
+> -
+>  /* Checks if this SKB belongs to an HW offloaded socket
+>   * and whether any SW fallbacks are required based on dev.
+>   * Check decrypted mark in case skb_orphan() cleared socket.
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 0fada7fe9b75..997b8606167e 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -5343,8 +5343,7 @@ static const struct bpf_func_proto bpf_sk_lookup_udp_proto = {
+>
+>  BPF_CALL_1(bpf_sk_release, struct sock *, sk)
+>  {
+> -       /* Only full sockets have sk->sk_flags. */
+> -       if (!sk_fullsock(sk) || !sock_flag(sk, SOCK_RCU_FREE))
+> +       if (sk_is_refcounted(sk))
+>                 sock_gen_put(sk);
+>         return 0;
+>  }
+> @@ -5870,7 +5869,8 @@ BPF_CALL_3(bpf_sk_assign, struct sk_buff *, skb, struct sock *, sk, u64, flags)
+>                 return -ESOCKTNOSUPPORT;
+>         if (unlikely(dev_net(skb->dev) != sock_net(sk)))
+>                 return -ENETUNREACH;
+> -       if (unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
+> +       if (sk_is_refcounted(sk) &&
+> +           unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
+>                 return -ENOENT;
+>
+>         skb_orphan(skb);
+> diff --git a/net/core/sock.c b/net/core/sock.c
+> index cfaf60267360..a2ab79446f59 100644
+> --- a/net/core/sock.c
+> +++ b/net/core/sock.c
+> @@ -2076,7 +2076,8 @@ EXPORT_SYMBOL(sock_efree);
+>   */
+>  void sock_pfree(struct sk_buff *skb)
+>  {
+> -       sock_edemux(skb);
+> +       if (sk_is_refcounted(skb->sk))
+> +               sock_edemux(skb);
 
-The iproute2 BPF loader does the first try without any log buffer, and then
-successively increases the size on failure [0].
+sock_edemux calls sock_gen_put, which is also called by
+bpf_sk_release. Is it worth teaching sock_gen_put about
+sk_fullsock, and dropping the other helpers? I was considering this
+when fixing up sk_release, but then forgot
+about it.
 
-libbpf should also assume the success case in the very first run, and only
-then redo the load attempt with log buffer to avoid the overhead.
+>  }
+>  EXPORT_SYMBOL(sock_pfree);
+>
+> --
+> 2.20.1
+>
 
-   [0] https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/lib/bpf.c
 
->>>> @@ -673,6 +674,13 @@ int btf__load(struct btf *btf)
->>>>          btf->fd = bpf_load_btf(btf->data, btf->data_size,
->>>>                                 log_buf, log_buf_size, false);
->>>>          if (btf->fd < 0) {
->>>> +               if (errno == ENOSPC) {
->>>> +                       log_buf_size = max((__u32)BPF_LOG_BUF_SIZE,
->>>> +                                          log_buf_size << 1);
->>>> +                       free(log_buf);
->>>> +                       goto retry_load;
->>>> +               }
->>>> +
->>>>                  err = -errno;
->>>>                  pr_warn("Error loading BTF: %s(%d)\n", strerror(errno), errno);
->>>>                  if (*log_buf)
-[...]
->>>> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
->>>> index 8c3afbd97747..2720f3366798 100644
->>>> --- a/tools/lib/bpf/libbpf_internal.h
->>>> +++ b/tools/lib/bpf/libbpf_internal.h
->>>> @@ -23,6 +23,8 @@
->>>>   #define BTF_PARAM_ENC(name, type) (name), (type)
->>>>   #define BTF_VAR_SECINFO_ENC(type, offset, size) (type), (offset), (size)
->>>>
->>>> +#define BPF_MIN_LOG_BUF_SIZE 128
->>>
->>> This seems way too low, if there is some error it almost certainly
->>> will be too short, probably for few iterations, just causing waste.
->>> Let's make it something a bit more reasonable, like 32KB or something?
->> In this case, maybe start with the existing 16M BPF_LOG_BUF_SIZE?
->> My goal here is optimize for the successful case. If there is an error the
->> size shouldn't matter that much.
-> 
-> Not feeling strongly. But we already will have a retry loop, so not
-> too hard to do it in steps. Then also errors do happen in production
-> as well, and it would be good to not eat too much memory
-> unnecessarily.
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
-Yeah, 128 is way too low. Either we should just malloc the max possible size
-right away, or make it a two-step approach where we first try with half the
-size and only if that fails we retry with the max size. Given programs can be
-very complex this will otherwise just prolong the time unnecessarily for the
-failure verdict and unnecessarily puts load on the verifier.
-
-Thanks,
-Daniel
+www.cloudflare.com
