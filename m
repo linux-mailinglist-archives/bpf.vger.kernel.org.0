@@ -2,136 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A79E191EE2
-	for <lists+bpf@lfdr.de>; Wed, 25 Mar 2020 03:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F421920CE
+	for <lists+bpf@lfdr.de>; Wed, 25 Mar 2020 06:57:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727253AbgCYCP5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Mar 2020 22:15:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33188 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727249AbgCYCP5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Mar 2020 22:15:57 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F43820722;
-        Wed, 25 Mar 2020 02:15:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585102556;
-        bh=54tljddbiTenKuvzACM/r2jigUZKNxNknkxOF7SY7wI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kL91OI67FQzAhwcCnz1cXPx14Fu8RBWLiNY4Bk6O1AGSL/yD++jdMtuiUeglKcN0+
-         Pk0f3uYeXRGfpN0Xwv1wIjWepdd5wsmbpZ1Mq9TyQrIIgimezW6gFbYKdadCFFhbHS
-         52+JHucebSUimCorJUnsow5aFEkeJuBtlh2LlLJE=
-Date:   Tue, 24 Mar 2020 19:15:54 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Toke =?UTF-8?B?SMO4aWxhbmQt?= =?UTF-8?B?SsO4cmdlbnNlbg==?= 
-        <toke@redhat.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
- program when attaching XDP
-Message-ID: <20200324191554.46a7e0c2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200325013631.vuncsvkivexdb3fr@ast-mbp>
-References: <875zez76ph.fsf@toke.dk>
-        <20200320103530.2853c573@kicinski-fedora-PC1C0HJN>
-        <5e750bd4ebf8d_233f2ab4c81425c4ce@john-XPS-13-9370.notmuch>
-        <CAEf4BzbWa8vdyLuzr_nxFM3BtT+hhzjCe9UQF8Y5cN+sVqa72g@mail.gmail.com>
-        <87tv2f48lp.fsf@toke.dk>
-        <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com>
-        <87h7ye3mf3.fsf@toke.dk>
-        <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com>
-        <87tv2e10ly.fsf@toke.dk>
-        <5e7a5e07d85e8_74a82ad21f7a65b88d@john-XPS-13-9370.notmuch>
-        <20200325013631.vuncsvkivexdb3fr@ast-mbp>
+        id S1725911AbgCYF56 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Mar 2020 01:57:58 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:35771 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725781AbgCYF56 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Mar 2020 01:57:58 -0400
+Received: by mail-pf1-f195.google.com with SMTP id u68so531905pfb.2;
+        Tue, 24 Mar 2020 22:57:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DhgMxg9/d4jZxJK2gCTztL66Uqlfg5HkLq6v1FdFCg0=;
+        b=Id/LMMY8Fb/MCPGxuZORARzbvPiuoa20rDbwXLZyJwdpHUNneG3se8PsL49Xhq9xHC
+         3tT59SoKrcIC5UtxCYfnQIpadjHePY7anjlh8kgiKzRZWLVlM0/4AcTHGZchILyizQWO
+         ck8G+YrJ1aJKZ+jips/RXApHkt23RpkmYPzB6OqyuYDGHLgaKWrYTdxjAoVWNBNmf7Mt
+         SJzpyMmiIY5oRT5C3uFXQFdVwavUIQYObhsSF3xkVIokWvVHkXvjf9vLWkut2WNXQ+zP
+         H+wppSdOHP7ctWFnyjocNGlVb+26yr8TZJuHLtRoy+2vMKVjFHdRKTHD/5vmaJPgko/C
+         ddCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=DhgMxg9/d4jZxJK2gCTztL66Uqlfg5HkLq6v1FdFCg0=;
+        b=AM/LLG7eM3v+/THAT6yaxNr9m/zSl1Q3XpA7WbowL/Y3y/gG3G0vj5kVgPxDA3xEo2
+         KtEg7ua03cRnfmAin6Wa8jGUYcBwvNeUnqQNbmL5zEtzEecPgkTBLONNOc7i1aeg7hQa
+         4Q/zpzdVuAqXWynGkBgqtrXd6Fg3s/8Ruon/z8g/E85T8Mx/usnSpXIwBTakPjlTeRU1
+         SjvCLjNmYFmy0y5qbu0UJGp3bGaaKgGx4ndcF1XI64DJanoUpUSfdl7qgRCIqsaUqmtd
+         58v3MUQZFFCjTvbca7sLKnIhVwBgmqFV0tySdX4OvG5d2AHUDv5Ec7Q5Yv4TP+LPzwWC
+         jcCg==
+X-Gm-Message-State: ANhLgQ0Hs0+znL7RcNPzikIw1eotk2mzzYtF+x0qtG0EV4llMkci4DDZ
+        A4DwGbKXvM9zqlibnlk1B5wNHBaZ
+X-Google-Smtp-Source: ADFU+vsYiM5pgnux73ARBjtr2cw3neM89imDuCw7sixRF3E3UzoO7RO5/V5B/bvMSpfrwCU9U5Cf/g==
+X-Received: by 2002:a63:b648:: with SMTP id v8mr1398589pgt.397.1585115876472;
+        Tue, 24 Mar 2020 22:57:56 -0700 (PDT)
+Received: from localhost.localdomain (c-73-93-5-123.hsd1.ca.comcast.net. [73.93.5.123])
+        by smtp.gmail.com with ESMTPSA id e10sm17605716pfm.121.2020.03.24.22.57.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Mar 2020 22:57:55 -0700 (PDT)
+From:   Joe Stringer <joe@wand.net.nz>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        eric.dumazet@gmail.com, lmb@cloudflare.com, kafai@fb.com
+Subject: [PATCHv2 bpf-next 0/5] Add bpf_sk_assign eBPF helper
+Date:   Tue, 24 Mar 2020 22:57:40 -0700
+Message-Id: <20200325055745.10710-1-joe@wand.net.nz>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 24 Mar 2020 18:36:31 -0700 Alexei Starovoitov wrote:
-> On Tue, Mar 24, 2020 at 12:22:47PM -0700, John Fastabend wrote:
-> > > Well, I wasn't talking about any of those subsystems, I was talking
-> > > about networking :)  
-> > 
-> > My experience has been that networking in the strict sense of XDP no
-> > longer exists on its own without cgroups, flow dissector, sockops,
-> > sockmap, tracing, etc. All of these pieces are built, patched, loaded,
-> > pinned and otherwise managed and manipulated as BPF objects via libbpf.
-> > 
-> > Because I have all this infra in place for other items its a bit odd
-> > imo to drop out of BPF apis to then swap a program differently in the
-> > XDP case from how I would swap a program in any other place. I'm
-> > assuming ability to swap links will be enabled at some point.
-> > 
-> > Granted it just means I have some extra functions on the side to manage
-> > the swap similar to how 'qdisc' would be handled today but still not as
-> > nice an experience in my case as if it was handled natively.
-> > 
-> > Anyways the netlink API is going to have to call into the BPF infra
-> > on the kernel side for verification, etc so its already not pure
-> > networking.
-> >   
-> > > 
-> > > In particular, networking already has a consistent and fairly
-> > > well-designed configuration mechanism (i.e., netlink) that we are
-> > > generally trying to move more functionality *towards* not *away from*
-> > > (see, e.g., converting ethtool to use netlink).  
-> > 
-> > True. But BPF programs are going to exist and interop with other
-> > programs not exactly in the networking space. Actually library calls
-> > might be used in tracing, cgroups, and XDP side. It gets a bit more
-> > interesting if the "same" object file (with some patching) runs in both
-> > XDP and sockops land for example.  
-> 
-> Thanks John for summarizing it very well.
-> It looks to me that netlink proponents fail to realize that "bpf for
-> networking" goes way beyond what netlink is doing and capable of doing in the
-> future. BPF_*_INET_* progs do core networking without any smell of netlink
-> anywhere. "But, but, but, netlink is the way to configure networking"... is
-> simply not true. Even in years before BPF sockets and syscalls were the way to
-> do it. netlink has plenty of awesome properties, but arguing that it's the
-> only true way to do networking is not matching the reality.
+Introduce a new helper that allows assigning a previously-found socket
+to the skb as the packet is received towards the stack, to cause the
+stack to guide the packet towards that socket subject to local routing
+configuration.
 
-It is the way to configure XDP today, so it's only natural to
-scrutinize the attempts to replace it. 
+This series the successor to previous discussions on-list[0], in-person
+at LPC2019[1], and the previous version[2] to support TProxy use cases
+more directly from eBPF programs attached at TC ingress, to simplify and
+streamline Linux stack configuration in scale environments with Cilium.
 
-Also I personally don't think you'd see this much push back trying to
-add bpf_link-based stuff to cls_bpf, that's an add-on. XDP is
-integrated very fundamentally with the networking stack at this point.
+Normally in ip{,6}_rcv_core(), the skb will be orphaned, dropping any
+existing socket reference associated with the skb. Existing tproxy
+implementations in netfilter get around this restriction by running the
+tproxy logic after ip_rcv_core() in the PREROUTING table. However, this
+is not an option for TC-based logic (including eBPF programs attached at
+TC ingress).
 
-> Details are important and every case is different. So imo:
-> converting ethtool to netlink - great stuff.
-> converting netdev irq/queue management to netlink - great stuff too.
-> adding more netlink api for xdp - really bad idea.
+This series introduces the BPF helper bpf_sk_assign() to associate the
+socket with the skb on the ingress path as the packet is passed up the
+stack. The initial patch in the series simply takes a reference on the
+socket to ensure safety, but later patches relax this for listen
+sockets.
 
-Why is it a bad idea?
+To ensure delivery to the relevant socket, we still consult the routing
+table, for full examples of how to configure see the tests in patch #5;
+the simplest form of the route would look like this:
 
-There are plenty things which will only be available over netlink.
-Configuring the interface so installing the XDP program is possible
-(disabling features, configuring queues etc.). Chances are user gets
-the ifindex of the interface to attach to over netlink in the first
-place. The queue configuration (which you agree belongs in netlink)
-will definitely get more complex to allow REDIRECTs to work more
-smoothly. AF_XDP needs all sort of netlink stuff.
+  $ ip route add local default dev lo
 
-Netlink gives us the notification mechanism which is how we solve
-coordination across daemons (something that BPF subsystem is only 
-now trying to solve).
+This series is laid out as follows:
+* Patch 1 extends the eBPF API to add sk_assign() and defines a new
+  socket free function to allow the later paths to understand when the
+  socket associated with the skb should be kept through receive.
+* Patches 2-4 optimizate the receive path to prefetch the socket
+  destination and avoid taking a reference on listener sockets during
+  receive.
+* Patches 5 extends the selftests with examples of the new
+  functionality and validation of correct behaviour.
 
-BPF subsystem has a proven track record of reimplementing things devs
-don't like or haven't studied (bpftool net, netlink library). So it is
-a real concern to allow duplicating parts of the kernel netlink API.
+Changes since v1:
+* Replace the metadata_dst approach with using the skb->destructor to
+  determine whether the socket has been prefetched. This is much
+  simpler.
+* Avoid taking a reference on listener sockets during receive
+* Restrict assigning sockets across namespaces
+* Restrict assigning SO_REUSEPORT sockets
+* Fix cookie usage for socket dst check
+* Rebase the tests against test_progs infrastructure
+* Tidy up commit messages
+
+[0] https://www.mail-archive.com/netdev@vger.kernel.org/msg303645.html
+[1] https://linuxplumbersconf.org/event/4/contributions/464/
+[2] https://lore.kernel.org/netdev/20200312233648.1767-1-joe@wand.net.nz/T/#m4028efa9381856049ae5633986ec562d6b94a146
+
+
+Joe Stringer (4):
+  bpf: Add socket assign support
+  bpf: Prefetch established socket destinations
+  net: Track socket refcounts in skb_steal_sock()
+  bpf: Don't refcount LISTEN sockets in sk_assign()
+
+Lorenz Bauer (1):
+  selftests: bpf: add test for sk_assign
+
+ include/net/inet6_hashtables.h                |   3 +-
+ include/net/inet_hashtables.h                 |   3 +-
+ include/net/sock.h                            |  42 ++-
+ include/uapi/linux/bpf.h                      |  25 +-
+ net/core/filter.c                             |  50 +++-
+ net/core/sock.c                               |  10 +
+ net/ipv4/ip_input.c                           |   3 +-
+ net/ipv4/udp.c                                |   6 +-
+ net/ipv6/ip6_input.c                          |   3 +-
+ net/ipv6/udp.c                                |   9 +-
+ net/sched/act_bpf.c                           |   2 +
+ tools/include/uapi/linux/bpf.h                |  25 +-
+ tools/testing/selftests/bpf/Makefile          |   2 +-
+ .../selftests/bpf/prog_tests/sk_assign.c      | 244 ++++++++++++++++++
+ .../selftests/bpf/progs/test_sk_assign.c      | 127 +++++++++
+ 15 files changed, 529 insertions(+), 25 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sk_assign.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sk_assign.c
+
+-- 
+2.20.1
+
