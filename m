@@ -2,347 +2,299 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F209F192172
-	for <lists+bpf@lfdr.de>; Wed, 25 Mar 2020 08:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01DF8192451
+	for <lists+bpf@lfdr.de>; Wed, 25 Mar 2020 10:38:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727259AbgCYHAC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Mar 2020 03:00:02 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:17402 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727253AbgCYHAC (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 25 Mar 2020 03:00:02 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02P6xupN021220
-        for <bpf@vger.kernel.org>; Wed, 25 Mar 2020 00:00:01 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=ZkbceiQ4RNIBixcbl5nhPtToEaYBDW2qQdoZQNm77hs=;
- b=cJgiq/DstQYYeJiZkyBqUAfuHoMZtx0X7KDUMVW6/aZC+2zESneaNCNltOxtGv3CBYQ0
- 1tdb32ERrMwFod/of0qZ5wkZzfE9H/eVU9pCZSTdPnLfybwTqz53uMm7fhjVvneBDcLV
- uS28YDWRDgUImPuKw8dYQJzeTZGQvprHVq8= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 2yy3gy7t82-13
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 25 Mar 2020 00:00:01 -0700
-Received: from intmgw004.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Tue, 24 Mar 2020 23:59:49 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id A84392EC34F3; Tue, 24 Mar 2020 23:59:42 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>, <rdna@fb.com>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v2 bpf-next 6/6] selftests/bpf: test FD-based cgroup attachment
-Date:   Tue, 24 Mar 2020 23:57:46 -0700
-Message-ID: <20200325065746.640559-7-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200325065746.640559-1-andriin@fb.com>
-References: <20200325065746.640559-1-andriin@fb.com>
-X-FB-Internal: Safe
+        id S1726103AbgCYJil (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Mar 2020 05:38:41 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([216.205.24.74]:47552 "EHLO
+        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727297AbgCYJik (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 25 Mar 2020 05:38:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585129118;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d0u7Se1AWHcN3G4Gr8eFFfZ+MuVOQoNkDeGwbCCLK2E=;
+        b=eKAH7F7Jx/Rr7+83lqau9jhD8x+o5BQKknAU3TFswaYg2HqN1dr9Ura7ohR0Jbgty4NsZG
+        9E2afJsIITEe0tAmXjDbMHYFGAE3MDvY+vrx97nLamOwXSyk1dPblH2j+XEjgjrQFv/flw
+        w25Wo4fclFX0wNU3BBEf7n+GJykTFI0=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-171-fnjTg20QMV2WzDhloZFmUw-1; Wed, 25 Mar 2020 05:38:36 -0400
+X-MC-Unique: fnjTg20QMV2WzDhloZFmUw-1
+Received: by mail-lf1-f72.google.com with SMTP id m12so622821lfj.5
+        for <bpf@vger.kernel.org>; Wed, 25 Mar 2020 02:38:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=d0u7Se1AWHcN3G4Gr8eFFfZ+MuVOQoNkDeGwbCCLK2E=;
+        b=DTV1O/XdDIBSkhyahwWkZmxGgFxpLfLvEC9/GJVZwPMINKark0Ert+gcAm+3+lJiI3
+         IKc4dsVG5a1WAyr/noRH5lefrMhVOZCDHmEPDpQmfXiaVK5cqck/JpkAJ1dIE9Lghav+
+         LOSxWQc2zo6XAZpkwGfvzmacNuQLqcTnKBzL+XqelNy4IcnVgJFrjUorMS+tmtuTtjup
+         esXIFaxfrjcAlN3BH9MKog52zyWBd1TFnFaiSd1ckX+tDfWrmWmDpdaQ2LQgCNPtGsx8
+         5ncJI13opNTFbANwRxVn3XsmxtmIvFSWqawYdzx9T8ZaiQ1Q4e+ah3uZ5t0YADFuN7pM
+         Cfzw==
+X-Gm-Message-State: ANhLgQ3P3qi4+tCNno/LVbDMz7NmzssM9iae0BXUlVwOdzeMMo7/6Pto
+        xPgTElI4fyHAlHHS2YYxU2xnfY1lYDP2AhFlnvR2JT03jlwMA5fRMt+XfVRZpoC82YnKnxOdEYx
+        kLqx0+oBFg9Up
+X-Received: by 2002:ac2:4a88:: with SMTP id l8mr1712527lfp.138.1585129114741;
+        Wed, 25 Mar 2020 02:38:34 -0700 (PDT)
+X-Google-Smtp-Source: ADFU+vvdE+0B2Ni60oKvTu0OjLLzlrBU0agYSqxNanwjNCdYxAEpZ+Ff8HWVtxneZ6UTPHlQBX85uA==
+X-Received: by 2002:ac2:4a88:: with SMTP id l8mr1712494lfp.138.1585129114288;
+        Wed, 25 Mar 2020 02:38:34 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id j5sm11454835lfk.73.2020.03.25.02.38.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Mar 2020 02:38:33 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 7A78D18158B; Wed, 25 Mar 2020 10:38:32 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing program when attaching XDP
+In-Reply-To: <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com>
+References: <158462359206.164779.15902346296781033076.stgit@toke.dk> <158462359315.164779.13931660750493121404.stgit@toke.dk> <20200319155236.3d8537c5@kicinski-fedora-PC1C0HJN> <875zez76ph.fsf@toke.dk> <20200320103530.2853c573@kicinski-fedora-PC1C0HJN> <5e750bd4ebf8d_233f2ab4c81425c4ce@john-XPS-13-9370.notmuch> <CAEf4BzbWa8vdyLuzr_nxFM3BtT+hhzjCe9UQF8Y5cN+sVqa72g@mail.gmail.com> <87tv2f48lp.fsf@toke.dk> <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com> <87h7ye3mf3.fsf@toke.dk> <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com> <87tv2e10ly.fsf@toke.dk> <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 25 Mar 2020 10:38:32 +0100
+Message-ID: <87369wrcyv.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
- definitions=2020-03-25_01:2020-03-23,2020-03-25 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- bulkscore=0 adultscore=0 mlxscore=0 phishscore=0 lowpriorityscore=0
- clxscore=1015 malwarescore=0 mlxlogscore=942 spamscore=0 suspectscore=8
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2003250058
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add selftests to exercise FD-based cgroup BPF program attachments and their
-intermixing with legacy cgroup BPF attachments. Auto-detachment and program
-replacement (both unconditional and cmpxchng-like) are tested as well.
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- .../selftests/bpf/prog_tests/cgroup_link.c    | 235 ++++++++++++++++++
- .../selftests/bpf/progs/test_cgroup_link.c    |  24 ++
- 2 files changed, 259 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_link.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_cgroup_link.c
+> On Tue, Mar 24, 2020 at 3:57 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>
+>> > On Mon, Mar 23, 2020 at 12:23 PM Toke H=C3=B8iland-J=C3=B8rgensen <tok=
+e@redhat.com> wrote:
+>> >>
+>> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>> >>
+>> >> > On Mon, Mar 23, 2020 at 4:24 AM Toke H=C3=B8iland-J=C3=B8rgensen <t=
+oke@redhat.com> wrote:
+>> >> >>
+>> >> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>> >> >>
+>> >> >> > On Fri, Mar 20, 2020 at 11:31 AM John Fastabend
+>> >> >> > <john.fastabend@gmail.com> wrote:
+>> >> >> >>
+>> >> >> >> Jakub Kicinski wrote:
+>> >> >> >> > On Fri, 20 Mar 2020 09:48:10 +0100 Toke H=C3=B8iland-J=C3=B8r=
+gensen wrote:
+>> >> >> >> > > Jakub Kicinski <kuba@kernel.org> writes:
+>> >> >> >> > > > On Thu, 19 Mar 2020 14:13:13 +0100 Toke H=C3=B8iland-J=C3=
+=B8rgensen wrote:
+>> >> >> >> > > >> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> >> >> >> > > >>
+>> >> >> >> > > >> While it is currently possible for userspace to specify =
+that an existing
+>> >> >> >> > > >> XDP program should not be replaced when attaching to an =
+interface, there is
+>> >> >> >> > > >> no mechanism to safely replace a specific XDP program wi=
+th another.
+>> >> >> >> > > >>
+>> >> >> >> > > >> This patch adds a new netlink attribute, IFLA_XDP_EXPECT=
+ED_FD, which can be
+>> >> >> >> > > >> set along with IFLA_XDP_FD. If set, the kernel will chec=
+k that the program
+>> >> >> >> > > >> currently loaded on the interface matches the expected o=
+ne, and fail the
+>> >> >> >> > > >> operation if it does not. This corresponds to a 'cmpxchg=
+' memory operation.
+>> >> >> >> > > >>
+>> >> >> >> > > >> A new companion flag, XDP_FLAGS_EXPECT_FD, is also added=
+ to explicitly
+>> >> >> >> > > >> request checking of the EXPECTED_FD attribute. This is n=
+eeded for userspace
+>> >> >> >> > > >> to discover whether the kernel supports the new attribut=
+e.
+>> >> >> >> > > >>
+>> >> >> >> > > >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com>
+>> >> >> >> > > >
+>> >> >> >> > > > I didn't know we wanted to go ahead with this...
+>> >> >> >> > >
+>> >> >> >> > > Well, I'm aware of the bpf_link discussion, obviously. Not =
+sure what's
+>> >> >> >> > > happening with that, though. So since this is a straight-fo=
+rward
+>> >> >> >> > > extension of the existing API, that doesn't carry a high im=
+plementation
+>> >> >> >> > > cost, I figured I'd just go ahead with this. Doesn't mean w=
+e can't have
+>> >> >> >> > > something similar in bpf_link as well, of course.
+>> >> >> >> >
+>> >> >> >> > I'm not really in the loop, but from what I overheard - I thi=
+nk the
+>> >> >> >> > bpf_link may be targeting something non-networking first.
+>> >> >> >>
+>> >> >> >> My preference is to avoid building two different APIs one for X=
+DP and another
+>> >> >> >> for everything else. If we have userlands that already understa=
+nd links and
+>> >> >> >> pinning support is on the way imo lets use these APIs for netwo=
+rking as well.
+>> >> >> >
+>> >> >> > I agree here. And yes, I've been working on extending bpf_link i=
+nto
+>> >> >> > cgroup and then to XDP. We are still discussing some cgroup-spec=
+ific
+>> >> >> > details, but the patch is ready. I'm going to post it as an RFC =
+to get
+>> >> >> > the discussion started, before we do this for XDP.
+>> >> >>
+>> >> >> Well, my reason for being skeptic about bpf_link and proposing the
+>> >> >> netlink-based API is actually exactly this, but in reverse: With
+>> >> >> bpf_link we will be in the situation that everything related to a =
+netdev
+>> >> >> is configured over netlink *except* XDP.
+>> >> >
+>> >> > One can argue that everything related to use of BPF is going to be
+>> >> > uniform and done through BPF syscall? Given variety of possible BPF
+>> >> > hooks/targets, using custom ways to attach for all those many cases=
+ is
+>> >> > really bad as well, so having a unifying concept and single entry to
+>> >> > do this is good, no?
+>> >>
+>> >> Well, it depends on how you view the BPF subsystem's relation to the
+>> >> rest of the kernel, I suppose. I tend to view it as a subsystem that
+>> >> provides a bunch of functionality, which you can setup (using "intern=
+al"
+>> >> BPF APIs), and then attach that object to a different subsystem
+>> >> (networking) using that subsystem's configuration APIs.
+>> >>
+>> >> Seeing as this really boils down to a matter of taste, though, I'm not
+>> >> sure we'll find agreement on this :)
+>> >
+>> > Yeah, seems like so. But then again, your view and reality don't seem
+>> > to correlate completely. cgroup, a lot of tracing,
+>> > flow_dissector/lirc_mode2 attachments all are done through BPF
+>> > syscall.
+>>
+>> Well, I wasn't talking about any of those subsystems, I was talking
+>> about networking :)
+>
+> So it's not "BPF subsystem's relation to the rest of the kernel" from
+> your previous email, it's now only "talking about networking"? Since
+> when the rest of the kernel is networking?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_link.c b/tools/testing/selftests/bpf/prog_tests/cgroup_link.c
-new file mode 100644
-index 000000000000..2076a9861f74
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_link.c
-@@ -0,0 +1,235 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+#include "cgroup_helpers.h"
-+#include "test_cgroup_link.skel.h"
-+
-+static __u32 duration = 0;
-+#define PING_CMD	"ping -q -c1 -w1 127.0.0.1 > /dev/null"
-+
-+static struct test_cgroup_link *skel = NULL;
-+
-+int ping_and_check(int exp_calls, int exp_alt_calls)
-+{
-+	skel->bss->calls = 0;
-+	skel->bss->alt_calls = 0;
-+	CHECK_FAIL(system(PING_CMD));
-+	if (CHECK(skel->bss->calls != exp_calls, "call_cnt",
-+		  "exp %d, got %d\n", exp_calls, skel->bss->calls))
-+		return -EINVAL;
-+	if (CHECK(skel->bss->alt_calls != exp_alt_calls, "alt_call_cnt",
-+		  "exp %d, got %d\n", exp_alt_calls, skel->bss->alt_calls))
-+		return -EINVAL;
-+	return 0;
-+}
-+
-+void test_cgroup_link(void)
-+{
-+	struct {
-+		const char *path;
-+		int fd;
-+	} cgs[] = {
-+		{ "/cg1" },
-+		{ "/cg1/cg2" },
-+		{ "/cg1/cg2/cg3" },
-+	};
-+	int last_cg = ARRAY_SIZE(cgs) - 1, cg_nr = ARRAY_SIZE(cgs);
-+	DECLARE_LIBBPF_OPTS(bpf_link_update_opts, link_upd_opts);
-+	struct bpf_link *links[ARRAY_SIZE(cgs)] = {}, *tmp_link;
-+	__u32 prog_ids[5], prog_cnt = 0, attach_flags;
-+	int i = 0, err, prog_fd;
-+	bool detach_legacy = false;
-+
-+	skel = test_cgroup_link__open_and_load();
-+	if (CHECK(!skel, "skel_open_load", "failed to open/load skeleton\n"))
-+		return;
-+	prog_fd = bpf_program__fd(skel->progs.egress);
-+
-+	err = setup_cgroup_environment();
-+	if (CHECK(err, "cg_init", "failed: %d\n", err))
-+		goto cleanup;
-+
-+	for (i = 0; i < cg_nr; i++) {
-+		cgs[i].fd = create_and_get_cgroup(cgs[i].path);
-+		if (CHECK(cgs[i].fd < 0, "cg_create", "fail: %d\n", cgs[i].fd))
-+			goto cleanup;
-+	}
-+
-+	err = join_cgroup(cgs[last_cg].path);
-+	if (CHECK(err, "cg_join", "fail: %d\n", err))
-+		goto cleanup;
-+
-+	for (i = 0; i < cg_nr; i++) {
-+		links[i] = bpf_program__attach_cgroup(skel->progs.egress,
-+						      cgs[i].fd,
-+						      BPF_F_ALLOW_MULTI);
-+		if (CHECK(IS_ERR(links[i]), "cg_attach", "i: %d, err: %ld\n",
-+				 i, PTR_ERR(links[i])))
-+			goto cleanup;
-+	}
-+
-+	ping_and_check(cg_nr, 0);
-+
-+	/* query the number of effective progs in last cg */
-+	err = bpf_prog_query(cgs[last_cg].fd, BPF_CGROUP_INET_EGRESS,
-+			     BPF_F_QUERY_EFFECTIVE, NULL, NULL,
-+			     &prog_cnt);
-+	CHECK_FAIL(err);
-+	if (CHECK(prog_cnt != cg_nr, "effect_cnt", "exp %d, got %d\n",
-+		  cg_nr, prog_cnt))
-+		goto cleanup;
-+	/* query the effective prog IDs in last cg */
-+	err = bpf_prog_query(cgs[last_cg].fd, BPF_CGROUP_INET_EGRESS,
-+			     BPF_F_QUERY_EFFECTIVE, &attach_flags,
-+			     prog_ids, &prog_cnt);
-+	CHECK_FAIL(err);
-+	if (CHECK(prog_cnt != cg_nr, "effect_cnt", "exp %d, got %d\n",
-+		  cg_nr, prog_cnt))
-+		goto cleanup;
-+	CHECK_FAIL(attach_flags != BPF_F_ALLOW_MULTI);
-+	for (i = 1; i < prog_cnt; i++) {
-+		CHECK(prog_ids[i - 1] != prog_ids[i], "prod_id_check",
-+		      "idx %d, prev id %d, cur id %d\n",
-+		      i, prog_ids[i - 1], prog_ids[i]);
-+	}
-+
-+	/* detach bottom program and ping again */
-+	bpf_link__destroy(links[last_cg]);
-+	links[last_cg] = NULL;
-+
-+	ping_and_check(cg_nr - 1, 0);
-+
-+	/* mix in with non link-based multi-attachments */
-+	err = bpf_prog_attach(prog_fd, cgs[last_cg].fd,
-+			      BPF_CGROUP_INET_EGRESS, BPF_F_ALLOW_MULTI);
-+	if (CHECK(err, "cg_attach_legacy", "errno=%d\n", errno))
-+		goto cleanup;
-+	detach_legacy = true;
-+
-+	links[last_cg] = bpf_program__attach_cgroup(skel->progs.egress,
-+						    cgs[last_cg].fd,
-+						    BPF_F_ALLOW_MULTI);
-+	if (CHECK(IS_ERR(links[last_cg]), "cg_attach", "err: %ld\n",
-+		  PTR_ERR(links[last_cg])))
-+		goto cleanup;
-+
-+	/* attempt to mix in with exclusive bpf_link */
-+	tmp_link = bpf_program__attach_cgroup(skel->progs.egress,
-+					      cgs[last_cg].fd,
-+					      BPF_F_ALLOW_OVERRIDE);
-+	if (CHECK(!IS_ERR(tmp_link), "cg_attach_fail", "unexpected success!\n")) {
-+		bpf_link__destroy(tmp_link);
-+		goto cleanup;
-+	}
-+
-+	ping_and_check(cg_nr + 1, 0);
-+
-+	/* detach */
-+	bpf_link__destroy(links[last_cg]);
-+	links[last_cg] = NULL;
-+
-+	/* detach legacy */
-+	err = bpf_prog_detach2(prog_fd, cgs[last_cg].fd, BPF_CGROUP_INET_EGRESS);
-+	if (CHECK(err, "cg_detach_legacy", "errno=%d\n", errno))
-+		goto cleanup;
-+	detach_legacy = false;
-+
-+	/* attach legacy exclusive prog attachment */
-+	err = bpf_prog_attach(prog_fd, cgs[last_cg].fd,
-+			      BPF_CGROUP_INET_EGRESS, 0);
-+	if (CHECK(err, "cg_attach_exclusive", "errno=%d\n", errno))
-+		goto cleanup;
-+	detach_legacy = true;
-+
-+	/* replace legacy exlusive prog with exclusive bpf_link */
-+	links[last_cg] = bpf_program__attach_cgroup(skel->progs.egress,
-+						    cgs[last_cg].fd,
-+						    0);
-+	if (CHECK(IS_ERR(links[last_cg]), "cg_replace", "err: %ld\n",
-+		  PTR_ERR(links[last_cg])))
-+		goto cleanup;
-+	detach_legacy = false;
-+
-+	ping_and_check(cg_nr, 0);
-+
-+	/* detach */
-+	err = bpf_prog_detach2(prog_fd, cgs[last_cg].fd, BPF_CGROUP_INET_EGRESS);
-+	if (CHECK(!err, "cg_detach_legacy", "unexpected success!\n"))
-+		goto cleanup;
-+
-+	/* attempt to mix in with multi-attach bpf_link */
-+	tmp_link = bpf_program__attach_cgroup(skel->progs.egress,
-+					      cgs[last_cg].fd,
-+					      BPF_F_ALLOW_OVERRIDE);
-+	if (CHECK(!IS_ERR(tmp_link), "cg_attach_fail", "unexpected success!\n")) {
-+		bpf_link__destroy(tmp_link);
-+		goto cleanup;
-+	}
-+
-+	ping_and_check(cg_nr, 0);
-+
-+	/* replace BPF programs inside their links for all but first link */
-+	for (i = 1; i < cg_nr; i++) {
-+		err = bpf_link__update_program(links[i], skel->progs.egress_alt);
-+		if (CHECK(err, "prog_upd", "link #%d\n", i))
-+			goto cleanup;
-+	}
-+
-+	ping_and_check(1, cg_nr - 1);
-+
-+	/* Attempt program update with wrong expected BPF program */
-+	link_upd_opts.old_prog_fd = bpf_program__fd(skel->progs.egress_alt);
-+	link_upd_opts.flags = BPF_F_REPLACE;
-+	err = bpf_link_update(bpf_link__fd(links[0]),
-+			      bpf_program__fd(skel->progs.egress_alt),
-+			      &link_upd_opts);
-+	if (CHECK(err == 0 || errno != EPERM, "prog_cmpxchg1",
-+		  "unexpectedly succeeded, err %d, errno %d\n", err, -errno))
-+		goto cleanup;
-+
-+	/* Compare-exchange single link program from egress to egress_alt */
-+	link_upd_opts.old_prog_fd = bpf_program__fd(skel->progs.egress);
-+	link_upd_opts.flags = BPF_F_REPLACE;
-+	err = bpf_link_update(bpf_link__fd(links[0]),
-+			      bpf_program__fd(skel->progs.egress_alt),
-+			      &link_upd_opts);
-+	if (CHECK(err, "prog_cmpxchg2", "errno %d\n", -errno))
-+		goto cleanup;
-+
-+	/* ping */
-+	ping_and_check(0, cg_nr);
-+
-+	/* close cgroup FDs before detaching links */
-+	for (i = 0; i < cg_nr; i++) {
-+		if (cgs[i].fd > 0) {
-+			close(cgs[i].fd);
-+			cgs[i].fd = -1;
-+		}
-+	}
-+
-+	/* BPF programs should still get called */
-+	ping_and_check(0, cg_nr);
-+
-+	/* leave cgroup and remove them, don't detach programs */
-+	cleanup_cgroup_environment();
-+
-+	/* BPF programs should have been auto-detached */
-+	ping_and_check(0, 0);
-+
-+cleanup:
-+	if (detach_legacy)
-+		bpf_prog_detach2(prog_fd, cgs[last_cg].fd,
-+				 BPF_CGROUP_INET_EGRESS);
-+
-+	for (i = 0; i < cg_nr; i++) {
-+		if (!IS_ERR(links[i]))
-+			bpf_link__destroy(links[i]);
-+	}
-+	test_cgroup_link__destroy(skel);
-+
-+	for (i = 0; i < cg_nr; i++) {
-+		if (cgs[i].fd > 0)
-+			close(cgs[i].fd);
-+	}
-+	cleanup_cgroup_environment();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_cgroup_link.c b/tools/testing/selftests/bpf/progs/test_cgroup_link.c
-new file mode 100644
-index 000000000000..77e47b9e4446
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_cgroup_link.c
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+int calls = 0;
-+int alt_calls = 0;
-+
-+SEC("cgroup_skb/egress1")
-+int egress(struct __sk_buff *skb)
-+{
-+	__sync_fetch_and_add(&calls, 1);
-+	return 1;
-+}
-+
-+SEC("cgroup_skb/egress2")
-+int egress_alt(struct __sk_buff *skb)
-+{
-+	__sync_fetch_and_add(&alt_calls, 1);
-+	return 1;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-+
--- 
-2.17.1
+Not really, I would likely argue the same for any other subsystem, I
+just prefer to limit myself to talking about things I actually know
+something about. Hence, networking :)
+
+> But anyways, I think John addressed modern XDP networking issues in
+> his email very well already.
+
+Going to reply to that email next...
+
+>> In particular, networking already has a consistent and fairly
+>> well-designed configuration mechanism (i.e., netlink) that we are
+>> generally trying to move more functionality *towards* not *away from*
+>> (see, e.g., converting ethtool to use netlink).
+>>
+>> > LINK_CREATE provides an opportunity to finally unify all those
+>> > different ways to achieve the same "attach my BPF program to some
+>> > target object" semantics.
+>>
+>> Well I also happen to think that "attach a BPF program to an object" is
+>> the wrong way to think about XDP. Rather, in my mind the model is
+>> "instruct the netdevice to execute this piece of BPF code".
+>
+> That can't be reconciled, so no point of arguing :) But thinking about
+> BPF in general, I think it's closer to attach BPF program thinking
+> (especially all the fexit/fentry, kprobe, etc), where objects that BPF
+> is attached to is not "active" in the sense of "calling BPF", it's
+> more of BPF system setting things up (attaching?) in such a way that
+> BPF program is executed when appropriate.
+
+I'd tend to agree with you on most of the tracing stuff, but not on
+this. But let's just agree to disagree here :)
+
+>> >> >> Other than that, I don't see any reason why the bpf_link API won't=
+ work.
+>> >> >> So I guess that if no one else has any problem with BPF insisting =
+on
+>> >> >> being a special snowflake, I guess I can live with it as well... *=
+shrugs* :)
+>> >> >
+>> >> > Apart from derogatory remark,
+>> >>
+>> >> Yeah, should have left out the 'snowflake' bit, sorry about that...
+>> >>
+>> >> > BPF is a bit special here, because it requires every potential BPF
+>> >> > hook (be it cgroups, xdp, perf_event, etc) to be aware of BPF
+>> >> > program(s) and execute them with special macro. So like it or not, =
+it
+>> >> > is special and each driver supporting BPF needs to implement this B=
+PF
+>> >> > wiring.
+>> >>
+>> >> All that is about internal implementation, though. I'm bothered by the
+>> >> API discrepancy (i.e., from the user PoV we'll end up with: "netlink =
+is
+>> >> what you use to configure your netdev except if you want to attach an
+>> >> XDP program to it").
+>> >>
+>> >
+>> > See my reply to David. Depends on where you define user API. Is it
+>> > libbpf API, which is what most users are using? Or kernel API?
+>>
+>> Well I'm talking about the kernel<->userspace API, obviously :)
+>>
+>> > If everyone is using libbpf, does kernel system (bpf syscall vs
+>> > netlink) matter all that much?
+>>
+>> This argument works the other way as well, though: If libbpf can
+>> abstract the subsystem differences and provide a consistent interface to
+>> "the BPF world", why does BPF need to impose its own syscall API on the
+>> networking subsystem?
+>
+> bpf_link in libbpf started as user-space abstraction only, but we
+> realized that it's not enough and there is a need to have proper
+> kernel support and corresponding kernel object, so it's not just
+> user-space API concerns.
+>
+> As for having netlink interface for creating link only for XDP. Why
+> duplicating and maintaining 2 interfaces?
+
+Totally agree; why do we need two interfaces? Let's keep the one we
+already have - the netlink interface! :)
+
+> All the other subsystems will go through bpf syscall, only XDP wants
+> to (also) have this through netlink. This means duplication of UAPI
+> for no added benefit. It's a LINK_CREATE operations, as well as
+> LINK_UPDATE operations. Do we need to duplicate LINK_QUERY (once its
+> implemented)? What if we'd like to support some other generic bpf_link
+> functionality, would it be ok to add it only to bpf syscall, or we
+> need to duplicate this in netlink as well?
+
+You're saying that like we didn't already have the netlink API. We
+essentially already have (the equivalent of) LINK_CREATE and LINK_QUERY,
+this is just adding LINK_UPDATE. It's a straight-forward fix of an
+existing API; essentially you're saying we should keep the old API in a
+crippled state in order to promote your (proposed) new API.
+
+-Toke
 
