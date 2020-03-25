@@ -2,103 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8701619274B
-	for <lists+bpf@lfdr.de>; Wed, 25 Mar 2020 12:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E86551927C7
+	for <lists+bpf@lfdr.de>; Wed, 25 Mar 2020 13:06:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbgCYLg6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Mar 2020 07:36:58 -0400
-Received: from sym2.noone.org ([178.63.92.236]:48974 "EHLO sym2.noone.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726906AbgCYLg6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Mar 2020 07:36:58 -0400
-Received: by sym2.noone.org (Postfix, from userid 1002)
-        id 48nR0l53JjzvjdR; Wed, 25 Mar 2020 12:36:55 +0100 (CET)
-From:   Tobias Klauser <tklauser@distanz.ch>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        id S1727647AbgCYMG1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Mar 2020 08:06:27 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:36079 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727682AbgCYMG0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Mar 2020 08:06:26 -0400
+Received: by mail-wm1-f68.google.com with SMTP id g62so2356440wme.1
+        for <bpf@vger.kernel.org>; Wed, 25 Mar 2020 05:06:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+PuCayDB8/bzQ2bHokcpFfFt5a4I5BUuCsnOfLRNswc=;
+        b=ZI4mEik3eoP0ROxeS3oL2y4mBlwTAhEpvjh3oaTAii4PXNjtOdoF9lCzTuSyJMFphy
+         Ux+RApkQNzuPXAF/TiD94+U4PYyPIoftuvajAI7lHu5pDlMKTDhe050nwd9jSEpK4dUL
+         nMpZjQPgZWp96mxdmgUOYnla/p0akCIya2ooavLXHgH9q5HxxAcMWgfC5x/DDVXxxhWN
+         jwq+rLxVRLIPdlGifJhu2l3rkxzWqIDiEeoPMXnw7T/ItINrc0m6tRVrWKDMWZBlOK/4
+         WwS2vRqffUulFoAnNjf9CKqIgird9ROKt2YJEXOe3ZNAe3BIUQ2Q6QeYzMxTYYtgbBea
+         r5ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+PuCayDB8/bzQ2bHokcpFfFt5a4I5BUuCsnOfLRNswc=;
+        b=KKaKmt6iHjDDyEBOLodz2pKnAv1yFIjvKz4Vkr51Ra4YKmL/KErreOX5GACXnvZP6I
+         Pv4jjNw4jvdP1JEJNIn8yhcnJQIxUO6CGWADm2XN1pKZDk4d4oT9QQTs0USESWlHSFzf
+         bc0t4MXOEYn5PJpAYfdwUj+CeDVWlat0xPoW+3JvLOMrv2Hk3yjWzshun9NRpg5E5UpW
+         qwwXg/LSMPU0PtI5+eyh+/ElC+IaEcUzGujaWFdc55ZNoCg8dtNhJJ5XD3njHXK7VgVG
+         TgY62/+x2PFbBXGXrBZny/Dmo6C0z0rwAmpBir/JnSMMpfVUyca5RLmhSaddA+xCu21y
+         D6Xg==
+X-Gm-Message-State: ANhLgQ37XkUZB9qZ0izGCZbOS1NhZsRM0sXw88QgV/7aa/CP1lFzrp0L
+        CKhgaTkn7T1DL//1rYk0VnfH4m30yP3xVQ==
+X-Google-Smtp-Source: ADFU+vuouDLwROO6z7rhU4N4JneKtsKaMBeVQy9BlXcvDLkHxBIcGJSMOErhyX1+DBkhC4/kvS0+jw==
+X-Received: by 2002:a1c:8090:: with SMTP id b138mr3297274wmd.55.1585137984044;
+        Wed, 25 Mar 2020 05:06:24 -0700 (PDT)
+Received: from [192.168.1.10] ([194.35.118.40])
+        by smtp.gmail.com with ESMTPSA id k9sm34983203wrd.74.2020.03.25.05.06.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Mar 2020 05:06:23 -0700 (PDT)
+Subject: Re: [PATCH] libbpf: remove unused parameter `def` to
+ get_map_field_int
+To:     Tobias Klauser <tklauser@distanz.ch>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org
-Subject: [PATCH] libbpf: remove unused parameter `def` to get_map_field_int
-Date:   Wed, 25 Mar 2020 12:36:55 +0100
-Message-Id: <20200325113655.19341-1-tklauser@distanz.ch>
-X-Mailer: git-send-email 2.11.0
+References: <20200325113655.19341-1-tklauser@distanz.ch>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <8ef9f1d0-a373-c15c-954a-3e29354de173@isovalent.com>
+Date:   Wed, 25 Mar 2020 12:06:22 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <20200325113655.19341-1-tklauser@distanz.ch>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Has been unused since commit ef99b02b23ef ("libbpf: capture value in BTF
-type info for BTF-defined map defs").
+2020-03-25 12:36 UTC+0100 ~ Tobias Klauser <tklauser@distanz.ch>
+> Has been unused since commit ef99b02b23ef ("libbpf: capture value in BTF
+> type info for BTF-defined map defs").
+> 
+> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
 
-Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
----
- tools/lib/bpf/libbpf.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 085e41f9b68e..e9479ad9dd51 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1845,7 +1845,6 @@ resolve_func_ptr(const struct btf *btf, __u32 id, __u32 *res_id)
-  * type definition, while using only sizeof(void *) space in ELF data section.
-  */
- static bool get_map_field_int(const char *map_name, const struct btf *btf,
--			      const struct btf_type *def,
- 			      const struct btf_member *m, __u32 *res)
- {
- 	const struct btf_type *t = skip_mods_and_typedefs(btf, m->type, NULL);
-@@ -1972,19 +1971,19 @@ static int bpf_object__init_user_btf_map(struct bpf_object *obj,
- 			return -EINVAL;
- 		}
- 		if (strcmp(name, "type") == 0) {
--			if (!get_map_field_int(map_name, obj->btf, def, m,
-+			if (!get_map_field_int(map_name, obj->btf, m,
- 					       &map->def.type))
- 				return -EINVAL;
- 			pr_debug("map '%s': found type = %u.\n",
- 				 map_name, map->def.type);
- 		} else if (strcmp(name, "max_entries") == 0) {
--			if (!get_map_field_int(map_name, obj->btf, def, m,
-+			if (!get_map_field_int(map_name, obj->btf, m,
- 					       &map->def.max_entries))
- 				return -EINVAL;
- 			pr_debug("map '%s': found max_entries = %u.\n",
- 				 map_name, map->def.max_entries);
- 		} else if (strcmp(name, "map_flags") == 0) {
--			if (!get_map_field_int(map_name, obj->btf, def, m,
-+			if (!get_map_field_int(map_name, obj->btf, m,
- 					       &map->def.map_flags))
- 				return -EINVAL;
- 			pr_debug("map '%s': found map_flags = %u.\n",
-@@ -1992,8 +1991,7 @@ static int bpf_object__init_user_btf_map(struct bpf_object *obj,
- 		} else if (strcmp(name, "key_size") == 0) {
- 			__u32 sz;
- 
--			if (!get_map_field_int(map_name, obj->btf, def, m,
--					       &sz))
-+			if (!get_map_field_int(map_name, obj->btf, m, &sz))
- 				return -EINVAL;
- 			pr_debug("map '%s': found key_size = %u.\n",
- 				 map_name, sz);
-@@ -2035,8 +2033,7 @@ static int bpf_object__init_user_btf_map(struct bpf_object *obj,
- 		} else if (strcmp(name, "value_size") == 0) {
- 			__u32 sz;
- 
--			if (!get_map_field_int(map_name, obj->btf, def, m,
--					       &sz))
-+			if (!get_map_field_int(map_name, obj->btf, m, &sz))
- 				return -EINVAL;
- 			pr_debug("map '%s': found value_size = %u.\n",
- 				 map_name, sz);
-@@ -2079,8 +2076,7 @@ static int bpf_object__init_user_btf_map(struct bpf_object *obj,
- 			__u32 val;
- 			int err;
- 
--			if (!get_map_field_int(map_name, obj->btf, def, m,
--					       &val))
-+			if (!get_map_field_int(map_name, obj->btf, m, &val))
- 				return -EINVAL;
- 			pr_debug("map '%s': found pinning = %u.\n",
- 				 map_name, val);
--- 
-2.26.0
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 
