@@ -2,147 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C43621931B0
-	for <lists+bpf@lfdr.de>; Wed, 25 Mar 2020 21:15:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDDC19320D
+	for <lists+bpf@lfdr.de>; Wed, 25 Mar 2020 21:47:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727355AbgCYUPB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Mar 2020 16:15:01 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:39148 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727316AbgCYUPA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Mar 2020 16:15:00 -0400
-Received: by mail-wm1-f66.google.com with SMTP id a9so4401409wmj.4
-        for <bpf@vger.kernel.org>; Wed, 25 Mar 2020 13:14:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=0OQaYSA4nZ2gXySsRJHDk1KXoSC2YVOYU+F8UZAf+F8=;
-        b=hwnn3Ir68Lfzy19akJriEz5wwoiXbl+3c2wZp4BAUkbVG9nIp+//So75WSrFTx+5qh
-         7QV8fbMyUIE0UcueiX/ErLGabclX1TuHwPq7sPfVa49rUtx3pTfT/2O+3WKNtEa8/xFF
-         mfptOdRKmsYkjD07FFfpFuUE8n0vyQrAFtB3Q=
+        id S1727306AbgCYUrJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Mar 2020 16:47:09 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:36049 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727253AbgCYUrJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Mar 2020 16:47:09 -0400
+Received: by mail-wm1-f68.google.com with SMTP id g62so4596412wme.1;
+        Wed, 25 Mar 2020 13:47:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=0OQaYSA4nZ2gXySsRJHDk1KXoSC2YVOYU+F8UZAf+F8=;
-        b=DPTYr6N9OyOMST611xmHevluzgNc0lLjKthWEsKQq/aDa1Q/Lt33OG9T43yZ/w862A
-         dcOUncKfP8reT+5NwxTL7SOKKVSJh1+TB9Qcr79nZPJf9sCvP2yzH0yxwOE6uh/vgLSm
-         OQiNLxVjA703+3lF0VQil6kXCntjNkoDPbOysoUozlpGtfJ4qAVUmj4izXDO29OXNFUn
-         2RWwJl4rEB9r1BHmtYAbJ9LHqDCdZ8bCWIZLiO9pRZtb5xN/OZByCtZ+Fpsq1IyqZtDw
-         pc8l56kVFqTPQvHNxPQr2JuMdLgxKW49XUnqGXThNS+l8OqSBVdNe2BuyWn7POBVcLJ8
-         SLuQ==
-X-Gm-Message-State: ANhLgQ37w9b7np3qTPn5ePEYpkw7MGYzMAvW5pYuOGjni9lrPzUnwR7N
-        C5zpV+Pe6suFQApbMZ/BMN91tg==
-X-Google-Smtp-Source: ADFU+vtR78/5TV4j/RhUUACat+o7Zx3yuL90WC4GLgjN9JgBU6U7lQg4W+7dAXk8Am9gfUuv1zpbAw==
-X-Received: by 2002:a1c:740f:: with SMTP id p15mr5152828wmc.98.1585167298609;
-        Wed, 25 Mar 2020 13:14:58 -0700 (PDT)
-Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
-        by smtp.gmail.com with ESMTPSA id z188sm176869wme.46.2020.03.25.13.14.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Mar 2020 13:14:58 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Wed, 25 Mar 2020 21:14:56 +0100
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@google.com>, Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>, Paul Turner <pjt@google.com>,
-        Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH bpf-next v6 3/8] bpf: lsm: provide attachment points for
- BPF LSM programs
-Message-ID: <20200325201456.GA30568@chromium.org>
-References: <20200325152629.6904-1-kpsingh@chromium.org>
- <20200325152629.6904-4-kpsingh@chromium.org>
- <202003251225.923FF1DD7@keescook>
- <20200325193956.GA22898@chromium.org>
- <202003251257.AD4381C861@keescook>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aZh1lVl+Z3AA4oBgpFUkwMGmFnCKYdp+eUJRXxG73Gw=;
+        b=d7PO0NeJBCI8z67pKgtmhAVJyYcRnO4Mu1TV7PNFYgYXbvxX64LDAj3CekGObH5iAJ
+         sI6oqYEd6RX/UPOB/eeHTNAqUz6z0Sjw2AzHX8oMTrOvnKurQrzmHbZ5QKG+l3VZi8cf
+         i1OHNwiFBAaS76FeY1Ab50kqp9DtEwH2CfVRLNlxtF0H/ikI0EVTfl4U/V36dYXEvT9v
+         veA/u+GUVjRa8mrTmTMpoBcTSvvWYuDXq2MOOYb2llsEYkbgiW4R17AO/RfPaod3UAi1
+         EarrYO6sdj0Nuz4ei6MfjroMPKrJ2hQMMgN7Nxx/+bpNT9KV+DCFJgZ59DeZ7tOpcIUI
+         H+Mw==
+X-Gm-Message-State: ANhLgQ1/vuSfpZ250M+XxvXz1v9IiCpHUN90wKTI8yIExPonMswWuWgW
+        RdqYzCFOKufaG8AZfpp4nMryGTPxTck5qx4D0XW1kokv
+X-Google-Smtp-Source: ADFU+vvpd6YlyFCKzdFNPtYw8HfkafiZJ8fbVl3DgPbQgCQsZgcNy7ZcN4FN4VANfV1M1WU5QxioUigiX+QFyYW9LwQ=
+X-Received: by 2002:a1c:acc8:: with SMTP id v191mr5503845wme.185.1585169226063;
+ Wed, 25 Mar 2020 13:47:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <202003251257.AD4381C861@keescook>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200325055745.10710-1-joe@wand.net.nz> <20200325055745.10710-5-joe@wand.net.nz>
+ <CACAyw9_17E3TNCFsnXzQ4K2zSmwn8J+BcZqbjiK==WQH=zNzvg@mail.gmail.com>
+In-Reply-To: <CACAyw9_17E3TNCFsnXzQ4K2zSmwn8J+BcZqbjiK==WQH=zNzvg@mail.gmail.com>
+From:   Joe Stringer <joe@wand.net.nz>
+Date:   Wed, 25 Mar 2020 13:46:43 -0700
+Message-ID: <CAOftzPipEjfy1p_98V+JmV3p_WJPzhE-_KfqC3UE3d-TYYxyww@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next 4/5] bpf: Don't refcount LISTEN sockets in sk_assign()
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Joe Stringer <joe@wand.net.nz>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Martin Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 25-Mär 13:07, Kees Cook wrote:
-> On Wed, Mar 25, 2020 at 08:39:56PM +0100, KP Singh wrote:
-> > On 25-Mär 12:28, Kees Cook wrote:
-> > > On Wed, Mar 25, 2020 at 04:26:24PM +0100, KP Singh wrote:
-> > > > +noinline __weak RET bpf_lsm_##NAME(__VA_ARGS__)	\
-> > > 
-> > > I don't think the __weak is needed any more here?
-> > 
-> > This was suggested in:
-> > 
-> >  https://lore.kernel.org/bpf/20200221022537.wbmhdfkdbfvw2pww@ast-mbp/
-> > 
-> > "I think I saw cases when gcc ignored 'noinline' when function is
-> > defined in the same file and still performed inlining while keeping
-> > the function body.  To be safe I think __weak is necessary. That will
-> > guarantee noinline."
-> > 
-> > It happened to work nicely with the previous approach for the special
-> > hooks but the actual reason for adding the __weak was to guarrantee
-> > that these functions don't get inlined.
-> 
-> Oh, hrm. Well, okay. That rationale would imply that the "noinline"
-> macro needs adjustment instead, but that can be separate, something like:
-> 
-> include/linux/compiler_attributes.h
-> 
-> -#define noinline __attribute__((__noinline__))
-> +#define noinline __attribute__((__noinline__)) __attribute__((__weak__))
-> 
-> With a comment, etc...
+On Wed, Mar 25, 2020 at 3:29 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+>
+> On Wed, 25 Mar 2020 at 05:58, Joe Stringer <joe@wand.net.nz> wrote:
+> >
+> > Avoid taking a reference on listen sockets by checking the socket type
+> > in the sk_assign and in the corresponding skb_steal_sock() code in the
+> > the transport layer, and by ensuring that the prefetch free (sock_pfree)
+> > function uses the same logic to check whether the socket is refcounted.
+> >
+> > Suggested-by: Martin KaFai Lau <kafai@fb.com>
+> > Signed-off-by: Joe Stringer <joe@wand.net.nz>
+> > ---
+> > v2: Initial version
+> > ---
+> >  include/net/sock.h | 25 +++++++++++++++++--------
+> >  net/core/filter.c  |  6 +++---
+> >  net/core/sock.c    |  3 ++-
+> >  3 files changed, 22 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/include/net/sock.h b/include/net/sock.h
+> > index 1ca2e808cb8e..3ec1865f173e 100644
+> > --- a/include/net/sock.h
+> > +++ b/include/net/sock.h
+> > @@ -2533,6 +2533,21 @@ skb_sk_is_prefetched(struct sk_buff *skb)
+> >         return skb->destructor == sock_pfree;
+> >  }
+> >
+> > +/* This helper checks if a socket is a full socket,
+> > + * ie _not_ a timewait or request socket.
+> > + */
+> > +static inline bool sk_fullsock(const struct sock *sk)
+> > +{
+> > +       return (1 << sk->sk_state) & ~(TCPF_TIME_WAIT | TCPF_NEW_SYN_RECV);
+> > +}
+> > +
+> > +static inline bool
+> > +sk_is_refcounted(struct sock *sk)
+> > +{
+> > +       /* Only full sockets have sk->sk_flags. */
+> > +       return !sk_fullsock(sk) || !sock_flag(sk, SOCK_RCU_FREE);
+> > +}
+> > +
+> >  /**
+> >   * skb_steal_sock
+> >   * @skb to steal the socket from
+> > @@ -2545,6 +2560,8 @@ skb_steal_sock(struct sk_buff *skb, bool *refcounted)
+> >                 struct sock *sk = skb->sk;
+> >
+> >                 *refcounted = true;
+> > +               if (skb_sk_is_prefetched(skb))
+> > +                       *refcounted = sk_is_refcounted(sk);
+> >                 skb->destructor = NULL;
+> >                 skb->sk = NULL;
+> >                 return sk;
+> > @@ -2553,14 +2570,6 @@ skb_steal_sock(struct sk_buff *skb, bool *refcounted)
+> >         return NULL;
+> >  }
+> >
+> > -/* This helper checks if a socket is a full socket,
+> > - * ie _not_ a timewait or request socket.
+> > - */
+> > -static inline bool sk_fullsock(const struct sock *sk)
+> > -{
+> > -       return (1 << sk->sk_state) & ~(TCPF_TIME_WAIT | TCPF_NEW_SYN_RECV);
+> > -}
+> > -
+> >  /* Checks if this SKB belongs to an HW offloaded socket
+> >   * and whether any SW fallbacks are required based on dev.
+> >   * Check decrypted mark in case skb_orphan() cleared socket.
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 0fada7fe9b75..997b8606167e 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -5343,8 +5343,7 @@ static const struct bpf_func_proto bpf_sk_lookup_udp_proto = {
+> >
+> >  BPF_CALL_1(bpf_sk_release, struct sock *, sk)
+> >  {
+> > -       /* Only full sockets have sk->sk_flags. */
+> > -       if (!sk_fullsock(sk) || !sock_flag(sk, SOCK_RCU_FREE))
+> > +       if (sk_is_refcounted(sk))
+> >                 sock_gen_put(sk);
+> >         return 0;
+> >  }
+> > @@ -5870,7 +5869,8 @@ BPF_CALL_3(bpf_sk_assign, struct sk_buff *, skb, struct sock *, sk, u64, flags)
+> >                 return -ESOCKTNOSUPPORT;
+> >         if (unlikely(dev_net(skb->dev) != sock_net(sk)))
+> >                 return -ENETUNREACH;
+> > -       if (unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
+> > +       if (sk_is_refcounted(sk) &&
+> > +           unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
+> >                 return -ENOENT;
+> >
+> >         skb_orphan(skb);
+> > diff --git a/net/core/sock.c b/net/core/sock.c
+> > index cfaf60267360..a2ab79446f59 100644
+> > --- a/net/core/sock.c
+> > +++ b/net/core/sock.c
+> > @@ -2076,7 +2076,8 @@ EXPORT_SYMBOL(sock_efree);
+> >   */
+> >  void sock_pfree(struct sk_buff *skb)
+> >  {
+> > -       sock_edemux(skb);
+> > +       if (sk_is_refcounted(skb->sk))
+> > +               sock_edemux(skb);
+>
+> sock_edemux calls sock_gen_put, which is also called by
+> bpf_sk_release. Is it worth teaching sock_gen_put about
+> sk_fullsock, and dropping the other helpers? I was considering this
+> when fixing up sk_release, but then forgot
+> about it.
 
-Sounds reasonable, I will drop the __weak from this and send a
-separate patch for this.
-
-- KP
-
-> 
-> -Kees
-> 
-> > 
-> > > 
-> > > > +{						\
-> > > > +	return DEFAULT;				\
-> > > 
-> > > I'm impressed that LSM_RET_VOID actually works. :)
-> > 
-> > All the credit goes to Andrii :)
-> > 
-> > - KP
-> > 
-> > > 
-> > > -Kees
-> > > 
-> > > > +}
-> > > > +
-> > > > +#include <linux/lsm_hook_defs.h>
-> > > > +#undef LSM_HOOK
-> > > >  
-> > > >  const struct bpf_prog_ops lsm_prog_ops = {
-> > > >  };
-> > > > -- 
-> > > > 2.20.1
-> > > > 
-> > > 
-> > > -- 
-> > > Kees Cook
-> 
-> -- 
-> Kees Cook
+I like the idea, but I'm concerned about breaking things outside the
+focus of this new helper if the skb_sk_is_prefetched() function from
+patch 1 is allowed to return true for sockets other than the ones
+assigned from the bpf_sk_assign() helper. At a glance there's users of
+sock_efree (which sock_edemux can be defined to) like netem_enqueue()
+which may inadvertently trigger unexpected paths here. I think it's
+more explicit so more obviously correct if the destructor pointer used
+in this series is unique compared to other paths, even if the
+underlying code is the same.
