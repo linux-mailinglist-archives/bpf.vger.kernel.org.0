@@ -2,227 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CD55D193EF3
-	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 13:35:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD76193F85
+	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 14:12:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728231AbgCZMfW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Mar 2020 08:35:22 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([216.205.24.74]:34432 "EHLO
-        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727560AbgCZMfW (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 26 Mar 2020 08:35:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585226120;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9ZFM2rDTCimQ0JQaXvASkvUq3yLujeUr1YmlyXwd37M=;
-        b=YLv/c+14YT0uhcq0/6hMM9is+Iw4JJcv0YvJYuPSoj2rhBFPUICtRuPZ8yzqBnW9QSUVAN
-        a9odBAOGRgBWloNm927WqqYHZHXwqHwSyLGrtbjOSacERv582lmoAEoghjUNukiyOJXYb3
-        MyyJTYer1lzHO1D+/hBDM080kIr9HbA=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-165-76oFQeaCOWC1dAdJB_x7qA-1; Thu, 26 Mar 2020 08:35:18 -0400
-X-MC-Unique: 76oFQeaCOWC1dAdJB_x7qA-1
-Received: by mail-lf1-f71.google.com with SMTP id k15so441650lfc.11
-        for <bpf@vger.kernel.org>; Thu, 26 Mar 2020 05:35:18 -0700 (PDT)
+        id S1726359AbgCZNMG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Mar 2020 09:12:06 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:32974 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726175AbgCZNMG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Mar 2020 09:12:06 -0400
+Received: by mail-wr1-f66.google.com with SMTP id a25so7767586wrd.0
+        for <bpf@vger.kernel.org>; Thu, 26 Mar 2020 06:12:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=fYD1onDikuCT88dA5DWTTI0UuhLtnw/htdevMIVPd9s=;
+        b=SBr6DW5T+1V0x5iQLwqAaWSO25Rdxc8tXhULBX/bVijGFSDxmpoXqFVFnH5TrL2kG0
+         u3v0fs+akUJTQ2RGHrLQGMzCWoi8tpcrJn0prdInLINCiMuritNDPDf7FqpSYQGe2xWe
+         hPI2gQ6d+etxyoc1nowSU5Oq+RYuE3OIjyPH0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=9ZFM2rDTCimQ0JQaXvASkvUq3yLujeUr1YmlyXwd37M=;
-        b=e4xv0QbDmg6157QAAi6Rt9Mcq/ICmKkbB/XRk2UV+y1V16rfoEqNmmCkTdvTXFDRqy
-         WFyiGNEBDSDL8jvCAgFa3TWVXlvXQWP9wKLkuecUyfLgZYGhs9huEFEdCFfP6riIXSNQ
-         FczoOx/2RewmW1TWO+P1Uk0U5wegcpCYpnIp0rHNKw9DoEtp348DQRBYxiE9SP0d/V2M
-         ZFK93//rON/x/lPw64QuVpwLd0iDS8iK+ngxECOagWPgd4g0zmJ5FeFFEWAsjvLnBOYM
-         ggoYL6Y1r9D9PA6co5tFXpuWSN9SjizRsYlXHM3RDl//9y4poM5mJ8stVoav7s5MbUN1
-         /I5g==
-X-Gm-Message-State: ANhLgQ3krBg+fCzzng/Aje6rQE0Jucd0TVubKUVjShwdES5UBv6dxHI+
-        0AUeB2CZBGfwl5qgZ2+KcdFkPpNatGr2dV66hOYHMUQmaQT81xgM/QexakB0OsFNIE9iT6F659W
-        3U4zQzwc1Q6tI
-X-Received: by 2002:a19:a40f:: with SMTP id q15mr5531943lfc.104.1585226117186;
-        Thu, 26 Mar 2020 05:35:17 -0700 (PDT)
-X-Google-Smtp-Source: ADFU+vuMCk5knpuZL3stSBKP9NCtux2i5UUrfDDqAb7fOmI0S9Wv8fHsMIoGuCXdqzpyUZZtBMgwLA==
-X-Received: by 2002:a19:a40f:: with SMTP id q15mr5531926lfc.104.1585226116862;
-        Thu, 26 Mar 2020 05:35:16 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id b23sm1394311lfi.55.2020.03.26.05.35.15
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=fYD1onDikuCT88dA5DWTTI0UuhLtnw/htdevMIVPd9s=;
+        b=f93wvoI0bLXm7bNTJ9Q9Vy/ysU+pRSEvEdEaw8ZEEu7PAmB3v17U8WMt4ypKH603AE
+         EKuA7lVV/5mpS0uTjj1OvyPPYgv5xv3k5fBSmgfjnVLAPAAQ6U7bgBMBnIJzX7Bvxojk
+         l9Vj7Te+vIFe0XJm5Vo3GTYkqAFGyFcC+xP+9xmxV61DoNeQfzmBBSbenyEu4CTFkUSm
+         orSD6ZCVFVkqI8SqjIcnOJsMaEcl+EvuCmWYKmomFPK+kI1lKHEl/dDTaHqjOuRyyhPa
+         2+fDrxRi11MufJfGvn869CLFCx7iZa3QA1Nv+bG3OXT2pcWmc2QOSPQzuR4I4TedOYmP
+         TTEA==
+X-Gm-Message-State: ANhLgQ0g2KS4vzmfUVkTaRsUiV+Laek9pLO1lN1cYnQ1iEEIWM0yBrl5
+        jlFIWlQy+7tIyG0u3BZ3T7iw5Q==
+X-Google-Smtp-Source: ADFU+vsgpQLD/kDSgky4dJcwopfiL6zM9Z6fEVRTGk4Y2ZMQ2fUbqvWhoxQPHg238aypcNRoFGZS/w==
+X-Received: by 2002:adf:efc9:: with SMTP id i9mr8872802wrp.23.1585228324428;
+        Thu, 26 Mar 2020 06:12:04 -0700 (PDT)
+Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
+        by smtp.gmail.com with ESMTPSA id 195sm3563080wmb.8.2020.03.26.06.11.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Mar 2020 05:35:15 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 94ED018158B; Thu, 26 Mar 2020 13:35:13 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+        Thu, 26 Mar 2020 06:12:03 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Thu, 26 Mar 2020 14:11:58 +0100
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@google.com>,
+        Thomas Garnier <thgarnie@google.com>,
+        Yonghong Song <yhs@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing program when attaching XDP
-In-Reply-To: <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com>
-References: <158462359206.164779.15902346296781033076.stgit@toke.dk> <158462359315.164779.13931660750493121404.stgit@toke.dk> <20200319155236.3d8537c5@kicinski-fedora-PC1C0HJN> <875zez76ph.fsf@toke.dk> <20200320103530.2853c573@kicinski-fedora-PC1C0HJN> <5e750bd4ebf8d_233f2ab4c81425c4ce@john-XPS-13-9370.notmuch> <CAEf4BzbWa8vdyLuzr_nxFM3BtT+hhzjCe9UQF8Y5cN+sVqa72g@mail.gmail.com> <87tv2f48lp.fsf@toke.dk> <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com> <87h7ye3mf3.fsf@toke.dk> <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com> <87tv2e10ly.fsf@toke.dk> <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com> <87369wrcyv.fsf@toke.dk> <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 26 Mar 2020 13:35:13 +0100
-Message-ID: <87pncznvjy.fsf@toke.dk>
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH bpf-next v6 1/8] bpf: Introduce BPF_PROG_TYPE_LSM
+Message-ID: <20200326131158.GA8575@chromium.org>
+References: <20200325152629.6904-1-kpsingh@chromium.org>
+ <20200325152629.6904-2-kpsingh@chromium.org>
+ <CAEf4BzYomSccqbO2AGbejQV2R2z0jz5GhEFZxuf7SGwtju+e8w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzYomSccqbO2AGbejQV2R2z0jz5GhEFZxuf7SGwtju+e8w@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On 25-Mär 18:51, Andrii Nakryiko wrote:
+> On Wed, Mar 25, 2020 at 8:27 AM KP Singh <kpsingh@chromium.org> wrote:
+> >
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > Introduce types and configs for bpf programs that can be attached to
+> > LSM hooks. The programs can be enabled by the config option
+> > CONFIG_BPF_LSM.
+> >
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+> > Reviewed-by: Brendan Jackman <jackmanb@google.com>
+> > Reviewed-by: Florent Revest <revest@google.com>
+> > Reviewed-by: Thomas Garnier <thgarnie@google.com>
+> > Acked-by: Yonghong Song <yhs@fb.com>
+> > ---
+> 
+> Looks good to me, so please add by ack, but I think it would be easier
+> to review if this was combined with patch #4, which adds verifier
+> support and kernel/bpf/syscall.c support. On its own this patch just
+> adds random unused stuff.
 
-> Now for XDP. It has same flawed model. And even if it seems to you
-> that it's not a big issue, and even if Jakub thinks we are trying to
-> solve non-existing problem, it is a real problem and a real concern
-> from people that have to support XDP in production with many
-> well-meaning developers developing BPF applications independently.
-> Copying what you wrote in another thread:
->
->> Setting aside the question of which is the best abstraction to represent
->> an attachment, it seems to me that the actual behavioural problem (XDP
->> programs being overridden by mistake) would be solvable by this patch,
->> assuming well-behaved userspace applications.
->
-> ... this is a horrible and unrealistic assumption that we just cannot
-> make and accept. However well-behaved userspace applications are, they
-> are written by people that make mistakes. And rather than blissfully
-> expect that everything will be fine, we want to have enforcements in
-> place that will prevent some buggy application to wreck havoc in
-> production.
+The ordering becomes tricky as we are using the CONFIG_BPF_LSM in
+"bpf: lsm: provide attachment points for BPF LSM
+programs". If it's not too much trouble, I would appreciate if we can
+keep the order.
 
-Look, I'm not trying to tell you how to managed your internal systems.
-I'm just objecting to your assertion that your deployment model is the
-only one that can possibly work, and the refusal to consider other
-alternatives that comes with it.
+> 
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
 
->> You're saying that like we didn't already have the netlink API. We
->> essentially already have (the equivalent of) LINK_CREATE and LINK_QUERY,
->> this is just adding LINK_UPDATE. It's a straight-forward fix of an
->> existing API; essentially you're saying we should keep the old API in a
->> crippled state in order to promote your (proposed) new API.
->
-> This is the fundamental disagreement that we seem to have. XDP's BPF
-> program attachment is not in any way equivalent to bpf_link. So no,
-> netlink API currently doesn't have anything that's close to bpf_link.
-> Let me try to summarize what bpf_link is and what are its fundamental
-> properties regardless of type of BPF programs.
+Added your ack Thanks :)
 
-First of all, thank you for this summary; that is very useful!
+- KP
 
-> 1. bpf_link represents a connection (pairing?) of BPF program and some
-> BPF hook it is attached to. BPF hook could be perf event, cgroup,
-> netdev, etc. It's a completely independent object in itself, along the
-> bpf_map and bpf_prog, which has its own lifetime and kernel
-> representation. To user-space application it is returned as an
-> installed FD, similar to loaded BPF program and BPF map. It is
-> important that it's not just a BPF program, because BPF program can be
-> attached to multiple BPF hooks (e.g., same XDP program can be attached
-> to multiple interface; same kprobe handler can be installed multiple
-> times), which means that having BPF program FD isn't enough to
-> uniquely represent that one specific BPF program attachment and detach
-> it or query it. Having kernel object for this allows to encapsulate
-> all these various details of what is attached were and present to
-> user-space a single handle (FD) to work with.
-
-For XDP there is already a unique handle, it's just implicit: Each
-netdev can have exactly one XDP program loaded. So I don't really see
-how bpf_link adds anything, other than another API for the same thing?
-
-> 2. Due to having FD associated with bpf_link, it's not possible to
-> talk about "owning" bpf_link. If application created link and never
-> shared its FD with any other application, it is the sole owner of it.
-> But it also means that you can share it, if you need it. Now, once
-> application closes FD or app crashes and kernel automatically closes
-> that FD, bpf_link refcount is decremented. If it was the last or only
-> FD, it will trigger automatica detachment and clean up of that
-> particular BPF program attachment. Note, not a clean up of BPF
-> program, which can still be attached somewhere else: only that
-> particular attachment.
-
-This behaviour is actually one of my reservations against bpf_link for
-XDP: I think that automatically detaching XDP programs when the FD is
-closed is very much the wrong behaviour. An XDP program processes
-packets, and when loading one I very much expect it to keep doing that
-until I explicitly tell it to stop.
-
-> 3. This derives from the concept of ownership of bpf_link. Once
-> bpf_link is attached, no other application that doesn't own that
-> bpf_link can replace, detach or modify the link. For some cases it
-> doesn't matter. E.g., for tracing, all attachment to the same fentry
-> trampoline are completely independent. But for other cases this is
-> crucial property. E.g., when you attach BPF program in an exclusive
-> (single) mode, it means that particular cgroup and any of its children
-> cgroups can have any more BPF programs attached. This is important for
-> container management systems to enforce invariants and correct
-> functioning of the system. Right now it's very easy to violate that -
-> you just go and attach your own BPF program, and previous BPF program
-> gets automatically detached without original application that put it
-> there knowing about this. Chaos ensues after that and real people have
-> to deal with this. Which is why existing
-> BPF_PROG_ATTACH/BPF_PROG_DETACH API is inadequate and we are adding
-> bpf_link support.
-
-I can totally see how having an option to enforce a policy such as
-locking out others from installing cgroup BPF programs is useful. But
-such an option is just that: policy. So building this policy in as a
-fundamental property of the API seems like a bad idea; that is
-effectively enforcing policy in the kernel, isn't it?
-
-> Those same folks have similar concern with XDP. In the world where
-> container management installs "root" XDP program which other user
-> applications can plug into (libxdp use case, right?), it's crucial to
-> ensure that this root XDP program is not accidentally overwritten by
-> some well-meaning, but not overly cautious developer experimenting in
-> his own container with XDP programs. This is where bpf_link ownership
-> plays a huge role. Tupperware agent (FB's container management agent)
-> would install root XDP program and will hold onto this bpf_link
-> without sharing it with other applications. That will guarantee that
-> the system will be stable and can't be compromised.
-
-See this is where we get into "deployment-model specific territory". I
-mean, sure, in the "central management daemon" model, it makes sense
-that no other applications can replace the XDP program. But, erm, we
-already have a mechanism to ensure that: Just don't grant those
-applications CAP_NET_ADMIN? So again, bpf_link doesn't really seem to
-add anything other than a different way to do the same thing?
-
-Additionally, in the case where there is *not* a central management
-daemon (i.e., what I'm implementing with libxdp), this would be the flow
-implemented by the library without bpf_link:
-
-1. Query kernel for current BPF prog loaded on $IFACE
-2. Sanity-check that this program is a dispatcher program installed by
-   libxdp
-3. Create a new dispatcher program with whatever changes we want to do
-   (such as adding another component program).
-4. Atomically replace the old program with the new one using the netlink
-   API in this patch series.
-
-Whereas with bpf_link, it would be:
-
-1. Find the pinned bpf_link for $IFACE (e.g., load from
-   /sys/fs/bpf/iface-links/$IFNAME).
-2. Query kernel for current BPF prog linked to $LINK
-3. Sanity-check that this program is a dispatcher program installed by
-   libxdp
-4. Create a new dispatcher program with whatever changes we want to do
-   (such as adding another component program).
-5. Atomically replace the old program with the new one using the
-   LINK_UPDATE bpf() API.
-
-
-So all this does is add an additional step, and another dependency on
-bpffs. And crucially, I really don't see how the "bpf_link is the only
-thing that is not fundamentally broken" argument holds up.
-
--Toke
-
+> 
+> >  MAINTAINERS                    |  1 +
+> >  include/linux/bpf.h            |  3 +++
+> >  include/linux/bpf_types.h      |  4 ++++
+> >  include/uapi/linux/bpf.h       |  2 ++
+> >  init/Kconfig                   | 12 ++++++++++++
+> >  kernel/bpf/Makefile            |  1 +
+> >  kernel/bpf/bpf_lsm.c           | 17 +++++++++++++++++
+> >  kernel/trace/bpf_trace.c       | 12 ++++++------
+> >  tools/include/uapi/linux/bpf.h |  2 ++
+> >  tools/lib/bpf/libbpf_probes.c  |  1 +
+> >  10 files changed, 49 insertions(+), 6 deletions(-)
+> >  create mode 100644 kernel/bpf/bpf_lsm.c
+> >
+> 
+> [...]
