@@ -2,108 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B60E1938A8
-	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 07:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3211938B9
+	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 07:38:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbgCZGep (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Mar 2020 02:34:45 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:35997 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726260AbgCZGep (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Mar 2020 02:34:45 -0400
-Received: by mail-pf1-f195.google.com with SMTP id i13so2292818pfe.3;
-        Wed, 25 Mar 2020 23:34:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8Yp31voZWlVivg9kGYEITrYNynKJ5KaUpyuZtUu51uQ=;
-        b=RT3xnHvCGWEV0TWOMX6vqaa1p5KvabcHIB812s/x8VHWpRemFVAcdI4antoxrXLnC+
-         Tbi9RQSZm8eKUOCgQ5TnEq1UB2UA9A5P3CdcHL5JvPUh64phHTzJ73+Pp29TfXZlEfLh
-         P+N3/ADKawlAlu4cgOm1hpHpa63VGL7P8yw2KDtnmxTSba/J5v1l2wt0+Ec5ZigQOWG4
-         1ef6oDdNCWHgRi7eeOLgZ0js/SJ0HU3X53CgPKK+swpbWSNB3JblCab2X7a6VD0gUkHn
-         zcAtxiGLRn/1PjYx6IkrLOvxWaydtndG+T86cLAHIhvA6GSZPoGM0mGFghj4cQRmdEKy
-         MWCA==
+        id S1726213AbgCZGij (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Mar 2020 02:38:39 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:37068 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727655AbgCZGih (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Mar 2020 02:38:37 -0400
+Received: by mail-wr1-f66.google.com with SMTP id w10so6359161wrm.4;
+        Wed, 25 Mar 2020 23:38:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8Yp31voZWlVivg9kGYEITrYNynKJ5KaUpyuZtUu51uQ=;
-        b=j8jFsnq7tR76Vn+z72Xf8q/d7gYk+K6dM3p0f0GlWzGRPaavn+hv6DCnquc84Nqs1j
-         Y5HebhxwlAL3L5poFD38ls6Giyw8OzSeJcAEhe4g2Du3CWVSamtht+czlIKHAJQt7tJ0
-         v1aXOUFpvIBciRiNlqNmeMjPqKuC0F356bE+9wkQNu4s48AEvJOW6UztBluKokbn1zFJ
-         QXITGxEnnwUfaBS08dl/Gxtnxj2dNH7zxP60fcwPQTK1rbE+AfA0TakvRZcY3DwKOLia
-         o7hZ7S62G+j6ve9xbNkSSqmlcUwAr5+39dZBpAbdcvLSxMSOpCklDXu2cT6bvrKXx5+S
-         6a1g==
-X-Gm-Message-State: ANhLgQ3ad38o8FhKiDlJxsfaaJrB7rpOnQRpymtboVEjy5scw21w9+FB
-        C2sFBt/GeWb9UGNJQqH6+A8=
-X-Google-Smtp-Source: ADFU+vsEozPuAJZ0JBU+YJWGR6hIPOtVjOwrapG+zB3wOabHNX22Y3b2KSy0yM5IXQ4nG9RqkpPPcQ==
-X-Received: by 2002:a62:686:: with SMTP id 128mr7144824pfg.152.1585204483982;
-        Wed, 25 Mar 2020 23:34:43 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:5929])
-        by smtp.gmail.com with ESMTPSA id y193sm799162pgd.87.2020.03.25.23.34.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Mar 2020 23:34:43 -0700 (PDT)
-Date:   Wed, 25 Mar 2020 23:34:41 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     ecree@solarflare.com, yhs@fb.com, daniel@iogearbox.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [bpf-next PATCH 10/10] bpf: test_verifier, add alu32 bounds
- tracking tests
-Message-ID: <20200326063441.ymitkh5z6sgevbm4@ast-mbp>
-References: <158507130343.15666.8018068546764556975.stgit@john-Precision-5820-Tower>
- <158507165554.15666.6019652542965367828.stgit@john-Precision-5820-Tower>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AtUcOU+hDl2pe+N65kN8jrN1QscIN/CTHShJYFT3a3w=;
+        b=LxjckWLTvX4DUPX+8or7v5SdHTPXUgR5o/sZCbikbEv6mhDrI0XJSARPDcr05xXTgo
+         WoBKTqn/6DrKSWVW3aDMX7hKCNCz25G5TIdV9bIF5icNUmauLeuoSG7k1NKiidAqECVc
+         zv8lfVM8/rORbP/6+U+m9SW5hnAGd70O8UHvrL1dx44GpV4tU4X+oV4MuSqCA0v7U5Dn
+         EM+wVVqjGofmIqShwohKta+Hi2WM44QzEGrXD3UM7wzyzHD20gcKiy700Skr2pkEmbAk
+         Y/lQ1kWFk+JF9QD2yUe/u3LWmg+xI/N55wfDm42iW7wEKJSXKve8JonG2mgiZLRT9O8V
+         6oGA==
+X-Gm-Message-State: ANhLgQ2Vrs7mwb5TkT/8u4++ZvkVZgGbhei0WPUFofU+ecJeBCQ/hHkV
+        rfbl2wEazGHK8LeNTZTZUvVGT2PiDcXItsJDJiI=
+X-Google-Smtp-Source: ADFU+vtDPsqR/AvvKYilDzU/20vKOKaNMo9s7EaUdYaswnBaPAJXRt96ylA+YkFRuVD2ehIg8H+fdtQL9UjxXKuc0g0=
+X-Received: by 2002:adf:fe03:: with SMTP id n3mr7642285wrr.266.1585204714794;
+ Wed, 25 Mar 2020 23:38:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <158507165554.15666.6019652542965367828.stgit@john-Precision-5820-Tower>
+References: <20200325055745.10710-1-joe@wand.net.nz> <20200325055745.10710-6-joe@wand.net.nz>
+ <CACAyw9-jJiAAci8dNsGGH7gf6QQCsybC2RAaSq18qsQDgaR4CQ@mail.gmail.com>
+ <CAOftzPiDk0C+fCo9L5CWPvVR3RRLeLykQSMKAO4mOc=n8UNYpA@mail.gmail.com> <20200326062514.lc7f6xbg5sg4hhjj@kafai-mbp>
+In-Reply-To: <20200326062514.lc7f6xbg5sg4hhjj@kafai-mbp>
+From:   Joe Stringer <joe@wand.net.nz>
+Date:   Wed, 25 Mar 2020 23:38:23 -0700
+Message-ID: <CAOftzPhGs90Ni391ir+1ZZqxrvhbyawsDS9SVCufvD1SbewiXw@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next 5/5] selftests: bpf: add test for sk_assign
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Joe Stringer <joe@wand.net.nz>, Lorenz Bauer <lmb@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 24, 2020 at 10:40:55AM -0700, John Fastabend wrote:
-> Its possible to have divergent ALU32 and ALU64 bounds when using JMP32
-> instructins and ALU64 arithmatic operations. Sometimes the clang will
-> even generate this code. Because the case is a bit tricky lets add
-> a specific test for it.
-> 
-> Here is  pseudocode asm version to illustrate the idea,
-> 
->  1 r0 = 0xffffffff00000001;
->  2 if w0 > 1 goto %l[fail];
->  3 r0 += 1
->  5 if w0 > 2 goto %l[fail]
->  6 exit
-> 
-> The intent here is the verifier will fail the load if the 32bit bounds
-> are not tracked correctly through ALU64 op. Similarly we can check the
-> 64bit bounds are correctly zero extended after ALU32 ops.
-> 
->  1 r0 = 0xffffffff00000001;
->  2 w0 += 1
->  2 if r0 < 0xffffffff00000001 goto %l[fail];
+On Wed, Mar 25, 2020 at 11:25 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Wed, Mar 25, 2020 at 01:55:59PM -0700, Joe Stringer wrote:
+> > On Wed, Mar 25, 2020 at 3:35 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> > >
+> > > On Wed, 25 Mar 2020 at 05:58, Joe Stringer <joe@wand.net.nz> wrote:
+> > > >
+> > > > From: Lorenz Bauer <lmb@cloudflare.com>
+> > > >
+> > > > Attach a tc direct-action classifier to lo in a fresh network
+> > > > namespace, and rewrite all connection attempts to localhost:4321
+> > > > to localhost:1234 (for port tests) and connections to unreachable
+> > > > IPv4/IPv6 IPs to the local socket (for address tests).
+> > >
+> > > Can you extend this to cover UDP as well?
+> >
+> > I'm working on a follow-up series for UDP, we need this too.
+> Other than selftests, what are the changes for UDP in patch 1 - 4?
 
-This should be 3.
-
-> +	"bounds check mixed 32bit and 64bit arithmatic. test2",
-> +	.insns = {
-> +	BPF_MOV64_IMM(BPF_REG_0, 0),
-> +	BPF_MOV64_IMM(BPF_REG_1, -1),
-> +	BPF_ALU64_IMM(BPF_LSH, BPF_REG_1, 32),
-> +	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 1),
-> +	/* r1 = 0xffffFFFF00000001 */
-> +	BPF_MOV64_IMM(BPF_REG_2, 3),
-> +	/* r1 = 0x2 */
-> +	BPF_ALU32_IMM(BPF_ADD, BPF_REG_1, 1),
-> +	/* check ALU32 op zero extends 64bit bounds */
-> +	BPF_JMP_REG(BPF_JGT, BPF_REG_1, BPF_REG_2, 1),
-> +	BPF_JMP_A(1),
-> +	/* invalid ldx if bounds are lost above */
-> +	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, -1),
-> +	BPF_EXIT_INSN(),
-> +	},
-> +	.result = ACCEPT
-> +},
-> 
+Nothing in those patches, I have refactoring of all of the socket
+helpers, skc_lookup_udp() and adding flags to the socket lookup
+functions to support only looking for a certain type of sockets -
+established or listen. This helps to avoid multiple lookups in these
+cases where you really just want to look up established sockets with
+the packet tuple first then look up the listener socket with the
+unrelated/tproxy tuple. For UDP it makes it easier to find the correct
+socket and in general (including TCP) helps to avoid up to two socket
+hashtable lookups for this use case. This part is because the current
+helpers all look up the established socket first then the listener
+socket, so for the first packet that hits these we perform both of
+these lookups for the packet tuple (which finds nothing), then look up
+an established socket for the target tuple (which finds nothing) then
+finally a listen socket for the target tuple. It's about another 300+
+/ 250- changes overall, of which a large chunk is one patch that
+refactors the code into macros. I haven't narrowed down for sure
+whether the lookup flags patch is required for UDP cases yet.
