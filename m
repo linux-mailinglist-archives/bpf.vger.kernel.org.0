@@ -2,49 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A54CA193CE5
-	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 11:20:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ABA1193CEE
+	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 11:25:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727880AbgCZKU1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Mar 2020 06:20:27 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:36403 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726298AbgCZKU0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Mar 2020 06:20:26 -0400
-Received: by mail-oi1-f196.google.com with SMTP id k18so5015169oib.3
-        for <bpf@vger.kernel.org>; Thu, 26 Mar 2020 03:20:25 -0700 (PDT)
+        id S1727873AbgCZKZE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Mar 2020 06:25:04 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:39784 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726298AbgCZKZC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Mar 2020 06:25:02 -0400
+Received: by mail-oi1-f195.google.com with SMTP id d63so5000068oig.6
+        for <bpf@vger.kernel.org>; Thu, 26 Mar 2020 03:24:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=4Ou958zyhsDYQ/ks25N+pQXJ3t+VMiViuMpgt3OjfrE=;
-        b=hzMjklkbo8OalW+4Co8gHQTKDS+eTFrCAaazRKliFE0k8A397+fMNHaHtpIMYPruno
-         iS9dMnlAfWFbfHIXE8XcMYf+pghNaGbjumvAyru/og2V/0aJsn6ovLtTWTN3tlXoXthW
-         4JM2uWO17KaBHVm8h4N4bN/biWd1Krnze3dW8=
+        bh=UOMKg0uE1/0VSp+2D4uQQJWnoyIiXtZoR2HA9+kYbyk=;
+        b=Om4BsRqG3XmqmUNKG/S14Oh67eoF+MPmvrjzK56qiwvAe2aEnlhOYferC3MB2aCw4j
+         A+ZAn5Udgqq1sVT/wGsVqmIa7yhKrwgES5WK5JHK0t/Buet8x0zOGrKp0NI2MGdliJUo
+         RMENhFafZdmXNrsWFOJsEhs2sHY0PQ1MNvbTM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4Ou958zyhsDYQ/ks25N+pQXJ3t+VMiViuMpgt3OjfrE=;
-        b=rx1Q06LxiwcBiS7TfbLTadgWdBVBrfvaJYwPjqAGdyYfCA/3X+zfDt5nZr+MduXVT5
-         nmZ1NvUtYhr1nptGO90rGPwmW8dPvnq4d0saEUgNtiTHQyi+LACCrn2DIumJJzgHOJLQ
-         V2He0ftu6pxusa2PcKjPm6X6Tlyk/iY57KR4CYDfOlebC+Py9aEERGpFy/kePM1AJ8SD
-         Mg0ryOZqwXupbURt846yEEurvoL82Oi/Sb2idFJd+8+opQdkIZlu1Is6pPAmMIGCVhzx
-         6SjCNETVuDE99vI+VfLAZjYK2lF1mNvByDbz/PJQsu/CQmEzTXw3BzHPuFB5zJMk9qHG
-         nI+g==
-X-Gm-Message-State: ANhLgQ1wPiRiKbDDLcvV3sdD0D29gpBdvSEeAD4XqxJD9ruH5yettHqG
-        ppfJg03R76td7iXf3klGj4L11S0Q2GQkUaZxEHDizA==
-X-Google-Smtp-Source: ADFU+vvjooMPm1pO3DPN0m4KYV8vALUhU7yayr+ed5P3H+Z91ADsNsub0miXeGSwLpLLtGAKNFaeTX6gGlZgVQSQXfI=
-X-Received: by 2002:aca:c415:: with SMTP id u21mr1219894oif.102.1585218025192;
- Thu, 26 Mar 2020 03:20:25 -0700 (PDT)
+        bh=UOMKg0uE1/0VSp+2D4uQQJWnoyIiXtZoR2HA9+kYbyk=;
+        b=EVTwiq29On3fWXX/PwQEDCREJq4pqX4Vf9JoorQJKz/Q5vGumlJPumnCbgM6P0rmtS
+         j6qNBlYeELKhwvrBPVxYjoGUrZxTfxwa4TnPlXmd7zc+EE+GCIazGjGIldzQyb7QiTEz
+         x4DuoADoJsYtVmwrvswq8jDSf7WQZMrSfo7KU3miY5uyCajo3n/B0RsG88vGg65ZSlFA
+         iJryCqgSFCzuud4pIRVLCKEWrdqSQ6juYJsY3ZIe1CUKn7ekOUYvnL2kwy9zFxFDsa7x
+         E7Oa5c6nnI4vvccmkxA5Se/XXi1/jolUyt6PCzsYHL0BdGgnhAEcdijhOS/79OT6J3gc
+         s53Q==
+X-Gm-Message-State: ANhLgQ3EIZDMxBG7H0ZJVFSq/Ojcg0Eq/rg/PxE+3XFAwSxVp8umqX2t
+        0CsuqrVQz5rM2N+qBLUG8OXKqiVA3uNXlOU5RscXfw==
+X-Google-Smtp-Source: ADFU+vtMPQNsI5XkNlQvyfviuo68HSkN/MR5ev5MPYS9mD1n1z+1h6rpcoS/znS0/2zQlNhmXUOn/PIzI8DHqzbEGyI=
+X-Received: by 2002:aca:c415:: with SMTP id u21mr1227209oif.102.1585218299235;
+ Thu, 26 Mar 2020 03:24:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200325055745.10710-1-joe@wand.net.nz> <20200325055745.10710-5-joe@wand.net.nz>
- <CACAyw9_17E3TNCFsnXzQ4K2zSmwn8J+BcZqbjiK==WQH=zNzvg@mail.gmail.com> <CAOftzPipEjfy1p_98V+JmV3p_WJPzhE-_KfqC3UE3d-TYYxyww@mail.gmail.com>
-In-Reply-To: <CAOftzPipEjfy1p_98V+JmV3p_WJPzhE-_KfqC3UE3d-TYYxyww@mail.gmail.com>
+References: <20200325055745.10710-1-joe@wand.net.nz> <20200325055745.10710-2-joe@wand.net.nz>
+In-Reply-To: <20200325055745.10710-2-joe@wand.net.nz>
 From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Thu, 26 Mar 2020 10:20:14 +0000
-Message-ID: <CACAyw99SDN0U+VWi=WqS0V-M+riGehXfj3frTzSa6YcvOgWJtQ@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 4/5] bpf: Don't refcount LISTEN sockets in sk_assign()
+Date:   Thu, 26 Mar 2020 10:24:48 +0000
+Message-ID: <CACAyw989SkYaE6Qt_Lm+wjTCvpFH470ObGCkb4+hmEoijG3T8Q@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next 1/5] bpf: Add socket assign support
 To:     Joe Stringer <joe@wand.net.nz>
 Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -57,133 +56,279 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 25 Mar 2020 at 20:47, Joe Stringer <joe@wand.net.nz> wrote:
+On Wed, 25 Mar 2020 at 05:57, Joe Stringer <joe@wand.net.nz> wrote:
 >
-> On Wed, Mar 25, 2020 at 3:29 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> >
-> > On Wed, 25 Mar 2020 at 05:58, Joe Stringer <joe@wand.net.nz> wrote:
-> > >
-> > > Avoid taking a reference on listen sockets by checking the socket type
-> > > in the sk_assign and in the corresponding skb_steal_sock() code in the
-> > > the transport layer, and by ensuring that the prefetch free (sock_pfree)
-> > > function uses the same logic to check whether the socket is refcounted.
-> > >
-> > > Suggested-by: Martin KaFai Lau <kafai@fb.com>
-> > > Signed-off-by: Joe Stringer <joe@wand.net.nz>
-> > > ---
-> > > v2: Initial version
-> > > ---
-> > >  include/net/sock.h | 25 +++++++++++++++++--------
-> > >  net/core/filter.c  |  6 +++---
-> > >  net/core/sock.c    |  3 ++-
-> > >  3 files changed, 22 insertions(+), 12 deletions(-)
-> > >
-> > > diff --git a/include/net/sock.h b/include/net/sock.h
-> > > index 1ca2e808cb8e..3ec1865f173e 100644
-> > > --- a/include/net/sock.h
-> > > +++ b/include/net/sock.h
-> > > @@ -2533,6 +2533,21 @@ skb_sk_is_prefetched(struct sk_buff *skb)
-> > >         return skb->destructor == sock_pfree;
-> > >  }
-> > >
-> > > +/* This helper checks if a socket is a full socket,
-> > > + * ie _not_ a timewait or request socket.
-> > > + */
-> > > +static inline bool sk_fullsock(const struct sock *sk)
-> > > +{
-> > > +       return (1 << sk->sk_state) & ~(TCPF_TIME_WAIT | TCPF_NEW_SYN_RECV);
-> > > +}
-> > > +
-> > > +static inline bool
-> > > +sk_is_refcounted(struct sock *sk)
-> > > +{
-> > > +       /* Only full sockets have sk->sk_flags. */
-> > > +       return !sk_fullsock(sk) || !sock_flag(sk, SOCK_RCU_FREE);
-> > > +}
-> > > +
-> > >  /**
-> > >   * skb_steal_sock
-> > >   * @skb to steal the socket from
-> > > @@ -2545,6 +2560,8 @@ skb_steal_sock(struct sk_buff *skb, bool *refcounted)
-> > >                 struct sock *sk = skb->sk;
-> > >
-> > >                 *refcounted = true;
-> > > +               if (skb_sk_is_prefetched(skb))
-> > > +                       *refcounted = sk_is_refcounted(sk);
-> > >                 skb->destructor = NULL;
-> > >                 skb->sk = NULL;
-> > >                 return sk;
-> > > @@ -2553,14 +2570,6 @@ skb_steal_sock(struct sk_buff *skb, bool *refcounted)
-> > >         return NULL;
-> > >  }
-> > >
-> > > -/* This helper checks if a socket is a full socket,
-> > > - * ie _not_ a timewait or request socket.
-> > > - */
-> > > -static inline bool sk_fullsock(const struct sock *sk)
-> > > -{
-> > > -       return (1 << sk->sk_state) & ~(TCPF_TIME_WAIT | TCPF_NEW_SYN_RECV);
-> > > -}
-> > > -
-> > >  /* Checks if this SKB belongs to an HW offloaded socket
-> > >   * and whether any SW fallbacks are required based on dev.
-> > >   * Check decrypted mark in case skb_orphan() cleared socket.
-> > > diff --git a/net/core/filter.c b/net/core/filter.c
-> > > index 0fada7fe9b75..997b8606167e 100644
-> > > --- a/net/core/filter.c
-> > > +++ b/net/core/filter.c
-> > > @@ -5343,8 +5343,7 @@ static const struct bpf_func_proto bpf_sk_lookup_udp_proto = {
-> > >
-> > >  BPF_CALL_1(bpf_sk_release, struct sock *, sk)
-> > >  {
-> > > -       /* Only full sockets have sk->sk_flags. */
-> > > -       if (!sk_fullsock(sk) || !sock_flag(sk, SOCK_RCU_FREE))
-> > > +       if (sk_is_refcounted(sk))
-> > >                 sock_gen_put(sk);
-> > >         return 0;
-> > >  }
-> > > @@ -5870,7 +5869,8 @@ BPF_CALL_3(bpf_sk_assign, struct sk_buff *, skb, struct sock *, sk, u64, flags)
-> > >                 return -ESOCKTNOSUPPORT;
-> > >         if (unlikely(dev_net(skb->dev) != sock_net(sk)))
-> > >                 return -ENETUNREACH;
-> > > -       if (unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
-> > > +       if (sk_is_refcounted(sk) &&
-> > > +           unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
-> > >                 return -ENOENT;
-> > >
-> > >         skb_orphan(skb);
-> > > diff --git a/net/core/sock.c b/net/core/sock.c
-> > > index cfaf60267360..a2ab79446f59 100644
-> > > --- a/net/core/sock.c
-> > > +++ b/net/core/sock.c
-> > > @@ -2076,7 +2076,8 @@ EXPORT_SYMBOL(sock_efree);
-> > >   */
-> > >  void sock_pfree(struct sk_buff *skb)
-> > >  {
-> > > -       sock_edemux(skb);
-> > > +       if (sk_is_refcounted(skb->sk))
-> > > +               sock_edemux(skb);
-> >
-> > sock_edemux calls sock_gen_put, which is also called by
-> > bpf_sk_release. Is it worth teaching sock_gen_put about
-> > sk_fullsock, and dropping the other helpers? I was considering this
-> > when fixing up sk_release, but then forgot
-> > about it.
+> Add support for TPROXY via a new bpf helper, bpf_sk_assign().
 >
-> I like the idea, but I'm concerned about breaking things outside the
-> focus of this new helper if the skb_sk_is_prefetched() function from
-> patch 1 is allowed to return true for sockets other than the ones
-> assigned from the bpf_sk_assign() helper. At a glance there's users of
-> sock_efree (which sock_edemux can be defined to) like netem_enqueue()
-> which may inadvertently trigger unexpected paths here. I think it's
-> more explicit so more obviously correct if the destructor pointer used
-> in this series is unique compared to other paths, even if the
-> underlying code is the same.
+> This helper requires the BPF program to discover the socket via a call
+> to bpf_sk*_lookup_*(), then pass this socket to the new helper. The
+> helper takes its own reference to the socket in addition to any existing
+> reference that may or may not currently be obtained for the duration of
+> BPF processing. For the destination socket to receive the traffic, the
+> traffic must be routed towards that socket via local route. The
+> simplest example route is below, but in practice you may want to route
+> traffic more narrowly (eg by CIDR):
+>
+>   $ ip route add local default dev lo
+>
+> This patch avoids trying to introduce an extra bit into the skb->sk, as
+> that would require more invasive changes to all code interacting with
+> the socket to ensure that the bit is handled correctly, such as all
+> error-handling cases along the path from the helper in BPF through to
+> the orphan path in the input. Instead, we opt to use the destructor
+> variable to switch on the prefetch of the socket.
+>
+> Signed-off-by: Joe Stringer <joe@wand.net.nz>
+> ---
+> v2: Use skb->destructor to determine socket prefetch usage instead of
+>       introducing a new metadata_dst
+>     Restrict socket assign to same netns as TC device
+>     Restrict assigning reuseport sockets
+>     Adjust commit wording
+> v1: Initial version
+> ---
+>  include/net/sock.h             |  7 +++++++
+>  include/uapi/linux/bpf.h       | 25 ++++++++++++++++++++++++-
+>  net/core/filter.c              | 31 +++++++++++++++++++++++++++++++
+>  net/core/sock.c                |  9 +++++++++
+>  net/ipv4/ip_input.c            |  3 ++-
+>  net/ipv6/ip6_input.c           |  3 ++-
+>  net/sched/act_bpf.c            |  2 ++
+>  tools/include/uapi/linux/bpf.h | 25 ++++++++++++++++++++++++-
+>  8 files changed, 101 insertions(+), 4 deletions(-)
+>
+> diff --git a/include/net/sock.h b/include/net/sock.h
+> index b5cca7bae69b..2613d21a667a 100644
+> --- a/include/net/sock.h
+> +++ b/include/net/sock.h
+> @@ -1657,6 +1657,7 @@ struct sk_buff *sock_omalloc(struct sock *sk, unsigned long size,
+>  void skb_orphan_partial(struct sk_buff *skb);
+>  void sock_rfree(struct sk_buff *skb);
+>  void sock_efree(struct sk_buff *skb);
+> +void sock_pfree(struct sk_buff *skb);
+>  #ifdef CONFIG_INET
+>  void sock_edemux(struct sk_buff *skb);
+>  #else
+> @@ -2526,6 +2527,12 @@ void sock_net_set(struct sock *sk, struct net *net)
+>         write_pnet(&sk->sk_net, net);
+>  }
+>
+> +static inline bool
+> +skb_sk_is_prefetched(struct sk_buff *skb)
+> +{
+> +       return skb->destructor == sock_pfree;
+> +}
+> +
+>  static inline struct sock *skb_steal_sock(struct sk_buff *skb)
+>  {
+>         if (skb->sk) {
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 5d01c5c7e598..0c6f151deebe 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -2950,6 +2950,28 @@ union bpf_attr {
+>   *             restricted to raw_tracepoint bpf programs.
+>   *     Return
+>   *             0 on success, or a negative error in case of failure.
+> + *
+> + * int bpf_sk_assign(struct sk_buff *skb, struct bpf_sock *sk, u64 flags)
+> + *     Description
+> + *             Assign the *sk* to the *skb*. When combined with appropriate
+> + *             routing configuration to receive the packet towards the socket,
+> + *             will cause *skb* to be delivered to the specified socket.
+> + *             Subsequent redirection of *skb* via  **bpf_redirect**\ (),
+> + *             **bpf_clone_redirect**\ () or other methods outside of BPF may
+> + *             interfere with successful delivery to the socket.
+> + *
+> + *             This operation is only valid from TC ingress path.
+> + *
+> + *             The *flags* argument must be zero.
+> + *     Return
+> + *             0 on success, or a negative errno in case of failure.
+> + *
+> + *             * **-EINVAL**           Unsupported flags specified.
+> + *             * **-ENETUNREACH**      Socket is unreachable (wrong netns).
+> + *             * **-ENOENT**           Socket is unavailable for assignment.
+> + *             * **-EOPNOTSUPP**       Unsupported operation, for example a
+> + *                                     call from outside of TC ingress.
+> + *             * **-ESOCKTNOSUPPORT**  Socket type not supported (reuseport).
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)          \
+>         FN(unspec),                     \
+> @@ -3073,7 +3095,8 @@ union bpf_attr {
+>         FN(jiffies64),                  \
+>         FN(read_branch_records),        \
+>         FN(get_ns_current_pid_tgid),    \
+> -       FN(xdp_output),
+> +       FN(xdp_output),                 \
+> +       FN(sk_assign),
+>
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+>   * function eBPF program intends to call
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 96350a743539..f7f9b6631f75 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -5860,6 +5860,35 @@ static const struct bpf_func_proto bpf_tcp_gen_syncookie_proto = {
+>         .arg5_type      = ARG_CONST_SIZE,
+>  };
+>
+> +BPF_CALL_3(bpf_sk_assign, struct sk_buff *, skb, struct sock *, sk, u64, flags)
+> +{
+> +       if (flags != 0)
+> +               return -EINVAL;
+> +       if (!skb_at_tc_ingress(skb))
+> +               return -EOPNOTSUPP;
+> +       if (unlikely(sk->sk_reuseport))
+> +               return -ESOCKTNOSUPPORT;
+> +       if (unlikely(dev_net(skb->dev) != sock_net(sk)))
+> +               return -ENETUNREACH;
+> +       if (unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
+> +               return -ENOENT;
+> +
+> +       skb_orphan(skb);
+> +       skb->sk = sk;
+> +       skb->destructor = sock_pfree;
+> +
+> +       return 0;
+> +}
 
-Sorry, I didn't mean to get rid of sock_pfree, I was referring to
-sk_fullsock and
-sk_is_refcounted. My point was that it's weird that sock_gen_put isn't
-actually generic because it doesn't properly handle SOCK_RCU_FREE.
+Follow up to my email re UDP tests: it seems like the helper doesn't check
+that the sk is TCP, hence I assumed that you want to add support for
+both in the same series.
+
+Also, is it possible to check that the sk protocol matches skb protocol?
+
+> +
+> +static const struct bpf_func_proto bpf_sk_assign_proto = {
+> +       .func           = bpf_sk_assign,
+> +       .gpl_only       = false,
+> +       .ret_type       = RET_INTEGER,
+> +       .arg1_type      = ARG_PTR_TO_CTX,
+> +       .arg2_type      = ARG_PTR_TO_SOCK_COMMON,
+> +       .arg3_type      = ARG_ANYTHING,
+> +};
+> +
+>  #endif /* CONFIG_INET */
+>
+>  bool bpf_helper_changes_pkt_data(void *func)
+> @@ -6153,6 +6182,8 @@ tc_cls_act_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>                 return &bpf_skb_ecn_set_ce_proto;
+>         case BPF_FUNC_tcp_gen_syncookie:
+>                 return &bpf_tcp_gen_syncookie_proto;
+> +       case BPF_FUNC_sk_assign:
+> +               return &bpf_sk_assign_proto;
+>  #endif
+>         default:
+>                 return bpf_base_func_proto(func_id);
+> diff --git a/net/core/sock.c b/net/core/sock.c
+> index 0fc8937a7ff4..cfaf60267360 100644
+> --- a/net/core/sock.c
+> +++ b/net/core/sock.c
+> @@ -2071,6 +2071,15 @@ void sock_efree(struct sk_buff *skb)
+>  }
+>  EXPORT_SYMBOL(sock_efree);
+>
+> +/* Buffer destructor for prefetch/receive path where reference count may
+> + * not be held, e.g. for listen sockets.
+> + */
+> +void sock_pfree(struct sk_buff *skb)
+> +{
+> +       sock_edemux(skb);
+> +}
+> +EXPORT_SYMBOL(sock_pfree);
+> +
+>  kuid_t sock_i_uid(struct sock *sk)
+>  {
+>         kuid_t uid;
+> diff --git a/net/ipv4/ip_input.c b/net/ipv4/ip_input.c
+> index aa438c6758a7..b0c244af1e4d 100644
+> --- a/net/ipv4/ip_input.c
+> +++ b/net/ipv4/ip_input.c
+> @@ -509,7 +509,8 @@ static struct sk_buff *ip_rcv_core(struct sk_buff *skb, struct net *net)
+>         IPCB(skb)->iif = skb->skb_iif;
+>
+>         /* Must drop socket now because of tproxy. */
+> -       skb_orphan(skb);
+> +       if (!skb_sk_is_prefetched(skb))
+> +               skb_orphan(skb);
+>
+>         return skb;
+>
+> diff --git a/net/ipv6/ip6_input.c b/net/ipv6/ip6_input.c
+> index 7b089d0ac8cd..e96304d8a4a7 100644
+> --- a/net/ipv6/ip6_input.c
+> +++ b/net/ipv6/ip6_input.c
+> @@ -285,7 +285,8 @@ static struct sk_buff *ip6_rcv_core(struct sk_buff *skb, struct net_device *dev,
+>         rcu_read_unlock();
+>
+>         /* Must drop socket now because of tproxy. */
+> -       skb_orphan(skb);
+> +       if (!skb_sk_is_prefetched(skb))
+> +               skb_orphan(skb);
+>
+>         return skb;
+>  err:
+> diff --git a/net/sched/act_bpf.c b/net/sched/act_bpf.c
+> index 46f47e58b3be..6c7ed8fcc909 100644
+> --- a/net/sched/act_bpf.c
+> +++ b/net/sched/act_bpf.c
+> @@ -53,6 +53,8 @@ static int tcf_bpf_act(struct sk_buff *skb, const struct tc_action *act,
+>                 bpf_compute_data_pointers(skb);
+>                 filter_res = BPF_PROG_RUN(filter, skb);
+>         }
+> +       if (filter_res != TC_ACT_OK)
+> +               skb_orphan(skb);
+>         rcu_read_unlock();
+>
+>         /* A BPF program may overwrite the default action opcode.
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index 5d01c5c7e598..0c6f151deebe 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -2950,6 +2950,28 @@ union bpf_attr {
+>   *             restricted to raw_tracepoint bpf programs.
+>   *     Return
+>   *             0 on success, or a negative error in case of failure.
+> + *
+> + * int bpf_sk_assign(struct sk_buff *skb, struct bpf_sock *sk, u64 flags)
+> + *     Description
+> + *             Assign the *sk* to the *skb*. When combined with appropriate
+> + *             routing configuration to receive the packet towards the socket,
+> + *             will cause *skb* to be delivered to the specified socket.
+> + *             Subsequent redirection of *skb* via  **bpf_redirect**\ (),
+> + *             **bpf_clone_redirect**\ () or other methods outside of BPF may
+> + *             interfere with successful delivery to the socket.
+> + *
+> + *             This operation is only valid from TC ingress path.
+> + *
+> + *             The *flags* argument must be zero.
+> + *     Return
+> + *             0 on success, or a negative errno in case of failure.
+> + *
+> + *             * **-EINVAL**           Unsupported flags specified.
+> + *             * **-ENETUNREACH**      Socket is unreachable (wrong netns).
+> + *             * **-ENOENT**           Socket is unavailable for assignment.
+> + *             * **-EOPNOTSUPP**       Unsupported operation, for example a
+> + *                                     call from outside of TC ingress.
+> + *             * **-ESOCKTNOSUPPORT**  Socket type not supported (reuseport).
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)          \
+>         FN(unspec),                     \
+> @@ -3073,7 +3095,8 @@ union bpf_attr {
+>         FN(jiffies64),                  \
+>         FN(read_branch_records),        \
+>         FN(get_ns_current_pid_tgid),    \
+> -       FN(xdp_output),
+> +       FN(xdp_output),                 \
+> +       FN(sk_assign),
+>
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+>   * function eBPF program intends to call
+> --
+> 2.20.1
+>
+
 
 -- 
 Lorenz Bauer  |  Systems Engineer
