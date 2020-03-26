@@ -2,56 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB638193565
-	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 02:49:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC86193567
+	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 02:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727576AbgCZBtW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Mar 2020 21:49:22 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:41475 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727561AbgCZBtV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Mar 2020 21:49:21 -0400
-Received: by mail-qt1-f194.google.com with SMTP id i3so4042331qtv.8;
-        Wed, 25 Mar 2020 18:49:20 -0700 (PDT)
+        id S1727644AbgCZBwC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Mar 2020 21:52:02 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:46906 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727574AbgCZBwC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Mar 2020 21:52:02 -0400
+Received: by mail-qt1-f195.google.com with SMTP id g7so4019193qtj.13;
+        Wed, 25 Mar 2020 18:52:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=mRLGHfszhMu2H9fDuncZog2vRyEHxBc99RbT/Vq7PW8=;
-        b=PFjPprIUPwCIol8hbzv8mrSyzKT0f9TMgTEtVE8XCoOh+ffNffW36O0ulxZ0enPXZR
-         oAVRSmUpo6AZKZ3/+KdJp+fV4HXGejxHJt0iCblT/jv1YnRSDyg/+TiagxJgiYlQVHqu
-         mQBmAEU2QW+IVSA5u40aM4nLwC4IqlNhiGMno5i+jzmyNjl3kKtgYKIH3F0+BAymQ8Qz
-         pjeGuZbtZCUipN/QJDT1qFfLJgKGHANuFB2OPfCUwecsj0iI6PQ30GsB+f0WtULw5ze6
-         VAPJelIT44aQC5S42ZarMfz0KGCkXcngtPRwQwAzAa3TrxiNcOeWDcmvze0JMBpjnSzI
-         /GaA==
+        bh=y38zEgb3EH5u0ISLbX3L46cnC2XWupaDcY08yZB2pNc=;
+        b=lAaBD/0C9KD3FC5rERps9ALxqWaPr3p9p6GWkio2Ph34zVah9EUivfohLcXVxDIW8k
+         qC+DhDMxP3eYiHC3ugZ73vGAXcfnXs8XEfGvdVt5oCt/W+IjZ2NojiGk2NpIEJxtx7vO
+         c2scVpO98jYO/AK5np6/+QaBBAjSUo4Nlh+YmT5cLqx8fj26cwfUYLio9/ISH934psZ4
+         yzwIsXy1jFnnSBxKinBfISl8eBo4mmCCyqqkUtjYK8jf3KXWaAB407m9+iir7wpMrLpk
+         btU6fM5hJhUB4OfnvUiaFm0XvIxOL58V79S2zlELbiUwFhK350pKRqYCeUoYbhaL34wk
+         d9Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=mRLGHfszhMu2H9fDuncZog2vRyEHxBc99RbT/Vq7PW8=;
-        b=eyKqnvVCTZE+n3xi+MwI/yF7KN2q3oBWmDMdoaz+G+aNCfZO7rHihA+B0Rz0635zho
-         sPVExBEtZsq8rUPaJ57ecSSaGgHYp6O4i4MBL4g7dtScKP2lxflpOgZvtdOpwrvhpzhx
-         ohs4cWdtWnYBFJxnQUPLbHm54ylMVlrTwMzPr9QrA8qoRhabCdjgmBNRyES2LP/Fgp9h
-         Qw7BrjfrvsRYH8UTCsuPDX4+FcRCHTK+Fsq7FDynxpclhNXeL5/u07AKNwG98qlKkfy/
-         jFK6R4QHz6/dTHA1OypQFcBlKEbA080/hcSG41bEAjX+2MbevuKR3TCSHBOyEozJWELK
-         wDwQ==
-X-Gm-Message-State: ANhLgQ2aJj81X7kWCPZta0LGSC5U8Yw0PsTcmjMVJh+IbaBnrQIWC0WQ
-        TjYI5SX+vbP6boVeYnczEUCTEw83gN//AMaKIL0=
-X-Google-Smtp-Source: ADFU+vt3Y8r0cvEDUOl2zSnNbGj7ycQvuBbKZKqpCB5JYtit1lUfaGb6YvS3pYYXmU+n+Hj6FgT6I4ELFB4cOpNM8DY=
-X-Received: by 2002:ac8:7cb0:: with SMTP id z16mr5839557qtv.59.1585187359951;
- Wed, 25 Mar 2020 18:49:19 -0700 (PDT)
+        bh=y38zEgb3EH5u0ISLbX3L46cnC2XWupaDcY08yZB2pNc=;
+        b=KpWulbrPCuxjlkGmccRjLTd+Pvggk0WXt909ZhZPtkFgcJv58qRm9AlquzSzAXsTaw
+         j5q5B6wNRu9XUrO1mi0Zv3Ewr7ydw4GZSCJ6P2YTe/JnF/nn9JyWtXppd/bzOyaN4yf4
+         4cXa6dWXU+r3k1gVGfqkzAKR50C1rb8laNWCDbJX3lOyIyUrPbVmAhtRZdtVEkWhzqxR
+         izYejf7K0s2VdTUBhvy4TOozWTs7EWL6oLp8NBPXWNb0M9x8yBeDku6sV0Cms86HtsSO
+         R2TNX6MDihJvFC09E4+FI4biGsyzsSOO4cjHdp4/eKtIeo3tEw2LqxCmMj3r8U0s8yWK
+         HEeQ==
+X-Gm-Message-State: ANhLgQ2ypscl2upjjGPVO/NtnaxURug/R2vHdblqiPy/6TtZJbHkIHO8
+        lKcMaw5xOquX11nvR2waYZa6+Db0Jxr6STXWZM4=
+X-Google-Smtp-Source: ADFU+vsEuvmfB/mTYFYnlUUT9EbTD50gewArOBTrfX+z1pFq5CwoE9ICI5sfKWceBFPTzgpb4mUU21kl1UL26iw54P8=
+X-Received: by 2002:ac8:1865:: with SMTP id n34mr5687310qtk.93.1585187521038;
+ Wed, 25 Mar 2020 18:52:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200325152629.6904-1-kpsingh@chromium.org> <20200325152629.6904-5-kpsingh@chromium.org>
-In-Reply-To: <20200325152629.6904-5-kpsingh@chromium.org>
+References: <20200325152629.6904-1-kpsingh@chromium.org> <20200325152629.6904-2-kpsingh@chromium.org>
+In-Reply-To: <20200325152629.6904-2-kpsingh@chromium.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 25 Mar 2020 18:49:09 -0700
-Message-ID: <CAEf4BzbZ0Y+BXezgbdzN2T1cH9osREJUNQQoQJ5rJ0EYyD-Udg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 4/8] bpf: lsm: Implement attach, detach and execution
+Date:   Wed, 25 Mar 2020 18:51:50 -0700
+Message-ID: <CAEf4BzYomSccqbO2AGbejQV2R2z0jz5GhEFZxuf7SGwtju+e8w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 1/8] bpf: Introduce BPF_PROG_TYPE_LSM
 To:     KP Singh <kpsingh@chromium.org>
 Cc:     open list <linux-kernel@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
         Brendan Jackman <jackmanb@google.com>,
         Florent Revest <revest@google.com>,
+        Thomas Garnier <thgarnie@google.com>,
+        Yonghong Song <yhs@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         James Morris <jmorris@namei.org>,
@@ -70,139 +72,36 @@ On Wed, Mar 25, 2020 at 8:27 AM KP Singh <kpsingh@chromium.org> wrote:
 >
 > From: KP Singh <kpsingh@google.com>
 >
-> JITed BPF programs are dynamically attached to the LSM hooks
-> using BPF trampolines. The trampoline prologue generates code to handle
-> conversion of the signature of the hook to the appropriate BPF context.
->
-> The allocated trampoline programs are attached to the nop functions
-> initialized as LSM hooks.
->
-> BPF_PROG_TYPE_LSM programs must have a GPL compatible license and
-> and need CAP_SYS_ADMIN (required for loading eBPF programs).
->
-> Upon attachment:
->
-> * A BPF fexit trampoline is used for LSM hooks with a void return type.
-> * A BPF fmod_ret trampoline is used for LSM hooks which return an
->   int. The attached programs can override the return value of the
->   bpf LSM hook to indicate a MAC Policy decision.
+> Introduce types and configs for bpf programs that can be attached to
+> LSM hooks. The programs can be enabled by the config option
+> CONFIG_BPF_LSM.
 >
 > Signed-off-by: KP Singh <kpsingh@google.com>
 > Reviewed-by: Brendan Jackman <jackmanb@google.com>
 > Reviewed-by: Florent Revest <revest@google.com>
+> Reviewed-by: Thomas Garnier <thgarnie@google.com>
+> Acked-by: Yonghong Song <yhs@fb.com>
 > ---
->  include/linux/bpf_lsm.h | 11 ++++++++
->  kernel/bpf/bpf_lsm.c    | 28 +++++++++++++++++++++
->  kernel/bpf/btf.c        |  9 ++++++-
->  kernel/bpf/syscall.c    | 56 ++++++++++++++++++++++++++++-------------
->  kernel/bpf/trampoline.c | 17 ++++++++++---
->  kernel/bpf/verifier.c   | 19 +++++++++++---
->  6 files changed, 113 insertions(+), 27 deletions(-)
+
+Looks good to me, so please add by ack, but I think it would be easier
+to review if this was combined with patch #4, which adds verifier
+support and kernel/bpf/syscall.c support. On its own this patch just
+adds random unused stuff.
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  MAINTAINERS                    |  1 +
+>  include/linux/bpf.h            |  3 +++
+>  include/linux/bpf_types.h      |  4 ++++
+>  include/uapi/linux/bpf.h       |  2 ++
+>  init/Kconfig                   | 12 ++++++++++++
+>  kernel/bpf/Makefile            |  1 +
+>  kernel/bpf/bpf_lsm.c           | 17 +++++++++++++++++
+>  kernel/trace/bpf_trace.c       | 12 ++++++------
+>  tools/include/uapi/linux/bpf.h |  2 ++
+>  tools/lib/bpf/libbpf_probes.c  |  1 +
+>  10 files changed, 49 insertions(+), 6 deletions(-)
+>  create mode 100644 kernel/bpf/bpf_lsm.c
 >
-
-[...]
-
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 85567a6ea5f9..3ba30fd6101e 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -25,6 +25,7 @@
->  #include <linux/nospec.h>
->  #include <linux/audit.h>
->  #include <uapi/linux/btf.h>
-> +#include <linux/bpf_lsm.h>
->
->  #define IS_FD_ARRAY(map) ((map)->map_type == BPF_MAP_TYPE_PERF_EVENT_ARRAY || \
->                           (map)->map_type == BPF_MAP_TYPE_CGROUP_ARRAY || \
-> @@ -1935,6 +1936,7 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
->
->                 switch (prog_type) {
->                 case BPF_PROG_TYPE_TRACING:
-> +               case BPF_PROG_TYPE_LSM:
->                 case BPF_PROG_TYPE_STRUCT_OPS:
->                 case BPF_PROG_TYPE_EXT:
->                         break;
-> @@ -2367,10 +2369,28 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog)
->         struct file *link_file;
->         int link_fd, err;
->
-> -       if (prog->expected_attach_type != BPF_TRACE_FENTRY &&
-> -           prog->expected_attach_type != BPF_TRACE_FEXIT &&
-> -           prog->expected_attach_type != BPF_MODIFY_RETURN &&
-> -           prog->type != BPF_PROG_TYPE_EXT) {
-> +       switch (prog->type) {
-> +       case BPF_PROG_TYPE_TRACING:
-> +               if (prog->expected_attach_type != BPF_TRACE_FENTRY &&
-> +                   prog->expected_attach_type != BPF_TRACE_FEXIT &&
-> +                   prog->expected_attach_type != BPF_MODIFY_RETURN) {
-> +                       err = -EINVAL;
-> +                       goto out_put_prog;
-> +               }
-> +               break;
-> +       case BPF_PROG_TYPE_EXT:
-> +               if (prog->expected_attach_type != 0) {
-> +                       err = -EINVAL;
-> +                       goto out_put_prog;
-> +               }
-> +               break;
-> +       case BPF_PROG_TYPE_LSM:
-> +               if (prog->expected_attach_type != BPF_LSM_MAC) {
-> +                       err = -EINVAL;
-> +                       goto out_put_prog;
-> +               }
-> +               break;
-> +       default:
-
-thanks, this is much more "scalable" in terms of maintenance!
-
->                 err = -EINVAL;
->                 goto out_put_prog;
->         }
-> @@ -2449,16 +2469,10 @@ static int bpf_raw_tracepoint_open(const union bpf_attr *attr)
->         if (IS_ERR(prog))
->                 return PTR_ERR(prog);
->
-> -       if (prog->type != BPF_PROG_TYPE_RAW_TRACEPOINT &&
-> -           prog->type != BPF_PROG_TYPE_TRACING &&
-> -           prog->type != BPF_PROG_TYPE_EXT &&
-> -           prog->type != BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE) {
-> -               err = -EINVAL;
-> -               goto out_put_prog;
-> -       }
-> -
-> -       if (prog->type == BPF_PROG_TYPE_TRACING ||
-> -           prog->type == BPF_PROG_TYPE_EXT) {
-> +       switch (prog->type) {
-> +       case BPF_PROG_TYPE_TRACING:
-> +       case BPF_PROG_TYPE_EXT:
-> +       case BPF_PROG_TYPE_LSM:
->                 if (attr->raw_tracepoint.name) {
->                         /* The attach point for this category of programs
->                          * should be specified via btf_id during program load.
-> @@ -2466,11 +2480,13 @@ static int bpf_raw_tracepoint_open(const union bpf_attr *attr)
->                         err = -EINVAL;
->                         goto out_put_prog;
->                 }
-> -               if (prog->expected_attach_type == BPF_TRACE_RAW_TP)
-> +               if (prog->expected_attach_type == BPF_TRACE_RAW_TP) {
-
-this should probably also ensure prog->type == BPF_PROG_TYPE_TRACING ?
-Otherwise you can trick kernel with BPF_PROG_TYPE_LSM and
-expected_attach_type == BPF_TRACE_RAW_TP, no?
-
->                         tp_name = prog->aux->attach_func_name;
-> -               else
-> -                       return bpf_tracing_prog_attach(prog);
-> -       } else {
-> +                       break;
-> +               }
-> +               return bpf_tracing_prog_attach(prog);
-> +       case BPF_PROG_TYPE_RAW_TRACEPOINT:
-> +       case BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE:
->                 if (strncpy_from_user(buf,
->                                       u64_to_user_ptr(attr->raw_tracepoint.name),
->                                       sizeof(buf) - 1) < 0) {
-> @@ -2479,6 +2495,10 @@ static int bpf_raw_tracepoint_open(const union bpf_attr *attr)
->                }
 
 [...]
