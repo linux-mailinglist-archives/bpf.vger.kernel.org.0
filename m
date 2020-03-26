@@ -2,96 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 53ABD194D69
-	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 00:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93015194D7C
+	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 00:48:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727347AbgCZXkW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Mar 2020 19:40:22 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:35784 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727345AbgCZXkW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Mar 2020 19:40:22 -0400
-Received: by mail-wm1-f66.google.com with SMTP id m3so10420643wmi.0;
-        Thu, 26 Mar 2020 16:40:21 -0700 (PDT)
+        id S1726359AbgCZXsu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Mar 2020 19:48:50 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:40033 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726067AbgCZXsu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Mar 2020 19:48:50 -0400
+Received: by mail-lf1-f65.google.com with SMTP id j17so6371575lfe.7;
+        Thu, 26 Mar 2020 16:48:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OxfsuJxUwQgyHeL6ML1Ets48AkLBPa97SvcuT6O+r2w=;
+        b=HAyV60qBe3SD5OX4zLRd4QxQKBdm76OMz7aCv0yF0aj3KPd4/r7kOo6qnAwu/ZAF1/
+         eLn/MJhS9Axh75Ww/wSveVhWZzii5tBVlpQLMybJYFbXPEPu5Bz6n9OoJbHftph+tJkW
+         3EWuHUDVLo7CF+Uyydqv6bWzIsdAed+fCIUef+47qS3LgFUg4/KMl12NqsiOACYGfcGQ
+         VM3Jf5Lt/RQOdZv9R5TqRy9uLZznlnYTxUBKaEQcPjT2dMLUonFn+v3nuRPA3M7iPYhM
+         73rhbOBrJvUs4zCeCbHbT1WPQw92bjaredJkoRBunWqfvZEIgGg+OVeVNjiA3r2zvk2t
+         HUQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CVALNZ4DH6smS5VGTWJWkPRe60hQEpwhHv89SpCkxEc=;
-        b=ImLGpAIP/KY0Kn4ral2udC4zEsHoYihzWvkFPLSSO9/HMlkrpArkH0ibrKY8aQsbmE
-         LCR5eJMVPdKgyAjjyATG5yohsrDGxUU+UB8sBu6dI5O9MjNHLY4GhP/EYaXLjClGp68m
-         kA87dEmB3GjC/fvZ4fUS8pQJZtPFzFhi4o8pQR/iMAk/Hp9qaae7iCq8spQvxSnSa3k0
-         YjJblVrBeH0KNTJ4jVlksku1rfRo+z4T6GW+WOWcdEQLBk2OyvJmw9ldajhVbNTNpXyn
-         /mCl6CZ/lh1mZYNbtUXNyWaNYm2BfpORE2D3OLHNmaLUqd2ijkEXjSmfen94u+CGMMY3
-         6xsw==
-X-Gm-Message-State: ANhLgQ1W7cZb2gx0Z1XrHtSHbJaNv8fNw4a/KTAjnqwuuGs0G0gY2ihh
-        v5BwcxanjAoO10f2tgmVLug1b2VwV3XgXf7HDo8Ftyw1
-X-Google-Smtp-Source: ADFU+vvaFtB6sRjtwBgEPsFtHzA8WTJ6lLirZyCCQ5lQ5DxGVqqAaL2vXI6PYkV6uFh4g6F9UvxzsgeNWEp59fnB4sU=
-X-Received: by 2002:adf:e584:: with SMTP id l4mr7260815wrm.388.1585266020734;
- Thu, 26 Mar 2020 16:40:20 -0700 (PDT)
+        bh=OxfsuJxUwQgyHeL6ML1Ets48AkLBPa97SvcuT6O+r2w=;
+        b=oQ/rqfgilGvM8/kaJemIrOck5fZ1Upq5NhhmX9Pg5yy8nDdRBI8HqBmXBwqItZYxAe
+         Pciw51mAvOdsx1sKfTelHz+VlNmuX5c9xDU76IKj9AH2rI/BUVCxyfmELV1zgcTavLHu
+         +Z3T5u0A63POTskqsSEhCsaD9ae4srTijvdJd3GAVfa338A3K/IQe94WPsdiiMKkiyjG
+         WX8ScOVjuaaIO6MXWQ3RM7P/QhmzZug56DhAF0LJ8tsXfmivO5kpDFyN/2Y32B35q4hG
+         qeroJ0PUxxoJGh79q4qg6w1bmZnIa1Ci9ZnnVQg0hzSjZ9F2RCiBnMqMNlG6DF4OTeav
+         bCfQ==
+X-Gm-Message-State: AGi0PuZ04azbDJFtVyFS9TR/vVm66paeo3KyyyGHCqnAvUPT3hPt7dTb
+        VqKWvK8HpE/QFYuJm1HTXs9LWHzScutrqGV6K4Y=
+X-Google-Smtp-Source: APiQypLmMGgk3Zqm7RhdrseYvQYa7UrVl29HUF1yy85h+6Zn9zyRg4mh8uaAzG74LZm0mcl3tFheM7MCdI2V5eeSNMs=
+X-Received: by 2002:a19:6f02:: with SMTP id k2mr1378706lfc.119.1585266527281;
+ Thu, 26 Mar 2020 16:48:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200325055745.10710-1-joe@wand.net.nz> <20200325055745.10710-6-joe@wand.net.nz>
- <CACAyw9-jJiAAci8dNsGGH7gf6QQCsybC2RAaSq18qsQDgaR4CQ@mail.gmail.com>
- <CAOftzPiDk0C+fCo9L5CWPvVR3RRLeLykQSMKAO4mOc=n8UNYpA@mail.gmail.com>
- <20200326062514.lc7f6xbg5sg4hhjj@kafai-mbp> <CAOftzPhGs90Ni391ir+1ZZqxrvhbyawsDS9SVCufvD1SbewiXw@mail.gmail.com>
-In-Reply-To: <CAOftzPhGs90Ni391ir+1ZZqxrvhbyawsDS9SVCufvD1SbewiXw@mail.gmail.com>
-From:   Joe Stringer <joe@wand.net.nz>
-Date:   Thu, 26 Mar 2020 16:39:55 -0700
-Message-ID: <CAOftzPg9msjF7aky6M7OvN+6YbxVdBpuwM78ETpFJ_YGfwe63w@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 5/5] selftests: bpf: add test for sk_assign
-To:     Joe Stringer <joe@wand.net.nz>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Lorenz Bauer <lmb@cloudflare.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+References: <20200326031613.19372-1-yuehaibing@huawei.com>
+In-Reply-To: <20200326031613.19372-1-yuehaibing@huawei.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 26 Mar 2020 16:48:35 -0700
+Message-ID: <CAADnVQL=jcJAKwcNarjL8-=+9HxhPuRtYOWH_qZ8wGRbNmpbYQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: remove unused vairable 'bpf_xdp_link_lops'
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 25, 2020 at 11:38 PM Joe Stringer <joe@wand.net.nz> wrote:
+On Wed, Mar 25, 2020 at 8:16 PM YueHaibing <yuehaibing@huawei.com> wrote:
 >
-> On Wed, Mar 25, 2020 at 11:25 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> >
-> > On Wed, Mar 25, 2020 at 01:55:59PM -0700, Joe Stringer wrote:
-> > > On Wed, Mar 25, 2020 at 3:35 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> > > >
-> > > > On Wed, 25 Mar 2020 at 05:58, Joe Stringer <joe@wand.net.nz> wrote:
-> > > > >
-> > > > > From: Lorenz Bauer <lmb@cloudflare.com>
-> > > > >
-> > > > > Attach a tc direct-action classifier to lo in a fresh network
-> > > > > namespace, and rewrite all connection attempts to localhost:4321
-> > > > > to localhost:1234 (for port tests) and connections to unreachable
-> > > > > IPv4/IPv6 IPs to the local socket (for address tests).
-> > > >
-> > > > Can you extend this to cover UDP as well?
-> > >
-> > > I'm working on a follow-up series for UDP, we need this too.
-> > Other than selftests, what are the changes for UDP in patch 1 - 4?
+> kernel/bpf/syscall.c:2263:34: warning: 'bpf_xdp_link_lops' defined but not used [-Wunused-const-variable=]
+>  static const struct bpf_link_ops bpf_xdp_link_lops;
+>                                   ^~~~~~~~~~~~~~~~~
 >
-> Nothing in those patches, I have refactoring of all of the socket
-> helpers, skc_lookup_udp() and adding flags to the socket lookup
-> functions to support only looking for a certain type of sockets -
-> established or listen. This helps to avoid multiple lookups in these
-> cases where you really just want to look up established sockets with
-> the packet tuple first then look up the listener socket with the
-> unrelated/tproxy tuple. For UDP it makes it easier to find the correct
-> socket and in general (including TCP) helps to avoid up to two socket
-> hashtable lookups for this use case. This part is because the current
-> helpers all look up the established socket first then the listener
-> socket, so for the first packet that hits these we perform both of
-> these lookups for the packet tuple (which finds nothing), then look up
-> an established socket for the target tuple (which finds nothing) then
-> finally a listen socket for the target tuple. It's about another 300+
-> / 250- changes overall, of which a large chunk is one patch that
-> refactors the code into macros. I haven't narrowed down for sure
-> whether the lookup flags patch is required for UDP cases yet.
+> commit 70ed506c3bbc ("bpf: Introduce pinnable bpf_link abstraction")
+> involded this unused variable, remove it.
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-FWIW I did some more testing and it was not apparent that
-skc_lookup_udp is at all necessary, I was able to roll in UDP support
-in the next revision of this series with no special extra patches.
-
-I'll keep working on those other optimizations in the background though.
+Applied. Thanks
