@@ -2,170 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B186194D56
-	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 00:35:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53ABD194D69
+	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 00:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727509AbgCZXfj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Mar 2020 19:35:39 -0400
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:39197 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726954AbgCZXfj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Mar 2020 19:35:39 -0400
-Received: by mail-pj1-f65.google.com with SMTP id z3so2540924pjr.4;
-        Thu, 26 Mar 2020 16:35:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9FN11s9scCK5qgibF6L3+4gVIyRgF1RL7ZAsxAIHQYU=;
-        b=tROQqu9vsFezeCvouq8Ox+xw4j8OmZ4owdM4vSJyIeYuzhgVhYWdO+o1RzIHyry238
-         npm/FdH2U4MV8yx2e1t4KMafuikciN+QcILLZaryEukz6QNjXPRVhi0Y0u+8emkdNH8S
-         78hSUjb29qMdPd7s6fxu+EJ7cukvC2yX2YJiHekovPp8hqLXsbrh7GDWJI1vr9y4xgo8
-         rKjMZKHfqk3kpDIWsP4/abseY4x207pZRtgRS22UkgJ0dQRHJhhUw1PrViXhHXg/IYTc
-         JNd6buRT/osnBJMO22jeoHASYAOoxS8XtHSbM6hC1eypLnKBOevHRA187VaeVI3gAsAc
-         wuww==
+        id S1727347AbgCZXkW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Mar 2020 19:40:22 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:35784 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727345AbgCZXkW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Mar 2020 19:40:22 -0400
+Received: by mail-wm1-f66.google.com with SMTP id m3so10420643wmi.0;
+        Thu, 26 Mar 2020 16:40:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9FN11s9scCK5qgibF6L3+4gVIyRgF1RL7ZAsxAIHQYU=;
-        b=opy2sFTr1zHF9jC3jCRG30d1jP33p5Pe4S9HlIf0YqQp4kNFnQei69FXAoxj8rFHWd
-         NH2UTEkQUdS10cPxtxnxcKa4l/TOTnh4Ez/Q9qpqqtI0jlZeiZHKTx+SegmZofXvkdB/
-         mnGg5KdxlcAHL0CxYMltFEQ3cKm4HoQk34g55gIa05nKdRRR1g248NfoW1tpfQsPYVaW
-         EWlAb/A2kZlRJk2me3d00trb4kt2ab+G6lFK2rTh4NUUm+E32yRvBSeiGC6jb0lgfThY
-         vcy1Bj2rotpjzLZyTgJoyyIyKnZUdfh4cz1N20Uxxd2WNk1gYk5hPEZ+UxwPWDmRZMdW
-         C3rQ==
-X-Gm-Message-State: ANhLgQ31BFwEFRlb56dg0Mre8m/DSUp2wGBRz1XaAjITQ3uQxF37DUoE
-        2YFrKgSmu+sNphGdiGFmMaN8fUlr
-X-Google-Smtp-Source: ADFU+vsAmL+vckTNYYDEr9VrDYlcPKeUajTRABrIAo9X6/7JXLQRBz7XM7DovD5IXDnQdd5peGTDSA==
-X-Received: by 2002:a17:90a:628a:: with SMTP id d10mr2709112pjj.25.1585265737424;
-        Thu, 26 Mar 2020 16:35:37 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:c7d9])
-        by smtp.gmail.com with ESMTPSA id 185sm2561957pfz.119.2020.03.26.16.35.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Mar 2020 16:35:36 -0700 (PDT)
-Date:   Thu, 26 Mar 2020 16:35:33 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, rdna@fb.com, andrii.nakryiko@gmail.com,
-        kernel-team@fb.com
-Subject: Re: [PATCH v2 bpf-next 4/6] bpf: implement bpf_prog replacement for
- an active bpf_cgroup_link
-Message-ID: <20200326233533.gbyogvi57xufe34d@ast-mbp>
-References: <20200325065746.640559-1-andriin@fb.com>
- <20200325065746.640559-5-andriin@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CVALNZ4DH6smS5VGTWJWkPRe60hQEpwhHv89SpCkxEc=;
+        b=ImLGpAIP/KY0Kn4ral2udC4zEsHoYihzWvkFPLSSO9/HMlkrpArkH0ibrKY8aQsbmE
+         LCR5eJMVPdKgyAjjyATG5yohsrDGxUU+UB8sBu6dI5O9MjNHLY4GhP/EYaXLjClGp68m
+         kA87dEmB3GjC/fvZ4fUS8pQJZtPFzFhi4o8pQR/iMAk/Hp9qaae7iCq8spQvxSnSa3k0
+         YjJblVrBeH0KNTJ4jVlksku1rfRo+z4T6GW+WOWcdEQLBk2OyvJmw9ldajhVbNTNpXyn
+         /mCl6CZ/lh1mZYNbtUXNyWaNYm2BfpORE2D3OLHNmaLUqd2ijkEXjSmfen94u+CGMMY3
+         6xsw==
+X-Gm-Message-State: ANhLgQ1W7cZb2gx0Z1XrHtSHbJaNv8fNw4a/KTAjnqwuuGs0G0gY2ihh
+        v5BwcxanjAoO10f2tgmVLug1b2VwV3XgXf7HDo8Ftyw1
+X-Google-Smtp-Source: ADFU+vvaFtB6sRjtwBgEPsFtHzA8WTJ6lLirZyCCQ5lQ5DxGVqqAaL2vXI6PYkV6uFh4g6F9UvxzsgeNWEp59fnB4sU=
+X-Received: by 2002:adf:e584:: with SMTP id l4mr7260815wrm.388.1585266020734;
+ Thu, 26 Mar 2020 16:40:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200325065746.640559-5-andriin@fb.com>
+References: <20200325055745.10710-1-joe@wand.net.nz> <20200325055745.10710-6-joe@wand.net.nz>
+ <CACAyw9-jJiAAci8dNsGGH7gf6QQCsybC2RAaSq18qsQDgaR4CQ@mail.gmail.com>
+ <CAOftzPiDk0C+fCo9L5CWPvVR3RRLeLykQSMKAO4mOc=n8UNYpA@mail.gmail.com>
+ <20200326062514.lc7f6xbg5sg4hhjj@kafai-mbp> <CAOftzPhGs90Ni391ir+1ZZqxrvhbyawsDS9SVCufvD1SbewiXw@mail.gmail.com>
+In-Reply-To: <CAOftzPhGs90Ni391ir+1ZZqxrvhbyawsDS9SVCufvD1SbewiXw@mail.gmail.com>
+From:   Joe Stringer <joe@wand.net.nz>
+Date:   Thu, 26 Mar 2020 16:39:55 -0700
+Message-ID: <CAOftzPg9msjF7aky6M7OvN+6YbxVdBpuwM78ETpFJ_YGfwe63w@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next 5/5] selftests: bpf: add test for sk_assign
+To:     Joe Stringer <joe@wand.net.nz>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Lorenz Bauer <lmb@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 24, 2020 at 11:57:44PM -0700, Andrii Nakryiko wrote:
->  
-> +/* Swap updated BPF program for given link in effective program arrays across
-> + * all descendant cgroups. This function is guaranteed to succeed.
-> + */
-> +static void replace_effective_prog(struct cgroup *cgrp,
-> +				   enum bpf_attach_type type,
-> +				   struct bpf_cgroup_link *link)
-> +{
-> +	struct bpf_prog_array_item *item;
-> +	struct cgroup_subsys_state *css;
-> +	struct bpf_prog_array *progs;
-> +	struct bpf_prog_list *pl;
-> +	struct list_head *head;
-> +	struct cgroup *cg;
-> +	int pos;
-> +
-> +	css_for_each_descendant_pre(css, &cgrp->self) {
-> +		struct cgroup *desc = container_of(css, struct cgroup, self);
-> +
-> +		if (percpu_ref_is_zero(&desc->bpf.refcnt))
-> +			continue;
-> +
-> +		/* found position of link in effective progs array */
-> +		for (pos = 0, cg = desc; cg; cg = cgroup_parent(cg)) {
-> +			if (pos && !(cg->bpf.flags[type] & BPF_F_ALLOW_MULTI))
-> +				continue;
-> +
-> +			head = &cg->bpf.progs[type];
-> +			list_for_each_entry(pl, head, node) {
-> +				if (!prog_list_prog(pl))
-> +					continue;
-> +				if (pl->link == link)
-> +					goto found;
-> +				pos++;
-> +			}
-> +		}
-> +found:
-> +		BUG_ON(!cg);
-> +		progs = rcu_dereference_protected(
-> +				desc->bpf.effective[type],
-> +				lockdep_is_held(&cgroup_mutex));
-> +		item = &progs->items[pos];
-> +		WRITE_ONCE(item->prog, link->link.prog);
-> +	}
-> +}
-> +
-> +/**
-> + * __cgroup_bpf_replace() - Replace link's program and propagate the change
-> + *                          to descendants
-> + * @cgrp: The cgroup which descendants to traverse
-> + * @link: A link for which to replace BPF program
-> + * @type: Type of attach operation
-> + *
-> + * Must be called with cgroup_mutex held.
-> + */
-> +int __cgroup_bpf_replace(struct cgroup *cgrp, struct bpf_cgroup_link *link,
-> +			 struct bpf_prog *new_prog)
-> +{
-> +	struct list_head *progs = &cgrp->bpf.progs[link->type];
-> +	struct bpf_prog *old_prog;
-> +	struct bpf_prog_list *pl;
-> +	bool found = false;
-> +
-> +	if (link->link.prog->type != new_prog->type)
-> +		return -EINVAL;
-> +
-> +	list_for_each_entry(pl, progs, node) {
-> +		if (pl->link == link) {
-> +			found = true;
-> +			break;
-> +		}
-> +	}
-> +	if (!found)
-> +		return -ENOENT;
-> +
-> +	old_prog = xchg(&link->link.prog, new_prog);
-> +	replace_effective_prog(cgrp, link->type, link);
+On Wed, Mar 25, 2020 at 11:38 PM Joe Stringer <joe@wand.net.nz> wrote:
+>
+> On Wed, Mar 25, 2020 at 11:25 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> >
+> > On Wed, Mar 25, 2020 at 01:55:59PM -0700, Joe Stringer wrote:
+> > > On Wed, Mar 25, 2020 at 3:35 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> > > >
+> > > > On Wed, 25 Mar 2020 at 05:58, Joe Stringer <joe@wand.net.nz> wrote:
+> > > > >
+> > > > > From: Lorenz Bauer <lmb@cloudflare.com>
+> > > > >
+> > > > > Attach a tc direct-action classifier to lo in a fresh network
+> > > > > namespace, and rewrite all connection attempts to localhost:4321
+> > > > > to localhost:1234 (for port tests) and connections to unreachable
+> > > > > IPv4/IPv6 IPs to the local socket (for address tests).
+> > > >
+> > > > Can you extend this to cover UDP as well?
+> > >
+> > > I'm working on a follow-up series for UDP, we need this too.
+> > Other than selftests, what are the changes for UDP in patch 1 - 4?
+>
+> Nothing in those patches, I have refactoring of all of the socket
+> helpers, skc_lookup_udp() and adding flags to the socket lookup
+> functions to support only looking for a certain type of sockets -
+> established or listen. This helps to avoid multiple lookups in these
+> cases where you really just want to look up established sockets with
+> the packet tuple first then look up the listener socket with the
+> unrelated/tproxy tuple. For UDP it makes it easier to find the correct
+> socket and in general (including TCP) helps to avoid up to two socket
+> hashtable lookups for this use case. This part is because the current
+> helpers all look up the established socket first then the listener
+> socket, so for the first packet that hits these we perform both of
+> these lookups for the packet tuple (which finds nothing), then look up
+> an established socket for the target tuple (which finds nothing) then
+> finally a listen socket for the target tuple. It's about another 300+
+> / 250- changes overall, of which a large chunk is one patch that
+> refactors the code into macros. I haven't narrowed down for sure
+> whether the lookup flags patch is required for UDP cases yet.
 
-I think with 'found = true' in this function you're assuming that it will be
-found in replace_effective_prog() ? I don't think that's the case.
-Try to create bpf_link with BPF_F_ALLOW_OVERRIDE, override it in a child cgroup
-with another link and then try to LINK_UPDATE the former. The link is there,
-but the prog is not executing and it's not in effective array. What LINK_UPDATE
-suppose to do? I guess it should succeed?
-Even trickier that the prog will be in effective array in some of
-css_for_each_descendant_pre() and not in others. This cgroup attach semantics
-were convoluted from the day one. Apparently people use all three variants now,
-but I wouldn't bet that everyone understands it.
-Hence my proposal to support F_ALLOW_MULTI for links only. At least initially.
-It's so much simpler to explain. And owning bpf_link will guarantee that the
-prog is executing (unless cgroup is removed and sockets are closed). I guess
-default (no-override) is acceptable to bpf_link as well and in that sense it
-will be very similar to XDP with single prog attached. So I think I can live
-with default and ALLOW_MULTI for now. But we should probably redesign
-overriding capabilities. Folks need to attach multiple progs to a given cgroup
-and disallow all progs in children. Currently it's not possible to do, since
-MULTI in the parent allows at least one (default, override or multi) in the
-children. bpf_link inheriting this logic won't help to solve this use case. It
-feels that link should stay as multi only and override or not in the children
-should be a separate property. Probably not related to link at all. It fits
-better as a cgroup permission.
+FWIW I did some more testing and it was not apparent that
+skc_lookup_udp is at all necessary, I was able to roll in UDP support
+in the next revision of this series with no special extra patches.
 
-Anyhow I'm going to apply patches 1 and 2, since they are good cleanup
-regardless of what we decide here.
+I'll keep working on those other optimizations in the background though.
