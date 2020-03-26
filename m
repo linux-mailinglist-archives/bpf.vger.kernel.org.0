@@ -2,112 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1F0194798
-	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 20:40:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D14FE1947B4
+	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 20:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbgCZTk5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Mar 2020 15:40:57 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:41503 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726067AbgCZTk5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Mar 2020 15:40:57 -0400
-Received: by mail-pl1-f196.google.com with SMTP id t16so2551628plr.8;
-        Thu, 26 Mar 2020 12:40:57 -0700 (PDT)
+        id S1726067AbgCZToG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Mar 2020 15:44:06 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:39224 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727719AbgCZToG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Mar 2020 15:44:06 -0400
+Received: by mail-wm1-f68.google.com with SMTP id a9so8692133wmj.4
+        for <bpf@vger.kernel.org>; Thu, 26 Mar 2020 12:44:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HPuxdzkNqLhQ3fR4K6trK8HciMyFIxhzicL4Cb7qcio=;
-        b=JOxBI8DCOorhzDHSsG5draNC3B3YA2fK+zQX1qhLKL34alNsnDK08uhQKkzUxYRam0
-         n3Z9W2Xhl/eSDxQ3aR4Fs75uAyjgnz+pyGmB/K1+razRUaJ7C6lCdk7bT+IYiS54Px9P
-         lllGtxE02SMC7BeDR/6EH5Uk4bwZmSVlVNCjLqSuESdxeXgrqJ/vS/Kd+GdfAiXJG5Rl
-         HiNsj7W0rpYbUrvXRWVkQHSFWGGzMWY4BQ+tFBSdCxTCZfWmtZkT9JvS+Y4Y65ht9Q49
-         TvUPY5fXsECNKsucFR6TrnycsuQzt8lDtIeaRUOchP1vcOOvQ09wmMtoEmKBsnjCYkaF
-         nLpg==
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=0Bii1s2deigTxksVQn5D4fa3g6KSqWpYF2vfQCrTCkQ=;
+        b=mXue/BH8dMK46Q+CxoPuOCAXIhsjfNF4BBz9nY0CKpqWmSNg1EdIyHxC/ObRwwi+4Y
+         vrbbv616X1THSsMHpH5lPr0ZnkJbdXDnByiot4haqIrWo6+ag7FMFpksuXbvMVX5B1mz
+         KDJ9sjiU9NcbKj1KvyZfGqfFysuI5OEoyFOoY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HPuxdzkNqLhQ3fR4K6trK8HciMyFIxhzicL4Cb7qcio=;
-        b=AplmewcnGk3RzVug5g3gbIGWWsHMWEwKwWS0By+iUviaGOaGpwCXWmyeEdMcoLLgAL
-         a7484/ceipiHFGe/D5ebNvJ+fkyuQIyLzafwj0UAt7mb1qCojk7uVrjz6D/h6J2FZFBA
-         btnEO8kTwfK/O/aY+MQ+FK9h00h5yuTfukZM4c2MKmK5j/Q0OwJc31xgh53Kw8/HfUli
-         zYujjwZbsCV89e6LDWgJF/TwH2FziKVga/A+0OcBsNuOzD5tFL8LZ/OowmMr83NEjikw
-         l3ptRw680CN1ut/U2xP5L4BRmBYZsN8Pbq3lHFNZGn9q+oxN+98yoLSqrdz1OsDNrOz1
-         KuLg==
-X-Gm-Message-State: ANhLgQ3TgTwQUL2dJXNWZXtbePt0TtwmeYZbLlygHS/XQ/ne1ghywIXc
-        K8M7t9y+Dacn9UZM2xErXsI=
-X-Google-Smtp-Source: ADFU+vv6mkckeowZNju+x2RhpAIHT1ILBxnCrIRu4fmAU14QnDRISc+beyxgPwlhEAsPwxDeTVqesA==
-X-Received: by 2002:a17:90a:5218:: with SMTP id v24mr1722611pjh.90.1585251654782;
-        Thu, 26 Mar 2020 12:40:54 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:c7d9])
-        by smtp.gmail.com with ESMTPSA id a71sm2364519pfa.162.2020.03.26.12.40.52
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=0Bii1s2deigTxksVQn5D4fa3g6KSqWpYF2vfQCrTCkQ=;
+        b=msHpgOX9gqjs3lWa7iPugy+uSYWyTkGK1fr+cj1a28Olv18ObvhEJNdy1ubUUt11RH
+         v5GNOpAna68fSA8yPZHwUY2mAMUI5tBGqFjhpaXIHqN3qM9DTmp6qAw1vAA/90IE3naM
+         RZxUEm4i4UzS1i6t8kYnftW/+uKKe9gqXzxEplxmZZS+V24QfX7g9IdtZACFOihlUdMj
+         Y2Wv9DgKF5No+DM5KMU2P8xnPtiA0Lmva3oZKkEhNqmPuy3f3rIyS6PV0FspPhQtYSNo
+         P058mTBswChY9XFcQxHNz+WcyYSYl2kFOdAwuZVtZvbLdkpbik/F3Y+o7WOBNdVTEAU7
+         9vDQ==
+X-Gm-Message-State: ANhLgQ3l3eFviuFWnRs+3c/6vdNQvJWlk8qneWjRR87wLf6ZpDGz5Ju2
+        mapXAVLHzk86pUCzvdx/OhFt0g==
+X-Google-Smtp-Source: ADFU+vv6oOna9/uYcBsBB+T/TvHqVZPZsv2Q92xO2Srm3mQHiGr5MgeyNE/xuLzjiHifH8JuX6CviQ==
+X-Received: by 2002:a05:600c:24c:: with SMTP id 12mr1548359wmj.186.1585251843249;
+        Thu, 26 Mar 2020 12:44:03 -0700 (PDT)
+Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
+        by smtp.gmail.com with ESMTPSA id s127sm4869574wmf.28.2020.03.26.12.44.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Mar 2020 12:40:53 -0700 (PDT)
-Date:   Thu, 26 Mar 2020 12:40:50 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        Thu, 26 Mar 2020 12:44:02 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Thu, 26 Mar 2020 20:44:00 +0100
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@google.com>,
+        Thomas Garnier <thgarnie@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
- program when attaching XDP
-Message-ID: <20200326194050.d5cjetvhzlhyiesb@ast-mbp>
-References: <CAEf4BzbWa8vdyLuzr_nxFM3BtT+hhzjCe9UQF8Y5cN+sVqa72g@mail.gmail.com>
- <87tv2f48lp.fsf@toke.dk>
- <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com>
- <87h7ye3mf3.fsf@toke.dk>
- <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com>
- <87tv2e10ly.fsf@toke.dk>
- <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com>
- <87369wrcyv.fsf@toke.dk>
- <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com>
- <20200325221323.00459c8d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH bpf-next v7 7/8] bpf: lsm: Add selftests for
+ BPF_PROG_TYPE_LSM
+Message-ID: <20200326194400.GB15273@chromium.org>
+References: <20200326142823.26277-1-kpsingh@chromium.org>
+ <20200326142823.26277-8-kpsingh@chromium.org>
+ <CAEf4BzZRe_kFR4yzhPFGgauvYLKvre1reuGp=5=jq_nvQGAayw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200325221323.00459c8d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzZRe_kFR4yzhPFGgauvYLKvre1reuGp=5=jq_nvQGAayw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 25, 2020 at 10:13:23PM -0700, Jakub Kicinski wrote:
+On 26-Mär 12:24, Andrii Nakryiko wrote:
+> On Thu, Mar 26, 2020 at 7:30 AM KP Singh <kpsingh@chromium.org> wrote:
 > >
-> > Now for XDP. It has same flawed model. And even if it seems to you
-> > that it's not a big issue, and even if Jakub thinks we are trying to
-> > solve non-existing problem, it is a real problem and a real concern
-> > from people that have to support XDP in production with many
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > * Load/attach a BPF program that hooks to file_mprotect (int)
+> >   and bprm_committed_creds (void).
+> > * Perform an action that triggers the hook.
+> > * Verify if the audit event was received using the shared global
+> >   variables for the process executed.
+> > * Verify if the mprotect returns a -EPERM.
+> >
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+> > Reviewed-by: Brendan Jackman <jackmanb@google.com>
+> > Reviewed-by: Florent Revest <revest@google.com>
+> > Reviewed-by: Thomas Garnier <thgarnie@google.com>
+> > ---
 > 
-> More than happy to talk to those folks, and see the tickets.
-
-Jakub, you repeatedly demonstrated lack of understanding of what
-bpf_link is despite multiple attempts from me, Andrii and others.
-At this point I don't believe in your good intent.
-Your repeated attacks on BPF in every thread are out of control.
-I kept ignoring your insults for long time, but I cannot do this anymore.
-Please find other threads to contribute your opinions.
-They are not welcomed here.
-
-> > well-meaning developers developing BPF applications independently.
+> Please fix endlines below. With that:
 > 
-> There is one single program which can be attached to the XDP hook, 
-> the "everybody attaches their program model" does not apply.
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
 > 
-> TW agent should just listen on netlink notifications to see if someone
-> replaced its program.
+> >  tools/testing/selftests/bpf/config            |  2 +
+> >  .../selftests/bpf/prog_tests/test_lsm.c       | 86 +++++++++++++++++++
+> >  tools/testing/selftests/bpf/progs/lsm.c       | 48 +++++++++++
+> >  3 files changed, 136 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_lsm.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/lsm.c
+> >
+> 
+> [...]
+> 
+> > +void test_test_lsm(void)
+> > +{
+> > +       struct lsm *skel = NULL;
+> > +       int err, duration = 0;
+> > +
+> > +       skel = lsm__open_and_load();
+> > +       if (CHECK(!skel, "skel_load", "lsm skeleton failed\n"))
+> > +               goto close_prog;
+> > +
+> > +       err = lsm__attach(skel);
+> > +       if (CHECK(err, "attach", "lsm attach failed: %d\n", err))
+> > +               goto close_prog;
+> > +
+> > +       err = exec_cmd(&skel->bss->monitored_pid);
+> > +       if (CHECK(err < 0, "exec_cmd", "err %d errno %d\n", err, errno))
+> > +               goto close_prog;
+> > +
+> > +       CHECK(skel->bss->bprm_count != 1, "bprm_count", "bprm_count = %d",
+> 
+> \n is missing
 
-This is dumbest idea I've heard in a long time.
-May be kernel shouldn't have done ACLs and did notifications only
-when file is accessed by a task that shouldn't have accessed it?
-Same level of craziness.
+Done.
+
+> 
+> > +             skel->bss->bprm_count);
+> > +
+> > +       skel->bss->monitored_pid = getpid();
+> > +
+> > +       err = heap_mprotect();
+> > +       if (CHECK(errno != EPERM, "heap_mprotect", "want errno=EPERM, got %d\n",
+> > +                 errno))
+> > +               goto close_prog;
+> > +
+> > +       CHECK(skel->bss->mprotect_count != 1, "mprotect_count",
+> > +             "mprotect_count = %d", skel->bss->mprotect_count);
+> 
+> \n is missing
+
+Done.
+
+- KP
+
+> 
+> > +
+> > +close_prog:
+> > +       lsm__destroy(skel);
+> > +}
+> 
+> [...]
