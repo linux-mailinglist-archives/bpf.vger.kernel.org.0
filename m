@@ -2,56 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 09FCF193570
-	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 02:57:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC81919357E
+	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 03:01:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727574AbgCZB5E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Mar 2020 21:57:04 -0400
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:45937 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727564AbgCZB5D (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Mar 2020 21:57:03 -0400
-Received: by mail-qv1-f67.google.com with SMTP id g4so2179272qvo.12;
-        Wed, 25 Mar 2020 18:57:03 -0700 (PDT)
+        id S1727576AbgCZCBN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Mar 2020 22:01:13 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:44156 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727561AbgCZCBM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Mar 2020 22:01:12 -0400
+Received: by mail-qt1-f194.google.com with SMTP id x16so4050097qts.11;
+        Wed, 25 Mar 2020 19:01:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XZom649rD9A2YiwpVukxYNVVAs0uWpwZ9GzmqDRwqNA=;
-        b=bFB7g4KTIRH6+POAgAAyQQICNPW/diAa6HattO/B+IEPIPNsd2YUVkvVJwNRxLQnZo
-         Rlqe021q/IiNZ4xDdUEbkkVrWeaGMSKyGHlmlALSJUgayaC+PGmoUBhtJ/MDAv5ET6Hn
-         AFvfHjKApzJn4paZW5glsyUy9wW7FKbJp7qyueiNlwUtD3QicIexoQeUFuF1v0pRDY0F
-         lzqL0LJJjetTRczXyn9f6fCaUcHwtvhY/XaO4fKzwnOHY5AuUgyDbzcPwN6H0maXwsux
-         gP+FHyHCutE2oQzv6lzmmhszLMhdJIjLsisKrNi/zRWaYrvveABYl+2Bm1fHFulm/uzC
-         p9qg==
+        bh=nfDBqnoDk7+WrJd1+uPYSH2KCPjyEuxa89DWXm3bmH8=;
+        b=Fl4C1DBn+fUTzfbu/f+eoGiCyfJx7FwO92+Vxi31fr5sNtrsnlaD3iZfvr6LGLooEk
+         +01RoWONUrHOa6G/m6pERIO0iRY3JcKhGLYVCTOVHSyEeyE1G95Tkz0bWx0zEYFwdGT6
+         hnv+wmjW5dSDiN+3DPP2SiUpMu4UE2CckumGh9+LMZ6Sq69VedNJNE+zEPZLS3LhPot7
+         YTpo5oUoshGNjWRXI7sr6Y8kCmKU4Q43fEHlDfmpi5p/fvOrEbjjZq/PopfHpF7XgPER
+         SXcQ7zQi1sRzTwO2D4Tc/Sf+P1qHCI6HFnlB4gzDPTDZ0WXkmmXqwZSbEYWj1vHlVtMh
+         E4lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XZom649rD9A2YiwpVukxYNVVAs0uWpwZ9GzmqDRwqNA=;
-        b=nckudXUkixhIOILWiE6oEINferSL+o2cDcXJcQHOfguYLcL+SWGXAMkMNbl4T0XlxY
-         GPMEu1vymvyUpMAU47hIqu58oVCzjlSHIZJC4FxT4bzAQJ1J8P7ZI+nA6knACtflDjGs
-         g+1alxOGx+dUId+VwF/RQsL0RNCwcxY0cPCpO+CKdGRE+Xc4K2MVnoGO2C6J20sD5fWW
-         NzMxPVKld2bEwkJgQCh8uIOafX0f6316Ld6uqjMFVXQXL5eo8yJnf0LaVAraRWfHPqMQ
-         sEk+ZbszZEeEfNOyDkTKuCrCNCY+2/TPDVZ9NnuilEs8KrqBFRaT+uuURFOLGA05cDe7
-         J6og==
-X-Gm-Message-State: ANhLgQ0Z44QlGxmqiwe9UcgIgpPiEXV4PR+BVVLAdHPQvs1W78e61mMG
-        gqMYhaofNYvJjQGeXmwO83iZFM/j31Z0Tyz0y+g=
-X-Google-Smtp-Source: ADFU+vtZRksw2950jnl8Q59zwV1JximIkDZpJC5LSSHjKcPw+tjw857VjjCYua+Tohc0vUPAb/rcbVGh3j5lAVJxEok=
-X-Received: by 2002:a0c:ee28:: with SMTP id l8mr6023029qvs.196.1585187823033;
- Wed, 25 Mar 2020 18:57:03 -0700 (PDT)
+        bh=nfDBqnoDk7+WrJd1+uPYSH2KCPjyEuxa89DWXm3bmH8=;
+        b=BEKoWzuhqT7i/6ZF13DDa9roCTD5440fvWN0Y0HEpcD16AEcU7oWsNXUMymN34wO/G
+         6uM01Ha4vvhWvQHt7QePh74yg7IEuz28nFYf8yqxpAxhuD62C/QtLXS9WxybD8o6oCCv
+         LxTWUPd8U1AyRg+hJ99/DCRV/lA6zOXsqQDx06QlKfyG6sIv5m6ptnzwD+kOEv4M0nNQ
+         vx19MoYN0t8SOYT2r/sxZU6Xy2389VPDcYyGov4W5Zk5fmkO8XdE75QQHnEcnV4Xe4IA
+         4jlbxQQx3gvCV9g0YjvUrUqzixKFjp/TFbf+mpQwIHsXPYh6YtdkPekmKBdDHpltby4+
+         pjew==
+X-Gm-Message-State: ANhLgQ3joE2woMe5/uQURhzhjvrpf8hKWYVc4tseiE19qJiX+xR3X8QF
+        QvqtpCBcS+7Uu43sORvICCt3cDqUzJGo2ztHihQ=
+X-Google-Smtp-Source: ADFU+vso0K1cvL1q9SrpEdWIqGIFrHL4xgAECmYR7YSLtyGx3b7KBjOhL/42EFez99LDEYomrSf1BZZPJwg90uVjIcw=
+X-Received: by 2002:ac8:3f62:: with SMTP id w31mr5917641qtk.171.1585188071656;
+ Wed, 25 Mar 2020 19:01:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200325152629.6904-1-kpsingh@chromium.org> <20200325152629.6904-7-kpsingh@chromium.org>
-In-Reply-To: <20200325152629.6904-7-kpsingh@chromium.org>
+References: <20200325152629.6904-1-kpsingh@chromium.org> <20200325152629.6904-8-kpsingh@chromium.org>
+In-Reply-To: <20200325152629.6904-8-kpsingh@chromium.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 25 Mar 2020 18:56:52 -0700
-Message-ID: <CAEf4Bzbn3jAXPEBPWtxk6UUN9iWbmb_bnPYzSoA7du-Nz-Mbxw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 6/8] tools/libbpf: Add support for BPF_PROG_TYPE_LSM
+Date:   Wed, 25 Mar 2020 19:01:00 -0700
+Message-ID: <CAEf4BzbzfbTT9x3tfLrqhYgozcvxvHvKSVkvyuNqji=aNgvmZg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 7/8] bpf: lsm: Add selftests for BPF_PROG_TYPE_LSM
 To:     KP Singh <kpsingh@chromium.org>
 Cc:     open list <linux-kernel@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
         Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@google.com>, Yonghong Song <yhs@fb.com>,
+        Florent Revest <revest@google.com>,
+        Thomas Garnier <thgarnie@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         James Morris <jmorris@namei.org>,
@@ -70,28 +71,50 @@ On Wed, Mar 25, 2020 at 8:27 AM KP Singh <kpsingh@chromium.org> wrote:
 >
 > From: KP Singh <kpsingh@google.com>
 >
-> Since BPF_PROG_TYPE_LSM uses the same attaching mechanism as
-> BPF_PROG_TYPE_TRACING, the common logic is refactored into a static
-> function bpf_program__attach_btf_id.
->
-> A new API call bpf_program__attach_lsm is still added to avoid userspace
-> conflicts if this ever changes in the future.
+> * Load/attach a BPF program that hooks to file_mprotect (int)
+>   and bprm_committed_creds (void).
+> * Perform an action that triggers the hook.
+> * Verify if the audit event was received using the shared global
+>   variables for the process executed.
+> * Verify if the mprotect returns a -EPERM.
 >
 > Signed-off-by: KP Singh <kpsingh@google.com>
 > Reviewed-by: Brendan Jackman <jackmanb@google.com>
 > Reviewed-by: Florent Revest <revest@google.com>
-> Acked-by: Yonghong Song <yhs@fb.com>
+> Reviewed-by: Thomas Garnier <thgarnie@google.com>
 > ---
-
-LGTM.
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  tools/lib/bpf/bpf.c      |  3 ++-
->  tools/lib/bpf/libbpf.c   | 39 +++++++++++++++++++++++++++++++++++----
->  tools/lib/bpf/libbpf.h   |  4 ++++
->  tools/lib/bpf/libbpf.map |  3 +++
->  4 files changed, 44 insertions(+), 5 deletions(-)
+>  tools/testing/selftests/bpf/config            |  2 +
+>  .../selftests/bpf/prog_tests/test_lsm.c       | 84 +++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/lsm.c       | 48 +++++++++++
+>  3 files changed, 134 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_lsm.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/lsm.c
 >
+
+[...]
+
+> +
+> +int exec_cmd(int *monitored_pid)
+> +{
+> +       int child_pid;
+> +
+> +       child_pid = fork();
+> +       if (child_pid == 0) {
+> +               *monitored_pid = getpid();
+> +               execvp(CMD_ARGS[0], CMD_ARGS);
+> +               return -EINVAL;
+> +       } else if (child_pid > 0)
+
+This test is part of test_progs, so let's be a good citizen and wait
+for your specific child. I'd rather not hunt for elusive bugs later,
+so please use waitpid() instead.
+
+Otherwise looks good and clean, thanks!
+
+> +               return wait(NULL);
+> +
+> +       return -EINVAL;
+> +}
+> +
 
 [...]
