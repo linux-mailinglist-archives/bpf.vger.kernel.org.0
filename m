@@ -2,55 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D499193FDA
-	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 14:35:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF56193FDD
+	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 14:36:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbgCZNf4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Mar 2020 09:35:56 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:36425 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727541AbgCZNfz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Mar 2020 09:35:55 -0400
-Received: by mail-wr1-f66.google.com with SMTP id 31so7826025wrs.3
-        for <bpf@vger.kernel.org>; Thu, 26 Mar 2020 06:35:52 -0700 (PDT)
+        id S1727708AbgCZNg1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Mar 2020 09:36:27 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:35534 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727444AbgCZNg0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Mar 2020 09:36:26 -0400
+Received: by mail-wr1-f67.google.com with SMTP id d5so7866486wrn.2
+        for <bpf@vger.kernel.org>; Thu, 26 Mar 2020 06:36:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to
          :user-agent;
-        bh=V3FPFqQqihDv51B2EC+6j3PXfsDAs8xWIOORX4GI6BE=;
-        b=OU2CdvNfnHQaPtqcTFjw0kBWW1Zulr0Dh2t5tSDDdbEQSnD+WiGxBdCRQaJw0EWvuq
-         AwqWxe+eanybPcnewJ7F/Ue57ukfTcoex0adU6mKHeWbco4+p4uSSq7T1+tlXANOtTt5
-         v24dc7WmHf+rjs04tY5UYE0vPE5YUPItM3+yM=
+        bh=ovCKN6r26UhRylA1vm+kwz+TJf7uPDzl6lowndnjD70=;
+        b=aX7Amg/46758K2hIawHd5YOPoDrIwsKkKCmkQGPWJLgpI5bZnube9C0/LCQnSGvwUP
+         iV0QhWaOjaN7p9ZMwc8S8wSy9SSSu7TLsY4Zvtr09q7OeW0wtfFfAw0U+ZvFSyVA8SP0
+         da49F5jmKwK9hxv9Vjyrxo69UW1Zb58H1Roiw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to:user-agent;
-        bh=V3FPFqQqihDv51B2EC+6j3PXfsDAs8xWIOORX4GI6BE=;
-        b=cpQrnBcaKtdiNGPRD6LvTQ5omUOOd03pCZ8ApqpORCGrc/IvlKg0ZTq3UbMU+5XHVJ
-         zxjeSebQ7Drq4Z2QD+273VqBl+RxiASlJzDlfQUQBqZWxTqNo8XcPc+n5VjVFhFoHqsf
-         Tl+6H3bwAREncqd2jIBwLVNeAJeza+cJksMgEei9wZT7wEfnvMtIIAyuk45HdhUZL9r4
-         Zc1hoCdDUmiVmiuYFA4fCAWYneg5pdq3mfB1pHw1PniA9YACYIFO7swqTMnbctjTmatT
-         bg+8qOkok6EUOJlm+hcJERry3FX1NQjyKjUe0CjKwBPBfFJym+sGrQF+wcSolArTBQUG
-         6o4w==
-X-Gm-Message-State: ANhLgQ0CUrbrN10tYEUwu8taiiFu4cLk2lLYsQrlarztpOHLb1xPHqUY
-        IEw4MBcV0/VnXhG3BgkME6zT6Q==
-X-Google-Smtp-Source: ADFU+vum8zXgDXt9jwDJee9jxJCo25OtCt5HFS/x50WWMNv1xR+RAoCMpvWfWWgSigrkJ1R+ggA3WA==
-X-Received: by 2002:adf:916f:: with SMTP id j102mr9015893wrj.335.1585229751684;
-        Thu, 26 Mar 2020 06:35:51 -0700 (PDT)
+        bh=ovCKN6r26UhRylA1vm+kwz+TJf7uPDzl6lowndnjD70=;
+        b=E/6wcIJa/xWYi7jQY+jL+qWBrIRZDKQlSmw7w1ODZTZ+grTbyD2/u1to8w9rba6cS+
+         UBNw4F9dA1HXMdyyx2tPUS1VVo2j1S5IAKTWFpJEzX9C4JSKRqO3gIzB2V6oItNKCUkn
+         Mgcx3KUn8pnJORhEbCkLu1qy/NCYWhM/8OpbBnn0LMPA+frfDqcMtB6nJ8trogvABnek
+         /JT7auJhKzy/B6cNi7CvPd9pPmyoFMcOfWnhmj6iCIP8SG+fkXRD/eT/CLyl1m+gwVF/
+         ddy5rEkMLRVZB1IT3dvaVtBhrYdXwz5MflkToXdj+37g3rA+ehVkpFhKM34058kwC4zW
+         DTkQ==
+X-Gm-Message-State: ANhLgQ3l0xtEj6gz4eesTmYFpH1iZy6BZ+DplHjrdWTLcTDWprLKcmVk
+        UEWawAnbbVgrVOeJMxTDdfvmrA==
+X-Google-Smtp-Source: ADFU+vsKWkKMYKPUzplU34IsZwsOqLykAHrTxJTpYTlmSJ4JSei5CHjs0/8o+xQyrIai7gjjyFDcQg==
+X-Received: by 2002:adf:f0c5:: with SMTP id x5mr9499607wro.415.1585229784324;
+        Thu, 26 Mar 2020 06:36:24 -0700 (PDT)
 Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
-        by smtp.gmail.com with ESMTPSA id q185sm3713058wme.10.2020.03.26.06.35.48
+        by smtp.gmail.com with ESMTPSA id a186sm3499256wmh.33.2020.03.26.06.36.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Mar 2020 06:35:51 -0700 (PDT)
+        Thu, 26 Mar 2020 06:36:23 -0700 (PDT)
 From:   KP Singh <kpsingh@chromium.org>
 X-Google-Original-From: KP Singh <kpsingh>
-Date:   Thu, 26 Mar 2020 14:35:47 +0100
+Date:   Thu, 26 Mar 2020 14:36:17 +0100
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     open list <linux-kernel@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
         Brendan Jackman <jackmanb@google.com>,
         Florent Revest <revest@google.com>,
+        Thomas Garnier <thgarnie@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         James Morris <jmorris@namei.org>,
@@ -59,97 +60,77 @@ Cc:     open list <linux-kernel@vger.kernel.org>,
         Florent Revest <revest@chromium.org>,
         Brendan Jackman <jackmanb@chromium.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH bpf-next v6 4/8] bpf: lsm: Implement attach, detach and
- execution
-Message-ID: <20200326133547.GB8575@chromium.org>
+Subject: Re: [PATCH bpf-next v6 7/8] bpf: lsm: Add selftests for
+ BPF_PROG_TYPE_LSM
+Message-ID: <20200326133617.GC8575@chromium.org>
 References: <20200325152629.6904-1-kpsingh@chromium.org>
- <20200325152629.6904-5-kpsingh@chromium.org>
- <CAEf4BzbZ0Y+BXezgbdzN2T1cH9osREJUNQQoQJ5rJ0EYyD-Udg@mail.gmail.com>
+ <20200325152629.6904-8-kpsingh@chromium.org>
+ <CAEf4BzbzfbTT9x3tfLrqhYgozcvxvHvKSVkvyuNqji=aNgvmZg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbZ0Y+BXezgbdzN2T1cH9osREJUNQQoQJ5rJ0EYyD-Udg@mail.gmail.com>
+In-Reply-To: <CAEf4BzbzfbTT9x3tfLrqhYgozcvxvHvKSVkvyuNqji=aNgvmZg@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 25-Mär 18:49, Andrii Nakryiko wrote:
+On 25-Mär 19:01, Andrii Nakryiko wrote:
 > On Wed, Mar 25, 2020 at 8:27 AM KP Singh <kpsingh@chromium.org> wrote:
 > >
 > > From: KP Singh <kpsingh@google.com>
 > >
-> > JITed BPF programs are dynamically attached to the LSM hooks
-> > using BPF trampolines. The trampoline prologue generates code to handle
-> > conversion of the signature of the hook to the appropriate BPF context.
-> >
-> > The allocated trampoline programs are attached to the nop functions
-> > initialized as LSM hooks.
-> >
-> > BPF_PROG_TYPE_LSM programs must have a GPL compatible license and
-> > and need CAP_SYS_ADMIN (required for loading eBPF programs).
-> >
-> > Upon attachment:
-> >
-> > * A BPF fexit trampoline is used for LSM hooks with a void return type.
-> > * A BPF fmod_ret trampoline is used for LSM hooks which return an
-> >   int. The attached programs can override the return value of the
-> >   bpf LSM hook to indicate a MAC Policy decision.
+> > * Load/attach a BPF program that hooks to file_mprotect (int)
+> >   and bprm_committed_creds (void).
+> > * Perform an action that triggers the hook.
+> > * Verify if the audit event was received using the shared global
+> >   variables for the process executed.
+> > * Verify if the mprotect returns a -EPERM.
 > >
 > > Signed-off-by: KP Singh <kpsingh@google.com>
 > > Reviewed-by: Brendan Jackman <jackmanb@google.com>
 > > Reviewed-by: Florent Revest <revest@google.com>
+> > Reviewed-by: Thomas Garnier <thgarnie@google.com>
 > > ---
-> >  include/linux/bpf_lsm.h | 11 ++++++++
-> >  kernel/bpf/bpf_lsm.c    | 28 +++++++++++++++++++++
-> >  kernel/bpf/btf.c        |  9 ++++++-
-> >  kernel/bpf/syscall.c    | 56 ++++++++++++++++++++++++++++-------------
-> >  kernel/bpf/trampoline.c | 17 ++++++++++---
-> >  kernel/bpf/verifier.c   | 19 +++++++++++---
-> >  6 files changed, 113 insertions(+), 27 deletions(-)
+> >  tools/testing/selftests/bpf/config            |  2 +
+> >  .../selftests/bpf/prog_tests/test_lsm.c       | 84 +++++++++++++++++++
+> >  tools/testing/selftests/bpf/progs/lsm.c       | 48 +++++++++++
+> >  3 files changed, 134 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_lsm.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/lsm.c
 > >
 > 
 > [...]
 > 
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index 85567a6ea5f9..3ba30fd6101e 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -25,6 +25,7 @@
-> >  #include <linux/nospec.h>
-> >  #include <linux/audit.h>
-> >  #include <uapi/linux/btf.h>
-> > +#include <linux/bpf_lsm.h>
-
-[...]
-
-> > -               if (prog->expected_attach_type == BPF_TRACE_RAW_TP)
-> > +               if (prog->expected_attach_type == BPF_TRACE_RAW_TP) {
+> > +
+> > +int exec_cmd(int *monitored_pid)
+> > +{
+> > +       int child_pid;
+> > +
+> > +       child_pid = fork();
+> > +       if (child_pid == 0) {
+> > +               *monitored_pid = getpid();
+> > +               execvp(CMD_ARGS[0], CMD_ARGS);
+> > +               return -EINVAL;
+> > +       } else if (child_pid > 0)
 > 
-> this should probably also ensure prog->type == BPF_PROG_TYPE_TRACING ?
-> Otherwise you can trick kernel with BPF_PROG_TYPE_LSM and
-> expected_attach_type == BPF_TRACE_RAW_TP, no?
+> This test is part of test_progs, so let's be a good citizen and wait
+> for your specific child. I'd rather not hunt for elusive bugs later,
+> so please use waitpid() instead.
 
-Indeed, fixed. Thanks!
+Good idea. Done.
 
 - KP
 
 > 
-> >                         tp_name = prog->aux->attach_func_name;
-> > -               else
-> > -                       return bpf_tracing_prog_attach(prog);
-> > -       } else {
-> > +                       break;
-> > +               }
-> > +               return bpf_tracing_prog_attach(prog);
-> > +       case BPF_PROG_TYPE_RAW_TRACEPOINT:
-> > +       case BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE:
-> >                 if (strncpy_from_user(buf,
-> >                                       u64_to_user_ptr(attr->raw_tracepoint.name),
-> >                                       sizeof(buf) - 1) < 0) {
-> > @@ -2479,6 +2495,10 @@ static int bpf_raw_tracepoint_open(const union bpf_attr *attr)
-> >                }
+> Otherwise looks good and clean, thanks!
+> 
+> > +               return wait(NULL);
+> > +
+> > +       return -EINVAL;
+> > +}
+> > +
 > 
 > [...]
