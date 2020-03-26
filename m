@@ -2,119 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC81919357E
-	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 03:01:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 170A519358C
+	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 03:04:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727576AbgCZCBN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Mar 2020 22:01:13 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:44156 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727561AbgCZCBM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Mar 2020 22:01:12 -0400
-Received: by mail-qt1-f194.google.com with SMTP id x16so4050097qts.11;
-        Wed, 25 Mar 2020 19:01:12 -0700 (PDT)
+        id S1727611AbgCZCEq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Mar 2020 22:04:46 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:40398 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727585AbgCZCEq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Mar 2020 22:04:46 -0400
+Received: by mail-qt1-f196.google.com with SMTP id c9so4079484qtw.7;
+        Wed, 25 Mar 2020 19:04:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nfDBqnoDk7+WrJd1+uPYSH2KCPjyEuxa89DWXm3bmH8=;
-        b=Fl4C1DBn+fUTzfbu/f+eoGiCyfJx7FwO92+Vxi31fr5sNtrsnlaD3iZfvr6LGLooEk
-         +01RoWONUrHOa6G/m6pERIO0iRY3JcKhGLYVCTOVHSyEeyE1G95Tkz0bWx0zEYFwdGT6
-         hnv+wmjW5dSDiN+3DPP2SiUpMu4UE2CckumGh9+LMZ6Sq69VedNJNE+zEPZLS3LhPot7
-         YTpo5oUoshGNjWRXI7sr6Y8kCmKU4Q43fEHlDfmpi5p/fvOrEbjjZq/PopfHpF7XgPER
-         SXcQ7zQi1sRzTwO2D4Tc/Sf+P1qHCI6HFnlB4gzDPTDZ0WXkmmXqwZSbEYWj1vHlVtMh
-         E4lQ==
+        bh=N5bkQtuu9iQlJDxT62St8TPUscxkVcdWASODyg/UT1M=;
+        b=O1+xgRCefbQlRiuZuIjkTmB/R+u5wp5fwmODgpsZz56FU9vaePzTpDzQaSX3N2OEmE
+         Oy4l3hCr3va63/2e9oyZ+qOBHWHXDVYXDNzzxGZnOHwOuLr2HZ1UFXoteRs0UsrfHV1+
+         L0gZ2iljcoomb2jJK7/iCXcEBkaYn5J0cFybHAobUOjoxMRX8MOsPyXQ9wr9pdUUTfRK
+         yYa9IfmRhnVoexVTovWx0P61iJgGmltzSAY2UwNFUNN72+f5SnipvP1MwbGgM9uisOz8
+         WwjbRYW5CRCr2B6klKoE5tNHdkscbHFAOcKfNGzM5h2R8XuAyDxSttnCKHz/RyEV5ej1
+         +i1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nfDBqnoDk7+WrJd1+uPYSH2KCPjyEuxa89DWXm3bmH8=;
-        b=BEKoWzuhqT7i/6ZF13DDa9roCTD5440fvWN0Y0HEpcD16AEcU7oWsNXUMymN34wO/G
-         6uM01Ha4vvhWvQHt7QePh74yg7IEuz28nFYf8yqxpAxhuD62C/QtLXS9WxybD8o6oCCv
-         LxTWUPd8U1AyRg+hJ99/DCRV/lA6zOXsqQDx06QlKfyG6sIv5m6ptnzwD+kOEv4M0nNQ
-         vx19MoYN0t8SOYT2r/sxZU6Xy2389VPDcYyGov4W5Zk5fmkO8XdE75QQHnEcnV4Xe4IA
-         4jlbxQQx3gvCV9g0YjvUrUqzixKFjp/TFbf+mpQwIHsXPYh6YtdkPekmKBdDHpltby4+
-         pjew==
-X-Gm-Message-State: ANhLgQ3joE2woMe5/uQURhzhjvrpf8hKWYVc4tseiE19qJiX+xR3X8QF
-        QvqtpCBcS+7Uu43sORvICCt3cDqUzJGo2ztHihQ=
-X-Google-Smtp-Source: ADFU+vso0K1cvL1q9SrpEdWIqGIFrHL4xgAECmYR7YSLtyGx3b7KBjOhL/42EFez99LDEYomrSf1BZZPJwg90uVjIcw=
-X-Received: by 2002:ac8:3f62:: with SMTP id w31mr5917641qtk.171.1585188071656;
- Wed, 25 Mar 2020 19:01:11 -0700 (PDT)
+        bh=N5bkQtuu9iQlJDxT62St8TPUscxkVcdWASODyg/UT1M=;
+        b=hTpIole65leilg1KaNxPADG4PNBaO3BSVHnAytr4u0vQWSIZFVTvRYCMT3CY+yW091
+         QIg4T0tnrd2eLcyb2cHCIoRJ/+Vr15Kc8uvo446g+LcaatELStPhS0Fn9cD+zsrdwBPg
+         mtNzuO8la98Q3Bx2NtDG+LRCapU52QNEoXoljl1J02HthYHeQTEIYdwWqHY+DOEtfx5g
+         eKFaGH12EaLIzZErOZ9POyk1g2ZbR/hGZV1gXzzxj3HACOKeJ0EKsxOEbpPP7a12htmB
+         7tg3/mJOqgSeAuvTDRu3Gkpp7xQo0kn/R05hsENEd0nY+PWK4nlg93+bsnWgZ9mdnYEd
+         pqyg==
+X-Gm-Message-State: ANhLgQ22mdJXsJdzI6fzuji/Yw12GAuYDMVkyGWAm6w7VF63RWWjJ7N8
+        Wodbj554hM8gB9fjI2CUmDq7Mo3eBDDFsEGf6Ic=
+X-Google-Smtp-Source: ADFU+vuk7zcNEhOvNiM0X5r+laX6IFK+yyCCAvMF6t4L0Qg0s6LBWnyDc+A6yJObwePEfp9kGgaz4+j5leQc9BaUx3U=
+X-Received: by 2002:ac8:7cb0:: with SMTP id z16mr5878580qtv.59.1585188285039;
+ Wed, 25 Mar 2020 19:04:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200325152629.6904-1-kpsingh@chromium.org> <20200325152629.6904-8-kpsingh@chromium.org>
-In-Reply-To: <20200325152629.6904-8-kpsingh@chromium.org>
+References: <20200325055745.10710-1-joe@wand.net.nz> <20200325055745.10710-6-joe@wand.net.nz>
+In-Reply-To: <20200325055745.10710-6-joe@wand.net.nz>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 25 Mar 2020 19:01:00 -0700
-Message-ID: <CAEf4BzbzfbTT9x3tfLrqhYgozcvxvHvKSVkvyuNqji=aNgvmZg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 7/8] bpf: lsm: Add selftests for BPF_PROG_TYPE_LSM
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
-        Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@google.com>,
-        Thomas Garnier <thgarnie@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 25 Mar 2020 19:04:34 -0700
+Message-ID: <CAEf4BzbxWtC9H79ij+hzWU6VDHtEVWy5_FgGh6-X1SZhtXkz3g@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next 5/5] selftests: bpf: add test for sk_assign
+To:     Joe Stringer <joe@wand.net.nz>
+Cc:     bpf <bpf@vger.kernel.org>, Lorenz Bauer <lmb@cloudflare.com>,
+        Networking <netdev@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Martin Lau <kafai@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 25, 2020 at 8:27 AM KP Singh <kpsingh@chromium.org> wrote:
+On Tue, Mar 24, 2020 at 10:58 PM Joe Stringer <joe@wand.net.nz> wrote:
 >
-> From: KP Singh <kpsingh@google.com>
+> From: Lorenz Bauer <lmb@cloudflare.com>
 >
-> * Load/attach a BPF program that hooks to file_mprotect (int)
->   and bprm_committed_creds (void).
-> * Perform an action that triggers the hook.
-> * Verify if the audit event was received using the shared global
->   variables for the process executed.
-> * Verify if the mprotect returns a -EPERM.
+> Attach a tc direct-action classifier to lo in a fresh network
+> namespace, and rewrite all connection attempts to localhost:4321
+> to localhost:1234 (for port tests) and connections to unreachable
+> IPv4/IPv6 IPs to the local socket (for address tests).
 >
-> Signed-off-by: KP Singh <kpsingh@google.com>
-> Reviewed-by: Brendan Jackman <jackmanb@google.com>
-> Reviewed-by: Florent Revest <revest@google.com>
-> Reviewed-by: Thomas Garnier <thgarnie@google.com>
+> Keep in mind that both client to server and server to client traffic
+> passes the classifier.
+>
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> Co-authored-by: Joe Stringer <joe@wand.net.nz>
+> Signed-off-by: Joe Stringer <joe@wand.net.nz>
 > ---
->  tools/testing/selftests/bpf/config            |  2 +
->  .../selftests/bpf/prog_tests/test_lsm.c       | 84 +++++++++++++++++++
->  tools/testing/selftests/bpf/progs/lsm.c       | 48 +++++++++++
->  3 files changed, 134 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_lsm.c
->  create mode 100644 tools/testing/selftests/bpf/progs/lsm.c
+
+Can you please check that you test fails (instead of getting stuck)
+when there is something wrong with network. We went through this
+exercise with tcp_rtt and sockmap_listen, where a bunch of stuff was
+blocking. This works fine when everything works, but horribly breaks
+when something is not working. Given this is part of test_progs, let's
+please make sure we don't deadlock anywhere.
+
+> v2: Rebase onto test_progs infrastructure
+> v1: Initial commit
+> ---
+>  tools/testing/selftests/bpf/Makefile          |   2 +-
+>  .../selftests/bpf/prog_tests/sk_assign.c      | 244 ++++++++++++++++++
+>  .../selftests/bpf/progs/test_sk_assign.c      | 127 +++++++++
+>  3 files changed, 372 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/sk_assign.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_sk_assign.c
 >
-
-[...]
-
-> +
-> +int exec_cmd(int *monitored_pid)
-> +{
-> +       int child_pid;
-> +
-> +       child_pid = fork();
-> +       if (child_pid == 0) {
-> +               *monitored_pid = getpid();
-> +               execvp(CMD_ARGS[0], CMD_ARGS);
-> +               return -EINVAL;
-> +       } else if (child_pid > 0)
-
-This test is part of test_progs, so let's be a good citizen and wait
-for your specific child. I'd rather not hunt for elusive bugs later,
-so please use waitpid() instead.
-
-Otherwise looks good and clean, thanks!
-
-> +               return wait(NULL);
-> +
-> +       return -EINVAL;
-> +}
-> +
 
 [...]
