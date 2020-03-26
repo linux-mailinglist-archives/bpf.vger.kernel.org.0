@@ -2,79 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 93015194D7C
-	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 00:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 494E8194D91
+	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 00:54:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbgCZXsu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Mar 2020 19:48:50 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:40033 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726067AbgCZXsu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Mar 2020 19:48:50 -0400
-Received: by mail-lf1-f65.google.com with SMTP id j17so6371575lfe.7;
-        Thu, 26 Mar 2020 16:48:48 -0700 (PDT)
+        id S1727670AbgCZXyc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Mar 2020 19:54:32 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:38488 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726067AbgCZXyc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Mar 2020 19:54:32 -0400
+Received: by mail-pg1-f196.google.com with SMTP id x7so3705602pgh.5;
+        Thu, 26 Mar 2020 16:54:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OxfsuJxUwQgyHeL6ML1Ets48AkLBPa97SvcuT6O+r2w=;
-        b=HAyV60qBe3SD5OX4zLRd4QxQKBdm76OMz7aCv0yF0aj3KPd4/r7kOo6qnAwu/ZAF1/
-         eLn/MJhS9Axh75Ww/wSveVhWZzii5tBVlpQLMybJYFbXPEPu5Bz6n9OoJbHftph+tJkW
-         3EWuHUDVLo7CF+Uyydqv6bWzIsdAed+fCIUef+47qS3LgFUg4/KMl12NqsiOACYGfcGQ
-         VM3Jf5Lt/RQOdZv9R5TqRy9uLZznlnYTxUBKaEQcPjT2dMLUonFn+v3nuRPA3M7iPYhM
-         73rhbOBrJvUs4zCeCbHbT1WPQw92bjaredJkoRBunWqfvZEIgGg+OVeVNjiA3r2zvk2t
-         HUQQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7CVUJ19v0pY389uYsPOimGpmTd+8zgk3ZoECLlak5lM=;
+        b=INFMJGFcMVQGmxapcKuRntC2Hu7Scihi/K2WIqPinYkE7x1TAkiXXc/d9BNnWaPns4
+         L5Yjl1/AowBiF15atWfviywBhgO0UTCApRKD1MEGRqOaNjJrO5D5tVfDDz4cE2trvw7l
+         bVlE0Rmf+Rh4whilo56Bl9iTZHvA/Je7qZtsq+R12rNvESruWl2DpeWOyGkOP8bTUtJl
+         /o2zXLz1MMGyJ7Kxl3bLSSodp3GyaoJKNprYHm99xSQEbaB3llKIkqNDETYReSsVx9nE
+         FnvPXwu9d7nsGvcDwKRbA8+6i5NN5ibUQbL2vPleW6nU335BCJvH52SJ0grrfZk7KwSi
+         8EvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OxfsuJxUwQgyHeL6ML1Ets48AkLBPa97SvcuT6O+r2w=;
-        b=oQ/rqfgilGvM8/kaJemIrOck5fZ1Upq5NhhmX9Pg5yy8nDdRBI8HqBmXBwqItZYxAe
-         Pciw51mAvOdsx1sKfTelHz+VlNmuX5c9xDU76IKj9AH2rI/BUVCxyfmELV1zgcTavLHu
-         +Z3T5u0A63POTskqsSEhCsaD9ae4srTijvdJd3GAVfa338A3K/IQe94WPsdiiMKkiyjG
-         WX8ScOVjuaaIO6MXWQ3RM7P/QhmzZug56DhAF0LJ8tsXfmivO5kpDFyN/2Y32B35q4hG
-         qeroJ0PUxxoJGh79q4qg6w1bmZnIa1Ci9ZnnVQg0hzSjZ9F2RCiBnMqMNlG6DF4OTeav
-         bCfQ==
-X-Gm-Message-State: AGi0PuZ04azbDJFtVyFS9TR/vVm66paeo3KyyyGHCqnAvUPT3hPt7dTb
-        VqKWvK8HpE/QFYuJm1HTXs9LWHzScutrqGV6K4Y=
-X-Google-Smtp-Source: APiQypLmMGgk3Zqm7RhdrseYvQYa7UrVl29HUF1yy85h+6Zn9zyRg4mh8uaAzG74LZm0mcl3tFheM7MCdI2V5eeSNMs=
-X-Received: by 2002:a19:6f02:: with SMTP id k2mr1378706lfc.119.1585266527281;
- Thu, 26 Mar 2020 16:48:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200326031613.19372-1-yuehaibing@huawei.com>
-In-Reply-To: <20200326031613.19372-1-yuehaibing@huawei.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7CVUJ19v0pY389uYsPOimGpmTd+8zgk3ZoECLlak5lM=;
+        b=WODTFPEOQnnMYBo9VCxkSA5i0evU3VthziUjDUZg9HUk6iR90FQZScpW/IQHZg/z6p
+         Pr+D5TiiAZGmq4ptlNOjqwfDdh5iUHFowZumTujom0Z15ApS+6iqYrg9CuLa7I+KIS9o
+         wnl1SzQOmmmK/jKI/AjZBKhNC7uL7BJJm+G4e2oe1uaGpRaU/8zGJM/cKRiB0WcXvn2M
+         NB0+m//El3bn13q+8lnbdSmGXB6ZVqHNtec2HhrZmRH0sGL/YoNh40THmareWlau5xUB
+         yIKGCD6Gv/MwyQxM5HbMNs3iX3exjExLe4wMya74QdS2YmT3DNTTxo5tVtJAyGjvshGq
+         8bkg==
+X-Gm-Message-State: ANhLgQ15N5sneQW/xMREsldks7Ms6CIYwaNux0ZMcDi5czpyLJ3LUibf
+        frirDRhqZOvZR3fBpx5MXok=
+X-Google-Smtp-Source: ADFU+vtHItp+nWzngvwdD8m8gR416+z5AIiqRHKH0JSJZuOyBE5OslhJKwILx7T9X+o7ZOXp/Dq6XA==
+X-Received: by 2002:a63:1517:: with SMTP id v23mr10800809pgl.89.1585266871010;
+        Thu, 26 Mar 2020 16:54:31 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:c7d9])
+        by smtp.gmail.com with ESMTPSA id p70sm2417463pjp.47.2020.03.26.16.54.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Mar 2020 16:54:30 -0700 (PDT)
+Date:   Thu, 26 Mar 2020 16:54:26 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 26 Mar 2020 16:48:35 -0700
-Message-ID: <CAADnVQL=jcJAKwcNarjL8-=+9HxhPuRtYOWH_qZ8wGRbNmpbYQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: remove unused vairable 'bpf_xdp_link_lops'
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
+To:     Jean-Philippe Menil <jpmenil@gmail.com>
+Cc:     yhs@fb.com, kernel-janitors@vger.kernel.org,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] bpf: fix build warning - missing prototype
+Message-ID: <20200326235426.ei6ae2z5ek6uq3tt@ast-mbp>
+References: <7c27e51f-6a64-7374-b705-450cad42146c@fb.com>
+ <20200324072231.5780-1-jpmenil@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200324072231.5780-1-jpmenil@gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 25, 2020 at 8:16 PM YueHaibing <yuehaibing@huawei.com> wrote:
->
-> kernel/bpf/syscall.c:2263:34: warning: 'bpf_xdp_link_lops' defined but not used [-Wunused-const-variable=]
->  static const struct bpf_link_ops bpf_xdp_link_lops;
->                                   ^~~~~~~~~~~~~~~~~
->
-> commit 70ed506c3bbc ("bpf: Introduce pinnable bpf_link abstraction")
-> involded this unused variable, remove it.
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+On Tue, Mar 24, 2020 at 08:22:31AM +0100, Jean-Philippe Menil wrote:
+> Fix build warnings when building net/bpf/test_run.o with W=1 due
+> to missing prototype for bpf_fentry_test{1..6}.
+> 
+> Declare prototypes in order to silence warnings.
+> 
+> Signed-off-by: Jean-Philippe Menil <jpmenil@gmail.com>
+> ---
+>  net/bpf/test_run.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> index d555c0d8657d..cdf87fb0b6eb 100644
+> --- a/net/bpf/test_run.c
+> +++ b/net/bpf/test_run.c
+> @@ -113,31 +113,37 @@ static int bpf_test_finish(const union bpf_attr *kattr,
+>   * architecture dependent calling conventions. 7+ can be supported in the
+>   * future.
+>   */
+> +int noinline bpf_fentry_test1(int a);
+>  int noinline bpf_fentry_test1(int a)
+>  {
+>  	return a + 1;
+>  }
+>  
+> +int noinline bpf_fentry_test2(int a, u64 b);
+>  int noinline bpf_fentry_test2(int a, u64 b)
+>  {
+>  	return a + b;
+>  }
+>  
+> +int noinline bpf_fentry_test3(char a, int b, u64 c);
+>  int noinline bpf_fentry_test3(char a, int b, u64 c)
+>  {
+>  	return a + b + c;
+>  }
+>  
+> +int noinline bpf_fentry_test4(void *a, char b, int c, u64 d);
+>  int noinline bpf_fentry_test4(void *a, char b, int c, u64 d)
+>  {
+>  	return (long)a + b + c + d;
+>  }
+>  
+> +int noinline bpf_fentry_test5(u64 a, void *b, short c, int d, u64 e);
+>  int noinline bpf_fentry_test5(u64 a, void *b, short c, int d, u64 e)
+>  {
+>  	return a + (long)b + c + d + e;
+>  }
+>  
+> +int noinline bpf_fentry_test6(u64 a, void *b, short c, int d, void *e, u64 f);
+>  int noinline bpf_fentry_test6(u64 a, void *b, short c, int d, void *e, u64 f)
 
-Applied. Thanks
+That's a bit too much of "watery water".
+Have you considered
+__diag_push();
+__diag_ignore(GCC, "-Wwhatever specific flag will shut up this warn")
+__diag_pop();
+approach ?
+It will be self documenting as well.
