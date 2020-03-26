@@ -2,336 +2,227 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ABA1193CEE
-	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 11:25:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD55D193EF3
+	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 13:35:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727873AbgCZKZE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Mar 2020 06:25:04 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:39784 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726298AbgCZKZC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Mar 2020 06:25:02 -0400
-Received: by mail-oi1-f195.google.com with SMTP id d63so5000068oig.6
-        for <bpf@vger.kernel.org>; Thu, 26 Mar 2020 03:24:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UOMKg0uE1/0VSp+2D4uQQJWnoyIiXtZoR2HA9+kYbyk=;
-        b=Om4BsRqG3XmqmUNKG/S14Oh67eoF+MPmvrjzK56qiwvAe2aEnlhOYferC3MB2aCw4j
-         A+ZAn5Udgqq1sVT/wGsVqmIa7yhKrwgES5WK5JHK0t/Buet8x0zOGrKp0NI2MGdliJUo
-         RMENhFafZdmXNrsWFOJsEhs2sHY0PQ1MNvbTM=
+        id S1728231AbgCZMfW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Mar 2020 08:35:22 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([216.205.24.74]:34432 "EHLO
+        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727560AbgCZMfW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 26 Mar 2020 08:35:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585226120;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9ZFM2rDTCimQ0JQaXvASkvUq3yLujeUr1YmlyXwd37M=;
+        b=YLv/c+14YT0uhcq0/6hMM9is+Iw4JJcv0YvJYuPSoj2rhBFPUICtRuPZ8yzqBnW9QSUVAN
+        a9odBAOGRgBWloNm927WqqYHZHXwqHwSyLGrtbjOSacERv582lmoAEoghjUNukiyOJXYb3
+        MyyJTYer1lzHO1D+/hBDM080kIr9HbA=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-165-76oFQeaCOWC1dAdJB_x7qA-1; Thu, 26 Mar 2020 08:35:18 -0400
+X-MC-Unique: 76oFQeaCOWC1dAdJB_x7qA-1
+Received: by mail-lf1-f71.google.com with SMTP id k15so441650lfc.11
+        for <bpf@vger.kernel.org>; Thu, 26 Mar 2020 05:35:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UOMKg0uE1/0VSp+2D4uQQJWnoyIiXtZoR2HA9+kYbyk=;
-        b=EVTwiq29On3fWXX/PwQEDCREJq4pqX4Vf9JoorQJKz/Q5vGumlJPumnCbgM6P0rmtS
-         j6qNBlYeELKhwvrBPVxYjoGUrZxTfxwa4TnPlXmd7zc+EE+GCIazGjGIldzQyb7QiTEz
-         x4DuoADoJsYtVmwrvswq8jDSf7WQZMrSfo7KU3miY5uyCajo3n/B0RsG88vGg65ZSlFA
-         iJryCqgSFCzuud4pIRVLCKEWrdqSQ6juYJsY3ZIe1CUKn7ekOUYvnL2kwy9zFxFDsa7x
-         E7Oa5c6nnI4vvccmkxA5Se/XXi1/jolUyt6PCzsYHL0BdGgnhAEcdijhOS/79OT6J3gc
-         s53Q==
-X-Gm-Message-State: ANhLgQ3EIZDMxBG7H0ZJVFSq/Ojcg0Eq/rg/PxE+3XFAwSxVp8umqX2t
-        0CsuqrVQz5rM2N+qBLUG8OXKqiVA3uNXlOU5RscXfw==
-X-Google-Smtp-Source: ADFU+vtMPQNsI5XkNlQvyfviuo68HSkN/MR5ev5MPYS9mD1n1z+1h6rpcoS/znS0/2zQlNhmXUOn/PIzI8DHqzbEGyI=
-X-Received: by 2002:aca:c415:: with SMTP id u21mr1227209oif.102.1585218299235;
- Thu, 26 Mar 2020 03:24:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200325055745.10710-1-joe@wand.net.nz> <20200325055745.10710-2-joe@wand.net.nz>
-In-Reply-To: <20200325055745.10710-2-joe@wand.net.nz>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Thu, 26 Mar 2020 10:24:48 +0000
-Message-ID: <CACAyw989SkYaE6Qt_Lm+wjTCvpFH470ObGCkb4+hmEoijG3T8Q@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 1/5] bpf: Add socket assign support
-To:     Joe Stringer <joe@wand.net.nz>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=9ZFM2rDTCimQ0JQaXvASkvUq3yLujeUr1YmlyXwd37M=;
+        b=e4xv0QbDmg6157QAAi6Rt9Mcq/ICmKkbB/XRk2UV+y1V16rfoEqNmmCkTdvTXFDRqy
+         WFyiGNEBDSDL8jvCAgFa3TWVXlvXQWP9wKLkuecUyfLgZYGhs9huEFEdCFfP6riIXSNQ
+         FczoOx/2RewmW1TWO+P1Uk0U5wegcpCYpnIp0rHNKw9DoEtp348DQRBYxiE9SP0d/V2M
+         ZFK93//rON/x/lPw64QuVpwLd0iDS8iK+ngxECOagWPgd4g0zmJ5FeFFEWAsjvLnBOYM
+         ggoYL6Y1r9D9PA6co5tFXpuWSN9SjizRsYlXHM3RDl//9y4poM5mJ8stVoav7s5MbUN1
+         /I5g==
+X-Gm-Message-State: ANhLgQ3krBg+fCzzng/Aje6rQE0Jucd0TVubKUVjShwdES5UBv6dxHI+
+        0AUeB2CZBGfwl5qgZ2+KcdFkPpNatGr2dV66hOYHMUQmaQT81xgM/QexakB0OsFNIE9iT6F659W
+        3U4zQzwc1Q6tI
+X-Received: by 2002:a19:a40f:: with SMTP id q15mr5531943lfc.104.1585226117186;
+        Thu, 26 Mar 2020 05:35:17 -0700 (PDT)
+X-Google-Smtp-Source: ADFU+vuMCk5knpuZL3stSBKP9NCtux2i5UUrfDDqAb7fOmI0S9Wv8fHsMIoGuCXdqzpyUZZtBMgwLA==
+X-Received: by 2002:a19:a40f:: with SMTP id q15mr5531926lfc.104.1585226116862;
+        Thu, 26 Mar 2020 05:35:16 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id b23sm1394311lfi.55.2020.03.26.05.35.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Mar 2020 05:35:15 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 94ED018158B; Thu, 26 Mar 2020 13:35:13 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Martin Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing program when attaching XDP
+In-Reply-To: <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com>
+References: <158462359206.164779.15902346296781033076.stgit@toke.dk> <158462359315.164779.13931660750493121404.stgit@toke.dk> <20200319155236.3d8537c5@kicinski-fedora-PC1C0HJN> <875zez76ph.fsf@toke.dk> <20200320103530.2853c573@kicinski-fedora-PC1C0HJN> <5e750bd4ebf8d_233f2ab4c81425c4ce@john-XPS-13-9370.notmuch> <CAEf4BzbWa8vdyLuzr_nxFM3BtT+hhzjCe9UQF8Y5cN+sVqa72g@mail.gmail.com> <87tv2f48lp.fsf@toke.dk> <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com> <87h7ye3mf3.fsf@toke.dk> <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com> <87tv2e10ly.fsf@toke.dk> <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com> <87369wrcyv.fsf@toke.dk> <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 26 Mar 2020 13:35:13 +0100
+Message-ID: <87pncznvjy.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 25 Mar 2020 at 05:57, Joe Stringer <joe@wand.net.nz> wrote:
->
-> Add support for TPROXY via a new bpf helper, bpf_sk_assign().
->
-> This helper requires the BPF program to discover the socket via a call
-> to bpf_sk*_lookup_*(), then pass this socket to the new helper. The
-> helper takes its own reference to the socket in addition to any existing
-> reference that may or may not currently be obtained for the duration of
-> BPF processing. For the destination socket to receive the traffic, the
-> traffic must be routed towards that socket via local route. The
-> simplest example route is below, but in practice you may want to route
-> traffic more narrowly (eg by CIDR):
->
->   $ ip route add local default dev lo
->
-> This patch avoids trying to introduce an extra bit into the skb->sk, as
-> that would require more invasive changes to all code interacting with
-> the socket to ensure that the bit is handled correctly, such as all
-> error-handling cases along the path from the helper in BPF through to
-> the orphan path in the input. Instead, we opt to use the destructor
-> variable to switch on the prefetch of the socket.
->
-> Signed-off-by: Joe Stringer <joe@wand.net.nz>
-> ---
-> v2: Use skb->destructor to determine socket prefetch usage instead of
->       introducing a new metadata_dst
->     Restrict socket assign to same netns as TC device
->     Restrict assigning reuseport sockets
->     Adjust commit wording
-> v1: Initial version
-> ---
->  include/net/sock.h             |  7 +++++++
->  include/uapi/linux/bpf.h       | 25 ++++++++++++++++++++++++-
->  net/core/filter.c              | 31 +++++++++++++++++++++++++++++++
->  net/core/sock.c                |  9 +++++++++
->  net/ipv4/ip_input.c            |  3 ++-
->  net/ipv6/ip6_input.c           |  3 ++-
->  net/sched/act_bpf.c            |  2 ++
->  tools/include/uapi/linux/bpf.h | 25 ++++++++++++++++++++++++-
->  8 files changed, 101 insertions(+), 4 deletions(-)
->
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index b5cca7bae69b..2613d21a667a 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -1657,6 +1657,7 @@ struct sk_buff *sock_omalloc(struct sock *sk, unsigned long size,
->  void skb_orphan_partial(struct sk_buff *skb);
->  void sock_rfree(struct sk_buff *skb);
->  void sock_efree(struct sk_buff *skb);
-> +void sock_pfree(struct sk_buff *skb);
->  #ifdef CONFIG_INET
->  void sock_edemux(struct sk_buff *skb);
->  #else
-> @@ -2526,6 +2527,12 @@ void sock_net_set(struct sock *sk, struct net *net)
->         write_pnet(&sk->sk_net, net);
->  }
->
-> +static inline bool
-> +skb_sk_is_prefetched(struct sk_buff *skb)
-> +{
-> +       return skb->destructor == sock_pfree;
-> +}
-> +
->  static inline struct sock *skb_steal_sock(struct sk_buff *skb)
->  {
->         if (skb->sk) {
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 5d01c5c7e598..0c6f151deebe 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -2950,6 +2950,28 @@ union bpf_attr {
->   *             restricted to raw_tracepoint bpf programs.
->   *     Return
->   *             0 on success, or a negative error in case of failure.
-> + *
-> + * int bpf_sk_assign(struct sk_buff *skb, struct bpf_sock *sk, u64 flags)
-> + *     Description
-> + *             Assign the *sk* to the *skb*. When combined with appropriate
-> + *             routing configuration to receive the packet towards the socket,
-> + *             will cause *skb* to be delivered to the specified socket.
-> + *             Subsequent redirection of *skb* via  **bpf_redirect**\ (),
-> + *             **bpf_clone_redirect**\ () or other methods outside of BPF may
-> + *             interfere with successful delivery to the socket.
-> + *
-> + *             This operation is only valid from TC ingress path.
-> + *
-> + *             The *flags* argument must be zero.
-> + *     Return
-> + *             0 on success, or a negative errno in case of failure.
-> + *
-> + *             * **-EINVAL**           Unsupported flags specified.
-> + *             * **-ENETUNREACH**      Socket is unreachable (wrong netns).
-> + *             * **-ENOENT**           Socket is unavailable for assignment.
-> + *             * **-EOPNOTSUPP**       Unsupported operation, for example a
-> + *                                     call from outside of TC ingress.
-> + *             * **-ESOCKTNOSUPPORT**  Socket type not supported (reuseport).
->   */
->  #define __BPF_FUNC_MAPPER(FN)          \
->         FN(unspec),                     \
-> @@ -3073,7 +3095,8 @@ union bpf_attr {
->         FN(jiffies64),                  \
->         FN(read_branch_records),        \
->         FN(get_ns_current_pid_tgid),    \
-> -       FN(xdp_output),
-> +       FN(xdp_output),                 \
-> +       FN(sk_assign),
->
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
->   * function eBPF program intends to call
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 96350a743539..f7f9b6631f75 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -5860,6 +5860,35 @@ static const struct bpf_func_proto bpf_tcp_gen_syncookie_proto = {
->         .arg5_type      = ARG_CONST_SIZE,
->  };
->
-> +BPF_CALL_3(bpf_sk_assign, struct sk_buff *, skb, struct sock *, sk, u64, flags)
-> +{
-> +       if (flags != 0)
-> +               return -EINVAL;
-> +       if (!skb_at_tc_ingress(skb))
-> +               return -EOPNOTSUPP;
-> +       if (unlikely(sk->sk_reuseport))
-> +               return -ESOCKTNOSUPPORT;
-> +       if (unlikely(dev_net(skb->dev) != sock_net(sk)))
-> +               return -ENETUNREACH;
-> +       if (unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
-> +               return -ENOENT;
-> +
-> +       skb_orphan(skb);
-> +       skb->sk = sk;
-> +       skb->destructor = sock_pfree;
-> +
-> +       return 0;
-> +}
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-Follow up to my email re UDP tests: it seems like the helper doesn't check
-that the sk is TCP, hence I assumed that you want to add support for
-both in the same series.
+> Now for XDP. It has same flawed model. And even if it seems to you
+> that it's not a big issue, and even if Jakub thinks we are trying to
+> solve non-existing problem, it is a real problem and a real concern
+> from people that have to support XDP in production with many
+> well-meaning developers developing BPF applications independently.
+> Copying what you wrote in another thread:
+>
+>> Setting aside the question of which is the best abstraction to represent
+>> an attachment, it seems to me that the actual behavioural problem (XDP
+>> programs being overridden by mistake) would be solvable by this patch,
+>> assuming well-behaved userspace applications.
+>
+> ... this is a horrible and unrealistic assumption that we just cannot
+> make and accept. However well-behaved userspace applications are, they
+> are written by people that make mistakes. And rather than blissfully
+> expect that everything will be fine, we want to have enforcements in
+> place that will prevent some buggy application to wreck havoc in
+> production.
 
-Also, is it possible to check that the sk protocol matches skb protocol?
+Look, I'm not trying to tell you how to managed your internal systems.
+I'm just objecting to your assertion that your deployment model is the
+only one that can possibly work, and the refusal to consider other
+alternatives that comes with it.
 
-> +
-> +static const struct bpf_func_proto bpf_sk_assign_proto = {
-> +       .func           = bpf_sk_assign,
-> +       .gpl_only       = false,
-> +       .ret_type       = RET_INTEGER,
-> +       .arg1_type      = ARG_PTR_TO_CTX,
-> +       .arg2_type      = ARG_PTR_TO_SOCK_COMMON,
-> +       .arg3_type      = ARG_ANYTHING,
-> +};
-> +
->  #endif /* CONFIG_INET */
+>> You're saying that like we didn't already have the netlink API. We
+>> essentially already have (the equivalent of) LINK_CREATE and LINK_QUERY,
+>> this is just adding LINK_UPDATE. It's a straight-forward fix of an
+>> existing API; essentially you're saying we should keep the old API in a
+>> crippled state in order to promote your (proposed) new API.
 >
->  bool bpf_helper_changes_pkt_data(void *func)
-> @@ -6153,6 +6182,8 @@ tc_cls_act_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->                 return &bpf_skb_ecn_set_ce_proto;
->         case BPF_FUNC_tcp_gen_syncookie:
->                 return &bpf_tcp_gen_syncookie_proto;
-> +       case BPF_FUNC_sk_assign:
-> +               return &bpf_sk_assign_proto;
->  #endif
->         default:
->                 return bpf_base_func_proto(func_id);
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 0fc8937a7ff4..cfaf60267360 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -2071,6 +2071,15 @@ void sock_efree(struct sk_buff *skb)
->  }
->  EXPORT_SYMBOL(sock_efree);
->
-> +/* Buffer destructor for prefetch/receive path where reference count may
-> + * not be held, e.g. for listen sockets.
-> + */
-> +void sock_pfree(struct sk_buff *skb)
-> +{
-> +       sock_edemux(skb);
-> +}
-> +EXPORT_SYMBOL(sock_pfree);
-> +
->  kuid_t sock_i_uid(struct sock *sk)
->  {
->         kuid_t uid;
-> diff --git a/net/ipv4/ip_input.c b/net/ipv4/ip_input.c
-> index aa438c6758a7..b0c244af1e4d 100644
-> --- a/net/ipv4/ip_input.c
-> +++ b/net/ipv4/ip_input.c
-> @@ -509,7 +509,8 @@ static struct sk_buff *ip_rcv_core(struct sk_buff *skb, struct net *net)
->         IPCB(skb)->iif = skb->skb_iif;
->
->         /* Must drop socket now because of tproxy. */
-> -       skb_orphan(skb);
-> +       if (!skb_sk_is_prefetched(skb))
-> +               skb_orphan(skb);
->
->         return skb;
->
-> diff --git a/net/ipv6/ip6_input.c b/net/ipv6/ip6_input.c
-> index 7b089d0ac8cd..e96304d8a4a7 100644
-> --- a/net/ipv6/ip6_input.c
-> +++ b/net/ipv6/ip6_input.c
-> @@ -285,7 +285,8 @@ static struct sk_buff *ip6_rcv_core(struct sk_buff *skb, struct net_device *dev,
->         rcu_read_unlock();
->
->         /* Must drop socket now because of tproxy. */
-> -       skb_orphan(skb);
-> +       if (!skb_sk_is_prefetched(skb))
-> +               skb_orphan(skb);
->
->         return skb;
->  err:
-> diff --git a/net/sched/act_bpf.c b/net/sched/act_bpf.c
-> index 46f47e58b3be..6c7ed8fcc909 100644
-> --- a/net/sched/act_bpf.c
-> +++ b/net/sched/act_bpf.c
-> @@ -53,6 +53,8 @@ static int tcf_bpf_act(struct sk_buff *skb, const struct tc_action *act,
->                 bpf_compute_data_pointers(skb);
->                 filter_res = BPF_PROG_RUN(filter, skb);
->         }
-> +       if (filter_res != TC_ACT_OK)
-> +               skb_orphan(skb);
->         rcu_read_unlock();
->
->         /* A BPF program may overwrite the default action opcode.
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index 5d01c5c7e598..0c6f151deebe 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -2950,6 +2950,28 @@ union bpf_attr {
->   *             restricted to raw_tracepoint bpf programs.
->   *     Return
->   *             0 on success, or a negative error in case of failure.
-> + *
-> + * int bpf_sk_assign(struct sk_buff *skb, struct bpf_sock *sk, u64 flags)
-> + *     Description
-> + *             Assign the *sk* to the *skb*. When combined with appropriate
-> + *             routing configuration to receive the packet towards the socket,
-> + *             will cause *skb* to be delivered to the specified socket.
-> + *             Subsequent redirection of *skb* via  **bpf_redirect**\ (),
-> + *             **bpf_clone_redirect**\ () or other methods outside of BPF may
-> + *             interfere with successful delivery to the socket.
-> + *
-> + *             This operation is only valid from TC ingress path.
-> + *
-> + *             The *flags* argument must be zero.
-> + *     Return
-> + *             0 on success, or a negative errno in case of failure.
-> + *
-> + *             * **-EINVAL**           Unsupported flags specified.
-> + *             * **-ENETUNREACH**      Socket is unreachable (wrong netns).
-> + *             * **-ENOENT**           Socket is unavailable for assignment.
-> + *             * **-EOPNOTSUPP**       Unsupported operation, for example a
-> + *                                     call from outside of TC ingress.
-> + *             * **-ESOCKTNOSUPPORT**  Socket type not supported (reuseport).
->   */
->  #define __BPF_FUNC_MAPPER(FN)          \
->         FN(unspec),                     \
-> @@ -3073,7 +3095,8 @@ union bpf_attr {
->         FN(jiffies64),                  \
->         FN(read_branch_records),        \
->         FN(get_ns_current_pid_tgid),    \
-> -       FN(xdp_output),
-> +       FN(xdp_output),                 \
-> +       FN(sk_assign),
->
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
->   * function eBPF program intends to call
-> --
-> 2.20.1
->
+> This is the fundamental disagreement that we seem to have. XDP's BPF
+> program attachment is not in any way equivalent to bpf_link. So no,
+> netlink API currently doesn't have anything that's close to bpf_link.
+> Let me try to summarize what bpf_link is and what are its fundamental
+> properties regardless of type of BPF programs.
+
+First of all, thank you for this summary; that is very useful!
+
+> 1. bpf_link represents a connection (pairing?) of BPF program and some
+> BPF hook it is attached to. BPF hook could be perf event, cgroup,
+> netdev, etc. It's a completely independent object in itself, along the
+> bpf_map and bpf_prog, which has its own lifetime and kernel
+> representation. To user-space application it is returned as an
+> installed FD, similar to loaded BPF program and BPF map. It is
+> important that it's not just a BPF program, because BPF program can be
+> attached to multiple BPF hooks (e.g., same XDP program can be attached
+> to multiple interface; same kprobe handler can be installed multiple
+> times), which means that having BPF program FD isn't enough to
+> uniquely represent that one specific BPF program attachment and detach
+> it or query it. Having kernel object for this allows to encapsulate
+> all these various details of what is attached were and present to
+> user-space a single handle (FD) to work with.
+
+For XDP there is already a unique handle, it's just implicit: Each
+netdev can have exactly one XDP program loaded. So I don't really see
+how bpf_link adds anything, other than another API for the same thing?
+
+> 2. Due to having FD associated with bpf_link, it's not possible to
+> talk about "owning" bpf_link. If application created link and never
+> shared its FD with any other application, it is the sole owner of it.
+> But it also means that you can share it, if you need it. Now, once
+> application closes FD or app crashes and kernel automatically closes
+> that FD, bpf_link refcount is decremented. If it was the last or only
+> FD, it will trigger automatica detachment and clean up of that
+> particular BPF program attachment. Note, not a clean up of BPF
+> program, which can still be attached somewhere else: only that
+> particular attachment.
+
+This behaviour is actually one of my reservations against bpf_link for
+XDP: I think that automatically detaching XDP programs when the FD is
+closed is very much the wrong behaviour. An XDP program processes
+packets, and when loading one I very much expect it to keep doing that
+until I explicitly tell it to stop.
+
+> 3. This derives from the concept of ownership of bpf_link. Once
+> bpf_link is attached, no other application that doesn't own that
+> bpf_link can replace, detach or modify the link. For some cases it
+> doesn't matter. E.g., for tracing, all attachment to the same fentry
+> trampoline are completely independent. But for other cases this is
+> crucial property. E.g., when you attach BPF program in an exclusive
+> (single) mode, it means that particular cgroup and any of its children
+> cgroups can have any more BPF programs attached. This is important for
+> container management systems to enforce invariants and correct
+> functioning of the system. Right now it's very easy to violate that -
+> you just go and attach your own BPF program, and previous BPF program
+> gets automatically detached without original application that put it
+> there knowing about this. Chaos ensues after that and real people have
+> to deal with this. Which is why existing
+> BPF_PROG_ATTACH/BPF_PROG_DETACH API is inadequate and we are adding
+> bpf_link support.
+
+I can totally see how having an option to enforce a policy such as
+locking out others from installing cgroup BPF programs is useful. But
+such an option is just that: policy. So building this policy in as a
+fundamental property of the API seems like a bad idea; that is
+effectively enforcing policy in the kernel, isn't it?
+
+> Those same folks have similar concern with XDP. In the world where
+> container management installs "root" XDP program which other user
+> applications can plug into (libxdp use case, right?), it's crucial to
+> ensure that this root XDP program is not accidentally overwritten by
+> some well-meaning, but not overly cautious developer experimenting in
+> his own container with XDP programs. This is where bpf_link ownership
+> plays a huge role. Tupperware agent (FB's container management agent)
+> would install root XDP program and will hold onto this bpf_link
+> without sharing it with other applications. That will guarantee that
+> the system will be stable and can't be compromised.
+
+See this is where we get into "deployment-model specific territory". I
+mean, sure, in the "central management daemon" model, it makes sense
+that no other applications can replace the XDP program. But, erm, we
+already have a mechanism to ensure that: Just don't grant those
+applications CAP_NET_ADMIN? So again, bpf_link doesn't really seem to
+add anything other than a different way to do the same thing?
+
+Additionally, in the case where there is *not* a central management
+daemon (i.e., what I'm implementing with libxdp), this would be the flow
+implemented by the library without bpf_link:
+
+1. Query kernel for current BPF prog loaded on $IFACE
+2. Sanity-check that this program is a dispatcher program installed by
+   libxdp
+3. Create a new dispatcher program with whatever changes we want to do
+   (such as adding another component program).
+4. Atomically replace the old program with the new one using the netlink
+   API in this patch series.
+
+Whereas with bpf_link, it would be:
+
+1. Find the pinned bpf_link for $IFACE (e.g., load from
+   /sys/fs/bpf/iface-links/$IFNAME).
+2. Query kernel for current BPF prog linked to $LINK
+3. Sanity-check that this program is a dispatcher program installed by
+   libxdp
+4. Create a new dispatcher program with whatever changes we want to do
+   (such as adding another component program).
+5. Atomically replace the old program with the new one using the
+   LINK_UPDATE bpf() API.
 
 
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+So all this does is add an additional step, and another dependency on
+bpffs. And crucially, I really don't see how the "bpf_link is the only
+thing that is not fundamentally broken" argument holds up.
 
-www.cloudflare.com
+-Toke
+
