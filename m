@@ -2,104 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A25194391
-	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 16:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA041945C5
+	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 18:47:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727774AbgCZPw0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Mar 2020 11:52:26 -0400
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:53531 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727733AbgCZPw0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Mar 2020 11:52:26 -0400
-Received: by mail-pj1-f67.google.com with SMTP id l36so2637237pjb.3;
-        Thu, 26 Mar 2020 08:52:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=Cu2h+YcrIqDJjOVWrcg9qh9LpRYfxDF53j5qt17OgDg=;
-        b=ZpNCpuWZ1eSy5xaFqAzytGomXpY7T6zoCAEDuqCdM/QnB8FEHI+Np/oVS8KtCcplt6
-         Nw3z8OSJ6Ns2Gxv+36EFFbxc7cdWM7+3MOLTvhCwvIFVryOst5CRoVr500EcYGcJn0GH
-         EGoW3jmYYml74SyfKTAkCzs1vRup5X2cJHpiNUzuDnD+VRVG6V6IrPb4yN1Z18s3kFd9
-         VzSAKjzG9Ex4qzgywFX+B1Ildm0SQDwLgRF4RyTg3DLTMDjjPPnsBLzYw9SxWjKo0U4n
-         5Hx8+3QqWFNxUeYmEFGs/qpDWUWhbffJOPwzzD1/g76i7s2hwMO41+DBFtbTzjanUwk4
-         t22g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=Cu2h+YcrIqDJjOVWrcg9qh9LpRYfxDF53j5qt17OgDg=;
-        b=Yd7lRRh5Q6Z8gXT4/vhBNrhmVGdBpuVIsUzUupBEieadTaF3CXjcaaRKJhtQsFtty0
-         kJHokwnY9DQMRoKCVzzqsiHkqPcaUHTzPxUX4bHiwlb0Ibdkep7L+3gzdLdcXbGZ7Bqe
-         3O0LSu9P1MBGbcM647yLwKn/81OcUOOrUO7acmQQluiGbeaeJLuOPLDrFXO4qzmhkOVL
-         7ox1PIsGXrOgSvNtBAJCMwUk/MKJedYiYv9GxsHyc+ZAmr9HrgDSNIgkAzdfKvzN20Q6
-         JkGfKM2Utug0iYB/Zsm/LDvt06giJf3akzGuDfeAQSN4xFYvCiKwtqi9cYufdeEm9Jn1
-         JDfg==
-X-Gm-Message-State: ANhLgQ1wb+EdFBccXAk3fLarTZphbIuzJ58LFZaJD0NeexqA/WTOiY32
-        DQJFkQ3m5zq5OqJ2tQc42Gc=
-X-Google-Smtp-Source: ADFU+vvobQjrEUNfhNe6x6YveJ/MhPXKkPyTF2aUoNHOWe2uLqdm9w4HnO6hFY7KULhNtPblAlBe3Q==
-X-Received: by 2002:a17:902:b40e:: with SMTP id x14mr8090137plr.319.1585237945470;
-        Thu, 26 Mar 2020 08:52:25 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id g30sm1956366pgn.40.2020.03.26.08.52.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Mar 2020 08:52:24 -0700 (PDT)
-Date:   Thu, 26 Mar 2020 08:52:15 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     ecree@solarflare.com, yhs@fb.com, daniel@iogearbox.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Message-ID: <5e7ccfaf79433_65132acbbe7fc5c4eb@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200326062301.fvomwkz5grg3b5qb@ast-mbp>
-References: <158507130343.15666.8018068546764556975.stgit@john-Precision-5820-Tower>
- <158507155667.15666.4189866174878249746.stgit@john-Precision-5820-Tower>
- <20200326062301.fvomwkz5grg3b5qb@ast-mbp>
-Subject: Re: [bpf-next PATCH 05/10] bpf: verifier, return value is an int in
- do_refine_retval_range
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        id S1726267AbgCZRr7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Mar 2020 13:47:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45828 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726260AbgCZRr6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Mar 2020 13:47:58 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 790462070A;
+        Thu, 26 Mar 2020 17:47:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1585244878;
+        bh=NaZQt404XwZx2V7iFbgzg4sZjdQZx3A9dQh/StbeMGI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AYhVNfk8y29mzr7qON4HkZPdo19K0G9oGpCi8R7KruhkiQLhc9slTl8KcKCkZX85E
+         JkkM7MJ0z10nJx5raHfD8LFsCMYEG/Xd0aOzGlOJi+qrhMQFm6UJtb2dihgXozCw0J
+         /DrNNCi6rtX8TsEUCuTI2Gn6RITKBFy69pNnY7RY=
+Date:   Thu, 26 Mar 2020 10:47:55 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Toke =?UTF-8?B?SMO4aWxh?= =?UTF-8?B?bmQtSsO4cmdlbnNlbg==?= 
+        <toke@redhat.com>, John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
+ program when attaching XDP
+Message-ID: <20200326104755.1ea5ac43@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CACAyw9-FrwgBGjGT1CYrKJuyRJtwn0XUsifF_uR6LpRbcucN+A@mail.gmail.com>
+References: <158462359206.164779.15902346296781033076.stgit@toke.dk>
+        <158462359315.164779.13931660750493121404.stgit@toke.dk>
+        <20200319155236.3d8537c5@kicinski-fedora-PC1C0HJN>
+        <875zez76ph.fsf@toke.dk>
+        <20200320103530.2853c573@kicinski-fedora-PC1C0HJN>
+        <5e750bd4ebf8d_233f2ab4c81425c4ce@john-XPS-13-9370.notmuch>
+        <CAEf4BzbWa8vdyLuzr_nxFM3BtT+hhzjCe9UQF8Y5cN+sVqa72g@mail.gmail.com>
+        <87tv2f48lp.fsf@toke.dk>
+        <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com>
+        <87h7ye3mf3.fsf@toke.dk>
+        <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com>
+        <87tv2e10ly.fsf@toke.dk>
+        <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com>
+        <87369wrcyv.fsf@toke.dk>
+        <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com>
+        <CACAyw9-FrwgBGjGT1CYrKJuyRJtwn0XUsifF_uR6LpRbcucN+A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov wrote:
-> On Tue, Mar 24, 2020 at 10:39:16AM -0700, John Fastabend wrote:
-> > Mark 32-bit subreg region with max value because do_refine_retval_range()
-> > catches functions with int return type (We will assume here that int is
-> > a 32-bit type). Marking 64-bit region could be dangerous if upper bits
-> > are not zero which could be possible.
-> > 
-> > Two reasons to pull this out of original patch. First it makes the original
-> > fix impossible to backport. And second I've not seen this as being problematic
-> > in practice unlike the other case.
-> > 
-> > Fixes: 849fa50662fbc ("bpf/verifier: refine retval R0 state for bpf_get_stack helper")
-> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> > ---
-> >  kernel/bpf/verifier.c |    2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 6372fa4..3731109 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -4328,7 +4328,7 @@ static void do_refine_retval_range(struct bpf_reg_state *regs, int ret_type,
-> >  	     func_id != BPF_FUNC_probe_read_str))
-> >  		return;
-> >  
-> > -	ret_reg->smax_value = meta->msize_max_value;
-> > +	ret_reg->s32_max_value = meta->msize_max_value;
+On Thu, 26 Mar 2020 10:04:53 +0000 Lorenz Bauer wrote:
+> On Thu, 26 Mar 2020 at 00:16, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > Those same folks have similar concern with XDP. In the world where
+> > container management installs "root" XDP program which other user
+> > applications can plug into (libxdp use case, right?), it's crucial to
+> > ensure that this root XDP program is not accidentally overwritten by
+> > some well-meaning, but not overly cautious developer experimenting in
+> > his own container with XDP programs. This is where bpf_link ownership
+> > plays a huge role. Tupperware agent (FB's container management agent)
+> > would install root XDP program and will hold onto this bpf_link
+> > without sharing it with other applications. That will guarantee that
+> > the system will be stable and can't be compromised.  
 > 
-> I think this is not correct.
-> These two special helpers are invoked via BPF_CALL_x() which has u64 return value.
-> So despite having 'int' return in bpf_helper_defs.h the upper 32-bit will be correct.
-> I think this patch should do:
-> ret_reg->smax_value = meta->msize_max_value;
-> ret_reg->s32_max_value = meta->msize_max_value;
+> Thanks for the extensive explanation Andrii.
+> 
+> This is what I imagine you're referring to: Tupperware creates a new network
+> namespace ns1 and a veth0<>veth1 pair, moves one of the veth devices
+> (let's says veth1) into ns1 and runs an application in ns1. On which veth
+> would the XDP program go?
+> 
+> The way I understand it, veth1 would have XDP, and the application in ns1 would
+> be prevented from attaching a new program? Maybe you can elaborate on this
+> a little.
 
-OK, I missed the u64 in BPF_CALL_x(). Setting both smax and s32_max
-looks correct.  My logic above is wrong so I'll fix that. Thanks.
+Nope, there is no veths involved. Tupperware mediates the requests 
+from containers to install programs on the physical interface for
+heavy-duty network processing like DDoS protection for the entire
+machine.
