@@ -2,203 +2,366 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9AF194924
-	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 21:28:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF1D1949A1
+	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 21:56:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727943AbgCZU2z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Mar 2020 16:28:55 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:23998 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726363AbgCZU2z (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 26 Mar 2020 16:28:55 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02QKBIIj005187;
-        Thu, 26 Mar 2020 13:28:50 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=vpEY5owUP251CpMVMs6pgESngCoQ1uY806QGZ/JvP7w=;
- b=IMl0L7K0Ypk7Y/een2105NuSulm216r5POMwsVPL0YxwJb+2EkZpaijVQsrNlP/fbLOh
- e8Oqvhcs3LMhSnTlsivMGfWCpg6RbUEP/IrkOesC+vgK8Oax2ysYdbUD2ezrBU1EnTLc
- rumxqnbVNVBcebShoqtiTJ+ywxE2fTXMdww= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2yx2xpah0f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 26 Mar 2020 13:28:50 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 26 Mar 2020 13:28:49 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eubu+30euWCH5eiv8iFMlzVdOOqwnuInc9rvWW2+S1iWHrsL0b0UA/IVHRxosn736oDGarQ9c09ZCwhbzp4VMZiEzYt+ym+Hkl0Ko7wHcYDylU2E0vzNPXXjNWk0v+CfnnesYJYniYkH3TMe/9av//bXcORaQ3/uuKEoL5jeC4bv+NRY4gZT/GOFgzLYDNSVHGJRgRiQmaTBHY14Gv3qSy9iCKx31iHXHD0dFEK/LMjgdyCmOLtMVDwCSlSl0ULJ4b+xRYji09iHanJRhoG24KqAGIGuFwaIfeJRgvWKGFZotsjaD+uOfR05DuLnfus4BeX9h6icZcLv73fQ8fsSCQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vpEY5owUP251CpMVMs6pgESngCoQ1uY806QGZ/JvP7w=;
- b=WzG8YPdJqQqE3rd9aiTGaiOOsKoPpKscWZlmCobELRP21OeZ62EyYENf3cs6YFYO8xGrrWMR4umD5APKu1NfdrU9s2yXUoW2AtAlimBjS05XfdnVe2wRD+TtE2ufDagUbdc/7KE450OPlKS10yBCFqC0/TxHdmxCiEyxGCwpI6YaTRQzqsl8DwKNXMVEEqiSh+RhpQBggajC/bbs5l/LolKxCa82F+pc7iGW5+gOCSN8eJezKWRc+N/NTWr+kAyIoEyaP7oWqi5ULUrzue2C2m4vEYKU8UZGBy0bTiUy2+S6yQiNnn/bLgDxL+d4P1TUzZs7e1ip4VWkTiFJhY4Sbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vpEY5owUP251CpMVMs6pgESngCoQ1uY806QGZ/JvP7w=;
- b=WPSm2evOcf4aggHKM0s3tT3FMg//zpCYB81jkYgNhncpmC1u4skKqVCBWPal4IvhLPBTWO/Vf0KN0sfNrS7FnpodSgLq07OVcbba21VPDlRBWP++Uk/vzKmDW0V3jed6kVF8VQspxAGFs3PHAgw1REcftwFqgue79tmb5NDDcWI=
-Received: from MW3PR15MB3753.namprd15.prod.outlook.com (2603:10b6:303:50::17)
- by MW3PR15MB3753.namprd15.prod.outlook.com (2603:10b6:303:50::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2856.20; Thu, 26 Mar
- 2020 20:28:48 +0000
-Received: from MW3PR15MB3753.namprd15.prod.outlook.com
- ([fe80::3517:e69:6e78:4f7c]) by MW3PR15MB3753.namprd15.prod.outlook.com
- ([fe80::3517:e69:6e78:4f7c%7]) with mapi id 15.20.2856.019; Thu, 26 Mar 2020
- 20:28:48 +0000
-Subject: Re: runqslower build failed on Debian9
-To:     Liu Yiding <liuyd.fnst@cn.fujitsu.com>
-CC:     <linux-kselftest@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-References: <60b05d23-6352-b978-3bf7-5a86466bb297@cn.fujitsu.com>
-From:   Andrii Nakryiko <andriin@fb.com>
-Message-ID: <c1025a74-1d80-5127-2b0a-87465d3dbcd0@fb.com>
-Date:   Thu, 26 Mar 2020 13:28:45 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.5.0
-In-Reply-To: <60b05d23-6352-b978-3bf7-5a86466bb297@cn.fujitsu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MWHPR14CA0054.namprd14.prod.outlook.com
- (2603:10b6:300:81::16) To MW3PR15MB3753.namprd15.prod.outlook.com
- (2603:10b6:303:50::17)
+        id S1726260AbgCZU4N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Mar 2020 16:56:13 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:55295 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726422AbgCZU4L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Mar 2020 16:56:11 -0400
+Received: by mail-wm1-f65.google.com with SMTP id c81so8581543wmd.4
+        for <bpf@vger.kernel.org>; Thu, 26 Mar 2020 13:56:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=rwP6omks5Bq+LZp/QxgHU372BSlee6s0/LxcH04vRKs=;
+        b=d6ksKOlgjbYjHrVyYgr77zwbHRp74js8GAmnFUAI8mm/lTiINEMzxp7PaJXycUlOTU
+         Uw1xjwoet+9XZXNdqC1mbPWkMasfasXrMXkRoHUQjmtBUg30B8ixojhM0HPEy+61M79Z
+         qW98UrwAc73NokYHzWtTDFvcBKJZ1PdzlbetU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=rwP6omks5Bq+LZp/QxgHU372BSlee6s0/LxcH04vRKs=;
+        b=EeeHk3XDuDbhwXRLsQtOBd4st4cKt7iMKznch81lwceP0fs5xxB7LHKEl9QtpMcH/J
+         okpvmY8X72uqGIK/+3GmLU6xyPAv0uHca4k66irvi4cAn1T42TYHgmD1eQlgv9E6Rc24
+         uKV2WupB4AAwZR7JsaSekAjYmldOT5ugCq5ZFZiqVd0wGJhzHWnOOSTh5OcSflSpQTJw
+         W6UJnEGE4jn+DhDtexevbAEu+vXhoAOliuph5ApJYs/JZcPkXut3nBwCouqcXrVwUwE6
+         nLwpzcHEtpvTUMTAtIAgwZUjDNpu1DZf/r9WnesaGNyqCapeAhilvik8g6hekMzswW/0
+         D9Ug==
+X-Gm-Message-State: ANhLgQ058l3hzZf3lEwEuZPdV24AkHNcuezM0BrFSNABTYWkMyItLEj0
+        MTnzzvBRq2na51N76uX5lwOyXw==
+X-Google-Smtp-Source: ADFU+vvJZFuES+hj74DJVNA+Egz9nA9OgldTpa60/W1NvhpyzxaZwZox17cgsEQKdYnkbSyR8a7Nvw==
+X-Received: by 2002:adf:e492:: with SMTP id i18mr6162954wrm.316.1585256167215;
+        Thu, 26 Mar 2020 13:56:07 -0700 (PDT)
+Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
+        by smtp.gmail.com with ESMTPSA id 127sm5388422wmd.38.2020.03.26.13.56.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Mar 2020 13:56:06 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Thu, 26 Mar 2020 21:56:04 +0100
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@google.com>,
+        Thomas Garnier <thgarnie@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH bpf-next v7 8/8] bpf: lsm: Add Documentation
+Message-ID: <20200326205604.GC15273@chromium.org>
+References: <20200326142823.26277-1-kpsingh@chromium.org>
+ <20200326142823.26277-9-kpsingh@chromium.org>
+ <CAEf4BzZ=qCNVbGqRfkgS-rfsODQaAzjQOErN8U9RH4Eu-HuD8Q@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:2103:51:fde8:f2bb:1332] (2620:10d:c090:400::5:7bf1) by MWHPR14CA0054.namprd14.prod.outlook.com (2603:10b6:300:81::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2856.19 via Frontend Transport; Thu, 26 Mar 2020 20:28:47 +0000
-X-Originating-IP: [2620:10d:c090:400::5:7bf1]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ea4a4a37-6ec2-4fa8-b39d-08d7d1c449dd
-X-MS-TrafficTypeDiagnostic: MW3PR15MB3753:
-X-Microsoft-Antispam-PRVS: <MW3PR15MB3753D474929BBC55650E6B0FC6CF0@MW3PR15MB3753.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
-X-Forefront-PRVS: 0354B4BED2
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(39860400002)(136003)(396003)(376002)(346002)(366004)(81156014)(16526019)(36756003)(186003)(316002)(31696002)(8676002)(6916009)(86362001)(52116002)(81166006)(6486002)(4326008)(2906002)(31686004)(478600001)(2616005)(8936002)(53546011)(5660300002)(66556008)(66476007)(66946007);DIR:OUT;SFP:1102;SCL:1;SRVR:MW3PR15MB3753;H:MW3PR15MB3753.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;
-Received-SPF: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1XO6P8dOovh8g0KbfCG3K/JlVe4f1vZQs190OU30LrNRlGj7YBmLYkhEAaNFc0zLXdxV8uYmVRol0iUaPyyp//aZUfpRTm08RYTtiFu3+bUPapB2omFXW1SfSKyaylFY8+M86w8KYDjGv4d5n7OTAtg6rUOZq0mEH3trdqSvR3+Gm3061riHa7X3nNDMHhFwXDKJ6GYqUsx6DgUypXOU+bYG6CPvNCY5N7BwkYy4raV+ks2Pb3kXC7bT/nnnV2ArMXzOtk050/5v2bD2h6D1oGnyrdWrm6amNVmYQ4H7MJuLsuNBZjtgA7rNvJEVt67Vc2tgtYji9uP2L0b+32YFcYUHNwLVzpPIMY8oTuCQ7WhM/skxxIHl+7mZvjRcaByG/I+FR0RzZ2zoY8Wljida4teapz5abevdyClWPKw5xlN82l+KHjpFYBH98oOGRK4h
-X-MS-Exchange-AntiSpam-MessageData: BrfwHdDS7Nn5VzjttTZShs6CzB23o3bmQZg+zuJN5/44FKXcI2PsfHBqyEHNPeKvhbZX8MN32mpYba98SXX0DBkbsSxqcASNvcv16mC2GxN7gJHgLOZwg5grhbhdrasNUBQ2ppnr0HadOM6NtmquwKTosteVV7IEn3sjwdMVntytk+gfxXS0Tv91UpLE4kwn
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea4a4a37-6ec2-4fa8-b39d-08d7d1c449dd
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2020 20:28:48.0958
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qD5d0QoHrFbyVWb21Km9phlvIUqq7uPOYPVswPB5zcgWhecspu+UuZshavHrjpTZ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3753
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
- definitions=2020-03-26_12:2020-03-26,2020-03-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- priorityscore=1501 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
- spamscore=0 impostorscore=0 malwarescore=0 clxscore=1011 adultscore=0
- bulkscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2003260147
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzZ=qCNVbGqRfkgS-rfsODQaAzjQOErN8U9RH4Eu-HuD8Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/25/20 10:26 PM, Liu Yiding wrote:
-> Hi, Andrii.
-> 
-> I noticed you had added runqslower tool to tools/bpf, so drop this 
-> problem to you.
-> 
-> 
-> Now i failed to run bpf tests since i can't build runqslower.
-> 
-> Testing env: "Debian GNU/Linux 9 (stretch)"
-> 
-> kernel: 5.6.0-rc5
-> 
-> gcc: gcc 6.3
-> 
-> clang: clang-11.
-> 
-> 
-> Description: Build runqslower failed due to build error "incomplete 
-> type" and libbpf show unsupported BTF_KIND:7.
-> 
-> Whole build log please see the attatchment.
-> 
-> 
-> Error info
-> 
-> ```
-> 
-> root@vm-snb-144 ~/linus/tools/bpf# make
-> 
-> Auto-detecting system features:
-> ...                        libbfd: [ on  ]
-> ...        disassembler-four-args: [ OFF ]
-> 
-> [snip]
-> 
->    INSTALL  bpftool
->    LINK     bpf_asm
->    GEN      vmlinux.h
-> libbpf: unsupported BTF_KIND:7    (Many unsupported errors)
-> libbpf: unsupported BTF_KIND:7
-> libbpf: unsupported BTF_KIND:7
-> 
+Thanks for the reviews!
 
-Would you be able to share BTF of vmlinux that is used to generate 
-vmlinux.h? Please run in verbose mode: `make V=1` and search for 
-`bpftool btf dump file` command. It should point either to
-/sys/kernel/btf/vmlinux or some other location, depending on how things 
-are set up on your side.
+On 26-M�r 12:31, Andrii Nakryiko wrote:
+> On Thu, Mar 26, 2020 at 7:29 AM KP Singh <kpsingh@chromium.org> wrote:
+> >
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > Document how eBPF programs (BPF_PROG_TYPE_LSM) can be loaded and
+> > attached (BPF_LSM_MAC) to the LSM hooks.
+> >
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+> > Reviewed-by: Brendan Jackman <jackmanb@google.com>
+> > Reviewed-by: Florent Revest <revest@google.com>
+> > Reviewed-by: Thomas Garnier <thgarnie@google.com>
+> > ---
+> 
+> This needs another pass and re-reading, has a bunch of outdated info :)
 
-If it's /sys/kernel/btf/vmlinux, you can just `cat 
-/sys/kernel/btf/vmlinux > my_btf.bin`. If it's some other file, easiest 
-would be to just share that file. If not, it's possible to extract .BTF 
-ELF section, let me know if you need help with that.
+Indeed :)
+
+> 
+> >  Documentation/bpf/bpf_lsm.rst | 150 ++++++++++++++++++++++++++++++++++
+> >  Documentation/bpf/index.rst   |   1 +
+> >  2 files changed, 151 insertions(+)
+> >  create mode 100644 Documentation/bpf/bpf_lsm.rst
+> >
+> > diff --git a/Documentation/bpf/bpf_lsm.rst b/Documentation/bpf/bpf_lsm.rst
+> > new file mode 100644
+> > index 000000000000..2a2c3b4a74d4
+> > --- /dev/null
+> > +++ b/Documentation/bpf/bpf_lsm.rst
+> > @@ -0,0 +1,150 @@
+> > +.. SPDX-License-Identifier: GPL-2.0+
+> > +.. Copyright (C) 2020 Google LLC.
+> > +
+> > +================
+> > +LSM BPF Programs
+> > +================
+> > +
+> > +These BPF programs allow runtime instrumentation of the LSM hooks by privileged
+> > +users to implement system-wide MAC (Mandatory Access Control) and Audit
+> > +policies using eBPF. Since these program end up modifying the MAC policies of
+> > +the system, they require both ``CAP_MAC_ADMIN`` and also require
+> > +``CAP_SYS_ADMIN`` for the loading of BPF programs.
+> > +
+> > +Structure
+> > +---------
+> > +
+> > +The example shows an eBPF program that can be attached to the ``file_mprotect``
+> > +LSM hook:
+> > +
+> > +.. c:function:: int file_mprotect(struct vm_area_struct *vma, unsigned long reqprot, unsigned long prot);
+> > +
+> > +Other LSM hooks which can be instrumented can be found in
+> > +``include/linux/lsm_hooks.h``.
+> > +
+> > +eBPF programs that use :doc:`/bpf/btf` do not need to include kernel headers
+> > +for accessing information from the attached eBPF program's context. They can
+> > +simply declare the structures in the eBPF program and only specify the fields
+> > +that need to be accessed.
+> > +
+> > +.. code-block:: c
+> > +
+> > +       struct mm_struct {
+> > +               unsigned long start_brk, brk, start_stack;
+> > +       } __attribute__((preserve_access_index));
+> > +
+> > +       struct vm_area_struct {
+> > +               unsigned long start_brk, brk, start_stack;
+> > +               unsigned long vm_start, vm_end;
+> > +               struct mm_struct *vm_mm;
+> > +       } __attribute__((preserve_access_index));
+> > +
+> > +
+> > +.. note:: Only the size and the names of the fields must match the type in the
+> > +         kernel and the order of the fields is irrelevant.
+> 
+> type should match/be compatible as well?
+
+I changed it to simply be:
+
+.. note:: The order of the fields is irrelevant.
+
+> 
+> > +
+> > +This can be further simplified (if one has access to the BTF information at
+> > +build time) by generating the ``vmlinux.h`` with:
+> > +
+> > +.. code-block:: console
+> > +
+> > +        # bpftool dump file <path-to-btf-vmlinux> format c > vmlinux.h
+> > +
+> 
+> bpftool btf *dump* file
+
+Done.
+
+> 
+> > +.. note:: ``path-to-btf-vmlinux`` can be ``/sys/kernel/btf/vmlinux`` if the
+> > +         build environment matches the environment the BPF programs are
+> > +         deployed in.
+> > +
+> > +The ``vmlinux.h`` can then simply be included in the BPF programs without
+> > +requiring the definition of the types.
+> > +
+> > +The eBPF programs can be declared using the``BPF_PROG``
+> > +macros defined in `tools/lib/bpf/bpf_tracing.h`_. In this
+> > +example:
+> > +
+> > +       * ``"lsm/file_mprotect"`` indicates the LSM hook that the program must
+> > +         be attached to
+> > +       * ``mprotect_audit`` is the name of the eBPF program
+> > +
+> > +.. code-block:: c
+> > +
+> > +        SEC("lsm/file_mprotect")
+> > +        int BPF_PROG(mprotect_audit, struct vm_area_struct *vma,
+> > +                     unsigned long reqprot, unsigned long prot, int ret)
+> > +       {
+> > +                /* Ret is the return value from the previous BPF program
+> > +                 * or 0 if it's the first hook.
+> > +                 */
+> > +                if (ret != 0)
+> > +                        return ret;
+> > +
+> > +               int is_heap;
+> > +
+> > +               is_heap = (vma->vm_start >= vma->vm_mm->start_brk &&
+> > +                          vma->vm_end <= vma->vm_mm->brk);
+> > +
+> > +               /* Return an -EPERM or write information to the perf events buffer
+> > +                * for auditing
+> > +                */
+> 
+> return missing?
+
+Fixed.
+
+> 
+> > +       }
+> > +
+> > +The ``__attribute__((preserve_access_index))`` is a clang feature that allows
+> > +the BPF verifier to update the offsets for the access at runtime using the
+> > +:doc:`/bpf/btf` information. Since the BPF verifier is aware of the types, it
+> > +also validates all the accesses made to the various types in the eBPF program.
+> > +
+> > +Loading
+> > +-------
+> > +
+> > +eBPF programs can be loaded with the :manpage:`bpf(2)` syscall's
+> > +``BPF_PROG_LOAD`` operation or more simply by using the the libbpf helper
+> > +``bpf_prog_load_xattr``:
+> > +
+> > +
+> > +.. code-block:: c
+> > +
+> > +       struct bpf_prog_load_attr attr = {
+> > +               .file = "./prog.o",
+> > +       };
+> > +       struct bpf_object *prog_obj;
+> > +       struct bpf_program *prog;
+> > +       int prog_fd;
+> > +
+> > +       bpf_prog_load_xattr(&attr, &prog_obj, &prog_fd);
+> 
+> Can you please update this to not use deprecated/legacy APIs. Please
+> suggest bpf_object__open/bpf_object__load  and/or BPF skeleton as an
+> example.
 
 
-> [snip]
-> 
-> (Many incomplete type errors)
-> 
-> .output/vmlinux.h:8401:18: error: field has incomplete type 'struct 
-> idt_bits'
->          struct idt_bits bits;
->                          ^
-> .output/vmlinux.h:8396:8: note: forward declaration of 'struct idt_bits'
-> struct idt_bits;
->         ^
-> .output/vmlinux.h:8598:21: error: field has incomplete type 'struct 
-> trace_entry'
->          struct trace_entry ent;
->                             ^
-> .output/vmlinux.h:8595:8: note: forward declaration of 'struct trace_entry'
-> struct trace_entry;
->         ^
-> .output/vmlinux.h:9006:25: error: array has incomplete element type 
-> 'struct cyc2ns_data'
->          struct cyc2ns_data data[2];
->                                 ^
-> .output/vmlinux.h:3669:8: note: forward declaration of 'struct cyc2ns_data'
-> struct cyc2ns_data;
->         ^
-> fatal error: too many errors emitted, stopping now [-ferror-limit=]
-> 20 errors generated.
-> Makefile:56: recipe for target '.output/runqslower.bpf.o' failed
-> make[1]: *** [.output/runqslower.bpf.o] Error 1
-> Makefile:119: recipe for target 'runqslower' failed
-> make: *** [runqslower] Error 2
-> 
-> ```
-> 
-> 
+Simplified and modernized this section as:
 
+
+Loading
+-------
+
+eBPF programs can be loaded with the :manpage:`bpf(2)` syscall's
+``BPF_PROG_LOAD`` operation:
+
+.. code-block:: c
+
+	struct bpf_object *obj;
+
+	obj = bpf_object__open("./my_prog.o");
+	bpf_object__load(obj);
+
+This can be simplified by using a skeleton header generated by ``bpftool``:
+
+.. code-block:: console
+
+	# bpftool gen skeleton my_prog.o > my_prog.skel.h
+
+and the program can be loaded by including ``my_prog.skel.h`` and using
+the generated helper, ``my_prog__open_and_load``.
+
+Attachment to LSM Hooks
+-----------------------
+
+The LSM allows attachment of eBPF programs as LSM hooks using :manpage:`bpf(2)`
+syscall's ``BPF_RAW_TRACEPOINT_OPEN`` operation or more simply by
+using the libbpf helper ``bpf_program__attach_lsm``.
+
+The program can be detached from the LSM hook by *destroying* the ``link``
+link returned by ``bpf_program__attach_lsm`` using ``bpf_link__destroy``.
+
+One can also use the helpers generated in ``my_prog.skel.h`` i.e.
+``my_prog__attach`` for attachment and ``my_prog__destroy`` for cleaning up.
+
+</end>
+
+If this looks okay, I will send a v8 with this updated and other
+fixes.
+
+- KP
+
+> 
+> > +
+> > +Attachment to LSM Hooks
+> > +-----------------------
+> > +
+> > +The LSM allows attachment of eBPF programs as LSM hooks using :manpage:`bpf(2)`
+> > +syscall's ``BPF_PROG_ATTACH`` operation or more simply by
+> 
+> BPF_PROG_ATTACH is incorrect, it's RAW_TRACEPOINT_OPEN, isn't it?
+
+Correct, updated. Thanks!
+
+> 
+> > +using the libbpf helper ``bpf_program__attach_lsm``. In the code shown below
+> > +``prog`` is the eBPF program loaded using ``BPF_PROG_LOAD``:
+> > +
+> > +.. code-block:: c
+> > +
+> > +       struct bpf_link *link;
+> > +
+> > +       link = bpf_program__attach_lsm(prog);
+> > +
+> > +The program can be detached from the LSM hook by *destroying* the ``link``
+> > +link returned by ``bpf_program__attach_lsm``:
+> > +
+> > +.. code-block:: c
+> > +
+> > +       link->destroy();
+> 
+> that's not how it works in C ;)
+
+Oops, I incorrectly picked it up from link->destroy(link); and wrote
+something stupid.
+
+> 
+> bpf_link__destroy(link);
+
+Updated in the snippet posted above.
+
+- KP
+
+> 
+> > +
+> > +Examples
+> > +--------
+> > +
+> > +An example eBPF programs can be found in
+> > +`tools/testing/selftests/bpf/progs/lsm.c`_ and the corresponding
+> > +userspace code in `tools/testing/selftests/bpf/prog_tests/test_lsm.c`_
+> > +
+> > +.. Links
+> > +.. _tools/lib/bpf/bpf_tracing.h:
+> > +   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/tools/lib/bpf/bpf_tracing.h
+> > +.. _tools/testing/selftests/bpf/progs/lsm.c:
+> > +   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/tools/testing/selftests/bpf/progs/lsm.c
+> > +.. _tools/testing/selftests/bpf/progs/lsm_void_hook.c:
+> > +   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/tools/testing/selftests/bpf/progs/lsm_void_hook.c
+> > +.. _tools/testing/selftests/bpf/prog_tests/test_lsm.c:
+> > +   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/tools/testing/selftests/bpf/prog_tests/test_lsm.c
+> > diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
+> > index 7be43c5f2dcf..f99677f3572f 100644
+> > --- a/Documentation/bpf/index.rst
+> > +++ b/Documentation/bpf/index.rst
+> > @@ -45,6 +45,7 @@ Program types
+> >     prog_cgroup_sockopt
+> >     prog_cgroup_sysctl
+> >     prog_flow_dissector
+> > +   bpf_lsm
+> >
+> >
+> >  Testing and debugging BPF
+> > --
+> > 2.20.1
+> >
