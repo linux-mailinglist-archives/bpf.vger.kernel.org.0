@@ -2,136 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBA619354A
-	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 02:31:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB638193565
+	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 02:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727585AbgCZBbu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Mar 2020 21:31:50 -0400
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:45788 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727561AbgCZBbu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Mar 2020 21:31:50 -0400
-Received: by mail-qv1-f67.google.com with SMTP id g4so2155820qvo.12
-        for <bpf@vger.kernel.org>; Wed, 25 Mar 2020 18:31:49 -0700 (PDT)
+        id S1727576AbgCZBtW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Mar 2020 21:49:22 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:41475 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727561AbgCZBtV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Mar 2020 21:49:21 -0400
+Received: by mail-qt1-f194.google.com with SMTP id i3so4042331qtv.8;
+        Wed, 25 Mar 2020 18:49:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=j7FF/lCI/a6VDmrNhXy3egXWTeVlilEZ3s3aRmfHp3I=;
-        b=BE6s4N273DnP0qW/SJ/wwQtXQJKHkkR79+L+Qgspixv5sl0B7/LcafoSejmVvt2bBi
-         6MDlmYY35GrIEKv44UbLbZW9r7VxfJpgrUrAMlcOu6tFu2/EaeAS0SCCxD1ejnaxpE/Y
-         muD/9PKSDIYg9vNakt/5SJomno/b2WBz5CW8SXQzXQx+L2ysDwIqJNOP/XEOz0BgPGwb
-         t+9Ancu4gZQqjbk00IHOPzb174jgpyt5xnL87HSALeonRLPaHd3DhKCdswdW4UB2mL75
-         9azhcZWvc/MsNxjFNwRRmCzwGjfh78NBGz7WmDIN8K+oDWv9rfLd+fPcI5quBImw75eT
-         dVVQ==
+        bh=mRLGHfszhMu2H9fDuncZog2vRyEHxBc99RbT/Vq7PW8=;
+        b=PFjPprIUPwCIol8hbzv8mrSyzKT0f9TMgTEtVE8XCoOh+ffNffW36O0ulxZ0enPXZR
+         oAVRSmUpo6AZKZ3/+KdJp+fV4HXGejxHJt0iCblT/jv1YnRSDyg/+TiagxJgiYlQVHqu
+         mQBmAEU2QW+IVSA5u40aM4nLwC4IqlNhiGMno5i+jzmyNjl3kKtgYKIH3F0+BAymQ8Qz
+         pjeGuZbtZCUipN/QJDT1qFfLJgKGHANuFB2OPfCUwecsj0iI6PQ30GsB+f0WtULw5ze6
+         VAPJelIT44aQC5S42ZarMfz0KGCkXcngtPRwQwAzAa3TrxiNcOeWDcmvze0JMBpjnSzI
+         /GaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=j7FF/lCI/a6VDmrNhXy3egXWTeVlilEZ3s3aRmfHp3I=;
-        b=E53Uv42+mdG4rEMULqW+iZyyEVEc8Cajv4l6SWl563fTcEBd1cvnIDf3ZFu7vl2X6Z
-         xMhp2uXtY9HcD37Kw2+np9nsFfI3XvgHgw1MLuf5PCkl8DX4G0RyDP/XfSow9nYtywRH
-         tkmVuqkCdl6gOVf60ysh5DvzuTUqzfxM8rOtRUT3v6IPQHthHAFR99LVlJqZ3HPXEFSk
-         0R5jy2+Q80fnkR5N2KCQ2RRSOjQe0lNtI4vND+vQgHeKMACwqh4o8q1lP89mi058oX55
-         r8li1TEBC0LrMZQHPxaZ8u2mor4C2BU15kNnUlT3WoM0Ns42QbkATT8ZJUYNVedKmpYy
-         z/lw==
-X-Gm-Message-State: ANhLgQ03L7jx2ISJEM20Mm8ljSqTCwV0MYbkMm+84qoKDAF2coOhmecj
-        EnHm5ulQZ7OzFsxqpt9JQXBfgollEuza8bDWTYo=
-X-Google-Smtp-Source: ADFU+vsnpZDMuRbXhPDxp8QXi30mqWNYG4TEyDdsCOC4PqVgCi9keQ9RPiQVVZqSeEBA6GYj3nN2iA2gmsAidIuKYwA=
-X-Received: by 2002:a0c:ee28:: with SMTP id l8mr5964886qvs.196.1585186309008;
- Wed, 25 Mar 2020 18:31:49 -0700 (PDT)
+        bh=mRLGHfszhMu2H9fDuncZog2vRyEHxBc99RbT/Vq7PW8=;
+        b=eyKqnvVCTZE+n3xi+MwI/yF7KN2q3oBWmDMdoaz+G+aNCfZO7rHihA+B0Rz0635zho
+         sPVExBEtZsq8rUPaJ57ecSSaGgHYp6O4i4MBL4g7dtScKP2lxflpOgZvtdOpwrvhpzhx
+         ohs4cWdtWnYBFJxnQUPLbHm54ylMVlrTwMzPr9QrA8qoRhabCdjgmBNRyES2LP/Fgp9h
+         Qw7BrjfrvsRYH8UTCsuPDX4+FcRCHTK+Fsq7FDynxpclhNXeL5/u07AKNwG98qlKkfy/
+         jFK6R4QHz6/dTHA1OypQFcBlKEbA080/hcSG41bEAjX+2MbevuKR3TCSHBOyEozJWELK
+         wDwQ==
+X-Gm-Message-State: ANhLgQ2aJj81X7kWCPZta0LGSC5U8Yw0PsTcmjMVJh+IbaBnrQIWC0WQ
+        TjYI5SX+vbP6boVeYnczEUCTEw83gN//AMaKIL0=
+X-Google-Smtp-Source: ADFU+vt3Y8r0cvEDUOl2zSnNbGj7ycQvuBbKZKqpCB5JYtit1lUfaGb6YvS3pYYXmU+n+Hj6FgT6I4ELFB4cOpNM8DY=
+X-Received: by 2002:ac8:7cb0:: with SMTP id z16mr5839557qtv.59.1585187359951;
+ Wed, 25 Mar 2020 18:49:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAGyo_hqRCs6hp7w6zWEf5RzEZF6zyXj_Bb_AgXVKgab7tg06NQ@mail.gmail.com>
-In-Reply-To: <CAGyo_hqRCs6hp7w6zWEf5RzEZF6zyXj_Bb_AgXVKgab7tg06NQ@mail.gmail.com>
+References: <20200325152629.6904-1-kpsingh@chromium.org> <20200325152629.6904-5-kpsingh@chromium.org>
+In-Reply-To: <20200325152629.6904-5-kpsingh@chromium.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 25 Mar 2020 18:31:38 -0700
-Message-ID: <CAEf4BzbN0rdiLvSe3_669FMKcV99RXrnKAKDtr8GnRP+4omQsw@mail.gmail.com>
-Subject: Re: libbpf/BTF loading issue with fentry/fexit selftests
-To:     Matt Cover <werekraken@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+Date:   Wed, 25 Mar 2020 18:49:09 -0700
+Message-ID: <CAEf4BzbZ0Y+BXezgbdzN2T1cH9osREJUNQQoQJ5rJ0EYyD-Udg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 4/8] bpf: lsm: Implement attach, detach and execution
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        bpf <bpf@vger.kernel.org>
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 25, 2020 at 3:16 PM Matt Cover <werekraken@gmail.com> wrote:
+On Wed, Mar 25, 2020 at 8:27 AM KP Singh <kpsingh@chromium.org> wrote:
 >
-> I'm looking to explore the bpf trampoline Alexei introduced for
-> tracing progs, but am encountering a libbpf/BTF issue with loading
-> the selftests. Hoping you guys might have a pointer or two.
+> From: KP Singh <kpsingh@google.com>
 >
-> The kernel build used pahole 1.15. All llvm-project components used
-> in compiling the selftests were 10.0.0-rc6.
+> JITed BPF programs are dynamically attached to the LSM hooks
+> using BPF trampolines. The trampoline prologue generates code to handle
+> conversion of the signature of the hook to the appropriate BPF context.
 >
-> I believe the following confirms that BTF is indeed present in this kernel.
-
-BTF is, but that BTF doesn't have information about FUNCs (only
-FUNC_PROTOs). You need pahole 1.16 for fentry/fexit.
-
+> The allocated trampoline programs are attached to the nop functions
+> initialized as LSM hooks.
 >
+> BPF_PROG_TYPE_LSM programs must have a GPL compatible license and
+> and need CAP_SYS_ADMIN (required for loading eBPF programs).
 >
-> [vagrant@localhost bpf]$ uname -r
-> 5.5.9-1.btf.el7.x86_64
-> [vagrant@localhost bpf]$ grep CONFIG_DEBUG_INFO_BTF /boot/config-`uname -r`
-> CONFIG_DEBUG_INFO_BTF=y
-> [vagrant@localhost bpf]$ ~/bpftool btf dump file ~/vmlinux-`uname -r`
-> | grep -i fexit
->     'BPF_TRAMP_FEXIT' val=1
->     'BPF_TRACE_FEXIT' val=25
-> [vagrant@localhost bpf]$ ~/bpftool btf dump file
-> /sys/kernel/btf/vmlinux | grep -i fexit
->     'BPF_TRAMP_FEXIT' val=1
->     'BPF_TRACE_FEXIT' val=25
+> Upon attachment:
 >
+> * A BPF fexit trampoline is used for LSM hooks with a void return type.
+> * A BPF fmod_ret trampoline is used for LSM hooks which return an
+>   int. The attached programs can override the return value of the
+>   bpf LSM hook to indicate a MAC Policy decision.
 >
-> The fexit_test.o file also has BTF information.
+> Signed-off-by: KP Singh <kpsingh@google.com>
+> Reviewed-by: Brendan Jackman <jackmanb@google.com>
+> Reviewed-by: Florent Revest <revest@google.com>
+> ---
+>  include/linux/bpf_lsm.h | 11 ++++++++
+>  kernel/bpf/bpf_lsm.c    | 28 +++++++++++++++++++++
+>  kernel/bpf/btf.c        |  9 ++++++-
+>  kernel/bpf/syscall.c    | 56 ++++++++++++++++++++++++++++-------------
+>  kernel/bpf/trampoline.c | 17 ++++++++++---
+>  kernel/bpf/verifier.c   | 19 +++++++++++---
+>  6 files changed, 113 insertions(+), 27 deletions(-)
 >
->
-> [vagrant@localhost bpf]$ ~/bpftool btf dump file fexit_test.o | grep FUNC_PROTO
-> [4] FUNC_PROTO '(anon)' ret_type_id=5 vlen=1
-> [7] FUNC_PROTO '(anon)' ret_type_id=5 vlen=1
-> [9] FUNC_PROTO '(anon)' ret_type_id=5 vlen=1
-> [11] FUNC_PROTO '(anon)' ret_type_id=5 vlen=1
-> [13] FUNC_PROTO '(anon)' ret_type_id=5 vlen=1
-> [15] FUNC_PROTO '(anon)' ret_type_id=5 vlen=1
->
->
-> However, I get libbpf/BTF load errors when trying to run any
-> fentry/fexit tests.
->
->
-> [vagrant@localhost bpf]$ sudo ./test_progs -t fexit_test | grep '^libbpf\|FAIL'
-> libbpf: Error loading BTF: Invalid argument(22)
-> libbpf: magic: 0xeb9f
-> libbpf: Error loading .BTF into kernel: -22.
-> libbpf: Error loading BTF: Invalid argument(22)
-> libbpf: magic: 0xeb9f
-> libbpf: Error loading .BTF into kernel: -22.
-> libbpf: fexit/bpf_fentry_test1 is not found in vmlinux BTF
-> test_fexit_test:FAIL:prog_load fail err -2 errno 22
-> #10 fexit_test:FAIL
-> Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
->
->
-> I saw in a similar thread that -vvv output was requested. Figured the
-> same applies here.
-
-Yeah, for tricky issues that good. In this case it was pretty obvious,
-but generally it's a good idea for sure, thanks!
->
->
-> [vagrant@localhost bpf]$ sudo ./test_progs -vvv -t fexit_test | grep
-> '^libbpf\|FAIL'
 
 [...]
 
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 85567a6ea5f9..3ba30fd6101e 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/nospec.h>
+>  #include <linux/audit.h>
+>  #include <uapi/linux/btf.h>
+> +#include <linux/bpf_lsm.h>
 >
+>  #define IS_FD_ARRAY(map) ((map)->map_type == BPF_MAP_TYPE_PERF_EVENT_ARRAY || \
+>                           (map)->map_type == BPF_MAP_TYPE_CGROUP_ARRAY || \
+> @@ -1935,6 +1936,7 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
 >
-> Any hints on the issue?
+>                 switch (prog_type) {
+>                 case BPF_PROG_TYPE_TRACING:
+> +               case BPF_PROG_TYPE_LSM:
+>                 case BPF_PROG_TYPE_STRUCT_OPS:
+>                 case BPF_PROG_TYPE_EXT:
+>                         break;
+> @@ -2367,10 +2369,28 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog)
+>         struct file *link_file;
+>         int link_fd, err;
 >
-> -Matt C.
+> -       if (prog->expected_attach_type != BPF_TRACE_FENTRY &&
+> -           prog->expected_attach_type != BPF_TRACE_FEXIT &&
+> -           prog->expected_attach_type != BPF_MODIFY_RETURN &&
+> -           prog->type != BPF_PROG_TYPE_EXT) {
+> +       switch (prog->type) {
+> +       case BPF_PROG_TYPE_TRACING:
+> +               if (prog->expected_attach_type != BPF_TRACE_FENTRY &&
+> +                   prog->expected_attach_type != BPF_TRACE_FEXIT &&
+> +                   prog->expected_attach_type != BPF_MODIFY_RETURN) {
+> +                       err = -EINVAL;
+> +                       goto out_put_prog;
+> +               }
+> +               break;
+> +       case BPF_PROG_TYPE_EXT:
+> +               if (prog->expected_attach_type != 0) {
+> +                       err = -EINVAL;
+> +                       goto out_put_prog;
+> +               }
+> +               break;
+> +       case BPF_PROG_TYPE_LSM:
+> +               if (prog->expected_attach_type != BPF_LSM_MAC) {
+> +                       err = -EINVAL;
+> +                       goto out_put_prog;
+> +               }
+> +               break;
+> +       default:
+
+thanks, this is much more "scalable" in terms of maintenance!
+
+>                 err = -EINVAL;
+>                 goto out_put_prog;
+>         }
+> @@ -2449,16 +2469,10 @@ static int bpf_raw_tracepoint_open(const union bpf_attr *attr)
+>         if (IS_ERR(prog))
+>                 return PTR_ERR(prog);
+>
+> -       if (prog->type != BPF_PROG_TYPE_RAW_TRACEPOINT &&
+> -           prog->type != BPF_PROG_TYPE_TRACING &&
+> -           prog->type != BPF_PROG_TYPE_EXT &&
+> -           prog->type != BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE) {
+> -               err = -EINVAL;
+> -               goto out_put_prog;
+> -       }
+> -
+> -       if (prog->type == BPF_PROG_TYPE_TRACING ||
+> -           prog->type == BPF_PROG_TYPE_EXT) {
+> +       switch (prog->type) {
+> +       case BPF_PROG_TYPE_TRACING:
+> +       case BPF_PROG_TYPE_EXT:
+> +       case BPF_PROG_TYPE_LSM:
+>                 if (attr->raw_tracepoint.name) {
+>                         /* The attach point for this category of programs
+>                          * should be specified via btf_id during program load.
+> @@ -2466,11 +2480,13 @@ static int bpf_raw_tracepoint_open(const union bpf_attr *attr)
+>                         err = -EINVAL;
+>                         goto out_put_prog;
+>                 }
+> -               if (prog->expected_attach_type == BPF_TRACE_RAW_TP)
+> +               if (prog->expected_attach_type == BPF_TRACE_RAW_TP) {
+
+this should probably also ensure prog->type == BPF_PROG_TYPE_TRACING ?
+Otherwise you can trick kernel with BPF_PROG_TYPE_LSM and
+expected_attach_type == BPF_TRACE_RAW_TP, no?
+
+>                         tp_name = prog->aux->attach_func_name;
+> -               else
+> -                       return bpf_tracing_prog_attach(prog);
+> -       } else {
+> +                       break;
+> +               }
+> +               return bpf_tracing_prog_attach(prog);
+> +       case BPF_PROG_TYPE_RAW_TRACEPOINT:
+> +       case BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE:
+>                 if (strncpy_from_user(buf,
+>                                       u64_to_user_ptr(attr->raw_tracepoint.name),
+>                                       sizeof(buf) - 1) < 0) {
+> @@ -2479,6 +2495,10 @@ static int bpf_raw_tracepoint_open(const union bpf_attr *attr)
+>                }
+
+[...]
