@@ -2,52 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F35A193CBE
-	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 11:13:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A54CA193CE5
+	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 11:20:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727873AbgCZKNq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Mar 2020 06:13:46 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:37291 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726298AbgCZKNp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Mar 2020 06:13:45 -0400
-Received: by mail-ot1-f66.google.com with SMTP id g23so5227930otq.4
-        for <bpf@vger.kernel.org>; Thu, 26 Mar 2020 03:13:44 -0700 (PDT)
+        id S1727880AbgCZKU1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Mar 2020 06:20:27 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:36403 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726298AbgCZKU0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Mar 2020 06:20:26 -0400
+Received: by mail-oi1-f196.google.com with SMTP id k18so5015169oib.3
+        for <bpf@vger.kernel.org>; Thu, 26 Mar 2020 03:20:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nuHCk77tCbCasAzyaJ+kKtIldZ0BFpvAAWnlvjwZyjA=;
-        b=bD/WthBxaZlcC95kfdJ0n6oDY2wmwt34wz6P8tuXNk3ijRIgUhm3KF5dJy1EvR/3i1
-         kwjpkUa7h0z9hOVLfylLKKsyR4Zr74vLPtkuudcM7PjaKmSNeXEvays8p3EBUzBJ8FzC
-         8MjhmOe8jmoq5UJNsXdNY6axfwj5jJm2AUFdQ=
+        bh=4Ou958zyhsDYQ/ks25N+pQXJ3t+VMiViuMpgt3OjfrE=;
+        b=hzMjklkbo8OalW+4Co8gHQTKDS+eTFrCAaazRKliFE0k8A397+fMNHaHtpIMYPruno
+         iS9dMnlAfWFbfHIXE8XcMYf+pghNaGbjumvAyru/og2V/0aJsn6ovLtTWTN3tlXoXthW
+         4JM2uWO17KaBHVm8h4N4bN/biWd1Krnze3dW8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nuHCk77tCbCasAzyaJ+kKtIldZ0BFpvAAWnlvjwZyjA=;
-        b=ZXfCUjDeCwmMnZYT0EboErKI6f/N/vcZ6sMW0YiuhvBYSqarKREm/3BgBtoc4qYsEK
-         /CGiDQXfoPVa7CmFdYlShI9gvIQiOmzvcVXMQltXAe6epzD2aM08go0t6842hIl6i0HI
-         77M+Ih4YaSPXcD6Y3ZmMA1sIS6E7Uq7HH4pn7g1S2xHyXt9/avnZtQjN5jctiV1pY72I
-         oI6uYSM1H1rERclSuTZ0TAzkaXmQSt5djbq5Y48jAxd8HdhlxU7MWpM2x7IhpTYOFyUb
-         60wuL4byAM9jS1ZlI23GxYlJkd6GKDOpEw5M3Kbj1s1RFY66RnYQvE1hF/AJMnVJ7yH+
-         jgiw==
-X-Gm-Message-State: ANhLgQ0+R0WpmlITdqT9eNP1JdLwSD8avzmkrP8LvEdfDIDekyepVMEn
-        P9kQg4QSHFa4jd9US5PBLiM6rUg7lew7Z6TV6D+wJA==
-X-Google-Smtp-Source: ADFU+vugjRhDyNJmOxm2866DCF/Gm0RzUMZvyDFStmK8TUhFLERJ0VzNe6Q+DvNso1500XGyjFmDhSojzgqFnS4uqhw=
-X-Received: by 2002:a9d:748e:: with SMTP id t14mr5942403otk.334.1585217623398;
- Thu, 26 Mar 2020 03:13:43 -0700 (PDT)
+        bh=4Ou958zyhsDYQ/ks25N+pQXJ3t+VMiViuMpgt3OjfrE=;
+        b=rx1Q06LxiwcBiS7TfbLTadgWdBVBrfvaJYwPjqAGdyYfCA/3X+zfDt5nZr+MduXVT5
+         nmZ1NvUtYhr1nptGO90rGPwmW8dPvnq4d0saEUgNtiTHQyi+LACCrn2DIumJJzgHOJLQ
+         V2He0ftu6pxusa2PcKjPm6X6Tlyk/iY57KR4CYDfOlebC+Py9aEERGpFy/kePM1AJ8SD
+         Mg0ryOZqwXupbURt846yEEurvoL82Oi/Sb2idFJd+8+opQdkIZlu1Is6pPAmMIGCVhzx
+         6SjCNETVuDE99vI+VfLAZjYK2lF1mNvByDbz/PJQsu/CQmEzTXw3BzHPuFB5zJMk9qHG
+         nI+g==
+X-Gm-Message-State: ANhLgQ1wPiRiKbDDLcvV3sdD0D29gpBdvSEeAD4XqxJD9ruH5yettHqG
+        ppfJg03R76td7iXf3klGj4L11S0Q2GQkUaZxEHDizA==
+X-Google-Smtp-Source: ADFU+vvjooMPm1pO3DPN0m4KYV8vALUhU7yayr+ed5P3H+Z91ADsNsub0miXeGSwLpLLtGAKNFaeTX6gGlZgVQSQXfI=
+X-Received: by 2002:aca:c415:: with SMTP id u21mr1219894oif.102.1585218025192;
+ Thu, 26 Mar 2020 03:20:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200325055745.10710-1-joe@wand.net.nz> <20200325055745.10710-6-joe@wand.net.nz>
- <82e8d147-b334-3d29-0312-7b087ac908f3@fb.com>
-In-Reply-To: <82e8d147-b334-3d29-0312-7b087ac908f3@fb.com>
+References: <20200325055745.10710-1-joe@wand.net.nz> <20200325055745.10710-5-joe@wand.net.nz>
+ <CACAyw9_17E3TNCFsnXzQ4K2zSmwn8J+BcZqbjiK==WQH=zNzvg@mail.gmail.com> <CAOftzPipEjfy1p_98V+JmV3p_WJPzhE-_KfqC3UE3d-TYYxyww@mail.gmail.com>
+In-Reply-To: <CAOftzPipEjfy1p_98V+JmV3p_WJPzhE-_KfqC3UE3d-TYYxyww@mail.gmail.com>
 From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Thu, 26 Mar 2020 10:13:31 +0000
-Message-ID: <CACAyw99Eeu+=yD8UKazRJcknZi3D5zMJ4n=FVsxXi63DwhdxYA@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 5/5] selftests: bpf: add test for sk_assign
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Joe Stringer <joe@wand.net.nz>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
+Date:   Thu, 26 Mar 2020 10:20:14 +0000
+Message-ID: <CACAyw99SDN0U+VWi=WqS0V-M+riGehXfj3frTzSa6YcvOgWJtQ@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next 4/5] bpf: Don't refcount LISTEN sockets in sk_assign()
+To:     Joe Stringer <joe@wand.net.nz>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Eric Dumazet <eric.dumazet@gmail.com>,
@@ -58,473 +57,133 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 25 Mar 2020 at 18:17, Yonghong Song <yhs@fb.com> wrote:
+On Wed, 25 Mar 2020 at 20:47, Joe Stringer <joe@wand.net.nz> wrote:
 >
->
->
-> On 3/24/20 10:57 PM, Joe Stringer wrote:
-> > From: Lorenz Bauer <lmb@cloudflare.com>
+> On Wed, Mar 25, 2020 at 3:29 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
 > >
-> > Attach a tc direct-action classifier to lo in a fresh network
-> > namespace, and rewrite all connection attempts to localhost:4321
-> > to localhost:1234 (for port tests) and connections to unreachable
-> > IPv4/IPv6 IPs to the local socket (for address tests).
+> > On Wed, 25 Mar 2020 at 05:58, Joe Stringer <joe@wand.net.nz> wrote:
+> > >
+> > > Avoid taking a reference on listen sockets by checking the socket type
+> > > in the sk_assign and in the corresponding skb_steal_sock() code in the
+> > > the transport layer, and by ensuring that the prefetch free (sock_pfree)
+> > > function uses the same logic to check whether the socket is refcounted.
+> > >
+> > > Suggested-by: Martin KaFai Lau <kafai@fb.com>
+> > > Signed-off-by: Joe Stringer <joe@wand.net.nz>
+> > > ---
+> > > v2: Initial version
+> > > ---
+> > >  include/net/sock.h | 25 +++++++++++++++++--------
+> > >  net/core/filter.c  |  6 +++---
+> > >  net/core/sock.c    |  3 ++-
+> > >  3 files changed, 22 insertions(+), 12 deletions(-)
+> > >
+> > > diff --git a/include/net/sock.h b/include/net/sock.h
+> > > index 1ca2e808cb8e..3ec1865f173e 100644
+> > > --- a/include/net/sock.h
+> > > +++ b/include/net/sock.h
+> > > @@ -2533,6 +2533,21 @@ skb_sk_is_prefetched(struct sk_buff *skb)
+> > >         return skb->destructor == sock_pfree;
+> > >  }
+> > >
+> > > +/* This helper checks if a socket is a full socket,
+> > > + * ie _not_ a timewait or request socket.
+> > > + */
+> > > +static inline bool sk_fullsock(const struct sock *sk)
+> > > +{
+> > > +       return (1 << sk->sk_state) & ~(TCPF_TIME_WAIT | TCPF_NEW_SYN_RECV);
+> > > +}
+> > > +
+> > > +static inline bool
+> > > +sk_is_refcounted(struct sock *sk)
+> > > +{
+> > > +       /* Only full sockets have sk->sk_flags. */
+> > > +       return !sk_fullsock(sk) || !sock_flag(sk, SOCK_RCU_FREE);
+> > > +}
+> > > +
+> > >  /**
+> > >   * skb_steal_sock
+> > >   * @skb to steal the socket from
+> > > @@ -2545,6 +2560,8 @@ skb_steal_sock(struct sk_buff *skb, bool *refcounted)
+> > >                 struct sock *sk = skb->sk;
+> > >
+> > >                 *refcounted = true;
+> > > +               if (skb_sk_is_prefetched(skb))
+> > > +                       *refcounted = sk_is_refcounted(sk);
+> > >                 skb->destructor = NULL;
+> > >                 skb->sk = NULL;
+> > >                 return sk;
+> > > @@ -2553,14 +2570,6 @@ skb_steal_sock(struct sk_buff *skb, bool *refcounted)
+> > >         return NULL;
+> > >  }
+> > >
+> > > -/* This helper checks if a socket is a full socket,
+> > > - * ie _not_ a timewait or request socket.
+> > > - */
+> > > -static inline bool sk_fullsock(const struct sock *sk)
+> > > -{
+> > > -       return (1 << sk->sk_state) & ~(TCPF_TIME_WAIT | TCPF_NEW_SYN_RECV);
+> > > -}
+> > > -
+> > >  /* Checks if this SKB belongs to an HW offloaded socket
+> > >   * and whether any SW fallbacks are required based on dev.
+> > >   * Check decrypted mark in case skb_orphan() cleared socket.
+> > > diff --git a/net/core/filter.c b/net/core/filter.c
+> > > index 0fada7fe9b75..997b8606167e 100644
+> > > --- a/net/core/filter.c
+> > > +++ b/net/core/filter.c
+> > > @@ -5343,8 +5343,7 @@ static const struct bpf_func_proto bpf_sk_lookup_udp_proto = {
+> > >
+> > >  BPF_CALL_1(bpf_sk_release, struct sock *, sk)
+> > >  {
+> > > -       /* Only full sockets have sk->sk_flags. */
+> > > -       if (!sk_fullsock(sk) || !sock_flag(sk, SOCK_RCU_FREE))
+> > > +       if (sk_is_refcounted(sk))
+> > >                 sock_gen_put(sk);
+> > >         return 0;
+> > >  }
+> > > @@ -5870,7 +5869,8 @@ BPF_CALL_3(bpf_sk_assign, struct sk_buff *, skb, struct sock *, sk, u64, flags)
+> > >                 return -ESOCKTNOSUPPORT;
+> > >         if (unlikely(dev_net(skb->dev) != sock_net(sk)))
+> > >                 return -ENETUNREACH;
+> > > -       if (unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
+> > > +       if (sk_is_refcounted(sk) &&
+> > > +           unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
+> > >                 return -ENOENT;
+> > >
+> > >         skb_orphan(skb);
+> > > diff --git a/net/core/sock.c b/net/core/sock.c
+> > > index cfaf60267360..a2ab79446f59 100644
+> > > --- a/net/core/sock.c
+> > > +++ b/net/core/sock.c
+> > > @@ -2076,7 +2076,8 @@ EXPORT_SYMBOL(sock_efree);
+> > >   */
+> > >  void sock_pfree(struct sk_buff *skb)
+> > >  {
+> > > -       sock_edemux(skb);
+> > > +       if (sk_is_refcounted(skb->sk))
+> > > +               sock_edemux(skb);
 > >
-> > Keep in mind that both client to server and server to client traffic
-> > passes the classifier.
-> >
-> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> > Co-authored-by: Joe Stringer <joe@wand.net.nz>
-> > Signed-off-by: Joe Stringer <joe@wand.net.nz>
-> > ---
-> > v2: Rebase onto test_progs infrastructure
-> > v1: Initial commit
-> > ---
-> >   tools/testing/selftests/bpf/Makefile          |   2 +-
-> >   .../selftests/bpf/prog_tests/sk_assign.c      | 244 ++++++++++++++++++
-> >   .../selftests/bpf/progs/test_sk_assign.c      | 127 +++++++++
-> >   3 files changed, 372 insertions(+), 1 deletion(-)
-> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/sk_assign.c
-> >   create mode 100644 tools/testing/selftests/bpf/progs/test_sk_assign.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > index 7729892e0b04..4f7f83d059ca 100644
-> > --- a/tools/testing/selftests/bpf/Makefile
-> > +++ b/tools/testing/selftests/bpf/Makefile
-> > @@ -76,7 +76,7 @@ TEST_PROGS_EXTENDED := with_addr.sh \
-> >   # Compile but not part of 'make run_tests'
-> >   TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
-> >       flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
-> > -     test_lirc_mode2_user xdping test_cpp runqslower
-> > +     test_lirc_mode2_user xdping test_cpp runqslower test_sk_assign
+> > sock_edemux calls sock_gen_put, which is also called by
+> > bpf_sk_release. Is it worth teaching sock_gen_put about
+> > sk_fullsock, and dropping the other helpers? I was considering this
+> > when fixing up sk_release, but then forgot
+> > about it.
 >
-> No test_sk_assign any more as the test is integrated into test_progs, right?
->
-> >
-> >   TEST_CUSTOM_PROGS = urandom_read
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/sk_assign.c b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-> > new file mode 100644
-> > index 000000000000..1f0afcc20c48
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-> > @@ -0,0 +1,244 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +// Copyright (c) 2018 Facebook
-> > +// Copyright (c) 2019 Cloudflare
-> > +// Copyright (c) 2020 Isovalent, Inc.
-> > +/*
-> > + * Test that the socket assign program is able to redirect traffic towards a
-> > + * socket, regardless of whether the port or address destination of the traffic
-> > + * matches the port.
-> > + */
-> > +
-> > +#define _GNU_SOURCE
-> > +#include <fcntl.h>
-> > +#include <signal.h>
-> > +#include <stdlib.h>
-> > +#include <unistd.h>
-> > +
-> > +#include "test_progs.h"
-> > +
-> > +#define TEST_DPORT 4321
-> > +#define TEST_DADDR (0xC0A80203)
-> > +#define NS_SELF "/proc/self/ns/net"
-> > +
-> > +static __u32 duration;
-> > +
-> > +static bool configure_stack(int self_net)
->
-> self_net parameter is not used.
->
-> > +{
-> > +     /* Move to a new networking namespace */
-> > +     if (CHECK_FAIL(unshare(CLONE_NEWNET)))
-> > +             return false;
->
-> You can use CHECK to encode better error messages. Thhis is what
-> most test_progs tests are using.
->
-> > +     /* Configure necessary links, routes */
-> > +     if (CHECK_FAIL(system("ip link set dev lo up")))
-> > +             return false;
-> > +     if (CHECK_FAIL(system("ip route add local default dev lo")))
-> > +             return false;
-> > +     if (CHECK_FAIL(system("ip -6 route add local default dev lo")))
-> > +             return false;
-> > +
-> > +     /* Load qdisc, BPF program */
-> > +     if (CHECK_FAIL(system("tc qdisc add dev lo clsact")))
-> > +             return false;
-> > +     if (CHECK_FAIL(system("tc filter add dev lo ingress bpf direct-action "
-> > +                  "object-file ./test_sk_assign.o section sk_assign_test")))
-> > +             return false;
-> > +
-> > +     return true;
-> > +}
-> > +
-> > +static int start_server(const struct sockaddr *addr, socklen_t len)
-> > +{
-> > +     int fd;
-> > +
-> > +     fd = socket(addr->sa_family, SOCK_STREAM, 0);
-> > +     if (CHECK_FAIL(fd == -1))
-> > +             goto out;
-> > +     if (CHECK_FAIL(bind(fd, addr, len) == -1))
-> > +             goto close_out;
-> > +     if (CHECK_FAIL(listen(fd, 128) == -1))
-> > +             goto close_out;
-> > +
-> > +     goto out;
-> > +
-> > +close_out:
-> > +     close(fd);
-> > +     fd = -1;
-> > +out:
-> > +     return fd;
-> > +}
-> > +
-> > +static void handle_timeout(int signum)
-> > +{
-> > +     if (signum == SIGALRM)
-> > +             fprintf(stderr, "Timed out while connecting to server\n");
-> > +     kill(0, SIGKILL);
-> > +}
-> > +
-> > +static struct sigaction timeout_action = {
-> > +     .sa_handler = handle_timeout,
-> > +};
-> > +
-> > +static int connect_to_server(const struct sockaddr *addr, socklen_t len)
-> > +{
-> > +     int fd = -1;
-> > +
-> > +     fd = socket(addr->sa_family, SOCK_STREAM, 0);
-> > +     if (CHECK_FAIL(fd == -1))
-> > +             goto out;
-> > +     if (CHECK_FAIL(sigaction(SIGALRM, &timeout_action, NULL)))
-> > +             goto out;
->
-> should this goto close_out?
->
-> > +     alarm(3);
-> > +     if (CHECK_FAIL(connect(fd, addr, len) == -1))
-> > +             goto close_out;
-> > +
-> > +     goto out;
-> > +
-> > +close_out:
-> > +     close(fd);
-> > +     fd = -1;
-> > +out:
-> > +     return fd;
-> > +}
-> > +
-> > +static in_port_t get_port(int fd)
-> > +{
-> > +     struct sockaddr_storage name;
-> > +     socklen_t len;
-> > +     in_port_t port = 0;
-> > +
-> > +     len = sizeof(name);
-> > +     if (CHECK_FAIL(getsockname(fd, (struct sockaddr *)&name, &len)))
-> > +             return port;
-> > +
-> > +     switch (name.ss_family) {
-> > +     case AF_INET:
-> > +             port = ((struct sockaddr_in *)&name)->sin_port;
-> > +             break;
-> > +     case AF_INET6:
-> > +             port = ((struct sockaddr_in6 *)&name)->sin6_port;
-> > +             break;
-> > +     default:
-> > +             CHECK(1, "Invalid address family", "%d\n", name.ss_family);
-> > +     }
-> > +     return port;
-> > +}
-> > +
-> > +static int run_test(int server_fd, const struct sockaddr *addr, socklen_t len)
-> > +{
-> > +     int client = -1, srv_client = -1;
-> > +     char buf[] = "testing";
-> > +     in_port_t port;
-> > +     int ret = 1;
-> > +
-> > +     client = connect_to_server(addr, len);
-> > +     if (client == -1) {
-> > +             perror("Cannot connect to server");
-> > +             goto out;
-> > +     }
-> > +
-> > +     srv_client = accept(server_fd, NULL, NULL);
-> > +     if (CHECK_FAIL(srv_client == -1)) {
-> > +             perror("Can't accept connection");
-> > +             goto out;
-> > +     }
-> > +     if (CHECK_FAIL(write(client, buf, sizeof(buf)) != sizeof(buf))) {
-> > +             perror("Can't write on client");
-> > +             goto out;
-> > +     }
-> > +     if (CHECK_FAIL(read(srv_client, buf, sizeof(buf)) != sizeof(buf))) {
-> > +             perror("Can't read on server");
-> > +             goto out;
-> > +     }
-> > +
-> > +     port = get_port(srv_client);
-> > +     if (CHECK_FAIL(!port))
-> > +             goto out;
-> > +     if (CHECK(port != htons(TEST_DPORT), "Expected", "port %u but got %u",
-> > +               TEST_DPORT, ntohs(port)))
-> > +             goto out;
-> > +
-> > +     ret = 0;
-> > +out:
-> > +     close(client);
-> > +     close(srv_client);
-> > +     return ret;
-> > +}
-> > +
-> > +static int do_sk_assign(void)
-> > +{
-> > +     struct sockaddr_in addr4;
-> > +     struct sockaddr_in6 addr6;
-> > +     int server = -1;
-> > +     int server_v6 = -1;
-> > +     int err = 1;
-> > +
-> > +     memset(&addr4, 0, sizeof(addr4));
-> > +     addr4.sin_family = AF_INET;
-> > +     addr4.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-> > +     addr4.sin_port = htons(1234);
-> > +
-> > +     memset(&addr6, 0, sizeof(addr6));
-> > +     addr6.sin6_family = AF_INET6;
-> > +     addr6.sin6_addr = in6addr_loopback;
-> > +     addr6.sin6_port = htons(1234);
-> > +
-> > +     server = start_server((const struct sockaddr *)&addr4, sizeof(addr4));
-> > +     if (server == -1)
-> > +             goto out;
-> > +
-> > +     server_v6 = start_server((const struct sockaddr *)&addr6,
-> > +                              sizeof(addr6));
-> > +     if (server_v6 == -1)
-> > +             goto out;
-> > +
-> > +     /* Connect to unbound ports */
-> > +     addr4.sin_port = htons(TEST_DPORT);
-> > +     addr6.sin6_port = htons(TEST_DPORT);
-> > +
-> > +     test__start_subtest("ipv4 port redir");
-> > +     if (run_test(server, (const struct sockaddr *)&addr4, sizeof(addr4)))
-> > +             goto out;
-> > +
-> > +     test__start_subtest("ipv6 port redir");
-> > +     if (run_test(server_v6, (const struct sockaddr *)&addr6, sizeof(addr6)))
-> > +             goto out;
-> > +
-> > +     /* Connect to unbound addresses */
-> > +     addr4.sin_addr.s_addr = htonl(TEST_DADDR);
-> > +     addr6.sin6_addr.s6_addr32[3] = htonl(TEST_DADDR);
-> > +
-> > +     test__start_subtest("ipv4 addr redir");
-> > +     if (run_test(server, (const struct sockaddr *)&addr4, sizeof(addr4)))
-> > +             goto out;
-> > +
-> > +     test__start_subtest("ipv6 addr redir");
-> > +     if (run_test(server_v6, (const struct sockaddr *)&addr6, sizeof(addr6)))
-> > +             goto out;
-> > +
-> > +     err = 0;
-> > +out:
-> > +     close(server);
-> > +     close(server_v6);
-> > +     return err;
-> > +}
-> > +
-> > +void test_sk_assign(void)
-> > +{
-> > +     int self_net;
-> > +
-> > +     self_net = open(NS_SELF, O_RDONLY);
-> > +     if (CHECK_FAIL(self_net < 0)) {
-> > +             perror("Unable to open "NS_SELF);
-> > +             return;
-> > +     }
-> > +
-> > +     if (!configure_stack(self_net)) {
-> > +             perror("configure_stack");
-> > +             goto cleanup;
-> > +     }
-> > +
-> > +     do_sk_assign();
-> > +
-> > +cleanup:
-> > +     close(self_net);
->
-> Did we exit the newly unshared net namespace and restored the previous
-> namespace?
->
-> > +}
-> > diff --git a/tools/testing/selftests/bpf/progs/test_sk_assign.c b/tools/testing/selftests/bpf/progs/test_sk_assign.c
-> > new file mode 100644
-> > index 000000000000..7de30ad3f594
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/test_sk_assign.c
-> > @@ -0,0 +1,127 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +// Copyright (c) 2019 Cloudflare Ltd.
-> > +
-> > +#include <stddef.h>
-> > +#include <stdbool.h>
-> > +#include <string.h>
-> > +#include <linux/bpf.h>
-> > +#include <linux/if_ether.h>
-> > +#include <linux/in.h>
-> > +#include <linux/ip.h>
-> > +#include <linux/ipv6.h>
-> > +#include <linux/pkt_cls.h>
-> > +#include <linux/tcp.h>
-> > +#include <sys/socket.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_endian.h>
-> > +
-> > +int _version SEC("version") = 1;
-> > +char _license[] SEC("license") = "GPL";
-> > +
-> > +/* Fill 'tuple' with L3 info, and attempt to find L4. On fail, return NULL. */
-> > +static struct bpf_sock_tuple *get_tuple(void *data, __u64 nh_off,
-> > +                                     void *data_end, __u16 eth_proto,
-> > +                                     bool *ipv4)
-> > +{
-> > +     struct bpf_sock_tuple *result;
-> > +     __u8 proto = 0;
-> > +     __u64 ihl_len;
-> > +
-> > +     if (eth_proto == bpf_htons(ETH_P_IP)) {
-> > +             struct iphdr *iph = (struct iphdr *)(data + nh_off);
-> > +
-> > +             if (iph + 1 > data_end)
-> > +                     return NULL;
-> > +             if (iph->ihl != 5)
-> > +                     /* Options are not supported */
-> > +                     return NULL;
-> > +             ihl_len = iph->ihl * 4;
-> > +             proto = iph->protocol;
-> > +             *ipv4 = true;
-> > +             result = (struct bpf_sock_tuple *)&iph->saddr;
-> > +     } else if (eth_proto == bpf_htons(ETH_P_IPV6)) {
-> > +             struct ipv6hdr *ip6h = (struct ipv6hdr *)(data + nh_off);
-> > +
-> > +             if (ip6h + 1 > data_end)
-> > +                     return NULL;
-> > +             ihl_len = sizeof(*ip6h);
-> > +             proto = ip6h->nexthdr;
-> > +             *ipv4 = false;
-> > +             result = (struct bpf_sock_tuple *)&ip6h->saddr;
-> > +     } else {
-> > +             return NULL;
-> > +     }
-> > +
-> > +     if (result + 1 > data_end || proto != IPPROTO_TCP)
-> > +             return NULL;
-> > +
-> > +     return result;
-> > +}
-> > +
-> > +SEC("sk_assign_test")
-> > +int bpf_sk_assign_test(struct __sk_buff *skb)
-> > +{
-> > +     void *data_end = (void *)(long)skb->data_end;
-> > +     void *data = (void *)(long)skb->data;
-> > +     struct ethhdr *eth = (struct ethhdr *)(data);
-> > +     struct bpf_sock_tuple *tuple, ln = {0};
-> > +     struct bpf_sock *sk;
-> > +     int tuple_len;
-> > +     bool ipv4;
-> > +     int ret;
-> > +
-> > +     if (eth + 1 > data_end)
-> > +             return TC_ACT_SHOT;
-> > +
-> > +     tuple = get_tuple(data, sizeof(*eth), data_end, eth->h_proto, &ipv4);
-> > +     if (!tuple)
-> > +             return TC_ACT_SHOT;
-> > +
-> > +     tuple_len = ipv4 ? sizeof(tuple->ipv4) : sizeof(tuple->ipv6);
-> > +     sk = bpf_skc_lookup_tcp(skb, tuple, tuple_len, BPF_F_CURRENT_NETNS, 0);
->
-> You can get rid of tuple_len with
->         if (ipv4)
->                 sk = bpf_skc_lookup_tcp(..., sizeof(tuple->ipv4), ...);
->         else
->                 sk = bpf_skc_lookup_tcp(..., sizeof(tuple->ipv6), ...);
->
-> and later on you can do common bpf_skc_lookup_tcp.
-> But it may not be worthwhile to do it, as you have two separate calls
-> in the above instead.
->
-> > +     if (sk) {
-> > +             if (sk->state != BPF_TCP_LISTEN)
-> > +                     goto assign;
-> > +
-> > +             bpf_sk_release(sk);
-> > +     }
-> > +
-> > +     if (ipv4) {
-> > +             if (tuple->ipv4.dport != bpf_htons(4321))
-> > +                     return TC_ACT_OK;
-> > +
-> > +             ln.ipv4.daddr = bpf_htonl(0x7f000001);
-> > +             ln.ipv4.dport = bpf_htons(1234);
-> > +
-> > +             sk = bpf_skc_lookup_tcp(skb, &ln, sizeof(ln.ipv4),
-> > +                                     BPF_F_CURRENT_NETNS, 0);
-> > +     } else {
-> > +             if (tuple->ipv6.dport != bpf_htons(4321))
-> > +                     return TC_ACT_OK;
-> > +
-> > +             /* Upper parts of daddr are already zero. */
-> > +             ln.ipv6.daddr[3] = bpf_htonl(0x1);
-> > +             ln.ipv6.dport = bpf_htons(1234);
-> > +
-> > +             sk = bpf_skc_lookup_tcp(skb, &ln, sizeof(ln.ipv6),
-> > +                                     BPF_F_CURRENT_NETNS, 0);
-> > +     }
-> > +
-> > +     /* We can't do a single skc_lookup_tcp here, because then the compiler
-> > +      * will likely spill tuple_len to the stack. This makes it lose all
-> > +      * bounds information in the verifier, which then rejects the call as
-> > +      * unsafe.
-> > +      */
->
-> This is a known issue. For scalars, only constant is restored properly
-> in verifier at this moment. I did some hacking before to enable any
-> scalars. The fear is this will make pruning performs worse. More
-> study is needed here.
+> I like the idea, but I'm concerned about breaking things outside the
+> focus of this new helper if the skb_sk_is_prefetched() function from
+> patch 1 is allowed to return true for sockets other than the ones
+> assigned from the bpf_sk_assign() helper. At a glance there's users of
+> sock_efree (which sock_edemux can be defined to) like netem_enqueue()
+> which may inadvertently trigger unexpected paths here. I think it's
+> more explicit so more obviously correct if the destructor pointer used
+> in this series is unique compared to other paths, even if the
+> underlying code is the same.
 
-Of topic, but: this is actually one of the most challenging issues for
-us when writing
-BPF. It forces us to have very deep call graphs to hopefully avoid clang
-spilling the constants. Please let me know if I can help in any way.
-
->
-> > +     if (!sk)
-> > +             return TC_ACT_SHOT;
-> > +
-> > +     if (sk->state != BPF_TCP_LISTEN) {
-> > +             bpf_sk_release(sk);
-> > +             return TC_ACT_SHOT;
-> > +     }
-> > +
-> > +assign:
-> > +     ret = bpf_sk_assign(skb, sk, 0);
-> > +     bpf_sk_release(sk);
-> > +     return ret == 0 ? TC_ACT_OK : TC_ACT_SHOT;
-> > +}
-> >
-
-
+Sorry, I didn't mean to get rid of sock_pfree, I was referring to
+sk_fullsock and
+sk_is_refcounted. My point was that it's weird that sock_gen_put isn't
+actually generic because it doesn't properly handle SOCK_RCU_FREE.
 
 -- 
 Lorenz Bauer  |  Systems Engineer
