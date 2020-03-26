@@ -2,100 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 89461194840
-	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 21:06:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9AF194924
+	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 21:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727879AbgCZUGG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Mar 2020 16:06:06 -0400
-Received: from dispatch1-us1.ppe-hosted.com ([148.163.129.52]:46770 "EHLO
-        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727851AbgCZUGF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 26 Mar 2020 16:06:05 -0400
-Received: from mx1-us1.ppe-hosted.com (unknown [10.7.65.60])
-        by dispatch1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 1DFC1600FE;
-        Thu, 26 Mar 2020 20:06:05 +0000 (UTC)
-Received: from us4-mdac16-37.ut7.mdlocal (unknown [10.7.66.156])
-        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 1ADD52009A;
-        Thu, 26 Mar 2020 20:06:05 +0000 (UTC)
-X-Virus-Scanned: Proofpoint Essentials engine
-Received: from mx1-us1.ppe-hosted.com (unknown [10.7.66.32])
-        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 91DE01C0052;
-        Thu, 26 Mar 2020 20:06:03 +0000 (UTC)
-Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 00A2CB4007D;
-        Thu, 26 Mar 2020 20:06:02 +0000 (UTC)
-Received: from [10.17.20.203] (10.17.20.203) by ukex01.SolarFlarecom.com
- (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Thu, 26 Mar
- 2020 20:05:54 +0000
-Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
- program when attaching XDP
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Andrii Nakryiko" <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jesper Dangaard Brouer" <brouer@redhat.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-References: <CAEf4BzbWa8vdyLuzr_nxFM3BtT+hhzjCe9UQF8Y5cN+sVqa72g@mail.gmail.com>
- <87tv2f48lp.fsf@toke.dk>
- <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com>
- <87h7ye3mf3.fsf@toke.dk>
- <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com>
- <87tv2e10ly.fsf@toke.dk>
- <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com>
- <87369wrcyv.fsf@toke.dk>
- <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com>
- <20200325221323.00459c8d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200326194050.d5cjetvhzlhyiesb@ast-mbp>
-From:   Edward Cree <ecree@solarflare.com>
-Message-ID: <042eca2c-b0c1-b20f-7636-eaa6156cd464@solarflare.com>
-Date:   Thu, 26 Mar 2020 20:05:52 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
-MIME-Version: 1.0
-In-Reply-To: <20200326194050.d5cjetvhzlhyiesb@ast-mbp>
-Content-Type: text/plain; charset="utf-8"
+        id S1727943AbgCZU2z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Mar 2020 16:28:55 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:23998 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726363AbgCZU2z (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 26 Mar 2020 16:28:55 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02QKBIIj005187;
+        Thu, 26 Mar 2020 13:28:50 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=vpEY5owUP251CpMVMs6pgESngCoQ1uY806QGZ/JvP7w=;
+ b=IMl0L7K0Ypk7Y/een2105NuSulm216r5POMwsVPL0YxwJb+2EkZpaijVQsrNlP/fbLOh
+ e8Oqvhcs3LMhSnTlsivMGfWCpg6RbUEP/IrkOesC+vgK8Oax2ysYdbUD2ezrBU1EnTLc
+ rumxqnbVNVBcebShoqtiTJ+ywxE2fTXMdww= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2yx2xpah0f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 26 Mar 2020 13:28:50 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Thu, 26 Mar 2020 13:28:49 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eubu+30euWCH5eiv8iFMlzVdOOqwnuInc9rvWW2+S1iWHrsL0b0UA/IVHRxosn736oDGarQ9c09ZCwhbzp4VMZiEzYt+ym+Hkl0Ko7wHcYDylU2E0vzNPXXjNWk0v+CfnnesYJYniYkH3TMe/9av//bXcORaQ3/uuKEoL5jeC4bv+NRY4gZT/GOFgzLYDNSVHGJRgRiQmaTBHY14Gv3qSy9iCKx31iHXHD0dFEK/LMjgdyCmOLtMVDwCSlSl0ULJ4b+xRYji09iHanJRhoG24KqAGIGuFwaIfeJRgvWKGFZotsjaD+uOfR05DuLnfus4BeX9h6icZcLv73fQ8fsSCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vpEY5owUP251CpMVMs6pgESngCoQ1uY806QGZ/JvP7w=;
+ b=WzG8YPdJqQqE3rd9aiTGaiOOsKoPpKscWZlmCobELRP21OeZ62EyYENf3cs6YFYO8xGrrWMR4umD5APKu1NfdrU9s2yXUoW2AtAlimBjS05XfdnVe2wRD+TtE2ufDagUbdc/7KE450OPlKS10yBCFqC0/TxHdmxCiEyxGCwpI6YaTRQzqsl8DwKNXMVEEqiSh+RhpQBggajC/bbs5l/LolKxCa82F+pc7iGW5+gOCSN8eJezKWRc+N/NTWr+kAyIoEyaP7oWqi5ULUrzue2C2m4vEYKU8UZGBy0bTiUy2+S6yQiNnn/bLgDxL+d4P1TUzZs7e1ip4VWkTiFJhY4Sbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vpEY5owUP251CpMVMs6pgESngCoQ1uY806QGZ/JvP7w=;
+ b=WPSm2evOcf4aggHKM0s3tT3FMg//zpCYB81jkYgNhncpmC1u4skKqVCBWPal4IvhLPBTWO/Vf0KN0sfNrS7FnpodSgLq07OVcbba21VPDlRBWP++Uk/vzKmDW0V3jed6kVF8VQspxAGFs3PHAgw1REcftwFqgue79tmb5NDDcWI=
+Received: from MW3PR15MB3753.namprd15.prod.outlook.com (2603:10b6:303:50::17)
+ by MW3PR15MB3753.namprd15.prod.outlook.com (2603:10b6:303:50::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2856.20; Thu, 26 Mar
+ 2020 20:28:48 +0000
+Received: from MW3PR15MB3753.namprd15.prod.outlook.com
+ ([fe80::3517:e69:6e78:4f7c]) by MW3PR15MB3753.namprd15.prod.outlook.com
+ ([fe80::3517:e69:6e78:4f7c%7]) with mapi id 15.20.2856.019; Thu, 26 Mar 2020
+ 20:28:48 +0000
+Subject: Re: runqslower build failed on Debian9
+To:     Liu Yiding <liuyd.fnst@cn.fujitsu.com>
+CC:     <linux-kselftest@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+References: <60b05d23-6352-b978-3bf7-5a86466bb297@cn.fujitsu.com>
+From:   Andrii Nakryiko <andriin@fb.com>
+Message-ID: <c1025a74-1d80-5127-2b0a-87465d3dbcd0@fb.com>
+Date:   Thu, 26 Mar 2020 13:28:45 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
+In-Reply-To: <60b05d23-6352-b978-3bf7-5a86466bb297@cn.fujitsu.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Originating-IP: [10.17.20.203]
-X-ClientProxiedBy: ocex03.SolarFlarecom.com (10.20.40.36) To
- ukex01.SolarFlarecom.com (10.17.10.4)
-X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1020-25314.003
-X-TM-AS-Result: No-1.099900-8.000000-10
-X-TMASE-MatchedRID: csPTYAMX1+HmLzc6AOD8DfHkpkyUphL9vMRNh9hLjFl0Tsch72XSbGRW
-        ePusFQaM5s1otBC8xHkXC2iWp7Ivyh8a27oj+G8+WYCA1t8hlcs6En2bnefhoOdQPw86uR12gqI
-        7yjbVyzTnEL+ol7gM64eieUG1ENTlLIgrJoe5B7cK4MBRf7I7ppzipwKe4Je16J/GTpdIYCjYiz
-        h88Z/Oq+fOVcxjDhcwIC0OoeD/hCaJhnKtQtAvVtmzcdRxL+xwKrauXd3MZDWhz7yVilwuBcOPh
-        BUFA6FXB3rIv92E3Y7jGsVMK6ZBAE83Gm2uZmpcoxgy4cSARIn532oiAhuuAxB6k0iRGuvKQeqd
-        hJJ1Z9/FMeIvMXhsZwbEQIfFpkwHBtlgFh29qnpKzBwu5JpklnOUuoTXM7r4QwymtxuJ6y0=
-X-TM-AS-User-Approved-Sender: Yes
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--1.099900-8.000000
-X-TMASE-Version: SMEX-12.5.0.1300-8.5.1020-25314.003
-X-MDID: 1585253164-sv073K3buUa3
+X-ClientProxiedBy: MWHPR14CA0054.namprd14.prod.outlook.com
+ (2603:10b6:300:81::16) To MW3PR15MB3753.namprd15.prod.outlook.com
+ (2603:10b6:303:50::17)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:2103:51:fde8:f2bb:1332] (2620:10d:c090:400::5:7bf1) by MWHPR14CA0054.namprd14.prod.outlook.com (2603:10b6:300:81::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2856.19 via Frontend Transport; Thu, 26 Mar 2020 20:28:47 +0000
+X-Originating-IP: [2620:10d:c090:400::5:7bf1]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ea4a4a37-6ec2-4fa8-b39d-08d7d1c449dd
+X-MS-TrafficTypeDiagnostic: MW3PR15MB3753:
+X-Microsoft-Antispam-PRVS: <MW3PR15MB3753D474929BBC55650E6B0FC6CF0@MW3PR15MB3753.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
+X-Forefront-PRVS: 0354B4BED2
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(39860400002)(136003)(396003)(376002)(346002)(366004)(81156014)(16526019)(36756003)(186003)(316002)(31696002)(8676002)(6916009)(86362001)(52116002)(81166006)(6486002)(4326008)(2906002)(31686004)(478600001)(2616005)(8936002)(53546011)(5660300002)(66556008)(66476007)(66946007);DIR:OUT;SFP:1102;SCL:1;SRVR:MW3PR15MB3753;H:MW3PR15MB3753.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;
+Received-SPF: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1XO6P8dOovh8g0KbfCG3K/JlVe4f1vZQs190OU30LrNRlGj7YBmLYkhEAaNFc0zLXdxV8uYmVRol0iUaPyyp//aZUfpRTm08RYTtiFu3+bUPapB2omFXW1SfSKyaylFY8+M86w8KYDjGv4d5n7OTAtg6rUOZq0mEH3trdqSvR3+Gm3061riHa7X3nNDMHhFwXDKJ6GYqUsx6DgUypXOU+bYG6CPvNCY5N7BwkYy4raV+ks2Pb3kXC7bT/nnnV2ArMXzOtk050/5v2bD2h6D1oGnyrdWrm6amNVmYQ4H7MJuLsuNBZjtgA7rNvJEVt67Vc2tgtYji9uP2L0b+32YFcYUHNwLVzpPIMY8oTuCQ7WhM/skxxIHl+7mZvjRcaByG/I+FR0RzZ2zoY8Wljida4teapz5abevdyClWPKw5xlN82l+KHjpFYBH98oOGRK4h
+X-MS-Exchange-AntiSpam-MessageData: BrfwHdDS7Nn5VzjttTZShs6CzB23o3bmQZg+zuJN5/44FKXcI2PsfHBqyEHNPeKvhbZX8MN32mpYba98SXX0DBkbsSxqcASNvcv16mC2GxN7gJHgLOZwg5grhbhdrasNUBQ2ppnr0HadOM6NtmquwKTosteVV7IEn3sjwdMVntytk+gfxXS0Tv91UpLE4kwn
+X-MS-Exchange-CrossTenant-Network-Message-Id: ea4a4a37-6ec2-4fa8-b39d-08d7d1c449dd
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2020 20:28:48.0958
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qD5d0QoHrFbyVWb21Km9phlvIUqq7uPOYPVswPB5zcgWhecspu+UuZshavHrjpTZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3753
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
+ definitions=2020-03-26_12:2020-03-26,2020-03-26 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ priorityscore=1501 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
+ spamscore=0 impostorscore=0 malwarescore=0 clxscore=1011 adultscore=0
+ bulkscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2003260147
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 26/03/2020 19:40, Alexei Starovoitov wrote:
-> At this point I don't believe in your good intent.
-> Your repeated attacks on BPF in every thread are out of control.
-> I kept ignoring your insults for long time, but I cannot do this anymore.
-> Please find other threads to contribute your opinions.
-> They are not welcomed here.
-Given that this clearly won't land in this cycle (and neither will bpf_link
- for XDP), can I suggest thateveryone involved steps back from the subject
- for a few days to let tempers cool?  It's getting to the point where people
- are burning bridges and saying things they might regret.
-I know everyone is under a lot of stress right now.
+On 3/25/20 10:26 PM, Liu Yiding wrote:
+> Hi, Andrii.
+> 
+> I noticed you had added runqslower tool to tools/bpf, so drop this 
+> problem to you.
+> 
+> 
+> Now i failed to run bpf tests since i can't build runqslower.
+> 
+> Testing env: "Debian GNU/Linux 9 (stretch)"
+> 
+> kernel: 5.6.0-rc5
+> 
+> gcc: gcc 6.3
+> 
+> clang: clang-11.
+> 
+> 
+> Description: Build runqslower failed due to build error "incomplete 
+> type" and libbpf show unsupported BTF_KIND:7.
+> 
+> Whole build log please see the attatchment.
+> 
+> 
+> Error info
+> 
+> ```
+> 
+> root@vm-snb-144 ~/linus/tools/bpf# make
+> 
+> Auto-detecting system features:
+> ...                        libbfd: [ on  ]
+> ...        disassembler-four-args: [ OFF ]
+> 
+> [snip]
+> 
+>    INSTALL  bpftool
+>    LINK     bpf_asm
+>    GEN      vmlinux.h
+> libbpf: unsupported BTF_KIND:7    (Many unsupported errors)
+> libbpf: unsupported BTF_KIND:7
+> libbpf: unsupported BTF_KIND:7
+> 
+
+Would you be able to share BTF of vmlinux that is used to generate 
+vmlinux.h? Please run in verbose mode: `make V=1` and search for 
+`bpftool btf dump file` command. It should point either to
+/sys/kernel/btf/vmlinux or some other location, depending on how things 
+are set up on your side.
+
+If it's /sys/kernel/btf/vmlinux, you can just `cat 
+/sys/kernel/btf/vmlinux > my_btf.bin`. If it's some other file, easiest 
+would be to just share that file. If not, it's possible to extract .BTF 
+ELF section, let me know if you need help with that.
+
+
+> [snip]
+> 
+> (Many incomplete type errors)
+> 
+> .output/vmlinux.h:8401:18: error: field has incomplete type 'struct 
+> idt_bits'
+>          struct idt_bits bits;
+>                          ^
+> .output/vmlinux.h:8396:8: note: forward declaration of 'struct idt_bits'
+> struct idt_bits;
+>         ^
+> .output/vmlinux.h:8598:21: error: field has incomplete type 'struct 
+> trace_entry'
+>          struct trace_entry ent;
+>                             ^
+> .output/vmlinux.h:8595:8: note: forward declaration of 'struct trace_entry'
+> struct trace_entry;
+>         ^
+> .output/vmlinux.h:9006:25: error: array has incomplete element type 
+> 'struct cyc2ns_data'
+>          struct cyc2ns_data data[2];
+>                                 ^
+> .output/vmlinux.h:3669:8: note: forward declaration of 'struct cyc2ns_data'
+> struct cyc2ns_data;
+>         ^
+> fatal error: too many errors emitted, stopping now [-ferror-limit=]
+> 20 errors generated.
+> Makefile:56: recipe for target '.output/runqslower.bpf.o' failed
+> make[1]: *** [.output/runqslower.bpf.o] Error 1
+> Makefile:119: recipe for target 'runqslower' failed
+> make: *** [runqslower] Error 2
+> 
+> ```
+> 
+> 
+
