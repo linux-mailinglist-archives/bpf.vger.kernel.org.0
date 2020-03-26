@@ -2,159 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D14FE1947B4
-	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 20:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC641947BF
+	for <lists+bpf@lfdr.de>; Thu, 26 Mar 2020 20:45:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726067AbgCZToG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Mar 2020 15:44:06 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:39224 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727719AbgCZToG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Mar 2020 15:44:06 -0400
-Received: by mail-wm1-f68.google.com with SMTP id a9so8692133wmj.4
-        for <bpf@vger.kernel.org>; Thu, 26 Mar 2020 12:44:03 -0700 (PDT)
+        id S1728383AbgCZTpJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Mar 2020 15:45:09 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:45254 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727026AbgCZTpI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Mar 2020 15:45:08 -0400
+Received: by mail-pl1-f193.google.com with SMTP id b9so2550290pls.12;
+        Thu, 26 Mar 2020 12:45:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=0Bii1s2deigTxksVQn5D4fa3g6KSqWpYF2vfQCrTCkQ=;
-        b=mXue/BH8dMK46Q+CxoPuOCAXIhsjfNF4BBz9nY0CKpqWmSNg1EdIyHxC/ObRwwi+4Y
-         vrbbv616X1THSsMHpH5lPr0ZnkJbdXDnByiot4haqIrWo6+ag7FMFpksuXbvMVX5B1mz
-         KDJ9sjiU9NcbKj1KvyZfGqfFysuI5OEoyFOoY=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sOXGQjEEKLCwjbFO0Zx0DMlBVwmlMSG+I2gRzjcAgU4=;
+        b=hQ+6lhlG00FEHD3matVmJicwW35u3Y6pLUgGkGcaMrEk2aaDa49Fpi+msPTNh/IJe2
+         OEjoO+y0sRRnPMYSWLkJi6Hl811iz/w62vK3nvliB9RO9iuyMMDCmY5JploIDOBF6LN2
+         mp0fIsp0TqitoaBACmYuPI8X+YyYEnjz29qHz7P0GIgkxgv3czgtN9TCbu6ai0lCBSPo
+         RIYC2cPATtgoZ6cgv0HVyzUbyb5H76YDtUpAWQpKvYG0bbC80/N6LTUnUJTpZodyssCr
+         xiKrApEgfE/ILr0LOJ97MOjNggT+lvaP1QT7hJ6uiGPP/h9Kex/Sv6TkX3PUfoJ0j84U
+         grmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=0Bii1s2deigTxksVQn5D4fa3g6KSqWpYF2vfQCrTCkQ=;
-        b=msHpgOX9gqjs3lWa7iPugy+uSYWyTkGK1fr+cj1a28Olv18ObvhEJNdy1ubUUt11RH
-         v5GNOpAna68fSA8yPZHwUY2mAMUI5tBGqFjhpaXIHqN3qM9DTmp6qAw1vAA/90IE3naM
-         RZxUEm4i4UzS1i6t8kYnftW/+uKKe9gqXzxEplxmZZS+V24QfX7g9IdtZACFOihlUdMj
-         Y2Wv9DgKF5No+DM5KMU2P8xnPtiA0Lmva3oZKkEhNqmPuy3f3rIyS6PV0FspPhQtYSNo
-         P058mTBswChY9XFcQxHNz+WcyYSYl2kFOdAwuZVtZvbLdkpbik/F3Y+o7WOBNdVTEAU7
-         9vDQ==
-X-Gm-Message-State: ANhLgQ3l3eFviuFWnRs+3c/6vdNQvJWlk8qneWjRR87wLf6ZpDGz5Ju2
-        mapXAVLHzk86pUCzvdx/OhFt0g==
-X-Google-Smtp-Source: ADFU+vv6oOna9/uYcBsBB+T/TvHqVZPZsv2Q92xO2Srm3mQHiGr5MgeyNE/xuLzjiHifH8JuX6CviQ==
-X-Received: by 2002:a05:600c:24c:: with SMTP id 12mr1548359wmj.186.1585251843249;
-        Thu, 26 Mar 2020 12:44:03 -0700 (PDT)
-Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
-        by smtp.gmail.com with ESMTPSA id s127sm4869574wmf.28.2020.03.26.12.44.01
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sOXGQjEEKLCwjbFO0Zx0DMlBVwmlMSG+I2gRzjcAgU4=;
+        b=cezlRqZgtDF8eV+0PjsbfVAQ+24uNJfXVpyqIEUAeqO467jpajAVsgdq0KC/yHy31C
+         QMZ4Uty4hO0azGwY1zu0il4baiKicZXpESdrtHczp6L5c+SCCVj0QVZKxpg3NuVklxEU
+         dEHby+ai6OVzm2xE8KCoTk0oNJGHodgxfn7CIqD2mEYoAAxdhsaFzKhq7FQkX1XMKV0n
+         KhBe2Irx9wDa5g17mDYXTJr3bqSrwiUeTcr0kk24bTMXnZhiAY5BcdmHGBhKBcmNOBlF
+         KswHK9dfU8XPGbyDPK3kYvHvk3anPKK0A+KgPQPB5zWIDTCFE2N7sqE76j8Fevm+rT3b
+         WaTA==
+X-Gm-Message-State: ANhLgQ3O6+HLdus0kpihX17Nxymet/Jqta3gjfUwxnoaJmn1m6LPYZ/x
+        3iBhVLc3OSg9ml+1dBeKiWw=
+X-Google-Smtp-Source: ADFU+vuI+aotOj1NaBDkZaxxuj1xaRDJu/Uqjr7lZG8GzyXDag0U1AVsJbOToZLaTNdAvs02+/du+w==
+X-Received: by 2002:a17:90a:6501:: with SMTP id i1mr1803228pjj.32.1585251906623;
+        Thu, 26 Mar 2020 12:45:06 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:c7d9])
+        by smtp.gmail.com with ESMTPSA id v20sm1420618pgo.34.2020.03.26.12.45.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Mar 2020 12:44:02 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Thu, 26 Mar 2020 20:44:00 +0100
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
-        Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@google.com>,
-        Thomas Garnier <thgarnie@google.com>,
+        Thu, 26 Mar 2020 12:45:05 -0700 (PDT)
+Date:   Thu, 26 Mar 2020 12:45:03 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Lorenz Bauer <lmb@cloudflare.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH bpf-next v7 7/8] bpf: lsm: Add selftests for
- BPF_PROG_TYPE_LSM
-Message-ID: <20200326194400.GB15273@chromium.org>
-References: <20200326142823.26277-1-kpsingh@chromium.org>
- <20200326142823.26277-8-kpsingh@chromium.org>
- <CAEf4BzZRe_kFR4yzhPFGgauvYLKvre1reuGp=5=jq_nvQGAayw@mail.gmail.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
+ program when attaching XDP
+Message-ID: <20200326194503.6wdx4gqq7u4quzrg@ast-mbp>
+References: <87tv2f48lp.fsf@toke.dk>
+ <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com>
+ <87h7ye3mf3.fsf@toke.dk>
+ <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com>
+ <87tv2e10ly.fsf@toke.dk>
+ <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com>
+ <87369wrcyv.fsf@toke.dk>
+ <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com>
+ <CACAyw9-FrwgBGjGT1CYrKJuyRJtwn0XUsifF_uR6LpRbcucN+A@mail.gmail.com>
+ <20200326104755.1ea5ac43@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZRe_kFR4yzhPFGgauvYLKvre1reuGp=5=jq_nvQGAayw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200326104755.1ea5ac43@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 26-Mär 12:24, Andrii Nakryiko wrote:
-> On Thu, Mar 26, 2020 at 7:30 AM KP Singh <kpsingh@chromium.org> wrote:
-> >
-> > From: KP Singh <kpsingh@google.com>
-> >
-> > * Load/attach a BPF program that hooks to file_mprotect (int)
-> >   and bprm_committed_creds (void).
-> > * Perform an action that triggers the hook.
-> > * Verify if the audit event was received using the shared global
-> >   variables for the process executed.
-> > * Verify if the mprotect returns a -EPERM.
-> >
-> > Signed-off-by: KP Singh <kpsingh@google.com>
-> > Reviewed-by: Brendan Jackman <jackmanb@google.com>
-> > Reviewed-by: Florent Revest <revest@google.com>
-> > Reviewed-by: Thomas Garnier <thgarnie@google.com>
-> > ---
+On Thu, Mar 26, 2020 at 10:47:55AM -0700, Jakub Kicinski wrote:
+> On Thu, 26 Mar 2020 10:04:53 +0000 Lorenz Bauer wrote:
+> > On Thu, 26 Mar 2020 at 00:16, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > > Those same folks have similar concern with XDP. In the world where
+> > > container management installs "root" XDP program which other user
+> > > applications can plug into (libxdp use case, right?), it's crucial to
+> > > ensure that this root XDP program is not accidentally overwritten by
+> > > some well-meaning, but not overly cautious developer experimenting in
+> > > his own container with XDP programs. This is where bpf_link ownership
+> > > plays a huge role. Tupperware agent (FB's container management agent)
+> > > would install root XDP program and will hold onto this bpf_link
+> > > without sharing it with other applications. That will guarantee that
+> > > the system will be stable and can't be compromised.  
+> > 
+> > Thanks for the extensive explanation Andrii.
+> > 
+> > This is what I imagine you're referring to: Tupperware creates a new network
+> > namespace ns1 and a veth0<>veth1 pair, moves one of the veth devices
+> > (let's says veth1) into ns1 and runs an application in ns1. On which veth
+> > would the XDP program go?
+> > 
+> > The way I understand it, veth1 would have XDP, and the application in ns1 would
+> > be prevented from attaching a new program? Maybe you can elaborate on this
+> > a little.
 > 
-> Please fix endlines below. With that:
-> 
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> 
-> >  tools/testing/selftests/bpf/config            |  2 +
-> >  .../selftests/bpf/prog_tests/test_lsm.c       | 86 +++++++++++++++++++
-> >  tools/testing/selftests/bpf/progs/lsm.c       | 48 +++++++++++
-> >  3 files changed, 136 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_lsm.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/lsm.c
-> >
-> 
-> [...]
-> 
-> > +void test_test_lsm(void)
-> > +{
-> > +       struct lsm *skel = NULL;
-> > +       int err, duration = 0;
-> > +
-> > +       skel = lsm__open_and_load();
-> > +       if (CHECK(!skel, "skel_load", "lsm skeleton failed\n"))
-> > +               goto close_prog;
-> > +
-> > +       err = lsm__attach(skel);
-> > +       if (CHECK(err, "attach", "lsm attach failed: %d\n", err))
-> > +               goto close_prog;
-> > +
-> > +       err = exec_cmd(&skel->bss->monitored_pid);
-> > +       if (CHECK(err < 0, "exec_cmd", "err %d errno %d\n", err, errno))
-> > +               goto close_prog;
-> > +
-> > +       CHECK(skel->bss->bprm_count != 1, "bprm_count", "bprm_count = %d",
-> 
-> \n is missing
+> Nope, there is no veths involved. Tupperware mediates the requests 
+> from containers to install programs on the physical interface for
+> heavy-duty network processing like DDoS protection for the entire
+> machine.
 
-Done.
-
-> 
-> > +             skel->bss->bprm_count);
-> > +
-> > +       skel->bss->monitored_pid = getpid();
-> > +
-> > +       err = heap_mprotect();
-> > +       if (CHECK(errno != EPERM, "heap_mprotect", "want errno=EPERM, got %d\n",
-> > +                 errno))
-> > +               goto close_prog;
-> > +
-> > +       CHECK(skel->bss->mprotect_count != 1, "mprotect_count",
-> > +             "mprotect_count = %d", skel->bss->mprotect_count);
-> 
-> \n is missing
-
-Done.
-
-- KP
-
-> 
-> > +
-> > +close_prog:
-> > +       lsm__destroy(skel);
-> > +}
-> 
-> [...]
+that's not what is happening.
+Jakub, I strongly suggest to avoid talking about things you have no clue.
