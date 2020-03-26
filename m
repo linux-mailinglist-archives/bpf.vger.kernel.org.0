@@ -2,189 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A9704194C06
-	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 00:14:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B186194D56
+	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 00:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727607AbgCZXOc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Mar 2020 19:14:32 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:26306 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727347AbgCZXOc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 26 Mar 2020 19:14:32 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 02QN9IBc032498;
-        Thu, 26 Mar 2020 16:14:17 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=113rVbSKXoplpZeuH67Z9X993mY92nW81x0ySNRQcGc=;
- b=FemSma3V/d+vepTYQw55xdRf6I4++iya20tnZVgUxdmJk9QznWopJ6Dpzs1GITwNxJkI
- oMcmZBi2tEL8kDz6Ialg9kzf4kmw5GMxm2i2EPRniKlvjpMxp5lwBWf/3rhxlnmsnY3b
- ttsmkb2bUh3dDNdxwF0lcBb11hqkEIhrx0g= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 2yweknxj3y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 26 Mar 2020 16:14:17 -0700
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 26 Mar 2020 16:14:16 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LDph1IYAI+hXWNh2nK8uFulR2ogo62jF+Fw2cyCmv4rS49MoeMiNr/CKXK//AZ4KT7GaC85o36tjx1BH6l6zwVBP/qQUVvcS3Mb1zng3uB2ulsNwFsp14/83tkWduixEqnnhKjafWW3lE4UKV5DhicF9RGs+WAwCtq/nfZKeFMsUiQg7SRDZw6F2F3iBfwqXFNsLH+KF524AXyMagfI2DjVr7fVbdKtoNQAu7DdSoTe4l9KTlREFui2uzxQPClv6eW20yVPKOuK2MxcoKfmkjMFKhq0NIFynmRtT/4nJ2+2TIkaQrZayaR2xLX3WyrOPSDBCDVr5vWHweudqJbHhHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=113rVbSKXoplpZeuH67Z9X993mY92nW81x0ySNRQcGc=;
- b=ZTCIUCvUDs33BEOep+UIdu7QQOtTxuaxO0ncUD0ESBx61Yh5Oa5mnajNRjhVndXm2z0DKn66HuNHZHlVsFrx2No62kAFMheHaPWXrbJxZSw75BE6u++1wTzZ7HI+zavlfls9VhQcuAvxwLuRpY+orw9RtIgmBc3RcYrr98+gClfvvzg6axk/1CDGhdSB1tVS0/1n6OhCFJxCsBNk3H88iTYtBv/SlstGPEJ1RaQ6wVy9DDxDGbdu8Vsm7P8A951hoqsocFK9pul0XH2szARs+AblXxdsVMii7vafPqbnCyoLwitHJTDBsKEIfXPtXynhINGNsmJZ9aQourIxp6nVow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=113rVbSKXoplpZeuH67Z9X993mY92nW81x0ySNRQcGc=;
- b=C34WnwXOPqkuGFhIDc6yr1qcGsTVRhdkgq3dT71X1bvlzWfkYmxZr42YYJyBY8MAlFA4cdKXfJum42kpU0RyA5LCHdcONeDSibbhijqHFtYEEeYsFgCL2wfALTqpieQtTxtvfwkFMoJnHS8FMKsxplzMIoTUIkr5UdnsTGV/OCY=
-Received: from MW3PR15MB3883.namprd15.prod.outlook.com (2603:10b6:303:51::22)
- by MW3PR15MB3772.namprd15.prod.outlook.com (2603:10b6:303:4c::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2856.20; Thu, 26 Mar
- 2020 23:14:14 +0000
-Received: from MW3PR15MB3883.namprd15.prod.outlook.com
- ([fe80::a49b:8546:912f:dd98]) by MW3PR15MB3883.namprd15.prod.outlook.com
- ([fe80::a49b:8546:912f:dd98%5]) with mapi id 15.20.2835.025; Thu, 26 Mar 2020
- 23:14:14 +0000
-Subject: Re: call for bpf progs. Re: [PATCHv2 bpf-next 5/5] selftests: bpf:
- add test for sk_assign
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-CC:     Joe Stringer <joe@wand.net.nz>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Martin Lau <kafai@fb.com>
-References: <20200325055745.10710-1-joe@wand.net.nz>
- <20200325055745.10710-6-joe@wand.net.nz>
- <82e8d147-b334-3d29-0312-7b087ac908f3@fb.com>
- <CACAyw99Eeu+=yD8UKazRJcknZi3D5zMJ4n=FVsxXi63DwhdxYA@mail.gmail.com>
- <20200326210719.den5isqxntnoqhmv@ast-mbp>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <ac11345e-3036-4f88-96ab-9cff84b5d9ea@fb.com>
-Date:   Thu, 26 Mar 2020 16:14:10 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.6.0
-In-Reply-To: <20200326210719.den5isqxntnoqhmv@ast-mbp>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW2PR16CA0053.namprd16.prod.outlook.com
- (2603:10b6:907:1::30) To MW3PR15MB3883.namprd15.prod.outlook.com
- (2603:10b6:303:51::22)
+        id S1727509AbgCZXfj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Mar 2020 19:35:39 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:39197 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726954AbgCZXfj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Mar 2020 19:35:39 -0400
+Received: by mail-pj1-f65.google.com with SMTP id z3so2540924pjr.4;
+        Thu, 26 Mar 2020 16:35:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9FN11s9scCK5qgibF6L3+4gVIyRgF1RL7ZAsxAIHQYU=;
+        b=tROQqu9vsFezeCvouq8Ox+xw4j8OmZ4owdM4vSJyIeYuzhgVhYWdO+o1RzIHyry238
+         npm/FdH2U4MV8yx2e1t4KMafuikciN+QcILLZaryEukz6QNjXPRVhi0Y0u+8emkdNH8S
+         78hSUjb29qMdPd7s6fxu+EJ7cukvC2yX2YJiHekovPp8hqLXsbrh7GDWJI1vr9y4xgo8
+         rKjMZKHfqk3kpDIWsP4/abseY4x207pZRtgRS22UkgJ0dQRHJhhUw1PrViXhHXg/IYTc
+         JNd6buRT/osnBJMO22jeoHASYAOoxS8XtHSbM6hC1eypLnKBOevHRA187VaeVI3gAsAc
+         wuww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9FN11s9scCK5qgibF6L3+4gVIyRgF1RL7ZAsxAIHQYU=;
+        b=opy2sFTr1zHF9jC3jCRG30d1jP33p5Pe4S9HlIf0YqQp4kNFnQei69FXAoxj8rFHWd
+         NH2UTEkQUdS10cPxtxnxcKa4l/TOTnh4Ez/Q9qpqqtI0jlZeiZHKTx+SegmZofXvkdB/
+         mnGg5KdxlcAHL0CxYMltFEQ3cKm4HoQk34g55gIa05nKdRRR1g248NfoW1tpfQsPYVaW
+         EWlAb/A2kZlRJk2me3d00trb4kt2ab+G6lFK2rTh4NUUm+E32yRvBSeiGC6jb0lgfThY
+         vcy1Bj2rotpjzLZyTgJoyyIyKnZUdfh4cz1N20Uxxd2WNk1gYk5hPEZ+UxwPWDmRZMdW
+         C3rQ==
+X-Gm-Message-State: ANhLgQ31BFwEFRlb56dg0Mre8m/DSUp2wGBRz1XaAjITQ3uQxF37DUoE
+        2YFrKgSmu+sNphGdiGFmMaN8fUlr
+X-Google-Smtp-Source: ADFU+vsAmL+vckTNYYDEr9VrDYlcPKeUajTRABrIAo9X6/7JXLQRBz7XM7DovD5IXDnQdd5peGTDSA==
+X-Received: by 2002:a17:90a:628a:: with SMTP id d10mr2709112pjj.25.1585265737424;
+        Thu, 26 Mar 2020 16:35:37 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:c7d9])
+        by smtp.gmail.com with ESMTPSA id 185sm2561957pfz.119.2020.03.26.16.35.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Mar 2020 16:35:36 -0700 (PDT)
+Date:   Thu, 26 Mar 2020 16:35:33 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, rdna@fb.com, andrii.nakryiko@gmail.com,
+        kernel-team@fb.com
+Subject: Re: [PATCH v2 bpf-next 4/6] bpf: implement bpf_prog replacement for
+ an active bpf_cgroup_link
+Message-ID: <20200326233533.gbyogvi57xufe34d@ast-mbp>
+References: <20200325065746.640559-1-andriin@fb.com>
+ <20200325065746.640559-5-andriin@fb.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from macbook-pro-52.local.dhcp.thefacebook.com (2620:10d:c090:400::5:ab1) by MW2PR16CA0053.namprd16.prod.outlook.com (2603:10b6:907:1::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2856.19 via Frontend Transport; Thu, 26 Mar 2020 23:14:12 +0000
-X-Originating-IP: [2620:10d:c090:400::5:ab1]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a19c2a09-24a8-4838-7f85-08d7d1db6617
-X-MS-TrafficTypeDiagnostic: MW3PR15MB3772:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW3PR15MB37729213111D2C5B6D503540D3CF0@MW3PR15MB3772.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-Forefront-PRVS: 0354B4BED2
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(396003)(376002)(39860400002)(366004)(136003)(346002)(53546011)(31686004)(6506007)(52116002)(6486002)(66476007)(66946007)(186003)(16526019)(2616005)(5660300002)(110136005)(2906002)(36756003)(4326008)(31696002)(6512007)(54906003)(966005)(316002)(81166006)(478600001)(81156014)(8936002)(66556008)(86362001)(8676002);DIR:OUT;SFP:1102;SCL:1;SRVR:MW3PR15MB3772;H:MW3PR15MB3883.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;
-Received-SPF: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MQLQ8LEWYBHPTGEON/Lsl2d7nKEVrfMuDEoP5UGAfxyv6aXlV824hxUtdKYeEHTgiMu/3+XSvBKeeRyfqzodqLfjjCn9cCGm6H+Clw9bCfNFJQmsWmsdXg+g2P6PubpntHwfLT4vB9OHZ7mKn6Xd1qqWX0Bzh6r4PO9w93mtUSIfoK4LtIbLD/FaC+VbMUbTUfhf2VVjusLR/bcA+0+LmuIU/XuTTSXYTBhTckE73WerqsKde2exEIsIP+v2P0ISUtIAKqWgoNzK3LUdCCm8gRSyD/1X+QHXrNo8T5EABB3eL6HuQ6oR12KD9P+V0YZp+Ke0NoI1dTG97u9aMJDosOZFZCfgfiUm10ZzqZBeSlxVbOH42cV31ignrt2d5+0duDopnOkerxW9vKJio4CH3dd7e8Wr9RxrtcqixigleT0YAfrbg2qAswKbjC8u5nwVUu2YUea5pFAD6ldfYG/RBcQ6xTSCUk/ml9qTNLvB9bNpq+exEP359VF+S+DtJgDDvPwu0aUvAazDywiIxbkceg==
-X-MS-Exchange-AntiSpam-MessageData: /UrYUZrj0MDfobUmk3743IripLYGL2hheU3/AY2Z0yrOOuvLFrjngjE9oLpi+ghkK6nVFNu+4q/0OSF8sdfjebudGiuqORmYQZ1GsV2zMDJT2izy4XSHvf5Bhg45K1k71kfd/NRS2046vYYIK/pNOYTahxlkR/nHM55rGdufLfjPQVHHnIq9fsdrrwr2uZ/Y
-X-MS-Exchange-CrossTenant-Network-Message-Id: a19c2a09-24a8-4838-7f85-08d7d1db6617
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2020 23:14:13.8736
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XxoTOMRKqPjTqjlUz3Mqjwt0xf4xsgjJG6HqaDV4UCrC1vuWthIYMf9vYvueK8Tc
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3772
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
- definitions=2020-03-26_14:2020-03-26,2020-03-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- lowpriorityscore=0 mlxlogscore=999 spamscore=0 phishscore=0 suspectscore=0
- clxscore=1015 adultscore=0 mlxscore=0 impostorscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2003260168
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200325065746.640559-5-andriin@fb.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Mar 24, 2020 at 11:57:44PM -0700, Andrii Nakryiko wrote:
+>  
+> +/* Swap updated BPF program for given link in effective program arrays across
+> + * all descendant cgroups. This function is guaranteed to succeed.
+> + */
+> +static void replace_effective_prog(struct cgroup *cgrp,
+> +				   enum bpf_attach_type type,
+> +				   struct bpf_cgroup_link *link)
+> +{
+> +	struct bpf_prog_array_item *item;
+> +	struct cgroup_subsys_state *css;
+> +	struct bpf_prog_array *progs;
+> +	struct bpf_prog_list *pl;
+> +	struct list_head *head;
+> +	struct cgroup *cg;
+> +	int pos;
+> +
+> +	css_for_each_descendant_pre(css, &cgrp->self) {
+> +		struct cgroup *desc = container_of(css, struct cgroup, self);
+> +
+> +		if (percpu_ref_is_zero(&desc->bpf.refcnt))
+> +			continue;
+> +
+> +		/* found position of link in effective progs array */
+> +		for (pos = 0, cg = desc; cg; cg = cgroup_parent(cg)) {
+> +			if (pos && !(cg->bpf.flags[type] & BPF_F_ALLOW_MULTI))
+> +				continue;
+> +
+> +			head = &cg->bpf.progs[type];
+> +			list_for_each_entry(pl, head, node) {
+> +				if (!prog_list_prog(pl))
+> +					continue;
+> +				if (pl->link == link)
+> +					goto found;
+> +				pos++;
+> +			}
+> +		}
+> +found:
+> +		BUG_ON(!cg);
+> +		progs = rcu_dereference_protected(
+> +				desc->bpf.effective[type],
+> +				lockdep_is_held(&cgroup_mutex));
+> +		item = &progs->items[pos];
+> +		WRITE_ONCE(item->prog, link->link.prog);
+> +	}
+> +}
+> +
+> +/**
+> + * __cgroup_bpf_replace() - Replace link's program and propagate the change
+> + *                          to descendants
+> + * @cgrp: The cgroup which descendants to traverse
+> + * @link: A link for which to replace BPF program
+> + * @type: Type of attach operation
+> + *
+> + * Must be called with cgroup_mutex held.
+> + */
+> +int __cgroup_bpf_replace(struct cgroup *cgrp, struct bpf_cgroup_link *link,
+> +			 struct bpf_prog *new_prog)
+> +{
+> +	struct list_head *progs = &cgrp->bpf.progs[link->type];
+> +	struct bpf_prog *old_prog;
+> +	struct bpf_prog_list *pl;
+> +	bool found = false;
+> +
+> +	if (link->link.prog->type != new_prog->type)
+> +		return -EINVAL;
+> +
+> +	list_for_each_entry(pl, progs, node) {
+> +		if (pl->link == link) {
+> +			found = true;
+> +			break;
+> +		}
+> +	}
+> +	if (!found)
+> +		return -ENOENT;
+> +
+> +	old_prog = xchg(&link->link.prog, new_prog);
+> +	replace_effective_prog(cgrp, link->type, link);
 
+I think with 'found = true' in this function you're assuming that it will be
+found in replace_effective_prog() ? I don't think that's the case.
+Try to create bpf_link with BPF_F_ALLOW_OVERRIDE, override it in a child cgroup
+with another link and then try to LINK_UPDATE the former. The link is there,
+but the prog is not executing and it's not in effective array. What LINK_UPDATE
+suppose to do? I guess it should succeed?
+Even trickier that the prog will be in effective array in some of
+css_for_each_descendant_pre() and not in others. This cgroup attach semantics
+were convoluted from the day one. Apparently people use all three variants now,
+but I wouldn't bet that everyone understands it.
+Hence my proposal to support F_ALLOW_MULTI for links only. At least initially.
+It's so much simpler to explain. And owning bpf_link will guarantee that the
+prog is executing (unless cgroup is removed and sockets are closed). I guess
+default (no-override) is acceptable to bpf_link as well and in that sense it
+will be very similar to XDP with single prog attached. So I think I can live
+with default and ALLOW_MULTI for now. But we should probably redesign
+overriding capabilities. Folks need to attach multiple progs to a given cgroup
+and disallow all progs in children. Currently it's not possible to do, since
+MULTI in the parent allows at least one (default, override or multi) in the
+children. bpf_link inheriting this logic won't help to solve this use case. It
+feels that link should stay as multi only and override or not in the children
+should be a separate property. Probably not related to link at all. It fits
+better as a cgroup permission.
 
-On 3/26/20 2:07 PM, Alexei Starovoitov wrote:
-> On Thu, Mar 26, 2020 at 10:13:31AM +0000, Lorenz Bauer wrote:
->>>> +
->>>> +     if (ipv4) {
->>>> +             if (tuple->ipv4.dport != bpf_htons(4321))
->>>> +                     return TC_ACT_OK;
->>>> +
->>>> +             ln.ipv4.daddr = bpf_htonl(0x7f000001);
->>>> +             ln.ipv4.dport = bpf_htons(1234);
->>>> +
->>>> +             sk = bpf_skc_lookup_tcp(skb, &ln, sizeof(ln.ipv4),
->>>> +                                     BPF_F_CURRENT_NETNS, 0);
->>>> +     } else {
->>>> +             if (tuple->ipv6.dport != bpf_htons(4321))
->>>> +                     return TC_ACT_OK;
->>>> +
->>>> +             /* Upper parts of daddr are already zero. */
->>>> +             ln.ipv6.daddr[3] = bpf_htonl(0x1);
->>>> +             ln.ipv6.dport = bpf_htons(1234);
->>>> +
->>>> +             sk = bpf_skc_lookup_tcp(skb, &ln, sizeof(ln.ipv6),
->>>> +                                     BPF_F_CURRENT_NETNS, 0);
->>>> +     }
->>>> +
->>>> +     /* We can't do a single skc_lookup_tcp here, because then the compiler
->>>> +      * will likely spill tuple_len to the stack. This makes it lose all
->>>> +      * bounds information in the verifier, which then rejects the call as
->>>> +      * unsafe.
->>>> +      */
->>>
->>> This is a known issue. For scalars, only constant is restored properly
->>> in verifier at this moment. I did some hacking before to enable any
->>> scalars. The fear is this will make pruning performs worse. More
->>> study is needed here.
->>
->> Of topic, but: this is actually one of the most challenging issues for
->> us when writing
->> BPF. It forces us to have very deep call graphs to hopefully avoid clang
->> spilling the constants. Please let me know if I can help in any way.
-> 
-> Thanks for bringing this up.
-> Yonghong, please correct me if I'm wrong.
-
-Yes. The summary below is correct. For reference, the below bcc issue
-documents some of my investigation:
-   https://github.com/iovisor/bcc/issues/2463
-
-> I think you've experimented with tracking spilled constants. The first issue
-> came with spilling of 4 byte constant. The verifier tracks 8 byte slots and
-> lots of places assume that slot granularity. It's not clear yet how to refactor
-> the verifier. Ideas, help are greatly appreciated.
-
-I cannot remember exactly what I did then. Probably remember the spilled 
-size too. Since the hack is never peer reviewed, maybe my approach has bugs.
-
-> The second concern was pruning, but iirc the experiments were inconclusive.
-> selftests/bpf only has old fb progs. Hence, I think, the step zero is for
-> everyone to contribute their bpf programs written in C. If we have both
-> cilium and cloudflare progs as selftests it will help a lot to guide such long
-> lasting verifier decisions.
-
-Yes, this is inconclusive and I did not do any active investigation here
-since just enhancing the non-const spill won't resolve the above issue.
-But totally agree that if we had an implementation, we should measure
-its impact on verifier speed.
+Anyhow I'm going to apply patches 1 and 2, since they are good cleanup
+regardless of what we decide here.
