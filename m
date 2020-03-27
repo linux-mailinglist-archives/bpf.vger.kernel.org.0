@@ -2,117 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FC3195E77
-	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 20:17:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D172195E7B
+	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 20:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgC0TRg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Mar 2020 15:17:36 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:40552 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727143AbgC0TRg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Mar 2020 15:17:36 -0400
-Received: by mail-wr1-f67.google.com with SMTP id u10so12795992wro.7
-        for <bpf@vger.kernel.org>; Fri, 27 Mar 2020 12:17:34 -0700 (PDT)
+        id S1727143AbgC0TSJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Mar 2020 15:18:09 -0400
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:37550 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726959AbgC0TSJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Mar 2020 15:18:09 -0400
+Received: by mail-qv1-f67.google.com with SMTP id n1so5493387qvz.4;
+        Fri, 27 Mar 2020 12:18:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=hh6WYJqT/M6VdZCxRRGFJ4X3bio1m9J2mQ8vyCBUNIY=;
-        b=Aj5KuCp5rUlAQ6zF28nJ3B92q65AO0KaTlRq7Hiod12FrJbTDddzKrzAevJvITTfmr
-         tSOgGVEdlR8yytc4R3UmpYwQ3nAisNYbKiSV98g3m+K8js1jSHsICGH+oZDRLvLutkB4
-         W1Kg+U/SFAKQNWSdnCyBeag5nqvbfKf4rlZrU=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=VwCdC8pByNVHAX48x87PIRqfh9CGcN030y6wF8AKKEY=;
+        b=idvSSnanBbaoWYK4bFRkKb3OA3h+26oo9paWJgbbz1z1GDnYXXmDz7c84+c3LqnBDG
+         CyTiarQmxK0ASWiHKtk2PYO/pmHp7I3EP56J46eL1QtPp6xsiJmZ/OkZMeh4g+yXt3rn
+         aOAlLC7j+fe+3MI1PX+Oy24jbUvKlCAsLwU5MCccLBS8KpQCeDCoNEtS3xz7+xb/dbuM
+         +xmbTdzUPiIAZOHBVgCTqR9OB7sEJ7fydpl2zwJW+/7D+aAgOUQs6sVW7xZCdF7O3xcf
+         DilZtktAYR6NwV+rJ+IZb3RK/ZG7InzdKYz4Qjr43ptD777/IdTmZHtgDGnDiKVXDDfT
+         9jgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=hh6WYJqT/M6VdZCxRRGFJ4X3bio1m9J2mQ8vyCBUNIY=;
-        b=W6CuUFgqplsv8rfO0J0RvyhwgGx7jOABGPMkOgdPYPsUEQe2QVNrGA6H+Y/XVbkOtX
-         dx1Wi05Ze1M91PORmXW+DIgVnw+pWWRx+tyPxih+FF308srQ1YZ+5aJssF1IszxeOn6M
-         XPJLriI9CD3wyIGENH+KwJtVfJlaxpdUZiJCRnNcmWSSx9GbRR9eMTjiitOtD7LSyMjb
-         h38IWEp+lWFdjaNEqVuRLU8gxplTRL1Nzc7Dq/3B11kSC8x+hM0aMVjAfeNvYuAUi0S2
-         vPmMVxEIPQHcvDLeWNzJGRPCg1ieBR7Gqn9QFdEZpxZkwUDB9WNYWTVHdl3JVSLyiHwZ
-         UTyA==
-X-Gm-Message-State: ANhLgQ0htPd8atvMxbFfzVZF80Y7tjcVM79B+vgwfUXNv91tSd56tkpC
-        amqhnUF3H5BGZhhHednptRsr1g==
-X-Google-Smtp-Source: ADFU+vsR7STlVYO4IV6+sb1UEbSKtqgoJjlapPf0cVHt271rMf3b6PMAe2TvKL793EyB2zae3Sc3Bw==
-X-Received: by 2002:a5d:4305:: with SMTP id h5mr935606wrq.69.1585336654111;
-        Fri, 27 Mar 2020 12:17:34 -0700 (PDT)
-Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
-        by smtp.gmail.com with ESMTPSA id d6sm9333648wrw.10.2020.03.27.12.17.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Mar 2020 12:17:33 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Fri, 27 Mar 2020 20:17:31 +0100
-To:     Kees Cook <keescook@chromium.org>, James Morris <jmorris@namei.org>
-Cc:     Casey Schaufler <casey@schaufler-ca.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Paul Moore <paul@paul-moore.com>
-Subject: Re: [PATCH bpf-next v7 4/8] bpf: lsm: Implement attach, detach and
- execution
-Message-ID: <20200327191731.GA9419@chromium.org>
-References: <20200326142823.26277-1-kpsingh@chromium.org>
- <20200326142823.26277-5-kpsingh@chromium.org>
- <alpine.LRH.2.21.2003271119420.17089@namei.org>
- <2241c806-65c9-68f5-f822-9a245ecf7ba0@tycho.nsa.gov>
- <20200327124115.GA8318@chromium.org>
- <14ff822f-3ca5-7ebb-3df6-dd02249169d2@tycho.nsa.gov>
- <a3f6d9f8-6425-af28-d472-fad642439b69@schaufler-ca.com>
- <202003271143.71E0C591C1@keescook>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VwCdC8pByNVHAX48x87PIRqfh9CGcN030y6wF8AKKEY=;
+        b=A6eyUmjVfcCg0MrDuz3AnCkb0WiS5lVDb9ENmkixLTaXVpAT3sIBKErNGbPp8GSL/m
+         WZUO6eA3tkuMKecPDjEMUiVbBJY+rlZWF1VK28QHudA8f1nmkpLL1mPEwDiAWlxvS1al
+         Iac3gexqjQAuHCKlLOndpmPy9E5S80Rqi+G3OiHp35K2CMVhTydzx7p8Ycb7Sdx4PzYA
+         83qmbhyuXpM7ndHmF8rnNA9i4DMDupRTS2hRBY9Kk3rcDhtjpwuRbYqx46Dtnk0HG29b
+         0+4qYjPMt/9K19faKPT8vIEBgQ0u7UBJyGBePWkDsi0YpAk88uyfLqqylmFX0jkeiud7
+         DlgA==
+X-Gm-Message-State: ANhLgQ1C5BIbrMwVpLgrpqAiQ9zsTlPtJwV6cEG/5WTRcSBW7ywPXnH7
+        WTYDU60w9vktKmeUBIIsWEsVosCoqnx/vce3688=
+X-Google-Smtp-Source: ADFU+vtiy2P2DXmmmtuqoeWJz2V5ww0YBj0CCPa9zN84HdGJ8O3WhEwcSXiLjvhLvSYv3lYhoGldN40Ebbm31GJPmNU=
+X-Received: by 2002:a0c:8525:: with SMTP id n34mr789046qva.224.1585336686901;
+ Fri, 27 Mar 2020 12:18:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <202003271143.71E0C591C1@keescook>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200326151741.125427-1-toke@redhat.com> <20200327125818.155522-1-toke@redhat.com>
+In-Reply-To: <20200327125818.155522-1-toke@redhat.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 27 Mar 2020 12:17:56 -0700
+Message-ID: <CAEf4BzbEyYQeLEsw0tzYYHeKi+q7a+vxavya9O3jykwsH3ki9g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] libbpf: Add getter for pointer to data area
+ for internal maps
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 27-Mär 11:59, Kees Cook wrote:
-> On Fri, Mar 27, 2020 at 09:36:15AM -0700, Casey Schaufler wrote:
-> > On 3/27/2020 6:43 AM, Stephen Smalley wrote:
-> > > On 3/27/20 8:41 AM, KP Singh wrote:
-> > >> On 27-Mär 08:27, Stephen Smalley wrote:
-> > >>>>> +        return -EPERM;
+On Fri, Mar 27, 2020 at 5:58 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> For internal maps (most notably the maps backing global variables), libbp=
+f
+> uses an internal mmaped area to store the data after opening the object.
+> This data is subsequently copied into the kernel map when the object is
+> loaded.
+>
+> This adds a getter for the pointer to that internal data store. This can =
+be
+> used to modify the data before it is loaded into the kernel, which is
+> especially relevant for RODATA, which is frozen on load. This same pointe=
+r
+> is already exposed to the auto-generated skeletons, so access to it is
+> already API; this just adds a way to get at it without pulling in the ful=
+l
+> skeleton infrastructure.
+>
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
+> v2:
+>   - Add per-map getter for data area instead of a global rodata getter fo=
+r bpf_obj
+>
+> tools/lib/bpf/libbpf.c   | 9 +++++++++
+>  tools/lib/bpf/libbpf.h   | 1 +
+>  tools/lib/bpf/libbpf.map | 1 +
+>  3 files changed, 11 insertions(+)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 085e41f9b68e..a0055f8908fd 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -6756,6 +6756,15 @@ void *bpf_map__priv(const struct bpf_map *map)
+>         return map ? map->priv : ERR_PTR(-EINVAL);
+>  }
+>
+> +void *bpf_map__data_area(const struct bpf_map *map, size_t *size)
 
-[...]
+I'm not entirely thrilled about "data_area" name. This is entirely for
+providing initial value for maps, so maybe something like
+bpf_map__init_value() or something along those lines?
 
-> > >
-> > > I would favor removing the CAP_MAC_ADMIN check here, and implementing it in a bpf_prog hook for Smack and AppArmor if they want that.  SELinux would implement its own check in its existing bpf_prog hook.
-> > >
-> > The whole notion of one security module calling into another for permission
-> > to do something still gives me the heebee jeebees, but if more nimble minds
-> > than mine think this is a good idea I won't nack it.
-> 
-> Well, it's a hook into BPF prog creation, not the BPF LSM specifically,
-> so that's why I think it's general enough control without it being
-> directly weird. :)
-> 
-> As far as dropping CAP_MAC_ADMIN, yeah, that should be fine. Creating LSM
-> BPF programs already requires CAP_SYS_ADMIN, so for SELinux-less systems,
-> that's likely fine. If we need to change the BPF program creation access
-> control in the future we can revisit it then.
+Actually, how about a different API altogether:
 
-Sounds good, I will send out v8 carrying James and Andri's
-Acks/Review tags, CAP_MAC_ADMIN check removed and some other minor
-fixes.
+bpf_map__set_init_value(struct bpf_map *map, void *data, size_t size)?
 
-- KP
+Application will have to prepare data of correct size, which will be
+copied to libbpf's internal storage. It also doesn't expose any of
+internal pointer. I don't think extra memcopy is a big deal here.
+Thoughts?
 
-> 
-> -- 
-> Kees Cook
+
+> +{
+> +       if (map->mmaped && map->libbpf_type !=3D LIBBPF_MAP_KCONFIG) {
+> +               *size =3D map->def.value_size;
+> +               return map->mmaped;
+> +       }
+> +       return NULL;
+> +}
+> +
+>  bool bpf_map__is_offload_neutral(const struct bpf_map *map)
+>  {
+>         return map->def.type =3D=3D BPF_MAP_TYPE_PERF_EVENT_ARRAY;
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index d38d7a629417..baef0d2f3205 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -407,6 +407,7 @@ typedef void (*bpf_map_clear_priv_t)(struct bpf_map *=
+, void *);
+>  LIBBPF_API int bpf_map__set_priv(struct bpf_map *map, void *priv,
+>                                  bpf_map_clear_priv_t clear_priv);
+>  LIBBPF_API void *bpf_map__priv(const struct bpf_map *map);
+> +LIBBPF_API void *bpf_map__data_area(const struct bpf_map *map, size_t *s=
+ize);
+>  LIBBPF_API int bpf_map__reuse_fd(struct bpf_map *map, int fd);
+>  LIBBPF_API int bpf_map__resize(struct bpf_map *map, __u32 max_entries);
+>  LIBBPF_API bool bpf_map__is_offload_neutral(const struct bpf_map *map);
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 5129283c0284..258528045a85 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -243,5 +243,6 @@ LIBBPF_0.0.8 {
+>                 bpf_link__pin;
+>                 bpf_link__pin_path;
+>                 bpf_link__unpin;
+> +               bpf_map__data_area;
+>                 bpf_program__set_attach_target;
+>  } LIBBPF_0.0.7;
+> --
+> 2.26.0
+>
