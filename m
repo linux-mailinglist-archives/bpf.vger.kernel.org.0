@@ -2,105 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB185195FFA
-	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 21:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F9019602B
+	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 22:05:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727352AbgC0Ur1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Mar 2020 16:47:27 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:34341 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727322AbgC0Ur1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Mar 2020 16:47:27 -0400
-Received: by mail-ed1-f65.google.com with SMTP id i24so12946142eds.1;
-        Fri, 27 Mar 2020 13:47:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KrwX+7IzzOcdtmf9GL8aP68WQccVqVWSmtAG1GU9fKQ=;
-        b=ZHJZ1sVao15S3PsXnhgLvQKmGh+O3Mrw5UAt6NlaAgQyn2ZmDn/JZuh0bJ5DcWpSmt
-         Pb8woPwR21dktkpk17yEH74bwFfUaqlH15wb0TupQEUwbiH95dVBaN0L0S8urJytHLM3
-         YnOgNEVJJcct8WA5h+ZjlYw7V/HoJ1P1h56E4g5/bOyXy15gq4P2hQ0Q8b51BoE0ChGD
-         st/R7hd71pURtL2VPnBDAtacN7kPswlcWf+kzA+OO1vmbgcZFh0hC12JJsgixnuxMhvv
-         A7IOrkb7zT1aZtU2fLMPD/BOjdz8kpURUT8qwMvIIwltjjtzks76Rry0+bwm/XbjJh4I
-         JljA==
+        id S1727354AbgC0VFe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Mar 2020 17:05:34 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:34393 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727352AbgC0VFe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Mar 2020 17:05:34 -0400
+Received: by mail-wr1-f66.google.com with SMTP id 65so13222845wrl.1;
+        Fri, 27 Mar 2020 14:05:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KrwX+7IzzOcdtmf9GL8aP68WQccVqVWSmtAG1GU9fKQ=;
-        b=S7duBvmKwYwJecfq5KIF2v6YyQW0U0dAB+FAzT+DbF5+Y12aoySAE/et3xA2pTtUfA
-         9H7GZbBTNoitlHaZBQRIO0whrOKBKnhbn4nh+/xl7PP9oPVmx5E3pfGfeVgwEzI0Omq4
-         q9Aexyo+deEjgMY7jCz82fWVilr9zBMweIv5iwC+48zCuHTQV78QfQfzM9TNLefo6O9U
-         yySsNAXxgx1j7J0eV9W/JZHQp0wIpPJXM26w+1Jwj+eihT8eRX5kDL3qEovKPF4hHpQ3
-         u/UwWDeGAqNIGx5Rkas4wsGbq1kdNV3FTzcfnKi8YJkovah0O0314bYbU48LhyPiONsS
-         WaMw==
-X-Gm-Message-State: ANhLgQ0dZsM+jajyALC9p1E9HCTxrOiXdwwzd7t3irzgnL56AyBYQDe3
-        yv1P011pRSX1EfA2CvS2UAM=
-X-Google-Smtp-Source: ADFU+vu2kBpouAt4iFovayfU8Nv6v1u2o+RYuTZtb4ny6MP0OKtvpfFVrmCI9cxb/fF2Qok5vQ/H4w==
-X-Received: by 2002:a17:906:4e12:: with SMTP id z18mr868375eju.49.1585342045395;
-        Fri, 27 Mar 2020 13:47:25 -0700 (PDT)
-Received: from localhost.localdomain (bbcs-97-49.pub.wingo.ch. [144.2.97.49])
-        by smtp.googlemail.com with ESMTPSA id p17sm1048552edq.57.2020.03.27.13.47.24
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 27 Mar 2020 13:47:24 -0700 (PDT)
-From:   Jean-Philippe Menil <jpmenil@gmail.com>
-To:     daniel@iogearbox.net
-Cc:     kernel-janitors@vger.kernel.org, jpmenil@gmail.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4] bpf: fix build warning - missing prototype
-Date:   Fri, 27 Mar 2020 21:47:13 +0100
-Message-Id: <20200327204713.28050-1-jpmenil@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <3164e566-d54e-2254-32c4-d7fee47c37ea@iogearbox.net>
-References: <3164e566-d54e-2254-32c4-d7fee47c37ea@iogearbox.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uC3/UwAhfLTmbfSw0X2EqP5XAU6300Fl1XuApVESDKI=;
+        b=JW0RjHJipGPCpZZ1p663q3iir0/ZGNgX0Ef+dk5WDtmKeowPSndJco6yiOxuwYYL68
+         ra09D3DRWQGJ5oEPZd7HnaadCIQBi5EH3UZUP5FRTZ5WqRv07ad2gmGkXca3ggkJjLGt
+         8D3Mn+pfvcBG4a32MShE1Z/p55kNPoZbNDGY9btpnkSxOeJtshQFl1vc7MVvRcyrKTkw
+         Mox8cKJaqqMN8wwq1TIgxRW+nEu+HpvAYPX6h81iU75AhY11Pcvzi28pv4yy55GHZlbT
+         0lqICHpoQExd9900BHvqUEzV3xUgdwUzDOmDLqCRbjKzuNyNNOfIByP0xelK/Ds4sSRz
+         sxnw==
+X-Gm-Message-State: ANhLgQ37PP58E/yOJMEQsBW8oYMC3wTlhJe1m23REwuiv0yvJPWD8ppD
+        FfoPzmtrxj5D4ny9KM3j06uNfj/LLs56RwtIKh8=
+X-Google-Smtp-Source: ADFU+vt51AwfD1CA65OgKcekVfRwTkPnbrZ5cvWLG+wEZ0izHd6zf+xXcjZqSN2KkN928w4kitrtBHPqqkzJKwKfJsc=
+X-Received: by 2002:adf:e584:: with SMTP id l4mr1301801wrm.388.1585343132421;
+ Fri, 27 Mar 2020 14:05:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200327042556.11560-1-joe@wand.net.nz> <20200327184621.67324727o5rtu42p@kafai-mbp>
+In-Reply-To: <20200327184621.67324727o5rtu42p@kafai-mbp>
+From:   Joe Stringer <joe@wand.net.nz>
+Date:   Fri, 27 Mar 2020 14:05:05 -0700
+Message-ID: <CAOftzPjv8rcP7Ge59fc4rhy=BR2Ym1=G3n3fvi402nx61zLf-Q@mail.gmail.com>
+Subject: Re: [PATCHv3 bpf-next 0/5] Add bpf_sk_assign eBPF helper
+To:     Martin KaFai Lau <kafai@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     Joe Stringer <joe@wand.net.nz>, bpf <bpf@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix build warnings when building net/bpf/test_run.o with W=1 due
-to missing prototype for bpf_fentry_test{1..6}.
+On Fri, Mar 27, 2020 at 11:46 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Thu, Mar 26, 2020 at 09:25:51PM -0700, Joe Stringer wrote:
+> > Introduce a new helper that allows assigning a previously-found socket
+> > to the skb as the packet is received towards the stack, to cause the
+> > stack to guide the packet towards that socket subject to local routing
+> > configuration. The intention is to support TProxy use cases more
+> > directly from eBPF programs attached at TC ingress, to simplify and
+> > streamline Linux stack configuration in scale environments with Cilium.
+> >
+> > Normally in ip{,6}_rcv_core(), the skb will be orphaned, dropping any
+> > existing socket reference associated with the skb. Existing tproxy
+> > implementations in netfilter get around this restriction by running the
+> > tproxy logic after ip_rcv_core() in the PREROUTING table. However, this
+> > is not an option for TC-based logic (including eBPF programs attached at
+> > TC ingress).
+> >
+> > This series introduces the BPF helper bpf_sk_assign() to associate the
+> > socket with the skb on the ingress path as the packet is passed up the
+> > stack. The initial patch in the series simply takes a reference on the
+> > socket to ensure safety, but later patches relax this for listen
+> > sockets.
+> >
+> > To ensure delivery to the relevant socket, we still consult the routing
+> > table, for full examples of how to configure see the tests in patch #5;
+> > the simplest form of the route would look like this:
+> >
+> >   $ ip route add local default dev lo
+> >
+> > This series is laid out as follows:
+> > * Patch 1 extends the eBPF API to add sk_assign() and defines a new
+> >   socket free function to allow the later paths to understand when the
+> >   socket associated with the skb should be kept through receive.
+> > * Patches 2-3 optimize the receive path to avoid taking a reference on
+> >   listener sockets during receive.
+> > * Patches 4-5 extends the selftests with examples of the new
+> >   functionality and validation of correct behaviour.
+> >
+> > Changes since v2:
+> > * Add selftests for UDP socket redirection
+> > * Drop the early demux optimization patch (defer for more testing)
+> > * Fix check for orphaning after TC act return
+> > * Tidy up the tests to clean up properly and be less noisy.
+> >
+> > Changes since v1:
+> > * Replace the metadata_dst approach with using the skb->destructor to
+> >   determine whether the socket has been prefetched. This is much
+> >   simpler.
+> > * Avoid taking a reference on listener sockets during receive
+> > * Restrict assigning sockets across namespaces
+> > * Restrict assigning SO_REUSEPORT sockets
+> > * Fix cookie usage for socket dst check
+> > * Rebase the tests against test_progs infrastructure
+> > * Tidy up commit messages
+> lgtm.
+>
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
 
-Instead of declaring prototypes, turn off warnings with
-__diag_{push,ignore,pop} as pointed by Alexei.
+Thanks for the reviews!
 
-Signed-off-by: Jean-Philippe Menil <jpmenil@gmail.com>
----
- net/bpf/test_run.c | 5 +++++
- 1 file changed, 5 insertions(+)
+I've rolled in the current nits + acks into the branch below, pending
+any further feedback. Alexei, happy to respin this on the mailinglist
+at some point if that's easier for you.
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 4c921f5154e0..73e703895343 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -114,6 +114,9 @@ static int bpf_test_finish(const union bpf_attr *kattr,
-  * architecture dependent calling conventions. 7+ can be supported in the
-  * future.
-  */
-+__diag_push();
-+__diag_ignore(GCC, 8, "-Wmissing-prototypes",
-+	      "Global functions as their definitions will be in vmlinux BTF");
- int noinline bpf_fentry_test1(int a)
- {
- 	return a + 1;
-@@ -150,6 +153,8 @@ int noinline bpf_modify_return_test(int a, int *b)
- 	return a + *b;
- }
- 
-+__diag_pop();
-+
- ALLOW_ERROR_INJECTION(bpf_modify_return_test, ERRNO);
- 
- static void *bpf_test_init(const union bpf_attr *kattr, u32 size,
--- 
-2.26.0
-
+https://github.com/joestringer/linux/tree/submit/bpf-sk-assign-v3+
