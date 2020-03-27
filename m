@@ -2,106 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 501CE195265
-	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 08:56:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 792011954B8
+	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 11:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725956AbgC0H4E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Mar 2020 03:56:04 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:33524 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgC0H4E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Mar 2020 03:56:04 -0400
-Received: by mail-ed1-f68.google.com with SMTP id z65so10039687ede.0;
-        Fri, 27 Mar 2020 00:56:02 -0700 (PDT)
+        id S1726168AbgC0KDK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Mar 2020 06:03:10 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:41771 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbgC0KDJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Mar 2020 06:03:09 -0400
+Received: by mail-oi1-f170.google.com with SMTP id k9so8263221oia.8
+        for <bpf@vger.kernel.org>; Fri, 27 Mar 2020 03:03:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DOngrTjBMh1Wy5Q62zykbp/GEp/RVLEjSOAHb9wDE0c=;
-        b=ryfx4Hftnscsun3x0YRsp74LdqQiGv/vq2nUpom1Hz3IuxiKxC61rgDIm13OxGkthi
-         y1mIStVSphXp5/D8Dsk9k2T0tHZLc374B8qvpNTwvxhpmieYSLwjv1P7wD4iDN126CAj
-         KIXpaTHgVAq/+9kLhFyYBYMBpq1oEOClAiZERxUYwhfipTk0XlFHnOjj+CWczNIA8JQf
-         BOwWhdjL+Gjm6ScPcPyL2HjiL93loKaKQX8ZlQf8lgFXMxXpTFRDEAxd82euJGCEw3lY
-         xARqvWx2jaQ6hZiLQvkQoei6YvSBLT6kjGl1xX1ugQixeCZ8oGJb5J51IZenKRukYsrb
-         nt5Q==
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8Z6DiYcAhBZf/nevFbYm9Xop0DNLHOT9IeSyDtGfyEU=;
+        b=mJkm6xUAm+FFpg3i+w7HSS9mIvckax758oLu9zBiu0V3WN4HdbXbcWcHce2O95hexy
+         aobUFd4PjjV77H9N7VYhubFH69YcWdFXlPKds8Ry8r0j2A7FhKESLMRP41DtGGWrGqsx
+         9TfUr3C/S0fvSaWi1sGoNR+mo3hqpN7nn3fvY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DOngrTjBMh1Wy5Q62zykbp/GEp/RVLEjSOAHb9wDE0c=;
-        b=Ltg3u/CBwMhn8tsAqThcenad04eYruJtGRzow3Cb/hfQUrjfvATvcCG7R3LfXhc+QS
-         edULvuRsgXoo7xsb6zq9401Gd3ORdsnJGBV6L/Nn4oZ5n2VU45uZ3M4DQkLE4QKX/hXO
-         wCcRo2kyMKSqF16m6Bwczq1rkkqhQ1tP5xrC+8hYMgOtWjb+f5afe2fBoQ0nRMM/0KHE
-         XU8e1Mv7A0BsjNx00nD55Tzb3lTbGTII30NaBA58+KXSvWLlrsWISKTvP0oAFJO1kFB5
-         2PO+vKDRzlkxxQ+VulsEFhiEfRwqWBfrhU0jfnE0rssZmT2JpQ4hzB6sWtXG5Eo8omO3
-         32LQ==
-X-Gm-Message-State: ANhLgQ10r9f7vuaSuR6U/YylTf0sRL4rnmjUldUkWgA+pAeLphYBiGHL
-        cOebi/Z71kd1tcwB5oG8e38=
-X-Google-Smtp-Source: ADFU+vstx/W2tBPN+4MRXuf6ruZaoVkf6YjvrW6OBAO9GSINxibsBVs6wEpuM49d+z3UubAGouAUTA==
-X-Received: by 2002:a50:bb47:: with SMTP id y65mr9666906ede.204.1585295761754;
-        Fri, 27 Mar 2020 00:56:01 -0700 (PDT)
-Received: from localhost.localdomain (163.239.197.178.dynamic.wless.lssmb00p-cgnat.res.cust.swisscom.ch. [178.197.239.163])
-        by smtp.googlemail.com with ESMTPSA id b11sm718149edj.20.2020.03.27.00.56.00
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 27 Mar 2020 00:56:01 -0700 (PDT)
-From:   Jean-Philippe Menil <jpmenil@gmail.com>
-To:     alexei.starovoitov@gmail.com
-Cc:     kernel-janitors@vger.kernel.org, jpmenil@gmail.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] bpf: fix build warning - missing prototype
-Date:   Fri, 27 Mar 2020 08:55:44 +0100
-Message-Id: <20200327075544.22814-1-jpmenil@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200326235426.ei6ae2z5ek6uq3tt@ast-mbp>
-References: <20200326235426.ei6ae2z5ek6uq3tt@ast-mbp>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8Z6DiYcAhBZf/nevFbYm9Xop0DNLHOT9IeSyDtGfyEU=;
+        b=QC/x0y9j5qecCg6F3HxrvQrFqzXcWQEaqqt+XbR5foHrDR46xP5R/pAWER3pAy/RVi
+         hZwx+RXZA8ZDW93QgOmiXwj5m8WpGTDPQCZUl7O1jK9n0qLM3WUJ/sp7Pk/1RfWlNE66
+         j6Vbq+fHEbM2EeeOLwJjVzqV1nMOorbIcR/s4SlRDXa1eh2Mnn07L/4vpEh74SbhGm7y
+         k5teN4aDH7XVB7IL2R7bGc/fU4QYKHsb+vQFzrGdFaPn+EERyJjFsRXBP2sjsoJT1om/
+         YWVNknoCyeQkBtD1SeGgMrpRKOHIaytxRX3qtsiagp2c22HAHPtrb48YasstoqiLBVVS
+         k1Gw==
+X-Gm-Message-State: ANhLgQ2FwIIjc4fCxJd6wYjo5CDDqMNQEGlV7XnpQqBCUdM/vgn65PSu
+        8BOLulBfbaa82sdapHuKNWISogRTX4R6/YEEu5MBYg==
+X-Google-Smtp-Source: ADFU+vtEXpmXWXE625A9DpAxXZ0XHW0DYZGxMuRTSt6f9szWc+jYAMRnGEtygM8I5C1nB40q8Urg2gb2WcdVaZ7b64w=
+X-Received: by 2002:a54:410c:: with SMTP id l12mr3427916oic.13.1585303386802;
+ Fri, 27 Mar 2020 03:03:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200325055745.10710-1-joe@wand.net.nz> <20200325055745.10710-6-joe@wand.net.nz>
+ <82e8d147-b334-3d29-0312-7b087ac908f3@fb.com> <CACAyw99Eeu+=yD8UKazRJcknZi3D5zMJ4n=FVsxXi63DwhdxYA@mail.gmail.com>
+ <20200326210719.den5isqxntnoqhmv@ast-mbp>
+In-Reply-To: <20200326210719.den5isqxntnoqhmv@ast-mbp>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Fri, 27 Mar 2020 10:02:55 +0000
+Message-ID: <CACAyw9_jv3eJz8eRRBOvWEc4=BM0_tRuQCz_fLKsVLTid7tCDA@mail.gmail.com>
+Subject: Re: call for bpf progs. Re: [PATCHv2 bpf-next 5/5] selftests: bpf:
+ add test for sk_assign
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Joe Stringer <joe@wand.net.nz>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Martin Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix build warnings when building net/bpf/test_run.o with W=1 due
-to missing prototype for bpf_fentry_test{1..6}.
+On Thu, 26 Mar 2020 at 21:07, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Mar 26, 2020 at 10:13:31AM +0000, Lorenz Bauer wrote:
+> > > > +
+> > > > +     if (ipv4) {
+> > > > +             if (tuple->ipv4.dport != bpf_htons(4321))
+> > > > +                     return TC_ACT_OK;
+> > > > +
+> > > > +             ln.ipv4.daddr = bpf_htonl(0x7f000001);
+> > > > +             ln.ipv4.dport = bpf_htons(1234);
+> > > > +
+> > > > +             sk = bpf_skc_lookup_tcp(skb, &ln, sizeof(ln.ipv4),
+> > > > +                                     BPF_F_CURRENT_NETNS, 0);
+> > > > +     } else {
+> > > > +             if (tuple->ipv6.dport != bpf_htons(4321))
+> > > > +                     return TC_ACT_OK;
+> > > > +
+> > > > +             /* Upper parts of daddr are already zero. */
+> > > > +             ln.ipv6.daddr[3] = bpf_htonl(0x1);
+> > > > +             ln.ipv6.dport = bpf_htons(1234);
+> > > > +
+> > > > +             sk = bpf_skc_lookup_tcp(skb, &ln, sizeof(ln.ipv6),
+> > > > +                                     BPF_F_CURRENT_NETNS, 0);
+> > > > +     }
+> > > > +
+> > > > +     /* We can't do a single skc_lookup_tcp here, because then the compiler
+> > > > +      * will likely spill tuple_len to the stack. This makes it lose all
+> > > > +      * bounds information in the verifier, which then rejects the call as
+> > > > +      * unsafe.
+> > > > +      */
+> > >
+> > > This is a known issue. For scalars, only constant is restored properly
+> > > in verifier at this moment. I did some hacking before to enable any
+> > > scalars. The fear is this will make pruning performs worse. More
+> > > study is needed here.
+> >
+> > Of topic, but: this is actually one of the most challenging issues for
+> > us when writing
+> > BPF. It forces us to have very deep call graphs to hopefully avoid clang
+> > spilling the constants. Please let me know if I can help in any way.
+>
+> Thanks for bringing this up.
+> Yonghong, please correct me if I'm wrong.
+> I think you've experimented with tracking spilled constants. The first issue
+> came with spilling of 4 byte constant. The verifier tracks 8 byte slots and
+> lots of places assume that slot granularity. It's not clear yet how to refactor
+> the verifier. Ideas, help are greatly appreciated.
+> The second concern was pruning, but iirc the experiments were inconclusive.
+> selftests/bpf only has old fb progs. Hence, I think, the step zero is for
+> everyone to contribute their bpf programs written in C. If we have both
+> cilium and cloudflare progs as selftests it will help a lot to guide such long
+> lasting verifier decisions.
 
-Instead of declaring prototypes, turn off warnings with
-__diag_{push,ignore,pop} as pointed by Alexei.
+Ok, I'll try to get something sorted out. We have a TC classifier that
+would be suitable,
+and I've been meaning to get it open sourced. Does the integration into the
+test suite have to involve running packets through it, or is compile
+and load enough?
 
-Signed-off-by: Jean-Philippe Menil <jpmenil@gmail.com>
----
- net/bpf/test_run.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index d555c0d8657d..cc1592413fc3 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -113,6 +113,9 @@ static int bpf_test_finish(const union bpf_attr *kattr,
-  * architecture dependent calling conventions. 7+ can be supported in the
-  * future.
-  */
-+__diag_push();
-+__diag_ignore(GCC, 8, "-Wmissing-prototypes",
-+	      "Global functions as their definitions will be in vmlinux BTF);
- int noinline bpf_fentry_test1(int a)
- {
- 	return a + 1;
-@@ -143,6 +146,8 @@ int noinline bpf_fentry_test6(u64 a, void *b, short c, int d, void *e, u64 f)
- 	return a + (long)b + c + d + (long)e + f;
- }
- 
-+__diag_pop();
-+
- static void *bpf_test_init(const union bpf_attr *kattr, u32 size,
- 			   u32 headroom, u32 tailroom)
- {
 -- 
-2.26.0
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
+www.cloudflare.com
