@@ -2,111 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CEC194F9B
-	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 04:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCFAF194FB7
+	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 04:40:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727612AbgC0DNC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Mar 2020 23:13:02 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:44451 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727509AbgC0DNC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Mar 2020 23:13:02 -0400
-Received: by mail-pg1-f193.google.com with SMTP id 142so3907806pgf.11;
-        Thu, 26 Mar 2020 20:13:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/FAiupbq7ijBqqhfCHQ+LKr/8inE0CiEthvKJQ+FYbU=;
-        b=IFwqDYEFF2JE0Ho1LEZF7TRM28eNrRIXyMFmHo87Zsulf9Hpa6gYX7X0GzCDlnpzeP
-         wCGDpPPXXkdb56RFBp3Fsf2+nlePxViNgwPpSF7Ag5LKo9dsAKKbWa3Wu2R9dBc/oZLY
-         QcNRhcPYRxuYfCvB0+Zng+VDeLtWxj0if8iwAv3jAWGPR7/3klUajWesE/2snH+6OU2F
-         BadX/emU+WznC/UBetWnCWLMQUpJXLIFYb2Mr1uLmdUNxj0fcplTgRMYDY5qwSJZ/P9h
-         mdY3kqQ88iC7PjlQdO275SvUMY3Dv8rJj+LeIC+9wynVn50FxURecaMxqjKXIqEsKhvC
-         g+vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/FAiupbq7ijBqqhfCHQ+LKr/8inE0CiEthvKJQ+FYbU=;
-        b=ucs5KicKfzekMxfFB28RfOzcnL0Z3cHghMnsc6B05Y7hBEqLVH5/mcV+bPSDdnrlRK
-         soDn+8A6XLMp2AVeWDxE0+YGXf/0z3eotDSzy1CB4SGtJ64K7wXoOJPDUEvTdpVWxs+8
-         YObF0jF15o1UmTJ7xlHiOmShey66Po+mVFU+Qy4BECCbB4xX+WMtRP84RxN0+dWts17M
-         smjnycm2AtjItEg430H1Oa13fBYoOYfzi/kSTFzVxASZ9F8PcZQ+wCdua/GPRVhc6htD
-         kIsHtFsxbK9+03ZFhquaEk3MvZDDZd5MigzpoYY1IYtsY0E/EhYuaF60hgj/Iu3nkjsF
-         000w==
-X-Gm-Message-State: ANhLgQ2xfMLGgzJye3BAFZztpLjKqwKEXCusJGMLeMZCuyoT1DPFv+dF
-        yr5nnRB5dY0hZMpTu7Eelp0=
-X-Google-Smtp-Source: ADFU+vuHzIddnVm+YomQmVyVBvOX/KHr2ffE0qgTr5m2QJt2oN8z3JjXp3HapiCZWFKI6Lod5I+VdA==
-X-Received: by 2002:a63:1053:: with SMTP id 19mr11248314pgq.60.1585278780602;
-        Thu, 26 Mar 2020 20:13:00 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:f1d9])
-        by smtp.gmail.com with ESMTPSA id w205sm2866343pfc.75.2020.03.26.20.12.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Mar 2020 20:12:59 -0700 (PDT)
-Date:   Thu, 26 Mar 2020 20:12:56 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH bpf-next v7 4/8] bpf: lsm: Implement attach, detach and
- execution
-Message-ID: <20200327031256.vhk2luomxgex3ui4@ast-mbp>
-References: <20200326142823.26277-1-kpsingh@chromium.org>
- <20200326142823.26277-5-kpsingh@chromium.org>
+        id S1727509AbgC0DkN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Mar 2020 23:40:13 -0400
+Received: from us-smtp-delivery-172.mimecast.com ([63.128.21.172]:41304 "EHLO
+        us-smtp-delivery-172.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727446AbgC0DkM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 26 Mar 2020 23:40:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=valvesoftware.com;
+        s=mc20150811; t=1585280411;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=93NrP1J5ob0+Gg1hAqxUnhANzJSLqVrWUmGujX9AQ0k=;
+        b=hDbBLCr8dERDRzS3uE/SrG50N4EVigu3g8dW39rT5zaPO3aK7jmLR19PDzh9lPJYnWW24b
+        ZmG9nva6GmdKMPKb+2fXtvng5nEV182VotMqxaaeHtszpoFgO2ABCj738SQ3wlcVG60eYN
+        wIsdTaI2fLGDp++obJp55UbxXQ5ok0I=
+Received: from smtp01.valvesoftware.com (smtp01.valvesoftware.com
+ [208.64.203.181]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-183-MzPpUS9uMYGspFvS-Rd3sw-1; Thu, 26 Mar 2020 23:24:08 -0400
+X-MC-Unique: MzPpUS9uMYGspFvS-Rd3sw-1
+Received: from [172.16.1.107] (helo=antispam.valve.org)
+        by smtp01.valvesoftware.com with esmtp (Exim 4.86_2)
+        (envelope-from <fletcherd@valvesoftware.com>)
+        id 1jHfbL-0001Ck-HI; Thu, 26 Mar 2020 20:24:07 -0700
+Received: from antispam.valve.org (127.0.0.1) id hflote0171sr; Thu, 26 Mar 2020 20:24:07 -0700 (envelope-from <fletcherd@valvesoftware.com>)
+Received: from mail1.valvemail.org ([172.16.144.22])
+        by antispam.valve.org ([172.16.1.107]) (SonicWALL 9.0.5.2081 )
+        with ESMTP id o202003270324070010485-5; Thu, 26 Mar 2020 20:24:07 -0700
+Received: from mail1.valvemail.org (172.16.144.22) by mail1.valvemail.org
+ (172.16.144.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 26 Mar
+ 2020 20:24:07 -0700
+Received: from mail1.valvemail.org ([fe80::3155:e19a:4b5e:b8f7]) by
+ mail1.valvemail.org ([fe80::3155:e19a:4b5e:b8f7%8]) with mapi id
+ 15.01.1913.007; Thu, 26 Mar 2020 20:24:07 -0700
+From:   Fletcher Dunn <fletcherd@valvesoftware.com>
+To:     'Alexei Starovoitov' <ast@kernel.org>,
+        'Daniel Borkmann' <daniel@iogearbox.net>
+CC:     'Martin KaFai Lau' <kafai@fb.com>,
+        'Song Liu' <songliubraving@fb.com>,
+        'Yonghong Song' <yhs@fb.com>,
+        'Andrii Nakryiko' <andriin@fb.com>,
+        "'netdev@vger.kernel.org'" <netdev@vger.kernel.org>,
+        "'bpf@vger.kernel.org'" <bpf@vger.kernel.org>,
+        Brandon Gilmore <bgilmore@valvesoftware.com>,
+        "Steven Noonan" <steven@valvesoftware.com>
+Subject: [PATCH bpf-next] xsk: Init all ring members in xsk_umem__create and
+ xsk_socket__create
+Thread-Topic: [PATCH bpf-next] xsk: Init all ring members in xsk_umem__create
+ and xsk_socket__create
+Thread-Index: AdYD5ybf0ykyxQWeQrqqAmtRPVTlSw==
+Date:   Fri, 27 Mar 2020 03:24:07 +0000
+Message-ID: <85f12913cde94b19bfcb598344701c38@valvesoftware.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.18.42.19]
+x-exclaimer-md-config: fe5cb8ea-1338-4c54-81e0-ad323678e037
+x-c2processedorg: d7674bc1-f4dc-4fad-9e9e-e896f8a3f31b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200326142823.26277-5-kpsingh@chromium.org>
+X-Mlf-CnxnMgmt-Allow: 172.16.144.22
+X-Mlf-Version: 9.0.5.2081
+X-Mlf-License: BSVKCAP__
+X-Mlf-UniqueId: o202003270324070010485
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: valvesoftware.com
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 26, 2020 at 03:28:19PM +0100, KP Singh wrote:
->  
->  	if (arg == nr_args) {
-> -		if (prog->expected_attach_type == BPF_TRACE_FEXIT) {
-> +		/* BPF_LSM_MAC programs only have int and void functions they
-> +		 * can be attached to. When they are attached to a void function
-> +		 * they result in the creation of an FEXIT trampoline and when
-> +		 * to a function that returns an int, a MODIFY_RETURN
-> +		 * trampoline.
-> +		 */
-> +		if (prog->expected_attach_type == BPF_TRACE_FEXIT ||
-> +		    prog->expected_attach_type == BPF_LSM_MAC) {
->  			if (!t)
->  				return true;
->  			t = btf_type_by_id(btf, t->type);
+Fix a sharp edge in xsk_umem__create and xsk_socket__create.  Almost all of
+the members of the ring buffer structs are initialized, but the "cached_xxx=
+"
+variables are not all initialized.  The caller is required to zero them.
+This is needlessly dangerous.  The results if you don't do it can be very b=
+ad.
+For example, they can cause xsk_prod_nb_free and xsk_cons_nb_avail to retur=
+n
+values greater than the size of the queue.  xsk_ring_cons__peek can return =
+an
+index that does not refer to an item that has been queued.
 
-Could you add a comment here that though BPF_MODIFY_RETURN-like check
-if (ret_type != 'int') return -EINVAL;
-is _not_ done here. It is still safe, since LSM hooks have only
-void and int return types.
+I have confirmed that without this change, my program misbehaves unless I
+memset the ring buffers to zero before calling the function.  Afterwards,
+my program works without (or with) the memset.
 
-> +	case BPF_LSM_MAC:
-> +		if (!prog->aux->attach_func_proto->type)
-> +			/* The function returns void, we cannot modify its
-> +			 * return value.
-> +			 */
-> +			return BPF_TRAMP_FEXIT;
-> +		else
-> +			return BPF_TRAMP_MODIFY_RETURN;
+Signed-off-by: Fletcher Dunn <fletcherd@valvesoftware.com>
 
-I was thinking whether it would help performance significantly enough
-if we add a flavor of BPF_TRAMP_FEXIT that doesn't have
-BPF_TRAMP_F_CALL_ORIG.
-That will save the cost of nop call, but I guess indirect call due
-to lsm infra is slow enough, so this extra few cycles won't be noticeable.
-So I'm fine with it as-is. When lsm hooks will get rid of indirect call
-we can optimize it further.
+---
+
+diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+index 9807903f121e..f7f4efb70a4c 100644
+--- a/tools/lib/bpf/xsk.c
++++ b/tools/lib/bpf/xsk.c
+@@ -280,7 +280,11 @@ int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr=
+, void *umem_area,
+ =09fill->consumer =3D map + off.fr.consumer;
+ =09fill->flags =3D map + off.fr.flags;
+ =09fill->ring =3D map + off.fr.desc;
+-=09fill->cached_cons =3D umem->config.fill_size;
++=09fill->cached_prod =3D *fill->producer;
++=09/* cached_cons is "size" bigger than the real consumer pointer
++=09 * See xsk_prod_nb_free
++=09 */
++=09fill->cached_cons =3D *fill->consumer + umem->config.fill_size;
+=20
+ =09map =3D mmap(NULL, off.cr.desc + umem->config.comp_size * sizeof(__u64)=
+,
+ =09=09   PROT_READ | PROT_WRITE, MAP_SHARED | MAP_POPULATE, umem->fd,
+@@ -297,6 +301,8 @@ int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr,=
+ void *umem_area,
+ =09comp->consumer =3D map + off.cr.consumer;
+ =09comp->flags =3D map + off.cr.flags;
+ =09comp->ring =3D map + off.cr.desc;
++=09comp->cached_prod =3D *comp->producer;
++=09comp->cached_cons =3D *comp->consumer;
+=20
+ =09*umem_ptr =3D umem;
+ =09return 0;
+@@ -672,6 +678,8 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, con=
+st char *ifname,
+ =09=09rx->consumer =3D rx_map + off.rx.consumer;
+ =09=09rx->flags =3D rx_map + off.rx.flags;
+ =09=09rx->ring =3D rx_map + off.rx.desc;
++=09=09rx->cached_prod =3D *rx->producer;
++=09=09rx->cached_cons =3D *rx->consumer;
+ =09}
+ =09xsk->rx =3D rx;
+=20
+@@ -691,7 +699,11 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, co=
+nst char *ifname,
+ =09=09tx->consumer =3D tx_map + off.tx.consumer;
+ =09=09tx->flags =3D tx_map + off.tx.flags;
+ =09=09tx->ring =3D tx_map + off.tx.desc;
+-=09=09tx->cached_cons =3D xsk->config.tx_size;
++=09=09tx->cached_prod =3D *tx->producer;
++=09=09/* cached_cons is r->size bigger than the real consumer pointer
++=09=09 * See xsk_prod_nb_free
++=09=09 */
++=09=09tx->cached_cons =3D *tx->consumer + xsk->config.tx_size;
+ =09}
+ =09xsk->tx =3D tx;
+
