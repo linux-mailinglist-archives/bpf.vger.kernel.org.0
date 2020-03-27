@@ -2,115 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F9019602B
-	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 22:05:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 261AA1960C1
+	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 22:54:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727354AbgC0VFe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Mar 2020 17:05:34 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:34393 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727352AbgC0VFe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Mar 2020 17:05:34 -0400
-Received: by mail-wr1-f66.google.com with SMTP id 65so13222845wrl.1;
-        Fri, 27 Mar 2020 14:05:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uC3/UwAhfLTmbfSw0X2EqP5XAU6300Fl1XuApVESDKI=;
-        b=JW0RjHJipGPCpZZ1p663q3iir0/ZGNgX0Ef+dk5WDtmKeowPSndJco6yiOxuwYYL68
-         ra09D3DRWQGJ5oEPZd7HnaadCIQBi5EH3UZUP5FRTZ5WqRv07ad2gmGkXca3ggkJjLGt
-         8D3Mn+pfvcBG4a32MShE1Z/p55kNPoZbNDGY9btpnkSxOeJtshQFl1vc7MVvRcyrKTkw
-         Mox8cKJaqqMN8wwq1TIgxRW+nEu+HpvAYPX6h81iU75AhY11Pcvzi28pv4yy55GHZlbT
-         0lqICHpoQExd9900BHvqUEzV3xUgdwUzDOmDLqCRbjKzuNyNNOfIByP0xelK/Ds4sSRz
-         sxnw==
-X-Gm-Message-State: ANhLgQ37PP58E/yOJMEQsBW8oYMC3wTlhJe1m23REwuiv0yvJPWD8ppD
-        FfoPzmtrxj5D4ny9KM3j06uNfj/LLs56RwtIKh8=
-X-Google-Smtp-Source: ADFU+vt51AwfD1CA65OgKcekVfRwTkPnbrZ5cvWLG+wEZ0izHd6zf+xXcjZqSN2KkN928w4kitrtBHPqqkzJKwKfJsc=
-X-Received: by 2002:adf:e584:: with SMTP id l4mr1301801wrm.388.1585343132421;
- Fri, 27 Mar 2020 14:05:32 -0700 (PDT)
+        id S1727606AbgC0VyM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Mar 2020 17:54:12 -0400
+Received: from www62.your-server.de ([213.133.104.62]:50696 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727473AbgC0VyM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Mar 2020 17:54:12 -0400
+Received: from 98.186.195.178.dynamic.wline.res.cust.swisscom.ch ([178.195.186.98] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jHwvV-0006bl-IT; Fri, 27 Mar 2020 22:54:05 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf 2020-03-27
+Date:   Fri, 27 Mar 2020 22:54:05 +0100
+Message-Id: <20200327215405.29657-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <20200327042556.11560-1-joe@wand.net.nz> <20200327184621.67324727o5rtu42p@kafai-mbp>
-In-Reply-To: <20200327184621.67324727o5rtu42p@kafai-mbp>
-From:   Joe Stringer <joe@wand.net.nz>
-Date:   Fri, 27 Mar 2020 14:05:05 -0700
-Message-ID: <CAOftzPjv8rcP7Ge59fc4rhy=BR2Ym1=G3n3fvi402nx61zLf-Q@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 0/5] Add bpf_sk_assign eBPF helper
-To:     Martin KaFai Lau <kafai@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     Joe Stringer <joe@wand.net.nz>, bpf <bpf@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25764/Fri Mar 27 14:11:26 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 27, 2020 at 11:46 AM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Thu, Mar 26, 2020 at 09:25:51PM -0700, Joe Stringer wrote:
-> > Introduce a new helper that allows assigning a previously-found socket
-> > to the skb as the packet is received towards the stack, to cause the
-> > stack to guide the packet towards that socket subject to local routing
-> > configuration. The intention is to support TProxy use cases more
-> > directly from eBPF programs attached at TC ingress, to simplify and
-> > streamline Linux stack configuration in scale environments with Cilium.
-> >
-> > Normally in ip{,6}_rcv_core(), the skb will be orphaned, dropping any
-> > existing socket reference associated with the skb. Existing tproxy
-> > implementations in netfilter get around this restriction by running the
-> > tproxy logic after ip_rcv_core() in the PREROUTING table. However, this
-> > is not an option for TC-based logic (including eBPF programs attached at
-> > TC ingress).
-> >
-> > This series introduces the BPF helper bpf_sk_assign() to associate the
-> > socket with the skb on the ingress path as the packet is passed up the
-> > stack. The initial patch in the series simply takes a reference on the
-> > socket to ensure safety, but later patches relax this for listen
-> > sockets.
-> >
-> > To ensure delivery to the relevant socket, we still consult the routing
-> > table, for full examples of how to configure see the tests in patch #5;
-> > the simplest form of the route would look like this:
-> >
-> >   $ ip route add local default dev lo
-> >
-> > This series is laid out as follows:
-> > * Patch 1 extends the eBPF API to add sk_assign() and defines a new
-> >   socket free function to allow the later paths to understand when the
-> >   socket associated with the skb should be kept through receive.
-> > * Patches 2-3 optimize the receive path to avoid taking a reference on
-> >   listener sockets during receive.
-> > * Patches 4-5 extends the selftests with examples of the new
-> >   functionality and validation of correct behaviour.
-> >
-> > Changes since v2:
-> > * Add selftests for UDP socket redirection
-> > * Drop the early demux optimization patch (defer for more testing)
-> > * Fix check for orphaning after TC act return
-> > * Tidy up the tests to clean up properly and be less noisy.
-> >
-> > Changes since v1:
-> > * Replace the metadata_dst approach with using the skb->destructor to
-> >   determine whether the socket has been prefetched. This is much
-> >   simpler.
-> > * Avoid taking a reference on listener sockets during receive
-> > * Restrict assigning sockets across namespaces
-> > * Restrict assigning SO_REUSEPORT sockets
-> > * Fix cookie usage for socket dst check
-> > * Rebase the tests against test_progs infrastructure
-> > * Tidy up commit messages
-> lgtm.
->
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
+Hi David,
 
-Thanks for the reviews!
+The following pull-request contains BPF updates for your *net* tree.
 
-I've rolled in the current nits + acks into the branch below, pending
-any further feedback. Alexei, happy to respin this on the mailinglist
-at some point if that's easier for you.
+We've added 3 non-merge commits during the last 4 day(s) which contain
+a total of 4 files changed, 25 insertions(+), 20 deletions(-).
 
-https://github.com/joestringer/linux/tree/submit/bpf-sk-assign-v3+
+The main changes are:
+
+1) Explicitly memset the bpf_attr structure on bpf() syscall to avoid
+   having to rely on compiler to do so. Issues have been noticed on
+   some compilers with padding and other oddities where the request was
+   then unexpectedly rejected, from Greg Kroah-Hartman.
+
+2) Sanitize the bpf_struct_ops TCP congestion control name in order to
+   avoid problematic characters such as whitespaces, from Martin KaFai Lau.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Alexander Potapenko, Alistair Delva, Andrii Nakryiko, Daniel Borkmann, 
+John Stultz, Maciej Żenczykowski, Yonghong Song
+
+----------------------------------------------------------------
+
+The following changes since commit 32ca98feab8c9076c89c0697c5a85e46fece809d:
+
+  net: ip_gre: Accept IFLA_INFO_DATA-less configuration (2020-03-16 17:19:56 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to 5c6f25887963f15492b604dd25cb149c501bbabf:
+
+  bpf: Explicitly memset some bpf info structures declared on the stack (2020-03-20 21:05:22 +0100)
+
+----------------------------------------------------------------
+Greg Kroah-Hartman (2):
+      bpf: Explicitly memset the bpf_attr structure
+      bpf: Explicitly memset some bpf info structures declared on the stack
+
+Martin KaFai Lau (1):
+      bpf: Sanitize the bpf_struct_ops tcp-cc name
+
+ include/linux/bpf.h   |  1 +
+ kernel/bpf/btf.c      |  3 ++-
+ kernel/bpf/syscall.c  | 34 ++++++++++++++++++++--------------
+ net/ipv4/bpf_tcp_ca.c |  7 ++-----
+ 4 files changed, 25 insertions(+), 20 deletions(-)
