@@ -2,44 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 12738195EF7
-	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 20:46:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3AC8195EFD
+	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 20:46:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727639AbgC0Tmg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Mar 2020 15:42:36 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:44804 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726738AbgC0Tmf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Mar 2020 15:42:35 -0400
-Received: by mail-qk1-f195.google.com with SMTP id j4so12084930qkc.11;
-        Fri, 27 Mar 2020 12:42:34 -0700 (PDT)
+        id S1727423AbgC0TpV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Mar 2020 15:45:21 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:36193 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726738AbgC0TpU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Mar 2020 15:45:20 -0400
+Received: by mail-qt1-f193.google.com with SMTP id m33so9651701qtb.3;
+        Fri, 27 Mar 2020 12:45:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=rKL+VFjmUVuqurp/2aQxdNqmyU9h2BvyuAzk/lejr0M=;
-        b=QE7qx52c5uU7otJedEAGqLh7z72neXsaeOu/9TeTe0mXPoGy7UTj8Ugj8f+po4bWqo
-         DPoJQquEYKvF1g02ta+EMSU/ve4jkYTI3DLoC+d/KiJYkOQEjgRAyfaBY44TIoSko34F
-         Yln6RAgYvI3Apb/nIL6el/sKDokUH2PNNZKl9cS/HSEQAd0brCtw46o8iCliCbvaQ3TX
-         BO6CIAypMKqOeNjifTh/fJS9fl+EjgWlp+5wfK/dLC1oacmWq3JxPhfiO6y5wFlOubA/
-         9NDy01d48teEmBJ11WzYJUnueBrbqHk6gHOsuFVj99YANashoeE36yPhYytagAPKyWly
-         RosQ==
+        bh=fa5lFhQ+cqINl98IVwvSef60/lZRCUcBTSDPW4Y1JSM=;
+        b=AoBkQhUtBkLDyLJ+HE6I2KvcoHPTnAjIL/FznLQ5JYSh/Jx+oTWxsNLjiawRKyx6ud
+         UTN5in9y/MI6IQHXmjn/V8bdCEH5U4WVe6HBkjaInAdry+a8xZhML5bRcfKfpsdFmET2
+         fcl0UzdnNJZv9r01tWaUR0TMSiQ7/+zHZVNWw6mNYzonVLiy7i+SiiFkWMMjXpg+UKjL
+         2DbHtK8R8PS+VRwGNEsNhkB4mwXVrhBWUGF10TStxXcFfPDp2LCUPEBeLVI7hgfSXZTg
+         qCUIFzcoUHhXmuvC4IuuhSmuhK8aKdLme6+uGbgAFuqf0Ukx16E3BpCflwARLKBBwLwR
+         XU7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rKL+VFjmUVuqurp/2aQxdNqmyU9h2BvyuAzk/lejr0M=;
-        b=lNM3+SKSpCuU7BbafFD1LvsqlxBoKcof+u1oewWu7MAJseZD9/Gunok44c6/bVSTsw
-         VfQ87Cl6PGHP92AQvhYWwNgykeHLnrP6sO+ScXnfqkbNKQNoIlo8KD/tGM11aonQN7GH
-         GctW0WpiX8yUhb+iOH9dFmQTNQLykNbA93c4EQ6dOsOHwylKllex8rtejwnHnYBMOojY
-         Jk17MarDkxbfxkcLLh+DI17Ck1xo8j/1ITR0tvGKmDYMvTJm67bV7Qi9Ua5PYRKoI9tY
-         mpYpGHFsDX8KYl3DDqboHu3DHmHekO3Z76bygLK6PQJ0N+hPrU4/W33fTsTPkaYcvQGl
-         GCPg==
-X-Gm-Message-State: ANhLgQ1XIh8nM6pMHZzu5QJyPx2MXVm+pqSbiaLRNJCRY62WdtCYHZUV
-        xx/3jobdPnlX+E5BezD1SZRdRor+gIbGda1E4Wo=
-X-Google-Smtp-Source: ADFU+vuICBI/8pH0HKxQowt2zL+CvN3o5UpzUK1m4NcibUolVrrMyPoTSdLh2ubwLYMkkpcjjimZAMzKyKNyuCS43zc=
-X-Received: by 2002:a37:6411:: with SMTP id y17mr985067qkb.437.1585338154019;
- Fri, 27 Mar 2020 12:42:34 -0700 (PDT)
+        bh=fa5lFhQ+cqINl98IVwvSef60/lZRCUcBTSDPW4Y1JSM=;
+        b=QmQYLq85P0/1MGjTiUceFgusQf4fuO6WxRt8y1rhtRLkpV2wLxDetwnKfUsidhtLa3
+         OfyIQv9j8onVvPt5aW2LQZRJxJOh/dLUqutQO0smSEudGLvV2SJuM3VcUNqoxyVQkK/L
+         fQ5sgpe73qWi0U1wIfT6uxO6D6jGV+d6YLxi7ekhlkLpTcAB9urY5l/qC/2yA11tqpkM
+         xCcKwYr2HYVZDmqNZUmCcmvi6Ke6mY+L2RoS9o5Mm6EGEWeY2edwQDnKLFbfHVrRMyxA
+         lz17Wpwg5ZEY1tF0+4Emt8UYMcVt2ep2cAB+LAblCTGZ2Enw5o9A5p19nVCRQViz3N5P
+         Onyg==
+X-Gm-Message-State: ANhLgQ192I2BBz2OAzBCoSlpl/+gHOgwvcSju7shsnsitCjWv53ytYKd
+        Fk7DseMznCVIQNfnRPKzow00B02VY1FlfwteS5Q=
+X-Google-Smtp-Source: ADFU+vt2Vd+vJdNitQ0MMubOBni+mgHlvIp5uQ+mljIUZlWSZkdbH+0i4Arx6VLjSsai8X1w2R+2+2CjXiWc8M0KrqE=
+X-Received: by 2002:ac8:1865:: with SMTP id n34mr857593qtk.93.1585338318648;
+ Fri, 27 Mar 2020 12:45:18 -0700 (PDT)
 MIME-Version: 1.0
 References: <158462359206.164779.15902346296781033076.stgit@toke.dk>
  <158462359315.164779.13931660750493121404.stgit@toke.dk> <20200319155236.3d8537c5@kicinski-fedora-PC1C0HJN>
@@ -54,8 +54,8 @@ References: <158462359206.164779.15902346296781033076.stgit@toke.dk>
  <CACAyw98yYE+eOx5OayyN2tNQeNqFXnHdRGSv6DYX7ehfMHt1+g@mail.gmail.com>
 In-Reply-To: <CACAyw98yYE+eOx5OayyN2tNQeNqFXnHdRGSv6DYX7ehfMHt1+g@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 27 Mar 2020 12:42:20 -0700
-Message-ID: <CAEf4BzZ07Jfttmnnax3910vsSB9AWfUsswVibDhuwZNKZMOoRw@mail.gmail.com>
+Date:   Fri, 27 Mar 2020 12:45:07 -0700
+Message-ID: <CAEf4BzZdOe0eszN89cUVoxyWHPsUDh8O0QSL56MA82ku0uQ9jQ@mail.gmail.com>
 Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
  program when attaching XDP
 To:     Lorenz Bauer <lmb@cloudflare.com>
@@ -186,9 +186,6 @@ er
 > to support, and the pinning behaviour also seems nice. I'm really not fus=
 sed
 > by netlink vs syscall, whatever.
-
-Great, thanks.
-
 >
 > However, this behaviour concerns me. It's like Windows not
 > letting you delete a file while an application has it opened, which just =
@@ -209,16 +206,6 @@ if
 nt and
 > vice versa. If you need to restrict control, use network namespaces
 > to hide the devices, instead of hiding the bpffs.
-
-Alexei mentioned a "nuke" option few times already, that will solve
-this. The idea is that human operation should be able to do this, but
-not applications, even though they have CAP_NET_ADMIN. I don't know
-how exactly interface will look like, but it shouldn't allow
-applications just randomly replace bpf_link. There are legitimate use
-cases where application has to have CAP_NET_ADMIN and we can't hide
-netdevice from them, unfortunately.
-
-
 >
 > >
 > > It's a game of picking features/properties in isolation and "we can do
@@ -330,6 +317,15 @@ I
 > so trust these applications to not fiddle with XDP? Are there many of the=
 se?
 > Are they inside a user namespace or something?
+
+Sorry, missed this part. Yes, in our environment those will be
+containerized applications. It doesn't matter how many of them there
+are. There might be none right now, but we have no guarantee there
+won't appear a new one, because we have many independent teams working
+on different applications. And just a single one rogue application is
+enough to wreck havoc. So again, it's about preventing, not just
+detection.
+
 >
 > >
 > > >
