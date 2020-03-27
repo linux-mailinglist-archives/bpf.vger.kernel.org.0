@@ -2,48 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F34A5195F78
-	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 21:17:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D302195FD9
+	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 21:34:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727322AbgC0URB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Mar 2020 16:17:01 -0400
-Received: from www62.your-server.de ([213.133.104.62]:37466 "EHLO
+        id S1727707AbgC0UeL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Mar 2020 16:34:11 -0400
+Received: from www62.your-server.de ([213.133.104.62]:39836 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726959AbgC0URB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Mar 2020 16:17:01 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
+        with ESMTP id S1727393AbgC0UeL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Mar 2020 16:34:11 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jHvPR-0006Dt-JP; Fri, 27 Mar 2020 21:16:53 +0100
+        id 1jHvg6-00089O-S4; Fri, 27 Mar 2020 21:34:06 +0100
 Received: from [178.195.186.98] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jHvPR-000N0M-7Z; Fri, 27 Mar 2020 21:16:53 +0100
-Subject: Re: call for bpf progs. Re: [PATCHv2 bpf-next 5/5] selftests: bpf:
- add test for sk_assign
-To:     Joe Stringer <joe@wand.net.nz>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        id 1jHvg6-000Lpp-Dh; Fri, 27 Mar 2020 21:34:06 +0100
+Subject: Re: [PATCH v3] bpf: fix build warning - missing prototype
+To:     Jean-Philippe Menil <jpmenil@gmail.com>,
+        alexei.starovoitov@gmail.com
+Cc:     kernel-janitors@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Martin Lau <kafai@fb.com>,
-        john fastabend <john.fastabend@gmail.com>
-References: <20200325055745.10710-1-joe@wand.net.nz>
- <20200325055745.10710-6-joe@wand.net.nz>
- <82e8d147-b334-3d29-0312-7b087ac908f3@fb.com>
- <CACAyw99Eeu+=yD8UKazRJcknZi3D5zMJ4n=FVsxXi63DwhdxYA@mail.gmail.com>
- <20200326210719.den5isqxntnoqhmv@ast-mbp>
- <CAOftzPjyCNGEjBm4k3aKK+=AB-1STDbYbQK5sZbK6gTAo13XuA@mail.gmail.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200326235426.ei6ae2z5ek6uq3tt@ast-mbp>
+ <20200327075544.22814-1-jpmenil@gmail.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <c5e50f60-3872-b3ec-7038-737ca08f3077@iogearbox.net>
-Date:   Fri, 27 Mar 2020 21:16:52 +0100
+Message-ID: <3164e566-d54e-2254-32c4-d7fee47c37ea@iogearbox.net>
+Date:   Fri, 27 Mar 2020 21:34:05 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <CAOftzPjyCNGEjBm4k3aKK+=AB-1STDbYbQK5sZbK6gTAo13XuA@mail.gmail.com>
+In-Reply-To: <20200327075544.22814-1-jpmenil@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -54,74 +51,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/27/20 8:06 PM, Joe Stringer wrote:
-> On Thu, Mar 26, 2020 at 2:07 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
->> The second concern was pruning, but iirc the experiments were inconclusive.
->> selftests/bpf only has old fb progs. Hence, I think, the step zero is for
->> everyone to contribute their bpf programs written in C. If we have both
->> cilium and cloudflare progs as selftests it will help a lot to guide such long
->> lasting verifier decisions.
+On 3/27/20 8:55 AM, Jean-Philippe Menil wrote:
+> Fix build warnings when building net/bpf/test_run.o with W=1 due
+> to missing prototype for bpf_fentry_test{1..6}.
 > 
-> How would you like to handle program changes over time for this?
+> Instead of declaring prototypes, turn off warnings with
+> __diag_{push,ignore,pop} as pointed by Alexei.
 > 
-> In Cilium community we periodically rebuild bpf-next VM images for
-> testing, and run every pull request against those images[0]. We also
-> test against specific older kernels, currently 4.9 and 4.19. This
-> allows us to get some sense for the impact of upstream changes while
-> developing Cilium features, but unfortunately doesn't allow everyone
-> using kernel selftests to get that feedback at least from the kernel
-> tree. We also have a verifier complexity test script where we compile
-> with the maximum number of features (to ideally generate the most
-> complex programs possible) then attempt to load all of the various
-> programs, and output the complexity count that the kernel reports[1,2]
-> which we can track over time.
+> Signed-off-by: Jean-Philippe Menil <jpmenil@gmail.com>
+
+Looks better, but this doesn't apply cleanly. Please respin to latest bpf-next tree, thanks.
+
+> ---
+>   net/bpf/test_run.c | 5 +++++
+>   1 file changed, 5 insertions(+)
 > 
-> However Cilium BPF programs are actively developing and even if we
-> merge these programs into the kernel tree, they will get out-of-date
-> quickly. Up until recently everything was verifying fine compiling
-> with LLVM7 and loading into bpf-next. Over the past month we started
-> noticing new issues not with the existing implementation, but in *new*
-> BPF features. As we increased complexity, our CI started failing
-> against bpf-next[3] while they loaded fine on older kernels. We ended
-> up mitigating by upgrading to LLVM-10. Long story short, there's
-> several moving parts; changing BPF program implementations, changing
-> the compiler toolchain, changing the kernel verifier. So my question
-> is basically, where's the line of responsibility for what the kernel
-> selftests are responsible for vs integration tests? How do we maintain
-> those over time as the BPF programs and compiler changes?
-
-I wonder whether it would make sense to create test cases which are based
-on our cilium/cilium:latest docker image. Those would be run as part of
-BPF kernel selftests as well as part of our own CI for every PR. I think
-it could be some basic connectivity test, service mapping, etc with a
-bunch of application containers.
-
-One nice thing that just came to mind is that it would actually allow for
-easy testing of latest clang/llvm git by rerunning the test script and
-remapping them as a volume, e.g.:
-
-   docker run -it -v /root/clang+llvm-7.0.1-x86_64-linux-gnu-ubuntu-18.04/bin/clang:/bin/clang \
-                  -v /root/clang+llvm-7.0.1-x86_64-linux-gnu-ubuntu-18.04/bin/llc:/bin/llc \
-          cilium/cilium:latest /bin/sh
-
-Perhaps that would be more useful and always up to date than a copy of the
-code base that would get stale next day? In the end in this context kernel
-changes and/or llvm changes might be of interest to check whether anything
-potentially blows up, so having a self-contained packaging might be useful.
-Thoughts?
-
-> Do we just parachute the ~11K LoC of Cilium datapath into the kernel
-> tree once per cycle? Or should Cilium autobuild a verifier-test docker
-> image that kernel testing scripts can pull & run? Or would it be
-> helpful to have a separate GitHub project similar to libbpf that pulls
-> out kernel selftests, Cilium progs, fb progs, cloudflare progs, etc
-> automatically and centralizes a generic suite of BPF verifier
-> integration tests? Some other option?
-> 
-> [0] https://github.com/cilium/packer-ci-build
-> [1] https://github.com/cilium/cilium/blob/master/test/bpf/check-complexity.sh
-> [2] https://github.com/cilium/cilium/blob/master/test/bpf/verifier-test.sh
-> [3] https://github.com/cilium/cilium/issues/10517
+> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> index d555c0d8657d..cc1592413fc3 100644
+> --- a/net/bpf/test_run.c
+> +++ b/net/bpf/test_run.c
+> @@ -113,6 +113,9 @@ static int bpf_test_finish(const union bpf_attr *kattr,
+>    * architecture dependent calling conventions. 7+ can be supported in the
+>    * future.
+>    */
+> +__diag_push();
+> +__diag_ignore(GCC, 8, "-Wmissing-prototypes",
+> +	      "Global functions as their definitions will be in vmlinux BTF);
+>   int noinline bpf_fentry_test1(int a)
+>   {
+>   	return a + 1;
+> @@ -143,6 +146,8 @@ int noinline bpf_fentry_test6(u64 a, void *b, short c, int d, void *e, u64 f)
+>   	return a + (long)b + c + d + (long)e + f;
+>   }
+>   
+> +__diag_pop();
+> +
+>   static void *bpf_test_init(const union bpf_attr *kattr, u32 size,
+>   			   u32 headroom, u32 tailroom)
+>   {
 > 
 
