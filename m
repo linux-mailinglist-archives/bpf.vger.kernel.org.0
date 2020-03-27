@@ -2,172 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D58BD195A72
-	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 16:59:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9236195AA9
+	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 17:08:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727733AbgC0P7T (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Mar 2020 11:59:19 -0400
-Received: from www62.your-server.de ([213.133.104.62]:50956 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727707AbgC0P7R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Mar 2020 11:59:17 -0400
-Received: from 98.186.195.178.dynamic.wline.res.cust.swisscom.ch ([178.195.186.98] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jHrO7-0007nm-6w; Fri, 27 Mar 2020 16:59:15 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     alexei.starovoitov@gmail.com
-Cc:     m@lambda.lt, joe@wand.net.nz, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf-next 7/7] bpf: add selftest cases for ctx_or_null argument type
-Date:   Fri, 27 Mar 2020 16:58:56 +0100
-Message-Id: <c74758d07b1b678036465ef7f068a49e9efd3548.1585323121.git.daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <cover.1585323121.git.daniel@iogearbox.net>
-References: <cover.1585323121.git.daniel@iogearbox.net>
+        id S1727548AbgC0QI6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Mar 2020 12:08:58 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:40487 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727354AbgC0QI5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Mar 2020 12:08:57 -0400
+Received: by mail-lj1-f193.google.com with SMTP id 19so10753347ljj.7;
+        Fri, 27 Mar 2020 09:08:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=spnkQutFB18IjJxiXOUjvoPj/dKwleF9bt8ULMfxB1Y=;
+        b=pQzJlif3MiB+xaxOktX9paLasGpqWzapgfk2xIE9kLJ3a0ybeI+m2EPYtXR9phWgK1
+         j+UNr5MmCNpz757pMUKQcgtV4to2BuJA4l/M1KkcBOlTeIfFQ3wUNuxJR4a7hvBdDmsF
+         SCtA5K6zihic2AlVuPCYB3IHEoqy2NmbbwpCtU0XzLMQgk+9S3AtQnZqK+cOC6UcJ/G+
+         PdqrwEjrC5w69PR5eFMp6oQsNnnVMzV7+eVgfdlPvCuj7pVsbpMl0feQNXTQy27Ec2/X
+         1CxKoO/HUgJPVlykF4QIlx+MBpmG18fSGWsBnqR09AjPSPVoD1SFKF39cCIu4SqhynS7
+         e9CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=spnkQutFB18IjJxiXOUjvoPj/dKwleF9bt8ULMfxB1Y=;
+        b=uSO4b5Sw649qHw0YBKKXFz4PcRRVQ+iXlEE8gK9Vxoez7noEiLTnDtZN27osAHwth3
+         iz+2rq7WoiUhUT+bRtTm0q7Oq6n15WfG/Za+C2Lyrr/iOKVeHnc30aXsMvxrJAkJSFIy
+         hzsm27DDQtAf+MZTkXozNYbA/VZY7GeKLcfhYgDFIZvNWsrSVB/M21QaJQvnGaBcq6Xk
+         vL5wGc0Nv6PuiC+hGNdQgWaRBM50pjCj7z7pFwahYNcWCvRUOr45sn2kqnTV2+oEfnor
+         iAu3Nqvz/NcfTiDqvuyLjua9C0xsec3YO35kNTA9fMgcs//M87U1ZioivqN6Bw6jwvzR
+         OAPA==
+X-Gm-Message-State: AGi0PuYguJ88VWhTu4sgZekm051Cg5U/o06nYAsEw9VgYzKAkkAJCXNQ
+        N01POg/XmxmN24Nki8ojz7b35TlE9Q2C0rymU7cMxw==
+X-Google-Smtp-Source: APiQypJga1+Zdr53axMFLQR1J8gqplOP1NeXfwltFHQ8tw9f7bjl0DsITKxwAfVTuQxdMofD3tEfOPhyDMqqKtLZGBQ=
+X-Received: by 2002:a2e:988c:: with SMTP id b12mr8986610ljj.138.1585325334923;
+ Fri, 27 Mar 2020 09:08:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25764/Fri Mar 27 14:11:26 2020)
+References: <20200325055745.10710-1-joe@wand.net.nz> <20200325055745.10710-6-joe@wand.net.nz>
+ <82e8d147-b334-3d29-0312-7b087ac908f3@fb.com> <CACAyw99Eeu+=yD8UKazRJcknZi3D5zMJ4n=FVsxXi63DwhdxYA@mail.gmail.com>
+ <20200326210719.den5isqxntnoqhmv@ast-mbp> <CACAyw9_jv3eJz8eRRBOvWEc4=BM0_tRuQCz_fLKsVLTid7tCDA@mail.gmail.com>
+In-Reply-To: <CACAyw9_jv3eJz8eRRBOvWEc4=BM0_tRuQCz_fLKsVLTid7tCDA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 27 Mar 2020 09:08:43 -0700
+Message-ID: <CAADnVQKoO18HSTEkUdw9M4_YawdSw_FsDbLjK6jGiPRfiy6K2w@mail.gmail.com>
+Subject: Re: call for bpf progs. Re: [PATCHv2 bpf-next 5/5] selftests: bpf:
+ add test for sk_assign
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Yonghong Song <yhs@fb.com>, Joe Stringer <joe@wand.net.nz>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Martin Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add various tests to make sure the verifier keeps catching them:
+On Fri, Mar 27, 2020 at 3:03 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> >
+> > Thanks for bringing this up.
+> > Yonghong, please correct me if I'm wrong.
+> > I think you've experimented with tracking spilled constants. The first issue
+> > came with spilling of 4 byte constant. The verifier tracks 8 byte slots and
+> > lots of places assume that slot granularity. It's not clear yet how to refactor
+> > the verifier. Ideas, help are greatly appreciated.
+> > The second concern was pruning, but iirc the experiments were inconclusive.
+> > selftests/bpf only has old fb progs. Hence, I think, the step zero is for
+> > everyone to contribute their bpf programs written in C. If we have both
+> > cilium and cloudflare progs as selftests it will help a lot to guide such long
+> > lasting verifier decisions.
+>
+> Ok, I'll try to get something sorted out. We have a TC classifier that
+> would be suitable,
+> and I've been meaning to get it open sourced. Does the integration into the
+> test suite have to involve running packets through it, or is compile
+> and load enough?
 
-  # ./test_verifier
-  [...]
-  #230/p pass ctx or null check, 1: ctx OK
-  #231/p pass ctx or null check, 2: null OK
-  #232/p pass ctx or null check, 3: 1 OK
-  #233/p pass ctx or null check, 4: ctx - const OK
-  #234/p pass ctx or null check, 5: null (connect) OK
-  #235/p pass ctx or null check, 6: null (bind) OK
-  #236/p pass ctx or null check, 7: ctx (bind) OK
-  #237/p pass ctx or null check, 8: null (bind) OK
-  [...]
-  Summary: 1595 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- tools/testing/selftests/bpf/verifier/ctx.c | 105 +++++++++++++++++++++
- 1 file changed, 105 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/verifier/ctx.c b/tools/testing/selftests/bpf/verifier/ctx.c
-index 92762c08f5e3..93d6b1641481 100644
---- a/tools/testing/selftests/bpf/verifier/ctx.c
-+++ b/tools/testing/selftests/bpf/verifier/ctx.c
-@@ -91,3 +91,108 @@
- 	.result = REJECT,
- 	.errstr = "variable ctx access var_off=(0x0; 0x4)",
- },
-+{
-+	"pass ctx or null check, 1: ctx",
-+	.insns = {
-+		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
-+			     BPF_FUNC_get_netns_cookie),
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_CGROUP_SOCK_ADDR,
-+	.expected_attach_type = BPF_CGROUP_UDP6_SENDMSG,
-+	.result = ACCEPT,
-+},
-+{
-+	"pass ctx or null check, 2: null",
-+	.insns = {
-+		BPF_MOV64_IMM(BPF_REG_1, 0),
-+		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
-+			     BPF_FUNC_get_netns_cookie),
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_CGROUP_SOCK_ADDR,
-+	.expected_attach_type = BPF_CGROUP_UDP6_SENDMSG,
-+	.result = ACCEPT,
-+},
-+{
-+	"pass ctx or null check, 3: 1",
-+	.insns = {
-+		BPF_MOV64_IMM(BPF_REG_1, 1),
-+		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
-+			     BPF_FUNC_get_netns_cookie),
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_CGROUP_SOCK_ADDR,
-+	.expected_attach_type = BPF_CGROUP_UDP6_SENDMSG,
-+	.result = REJECT,
-+	.errstr = "R1 type=inv expected=ctx",
-+},
-+{
-+	"pass ctx or null check, 4: ctx - const",
-+	.insns = {
-+		BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -612),
-+		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
-+			     BPF_FUNC_get_netns_cookie),
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_CGROUP_SOCK_ADDR,
-+	.expected_attach_type = BPF_CGROUP_UDP6_SENDMSG,
-+	.result = REJECT,
-+	.errstr = "dereference of modified ctx ptr",
-+},
-+{
-+	"pass ctx or null check, 5: null (connect)",
-+	.insns = {
-+		BPF_MOV64_IMM(BPF_REG_1, 0),
-+		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
-+			     BPF_FUNC_get_netns_cookie),
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_CGROUP_SOCK_ADDR,
-+	.expected_attach_type = BPF_CGROUP_INET4_CONNECT,
-+	.result = ACCEPT,
-+},
-+{
-+	"pass ctx or null check, 6: null (bind)",
-+	.insns = {
-+		BPF_MOV64_IMM(BPF_REG_1, 0),
-+		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
-+			     BPF_FUNC_get_netns_cookie),
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_CGROUP_SOCK,
-+	.expected_attach_type = BPF_CGROUP_INET4_POST_BIND,
-+	.result = ACCEPT,
-+},
-+{
-+	"pass ctx or null check, 7: ctx (bind)",
-+	.insns = {
-+		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
-+			     BPF_FUNC_get_socket_cookie),
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_CGROUP_SOCK,
-+	.expected_attach_type = BPF_CGROUP_INET4_POST_BIND,
-+	.result = ACCEPT,
-+},
-+{
-+	"pass ctx or null check, 8: null (bind)",
-+	.insns = {
-+		BPF_MOV64_IMM(BPF_REG_1, 0),
-+		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
-+			     BPF_FUNC_get_socket_cookie),
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_CGROUP_SOCK,
-+	.expected_attach_type = BPF_CGROUP_INET4_POST_BIND,
-+	.result = REJECT,
-+	.errstr = "R1 type=inv expected=ctx",
-+},
--- 
-2.21.0
-
+It would be great if you can add it as part of test_progs and run it
+with one or two packets via prog_test_run like all the tests do.
+Thanks!
