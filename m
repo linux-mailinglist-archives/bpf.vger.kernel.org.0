@@ -2,90 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 261AA1960C1
-	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 22:54:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F611960EB
+	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 23:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727606AbgC0VyM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Mar 2020 17:54:12 -0400
-Received: from www62.your-server.de ([213.133.104.62]:50696 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727473AbgC0VyM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Mar 2020 17:54:12 -0400
-Received: from 98.186.195.178.dynamic.wline.res.cust.swisscom.ch ([178.195.186.98] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jHwvV-0006bl-IT; Fri, 27 Mar 2020 22:54:05 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf 2020-03-27
-Date:   Fri, 27 Mar 2020 22:54:05 +0100
-Message-Id: <20200327215405.29657-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S1727699AbgC0WRA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Mar 2020 18:17:00 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:26601 "EHLO
+        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727639AbgC0WRA (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 27 Mar 2020 18:17:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585347419;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RDh3LFZbbssgAdAbHWWA37QQoc8QtrlPd+JUjMAzmKQ=;
+        b=Y2xd5G0cZub4bxPnKlUtwIIqpsXOHHU1J10x2uyqtUOuEGVX9LiRpjYJK+JXUzeos9xZzc
+        U/xww2VGKZVZqCbAktqWELnfvdxfCatkom5i04QrgNF8HoWiOvh15zdSq91KVc8DFNWKOE
+        JKYrkE5FgQHW8lHTI+VX75FVP0oGcNc=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-32-VhN0R_gSNSmiTbAlBzwZRQ-1; Fri, 27 Mar 2020 18:16:57 -0400
+X-MC-Unique: VhN0R_gSNSmiTbAlBzwZRQ-1
+Received: by mail-lf1-f72.google.com with SMTP id j3so4327111lfe.10
+        for <bpf@vger.kernel.org>; Fri, 27 Mar 2020 15:16:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=RDh3LFZbbssgAdAbHWWA37QQoc8QtrlPd+JUjMAzmKQ=;
+        b=a6AxEDh295y/HW1LVFabmZsjqfL3NE4b/72acW9/Tp156hXyUe/kCPdUOQv3Ut3sLb
+         HJZsAss7QgctwEgIdB2kbCwL13Ujpr/84NskNk/VsxM4DgxmSdnuby4VoR/UBc39FTF/
+         uDC6qQNDjWmxWXXvp1NU2hFkKwUIGuxeJhzbFlYFZoWMUpilbMN0AoD7m7/iet/HLkv1
+         To5gaNThjAlutN+Ho5cplKvwTAjXyVw8SxTZ+tRuDJRHYejPeiSGSpmV0c0LneN5lAgZ
+         acBo13obK0xfi733KVtJYVMj7e79ymJkW4+wc94W//SK7E9HKxA0NDJkxrmy9uJZg6Zv
+         Q/ag==
+X-Gm-Message-State: AGi0PuYfzhlDr1k1dmnhpc1J9lUtOJrXfeQ3yaHe7cXu1ixbQUJu09Qw
+        no0guXwrzxh1pjJkDDdYPwXPM8qlyTmrtc/UgIH4YREE+Fvzpdt1j1WlS7I23QeruvCJ2f9sOkP
+        HmoNYhRgDcM/6
+X-Received: by 2002:a2e:9757:: with SMTP id f23mr591940ljj.269.1585347415892;
+        Fri, 27 Mar 2020 15:16:55 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJRZ1d05vO3Z/RzbY8b19DajZoaWjLHYIVLCDFq0EBcwPnbyppbDwdE6i2Ri8huW4taV+nkyA==
+X-Received: by 2002:a2e:9757:: with SMTP id f23mr591922ljj.269.1585347415700;
+        Fri, 27 Mar 2020 15:16:55 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id d19sm3199247lji.95.2020.03.27.15.16.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Mar 2020 15:16:54 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 7D06518158B; Fri, 27 Mar 2020 23:16:52 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing program when attaching XDP
+In-Reply-To: <CAEf4Bza7zQ+ii4SH=4gJqQdyCp9pm6qGAsBOwa0MG5AEofC2HQ@mail.gmail.com>
+References: <158462359206.164779.15902346296781033076.stgit@toke.dk> <158462359315.164779.13931660750493121404.stgit@toke.dk> <20200319155236.3d8537c5@kicinski-fedora-PC1C0HJN> <875zez76ph.fsf@toke.dk> <20200320103530.2853c573@kicinski-fedora-PC1C0HJN> <5e750bd4ebf8d_233f2ab4c81425c4ce@john-XPS-13-9370.notmuch> <CAEf4BzbWa8vdyLuzr_nxFM3BtT+hhzjCe9UQF8Y5cN+sVqa72g@mail.gmail.com> <87tv2f48lp.fsf@toke.dk> <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com> <87h7ye3mf3.fsf@toke.dk> <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com> <87tv2e10ly.fsf@toke.dk> <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com> <87369wrcyv.fsf@toke.dk> <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com> <87pncznvjy.fsf@toke.dk> <CAEf4BzaPQ6=h8a6Ngz638AtL4LmBLLVMV+_-YLMR=Ls+drd5HQ@mail.gmail.com> <87lfnmm35r.fsf@toke.dk> <CAEf4Bza7zQ+ii4SH=4gJqQdyCp9pm6qGAsBOwa0MG5AEofC2HQ@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 27 Mar 2020 23:16:52 +0100
+Message-ID: <87wo75l9yj.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25764/Fri Mar 27 14:11:26 2020)
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David,
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-The following pull-request contains BPF updates for your *net* tree.
+> Please stop dodging. Just like with "rest of the kernel", but really
+> "just networking" from before.
 
-We've added 3 non-merge commits during the last 4 day(s) which contain
-a total of 4 files changed, 25 insertions(+), 20 deletions(-).
+Look, if we can't have this conversation without throwing around
+accusations of bad faith, I think it is best we just take Ed's advice
+and leave it until after the merge window.
 
-The main changes are:
+-Toke
 
-1) Explicitly memset the bpf_attr structure on bpf() syscall to avoid
-   having to rely on compiler to do so. Issues have been noticed on
-   some compilers with padding and other oddities where the request was
-   then unexpectedly rejected, from Greg Kroah-Hartman.
-
-2) Sanitize the bpf_struct_ops TCP congestion control name in order to
-   avoid problematic characters such as whitespaces, from Martin KaFai Lau.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Alexander Potapenko, Alistair Delva, Andrii Nakryiko, Daniel Borkmann, 
-John Stultz, Maciej Żenczykowski, Yonghong Song
-
-----------------------------------------------------------------
-
-The following changes since commit 32ca98feab8c9076c89c0697c5a85e46fece809d:
-
-  net: ip_gre: Accept IFLA_INFO_DATA-less configuration (2020-03-16 17:19:56 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to 5c6f25887963f15492b604dd25cb149c501bbabf:
-
-  bpf: Explicitly memset some bpf info structures declared on the stack (2020-03-20 21:05:22 +0100)
-
-----------------------------------------------------------------
-Greg Kroah-Hartman (2):
-      bpf: Explicitly memset the bpf_attr structure
-      bpf: Explicitly memset some bpf info structures declared on the stack
-
-Martin KaFai Lau (1):
-      bpf: Sanitize the bpf_struct_ops tcp-cc name
-
- include/linux/bpf.h   |  1 +
- kernel/bpf/btf.c      |  3 ++-
- kernel/bpf/syscall.c  | 34 ++++++++++++++++++++--------------
- net/ipv4/bpf_tcp_ca.c |  7 ++-----
- 4 files changed, 25 insertions(+), 20 deletions(-)
