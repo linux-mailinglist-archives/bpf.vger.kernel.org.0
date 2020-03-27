@@ -2,53 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A5651196198
-	for <lists+bpf@lfdr.de>; Sat, 28 Mar 2020 00:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9947F1961BB
+	for <lists+bpf@lfdr.de>; Sat, 28 Mar 2020 00:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727717AbgC0XAy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Mar 2020 19:00:54 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:45685 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727585AbgC0XAy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Mar 2020 19:00:54 -0400
-Received: by mail-pf1-f193.google.com with SMTP id r14so2737821pfl.12;
-        Fri, 27 Mar 2020 16:00:52 -0700 (PDT)
+        id S1726781AbgC0XC6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Mar 2020 19:02:58 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:34116 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727685AbgC0XC6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Mar 2020 19:02:58 -0400
+Received: by mail-pg1-f196.google.com with SMTP id d37so4796846pgl.1;
+        Fri, 27 Mar 2020 16:02:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=+GqeFlYDOVxo+UwHqbYTX+sDCdzCxbsaVnEq0Ryq7Go=;
-        b=bwr8UhTluMh/r9tdpl4Lxi5BalTdo4vORZRP8JBtNnkjUDmzPgfOLmS7HauuLut+pi
-         h6+EjpW6muF8eVikZi9/fGDhI97eCZVE4VaB7UBqdmINTAmX+6bmj6TkfOhVh9zJQMIC
-         MjCx85zMXPePi5RrG35RCk381Vr1xj9p9kvJbbyOQUajDhKHD0zNXhJcedWe8Qhz6HWE
-         QOcFVcAfxEeWFRgg0r5G4Zhth7NUec1NCWcgjhgQeBR7y5jUrxYgGQvHTc+kW6SmroBE
-         BcTgwMFqKDFPS9HRpMNrRDOa8CVlruG6WCSUz9JGTvkPUkga/c3j717NTyVfgkQTM9DT
-         BWBw==
+         :content-disposition:in-reply-to;
+        bh=ZSTOHs0uJUooAn9pagNglK3cT6ayiCgMskC9nSrVy4U=;
+        b=oOjFI45iMQvpgqZHOAeeBIFOND/qRw3RsG0IWNX4Wkw+bGgidsQFgzHS+uo8LogjxP
+         gdYvf1Ig/KMS89yQGVKCDCLosDZHGHARNvQ2kF2Q1zNVqePkuQNLZk7myiETin0ypp7G
+         Fdnz9XQSF32YFwJG/WPZviZH05KujEBOj7tAQefdxnpl7TyyZ2wKLtMgmThd6tQsQ1Gb
+         eaDcDZkF5dnaMGd03vdKL+OK4YmRk/3NlGgE2ciACXwm1CzxNJONzXdPdJmqdSTasn90
+         KOqs+6Sdo0Yqi8Drlsgqn3DH6MdBNGFR/24Qkxid5SME3JEdBLLW0yrw4EOEaZIYAqBJ
+         puYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=+GqeFlYDOVxo+UwHqbYTX+sDCdzCxbsaVnEq0Ryq7Go=;
-        b=EpzPycNlbsIwQMyPe1rDMmn9jtrwYaWHSoAhtp9fohNP1yu4zwRkFCTAywbUQxsUnq
-         vZjf/p0mUAQD0+bgwU7o6qp4/DpkN81cjjSW6KNCQUBK8rGRquoLBz5fTtQ5FEndEx1w
-         uWaBHG7j9EgyHCEtOUS1uV3ikNExq8/X2RBRmNqfBF6y0nrEwFlHoI6liKobnRnm2Ziq
-         wKJdfqzOCYL73gFMMMNY26BCgpVxBwLNMMPWHUbn6tOtTavyPNYgtRYQ/NkrFC9ebKYc
-         azbFonKNVnk/eP65biulcE2tBY3BkqlInQF8G2ssVfOmATDZUmjgbUqrz+XqVCrxTrhp
-         V1Yg==
-X-Gm-Message-State: ANhLgQ2LfpDResDCIjZ4seRJKbm2VvW1iDAQmRWGoKrXA6DHeTlWzDJv
-        dIBik+awnn0qzNjnwhWNOJM=
-X-Google-Smtp-Source: ADFU+vuUhkrlEEBTB1nOUwmmMAnqQZbVwhLi02JeIWuQdWpJbX4+U9Qlvycgx7eb1uabNDUW+iuCXA==
-X-Received: by 2002:a62:fcc7:: with SMTP id e190mr1545773pfh.285.1585350052148;
-        Fri, 27 Mar 2020 16:00:52 -0700 (PDT)
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZSTOHs0uJUooAn9pagNglK3cT6ayiCgMskC9nSrVy4U=;
+        b=Yz6pHnYP9DUJcrg6zEvw9MZg7Pcl6lGuHQHQcdxYt04OY8wMlHXIHwq1ke8YrLY6bA
+         cODgsWs9x/6wSE9LRhZV2HNXY+0ZdMVrVRu2xu6XohlL0MTpJRYsif00XU3jL7RTo5w9
+         2IR5mlFaPYXWHqZCppZ8cygiXKFK+wBFewoGhnmNHFuIvVdP+Grm7sM7EcJb8GEu5xZx
+         iyHgLG4NJ/1oQ7/ZGI5qruZiahNNOiYrCm/Agee0LQfjE19ytNQApcPO5vpa1NMHpIlB
+         X0WHXWe+gBLEOqLIMigsDwIUV9fSMrKXj1YKFvcjYm5/Y/ZZi0fU4yxMQIDJ3lUWqCe+
+         9geA==
+X-Gm-Message-State: ANhLgQ10upyCX07Zow1JpYJYF5v80Ea9+jy1sBUiOS2qaDDKKM133pjv
+        w0+htT8xeouWw/jibB4OAjA=
+X-Google-Smtp-Source: ADFU+vsqnmnRjqdkSg8uHxYlwosopshvpcGw0AHgzfpgnvsl5rQawsrrMYKJlh/SkWRX5OKMsywU5A==
+X-Received: by 2002:aa7:99c8:: with SMTP id v8mr1500729pfi.151.1585350177084;
+        Fri, 27 Mar 2020 16:02:57 -0700 (PDT)
 Received: from ast-mbp ([2620:10d:c090:400::5:4ef7])
-        by smtp.gmail.com with ESMTPSA id z17sm4956001pff.12.2020.03.27.16.00.49
+        by smtp.gmail.com with ESMTPSA id 74sm4888023pfy.120.2020.03.27.16.02.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Mar 2020 16:00:50 -0700 (PDT)
-Date:   Fri, 27 Mar 2020 16:00:47 -0700
+        Fri, 27 Mar 2020 16:02:56 -0700 (PDT)
+Date:   Fri, 27 Mar 2020 16:02:53 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Lorenz Bauer <lmb@cloudflare.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         John Fastabend <john.fastabend@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -58,113 +59,52 @@ Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Andrii Nakryiko <andriin@fb.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
         Andrey Ignatov <rdna@fb.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
  program when attaching XDP
-Message-ID: <20200327230047.ois5esl35s63qorj@ast-mbp>
-References: <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com>
- <87h7ye3mf3.fsf@toke.dk>
+Message-ID: <20200327230253.txq54keztlwsok2s@ast-mbp>
+References: <87h7ye3mf3.fsf@toke.dk>
  <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com>
  <87tv2e10ly.fsf@toke.dk>
  <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com>
  <87369wrcyv.fsf@toke.dk>
  <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com>
  <87pncznvjy.fsf@toke.dk>
- <20200326195859.u6inotgrm3ubw5bx@ast-mbp>
- <87imiqm27d.fsf@toke.dk>
+ <CAEf4BzaPQ6=h8a6Ngz638AtL4LmBLLVMV+_-YLMR=Ls+drd5HQ@mail.gmail.com>
+ <CACAyw98yYE+eOx5OayyN2tNQeNqFXnHdRGSv6DYX7ehfMHt1+g@mail.gmail.com>
+ <9f0ab343-939b-92e3-c1b8-38a158da10c9@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87imiqm27d.fsf@toke.dk>
+In-Reply-To: <9f0ab343-939b-92e3-c1b8-38a158da10c9@gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 27, 2020 at 01:06:46PM +0100, Toke Høiland-Jørgensen wrote:
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+On Fri, Mar 27, 2020 at 10:12:05AM -0600, David Ahern wrote:
+> On 3/27/20 5:06 AM, Lorenz Bauer wrote:
+> > However, this behaviour concerns me. It's like Windows not
+> > letting you delete a file while an application has it opened, which just leads
+> > to randomly killing programs until you find the right one. It's frustrating
+> > and counter productive.
+> > 
+> > You're taking power away from the operator. In your deployment scenario
+> > this might make sense, but I think it's a really bad model in general. If I am
+> > privileged I need to be able to exercise that privilege. This means that if
+> > there is a netdevice in my network namespace, and I have CAP_NET_ADMIN
+> > or whatever, I can break the association.
+> > 
+> > So, to be constructive: I'd prefer bpf_link to replace a netlink attachment and
+> > vice versa. If you need to restrict control, use network namespaces
+> > to hide the devices, instead of hiding the bpffs.
 > 
-> > On Thu, Mar 26, 2020 at 01:35:13PM +0100, Toke Høiland-Jørgensen wrote:
-> >> 
-> >> Additionally, in the case where there is *not* a central management
-> >> daemon (i.e., what I'm implementing with libxdp), this would be the flow
-> >> implemented by the library without bpf_link:
-> >> 
-> >> 1. Query kernel for current BPF prog loaded on $IFACE
-> >> 2. Sanity-check that this program is a dispatcher program installed by
-> >>    libxdp
-> >> 3. Create a new dispatcher program with whatever changes we want to do
-> >>    (such as adding another component program).
-> >> 4. Atomically replace the old program with the new one using the netlink
-> >>    API in this patch series.
-> >
-> > in this model what stops another application that is not using libdispatcher to
-> > nuke dispatcher program ?
-> 
-> Nothing. But nothing is stopping it from issuing 'ip link down' either -
-> an application with CAP_NET_ADMIN is implicitly trusted to be
-> well-behaved. This patch series is just adding the kernel primitive that
-> enables applications to be well-behaved. I consider it an API bug-fix.
+> I had a thought yesterday along similar lines: bpf_link is about
+> ownership and preventing "accidental" deletes. What's the observability
+> wrt to learning who owns a program at a specific attach point and can
+> that ever be hidden.
 
-I think what you're proposing is not a fix, but a band-aid.
-And from what I can read in this thread you remain unconvinced that
-you will hit exactly the same issues we're describing.
-We hit them already and you will hit them a year from now.
-Simply because fb usage of all parts of bpf are about 3-4 years ahead
-of everyone else.
-I'm trying to convince you that your libxdp will be in much better
-shape a year from now. It will be prepared for a situation when
-other libxdp clones exist and are trying to do the same.
-While you're saying:
-"let me shot myself in the foot. I know what I'm doing. I'll be fine".
-I know you will not be. And soon enough you'll come back proposing
-locking, id, owner apis for xdp.
-
-> >> Whereas with bpf_link, it would be:
-> >> 
-> >> 1. Find the pinned bpf_link for $IFACE (e.g., load from
-> >>    /sys/fs/bpf/iface-links/$IFNAME).
-> >> 2. Query kernel for current BPF prog linked to $LINK
-> >> 3. Sanity-check that this program is a dispatcher program installed by
-> >>    libxdp
-> >> 4. Create a new dispatcher program with whatever changes we want to do
-> >>    (such as adding another component program).
-> >> 5. Atomically replace the old program with the new one using the
-> >>    LINK_UPDATE bpf() API.
-> >
-> > whereas here dispatcher program is only accessible to libdispatcher.
-> > Instance of bpffs needs to be known to libdispatcher only.
-> > That's the ownership I've been talking about.
-> >
-> > As discussed early we need a way for _human_ to nuke dispatcher program,
-> > but such api shouldn't be usable out of application/task.
-> 
-> As long as there is this kind of override in place, I'm not actually
-> fundamentally opposed to the concept of bpf_link for XDP, as an
-> additional mechanism. What I'm opposed to is using bpf_link as a reason
-> to block this series.
-> 
-> In fact, a way to implement the "human override" you mention, could be
-> to reuse the mechanism implemented in this series: If the EXPECTED_FD
-> passed via netlink is a bpf_link FD, that could be interpreted as an
-> override by the kernel.
-
-That's not "human override". You want to use expected_fd in libxdp.
-That's not human. That's any 'yum install firewall' will be nuking
-the bpf_link and careful orchestration of our libxdp.
-
-As far as blocking cap_net_admin...
-you mentioned that use case is to do:
-sudo yum install firewall1
-sudo yum install firewall2
-
-when these packages are being installed they will invoke startup scripts
-that will install their dispatcher progs on eth0.
-Imagine firewall2 is not using correct vestion of libxdp. or buggy one.
-all the good work from firewall1 went down the drain.
-Note in both cases you only need cap_net_admin to install the prog.
-The packages will not be reconfiguring eth0. They need to be told
-which interface to apply firewall to. That's all.
+Absolutely. all links should be visible somehow.
+idr for links with equivalent get_next_id and get_fd_from_id will be available.
+The mechanism for "human override" is tbd.
