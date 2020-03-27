@@ -2,152 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFAF194FB7
-	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 04:40:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B25E0195001
+	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 05:26:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727509AbgC0DkN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Mar 2020 23:40:13 -0400
-Received: from us-smtp-delivery-172.mimecast.com ([63.128.21.172]:41304 "EHLO
-        us-smtp-delivery-172.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727446AbgC0DkM (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 26 Mar 2020 23:40:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=valvesoftware.com;
-        s=mc20150811; t=1585280411;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=93NrP1J5ob0+Gg1hAqxUnhANzJSLqVrWUmGujX9AQ0k=;
-        b=hDbBLCr8dERDRzS3uE/SrG50N4EVigu3g8dW39rT5zaPO3aK7jmLR19PDzh9lPJYnWW24b
-        ZmG9nva6GmdKMPKb+2fXtvng5nEV182VotMqxaaeHtszpoFgO2ABCj738SQ3wlcVG60eYN
-        wIsdTaI2fLGDp++obJp55UbxXQ5ok0I=
-Received: from smtp01.valvesoftware.com (smtp01.valvesoftware.com
- [208.64.203.181]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-183-MzPpUS9uMYGspFvS-Rd3sw-1; Thu, 26 Mar 2020 23:24:08 -0400
-X-MC-Unique: MzPpUS9uMYGspFvS-Rd3sw-1
-Received: from [172.16.1.107] (helo=antispam.valve.org)
-        by smtp01.valvesoftware.com with esmtp (Exim 4.86_2)
-        (envelope-from <fletcherd@valvesoftware.com>)
-        id 1jHfbL-0001Ck-HI; Thu, 26 Mar 2020 20:24:07 -0700
-Received: from antispam.valve.org (127.0.0.1) id hflote0171sr; Thu, 26 Mar 2020 20:24:07 -0700 (envelope-from <fletcherd@valvesoftware.com>)
-Received: from mail1.valvemail.org ([172.16.144.22])
-        by antispam.valve.org ([172.16.1.107]) (SonicWALL 9.0.5.2081 )
-        with ESMTP id o202003270324070010485-5; Thu, 26 Mar 2020 20:24:07 -0700
-Received: from mail1.valvemail.org (172.16.144.22) by mail1.valvemail.org
- (172.16.144.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 26 Mar
- 2020 20:24:07 -0700
-Received: from mail1.valvemail.org ([fe80::3155:e19a:4b5e:b8f7]) by
- mail1.valvemail.org ([fe80::3155:e19a:4b5e:b8f7%8]) with mapi id
- 15.01.1913.007; Thu, 26 Mar 2020 20:24:07 -0700
-From:   Fletcher Dunn <fletcherd@valvesoftware.com>
-To:     'Alexei Starovoitov' <ast@kernel.org>,
-        'Daniel Borkmann' <daniel@iogearbox.net>
-CC:     'Martin KaFai Lau' <kafai@fb.com>,
-        'Song Liu' <songliubraving@fb.com>,
-        'Yonghong Song' <yhs@fb.com>,
-        'Andrii Nakryiko' <andriin@fb.com>,
-        "'netdev@vger.kernel.org'" <netdev@vger.kernel.org>,
-        "'bpf@vger.kernel.org'" <bpf@vger.kernel.org>,
-        Brandon Gilmore <bgilmore@valvesoftware.com>,
-        "Steven Noonan" <steven@valvesoftware.com>
-Subject: [PATCH bpf-next] xsk: Init all ring members in xsk_umem__create and
- xsk_socket__create
-Thread-Topic: [PATCH bpf-next] xsk: Init all ring members in xsk_umem__create
- and xsk_socket__create
-Thread-Index: AdYD5ybf0ykyxQWeQrqqAmtRPVTlSw==
-Date:   Fri, 27 Mar 2020 03:24:07 +0000
-Message-ID: <85f12913cde94b19bfcb598344701c38@valvesoftware.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.18.42.19]
-x-exclaimer-md-config: fe5cb8ea-1338-4c54-81e0-ad323678e037
-x-c2processedorg: d7674bc1-f4dc-4fad-9e9e-e896f8a3f31b
+        id S1725936AbgC0E0B (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Mar 2020 00:26:01 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:43488 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725942AbgC0E0A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Mar 2020 00:26:00 -0400
+Received: by mail-pf1-f194.google.com with SMTP id f206so3892329pfa.10;
+        Thu, 26 Mar 2020 21:25:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TsKBx3wOdnN/Qyf6INTx0C/vLa7l7648ufKCRtBivuU=;
+        b=R/PCAUsbaPdpfyfYjwsj6ks5ueUlVlfiot1iGbNKGyDja/2SfMJjXtohbk0Mvj18CQ
+         TaqfM29gMwbqhCSlBxg0LUUfdCERTL0GIQmRl9votI7ll0Y0kz9cS0I3VfobskL5tc2T
+         BwrriHX9+psvG4gPnAym/jYgqMkZ8zPZ1hY2CccreyM5bZrqGtIPLNUbEjl51MKzRuQV
+         jWcajDeXzeffL7NJubRbkSGuN7Cszzp3IYV2clnRQ7LOfvYTbDB3SPTZkdWLWrktxQ7X
+         oBLOEYO0O3qRKZGWlHknD7G+a4TeNGwfDU+bPOOfSB9QUMaswj4xOhibaiNmZcxrqAyy
+         E6OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=TsKBx3wOdnN/Qyf6INTx0C/vLa7l7648ufKCRtBivuU=;
+        b=sDQJGkYIEMDvu2rWD41+5AR31oSsNt3wj/6xVob5zxB3IjUwC23vI5byW4ni+FJxF5
+         G1WbqqsAAIOSY9PKGMvorVuR0+u/ewkeNOMb9Is6f0z0kCdLEsFNvAZ5yZGB5o2WEVI7
+         rijxNdpEwIyKAxwcFhKZXgJRiJBgfjsTeCIf6kRvLWnHouATPkoOEEEFgFH064aqWvbU
+         fbmM13YIU4yJ22WPie0tHmmX3VL6JbBGGA77andB/A2N9axUPJcdoRO7YY9l860HsxEh
+         vVwS1NMHUKYa9In2H3pCnRPu+BTAro2ctIg65qIET2y+rfB/3LO5+TU/h3lxoB8w0bBV
+         An4Q==
+X-Gm-Message-State: ANhLgQ2jVKgjTf/q6zsZWIThjEceVZOaIXcxYj6WYnKFlsoM4AI4XTS9
+        l1sUYH9IuJf33JSNJffMln2PNXI9
+X-Google-Smtp-Source: ADFU+vsA3EUQ4yymDecSJyLZqcUyz4Nvs6Mn0AhhB0tXSSKlvzVPr1zE6KknIkj8L3qBTGQVt3+fXg==
+X-Received: by 2002:a63:2166:: with SMTP id s38mr11474613pgm.83.1585283158765;
+        Thu, 26 Mar 2020 21:25:58 -0700 (PDT)
+Received: from localhost.localdomain (c-73-93-5-123.hsd1.ca.comcast.net. [73.93.5.123])
+        by smtp.gmail.com with ESMTPSA id y17sm3004647pfl.104.2020.03.26.21.25.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Mar 2020 21:25:58 -0700 (PDT)
+From:   Joe Stringer <joe@wand.net.nz>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        eric.dumazet@gmail.com, lmb@cloudflare.com, kafai@fb.com
+Subject: [PATCHv3 bpf-next 0/5] Add bpf_sk_assign eBPF helper
+Date:   Thu, 26 Mar 2020 21:25:51 -0700
+Message-Id: <20200327042556.11560-1-joe@wand.net.nz>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Mlf-CnxnMgmt-Allow: 172.16.144.22
-X-Mlf-Version: 9.0.5.2081
-X-Mlf-License: BSVKCAP__
-X-Mlf-UniqueId: o202003270324070010485
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: valvesoftware.com
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix a sharp edge in xsk_umem__create and xsk_socket__create.  Almost all of
-the members of the ring buffer structs are initialized, but the "cached_xxx=
-"
-variables are not all initialized.  The caller is required to zero them.
-This is needlessly dangerous.  The results if you don't do it can be very b=
-ad.
-For example, they can cause xsk_prod_nb_free and xsk_cons_nb_avail to retur=
-n
-values greater than the size of the queue.  xsk_ring_cons__peek can return =
-an
-index that does not refer to an item that has been queued.
+Introduce a new helper that allows assigning a previously-found socket
+to the skb as the packet is received towards the stack, to cause the
+stack to guide the packet towards that socket subject to local routing
+configuration. The intention is to support TProxy use cases more
+directly from eBPF programs attached at TC ingress, to simplify and
+streamline Linux stack configuration in scale environments with Cilium.
 
-I have confirmed that without this change, my program misbehaves unless I
-memset the ring buffers to zero before calling the function.  Afterwards,
-my program works without (or with) the memset.
+Normally in ip{,6}_rcv_core(), the skb will be orphaned, dropping any
+existing socket reference associated with the skb. Existing tproxy
+implementations in netfilter get around this restriction by running the
+tproxy logic after ip_rcv_core() in the PREROUTING table. However, this
+is not an option for TC-based logic (including eBPF programs attached at
+TC ingress).
 
-Signed-off-by: Fletcher Dunn <fletcherd@valvesoftware.com>
+This series introduces the BPF helper bpf_sk_assign() to associate the
+socket with the skb on the ingress path as the packet is passed up the
+stack. The initial patch in the series simply takes a reference on the
+socket to ensure safety, but later patches relax this for listen
+sockets.
 
----
+To ensure delivery to the relevant socket, we still consult the routing
+table, for full examples of how to configure see the tests in patch #5;
+the simplest form of the route would look like this:
 
-diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-index 9807903f121e..f7f4efb70a4c 100644
---- a/tools/lib/bpf/xsk.c
-+++ b/tools/lib/bpf/xsk.c
-@@ -280,7 +280,11 @@ int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr=
-, void *umem_area,
- =09fill->consumer =3D map + off.fr.consumer;
- =09fill->flags =3D map + off.fr.flags;
- =09fill->ring =3D map + off.fr.desc;
--=09fill->cached_cons =3D umem->config.fill_size;
-+=09fill->cached_prod =3D *fill->producer;
-+=09/* cached_cons is "size" bigger than the real consumer pointer
-+=09 * See xsk_prod_nb_free
-+=09 */
-+=09fill->cached_cons =3D *fill->consumer + umem->config.fill_size;
-=20
- =09map =3D mmap(NULL, off.cr.desc + umem->config.comp_size * sizeof(__u64)=
-,
- =09=09   PROT_READ | PROT_WRITE, MAP_SHARED | MAP_POPULATE, umem->fd,
-@@ -297,6 +301,8 @@ int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr,=
- void *umem_area,
- =09comp->consumer =3D map + off.cr.consumer;
- =09comp->flags =3D map + off.cr.flags;
- =09comp->ring =3D map + off.cr.desc;
-+=09comp->cached_prod =3D *comp->producer;
-+=09comp->cached_cons =3D *comp->consumer;
-=20
- =09*umem_ptr =3D umem;
- =09return 0;
-@@ -672,6 +678,8 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, con=
-st char *ifname,
- =09=09rx->consumer =3D rx_map + off.rx.consumer;
- =09=09rx->flags =3D rx_map + off.rx.flags;
- =09=09rx->ring =3D rx_map + off.rx.desc;
-+=09=09rx->cached_prod =3D *rx->producer;
-+=09=09rx->cached_cons =3D *rx->consumer;
- =09}
- =09xsk->rx =3D rx;
-=20
-@@ -691,7 +699,11 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, co=
-nst char *ifname,
- =09=09tx->consumer =3D tx_map + off.tx.consumer;
- =09=09tx->flags =3D tx_map + off.tx.flags;
- =09=09tx->ring =3D tx_map + off.tx.desc;
--=09=09tx->cached_cons =3D xsk->config.tx_size;
-+=09=09tx->cached_prod =3D *tx->producer;
-+=09=09/* cached_cons is r->size bigger than the real consumer pointer
-+=09=09 * See xsk_prod_nb_free
-+=09=09 */
-+=09=09tx->cached_cons =3D *tx->consumer + xsk->config.tx_size;
- =09}
- =09xsk->tx =3D tx;
+  $ ip route add local default dev lo
+
+This series is laid out as follows:
+* Patch 1 extends the eBPF API to add sk_assign() and defines a new
+  socket free function to allow the later paths to understand when the
+  socket associated with the skb should be kept through receive.
+* Patches 2-3 optimize the receive path to avoid taking a reference on
+  listener sockets during receive.
+* Patches 4-5 extends the selftests with examples of the new
+  functionality and validation of correct behaviour.
+
+Changes since v2:
+* Add selftests for UDP socket redirection
+* Drop the early demux optimization patch (defer for more testing)
+* Fix check for orphaning after TC act return
+* Tidy up the tests to clean up properly and be less noisy.
+
+Changes since v1:
+* Replace the metadata_dst approach with using the skb->destructor to
+  determine whether the socket has been prefetched. This is much
+  simpler.
+* Avoid taking a reference on listener sockets during receive
+* Restrict assigning sockets across namespaces
+* Restrict assigning SO_REUSEPORT sockets
+* Fix cookie usage for socket dst check
+* Rebase the tests against test_progs infrastructure
+* Tidy up commit messages
+
+Joe Stringer (4):
+  bpf: Add socket assign support
+  net: Track socket refcounts in skb_steal_sock()
+  bpf: Don't refcount LISTEN sockets in sk_assign()
+  selftests: bpf: Extend sk_assign tests for UDP
+
+Lorenz Bauer (1):
+  selftests: bpf: add test for sk_assign
+
+ include/net/inet6_hashtables.h                |   3 +-
+ include/net/inet_hashtables.h                 |   3 +-
+ include/net/sock.h                            |  42 ++-
+ include/uapi/linux/bpf.h                      |  25 +-
+ net/core/filter.c                             |  35 +-
+ net/core/sock.c                               |  10 +
+ net/ipv4/ip_input.c                           |   3 +-
+ net/ipv4/udp.c                                |   6 +-
+ net/ipv6/ip6_input.c                          |   3 +-
+ net/ipv6/udp.c                                |   9 +-
+ net/sched/act_bpf.c                           |   3 +
+ tools/include/uapi/linux/bpf.h                |  25 +-
+ .../selftests/bpf/prog_tests/sk_assign.c      | 309 ++++++++++++++++++
+ .../selftests/bpf/progs/test_sk_assign.c      | 204 ++++++++++++
+ 14 files changed, 656 insertions(+), 24 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sk_assign.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sk_assign.c
+
+-- 
+2.20.1
 
