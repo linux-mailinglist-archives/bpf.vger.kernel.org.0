@@ -2,77 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC5B91956BB
-	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 13:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCFE195708
+	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 13:24:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgC0MGx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Mar 2020 08:06:53 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([216.205.24.74]:53380 "EHLO
+        id S1726540AbgC0MYp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Mar 2020 08:24:45 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:39753 "EHLO
         us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726165AbgC0MGx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 27 Mar 2020 08:06:53 -0400
+        by vger.kernel.org with ESMTP id S1726454AbgC0MYp (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 27 Mar 2020 08:24:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585310811;
+        s=mimecast20190719; t=1585311884;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=niJY98Im+v+CB/6zJ9FmfYwfKSeHs73K9mFOslQzLCo=;
-        b=YOad5Wq9dy2P0A/sZhpZh+mTNQ4nItXQIp2PFvSdR+PoXQVnoyBiXNcLyKeTwGBXs0NrMj
-        xHgdEjlxK9eXfgnjvlPSa+PC+NtJSNAcpHnTus1kgWVPshbgSpHmhRMQd/WXUKqFwGyXqv
-        oCMoNc/H5pHa8hdS0KxCRZnUPwd7cDY=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-105-_jmbqxGjOBi-IAI45q8q4w-1; Fri, 27 Mar 2020 08:06:50 -0400
-X-MC-Unique: _jmbqxGjOBi-IAI45q8q4w-1
-Received: by mail-lf1-f71.google.com with SMTP id c22so949824lfb.14
-        for <bpf@vger.kernel.org>; Fri, 27 Mar 2020 05:06:50 -0700 (PDT)
+        bh=vosgrYq+dIB9YWWJ2hoVCefw2rREFv5Y6PKVFxbbPF8=;
+        b=MCc2tYnJs/Dy9yXWqjHZ2mzVaO9q067n/SPxnlqXy1AkzadFfYkd7lPbnM8+26+kcMj81b
+        Ile+KdGZZf9uodfkVPWRkA9gY+hnyGMz+1vdxTfGvCf21iwpGlzzJtlpwmkT4zh+8uRJxQ
+        XRK04glxZY8k2TyhnamO3Ij4IwD9bA0=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-36-dNZBMZ3WM7uHCYCxL_1APw-1; Fri, 27 Mar 2020 08:24:42 -0400
+X-MC-Unique: dNZBMZ3WM7uHCYCxL_1APw-1
+Received: by mail-lf1-f69.google.com with SMTP id l3so3469251lfe.22
+        for <bpf@vger.kernel.org>; Fri, 27 Mar 2020 05:24:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version:content-transfer-encoding;
-        bh=niJY98Im+v+CB/6zJ9FmfYwfKSeHs73K9mFOslQzLCo=;
-        b=IhXpTiF1+roQUfrTeV0uK7Zjrrug4X+xH+TpjMoC0cEJqPe5T7XjuHKL2pJRYDYMxU
-         FYOs0ql8o9AGV8B/zZXmqBo7uZSyoQGrEt/cSiKUem/XPjlDE1csfzoCLL9CbpHgk59D
-         1lWiyiGrmJ8I75URQmsz39mXJggbah/b+vKaQK3DFmX9JG4OZAfh5F+66++QrgH2NWFO
-         RHndnSGeAe2hSZRO5CEPK1q/H0p0Q/NLiBgTkdkYiGn0YAW1f/83AZ9s7+dfQ32DLLul
-         SmXdQO6aLAZoCC2lhVVs9+amqPI+7e5Ufr1UB6hnY3X2BIVBvJkl+kSk9PaUDQlUmDvM
-         IgPA==
-X-Gm-Message-State: ANhLgQ1ArsS32LuqEyFbw0K92M5572BRK0Qhk+FRgyyZVsxHHKmn+4hj
-        plXScXXmIJr4II3g9EAklSLVRvWsO2Hs9Jf2x5gOooYsYE/qeTptAcs7CjztiBb62lyzEJJiq8K
-        SHWlE3fUAGzf2
-X-Received: by 2002:a2e:b88b:: with SMTP id r11mr8286515ljp.116.1585310808861;
-        Fri, 27 Mar 2020 05:06:48 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIDALsSL5o8YMDHm5K5I/gs+G8XlttrB4MBGgtJ6qCAFs468o5dRrOi7mncvVOVKEecf33qdA==
-X-Received: by 2002:a2e:b88b:: with SMTP id r11mr8286504ljp.116.1585310808614;
-        Fri, 27 Mar 2020 05:06:48 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id c23sm662517lfc.69.2020.03.27.05.06.47
+        bh=vosgrYq+dIB9YWWJ2hoVCefw2rREFv5Y6PKVFxbbPF8=;
+        b=TxVzm6nYA/DYc0IGsMeZYSFnaf1TMTj69GxslhB0h246S2KzPLmrhioaqrud5ceIL8
+         Q3n5E5xMeOoWfC11bGws+3heGqMIErksc1wpdZbkzEaCXUNllojhn4aDBPoAe429UWtQ
+         UVEqMBEvjHQvqCUrwEGOOyKpOl+DfAQdqoaKnwJF6p1Z0P3Qwg3yI4YPk7yxIGd4sFv7
+         RkKl9UV0en+8IQGBaQKFj39jy5dZc5X0iyKWrPbwRo1xn+UBTBzTOTKRkkVB5WkFxYmX
+         CE6fHEidGdDuEhyVUW9JvZ22Yb9d2AQNzXV7vbV57hY+Mrc4Dy8UmWwVE5Uzrr7L83O3
+         LPnw==
+X-Gm-Message-State: AGi0PuZEB9nCqKWphhcvzEZLChQ8Gdt28a01blZ4j0lncct8gmjYIFAa
+        qDBh5ym6VQEcYQtYSklEd+rsVDfqiHcM3yA8MLkgBYZ6lYiE5ROMW5E56CfWK8nOBsRHisH6I2U
+        ZEhDeZrEbsG2x
+X-Received: by 2002:a2e:5ce:: with SMTP id 197mr8443874ljf.234.1585311881194;
+        Fri, 27 Mar 2020 05:24:41 -0700 (PDT)
+X-Google-Smtp-Source: ADFU+vsawMB3aEM37Jpmcuqewkciu2tzCjDejZAco2JHqvmvthSuGn1Bt2m4GUyqM9mRg3sz6u2W3g==
+X-Received: by 2002:a2e:5ce:: with SMTP id 197mr8443864ljf.234.1585311880946;
+        Fri, 27 Mar 2020 05:24:40 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id h6sm2655635lji.39.2020.03.27.05.24.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Mar 2020 05:06:47 -0700 (PDT)
+        Fri, 27 Mar 2020 05:24:39 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id D3E7418158B; Fri, 27 Mar 2020 13:06:46 +0100 (CET)
+        id CF82618158B; Fri, 27 Mar 2020 13:24:37 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing program when attaching XDP
-In-Reply-To: <20200326195859.u6inotgrm3ubw5bx@ast-mbp>
-References: <CAEf4BzbWa8vdyLuzr_nxFM3BtT+hhzjCe9UQF8Y5cN+sVqa72g@mail.gmail.com> <87tv2f48lp.fsf@toke.dk> <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com> <87h7ye3mf3.fsf@toke.dk> <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com> <87tv2e10ly.fsf@toke.dk> <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com> <87369wrcyv.fsf@toke.dk> <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com> <87pncznvjy.fsf@toke.dk> <20200326195859.u6inotgrm3ubw5bx@ast-mbp>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] libbpf: Add bpf_object__rodata getter function
+In-Reply-To: <CAEf4BzYxJjJygu_ZqJJB03n=ZetxhuUE7eLD9dsbkbvzQ5M08w@mail.gmail.com>
+References: <20200326151741.125427-1-toke@redhat.com> <CAEf4BzYxJjJygu_ZqJJB03n=ZetxhuUE7eLD9dsbkbvzQ5M08w@mail.gmail.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 27 Mar 2020 13:06:46 +0100
-Message-ID: <87imiqm27d.fsf@toke.dk>
+Date:   Fri, 27 Mar 2020 13:24:37 +0100
+Message-ID: <87eetem1dm.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -81,60 +71,72 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-> On Thu, Mar 26, 2020 at 01:35:13PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->>=20
->> Additionally, in the case where there is *not* a central management
->> daemon (i.e., what I'm implementing with libxdp), this would be the flow
->> implemented by the library without bpf_link:
->>=20
->> 1. Query kernel for current BPF prog loaded on $IFACE
->> 2. Sanity-check that this program is a dispatcher program installed by
->>    libxdp
->> 3. Create a new dispatcher program with whatever changes we want to do
->>    (such as adding another component program).
->> 4. Atomically replace the old program with the new one using the netlink
->>    API in this patch series.
+> On Thu, Mar 26, 2020 at 8:18 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> This adds a new getter function to libbpf to get the rodata area of a bpf
+>> object. This is useful if a program wants to modify the rodata before
+>> loading the object. Any such modification needs to be done before loadin=
+g,
+>> since libbpf freezes the backing map after populating it (to allow the
+>> kernel to do dead code elimination based on its contents).
+>>
+>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> ---
+>>  tools/lib/bpf/libbpf.c   | 13 +++++++++++++
+>>  tools/lib/bpf/libbpf.h   |  1 +
+>>  tools/lib/bpf/libbpf.map |  1 +
+>>  3 files changed, 15 insertions(+)
+>>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 085e41f9b68e..d3e3bbe12f78 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -1352,6 +1352,19 @@ bpf_object__init_internal_map(struct bpf_object *=
+obj, enum libbpf_map_type type,
+>>         return 0;
+>>  }
+>>
+>> +void *bpf_object__rodata(const struct bpf_object *obj, size_t *size)
 >
-> in this model what stops another application that is not using libdispatc=
-her to
-> nuke dispatcher program ?
+> We probably don't want to expose this API. It just doesn't scale,
+> especially if/when we add support for custom sections names for global
+> variables.
 
-Nothing. But nothing is stopping it from issuing 'ip link down' either -
-an application with CAP_NET_ADMIN is implicitly trusted to be
-well-behaved. This patch series is just adding the kernel primitive that
-enables applications to be well-behaved. I consider it an API bug-fix.
+Right. I was not aware of any such plans, but OK.
 
->> Whereas with bpf_link, it would be:
->>=20
->> 1. Find the pinned bpf_link for $IFACE (e.g., load from
->>    /sys/fs/bpf/iface-links/$IFNAME).
->> 2. Query kernel for current BPF prog linked to $LINK
->> 3. Sanity-check that this program is a dispatcher program installed by
->>    libxdp
->> 4. Create a new dispatcher program with whatever changes we want to do
->>    (such as adding another component program).
->> 5. Atomically replace the old program with the new one using the
->>    LINK_UPDATE bpf() API.
->
-> whereas here dispatcher program is only accessible to libdispatcher.
-> Instance of bpffs needs to be known to libdispatcher only.
-> That's the ownership I've been talking about.
->
-> As discussed early we need a way for _human_ to nuke dispatcher program,
-> but such api shouldn't be usable out of application/task.
+> Also checking for map->mmaped is too restrictive. See how BPF skeleton
+> solves this problem and still allows .rodata initialization even on
+> kernels that don't support memory-mapping global variables.
 
-As long as there is this kind of override in place, I'm not actually
-fundamentally opposed to the concept of bpf_link for XDP, as an
-additional mechanism. What I'm opposed to is using bpf_link as a reason
-to block this series.
+Not sure what you mean here? As far as I can tell, the map->mmaped
+pointer has nothing to do with the kernel support for mmaping the map
+contents. It's just what libbpf does to store the data of any
+internal_maps?
 
-In fact, a way to implement the "human override" you mention, could be
-to reuse the mechanism implemented in this series: If the EXPECTED_FD
-passed via netlink is a bpf_link FD, that could be interpreted as an
-override by the kernel.
+I mean, bpf_object__open_skeleton() just does this:
+
+		if (mmaped && (*map)->libbpf_type !=3D LIBBPF_MAP_KCONFIG)
+			*mmaped =3D (*map)->mmaped;
+
+which amounts to the same as I'm doing in this patch?
+
+> But basically, why can't you use BPF skeleton?
+
+Couple of reasons:
+
+- I don't need any of the other features of the skeleton
+- I don't want to depend on bpftool in the build process
+- I don't want to embed the BPF bytecode into the C object
+
+> Also, application can already find that map by looking at name.
+
+Yes, it can find the map, but it can't access the data. But I guess I
+could just add a getter for that. Just figured this was easier to
+consume; but I can see why it might impose restrictions on future
+changes, so I'll send a v2 with such a map-level getter instead.
 
 -Toke
 
