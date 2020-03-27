@@ -2,101 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A61195D16
-	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 18:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D18195D22
+	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 18:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726275AbgC0RoI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Mar 2020 13:44:08 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:35108 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727606AbgC0RoH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Mar 2020 13:44:07 -0400
-Received: by mail-wr1-f66.google.com with SMTP id d5so12486489wrn.2;
-        Fri, 27 Mar 2020 10:44:06 -0700 (PDT)
+        id S1726540AbgC0Rtp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Mar 2020 13:49:45 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:43603 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726275AbgC0Rtp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Mar 2020 13:49:45 -0400
+Received: by mail-qk1-f195.google.com with SMTP id o10so11681385qki.10;
+        Fri, 27 Mar 2020 10:49:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZZDcK75sJ+QKnRKKCmA36T77YwqPu4mBJqtUYUH0mUI=;
+        b=d/g9JrVv8yhsJa7ZClAX0DYoC1XKGwNqDDk/sSmcVxbOWCrFPPV3VecAgE2JVnrKM8
+         XnCiuvYjmWCD/VTLJ1GPIo+FZZI64Csh+RD8Pm2p+4XVfaRvUbCO4z3+s8nnhye8JYA3
+         0I6Kwm49MQ70+eD26XtMXs/z/LAmD6lx55UWw3Y54liDpYoOdQ+oVk8chaVWp0JmIk9Q
+         wnvsAwxz23PYedxCI8TEMi2tWDZzzkkt0Q2Bq6w9bUXGBuiEbEPykdyJQcD5zEhaa8cJ
+         mN17WlQzv+K+9eEqQIruyJhIPyJljKIAkwvQPIjnvtzxEK3uHGlJtwdlghmjYmQV+a9e
+         d1mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OtrLhEEuBQztk/nWFtGztbhVqTqnMNrAnlarWEAa1lA=;
-        b=RoZImjXiH1zSvKpuEOer3TSDOAX5VfnddkmbsQrPsHKhaXQEJCoBh8JBLVXQDrg5uw
-         zjvJH7qMN/gp9iFgBE/9C5Ah7mtYsAm4c7eA36thBlXLtL1pjBA/dbdHsyPknetgjaGC
-         sREMl++IQYAi165WnHIPzZa3UPKHP/ZroA9NWnEJTwevPqbBjuKnzWT1XMOtgqgPJMGA
-         vi57ugr3qvFO5fzN0QQcmiJ0Oqv5IwgLRW5XD8q88DsDp5kzeRYytVwZopojZE2Qk3fn
-         ZykvJiFUy45psUZPN0U8ZfbG0BXegXWBtokccYuV/R/Yvr8ospHqE/M/QVEycYTr3iCr
-         jQXw==
-X-Gm-Message-State: ANhLgQ2Bch2Q40O5KLrsKycEXe6HpG71Pek66kd9HO0hUZ2v0ntrg3wf
-        TJedkhZWFxe3WmSoIpw3PBtrYzNfl/DOsLwNmGQ=
-X-Google-Smtp-Source: ADFU+vulBXbiytEStvxainF3jjJtOL/qEbP2CTLlh0qQU7WSzzuXKbJuIvoFIhE5xTMaxlmP3QWXyNsOumvqlxUwoP8=
-X-Received: by 2002:adf:f0c5:: with SMTP id x5mr512289wro.415.1585331045556;
- Fri, 27 Mar 2020 10:44:05 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZZDcK75sJ+QKnRKKCmA36T77YwqPu4mBJqtUYUH0mUI=;
+        b=Vnerh3HJ3H8pjH2sryqVuBYl9/srd0qPbfWAeTRnQZKPeEr5zVzR59xndo50qehrfu
+         5l0kQLzV1CLlO+3NWbv7nn/oZJVpi1CYRxJOpw+95sGGCIH7EekcROREZsGZRbubNoww
+         pBHuCtzGHBOjE1r7Aje8U7xfskU2eIbOnMIQYqjEgSUV3xaPK3OKe/jPA5bps6tx96R/
+         Mwwm2C3KVTecY+4+vOL37NWZsj5XAmluJL72lBegVeTUuvBEoILuJvdh+IczxwdCjcMC
+         8Xa3rfZGcsrCz8MF6hTiLbik7wYYAoJKvDAax4R49YfLMimZZYSG+dmdFzeNqk/xOh02
+         mCqA==
+X-Gm-Message-State: ANhLgQ1LHN9NOX4YW3Fs+t993AzFOxRFLMxZCh2zDLRgugU56yNGMosj
+        YLjBL2FULsHCwEdSvToknT9cofLrdinxICVzKVo=
+X-Google-Smtp-Source: ADFU+vsfFSR/+yVYFF8n9a9R/5R8cxgNEa/I2mS6VlVan8b6jprYFDY6jf72vEdyLQ6KIKzRSXjmN92OfCXSidFq6zA=
+X-Received: by 2002:a05:620a:88e:: with SMTP id b14mr478698qka.449.1585331383616;
+ Fri, 27 Mar 2020 10:49:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200327042556.11560-1-joe@wand.net.nz> <9ee7da2e-3675-9bd2-e317-c86cfa284e85@mojatatu.com>
-In-Reply-To: <9ee7da2e-3675-9bd2-e317-c86cfa284e85@mojatatu.com>
-From:   Joe Stringer <joe@wand.net.nz>
-Date:   Fri, 27 Mar 2020 10:43:38 -0700
-Message-ID: <CAOftzPjWtL5a5j3GAJW5SOhWS1Jx43XWSwb7ksTaXC5-sAaw2w@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 0/5] Add bpf_sk_assign eBPF helper
-To:     Jamal Hadi Salim <jhs@mojatatu.com>
-Cc:     Joe Stringer <joe@wand.net.nz>, bpf <bpf@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Roman Mashak <mrv@mojatatu.com>
+References: <20200326151741.125427-1-toke@redhat.com> <CAEf4BzYxJjJygu_ZqJJB03n=ZetxhuUE7eLD9dsbkbvzQ5M08w@mail.gmail.com>
+ <87eetem1dm.fsf@toke.dk>
+In-Reply-To: <87eetem1dm.fsf@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 27 Mar 2020 10:49:32 -0700
+Message-ID: <CAEf4BzbRpJsoXb3Bvx0_jKGj4gLk-dhXRqryfO23qMreG2B+Kg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Add bpf_object__rodata getter function
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 27, 2020 at 7:14 AM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
+On Fri, Mar 27, 2020 at 5:24 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> On 2020-03-27 12:25 a.m., Joe Stringer wrote:
-> > Introduce a new helper that allows assigning a previously-found socket
-> > to the skb as the packet is received towards the stack, to cause the
-> > stack to guide the packet towards that socket subject to local routing
-> > configuration. The intention is to support TProxy use cases more
-> > directly from eBPF programs attached at TC ingress, to simplify and
-> > streamline Linux stack configuration in scale environments with Cilium.
-> >
-> > Normally in ip{,6}_rcv_core(), the skb will be orphaned, dropping any
-> > existing socket reference associated with the skb. Existing tproxy
-> > implementations in netfilter get around this restriction by running the
-> > tproxy logic after ip_rcv_core() in the PREROUTING table. However, this
-> > is not an option for TC-based logic (including eBPF programs attached at
-> > TC ingress).
-> >
-> > This series introduces the BPF helper bpf_sk_assign() to associate the
-> > socket with the skb on the ingress path as the packet is passed up the
-> > stack. The initial patch in the series simply takes a reference on the
-> > socket to ensure safety, but later patches relax this for listen
-> > sockets.
-> >
-> > To ensure delivery to the relevant socket, we still consult the routing
-> > table, for full examples of how to configure see the tests in patch #5;
-> > the simplest form of the route would look like this:
-> >
-> >    $ ip route add local default dev lo
-> >
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 >
-> Trying to understand so if we can port our tc action (and upstream),
-> we would need to replicate:
+> > On Thu, Mar 26, 2020 at 8:18 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+> >>
+> >> This adds a new getter function to libbpf to get the rodata area of a =
+bpf
+> >> object. This is useful if a program wants to modify the rodata before
+> >> loading the object. Any such modification needs to be done before load=
+ing,
+> >> since libbpf freezes the backing map after populating it (to allow the
+> >> kernel to do dead code elimination based on its contents).
+> >>
+> >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> >> ---
+> >>  tools/lib/bpf/libbpf.c   | 13 +++++++++++++
+> >>  tools/lib/bpf/libbpf.h   |  1 +
+> >>  tools/lib/bpf/libbpf.map |  1 +
+> >>  3 files changed, 15 insertions(+)
+> >>
+> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> >> index 085e41f9b68e..d3e3bbe12f78 100644
+> >> --- a/tools/lib/bpf/libbpf.c
+> >> +++ b/tools/lib/bpf/libbpf.c
+> >> @@ -1352,6 +1352,19 @@ bpf_object__init_internal_map(struct bpf_object=
+ *obj, enum libbpf_map_type type,
+> >>         return 0;
+> >>  }
+> >>
+> >> +void *bpf_object__rodata(const struct bpf_object *obj, size_t *size)
+> >
+> > We probably don't want to expose this API. It just doesn't scale,
+> > especially if/when we add support for custom sections names for global
+> > variables.
 >
->   bpf_sk_assign() - invoked everytime we succeed finding the sk
->   bpf_sk_release() - invoked everytime we are done processing the sk
+> Right. I was not aware of any such plans, but OK.
 
-The skb->destructor = sock_pfree() is the balanced other half of
-bpf_sk_assign(), so you shouldn't need to explicitly call
-bpf_sk_release() to handle the refcounting of the assigned socket.
+There are no concrete plans, but compilers do create more than one
+.rodata in some circumstances (I remember seeing something like
+.rodata.align16, etc). So just don't want to have accessor for .rodata
+but not for all other places. Let me take a closer look at v2, but I
+think that one is a better approach.
 
-The `bpf_sk_release()` pairs with BPF socket lookup, so if you already
-have other socket lookup code handling the core tproxy logic (looking
-up established, then looking up listen sockets with different tuple)
-then you're presumably already handling that to avoid leaking
-references.
+>
+> > Also checking for map->mmaped is too restrictive. See how BPF skeleton
+> > solves this problem and still allows .rodata initialization even on
+> > kernels that don't support memory-mapping global variables.
+>
+> Not sure what you mean here? As far as I can tell, the map->mmaped
+> pointer has nothing to do with the kernel support for mmaping the map
 
-I think that looking at the test_sk_assign.c BPF program in patch 4/5
-should give you a good sense for what you'd need in the TC action
-logic.
+Right, I forgot details by now and I just briefly looked at code and
+saw mmap() call. But it's actually an anonymous mmap() call, which
+gets remapped later, so yeah, it's a double-purpose memory area.
+
+> contents. It's just what libbpf does to store the data of any
+> internal_maps?
+>
+> I mean, bpf_object__open_skeleton() just does this:
+>
+>                 if (mmaped && (*map)->libbpf_type !=3D LIBBPF_MAP_KCONFIG=
+)
+>                         *mmaped =3D (*map)->mmaped;
+>
+> which amounts to the same as I'm doing in this patch?
+>
+> > But basically, why can't you use BPF skeleton?
+>
+> Couple of reasons:
+>
+> - I don't need any of the other features of the skeleton
+> - I don't want to depend on bpftool in the build process
+> - I don't want to embed the BPF bytecode into the C object
+
+Just curious, how are you intending to use global variables. Are you
+restricting to a single global var (a struct probably), so it's easier
+to work with it? Or are you resolving all the variables' offsets
+manually? It's really inconvenient to work with global variables
+without skeleton, which is why I'm curious.
+
+>
+> > Also, application can already find that map by looking at name.
+>
+> Yes, it can find the map, but it can't access the data. But I guess I
+> could just add a getter for that. Just figured this was easier to
+> consume; but I can see why it might impose restrictions on future
+> changes, so I'll send a v2 with such a map-level getter instead.
+
+Sounds good, I'll go review v2 now.
+>
+> -Toke
+>
