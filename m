@@ -2,29 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D302195FD9
-	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 21:34:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB185195FFA
+	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 21:47:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727707AbgC0UeL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Mar 2020 16:34:11 -0400
-Received: from www62.your-server.de ([213.133.104.62]:39836 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727393AbgC0UeL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Mar 2020 16:34:11 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jHvg6-00089O-S4; Fri, 27 Mar 2020 21:34:06 +0100
-Received: from [178.195.186.98] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jHvg6-000Lpp-Dh; Fri, 27 Mar 2020 21:34:06 +0100
-Subject: Re: [PATCH v3] bpf: fix build warning - missing prototype
-To:     Jean-Philippe Menil <jpmenil@gmail.com>,
-        alexei.starovoitov@gmail.com
-Cc:     kernel-janitors@vger.kernel.org,
+        id S1727352AbgC0Ur1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Mar 2020 16:47:27 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:34341 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727322AbgC0Ur1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Mar 2020 16:47:27 -0400
+Received: by mail-ed1-f65.google.com with SMTP id i24so12946142eds.1;
+        Fri, 27 Mar 2020 13:47:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=KrwX+7IzzOcdtmf9GL8aP68WQccVqVWSmtAG1GU9fKQ=;
+        b=ZHJZ1sVao15S3PsXnhgLvQKmGh+O3Mrw5UAt6NlaAgQyn2ZmDn/JZuh0bJ5DcWpSmt
+         Pb8woPwR21dktkpk17yEH74bwFfUaqlH15wb0TupQEUwbiH95dVBaN0L0S8urJytHLM3
+         YnOgNEVJJcct8WA5h+ZjlYw7V/HoJ1P1h56E4g5/bOyXy15gq4P2hQ0Q8b51BoE0ChGD
+         st/R7hd71pURtL2VPnBDAtacN7kPswlcWf+kzA+OO1vmbgcZFh0hC12JJsgixnuxMhvv
+         A7IOrkb7zT1aZtU2fLMPD/BOjdz8kpURUT8qwMvIIwltjjtzks76Rry0+bwm/XbjJh4I
+         JljA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=KrwX+7IzzOcdtmf9GL8aP68WQccVqVWSmtAG1GU9fKQ=;
+        b=S7duBvmKwYwJecfq5KIF2v6YyQW0U0dAB+FAzT+DbF5+Y12aoySAE/et3xA2pTtUfA
+         9H7GZbBTNoitlHaZBQRIO0whrOKBKnhbn4nh+/xl7PP9oPVmx5E3pfGfeVgwEzI0Omq4
+         q9Aexyo+deEjgMY7jCz82fWVilr9zBMweIv5iwC+48zCuHTQV78QfQfzM9TNLefo6O9U
+         yySsNAXxgx1j7J0eV9W/JZHQp0wIpPJXM26w+1Jwj+eihT8eRX5kDL3qEovKPF4hHpQ3
+         u/UwWDeGAqNIGx5Rkas4wsGbq1kdNV3FTzcfnKi8YJkovah0O0314bYbU48LhyPiONsS
+         WaMw==
+X-Gm-Message-State: ANhLgQ0dZsM+jajyALC9p1E9HCTxrOiXdwwzd7t3irzgnL56AyBYQDe3
+        yv1P011pRSX1EfA2CvS2UAM=
+X-Google-Smtp-Source: ADFU+vu2kBpouAt4iFovayfU8Nv6v1u2o+RYuTZtb4ny6MP0OKtvpfFVrmCI9cxb/fF2Qok5vQ/H4w==
+X-Received: by 2002:a17:906:4e12:: with SMTP id z18mr868375eju.49.1585342045395;
+        Fri, 27 Mar 2020 13:47:25 -0700 (PDT)
+Received: from localhost.localdomain (bbcs-97-49.pub.wingo.ch. [144.2.97.49])
+        by smtp.googlemail.com with ESMTPSA id p17sm1048552edq.57.2020.03.27.13.47.24
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 27 Mar 2020 13:47:24 -0700 (PDT)
+From:   Jean-Philippe Menil <jpmenil@gmail.com>
+To:     daniel@iogearbox.net
+Cc:     kernel-janitors@vger.kernel.org, jpmenil@gmail.com,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -32,62 +54,53 @@ Cc:     kernel-janitors@vger.kernel.org,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
         bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200326235426.ei6ae2z5ek6uq3tt@ast-mbp>
- <20200327075544.22814-1-jpmenil@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <3164e566-d54e-2254-32c4-d7fee47c37ea@iogearbox.net>
-Date:   Fri, 27 Mar 2020 21:34:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+Subject: [PATCH v4] bpf: fix build warning - missing prototype
+Date:   Fri, 27 Mar 2020 21:47:13 +0100
+Message-Id: <20200327204713.28050-1-jpmenil@gmail.com>
+X-Mailer: git-send-email 2.26.0
+In-Reply-To: <3164e566-d54e-2254-32c4-d7fee47c37ea@iogearbox.net>
+References: <3164e566-d54e-2254-32c4-d7fee47c37ea@iogearbox.net>
 MIME-Version: 1.0
-In-Reply-To: <20200327075544.22814-1-jpmenil@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25764/Fri Mar 27 14:11:26 2020)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/27/20 8:55 AM, Jean-Philippe Menil wrote:
-> Fix build warnings when building net/bpf/test_run.o with W=1 due
-> to missing prototype for bpf_fentry_test{1..6}.
-> 
-> Instead of declaring prototypes, turn off warnings with
-> __diag_{push,ignore,pop} as pointed by Alexei.
-> 
-> Signed-off-by: Jean-Philippe Menil <jpmenil@gmail.com>
+Fix build warnings when building net/bpf/test_run.o with W=1 due
+to missing prototype for bpf_fentry_test{1..6}.
 
-Looks better, but this doesn't apply cleanly. Please respin to latest bpf-next tree, thanks.
+Instead of declaring prototypes, turn off warnings with
+__diag_{push,ignore,pop} as pointed by Alexei.
 
-> ---
->   net/bpf/test_run.c | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> index d555c0d8657d..cc1592413fc3 100644
-> --- a/net/bpf/test_run.c
-> +++ b/net/bpf/test_run.c
-> @@ -113,6 +113,9 @@ static int bpf_test_finish(const union bpf_attr *kattr,
->    * architecture dependent calling conventions. 7+ can be supported in the
->    * future.
->    */
-> +__diag_push();
-> +__diag_ignore(GCC, 8, "-Wmissing-prototypes",
-> +	      "Global functions as their definitions will be in vmlinux BTF);
->   int noinline bpf_fentry_test1(int a)
->   {
->   	return a + 1;
-> @@ -143,6 +146,8 @@ int noinline bpf_fentry_test6(u64 a, void *b, short c, int d, void *e, u64 f)
->   	return a + (long)b + c + d + (long)e + f;
->   }
->   
-> +__diag_pop();
-> +
->   static void *bpf_test_init(const union bpf_attr *kattr, u32 size,
->   			   u32 headroom, u32 tailroom)
->   {
-> 
+Signed-off-by: Jean-Philippe Menil <jpmenil@gmail.com>
+---
+ net/bpf/test_run.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 4c921f5154e0..73e703895343 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -114,6 +114,9 @@ static int bpf_test_finish(const union bpf_attr *kattr,
+  * architecture dependent calling conventions. 7+ can be supported in the
+  * future.
+  */
++__diag_push();
++__diag_ignore(GCC, 8, "-Wmissing-prototypes",
++	      "Global functions as their definitions will be in vmlinux BTF");
+ int noinline bpf_fentry_test1(int a)
+ {
+ 	return a + 1;
+@@ -150,6 +153,8 @@ int noinline bpf_modify_return_test(int a, int *b)
+ 	return a + *b;
+ }
+ 
++__diag_pop();
++
+ ALLOW_ERROR_INJECTION(bpf_modify_return_test, ERRNO);
+ 
+ static void *bpf_test_init(const union bpf_attr *kattr, u32 size,
+-- 
+2.26.0
 
