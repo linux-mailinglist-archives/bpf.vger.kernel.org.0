@@ -2,273 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C2619500B
-	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 05:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C80195038
+	for <lists+bpf@lfdr.de>; Fri, 27 Mar 2020 06:02:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbgC0E0O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Mar 2020 00:26:14 -0400
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:34202 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725942AbgC0E0O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Mar 2020 00:26:14 -0400
-Received: by mail-pj1-f65.google.com with SMTP id q16so3981693pje.1;
-        Thu, 26 Mar 2020 21:26:07 -0700 (PDT)
+        id S1726133AbgC0FCU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Mar 2020 01:02:20 -0400
+Received: from mail-pl1-f176.google.com ([209.85.214.176]:42193 "EHLO
+        mail-pl1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725857AbgC0FCU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Mar 2020 01:02:20 -0400
+Received: by mail-pl1-f176.google.com with SMTP id e1so3013095plt.9;
+        Thu, 26 Mar 2020 22:02:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nx/iurhlf39+SGl5No5hKwXOjBVSUkaHUrpHSSIIfQU=;
-        b=CIAVyDVrGIzP6Nl4Qh+noFuHEhJj9zSASSn9BAIk8IPTHFxNL6u5WmTjLNgTcNwZEy
-         f5JIrLMl/sYjIINahyspe244xEkUAi+SVeA4mB8W7wYUvpaChoqYQ2nbypUcDEbFpKDm
-         XB+JNLJKMkdGatt2fIx7n0RK5EzM6fLZEzgnMQGjGY8XlLYR5W0PqhHMKI6WWtKzYma7
-         NEKwFWKomgtyxTiUmAoxWIKR+fM/DVCBmikhsyRkAtXePb5/uGAa6mkFDeI52zOKOk9c
-         nV2QkK0Rfhw09xEvhC5PkxunejH8CXBW9CmBaN0Pobhc2p/Sr/0kMb1Pykq+ZhJlgZgr
-         4o2Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nZ1omxnMktxVk/WgGM1DGmrMKAiULbbyxCyGaWgk9gU=;
+        b=I3uD4V5R8RlmrnRc+aZVOx/07VS3ixCqcAdPOZ3/IRKNEPncAUrMjXxyTqKKTk7VKz
+         PtgevwM8d3O8EqWR971xOWztX1uZljme+Jh3PDCuTtjdaJxvNM2mQ8c+T8YLAJtjwmFp
+         CUiiFtRAczvzAav5Tqrta71T1j+G7X4vObhhqi4wJ9S1jGugOMqKqRv8hGZDG1d+GehC
+         mCzbfwgh3qpKFSZUtZFHExcEcL8FhA4/UsNwthFqIlOmUwNisgY4dtt+ACfKoZG86JTd
+         WSxL01JrWml/rBIIpoAJqM49gnQwt5x68wTWeikVmDXtBoSJpqsGG9MN0WWcmAv7Ystp
+         a9mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=nx/iurhlf39+SGl5No5hKwXOjBVSUkaHUrpHSSIIfQU=;
-        b=WwzCusdMjO+0pPjmQNnpMVxbBtzDm8nhQO3v/HBdUj1DnLzL662HU52V0EyVGP7St0
-         uQdRGThdGjMS4ZrvRuJudMg1Pd0lWuEU6fl8guK1SwQ9YV7FI3aMpfpDmPPhl5Y2BOua
-         545Lf4YbvqWboCsNx33yepN8f0sk1zK/0tt0yMXMyHKhoOw/hVybpALGccUp9w+MgFgR
-         QONf2qIu2Tr6WYegAKwiogAVzfGoIw/tRlRvVqtY6H3hfrQr+YtrO5u2KTpEE77y1qpE
-         MiboeupuOMLXLlzhyGzk3V1jNdnDAw0lJgGb2zlV+N7qWUWlzNfx2KRuYegFjo1B99nE
-         KIqA==
-X-Gm-Message-State: ANhLgQ2w83ZfHbBKQ4tfrCy2Wuv+BjQvIULmsl/NvSTLpb7GHhLwfAlu
-        +TM0oXMC1rSrtF2CfHeOXYZ2qvnM
-X-Google-Smtp-Source: ADFU+vs0f5PPzE3NF1kffOAWcwSUrH88laIYXbzil9L+AIKZklZt79rHbwfntjtBPJj7dM4FNDe52g==
-X-Received: by 2002:a17:90a:c257:: with SMTP id d23mr3851644pjx.192.1585283165939;
-        Thu, 26 Mar 2020 21:26:05 -0700 (PDT)
-Received: from localhost.localdomain (c-73-93-5-123.hsd1.ca.comcast.net. [73.93.5.123])
-        by smtp.gmail.com with ESMTPSA id y17sm3004647pfl.104.2020.03.26.21.26.04
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nZ1omxnMktxVk/WgGM1DGmrMKAiULbbyxCyGaWgk9gU=;
+        b=CG2h9iakoUeuw8DEqGCRjnYJb2QHHSBR3zQux7gqmWG65dmgx2x11AnntpM41aBUOb
+         KYD1Dj/LrwX4itO25h/96D4Jd3Be2aBV5QkrkpdwlAzIIWiqMWVbihJw02IdsmSiGAYj
+         upje+8hBj1KvNfKQx3hTkHnYJEyTchjWNe7wBEKfc6YgkGj2U8S592trk4zwbQm/UyEp
+         UxWswkQstivzWoRTVvgrGCiBshhYM1rE0ORFMthrAvhKaV2G7boLb6hl9K3SFGr51J2j
+         gcHeuUdclYYq0inlYRe0Hr3jEDgTo/wADJXYnMNu+DtcaHKaVHtv47PLPVFKN6B6V0MJ
+         uSpw==
+X-Gm-Message-State: ANhLgQ1pC+9Iq53eLK2q3+0JrJtC0Z6ZPgzYh0TpD67aeaYXJZY9xVk9
+        eD1K4HpoFleAZ2xt2H7qB/s=
+X-Google-Smtp-Source: ADFU+vtjFu4xwOVZMqL5xiUK+NHMuVHCOeyiGEHfv7On3OqEhrP6z3+BYuy0ydN2Zky7xFKJxeBFwA==
+X-Received: by 2002:a17:902:9048:: with SMTP id w8mr11331615plz.24.1585285338758;
+        Thu, 26 Mar 2020 22:02:18 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:f1d9])
+        by smtp.gmail.com with ESMTPSA id i197sm3076934pfe.137.2020.03.26.22.02.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Mar 2020 21:26:05 -0700 (PDT)
-From:   Joe Stringer <joe@wand.net.nz>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        eric.dumazet@gmail.com, lmb@cloudflare.com, kafai@fb.com
-Subject: [PATCHv3 bpf-next 5/5] selftests: bpf: Extend sk_assign tests for UDP
-Date:   Thu, 26 Mar 2020 21:25:56 -0700
-Message-Id: <20200327042556.11560-6-joe@wand.net.nz>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200327042556.11560-1-joe@wand.net.nz>
+        Thu, 26 Mar 2020 22:02:17 -0700 (PDT)
+Date:   Thu, 26 Mar 2020 22:02:15 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Joe Stringer <joe@wand.net.nz>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
+        ast@kernel.org, eric.dumazet@gmail.com, lmb@cloudflare.com,
+        kafai@fb.com
+Subject: Re: [PATCHv3 bpf-next 0/5] Add bpf_sk_assign eBPF helper
+Message-ID: <20200327050215.vpl62gfvjj7zljdf@ast-mbp>
 References: <20200327042556.11560-1-joe@wand.net.nz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200327042556.11560-1-joe@wand.net.nz>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add support for testing UDP sk_assign to the existing tests.
+On Thu, Mar 26, 2020 at 09:25:51PM -0700, Joe Stringer wrote:
+> Introduce a new helper that allows assigning a previously-found socket
+> to the skb as the packet is received towards the stack, to cause the
+> stack to guide the packet towards that socket subject to local routing
+> configuration. The intention is to support TProxy use cases more
+> directly from eBPF programs attached at TC ingress, to simplify and
+> streamline Linux stack configuration in scale environments with Cilium.
 
-Signed-off-by: Joe Stringer <joe@wand.net.nz>
----
-v3: Initial version
----
- .../selftests/bpf/prog_tests/sk_assign.c      | 47 +++++++++++--
- .../selftests/bpf/progs/test_sk_assign.c      | 69 +++++++++++++++++--
- 2 files changed, 105 insertions(+), 11 deletions(-)
+Thanks for the quick respin.
+It builds. And tests are passing for me.
+The lack of acks and reviewed-by is a bit concerning for such important feature.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sk_assign.c b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-index 25f17fe7d678..d572e1a2c297 100644
---- a/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-@@ -69,7 +69,7 @@ start_server(const struct sockaddr *addr, socklen_t len, int type)
- 		goto close_out;
- 	if (CHECK_FAIL(bind(fd, addr, len) == -1))
- 		goto close_out;
--	if (CHECK_FAIL(listen(fd, 128) == -1))
-+	if (type == SOCK_STREAM && CHECK_FAIL(listen(fd, 128) == -1))
- 		goto close_out;
- 
- 	goto out;
-@@ -125,6 +125,20 @@ get_port(int fd)
- 	return port;
- }
- 
-+static ssize_t
-+rcv_msg(int srv_client, int type)
-+{
-+	struct sockaddr_storage ss;
-+	char buf[BUFSIZ];
-+	socklen_t slen;
-+
-+	if (type == SOCK_STREAM)
-+		return read(srv_client, &buf, sizeof(buf));
-+	else
-+		return recvfrom(srv_client, &buf, sizeof(buf), 0,
-+				(struct sockaddr *)&ss, &slen);
-+}
-+
- static int
- run_test(int server_fd, const struct sockaddr *addr, socklen_t len, int type)
- {
-@@ -139,16 +153,20 @@ run_test(int server_fd, const struct sockaddr *addr, socklen_t len, int type)
- 		goto out;
- 	}
- 
--	srv_client = accept(server_fd, NULL, NULL);
--	if (CHECK_FAIL(srv_client == -1)) {
--		perror("Can't accept connection");
--		goto out;
-+	if (type == SOCK_STREAM) {
-+		srv_client = accept(server_fd, NULL, NULL);
-+		if (CHECK_FAIL(srv_client == -1)) {
-+			perror("Can't accept connection");
-+			goto out;
-+		}
-+	} else {
-+		srv_client = server_fd;
- 	}
- 	if (CHECK_FAIL(write(client, buf, sizeof(buf)) != sizeof(buf))) {
- 		perror("Can't write on client");
- 		goto out;
- 	}
--	if (CHECK_FAIL(read(srv_client, &buf, sizeof(buf)) != sizeof(buf))) {
-+	if (CHECK_FAIL(rcv_msg(srv_client, type) != sizeof(buf))) {
- 		perror("Can't read on server");
- 		goto out;
- 	}
-@@ -156,9 +174,20 @@ run_test(int server_fd, const struct sockaddr *addr, socklen_t len, int type)
- 	port = get_port(srv_client);
- 	if (CHECK_FAIL(!port))
- 		goto out;
--	if (CHECK(port != htons(CONNECT_PORT), "Expected", "port %u but got %u",
-+	/* SOCK_STREAM is connected via accept(), so the server's local address
-+	 * will be the CONNECT_PORT rather than the BIND port that corresponds
-+	 * to the listen socket. SOCK_DGRAM on the other hand is connectionless
-+	 * so we can't really do the same check there; the server doesn't ever
-+	 * create a socket with CONNECT_PORT.
-+	 */
-+	if (type == SOCK_STREAM &&
-+	    CHECK(port != htons(CONNECT_PORT), "Expected", "port %u but got %u",
- 		  CONNECT_PORT, ntohs(port)))
- 		goto out;
-+	else if (type == SOCK_DGRAM &&
-+		 CHECK(port != htons(BIND_PORT), "Expected",
-+		       "port %u but got %u", BIND_PORT, ntohs(port)))
-+		goto out;
- 
- 	ret = 0;
- out:
-@@ -230,6 +259,10 @@ void test_sk_assign(void)
- 		TEST("ipv4 tcp addr redir", AF_INET, SOCK_STREAM, true),
- 		TEST("ipv6 tcp port redir", AF_INET6, SOCK_STREAM, false),
- 		TEST("ipv6 tcp addr redir", AF_INET6, SOCK_STREAM, true),
-+		TEST("ipv4 udp port redir", AF_INET, SOCK_DGRAM, false),
-+		TEST("ipv4 udp addr redir", AF_INET, SOCK_DGRAM, true),
-+		TEST("ipv6 udp port redir", AF_INET6, SOCK_DGRAM, false),
-+		TEST("ipv6 udp addr redir", AF_INET6, SOCK_DGRAM, true),
- 	};
- 	int server = -1;
- 	int self_net;
-diff --git a/tools/testing/selftests/bpf/progs/test_sk_assign.c b/tools/testing/selftests/bpf/progs/test_sk_assign.c
-index bde8748799eb..99547dcaac12 100644
---- a/tools/testing/selftests/bpf/progs/test_sk_assign.c
-+++ b/tools/testing/selftests/bpf/progs/test_sk_assign.c
-@@ -21,7 +21,7 @@ char _license[] SEC("license") = "GPL";
- 
- /* Fill 'tuple' with L3 info, and attempt to find L4. On fail, return NULL. */
- static inline struct bpf_sock_tuple *
--get_tuple(struct __sk_buff *skb, bool *ipv4)
-+get_tuple(struct __sk_buff *skb, bool *ipv4, bool *tcp)
- {
- 	void *data_end = (void *)(long)skb->data_end;
- 	void *data = (void *)(long)skb->data;
-@@ -60,12 +60,64 @@ get_tuple(struct __sk_buff *skb, bool *ipv4)
- 		return (struct bpf_sock_tuple *)data;
- 	}
- 
--	if (result + 1 > data_end || proto != IPPROTO_TCP)
-+	if (proto != IPPROTO_TCP && proto != IPPROTO_UDP)
- 		return NULL;
- 
-+	*tcp = (proto == IPPROTO_TCP);
- 	return result;
- }
- 
-+static inline int
-+handle_udp(struct __sk_buff *skb, struct bpf_sock_tuple *tuple, bool ipv4)
-+{
-+	struct bpf_sock_tuple ln = {0};
-+	struct bpf_sock *sk;
-+	size_t tuple_len;
-+	int ret;
-+
-+	tuple_len = ipv4 ? sizeof(tuple->ipv4) : sizeof(tuple->ipv6);
-+	if ((void *)tuple + tuple_len > skb->data_end)
-+		return TC_ACT_SHOT;
-+
-+	sk = bpf_sk_lookup_udp(skb, tuple, tuple_len, BPF_F_CURRENT_NETNS, 0);
-+	if (sk)
-+		goto assign;
-+
-+	if (ipv4) {
-+		if (tuple->ipv4.dport != bpf_htons(4321))
-+			return TC_ACT_OK;
-+
-+		ln.ipv4.daddr = bpf_htonl(0x7f000001);
-+		ln.ipv4.dport = bpf_htons(1234);
-+
-+		sk = bpf_sk_lookup_udp(skb, &ln, sizeof(ln.ipv4),
-+					BPF_F_CURRENT_NETNS, 0);
-+	} else {
-+		if (tuple->ipv6.dport != bpf_htons(4321))
-+			return TC_ACT_OK;
-+
-+		/* Upper parts of daddr are already zero. */
-+		ln.ipv6.daddr[3] = bpf_htonl(0x1);
-+		ln.ipv6.dport = bpf_htons(1234);
-+
-+		sk = bpf_sk_lookup_udp(skb, &ln, sizeof(ln.ipv6),
-+					BPF_F_CURRENT_NETNS, 0);
-+	}
-+
-+	/* workaround: We can't do a single socket lookup here, because then
-+	 * the compiler will likely spill tuple_len to the stack. This makes it
-+	 * lose all bounds information in the verifier, which then rejects the
-+	 * call as unsafe.
-+	 */
-+	if (!sk)
-+		return TC_ACT_SHOT;
-+
-+assign:
-+	ret = bpf_sk_assign(skb, sk, 0);
-+	bpf_sk_release(sk);
-+	return ret;
-+}
-+
- static inline int
- handle_tcp(struct __sk_buff *skb, struct bpf_sock_tuple *tuple, bool ipv4)
- {
-@@ -130,14 +182,23 @@ int bpf_sk_assign_test(struct __sk_buff *skb)
- {
- 	struct bpf_sock_tuple *tuple, ln = {0};
- 	bool ipv4 = false;
-+	bool tcp = false;
- 	int tuple_len;
- 	int ret = 0;
- 
--	tuple = get_tuple(skb, &ipv4);
-+	tuple = get_tuple(skb, &ipv4, &tcp);
- 	if (!tuple)
- 		return TC_ACT_SHOT;
- 
--	ret = handle_tcp(skb, tuple, ipv4);
-+	/* Note that the verifier socket return type for bpf_skc_lookup_tcp()
-+	 * differs from bpf_sk_lookup_udp(), so even though the C-level type is
-+	 * the same here, if we try to share the implementations they will
-+	 * fail to verify because we're crossing pointer types.
-+	 */
-+	if (tcp)
-+		ret = handle_tcp(skb, tuple, ipv4);
-+	else
-+		ret = handle_udp(skb, tuple, ipv4);
- 
- 	return ret == 0 ? TC_ACT_OK : TC_ACT_SHOT;
- }
--- 
-2.20.1
-
+Folks, please be more generous with acks :)
+so we can apply it with more confidence.
