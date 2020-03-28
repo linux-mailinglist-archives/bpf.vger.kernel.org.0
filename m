@@ -2,60 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF281968ED
-	for <lists+bpf@lfdr.de>; Sat, 28 Mar 2020 20:34:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E151968FC
+	for <lists+bpf@lfdr.de>; Sat, 28 Mar 2020 20:43:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727306AbgC1TeY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 28 Mar 2020 15:34:24 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:43215 "EHLO
+        id S1726497AbgC1Tn4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 28 Mar 2020 15:43:56 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:60157 "EHLO
         us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725807AbgC1TeY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 28 Mar 2020 15:34:24 -0400
+        by vger.kernel.org with ESMTP id S1726265AbgC1Tn4 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 28 Mar 2020 15:43:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585424062;
+        s=mimecast20190719; t=1585424634;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xavtOB9q+6tVlOy8IGm8o35ph13MKK+BP0SPVCpA4UE=;
-        b=hX0t05E6YVVStwZnckG3iyav5BNofMwLX/d7VHmfrpUqjNp2EJtQphWADoOAqVvDZHXywK
-        G5nbCGSVhLUST9Y/6yEnS+RVomOnT9VMwgH5YnQLXazMudvHx8vaZlZIXzaoV0TH5E16Z0
-        /q2gy7YvuWLLLfc/TNEoHp3SHXsc9SA=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-42-24_g24yiM0eBFxJFhiZDxQ-1; Sat, 28 Mar 2020 15:34:19 -0400
-X-MC-Unique: 24_g24yiM0eBFxJFhiZDxQ-1
-Received: by mail-lf1-f69.google.com with SMTP id k15so3728533lfc.11
-        for <bpf@vger.kernel.org>; Sat, 28 Mar 2020 12:34:19 -0700 (PDT)
+        bh=vpQwKWo/17n/h8b6dDma1QUlo5wTceRnvlY+HtgX2yk=;
+        b=LKqWJnNZK04pRd++I7icFW+/vCGkubKmDBO7oXsH7+aEwsdIKbQqZ7UK9XIJU7YX4/UCEx
+        N8UW8z6yNUq8+b0AIBFajUVyW3ItPV75+dOEKwhqp3Ki4Seem4gE6RrxHLMhMvSvr+V1NI
+        9BTrdJtmhCQY8adudN5/4QpB0kWS1To=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-10-KZt9dhUqNEalta35B9u5Vg-1; Sat, 28 Mar 2020 15:43:52 -0400
+X-MC-Unique: KZt9dhUqNEalta35B9u5Vg-1
+Received: by mail-lj1-f198.google.com with SMTP id l13so2002288ljg.12
+        for <bpf@vger.kernel.org>; Sat, 28 Mar 2020 12:43:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version:content-transfer-encoding;
-        bh=xavtOB9q+6tVlOy8IGm8o35ph13MKK+BP0SPVCpA4UE=;
-        b=sQa9UBGtjmCJ4t6cukcdSf4OSyJ8eDvAXtmuCndREDrd132k37PVN2DlEscE5Cq8ZZ
-         ZxTAOsWqOSUBKRUvZhK6DnZ1qHaVj6lLYd3ml6GsV+GxJehpC73SQbhRRFlbt3stD7kF
-         ovti+oIP2nzNUxN1jfBDKZdXlXzKJ3MDptFnVOVApdkApIWfNbkvy38oT7YvcBkYipx+
-         kMxdDjXbnX7p1DXH3rCt89XslAito4QJ9jV5sVxH6v0fJ1RXqJRKN8ORGo5BdMQVHxXu
-         JVBNEuf+y55eF5X1CUt2GDgWgjUehJ7E03Sxn8x383Kb8OlBMkhHHqKFOrYI68VYrMBi
-         WY6g==
-X-Gm-Message-State: AGi0PubSmbM7Nz678tu51OjSBgsSFF05qArZLB6sa5Azo6ZHoI1ijSY7
-        9cwFtvj7MUvzfDGMlG79iuMCQx6/WcuGNMQaM+iwpGI0lvG/5aaE6NqaqQ5zI/kxFXDBkDt+/Mw
-        KSTbWDTZxQ6Kg
-X-Received: by 2002:a2e:b88b:: with SMTP id r11mr2869937ljp.116.1585424058070;
-        Sat, 28 Mar 2020 12:34:18 -0700 (PDT)
-X-Google-Smtp-Source: APiQypLFypNpFK3wZMKtVBj4E45xuQIH0Q7exsWfvmIsj4wNOALhNTlCqKkgnQKadXd1r8NniyF+5g==
-X-Received: by 2002:a2e:b88b:: with SMTP id r11mr2869918ljp.116.1585424057762;
-        Sat, 28 Mar 2020 12:34:17 -0700 (PDT)
+        bh=vpQwKWo/17n/h8b6dDma1QUlo5wTceRnvlY+HtgX2yk=;
+        b=PnsFMFSbeXrbL70NrAn1wBDFuga4FWc+JvMQvZOgd1iVeqtS75iWySUQVGLTJfKpCK
+         raNbBg9613/gTrTsaA84OWCFbHzW+0N472C6l7F3TH72Hg1dPDpV1rr8XKHanCfWJPr7
+         dgPEz28YvD2pX1IWYjJt2jmQAKPGf6e4jDZ6w04cXaFZTNFR4Ac+Bwrgwz1f+h3pycx3
+         cuxxqw/QxE/9KtXpsAhyp14b6iFd/8i+hynDxsvD155wsf4TC+YCO80+njpLCvFyJ9ZS
+         N2FBdDSIg9CUBnZQW7ftwZPJ131BxcaRBoY1QQgYt0/qIdesUR7R08zqs6PDt+lvFgad
+         hFcQ==
+X-Gm-Message-State: AGi0PuYim8lLHEk21n57Eja+bjbs5l2x4mqYZKytGEQmiOhbGgWm0AYT
+        iKPwFg4QQY1F7krFSKAeDkAsmehzwh14RH51Uep0/6JVt3HY+OyYOJfYelZA3bFmgOeaLfTWDm3
+        uKhOYPZqatGSz
+X-Received: by 2002:a2e:9b55:: with SMTP id o21mr2817494ljj.74.1585424631096;
+        Sat, 28 Mar 2020 12:43:51 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIlYLEYpodnKfESsuUVCWNnOXFm59Wq/ON0ymJXHaGk467Hzv1zJUjvA2uBt9EN0SyioadfSg==
+X-Received: by 2002:a2e:9b55:: with SMTP id o21mr2817473ljj.74.1585424630782;
+        Sat, 28 Mar 2020 12:43:50 -0700 (PDT)
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id h3sm5021490lfk.30.2020.03.28.12.34.15
+        by smtp.gmail.com with ESMTPSA id c13sm4305925ljj.37.2020.03.28.12.43.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Mar 2020 12:34:16 -0700 (PDT)
+        Sat, 28 Mar 2020 12:43:49 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 98EBD18158B; Sat, 28 Mar 2020 20:34:12 +0100 (CET)
+        id C55A318158B; Sat, 28 Mar 2020 20:43:47 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -68,11 +67,31 @@ Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Andrey Ignatov <rdna@fb.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing program when attaching XDP
-In-Reply-To: <20200328022609.zfupojim7see5cqx@ast-mbp>
-References: <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com> <87tv2e10ly.fsf@toke.dk> <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com> <87369wrcyv.fsf@toke.dk> <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com> <87pncznvjy.fsf@toke.dk> <20200326195859.u6inotgrm3ubw5bx@ast-mbp> <87imiqm27d.fsf@toke.dk> <20200327230047.ois5esl35s63qorj@ast-mbp> <87lfnll0eh.fsf@toke.dk> <20200328022609.zfupojim7see5cqx@ast-mbp>
+In-Reply-To: <CAEf4BzbK_pn6ox6JZLTjb7FYrpWGZrSqCApEY9xbWiFwwLKaGw@mail.gmail.com>
+References: <158462359206.164779.15902346296781033076.stgit@toke.dk>
+ <875zez76ph.fsf@toke.dk>
+ <20200320103530.2853c573@kicinski-fedora-PC1C0HJN>
+ <5e750bd4ebf8d_233f2ab4c81425c4ce@john-XPS-13-9370.notmuch>
+ <CAEf4BzbWa8vdyLuzr_nxFM3BtT+hhzjCe9UQF8Y5cN+sVqa72g@mail.gmail.com>
+ <87tv2f48lp.fsf@toke.dk>
+ <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com>
+ <87h7ye3mf3.fsf@toke.dk>
+ <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com>
+ <87tv2e10ly.fsf@toke.dk>
+ <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com>
+ <87369wrcyv.fsf@toke.dk>
+ <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com>
+ <87pncznvjy.fsf@toke.dk>
+ <CAEf4BzaPQ6=h8a6Ngz638AtL4LmBLLVMV+_-YLMR=Ls+drd5HQ@mail.gmail.com>
+ <87lfnmm35r.fsf@toke.dk>
+ <CAEf4Bza7zQ+ii4SH=4gJqQdyCp9pm6qGAsBOwa0MG5AEofC2HQ@mail.gmail.com>
+ <87wo75l9yj.fsf@toke.dk>
+ <CAEf4Bza8P3yT08NAaqN2EKaaBFumzydbtYQmSvLxZ99=B6_iHw@mail.gmail.com>
+ <87o8shl1y4.fsf@toke.dk>
+ <CAEf4BzbK_pn6ox6JZLTjb7FYrpWGZrSqCApEY9xbWiFwwLKaGw@mail.gmail.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Sat, 28 Mar 2020 20:34:12 +0100
-Message-ID: <87eetcl1e3.fsf@toke.dk>
+Date:   Sat, 28 Mar 2020 20:43:47 +0100
+Message-ID: <87blogl0y4.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -81,129 +100,137 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-> On Sat, Mar 28, 2020 at 02:43:18AM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->>=20
->> No, I was certainly not planning to use that to teach libxdp to just
->> nuke any bpf_link it finds attached to an interface. Quite the contrary,
->> the point of this series is to allow libxdp to *avoid* replacing
->> something on the interface that it didn't put there itself.
+> On Fri, Mar 27, 2020 at 6:10 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>
+>> > On Fri, Mar 27, 2020 at 3:17 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
+@redhat.com> wrote:
+>> >>
+>> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>> >>
+>> >> > Please stop dodging. Just like with "rest of the kernel", but really
+>> >> > "just networking" from before.
+>> >>
+>> >> Look, if we can't have this conversation without throwing around
+>> >> accusations of bad faith, I think it is best we just take Ed's advice
+>> >> and leave it until after the merge window.
+>> >>
+>> >
+>> > Toke, if me pointing out that you are dodging original discussion and
+>> > pivoting offends you,
+>>
+>> It does, because I'm not. See below.
+>>
+>> > But if you are still with me, let's look at this particular part of
+>> > discussion:
+>> >
+>> >>> >> For XDP there is already a unique handle, it's just implicit: Each
+>> >>> >> netdev can have exactly one XDP program loaded. So I don't really=
+ see
+>> >>> >> how bpf_link adds anything, other than another API for the same t=
+hing?
+>> >>> >
+>> >>> > I certainly failed to explain things clearly if you are still aski=
+ng
+>> >>> > this. See point #2, once you attach bpf_link you can't just replace
+>> >>> > it. This is what XDP doesn't have right now.
+>> >>>
+>> >>> Those are two different things, though. I get that #2 is a new
+>> >>> capability provided by bpf_link, I was just saying #1 isn't (for XDP=
+).
+>> >>
+>> >> bpf_link is combination of those different things... Independently
+>> >> they are either impossible or insufficient. I'm not sure how that
+>> >> doesn't answer your question:
+>> >>
+>> >>> So I don't really see
+>> >>> how bpf_link adds anything, other than another API for the same thin=
+g?
+>> >>
+>> >> Please stop dodging. Just like with "rest of the kernel", but really
+>> >> "just networking" from before.
+>> >
+>> > You said "So I don't really see how bpf_link adds anything, other than
+>> > another API for the same thing?". I explained that bpf_link is not the
+>> > same thing that exists already, thus it's not another API for the same
+>> > thing. You picked one property of bpf_link and claimed it's the same
+>> > as what XDP has right now. "I get that #2 is a new capability provided
+>> > by bpf_link, I was just saying #1 isn't (for XDP)". So should I read
+>> > that as if you are agreeing and your original objection is rescinded?
+>> > If yes, then good, this part is concluded and I'm sorry if I
+>> > misinterpreted your answer.
+>>
+>> Yes, I do believe that was a misinterpretation. Basically, by my
+>> paraphrasing, our argument goes something like this:
+>>
+>> What you said was: "bpf_link adds three things: 1. unique attachment
+>> identifier, 2. auto-detach and 3. preventing others from overriding it".
+>>
+>> And I replied: "1. already exists for XDP, 2. I don't think is the right
+>> behaviour for XDP, and 3. I don't see the point of - hence I don't
+>> believe bpf_link adds anything useful for my use case"
+>>
+>> I was not trying to cherry-pick any of the properties, and I do
+>> understand that 2. and 3. are new properties; I just disagree about how
+>> useful they are (and thus whether they are worth introducing another API
+>> for).
+>>
 >
-> Exactly! "that it didn't put there itself".
-> How are you going to do that?
-> I really hope you thought it through and came up with magic.
-> Because I tried and couldn't figure out how to do that with IFLA_XDP*
-> Please walk me step by step how do you think it's possible.
+> I appreciate you summarizing. It makes everything clearer. I also
+> don't have much to add after so many rounds.
 
-I'm inspecting the BPF program itself to make sure it's compatible.
-Specifically, I'm embedding a piece of metadata into the program BTF,
-using Andrii's encoding trick that we also use for defining maps. So
-xdp-dispatcher.c contains this[0]:
+Right, great, let's leave this here, then :)
 
-__uint(dispatcher_version, XDP_DISPATCHER_VERSION) SEC(XDP_METADATA_SECTION=
-);
-
-and libxdp will refuse to touch any program that it finds loaded on an
-iface which doesn't have this, or which has a version number that is
-higher than what the library understands. The code implementing the
-check itself is this[1]:
-
-static int check_dispatcher_version(struct btf *btf)
-{
-	const char *name =3D "dispatcher_version";
-	const struct btf_type *sec, *def;
-	__u32 version;
-
-	sec =3D btf_get_datasec(btf, XDP_METADATA_SECTION);
-	if (!sec)
-		return -ENOENT;
-
-	def =3D btf_get_section_var(btf, sec, name, BTF_KIND_PTR);
-	if (IS_ERR(def))
-		return PTR_ERR(def);
-
-	if (!get_field_int(btf, name, def, &version))
-		return -ENOENT;
-
-	if (version > XDP_DISPATCHER_VERSION) {
-		pr_warn("XDP dispatcher version %d higher than supported %d\n",
-			version, XDP_DISPATCHER_VERSION);
-		return -EOPNOTSUPP;
-	}
-	pr_debug("Verified XDP dispatcher version %d <=3D %d\n",
-		 version, XDP_DISPATCHER_VERSION);
-	return 0;
-}
-
-and is called both when loading the BPF object code from disk, and
-before operating on a program already loaded into the kernel.
-
-> I'm saying that without bpf_link for xdp libxdp has no ability to
-> identify an attachment that is theirs.
-
-Ah, so *that* was what you meant with "unique attachment". It never
-occurred to me that answering this question ("is it my program?") was to
-be a feature of bpf_link; I always assumed that would be a property of
-the bpf_prog itself.
-
-Any reason what I'm describing above wouldn't work for you?
-
-> I suspect what is happening that you found first missing kernel feature
-> while implementing libxdp and trying to fix it by extending kernel api.
-> Well the reason libxdp is not part of libbpf is for it to be flexible
-> in design and have unstable api.
-> But you're using this unstable project as the reason to add stable apis
-> both to kernel and libbpf. I don't think that's workable because...
-
-That's certainly not my intention. I have done my best to think through
-which is the minimum amount of kernel support I need to implement the
-libxdp multi-prog feature set. When the initial freplace support landed
-there was three things missing:
-
-1. Ability to make freplace attachments permanent
-2. Atomic replace of XDP programs
-3. Multi-attach for freplace
-
-Andrii already solved 1. with pinning, this is my attempt to solve 2.,
-and 3. is TBD.
-
->> I could understand why you wouldn't want to do
->> that if it was a huge and invasive change; but it really isn't...
+>> > But if not, then you again are picking one properly and just saying
+>> > "but XDP has it" without considering all of bpf_link properties as a
+>> > whole. In that case I do think you are arguing not in good faith.
+>>
+>> I really don't see how you could read my emails and come to that
+>> conclusion. But obviously you did, so I'll take that into consideration
+>> and see if I can express myself clearer in the future. But know this: I
+>> never deliberately argue in bad faith; so even if it seems like I am,
+>> please extend me the courtesy of assuming that this is due to either a
+>> misunderstanding or an honest difference in opinion. I will try to do
+>> the same for you.
 >
-> Yes. It's a small api extension to both kernel and libbpf.
-> But it means that by accepting this small change I sign up on maintaining=
- it
-> forever. And I see how second and third such small experimental change wi=
-ll be
-> coming in the future. All such design revisions of libxdp will end up on =
-my
-> plate to support forever in the kernel and in libbpf. I'm not excited to
-> support all of these experimental code.
+> I guess me citing your previous replies and pointing out to
+> inconsistencies (at least from my interpretation of them) should have
+> been a signal ;)
 
-I understand that, but as I said it's really not my intention to just
-dump experimental code on you. And I also do consider this an obvious
-API bugfix that is useful in its own right.
+Well, it was my impression that we were making progress on this; which
+is why I got so offended when I suddenly felt myself being accused :/
 
-> I see two ways out of this stalemate:
-> 1. assume that replace_fd extension landed and develop libxdp further
->    into fully fledged library. May be not a complete library, but at least
->    for few more weeks. If then you still think replace_fd is enough
->    I'll land it.
-> 2. I can land replace_fd now, but please don't be surprised that
->    I will revert it several weeks from now when it's clear that
->    it's not enough.
->=20=20
-> Which one do you prefer?
+> But I do assume good faith to the extent possible, which is why we are
+> still here at almost 80 emails in.
 
-I prefer 2. Reverting if it does turn out that I'm wrong is fine. Heck,
-in that case I'll even send the revert myself :)
+Great, thank you! And yeah, those emails did stack up, didn't they? I do
+think we've made some progress, though, miscommunication and all :)
+
+>> > Simple as that. I also hope I don't have to go all the way back to
+>> > "rest of the kernel", pivoted to "just networking" w.r.t.
+>> > subsystem-specific configuration/attachment APIs to explain another
+>> > reference.
+>>
+>> Again, I was not trying to "pivot", or attempting to use rhetorical
+>> tricks to "win" or anything like that. I was making an observation about
+>> how it's natural that when two subsystems interact, it's quite natural
+>> that there will be clashes between their different "traditions". And
+>> that how you view the subsystems' relationship with each other obviously
+>> affects your opinion of what the right thing to do is in such a
+>> situation. I never meant to imply anything concrete about BPF in
+>> anything other than a networking context. And again, I don't understand
+>> how you could read that out of what I wrote, but I'll take the fact that
+>> you did into consideration in the future.
+>
+> Because "rest of the kernel" meant "cgroup subsystem" as well, which
+> was clearly not true case w.r.t. BPF. But alright, water under the
+> bridge, let's just not use generalizations too much going forward.
+
+Sure, sounds good.
 
 -Toke
-
-[0] https://github.com/xdp-project/xdp-tools/blob/xdp-multi-prog/lib/libxdp=
-/xdp-dispatcher.c.in#L61
-[1] https://github.com/xdp-project/xdp-tools/blob/xdp-multi-prog/lib/libxdp=
-/libxdp.c#L824
 
