@@ -2,276 +2,208 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2E21968C1
-	for <lists+bpf@lfdr.de>; Sat, 28 Mar 2020 19:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF281968ED
+	for <lists+bpf@lfdr.de>; Sat, 28 Mar 2020 20:34:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727307AbgC1Sz0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 28 Mar 2020 14:55:26 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:45362 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727179AbgC1SzY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 28 Mar 2020 14:55:24 -0400
-Received: by mail-pl1-f195.google.com with SMTP id b9so4875078pls.12;
-        Sat, 28 Mar 2020 11:55:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NDVGlRAeM13C8KfCj3zWdaO8zw4xeNG2F+otqJaRSEg=;
-        b=bkJ2ZNCm0EK8pq1e6mY+2HJwiNqXMFSnDI2OoF3Obuo7s27KuqFqj5UFko+L7UB8Ny
-         qAqCa8geY88/XXTUfFAorfS7Za9Y0dNxHdlZKVWvoXj+siC82uIuu26+767RnG9aqmRf
-         lbxcmhFqFH4KtCDg43jCLohb+WJm86cBJYoE0wFapl/3WYXYyIIKRmln3gJu7sLCubnc
-         JZXvfAySWys2Tk/PAuUQ3kYqOTyazPjoNOooWHgRAgqRYWQL3YJo+oZi3yeEPgFcKtfg
-         Flu6ONzPielusIwOC75rnRBeNvbwAkxuyZHO6gykTmJ4lNuphVHu2MU30eAEQGvUmcbi
-         IHtQ==
+        id S1727306AbgC1TeY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 28 Mar 2020 15:34:24 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:43215 "EHLO
+        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725807AbgC1TeY (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 28 Mar 2020 15:34:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585424062;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xavtOB9q+6tVlOy8IGm8o35ph13MKK+BP0SPVCpA4UE=;
+        b=hX0t05E6YVVStwZnckG3iyav5BNofMwLX/d7VHmfrpUqjNp2EJtQphWADoOAqVvDZHXywK
+        G5nbCGSVhLUST9Y/6yEnS+RVomOnT9VMwgH5YnQLXazMudvHx8vaZlZIXzaoV0TH5E16Z0
+        /q2gy7YvuWLLLfc/TNEoHp3SHXsc9SA=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-42-24_g24yiM0eBFxJFhiZDxQ-1; Sat, 28 Mar 2020 15:34:19 -0400
+X-MC-Unique: 24_g24yiM0eBFxJFhiZDxQ-1
+Received: by mail-lf1-f69.google.com with SMTP id k15so3728533lfc.11
+        for <bpf@vger.kernel.org>; Sat, 28 Mar 2020 12:34:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=NDVGlRAeM13C8KfCj3zWdaO8zw4xeNG2F+otqJaRSEg=;
-        b=VxBkA5bT+Q6PpOIT3kfCis3FSFGphCsIj+GazJydZ/qq5NxTYl+AjlQJIe5IZriVwe
-         V6IPvXfFvGFP43a7IWkn6+Yr+NjDEkrJA3dljdEsL8JmkpkFgfnK2sR28YJX9VLVXxdv
-         MX8Zkka2xfnTs9pRl1wkUyZ6Xj/vjXnJfbez5XzEh3YPtvClZFpfbYEIerWburtCUVz9
-         tUyIWRRq1Mf92NRRSmm92EpmMUGetR8wBXqT8nA3BvEA9oFz1ywpMN9vbMfAoxd5YEFy
-         P0FbftNTg1tsn1EcZRVjTVk03/obsnqlKXD1Nl2L+TRnEgBQl30CVXYJe5HzUjZSoPgg
-         UPHQ==
-X-Gm-Message-State: ANhLgQ1ex3cnPEZfkLLy4lNjUumgu8lp4SvumB+IyQwoiS8IeSD0PJrv
-        rgyvrrKqrS8y2fXjQF5FAYTr5hhT
-X-Google-Smtp-Source: ADFU+vulhgK7fSZC2t0/B+UepVQzihA080ZOjHp2X++JtOT96tcvmXrRWQcquQF/nTDlglYUPjGBEQ==
-X-Received: by 2002:a17:902:d895:: with SMTP id b21mr4952404plz.118.1585421722947;
-        Sat, 28 Mar 2020 11:55:22 -0700 (PDT)
-Received: from localhost.localdomain (c-73-93-5-123.hsd1.ca.comcast.net. [73.93.5.123])
-        by smtp.gmail.com with ESMTPSA id d7sm6682022pfo.86.2020.03.28.11.55.21
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=xavtOB9q+6tVlOy8IGm8o35ph13MKK+BP0SPVCpA4UE=;
+        b=sQa9UBGtjmCJ4t6cukcdSf4OSyJ8eDvAXtmuCndREDrd132k37PVN2DlEscE5Cq8ZZ
+         ZxTAOsWqOSUBKRUvZhK6DnZ1qHaVj6lLYd3ml6GsV+GxJehpC73SQbhRRFlbt3stD7kF
+         ovti+oIP2nzNUxN1jfBDKZdXlXzKJ3MDptFnVOVApdkApIWfNbkvy38oT7YvcBkYipx+
+         kMxdDjXbnX7p1DXH3rCt89XslAito4QJ9jV5sVxH6v0fJ1RXqJRKN8ORGo5BdMQVHxXu
+         JVBNEuf+y55eF5X1CUt2GDgWgjUehJ7E03Sxn8x383Kb8OlBMkhHHqKFOrYI68VYrMBi
+         WY6g==
+X-Gm-Message-State: AGi0PubSmbM7Nz678tu51OjSBgsSFF05qArZLB6sa5Azo6ZHoI1ijSY7
+        9cwFtvj7MUvzfDGMlG79iuMCQx6/WcuGNMQaM+iwpGI0lvG/5aaE6NqaqQ5zI/kxFXDBkDt+/Mw
+        KSTbWDTZxQ6Kg
+X-Received: by 2002:a2e:b88b:: with SMTP id r11mr2869937ljp.116.1585424058070;
+        Sat, 28 Mar 2020 12:34:18 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLFypNpFK3wZMKtVBj4E45xuQIH0Q7exsWfvmIsj4wNOALhNTlCqKkgnQKadXd1r8NniyF+5g==
+X-Received: by 2002:a2e:b88b:: with SMTP id r11mr2869918ljp.116.1585424057762;
+        Sat, 28 Mar 2020 12:34:17 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id h3sm5021490lfk.30.2020.03.28.12.34.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Mar 2020 11:55:22 -0700 (PDT)
-From:   Joe Stringer <joe@wand.net.nz>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        eric.dumazet@gmail.com, lmb@cloudflare.com, kafai@fb.com
-Subject: [PATCHv4 bpf-next 5/5] selftests: bpf: Extend sk_assign tests for UDP
-Date:   Sat, 28 Mar 2020 11:55:08 -0700
-Message-Id: <20200328185509.20892-6-joe@wand.net.nz>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200328185509.20892-1-joe@wand.net.nz>
-References: <20200328185509.20892-1-joe@wand.net.nz>
+        Sat, 28 Mar 2020 12:34:16 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 98EBD18158B; Sat, 28 Mar 2020 20:34:12 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing program when attaching XDP
+In-Reply-To: <20200328022609.zfupojim7see5cqx@ast-mbp>
+References: <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com> <87tv2e10ly.fsf@toke.dk> <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com> <87369wrcyv.fsf@toke.dk> <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com> <87pncznvjy.fsf@toke.dk> <20200326195859.u6inotgrm3ubw5bx@ast-mbp> <87imiqm27d.fsf@toke.dk> <20200327230047.ois5esl35s63qorj@ast-mbp> <87lfnll0eh.fsf@toke.dk> <20200328022609.zfupojim7see5cqx@ast-mbp>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Sat, 28 Mar 2020 20:34:12 +0100
+Message-ID: <87eetcl1e3.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add support for testing UDP sk_assign to the existing tests.
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-Signed-off-by: Joe Stringer <joe@wand.net.nz>
-Acked-by: Lorenz Bauer <lmb@cloudflare.com>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
----
-v4: Acked
-v3: Initial post
----
- .../selftests/bpf/prog_tests/sk_assign.c      | 47 +++++++++++--
- .../selftests/bpf/progs/test_sk_assign.c      | 69 +++++++++++++++++--
- 2 files changed, 105 insertions(+), 11 deletions(-)
+> On Sat, Mar 28, 2020 at 02:43:18AM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>>=20
+>> No, I was certainly not planning to use that to teach libxdp to just
+>> nuke any bpf_link it finds attached to an interface. Quite the contrary,
+>> the point of this series is to allow libxdp to *avoid* replacing
+>> something on the interface that it didn't put there itself.
+>
+> Exactly! "that it didn't put there itself".
+> How are you going to do that?
+> I really hope you thought it through and came up with magic.
+> Because I tried and couldn't figure out how to do that with IFLA_XDP*
+> Please walk me step by step how do you think it's possible.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sk_assign.c b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-index 25f17fe7d678..d572e1a2c297 100644
---- a/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-@@ -69,7 +69,7 @@ start_server(const struct sockaddr *addr, socklen_t len, int type)
- 		goto close_out;
- 	if (CHECK_FAIL(bind(fd, addr, len) == -1))
- 		goto close_out;
--	if (CHECK_FAIL(listen(fd, 128) == -1))
-+	if (type == SOCK_STREAM && CHECK_FAIL(listen(fd, 128) == -1))
- 		goto close_out;
- 
- 	goto out;
-@@ -125,6 +125,20 @@ get_port(int fd)
- 	return port;
- }
- 
-+static ssize_t
-+rcv_msg(int srv_client, int type)
-+{
-+	struct sockaddr_storage ss;
-+	char buf[BUFSIZ];
-+	socklen_t slen;
-+
-+	if (type == SOCK_STREAM)
-+		return read(srv_client, &buf, sizeof(buf));
-+	else
-+		return recvfrom(srv_client, &buf, sizeof(buf), 0,
-+				(struct sockaddr *)&ss, &slen);
-+}
-+
- static int
- run_test(int server_fd, const struct sockaddr *addr, socklen_t len, int type)
- {
-@@ -139,16 +153,20 @@ run_test(int server_fd, const struct sockaddr *addr, socklen_t len, int type)
- 		goto out;
- 	}
- 
--	srv_client = accept(server_fd, NULL, NULL);
--	if (CHECK_FAIL(srv_client == -1)) {
--		perror("Can't accept connection");
--		goto out;
-+	if (type == SOCK_STREAM) {
-+		srv_client = accept(server_fd, NULL, NULL);
-+		if (CHECK_FAIL(srv_client == -1)) {
-+			perror("Can't accept connection");
-+			goto out;
-+		}
-+	} else {
-+		srv_client = server_fd;
- 	}
- 	if (CHECK_FAIL(write(client, buf, sizeof(buf)) != sizeof(buf))) {
- 		perror("Can't write on client");
- 		goto out;
- 	}
--	if (CHECK_FAIL(read(srv_client, &buf, sizeof(buf)) != sizeof(buf))) {
-+	if (CHECK_FAIL(rcv_msg(srv_client, type) != sizeof(buf))) {
- 		perror("Can't read on server");
- 		goto out;
- 	}
-@@ -156,9 +174,20 @@ run_test(int server_fd, const struct sockaddr *addr, socklen_t len, int type)
- 	port = get_port(srv_client);
- 	if (CHECK_FAIL(!port))
- 		goto out;
--	if (CHECK(port != htons(CONNECT_PORT), "Expected", "port %u but got %u",
-+	/* SOCK_STREAM is connected via accept(), so the server's local address
-+	 * will be the CONNECT_PORT rather than the BIND port that corresponds
-+	 * to the listen socket. SOCK_DGRAM on the other hand is connectionless
-+	 * so we can't really do the same check there; the server doesn't ever
-+	 * create a socket with CONNECT_PORT.
-+	 */
-+	if (type == SOCK_STREAM &&
-+	    CHECK(port != htons(CONNECT_PORT), "Expected", "port %u but got %u",
- 		  CONNECT_PORT, ntohs(port)))
- 		goto out;
-+	else if (type == SOCK_DGRAM &&
-+		 CHECK(port != htons(BIND_PORT), "Expected",
-+		       "port %u but got %u", BIND_PORT, ntohs(port)))
-+		goto out;
- 
- 	ret = 0;
- out:
-@@ -230,6 +259,10 @@ void test_sk_assign(void)
- 		TEST("ipv4 tcp addr redir", AF_INET, SOCK_STREAM, true),
- 		TEST("ipv6 tcp port redir", AF_INET6, SOCK_STREAM, false),
- 		TEST("ipv6 tcp addr redir", AF_INET6, SOCK_STREAM, true),
-+		TEST("ipv4 udp port redir", AF_INET, SOCK_DGRAM, false),
-+		TEST("ipv4 udp addr redir", AF_INET, SOCK_DGRAM, true),
-+		TEST("ipv6 udp port redir", AF_INET6, SOCK_DGRAM, false),
-+		TEST("ipv6 udp addr redir", AF_INET6, SOCK_DGRAM, true),
- 	};
- 	int server = -1;
- 	int self_net;
-diff --git a/tools/testing/selftests/bpf/progs/test_sk_assign.c b/tools/testing/selftests/bpf/progs/test_sk_assign.c
-index bde8748799eb..99547dcaac12 100644
---- a/tools/testing/selftests/bpf/progs/test_sk_assign.c
-+++ b/tools/testing/selftests/bpf/progs/test_sk_assign.c
-@@ -21,7 +21,7 @@ char _license[] SEC("license") = "GPL";
- 
- /* Fill 'tuple' with L3 info, and attempt to find L4. On fail, return NULL. */
- static inline struct bpf_sock_tuple *
--get_tuple(struct __sk_buff *skb, bool *ipv4)
-+get_tuple(struct __sk_buff *skb, bool *ipv4, bool *tcp)
- {
- 	void *data_end = (void *)(long)skb->data_end;
- 	void *data = (void *)(long)skb->data;
-@@ -60,12 +60,64 @@ get_tuple(struct __sk_buff *skb, bool *ipv4)
- 		return (struct bpf_sock_tuple *)data;
- 	}
- 
--	if (result + 1 > data_end || proto != IPPROTO_TCP)
-+	if (proto != IPPROTO_TCP && proto != IPPROTO_UDP)
- 		return NULL;
- 
-+	*tcp = (proto == IPPROTO_TCP);
- 	return result;
- }
- 
-+static inline int
-+handle_udp(struct __sk_buff *skb, struct bpf_sock_tuple *tuple, bool ipv4)
-+{
-+	struct bpf_sock_tuple ln = {0};
-+	struct bpf_sock *sk;
-+	size_t tuple_len;
-+	int ret;
-+
-+	tuple_len = ipv4 ? sizeof(tuple->ipv4) : sizeof(tuple->ipv6);
-+	if ((void *)tuple + tuple_len > skb->data_end)
-+		return TC_ACT_SHOT;
-+
-+	sk = bpf_sk_lookup_udp(skb, tuple, tuple_len, BPF_F_CURRENT_NETNS, 0);
-+	if (sk)
-+		goto assign;
-+
-+	if (ipv4) {
-+		if (tuple->ipv4.dport != bpf_htons(4321))
-+			return TC_ACT_OK;
-+
-+		ln.ipv4.daddr = bpf_htonl(0x7f000001);
-+		ln.ipv4.dport = bpf_htons(1234);
-+
-+		sk = bpf_sk_lookup_udp(skb, &ln, sizeof(ln.ipv4),
-+					BPF_F_CURRENT_NETNS, 0);
-+	} else {
-+		if (tuple->ipv6.dport != bpf_htons(4321))
-+			return TC_ACT_OK;
-+
-+		/* Upper parts of daddr are already zero. */
-+		ln.ipv6.daddr[3] = bpf_htonl(0x1);
-+		ln.ipv6.dport = bpf_htons(1234);
-+
-+		sk = bpf_sk_lookup_udp(skb, &ln, sizeof(ln.ipv6),
-+					BPF_F_CURRENT_NETNS, 0);
-+	}
-+
-+	/* workaround: We can't do a single socket lookup here, because then
-+	 * the compiler will likely spill tuple_len to the stack. This makes it
-+	 * lose all bounds information in the verifier, which then rejects the
-+	 * call as unsafe.
-+	 */
-+	if (!sk)
-+		return TC_ACT_SHOT;
-+
-+assign:
-+	ret = bpf_sk_assign(skb, sk, 0);
-+	bpf_sk_release(sk);
-+	return ret;
-+}
-+
- static inline int
- handle_tcp(struct __sk_buff *skb, struct bpf_sock_tuple *tuple, bool ipv4)
- {
-@@ -130,14 +182,23 @@ int bpf_sk_assign_test(struct __sk_buff *skb)
- {
- 	struct bpf_sock_tuple *tuple, ln = {0};
- 	bool ipv4 = false;
-+	bool tcp = false;
- 	int tuple_len;
- 	int ret = 0;
- 
--	tuple = get_tuple(skb, &ipv4);
-+	tuple = get_tuple(skb, &ipv4, &tcp);
- 	if (!tuple)
- 		return TC_ACT_SHOT;
- 
--	ret = handle_tcp(skb, tuple, ipv4);
-+	/* Note that the verifier socket return type for bpf_skc_lookup_tcp()
-+	 * differs from bpf_sk_lookup_udp(), so even though the C-level type is
-+	 * the same here, if we try to share the implementations they will
-+	 * fail to verify because we're crossing pointer types.
-+	 */
-+	if (tcp)
-+		ret = handle_tcp(skb, tuple, ipv4);
-+	else
-+		ret = handle_udp(skb, tuple, ipv4);
- 
- 	return ret == 0 ? TC_ACT_OK : TC_ACT_SHOT;
- }
--- 
-2.20.1
+I'm inspecting the BPF program itself to make sure it's compatible.
+Specifically, I'm embedding a piece of metadata into the program BTF,
+using Andrii's encoding trick that we also use for defining maps. So
+xdp-dispatcher.c contains this[0]:
+
+__uint(dispatcher_version, XDP_DISPATCHER_VERSION) SEC(XDP_METADATA_SECTION=
+);
+
+and libxdp will refuse to touch any program that it finds loaded on an
+iface which doesn't have this, or which has a version number that is
+higher than what the library understands. The code implementing the
+check itself is this[1]:
+
+static int check_dispatcher_version(struct btf *btf)
+{
+	const char *name =3D "dispatcher_version";
+	const struct btf_type *sec, *def;
+	__u32 version;
+
+	sec =3D btf_get_datasec(btf, XDP_METADATA_SECTION);
+	if (!sec)
+		return -ENOENT;
+
+	def =3D btf_get_section_var(btf, sec, name, BTF_KIND_PTR);
+	if (IS_ERR(def))
+		return PTR_ERR(def);
+
+	if (!get_field_int(btf, name, def, &version))
+		return -ENOENT;
+
+	if (version > XDP_DISPATCHER_VERSION) {
+		pr_warn("XDP dispatcher version %d higher than supported %d\n",
+			version, XDP_DISPATCHER_VERSION);
+		return -EOPNOTSUPP;
+	}
+	pr_debug("Verified XDP dispatcher version %d <=3D %d\n",
+		 version, XDP_DISPATCHER_VERSION);
+	return 0;
+}
+
+and is called both when loading the BPF object code from disk, and
+before operating on a program already loaded into the kernel.
+
+> I'm saying that without bpf_link for xdp libxdp has no ability to
+> identify an attachment that is theirs.
+
+Ah, so *that* was what you meant with "unique attachment". It never
+occurred to me that answering this question ("is it my program?") was to
+be a feature of bpf_link; I always assumed that would be a property of
+the bpf_prog itself.
+
+Any reason what I'm describing above wouldn't work for you?
+
+> I suspect what is happening that you found first missing kernel feature
+> while implementing libxdp and trying to fix it by extending kernel api.
+> Well the reason libxdp is not part of libbpf is for it to be flexible
+> in design and have unstable api.
+> But you're using this unstable project as the reason to add stable apis
+> both to kernel and libbpf. I don't think that's workable because...
+
+That's certainly not my intention. I have done my best to think through
+which is the minimum amount of kernel support I need to implement the
+libxdp multi-prog feature set. When the initial freplace support landed
+there was three things missing:
+
+1. Ability to make freplace attachments permanent
+2. Atomic replace of XDP programs
+3. Multi-attach for freplace
+
+Andrii already solved 1. with pinning, this is my attempt to solve 2.,
+and 3. is TBD.
+
+>> I could understand why you wouldn't want to do
+>> that if it was a huge and invasive change; but it really isn't...
+>
+> Yes. It's a small api extension to both kernel and libbpf.
+> But it means that by accepting this small change I sign up on maintaining=
+ it
+> forever. And I see how second and third such small experimental change wi=
+ll be
+> coming in the future. All such design revisions of libxdp will end up on =
+my
+> plate to support forever in the kernel and in libbpf. I'm not excited to
+> support all of these experimental code.
+
+I understand that, but as I said it's really not my intention to just
+dump experimental code on you. And I also do consider this an obvious
+API bugfix that is useful in its own right.
+
+> I see two ways out of this stalemate:
+> 1. assume that replace_fd extension landed and develop libxdp further
+>    into fully fledged library. May be not a complete library, but at least
+>    for few more weeks. If then you still think replace_fd is enough
+>    I'll land it.
+> 2. I can land replace_fd now, but please don't be surprised that
+>    I will revert it several weeks from now when it's clear that
+>    it's not enough.
+>=20=20
+> Which one do you prefer?
+
+I prefer 2. Reverting if it does turn out that I'm wrong is fine. Heck,
+in that case I'll even send the revert myself :)
+
+-Toke
+
+[0] https://github.com/xdp-project/xdp-tools/blob/xdp-multi-prog/lib/libxdp=
+/xdp-dispatcher.c.in#L61
+[1] https://github.com/xdp-project/xdp-tools/blob/xdp-multi-prog/lib/libxdp=
+/libxdp.c#L824
 
