@@ -2,235 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E151968FC
-	for <lists+bpf@lfdr.de>; Sat, 28 Mar 2020 20:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C74F196903
+	for <lists+bpf@lfdr.de>; Sat, 28 Mar 2020 20:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgC1Tn4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 28 Mar 2020 15:43:56 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:60157 "EHLO
-        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726265AbgC1Tn4 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 28 Mar 2020 15:43:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585424634;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vpQwKWo/17n/h8b6dDma1QUlo5wTceRnvlY+HtgX2yk=;
-        b=LKqWJnNZK04pRd++I7icFW+/vCGkubKmDBO7oXsH7+aEwsdIKbQqZ7UK9XIJU7YX4/UCEx
-        N8UW8z6yNUq8+b0AIBFajUVyW3ItPV75+dOEKwhqp3Ki4Seem4gE6RrxHLMhMvSvr+V1NI
-        9BTrdJtmhCQY8adudN5/4QpB0kWS1To=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-10-KZt9dhUqNEalta35B9u5Vg-1; Sat, 28 Mar 2020 15:43:52 -0400
-X-MC-Unique: KZt9dhUqNEalta35B9u5Vg-1
-Received: by mail-lj1-f198.google.com with SMTP id l13so2002288ljg.12
-        for <bpf@vger.kernel.org>; Sat, 28 Mar 2020 12:43:52 -0700 (PDT)
+        id S1727384AbgC1T4l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 28 Mar 2020 15:56:41 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:52947 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726981AbgC1T4l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 28 Mar 2020 15:56:41 -0400
+Received: by mail-wm1-f66.google.com with SMTP id z18so15304726wmk.2
+        for <bpf@vger.kernel.org>; Sat, 28 Mar 2020 12:56:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=RaAner1AOy6mqRxgg2s6OrVjNWEeXrUvVQ99ZwBacLY=;
+        b=j83qG6wi8FIVqxHB6qtn71NfG8/D64pOANqSOp43lzviKNip7DW6ja7q0RUBFEWDt9
+         2qRLkPeJzAuE70oECTtOchfpQpUZVJuRpiXtDT5LxoUxTZQv0ZlkwNgp0Nzk4wbDrMI6
+         1A0Mfd0tSNraiuW9a9o7EI1TosBTOTlHz5Nc4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=vpQwKWo/17n/h8b6dDma1QUlo5wTceRnvlY+HtgX2yk=;
-        b=PnsFMFSbeXrbL70NrAn1wBDFuga4FWc+JvMQvZOgd1iVeqtS75iWySUQVGLTJfKpCK
-         raNbBg9613/gTrTsaA84OWCFbHzW+0N472C6l7F3TH72Hg1dPDpV1rr8XKHanCfWJPr7
-         dgPEz28YvD2pX1IWYjJt2jmQAKPGf6e4jDZ6w04cXaFZTNFR4Ac+Bwrgwz1f+h3pycx3
-         cuxxqw/QxE/9KtXpsAhyp14b6iFd/8i+hynDxsvD155wsf4TC+YCO80+njpLCvFyJ9ZS
-         N2FBdDSIg9CUBnZQW7ftwZPJ131BxcaRBoY1QQgYt0/qIdesUR7R08zqs6PDt+lvFgad
-         hFcQ==
-X-Gm-Message-State: AGi0PuYim8lLHEk21n57Eja+bjbs5l2x4mqYZKytGEQmiOhbGgWm0AYT
-        iKPwFg4QQY1F7krFSKAeDkAsmehzwh14RH51Uep0/6JVt3HY+OyYOJfYelZA3bFmgOeaLfTWDm3
-        uKhOYPZqatGSz
-X-Received: by 2002:a2e:9b55:: with SMTP id o21mr2817494ljj.74.1585424631096;
-        Sat, 28 Mar 2020 12:43:51 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIlYLEYpodnKfESsuUVCWNnOXFm59Wq/ON0ymJXHaGk467Hzv1zJUjvA2uBt9EN0SyioadfSg==
-X-Received: by 2002:a2e:9b55:: with SMTP id o21mr2817473ljj.74.1585424630782;
-        Sat, 28 Mar 2020 12:43:50 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id c13sm4305925ljj.37.2020.03.28.12.43.49
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RaAner1AOy6mqRxgg2s6OrVjNWEeXrUvVQ99ZwBacLY=;
+        b=aXojLldwFvt0O6x50tapsWDUSaF3BMHBzUH1+j9nnMpvCY23ErJjfhGzsr3tfQbOqV
+         XZX7B9srKSW8K9790wnSqHs6hI1lWcGW7MzcBUqe3+siUVbpSrLyh7e9aPK/v6b4Nf/F
+         jsH33MCdbzrouu7JSaN5JWsizLhz0JJgwa0SIphMUlqlHZMPaadgWBveS8gNDjDBGo+w
+         o/vDVXfAAPRUpaIJZ0t63Y3e7BuDTr/idPtiIC3HTVUBwmjVkAvW5VaO61MErnTbveOC
+         8iIRsdrX2I7u6gkFc6xqedyrbgeVVLcToy/8L4ex4ANA/jyqtGIhNRBjS34V04TWGx7y
+         5ydQ==
+X-Gm-Message-State: ANhLgQ2/PxxOo+htijKUfRfOEOJwcBvSah0zdB0KHX6WmOCBJeIKIHF+
+        g3vUz8fWBR/Xr/XY0YhXYjdXjA==
+X-Google-Smtp-Source: ADFU+vvaYd97z0o5WsUXqObkXdOSUk66yt71KeGEJtWcfmHE/YKKvWPVUVfd0xksvz+KE13VM1E8og==
+X-Received: by 2002:a1c:3586:: with SMTP id c128mr5091509wma.82.1585425398431;
+        Sat, 28 Mar 2020 12:56:38 -0700 (PDT)
+Received: from google.com ([2a00:79e0:42:204:8a21:ba0c:bb42:75ec])
+        by smtp.gmail.com with ESMTPSA id s11sm14547650wrw.58.2020.03.28.12.56.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Mar 2020 12:43:49 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id C55A318158B; Sat, 28 Mar 2020 20:43:47 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        Sat, 28 Mar 2020 12:56:37 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Sat, 28 Mar 2020 20:56:36 +0100
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing program when attaching XDP
-In-Reply-To: <CAEf4BzbK_pn6ox6JZLTjb7FYrpWGZrSqCApEY9xbWiFwwLKaGw@mail.gmail.com>
-References: <158462359206.164779.15902346296781033076.stgit@toke.dk>
- <875zez76ph.fsf@toke.dk>
- <20200320103530.2853c573@kicinski-fedora-PC1C0HJN>
- <5e750bd4ebf8d_233f2ab4c81425c4ce@john-XPS-13-9370.notmuch>
- <CAEf4BzbWa8vdyLuzr_nxFM3BtT+hhzjCe9UQF8Y5cN+sVqa72g@mail.gmail.com>
- <87tv2f48lp.fsf@toke.dk>
- <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com>
- <87h7ye3mf3.fsf@toke.dk>
- <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com>
- <87tv2e10ly.fsf@toke.dk>
- <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com>
- <87369wrcyv.fsf@toke.dk>
- <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com>
- <87pncznvjy.fsf@toke.dk>
- <CAEf4BzaPQ6=h8a6Ngz638AtL4LmBLLVMV+_-YLMR=Ls+drd5HQ@mail.gmail.com>
- <87lfnmm35r.fsf@toke.dk>
- <CAEf4Bza7zQ+ii4SH=4gJqQdyCp9pm6qGAsBOwa0MG5AEofC2HQ@mail.gmail.com>
- <87wo75l9yj.fsf@toke.dk>
- <CAEf4Bza8P3yT08NAaqN2EKaaBFumzydbtYQmSvLxZ99=B6_iHw@mail.gmail.com>
- <87o8shl1y4.fsf@toke.dk>
- <CAEf4BzbK_pn6ox6JZLTjb7FYrpWGZrSqCApEY9xbWiFwwLKaGw@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Sat, 28 Mar 2020 20:43:47 +0100
-Message-ID: <87blogl0y4.fsf@toke.dk>
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH bpf-next v8 0/8] MAC and Audit policy using eBPF (KRSI)
+Message-ID: <20200328195636.GA95544@google.com>
+References: <20200327192854.31150-1-kpsingh@chromium.org>
+ <4e5a09bb-04c4-39b8-10d4-59496ffb5eee@iogearbox.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4e5a09bb-04c4-39b8-10d4-59496ffb5eee@iogearbox.net>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On 28-Mar 18:18, Daniel Borkmann wrote:
+> Hey KP,
+> 
+> On 3/27/20 8:28 PM, KP Singh wrote:
+> > From: KP Singh <kpsingh@google.com>
+> > 
+> > # v7 -> v8
+> > 
+> >    https://lore.kernel.org/bpf/20200326142823.26277-1-kpsingh@chromium.org/
+> > 
+> > * Removed CAP_MAC_ADMIN check from bpf_lsm_verify_prog. LSMs can add it
+> >    in their own bpf_prog hook. This can be revisited as a separate patch.
+> > * Added Andrii and James' Ack/Review tags.
+> > * Fixed an indentation issue and missing newlines in selftest error
+> >    a cases.
+> > * Updated a comment as suggested by Alexei.
+> > * Updated the documentation to use the newer libbpf API and some other
+> >    fixes.
+> > * Rebase
+> > 
+> > # v6 -> v7
+> > 
+> >    https://lore.kernel.org/bpf/20200325152629.6904-1-kpsingh@chromium.org/
+> > 
+> [...]
+> > KP Singh (8):
+> >    bpf: Introduce BPF_PROG_TYPE_LSM
+> >    security: Refactor declaration of LSM hooks
+> >    bpf: lsm: provide attachment points for BPF LSM programs
+> >    bpf: lsm: Implement attach, detach and execution
+> >    bpf: lsm: Initialize the BPF LSM hooks
+> >    tools/libbpf: Add support for BPF_PROG_TYPE_LSM
+> >    bpf: lsm: Add selftests for BPF_PROG_TYPE_LSM
+> >    bpf: lsm: Add Documentation
+> 
+> I was about to apply, but then I'm getting the following selftest issue on
+> the added LSM one, ptal:
+> 
+> # ./test_progs
+> [...]
+> #65/1 test_global_func1.o:OK
+> #65/2 test_global_func2.o:OK
+> #65/3 test_global_func3.o:OK
+> #65/4 test_global_func4.o:OK
+> #65/5 test_global_func5.o:OK
+> #65/6 test_global_func6.o:OK
+> #65/7 test_global_func7.o:OK
+> #65 test_global_funcs:OK
+> test_test_lsm:PASS:skel_load 0 nsec
+> test_test_lsm:PASS:attach 0 nsec
+> test_test_lsm:PASS:exec_cmd 0 nsec
+> test_test_lsm:FAIL:bprm_count bprm_count = 0
+> test_test_lsm:FAIL:heap_mprotect want errno=EPERM, got 22
 
-> On Fri, Mar 27, 2020 at 6:10 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->>
->> > On Fri, Mar 27, 2020 at 3:17 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
-@redhat.com> wrote:
->> >>
->> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->> >>
->> >> > Please stop dodging. Just like with "rest of the kernel", but really
->> >> > "just networking" from before.
->> >>
->> >> Look, if we can't have this conversation without throwing around
->> >> accusations of bad faith, I think it is best we just take Ed's advice
->> >> and leave it until after the merge window.
->> >>
->> >
->> > Toke, if me pointing out that you are dodging original discussion and
->> > pivoting offends you,
->>
->> It does, because I'm not. See below.
->>
->> > But if you are still with me, let's look at this particular part of
->> > discussion:
->> >
->> >>> >> For XDP there is already a unique handle, it's just implicit: Each
->> >>> >> netdev can have exactly one XDP program loaded. So I don't really=
- see
->> >>> >> how bpf_link adds anything, other than another API for the same t=
-hing?
->> >>> >
->> >>> > I certainly failed to explain things clearly if you are still aski=
-ng
->> >>> > this. See point #2, once you attach bpf_link you can't just replace
->> >>> > it. This is what XDP doesn't have right now.
->> >>>
->> >>> Those are two different things, though. I get that #2 is a new
->> >>> capability provided by bpf_link, I was just saying #1 isn't (for XDP=
-).
->> >>
->> >> bpf_link is combination of those different things... Independently
->> >> they are either impossible or insufficient. I'm not sure how that
->> >> doesn't answer your question:
->> >>
->> >>> So I don't really see
->> >>> how bpf_link adds anything, other than another API for the same thin=
-g?
->> >>
->> >> Please stop dodging. Just like with "rest of the kernel", but really
->> >> "just networking" from before.
->> >
->> > You said "So I don't really see how bpf_link adds anything, other than
->> > another API for the same thing?". I explained that bpf_link is not the
->> > same thing that exists already, thus it's not another API for the same
->> > thing. You picked one property of bpf_link and claimed it's the same
->> > as what XDP has right now. "I get that #2 is a new capability provided
->> > by bpf_link, I was just saying #1 isn't (for XDP)". So should I read
->> > that as if you are agreeing and your original objection is rescinded?
->> > If yes, then good, this part is concluded and I'm sorry if I
->> > misinterpreted your answer.
->>
->> Yes, I do believe that was a misinterpretation. Basically, by my
->> paraphrasing, our argument goes something like this:
->>
->> What you said was: "bpf_link adds three things: 1. unique attachment
->> identifier, 2. auto-detach and 3. preventing others from overriding it".
->>
->> And I replied: "1. already exists for XDP, 2. I don't think is the right
->> behaviour for XDP, and 3. I don't see the point of - hence I don't
->> believe bpf_link adds anything useful for my use case"
->>
->> I was not trying to cherry-pick any of the properties, and I do
->> understand that 2. and 3. are new properties; I just disagree about how
->> useful they are (and thus whether they are worth introducing another API
->> for).
->>
->
-> I appreciate you summarizing. It makes everything clearer. I also
-> don't have much to add after so many rounds.
+The test seems to pass for me [classic, "works on my machine" ;)]
 
-Right, great, let's leave this here, then :)
+  ./test_progs -t test_lsm
+  #66 test_lsm:OK
+  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
 
->> > But if not, then you again are picking one properly and just saying
->> > "but XDP has it" without considering all of bpf_link properties as a
->> > whole. In that case I do think you are arguing not in good faith.
->>
->> I really don't see how you could read my emails and come to that
->> conclusion. But obviously you did, so I'll take that into consideration
->> and see if I can express myself clearer in the future. But know this: I
->> never deliberately argue in bad faith; so even if it seems like I am,
->> please extend me the courtesy of assuming that this is due to either a
->> misunderstanding or an honest difference in opinion. I will try to do
->> the same for you.
->
-> I guess me citing your previous replies and pointing out to
-> inconsistencies (at least from my interpretation of them) should have
-> been a signal ;)
+and also in the complete run of test_progs.
 
-Well, it was my impression that we were making progress on this; which
-is why I got so offended when I suddenly felt myself being accused :/
+Since the attachment succeeds and the hook does not get called, it
+seems like "bpf" LSM is not being initialized and the hook, although
+present, does not get called.
 
-> But I do assume good faith to the extent possible, which is why we are
-> still here at almost 80 emails in.
+This indicates that "bpf" is not in CONFIG_LSM. It should, however, be
+there by default as we added it to default value of CONFIG_LSM and
+also for other DEFAULT_SECURITY_* options.
 
-Great, thank you! And yeah, those emails did stack up, didn't they? I do
-think we've made some progress, though, miscommunication and all :)
+Let me know if that's the case and it fixes it.
 
->> > Simple as that. I also hope I don't have to go all the way back to
->> > "rest of the kernel", pivoted to "just networking" w.r.t.
->> > subsystem-specific configuration/attachment APIs to explain another
->> > reference.
->>
->> Again, I was not trying to "pivot", or attempting to use rhetorical
->> tricks to "win" or anything like that. I was making an observation about
->> how it's natural that when two subsystems interact, it's quite natural
->> that there will be clashes between their different "traditions". And
->> that how you view the subsystems' relationship with each other obviously
->> affects your opinion of what the right thing to do is in such a
->> situation. I never meant to imply anything concrete about BPF in
->> anything other than a networking context. And again, I don't understand
->> how you could read that out of what I wrote, but I'll take the fact that
->> you did into consideration in the future.
->
-> Because "rest of the kernel" meant "cgroup subsystem" as well, which
-> was clearly not true case w.r.t. BPF. But alright, water under the
-> bridge, let's just not use generalizations too much going forward.
+- KP
 
-Sure, sounds good.
-
--Toke
-
+> #66 test_lsm:FAIL
+> test_test_overhead:PASS:obj_open_file 0 nsec
+> test_test_overhead:PASS:find_probe 0 nsec
+> test_test_overhead:PASS:find_probe 0 nsec
+> test_test_overhead:PASS:find_probe 0 nsec
+> test_test_overhead:PASS:find_probe 0 nsec
+> test_test_overhead:PASS:find_probe 0 nsec
+> Caught signal #11!
+> Stack trace:
+> ./test_progs(crash_handler+0x31)[0x56100f25eb51]
+> /lib/x86_64-linux-gnu/libpthread.so.0(+0x12890)[0x7f9d8d225890]
+> /lib/x86_64-linux-gnu/libc.so.6(+0x18ef2d)[0x7f9d8cfb0f2d]
+> /lib/x86_64-linux-gnu/libc.so.6(__libc_calloc+0x372)[0x7f9d8cebc3a2]
+> /usr/local/lib/libelf.so.1(+0x33ce)[0x7f9d8d85a3ce]
+> /usr/local/lib/libelf.so.1(+0x3fb2)[0x7f9d8d85afb2]
+> ./test_progs(btf__parse_elf+0x15d)[0x56100f27a141]
+> ./test_progs(libbpf_find_kernel_btf+0x169)[0x56100f27ee83]
+> ./test_progs(+0x43906)[0x56100f266906]
+> ./test_progs(bpf_object__load_xattr+0xe5)[0x56100f26e93c]
+> ./test_progs(bpf_object__load+0x47)[0x56100f26eafd]
+> ./test_progs(test_test_overhead+0x252)[0x56100f24a922]
+> ./test_progs(main+0x212)[0x56100f22f772]
+> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xe7)[0x7f9d8ce43b97]
+> ./test_progs(_start+0x2a)[0x56100f22f8fa]
+> Segmentation fault (core dumped)
+> #
+> 
+> (Before the series, it runs through fine on my side.)
+> 
+> Thanks,
+> Daniel
