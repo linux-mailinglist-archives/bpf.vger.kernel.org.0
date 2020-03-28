@@ -2,75 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B6AC0196796
-	for <lists+bpf@lfdr.de>; Sat, 28 Mar 2020 17:45:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA421967F8
+	for <lists+bpf@lfdr.de>; Sat, 28 Mar 2020 18:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727766AbgC1QpI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 28 Mar 2020 12:45:08 -0400
-Received: from mx.sdf.org ([205.166.94.20]:49937 "EHLO mx.sdf.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727829AbgC1Qno (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 28 Mar 2020 12:43:44 -0400
-Received: from sdf.org (IDENT:lkml@sdf.lonestar.org [205.166.94.16])
-        by mx.sdf.org (8.15.2/8.14.5) with ESMTPS id 02SGhPra027632
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits) verified NO);
-        Sat, 28 Mar 2020 16:43:25 GMT
-Received: (from lkml@localhost)
-        by sdf.org (8.15.2/8.12.8/Submit) id 02SGhPH7029961;
-        Sat, 28 Mar 2020 16:43:25 GMT
-Message-Id: <202003281643.02SGhPH7029961@sdf.org>
-From:   George Spelvin <lkml@sdf.org>
-Date:   Fri, 29 Nov 2019 17:16:39 -0500
-Subject: [RFC PATCH v1 47/50] kernel/bpf/core.c: Use get_random_max32()
-To:     linux-kernel@vger.kernel.org, lkml@sdf.org
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1725882AbgC1ROc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 28 Mar 2020 13:14:32 -0400
+Received: from www62.your-server.de ([213.133.104.62]:59022 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725807AbgC1ROc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 28 Mar 2020 13:14:32 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jIF2Q-0001nu-OY; Sat, 28 Mar 2020 18:14:26 +0100
+Received: from [178.195.186.98] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jIF2Q-0002jX-Br; Sat, 28 Mar 2020 18:14:26 +0100
+Subject: Re: [PATCH bpf-next] xsk: Init all ring members in xsk_umem__create
+ and xsk_socket__create
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Fletcher Dunn <fletcherd@valvesoftware.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
+        Andrii Nakryiko <andriin@fb.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Brandon Gilmore <bgilmore@valvesoftware.com>,
+        Steven Noonan <steven@valvesoftware.com>
+References: <85f12913cde94b19bfcb598344701c38@valvesoftware.com>
+ <CAJ8uoz2M0Xj_maD3jZeZedrUXGNJqvbV_DyC2A8Yh9R6z7gfsg@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <ae371400-e37f-bbac-691e-cc50235f1ee0@iogearbox.net>
+Date:   Sat, 28 Mar 2020 18:14:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <CAJ8uoz2M0Xj_maD3jZeZedrUXGNJqvbV_DyC2A8Yh9R6z7gfsg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25765/Sat Mar 28 14:16:42 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Smaller, faster, and a smidge more uniform than %.
+On 3/28/20 10:18 AM, Magnus Karlsson wrote:
+> On Fri, Mar 27, 2020 at 4:40 AM Fletcher Dunn
+> <fletcherd@valvesoftware.com> wrote:
+>>
+>> Fix a sharp edge in xsk_umem__create and xsk_socket__create.  Almost all of
+>> the members of the ring buffer structs are initialized, but the "cached_xxx"
+>> variables are not all initialized.  The caller is required to zero them.
+>> This is needlessly dangerous.  The results if you don't do it can be very bad.
+>> For example, they can cause xsk_prod_nb_free and xsk_cons_nb_avail to return
+>> values greater than the size of the queue.  xsk_ring_cons__peek can return an
+>> index that does not refer to an item that has been queued.
+>>
+>> I have confirmed that without this change, my program misbehaves unless I
+>> memset the ring buffers to zero before calling the function.  Afterwards,
+>> my program works without (or with) the memset.
+> 
+> Thank you Flecther for catching this. Appreciated.
+> 
+> /Magnus
+> 
+> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Signed-off-by: George Spelvin <lkml@sdf.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: Andrii Nakryiko <andriin@fb.com>
-Cc: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org
----
- kernel/bpf/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index af6b738cf435c..61713a7f73d85 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -874,7 +874,7 @@ bpf_jit_binary_alloc(unsigned int proglen, u8 **image_ptr,
- 	hdr->pages = pages;
- 	hole = min_t(unsigned int, size - (proglen + sizeof(*hdr)),
- 		     PAGE_SIZE - sizeof(*hdr));
--	start = (get_random_int() % hole) & ~(alignment - 1);
-+	start = get_random_max32(hole) & ~(alignment - 1);
- 
- 	/* Leave a random number of instructions before BPF code. */
- 	*image_ptr = &hdr->image[start];
-@@ -947,7 +947,7 @@ static int bpf_jit_blind_insn(const struct bpf_insn *from,
- 			      bool emit_zext)
- {
- 	struct bpf_insn *to = to_buff;
--	u32 imm_rnd = get_random_int();
-+	u32 imm_rnd = get_random_u32();
- 	s16 off;
- 
- 	BUILD_BUG_ON(BPF_REG_AX  + 1 != MAX_BPF_JIT_REG);
--- 
-2.26.0
-
+Applied, thanks!
