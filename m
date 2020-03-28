@@ -2,84 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DEF91962F3
-	for <lists+bpf@lfdr.de>; Sat, 28 Mar 2020 02:48:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4898F1962FB
+	for <lists+bpf@lfdr.de>; Sat, 28 Mar 2020 02:56:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbgC1Bsv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Mar 2020 21:48:51 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:37732 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbgC1Bsv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Mar 2020 21:48:51 -0400
-Received: by mail-pg1-f195.google.com with SMTP id a32so5505348pga.4;
-        Fri, 27 Mar 2020 18:48:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZFoiLEARI3ThGnDyc2jHxTpFEzA0wvG0QeUmiAQEtNE=;
-        b=ae5AxabDXf/CTqKrV9i3nVMNu0dDkhH+eKlAGid7zP7KNhxXc/iHymj70NQ7J13sRj
-         MPafmQUPDGxNIRc3CTIoK0x5OXEL99+CkORT6qhn7d6wArOc3e3DAjE3FZyiWFH9V3JD
-         NH6NdbMNyX3OLgEI5VNxAo0B0bp75yQXtpc+IR9UE9RaKzsgOJEJB9c7+BKLY8yfZXZ9
-         FAJ9Y7cqtHlDo/r3w8TOPBPaCx+W9PLEQcG9Pj0yXnEM1lFTC9kokx7EKqcysJtUz8fD
-         SDp8t/csaQ4n3qKo113+oiQhmkp057e9HT264w+DAOWikaET0ERkJyf6jtP3xcRvX1vZ
-         X5QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZFoiLEARI3ThGnDyc2jHxTpFEzA0wvG0QeUmiAQEtNE=;
-        b=PeNo0kGh6uPK3ehbWOmovotzs1HQbc+QJ0+wlKLQr8jyaI5zcIGxQqLazzud74C3rc
-         9PW8Ww3beEU66R3oSRy1Jgcxi8JbyZGvflgysdrtNSasqAAtPMkdOXGtUgkD+IqRK7fz
-         r9Xuw22GI4ATjsjpmpAbCNsvnlrVAP+14hMmfDjmWD9b8w6JOhAlnpalgAVHPjg61f1w
-         Ef2N14t+vIkP2BbOw4RyX0/Wm+ee7tzB6MAOxWU/ra7KqALtQ31xVA+v+D7ya9xXMYd7
-         QOV4LBtpln84WTwIWO4NiOj9XR+TU43+UrzNp452KMERaGiLtDoYmBvzaZrCtqt5p8lg
-         XnAQ==
-X-Gm-Message-State: ANhLgQ0jeIo9Hr4Ro2CglolZOGJ2eMRrh7gU8yMqAV0d5ke50Q7hrilQ
-        6SuZUdwg61zVwKd7pu6fpBDeigpn
-X-Google-Smtp-Source: ADFU+vs5Kg6ooK8RVx6Wm1A4Dqqwxh/I/s7RhaKQYgNOCyuqr9+9rjxsdMyuGMfVZjfH+HrYL7qSmA==
-X-Received: by 2002:a65:55c6:: with SMTP id k6mr2326491pgs.52.1585360130229;
-        Fri, 27 Mar 2020 18:48:50 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:f1d9])
-        by smtp.gmail.com with ESMTPSA id y13sm4973205pfp.88.2020.03.27.18.48.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Mar 2020 18:48:49 -0700 (PDT)
-Date:   Fri, 27 Mar 2020 18:48:44 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     m@lambda.lt, joe@wand.net.nz, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next 3/7] bpf: add netns cookie and enable it for bpf
- cgroup hooks
-Message-ID: <20200328014844.xz5s67j2cyvnf7lp@ast-mbp>
+        id S1726330AbgC1B4m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Mar 2020 21:56:42 -0400
+Received: from www62.your-server.de ([213.133.104.62]:58472 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726291AbgC1B4m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Mar 2020 21:56:42 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jI0iE-00048d-1u; Sat, 28 Mar 2020 02:56:38 +0100
+Received: from [178.195.186.98] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jI0iD-000Xx6-Py; Sat, 28 Mar 2020 02:56:37 +0100
+Subject: Re: [PATCH bpf-next 4/7] bpf: allow to retrieve cgroup v1 classid
+ from v2 hooks
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Martynas Pumputis <m@lambda.lt>,
+        Joe Stringer <joe@wand.net.nz>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
 References: <cover.1585323121.git.daniel@iogearbox.net>
- <c47d2346982693a9cf9da0e12690453aded4c788.1585323121.git.daniel@iogearbox.net>
+ <555e1c69db7376c0947007b4951c260e1074efc3.1585323121.git.daniel@iogearbox.net>
+ <CAEf4BzY5dd-wXbLziCQJOgikY-qvD+GQC=9HHZGCqmM_R-2mJA@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <3e519e0e-aa52-67a5-98f6-0e259745e400@iogearbox.net>
+Date:   Sat, 28 Mar 2020 02:56:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c47d2346982693a9cf9da0e12690453aded4c788.1585323121.git.daniel@iogearbox.net>
+In-Reply-To: <CAEf4BzY5dd-wXbLziCQJOgikY-qvD+GQC=9HHZGCqmM_R-2mJA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25764/Fri Mar 27 14:11:26 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 27, 2020 at 04:58:52PM +0100, Daniel Borkmann wrote:
-> + *
-> + * u64 bpf_get_netns_cookie(void *ctx)
-> + * 	Description
-> + * 		Retrieve the cookie (generated by the kernel) of the network
-> + * 		namespace the input *ctx* is associated with. The network
-> + * 		namespace cookie remains stable for its lifetime and provides
-> + * 		a global identifier that can be assumed unique. If *ctx* is
-> + * 		NULL, then the helper returns the cookie for the initial
-> + * 		network namespace. The cookie itself is very similar to that
-> + * 		of bpf_get_socket_cookie() helper, but for network namespaces
-> + * 		instead of sockets.
+On 3/28/20 1:41 AM, Andrii Nakryiko wrote:
+> On Fri, Mar 27, 2020 at 9:00 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>
+>> Today, Kubernetes is still operating on cgroups v1, however, it is
+>> possible to retrieve the task's classid based on 'current' out of
+>> connect(), sendmsg(), recvmsg() and bind-related hooks for orchestrators
+>> which attach to the root cgroup v2 hook in a mixed env like in case
+>> of Cilium, for example, in order to then correlate certain pod traffic
+>> and use it as part of the key for BPF map lookups.
+> 
+> Have you tried getting this classid directly from task_struct in your
+> BPF program with vmlinux.h and CO-RE? Seems like it should be pretty
+> straightforward and not requiring a special BPF handler just for that?
 
-All new helpers in this patch and few others are missing 'flags' argument.
-Yes. It's kinda hard right now to come up with a use case for the flags,
-since all helpers look kinda trivial, simple, and single purpose.
-But the same thing happened with bpf_send_signal(). It felt that there is no
-way to extend it. Yet later we had to add bpf_send_signal_thread() which could
-have been handled with flags if they were there. So please add flags to all new
-helpers though it might seem redundant.
+To answer both questions (5/7 and this one) in the same mail here: my
+understanding is that this would require to install additional tracing
+programs on these hooks instead of being able to integrate them into [0]
+for usage out of sock_addr and sock progs (similar as they are available
+as well from tc from skb)?
+
+Thanks,
+Daniel
+
+   [0] https://github.com/cilium/cilium/blob/master/bpf/bpf_sock.c
