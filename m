@@ -2,125 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B53D819625E
-	for <lists+bpf@lfdr.de>; Sat, 28 Mar 2020 01:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88658196280
+	for <lists+bpf@lfdr.de>; Sat, 28 Mar 2020 01:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726912AbgC1ARv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Mar 2020 20:17:51 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:34150 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726134AbgC1ARv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Mar 2020 20:17:51 -0400
-Received: by mail-qt1-f194.google.com with SMTP id 10so10207549qtp.1;
-        Fri, 27 Mar 2020 17:17:51 -0700 (PDT)
+        id S1727247AbgC1Acb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Mar 2020 20:32:31 -0400
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:39804 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727485AbgC1Aca (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Mar 2020 20:32:30 -0400
+Received: by mail-qv1-f67.google.com with SMTP id v38so5871753qvf.6;
+        Fri, 27 Mar 2020 17:32:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Rd/kZuwDUbwtE932LuCUfDihCMXQyPB1DkgyzbaO5Yc=;
-        b=n2XL+HtH3bcfupmNgd7gkjwsEm/CNr2hug9QzB3oeoH1s2qIP2Nj4z4TO2zzHpXECf
-         0sYXi31ON/Wsb3Eb7TF1PK//WoSF9/DGJm1/bA8iHoFZEahP32OI3QVX2k7A3RKETNSf
-         OpQZEF23A28A50zCkc6vWzeNzeaW2hC9x4rSBVL545iBbY//PtcZd/z2hZtyb2eWOQPN
-         Qh0WhOAn4zxIWz30kMi8UNaio5COQ4f/6LgfK9YeolfgC2VHdWfrmEjcljwllMT2YYct
-         X0CJleU+FejLwRt1pjZyObZdy68D0ST4uFy+m9OgJ72xuYQHuU+ScnxHMwT6eRI/Sgw2
-         hqCQ==
+        bh=tBoFcP2MRayTJTdOMjjEvhO91QmiVetcVDrFeYxN6m8=;
+        b=aqcCLnHd6Y+Zu4JSw6vMQfTrxw4iGdRVzi+OLqlLP970hhTQIRlDkqWshcd3YIH2ao
+         HA3sUjx4o7Cz/Dg4FFFjq9KYKo0iVnWI4jQ1LgdW3S1k9sFsZxBmVQAuph+Q+qpqYosj
+         jnrbg/pdAwCWbJj4WnqQ8VyNYIDeoB6kZ6kXJ6CYhzZRtHL57Cqp6585hw5o5LQ9OntI
+         fNvKZdBhyC9DCXNgn5yjA40H304FUzxe1dxon/jNi3cDdvwuoageUwbzP78drkVKEh3A
+         lRWP0+d5C2L6/uxRzulkoHognE7m+jQvL4UAmlA/1wpIQ83ccdx4LL9iwku0WtJN0cSL
+         0tog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Rd/kZuwDUbwtE932LuCUfDihCMXQyPB1DkgyzbaO5Yc=;
-        b=hv04SG3OwQnFKXApavE3c+jk0qKFYZ+IYoYdlusrvr/XXrW9uKOXwJ3NcCAsKziUDW
-         dAWlfLYKbtpHNBabUlxu5gGIcASNbFYgb+2+AeXTIoYGBVxW2hl9mH/g6VV5ekuGPJmk
-         3dHzNlUuquoIcb5hyStEwV9Fpz1bL9tGWyjmmvYwOXXuEYs3jo3OB6v1lt8QWywtybzj
-         r5laSJ2jUCG2HhRz3vyv90UzhysJsMT7zbTjdIKU/q7CILzNFFcnLWaJE1T82mcy5+L1
-         jRcmotcPByX67yTR6SDna2b7bN/vw5yT3LxCcSD6vfC+zq/cFHT1RbKl6T306D8cWD7G
-         NKgQ==
-X-Gm-Message-State: ANhLgQ3wYaoeJe5SY5kePRxhMlv5zvhTRqSl10SNk1ANx1C5e9X+0tDm
-        BVpIQ1fFxxv5jBnKOoluUYpEtu+d9FVaQScJABI=
-X-Google-Smtp-Source: ADFU+vvxfHvWJhtQbLX9VhZBRB8W6yRBV79Ysr/MtfHtnPW89mUVWq1yCpjXDetm4aYmYHHMxtXMGbwzWR3gUTqa00g=
-X-Received: by 2002:ac8:1865:: with SMTP id n34mr1849063qtk.93.1585354670512;
- Fri, 27 Mar 2020 17:17:50 -0700 (PDT)
+        bh=tBoFcP2MRayTJTdOMjjEvhO91QmiVetcVDrFeYxN6m8=;
+        b=hIieIaTLR0toBluhEZh7xrlW9cUvZVtgKrc8Ssk6DqgGRbC1gn0TMzy7W/7YjqKmlk
+         HM8KwEfIWYfZY6gqBTpNnLJY//G+jQr+dDfMftkMhNGUeDje4ugIFNpDTj5ZvjZIol8P
+         bGyyRJcl6hVtvLbDO++tj1RhxsClAAKODBst64q7AWE/fdJmQSil3K3Ee7TQPT2LA/se
+         SJRDnQUwF/EweGOGNXPo+eik8oqu8r6qZ/rU/YT3T5owp/JYzR0r0nfR3pjRagCPS8P9
+         4t5EZecTQUIRt2sUQqHe8Xfd/bIREBTPW5JDFIQgBX4T/pBFEkcMJttGpwGWuLQQeT8r
+         9S+w==
+X-Gm-Message-State: ANhLgQ2FEbz8sPjw8fPbd+Xo/xOecNlRyBhtU+HH9Bc44wZfiil4ujSy
+        AKpP9750DzZ4lSasZAaKDF0cUtt0jtne/sQCOoEWFrt5
+X-Google-Smtp-Source: ADFU+vsonNv8ZXK0zCRWho9P9hh5Scb6Os6IXJMOiT5TFhbthR5n5KIjixobCPudgMTkDk/Wg4mXjWVTYl+NAwoV+1w=
+X-Received: by 2002:ad4:4182:: with SMTP id e2mr1836397qvp.247.1585355549435;
+ Fri, 27 Mar 2020 17:32:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200325055745.10710-1-joe@wand.net.nz> <20200325055745.10710-6-joe@wand.net.nz>
- <82e8d147-b334-3d29-0312-7b087ac908f3@fb.com> <CACAyw99Eeu+=yD8UKazRJcknZi3D5zMJ4n=FVsxXi63DwhdxYA@mail.gmail.com>
- <20200326210719.den5isqxntnoqhmv@ast-mbp> <CAOftzPjyCNGEjBm4k3aKK+=AB-1STDbYbQK5sZbK6gTAo13XuA@mail.gmail.com>
-In-Reply-To: <CAOftzPjyCNGEjBm4k3aKK+=AB-1STDbYbQK5sZbK6gTAo13XuA@mail.gmail.com>
+References: <cover.1585323121.git.daniel@iogearbox.net> <c47d2346982693a9cf9da0e12690453aded4c788.1585323121.git.daniel@iogearbox.net>
+In-Reply-To: <c47d2346982693a9cf9da0e12690453aded4c788.1585323121.git.daniel@iogearbox.net>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 27 Mar 2020 17:17:38 -0700
-Message-ID: <CAEf4BzZZfsW-xw8AtmwA4gSBusrBW8M6D4RLqO3SWV_0DQxW8w@mail.gmail.com>
-Subject: Re: call for bpf progs. Re: [PATCHv2 bpf-next 5/5] selftests: bpf:
- add test for sk_assign
-To:     Joe Stringer <joe@wand.net.nz>
+Date:   Fri, 27 Mar 2020 17:32:18 -0700
+Message-ID: <CAEf4BzbZiZwfae+B2gu4WkWVRoVkLJUYhFf0rorx0jVCf_kiQw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/7] bpf: add netns cookie and enable it for bpf
+ cgroup hooks
+To:     Daniel Borkmann <daniel@iogearbox.net>
 Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Martin Lau <kafai@fb.com>,
-        john fastabend <john.fastabend@gmail.com>
+        Martynas Pumputis <m@lambda.lt>,
+        Joe Stringer <joe@wand.net.nz>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 27, 2020 at 12:07 PM Joe Stringer <joe@wand.net.nz> wrote:
+On Fri, Mar 27, 2020 at 8:59 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
-> On Thu, Mar 26, 2020 at 2:07 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> > The second concern was pruning, but iirc the experiments were inconclusive.
-> > selftests/bpf only has old fb progs. Hence, I think, the step zero is for
-> > everyone to contribute their bpf programs written in C. If we have both
-> > cilium and cloudflare progs as selftests it will help a lot to guide such long
-> > lasting verifier decisions.
+> In Cilium we're mainly using BPF cgroup hooks today in order to implement
+> kube-proxy free Kubernetes service translation for ClusterIP, NodePort (*),
+> ExternalIP, and LoadBalancer as well as HostPort mapping [0] for all traffic
+> between Cilium managed nodes. While this works in its current shape and avoids
+> packet-level NAT for inter Cilium managed node traffic, there is one major
+> limitation we're facing today, that is, lack of netns awareness.
 >
-> How would you like to handle program changes over time for this?
+> In Kubernetes, the concept of Pods (which hold one or multiple containers)
+> has been built around network namespaces, so while we can use the global scope
+> of attaching to root BPF cgroup hooks also to our advantage (e.g. for exposing
+> NodePort ports on loopback addresses), we also have the need to differentiate
+> between initial network namespaces and non-initial one. For example, ExternalIP
+> services mandate that non-local service IPs are not to be translated from the
+> host (initial) network namespace as one example. Right now, we have an ugly
+> work-around in place where non-local service IPs for ExternalIP services are
+> not xlated from connect() and friends BPF hooks but instead via less efficient
+> packet-level NAT on the veth tc ingress hook for Pod traffic.
 >
-> In Cilium community we periodically rebuild bpf-next VM images for
-> testing, and run every pull request against those images[0]. We also
-> test against specific older kernels, currently 4.9 and 4.19. This
-> allows us to get some sense for the impact of upstream changes while
-> developing Cilium features, but unfortunately doesn't allow everyone
-> using kernel selftests to get that feedback at least from the kernel
-> tree. We also have a verifier complexity test script where we compile
-> with the maximum number of features (to ideally generate the most
-> complex programs possible) then attempt to load all of the various
-> programs, and output the complexity count that the kernel reports[1,2]
-> which we can track over time.
+> On top of determining whether we're in initial or non-initial network namespace
+> we also have a need for a socket-cookie like mechanism for network namespaces
+> scope. Socket cookies have the nice property that they can be combined as part
+> of the key structure e.g. for BPF LRU maps without having to worry that the
+> cookie could be recycled. We are planning to use this for our sessionAffinity
+> implementation for services. Therefore, add a new bpf_get_netns_cookie() helper
+> which would resolve both use cases at once: bpf_get_netns_cookie(NULL) would
+> provide the cookie for the initial network namespace while passing the context
+> instead of NULL would provide the cookie from the application's network namespace.
+> We're using a hole, so no size increase; the assignment happens only once.
+> Therefore this allows for a comparison on initial namespace as well as regular
+> cookie usage as we have today with socket cookies. We could later on enable
+> this helper for other program types as well as we would see need.
 >
-> However Cilium BPF programs are actively developing and even if we
-> merge these programs into the kernel tree, they will get out-of-date
-> quickly. Up until recently everything was verifying fine compiling
-> with LLVM7 and loading into bpf-next. Over the past month we started
-> noticing new issues not with the existing implementation, but in *new*
-> BPF features. As we increased complexity, our CI started failing
-> against bpf-next[3] while they loaded fine on older kernels. We ended
-> up mitigating by upgrading to LLVM-10. Long story short, there's
-> several moving parts; changing BPF program implementations, changing
-> the compiler toolchain, changing the kernel verifier. So my question
-> is basically, where's the line of responsibility for what the kernel
-> selftests are responsible for vs integration tests? How do we maintain
-> those over time as the BPF programs and compiler changes?
+>   (*) Both externalTrafficPolicy={Local|Cluster} types
+>   [0] https://github.com/cilium/cilium/blob/master/bpf/bpf_sock.c
+>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> ---
+>  include/linux/bpf.h            |  1 +
+>  include/net/net_namespace.h    | 10 +++++++++
+>  include/uapi/linux/bpf.h       | 16 ++++++++++++++-
+>  kernel/bpf/verifier.c          | 16 +++++++++------
+>  net/core/filter.c              | 37 ++++++++++++++++++++++++++++++++++
+>  net/core/net_namespace.c       | 15 ++++++++++++++
+>  tools/include/uapi/linux/bpf.h | 16 ++++++++++++++-
+>  7 files changed, 103 insertions(+), 8 deletions(-)
+>
 
-Just wanted to point out that libbpf's Github CI has multi-kernel
-testing, so we'll be able to capture regressions on old kernels that
-are caused by libbpf and/or nightly clang (we are currently pulling
-clang-11 from nightly packages). We are also testing against latest
-kernel as well, so if they break, we'll need to fix them. Which is why
-I'd like those programs to be manageable in size and complexity and a
-simple part of test_progs, not in some Docker container :)
+[...]
 
->
-> Do we just parachute the ~11K LoC of Cilium datapath into the kernel
-> tree once per cycle? Or should Cilium autobuild a verifier-test docker
-> image that kernel testing scripts can pull & run? Or would it be
-> helpful to have a separate GitHub project similar to libbpf that pulls
-> out kernel selftests, Cilium progs, fb progs, cloudflare progs, etc
-> automatically and centralizes a generic suite of BPF verifier
-> integration tests? Some other option?
->
-> [0] https://github.com/cilium/packer-ci-build
-> [1] https://github.com/cilium/cilium/blob/master/test/bpf/check-complexity.sh
-> [2] https://github.com/cilium/cilium/blob/master/test/bpf/verifier-test.sh
-> [3] https://github.com/cilium/cilium/issues/10517
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 745f3cfdf3b2..cb30b34d1466 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3461,13 +3461,17 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 regno,
+>                 expected_type = CONST_PTR_TO_MAP;
+>                 if (type != expected_type)
+>                         goto err_type;
+> -       } else if (arg_type == ARG_PTR_TO_CTX) {
+> +       } else if (arg_type == ARG_PTR_TO_CTX ||
+> +                  arg_type == ARG_PTR_TO_CTX_OR_NULL) {
+>                 expected_type = PTR_TO_CTX;
+> -               if (type != expected_type)
+> -                       goto err_type;
+> -               err = check_ctx_reg(env, reg, regno);
+> -               if (err < 0)
+> -                       return err;
+> +               if (!(register_is_null(reg) &&
+> +                     arg_type == ARG_PTR_TO_CTX_OR_NULL)) {
+
+
+Other parts of check_func_arg() have different pattern that doesn't
+negate this complicated condition:
+
+if (register_is_null(reg) && arg_type == ARG_PTR_TO_CTX_OR_NULL)
+    ;
+else {
+    ...
+}
+
+It's marginally easier to follow, though still increases nestedness :(
+
+> +                       if (type != expected_type)
+> +                               goto err_type;
+> +                       err = check_ctx_reg(env, reg, regno);
+> +                       if (err < 0)
+> +                               return err;
+> +               }
+>         } else if (arg_type == ARG_PTR_TO_SOCK_COMMON) {
+>                 expected_type = PTR_TO_SOCK_COMMON;
+>                 /* Any sk pointer can be ARG_PTR_TO_SOCK_COMMON */
+
+[...]
+
+> +static const struct bpf_func_proto bpf_get_netns_cookie_sock_addr_proto = {
+> +       .func           = bpf_get_netns_cookie_sock_addr,
+> +       .gpl_only       = false,
+> +       .ret_type       = RET_INTEGER,
+> +       .arg1_type      = ARG_PTR_TO_CTX_OR_NULL,
+
+Just for completeness sake, have you considered using two helpers -
+one accepting context and other accepting nothing instead of adding
+ARG_PTR_TO_CTX_OR_NULL? Would it be too bad?
+
+> +};
+> +
+
+[...]
+
+> +static atomic64_t cookie_gen;
+> +
+> +u64 net_gen_cookie(struct net *net)
+> +{
+> +       while (1) {
+> +               u64 res = atomic64_read(&net->net_cookie);
+> +
+> +               if (res)
+> +                       return res;
+> +               res = atomic64_inc_return(&cookie_gen);
+> +               atomic64_cmpxchg(&net->net_cookie, 0, res);
+
+you'll always do extra atomic64_read, even if you succeed on the first
+try. Why not:
+
+while (1) {
+   u64 res = atomic64_read(&net->net_cookie);
+   if (res)
+       return res;
+   res = atomic64_inc_return(&cookie_gen);
+   if (atomic64_cmpxchg(&net->net_cookie, 0, res) == 0)
+      return res;
+}
+
+> +       }
+> +}
+> +
+
+[...]
