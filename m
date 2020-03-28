@@ -2,91 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7A1196345
-	for <lists+bpf@lfdr.de>; Sat, 28 Mar 2020 04:06:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6928A1964C4
+	for <lists+bpf@lfdr.de>; Sat, 28 Mar 2020 10:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726781AbgC1DGj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Mar 2020 23:06:39 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:51310 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726291AbgC1DGj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Mar 2020 23:06:39 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 9190A9271D5AFA8BEF8B;
-        Sat, 28 Mar 2020 11:06:35 +0800 (CST)
-Received: from localhost (10.173.223.234) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Sat, 28 Mar 2020
- 11:06:28 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <netanel@amazon.com>, <akiyano@amazon.com>, <gtzalik@amazon.com>,
-        <saeedb@amazon.com>, <zorik@amazon.com>, <davem@davemloft.net>,
-        <sameehj@amazon.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH net-next] net: ena: Make some functions static
-Date:   Sat, 28 Mar 2020 11:06:20 +0800
-Message-ID: <20200328030620.22328-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1726164AbgC1JS5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 28 Mar 2020 05:18:57 -0400
+Received: from mail-vs1-f66.google.com ([209.85.217.66]:46580 "EHLO
+        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725865AbgC1JS5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 28 Mar 2020 05:18:57 -0400
+Received: by mail-vs1-f66.google.com with SMTP id z125so7767081vsb.13;
+        Sat, 28 Mar 2020 02:18:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cWGCUs9Twi1dHOwTh9evVshDNb9RGDkgYpcpyU7JNHU=;
+        b=Ye3XkGzGbFxh6NNoFhs4irBFsYNJWbQqrYVybicR4NPaIyDfsS/RnPW4Pa+NGa281q
+         aYF9TSaKfSH8nbhFY4M/s7vphOWoalyr2U446S5INPCpFYsX+0nkAvFBCbWEfWr4Bka4
+         FawGNzwKReKd0gwSFSw7vUamrHJH/1xXzTIEE8Rbs6yEkH0kAVW82tpiOO2aIT9Imv3e
+         Hf8w20cE1paGtdszZWakB/xwXL8tuArsUE1K7ya0Dzy9yP3MPaY5CawCV59BCRS6ao85
+         2WWurHLAHCiN1OjenkPgHKPiwvCSORQjy4pOnZUzNXzifXjudWirQfOY/IeiHz0IqeVd
+         5jGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cWGCUs9Twi1dHOwTh9evVshDNb9RGDkgYpcpyU7JNHU=;
+        b=Dmi6YGhHkwb27cSy0JdydejkDkNGTcwYhU1IzsBBnr5WymkNK7tYfgQRcYCWfJTt9l
+         Z3AVxMItDdHv2kcyA2YAuc0gknsfw3an0ufVCVFkI/O94LANvIq17DJvWbOEAkxXIpx3
+         2iI31ZxvHPQi6dvfHa0BlBEw9eHu/Y7YPDgcL6AHmD3zOeBnur2Zm3/fbfyDBi20Unjw
+         EhfD41bUoGYw1I0GZ+XbaqjOvvY8U6wcrgcKVoIeYlzMX/bo1igqZXOz3D4qtCzW+ks7
+         v/bJyDJzDX7SL+CB+DR+7DLhgOrN1+qW27wgy3E8ELKnR1JyowK+QIQr+CBw/wK2/+Ll
+         1Ukg==
+X-Gm-Message-State: AGi0PuYU9jv7HjLR6KxQBiUNxk0YIBcO5i21e8ptIJWgw6qhvR4Zgu2i
+        roqNl4Ty3T2/j+jh8zjj6b6MQhxHmHGrpgrDfGA=
+X-Google-Smtp-Source: APiQypIWPDpLkb+aZjaUHXi/rjG/0Sj5qzuJ0B7q1C8bVCyIubk7MXiCnjFk7620ij6rO6rpLTuwncVVyfkg9HA18po=
+X-Received: by 2002:a05:6102:104b:: with SMTP id h11mr2047534vsq.182.1585387136417;
+ Sat, 28 Mar 2020 02:18:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.173.223.234]
-X-CFilter-Loop: Reflected
+References: <85f12913cde94b19bfcb598344701c38@valvesoftware.com>
+In-Reply-To: <85f12913cde94b19bfcb598344701c38@valvesoftware.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Sat, 28 Mar 2020 10:18:45 +0100
+Message-ID: <CAJ8uoz2M0Xj_maD3jZeZedrUXGNJqvbV_DyC2A8Yh9R6z7gfsg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] xsk: Init all ring members in xsk_umem__create
+ and xsk_socket__create
+To:     Fletcher Dunn <fletcherd@valvesoftware.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Brandon Gilmore <bgilmore@valvesoftware.com>,
+        Steven Noonan <steven@valvesoftware.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix sparse warnings:
+On Fri, Mar 27, 2020 at 4:40 AM Fletcher Dunn
+<fletcherd@valvesoftware.com> wrote:
+>
+> Fix a sharp edge in xsk_umem__create and xsk_socket__create.  Almost all of
+> the members of the ring buffer structs are initialized, but the "cached_xxx"
+> variables are not all initialized.  The caller is required to zero them.
+> This is needlessly dangerous.  The results if you don't do it can be very bad.
+> For example, they can cause xsk_prod_nb_free and xsk_cons_nb_avail to return
+> values greater than the size of the queue.  xsk_ring_cons__peek can return an
+> index that does not refer to an item that has been queued.
+>
+> I have confirmed that without this change, my program misbehaves unless I
+> memset the ring buffers to zero before calling the function.  Afterwards,
+> my program works without (or with) the memset.
 
-drivers/net/ethernet/amazon/ena/ena_netdev.c:460:6: warning: symbol 'ena_xdp_exchange_program_rx_in_range' was not declared. Should it be static?
-drivers/net/ethernet/amazon/ena/ena_netdev.c:481:6: warning: symbol 'ena_xdp_exchange_program' was not declared. Should it be static?
-drivers/net/ethernet/amazon/ena/ena_netdev.c:1555:5: warning: symbol 'ena_xdp_handle_buff' was not declared. Should it be static?
+Thank you Flecther for catching this. Appreciated.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/net/ethernet/amazon/ena/ena_netdev.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+/Magnus
 
-diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-index 5703282aba8f..2cc765df8da3 100644
---- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
-+++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-@@ -457,10 +457,9 @@ static void ena_xdp_unregister_rxq_info(struct ena_ring *rx_ring)
- 	xdp_rxq_info_unreg(&rx_ring->xdp_rxq);
- }
- 
--void ena_xdp_exchange_program_rx_in_range(struct ena_adapter *adapter,
--					  struct bpf_prog *prog,
--					  int first,
--					  int count)
-+static void ena_xdp_exchange_program_rx_in_range(struct ena_adapter *adapter,
-+						 struct bpf_prog *prog,
-+						 int first, int count)
- {
- 	struct ena_ring *rx_ring;
- 	int i = 0;
-@@ -478,8 +477,8 @@ void ena_xdp_exchange_program_rx_in_range(struct ena_adapter *adapter,
- 	}
- }
- 
--void ena_xdp_exchange_program(struct ena_adapter *adapter,
--			      struct bpf_prog *prog)
-+static void ena_xdp_exchange_program(struct ena_adapter *adapter,
-+				     struct bpf_prog *prog)
- {
- 	struct bpf_prog *old_bpf_prog = xchg(&adapter->xdp_bpf_prog, prog);
- 
-@@ -1552,7 +1551,7 @@ static void ena_set_rx_hash(struct ena_ring *rx_ring,
- 	}
- }
- 
--int ena_xdp_handle_buff(struct ena_ring *rx_ring, struct xdp_buff *xdp)
-+static int ena_xdp_handle_buff(struct ena_ring *rx_ring, struct xdp_buff *xdp)
- {
- 	struct ena_rx_buffer *rx_info;
- 	int ret;
--- 
-2.17.1
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-
+> Signed-off-by: Fletcher Dunn <fletcherd@valvesoftware.com>
+>
+> ---
+>
+> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+> index 9807903f121e..f7f4efb70a4c 100644
+> --- a/tools/lib/bpf/xsk.c
+> +++ b/tools/lib/bpf/xsk.c
+> @@ -280,7 +280,11 @@ int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void *umem_area,
+>         fill->consumer = map + off.fr.consumer;
+>         fill->flags = map + off.fr.flags;
+>         fill->ring = map + off.fr.desc;
+> -       fill->cached_cons = umem->config.fill_size;
+> +       fill->cached_prod = *fill->producer;
+> +       /* cached_cons is "size" bigger than the real consumer pointer
+> +        * See xsk_prod_nb_free
+> +        */
+> +       fill->cached_cons = *fill->consumer + umem->config.fill_size;
+>
+>         map = mmap(NULL, off.cr.desc + umem->config.comp_size * sizeof(__u64),
+>                    PROT_READ | PROT_WRITE, MAP_SHARED | MAP_POPULATE, umem->fd,
+> @@ -297,6 +301,8 @@ int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void *umem_area,
+>         comp->consumer = map + off.cr.consumer;
+>         comp->flags = map + off.cr.flags;
+>         comp->ring = map + off.cr.desc;
+> +       comp->cached_prod = *comp->producer;
+> +       comp->cached_cons = *comp->consumer;
+>
+>         *umem_ptr = umem;
+>         return 0;
+> @@ -672,6 +678,8 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
+>                 rx->consumer = rx_map + off.rx.consumer;
+>                 rx->flags = rx_map + off.rx.flags;
+>                 rx->ring = rx_map + off.rx.desc;
+> +               rx->cached_prod = *rx->producer;
+> +               rx->cached_cons = *rx->consumer;
+>         }
+>         xsk->rx = rx;
+>
+> @@ -691,7 +699,11 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
+>                 tx->consumer = tx_map + off.tx.consumer;
+>                 tx->flags = tx_map + off.tx.flags;
+>                 tx->ring = tx_map + off.tx.desc;
+> -               tx->cached_cons = xsk->config.tx_size;
+> +               tx->cached_prod = *tx->producer;
+> +               /* cached_cons is r->size bigger than the real consumer pointer
+> +                * See xsk_prod_nb_free
+> +                */
+> +               tx->cached_cons = *tx->consumer + xsk->config.tx_size;
+>         }
+>         xsk->tx = tx;
+>
