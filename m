@@ -2,211 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B6E196D94
-	for <lists+bpf@lfdr.de>; Sun, 29 Mar 2020 15:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E2E196DA2
+	for <lists+bpf@lfdr.de>; Sun, 29 Mar 2020 15:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728215AbgC2NKz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 29 Mar 2020 09:10:55 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:37866 "EHLO
+        id S1728110AbgC2NXV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 29 Mar 2020 09:23:21 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:55290 "EHLO
         us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728216AbgC2NKz (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 29 Mar 2020 09:10:55 -0400
+        by vger.kernel.org with ESMTP id S1727903AbgC2NXV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 29 Mar 2020 09:23:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585487453;
+        s=mimecast20190719; t=1585488200;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=E31LT0I4tJZB6oZQ8d2w38DHMS7tgwHGLKjR6dj+XoI=;
-        b=VEpSBajsuTma5VWHG0WAjb9wKegPY93YoCclqlwb4IwYF99UCMXYBuLVzKalL+kTnlX7tf
-        AXTNTccsX7nLSceakUiM96teNwQ4OZuZm9eRlVzstVZzNI1fIwmmwWM9J1LECZf+JLQu4h
-        0gQJ9Qc6IWkbSIL/sXFBN4dIIX3y3sc=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-190-66LRbWXTOEiR6TAZr8xY1A-1; Sun, 29 Mar 2020 09:10:51 -0400
-X-MC-Unique: 66LRbWXTOEiR6TAZr8xY1A-1
-Received: by mail-lf1-f72.google.com with SMTP id c20so6123793lfh.6
-        for <bpf@vger.kernel.org>; Sun, 29 Mar 2020 06:10:51 -0700 (PDT)
+        bh=2s2BdnMCPGd1g5Zqt0G0Bsb/G6cmPG9iPfUVgjjDP5I=;
+        b=b/JJI2CSQJ2KVgyWahsK6zVnNBzvL46C7tK+1eaxd6l20C+9lJbsyteIA9oN3ua971nHDW
+        eLtnShgLfDNAmz0sI4WVeQvOZUfSfke1h9TaWMKUlOIjmNFcu6fNZmCFgBZfSkipgUeKwX
+        hBu2TWcAJUk8gD5TUsROln3pIJvU5pI=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-98-TJInDFbvPYmbke9_ATdKwQ-1; Sun, 29 Mar 2020 09:23:18 -0400
+X-MC-Unique: TJInDFbvPYmbke9_ATdKwQ-1
+Received: by mail-lj1-f198.google.com with SMTP id v22so715257ljh.18
+        for <bpf@vger.kernel.org>; Sun, 29 Mar 2020 06:23:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=E31LT0I4tJZB6oZQ8d2w38DHMS7tgwHGLKjR6dj+XoI=;
-        b=Y1id3MfBAR+1dm/xFC7cmbuznyQ9P2h9/cVvc6GgM709ONddAZeVN2Z611pJkV24OL
-         MFWGfE+3Ng+iTBFQKEQU2l/E8ATafFsURO0B1kwmtNZ4lyHHqyUOv+UhBEQKLASfXkJp
-         dC1nfx+8oWXHCW/AwUvQPtOnl2DzRgzF9nO8Y/5gPjUG0QmoTFm1FbMU2VMUawdXqM/m
-         np+p/1XHkpGrsljuacjOEcpgE/Isz8oitYzdvxzKboGkn5uNNcCYKVtId99CPe4dsZZC
-         3xx/WYAehSW3uLbStVFuJCUG+dDlzn3MKRnU0uIuCEThBfGKBr79o1EmHF3T+Xv3ag5a
-         aA8g==
-X-Gm-Message-State: AGi0PubR4ThdoShqPciFwXam266iuQ9KuRlXyr0ACbWbeYFU/EWGTMZs
-        dPFtEUJ1cnu1nQBTxhnA8VuneeRRL3edISOEgMw9bTpmwucDVoyaA0bqaqBh0xQhu4WXSwnVjvl
-        OhAsYgp3L72t2
-X-Received: by 2002:a19:4ad4:: with SMTP id x203mr5295670lfa.64.1585487450038;
-        Sun, 29 Mar 2020 06:10:50 -0700 (PDT)
-X-Google-Smtp-Source: APiQypLrmfctLlPcyhEWmKswZVHKGARfDMjJBJrSn3i4RaC67/kNsUTYfVLlIPhGVgRBMr+jInREeQ==
-X-Received: by 2002:a19:4ad4:: with SMTP id x203mr5295659lfa.64.1585487449785;
-        Sun, 29 Mar 2020 06:10:49 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id 9sm6212501ljf.0.2020.03.29.06.10.48
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=2s2BdnMCPGd1g5Zqt0G0Bsb/G6cmPG9iPfUVgjjDP5I=;
+        b=P4Sr9R8jX+iEzR2RWxfVbJ7GUckld6vhLSjpcAloR5NorUnj7gKlXXKRiSXzqoK06r
+         PPTtN+bBdeDMeP4PZrdiNX/1vEuqOezHUK//z2QRc0/hz1kM3xQLhd1nsZ9vlJ0iM1qx
+         N4jeeoPL84JizbC2NSnLx9gKUGmrdf/XnUnwEMvpzQUkegPtdETE9fmUt7+sQxxmkcKh
+         B5k5Jrd0faANn/3CRPwxn9pymLWZLahvMnCdBRTX3IvIIqm0kYKLaYiJPTe3JpN42ylR
+         Wya18w3SpAUcOxmCNuvDv91lodOBdA88wedC2Qiiv3g9JCKr5ECptdcoJMBgdeI95MfC
+         d+5w==
+X-Gm-Message-State: AGi0PuaOpcDYzmmFJ/Mu9OwlTsEkqvlapIsLHG3Gbb5BfkHKu1hjoNuS
+        Aple8q0hxlcrC6ts+AXSIUCkSXoniydC4PuAGtgcvo+11FFstzQ/4FYQN9N+44JBYEV/ksBmCod
+        kxJCu/MYbsKh8
+X-Received: by 2002:a2e:3a01:: with SMTP id h1mr4602893lja.161.1585488197076;
+        Sun, 29 Mar 2020 06:23:17 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJnAFmndO5nwxNXiRkPpOK0TLlxetboyE0xtvhjvUUI3lHhKU0hHnrqVjWfxXDOOIDZXOC9tw==
+X-Received: by 2002:a2e:3a01:: with SMTP id h1mr4602881lja.161.1585488196682;
+        Sun, 29 Mar 2020 06:23:16 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id y124sm6187788lff.48.2020.03.29.06.23.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Mar 2020 06:10:48 -0700 (PDT)
+        Sun, 29 Mar 2020 06:23:16 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 18E7018158B; Sun, 29 Mar 2020 15:10:47 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH v3 2/2] selftests: Add test for overriding global data value before load
-In-Reply-To: <CAEf4BzZPd0-unT7ChKNFCYRVU2NHfdp8kKuEFSZgaDxm9ndC8w@mail.gmail.com>
-References: <20200327125818.155522-1-toke@redhat.com> <20200328182834.196578-2-toke@redhat.com> <CAEf4BzZPd0-unT7ChKNFCYRVU2NHfdp8kKuEFSZgaDxm9ndC8w@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Sun, 29 Mar 2020 15:10:47 +0200
-Message-ID: <87tv27joh4.fsf@toke.dk>
+        id D131F18158B; Sun, 29 Mar 2020 15:23:14 +0200 (CEST)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     daniel@iogearbox.net, ast@fb.com
+Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: [PATCH v4 1/2] libbpf: Add setter for initial value for internal maps
+Date:   Sun, 29 Mar 2020 15:22:52 +0200
+Message-Id: <20200329132253.232541-1-toke@redhat.com>
+X-Mailer: git-send-email 2.26.0
+In-Reply-To: <20200328182834.196578-1-toke@redhat.com>
+References: <20200328182834.196578-1-toke@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+For internal maps (most notably the maps backing global variables), libbpf
+uses an internal mmaped area to store the data after opening the object.
+This data is subsequently copied into the kernel map when the object is
+loaded.
 
-> On Sat, Mar 28, 2020 at 11:29 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
-edhat.com> wrote:
->>
->> This extends the global_data test to also exercise the new
->> bpf_map__set_initial_value() function. The test simply overrides the glo=
-bal
->> data section with all zeroes, and checks that the new value makes it into
->> the kernel map on load.
->>
->> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> ---
->>  .../selftests/bpf/prog_tests/global_data.c    | 61 +++++++++++++++++++
->>  1 file changed, 61 insertions(+)
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/global_data.c b/tool=
-s/testing/selftests/bpf/prog_tests/global_data.c
->> index c680926fce73..f018ce53a8d1 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/global_data.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/global_data.c
->> @@ -121,6 +121,65 @@ static void test_global_data_rdonly(struct bpf_obje=
-ct *obj, __u32 duration)
->>               "err %d errno %d\n", err, errno);
->>  }
->>
->> +static void test_global_data_set_rdonly(__u32 duration)
->> +{
->> +       const char *file =3D "./test_global_data.o";
->> +       int err =3D -ENOMEM, map_fd, zero =3D 0;
->> +       __u8 *buff =3D NULL, *newval =3D NULL;
->> +       struct bpf_program *prog;
->> +       struct bpf_object *obj;
->> +       struct bpf_map *map;
->> +       size_t sz;
->> +
->> +       obj =3D bpf_object__open_file(file, NULL);
->
-> Try using skeleton open and load .o file, it will cut this code almost
-> in half.
+This adds a function to set a new value for that data, which can be used to
+before it is loaded into the kernel. This is especially relevant for RODATA
+maps, since those are frozen on load.
 
-Doesn't work, though:
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
+v4:
+  - Make void pointer const, check if map was loaded
+  - Reject set if map was already loaded
+  - Split test into its own file
+v3:
+  - Add a setter for the initial value instead of a getter for the pointer to it
+  - Add selftest
+v2:
+  - Add per-map getter for data area instead of a global rodata getter for bpf_obj
 
-In file included from /home/build/linux/tools/testing/selftests/bpf/prog_te=
-sts/global_data_init.c:3:
-/home/build/linux/tools/testing/selftests/bpf/test_global_data.skel.h:31:14=
-: error: field =E2=80=98struct1=E2=80=99 has incomplete type
-   31 |   struct foo struct1;
-      |              ^~~~~~~
-/home/build/linux/tools/testing/selftests/bpf/test_global_data.skel.h:37:14=
-: error: field =E2=80=98struct3=E2=80=99 has incomplete type
-   37 |   struct foo struct3;
-      |              ^~~~~~~
-/home/build/linux/tools/testing/selftests/bpf/test_global_data.skel.h:45:14=
-: error: field =E2=80=98struct0=E2=80=99 has incomplete type
-   45 |   struct foo struct0;
-      |              ^~~~~~~
-/home/build/linux/tools/testing/selftests/bpf/test_global_data.skel.h:46:14=
-: error: field =E2=80=98struct2=E2=80=99 has incomplete type
-   46 |   struct foo struct2;
-      |              ^~~~~~~
-make: *** [Makefile:361: /home/build/linux/tools/testing/selftests/bpf/glob=
-al_data_init.test.o] Error 1
+ tools/lib/bpf/libbpf.c   | 11 +++++++++++
+ tools/lib/bpf/libbpf.h   |  2 ++
+ tools/lib/bpf/libbpf.map |  1 +
+ 3 files changed, 14 insertions(+)
 
-Just fixing the program SEC name as you suggested below already gets rid
-of half the setup code, though, so doesn't really make much difference
-anyway :)
-
->> +       if (CHECK_FAIL(!obj))
->> +               return;
->> +       prog =3D bpf_program__next(NULL, obj);
->> +       if (CHECK_FAIL(!prog))
->> +               goto out;
->> +       err =3D bpf_program__set_sched_cls(prog);
->
-> Please fix SEC() name for that program instead of setting type explicitly.
-
-Yeah, that helps, thanks!
-
->> +       if (CHECK_FAIL(err))
->> +               goto out;
->> +
->> +       map =3D bpf_object__find_map_by_name(obj, "test_glo.rodata");
->> +       if (CHECK_FAIL(!map || !bpf_map__is_internal(map)))
->> +               goto out;
->> +
->> +       sz =3D bpf_map__def(map)->value_size;
->> +       newval =3D malloc(sz);
->> +       if (CHECK_FAIL(!newval))
->> +               goto out;
->> +       memset(newval, 0, sz);
->> +
->> +       /* wrong size, should fail */
->> +       err =3D bpf_map__set_initial_value(map, newval, sz - 1);
->> +       if (CHECK(!err, "reject set initial value wrong size", "err %d\n=
-", err))
->> +               goto out;
->> +
->> +       err =3D bpf_map__set_initial_value(map, newval, sz);
->> +       if (CHECK_FAIL(err))
->> +               goto out;
->> +
->> +       err =3D bpf_object__load(obj);
->> +       if (CHECK_FAIL(err))
->> +               goto out;
->> +
->> +       map_fd =3D bpf_map__fd(map);
->> +       if (CHECK_FAIL(map_fd < 0))
->> +               goto out;
->> +
->> +       buff =3D malloc(sz);
->> +       if (buff)
->> +               err =3D bpf_map_lookup_elem(map_fd, &zero, buff);
->> +       CHECK(!buff || err || memcmp(buff, newval, sz),
->> +             "compare .rodata map data override",
->> +             "err %d errno %d\n", err, errno);
->> +out:
->> +       free(buff);
->> +       free(newval);
->> +       bpf_object__close(obj);
->> +}
->> +
->>  void test_global_data(void)
->>  {
->>         const char *file =3D "./test_global_data.o";
->> @@ -144,4 +203,6 @@ void test_global_data(void)
->>         test_global_data_rdonly(obj, duration);
->>
->>         bpf_object__close(obj);
->> +
->> +       test_global_data_set_rdonly(duration);
->
-> This should either be a sub-test or better yet a separate test
-> altogether.
-
-Sure, will move it to its own file.
-
--Toke
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 62903302935e..7deab98720ee 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -6758,6 +6758,17 @@ void *bpf_map__priv(const struct bpf_map *map)
+ 	return map ? map->priv : ERR_PTR(-EINVAL);
+ }
+ 
++int bpf_map__set_initial_value(struct bpf_map *map,
++			       const void *data, size_t size)
++{
++	if (!map->mmaped || map->libbpf_type == LIBBPF_MAP_KCONFIG ||
++	    size != map->def.value_size || map->fd >= 0)
++		return -EINVAL;
++
++	memcpy(map->mmaped, data, size);
++	return 0;
++}
++
+ bool bpf_map__is_offload_neutral(const struct bpf_map *map)
+ {
+ 	return map->def.type == BPF_MAP_TYPE_PERF_EVENT_ARRAY;
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index bf7a35a9556d..958ae71c116e 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -407,6 +407,8 @@ typedef void (*bpf_map_clear_priv_t)(struct bpf_map *, void *);
+ LIBBPF_API int bpf_map__set_priv(struct bpf_map *map, void *priv,
+ 				 bpf_map_clear_priv_t clear_priv);
+ LIBBPF_API void *bpf_map__priv(const struct bpf_map *map);
++LIBBPF_API int bpf_map__set_initial_value(struct bpf_map *map,
++					  const void *data, size_t size);
+ LIBBPF_API int bpf_map__reuse_fd(struct bpf_map *map, int fd);
+ LIBBPF_API int bpf_map__resize(struct bpf_map *map, __u32 max_entries);
+ LIBBPF_API bool bpf_map__is_offload_neutral(const struct bpf_map *map);
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index dcc87db3ca8a..159826b36b38 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -243,6 +243,7 @@ LIBBPF_0.0.8 {
+ 		bpf_link__pin;
+ 		bpf_link__pin_path;
+ 		bpf_link__unpin;
++		bpf_map__set_initial_value;
+ 		bpf_program__set_attach_target;
+ 		bpf_set_link_xdp_fd_opts;
+ } LIBBPF_0.0.7;
+-- 
+2.26.0
 
