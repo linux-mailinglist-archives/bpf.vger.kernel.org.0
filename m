@@ -2,105 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 70217196FB2
-	for <lists+bpf@lfdr.de>; Sun, 29 Mar 2020 21:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCAED196FCF
+	for <lists+bpf@lfdr.de>; Sun, 29 Mar 2020 22:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728467AbgC2T05 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 29 Mar 2020 15:26:57 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:40026 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728393AbgC2T05 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 29 Mar 2020 15:26:57 -0400
-Received: by mail-pf1-f195.google.com with SMTP id c20so4946138pfi.7;
-        Sun, 29 Mar 2020 12:26:55 -0700 (PDT)
+        id S1728709AbgC2UGT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 29 Mar 2020 16:06:19 -0400
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:36197 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727933AbgC2UGS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 29 Mar 2020 16:06:18 -0400
+Received: by mail-qv1-f66.google.com with SMTP id z13so7879818qvw.3;
+        Sun, 29 Mar 2020 13:06:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=sPMPtXybkPRv6l8ijINpE3FkTaYU6QeaJDEhFXau+5k=;
-        b=U+YnztsnFG2sbQF4zl4gDayWyHuH40rC7lYebX8lMvJy0/zk1q9b/jqPU1lJtXIf8c
-         Oq3BAsuGD0UEb2FRMRr2B+WcNOmpEqbyHnO2NgM8RDtnYTb4pJR81PnO10A7bY+RrNZl
-         u+hlvhVmOh/wCJl3KIRX1xosrlBPHRWYlJ6WQ2+2T8rfVVrwhzjSoAdeUTl0wn/wb1/I
-         pmKgFtTPqdLXahU+zIdhGxYLcNUu9f+3oRMveR4q5tSX8u2n2DogPjWmyFBjRQuTAkk8
-         Y9rK8xtf5rrsjlJTRH+sCFEmr94yZ5XS+e5lOnAg/8Fy8yEizV8ce52E/ifYPXtzjngc
-         E/oA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=clV/nV6Zb0cjtGaQvCtq+1M9ztNWB5uAj2YeO5WNnhk=;
+        b=J8wrY7yd6jQ93G+M0i+HSaOFCZY3yfouXmtVz0KrUKOcVMKEuLy4Gg1IXbZrKboj3I
+         HZSQKmjbnXE8MIxL5bsW+6Rx6gjfm3JYPkogy+wayzV/vTv4WFhaXJ4vZl2aNP3XvSZe
+         cixKPTXFajAQUW7P8d77JDRb+nE1xaue713ynPT1+9eKiyJjZazuhKeA3IfnOlkqC8LB
+         9WMtUbn0RxjXxO+NpsyLVxk3r/CyXsP0e62dz6N6tMiDH68aiFRGQ5JG9Ps0SSaeGv2H
+         3kKwKt14oVU/7w2j3ZO0GS6xFnS9GgBuE3Bou8KuVwOwlKRX9gu6qLstIYP42K0R4ywc
+         2s/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=sPMPtXybkPRv6l8ijINpE3FkTaYU6QeaJDEhFXau+5k=;
-        b=qDGc7z3l8yPuDecy+UVQ7iMQnuSNMUJ40McOXS3TcUlT58QkB3i/28Ke1UsArT3xGs
-         ClgzAud448IFd1wIWyE2GcXWTnowmGze9RcevaHRx6xo63shAnB6MrI6xGN/H5YJ3h1x
-         nrX509Mbyt2s1dMdO40Cu9gVP7QpVDJldPVGA6t5JmbWJAZjxlpwhV/Ai3yYsB/TFpEd
-         DY0YgKDrEKxBvE1yGxZcjZdSMHQMnV+GdXIW/qcNykPQjG4j8XhOX/3w4RMKtQ2kL8N4
-         ehkWpHXwswdrAWvofvjg+I2kmMg9A7EOBDeb5IkTEYQhotthwQB/NjT7VvfOvVauIgBo
-         RnuA==
-X-Gm-Message-State: ANhLgQ00NFPVxr7Ps3Fpe6bdVqxqJBr/Xnip0fEZaTxBfTzlqaoahHqw
-        ttLlqd54jb20S2JmhVn6T+s=
-X-Google-Smtp-Source: ADFU+vvp5zyS/gNYDfgCCRxhpZ9A3QSRhN4OgGnmfr+hIa9HzMKOY356ND1aorjZkphGn/OkJjHLog==
-X-Received: by 2002:a63:7416:: with SMTP id p22mr9853353pgc.32.1585510014330;
-        Sun, 29 Mar 2020 12:26:54 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:6705])
-        by smtp.gmail.com with ESMTPSA id g4sm8619136pfb.169.2020.03.29.12.26.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Mar 2020 12:26:53 -0700 (PDT)
-Date:   Sun, 29 Mar 2020 12:26:50 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
- program when attaching XDP
-Message-ID: <20200329192650.w55hcof5ix6tb54s@ast-mbp>
-References: <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com>
- <87pncznvjy.fsf@toke.dk>
- <20200326195859.u6inotgrm3ubw5bx@ast-mbp>
- <87imiqm27d.fsf@toke.dk>
- <20200327230047.ois5esl35s63qorj@ast-mbp>
- <87lfnll0eh.fsf@toke.dk>
- <20200328022609.zfupojim7see5cqx@ast-mbp>
- <87eetcl1e3.fsf@toke.dk>
- <20200328233546.7ayswtraepw3ia2x@ast-mbp>
- <87369rla1y.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=clV/nV6Zb0cjtGaQvCtq+1M9ztNWB5uAj2YeO5WNnhk=;
+        b=KJK9RBSkA082tCnOKVbs1nqzO+nQB6pCZDeDtvZSin8t6Rud59+vqLchU5KbRDtlNa
+         ZKuqYybWYXaHIWE/Z2AR5RP8loxcbArwu5Z81r6khSsVztsxEmfOYUHRcdtXVRMPYY23
+         vt2V9fxEDdsKpSwbSXz3WSAsuZMHyq4JlMLVnOfVzuXyJKJ1AjE9ogwOHFpGpoivmbcG
+         +HZs5+SuiTWmArXP3Uoy4RgSMwE/bu//jkx07i6V1UFZ9NvvSNswlrI6Z5ila5XH4znl
+         bQReIxIGokmAg+BZw0zDU6WnA7Us+QCx7Z0oaCUFwT3CyZwbVEo3cfY2jQDRki35w6rP
+         uV6A==
+X-Gm-Message-State: ANhLgQ200eYyIOiPY04XcPBNz48Fz3fXuP+CU/kv8e45nH+gnElx5Nsa
+        GxngMn5vC+TMLdXmClldYNt0n0bmyfgz3PdrKHyz+PU+
+X-Google-Smtp-Source: ADFU+vv1hxBgjqx39VD8aj6P0TppxO180DfynVP/F+jRJ5CpLDd/BiLoxpx6gODSv/megYiGTeH9qBZv72tabitgHbw=
+X-Received: by 2002:a0c:bc15:: with SMTP id j21mr8420435qvg.228.1585512375542;
+ Sun, 29 Mar 2020 13:06:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87369rla1y.fsf@toke.dk>
+References: <20200328182834.196578-1-toke@redhat.com> <20200329132253.232541-1-toke@redhat.com>
+In-Reply-To: <20200329132253.232541-1-toke@redhat.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sun, 29 Mar 2020 13:06:04 -0700
+Message-ID: <CAEf4BzZpd_SMqsJx7UjZDUZk9UY48D2RVW2ero+Rg7=HPzRo=w@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] libbpf: Add setter for initial value for internal maps
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Mar 29, 2020 at 12:39:21PM +0200, Toke Høiland-Jørgensen wrote:
-> 
-> > I guess all that is acceptable behavior to some libxdp users.
-> 
-> I believe so.
+On Sun, Mar 29, 2020 at 6:23 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> For internal maps (most notably the maps backing global variables), libbp=
+f
+> uses an internal mmaped area to store the data after opening the object.
+> This data is subsequently copied into the kernel map when the object is
+> loaded.
+>
+> This adds a function to set a new value for that data, which can be used =
+to
+> before it is loaded into the kernel. This is especially relevant for RODA=
+TA
+> maps, since those are frozen on load.
+>
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
 
-Not for us. Sadly that's where we part ways. we will not be using your libxdp.
-Existing xdp api was barely usable in the datacenter environment. replace_fd
-makes no difference.
+LGTM.
 
-> exclusivity does come in handy. And as I said, I can live with there
-> being two APIs as long as there's a reasonable way to override the
-> bpf_link "lock" :)
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-I explained many times already that bpf_link for XDP is NOT a second api to do
-the same thing. I understand that you think it's a second api, but when you
-keep repeating 'second api' it makes other folks (who also don't understand the
-difference) to make wrong conclusions that they can use either to achieve the
-same thing. They cannot. And it makes my job explaining harder. So please drop
-'second api' narrative.
+[...]
