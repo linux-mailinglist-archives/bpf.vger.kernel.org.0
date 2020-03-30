@@ -2,84 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5AF198786
-	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 00:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22113198797
+	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 00:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728880AbgC3WlI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Mar 2020 18:41:08 -0400
-Received: from www62.your-server.de ([213.133.104.62]:54412 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728876AbgC3WlI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Mar 2020 18:41:08 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jJ35d-0001n9-M7; Tue, 31 Mar 2020 00:41:05 +0200
-Received: from [178.195.186.98] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jJ35d-0008o8-EH; Tue, 31 Mar 2020 00:41:05 +0200
-Subject: Re: CONFIG_DEBUG_INFO_BTF and CONFIG_GCC_PLUGIN_RANDSTRUCT
-To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>
-References: <CAG48ez2sZ58VQ4+LJu39H1M0Y98LhRYR19G_fDAPJPBf7imxuw@mail.gmail.com>
- <CAADnVQ+Ux3-D_7ytRJx_Pz4fStRLS1vkM=-tGZ0paoD7n+JCLQ@mail.gmail.com>
- <CAG48ez0ajun-ujQQqhDRooha1F0BZd3RYKvbJ=8SsRiHAQjUzw@mail.gmail.com>
- <202003301016.D0E239A0@keescook>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <c332da87-a770-8cf9-c252-5fb64c06c17e@iogearbox.net>
-Date:   Tue, 31 Mar 2020 00:41:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1729060AbgC3Wuk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Mar 2020 18:50:40 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:39978 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728876AbgC3Wuk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Mar 2020 18:50:40 -0400
+Received: by mail-lf1-f68.google.com with SMTP id j17so15632683lfe.7;
+        Mon, 30 Mar 2020 15:50:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sPkC0XX2iBY0yYjGTnxVOP9pK5BC05S2dgxzKmJdJTo=;
+        b=pXuibOOfcPQhiq1oPWkObgd3ZMnVXAQW8uQSnrPw/JWoHBlyBLNDK6gaXLx30b708/
+         cfC3n8Oda3JFxmGQZTecF3aawPmu41X85VwPl0KlzOv8x8/acv6ShqnhlFsaVVprGdWl
+         4VD5YXEwqzJdokpg/gVbawTJxuINwLgu8/tTRqGjBqNbj5gSSZ2FSq00S4lf8SnvCKJ7
+         n3OGtaczbWFBg5+5AuhmlosmRf2JWpL+Ul4did/NMA547Zvcel78l9V6m2DhW9WsQg9D
+         5KHThkZ37OUJmwBiCzMXHvtA+7Qh3S1RWB77kRx2/1+gr5PZ2Y8iJkSoBnfn7/CJivr3
+         upwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sPkC0XX2iBY0yYjGTnxVOP9pK5BC05S2dgxzKmJdJTo=;
+        b=DzOfMsq87l28Xj5nhoUtNYIwZwf0L0dcMOpF8XmdrjyHFmnkNpvnk5i5nNbn5seacl
+         VgLLv23R4tZqevRHAOcSZiNfYBfeeQDeq7wU5LV2QjfUnvQk5Acuj+MA/+3gyY0/oorm
+         QD+APhIKHWQmPh09ZOMV52G8SHljKdk53vU4azZIL7mp33HrkBUopDBvJwUAMbIzavAD
+         M+Jt4h7NsRC8O3BrhFZCcOgZ46DUIo1ak3oupOxR821zorXFkop7hmVW5C20hU2MJuw7
+         PfmtiLW4UQeF2PwCQh0/C6A/KICaMIFSvFFRe+TsVH1bLCK+XWDHIz6llEBfGIU5wXex
+         bhpw==
+X-Gm-Message-State: AGi0PuZwvqWexOEMF6KQSCShV3IcEN+KT5c+tEHtQo0M9+ASZE6Psnvl
+        FObSijlEjuI2kO5MDHtcW+fPSGgQQ4x+fLocoFo=
+X-Google-Smtp-Source: APiQypKxUPGWoBW3ts7L57YJ6uczfJxRayL8vb/b8LSxkZUaCAugjMtkhd1CegqX9+BxTWZHzjE0lTJr3FBF3lGbolQ=
+X-Received: by 2002:ac2:418b:: with SMTP id z11mr9432593lfh.134.1585608635677;
+ Mon, 30 Mar 2020 15:50:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <202003301016.D0E239A0@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25767/Mon Mar 30 15:08:30 2020)
+References: <20200330030001.2312810-1-andriin@fb.com> <c9f52288-5ea8-a117-8a67-84ba48374d3a@gmail.com>
+ <CAEf4BzZpCOCi1QfL0peBRjAOkXRwGEi_DAW4z34Mf3Tv_sbRFw@mail.gmail.com> <662788f9-0a53-72d4-2675-daec893b5b81@gmail.com>
+In-Reply-To: <662788f9-0a53-72d4-2675-daec893b5b81@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 30 Mar 2020 15:50:24 -0700
+Message-ID: <CAADnVQK8oMZehQVt34=5zgN12VBc2940AWJJK2Ft0cbOi1jDhQ@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 0/4] Add support for cgroup bpf_link
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrey Ignatov <rdna@fb.com>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/30/20 7:20 PM, Kees Cook wrote:
-> On Mon, Mar 30, 2020 at 06:17:32PM +0200, Jann Horn wrote:
->> On Mon, Mar 30, 2020 at 5:59 PM Alexei Starovoitov
->> <alexei.starovoitov@gmail.com> wrote:
->>> On Mon, Mar 30, 2020 at 8:14 AM Jann Horn <jannh@google.com> wrote:
->>>>
->>>> I noticed that CONFIG_DEBUG_INFO_BTF seems to partly defeat the point
->>>> of CONFIG_GCC_PLUGIN_RANDSTRUCT.
->>>
->>> Is it a theoretical stmt or you have data?
->>> I think it's the other way around.
->>> gcc-plugin breaks dwarf and breaks btf.
->>> But I only looked at gcc patches without applying them.
->>
->> Ah, interesting - I haven't actually tested it, I just assumed
->> (perhaps incorrectly) that the GCC plugin would deal with DWARF info
->> properly.
-> 
-> Yeah, GCC appears to create DWARF before the plugin does the
-> randomization[1], so it's not an exposure, but yes, struct randomization
-> is pretty completely incompatible with a bunch of things in the kernel
-> (by design). I'm happy to add negative "depends" in the Kconfig if it
-> helps clarify anything.
+On Mon, Mar 30, 2020 at 1:46 PM David Ahern <dsahern@gmail.com> wrote:
+> release. As it stands it is a half-baked feature.
 
-Is this expected to get fixed at some point wrt DWARF? Perhaps would make
-sense then to add a negative "depends" for both DWARF and BTF if the option
-GCC_PLUGIN_RANDSTRUCT is set given both would be incompatible/broken.
+speaking of half-baked.
+I think as it stands (even without link_query) it's already extremely
+useful addition and doesn't take anything away from existing cgroup-bpf
+and doesn't hinder observability. 'bpftool cgroup' works just fine.
+So I've applied the set.
 
-Thanks,
-Daniel
-
-> -Kees
-> 
-> [1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=84052
-> 
-
+Even if it was half-baked it would still be applie-able.
+Many features are developed over the course of multiple
+kernel releases. Example: your nexthops, mptcp, bpf-lsm.
