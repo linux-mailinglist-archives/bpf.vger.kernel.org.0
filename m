@@ -2,103 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 358011980A4
-	for <lists+bpf@lfdr.de>; Mon, 30 Mar 2020 18:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56AA1980CB
+	for <lists+bpf@lfdr.de>; Mon, 30 Mar 2020 18:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726981AbgC3QMl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Mar 2020 12:12:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726017AbgC3QMl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Mar 2020 12:12:41 -0400
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 41FDD2072E;
-        Mon, 30 Mar 2020 16:12:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585584761;
-        bh=aGvwRHVGkfCwUwyFQ1NwD3TIR1jMPKBWli5lctMi03A=;
-        h=From:To:Cc:Subject:Date:From;
-        b=cOyl4qF1nqSnhTT458HYnCkYRTGr0Y0u/itgXt8V2OwSLH82KbyfSX6NAYexbwDrw
-         +IjVNh+I0R5+Gd50deJgpMKJA9R9q27UZu7uWsrTpOtFNXyxXS55fA8cGyb7DaQMaz
-         AziioY8InHhg5w6clw0hKSIYvjiuAmlMrwIpKrt8=
-From:   Will Deacon <will@kernel.org>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@android.com, Will Deacon <will@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Eric Dumazet <edumazet@google.com>
-Subject: [RFC PATCH] tun: Don't put_page() for all negative return values from XDP program
-Date:   Mon, 30 Mar 2020 17:12:34 +0100
-Message-Id: <20200330161234.12777-1-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S1730099AbgC3QSC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Mar 2020 12:18:02 -0400
+Received: from mail-lj1-f172.google.com ([209.85.208.172]:44668 "EHLO
+        mail-lj1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726085AbgC3QSB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Mar 2020 12:18:01 -0400
+Received: by mail-lj1-f172.google.com with SMTP id p14so18733462lji.11
+        for <bpf@vger.kernel.org>; Mon, 30 Mar 2020 09:18:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3RZhMtylGsFHVN9z6+W/DO3tfjbONzUeU1vV8G94Wnk=;
+        b=uVCj1jls1um+IFnFYAXlEl3lYn/Ft8+dWYk1a/M+NlIT0UWsnO21w6tRXOR7E3udoL
+         Ea9iUXBC9QD3xlXfIV0f+bnx1i0FhuVFEtvoAyXjp4AYpxMNzWFCFTVrFLkQ9CqBdxNw
+         sMa1pj4INgfN9HltvPVhFuhuco/8UchxZe+yQIKyI2ie99n7oqsz5lGk6w8gitTUAjNu
+         n4S/uSQz97iyJRuJpzaNvs8wvDmy58c+p8rVUzBV2cxOJPIPfqM2wTJuLIfFXUE2s1w6
+         8WR1vAvH095oLBBsEiydmU+7RTmiAyu76oqJpnM+vzj8QZIkqq56yeSKrztpvVVi1MnH
+         0MpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3RZhMtylGsFHVN9z6+W/DO3tfjbONzUeU1vV8G94Wnk=;
+        b=IS1PyQVcoeuYotMLG2pRdOdXS6Xpb+qTsydeUtc5MhDuY8YO+Y4LMllFJmq0dxf+Vj
+         F4Pv8UXewp+uHygIv5SDAxXyXHlt9jAlqOWfDw0BPmuGp1Ibp48WgbKG+c3g2kyBuo3b
+         fpz7bNVVUxfScNzctSGh16S7Ufxh8JaDx+CvMvH09nYZn3MANRlxsSkSr1btEclgZRX0
+         8+hu1bm4h+Ez3xVH1khxW/QMR+YTuKSAA++6Z/xJnJhpx1obynI7D9201UcY0G6LhwW3
+         rfkuxlOkMboeCwIvCHRfoltVfuA4z1BkIwqzZ04pKOhKgO+yCDPb0INLqF/gtHPY7ptQ
+         Vi5g==
+X-Gm-Message-State: AGi0PubnjNrO8HhNCoV9gADEgo/aGbuhCTId2S6C1yB1ILUW6NDghii0
+        ehBxfn8J/dXRJlelDkJFlfV9McU7/3powTbeS5EiaQ==
+X-Google-Smtp-Source: APiQypJNEagMzxJZcGFrz+oawUKbPvEzaZGuQMq79eVbKwBRY/RuQbdk+smSuOeE886fsdULdjaPh0jzDG/oJseDM4w=
+X-Received: by 2002:a2e:9d98:: with SMTP id c24mr7099656ljj.137.1585585079275;
+ Mon, 30 Mar 2020 09:17:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAG48ez2sZ58VQ4+LJu39H1M0Y98LhRYR19G_fDAPJPBf7imxuw@mail.gmail.com>
+ <CAADnVQ+Ux3-D_7ytRJx_Pz4fStRLS1vkM=-tGZ0paoD7n+JCLQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+Ux3-D_7ytRJx_Pz4fStRLS1vkM=-tGZ0paoD7n+JCLQ@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 30 Mar 2020 18:17:32 +0200
+Message-ID: <CAG48ez0ajun-ujQQqhDRooha1F0BZd3RYKvbJ=8SsRiHAQjUzw@mail.gmail.com>
+Subject: Re: CONFIG_DEBUG_INFO_BTF and CONFIG_GCC_PLUGIN_RANDSTRUCT
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When an XDP program is installed, tun_build_skb() grabs a reference to
-the current page fragment page if the program returns XDP_REDIRECT or
-XDP_TX. However, since tun_xdp_act() passes through negative return
-values from the XDP program, it is possible to trigger the error path by
-mistake and accidentally drop a reference to the fragments page without
-taking one, leading to a spurious free. This is believed to be the cause
-of some KASAN use-after-free reports from syzbot [1], although without a
-reproducer it is not possible to confirm whether this patch fixes the
-problem.
+On Mon, Mar 30, 2020 at 5:59 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+> On Mon, Mar 30, 2020 at 8:14 AM Jann Horn <jannh@google.com> wrote:
+> >
+> > I noticed that CONFIG_DEBUG_INFO_BTF seems to partly defeat the point
+> > of CONFIG_GCC_PLUGIN_RANDSTRUCT.
+>
+> Is it a theoretical stmt or you have data?
+> I think it's the other way around.
+> gcc-plugin breaks dwarf and breaks btf.
+> But I only looked at gcc patches without applying them.
 
-Ensure that we only drop a reference to the fragments page if the XDP
-transmit or redirect operations actually fail.
-
-[1] https://syzkaller.appspot.com/bug?id=e76a6af1be4acd727ff6bbca669833f98cbf5d95
-
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jason Wang <jasowang@redhat.com>
-CC: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Will Deacon <will@kernel.org>
----
-
-Sending as RFC because I've not been able to confirm that this fixes anything.
-
- drivers/net/tun.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index 650c937ed56b..9de9b7d8aedd 100644
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -1715,8 +1715,12 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
- 			alloc_frag->offset += buflen;
- 		}
- 		err = tun_xdp_act(tun, xdp_prog, &xdp, act);
--		if (err < 0)
--			goto err_xdp;
-+		if (err < 0) {
-+			if (act == XDP_REDIRECT || act == XDP_TX)
-+				put_page(alloc_frag->page);
-+			goto out;
-+		}
-+
- 		if (err == XDP_REDIRECT)
- 			xdp_do_flush();
- 		if (err != XDP_PASS)
-@@ -1730,8 +1734,6 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
- 
- 	return __tun_build_skb(tfile, alloc_frag, buf, buflen, len, pad);
- 
--err_xdp:
--	put_page(alloc_frag->page);
- out:
- 	rcu_read_unlock();
- 	local_bh_enable();
--- 
-2.26.0.rc2.310.g2932bb562d-goog
-
+Ah, interesting - I haven't actually tested it, I just assumed
+(perhaps incorrectly) that the GCC plugin would deal with DWARF info
+properly.
