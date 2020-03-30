@@ -2,356 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C46C81972B8
-	for <lists+bpf@lfdr.de>; Mon, 30 Mar 2020 05:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B49F2197444
+	for <lists+bpf@lfdr.de>; Mon, 30 Mar 2020 08:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729285AbgC3DAc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 29 Mar 2020 23:00:32 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:29424 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729273AbgC3DAc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 29 Mar 2020 23:00:32 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02U30UIW017815
-        for <bpf@vger.kernel.org>; Sun, 29 Mar 2020 20:00:31 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=5iTq5IScFnRyRJGb3Rb6zMgKbF04ryz5uhGGr00u074=;
- b=fVrv8Wmgtd+k1g+3XdivPv7G8ZRDF038DUmbBMn5OuIkuOkV4kapCY1lD6qnq9H412Uu
- wp9IKz05YsOLa8h3VBoyo2XrWY78JceVZ4ip+VRhO1Ih8u3Qb0SJRTsAyVyKoSkBLfzG
- msNtF2XShquT/d8MQkpdKLDGKcPdFVWBQ1Y= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3031m8hsxv-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sun, 29 Mar 2020 20:00:31 -0700
-Received: from intmgw002.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+        id S1728732AbgC3GKh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Mar 2020 02:10:37 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23174 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726463AbgC3GKh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 30 Mar 2020 02:10:37 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 02U68KOC009127;
+        Sun, 29 Mar 2020 23:10:32 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=P5YWrf7dyiKQJAd/53OI6QaWl9Pia9ar2hQISqKxhPM=;
+ b=PpM8iTephs3QL0s2mILh+DEUsWG51FSf9cy0ZyNcaSbN6gdhcSc1MKnIB0dzKxecZeFF
+ zEGCxTNZqDrPWcTJm1t8Apu23b54apeYluhKAxnRoyK/gJRVhk+G/KC9SzmTISc/ERgQ
+ pULdzzJhRCnxUpeKIR+exjfUDr+Q12bSF6E= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 302dw6xbd7-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sun, 29 Mar 2020 23:10:32 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Sun, 29 Mar 2020 20:00:14 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id A449B2EC3214; Sun, 29 Mar 2020 20:00:11 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
+ 15.1.1847.3; Sun, 29 Mar 2020 23:10:12 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R1kVfJ72fy7CL+WA9W5Dtlr/o2+uQOt2QqI+lY+dnpiW7MKwgwmZeGjjzt15E6lSCgIs3xipTW9tiu0JbHZTt4kTEFKyQiNUxu+B/30drm4xek1hZT0k0Dex2ClJk5Vt2cAAED8HorFx7lgG+k8xsE0VHxhGkCXAJuBQZjosWw/TYWHUXaJXWuPJ/Wi0hM6iDfl3I+FzXDE2kAscxubBsE0g9Aiyj58UMupyPe52dAPWX0eAdJY+eGD1Irc9/gz6TCdOol3dhPyedPHl9AXmkqnagkwJ2uU/lBEoSy6JJbz/X5ZOBft6MAgWc8flepxr2n9qjPdcY6rhi8dt4hxuQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P5YWrf7dyiKQJAd/53OI6QaWl9Pia9ar2hQISqKxhPM=;
+ b=C00iYywmBb6BCVVU5eW20LR0jgSjahWZcq7dW+CzJwsbp/YiTqM9izgI3P3TrrAhEdR5B/ZA/yQnjtimKELBVMBP0bobLe2h49m2xNhuB/XrTVPvPYLwJQRWvGKo4TLv3bxTE3z7QlsRe0MFS8OcgPr1dOysaRSW56yN9AtdTnZNcohn+jFxg62EdMliZX9BSGyWXGNEKsv29oJpgp6ThsbQuhsel+IgcEYjoUFOmj+BoR2gq8lTc92HK+bex8kqNudiBNGyGj/l0CokcijbDbw7C2F4fbyHlENKjFAiYN2CW/WcZb0IWBNWp56h++USHvLuWbSdkix/f19JhtDfmw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P5YWrf7dyiKQJAd/53OI6QaWl9Pia9ar2hQISqKxhPM=;
+ b=Jd5EeN4L56wiFsMX0iqHcvyyVRd15kbeuUXS5jTDdYW4D6ZXWJyGA9t13hxOSZ1DmohHdUMKT6rjvk6CYqJHjd1BK/s2457zzFhgFc/mAT/ISYXZp8S0LKFZOP3AS5fiOsDs6+ZyNTRyVEDCER1HySyuiKuY8XzOmRp1QveQbzs=
+Received: from MW3PR15MB3753.namprd15.prod.outlook.com (2603:10b6:303:50::17)
+ by MW3PR15MB3788.namprd15.prod.outlook.com (2603:10b6:303:4e::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2856.20; Mon, 30 Mar
+ 2020 06:09:58 +0000
+Received: from MW3PR15MB3753.namprd15.prod.outlook.com
+ ([fe80::3517:e69:6e78:4f7c]) by MW3PR15MB3753.namprd15.prod.outlook.com
+ ([fe80::3517:e69:6e78:4f7c%7]) with mapi id 15.20.2856.019; Mon, 30 Mar 2020
+ 06:09:57 +0000
+Subject: Re: runqslower build failed on Debian9
+To:     Liu Yiding <liuyd.fnst@cn.fujitsu.com>
+CC:     <linux-kselftest@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>
+References: <60b05d23-6352-b978-3bf7-5a86466bb297@cn.fujitsu.com>
+ <c1025a74-1d80-5127-2b0a-87465d3dbcd0@fb.com>
+ <84a70348-62e3-728b-d934-28e902d40fd0@cn.fujitsu.com>
+ <da95b852-e556-1b56-42eb-b97e1826710c@cn.fujitsu.com>
+ <a2771f66-b7ff-f320-dbd6-0967c189834f@cn.fujitsu.com>
 From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>, <rdna@fb.com>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v3 bpf-next 4/4] selftests/bpf: test FD-based cgroup attachment
-Date:   Sun, 29 Mar 2020 20:00:01 -0700
-Message-ID: <20200330030001.2312810-5-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200330030001.2312810-1-andriin@fb.com>
-References: <20200330030001.2312810-1-andriin@fb.com>
-X-FB-Internal: Safe
+Message-ID: <a2b1a025-6a70-c3a5-fc19-155f0266946a@fb.com>
+Date:   Sun, 29 Mar 2020 23:09:55 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.6.0
+In-Reply-To: <a2771f66-b7ff-f320-dbd6-0967c189834f@cn.fujitsu.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: CO2PR04CA0200.namprd04.prod.outlook.com
+ (2603:10b6:104:5::30) To MW3PR15MB3753.namprd15.prod.outlook.com
+ (2603:10b6:303:50::17)
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:2103:51:fde8:f2bb:1332] (2620:10d:c090:400::5:5130) by CO2PR04CA0200.namprd04.prod.outlook.com (2603:10b6:104:5::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2856.19 via Frontend Transport; Mon, 30 Mar 2020 06:09:56 +0000
+X-Originating-IP: [2620:10d:c090:400::5:5130]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d509006c-ed53-45b6-e172-08d7d470f8b6
+X-MS-TrafficTypeDiagnostic: MW3PR15MB3788:
+X-Microsoft-Antispam-PRVS: <MW3PR15MB37881D5C4D1ED2A7507460BDC6CB0@MW3PR15MB3788.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Forefront-PRVS: 0358535363
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR15MB3753.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(396003)(376002)(366004)(346002)(39860400002)(136003)(8676002)(36756003)(81156014)(478600001)(66946007)(316002)(81166006)(2616005)(8936002)(66556008)(66476007)(2906002)(6486002)(54906003)(52116002)(53546011)(186003)(6916009)(16526019)(4326008)(31696002)(86362001)(5660300002)(31686004);DIR:OUT;SFP:1102;
+Received-SPF: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CdQEEVhiLqERQUDBoM+tKR90tFlHrtUY5UYDex8huRlkQqjfetS2JqI0DQZjF2GO1QcBnAsFtZrkuI5tw5TWYBTW806MPNzaSIpfsvki4mxZHfFjyaf9M3wupNj6yAGoX4TL5iDXM7DJPPBzmpPQMfhw/p1lJSXKMaMLJ7h0uFukayeoXm0w599fmxzWcvbIqJvfWG4+MDHzj+rQqrY+ZpQNj8njxfj+wpdrwtu/zi2jIpHl5X+MMkVcszAzyiz7FSndVsjntfwvM9W+DDom/IulnbVx6JGzubm2KC+RjgYMeWLNGMOj3hgvuRIa6emlcxeZoioOWr8lSo1eLX+i4AOcUlsG4xtjeziEJj18zNtawRlqFqS2cKGbo3pXvMqNoKhdw+zFJrzKOQdnPB1agU8KklsmARFYL7JlZwyEL05VsFvfKNwEwB3UdBVCzqTU
+X-MS-Exchange-AntiSpam-MessageData: QOngdz2MtNWF5+QcottyKkShOcf8u8xGc8Sq6Rk4hujpvTMeLZQR1+CvQBvtbNQZDZH1Ip5gc/uMOOOWsgMwLReaigdTXI1nMsjo93BCIl1ALA3jFBwJSB5f3GZHgnFdMcLnBuQ1M/3PbIQf+M0X700P57hQ1uSotexE16fLFDr/+ADkNTd1f6BD3wg3KhRd
+X-MS-Exchange-CrossTenant-Network-Message-Id: d509006c-ed53-45b6-e172-08d7d470f8b6
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2020 06:09:57.2726
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VdQnFaMj5tmwUFA5WYihIqaUvuUXIZhmb6dDJIsVvgQu2f1l7UI3d0kyAAeTHlTX
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3788
+X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
- definitions=2020-03-29_10:2020-03-27,2020-03-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 phishscore=0
- lowpriorityscore=0 suspectscore=8 spamscore=0 adultscore=0 malwarescore=0
- clxscore=1015 priorityscore=1501 mlxlogscore=904 impostorscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2003300027
+ definitions=2020-03-30_01:2020-03-27,2020-03-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ bulkscore=0 impostorscore=0 mlxlogscore=999 adultscore=0 malwarescore=0
+ clxscore=1015 phishscore=0 lowpriorityscore=0 spamscore=0
+ priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2003020000 definitions=main-2003300058
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add selftests to exercise FD-based cgroup BPF program attachments and their
-intermixing with legacy cgroup BPF attachments. Auto-detachment and program
-replacement (both unconditional and cmpxchng-like) are tested as well.
+On 3/29/20 5:48 PM, Liu Yiding wrote:
+> Add attachment.
+> 
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- .../selftests/bpf/prog_tests/cgroup_link.c    | 244 ++++++++++++++++++
- .../selftests/bpf/progs/test_cgroup_link.c    |  24 ++
- 2 files changed, 268 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_link.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_cgroup_link.c
+Your BTF seems to be invalid. It has struct perf_ibs, which has a first 
+field `struct pmu pmu` field with valid-looking size of 296 bytes, 
+**but** the type that field points to is not a complete `struct pmu` 
+definition, but rather just forward declaration. The way it is it 
+shouldn't be even compilable, because forward declaration of a struct 
+doesn't specify the size of a struct, so compiler should have rejected 
+it. So it must be that either DWARF generated by compiler isn't correct, 
+or there is DWARF -> BTF conversion bug somewhere. Are you using any 
+special DWARF Kconfig settings? Maybe you can share your full .config 
+and I might try to repro it on my machine.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_link.c b/tools/testing/selftests/bpf/prog_tests/cgroup_link.c
-new file mode 100644
-index 000000000000..6e04f8d1d15b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_link.c
-@@ -0,0 +1,244 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+#include "cgroup_helpers.h"
-+#include "test_cgroup_link.skel.h"
-+
-+static __u32 duration = 0;
-+#define PING_CMD	"ping -q -c1 -w1 127.0.0.1 > /dev/null"
-+
-+static struct test_cgroup_link *skel = NULL;
-+
-+int ping_and_check(int exp_calls, int exp_alt_calls)
-+{
-+	skel->bss->calls = 0;
-+	skel->bss->alt_calls = 0;
-+	CHECK_FAIL(system(PING_CMD));
-+	if (CHECK(skel->bss->calls != exp_calls, "call_cnt",
-+		  "exp %d, got %d\n", exp_calls, skel->bss->calls))
-+		return -EINVAL;
-+	if (CHECK(skel->bss->alt_calls != exp_alt_calls, "alt_call_cnt",
-+		  "exp %d, got %d\n", exp_alt_calls, skel->bss->alt_calls))
-+		return -EINVAL;
-+	return 0;
-+}
-+
-+void test_cgroup_link(void)
-+{
-+	struct {
-+		const char *path;
-+		int fd;
-+	} cgs[] = {
-+		{ "/cg1" },
-+		{ "/cg1/cg2" },
-+		{ "/cg1/cg2/cg3" },
-+		{ "/cg1/cg2/cg3/cg4" },
-+	};
-+	int last_cg = ARRAY_SIZE(cgs) - 1, cg_nr = ARRAY_SIZE(cgs);
-+	DECLARE_LIBBPF_OPTS(bpf_link_update_opts, link_upd_opts);
-+	struct bpf_link *links[ARRAY_SIZE(cgs)] = {}, *tmp_link;
-+	__u32 prog_ids[ARRAY_SIZE(cgs)], prog_cnt = 0, attach_flags;
-+	int i = 0, err, prog_fd;
-+	bool detach_legacy = false;
-+
-+	skel = test_cgroup_link__open_and_load();
-+	if (CHECK(!skel, "skel_open_load", "failed to open/load skeleton\n"))
-+		return;
-+	prog_fd = bpf_program__fd(skel->progs.egress);
-+
-+	err = setup_cgroup_environment();
-+	if (CHECK(err, "cg_init", "failed: %d\n", err))
-+		goto cleanup;
-+
-+	for (i = 0; i < cg_nr; i++) {
-+		cgs[i].fd = create_and_get_cgroup(cgs[i].path);
-+		if (CHECK(cgs[i].fd < 0, "cg_create", "fail: %d\n", cgs[i].fd))
-+			goto cleanup;
-+	}
-+
-+	err = join_cgroup(cgs[last_cg].path);
-+	if (CHECK(err, "cg_join", "fail: %d\n", err))
-+		goto cleanup;
-+
-+	for (i = 0; i < cg_nr; i++) {
-+		links[i] = bpf_program__attach_cgroup(skel->progs.egress,
-+						      cgs[i].fd);
-+		if (CHECK(IS_ERR(links[i]), "cg_attach", "i: %d, err: %ld\n",
-+				 i, PTR_ERR(links[i])))
-+			goto cleanup;
-+	}
-+
-+	ping_and_check(cg_nr, 0);
-+
-+	/* query the number of effective progs and attach flags in root cg */
-+	err = bpf_prog_query(cgs[0].fd, BPF_CGROUP_INET_EGRESS,
-+			     BPF_F_QUERY_EFFECTIVE, &attach_flags, NULL,
-+			     &prog_cnt);
-+	CHECK_FAIL(err);
-+	CHECK_FAIL(attach_flags != BPF_F_ALLOW_MULTI);
-+	if (CHECK(prog_cnt != 1, "effect_cnt", "exp %d, got %d\n", 1, prog_cnt))
-+		goto cleanup;
-+
-+	/* query the number of effective progs in last cg */
-+	err = bpf_prog_query(cgs[last_cg].fd, BPF_CGROUP_INET_EGRESS,
-+			     BPF_F_QUERY_EFFECTIVE, NULL, NULL,
-+			     &prog_cnt);
-+	CHECK_FAIL(err);
-+	CHECK_FAIL(attach_flags != BPF_F_ALLOW_MULTI);
-+	if (CHECK(prog_cnt != cg_nr, "effect_cnt", "exp %d, got %d\n",
-+		  cg_nr, prog_cnt))
-+		goto cleanup;
-+
-+	/* query the effective prog IDs in last cg */
-+	err = bpf_prog_query(cgs[last_cg].fd, BPF_CGROUP_INET_EGRESS,
-+			     BPF_F_QUERY_EFFECTIVE, &attach_flags,
-+			     prog_ids, &prog_cnt);
-+	CHECK_FAIL(err);
-+	CHECK_FAIL(attach_flags != BPF_F_ALLOW_MULTI);
-+	if (CHECK(prog_cnt != cg_nr, "effect_cnt", "exp %d, got %d\n",
-+		  cg_nr, prog_cnt))
-+		goto cleanup;
-+	for (i = 1; i < prog_cnt; i++) {
-+		CHECK(prog_ids[i - 1] != prog_ids[i], "prog_id_check",
-+		      "idx %d, prev id %d, cur id %d\n",
-+		      i, prog_ids[i - 1], prog_ids[i]);
-+	}
-+
-+	/* detach bottom program and ping again */
-+	bpf_link__destroy(links[last_cg]);
-+	links[last_cg] = NULL;
-+
-+	ping_and_check(cg_nr - 1, 0);
-+
-+	/* mix in with non link-based multi-attachments */
-+	err = bpf_prog_attach(prog_fd, cgs[last_cg].fd,
-+			      BPF_CGROUP_INET_EGRESS, BPF_F_ALLOW_MULTI);
-+	if (CHECK(err, "cg_attach_legacy", "errno=%d\n", errno))
-+		goto cleanup;
-+	detach_legacy = true;
-+
-+	links[last_cg] = bpf_program__attach_cgroup(skel->progs.egress,
-+						    cgs[last_cg].fd);
-+	if (CHECK(IS_ERR(links[last_cg]), "cg_attach", "err: %ld\n",
-+		  PTR_ERR(links[last_cg])))
-+		goto cleanup;
-+
-+	ping_and_check(cg_nr + 1, 0);
-+
-+	/* detach link */
-+	bpf_link__destroy(links[last_cg]);
-+	links[last_cg] = NULL;
-+
-+	/* detach legacy */
-+	err = bpf_prog_detach2(prog_fd, cgs[last_cg].fd, BPF_CGROUP_INET_EGRESS);
-+	if (CHECK(err, "cg_detach_legacy", "errno=%d\n", errno))
-+		goto cleanup;
-+	detach_legacy = false;
-+
-+	/* attach legacy exclusive prog attachment */
-+	err = bpf_prog_attach(prog_fd, cgs[last_cg].fd,
-+			      BPF_CGROUP_INET_EGRESS, 0);
-+	if (CHECK(err, "cg_attach_exclusive", "errno=%d\n", errno))
-+		goto cleanup;
-+	detach_legacy = true;
-+
-+	/* attempt to mix in with multi-attach bpf_link */
-+	tmp_link = bpf_program__attach_cgroup(skel->progs.egress,
-+					      cgs[last_cg].fd);
-+	if (CHECK(!IS_ERR(tmp_link), "cg_attach_fail", "unexpected success!\n")) {
-+		bpf_link__destroy(tmp_link);
-+		goto cleanup;
-+	}
-+
-+	ping_and_check(cg_nr, 0);
-+
-+	/* detach */
-+	err = bpf_prog_detach2(prog_fd, cgs[last_cg].fd, BPF_CGROUP_INET_EGRESS);
-+	if (CHECK(err, "cg_detach_legacy", "errno=%d\n", errno))
-+		goto cleanup;
-+	detach_legacy = false;
-+
-+	ping_and_check(cg_nr - 1, 0);
-+
-+	/* attach back link-based one */
-+	links[last_cg] = bpf_program__attach_cgroup(skel->progs.egress,
-+						    cgs[last_cg].fd);
-+	if (CHECK(IS_ERR(links[last_cg]), "cg_attach", "err: %ld\n",
-+		  PTR_ERR(links[last_cg])))
-+		goto cleanup;
-+
-+	ping_and_check(cg_nr, 0);
-+
-+	/* check legacy exclusive prog can't be attached */
-+	err = bpf_prog_attach(prog_fd, cgs[last_cg].fd,
-+			      BPF_CGROUP_INET_EGRESS, 0);
-+	if (CHECK(!err, "cg_attach_exclusive", "unexpected success")) {
-+		bpf_prog_detach2(prog_fd, cgs[last_cg].fd, BPF_CGROUP_INET_EGRESS);
-+		goto cleanup;
-+	}
-+
-+	/* replace BPF programs inside their links for all but first link */
-+	for (i = 1; i < cg_nr; i++) {
-+		err = bpf_link__update_program(links[i], skel->progs.egress_alt);
-+		if (CHECK(err, "prog_upd", "link #%d\n", i))
-+			goto cleanup;
-+	}
-+
-+	ping_and_check(1, cg_nr - 1);
-+
-+	/* Attempt program update with wrong expected BPF program */
-+	link_upd_opts.old_prog_fd = bpf_program__fd(skel->progs.egress_alt);
-+	link_upd_opts.flags = BPF_F_REPLACE;
-+	err = bpf_link_update(bpf_link__fd(links[0]),
-+			      bpf_program__fd(skel->progs.egress_alt),
-+			      &link_upd_opts);
-+	if (CHECK(err == 0 || errno != EPERM, "prog_cmpxchg1",
-+		  "unexpectedly succeeded, err %d, errno %d\n", err, -errno))
-+		goto cleanup;
-+
-+	/* Compare-exchange single link program from egress to egress_alt */
-+	link_upd_opts.old_prog_fd = bpf_program__fd(skel->progs.egress);
-+	link_upd_opts.flags = BPF_F_REPLACE;
-+	err = bpf_link_update(bpf_link__fd(links[0]),
-+			      bpf_program__fd(skel->progs.egress_alt),
-+			      &link_upd_opts);
-+	if (CHECK(err, "prog_cmpxchg2", "errno %d\n", -errno))
-+		goto cleanup;
-+
-+	/* ping */
-+	ping_and_check(0, cg_nr);
-+
-+	/* close cgroup FDs before detaching links */
-+	for (i = 0; i < cg_nr; i++) {
-+		if (cgs[i].fd > 0) {
-+			close(cgs[i].fd);
-+			cgs[i].fd = -1;
-+		}
-+	}
-+
-+	/* BPF programs should still get called */
-+	ping_and_check(0, cg_nr);
-+
-+	/* leave cgroup and remove them, don't detach programs */
-+	cleanup_cgroup_environment();
-+
-+	/* BPF programs should have been auto-detached */
-+	ping_and_check(0, 0);
-+
-+cleanup:
-+	if (detach_legacy)
-+		bpf_prog_detach2(prog_fd, cgs[last_cg].fd,
-+				 BPF_CGROUP_INET_EGRESS);
-+
-+	for (i = 0; i < cg_nr; i++) {
-+		if (!IS_ERR(links[i]))
-+			bpf_link__destroy(links[i]);
-+	}
-+	test_cgroup_link__destroy(skel);
-+
-+	for (i = 0; i < cg_nr; i++) {
-+		if (cgs[i].fd > 0)
-+			close(cgs[i].fd);
-+	}
-+	cleanup_cgroup_environment();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_cgroup_link.c b/tools/testing/selftests/bpf/progs/test_cgroup_link.c
-new file mode 100644
-index 000000000000..77e47b9e4446
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_cgroup_link.c
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+int calls = 0;
-+int alt_calls = 0;
-+
-+SEC("cgroup_skb/egress1")
-+int egress(struct __sk_buff *skb)
-+{
-+	__sync_fetch_and_add(&calls, 1);
-+	return 1;
-+}
-+
-+SEC("cgroup_skb/egress2")
-+int egress_alt(struct __sk_buff *skb)
-+{
-+	__sync_fetch_and_add(&alt_calls, 1);
-+	return 1;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-+
--- 
-2.17.1
+But either way, that warning you get is a valid one, it should be 
+illegal to have non-pointer forward-declared struct as a type for a 
+struct member.
+
+> 
+> On 3/30/20 8:46 AM, Liu Yiding wrote:
+>> Something wrong with my smtp and this email missed.
+>>
+>> Send again.
+>>
+>>
+>> On 3/27/20 11:09 AM, Liu Yiding wrote:
+>>> Hi, Andrii.
+>>>
+>>> Thanks for your prompt reply!
+>>>
+>>> Please check attatchment for my_btf.bin.
+>>>
+>>>
+>>> On 3/27/20 4:28 AM, Andrii Nakryiko wrote:
+>>>> Would you be able to share BTF of vmlinux that is used to generate 
+>>>> vmlinux.h? Please run in verbose mode: `make V=1` and search for 
+>>>> `bpftool btf dump file` command. It should point either to
+>>>> /sys/kernel/btf/vmlinux or some other location, depending on how 
+>>>> things are set up on your side.
+>>>>
+>>>> If it's /sys/kernel/btf/vmlinux, you can just `cat 
+>>>> /sys/kernel/btf/vmlinux > my_btf.bin`. If it's some other file, 
+>>>> easiest would be to just share that file. If not, it's possible to 
+>>>> extract .BTF ELF section, let me know if you need help with that. 
+>>>
 
