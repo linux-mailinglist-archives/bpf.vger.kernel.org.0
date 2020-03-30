@@ -2,97 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 944C7198873
-	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 01:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F8F19888F
+	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 01:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728901AbgC3Xn6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Mar 2020 19:43:58 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:33829 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728537AbgC3Xn6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Mar 2020 19:43:58 -0400
-Received: by mail-qk1-f193.google.com with SMTP id i6so21202338qke.1;
-        Mon, 30 Mar 2020 16:43:56 -0700 (PDT)
+        id S1728901AbgC3Xx3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Mar 2020 19:53:29 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:44109 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728537AbgC3Xx3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Mar 2020 19:53:29 -0400
+Received: by mail-qk1-f194.google.com with SMTP id j4so21156152qkc.11
+        for <bpf@vger.kernel.org>; Mon, 30 Mar 2020 16:53:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GEsMIo837tE32nbS1/vEjsFIUIiXOxXUakGNYbdMpd0=;
-        b=L3hJjaAxfXb9n9FyPxd2XiDbZ+CqPjgoEr2fg5fgZBk1Pe9LgMeiuexsjHHdIlGi4X
-         6FJtY/TSSX+dLKX+Mac0qUYMTeOVxE8iwk9GkKv79MXQsrTPcEmPm0TXCNnKHZyXhT2W
-         bAYrE4wW04mefR0cT1IiX7Tqup8JraVP/uleEVv5XAuA8oKb70EOXMvt8fyknjbwpOOr
-         YgFlxHe56wEPvUiRc7vH6IHxLYOUb62/pqs/cYLgSSE9d6qv6EtX+8OSTEhj9DmVLZUj
-         WvvUhjn1wEbWx54VKRoJwIDCNhwTn4in0f9IRD71qRqA3nN7UcN18E3fhSqZIaru+c4c
-         dy3A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GEeD2ynREbqBHB9cLaqJx6nSGcBjmQzXGIRvg9dyv3I=;
+        b=U4D8boWjIGxt05DbPDn0/Kda5cRytPh41gY5PPi99LtvkJ2w5zuUmqHdY3iy+c/ouV
+         EVwt1EaxHbxgQqL6k8J+YDYYc/KCkg5HT1OoU3oAHnnnF2TNww8dKcq98ANmIpTi1HJv
+         T+nvUleaEZNXdr8MDkLfacvdvNsmZFKEi6fvaEaaZgE1W0BgHy/IZZUkNjc10eFyiYvb
+         sxhARkFNmeUpmQfvdyBYq+fFwDzVoFbLINKZ1G6wr8Tehwgm2hV+tjHI88YMw6e4c03x
+         NC1alUXxpD1Oy09BPfPtu0ggrGBX2AR1jg7nOXrq6qXJFFyDd+jkBUBx0R5VyctJGJga
+         vItg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GEsMIo837tE32nbS1/vEjsFIUIiXOxXUakGNYbdMpd0=;
-        b=tVuleEkD4YJ+EbIawK/Kae/P3iHKEmwHkB/SAJnlGSU0aPW8VZmWSqMwO+Y5vVOnAw
-         e6Wo8fgiRX2Lq2HpChTct88qUryAoSZhHZ0b4Ihhj09fjbHPUZf04wGOXHXGiagREP2r
-         87SM3cM7a9789RMggMpc/1mOFsfqU9z+pQ+BjEsxeC6ei93/lKi5Tgwd82qTRkL+zvU2
-         5aWgzpIe6nEG2NZPDCGiOyqTa9uQpjwrMFZqsHVxUALqXmi0mo6GCv4l5tN8BYZ16T0M
-         0BFw2QyopIb7S5QYcnhVa/+TdS9aBIbKnIrjVfkuwSh8d+zGT1Zc4+pf9UEWVMf56Gzr
-         DieQ==
-X-Gm-Message-State: ANhLgQ3W6ZpZ4NVFRKwRq8nuaCqTvX+NaouExXjZe+DDCMQxppG1zpjb
-        s5DqfV3kbAKEGD5Gn/owxqo=
-X-Google-Smtp-Source: ADFU+vsXv53R/3NPrlBI0i4bpT+AnryRoMEiamLHgvXwbpCUB5RdBqYAqdMTEqbbYpgHAraWdEkdjw==
-X-Received: by 2002:a37:6756:: with SMTP id b83mr2425361qkc.468.1585611835574;
-        Mon, 30 Mar 2020 16:43:55 -0700 (PDT)
-Received: from ?IPv6:2601:282:803:7700:38c4:c806:40d0:dc8a? ([2601:282:803:7700:38c4:c806:40d0:dc8a])
-        by smtp.googlemail.com with ESMTPSA id d24sm11313167qkl.8.2020.03.30.16.43.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Mar 2020 16:43:54 -0700 (PDT)
-Subject: Re: [PATCH v3 bpf-next 0/4] Add support for cgroup bpf_link
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrey Ignatov <rdna@fb.com>, Kernel Team <kernel-team@fb.com>
-References: <20200330030001.2312810-1-andriin@fb.com>
- <c9f52288-5ea8-a117-8a67-84ba48374d3a@gmail.com>
- <CAEf4BzZpCOCi1QfL0peBRjAOkXRwGEi_DAW4z34Mf3Tv_sbRFw@mail.gmail.com>
- <662788f9-0a53-72d4-2675-daec893b5b81@gmail.com>
- <CAADnVQK8oMZehQVt34=5zgN12VBc2940AWJJK2Ft0cbOi1jDhQ@mail.gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <cdd576be-8075-13a7-98ee-9bc9355a2437@gmail.com>
-Date:   Mon, 30 Mar 2020 17:43:52 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GEeD2ynREbqBHB9cLaqJx6nSGcBjmQzXGIRvg9dyv3I=;
+        b=KeieY0PqQw6LXkyXUay9pJHNuGVyhHNtrv4SvCv2BMYTS9JKXF58N0HmPid5VU77KF
+         BmEpn+0yvh5MmXzSJK7yg6U08GN5mdOs666S84s5Z8AQeYPskxHIMwb40NGgWf4j8zIb
+         quaAjh+9ShDdTLh1X0UG1so0BnK2gewxTsKxBCkzpTmaJsNAoNdF+6kVgQVYmzPqE5y6
+         VgUa3KZKSdKXUN+Onc3QFz0ZrKbXKoUSCggoUSUAnFrcig//MHXGfrOV4aBERFJ8cs0o
+         mPxkJQmAwu9GcgR8AUAQgQrjlOpDqf7+6SVncsx7pXVnKCVJ5+g/XceXLkavLesgac8T
+         fsqw==
+X-Gm-Message-State: ANhLgQ3qXJD3wCJAzamcYPzkQNtKs8ZYex+LKAdl7FjJK+YTlwJ0o6DR
+        +PEmF1Jl/eyQqUi3HPLmnCdsdRqh/S4XTct3ZEQ=
+X-Google-Smtp-Source: ADFU+vseRGWJu7mMCOTaa8dOS8JXA3cierfSwCBO2YqlRns5wY4rJ5mcLii0955O7e8izYWyeFKuvmac2dCuAqzbMl4=
+X-Received: by 2002:a37:992:: with SMTP id 140mr1874898qkj.36.1585612407853;
+ Mon, 30 Mar 2020 16:53:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQK8oMZehQVt34=5zgN12VBc2940AWJJK2Ft0cbOi1jDhQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <0e9a74933b3f21f4c5b5a3bc7f8e900b39805639.1585556231.git.daniel@iogearbox.net>
+In-Reply-To: <0e9a74933b3f21f4c5b5a3bc7f8e900b39805639.1585556231.git.daniel@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 30 Mar 2020 16:53:16 -0700
+Message-ID: <CAEf4BzYcpzeH+wDhk-MAU9NFbZ7NXYb5neh3hZVWrn2pHhduNw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf, doc: Add John as official reviewer to BPF subsystem
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/30/20 4:50 PM, Alexei Starovoitov wrote:
-> On Mon, Mar 30, 2020 at 1:46 PM David Ahern <dsahern@gmail.com> wrote:
->> release. As it stands it is a half-baked feature.
-> 
-> speaking of half-baked.
-> I think as it stands (even without link_query) it's already extremely
-> useful addition and doesn't take anything away from existing cgroup-bpf
-> and doesn't hinder observability. 'bpftool cgroup' works just fine.
-> So I've applied the set.
-> 
-> Even if it was half-baked it would still be applie-able.
-> Many features are developed over the course of multiple
-> kernel releases. Example: your nexthops, mptcp, bpf-lsm.
-> 
+On Mon, Mar 30, 2020 at 1:39 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> We've added John Fastabend to our weekly BPF patch review rotation over
+> last months now where he provided excellent and timely feedback on BPF
+> patches. Therefore, add him to the BPF core reviewer team to the MAINTAINERS
+> file to reflect that.
+>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Acked-by: Alexei Starovoitov <ast@kernel.org>
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> ---
 
-nexthops were not - refactoring in 1 release and the entire feature went
-in to 5.4. Large features / patch sets often must be spread across
-kernel versions because it is not humanly possible to send and review
-the patches.
+In case you need more acks :)
 
-This is not a large feature, and there is no reason for CREATE/UPDATE -
-a mere 4 patch set - to go in without something as essential as the
-QUERY for observability.
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3197fe9256b2..983e449c0b5b 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3147,6 +3147,7 @@ R:        Martin KaFai Lau <kafai@fb.com>
+>  R:     Song Liu <songliubraving@fb.com>
+>  R:     Yonghong Song <yhs@fb.com>
+>  R:     Andrii Nakryiko <andriin@fb.com>
+> +R:     John Fastabend <john.fastabend@gmail.com>
+>  R:     KP Singh <kpsingh@chromium.org>
+>  L:     netdev@vger.kernel.org
+>  L:     bpf@vger.kernel.org
+> --
+> 2.21.0
+>
