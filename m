@@ -2,99 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F320B1974BA
-	for <lists+bpf@lfdr.de>; Mon, 30 Mar 2020 08:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF8019759E
+	for <lists+bpf@lfdr.de>; Mon, 30 Mar 2020 09:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728955AbgC3Gzp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Mar 2020 02:55:45 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([216.205.24.74]:51382 "EHLO
-        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728733AbgC3Gzp (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 30 Mar 2020 02:55:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585551344;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ajoDkbQ/qcpUsEb0QgM4LBFTevZKUmFKbf6Bf6g6uF0=;
-        b=gzo/liQunUXkL9jemoiGygokK7h9uY3PGyMsTAHJ8ksUt9wJ6XwQG0Cto8YTLZml2Z5eYS
-        uBlBSgu8Ob2QqYBh/Ei9qUPdeFoMbdmo0lGGpbLzwJbvgsmKhPd2niHff3pfS0G9RZctog
-        c1EnkXV2qp5msDEUHdG5ISNHRDqJMOc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-67-iQWA9ZThMQWutNgQ2DSbEQ-1; Mon, 30 Mar 2020 02:55:40 -0400
-X-MC-Unique: iQWA9ZThMQWutNgQ2DSbEQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E550B1005512;
-        Mon, 30 Mar 2020 06:55:37 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6B32160304;
-        Mon, 30 Mar 2020 06:55:31 +0000 (UTC)
-Date:   Mon, 30 Mar 2020 08:55:28 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Eric Sage <eric@sage.org>
-Cc:     brouer@redhat.com, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, davem@davemloft.net,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH v4] samples/bpf: Add xdp_stat sample program
-Message-ID: <20200330085528.18e3ca7e@carbon>
-In-Reply-To: <20200329231630.41950-1-eric@sage.org>
-References: <20200329231630.41950-1-eric@sage.org>
+        id S1729400AbgC3HZI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Mar 2020 03:25:08 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:36085 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729413AbgC3HZF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Mar 2020 03:25:05 -0400
+Received: by mail-io1-f71.google.com with SMTP id s66so15415081iod.3
+        for <bpf@vger.kernel.org>; Mon, 30 Mar 2020 00:25:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=TZJbpgebPbX3Q4FeLfNCFQJD77ggPTwgpCJg6I/5kLk=;
+        b=hPQoWtP26JO3E6/nBCK56G1TVliLfV6cso6wAyuPUPLkUwJvCvCHjkuadQZksF0+++
+         ZlnYPH5Y/JSgeFvbCD/bh+Ecn/0tKtEtsCRKSFas7NU0AA2UNwO8qxeokT+fjs4YCF1+
+         IzLZxqV67h8agTuQA1Z3BCHhzzhKefjt4Lcdqy84rL1HbH16GE18tdPFQPXXNNweKtW8
+         PbiTCQsECzwqRuOBRH2IkYl0mDHkrk72SxVsVWPma2LGDvtZI0uoDZAzIHDKL3rMBFdn
+         wgY4sXTEI0wdAGBdQO0b7512nmkrzMJ1Me5DbIw5W4AN6mU0uZD2zA0c7mvsQTwBtu2n
+         RUcQ==
+X-Gm-Message-State: ANhLgQ3PPNyQ/C+H4d/v6I8JMtcA4RoChrHwInCeZZ+3DjhpQKoUfiEO
+        9S8aD3N6ZqMzT3CVC9RyxcNUFWmOzBWJUt7mWRAbKCXDj4Eg
+X-Google-Smtp-Source: ADFU+vtBbBt6BuinPFFJY8ewnoDn/U9q2ryhLsaXg+psdNxruEaMqWJqvCEaD1smqkJhUjifXxvNwbU5if/xCAxan2Tj9cQry9q1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Received: by 2002:a6b:e316:: with SMTP id u22mr9378632ioc.1.1585553103320;
+ Mon, 30 Mar 2020 00:25:03 -0700 (PDT)
+Date:   Mon, 30 Mar 2020 00:25:03 -0700
+In-Reply-To: <000000000000aa9a23059f62246a@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007effb905a20d5904@google.com>
+Subject: Re: WARNING in sk_stream_kill_queues (4)
+From:   syzbot <syzbot+fbe81b56f7df4c0fb21b@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, aviadye@mellanox.com,
+        borisp@mellanox.com, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davejwatson@fb.com, davem@davemloft.net, edumazet@google.com,
+        jbaron@akamai.com, john.fastabend@gmail.com, kafai@fb.com,
+        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        ncardwell@google.com, netdev@vger.kernel.org, shuah@kernel.org,
+        soheil@google.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 29 Mar 2020 16:16:30 -0700
-Eric Sage <eric@sage.org> wrote:
+syzbot suspects this bug was fixed by commit:
 
-[...]
-> ---
->  samples/bpf/Makefile          |   3 +
->  samples/bpf/xdp_stat          | Bin 0 -> 200488 bytes
+commit b6f6118901d1e867ac9177bbff3b00b185bd4fdc
+Author: Eric Dumazet <edumazet@google.com>
+Date:   Tue Feb 25 19:52:29 2020 +0000
 
-No binary files please.
+    ipv6: restrict IPV6_ADDRFORM operation
 
->  samples/bpf/xdp_stat_common.h |  28 ++
->  samples/bpf/xdp_stat_kern.c   | 192 +++++++++
->  samples/bpf/xdp_stat_user.c   | 748 ++++++++++++++++++++++++++++++++++
->  5 files changed, 971 insertions(+)
->  create mode 100755 samples/bpf/xdp_stat
->  create mode 100644 samples/bpf/xdp_stat_common.h
->  create mode 100644 samples/bpf/xdp_stat_kern.c
->  create mode 100644 samples/bpf/xdp_stat_user.c
-> 
-[...]
-> diff --git a/samples/bpf/xdp_stat b/samples/bpf/xdp_stat
-> new file mode 100755
-> index 0000000000000000000000000000000000000000..32a05e4e3f804400914d5048bfb602888af00b11
-> GIT binary patch
-> literal 200488
-> zcmeFadw3K@7B}3J3=jqBsGw0%qmFA((L_ZP0nL~h=+TKr0YMQ7h6IpXmdrrB5}XOp
-> zHiPlHuInmZ*2O!!A~!Laa7hqvfHxE`5ie9T3aCgxg?ztXb<d<>o%i|v`2P8x=M4|(
-> zu2ZL~PMtb+>YP(momu|i;0%{bN&aLgmnlru<rhnk^;=OUbjy@!{wh`qmG1a`s&b0b  
-> z6=}DGF^74@hdd`_$fS~dW?4yvwXxhHJAY9|F;Ywy^P%*SzdN5v3i)KY&YxoY)p{1%
-> z1(Q!D+sbCSE_}`9FZ|>d%SZC*f5d7b`E-_(?ZvHpCGNG#+0VtRtYq@(EJxl{*ION|  
-> ze)tNBn0ywhR=G#*XR;izS#EdCD!2QeR=L#ECS$k#O!AX7^8Z?^7@oyQF<s1u;*-BS
-> zpTy-)*>|CFd@t)~6)fv#wU>MbyGt}B`An9(7Uf9i|JxsX7?kVm_R{gC;Yh2-<kRk^
-> za{lCrw_JSD`IE=>n>=x9xVB$y;l=$fzUaJ~Y3E%a``ru0C{shO9<H46_opwvV6!Ld  
-> z#dVX5&-MIzPFB@tpOJ3T!1{>8AL85WlFv${nJ@b#g~gpgSQY-i_H_F(ML!!!u>|DM
-> zpHd``ITR#QZ>NFJL*svj&vE@T_zh{`Z=wT#hJR6-cK@5Ep6k-U{b}H2#Gkc$R2uwa  
-> z)6n@#ntFasQ_t8m@X|DJk*3|XY1;i)8vHxbj8~sD_+8TAf0u^N9%<@1FAe;qH1*t@
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1177dc25e00000
+start commit:   f8788d86 Linux 5.6-rc3
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9833e26bab355358
+dashboard link: https://syzkaller.appspot.com/bug?extid=fbe81b56f7df4c0fb21b
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14fd92c3e00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11679a81e00000
 
-No binary files please.
+If the result looks correct, please mark the bug fixed by replying with:
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+#syz fix: ipv6: restrict IPV6_ADDRFORM operation
 
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
