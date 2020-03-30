@@ -2,110 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 12817197AD8
-	for <lists+bpf@lfdr.de>; Mon, 30 Mar 2020 13:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3128197BED
+	for <lists+bpf@lfdr.de>; Mon, 30 Mar 2020 14:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729936AbgC3LfF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Mar 2020 07:35:05 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([216.205.24.74]:39390 "EHLO
-        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729913AbgC3LfD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 30 Mar 2020 07:35:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585568102;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/yKFIjqFad0brG+IqtxaXWXaU5bUtQPPGHJ+K52Qhck=;
-        b=HowYcfq/dkDcdTcuiriO5m4mcOPyXGxmUotU84SAethaJYG3T2m9Qt1S4BvswPmmglicIY
-        DCL307YwQB9gEXLtvDZoufid0bNwEct2/MrxCn4IvIurI491CYhImNL+Nd6A+gFDwt/PQ+
-        bpuvfFu3yh7yqe85SdAYcIBnu4SzMus=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-241-qZAMEnE7NK6C_EuYeAOraQ-1; Mon, 30 Mar 2020 07:34:56 -0400
-X-MC-Unique: qZAMEnE7NK6C_EuYeAOraQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 711B7107ACC7;
-        Mon, 30 Mar 2020 11:34:53 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 41E9B100EBAD;
-        Mon, 30 Mar 2020 11:34:46 +0000 (UTC)
-Date:   Mon, 30 Mar 2020 13:34:42 +0200
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-To:     Mao Wenan <maowenan@huawei.com>
-Cc:     <davem@davemloft.net>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <kuba@kernel.org>, <hawk@kernel.org>, <john.fastabend@gmail.com>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <andriin@fb.com>, <jwi@linux.ibm.com>,
-        <toshiaki.makita1@gmail.com>, <jianglidong3@jd.com>,
-        <edumazet@google.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>
-Subject: Re: [PATCH net] veth: xdp: use head instead of hard_start
-Message-ID: <20200330133442.132bde0c@carbon>
-In-Reply-To: <20200330102631.31286-1-maowenan@huawei.com>
-References: <20200330102631.31286-1-maowenan@huawei.com>
-Organization: Red Hat Inc.
+        id S1730173AbgC3Met (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Mar 2020 08:34:49 -0400
+Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:54140 "EHLO
+        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729972AbgC3Mes (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 30 Mar 2020 08:34:48 -0400
+Received: from mxbackcorp2j.mail.yandex.net (mxbackcorp2j.mail.yandex.net [IPv6:2a02:6b8:0:1619::119])
+        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 8742C2E145B;
+        Mon, 30 Mar 2020 15:34:45 +0300 (MSK)
+Received: from vla5-58875c36c028.qloud-c.yandex.net (vla5-58875c36c028.qloud-c.yandex.net [2a02:6b8:c18:340b:0:640:5887:5c36])
+        by mxbackcorp2j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id sJNm8W33zB-Yi88MPBg;
+        Mon, 30 Mar 2020 15:34:45 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1585571685; bh=D5hxrkeuTPe28Dn+5LHGq2bHTkYTYq7ip7aP/kwuLUs=;
+        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
+        b=Nc8A4MU+qyUgcau0J2Rhiah8ciSKAmxmltKPrmXaI9XBeSxcDYmzov9lXem7X8JLU
+         DQuJuP0VkM65p/W/+/iyOg1KprQzda/kYVrxTVMN0HKTP8ynGBU1Yuq7QVs7wSQLoY
+         OE9cjBNh+ezy2FrxJfp/ioA7EWBw3KIRhigqwvug=
+Authentication-Results: mxbackcorp2j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from unknown (unknown [2a02:6b8:b080:8617::1:1])
+        by vla5-58875c36c028.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id 7cEwYPC9vo-YiX8sWrY;
+        Mon, 30 Mar 2020 15:34:44 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH v2 net] inet_diag: add cgroup id attribute
+To:     Dmitry Yakunin <zeil@yandex-team.ru>, davem@davemloft.net,
+        netdev@vger.kernel.org
+References: <20200330113803.GA19490@yandex-team.ru>
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Cc:     cgroups@vger.kernel.org, bpf@vger.kernel.org
+Message-ID: <e343dd4f-4ac7-90ba-29cd-bb01721ee613@yandex-team.ru>
+Date:   Mon, 30 Mar 2020 15:34:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200330113803.GA19490@yandex-team.ru>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 30 Mar 2020 18:26:31 +0800
-Mao Wenan <maowenan@huawei.com> wrote:
+On 30/03/2020 14.38, Dmitry Yakunin wrote:
+> This patch adds cgroup v2 id to common inet diag message attributes.
+> This allows investigate sockets on per cgroup basis when
+> net_cls/net_prio cgroup not used.
 
-> xdp.data_hard_start is mapped to the first
-> address of xdp_frame, but the pointer hard_start
-> is the offset(sizeof(struct xdp_frame)) of xdp_frame,
-> it should use head instead of hard_start to
-> set xdp.data_hard_start. Otherwise, if BPF program
-> calls helper_function such as bpf_xdp_adjust_head, it
-> will be confused for xdp_frame_end.
+After second thought:
+Option CONFIG_SOCK_CGROUP_DATA are not directly enabled in config.
+It's selected by CONFIG_CGROUP_BPF or legacy CGROUP_NET_CLASSID/PRIO.
 
-I have noticed this[1] and have a patch in my current patchset for
-fixing this.  IMHO is is not so important fix right now, as the effect
-is that you currently only lose 32 bytes of headroom.
+So, it would be more clear to put this code under ifdef CONFIG_CGROUP_BPF.
+Because it exposes cgroup2 id and has nothing to do with legacy cgroups.
 
-[1] https://lore.kernel.org/netdev/158446621887.702578.17234304084556809684.stgit@firesoul/
++CC cgroups@vger.kernel.org and bpf@vger.kernel.org
 
-Fixing this now is going to be annoying and cause merge conflicts for
-my patchset.  If you insist on fixing this now, you need to improve
-commit message and also fix patch, see below.
-
-> Signed-off-by: Mao Wenan <maowenan@huawei.com>
-> ---
->  drivers/net/veth.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-> index d4cbb9e8c63f..5ea550884bf8 100644
-> --- a/drivers/net/veth.c
-> +++ b/drivers/net/veth.c
-> @@ -506,7 +506,7 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
->  		struct xdp_buff xdp;
->  		u32 act;
->  
-> -		xdp.data_hard_start = hard_start;
-> +		xdp.data_hard_start = head;
-
-You also need update/remove the other lines doing this.
-
->  		xdp.data = frame->data;
->  		xdp.data_end = frame->data + frame->len;
->  		xdp.data_meta = frame->data - frame->metasize;
-
-
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+> Signed-off-by: Dmitry Yakunin <zeil@yandex-team.ru>
+> Reviewed-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+> ---
+>   include/linux/inet_diag.h      | 6 +++++-
+>   include/uapi/linux/inet_diag.h | 1 +
+>   net/ipv4/inet_diag.c           | 7 +++++++
+>   3 files changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/inet_diag.h b/include/linux/inet_diag.h
+> index c91cf2d..8bc5e7d 100644
+> --- a/include/linux/inet_diag.h
+> +++ b/include/linux/inet_diag.h
+> @@ -66,7 +66,11 @@ static inline size_t inet_diag_msg_attrs_size(void)
+>   		+ nla_total_size(1)  /* INET_DIAG_SKV6ONLY */
+>   #endif
+>   		+ nla_total_size(4)  /* INET_DIAG_MARK */
+> -		+ nla_total_size(4); /* INET_DIAG_CLASS_ID */
+> +		+ nla_total_size(4)  /* INET_DIAG_CLASS_ID */
+> +#ifdef CONFIG_SOCK_CGROUP_DATA
+> +		+ nla_total_size(8)  /* INET_DIAG_CGROUP_ID */
+> +#endif
+> +		;
+>   }
+>   int inet_diag_msg_attrs_fill(struct sock *sk, struct sk_buff *skb,
+>   			     struct inet_diag_msg *r, int ext,
+> diff --git a/include/uapi/linux/inet_diag.h b/include/uapi/linux/inet_diag.h
+> index a1ff345..dc87ad6 100644
+> --- a/include/uapi/linux/inet_diag.h
+> +++ b/include/uapi/linux/inet_diag.h
+> @@ -154,6 +154,7 @@ enum {
+>   	INET_DIAG_CLASS_ID,	/* request as INET_DIAG_TCLASS */
+>   	INET_DIAG_MD5SIG,
+>   	INET_DIAG_ULP_INFO,
+> +	INET_DIAG_CGROUP_ID,
+>   	__INET_DIAG_MAX,
+>   };
+>   
+> diff --git a/net/ipv4/inet_diag.c b/net/ipv4/inet_diag.c
+> index 8c83775..ba0bb14 100644
+> --- a/net/ipv4/inet_diag.c
+> +++ b/net/ipv4/inet_diag.c
+> @@ -161,6 +161,13 @@ int inet_diag_msg_attrs_fill(struct sock *sk, struct sk_buff *skb,
+>   			goto errout;
+>   	}
+>   
+> +#ifdef CONFIG_SOCK_CGROUP_DATA
+> +	if (nla_put_u64_64bit(skb, INET_DIAG_CGROUP_ID,
+> +			      cgroup_id(sock_cgroup_ptr(&sk->sk_cgrp_data)),
+> +			      INET_DIAG_PAD))
+> +		goto errout;
+> +#endif
+> +
+>   	r->idiag_uid = from_kuid_munged(user_ns, sock_i_uid(sk));
+>   	r->idiag_inode = sock_i_ino(sk);
+>   
+> 
