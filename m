@@ -2,75 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF8019759E
-	for <lists+bpf@lfdr.de>; Mon, 30 Mar 2020 09:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D801978B4
+	for <lists+bpf@lfdr.de>; Mon, 30 Mar 2020 12:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729400AbgC3HZI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Mar 2020 03:25:08 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:36085 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729413AbgC3HZF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Mar 2020 03:25:05 -0400
-Received: by mail-io1-f71.google.com with SMTP id s66so15415081iod.3
-        for <bpf@vger.kernel.org>; Mon, 30 Mar 2020 00:25:03 -0700 (PDT)
+        id S1729137AbgC3KTZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Mar 2020 06:19:25 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([216.205.24.74]:47986 "EHLO
+        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729069AbgC3KTZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 30 Mar 2020 06:19:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585563564;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p9vx3TGa1czRbhD2gVc641boIWf6QXwts6CeJX/xsgk=;
+        b=fxlciVTlhg0z1316zBDrCdexAxzz61NY4HRtMOJxbpNm274v6c1u2cTD9d48dNo2abKNta
+        N3Fjmwg4PpakHu8ONO27HrPccK6Nyr/Yxi8GzxSmiQ++XsBwFvtykljQlEclAhhf2nfX2L
+        5Bz7mBwOibfrggc5MwBT9opFYhtzG8k=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-435-bZ0omiKpPXmRCnxwJA-_PQ-1; Mon, 30 Mar 2020 06:19:22 -0400
+X-MC-Unique: bZ0omiKpPXmRCnxwJA-_PQ-1
+Received: by mail-lj1-f200.google.com with SMTP id r18so1377641ljp.13
+        for <bpf@vger.kernel.org>; Mon, 30 Mar 2020 03:19:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=TZJbpgebPbX3Q4FeLfNCFQJD77ggPTwgpCJg6I/5kLk=;
-        b=hPQoWtP26JO3E6/nBCK56G1TVliLfV6cso6wAyuPUPLkUwJvCvCHjkuadQZksF0+++
-         ZlnYPH5Y/JSgeFvbCD/bh+Ecn/0tKtEtsCRKSFas7NU0AA2UNwO8qxeokT+fjs4YCF1+
-         IzLZxqV67h8agTuQA1Z3BCHhzzhKefjt4Lcdqy84rL1HbH16GE18tdPFQPXXNNweKtW8
-         PbiTCQsECzwqRuOBRH2IkYl0mDHkrk72SxVsVWPma2LGDvtZI0uoDZAzIHDKL3rMBFdn
-         wgY4sXTEI0wdAGBdQO0b7512nmkrzMJ1Me5DbIw5W4AN6mU0uZD2zA0c7mvsQTwBtu2n
-         RUcQ==
-X-Gm-Message-State: ANhLgQ3PPNyQ/C+H4d/v6I8JMtcA4RoChrHwInCeZZ+3DjhpQKoUfiEO
-        9S8aD3N6ZqMzT3CVC9RyxcNUFWmOzBWJUt7mWRAbKCXDj4Eg
-X-Google-Smtp-Source: ADFU+vtBbBt6BuinPFFJY8ewnoDn/U9q2ryhLsaXg+psdNxruEaMqWJqvCEaD1smqkJhUjifXxvNwbU5if/xCAxan2Tj9cQry9q1
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=p9vx3TGa1czRbhD2gVc641boIWf6QXwts6CeJX/xsgk=;
+        b=RbCBH0OLts5tZ5fKSb90+BhxUyBrc5hTFYGQ9QbgUNd2iwraUdRTLlpq/35M7dYcK9
+         P3OP5fVNOBqv62fVBHHoOv6jzc/NHRjLhGanwCEwdZq32lUDPcSp+ydFaOpBHMNbkGOT
+         +D5bsFDGo13mW5d4gd2HSAUoOj/mXqJxH12ejLdDys00npXLcRxI0ZfsPQBWL8AmPbHZ
+         GNCoydKgM+EiAwXwTOfqVJFMPamXNSKzIZnQwPlk5AfsPQCCxav6mQCdPjXSfZPztUNZ
+         DGgDpyy5tJDjO2C81AVGMRrxmWLEpAzGHDG86LixH5DHzkY0WKGrRjl+qL4xWBX66xKD
+         I6gA==
+X-Gm-Message-State: AGi0PuZqbhlHknf7KwnnsxirajGB+Y8Tl70MhDoMz5BClQUM9vd5Yq/V
+        qOiSnBIodhxIa6kyhK2SHKLuQklj+j3z4m6k44tUeZThwiASlXLuVxaJdiAJhrZDvjDqG+LE4Gx
+        +IpjM8BPu9PAv
+X-Received: by 2002:a2e:8246:: with SMTP id j6mr6633720ljh.162.1585563560974;
+        Mon, 30 Mar 2020 03:19:20 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIebnYHjZQesfpOjLMZUMUE4hoFNYgfPZiMPUSAzI9O87KG1d2+xALhoRMbNbd3h0EBeQWmMQ==
+X-Received: by 2002:a2e:8246:: with SMTP id j6mr6633706ljh.162.1585563560681;
+        Mon, 30 Mar 2020 03:19:20 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id u7sm113lfb.84.2020.03.30.03.19.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Mar 2020 03:19:19 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 5729218158B; Mon, 30 Mar 2020 12:19:18 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing program when attaching XDP
+In-Reply-To: <20200329192650.w55hcof5ix6tb54s@ast-mbp>
+References: <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com> <87pncznvjy.fsf@toke.dk> <20200326195859.u6inotgrm3ubw5bx@ast-mbp> <87imiqm27d.fsf@toke.dk> <20200327230047.ois5esl35s63qorj@ast-mbp> <87lfnll0eh.fsf@toke.dk> <20200328022609.zfupojim7see5cqx@ast-mbp> <87eetcl1e3.fsf@toke.dk> <20200328233546.7ayswtraepw3ia2x@ast-mbp> <87369rla1y.fsf@toke.dk> <20200329192650.w55hcof5ix6tb54s@ast-mbp>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 30 Mar 2020 12:19:18 +0200
+Message-ID: <87r1xajgbd.fsf@toke.dk>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:e316:: with SMTP id u22mr9378632ioc.1.1585553103320;
- Mon, 30 Mar 2020 00:25:03 -0700 (PDT)
-Date:   Mon, 30 Mar 2020 00:25:03 -0700
-In-Reply-To: <000000000000aa9a23059f62246a@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007effb905a20d5904@google.com>
-Subject: Re: WARNING in sk_stream_kill_queues (4)
-From:   syzbot <syzbot+fbe81b56f7df4c0fb21b@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, aviadye@mellanox.com,
-        borisp@mellanox.com, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davejwatson@fb.com, davem@davemloft.net, edumazet@google.com,
-        jbaron@akamai.com, john.fastabend@gmail.com, kafai@fb.com,
-        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        ncardwell@google.com, netdev@vger.kernel.org, shuah@kernel.org,
-        soheil@google.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot suspects this bug was fixed by commit:
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-commit b6f6118901d1e867ac9177bbff3b00b185bd4fdc
-Author: Eric Dumazet <edumazet@google.com>
-Date:   Tue Feb 25 19:52:29 2020 +0000
+> On Sun, Mar 29, 2020 at 12:39:21PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>>=20
+>> > I guess all that is acceptable behavior to some libxdp users.
+>>=20
+>> I believe so.
+>
+> Not for us. Sadly that's where we part ways. we will not be using your
+> libxdp.
 
-    ipv6: restrict IPV6_ADDRFORM operation
+Up to you of course, but I must say that I'm a bit surprised that you
+state this so categorically at this stage. As far as I'm concerned,
+there is still plenty of opportunity for cooperation on this, and I'm
+still quite willing to accommodate your needs in libxdp.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1177dc25e00000
-start commit:   f8788d86 Linux 5.6-rc3
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9833e26bab355358
-dashboard link: https://syzkaller.appspot.com/bug?extid=fbe81b56f7df4c0fb21b
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14fd92c3e00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11679a81e00000
+> Existing xdp api was barely usable in the datacenter environment. replace=
+_fd
+> makes no difference.
+>
+>> exclusivity does come in handy. And as I said, I can live with there
+>> being two APIs as long as there's a reasonable way to override the
+>> bpf_link "lock" :)
+>
+> I explained many times already that bpf_link for XDP is NOT a second api =
+to do
+> the same thing. I understand that you think it's a second api, but when y=
+ou
+> keep repeating 'second api' it makes other folks (who also don't understa=
+nd the
+> difference) to make wrong conclusions that they can use either to achieve=
+ the
+> same thing. They cannot. And it makes my job explaining harder. So please=
+ drop
+> 'second api' narrative.
 
-If the result looks correct, please mark the bug fixed by replying with:
+I understand that they're different. Really, I do. That doesn't change
+the fact that there will be two ways to install an XDP program, though.
+Which is all I meant by "two APIs"; I was not implying they would be
+completely equivalent in all ways.
 
-#syz fix: ipv6: restrict IPV6_ADDRFORM operation
+-Toke
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
