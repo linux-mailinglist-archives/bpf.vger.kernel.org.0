@@ -2,100 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9FB197127
-	for <lists+bpf@lfdr.de>; Mon, 30 Mar 2020 01:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC15F197181
+	for <lists+bpf@lfdr.de>; Mon, 30 Mar 2020 02:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727183AbgC2XxM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 29 Mar 2020 19:53:12 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:45975 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726403AbgC2XxM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 29 Mar 2020 19:53:12 -0400
-Received: by mail-qk1-f193.google.com with SMTP id c145so17234357qke.12;
-        Sun, 29 Mar 2020 16:53:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=muZcqdyzC4F2pH+3BqIiv8M4ZN/NKrjPmBvgSSUPEzs=;
-        b=WDpTWaJVpx6haC2JHHaVwSATWPRuG3ccoGvqioTHIWmhqaDcyf64uCHtVsyX0GRS7e
-         uRTrnpl3I5kuVgwolOfiVq7ciyC61SZZiP6uIvoQIoTYqPJxw7X+x0URYnBpynF0B1ZU
-         h6fNueb/k3ZqCi1hnrAPsohfDSw1FHYXs8vVbfPrBkPLBzHIHy9zjpXwnCIlHwZa8BHQ
-         Al6wGuY/49K2qBR1Fm7fhRV35nyeUDR5LmCzPmfL5QXETxiZHntKQNus/6KfYMlA24rl
-         hh9MvQj/gXd7F2ZCbeaNqxECLCEnHqPEjEYIOwvgU2uDR3GrkNsGtxK3ipklshZUeTEM
-         ONvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=muZcqdyzC4F2pH+3BqIiv8M4ZN/NKrjPmBvgSSUPEzs=;
-        b=aD+yKGukYM2PSQ5yMQZQXq5smBfoeluJw8q41atHX9VWT7KkXh8xF/8FRqVvl1EER6
-         mNiooBodWH/OBQlBhBxlp0BvKYRa+tN7Mdolx/hXUDs2gmUemB+KSNPFqfXMAZyczUcA
-         e7+Efx4AlcywFjIWqHRqV0NrrgKLu+kTdCA9D9bLlQyoehSao+tGRt0Nn2R5oA5fUO0S
-         3qHW9g/Oo/cqO9BHx8zFBGxdOJFtN5FOwUCO32r5m6UtysyjZfd6D3jc1N9bhYNDh6VB
-         x6i2JudjAe32nwc/1WLS3so8e/iBIond9hJLgcz/Xdfm4j9Te8robRI9Cha4LIRyI9oD
-         GgsA==
-X-Gm-Message-State: ANhLgQ1TA4RjrS2swB8/9hLyILiulKAFWgxERJr3iz5rx+9coJQOwSYo
-        WSjMPegCKaD/Wp52JSz84RzrdIFnlknRATD1scU=
-X-Google-Smtp-Source: ADFU+vsnY1ZMlbviv8qiXoRPyVBuIqEo7zFGugNVxLExGfLzIYeVaeb0zjr+CJlghzLLuOA9ktXTZSGNwempB1i5K1I=
-X-Received: by 2002:a37:b786:: with SMTP id h128mr5827140qkf.92.1585525990818;
- Sun, 29 Mar 2020 16:53:10 -0700 (PDT)
+        id S1727742AbgC3ApS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 29 Mar 2020 20:45:18 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:34176 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727549AbgC3ApS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 29 Mar 2020 20:45:18 -0400
+X-IronPort-AV: E=Sophos;i="5.72,322,1580745600"; 
+   d="scan'208";a="87771264"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 30 Mar 2020 08:45:16 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id 73303406AB15;
+        Mon, 30 Mar 2020 08:35:00 +0800 (CST)
+Received: from localhost.localdomain (10.167.226.81) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Mon, 30 Mar 2020 08:45:18 +0800
+Subject: Re: runqslower build failed on Debian9
+From:   Liu Yiding <liuyd.fnst@cn.fujitsu.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+CC:     <linux-kselftest@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+References: <60b05d23-6352-b978-3bf7-5a86466bb297@cn.fujitsu.com>
+ <c1025a74-1d80-5127-2b0a-87465d3dbcd0@fb.com>
+ <84a70348-62e3-728b-d934-28e902d40fd0@cn.fujitsu.com>
+Message-ID: <da95b852-e556-1b56-42eb-b97e1826710c@cn.fujitsu.com>
+Date:   Mon, 30 Mar 2020 08:46:43 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <20200329231630.41950-1-eric@sage.org>
-In-Reply-To: <20200329231630.41950-1-eric@sage.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sun, 29 Mar 2020 16:52:59 -0700
-Message-ID: <CAEf4BzY_s_2YHgrbNzVPTC6qtVXmz9LvVPtZcw1AWSffi8aYtQ@mail.gmail.com>
-Subject: Re: [PATCH v4] samples/bpf: Add xdp_stat sample program
-To:     Eric Sage <eric@sage.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <84a70348-62e3-728b-d934-28e902d40fd0@cn.fujitsu.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.167.226.81]
+X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201)
+X-yoursite-MailScanner-ID: 73303406AB15.A7336
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: liuyd.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Mar 29, 2020 at 4:35 PM Eric Sage <eric@sage.org> wrote:
->
-> At Facebook we use tail calls to jump between our firewall filters and
-> our L4LB. This is a program I wrote to estimate per program performance
-> by swapping out the entries in the program array with interceptors that
-> take measurements and then jump to the original entries.
->
-> I found the sample programs to be invaluable in understanding how to use
-> the libbpf API (as well as the test env from the xdp-tutorial repo for
-> testing), and want to return the favor. I am currently working on
-> my next iteration that uses fentry/fexit to be less invasive,
-> but I thought it was an interesting PoC of what you can do with program
-> arrays.
->
-> v4:
-> - rebase
-> v3:
-> - Fixed typos in xdp_stat_kern.c
-> - Switch to using key_size, value_size for prog arrays
->
-> Signed-off-by: Eric Sage <eric@sage.org>
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> ---
->  samples/bpf/Makefile          |   3 +
->  samples/bpf/xdp_stat          | Bin 0 -> 200488 bytes
+Something wrong with my smtp and this email missed.
 
-Add xdp_stat to .gitignore?
+Send again.
 
->  samples/bpf/xdp_stat_common.h |  28 ++
->  samples/bpf/xdp_stat_kern.c   | 192 +++++++++
->  samples/bpf/xdp_stat_user.c   | 748 ++++++++++++++++++++++++++++++++++
->  5 files changed, 971 insertions(+)
->  create mode 100755 samples/bpf/xdp_stat
->  create mode 100644 samples/bpf/xdp_stat_common.h
->  create mode 100644 samples/bpf/xdp_stat_kern.c
->  create mode 100644 samples/bpf/xdp_stat_user.c
+
+On 3/27/20 11:09 AM, Liu Yiding wrote:
+> Hi, Andrii.
 >
+> Thanks for your prompt reply!
+>
+> Please check attatchment for my_btf.bin.
+>
+>
+> On 3/27/20 4:28 AM, Andrii Nakryiko wrote:
+>> Would you be able to share BTF of vmlinux that is used to generate 
+>> vmlinux.h? Please run in verbose mode: `make V=1` and search for 
+>> `bpftool btf dump file` command. It should point either to
+>> /sys/kernel/btf/vmlinux or some other location, depending on how 
+>> things are set up on your side.
+>>
+>> If it's /sys/kernel/btf/vmlinux, you can just `cat 
+>> /sys/kernel/btf/vmlinux > my_btf.bin`. If it's some other file, 
+>> easiest would be to just share that file. If not, it's possible to 
+>> extract .BTF ELF section, let me know if you need help with that. 
+>
+-- 
+Best Regards.
+Liu Yiding
+
+
+
