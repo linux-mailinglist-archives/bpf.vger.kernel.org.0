@@ -2,137 +2,289 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3AA199F86
-	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 21:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE40199FD9
+	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 22:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727708AbgCaT6d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Mar 2020 15:58:33 -0400
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:37653 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726947AbgCaT6d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Mar 2020 15:58:33 -0400
-Received: by mail-pj1-f67.google.com with SMTP id o12so1572955pjs.2
-        for <bpf@vger.kernel.org>; Tue, 31 Mar 2020 12:58:32 -0700 (PDT)
+        id S1729597AbgCaUP6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Mar 2020 16:15:58 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:39523 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727708AbgCaUP6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Mar 2020 16:15:58 -0400
+Received: by mail-qk1-f194.google.com with SMTP id b62so24577754qkf.6;
+        Tue, 31 Mar 2020 13:15:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iIE5XFM5K7QbE20yyDiZj6SZSyFq4hlwbNrIPIzU0gY=;
-        b=S+w7GqDb769CQ8xv21FIHZaNTBTZm/T6OlidzROuKsDVAboV/EyN3Llh6Rz9mTZIft
-         zotPnmEPIB8CQiPZpqd8ptbr4VcDp3TNcS1e4/py50PXxoyy27AenDHwc+9tWLcOub7S
-         xUXQTmtjjTRF4Le26nz+prjPz5JX7fc6k5RGU=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Ul3hhhavR4FQmbxolSeFzISmi9sp4tG1wMRK7A/A1gs=;
+        b=WxRfSyoo53XYefNd0el85EC5RIdyWT7UAhHQIRfvDTymB+/sar+vpRRBt1CFnuqxAq
+         WG1m5clQzFVlLV7O2WrozSwmn30VxZsTAFe8ReijakktlGKoE0Du2hrwKIGjV5jW+XJG
+         Cv3AJ+PyGrwbtOwV9uMRmxn9GGLNfjLWAImAIJepqyeKjZ29hYJLVJ67xF4vhsFoF5ts
+         3WrXk6pSTyawfb34ypjUckPMxPDqfCEpnkRLcGiXuN5ocTH8cGentfrOjqH/dKWtROpk
+         P9iwx8+QJuxulG+ElcyxiUgx1ylbkmr/LBcdlUpz/dIhktj3NYqLds4ddg2MyPj1oJid
+         MXyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iIE5XFM5K7QbE20yyDiZj6SZSyFq4hlwbNrIPIzU0gY=;
-        b=khRN5tGxH+I6SUHtWG1Vhye8QVz3jnpyeur+FZuXe+hTvkZZOvwbgjHhfeR8aic3Fx
-         NY/Y9BRZrjdTP+mWL+KLQI5b+r55aHmAZbNjnF8kKr5RBNnUiasS+Z+Y3yYfLehEQVIx
-         W7/v62fjz+m7OwUaX6dtGc7c+NmJkXhLX+GPJHNFpTcOYAJs9rr4Y+KoYUWoUJ551OuO
-         fifoHUFUBW1I600mEo4vXwGYZ7GHbTpvmX/vMBhiKq5fM7/r0uuWr6muqMnVuuGtEMtM
-         B2LBdYpIVFTXdBq6DK6UY2iDt/dHTTK4D/h3vK1PbEmCXCW2cV5fNvVSgY4xopqbVZ4Y
-         swDw==
-X-Gm-Message-State: ANhLgQ0ao+l/7o5EvjdUqSS3JG9iUT/RmgXHlMTf2rZPE2SHM/h6qbRh
-        eewADMnOYpRiSZvGQfeYwWIU3w==
-X-Google-Smtp-Source: ADFU+vthYqtijXEiYJ1M7gXE9t+NnabDok25352WJK4rM43tVjWFqpSgeiB1d/0wichYw3yjyVfreg==
-X-Received: by 2002:a17:902:8648:: with SMTP id y8mr18766618plt.153.1585684711969;
-        Tue, 31 Mar 2020 12:58:31 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d8sm2553519pjx.12.2020.03.31.12.58.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Mar 2020 12:58:31 -0700 (PDT)
-Date:   Tue, 31 Mar 2020 12:58:30 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Jann Horn <jannh@google.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>
-Subject: Re: CONFIG_DEBUG_INFO_BTF and CONFIG_GCC_PLUGIN_RANDSTRUCT
-Message-ID: <202003311257.3372EC63@keescook>
-References: <CAG48ez2sZ58VQ4+LJu39H1M0Y98LhRYR19G_fDAPJPBf7imxuw@mail.gmail.com>
- <CAADnVQ+Ux3-D_7ytRJx_Pz4fStRLS1vkM=-tGZ0paoD7n+JCLQ@mail.gmail.com>
- <CAG48ez0ajun-ujQQqhDRooha1F0BZd3RYKvbJ=8SsRiHAQjUzw@mail.gmail.com>
- <202003301016.D0E239A0@keescook>
- <c332da87-a770-8cf9-c252-5fb64c06c17e@iogearbox.net>
- <202003311110.2B08091E@keescook>
- <CAEf4BzYZsiuQGYVozwB=7nNhVYzCr=fQq6PLgHF3M5AXbhZyig@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Ul3hhhavR4FQmbxolSeFzISmi9sp4tG1wMRK7A/A1gs=;
+        b=i74P22aRT3vz6qgpHLrHm6DLtaqvtKh2ViTnFR3ZZnirkK8OQhVjwXhPu9SGhNkz/d
+         t9lIKev+TFibTgA+jc9zWxJVWtDwlhbfJPqqWkKGPPol1+pDIm/szDdnoGT+ku3H4hVq
+         YpbT62Rch3WMOZ5LLf1m4ZvYm3VX9RR8egh7fnZKsG9gKXEYGbszox3/bKVsjyriNxBO
+         +U4s4ziRj8YNWy81hJdg+4GdrPLOfRWxvBH3S6Db3P95b4LvifXB+5lPFXwzCPB50e+G
+         J+xObOKPRwN4j84ro/zBt3Awh0RLE1zOrW1vP25uZWCprk2yJ9zweoac8VKYbwbilRIf
+         OlBg==
+X-Gm-Message-State: ANhLgQ2sNxNOCP1gyHKygGPJlrKqmbnEddADcut85Gd9owEwcZNrS8/Z
+        NcRS/N2GPOQ2FWzOcf4R+ZA1Fgtecd91R5oGLqI=
+X-Google-Smtp-Source: ADFU+vutYyDtGJ/IQU+3gM4PZm45VZrjW6CfdNb9rBU9S6pQtcrY+ZNmRH2jLFXAC3QITQudfneeJoB823PdzF4wqLk=
+X-Received: by 2002:a37:6411:: with SMTP id y17mr7042990qkb.437.1585685756328;
+ Tue, 31 Mar 2020 13:15:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYZsiuQGYVozwB=7nNhVYzCr=fQq6PLgHF3M5AXbhZyig@mail.gmail.com>
+References: <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com>
+ <87tv2e10ly.fsf@toke.dk> <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com>
+ <87369wrcyv.fsf@toke.dk> <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com>
+ <87pncznvjy.fsf@toke.dk> <20200326195859.u6inotgrm3ubw5bx@ast-mbp>
+ <87imiqm27d.fsf@toke.dk> <20200327230047.ois5esl35s63qorj@ast-mbp>
+ <87lfnll0eh.fsf@toke.dk> <20200328022609.zfupojim7see5cqx@ast-mbp>
+ <87eetcl1e3.fsf@toke.dk> <CAEf4Bzb+GSf8cE_rutiaeZOtAuUick1+RnkCBU=Z+oY_36ArSA@mail.gmail.com>
+ <87y2rihruq.fsf@toke.dk> <CAEf4Bza4vKbjkj8kBkrVmayFr2j_nvrORF_YkCoVKibB=SmSYQ@mail.gmail.com>
+ <87pncsj0hv.fsf@toke.dk> <86f95d7a-1659-a092-91a2-abe5d58ceda8@iogearbox.net>
+In-Reply-To: <86f95d7a-1659-a092-91a2-abe5d58ceda8@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 31 Mar 2020 13:15:44 -0700
+Message-ID: <CAEf4BzYAtvETd+Sh6bBVnrqB=jz00+N1PLgsT6vAkwLhdB2d3w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
+ program when attaching XDP
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        David Ahern <dsahern@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 31, 2020 at 12:50:07PM -0700, Andrii Nakryiko wrote:
-> On Tue, Mar 31, 2020 at 11:12 AM Kees Cook <keescook@chromium.org> wrote:
+On Tue, Mar 31, 2020 at 6:49 AM Daniel Borkmann <daniel@iogearbox.net> wrot=
+e:
+>
+> On 3/31/20 12:13 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> > Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 > >
-> > On Tue, Mar 31, 2020 at 12:41:04AM +0200, Daniel Borkmann wrote:
-> > > On 3/30/20 7:20 PM, Kees Cook wrote:
-> > > > On Mon, Mar 30, 2020 at 06:17:32PM +0200, Jann Horn wrote:
-> > > > > On Mon, Mar 30, 2020 at 5:59 PM Alexei Starovoitov
-> > > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > > On Mon, Mar 30, 2020 at 8:14 AM Jann Horn <jannh@google.com> wrote:
-> > > > > > >
-> > > > > > > I noticed that CONFIG_DEBUG_INFO_BTF seems to partly defeat the point
-> > > > > > > of CONFIG_GCC_PLUGIN_RANDSTRUCT.
-> > > > > >
-> > > > > > Is it a theoretical stmt or you have data?
-> > > > > > I think it's the other way around.
-> > > > > > gcc-plugin breaks dwarf and breaks btf.
-> > > > > > But I only looked at gcc patches without applying them.
-> > > > >
-> > > > > Ah, interesting - I haven't actually tested it, I just assumed
-> > > > > (perhaps incorrectly) that the GCC plugin would deal with DWARF info
-> > > > > properly.
-> > > >
-> > > > Yeah, GCC appears to create DWARF before the plugin does the
-> > > > randomization[1], so it's not an exposure, but yes, struct randomization
-> > > > is pretty completely incompatible with a bunch of things in the kernel
-> > > > (by design). I'm happy to add negative "depends" in the Kconfig if it
-> > > > helps clarify anything.
-> > >
-> > > Is this expected to get fixed at some point wrt DWARF? Perhaps would make
-> >
-> > No, gcc closed the issue as "won't fix".
-> >
-> > > sense then to add a negative "depends" for both DWARF and BTF if the option
-> > > GCC_PLUGIN_RANDSTRUCT is set given both would be incompatible/broken.
-> >
-> > I hadn't just to keep wider randconfig build test coverage. That said, I
-> > could make it be: depends COMPILE_TEST || !DWARF ...
-> >
-> > I can certainly do that.
-> 
-> I've asked Slava in [0] to disable all three known configs that break
-> DWARF and subsequently BTF, I hope it's ok to just do it in one patch.
-> Currently all these appear to result in invalid BTF due to various
-> DWARF modifications:
-> 
->   - DEBUG_INFO_REDUCED (see [1])
->   - DEBUG_INFO_SPLIT (see [0]
->   - GCC_PLUGIN_RANDSTRUCT (this discussion).
-> 
->   [0] https://lore.kernel.org/bpf/CAEf4BzadnfAwfa1D0jZb=01Ou783GpK_U7PAYeEJca-L9kdnVA@mail.gmail.com/
->   [1] https://lore.kernel.org/bpf/CAEf4BzZri8KpwLcoPgjiVx_=QmJ2W9UzBkDqSO2rUWMzWogkKg@mail.gmail.com/
+> >>>> So you install your libxdp-based firewalls and are happy. Then you
+> >>>> decide to install this awesome packet analyzer, which doesn't know
+> >>>> about libxdp yet. Suddenly, you get all packets analyzer, but no mor=
+e
+> >>>> firewall, until users somehow notices that it's gone. Or firewall
+> >>>> periodically checks that it's still runinng. Both not great, IMO, bu=
+t
+> >>>> might be acceptable for some users, I guess. But imagine all the
+> >>>> confusion for user, especially if he doesn't give a damn about XDP a=
+nd
+> >>>> other buzzwords, but only needs a reliable firewall :)
+> >>>
+> >>> Yes, whereas if the firewall is using bpf_link, then the packet analy=
+ser
+> >>> will be locked out and can't do its thing. Either way you end up with=
+ a
+> >>> broken application; it's just moving the breakage. In the case of
+> >>
+> >> Hm... In one case firewall installation reported success and stopped
+> >> working afterwards with no notification and user having no clue. In
+> >> another, packet analyzer refused to start and reported error to user.
+> >> Let's agree to disagree that those are not at all equivalent. To me
+> >> silent failure is so much worse, than application failing to start in
+> >> the first place.
+>
+> I sort of agree with both of you that either case is not great. The silen=
+t
+> override we currently have is not great since it can be evicted at any ti=
+me
+> but also bpf_link to lock-out other programs at XDP layer is not great ei=
+ther
+> since there is also huge potential to break existing programs. It's proba=
+bly
 
-Sure! That'd by fine by me. I'd just like it to be a "|| COMPILE_TEST"
-for GCC_PLUGIN_RANDSTRUCT. Feel free to CC me for an Ack. :)
+I disagree with the premise that in current setup two XDP applications
+can work at all. Best case, one will fail if specified the option to
+not attach if something is already attached. Worst case, both will
+happily assume (and report to user) that they are working, but only
+the one attached last will actually work. Or maybe it's not even the
+worst scenario, if both of them use netlink notification and keep
+re-attaching themselves and detaching "opponent" (a fun bot fight to
+watch...)
 
--Kees
+So what I hope we are discussing here is the world where some
+applications are moving into using libxdp or some other co-operative
+approach/daemon. In that case, utmost importance (otherwise its
+unreliable and half-working solution) is to prevent XDP applications
+not aware about this cooperation approach to break cooperating ones.
+And that can be done only if libxdp/daemon can guarantee that *if it
+successfully* attaches root XDP program, it won't be replaced by
+oblivious XDP application that is not aware of it. So yes, in this
+case non-cooperating application won't work (as it might not with
+current API), but at least it will report that it can't attach, as
+opposed to break *all* other nicely behaving and cooperating XDP
+appplications **silently**. There are probably few more frustrating
+things than silent corruption/breakage, IMO as both a user and
+programmer.
 
-> 
-> 
-> >
-> > -Kees
-> >
-> > [1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=84052
-> >
-> > --
-> > Kees Cook
+> best to discuss on an actual proposal to see the concrete semantics, but =
+my
+> concerns, assuming I didn't misunderstand or got confused on something al=
+ong
+> the way (if so, please let me know), currently are:
+>
+>   - System service XYZ starts to use XDP with bpf_link one day. Somehow t=
+his
+>     application gets shipped by default on mainstream distros and starts =
+up
+>     during init, then effectively locking out everyone else that used to =
+use
+>     the hook today "just fine" given they owned / orchestrated the underl=
+ying
+>     networking on the host namespace for the nodes they manage (and for t=
+hat
 
--- 
-Kees Cook
+If XYZ didn't use bpf_link and just used existing API, it would break
+everything as well, because see above, they can't co-exist. The
+difference is in amount of undeterminism (who starts first and who's
+second) and awareness (whether app even knows that it's broken).
+Neither are in favor of existing API.
+
+>     it worked before). Now such latter app somehow needs to work around t=
+his
+>     breakage by undoing the damage that XYZ did in order to be able to op=
+erate
+>     again. There was mentioned 'human override'. I presume whatever it wi=
+ll be,
+>     it will also be done by applications when they don't have another cho=
+ice.
+
+No, it's opposite. That's why it's **human override**. It's not
+intended to be used by application to "unblock" itself.
+
+>     Otherwise we need to go and tell users that XDP is now only _entirely=
+_
+>     reserved for system service XYZ if you run distro ABC, but not for ev=
+eryone
+>     else anymore; what answer is there to this? From a PoV where one owns=
+ the
+
+That's exactly what Toke's libxdp is intending to be. An XDP
+coordination solution/library that other applications that want to
+co-exist on the same network interface **have** to use. It intends to
+allow all XDP applications to co-exist. That would be the answer - go
+use that library.
+
+>     entire distro and ecosystem, this is fine, but where this is not the =
+case
+>     as in the rest of the world having to rely on mainstream distros, wha=
+t is
+>     the answer to users (and especially "those that don't give a damn abo=
+ut XDP,
+>     but just want to get stuff to work" that used to work before, even if=
+ we
+>     think silent override is broken)? If the answer is to just 'shrug' an=
+d tell
+>     'sorry that's the new way it is right now', then apps will try to use=
+ whatever
+>     'human override' there is, and we're back to square one. To provide a
+>     concrete example: if Cilium was configured to load some of its progra=
+ms on
+>     XDP hook, it currently replaces whatever it was there before. The ass=
+umption
+>     is, that in the scenario we're in, we can orchestrate the hostns netw=
+orking
+>     just fine on K8s nodes since there is just one CNI plugin taking care=
+ of that
+>     (and that generally also holds true for the other hooks we're using t=
+oday).
+>     Now, while we could switch to bpf_link as well and implement it in ip=
+route2
+>     for this specific case, what if someone else starting up earlier and =
+locks
+>     our stuff out? How would we work around it?
+
+For one, you can use some tool/script (like the one I posted
+yesterday: [0]) to find "offending" application that's not expected to
+be using XDP and kill it (and/or investigate why on earth it got
+installed/started in your infrastructure without you being aware). I
+think this solution is better than nuke ("human override") option,
+because it gives you clues on what's misbehaving and needs fixing in
+the first place.
+
+  [0] https://gist.github.com/anakryiko/562dff8e39c619a5ee247bb55aa057c7
+
+>
+>   - Assuming we have XDP with bpf_link in place with the above, now appli=
+cations
+>     are forced to start using bpf_link in order to not be locked out by o=
+thers
+>     using bpf_link as otherwise their application would break. So they ne=
+ed to
+>     support the "old" way of attaching programs as we have today for olde=
+r
+>     kernels and need to support the bpf_link attachment for newer kernels=
+ since
+>     they cannot rely on the old / existing API anymore. There is also a w=
+orld
+>     outside of C/C++ and thus libbpf / lib{xdp,dispatcher} or whatever, s=
+o the
+>     whole rest of the ecosystem is forced to implement it as well due to =
+breakage
+>     concerns, understandable, but quite a burden.
+
+Multi-XDP (on the same netdev, of course) doesn't exist and is not
+possible today with existing API and semantics. The world outside of
+C/C++ will either need to use compatible mechanisms (linking and using
+libxdp with whatever means their language/runtime provides or at least
+re-implementing the same set of protocols and behaviors).
+
+>
+>   - Equally, in case of Toke's implementation for the cmpxchg-like mechan=
+ism in
+>     XDP itself, what happens if an application uses this API and assuming=
+ the
+>     library would return the error to the application using it if the exp=
+ected
+>     program is not attached? Then the application would go for a forceful=
+ override
+>     with the existing API today or would it voluntarily bail out and refu=
+sing to
+>     work if some other non-cooperating application was loaded in the mean=
+time?
+>     What is the cmpxchg-like mechanism then solving realistically? (And a=
+gain,
+>     please keep all in mind we cannot force the entire world to use one s=
+ingle
+>     library to rule 'em all, there are plenty of other language runtimes =
+out in
+>     the wild that cannot just import C/C++.)
+
+It's not about using one specific library, but it is about following
+the same protocol. I think that's what Toke, Alexei, Andrey and others
+are assuming - that yes, if people want to write reliable XDP
+applications co-existing with each other, they will have to use the
+same library (easier, if possible) or at least follow the same
+protocol.
+
+
+>
+> Thoughts?
+>
+> Thanks,
+> Daniel
