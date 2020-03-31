@@ -2,90 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C4350198AB6
-	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 05:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24BF0198AC6
+	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 06:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729197AbgCaD5E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Mar 2020 23:57:04 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12658 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727358AbgCaD5D (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Mar 2020 23:57:03 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 9325F2252625F8F9FCB5;
-        Tue, 31 Mar 2020 11:57:01 +0800 (CST)
-Received: from [127.0.0.1] (10.173.223.60) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Tue, 31 Mar 2020
- 11:56:58 +0800
-Subject: Re: [PATCH net] veth: xdp: use head instead of hard_start
-To:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>
-CC:     <davem@davemloft.net>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <kuba@kernel.org>, <hawk@kernel.org>, <john.fastabend@gmail.com>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <andriin@fb.com>, <jwi@linux.ibm.com>, <jianglidong3@jd.com>,
-        <edumazet@google.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>
-References: <20200330102631.31286-1-maowenan@huawei.com>
- <20200330133442.132bde0c@carbon>
- <3053de4c-cee6-f6fc-efc2-09c6250f3ef2@gmail.com>
-From:   maowenan <maowenan@huawei.com>
-Message-ID: <e7cf1271-2953-a5aa-ab25-c4b4a3843ee1@huawei.com>
-Date:   Tue, 31 Mar 2020 11:56:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1725792AbgCaEBU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Mar 2020 00:01:20 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:42682 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbgCaEBU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Mar 2020 00:01:20 -0400
+Received: by mail-pl1-f194.google.com with SMTP id e1so7610229plt.9;
+        Mon, 30 Mar 2020 21:01:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ZC40A9tEmS88Wu0yKU/oWRDpI8/iuziLQhjXOXknsZk=;
+        b=JgUFsIUjbfIkAlxs3hY7f+QKxydbNeTiol7uGLKg9iy4LfFT2M6+/niYLybGdgVB33
+         wZAXhblLwHTsaosDJ15L/FJ0tixBAqlANlZtYdEqPtxTks8uKBd6WMYTb6sS0vh+8z34
+         NWbBGRvFbreGivgyIEZxTsV+d03vkTZ5nHl4dKUhTUv86CZy7rVC+4sltRO0uq0/KtUp
+         wrpT5FEMeP02pJRjUYbE94JzcPoDlfCJAlGikjP39cnMLtuCkTLZBWQu9tMiPO7yMuhp
+         o89LMK/d1ksRLRH9zeA4AJCx/yeV01j3xAooUNiMVZ67jQ3q9hkF3SnEkR0lpPtw2c4E
+         fNXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ZC40A9tEmS88Wu0yKU/oWRDpI8/iuziLQhjXOXknsZk=;
+        b=FdrLOv7UqCHks5Vp0GmqQBOgsj3Ey3McOIfoJy82+7YJsU76zk5bBCVwZhNiNtezou
+         yTFk6U361mTWxL0p2mYzpJhNAlR+X120617PfJRiOsgXLIz79rVAKxyBva0KZuQV+m/O
+         ntUYSiCD3e/2BcQHHhveVIVDFLlO51RTofU0cRSqTXvLWl1Emv0xRB5FAF59iQo1KWaw
+         AlMth+TzmGIO53lNSsNKmlyyb7p/L07jafagfQ1zCFHPs6hhN/mNO6wnwbCNbEOgrkGw
+         iNRSMq3Vi5PoVwifbDZFK0MChw1qE3B0jynhpn33XNjgqHykLeS620HzFGHWe6uY1bGT
+         tzMg==
+X-Gm-Message-State: AGi0PuaAhKzYxDsqytQuENkUL9gXtSHzbjjIWMk2agtF3QErIwLzAEvo
+        PVvIndV/4buCu4Cx1BjS+cM=
+X-Google-Smtp-Source: APiQypIWbWU9dMgpUlPMRxl5SaMkLzutbTmTwADpif49tnuLVu1GJtORUIpPp6AURxHwQoWTiamWjw==
+X-Received: by 2002:a17:90a:3547:: with SMTP id q65mr1643566pjb.118.1585627278751;
+        Mon, 30 Mar 2020 21:01:18 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:442d])
+        by smtp.gmail.com with ESMTPSA id b25sm11307737pfp.201.2020.03.30.21.01.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Mar 2020 21:01:17 -0700 (PDT)
+Date:   Mon, 30 Mar 2020 21:01:12 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Edward Cree <ecree@solarflare.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
+ program when attaching XDP
+Message-ID: <20200331040112.5tvvubsf6ij4eupb@ast-mbp>
+References: <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com>
+ <87pncznvjy.fsf@toke.dk>
+ <20200326195859.u6inotgrm3ubw5bx@ast-mbp>
+ <87imiqm27d.fsf@toke.dk>
+ <20200327230047.ois5esl35s63qorj@ast-mbp>
+ <87lfnll0eh.fsf@toke.dk>
+ <20200328022609.zfupojim7see5cqx@ast-mbp>
+ <87eetcl1e3.fsf@toke.dk>
+ <CAEf4Bzb+GSf8cE_rutiaeZOtAuUick1+RnkCBU=Z+oY_36ArSA@mail.gmail.com>
+ <53515939-00bb-174c-bc55-f90eaceac2a3@solarflare.com>
 MIME-Version: 1.0
-In-Reply-To: <3053de4c-cee6-f6fc-efc2-09c6250f3ef2@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.173.223.60]
-X-CFilter-Loop: Reflected
+In-Reply-To: <53515939-00bb-174c-bc55-f90eaceac2a3@solarflare.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020/3/31 7:35, Toshiaki Makita wrote:
-> Hi Mao & Jesper
-> (Resending with plain text...)
-> 
-> On 2020/03/30 20:34, Jesper Dangaard Brouer wrote:
->> On Mon, 30 Mar 2020 18:26:31 +0800
->> Mao Wenan <maowenan@huawei.com> wrote:
->>
->>> xdp.data_hard_start is mapped to the first
->>> address of xdp_frame, but the pointer hard_start
->>> is the offset(sizeof(struct xdp_frame)) of xdp_frame,
->>> it should use head instead of hard_start to
->>> set xdp.data_hard_start. Otherwise, if BPF program
->>> calls helper_function such as bpf_xdp_adjust_head, it
->>> will be confused for xdp_frame_end.
->>
->> I have noticed this[1] and have a patch in my current patchset for
->> fixing this.Â  IMHO is is not so important fix right now, as the effect
->> is that you currently only lose 32 bytes of headroom.
->>
-I consider that it is needed because bpf_xdp_adjust_head() just a common helper function,
-veth as one driver application should keep the same as 32 bytes of headroom as other driver.
-And convert_to_xdp_frame set() also store info in top of packet, and set:
-	xdp_frame = xdp->data_hard_start;
+On Mon, Mar 30, 2020 at 04:41:46PM +0100, Edward Cree wrote:
+> On 29/03/2020 21:23, Andrii Nakryiko wrote:
+> > But you can't say the same about other XDP applications that do not
+> > use libxdp. So will your library come with a huge warning
+> What about a system-wide policy switch to decide whether replacing/
+>  removing an XDP program without EXPECTED_FD is allowed?  That way
+>  the sysadmin gets to choose whether it's the firewall or the packet
+>  analyser that breaks, rather than baking a policy into the design.
+> Then libxdp just needs to say in the README "you might want to turn
+>  on this switch".  Or maybe it defaults to on, and the other program
+>  has to talk you into turning it off if it wants to be 'ill-behaved'.
 
->> [1] https://lore.kernel.org/netdev/158446621887.702578.17234304084556809684.stgit@firesoul/
-> 
-> You are right, the subtraction is not necessary here.
-I guess you mean that previous subtraction is not necessary ? this line : void *head = hard_start - sizeof(struct xdp_frame); ?
-But in the veth_xdp_rcv_one,below line will use head pointer,
-case XDP_TX:
-                        orig_frame = *frame;
-                        xdp.data_hard_start = head;
+yeah. something like this can work for xdp only, but
+it won't work for tc, since ownership is missing.
+It looks like such policy knob will bere-inventing bpf_link for
+one specific xdp case only because xdp has one program per attachment.
 
+Imagine it was easy to come up with sensible policy and allow
+multiple progs in xdp hook.
+How would you implement such policy knob?
+processA attaches prog XDP_A. processB attaches prog XDP-B.
+Unless they start tagging their indivdual programs with BTF tags
+(as Toke is planning to do) there is no way to tell them apart.
+Then processA can iterate all progs in a hook, finds its prog
+based on tag and tell kernel: "find and replace an xdp prog with old_fd
+with new_fd on this ifindex".
+Kinda works, but it doesn't stop processB to accidently detach prog XDP_A
+that was installed by processA.
 
-> Thank you for working on this.
-> 
-> Toshiaki Makita
-> 
-> .
+The kernel job is to share the system resources. Like memory, cpu time.
+The hook is such resource too. The owner concept part of bpf_link
+allows such sharing.
 
+> Either way, affected users will be driven to the kernel's
+>  documentation for the policy switch, where we can tell them whatever
+>  we think they need to know.
 
+In the data center there are no users. Few months back I described it
+the single user system. A bunch of processes are competing for resources.
+They can be all root, or all nobody, or containers with userns.
+Neither user id nor caps can be such separator among processes for
+the job of sharing bpf hook.
+The tc/xdp/cgroup/tracing bpf attachment points need to be safely
+shared among N root processes that are not cooperating with each other.
+For tc, cgroup, tracing the problem is solved with bpf_link, since
+they all allow multi prog.
+XDP is the hardest, since it does single prog only.
+That's what we're trying to solve with libdispatcher.
+I think if it goes well it can become part of the kernel and kernel
+will do multi prog XDP attach. And all hooks will be symmetrical.
+But looking at the size of this thread and still lots of misunderstanding
+about basic concept like bpf_link I'm not hopeful that libdispatcher
+will ever become part of the kernel.
