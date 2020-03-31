@@ -2,58 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5BF199339
-	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 12:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0B9199562
+	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 13:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729997AbgCaKN1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Mar 2020 06:13:27 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:20239 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730224AbgCaKN1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Mar 2020 06:13:27 -0400
+        id S1730534AbgCaLeK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Mar 2020 07:34:10 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:49535 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730515AbgCaLeK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 31 Mar 2020 07:34:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585649605;
+        s=mimecast20190719; t=1585654449;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CiuEMwk5QuitIfDRpxWsjJRKhCskplSxPEEHaL3KHzA=;
-        b=Sgp/D+CyDOvF8nAj+cfyLajB60zByKDDtdyuvRbhgYMhFOG3nR2/OFUb3SHStrPwJ3w/ux
-        rfcJ2LzZX2ttfHIfWpTIQgv93XLUljjZjyZhiKjTCChcqOXYgNC0ASt7w7iI3bu2CBF0HY
-        y41IbPj02pYookn/cqmrzdyl3gtR7V4=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-412-9FTbXSNnP5KtVZG-Wl1uBw-1; Tue, 31 Mar 2020 06:13:24 -0400
-X-MC-Unique: 9FTbXSNnP5KtVZG-Wl1uBw-1
-Received: by mail-lf1-f71.google.com with SMTP id q4so8656615lff.4
-        for <bpf@vger.kernel.org>; Tue, 31 Mar 2020 03:13:23 -0700 (PDT)
+        bh=HrO6qnvFCLDk5NO+OpOmNPceTFDvqZ+epiw6rusbJ10=;
+        b=jHul6kWQECZTZh2u/uXD2lBqoI4cthV3Xs5tNT62JAzAZCjCFV3O7rJI12Yc83bY/iKohi
+        I19NweSk1EgnsER402iSCLNLIGnFRUaxiHw6ib1oFfuNbsKLlSDdGw7+Tsp7DiKTSFA+pb
+        FCLJd/1Y6urOI0HHOQui93s7u2Gw9AE=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-461-aIeEZym_MBu6QDx4nNFG1w-1; Tue, 31 Mar 2020 07:34:07 -0400
+X-MC-Unique: aIeEZym_MBu6QDx4nNFG1w-1
+Received: by mail-lj1-f200.google.com with SMTP id t6so1302186ljg.6
+        for <bpf@vger.kernel.org>; Tue, 31 Mar 2020 04:34:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=CiuEMwk5QuitIfDRpxWsjJRKhCskplSxPEEHaL3KHzA=;
-        b=XHJ33wpG1ReTcMqP9eY5jsyKFjOAP7chmxzvrEM6ohpgVFCeIlicDDQ+I3lHwGLJT2
-         sLMxONMm00yLNS5TgKOQI0WERg0/+dW0srJPGcE1ZPZQ1IheI5hNg8krboM4Hz1VaDnB
-         2RdcNourAmhXExsMuJzUzpWDUsslHY1mYDhNH0uA4TIbHSurSzlACbwnYT0I3m+Wxtzl
-         7m8V1JPqBM6uEUGa1cmMS9S38fQp2iSjJiq+u0+S5CPP+f1o1JiBDeIYiOu9Uuqn5vJY
-         ACCaZfXn6+fDykHG1GuUKlG4sfwLzcFCrTeXDD1ldX7V9Hpdnwry+NyhbOpjzBq5H5M7
-         DCeQ==
-X-Gm-Message-State: AGi0PuZa12lLki/B9EHChCS8Cojw0ZnwUBt9PPwRjgONztmhBlijeaW8
-        G7kTaA7esxiSDHl73TEcavKEpNsX7kZz9SsB9h1dxAFbUI87qsp09uCEgmZWsGQeYmaIE3ztX0Y
-        wAU9WpoKuV2qz
-X-Received: by 2002:ac2:4462:: with SMTP id y2mr6867603lfl.183.1585649602707;
-        Tue, 31 Mar 2020 03:13:22 -0700 (PDT)
-X-Google-Smtp-Source: APiQypLBBxVYR14X16mmpnBA+hqpOuXZoB5tEwmNqRbKEhj23n6swe1DbyDYzlPViP7KgLE3IhgH0A==
-X-Received: by 2002:ac2:4462:: with SMTP id y2mr6867581lfl.183.1585649602472;
-        Tue, 31 Mar 2020 03:13:22 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id n17sm8375658ljc.76.2020.03.31.03.13.21
+         :message-id:mime-version:content-transfer-encoding;
+        bh=HrO6qnvFCLDk5NO+OpOmNPceTFDvqZ+epiw6rusbJ10=;
+        b=eKCATA9o9Ma5wtaSI7at/2UgabpRDm5dOv/0n04an26SFYKPnsq24aRTe0CGq7mYh/
+         Q+Fp9usbNEjcVu6me1ckaBhdUnByN4+ltvoW9Jnbl13OjPxpd92EIbsZqStJmtKBEu2k
+         GjkuoNyFqptSv2xXHGu/k5FNWRWPdYtfF/sitMWtXDRp7gXhUAQOMecyHNGoHZIm0szE
+         9tLtRWmZusc9wA8KoSXV8/amBN3uyaY1eol48i03r2dCNLNrZVcyLNvyrtjQ0ijktjQq
+         QECZihInftmz++uMVfYk2U1TLxR1HgtVkXdHKQsvBPJfLi0JH6Zu3OZTqy1X9NKRAWVu
+         Gyjw==
+X-Gm-Message-State: AGi0PuaPef0oOd/YzoNznjLNMAAs4IY6rV3OqBEPu4XIX2yUyzSEINXg
+        A83E5EusHJuxTWTZ49aOa+cXuqi5cKwLflCm46BLAB4fMuWVrzrk2BUAoY0pYuI8oXnSqEl+yr/
+        qsLvFRdPgTD4+
+X-Received: by 2002:a2e:7606:: with SMTP id r6mr9642596ljc.118.1585654446230;
+        Tue, 31 Mar 2020 04:34:06 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIk+2lmWU41DZ0mTC8ILVxl4F/NkjA59ewgq4K6VwG8uzR822Z12+u9WfLaCIJYb76YCOla4A==
+X-Received: by 2002:a2e:7606:: with SMTP id r6mr9642573ljc.118.1585654445979;
+        Tue, 31 Mar 2020 04:34:05 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id v22sm8418906ljj.67.2020.03.31.04.34.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Mar 2020 03:13:21 -0700 (PDT)
+        Tue, 31 Mar 2020 04:34:04 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 4DDA918158D; Tue, 31 Mar 2020 12:13:16 +0200 (CEST)
+        id D114518158D; Tue, 31 Mar 2020 13:34:00 +0200 (CEST)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Edward Cree <ecree@solarflare.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -67,49 +69,86 @@ Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Andrey Ignatov <rdna@fb.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing program when attaching XDP
-In-Reply-To: <CAEf4Bza4vKbjkj8kBkrVmayFr2j_nvrORF_YkCoVKibB=SmSYQ@mail.gmail.com>
-References: <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com> <87tv2e10ly.fsf@toke.dk> <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com> <87369wrcyv.fsf@toke.dk> <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com> <87pncznvjy.fsf@toke.dk> <20200326195859.u6inotgrm3ubw5bx@ast-mbp> <87imiqm27d.fsf@toke.dk> <20200327230047.ois5esl35s63qorj@ast-mbp> <87lfnll0eh.fsf@toke.dk> <20200328022609.zfupojim7see5cqx@ast-mbp> <87eetcl1e3.fsf@toke.dk> <CAEf4Bzb+GSf8cE_rutiaeZOtAuUick1+RnkCBU=Z+oY_36ArSA@mail.gmail.com> <87y2rihruq.fsf@toke.dk> <CAEf4Bza4vKbjkj8kBkrVmayFr2j_nvrORF_YkCoVKibB=SmSYQ@mail.gmail.com>
+In-Reply-To: <20200331040112.5tvvubsf6ij4eupb@ast-mbp>
+References: <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com> <87pncznvjy.fsf@toke.dk> <20200326195859.u6inotgrm3ubw5bx@ast-mbp> <87imiqm27d.fsf@toke.dk> <20200327230047.ois5esl35s63qorj@ast-mbp> <87lfnll0eh.fsf@toke.dk> <20200328022609.zfupojim7see5cqx@ast-mbp> <87eetcl1e3.fsf@toke.dk> <CAEf4Bzb+GSf8cE_rutiaeZOtAuUick1+RnkCBU=Z+oY_36ArSA@mail.gmail.com> <53515939-00bb-174c-bc55-f90eaceac2a3@solarflare.com> <20200331040112.5tvvubsf6ij4eupb@ast-mbp>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 31 Mar 2020 12:13:16 +0200
-Message-ID: <87pncsj0hv.fsf@toke.dk>
+Date:   Tue, 31 Mar 2020 13:34:00 +0200
+Message-ID: <87k130iwrb.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
->> > So you install your libxdp-based firewalls and are happy. Then you
->> > decide to install this awesome packet analyzer, which doesn't know
->> > about libxdp yet. Suddenly, you get all packets analyzer, but no more
->> > firewall, until users somehow notices that it's gone. Or firewall
->> > periodically checks that it's still runinng. Both not great, IMO, but
->> > might be acceptable for some users, I guess. But imagine all the
->> > confusion for user, especially if he doesn't give a damn about XDP and
->> > other buzzwords, but only needs a reliable firewall :)
->>
->> Yes, whereas if the firewall is using bpf_link, then the packet analyser
->> will be locked out and can't do its thing. Either way you end up with a
->> broken application; it's just moving the breakage. In the case of
+> On Mon, Mar 30, 2020 at 04:41:46PM +0100, Edward Cree wrote:
+>> On 29/03/2020 21:23, Andrii Nakryiko wrote:
+>> > But you can't say the same about other XDP applications that do not
+>> > use libxdp. So will your library come with a huge warning
+>> What about a system-wide policy switch to decide whether replacing/
+>> =C2=A0removing an XDP program without EXPECTED_FD is allowed?=C2=A0 That=
+ way
+>> =C2=A0the sysadmin gets to choose whether it's the firewall or the packet
+>> =C2=A0analyser that breaks, rather than baking a policy into the design.
+>> Then libxdp just needs to say in the README "you might want to turn
+>> =C2=A0on this switch".=C2=A0 Or maybe it defaults to on, and the other p=
+rogram
+>> =C2=A0has to talk you into turning it off if it wants to be 'ill-behaved=
+'.
 >
-> Hm... In one case firewall installation reported success and stopped
-> working afterwards with no notification and user having no clue. In
-> another, packet analyzer refused to start and reported error to user.
-> Let's agree to disagree that those are not at all equivalent. To me
-> silent failure is so much worse, than application failing to start in
-> the first place.
+> yeah. something like this can work for xdp only, but
+> it won't work for tc, since ownership is missing.
+> It looks like such policy knob will bere-inventing bpf_link for
+> one specific xdp case only because xdp has one program per attachment.
 
-Oh, sure, obvious failures are preferable to silent ones, do doubt about
-that. But for things to actually *work*, both applications need to agree
-on how to do things, which in practice means they'll need to use the
-same library. At which point you can solve this problem in the
-library.
+You keep talking about this as though bpf_link was the existing API and
+we're discussing adding another, when in reality it's the other way
+around.
 
-So again, I'm not saying the two are equivalent, I am just disagreeing
-with you about how big the benefit is. And sure, we can agree to
-disagree on that :)
+> Imagine it was easy to come up with sensible policy and allow
+> multiple progs in xdp hook.
+> How would you implement such policy knob?
+> processA attaches prog XDP_A. processB attaches prog XDP-B.
+> Unless they start tagging their indivdual programs with BTF tags
+> (as Toke is planning to do) there is no way to tell them apart.
+> Then processA can iterate all progs in a hook, finds its prog
+> based on tag and tell kernel: "find and replace an xdp prog with old_fd
+> with new_fd on this ifindex".
+> Kinda works, but it doesn't stop processB to accidently detach prog XDP_A
+> that was installed by processA.
+>
+> The kernel job is to share the system resources. Like memory, cpu time.
+> The hook is such resource too. The owner concept part of bpf_link
+> allows such sharing.
+
+FWIW I actually agree that the bpf_link ownership concept makes sense
+for the individual attachments in a multi-prog hook; including for XDP.
+And I've started thinking about whether the bpf_link fd can work as the
+reference being returned by libxdp after a component program is
+attached. I have some reservations, but I'll start a new thread on that
+once I'm a bit further along with it...
+
+[...]
+
+> XDP is the hardest, since it does single prog only.
+> That's what we're trying to solve with libdispatcher.
+> I think if it goes well it can become part of the kernel and kernel
+> will do multi prog XDP attach. And all hooks will be symmetrical.
+
+Now *that* I'd like to see! I've said from the beginning that I think
+XDP multi-prog should be part of the kernel, so if we can get there via
+this detour I'm all for it.
+
+> But looking at the size of this thread and still lots of
+> misunderstanding about basic concept like bpf_link I'm not hopeful
+> that libdispatcher will ever become part of the kernel.
+
+I don't share your pessimism. If we can stop writing off honest
+disagreement about design tradeoffs as just "misunderstanding", I think
+we can get there.
 
 -Toke
 
