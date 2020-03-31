@@ -2,155 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D361E199F68
-	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 21:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ECCA199F6C
+	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 21:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727955AbgCaTrU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Mar 2020 15:47:20 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:37801 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727768AbgCaTrT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Mar 2020 15:47:19 -0400
-Received: by mail-qk1-f195.google.com with SMTP id x3so24458911qki.4;
-        Tue, 31 Mar 2020 12:47:19 -0700 (PDT)
+        id S1726548AbgCaTuU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Mar 2020 15:50:20 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:41435 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726411AbgCaTuU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Mar 2020 15:50:20 -0400
+Received: by mail-qk1-f196.google.com with SMTP id q188so24438594qke.8
+        for <bpf@vger.kernel.org>; Tue, 31 Mar 2020 12:50:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=GFR2ebeelxrsVQaEHaa7H8HXE+7opSWH7ZpASGlERsM=;
-        b=d6ldevC9PQKwwsqzRi0EN6gl2z2VxBKwgrNgIFhrmLCCkWMMQOzTLAprn1kcPZuZ10
-         XjFbX2SZCT4fSbmuGB3jzdYOZjQZwW5sBw2P3L/jbb+kMuIDsRkMAvqAC1EK90GjznwP
-         kKs+hCV7J508TWxufgCB7rStezN2Chjy5XqJ9vfE2a9oFSNwFIEoCknByW92N7+VRHgD
-         Uwby5nPHwvDQ2fxfs6WZpczVUGOla1Kt8jhdeXaMyurrDKS1c5vVuEQhXmQpsxUlXGjY
-         P0BAEWX3aOtaMWvr7CwjSgnxgCkpFO5oxWBZxZ9ZAYbAA1X19Of7FCxgNwGhOpp7WfPV
-         guRw==
+        bh=o5+qKLQ1f4NqUqvhqrfke6cOCk10NSdeFo7t2OCsew8=;
+        b=CMfKSpfoJV/1XPTFCLmfA6IVfkYQO8d03ChIgA6G5K9uJ+Dt3sOIpoIqUlgv24jKYI
+         dVs1Rea5ot/663JHeeGdiAJgIieYtep+k0d56O36iC5BOZ0gw2ls9THUtf0jc72nxMus
+         mRxyXXTPK905JkamOGghpPhn3gNSNHvi1KAtWZgckgKWRt40U0/xSxnPZ3PtEaD0Jd6f
+         VwMTkv+gis5tw5wWBE6aZlVsvqRpGPzk2QXMyTkkBgVrN9vjHu7zbS/zODZI7gJBdy2g
+         Dtxh7RyABKfNMFA0HbbSWR68XR8OXpc6MU0OkqZ2K/cXh0CtZfCtUKvbAqd9mRbnsgYY
+         aq4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=GFR2ebeelxrsVQaEHaa7H8HXE+7opSWH7ZpASGlERsM=;
-        b=kCQtwahfduetiH8hDmGzWxo3b/6jQkSqVfDer8qs6tbOpZxxP93z/6vudfAp6PphQD
-         zf2WYQ/tM+rFUQDRYCoQbMMV+SLjijzr5w8b0aU8m9YIkdpqzpzsiOJ2MKeNJvofpBCO
-         c8zX5sfBx51iNNSvGplyOrDqtynvuBU47Bwg21LfIVNOIZkdyKSlq6NMy3M9rtSwyon2
-         K2NOcf4BZUcgnH8wCQnvdPwYJZuUgNpyiErTznH4dbMLcS6kdAGn/ZZ/J52Lwvq6lXOk
-         iu3eVvbM7LqQ95CP6RCVkTn5OfNUwQfXvSny6kpMzGVVesw6UmSEE5gr+qcbeSlNmAQ5
-         pfpg==
-X-Gm-Message-State: ANhLgQ1YD+zxjbCcs5J7LwGA2u2IlA+eKSFBYEwx5Ts+CF9H2zwoBVc0
-        BhHRkDkiIMI3+idr0dBGSEDmTunX20RPOCEyCHM=
-X-Google-Smtp-Source: ADFU+vsQeYFXMaujLW5040JH0lik5W1Ur57xYxu1+p18j3/IegQJuXKTpgoGz15sWUV8DbDW4cpOi/iH0bqVmJdwakE=
-X-Received: by 2002:a37:6411:: with SMTP id y17mr6917618qkb.437.1585684038877;
- Tue, 31 Mar 2020 12:47:18 -0700 (PDT)
+        bh=o5+qKLQ1f4NqUqvhqrfke6cOCk10NSdeFo7t2OCsew8=;
+        b=shzFiwucvwVKKkbsjpur7T3LtUfqHyS3+m9IMuD9asQMpYw6TDBz/SpBNaCwptqGvx
+         l5Q7WGsxgH7DZuZIfWaEKye/lIs6cR5VvDoOBPt0yVQU+omwB4lsyMJFE1+xRmwjhogn
+         pnWm0U646mLQesk/AEPLb0yU+g3ePRb6Bw8uLMFSmVs+MHGtFJ1/dZs7PGwaQbhjEslb
+         itOzFdWhMpdXsG1X463CWzPBv3vACHm1iGvKR56ESjWrypx0XlNWtQ8+ljUXwRlQkHyz
+         ZeLz/1Ga/PbsetKwSccZnspljzlJDWH5AbLwP0h2LSv1TwS5wEnPWqPVKr637LM83ap/
+         rPLA==
+X-Gm-Message-State: ANhLgQ2VIWDVQbHbGvMwqql+/lLGLNlPXNiGUYP0/hYrwUuOJwQkqnuz
+        RdaLzAOA5rzPovlYknVMJHXSnbxSIxvJsdsZUqA=
+X-Google-Smtp-Source: ADFU+vsNIICmh4UU/HbDsexWPCQXWoxpUmRkqKNeRLTkqhCMElndmAYdLEyHsPlFNZnb+FTSqvH7XgLIP5OruxPWt8I=
+X-Received: by 2002:a05:620a:88e:: with SMTP id b14mr6969392qka.449.1585684218869;
+ Tue, 31 Mar 2020 12:50:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <60b05d23-6352-b978-3bf7-5a86466bb297@cn.fujitsu.com>
- <c1025a74-1d80-5127-2b0a-87465d3dbcd0@fb.com> <84a70348-62e3-728b-d934-28e902d40fd0@cn.fujitsu.com>
- <da95b852-e556-1b56-42eb-b97e1826710c@cn.fujitsu.com> <a2771f66-b7ff-f320-dbd6-0967c189834f@cn.fujitsu.com>
- <a2b1a025-6a70-c3a5-fc19-155f0266946a@fb.com> <7705ca15-0d63-2e17-b947-51852c196c4b@cn.fujitsu.com>
-In-Reply-To: <7705ca15-0d63-2e17-b947-51852c196c4b@cn.fujitsu.com>
+References: <CAG48ez2sZ58VQ4+LJu39H1M0Y98LhRYR19G_fDAPJPBf7imxuw@mail.gmail.com>
+ <CAADnVQ+Ux3-D_7ytRJx_Pz4fStRLS1vkM=-tGZ0paoD7n+JCLQ@mail.gmail.com>
+ <CAG48ez0ajun-ujQQqhDRooha1F0BZd3RYKvbJ=8SsRiHAQjUzw@mail.gmail.com>
+ <202003301016.D0E239A0@keescook> <c332da87-a770-8cf9-c252-5fb64c06c17e@iogearbox.net>
+ <202003311110.2B08091E@keescook>
+In-Reply-To: <202003311110.2B08091E@keescook>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 31 Mar 2020 12:47:07 -0700
-Message-ID: <CAEf4BzZri8KpwLcoPgjiVx_=QmJ2W9UzBkDqSO2rUWMzWogkKg@mail.gmail.com>
-Subject: Re: runqslower build failed on Debian9
-To:     Liu Yiding <liuyd.fnst@cn.fujitsu.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Philip Li <philip.li@intel.com>
+Date:   Tue, 31 Mar 2020 12:50:07 -0700
+Message-ID: <CAEf4BzYZsiuQGYVozwB=7nNhVYzCr=fQq6PLgHF3M5AXbhZyig@mail.gmail.com>
+Subject: Re: CONFIG_DEBUG_INFO_BTF and CONFIG_GCC_PLUGIN_RANDSTRUCT
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Jann Horn <jannh@google.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 30, 2020 at 5:19 PM Liu Yiding <liuyd.fnst@cn.fujitsu.com> wrote:
+On Tue, Mar 31, 2020 at 11:12 AM Kees Cook <keescook@chromium.org> wrote:
 >
->
-> On 3/30/20 2:09 PM, Andrii Nakryiko wrote:
-> > On 3/29/20 5:48 PM, Liu Yiding wrote:
-> >> Add attachment.
-> >>
+> On Tue, Mar 31, 2020 at 12:41:04AM +0200, Daniel Borkmann wrote:
+> > On 3/30/20 7:20 PM, Kees Cook wrote:
+> > > On Mon, Mar 30, 2020 at 06:17:32PM +0200, Jann Horn wrote:
+> > > > On Mon, Mar 30, 2020 at 5:59 PM Alexei Starovoitov
+> > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > > On Mon, Mar 30, 2020 at 8:14 AM Jann Horn <jannh@google.com> wrote:
+> > > > > >
+> > > > > > I noticed that CONFIG_DEBUG_INFO_BTF seems to partly defeat the point
+> > > > > > of CONFIG_GCC_PLUGIN_RANDSTRUCT.
+> > > > >
+> > > > > Is it a theoretical stmt or you have data?
+> > > > > I think it's the other way around.
+> > > > > gcc-plugin breaks dwarf and breaks btf.
+> > > > > But I only looked at gcc patches without applying them.
+> > > >
+> > > > Ah, interesting - I haven't actually tested it, I just assumed
+> > > > (perhaps incorrectly) that the GCC plugin would deal with DWARF info
+> > > > properly.
+> > >
+> > > Yeah, GCC appears to create DWARF before the plugin does the
+> > > randomization[1], so it's not an exposure, but yes, struct randomization
+> > > is pretty completely incompatible with a bunch of things in the kernel
+> > > (by design). I'm happy to add negative "depends" in the Kconfig if it
+> > > helps clarify anything.
 > >
-> > Your BTF seems to be invalid. It has struct perf_ibs, which has a
-> > first field `struct pmu pmu` field with valid-looking size of 296
-> > bytes, **but** the type that field points to is not a complete `struct
-> > pmu` definition, but rather just forward declaration. The way it is it
-> > shouldn't be even compilable, because forward declaration of a struct
-> > doesn't specify the size of a struct, so compiler should have rejected
-> > it. So it must be that either DWARF generated by compiler isn't
-> > correct, or there is DWARF -> BTF conversion bug somewhere. Are you
-> > using any special DWARF Kconfig settings? Maybe you can share your
-> > full .config and I might try to repro it on my machine.
-> >
+> > Is this expected to get fixed at some point wrt DWARF? Perhaps would make
 >
->  >> Are you using any special DWARF Kconfig settings?
+> No, gcc closed the issue as "won't fix".
 >
-> Sorry, i'm a newbie at this. I don't know which settings are related to
-> DWARF.
+> > sense then to add a negative "depends" for both DWARF and BTF if the option
+> > GCC_PLUGIN_RANDSTRUCT is set given both would be incompatible/broken.
 >
-> Just search keywords.
+> I hadn't just to keep wider randconfig build test coverage. That said, I
+> could make it be: depends COMPILE_TEST || !DWARF ...
 >
-> ```
->
-> liuyd@localhost:~$ cat config-5.6.0-rc5 | grep DWARF
-> # CONFIG_DEBUG_INFO_DWARF4 is not set
->
-> ```
->
-> I built attached config on a clear ubuntu machine. Error could be
-> reproduced. So you are right, there is a conflict between kconfigs.
->
->
->  >> Maybe you can share your full .config and I might try to repro it on
-> my machine.
->
-> Thanks a lot. I attached the broken config.
+> I can certainly do that.
 
-Thanks a lot! I think it's due to DEBUG_INFO_REDUCED which produces
-not entirely correct DWARF. I'm asking Slava to disable this config
-when BTF is requested in [0].
+I've asked Slava in [0] to disable all three known configs that break
+DWARF and subsequently BTF, I hope it's ok to just do it in one patch.
+Currently all these appear to result in invalid BTF due to various
+DWARF modifications:
 
-  [0] https://lore.kernel.org/bpf/CAEf4BzadnfAwfa1D0jZb=01Ou783GpK_U7PAYeEJca-L9kdnVA@mail.gmail.com
+  - DEBUG_INFO_REDUCED (see [1])
+  - DEBUG_INFO_SPLIT (see [0]
+  - GCC_PLUGIN_RANDSTRUCT (this discussion).
+
+  [0] https://lore.kernel.org/bpf/CAEf4BzadnfAwfa1D0jZb=01Ou783GpK_U7PAYeEJca-L9kdnVA@mail.gmail.com/
+  [1] https://lore.kernel.org/bpf/CAEf4BzZri8KpwLcoPgjiVx_=QmJ2W9UzBkDqSO2rUWMzWogkKg@mail.gmail.com/
 
 
 >
+> -Kees
 >
-> > But either way, that warning you get is a valid one, it should be
-> > illegal to have non-pointer forward-declared struct as a type for a
-> > struct member.
-> >
-> >>
-> >> On 3/30/20 8:46 AM, Liu Yiding wrote:
-> >>> Something wrong with my smtp and this email missed.
-> >>>
-> >>> Send again.
-> >>>
-> >>>
-> >>> On 3/27/20 11:09 AM, Liu Yiding wrote:
-> >>>> Hi, Andrii.
-> >>>>
-> >>>> Thanks for your prompt reply!
-> >>>>
-> >>>> Please check attatchment for my_btf.bin.
-> >>>>
-> >>>>
-> >>>> On 3/27/20 4:28 AM, Andrii Nakryiko wrote:
-> >>>>> Would you be able to share BTF of vmlinux that is used to generate
-> >>>>> vmlinux.h? Please run in verbose mode: `make V=1` and search for
-> >>>>> `bpftool btf dump file` command. It should point either to
-> >>>>> /sys/kernel/btf/vmlinux or some other location, depending on how
-> >>>>> things are set up on your side.
-> >>>>>
-> >>>>> If it's /sys/kernel/btf/vmlinux, you can just `cat
-> >>>>> /sys/kernel/btf/vmlinux > my_btf.bin`. If it's some other file,
-> >>>>> easiest would be to just share that file. If not, it's possible to
-> >>>>> extract .BTF ELF section, let me know if you need help with that.
-> >>>>
-> >
-> >
-> >
+> [1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=84052
+>
 > --
-> Best Regards.
-> Liu Yiding
->
->
->
+> Kees Cook
