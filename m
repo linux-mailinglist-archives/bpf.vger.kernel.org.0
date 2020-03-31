@@ -2,97 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3C8199F61
-	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 21:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D361E199F68
+	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 21:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728274AbgCaTp6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Mar 2020 15:45:58 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:46768 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727875AbgCaTp6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Mar 2020 15:45:58 -0400
-Received: by mail-qt1-f193.google.com with SMTP id g7so19452812qtj.13;
-        Tue, 31 Mar 2020 12:45:57 -0700 (PDT)
+        id S1727955AbgCaTrU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Mar 2020 15:47:20 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:37801 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727768AbgCaTrT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Mar 2020 15:47:19 -0400
+Received: by mail-qk1-f195.google.com with SMTP id x3so24458911qki.4;
+        Tue, 31 Mar 2020 12:47:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=REjYZlG94i8PyvxEbrGw6FROa/0MlwWAThXqw6aFXhA=;
-        b=VSzLexTs4R0b655EBqdGCoSiFIqAQHoDH/UYop0iyse8dwS75rGIg5+JF73dCSmK1g
-         zEphrL0t82cI/7mDQyyl246sSAEeSaZYqwIjLSG8E6an5fc7yedc0djdKKfBh1e/+sX6
-         8hHIphF8tk+LMZqKjxxZasi5b4mRCYJm7kt/urRRmWEJnZRitnDeMeNIozr37N4Wsuxv
-         PY5vrL5L1OYrgDjprWPaodKVqzE4OZXFXydKFQ0owREtK2KnYbdNY9BDVIySeE6mK0L/
-         f1KkeATFooGwCvPN8f86OH2P3zwP7dJWlab2UyZR3iMe+EZDreIPJ6FARa+xmZ8DiT1Y
-         VvyA==
+        bh=GFR2ebeelxrsVQaEHaa7H8HXE+7opSWH7ZpASGlERsM=;
+        b=d6ldevC9PQKwwsqzRi0EN6gl2z2VxBKwgrNgIFhrmLCCkWMMQOzTLAprn1kcPZuZ10
+         XjFbX2SZCT4fSbmuGB3jzdYOZjQZwW5sBw2P3L/jbb+kMuIDsRkMAvqAC1EK90GjznwP
+         kKs+hCV7J508TWxufgCB7rStezN2Chjy5XqJ9vfE2a9oFSNwFIEoCknByW92N7+VRHgD
+         Uwby5nPHwvDQ2fxfs6WZpczVUGOla1Kt8jhdeXaMyurrDKS1c5vVuEQhXmQpsxUlXGjY
+         P0BAEWX3aOtaMWvr7CwjSgnxgCkpFO5oxWBZxZ9ZAYbAA1X19Of7FCxgNwGhOpp7WfPV
+         guRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=REjYZlG94i8PyvxEbrGw6FROa/0MlwWAThXqw6aFXhA=;
-        b=Bhaw6xWlaauB+MTUSw6SCgoP5rPPL458ZDHpYRdfo7Xk8fG+jR6oY5SdNOaLsDP6KQ
-         YEmFDshh+3tB3UAIgdxLU6uwFUzt3N2ueX14qImjT+n1LIitNpEW7AyKKZYDsKZI66WI
-         L2t/gadhJYxjYIq665h+lzDCajtu6pgQ4wgxuI4ZYcsRISThKE2ONm8wkTpFK8Bbl7N/
-         2sbjCFvWRhOp3nYpvf9q/S2wpRh3HzitG0/YQKhB/hLuBGo8YZkdafUC0nZ7cFhuGuGK
-         YtkdKuWqa2K046usOXSAGQ48z8Rt1DvnIBwP8U1MAyFAB6ka6SmYEaCszND6u2PCQe7a
-         6BFw==
-X-Gm-Message-State: ANhLgQ2RFlllpx+2aPwI0IJR3W75L7mLqAzww4oaJgPBbtMPg+8RqjJQ
-        kM59p5aLNYKrpjAUEIilj713rpsJH2v2hoEKuDU=
-X-Google-Smtp-Source: ADFU+vvi0ecOPffFZmRFp24NNImgY9stnVZBzdZ7eyIL1hi/wzu6S8WAYD8vWyl+NrWOBTAx/Emq3hZqKr5dYgtkrY8=
-X-Received: by 2002:ac8:6f1b:: with SMTP id g27mr6856118qtv.117.1585683956976;
- Tue, 31 Mar 2020 12:45:56 -0700 (PDT)
+        bh=GFR2ebeelxrsVQaEHaa7H8HXE+7opSWH7ZpASGlERsM=;
+        b=kCQtwahfduetiH8hDmGzWxo3b/6jQkSqVfDer8qs6tbOpZxxP93z/6vudfAp6PphQD
+         zf2WYQ/tM+rFUQDRYCoQbMMV+SLjijzr5w8b0aU8m9YIkdpqzpzsiOJ2MKeNJvofpBCO
+         c8zX5sfBx51iNNSvGplyOrDqtynvuBU47Bwg21LfIVNOIZkdyKSlq6NMy3M9rtSwyon2
+         K2NOcf4BZUcgnH8wCQnvdPwYJZuUgNpyiErTznH4dbMLcS6kdAGn/ZZ/J52Lwvq6lXOk
+         iu3eVvbM7LqQ95CP6RCVkTn5OfNUwQfXvSny6kpMzGVVesw6UmSEE5gr+qcbeSlNmAQ5
+         pfpg==
+X-Gm-Message-State: ANhLgQ1YD+zxjbCcs5J7LwGA2u2IlA+eKSFBYEwx5Ts+CF9H2zwoBVc0
+        BhHRkDkiIMI3+idr0dBGSEDmTunX20RPOCEyCHM=
+X-Google-Smtp-Source: ADFU+vsQeYFXMaujLW5040JH0lik5W1Ur57xYxu1+p18j3/IegQJuXKTpgoGz15sWUV8DbDW4cpOi/iH0bqVmJdwakE=
+X-Received: by 2002:a37:6411:: with SMTP id y17mr6917618qkb.437.1585684038877;
+ Tue, 31 Mar 2020 12:47:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200331164719.15930-1-slava@bacher09.org>
-In-Reply-To: <20200331164719.15930-1-slava@bacher09.org>
+References: <60b05d23-6352-b978-3bf7-5a86466bb297@cn.fujitsu.com>
+ <c1025a74-1d80-5127-2b0a-87465d3dbcd0@fb.com> <84a70348-62e3-728b-d934-28e902d40fd0@cn.fujitsu.com>
+ <da95b852-e556-1b56-42eb-b97e1826710c@cn.fujitsu.com> <a2771f66-b7ff-f320-dbd6-0967c189834f@cn.fujitsu.com>
+ <a2b1a025-6a70-c3a5-fc19-155f0266946a@fb.com> <7705ca15-0d63-2e17-b947-51852c196c4b@cn.fujitsu.com>
+In-Reply-To: <7705ca15-0d63-2e17-b947-51852c196c4b@cn.fujitsu.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 31 Mar 2020 12:45:46 -0700
-Message-ID: <CAEf4BzadnfAwfa1D0jZb=01Ou783GpK_U7PAYeEJca-L9kdnVA@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: disable DEBUG_INFO_SPLIT when BTF is on
-To:     Slava Bacherikov <slava@bacher09.org>
-Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+Date:   Tue, 31 Mar 2020 12:47:07 -0700
+Message-ID: <CAEf4BzZri8KpwLcoPgjiVx_=QmJ2W9UzBkDqSO2rUWMzWogkKg@mail.gmail.com>
+Subject: Re: runqslower build failed on Debian9
+To:     Liu Yiding <liuyd.fnst@cn.fujitsu.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Philip Li <philip.li@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 31, 2020 at 9:57 AM Slava Bacherikov <slava@bacher09.org> wrote:
+On Mon, Mar 30, 2020 at 5:19 PM Liu Yiding <liuyd.fnst@cn.fujitsu.com> wrote:
 >
-> Currently turning on DEBUG_INFO_SPLIT when DEBUG_INFO_BTF is also
-> enabled will produce invalid btf file, since gen_btf function in
-> link-vmlinux.sh script doesn't handle *.dwo files.
 >
-> Signed-off-by: Slava Bacherikov <slava@bacher09.org>
-> ---
->  lib/Kconfig.debug | 1 +
->  1 file changed, 1 insertion(+)
+> On 3/30/20 2:09 PM, Andrii Nakryiko wrote:
+> > On 3/29/20 5:48 PM, Liu Yiding wrote:
+> >> Add attachment.
+> >>
+> >
+> > Your BTF seems to be invalid. It has struct perf_ibs, which has a
+> > first field `struct pmu pmu` field with valid-looking size of 296
+> > bytes, **but** the type that field points to is not a complete `struct
+> > pmu` definition, but rather just forward declaration. The way it is it
+> > shouldn't be even compilable, because forward declaration of a struct
+> > doesn't specify the size of a struct, so compiler should have rejected
+> > it. So it must be that either DWARF generated by compiler isn't
+> > correct, or there is DWARF -> BTF conversion bug somewhere. Are you
+> > using any special DWARF Kconfig settings? Maybe you can share your
+> > full .config and I might try to repro it on my machine.
+> >
 >
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index f61d834e02fe..a9429ef5eec8 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -223,6 +223,7 @@ config DEBUG_INFO_DWARF4
->  config DEBUG_INFO_BTF
->         bool "Generate BTF typeinfo"
->         depends on DEBUG_INFO
-> +       depends on !DEBUG_INFO_SPLIT
+>  >> Are you using any special DWARF Kconfig settings?
+>
+> Sorry, i'm a newbie at this. I don't know which settings are related to
+> DWARF.
+>
+> Just search keywords.
+>
+> ```
+>
+> liuyd@localhost:~$ cat config-5.6.0-rc5 | grep DWARF
+> # CONFIG_DEBUG_INFO_DWARF4 is not set
+>
+> ```
+>
+> I built attached config on a clear ubuntu machine. Error could be
+> reproduced. So you are right, there is a conflict between kconfigs.
+>
+>
+>  >> Maybe you can share your full .config and I might try to repro it on
+> my machine.
+>
+> Thanks a lot. I attached the broken config.
 
-Thanks for following up! This looks good, but I think there are more
-DWARF-related configs that should be banned. See [0] and [1]. If you
-don't mind, let's use your patch to disable all of them in one go. So
-can you please update and disable DEBUG_INFO_REDUCED and
-GCC_PLUGIN_RANDSTRUCT? Thanks!
+Thanks a lot! I think it's due to DEBUG_INFO_REDUCED which produces
+not entirely correct DWARF. I'm asking Slava to disable this config
+when BTF is requested in [0].
 
-  [0] https://lore.kernel.org/bpf/202003311110.2B08091E@keescook
-  [1] https://lore.kernel.org/bpf/a2b1a025-6a70-c3a5-fc19-155f0266946a@fb.com
+  [0] https://lore.kernel.org/bpf/CAEf4BzadnfAwfa1D0jZb=01Ou783GpK_U7PAYeEJca-L9kdnVA@mail.gmail.com
 
 
->         help
->           Generate deduplicated BTF type information from DWARF debug info.
->           Turning this on expects presence of pahole tool, which will convert
+>
+>
+> > But either way, that warning you get is a valid one, it should be
+> > illegal to have non-pointer forward-declared struct as a type for a
+> > struct member.
+> >
+> >>
+> >> On 3/30/20 8:46 AM, Liu Yiding wrote:
+> >>> Something wrong with my smtp and this email missed.
+> >>>
+> >>> Send again.
+> >>>
+> >>>
+> >>> On 3/27/20 11:09 AM, Liu Yiding wrote:
+> >>>> Hi, Andrii.
+> >>>>
+> >>>> Thanks for your prompt reply!
+> >>>>
+> >>>> Please check attatchment for my_btf.bin.
+> >>>>
+> >>>>
+> >>>> On 3/27/20 4:28 AM, Andrii Nakryiko wrote:
+> >>>>> Would you be able to share BTF of vmlinux that is used to generate
+> >>>>> vmlinux.h? Please run in verbose mode: `make V=1` and search for
+> >>>>> `bpftool btf dump file` command. It should point either to
+> >>>>> /sys/kernel/btf/vmlinux or some other location, depending on how
+> >>>>> things are set up on your side.
+> >>>>>
+> >>>>> If it's /sys/kernel/btf/vmlinux, you can just `cat
+> >>>>> /sys/kernel/btf/vmlinux > my_btf.bin`. If it's some other file,
+> >>>>> easiest would be to just share that file. If not, it's possible to
+> >>>>> extract .BTF ELF section, let me know if you need help with that.
+> >>>>
+> >
+> >
+> >
 > --
-> 2.24.1
+> Best Regards.
+> Liu Yiding
+>
+>
 >
