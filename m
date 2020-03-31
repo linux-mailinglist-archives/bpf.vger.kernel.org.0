@@ -2,102 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CEA319A200
-	for <lists+bpf@lfdr.de>; Wed,  1 Apr 2020 00:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BD4B19A20B
+	for <lists+bpf@lfdr.de>; Wed,  1 Apr 2020 00:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729647AbgCaWk0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Mar 2020 18:40:26 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:38299 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727955AbgCaWk0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Mar 2020 18:40:26 -0400
-Received: by mail-wr1-f66.google.com with SMTP id c7so2211272wrx.5
-        for <bpf@vger.kernel.org>; Tue, 31 Mar 2020 15:40:25 -0700 (PDT)
+        id S1731470AbgCaWor (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Mar 2020 18:44:47 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:46261 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727955AbgCaWor (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Mar 2020 18:44:47 -0400
+Received: by mail-qk1-f194.google.com with SMTP id u4so24978441qkj.13;
+        Tue, 31 Mar 2020 15:44:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jY5b0DeIGw0kq+dmH/vJgCrU2SOoRk0fZBuTs/xmVo0=;
-        b=VDiCMTXyKUNt4iheUBH8m+6xsiIx/rgJTGicdZ/BWJF7GmTfsrCY7g+447EMzve3aq
-         Y+ldUezP4BlAWoR5IQfLpc6iFnWWr1G6v9bb02zEQLrKSg4qsJ4HrBuw7+exNKd9bAfU
-         jdqJY5s8D3nIc5Tz5vqTofy5j8BNQJ7duYeCA=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/AU0lA6PkuOvFJOWA8GHKBdsC2ZkjBjZg3pc7o84R4Q=;
+        b=trRWj+ISh59YDvidnlqJY/yn2YIDW24L1vB7wSm0EfLvy7lpWrGLtsa99jG2pQvOBt
+         pr/hjs/5DQhbaXbu/eI2CCIgVEwZAZcDnXyK7pa6hT1V7M9fnrTNdGd9AuEr8+JkxETT
+         1eM3Y8VRpYdaD5p86bKwABu+OfqzSCha0+o7xs9XHpOdIqlr2lTrOeY9vfbCXOD4tL9k
+         eOM1gZHwP3nOOt1GnPh/IuTh4sBkauF1PU2gCvkOrR4H8wXPnTo1T5QfS10bql1E/Ntt
+         lWuKW4HluvGpn3ZQhkauL9ZXPFru41YBAP73Vhd4i8ppvbSZXwT0OSyOhJkUGZiQJQ52
+         FB/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jY5b0DeIGw0kq+dmH/vJgCrU2SOoRk0fZBuTs/xmVo0=;
-        b=FjIi5hLooHjzde1apG7kkKyaoWYvfFuCHVTnjrr2NcESBRX1cxNqirpX8zcodMs0oE
-         SE7WYk6HLj7aglvMNl6T+IJIDAgrP/5irvKz3PGw7QjCfKJL7kMF/Grwp3kw/t8Y8lgQ
-         x4lFESiTcnhpvp7A3nJCWaIdDsCEjnFqBLdDu969fdOGfzzTrS6modb8aowLs4TVOUMU
-         SwA6/RaCKfImIXNy04D7EdsbKrNZgTWtetKs+um/lLn8J5w9wgg4pxkSLa0ZLe5aGIrM
-         MU4Wdup4bJ+vyOHHcfVBPZVCfYceyP5ee3NaxnV6Gs28Tu3LWfXgawIxWVsNhRZo+HFu
-         rwkw==
-X-Gm-Message-State: AGi0PuZY654Ka0B5qlY7nquniu0yc0zoHZwsOu2m4xqlIAEpxC2OrHHK
-        uS87dB36Tyeka5n0g9Xy7wBZyQ==
-X-Google-Smtp-Source: APiQypLOGvUileQhr35EVvXv/b90kFXVu0uzau9TlILC3ZUR48htnauWq/BaHsz4upygp1gntHv0QA==
-X-Received: by 2002:adf:fe52:: with SMTP id m18mr976140wrs.162.1585694424872;
-        Tue, 31 Mar 2020 15:40:24 -0700 (PDT)
-Received: from google.com ([2a00:79e0:42:204:8a21:ba0c:bb42:75ec])
-        by smtp.gmail.com with ESMTPSA id 138sm79981wmb.21.2020.03.31.15.40.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Mar 2020 15:40:24 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Wed, 1 Apr 2020 00:40:22 +0200
-To:     Slava Bacherikov <slava@bacher09.org>
-Cc:     andriin@fb.com, keescook@chromium.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jannh@google.com,
-        alexei.starovoitov@gmail.com, daniel@iogearbox.net,
-        kernel-hardening@lists.openwall.com,
-        Liu Yiding <liuyd.fnst@cn.fujitsu.com>
-Subject: Re: [PATCH v2 bpf] kbuild: fix dependencies for DEBUG_INFO_BTF
-Message-ID: <20200331224022.GA23586@google.com>
-References: <20200331215536.34162-1-slava@bacher09.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/AU0lA6PkuOvFJOWA8GHKBdsC2ZkjBjZg3pc7o84R4Q=;
+        b=VQu3aZ3V7DHvOr1EvFJ+QkvEPmvZjNHLQRLc8WNKwSCl+IO1BK6DF+v0stqyvfzdLP
+         asw0zckwnclLELkOcZoprcDsPJ9V7SmVgnhEkfFvoU4cBJoY4MkdmZalez5VVFdLjMuq
+         N2THBfJy3h86+63SAyr4Pi3EVA46FG5YCxfwiuyR7uCgKHxPWyohc7M0lJIr67vdhLeb
+         JcPCXlnoYoR8wT2Yc7z7vxbYLQmzmb9XBxiYCf4+XrUSEl6Td9Vtzuz0i9BcUywyLcq4
+         cM+XN8IiXAf08FwMEAPgWpGPBMOCXsLFGwWrnNjnqP2bvNZtMFsd2rz9At/iQl4LGFcC
+         InYg==
+X-Gm-Message-State: ANhLgQ3VmzBqLzQr06QUxNg7aEmV5E2ifYoz/V6uom7WLt60OFtpS0pu
+        D25UwF+XDc5RLeItBcnV65o=
+X-Google-Smtp-Source: ADFU+vtwUb/xk7oS4IPL0ItYDJtc1w04KvyjY57g2ACo4GCkeIRATUQt5eIk6F2VRc7xKrQ+ha8e/w==
+X-Received: by 2002:a37:6d3:: with SMTP id 202mr7291136qkg.267.1585694685906;
+        Tue, 31 Mar 2020 15:44:45 -0700 (PDT)
+Received: from ?IPv6:2601:282:803:7700:8cf:804:d878:6008? ([2601:282:803:7700:8cf:804:d878:6008])
+        by smtp.googlemail.com with ESMTPSA id f14sm203284qtp.55.2020.03.31.15.44.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Mar 2020 15:44:45 -0700 (PDT)
+Subject: Re: [PATCH v3 bpf-next 0/4] Add support for cgroup bpf_link
+To:     Edward Cree <ecree@solarflare.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrey Ignatov <rdna@fb.com>, Kernel Team <kernel-team@fb.com>
+References: <20200330030001.2312810-1-andriin@fb.com>
+ <c9f52288-5ea8-a117-8a67-84ba48374d3a@gmail.com>
+ <CAEf4BzZpCOCi1QfL0peBRjAOkXRwGEi_DAW4z34Mf3Tv_sbRFw@mail.gmail.com>
+ <662788f9-0a53-72d4-2675-daec893b5b81@gmail.com>
+ <CAADnVQK8oMZehQVt34=5zgN12VBc2940AWJJK2Ft0cbOi1jDhQ@mail.gmail.com>
+ <cdd576be-8075-13a7-98ee-9bc9355a2437@gmail.com>
+ <20200331003222.gdc2qb5rmopphdxl@ast-mbp>
+ <58cea4c7-e832-2632-7f69-5502b06310b2@gmail.com>
+ <CAEf4BzZSCdtSRw9mj2W5Vv3C-G6iZdMJsZ8WGon11mN3oBiguQ@mail.gmail.com>
+ <869adb74-5192-563d-0e8a-9cb578b2a601@solarflare.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <b5526d61-9af9-1f10-bf20-38cf8a2f10fd@gmail.com>
+Date:   Tue, 31 Mar 2020 16:44:43 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200331215536.34162-1-slava@bacher09.org>
+In-Reply-To: <869adb74-5192-563d-0e8a-9cb578b2a601@solarflare.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 01-Apr 00:55, Slava Bacherikov wrote:
-> Currently turning on DEBUG_INFO_SPLIT when DEBUG_INFO_BTF is also
-> enabled will produce invalid btf file, since gen_btf function in
-> link-vmlinux.sh script doesn't handle *.dwo files.
+On 3/31/20 3:51 PM, Edward Cree wrote:
+> On 31/03/2020 04:54, Andrii Nakryiko wrote:
+>> No need to kill random processes, you can kill only those that hold
+>> bpf_link FD. You can find them using drgn tool with script like [0].
+> For the record, I find the argument "we don't need a query feature,
+>  because you can just use a kernel debugger" *utterly* *horrifying*.
+> Now, it seems to be moot, because Alexei has given other, better
+>  reasons why query doesn't need to land yet; but can we please not
+>  ever treat debugging interfaces as a substitute for proper APIs?
 > 
-> Enabling DEBUG_INFO_REDUCED will also produce invalid btf file, and
-> using GCC_PLUGIN_RANDSTRUCT with BTF makes no sense.
+> </scream>
+> -ed
 > 
-> Signed-off-by: Slava Bacherikov <slava@bacher09.org>
-> Reported-by: Jann Horn <jannh@google.com>
-> Reported-by: Liu Yiding <liuyd.fnst@cn.fujitsu.com>
-> Fixes: e83b9f55448a ("kbuild: add ability to generate BTF type info for vmlinux")
 
-I can say that I also got invalid BTF when I tried using
-DEBUG_INFO_REDUCED.
-
-So here's a first one from of these from me :)
-
-Acked-by: KP Singh <kpsingh@google.com>
-
-> ---
->  lib/Kconfig.debug | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index f61d834e02fe..9ae288e2a6c0 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -223,6 +223,7 @@ config DEBUG_INFO_DWARF4
->  config DEBUG_INFO_BTF
->  	bool "Generate BTF typeinfo"
->  	depends on DEBUG_INFO
-> +	depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED && !GCC_PLUGIN_RANDSTRUCT
->  	help
->  	  Generate deduplicated BTF type information from DWARF debug info.
->  	  Turning this on expects presence of pahole tool, which will convert
-> -- 
-> 2.24.1
-> 
+just about to send the same intent. Dev packages and processing
+/proc/kcore is not a proper observability API for production systems.
