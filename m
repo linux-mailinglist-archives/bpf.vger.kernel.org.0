@@ -2,153 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0B9199562
-	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 13:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94EAE199615
+	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 14:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730534AbgCaLeK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Mar 2020 07:34:10 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:49535 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730515AbgCaLeK (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 31 Mar 2020 07:34:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585654449;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HrO6qnvFCLDk5NO+OpOmNPceTFDvqZ+epiw6rusbJ10=;
-        b=jHul6kWQECZTZh2u/uXD2lBqoI4cthV3Xs5tNT62JAzAZCjCFV3O7rJI12Yc83bY/iKohi
-        I19NweSk1EgnsER402iSCLNLIGnFRUaxiHw6ib1oFfuNbsKLlSDdGw7+Tsp7DiKTSFA+pb
-        FCLJd/1Y6urOI0HHOQui93s7u2Gw9AE=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-461-aIeEZym_MBu6QDx4nNFG1w-1; Tue, 31 Mar 2020 07:34:07 -0400
-X-MC-Unique: aIeEZym_MBu6QDx4nNFG1w-1
-Received: by mail-lj1-f200.google.com with SMTP id t6so1302186ljg.6
-        for <bpf@vger.kernel.org>; Tue, 31 Mar 2020 04:34:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=HrO6qnvFCLDk5NO+OpOmNPceTFDvqZ+epiw6rusbJ10=;
-        b=eKCATA9o9Ma5wtaSI7at/2UgabpRDm5dOv/0n04an26SFYKPnsq24aRTe0CGq7mYh/
-         Q+Fp9usbNEjcVu6me1ckaBhdUnByN4+ltvoW9Jnbl13OjPxpd92EIbsZqStJmtKBEu2k
-         GjkuoNyFqptSv2xXHGu/k5FNWRWPdYtfF/sitMWtXDRp7gXhUAQOMecyHNGoHZIm0szE
-         9tLtRWmZusc9wA8KoSXV8/amBN3uyaY1eol48i03r2dCNLNrZVcyLNvyrtjQ0ijktjQq
-         QECZihInftmz++uMVfYk2U1TLxR1HgtVkXdHKQsvBPJfLi0JH6Zu3OZTqy1X9NKRAWVu
-         Gyjw==
-X-Gm-Message-State: AGi0PuaPef0oOd/YzoNznjLNMAAs4IY6rV3OqBEPu4XIX2yUyzSEINXg
-        A83E5EusHJuxTWTZ49aOa+cXuqi5cKwLflCm46BLAB4fMuWVrzrk2BUAoY0pYuI8oXnSqEl+yr/
-        qsLvFRdPgTD4+
-X-Received: by 2002:a2e:7606:: with SMTP id r6mr9642596ljc.118.1585654446230;
-        Tue, 31 Mar 2020 04:34:06 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIk+2lmWU41DZ0mTC8ILVxl4F/NkjA59ewgq4K6VwG8uzR822Z12+u9WfLaCIJYb76YCOla4A==
-X-Received: by 2002:a2e:7606:: with SMTP id r6mr9642573ljc.118.1585654445979;
-        Tue, 31 Mar 2020 04:34:05 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id v22sm8418906ljj.67.2020.03.31.04.34.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Mar 2020 04:34:04 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id D114518158D; Tue, 31 Mar 2020 13:34:00 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Edward Cree <ecree@solarflare.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S1730560AbgCaMOo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Mar 2020 08:14:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730500AbgCaMOo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Mar 2020 08:14:44 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1BE720714;
+        Tue, 31 Mar 2020 12:14:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1585656884;
+        bh=zMWOFFv4ct6bAsND3kQvkxIGAcQNiNWGobm31SRZOKY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FvN3gzNKla8HX54j+mWh1lP9C5LxT9buw08aRf86vWDaELxDR9AcbD9GXzXPLrBVu
+         xAK9iUT/Q+wzL3cFak4C3PbLEj2CNdU4n1HXjjw7D8NrtTuoyKGz8ELWtkO8Zf61EF
+         YuxUKaOLvEHNfHTHbiCtL8Ow0n4n3fZeKW2Oi8NY=
+Date:   Tue, 31 Mar 2020 13:14:39 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@android.com,
+        "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing program when attaching XDP
-In-Reply-To: <20200331040112.5tvvubsf6ij4eupb@ast-mbp>
-References: <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com> <87pncznvjy.fsf@toke.dk> <20200326195859.u6inotgrm3ubw5bx@ast-mbp> <87imiqm27d.fsf@toke.dk> <20200327230047.ois5esl35s63qorj@ast-mbp> <87lfnll0eh.fsf@toke.dk> <20200328022609.zfupojim7see5cqx@ast-mbp> <87eetcl1e3.fsf@toke.dk> <CAEf4Bzb+GSf8cE_rutiaeZOtAuUick1+RnkCBU=Z+oY_36ArSA@mail.gmail.com> <53515939-00bb-174c-bc55-f90eaceac2a3@solarflare.com> <20200331040112.5tvvubsf6ij4eupb@ast-mbp>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 31 Mar 2020 13:34:00 +0200
-Message-ID: <87k130iwrb.fsf@toke.dk>
+        Eric Dumazet <edumazet@google.com>
+Subject: Re: [RFC PATCH] tun: Don't put_page() for all negative return values
+ from XDP program
+Message-ID: <20200331121438.GA30061@willie-the-truck>
+References: <20200330161234.12777-1-will@kernel.org>
+ <fd4d792f-32df-953a-a076-c09ed5dea573@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fd4d792f-32df-953a-a076-c09ed5dea573@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-
-> On Mon, Mar 30, 2020 at 04:41:46PM +0100, Edward Cree wrote:
->> On 29/03/2020 21:23, Andrii Nakryiko wrote:
->> > But you can't say the same about other XDP applications that do not
->> > use libxdp. So will your library come with a huge warning
->> What about a system-wide policy switch to decide whether replacing/
->> =C2=A0removing an XDP program without EXPECTED_FD is allowed?=C2=A0 That=
- way
->> =C2=A0the sysadmin gets to choose whether it's the firewall or the packet
->> =C2=A0analyser that breaks, rather than baking a policy into the design.
->> Then libxdp just needs to say in the README "you might want to turn
->> =C2=A0on this switch".=C2=A0 Or maybe it defaults to on, and the other p=
-rogram
->> =C2=A0has to talk you into turning it off if it wants to be 'ill-behaved=
-'.
->
-> yeah. something like this can work for xdp only, but
-> it won't work for tc, since ownership is missing.
-> It looks like such policy knob will bere-inventing bpf_link for
-> one specific xdp case only because xdp has one program per attachment.
-
-You keep talking about this as though bpf_link was the existing API and
-we're discussing adding another, when in reality it's the other way
-around.
-
-> Imagine it was easy to come up with sensible policy and allow
-> multiple progs in xdp hook.
-> How would you implement such policy knob?
-> processA attaches prog XDP_A. processB attaches prog XDP-B.
-> Unless they start tagging their indivdual programs with BTF tags
-> (as Toke is planning to do) there is no way to tell them apart.
-> Then processA can iterate all progs in a hook, finds its prog
-> based on tag and tell kernel: "find and replace an xdp prog with old_fd
-> with new_fd on this ifindex".
-> Kinda works, but it doesn't stop processB to accidently detach prog XDP_A
-> that was installed by processA.
->
-> The kernel job is to share the system resources. Like memory, cpu time.
-> The hook is such resource too. The owner concept part of bpf_link
-> allows such sharing.
-
-FWIW I actually agree that the bpf_link ownership concept makes sense
-for the individual attachments in a multi-prog hook; including for XDP.
-And I've started thinking about whether the bpf_link fd can work as the
-reference being returned by libxdp after a component program is
-attached. I have some reservations, but I'll start a new thread on that
-once I'm a bit further along with it...
+On Tue, Mar 31, 2020 at 10:59:01AM +0800, Jason Wang wrote:
+> On 2020/3/31 上午12:12, Will Deacon wrote:
+> > When an XDP program is installed, tun_build_skb() grabs a reference to
+> > the current page fragment page if the program returns XDP_REDIRECT or
+> > XDP_TX. However, since tun_xdp_act() passes through negative return
+> > values from the XDP program, it is possible to trigger the error path by
+> > mistake and accidentally drop a reference to the fragments page without
+> > taking one, leading to a spurious free. This is believed to be the cause
+> > of some KASAN use-after-free reports from syzbot [1], although without a
+> > reproducer it is not possible to confirm whether this patch fixes the
+> > problem.
+> > 
+> > Ensure that we only drop a reference to the fragments page if the XDP
+> > transmit or redirect operations actually fail.
+> > 
+> > [1] https://syzkaller.appspot.com/bug?id=e76a6af1be4acd727ff6bbca669833f98cbf5d95
+> 
+> 
+> I think the patch fixes the issue reported. Since I can see the warn of bad
+> page state in put_page().
 
 [...]
 
-> XDP is the hardest, since it does single prog only.
-> That's what we're trying to solve with libdispatcher.
-> I think if it goes well it can become part of the kernel and kernel
-> will do multi prog XDP attach. And all hooks will be symmetrical.
+> Acked-by: Jason Wang <jasowang@redhat.com>
 
-Now *that* I'd like to see! I've said from the beginning that I think
-XDP multi-prog should be part of the kernel, so if we can get there via
-this detour I'm all for it.
+Thanks, Jason. In which case, I'll add this tag along with:
 
-> But looking at the size of this thread and still lots of
-> misunderstanding about basic concept like bpf_link I'm not hopeful
-> that libdispatcher will ever become part of the kernel.
+Fixes: 8ae1aff0b331 ("tuntap: split out XDP logic")
 
-I don't share your pessimism. If we can stop writing off honest
-disagreement about design tradeoffs as just "misunderstanding", I think
-we can get there.
-
--Toke
-
+Will
