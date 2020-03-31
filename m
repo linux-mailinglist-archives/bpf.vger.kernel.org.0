@@ -2,104 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD6819A1BE
-	for <lists+bpf@lfdr.de>; Wed,  1 Apr 2020 00:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEA319A200
+	for <lists+bpf@lfdr.de>; Wed,  1 Apr 2020 00:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728840AbgCaWQX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Mar 2020 18:16:23 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:44640 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727955AbgCaWQW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Mar 2020 18:16:22 -0400
-Received: by mail-pf1-f195.google.com with SMTP id b72so11034131pfb.11;
-        Tue, 31 Mar 2020 15:16:20 -0700 (PDT)
+        id S1729647AbgCaWk0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Mar 2020 18:40:26 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:38299 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727955AbgCaWk0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Mar 2020 18:40:26 -0400
+Received: by mail-wr1-f66.google.com with SMTP id c7so2211272wrx.5
+        for <bpf@vger.kernel.org>; Tue, 31 Mar 2020 15:40:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=OBuQzCEQi0PqZRU3WMKWxzfOWVwx3+pYDNPDQ0ltveI=;
-        b=ZFFjB0U8bT6q630ouARTHMTTH75fudntvIGn00zgf6RCw6P9HPNjI46LL6aUI2LqWe
-         D7I9nqcd6hO04Mks4kXqGAxOsVmo8yEDpiZ/KlOICxQaygdD9CNUFVveBjoLC3HzwITo
-         AcqCO40pJCX6JSyQmA1V7ReU+iTzBZ8lrAj52EuvYWCsS8KFVP0SbJfKJAZnkowl8YnX
-         6rR8WiWUCW4kJ4JhgPB42Q4VKFjZeQJUkB+ff0BY9McK2wB/mZBZddpgQZ/4NkxXfjcR
-         R+mbGKQ9jzNNew0OfbV/qJD6+TnZ3PCEaqxEnLXm/UeGRXZuaptLVtBxAfXfzAAWr17z
-         Gi/A==
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jY5b0DeIGw0kq+dmH/vJgCrU2SOoRk0fZBuTs/xmVo0=;
+        b=VDiCMTXyKUNt4iheUBH8m+6xsiIx/rgJTGicdZ/BWJF7GmTfsrCY7g+447EMzve3aq
+         Y+ldUezP4BlAWoR5IQfLpc6iFnWWr1G6v9bb02zEQLrKSg4qsJ4HrBuw7+exNKd9bAfU
+         jdqJY5s8D3nIc5Tz5vqTofy5j8BNQJ7duYeCA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=OBuQzCEQi0PqZRU3WMKWxzfOWVwx3+pYDNPDQ0ltveI=;
-        b=TaQe8P2CwBxGlSRc9c4RbEnvm/vfta2uRgzzs66S85YndLKrCguowHhGAu/uiRwNso
-         dxXzR//I4PS7+FXTk4QNjWwvSu8JmD0ph59FGnbNC8ZHmDaqm96BMO/bVvvpijba1isj
-         yT0Ugc5LM6Hrhtteqf88A2HocWeJazXsp/Wn3VRZijZdvw8d0P4/S9wlcGrmO9vp9mfh
-         f7KQSMfSxnP2GNSYpso/Knr0b0QPNCZemKS2TUSjUbib3RWEOWTmzx3VEW5ctm4cii1G
-         +liErHf0vxHQrKmn/7FdKMJrt8oKchQz2JS9xpYvPrexpvin/gWTataN0Lx1xSyjpVpM
-         LJeQ==
-X-Gm-Message-State: ANhLgQ1r0R9uBvIVcg1FeWkfHAA5PPwTOv08iotKNcidnrS6mOQUnxi2
-        aQlJgRDTtxy7MAxNh/nMUJ0=
-X-Google-Smtp-Source: ADFU+vt3xRj1b+xkbqDVvnv5034gAGCn85C0Nqn59rDRIn6rGM4SYqyty879rk9o7y3gz+WiRmNX3w==
-X-Received: by 2002:a63:6f45:: with SMTP id k66mr20352554pgc.246.1585692979758;
-        Tue, 31 Mar 2020 15:16:19 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:8a85])
-        by smtp.gmail.com with ESMTPSA id f22sm28811pgl.20.2020.03.31.15.16.16
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jY5b0DeIGw0kq+dmH/vJgCrU2SOoRk0fZBuTs/xmVo0=;
+        b=FjIi5hLooHjzde1apG7kkKyaoWYvfFuCHVTnjrr2NcESBRX1cxNqirpX8zcodMs0oE
+         SE7WYk6HLj7aglvMNl6T+IJIDAgrP/5irvKz3PGw7QjCfKJL7kMF/Grwp3kw/t8Y8lgQ
+         x4lFESiTcnhpvp7A3nJCWaIdDsCEjnFqBLdDu969fdOGfzzTrS6modb8aowLs4TVOUMU
+         SwA6/RaCKfImIXNy04D7EdsbKrNZgTWtetKs+um/lLn8J5w9wgg4pxkSLa0ZLe5aGIrM
+         MU4Wdup4bJ+vyOHHcfVBPZVCfYceyP5ee3NaxnV6Gs28Tu3LWfXgawIxWVsNhRZo+HFu
+         rwkw==
+X-Gm-Message-State: AGi0PuZY654Ka0B5qlY7nquniu0yc0zoHZwsOu2m4xqlIAEpxC2OrHHK
+        uS87dB36Tyeka5n0g9Xy7wBZyQ==
+X-Google-Smtp-Source: APiQypLOGvUileQhr35EVvXv/b90kFXVu0uzau9TlILC3ZUR48htnauWq/BaHsz4upygp1gntHv0QA==
+X-Received: by 2002:adf:fe52:: with SMTP id m18mr976140wrs.162.1585694424872;
+        Tue, 31 Mar 2020 15:40:24 -0700 (PDT)
+Received: from google.com ([2a00:79e0:42:204:8a21:ba0c:bb42:75ec])
+        by smtp.gmail.com with ESMTPSA id 138sm79981wmb.21.2020.03.31.15.40.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Mar 2020 15:16:18 -0700 (PDT)
-Date:   Tue, 31 Mar 2020 15:16:13 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Edward Cree <ecree@solarflare.com>
-Cc:     David Ahern <dsahern@gmail.com>, Lorenz Bauer <lmb@cloudflare.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
- program when attaching XDP
-Message-ID: <20200331221613.uwk6vmlrwggbj4s7@ast-mbp>
-References: <87369wrcyv.fsf@toke.dk>
- <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com>
- <87pncznvjy.fsf@toke.dk>
- <CAEf4BzaPQ6=h8a6Ngz638AtL4LmBLLVMV+_-YLMR=Ls+drd5HQ@mail.gmail.com>
- <CACAyw98yYE+eOx5OayyN2tNQeNqFXnHdRGSv6DYX7ehfMHt1+g@mail.gmail.com>
- <9f0ab343-939b-92e3-c1b8-38a158da10c9@gmail.com>
- <20200327230253.txq54keztlwsok2s@ast-mbp>
- <eba2b6df-e2e8-e756-dead-3f1044a061cd@solarflare.com>
- <20200331034319.lg2tgxxs5eyiqebi@ast-mbp>
- <8c55c053-ab95-3657-e271-dd47c1daaf5e@solarflare.com>
+        Tue, 31 Mar 2020 15:40:24 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Wed, 1 Apr 2020 00:40:22 +0200
+To:     Slava Bacherikov <slava@bacher09.org>
+Cc:     andriin@fb.com, keescook@chromium.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jannh@google.com,
+        alexei.starovoitov@gmail.com, daniel@iogearbox.net,
+        kernel-hardening@lists.openwall.com,
+        Liu Yiding <liuyd.fnst@cn.fujitsu.com>
+Subject: Re: [PATCH v2 bpf] kbuild: fix dependencies for DEBUG_INFO_BTF
+Message-ID: <20200331224022.GA23586@google.com>
+References: <20200331215536.34162-1-slava@bacher09.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8c55c053-ab95-3657-e271-dd47c1daaf5e@solarflare.com>
+In-Reply-To: <20200331215536.34162-1-slava@bacher09.org>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 31, 2020 at 11:05:50PM +0100, Edward Cree wrote:
-> On 31/03/2020 04:43, Alexei Starovoitov wrote:
-> > On Mon, Mar 30, 2020 at 04:25:07PM +0100, Edward Cree wrote:
-> >> Everything that a human operator can do, so can any program with the
-> >>  same capabilities/wheel bits.  Especially as the API that the
-> >>  operator-tool uses *will* be open and documented.  The Unix Way does
-> >>  not allow unscriptable interfaces, and heavily frowns at any kind of
-> >>  distinction between 'humans' and 'programs'.
-> > can you share a link on such philosophy?
-> It's not quite as explicit about it as I'd like, but
->  http://www.catb.org/esr/writings/taoup/html/ch01s06.html#id2877684
->  is the closest I can find right now.
+On 01-Apr 00:55, Slava Bacherikov wrote:
+> Currently turning on DEBUG_INFO_SPLIT when DEBUG_INFO_BTF is also
+> enabled will produce invalid btf file, since gen_btf function in
+> link-vmlinux.sh script doesn't handle *.dwo files.
+> 
+> Enabling DEBUG_INFO_REDUCED will also produce invalid btf file, and
+> using GCC_PLUGIN_RANDSTRUCT with BTF makes no sense.
+> 
+> Signed-off-by: Slava Bacherikov <slava@bacher09.org>
+> Reported-by: Jann Horn <jannh@google.com>
+> Reported-by: Liu Yiding <liuyd.fnst@cn.fujitsu.com>
+> Fixes: e83b9f55448a ("kbuild: add ability to generate BTF type info for vmlinux")
 
-I knew the bit you linked and I've read several "Rule of" up and down
-in that doc and still don't see any mention of 'humans' vs 'programs'.
-Unix philosophy can be rephrased as divide-and-conquer which is #1
-principle in bpf architecture. In other words: build the smallest
-possible mechanisms that are composable.
+I can say that I also got invalid BTF when I tried using
+DEBUG_INFO_REDUCED.
+
+So here's a first one from of these from me :)
+
+Acked-by: KP Singh <kpsingh@google.com>
+
+> ---
+>  lib/Kconfig.debug | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index f61d834e02fe..9ae288e2a6c0 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -223,6 +223,7 @@ config DEBUG_INFO_DWARF4
+>  config DEBUG_INFO_BTF
+>  	bool "Generate BTF typeinfo"
+>  	depends on DEBUG_INFO
+> +	depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED && !GCC_PLUGIN_RANDSTRUCT
+>  	help
+>  	  Generate deduplicated BTF type information from DWARF debug info.
+>  	  Turning this on expects presence of pahole tool, which will convert
+> -- 
+> 2.24.1
+> 
