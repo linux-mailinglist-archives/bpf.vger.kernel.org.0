@@ -2,137 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFF0198A3E
-	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 04:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DCCD198A63
+	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 05:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729750AbgCaC7R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Mar 2020 22:59:17 -0400
-Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:39111 "EHLO
-        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730273AbgCaC7M (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 30 Mar 2020 22:59:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585623551;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jPbiSea3iKmgsPhW5d6VdEOeNmJ89GIMDsuQYNvPcfk=;
-        b=eokyMPBhgiMD9Hr75B7FIA+qmFFqjssuZTD0ULgBNov0NcctVPWLDzs1ooX4e7DFFyRFmM
-        zkkz7NP8JQi+nTWdxpjhVn4p5esV10tjpyen0zm8vB0jZwJxSVc38Idl4ORtumG/0tW6sB
-        +AIFZSQDzd3AV7uCzysy77n5NCFeUhQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-416-wAoZLjByNXaQepDoMefmhw-1; Mon, 30 Mar 2020 22:59:08 -0400
-X-MC-Unique: wAoZLjByNXaQepDoMefmhw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 72666800D5B;
-        Tue, 31 Mar 2020 02:59:06 +0000 (UTC)
-Received: from [10.72.12.115] (ovpn-12-115.pek2.redhat.com [10.72.12.115])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 31DCA19C58;
-        Tue, 31 Mar 2020 02:59:02 +0000 (UTC)
-Subject: Re: [RFC PATCH] tun: Don't put_page() for all negative return values
- from XDP program
-To:     Will Deacon <will@kernel.org>, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@android.com, "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>
-References: <20200330161234.12777-1-will@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <fd4d792f-32df-953a-a076-c09ed5dea573@redhat.com>
-Date:   Tue, 31 Mar 2020 10:59:01 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1729925AbgCaDLL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Mar 2020 23:11:11 -0400
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:35008 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727614AbgCaDLL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Mar 2020 23:11:11 -0400
+Received: by mail-pj1-f67.google.com with SMTP id g9so486284pjp.0;
+        Mon, 30 Mar 2020 20:11:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=88Mq5VBLJxKNb7gCZ5YeF16M/DgSjuBGtrWldue33Q8=;
+        b=fKlCqB7M+/Wn5YcFbh8CeolrMj1q1VXSHTSsbL5kWWfY+FPgXaXZcL4OayMYVhixK3
+         Pq2n5cMkSKUhKIT0z1Xwkf4G/w877eEzhSsFzDM2lu8rQ0Wq51cmGNHtItmX/M+ha0Pi
+         diPYoW1wFLI0YC4/zDx2zwhwjqAiHGF7alddZcN7JdvXoNT6BYjcAQj5QrUTf3/73HKl
+         90qJRYVxZF5YX+PTHwBsAMieHLbAy4EIPTFYTkv+AVtCCITdrJDqHtc9udkpwkL8khNa
+         ehtYA4prC5jAMbgoQQJKY5rdhL84nqAM/7SRMfZ0ZYwNtsRUxeC70/yAUZtzzqkov8iS
+         h8ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=88Mq5VBLJxKNb7gCZ5YeF16M/DgSjuBGtrWldue33Q8=;
+        b=RFd9trKr27oNPq4mZFmd3g0/PSulGISWoe6jtiDb3HWQSqNszbIKovLPWz9KZtOPHp
+         VnnMBPGFosBMagqdGrumsF/+KzOxLrZZA+TBGXdFCRiHlXyqyS2GeIBtm8ERp84tweUj
+         7MUTtJfQing1Kk1lNnmPcktmay45bxjTNYb3fHDiqRaBIGUM69h/2XMo6u4HmHCKbamD
+         ckBho+F8TY9rbGY6GdCPZ02zovbmu5GZvGxiJycfOgmr20JCih51cbTAU7i0xeZpSIRv
+         HI3alB7JdIKE3bZNX44EQ3BHewTQGWUsMLRmQSxevx98xAYMUq6bd6yM6nSpwOOfDuwe
+         u9+A==
+X-Gm-Message-State: AGi0PuZaHvfqcc76lXExd19msPWVESaWWyuBrP7W09qdXJIUuovXUXRq
+        +LvYbYj+jQ3Kt+ebCJix5e8=
+X-Google-Smtp-Source: APiQypJ5gNEmLIfP28CKLHezZiuo00+bpMdQoCvvnXfFuzG4PCINrTu3BmN+dy/6IbvyQgA2AOzHew==
+X-Received: by 2002:a17:90a:26ed:: with SMTP id m100mr1414267pje.130.1585624269947;
+        Mon, 30 Mar 2020 20:11:09 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:442d])
+        by smtp.gmail.com with ESMTPSA id s22sm236483pfh.18.2020.03.30.20.11.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Mar 2020 20:11:09 -0700 (PDT)
+Date:   Mon, 30 Mar 2020 20:11:05 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     David Miller <davem@davemloft.net>
+Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: pull-request: bpf-next 2020-03-30
+Message-ID: <20200331031105.qxzwapskpykmeou2@ast-mbp>
+References: <20200331012815.3258314-1-ast@kernel.org>
+ <20200330.195400.784625163425445502.davem@davemloft.net>
 MIME-Version: 1.0
-In-Reply-To: <20200330161234.12777-1-will@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200330.195400.784625163425445502.davem@davemloft.net>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, Mar 30, 2020 at 07:54:00PM -0700, David Miller wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+> Date: Mon, 30 Mar 2020 18:28:15 -0700
+> 
+> > The following pull-request contains BPF updates for your *net-next* tree.
+> > 
+> > We've added 73 non-merge commits during the last 14 day(s) which contain
+> > a total of 107 files changed, 6086 insertions(+), 1728 deletions(-).
+> > 
+> > The main changes are:
+>  ...
+> > Please consider pulling these changes from:
+> > 
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+> 
+> Pulled, there was a minor merge conflict in the cgroup changes, which I
+> resolved like this:
+> 
+> @@@ -305,10 -418,9 +421,9 @@@ int __cgroup_bpf_attach(struct cgroup *
+>         u32 saved_flags = (flags & (BPF_F_ALLOW_OVERRIDE | BPF_F_ALLOW_MULTI));
+>         struct list_head *progs = &cgrp->bpf.progs[type];
+>         struct bpf_prog *old_prog = NULL;
+>  -      struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE],
+>  -              *old_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {NULL};
+>  +      struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
+>  +      struct bpf_cgroup_storage *old_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
+> -       struct bpf_prog_list *pl, *replace_pl = NULL;
+> -       enum bpf_cgroup_storage_type stype;
+> +       struct bpf_prog_list *pl;
 
-On 2020/3/31 =E4=B8=8A=E5=8D=8812:12, Will Deacon wrote:
-> When an XDP program is installed, tun_build_skb() grabs a reference to
-> the current page fragment page if the program returns XDP_REDIRECT or
-> XDP_TX. However, since tun_xdp_act() passes through negative return
-> values from the XDP program, it is possible to trigger the error path b=
-y
-> mistake and accidentally drop a reference to the fragments page without
-> taking one, leading to a spurious free. This is believed to be the caus=
-e
-> of some KASAN use-after-free reports from syzbot [1], although without =
-a
-> reproducer it is not possible to confirm whether this patch fixes the
-> problem.
->
-> Ensure that we only drop a reference to the fragments page if the XDP
-> transmit or redirect operations actually fail.
->
-> [1] https://syzkaller.appspot.com/bug?id=3De76a6af1be4acd727ff6bbca6698=
-33f98cbf5d95
+Right. Forgot to mention this merge conflict.
+The resolution is correct.
+Same as what Stephen did here:
+https://lore.kernel.org/lkml/20200331114005.5e2fc6f7@canb.auug.org.au/
 
-
-I think the patch fixes the issue reported. Since I can see the warn of=20
-bad page state in put_page().
-
-
->
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Jason Wang <jasowang@redhat.com>
-> CC: Eric Dumazet <edumazet@google.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->
-> Sending as RFC because I've not been able to confirm that this fixes an=
-ything.
->
->   drivers/net/tun.c | 10 ++++++----
->   1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-> index 650c937ed56b..9de9b7d8aedd 100644
-> --- a/drivers/net/tun.c
-> +++ b/drivers/net/tun.c
-> @@ -1715,8 +1715,12 @@ static struct sk_buff *tun_build_skb(struct tun_=
-struct *tun,
->   			alloc_frag->offset +=3D buflen;
->   		}
->   		err =3D tun_xdp_act(tun, xdp_prog, &xdp, act);
-> -		if (err < 0)
-> -			goto err_xdp;
-> +		if (err < 0) {
-> +			if (act =3D=3D XDP_REDIRECT || act =3D=3D XDP_TX)
-> +				put_page(alloc_frag->page);
-> +			goto out;
-> +		}
-> +
->   		if (err =3D=3D XDP_REDIRECT)
->   			xdp_do_flush();
->   		if (err !=3D XDP_PASS)
-> @@ -1730,8 +1734,6 @@ static struct sk_buff *tun_build_skb(struct tun_s=
-truct *tun,
->  =20
->   	return __tun_build_skb(tfile, alloc_frag, buf, buflen, len, pad);
->  =20
-> -err_xdp:
-> -	put_page(alloc_frag->page);
->   out:
->   	rcu_read_unlock();
->   	local_bh_enable();
-
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-Thanks
-
-
+Thanks!
