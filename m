@@ -2,173 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F0769199FE1
-	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 22:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9AB199FE9
+	for <lists+bpf@lfdr.de>; Tue, 31 Mar 2020 22:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729368AbgCaUTY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Mar 2020 16:19:24 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:39973 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727708AbgCaUTY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Mar 2020 16:19:24 -0400
-Received: by mail-qk1-f193.google.com with SMTP id l25so24589220qki.7;
-        Tue, 31 Mar 2020 13:19:22 -0700 (PDT)
+        id S1729597AbgCaUXo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Mar 2020 16:23:44 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:33964 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727852AbgCaUXn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Mar 2020 16:23:43 -0400
+Received: by mail-qk1-f194.google.com with SMTP id i6so24593657qke.1
+        for <bpf@vger.kernel.org>; Tue, 31 Mar 2020 13:23:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=98Mx8YlzWs3km5z9jniJzK/L6x7AMsrTVCjYMPgwsgE=;
-        b=gh7K28ge0u97KTF16N79lO15lt3QEe20KjZ5+zoRuJPDcHhP6r7GY9IIHWgC6tiXFe
-         Cz42kJKYAFv8LIOLQ+YsoSEGAl6O4ovVOY3ZdGsQfOaDet8gJXkjEy/GEx9hqWmoasOo
-         tJf3z6r2vZwsJ5JizupmIShSdLI5jluAMvsqyw4AZrxSAM2kFZEc0P3WIoiP4AUl/WzB
-         znrbZHGfji4tLG7XtfBdVKyF/mZ0PI7p8g+FCLoeuIQf+4Aral90hUpli7LkuOpSvphI
-         TTa5WvO7CeMeTZRwAfgVM1TRuGcIeoeiw7pyZNfl/R/WCw1MKwdDujzacFRVgJAvn7RB
-         Zing==
+         :cc;
+        bh=O2Xjl+tu9dt8lDajpKq9iYoZKBoTg+AzZ/EUYxNULVg=;
+        b=na7OGF7zEZXkjsSc155up/B44h/+USLLAKn0yG0ZSFNpmrGE1ABeuCfapIAVixMiF8
+         /dHbb85d3ytEF1NLoxbE4lsaZr6n+S6miZp7Sn1FYhBLTIGdE5CazDL2g7/okM0BlZBo
+         QQ3M/ZJ2qmQw3CjH3nZ9iaeHcuOkq5/bqao/t/LyS6C0ucj36FSd9J4DqbbIxjuUcGZU
+         qkNotg3R+XA+4bmGDXE/WNsSnUvLtZd4hb6IG3ColWKzvG6kX17O++kO7Yv8I9bCvNFN
+         psbsDVVfL6jJ4B/1W3Wim9bSVSV9Y1pYUt9Bkf/is/JA/0eezU7p/oxkqUdrwdfbNtCV
+         IIqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=98Mx8YlzWs3km5z9jniJzK/L6x7AMsrTVCjYMPgwsgE=;
-        b=K74Wot23GH6cSWNp5vh5XyKV9jT5bVjuUJUFGaVNY2kcrRcSykWAShvaqIGQDh0FOb
-         KjEXevYQxv6SGsgkG47nrbVJScrCuYYueEHjnDhwUsWYb53JEtm18bQ7QMmOGKJQAT3N
-         vqng/2rm9X7S3wshxFQ+XonUcjASrJ9mPRLjnaTCrC0AOru78h+rvIysimuv68IBypS4
-         m43zgZ6tXjKFw6HTmrYCN5+pHwWmtzxr73MRzvv5pPBJRTCjsNYkqs2BhhvHUKO6agOY
-         CBxmy4D1gKCFbv4tie+IbqOoxofIxUX/5bXUWJYtxqVTYXyVlzOFlNXEbG1ctF65AkDl
-         9PKQ==
-X-Gm-Message-State: ANhLgQ3rhZGA97O2r5PtxC6tkhFV5L1iBi2fqpnFHIfeMyL5DaeSQSKK
-        sI6clMIv0xexQzkXBxggl6FQqnAWvBy2CKkgEz4=
-X-Google-Smtp-Source: ADFU+vt7Dt4LQ1KKKGqZasAlcb0zE7eiWAFu0ec0/2s/vESKTnTcbSffG7CdYkzBUgkFQcl0gfbJqcnt07Vo0nh7Ta4=
-X-Received: by 2002:a37:b786:: with SMTP id h128mr5974791qkf.92.1585685962168;
- Tue, 31 Mar 2020 13:19:22 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=O2Xjl+tu9dt8lDajpKq9iYoZKBoTg+AzZ/EUYxNULVg=;
+        b=e8sT9qfM9DqbiArC25L0CUg3POXC/RqiQHg1zWebqbnUBOT44YTtEuGmiGPhJilmO4
+         /ElJluK1GuxGbX5VjlRTEsnlIt6aW0xwtTlBCOJGXVwfxAEE4B6yIpgmZ1IsmyEq0Zib
+         baCPFBdNwSRtA7pbFoSVKJqOH1w6nQkHB3u0rGqj2yflstlPEe21B4UEiU4tZDAa9oGh
+         w7CpjVuHcBZNSCOJVDmug/1e1vTWf0mc06CtEncsUxWLx3wTbI0obFz77jjCrJ6/A3q4
+         Pk/IS/7Y5XSVgKtLcfLmzCNXfU/GvVedV0LVZXHqnbnmRTJ3ygtBpc0QbzLeypVfE7ZG
+         Hfwg==
+X-Gm-Message-State: ANhLgQ2InGaVWg/+28/nAGD6c3TI9VdtofVQm0Yb8fvDm8lIcz0xZ6+A
+        p99rXffoh4j2JQo0UH7uXeP+LCqOG2o7eDACi+g=
+X-Google-Smtp-Source: ADFU+vvzLoOQupQEE/JE45FafsskjhAXiekCkRxUaEeeBCYJGZpyr6VsELMrWgDYhV0SA1r2TCgTjnyXrQIPYANunvc=
+X-Received: by 2002:a37:992:: with SMTP id 140mr6277399qkj.36.1585686221047;
+ Tue, 31 Mar 2020 13:23:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com>
- <87tv2e10ly.fsf@toke.dk> <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com>
- <87369wrcyv.fsf@toke.dk> <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com>
- <87pncznvjy.fsf@toke.dk> <20200326195859.u6inotgrm3ubw5bx@ast-mbp>
- <87imiqm27d.fsf@toke.dk> <20200327230047.ois5esl35s63qorj@ast-mbp>
- <87lfnll0eh.fsf@toke.dk> <20200328022609.zfupojim7see5cqx@ast-mbp>
- <87eetcl1e3.fsf@toke.dk> <CAEf4Bzb+GSf8cE_rutiaeZOtAuUick1+RnkCBU=Z+oY_36ArSA@mail.gmail.com>
- <87y2rihruq.fsf@toke.dk> <CAEf4Bza4vKbjkj8kBkrVmayFr2j_nvrORF_YkCoVKibB=SmSYQ@mail.gmail.com>
- <87pncsj0hv.fsf@toke.dk> <86f95d7a-1659-a092-91a2-abe5d58ceda8@iogearbox.net> <87blocin7p.fsf@toke.dk>
-In-Reply-To: <87blocin7p.fsf@toke.dk>
+References: <CAG48ez2sZ58VQ4+LJu39H1M0Y98LhRYR19G_fDAPJPBf7imxuw@mail.gmail.com>
+ <CAADnVQ+Ux3-D_7ytRJx_Pz4fStRLS1vkM=-tGZ0paoD7n+JCLQ@mail.gmail.com>
+ <CAG48ez0ajun-ujQQqhDRooha1F0BZd3RYKvbJ=8SsRiHAQjUzw@mail.gmail.com>
+ <202003301016.D0E239A0@keescook> <c332da87-a770-8cf9-c252-5fb64c06c17e@iogearbox.net>
+ <202003311110.2B08091E@keescook> <CAEf4BzYZsiuQGYVozwB=7nNhVYzCr=fQq6PLgHF3M5AXbhZyig@mail.gmail.com>
+ <202003311257.3372EC63@keescook>
+In-Reply-To: <202003311257.3372EC63@keescook>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 31 Mar 2020 13:19:10 -0700
-Message-ID: <CAEf4BzaQANTPcWQu=0m=K9=CEFboBLN36a0B2XeX+qjuPdQ=8w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/4] xdp: Support specifying expected existing
- program when attaching XDP
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Date:   Tue, 31 Mar 2020 13:23:30 -0700
+Message-ID: <CAEf4BzYODtQtuO79BAn-m=2n8QwPRLd74UP-rwivHj6uLk3ycA@mail.gmail.com>
+Subject: Re: CONFIG_DEBUG_INFO_BTF and CONFIG_GCC_PLUGIN_RANDSTRUCT
+To:     Kees Cook <keescook@chromium.org>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Jann Horn <jannh@google.com>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        David Ahern <dsahern@gmail.com>
+        bpf <bpf@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Slava Bacherikov <slava@bacher09.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 31, 2020 at 8:00 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
+On Tue, Mar 31, 2020 at 12:58 PM Kees Cook <keescook@chromium.org> wrote:
 >
-> Daniel Borkmann <daniel@iogearbox.net> writes:
->
-> > On 3/31/20 12:13 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-> >>
-> >>>>> So you install your libxdp-based firewalls and are happy. Then you
-> >>>>> decide to install this awesome packet analyzer, which doesn't know
-> >>>>> about libxdp yet. Suddenly, you get all packets analyzer, but no mo=
-re
-> >>>>> firewall, until users somehow notices that it's gone. Or firewall
-> >>>>> periodically checks that it's still runinng. Both not great, IMO, b=
-ut
-> >>>>> might be acceptable for some users, I guess. But imagine all the
-> >>>>> confusion for user, especially if he doesn't give a damn about XDP =
-and
-> >>>>> other buzzwords, but only needs a reliable firewall :)
-> >>>>
-> >>>> Yes, whereas if the firewall is using bpf_link, then the packet anal=
-yser
-> >>>> will be locked out and can't do its thing. Either way you end up wit=
-h a
-> >>>> broken application; it's just moving the breakage. In the case of
-> >>>
-> >>> Hm... In one case firewall installation reported success and stopped
-> >>> working afterwards with no notification and user having no clue. In
-> >>> another, packet analyzer refused to start and reported error to user.
-> >>> Let's agree to disagree that those are not at all equivalent. To me
-> >>> silent failure is so much worse, than application failing to start in
-> >>> the first place.
+> On Tue, Mar 31, 2020 at 12:50:07PM -0700, Andrii Nakryiko wrote:
+> > On Tue, Mar 31, 2020 at 11:12 AM Kees Cook <keescook@chromium.org> wrote:
+> > >
+> > > On Tue, Mar 31, 2020 at 12:41:04AM +0200, Daniel Borkmann wrote:
+> > > > On 3/30/20 7:20 PM, Kees Cook wrote:
+> > > > > On Mon, Mar 30, 2020 at 06:17:32PM +0200, Jann Horn wrote:
+> > > > > > On Mon, Mar 30, 2020 at 5:59 PM Alexei Starovoitov
+> > > > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > > > > On Mon, Mar 30, 2020 at 8:14 AM Jann Horn <jannh@google.com> wrote:
+> > > > > > > >
+> > > > > > > > I noticed that CONFIG_DEBUG_INFO_BTF seems to partly defeat the point
+> > > > > > > > of CONFIG_GCC_PLUGIN_RANDSTRUCT.
+> > > > > > >
+> > > > > > > Is it a theoretical stmt or you have data?
+> > > > > > > I think it's the other way around.
+> > > > > > > gcc-plugin breaks dwarf and breaks btf.
+> > > > > > > But I only looked at gcc patches without applying them.
+> > > > > >
+> > > > > > Ah, interesting - I haven't actually tested it, I just assumed
+> > > > > > (perhaps incorrectly) that the GCC plugin would deal with DWARF info
+> > > > > > properly.
+> > > > >
+> > > > > Yeah, GCC appears to create DWARF before the plugin does the
+> > > > > randomization[1], so it's not an exposure, but yes, struct randomization
+> > > > > is pretty completely incompatible with a bunch of things in the kernel
+> > > > > (by design). I'm happy to add negative "depends" in the Kconfig if it
+> > > > > helps clarify anything.
+> > > >
+> > > > Is this expected to get fixed at some point wrt DWARF? Perhaps would make
+> > >
+> > > No, gcc closed the issue as "won't fix".
+> > >
+> > > > sense then to add a negative "depends" for both DWARF and BTF if the option
+> > > > GCC_PLUGIN_RANDSTRUCT is set given both would be incompatible/broken.
+> > >
+> > > I hadn't just to keep wider randconfig build test coverage. That said, I
+> > > could make it be: depends COMPILE_TEST || !DWARF ...
+> > >
+> > > I can certainly do that.
 > >
-> > I sort of agree with both of you that either case is not great. The sil=
-ent
-> > override we currently have is not great since it can be evicted at any =
-time
-> > but also bpf_link to lock-out other programs at XDP layer is not great =
-either
-> > since there is also huge potential to break existing programs. It's pro=
-bably
-> > best to discuss on an actual proposal to see the concrete semantics, bu=
-t my
-> > concerns, assuming I didn't misunderstand or got confused on something =
-along
-> > the way (if so, please let me know), currently are:
+> > I've asked Slava in [0] to disable all three known configs that break
+> > DWARF and subsequently BTF, I hope it's ok to just do it in one patch.
+> > Currently all these appear to result in invalid BTF due to various
+> > DWARF modifications:
+> >
+> >   - DEBUG_INFO_REDUCED (see [1])
+> >   - DEBUG_INFO_SPLIT (see [0]
+> >   - GCC_PLUGIN_RANDSTRUCT (this discussion).
+> >
+> >   [0] https://lore.kernel.org/bpf/CAEf4BzadnfAwfa1D0jZb=01Ou783GpK_U7PAYeEJca-L9kdnVA@mail.gmail.com/
+> >   [1] https://lore.kernel.org/bpf/CAEf4BzZri8KpwLcoPgjiVx_=QmJ2W9UzBkDqSO2rUWMzWogkKg@mail.gmail.com/
 >
-> I think you're summarising the issues well, with perhaps one thing
-> missing: The goal is to enable multi-prog execution, i.e., execute two
-> programs in sequence. So, when things work correctly the flow should be:
+> Sure! That'd by fine by me. I'd just like it to be a "|| COMPILE_TEST"
+> for GCC_PLUGIN_RANDSTRUCT. Feel free to CC me for an Ack. :)
 >
-> App1, loading prog1:
-> - get current program from $IFACE
-> - current program is NULL:
->   -> build dispatcher(prog1)
->   -> load dispatcher onto $IFACE with UPDATE_IF_NOEXIST flag
->   -> success
->
-> Then, app2 loading prog2:
-> - get current program from $IFACE
-> - current program is dispatcher(prog1):
->   -> build new dispatcher(prog1,prog2)
->   -> atomically replace old dispatcher with new one
->   -> success
->
-> As long as app1 and app2 agree on what a dispatcher looks like, and how
-> to update it, they can cooperatively install themselves in the chain, as
-> long as there's a way to resolve the race between reading and updating
-> the state in the kernel.
->
-> However, if they *don't* agree on how to build the dispatcher and run in
-> sequence, they are fundamentally incompatible. Which also means that
-> multi-prog operation is going to be incompatible with any application
-> that was written before it was implemented. The only way to avoid that
-> is to provide the multi-prog support in the kernel, in a way that is
-> compatible with the old API. I'm not sure if this is even possible; but
-> I certainly got a very emphatic NACK on any attempt to implement the
-> support in the kernel when I posted my initial patch back in the fall.
->
-> Also, to your point about needing a specific library: I've been saying
-> "using the same library" because I think that is the most likely way to
-> get applications to agree. But really, what's needed is more like a
-> protocol; there could in theory be several independent implementations
-> that interoperate. However, I don't see a way to make things compatible
-> with applications that don't follow that protocol; we only get to pick
-> the failure mode (and those failure modes I think you summarised quite
-> well).
 
-Well, for once we agree with Toke in this thread (regarding last two
-paragraphs) :)
++cc Slava
 
+I'm unsure what COMPILE_TEST dependency (or is it anti-dependency?)
+has to do with BTF generation and reading description in Kconfig
+didn't clarify it for me. Can you please elaborate just a bit? Thanks!
+
+> -Kees
 >
-> -Toke
+> >
+> >
+> > >
+> > > -Kees
+> > >
+> > > [1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=84052
+> > >
+> > > --
+> > > Kees Cook
 >
+> --
+> Kees Cook
