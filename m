@@ -2,105 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C34A319B8DF
-	for <lists+bpf@lfdr.de>; Thu,  2 Apr 2020 01:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACBBC19B8EF
+	for <lists+bpf@lfdr.de>; Thu,  2 Apr 2020 01:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733290AbgDAXTx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Apr 2020 19:19:53 -0400
-Received: from mail-qv1-f41.google.com ([209.85.219.41]:42776 "EHLO
-        mail-qv1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732537AbgDAXTx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Apr 2020 19:19:53 -0400
-Received: by mail-qv1-f41.google.com with SMTP id ca9so731633qvb.9;
-        Wed, 01 Apr 2020 16:19:53 -0700 (PDT)
+        id S1732637AbgDAX2y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Apr 2020 19:28:54 -0400
+Received: from mail-pf1-f171.google.com ([209.85.210.171]:45443 "EHLO
+        mail-pf1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732503AbgDAX2y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Apr 2020 19:28:54 -0400
+Received: by mail-pf1-f171.google.com with SMTP id r14so783149pfl.12
+        for <bpf@vger.kernel.org>; Wed, 01 Apr 2020 16:28:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2URR2g44lQdCwfn/Tkh9j1lhueN+DBYJikDKN7H5608=;
-        b=jZpoHJfuqEfG50YWYIlPGCUNNQ5rittqBuoVGQwBwdOc0NMOvwQes4JVF6JbUWWoUo
-         m0OeCTiZ+5KKhBN71gDlRQZHu+UEzL06Rm3ud3XYWYzdrxrGEwSH72T1R2W/Vp9O+F8s
-         6PHcvvAojAUhodlzhZdnMtIjWttWb79KWUQfMb3yUWElb3R9wiIT96VWjZ1Fr/iEQx/9
-         t9RYArIO6+sNNOerr8NJ7XEkynQBJqRMNc2i3dncAoTN37IvpWeihyamvuV3QQVuDC6t
-         k+fVfBz8w/zV4WBTCxwoevgA5choxEt2waFn0DAIQlyATuYKFYMt26UwDAD3PDT2HCzl
-         JnDw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hbTNkb7dEJV/jUuDYaV6ronUZJKT0J6YmMyYLmqZPyU=;
+        b=I4qPhH9OYmT7g9sEyW60xEZxFTOgLVe4PF4Hh3yIcEsq++K+8kbwMm/41kvHEWIlh+
+         +D80h6iaELN3eQT1/UGl8CgWOYk2+WuDpGVJX2G0C3oRFrmw0lhx8Zmh9KyLCn4lXS2w
+         pKx5m1DJx9T1ksJgD1DO89LIecwRc+Ts+ATacxUFmuNCOtJqnsOPD7br9Tt1bD7vWGlU
+         KhwMhsEtQkS05TYV+Pz/MxkNfrVWXSf6un7X6jRaoUpqkz/W8ejhh9ag84JvZIb75MVZ
+         aa5SRgn2UsjC7YLuMJe+iZcbx1fXtb5WW67p7rPWAn9WjRTwdTAmqxmf1nBzztMsBA4w
+         FQew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2URR2g44lQdCwfn/Tkh9j1lhueN+DBYJikDKN7H5608=;
-        b=mXBpWoCCtTkEx0iK/1mWpJwYmzA6EilkBrUmDzCsskdF83NAy4t68VtGYJB4HNGZ0a
-         np3n3atTgkkmUjHRibUzOxVn/xJGVad39L2mrpJ61K8TAa0QmeiDAxAm6nPpFh65MNRi
-         rEUlNNQCEs45iRpEenZPImjLs7FXrYRsDrxJlJUuWRuKkXoI7Z4GzkYaF87uFe9GmHas
-         01VXqJImMHe1V0qAlysuHv7jLk5+306p0QgUZ1T41rB3Z0DlyLuZPTFDDa6uYbSXBLxa
-         b8760m39jXeD7jyuYpkRqLaKhP+2CUo8OD3YPi6MBXdYJnLlFWIDCPgsJFHh9Ho+xxQa
-         SfSQ==
-X-Gm-Message-State: AGi0PuY/uxGWfXyxl72/rKzi22yXGP42oTXFDLWfZv4rKfn5JyQWHNKn
-        R388hv64FttrLlwSeGdz/ppzXJfz1/8JIPqgmRI=
-X-Google-Smtp-Source: APiQypKp5ScZYtVmlvOUOH8jsenqRkI1KwDczEFJuV3oe7hocEQ64EEStMNYvhHmrySfkACgxvPkDz/C1lEzd5FYGGI=
-X-Received: by 2002:a05:6214:14b1:: with SMTP id bo17mr568247qvb.196.1585783192726;
- Wed, 01 Apr 2020 16:19:52 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hbTNkb7dEJV/jUuDYaV6ronUZJKT0J6YmMyYLmqZPyU=;
+        b=eNitEYIN1vCo3kMZBgXpp8IHBUZa3pNwNAm33Q36c5YPUMKaAoiQFUGh4g/CMOAHXx
+         nhY6bCVxCt41SzxNorFb4Arpk1048TkgF2WgaiAISHo341uvJULFkUN4FKx+QouI6Uj1
+         /ETuHXHjaLaKf4fjAKG7f7HyNEa0fvkDTrZvVsmQFvktO2LDYaVFAs/4P7le1MhOyZTw
+         M22uE8a2wDREY4BM5xj38h6ehZ0rPHIarqMuHItSF923F9zYyZUbmFZUls5klOXVGWbc
+         KsI2cIrgkbCdd8MwL/If4A5/PehTOwG992VPooaudxJXZ9Ap/AI8cfRU54Fi8npPSNzu
+         p9AQ==
+X-Gm-Message-State: AGi0PuY4YxU+P8hCzZKeywKyNUqTDFLXyXBjhBb15ss3SkGn12qeY+z9
+        /KNzk4A6LBKxhOzVZd1BcFx8rppe
+X-Google-Smtp-Source: APiQypJBK7YzoSvI90CiSCgCoUdQz8WmbDSMYgtsMaoFQethyWnTW31HSt9Y8LFAndIxznIlhbE1JA==
+X-Received: by 2002:aa7:949d:: with SMTP id z29mr199435pfk.111.1585783732897;
+        Wed, 01 Apr 2020 16:28:52 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:557f])
+        by smtp.gmail.com with ESMTPSA id e80sm2452233pfh.117.2020.04.01.16.28.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Apr 2020 16:28:52 -0700 (PDT)
+Date:   Wed, 1 Apr 2020 16:28:49 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Gilad Reti <gilad.reti@gmail.com>
+Cc:     bpf@vger.kernel.org
+Subject: Re: probe_write_common_error
+Message-ID: <20200401232849.wms6vfuozvis5t2s@ast-mbp>
+References: <CANaYP3GNm-siPt49Z5SSvgcF9YT4oN_enznMkaEFgbBBC9qrDQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200329225342.16317-1-joe@wand.net.nz> <20200329225342.16317-5-joe@wand.net.nz>
-In-Reply-To: <20200329225342.16317-5-joe@wand.net.nz>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 1 Apr 2020 16:19:41 -0700
-Message-ID: <CAEf4Bzb6Jr3qBOd0N2NsqMCXQ-19StU+TdFSmB=E+mDPeeC_Jg@mail.gmail.com>
-Subject: Re: [PATCHv5 bpf-next 4/5] selftests: bpf: add test for sk_assign
-To:     Joe Stringer <joe@wand.net.nz>
-Cc:     bpf <bpf@vger.kernel.org>, Lorenz Bauer <lmb@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Martin Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANaYP3GNm-siPt49Z5SSvgcF9YT4oN_enznMkaEFgbBBC9qrDQ@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Mar 29, 2020 at 3:58 PM Joe Stringer <joe@wand.net.nz> wrote:
->
-> From: Lorenz Bauer <lmb@cloudflare.com>
->
-> Attach a tc direct-action classifier to lo in a fresh network
-> namespace, and rewrite all connection attempts to localhost:4321
-> to localhost:1234 (for port tests) and connections to unreachable
-> IPv4/IPv6 IPs to the local socket (for address tests). Includes
-> implementations for both TCP and UDP.
->
-> Keep in mind that both client to server and server to client traffic
-> passes the classifier.
->
-> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> Co-authored-by: Joe Stringer <joe@wand.net.nz>
-> Signed-off-by: Joe Stringer <joe@wand.net.nz>
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
-> ---
-> v5: No change
-> v4: Add acks
-> v3: Add tests for UDP socket assign
->     Fix switching back to original netns after test
->     Avoid using signals to timeout connections
->     Refactor to iterate through test cases
-> v2: Rebase onto test_progs infrastructure
-> v1: Initial commit
-> ---
+On Tue, Mar 31, 2020 at 07:16:28PM +0300, Gilad Reti wrote:
+> When I try to probe_write_common into a writable location (e.g a
+> memory address on a usermode stack) which is not yet mapped or mapped
+> as read only to the memory, the function sometimes return a EFAULT
+> (bad address) error. This is happening since the pagefault handler was
+> disabled and thus this memory location won't be mapped when the
+> function tries to write into it, an error will be returned and no data
+> will be written.
+> Is that behavior intended? Did you want those functions to have as
+> less side-effects are possible?
 
-Hey Joe!
-
-When syncing libbpf to Github, this selftest is now failing with the
-follow errors:
-
-tc: command line is not complete, try "help"
-configure_stack:FAIL:46
-configure_stack: Interrupted system call
-#49 sk_assign:FAIL
-
-We are probably missing some packages or something like that. Could
-you please help figuring out how we need to adjust libbpf Travis CI
-environment to accomodate this? Thanks!
-You can find one of the failed runs at [0]
-
-  [0] https://travis-ci.com/github/anakryiko/libbpf/jobs/311759005
+You mean bpf_probe_write_user() helper?
+Yes it's a non-faulting helper that will fail if prog is trying to
+write into a valid memory that could have been served with minor fault.
+The main reason for this is that bpf progs are not allowed to sleep.
+We're working on sleepable bpf progs that will be able to do copy_from/to_user
+from the context where it is safe to sleep. Like syscall entry.
+Could you please share more about your use case, so we can make sure
+that it will be covered by upcoming work?
