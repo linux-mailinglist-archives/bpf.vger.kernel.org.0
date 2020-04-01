@@ -2,212 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E94219A212
-	for <lists+bpf@lfdr.de>; Wed,  1 Apr 2020 00:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D77EC19A2B7
+	for <lists+bpf@lfdr.de>; Wed,  1 Apr 2020 02:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731427AbgCaWs5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Mar 2020 18:48:57 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:39853 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729647AbgCaWs4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Mar 2020 18:48:56 -0400
-Received: by mail-lj1-f193.google.com with SMTP id i20so23764224ljn.6
-        for <bpf@vger.kernel.org>; Tue, 31 Mar 2020 15:48:54 -0700 (PDT)
+        id S1731424AbgDAADW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Mar 2020 20:03:22 -0400
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:37002 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728840AbgDAADV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Mar 2020 20:03:21 -0400
+Received: by mail-qv1-f66.google.com with SMTP id n1so11936604qvz.4;
+        Tue, 31 Mar 2020 17:03:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7EgE3rQUBwKB+OsNaorPCoGcvdaSTA93aqDrB6D4TEc=;
-        b=gkLrXlWeXFOSVICast5Vdl5R5P3IOcA/C6dTpriALza9D4E6Y6Qd652tVMYoj2pY3P
-         DN47bRyHES/yPSQOm7K3SMnISIFaCOSoghFeabV7lMExqinTjNSHkz7tKMQ+H19tgYzl
-         A9372xTpCD9MIMVGWYWT+F5jGZWz+Fs2zGfe2w+2SUu/Il1cptPCYi0tM/+XZRpAIR3D
-         xJ4G3wavpa1cE53/NVAoTG99j8pRrrnlsWvC0aUIASE8vWsF6GaozXk/FWJKf698GgGJ
-         kffciFjXKMUs3pCMAGQDP4ubtD5jtjSITiT14urXLT87awxyqjDtvVLgtoSMrntQJLEB
-         9oKQ==
+         :cc;
+        bh=RmTvz/L6YmOrh3p07+F8l4GXjEVQNak2kA1fSgQ4Mjo=;
+        b=aIxiKBCsylb6yX3xKI+LsQsqD0w6HyUuOtycBCSZkXBMPqOnHc2TtCNpmmKNjSX4jz
+         E6TkCysPrh15L662DEQtnYOMpbMzgrTHXK5wlH1ZxSK49B0DvmybzIoSoUVjJ54XGjVF
+         Hrc0IC9VXLt5tbsUM8us6woO1kz1OpIhbRAbP2KvBxV6+vX0k2ozWBnhNbWvXR7/LKi5
+         +Y657UvUeShXYWfIsXFmeCc+OvGOrcRJrxnUCjrCRGiwdY6qwkrtOoIq+8UEDgFkGeli
+         xtrnkBU+0ImdgeOiXjy+I3Utt/iM9GAvVf/qRtf7hFA66IKrs8PioREy9drD+gIIklg8
+         KU6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7EgE3rQUBwKB+OsNaorPCoGcvdaSTA93aqDrB6D4TEc=;
-        b=FrSgONEFgHF9VgCseDaN4c8KFMUCIxAFjavQLn3+3OIh5R5sYC7aSGKZa0rEJOMsAN
-         Bu9KzSkLN5KDvfh3Q8YI8+UKiP1fWrbzUpSnkbtLk7Nys/sE+V6CxUHjpAfRCcC+emNU
-         xitX4wS6nreaL6Uhib3mTs4yo5w2HIoVrRSM7/rHszmeS++J+eNDmRJPe4jmgJc7nkwt
-         +RKjmJXpIUREXseyoK5ag0Lh5FRfYUeiLMUmEVbkvuc+pUjkpcnpS1eNzudV4hRpnt8b
-         BzLYSlzxrT0l56sT/1G8bwKPvfyP3jlBQ47btSg1Bwigbp0apIPU3cQ9JUY7i3yWrTuh
-         +ZUA==
-X-Gm-Message-State: AGi0PuZEqyrdBN7/45uZxDX7ictn9bTTmYT1dgfJ8RMmNSXgR/J5AAJB
-        DkuNAw7qgA9DUSZwu9gbXQmafEM5ENyEIvb27Z3zaA==
-X-Google-Smtp-Source: APiQypJ+B+qhItODgJVwcNmLxHZLIAdDTta58U7ToLrZU85bMoPFj8kp5unGdwCGxs81XDXJ/rJlN0fJg9AFRYY2PLs=
-X-Received: by 2002:a2e:8015:: with SMTP id j21mr10850819ljg.165.1585694933444;
- Tue, 31 Mar 2020 15:48:53 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=RmTvz/L6YmOrh3p07+F8l4GXjEVQNak2kA1fSgQ4Mjo=;
+        b=mwGJJuk+SrSZupi3cNjWvRmI1zo7U8b1qRu2JiY7qSmY5mRIvHlM94NEDHrtQNxIHs
+         e+9+b7Wsy2j135PfvaSDKJa6tzGt3Mwq+katmiJYjBh5Y2DMKB1hezRLK2FrgVQCsoYL
+         yWvuGZtUfJxOov2++AB0Bfe0iBsKSklUiqXchMUmL8a7cuQmPrfnap8aFO3C2btnhxA4
+         /Icwjq2IaFCjfdi0cuMJ+a2LmN1RlgEkza6JVt9+SO80q/SCqjTRGXQzx9aU+RQwfqUK
+         Ea4XV/JFlNHnHLhsPrPHENnzHE/D01BolBpBxlcTlBcqhHeO4tuCMBcBFSgo+SAwLRav
+         7TQQ==
+X-Gm-Message-State: ANhLgQ2lQ627OkPXg9YXxxoxXZU9VNrXHUM1v2dV6f0u4u2HrDmT35rP
+        J6ZrK3dKfzPQs1ZzOAE7CF2Bdg581XT9yVdGHqw=
+X-Google-Smtp-Source: ADFU+vu6cimqTEAdtf39u8/T8WKKgNSMwihn5EK0r1F+dpBI+yAtS8ffjb/s/DQe8an3NADwSJckknxiktPrBP5Bf4E=
+X-Received: by 2002:a0c:bc15:: with SMTP id j21mr18213275qvg.228.1585699398382;
+ Tue, 31 Mar 2020 17:03:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200331141450.035873853@linuxfoundation.org>
-In-Reply-To: <20200331141450.035873853@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 1 Apr 2020 04:18:41 +0530
-Message-ID: <CA+G9fYuU-5o5DG1VSQuCPx=TSs61-1jBekdGb5yvMRz4ur3BQg@mail.gmail.com>
-Subject: Re: [PATCH 5.5 000/171] 5.5.14-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>,
+References: <20200331215536.34162-1-slava@bacher09.org>
+In-Reply-To: <20200331215536.34162-1-slava@bacher09.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 31 Mar 2020 17:03:07 -0700
+Message-ID: <CAEf4BzZXtCPhhntbgrqL0z9aX4yrNUXfFZPk+qb_5-+Nx6PRzw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf] kbuild: fix dependencies for DEBUG_INFO_BTF
+To:     Slava Bacherikov <slava@bacher09.org>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Kees Cook <keescook@chromium.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        john.fastabend@gmail.com, komachi.yoshiki@gmail.com,
-        Andrii Nakryiko <andriin@fb.com>, lukenels@cs.washington.edu,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        kernel-hardening@lists.openwall.com,
+        Liu Yiding <liuyd.fnst@cn.fujitsu.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 31 Mar 2020 at 21:02, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Tue, Mar 31, 2020 at 2:57 PM Slava Bacherikov <slava@bacher09.org> wrote:
 >
-> This is the start of the stable review cycle for the 5.5.14 release.
-> There are 171 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Currently turning on DEBUG_INFO_SPLIT when DEBUG_INFO_BTF is also
+> enabled will produce invalid btf file, since gen_btf function in
+> link-vmlinux.sh script doesn't handle *.dwo files.
 >
-> Responses should be made by Thu, 02 Apr 2020 14:12:02 +0000.
-> Anything received after that time might be too late.
+> Enabling DEBUG_INFO_REDUCED will also produce invalid btf file, and
+> using GCC_PLUGIN_RANDSTRUCT with BTF makes no sense.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.5.14-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.5.y
-> and the diffstat can be found below.
+> Signed-off-by: Slava Bacherikov <slava@bacher09.org>
+> Reported-by: Jann Horn <jannh@google.com>
+> Reported-by: Liu Yiding <liuyd.fnst@cn.fujitsu.com>
+> Fixes: e83b9f55448a ("kbuild: add ability to generate BTF type info for vmlinux")
+> ---
+
+LGTM, but let's wait on Kees about COMPILE_TEST dependency...
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  lib/Kconfig.debug | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> thanks,
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index f61d834e02fe..9ae288e2a6c0 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -223,6 +223,7 @@ config DEBUG_INFO_DWARF4
+>  config DEBUG_INFO_BTF
+>         bool "Generate BTF typeinfo"
+>         depends on DEBUG_INFO
+> +       depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED && !GCC_PLUGIN_RANDSTRUCT
+>         help
+>           Generate deduplicated BTF type information from DWARF debug info.
+>           Turning this on expects presence of pahole tool, which will convert
+> --
+> 2.24.1
 >
-> greg k-h
-
-
-Results from Linaro=E2=80=99s test farm.
-Regressions on x86_64 and i386.
-
-selftests bpf test_verifier reports as failed.
-This test PASSED on v5.5.13
-
-#554/p jgt32: range bound deduction, reg op imm FAIL
-Failed to load prog 'Success'!
-R8 unbounded memory access, make sure to bounds check any array access
-into a map
-verification time 141 usec
-stack depth 8
-processed 16 insns (limit 1000000) max_states_per_insn 0 total_states
-1 peak_states 1 mark_read 1
-#555/p jgt32: range bound deduction, reg1 op reg2, reg1 unknown FAIL
-Failed to load prog 'Success'!
-R8 unbounded memory access, make sure to bounds check any array access
-into a map
-verification time 94 usec
-stack depth 8
-processed 17 insns (limit 1000000) max_states_per_insn 0 total_states
-1 peak_states 1 mark_read 1
-#556/p jle32: range bound deduction, reg1 op reg2, reg2 unknown FAIL
-Failed to load prog 'Success'!
-R8 unbounded memory access, make sure to bounds check any array access
-into a map
-verification time 68 usec
-stack depth 8
-processed 17 insns (limit 1000000) max_states_per_insn 0 total_states
-1 peak_states 1 mark_read 1
-
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.5.14-rc2
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.5.y
-git commit: b487728d5e18490b0e551a6518d0647ae641ca3a
-git describe: v5.5.13-172-gb487728d5e18
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.5-oe/bui=
-ld/v5.5.13-172-gb487728d5e18
-
-Regressions (compared to build v5.5.13)
-  x86_64:
-  qemu_x86_64:
-     kselftest: bpf_test_verifier - FAILED
-    # Summary 1577 PASSED, 0 SKIPPED, 3 FAILED
-
-No fixes (compared to build v5.5.13)
-
-Ran 27293 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- nxp-ls2088
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* install-android-platform-tools-r2800
-* kselftest
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* perf
-* v4l2-compliance
-* ltp-syscalls-tests
-* kvm-unit-tests
-* ltp-cve-tests
-* ltp-open-posix-tests
-* network-basic-tests
-* spectre-meltdown-checker-test
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-
-ref:
-https://lkft.validation.linaro.org/scheduler/job/1327830#L3067
-https://lkft.validation.linaro.org/scheduler/job/1327830#L3067
-https://lkft.validation.linaro.org/scheduler/job/1328415#L1656
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
