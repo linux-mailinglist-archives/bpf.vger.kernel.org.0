@@ -2,97 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1D319ADB3
-	for <lists+bpf@lfdr.de>; Wed,  1 Apr 2020 16:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F4319ADC5
+	for <lists+bpf@lfdr.de>; Wed,  1 Apr 2020 16:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732852AbgDAOVR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Apr 2020 10:21:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732781AbgDAOVR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Apr 2020 10:21:17 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1732992AbgDAO0Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Apr 2020 10:26:16 -0400
+Received: from dispatch1-us1.ppe-hosted.com ([67.231.154.164]:40508 "EHLO
+        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732749AbgDAO0P (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 1 Apr 2020 10:26:15 -0400
+Received: from mx1-us1.ppe-hosted.com (unknown [10.110.50.144])
+        by dispatch1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id B8F69200DB;
+        Wed,  1 Apr 2020 14:26:14 +0000 (UTC)
+Received: from us4-mdac16-13.at1.mdlocal (unknown [10.110.49.195])
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id B748A800AF;
+        Wed,  1 Apr 2020 14:26:14 +0000 (UTC)
+X-Virus-Scanned: Proofpoint Essentials engine
+Received: from mx1-us1.ppe-hosted.com (unknown [10.110.49.105])
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 559BB40073;
+        Wed,  1 Apr 2020 14:26:14 +0000 (UTC)
+Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D1F020705;
-        Wed,  1 Apr 2020 14:21:15 +0000 (UTC)
-Date:   Wed, 1 Apr 2020 10:21:12 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     kernel test robot <rong.a.chen@intel.com>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id ED8349C007D;
+        Wed,  1 Apr 2020 14:26:13 +0000 (UTC)
+Received: from [10.17.20.203] (10.17.20.203) by ukex01.SolarFlarecom.com
+ (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Wed, 1 Apr 2020
+ 15:26:07 +0100
+Subject: Re: [PATCH v3 bpf-next 0/4] Add support for cgroup bpf_link
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     David Ahern <dsahern@gmail.com>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Peter Wu <peter@lekensteyn.nl>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Shuah Khan <shuahkhan@gmail.com>, bpf <bpf@vger.kernel.org>,
-        lkp@lists.01.org
-Subject: Re: [tracing] cd8f62b481:
- BUG:sleeping_function_called_from_invalid_context_at_mm/slab.h
-Message-ID: <20200401102112.35036490@gandalf.local.home>
-In-Reply-To: <20200401230700.d9ddb42b3459dca98144b55c@kernel.org>
-References: <20200319232731.799117803@goodmis.org>
-        <20200326091256.GR11705@shao2-debian>
-        <20200401230700.d9ddb42b3459dca98144b55c@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "Alexei Starovoitov" <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Andrey Ignatov" <rdna@fb.com>, Kernel Team <kernel-team@fb.com>
+References: <20200330030001.2312810-1-andriin@fb.com>
+ <c9f52288-5ea8-a117-8a67-84ba48374d3a@gmail.com>
+ <CAEf4BzZpCOCi1QfL0peBRjAOkXRwGEi_DAW4z34Mf3Tv_sbRFw@mail.gmail.com>
+ <662788f9-0a53-72d4-2675-daec893b5b81@gmail.com>
+ <CAADnVQK8oMZehQVt34=5zgN12VBc2940AWJJK2Ft0cbOi1jDhQ@mail.gmail.com>
+ <cdd576be-8075-13a7-98ee-9bc9355a2437@gmail.com>
+ <20200331003222.gdc2qb5rmopphdxl@ast-mbp>
+ <58cea4c7-e832-2632-7f69-5502b06310b2@gmail.com>
+ <CAEf4BzZSCdtSRw9mj2W5Vv3C-G6iZdMJsZ8WGon11mN3oBiguQ@mail.gmail.com>
+ <869adb74-5192-563d-0e8a-9cb578b2a601@solarflare.com>
+ <CAEf4Bza1ueH=SUccfDNScRyURFoQfa1b2z-x1pOfVXuSpGUpmQ@mail.gmail.com>
+From:   Edward Cree <ecree@solarflare.com>
+Message-ID: <e9e81427-c0d7-4a1e-ba9b-c51fd3c683ac@solarflare.com>
+Date:   Wed, 1 Apr 2020 15:26:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAEf4Bza1ueH=SUccfDNScRyURFoQfa1b2z-x1pOfVXuSpGUpmQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Originating-IP: [10.17.20.203]
+X-ClientProxiedBy: ocex03.SolarFlarecom.com (10.20.40.36) To
+ ukex01.SolarFlarecom.com (10.17.10.4)
+X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1020-25326.003
+X-TM-AS-Result: No-9.170700-8.000000-10
+X-TMASE-MatchedRID: csPTYAMX1+HecRzRckOs5/ZvT2zYoYOwt3aeg7g/usAM74Nf6tTB9sij
+        F4UeOUZT7FsIwysVj2VO1SpuqMw3YVJAAk7j9W+XkJi1wdeHFtqcqlCdrhyhQCO7AnsM9hLAXa9
+        +3ZJzfMIWf1eVkaUg8CObEUW1s0wmEkhxDD0C3MwD2WXLXdz+AQZyESFXAljfSX8n1Gj4wAE/Fc
+        xFvf6KLlTEG0VYp/krlVMZeeAkuNC/WXZS/HqJ2tAtbEEX0MxBxEHRux+uk8h+ICquNi0WJLCxA
+        2qCQxM8Ht6Glx7uLSICvd0lnWtVOMmLiOgEMwkoftwZ3X11IV0=
+X-TM-AS-User-Approved-Sender: Yes
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--9.170700-8.000000
+X-TMASE-Version: SMEX-12.5.0.1300-8.5.1020-25326.003
+X-MDID: 1585751174-9paET6OkOxIX
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 1 Apr 2020 23:07:00 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On 01/04/2020 01:22, Andrii Nakryiko wrote:
+> Can you please point out where I was objecting to observability API
+> (which is LINK_QUERY thing we've discussed and I didn't oppose, and
+> I'm going to add next)?
+I didn't say you objected to it.
+I just said that you argued that it was OK for it to not land in the
+ same release as the rest of the API, because drgn could paper over
+ that gap.  Which seems to me to signify a dangerous way of thinking,
+ and I wanted to raise the alarm about that.
+(If you _don't_ see what's wrong with that argument... well, that'd
+ be even _more_ alarming.  Debuggers — and fuser, for that matter —
+ are for when things go wrong _in ways the designers of the system
+ failed to anticipate_.  They should not be part of a 'normal' work-
+ flow for dealing with problems that we already _know_ are possible;
+ it's kinda-sorta like how exceptions shouldn't be used for non-
+ exceptional situations.)
 
-> Hi Steve,
-> 
-> On Thu, 26 Mar 2020 17:12:56 +0800
-> kernel test robot <rong.a.chen@intel.com> wrote:
-> 
-> > FYI, we noticed the following commit (built with gcc-7):
-> > 
-> > commit: cd8f62b481530fafbeacee0d3283b60bcf42d854 ("[PATCH 02/12 v2] tracing: Save off entry when peeking at next entry")
-> > url: https://github.com/0day-ci/linux/commits/Steven-Rostedt/ring-buffer-tracing-Remove-disabling-of-ring-buffer-while-reading-trace-file/20200320-073240
-> >   
-> 
-> Hmm, this seems that we can not call kmalloc() in ftrace_dump().
-> Maybe we can fix it by
-> - Use GFP_ATOMIC.
->  or
-> - Do not use iter->temp if it is NULL. (it is safe since ftrace_dump() stops tracing)
-> 
-> What would you think?
-> 
-
-Thanks for the reminder, I knew there was something that I had to deal with
-and forgot to mark this report!
-
-I already looked at it, and yes, this is an issue, but for PREEMPT_RT even
-GFP_ATOMIC will fail. As it's not critical to record it, we can just check
-for in atomic and not bother with the allocation.
-
--- Steve
-
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 6519b7afc499..7f1466253ca8 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -3487,6 +3487,14 @@ struct trace_entry *trace_find_next_entry(struct trace_iterator *iter,
- 	 */
- 	if (iter->ent && iter->ent != iter->temp) {
- 		if (!iter->temp || iter->temp_size < iter->ent_size) {
-+			/*
-+			 * This function is only used to add markers between
-+			 * events that are far apart (see trace_print_lat_context()),
-+			 * but if this is called in an atomic context (like NMIs)
-+			 * we can't call kmalloc(), thus just return NULL.
-+			 */
-+			if (in_atomic() || irqs_disabled())
-+				return NULL;
- 			kfree(iter->temp);
- 			iter->temp = kmalloc(iter->ent_size, GFP_KERNEL);
- 			if (!iter->temp)
+-ed
