@@ -2,73 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5B719ADA1
-	for <lists+bpf@lfdr.de>; Wed,  1 Apr 2020 16:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF48919ADBA
+	for <lists+bpf@lfdr.de>; Wed,  1 Apr 2020 16:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732908AbgDAOSI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 1 Apr 2020 10:18:08 -0400
-Received: from postout1.mail.lrz.de ([129.187.255.137]:40505 "EHLO
-        postout1.mail.lrz.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732205AbgDAOSI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Apr 2020 10:18:08 -0400
-Received: from lxmhs51.srv.lrz.de (localhost [127.0.0.1])
-        by postout1.mail.lrz.de (Postfix) with ESMTP id 48spFT0jhJzyVF
-        for <bpf@vger.kernel.org>; Wed,  1 Apr 2020 16:18:05 +0200 (CEST)
-X-Virus-Scanned: by amavisd-new at lrz.de in lxmhs51.srv.lrz.de
-X-Spam-Flag: NO
-X-Spam-Score: 0.814
-X-Spam-Level: 
-X-Spam-Status: No, score=0.814 tagged_above=-999 required=5
-        tests=[ALL_TRUSTED=-1, BAYES_05=-0.5, LRZ_CT_PLAIN_ISO8859_1=0.001,
-        LRZ_DATE_TZ_0000=0.001, LRZ_DKIM_DESTROY_MTA=0.001,
-        LRZ_DMARC_OVERWRITE=0.001, LRZ_ENVFROM_FROM_ALIGNED_STRICT=0.001,
-        LRZ_ENVFROM_FROM_MATCH=0.001, LRZ_FROM_AP_PHRASE=0.001,
-        LRZ_FROM_HAS_A=0.001, LRZ_FROM_HAS_MDOM=0.001, LRZ_FROM_HAS_MX=0.001,
-        LRZ_FROM_HOSTED_DOMAIN=0.001, LRZ_FROM_NAME_IN_ADDR=0.001,
-        LRZ_FROM_PHRASE=0.001, LRZ_FWD_MS_EX=0.001, LRZ_HAS_CLANG=0.001,
-        LRZ_HAS_THREAD_INDEX=0.001, LRZ_HAS_X_ORIG_IP=0.001,
-        LRZ_MSGID_HL32=0.001, LRZ_RCVD_BADWLRZ_EXCH=0.001,
-        LRZ_RCVD_MS_EX=0.001, LRZ_RDNS_NONE=1.5, RDNS_NONE=0.793,
-        SPF_HELO_NONE=0.001] autolearn=no autolearn_force=no
-Received: from postout1.mail.lrz.de ([127.0.0.1])
-        by lxmhs51.srv.lrz.de (lxmhs51.srv.lrz.de [127.0.0.1]) (amavisd-new, port 20024)
-        with LMTP id zE6r2xwqR_GC for <bpf@vger.kernel.org>;
-        Wed,  1 Apr 2020 16:18:04 +0200 (CEST)
-Received: from BADWLRZ-SWMBX05.ads.mwn.de (BADWLRZ-SWMBX05.ads.mwn.de [IPv6:2001:4ca0:0:108::161])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (Client CN "BADWLRZ-SWMBX05", Issuer "BADWLRZ-SWMBX05" (not verified))
-        by postout1.mail.lrz.de (Postfix) with ESMTPS id 48spFS6XNkzySb
-        for <bpf@vger.kernel.org>; Wed,  1 Apr 2020 16:18:04 +0200 (CEST)
-Received: from BADWLRZ-SWMBX03.ads.mwn.de (2001:4ca0:0:108::159) by
- BADWLRZ-SWMBX05.ads.mwn.de (2001:4ca0:0:108::161) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Wed, 1 Apr 2020 16:18:04 +0200
-Received: from BADWLRZ-SWMBX03.ads.mwn.de ([fe80::b83a:fd44:92bb:7e5e]) by
- BADWLRZ-SWMBX03.ads.mwn.de ([fe80::b83a:fd44:92bb:7e5e%13]) with mapi id
- 15.01.1913.010; Wed, 1 Apr 2020 16:18:04 +0200
-From:   "Gaul, Maximilian" <maximilian.gaul@hm.edu>
-To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Compare *bpf_ktime_get_ns* in userspace
-Thread-Topic: Compare *bpf_ktime_get_ns* in userspace
-Thread-Index: AQHWCDAD/UOqIiO7PUa5k89z3yfvHQ==
-Date:   Wed, 1 Apr 2020 14:18:04 +0000
-Message-ID: <847e02c956f249aa8daab85c538e75fe@hm.edu>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Exchange-Organization-AuthAs: Internal
-X-MS-Exchange-Organization-AuthMechanism: 04
-X-MS-Exchange-Organization-AuthSource: BADWLRZ-SWMBX03.ads.mwn.de
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [2003:c6:4f25:4b06:a9f2:d944:66d0:c35c]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        id S1732749AbgDAOWU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Apr 2020 10:22:20 -0400
+Received: from pub.regulars.win ([89.163.144.234]:60018 "EHLO pub.regulars.win"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732205AbgDAOWU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Apr 2020 10:22:20 -0400
+From:   Slava Bacherikov <slava@bacher09.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bacher09.org;
+        s=reg; t=1585750936;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6PA6evFBA3OhoMmMTkr0x/OR3XEpPNK02N3kYgs/0fY=;
+        b=WHb2HyAqpVVozuh8wufIBqW+oj9uTdjbGnGsyEXPc7/TaCXQjFjLlFvyjWIWzbUeFHxjMJ
+        MS+CV9sKgxO+0GYdsxZts5OAsRg+ujd1m5PkErXUf9f4ii1JfPdjUbg2Do8Z+tw3C35aCe
+        C07xU6daqkxWfDHWpYGCzu4ZwMVyA+Q=
+To:     keescook@chromium.org
+Cc:     andriin@fb.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jannh@google.com, alexei.starovoitov@gmail.com,
+        daniel@iogearbox.net, kernel-hardening@lists.openwall.com,
+        liuyd.fnst@cn.fujitsu.com, Slava Bacherikov <slava@bacher09.org>,
+        KP Singh <kpsingh@google.com>
+Subject: [PATCH v3 bpf] kbuild: fix dependencies for DEBUG_INFO_BTF
+Date:   Wed,  1 Apr 2020 17:20:58 +0300
+Message-Id: <20200401142057.453892-1-slava@bacher09.org>
+In-Reply-To: <202004010033.A1523890@keescook>
+References: <202004010033.A1523890@keescook>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I was just wondering whether there is a way to make the timestamp received in XDP/BPF via *bpf_ktime_get_ns* comparable with the usual functions in user-space such as *clock_gettime(CLOCK_MONOTONIC, &t);*?
+Currently turning on DEBUG_INFO_SPLIT when DEBUG_INFO_BTF is also
+enabled will produce invalid btf file, since gen_btf function in
+link-vmlinux.sh script doesn't handle *.dwo files.
 
-Unfortunately, *ktime_get_ns* is defined as the time since system boot, but as far as I know, there is no way in user-space to determine the time since system boot any finer than in seconds.
+Enabling DEBUG_INFO_REDUCED will also produce invalid btf file, and
+using GCC_PLUGIN_RANDSTRUCT with BTF makes no sense.
+
+Signed-off-by: Slava Bacherikov <slava@bacher09.org>
+Reported-by: Jann Horn <jannh@google.com>
+Reported-by: Liu Yiding <liuyd.fnst@cn.fujitsu.com>
+Acked-by: KP Singh <kpsingh@google.com>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Fixes: e83b9f55448a ("kbuild: add ability to generate BTF type info for vmlinux")
+---
+ lib/Kconfig.debug | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index f61d834e02fe..b94227be2d62 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -222,7 +222,9 @@ config DEBUG_INFO_DWARF4
+ 
+ config DEBUG_INFO_BTF
+ 	bool "Generate BTF typeinfo"
+-	depends on DEBUG_INFO
++	depends on DEBUG_INFO || COMPILE_TEST
++	depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
++	depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
+ 	help
+ 	  Generate deduplicated BTF type information from DWARF debug info.
+ 	  Turning this on expects presence of pahole tool, which will convert
