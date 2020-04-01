@@ -2,105 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB75019AF06
-	for <lists+bpf@lfdr.de>; Wed,  1 Apr 2020 17:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E7919AF82
+	for <lists+bpf@lfdr.de>; Wed,  1 Apr 2020 18:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgDAPt0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Apr 2020 11:49:26 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:38064 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732966AbgDAPt0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Apr 2020 11:49:26 -0400
-Received: by mail-pl1-f196.google.com with SMTP id w3so37818plz.5
-        for <bpf@vger.kernel.org>; Wed, 01 Apr 2020 08:49:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ySKX8LJGChHC8c8x0OQmrTxCx//5fIDMajpHfT6ERsw=;
-        b=fYGIqS4w9FpClJWxf/snstu/bTH/DlaBxQ+pEq2Y/GNnZQYhfDgue/9Lz65NoujHM9
-         LSxifCvxnIYPKf2GWZY90VOJwTSLJWpwxgDs7Js/2+jdx5gWGXq3ir2iVZK7zD365h/N
-         P8618F8gyRMfSa+q7hWsIqDVOexwB7konfVek=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ySKX8LJGChHC8c8x0OQmrTxCx//5fIDMajpHfT6ERsw=;
-        b=IvZGFffM4BM0Dy3dPVirFoPbgh8/NG4bABrJCnGlg1341tokv2G5Iotwk1aLkCbKWj
-         OHYSWTmiz+OQcnqzaMTl6NbI38A1zw0eAw2YgdHyd+VOUe6+nw5oNeGOwVzeS/4mrWPA
-         yGShCKUnEq4DWZNuxAqqD5FrjCI4qMxk/J4UEqy475AXjwetSJjYhmgSFPhH6pFHPdmH
-         nQhfDGptZ3ojhGJovMQ8O+MuwzIEt9W4sJCAY1CEZ6K+bUJgAN/3Qi9xoK6ThSt/N1m+
-         2iBj/5El4hy+nWgNwVel9ZlnGIoGa2Cfo8ZXX7N1zo5XIg8ufTnznE9XbtuagqkAiFfQ
-         BzXA==
-X-Gm-Message-State: AGi0PuYpYDCJOw/yUMaRayMBGnhMmyWJZD56HS3rIGpLFLeX46XdmVsl
-        jqD8xUpiruUutd2HT5u3hVhAhw==
-X-Google-Smtp-Source: APiQypKdrU/NsWejH1n/G3BfA3vTkH3qucG2TO6GKLDMoF3lPyJQdaiJTFZ4/arwCmTtqjxfFpIr1Q==
-X-Received: by 2002:a17:90b:110f:: with SMTP id gi15mr5488512pjb.184.1585756165084;
-        Wed, 01 Apr 2020 08:49:25 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x3sm1837199pfp.167.2020.04.01.08.49.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Apr 2020 08:49:23 -0700 (PDT)
-Date:   Wed, 1 Apr 2020 08:49:22 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Slava Bacherikov <slava@bacher09.org>
-Cc:     andriin@fb.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jannh@google.com, alexei.starovoitov@gmail.com,
-        daniel@iogearbox.net, kernel-hardening@lists.openwall.com,
-        liuyd.fnst@cn.fujitsu.com, KP Singh <kpsingh@google.com>
-Subject: Re: [PATCH v3 bpf] kbuild: fix dependencies for DEBUG_INFO_BTF
-Message-ID: <202004010849.CC7E9412@keescook>
-References: <202004010033.A1523890@keescook>
- <20200401142057.453892-1-slava@bacher09.org>
+        id S1727541AbgDAQPi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Apr 2020 12:15:38 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:52462 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726785AbgDAQPh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 1 Apr 2020 12:15:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585757736;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C95Q5R2yoRf7nJ/OPhhJaaYPqUp7q75QDzRjhHMzg08=;
+        b=UNdmJIbf8cmKVSeDg4DqyIBPd8SiWXdH/Wp5IooXRMAhAV4M8JnUHRcPYFIoMKAUKmpLvm
+        EZ1dr9YwL+0jexLY/z2tFGYXKugLYsMDYt12gGJW271YoHS1/HvNubFvw9SQdMKnJ748FB
+        UpfDteRughNfvFNkaNmHme1Bbd8REV0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-344-fyKOq8M0PoeYyQlzPZwq1w-1; Wed, 01 Apr 2020 12:15:32 -0400
+X-MC-Unique: fyKOq8M0PoeYyQlzPZwq1w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 906F8477;
+        Wed,  1 Apr 2020 16:15:28 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6086110002AE;
+        Wed,  1 Apr 2020 16:15:19 +0000 (UTC)
+Date:   Wed, 1 Apr 2020 18:15:17 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Toshiaki Makita <toshiaki.makita1@gmail.com>
+Cc:     brouer@redhat.com, Mao Wenan <maowenan@huawei.com>,
+        davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        jwi@linux.ibm.com, jianglidong3@jd.com, edumazet@google.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH net v2] veth: xdp: use head instead of hard_start
+Message-ID: <20200401181419.7acd2aa6@carbon>
+In-Reply-To: <7a1d55ad-1427-67fe-f204-4d4a0ab2c4b1@gmail.com>
+References: <fb5ab568-9bc8-3145-a8db-3e975ccdf846@gmail.com>
+        <20200331060641.79999-1-maowenan@huawei.com>
+        <7a1d55ad-1427-67fe-f204-4d4a0ab2c4b1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200401142057.453892-1-slava@bacher09.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 01, 2020 at 05:20:58PM +0300, Slava Bacherikov wrote:
-> Currently turning on DEBUG_INFO_SPLIT when DEBUG_INFO_BTF is also
-> enabled will produce invalid btf file, since gen_btf function in
-> link-vmlinux.sh script doesn't handle *.dwo files.
+On Tue, 31 Mar 2020 15:16:22 +0900
+Toshiaki Makita <toshiaki.makita1@gmail.com> wrote:
+
+> On 2020/03/31 15:06, Mao Wenan wrote:
+> > xdp.data_hard_start is equal to first address of
+> > struct xdp_frame, which is mentioned in
+> > convert_to_xdp_frame(). But the pointer hard_start
+> > in veth_xdp_rcv_one() is 32 bytes offset of frame,
+> > so it should use head instead of hard_start to
+> > set xdp.data_hard_start. Otherwise, if BPF program
+> > calls helper_function such as bpf_xdp_adjust_head, it
+> > will be confused for xdp_frame_end.  
 > 
-> Enabling DEBUG_INFO_REDUCED will also produce invalid btf file, and
-> using GCC_PLUGIN_RANDSTRUCT with BTF makes no sense.
+> I think you should discuss this more with Jesper before
+> submitting v2.
+> He does not like this to be included now due to merge conflict risk.
+> Basically I agree with him that we don't need to hurry with this fix.
 > 
-> Signed-off-by: Slava Bacherikov <slava@bacher09.org>
-
-Very cool; thanks! :)
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--Kees
-
-> Reported-by: Jann Horn <jannh@google.com>
-> Reported-by: Liu Yiding <liuyd.fnst@cn.fujitsu.com>
-> Acked-by: KP Singh <kpsingh@google.com>
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> Fixes: e83b9f55448a ("kbuild: add ability to generate BTF type info for vmlinux")
-> ---
->  lib/Kconfig.debug | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> Toshiaki Makita
 > 
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index f61d834e02fe..b94227be2d62 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -222,7 +222,9 @@ config DEBUG_INFO_DWARF4
->  
->  config DEBUG_INFO_BTF
->  	bool "Generate BTF typeinfo"
-> -	depends on DEBUG_INFO
-> +	depends on DEBUG_INFO || COMPILE_TEST
-> +	depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
-> +	depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
->  	help
->  	  Generate deduplicated BTF type information from DWARF debug info.
->  	  Turning this on expects presence of pahole tool, which will convert
+> > 
+> > Fixes: 9fc8d518d9d5 ("veth: Handle xdp_frames in xdp napi ring")
+> > Signed-off-by: Mao Wenan <maowenan@huawei.com>
+> > ---
+> >   v2: add fixes tag, as well as commit log.
+> >   drivers/net/veth.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+> > index d4cbb9e8c63f..5ea550884bf8 100644
+> > --- a/drivers/net/veth.c
+> > +++ b/drivers/net/veth.c
+> > @@ -506,7 +506,7 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
+> >   		struct xdp_buff xdp;
+> >   		u32 act;
+> >   
+> > -		xdp.data_hard_start = hard_start;
+> > +		xdp.data_hard_start = head;
+> >   		xdp.data = frame->data;
+> >   		xdp.data_end = frame->data + frame->len;
+> >   		xdp.data_meta = frame->data - frame->metasize;
+> >   
+
+Below is the patch that I have in my queue.  I've added a Reported-by
+tag to give you some credit, even-though I already had plans to fix
+this, as part of my XDP frame_sz work.
+
+
+[PATCH RFC net-next] veth: adjust hard_start offset on redirect XDP frames
+
+When native XDP redirect into a veth device, the frame arrives in the
+xdp_frame structure. It is then processed in veth_xdp_rcv_one(),
+which can run a new XDP bpf_prog on the packet. Doing so requires
+converting xdp_frame to xdp_buff, but the tricky part is that
+xdp_frame memory area is located in the top (data_hard_start) memory
+area that xdp_buff will point into.
+
+The current code tried to protect the xdp_frame area, by assigning
+xdp_buff.data_hard_start past this memory. This results in 32 bytes
+less headroom to expand into via BPF-helper bpf_xdp_adjust_head().
+
+This protect step is actually not needed, because BPF-helper
+bpf_xdp_adjust_head() already reserve this area, and don't allow
+BPF-prog to expand into it. Thus, it is safe to point data_hard_start
+directly at xdp_frame memory area.
+
+Cc: Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>
+Fixes: 9fc8d518d9d5 ("veth: Handle xdp_frames in xdp napi ring")
+Reported-by: Mao Wenan <maowenan@huawei.com>
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+---
+ drivers/net/veth.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index 8cdc4415fa70..2edc04a8ab8e 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -493,13 +493,15 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
+ 					struct veth_xdp_tx_bq *bq)
+ {
+ 	void *hard_start = frame->data - frame->headroom;
+-	void *head = hard_start - sizeof(struct xdp_frame);
+ 	int len = frame->len, delta = 0;
+ 	struct xdp_frame orig_frame;
+ 	struct bpf_prog *xdp_prog;
+ 	unsigned int headroom;
+ 	struct sk_buff *skb;
+ 
++	/* bpf_xdp_adjust_head() assures BPF cannot access xdp_frame area */
++	hard_start -= sizeof(struct xdp_frame);
++
+ 	rcu_read_lock();
+ 	xdp_prog = rcu_dereference(rq->xdp_prog);
+ 	if (likely(xdp_prog)) {
+@@ -521,7 +523,6 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
+ 			break;
+ 		case XDP_TX:
+ 			orig_frame = *frame;
+-			xdp.data_hard_start = head;
+ 			xdp.rxq->mem = frame->mem;
+ 			if (unlikely(veth_xdp_tx(rq->dev, &xdp, bq) < 0)) {
+ 				trace_xdp_exception(rq->dev, xdp_prog, act);
+@@ -533,7 +534,6 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
+ 			goto xdp_xmit;
+ 		case XDP_REDIRECT:
+ 			orig_frame = *frame;
+-			xdp.data_hard_start = head;
+ 			xdp.rxq->mem = frame->mem;
+ 			if (xdp_do_redirect(rq->dev, &xdp, xdp_prog)) {
+ 				frame = &orig_frame;
+@@ -555,7 +555,7 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
+ 	rcu_read_unlock();
+ 
+ 	headroom = sizeof(struct xdp_frame) + frame->headroom - delta;
+-	skb = veth_build_skb(head, headroom, len, 0);
++	skb = veth_build_skb(hard_start, headroom, len, 0);
+ 	if (!skb) {
+ 		xdp_return_frame(frame);
+ 		goto err;
+
 
 -- 
-Kees Cook
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
