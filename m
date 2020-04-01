@@ -2,109 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D30E019A642
-	for <lists+bpf@lfdr.de>; Wed,  1 Apr 2020 09:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC4E19A64E
+	for <lists+bpf@lfdr.de>; Wed,  1 Apr 2020 09:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731849AbgDAHcd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Apr 2020 03:32:33 -0400
-Received: from mail-pl1-f175.google.com ([209.85.214.175]:40102 "EHLO
-        mail-pl1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731725AbgDAHcc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Apr 2020 03:32:32 -0400
-Received: by mail-pl1-f175.google.com with SMTP id h11so9263281plk.7
-        for <bpf@vger.kernel.org>; Wed, 01 Apr 2020 00:32:30 -0700 (PDT)
+        id S1731910AbgDAHe4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Apr 2020 03:34:56 -0400
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:38302 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731912AbgDAHez (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Apr 2020 03:34:55 -0400
+Received: by mail-pj1-f68.google.com with SMTP id m15so2324152pje.3
+        for <bpf@vger.kernel.org>; Wed, 01 Apr 2020 00:34:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Q2zlprsjpvbH/CUCgF6/KaFZrKtD3zRPUib4YqmUolQ=;
-        b=eH7GQi4Fb+gecHNihtjNMlPCkT58qolygnegnhh5hSJE1vBUBJ66LNnElFLF0DunMT
-         FDAwRc5Hey0enMXIuTw8vOI9JR6u+IfleFr/zhPd9/fbIfhyQFu1uS1hiiX8gUWqR+RG
-         PBAMcJAeTHpk9Uk9APR8+Vb/7wsuXYEM+S8fs=
+         :content-disposition:in-reply-to;
+        bh=e9j0gXLS8BiPnG8hg4KhkQMvt4m3nuldxIMCe99NUSM=;
+        b=CzwRDrj2h0sa5kX72PUVDeT6L3fY9qudsdi8KkOaBKK9gQI9Rk35RY8a+tf/7T/90X
+         Zl5oGkGuBSVb657tgNqL16cqTQjKM3o1b6z/xqQcfhcf5YAqC/8MEoQ6vJl0xnuS4T1p
+         bLhOvG+N19w8AdK3xAI90GJXQBJzHg/Idzk0c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Q2zlprsjpvbH/CUCgF6/KaFZrKtD3zRPUib4YqmUolQ=;
-        b=ZHDYNGfLGn2wAgPqinDiYbDS9y1tfpCmS2ancXJr2g8jE98/ebxlnTInZXbZVCdSNB
-         WVmFGKnXXpSiLI6mJ1eSH5e9sgcoM42Y51OpGhjPLGPNmOExoDYiTOeOGrMySmB8YXRN
-         GA0a83cvA+k4qDDzkJSHQZXfqRVqODA6TuLaNbJ46mVhGjBQTBgeEs+N+L7AcxH1LaYb
-         858WqsG37eIl1dagNiJyqlPAITBawoLdrlOBfNJ/Rck2rU+QNMZ9RXByuA6bqhPgYrFo
-         /+o/mFXlzSn1xIgbNrC2CTB7pD95ivhJRtqsFNDdMAbXm/yPk7SnUZITVKlHaBNcfnMO
-         SrsQ==
-X-Gm-Message-State: AGi0Pub0laHAetsPL8vdtvHlcitGcIZgWWQstaHYZtElFdoj4ka+7RMx
-        JFRb7KRpnAjLCgIJofP4M9mxcA==
-X-Google-Smtp-Source: APiQypKmwoN+WlTZJjmydYo5ouItfzTZNL+lOANxC/eXYfxIziyQqxNU1yxknZE8OOqBHFK5Z7Q0QA==
-X-Received: by 2002:a17:90b:4396:: with SMTP id in22mr3252194pjb.10.1585726350003;
-        Wed, 01 Apr 2020 00:32:30 -0700 (PDT)
+         :mime-version:content-disposition:in-reply-to;
+        bh=e9j0gXLS8BiPnG8hg4KhkQMvt4m3nuldxIMCe99NUSM=;
+        b=p4O0z1XqyVcvOeJ9Q6LyRI1hMgQLQ3veQxS2VI3xpsDJLESbdvx8beB1ocVAaGs7dW
+         VS77I7+XaQoSyq9AkDnDeW9A7+5SlUpTq7hsXdsGQ320DSdyelb3gyj63UXIQ+KKu0ll
+         JH1B4K17ZRnwzE6nxXUyb5Srz8a0wCsEOxcoV1JEe3+vLzzFNCgt0WKo9SY5Z/jxjBz+
+         epSfZC8ZD40aBdECnNO+bPoMbOz3CfGpR2lIA6kUuu+xJjIsJG4IxdHhy3H3QwF9Fwh1
+         uy8boE1ToKI8+nDA7Nrgk0OsqQ7/JjEYKXCfHDNCxnmY3k8QOCs1hBpDCWgFZC2/9BeS
+         Qu+A==
+X-Gm-Message-State: AGi0PuZdfxeOBm1Cj2ELhIzGxvbxKTJ6KXe5M82PpBWFft4EZJS8wOw3
+        3S3YSapYEbhdvlUHvJPksWJIhQ==
+X-Google-Smtp-Source: APiQypJDNRDZ33Sc9rxPUXsp2xFXUXbugulWQqiDDPonuNaxSEsO5TuU3WlX80cycoM1zufaEYn2wA==
+X-Received: by 2002:a17:902:6acc:: with SMTP id i12mr7180158plt.61.1585726494195;
+        Wed, 01 Apr 2020 00:34:54 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k17sm911825pfp.194.2020.04.01.00.32.28
+        by smtp.gmail.com with ESMTPSA id w74sm948693pfd.112.2020.04.01.00.34.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Apr 2020 00:32:29 -0700 (PDT)
-Date:   Wed, 1 Apr 2020 00:32:28 -0700
+        Wed, 01 Apr 2020 00:34:53 -0700 (PDT)
+Date:   Wed, 1 Apr 2020 00:34:52 -0700
 From:   Kees Cook <keescook@chromium.org>
 To:     Slava Bacherikov <slava@bacher09.org>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jann Horn <jannh@google.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>
-Subject: Re: CONFIG_DEBUG_INFO_BTF and CONFIG_GCC_PLUGIN_RANDSTRUCT
-Message-ID: <202004010029.167BA4AA1F@keescook>
-References: <CAG48ez2sZ58VQ4+LJu39H1M0Y98LhRYR19G_fDAPJPBf7imxuw@mail.gmail.com>
- <CAADnVQ+Ux3-D_7ytRJx_Pz4fStRLS1vkM=-tGZ0paoD7n+JCLQ@mail.gmail.com>
- <CAG48ez0ajun-ujQQqhDRooha1F0BZd3RYKvbJ=8SsRiHAQjUzw@mail.gmail.com>
- <202003301016.D0E239A0@keescook>
- <c332da87-a770-8cf9-c252-5fb64c06c17e@iogearbox.net>
- <202003311110.2B08091E@keescook>
- <CAEf4BzYZsiuQGYVozwB=7nNhVYzCr=fQq6PLgHF3M5AXbhZyig@mail.gmail.com>
- <202003311257.3372EC63@keescook>
- <CAEf4BzYODtQtuO79BAn-m=2n8QwPRLd74UP-rwivHj6uLk3ycA@mail.gmail.com>
- <8962ffa8-69b7-ab6b-3969-3029a95dfcec@bacher09.org>
+Cc:     andriin@fb.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jannh@google.com, alexei.starovoitov@gmail.com,
+        daniel@iogearbox.net, kernel-hardening@lists.openwall.com,
+        Liu Yiding <liuyd.fnst@cn.fujitsu.com>
+Subject: Re: [PATCH v2 bpf] kbuild: fix dependencies for DEBUG_INFO_BTF
+Message-ID: <202004010033.A1523890@keescook>
+References: <20200331215536.34162-1-slava@bacher09.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8962ffa8-69b7-ab6b-3969-3029a95dfcec@bacher09.org>
+In-Reply-To: <20200331215536.34162-1-slava@bacher09.org>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 01, 2020 at 12:24:46AM +0300, Slava Bacherikov wrote:
-> 31.03.2020 23:23, Andrii Nakryiko пишет:
-> > On Tue, Mar 31, 2020 at 12:58 PM Kees Cook <keescook@chromium.org> wrote:
-> >> Sure! That'd by fine by me. I'd just like it to be a "|| COMPILE_TEST"
-> >> for GCC_PLUGIN_RANDSTRUCT. Feel free to CC me for an Ack. :)
-> >>
-> > 
-> > +cc Slava
-> > 
-> > I'm unsure what COMPILE_TEST dependency (or is it anti-dependency?)
-> > has to do with BTF generation and reading description in Kconfig
-> > didn't clarify it for me. Can you please elaborate just a bit? Thanks!
-> > 
-> >> -Kees
+On Wed, Apr 01, 2020 at 12:55:37AM +0300, Slava Bacherikov wrote:
+> Currently turning on DEBUG_INFO_SPLIT when DEBUG_INFO_BTF is also
+> enabled will produce invalid btf file, since gen_btf function in
+> link-vmlinux.sh script doesn't handle *.dwo files.
 > 
-> Hi,
+> Enabling DEBUG_INFO_REDUCED will also produce invalid btf file, and
+> using GCC_PLUGIN_RANDSTRUCT with BTF makes no sense.
 > 
-> Regarding COMPILE_TEST, DEBUG_INFO has dependency on:
+> Signed-off-by: Slava Bacherikov <slava@bacher09.org>
+> Reported-by: Jann Horn <jannh@google.com>
+> Reported-by: Liu Yiding <liuyd.fnst@cn.fujitsu.com>
+> Fixes: e83b9f55448a ("kbuild: add ability to generate BTF type info for vmlinux")
+> ---
+>  lib/Kconfig.debug | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> DEBUG_KERNEL && !COMPILE_TEST
-> 
-> And DEBUG_INFO_BTF depends on DEBUG_INFO, so enabling COMPILE_TEST
-> would block DEBUG_INFO and so DEBUG_INFO_BTF as well. Unless I don't
-> understand something and there is some other reason to add it.
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index f61d834e02fe..9ae288e2a6c0 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -223,6 +223,7 @@ config DEBUG_INFO_DWARF4
+>  config DEBUG_INFO_BTF
+>  	bool "Generate BTF typeinfo"
+>  	depends on DEBUG_INFO
+> +	depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED && !GCC_PLUGIN_RANDSTRUCT
+>  	help
+>  	  Generate deduplicated BTF type information from DWARF debug info.
+>  	  Turning this on expects presence of pahole tool, which will convert
 
-I meant that if you're adjusting the depends for GCC_PLUGIN_RANDSTRUCT,
-I'd like it to be:
+Please make this:
 
-	depends on COMPILE_TEST || !DEBUG_INFO
+depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
+depends on COMPILE_TEST || !GCC_PLUGIN_RANDSTRUCT
 
-That way randconfig, all*config, etc, will still select
-GCC_PLUGIN_RANDSTRUCT with everything else, regardless of DEBUG_INFO.
+-Kees
 
 -- 
 Kees Cook
