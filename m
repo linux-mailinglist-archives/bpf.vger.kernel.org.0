@@ -2,119 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B861719A7FD
-	for <lists+bpf@lfdr.de>; Wed,  1 Apr 2020 10:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A54A219AA77
+	for <lists+bpf@lfdr.de>; Wed,  1 Apr 2020 13:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730333AbgDAI4X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Apr 2020 04:56:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54442 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727322AbgDAI4X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Apr 2020 04:56:23 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1732147AbgDALJR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 1 Apr 2020 07:09:17 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:57201 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732269AbgDALJR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Apr 2020 07:09:17 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-145-ff90X8cOP66KmspAlL1Mdg-1; Wed, 01 Apr 2020 07:09:14 -0400
+X-MC-Unique: ff90X8cOP66KmspAlL1Mdg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95AB620784;
-        Wed,  1 Apr 2020 08:56:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585731383;
-        bh=pZfkpzV/DA6TJrp3HueXSBW9yxX80ESU1n7+BOkQquc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Os3MhArKMK5pr15JDTv+GuhUZA2z26WCPoNodnEur3UTs7+7Lwh3XVqLAj2qqcLVM
-         c8DWL6v+4M5n71Cu9YE1IwMSRlNnXg3oN4ieQ7YbnLJ0xfXJRqvgQDolrPzIqrtQxn
-         42lXpvbIaEju92IXHKsXjfPxVlqShCvg+T44u6j0=
-Date:   Wed, 1 Apr 2020 10:56:20 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>,
-        john.fastabend@gmail.com, komachi.yoshiki@gmail.com,
-        Andrii Nakryiko <andriin@fb.com>, lukenels@cs.washington.edu,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH 5.5 000/171] 5.5.14-rc2 review
-Message-ID: <20200401085620.GD2026666@kroah.com>
-References: <20200331141450.035873853@linuxfoundation.org>
- <CA+G9fYuU-5o5DG1VSQuCPx=TSs61-1jBekdGb5yvMRz4ur3BQg@mail.gmail.com>
- <20200401061131.GA1907105@kroah.com>
- <dc2cee11-84fc-70a7-41d8-2de23942697c@iogearbox.net>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E631213FD;
+        Wed,  1 Apr 2020 11:09:11 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.194.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8818110027AF;
+        Wed,  1 Apr 2020 11:09:08 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Wenbo Zhang <ethercflow@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Andrii Nakryiko <andriin@fb.com>, bgregg@netflix.com,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [RFC 0/3] bpf: Add d_path helper
+Date:   Wed,  1 Apr 2020 13:09:04 +0200
+Message-Id: <20200401110907.2669564-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dc2cee11-84fc-70a7-41d8-2de23942697c@iogearbox.net>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 01, 2020 at 10:03:16AM +0200, Daniel Borkmann wrote:
-> On 4/1/20 8:11 AM, Greg Kroah-Hartman wrote:
-> > On Wed, Apr 01, 2020 at 04:18:41AM +0530, Naresh Kamboju wrote:
-> > > On Tue, 31 Mar 2020 at 21:02, Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > > 
-> > > > This is the start of the stable review cycle for the 5.5.14 release.
-> > > > There are 171 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
-> > > > 
-> > > > Responses should be made by Thu, 02 Apr 2020 14:12:02 +0000.
-> > > > Anything received after that time might be too late.
-> > > > 
-> > > > The whole patch series can be found in one patch at:
-> > > >          https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.5.14-rc2.gz
-> > > > or in the git tree and branch at:
-> > > >          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.5.y
-> > > > and the diffstat can be found below.
-> > > > 
-> > > > thanks,
-> > > > 
-> > > > greg k-h
-> > > 
-> > > Results from Linaro’s test farm.
-> > > Regressions on x86_64 and i386.
-> > > 
-> > > selftests bpf test_verifier reports as failed.
-> > > This test PASSED on v5.5.13
-> > > 
-> > > #554/p jgt32: range bound deduction, reg op imm FAIL
-> > > Failed to load prog 'Success'!
-> > > R8 unbounded memory access, make sure to bounds check any array access
-> > > into a map
-> > > verification time 141 usec
-> > > stack depth 8
-> > > processed 16 insns (limit 1000000) max_states_per_insn 0 total_states
-> > > 1 peak_states 1 mark_read 1
-> > > #555/p jgt32: range bound deduction, reg1 op reg2, reg1 unknown FAIL
-> > > Failed to load prog 'Success'!
-> > > R8 unbounded memory access, make sure to bounds check any array access
-> > > into a map
-> > > verification time 94 usec
-> > > stack depth 8
-> > > processed 17 insns (limit 1000000) max_states_per_insn 0 total_states
-> > > 1 peak_states 1 mark_read 1
-> > > #556/p jle32: range bound deduction, reg1 op reg2, reg2 unknown FAIL
-> > > Failed to load prog 'Success'!
-> > > R8 unbounded memory access, make sure to bounds check any array access
-> > > into a map
-> > > verification time 68 usec
-> > > stack depth 8
-> > > processed 17 insns (limit 1000000) max_states_per_insn 0 total_states
-> > > 1 peak_states 1 mark_read 1
-> > 
-> > Can you run 'git bisect' to find the offending patch?
-> 
-> No need, I'll send you a patch to update the selftests. It's expected that they
-> fail now due to the revert we had to do, so if this is the only issue it shouldn't
-> hold up the release. In any case, I'll send them over to you next.
+hi,
+adding d_path helper to return full path for 'path' object.
 
-Great, thanks for letting me know this isn't a "real" issue :)
+I originally added and used 'file_path' helper, which did the same,
+but used 'struct file' object. Then realized that file_path is just
+a wrapper for d_path, so we'd cover more calling sites if we add
+d_path helper and allowed resolving BTF object within another object,
+so we could call d_path also with file pointer, like:
 
-greg k-h
+  bpf_d_path(&file->f_path, buf, size);
+
+This feature is mainly to be able to add dpath (filepath originally)
+function to bpftrace, which seems to work nicely now, like:
+
+  # bpftrace -e 'kretfunc:fget { printf("%s\n", dpath(args->ret->f_path));  }' 
+
+I'm not completely sure this is all safe and bullet proof and there's
+no other way to do this, hence RFC post.
+
+I'd be happy also with file_path function, but I thought it'd be
+a shame not to try to add d_path with the verifier change.
+I'm open to any suggestions ;-)
+
+thanks,
+jirka
+
+
+---
+Jiri Olsa (3):
+      bpf: Add support to check if BTF object is nested in another object
+      bpf: Add d_path helper
+      selftests/bpf: Add test for d_path helper
+
+ include/linux/bpf.h                             |   3 ++
+ include/uapi/linux/bpf.h                        |  14 ++++++-
+ kernel/bpf/btf.c                                |  69 +++++++++++++++++++++++++++++++++
+ kernel/bpf/verifier.c                           |  18 ++++++++-
+ kernel/trace/bpf_trace.c                        |  31 +++++++++++++++
+ scripts/bpf_helpers_doc.py                      |   2 +
+ tools/include/uapi/linux/bpf.h                  |  14 ++++++-
+ tools/testing/selftests/bpf/prog_tests/d_path.c | 196 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/test_d_path.c |  71 ++++++++++++++++++++++++++++++++++
+ 9 files changed, 414 insertions(+), 4 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/d_path.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_d_path.c
+
