@@ -2,119 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A0919AE70
-	for <lists+bpf@lfdr.de>; Wed,  1 Apr 2020 17:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB75019AF06
+	for <lists+bpf@lfdr.de>; Wed,  1 Apr 2020 17:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733132AbgDAPEG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Apr 2020 11:04:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733129AbgDAPEF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Apr 2020 11:04:05 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CEA13206F6;
-        Wed,  1 Apr 2020 15:04:03 +0000 (UTC)
-Date:   Wed, 1 Apr 2020 11:04:01 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     kernel test robot <rong.a.chen@intel.com>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Peter Wu <peter@lekensteyn.nl>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Shuah Khan <shuahkhan@gmail.com>, bpf <bpf@vger.kernel.org>,
-        lkp@lists.01.org
-Subject: Re: [tracing] cd8f62b481:
- BUG:sleeping_function_called_from_invalid_context_at_mm/slab.h
-Message-ID: <20200401110401.23cda3b3@gandalf.local.home>
-In-Reply-To: <20200401102112.35036490@gandalf.local.home>
-References: <20200319232731.799117803@goodmis.org>
-        <20200326091256.GR11705@shao2-debian>
-        <20200401230700.d9ddb42b3459dca98144b55c@kernel.org>
-        <20200401102112.35036490@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726640AbgDAPt0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Apr 2020 11:49:26 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:38064 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732966AbgDAPt0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Apr 2020 11:49:26 -0400
+Received: by mail-pl1-f196.google.com with SMTP id w3so37818plz.5
+        for <bpf@vger.kernel.org>; Wed, 01 Apr 2020 08:49:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ySKX8LJGChHC8c8x0OQmrTxCx//5fIDMajpHfT6ERsw=;
+        b=fYGIqS4w9FpClJWxf/snstu/bTH/DlaBxQ+pEq2Y/GNnZQYhfDgue/9Lz65NoujHM9
+         LSxifCvxnIYPKf2GWZY90VOJwTSLJWpwxgDs7Js/2+jdx5gWGXq3ir2iVZK7zD365h/N
+         P8618F8gyRMfSa+q7hWsIqDVOexwB7konfVek=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ySKX8LJGChHC8c8x0OQmrTxCx//5fIDMajpHfT6ERsw=;
+        b=IvZGFffM4BM0Dy3dPVirFoPbgh8/NG4bABrJCnGlg1341tokv2G5Iotwk1aLkCbKWj
+         OHYSWTmiz+OQcnqzaMTl6NbI38A1zw0eAw2YgdHyd+VOUe6+nw5oNeGOwVzeS/4mrWPA
+         yGShCKUnEq4DWZNuxAqqD5FrjCI4qMxk/J4UEqy475AXjwetSJjYhmgSFPhH6pFHPdmH
+         nQhfDGptZ3ojhGJovMQ8O+MuwzIEt9W4sJCAY1CEZ6K+bUJgAN/3Qi9xoK6ThSt/N1m+
+         2iBj/5El4hy+nWgNwVel9ZlnGIoGa2Cfo8ZXX7N1zo5XIg8ufTnznE9XbtuagqkAiFfQ
+         BzXA==
+X-Gm-Message-State: AGi0PuYpYDCJOw/yUMaRayMBGnhMmyWJZD56HS3rIGpLFLeX46XdmVsl
+        jqD8xUpiruUutd2HT5u3hVhAhw==
+X-Google-Smtp-Source: APiQypKdrU/NsWejH1n/G3BfA3vTkH3qucG2TO6GKLDMoF3lPyJQdaiJTFZ4/arwCmTtqjxfFpIr1Q==
+X-Received: by 2002:a17:90b:110f:: with SMTP id gi15mr5488512pjb.184.1585756165084;
+        Wed, 01 Apr 2020 08:49:25 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id x3sm1837199pfp.167.2020.04.01.08.49.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Apr 2020 08:49:23 -0700 (PDT)
+Date:   Wed, 1 Apr 2020 08:49:22 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Slava Bacherikov <slava@bacher09.org>
+Cc:     andriin@fb.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jannh@google.com, alexei.starovoitov@gmail.com,
+        daniel@iogearbox.net, kernel-hardening@lists.openwall.com,
+        liuyd.fnst@cn.fujitsu.com, KP Singh <kpsingh@google.com>
+Subject: Re: [PATCH v3 bpf] kbuild: fix dependencies for DEBUG_INFO_BTF
+Message-ID: <202004010849.CC7E9412@keescook>
+References: <202004010033.A1523890@keescook>
+ <20200401142057.453892-1-slava@bacher09.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200401142057.453892-1-slava@bacher09.org>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 1 Apr 2020 10:21:12 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Wed, Apr 01, 2020 at 05:20:58PM +0300, Slava Bacherikov wrote:
+> Currently turning on DEBUG_INFO_SPLIT when DEBUG_INFO_BTF is also
+> enabled will produce invalid btf file, since gen_btf function in
+> link-vmlinux.sh script doesn't handle *.dwo files.
+> 
+> Enabling DEBUG_INFO_REDUCED will also produce invalid btf file, and
+> using GCC_PLUGIN_RANDSTRUCT with BTF makes no sense.
+> 
+> Signed-off-by: Slava Bacherikov <slava@bacher09.org>
 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 6519b7afc499..7f1466253ca8 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -3487,6 +3487,14 @@ struct trace_entry *trace_find_next_entry(struct trace_iterator *iter,
->  	 */
->  	if (iter->ent && iter->ent != iter->temp) {
->  		if (!iter->temp || iter->temp_size < iter->ent_size) {
-> +			/*
-> +			 * This function is only used to add markers between
-> +			 * events that are far apart (see trace_print_lat_context()),
-> +			 * but if this is called in an atomic context (like NMIs)
-> +			 * we can't call kmalloc(), thus just return NULL.
-> +			 */
-> +			if (in_atomic() || irqs_disabled())
-> +				return NULL;
->  			kfree(iter->temp);
->  			iter->temp = kmalloc(iter->ent_size, GFP_KERNEL);
->  			if (!iter->temp)
+Very cool; thanks! :)
 
-Peter informed me on IRC not to use in_atomic() as it doesn't catch
-spin_locks when CONFIG_PREEMPT is not defined.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-As the issue is just with ftrace_dump(), I'll have it use a static buffer
-instead of 128 bytes. Which should be big enough for most events, and if
-not, then it will just miss the markers.
+-Kees
 
--- Steve
+> Reported-by: Jann Horn <jannh@google.com>
+> Reported-by: Liu Yiding <liuyd.fnst@cn.fujitsu.com>
+> Acked-by: KP Singh <kpsingh@google.com>
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> Fixes: e83b9f55448a ("kbuild: add ability to generate BTF type info for vmlinux")
+> ---
+>  lib/Kconfig.debug | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index f61d834e02fe..b94227be2d62 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -222,7 +222,9 @@ config DEBUG_INFO_DWARF4
+>  
+>  config DEBUG_INFO_BTF
+>  	bool "Generate BTF typeinfo"
+> -	depends on DEBUG_INFO
+> +	depends on DEBUG_INFO || COMPILE_TEST
+> +	depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
+> +	depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
+>  	help
+>  	  Generate deduplicated BTF type information from DWARF debug info.
+>  	  Turning this on expects presence of pahole tool, which will convert
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 6519b7afc499..8c9d6a75abbf 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -3472,6 +3472,8 @@ __find_next_entry(struct trace_iterator *iter, int *ent_cpu,
- 	return next;
- }
- 
-+#define IGNORE_TEMP		((struct trace_iterator *)-1L)
-+
- /* Find the next real entry, without updating the iterator itself */
- struct trace_entry *trace_find_next_entry(struct trace_iterator *iter,
- 					  int *ent_cpu, u64 *ent_ts)
-@@ -3480,6 +3482,17 @@ struct trace_entry *trace_find_next_entry(struct trace_iterator *iter,
- 	int ent_size = iter->ent_size;
- 	struct trace_entry *entry;
- 
-+	/*
-+	 * This function is only used to add markers between
-+	 * events that are far apart (see trace_print_lat_context()),
-+	 * but if this is called in an atomic context (like NMIs)
-+	 * kmalloc() can't be called.
-+	 * That happens via ftrace_dump() which will initialize
-+	 * iter->temp to IGNORE_TEMP. In such a case, just return NULL.
-+	 */
-+	if (iter->temp == IGNORE_TEMP)
-+		return NULL;
-+
- 	/*
- 	 * The __find_next_entry() may call peek_next_entry(), which may
- 	 * call ring_buffer_peek() that may make the contents of iter->ent
-@@ -9203,6 +9216,8 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
- 
- 	/* Simulate the iterator */
- 	trace_init_global_iter(&iter);
-+	/* Force not using the temp buffer */
-+	iter.temp = IGNORE_TEMP;
- 
- 	for_each_tracing_cpu(cpu) {
- 		atomic_inc(&per_cpu_ptr(iter.array_buffer->data, cpu)->disabled);
+-- 
+Kees Cook
