@@ -2,73 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9852219C619
-	for <lists+bpf@lfdr.de>; Thu,  2 Apr 2020 17:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 166DD19C61E
+	for <lists+bpf@lfdr.de>; Thu,  2 Apr 2020 17:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389392AbgDBPkW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Apr 2020 11:40:22 -0400
-Received: from pub.regulars.win ([89.163.144.234]:36068 "EHLO pub.regulars.win"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388591AbgDBPkW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Apr 2020 11:40:22 -0400
-Subject: Re: [PATCH v4 bpf] kbuild: fix dependencies for DEBUG_INFO_BTF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bacher09.org;
-        s=reg; t=1585842020;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=GZLGLGK0Ts+nwMLTKpmMA0gphkPeoQjdvofgRxfo/XQ=;
-        b=rp5rZGQMd0ceRJDBWcpjiTnamXyUc3Rl/Y4P4pOlgIRcRqMERZduQGjA0aCXJhoQ25trW7
-        dYNDBhqoGw2qpfMPpU7A9i4hNv3FUhWGxozJ2zJFJ3mZjVJ/95UG0TJmPCuQxiHrsOx/xS
-        s7bKQF55nqFd0X5/wZIkfL5QFa91urI=
-Cc:     Kees Cook <keescook@chromium.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jannh@google.com,
-        alexei.starovoitov@gmail.com, daniel@iogearbox.net,
-        kernel-hardening@lists.openwall.com, liuyd.fnst@cn.fujitsu.com,
-        kpsingh@google.com
-References: <202004010849.CC7E9412@keescook>
- <20200402153335.38447-1-slava@bacher09.org>
-To:     Andrii Nakryiko <andriin@fb.com>
-From:   Slava Bacherikov <slava@bacher09.org>
-Autocrypt: addr=slava@bacher09.org; prefer-encrypt=mutual; keydata=
- mQINBFFdcIUBEAC9HZz+DbqCs+jyJjpvRyped8U4bz716OZKvZCTH4fNxrrV0fYWRn7LJ/dU
- r5tBnwhmlTWD4v6hk88qpD9flagkSP4UuIAo+3aopxvrkyWXXYiEAjSL2uTFolcEO40HuYPk
- 7nprTEzHcHgcYq2wzJfE046gimzFYcUXkrv1gC89RdkwOgLTFb80QUpKyVeoKJWKWHPfRqGF
- FxpFwMnW3IrgZhOnl8X859WwKUc/agPz05LjaksGpAP8ayfruxtG/3Hl7OulYPWIkTuxHAtK
- xW9QL7Vt24P8rVLC7sgNZYcjaOcY70PCkGLnquETuIeeCwhKr/e2n+ymH+CxlAiUY+blNpO5
- S5P+rwb0qPvGDzjF+Drdp0ye/S3kMa+FNrELW06Fp74p7BgsPgNsuBVg300JWMFXiS7YeMZV
- cyedAzGbcO8yxrY6ZnuNF8rLiZOYde79yN82wTNw/fWZtHhz8QJELZzMNjZd3/w61ztSs9ng
- mduiqv9EyNKlEEuxy6N4jGTQ2YYLE/YcIx654rCfpJWJhj2kDd4k2uNRrhJI7t4duHC86K4M
- HiOwC7PIKlIbtrpYnTZPXXcQHp69LDzxCAA6dgGkhjZsUTVci0rTEfRQjkXYvK/f3P1SHF1M
- EHoeEaclqvpkuvPcbHQ/TBwBJs+ekdFCTmBzv0UwqZKfaPW5yQARAQABtDJTbGF2YSBCYWNo
- ZXJpa292IChNeSBOZXcgS2V5KSA8c2xhdmFAYmFjaGVyMDkub3JnPokCWQQTAQIAQwIbIwUJ
- DShogAcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAFiEEZkmc+DLOftzkG8AWUSYbvb34nfMF
- AlkF95wCGQEACgkQUSYbvb34nfO7FQ//drNtAxFi294vVZnN+wyVimXGiyBHpBPnEK5/hSQ5
- oBVvjFl8Ws7q13WWklhdPgM3atAukADMG5wr3IM3ctS1L2+502TYGv8W5jvUlso/TxjNdVQz
- SDicmPCMMs91BWHiJHkYKErUXxNtCaBQqVV2rAKiDoK1gtFrWfH/3OgP6RS+mLMt5eJ/PHsc
- kAuvaXOIzWxjclGMB2yAQzmK7SImOHp7YUBqXrOt523sz29p+1q0+y6ZRlPNctys/okUdnoK
- bi0rMBqbHngaoi/al9Clh9jrhqjZHJLPSM091u3ubuQkvtg3BOhqs0I/b7Xz83VxN0pj8XHI
- z4MRFwfhVSKW4pRLf92DKAa9PEYxA9QtboKafZG2EJfrUauba29/JoIh8Evi5MIuWNeZK7pK
- t3+NadAwXwcLP4RlLuOkVrF+DAuhEktvdJBvTfUkipeQo3YGcffm1daJWoUKiP2a3tqJ9fz8
- Zd5cy8hvKFCv5VsoqF2voc6uaadH1/Pwylnw2fzTfGzFP0bsz/HI8F7g3WFv0PrrtkXnPUCD
- 2IbmIGe8fi7NBTIqtc+mDMsqOIa4hlLBGkP8jHnCPv6oaGYlWemzcVhehU3XQOKyT2lroZan
- nnARpEW9lSSeWPba99+PJu0q2rEaQj/Vhy/m2db89kYeLcEuItd4DYKk7rHZSrHBKwM=
-Message-ID: <f43f4e17-f496-9ee1-7d89-c8f742720a5f@bacher09.org>
-Date:   Thu, 2 Apr 2020 18:40:19 +0300
+        id S2389349AbgDBPkh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Apr 2020 11:40:37 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:34162 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388972AbgDBPkh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Apr 2020 11:40:37 -0400
+Received: by mail-lf1-f65.google.com with SMTP id e7so3144533lfq.1;
+        Thu, 02 Apr 2020 08:40:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1+2erfkkbu3TLnQgP4FNOMyrP6eIdZu6/WJPUCTbdAA=;
+        b=QiJY6vAFVaADxgmOmeE784cvy5UzSNFL7qXv9U7OiG/ZMEuwa2vEwY6vVWcaccQ7na
+         GbAEDP+GKI/k7Z4eVfyfmSz10A/spb4g63pOAA3oq6T/nxAAd3YUVZOuzoqxoF3wW+PZ
+         qFpyF74CkGNiCdMXkCbmmeBtF20TG/+rjyFJSvz4kQY/Euvsp7hRzDziIIm0nnx9VHw/
+         j37WbJT9HhQEk3LDifhUHXz33V1hGVfNvTalDT9wQtshYzrIjXb72WeZPCKw2+9LATR4
+         8/6cxXD8+ZnYsyxq2OTIkr6OKTFV3DJOYwoLKFDF0/QHs1li4pbHyfpO2TP66E/0SDuZ
+         hxeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1+2erfkkbu3TLnQgP4FNOMyrP6eIdZu6/WJPUCTbdAA=;
+        b=UWKsQ/EjjHANV9fLPgBni5oyPbDuTlHhQ7B8wH9bW+p1Q45etwe9a2FOLVkUNUMVwG
+         W30k76KOx3JjcoffDPv7ki0pITqam0iQPabpmw5peoFqbgZoKsc2e3zLIOmWvnvVMcHj
+         fLKazb0hpYPmrsuvJA7R5nWhb9trTj1ptwUGsZXSuU71n5GN2eZDT+XG0UvRgKyVYLxT
+         Qtl4PH9QudOew7it/NY9BgHM0q1pSuFj/mJP7dlq7psaU5SRp3jhALwjwMbET3Z4ftGk
+         7TCNx26wLUSlpC9QPJJECnhhTt/6WaMDTB8RisjQLyr9h0lQw+6sPwHtinIjqy15PN4Y
+         5g0w==
+X-Gm-Message-State: AGi0PuaaMPw8GauXvn0zkVSKsxgM5ie5/7v0dnmfT58q5A6gOTCERg1I
+        US9GSYayGON622+QjrYpVqotdirxuNQmKxKsZ88=
+X-Google-Smtp-Source: APiQypIdvYJc6O/exwVrWe6ToU6iOSXmBNO1FTBzi81ghhxfIzKlP+jfokCDAjIOMT0OgNS+I5in+pfDYpMcW1SGxZc=
+X-Received: by 2002:a19:40ca:: with SMTP id n193mr2503030lfa.196.1585842035185;
+ Thu, 02 Apr 2020 08:40:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200402153335.38447-1-slava@bacher09.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <fb5ab568-9bc8-3145-a8db-3e975ccdf846@gmail.com>
+ <20200331060641.79999-1-maowenan@huawei.com> <7a1d55ad-1427-67fe-f204-4d4a0ab2c4b1@gmail.com>
+ <20200401181419.7acd2aa6@carbon> <ede2f407-839e-d29e-0ebe-aa39dd461bfd@gmail.com>
+ <20200402110619.48f31a63@carbon>
+In-Reply-To: <20200402110619.48f31a63@carbon>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 2 Apr 2020 08:40:23 -0700
+Message-ID: <CAADnVQKEyv_bRhEfu1Jp=DSggj_O2xjJyd_QZ7a4LJY+dUO2rg@mail.gmail.com>
+Subject: Re: [PATCH net v2] veth: xdp: use head instead of hard_start
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        Mao Wenan <maowenan@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, jwi@linux.ibm.com,
+        jianglidong3@jd.com, Eric Dumazet <edumazet@google.com>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Apr 2, 2020 at 2:06 AM Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+>
+> On Thu, 2 Apr 2020 09:47:03 +0900
+> Toshiaki Makita <toshiaki.makita1@gmail.com> wrote:
+>
+> > On 2020/04/02 1:15, Jesper Dangaard Brouer wrote:
+> > ...
+> > > [PATCH RFC net-next] veth: adjust hard_start offset on redirect XDP frames
+> > >
+> > > When native XDP redirect into a veth device, the frame arrives in the
+> > > xdp_frame structure. It is then processed in veth_xdp_rcv_one(),
+> > > which can run a new XDP bpf_prog on the packet. Doing so requires
+> > > converting xdp_frame to xdp_buff, but the tricky part is that
+> > > xdp_frame memory area is located in the top (data_hard_start) memory
+> > > area that xdp_buff will point into.
+> > >
+> > > The current code tried to protect the xdp_frame area, by assigning
+> > > xdp_buff.data_hard_start past this memory. This results in 32 bytes
+> > > less headroom to expand into via BPF-helper bpf_xdp_adjust_head().
+> > >
+> > > This protect step is actually not needed, because BPF-helper
+> > > bpf_xdp_adjust_head() already reserve this area, and don't allow
+> > > BPF-prog to expand into it. Thus, it is safe to point data_hard_start
+> > > directly at xdp_frame memory area.
+> > >
+> > > Cc: Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>
+> >
+> > FYI: This mail address is deprecated.
+> >
+> > > Fixes: 9fc8d518d9d5 ("veth: Handle xdp_frames in xdp napi ring")
+> > > Reported-by: Mao Wenan <maowenan@huawei.com>
+> > > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> >
+> > FWIW,
+> >
+> > Acked-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
+>
+> Thanks.
+>
+> I have updated your email and added your ack in my patchset.  I will
+> submit this officially once net-next opens up again[1], as part my
+> larger patchset for introducing XDP frame_sz.
 
-
-02.04.2020 18:33, Slava Bacherikov wrote:
-> +	depends on DEBUG_INFO || COMPILE_TEST
-
-Andrii are you fine by this ?
+It looks like bug fix to me.
+The way I read it that behavior of bpf_xdp_adjust_head() is a bit
+buggy with veth netdev,
+so why wait ?
