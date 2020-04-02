@@ -2,99 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F6319B95F
-	for <lists+bpf@lfdr.de>; Thu,  2 Apr 2020 02:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDAB419B99A
+	for <lists+bpf@lfdr.de>; Thu,  2 Apr 2020 02:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732527AbgDBAJg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Apr 2020 20:09:36 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:35836 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732137AbgDBAJg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Apr 2020 20:09:36 -0400
-Received: by mail-lj1-f194.google.com with SMTP id k21so1401717ljh.2
-        for <bpf@vger.kernel.org>; Wed, 01 Apr 2020 17:09:35 -0700 (PDT)
+        id S1732619AbgDBArM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Apr 2020 20:47:12 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:38269 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732527AbgDBArM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Apr 2020 20:47:12 -0400
+Received: by mail-pf1-f195.google.com with SMTP id c21so910143pfo.5;
+        Wed, 01 Apr 2020 17:47:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z2zCDanlb805Hy1usViRfiz/uoZcbCtBK51goo7ofEA=;
-        b=H2uI99HxfayEM1VzmvS0pNKItcm1B3S7FhxfKSaU3wUoYEGk8K/qw3OZDGWE0oIYct
-         OtjQkuCrNnWXUA7O6xNaPKC6dLeAKOh8BGWYvONIL0NA+EbSaZOPqviD9uMYo2BBQpv3
-         wHsbbKhinW6zJEM4bL0zHUwLw6S2A1PHkN7K92YGomD3ldPmyvkrUutgd5woYsyYQF83
-         JVSsApSCP6TW0RZ1y0vUVeZM4dXoL6D5wvh3fdqaMxKqCVusq+zOCGbIMGASNmGHcp4w
-         5ir481tyS2QFp0WjpwIZ73AixtRg9I00pZnlqcnJPvrSSQgweGJ3VP1xHhkfxbaoTc5A
-         y8Og==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gKLfRHXqeC/oi2xP24lA0VxkwaXTW253NCEpbDodjM8=;
+        b=TQ5U5WQwnl6uazN/fdbqBwcYVhvaEdWSkMdvsbnu3CIQe9EtEnej6O1oUa2hLwpMyI
+         WjaCa5H/8AG8MYT1bUp2cQryZgIU73eqS953Nng2zR/9xGGxnpO7rTw4X0jXLB6hwkiJ
+         uwa3Yhd1bztdbxwwUFFoIzC+r1z2uc5Fdgk4ZkX81lZitAZdNeYKrzRKtdmkLwCHzuVQ
+         aNQml7SPwtnlHWSbbNUf+NOtcRxM0N36tKc5l10vgoCTU8Sf+FTwQ1KCoRxS6JcNAnlR
+         V85JKyQFo9nqRfVL4kMjlaOTWGCXr5qMc4w9jKsZr69iKvFYeXknjB0B3+rLE3G6BAI8
+         G4GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z2zCDanlb805Hy1usViRfiz/uoZcbCtBK51goo7ofEA=;
-        b=jvr9SZRUdeWGrZH4e482RVFhN7n+oPbsyjmZ4He0TlTFxG4/C21FqSYa3HkfW3Vqgp
-         0DdW9I09etEz26yOHeDkDOqoOGMJMKALNSmUI801I0CxtCoXQumA9A7vl8PERvC46zKl
-         cnE3XR4RhCR6vaDPo4vFAUW1ejVag96t5ALfIwmPReZnWVBCMYrYWvL8XJVXJlpRemzo
-         gzMANUQmtqQARPwAWMvkZv5slKscR9LHjamlpQjpKMLRROsP8TkFP9cSPxYfqZtpdcBz
-         oAPZxwIblKHAaUYrVI+JBByNoqv0XXy9+8ZEOBY60USdvlJ9FWCg1SG2g//GQcKagO5R
-         FjmQ==
-X-Gm-Message-State: AGi0PuaDAZVQX8Cp2+bjzRL8q4xHuoyg9FykexpNyxenBQqBZJgX+uie
-        VBNJPnLstdNafA+dVeAlhi4jmcJWU0B+yItZIwA=
-X-Google-Smtp-Source: APiQypKCsuzpjVvgrzVB8hgCBqV6F17jxwD5shDsH1nVfuTJa7PfQfan+kVQSHU/yt3oET8L9UmeXfEOlp8ZzOHcypo=
-X-Received: by 2002:a2e:5ce:: with SMTP id 197mr425204ljf.234.1585786174547;
- Wed, 01 Apr 2020 17:09:34 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gKLfRHXqeC/oi2xP24lA0VxkwaXTW253NCEpbDodjM8=;
+        b=UMMgse8FaQ7XjiyquOtZ8+rPcjFsBer4PmBMo9rcbYtokvMRaccc9W930X5CpdOCNW
+         KBXREQAtvCj+TeFuaPlTQOIHwj8N2rid+XDPaRx2QF2V8y6nr6E0Ux0C8izCGOpw66qj
+         rz+sb7Kw0lOmLFmzy3bfr+uE5DFv38iJRmkpL3G6itmGMwUdvJ5qdeE93sXiBXlE5KZJ
+         RQCKTny4PpGvAoSoSQzBDedLU7OIA/IPzyppo0nwelS/pxP0EreawInUupbI/PBGO3EI
+         cuAs1qkTllfUBfNkWm1KDoOQ5NHTQM7mlBVf/vtWArYA10ClsaEJXNGGwE+J9KXCL2kx
+         UWgA==
+X-Gm-Message-State: AGi0Pua7NJ2lI2OOyd2RjXEH+eNqo8FHEM6QNekZZQZtBXGsnrXqEOnl
+        OeASkG6SJgz+qd+Ziq+zDZz3VyAo
+X-Google-Smtp-Source: APiQypJUo1ChJEV935jbuqqDGBmqOSPXf7PQPaGev8X1QugSrNwjI99o4UN3g6xKqwJEPMoQZ5fpxA==
+X-Received: by 2002:a63:5fd8:: with SMTP id t207mr873597pgb.186.1585788429294;
+        Wed, 01 Apr 2020 17:47:09 -0700 (PDT)
+Received: from [192.168.1.18] (i223-218-245-204.s42.a013.ap.plala.or.jp. [223.218.245.204])
+        by smtp.googlemail.com with ESMTPSA id 63sm2451755pfx.132.2020.04.01.17.47.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Apr 2020 17:47:08 -0700 (PDT)
+Subject: Re: [PATCH net v2] veth: xdp: use head instead of hard_start
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Mao Wenan <maowenan@huawei.com>, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net, kuba@kernel.org,
+        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        jwi@linux.ibm.com, jianglidong3@jd.com, edumazet@google.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <fb5ab568-9bc8-3145-a8db-3e975ccdf846@gmail.com>
+ <20200331060641.79999-1-maowenan@huawei.com>
+ <7a1d55ad-1427-67fe-f204-4d4a0ab2c4b1@gmail.com>
+ <20200401181419.7acd2aa6@carbon>
+From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
+Message-ID: <ede2f407-839e-d29e-0ebe-aa39dd461bfd@gmail.com>
+Date:   Thu, 2 Apr 2020 09:47:03 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20200329004356.27286-1-kpsingh@chromium.org> <20200329004356.27286-8-kpsingh@chromium.org>
-In-Reply-To: <20200329004356.27286-8-kpsingh@chromium.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 1 Apr 2020 17:09:23 -0700
-Message-ID: <CAADnVQKP3mOTUkkzjWM6Qii+v-dCDwV9Ms_-4ptsbdwyDW1MCA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v9 7/8] bpf: lsm: Add selftests for BPF_PROG_TYPE_LSM
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        Florent Revest <revest@google.com>,
-        Thomas Garnier <thgarnie@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200401181419.7acd2aa6@carbon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Mar 28, 2020 at 5:44 PM KP Singh <kpsingh@chromium.org> wrote:
-> +int BPF_PROG(test_int_hook, struct vm_area_struct *vma,
-> +            unsigned long reqprot, unsigned long prot, int ret)
-> +{
-> +       if (ret != 0)
-> +               return ret;
-> +
-> +       __u32 pid = bpf_get_current_pid_tgid() >> 32;
-> +       int is_heap = 0;
-> +
-> +       is_heap = (vma->vm_start >= vma->vm_mm->start_brk &&
-> +                  vma->vm_end <= vma->vm_mm->brk);
+On 2020/04/02 1:15, Jesper Dangaard Brouer wrote:
+...
+> [PATCH RFC net-next] veth: adjust hard_start offset on redirect XDP frames
+> 
+> When native XDP redirect into a veth device, the frame arrives in the
+> xdp_frame structure. It is then processed in veth_xdp_rcv_one(),
+> which can run a new XDP bpf_prog on the packet. Doing so requires
+> converting xdp_frame to xdp_buff, but the tricky part is that
+> xdp_frame memory area is located in the top (data_hard_start) memory
+> area that xdp_buff will point into.
+> 
+> The current code tried to protect the xdp_frame area, by assigning
+> xdp_buff.data_hard_start past this memory. This results in 32 bytes
+> less headroom to expand into via BPF-helper bpf_xdp_adjust_head().
+> 
+> This protect step is actually not needed, because BPF-helper
+> bpf_xdp_adjust_head() already reserve this area, and don't allow
+> BPF-prog to expand into it. Thus, it is safe to point data_hard_start
+> directly at xdp_frame memory area.
+> 
+> Cc: Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>
 
-This test fails for me.
-I've added:
-        bpf_printk("start %llx %llx\n", vma->vm_start, vma->vm_mm->start_brk);
-        bpf_printk("end %llx %llx\n", vma->vm_end, vma->vm_mm->brk);
-and see
-cat /sys/kernel/debug/tracing/trace_pipe
-            true-2285  [001] ...2   858.717432: 0: start 7f66470a2000 607000
-            true-2285  [001] ...2   858.717440: 0: end 7f6647443000 607000
-            true-2285  [001] ...2   858.717658: 0: start 7f6647439000 607000
-            true-2285  [001] ...2   858.717659: 0: end 7f664743f000 607000
-            true-2285  [001] ...2   858.717691: 0: start 605000 607000
-            true-2285  [001] ...2   858.717692: 0: end 607000 607000
-            true-2285  [001] ...2   858.717700: 0: start 7f6647666000 607000
-            true-2285  [001] ...2   858.717701: 0: end 7f6647668000 607000
-      test_progs-2283  [000] ...2   858.718030: 0: start 523000 39b9000
-      test_progs-2283  [000] ...2   858.718033: 0: end 39e0000 39e0000
+FYI: This mail address is deprecated.
 
-523000 is not >= 39b9000.
-523000 is higher than vm_mm->end_data, but lower than vm_mm->start_brk.
-No idea why this addr is passed into security_file_mprotect().
-The address user space is passing to mprotect() is 0x39c0000 which is correct.
-Could you please help debug?
+> Fixes: 9fc8d518d9d5 ("veth: Handle xdp_frames in xdp napi ring")
+> Reported-by: Mao Wenan <maowenan@huawei.com>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+
+FWIW,
+
+Acked-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
