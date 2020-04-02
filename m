@@ -2,179 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C62F619B9D5
-	for <lists+bpf@lfdr.de>; Thu,  2 Apr 2020 03:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 127C419BAE0
+	for <lists+bpf@lfdr.de>; Thu,  2 Apr 2020 06:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732783AbgDBBXX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Apr 2020 21:23:23 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:49440 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732462AbgDBBXX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Apr 2020 21:23:23 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 4C5354C9FB92A9B66279;
-        Thu,  2 Apr 2020 09:23:17 +0800 (CST)
-Received: from [127.0.0.1] (10.173.223.60) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Thu, 2 Apr 2020
- 09:23:12 +0800
-Subject: Re: [PATCH net v2] veth: xdp: use head instead of hard_start
-To:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toshiaki Makita <toshiaki.makita1@gmail.com>
-CC:     <davem@davemloft.net>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <kuba@kernel.org>, <hawk@kernel.org>, <john.fastabend@gmail.com>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <andriin@fb.com>, <jwi@linux.ibm.com>, <jianglidong3@jd.com>,
-        <edumazet@google.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>
-References: <fb5ab568-9bc8-3145-a8db-3e975ccdf846@gmail.com>
- <20200331060641.79999-1-maowenan@huawei.com>
- <7a1d55ad-1427-67fe-f204-4d4a0ab2c4b1@gmail.com>
- <20200401181419.7acd2aa6@carbon>
-From:   maowenan <maowenan@huawei.com>
-Message-ID: <348d193e-cc68-3be4-ae39-dd73dbba635c@huawei.com>
-Date:   Thu, 2 Apr 2020 09:23:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1728455AbgDBEEB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Apr 2020 00:04:01 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:51823 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726136AbgDBEEB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Apr 2020 00:04:01 -0400
+Received: by mail-wm1-f66.google.com with SMTP id z7so1907616wmk.1
+        for <bpf@vger.kernel.org>; Wed, 01 Apr 2020 21:04:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=g3IEtO7ErFuz58cL6xVhJ/guUj+thhCktSq9wBBOYcg=;
+        b=C544YK6neiofvM2DHHQ7bhdR83wuKDgdJDiNjeB/akh8kPgWgXDavV9OvJOK2DaHdj
+         SzBufrPzb3hwXqziJhKRX6Ngh72wA/0hQgxCqA0XyMWAunPbu8yMLC2V5NmGJyjnS63j
+         7ox+BbT20UMB6L3DFoKNK0GgKe6cs/aeARbjc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=g3IEtO7ErFuz58cL6xVhJ/guUj+thhCktSq9wBBOYcg=;
+        b=WLJinFsU5PwXmXoELxf5ZYnpme2rbCG8tvUf7g8oPhNvqF7c+EeHxU6Ooqu8AQgo7t
+         C38e/wnSon7fn8UZWSvyKpdLhSxylpUGIk8F946+iA31KOA0fEsYd1ZipG57RMnaN5+l
+         lQN5/nTa1MIPg36KCXCHde/IdtaS0r96TymKYS1J3ad/JN1jtUHH58gVssFM2JxSYDsB
+         uxNc+qgxBQ2nw+VPuN4wrAmiziO8948Fji/vgsJD5F+CWBxw3/4u5VRmJh4FLX0OMmWr
+         wf7iZeionsIA7Gq5WS3O4LrzeiCjhw9gBIkVAg3ezNnv1Et8PamDRhe0t/ZxlAew49gZ
+         CK4w==
+X-Gm-Message-State: AGi0PuZvjfLr3pSX1aoMIoAaLtHvlSwBVSodwAK0lqMgru7+9MFHHcP2
+        aqWwOZVCi4nSfj/i2C/+nsFjdQ==
+X-Google-Smtp-Source: APiQypJUVjhN48DEmNElLnc3XuQUiROcjSHi7/4KBh8+WunYlHXwvS5l8MLyVTFYb3bNtLAI65FHfw==
+X-Received: by 2002:a1c:a553:: with SMTP id o80mr1207425wme.159.1585800239422;
+        Wed, 01 Apr 2020 21:03:59 -0700 (PDT)
+Received: from google.com ([2a00:79e0:42:204:8a21:ba0c:bb42:75ec])
+        by smtp.gmail.com with ESMTPSA id n124sm5484582wma.11.2020.04.01.21.03.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Apr 2020 21:03:58 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Thu, 2 Apr 2020 06:03:57 +0200
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Brendan Jackman <jackmanb@google.com>,
+        Florent Revest <revest@google.com>,
+        Thomas Garnier <thgarnie@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kees Cook <keescook@chromium.org>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Subject: Re: [PATCH bpf-next v9 7/8] bpf: lsm: Add selftests for
+ BPF_PROG_TYPE_LSM
+Message-ID: <20200402040357.GA217889@google.com>
+References: <20200329004356.27286-1-kpsingh@chromium.org>
+ <20200329004356.27286-8-kpsingh@chromium.org>
+ <CAADnVQKP3mOTUkkzjWM6Qii+v-dCDwV9Ms_-4ptsbdwyDW1MCA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200401181419.7acd2aa6@carbon>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.173.223.60]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQKP3mOTUkkzjWM6Qii+v-dCDwV9Ms_-4ptsbdwyDW1MCA@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020/4/2 0:15, Jesper Dangaard Brouer wrote:
-> On Tue, 31 Mar 2020 15:16:22 +0900
-> Toshiaki Makita <toshiaki.makita1@gmail.com> wrote:
+On 01-Apr 17:09, Alexei Starovoitov wrote:
+> On Sat, Mar 28, 2020 at 5:44 PM KP Singh <kpsingh@chromium.org> wrote:
+> > +int BPF_PROG(test_int_hook, struct vm_area_struct *vma,
+> > +            unsigned long reqprot, unsigned long prot, int ret)
+> > +{
+> > +       if (ret != 0)
+> > +               return ret;
+> > +
+> > +       __u32 pid = bpf_get_current_pid_tgid() >> 32;
+> > +       int is_heap = 0;
+> > +
+> > +       is_heap = (vma->vm_start >= vma->vm_mm->start_brk &&
+> > +                  vma->vm_end <= vma->vm_mm->brk);
 > 
->> On 2020/03/31 15:06, Mao Wenan wrote:
->>> xdp.data_hard_start is equal to first address of
->>> struct xdp_frame, which is mentioned in
->>> convert_to_xdp_frame(). But the pointer hard_start
->>> in veth_xdp_rcv_one() is 32 bytes offset of frame,
->>> so it should use head instead of hard_start to
->>> set xdp.data_hard_start. Otherwise, if BPF program
->>> calls helper_function such as bpf_xdp_adjust_head, it
->>> will be confused for xdp_frame_end.  
->>
->> I think you should discuss this more with Jesper before
->> submitting v2.
->> He does not like this to be included now due to merge conflict risk.
->> Basically I agree with him that we don't need to hurry with this fix.
->>
->> Toshiaki Makita
->>
->>>
->>> Fixes: 9fc8d518d9d5 ("veth: Handle xdp_frames in xdp napi ring")
->>> Signed-off-by: Mao Wenan <maowenan@huawei.com>
->>> ---
->>>   v2: add fixes tag, as well as commit log.
->>>   drivers/net/veth.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
->>> index d4cbb9e8c63f..5ea550884bf8 100644
->>> --- a/drivers/net/veth.c
->>> +++ b/drivers/net/veth.c
->>> @@ -506,7 +506,7 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
->>>   		struct xdp_buff xdp;
->>>   		u32 act;
->>>   
->>> -		xdp.data_hard_start = hard_start;
->>> +		xdp.data_hard_start = head;
->>>   		xdp.data = frame->data;
->>>   		xdp.data_end = frame->data + frame->len;
->>>   		xdp.data_meta = frame->data - frame->metasize;
->>>   
-> 
-> Below is the patch that I have in my queue.  I've added a Reported-by
-> tag to give you some credit, even-though I already had plans to fix
-> this, as part of my XDP frame_sz work.
-thanks for reported-by.
-Actually the fault is found by reviewing veth code two weeks ago,
-when I debugged another warning bpf_warn_invalid_xdp_action associated veth
-module, and there is no chance to send such fix patch as quick.
+> This test fails for me.
 
-> 
-> 
-> [PATCH RFC net-next] veth: adjust hard_start offset on redirect XDP frames
-> 
-> When native XDP redirect into a veth device, the frame arrives in the
-> xdp_frame structure. It is then processed in veth_xdp_rcv_one(),
-> which can run a new XDP bpf_prog on the packet. Doing so requires
-> converting xdp_frame to xdp_buff, but the tricky part is that
-> xdp_frame memory area is located in the top (data_hard_start) memory
-> area that xdp_buff will point into.
-> 
-> The current code tried to protect the xdp_frame area, by assigning
-> xdp_buff.data_hard_start past this memory. This results in 32 bytes
-> less headroom to expand into via BPF-helper bpf_xdp_adjust_head().
-> 
-> This protect step is actually not needed, because BPF-helper
-> bpf_xdp_adjust_head() already reserve this area, and don't allow
-> BPF-prog to expand into it. Thus, it is safe to point data_hard_start
-> directly at xdp_frame memory area.
-> 
-> Cc: Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>
-> Fixes: 9fc8d518d9d5 ("veth: Handle xdp_frames in xdp napi ring")
-> Reported-by: Mao Wenan <maowenan@huawei.com>
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
->  drivers/net/veth.c |    8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-> index 8cdc4415fa70..2edc04a8ab8e 100644
-> --- a/drivers/net/veth.c
-> +++ b/drivers/net/veth.c
-> @@ -493,13 +493,15 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
->  					struct veth_xdp_tx_bq *bq)
->  {
->  	void *hard_start = frame->data - frame->headroom;
-> -	void *head = hard_start - sizeof(struct xdp_frame);
->  	int len = frame->len, delta = 0;
->  	struct xdp_frame orig_frame;
->  	struct bpf_prog *xdp_prog;
->  	unsigned int headroom;
->  	struct sk_buff *skb;
->  
-> +	/* bpf_xdp_adjust_head() assures BPF cannot access xdp_frame area */
-> +	hard_start -= sizeof(struct xdp_frame);
-> +
->  	rcu_read_lock();
->  	xdp_prog = rcu_dereference(rq->xdp_prog);
->  	if (likely(xdp_prog)) {
-> @@ -521,7 +523,6 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
->  			break;
->  		case XDP_TX:
->  			orig_frame = *frame;
-> -			xdp.data_hard_start = head;
->  			xdp.rxq->mem = frame->mem;
->  			if (unlikely(veth_xdp_tx(rq->dev, &xdp, bq) < 0)) {
->  				trace_xdp_exception(rq->dev, xdp_prog, act);
-> @@ -533,7 +534,6 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
->  			goto xdp_xmit;
->  		case XDP_REDIRECT:
->  			orig_frame = *frame;
-> -			xdp.data_hard_start = head;
->  			xdp.rxq->mem = frame->mem;
->  			if (xdp_do_redirect(rq->dev, &xdp, xdp_prog)) {
->  				frame = &orig_frame;
-> @@ -555,7 +555,7 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
->  	rcu_read_unlock();
->  
->  	headroom = sizeof(struct xdp_frame) + frame->headroom - delta;
-> -	skb = veth_build_skb(head, headroom, len, 0);
-> +	skb = veth_build_skb(hard_start, headroom, len, 0);
->  	if (!skb) {
->  		xdp_return_frame(frame);
->  		goto err;
-> 
-> 
+Trying this from bpf/master:
 
+  b9258a2cece4 ("slcan: Don't transmit uninitialized stack data in padding")
 
+also from bpf-next/master:
+
+ 1a323ea5356e ("x86: get rid of 'errret' argument to __get_user_xyz() macross")
+
+and I am unable to reproduce the failure (the output when using bpf/master):
+
+ ./test_progs -t test_lsm
+#70 test_lsm:OK
+Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+
+cat /sys/kernel/debug/tracing/trace
+# tracer: nop
+#
+# entries-in-buffer/entries-written: 10/10   #P:4
+#
+#                              _-----=> irqs-off
+#                             / _----=> need-resched
+#                            | / _---=> hardirq/softirq
+#                            || / _--=> preempt-depth
+#                            ||| /     delay
+#           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
+#              | |       |   ||||       |         |
+            true-322   [001] ...2   187.127231: 0: start 7fc7ffccc000 556a623be000
+            true-322   [001] ...2   187.127238: 0: end 7fc7ffe8c000 556a623be000
+            true-322   [001] ...2   187.128233: 0: start 7fc7ffe82000 556a623be000
+            true-322   [001] ...2   187.128237: 0: end 7fc7ffe88000 556a623be000
+            true-322   [001] ...2   187.128306: 0: start 556a604f7000 556a623be000
+            true-322   [001] ...2   187.128309: 0: end 556a604f9000 556a623be000
+            true-322   [001] ...2   187.128372: 0: start 7fc7ffebf000 556a623be000
+            true-322   [001] ...2   187.128375: 0: end 7fc7ffec1000 556a623be000
+      test_progs-321   [000] ...2   187.129952: 0: start 55dc6e8df000 55dc6e8df000
+      test_progs-321   [000] ...2   187.129955: 0: end 55dc6e906000 55dc6e906000
+
+The full run also works for me:
+
+./test_progs
+
+[...]
+
+#70 test_lsm:OK
+#71 test_overhead:OK
+#72 tp_attach_query:OK
+
+My config is:
+
+  https://gist.githubusercontent.com/sinkap/cb24b955e1b6e6c1dc736054a774fb41/raw/
+
+and the kernel commandline is (on a QEMU VM):
+
+cat /proc/cmdline
+console=ttyS0,115200 root=/dev/sda rw nokaslr
+
+Could you share your config and cmdline?
+
+Also, I am wondering if this happens just in the BPF program or also
+in the kernel as the other variable I can think of is the compiled
+bpf program itself which might be reading a different value thinking
+it's vm->vma_start, possible something to do with BTF / CO RE due to a
+compiler bug:
+
+Here's the version of clang I am using:
+
+  clang version 10.0.0 (https://github.com/llvm/llvm-project.git 2026d7b80a1a5534b5e263683c85aa95e7593b98)
+
+- KP
+
+> I've added:
+>         bpf_printk("start %llx %llx\n", vma->vm_start, vma->vm_mm->start_brk);
+>         bpf_printk("end %llx %llx\n", vma->vm_end, vma->vm_mm->brk);
+> and see
+> cat /sys/kernel/debug/tracing/trace_pipe
+>             true-2285  [001] ...2   858.717432: 0: start 7f66470a2000 607000
+>             true-2285  [001] ...2   858.717440: 0: end 7f6647443000 607000
+>             true-2285  [001] ...2   858.717658: 0: start 7f6647439000 607000
+>             true-2285  [001] ...2   858.717659: 0: end 7f664743f000 607000
+>             true-2285  [001] ...2   858.717691: 0: start 605000 607000
+>             true-2285  [001] ...2   858.717692: 0: end 607000 607000
+>             true-2285  [001] ...2   858.717700: 0: start 7f6647666000 607000
+>             true-2285  [001] ...2   858.717701: 0: end 7f6647668000 607000
+>       test_progs-2283  [000] ...2   858.718030: 0: start 523000 39b9000
+>       test_progs-2283  [000] ...2   858.718033: 0: end 39e0000 39e0000
+> 
+> 523000 is not >= 39b9000.
+> 523000 is higher than vm_mm->end_data, but lower than vm_mm->start_brk.
+> No idea why this addr is passed into security_file_mprotect().
+> The address user space is passing to mprotect() is 0x39c0000 which is correct.
+> Could you please help debug?
