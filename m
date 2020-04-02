@@ -2,57 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E732C19BD29
-	for <lists+bpf@lfdr.de>; Thu,  2 Apr 2020 09:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F95019BE5C
+	for <lists+bpf@lfdr.de>; Thu,  2 Apr 2020 11:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387477AbgDBH6i (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Apr 2020 03:58:38 -0400
-Received: from mx58.baidu.com ([61.135.168.58]:23476 "EHLO
-        tc-sys-mailedm02.tc.baidu.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725965AbgDBH6i (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 2 Apr 2020 03:58:38 -0400
-X-Greylist: delayed 370 seconds by postgrey-1.27 at vger.kernel.org; Thu, 02 Apr 2020 03:58:37 EDT
-Received: from localhost (cp01-cos-dev01.cp01.baidu.com [10.92.119.46])
-        by tc-sys-mailedm02.tc.baidu.com (Postfix) with ESMTP id 4B10611C0056;
-        Thu,  2 Apr 2020 15:52:10 +0800 (CST)
-From:   Li RongQing <lirongqing@baidu.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org, kevin.laatz@intel.com,
-        ciara.loftus@intel.com, bruce.richardson@intel.com,
-        jonathan.lemon@gmail.com, daniel@iogearbox.net
-Subject: [PATCH] xsk: fix out of boundary write in __xsk_rcv_memcpy
-Date:   Thu,  2 Apr 2020 15:52:10 +0800
-Message-Id: <1585813930-19712-1-git-send-email-lirongqing@baidu.com>
-X-Mailer: git-send-email 1.7.1
+        id S2387737AbgDBJGi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Apr 2020 05:06:38 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:56194 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387726AbgDBJGh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 2 Apr 2020 05:06:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585818397;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=65cLaBQBBxQNS4tib9PUIecsC4BcpagR0uIUdTj5N9c=;
+        b=N5KoIne36YXUT9uW4cRYgza9cWPTR4Grwx3HX8V86nGXgHVYm2u8C+YJ7b+4PIYpp4tHC6
+        19vOvYqBLJQ5CvsT2ZKbcJg6+g18j6kQTZDxXFTnl6/TegVyqLd2uzdHDdRDCZek/du3/b
+        +ZDepoSXTdsky9RpYxBZME57qmo26F0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-175-xaPBBNPnMLaUxkTVbBxdmA-1; Thu, 02 Apr 2020 05:06:33 -0400
+X-MC-Unique: xaPBBNPnMLaUxkTVbBxdmA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EAE4F1083E8A;
+        Thu,  2 Apr 2020 09:06:29 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5033526DC3;
+        Thu,  2 Apr 2020 09:06:21 +0000 (UTC)
+Date:   Thu, 2 Apr 2020 11:06:19 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Toshiaki Makita <toshiaki.makita1@gmail.com>
+Cc:     Mao Wenan <maowenan@huawei.com>, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net, kuba@kernel.org,
+        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        jwi@linux.ibm.com, jianglidong3@jd.com, edumazet@google.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        brouer@redhat.com
+Subject: Re: [PATCH net v2] veth: xdp: use head instead of hard_start
+Message-ID: <20200402110619.48f31a63@carbon>
+In-Reply-To: <ede2f407-839e-d29e-0ebe-aa39dd461bfd@gmail.com>
+References: <fb5ab568-9bc8-3145-a8db-3e975ccdf846@gmail.com>
+        <20200331060641.79999-1-maowenan@huawei.com>
+        <7a1d55ad-1427-67fe-f204-4d4a0ab2c4b1@gmail.com>
+        <20200401181419.7acd2aa6@carbon>
+        <ede2f407-839e-d29e-0ebe-aa39dd461bfd@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-first_len is remainder of first page, if write size is
-larger than it, out of page boundary write will happen
+On Thu, 2 Apr 2020 09:47:03 +0900
+Toshiaki Makita <toshiaki.makita1@gmail.com> wrote:
 
-Fixes: c05cd3645814 "(xsk: add support to allow unaligned chunk placement)"
-Signed-off-by: Li RongQing <lirongqing@baidu.com>
----
- net/xdp/xsk.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> On 2020/04/02 1:15, Jesper Dangaard Brouer wrote:
+> ...
+> > [PATCH RFC net-next] veth: adjust hard_start offset on redirect XDP frames
+> > 
+> > When native XDP redirect into a veth device, the frame arrives in the
+> > xdp_frame structure. It is then processed in veth_xdp_rcv_one(),
+> > which can run a new XDP bpf_prog on the packet. Doing so requires
+> > converting xdp_frame to xdp_buff, but the tricky part is that
+> > xdp_frame memory area is located in the top (data_hard_start) memory
+> > area that xdp_buff will point into.
+> > 
+> > The current code tried to protect the xdp_frame area, by assigning
+> > xdp_buff.data_hard_start past this memory. This results in 32 bytes
+> > less headroom to expand into via BPF-helper bpf_xdp_adjust_head().
+> > 
+> > This protect step is actually not needed, because BPF-helper
+> > bpf_xdp_adjust_head() already reserve this area, and don't allow
+> > BPF-prog to expand into it. Thus, it is safe to point data_hard_start
+> > directly at xdp_frame memory area.
+> > 
+> > Cc: Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>  
+> 
+> FYI: This mail address is deprecated.
+> 
+> > Fixes: 9fc8d518d9d5 ("veth: Handle xdp_frames in xdp napi ring")
+> > Reported-by: Mao Wenan <maowenan@huawei.com>
+> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>  
+> 
+> FWIW,
+> 
+> Acked-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 356f90e4522b..c350108aa38d 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -131,8 +131,9 @@ static void __xsk_rcv_memcpy(struct xdp_umem *umem, u64 addr, void *from_buf,
- 		u64 page_start = addr & ~(PAGE_SIZE - 1);
- 		u64 first_len = PAGE_SIZE - (addr - page_start);
- 
--		memcpy(to_buf, from_buf, first_len + metalen);
--		memcpy(next_pg_addr, from_buf + first_len, len - first_len);
-+		memcpy(to_buf, from_buf, first_len);
-+		memcpy(next_pg_addr, from_buf + first_len,
-+		       len + metalen - first_len);
- 
- 		return;
- 	}
+Thanks.
+
+I have updated your email and added your ack in my patchset.  I will
+submit this officially once net-next opens up again[1], as part my
+larger patchset for introducing XDP frame_sz.
+
+[1] http://vger.kernel.org/~davem/net-next.html
 -- 
-2.16.2
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
