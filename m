@@ -2,79 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E53019CA06
-	for <lists+bpf@lfdr.de>; Thu,  2 Apr 2020 21:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D64B519CAC3
+	for <lists+bpf@lfdr.de>; Thu,  2 Apr 2020 22:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390038AbgDBTbu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Apr 2020 15:31:50 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:40194 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389108AbgDBTbt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Apr 2020 15:31:49 -0400
-Received: by mail-qk1-f193.google.com with SMTP id l25so5406980qki.7;
-        Thu, 02 Apr 2020 12:31:47 -0700 (PDT)
+        id S2388871AbgDBUH5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Apr 2020 16:07:57 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:50285 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388861AbgDBUH5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Apr 2020 16:07:57 -0400
+Received: by mail-wm1-f67.google.com with SMTP id t128so4808553wma.0
+        for <bpf@vger.kernel.org>; Thu, 02 Apr 2020 13:07:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7I6mCCWO0NI2W9Hv1j2ODnDFaCT13IrYKH20fIeShyM=;
-        b=qtiL8TpB80vLSxlF06cwi699QC+hLcU4dTsjnFf39v34jsBq6n0YTbCvrIiysheT5e
-         0iDCSMRVYq48fkYuwf7bD68+pxz7nQ74cvtLS3nYaJvZ/0obYVA+yCpyTHkq7mg+SMkQ
-         8f1FSy+tnNukU5h6Ew2OMmoz4LRVMG1Hy91BKk6TaIta7EWlN7Im+cdyphWu6CHElvxQ
-         DI6YuEBFoXYi0/2CuK1IpIDQrK2TiGauWUnjjcXO3tbCTNXIgzwz0uY+weQQYLLwH4qV
-         HMR0Up/BJT+QPMlycRANAHWJQePSQ3f0ZrLLcHFbcQdmKZVoe2t3s0mBEG/syw612Eko
-         iu4g==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Iu/q3zMTB/NGBoImfknpSwtGLLWxG6GnJEB0Nk4jwMU=;
+        b=BYi7UK0tgravCN/xlIXTjI2k/wLwNPVZjOA+zXhVyXKBwtlL6koSK/yxy51fQ8NttV
+         5mkWj6mrHJ01ZUnrBytPbgXPIzv483auc9jen9PrDxSQg/cDjIAnBcfYG2KVhaptMaJ9
+         Q+fOy4/jVwS7BD13/EEfuF9cImBH9CK6bY6Ws=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7I6mCCWO0NI2W9Hv1j2ODnDFaCT13IrYKH20fIeShyM=;
-        b=iO1TQrhKCdF/9JFs2YDL9/No7/v6XhhhpIyEAYXS8pGNyk/CAzbzxZNA6zhW5b53+m
-         j9MVAs49Glfx3KDHds3uGBCqrl9lc5QRk9LQUzDchlcd8E2qyf5qPlgJoZlGKX+omwY7
-         jLigLxRBYyfVWdIt4Vv5e/2qeqr1RlslH6p0bfPKFoyvHigfC9wKkJKjKjMLyS6ol22F
-         5TuwkZ0G/v9sAqG5eT5cXeufqpxav238zinQOK4uckvb0zRjOvzG7dpg+tke8dUzW2a0
-         5yk4sKCyc2qF/FPUDzKXCvFidatSFjuF/081XOOlXXN+/njRtCqk4xWeMvWX5ccbHtM3
-         PgIQ==
-X-Gm-Message-State: AGi0PuZ/8R61U06U7cm9WlGbf1ENSomLLiyjCQl6fi0u1Y2icIkbeLXH
-        Cf0mdOWrL1zDBuFmxiClm/qsjEXx0NyOnGHW7e4=
-X-Google-Smtp-Source: APiQypK/ZbpMk9Dj0Hosok9jPEo30Su45nhINvZzVFcgTSuckkMrLuD8FT88jQlIP1pGI5Y6rlhHf2KJzp2UlipKQtA=
-X-Received: by 2002:a37:6411:: with SMTP id y17mr5397810qkb.437.1585855906945;
- Thu, 02 Apr 2020 12:31:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Iu/q3zMTB/NGBoImfknpSwtGLLWxG6GnJEB0Nk4jwMU=;
+        b=aVtDZJ4+fTNiYg6H6MpO0zd4G55cmcSr4U0LTeWcApg/CwHLnGkHnEM4eOVp42MeOc
+         Ut4LVA+mdmn3/KuMiRXM96Q7L2+zrch0yoQIjDphMfFDRGDn9kcfQGRDqI+0X8j8fFT4
+         uzzCRdtisF97n7Wxh32TXxEBlH7zIGI7JAtPwzfDsMkFtVIWOuWH++GKMoE57D8CgUU6
+         0caMBeFRC+5K5xQiqERO88kHxqqT3JGPrJc1T6CadPxswykZ46zOBtvFal5L9GN4UtuO
+         bV57XCOTV93jl8r0Idcq+dNiSxjqSYUwhbHLWdKRnDuMqosmZ3ePWR3XZepseaZkJaqc
+         UGzQ==
+X-Gm-Message-State: AGi0PuYTJkiJzawkJvPTGlixErMT/vp5/3y9d4HGkVFpPv7Q9FOBfwQj
+        K7307aUeqvhkUexUdIBQf5iBpg==
+X-Google-Smtp-Source: APiQypLwXf59H0ELqYQHrCLRAaB3IZpY+8LNTDxn5b36clU3b2wvqLoK0knFNxZUXmAQ/NJ9Q8CxHQ==
+X-Received: by 2002:a7b:c083:: with SMTP id r3mr5214243wmh.92.1585858075446;
+        Thu, 02 Apr 2020 13:07:55 -0700 (PDT)
+Received: from kpsingh-kernel.localdomain (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
+        by smtp.gmail.com with ESMTPSA id q4sm12562641wmj.1.2020.04.02.13.07.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Apr 2020 13:07:54 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH bpf] bpf, lsm: Fix the file_mprotect LSM test.
+Date:   Thu,  2 Apr 2020 22:07:51 +0200
+Message-Id: <20200402200751.26372-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <202004010849.CC7E9412@keescook> <20200402153335.38447-1-slava@bacher09.org>
- <f43f4e17-f496-9ee1-7d89-c8f742720a5f@bacher09.org>
-In-Reply-To: <f43f4e17-f496-9ee1-7d89-c8f742720a5f@bacher09.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 2 Apr 2020 12:31:36 -0700
-Message-ID: <CAEf4Bzb2mgDPcdNGWnBgoqsuWYqDiv39U2irn4iCp=7B3kx1nA@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf] kbuild: fix dependencies for DEBUG_INFO_BTF
-To:     Slava Bacherikov <slava@bacher09.org>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Kees Cook <keescook@chromium.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Liu Yiding <liuyd.fnst@cn.fujitsu.com>, kpsingh@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 2, 2020 at 8:40 AM Slava Bacherikov <slava@bacher09.org> wrote:
->
->
->
-> 02.04.2020 18:33, Slava Bacherikov wrote:
-> > +     depends on DEBUG_INFO || COMPILE_TEST
->
-> Andrii are you fine by this ?
+From: KP Singh <kpsingh@google.com>
 
-I think it needs a good comment explaining this weirdness, at least.
-As I said, if there is no DEBUG_INFO, there is not point in doing
-DWARF-to-BTF conversion, even more -- it actually might fail, I
-haven't checked what pahole does in that case. So I'd rather drop
-GCC_PLUGIN_RANDSTRUCT is that's the issue here. DEBUG_INFO_SPLIT and
-DEBUG_INFO_REDUCED look good.
+The test was previously using an mprotect on the heap memory allocated
+using malloc and was expecting the allocation to be always using
+sbrk(2). This is, however, not always true and in certain conditions
+malloc may end up using anonymous mmaps for heap alloctions. This means
+that the following condition that is used in the "lsm/file_mprotect"
+program is not sufficent to detect all mprotect calls done on heap
+memory:
+
+	is_heap = (vma->vm_start >= vma->vm_mm->start_brk &&
+		   vma->vm_end <= vma->vm_mm->brk);
+
+The test is updated to use an mprotect on memory allocated on the stack.
+While this would result in the splitting of the vma, this happens only
+after the security_file_mprotect hook. So, the condition used in the BPF
+program holds true.
+
+Signed-off-by: KP Singh <kpsingh@google.com>
+Reported-by: Alexei Starovoitov <ast@kernel.org>
+Fixes: 03e54f100d57 ("bpf: lsm: Add selftests for BPF_PROG_TYPE_LSM")
+---
+ .../selftests/bpf/prog_tests/test_lsm.c        | 18 +++++++++---------
+ tools/testing/selftests/bpf/progs/lsm.c        |  8 ++++----
+ 2 files changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_lsm.c b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
+index 1e4c258de09d..b17eb2045c1d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_lsm.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
+@@ -15,7 +15,10 @@
+ 
+ char *CMD_ARGS[] = {"true", NULL};
+ 
+-int heap_mprotect(void)
++#define GET_PAGE_ADDR(ADDR, PAGE_SIZE)					\
++	(char *)(((unsigned long) (ADDR + PAGE_SIZE)) & ~(PAGE_SIZE-1))
++
++int stack_mprotect(void)
+ {
+ 	void *buf;
+ 	long sz;
+@@ -25,12 +28,9 @@ int heap_mprotect(void)
+ 	if (sz < 0)
+ 		return sz;
+ 
+-	buf = memalign(sz, 2 * sz);
+-	if (buf == NULL)
+-		return -ENOMEM;
+-
+-	ret = mprotect(buf, sz, PROT_READ | PROT_WRITE | PROT_EXEC);
+-	free(buf);
++	buf = alloca(sz * 3);
++	ret = mprotect(GET_PAGE_ADDR(buf, sz), sz,
++		       PROT_READ | PROT_WRITE | PROT_EXEC);
+ 	return ret;
+ }
+ 
+@@ -73,8 +73,8 @@ void test_test_lsm(void)
+ 
+ 	skel->bss->monitored_pid = getpid();
+ 
+-	err = heap_mprotect();
+-	if (CHECK(errno != EPERM, "heap_mprotect", "want errno=EPERM, got %d\n",
++	err = stack_mprotect();
++	if (CHECK(errno != EPERM, "stack_mprotect", "want err=EPERM, got %d\n",
+ 		  errno))
+ 		goto close_prog;
+ 
+diff --git a/tools/testing/selftests/bpf/progs/lsm.c b/tools/testing/selftests/bpf/progs/lsm.c
+index a4e3c223028d..b4598d4bc4f7 100644
+--- a/tools/testing/selftests/bpf/progs/lsm.c
++++ b/tools/testing/selftests/bpf/progs/lsm.c
+@@ -23,12 +23,12 @@ int BPF_PROG(test_int_hook, struct vm_area_struct *vma,
+ 		return ret;
+ 
+ 	__u32 pid = bpf_get_current_pid_tgid() >> 32;
+-	int is_heap = 0;
++	int is_stack = 0;
+ 
+-	is_heap = (vma->vm_start >= vma->vm_mm->start_brk &&
+-		   vma->vm_end <= vma->vm_mm->brk);
++	is_stack = (vma->vm_start <= vma->vm_mm->start_stack &&
++		    vma->vm_end >= vma->vm_mm->start_stack);
+ 
+-	if (is_heap && monitored_pid == pid) {
++	if (is_stack && monitored_pid == pid) {
+ 		mprotect_count++;
+ 		ret = -EPERM;
+ 	}
+-- 
+2.20.1
+
