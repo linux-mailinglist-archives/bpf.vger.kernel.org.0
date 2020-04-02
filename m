@@ -2,72 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C703919CCBF
-	for <lists+bpf@lfdr.de>; Fri,  3 Apr 2020 00:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6CE19CD0E
+	for <lists+bpf@lfdr.de>; Fri,  3 Apr 2020 00:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389431AbgDBWVE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Apr 2020 18:21:04 -0400
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:38495 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726963AbgDBWVE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Apr 2020 18:21:04 -0400
-Received: by mail-pj1-f67.google.com with SMTP id m15so2070565pje.3;
-        Thu, 02 Apr 2020 15:21:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version;
-        bh=KpQBdYnZ3QRBd3mmVWoDmswwLkLLj3nrwulMo7pb1IE=;
-        b=HFiRXd90SPWjAQeiyUYEsotmCJ5EcVEbXwLpgtCWqAoLeN+jX0ovkTIORTd6h9+yDt
-         XSpJGl3tYAGDxqCwtR8fp2FqIq4XvVWZ9p/YdqY1hTM5/sXnXKZHtr0t4bjxycZjx7fK
-         XUf8osJceEOAAE7GJqFq4zT2Tof3FLYM8w5ML76lbmDKkyjULalwPAeeQMQlsWvhFErJ
-         L7T5NFvcrR2U46FsCfl+ZlIehkzjXNSBGg/P7Tc5tfv7NL/M79xNXQ3Vk6ybgzlw+z9J
-         RROm895nZoZzyspfMfCnzG0MHsMof8ccQiIzjLFcK18+91qe12KhwOirMS9VNGluq3Sz
-         nK7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version;
-        bh=KpQBdYnZ3QRBd3mmVWoDmswwLkLLj3nrwulMo7pb1IE=;
-        b=ernCDzL5ch8NC0JOPbERdZvf9ysqGykB3Z+XMG1LNfZjNujNf5yJtWFnPTDKM0QY7Z
-         dAQt2pIR3p2Hg0HDjWItH/KYeAui4aoXWfTtDhcEfUEN6S+ilOB7FNeAXPnjFgAZiZqG
-         kPo4sJh57leByse+ff+pDwlo1mXwvXycZwBBuvgdoQC9y1FEKbXcTpQyrIL34lhTQ1rj
-         hY29Xtl+3vp1082pXkge9clz4Q/kByBviR9o5d/96tvmAmIXw0YAZHn0i9PIj2aMUEJw
-         pNEjzLt+grNf0hMv1WmRjnjrz0/P0TEw/qQ06fNVXN/n4b7y61OWX/2XZkCtdx6XErqZ
-         6/UA==
-X-Gm-Message-State: AGi0Pua2Kp1L5u8tfgb/5CZwwT7tkOffdIZBqaqK6gsoa9aSF4HxZevv
-        y2zLq6s/ATiW3JkYAful5z4=
-X-Google-Smtp-Source: APiQypKQrvHmr5s8XwIXnQ2CNa+PS+1HFbUu52qbOrotfsfNGCwy3ERqKL+397db28WwQ7A8gcewgQ==
-X-Received: by 2002:a17:90a:a484:: with SMTP id z4mr6250311pjp.77.1585866061190;
-        Thu, 02 Apr 2020 15:21:01 -0700 (PDT)
-Received: from [100.108.66.22] ([2620:10d:c090:400::5:7cec])
-        by smtp.gmail.com with ESMTPSA id w27sm4444215pfq.211.2020.04.02.15.20.59
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 02 Apr 2020 15:21:00 -0700 (PDT)
-From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
-To:     "Li RongQing" <lirongqing@baidu.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, kevin.laatz@intel.com,
-        ciara.loftus@intel.com, bruce.richardson@intel.com,
-        daniel@iogearbox.net
-Subject: Re: [PATCH] xsk: fix out of boundary write in __xsk_rcv_memcpy
-Date:   Thu, 02 Apr 2020 15:20:59 -0700
-X-Mailer: MailMate (1.13.1r5671)
-Message-ID: <6BB0E637-B5F8-4B50-9B70-8A30F4AF6CF5@gmail.com>
-In-Reply-To: <1585813930-19712-1-git-send-email-lirongqing@baidu.com>
-References: <1585813930-19712-1-git-send-email-lirongqing@baidu.com>
+        id S2389034AbgDBWuE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Apr 2020 18:50:04 -0400
+Received: from www62.your-server.de ([213.133.104.62]:34828 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387919AbgDBWuE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Apr 2020 18:50:04 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jK8et-0004Gd-BY; Fri, 03 Apr 2020 00:49:59 +0200
+Received: from [178.195.186.98] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jK8es-000S0u-Vb; Fri, 03 Apr 2020 00:49:59 +0200
+Subject: Re: [PATCH v5 bpf] kbuild: fix dependencies for DEBUG_INFO_BTF
+To:     Slava Bacherikov <slava@bacher09.org>, andriin@fb.com
+Cc:     keescook@chromium.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jannh@google.com,
+        alexei.starovoitov@gmail.com, kernel-hardening@lists.openwall.com,
+        liuyd.fnst@cn.fujitsu.com, kpsingh@google.com
+References: <202004021328.E6161480@keescook>
+ <20200402204138.408021-1-slava@bacher09.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f55123e4-4034-b22a-a509-4ddf40f1ca22@iogearbox.net>
+Date:   Fri, 3 Apr 2020 00:49:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200402204138.408021-1-slava@bacher09.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25770/Thu Apr  2 14:58:54 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2 Apr 2020, at 0:52, Li RongQing wrote:
+On 4/2/20 10:41 PM, Slava Bacherikov wrote:
+> Currently turning on DEBUG_INFO_SPLIT when DEBUG_INFO_BTF is also
+> enabled will produce invalid btf file, since gen_btf function in
+> link-vmlinux.sh script doesn't handle *.dwo files.
+> 
+> Enabling DEBUG_INFO_REDUCED will also produce invalid btf file, and
+> using GCC_PLUGIN_RANDSTRUCT with BTF makes no sense.
+> 
+> Signed-off-by: Slava Bacherikov <slava@bacher09.org>
+> Reported-by: Jann Horn <jannh@google.com>
+> Reported-by: Liu Yiding <liuyd.fnst@cn.fujitsu.com>
+> Acked-by: KP Singh <kpsingh@google.com>
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Fixes: e83b9f55448a ("kbuild: add ability to generate BTF type info for vmlinux")
 
-> first_len is remainder of first page, if write size is
-> larger than it, out of page boundary write will happen
->
-> Fixes: c05cd3645814 "(xsk: add support to allow unaligned chunk placement)"
-> Signed-off-by: Li RongQing <lirongqing@baidu.com>
-
-Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
+Applied, thanks!
