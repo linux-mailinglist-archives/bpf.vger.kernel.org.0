@@ -2,100 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AF91D19CC36
-	for <lists+bpf@lfdr.de>; Thu,  2 Apr 2020 23:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9384D19CC53
+	for <lists+bpf@lfdr.de>; Thu,  2 Apr 2020 23:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388855AbgDBVDJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Apr 2020 17:03:09 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:33782 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727412AbgDBVDJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Apr 2020 17:03:09 -0400
-Received: by mail-qk1-f195.google.com with SMTP id v7so5827899qkc.0;
-        Thu, 02 Apr 2020 14:03:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sVjs2DH9m9fKgjs6n5kVRWIE0vGLsA/x3K/6uNiKORs=;
-        b=daDolYs7NP3AZpiXGh8vMaDcVivAzxdICdi7a5NF4eji04bA84T747X4wiXOZfMH1J
-         PNU/6IAUp2gnrVx3HcfMPiEYj3DWHUs4qsHQMDo/8VyrnqhbyL/TsfFtFZWlJkCad0tt
-         364Ci6j98+J/faVYlvmIY+4UIDBWba5IvRCj9/RzlsszImRrZkEPx5xpJoA96RtuDcPb
-         YpDWiyEPusaB0pnVTjDtQuAJhB74DWBcXrYhxOttkXswGEBqQ1KJ4gAnQEbiUNvm757G
-         u2ylGGb36YA0ZpNX0UESKPW8vKTbUxfLeK/O0MdLC+bZkDXzMOVECnHORTppQ3y3WU1j
-         T9dA==
+        id S2390160AbgDBVXV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Apr 2020 17:23:21 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:38458 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2390127AbgDBVXU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Apr 2020 17:23:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585862599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vVG1s12+16EEZJ0q7BaqOZsQVAZZgTsCxHanP+oPFyI=;
+        b=QBAfcqRwC1aZ46JBA7N2T/oyEEyO0OavZexHD7OC7izJhp0DYnIc2+D3bm17R2I8mrjjCF
+        QU6ZsUwby/RYj5DF7iWr1189rpEIbFcYQ4PcfLUufrngxcmeZ2b4LX0CkbbboDEdnTD13g
+        o/EeJLd4hGpnpFa303VURNpKZzKuSa0=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-196-abN8JmvYPFObmVUW3JpqUQ-1; Thu, 02 Apr 2020 17:23:17 -0400
+X-MC-Unique: abN8JmvYPFObmVUW3JpqUQ-1
+Received: by mail-lf1-f70.google.com with SMTP id y19so1222623lfk.13
+        for <bpf@vger.kernel.org>; Thu, 02 Apr 2020 14:23:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sVjs2DH9m9fKgjs6n5kVRWIE0vGLsA/x3K/6uNiKORs=;
-        b=b9hEV0Qex9KqLzRUnf1LNc0xNlSLKpWC+rL3LWtTFRMfhl9Pe32gs0qJn2WjmzKdeg
-         v0V7qTngOfrL3cS2qFRCFZLcZ5Zg/1Yc8MrG3Qvu1q6F9o7GRzImPUC1t/0+HoywNkCF
-         emrJK/E3/6FBJhd3RRSY79rPSSvtY/JrFz1qEtrkxstK0FyAHMc9sKnB/89gDCH70BWW
-         Lx5SQ2rFOmunXDiEuRVdBhGVTRwfGWoaDkbKnZ23wUguw+dQ8selOgHFrC4QOirgYjNe
-         yVifMZ1zbP5iEgsz8J5z1Q6PZgyhkBHycb/xOmVqLTXFLgplmyq2wVEZA+PG4NKq0rTa
-         bNFA==
-X-Gm-Message-State: AGi0PuZfNwufWZuCUGi1eG1XdgGOiFek+j3DNZi7ZK6lOLYa7GztvrQU
-        yjq5ebXJEeq+qvD4zpflhb8/vCH1N49gUnwJVzU=
-X-Google-Smtp-Source: APiQypI9U0BrOKkyTjQVQejiiAYGIbOCtFil/m6mRrtSQalLPzDZZy1MMaWsZIdOvgwQjFiGvhPG+t9P95gmvP0Beew=
-X-Received: by 2002:a37:6411:: with SMTP id y17mr5760875qkb.437.1585861388455;
- Thu, 02 Apr 2020 14:03:08 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=vVG1s12+16EEZJ0q7BaqOZsQVAZZgTsCxHanP+oPFyI=;
+        b=YvHskp57C1xKPe3oCUapur7OkYajPoPbXavPtMVMULo4OWHpXkSq3UJQwiHLhELZNG
+         OfUjYIYUB8x+uRRLbjQUA6Ofoq43ta9JjUz7Vs9agvIJ42P6AN8QFA7TDhoF49S99Q2W
+         P7w+7AzTtK1D319k1+U/udCTgg28HFJZydaefWuVf3lO5aE1Kw0wokn8pzXIpxuhbHJH
+         +M7axrIpmXiDc4EULSVzyaLvF3T/Y2Y8+uVqwExgXhLTdT2nwEyX0S+u4cWSCzFvZE/d
+         Cohq7uiDgxzbZn3rpvX1Ee/02lLo+T0JnnSe73Rd5dEOFe5R0aYFUAiWPXGCM/5JMkJZ
+         B9PQ==
+X-Gm-Message-State: AGi0PuYX7EKyDr1Vz/TOlKJU3cC23jbxSdjCFYsffIUE/B2r80Fi6Sat
+        2uRsQJcY3pRbFi5EeokBw/Wnds9MQlykm6zrXot1FgnWdsbg4r92eb9KGvkCJ5SCzx6OHkLDJG5
+        L11tXpSY8fh0O
+X-Received: by 2002:a19:c895:: with SMTP id y143mr2790153lff.123.1585862595783;
+        Thu, 02 Apr 2020 14:23:15 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLn1tnu9OzY33qbyfuFBasj576WXdfE9HkucC6zxIig+X5+tP/eMvy+99N9Gt6T4IWUB4MMQA==
+X-Received: by 2002:a19:c895:: with SMTP id y143mr2790145lff.123.1585862595545;
+        Thu, 02 Apr 2020 14:23:15 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id z23sm3818586ljz.52.2020.04.02.14.23.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Apr 2020 14:23:14 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id BB2E418158C; Thu,  2 Apr 2020 23:23:12 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrey Ignatov <rdna@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: bpf: ability to attach freplace to multiple parents
+In-Reply-To: <20200402202156.hq7wpz5vdoajpqp5@ast-mbp>
+References: <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com> <87h7ye3mf3.fsf@toke.dk> <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com> <87tv2e10ly.fsf@toke.dk> <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com> <87369wrcyv.fsf@toke.dk> <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com> <CACAyw9-FrwgBGjGT1CYrKJuyRJtwn0XUsifF_uR6LpRbcucN+A@mail.gmail.com> <20200326195340.dznktutm6yq763af@ast-mbp> <87o8sim4rw.fsf@toke.dk> <20200402202156.hq7wpz5vdoajpqp5@ast-mbp>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 02 Apr 2020 23:23:12 +0200
+Message-ID: <87o8s9eg5b.fsf@toke.dk>
 MIME-Version: 1.0
-References: <202004021328.E6161480@keescook> <20200402204138.408021-1-slava@bacher09.org>
-In-Reply-To: <20200402204138.408021-1-slava@bacher09.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 2 Apr 2020 14:02:57 -0700
-Message-ID: <CAEf4BzZxWTDCtcov5_TvGLR0Qp4p-JANh29WoZKEQ6FvmWrr9A@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf] kbuild: fix dependencies for DEBUG_INFO_BTF
-To:     Slava Bacherikov <slava@bacher09.org>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Kees Cook <keescook@chromium.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Liu Yiding <liuyd.fnst@cn.fujitsu.com>,
-        KP Singh <kpsingh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 2, 2020 at 1:44 PM Slava Bacherikov <slava@bacher09.org> wrote:
->
-> Currently turning on DEBUG_INFO_SPLIT when DEBUG_INFO_BTF is also
-> enabled will produce invalid btf file, since gen_btf function in
-> link-vmlinux.sh script doesn't handle *.dwo files.
->
-> Enabling DEBUG_INFO_REDUCED will also produce invalid btf file, and
-> using GCC_PLUGIN_RANDSTRUCT with BTF makes no sense.
->
-> Signed-off-by: Slava Bacherikov <slava@bacher09.org>
-> Reported-by: Jann Horn <jannh@google.com>
-> Reported-by: Liu Yiding <liuyd.fnst@cn.fujitsu.com>
-> Acked-by: KP Singh <kpsingh@google.com>
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Fixes: e83b9f55448a ("kbuild: add ability to generate BTF type info for vmlinux")
-> ---
->  lib/Kconfig.debug | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index f61d834e02fe..6118d99117da 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -223,6 +223,8 @@ config DEBUG_INFO_DWARF4
->  config DEBUG_INFO_BTF
->         bool "Generate BTF typeinfo"
->         depends on DEBUG_INFO
-> +       depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
-> +       depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-Given what Kees explained, I think this looks good. Thanks!
+> On Fri, Mar 27, 2020 at 12:11:15PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>>=20
+>> Current code is in [0], for those following along. There are two bits of
+>> kernel support missing before I can get it to where I want it for an
+>> initial "release": Atomic replace of the dispatcher (this series), and
+>> the ability to attach an freplace program to more than one "parent".
+>> I'll try to get an RFC out for the latter during the merge window, but
+>> I'll probably need some help in figuring out how to make it safe from
+>> the verifier PoV.
+>
+> I have some thoughts on the second part "ability to attach an freplace
+> to more than one 'parent'".
+> I think the solution should be more generic than just freplace.
+> fentry/fexit need to have the same feature.
+> Few folks already said that they want to attach fentry to multiple
+> kernel functions. It's similar to what people do with kprobe progs now.
+> (attach to multiple and differentiate attach point based on parent IP)
+> Similarly "bpftool profile" needs it to avoid creating new pair of fentry=
+/fexit
+> progs for every target bpf prog it's collecting stats about.
+> I didn't add this ability to fentry/fexit/freplace only to simplify
+> initial implementation ;) I think the time had come.
 
->         help
->           Generate deduplicated BTF type information from DWARF debug info.
->           Turning this on expects presence of pahole tool, which will convert
+Yup, I agree that it makes sense to do the same for fentry/fexit.
+
+> Currently fentry/fexit/freplace progs have single prog->aux->linked_prog =
+pointer.
+> It just needs to become a linked list.
+> The api extension could be like this:
+> bpf_raw_tp_open(prog_fd, attach_prog_fd, attach_btf_id);
+> (currently it's just bpf_raw_tp_open(prog_fd))
+> The same pair of (attach_prog_fd, attach_btf_id) is already passed into p=
+rog_load
+> to hold the linked_prog and its corresponding btf_id.
+> I'm proposing to extend raw_tp_open with this pair as well to
+> attach existing fentry/fexit/freplace prog to another target.
+> Internally the kernel verify that btf of current linked_prog
+> exactly matches to btf of another requested linked_prog and
+> if they match it will attach the same prog to two target programs (in cas=
+e of freplace)
+> or two kernel functions (in case of fentry/fexit).
+
+API-wise this was exactly what I had in mind as well.
+
+> Toke, Andrey,
+> if above kinda makes sense from high level description
+> I can prototype it quickly and then we can discuss details
+> in the patches ?
+> Or we can drill further into details and discuss corner cases.
+
+I have one detail to discuss: What would the bpf_raw_tp_open() call
+return on the second attachment? A second reference to the same bpf_link
+fd as the initial attachment, or a different link?
+
+For the dispatcher use case, the former would make sense: If the
+bpf_link is returned to the application as a canonical reference to its
+program's attachment, it should persist even when the dispatcher program
+itself is replaced from underneath it. But I'm not sure if the same is
+true for all such secondary attachments?
+
+-Toke
+
