@@ -2,150 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D64B519CAC3
-	for <lists+bpf@lfdr.de>; Thu,  2 Apr 2020 22:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE99019CAFE
+	for <lists+bpf@lfdr.de>; Thu,  2 Apr 2020 22:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388871AbgDBUH5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Apr 2020 16:07:57 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:50285 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388861AbgDBUH5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Apr 2020 16:07:57 -0400
-Received: by mail-wm1-f67.google.com with SMTP id t128so4808553wma.0
-        for <bpf@vger.kernel.org>; Thu, 02 Apr 2020 13:07:56 -0700 (PDT)
+        id S1732263AbgDBUWB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Apr 2020 16:22:01 -0400
+Received: from mail-pl1-f175.google.com ([209.85.214.175]:46323 "EHLO
+        mail-pl1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727412AbgDBUWB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Apr 2020 16:22:01 -0400
+Received: by mail-pl1-f175.google.com with SMTP id s23so1754901plq.13;
+        Thu, 02 Apr 2020 13:22:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Iu/q3zMTB/NGBoImfknpSwtGLLWxG6GnJEB0Nk4jwMU=;
-        b=BYi7UK0tgravCN/xlIXTjI2k/wLwNPVZjOA+zXhVyXKBwtlL6koSK/yxy51fQ8NttV
-         5mkWj6mrHJ01ZUnrBytPbgXPIzv483auc9jen9PrDxSQg/cDjIAnBcfYG2KVhaptMaJ9
-         Q+fOy4/jVwS7BD13/EEfuF9cImBH9CK6bY6Ws=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=8QzNQ6U5mR4yP2Jfvx22V6HOyGsI4et+ZabZoYVq6ow=;
+        b=CWfAV6mcEmSnaXuR1eS0tmRtyjrOw5tBbLcyJNHMYijkScJlg37lvXIHajdOZV0eX0
+         WjJ6pgrc79KETLmojLxB7KvOz0dcuS5oZowS03QXjNLTgG4A2kW8TtSwf+VRnegGU1Ce
+         6SQtowayUghrDPjt0LDTGsrdniEbe48VGKZnbENhE2w+fhbVngjD9RE7Tt4a5q393ux4
+         6hK1qQO/0Sz4F2op9/ANp+mYJycImugeTCiFtuLkpts+tO5QAQ24v333tzeY0GIyKRuH
+         dqlfjB/83uXp9/8KdZDcCARai5kSyH7wEnVDZhLsod2lvU6eHPAMXsd1GpZyr3n54pT8
+         Km+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Iu/q3zMTB/NGBoImfknpSwtGLLWxG6GnJEB0Nk4jwMU=;
-        b=aVtDZJ4+fTNiYg6H6MpO0zd4G55cmcSr4U0LTeWcApg/CwHLnGkHnEM4eOVp42MeOc
-         Ut4LVA+mdmn3/KuMiRXM96Q7L2+zrch0yoQIjDphMfFDRGDn9kcfQGRDqI+0X8j8fFT4
-         uzzCRdtisF97n7Wxh32TXxEBlH7zIGI7JAtPwzfDsMkFtVIWOuWH++GKMoE57D8CgUU6
-         0caMBeFRC+5K5xQiqERO88kHxqqT3JGPrJc1T6CadPxswykZ46zOBtvFal5L9GN4UtuO
-         bV57XCOTV93jl8r0Idcq+dNiSxjqSYUwhbHLWdKRnDuMqosmZ3ePWR3XZepseaZkJaqc
-         UGzQ==
-X-Gm-Message-State: AGi0PuYTJkiJzawkJvPTGlixErMT/vp5/3y9d4HGkVFpPv7Q9FOBfwQj
-        K7307aUeqvhkUexUdIBQf5iBpg==
-X-Google-Smtp-Source: APiQypLwXf59H0ELqYQHrCLRAaB3IZpY+8LNTDxn5b36clU3b2wvqLoK0knFNxZUXmAQ/NJ9Q8CxHQ==
-X-Received: by 2002:a7b:c083:: with SMTP id r3mr5214243wmh.92.1585858075446;
-        Thu, 02 Apr 2020 13:07:55 -0700 (PDT)
-Received: from kpsingh-kernel.localdomain (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
-        by smtp.gmail.com with ESMTPSA id q4sm12562641wmj.1.2020.04.02.13.07.54
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=8QzNQ6U5mR4yP2Jfvx22V6HOyGsI4et+ZabZoYVq6ow=;
+        b=P0HoKQ0Z0RTJd2yzMXDhOrtenUaborcCOtn6AMczZG5TN3HsBWJSbyVm7Vf2x3Sn8M
+         4ts9yFPcaH/yc9uWJ8gp6Cd05/0mwEBnL/FMf5ROsdKCCGlegqklPwtgB7rECRqtIHgQ
+         BzQ95WY4jFRqZegQ+aif1rCo8P/3HmZN1RN1dGhxct7XvNNteFZRvQFG0IIspZVYaK2o
+         0cPWjG98/B7S/55ydCCyNRzCwjVmjX0E/S0Ati86A2rWKUMvYJ4C1hcckF2S1xesk8+T
+         dKo5lG7al+2LZeIp2uE5RSSDlsUq9ZryeLk2wImTy41c68aUYgasGYO2q8DL5YLqggPs
+         14yg==
+X-Gm-Message-State: AGi0PuaPdqtD1nWMitBc/fu43GF9IH4NV66mCsk+tH96qpDMjpX6m4ye
+        uXMwMG1/fJw4lZ56EfGbZdE=
+X-Google-Smtp-Source: APiQypJo0MuaPYS7zNpkTaNHnreB97PAhFJJKC7+AKHiFSqEA0PklWgkkDZ/T5SC7hXFsuL1B9D/qQ==
+X-Received: by 2002:a17:902:7b89:: with SMTP id w9mr4751937pll.34.1585858919413;
+        Thu, 02 Apr 2020 13:21:59 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:b3a4])
+        by smtp.gmail.com with ESMTPSA id c201sm4308362pfc.73.2020.04.02.13.21.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2020 13:07:54 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf] bpf, lsm: Fix the file_mprotect LSM test.
-Date:   Thu,  2 Apr 2020 22:07:51 +0200
-Message-Id: <20200402200751.26372-1-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.20.1
+        Thu, 02 Apr 2020 13:21:58 -0700 (PDT)
+Date:   Thu, 2 Apr 2020 13:21:56 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrey Ignatov <rdna@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: bpf: ability to attach freplace to multiple parents
+Message-ID: <20200402202156.hq7wpz5vdoajpqp5@ast-mbp>
+References: <CAEf4BzYutqP0yAy-KyToUNHM6Z-6C-XaEwK25pK123gejG0s9Q@mail.gmail.com>
+ <87h7ye3mf3.fsf@toke.dk>
+ <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com>
+ <87tv2e10ly.fsf@toke.dk>
+ <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com>
+ <87369wrcyv.fsf@toke.dk>
+ <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com>
+ <CACAyw9-FrwgBGjGT1CYrKJuyRJtwn0XUsifF_uR6LpRbcucN+A@mail.gmail.com>
+ <20200326195340.dznktutm6yq763af@ast-mbp>
+ <87o8sim4rw.fsf@toke.dk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <87o8sim4rw.fsf@toke.dk>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+On Fri, Mar 27, 2020 at 12:11:15PM +0100, Toke Høiland-Jørgensen wrote:
+> 
+> Current code is in [0], for those following along. There are two bits of
+> kernel support missing before I can get it to where I want it for an
+> initial "release": Atomic replace of the dispatcher (this series), and
+> the ability to attach an freplace program to more than one "parent".
+> I'll try to get an RFC out for the latter during the merge window, but
+> I'll probably need some help in figuring out how to make it safe from
+> the verifier PoV.
 
-The test was previously using an mprotect on the heap memory allocated
-using malloc and was expecting the allocation to be always using
-sbrk(2). This is, however, not always true and in certain conditions
-malloc may end up using anonymous mmaps for heap alloctions. This means
-that the following condition that is used in the "lsm/file_mprotect"
-program is not sufficent to detect all mprotect calls done on heap
-memory:
+I have some thoughts on the second part "ability to attach an freplace
+to more than one 'parent'".
+I think the solution should be more generic than just freplace.
+fentry/fexit need to have the same feature.
+Few folks already said that they want to attach fentry to multiple
+kernel functions. It's similar to what people do with kprobe progs now.
+(attach to multiple and differentiate attach point based on parent IP)
+Similarly "bpftool profile" needs it to avoid creating new pair of fentry/fexit
+progs for every target bpf prog it's collecting stats about.
+I didn't add this ability to fentry/fexit/freplace only to simplify
+initial implementation ;) I think the time had come.
+Currently fentry/fexit/freplace progs have single prog->aux->linked_prog pointer.
+It just needs to become a linked list.
+The api extension could be like this:
+bpf_raw_tp_open(prog_fd, attach_prog_fd, attach_btf_id);
+(currently it's just bpf_raw_tp_open(prog_fd))
+The same pair of (attach_prog_fd, attach_btf_id) is already passed into prog_load
+to hold the linked_prog and its corresponding btf_id.
+I'm proposing to extend raw_tp_open with this pair as well to
+attach existing fentry/fexit/freplace prog to another target.
+Internally the kernel verify that btf of current linked_prog
+exactly matches to btf of another requested linked_prog and
+if they match it will attach the same prog to two target programs (in case of freplace)
+or two kernel functions (in case of fentry/fexit).
 
-	is_heap = (vma->vm_start >= vma->vm_mm->start_brk &&
-		   vma->vm_end <= vma->vm_mm->brk);
-
-The test is updated to use an mprotect on memory allocated on the stack.
-While this would result in the splitting of the vma, this happens only
-after the security_file_mprotect hook. So, the condition used in the BPF
-program holds true.
-
-Signed-off-by: KP Singh <kpsingh@google.com>
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Fixes: 03e54f100d57 ("bpf: lsm: Add selftests for BPF_PROG_TYPE_LSM")
----
- .../selftests/bpf/prog_tests/test_lsm.c        | 18 +++++++++---------
- tools/testing/selftests/bpf/progs/lsm.c        |  8 ++++----
- 2 files changed, 13 insertions(+), 13 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_lsm.c b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
-index 1e4c258de09d..b17eb2045c1d 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_lsm.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
-@@ -15,7 +15,10 @@
- 
- char *CMD_ARGS[] = {"true", NULL};
- 
--int heap_mprotect(void)
-+#define GET_PAGE_ADDR(ADDR, PAGE_SIZE)					\
-+	(char *)(((unsigned long) (ADDR + PAGE_SIZE)) & ~(PAGE_SIZE-1))
-+
-+int stack_mprotect(void)
- {
- 	void *buf;
- 	long sz;
-@@ -25,12 +28,9 @@ int heap_mprotect(void)
- 	if (sz < 0)
- 		return sz;
- 
--	buf = memalign(sz, 2 * sz);
--	if (buf == NULL)
--		return -ENOMEM;
--
--	ret = mprotect(buf, sz, PROT_READ | PROT_WRITE | PROT_EXEC);
--	free(buf);
-+	buf = alloca(sz * 3);
-+	ret = mprotect(GET_PAGE_ADDR(buf, sz), sz,
-+		       PROT_READ | PROT_WRITE | PROT_EXEC);
- 	return ret;
- }
- 
-@@ -73,8 +73,8 @@ void test_test_lsm(void)
- 
- 	skel->bss->monitored_pid = getpid();
- 
--	err = heap_mprotect();
--	if (CHECK(errno != EPERM, "heap_mprotect", "want errno=EPERM, got %d\n",
-+	err = stack_mprotect();
-+	if (CHECK(errno != EPERM, "stack_mprotect", "want err=EPERM, got %d\n",
- 		  errno))
- 		goto close_prog;
- 
-diff --git a/tools/testing/selftests/bpf/progs/lsm.c b/tools/testing/selftests/bpf/progs/lsm.c
-index a4e3c223028d..b4598d4bc4f7 100644
---- a/tools/testing/selftests/bpf/progs/lsm.c
-+++ b/tools/testing/selftests/bpf/progs/lsm.c
-@@ -23,12 +23,12 @@ int BPF_PROG(test_int_hook, struct vm_area_struct *vma,
- 		return ret;
- 
- 	__u32 pid = bpf_get_current_pid_tgid() >> 32;
--	int is_heap = 0;
-+	int is_stack = 0;
- 
--	is_heap = (vma->vm_start >= vma->vm_mm->start_brk &&
--		   vma->vm_end <= vma->vm_mm->brk);
-+	is_stack = (vma->vm_start <= vma->vm_mm->start_stack &&
-+		    vma->vm_end >= vma->vm_mm->start_stack);
- 
--	if (is_heap && monitored_pid == pid) {
-+	if (is_stack && monitored_pid == pid) {
- 		mprotect_count++;
- 		ret = -EPERM;
- 	}
--- 
-2.20.1
-
+Toke, Andrey,
+if above kinda makes sense from high level description
+I can prototype it quickly and then we can discuss details
+in the patches ?
+Or we can drill further into details and discuss corner cases.
