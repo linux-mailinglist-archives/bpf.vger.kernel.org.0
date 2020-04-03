@@ -2,77 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D93C19D998
-	for <lists+bpf@lfdr.de>; Fri,  3 Apr 2020 16:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7528319D9D6
+	for <lists+bpf@lfdr.de>; Fri,  3 Apr 2020 17:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404121AbgDCO4G (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Apr 2020 10:56:06 -0400
-Received: from forwardcorp1j.mail.yandex.net ([5.45.199.163]:54324 "EHLO
-        forwardcorp1j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404117AbgDCO4F (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 3 Apr 2020 10:56:05 -0400
-Received: from mxbackcorp2j.mail.yandex.net (mxbackcorp2j.mail.yandex.net [IPv6:2a02:6b8:0:1619::119])
-        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id 8AA382E14B4;
-        Fri,  3 Apr 2020 17:56:02 +0300 (MSK)
-Received: from iva8-88b7aa9dc799.qloud-c.yandex.net (iva8-88b7aa9dc799.qloud-c.yandex.net [2a02:6b8:c0c:77a0:0:640:88b7:aa9d])
-        by mxbackcorp2j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id ysZoBl8NAD-u19ewH8K;
-        Fri, 03 Apr 2020 17:56:02 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1585925762; bh=Q7u3ANbO873KS0xB1AbSi27nApxQH0XfixpEWRWSarw=;
-        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
-        b=J6f1621N+JkGjuHiNs0fLjRg3rqlb5JEvKks79Yh6gBTXRN8g2wXq65tTVJ1QCYf2
-         WIumpNhxdwK8ZKcQ/IkNJNH93yaiVHKhcjr5LiC++PYqpLxnEdqiRCIaegB/5Uxaxa
-         ZkZiPi4CFs9Nj9IPk0+iAWwQpvYwovMIBYVKmWZg=
-Authentication-Results: mxbackcorp2j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from unknown (unknown [2a02:6b8:b080:8910::1:6])
-        by iva8-88b7aa9dc799.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id yQV6sUDxJj-u1WWXO1Z;
-        Fri, 03 Apr 2020 17:56:01 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: [PATCH v3 net] inet_diag: add cgroup id attribute
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Dmitry Yakunin <zeil@yandex-team.ru>, davem@davemloft.net,
-        netdev@vger.kernel.org, cgroups@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20200403095627.GA85072@yandex-team.ru>
- <20200403133817.GW162390@mtj.duckdns.org>
- <c28be8aa-d91c-3827-7e99-f92ad05ef6f1@yandex-team.ru>
- <20200403144505.GZ162390@mtj.duckdns.org>
-From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Message-ID: <20ba0af2-66df-00da-104a-512990c316d8@yandex-team.ru>
-Date:   Fri, 3 Apr 2020 17:56:01 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S2403991AbgDCPN2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Apr 2020 11:13:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728213AbgDCPN2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Apr 2020 11:13:28 -0400
+Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 294EF2073B;
+        Fri,  3 Apr 2020 15:13:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1585926807;
+        bh=I/Lij4c63/t1fugS8FYJeh/QU8MNx0FELG2JmOJkUBM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kozVUiqbzzOC27RXU2Gn4uoI/0YIM2nu4c0ig/txr/XTvAIKhfAqjzkfliXj9bNvS
+         iu1CoUTc1kgSjD+EpJT7qF5ykr4UqoaLcjmD2PtQqP0PmflPS8JbyPYTny1xaOithC
+         v4ZouSAp1urCKzuniCO1Y8+PqGLP1Yy1zRcDg3YU=
+From:   Will Deacon <will@kernel.org>
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@android.com, Will Deacon <will@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jason Wang <jasowang@redhat.com>
+Subject: [PATCH] tun: Don't put_page() for all negative return values from XDP program
+Date:   Fri,  3 Apr 2020 16:13:21 +0100
+Message-Id: <20200403151321.20166-1-will@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200403144505.GZ162390@mtj.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 03/04/2020 17.45, Tejun Heo wrote:
-> On Fri, Apr 03, 2020 at 05:37:17PM +0300, Konstantin Khlebnikov wrote:
->>> How would this work with things like inetd? Would it make sense to associate the
->>> socket on the first actual send/recv?
->>
->> First send/recv seems too intrusive.
-> 
-> Intrusive in terms of?
+When an XDP program is installed, tun_build_skb() grabs a reference to
+the current page fragment page if the program returns XDP_REDIRECT or
+XDP_TX. However, since tun_xdp_act() passes through negative return
+values from the XDP program, it is possible to trigger the error path by
+mistake and accidentally drop a reference to the fragments page without
+taking one, leading to a spurious free. This is believed to be the cause
+of some KASAN use-after-free reports from syzbot [1], although without a
+reproducer it is not possible to confirm whether this patch fixes the
+problem.
 
-In term of adding more code to networking fast paths.
+Ensure that we only drop a reference to the fragments page if the XDP
+transmit or redirect operations actually fail.
 
-> 
->> Setsockopt to change association to current cgroup (or by id) seems more reasonable.
-> 
-> I'm not sure about exposing it as an explicit interface.
+[1] https://syzkaller.appspot.com/bug?id=e76a6af1be4acd727ff6bbca669833f98cbf5d95
 
-Yep, it's better to create thing in right place from the beginning.
-Current behaviour isn't bad, just not obvious (and barely documented).
-That's why I've asked Dmitry to add these notes.
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+CC: Eric Dumazet <edumazet@google.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Fixes: 8ae1aff0b331 ("tuntap: split out XDP logic")
+Signed-off-by: Will Deacon <will@kernel.org>
+---
 
-> 
-> Thanks.
-> 
+RFC -> V1: Added Fixes tag and Jason's Ack.
+
+ drivers/net/tun.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index 650c937ed56b..9de9b7d8aedd 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -1715,8 +1715,12 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
+ 			alloc_frag->offset += buflen;
+ 		}
+ 		err = tun_xdp_act(tun, xdp_prog, &xdp, act);
+-		if (err < 0)
+-			goto err_xdp;
++		if (err < 0) {
++			if (act == XDP_REDIRECT || act == XDP_TX)
++				put_page(alloc_frag->page);
++			goto out;
++		}
++
+ 		if (err == XDP_REDIRECT)
+ 			xdp_do_flush();
+ 		if (err != XDP_PASS)
+@@ -1730,8 +1734,6 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
+ 
+ 	return __tun_build_skb(tfile, alloc_frag, buf, buflen, len, pad);
+ 
+-err_xdp:
+-	put_page(alloc_frag->page);
+ out:
+ 	rcu_read_unlock();
+ 	local_bh_enable();
+-- 
+2.26.0.292.g33ef6b2f38-goog
+
