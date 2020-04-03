@@ -2,78 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B9619D8DE
-	for <lists+bpf@lfdr.de>; Fri,  3 Apr 2020 16:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E76219D941
+	for <lists+bpf@lfdr.de>; Fri,  3 Apr 2020 16:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728216AbgDCOUa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Apr 2020 10:20:30 -0400
-Received: from www62.your-server.de ([213.133.104.62]:40646 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727927AbgDCOUa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Apr 2020 10:20:30 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jKNBJ-0007Yy-8S; Fri, 03 Apr 2020 16:20:25 +0200
-Received: from [178.195.186.98] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jKNBI-000EqM-Uq; Fri, 03 Apr 2020 16:20:24 +0200
-Subject: Re: Question on "uaccess: Add strict non-pagefault kernel-space read
- function"
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        bgregg@netflix.com
-References: <20200403133533.GA3424@infradead.org>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <5ddc8c04-279d-9a14-eaa7-755467902ead@iogearbox.net>
-Date:   Fri, 3 Apr 2020 16:20:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S2390910AbgDCOhV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Apr 2020 10:37:21 -0400
+Received: from forwardcorp1j.mail.yandex.net ([5.45.199.163]:60718 "EHLO
+        forwardcorp1j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390796AbgDCOhV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 3 Apr 2020 10:37:21 -0400
+Received: from mxbackcorp1o.mail.yandex.net (mxbackcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::301])
+        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id 55A332E151A;
+        Fri,  3 Apr 2020 17:37:18 +0300 (MSK)
+Received: from iva8-88b7aa9dc799.qloud-c.yandex.net (iva8-88b7aa9dc799.qloud-c.yandex.net [2a02:6b8:c0c:77a0:0:640:88b7:aa9d])
+        by mxbackcorp1o.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id 5Ty4DonBRu-bHiSwSOI;
+        Fri, 03 Apr 2020 17:37:18 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1585924638; bh=rZPKF6obiJ/krD77h4NfxBs/gQ6MdBgNCuwQmy0+SWU=;
+        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
+        b=Bi7CnL9+JFSdwQ7EcUVkkhRpD2i2IdQXd0BcCfjJsFqxyEALDQ7lW5MnXX+LRXBh6
+         qx4CRVbfV5SdaYxpmSh1nqIMimnKICDPWUz+q2icQ/ZieWYbpb7l6sRNPQ0f2rOj3b
+         ve+YHvl6czWpRy/Hld+/U7WxNsNN0AUww4jSXlhM=
+Authentication-Results: mxbackcorp1o.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from unknown (unknown [2a02:6b8:b080:8910::1:6])
+        by iva8-88b7aa9dc799.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id YfNmyTPKzN-bHWmcnfE;
+        Fri, 03 Apr 2020 17:37:17 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH v3 net] inet_diag: add cgroup id attribute
+To:     Tejun Heo <tj@kernel.org>, Dmitry Yakunin <zeil@yandex-team.ru>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        cgroups@vger.kernel.org, bpf@vger.kernel.org
+References: <20200403095627.GA85072@yandex-team.ru>
+ <20200403133817.GW162390@mtj.duckdns.org>
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Message-ID: <c28be8aa-d91c-3827-7e99-f92ad05ef6f1@yandex-team.ru>
+Date:   Fri, 3 Apr 2020 17:37:17 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200403133533.GA3424@infradead.org>
+In-Reply-To: <20200403133817.GW162390@mtj.duckdns.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Language: en-CA
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25770/Thu Apr  2 14:58:54 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Christoph,
-
-On 4/3/20 3:35 PM, Christoph Hellwig wrote:
-[...]
-> I just stumbled over your above commit, and it really confuses me.
+On 03/04/2020 16.38, Tejun Heo wrote:
+> On Fri, Apr 03, 2020 at 12:56:27PM +0300, Dmitry Yakunin wrote:
+>> This patch adds cgroup v2 ID to common inet diag message attributes.
+>> Cgroup v2 ID is kernfs ID (ino or ino+gen). This attribute allows filter
+>> inet diag output by cgroup ID obtained by name_to_handle_at() syscall.
+>> When net_cls or net_prio cgroup is activated this ID is equal to 1 (root
+>> cgroup ID) for newly created sockets.
+>>
+>> Some notes about this ID:
+>>
+>> 1) gets initialized in socket() syscall
+>> 2) incoming socket gets ID from listening socket
+>>     (not during accept() syscall)
 > 
-> Not the newly added functions, which seems perfectly sane, but why you
-> left the crazy old functions in place instead of investing a little
-> bit of extra effort to clean the existing mess up and switch everyone
-> to the sane new variants?
+> How would this work with things like inetd? Would it make sense to associate the
+> socket on the first actual send/recv?
 
-With crazy old functions I presume you mean the old bpf_probe_read()
-which is mapped to BPF_FUNC_probe_read helper or something else entirely?
+First send/recv seems too intrusive.
+Setsockopt to change association to current cgroup (or by id) seems more reasonable.
 
-For the former, basically my main concern was that these would otherwise
-break existing tools like bcc/bpftrace/.. unfortunately until they are not
-converted over yet to _strict variants.
+Systemd variant of inetd handles sockets as separate units and probably
+creates own cgroups for them.
 
-At least on x86, they would still rely on the broken semantic to probe
-kernel and user memory with probe_read where it 'happens to work', but not
-on other archs where the address space is not shared.
-
-But once these are fixed, I would love to deprecate these in one way or
-another. The warning in 00c42373d397 ("x86-64: add warning for non-canonical
-user access address dereferences") should be a good incentive to switch
-since people have been hitting it in production as the non-canonical space
-is sometimes used in user space to tag pointers, for example.
-
-Thanks,
-Daniel
+> 
+> Thanks.
+> 
