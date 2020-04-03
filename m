@@ -2,133 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 892C919D769
-	for <lists+bpf@lfdr.de>; Fri,  3 Apr 2020 15:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D493A19D7C2
+	for <lists+bpf@lfdr.de>; Fri,  3 Apr 2020 15:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728154AbgDCNQr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Apr 2020 09:16:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59374 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728044AbgDCNQq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Apr 2020 09:16:46 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4B8620721;
-        Fri,  3 Apr 2020 13:16:44 +0000 (UTC)
-Date:   Fri, 3 Apr 2020 09:16:42 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     kernel test robot <rong.a.chen@intel.com>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Peter Wu <peter@lekensteyn.nl>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Shuah Khan <shuahkhan@gmail.com>, bpf <bpf@vger.kernel.org>,
-        lkp@lists.01.org
-Subject: Re: [tracing] cd8f62b481:
- BUG:sleeping_function_called_from_invalid_context_at_mm/slab.h
-Message-ID: <20200403091642.5ce182f1@gandalf.local.home>
-In-Reply-To: <20200403154702.bc3478c84d70fb48b07d9985@kernel.org>
-References: <20200319232731.799117803@goodmis.org>
-        <20200326091256.GR11705@shao2-debian>
-        <20200401230700.d9ddb42b3459dca98144b55c@kernel.org>
-        <20200401102112.35036490@gandalf.local.home>
-        <20200401110401.23cda3b3@gandalf.local.home>
-        <20200402161920.3b3649cac4cc47a52679d69b@kernel.org>
-        <20200402141440.7868465a@gandalf.local.home>
-        <20200403154702.bc3478c84d70fb48b07d9985@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2390834AbgDCNiV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Apr 2020 09:38:21 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:45901 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390770AbgDCNiU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Apr 2020 09:38:20 -0400
+Received: by mail-qk1-f194.google.com with SMTP id o18so5083560qko.12;
+        Fri, 03 Apr 2020 06:38:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kYnZHxpPGf7DaV2eyxdpVvKIQEJ0x8tV886Kl8XWxiA=;
+        b=lrvUKqCgKFfiT00Eui7HGLx0wjeLy4R+GU/a2axO0G1VoL90GmeCpeKV+aGHLYBEnZ
+         Syo4J2xHK1ckt26K8Que5Cq5POPiP25pcS5yM288zGSG276nU6nYUzm2EeIvBiOuKOY+
+         kC7UxBeXCyDyXAphAhamhn7xgvNCl7p2hRM+6qW/7yBTAYHa5bo0Tq6QxyBV/r5JlDuC
+         oo6iYqhiBeYusnpK1SIZlI2/wY/VVZd0rbIiicvHfb+c5zlvTS0v+80b4lNJlfkDAW87
+         OvCHrn5h667rPGJbAE341oPeh/RbdJyEucU77d6z8wCc0T65DVrQyfRDcnPHpcDDmciV
+         nmyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=kYnZHxpPGf7DaV2eyxdpVvKIQEJ0x8tV886Kl8XWxiA=;
+        b=MmmKhfilCkFvDD8Txx6ISyw2w1kJqKnFffMysh+bxKgzBV3gH0kOwgI8C4FtoWuV4G
+         FU7Dl+pyMy00W+5cC96oEKz9lozjSJFuOUbLfpYxFvQKYEK/J4A5KsVClpklyZSz1Qoz
+         fjtP9Z38nISfIV2xjaLaJ7Ho0bZD5nRC5/lnM+v/InV+tuQuFZv82f2rOsZBgPr3uwmy
+         kWSW4w/NBA+raGPVi/+GdyReUCQrieEzOUWtJSiitmYj+2NP8n6+XGxCTbbDImWoEbOq
+         Mqa2UlisCZd3MRsVC1LHaii6Hq5jSYWpS8OJ9pWp9tQcsfdpKw3CDySyBjngkEIspjvj
+         7zuA==
+X-Gm-Message-State: AGi0PubYo3Ngt1emZAWGLPMgjCEsKoysX57G6lF5Q5uXeoimgBVTDLaz
+        KrlD4iLDggWv53IC5W5l4kc=
+X-Google-Smtp-Source: APiQypL44cxfmuewwrpxwwbvpIKuvjPSzJvqGxjLEG8Ah2ndG4epcsnqs6WSVWBPiTG9XRxcx7UEZA==
+X-Received: by 2002:a37:27cd:: with SMTP id n196mr9029422qkn.144.1585921099300;
+        Fri, 03 Apr 2020 06:38:19 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::842b])
+        by smtp.gmail.com with ESMTPSA id x6sm6182557qke.43.2020.04.03.06.38.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Apr 2020 06:38:18 -0700 (PDT)
+Date:   Fri, 3 Apr 2020 09:38:17 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Dmitry Yakunin <zeil@yandex-team.ru>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        khlebnikov@yandex-team.ru, cgroups@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v3 net] inet_diag: add cgroup id attribute
+Message-ID: <20200403133817.GW162390@mtj.duckdns.org>
+References: <20200403095627.GA85072@yandex-team.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200403095627.GA85072@yandex-team.ru>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 3 Apr 2020 15:47:02 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
-
-> > +#define STATIC_TEMP_BUF_SIZE	128
-> > +static char static_temp_buf[STATIC_TEMP_BUF_SIZE];
-> > +
-> >  /* Find the next real entry, without updating the iterator itself */
-> >  struct trace_entry *trace_find_next_entry(struct trace_iterator *iter,
-> >  					  int *ent_cpu, u64 *ent_ts)
-> > @@ -3480,13 +3483,26 @@ struct trace_entry *trace_find_next_entry(struct trace_iterator *iter,
-> >  	int ent_size = iter->ent_size;
-> >  	struct trace_entry *entry;
-> >  
-> > +	/*
-> > +	 * If called from ftrace_dump(), then the iter->temp buffer
-> > +	 * will be the static_temp_buf and not created from kmalloc.
-> > +	 * If the entry size is greater than the buffer, we can
-> > +	 * not save it. Just return NULL in that case. This is only
-> > +	 * used to add markers when two consecutive events' time
-> > +	 * stamps have a large delta. See trace_print_lat_context()
-> > +	 */
-> > +	if (iter->temp == static_temp_buf &&
-> > +	    STATIC_TEMP_BUF_SIZE < ent_size)
-> > +		return NULL;
-> > +
-> >  	/*
-> >  	 * The __find_next_entry() may call peek_next_entry(), which may
-> >  	 * call ring_buffer_peek() that may make the contents of iter->ent
-> >  	 * undefined. Need to copy iter->ent now.
-> >  	 */
-> >  	if (iter->ent && iter->ent != iter->temp) {
-> > -		if (!iter->temp || iter->temp_size < iter->ent_size) {
-> > +		if ((!iter->temp || iter->temp_size < iter->ent_size) &&
-> > +		    !WARN_ON_ONCE(iter->temp == static_temp_buf)) {  
+On Fri, Apr 03, 2020 at 12:56:27PM +0300, Dmitry Yakunin wrote:
+> This patch adds cgroup v2 ID to common inet diag message attributes.
+> Cgroup v2 ID is kernfs ID (ino or ino+gen). This attribute allows filter
+> inet diag output by cgroup ID obtained by name_to_handle_at() syscall.
+> When net_cls or net_prio cgroup is activated this ID is equal to 1 (root
+> cgroup ID) for newly created sockets.
 > 
-> This must not happen because ent_size == iter->ent_size.
-> If it happens, it should return NULL without any trial of kfree() and
-> kmalloc(), becuase it will cause illegal freeing memory and memory leak.
-> (Note that the iter->temp never be freed in ftrace_dump() path)
-
-Correct, which is why there's a ! in there. It's a paranoid check which
-should never trigger, which is why there's a WARN_ON_ONCE() there. But as
-the "!" is not easy to see, the above is the same logic as:
-
-	if ((!iter->temp || iter->temp_size < iter->ent_size) &&
-	    (iter->temp != static_temp_buf)) {
-
-Thus, if we get to that test against static_temp_buf, and it's true, then
-we will trigger the WARN_ON, but it wont call the kfree().
-
+> Some notes about this ID:
 > 
-> Anyway, this condition is completery same as above return code.
-> 
-> >  			kfree(iter->temp);
-> >  			iter->temp = kmalloc(iter->ent_size, GFP_KERNEL);
-> >  			if (!iter->temp)
-> > @@ -9203,6 +9219,8 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
-> >  
-> >  	/* Simulate the iterator */
-> >  	trace_init_global_iter(&iter);
-> > +	/* Can not use kmalloc for iter.temp */
-> > +	iter.temp = static_temp_buf;
-> >    
-> 
-> You may miss initializing temp_size here.
-> 
-> 	iter.temp_size = STATIC_TEMP_BUF_SIZE;
+> 1) gets initialized in socket() syscall
+> 2) incoming socket gets ID from listening socket
+>    (not during accept() syscall)
 
-Oh, damn! You're right.
+How would this work with things like inetd? Would it make sense to associate the
+socket on the first actual send/recv?
 
-> 
-> BTW, as I pointed, if the iter->temp is for avoiding the data overwritten
-> by ringbuffer writer, would we need to use it for ftrace_dump() too?
-> It seems that ftrace_dump() stops tracing.
+Thanks.
 
-Yes, it is still needed. That's because the old way use to just leave the
-iter->ent pointing into the ring buffer itself. The new way, the ring
-buffer makes a copy of the event, and passes that back. When you do another
-read, it overwrites the copy. It doesn't matter if the ring buffer is
-stopped or not.
-
--- Steve
+-- 
+tejun
