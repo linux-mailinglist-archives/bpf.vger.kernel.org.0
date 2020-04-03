@@ -2,134 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3322019D25D
-	for <lists+bpf@lfdr.de>; Fri,  3 Apr 2020 10:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5046619D2C3
+	for <lists+bpf@lfdr.de>; Fri,  3 Apr 2020 10:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727868AbgDCIir (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Apr 2020 04:38:47 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:21188 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388472AbgDCIir (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Apr 2020 04:38:47 -0400
+        id S2388221AbgDCIz6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Apr 2020 04:55:58 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:58949 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727856AbgDCIz6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 3 Apr 2020 04:55:58 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585903125;
+        s=mimecast20190719; t=1585904156;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=MwWGdFus6RcsojSPJf8dandZUpGf7sV7QjhW4kAmQmk=;
-        b=gfoEX7edmbAdCrs3oADAAIWg+cIWcKM7eTTzm6f0pPPFseUGmL95a7MOPdyydcMb4toSCD
-        dbbJ2LVdM2Xu4pmMMa2HSWNvUMteEeeTXiACYuW4sblhYVYvylUMQwAQg7GY3iEiP/qmDF
-        vZZ83WblABZwV6MlLzXiKk5CWmhcS0Y=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-92-zXvjiirmPNqgoTuEbwkrVg-1; Fri, 03 Apr 2020 04:38:44 -0400
-X-MC-Unique: zXvjiirmPNqgoTuEbwkrVg-1
-Received: by mail-lf1-f69.google.com with SMTP id q11so2170460lfk.2
-        for <bpf@vger.kernel.org>; Fri, 03 Apr 2020 01:38:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=MwWGdFus6RcsojSPJf8dandZUpGf7sV7QjhW4kAmQmk=;
-        b=hUCjKm7f/4l9LWbbLYOuxoAN2kwAEAgffqGpDyRyfCQdHRT3PgZiW3p1fgwudWxEjQ
-         15eMA8tcIj4hE71gWWBhLl/Wmamtc1hN3frevPwHqg2zFjvrC2T+B2UBpwerxC4X/oGn
-         TeDgekwFksXVe/qK6+pMSKTObALpeh68atyw5SS6Sd8A28Qa7RLIQ9Od5f9g94Adz9Wn
-         N8H2WTFCZU9+jWVaz470lOEGe5QLJedj8vyguFormXa1+1TdjctOqcdit9/XihAjwnkV
-         jLxSP+R0QT8W8+P9DYXdZD9NPcxuLBAeunAliWOPeDPDjc0AZBgX8ofd3tNGPWPwpKPu
-         fZ/g==
-X-Gm-Message-State: AGi0PuaRPVLMTfj0SStbS01Z7/ib0Y9F3mZq/EiPQDSXwJ2QJfJ1L349
-        5NunZ0MgEiHXVHidMFrkkiZtqq/H9yHh+Qx2k4epSGJeV9PlPxVPdh9UhSY6DD2y+TjF/LdVbSm
-        Xxx/oRFungjZ+
-X-Received: by 2002:a2e:9bd7:: with SMTP id w23mr4497485ljj.47.1585903122282;
-        Fri, 03 Apr 2020 01:38:42 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJnnyi7t4elwruh/VzpO7DuUWm6GQguQs6qCXfDGi1ZzPcIhbeC+r5zYX+l2A9HAQjbM7Kv5w==
-X-Received: by 2002:a2e:9bd7:: with SMTP id w23mr4497472ljj.47.1585903121917;
-        Fri, 03 Apr 2020 01:38:41 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id q30sm6289192lfn.18.2020.04.03.01.38.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Apr 2020 01:38:41 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 36A7718158C; Fri,  3 Apr 2020 10:38:38 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrey Ignatov <rdna@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: bpf: ability to attach freplace to multiple parents
-In-Reply-To: <20200402215452.dkkbbymnhzlcux7m@ast-mbp>
-References: <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com> <87tv2e10ly.fsf@toke.dk> <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com> <87369wrcyv.fsf@toke.dk> <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com> <CACAyw9-FrwgBGjGT1CYrKJuyRJtwn0XUsifF_uR6LpRbcucN+A@mail.gmail.com> <20200326195340.dznktutm6yq763af@ast-mbp> <87o8sim4rw.fsf@toke.dk> <20200402202156.hq7wpz5vdoajpqp5@ast-mbp> <87o8s9eg5b.fsf@toke.dk> <20200402215452.dkkbbymnhzlcux7m@ast-mbp>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 03 Apr 2020 10:38:38 +0200
-Message-ID: <87ftdldkvl.fsf@toke.dk>
+        bh=UUO2hpzrUb4O8Yw0h3ZZcshPOPBcVYEzfp73urzKT10=;
+        b=T5mODC0QPsmggcfcQPGHir3BswgBCfW68fcznqnQzTEPGrffevAOmdtvCq7zRwPGFM4sS+
+        KtsSgTX1gsyfMMWQ1rZ8Dh+wBTUoWU9zVJj4wJonXq7+odco5+nLUQsrMjhpwjEsLYqr74
+        PI8uv/3r3+Llp4GYLCZOllUcZXsqwGQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-41-HneTfMmuPouWBW5cJc_5hQ-1; Fri, 03 Apr 2020 04:55:55 -0400
+X-MC-Unique: HneTfMmuPouWBW5cJc_5hQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 82876477;
+        Fri,  3 Apr 2020 08:55:52 +0000 (UTC)
+Received: from krava (unknown [10.40.194.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 36ED35DA76;
+        Fri,  3 Apr 2020 08:55:35 +0000 (UTC)
+Date:   Fri, 3 Apr 2020 10:55:29 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Florent Revest <revest@chromium.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Wenbo Zhang <ethercflow@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Andrii Nakryiko <andriin@fb.com>, bgregg@netflix.com,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [RFC 0/3] bpf: Add d_path helper
+Message-ID: <20200403085529.GD2784502@krava>
+References: <20200401110907.2669564-1-jolsa@kernel.org>
+ <5968eda68bfec39387c34ffaf0ecc3ed5d8afd6f.camel@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5968eda68bfec39387c34ffaf0ecc3ed5d8afd6f.camel@chromium.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+On Thu, Apr 02, 2020 at 04:03:00PM +0200, Florent Revest wrote:
+> On Wed, 2020-04-01 at 13:09 +0200, Jiri Olsa wrote:
+> > hi,
+> > adding d_path helper to return full path for 'path' object.
+> > 
+> > I originally added and used 'file_path' helper, which did the same,
+> > but used 'struct file' object. Then realized that file_path is just
+> > a wrapper for d_path, so we'd cover more calling sites if we add
+> > d_path helper and allowed resolving BTF object within another object,
+> > so we could call d_path also with file pointer, like:
+> > 
+> >   bpf_d_path(&file->f_path, buf, size);
+> > 
+> > This feature is mainly to be able to add dpath (filepath originally)
+> > function to bpftrace, which seems to work nicely now, like:
+> > 
+> >   # bpftrace -e 'kretfunc:fget { printf("%s\n", dpath(args->ret-
+> > >f_path));  }' 
+> > 
+> > I'm not completely sure this is all safe and bullet proof and there's
+> > no other way to do this, hence RFC post.
+> > 
+> > I'd be happy also with file_path function, but I thought it'd be
+> > a shame not to try to add d_path with the verifier change.
+> > I'm open to any suggestions ;-)
+> 
+> First of all I want to mention that we are really interested in this
+> feature so thanks a lot for bringing it up Jiri! I have experimented
+> with similar BPF helpers in the past few months so I hope my input can
+> be helpful! :)
+> 
+> One of our use-cases is to gather information about execution events,
+> including a bunch of paths (such as the executable command, the
+> resolved executable file path and the current-working-directory) and
+> then output them to Perf.
+> Each of those paths can be up to PATH_MAX(one page) long so we would
+> pre-allocate a data structure with a few identifiers (to later
+> reassemble the event from userspace) and a page of data and then we
+> would output it using bpf_perf_event_output. However, with three mostly
+> empty pages per event, we would quickly fill up the ring buffer and
+> loose many events.
+> This might be a bit out-of-scope at this moment but one of the
+> teachings we got from playing with such a helper is that we would also
+> need a helper for outputting strings to Perf, pre-pended with a header
+> buffer.
 
-> It's a different link.
-> For fentry/fexit/freplace the link is pair:
->   // target           ...         bpf_prog
-> (target_prog_fd_or_vmlinux, fentry_exit_replace_prog_fd).
->
-> So for xdp case we will have:
-> root_link = (eth0_ifindex, dispatcher_prog_fd) // dispatcher prog attached to eth0
-> link1 = (dispatcher_prog_fd, xdp_firewall1_fd) // 1st extension prog attached to dispatcher
-> link2 = (dispatcher_prog_fd, xdp_firewall2_fd) // 2nd extension prog attached to dispatcher
->
-> Now libxdp wants to update the dispatcher prog.
-> It generates new dispatcher prog with more placeholder entries or new policy:
-> new_dispatcher_prog_fd.
-> It's not attached anywhere.
-> Then libxdp calls new bpf_raw_tp_open() api I'm proposing above to create:
-> link3 = (new_dispatcher_prog_fd, xdp_firewall1_fd)
-> link4 = (new_dispatcher_prog_fd, xdp_firewall2_fd)
-> Now we have two firewalls attached to both old dispatcher prog and new dispatcher prog.
-> Both firewalls are executing via old dispatcher prog that is active.
-> Now libxdp calls:
-> bpf_link_udpate(root_link, dispatcher_prog_fd, new_dispatcher_prog_fd)
-> which atomically replaces old dispatcher prog with new dispatcher prog in eth0.
-> The traffic keeps flowing into both firewalls. No packets lost.
-> But now it goes through new dipsatcher prog.
-> libxdp can now:
-> close(dispatcher_prog_fd);
-> close(link1);
-> close(link2);
-> Closing (and destroying two links) will remove old dispatcher prog
-> from linked list in xdp_firewall1_prog->aux->linked_prog_list and from
-> xdp_firewall2_prog->aux->linked_prog_list.
-> Notice that there is no need to explicitly detach old dispatcher prog from eth0.
-> link_update() did it while replacing it with new dispatcher prog.
+I think bpftrace uses fixed size as well at some point,
+but very small one, which is still sufficent for tools usage,
+but we can always send only data with the size of the path
 
-Yeah, this was the flow I had in mind already. However, what I meant was
-that *from the PoV of an application consuming the link fd*, this would
-lead to dangling links.
-
-I.e., an application does:
-
-app1_link_fd = libxdp_install_prog(prog1);
-
-and stores link_fd somewhere (just holds on to it, or pins it
-somewhere).
-
-Then later, another application does:
-
-app2_link_fd = libxdp_install_prog(prog2);
-
-but this has the side-effect of replacing the dispatcher, so
-app1_link_fd is now no longer valid.
-
-This can be worked around, of course (e.g., just return the prog_fd and
-hide any link_fd details inside the library), but if the point of
-bpf_link is that the application could hold on to it and use it for
-subsequent replacements, that would be nice to have for consumers of the
-library as well, no?
-
--Toke
+thanks for info
+jirka
 
