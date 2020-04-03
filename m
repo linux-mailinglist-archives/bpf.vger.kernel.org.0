@@ -2,67 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A7319CD25
-	for <lists+bpf@lfdr.de>; Fri,  3 Apr 2020 00:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1902719CEBD
+	for <lists+bpf@lfdr.de>; Fri,  3 Apr 2020 04:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390151AbgDBWwW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Apr 2020 18:52:22 -0400
-Received: from www62.your-server.de ([213.133.104.62]:35178 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387919AbgDBWwV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Apr 2020 18:52:21 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jK8h9-0004Ra-NB; Fri, 03 Apr 2020 00:52:19 +0200
-Received: from [178.195.186.98] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jK8h9-000331-Dn; Fri, 03 Apr 2020 00:52:19 +0200
-Subject: Re: [PATCH bpf] net, sk_msg: Don't use RCU_INIT_POINTER on
- sk_user_data
-To:     Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
-        kbuild test robot <lkp@intel.com>
-References: <20200402125524.851439-1-jakub@cloudflare.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <3dd151ce-01cf-7267-af13-c509e617e022@iogearbox.net>
-Date:   Fri, 3 Apr 2020 00:52:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S2388951AbgDCCqf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Apr 2020 22:46:35 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:43104 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731842AbgDCCqf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Apr 2020 22:46:35 -0400
+Received: by mail-lf1-f66.google.com with SMTP id n20so4478112lfl.10;
+        Thu, 02 Apr 2020 19:46:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p088pgCUdKjtLYg5BgMR/YxL/Sl3wyR6P8BkYTOme4c=;
+        b=WvwwWahsQhmESiS/BHvk2CBk1kKcMy2IrWCquC2M6NNLCcgxEuNvQ+4R48Nuz1gvyW
+         TVvzVqgnjl0odF3LEBGHhHh9tAaeBYd0MmB7jfIOaTZhUAreE2sLg7lFiLCfqCVJNP4+
+         /tXc1JGCzO5syojfJtr9+Rm9YM3rWxqdgFU3qFrluJ4qUpOqOmWFfWOthWub0Ko+Gj9B
+         0uMKnuCXXSJKiAnkUnKxZt5cXkz5+XNegAwVkvLL6aZJtmpFj51XReUS+26ehHrQtsPx
+         YCa6q5mPnqo8L6cI5gFD6r/wAHYptNop27wrgmnpE6VxOsoO0n4wZXD4GdlebLOMSshb
+         +EqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p088pgCUdKjtLYg5BgMR/YxL/Sl3wyR6P8BkYTOme4c=;
+        b=n+ZKcZ6Xg494R7O/HuiUJ2mH5BVmy6j4S8FkoqB1LzQrksK1U/gFRiX28gmJoSh58e
+         8/o7pA9IPT2MDGg1mX1gXpPX9S4OXuj2MvYqotvdptJlrXiFuOsCStLMEotDy2veGwsi
+         Q88gb8x8vMHHvXe/yw1FWGbzdbkXVOQqqjCK8ScRRA/6VabkMZR5q5qn2gDa7jdrINmc
+         1NsIwZ7ztnmawe0KqLwTH8DGIIYlKIvyPjGfQOko5QbqsZklVy5ZqFz+8PGI0hD1gwwM
+         k697QxbpNc4NymGTclmV30Y2Tl0BGr5m0CuDU3l2zxIS9A+FdwYnCaXzWIpI2whAQwSl
+         yw0A==
+X-Gm-Message-State: AGi0PuYoXkoUKup+YBXQI4eLp/jFX69yoYqFvqCHVanGejOaQjVQ2Oqn
+        /7Mtz/BUf68T2hFqrX8FDV0XyRJW7LSpgiebRiQ=
+X-Google-Smtp-Source: APiQypIpx2i4EsjjI58+/0E6/sJncBfO2eiMGZaC5B6E4RIOWpMYFNpE8CvAzT4q7H8oOJEdGzdj5SpK5oGnjtFrX1I=
+X-Received: by 2002:a19:40ca:: with SMTP id n193mr3885979lfa.196.1585881992590;
+ Thu, 02 Apr 2020 19:46:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200402125524.851439-1-jakub@cloudflare.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25770/Thu Apr  2 14:58:54 2020)
+References: <20200402200751.26372-1-kpsingh@chromium.org>
+In-Reply-To: <20200402200751.26372-1-kpsingh@chromium.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 2 Apr 2020 19:46:19 -0700
+Message-ID: <CAADnVQJO+LYbUmOc71jzxpHsmUXoOw0kU7393m74J2iy1u2hCA@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf, lsm: Fix the file_mprotect LSM test.
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/2/20 2:55 PM, Jakub Sitnicki wrote:
-> sparse reports an error due to use of RCU_INIT_POINTER helper to assign to
-> sk_user_data pointer, which is not tagged with __rcu:
-> 
-> net/core/sock.c:1875:25: error: incompatible types in comparison expression (different address spaces):
-> net/core/sock.c:1875:25:    void [noderef] <asn:4> *
-> net/core/sock.c:1875:25:    void *
-> 
-> ... and rightfully so. sk_user_data is not always treated as a pointer to
-> an RCU-protected data. When it is used to point at an RCU-protected object,
-> we access it with __sk_user_data to inform sparse about it.
-> 
-> In this case, when the child socket does not inherit sk_user_data from the
-> parent, there is no reason to treat it as an RCU-protected pointer.
-> 
-> Use a regular assignment to clear the pointer value.
-> 
-> Fixes: f1ff5ce2cd5e ("net, sk_msg: Clear sk_user_data pointer on clone if tagged")
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+On Thu, Apr 2, 2020 at 1:07 PM KP Singh <kpsingh@chromium.org> wrote:
+>
+> From: KP Singh <kpsingh@google.com>
+>
+> The test was previously using an mprotect on the heap memory allocated
+> using malloc and was expecting the allocation to be always using
+> sbrk(2). This is, however, not always true and in certain conditions
+> malloc may end up using anonymous mmaps for heap alloctions. This means
+> that the following condition that is used in the "lsm/file_mprotect"
+> program is not sufficent to detect all mprotect calls done on heap
+> memory:
+>
+>         is_heap = (vma->vm_start >= vma->vm_mm->start_brk &&
+>                    vma->vm_end <= vma->vm_mm->brk);
+>
+> The test is updated to use an mprotect on memory allocated on the stack.
+> While this would result in the splitting of the vma, this happens only
+> after the security_file_mprotect hook. So, the condition used in the BPF
+> program holds true.
+>
+> Signed-off-by: KP Singh <kpsingh@google.com>
+> Reported-by: Alexei Starovoitov <ast@kernel.org>
+> Fixes: 03e54f100d57 ("bpf: lsm: Add selftests for BPF_PROG_TYPE_LSM")
 
-LGTM, applied, thanks!
+Applied. Thanks
