@@ -2,227 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E40219DD73
-	for <lists+bpf@lfdr.de>; Fri,  3 Apr 2020 20:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB5019DFCB
+	for <lists+bpf@lfdr.de>; Fri,  3 Apr 2020 22:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728219AbgDCSGB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Apr 2020 14:06:01 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:46080 "EHLO
+        id S1729333AbgDCUu2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Apr 2020 16:50:28 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:39560 "EHLO
         mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728437AbgDCSGB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Apr 2020 14:06:01 -0400
-Received: by mail-qk1-f196.google.com with SMTP id u4so8921836qkj.13
-        for <bpf@vger.kernel.org>; Fri, 03 Apr 2020 11:05:59 -0700 (PDT)
+        with ESMTP id S1729094AbgDCUuY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Apr 2020 16:50:24 -0400
+Received: by mail-qk1-f196.google.com with SMTP id b62so9595667qkf.6;
+        Fri, 03 Apr 2020 13:50:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ugedal.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=jI4MPZ+407qBrB7BW/I/HGZvR1WIFnXi1aza4Y9SsFQ=;
-        b=SupQKYxpE8gbDBDzCN/4G4PY85zzwbFB6pvsxwwYjUE+bQuhCMGZfLo8PdRWW8nbvV
-         X8YKJZEM7fxcewpW+alGiHKPP53DI+QITQfrJgltJKWWxfDAbYGDk/Bn8mfR73Y22iGL
-         ySnlVvyWajEOedCXbUfMpPnHkb5CLdeVAVEbNOU6dp0dMOoxRfTq6O5QnEpskTeI8oUX
-         M88ne1NwPeVE4X46eyfjwj7kix2HMM4JlRAKtly8XIXxv6xLKxvK1O8ROHbrU2lINJj7
-         DFBw8q/1tRyHNC9//JeAV07JIQQ/haP1og9Jv7oUmXCX/+HmI8C3WyB/fzUzuQueLc9S
-         kH+Q==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FmYPQx8YxN0VzxRVH60woHoEcaUG/mRpzY/F6fsmbBg=;
+        b=EJv+/5Nw6GDaEXqkquLfhfMA1rBTppoDrc/bl8ZsoLXlaiqV6XArtEJafGx0r/wNUG
+         gVPlv0zuax5cLTEdnaB31/Ir0toUsgayJeEYDmXYlv4j8eH3b74qyi4i4iUxJ4pYI1jV
+         YLxrLwZE7tOBn8CY4JIdSlP2cBMIpGzzoBT+dMz7ePJwXUTkXa68FaVyNVxehsYJeiKn
+         ypAvHYakv9qZQeAnNcXLg4S1fjamfzmkDIRavpcrkAp/SH3vEs98i4zTk2ZLEFSCNwAH
+         EmNuUl1MB60bmWMutMrO2ilRWNZcZpRaAriAQY8ibvl0/Io05vW/6c9OlCRjbgn6hRGM
+         UGkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=jI4MPZ+407qBrB7BW/I/HGZvR1WIFnXi1aza4Y9SsFQ=;
-        b=Zf0rVqheR5UstUT4hAHDOl2ENtDsd4+Oh5eHO4QRD50l0VR2nUK9jkRqeW9Vro+nUp
-         Nb62BMBWu6ldoig/OaSIp+npf2hmrCC/7ihYgrfGHRDdUbe4Z1EdRFOMssx+3s81iMvp
-         F/m0nv1cJBzQ9Ke69oyl/j+PovdvRkebXezcwgbPdpTGu+7px+H9cFjZyRz23RJfRMnz
-         X4L1umxFLHS0qc7OeST9KstI7RAWMn8pAfhAruN2Pw8jxytRDI3+2QOleBCZ5VXLfxGN
-         AOAlk0ZMmdkFEBGM5UsLvjMvOpWDPkpi4yvkMtmoErKjf1sBkPw7JniIlbc0MIvBK9d1
-         DClQ==
-X-Gm-Message-State: AGi0PuaxtO6tfOjuIjJHeGIup6g7ZsHU+rDrNgZA+x/DYoJn//UkenMs
-        xnFThdfftcd9TN502if3CUzKcjAZzIdFOLWGqAuT2xOXLjwZoHmB
-X-Google-Smtp-Source: APiQypL+/GQqyo3E20GV5a17Pp1eqwBVd/nfJQB2qgX43W1nA7BCnYEqFNdYZfXNQVCw6d9nKs+tN6rZpOEVxDxE90I=
-X-Received: by 2002:a37:4fd0:: with SMTP id d199mr10143025qkb.121.1585937158639;
- Fri, 03 Apr 2020 11:05:58 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=FmYPQx8YxN0VzxRVH60woHoEcaUG/mRpzY/F6fsmbBg=;
+        b=Q62M5pasYY/1UVWV+Lryz/Niz9pns/pAr7xGnCAzmCikaA/5XDFCNwgjZkeeuYM/03
+         mSHQVx9urzLNWqaZ8t1YcMcadQ3IsXSl1tGKFYz1G4YqNwb0V1wDmiIWF2g8f311c6Id
+         lltfs0h0lIzFEXW/olfJBuL1q4AjnZDGsV/N+YFrAOGpV4IYNuiSlyBCtsI57rihqm/F
+         ZUh1VpLlrlJ3Fib7s0LNIPE4p2f5gcT0SCs/fTFsbWRNlX/gUO+3DFZJezhKPc2agyO/
+         6uQDbFJ7f/xfnvXc4YAJqsL8LPiXGEHT39u3brDMCxQNnkTJlRsJZmU8Ey27tE3zqvfP
+         qUzw==
+X-Gm-Message-State: AGi0Pua30/Iw455Ats3B4Tm2xxIyOKpZ6c/uPaUzeGCG0dtu5ZpQsImK
+        5GTgp1JKn4WQ+cbSVBkmS8MfJJFRkoyxFfDUNmg=
+X-Google-Smtp-Source: APiQypKUvNq9w5r6XWPwtMqzhHUDxkqXXWm97f7kOfRyDKGt5Fx1FGDnzJAAC8V3Ytk9/UDRmMJiuTTNfRxD84OaLjU=
+X-Received: by 2002:a37:6411:: with SMTP id y17mr11285357qkb.437.1585947023853;
+ Fri, 03 Apr 2020 13:50:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200403175528.225990-1-odin@ugedal.com>
-In-Reply-To: <20200403175528.225990-1-odin@ugedal.com>
-From:   Odin Ugedal <odin@ugedal.com>
-Date:   Fri, 3 Apr 2020 20:05:46 +0200
-Message-ID: <CAFpoUr11o6m5oS7Dtt9FM02JmPg4oJFaUQcD+R+7ckoR=QETqg@mail.gmail.com>
-Subject: Re: [PATCH] device_cgroup: Cleanup cgroup eBPF device filter code
-To:     bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Harish.Kasiviswanathan@amd.com,
-        guro@fb.com, amd-gfx@lists.freedesktop.org
+References: <20200329225342.16317-1-joe@wand.net.nz> <20200329225342.16317-5-joe@wand.net.nz>
+ <CAEf4Bzb6Jr3qBOd0N2NsqMCXQ-19StU+TdFSmB=E+mDPeeC_Jg@mail.gmail.com> <CAOftzPj5aKspwmZ72t+ivjE72CUWObfgekpiQM+iCTya5hxgGw@mail.gmail.com>
+In-Reply-To: <CAOftzPj5aKspwmZ72t+ivjE72CUWObfgekpiQM+iCTya5hxgGw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 3 Apr 2020 13:50:12 -0700
+Message-ID: <CAEf4BzaFbM+H1BRGeWTTTaBB_uwUxMadL-K7txFHJVWiGz34Tg@mail.gmail.com>
+Subject: Re: [PATCHv5 bpf-next 4/5] selftests: bpf: add test for sk_assign
+To:     Joe Stringer <joe@wand.net.nz>
+Cc:     bpf <bpf@vger.kernel.org>, Lorenz Bauer <lmb@cloudflare.com>,
+        Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Martin Lau <kafai@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi (patch author here),
+On Thu, Apr 2, 2020 at 8:46 AM Joe Stringer <joe@wand.net.nz> wrote:
+>
+> I'll take a look. Should just be iproute2 package I believe.
+>
 
-This is my first "real" patch, so looking forward to some feedback! I
-am not sure if this behavior is the "best one", or if we should
-require CONFIG_CGROUP_DEVICE to be set to yes. In that case we can
-just abandon this patch and replace the original "#if
-defined(CONFIG_CGROUP_DEVICE) || defined(CONFIG_CGROUP_BPF)" with a
-simple "#ifdef CONFIG_CGROUP_DEVICE" and update the docs and the
-config.
+For anyone following along. iproute2, which is now a dependency of
+sk_assign selftest brings in a ton of dependencies, including systemd
+itself. This, beyond causing linux image problems we haven't
+investigated too deeply, also increases our image almost three-fold.
+See [0] for github discussion on topic.
 
-It is also another alternative to keep the code in this patch and move
-some of it into a separate file in order to avoid all the ifdefs, and
-to make the split between cgroup v1 and cgroup v2 code cleaner.
+So for now I'm going to disable sk_assign selftest permanently in
+libbpf tests. Ideally sk_assign can be written to not rely on iproute2
+to set things up. But until then, it won't be exercised in libbpf's CI
+tests, unfortunately.
 
-As a reference, only Fedora is currently shipping with cgroup v2 as
-default (afaik.) and their kernel is compiled (5.3.7-301.fc31.x86_64)
-with CONFIG_CGROUP_DEVICE=y and CONFIG_CGROUP_BPF=y, so this will not
-affect them.
-
-Odin Ugedal
+  [0] https://github.com/libbpf/libbpf/pull/144#issuecomment-608170330
 
 
-fre. 3. apr. 2020 kl. 19:55 skrev Odin Ugedal <odin@ugedal.com>:
->
-> Original cgroup v2 eBPF code for filtering device access made it
-> possible to compile with CONFIG_CGROUP_DEVICE=n and still use the eBPF
-> filtering. Change
-> commit 4b7d4d453fc4 ("device_cgroup: Export devcgroup_check_permission")
-> reverted this, making it required to set it to y.
->
-> Since the device filtering (and all the docs) for cgroup v2 is no longer
-> a "device controller" like it was in v1, someone might compile their
-> kernel with CONFIG_CGROUP_DEVICE=n. Then (for linux 5.5+) the eBPF
-> filter will not be invoked, and all processes will be allowed access
-> to all devices, no matter what the eBPF filter says.
->
-> Signed-off-by: Odin Ugedal <odin@ugedal.com>
-> ---
->  drivers/gpu/drm/amd/amdkfd/kfd_priv.h |  2 +-
->  include/linux/device_cgroup.h         | 14 +++++---------
->  security/Makefile                     |  2 +-
->  security/device_cgroup.c              | 19 ++++++++++++++++---
->  4 files changed, 23 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_priv.h b/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-> index 4a3049841086..c24cad3c64ed 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-> @@ -1050,7 +1050,7 @@ void kfd_dec_compute_active(struct kfd_dev *dev);
->  /* Check with device cgroup if @kfd device is accessible */
->  static inline int kfd_devcgroup_check_permission(struct kfd_dev *kfd)
->  {
-> -#if defined(CONFIG_CGROUP_DEVICE)
-> +#if defined(CONFIG_CGROUP_DEVICE) || defined(CONFIG_CGROUP_BPF)
->         struct drm_device *ddev = kfd->ddev;
->
->         return devcgroup_check_permission(DEVCG_DEV_CHAR, ddev->driver->major,
-> diff --git a/include/linux/device_cgroup.h b/include/linux/device_cgroup.h
-> index fa35b52e0002..9a72214496e5 100644
-> --- a/include/linux/device_cgroup.h
-> +++ b/include/linux/device_cgroup.h
-> @@ -1,6 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
->  #include <linux/fs.h>
-> -#include <linux/bpf-cgroup.h>
->
->  #define DEVCG_ACC_MKNOD 1
->  #define DEVCG_ACC_READ  2
-> @@ -11,16 +10,10 @@
->  #define DEVCG_DEV_CHAR  2
->  #define DEVCG_DEV_ALL   4  /* this represents all devices */
->
-> -#ifdef CONFIG_CGROUP_DEVICE
-> -int devcgroup_check_permission(short type, u32 major, u32 minor,
-> -                              short access);
-> -#else
-> -static inline int devcgroup_check_permission(short type, u32 major, u32 minor,
-> -                                            short access)
-> -{ return 0; }
-> -#endif
->
->  #if defined(CONFIG_CGROUP_DEVICE) || defined(CONFIG_CGROUP_BPF)
-> +int devcgroup_check_permission(short type, u32 major, u32 minor,
-> +                              short access);
->  static inline int devcgroup_inode_permission(struct inode *inode, int mask)
->  {
->         short type, access = 0;
-> @@ -61,6 +54,9 @@ static inline int devcgroup_inode_mknod(int mode, dev_t dev)
->  }
->
->  #else
-> +static inline int devcgroup_check_permission(short type, u32 major, u32 minor,
-> +                              short access)
-> +{ return 0; }
->  static inline int devcgroup_inode_permission(struct inode *inode, int mask)
->  { return 0; }
->  static inline int devcgroup_inode_mknod(int mode, dev_t dev)
-> diff --git a/security/Makefile b/security/Makefile
-> index 22e73a3482bd..3baf435de541 100644
-> --- a/security/Makefile
-> +++ b/security/Makefile
-> @@ -30,7 +30,7 @@ obj-$(CONFIG_SECURITY_YAMA)           += yama/
->  obj-$(CONFIG_SECURITY_LOADPIN)         += loadpin/
->  obj-$(CONFIG_SECURITY_SAFESETID)       += safesetid/
->  obj-$(CONFIG_SECURITY_LOCKDOWN_LSM)    += lockdown/
-> -obj-$(CONFIG_CGROUP_DEVICE)            += device_cgroup.o
-> +obj-$(CONFIG_CGROUPS)                  += device_cgroup.o
->  obj-$(CONFIG_BPF_LSM)                  += bpf/
->
->  # Object integrity file lists
-> diff --git a/security/device_cgroup.c b/security/device_cgroup.c
-> index 7d0f8f7431ff..43ab0ad45c1b 100644
-> --- a/security/device_cgroup.c
-> +++ b/security/device_cgroup.c
-> @@ -15,6 +15,8 @@
->  #include <linux/rcupdate.h>
->  #include <linux/mutex.h>
->
-> +#ifdef CONFIG_CGROUP_DEVICE
-> +
->  static DEFINE_MUTEX(devcgroup_mutex);
->
->  enum devcg_behavior {
-> @@ -792,7 +794,7 @@ struct cgroup_subsys devices_cgrp_subsys = {
->  };
->
->  /**
-> - * __devcgroup_check_permission - checks if an inode operation is permitted
-> + * devcgroup_legacy_check_permission - checks if an inode operation is permitted
->   * @dev_cgroup: the dev cgroup to be tested against
->   * @type: device type
->   * @major: device major number
-> @@ -801,7 +803,7 @@ struct cgroup_subsys devices_cgrp_subsys = {
->   *
->   * returns 0 on success, -EPERM case the operation is not permitted
->   */
-> -static int __devcgroup_check_permission(short type, u32 major, u32 minor,
-> +static int devcgroup_legacy_check_permission(short type, u32 major, u32 minor,
->                                         short access)
->  {
->         struct dev_cgroup *dev_cgroup;
-> @@ -825,6 +827,10 @@ static int __devcgroup_check_permission(short type, u32 major, u32 minor,
->         return 0;
->  }
->
-> +#endif /* CONFIG_CGROUP_DEVICE */
-> +
-> +#if defined(CONFIG_CGROUP_DEVICE) || defined(CONFIG_CGROUP_BPF)
-> +
->  int devcgroup_check_permission(short type, u32 major, u32 minor, short access)
->  {
->         int rc = BPF_CGROUP_RUN_PROG_DEVICE_CGROUP(type, major, minor, access);
-> @@ -832,6 +838,13 @@ int devcgroup_check_permission(short type, u32 major, u32 minor, short access)
->         if (rc)
->                 return -EPERM;
->
-> -       return __devcgroup_check_permission(type, major, minor, access);
-> +       #ifdef CONFIG_CGROUP_DEVICE
-> +       return devcgroup_legacy_check_permission(type, major, minor, access);
-> +
-> +       #else /* CONFIG_CGROUP_DEVICE */
-> +       return 0;
-> +
-> +       #endif /* CONFIG_CGROUP_DEVICE */
->  }
->  EXPORT_SYMBOL(devcgroup_check_permission);
-> +#endif /* defined(CONFIG_CGROUP_DEVICE) || defined(CONFIG_CGROUP_BPF) */
-> --
-> 2.26.0
->
+> On Wed, Apr 1, 2020, 16:20 Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>>
+>> On Sun, Mar 29, 2020 at 3:58 PM Joe Stringer <joe@wand.net.nz> wrote:
+>> >
+>> > From: Lorenz Bauer <lmb@cloudflare.com>
+>> >
+>> > Attach a tc direct-action classifier to lo in a fresh network
+>> > namespace, and rewrite all connection attempts to localhost:4321
+>> > to localhost:1234 (for port tests) and connections to unreachable
+>> > IPv4/IPv6 IPs to the local socket (for address tests). Includes
+>> > implementations for both TCP and UDP.
+>> >
+>> > Keep in mind that both client to server and server to client traffic
+>> > passes the classifier.
+>> >
+>> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+>> > Co-authored-by: Joe Stringer <joe@wand.net.nz>
+>> > Signed-off-by: Joe Stringer <joe@wand.net.nz>
+>> > Acked-by: Martin KaFai Lau <kafai@fb.com>
+>> > ---
+>> > v5: No change
+>> > v4: Add acks
+>> > v3: Add tests for UDP socket assign
+>> >     Fix switching back to original netns after test
+>> >     Avoid using signals to timeout connections
+>> >     Refactor to iterate through test cases
+>> > v2: Rebase onto test_progs infrastructure
+>> > v1: Initial commit
+>> > ---
+>>
+>> Hey Joe!
+>>
+>> When syncing libbpf to Github, this selftest is now failing with the
+>> follow errors:
+>>
+>> tc: command line is not complete, try "help"
+>> configure_stack:FAIL:46
+>> configure_stack: Interrupted system call
+>> #49 sk_assign:FAIL
+>>
+>> We are probably missing some packages or something like that. Could
+>> you please help figuring out how we need to adjust libbpf Travis CI
+>> environment to accomodate this? Thanks!
+>> You can find one of the failed runs at [0]
+>>
+>>   [0] https://travis-ci.com/github/anakryiko/libbpf/jobs/311759005
