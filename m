@@ -2,127 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB5019DFCB
-	for <lists+bpf@lfdr.de>; Fri,  3 Apr 2020 22:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAED719E032
+	for <lists+bpf@lfdr.de>; Fri,  3 Apr 2020 23:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729333AbgDCUu2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Apr 2020 16:50:28 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:39560 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729094AbgDCUuY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Apr 2020 16:50:24 -0400
-Received: by mail-qk1-f196.google.com with SMTP id b62so9595667qkf.6;
-        Fri, 03 Apr 2020 13:50:24 -0700 (PDT)
+        id S1728284AbgDCVNM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Apr 2020 17:13:12 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:36373 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728264AbgDCVNJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Apr 2020 17:13:09 -0400
+Received: by mail-lj1-f195.google.com with SMTP id b1so8439371ljp.3;
+        Fri, 03 Apr 2020 14:13:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FmYPQx8YxN0VzxRVH60woHoEcaUG/mRpzY/F6fsmbBg=;
-        b=EJv+/5Nw6GDaEXqkquLfhfMA1rBTppoDrc/bl8ZsoLXlaiqV6XArtEJafGx0r/wNUG
-         gVPlv0zuax5cLTEdnaB31/Ir0toUsgayJeEYDmXYlv4j8eH3b74qyi4i4iUxJ4pYI1jV
-         YLxrLwZE7tOBn8CY4JIdSlP2cBMIpGzzoBT+dMz7ePJwXUTkXa68FaVyNVxehsYJeiKn
-         ypAvHYakv9qZQeAnNcXLg4S1fjamfzmkDIRavpcrkAp/SH3vEs98i4zTk2ZLEFSCNwAH
-         EmNuUl1MB60bmWMutMrO2ilRWNZcZpRaAriAQY8ibvl0/Io05vW/6c9OlCRjbgn6hRGM
-         UGkg==
+        bh=XmiJ8r8In7YZhRpgdLSggbFpjzBQN570VmkdZRjoKl0=;
+        b=M6ntENSWQevfVE4wJYGpCvuhiRBs/UguboAiKuhbN1k8eoUdPpvVhUv1xnF8VXgwRA
+         MdLwa/cOtEg+kyIANAYshaShDUIy364a8Qo+R2UAu/P1S+ulxY0kFyk+cOqsHi+T3UFp
+         g2LxoYzZgTThz6Oy4rK7gU2WNK3GzOtrqQzmeQOwI6MlscPkO2M6rdL00gjYrK8igEyZ
+         w5SN4N/51Ggyw+VN7sRiouv16fwKQmHEjKcDJW5oAysHPfz/jbDfsiAK5JZqbT+Yt1Rd
+         2RdZsW5WGf/hx2pwMsgqOhucC8mAjPqiSPy8ltpa3QVsgaRKLVWedu342pVtPwBbnBYf
+         wxIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FmYPQx8YxN0VzxRVH60woHoEcaUG/mRpzY/F6fsmbBg=;
-        b=Q62M5pasYY/1UVWV+Lryz/Niz9pns/pAr7xGnCAzmCikaA/5XDFCNwgjZkeeuYM/03
-         mSHQVx9urzLNWqaZ8t1YcMcadQ3IsXSl1tGKFYz1G4YqNwb0V1wDmiIWF2g8f311c6Id
-         lltfs0h0lIzFEXW/olfJBuL1q4AjnZDGsV/N+YFrAOGpV4IYNuiSlyBCtsI57rihqm/F
-         ZUh1VpLlrlJ3Fib7s0LNIPE4p2f5gcT0SCs/fTFsbWRNlX/gUO+3DFZJezhKPc2agyO/
-         6uQDbFJ7f/xfnvXc4YAJqsL8LPiXGEHT39u3brDMCxQNnkTJlRsJZmU8Ey27tE3zqvfP
-         qUzw==
-X-Gm-Message-State: AGi0Pua30/Iw455Ats3B4Tm2xxIyOKpZ6c/uPaUzeGCG0dtu5ZpQsImK
-        5GTgp1JKn4WQ+cbSVBkmS8MfJJFRkoyxFfDUNmg=
-X-Google-Smtp-Source: APiQypKUvNq9w5r6XWPwtMqzhHUDxkqXXWm97f7kOfRyDKGt5Fx1FGDnzJAAC8V3Ytk9/UDRmMJiuTTNfRxD84OaLjU=
-X-Received: by 2002:a37:6411:: with SMTP id y17mr11285357qkb.437.1585947023853;
- Fri, 03 Apr 2020 13:50:23 -0700 (PDT)
+        bh=XmiJ8r8In7YZhRpgdLSggbFpjzBQN570VmkdZRjoKl0=;
+        b=azRK44efIQRVkP9oWe75wP8STYF6/bdc6aMngSiRglurMbz5n1HTSZu7Y4QXdGUOR+
+         P4kFFa5nBpUtnz4TboY7bIVoAadsFor6l20ir9SGpNokh2xufrhkHMidelEmwCKuaXnM
+         68JREb+mKLeU3sKj21LBAyKJ+ENHEPydV48HivhRPie3cU8IKQKm8xmR70MfWJK3vvZE
+         H7KNCKq+z29tmTrAb43gdECrAu+RbFFDvmTc6kwjBNYYNq8Xt8RZCvoTrN2+EMdf9XLe
+         sBaNGG5WkiOLK9cK8B15LaOYIoHcftZeg1grm3lDUkXrQsbsLIe/SxUVZP9mbAJQVwMY
+         ZyIA==
+X-Gm-Message-State: AGi0PuZKcVuijDqwn1vAxHAWm74zmeA1ghVjFDY8MSaGnd4+V5Jt6Vqe
+        /STXadkWxrXEgu2eupuW8I38Gk/cztfUimAZi0s=
+X-Google-Smtp-Source: APiQypLrAAv0TjbwUikI1rOrsahsFIicv7pVJUqr/CcJxejGQmURK1Ta5WDW3qardZaSCQVr8cXCTMZJZgEGyc+DR3M=
+X-Received: by 2002:a2e:b24c:: with SMTP id n12mr6345776ljm.7.1585948385607;
+ Fri, 03 Apr 2020 14:13:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200329225342.16317-1-joe@wand.net.nz> <20200329225342.16317-5-joe@wand.net.nz>
- <CAEf4Bzb6Jr3qBOd0N2NsqMCXQ-19StU+TdFSmB=E+mDPeeC_Jg@mail.gmail.com> <CAOftzPj5aKspwmZ72t+ivjE72CUWObfgekpiQM+iCTya5hxgGw@mail.gmail.com>
-In-Reply-To: <CAOftzPj5aKspwmZ72t+ivjE72CUWObfgekpiQM+iCTya5hxgGw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 3 Apr 2020 13:50:12 -0700
-Message-ID: <CAEf4BzaFbM+H1BRGeWTTTaBB_uwUxMadL-K7txFHJVWiGz34Tg@mail.gmail.com>
-Subject: Re: [PATCHv5 bpf-next 4/5] selftests: bpf: add test for sk_assign
-To:     Joe Stringer <joe@wand.net.nz>
-Cc:     bpf <bpf@vger.kernel.org>, Lorenz Bauer <lmb@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+References: <fb5ab568-9bc8-3145-a8db-3e975ccdf846@gmail.com>
+ <20200331060641.79999-1-maowenan@huawei.com> <7a1d55ad-1427-67fe-f204-4d4a0ab2c4b1@gmail.com>
+ <20200401181419.7acd2aa6@carbon> <ede2f407-839e-d29e-0ebe-aa39dd461bfd@gmail.com>
+ <20200402110619.48f31a63@carbon> <CAADnVQKEyv_bRhEfu1Jp=DSggj_O2xjJyd_QZ7a4LJY+dUO2rg@mail.gmail.com>
+ <20200403095847.21e1e5ea@carbon>
+In-Reply-To: <20200403095847.21e1e5ea@carbon>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 3 Apr 2020 14:12:54 -0700
+Message-ID: <CAADnVQKs9hLUPB6vW+sC3pe1ivXKU3woJFvT=X2hCqT=NnZF7Q@mail.gmail.com>
+Subject: Re: [PATCH net v2] veth: xdp: use head instead of hard_start
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        Mao Wenan <maowenan@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Martin Lau <kafai@fb.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, jwi@linux.ibm.com,
+        jianglidong3@jd.com, Eric Dumazet <edumazet@google.com>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 2, 2020 at 8:46 AM Joe Stringer <joe@wand.net.nz> wrote:
+On Fri, Apr 3, 2020 at 12:59 AM Jesper Dangaard Brouer
+<brouer@redhat.com> wrote:
 >
-> I'll take a look. Should just be iproute2 package I believe.
->
+> I want to wait to ease your life as maintainer. This is part of a
+> larger patchset (for XDP frame_sz) and the next patch touch same code
+> path and thus depend on these code adjustments.  If we apply them in
+> bpf vs bpf-next then you/we will have to handle merge conflicts.  The
+> severity of the "fix" is really low, it only means 32 bytes less
+> headroom (which I doubt anyone is using).
 
-For anyone following along. iproute2, which is now a dependency of
-sk_assign selftest brings in a ton of dependencies, including systemd
-itself. This, beyond causing linux image problems we haven't
-investigated too deeply, also increases our image almost three-fold.
-See [0] for github discussion on topic.
-
-So for now I'm going to disable sk_assign selftest permanently in
-libbpf tests. Ideally sk_assign can be written to not rely on iproute2
-to set things up. But until then, it won't be exercised in libbpf's CI
-tests, unfortunately.
-
-  [0] https://github.com/libbpf/libbpf/pull/144#issuecomment-608170330
-
-
-> On Wed, Apr 1, 2020, 16:20 Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->>
->> On Sun, Mar 29, 2020 at 3:58 PM Joe Stringer <joe@wand.net.nz> wrote:
->> >
->> > From: Lorenz Bauer <lmb@cloudflare.com>
->> >
->> > Attach a tc direct-action classifier to lo in a fresh network
->> > namespace, and rewrite all connection attempts to localhost:4321
->> > to localhost:1234 (for port tests) and connections to unreachable
->> > IPv4/IPv6 IPs to the local socket (for address tests). Includes
->> > implementations for both TCP and UDP.
->> >
->> > Keep in mind that both client to server and server to client traffic
->> > passes the classifier.
->> >
->> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
->> > Co-authored-by: Joe Stringer <joe@wand.net.nz>
->> > Signed-off-by: Joe Stringer <joe@wand.net.nz>
->> > Acked-by: Martin KaFai Lau <kafai@fb.com>
->> > ---
->> > v5: No change
->> > v4: Add acks
->> > v3: Add tests for UDP socket assign
->> >     Fix switching back to original netns after test
->> >     Avoid using signals to timeout connections
->> >     Refactor to iterate through test cases
->> > v2: Rebase onto test_progs infrastructure
->> > v1: Initial commit
->> > ---
->>
->> Hey Joe!
->>
->> When syncing libbpf to Github, this selftest is now failing with the
->> follow errors:
->>
->> tc: command line is not complete, try "help"
->> configure_stack:FAIL:46
->> configure_stack: Interrupted system call
->> #49 sk_assign:FAIL
->>
->> We are probably missing some packages or something like that. Could
->> you please help figuring out how we need to adjust libbpf Travis CI
->> environment to accomodate this? Thanks!
->> You can find one of the failed runs at [0]
->>
->>   [0] https://travis-ci.com/github/anakryiko/libbpf/jobs/311759005
+Ahh. Make sense. That type of fix can wait.
+Thanks!
