@@ -2,91 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D67B19EC8B
-	for <lists+bpf@lfdr.de>; Sun,  5 Apr 2020 18:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1273C19ED57
+	for <lists+bpf@lfdr.de>; Sun,  5 Apr 2020 20:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726918AbgDEQ0x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 5 Apr 2020 12:26:53 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:45914 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726765AbgDEQ0x (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 5 Apr 2020 12:26:53 -0400
-Received: by mail-io1-f67.google.com with SMTP id y14so13069199iol.12;
-        Sun, 05 Apr 2020 09:26:52 -0700 (PDT)
+        id S1726776AbgDESb2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 5 Apr 2020 14:31:28 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:34137 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726771AbgDESb2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 5 Apr 2020 14:31:28 -0400
+Received: by mail-qk1-f194.google.com with SMTP id i186so4989266qke.1;
+        Sun, 05 Apr 2020 11:31:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qzPKx60Pj8Uww/sN5UN+Yh108GxV30oLDYA5ZvLaw4o=;
-        b=cr3eMjSy5xezMeWVo1yY3VaPnaWrbm+A+wVnPj1jut57vU9SQ/w/bsw+qcEyO9mHjO
-         Nr+V0Jh6Ah82E3ywyTPOgivMIfo5cglSRgtpMCf5fiEPRYuk1qx0tC0ZZDcGPha0otez
-         gDoa8bLYcjWkkVGsoGkREfxKTQWlvBzWij7rnILgnr+v5RBVvZoGO0i07EIEC2YYZRLa
-         qcW5ubFyPU7IWnBMFocD6rzCqLvAUTq44t+fKX/NbMAKlPoCkceQb6JQTFCQLQ46BlXx
-         asXkdNQTO/wRxuCyW/LUpZ5A8vMPspXrjaywn4LpQxLsSDja6ML7FFDKGwSitNI5ieVy
-         F5ew==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VdCOiULPYGtStxmnCkuLZmgFo9x/FqnSR/aOAQ2GpqY=;
+        b=a/oiTCaP0JqkVYTPom12lG6TzWozpI0vJlIWag+UO6v0t6sQUvmrDxpxORevKwDUue
+         lXmR8iaLNSHPmO6foLB+ZjB4hyevI81dyVbN7PYQ8uqEf9rhZrFfY0jDy5NFLjTkSZGz
+         S9ISOBAAV6XJ+G80TqgsgXbYLHPX2t/UDU5+cPqMdILsGERgFQC37Rc7zXd9lHOEu8BW
+         vSso/2iwS6uJ/ZgJBtty7cVCtBziAD4EkVWQW4OLK1DK3PQaBwxrONvaXh4U3z+2MTM6
+         Cy12QYmIjonp+eEoMeg05391xGGkWVsLsg5MPhDE3XFks/k0n6B1ZeZHT58H6m0WJyLx
+         cJ6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qzPKx60Pj8Uww/sN5UN+Yh108GxV30oLDYA5ZvLaw4o=;
-        b=gnQzIAQSTFER/+WS5nASagEc7NPcTNaPoy09CPHzbPo7zS6G0gq9S/yBBAoDsnDZMq
-         NH0XhhpF3vhwxRMXTAZpPR4PrEWMOYtTI8pURPmeLaEx46qgliDQMekFoN3qVIUF9xdy
-         7cUscYpi/lMfiBLvkZJ5uqRBCZSmHxZQge9FGB01rdsr8tREf41Sfa9mjXQI36eXm/Xh
-         oShHQzuIrvDxxB0HJ1NVmXmlHC8a5C9DyK/lXAU5HHh0J/Hj33Mx2k9KE5z1z19GNqT7
-         68B3kKm1N/rKDGEn0IJ66G4ilxUoknwdPJr3U8+88GjFfy0haMoQhx7meLbgcGJ1e4vf
-         0o9w==
-X-Gm-Message-State: AGi0PubJEknlGBsqTk0f1czu+nk9eeIygJFB/q6j68x/Cjwn+H+SpX55
-        xKS2Ehbfwrd/UP0kalcDMp2CCrKR
-X-Google-Smtp-Source: APiQypK0Kl2pUml53VmbpXW499rDMSVgaOIPAVH7hN8HUhsemX6YY0kRWWRA2Lv8lGcn0/KvBnHy7w==
-X-Received: by 2002:a6b:ee10:: with SMTP id i16mr15936272ioh.114.1586104011897;
-        Sun, 05 Apr 2020 09:26:51 -0700 (PDT)
-Received: from ?IPv6:2601:282:803:7700:60e1:98ca:913:d555? ([2601:282:803:7700:60e1:98ca:913:d555])
-        by smtp.googlemail.com with ESMTPSA id 10sm5087601ilb.45.2020.04.05.09.26.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Apr 2020 09:26:51 -0700 (PDT)
-Subject: Re: [RFC PATCH bpf-next 0/8] bpf_link observability APIs
-To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
-Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com
-References: <20200404000948.3980903-1-andriin@fb.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <0849eba7-18c3-e5d5-f4d6-b76dcb882906@gmail.com>
-Date:   Sun, 5 Apr 2020 10:26:50 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VdCOiULPYGtStxmnCkuLZmgFo9x/FqnSR/aOAQ2GpqY=;
+        b=os8XJtitpsqftVd9/UGukvLeD+fNuyssIzandq6QXlGvfxgvWT5YmPtUDwWYjgJCze
+         hnsBfCNZJDfJNbw8v3u4SjQ2e4fcgFhJ/PeSmO/pj8kyykkN9cRd5QBVYnyWdwyvukAh
+         3VsWtcfwxJJyG7XwfqIRnAReflCmCygRJNknt/XMvnlekzRxG2KTeIQcc8XXR1FkC/rq
+         vj5g9oneakR/ye6NcQVDmTK5p7SJJU81agISu9aSL28o8GqUq5iIkIWZH3tmc/zcpmqj
+         xiXX6LdPP2toIa2lEoBk1gGAdL/gynDldYAWq2cDDcsq2lFcQTN14CMlmschFF8An+OY
+         /rag==
+X-Gm-Message-State: AGi0Pua6kXfJnbF4s5AqIivugns5e42s5f3F/RPR1WnF26NSNr4P8SUB
+        lugDQ8rqLw3x6qN18I+1cihIvRxZroKxp4oINQI=
+X-Google-Smtp-Source: APiQypJlyFvwWzBHcBNhjoIuhWhZakt/U0cjOygj60OtUhHLEU48/lMr/qPnmWesPtPMCPIHmjE4WU2Sk8XtVbPvGQo=
+X-Received: by 2002:a37:9c4d:: with SMTP id f74mr2633934qke.437.1586111486634;
+ Sun, 05 Apr 2020 11:31:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200404000948.3980903-1-andriin@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200404000948.3980903-1-andriin@fb.com> <0849eba7-18c3-e5d5-f4d6-b76dcb882906@gmail.com>
+In-Reply-To: <0849eba7-18c3-e5d5-f4d6-b76dcb882906@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sun, 5 Apr 2020 11:31:15 -0700
+Message-ID: <CAEf4Bzb4HJNzpyF=yRsS1CjiZK1qZ57QmiFUH2-hh46u+OFs7A@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 0/8] bpf_link observability APIs
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/3/20 6:09 PM, Andrii Nakryiko wrote:
-> This patch series adds various observability APIs to bpf_link:
->   - each bpf_link now gets ID, similar to bpf_map and bpf_prog, by which
->     user-space can iterate over all existing bpf_links and create limited FD
->     from ID;
->   - allows to get extra object information with bpf_link general and
->     type-specific information;
->   - makes LINK_UPDATE operation allowed only for writable bpf_links and allows
->     to pin bpf_link as read-only file;
->   - implements `bpf link show` command which lists all active bpf_links in the
->     system;
->   - implements `bpf link pin` allowing to pin bpf_link by ID or from other
->     pinned path.
-> 
-> This RFC series is missing selftests and only limited amount of manual testing
-> was performed. But kernel implementation is hopefully in a good shape and
-> won't change much (unless some big issues are identified with the current
-> approach). It would be great to get feedback on approach and implementation,
-> before I invest more time in writing tests.
-> 
+On Sun, Apr 5, 2020 at 9:26 AM David Ahern <dsahern@gmail.com> wrote:
+>
+> On 4/3/20 6:09 PM, Andrii Nakryiko wrote:
+> > This patch series adds various observability APIs to bpf_link:
+> >   - each bpf_link now gets ID, similar to bpf_map and bpf_prog, by which
+> >     user-space can iterate over all existing bpf_links and create limited FD
+> >     from ID;
+> >   - allows to get extra object information with bpf_link general and
+> >     type-specific information;
+> >   - makes LINK_UPDATE operation allowed only for writable bpf_links and allows
+> >     to pin bpf_link as read-only file;
+> >   - implements `bpf link show` command which lists all active bpf_links in the
+> >     system;
+> >   - implements `bpf link pin` allowing to pin bpf_link by ID or from other
+> >     pinned path.
+> >
+> > This RFC series is missing selftests and only limited amount of manual testing
+> > was performed. But kernel implementation is hopefully in a good shape and
+> > won't change much (unless some big issues are identified with the current
+> > approach). It would be great to get feedback on approach and implementation,
+> > before I invest more time in writing tests.
+> >
+>
+> The word 'ownership' was used over and over in describing the benefits
+> of bpf_link meaning a process owns a program at a specific attach point.
+> How does this set allow me to discover the pid of the process
+> controlling a specific bpf_link?
 
-The word 'ownership' was used over and over in describing the benefits
-of bpf_link meaning a process owns a program at a specific attach point.
-How does this set allow me to discover the pid of the process
-controlling a specific bpf_link?
+In general, it's many processes, not a single process. Here's how:
+
+1. Each bpf_link has a unique ID.
+2. You can find desired bpf_link info (including ID) either by already
+having FD and querying it with GET_OBJ_INFO_BY_FD, or by doing
+GET_NEXT_ID iteration and then GET_FD_BY_ID + GET_OBJ_INFO_BY_FD.
+3. Iterate all open files (either by using tools like drgn or by
+iterating over procfs), check their fdinfo to see if it's bpf_link's
+with given ID. This gives you which application has FD open against
+given bpf_link.
+
+Similarly one can iterate over all pinned files in bpffs and see if it
+pins bpf_link (I believe bpftool can do that already and show which
+objects are pinned, so it should be a minimal change to actually print
+out all the pinned file paths).
+
+Does that answer your question?
