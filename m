@@ -2,116 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A6519EA09
-	for <lists+bpf@lfdr.de>; Sun,  5 Apr 2020 10:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D67B19EC8B
+	for <lists+bpf@lfdr.de>; Sun,  5 Apr 2020 18:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726380AbgDEIhA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 5 Apr 2020 04:37:00 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:34881 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726308AbgDEIhA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 5 Apr 2020 04:37:00 -0400
-Received: by mail-pf1-f193.google.com with SMTP id a13so6007474pfa.2;
-        Sun, 05 Apr 2020 01:36:59 -0700 (PDT)
+        id S1726918AbgDEQ0x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 5 Apr 2020 12:26:53 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:45914 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726765AbgDEQ0x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 5 Apr 2020 12:26:53 -0400
+Received: by mail-io1-f67.google.com with SMTP id y14so13069199iol.12;
+        Sun, 05 Apr 2020 09:26:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Ncl8XXtzp8goItvEp2ww15C1VisVJr6bKa4zYnBNmX0=;
-        b=UiBbl3JgXB+WXPn0PDlm6JGE4zUA0Lk+w2SyBVnGyw+dtI3fMZAwpQvxLQLp1zocmc
-         cbZAjRELnDckLbIDej8cQ9TYieSow+wb5wXbORwlZevebns6eo8/z0JWd8gu9J6eQvcw
-         hazEBqpkdC/xBC+YGvNdp/RryMhQ/PVr5bSPI/hnLNMKTMSs9uJrrKbom6qKwt53EDl6
-         DcRcqE9SMUU8sMl3p5awrJZf2xuCdUStIN8IFN3vUpYauz/B1Me3zUaDSTYiU1K/RbSb
-         fzUtxc7jlXr99CrDzjo6H1+wCRql+6stLwwjt9iiefUmyJqE7D+H6jnjoPQcAsxrXOVl
-         ZGFw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qzPKx60Pj8Uww/sN5UN+Yh108GxV30oLDYA5ZvLaw4o=;
+        b=cr3eMjSy5xezMeWVo1yY3VaPnaWrbm+A+wVnPj1jut57vU9SQ/w/bsw+qcEyO9mHjO
+         Nr+V0Jh6Ah82E3ywyTPOgivMIfo5cglSRgtpMCf5fiEPRYuk1qx0tC0ZZDcGPha0otez
+         gDoa8bLYcjWkkVGsoGkREfxKTQWlvBzWij7rnILgnr+v5RBVvZoGO0i07EIEC2YYZRLa
+         qcW5ubFyPU7IWnBMFocD6rzCqLvAUTq44t+fKX/NbMAKlPoCkceQb6JQTFCQLQ46BlXx
+         asXkdNQTO/wRxuCyW/LUpZ5A8vMPspXrjaywn4LpQxLsSDja6ML7FFDKGwSitNI5ieVy
+         F5ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Ncl8XXtzp8goItvEp2ww15C1VisVJr6bKa4zYnBNmX0=;
-        b=IVIxM5N2nZf2mFqVHJknxklv6Tozfk8SMDwcv9j956+LEdk+pKN7R3QArlfYX6WWvg
-         Hk0R2ouoazFK1irysfp3DtVp8nF3r0m6Rx+MqAsq+qWxGo1R9Qp9OsEfvK5pV49vUdXQ
-         H8s+7o1gJmwji70hX4O6cM1qrrFtveq6YAaIaCITm6t0Ah80kLiqohz8hGcCT9nLeEG6
-         kJeZhhmMnEbzcrejqXtHfpiD7cyQG5ieBHzO1tnAcJKgScDgfvYF1fcCGFJZGznowZCN
-         a/0yUSIXgsyvaElOOrbln2fSu5eXDkHTkYbV5CU5KuL5iajctvrJre1oQ6YaHuGcmR69
-         0aPg==
-X-Gm-Message-State: AGi0Pubx71WSMvGnvlOUz0g1uNenb3YTfEEyjkoi0x2LLW65VR0tjzwj
-        Vb6pdicLoN57msxlyAfC2OM=
-X-Google-Smtp-Source: APiQypLwjpQ8/2K2EhOZmMPEwHuHozeHT2LsHn3MvCuDvbg8478/A6s7FGnWlBvSyPQ5EeyjF7JA+w==
-X-Received: by 2002:a63:602:: with SMTP id 2mr15774896pgg.356.1586075818769;
-        Sun, 05 Apr 2020 01:36:58 -0700 (PDT)
-Received: from localhost (n112120135125.netvigator.com. [112.120.135.125])
-        by smtp.gmail.com with ESMTPSA id y3sm8991405pfy.158.2020.04.05.01.36.57
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 05 Apr 2020 01:36:58 -0700 (PDT)
-From:   Qiujun Huang <hqjagain@gmail.com>
-To:     jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc:     ast@kernel.org, daniel@iogearbox.net, linux-um@lists.infradead.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>
-Subject: [PATCH] um: delete an unnecessary check before the kfree
-Date:   Sun,  5 Apr 2020 16:36:52 +0800
-Message-Id: <20200405083652.29462-1-hqjagain@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qzPKx60Pj8Uww/sN5UN+Yh108GxV30oLDYA5ZvLaw4o=;
+        b=gnQzIAQSTFER/+WS5nASagEc7NPcTNaPoy09CPHzbPo7zS6G0gq9S/yBBAoDsnDZMq
+         NH0XhhpF3vhwxRMXTAZpPR4PrEWMOYtTI8pURPmeLaEx46qgliDQMekFoN3qVIUF9xdy
+         7cUscYpi/lMfiBLvkZJ5uqRBCZSmHxZQge9FGB01rdsr8tREf41Sfa9mjXQI36eXm/Xh
+         oShHQzuIrvDxxB0HJ1NVmXmlHC8a5C9DyK/lXAU5HHh0J/Hj33Mx2k9KE5z1z19GNqT7
+         68B3kKm1N/rKDGEn0IJ66G4ilxUoknwdPJr3U8+88GjFfy0haMoQhx7meLbgcGJ1e4vf
+         0o9w==
+X-Gm-Message-State: AGi0PubJEknlGBsqTk0f1czu+nk9eeIygJFB/q6j68x/Cjwn+H+SpX55
+        xKS2Ehbfwrd/UP0kalcDMp2CCrKR
+X-Google-Smtp-Source: APiQypK0Kl2pUml53VmbpXW499rDMSVgaOIPAVH7hN8HUhsemX6YY0kRWWRA2Lv8lGcn0/KvBnHy7w==
+X-Received: by 2002:a6b:ee10:: with SMTP id i16mr15936272ioh.114.1586104011897;
+        Sun, 05 Apr 2020 09:26:51 -0700 (PDT)
+Received: from ?IPv6:2601:282:803:7700:60e1:98ca:913:d555? ([2601:282:803:7700:60e1:98ca:913:d555])
+        by smtp.googlemail.com with ESMTPSA id 10sm5087601ilb.45.2020.04.05.09.26.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 05 Apr 2020 09:26:51 -0700 (PDT)
+Subject: Re: [RFC PATCH bpf-next 0/8] bpf_link observability APIs
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com
+References: <20200404000948.3980903-1-andriin@fb.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <0849eba7-18c3-e5d5-f4d6-b76dcb882906@gmail.com>
+Date:   Sun, 5 Apr 2020 10:26:50 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <20200404000948.3980903-1-andriin@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-NULL check before kfree is unnecessary so remove it.
+On 4/3/20 6:09 PM, Andrii Nakryiko wrote:
+> This patch series adds various observability APIs to bpf_link:
+>   - each bpf_link now gets ID, similar to bpf_map and bpf_prog, by which
+>     user-space can iterate over all existing bpf_links and create limited FD
+>     from ID;
+>   - allows to get extra object information with bpf_link general and
+>     type-specific information;
+>   - makes LINK_UPDATE operation allowed only for writable bpf_links and allows
+>     to pin bpf_link as read-only file;
+>   - implements `bpf link show` command which lists all active bpf_links in the
+>     system;
+>   - implements `bpf link pin` allowing to pin bpf_link by ID or from other
+>     pinned path.
+> 
+> This RFC series is missing selftests and only limited amount of manual testing
+> was performed. But kernel implementation is hopefully in a good shape and
+> won't change much (unless some big issues are identified with the current
+> approach). It would be great to get feedback on approach and implementation,
+> before I invest more time in writing tests.
+> 
 
-This issue was detected by using the Coccinelle software.
-
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
----
- arch/um/drivers/vector_user.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
-
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index ddcd917be0af..aa28e9eecb7b 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -221,8 +221,7 @@ static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
- 	return result;
- tap_cleanup:
- 	printk(UM_KERN_ERR "user_init_tap: init failed, error %d", fd);
--	if (result != NULL)
--		kfree(result);
-+	kfree(result);
- 	return NULL;
- }
- 
-@@ -266,8 +265,7 @@ static struct vector_fds *user_init_hybrid_fds(struct arglist *ifspec)
- 	return result;
- hybrid_cleanup:
- 	printk(UM_KERN_ERR "user_init_hybrid: init failed");
--	if (result != NULL)
--		kfree(result);
-+	kfree(result);
- 	return NULL;
- }
- 
-@@ -344,10 +342,8 @@ static struct vector_fds *user_init_unix_fds(struct arglist *ifspec, int id)
- unix_cleanup:
- 	if (fd >= 0)
- 		os_close_file(fd);
--	if (remote_addr != NULL)
--		kfree(remote_addr);
--	if (result != NULL)
--		kfree(result);
-+	kfree(remote_addr);
-+	kfree(result);
- 	return NULL;
- }
- 
-@@ -382,8 +378,7 @@ static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
- 	return result;
- raw_cleanup:
- 	printk(UM_KERN_ERR "user_init_raw: init failed, error %d", err);
--	if (result != NULL)
--		kfree(result);
-+	kfree(result);
- 	return NULL;
- }
- 
--- 
-2.17.1
-
+The word 'ownership' was used over and over in describing the benefits
+of bpf_link meaning a process owns a program at a specific attach point.
+How does this set allow me to discover the pid of the process
+controlling a specific bpf_link?
