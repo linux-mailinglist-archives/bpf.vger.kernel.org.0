@@ -2,105 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1273C19ED57
-	for <lists+bpf@lfdr.de>; Sun,  5 Apr 2020 20:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1443219EF56
+	for <lists+bpf@lfdr.de>; Mon,  6 Apr 2020 04:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgDESb2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 5 Apr 2020 14:31:28 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:34137 "EHLO
+        id S1726436AbgDFCqv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 5 Apr 2020 22:46:51 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:45039 "EHLO
         mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726771AbgDESb2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 5 Apr 2020 14:31:28 -0400
-Received: by mail-qk1-f194.google.com with SMTP id i186so4989266qke.1;
-        Sun, 05 Apr 2020 11:31:27 -0700 (PDT)
+        with ESMTP id S1726408AbgDFCqu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 5 Apr 2020 22:46:50 -0400
+Received: by mail-qk1-f194.google.com with SMTP id j4so14739008qkc.11;
+        Sun, 05 Apr 2020 19:46:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=VdCOiULPYGtStxmnCkuLZmgFo9x/FqnSR/aOAQ2GpqY=;
-        b=a/oiTCaP0JqkVYTPom12lG6TzWozpI0vJlIWag+UO6v0t6sQUvmrDxpxORevKwDUue
-         lXmR8iaLNSHPmO6foLB+ZjB4hyevI81dyVbN7PYQ8uqEf9rhZrFfY0jDy5NFLjTkSZGz
-         S9ISOBAAV6XJ+G80TqgsgXbYLHPX2t/UDU5+cPqMdILsGERgFQC37Rc7zXd9lHOEu8BW
-         vSso/2iwS6uJ/ZgJBtty7cVCtBziAD4EkVWQW4OLK1DK3PQaBwxrONvaXh4U3z+2MTM6
-         Cy12QYmIjonp+eEoMeg05391xGGkWVsLsg5MPhDE3XFks/k0n6B1ZeZHT58H6m0WJyLx
-         cJ6Q==
+        bh=56voqtFYeudq/VV/J/Sg075FrS52rvV+pYrlJWqB8HY=;
+        b=WkVVGgWFJTYzEXNm/LIEDG1GuUzpOrz4DjCrAvs6wKize+qZNPWC8LlXA/6BG2CCeQ
+         SJ9N1/YOs7HN1KAK8sDPTBaKUzmpGzvdiiIy7o/0MJsi7LkA+3TtqJa/tNCOztOMcBsK
+         3S/8r7YXulhYeSCnqYYPCPbyhbCLgBGMa1b3XMGqI3yIqkBAPfQwpnGI/WMf7WUguVf3
+         GCwBj4gNVCmUMijdwtz3UtUGPH55hLfUtJshRftvHkKkW5krkt3w4OK8x2dkBtDsUKj5
+         /QP8/9hCmdMu8DaDDqtYiFq1YJA1pxs2KacuBdZCzo9jogRc2h0gA0/MG5LxNF6/4ujg
+         uaZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=VdCOiULPYGtStxmnCkuLZmgFo9x/FqnSR/aOAQ2GpqY=;
-        b=os8XJtitpsqftVd9/UGukvLeD+fNuyssIzandq6QXlGvfxgvWT5YmPtUDwWYjgJCze
-         hnsBfCNZJDfJNbw8v3u4SjQ2e4fcgFhJ/PeSmO/pj8kyykkN9cRd5QBVYnyWdwyvukAh
-         3VsWtcfwxJJyG7XwfqIRnAReflCmCygRJNknt/XMvnlekzRxG2KTeIQcc8XXR1FkC/rq
-         vj5g9oneakR/ye6NcQVDmTK5p7SJJU81agISu9aSL28o8GqUq5iIkIWZH3tmc/zcpmqj
-         xiXX6LdPP2toIa2lEoBk1gGAdL/gynDldYAWq2cDDcsq2lFcQTN14CMlmschFF8An+OY
-         /rag==
-X-Gm-Message-State: AGi0Pua6kXfJnbF4s5AqIivugns5e42s5f3F/RPR1WnF26NSNr4P8SUB
-        lugDQ8rqLw3x6qN18I+1cihIvRxZroKxp4oINQI=
-X-Google-Smtp-Source: APiQypJlyFvwWzBHcBNhjoIuhWhZakt/U0cjOygj60OtUhHLEU48/lMr/qPnmWesPtPMCPIHmjE4WU2Sk8XtVbPvGQo=
-X-Received: by 2002:a37:9c4d:: with SMTP id f74mr2633934qke.437.1586111486634;
- Sun, 05 Apr 2020 11:31:26 -0700 (PDT)
+        bh=56voqtFYeudq/VV/J/Sg075FrS52rvV+pYrlJWqB8HY=;
+        b=JuntiiMeWgfxxcdlFbLTMWYM2jzwOu732HEhVuQh7jpmkv08HOr1UaWMDpFl46/35i
+         iiLeyL37Ipr9JtdmwqqWxMvlsHD3bkLsx8TTY0T71Qt3vHvxtj9b0UBoRcqO+SVhZgpA
+         V24Tcz8NuDh82KKeOScuONyHOOQejV1Q4kSCTWduFcTd+y1R2OUBkHTTDseI1K27LDZ9
+         h6AUWn4iyEcFwIJJI0+Va012Qnqj1vMELxBh+mN3NngaktkRFMS/SWse3eZAE/KeNkaG
+         OEs/fNEZ04tfBUb/x5Q/2bIdYp1APH+K61m7M+/kMO9sica1GwE8aMKIEHq815VYaKII
+         Xxag==
+X-Gm-Message-State: AGi0PuaQpL2LAypLb3KQ7pp1J+TvK75eBXyVCPVPTB8KytZv1G7wzuCw
+        aZAjA1Qkf3amfoLusEem14x/EeU3OTD9r788dIk=
+X-Google-Smtp-Source: APiQypLFRORlr4Vh0aYKObYp4Acq9iJezPZdOKLsC++BIczCfPtmRtzIkM7pLbLgyrnkXclrZIDRaUte9iHcVg1wXdc=
+X-Received: by 2002:a05:620a:88e:: with SMTP id b14mr20514490qka.449.1586141209712;
+ Sun, 05 Apr 2020 19:46:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200404000948.3980903-1-andriin@fb.com> <0849eba7-18c3-e5d5-f4d6-b76dcb882906@gmail.com>
-In-Reply-To: <0849eba7-18c3-e5d5-f4d6-b76dcb882906@gmail.com>
+References: <20200404051430.698058-1-jcline@redhat.com>
+In-Reply-To: <20200404051430.698058-1-jcline@redhat.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sun, 5 Apr 2020 11:31:15 -0700
-Message-ID: <CAEf4Bzb4HJNzpyF=yRsS1CjiZK1qZ57QmiFUH2-hh46u+OFs7A@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/8] bpf_link observability APIs
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+Date:   Sun, 5 Apr 2020 19:46:38 -0700
+Message-ID: <CAEf4BzZmki+vzzC0j_uXWfPFs6BGqwxbJn2fYK83L5fpUm+UHg@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: Initialize *nl_pid so gcc 10 is happy
+To:     Jeremy Cline <jcline@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Apr 5, 2020 at 9:26 AM David Ahern <dsahern@gmail.com> wrote:
+On Fri, Apr 3, 2020 at 10:15 PM Jeremy Cline <jcline@redhat.com> wrote:
 >
-> On 4/3/20 6:09 PM, Andrii Nakryiko wrote:
-> > This patch series adds various observability APIs to bpf_link:
-> >   - each bpf_link now gets ID, similar to bpf_map and bpf_prog, by which
-> >     user-space can iterate over all existing bpf_links and create limited FD
-> >     from ID;
-> >   - allows to get extra object information with bpf_link general and
-> >     type-specific information;
-> >   - makes LINK_UPDATE operation allowed only for writable bpf_links and allows
-> >     to pin bpf_link as read-only file;
-> >   - implements `bpf link show` command which lists all active bpf_links in the
-> >     system;
-> >   - implements `bpf link pin` allowing to pin bpf_link by ID or from other
-> >     pinned path.
-> >
-> > This RFC series is missing selftests and only limited amount of manual testing
-> > was performed. But kernel implementation is hopefully in a good shape and
-> > won't change much (unless some big issues are identified with the current
-> > approach). It would be great to get feedback on approach and implementation,
-> > before I invest more time in writing tests.
-> >
+> Builds of Fedora's kernel-tools package started to fail with "may be
+> used uninitialized" warnings for nl_pid in bpf_set_link_xdp_fd() and
+> bpf_get_link_xdp_info() on the s390 architecture.
 >
-> The word 'ownership' was used over and over in describing the benefits
-> of bpf_link meaning a process owns a program at a specific attach point.
-> How does this set allow me to discover the pid of the process
-> controlling a specific bpf_link?
+> Although libbpf_netlink_open() always returns a negative number when it
+> does not set *nl_pid, the compiler does not determine this and thus
+> believes the variable might be used uninitialized. Assuage gcc's fears
+> by explicitly initializing nl_pid.
+>
+> Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=1807781
+> Signed-off-by: Jeremy Cline <jcline@redhat.com>
+> ---
 
-In general, it's many processes, not a single process. Here's how:
+Yep, unfortunately compiler is not that smart.
 
-1. Each bpf_link has a unique ID.
-2. You can find desired bpf_link info (including ID) either by already
-having FD and querying it with GET_OBJ_INFO_BY_FD, or by doing
-GET_NEXT_ID iteration and then GET_FD_BY_ID + GET_OBJ_INFO_BY_FD.
-3. Iterate all open files (either by using tools like drgn or by
-iterating over procfs), check their fdinfo to see if it's bpf_link's
-with given ID. This gives you which application has FD open against
-given bpf_link.
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-Similarly one can iterate over all pinned files in bpffs and see if it
-pins bpf_link (I believe bpftool can do that already and show which
-objects are pinned, so it should be a minimal change to actually print
-out all the pinned file paths).
-
-Does that answer your question?
+>  tools/lib/bpf/netlink.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
+> index 18b5319025e19..9a14694176de0 100644
+> --- a/tools/lib/bpf/netlink.c
+> +++ b/tools/lib/bpf/netlink.c
+> @@ -142,7 +142,7 @@ static int __bpf_set_link_xdp_fd_replace(int ifindex, int fd, int old_fd,
+>                 struct ifinfomsg ifinfo;
+>                 char             attrbuf[64];
+>         } req;
+> -       __u32 nl_pid;
+> +       __u32 nl_pid = 0;
+>
+>         sock = libbpf_netlink_open(&nl_pid);
+>         if (sock < 0)
+> @@ -288,7 +288,7 @@ int bpf_get_link_xdp_info(int ifindex, struct xdp_link_info *info,
+>  {
+>         struct xdp_id_md xdp_id = {};
+>         int sock, ret;
+> -       __u32 nl_pid;
+> +       __u32 nl_pid = 0;
+>         __u32 mask;
+>
+>         if (flags & ~XDP_FLAGS_MASK || !info_size)
+> --
+> 2.26.0
+>
