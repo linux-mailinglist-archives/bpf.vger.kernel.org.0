@@ -2,100 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6B81A05CB
-	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 06:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC551A0621
+	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 07:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725883AbgDGEfw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Apr 2020 00:35:52 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:50360 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725802AbgDGEfw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Apr 2020 00:35:52 -0400
-Received: by mail-wm1-f67.google.com with SMTP id x25so383671wmc.0;
-        Mon, 06 Apr 2020 21:35:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sSkxWTuRD0sKq21kRPoKRlna2bsz89FT8o39f/x/Qug=;
-        b=qCZvQep6dpUpOavOoWOqLek+uGC/jN+RmKU7Ie0mTunDoXWrwWnqAuP3TlVFpjtQtw
-         Td6SyMkG6R5RHOi73MSNlo6coqhPh3GxmVeznZZ4I1AqAdN6BF5tv2elQQNvlZo69da6
-         /ZUJQUp58K19yR3lTwV6wrcqDjirIZ4XFXVeiJwyEBbjIqCqu0eFuBKCEuVSyzga3WpX
-         5aoUmD/RA/KQKHZx8O8gdjAdZf8UOt2ZuuHbyIprRDHbaxjyRR8m979DwtnUzQSAZZOh
-         7kzebqkC0oBk5yYezXCt0ymiSf0y3nZv+3YV9BwnaVwY91ijtD/HTSGHr5sA7x1pCFMA
-         3Vpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sSkxWTuRD0sKq21kRPoKRlna2bsz89FT8o39f/x/Qug=;
-        b=jI6Co5bo6xdfnGJ+PEr3Jrbamb4VRng+kuVtuu0GXahiITc6YLtJL8o+l5F3VWxHHa
-         0XQAoi8RD1lGgxrSQfItAMPdn1bjslwNTEvNiFInbjqlUSwNdPsSCKpN4cjLzIGtsfeE
-         FYf+uH2rWXoQwNpbZHB89MXwPwKkAob6f2uaDw61+oIKU0PkZDRGcqCjgR35tucksYlg
-         07THQ8d24b9LZrxXRtjj3bk0pF2HKE10b1F+Tg3XD75vziSqGIXaBs0wrKqKqNMYXGvC
-         684VLrwUdm2cro/LItOBk/i680HJuUkBCXx5yiolCZGdHTrlSyH74Ppj41Ua4IU/M9iJ
-         xyjg==
-X-Gm-Message-State: AGi0PuZTYVOUP8a7/0dAoBLygwUFx8PqTReYCCZYbyBVBUpRUmuaBkP9
-        p5WGKAp4bY07a57RSxi2IgUr8Vhkl3l9BljIBqE=
-X-Google-Smtp-Source: APiQypJHb3EeIZpJfA5vWcniz0V3Ui8OvsHNRMp3/07GMGP8kNJZZBBoH4kInyF7w5yjaGBPjaHw0dLXOZso7eoj6d8=
-X-Received: by 2002:a7b:c0d5:: with SMTP id s21mr247696wmh.107.1586234150840;
- Mon, 06 Apr 2020 21:35:50 -0700 (PDT)
+        id S1726796AbgDGFLd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Apr 2020 01:11:33 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:16546 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726399AbgDGFLd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 7 Apr 2020 01:11:33 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0375BS5k026492
+        for <bpf@vger.kernel.org>; Mon, 6 Apr 2020 22:11:32 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=3YibdS0UKx5l9l22WTyH//kMHLuX69iCuzoNpcxmDww=;
+ b=bAL7XlSkKAgVZUdf+FdvfKlxHwVobqYmOE1cbR36b+60vdPGCjczkWTfKzDK8VWledhF
+ mXnXPuEJTGSKT9j88WJYVxJenfWTTF5KtYUb3ya4VeD3JcgpQ0B2fPgoMaX93mPRQ5yV
+ hq43SB+SHMHQhx8n7kuHZBGBY9StLQjlNaI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 307a266ydt-9
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 06 Apr 2020 22:11:32 -0700
+Received: from intmgw001.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Mon, 6 Apr 2020 22:11:14 -0700
+Received: by dev082.prn2.facebook.com (Postfix, from userid 572249)
+        id A9C4A3700D26; Mon,  6 Apr 2020 22:11:08 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrey Ignatov <rdna@fb.com>
+Smtp-Origin-Hostname: dev082.prn2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Andrey Ignatov <rdna@fb.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <kernel-team@fb.com>, <toke@redhat.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf 0/2] libbpf: Fix bpf_get_link_xdp_id flags handling
+Date:   Mon, 6 Apr 2020 22:09:44 -0700
+Message-ID: <cover.1586236080.git.rdna@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <1585813930-19712-1-git-send-email-lirongqing@baidu.com>
- <6BB0E637-B5F8-4B50-9B70-8A30F4AF6CF5@gmail.com> <CAJ+HfNjTaWp+=na14mjMzpbRzM2Ea5wK_MNJddFNEJ59XDLPNw@mail.gmail.com>
- <7dbc67e0-aaca-9809-3cda-34f3d5791337@iogearbox.net>
-In-Reply-To: <7dbc67e0-aaca-9809-3cda-34f3d5791337@iogearbox.net>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Tue, 7 Apr 2020 06:35:39 +0200
-Message-ID: <CAJ+HfNhYqPuX6zC3QZi=aQ0=j_z2gNPBmkYohm-hkP7q4pE_ug@mail.gmail.com>
-Subject: Re: [PATCH] xsk: fix out of boundary write in __xsk_rcv_memcpy
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Li RongQing <lirongqing@baidu.com>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kevin Laatz <kevin.laatz@intel.com>,
-        Ciara Loftus <ciara.loftus@intel.com>,
-        Bruce Richardson <bruce.richardson@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-07_01:2020-04-07,2020-04-06 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=309
+ malwarescore=0 suspectscore=13 priorityscore=1501 lowpriorityscore=0
+ phishscore=0 spamscore=0 adultscore=0 impostorscore=0 clxscore=1015
+ mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004070042
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 6 Apr 2020 at 22:13, Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 4/3/20 10:29 AM, Bj=C3=B6rn T=C3=B6pel wrote:
-> > On Fri, 3 Apr 2020 at 00:22, Jonathan Lemon <jonathan.lemon@gmail.com> =
-wrote:
-> >> On 2 Apr 2020, at 0:52, Li RongQing wrote:
-> >>
-> >>> first_len is remainder of first page, if write size is
-> >>> larger than it, out of page boundary write will happen
-> >>>
-> >>> Fixes: c05cd3645814 "(xsk: add support to allow unaligned chunk place=
-ment)"
-> >>> Signed-off-by: Li RongQing <lirongqing@baidu.com>
-> >>
-> >> Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
-> >
-> > Good catch!
-> > Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
->
-> Applied, thanks!
->
-> Bj=C3=B6rn, Magnus, others, would be really valuable to have a proper kse=
-lftest suite
-> in BPF for covering everything xsk related, including such corner cases a=
-s Li fixed
-> here, wdyt? ;-)
->
-
-Indeed. It's *very much* overdue. :-(
+This patch set fixes bpf_get_link_xdp_id() behavior for non-zero flags an=
+d
+adds selftest that verifies the fix and can be used to reproduce the
+problem.
 
 
-Bj=C3=B6rn
+Andrey Ignatov (2):
+  libbpf: Fix bpf_get_link_xdp_id flags handling
+  selftests/bpf: Add test for bpf_get_link_xdp_id
 
-> Thanks,
-> Daniel
+ tools/lib/bpf/netlink.c                       |  2 +-
+ .../selftests/bpf/prog_tests/xdp_info.c       | 68 +++++++++++++++++++
+ 2 files changed, 69 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_info.c
+
+--=20
+2.24.1
+
