@@ -2,75 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F90C1A0521
-	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 05:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6B81A05CB
+	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 06:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbgDGDIl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Apr 2020 23:08:41 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:38679 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726681AbgDGDIk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Apr 2020 23:08:40 -0400
-Received: by mail-lf1-f68.google.com with SMTP id l11so1172770lfc.5;
-        Mon, 06 Apr 2020 20:08:39 -0700 (PDT)
+        id S1725883AbgDGEfw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Apr 2020 00:35:52 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:50360 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725802AbgDGEfw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Apr 2020 00:35:52 -0400
+Received: by mail-wm1-f67.google.com with SMTP id x25so383671wmc.0;
+        Mon, 06 Apr 2020 21:35:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zsYSND37d1WovY/AysD3q0aS8AHErV9kM3MhhA7w89s=;
-        b=sDtu4jkQ/UmTekhQ6pgYwCbOFPgBt29BSd0K7ac4LNlGULAyXx9mPoeDOTS/r5NxV8
-         1FEmgL5SLAHX4vtfAPIDp5wv3clDmC6hZ1l+TmbD7AyvAmh4y32jNaEuZ+D2k0bP9Htw
-         pQdy96rdHOi0T8k7gGXxRhZ1A/O+pBsdJq7OA+RoUhi+GJ4ZAiRJSzVImPgRhwmCgs2m
-         45RcoHwkQcPMwmhrwbU6mguNP2uEZIdd62qj63r9Fxvhfurg3dV8WIvDmGl1LUmKJirj
-         AOIH2g9bSzAPp5T2HIn8VkGPjErXO4XVoPcSJin5wuoIYziHQErrpZgfIOqYHFLS/qhp
-         pcWw==
+         :cc:content-transfer-encoding;
+        bh=sSkxWTuRD0sKq21kRPoKRlna2bsz89FT8o39f/x/Qug=;
+        b=qCZvQep6dpUpOavOoWOqLek+uGC/jN+RmKU7Ie0mTunDoXWrwWnqAuP3TlVFpjtQtw
+         Td6SyMkG6R5RHOi73MSNlo6coqhPh3GxmVeznZZ4I1AqAdN6BF5tv2elQQNvlZo69da6
+         /ZUJQUp58K19yR3lTwV6wrcqDjirIZ4XFXVeiJwyEBbjIqCqu0eFuBKCEuVSyzga3WpX
+         5aoUmD/RA/KQKHZx8O8gdjAdZf8UOt2ZuuHbyIprRDHbaxjyRR8m979DwtnUzQSAZZOh
+         7kzebqkC0oBk5yYezXCt0ymiSf0y3nZv+3YV9BwnaVwY91ijtD/HTSGHr5sA7x1pCFMA
+         3Vpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zsYSND37d1WovY/AysD3q0aS8AHErV9kM3MhhA7w89s=;
-        b=Zdb6qoxFSdxYGWB1o7mejIq8GEysXkJAYDhi5l07DYTf8DrMBqnA79OgCQF0MmMpk0
-         n9rP/TaO/8TswBukfFwN+c2+e0rNzlCnNCrkNJL9+A+SCfiY+PbX+g8Qm0oiwQezUjgr
-         15/UgmGNtwo4pZ/SD3gU3j/coHWFqw9YK1jVEjk8+EgzwXXwOPaRyD8KmVBiX1RvRmR0
-         whi2gnWxxEQI1z+gZjbtKhcN3kS6BM0AJSo0xGkYzNr0YRCrhzfWnbiJg8SnpmKrnjit
-         cg1Zfax79qeRR/Y0qCA1YOcXpAl64tgjUIX3S1rvwuwCdyg6Ib8b/44CfNCh4ILdVpQ0
-         uXWQ==
-X-Gm-Message-State: AGi0PuYmmUrFJZQ0aI7KrRxr9lQKgKe7LKCxEzso4HilSsold6SKsfcJ
-        hinUEPPL5mAttHeZVfRLf0pIpU7yhkhfR/FCQAM=
-X-Google-Smtp-Source: APiQypKQsKIwrun7isv16dKPq2dYtfOpYBlBKq04m2Ce1IGWQdUMNqb1kr8dKw+ktwBbvz8Mtc8cX85Rz0UDTu8d2T0=
-X-Received: by 2002:ac2:4426:: with SMTP id w6mr87310lfl.8.1586228918428; Mon,
- 06 Apr 2020 20:08:38 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=sSkxWTuRD0sKq21kRPoKRlna2bsz89FT8o39f/x/Qug=;
+        b=jI6Co5bo6xdfnGJ+PEr3Jrbamb4VRng+kuVtuu0GXahiITc6YLtJL8o+l5F3VWxHHa
+         0XQAoi8RD1lGgxrSQfItAMPdn1bjslwNTEvNiFInbjqlUSwNdPsSCKpN4cjLzIGtsfeE
+         FYf+uH2rWXoQwNpbZHB89MXwPwKkAob6f2uaDw61+oIKU0PkZDRGcqCjgR35tucksYlg
+         07THQ8d24b9LZrxXRtjj3bk0pF2HKE10b1F+Tg3XD75vziSqGIXaBs0wrKqKqNMYXGvC
+         684VLrwUdm2cro/LItOBk/i680HJuUkBCXx5yiolCZGdHTrlSyH74Ppj41Ua4IU/M9iJ
+         xyjg==
+X-Gm-Message-State: AGi0PuZTYVOUP8a7/0dAoBLygwUFx8PqTReYCCZYbyBVBUpRUmuaBkP9
+        p5WGKAp4bY07a57RSxi2IgUr8Vhkl3l9BljIBqE=
+X-Google-Smtp-Source: APiQypJHb3EeIZpJfA5vWcniz0V3Ui8OvsHNRMp3/07GMGP8kNJZZBBoH4kInyF7w5yjaGBPjaHw0dLXOZso7eoj6d8=
+X-Received: by 2002:a7b:c0d5:: with SMTP id s21mr247696wmh.107.1586234150840;
+ Mon, 06 Apr 2020 21:35:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200310174711.7490-1-lmb@cloudflare.com> <20200312015822.bhu6ptkx5jpabkr6@ast-mbp.dhcp.thefacebook.com>
- <CACAyw9-Ui5FECjAaehP8raRjcRJVx2nQAj5=XPu=zXME2acMhg@mail.gmail.com>
- <20200312175828.xenznhgituyi25kj@ast-mbp> <CACAyw98cp2we2w_L=YgEj+BbCqA5_3HvSML1VZzyNeF8mVfEEQ@mail.gmail.com>
- <20200314025832.3ffdgkva65dseoec@ast-mbp.dhcp.thefacebook.com>
- <CACAyw99HC70=wYBzZAiQVyUi56y_0x-6saGkp_KHBpjQuva1KA@mail.gmail.com>
- <5e711f6ed4f6c_278b2b1b264c65b4bd@john-XPS-13-9370.notmuch> <CACAyw9_J2Nc74hA6tQrWrvQ1Q61994YRaQUPu_2=rKYr9LUFYQ@mail.gmail.com>
-In-Reply-To: <CACAyw9_J2Nc74hA6tQrWrvQ1Q61994YRaQUPu_2=rKYr9LUFYQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 6 Apr 2020 20:08:26 -0700
-Message-ID: <CAADnVQKigRAAhhfTwT+QZ0P_TJKTLSiVGpnr_Su8mcyEcvM19Q@mail.gmail.com>
-Subject: Re: [PATCH 0/5] Return fds from privileged sockhash/sockmap lookup
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>
+References: <1585813930-19712-1-git-send-email-lirongqing@baidu.com>
+ <6BB0E637-B5F8-4B50-9B70-8A30F4AF6CF5@gmail.com> <CAJ+HfNjTaWp+=na14mjMzpbRzM2Ea5wK_MNJddFNEJ59XDLPNw@mail.gmail.com>
+ <7dbc67e0-aaca-9809-3cda-34f3d5791337@iogearbox.net>
+In-Reply-To: <7dbc67e0-aaca-9809-3cda-34f3d5791337@iogearbox.net>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Tue, 7 Apr 2020 06:35:39 +0200
+Message-ID: <CAJ+HfNhYqPuX6zC3QZi=aQ0=j_z2gNPBmkYohm-hkP7q4pE_ug@mail.gmail.com>
+Subject: Re: [PATCH] xsk: fix out of boundary write in __xsk_rcv_memcpy
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Li RongQing <lirongqing@baidu.com>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kevin Laatz <kevin.laatz@intel.com>,
+        Ciara Loftus <ciara.loftus@intel.com>,
+        Bruce Richardson <bruce.richardson@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 20, 2020 at 8:12 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> Another way around this might be to add a way to go from socket cookie to
-> socket, and not touch sockmap. I suspect that is an even steeper hill to climb,
-> especially if it means adding a new syscall.
+On Mon, 6 Apr 2020 at 22:13, Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 4/3/20 10:29 AM, Bj=C3=B6rn T=C3=B6pel wrote:
+> > On Fri, 3 Apr 2020 at 00:22, Jonathan Lemon <jonathan.lemon@gmail.com> =
+wrote:
+> >> On 2 Apr 2020, at 0:52, Li RongQing wrote:
+> >>
+> >>> first_len is remainder of first page, if write size is
+> >>> larger than it, out of page boundary write will happen
+> >>>
+> >>> Fixes: c05cd3645814 "(xsk: add support to allow unaligned chunk place=
+ment)"
+> >>> Signed-off-by: Li RongQing <lirongqing@baidu.com>
+> >>
+> >> Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
+> >
+> > Good catch!
+> > Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+>
+> Applied, thanks!
+>
+> Bj=C3=B6rn, Magnus, others, would be really valuable to have a proper kse=
+lftest suite
+> in BPF for covering everything xsk related, including such corner cases a=
+s Li fixed
+> here, wdyt? ;-)
+>
 
-I think receiving socket FD from socket cookie would be much better approach.
-It's clean layering and security folks will enforce that bit of api
-individually.
-New syscall is not hard to add.
-man pages, docs are needed regardless.
+Indeed. It's *very much* overdue. :-(
+
+
+Bj=C3=B6rn
+
+> Thanks,
+> Daniel
