@@ -2,66 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DCAE1A0A3B
-	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 11:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91881A0A47
+	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 11:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728023AbgDGJd7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Apr 2020 05:33:59 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:42344 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726716AbgDGJd6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Apr 2020 05:33:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ALLpFhoRwFcaZVxVwmpORwXzqCLllgkOW88XxNP1czw=; b=cXqt2Apb0IYUWCtEG/qZtDMcnU
-        GDRnm2aNxxGoLxkuAR2tr8mHb6Rbt51JplL2wsHcw0XXes/p9vuKk2dRBjziu0pj+AMLXBIVXd5MB
-        gvV51G/O02Ml2mfOfroshmH9vvT7b25V5u29s96NWMaLGhnQ3eRcS49vwwXdNV7XAE1sQ6TTUm338
-        r+cGgmsDwefFnOAQBzqSeJN/mQh9Y7/rvYUJ2/a5zxNSS+8KqyAQ55Tz9rvkDZQAS6eOCTxFKzMz0
-        EHTPlUb/iGsSM621kD101DfYjXLrGVEVLN5aOlUfGqxkJf7cU2Lpm3CWVfvPvyK+JQrjpvISps5WE
-        4y29vzZQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jLkcH-0006yf-F2; Tue, 07 Apr 2020 09:33:57 +0000
-Date:   Tue, 7 Apr 2020 02:33:57 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        bgregg@netflix.com
-Subject: Re: Question on "uaccess: Add strict non-pagefault kernel-space read
- function"
-Message-ID: <20200407093357.GA24309@infradead.org>
-References: <20200403133533.GA3424@infradead.org>
- <5ddc8c04-279d-9a14-eaa7-755467902ead@iogearbox.net>
- <20200404093105.GA445@infradead.org>
- <2adc77e1-e84d-f303-fd88-133ec950c33f@iogearbox.net>
+        id S1725883AbgDGJjK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Apr 2020 05:39:10 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:49246 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726562AbgDGJjK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Apr 2020 05:39:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586252349;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BT0DOjBa5uu8x94CvxH++WNSrZ3ZhvAl1TY5DndZwnY=;
+        b=FK3azqbTiB1VEsspdf6uEqNcpuC7NqVIYQU9a+MJ2LoM2ZdaYjSTij+vtixeW4yuRWOtCe
+        w2sq4wZU+QZimBf0wjw0IPoCjNnut8PzvRYsjBzuoYeHBAuRBfS0xRuMBFe8B+r7XT9yN1
+        9fOyzck/MoCJ2TqMsWqDbysZaqJy0Ao=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-292-vKYNsQNoOVaKwnUBu1uibA-1; Tue, 07 Apr 2020 05:37:36 -0400
+X-MC-Unique: vKYNsQNoOVaKwnUBu1uibA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 02E441088386;
+        Tue,  7 Apr 2020 09:37:34 +0000 (UTC)
+Received: from krava (unknown [10.40.192.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AF3391001DF0;
+        Tue,  7 Apr 2020 09:37:30 +0000 (UTC)
+Date:   Tue, 7 Apr 2020 11:37:28 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Wenbo Zhang <ethercflow@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Andrii Nakryiko <andriin@fb.com>, bgregg@netflix.com,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH 1/3] bpf: Add support to check if BTF object is nested in
+ another object
+Message-ID: <20200407093728.GB3144092@krava>
+References: <20200401110907.2669564-1-jolsa@kernel.org>
+ <20200401110907.2669564-2-jolsa@kernel.org>
+ <20200407011601.526c6i6dyq6lndmf@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2adc77e1-e84d-f303-fd88-133ec950c33f@iogearbox.net>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200407011601.526c6i6dyq6lndmf@ast-mbp.dhcp.thefacebook.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 11:03:23AM +0200, Daniel Borkmann wrote:
+On Mon, Apr 06, 2020 at 06:16:01PM -0700, Alexei Starovoitov wrote:
+
+SNIP
+
+> > +			continue;
+> > +
+> > +		/* the 'off' we're looking for is either equal to start
+> > +		 * of this field or inside of this struct
+> > +		 */
+> > +		if (btf_type_is_struct(mtype)) {
+> > +			/* our field must be inside that union or struct */
+> > +			t = mtype;
+> > +
+> > +			/* adjust offset we're looking for */
+> > +			off -= moff;
+> > +			goto again;
+> > +		}
 > 
-> ... where archs with non-overlapping user and kernel address range would
-> only end up having to implementing kernel_range_ok() check. Or, instead of
-> a generic kernel_range_ok() this could perhaps be more probing-specific as
-> in probe_kernel_range_ok() where this would then also cover the special
-> cases we seem to have in parisc and um. Then, this would allow to get rid
-> of all the __weak aliasing as well which may just be confusing. I could look
-> into coming up with something along these lines. Thoughts?
+> Looks like copy-paste that should be generalized into common helper.
 
-FYI, this is what I cooked up a few days ago:
+right, I think we could have some common code with btf_struct_access,
+but id not want to complicate the change for rfc
 
-http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/maccess-fixups
+> 
+> > +
+> > +		bpf_log(log, "struct %s doesn't have struct field at offset %d\n", tname, off);
+> > +		return -EACCES;
+> > +	}
+> > +
+> > +	bpf_log(log, "struct %s doesn't have field at offset %d\n", tname, off);
+> > +	return -EACCES;
+> > +}
+> > +
+> >  static int __btf_resolve_helper_id(struct bpf_verifier_log *log, void *fn,
+> >  				   int arg)
+> >  {
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 04c6630cc18f..6eb88bef4379 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -3103,6 +3103,18 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+> >  	return 0;
+> >  }
+> >  
+> > +static void check_ptr_in_btf(struct bpf_verifier_env *env,
+> > +			     struct bpf_reg_state *reg,
+> > +			     u32 exp_id)
+> > +{
+> > +	const struct btf_type *t = btf_type_by_id(btf_vmlinux, reg->btf_id);
+> > +
+> > +	if (!btf_struct_address(&env->log, t, reg->off, exp_id)) {
+> > +		reg->btf_id = exp_id;
+> > +		reg->off = 0;
+> 
+> This doesn't look right.
+> If you simply overwrite btf_id and off in the reg it will contain wrong info
+> in any subsequent instruction.
+> Typically it would be ok, since this reg is a function argument and will be
+> scratched after the call, but consider:
+> bpf_foo(&file->f_path, &file->f_owner);
+> The same base register will be used to construct R1 and R2
+> and above re-assign will screw up R1.
 
-Still misses the final work to switch probe_kernel_read to be the
-strict version.  Any good naming suggestion for the non-strict one?
+ok.. I'll use the 'new btf id' just to do check on the helper args
+and not change the reg's btf id
+
+thanks,
+jirka
+
