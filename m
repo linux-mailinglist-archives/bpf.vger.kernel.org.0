@@ -2,196 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 372CF1A068D
-	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 07:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A91F1A0740
+	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 08:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726808AbgDGF23 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Apr 2020 01:28:29 -0400
-Received: from mail-vs1-f67.google.com ([209.85.217.67]:37063 "EHLO
-        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgDGF23 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Apr 2020 01:28:29 -0400
-Received: by mail-vs1-f67.google.com with SMTP id o3so1447348vsd.4;
-        Mon, 06 Apr 2020 22:28:26 -0700 (PDT)
+        id S1726591AbgDGG2x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Apr 2020 02:28:53 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:33279 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgDGG2x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Apr 2020 02:28:53 -0400
+Received: by mail-pl1-f194.google.com with SMTP id ay1so867719plb.0;
+        Mon, 06 Apr 2020 23:28:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WrrS0Lhv15zxlqz1Gg8dhCo/1YDYxqP75f329M6pi8g=;
-        b=ecWsFgYxhiIQvqETzF0YU62LFUUJpET9TBMlx/sk0c/jmfFnFtkHFuLXoVMQp+seqm
-         tZY9UvlZV2xPSiTnbMjOIKzecJoipBK3eq+WrxAqCuKugzMrywczIyV873todT6OwFTB
-         ZmYRz+/xWizAbFXs6k4ygl5JIz/MZVUsdpXt+6t4c1Mp7xWqBLV2smPPAlh+tleZpumK
-         CNXkCgYtlkHYKrckeC+MywD0XH9ALgIQfiZUEHPUF133dLOhEXYfr4ISPgK0w9d1bfTg
-         yqvFxzq+HoEfqpICa2k4OwxaxX1GVetOHFZmTJXlx826yeBuQ93SkA6N7TVVG38FSU+c
-         PJXQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=FrRoXhNSt3kKGmz9fpJmBBjRUgYD6dko1gvPNj4Jml8=;
+        b=k5x5caIulOUhWZIaZBmQbLuGn0wBl5m+FP0gRjo+kwY8yC5Tk5FZF5VWcvyMiO7GAv
+         7JzU6XgqWcMmbwUkf5+M6Rwo4oWYdkojssyGpPQxeAlETIry/PINaUgAldfG+04GUgT7
+         JQZeXJGC1TTq+QHP7h5Zd5EAt08GR16700xCLgSLa0Xa6XpXKTPteTeZ0k58jkEnAkVX
+         4GhiFkcG3zp20igF3xKhL4BL49mNDfuD+qVd9mlAgbAMl+UnuBV6HNgtAYCTFOyMvZ29
+         4edoC/hWATgum37iPDjtpTm2JSjWUuIBxYEB4MDzPemwLul1NJaKrb0jlUiRP2jLdJnA
+         oGkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WrrS0Lhv15zxlqz1Gg8dhCo/1YDYxqP75f329M6pi8g=;
-        b=N268/RZ1MAP4EJM+hdjXfS2/iInM2HyWeb0DCf5kveGaooGVHb0iOCcWwGl0bnYOXR
-         ZOQRPgR0tvARyqH4NB7Ljn60gGxbbXA76MBNkHAfhlPgLvPR3lPouXHS586dVCl2cAZN
-         YvQiveV7pCthSKrLDy2M1Dad2YroflKLJh/dqgFqTZ395PMraUYxH/0gwJAJiNI+s7EN
-         EmnLRlDCEHt4qokR5uIHzDUKkoHDiXHcp8wUX0n5H7zCjXo+y2DHqmGaDpXMGmq7fmQ7
-         L1t62BS3Pi6QHoVx9axNT3+1p/CjUVLH/KStMrSTFrTVjpXpi8UHZhLwgfhsE3gZX7Mx
-         plCg==
-X-Gm-Message-State: AGi0PuYjCzoZqx1JgrUYhZtLQ6EJG2oXYgLtpNd+nvHPAKcC/4FOVOAI
-        M8fOtA/F0LDsamkyBnZb6YELwPYwFswzd6LwYvk=
-X-Google-Smtp-Source: APiQypIby2UXjuX8vOzjjgILvfC+AKaKfIeOVqPZMgfFRa7+1YoghBkUDH/75MUxC3ZBPdUOACQWBqcCuCYnrY88pSE=
-X-Received: by 2002:a67:fd6f:: with SMTP id h15mr503854vsa.96.1586237306008;
- Mon, 06 Apr 2020 22:28:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200118000128.15746-1-matthew.cover@stackpath.com>
- <20200121202038.26490-1-matthew.cover@stackpath.com> <CAGyo_hpVm7q3ghW+je23xs3ja_COP_BMZoE_=phwGRzjSTih8w@mail.gmail.com>
- <CAOftzPi74gg=g8VK-43KmA7qqpiSYnJVoYUFDtPDwum10KHc2Q@mail.gmail.com>
- <CAGyo_hprQRLLUUnt9G4SJnbgLSdN=HTDDGFBsPYMDC5bGmTPYA@mail.gmail.com>
- <20200130215330.f3unziderf5rlipf@ast-mbp> <CAGyo_hrYhwzVRcyN22j_4pBAcVGaazSu2xQFHT_DYpFeHdUjyA@mail.gmail.com>
- <20200220044505.bpfvdrcmc27ik2jp@ast-mbp> <CAGyo_hrcibFyz=b=+y=yO_yapw=TbtbO8d1vGPSLpTU0Y2gzBw@mail.gmail.com>
- <20200407030303.ffs7xxruuktss5fs@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200407030303.ffs7xxruuktss5fs@ast-mbp.dhcp.thefacebook.com>
-From:   Matt Cover <werekraken@gmail.com>
-Date:   Mon, 6 Apr 2020 22:28:13 -0700
-Message-ID: <CAGyo_hrYYYN6EXnbocauMo52pF52fAQwiJbDVZwH4NG3UC5anQ@mail.gmail.com>
-Subject: Re: unstable bpf helpers proposal. Was: [PATCH bpf-next v2 1/2] bpf:
- add bpf_ct_lookup_{tcp,udp}() helpers
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Matthew Cover <matthew.cover@stackpath.com>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=FrRoXhNSt3kKGmz9fpJmBBjRUgYD6dko1gvPNj4Jml8=;
+        b=CvGHoeCUIQwF3dxEBonYz1cPQjlZcZ3Y7wJSMd38bQHWAWPdPYqo5OTrgv9dVkDTzS
+         ZrQRHgGnJRGuPFAnYGmn+5UVCs+3XRhb8T6+6SUj5EUpK4lYsW9TORCkNkP4EZBo0rhh
+         oaJuHB2hBQStZyPlaFDJFT5zUsDMkBIiaeKuDUZ847VyFuaC5cLIsbxXh3iHstX58Yd7
+         /dGuzrQD8roVaNIgsRC0iX91xyxArQETZQFkcz60H0+kkYfbBobiDLN7Evh2XxKa2kVV
+         +oqGM4TlVA5kQw8r/BKGE08S87cz/HlHfwFLC1gJzGWwr3cyjEeyzZUUG+ynzABSTnPh
+         yRLA==
+X-Gm-Message-State: AGi0PuYyn4hFjys54pwbzIOVSsqRdK2qci0HCfe7dJQG/c3FN+HoiNbX
+        tcJpXlsCq36GTaQnit9gsB0=
+X-Google-Smtp-Source: APiQypLjjr2iwGDC7DK9g1lf1F6aMnklHVLnUIsQiPLBAhE2tpb4umeSh8nPm9b6pmVSlcYMv0Oh3A==
+X-Received: by 2002:a17:902:7603:: with SMTP id k3mr1048685pll.100.1586240931879;
+        Mon, 06 Apr 2020 23:28:51 -0700 (PDT)
+Received: from dali.ht.sfc.keio.ac.jp (dali.ht.sfc.keio.ac.jp. [133.27.170.2])
+        by smtp.gmail.com with ESMTPSA id v20sm12376925pgo.34.2020.04.06.23.28.48
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Mon, 06 Apr 2020 23:28:50 -0700 (PDT)
+From:   Yoshiki Komachi <komachi.yoshiki@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     Yoshiki Komachi <komachi.yoshiki@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH] libbpf: Make bpf/bpf_helpers.h self-contained
+Date:   Tue,  7 Apr 2020 15:28:24 +0900
+Message-Id: <1586240904-14176-1-git-send-email-komachi.yoshiki@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 6, 2020 at 8:03 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, Apr 03, 2020 at 04:56:01PM -0700, Matt Cover wrote:
-> > > I think doing BTF annotation for EXPORT_SYMBOL_BPF(bpf_icmp_send); is trivial.
-> >
-> > I've been looking into this more; here is what I'm thinking.
-> >
-> > 1. Export symbols for bpf the same as modules, but into one or more
-> >    special namespaces.
-> >
-> >    Exported symbols recently gained namespaces.
-> >      https://lore.kernel.org/linux-usb/20190906103235.197072-1-maennich@google.com/
-> >      Documentation/kbuild/namespaces.rst
-> >
-> >    This makes the in-kernel changes needed for export super simple.
-> >
-> >      #define EXPORT_SYMBOL_BPF(sym)     EXPORT_SYMBOL_NS(sym, BPF_PROG)
-> >      #define EXPORT_SYMBOL_BPF_GPL(sym) EXPORT_SYMBOL_NS_GPL(sym, BPF_PROG)
-> >
-> >    BPF_PROG is our special namespace above. We can easily add
-> >    BPF_PROG_ACQUIRES and BPF_PROG_RELEASES for those types of
-> >    unstable helpers.
-> >
-> >    Exports for bpf progs are then as simple as for modules.
-> >
-> >      EXPORT_SYMBOL_BPF(bpf_icmp_send);
-> >
-> >    Documenting these namespaces as not for use by modules should be
-> >    enough; an explicit import statement to use namespaced symbols is
-> >    already required. Explicitly preventing module use in
-> >    MODULE_IMPORT_NS or modpost are also options if we feel more is
-> >    needed.
-> >
-> > 2. Teach pahole's (dwarves') dwarf loader to parse __ksymtab*.
-> >
-> >    I've got a functional wip which retrieves the namespace from the
-> >    __kstrtab ELF section. Working to differentiate between __ksymtab
-> >    and __ksymtab_gpl symbols next. Good news is this info is readily
-> >    available in vmlinux and module .o files. The interface here will
-> >    probably end up similar to dwarves' elf_symtab__*, but with an
-> >    struct elf_ksymtab per __ksymtab* section (all pointing to the
-> >    same __kstrtab section though).
-> >
-> > 3. Teach pahole's btf encoder to encode the following bools: export,
-> >    gpl_only, acquires, releases.
-> >
-> >    I'm envisioning this info will end up in a new struct
-> >    btf_func_proto in btf.h. Perhaps like this.
-> >
-> >      struct btf_func_proto {
-> >          /* "info" bits arrangement
-> >           * bit     0: exported (callable by bpf prog)
-> >           * bit     1: gpl_only (only callable from GPL licensed bpf prog)
-> >           * bit     2: acquires (acquires and returns a refcounted pointer)
-> >           * bit     3: releases (first argument, a refcounted pointer,
-> > is released)
-> >           * bits 4-31: unused
-> >           */
-> >          __u32    info;
-> >      };
-> >
-> >    Currently, a "struct btf_type" of type BTF_KIND_FUNC_PROTO is
-> >    directly followed by vlen struct btf_param/s. I'm hoping we can
-> >    insert btf_func_proto before the first btf_param or after the
-> >    last. If that's not workable, adding a new type,
-> >    BTF_KIND_FUNC_EXPORT, is another idea.
->
-> I don't see why 1 and 2 are necessary.
-> What is the value of true export_symbol here?
+I tried to compile a bpf program including bpf_helpers.h, however it
+resulted in failure as below:
 
-Hmm... I was under the impression that these functions had to be
-exported to be eligible for BTF. Perhaps I'm misunderstanding this
-dwaves commit:
+  # clang -I./linux/tools/lib/ -I/lib/modules/$(uname -r)/build/include/ \
+    -O2 -Wall -target bpf -emit-llvm -c bpf_prog.c -o bpf_prog.bc
+  ...
+  In file included from linux/tools/lib/bpf/bpf_helpers.h:5:
+  linux/tools/lib/bpf/bpf_helper_defs.h:56:82: error: unknown type name '__u64'
+  ...
 
-  3c5f2a224aa1 ("btf_encoder: Preserve and encode exported functions
-as BTF_KIND_FUNC")
+This is because bpf_helpers.h depends on linux/types.h and it is not
+self-contained. This has been like this long time, but since bpf_helpers.h
+was moved from selftests private file to libbpf header file, IMO it 
+should include linux/types.h by itself.
 
-Looking briefly I can see that the functions in symvers and BTF are
-not an exact match. Does "exported functions" in the above commit
-message not mean "exported symbols"?
+Fixes: e01a75c15969 ("libbpf: Move bpf_{helpers, helper_defs, endian, tracing}.h into libbpf")
+Signed-off-by: Yoshiki Komachi <komachi.yoshiki@gmail.com>
+---
+ tools/lib/bpf/bpf_helpers.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-It looks like BTF FUNCs line up perfectly with symbols marked 'T' and
-'W' in kallsyms. I'll look into what adds a [TW] marked symbol to
-kallsyms and see how this differs from symvers.
+diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+index f69cc208778a..d9288e695eb1 100644
+--- a/tools/lib/bpf/bpf_helpers.h
++++ b/tools/lib/bpf/bpf_helpers.h
+@@ -2,6 +2,7 @@
+ #ifndef __BPF_HELPERS__
+ #define __BPF_HELPERS__
+ 
++#include <linux/types.h>
+ #include "bpf_helper_defs.h"
+ 
+ #define __uint(name, val) int (*name)[val]
+-- 
+2.24.1
 
-> What is the value of namespaced true export_symbol?
-
-This simply seemed like a clean way to group the symbols under the
-premise these functions already needed to be exported via
-EXPORT_SYMBOL*.
-
-> Imo it only adds memory overhead to vmlinux.
-> The same information is available in BTF as a _name_.
-> What is the point to replicate it into kcrc?
-
-See below.
-
-> Imo kcrc is a poor protection mechanism that is already worse
-> that BTF. I really don't see a value going that route.
->
-
-See below
-
-> I think just encoding the intent to export into BTF is enough.
-> Option 3 above looks like overkill too. Just name convention would do.
-> We already use different prefixes to encode certain BTFs
-> (see struct_ops and btf_trace).
-> Just say when BTF func_proto starts with "export_" it means it's exported.
-> It would be trivial for users to grep as well:
-> bpftool btf dump file ./vmlinux |grep export_
-
-Ok, cool. A naming convention could work (even if it turns out we do
-have to EXPORT_SYMBOL).
-
->
-> >
-> > The crcs could be used to improve the developer experience when
-> > using unstable helpers.
->
-> crc don't add any additional value on top of BTF. BTF types has to match exactly.
-> It's like C compiler checking that you can call a function with correct proto.
-
-I can see that for the verifier BTF is much superior to crc. The
-safety of the program is not improved by the crc. I was simply
-thinking the crc could be used in struct variant selection instead
-of kernel version. In some environments this could be useful since
-distros often backport patches while leaving version old (often
-meaning a second distro-specific version must also be considered).
