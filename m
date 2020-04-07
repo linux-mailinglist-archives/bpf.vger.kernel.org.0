@@ -2,48 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D546E1A18BF
-	for <lists+bpf@lfdr.de>; Wed,  8 Apr 2020 01:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3267F1A18C1
+	for <lists+bpf@lfdr.de>; Wed,  8 Apr 2020 01:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726407AbgDGXoN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Apr 2020 19:44:13 -0400
-Received: from www62.your-server.de ([213.133.104.62]:57580 "EHLO
+        id S1726484AbgDGXoy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Apr 2020 19:44:54 -0400
+Received: from www62.your-server.de ([213.133.104.62]:57744 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726386AbgDGXoN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Apr 2020 19:44:13 -0400
+        with ESMTP id S1726386AbgDGXoy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Apr 2020 19:44:54 -0400
 Received: from sslproxy06.your-server.de ([78.46.172.3])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jLxt0-0001PO-3o; Wed, 08 Apr 2020 01:44:06 +0200
+        id 1jLxtk-0001Td-M8; Wed, 08 Apr 2020 01:44:52 +0200
 Received: from [178.195.186.98] (helo=pc-9.home)
         by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jLxsz-0008rw-Hi; Wed, 08 Apr 2020 01:44:05 +0200
-Subject: Re: [PATCH bpf] riscv, bpf: Fix offset range checking for auipc+jalr
- on RV64
-To:     Luke Nelson <lukenels@cs.washington.edu>, bpf@vger.kernel.org
-Cc:     Xi Wang <xi.wang@gmail.com>, Luke Nelson <luke.r.nels@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20200406221604.18547-1-luke.r.nels@gmail.com>
+        id 1jLxtk-000AzP-Dk; Wed, 08 Apr 2020 01:44:52 +0200
+Subject: Re: [PATCH bpf 0/2] libbpf: Fix bpf_get_link_xdp_id flags handling
+To:     Andrey Ignatov <rdna@fb.com>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, kernel-team@fb.com, toke@redhat.com
+References: <cover.1586236080.git.rdna@fb.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <bdea1a61-53d6-dc03-7cdb-4b6b0710be2e@iogearbox.net>
-Date:   Wed, 8 Apr 2020 01:44:04 +0200
+Message-ID: <ecc86032-c5e3-7ed0-8f8f-52c7b167b7d8@iogearbox.net>
+Date:   Wed, 8 Apr 2020 01:44:51 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20200406221604.18547-1-luke.r.nels@gmail.com>
+In-Reply-To: <cover.1586236080.git.rdna@fb.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -54,30 +42,19 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/7/20 12:16 AM, Luke Nelson wrote:
-> The existing code in emit_call on RV64 checks that the PC-relative offset
-> to the function fits in 32 bits before calling emit_jump_and_link to emit
-> an auipc+jalr pair. However, this check is incorrect because offsets in
-> the range [2^31 - 2^11, 2^31 - 1] cannot be encoded using auipc+jalr on
-> RV64 (see discussion [1]). The RISC-V spec has recently been updated
-> to reflect this fact [2, 3].
+On 4/7/20 7:09 AM, Andrey Ignatov wrote:
+> This patch set fixes bpf_get_link_xdp_id() behavior for non-zero flags and
+> adds selftest that verifies the fix and can be used to reproduce the
+> problem.
 > 
-> This patch fixes the problem by moving the check on the offset into
-> emit_jump_and_link and modifying it to the correct range of encodable
-> offsets, which is [-2^31 - 2^11, 2^31 - 2^11). This also enforces the
-> check on the offset to other uses of emit_jump_and_link (e.g., BPF_JA)
-> as well.
 > 
-> Currently, this bug is unlikely to be triggered, because the memory
-> region from which JITed images are allocated is close enough to kernel
-> text for the offsets to not become too large; and because the bounds on
-> BPF program size are small enough. This patch prevents this problem from
-> becoming an issue if either of these change.
+> Andrey Ignatov (2):
+>    libbpf: Fix bpf_get_link_xdp_id flags handling
+>    selftests/bpf: Add test for bpf_get_link_xdp_id
 > 
-> [1]: https://groups.google.com/a/groups.riscv.org/forum/#!topic/isa-dev/bwWFhBnnZFQ
-> [2]: https://github.com/riscv/riscv-isa-manual/commit/b1e42e09ac55116dbf9de5e4fb326a5a90e4a993
-> [3]: https://github.com/riscv/riscv-isa-manual/commit/4c1b2066ebd2965a422e41eb262d0a208a7fea07
-> 
-> Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+>   tools/lib/bpf/netlink.c                       |  2 +-
+>   .../selftests/bpf/prog_tests/xdp_info.c       | 68 +++++++++++++++++++
+>   2 files changed, 69 insertions(+), 1 deletion(-)
+>   create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_info.c
 
-Applied, thanks!
+LGTM, applied, thanks!
