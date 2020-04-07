@@ -2,71 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F141A091D
-	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 10:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC9751A0993
+	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 10:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727916AbgDGIOH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Apr 2020 04:14:07 -0400
-Received: from proxmox-new.maurer-it.com ([212.186.127.180]:14397 "EHLO
-        proxmox-new.maurer-it.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726687AbgDGIOH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Apr 2020 04:14:07 -0400
-X-Greylist: delayed 555 seconds by postgrey-1.27 at vger.kernel.org; Tue, 07 Apr 2020 04:14:06 EDT
-Received: from proxmox-new.maurer-it.com (localhost.localdomain [127.0.0.1])
-        by proxmox-new.maurer-it.com (Proxmox) with ESMTP id 28CD14597C;
-        Tue,  7 Apr 2020 10:04:50 +0200 (CEST)
-Subject: Re: [PATCH] net/bpfilter: remove superfluous testing message
-To:     David Miller <davem@davemloft.net>, bmeneg@redhat.com
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20200331130630.633400-1-bmeneg@redhat.com>
- <20200331.100806.878847626011762877.davem@davemloft.net>
-From:   Thomas Lamprecht <t.lamprecht@proxmox.com>
-Message-ID: <f6af51c3-0875-c394-f6c4-2f51c7d1280c@proxmox.com>
-Date:   Tue, 7 Apr 2020 10:04:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:75.0) Gecko/20100101
- Thunderbird/75.0
+        id S1726393AbgDGIxf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Apr 2020 04:53:35 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:33823 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725883AbgDGIxf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 7 Apr 2020 04:53:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586249614;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ipYCcCqa2Muib314Zq2hTUsli6+sqi8KPyaPUSKEjE0=;
+        b=UOx0R0CKgDUfiYsaqY2Rn1J7kgXOg9pPkOIByZKug47WElfM8fZ8cTur+5hbju94PC1Xxj
+        L3xTybi3OR1p7Ojal/tkzIiIaBepf7qeeLt1V6GmcjHZPkAh6nVq9Dy3ocmR9cqb4CUQZJ
+        eqWeLK2SazBKZkGRXN8GV09WpTkz+mM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-495-B5wDdJ3JPQS3VfS56BFJuQ-1; Tue, 07 Apr 2020 04:53:29 -0400
+X-MC-Unique: B5wDdJ3JPQS3VfS56BFJuQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 340C88017CE;
+        Tue,  7 Apr 2020 08:53:27 +0000 (UTC)
+Received: from krava (unknown [10.40.192.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id ABC2550C01;
+        Tue,  7 Apr 2020 08:53:23 +0000 (UTC)
+Date:   Tue, 7 Apr 2020 10:53:21 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Wenbo Zhang <ethercflow@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Andrii Nakryiko <andriin@fb.com>, bgregg@netflix.com
+Subject: Re: [RFC 0/3] bpf: Add d_path helper
+Message-ID: <20200407085321.GA3144092@krava>
+References: <20200401110907.2669564-1-jolsa@kernel.org>
+ <20200402142106.GF23230@ZenIV.linux.org.uk>
+ <20200403090828.GF2784502@krava>
+ <20200406031602.GR23230@ZenIV.linux.org.uk>
+ <20200406090918.GA3035739@krava>
+ <20200407011052.khtujfdamjtwvpdp@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <20200331.100806.878847626011762877.davem@davemloft.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200407011052.khtujfdamjtwvpdp@ast-mbp.dhcp.thefacebook.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/31/20 7:08 PM, David Miller wrote:
-> From: Bruno Meneguele <bmeneg@redhat.com>
-> Date: Tue, 31 Mar 2020 10:06:30 -0300
+On Mon, Apr 06, 2020 at 06:10:52PM -0700, Alexei Starovoitov wrote:
+> On Mon, Apr 06, 2020 at 11:09:18AM +0200, Jiri Olsa wrote:
+> > 
+> > is there any way we could have d_path functionality (even
+> > reduced and not working for all cases) that could be used
+> > or called like that?
 > 
->> A testing message was brought by 13d0f7b814d9 ("net/bpfilter: fix dprintf
->> usage for /dev/kmsg") but should've been deleted before patch submission.
->> Although it doesn't cause any harm to the code or functionality itself, it's
->> totally unpleasant to have it displayed on every loop iteration with no real
->> use case. Thus remove it unconditionally.
->>
->> Fixes: 13d0f7b814d9 ("net/bpfilter: fix dprintf usage for /dev/kmsg")
->> Signed-off-by: Bruno Meneguele <bmeneg@redhat.com>
+> I agree with Al. This helper cannot be enabled for all of bpf tracing.
+> We have to white list its usage for specific callsites only.
+> May be all of lsm hooks are safe. I don't know yet. This has to be
+> analyzed carefully. Every hook. One by one.
+> in_task() isn't really a solution.
+
+ok, I thought of white list and it seemed too much to me,
+but there's probably no other way
+
+jirka
+
 > 
-> Applied, thanks.
+> At the same time I agree that such helper is badly needed.
+> Folks have been requesting it for long time.
 > 
-
-As the commit this fixes was included in a stable release (at least 5.4.29[0],
-I did not checked others - sorry) it could make sense to backport this also
-to the 5.4 stable tree?
-
-Per documentation[1], I checked the netdev and Greg's queues, but did not found
-it to be included anywhere yet.
-
-I hope I handled this request somewhat correctly, please tell me if I should
-propose the backported patch more directly to the respective stable list. As is,
-the patch[2] applies fine here on top of 5.4.30.
-
-cheers,
-Thomas
-
-[0]: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-5.4.y&id=712c39d9319a864b74b44fd03b0e083afa2d8af2
-[1]: https://www.kernel.org/doc/html/latest/networking/netdev-FAQ.html#q-how-can-i-tell-what-patches-are-queued-up-for-backporting-to-the-various-stable-releases
-[2]: https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/patch/?id=41c55ea6c2a7ca4c663eeec05bdf54f4e2419699
 
