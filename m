@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9341A02C5
-	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 02:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA12D1A02EA
+	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 02:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbgDGABF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Apr 2020 20:01:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33402 "EHLO mail.kernel.org"
+        id S1727716AbgDGAB6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Apr 2020 20:01:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726477AbgDGABF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Apr 2020 20:01:05 -0400
+        id S1727696AbgDGAB5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Apr 2020 20:01:57 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EAD252078C;
-        Tue,  7 Apr 2020 00:01:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EF6D920857;
+        Tue,  7 Apr 2020 00:01:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586217663;
-        bh=EfcVTwVqrO6AJ3MtBctoCWpmYHa9bcjVtiTPs+AuG78=;
+        s=default; t=1586217716;
+        bh=3lqjoguLUMkjgVnLq4LSYyidc8BX3fXTE69J4DScU8s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aZxET/q9zCbZTORuUIu0mApbwO76tvy9jkBpRzUaXXLQS0tG6tvODOrqjulcDd47t
-         J18rUcbhXYnG9VrVDeuJO0x02XaPKlXnThkvNeKz+sqeRBkQ1Ds6+fc4gTSU+r9pca
-         JmbhULIBBzK2ZZbBk6Kzz18cM4MsqRcnDOWe81og=
+        b=KZHjkrWJDmxeJz9cVfk/CAsKt5dAkSX8t5Bmm0Ns4pz5yAdrm2LWJWeNzQtkZxz7U
+         e1vgrwM3h8vPIkFMIAwO36VaHA0X5so6YIA4BWr6xiZ5bDzXOnPwfqAPP6XcDuC4TY
+         0EoXA7ETDO5BgBHK9HY6tJrmq3Id9qF5LnSIv04o=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
         Song Liu <songliubraving@fb.com>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 04/35] bpf: Fix deadlock with rq_lock in bpf_send_signal()
-Date:   Mon,  6 Apr 2020 20:00:26 -0400
-Message-Id: <20200407000058.16423-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 04/32] bpf: Fix deadlock with rq_lock in bpf_send_signal()
+Date:   Mon,  6 Apr 2020 20:01:22 -0400
+Message-Id: <20200407000151.16768-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200407000058.16423-1-sashal@kernel.org>
-References: <20200407000058.16423-1-sashal@kernel.org>
+In-Reply-To: <20200407000151.16768-1-sashal@kernel.org>
+References: <20200407000151.16768-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -224,10 +224,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index e5ef4ae9edb50..0e553b1706d37 100644
+index 89bdac61233db..2372b861f2cfa 100644
 --- a/kernel/trace/bpf_trace.c
 +++ b/kernel/trace/bpf_trace.c
-@@ -731,7 +731,7 @@ BPF_CALL_1(bpf_send_signal, u32, sig)
+@@ -650,7 +650,7 @@ BPF_CALL_1(bpf_send_signal, u32, sig)
  	if (unlikely(!nmi_uaccess_okay()))
  		return -EPERM;
  
