@@ -2,121 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F02ED1A12C3
-	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 19:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A51D1A16C4
+	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 22:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgDGRe2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Apr 2020 13:34:28 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:35282 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726277AbgDGRe2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Apr 2020 13:34:28 -0400
-Received: by mail-pf1-f194.google.com with SMTP id a13so1125640pfa.2;
-        Tue, 07 Apr 2020 10:34:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VfOmombnx46eshTSKRK9pRfZX76vCXDPnZXls0b51W4=;
-        b=Hddv0C4kDCfZnk2aC1nGmIdqB+XhZGb5+u8cg0skh3IhZHszlQML6SsJmVOEPvlzC3
-         cvG9y9qFXCjYTfuFZ4yHxHFZ0F0DUaJ2HKJUaVMabXAKfm3iOJLjjtr+Oo8eo5GFPn9F
-         5bg8QwvETywP8lpmMV9Mx5UMk20o+ehbDlCIWALsBQzksEO9mP9GCkWK5SoKsYht2Nqo
-         muzRNQFCLmTZP6rmVDo0FO9BsUb+PPVYF8kwWycdAEkm5c3ASxYS7m0A1KnWM7bnwgXN
-         s2NinSYKFQ1iHmZQwQxOfBPVfIL+ZJf/yiGP/SDZZHuC839oDrSeCSdFEPLaDUikmy8W
-         wHaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VfOmombnx46eshTSKRK9pRfZX76vCXDPnZXls0b51W4=;
-        b=XpGrK5CTOWbNxaNHXushRxdUs/WWzunt1DqV4HKokUnz3cDVd7BUUKxNZokdtbu2xu
-         pllq4sYOje7luj4KELBy2/gniPfxfHNvNcSTG9q9LrzQqOYqCRcyfQ0rDQh1VXXPVoXu
-         LO6esU65RCmusn/d6dOoDiF/2KdHXuLD2g4pkU73ZXRvCkQZBL0RKV9J8eMTrpQiYMQt
-         /3XLrf8XmAAquSfWJsTB5NCwAlRyDhTIr92Ghcqtud9ehS1irbox+nkzfba8CE1pRe2o
-         MrGMknxdmaZr1MHs7PCCuNOl9ZKmns1NlmwYggsDc2kexkzxXUAhJH8yYgTtFfzNqhCg
-         ZqrQ==
-X-Gm-Message-State: AGi0PuYCdF35AJm/Ba8FteXn7p3W3w8RDMNnT+9FMCa3rG9Qdkx7iPmp
-        wdOMC7dckHeavtqJZw2Bowaax2b1
-X-Google-Smtp-Source: APiQypIa74zR0qmYTbKig2FWmaxACiZBiwVwKrRADP9Gpene7wmvTJ8v7M8WNDzgMsj7vfTCmBl1pg==
-X-Received: by 2002:a63:741b:: with SMTP id p27mr3114156pgc.68.1586280866998;
-        Tue, 07 Apr 2020 10:34:26 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:863d])
-        by smtp.gmail.com with ESMTPSA id x68sm13108858pfb.5.2020.04.07.10.34.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 10:34:25 -0700 (PDT)
-Date:   Tue, 7 Apr 2020 10:34:23 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Matt Cover <werekraken@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Matthew Cover <matthew.cover@stackpath.com>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        kernel-team@fb.com
-Subject: Re: unstable bpf helpers proposal. Was: [PATCH bpf-next v2 1/2] bpf:
- add bpf_ct_lookup_{tcp,udp}() helpers
-Message-ID: <20200407173423.jh2ed3enaohfo5g2@ast-mbp.dhcp.thefacebook.com>
-References: <20200121202038.26490-1-matthew.cover@stackpath.com>
- <CAGyo_hpVm7q3ghW+je23xs3ja_COP_BMZoE_=phwGRzjSTih8w@mail.gmail.com>
- <CAOftzPi74gg=g8VK-43KmA7qqpiSYnJVoYUFDtPDwum10KHc2Q@mail.gmail.com>
- <CAGyo_hprQRLLUUnt9G4SJnbgLSdN=HTDDGFBsPYMDC5bGmTPYA@mail.gmail.com>
- <20200130215330.f3unziderf5rlipf@ast-mbp>
- <CAGyo_hrYhwzVRcyN22j_4pBAcVGaazSu2xQFHT_DYpFeHdUjyA@mail.gmail.com>
- <20200220044505.bpfvdrcmc27ik2jp@ast-mbp>
- <CAGyo_hrcibFyz=b=+y=yO_yapw=TbtbO8d1vGPSLpTU0Y2gzBw@mail.gmail.com>
- <20200407030303.ffs7xxruuktss5fs@ast-mbp.dhcp.thefacebook.com>
- <CAGyo_hrYYYN6EXnbocauMo52pF52fAQwiJbDVZwH4NG3UC5anQ@mail.gmail.com>
+        id S1726495AbgDGUZh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Apr 2020 16:25:37 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:38309 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726386AbgDGUZg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Apr 2020 16:25:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586291135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=scImo7fc2VVLGYYgXmQngzwdo//+qw89Krq5Bdm1HOo=;
+        b=h54mPhHSntiTbPy9MXyUYNUrOAnL1jqpcCdfhPamULOl/X5aSgnvCpxmjJrGi4twNvOTPC
+        fObfY+dhdk+guDM/hCymcoWTUS8g0cT9spTXGlODpFmBDmumMGU0Tp5m6h1kgZ8zNntiex
+        rJNzHrOawbox0MfDEjFNzZmvUOk5SgQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-265-aijyxqmrMsqH75FaYxNYjQ-1; Tue, 07 Apr 2020 16:25:29 -0400
+X-MC-Unique: aijyxqmrMsqH75FaYxNYjQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A25998017CE;
+        Tue,  7 Apr 2020 20:25:25 +0000 (UTC)
+Received: from krava (unknown [10.40.192.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A305A1001B3F;
+        Tue,  7 Apr 2020 20:25:13 +0000 (UTC)
+Date:   Tue, 7 Apr 2020 22:25:08 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jiwei Sun <jiwei.sun@windriver.com>,
+        yuzhoujian <yuzhoujian@didichuxing.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.garry@huawei.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v7] perf tools: add support for libpfm4
+Message-ID: <20200407202508.GA3210726@krava>
+References: <20200407064018.158555-1-irogers@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGyo_hrYYYN6EXnbocauMo52pF52fAQwiJbDVZwH4NG3UC5anQ@mail.gmail.com>
+In-Reply-To: <20200407064018.158555-1-irogers@google.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 10:28:13PM -0700, Matt Cover wrote:
-> >
-> > I don't see why 1 and 2 are necessary.
-> > What is the value of true export_symbol here?
+On Mon, Apr 06, 2020 at 11:40:18PM -0700, Ian Rogers wrote:
+> From: Stephane Eranian <eranian@google.com>
 > 
-> Hmm... I was under the impression that these functions had to be
-> exported to be eligible for BTF. Perhaps I'm misunderstanding this
-> dwaves commit:
+> This patch links perf with the libpfm4 library if it is available and
+> NO_LIBPFM4 isn't passed to the build. The libpfm4 library contains hardware
+> event tables for all processors supported by perf_events. It is a helper
+> library that helps convert from a symbolic event name to the event
+> encoding required by the underlying kernel interface. This
+> library is open-source and available from: http://perfmon2.sf.net.
 > 
->   3c5f2a224aa1 ("btf_encoder: Preserve and encode exported functions
-> as BTF_KIND_FUNC")
+> With this patch, it is possible to specify full hardware events
+> by name. Hardware filters are also supported. Events must be
+> specified via the --pfm-events and not -e option. Both options
+> are active at the same time and it is possible to mix and match:
 > 
-> Looking briefly I can see that the functions in symvers and BTF are
-> not an exact match. Does "exported functions" in the above commit
-> message not mean "exported symbols"?
-
-Yeah. That pahole's commit log is confusing.
-It meant to say that all of exported symbols will be in BTF
-along with all other global functions.
-$ bpftool btf dump file ./bld_x64/vmlinux|grep __icmp_send
-[71784] FUNC '__icmp_send' type_id=71783
-$ bpftool btf dump file ./bld_x64/vmlinux|grep bpf_prog_alloc_no_stats
-[17945] FUNC 'bpf_prog_alloc_no_stats' type_id=17943
-First one is exported. Second is a simple global.
-There is no difference between them from BTF pov.
-
-pahole can be improved too.
-If it turns out that certain static functions has to be in BTF
-we can easily make it so.
-
-> >
-> > crc don't add any additional value on top of BTF. BTF types has to match exactly.
-> > It's like C compiler checking that you can call a function with correct proto.
+> $ perf stat --pfm-events inst_retired:any_p:c=1:i -e cycles ....
 > 
-> I can see that for the verifier BTF is much superior to crc. The
-> safety of the program is not improved by the crc. I was simply
-> thinking the crc could be used in struct variant selection instead
-> of kernel version. In some environments this could be useful since
-> distros often backport patches while leaving version old (often
-> meaning a second distro-specific version must also be considered).
+> v7 rebases and adds fallback code for libpfm4 events.
+>    The fallback code is to force user only priv level in case the
+>    perf_event_open() syscall failed for permissions reason.
+>    the fallback forces a user privilege level restriction on the event string,
+>    so depending on the syntax either u or :u is needed.
+> 
+>    But libpfm4 can use a : or . as the separator, so simply searching
+>    for ':' vs. '/' is not good enough to determine the syntax needed.
+>    Therefore, this patch introduces a new evsel boolean field to mark events
+>    coming from  libpfm4. The field is then used to adjust the fallback string.
 
-The kernel version should not be used in any kind of logic. Lots of folks
-backport bpf patches to older versions of the kernel. The kernel version is
-meaningless form bpf pov. We even removed kernel_version check from kprobe
-programs, because it was useless. vmlinux BTF is a complete description of the
-running kernel. It's the one that the verifier is using to do it safety checks.
+heya,
+I made bunch of comments for v5, not sure you saw them:
+  https://lore.kernel.org/lkml/20200323235846.104937-1-irogers@google.com/
+
+jirka
+
+> v6 is a rebase.
+> v5 is a rebase.
+> v4 is a rebase on git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git
+>    branch perf/core and re-adds the tools/build/feature/test-libpfm4.c
+>    missed in v3.
+> v3 is against acme/perf/core and removes a diagnostic warning.
+> v2 of this patch makes the --pfm-events man page documentation
+> conditional on libpfm4 behing configured. It tidies some of the
+> documentation and adds the feature test missed in the v1 patch.
+> 
+
+SNIP
+
