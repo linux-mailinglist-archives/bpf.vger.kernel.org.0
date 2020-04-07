@@ -2,150 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4571A0786
-	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 08:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8929A1A07B3
+	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 08:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727464AbgDGGnn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Apr 2020 02:43:43 -0400
-Received: from mail-yb1-f193.google.com ([209.85.219.193]:42856 "EHLO
-        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727376AbgDGGnm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Apr 2020 02:43:42 -0400
-Received: by mail-yb1-f193.google.com with SMTP id c13so1230056ybp.9
-        for <bpf@vger.kernel.org>; Mon, 06 Apr 2020 23:43:41 -0700 (PDT)
+        id S1726725AbgDGGwu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Apr 2020 02:52:50 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:37152 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726030AbgDGGwu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Apr 2020 02:52:50 -0400
+Received: by mail-qt1-f195.google.com with SMTP id n17so1919185qtv.4;
+        Mon, 06 Apr 2020 23:52:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=o+lddGcmZZMWCWY/hrwQ/sl6NL2A6Ox6QLM0MeNapFc=;
-        b=vJwu8vd7xgWlMCEr4QgadrLlWKjCvorA+xVbSYejayzEt+gA2FoHMzPUggmJLOFRBM
-         tDR7wgEEj9wM/JuVmS7Is+8Ri++9uuHQa8rxrOGrj+Od3SFd+d65RWF2XkJ86IEn3zoL
-         igGlkcx8HWrq1LF/8RoG+2LyyKR34yShR2CeCjpEyx29DR1+Yxd5MmiGwNgOcZyPVJgK
-         qM0xSQPdOzg5TFz50cjC3QaAYwy9ztVgS/Yeg5bEzmUcsw0iwiGDkM2+Gq7E387GPso4
-         rdjCaASc36vSK8qQZZHsYL+YC24MZISUYSg97fWM8D3oKcgNv4tdrP4yL1RJcdlGSF8i
-         7HhQ==
+        bh=a3DtR8lJo6PTMwtSOd+rDZo3P/UEBQfONul+r7GtLsU=;
+        b=J0T4IWqfZlYey7gFpBduMZFlKmMrJI2QJTLGFSL3Qub25yImfM7rA42D1WRalOvS7a
+         QIIdY0EUBpHSxjtJF/CzyIoBhfBESDvoEgVScJrbJwBRg2lk/QBsKsnUn3pk++r/L/UM
+         u1uufVNUCJIYGyKZeGkrjJjlQVyFHqgc7ksFVhI0PNL+JDpW5e/YaHbmCsFvJJz477xO
+         VWyGTA4L8P2kKesky/9pfxzrjQMsqs8X/ShR19wT9nXqeKOj++2yefaVMDieyAePhIrr
+         he0tRLj8MkCLHJo1ldEY7Ido9Z5+Rt8ujqLFj4RWJKlCI1MsJy0QVRPlqLXyXDNFml3l
+         TkAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=o+lddGcmZZMWCWY/hrwQ/sl6NL2A6Ox6QLM0MeNapFc=;
-        b=Jq5RPgavECEQ2B+sRYLbahbd9JOxBfnT4MlaLeQ/pbJcf+pLz8SkEB2MdLudKgR6UC
-         wG07psdh5Rgk8EcnOzZaMJIIBaGbC5LzuLQizrijRpPM+dXb0qs4NJeOOTrBfg1ZRAnN
-         HtOD/MSjVAQ0iMUFptNGir9vAmIEs1DbGEiEyt56K2hxXXe+r0UknSjJvOP2fm35qiPA
-         hVxnwwrCYfja6KRC7x2ePV+Cp7gzP9SBOPwVzB2XdWVanQpQPNuk6sO6k3Ru+T8wpijA
-         07PrvLOqreHlNwfA47JppEzAoht1zK1/6YM3tUJyjUuIG+MtMqFkaee0PbXzrsig5tNl
-         SaDg==
-X-Gm-Message-State: AGi0PubF2OZSQgMP1KDmh4qBDgGHHjel6QPaTkhPqw4P2nRjUe1HLeEb
-        gWjAQg/pDnyy7pL9WrD7W1P6DnFFDxNKi/5XU7XQSg==
-X-Google-Smtp-Source: APiQypLj57aHxYP8mfedHKGyTcUe1VwkNrUoXV0C492PLl4l8oHMQEo5CkNqqE8/55Bl77tsGd7tbKB9QXgfkdgO5zk=
-X-Received: by 2002:a25:4443:: with SMTP id r64mr1441717yba.41.1586241821140;
- Mon, 06 Apr 2020 23:43:41 -0700 (PDT)
+        bh=a3DtR8lJo6PTMwtSOd+rDZo3P/UEBQfONul+r7GtLsU=;
+        b=Ru5jUE1R8o3BFOmH07N1wAObtae9WzP/zEQElNhip7FXDpvJCjN6hFKdnQrOC46DIA
+         /KtjHmXxPNKbXmjTJM6vbY79HaJ+28Oexw0Loh+g1+CaJkcW7mTof0cGdRjpUx1J99rp
+         u4MkUOcrHJcg4rQX8n5xgAemZuPdc8L4Ml13xjVP5zVA8GdPU2uxULQ0MUhB9FqeuNho
+         DH8sYdUpOOVsqV566q1qIMWIv+gSTqtqbNhQ8i4LWKW5q2JZDjIIwL1FwUxQCALufYYA
+         XqY3MriWn1L/TI070fs3q1xJhLEte+uflydJaBqmRYPqoiyRFGtLq6E6HJye3IpeXO2e
+         vlRA==
+X-Gm-Message-State: AGi0PuZN9xhNwVCFGBGmzv+7MZEysqPcYMcoEoVKcQBmG+fI3er4H7eI
+        jI9R9NG+AZus5/TCNRugxZSHcfvFAk0PGR6oFa8=
+X-Google-Smtp-Source: APiQypI9+0Hu73evKwOrHhmG710cmV0+RzwTXSunS6tGdmAfIwMAutiMZhsmZ9W6/U/21KFfbEr53pc5AJcjz5hChAw=
+X-Received: by 2002:ac8:468d:: with SMTP id g13mr773636qto.59.1586242369205;
+ Mon, 06 Apr 2020 23:52:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200323235846.104937-1-irogers@google.com> <20200324102732.GR1534489@krava>
-In-Reply-To: <20200324102732.GR1534489@krava>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 6 Apr 2020 23:43:29 -0700
-Message-ID: <CAP-5=fX346zwohXP_xgoZHyq4JSbV8hdLPvBR3ZpS_iOHcX1hA@mail.gmail.com>
-Subject: Re: [PATCH v5] perf tools: add support for libpfm4
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+References: <1586240904-14176-1-git-send-email-komachi.yoshiki@gmail.com>
+In-Reply-To: <1586240904-14176-1-git-send-email-komachi.yoshiki@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 6 Apr 2020 23:52:38 -0700
+Message-ID: <CAEf4BzZaMX=xPSkOdggX6kMa_a2eWZws9W0EiJm7Qf1x1sR+cQ@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: Make bpf/bpf_helpers.h self-contained
+To:     Yoshiki Komachi <komachi.yoshiki@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jiwei Sun <jiwei.sun@windriver.com>,
-        yuzhoujian <yuzhoujian@didichuxing.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 24, 2020 at 3:28 AM Jiri Olsa <jolsa@redhat.com> wrote:
+On Mon, Apr 6, 2020 at 11:29 PM Yoshiki Komachi
+<komachi.yoshiki@gmail.com> wrote:
 >
-> On Mon, Mar 23, 2020 at 04:58:46PM -0700, Ian Rogers wrote:
-> > This patch links perf with the libpfm4 library if it is available and
-> > NO_LIBPFM4 isn't passed to the build. The libpfm4 library contains hardware
-> > event tables for all processors supported by perf_events. It is a helper
-> > library that helps convert from a symbolic event name to the event
-> > encoding required by the underlying kernel interface. This
-> > library is open-source and available from: http://perfmon2.sf.net.
-> >
-> > With this patch, it is possible to specify full hardware events
-> > by name. Hardware filters are also supported. Events must be
-> > specified via the --pfm-events and not -e option. Both options
-> > are active at the same time and it is possible to mix and match:
-> >
-> > $ perf stat --pfm-events inst_retired:any_p:c=1:i -e cycles ....
-> >
-> > v5 is a rebase.
-> > v4 is a rebase on git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git
-> >    branch perf/core and re-adds the tools/build/feature/test-libpfm4.c
-> >    missed in v3.
-> > v3 is against acme/perf/core and removes a diagnostic warning.
-> > v2 of this patch makes the --pfm-events man page documentation
-> > conditional on libpfm4 behing configured. It tidies some of the
-> > documentation and adds the feature test missed in the v1 patch.
-> >
-> > Author: Stephane Eranian <eranian@google.com>
-> > Signed-off-by: Ian Rogers <irogers@google.com>
+> I tried to compile a bpf program including bpf_helpers.h, however it
+> resulted in failure as below:
 >
-> I still have some conflicts, but I merged it by hand
+>   # clang -I./linux/tools/lib/ -I/lib/modules/$(uname -r)/build/include/ \
+>     -O2 -Wall -target bpf -emit-llvm -c bpf_prog.c -o bpf_prog.bc
+>   ...
+>   In file included from linux/tools/lib/bpf/bpf_helpers.h:5:
+>   linux/tools/lib/bpf/bpf_helper_defs.h:56:82: error: unknown type name '__u64'
+>   ...
 >
+> This is because bpf_helpers.h depends on linux/types.h and it is not
+> self-contained. This has been like this long time, but since bpf_helpers.h
+> was moved from selftests private file to libbpf header file, IMO it
+> should include linux/types.h by itself.
 >
->         patching file tools/build/Makefile.feature
->         patching file tools/build/feature/Makefile
->         patching file tools/build/feature/test-libpfm4.c
->         patching file tools/perf/Documentation/Makefile
->         patching file tools/perf/Documentation/perf-record.txt
->         patching file tools/perf/Documentation/perf-stat.txt
->         patching file tools/perf/Documentation/perf-top.txt
->         patching file tools/perf/Makefile.config
->         patching file tools/perf/Makefile.perf
->         Hunk #3 FAILED at 834.
->         1 out of 3 hunks FAILED -- saving rejects to file tools/perf/Makefile.perf.rej
->         patching file tools/perf/builtin-list.c
->         patching file tools/perf/builtin-record.c
->         patching file tools/perf/builtin-stat.c
->         patching file tools/perf/builtin-top.c
->         Hunk #2 succeeded at 1549 (offset 2 lines).
->         Hunk #3 succeeded at 1567 (offset 2 lines).
->         patching file tools/perf/util/evsel.c
->         patching file tools/perf/util/evsel.h
->         patching file tools/perf/util/parse-events.c
->         patching file tools/perf/util/parse-events.h
->         patching file tools/perf/util/pmu.c
->         Hunk #1 succeeded at 869 (offset 5 lines).
->         patching file tools/perf/util/pmu.h
->         Hunk #1 succeeded at 65 (offset 1 line).
+> Fixes: e01a75c15969 ("libbpf: Move bpf_{helpers, helper_defs, endian, tracing}.h into libbpf")
+> Signed-off-by: Yoshiki Komachi <komachi.yoshiki@gmail.com>
+> ---
+>  tools/lib/bpf/bpf_helpers.h | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> jirka
+> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+> index f69cc208778a..d9288e695eb1 100644
+> --- a/tools/lib/bpf/bpf_helpers.h
+> +++ b/tools/lib/bpf/bpf_helpers.h
+> @@ -2,6 +2,7 @@
+>  #ifndef __BPF_HELPERS__
+>  #define __BPF_HELPERS__
+>
+> +#include <linux/types.h>
+>  #include "bpf_helper_defs.h"
 
-Thanks for looking at this! I sent a new version (v7):
-https://lore.kernel.org/lkml/20200407064018.158555-1-irogers@google.com/T/#u
-that adds Stephane's improvements for handling fallback when
-perf_event_open fails. Please let us know if there are issues we can
-address with the patch set.
+It's actually intentional, so that bpf_helpers.h can be used together
+with auto-generated (from BTF) vmlinux.h (which will have all the
+__u64 and other typedefs).
 
-Thanks,
-Ian
+>
+>  #define __uint(name, val) int (*name)[val]
+> --
+> 2.24.1
+>
