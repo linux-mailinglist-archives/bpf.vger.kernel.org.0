@@ -2,106 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0581A0A0D
-	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 11:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DCAE1A0A3B
+	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 11:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbgDGJ17 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Apr 2020 05:27:59 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:36027 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728049AbgDGJ16 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Apr 2020 05:27:58 -0400
-Received: by mail-wr1-f67.google.com with SMTP id k1so3063716wrm.3
-        for <bpf@vger.kernel.org>; Tue, 07 Apr 2020 02:27:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=X4ebnL9FKFq17X3pHCnu37OOFN1BcUTTkawnKuPEaf4=;
-        b=PxCV+msgjJfTVEbXmYgWagz9SMQD/gPBV15QP9rDBb9WK67XC2KO/GGSeUHh8ysbAi
-         9UDAn1MQ1imc604W1LmpW8vQU6yhxEcUVlWKHOWoh5rEokp7SP//+tkgpT4kWJ5U/qcY
-         67UZgaQcAD+YcoRoioSrxcx9YEEw/Bi5YFcds=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=X4ebnL9FKFq17X3pHCnu37OOFN1BcUTTkawnKuPEaf4=;
-        b=rGynOX23m0UzgddD431HWoYBlFnlMtPG8EXUx33hhEz4dy9zFl8O3fjdtDMskRlj0r
-         HOsnkjNyv5ql11cKXaMWtmy0nj/0WetQb9hnbbFCLnCqXnR+ST/f4wCgGTDaKqkcOuL6
-         10c6BzR5SkSTMs/58GqdqD1ZZrQ034FftwSrogKXSTIdlV+X9CqFMvZZvwNVGuHCQ3s4
-         oCvIYSKbI3O3nI76hefgrfuCG8xEMzOA/H93fDoQBGRUG6ohUKvkEeWmqtnUJnO4DuPs
-         viD1ZKYkg/S5zEEqIt8yApLDsmxrBflx9gbf1KCtS+g3AnIzLP7TLNvyUMZkHbfCvZtA
-         /r+A==
-X-Gm-Message-State: AGi0PuanA9OkNc6Fy/FVzh/+QMXxWCTbaMTdSECn+vHlqciOjBaJQAJC
-        0j+yWZWmqDNP+I8uClcCeVLiMg==
-X-Google-Smtp-Source: APiQypK3qB3PWwDqhsBScgrnmzwQA56QeljH9ycdKKg0XVEGUVIBcK2CB3gMaBAPt5w8egJN/h6GvA==
-X-Received: by 2002:adf:fa4f:: with SMTP id y15mr1849852wrr.118.1586251675115;
-        Tue, 07 Apr 2020 02:27:55 -0700 (PDT)
-Received: from google.com ([2a00:79e0:42:204:8a21:ba0c:bb42:75ec])
-        by smtp.gmail.com with ESMTPSA id d13sm3116411wrg.21.2020.04.07.02.27.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 02:27:54 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Tue, 7 Apr 2020 11:27:53 +0200
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Jiri Olsa <jolsa@kernel.org>,
+        id S1728023AbgDGJd7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Apr 2020 05:33:59 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:42344 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726716AbgDGJd6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Apr 2020 05:33:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ALLpFhoRwFcaZVxVwmpORwXzqCLllgkOW88XxNP1czw=; b=cXqt2Apb0IYUWCtEG/qZtDMcnU
+        GDRnm2aNxxGoLxkuAR2tr8mHb6Rbt51JplL2wsHcw0XXes/p9vuKk2dRBjziu0pj+AMLXBIVXd5MB
+        gvV51G/O02Ml2mfOfroshmH9vvT7b25V5u29s96NWMaLGhnQ3eRcS49vwwXdNV7XAE1sQ6TTUm338
+        r+cGgmsDwefFnOAQBzqSeJN/mQh9Y7/rvYUJ2/a5zxNSS+8KqyAQ55Tz9rvkDZQAS6eOCTxFKzMz0
+        EHTPlUb/iGsSM621kD101DfYjXLrGVEVLN5aOlUfGqxkJf7cU2Lpm3CWVfvPvyK+JQrjpvISps5WE
+        4y29vzZQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jLkcH-0006yf-F2; Tue, 07 Apr 2020 09:33:57 +0000
+Date:   Tue, 7 Apr 2020 02:33:57 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Christoph Hellwig <hch@infradead.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>, bgregg@netflix.com
-Subject: Re: [RFC 0/3] bpf: Add d_path helper
-Message-ID: <20200407092753.GA109512@google.com>
-References: <20200401110907.2669564-1-jolsa@kernel.org>
- <20200402142106.GF23230@ZenIV.linux.org.uk>
- <20200403090828.GF2784502@krava>
- <20200406031602.GR23230@ZenIV.linux.org.uk>
- <20200406090918.GA3035739@krava>
- <20200407011052.khtujfdamjtwvpdp@ast-mbp.dhcp.thefacebook.com>
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        bgregg@netflix.com
+Subject: Re: Question on "uaccess: Add strict non-pagefault kernel-space read
+ function"
+Message-ID: <20200407093357.GA24309@infradead.org>
+References: <20200403133533.GA3424@infradead.org>
+ <5ddc8c04-279d-9a14-eaa7-755467902ead@iogearbox.net>
+ <20200404093105.GA445@infradead.org>
+ <2adc77e1-e84d-f303-fd88-133ec950c33f@iogearbox.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200407011052.khtujfdamjtwvpdp@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <2adc77e1-e84d-f303-fd88-133ec950c33f@iogearbox.net>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06-Apr 18:10, Alexei Starovoitov wrote:
-> On Mon, Apr 06, 2020 at 11:09:18AM +0200, Jiri Olsa wrote:
-> > 
-> > is there any way we could have d_path functionality (even
-> > reduced and not working for all cases) that could be used
-> > or called like that?
+On Tue, Apr 07, 2020 at 11:03:23AM +0200, Daniel Borkmann wrote:
 > 
-> I agree with Al. This helper cannot be enabled for all of bpf tracing.
-> We have to white list its usage for specific callsites only.
-> May be all of lsm hooks are safe. I don't know yet. This has to be
-> analyzed carefully. Every hook. One by one.
+> ... where archs with non-overlapping user and kernel address range would
+> only end up having to implementing kernel_range_ok() check. Or, instead of
+> a generic kernel_range_ok() this could perhaps be more probing-specific as
+> in probe_kernel_range_ok() where this would then also cover the special
+> cases we seem to have in parisc and um. Then, this would allow to get rid
+> of all the __weak aliasing as well which may just be confusing. I could look
+> into coming up with something along these lines. Thoughts?
 
-I agree with this, there are some LSM hooks which do get called in
-interrupt context, eg. task_free (which gets called in an RCU
-callback).
+FYI, this is what I cooked up a few days ago:
 
-The hooks that we are using it for and we know that it works (using
-our experimental helpers similar to this) are the bprm_* hooks in the
-exec pathway (for logic based on the path of the executable).
+http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/maccess-fixups
 
-It might be worth whitelisting these functions by adding verifier ops
-for LSM programs?
-
-Would you want to do it as a part of this series?
-
-- KP
-
-> in_task() isn't really a solution.
-> 
-> At the same time I agree that such helper is badly needed.
-> Folks have been requesting it for long time.
+Still misses the final work to switch probe_kernel_read to be the
+strict version.  Any good naming suggestion for the non-strict one?
