@@ -2,211 +2,240 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF911A0100
-	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 00:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9341A02C5
+	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 02:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgDFWQb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Apr 2020 18:16:31 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:36961 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726598AbgDFWQa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Apr 2020 18:16:30 -0400
-Received: by mail-pf1-f195.google.com with SMTP id u65so8307417pfb.4
-        for <bpf@vger.kernel.org>; Mon, 06 Apr 2020 15:16:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cs.washington.edu; s=goo201206;
-        h=from:to:cc:subject:date:message-id;
-        bh=I8Ag8RJmxCZk7aftpHG1/aOT8pIgsaZRRBMA74l4szs=;
-        b=M8J8NhOnd6VsGu2mROnqMiucZGBJHkCFpdPuRUXTHrWBoiRpSX/zdOAAme47f8IpmO
-         LbxP9RDtmYBA4sFMzviQSaX6l/c2ApCo5J9ZISFFgE3ic036efVrwB2nD7wkS1aBm/gE
-         pEWLs6KKpMP1482IJ5rRxQ3ubJH7OiJ35zFuM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=I8Ag8RJmxCZk7aftpHG1/aOT8pIgsaZRRBMA74l4szs=;
-        b=c7LOGHbI6VW0rF8+evLJiyM8mSyJSGU2DdcDYB4Nm8ibjvfb6fy3rvi7qiPsaFrxO2
-         B5t74NI9pZYMXm4RjpMcYiSWSdvmTldKhpY0JO0t+4HQf6YZBNwNf9qZlYyK1CU6zl9W
-         myJRVR4Ug1VU1vc/IBkcOdmVYmFFbjraAR2hSng2152AJ8C3hkvIIz92fHdE4p/z4VZB
-         DygWIn8JCgkslCcttU+BoWPT/ZyaDhe9Fj24+TJOzQQJVrHSjDKcWwqQFt8vnqMgDLxL
-         HFY5JUI+Mk0tHKXvqkSrDsg6/XCTRm2pDx+jRFrISVmdgvvex52k97DcbHNkNAqqeQiB
-         AI8w==
-X-Gm-Message-State: AGi0PuYvc9PgG2cFswBzLL5xPSahOzLTEWYWEnCD8fa0IVtqpjnvAVEa
-        YRy7V0y4K0JqBaMUg/DcDt/xLfqWk91Y8w==
-X-Google-Smtp-Source: APiQypLGxqHjlTUmIKxBeT61WxtzGWT1x2WVVzwD4uK2qvte99BMAMa7HumrAI/VX29+HNxtKillxg==
-X-Received: by 2002:a63:dd09:: with SMTP id t9mr1182732pgg.432.1586211388598;
-        Mon, 06 Apr 2020 15:16:28 -0700 (PDT)
-Received: from localhost.localdomain (c-73-53-94-119.hsd1.wa.comcast.net. [73.53.94.119])
-        by smtp.gmail.com with ESMTPSA id s12sm11714998pgi.38.2020.04.06.15.16.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 15:16:28 -0700 (PDT)
-From:   Luke Nelson <lukenels@cs.washington.edu>
-X-Google-Original-From: Luke Nelson <luke.r.nels@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Xi Wang <xi.wang@gmail.com>, Luke Nelson <luke.r.nels@gmail.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf] riscv, bpf: Fix offset range checking for auipc+jalr on RV64
-Date:   Mon,  6 Apr 2020 22:16:04 +0000
-Message-Id: <20200406221604.18547-1-luke.r.nels@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726508AbgDGABF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Apr 2020 20:01:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33402 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726477AbgDGABF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Apr 2020 20:01:05 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EAD252078C;
+        Tue,  7 Apr 2020 00:01:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586217663;
+        bh=EfcVTwVqrO6AJ3MtBctoCWpmYHa9bcjVtiTPs+AuG78=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=aZxET/q9zCbZTORuUIu0mApbwO76tvy9jkBpRzUaXXLQS0tG6tvODOrqjulcDd47t
+         J18rUcbhXYnG9VrVDeuJO0x02XaPKlXnThkvNeKz+sqeRBkQ1Ds6+fc4gTSU+r9pca
+         JmbhULIBBzK2ZZbBk6Kzz18cM4MsqRcnDOWe81og=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.5 04/35] bpf: Fix deadlock with rq_lock in bpf_send_signal()
+Date:   Mon,  6 Apr 2020 20:00:26 -0400
+Message-Id: <20200407000058.16423-4-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200407000058.16423-1-sashal@kernel.org>
+References: <20200407000058.16423-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The existing code in emit_call on RV64 checks that the PC-relative offset
-to the function fits in 32 bits before calling emit_jump_and_link to emit
-an auipc+jalr pair. However, this check is incorrect because offsets in
-the range [2^31 - 2^11, 2^31 - 1] cannot be encoded using auipc+jalr on
-RV64 (see discussion [1]). The RISC-V spec has recently been updated
-to reflect this fact [2, 3].
+From: Yonghong Song <yhs@fb.com>
 
-This patch fixes the problem by moving the check on the offset into
-emit_jump_and_link and modifying it to the correct range of encodable
-offsets, which is [-2^31 - 2^11, 2^31 - 2^11). This also enforces the
-check on the offset to other uses of emit_jump_and_link (e.g., BPF_JA)
-as well.
+[ Upstream commit 1bc7896e9ef44fd77858b3ef0b8a6840be3a4494 ]
 
-Currently, this bug is unlikely to be triggered, because the memory
-region from which JITed images are allocated is close enough to kernel
-text for the offsets to not become too large; and because the bounds on
-BPF program size are small enough. This patch prevents this problem from
-becoming an issue if either of these change.
+When experimenting with bpf_send_signal() helper in our production
+environment (5.2 based), we experienced a deadlock in NMI mode:
+   #5 [ffffc9002219f770] queued_spin_lock_slowpath at ffffffff8110be24
+   #6 [ffffc9002219f770] _raw_spin_lock_irqsave at ffffffff81a43012
+   #7 [ffffc9002219f780] try_to_wake_up at ffffffff810e7ecd
+   #8 [ffffc9002219f7e0] signal_wake_up_state at ffffffff810c7b55
+   #9 [ffffc9002219f7f0] __send_signal at ffffffff810c8602
+  #10 [ffffc9002219f830] do_send_sig_info at ffffffff810ca31a
+  #11 [ffffc9002219f868] bpf_send_signal at ffffffff8119d227
+  #12 [ffffc9002219f988] bpf_overflow_handler at ffffffff811d4140
+  #13 [ffffc9002219f9e0] __perf_event_overflow at ffffffff811d68cf
+  #14 [ffffc9002219fa10] perf_swevent_overflow at ffffffff811d6a09
+  #15 [ffffc9002219fa38] ___perf_sw_event at ffffffff811e0f47
+  #16 [ffffc9002219fc30] __schedule at ffffffff81a3e04d
+  #17 [ffffc9002219fc90] schedule at ffffffff81a3e219
+  #18 [ffffc9002219fca0] futex_wait_queue_me at ffffffff8113d1b9
+  #19 [ffffc9002219fcd8] futex_wait at ffffffff8113e529
+  #20 [ffffc9002219fdf0] do_futex at ffffffff8113ffbc
+  #21 [ffffc9002219fec0] __x64_sys_futex at ffffffff81140d1c
+  #22 [ffffc9002219ff38] do_syscall_64 at ffffffff81002602
+  #23 [ffffc9002219ff50] entry_SYSCALL_64_after_hwframe at ffffffff81c00068
 
-[1]: https://groups.google.com/a/groups.riscv.org/forum/#!topic/isa-dev/bwWFhBnnZFQ
-[2]: https://github.com/riscv/riscv-isa-manual/commit/b1e42e09ac55116dbf9de5e4fb326a5a90e4a993
-[3]: https://github.com/riscv/riscv-isa-manual/commit/4c1b2066ebd2965a422e41eb262d0a208a7fea07
+The above call stack is actually very similar to an issue
+reported by Commit eac9153f2b58 ("bpf/stackmap: Fix deadlock with
+rq_lock in bpf_get_stack()") by Song Liu. The only difference is
+bpf_send_signal() helper instead of bpf_get_stack() helper.
 
-Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+The above deadlock is triggered with a perf_sw_event.
+Similar to Commit eac9153f2b58, the below almost identical reproducer
+used tracepoint point sched/sched_switch so the issue can be easily caught.
+  /* stress_test.c */
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <sys/mman.h>
+  #include <pthread.h>
+  #include <sys/types.h>
+  #include <sys/stat.h>
+  #include <fcntl.h>
+
+  #define THREAD_COUNT 1000
+  char *filename;
+  void *worker(void *p)
+  {
+        void *ptr;
+        int fd;
+        char *pptr;
+
+        fd = open(filename, O_RDONLY);
+        if (fd < 0)
+                return NULL;
+        while (1) {
+                struct timespec ts = {0, 1000 + rand() % 2000};
+
+                ptr = mmap(NULL, 4096 * 64, PROT_READ, MAP_PRIVATE, fd, 0);
+                usleep(1);
+                if (ptr == MAP_FAILED) {
+                        printf("failed to mmap\n");
+                        break;
+                }
+                munmap(ptr, 4096 * 64);
+                usleep(1);
+                pptr = malloc(1);
+                usleep(1);
+                pptr[0] = 1;
+                usleep(1);
+                free(pptr);
+                usleep(1);
+                nanosleep(&ts, NULL);
+        }
+        close(fd);
+        return NULL;
+  }
+
+  int main(int argc, char *argv[])
+  {
+        void *ptr;
+        int i;
+        pthread_t threads[THREAD_COUNT];
+
+        if (argc < 2)
+                return 0;
+
+        filename = argv[1];
+
+        for (i = 0; i < THREAD_COUNT; i++) {
+                if (pthread_create(threads + i, NULL, worker, NULL)) {
+                        fprintf(stderr, "Error creating thread\n");
+                        return 0;
+                }
+        }
+
+        for (i = 0; i < THREAD_COUNT; i++)
+                pthread_join(threads[i], NULL);
+        return 0;
+  }
+and the following command:
+  1. run `stress_test /bin/ls` in one windown
+  2. hack bcc trace.py with the following change:
+     --- a/tools/trace.py
+     +++ b/tools/trace.py
+     @@ -513,6 +513,7 @@ BPF_PERF_OUTPUT(%s);
+              __data.tgid = __tgid;
+              __data.pid = __pid;
+              bpf_get_current_comm(&__data.comm, sizeof(__data.comm));
+     +        bpf_send_signal(10);
+      %s
+      %s
+              %s.perf_submit(%s, &__data, sizeof(__data));
+  3. in a different window run
+     ./trace.py -p $(pidof stress_test) t:sched:sched_switch
+
+The deadlock can be reproduced in our production system.
+
+Similar to Song's fix, the fix is to delay sending signal if
+irqs is disabled to avoid deadlocks involving with rq_lock.
+With this change, my above stress-test in our production system
+won't cause deadlock any more.
+
+I also implemented a scale-down version of reproducer in the
+selftest (a subsequent commit). With latest bpf-next,
+it complains for the following potential deadlock.
+  [   32.832450] -> #1 (&p->pi_lock){-.-.}:
+  [   32.833100]        _raw_spin_lock_irqsave+0x44/0x80
+  [   32.833696]        task_rq_lock+0x2c/0xa0
+  [   32.834182]        task_sched_runtime+0x59/0xd0
+  [   32.834721]        thread_group_cputime+0x250/0x270
+  [   32.835304]        thread_group_cputime_adjusted+0x2e/0x70
+  [   32.835959]        do_task_stat+0x8a7/0xb80
+  [   32.836461]        proc_single_show+0x51/0xb0
+  ...
+  [   32.839512] -> #0 (&(&sighand->siglock)->rlock){....}:
+  [   32.840275]        __lock_acquire+0x1358/0x1a20
+  [   32.840826]        lock_acquire+0xc7/0x1d0
+  [   32.841309]        _raw_spin_lock_irqsave+0x44/0x80
+  [   32.841916]        __lock_task_sighand+0x79/0x160
+  [   32.842465]        do_send_sig_info+0x35/0x90
+  [   32.842977]        bpf_send_signal+0xa/0x10
+  [   32.843464]        bpf_prog_bc13ed9e4d3163e3_send_signal_tp_sched+0x465/0x1000
+  [   32.844301]        trace_call_bpf+0x115/0x270
+  [   32.844809]        perf_trace_run_bpf_submit+0x4a/0xc0
+  [   32.845411]        perf_trace_sched_switch+0x10f/0x180
+  [   32.846014]        __schedule+0x45d/0x880
+  [   32.846483]        schedule+0x5f/0xd0
+  ...
+
+  [   32.853148] Chain exists of:
+  [   32.853148]   &(&sighand->siglock)->rlock --> &p->pi_lock --> &rq->lock
+  [   32.853148]
+  [   32.854451]  Possible unsafe locking scenario:
+  [   32.854451]
+  [   32.855173]        CPU0                    CPU1
+  [   32.855745]        ----                    ----
+  [   32.856278]   lock(&rq->lock);
+  [   32.856671]                                lock(&p->pi_lock);
+  [   32.857332]                                lock(&rq->lock);
+  [   32.857999]   lock(&(&sighand->siglock)->rlock);
+
+  Deadlock happens on CPU0 when it tries to acquire &sighand->siglock
+  but it has been held by CPU1 and CPU1 tries to grab &rq->lock
+  and cannot get it.
+
+  This is not exactly the callstack in our production environment,
+  but sympotom is similar and both locks are using spin_lock_irqsave()
+  to acquire the lock, and both involves rq_lock. The fix to delay
+  sending signal when irq is disabled also fixed this issue.
+
+Signed-off-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Cc: Song Liu <songliubraving@fb.com>
+Link: https://lore.kernel.org/bpf/20200304191104.2796501-1-yhs@fb.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/net/bpf_jit_comp64.c | 49 +++++++++++++++++++++------------
- 1 file changed, 32 insertions(+), 17 deletions(-)
+ kernel/trace/bpf_trace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index cc1985d8750a..d208a9fd6c52 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -110,6 +110,16 @@ static bool is_32b_int(s64 val)
- 	return -(1L << 31) <= val && val < (1L << 31);
- }
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index e5ef4ae9edb50..0e553b1706d37 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -731,7 +731,7 @@ BPF_CALL_1(bpf_send_signal, u32, sig)
+ 	if (unlikely(!nmi_uaccess_okay()))
+ 		return -EPERM;
  
-+static bool in_auipc_jalr_range(s64 val)
-+{
-+	/*
-+	 * auipc+jalr can reach any signed PC-relative offset in the range
-+	 * [-2^31 - 2^11, 2^31 - 2^11).
-+	 */
-+	return (-(1L << 31) - (1L << 11)) <= val &&
-+		val < ((1L << 31) - (1L << 11));
-+}
-+
- static void emit_imm(u8 rd, s64 val, struct rv_jit_context *ctx)
- {
- 	/* Note that the immediate from the add is sign-extended,
-@@ -380,20 +390,24 @@ static void emit_sext_32_rd(u8 *rd, struct rv_jit_context *ctx)
- 	*rd = RV_REG_T2;
- }
- 
--static void emit_jump_and_link(u8 rd, s64 rvoff, bool force_jalr,
--			       struct rv_jit_context *ctx)
-+static int emit_jump_and_link(u8 rd, s64 rvoff, bool force_jalr,
-+			      struct rv_jit_context *ctx)
- {
- 	s64 upper, lower;
- 
- 	if (rvoff && is_21b_int(rvoff) && !force_jalr) {
- 		emit(rv_jal(rd, rvoff >> 1), ctx);
--		return;
-+		return 0;
-+	} else if (in_auipc_jalr_range(rvoff)) {
-+		upper = (rvoff + (1 << 11)) >> 12;
-+		lower = rvoff & 0xfff;
-+		emit(rv_auipc(RV_REG_T1, upper), ctx);
-+		emit(rv_jalr(rd, RV_REG_T1, lower), ctx);
-+		return 0;
- 	}
- 
--	upper = (rvoff + (1 << 11)) >> 12;
--	lower = rvoff & 0xfff;
--	emit(rv_auipc(RV_REG_T1, upper), ctx);
--	emit(rv_jalr(rd, RV_REG_T1, lower), ctx);
-+	pr_err("bpf-jit: target offset 0x%llx is out of range\n", rvoff);
-+	return -ERANGE;
- }
- 
- static bool is_signed_bpf_cond(u8 cond)
-@@ -407,18 +421,16 @@ static int emit_call(bool fixed, u64 addr, struct rv_jit_context *ctx)
- 	s64 off = 0;
- 	u64 ip;
- 	u8 rd;
-+	int ret;
- 
- 	if (addr && ctx->insns) {
- 		ip = (u64)(long)(ctx->insns + ctx->ninsns);
- 		off = addr - ip;
--		if (!is_32b_int(off)) {
--			pr_err("bpf-jit: target call addr %pK is out of range\n",
--			       (void *)addr);
--			return -ERANGE;
--		}
- 	}
- 
--	emit_jump_and_link(RV_REG_RA, off, !fixed, ctx);
-+	ret = emit_jump_and_link(RV_REG_RA, off, !fixed, ctx);
-+	if (ret)
-+		return ret;
- 	rd = bpf_to_rv_reg(BPF_REG_0, ctx);
- 	emit(rv_addi(rd, RV_REG_A0, 0), ctx);
- 	return 0;
-@@ -429,7 +441,7 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- {
- 	bool is64 = BPF_CLASS(insn->code) == BPF_ALU64 ||
- 		    BPF_CLASS(insn->code) == BPF_JMP;
--	int s, e, rvoff, i = insn - ctx->prog->insnsi;
-+	int s, e, rvoff, ret, i = insn - ctx->prog->insnsi;
- 	struct bpf_prog_aux *aux = ctx->prog->aux;
- 	u8 rd = -1, rs = -1, code = insn->code;
- 	s16 off = insn->off;
-@@ -699,7 +711,9 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 	/* JUMP off */
- 	case BPF_JMP | BPF_JA:
- 		rvoff = rv_offset(i, off, ctx);
--		emit_jump_and_link(RV_REG_ZERO, rvoff, false, ctx);
-+		ret = emit_jump_and_link(RV_REG_ZERO, rvoff, false, ctx);
-+		if (ret)
-+			return ret;
- 		break;
- 
- 	/* IF (dst COND src) JUMP off */
-@@ -801,7 +815,6 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 	case BPF_JMP | BPF_CALL:
- 	{
- 		bool fixed;
--		int ret;
- 		u64 addr;
- 
- 		mark_call(ctx);
-@@ -826,7 +839,9 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 			break;
- 
- 		rvoff = epilogue_offset(ctx);
--		emit_jump_and_link(RV_REG_ZERO, rvoff, false, ctx);
-+		ret = emit_jump_and_link(RV_REG_ZERO, rvoff, false, ctx);
-+		if (ret)
-+			return ret;
- 		break;
- 
- 	/* dst = imm64 */
+-	if (in_nmi()) {
++	if (irqs_disabled()) {
+ 		/* Do an early check on signal validity. Otherwise,
+ 		 * the error is lost in deferred irq_work.
+ 		 */
 -- 
-2.17.1
+2.20.1
 
