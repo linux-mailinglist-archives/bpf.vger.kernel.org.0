@@ -2,88 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9751A0993
-	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 10:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B29C91A09B4
+	for <lists+bpf@lfdr.de>; Tue,  7 Apr 2020 11:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726393AbgDGIxf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Apr 2020 04:53:35 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:33823 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725883AbgDGIxf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 7 Apr 2020 04:53:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586249614;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ipYCcCqa2Muib314Zq2hTUsli6+sqi8KPyaPUSKEjE0=;
-        b=UOx0R0CKgDUfiYsaqY2Rn1J7kgXOg9pPkOIByZKug47WElfM8fZ8cTur+5hbju94PC1Xxj
-        L3xTybi3OR1p7Ojal/tkzIiIaBepf7qeeLt1V6GmcjHZPkAh6nVq9Dy3ocmR9cqb4CUQZJ
-        eqWeLK2SazBKZkGRXN8GV09WpTkz+mM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-495-B5wDdJ3JPQS3VfS56BFJuQ-1; Tue, 07 Apr 2020 04:53:29 -0400
-X-MC-Unique: B5wDdJ3JPQS3VfS56BFJuQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 340C88017CE;
-        Tue,  7 Apr 2020 08:53:27 +0000 (UTC)
-Received: from krava (unknown [10.40.192.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id ABC2550C01;
-        Tue,  7 Apr 2020 08:53:23 +0000 (UTC)
-Date:   Tue, 7 Apr 2020 10:53:21 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>, bgregg@netflix.com
-Subject: Re: [RFC 0/3] bpf: Add d_path helper
-Message-ID: <20200407085321.GA3144092@krava>
-References: <20200401110907.2669564-1-jolsa@kernel.org>
- <20200402142106.GF23230@ZenIV.linux.org.uk>
- <20200403090828.GF2784502@krava>
- <20200406031602.GR23230@ZenIV.linux.org.uk>
- <20200406090918.GA3035739@krava>
- <20200407011052.khtujfdamjtwvpdp@ast-mbp.dhcp.thefacebook.com>
+        id S1726720AbgDGJD3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Apr 2020 05:03:29 -0400
+Received: from www62.your-server.de ([213.133.104.62]:44216 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726353AbgDGJD3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Apr 2020 05:03:29 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jLk8i-0002BD-Sf; Tue, 07 Apr 2020 11:03:24 +0200
+Received: from [178.195.186.98] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jLk8i-000BDN-Hp; Tue, 07 Apr 2020 11:03:24 +0200
+Subject: Re: Question on "uaccess: Add strict non-pagefault kernel-space read
+ function"
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        bgregg@netflix.com
+References: <20200403133533.GA3424@infradead.org>
+ <5ddc8c04-279d-9a14-eaa7-755467902ead@iogearbox.net>
+ <20200404093105.GA445@infradead.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2adc77e1-e84d-f303-fd88-133ec950c33f@iogearbox.net>
+Date:   Tue, 7 Apr 2020 11:03:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200407011052.khtujfdamjtwvpdp@ast-mbp.dhcp.thefacebook.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20200404093105.GA445@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25774/Mon Apr  6 14:53:25 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 06:10:52PM -0700, Alexei Starovoitov wrote:
-> On Mon, Apr 06, 2020 at 11:09:18AM +0200, Jiri Olsa wrote:
-> > 
-> > is there any way we could have d_path functionality (even
-> > reduced and not working for all cases) that could be used
-> > or called like that?
+On 4/4/20 11:31 AM, Christoph Hellwig wrote:
+> On Fri, Apr 03, 2020 at 04:20:24PM +0200, Daniel Borkmann wrote:
+>> With crazy old functions I presume you mean the old bpf_probe_read()
+>> which is mapped to BPF_FUNC_probe_read helper or something else entirely?
 > 
-> I agree with Al. This helper cannot be enabled for all of bpf tracing.
-> We have to white list its usage for specific callsites only.
-> May be all of lsm hooks are safe. I don't know yet. This has to be
-> analyzed carefully. Every hook. One by one.
-> in_task() isn't really a solution.
-
-ok, I thought of white list and it seemed too much to me,
-but there's probably no other way
-
-jirka
-
+> I couldn't care less about bpf, this is about the kernel API.
 > 
-> At the same time I agree that such helper is badly needed.
-> Folks have been requesting it for long time.
-> 
+> What I mean is that your new probe_kernel_read_strict and
+> strncpy_from_unsafe_strict helpers are good and useful.  But for this
+> to actually make sense we need to get rid of the non-strict versions,
+> and we also need to get rid of some of the weak alias magic.
 
+Yeah agree, the probe_kernel_read() should do the strict checks by default
+and there would need to be some way to opt-out for the legacy helpers to
+not break. So it would end up looking like the below ...
+
+long __probe_kernel_read(void *dst, const void *src, size_t size)
+{
+         long ret = -EFAULT;
+         mm_segment_t old_fs = get_fs();
+
+         set_fs(KERNEL_DS);
+         if (kernel_range_ok(src, size))
+                 ret = probe_read_common(dst, (__force const void __user *)src, size);
+         set_fs(old_fs);
+
+         return ret;
+}
+
+... where archs with non-overlapping user and kernel address range would
+only end up having to implementing kernel_range_ok() check. Or, instead of
+a generic kernel_range_ok() this could perhaps be more probing-specific as
+in probe_kernel_range_ok() where this would then also cover the special
+cases we seem to have in parisc and um. Then, this would allow to get rid
+of all the __weak aliasing as well which may just be confusing. I could look
+into coming up with something along these lines. Thoughts?
