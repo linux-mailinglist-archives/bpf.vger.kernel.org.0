@@ -2,172 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9157A1A233E
-	for <lists+bpf@lfdr.de>; Wed,  8 Apr 2020 15:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 185F41A2465
+	for <lists+bpf@lfdr.de>; Wed,  8 Apr 2020 16:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727980AbgDHNom (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Apr 2020 09:44:42 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:29138 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726663AbgDHNom (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 8 Apr 2020 09:44:42 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 038DZZxO016715
-        for <bpf@vger.kernel.org>; Wed, 8 Apr 2020 09:44:41 -0400
-Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30920rkd7a-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 08 Apr 2020 09:44:40 -0400
-Received: from localhost
-        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <borntraeger@de.ibm.com>;
-        Wed, 8 Apr 2020 14:44:25 +0100
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
-        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 8 Apr 2020 14:44:18 +0100
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 038DiUwG37421114
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Apr 2020 13:44:30 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EC36711C04A;
-        Wed,  8 Apr 2020 13:44:29 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A219611C04C;
-        Wed,  8 Apr 2020 13:44:28 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.145.153.96])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  8 Apr 2020 13:44:28 +0000 (GMT)
-Subject: Re: [PATCH 28/28] s390: use __vmalloc_node in stack_alloc
-To:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
+        id S1728657AbgDHO4S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Apr 2020 10:56:18 -0400
+Received: from mail-bn8nam11on2091.outbound.protection.outlook.com ([40.107.236.91]:60320
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727612AbgDHO4S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Apr 2020 10:56:18 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PlJUPa3lqf0EhOzYuTDbqUn3Yfus7gi/EEAWTCYl5lzKO+O5WHU8V45EHRhS9LySKN8/UHF1mXRcoMxRyMLQbRTHEgli/HoOl3hIJ3r1nkjIOybyz8K1GXJ5Keh54tH0NNfJacbJ7MsJw93QdHdNMAsTOBxr2HWhArBn0s476h0x4cprkkbOEbfcr2oq3PBKUdv9p7CP5noJF9IM/UEGZXza6uVSCGNBCXPYeycgwfaqsv1MmiyWbWlGvfbBZLdrDD23x0aSDLFKlZhgxfo2sQdW6dPelwT+Ux5OuRoPYP8FXPSIy/64NpzVeZPmLt1xBZSG6FlE9oJP7IDcML91fQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VHKjxxGW/r5bv5XHHhK1BcFGVReuVvUgZsexBpV9Dk4=;
+ b=e8VcEwJ84ixL8ae271jTzHy78a2HSrcLNi//YTZ8txzneQ6K2Y1/5nD1eQFghcYfDueLpueyMyFL8MXDMhh6VwCb+1XebOaNzg0GZKFpIKDAWs6RzpcQsD5MtPSLhQWDb1YB23ulDgfrrpHftE4pACvzaekZDOQjz0s8HE93Fg7XheTJhDRwnDoIGQ5Y8XMSmRlk57LP8T8OW4T2qXbREFWX92MYAmtGKpY0MBw89IOc6Io6WsZK8U9lv8cWoawHAxWXcf5oWhRQrescoWCdqopbma7sBqTZV6BY8ZP+di5jQyzbNRdeQg4EBF5e8tzBKTBZOjnCYc6DGyDCQBuSWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VHKjxxGW/r5bv5XHHhK1BcFGVReuVvUgZsexBpV9Dk4=;
+ b=AEeFwVdZx/qxS2THYUz5Hp4S+mCrZjoWl5e+XgC4E71ZVrxA8ZjSxSCKZd+7th88NmZyN3Barm0Y5PYxntpIEdph7+ngPecoILPdc0VHz0zJOtmFH1rEjE+d/wnancnMLB1C9FK0f00OdtIYckqqyZmqKaZoZ0Qzzzbp1qvzXQI=
+Received: from MN2PR21MB1437.namprd21.prod.outlook.com (2603:10b6:208:208::10)
+ by MN2PR21MB1197.namprd21.prod.outlook.com (2603:10b6:208:39::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.5; Wed, 8 Apr
+ 2020 14:56:15 +0000
+Received: from MN2PR21MB1437.namprd21.prod.outlook.com
+ ([fe80::453:5eca:93bd:5afa]) by MN2PR21MB1437.namprd21.prod.outlook.com
+ ([fe80::453:5eca:93bd:5afa%6]) with mapi id 15.20.2900.002; Wed, 8 Apr 2020
+ 14:56:15 +0000
+From:   Haiyang Zhang <haiyangz@microsoft.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        "sameehj@amazon.com" <sameehj@amazon.com>
+CC:     Wei Liu <wei.liu@kernel.org>, KY Srinivasan <kys@microsoft.com>,
         Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, x86@kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laura Abbott <labbott@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200408115926.1467567-1-hch@lst.de>
- <20200408115926.1467567-29-hch@lst.de>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Autocrypt: addr=borntraeger@de.ibm.com; prefer-encrypt=mutual; keydata=
- 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
- nS4h0HDFPrrp1C2EMVYIQrMokWvlFZbCpsdYbBI=
-Date:   Wed, 8 Apr 2020 15:44:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200408115926.1467567-29-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "zorik@amazon.com" <zorik@amazon.com>,
+        "akiyano@amazon.com" <akiyano@amazon.com>,
+        "gtzalik@amazon.com" <gtzalik@amazon.com>,
+        =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>
+Subject: RE: [PATCH RFC v2 12/33] hv_netvsc: add XDP frame size to driver
+Thread-Topic: [PATCH RFC v2 12/33] hv_netvsc: add XDP frame size to driver
+Thread-Index: AQHWDZwWYtPz3NShLUejuRSAK49QAqhvS9mg
+Date:   Wed, 8 Apr 2020 14:56:14 +0000
+Message-ID: <MN2PR21MB143703CC4F63B5EB20CA217CCAC00@MN2PR21MB1437.namprd21.prod.outlook.com>
+References: <158634658714.707275.7903484085370879864.stgit@firesoul>
+ <158634669527.707275.1340397871511076658.stgit@firesoul>
+In-Reply-To: <158634669527.707275.1340397871511076658.stgit@firesoul>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 20040813-0012-0000-0000-000003A0B568
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20040813-0013-0000-0000-000021DDDAB0
-Message-Id: <6689b12a-4473-af2e-0fa0-69097eb2bb52@de.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-07_10:2020-04-07,2020-04-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- phishscore=0 mlxlogscore=999 adultscore=0 malwarescore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 lowpriorityscore=0
- spamscore=0 suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004080113
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Owner=haiyangz@microsoft.com;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-04-08T14:56:13.3658040Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Application=Microsoft Azure
+ Information Protection;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=9bf9c14c-b0db-42ea-87d7-feca533218c8;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Extended_MSFT_Method=Automatic
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=haiyangz@microsoft.com; 
+x-originating-ip: [96.61.83.132]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: a9d51dab-0cf2-4214-4af4-08d7dbccfc6c
+x-ms-traffictypediagnostic: MN2PR21MB1197:|MN2PR21MB1197:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR21MB119736BE40467F8F1092BB31CAC00@MN2PR21MB1197.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-forefront-prvs: 0367A50BB1
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR21MB1437.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(376002)(366004)(136003)(346002)(39860400002)(396003)(6506007)(478600001)(186003)(26005)(9686003)(71200400001)(55016002)(82960400001)(86362001)(82950400001)(7696005)(10290500003)(4326008)(316002)(2906002)(54906003)(66556008)(66446008)(81156014)(53546011)(64756008)(76116006)(66946007)(110136005)(81166007)(8676002)(52536014)(7416002)(33656002)(5660300002)(8990500004)(8936002)(66476007);DIR:OUT;SFP:1102;
+received-spf: None (protection.outlook.com: microsoft.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: yAS6FmSKm4TFm9qK732O/VU95LqK88/JOHbQaPyXpwFWIW/nhAJujg7qJpq5u4VbsDzGflGochMB/Zldy1M62p7Hf7d3gr2kshl3lptWTDWRl6JBGs2n+w8e4LxxhF8x+O6jHusb+Al1v9XAA9iHCrCu4f6mLDpBccs6K32yYlfoGZmaaFrEXy7DbpckTMu43io74LN6h6DJr4dDETXnTELLPNhLi8gRwsVa0ylyrYLAZ7zaXS9Aaa59DWbStbTP6o15pElnS8zI4wxC/+doMVkRtUqPJQNbNA4dvyD1iE/+kGLF7FIPN1skUiog7JnF0Kz1kb4q/iLO+KMCusJRxYPlxa41HaspTUaT9VhP8XhExSpd1efsyotuYlYniWEVpyfHY+h7DyZaPUT6mkC05JcPoqIeAIOuMW9zYwlAREi+qRDvKcl/svwIm1I6M3Zg
+x-ms-exchange-antispam-messagedata: v6wPmm5ssgs9cwUBMAkeQs5othqhtY07LSSQBD7LeJ80Oqi+q0IMb0nDNGeRxBD6UtS2e0wC87IFeut55sjexIn0K94aV2vtUVrWzpeOi67UJliWmwdOCG1cPz/iW9Gx+Z/fU9heIcepORn0e3vuTg==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a9d51dab-0cf2-4214-4af4-08d7dbccfc6c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Apr 2020 14:56:14.9458
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jEtT7EwtJt5aHdqCaCTQontIynENKVmSe9vQo1Tmiueoq4w7tz5u6XX3M+vGbaMREoz+JPu1PYD1XsxpBy7nSg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR21MB1197
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 08.04.20 13:59, Christoph Hellwig wrote:
-> stack_alloc can use a slightly higher level vmalloc function.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  arch/s390/kernel/setup.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-> index 36445dd40fdb..0f0b140b5558 100644
-> --- a/arch/s390/kernel/setup.c
-> +++ b/arch/s390/kernel/setup.c
-> @@ -305,12 +305,9 @@ void *restart_stack __section(.data);
->  unsigned long stack_alloc(void)
->  {
->  #ifdef CONFIG_VMAP_STACK
-> -	return (unsigned long)
-> -		__vmalloc_node_range(THREAD_SIZE, THREAD_SIZE,
-> -				     VMALLOC_START, VMALLOC_END,
-> -				     THREADINFO_GFP,
-> -				     PAGE_KERNEL, 0, NUMA_NO_NODE,
-> -				     __builtin_return_address(0));
-> +	return (unsigned long)__vmalloc_node(THREAD_SIZE, THREAD_SIZE,
-> +			THREADINFO_GFP, NUMA_NO_NODE,
-> +			__builtin_return_address(0));
-
-Looks sane.
-
-Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
-
-
->  #else
->  	return __get_free_pages(GFP_KERNEL, THREAD_SIZE_ORDER);
->  #endif
-> 
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSmVzcGVyIERhbmdhYXJk
+IEJyb3VlciA8YnJvdWVyQHJlZGhhdC5jb20+DQo+IFNlbnQ6IFdlZG5lc2RheSwgQXByaWwgOCwg
+MjAyMCA3OjUyIEFNDQo+IFRvOiBzYW1lZWhqQGFtYXpvbi5jb20NCj4gQ2M6IFdlaSBMaXUgPHdl
+aS5saXVAa2VybmVsLm9yZz47IEtZIFNyaW5pdmFzYW4gPGt5c0BtaWNyb3NvZnQuY29tPjsNCj4g
+SGFpeWFuZyBaaGFuZyA8aGFpeWFuZ3pAbWljcm9zb2Z0LmNvbT47IFN0ZXBoZW4gSGVtbWluZ2Vy
+DQo+IDxzdGhlbW1pbkBtaWNyb3NvZnQuY29tPjsgSmVzcGVyIERhbmdhYXJkIEJyb3Vlcg0KPiA8
+YnJvdWVyQHJlZGhhdC5jb20+OyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBicGZAdmdlci5rZXJu
+ZWwub3JnOw0KPiB6b3Jpa0BhbWF6b24uY29tOyBha2l5YW5vQGFtYXpvbi5jb207IGd0emFsaWtA
+YW1hem9uLmNvbTsgVG9rZQ0KPiBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+
+OyBEYW5pZWwgQm9ya21hbm4NCj4gPGJvcmttYW5uQGlvZ2VhcmJveC5uZXQ+OyBBbGV4ZWkgU3Rh
+cm92b2l0b3YNCj4gPGFsZXhlaS5zdGFyb3ZvaXRvdkBnbWFpbC5jb20+OyBKb2huIEZhc3RhYmVu
+ZA0KPiA8am9obi5mYXN0YWJlbmRAZ21haWwuY29tPjsgQWxleGFuZGVyIER1eWNrDQo+IDxhbGV4
+YW5kZXIuZHV5Y2tAZ21haWwuY29tPjsgSmVmZiBLaXJzaGVyIDxqZWZmcmV5LnQua2lyc2hlckBp
+bnRlbC5jb20+Ow0KPiBEYXZpZCBBaGVybiA8ZHNhaGVybkBnbWFpbC5jb20+OyBXaWxsZW0gZGUg
+QnJ1aWpuDQo+IDx3aWxsZW1kZWJydWlqbi5rZXJuZWxAZ21haWwuY29tPjsgSWxpYXMgQXBhbG9k
+aW1hcw0KPiA8aWxpYXMuYXBhbG9kaW1hc0BsaW5hcm8ub3JnPjsgTG9yZW56byBCaWFuY29uaSA8
+bG9yZW56b0BrZXJuZWwub3JnPjsNCj4gU2FlZWQgTWFoYW1lZWQgPHNhZWVkbUBtZWxsYW5veC5j
+b20+DQo+IFN1YmplY3Q6IFtQQVRDSCBSRkMgdjIgMTIvMzNdIGh2X25ldHZzYzogYWRkIFhEUCBm
+cmFtZSBzaXplIHRvIGRyaXZlcg0KPiANCj4gVGhlIGh5cGVydiBOSUMgZHJpdmVycyBYRFAgaW1w
+bGVtZW50YXRpb24gaXMgcmF0aGVyIGRpc2FwcG9pbnRpbmcgYXMgaXQNCj4gd2lsbCBiZSBhIHNs
+b3dkb3duIHRvIGVuYWJsZSBYRFAgb24gdGhpcyBkcml2ZXIsIGdpdmVuIGl0IHdpbGwgYWxsb2Nh
+dGUgYQ0KPiBuZXcgcGFnZSBmb3IgZWFjaCBwYWNrZXQgYW5kIGNvcHkgb3ZlciB0aGUgcGF5bG9h
+ZCwgYmVmb3JlIGludm9raW5nIHRoZQ0KPiBYRFAgQlBGLXByb2cuDQoNCkFzIGV4cGxhaW5lZCB3
+aGVuIEkgc3VibWl0IHRoZSBYRFAgc3VwcG9ydCBmb3IgaHZfbmV0dnNjIC0tIHdpdGhvdXQgWERQ
+LCANCnRoaXMgZHJpdmVyIGFscmVhZHkgYWxsb2NhdGVzIG1lbW9yeSBhbmQgZG9lcyBhIGNvcHkg
+Zm9yIGV2ZXJ5IHBhY2tldC4gU28gDQp0aGUgcGFnZSBhbGxvY2F0aW9uIGZvciBYRFAgZGF0YSBi
+dWYgaXMgbm90IHNsb3dlciB0aGFuIHRoZSBleGlzdGluZyBjb2RlIA0KcGF0aC4gQWxzbywgYW4g
+b3B0aW1pemF0aW9uIHRoYXQgb25seSBhbGxvY2F0ZXMgYSBQQUdFIG9uY2UsIGFuZCByZS11c2Vz
+IGl0IA0KaW4gYSBOQVBJIGN5Y2xlIHdpbGwgYmUgZG9uZS4NCg0KQW5kLCBteSBYRFAgaW1wbGVt
+ZW50YXRpb24gZm9yIGh2X25ldHZzYyB0cmFuc3BhcmVudGx5IHBhc3NlcyB4ZHBfcHJvZyANCnRv
+IHRoZSBhc3NvY2lhdGVkIFZGIE5JQy4gTWFueSBvZiB0aGUgQXp1cmUgVk1zIGFyZSB1c2luZyBT
+UklPViwgc28gDQptYWpvcml0eSBvZiB0aGUgZGF0YSBhcmUgYWN0dWFsbHkgcHJvY2Vzc2VkIGRp
+cmVjdGx5IG9uIHRoZSBWRiBkcml2ZXIncyBYRFAgDQpwYXRoLiBTbyB0aGUgb3ZlcmhlYWQgb2Yg
+dGhlIHN5bnRoZXRpYyBkYXRhIHBhdGggKGh2X25ldHZzYykgaXMgbWluaW1hbC4NCg0KVGhhbmtz
+LA0KLSBIYWl5YW5nDQoNCg==
