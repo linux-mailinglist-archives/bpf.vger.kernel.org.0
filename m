@@ -2,93 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B681A192C
-	for <lists+bpf@lfdr.de>; Wed,  8 Apr 2020 02:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE34B1A1A4D
+	for <lists+bpf@lfdr.de>; Wed,  8 Apr 2020 05:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726464AbgDHAP6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Apr 2020 20:15:58 -0400
-Received: from www62.your-server.de ([213.133.104.62]:33280 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726420AbgDHAP5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Apr 2020 20:15:57 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jLyNl-0003Wt-MF; Wed, 08 Apr 2020 02:15:53 +0200
-Received: from [178.195.186.98] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jLyNl-000CZ7-Bb; Wed, 08 Apr 2020 02:15:53 +0200
-Subject: Re: Question on "uaccess: Add strict non-pagefault kernel-space read
- function"
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        bgregg@netflix.com
-References: <20200403133533.GA3424@infradead.org>
- <5ddc8c04-279d-9a14-eaa7-755467902ead@iogearbox.net>
- <20200404093105.GA445@infradead.org>
- <2adc77e1-e84d-f303-fd88-133ec950c33f@iogearbox.net>
- <20200407093357.GA24309@infradead.org>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <776e5c99-57c9-b61b-d466-412db440a859@iogearbox.net>
-Date:   Wed, 8 Apr 2020 02:15:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726475AbgDHDfq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Apr 2020 23:35:46 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:46143 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726467AbgDHDfp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Apr 2020 23:35:45 -0400
+Received: by mail-pg1-f196.google.com with SMTP id k191so2698950pgc.13;
+        Tue, 07 Apr 2020 20:35:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Oiq7K7zLDFU84F9c9eJl6byk3/OrOSVZXOPC7EzP7mc=;
+        b=GN40wtIqU5GWVhPr3ciSa0FUwnyy4Sn9QRJyAVxYC5RxYcYRP4t4F2sgoOgrc7LW50
+         lPDmsR0aiQ3VM5pcnskJslmyQKHMDXO4kynKnBjFBTl8eq5Q+nFwITQfp2vU9ynK9K4S
+         bRUpVW5xNLDki0BZmfaOZS+Lt/Z6KCAnkf2woBZWD+b4Ft3ZMBS+7vM7OL/VSXLagBKv
+         UbOTWufCM8zAjICYZmkGwl4xexKsb9aMWODr3SNRD22+A3s/1R4dUvYk0b7Ze2bPV1aD
+         KJQACieXPvb/DmnXhvUeA3ywfJP+hz+CCAXniKex1ysyNH36hiI0yQaUGvzyn7Bglmo3
+         uqHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=Oiq7K7zLDFU84F9c9eJl6byk3/OrOSVZXOPC7EzP7mc=;
+        b=DxZIqb/Cyizwqc6cvCHiSf2LNifE2QmhrfIYK101iv6/VRL4x28tRw1ewlr1mXzGKr
+         H0/OcSmoiQQR8Uxj1BKE/aKB2omuDy24h/k0BaeaAOpTdcQiMUpgJ64YFB+a26fvYJiI
+         zaZI+gETe7EHfCfG9kG+AAzMaY28I6JT27DrqgBeRpBF9jAAB3tJvszBSBlLt7+4YA+S
+         +PSzWXdIWylYMcN4BlNTK6jLeG26JwMjNZ2qZ+FtetHWJPrTqCC2lyt9GOFmKxcg7+8Z
+         mUql9kDWyUKolf2yx2HW5HdR/aX44CWzfLKMf8Mgo1eFIge4Qh4k79QBjYva/8sFIA/6
+         kLrA==
+X-Gm-Message-State: AGi0Pua2Sbk1wzXkPZ0leBl2ZixFY7ljCDJkux9GfTWHjHi0oe1i6Bum
+        +uZtIG63LuZrgVU8DYLs1Krp23NY
+X-Google-Smtp-Source: APiQypKNQ1pzIRrnlKWyIqCYvREfTIper/LGecQSpV5k4bgf3q8s589euFvjkLlkSA5VNskW8HLfyQ==
+X-Received: by 2002:a63:5f8e:: with SMTP id t136mr4984053pgb.7.1586316944349;
+        Tue, 07 Apr 2020 20:35:44 -0700 (PDT)
+Received: from localhost.localdomain (c-73-93-5-123.hsd1.ca.comcast.net. [73.93.5.123])
+        by smtp.gmail.com with ESMTPSA id u13sm14290098pgp.49.2020.04.07.20.35.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Apr 2020 20:35:43 -0700 (PDT)
+From:   Joe Stringer <joe@wand.net.nz>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org
+Subject: [PATCH bpf] bpf: Fix use of sk->sk_reuseport from sk_assign
+Date:   Tue,  7 Apr 2020 20:35:40 -0700
+Message-Id: <20200408033540.10339-1-joe@wand.net.nz>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200407093357.GA24309@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25775/Tue Apr  7 14:53:51 2020)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/7/20 11:33 AM, Christoph Hellwig wrote:
-> On Tue, Apr 07, 2020 at 11:03:23AM +0200, Daniel Borkmann wrote:
->>
->> ... where archs with non-overlapping user and kernel address range would
->> only end up having to implementing kernel_range_ok() check. Or, instead of
->> a generic kernel_range_ok() this could perhaps be more probing-specific as
->> in probe_kernel_range_ok() where this would then also cover the special
->> cases we seem to have in parisc and um. Then, this would allow to get rid
->> of all the __weak aliasing as well which may just be confusing. I could look
->> into coming up with something along these lines. Thoughts?
-> 
-> FYI, this is what I cooked up a few days ago:
-> 
-> http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/maccess-fixups
-> 
-> Still misses the final work to switch probe_kernel_read to be the
-> strict version.  Any good naming suggestion for the non-strict one?
+In testing, we found that for request sockets the sk->sk_reuseport field
+may yet be uninitialized, which caused bpf_sk_assign() to randomly
+succeed or return -ESOCKTNOSUPPORT when handling the forward ACK in a
+three-way handshake.
 
-Ah great, thanks for working on it including the cleanups in your branch above.
-Good naming suggestion is usually the hardest ... ;-) Maybe adding an _unsafe or
-_lax suffix ...
+Fix it by only applying the reuseport check for full sockets.
 
-Regarding commits:
+Fixes: cf7fbe660f2d ("bpf: Add socket assign support")
+Signed-off-by: Joe Stringer <joe@wand.net.nz>
+---
+ net/core/filter.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-* http://git.infradead.org/users/hch/misc.git/commitdiff/019f5d7894711a8046d1d57640d3db47f690c61e
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 7628b947dbc3..7d6ceaa54d21 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5925,7 +5925,7 @@ BPF_CALL_3(bpf_sk_assign, struct sk_buff *, skb, struct sock *, sk, u64, flags)
+ 		return -EOPNOTSUPP;
+ 	if (unlikely(dev_net(skb->dev) != sock_net(sk)))
+ 		return -ENETUNREACH;
+-	if (unlikely(sk->sk_reuseport))
++	if (unlikely(sk_fullsock(sk) && sk->sk_reuseport))
+ 		return -ESOCKTNOSUPPORT;
+ 	if (sk_is_refcounted(sk) &&
+ 	    unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
+-- 
+2.20.1
 
-I think the extra HAVE_PROBE_KERNEL_ALLOWED / HAVE_PROBE_KERNEL_STRICT_ALLOWED
-reads a bit odd. Could we simply have an equivalent for access_ok() that archs
-implement under KERNEL_DS where it covers the allowed/restricted kernel-only range?
-Like mentioned earlier e.g. probe_{user,kernel}_range_ok() helpers where the user
-one defaults to access_ok() internally and the kernel one contains all the range
-restrictions that archs can then define if needed (and if not there could be an
-asm-generic `return true` fallback, for example).
-
-* http://git.infradead.org/users/hch/misc.git/commitdiff/2d6070ac749d0af26367892545d1c288cc00823a
-
-This would still need to set dst[0] = '\0' in that case to be consistent with
-the other error handling cases there when count > 0.
-
-Thanks,
-Daniel
