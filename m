@@ -2,88 +2,241 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AE34B1A1A4D
-	for <lists+bpf@lfdr.de>; Wed,  8 Apr 2020 05:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D55941A1B90
+	for <lists+bpf@lfdr.de>; Wed,  8 Apr 2020 07:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726475AbgDHDfq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Apr 2020 23:35:46 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:46143 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbgDHDfp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Apr 2020 23:35:45 -0400
-Received: by mail-pg1-f196.google.com with SMTP id k191so2698950pgc.13;
-        Tue, 07 Apr 2020 20:35:45 -0700 (PDT)
+        id S1726192AbgDHFjU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Apr 2020 01:39:20 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:39256 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725879AbgDHFjU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Apr 2020 01:39:20 -0400
+Received: by mail-wr1-f67.google.com with SMTP id p10so6312472wrt.6;
+        Tue, 07 Apr 2020 22:39:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Oiq7K7zLDFU84F9c9eJl6byk3/OrOSVZXOPC7EzP7mc=;
-        b=GN40wtIqU5GWVhPr3ciSa0FUwnyy4Sn9QRJyAVxYC5RxYcYRP4t4F2sgoOgrc7LW50
-         lPDmsR0aiQ3VM5pcnskJslmyQKHMDXO4kynKnBjFBTl8eq5Q+nFwITQfp2vU9ynK9K4S
-         bRUpVW5xNLDki0BZmfaOZS+Lt/Z6KCAnkf2woBZWD+b4Ft3ZMBS+7vM7OL/VSXLagBKv
-         UbOTWufCM8zAjICYZmkGwl4xexKsb9aMWODr3SNRD22+A3s/1R4dUvYk0b7Ze2bPV1aD
-         KJQACieXPvb/DmnXhvUeA3ywfJP+hz+CCAXniKex1ysyNH36hiI0yQaUGvzyn7Bglmo3
-         uqHg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Okc82vqS7N+cAm2fC1T1A+xd/pJAgTWbJlOtDSH21Rg=;
+        b=NGjPIN3pcaFl/PAoh+/QRIXJUQi67BRhQXiHheHL6FKEhBjcg638Yd5wqiN9Z9yzop
+         VLX4y+CU3TUGzKxd8u21ww8cA32q/2uUZi0Cb1Q8BljyD929VSo2RJhuzsIYGiZdPyjB
+         AsvH2uHEv5ygVlRkUV4j/sLvRQpwKXZg4ZLiJXe1mNE51phrSZiYTEkF9RXoZSI/Se5u
+         yFcRuXDwtrW75zBa3E30rmV0IP3CLT89nbijAfeh41UmSpnCjOF95CUO8S8pvom+6INC
+         kbu1Cj8SB3XQNOie8ZrjVMD2doQGnMkae6fol4+qmN3s7SYNyj/FEPmx+4bsWwMTZW4D
+         +4Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=Oiq7K7zLDFU84F9c9eJl6byk3/OrOSVZXOPC7EzP7mc=;
-        b=DxZIqb/Cyizwqc6cvCHiSf2LNifE2QmhrfIYK101iv6/VRL4x28tRw1ewlr1mXzGKr
-         H0/OcSmoiQQR8Uxj1BKE/aKB2omuDy24h/k0BaeaAOpTdcQiMUpgJ64YFB+a26fvYJiI
-         zaZI+gETe7EHfCfG9kG+AAzMaY28I6JT27DrqgBeRpBF9jAAB3tJvszBSBlLt7+4YA+S
-         +PSzWXdIWylYMcN4BlNTK6jLeG26JwMjNZ2qZ+FtetHWJPrTqCC2lyt9GOFmKxcg7+8Z
-         mUql9kDWyUKolf2yx2HW5HdR/aX44CWzfLKMf8Mgo1eFIge4Qh4k79QBjYva/8sFIA/6
-         kLrA==
-X-Gm-Message-State: AGi0Pua2Sbk1wzXkPZ0leBl2ZixFY7ljCDJkux9GfTWHjHi0oe1i6Bum
-        +uZtIG63LuZrgVU8DYLs1Krp23NY
-X-Google-Smtp-Source: APiQypKNQ1pzIRrnlKWyIqCYvREfTIper/LGecQSpV5k4bgf3q8s589euFvjkLlkSA5VNskW8HLfyQ==
-X-Received: by 2002:a63:5f8e:: with SMTP id t136mr4984053pgb.7.1586316944349;
-        Tue, 07 Apr 2020 20:35:44 -0700 (PDT)
-Received: from localhost.localdomain (c-73-93-5-123.hsd1.ca.comcast.net. [73.93.5.123])
-        by smtp.gmail.com with ESMTPSA id u13sm14290098pgp.49.2020.04.07.20.35.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 20:35:43 -0700 (PDT)
-From:   Joe Stringer <joe@wand.net.nz>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org
-Subject: [PATCH bpf] bpf: Fix use of sk->sk_reuseport from sk_assign
-Date:   Tue,  7 Apr 2020 20:35:40 -0700
-Message-Id: <20200408033540.10339-1-joe@wand.net.nz>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Okc82vqS7N+cAm2fC1T1A+xd/pJAgTWbJlOtDSH21Rg=;
+        b=sfU4WmRnSk98h2eHeQiulXNQSUQb2wwHYjlcwjFS72CXI1jKeE4XC2Dd3kHbfx+A4x
+         gIIwsMQBcJQIAvwnyGzMh8Fs2m1idZfS7FgP814zV2MjewDRs9ISz0dhc1gKiQKzzYyz
+         qBDxsjvLP1+dHp6d6jUR8H6eJFNyDr87PoXtMPzjEJbSzHFfavaRHj2zAR1kkO+l0/A5
+         T0VAOzFNjdDSNBtu2Q9gEbtKCqc8fzniRN2lLI0pGsSS/f1Cj9b7rJSgZaGkbVE931Rl
+         +k4vLlHzb1LJ4VTrreuYa6HPrYV420kQnkE1aB/QLCP7hXRj/bqWq9BXUBSz1KdZyQmU
+         6atQ==
+X-Gm-Message-State: AGi0PuYFINnuZgxqBbziCfeCx2/RFd5bLuO51Pot68VqD/y+1EMxl7EH
+        kJvwjtncSOZ4B5t19lTr2T7jXiWUrXnWt99MWcw=
+X-Google-Smtp-Source: APiQypJITdWG6cr8CDIiyQl/5qm7RlFhsLVBSSSISjnWZ2rvwBgjWu9u8DR1q3ID4FGyCHEUXNbHgfHuDChal9IuBWM=
+X-Received: by 2002:a5d:4988:: with SMTP id r8mr6283912wrq.248.1586324357903;
+ Tue, 07 Apr 2020 22:39:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200406221604.18547-1-luke.r.nels@gmail.com>
+In-Reply-To: <20200406221604.18547-1-luke.r.nels@gmail.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Wed, 8 Apr 2020 07:39:06 +0200
+Message-ID: <CAJ+HfNh=VDeXJQ3iYHDEXAd1xB_YPShnJyqsW4OmRE=VLAMuuw@mail.gmail.com>
+Subject: Re: [PATCH bpf] riscv, bpf: Fix offset range checking for auipc+jalr
+ on RV64
+To:     Luke Nelson <lukenels@cs.washington.edu>
+Cc:     bpf <bpf@vger.kernel.org>, Xi Wang <xi.wang@gmail.com>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Netdev <netdev@vger.kernel.org>, linux-riscv@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In testing, we found that for request sockets the sk->sk_reuseport field
-may yet be uninitialized, which caused bpf_sk_assign() to randomly
-succeed or return -ESOCKTNOSUPPORT when handling the forward ACK in a
-three-way handshake.
+On Tue, 7 Apr 2020 at 00:16, Luke Nelson <lukenels@cs.washington.edu> wrote=
+:
+>
+> The existing code in emit_call on RV64 checks that the PC-relative offset
+> to the function fits in 32 bits before calling emit_jump_and_link to emit
+> an auipc+jalr pair. However, this check is incorrect because offsets in
+> the range [2^31 - 2^11, 2^31 - 1] cannot be encoded using auipc+jalr on
+> RV64 (see discussion [1]). The RISC-V spec has recently been updated
+> to reflect this fact [2, 3].
+>
+> This patch fixes the problem by moving the check on the offset into
+> emit_jump_and_link and modifying it to the correct range of encodable
+> offsets, which is [-2^31 - 2^11, 2^31 - 2^11). This also enforces the
+> check on the offset to other uses of emit_jump_and_link (e.g., BPF_JA)
+> as well.
+>
+> Currently, this bug is unlikely to be triggered, because the memory
+> region from which JITed images are allocated is close enough to kernel
+> text for the offsets to not become too large; and because the bounds on
+> BPF program size are small enough. This patch prevents this problem from
+> becoming an issue if either of these change.
+>
+> [1]: https://groups.google.com/a/groups.riscv.org/forum/#!topic/isa-dev/b=
+wWFhBnnZFQ
+> [2]: https://github.com/riscv/riscv-isa-manual/commit/b1e42e09ac55116dbf9=
+de5e4fb326a5a90e4a993
+> [3]: https://github.com/riscv/riscv-isa-manual/commit/4c1b2066ebd2965a422=
+e41eb262d0a208a7fea07
+>
 
-Fix it by only applying the reuseport check for full sockets.
+Wow! Interesting! Thanks for fixing this!
 
-Fixes: cf7fbe660f2d ("bpf: Add socket assign support")
-Signed-off-by: Joe Stringer <joe@wand.net.nz>
----
- net/core/filter.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Too late to Ack, but still:
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 7628b947dbc3..7d6ceaa54d21 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -5925,7 +5925,7 @@ BPF_CALL_3(bpf_sk_assign, struct sk_buff *, skb, struct sock *, sk, u64, flags)
- 		return -EOPNOTSUPP;
- 	if (unlikely(dev_net(skb->dev) != sock_net(sk)))
- 		return -ENETUNREACH;
--	if (unlikely(sk->sk_reuseport))
-+	if (unlikely(sk_fullsock(sk) && sk->sk_reuseport))
- 		return -ESOCKTNOSUPPORT;
- 	if (sk_is_refcounted(sk) &&
- 	    unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
--- 
-2.20.1
+Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>
 
+> Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+> ---
+>  arch/riscv/net/bpf_jit_comp64.c | 49 +++++++++++++++++++++------------
+>  1 file changed, 32 insertions(+), 17 deletions(-)
+>
+> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_com=
+p64.c
+> index cc1985d8750a..d208a9fd6c52 100644
+> --- a/arch/riscv/net/bpf_jit_comp64.c
+> +++ b/arch/riscv/net/bpf_jit_comp64.c
+> @@ -110,6 +110,16 @@ static bool is_32b_int(s64 val)
+>         return -(1L << 31) <=3D val && val < (1L << 31);
+>  }
+>
+> +static bool in_auipc_jalr_range(s64 val)
+> +{
+> +       /*
+> +        * auipc+jalr can reach any signed PC-relative offset in the rang=
+e
+> +        * [-2^31 - 2^11, 2^31 - 2^11).
+> +        */
+> +       return (-(1L << 31) - (1L << 11)) <=3D val &&
+> +               val < ((1L << 31) - (1L << 11));
+> +}
+> +
+>  static void emit_imm(u8 rd, s64 val, struct rv_jit_context *ctx)
+>  {
+>         /* Note that the immediate from the add is sign-extended,
+> @@ -380,20 +390,24 @@ static void emit_sext_32_rd(u8 *rd, struct rv_jit_c=
+ontext *ctx)
+>         *rd =3D RV_REG_T2;
+>  }
+>
+> -static void emit_jump_and_link(u8 rd, s64 rvoff, bool force_jalr,
+> -                              struct rv_jit_context *ctx)
+> +static int emit_jump_and_link(u8 rd, s64 rvoff, bool force_jalr,
+> +                             struct rv_jit_context *ctx)
+>  {
+>         s64 upper, lower;
+>
+>         if (rvoff && is_21b_int(rvoff) && !force_jalr) {
+>                 emit(rv_jal(rd, rvoff >> 1), ctx);
+> -               return;
+> +               return 0;
+> +       } else if (in_auipc_jalr_range(rvoff)) {
+> +               upper =3D (rvoff + (1 << 11)) >> 12;
+> +               lower =3D rvoff & 0xfff;
+> +               emit(rv_auipc(RV_REG_T1, upper), ctx);
+> +               emit(rv_jalr(rd, RV_REG_T1, lower), ctx);
+> +               return 0;
+>         }
+>
+> -       upper =3D (rvoff + (1 << 11)) >> 12;
+> -       lower =3D rvoff & 0xfff;
+> -       emit(rv_auipc(RV_REG_T1, upper), ctx);
+> -       emit(rv_jalr(rd, RV_REG_T1, lower), ctx);
+> +       pr_err("bpf-jit: target offset 0x%llx is out of range\n", rvoff);
+> +       return -ERANGE;
+>  }
+>
+>  static bool is_signed_bpf_cond(u8 cond)
+> @@ -407,18 +421,16 @@ static int emit_call(bool fixed, u64 addr, struct r=
+v_jit_context *ctx)
+>         s64 off =3D 0;
+>         u64 ip;
+>         u8 rd;
+> +       int ret;
+>
+>         if (addr && ctx->insns) {
+>                 ip =3D (u64)(long)(ctx->insns + ctx->ninsns);
+>                 off =3D addr - ip;
+> -               if (!is_32b_int(off)) {
+> -                       pr_err("bpf-jit: target call addr %pK is out of r=
+ange\n",
+> -                              (void *)addr);
+> -                       return -ERANGE;
+> -               }
+>         }
+>
+> -       emit_jump_and_link(RV_REG_RA, off, !fixed, ctx);
+> +       ret =3D emit_jump_and_link(RV_REG_RA, off, !fixed, ctx);
+> +       if (ret)
+> +               return ret;
+>         rd =3D bpf_to_rv_reg(BPF_REG_0, ctx);
+>         emit(rv_addi(rd, RV_REG_A0, 0), ctx);
+>         return 0;
+> @@ -429,7 +441,7 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, st=
+ruct rv_jit_context *ctx,
+>  {
+>         bool is64 =3D BPF_CLASS(insn->code) =3D=3D BPF_ALU64 ||
+>                     BPF_CLASS(insn->code) =3D=3D BPF_JMP;
+> -       int s, e, rvoff, i =3D insn - ctx->prog->insnsi;
+> +       int s, e, rvoff, ret, i =3D insn - ctx->prog->insnsi;
+>         struct bpf_prog_aux *aux =3D ctx->prog->aux;
+>         u8 rd =3D -1, rs =3D -1, code =3D insn->code;
+>         s16 off =3D insn->off;
+> @@ -699,7 +711,9 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, st=
+ruct rv_jit_context *ctx,
+>         /* JUMP off */
+>         case BPF_JMP | BPF_JA:
+>                 rvoff =3D rv_offset(i, off, ctx);
+> -               emit_jump_and_link(RV_REG_ZERO, rvoff, false, ctx);
+> +               ret =3D emit_jump_and_link(RV_REG_ZERO, rvoff, false, ctx=
+);
+> +               if (ret)
+> +                       return ret;
+>                 break;
+>
+>         /* IF (dst COND src) JUMP off */
+> @@ -801,7 +815,6 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, st=
+ruct rv_jit_context *ctx,
+>         case BPF_JMP | BPF_CALL:
+>         {
+>                 bool fixed;
+> -               int ret;
+>                 u64 addr;
+>
+>                 mark_call(ctx);
+> @@ -826,7 +839,9 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, st=
+ruct rv_jit_context *ctx,
+>                         break;
+>
+>                 rvoff =3D epilogue_offset(ctx);
+> -               emit_jump_and_link(RV_REG_ZERO, rvoff, false, ctx);
+> +               ret =3D emit_jump_and_link(RV_REG_ZERO, rvoff, false, ctx=
+);
+> +               if (ret)
+> +                       return ret;
+>                 break;
+>
+>         /* dst =3D imm64 */
+> --
+> 2.17.1
+>
