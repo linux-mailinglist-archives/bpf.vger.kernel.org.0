@@ -2,193 +2,218 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 221181A3660
-	for <lists+bpf@lfdr.de>; Thu,  9 Apr 2020 16:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA601A3685
+	for <lists+bpf@lfdr.de>; Thu,  9 Apr 2020 17:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727892AbgDIO51 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Apr 2020 10:57:27 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:38316 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727829AbgDIO5Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Apr 2020 10:57:25 -0400
-Received: by mail-ot1-f65.google.com with SMTP id t28so10765260ott.5
-        for <bpf@vger.kernel.org>; Thu, 09 Apr 2020 07:57:24 -0700 (PDT)
+        id S1727705AbgDIPDU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Apr 2020 11:03:20 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:37036 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727826AbgDIPDQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Apr 2020 11:03:16 -0400
+Received: by mail-wr1-f65.google.com with SMTP id w10so12317063wrm.4
+        for <bpf@vger.kernel.org>; Thu, 09 Apr 2020 08:03:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MvCVAZWSVpElREbfXb1mt2g3VRvFUkKvrzFHvdRqvkg=;
-        b=ebEd4FdYNO+7wzGFzjBvQDg8mK2wrpjmDjuCBjAH9tAbCCg4zgABTbGAxKzQ49JMxn
-         kqTYGut6ohJDRAdHangRN4hffUJ4MvJUmXVqHcdUYuhWsOAAhFmddn4uDDLAgZuSwUyx
-         in2+ZqI2XFwOOnx/68F1aBghe4TTCvi2K8Jb4=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vtCT7VM/U8+2ugDbyDMJTRpWOwmF4O8BiPI4Kf3pIEc=;
+        b=lnPzj9Bos4zIi4HxiqB9cXT1T7jEoLWox6BqHGJFDPSY9FckMJUiJeVAhjVR6NIKAr
+         w/vb2KU4OU8JtaRrW1873np+htxzXZj/D4Zxn+cxQvO7q3TOZHWhA/4oXK8od67/M+Yp
+         dsuHpS/XLyeFBqag6B44vFpm4oDj52hW28y+Pug/YPHvmpCAL0UTOHXiSUUtpgOnRfT4
+         CTllD7cvpOEJhB1/apMcuaJIJmiAIItovDjQIc9Q1hgkXA+60mEVzXb49omeCKQLJMCu
+         p6bvpwV8mGHvLrQnnHEWD3U8119Kj9JUTdxNgrqc6d2g4ILAGT+nVX2T25UPNjM00MAs
+         XgAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MvCVAZWSVpElREbfXb1mt2g3VRvFUkKvrzFHvdRqvkg=;
-        b=cmmSBafl5au0hXn/kQRv7u5s5I/W1vrZainz43+1YI6mqppqvyhF0CkGKbDBnOXF46
-         4f7CGCYWS79wYxLJr/BxIKHZtfU/HgsuiMXyYcD5vlxTbGl/ta5JSYNYo6H+3lIZEv56
-         eLv0Loa8Dly+4cmyDFiumuUibbvjML4uOARNd0Dcerb/Ca8DIuRKZJ1nqrbtAvtQLf97
-         DhIJCw+qSwjdPQdfiKJUo1MzqCs5Nui2rhSYLp6Brv7P86n621TpToZy9Ek3LqiOT0xh
-         iWj6UaHI60apnSeFqB9BM09auoFy4WpkOboGY5ciBHUPaav8OEaKkQzTxJqyiXEAS+H/
-         KRdA==
-X-Gm-Message-State: AGi0PubffXAH8gJCX7cjtHOZ+nQiH82zotTGGPU25fdqSY5vTN9Hoc12
-        sBEcC56JJXsAduoOrny9BsBhiwJs6UejH2zioR3S2w==
-X-Google-Smtp-Source: APiQypIfaMneOW4AjWTG+JPErLig8zTku8dFSxJeBsmrgUZhaXvkSx7h0yWmBa2juZ12CNXUTDblTNSgeRCuieJep64=
-X-Received: by 2002:a9d:6e8f:: with SMTP id a15mr251186otr.188.1586444244321;
- Thu, 09 Apr 2020 07:57:24 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vtCT7VM/U8+2ugDbyDMJTRpWOwmF4O8BiPI4Kf3pIEc=;
+        b=GOG3e2SzueS2PWGa7M8g7niIe4z+g0ocvL5yR/cML21uJ2jp5GjC9apHffiIlMNZ6j
+         SB1R9d0nUskflu6Yz4AZsewNfzFKWuyAxlspwHG8It1UAIDrgDXqJUYnMU+QJOJP4keo
+         wTlRCnNlItwEhHLBJkfKqd+GG6zw1lwka2k3xQ6GybtygVxZYd0WSxsR96BQGsi4I5OC
+         lDEV0CaEZri304e0rRfSZ/X9CDkgT6i7R738YWTq5Y7x+nYZaQRYEwIQBqvZJLG0e9Y4
+         zotMZHHkezWzOSp81HogvG5JVGN2vQhiD0fm5HklDL3FtjfLUw4Cii42zYgYS2YW811o
+         cl5g==
+X-Gm-Message-State: AGi0PuaHqdsR2Y7k51KtY1DAg8kqgongkqNJJP+tcpP/pCzw3M1MNYyi
+        D+C0FwD34VrcDZVCcOahI+A=
+X-Google-Smtp-Source: APiQypLB/1na7gVNCGNE7SQ87SSPjnNj8qDdKt01LKGGYkEIN62URyCQr4qjDOFdCU8tTvCsrfoU8A==
+X-Received: by 2002:a5d:4d50:: with SMTP id a16mr1099490wru.219.1586444593744;
+        Thu, 09 Apr 2020 08:03:13 -0700 (PDT)
+Received: from [192.168.1.254] (host149-67-dynamic.51-79-r.retail.telecomitalia.it. [79.51.67.149])
+        by smtp.gmail.com with ESMTPSA id r14sm4186993wmg.0.2020.04.09.08.03.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Apr 2020 08:03:12 -0700 (PDT)
+Subject: Re: [bpf PATCH v3] bpf: verifier, do_refine_retval_range may clamp
+ umin to 0 incorrectly
+To:     John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
+Cc:     yhs@fb.com, ast@kernel.org, daniel@iogearbox.net
+References: <158015334199.28573.4940395881683556537.stgit@john-XPS-13-9370>
+From:   Lorenzo Fontana <fontanalorenz@gmail.com>
+Message-ID: <bbf6acea-e2a1-5bff-1cd5-e3748fd7b7ed@gmail.com>
+Date:   Thu, 9 Apr 2020 17:03:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20200408115926.1467567-1-hch@lst.de> <20200408115926.1467567-20-hch@lst.de>
- <20200408122504.GO3456981@phenom.ffwll.local> <eb48f7b6327e482ea9911b129210c0417ab48345.camel@kernel.crashing.org>
- <CAKMK7uHtkLvdsWFGiAtkzVa5mpnDvXkn3CHZQ6bgJ_enbyAc8A@mail.gmail.com> <CADnq5_MjTSm6j=_8huVQ854H6jXY5Rg36wc31QDfOpfjfscWxA@mail.gmail.com>
-In-Reply-To: <CADnq5_MjTSm6j=_8huVQ854H6jXY5Rg36wc31QDfOpfjfscWxA@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 9 Apr 2020 16:57:12 +0200
-Message-ID: <CAKMK7uESDf446FsdA2KC9sybSKxf5OdXvHZ-d4G3PAt-vvP8zg@mail.gmail.com>
-Subject: Re: [PATCH 19/28] gpu/drm: remove the powerpc hack in drm_legacy_sg_alloc
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        linux-hyperv@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux MM <linux-mm@kvack.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        "open list:GENERIC INCLUDE/A..." <linux-arch@vger.kernel.org>,
-        linux-s390@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        X86 ML <x86@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, bpf <bpf@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <158015334199.28573.4940395881683556537.stgit@john-XPS-13-9370>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 9, 2020 at 4:19 PM Alex Deucher <alexdeucher@gmail.com> wrote:
->
-> On Thu, Apr 9, 2020 at 5:41 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Thu, Apr 9, 2020 at 10:54 AM Benjamin Herrenschmidt
-> > <benh@kernel.crashing.org> wrote:
-> > >
-> > > On Wed, 2020-04-08 at 14:25 +0200, Daniel Vetter wrote:
-> > > > On Wed, Apr 08, 2020 at 01:59:17PM +0200, Christoph Hellwig wrote:
-> > > > > If this code was broken for non-coherent caches a crude powerpc hack
-> > > > > isn't going to help anyone else.  Remove the hack as it is the last
-> > > > > user of __vmalloc passing a page protection flag other than PAGE_KERNEL.
-> > > >
-> > > > Well Ben added this to make stuff work on ppc, ofc the home grown dma
-> > > > layer in drm from back then isn't going to work in other places. I guess
-> > > > should have at least an ack from him, in case anyone still cares about
-> > > > this on ppc. Adding Ben to cc.
-> > >
-> > > This was due to some drivers (radeon ?) trying to use vmalloc pages for
-> > > coherent DMA, which means on those 4xx powerpc's need to be non-cached.
-> > >
-> > > There were machines using that (440 based iirc), though I honestly
-> > > can't tell if anybody still uses any of it.
-> >
-> > agp subsystem still seems to happily do that (vmalloc memory for
-> > device access), never having been ported to dma apis (or well
-> > converted to iommu drivers, which they kinda are really). So I think
-> > this all still works exactly as back then, even with the kms radeon
-> > drivers. Question really is whether we have users left, and I have no
-> > clue about that either.
-> >
-> > Now if these boxes didn't ever have agp then I think we can get away
-> > with deleting this, since we've already deleted the legacy radeon
-> > driver. And that one used vmalloc for everything. The new kms one does
-> > use the dma-api if the gpu isn't connected through agp.
->
-> All radeons have a built in remapping table to handle non-AGP systems.
-> On the earlier radeons it wasn't quite as performant as AGP, but it
-> was always more reliable because AGP is AGP.  Maybe it's time to let
-> AGP go?
+On 1/27/20 8:29 PM, John Fastabend wrote:
+> do_refine_retval_range() is called to refine return values from specified
+> helpers, probe_read_str and get_stack at the moment, the reasoning is
+> because both have a max value as part of their input arguments and
+> because the helper ensure the return value will not be larger than this
+> we can set smax values of the return register, r0.
+> 
+> However, the return value is a signed integer so setting umax is incorrect
+> It leads to further confusion when the do_refine_retval_range() then calls,
+> __reg_deduce_bounds() which will see a umax value as meaning the value is
+> unsigned and then assuming it is unsigned set the smin = umin which in this
+> case results in 'smin = 0' and an 'smax = X' where X is the input argument
+> from the helper call.
+> 
+> Here are the comments from _reg_deduce_bounds() on why this would be safe
+> to do.
+> 
+>  /* Learn sign from unsigned bounds.  Signed bounds cross the sign
+>   * boundary, so we must be careful.
+>   */
+>  if ((s64)reg->umax_value >= 0) {
+> 	/* Positive.  We can't learn anything from the smin, but smax
+> 	 * is positive, hence safe.
+> 	 */
+> 	reg->smin_value = reg->umin_value;
+> 	reg->smax_value = reg->umax_value = min_t(u64, reg->smax_value,
+> 						  reg->umax_value);
+> 
+> But now we incorrectly have a return value with type int with the
+> signed bounds (0,X). Suppose the return value is negative, which is
+> possible the we have the verifier and reality out of sync. Among other
+> things this may result in any error handling code being falsely detected
+> as dead-code and removed. For instance the example below shows using
+> bpf_probe_read_str() causes the error path to be identified as dead
+> code and removed.
+> 
+>>From the 'llvm-object -S' dump,
+> 
+>  r2 = 100
+>  call 45
+>  if r0 s< 0 goto +4
+>  r4 = *(u32 *)(r7 + 0)
+> 
+> But from dump xlate
+> 
+>   (b7) r2 = 100
+>   (85) call bpf_probe_read_compat_str#-96768
+>   (61) r4 = *(u32 *)(r7 +0)  <-- dropped if goto
+> 
+> Due to verifier state after call being
+> 
+>  R0=inv(id=0,umax_value=100,var_off=(0x0; 0x7f))
+> 
+> To fix omit setting the umax value because its not safe. The only
+> actual bounds we know is the smax. This results in the correct bounds
+> (SMIN, X) where X is the max length from the helper. After this the
+> new verifier state looks like the following after call 45.
+> 
+> R0=inv(id=0,smax_value=100)
+> 
+> Then xlated version no longer removed dead code giving the expected
+> result,
+> 
+>   (b7) r2 = 100
+>   (85) call bpf_probe_read_compat_str#-96768
+>   (c5) if r0 s< 0x0 goto pc+4
+>   (61) r4 = *(u32 *)(r7 +0)
+> 
+> Note, bpf_probe_read_* calls are root only so we wont hit this case
+> with non-root bpf users.
+> 
+> v3: comment had some documentation about meta set to null case which
+> is not relevant here and confusing to include in the comment.
+> 
+> v2 note: In original version we set msize_smax_value from check_func_arg()
+> and propagated this into smax of retval. The logic was smax is the bound
+> on the retval we set and because the type in the helper is ARG_CONST_SIZE
+> we know that the reg is a positive tnum_const() so umax=smax. Alexei
+> pointed out though this is a bit odd to read because the register in
+> check_func_arg() has a C type of u32 and the umax bound would be the
+> normally relavent bound here. Pulling in extra knowledge about future
+> checks makes reading the code a bit tricky. Further having a signed
+> meta data that can only ever be positive is also a bit odd. So dropped
+> the msize_smax_value metadata and made it a u64 msize_max_value to
+> indicate its unsigned. And additionally save bound from umax value in
+> check_arg_funcs which is the same as smax due to as noted above tnumx_cont
+> and negative check but reads better. By my analysis nothing functionally
+> changes in v2 but it does get easier to read so that is win.
+> 
+> Fixes: 849fa50662fbc ("bpf/verifier: refine retval R0 state for bpf_get_stack helper")
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> ---
+>  kernel/bpf/verifier.c |   19 +++++++++++--------
+>  1 file changed, 11 insertions(+), 8 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 7d530ce8719d..adeee88102e5 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -227,8 +227,7 @@ struct bpf_call_arg_meta {
+>  	bool pkt_access;
+>  	int regno;
+>  	int access_size;
+> -	s64 msize_smax_value;
+> -	u64 msize_umax_value;
+> +	u64 msize_max_value;
+>  	int ref_obj_id;
+>  	int func_id;
+>  	u32 btf_id;
+> @@ -3569,11 +3568,15 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 regno,
+>  	} else if (arg_type_is_mem_size(arg_type)) {
+>  		bool zero_size_allowed = (arg_type == ARG_CONST_SIZE_OR_ZERO);
+>  
+> -		/* remember the mem_size which may be used later
+> -		 * to refine return values.
+> +		/* This is used to refine r0 return value bounds for helpers
+> +		 * that enforce this value as an upper bound on return values.
+> +		 * See do_refine_retval_range() for helpers that can refine
+> +		 * the return value. C type of helper is u32 so we pull register
+> +		 * bound from umax_value however, if negative verifier errors
+> +		 * out. Only upper bounds can be learned because retval is an
+> +		 * int type and negative retvals are allowed.
+>  		 */
+> -		meta->msize_smax_value = reg->smax_value;
+> -		meta->msize_umax_value = reg->umax_value;
+> +		meta->msize_max_value = reg->umax_value;
+>  
+>  		/* The register is SCALAR_VALUE; the access check
+>  		 * happens using its boundaries.
+> @@ -4077,10 +4080,10 @@ static void do_refine_retval_range(struct bpf_reg_state *regs, int ret_type,
+>  	     func_id != BPF_FUNC_probe_read_str))
+>  		return;
+>  
+> -	ret_reg->smax_value = meta->msize_smax_value;
+> -	ret_reg->umax_value = meta->msize_umax_value;
+> +	ret_reg->smax_value = meta->msize_max_value;
+>  	__reg_deduce_bounds(ret_reg);
+>  	__reg_bound_offset(ret_reg);
+> +	__update_reg_bounds(ret_reg);
+>  }
+>  
+>  static int
+> 
 
-I'd be very much in favour of that, if we can just use the integrated
-gart and drop agp fast writes wobbliness on the floor. I think the
-only other modern driver using agp would be nouveau at that point.
--Daniel
-
->
-> Alex
->
-> > -Daniel
-> >
-> > > Cheers,
-> > > Ben.
-> > >
-> > > > -Daniel
-> > > >
-> > > > >
-> > > > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > > > > ---
-> > > > >  drivers/gpu/drm/drm_scatter.c | 11 +----------
-> > > > >  1 file changed, 1 insertion(+), 10 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/gpu/drm/drm_scatter.c b/drivers/gpu/drm/drm_scatter.c
-> > > > > index ca520028b2cb..f4e6184d1877 100644
-> > > > > --- a/drivers/gpu/drm/drm_scatter.c
-> > > > > +++ b/drivers/gpu/drm/drm_scatter.c
-> > > > > @@ -43,15 +43,6 @@
-> > > > >
-> > > > >  #define DEBUG_SCATTER 0
-> > > > >
-> > > > > -static inline void *drm_vmalloc_dma(unsigned long size)
-> > > > > -{
-> > > > > -#if defined(__powerpc__) && defined(CONFIG_NOT_COHERENT_CACHE)
-> > > > > -   return __vmalloc(size, GFP_KERNEL, pgprot_noncached_wc(PAGE_KERNEL));
-> > > > > -#else
-> > > > > -   return vmalloc_32(size);
-> > > > > -#endif
-> > > > > -}
-> > > > > -
-> > > > >  static void drm_sg_cleanup(struct drm_sg_mem * entry)
-> > > > >  {
-> > > > >     struct page *page;
-> > > > > @@ -126,7 +117,7 @@ int drm_legacy_sg_alloc(struct drm_device *dev, void *data,
-> > > > >             return -ENOMEM;
-> > > > >     }
-> > > > >
-> > > > > -   entry->virtual = drm_vmalloc_dma(pages << PAGE_SHIFT);
-> > > > > +   entry->virtual = vmalloc_32(pages << PAGE_SHIFT);
-> > > > >     if (!entry->virtual) {
-> > > > >             kfree(entry->busaddr);
-> > > > >             kfree(entry->pagelist);
-> > > > > --
-> > > > > 2.25.1
-> > > > >
-> > > >
-> > > >
-> > >
-> >
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > +41 (0) 79 365 57 48 - http://blog.ffwll.ch
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
 
+I've been working on this problem too. Based on what we did to fix it in our BPF program by changing the return value conditionals [0], the reasoning behind this patch looks good to me. I also tried to apply this patch series and I don't see the loop happening in the xlated code.
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-+41 (0) 79 365 57 48 - http://blog.ffwll.ch
+Thanks for working on this John.
+
+
+[0] https://patch-diff.githubusercontent.com/raw/draios/sysdig/pull/1612.patch
