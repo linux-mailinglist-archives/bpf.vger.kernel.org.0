@@ -2,88 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2FF1A3A6D
-	for <lists+bpf@lfdr.de>; Thu,  9 Apr 2020 21:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBF81A3AA2
+	for <lists+bpf@lfdr.de>; Thu,  9 Apr 2020 21:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbgDITSM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Apr 2020 15:18:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726632AbgDITSL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Apr 2020 15:18:11 -0400
-Received: from kicinski-fedora-PC1C0HJN (unknown [163.114.132.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9D7F206F5;
-        Thu,  9 Apr 2020 19:18:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586459892;
-        bh=yP2d2e1n+GwPcjoxvQGwUTVuQq6EPdlhx4w3UrWLvNg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Bnm9mrsT4PoTgnq+h7BSHcYMLSw2oBVBrq0w5BOw79A/ZZujiQDh+UiNeSFTbSv85
-         r9y/ruockZXnOH2LQlN9ziufDA8e+d4t5kNo4TCcXgzX0P5dHyf18StwAaNoV3elfU
-         1rpWVIXg6s5KXURrdApkIn4K60ltdxar7ZZoWtew=
-Date:   Thu, 9 Apr 2020 12:18:10 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Christian Deacon <gamemann@gflclan.com>, bpf@vger.kernel.org,
-        aelior@marvell.com, skalluru@marvell.com, netdev@vger.kernel.org
-Subject: Re: TC BPF Program Crashing With Bnx2x Drivers
-Message-ID: <20200409121810.26ad70aa@kicinski-fedora-PC1C0HJN>
-In-Reply-To: <54d3af61-8f00-6f65-23a4-0f1d5a9aba8e@iogearbox.net>
-References: <853f67f9-6713-a354-07f7-513d654ede91@gflclan.com>
-        <c3c44050-132e-44f7-1611-95d30b0b4b47@iogearbox.net>
-        <0a96d4ee-e875-e89c-e6bb-e6b62061abdd@gflclan.com>
-        <54d3af61-8f00-6f65-23a4-0f1d5a9aba8e@iogearbox.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726973AbgDITgQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Apr 2020 15:36:16 -0400
+Received: from mail.efficios.com ([167.114.26.124]:47154 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726869AbgDITgA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Apr 2020 15:36:00 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 7E427280DF6;
+        Thu,  9 Apr 2020 15:35:59 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id oSUiqoosXzqf; Thu,  9 Apr 2020 15:35:59 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id CBD6628097C;
+        Thu,  9 Apr 2020 15:35:58 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com CBD6628097C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1586460958;
+        bh=JJbEnSZlH0Z9aiz9kDpqohqZyqDrYygmMxJ1DfOirdE=;
+        h=From:To:Date:Message-Id;
+        b=pk+C+CXWM6T13Lu8JpfhgTZ2/uQJ1ODQqPNghvfwd8cgfNu1GpjzwScEcsnnlJUgd
+         PlYAlMxdL+dOXutnV9eOGDoyHM7vePm458oy8fO/I/axcXuQglUgqvwb+lwAGN2RX/
+         AyOacGceUBfnpc5vX2bKZkXmYuBQUK+nNWrAQSgTbs3v0yvtM7JlELm4QbD5dj8Nig
+         xwOXHJOC7VJ3gJ1ytPkW7L0w4xAhCbBtM3AmlmGAgBEB9NvzNhQ7oipEdPffg98Ge3
+         MGvGIdwo73aRaXOF+29+xnn3ZrrqjcgL0d31+HGNYo9U0etIlKE2nmqwBZDCOfjth9
+         xiZBXl6IHYjUA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 4f2umtxwPemD; Thu,  9 Apr 2020 15:35:58 -0400 (EDT)
+Received: from localhost.localdomain (192-222-181-218.qc.cable.ebox.net [192.222.181.218])
+        by mail.efficios.com (Postfix) with ESMTPSA id CE5B3280F54;
+        Thu,  9 Apr 2020 15:35:57 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, akpm@linux-foundation.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "K . Prasad" <prasad@linux.vnet.ibm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>, rostedt@goodmis.org,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Ingo Molnar <mingo@redhat.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [RFC PATCH 2/9] bpf: allow up to 13 arguments for tracepoints
+Date:   Thu,  9 Apr 2020 15:35:36 -0400
+Message-Id: <20200409193543.18115-3-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200409193543.18115-1-mathieu.desnoyers@efficios.com>
+References: <20200409193543.18115-1-mathieu.desnoyers@efficios.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 9 Apr 2020 01:57:42 +0200 Daniel Borkmann wrote:
-> On 4/9/20 1:30 AM, Christian Deacon wrote:
-> > Hey Daniel,
-> > 
-> > 
-> > Thank you for your response and I'm glad I'm in the correct area!
-> > 
-> > 
-> > When the individual ran:
-> > 
-> > 
-> > ```
-> > 
-> > ethtool -K eth0 tso off
-> > 
-> > ```
-> > 
-> > 
-> > The program started operating without crashing. It has been around 20 minutes so far and no crash. Therefore, I'd assume that stopped the crashing considering it usually crashed 20 - 30 seconds after starting the program each time beforehand. I'm not entirely sure what TSO does with this network driver, but I'll try doing some research.  
-> 
-> Yep, don't think it should crash anymore after you turned it off and
-> it survived since then. ;) I presume GSO is still on in your case,
-> right (check via `ethtool -k eth0`)?
-> 
-> > I was suspecting it may be the 'bpf_skb_adjust_room()' function as
-> > well since I'm using a mode that was implemented in later kernels.
-> > This function removes the outer IP header in my program from the
-> > outgoing IPIP packet. I'm not sure what would be causing the
-> > crashing, though.  
-> 
-> Probably bnx2x folks might be able to help but as mentioned looks
-> like the tso handling in there has an issue with the ipip which leads
-> to the nic hang eventually.
+Adding an argument to the writeback balance_dirty_pages event requires
+to bump the bpf argument count limit from 12 to 13.
 
-IMHO this is not a bnx2x problem. The drivers should not have to
-re-validate GSO flags..
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org
+---
+ include/linux/kernel.h       | 6 +++---
+ include/linux/trace_events.h | 3 +++
+ include/trace/bpf_probe.h    | 3 ++-
+ kernel/trace/bpf_trace.c     | 8 +++++---
+ 4 files changed, 13 insertions(+), 7 deletions(-)
 
-Let's see if I get this right. We have an IPinIP encap, IPXIP4 GSO skb
-comes down and TC bpf pulls the outer header off, but the gso flags
-remain unchanged. The driver then sees IPXIP4 GSO but there are no
-headers so it implodes. Is this correct?
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index 9b7a8d74a9d6..20203f762410 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -975,9 +975,9 @@ static inline void ftrace_dump(enum ftrace_dump_mode oops_dump_mode) { }
+ #define swap(a, b) \
+ 	do { typeof(a) __tmp = (a); (a) = (b); (b) = __tmp; } while (0)
+ 
+-/* This counts to 12. Any more, it will return 13th argument. */
+-#define __COUNT_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _n, X...) _n
+-#define COUNT_ARGS(X...) __COUNT_ARGS(, ##X, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
++/* This counts to 13. Any more, it will return 14th argument. */
++#define __COUNT_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _n, X...) _n
++#define COUNT_ARGS(X...) __COUNT_ARGS(, ##X, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+ 
+ #define __CONCAT(a, b) a ## b
+ #define CONCATENATE(a, b) __CONCAT(a, b)
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 5c6943354049..1e3f4782d32f 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -776,6 +776,9 @@ void bpf_trace_run11(struct bpf_prog *prog, u64 arg1, u64 arg2,
+ void bpf_trace_run12(struct bpf_prog *prog, u64 arg1, u64 arg2,
+ 		     u64 arg3, u64 arg4, u64 arg5, u64 arg6, u64 arg7,
+ 		     u64 arg8, u64 arg9, u64 arg10, u64 arg11, u64 arg12);
++void bpf_trace_run13(struct bpf_prog *prog, u64 arg1, u64 arg2,
++		     u64 arg3, u64 arg4, u64 arg5, u64 arg6, u64 arg7,
++		     u64 arg8, u64 arg9, u64 arg10, u64 arg11, u64 arg12, u64 arg13);
+ void perf_trace_run_bpf_submit(void *raw_data, int size, int rctx,
+ 			       struct trace_event_call *call, u64 count,
+ 			       struct pt_regs *regs, struct hlist_head *head,
+diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
+index 1ce3be63add1..1ca87b7a8230 100644
+--- a/include/trace/bpf_probe.h
++++ b/include/trace/bpf_probe.h
+@@ -52,7 +52,8 @@
+ #define __CAST10(a,...) __CAST_TO_U64(a), __CAST9(__VA_ARGS__)
+ #define __CAST11(a,...) __CAST_TO_U64(a), __CAST10(__VA_ARGS__)
+ #define __CAST12(a,...) __CAST_TO_U64(a), __CAST11(__VA_ARGS__)
+-/* tracepoints with more than 12 arguments will hit build error */
++#define __CAST13(a,...) __CAST_TO_U64(a), __CAST12(__VA_ARGS__)
++/* tracepoints with more than 13 arguments will hit build error */
+ #define CAST_TO_U64(...) CONCATENATE(__CAST, COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
+ 
+ #undef DECLARE_EVENT_CLASS
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index ca1796747a77..67354218b97f 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1546,6 +1546,7 @@ void __bpf_trace_run(struct bpf_prog *prog, u64 *args)
+ #define REPEAT_10(FN, DL, X, ...)	FN(X) UNPACK DL REPEAT_9(FN, DL, __VA_ARGS__)
+ #define REPEAT_11(FN, DL, X, ...)	FN(X) UNPACK DL REPEAT_10(FN, DL, __VA_ARGS__)
+ #define REPEAT_12(FN, DL, X, ...)	FN(X) UNPACK DL REPEAT_11(FN, DL, __VA_ARGS__)
++#define REPEAT_13(FN, DL, X, ...)	FN(X) UNPACK DL REPEAT_12(FN, DL, __VA_ARGS__)
+ #define REPEAT(X, FN, DL, ...)		REPEAT_##X(FN, DL, __VA_ARGS__)
+ 
+ #define SARG(X)		u64 arg##X
+@@ -1554,14 +1555,14 @@ void __bpf_trace_run(struct bpf_prog *prog, u64 *args)
+ #define __DL_COM	(,)
+ #define __DL_SEM	(;)
+ 
+-#define __SEQ_0_11	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
++#define __SEQ_0_12	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+ 
+ #define BPF_TRACE_DEFN_x(x)						\
+ 	void bpf_trace_run##x(struct bpf_prog *prog,			\
+-			      REPEAT(x, SARG, __DL_COM, __SEQ_0_11))	\
++			      REPEAT(x, SARG, __DL_COM, __SEQ_0_12))	\
+ 	{								\
+ 		u64 args[x];						\
+-		REPEAT(x, COPY, __DL_SEM, __SEQ_0_11);			\
++		REPEAT(x, COPY, __DL_SEM, __SEQ_0_12);			\
+ 		__bpf_trace_run(prog, args);				\
+ 	}								\
+ 	EXPORT_SYMBOL_GPL(bpf_trace_run##x)
+@@ -1577,6 +1578,7 @@ BPF_TRACE_DEFN_x(9);
+ BPF_TRACE_DEFN_x(10);
+ BPF_TRACE_DEFN_x(11);
+ BPF_TRACE_DEFN_x(12);
++BPF_TRACE_DEFN_x(13);
+ 
+ static int __bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
+ {
+-- 
+2.17.1
 
-And we have the ability to add the right gso flags for encap, not decap
-(bpf_skb_net_grow() vs bpf_skb_net_shrink()).
