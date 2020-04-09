@@ -2,81 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BEB1A2CA4
-	for <lists+bpf@lfdr.de>; Thu,  9 Apr 2020 01:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC20A1A2CF7
+	for <lists+bpf@lfdr.de>; Thu,  9 Apr 2020 02:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726527AbgDHX6O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Apr 2020 19:58:14 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:53208 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726510AbgDHX6O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Apr 2020 19:58:14 -0400
-Received: from 1.general.cascardo.us.vpn ([10.172.70.58] helo=localhost.localdomain)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <cascardo@canonical.com>)
-        id 1jMKaC-0001Kx-Ef; Wed, 08 Apr 2020 23:58:12 +0000
-From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, keescook@chromium.org,
-        luto@amacapital.net, wad@chromium.org, shuah@kernel.org
-Subject: [PATCH] selftests/seccomp: allow clock_nanosleep instead of nanosleep
-Date:   Wed,  8 Apr 2020 20:57:53 -0300
-Message-Id: <20200408235753.8566-1-cascardo@canonical.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726545AbgDIAly (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Apr 2020 20:41:54 -0400
+Received: from sonic308-37.consmr.mail.ne1.yahoo.com ([66.163.187.60]:33631
+        "EHLO sonic308-37.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726549AbgDIAlx (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 8 Apr 2020 20:41:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1586392912; bh=/6EYCRlfa2umBwyf6HMqnS88iYA4EIXadLKaqqSMGXc=; h=Date:From:To:Cc:Subject:References:In-Reply-To:From:Subject; b=Nw9PSYl5kPo55rK57kdK+1rouIyZmFH49XmlmNnt+EPGCmzv5/R562708lCkK9bcS1996WRvY6AWWRgP5phZau+eJxoQmqe+LtCwNJEbiYUjQhQT/OXacraRjiO5WRZ8qsSlVAMXGIKXGWVMix1s+I5tt6JSaqGsGWqa8zr1hJE6ZyAxPEoEYv5ZFlm/QM4zwfuDMMiG5yQiMafwtotoMJIbhnQ91EvX2WyiEWFjhDLOt5DLpnzrXKB58PBcZ/9RDKamP6jFx1FoPm8nUGivG9s/e+4lgHMoB8j5kGsRyJMdGA9c8cLBXg+peTceR8BZpBB9DLsp3YkeaGOsTusoSA==
+X-YMail-OSG: Kjs_hFQVM1mYR3Bbv__auOf2fhoaIk9dbexLkMUvZvDcgibPrEIH2uN_nb7TSk.
+ AjTVDttprz38pf2agkDENCO9OlpstM6AKa5fqJSzz9g9BDnD9cEKZ6Kcqg9CatwzLNYThMuSUeYX
+ 2yEgN2U8e5xgtZHtWmAFsIbznPJD_UPhljYJl2r_EoL5qqrqeJu9Nnd9Y.Ff.0cQ6SO_SlnVXMbj
+ JYEgiFEkwq6TWViREF0oZDh5a7V1WTHk_fQL7mKo.zfkeUUkf9r2PC3YbrlM36YDrBNE7Vu_H_23
+ 7SUm_oYUdCkn.imVzOSTsbg1UKej12C_c6DVKmb2bShJF7ckagBec7h.F7Pz2jADVU.RAf_SzeRw
+ jnXQU.OYwZs7DtYvRPtgjcVfmgAxeq8RUp0VPoOeRchdyRoGHKkYEH1l0ufQv3CAgRqC9S3zsOd9
+ fnhObZjDMfX58eXYxHjcxjHRReqFOhx5Hz6aq8FIq7jw8y8OEbWPMrjaCpR4FKEn_bozdR4qyDFm
+ 4sbsu66FrZifwa3kj9UeUr.wGSL5S042VmSyGfETFpHOTRvx51GHTkDHF4kqnnRQjnt9cOY_TXoy
+ 6ikjZzl8Rym8MnuDSY3t2UEnyXfrQM8zmKcZMaBXZA.1JruNMW__SZDUsuarZwJACQIZFjYaEYcB
+ 6Fx2cC_OXlNG7d102FBbLxbbWE51eCCn6.Ao3BUdftIqkSfQqE8AmEChvpnb3Hjczsgr87hSe_ZY
+ FNPGuabtMxRjTV5vOhJN9EVsFZjNMIpNdxApHaOp9BBa0mK8Hd4Y8_sLLzgFE_OX._p_ww8OgQCS
+ _PZw5TJANZTRxfmtlnIT9WY8nJxFEz0ZzkRbyJrD7lBRVCuL2qRMMrbnVCU.d3atpGGNT71.FMTl
+ XJp9kOjDwdiPhEHaNTf0wy9.286eHx9hDHZx13ycI4lCw.BNZVla9tTflJZSkBR622oDAvju0pYi
+ chnjA_f0d_Rs3Y.w_0UWDDtsiqrp7Nd.ENOvnjBk3WtBBjbeqzYHxInpU0ICw.akO5xUiF4HXGRD
+ NGu7bFyqgIPHiVSYVkpfC.PnR3fZmrfgYy1Ktc5D_y5Xh2Z7vFADl5LC6uRiCqJ9Y4yLuHo1ATrn
+ PxNppKa486Nn86yT5d.pKQ3q49VQAxNEB7EGZ_QmK0uyT9X6oF2qpuwBBPhXWKUMiK3EbPuATGVw
+ L.4MdTecfHCHslUWJtwrtw2v46CslPDJY3TtzPBEF3b6hKOBHSxZ.8CqTxF3S2_xcA64udxpFdja
+ 9c_vKNU82cTswpLxDeBimIz._J7Xaum1i6dZEwCbc.uspehQ3L04kL45bX0fhpi7dDoUJat5aE3S
+ p_Fl8AHbSq3P.bkBJGmoklW4vRdsCXSUz4v5SYoPxJ86d1eVDsQ0qrpylWpfgRvkXgRw467FBrzC
+ _ECRk3ijYTNyDsC7idxPty4i4XJSa9KM2uH5RWvaV.R8phY0hHU.lO54DG8mygB9TxdZscMBwbtP
+ JqFlYvAh9BGSO_QyxpGrs
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.ne1.yahoo.com with HTTP; Thu, 9 Apr 2020 00:41:52 +0000
+Received: by smtp412.mail.gq1.yahoo.com (Oath Hermes SMTP Server) with ESMTPA ID 07bc1f76d2033b5244ea2e327c66bf87;
+          Thu, 09 Apr 2020 00:39:51 +0000 (UTC)
+Date:   Thu, 9 Apr 2020 08:39:35 +0800
+From:   Gao Xiang <hsiangkao@aol.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, x86@kernel.org,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Laura Abbott <labbott@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 17/28] mm: remove the prot argument from vm_map_ram
+Message-ID: <20200409003931.GA8418@hsiangkao-HP-ZHAN-66-Pro-G1>
+References: <20200408115926.1467567-1-hch@lst.de>
+ <20200408115926.1467567-18-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200408115926.1467567-18-hch@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Mailer: WebService/1.1.15620 hermes Apache-HttpAsyncClient/4.1.4 (Java/11.0.6)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-glibc 2.31 calls clock_nanosleep when its nanosleep function is used. So
-the restart_syscall fails after that. In order to deal with it, we trace
-clock_nanosleep and nanosleep. Then we check for either.
+On Wed, Apr 08, 2020 at 01:59:15PM +0200, Christoph Hellwig wrote:
+> This is always GFP_KERNEL - for long term mappings with other properties
+> vmap should be used.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/gpu/drm/i915/gem/selftests/mock_dmabuf.c   | 2 +-
+>  drivers/media/common/videobuf2/videobuf2-dma-sg.c  | 3 +--
+>  drivers/media/common/videobuf2/videobuf2-vmalloc.c | 3 +--
+>  fs/erofs/decompressor.c                            | 2 +-
 
-This works just fine on systems with both glibc 2.30 and glibc 2.31,
-whereas it failed before on a system with glibc 2.31.
+For EROFS part,
 
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
----
- tools/testing/selftests/seccomp/seccomp_bpf.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+Acked-by: Gao Xiang <xiang@kernel.org>
 
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 89fb3e0b552e..c0aa46ce14f6 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -2803,12 +2803,13 @@ TEST(syscall_restart)
- 			 offsetof(struct seccomp_data, nr)),
- 
- #ifdef __NR_sigreturn
--		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_sigreturn, 6, 0),
-+		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_sigreturn, 7, 0),
- #endif
--		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_read, 5, 0),
--		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_exit, 4, 0),
--		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_rt_sigreturn, 3, 0),
--		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_nanosleep, 4, 0),
-+		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_read, 6, 0),
-+		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_exit, 5, 0),
-+		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_rt_sigreturn, 4, 0),
-+		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_nanosleep, 5, 0),
-+		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_clock_nanosleep, 4, 0),
- 		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_restart_syscall, 4, 0),
- 
- 		/* Allow __NR_write for easy logging. */
-@@ -2895,7 +2896,8 @@ TEST(syscall_restart)
- 	ASSERT_EQ(PTRACE_EVENT_SECCOMP, (status >> 16));
- 	ASSERT_EQ(0, ptrace(PTRACE_GETEVENTMSG, child_pid, NULL, &msg));
- 	ASSERT_EQ(0x100, msg);
--	EXPECT_EQ(__NR_nanosleep, get_syscall(_metadata, child_pid));
-+	ret = get_syscall(_metadata, child_pid);
-+	EXPECT_TRUE(ret == __NR_nanosleep || ret == __NR_clock_nanosleep);
- 
- 	/* Might as well check siginfo for sanity while we're here. */
- 	ASSERT_EQ(0, ptrace(PTRACE_GETSIGINFO, child_pid, NULL, &info));
--- 
-2.20.1
+Thanks,
+Gao Xiang
 
