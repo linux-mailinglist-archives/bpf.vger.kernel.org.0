@@ -2,60 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 01AF41A39A3
-	for <lists+bpf@lfdr.de>; Thu,  9 Apr 2020 20:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A76F91A39FB
+	for <lists+bpf@lfdr.de>; Thu,  9 Apr 2020 20:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgDISMU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Apr 2020 14:12:20 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:42988 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbgDISMU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Apr 2020 14:12:20 -0400
-Received: by mail-qt1-f196.google.com with SMTP id b10so677423qtt.9;
-        Thu, 09 Apr 2020 11:12:18 -0700 (PDT)
+        id S1726470AbgDIStq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Apr 2020 14:49:46 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:33904 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725987AbgDIStq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Apr 2020 14:49:46 -0400
+Received: by mail-qk1-f196.google.com with SMTP id i186so5153528qke.1;
+        Thu, 09 Apr 2020 11:49:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=SfINGAMNSPnbcTsywzPLPkIFLAeUGN4o5XJ6HHgBN7g=;
-        b=LFOoRG+SoLFi68LZVEeqgGREblIvcNTCH5nf0Fge1zfKlBVxq0KJpdoO50uaTr6G3b
-         1Wkl/pCdGrD9FIAAgFykd+ug43mDtzJZzi2VSXtCHBQgrE3J0gEjY3lcTH+q8MZKzOV3
-         u8OD6rR53HqzmxT8ETomsoJXcIhWTj4+TELPuM1vGJaCFiE6okuyYzvbt0j5GFzYjFHd
-         sPS2rhFZRLMCCUmaZu6QmDxFclMrGqOz5zBOxpIfP1d238MUJRGDHYk0AQbseQBTwjOV
-         enFnvgU/p2kRi3WMNPi3WjorMxni4mCeWKtifcriAhkhTgxguJ0rhdhhQchymS17J2DQ
-         O7IQ==
+        bh=ukIym3BDkleiNccRNd//cvZqgy+EVOlLbrUy2LS0HW4=;
+        b=MJLV19CDMKNsrsUeYmWHoH8tFPQUHJ8U9Qm2B/ehJiY+1UH0/AXQdOwyPT7XEY4GeC
+         /YIt5xg+IiPxW8r+kpCuqgcHlf9ayxPo6epcvlhXpCF2H11jBYmJgThCiC7G45GusHoA
+         +sm8qcYCWc725kfM6llNMlXtDm2T9wMlz1Pi5Q0So+5JFlIeMOt6ubC+ZTR1XZCs6zWT
+         tDPUmSDSbFWLx9L7KQX+1z6vvf9OUCMxQKxDfHo0Ehr4uwzOlSisH3p9aBUO1t3ASahp
+         X59sHlXdftw3f2QaTcAvvWzEybdLqoHrn7gaNeiGSLmWLrtuW85nCH4mlF91sJMgwj7x
+         oOKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SfINGAMNSPnbcTsywzPLPkIFLAeUGN4o5XJ6HHgBN7g=;
-        b=n+DsksuzJX2SJETtJXVR08OkegnkSCbkcb6hqFZaETUJoQ9DQ1lW+S5CeHiEoUTijV
-         j5Eg1ykm4TfPCqTUQ2hQkpzBNxsgw4HR/8VEO2dSZovoavuvt3U3lDo5xvhr5hrQT0mc
-         Pt6OW91DqOeTcTtuhqUTkb87DgTkX1k8M/bbA/MPrKdgrIRKVz6b5t69Cmpn7asLEVYv
-         yZG4fw7nrIt8KpA3CRX6yjneH2LwBT5XV2DKi4x+3xj532Qwz9p0Qu2/91EyLDxoZj2p
-         fonRIwRtaj+TzZFi3fV5XX3rB6L/NdVJTrlaHaQ8xs+OP9ILvDOqNZjB/iTTgoVDUJbn
-         N6GQ==
-X-Gm-Message-State: AGi0Pubd7lmYZWeu7JUeh5AERnQ3cJNc7rK8LOM/AlAjWV5MPG13OWv7
-        OBELNRDjwC0zSD9x/lDk4z0Lcl8zDksqs+WKc04=
-X-Google-Smtp-Source: APiQypJkrXftfHK0PfrkYgWRX9IMXPBnGKw7FdapS0URdYMkLC2sY4v3/j8AMCeSaNSQ+kbHE6bPK1eEH69ekXKGcmM=
-X-Received: by 2002:ac8:4e2c:: with SMTP id d12mr602871qtw.171.1586455937926;
- Thu, 09 Apr 2020 11:12:17 -0700 (PDT)
+        bh=ukIym3BDkleiNccRNd//cvZqgy+EVOlLbrUy2LS0HW4=;
+        b=RTNThCviXmmXkuNmhZ9w3pHjoeT2wW2JePcjzu+kH0274tP1UqPLMNgKP6xG0KTOJy
+         dskrJhBvVdaU2ntw6zt2SxEZoa+g4gsOlpuyuSMsKA6Orbe25CGsz7kypMfQe3SMo0xy
+         gFC3tkmNyfn+UaP+Uh2QLnEFLXWXl7owR7BxtQLicTzoWwr1LSLMC6JJ8dm92kR4ibWl
+         DXSxQejYYJyk2HQZtSwmzDpv4kHXRszh2Rm5z0EGmc29Nvrn2zhjv3Qsf60VNfWKX/NW
+         b3njSjZWwc8d6Fdxe5h5NW2tKSnr3gflVHuJh78tPSvE6Gh5A5PhT2d+AKtJTFGIkBJE
+         qzRg==
+X-Gm-Message-State: AGi0PubMN8gaO2NNCf50P+IB3O88/RArob26bK0nCaLNfFSdXSfv+qUC
+        uE1KPpV/PixfD0Yne2DaRQvn0mqgtg049fXjnrM=
+X-Google-Smtp-Source: APiQypJnvqtJIiJzu/cCI9NPl703qxPZ3yvnssM+gougkcbMsL8WzOoXxGZ1X8Aa9TCVNZOOD7lrctLT79qbZpf6NJ4=
+X-Received: by 2002:ae9:e854:: with SMTP id a81mr308401qkg.36.1586458184812;
+ Thu, 09 Apr 2020 11:49:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <1586240904-14176-1-git-send-email-komachi.yoshiki@gmail.com>
- <CAEf4BzZaMX=xPSkOdggX6kMa_a2eWZws9W0EiJm7Qf1x1sR+cQ@mail.gmail.com> <CAA6waGJNzgtKuNps6QZn39Nx3L0WJD3F0ikgAUh6-6ZWyMchmw@mail.gmail.com>
-In-Reply-To: <CAA6waGJNzgtKuNps6QZn39Nx3L0WJD3F0ikgAUh6-6ZWyMchmw@mail.gmail.com>
+References: <20200404000948.3980903-1-andriin@fb.com> <20200404000948.3980903-5-andriin@fb.com>
+ <87pnckc0fr.fsf@toke.dk> <CAEf4BzYrW43EW_Uneqo4B6TLY4V9fKXJxWj+-gbq-7X0j7y86g@mail.gmail.com>
+ <877dyq80x8.fsf@toke.dk> <CAEf4BzaiRYMc4QMjz8bEn1bgiSXZvW_e2N48-kTR4Fqgog2fBg@mail.gmail.com>
+ <87tv1t65cr.fsf@toke.dk>
+In-Reply-To: <87tv1t65cr.fsf@toke.dk>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 9 Apr 2020 11:12:06 -0700
-Message-ID: <CAEf4BzaO_m-OQVAuOkMsRC=ePWa95-V8ZpT1C9kWRzrnWZugJQ@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: Make bpf/bpf_helpers.h self-contained
-To:     Yoshiki Komachi <komachi.yoshiki@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 9 Apr 2020 11:49:33 -0700
+Message-ID: <CAEf4BzbXCsHCJ6Tet0i5g=pKB_uYqvgiaBNuY-NMdZm8rdZN5g@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 4/8] bpf: support GET_FD_BY_ID and
+ GET_NEXT_ID for bpf_link
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
@@ -63,71 +64,154 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 8, 2020 at 10:31 PM Yoshiki Komachi
-<komachi.yoshiki@gmail.com> wrote:
+On Wed, Apr 8, 2020 at 2:21 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com> wrote:
 >
-> 2020=E5=B9=B44=E6=9C=887=E6=97=A5(=E7=81=AB) 15:52 Andrii Nakryiko <andri=
-i.nakryiko@gmail.com>:
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>
+> > On Wed, Apr 8, 2020 at 8:14 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
+edhat.com> wrote:
+> >>
+> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+> >>
+> >> > On Mon, Apr 6, 2020 at 4:34 AM Toke H=C3=B8iland-J=C3=B8rgensen <tok=
+e@redhat.com> wrote:
+> >> >>
+> >> >> Andrii Nakryiko <andriin@fb.com> writes:
+> >> >>
+> >> >> > Add support to look up bpf_link by ID and iterate over all existi=
+ng bpf_links
+> >> >> > in the system. GET_FD_BY_ID code handles not-yet-ready bpf_link b=
+y checking
+> >> >> > that its ID hasn't been set to non-zero value yet. Setting bpf_li=
+nk's ID is
+> >> >> > done as the very last step in finalizing bpf_link, together with =
+installing
+> >> >> > FD. This approach allows users of bpf_link in kernel code to not =
+worry about
+> >> >> > races between user-space and kernel code that hasn't finished att=
+aching and
+> >> >> > initializing bpf_link.
+> >> >> >
+> >> >> > Further, it's critical that BPF_LINK_GET_FD_BY_ID only ever allow=
+s to create
+> >> >> > bpf_link FD that's O_RDONLY. This is to protect processes owning =
+bpf_link and
+> >> >> > thus allowed to perform modifications on them (like LINK_UPDATE),=
+ from other
+> >> >> > processes that got bpf_link ID from GET_NEXT_ID API. In the latte=
+r case, only
+> >> >> > querying bpf_link information (implemented later in the series) w=
+ill be
+> >> >> > allowed.
+> >> >>
+> >> >> I must admit I remain sceptical about this model of restricting acc=
+ess
+> >> >> without any of the regular override mechanisms (for instance, enfor=
+cing
+> >> >> read-only mode regardless of CAP_DAC_OVERRIDE in this series). Sinc=
+e you
+> >> >> keep saying there would be 'some' override mechanism, I think it wo=
+uld
+> >> >> be helpful if you could just include that so we can see the full
+> >> >> mechanism in context.
+> >> >
+> >> > I wasn't aware of CAP_DAC_OVERRIDE, thanks for bringing this up.
+> >> >
+> >> > One way to go about this is to allow creating writable bpf_link for
+> >> > GET_FD_BY_ID if CAP_DAC_OVERRIDE is set. Then we can allow LINK_DETA=
+CH
+> >> > operation on writable links, same as we do with LINK_UPDATE here.
+> >> > LINK_DETACH will do the same as cgroup bpf_link auto-detachment on
+> >> > cgroup dying: it will detach bpf_link, but will leave it alive until
+> >> > last FD is closed.
+> >>
+> >> Yup, I think this would be a reasonable way to implement the override
+> >> mechanism - it would ensure 'full root' users (like a root shell) can
+> >> remove attachments, while still preventing applications from doing so =
+by
+> >> limiting their capabilities.
 > >
-> > On Mon, Apr 6, 2020 at 11:29 PM Yoshiki Komachi
-> > <komachi.yoshiki@gmail.com> wrote:
-> > >
-> > > I tried to compile a bpf program including bpf_helpers.h, however it
-> > > resulted in failure as below:
-> > >
-> > >   # clang -I./linux/tools/lib/ -I/lib/modules/$(uname -r)/build/inclu=
-de/ \
-> > >     -O2 -Wall -target bpf -emit-llvm -c bpf_prog.c -o bpf_prog.bc
-> > >   ...
-> > >   In file included from linux/tools/lib/bpf/bpf_helpers.h:5:
-> > >   linux/tools/lib/bpf/bpf_helper_defs.h:56:82: error: unknown type na=
-me '__u64'
-> > >   ...
-> > >
-> > > This is because bpf_helpers.h depends on linux/types.h and it is not
-> > > self-contained. This has been like this long time, but since bpf_help=
-ers.h
-> > > was moved from selftests private file to libbpf header file, IMO it
-> > > should include linux/types.h by itself.
-> > >
-> > > Fixes: e01a75c15969 ("libbpf: Move bpf_{helpers, helper_defs, endian,=
- tracing}.h into libbpf")
-> > > Signed-off-by: Yoshiki Komachi <komachi.yoshiki@gmail.com>
-> > > ---
-> > >  tools/lib/bpf/bpf_helpers.h | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.=
-h
-> > > index f69cc208778a..d9288e695eb1 100644
-> > > --- a/tools/lib/bpf/bpf_helpers.h
-> > > +++ b/tools/lib/bpf/bpf_helpers.h
-> > > @@ -2,6 +2,7 @@
-> > >  #ifndef __BPF_HELPERS__
-> > >  #define __BPF_HELPERS__
-> > >
-> > > +#include <linux/types.h>
-> > >  #include "bpf_helper_defs.h"
+> > So I did some experiments and I think I want to keep GET_FD_BY_ID for
+> > bpf_link to return only read-only bpf_links.
+>
+> Why, exactly? (also, see below)
+
+For the reasons I explained below: because you can turn read-only
+bpf_link into writable one through pinning + chmod, if you have
+CAP_DAC_OVERRIDE.
+
+>
+> > After that, one can pin bpf_link temporarily and re-open it as
+> > writable one, provided CAP_DAC_OVERRIDE capability is present. All
+> > that works already, because pinned bpf_link is just a file, so one can
+> > do fchmod on it and all that will go through normal file access
+> > permission check code path.
+>
+> Ah, I did not know that was possible - I was assuming that bpffs was
+> doing something special to prevent that. But if not, great!
+>
+> > Unfortunately, just re-opening same FD as writable (which would
+> > be possible if fcntl(fd, F_SETFL, S_IRUSR
+> >  S_IWUSR) was supported on Linux) without pinning is not possible.
+> > Opening link from /proc/<pid>/fd/<link-fd> doesn't seem to work
+> > either, because backing inode is not BPF FS inode. I'm not sure, but
+> > maybe we can support the latter eventually. But either way, I think
+> > given this is to be used for manual troubleshooting, going through few
+> > extra hoops to force-detach bpf_link is actually a good thing.
+>
+> Hmm, I disagree that deliberately making users jump through hoops is a
+> good thing. Smells an awful lot like security through obscurity to me;
+> and we all know how well that works anyway...
+
+Depends on who users are? bpftool can implement this as one of
+`bpftool link` sub-commands and allow human operators to force-detach
+bpf_link, if necessary. I think applications shouldn't do this
+(programmatically) at all, which is why I think it's actually good
+that it's harder and not obvious, this will make developer think again
+before implementing this, hopefully. For me it's about discouraging
+bad practice.
+
+>
+> >> Extending on the concept of RO/RW bpf_link attachments, maybe it shoul=
+d
+> >> even be possible for an application to choose which mode it wants to p=
+in
+> >> its fd in? With the same capability being able to override it of
+> >> course...
 > >
-> > It's actually intentional, so that bpf_helpers.h can be used together
-> > with auto-generated (from BTF) vmlinux.h (which will have all the
-> > __u64 and other typedefs).
+> > Isn't that what patch #2 is doing?...
 >
-> Thanks for kind comments, and I found out that it=E2=80=99s not wrong but=
- intentional.
+> Ah yes, so it is! I guess I skipped over that a bit too fast ;)
 >
-> However users (like me) may not be aware of it at this point, because
-> there is no related statement as far as I know. Instead of my previous
-> proposal, we should add some comments (e.g., this header needs to
-> include either auto-generated (from BTF) vmlinux.h or linux/types.h
-> before using) to bpf_helpers.h header, IMO.
-
-Right, documenting various things like this is a sore point with BPF
-usage right now. Feel free to send a patch with such comment. Thanks!
-
+> > There are few bugs in the implementation currently, but it will work
+> > in the final version.
 >
-> > >
-> > >  #define __uint(name, val) int (*name)[val]
-> > > --
-> > > 2.24.1
-> > >
+> Cool.
+>
+> >> > We need to consider, though, if CAP_DAC_OVERRIDE is something that c=
+an
+> >> > be disabled for majority of real-life applications to prevent them
+> >> > from doing this. If every realistic application has/needs
+> >> > CAP_DAC_OVERRIDE, then that's essentially just saying that anyone ca=
+n
+> >> > get writable bpf_link and do anything with it.
+> >>
+> >> I poked around a bit, and looking at the sandboxing configurations
+> >> shipped with various daemons in their systemd unit files, it appears
+> >> that the main case where daemons are granted CAP_DAC_OVERRIDE is if th=
+ey
+> >> have to be able to read /etc/shadow (which is installed as chmod 0). I=
+f
+> >> this is really the case, that would indicate it's not a widely needed
+> >> capability; but I wouldn't exactly say that I've done a comprehensive
+> >> survey, so probably a good idea for you to check your users as well :)
+> >
+> > Right, it might not be possible to drop it for all applications right
+> > away, but at least CAP_DAC_OVERRIDE is not CAP_SYS_ADMIN, which is
+> > absolutely necessary to work with BPF.
+>
+> Yeah, I do hope that we'll eventually get CAP_BPF...
+>
+> -Toke
+>
