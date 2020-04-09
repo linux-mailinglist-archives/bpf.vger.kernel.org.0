@@ -2,179 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C5F1A3AA1
-	for <lists+bpf@lfdr.de>; Thu,  9 Apr 2020 21:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A7B1A3C4A
+	for <lists+bpf@lfdr.de>; Fri, 10 Apr 2020 00:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726992AbgDITgQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Apr 2020 15:36:16 -0400
-Received: from mail.efficios.com ([167.114.26.124]:47182 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726873AbgDITgA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Apr 2020 15:36:00 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id BDEB528109B;
-        Thu,  9 Apr 2020 15:35:59 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id WDzszhGAcDZT; Thu,  9 Apr 2020 15:35:59 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id EB0A828097D;
-        Thu,  9 Apr 2020 15:35:58 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com EB0A828097D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1586460959;
-        bh=EHJTpZNwmXluZM9tJ0paz0S+w/SyA8cPGMPnFdU4nVg=;
-        h=From:To:Date:Message-Id;
-        b=Hg/urOQpvU32K5RZgS22WfDNNMnSLMkqzgQXsmAFmKXDHU+cZuMNLdfmffqnynXMY
-         v3X3Et1ys6H7xdZLL8yA7596mBLf7Zr2IwPzHZrdmIgwyjCKWauXEG4fLJaOIFfp9f
-         v1fe37a8vE84wyQSRTVos68E7Hl10/AlstIDGEDs/6tB9ZDRiZXBLrpRfdvU4eOc5P
-         JtBODCm3D3bEYg4ULA2G/dGNODFr0HPYaI81xg6BdgrjaTfzYvM5AgO7PCC2atorGR
-         o95CoH++uSmyS1fXQ9RFj3dERWesrpc6nGU0C30rE2nI9XEGCHxUYA6zJE9wsL6eH1
-         Hux8TDIXRlzLA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id D4ck5yx4Fpqa; Thu,  9 Apr 2020 15:35:58 -0400 (EDT)
-Received: from localhost.localdomain (192-222-181-218.qc.cable.ebox.net [192.222.181.218])
-        by mail.efficios.com (Postfix) with ESMTPSA id 20139280D6B;
-        Thu,  9 Apr 2020 15:35:58 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, akpm@linux-foundation.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "K . Prasad" <prasad@linux.vnet.ibm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>, rostedt@goodmis.org,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        id S1726689AbgDIWSE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Apr 2020 18:18:04 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:50388 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726701AbgDIWSE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Apr 2020 18:18:04 -0400
+Received: by mail-pj1-f65.google.com with SMTP id b7so66951pju.0
+        for <bpf@vger.kernel.org>; Thu, 09 Apr 2020 15:18:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cs.washington.edu; s=goo201206;
+        h=from:to:cc:subject:date:message-id;
+        bh=d7I79Px6oW+xidqJy+si2tmnAYd369ZVNNbYLDl32gU=;
+        b=W9vJOxKo91GTrNMNOMDe+CcYIVgw/SOaLir7ekED0M2QDlKPHJMg0FkVS8aK5M4xUT
+         wKcgwDjPlpAbpIDBkQwzvxwo3aVhwKRbg73R/ocWLnP1YHT83chblwRCKlYUk3f3QcHv
+         X6rglaZaHPq7Yu0iL3vU0s8SY7n3uOxzM0y4Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=d7I79Px6oW+xidqJy+si2tmnAYd369ZVNNbYLDl32gU=;
+        b=fEgduDvRICyU3GG3Qx0x5A5TolOkFE5lt2ZmMR9KIwXrLI0BGRS0SwYSMwQhJMBP1F
+         NPBCGsAMd3ijcdy1xsrqznvCY05/+/e30ABWmN/gNs/u7oEGIP1eV2LN0mMdqCfXRcKg
+         RahNFrgHvZiilfqssKa65bRLxR5i/2sv5h5YcsVYAi1HoJNahNiNWViNLiKU0DcmBdKO
+         DvAqSdunOK10BFbgxfJL/yRG5rgi5Rx6lBKNGWMG6yl3ppQFVtM1DtcegwVl8BpMZaff
+         iO2vlLHAm7D2tjEOYL/kCaqywPsNoU0FIAQI24NfFemG57HPIQfyVu2vfvi1NibcU0mE
+         Eklg==
+X-Gm-Message-State: AGi0PubsnUMvgRVq23ipfPrTJOcFwMTyaEGQSVRH74lf591+7aSgQGgN
+        PSik5oKklViJyhcCMxuBX9IN2rcMzH2s7A==
+X-Google-Smtp-Source: APiQypLfv8Wd0dMcbnojJcRFpZ7fPcaUoNxEFntuU+I+4oPJFPCqFySEK9Ta/6QO6xIo+tI8+FNSxA==
+X-Received: by 2002:a17:90a:94c8:: with SMTP id j8mr1817350pjw.155.1586470682925;
+        Thu, 09 Apr 2020 15:18:02 -0700 (PDT)
+Received: from localhost.localdomain (c-73-53-94-119.hsd1.wa.comcast.net. [73.53.94.119])
+        by smtp.gmail.com with ESMTPSA id w29sm111547pge.25.2020.04.09.15.18.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Apr 2020 15:18:02 -0700 (PDT)
+From:   Luke Nelson <lukenels@cs.washington.edu>
+X-Google-Original-From: Luke Nelson <luke.r.nels@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Ingo Molnar <mingo@redhat.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [RFC PATCH 3/9] writeback: tracing: pass global_wb_domain as tracepoint parameter
-Date:   Thu,  9 Apr 2020 15:35:37 -0400
-Message-Id: <20200409193543.18115-4-mathieu.desnoyers@efficios.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf] arm, bpf: Fix offset overflow for BPF_MEM BPF_DW
+Date:   Thu,  9 Apr 2020 15:17:52 -0700
+Message-Id: <20200409221752.28448-1-luke.r.nels@gmail.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200409193543.18115-1-mathieu.desnoyers@efficios.com>
-References: <20200409193543.18115-1-mathieu.desnoyers@efficios.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The symbol global_wb_domain is not GPL-exported to modules. In order
-to allow kernel tracers implemented as GPL modules to access the
-global writeback domain dirty limit, as used within the
-global_dirty_state and balance_dirty_pages trace events, pass
-a pointer to the global writeback domain as a new parameter for
-those tracepoints.
+This patch fixes an incorrect check in how immediate memory offsets are
+computed for BPF_DW on arm.
 
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org
+For BPF_LDX/ST/STX + BPF_DW, the 32-bit arm JIT breaks down an 8-byte
+access into two separate 4-byte accesses using off+0 and off+4. If off
+fits in imm12, the JIT emits a ldr/str instruction with the immediate
+and avoids the use of a temporary register. While the current check off
+<= 0xfff ensures that the first immediate off+0 doesn't overflow imm12,
+it's not sufficient for the second immediate off+4, which may cause the
+second access of BPF_DW to read/write the wrong address.
+
+This patch fixes the problem by changing the check to
+off <= 0xfff - 4 for BPF_DW, ensuring off+4 will never overflow.
+
+A side effect of simplifying the check is that it now allows using
+negative immediate offsets in ldr/str. This means that small negative
+offsets can also avoid the use of a temporary register.
+
+This patch introduces no new failures in test_verifier or test_bpf.c.
+
+Fixes: c5eae692571d6 ("ARM: net: bpf: improve 64-bit store implementation")
+Fixes: ec19e02b343db ("ARM: net: bpf: fix LDX instructions")
+Co-developed-by: Xi Wang <xi.wang@gmail.com>
+Signed-off-by: Xi Wang <xi.wang@gmail.com>
+Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
 ---
- include/trace/events/writeback.h | 17 ++++++++++-------
- mm/page-writeback.c              |  9 +++++----
- 2 files changed, 15 insertions(+), 11 deletions(-)
+ arch/arm/net/bpf_jit_32.c | 40 +++++++++++++++++++++++----------------
+ 1 file changed, 24 insertions(+), 16 deletions(-)
 
-diff --git a/include/trace/events/writeback.h b/include/trace/events/writeback.h
-index d94def25e4dc..8fd774108c9c 100644
---- a/include/trace/events/writeback.h
-+++ b/include/trace/events/writeback.h
-@@ -531,11 +531,13 @@ TRACE_EVENT(writeback_queue_io,
- 
- TRACE_EVENT(global_dirty_state,
- 
--	TP_PROTO(unsigned long background_thresh,
-+	TP_PROTO(struct wb_domain *domain,
-+		 unsigned long background_thresh,
- 		 unsigned long dirty_thresh
- 	),
- 
--	TP_ARGS(background_thresh,
-+	TP_ARGS(domain,
-+		background_thresh,
- 		dirty_thresh
- 	),
- 
-@@ -558,7 +560,7 @@ TRACE_EVENT(global_dirty_state,
- 		__entry->nr_written	= global_node_page_state(NR_WRITTEN);
- 		__entry->background_thresh = background_thresh;
- 		__entry->dirty_thresh	= dirty_thresh;
--		__entry->dirty_limit	= global_wb_domain.dirty_limit;
-+		__entry->dirty_limit	= domain->dirty_limit;
- 	),
- 
- 	TP_printk("dirty=%lu writeback=%lu unstable=%lu "
-@@ -625,7 +627,8 @@ TRACE_EVENT(bdi_dirty_ratelimit,
- 
- TRACE_EVENT(balance_dirty_pages,
- 
--	TP_PROTO(struct bdi_writeback *wb,
-+	TP_PROTO(struct wb_domain *domain,
-+		 struct bdi_writeback *wb,
- 		 unsigned long thresh,
- 		 unsigned long bg_thresh,
- 		 unsigned long dirty,
-@@ -638,7 +641,7 @@ TRACE_EVENT(balance_dirty_pages,
- 		 long pause,
- 		 unsigned long start_time),
- 
--	TP_ARGS(wb, thresh, bg_thresh, dirty, bdi_thresh, bdi_dirty,
-+	TP_ARGS(domain, wb, thresh, bg_thresh, dirty, bdi_thresh, bdi_dirty,
- 		dirty_ratelimit, task_ratelimit,
- 		dirtied, period, pause, start_time),
- 
-@@ -664,8 +667,8 @@ TRACE_EVENT(balance_dirty_pages,
- 		unsigned long freerun = (thresh + bg_thresh) / 2;
- 		strscpy_pad(__entry->bdi, bdi_dev_name(wb->bdi), 32);
- 
--		__entry->limit		= global_wb_domain.dirty_limit;
--		__entry->setpoint	= (global_wb_domain.dirty_limit +
-+		__entry->limit		= domain->dirty_limit;
-+		__entry->setpoint	= (domain->dirty_limit +
- 						freerun) / 2;
- 		__entry->dirty		= dirty;
- 		__entry->bdi_setpoint	= __entry->setpoint *
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index 7326b54ab728..c76aae305360 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -443,9 +443,8 @@ static void domain_dirty_limits(struct dirty_throttle_control *dtc)
- 	dtc->thresh = thresh;
- 	dtc->bg_thresh = bg_thresh;
- 
--	/* we should eventually report the domain in the TP */
- 	if (!gdtc)
--		trace_global_dirty_state(bg_thresh, thresh);
-+		trace_global_dirty_state(&global_wb_domain, bg_thresh, thresh);
+diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
+index d124f78e20ac..bf85d6db4931 100644
+--- a/arch/arm/net/bpf_jit_32.c
++++ b/arch/arm/net/bpf_jit_32.c
+@@ -1000,21 +1000,35 @@ static inline void emit_a32_mul_r64(const s8 dst[], const s8 src[],
+ 	arm_bpf_put_reg32(dst_hi, rd[0], ctx);
  }
  
- /**
-@@ -1736,7 +1735,8 @@ static void balance_dirty_pages(struct bdi_writeback *wb,
- 		 * do a reset, as it may be a light dirtier.
- 		 */
- 		if (pause < min_pause) {
--			trace_balance_dirty_pages(wb,
-+			trace_balance_dirty_pages(&global_wb_domain,
-+						  wb,
- 						  sdtc->thresh,
- 						  sdtc->bg_thresh,
- 						  sdtc->dirty,
-@@ -1765,7 +1765,8 @@ static void balance_dirty_pages(struct bdi_writeback *wb,
- 		}
++static bool is_ldst_imm(s16 off, const u8 size)
++{
++	s16 off_max = 0;
++
++	switch (size) {
++	case BPF_B:
++	case BPF_W:
++		off_max = 0xfff;
++		break;
++	case BPF_H:
++		off_max = 0xff;
++		break;
++	case BPF_DW:
++		/* Need to make sure off+4 does not overflow. */
++		off_max = 0xfff - 4;
++		break;
++	}
++	return -off_max <= off && off <= off_max;
++}
++
+ /* *(size *)(dst + off) = src */
+ static inline void emit_str_r(const s8 dst, const s8 src[],
+-			      s32 off, struct jit_ctx *ctx, const u8 sz){
++			      s16 off, struct jit_ctx *ctx, const u8 sz){
+ 	const s8 *tmp = bpf2a32[TMP_REG_1];
+-	s32 off_max;
+ 	s8 rd;
  
- pause:
--		trace_balance_dirty_pages(wb,
-+		trace_balance_dirty_pages(&global_wb_domain,
-+					  wb,
- 					  sdtc->thresh,
- 					  sdtc->bg_thresh,
- 					  sdtc->dirty,
+ 	rd = arm_bpf_get_reg32(dst, tmp[1], ctx);
+ 
+-	if (sz == BPF_H)
+-		off_max = 0xff;
+-	else
+-		off_max = 0xfff;
+-
+-	if (off < 0 || off > off_max) {
++	if (!is_ldst_imm(off, sz)) {
+ 		emit_a32_mov_i(tmp[0], off, ctx);
+ 		emit(ARM_ADD_R(tmp[0], tmp[0], rd), ctx);
+ 		rd = tmp[0];
+@@ -1043,18 +1057,12 @@ static inline void emit_str_r(const s8 dst, const s8 src[],
+ 
+ /* dst = *(size*)(src + off) */
+ static inline void emit_ldx_r(const s8 dst[], const s8 src,
+-			      s32 off, struct jit_ctx *ctx, const u8 sz){
++			      s16 off, struct jit_ctx *ctx, const u8 sz){
+ 	const s8 *tmp = bpf2a32[TMP_REG_1];
+ 	const s8 *rd = is_stacked(dst_lo) ? tmp : dst;
+ 	s8 rm = src;
+-	s32 off_max;
+-
+-	if (sz == BPF_H)
+-		off_max = 0xff;
+-	else
+-		off_max = 0xfff;
+ 
+-	if (off < 0 || off > off_max) {
++	if (!is_ldst_imm(off, sz)) {
+ 		emit_a32_mov_i(tmp[0], off, ctx);
+ 		emit(ARM_ADD_R(tmp[0], tmp[0], src), ctx);
+ 		rm = tmp[0];
 -- 
 2.17.1
 
