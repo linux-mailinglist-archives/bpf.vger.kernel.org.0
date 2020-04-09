@@ -2,104 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 080481A2D38
-	for <lists+bpf@lfdr.de>; Thu,  9 Apr 2020 03:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75FDE1A2DF3
+	for <lists+bpf@lfdr.de>; Thu,  9 Apr 2020 05:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726521AbgDIBNL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Apr 2020 21:13:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46542 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726536AbgDIBNL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Apr 2020 21:13:11 -0400
-Received: from kicinski-fedora-PC1C0HJN (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 50CB620857;
-        Thu,  9 Apr 2020 01:13:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586394791;
-        bh=gnJSC+Ll55F8NHZqiO9BiUa6+NsFEi69Clrkki9joxs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=uePBGxeiUOI2f9dBbu1gCSAP9K3iU/l7kNXxFDYcgmpU3qAU5kmOUR6ephSm+5kca
-         lWfAiqPilBD2AnClEYq3x34FzcKztbx468I2/QicxdwWjzhwZGXljIHv9IH6k/Qhxr
-         AjcleUITp5MwS6y8PkSpxiiWgJ/DVbRXQtIagTEc=
-Date:   Wed, 8 Apr 2020 18:13:08 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Saeed Mahameed <saeedm@mellanox.com>
-Cc:     "brouer@redhat.com" <brouer@redhat.com>,
-        "akiyano@amazon.com" <akiyano@amazon.com>,
-        "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
-        "borkmann@iogearbox.net" <borkmann@iogearbox.net>,
-        "jeffrey.t.kirsher@intel.com" <jeffrey.t.kirsher@intel.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "toke@redhat.com" <toke@redhat.com>,
-        "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>,
-        "gtzalik@amazon.com" <gtzalik@amazon.com>,
-        "dsahern@gmail.com" <dsahern@gmail.com>,
-        "sameehj@amazon.com" <sameehj@amazon.com>,
-        "alexander.duyck@gmail.com" <alexander.duyck@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "ilias.apalodimas@linaro.org" <ilias.apalodimas@linaro.org>,
-        "zorik@amazon.com" <zorik@amazon.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "lorenzo@kernel.org" <lorenzo@kernel.org>
-Subject: Re: [PATCH RFC v2 01/33] xdp: add frame size to xdp_buff
-Message-ID: <20200408181308.4e1cf9fc@kicinski-fedora-PC1C0HJN>
-In-Reply-To: <a101ea0284504b65edcd8f83bd7a05747c6f8014.camel@mellanox.com>
-References: <158634658714.707275.7903484085370879864.stgit@firesoul>
-        <158634663936.707275.3156718045905620430.stgit@firesoul>
-        <20200408105339.7d8d4e59@kicinski-fedora-PC1C0HJN>
-        <a101ea0284504b65edcd8f83bd7a05747c6f8014.camel@mellanox.com>
+        id S1726663AbgDID0y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Apr 2020 23:26:54 -0400
+Received: from mail-yb1-f195.google.com ([209.85.219.195]:39978 "EHLO
+        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726545AbgDID0x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Apr 2020 23:26:53 -0400
+Received: by mail-yb1-f195.google.com with SMTP id a5so4951897ybo.7;
+        Wed, 08 Apr 2020 20:26:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=xIpdHjTqBOnzX/KRWf/+IF0SilgeswMLZm1Ka6Pjqp4=;
+        b=JBz01c/jMiya2h/5olMP4ym//6eOdmfONcdfxhPexmj4IUMUJxQyqlaMWzG1E+5IQM
+         0X6rO5ynLhuk3K2wJr228j4QKvU8XR0Qc+G65ZqLwOXq5RZBZ2U849odXG2uyZJSUaPd
+         xpGTcj5safLWLQ/PQI2nVtzgDJGDOGHn944klId14VIgx8YNo8nBiwdIGOSVo2Fd+xmj
+         wzxSMbsQyGUC+GKiHan8LybLAU0LOI9kC4QvcMiyNe7yStv1j/FZsN94zBLTV2BleRvW
+         51VzY3qjBq+BnJX9R37DYzBxyCTwhZzWh5QZIUBEf13UTHoGb3vO6W6p/taXF2YFZIrm
+         9phA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=xIpdHjTqBOnzX/KRWf/+IF0SilgeswMLZm1Ka6Pjqp4=;
+        b=sfoiFTubp2QQ2JN4uxkUzE4pzcicxEomC8KRU+W2E2quWLvPY1yCrYtuA6IoA6bwsy
+         B9bVVY8C6CVmxhi2wz1H8S1IABfrx6sSmUe7+hQOv+1fgZ95r+mxig+OlFEutZBKhqmF
+         MoXEThVqIxYnSDjhTNRHgr6XLeT2P1IX9s6cPEQ/TMvGHNbNPw5sEF6xBN4UTV78XmCQ
+         /z6S/mXW4DoKhOS19rfNf9AZn/fwu7PF0eMGA1Oy25MK645cQ2Xvm7T8Xlvd1qSB7djm
+         510XkpYnschRpZhcgZOPKJEMCMeORLEdjZSzQGiWCbMxOISh+XG1j7ctGBG7ivfEAiuC
+         eLeA==
+X-Gm-Message-State: AGi0PuZNHagCIq0X0AX5l3/4cvaBsNFGTx2y8eIIYaUSByl8MqbWV2Eb
+        BH0MuvNPo6pPDKbWFAN0Z2lbFmN5Rovd3FjTEZCLGMRQwubj
+X-Google-Smtp-Source: APiQypKuJ0Cn5j7emT2yXTOWpQmCxd+7rVq8TXo7tuN0sNTqLKkvLJp3s8Q2eeO75KI1Gngf6hpX2UmXZ+oUq7KI54o=
+X-Received: by 2002:a25:d9c1:: with SMTP id q184mr17950930ybg.349.1586402812885;
+ Wed, 08 Apr 2020 20:26:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+Date:   Thu, 9 Apr 2020 12:26:37 +0900
+Message-ID: <CAEKGpzh3drL1ywEfnJWhAqULcjaqGi+8GZSwG9XV-iYK4DnCpA@mail.gmail.com>
+Subject: BPF program attached on BPF map function (read,write) is not working?
+To:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 9 Apr 2020 00:48:30 +0000 Saeed Mahameed wrote:
-> > > + * This macro reserves tailroom in the XDP buffer by limiting the
-> > > + * XDP/BPF data access to data_hard_end.  Notice same area (and
-> > > size)
-> > > + * is used for XDP_PASS, when constructing the SKB via
-> > > build_skb().
-> > > + */
-> > > +#define xdp_data_hard_end(xdp)				\
-> > > +	((xdp)->data_hard_start + (xdp)->frame_sz -	\
-> > > +	 SKB_DATA_ALIGN(sizeof(struct skb_shared_info)))  
-> > 
-> > I think it should be said somewhere that the drivers are expected to
-> > DMA map memory up to xdp_data_hard_end(xdp).
-> >   
-> 
-> but this works on a specific xdp buff, drivers work with mtu
-> 
-> and what if the driver want to have this as an option per packet .. 
-> i.e.: if there is enough tail room, then build_skb, otherwise
-> alloc new skb, copy headers, setup data frags.. etc
-> 
-> having such limitations on driver can be very strict, i think the
-> decision must remain dynamic per frame..
-> 
-> of-course drivers should optimize to preserve enough tail room for all
-> rx packets.. 
+Currently, BPF program attached on BPF map function (read,write) is not called.
+To be specific, the bpf kprobe program on 'htab_map_get_next_key'
+doesn't called at all. To test this behavior, you can try ./tracex6
+from the 'samples/bpf'. (It does not work properly at all)
 
-My concern is that driver may allocate a full page for each frame but
-only DMA map the amount that can reasonably contain data given the MTU.
-To save on DMA syncs.
+By using 'git bisect', found the problem is derived from below commit.(v5.0-rc3)
+commit 7c4cd051add3 ("bpf: Fix syscall's stackmap lookup potential deadlock")
+The code below is an excerpt of only the problematic code from the entire code.
 
-Today that wouldn't be a problem, because XDP_REDIRECT will re-map the
-page, and XDP_TX has the same MTU.
+   diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+   index b155cd17c1bd..8577bb7f8be6 100644
+   --- a/kernel/bpf/syscall.c
+   +++ b/kernel/bpf/syscall.c
+   @@ -713,8 +713,13 @@ static int map_lookup_elem(union bpf_attr *attr)
 
-In this set xdp_data_hard_end is used both to find the end of memory
-buffer, and end of DMA buffer. Implementation of bpf_xdp_adjust_tail()
-assumes anything < SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) from
-the end is fair game.
+           if (bpf_map_is_dev_bound(map)) {
+                   err = bpf_map_offload_lookup_elem(map, key, value);
+                   goto done;
+           }
 
-So I was trying to say that we should warn driver authors that the DMA
-buffer can now grow / move beyond what the driver may expect in XDP_TX.
-Drivers can either DMA map enough memory, or handle the corner case in
-a special way.
+           preempt_disable();
+   +      this_cpu_inc(bpf_prog_active);
+           if (map->map_type == BPF_MAP_TYPE_PERCPU_HASH ||
+               map->map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH) {
+                   err = bpf_percpu_hash_copy(map, key, value);
+           } else if (map->map_type == BPF_MAP_TYPE_PERCPU_ARRAY) {
+                   err = bpf_percpu_array_copy(map, key, value);
+   @@ -744,7 +749,10 @@ static int map_lookup_elem(union bpf_attr *attr)
+                   }
+                   rcu_read_unlock();
+           }
+   +      this_cpu_dec(bpf_prog_active);
+           preempt_enable();
 
-IDK if that makes sense, we may be talking past each other :)
+   done:
+           if (err)
+                   goto free_value;
+
+As you can see from this snippet, bpf_prog_active value (flag I guess?)
+increases and decreases within the code snippet. And this action create a
+problem where bpf program on map is not called.
+
+   # kernel/trace/bpf_trace.c:74
+   unsigned int trace_call_bpf(struct trace_event_call *call, void *ctx)
+   {
+       ...
+        preempt_disable();
+
+        if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
+                /*
+                 * since some bpf program is already running on this cpu,
+                 * don't call into another bpf program (same or different)
+                 * and don't send kprobe event into ring-buffer,
+                 * so return zero here
+                 */
+                ret = 0;
+                goto out;
+        }
+       ...
+       ret = BPF_PROG_RUN_ARRAY_CHECK(call->prog_array, ctx, BPF_PROG_RUN);
+
+   out:
+       __this_cpu_dec(bpf_prog_active);
+       preempt_enable();
+
+
+So from trace_call_bpf() at kernel/trace/bpf_trace.c check whether
+bpf_prog_active is 1, and if it is, it skips the execution of bpf program.
+
+Back to latest Kernel 5.6, this this_cpu_{inc|dec}() has been wrapped with
+bpf_{enable|disable}_instrumentation().
+
+   # include/linux/bpf.h
+   static inline void bpf_enable_instrumentation(void)
+   {
+           if (IS_ENABLED(CONFIG_PREEMPT_RT))
+                   this_cpu_dec(bpf_prog_active);
+           else
+                   __this_cpu_dec(bpf_prog_active);
+           migrate_enable();
+   }
+
+And the functions which uses this wrapper are described below.
+
+   bpf_map_update_value
+   bpf_map_copy_value
+   map_delete_elem
+   generic_map_delete_batch
+
+Which is basically most of the map operation.
+
+So, I think this 'unable to attach bpf program on BPF map function (read,write)'
+is a bug. Or is it desired action?
+
+If it is a bug, bpf_{enable|disable}_instrumentation() should only
+cover stackmap
+as the upper commit intended. Not sure but adding another flag for
+lock might work?
+
+Or if this is an desired action, this should be covered at
+documentation with a limitation
+and tracex6 sample has to be removed.
