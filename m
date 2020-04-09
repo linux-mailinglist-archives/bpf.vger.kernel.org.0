@@ -2,89 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 442D21A3A01
-	for <lists+bpf@lfdr.de>; Thu,  9 Apr 2020 20:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2FF1A3A6D
+	for <lists+bpf@lfdr.de>; Thu,  9 Apr 2020 21:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgDISvJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Apr 2020 14:51:09 -0400
-Received: from mail-qv1-f66.google.com ([209.85.219.66]:42845 "EHLO
-        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726641AbgDISvJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Apr 2020 14:51:09 -0400
-Received: by mail-qv1-f66.google.com with SMTP id ca9so6042975qvb.9;
-        Thu, 09 Apr 2020 11:51:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AqENxf3+55rAQuua54i17o4PFt9hrYgalmZkC5wlfUs=;
-        b=bn8RsmLF4XGgytaVnSs76AJlmP1BVlgfRHK9atmcvUpCfiEXsTZRRj7NM9l7ukgZKF
-         7nb9298W8cu9KfvOimwD88bE1XNpkrmGw3lREXCOPQu+5y3qKe5pFW79L/s69KezRT3d
-         VGtyYNFOW2X5uFI+c5zes6TJtTPQpodtSQCX5mDIDRwZ9Ji6WP6wXAIumXMSCMKkSbaG
-         Ox+/g0qsTtYaTPubHKnanCXCvaj2U/YCdSl1TPjaX0Ydj+zuiVwYNDvdf8BJU6XN7GdJ
-         cUViRN8LKR170/NzsI6NI5EQVuZsbPjSsv/HW7F+HQ9/ULpJKeSDNp6vJNUgpjJFtIWT
-         RyOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AqENxf3+55rAQuua54i17o4PFt9hrYgalmZkC5wlfUs=;
-        b=NlRpSqKbw5TTox5zbYwOJSZfurmUfzjP+nSbLKp3WQi+blmaKpRGRvrHM/5YBC2FxO
-         yqHK+DqCaPPluQAue9huxX/R0sUoRpA07xCA5TtoiSJSBUBbBZekXqRjjHplfSq8eiqC
-         rQbdbP/SdhKN6uJxGyjLh083sEtnRuHj7bZLJ1VgA24sAaGOs9KUTKuzKN89mQzbPAQO
-         RR0Cv3GsSG4UI4CaFsxIopRpwnVivecGsnh2hhoheR0dc5GvzQ5P3OlkQpILyNIGXTKm
-         ZxuhoQapijBPzwpaoVHCVZHQBV8vTh554kq3Gd1toFKp0wuChhMr411633ERcMsD5pae
-         i4Vg==
-X-Gm-Message-State: AGi0Puaja/77DBBUr0seewVl0PjbsIyIBlNzXsANKPQicoWNyf/76OPi
-        oZ5VqdEnNR8AdtVQwnDl9LRISGxGD6lz4x9DH2U=
-X-Google-Smtp-Source: APiQypJXTUjQLLZducJxiiGIDeKKTfVw4mS8veSceY8vMr83LnB2TD1qTo0ikK5ckl7oEYtPEdtTBEoJWEiN5I+ID2o=
-X-Received: by 2002:a05:6214:6a6:: with SMTP id s6mr1468288qvz.247.1586458268467;
- Thu, 09 Apr 2020 11:51:08 -0700 (PDT)
+        id S1726810AbgDITSM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Apr 2020 15:18:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55882 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726632AbgDITSL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Apr 2020 15:18:11 -0400
+Received: from kicinski-fedora-PC1C0HJN (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D9D7F206F5;
+        Thu,  9 Apr 2020 19:18:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586459892;
+        bh=yP2d2e1n+GwPcjoxvQGwUTVuQq6EPdlhx4w3UrWLvNg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Bnm9mrsT4PoTgnq+h7BSHcYMLSw2oBVBrq0w5BOw79A/ZZujiQDh+UiNeSFTbSv85
+         r9y/ruockZXnOH2LQlN9ziufDA8e+d4t5kNo4TCcXgzX0P5dHyf18StwAaNoV3elfU
+         1rpWVIXg6s5KXURrdApkIn4K60ltdxar7ZZoWtew=
+Date:   Thu, 9 Apr 2020 12:18:10 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Christian Deacon <gamemann@gflclan.com>, bpf@vger.kernel.org,
+        aelior@marvell.com, skalluru@marvell.com, netdev@vger.kernel.org
+Subject: Re: TC BPF Program Crashing With Bnx2x Drivers
+Message-ID: <20200409121810.26ad70aa@kicinski-fedora-PC1C0HJN>
+In-Reply-To: <54d3af61-8f00-6f65-23a4-0f1d5a9aba8e@iogearbox.net>
+References: <853f67f9-6713-a354-07f7-513d654ede91@gflclan.com>
+        <c3c44050-132e-44f7-1611-95d30b0b4b47@iogearbox.net>
+        <0a96d4ee-e875-e89c-e6bb-e6b62061abdd@gflclan.com>
+        <54d3af61-8f00-6f65-23a4-0f1d5a9aba8e@iogearbox.net>
 MIME-Version: 1.0
-References: <20200404000948.3980903-1-andriin@fb.com> <20200404000948.3980903-9-andriin@fb.com>
- <1dbaaf27-af89-f6d5-bb09-8e1b967c9582@gmail.com>
-In-Reply-To: <1dbaaf27-af89-f6d5-bb09-8e1b967c9582@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 9 Apr 2020 11:50:57 -0700
-Message-ID: <CAEf4Bzb5WS1xwk+JZZX01ktAyT=KPpfgNtNdyrtDeNzK5Kzkjg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 8/8] bpftool: add bpf_link show and pin support
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 8, 2020 at 4:44 PM David Ahern <dsahern@gmail.com> wrote:
->
-> On 4/3/20 6:09 PM, Andrii Nakryiko wrote:
-> > diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-> > index 466c269eabdd..4b2f74941625 100644
-> > --- a/tools/bpf/bpftool/main.c
-> > +++ b/tools/bpf/bpftool/main.c
-> > @@ -30,6 +30,7 @@ bool verifier_logs;
-> >  bool relaxed_maps;
-> >  struct pinned_obj_table prog_table;
-> >  struct pinned_obj_table map_table;
-> > +struct pinned_obj_table link_table;
-> >
-> >  static void __noreturn clean_and_exit(int i)
-> >  {
-> > @@ -215,6 +216,7 @@ static const struct cmd cmds[] = {
-> >       { "batch",      do_batch },
-> >       { "prog",       do_prog },
-> >       { "map",        do_map },
-> > +     { "link",       do_link },
-> >       { "cgroup",     do_cgroup },
-> >       { "perf",       do_perf },
-> >       { "net",        do_net },
->
-> you need to add 'link' to the OBJECT list in do_help.
+On Thu, 9 Apr 2020 01:57:42 +0200 Daniel Borkmann wrote:
+> On 4/9/20 1:30 AM, Christian Deacon wrote:
+> > Hey Daniel,
+> > 
+> > 
+> > Thank you for your response and I'm glad I'm in the correct area!
+> > 
+> > 
+> > When the individual ran:
+> > 
+> > 
+> > ```
+> > 
+> > ethtool -K eth0 tso off
+> > 
+> > ```
+> > 
+> > 
+> > The program started operating without crashing. It has been around 20 minutes so far and no crash. Therefore, I'd assume that stopped the crashing considering it usually crashed 20 - 30 seconds after starting the program each time beforehand. I'm not entirely sure what TSO does with this network driver, but I'll try doing some research.  
+> 
+> Yep, don't think it should crash anymore after you turned it off and
+> it survived since then. ;) I presume GSO is still on in your case,
+> right (check via `ethtool -k eth0`)?
+> 
+> > I was suspecting it may be the 'bpf_skb_adjust_room()' function as
+> > well since I'm using a mode that was implemented in later kernels.
+> > This function removes the outer IP header in my program from the
+> > outgoing IPIP packet. I'm not sure what would be causing the
+> > crashing, though.  
+> 
+> Probably bnx2x folks might be able to help but as mentioned looks
+> like the tso handling in there has an issue with the ipip which leads
+> to the nic hang eventually.
 
-Yeah, and bash completions and a bunch of other stuff. Bpftool support
-is far from being polished.
+IMHO this is not a bnx2x problem. The drivers should not have to
+re-validate GSO flags..
+
+Let's see if I get this right. We have an IPinIP encap, IPXIP4 GSO skb
+comes down and TC bpf pulls the outer header off, but the gso flags
+remain unchanged. The driver then sees IPXIP4 GSO but there are no
+headers so it implodes. Is this correct?
+
+And we have the ability to add the right gso flags for encap, not decap
+(bpf_skb_net_grow() vs bpf_skb_net_shrink()).
