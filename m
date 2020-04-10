@@ -2,111 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BEA61A3E5F
-	for <lists+bpf@lfdr.de>; Fri, 10 Apr 2020 04:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3AEA1A3E8B
+	for <lists+bpf@lfdr.de>; Fri, 10 Apr 2020 05:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726327AbgDJCiu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Apr 2020 22:38:50 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:32887 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbgDJCiu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Apr 2020 22:38:50 -0400
-Received: by mail-pl1-f194.google.com with SMTP id ay1so234785plb.0;
-        Thu, 09 Apr 2020 19:38:49 -0700 (PDT)
+        id S1726574AbgDJDAX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Apr 2020 23:00:23 -0400
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:50798 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726552AbgDJDAX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Apr 2020 23:00:23 -0400
+Received: by mail-pj1-f68.google.com with SMTP id b7so303368pju.0;
+        Thu, 09 Apr 2020 20:00:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=cm3qEVUblIBWQEP7R8pxH+eUa0WNyfWiM9J7eM+Fwmk=;
-        b=AVSNgz0eR/mu36t1jtB1pHxzPsuhsLJ5Dgmcn/9c7jPOTV+CNdcyL0zkXP7nLHQzQV
-         A10fzku8OWDIGvjGdvgdeH+jWjXzrllDIeVhKdprzXhQynX714rs3Td/tjGR+coEL5Aw
-         9O9rN2XFZJ5QvZNpH7rO2zchnfDG/1aaYCeqb4UwllljqxtOrpvrRcKDBEk9COBYQQFO
-         1jJAN0Hms3ovic+Bal9KAkQ1W5BRhoTGfKl7mwDWNfIHMcC8IP7152Er0GK1ixcZQijG
-         71dIgnkhRybaZPDMrOAJ7jaWMDsjZpbv/oC14bGuigw82SaeZ2oRTYvVKah0eRNKXHb0
-         NEUg==
+        bh=AQk4mNPo1rM91Nw8K13eaCa0gv8MYDldNLpKlwDrZFQ=;
+        b=lHVW7mQVsZzwww/iWDUQJIpgCMJ2jxDDqrxeEIAO9xkq/TyuKo1u21PLccMFAa/lBz
+         rqt7omDIsHJseYPOFiqe1eBmn8u0GkAxafxGnT9UC2h8insR0vSSSzDWBHW0gUOxtCOJ
+         4tEm3/eoEDig9tuG+iPSo4SYuEtSK1PqjA7Niv/b2Dl/jhgMwF49zo/ElF40tOijGcKH
+         Zp/cfYX9BQwGC3RWdWATAu1E7w8/cajQSzonUd4yh2VB6UQ2lJFCp3SQJ4cMkoFmEa6/
+         gjhWfVjQTBRYOrNa+O9N/9p7WHYB+fPsAaRLieH4TEaVGrn8zFy5se5Ah3Il+EQ2GlvZ
+         Al4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=cm3qEVUblIBWQEP7R8pxH+eUa0WNyfWiM9J7eM+Fwmk=;
-        b=GvUX1EMRNMGonWMDs6sl6S6tHfxa1eH2Pdx/Y8Wu1mWhfQ6khksEs1m+T9jE9kqE8u
-         gWv+F+cvKljaPfjuo5AE48O/yTmhzM2no0LblUDqUJMF3tT2ZC8Fo8tcVpfcGduKXy9z
-         qrr1VQ/q/BzSXrQBCSuczL6htWzih5ulw2FmEJdMudcqaVuGNn1ZPrvfSoYXlmA5P8SG
-         7ywxFF2MSi5O3igE+YnCRCFFZCk071L23YwRx6qB/1d+NH2teJCtwaw6GR8KZlJ4nmrL
-         7YHfPUjX1KHrTN4XdotQLprgHcbBgIi7sCSx3qr1FcW2WB8tL7w1NCMnOcpl0nl94mYa
-         roJQ==
-X-Gm-Message-State: AGi0PuY8bkPmAxijXmFIsqz3eeoYDsGpLBunDFu88olYd5rH7IP1/NHU
-        mOWJjbrJBuBU8kj43o9FWls=
-X-Google-Smtp-Source: APiQypJUNzW2Kf/YisQ7Gm6MjGoHraf0uboGBOm6Ai9D7kmeIiXDGo0t/+GLEITvv65wjz5MhoeSGg==
-X-Received: by 2002:a17:90a:628c:: with SMTP id d12mr2775900pjj.53.1586486329072;
-        Thu, 09 Apr 2020 19:38:49 -0700 (PDT)
-Received: from localhost (181.56.30.125.dy.iij4u.or.jp. [125.30.56.181])
-        by smtp.gmail.com with ESMTPSA id f4sm456109pjm.9.2020.04.09.19.38.47
+        bh=AQk4mNPo1rM91Nw8K13eaCa0gv8MYDldNLpKlwDrZFQ=;
+        b=M9YdZSEta90qZXC9B1+Hp5lM8i4LCEKHCUKp9b9iI46XXWDzjz275gEo1E6uNshOMT
+         KJIoA6grzW4gtodz0IwzK+PdBgJknVypro0QrGb8/DlRFO+Gurjwaol7n8gJvjJXx+oc
+         IpcNsLo/MrYpj7AzNf6txtL37/tfuTiTpDxhqwmxTnvp0wx/rjzQ+qCJNHuzfNPPTDp1
+         3znDIiFboxto+Rr7TDqNi7r09PgWNF7eDWoTem9rkqox5HUgEmmmyau+cp7WMniOgK8t
+         T9L2e57Zon59mHLOnJOk55L2yIxN1oODW2zjB1ncFHvgj9PCGmxNLokJOor2eFTRqDCd
+         r/Tg==
+X-Gm-Message-State: AGi0PuZWRid2Nyckou5rtrztqIr71yVKfbf6VsJqIXZqMN8Vya+Qdu7g
+        2LdkoOqOsiYR3zFg0WkWPfs=
+X-Google-Smtp-Source: APiQypJlaKS5U3gT7aBUovoy0iPXJNzhHe46NT5UwqPGJKVUu+1Fzy5bwlDah7St3wVVfjTYT7CMvg==
+X-Received: by 2002:a17:90a:80ca:: with SMTP id k10mr2949132pjw.45.1586487621076;
+        Thu, 09 Apr 2020 20:00:21 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:f219])
+        by smtp.gmail.com with ESMTPSA id f9sm477692pjt.45.2020.04.09.20.00.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Apr 2020 19:38:48 -0700 (PDT)
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Date:   Fri, 10 Apr 2020 11:38:45 +0900
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, x86@kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laura Abbott <labbott@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sergey.senozhatsky@gmail.com
-Subject: Re: [PATCH 10/28] mm: only allow page table mappings for built-in
- zsmalloc
-Message-ID: <20200410023845.GA2354@jagdpanzerIV.localdomain>
-References: <20200408115926.1467567-1-hch@lst.de>
- <20200408115926.1467567-11-hch@lst.de>
- <20200409160826.GC247701@google.com>
- <20200409165030.GG20713@hirez.programming.kicks-ass.net>
- <20200409170813.GD247701@google.com>
+        Thu, 09 Apr 2020 20:00:20 -0700 (PDT)
+Date:   Thu, 9 Apr 2020 20:00:17 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
+Subject: Re: [RFC PATCH bpf-next 05/16] bpf: create file or anonymous dumpers
+Message-ID: <20200410030017.errh35srmbmd7uk5@ast-mbp.dhcp.thefacebook.com>
+References: <20200408232520.2675265-1-yhs@fb.com>
+ <20200408232526.2675664-1-yhs@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200409170813.GD247701@google.com>
+In-Reply-To: <20200408232526.2675664-1-yhs@fb.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On (20/04/09 10:08), Minchan Kim wrote:
-> > > Even though I don't know how many usecase we have using zsmalloc as
-> > > module(I heard only once by dumb reason), it could affect existing
-> > > users. Thus, please include concrete explanation in the patch to
-> > > justify when the complain occurs.
-> > 
-> > The justification is 'we can unexport functions that have no sane reason
-> > of being exported in the first place'.
-> > 
-> > The Changelog pretty much says that.
-> 
-> Okay, I hope there is no affected user since this patch.
-> If there are someone, they need to provide sane reason why they want
-> to have zsmalloc as module.
+On Wed, Apr 08, 2020 at 04:25:26PM -0700, Yonghong Song wrote:
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 0f1cbed446c1..b51d56fc77f9 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -354,6 +354,7 @@ enum {
+>  /* Flags for accessing BPF object from syscall side. */
+>  	BPF_F_RDONLY		= (1U << 3),
+>  	BPF_F_WRONLY		= (1U << 4),
+> +	BPF_F_DUMP		= (1U << 5),
+...
+>  static int bpf_obj_pin(const union bpf_attr *attr)
+>  {
+> -	if (CHECK_ATTR(BPF_OBJ) || attr->file_flags != 0)
+> +	if (CHECK_ATTR(BPF_OBJ) || attr->file_flags & ~BPF_F_DUMP)
+>  		return -EINVAL;
+>  
+> +	if (attr->file_flags == BPF_F_DUMP)
+> +		return bpf_dump_create(attr->bpf_fd,
+> +				       u64_to_user_ptr(attr->dumper_name));
+> +
+>  	return bpf_obj_pin_user(attr->bpf_fd, u64_to_user_ptr(attr->pathname));
+>  }
 
-I'm one of those who use zsmalloc as a module - mainly because I use zram
-as a compressing general purpose block device, not as a swap device.
-I create zram0, mkfs, mount, checkout and compile code, once done -
-umount, rmmod. This reduces the number of writes to SSD. Some people use
-tmpfs, but zram device(-s) can be much larger in size. That's a niche use
-case and I'm not against the patch.
-
-	-ss
+I think kernel can be a bit smarter here. There is no need for user space
+to pass BPF_F_DUMP flag to kernel just to differentiate the pinning.
+Can prog attach type be used instead?
