@@ -2,66 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A7E1A3D6B
-	for <lists+bpf@lfdr.de>; Fri, 10 Apr 2020 02:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484FF1A3DF2
+	for <lists+bpf@lfdr.de>; Fri, 10 Apr 2020 04:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbgDJAjn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Apr 2020 20:39:43 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:37160 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726896AbgDJAjn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Apr 2020 20:39:43 -0400
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 36D491210A443;
-        Thu,  9 Apr 2020 17:39:43 -0700 (PDT)
-Date:   Thu, 09 Apr 2020 17:39:39 -0700 (PDT)
-Message-Id: <20200409.173939.976560022955495468.davem@davemloft.net>
-To:     daniel@iogearbox.net
-Cc:     kuba@kernel.org, ast@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: pull-request: bpf 2020-04-10
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200410002947.30827-1-daniel@iogearbox.net>
-References: <20200410002947.30827-1-daniel@iogearbox.net>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 09 Apr 2020 17:39:43 -0700 (PDT)
+        id S1726327AbgDJCGW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Apr 2020 22:06:22 -0400
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:33859 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726082AbgDJCGW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Apr 2020 22:06:22 -0400
+Received: by mail-pj1-f67.google.com with SMTP id q16so1446534pje.1;
+        Thu, 09 Apr 2020 19:06:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CMpVmJ+cnQy/gzLhnplIw7thRivCqLL3yG7fXq8V54U=;
+        b=AEJQnWZzg53rTfF1TQcWQxy3bwOMKV8uEPRH/XA+Gj76xdqzcDNsZacbQ8kTiQlu0Y
+         k1dVSSD9oRjCNg8Sc25Vu13qTVmilXn/1iJ7vqv9BIGRGCviyqrxN+2EIphX09pLRelS
+         W6IB/q8nl2Br1j9VsDYckCeNy5WcE2hUZnsOkMjqeigg3qXwxcqpoNMkqcvYDHCCRjqo
+         pxgO24zdqRknsUYlHbvABTOTEnMeC+PrusALvS5lvyWC+8mWN0Xr+bhw1I4dM/QU9nTM
+         olijG44/acRgbe8HrflqcLYVsTK13G2h6/SK+VpMU/h7vdWzbDDpy/LIE3Rp+tbLumZM
+         qksw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CMpVmJ+cnQy/gzLhnplIw7thRivCqLL3yG7fXq8V54U=;
+        b=ZiXB6juKdSW1FRETMcm4GyoCMU7NJrEal81pa0R6ul0hmXRe4Zg4lanUg1L2O7Z60M
+         6E+CCLaQDQz1U3MNKKcGk/UpXDFTIWhsO2plxa4NZmB8GvQsu2nXvTBGSnEwrvAmxa/0
+         Ge27rSJZ3R6KulzhvtVZaOQCYrJm7Gs1a4r1tD1Nb9HASFTrVd0OiZtnmhajV7hDJUXJ
+         MzG7W+GZ9XRXrvMsSQQHPPCrfK7U3DDfmCIOHL7P9W+YsqvftuUDS12mnGZpxg8ZjeRO
+         ZuZJCTkpBjnbiIfqMxJ67Wqr3JLG7SIZnY11tKUbV9INwLu+aak8Tn5qePtKhZpIWW5B
+         fKvg==
+X-Gm-Message-State: AGi0PuZum6R8DbYPRgRcXhzuOrJtW11fjxKoV6Asc1Yoor5VujHMZ343
+        NEB4Llltjcdy0yhjVSHwQA==
+X-Google-Smtp-Source: APiQypLYxiQSyFcjg3L0pvugfHdSNkykRc+083UGrL0Fl9G/lJem44Arh0ZO70nrUgN20QYTzaD5Lw==
+X-Received: by 2002:a17:90a:3acc:: with SMTP id b70mr2634059pjc.179.1586484380281;
+        Thu, 09 Apr 2020 19:06:20 -0700 (PDT)
+Received: from localhost.localdomain ([49.142.73.162])
+        by smtp.gmail.com with ESMTPSA id s9sm405504pjr.5.2020.04.09.19.06.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Apr 2020 19:06:19 -0700 (PDT)
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: [PATCH] tools: bpftool: fix struct_ops command invalid pointer free
+Date:   Fri, 10 Apr 2020 11:06:12 +0900
+Message-Id: <20200410020612.2930667-1-danieltimlee@gmail.com>
+X-Mailer: git-send-email 2.26.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
-Date: Fri, 10 Apr 2020 02:29:47 +0200
+From commit 65c93628599d ("bpftool: Add struct_ops support"),
+a new type of command struct_ops has been added.
 
-> The following pull-request contains BPF updates for your *net* tree.
-> 
-> We've added 13 non-merge commits during the last 7 day(s) which contain
-> a total of 13 files changed, 137 insertions(+), 43 deletions(-).
-> 
-> The main changes are:
-> 
-> 1) JIT code emission fixes for riscv and arm32, from Luke Nelson and Xi Wang.
-> 
-> 2) Disable vmlinux BTF info if GCC_PLUGIN_RANDSTRUCT is used, from Slava Bacherikov.
-> 
-> 3) Fix oob write in AF_XDP when meta data is used, from Li RongQing.
-> 
-> 4) Fix bpf_get_link_xdp_id() handling on single prog when flags are specified,
->    from Andrey Ignatov.
-> 
-> 5) Fix sk_assign() BPF helper for request sockets that can have sk_reuseport
->    field uninitialized, from Joe Stringer.
-> 
-> 6) Fix mprotect() test case for the BPF LSM, from KP Singh.
-> 
-> Please consider pulling these changes from:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+This command requires kernel CONFIG_DEBUG_INFO_BTF=y, and for retrieving
+btf info, get_btf_vmlinux() is used.
 
-Pulled, thanks Daniel.
+When running this command on kernel without BTF debug info, this will
+lead to 'btf_vmlinux' variable contains invalid(error) pointer. And by
+this, btf_free() causes a segfault when executing 'bpftool struct_ops'.
+
+This commit adds pointer validation with IS_ERR not to free invalid
+pointer, and this will fix the segfault issue.
+
+Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+---
+ tools/bpf/bpftool/struct_ops.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/tools/bpf/bpftool/struct_ops.c b/tools/bpf/bpftool/struct_ops.c
+index 2a7befbd11ad..0fe0d584c57e 100644
+--- a/tools/bpf/bpftool/struct_ops.c
++++ b/tools/bpf/bpftool/struct_ops.c
+@@ -591,6 +591,8 @@ int do_struct_ops(int argc, char **argv)
+ 
+ 	err = cmd_select(cmds, argc, argv, do_help);
+ 
+-	btf__free(btf_vmlinux);
++	if (!IS_ERR(btf_vmlinux))
++		btf__free(btf_vmlinux);
++
+ 	return err;
+ }
+-- 
+2.26.0
+
