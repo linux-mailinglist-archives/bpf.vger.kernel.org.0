@@ -2,52 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF3D1A4C08
-	for <lists+bpf@lfdr.de>; Sat, 11 Apr 2020 00:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44E91A4C26
+	for <lists+bpf@lfdr.de>; Sat, 11 Apr 2020 00:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726626AbgDJWZ2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Apr 2020 18:25:28 -0400
-Received: from mail-qv1-f65.google.com ([209.85.219.65]:36747 "EHLO
-        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726582AbgDJWZ2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Apr 2020 18:25:28 -0400
-Received: by mail-qv1-f65.google.com with SMTP id o15so1661944qvl.3;
-        Fri, 10 Apr 2020 15:25:27 -0700 (PDT)
+        id S1726646AbgDJWgW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Apr 2020 18:36:22 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:40601 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726582AbgDJWgW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Apr 2020 18:36:22 -0400
+Received: by mail-qk1-f194.google.com with SMTP id z15so3685369qki.7;
+        Fri, 10 Apr 2020 15:36:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=E8YkzCFP5nolcIOAwtOLrccsuQY8xpA7hxmqnOBhnO8=;
-        b=OjSQYhObB5PbrVkT9oNXgYCDiTho/E79lggHHukymogMN3LE6F23/GtFftQnkSHaAY
-         t6omK3M5AUebCT8U5sWpWN7SphmvvF8TzeK0t/Wh+oabMa++wpEf71+fO1wR7Ztzouvr
-         fxzfbNFbrlEpqNCE9M3Ef3WEDXHgxS7nAgTq/hwiOrK+3F+X3demM6VcYuxyxCNFNhox
-         ip6dDqyJcjAG3436fMvY7Q3DHb9GByoGxhd0sPxvET4d87o8aLBruwg/Kh3BGUdYLuoR
-         tipFrN3gRW6ufD7nRjBjuE1cLUoiKtoo2i14HjNjQYn07XOUKbBZMeYYlQrffrXz/K1A
-         2RUQ==
+        bh=zr6HBjvgSbOiJkuAYNPevfrmtAynQ3ITGIc7QE3KC+4=;
+        b=jGluSRpucagLx3Jt6KQv5U+Sd+q3KfNjr4WnM3zjlONkBoGPI+pgye95wcZ8lVKYEY
+         fWBlNGX7vXUuwbyUkVZFVp9+XyV7Vd4FKCdAizWQyvyucxUF/4piZay/rA8slmI+H7tQ
+         55X4Hy5ds+RFSVdjwQ8pFUUJ3g47WAttFCpM+B7t8RPMYr0bE5lO3rL5QpWh6IJ3qSw0
+         3NkuL3O+g2bypPzABoAfM3fGk/yD5uQmgWsMoC5X8FcuoA6twMPu+QB3gsNV5xnFhe2f
+         LLW8PZApya6SyLl7AIVcxnBqs7L5Up9/dvS+pQKVezSQU9RHb0OQBbNNXdeMdvqsfovU
+         Te/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=E8YkzCFP5nolcIOAwtOLrccsuQY8xpA7hxmqnOBhnO8=;
-        b=GvmPc+Y1Hlafn8oO6zpbGr9e2fpab8F9iULN7wde3Ic+2CCBUZlgvEgdYO/iKSDtLM
-         EkAXL/IXexqDP5nl+bjrslDC/nLXjwBXI7iaGhWA0SmwJKt54WK2j2ayhl0OW1NCMHZE
-         xlEbAfhDmPWXhTzKp1XB+gn5zxJTQbQ1xz5C6es/MT8QuRqrRAXUVexL/HHllhVnj8/7
-         iN0tp57PXWRyo0BmhQK7mflO1ygiucxhtZBinUND5CSppwRhtM77LjIFa3SxYBKtknGu
-         Z1uCtiybL9I03WuYAR24ybgUARCyS4GH6YTSX9PToW2FYcaZyhsGHKhVcxcLgWzqslxG
-         HY2A==
-X-Gm-Message-State: AGi0PuYQOdhAUvCTLomYcVZSpquFEFdHIX9clYHF548FpS54IleYCahm
-        bL2/rIB40YOKEcnk5f7OKRniGafPZ36ZlqZFD+w=
-X-Google-Smtp-Source: APiQypLSNCHr71KVU0Rj3h58lGQ0RuETtGSDTjn18/4CXgGJ9E8uHupII6R3H61Ip/kUEkfrI+CNDiPirH1uPqV4Izo=
-X-Received: by 2002:ad4:568b:: with SMTP id bc11mr6861932qvb.228.1586557527354;
- Fri, 10 Apr 2020 15:25:27 -0700 (PDT)
+        bh=zr6HBjvgSbOiJkuAYNPevfrmtAynQ3ITGIc7QE3KC+4=;
+        b=EMhrGjMqAOqKz4r41d3l5VxwwfPOvj5uNTA5/yudRqTyb8Vv1qw6CGSHMu9nbzFN0G
+         4hE4tChFXRq+cziDF1gU+/ciYJKip5G7MfLD8KFP3GV9Nz0WySOIplSiNxE1zmfec7wm
+         qGyaXDA8i1+hVpj0RLka7mp5nhom+Ilp4zegETZlFG06jVQUfKVeXB+kzJHSXhjIMB9k
+         lojJh/EjM42xDWUFGpdPOwjRYxSc6Vo1wsEPvkqSfLc3186y+qL9olIzGI4YGrJaJ67j
+         obI77AKGQTEE4GZWMmlqpCeKfin8FyMzsr5jcQbukmWJ3ATi4WS0GYe1TYDMj9xRhgr2
+         istw==
+X-Gm-Message-State: AGi0PuYXauHyyin2aZds1/4Oa07Qy2Gc3ioRT8WZK7Tqedgx7u/Y9v0/
+        QPdSm4ghvhiS9wy1+mqZfFYjqqUWKLY0py3jRR6uGMbC4mFqbQ==
+X-Google-Smtp-Source: APiQypLQF9+js2QG7ftCVU7ZqY+pAXVYHnQkbnBk0LjVpzNsBYUIPhbGXfgBFHTRZpz3zC+WxcB+7a0HT1F0vzAVolk=
+X-Received: by 2002:a37:b786:: with SMTP id h128mr6204817qkf.92.1586558179955;
+ Fri, 10 Apr 2020 15:36:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200408232520.2675265-1-yhs@fb.com> <20200408232523.2675550-1-yhs@fb.com>
-In-Reply-To: <20200408232523.2675550-1-yhs@fb.com>
+References: <20200408232520.2675265-1-yhs@fb.com> <20200408232524.2675603-1-yhs@fb.com>
+In-Reply-To: <20200408232524.2675603-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 10 Apr 2020 15:25:16 -0700
-Message-ID: <CAEf4BzYd5gkytGookaVU_nCVVyxTYM1Z4ohqPFZW2YSY2VJ9Fg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 03/16] bpf: provide a way for targets to
- register themselves
+Date:   Fri, 10 Apr 2020 15:36:09 -0700
+Message-ID: <CAEf4BzaTvAMOLVfhqvFCY_5Aj32J4vVSm343-C4Cg7Xyr65H4w@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 04/16] bpf: allow loading of a dumper program
 To:     Yonghong Song <yhs@fb.com>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -61,78 +60,126 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 8, 2020 at 4:26 PM Yonghong Song <yhs@fb.com> wrote:
+On Wed, Apr 8, 2020 at 4:25 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> Here, the target refers to a particular data structure
-> inside the kernel we want to dump. For example, it
-> can be all task_structs in the current pid namespace,
-> or it could be all open files for all task_structs
-> in the current pid namespace.
+> A dumper bpf program is a tracing program with attach type
+> BPF_TRACE_DUMP. During bpf program load, the load attribute
+>    attach_prog_fd
+> carries the target directory fd. The program will be
+> verified against btf_id of the target_proto.
 >
-> Each target is identified with the following information:
->    target_rel_path   <=== relative path to /sys/kernel/bpfdump
->    target_proto      <=== kernel func proto which represents
->                           bpf program signature for this target
->    seq_ops           <=== seq_ops for seq_file operations
->    seq_priv_size     <=== seq_file private data size
->    target_feature    <=== target specific feature which needs
->                           handling outside seq_ops.
->
-> The target relative path is a relative directory to /sys/kernel/bpfdump/.
-> For example, it could be:
->    task                  <=== all tasks
->    task/file             <=== all open files under all tasks
->    ipv6_route            <=== all ipv6_routes
->    tcp6/sk_local_storage <=== all tcp6 socket local storages
->    foo/bar/tar           <=== all tar's in bar in foo
->
-> The "target_feature" is mostly used for reusing existing seq_ops.
-> For example, for /proc/net/<> stats, the "net" namespace is often
-> stored in file private data. The target_feature enables bpf based
-> dumper to set "net" properly for itself before calling shared
-> seq_ops.
->
-> bpf_dump_reg_target() is implemented so targets
-> can register themselves. Currently, module is not
-> supported, so there is no bpf_dump_unreg_target().
-> The main reason is that BTF is not available for modules
-> yet.
->
-> Since target might call bpf_dump_reg_target() before
-> bpfdump mount point is created, __bpfdump_init()
-> may be called in bpf_dump_reg_target() as well.
->
-> The file-based dumpers will be regular files under
-> the specific target directory. For example,
->    task/my1      <=== dumper "my1" iterates through all tasks
->    task/file/my2 <=== dumper "my2" iterates through all open files
->                       under all tasks
+> If the program is loaded successfully, the dump target, as
+> represented as a relative path to /sys/kernel/bpfdump,
+> will be remembered in prog->aux->dump_target, which will
+> be used later to create dumpers.
 >
 > Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
->  include/linux/bpf.h |   4 +
->  kernel/bpf/dump.c   | 190 +++++++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 193 insertions(+), 1 deletion(-)
+>  include/linux/bpf.h            |  2 ++
+>  include/uapi/linux/bpf.h       |  1 +
+>  kernel/bpf/dump.c              | 40 ++++++++++++++++++++++++++++++++++
+>  kernel/bpf/syscall.c           |  8 ++++++-
+>  kernel/bpf/verifier.c          | 15 +++++++++++++
+>  tools/include/uapi/linux/bpf.h |  1 +
+>  6 files changed, 66 insertions(+), 1 deletion(-)
 >
 
 [...]
 
-> +
-> +static int dumper_unlink(struct inode *dir, struct dentry *dentry)
+>
+> +int bpf_dump_set_target_info(u32 target_fd, struct bpf_prog *prog)
 > +{
-> +       kfree(d_inode(dentry)->i_private);
-> +       return simple_unlink(dir, dentry);
+> +       struct bpfdump_target_info *tinfo;
+> +       const char *target_proto;
+> +       struct file *target_file;
+> +       struct fd tfd;
+> +       int err = 0, btf_id;
+> +
+> +       if (!btf_vmlinux)
+> +               return -EINVAL;
+> +
+> +       tfd = fdget(target_fd);
+> +       target_file = tfd.file;
+> +       if (!target_file)
+> +               return -EBADF;
+
+fdput is missing (or rather err = -BADF; goto done; ?)
+
+
+> +
+> +       if (target_file->f_inode->i_op != &bpf_dir_iops) {
+> +               err = -EINVAL;
+> +               goto done;
+> +       }
+> +
+> +       tinfo = target_file->f_inode->i_private;
+> +       target_proto = tinfo->target_proto;
+> +       btf_id = btf_find_by_name_kind(btf_vmlinux, target_proto,
+> +                                      BTF_KIND_FUNC);
+> +
+> +       if (btf_id > 0) {
+> +               prog->aux->dump_target = tinfo->target;
+> +               prog->aux->attach_btf_id = btf_id;
+> +       }
+> +
+> +       err = min(btf_id, 0);
+
+this min trick looks too clever... why not more straightforward and composable:
+
+if (btf_id < 0) {
+    err = btf_id;
+    goto done;
+}
+
+prog->aux->dump_target = tinfo->target;
+prog->aux->attach_btf_id = btf_id;
+
+?
+
+> +done:
+> +       fdput(tfd);
+> +       return err;
 > +}
 > +
-> +static const struct inode_operations bpf_dir_iops = {
+>  int bpf_dump_reg_target(const char *target,
+>                         const char *target_proto,
+>                         const struct seq_operations *seq_ops,
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 64783da34202..41005dee8957 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2060,7 +2060,12 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
+>
+>         prog->expected_attach_type = attr->expected_attach_type;
+>         prog->aux->attach_btf_id = attr->attach_btf_id;
+> -       if (attr->attach_prog_fd) {
+> +       if (type == BPF_PROG_TYPE_TRACING &&
+> +           attr->expected_attach_type == BPF_TRACE_DUMP) {
+> +               err = bpf_dump_set_target_info(attr->attach_prog_fd, prog);
 
-noticed this reading next patch. It should probably be called
-bpfdump_dir_iops to avoid confusion with bpf_dir_iops of BPF FS in
-kernel/bpf/inode.c?
+looking at bpf_attr, it's not clear why attach_prog_fd and
+prog_ifindex were not combined into a single union field... this
+probably got missed? But in this case I'd say let's create a
 
-> +       .lookup         = simple_lookup,
-> +       .unlink         = dumper_unlink,
-> +};
+union {
+    __u32 attach_prog_fd;
+    __u32 attach_target_fd; (similar to terminology for BPF_PROG_ATTACH)
+};
+
+instead of reusing not-exactly-matching field names?
+
+> +               if (err)
+> +                       goto free_prog_nouncharge;
+> +       } else if (attr->attach_prog_fd) {
+>                 struct bpf_prog *tgt_prog;
+>
+>                 tgt_prog = bpf_prog_get(attr->attach_prog_fd);
+> @@ -2145,6 +2150,7 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
+>         err = bpf_prog_new_fd(prog);
+>         if (err < 0)
+>                 bpf_prog_put(prog);
 > +
+>         return err;
+>
 
 [...]
