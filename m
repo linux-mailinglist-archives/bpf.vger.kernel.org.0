@@ -2,153 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 500DC1A4B65
-	for <lists+bpf@lfdr.de>; Fri, 10 Apr 2020 22:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B2D1A4B84
+	for <lists+bpf@lfdr.de>; Fri, 10 Apr 2020 23:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgDJUsl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Apr 2020 16:48:41 -0400
-Received: from mail-qv1-f66.google.com ([209.85.219.66]:39725 "EHLO
-        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726177AbgDJUsl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Apr 2020 16:48:41 -0400
-Received: by mail-qv1-f66.google.com with SMTP id v38so1542002qvf.6
-        for <bpf@vger.kernel.org>; Fri, 10 Apr 2020 13:48:40 -0700 (PDT)
+        id S1726626AbgDJVOs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Apr 2020 17:14:48 -0400
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:35510 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726594AbgDJVOs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Apr 2020 17:14:48 -0400
+Received: by mail-pj1-f68.google.com with SMTP id mn19so1183923pjb.0
+        for <bpf@vger.kernel.org>; Fri, 10 Apr 2020 14:14:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7W0i1Cg1I5ndUZxWKSLW2NSYUtpwue6+Fzg3/yTyiSo=;
-        b=AmG/2ipiY/yKzMndeEJgkiW099tNPSMjnV63fUjS/zPfLTCu/7pA7is45zI3NSmUqC
-         TADGAlkjvhFK56HbsrZ+tFK314uQWcrWkX3Xvnx0VmWFrp8oblx7nJdGuFeUoQqw+sH+
-         YV5BWf+RLGxX5lDBXEUX6PFNHZKlWq5nFZuSPsQr/u5QUw3ekB6ruf5w7jr9FX/1eJNO
-         nbgAXtpP57wQGeQOOpUdBvhXryUAomwalh+KMcNYcGpx39osm72Qj+XpOn78sgjay3Nq
-         yu48Jx7Qu+5oVFItkMDFEySURPTbkhXyMOd1MGcMCWur7AyVoeutcIzKS0EEAZ2m6i4S
-         TL4g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DI5AkjC6zQ25hEM2Imd3gagbyNh7ffmjC9Y/suXyFjc=;
+        b=MsKdwWqoVN+8n0nAIAuhat1GJ2PWHaGmupw9MVrcyv0jKP6gjmJI5N3bpUjHVgtYrR
+         XAUXr+de1jwMXs4oy/5Cdlf39uiNxrde2CFwmX60mEul8Yz0nU670sPWQlxUyhOK1CTz
+         QDzLOqlo5uYtax9JtV+YNtRrGdib6NhmHMn2zzDMxSivaS07Svu+JQk8rr/TAx90EPMt
+         2LDcHZkaeZp6/HnYdV+Q+nzPvHfgIWziMDrXW+87nlamMB88tqTXR3hwyStoDkUvu0w7
+         En5X6ZvzEy9/VSGTRFYlzHzSvKKnESkEJWQhcIffrM4jWhhiT7jsASwumS6xEj3zs0Y2
+         jZng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7W0i1Cg1I5ndUZxWKSLW2NSYUtpwue6+Fzg3/yTyiSo=;
-        b=if/UaqXsge77/RT2BygLzA0I8wKLtX7Ib1rhDlNSc3DpYBpbfXboR9gJXC3Jx+LX57
-         OWDa9+mAYqI6lAy6Tbk/y94pEdfvWXE8b+CHDEDZx+x+tN9JbVmLRyGUXCt7xXbqNBtc
-         PKCSbs0cmNoifGd8E8I4STP0+mZaiwxZZA3IFkkbN0ntu/kVMAepf2jQ3iKtl/gpLvtV
-         Qya2EFnK15nAYdUaa7dp/ZagalWTur/mBLCf4ME1Ptowhya07xmL/qWfBcAwz/e8pTGa
-         BMlcSOC+NmKqVZMgCVV9Qbrj0P3DIgqC4G3oCRAA5XudaZK2wwi7YER4VB1rHZGr8bbQ
-         aPow==
-X-Gm-Message-State: AGi0PuZw+TdyRm/lqL4eNbTlp+MpjKdtycCDaQCQ6S3wSEAbkdV2dCS4
-        e4PQGtgSzg9kQTZ84pRc6/iV3U9cy9dtZkQzPkM=
-X-Google-Smtp-Source: APiQypJt9LUyYqQ28+3vSuIIAPfrlgQXZgJf4ccAg9F3Bgc1U6YxGxIQ8hM4EL4H4p++WYw8/qT3QgkZi8mXjC9BKoQ=
-X-Received: by 2002:a05:6214:1801:: with SMTP id o1mr6794237qvw.224.1586551719523;
- Fri, 10 Apr 2020 13:48:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAG48ez2R5nZA91j7cf2Z5o3dOEz0QNZK7cxecjmw0B-ZQ7AjmA@mail.gmail.com>
- <CAEf4Bzb2zcfJt6ujAN8zY_=x7-dFO92mPzkbCE+UMHVDGL7J+Q@mail.gmail.com> <CAG48ez20KjiYjcYzWnnVCyNTMjNFf+YgnwbbF9BUovZxDzsuEw@mail.gmail.com>
-In-Reply-To: <CAG48ez20KjiYjcYzWnnVCyNTMjNFf+YgnwbbF9BUovZxDzsuEw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 10 Apr 2020 13:48:27 -0700
-Message-ID: <CAEf4BzbEcbgAmXSzKx70rEhzmWcZ_8ECuX98_wsfvRkprKQgbQ@mail.gmail.com>
-Subject: Re: BPF map freezing is unreliable; can we instead just inline constants?
-To:     Jann Horn <jannh@google.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DI5AkjC6zQ25hEM2Imd3gagbyNh7ffmjC9Y/suXyFjc=;
+        b=BDrbdLycM5yi8AJw/OQ5BBh5yjbqE2gOBWMK0cxDccJxvUaywKX/aLMAtGwBqr/ga3
+         lrBdbhxWmXdXO6J+VG5is45x1sXuGnbsx1D5PmBsg+K5vt4oOAN/s6wxaBlApTAQIV7q
+         dIkM7blrOGbMOYGV3EJlJY6eGeumoI3G9FjJWGJrLu0lF/zmPrwupssgjP9aroreBcAr
+         GcwoSNKcjIMXWgij2OU9Iw1vs+5x4qp98L6LIxTnOK2gIyDdaSpMwyk+3D9xyyCO4kAF
+         6YjimeSoWyowoA4pmM6e2HP8ATbgPt/FddRyS0KcMIdun7dgeWvFNfuTjN9jUNzNXYG9
+         Bi3A==
+X-Gm-Message-State: AGi0PubJpnWl8nxyyWT0YtRzl+lvIlDYVEoPNx9jgytFKMT41RhvcycI
+        qRsEYwkA464rluK+xBj/m0k=
+X-Google-Smtp-Source: APiQypLDIuJVHBiGZ93kJQ3KEZiP9U+yLSRKt3bf7x05/FWDAFnqtMQ8B2O9c58LTDUGucFsT/raag==
+X-Received: by 2002:a17:902:6bc3:: with SMTP id m3mr6490244plt.288.1586553287432;
+        Fri, 10 Apr 2020 14:14:47 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:5315])
+        by smtp.gmail.com with ESMTPSA id i8sm2287309pgd.80.2020.04.10.14.14.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Apr 2020 14:14:46 -0700 (PDT)
+Date:   Fri, 10 Apr 2020 14:14:44 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrey Ignatov <rdna@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Matthew Garrett <mjg59@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf 1/2] libbpf: Fix loading cgroup_skb/egress with ret
+ in [2, 3]
+Message-ID: <20200410211444.opudqya3jvbdbqte@ast-mbp>
+References: <cover.1586547735.git.rdna@fb.com>
+ <daa546903aa74cf844452b7f80788d67c15b42ea.1586547735.git.rdna@fb.com>
+ <CAEf4BzYvPawqgdP+cU94+US=hKGaD8qCBFtnu_JZae3eJ0+SUw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYvPawqgdP+cU94+US=hKGaD8qCBFtnu_JZae3eJ0+SUw@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 10, 2020 at 1:47 AM Jann Horn <jannh@google.com> wrote:
->
-> On Fri, Apr 10, 2020 at 1:33 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> > On Wed, Apr 8, 2020 at 12:42 PM Jann Horn <jannh@google.com> wrote:
-> > >
-> > > Hi!
-> > >
-> > > I saw that BPF allows root to create frozen maps, for which the
-> > > verifier then assumes that they contain constant values. However, map
-> > > freezing is pretty wobbly:
-> > >
-> > > 1. The syscalls for updating maps from userspace don't seem to lock
-> > > the map at all.
+On Fri, Apr 10, 2020 at 01:39:03PM -0700, Andrii Nakryiko wrote:
+> On Fri, Apr 10, 2020 at 12:54 PM Andrey Ignatov <rdna@fb.com> wrote:
 > >
-> > True, there is a tiny race between freezing and map updates, but I
-> > don't think it's possible to solve it without taking locks all around
-> > the place in map update operations.
->
-> Yeah. So I think BPF should do exactly that. Or change the userspace
-> API so that userspace has to say at map creation time "I'll freeze
-> this map later", and then you only have to do the locking if that flag
-> is set.
+> > Initially BPF_CGROUP_INET_EGRESS hook didn't require specifying
+> > expected_attach_type at loading time, but commit
+> >
+> >   5cf1e9145630 ("bpf: cgroup inet skb programs can return 0 to 3")
+> >
+> > changed it so that expected_attach_type must be specified if program can
+> > return either 2 or 3 (before it was either 0 or 1) to communicate
+> > congestion notification to caller.
+> >
+> > At the same time loading w/o expected_attach_type is still supported for
+> > backward compatibility if program retval is in tnum_range(0, 1).
+> >
+> > Though libbpf currently supports guessing prog/attach/expected_attach
+> > types only for "old" mode (retval in [0; 1]). And if cgroup_skb egress
+> > program stars returning e.g. 2 (corresponds to NET_XMIT_CN), then
+> > guessing breaks and, e.g. bpftool can't load an object with such a
+> > program anymore:
+> >
+> >   # bpftool prog loadall tools/testing/selftests/bpf/test_skb.o /sys/fs/bpf/test_skb
+> >   libbpf: load bpf program failed: Invalid argument
+> >   libbpf: -- BEGIN DUMP LOG ---
+> >   libbpf:
+> >   ; return tc_prog(skb) == TC_ACT_OK ? 1 : 2 /* NET_XMIT_CN */;
+> >   0: (85) call pc+5
+> >
+> >    ... skip ...
+> >
+> >   from 87 to 1: R0_w=invP2 R10=fp0
+> >   ; return tc_prog(skb) == TC_ACT_OK ? 1 : 2 /* NET_XMIT_CN */;
+> >   1: (bc) w1 = w0
+> >   2: (b4) w0 = 1
+> >   3: (16) if w1 == 0x0 goto pc+1
+> >   4: (b4) w0 = 2
+> >   ; return tc_prog(skb) == TC_ACT_OK ? 1 : 2 /* NET_XMIT_CN */;
+> >   5: (95) exit
+> >   At program exit the register R0 has value (0x2; 0x0) should have been in (0x0; 0x1)
+> >   processed 96 insns (limit 1000000) max_states_per_insn 1 total_states 10 peak_states 10 mark_read 2
+> >
+> >   libbpf: -- END LOG --
+> >   libbpf: failed to load program 'cgroup_skb/egress'
+> >   libbpf: failed to load object 'tools/testing/selftests/bpf/test_skb.o'
+> >   Error: failed to load object file
+> >
+> > Fix it by introducing another entry in libbpf section_defs that makes the load
+> > happens with expected_attach_type: cgroup_skb/egress/expected
+> >
+> > That name may not be ideal, but I don't have a better option.
+> 
+> That's a really bad name :) But maybe instead of having another
+> section_def, turn existing section def into the one that does specify
+> expected_attach_type? Seems like kernels accept expected_attach_type
+> for a while now, so it might be ok backwards compatibility-wise?
+> Otherwise, we can teach libbpf to retry program load without expected
+> attach type for cgroup_skb/egress?
+> 
+> >
+> > Strictly speaking this is not a fix but rather a missing feature, that's
+> > why there is no Fixes tag. But it still seems to be a good idea to merge
+> > it to stable tree to fix loading programs that use a feature available
+> > for almost a year.
+> >
+> > Signed-off-by: Andrey Ignatov <rdna@fb.com>
+> > ---
+> >  tools/lib/bpf/libbpf.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index ff9174282a8c..c909352f894d 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -6330,6 +6330,8 @@ static const struct bpf_sec_def section_defs[] = {
+> >         BPF_PROG_SEC("lwt_seg6local",           BPF_PROG_TYPE_LWT_SEG6LOCAL),
+> >         BPF_APROG_SEC("cgroup_skb/ingress",     BPF_PROG_TYPE_CGROUP_SKB,
+> >                                                 BPF_CGROUP_INET_INGRESS),
+> > +       BPF_EAPROG_SEC("cgroup_skb/egress/expected", BPF_PROG_TYPE_CGROUP_SKB,
+> > +                                               BPF_CGROUP_INET_EGRESS),
+> >         BPF_APROG_SEC("cgroup_skb/egress",      BPF_PROG_TYPE_CGROUP_SKB,
+> >                                                 BPF_CGROUP_INET_EGRESS),
 
-I'd love to be able to create frozen maps from the get go (and specify
-initial values for the map), but freezing is done the way it's done
-already, unfortunately :(
-Regarding locking, maps could be updated from BPF program side as
-well. I'd be curious to hear what others think about this issue.
-
->
-> [...]
-> > > 3. It is assumed that a memory mapping can't be used to write to a
-> > > page anymore after the mapping has been removed; but actually,
-> > > userspace can grab references to pages in a VMA and use those
-> > > references to write to the VMA's pages after the VMA has already been
-> > > closed. (crasher attached as bpf-constant-data-uffd.c, compile with
-> > > "gcc -pthread ...")
-> >
-> > Please help me understand how that works (assuming we drop
-> > VM_MAYWRITE, of course). You mmap() as R/W, then munmap(), then
-> > freeze(). After munmap() refcount of writable pages should drop to
-> > zero. And mmap'ed address should be invalid and unmapped. I'm missing
-> > how after munmap() parallel thread still can write to that memory
-> > page?
->
-> The mmap()/munmap() syscalls place references to the pages the kernel
-> is using in the page tables of the process. Some other syscalls (such
-> as process_vm_writev()) can read these page table entries, take their
-> own references on those backing pages, and then continue to access
-> those pages even after they've been removed from the task's page
-> tables by munmap(). This works as long as the page table entries don't
-> have magic marker bits on them that prohibit this, which you get if
-> you use something like remap_pfn_range() in a loop instead of
-> remap_vmalloc_range() - but the memory mappings created by that
-> syscall are weird, and e.g. some syscalls like read() and write()
-> might sometimes fail if the buffer argument points into such a memory
-> region.
-
-So mmap() subsystem won't event know about those extra references and
-thus we can't really account that in our code, right? That's sad, but
-hopefully those APIs are root-only?
-
->
-> [...]
-> > > Is there a reason why the verifier doesn't replace loads from frozen
-> > > maps with the values stored in those maps? That seems like it would be
-> > > not only easier to secure, but additionally more performant.
-> >
-> > Verifier doesn't always know exact offset at which program is going to
-> > read read-only map contents. So something like this works:
-> >
-> > const volatile long arr[256];
-> >
-> > int x = rand() % 256;
-> > int y = arr[x];
-> >
-> > In this case verifier doesn't really know the value of y, so it can't
-> > be inlined. Then you can have code in which in one branch register is
-> > loaded with known value, but in another branch same register gets some
-> > value at random offset. Constant tracking is code path-sensitive,
-> > while instructions are shared between different code paths. Unless I'm
-> > missing what you are proposing :)
->
-> Ah, I missed that possibility. But is that actually something that
-> people do in practice? Or would it be okay for the verifier to just
-> assume an unknown value in these cases?
-
-Verifier will assume unknown value for the branch that has variable
-offset. It can't do the same for another branch (with constant offset)
-because it might not yet have encountered branch with variable offset.
-But either way, you were proposing to rewrite instruction and inline
-read constant, and I don't think it's possible because of this.
+are you saying that when bpf prog has SEC("cgroup_skb/egress",.. libbpf actually
+_not_ passing BPF_CGROUP_INET_EGRESS as expected_attach to the kernel?
+I think it's a libbpf bug and not something to workaround with retries.
