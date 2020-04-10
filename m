@@ -2,58 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6F01A4B9A
-	for <lists+bpf@lfdr.de>; Fri, 10 Apr 2020 23:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 398121A4BAD
+	for <lists+bpf@lfdr.de>; Fri, 10 Apr 2020 23:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726654AbgDJVdr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Apr 2020 17:33:47 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:46037 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726594AbgDJVdq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Apr 2020 17:33:46 -0400
-Received: by mail-lj1-f195.google.com with SMTP id t17so3198849ljc.12;
-        Fri, 10 Apr 2020 14:33:46 -0700 (PDT)
+        id S1726676AbgDJVwz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Apr 2020 17:52:55 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:41043 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726652AbgDJVwz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Apr 2020 17:52:55 -0400
+Received: by mail-qt1-f193.google.com with SMTP id i3so2583988qtv.8
+        for <bpf@vger.kernel.org>; Fri, 10 Apr 2020 14:52:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eVMKHOcwOHc1uDsK1KuN40ZRj/NsNM/2M7tDl8sBx14=;
-        b=gKiIOy65yLjnpP+RsK9noHVbNlazZeQ1fYSNS/FLI33iB7ZJr2vrMOX4db/rpqKEb7
-         E6SUqiFS2qwV+KJJMTffV7OFykjiYBHKx7FtwN+cbxUzY6tQTBZv/ZMozpnqeJ/onE/k
-         NwuHmw3CNWFDoc3w12Y5dBGlfeuY/0MWRwuvAn2QbXawYDxPgoELjXblobAzIdrxaO0n
-         fg45AmwrkRo+iiG9rCoBmi0fj4ZgVc4C0u3WsgpTWRVvWxgzq4UmnBQOUDEKZWFGsMFW
-         1YdRHYb6lRUsq15f3OT/QMLMmo3qUilRiSNG9dSDIjjJfi8zDds/7azWjgc1Tv9lrv5Z
-         KbSQ==
+        bh=TfoS1b2uMhndW4KIeiWClYU6d8VyCO2OzxccbPH1MqM=;
+        b=StrpmajKx/sYn9mlX8tbc8w19LWVdv3irqVw4VWWkhMZg+A2kuPjJEWMQ4P4050z4a
+         v2ylBi2MF3p+lZrnn4NURLxueLOrNIZ30PnxYRzM+83baSRYVWXm844DPR5oJLWdOojA
+         Nyz1tfAD3zZOnsiW0oCKQkWxNOn5g1djzqmt7NboRVVnjpe6wnCZQOg3u9EJirOUpslm
+         Ndt+gyR3rLwNJMrqPyb7WEtLlO8eA3JbC+BfsWH9rIA6MnoDF5sPcQox0q1gAMlK17yH
+         vmQvklE5jD2jhu8f3nQ7bGzO+lYJuyVfbnKSuE9uotR3ZGoErWudOqYoHL/llRNp2dFn
+         qXtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eVMKHOcwOHc1uDsK1KuN40ZRj/NsNM/2M7tDl8sBx14=;
-        b=KY2dYsTGgObPvVH18p/bu6sPzLBTwIVx7VSCPaa5GOY2Rai/7og+VmXndk5ktWcYHd
-         w/yLORoHmjo4gyXwKiSJcrba4jL16CEwFFFp+lbeBB7t6r1mdc2dvikuGPNvEkrWEPAW
-         qlWRkGxvtQThUSs6BBt33EClBar6h+ngvvcjYEUtRghYiaILhd6SvOomElylRL0RQ0cN
-         bDQVET9o96nYVkdPcaEB7OZ5q/N0j1GS8Srdp2seCFGSf+iPWr71LqatjWioTEyMuK4l
-         SgiX4tONf1r8N7YA9OlqP5QrsTSqrCmkdE3SsB1kxXsH7oHMofQRku0p0treP4YBKUkF
-         J11A==
-X-Gm-Message-State: AGi0PuaVDlJLdD3DwWGXX8sn4A50shV0gEzvUdORF974EPQqlgvc4sNq
-        9Q0YyNL4wV9X462Tyrgz7J2mkO7UiC/LOPUw3ls=
-X-Google-Smtp-Source: APiQypKKEJY3TWdYNUYfN3bMGP2tPq8LtsMuVggJ7yTdGFxA/noP65lt/2GchulQeLPjNM/At7A0hP0Xk4qxLFfVbbo=
-X-Received: by 2002:a2e:9247:: with SMTP id v7mr3844056ljg.215.1586554425130;
- Fri, 10 Apr 2020 14:33:45 -0700 (PDT)
+        bh=TfoS1b2uMhndW4KIeiWClYU6d8VyCO2OzxccbPH1MqM=;
+        b=WBF+brzC3dmkgmzYJ4z9J3SxuSHkjdmcBHnPqKwCy7ko9HLWtnW3nmbBMevV9o9nKK
+         pLdLTvb/l3LU0nkv13A9cZkskrs6lxLsg+GjOPCbSxrxiOWlu3jiC8OdlAphH336//l+
+         WuYbJplau4HYSY4zR3/GwFd22Ub10XZdlfC46+dxxqrJcnJbxdOkOVPxL2BC4oWp6hLM
+         7Mr1WyjXboWMb1XNwlyd3pj+r/c7UjqMyBPHDQ0AvAuLDNgeZVHKIMLYCsM56DnHfhsD
+         g2MfCGOrEwMYEdx6K1BJ7wOlMnWNJeg6nhRBJl9GbrqzEejNKBGH8U1jYP32eSKiF2Qd
+         c7eQ==
+X-Gm-Message-State: AGi0PuZ4rkpOO1fBHuM07jgGzbfKwG9ro5ZAuOKFUs6TqLTv7N3ugiwR
+        9cdB8W+8eu+T3eSlBQlWDDkZ+lMp4dmPhAe9XsY=
+X-Google-Smtp-Source: APiQypLI24iOauCoF6bBk1O1CotKoJVczRjmYaRITnvzcPqN2cKhBEdiDXg7qhhmwCrPyEBhxg7wCx/HP90S+9KOUJw=
+X-Received: by 2002:aed:3169:: with SMTP id 96mr1183481qtg.141.1586555572959;
+ Fri, 10 Apr 2020 14:52:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200408232520.2675265-1-yhs@fb.com> <20200408232529.2676060-1-yhs@fb.com>
- <20200410032223.esp46oxtpegextxn@ast-mbp.dhcp.thefacebook.com>
- <d40f0a39-093f-2ed2-d5d0-b97947f0093f@fb.com> <20200410213138.xwn2b7t6np44v5ls@ast-mbp>
-In-Reply-To: <20200410213138.xwn2b7t6np44v5ls@ast-mbp>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 10 Apr 2020 14:33:33 -0700
-Message-ID: <CAADnVQ+kmd0-9Q0XjNwLHEuYb60mnKYTQgy=RPsstdOZwtgixg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 08/16] bpf: add task and task/file targets
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+References: <cover.1586547735.git.rdna@fb.com> <daa546903aa74cf844452b7f80788d67c15b42ea.1586547735.git.rdna@fb.com>
+ <CAEf4BzYvPawqgdP+cU94+US=hKGaD8qCBFtnu_JZae3eJ0+SUw@mail.gmail.com> <20200410211444.opudqya3jvbdbqte@ast-mbp>
+In-Reply-To: <20200410211444.opudqya3jvbdbqte@ast-mbp>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 10 Apr 2020 14:52:42 -0700
+Message-ID: <CAEf4Bzab+3-gFPnrmc_2f3NogXvckox=QpGWVZiCNxTGQK9v7A@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] libbpf: Fix loading cgroup_skb/egress with ret in
+ [2, 3]
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrey Ignatov <rdna@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
@@ -62,60 +60,103 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 10, 2020 at 2:31 PM Alexei Starovoitov
+On Fri, Apr 10, 2020 at 2:14 PM Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
-> On Thu, Apr 09, 2020 at 11:19:10PM -0700, Yonghong Song wrote:
-> >
-> >
-> > On 4/9/20 8:22 PM, Alexei Starovoitov wrote:
-> > > On Wed, Apr 08, 2020 at 04:25:29PM -0700, Yonghong Song wrote:
-> > > > +
-> > > > + spin_lock(&files->file_lock);
-> > > > + for (; sfd < files_fdtable(files)->max_fds; sfd++) {
-> > > > +         struct file *f;
-> > > > +
-> > > > +         f = fcheck_files(files, sfd);
-> > > > +         if (!f)
-> > > > +                 continue;
-> > > > +
-> > > > +         *fd = sfd;
-> > > > +         get_file(f);
-> > > > +         spin_unlock(&files->file_lock);
-> > > > +         return f;
-> > > > + }
-> > > > +
-> > > > + /* the current task is done, go to the next task */
-> > > > + spin_unlock(&files->file_lock);
-> > > > + put_files_struct(files);
+> On Fri, Apr 10, 2020 at 01:39:03PM -0700, Andrii Nakryiko wrote:
+> > On Fri, Apr 10, 2020 at 12:54 PM Andrey Ignatov <rdna@fb.com> wrote:
 > > >
-> > > I think spin_lock is unnecessary.
-> > > It's similarly unnecessary in bpf_task_fd_query().
-> > > Take a look at proc_readfd_common() in fs/proc/fd.c.
-> > > It only needs rcu_read_lock() to iterate fd array.
+> > > Initially BPF_CGROUP_INET_EGRESS hook didn't require specifying
+> > > expected_attach_type at loading time, but commit
+> > >
+> > >   5cf1e9145630 ("bpf: cgroup inet skb programs can return 0 to 3")
+> > >
+> > > changed it so that expected_attach_type must be specified if program can
+> > > return either 2 or 3 (before it was either 0 or 1) to communicate
+> > > congestion notification to caller.
+> > >
+> > > At the same time loading w/o expected_attach_type is still supported for
+> > > backward compatibility if program retval is in tnum_range(0, 1).
+> > >
+> > > Though libbpf currently supports guessing prog/attach/expected_attach
+> > > types only for "old" mode (retval in [0; 1]). And if cgroup_skb egress
+> > > program stars returning e.g. 2 (corresponds to NET_XMIT_CN), then
+> > > guessing breaks and, e.g. bpftool can't load an object with such a
+> > > program anymore:
+> > >
+> > >   # bpftool prog loadall tools/testing/selftests/bpf/test_skb.o /sys/fs/bpf/test_skb
+> > >   libbpf: load bpf program failed: Invalid argument
+> > >   libbpf: -- BEGIN DUMP LOG ---
+> > >   libbpf:
+> > >   ; return tc_prog(skb) == TC_ACT_OK ? 1 : 2 /* NET_XMIT_CN */;
+> > >   0: (85) call pc+5
+> > >
+> > >    ... skip ...
+> > >
+> > >   from 87 to 1: R0_w=invP2 R10=fp0
+> > >   ; return tc_prog(skb) == TC_ACT_OK ? 1 : 2 /* NET_XMIT_CN */;
+> > >   1: (bc) w1 = w0
+> > >   2: (b4) w0 = 1
+> > >   3: (16) if w1 == 0x0 goto pc+1
+> > >   4: (b4) w0 = 2
+> > >   ; return tc_prog(skb) == TC_ACT_OK ? 1 : 2 /* NET_XMIT_CN */;
+> > >   5: (95) exit
+> > >   At program exit the register R0 has value (0x2; 0x0) should have been in (0x0; 0x1)
+> > >   processed 96 insns (limit 1000000) max_states_per_insn 1 total_states 10 peak_states 10 mark_read 2
+> > >
+> > >   libbpf: -- END LOG --
+> > >   libbpf: failed to load program 'cgroup_skb/egress'
+> > >   libbpf: failed to load object 'tools/testing/selftests/bpf/test_skb.o'
+> > >   Error: failed to load object file
+> > >
+> > > Fix it by introducing another entry in libbpf section_defs that makes the load
+> > > happens with expected_attach_type: cgroup_skb/egress/expected
+> > >
+> > > That name may not be ideal, but I don't have a better option.
 > >
-> > I see. I was looking at function seq_show() at fs/proc/fd.c,
+> > That's a really bad name :) But maybe instead of having another
+> > section_def, turn existing section def into the one that does specify
+> > expected_attach_type? Seems like kernels accept expected_attach_type
+> > for a while now, so it might be ok backwards compatibility-wise?
+> > Otherwise, we can teach libbpf to retry program load without expected
+> > attach type for cgroup_skb/egress?
 > >
-> > ...
-> >                 spin_lock(&files->file_lock);
-> >                 file = fcheck_files(files, fd);
-> >                 if (file) {
-> >                         struct fdtable *fdt = files_fdtable(files);
-> >
-> >                         f_flags = file->f_flags;
-> >                         if (close_on_exec(fd, fdt))
-> >                                 f_flags |= O_CLOEXEC;
-> >
-> >                         get_file(file);
-> >                         ret = 0;
-> >                 }
-> >                 spin_unlock(&files->file_lock);
-> >                 put_files_struct(files);
-> > ...
-> >
-> > I guess here spin_lock is needed due to close_on_exec().
+> > >
+> > > Strictly speaking this is not a fix but rather a missing feature, that's
+> > > why there is no Fixes tag. But it still seems to be a good idea to merge
+> > > it to stable tree to fix loading programs that use a feature available
+> > > for almost a year.
+> > >
+> > > Signed-off-by: Andrey Ignatov <rdna@fb.com>
+> > > ---
+> > >  tools/lib/bpf/libbpf.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > index ff9174282a8c..c909352f894d 100644
+> > > --- a/tools/lib/bpf/libbpf.c
+> > > +++ b/tools/lib/bpf/libbpf.c
+> > > @@ -6330,6 +6330,8 @@ static const struct bpf_sec_def section_defs[] = {
+> > >         BPF_PROG_SEC("lwt_seg6local",           BPF_PROG_TYPE_LWT_SEG6LOCAL),
+> > >         BPF_APROG_SEC("cgroup_skb/ingress",     BPF_PROG_TYPE_CGROUP_SKB,
+> > >                                                 BPF_CGROUP_INET_INGRESS),
+> > > +       BPF_EAPROG_SEC("cgroup_skb/egress/expected", BPF_PROG_TYPE_CGROUP_SKB,
+> > > +                                               BPF_CGROUP_INET_EGRESS),
+> > >         BPF_APROG_SEC("cgroup_skb/egress",      BPF_PROG_TYPE_CGROUP_SKB,
+> > >                                                 BPF_CGROUP_INET_EGRESS),
 >
-> Right. fdr->close_on_exec array is not rcu protected and needs that spin_lock.
+> are you saying that when bpf prog has SEC("cgroup_skb/egress",.. libbpf actually
+> _not_ passing BPF_CGROUP_INET_EGRESS as expected_attach to the kernel?
 
-Actually. I'll take it back. fdt is rcu protected and that member is part of it.
-So imo seq_show() is doing that spin_lock unnecessary.
+Yes, that seems to be the difference between BPF_EAPROG_SEC and BPF_APROG_SEC.
+
+> I think it's a libbpf bug and not something to workaround with retries.
+
+This predates me, but I assume it's a backwards-compatibility move.
+Because older kernels might know about expected_attach_type, but still
+allow ingress/egress programs to be attached. I'm fine with dropping
+that (I actually had to work around this problem in
+bpf_program__attach_cgroup), but if anyone is feeling strongly about
+tiny chance of breaking something, we'll have to teach libbpf to retry
+load without expected_attach_type, if that one fails (which fails in
+its own way, so I'd rather not do it).
