@@ -2,131 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8473C1A3CE5
-	for <lists+bpf@lfdr.de>; Fri, 10 Apr 2020 01:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6F51A3D2F
+	for <lists+bpf@lfdr.de>; Fri, 10 Apr 2020 02:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbgDIXdm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Apr 2020 19:33:42 -0400
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:38241 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726726AbgDIXdm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Apr 2020 19:33:42 -0400
-Received: by mail-qv1-f68.google.com with SMTP id p60so237429qva.5
-        for <bpf@vger.kernel.org>; Thu, 09 Apr 2020 16:33:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=npBZAQ8+nNwoz7pY5s9Hr75+OmCxMkNtfXBbfDSyFzE=;
-        b=l2XT1720Fua8eq3e3S69qpHwoIOyRVYbIZ236MxSKZX5EG0ynkfOCor5JsNAxNDaA4
-         lyIi0e6OEB9c6zfPYccPHDzns96vj0MgEABYa4itwLHvsFGRaYPOo5VqO8loJm4UVwrR
-         bKHhZpFOdvYXCjArFRLVh4W9ub77ymnTx7PjQM982CWkDqWbEw1EMJ4Elrp7YP6Fm5p6
-         1x7wmAG9ASdfZAdZoY2BFRH3juYyT6DG/qiGWULxRKweqYZoFN4btNG9moOklrlqZze0
-         s8Id8KBTbv5nX/Y5g0eEM1RDf0+QmLH5SMULf6VHB517Ooe1JyiygGwORW83Y0K3XMYb
-         FXxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=npBZAQ8+nNwoz7pY5s9Hr75+OmCxMkNtfXBbfDSyFzE=;
-        b=WhjBV/hTG1P3iiVrVTa8I/6K8BSFoXEFWdWOwZxj67O3bsS1MIEtlUiKpvfO4u/2sO
-         lC7NvWVSw1jqOhanalBIhjU06EBHwQ41JFZAQbbjZ7/OEXtq2kTSQamsgQXUFW5AFV3Z
-         BgeDUD2IDVh7/PKlyenfi42OJw1F35ZPOlidluWHr71LdJbMX4BJaCo8a8c5KjPuqyFg
-         fmiLYkhzi65fE0V+koAJ/fvghSGJRco5tIusZsqrfw15A1gWTjK/BvIDVkNVDAH0KEI5
-         DGM+7c52BGbriWWUV82n954rqAF3djdX80nF4rscP5OChSIVD+6dATLxzKrEhoHKNLpB
-         ibEg==
-X-Gm-Message-State: AGi0PuZ1GEzEYzfGFWS2RqJI5p9hW7P2T1e+JHOgvVC9ZZDB5ODbcbvU
-        XtGDDNEfpelJ97ZyQLTqLg9v4WSB6ZmdY6S2DrtOwUQR9KM=
-X-Google-Smtp-Source: APiQypJJirlPIHYVlou1U0+Kc/6G4phKRR4YiFxlFzRFCeIBPUhh8m3uShSXWZpur6qdfn42FVTsJumA0hRB5psd/DU=
-X-Received: by 2002:a05:6214:6a6:: with SMTP id s6mr2566120qvz.247.1586475221571;
- Thu, 09 Apr 2020 16:33:41 -0700 (PDT)
+        id S1726327AbgDJAE7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Apr 2020 20:04:59 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:54986 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726858AbgDJAE7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 9 Apr 2020 20:04:59 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03A04wu9014664
+        for <bpf@vger.kernel.org>; Thu, 9 Apr 2020 17:04:59 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=VsTwKJ14jmyg++RnaKeTORwNV+qZPB0bcEJYT0TSCUM=;
+ b=NC5FW+e5D58xRqGqH8KIjO77ZYISvrWfQ0N0LTCii5DxWWCf0u4Oxdw7mjqW+2XPjeXG
+ 4zB1DzHd2R3FoeqU2x8iXXQ/m8F1Gu7flqoMjSujkG6zJOyoBUp6shSPdyRyVIA663yT
+ V2E21rmzY77vWnrXNMI3rFjkNwC4St04GvQ= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3091kswfyg-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 09 Apr 2020 17:04:59 -0700
+Received: from intmgw005.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Thu, 9 Apr 2020 17:04:36 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 4427A2EC31C4; Thu,  9 Apr 2020 17:04:30 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, Jann Horn <jannh@google.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf 1/2] bpf: prevent re-mmap()'ing BPF map as writable for initially r/o mapping
+Date:   Thu, 9 Apr 2020 17:04:24 -0700
+Message-ID: <20200410000425.2597887-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <CAG48ez2R5nZA91j7cf2Z5o3dOEz0QNZK7cxecjmw0B-ZQ7AjmA@mail.gmail.com>
-In-Reply-To: <CAG48ez2R5nZA91j7cf2Z5o3dOEz0QNZK7cxecjmw0B-ZQ7AjmA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 9 Apr 2020 16:33:30 -0700
-Message-ID: <CAEf4Bzb2zcfJt6ujAN8zY_=x7-dFO92mPzkbCE+UMHVDGL7J+Q@mail.gmail.com>
-Subject: Re: BPF map freezing is unreliable; can we instead just inline constants?
-To:     Jann Horn <jannh@google.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Matthew Garrett <mjg59@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-09_09:2020-04-07,2020-04-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ mlxscore=0 mlxlogscore=655 spamscore=0 suspectscore=8 adultscore=0
+ bulkscore=0 malwarescore=0 clxscore=1015 impostorscore=0
+ priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2003020000 definitions=main-2004090172
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 8, 2020 at 12:42 PM Jann Horn <jannh@google.com> wrote:
->
-> Hi!
->
-> I saw that BPF allows root to create frozen maps, for which the
-> verifier then assumes that they contain constant values. However, map
-> freezing is pretty wobbly:
->
-> 1. The syscalls for updating maps from userspace don't seem to lock
-> the map at all.
+VM_MAYWRITE flag during initial memory mapping determines if already mmap=
+()'ed
+pages can be later remapped as writable ones through mprotect() call. To
+prevent user application to rewrite contents of memory-mapped as read-onl=
+y and
+subsequently frozen BPF map, remove VM_MAYWRITE flag completely on initia=
+lly
+read-only mapping.
 
-True, there is a tiny race between freezing and map updates, but I
-don't think it's possible to solve it without taking locks all around
-the place in map update operations.
+Alternatively, we could treat any memory-mapping on unfrozen map as writa=
+ble
+and bump writecnt instead. But there is little legitimate reason to map
+BPF map as read-only and then re-mmap() it as writable through mprotect()=
+,
+instead of just mmap()'ing it as read/write from the very beginning.
 
+Fixes: fc9702273e2e ("bpf: Add mmap() support for BPF_MAP_TYPE_ARRAY")
+Reported-by: Jann Horn <jannh@google.com>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ kernel/bpf/syscall.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> 2. BPF doesn't account for the fact that mprotect() can be used to
-> arbitrarily flip VM_WRITE on and off as long as VM_MAYWRITE is set.
-> (crasher attached as bpf-constant-data-mprotect.c)
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 64783da34202..f7f6db50a085 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -635,6 +635,10 @@ static int bpf_map_mmap(struct file *filp, struct vm=
+_area_struct *vma)
+ 	/* set default open/close callbacks */
+ 	vma->vm_ops =3D &bpf_map_default_vmops;
+ 	vma->vm_private_data =3D map;
++	vma->vm_flags &=3D ~VM_MAYEXEC;
++	if (!(vma->vm_flags & VM_WRITE))
++		/* disallow re-mapping with PROT_WRITE */
++		vma->vm_flags &=3D ~VM_MAYWRITE;
+=20
+ 	err =3D map->ops->map_mmap(map, vma);
+ 	if (err)
+--=20
+2.24.1
 
-Yeah, my bad. I wasn't aware of VM_MAYWRITE. I'll post a fix dropping
-VM_MAYWRITE (and VM_MAYEXEC while at that...) for frozen maps. That
-should fix bpf-constant-mprotect.c
-
-> 3. It is assumed that a memory mapping can't be used to write to a
-> page anymore after the mapping has been removed; but actually,
-> userspace can grab references to pages in a VMA and use those
-> references to write to the VMA's pages after the VMA has already been
-> closed. (crasher attached as bpf-constant-data-uffd.c, compile with
-> "gcc -pthread ...")
-
-Please help me understand how that works (assuming we drop
-VM_MAYWRITE, of course). You mmap() as R/W, then munmap(), then
-freeze(). After munmap() refcount of writable pages should drop to
-zero. And mmap'ed address should be invalid and unmapped. I'm missing
-how after munmap() parallel thread still can write to that memory
-page?
-
->
-> These things are probably not _huge_ concerns for most usecases, since
-> you need to be root to hit this stuff anyway - but I think it'd be
-> desirable for BPF to actually be memory-safe (and the kernel lockdown
-> folks would probably appreciate not having such a glaring hole that
-> lets root read/write arbitrary memory).
->
-> The third point is particularly hard to solve without adding more
-> constraints on the userspace API; I think that tightening up map
-> freezing would require ensuring that the map has *never* been mapped
-> as writable.
-
-I'm clearly missing how memory can remain mmaped() after single mmap()
-+ munmap(), I'd really appreciate if you could elaborate, thanks!
-
->
-> Is there a reason why the verifier doesn't replace loads from frozen
-> maps with the values stored in those maps? That seems like it would be
-> not only easier to secure, but additionally more performant.
-
-Verifier doesn't always know exact offset at which program is going to
-read read-only map contents. So something like this works:
-
-const volatile long arr[256];
-
-int x = rand() % 256;
-int y = arr[x];
-
-In this case verifier doesn't really know the value of y, so it can't
-be inlined. Then you can have code in which in one branch register is
-loaded with known value, but in another branch same register gets some
-value at random offset. Constant tracking is code path-sensitive,
-while instructions are shared between different code paths. Unless I'm
-missing what you are proposing :)
