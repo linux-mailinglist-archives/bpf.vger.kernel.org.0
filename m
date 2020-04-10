@@ -2,136 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C061A4B45
-	for <lists+bpf@lfdr.de>; Fri, 10 Apr 2020 22:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500DC1A4B65
+	for <lists+bpf@lfdr.de>; Fri, 10 Apr 2020 22:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbgDJUkY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Apr 2020 16:40:24 -0400
-Received: from mail-bn8nam11on2139.outbound.protection.outlook.com ([40.107.236.139]:2273
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726765AbgDJUkY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Apr 2020 16:40:24 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Aw2ZeqTFUqbJByz0S3f+6uLIOSNLHFUDiomjjV8ua+GbcSaK+gCIn4rzEMQblmi5+p27h4GUw4uiopBnOVVX9NF96dKfST1HAj3iwUWIQPocJM11iN5419kd+NJLfqm22mKODVHV9E8h9Xx1bWh98JkLDhMtt2QrEwcaZKXZJQ92vpuV7g4Sf6THY+AU6ClalBZmqoGngult+UE5jVeQCHAIrkAl1PmjRgJF8448LC1xSDbNhlxVCqO/03Zr4K0Jyw2FeE3ALQQoB8xB9538jzVdcEveIiE/vBJFT3x9WasrphlGE0CwSH00gAWtB8cyb3pXbca8HnsVty2/oIl62A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AxI15cV5ZOZn85Zvvz8N2nkqZ/SNnDxKOx5Qvn0sK2o=;
- b=A47fAhLmDhyOTdxby1MGYw7lMu+/zehb1fSTvG6tWqxGT0smEbuExsi1JXevWz+15txFJ877FRBDv7HbdzixP7BHla7e626Q7OHVEG4d5Djuzc4NnO4y498+7s10inuqzm+TDrMH/6McVYaecGI7O6fFeiPI/055EMy6QoC6DpLuRvs2hghd0t3lo2+jhFlCQ+TYACq6kgu42PY+ehLpabQzhm4re+3rnJAZz3USl8Ae6yDJO26ytRbOyuhnH1Ogq5jVxGw8UquN/6+Bm6Wjky8pxY5pMpFZAZgPVLUSQRuyoHhCrB6jKFt7XoocAJ2z+82cZkA07w3Y6zPaJkhptA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AxI15cV5ZOZn85Zvvz8N2nkqZ/SNnDxKOx5Qvn0sK2o=;
- b=Qxl2bm0d63GzV4vCOvZU6vbiYCA0bwSsF69cDss6OAfBrKUYZ4psysR9PjJR7Inm0DeexkrLFMrLZVpYv9b1zo4484fp9XeXTAbycifTYPqclAPiFdGAo0fCBJfa0QakGSG7iKoJlNjc9BDcyIM/G4VgZGajUOvMUeZ66Xemzck=
-Received: from DM5PR2101MB1047.namprd21.prod.outlook.com (2603:10b6:4:9e::16)
- by DM5PR2101MB1110.namprd21.prod.outlook.com (2603:10b6:4:a5::39) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.3; Fri, 10 Apr
- 2020 20:40:21 +0000
-Received: from DM5PR2101MB1047.namprd21.prod.outlook.com
- ([fe80::f54c:68f0:35cd:d3a2]) by DM5PR2101MB1047.namprd21.prod.outlook.com
- ([fe80::f54c:68f0:35cd:d3a2%9]) with mapi id 15.20.2921.009; Fri, 10 Apr 2020
- 20:40:21 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laura Abbott <labbott@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>
-CC:     Robin Murphy <robin.murphy@arm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 01/28] x86/hyperv: use vmalloc_exec for the hypercall page
-Thread-Topic: [PATCH 01/28] x86/hyperv: use vmalloc_exec for the hypercall
- page
-Thread-Index: AQHWDZ0/CoajD68QRkqSIM4FKSNiaKhy1QmA
-Date:   Fri, 10 Apr 2020 20:40:21 +0000
-Message-ID: <DM5PR2101MB1047BD681D8EDD0797DD1E28D7DE0@DM5PR2101MB1047.namprd21.prod.outlook.com>
-References: <20200408115926.1467567-1-hch@lst.de>
- <20200408115926.1467567-2-hch@lst.de>
-In-Reply-To: <20200408115926.1467567-2-hch@lst.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Owner=mikelley@ntdev.microsoft.com;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-04-10T20:40:19.1960251Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=1dcf4db3-748e-409d-8f7c-447fe27e9023;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Extended_MSFT_Method=Automatic
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=mikelley@microsoft.com; 
-x-originating-ip: [24.22.167.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: bd91a062-1bf1-46bf-b911-08d7dd8f638d
-x-ms-traffictypediagnostic: DM5PR2101MB1110:|DM5PR2101MB1110:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM5PR2101MB1110D1A5D643D6374EEBE4D0D7DE0@DM5PR2101MB1110.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1107;
-x-forefront-prvs: 0369E8196C
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR2101MB1047.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(346002)(366004)(376002)(396003)(136003)(39860400002)(8676002)(86362001)(8936002)(66476007)(8990500004)(7696005)(66946007)(71200400001)(81156014)(66446008)(54906003)(66556008)(64756008)(10290500003)(478600001)(7416002)(110136005)(316002)(76116006)(6506007)(33656002)(4326008)(82950400001)(55016002)(52536014)(4744005)(186003)(2906002)(82960400001)(26005)(9686003)(5660300002)(921003)(1121003);DIR:OUT;SFP:1102;
-received-spf: None (protection.outlook.com: microsoft.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: iPk50ujolCJd83GkVU8Q/GdEQxRbFm+HhFS2g3hzlQ3M61EOAzDmsYU7m+RWnkrXocM+HsEjPf9is5nPPFthji73D5Xp5Ed8eQyiIjms6PXaV8hi6LIA+PzuVCxyv0tzM2KSRI8J/0UN2ef2n21k5qp4IcuX/HwC7OLLVaioSzeDh2RPdp+6oVJPuNY1Itb9/b3+mtyFMXAv6vWk/8b0hzT6pxcQhjBond3LPQ762DrMG18Jqi1HfvEDKIUSjdDN6PxLmZy3+sgwx39EITjhSVpIS/Sdm7KqyU64jRGCJYS9XNxNNM8hm9BXfXXtPuJCxfN586xwrihjuR3wrgaZWMcKYjExOmUdG3E8n/zlNCcJDhmejfnWkIjNBnlGtLQI64Ihd+nbMzFuwtQW8BVNHqk2VN6FvWOW6pxiEn8+pQrlDp0oZSfGe81Lm40U0WueJkDGmRR7yiZtordaiODqu0t0ONDJn8+LsWdmzwJjkYfoH2/geWTzCwsOicrdobNi
-x-ms-exchange-antispam-messagedata: +tXqJ9SngzkET2ajAkgQpDK07e5qYoklVTvFxbVst2EBqO3DkVFzhGNkyeSOIorrnaoTQMUGzbAGKw+XKL0lj/sUP5klkB6enTMgGsrq59DD/x3W6slha3C2qb10maI+10LsOHRcRWru3TrPfIlLUg==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726671AbgDJUsl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Apr 2020 16:48:41 -0400
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:39725 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726177AbgDJUsl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Apr 2020 16:48:41 -0400
+Received: by mail-qv1-f66.google.com with SMTP id v38so1542002qvf.6
+        for <bpf@vger.kernel.org>; Fri, 10 Apr 2020 13:48:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7W0i1Cg1I5ndUZxWKSLW2NSYUtpwue6+Fzg3/yTyiSo=;
+        b=AmG/2ipiY/yKzMndeEJgkiW099tNPSMjnV63fUjS/zPfLTCu/7pA7is45zI3NSmUqC
+         TADGAlkjvhFK56HbsrZ+tFK314uQWcrWkX3Xvnx0VmWFrp8oblx7nJdGuFeUoQqw+sH+
+         YV5BWf+RLGxX5lDBXEUX6PFNHZKlWq5nFZuSPsQr/u5QUw3ekB6ruf5w7jr9FX/1eJNO
+         nbgAXtpP57wQGeQOOpUdBvhXryUAomwalh+KMcNYcGpx39osm72Qj+XpOn78sgjay3Nq
+         yu48Jx7Qu+5oVFItkMDFEySURPTbkhXyMOd1MGcMCWur7AyVoeutcIzKS0EEAZ2m6i4S
+         TL4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7W0i1Cg1I5ndUZxWKSLW2NSYUtpwue6+Fzg3/yTyiSo=;
+        b=if/UaqXsge77/RT2BygLzA0I8wKLtX7Ib1rhDlNSc3DpYBpbfXboR9gJXC3Jx+LX57
+         OWDa9+mAYqI6lAy6Tbk/y94pEdfvWXE8b+CHDEDZx+x+tN9JbVmLRyGUXCt7xXbqNBtc
+         PKCSbs0cmNoifGd8E8I4STP0+mZaiwxZZA3IFkkbN0ntu/kVMAepf2jQ3iKtl/gpLvtV
+         Qya2EFnK15nAYdUaa7dp/ZagalWTur/mBLCf4ME1Ptowhya07xmL/qWfBcAwz/e8pTGa
+         BMlcSOC+NmKqVZMgCVV9Qbrj0P3DIgqC4G3oCRAA5XudaZK2wwi7YER4VB1rHZGr8bbQ
+         aPow==
+X-Gm-Message-State: AGi0PuZw+TdyRm/lqL4eNbTlp+MpjKdtycCDaQCQ6S3wSEAbkdV2dCS4
+        e4PQGtgSzg9kQTZ84pRc6/iV3U9cy9dtZkQzPkM=
+X-Google-Smtp-Source: APiQypJt9LUyYqQ28+3vSuIIAPfrlgQXZgJf4ccAg9F3Bgc1U6YxGxIQ8hM4EL4H4p++WYw8/qT3QgkZi8mXjC9BKoQ=
+X-Received: by 2002:a05:6214:1801:: with SMTP id o1mr6794237qvw.224.1586551719523;
+ Fri, 10 Apr 2020 13:48:39 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd91a062-1bf1-46bf-b911-08d7dd8f638d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Apr 2020 20:40:21.4349
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZRCiv8Z7T3QM9EeSCGX8Y25Y1aZn3ejXpj1RdpMAAnRt2CHN5wCBdH+ON5JKRobDX7dRyxf/GdrzMHDy/MBMaoDe+dfn0eOaWJekJQejI5s=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR2101MB1110
+References: <CAG48ez2R5nZA91j7cf2Z5o3dOEz0QNZK7cxecjmw0B-ZQ7AjmA@mail.gmail.com>
+ <CAEf4Bzb2zcfJt6ujAN8zY_=x7-dFO92mPzkbCE+UMHVDGL7J+Q@mail.gmail.com> <CAG48ez20KjiYjcYzWnnVCyNTMjNFf+YgnwbbF9BUovZxDzsuEw@mail.gmail.com>
+In-Reply-To: <CAG48ez20KjiYjcYzWnnVCyNTMjNFf+YgnwbbF9BUovZxDzsuEw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 10 Apr 2020 13:48:27 -0700
+Message-ID: <CAEf4BzbEcbgAmXSzKx70rEhzmWcZ_8ECuX98_wsfvRkprKQgbQ@mail.gmail.com>
+Subject: Re: BPF map freezing is unreliable; can we instead just inline constants?
+To:     Jann Horn <jannh@google.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Matthew Garrett <mjg59@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de> Sent: Wednesday, April 8, 2020 4:59 AM
->=20
-> Use the designated helper for allocating executable kernel memory, and
-> remove the now unused PAGE_KERNEL_RX define.
->=20
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  arch/x86/hyperv/hv_init.c            | 2 +-
->  arch/x86/include/asm/pgtable_types.h | 2 --
->  2 files changed, 1 insertion(+), 3 deletions(-)
->=20
+On Fri, Apr 10, 2020 at 1:47 AM Jann Horn <jannh@google.com> wrote:
+>
+> On Fri, Apr 10, 2020 at 1:33 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> > On Wed, Apr 8, 2020 at 12:42 PM Jann Horn <jannh@google.com> wrote:
+> > >
+> > > Hi!
+> > >
+> > > I saw that BPF allows root to create frozen maps, for which the
+> > > verifier then assumes that they contain constant values. However, map
+> > > freezing is pretty wobbly:
+> > >
+> > > 1. The syscalls for updating maps from userspace don't seem to lock
+> > > the map at all.
+> >
+> > True, there is a tiny race between freezing and map updates, but I
+> > don't think it's possible to solve it without taking locks all around
+> > the place in map update operations.
+>
+> Yeah. So I think BPF should do exactly that. Or change the userspace
+> API so that userspace has to say at map creation time "I'll freeze
+> this map later", and then you only have to do the locking if that flag
+> is set.
 
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+I'd love to be able to create frozen maps from the get go (and specify
+initial values for the map), but freezing is done the way it's done
+already, unfortunately :(
+Regarding locking, maps could be updated from BPF program side as
+well. I'd be curious to hear what others think about this issue.
+
+>
+> [...]
+> > > 3. It is assumed that a memory mapping can't be used to write to a
+> > > page anymore after the mapping has been removed; but actually,
+> > > userspace can grab references to pages in a VMA and use those
+> > > references to write to the VMA's pages after the VMA has already been
+> > > closed. (crasher attached as bpf-constant-data-uffd.c, compile with
+> > > "gcc -pthread ...")
+> >
+> > Please help me understand how that works (assuming we drop
+> > VM_MAYWRITE, of course). You mmap() as R/W, then munmap(), then
+> > freeze(). After munmap() refcount of writable pages should drop to
+> > zero. And mmap'ed address should be invalid and unmapped. I'm missing
+> > how after munmap() parallel thread still can write to that memory
+> > page?
+>
+> The mmap()/munmap() syscalls place references to the pages the kernel
+> is using in the page tables of the process. Some other syscalls (such
+> as process_vm_writev()) can read these page table entries, take their
+> own references on those backing pages, and then continue to access
+> those pages even after they've been removed from the task's page
+> tables by munmap(). This works as long as the page table entries don't
+> have magic marker bits on them that prohibit this, which you get if
+> you use something like remap_pfn_range() in a loop instead of
+> remap_vmalloc_range() - but the memory mappings created by that
+> syscall are weird, and e.g. some syscalls like read() and write()
+> might sometimes fail if the buffer argument points into such a memory
+> region.
+
+So mmap() subsystem won't event know about those extra references and
+thus we can't really account that in our code, right? That's sad, but
+hopefully those APIs are root-only?
+
+>
+> [...]
+> > > Is there a reason why the verifier doesn't replace loads from frozen
+> > > maps with the values stored in those maps? That seems like it would be
+> > > not only easier to secure, but additionally more performant.
+> >
+> > Verifier doesn't always know exact offset at which program is going to
+> > read read-only map contents. So something like this works:
+> >
+> > const volatile long arr[256];
+> >
+> > int x = rand() % 256;
+> > int y = arr[x];
+> >
+> > In this case verifier doesn't really know the value of y, so it can't
+> > be inlined. Then you can have code in which in one branch register is
+> > loaded with known value, but in another branch same register gets some
+> > value at random offset. Constant tracking is code path-sensitive,
+> > while instructions are shared between different code paths. Unless I'm
+> > missing what you are proposing :)
+>
+> Ah, I missed that possibility. But is that actually something that
+> people do in practice? Or would it be okay for the verifier to just
+> assume an unknown value in these cases?
+
+Verifier will assume unknown value for the branch that has variable
+offset. It can't do the same for another branch (with constant offset)
+because it might not yet have encountered branch with variable offset.
+But either way, you were proposing to rewrite instruction and inline
+read constant, and I don't think it's possible because of this.
