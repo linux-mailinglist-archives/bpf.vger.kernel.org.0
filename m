@@ -2,216 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2671A49E6
-	for <lists+bpf@lfdr.de>; Fri, 10 Apr 2020 20:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56821A4A13
+	for <lists+bpf@lfdr.de>; Fri, 10 Apr 2020 21:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgDJSah (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Apr 2020 14:30:37 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:36458 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726594AbgDJSah (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 10 Apr 2020 14:30:37 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03AIOaco026127;
-        Fri, 10 Apr 2020 11:30:22 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=9MmObEknsVSQLrfKuTRSx0qFihBmU+MUkgc/jKi/R3o=;
- b=OQCvFe2vfjWEvGz5Q3YKPB4/rofnfJRzWmubLO5Yh5m98P6Fwk6E51blBsmEocu0kLWE
- sbY7ROgjoAbIArwfCF5gbJv1TqCHhEIRmtsOqrykwEFHFMK4z4KCRZFnt2MSlA8j5zPj
- 1TKOMhD4r7bJzbAWhmgkUodvb4ligaGGQVM= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 30afb83e62-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 10 Apr 2020 11:30:22 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Fri, 10 Apr 2020 11:30:21 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X8131ltIz6BYUec7/JtGTv4jhJhyMZ6ySu5e4Mr0rMEGZ1ur72UOLrJ+kRlMpCuLkUrjZ46iWEZ26i234qaznKja+kVo4q876I+96qfKpdIG5x/esWNQDBt2of1jCwSCqOu5wxkP67pp8fVbxcJvQ0ZFbJTe4zWXTRKGx5mgxKeoLTye75DifL727/KuCSofJy5upXn1Hcn4gsE9u5GO8/36PywBBgp1h1uC1g6wJKKwt18VrPbinws8y+lpmhKY9Hb5WPpvCrDBvX09bDT19b6gtMhE15ltCVXo8qeJCeMO7BnCAZwCOMrdi6rbFHM97zCHAq2dew3ncQeDRpZffA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9MmObEknsVSQLrfKuTRSx0qFihBmU+MUkgc/jKi/R3o=;
- b=JuMXcarGGhQVa177AzZzdd6U4g9rqpQcjzJESh76eGp/ETgnbhPozhysTDhhxBi/6ofJL9WCZ05v3sWz8lbaHUp+xZaZfBBO/CxlPzZUntNc63qv25+bU9VODlyfHDd6ZfPu2C/NTR0enWWP2aPkQVHOMVCjPtkXzbVCOyyCksE283d/vLBPKkqG4LlejOJCFqc8ztJyQdCDNDtL36C+MUlnZkNg4jm4eyzST7+dTOwPlHtRQMrnzt7kt5S03PV7dAnn/VEEjSDbeZEpTpQKs0/YrnBjaxEByGcg1o0aQoCFzc8kY3eW8bNFQU/84ZDdxjjsEuYbeaCdWdREeJuZ6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9MmObEknsVSQLrfKuTRSx0qFihBmU+MUkgc/jKi/R3o=;
- b=OQqJ9pGR9LinUWmfuNS9ZaXQ+aKI/JsH6IcDhdLw4vA1SP3yn3Ml1EzeGv5iey8Uw3kJuhj6FHl6AixLsMiekevEvKJKWlliIZi4FR1akbmgehJfdOUhLZajL8X20pqophD2ppkX5xEmsvfTV+pTVY6tiKEBziTkXkxZkPBRHU4=
-Received: from MW3PR15MB3883.namprd15.prod.outlook.com (2603:10b6:303:51::22)
- by MW3PR15MB3929.namprd15.prod.outlook.com (2603:10b6:303:4a::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.16; Fri, 10 Apr
- 2020 18:30:20 +0000
-Received: from MW3PR15MB3883.namprd15.prod.outlook.com
- ([fe80::a49b:8546:912f:dd98]) by MW3PR15MB3883.namprd15.prod.outlook.com
- ([fe80::a49b:8546:912f:dd98%5]) with mapi id 15.20.2878.018; Fri, 10 Apr 2020
- 18:30:20 +0000
-Subject: Re: [bpf] 1bcd60aafb: canonical_address#:#[##]
-To:     kernel test robot <rong.a.chen@intel.com>
-CC:     Andrii Nakryiko <andriin@fb.com>, <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <lkp@lists.01.org>
-References: <20200409092024.GF8179@shao2-debian>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <02ad51bd-9924-af89-67ed-5894084827fa@fb.com>
-Date:   Fri, 10 Apr 2020 11:30:17 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.6.0
-In-Reply-To: <20200409092024.GF8179@shao2-debian>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWHPR08CA0041.namprd08.prod.outlook.com
- (2603:10b6:300:c0::15) To MW3PR15MB3883.namprd15.prod.outlook.com
- (2603:10b6:303:51::22)
+        id S1726203AbgDJTAX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Apr 2020 15:00:23 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:44763 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726626AbgDJTAX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Apr 2020 15:00:23 -0400
+Received: by mail-qk1-f196.google.com with SMTP id j4so3100824qkc.11;
+        Fri, 10 Apr 2020 12:00:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mwBe7xi5mOInJFY4in1s3aWzNNuKPkpzEvwQ4F8Kvjc=;
+        b=n5dCfyhpKk0P/D9Zaiw+CntSa6UxfBV10HE7qxCYPKpHh9t2c4/cxNt6Tlc9Agpqr0
+         Ga8F579NiEu89XHBvRETDqO8ycDnpkMXjhGKrQ5Goq6zyPCxtUJ99dKlmWZq3AxuRV/Y
+         kSBpxTAPv7iqxXKqPznhFP/p3i9A01kSk/iZlQNALVZxoX+L67S66D4+w+KqiLUkl7Qw
+         QpRYZXXwPsI2Ff8bDpU1qrSf5vl+rD9MQNLUyFAroiYIZJL2mZW2pXvKFSLHUAJBMqJ6
+         G49rKtDpZt4Ck/p3yoUT97NiiVkJ3vkwu0nj/1x5fYoGUkTfotyAAkpjuyMUJsRl+o2h
+         gdJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mwBe7xi5mOInJFY4in1s3aWzNNuKPkpzEvwQ4F8Kvjc=;
+        b=M+tzVFkGbpDXH7UUW0O0cDyNM8F7WU4hLEfJUHagqYPUoBkasUm72Ann7tJRdm2TAq
+         4HJNOklpE+XAzVXLIb1E+9HgvCmiDqzYC5Y2tn9el3UMNvtxW2S3PfUMI8458tN9aQQI
+         LpOqk85FNARuGVTvhnrf96UHN23H742H8Gdl8mQJP5l2Z4gwwPUC17LzSC0yg1k9QVzm
+         B+soH2qt2IAwLCENTBFW7PRzF2TA30nbMaRr/Md9J3w5WeGz0o9Gm2sTbraWBAn9nLcJ
+         HFWsJmsJU+V4xNZxjq0sUOSlJg2/rTr1X8Ens44J8ohDeTidZJunZhWRuwK3Q7kmjnq+
+         ee4w==
+X-Gm-Message-State: AGi0PuaTr2fYSDAkTMXSKncf/rNUZGPoyWCJuPhVk4fdEGKXfs5GR06L
+        8ns/uaIXP1I+y3DNZfZ3rVG4LP/YEUQf9ww+/Yk=
+X-Google-Smtp-Source: APiQypLLpQ1go2x3CZKQMLdXhXL51CJijVhUn2ynZwQqGXXbwWVBtB3g/qsaeXbF2BzOS6Xz+qhM2hMbcW0+peAcStU=
+X-Received: by 2002:a05:620a:88e:: with SMTP id b14mr5734565qka.449.1586545222282;
+ Fri, 10 Apr 2020 12:00:22 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from macbook-pro-52.local.dhcp.thefacebook.com (2620:10d:c090:400::5:2973) by MWHPR08CA0041.namprd08.prod.outlook.com (2603:10b6:300:c0::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.20 via Frontend Transport; Fri, 10 Apr 2020 18:30:19 +0000
-X-Originating-IP: [2620:10d:c090:400::5:2973]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4370fff1-8c32-4c2d-c545-08d7dd7d39ac
-X-MS-TrafficTypeDiagnostic: MW3PR15MB3929:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW3PR15MB3929FF88AD0CCDEC067FBC36D3DE0@MW3PR15MB3929.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-Forefront-PRVS: 0369E8196C
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR15MB3883.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(136003)(346002)(39860400002)(366004)(376002)(396003)(66476007)(478600001)(36756003)(6916009)(966005)(45080400002)(4326008)(6486002)(66946007)(316002)(6512007)(53546011)(8676002)(2616005)(8936002)(81156014)(6506007)(31696002)(86362001)(66556008)(186003)(16526019)(2906002)(54906003)(52116002)(31686004)(5660300002);DIR:OUT;SFP:1102;
-Received-SPF: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7B3l7oJ/7ROTyNrYIqMbF8SRtTqK/qP6Y2jwUkYCB2fC7Ed7j4YpeAlvpmf/9V+eVo7sHzxIiMGCNS3LpPz6fO79fvChSJNnBK4S3/zDZWwu9WuZON8u5GCv/o3kZdE3WCmpIfJBEbHJoTBu6xTDXCDamrdGO+3gZih8rCgBQxMMg2gW/4IQxnmTVhBpb2Qtdw4qTQOp9q00pTkYocIlCMAu5mcTZEHGSzxUCeTjZ8lVvXSdmAVCCdCpdnD6ezZeJNfgagPy4kXMYN8j5Nkl2YYyUG0bsiIBNWAwHUz9gwgcJb01DxNOoFYXQnKjBOCqiVURGs/r44BeX8VpTVB+Xqg6T9Y0rUhH+lKiGAjV7EHsOCKCaTOCJ6fjUiTXM17rr1kMAuSEuEU39uZIpxFYsiqY98akbcpyIiRX8Q0/jVmXjToHivJSorV+BG0k6d11f+klW+Cy5yHIHkjgtmgS0iwsYmdbt0U86fr2o9MARnNzulk6qyaQZErS16nnFqv18FGqDyxxNJLKsrxIAlu51A==
-X-MS-Exchange-AntiSpam-MessageData: qgJgK5M0AmvkKhuJHDTebf8bUGW9YkAHKQFU+PlB6z5KUliYCmtMXKXZMxKYt8+tqvrQ0UYZFQrwgzUKOriCNReVuO/rdNyWJxMh9MfUachIx7ouLo2VL30ISEn6q+xkwyhpjZlqAPu06iZs0UJbTmQevvmgyow1tg5gg7JjwR4czD/58PpC4bmPM88MJ7UY
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4370fff1-8c32-4c2d-c545-08d7dd7d39ac
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2020 18:30:20.7077
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +/4d/hHoh0REFlBGE7Z6tGFgZhqG2m0JgxW5ETie9fxVo+LD1RtbETHMSU89LRXM
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3929
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-10_07:2020-04-09,2020-04-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- lowpriorityscore=0 spamscore=0 impostorscore=0 priorityscore=1501
- suspectscore=0 adultscore=0 malwarescore=0 bulkscore=0 mlxlogscore=972
- mlxscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004100140
-X-FB-Internal: deliver
+References: <20200410000425.2597887-1-andriin@fb.com> <CAG48ez1U70e8rU1NdTZ5ECS9kqSnQbpU5LBbk=iXmre+hGjuOQ@mail.gmail.com>
+In-Reply-To: <CAG48ez1U70e8rU1NdTZ5ECS9kqSnQbpU5LBbk=iXmre+hGjuOQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 10 Apr 2020 12:00:11 -0700
+Message-ID: <CAEf4BzZk8SzGQ4srkf1dApEqt84_ktpVQG9sVBBkK3GZ=xQzEA@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] bpf: prevent re-mmap()'ing BPF map as writable
+ for initially r/o mapping
+To:     Jann Horn <jannh@google.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Apr 10, 2020 at 1:51 AM Jann Horn <jannh@google.com> wrote:
+>
+> On Fri, Apr 10, 2020 at 2:04 AM Andrii Nakryiko <andriin@fb.com> wrote:
+> > VM_MAYWRITE flag during initial memory mapping determines if already mmap()'ed
+> > pages can be later remapped as writable ones through mprotect() call. To
+> > prevent user application to rewrite contents of memory-mapped as read-only and
+> > subsequently frozen BPF map, remove VM_MAYWRITE flag completely on initially
+> > read-only mapping.
+> >
+> > Alternatively, we could treat any memory-mapping on unfrozen map as writable
+> > and bump writecnt instead. But there is little legitimate reason to map
+> > BPF map as read-only and then re-mmap() it as writable through mprotect(),
+> > instead of just mmap()'ing it as read/write from the very beginning.
+> >
+> > Fixes: fc9702273e2e ("bpf: Add mmap() support for BPF_MAP_TYPE_ARRAY")
+> > Reported-by: Jann Horn <jannh@google.com>
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> >  kernel/bpf/syscall.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index 64783da34202..f7f6db50a085 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -635,6 +635,10 @@ static int bpf_map_mmap(struct file *filp, struct vm_area_struct *vma)
+> >         /* set default open/close callbacks */
+> >         vma->vm_ops = &bpf_map_default_vmops;
+> >         vma->vm_private_data = map;
+> > +       vma->vm_flags &= ~VM_MAYEXEC;
+> > +       if (!(vma->vm_flags & VM_WRITE))
+> > +               /* disallow re-mapping with PROT_WRITE */
+> > +               vma->vm_flags &= ~VM_MAYWRITE;
+>
+> The .open and .close handlers for the VMA are also wrong:
 
+Yes, it has to check VM_MAYWRITE now, my bad, thanks for catching
+this! Extended selftest to validate that scenario as well.
 
-On 4/9/20 2:20 AM, kernel test robot wrote:
-> FYI, we noticed the following commit (built with gcc-7):
-> 
-> commit: 1bcd60aafb39b0258603f63d5f451d51ecad245c ("[RFC PATCH bpf-next 03/16] bpf: provide a way for targets to register themselves")
-> url: https://github.com/0day-ci/linux/commits/Yonghong-Song/bpf-implement-bpf-based-dumping-of-kernel-data-structures/20200409-075105
-> base: https://git.kernel.org/cgit/linux/kernel/git/bpf/bpf-next.git master
-> 
-> in testcase: boot
-> 
-> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> 
-> 
-> +------------------------------------------+------------+------------+
-> |                                          | 034a45e60c | 1bcd60aafb |
-> +------------------------------------------+------------+------------+
-> | boot_successes                           | 4          | 0          |
-> | boot_failures                            | 0          | 4          |
-> | canonical_address#:#[##]                 | 0          | 4          |
-> | RIP:mntget                               | 0          | 4          |
-> | Kernel_panic-not_syncing:Fatal_exception | 0          | 4          |
-> +------------------------------------------+------------+------------+
-> 
-> 
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <rong.a.chen@intel.com>
-> 
-> 
-> [    0.701420] smpboot: Total of 2 processors activated (11999.99 BogoMIPS)
-> [    0.704085] devtmpfs: initialized
-> [    0.705366] x86/mm: Memory block size: 128MB
-> [    0.710473] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
-> [    0.711845] futex hash table entries: 512 (order: 3, 32768 bytes, linear)
-> [    0.713988] general protection fault, probably for non-canonical address 0xcb7b8adb56376100: 0000 [#1] SMP PTI
-> [    0.715820] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.6.0-02317-g1bcd60aafb39b0 #1
-> [    0.715820] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-> [    0.715820] RIP: 0010:mntget+0xd/0x15
-> [    0.715820] Code: 65 48 33 04 25 28 00 00 00 74 05 e8 9d e2 e5 ff 48 83 c4 30 5b 5d 41 5c 41 5d 41 5e c3 66 66 66 66 90 48 85 ff 48 89 f8 74 07 <48> 8b 57 28 65 ff 02 c3 66 66 66 66 90 53 48 8b 47 20 48 89 fb 48
-> [    0.715820] RSP: 0000:ffffc90000013e48 EFLAGS: 00010286
-> [    0.715820] RAX: cb7b8adb56376100 RBX: 0000000000000000 RCX: 0000000000000000
-> [    0.715820] RDX: 0000000000000001 RSI: ffffc90000013e34 RDI: cb7b8adb56376100
-> [    0.715820] RBP: ffffc90000013e88 R08: ffffffff8209b97a R09: ffff88822a456370
-> [    0.715820] R10: 0000000000000044 R11: ffff88822a04efd8 R12: ffffc90000013e84
-> [    0.715820] R13: ffffffff8226c380 R14: 0000000000000002 R15: ffffffff826d566d
-> [    0.715820] FS:  0000000000000000(0000) GS:ffff88823fc00000(0000) knlGS:0000000000000000
-> [    0.715820] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    0.715820] CR2: 0000000000000000 CR3: 0000000002212000 CR4: 00000000000406f0
-> [    0.715820] Call Trace:
-> [    0.715820]  simple_pin_fs+0x75/0x98
-> [    0.715820]  ? stack_map_init+0x48/0x48
-> [    0.715820]  __bpfdump_init+0x5a/0xd7
-> [    0.715820]  ? register_tracer+0x14c/0x1ac
-> [    0.715820]  do_one_initcall+0x9d/0x1bb
-> [    0.715820]  kernel_init_freeable+0x1c1/0x224
-> [    0.715820]  ? rest_init+0xc6/0xc6
-> [    0.715820]  kernel_init+0xa/0xff
-> [    0.715820]  ret_from_fork+0x35/0x40
-> [    0.715820] Modules linked in:
-> [    0.715855] ---[ end trace 1e6dc54c74784c94 ]---
-> [    0.717664] RIP: 0010:mntget+0xd/0x15
-> [    0.719174] Code: 65 48 33 04 25 28 00 00 00 74 05 e8 9d e2 e5 ff 48 83 c4 30 5b 5d 41 5c 41 5d 41 5e c3 66 66 66 66 90 48 85 ff 48 89 f8 74 07 <48> 8b 57 28 65 ff 02 c3 66 66 66 66 90 53 48 8b 47 20 48 89 fb 48
-> [    0.719837] RSP: 0000:ffffc90000013e48 EFLAGS: 00010286
-> [    0.721734] RAX: cb7b8adb56376100 RBX: 0000000000000000 RCX: 0000000000000000
-> [    0.723831] RDX: 0000000000000001 RSI: ffffc90000013e34 RDI: cb7b8adb56376100
-> [    0.726052] RBP: ffffc90000013e88 R08: ffffffff8209b97a R09: ffff88822a456370
-> [    0.727834] R10: 0000000000000044 R11: ffff88822a04efd8 R12: ffffc90000013e84
-> [    0.729939] R13: ffffffff8226c380 R14: 0000000000000002 R15: ffffffff826d566d
-> [    0.731834] FS:  0000000000000000(0000) GS:ffff88823fc00000(0000) knlGS:0000000000000000
-> [    0.734900] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    0.735836] CR2: 0000000000000000 CR3: 0000000002212000 CR4: 00000000000406f0
-> [    0.738028] Kernel panic - not syncing: Fatal exception
+>
+> /* called for any extra memory-mapped regions (except initial) */
+> static void bpf_map_mmap_open(struct vm_area_struct *vma)
+> {
+>         struct bpf_map *map = vma->vm_file->private_data;
+>
+>         bpf_map_inc_with_uref(map);
+>
+>         if (vma->vm_flags & VM_WRITE) {
+>                 mutex_lock(&map->freeze_mutex);
+>                 map->writecnt++;
+>                 mutex_unlock(&map->freeze_mutex);
+>         }
+> }
+>
+> /* called for all unmapped memory region (including initial) */
+> static void bpf_map_mmap_close(struct vm_area_struct *vma)
+> {
+>         struct bpf_map *map = vma->vm_file->private_data;
+>
+>         if (vma->vm_flags & VM_WRITE) {
+>                 mutex_lock(&map->freeze_mutex);
+>                 map->writecnt--;
+>                 mutex_unlock(&map->freeze_mutex);
+>         }
+>
+>         bpf_map_put_with_uref(map);
+> }
+>
+> static const struct vm_operations_struct bpf_map_default_vmops = {
+>         .open           = bpf_map_mmap_open,
+>         .close          = bpf_map_mmap_close,
+> };
+>
+> You can use mprotect() to flip VM_WRITE off while a VMA exists, and
+> then the writecnt won't go down when you close it. Or you could even
+> get the writecnt to go negative if you map as writable, then
+> mprotect() to readonly, then split the VMA a few times, mprotect the
+> split VMAs to writable, and then unmap them.
+>
+> I think you'll want to also check for MAYWRITE here.
+>
+> Also, the bpf_map_inc_with_uref/bpf_map_put_with_uref here look
+> superfluous - the VMA holds a reference to the file, and the file
+> holds a reference to the map.
 
-Thanks for the reporting! This is due to an uninitialized variable. Will
-fix in the next version.
-
-> 
-> Elapsed time: 60
-> 
-> qemu-img create -f qcow2 disk-vm-snb-ssd-31-0 256G
-> qemu-img create -f qcow2 disk-vm-snb-ssd-31-1 256G
-> 
-> 
-> To reproduce:
-> 
->          # build kernel
-> 	cd linux
-> 	cp config-5.6.0-02317-g1bcd60aafb39b0 .config
-> 	make HOSTCC=gcc-7 CC=gcc-7 ARCH=x86_64 olddefconfig prepare modules_prepare bzImage
-> 
->          git clone https://github.com/intel/lkp-tests.git
->          cd lkp-tests
->          bin/lkp qemu -k <bzImage> job-script # job-script is attached in this email
-> 
-> 
-> 
-> Thanks,
-> Rong Chen
-> 
+Hm.. So the file from which memory-mapping was created originally will
+stay referenced by VMA subsystem until the last VMA segment is
+unmmaped (and bpf_map_mmap_close is called for it), even if file
+itself is closed from user-space? It makes sense, though I didn't
+realize it at the time I was implementing this. I'll drop refcounting
+then.
