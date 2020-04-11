@@ -2,39 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1696F1A5B38
-	for <lists+bpf@lfdr.de>; Sun, 12 Apr 2020 01:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB991A59F9
+	for <lists+bpf@lfdr.de>; Sun, 12 Apr 2020 01:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727327AbgDKXEl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 11 Apr 2020 19:04:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38208 "EHLO mail.kernel.org"
+        id S1729481AbgDKXkN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 11 Apr 2020 19:40:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727269AbgDKXEj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 11 Apr 2020 19:04:39 -0400
+        id S1727919AbgDKXH2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 11 Apr 2020 19:07:28 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E5A7215A4;
-        Sat, 11 Apr 2020 23:04:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE7FF20787;
+        Sat, 11 Apr 2020 23:07:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586646279;
-        bh=trlwDwThN8VpndS+Dosau8+WGoHbHcbywweE9WxjASU=;
+        s=default; t=1586646447;
+        bh=h08k/XGB9YiKKAdTyYQIrzIjmYkhYs7ZSTs9y0CzzVs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WATsBN2IA4yLD5aPmOkGZ0YlZgyoEivtEjnSTloxHGpSqzBQSgeJOiLIN11pr/e4V
-         6qnxhLlK9Aa1TDzUKYLOQ+9Wxq6i5hS/Q6f/DsvJJo//TjVeFTFRGY+jcRgdbSI1ZQ
-         4sMQFAcZEI17+9r4fDYjo9spzuLq8IVfHQC86QW4=
+        b=N/835YQ1eNIDhLkRpzm8i108HL7ND/KuyET/gCOxgrgvJKcUgkxWN6aq0OP1l7Fui
+         Fhj1zJT0iIgTH2yq9ne1CA/VwxErlG32O9+N6Z/38QQsQhsCEjnL5VWqRWvvyckMpq
+         HQGlSumYC82iCqDERcec3WpLUxVEqmgVpS9LUEWQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 042/149] libbpf: Fix handling of optional field_name in btf_dump__emit_type_decl
-Date:   Sat, 11 Apr 2020 19:01:59 -0400
-Message-Id: <20200411230347.22371-42-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.5 018/121] selftests/bpf: Fix test_progs's parsing of test numbers
+Date:   Sat, 11 Apr 2020 19:05:23 -0400
+Message-Id: <20200411230706.23855-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200411230347.22371-1-sashal@kernel.org>
-References: <20200411230347.22371-1-sashal@kernel.org>
+In-Reply-To: <20200411230706.23855-1-sashal@kernel.org>
+References: <20200411230706.23855-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -46,33 +48,60 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Andrii Nakryiko <andriin@fb.com>
 
-[ Upstream commit 320a36063e1441210106aa33997ad3770d4c86b4 ]
+[ Upstream commit fc32490bff855a539d253c8a52c5a1ba51d1325a ]
 
-Internal functions, used by btf_dump__emit_type_decl(), assume field_name is
-never going to be NULL. Ensure it's always the case.
+When specifying disjoint set of tests, test_progs doesn't set skipped test's
+array elements to false. This leads to spurious execution of tests that should
+have been skipped. Fix it by explicitly initializing them to false.
 
-Fixes: 9f81654eebe8 ("libbpf: Expose BTF-to-C type declaration emitting API")
+Fixes: 3a516a0a3a7b ("selftests/bpf: add sub-tests support for test_progs")
 Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20200303180800.3303471-1-andriin@fb.com
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Link: https://lore.kernel.org/bpf/20200314013932.4035712-2-andriin@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/btf_dump.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/bpf/test_progs.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-index bd09ed1710f12..dc451e4de5ad4 100644
---- a/tools/lib/bpf/btf_dump.c
-+++ b/tools/lib/bpf/btf_dump.c
-@@ -1030,7 +1030,7 @@ int btf_dump__emit_type_decl(struct btf_dump *d, __u32 id,
- 	if (!OPTS_VALID(opts, btf_dump_emit_type_decl_opts))
- 		return -EINVAL;
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index 7fa7d08a8104d..849c1e8b8e3dc 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -361,7 +361,7 @@ static int libbpf_print_fn(enum libbpf_print_level level,
  
--	fname = OPTS_GET(opts, field_name, NULL);
-+	fname = OPTS_GET(opts, field_name, "");
- 	lvl = OPTS_GET(opts, indent_level, 0);
- 	btf_dump_emit_type_decl(d, id, fname, lvl);
- 	return 0;
+ int parse_num_list(const char *s, struct test_selector *sel)
+ {
+-	int i, set_len = 0, num, start = 0, end = -1;
++	int i, set_len = 0, new_len, num, start = 0, end = -1;
+ 	bool *set = NULL, *tmp, parsing_end = false;
+ 	char *next;
+ 
+@@ -396,18 +396,19 @@ int parse_num_list(const char *s, struct test_selector *sel)
+ 			return -EINVAL;
+ 
+ 		if (end + 1 > set_len) {
+-			set_len = end + 1;
+-			tmp = realloc(set, set_len);
++			new_len = end + 1;
++			tmp = realloc(set, new_len);
+ 			if (!tmp) {
+ 				free(set);
+ 				return -ENOMEM;
+ 			}
++			for (i = set_len; i < start; i++)
++				tmp[i] = false;
+ 			set = tmp;
++			set_len = new_len;
+ 		}
+-		for (i = start; i <= end; i++) {
++		for (i = start; i <= end; i++)
+ 			set[i] = true;
+-		}
+-
+ 	}
+ 
+ 	if (!set)
 -- 
 2.20.1
 
