@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0213D1A5B7D
-	for <lists+bpf@lfdr.de>; Sun, 12 Apr 2020 01:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 773941A5B59
+	for <lists+bpf@lfdr.de>; Sun, 12 Apr 2020 01:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727533AbgDKXuB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 11 Apr 2020 19:50:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37534 "EHLO mail.kernel.org"
+        id S1727083AbgDKXET (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 11 Apr 2020 19:04:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727052AbgDKXEP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 11 Apr 2020 19:04:15 -0400
+        id S1727077AbgDKXET (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 11 Apr 2020 19:04:19 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85C9021924;
-        Sat, 11 Apr 2020 23:04:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A40720708;
+        Sat, 11 Apr 2020 23:04:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586646255;
-        bh=/SDnD2eq8+OiMeGXkOs2RH6/El94rXKUQzFr8/5uLIw=;
+        s=default; t=1586646259;
+        bh=CUt+1MvioeiDPiQK9Zh7ckRIYPWV0LcGrYNTJZ3Hvws=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=syQsqRuHXP9KaJQK2HjI0nGY82sFV7flSFENXdGlWzScNlhI40SY5/XOy1uiK8Yqb
-         UlhyMHaBZMJ0+RMhH96QZXctmGxhf5QuVGmziKBNysHvRG6eVF1fd1ZATDDfWQSS2O
-         hNl7t/gHxbrFZV4NgMkgNao1LJPAB3np5FL1xx1o=
+        b=Q2NECbj4tTI4vcmoam3QW1DFC6VDMLI2uTLopGtXGvjU3cQlQDgF0QZGyHhhH7jmf
+         74PDB1OpqX97LfhEOlrcra4fG3Bb9kHQALB2qhlXaxiP4x0pKFe7pJZyAwMRs8Duzf
+         FK7HV4aBHq74ZQAxtXPenghJpwoKI/jL+yEPMomw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Wenbo Zhang <ethercflow@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 022/149] selftests/bpf: Fix test_progs's parsing of test numbers
-Date:   Sat, 11 Apr 2020 19:01:39 -0400
-Message-Id: <20200411230347.22371-22-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.6 025/149] libbpf: Ignore incompatible types with matching name during CO-RE relocation
+Date:   Sat, 11 Apr 2020 19:01:42 -0400
+Message-Id: <20200411230347.22371-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200411230347.22371-1-sashal@kernel.org>
 References: <20200411230347.22371-1-sashal@kernel.org>
@@ -48,60 +48,41 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Andrii Nakryiko <andriin@fb.com>
 
-[ Upstream commit fc32490bff855a539d253c8a52c5a1ba51d1325a ]
+[ Upstream commit d121e1d34b72c4975ff0340901d926c0aaf98174 ]
 
-When specifying disjoint set of tests, test_progs doesn't set skipped test's
-array elements to false. This leads to spurious execution of tests that should
-have been skipped. Fix it by explicitly initializing them to false.
+When finding target type candidates, ignore forward declarations, functions,
+and other named types of incompatible kind. Not doing this can cause false
+errors.  See [0] for one such case (due to struct pt_regs forward
+declaration).
 
-Fixes: 3a516a0a3a7b ("selftests/bpf: add sub-tests support for test_progs")
+  [0] https://github.com/iovisor/bcc/pull/2806#issuecomment-598543645
+
+Fixes: ddc7c3042614 ("libbpf: implement BPF CO-RE offset relocation algorithm")
+Reported-by: Wenbo Zhang <ethercflow@gmail.com>
 Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Acked-by: Martin KaFai Lau <kafai@fb.com>
-Link: https://lore.kernel.org/bpf/20200314013932.4035712-2-andriin@fb.com
+Link: https://lore.kernel.org/bpf/20200313172336.1879637-3-andriin@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/test_progs.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ tools/lib/bpf/libbpf.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-index bab1e6f1d8f13..709b6d43bbed9 100644
---- a/tools/testing/selftests/bpf/test_progs.c
-+++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -408,7 +408,7 @@ static int parse_str_list(const char *s, struct str_set *set)
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 7469c7dcc15e7..80ab0acc9dcdd 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -3868,6 +3868,10 @@ static struct ids_vec *bpf_core_find_cands(const struct btf *local_btf,
+ 		if (str_is_empty(targ_name))
+ 			continue;
  
- int parse_num_list(const char *s, struct test_selector *sel)
- {
--	int i, set_len = 0, num, start = 0, end = -1;
-+	int i, set_len = 0, new_len, num, start = 0, end = -1;
- 	bool *set = NULL, *tmp, parsing_end = false;
- 	char *next;
- 
-@@ -443,18 +443,19 @@ int parse_num_list(const char *s, struct test_selector *sel)
- 			return -EINVAL;
- 
- 		if (end + 1 > set_len) {
--			set_len = end + 1;
--			tmp = realloc(set, set_len);
-+			new_len = end + 1;
-+			tmp = realloc(set, new_len);
- 			if (!tmp) {
- 				free(set);
- 				return -ENOMEM;
- 			}
-+			for (i = set_len; i < start; i++)
-+				tmp[i] = false;
- 			set = tmp;
-+			set_len = new_len;
- 		}
--		for (i = start; i <= end; i++) {
-+		for (i = start; i <= end; i++)
- 			set[i] = true;
--		}
--
- 	}
- 
- 	if (!set)
++		t = skip_mods_and_typedefs(targ_btf, i, NULL);
++		if (!btf_is_composite(t) && !btf_is_array(t))
++			continue;
++
+ 		targ_essent_len = bpf_core_essential_name_len(targ_name);
+ 		if (targ_essent_len != local_essent_len)
+ 			continue;
 -- 
 2.20.1
 
