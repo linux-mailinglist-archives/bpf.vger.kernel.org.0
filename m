@@ -1,52 +1,84 @@
 Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FBF41A61DA
-	for <lists+bpf@lfdr.de>; Mon, 13 Apr 2020 05:59:30 +0200 (CEST)
+Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBB41A65A7
+	for <lists+bpf@lfdr.de>; Mon, 13 Apr 2020 13:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728659AbgDMD72 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 12 Apr 2020 23:59:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:55342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728631AbgDMD72 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 12 Apr 2020 23:59:28 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [23.128.96.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3A5C0A3BE0
-        for <bpf@vger.kernel.org>; Sun, 12 Apr 2020 20:59:29 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 8152B127AE1F3;
-        Sun, 12 Apr 2020 20:59:28 -0700 (PDT)
-Date:   Sun, 12 Apr 2020 20:59:27 -0700 (PDT)
-Message-Id: <20200412.205927.1627306630338317701.davem@davemloft.net>
-To:     me@jibi.io
-Cc:     bpf@vger.kernel.org, jasowang@redhat.com
-Subject: Re: [PATCH 1/1] net: tun: record RX queue in skb before
- do_xdp_generic()
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200410162059.15438-2-me@jibi.io>
-References: <20200410162059.15438-1-me@jibi.io>
-        <20200410162059.15438-2-me@jibi.io>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Sun, 12 Apr 2020 20:59:28 -0700 (PDT)
+        id S1729032AbgDMLfL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Apr 2020 07:35:11 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:58814 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728960AbgDMLfL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Apr 2020 07:35:11 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id AD1E02C3D16DCE273A7E;
+        Mon, 13 Apr 2020 19:35:07 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 13 Apr 2020 19:35:06 +0800
+From:   Mao Wenan <maowenan@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <andriin@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+Subject: [PATCH -next] bpf: remove set but not used variable 'dst_known'
+Date:   Mon, 13 Apr 2020 19:37:03 +0800
+Message-ID: <20200413113703.194287-1-maowenan@huawei.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Gilberto Bertin <me@jibi.io>
-Date: Fri, 10 Apr 2020 18:20:59 +0200
+Fixes gcc '-Wunused-but-set-variable' warning:
 
-> This allows netif_receive_generic_xdp() to correctly determine the RX
-> queue from which the skb is coming, so that the context passed to the
-> XDP program will contain the correct RX queue index.
-> 
-> Signed-off-by: Gilberto Bertin <me@jibi.io>
+kernel/bpf/verifier.c:5603:18: warning: variable ‘dst_known’
+set but not used [-Wunused-but-set-variable]
 
-Applied and queued up for -stable, thanks.
+It is not used since commit f1174f77b50c ("bpf/verifier:
+rework value tracking")
+
+Signed-off-by: Mao Wenan <maowenan@huawei.com>
+---
+ kernel/bpf/verifier.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 04c6630cc18f..c9f50969a689 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5600,7 +5600,7 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
+ {
+ 	struct bpf_reg_state *regs = cur_regs(env);
+ 	u8 opcode = BPF_OP(insn->code);
+-	bool src_known, dst_known;
++	bool src_known;
+ 	s64 smin_val, smax_val;
+ 	u64 umin_val, umax_val;
+ 	s32 s32_min_val, s32_max_val;
+@@ -5622,7 +5622,6 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
+ 
+ 	if (alu32) {
+ 		src_known = tnum_subreg_is_const(src_reg.var_off);
+-		dst_known = tnum_subreg_is_const(dst_reg->var_off);
+ 		if ((src_known &&
+ 		     (s32_min_val != s32_max_val || u32_min_val != u32_max_val)) ||
+ 		    s32_min_val > s32_max_val || u32_min_val > u32_max_val) {
+@@ -5634,7 +5633,6 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
+ 		}
+ 	} else {
+ 		src_known = tnum_is_const(src_reg.var_off);
+-		dst_known = tnum_is_const(dst_reg->var_off);
+ 		if ((src_known &&
+ 		     (smin_val != smax_val || umin_val != umax_val)) ||
+ 		    smin_val > smax_val || umin_val > umax_val) {
+-- 
+2.17.1
+
