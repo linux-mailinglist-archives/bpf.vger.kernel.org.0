@@ -2,55 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 498981A6F6E
-	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 00:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C30BF1A6F93
+	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 01:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389734AbgDMWtf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Apr 2020 18:49:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60290 "EHLO
+        id S2389828AbgDMXBH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Apr 2020 19:01:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389720AbgDMWqm (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 13 Apr 2020 18:46:42 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E492EC0A3BDC;
-        Mon, 13 Apr 2020 15:47:45 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id b10so8605548qtt.9;
-        Mon, 13 Apr 2020 15:47:45 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1728050AbgDMXBE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 13 Apr 2020 19:01:04 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11BBFC0A3BDC;
+        Mon, 13 Apr 2020 16:01:05 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id b10so8629441qtt.9;
+        Mon, 13 Apr 2020 16:01:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=h+DdmF0NCCrRn7Hgd79ggGYVwYbvBubuzbfq6+NRA6c=;
-        b=e39erTqpTo/GqHzA3BrQvYuGupcqmMyw7G2VqRRtkQM7UaxMBn51dCLLEB+1tgu574
-         lPhC0QxfehXIeafe2gdDl/azG7g2alKBicIVUcbbAgU42lK+AYkriXl4a+qwakEuD/VF
-         LTUx/0hQInl7hqdlyO0KqyFS08mBCTDA8ArFi9QgfYeFQ+fYXZ5scMEGFbw3EoGrpK/M
-         Gjg2Gcnf4nzW4LSbsMnORfbMDMFr0Je3ksk1EQVRb1a7qzlhcyDpNtAWvaRnWB7Ir/yB
-         uUe+yvxuyPTQIkoYesIIEy2RoSWW3yweZWl9UelWq3YGHpjgsQEjrE70gujgTeLLXQZl
-         5moA==
+        bh=CN+ze2zFPwxmB3EYCvaRIwTK4A4Ycgw65RJkPZl0Mrc=;
+        b=iDtUMlYHpc/g9fgLfdN+9m2vxy2uf30OjMPtJ48yDpueBxzgHzuKpU9oImM3leQqz0
+         kgo7BeMXi0XDbUmpMIv9nYUBHgKQWuX2SHfsmZye0wjooget7l+D6BGHOWTodRNMxfEc
+         9cn/1LVwY8RaNOthNbs4ws6o+lTVqjVVnILkhZfjt7hGjtDHEejbm+txcBCGnpPmP/7y
+         DgQ8UX7Qt7DsYfdHATtcPtKV3Ng1MFZurS62KTjEDZlJ/KZXJAVnzdmL71BwXcAI4qqX
+         Vkkv3AN2VzvDf7NbBTipIDmcfFPj7xZvhG/ybeu0CNL9G5alW/+pIKJw5DyMhUHZF+St
+         A31g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=h+DdmF0NCCrRn7Hgd79ggGYVwYbvBubuzbfq6+NRA6c=;
-        b=nKs8ZNG3BG/x70aV+HFc0mHQqhZRb2/+3i/+b89NGPzVb/pvo5P046elkbIoqCCPqk
-         duGQtbAdNBKWaSVE2daK/Hilyy52E4ux7zNTA6H/L6n2hJJQUN7G85PcpvncEmmY4L8N
-         w0gS4ThisGMpJNsdxKC2H2nXYJqWYCsYzIQR5AxizLe2KzViSHPOtcTL8eQi1gHQ2Vkg
-         5HfAYaBMsPWUtHvCAamopgP11AjDQIhgUoXUclJYrdXcHuyWSoFQ7uJ/pSYZAGHaUq2Q
-         67lvKGKXtyoK8OZfuaxd7bw9dL58BhJihVhDO6L5JJkbbGCVq6IwaGstLQo0Lw8be/2L
-         Y0dQ==
-X-Gm-Message-State: AGi0PubiNQOSZ7cxIvbylj1SEmFkMYRft0+CEsVHx53Pq88Qpa//DgkF
-        Qe4+c/PucX9tDzz26iYzVWnzCEPxPHlMZ8LobpE=
-X-Google-Smtp-Source: APiQypLXZJZ1d05B2yb4IEsjh9UBmSDr1t8CaG69xPZQSmXsN+KbLGYfUXHI//rYgPrwOyHQUCRbADexoO0oq6/nZHc=
-X-Received: by 2002:ac8:468d:: with SMTP id g13mr13246082qto.59.1586818065133;
- Mon, 13 Apr 2020 15:47:45 -0700 (PDT)
+        bh=CN+ze2zFPwxmB3EYCvaRIwTK4A4Ycgw65RJkPZl0Mrc=;
+        b=iS4XRtcCZjMdirXzdOAAchFUOcvdr6ROS4hqTzRofryor5rwRUSxIJhzhO2Qhh/rpy
+         OiXjVS6y8lwEAH2oFFcXgHmvaisv4kU9vbk55NCxsfC5k+yDm9egCKpkvh+b3bNIn7X8
+         vuwZ99lt6LvvmL2xub7EiXRrF6ru/UfuUspFHArXNg4TWYMQ8o9y5B4KR79I5LaY6qFQ
+         6wu+VlD0ImQ06zwVrlLPH/nAH3cvBwHpIpE6WYIIwl0rUAmmxA3cOcnpO41KhMy9TtQt
+         +9PZaNLPFWqWo/VhUvkY1mHo9nAxEbQyBiBCUQldc34lK1ZXRTLGSplo6tMaKpA3NXIv
+         Pc0g==
+X-Gm-Message-State: AGi0Pub/mP+28UfzimH/gfSAPZcJpFUaeNNBb6HVdjb4fCOVoruzwbr4
+        DR/lowYGMoyp7CCrdeSk33JFVhONDLbx7vGtkjE=
+X-Google-Smtp-Source: APiQypIZTQ88yT8sUAekL4byrt0Vp9gX70djLyJpOr7p/YSlNr5hHkoEupBMERang9VTaAsKdEiD/8UVjbjXQKXJSTI=
+X-Received: by 2002:ac8:3f6d:: with SMTP id w42mr9173506qtk.171.1586818864078;
+ Mon, 13 Apr 2020 16:01:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200408232520.2675265-1-yhs@fb.com> <20200408232528.2675856-1-yhs@fb.com>
- <CAEf4BzaBA_t9HUzTpnHFfqyxP0u-4hFJ0V9KW5DE1Tm6KOC9Kg@mail.gmail.com>
-In-Reply-To: <CAEf4BzaBA_t9HUzTpnHFfqyxP0u-4hFJ0V9KW5DE1Tm6KOC9Kg@mail.gmail.com>
+References: <20200408232520.2675265-1-yhs@fb.com> <20200408232529.2676060-1-yhs@fb.com>
+In-Reply-To: <20200408232529.2676060-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 13 Apr 2020 15:47:34 -0700
-Message-ID: <CAEf4BzbpU02rXZDx3Re8nR5iuPebQcvPkcui9m9r+nDyDVt2uw@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 07/16] bpf: add bpf_map target
+Date:   Mon, 13 Apr 2020 16:00:52 -0700
+Message-ID: <CAEf4BzYYPHAkx4LFuTs3ejqw2-YUzkLLp7+5WqAWBWPrebymtA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 08/16] bpf: add task and task/file targets
 To:     Yonghong Song <yhs@fb.com>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -64,96 +63,210 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 3:18 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Wed, Apr 8, 2020 at 4:26 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> On Wed, Apr 8, 2020 at 4:26 PM Yonghong Song <yhs@fb.com> wrote:
-> >
-> > This patch added bpf_map target. Traversing all bpf_maps
-> > through map_idr. A reference is held for the map during
-> > the show() to ensure safety and correctness for field accesses.
-> >
-> > Signed-off-by: Yonghong Song <yhs@fb.com>
-> > ---
-> >  kernel/bpf/syscall.c | 104 +++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 104 insertions(+)
-> >
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index b5e4f18cc633..62a872a406ca 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -3797,3 +3797,107 @@ SYSCALL_DEFINE3(bpf, int, cmd, union bpf_attr __user *, uattr, unsigned int, siz
-> >
-> >         return err;
-> >  }
-> > +
-> > +struct bpfdump_seq_map_info {
-> > +       struct bpf_map *map;
-> > +       u32 id;
-> > +};
-> > +
-> > +static struct bpf_map *bpf_map_seq_get_next(u32 *id)
-> > +{
-> > +       struct bpf_map *map;
-> > +
-> > +       spin_lock_bh(&map_idr_lock);
-> > +       map = idr_get_next(&map_idr, id);
-> > +       if (map)
-> > +               map = __bpf_map_inc_not_zero(map, false);
-> > +       spin_unlock_bh(&map_idr_lock);
-> > +
-> > +       return map;
-> > +}
-> > +
-> > +static void *bpf_map_seq_start(struct seq_file *seq, loff_t *pos)
-> > +{
-> > +       struct bpfdump_seq_map_info *info = seq->private;
-> > +       struct bpf_map *map;
-> > +       u32 id = info->id + 1;
+> Only the tasks belonging to "current" pid namespace
+> are enumerated.
 >
-> shouldn't it always start from id=0? This seems buggy and should break
-> on seq_file restart.
+> For task/file target, the bpf program will have access to
+>   struct task_struct *task
+>   u32 fd
+>   struct file *file
+> where fd/file is an open file for the task.
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  kernel/bpf/Makefile    |   2 +-
+>  kernel/bpf/dump_task.c | 294 +++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 295 insertions(+), 1 deletion(-)
+>  create mode 100644 kernel/bpf/dump_task.c
+>
+> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+> index 4a1376ab2bea..7e2c73deabab 100644
+> --- a/kernel/bpf/Makefile
+> +++ b/kernel/bpf/Makefile
+> @@ -26,7 +26,7 @@ obj-$(CONFIG_BPF_SYSCALL) += reuseport_array.o
+>  endif
+>  ifeq ($(CONFIG_SYSFS),y)
+>  obj-$(CONFIG_DEBUG_INFO_BTF) += sysfs_btf.o
+> -obj-$(CONFIG_BPF_SYSCALL) += dump.o
+> +obj-$(CONFIG_BPF_SYSCALL) += dump.o dump_task.o
+>  endif
+>  ifeq ($(CONFIG_BPF_JIT),y)
+>  obj-$(CONFIG_BPF_SYSCALL) += bpf_struct_ops.o
+> diff --git a/kernel/bpf/dump_task.c b/kernel/bpf/dump_task.c
+> new file mode 100644
+> index 000000000000..69b0bcec68e9
+> --- /dev/null
+> +++ b/kernel/bpf/dump_task.c
+> @@ -0,0 +1,294 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Copyright (c) 2020 Facebook */
+> +
+> +#include <linux/init.h>
+> +#include <linux/namei.h>
+> +#include <linux/pid_namespace.h>
+> +#include <linux/fs.h>
+> +#include <linux/fdtable.h>
+> +#include <linux/filter.h>
+> +
+> +struct bpfdump_seq_task_info {
+> +       struct pid_namespace *ns;
+> +       struct task_struct *task;
+> +       u32 id;
+> +};
+> +
+> +static struct task_struct *task_seq_get_next(struct pid_namespace *ns, u32 *id)
+> +{
+> +       struct task_struct *task;
+> +       struct pid *pid;
+> +
+> +       rcu_read_lock();
+> +       pid = idr_get_next(&ns->idr, id);
+> +       task = get_pid_task(pid, PIDTYPE_PID);
+> +       if (task)
+> +               get_task_struct(task);
 
-Actually never mind this, from reading fs/seq_file.c code I've been
-under impression that start is only called for full restarts, but
-that's not true.
+I think get_pid_task() already calls get_task_struct() internally on
+success. See also bpf_task_fd_query() implementation, it doesn't take
+extra refcnt on task.
 
+> +       rcu_read_unlock();
+> +
+> +       return task;
+> +}
+> +
 
+[...]
+
+> +static struct file *task_file_seq_get_next(struct pid_namespace *ns, u32 *id,
+> +                                          int *fd, struct task_struct **task,
+> +                                          struct files_struct **fstruct)
+> +{
+> +       struct files_struct *files;
+> +       struct task_struct *tk;
+> +       u32 sid = *id;
+> +       int sfd;
+> +
+> +       /* If this function returns a non-NULL file object,
+> +        * it held a reference to the files_struct and file.
+> +        * Otherwise, it does not hold any reference.
+> +        */
+> +again:
+> +       if (*fstruct) {
+> +               files = *fstruct;
+> +               sfd = *fd;
+> +       } else {
+> +               tk = task_seq_get_next(ns, &sid);
+> +               if (!tk)
+> +                       return NULL;
+> +               files = get_files_struct(tk);
+> +               put_task_struct(tk);
+> +               if (!files)
+> +                       return NULL;
+
+There might still be another task with its own files, so shouldn't we
+keep iterating tasks here?
+
+> +               *fstruct = files;
+> +               *task = tk;
+> +               if (sid == *id) {
+> +                       sfd = *fd;
+> +               } else {
+> +                       *id = sid;
+> +                       sfd = 0;
+> +               }
+> +       }
+> +
+> +       spin_lock(&files->file_lock);
+> +       for (; sfd < files_fdtable(files)->max_fds; sfd++) {
+> +               struct file *f;
+> +
+> +               f = fcheck_files(files, sfd);
+> +               if (!f)
+> +                       continue;
+> +
+> +               *fd = sfd;
+> +               get_file(f);
+> +               spin_unlock(&files->file_lock);
+> +               return f;
+> +       }
+> +
+> +       /* the current task is done, go to the next task */
+> +       spin_unlock(&files->file_lock);
+> +       put_files_struct(files);
+> +       *fstruct = NULL;
+> +       sid = ++(*id);
+> +       goto again;
+> +}
+> +
+
+[...]
+
+> +static int task_file_seq_show(struct seq_file *seq, void *v)
+> +{
+> +       struct bpfdump_seq_task_file_info *info = seq->private;
+> +       struct {
+> +               struct task_struct *task;
+> +               u32 fd;
+> +               struct file *file;
+> +               struct seq_file *seq;
+> +               u64 seq_num;
+
+should all the fields here be 8-byte aligned, including pointers
+(because BPF is 64-bit arch)? Well, at least `u32 fd` should?
+
+> +       } ctx = {
+> +               .file = v,
+> +               .seq = seq,
+> +       };
+> +       struct bpf_prog *prog;
+> +       int ret;
+> +
+> +       prog = bpf_dump_get_prog(seq, sizeof(struct bpfdump_seq_task_file_info),
+> +                                &ctx.seq_num);
+> +       ctx.task = info->task;
+> +       ctx.fd = info->fd;
+> +       ret = bpf_dump_run_prog(prog, &ctx);
+> +
+> +       return ret == 0 ? 0 : -EINVAL;
+> +}
+> +
+> +static const struct seq_operations task_file_seq_ops = {
+> +        .start  = task_file_seq_start,
+> +        .next   = task_file_seq_next,
+> +        .stop   = task_file_seq_stop,
+> +        .show   = task_file_seq_show,
+> +};
+> +
+> +int __init bpfdump__task(struct task_struct *task, struct seq_file *seq,
+> +                        u64 seq_num) {
+> +       return 0;
+> +}
+> +
+> +int __init bpfdump__task_file(struct task_struct *task, u32 fd,
+> +                             struct file *file, struct seq_file *seq,
+> +                             u64 seq_num)
+> +{
+> +       return 0;
+> +}
+> +
+> +static int __init task_dump_init(void)
+> +{
+> +       int ret;
+> +
+> +       ret = bpf_dump_reg_target("task", "bpfdump__task",
+> +                                 &task_seq_ops,
+> +                                 sizeof(struct bpfdump_seq_task_info), 0);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return bpf_dump_reg_target("task/file", "bpfdump__task_file",
+> +                                  &task_file_seq_ops,
+> +                                  sizeof(struct bpfdump_seq_task_file_info),
+> +                                  0);
+> +}
+> +late_initcall(task_dump_init);
+> --
+> 2.24.1
 >
-> > +
-> > +       map = bpf_map_seq_get_next(&id);
-> > +       if (!map)
->
-> bpf_map_seq_get_next will return error code, not NULL, if bpf_map
-> refcount couldn't be incremented. So this must be IS_ERR(map).
->
-> > +               return NULL;
-> > +
-> > +       ++*pos;
-> > +       info->map = map;
-> > +       info->id = id;
-> > +       return map;
-> > +}
-> > +
-> > +static void *bpf_map_seq_next(struct seq_file *seq, void *v, loff_t *pos)
-> > +{
-> > +       struct bpfdump_seq_map_info *info = seq->private;
-> > +       struct bpf_map *map;
-> > +       u32 id = info->id + 1;
-> > +
-> > +       ++*pos;
-> > +       map = bpf_map_seq_get_next(&id);
-> > +       if (!map)
->
-> same here, IS_ERR(map)
->
-> > +               return NULL;
-> > +
-> > +       __bpf_map_put(info->map, true);
-> > +       info->map = map;
-> > +       info->id = id;
-> > +       return map;
-> > +}
-> > +
->
-> [...]
