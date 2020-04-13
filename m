@@ -2,83 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBB41A65A7
-	for <lists+bpf@lfdr.de>; Mon, 13 Apr 2020 13:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4B31A65F3
+	for <lists+bpf@lfdr.de>; Mon, 13 Apr 2020 13:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729032AbgDMLfL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Apr 2020 07:35:11 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:58814 "EHLO huawei.com"
+        id S1729223AbgDMLvu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Apr 2020 07:51:50 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:60498 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728960AbgDMLfL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Apr 2020 07:35:11 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id AD1E02C3D16DCE273A7E;
-        Mon, 13 Apr 2020 19:35:07 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
+        id S1729178AbgDMLvu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Apr 2020 07:51:50 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 79E6F4CF4FE89C54BBF1;
+        Mon, 13 Apr 2020 19:51:47 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
  DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 13 Apr 2020 19:35:06 +0800
-From:   Mao Wenan <maowenan@huawei.com>
+ 14.3.487.0; Mon, 13 Apr 2020 19:51:41 +0800
+From:   Zou Wei <zou_wei@huawei.com>
 To:     <ast@kernel.org>, <daniel@iogearbox.net>, <kafai@fb.com>,
         <songliubraving@fb.com>, <yhs@fb.com>, <andriin@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-Subject: [PATCH -next] bpf: remove set but not used variable 'dst_known'
-Date:   Mon, 13 Apr 2020 19:37:03 +0800
-Message-ID: <20200413113703.194287-1-maowenan@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH-next] bpf: Verifier, remove unneeded conversion to bool
+Date:   Mon, 13 Apr 2020 19:57:56 +0800
+Message-ID: <1586779076-101346-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.113.25]
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
 X-CFilter-Loop: Reflected
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+This issue was detected by using the Coccinelle software:
 
-kernel/bpf/verifier.c:5603:18: warning: variable ‘dst_known’
-set but not used [-Wunused-but-set-variable]
+kernel/bpf/verifier.c:1259:16-21: WARNING: conversion to bool not needed here
 
-It is not used since commit f1174f77b50c ("bpf/verifier:
-rework value tracking")
+The conversion to bool is unneeded, remove it
 
-Signed-off-by: Mao Wenan <maowenan@huawei.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- kernel/bpf/verifier.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ kernel/bpf/verifier.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 04c6630cc18f..c9f50969a689 100644
+index 04c6630..38cfcf7 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -5600,7 +5600,7 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
- {
- 	struct bpf_reg_state *regs = cur_regs(env);
- 	u8 opcode = BPF_OP(insn->code);
--	bool src_known, dst_known;
-+	bool src_known;
- 	s64 smin_val, smax_val;
- 	u64 umin_val, umax_val;
- 	s32 s32_min_val, s32_max_val;
-@@ -5622,7 +5622,6 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
+@@ -1255,8 +1255,7 @@ static void __mark_reg_unknown(const struct bpf_verifier_env *env,
+ 	reg->type = SCALAR_VALUE;
+ 	reg->var_off = tnum_unknown;
+ 	reg->frameno = 0;
+-	reg->precise = env->subprog_cnt > 1 || !env->allow_ptr_leaks ?
+-		       true : false;
++	reg->precise = env->subprog_cnt > 1 || !env->allow_ptr_leaks;
+ 	__mark_reg_unbounded(reg);
+ }
  
- 	if (alu32) {
- 		src_known = tnum_subreg_is_const(src_reg.var_off);
--		dst_known = tnum_subreg_is_const(dst_reg->var_off);
- 		if ((src_known &&
- 		     (s32_min_val != s32_max_val || u32_min_val != u32_max_val)) ||
- 		    s32_min_val > s32_max_val || u32_min_val > u32_max_val) {
-@@ -5634,7 +5633,6 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
- 		}
- 	} else {
- 		src_known = tnum_is_const(src_reg.var_off);
--		dst_known = tnum_is_const(dst_reg->var_off);
- 		if ((src_known &&
- 		     (smin_val != smax_val || umin_val != umax_val)) ||
- 		    smin_val > smax_val || umin_val > umax_val) {
 -- 
-2.17.1
+2.6.2
 
