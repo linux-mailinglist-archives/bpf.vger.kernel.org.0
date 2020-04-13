@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059C61A6CCB
-	for <lists+bpf@lfdr.de>; Mon, 13 Apr 2020 21:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16F31A6CE4
+	for <lists+bpf@lfdr.de>; Mon, 13 Apr 2020 22:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388103AbgDMTqF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Apr 2020 15:46:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60288 "EHLO
+        id S2388180AbgDMUAI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Apr 2020 16:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387774AbgDMTqA (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 13 Apr 2020 15:46:00 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C958C0A3BDC;
-        Mon, 13 Apr 2020 12:46:00 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id w26so5002008qvd.10;
-        Mon, 13 Apr 2020 12:46:00 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S2388135AbgDMUAG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 13 Apr 2020 16:00:06 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F09EC0A3BDC;
+        Mon, 13 Apr 2020 13:00:06 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id b10so8188174qtt.9;
+        Mon, 13 Apr 2020 13:00:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LWYST+QLnIy00/KXFSYZ6pjER0eBs8+nduvFaVPgAv0=;
-        b=soK7rLPyV+Quc/+39BixgttRsD4sbmMFYQ3Eqmkyz9eaJ17P/9563NpeU/2zQnXpPH
-         9/dgfBWrmzd3xltfbjgIUiy/fJH3JDf8cJ8tvUl/YdjKPHXqVA9k7+OMwULHBrC+Sduh
-         TNz0fR3MmINwwLmSxv/amiUv2dLTLDhsmBSQdWSrb/CcAnzJgLtVBXznIA1ht1Wvyery
-         wHZk7z9TbuewopKDI8iSgqkJ7LxY6L7mcB2XIBaANsZTUL7Jml/8cvrGNhWA48Cozo/q
-         bgNMv2eyrivmoJXhbaM85qc62zJvI7dBBr6daMFoFbDQGOEZqw/HZ788/L43ALpIK+tI
-         3LDw==
+        bh=W3a8iTpmroxpZsTfoI/UNT2i6KRHATNcoYavmwnD5FE=;
+        b=eyIAXPGRHmxECNcWmKMeD86SXvZowNYjd4we8xO/vZgtlGB5Eq016WWHZlViSuEcoA
+         FmTpm3cEf5xoMSf5QFL2ox24ZPA0ToHHyUfC6ovMb00Q8OGWKNw4UJII5tAg10tPC8S+
+         myGPedMfvTg47IHbFjs3KPOOG0pHRCgVA9IYnCxCEuqwg7KjHsgWWzHo3qS8yV0UFkA6
+         ikRljFneNb8y3++ZR/SnbElDD2M0Sj7HHpV+948XmbbbRJeWxIAxVHcptT4poDVh6LGA
+         q9S3tJidSTvCgb7XlCQA0q/1n7DVlgv2/kEmHOYLehwvLqtNVhg+H0E1M1E/xwYaZe3g
+         dYkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LWYST+QLnIy00/KXFSYZ6pjER0eBs8+nduvFaVPgAv0=;
-        b=tFjd28v166DDn1x+CUiznUGSyTa7tH1RpsAsq+dOMDCPY1pzCt3/GpKpdDYWUxecmM
-         tu7vGwLn95o5TtmI6c9epGV9PbsG9K7EO2ybsL/F54OeRQUOUpycgjROdfX/mxHoPhRG
-         11TAlyyEhZAH9TjKcQHixuBdj0vBfzoDCE9H9JCFVLuc5Efu5pOWXsOeZdXV7tujqteY
-         69I6OeEwBiKlRAZNi7a0rNQxxhPxUAemcwRdmIeUfOxwhPzjQLo4aXv5cFEAjJBdwVBL
-         lB917vhRKTg7o5ldZjPARQ96u9EeNZdNNZeMnYXd1AF3JlojK1bQHiIhG6Uas+CpNtO1
-         hZ9A==
-X-Gm-Message-State: AGi0PubyEAbdcNqYz9Ly/bTgcXZnAGEdA8U4fSk1ikInJyYg/H6/3Mb1
-        HtcPj5ZWUT1pgGYlk+B/bys+gZbHmviEYwKAhsA=
-X-Google-Smtp-Source: APiQypJ22QjKJYVdN7gdVNoErHjREhN7xefrtLBjP+W7xFvyWkOhJL3bqP3j7BOgSe0kxzwBcM/NwaJPdWsnuxS2BFU=
-X-Received: by 2002:a05:6214:1801:: with SMTP id o1mr18476073qvw.224.1586807159749;
- Mon, 13 Apr 2020 12:45:59 -0700 (PDT)
+        bh=W3a8iTpmroxpZsTfoI/UNT2i6KRHATNcoYavmwnD5FE=;
+        b=bFLytK8rPagVY/KgtqYzNa/NT7pkkNLR1BHdMQq47fPSQRmYA3MXAB+YgwBfFWv1l7
+         Z1ghMGRC5muRjKEAYUFPR7L547U+dg9aj9RPz1KZAZ53SkNVUOZOaxkMNEq34PqQe2fP
+         Oe31xvSmsEyEe/9ZXcmARn0eyiNR3wAsp5lEYVYOZk3HIa13FqnW/gVkqWpPtL9tItmq
+         OkOFLzATGcgb637n30pc+4eOBxEjNSaC101O4QbMtpCQr/zNIZYbqUFooTfNb16Wz9SL
+         /nj19fyTbflHOxZPSYowNgI6h3VqGXqDODSdfqB0nkjh2Srk06lYIC7TGV48D7RmFqPr
+         aV6w==
+X-Gm-Message-State: AGi0PuaYKolTuCLhdp5J3FRrn+y6YCwEecNzQJ4zfm4wsv/bVdtyOmwh
+        +QCiEX3/GxXPMgCdmF9FZlvd/YMl3NBuDIBsfFK86B3+MLU=
+X-Google-Smtp-Source: APiQypIThO/5CZxH059Udi+owaSa423TCMmqo2FObcQQSlYHHvpQstTGXfjyMdi0Nl3vTcTcrxxVIgSmp1boSXcCF38=
+X-Received: by 2002:ac8:193d:: with SMTP id t58mr12158019qtj.93.1586808005426;
+ Mon, 13 Apr 2020 13:00:05 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200408232520.2675265-1-yhs@fb.com> <20200408232526.2675664-1-yhs@fb.com>
- <CAEf4BzajwPzHUyBvVZzafgKZHXv7b0pmL_avtFO6-_QHh46z1g@mail.gmail.com> <ed14f5c8-dacc-369f-07d0-f5ee2877e8ea@fb.com>
-In-Reply-To: <ed14f5c8-dacc-369f-07d0-f5ee2877e8ea@fb.com>
+ <CAEf4Bza8w9ypepeu6eoJkiXqKqEXtWAOONDpZ9LShivKUCOJbg@mail.gmail.com> <334a91d2-1567-bf3d-4ae6-305646738132@fb.com>
+In-Reply-To: <334a91d2-1567-bf3d-4ae6-305646738132@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 13 Apr 2020 12:45:48 -0700
-Message-ID: <CAEf4Bzarg7NjWs=6Pa5rsxJ4EYSCjx-LXZvTthsSVivNogOGbQ@mail.gmail.com>
+Date:   Mon, 13 Apr 2020 12:59:54 -0700
+Message-ID: <CAEf4BzaYYhK8PpO4Swcj0dqjYg+bn_3OkEnqjCXUgfkkHZgWMw@mail.gmail.com>
 Subject: Re: [RFC PATCH bpf-next 05/16] bpf: create file or anonymous dumpers
 To:     Yonghong Song <yhs@fb.com>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
@@ -64,11 +64,11 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 10, 2020 at 4:41 PM Yonghong Song <yhs@fb.com> wrote:
+On Fri, Apr 10, 2020 at 5:23 PM Yonghong Song <yhs@fb.com> wrote:
 >
 >
 >
-> On 4/10/20 3:51 PM, Andrii Nakryiko wrote:
+> On 4/10/20 4:25 PM, Andrii Nakryiko wrote:
 > > On Wed, Apr 8, 2020 at 4:26 PM Yonghong Song <yhs@fb.com> wrote:
 > >>
 > >> Given a loaded dumper bpf program, which already
@@ -95,6 +95,111 @@ On Fri, Apr 10, 2020 at 4:41 PM Yonghong Song <yhs@fb.com> wrote:
 > >> available to the target seq_ops->show().
 > >> Such information can be used to e.g., print
 > >> banner before printing out actual data.
+> >
+> > So I looked up seq_operations struct and did a very cursory read of
+> > fs/seq_file.c and seq_file documentation, so I might be completely off
+> > here.
+> >
+> > start() is called before iteration begins, stop() is called after
+> > iteration ends. Would it be a bit better and user-friendly interface
+> > to have to extra calls to BPF program, say with NULL input element,
+> > but with extra enum/flag that specifies that this is a START or END of
+> > iteration, in addition to seq_num?
+>
+> The current design always pass a valid object (task, file, netlink_sock,
+> fib6_info). That is, access to fields to those data structure won't
+> cause runtime exceptions.
+>
+> Therefore, with the existing seq_ops implementation for ipv6_route
+> and netlink, etc, we don't have END information. We can get START
+> information though.
+
+Right, I understand this about current implementation, because it
+calls BPF program from show. But I noticed also stop(), which
+
+>
+> >
+> > Also, right now it's impossible to write stateful dumpers that do any
+> > kind of stats calculation, because it's impossible to determine when
+> > iteration restarted (it starts from the very beginning, not from the
+> > last element). It's impossible to just rememebr last processed
+> > seq_num, because BPF program might be called for a new "session" in
+> > parallel with the old one.
+>
+> Theoretically, session end can be detected by checking the return
+> value of last bpf_seq_printf() or bpf_seq_write(). If it indicates
+> an overflow, that means session end.
+
+That's not what I meant by session end. If there is an overflow, the
+session is going to be restart from start (but it's still the same
+session, we just got bigger output buffer).
+
+>
+> Or bpfdump infrastructure can help do this work to provide
+> session id.
+
+Well, come to think about it. seq_file pointer itself is unique per
+session, so that one can be used as session id, is that right?
+
+>
+> >
+> > So it seems like few things would be useful:
+> >
+> > 1. end flag for post-aggregation and/or footer printing (seq_num == 0
+> > is providing similar means for start flag).
+>
+> the end flag is a problem. We could say hijack next or stop so we
+> can detect the end, but passing a NULL pointer as the object
+> to the bpf program may be problematic without verifier enforcement
+> as it may cause a lot of exceptions... Although all these exception
+> will be silenced by bpf infra, but still not sure whether this
+> is acceptable or not.
+
+Right, verifier will need to know that item can be valid pointer or
+NULL. It's not perfect, but not too big of a deal for user to check
+for NULL at the very beginning.
+
+What I'm aiming for with this end flags is ability for BPF program to
+collect data during show() calls, and then at the end get extra call
+to give ability to post-aggregate this data and emit some sort of
+summary into seq_file. Think about printing out summary stats across
+all tasks (e.g., p50 of run queue latency, or something like that). In
+that case, I need to iterate all tasks, I don't need to emit anything
+for any individual tasks, but I need to produce an aggregation and
+output after the last task was iterated. Right now it's impossible to
+do, but seems like an extremely powerful and useful feature. drgn
+could utilize this to speed up its scripts. There are plenty of tools
+that would like to have a frequent but cheap view into internals of
+the system, which current is implemented through netlink (taskstats)
+or procfs, both quite expensive, if polled every second.
+
+Anonymous bpfdump, though, is going to be much cheaper, because a lot
+of aggregation can happen in the kernel and only minimal output at the
+end will be read by user-space.
+
+>
+> > 2. Some sort of "session id", so that bpfdumper can maintain
+> > per-session intermediate state. Plus with this it would be possible to
+> > detect restarts (if there is some state for the same session and
+> > seq_num == 0, this is restart).
+>
+> I guess we can do this.
+
+See above, probably using seq_file pointer is good enough.
+
+>
+> >
+> > It seems like it might be a bit more flexible to, instead of providing
+> > seq_file * pointer directly, actually provide a bpfdumper_context
+> > struct, which would have seq_file * as one of fields, other being
+> > session_id and start/stop flags.
+>
+> As you mentioned, if we have more fields related to seq_file passing
+> to bpf program, yes, grouping them into a structure makes sense.
+>
+> >
+> > A bit unstructured thoughts, but what do you think?
+> >
 > >>
 > >> Note the seq_num does not represent the num
 > >> of unique kernel objects the bpf program has
@@ -123,97 +228,6 @@ On Fri, Apr 10, 2020 at 4:41 PM Yonghong Song <yhs@fb.com> wrote:
 > >>   tools/include/uapi/linux/bpf.h |   6 +-
 > >>   5 files changed, 362 insertions(+), 4 deletions(-)
 > >>
-> >
-> > [...]
-> >
-> >>
-> >> +struct dumper_inode_info {
-> >> +       struct bpfdump_target_info *tinfo;
-> >> +       struct bpf_prog *prog;
-> >> +};
-> >> +
-> >> +struct dumper_info {
-> >> +       struct list_head list;
-> >> +       /* file to identify an anon dumper,
-> >> +        * dentry to identify a file dumper.
-> >> +        */
-> >> +       union {
-> >> +               struct file *file;
-> >> +               struct dentry *dentry;
-> >> +       };
-> >> +       struct bpfdump_target_info *tinfo;
-> >> +       struct bpf_prog *prog;
-> >> +};
-> >
-> > This is essentially a bpf_link. Why not do it as a bpf_link from the
-> > get go? Instead of having all this duplication for anonymous and
->
-> This is a good question. Maybe part of bpf-link can be used and
-> I have to implement others. I will check.
->
-> > pinned dumpers, it would always be a bpf_link-based dumper, but for
-> > those pinned bpf_link itself is going to be pinned. You also get a
-> > benefit of being able to list all dumpers through existing bpf_link
-> > API (also see my RFC patches with bpf_link_prime/bpf_link_settle,
-> > which makes using bpf_link safe and simple).
->
-> Agree. Alternative is to use BPF_OBJ_GET_INFO_BY_FD to query individual
-> dumper as directory tree walk can be easily done at user space.
-
-But BPF_OBJ_GET_INFO_BY_FD won't work well for anonymous dumpers,
-because it's not so easy to iterate over them (possible, but not
-easy)?
-
->
->
-> >
-> > [...]
-> >
-> >> +
-> >> +static void anon_dumper_show_fdinfo(struct seq_file *m, struct file *filp)
-> >> +{
-> >> +       struct dumper_info *dinfo;
-> >> +
-> >> +       mutex_lock(&anon_dumpers.dumper_mutex);
-> >> +       list_for_each_entry(dinfo, &anon_dumpers.dumpers, list) {
-> >
-> > this (and few other places where you search in a loop) would also be
-> > simplified, because struct file* would point to bpf_dumper_link, which
-> > then would have a pointer to bpf_prog, dentry (if pinned), etc. No
-> > searching at all.
->
-> This is a reason for this. the same as bpflink, bpfdump already has
-> the full information about file, inode, etc.
-
-I think (if I understand what you are saying), this is my point. What
-you have in struct dumper_info is already a custom bpf_link. You are
-just missing `struct bpf_link link;` field there and plugging it into
-overall bpf_link infrastructure (bpf_link__init + bpf_link__prime +
-bpf_link__settle, from my RFC) to gain benefits of bpf_link infra.
-
-
-> The file private_data actually points to seq_file. The seq_file private
-> data is used in the target. That is exactly why we try to have this
-> mapping to keep track. bpf_link won't help here.
-
-I need to go and re-read all the code again carefully with who stores
-what in their private_data field...
-
->
-> >
-> >> +               if (dinfo->file == filp) {
-> >> +                       seq_printf(m, "target:\t%s\n"
-> >> +                                     "prog_id:\t%u\n",
-> >> +                                  dinfo->tinfo->target,
-> >> +                                  dinfo->prog->aux->id);
-> >> +                       break;
-> >> +               }
-> >> +       }
-> >> +       mutex_unlock(&anon_dumpers.dumper_mutex);
-> >> +}
-> >> +
-> >> +#endif
-> >> +
 > >
 > > [...]
 > >
