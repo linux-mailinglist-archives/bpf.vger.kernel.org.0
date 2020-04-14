@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30BF1A6F93
-	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 01:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD041A6FF2
+	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 02:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389828AbgDMXBH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Apr 2020 19:01:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34082 "EHLO
+        id S2390373AbgDNANv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Apr 2020 20:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728050AbgDMXBE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 13 Apr 2020 19:01:04 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11BBFC0A3BDC;
-        Mon, 13 Apr 2020 16:01:05 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id b10so8629441qtt.9;
-        Mon, 13 Apr 2020 16:01:04 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S2390372AbgDNANv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 13 Apr 2020 20:13:51 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3237BC0A3BDC;
+        Mon, 13 Apr 2020 17:13:51 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id q17so8500893qtp.4;
+        Mon, 13 Apr 2020 17:13:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=CN+ze2zFPwxmB3EYCvaRIwTK4A4Ycgw65RJkPZl0Mrc=;
-        b=iDtUMlYHpc/g9fgLfdN+9m2vxy2uf30OjMPtJ48yDpueBxzgHzuKpU9oImM3leQqz0
-         kgo7BeMXi0XDbUmpMIv9nYUBHgKQWuX2SHfsmZye0wjooget7l+D6BGHOWTodRNMxfEc
-         9cn/1LVwY8RaNOthNbs4ws6o+lTVqjVVnILkhZfjt7hGjtDHEejbm+txcBCGnpPmP/7y
-         DgQ8UX7Qt7DsYfdHATtcPtKV3Ng1MFZurS62KTjEDZlJ/KZXJAVnzdmL71BwXcAI4qqX
-         Vkkv3AN2VzvDf7NbBTipIDmcfFPj7xZvhG/ybeu0CNL9G5alW/+pIKJw5DyMhUHZF+St
-         A31g==
+        bh=ctsNaeDB/FhzDxVLxdQCuZgd7WZJGSkNfIxxzpN81Ek=;
+        b=trpCxkFNSPzBe5q21kPCbeP/DSePgIJtc/Sh1egsgZd1b+4/3iXRpPKheqsv+WfuIO
+         nCm0v8zkMmZckykiVJTBghrR8KABfEUavudS1LvZV158EEmQbe7pgH5XwHGnTtVcG72S
+         c6Y3IZJlCP6sRK4tCji1ViDQo2CCsrY1b/bn1HE96vEZK669r9PNyTMpq/u2XDPHipw5
+         S0GpHigJ0Hant9Rlhs2R2fuyu65XRLzWdTI0fAyrqLHAbgR9SNDrArN+tWPIqKjl1cQX
+         lkb3ExwEOuX8+1zb5ODgOsrP3Unr3PJr3HQmMwciCw29Q/u0HEYUhCMj4asV5lWZBZ+7
+         TFrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CN+ze2zFPwxmB3EYCvaRIwTK4A4Ycgw65RJkPZl0Mrc=;
-        b=iS4XRtcCZjMdirXzdOAAchFUOcvdr6ROS4hqTzRofryor5rwRUSxIJhzhO2Qhh/rpy
-         OiXjVS6y8lwEAH2oFFcXgHmvaisv4kU9vbk55NCxsfC5k+yDm9egCKpkvh+b3bNIn7X8
-         vuwZ99lt6LvvmL2xub7EiXRrF6ru/UfuUspFHArXNg4TWYMQ8o9y5B4KR79I5LaY6qFQ
-         6wu+VlD0ImQ06zwVrlLPH/nAH3cvBwHpIpE6WYIIwl0rUAmmxA3cOcnpO41KhMy9TtQt
-         +9PZaNLPFWqWo/VhUvkY1mHo9nAxEbQyBiBCUQldc34lK1ZXRTLGSplo6tMaKpA3NXIv
-         Pc0g==
-X-Gm-Message-State: AGi0Pub/mP+28UfzimH/gfSAPZcJpFUaeNNBb6HVdjb4fCOVoruzwbr4
-        DR/lowYGMoyp7CCrdeSk33JFVhONDLbx7vGtkjE=
-X-Google-Smtp-Source: APiQypIZTQ88yT8sUAekL4byrt0Vp9gX70djLyJpOr7p/YSlNr5hHkoEupBMERang9VTaAsKdEiD/8UVjbjXQKXJSTI=
-X-Received: by 2002:ac8:3f6d:: with SMTP id w42mr9173506qtk.171.1586818864078;
- Mon, 13 Apr 2020 16:01:04 -0700 (PDT)
+        bh=ctsNaeDB/FhzDxVLxdQCuZgd7WZJGSkNfIxxzpN81Ek=;
+        b=aWqSEoUpk1NosDhRp70QaNXU/am/n5ApNOoC3F3TqDwZzXlNLWkiL+FitjSXPnAoAM
+         mgPUHAO64Bhust96g498VIq0sG+H1lZEEwI6Ifo2bPnSxd9HEhJ9WAz3+FIsP6HS6Zzl
+         Fr2z88n/MYELKtCquIz7bdUetnEC1gQaeLPmVYz2ApDOsLcoh5OpG193SnXljFl38Gxq
+         0h30K3X0jkGu8Cg6nHQKypmNHpciF7P7ygjd5p0Q+SUiVC+ObYp1ijFU++r2f2Dov0Ec
+         34OLKLLO8RzEem+bKpGMvaTAV/vV0Pe0fTLxf1XYlNQo9QeLmnZoxpmhRMqCKSVVLxhk
+         38tQ==
+X-Gm-Message-State: AGi0PuZSWrQvVhLTQxmkcU50GNTsihhSDMFuBp5M3Stny4rSmbk4SpwX
+        ljg12W3lv+bMVURBfwp5233jhNqBSEfIypwZZIHtXcslVUw=
+X-Google-Smtp-Source: APiQypIj95cPbuZpOhzM3iOb7qDrEzrHs3Nk6COZwkER+NWhxiyCXAbIH53BLRef1/LZ9eKh7y/Wa3W68/61zYPnhok=
+X-Received: by 2002:ac8:3f6d:: with SMTP id w42mr9410765qtk.171.1586823230290;
+ Mon, 13 Apr 2020 17:13:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200408232520.2675265-1-yhs@fb.com> <20200408232529.2676060-1-yhs@fb.com>
-In-Reply-To: <20200408232529.2676060-1-yhs@fb.com>
+References: <20200408232520.2675265-1-yhs@fb.com> <20200408232532.2676247-1-yhs@fb.com>
+In-Reply-To: <20200408232532.2676247-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 13 Apr 2020 16:00:52 -0700
-Message-ID: <CAEf4BzYYPHAkx4LFuTs3ejqw2-YUzkLLp7+5WqAWBWPrebymtA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 08/16] bpf: add task and task/file targets
+Date:   Mon, 13 Apr 2020 17:13:39 -0700
+Message-ID: <CAEf4Bzb6Uied+4pE0+QbjoeBWVzVHmjEfPGfr5Gr_FKZg_CTEQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 10/16] bpf: support variable length array in
+ tracing programs
 To:     Yonghong Song <yhs@fb.com>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -65,208 +66,115 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Wed, Apr 8, 2020 at 4:26 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> Only the tasks belonging to "current" pid namespace
-> are enumerated.
+> In /proc/net/ipv6_route, we have
+>   struct fib6_info {
+>     struct fib6_table *fib6_table;
+>     ...
+>     struct fib6_nh fib6_nh[0];
+>   }
+>   struct fib6_nh {
+>     struct fib_nh_common nh_common;
+>     struct rt6_info **rt6i_pcpu;
+>     struct rt6_exception_bucket *rt6i_exception_bucket;
+>   };
+>   struct fib_nh_common {
+>     ...
+>     u8 nhc_gw_family;
+>     ...
+>   }
 >
-> For task/file target, the bpf program will have access to
->   struct task_struct *task
->   u32 fd
->   struct file *file
-> where fd/file is an open file for the task.
+> The access:
+>   struct fib6_nh *fib6_nh = &rt->fib6_nh;
+>   ... fib6_nh->nh_common.nhc_gw_family ...
+>
+> This patch ensures such an access is handled properly.
 >
 > Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
->  kernel/bpf/Makefile    |   2 +-
->  kernel/bpf/dump_task.c | 294 +++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 295 insertions(+), 1 deletion(-)
->  create mode 100644 kernel/bpf/dump_task.c
+>  kernel/bpf/btf.c | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
 >
-> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> index 4a1376ab2bea..7e2c73deabab 100644
-> --- a/kernel/bpf/Makefile
-> +++ b/kernel/bpf/Makefile
-> @@ -26,7 +26,7 @@ obj-$(CONFIG_BPF_SYSCALL) += reuseport_array.o
->  endif
->  ifeq ($(CONFIG_SYSFS),y)
->  obj-$(CONFIG_DEBUG_INFO_BTF) += sysfs_btf.o
-> -obj-$(CONFIG_BPF_SYSCALL) += dump.o
-> +obj-$(CONFIG_BPF_SYSCALL) += dump.o dump_task.o
->  endif
->  ifeq ($(CONFIG_BPF_JIT),y)
->  obj-$(CONFIG_BPF_SYSCALL) += bpf_struct_ops.o
-> diff --git a/kernel/bpf/dump_task.c b/kernel/bpf/dump_task.c
-> new file mode 100644
-> index 000000000000..69b0bcec68e9
-> --- /dev/null
-> +++ b/kernel/bpf/dump_task.c
-> @@ -0,0 +1,294 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright (c) 2020 Facebook */
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index d65c6912bdaf..89a0d983b169 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -3837,6 +3837,31 @@ int btf_struct_access(struct bpf_verifier_log *log,
+>         }
+>
+>         if (off + size > t->size) {
+> +               /* If the last element is a variable size array, we may
+> +                * need to relax the rule.
+> +                */
+> +               struct btf_array *array_elem;
+> +               u32 vlen = btf_type_vlen(t);
+> +               u32 last_member_type;
 > +
-> +#include <linux/init.h>
-> +#include <linux/namei.h>
-> +#include <linux/pid_namespace.h>
-> +#include <linux/fs.h>
-> +#include <linux/fdtable.h>
-> +#include <linux/filter.h>
-> +
-> +struct bpfdump_seq_task_info {
-> +       struct pid_namespace *ns;
-> +       struct task_struct *task;
-> +       u32 id;
-> +};
-> +
-> +static struct task_struct *task_seq_get_next(struct pid_namespace *ns, u32 *id)
-> +{
-> +       struct task_struct *task;
-> +       struct pid *pid;
-> +
-> +       rcu_read_lock();
-> +       pid = idr_get_next(&ns->idr, id);
-> +       task = get_pid_task(pid, PIDTYPE_PID);
-> +       if (task)
-> +               get_task_struct(task);
+> +               member = btf_type_member(t);
+> +               last_member_type = member[vlen - 1].type;
 
-I think get_pid_task() already calls get_task_struct() internally on
-success. See also bpf_task_fd_query() implementation, it doesn't take
-extra refcnt on task.
+vlen could be zero, and this will be bad
 
-> +       rcu_read_unlock();
-> +
-> +       return task;
-> +}
+
+> +               mtype = btf_type_by_id(btf_vmlinux, last_member_type);
+
+might want to strip modifiers here?
+
+> +               if (!btf_type_is_array(mtype))
+> +                       goto error;
 > +
 
-[...]
+should probably check that off is >= last_member's offset within a
+struct? Otherwise access might be spanning previous field and this
+array?
 
-> +static struct file *task_file_seq_get_next(struct pid_namespace *ns, u32 *id,
-> +                                          int *fd, struct task_struct **task,
-> +                                          struct files_struct **fstruct)
-> +{
-> +       struct files_struct *files;
-> +       struct task_struct *tk;
-> +       u32 sid = *id;
-> +       int sfd;
+> +               array_elem = (struct btf_array *)(mtype + 1);
+> +               if (array_elem->nelems != 0)
+> +                       goto error;
 > +
-> +       /* If this function returns a non-NULL file object,
-> +        * it held a reference to the files_struct and file.
-> +        * Otherwise, it does not hold any reference.
-> +        */
-> +again:
-> +       if (*fstruct) {
-> +               files = *fstruct;
-> +               sfd = *fd;
-> +       } else {
-> +               tk = task_seq_get_next(ns, &sid);
-> +               if (!tk)
-> +                       return NULL;
-> +               files = get_files_struct(tk);
-> +               put_task_struct(tk);
-> +               if (!files)
-> +                       return NULL;
+> +               elem_type = btf_type_by_id(btf_vmlinux, array_elem->type);
 
-There might still be another task with its own files, so shouldn't we
-keep iterating tasks here?
+strip modifiers
 
-> +               *fstruct = files;
-> +               *task = tk;
-> +               if (sid == *id) {
-> +                       sfd = *fd;
-> +               } else {
-> +                       *id = sid;
-> +                       sfd = 0;
-> +               }
-> +       }
+> +               if (!btf_type_is_struct(elem_type))
+> +                       goto error;
 > +
-> +       spin_lock(&files->file_lock);
-> +       for (; sfd < files_fdtable(files)->max_fds; sfd++) {
-> +               struct file *f;
-> +
-> +               f = fcheck_files(files, sfd);
-> +               if (!f)
-> +                       continue;
-> +
-> +               *fd = sfd;
-> +               get_file(f);
-> +               spin_unlock(&files->file_lock);
-> +               return f;
-> +       }
-> +
-> +       /* the current task is done, go to the next task */
-> +       spin_unlock(&files->file_lock);
-> +       put_files_struct(files);
-> +       *fstruct = NULL;
-> +       sid = ++(*id);
-> +       goto again;
-> +}
-> +
+> +               off = (off - t->size) % elem_type->size;
 
-[...]
+I think it will be safer to use field offset, not struct size.
+Consider example below
 
-> +static int task_file_seq_show(struct seq_file *seq, void *v)
-> +{
-> +       struct bpfdump_seq_task_file_info *info = seq->private;
-> +       struct {
-> +               struct task_struct *task;
-> +               u32 fd;
-> +               struct file *file;
-> +               struct seq_file *seq;
-> +               u64 seq_num;
+$ cat test-test.c
+struct bla {
+        long a;
+        int b;
+        char c[];
+};
 
-should all the fields here be 8-byte aligned, including pointers
-(because BPF is 64-bit arch)? Well, at least `u32 fd` should?
+int main() {
+        static struct bla *x = 0;
+        return 0;
+}
 
-> +       } ctx = {
-> +               .file = v,
-> +               .seq = seq,
-> +       };
-> +       struct bpf_prog *prog;
-> +       int ret;
+$ pahole -F btf -C bla test-test.o
+struct bla {
+        long int                   a;                    /*     0     8 */
+        int                        b;                    /*     8     4 */
+        char                       c[];                  /*    12     0 */
+
+        /* size: 16, cachelines: 1, members: 3 */
+        /* padding: 4 */
+        /* last cacheline: 16 bytes */
+};
+
+c is at offset 12, but struct size is 16 due to long alignment. It
+could be a 4-byte struct instead of char there.
+
+> +               return btf_struct_access(log, elem_type, off, size, atype, next_btf_id);
 > +
-> +       prog = bpf_dump_get_prog(seq, sizeof(struct bpfdump_seq_task_file_info),
-> +                                &ctx.seq_num);
-> +       ctx.task = info->task;
-> +       ctx.fd = info->fd;
-> +       ret = bpf_dump_run_prog(prog, &ctx);
-> +
-> +       return ret == 0 ? 0 : -EINVAL;
-> +}
-> +
-> +static const struct seq_operations task_file_seq_ops = {
-> +        .start  = task_file_seq_start,
-> +        .next   = task_file_seq_next,
-> +        .stop   = task_file_seq_stop,
-> +        .show   = task_file_seq_show,
-> +};
-> +
-> +int __init bpfdump__task(struct task_struct *task, struct seq_file *seq,
-> +                        u64 seq_num) {
-> +       return 0;
-> +}
-> +
-> +int __init bpfdump__task_file(struct task_struct *task, u32 fd,
-> +                             struct file *file, struct seq_file *seq,
-> +                             u64 seq_num)
-> +{
-> +       return 0;
-> +}
-> +
-> +static int __init task_dump_init(void)
-> +{
-> +       int ret;
-> +
-> +       ret = bpf_dump_reg_target("task", "bpfdump__task",
-> +                                 &task_seq_ops,
-> +                                 sizeof(struct bpfdump_seq_task_info), 0);
-> +       if (ret)
-> +               return ret;
-> +
-> +       return bpf_dump_reg_target("task/file", "bpfdump__task_file",
-> +                                  &task_file_seq_ops,
-> +                                  sizeof(struct bpfdump_seq_task_file_info),
-> +                                  0);
-> +}
-> +late_initcall(task_dump_init);
+> +error:
+>                 bpf_log(log, "access beyond struct %s at off %u size %u\n",
+>                         tname, off, size);
+>                 return -EACCES;
 > --
 > 2.24.1
 >
