@@ -2,154 +2,208 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8AC1A7335
-	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 07:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5DD1A7410
+	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 09:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405661AbgDNF4R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Apr 2020 01:56:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405672AbgDNF4Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Apr 2020 01:56:16 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532B8C0A3BDC;
-        Mon, 13 Apr 2020 22:56:16 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id z90so9201189qtd.10;
-        Mon, 13 Apr 2020 22:56:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PZlrHZ01xsbg88HIp1L/IORP/s8wpbtZlVJLqqY+T3M=;
-        b=Was4lc2VTxJkY5TnZOftJWu+Yl0EfWtcntcFS5HRgFBERCcjOsK/8X2oQXwVT9qCjM
-         P196oRde0WzvXoUcF7qKpTSZk1ux9rIATmtorGyXeeRNOyuV+kLEYiHrArbF6AuouuTf
-         a87AAD6ON2CtgT5WYbLtq9Bg09DwF6nrD2XRvU5ztkx8Tm9gNTkcgRxFibc6X1S1vKlA
-         mChiBeq4Qt1RIMyqgUs7X9ZNIC2xF3NebnQwKPcUJxZCggKfbx+qbjpIlEzgQVdGaZju
-         m3RONsvpuSpfMv0O/kIqFwG4q+0ltyCcAfKW0PoG1k2kcEBswJhmpnDumcVDhe9s/Pto
-         9K/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PZlrHZ01xsbg88HIp1L/IORP/s8wpbtZlVJLqqY+T3M=;
-        b=QDVSDFZ5SCGkUa7yce3Eh0qDkL09rv40avPT3UZFixEtEVjr9mLy2ZFxrpwmy1/r0y
-         Ty0IQpnPtIhJXMcqIOWIdrQ1ZwMXTOWzibokN4QpeIOC2FKuv821GNBNGgg42tSPxKFI
-         iF+snJRZIfeOwt0i/tbivapp2AGJtF0SZCqO7CmhwAjFPL5XZNj27lBBX6asZq9ZpZiw
-         G9n2q+ACFvk72BaUuC+yFq156r2rwSpMio0045DfiTtf3A1jeBm7xjIZNhYOcIl9zGKp
-         x113eB9xrXWz1snalLq7cvixrpS7cmbAKn94YxwNcgMPM1owSMwkMeh5aZW55b3yogis
-         leKw==
-X-Gm-Message-State: AGi0PubkP+9WB1eox7JIA5O+QrbuUGkdC0O2MvMXAbmm8SpsgEDMMCMs
-        4ksdHbXtxoW8FeOvqoaXsJaogns1Hu7MrDmGeMo=
-X-Google-Smtp-Source: APiQypJYk8DAj/d+T10MWHq7pzwFA8RGM7eQM2ITVMlP3uoj9cK5EdtLhcMfMAlZubJyQ52RBr9joMXH9JBVz182iqI=
-X-Received: by 2002:ac8:468d:: with SMTP id g13mr14335066qto.59.1586843775346;
- Mon, 13 Apr 2020 22:56:15 -0700 (PDT)
+        id S2406303AbgDNHER (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Apr 2020 03:04:17 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:54878 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2406214AbgDNHEQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Apr 2020 03:04:16 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03E72xcr016886;
+        Tue, 14 Apr 2020 00:04:02 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=89UTe5Ou06shPEZEzJKsF4nWTi0liyKop3yxLZzNl68=;
+ b=P9U2uFPveFD5qPaeDUG/us9ZshavWfRdc5RIqWsVmhe/Xc7IEL6o1LVLhEiu8ZdNfXO/
+ U6DsAdvUq7TycdV45T2NdfY1Pz7WH9oxd6AnmrHZVzQPS12bJFlDzgWx8XVvAsaKwT/r
+ bQP5O4AmCJKPGyi3Tkk7gEVyZS0hXehYr54= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 30d8ekr06m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 14 Apr 2020 00:04:02 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Tue, 14 Apr 2020 00:04:01 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LSJdbpnEMN9lfoifFRwWKvgqy5SDXvOI0aquqOOj5VOTOM7/Nws/hBuQJOC/uzOmLXbjarqUm8eHuLzXM6yZ1jqksxxnDTNSxrJ9U4l9V6QI/mvkrPy2GhCM+mUvxfjGX4SmzD35pgDtUhEmXTQjGFdiJClMFQlt/h+TnqMWgXgK/FQROJSTEbJIrC2OEUne9aA9Z0dUyJleKQ3eIuyFMOLHJ9xLG5NKF7XSAiDGsu4JVNgIJ1CUo1Ja2hGPStMVttfQVT2E8gbYJYVS4tDZMT0my9EgzrNRiWwY2ioloiYAsfed6C8DRgTQ23IFDl9nxqxcbshHaOYONEL5m2c8RQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=89UTe5Ou06shPEZEzJKsF4nWTi0liyKop3yxLZzNl68=;
+ b=SZPtbPhMi8Uwlr6ITk0p7ha6I3wf3Jt80x7LGn7d/OFyikBQaKqOIQmgZuoGmlH0wsFTzvNJhZK7RIhzJM9MVY0M65285puRiA/L6zZARmYuK4fepn1QTzy/dO2vZpxD3s9h3DrCtg1xdIvFyxaPmCJ3w/b9TW5bwZO69B/Veqi5N8QNU07CFz6X1lj44YsSGyMOVR/DMMeQM/LjxlNFpetUn4Nq4h0STuMYBR3dzaj/KLMs3xj96x0Q0/gBM61A/nD3avjxcxt07Hm9lnHimFYWILp82Sk7pgFVfaZD8th1JqiMUt2bdUDxIzeEmgF/FLEtjWNBCzcOIfuor0RNSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=89UTe5Ou06shPEZEzJKsF4nWTi0liyKop3yxLZzNl68=;
+ b=Do/3L12aEOZmtHLNoLcFgeD/o8f8ST9sJBz7qFXX66NLxabS4+aQyzBQ6EHsbpjinYyTr8WaAZnTG32oST2RZBzMuSxLZoaR0oZ9Ckkv0IB7Sw5Ohj5D/CZybRGjyJVMOGUOsEo1qbkeCa2D2nMfiZ5UAlCsPRPH5f3x2EM6tDU=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB3222.namprd15.prod.outlook.com (2603:10b6:a03:10d::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.24; Tue, 14 Apr
+ 2020 07:04:00 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::bdf1:da56:867d:f8a2]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::bdf1:da56:867d:f8a2%7]) with mapi id 15.20.2900.028; Tue, 14 Apr 2020
+ 07:04:00 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        "Alexei Starovoitov" <ast@fb.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Andrey Ignatov <rdna@fb.com>,
+        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next] libbpf: always specify expected_attach_type
+ on program load if supported
+Thread-Topic: [PATCH v2 bpf-next] libbpf: always specify expected_attach_type
+ on program load if supported
+Thread-Index: AQHWEhkJS7kOYuB4pEWWsARZmp1+Nqh4MYuA
+Date:   Tue, 14 Apr 2020 07:03:59 +0000
+Message-ID: <6E178D01-CF89-4AEA-8705-9789E58B1D46@fb.com>
+References: <20200414045613.2104756-1-andriin@fb.com>
+In-Reply-To: <20200414045613.2104756-1-andriin@fb.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.60.0.2.5)
+x-originating-ip: [2620:10d:c090:400::5:2730]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2eeb66fc-6f8e-49a6-f8ba-08d7e04201f3
+x-ms-traffictypediagnostic: BYAPR15MB3222:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB3222F8A0D6014CB4C1C4DE80B3DA0@BYAPR15MB3222.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 0373D94D15
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(39860400002)(136003)(366004)(376002)(346002)(396003)(6506007)(6862004)(478600001)(37006003)(2906002)(86362001)(966005)(71200400001)(6486002)(4326008)(81156014)(8936002)(8676002)(53546011)(6512007)(5660300002)(186003)(36756003)(2616005)(54906003)(316002)(66476007)(33656002)(6636002)(76116006)(91956017)(64756008)(66556008)(66446008)(66946007);DIR:OUT;SFP:1102;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7Lr27zyrFcYlj0yok+z4U1Wbn9BRelqXMQYm/N4qmqt4MMgkIASbVF+aiYRIZ24Y/uRXEt/bIyU/DGqc3OmwdTuuriaJ7dEAZsIhDwMkwyc1jjcCZvFDOlzB0K31AFwRXl7JdeoHJqaPdDf/lFJ7rahF79ctjJPAMXyJfInNx/IRlBbM+GLokuxZAyBCBtNCiyoXfKvvPv4eoKm8EQWLEOvz3c8JD2nD84Jajsjnt+n3QAx0n4zZkjE9VceT6SW0ufmcfuyEYqrnjdsn2UlmEJALBes6NDevO1AkRfPJC0sjU3FWglfw3HJs+g2fOQLAv6R3A8+hIWo55k//HUM7trtIx7xo7YQW3tXWQa/rmLGlSiYLMEXhXZ1utDjVljXtt0XkfplLChtgj6SOUXecE2p62SWF0T8vhncxB0IgVxvoKoIbBCLUvc0DvVV5eQ5lNTU9HNsfMyJ89+CUk1nOtbV04IZ9c+1WEJ7xbu7dPfOj8PbQQhaHzAGvdbgmFAl+OZc9JHVfJB9kwpZKNfUDlg==
+x-ms-exchange-antispam-messagedata: s0BWrJqTefTBmuGIGC6GINh/JjVAfpyT774KgLGaZFhh7xOEM8qLGXv3KXmg8lnGR+MnaKHr/oQsHhp4kiFE3IqLTPkmbSj1W6rIfMRZvleWh6R9ceIKmTmv1LARDROljNAWPsRCHKs0IvMiOY55+6/5INeLzBNmPvkV5vGYmOSV4IKVJv3/RoAfQPln1OjC
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <BCEC663182007A4A9C42702AA133815E@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20200408232520.2675265-1-yhs@fb.com> <20200408232526.2675664-1-yhs@fb.com>
-In-Reply-To: <20200408232526.2675664-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 13 Apr 2020 22:56:04 -0700
-Message-ID: <CAEf4Bzawu2dFXL7nvYhq1tKv9P7Bb9=6ksDpui5nBjxRrx=3_w@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 05/16] bpf: create file or anonymous dumpers
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2eeb66fc-6f8e-49a6-f8ba-08d7e04201f3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Apr 2020 07:03:59.9725
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: g1b69w7DtPUN6BMJ6/mNpu6N3xHMG4AlrlbhoCD3KGneTjlHa6O46wqPGXNwv2Kc2ir6wj4QibeRIM1B7LSk5A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3222
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-14_02:2020-04-13,2020-04-14 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ bulkscore=0 clxscore=1011 malwarescore=0 mlxlogscore=999 spamscore=0
+ mlxscore=0 adultscore=0 phishscore=0 priorityscore=1501 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004140057
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 8, 2020 at 4:26 PM Yonghong Song <yhs@fb.com> wrote:
->
-> Given a loaded dumper bpf program, which already
-> knows which target it should bind to, there
-> two ways to create a dumper:
->   - a file based dumper under hierarchy of
->     /sys/kernel/bpfdump/ which uses can
->     "cat" to print out the output.
->   - an anonymous dumper which user application
->     can "read" the dumping output.
->
-> For file based dumper, BPF_OBJ_PIN syscall interface
-> is used. For anonymous dumper, BPF_PROG_ATTACH
-> syscall interface is used.
 
-We discussed this offline with Yonghong a bit, but I thought I'd put
-my thoughts about this in writing for completeness. To me, it seems
-like the most consistent way to do both anonymous and named dumpers is
-through the following steps:
 
-1. BPF_PROG_LOAD to load/verify program, that created program FD.
-2. LINK_CREATE using that program FD and direntry FD. This creates
-dumper bpf_link (bpf_dumper_link), returns anonymous link FD. If link
-FD is closed, dumper program is detached and dumper is destroyed
-(unless pinned in bpffs, just like with any other bpf_link.
-3. At this point bpf_dumper_link can be treated like a factory of
-seq_files. We can add a new BPF_DUMPER_OPEN_FILE (all names are for
-illustration purposes) command, that accepts dumper link FD and
-returns a new seq_file FD, which can be read() normally (or, e.g.,
-cat'ed from shell).
-4. Additionally, this anonymous bpf_link can be pinned/mounted in
-bpfdumpfs. We can do it as BPF_OBJ_PIN or as a separate command. Once
-pinned at, e.g., /sys/fs/bpfdump/task/my_dumper, just opening that
-file is equivalent to BPF_DUMPER_OPEN_FILE and will create a new
-seq_file that can be read() independently from other seq_files opened
-against the same dumper. Pinning bpfdumpfs entry also bumps refcnt of
-bpf_link itself, so even if process that created link dies, bpf dumper
-stays attached until its bpfdumpfs entry is deleted.
+> On Apr 13, 2020, at 9:56 PM, Andrii Nakryiko <andriin@fb.com> wrote:
+>=20
+> For some types of BPF programs that utilize expected_attach_type, libbpf =
+won't
+> set load_attr.expected_attach_type, even if expected_attach_type is known=
+ from
+> section definition. This was done to preserve backwards compatibility wit=
+h old
+> kernels that didn't recognize expected_attach_type attribute yet (which w=
+as
+> added in 5e43f899b03a ("bpf: Check attach type at prog load time"). But t=
+his
+> is problematic for some BPF programs that utilize never features that req=
+uire
+> kernel to know specific expected_attach_type (e.g., extended set of retur=
+n
+> codes for cgroup_skb/egress programs).
+>=20
+> This patch makes libbpf specify expected_attach_type by default, but also
+> detect support for this field in kernel and not set it during program loa=
+d.
+> This allows to have a good metadata for bpf_program
+> (e.g., bpf_program__get_extected_attach_type()), but still work with old
+> kernels (for cases where it can work at all).
+>=20
+> Additionally, due to expected_attach_type being always set for recognized
+> program types, bpf_program__attach_cgroup doesn't have to do extra checks=
+ to
+> determine correct attach type, so remove that additional logic.
+>=20
+> Also adjust section_names selftest to account for this change.
+>=20
+> More detailed discussion can be found in [0].
+>=20
+>  [0] https://lore.kernel.org/bpf/20200412003604.GA15986@rdna-mbp.dhcp.the=
+facebook.com/
+>=20
+> Reported-by: Andrey Ignatov <rdna@fb.com>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
-Apart from BPF_DUMPER_OPEN_FILE and open()'ing bpfdumpfs file duality,
-it seems pretty consistent and follows safe-by-default auto-cleanup of
-anonymous link, unless pinned in bpfdumpfs (or one can still pin
-bpf_link in bpffs, but it can't be open()'ed the same way, it just
-preserves BPF program from being cleaned up).
+Acked-by: Song Liu <songliubraving@fb.com>
 
-Out of all schemes I could come up with, this one seems most unified
-and nicely fits into bpf_link infra. Thoughts?
+With one nit below.=20
 
->
-> To facilitate target seq_ops->show() to get the
-> bpf program easily, dumper creation increased
-> the target-provided seq_file private data size
-> so bpf program pointer is also stored in seq_file
-> private data.
->
-> Further, a seq_num which represents how many
-> bpf_dump_get_prog() has been called is also
-> available to the target seq_ops->show().
-> Such information can be used to e.g., print
-> banner before printing out actual data.
->
-> Note the seq_num does not represent the num
-> of unique kernel objects the bpf program has
-> seen. But it should be a good approximate.
->
-> A target feature BPF_DUMP_SEQ_NET_PRIVATE
-> is implemented specifically useful for
-> net based dumpers. It sets net namespace
-> as the current process net namespace.
-> This avoids changing existing net seq_ops
-> in order to retrieve net namespace from
-> the seq_file pointer.
->
-> For open dumper files, anonymous or not, the
-> fdinfo will show the target and prog_id associated
-> with that file descriptor. For dumper file itself,
-> a kernel interface will be provided to retrieve the
-> prog_id in one of the later patches.
->
-> Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
->  include/linux/bpf.h            |   5 +
->  include/uapi/linux/bpf.h       |   6 +-
->  kernel/bpf/dump.c              | 338 ++++++++++++++++++++++++++++++++-
->  kernel/bpf/syscall.c           |  11 +-
->  tools/include/uapi/linux/bpf.h |   6 +-
->  5 files changed, 362 insertions(+), 4 deletions(-)
->
+> v1->v2:
+> - fixed prog_type/expected_attach_type combo (Andrey);
+> - added comment explaining what we are doing in probe_exp_attach_type (An=
+drey).
+>=20
+> tools/lib/bpf/libbpf.c                        | 127 ++++++++++++------
+> .../selftests/bpf/prog_tests/section_names.c  |  42 +++---
+> 2 files changed, 110 insertions(+), 59 deletions(-)
+>=20
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index ff9174282a8c..c7393182e2ae 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -178,6 +178,8 @@ struct bpf_capabilities {
+> 	__u32 array_mmap:1;
+> 	/* BTF_FUNC_GLOBAL is supported */
+> 	__u32 btf_func_global:1;
+> +	/* kernel support for expected_attach_type in BPF_PROG_LOAD */
+> +	__u32 exp_attach_type:1;
+> };
 
 [...]
+
+> -#define BPF_PROG_SEC_IMPL(string, ptype, eatype, is_attachable, btf, aty=
+pe) \
+> -	{ string, sizeof(string) - 1, ptype, eatype, is_attachable, btf, atype =
+}
+> +#define BPF_PROG_SEC_IMPL(string, ptype, eatype, eatype_optional,	    \
+> +			  attachable, attach_btf)			    \
+> +	{								    \
+> +		.sec =3D string,						    \
+> +		.len =3D sizeof(string) - 1,				    \
+> +		.prog_type =3D ptype,					    \
+> +		.sec =3D string,						    \
+
+Two lines of ".sec =3D string".=20
+
+> +		.expected_attach_type =3D eatype,				    \
+> +		.is_exp_attach_type_optional =3D eatype_optional,		    \
+> +		.is_attachable =3D attachable,				    \
+> +		.is_attach_btf =3D attach_btf,				    \
+> +	}
+
