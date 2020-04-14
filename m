@@ -2,100 +2,237 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E43521A81C5
-	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 17:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0761A8284
+	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 17:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437542AbgDNPOS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Apr 2020 11:14:18 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:54473 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437681AbgDNPNt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Apr 2020 11:13:49 -0400
-Received: by mail-wm1-f65.google.com with SMTP id h2so13341992wmb.4;
-        Tue, 14 Apr 2020 08:13:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HmBLSR0xc1v+9c640X8yq/gCGBtmZiJRhg2yrai8Uso=;
-        b=D14QHr9SaRvNqJrN7V4ylJqJZJppU9twbzkK/fNI+KX4UE4L+iib2DfQxpN0Kyf9k0
-         0jWxU8/32Xv3x3XlfJ86tDihFLVOxvOlzEi+ZMdwJLITS8dFK0BX1BnSFMbIukqCz67j
-         Ry1D6UKhhWu8p54BC/8irvBUyM3rgmP6+q/b2UJkE1sNp9+K1kUVaK3Hqvzd2UaPuxIZ
-         anSMQsSW2BVe26VRK/LLL2FrqobB6z1ttZtlJECb+JJs28wjdhWhRht82hzPbhtmGZQY
-         R0TVcuvCAw7BpJsD+qr74o0Ega4Th5Rzz6uz0/Q9BGJM7Sc2yzOzFgFMlpPGsGilpct1
-         7zIg==
-X-Gm-Message-State: AGi0PuZzw+k35gwrD6pHLwZlJLjT1GDlWp2uALnwrcBTshm1PN1umiRv
-        3/JHGYY/h+9WzdYhOwjiHQA=
-X-Google-Smtp-Source: APiQypKJS2zs752mK3EmkKLPxDY+LMikzE4AHuLMlZzMU6rlOFHrjCq5D1gZZCfYEUzJLxq6M+CEVA==
-X-Received: by 2002:a7b:c190:: with SMTP id y16mr393464wmi.50.1586877227391;
-        Tue, 14 Apr 2020 08:13:47 -0700 (PDT)
-Received: from debian (44.142.6.51.dyn.plus.net. [51.6.142.44])
-        by smtp.gmail.com with ESMTPSA id t67sm20386094wmg.40.2020.04.14.08.13.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 08:13:46 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 16:13:44 +0100
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, x86@kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laura Abbott <labbott@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michael Kelley <mikelley@microsoft.com>,
-        Gao Xiang <xiang@kernel.org>
-Subject: Re: [PATCH 21/29] mm: remove the pgprot argument to __vmalloc
-Message-ID: <20200414151344.zgt2pnq7cjq2bgv6@debian>
-References: <20200414131348.444715-1-hch@lst.de>
- <20200414131348.444715-22-hch@lst.de>
+        id S2405589AbgDNPV2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Apr 2020 11:21:28 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:55520 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2407438AbgDNPV1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Apr 2020 11:21:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586877684;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3mUwkORT2ROzic1PwZLpKfaNvlCOUG87+Q2jFK40OgI=;
+        b=NCff+ycyTRCxIINeIoyN1ifBviAe0S6rV7Jyjq214yJBIeffdMZO2Qe6x0SxuaRBp/AcWV
+        +996hhiqzuFheiB+u7L/RhmcmFHyyBsvSttJidHGy9ae37DctH46HiC4b+vjVXH40FlQhV
+        YIzvfQBxTwWSIvnAiYnv/5EOSRkBeRA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-365-foMw-OOxOz2XtPQuTzeCgA-1; Tue, 14 Apr 2020 11:21:15 -0400
+X-MC-Unique: foMw-OOxOz2XtPQuTzeCgA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C13A107ACCC;
+        Tue, 14 Apr 2020 15:21:11 +0000 (UTC)
+Received: from krava (unknown [10.40.195.121])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CE9FF9F9A4;
+        Tue, 14 Apr 2020 15:21:04 +0000 (UTC)
+Date:   Tue, 14 Apr 2020 17:21:02 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jiwei Sun <jiwei.sun@windriver.com>,
+        yuzhoujian <yuzhoujian@didichuxing.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.garry@huawei.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v8 4/4] perf tools: add support for libpfm4
+Message-ID: <20200414152102.GC208694@krava>
+References: <20200411074631.9486-1-irogers@google.com>
+ <20200411074631.9486-5-irogers@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200414131348.444715-22-hch@lst.de>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20200411074631.9486-5-irogers@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 03:13:40PM +0200, Christoph Hellwig wrote:
-> The pgprot argument to __vmalloc is always PROT_KERNEL now, so remove
-> it.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Michael Kelley <mikelley@microsoft.com> [hyperv]
-> Acked-by: Gao Xiang <xiang@kernel.org> [erofs]
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  arch/x86/hyperv/hv_init.c              |  3 +--
-[...]
-> 
-> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> index 5a4b363ba67b..a3d689dfc745 100644
-> --- a/arch/x86/hyperv/hv_init.c
-> +++ b/arch/x86/hyperv/hv_init.c
-> @@ -95,8 +95,7 @@ static int hv_cpu_init(unsigned int cpu)
->  	 * not be stopped in the case of CPU offlining and the VM will hang.
->  	 */
->  	if (!*hvp) {
-> -		*hvp = __vmalloc(PAGE_SIZE, GFP_KERNEL | __GFP_ZERO,
-> -				 PAGE_KERNEL);
-> +		*hvp = __vmalloc(PAGE_SIZE, GFP_KERNEL | __GFP_ZERO);
->  	}
+On Sat, Apr 11, 2020 at 12:46:31AM -0700, Ian Rogers wrote:
 
-Acked-by: Wei Liu <wei.liu@kernel.org>
+SNIP
+
+>  TAG_FOLDERS= . ../lib ../include
+>  TAG_FILES= ../../include/uapi/linux/perf_event.h
+> diff --git a/tools/perf/builtin-list.c b/tools/perf/builtin-list.c
+> index 965ef017496f..7b64cd34266e 100644
+> --- a/tools/perf/builtin-list.c
+> +++ b/tools/perf/builtin-list.c
+> @@ -18,6 +18,10 @@
+>  #include <subcmd/parse-options.h>
+>  #include <stdio.h>
+>  
+> +#ifdef HAVE_LIBPFM
+> +#include "util/pfm.h"
+> +#endif
+
+so we have the HAVE_LIBPFM you could do the:
+
+#ifdef HAVE_LIBPFM
+#else
+#endif
+
+in util/pfm.h and add stubs for libpfm_initialize and others
+in case HAVE_LIBPFM is not defined.. that clear out all the
+#ifdefs in the change
+
+
+SNIP
+
+> diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+> index b6322eb0f423..8b323151f22c 100644
+> --- a/tools/perf/tests/builtin-test.c
+> +++ b/tools/perf/tests/builtin-test.c
+> @@ -313,6 +313,15 @@ static struct test generic_tests[] = {
+>  		.desc = "maps__merge_in",
+>  		.func = test__maps__merge_in,
+>  	},
+> +	{
+> +		.desc = "Test libpfm4 support",
+> +		.func = test__pfm,
+> +		.subtest = {
+> +			.skip_if_fail	= true,
+> +			.get_nr		= test__pfm_subtest_get_nr,
+> +			.get_desc	= test__pfm_subtest_get_desc,
+> +		}
+
+awesome :)
+
+SNIP
+
+> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> index d23db6755f51..83ad76d3d2be 100644
+> --- a/tools/perf/util/evsel.c
+> +++ b/tools/perf/util/evsel.c
+> @@ -2447,9 +2447,15 @@ bool perf_evsel__fallback(struct evsel *evsel, int err,
+>  		const char *sep = ":";
+>  
+>  		/* Is there already the separator in the name. */
+> +#ifndef HAVE_LIBPFM
+>  		if (strchr(name, '/') ||
+>  		    strchr(name, ':'))
+>  			sep = "";
+> +#else
+> +		if (strchr(name, '/') ||
+> +		    (strchr(name, ':') && !evsel->is_libpfm_event))
+> +			sep = "";
+> +#endif
+
+
+  ^^^^^^^^
+
+>  
+>  		if (asprintf(&new_name, "%s%su", name, sep) < 0)
+>  			return false;
+> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+> index 53187c501ee8..397d335d5e24 100644
+> --- a/tools/perf/util/evsel.h
+> +++ b/tools/perf/util/evsel.h
+> @@ -76,6 +76,9 @@ struct evsel {
+>  	bool			ignore_missing_thread;
+>  	bool			forced_leader;
+>  	bool			use_uncore_alias;
+> +#ifdef HAVE_LIBPFM
+> +	bool			is_libpfm_event;
+> +#endif
+
+perhaps we could had this one in unconditionaly,
+because I think we have some members like that
+for aux tracing.. and that would remove the #ifdef
+above
+
+
+SNIP
+
+>  
+> +#ifdef HAVE_LIBPFM
+> +struct evsel *parse_events__pfm_add_event(int idx, struct perf_event_attr *attr,
+> +					char *name, struct perf_pmu *pmu)
+> +{
+> +	return __add_event(NULL, &idx, attr, false, name, pmu, NULL, false,
+> +			   NULL);
+> +}
+> +#endif
+
+could you instead add parse_events__add_event and call it from pfm code?
+
+SNIP
+
+> +		pmu = perf_pmu__find_by_type((unsigned int)attr.type);
+> +		evsel = parse_events__pfm_add_event(evlist->core.nr_entries,
+> +						&attr, q, pmu);
+> +		if (evsel == NULL)
+> +			goto error;
+> +
+> +		evsel->is_libpfm_event = true;
+> +
+> +		evlist__add(evlist, evsel);
+> +
+> +		if (grp_evt == 0)
+> +			grp_leader = evsel;
+> +
+> +		if (grp_evt > -1) {
+> +			evsel->leader = grp_leader;
+> +			grp_leader->core.nr_members++;
+> +			grp_evt++;
+> +		}
+> +
+> +		if (*sep == '}') {
+> +			if (grp_evt < 0) {
+> +				ui__error("cannot close a non-existing event group\n");
+> +				goto error;
+> +			}
+> +			evlist->nr_groups++;
+> +			grp_leader = NULL;
+> +			grp_evt = -1;
+> +		}
+> +		evsel->is_libpfm_event = true;
+
+seems to be set twice in here
+
+
+> +	}
+> +	return 0;
+> +error:
+> +	free(p_orig);
+> +	return -1;
+> +}
+> +
+> +static const char *srcs[PFM_ATTR_CTRL_MAX] = {
+> +	[PFM_ATTR_CTRL_UNKNOWN] = "???",
+> +	[PFM_ATTR_CTRL_PMU] = "PMU",
+> +	[PFM_ATTR_CTRL_PERF_EVENT] = "perf_event",
+> +};
+
+SNIP
+
+thanks,
+jirka
+
