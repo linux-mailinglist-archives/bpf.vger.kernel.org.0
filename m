@@ -2,42 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965A51A8E81
-	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 00:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97E71A8E9B
+	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 00:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391861AbgDNWYq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Apr 2020 18:24:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49506 "EHLO mail.kernel.org"
+        id S2391992AbgDNWag (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Apr 2020 18:30:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391856AbgDNWYl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Apr 2020 18:24:41 -0400
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+        id S2391879AbgDNWaa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Apr 2020 18:30:30 -0400
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1270D2076B;
-        Tue, 14 Apr 2020 22:24:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D7EC92072D;
+        Tue, 14 Apr 2020 22:30:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586903081;
-        bh=YaJVT/ye1FgBI4JEdpPpiFVU6B7Mpm3hjJhUg2CSA94=;
+        s=default; t=1586903430;
+        bh=vG8FDRwCHd5tylyNu5Cye5AQVB8T/XkGgBRurtv/Z9k=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JEBHN+5SgmCGJ2yWaSx36uCojxC+aC2BZy6wJlChdqzACq0/GAGcOuw364NP9vCHJ
-         jrHQ4fYIwT4Ktma2GfhGDBGggSaKZTxZTbT1kGwXaXINs5i6zclUfXYoBjTsWc2UvK
-         T13TyNzTVMnQCHu8zQZEvqcYIMJTVJUcPI1DV+2s=
-Received: by mail-lj1-f175.google.com with SMTP id q22so1600628ljg.0;
-        Tue, 14 Apr 2020 15:24:40 -0700 (PDT)
-X-Gm-Message-State: AGi0PubcjDtEXCl4PdA6eBfNu6lJTS/67A9TbtduVWTtu5kIcCiN81Tz
-        6+bCqTlmbTIQNDcqbinmvDGepVElk3ldh54bTZo=
-X-Google-Smtp-Source: APiQypIAWSIXj7RT/pEoMXOrSMyKd56/mNs4ugtTYhIc9Jk9mRXSGpzm8BvLTnuM4herlwlx8vNNtowRPcFhxbI86Y0=
-X-Received: by 2002:a05:651c:1a5:: with SMTP id c5mr1383150ljn.113.1586903079191;
- Tue, 14 Apr 2020 15:24:39 -0700 (PDT)
+        b=yzUjr/x3vmA6qJpT9YNj78uDWMIOEB4KjvnuYKzOOimYMdK89bkxIbvXIhrnnzu7q
+         ENcVqFIpheSQXYeMHEPlzyMbPWQdwqTy5Qt45wmabmZnkwR6gmqJ+BIfoX4S7/AGdM
+         lyWrdNyx80HsXuYcidqqPmZBps4KMvlYnSw2ZGMo=
+Received: by mail-lj1-f169.google.com with SMTP id v9so1520522ljk.12;
+        Tue, 14 Apr 2020 15:30:29 -0700 (PDT)
+X-Gm-Message-State: AGi0PuaRIrotRll8srLNhsIJvOAjvQfS/15ljo7I9v0Mdm8LzXkyjy2l
+        9ICLhMpWz9P4M2N3L7znPFRnSP19IJkduwcnbgY=
+X-Google-Smtp-Source: APiQypLXJSM+Z2nv7xY8Bt8+Ocf0ju5yHdrGYojLi9dKlCxBxr+EdIWzPa5utfYoe/Qrwtja5VTBa9gvsyxSsFxJG7I=
+X-Received: by 2002:a2e:720e:: with SMTP id n14mr1359284ljc.64.1586903428092;
+ Tue, 14 Apr 2020 15:30:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200414145025.182163-1-toke@redhat.com>
-In-Reply-To: <20200414145025.182163-1-toke@redhat.com>
+References: <20200414145025.182163-1-toke@redhat.com> <20200414145025.182163-2-toke@redhat.com>
+In-Reply-To: <20200414145025.182163-2-toke@redhat.com>
 From:   Song Liu <song@kernel.org>
-Date:   Tue, 14 Apr 2020 15:24:28 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7X00K9_QsGm8XhFw2QB03MQSEYRv2f6KupXnWHmH-puA@mail.gmail.com>
-Message-ID: <CAPhsuW7X00K9_QsGm8XhFw2QB03MQSEYRv2f6KupXnWHmH-puA@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] libbpf: Fix type of old_fd in bpf_xdp_set_link_opts
+Date:   Tue, 14 Apr 2020 15:30:17 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW49m8Ke+kiuCvfPKdEefnON8_vb1bO6rfX5a7_ke=FSiw@mail.gmail.com>
+Message-ID: <CAPhsuW49m8Ke+kiuCvfPKdEefnON8_vb1bO6rfX5a7_ke=FSiw@mail.gmail.com>
+Subject: Re: [PATCH bpf 2/2] selftests/bpf: Check for correct program
+ attach/detach in xdp_attach test
 To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
@@ -53,14 +54,13 @@ X-Mailing-List: bpf@vger.kernel.org
 On Tue, Apr 14, 2020 at 9:20 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
 at.com> wrote:
 >
-> The 'old_fd' parameter used for atomic replacement of XDP programs is
-> supposed to be an FD, but was left as a u32 from an earlier iteration of
-> the patch that added it. It was converted to an int when read, so things
-> worked correctly even with negative values, but better change the
-> definition to correctly reflect the intention.
+> David Ahern noticed that there was a bug in the EXPECTED_FD code so
+> programs did not get detached properly when that parameter was supplied.
+> This case was not included in the xdp_attach tests; so let's add it to be
+> sure that such a bug does not sneak back in down.
 >
-> Fixes: bd5ca3ef93cd ("libbpf: Add function to set link XDP fd while speci=
-fying old program")
+> Fixes: 87854a0b57b3 ("selftests/bpf: Add tests for attaching XDP programs=
+")
 > Reported-by: David Ahern <dsahern@gmail.com>
 > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
