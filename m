@@ -2,91 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC161A7842
-	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 12:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB6B1A7870
+	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 12:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438211AbgDNKQ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Apr 2020 06:16:59 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:38495 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2438210AbgDNKQv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Apr 2020 06:16:51 -0400
+        id S2438379AbgDNKcl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Apr 2020 06:32:41 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:22380 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2438363AbgDNKcM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Apr 2020 06:32:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586859410;
+        s=mimecast20190719; t=1586860330;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mtn8Wer36F66lv1oVM1/nLcmPFI938b9NPEjtqQ2+fs=;
-        b=GgDMMZBz9+QisNECzno2+YU9WAqKqw4ukCDEkei1VWiSVip6Opfmfm9AB5RJ7Ch09HN9Pb
-        z6K/S8dxaHiQwFdgeRCaT7Y2n7SP1qCPEDKVD32lftfMdwEoI41f1xNVWSw2TT+ScMqiEP
-        wybk/yafH7qMCV43XnvWrOKT6vDikCA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-380-AZfUOMCuO--X4173cUufdw-1; Tue, 14 Apr 2020 06:16:47 -0400
-X-MC-Unique: AZfUOMCuO--X4173cUufdw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3B3DDDBB1;
-        Tue, 14 Apr 2020 10:16:45 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A1C3D5C1B0;
-        Tue, 14 Apr 2020 10:16:34 +0000 (UTC)
-Date:   Tue, 14 Apr 2020 12:16:33 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     David Miller <davem@davemloft.net>
-Cc:     sameehj@amazon.com, intel-wired-lan@lists.osuosl.org,
-        jeffrey.t.kirsher@intel.com, alexander.duyck@gmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, zorik@amazon.com,
-        akiyano@amazon.com, gtzalik@amazon.com, toke@redhat.com,
-        borkmann@iogearbox.net, alexei.starovoitov@gmail.com,
-        john.fastabend@gmail.com, dsahern@gmail.com,
-        willemdebruijn.kernel@gmail.com, ilias.apalodimas@linaro.org,
-        lorenzo@kernel.org, saeedm@mellanox.com, brouer@redhat.com
-Subject: Re: [PATCH RFC v2 26/33] i40e: add XDP frame size to driver
-Message-ID: <20200414121633.0461ece4@carbon>
-In-Reply-To: <20200408.144845.783523592365109446.davem@davemloft.net>
-References: <158634658714.707275.7903484085370879864.stgit@firesoul>
-        <158634676645.707275.7536684877295305696.stgit@firesoul>
-        <20200408.144845.783523592365109446.davem@davemloft.net>
+        bh=puRZHsouOsa+kXRm9Yn+iQV/J7KVw+zCVFM/OzxJ0Iw=;
+        b=aMfL/9yUdVPSVYkVm1JzAyo+UiAj8i7qq+MJRgL02mW1TLuXZdwChGHT1AQAxM9Hn5eu/B
+        hOm8jZIWLQc8Df9L3LypWadzslhV5a4QlWhquvky328JwFkBMCGo2Z+9sV05QDi4/96src
+        yV9eWh+J4j0xNUtASy0oEx3+N0b1v5Y=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-262-x6gjLV8DNtGu6CNHh2f6gw-1; Tue, 14 Apr 2020 06:32:09 -0400
+X-MC-Unique: x6gjLV8DNtGu6CNHh2f6gw-1
+Received: by mail-lj1-f198.google.com with SMTP id j15so1228461lji.4
+        for <bpf@vger.kernel.org>; Tue, 14 Apr 2020 03:32:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=puRZHsouOsa+kXRm9Yn+iQV/J7KVw+zCVFM/OzxJ0Iw=;
+        b=RZNfQLpAhkuTA7kK6jehF8JYHGFQKprQFjMECo5HZeIsPwwQnLjiz5JpIkyhpSfq8y
+         TyoFxjCufQrMKCiE4Ix8JkRJjVJryGGAvlCnnq0VF0gDvuDZI04u+wIOIKjIJv1F4pyO
+         M6WAWy5HE4CoWPHyT8lfOjghfPbMv0/eFdmsG6+OfvwYhItkNRD+fiXF16Ie8dfMDQ7o
+         gwbQDS1XNIwdHBMF/M5v2WtFmkP1AUpEJSH/bWuQaxxHAYnlc3NJDnGD9LElpPcsc5ZB
+         jAVHuMSPYg2/cEL9gmLEtBzKFsuOIHinNqO/f2sr2gsGI23EkhDVEZqSAps3hOBPmsc+
+         NLhg==
+X-Gm-Message-State: AGi0PuabPyvrDxpRpOnChbVxwJAabXXIuoQHHbtkHKeVf5YMqbOtRdN2
+        /S8l9y1McG2EDkHoa+gHw6IbbL6r8OEJZghsOmU0McNjrzFK5vEOVlQMS48xQkswXZz+P40V48y
+        FH0/0bAz3fT6d
+X-Received: by 2002:a2e:884d:: with SMTP id z13mr13832030ljj.158.1586860327528;
+        Tue, 14 Apr 2020 03:32:07 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLQHW4saFb1NraTKoPsxOqixD5mRrBsjSvfBmThywmMh1KVqoHU+D5sm9B8VhTNk/SIgfK2Kw==
+X-Received: by 2002:a2e:884d:: with SMTP id z13mr13832014ljj.158.1586860327243;
+        Tue, 14 Apr 2020 03:32:07 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id b21sm8930304ljj.46.2020.04.14.03.32.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 03:32:06 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id B9016181586; Tue, 14 Apr 2020 12:32:04 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [RFC PATCH bpf-next 4/8] bpf: support GET_FD_BY_ID and GET_NEXT_ID for bpf_link
+In-Reply-To: <CAEf4BzbXCsHCJ6Tet0i5g=pKB_uYqvgiaBNuY-NMdZm8rdZN5g@mail.gmail.com>
+References: <20200404000948.3980903-1-andriin@fb.com> <20200404000948.3980903-5-andriin@fb.com> <87pnckc0fr.fsf@toke.dk> <CAEf4BzYrW43EW_Uneqo4B6TLY4V9fKXJxWj+-gbq-7X0j7y86g@mail.gmail.com> <877dyq80x8.fsf@toke.dk> <CAEf4BzaiRYMc4QMjz8bEn1bgiSXZvW_e2N48-kTR4Fqgog2fBg@mail.gmail.com> <87tv1t65cr.fsf@toke.dk> <CAEf4BzbXCsHCJ6Tet0i5g=pKB_uYqvgiaBNuY-NMdZm8rdZN5g@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 14 Apr 2020 12:32:04 +0200
+Message-ID: <87mu7enysb.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 08 Apr 2020 14:48:45 -0700 (PDT)
-David Miller <davem@davemloft.net> wrote:
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-> From: Jesper Dangaard Brouer <brouer@redhat.com>
-> Date: Wed, 08 Apr 2020 13:52:46 +0200
-> 
-> > diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> > index b8496037ef7f..1fb6b1004dcb 100644
-> > --- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> > +++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> > @@ -1507,6 +1507,23 @@ static inline unsigned int i40e_rx_offset(struct i40e_ring *rx_ring)
-> >  	return ring_uses_build_skb(rx_ring) ? I40E_SKB_PAD : 0;
-> >  }
-> >  
-> > +static inline unsigned int i40e_rx_frame_truesize(struct i40e_ring *rx_ring,
-> > +						  unsigned int size)  
-> 
-> Please don't use inline in foo.c files.  I noticed you properly elided this in
-> the ice changes so I wonder why it showed up here :-)
+>> > After that, one can pin bpf_link temporarily and re-open it as
+>> > writable one, provided CAP_DAC_OVERRIDE capability is present. All
+>> > that works already, because pinned bpf_link is just a file, so one can
+>> > do fchmod on it and all that will go through normal file access
+>> > permission check code path.
+>>
+>> Ah, I did not know that was possible - I was assuming that bpffs was
+>> doing something special to prevent that. But if not, great!
+>>
+>> > Unfortunately, just re-opening same FD as writable (which would
+>> > be possible if fcntl(fd, F_SETFL, S_IRUSR
+>> >  S_IWUSR) was supported on Linux) without pinning is not possible.
+>> > Opening link from /proc/<pid>/fd/<link-fd> doesn't seem to work
+>> > either, because backing inode is not BPF FS inode. I'm not sure, but
+>> > maybe we can support the latter eventually. But either way, I think
+>> > given this is to be used for manual troubleshooting, going through few
+>> > extra hoops to force-detach bpf_link is actually a good thing.
+>>
+>> Hmm, I disagree that deliberately making users jump through hoops is a
+>> good thing. Smells an awful lot like security through obscurity to me;
+>> and we all know how well that works anyway...
+>
+> Depends on who users are? bpftool can implement this as one of
+> `bpftool link` sub-commands and allow human operators to force-detach
+> bpf_link, if necessary.
 
-Yes, I know I should not do this.  It got here by copy-paste accident,
-as I first had ixgbe function in a header file, and later I decided to
-move this into the ixgbe C-file, but I had already copy-pasted this
-into i40e driver ;-)
+Yeah, I would expect this to be the common way this would be used: built
+into tools.
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+> I think applications shouldn't do this (programmatically) at all,
+> which is why I think it's actually good that it's harder and not
+> obvious, this will make developer think again before implementing
+> this, hopefully. For me it's about discouraging bad practice.
+
+I guess I just don't share your optimism that making people jump through
+hoops will actually discourage them :)
+
+If people know what they are doing it should be enough to document it as
+discouraged. And if they don't, they are perfectly capable of finding
+and copy-pasting the sequence of hoop-jumps required to achieve what
+they want, probably with more bugs added along the way.
+
+So in the end I think that all you're really achieving is annoying
+people who do have a legitimate reason to override the behaviour (which
+includes yourself as a bpftool developer :)). That's what I meant by the
+'security through obscurity' comment.
+
+-Toke
 
