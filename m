@@ -2,178 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A197D1A7B1E
-	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 14:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0C81A7E92
+	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 15:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729406AbgDNMrH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Apr 2020 08:47:07 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:49240 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728911AbgDNMq6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Apr 2020 08:46:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586868417;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=A+nH0t8V7cHfq6JAuXH0DGqngzCk5JxjFUG03j3kMOo=;
-        b=SJjoiuH4vs/8Gdi+gzmkVjZC49PWnp3y19FrQ7Csp93LOLYnrAK8Rr16KAYAST0GBo6Fhw
-        HkcUfvnc9bcXacbFReBLoenw9R/tfGZvmWAmsQNy328Jp3arTF9pxIzAK/4TvEqJOSkQuy
-        NmUTkAS8r5bTICkpwyuZ9NCqi4+yc9w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-491-sUzUj0mKMti50Ws-J2VG_w-1; Tue, 14 Apr 2020 08:46:51 -0400
-X-MC-Unique: sUzUj0mKMti50Ws-J2VG_w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 762B5800D53;
-        Tue, 14 Apr 2020 12:46:49 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7DD5060BE2;
-        Tue, 14 Apr 2020 12:46:38 +0000 (UTC)
-Date:   Tue, 14 Apr 2020 14:46:37 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Saeed Mahameed <saeedm@mellanox.com>
-Cc:     "toke@redhat.com" <toke@redhat.com>,
-        "gtzalik@amazon.com" <gtzalik@amazon.com>,
-        "ilias.apalodimas@linaro.org" <ilias.apalodimas@linaro.org>,
-        "borkmann@iogearbox.net" <borkmann@iogearbox.net>,
-        "alexander.duyck@gmail.com" <alexander.duyck@gmail.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "akiyano@amazon.com" <akiyano@amazon.com>,
-        "zorik@amazon.com" <zorik@amazon.com>,
-        "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jeffrey.t.kirsher@intel.com" <jeffrey.t.kirsher@intel.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "dsahern@gmail.com" <dsahern@gmail.com>,
-        "lorenzo@kernel.org" <lorenzo@kernel.org>,
-        "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
-        brouer@redhat.com, Steffen Klassert <steffen.klassert@secunet.com>,
-        Willy Tarreau <w@1wt.eu>
-Subject: Re: [PATCH RFC v2 29/33] xdp: allow bpf_xdp_adjust_tail() to grow
- packet size
-Message-ID: <20200414144637.0dafdda5@carbon>
-In-Reply-To: <ed0ce4d76e77b23aa3edcd821d5a4867e8bb27b1.camel@mellanox.com>
-References: <158634658714.707275.7903484085370879864.stgit@firesoul>
-        <158634678170.707275.10720666808605360076.stgit@firesoul>
-        <ed0ce4d76e77b23aa3edcd821d5a4867e8bb27b1.camel@mellanox.com>
+        id S2502666AbgDNNOY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Apr 2020 09:14:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502664AbgDNNON (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Apr 2020 09:14:13 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F5BC061A0C;
+        Tue, 14 Apr 2020 06:14:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=s9wO1kktwKhWfxkNKBlR4BadnfNxuXVCWsOuMusKhWU=; b=rg2UNX+oDOoOmlIrOoATZfvHJo
+        yXYLxsNWr2T1nJZrGxGk5Lv5RIM+MPtFqTLpUBL+OtQmXF3dvx+r/E34dM9LM/msmhlhCadHxgEIS
+        pWLlsjvDOXkWGefwhB3ab1TbSjUnXSZ4O+DhmchdWfxHMd4ltbCqfxvArHED4bAzh+LrU5N0g8RQ/
+        sMGiG1d5h+8y+YZLDA1ZDHHjyY6lnNQFIUnXfoqPK7R0pAFuXPpCBcPa9tHT3OZrp88howxBXTV4j
+        g8suig+TIKVixAxTM0KrW7filVEfIW9iQoItZ9Ea9AdgUOMqiNFBCHWAFRBbLBwX140HeueDrEM53
+        qriivVXQ==;
+Received: from [2001:4bb8:180:384b:c70:4a89:bc61:2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jOLNu-0006Fe-Le; Tue, 14 Apr 2020 13:13:54 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, x86@kernel.org,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Laura Abbott <labbott@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: decruft the vmalloc API v2
+Date:   Tue, 14 Apr 2020 15:13:19 +0200
+Message-Id: <20200414131348.444715-1-hch@lst.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 9 Apr 2020 03:31:14 +0000
-Saeed Mahameed <saeedm@mellanox.com> wrote:
+Hi all,
 
-> On Wed, 2020-04-08 at 13:53 +0200, Jesper Dangaard Brouer wrote:
-> > Finally, after all drivers have a frame size, allow BPF-helper
-> > bpf_xdp_adjust_tail() to grow or extend packet size at frame tail.
-> >   
-> 
-> can you provide a list of usecases for why tail extension is necessary
-> ?
+Peter noticed that with some dumb luck you can toast the kernel address
+space with exported vmalloc symbols.
 
-Use-cases:
-(1) IPsec / XFRM needs a tail extend[1][2].
-(2) DNS-cache replies in XDP.
-(3) HA-proxy ALOHA would need it to convert to XDP.
- 
-> and what do you have in mind as immediate use of bpf_xdp_adjust_tail()
-> ? 
+I used this as an opportunity to decruft the vmalloc.c API and make it
+much more systematic.  This also removes any chance to create vmalloc
+mappings outside the designated areas or using executable permissions
+from modules.  Besides that it removes more than 300 lines of code.
 
-I guess Steffen Klassert's ipsec use-case(1) it the most immediate.
+A git tree is also available here:
 
-[1] http://vger.kernel.org/netconf2019_files/xfrm_xdp.pdf
-[2] http://vger.kernel.org/netconf2019.html
+    git://git.infradead.org/users/hch/misc.git sanitize-vmalloc-api.2
 
-> both cover letter and commit messages didn't list any actual use case..
+Gitweb:
 
-Sorry about that.
+    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/sanitize-vmalloc-api.2
 
-> > Remember that helper/macro xdp_data_hard_end have reserved some
-> > tailroom.  Thus, this helper makes sure that the BPF-prog don't have
-> > access to this tailroom area.
-> > 
-> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > ---
-> >  include/uapi/linux/bpf.h |    4 ++--
-> >  net/core/filter.c        |   18 ++++++++++++++++--
-> >  2 files changed, 18 insertions(+), 4 deletions(-)
-> > 
-[... cut ...]
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 7628b947dbc3..4d58a147eed0 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -3422,12 +3422,26 @@ static const struct bpf_func_proto
-> > bpf_xdp_adjust_head_proto = {
-> >  
-> >  BPF_CALL_2(bpf_xdp_adjust_tail, struct xdp_buff *, xdp, int, offset)
-> >  {
-> > +	void *data_hard_end = xdp_data_hard_end(xdp);
-> >  	void *data_end = xdp->data_end + offset;
-> >  
-> > -	/* only shrinking is allowed for now. */
-> > -	if (unlikely(offset >= 0))
-> > +	/* Notice that xdp_data_hard_end have reserved some tailroom */
-> > +	if (unlikely(data_end > data_hard_end))
-> >  		return -EINVAL;
-> >    
-> 
-> i don't know if i like this approach for couple of reasons.
-> 
-> 1. drivers will provide arbitrary frames_sz, which is normally larger
-> than mtu, and could be a full page size, for XDP_TX action this can be
-> problematic if xdp progs will allow oversized packets to get caught at
-> the driver level..
-
-We already check if MTU is exceeded for a specific device when we
-redirect into this, see helper xdp_ok_fwd_dev().  For the XDP_TX case,
-I guess some drivers bypass that check, which should be fixed. The
-XDP_TX case is IMHO a place where we allow drivers do special
-optimizations, thus drivers can choose to do something faster than
-calling generic helper xdp_ok_fwd_dev().  
-  
-> 
-> 2. xdp_data_hard_end(xdp) has a hardcoded assumption of the skb shinfo
-> and it introduces a reverse dependency between xdp buff and skbuff 
-> 
-(I'll address this in another mail)
-
-> both of the above can be solved if the drivers provided the max
-> allowed frame size, already accounting for mtu and shinfo when setting
-> xdp_buff.frame_sz at the driver level.
-
-It seems we look at the problem from two different angles.  You have
-the drivers perspective, while I have the network stacks perspective
-(the XDP_PASS case).  The mlx5 driver treats XDP as a special case, by
-hiding or confining xdp_buff to functions fairly deep in the
-call-stack.  My goal is different (moving SKB out of drivers), I see
-the xdp_buff/xdp_frame as the main packet object in the drivers, that
-gets send up the network stack (after converting to xdp_frame) and
-converted into SKB in core-code (yes, there is a long road-ahead). The
-larger tailroom can be used by netstack in SKB-coalesce.
-
-The next step is making xdp_buff (and xdp_frame) multi-buffer aware.
-This is why I reserve room for skb_shared_info.  I have considered
-reducing the size of xdp_buff.frame_sz, with sizeof(skb_shared_info),
-but it got kind of ugly having this in each drivers.
-
-I also considered having drivers setup a direct pointer to
-{skb,xdp}_shared_info section in xdp_buff, because will make it more
-flexible (for what I imagined Alexander Duyck want).  (But we can still
-do/change that later, once we start work in multi-buffer code)
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+Changes since v1:
+ - implement pgprot_nx for arm64 (Mark Rutland)
+ - fix a patch description
+ - properly pass pgprot to vmap in ion
+ - add a new patch to fix vmap() API misuse
+ - fix a vmap argument in x86
+ - two more vmalloc cleanups
+ - cleanup use of the unmap_kernel_range API
+ - rename ioremap_pbh to ioremap_phb
