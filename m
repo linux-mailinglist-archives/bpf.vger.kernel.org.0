@@ -2,97 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C533C1A7E17
-	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 15:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0321A7F18
+	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 16:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502862AbgDNNP5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Apr 2020 09:15:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502853AbgDNNPu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Apr 2020 09:15:50 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A51C061A0F;
-        Tue, 14 Apr 2020 06:15:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=xg3LanskcG5YxBBSEuWUOh1CRzHOTC2lvRuHUPOBmeo=; b=KhiN2gV6T32eNzUkhId1mXELeZ
-        5PsdY9DuWijoEqV8hb2sX5GukDJyInt/jxOFGbCajA4t8GitLegtX+eJQjrYYS/EnKK8+i/D4f+Fn
-        tuFY7+F0XaygZYJ5b1gWq/yCLhFuXWmmMjxhVh9UYbhg/6YPWDb54NRr5jsiB9JeTXQUj+Uy4dLSr
-        ofbutqQlzahhykDWFxF/82ir6KFU2OmzWWDcFYlCWo/0EVGvQvt26fFQ+vtZ8pm1pttsS+Y8snal4
-        j3dMZYsLj+N5ZdDPGWwXBRyexm9J5W7B+EYRiLN4iSj9Ock+F721O8Q3VljvKV/BYvUCnE8LmtGd2
-        GtWRMJVg==;
-Received: from [2001:4bb8:180:384b:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jOLPX-0001qd-UV; Tue, 14 Apr 2020 13:15:32 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, x86@kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laura Abbott <labbott@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: [PATCH 29/29] s390: use __vmalloc_node in stack_alloc
-Date:   Tue, 14 Apr 2020 15:13:48 +0200
-Message-Id: <20200414131348.444715-30-hch@lst.de>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200414131348.444715-1-hch@lst.de>
-References: <20200414131348.444715-1-hch@lst.de>
+        id S2388801AbgDNOCo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Apr 2020 10:02:44 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:56570 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388766AbgDNOCl (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Apr 2020 10:02:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586872960;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FE3q1BI1gQoIqjmh4SbHpCJasYqDCUKlT257lwdOsbE=;
+        b=crWTjZx2d3ISTP+RM3MmmIEHVMXvNm58SzY/yykQ1O5S3lgg9j2AF3pJ2Wbj9gUdQbIgxV
+        vJjv94aJ1pI+D1yyd0Gh9i4hDN9Qe9YApjqcJRz7eO0qfJ2iDd5h9rPp8J7Gty44OjQ/BK
+        F0t+mXdwuvnV9Zdgjy4J2DiuE1H9Rw0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-263-zLPZV4J7M6qON3a4Qvf55A-1; Tue, 14 Apr 2020 10:02:35 -0400
+X-MC-Unique: zLPZV4J7M6qON3a4Qvf55A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7C054800D5C;
+        Tue, 14 Apr 2020 14:02:33 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5EE29385;
+        Tue, 14 Apr 2020 14:02:22 +0000 (UTC)
+Date:   Tue, 14 Apr 2020 16:02:20 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     sameehj@amazon.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        zorik@amazon.com, akiyano@amazon.com, gtzalik@amazon.com,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>, brouer@redhat.com
+Subject: Re: [PATCH RFC v2 19/33] nfp: add XDP frame size to netronome
+ driver
+Message-ID: <20200414160220.7d0f94c8@carbon>
+In-Reply-To: <20200408105344.11d1a33f@kicinski-fedora-PC1C0HJN>
+References: <158634658714.707275.7903484085370879864.stgit@firesoul>
+        <158634673086.707275.8905781490793267908.stgit@firesoul>
+        <20200408105344.11d1a33f@kicinski-fedora-PC1C0HJN>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-stack_alloc can use a slightly higher level vmalloc function.
+On Wed, 8 Apr 2020 10:53:44 -0700
+Jakub Kicinski <kuba@kernel.org> wrote:
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/s390/kernel/setup.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+> On Wed, 08 Apr 2020 13:52:10 +0200 Jesper Dangaard Brouer wrote:
+> > The netronome nfp driver already had a true_bufsz variable
+> > that contains what was needed for xdp.frame_sz.
+> > 
+> > Cc: Jakub Kicinski <kuba@kernel.org>
+> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > ---
+> >  .../net/ethernet/netronome/nfp/nfp_net_common.c    |    1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+> > index 9bfb3b077bc1..b9b8c30eab33 100644
+> > --- a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+> > +++ b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+> > @@ -1817,6 +1817,7 @@ static int nfp_net_rx(struct nfp_net_rx_ring *rx_ring, int budget)
+> >  	rcu_read_lock();
+> >  	xdp_prog = READ_ONCE(dp->xdp_prog);
+> >  	true_bufsz = xdp_prog ? PAGE_SIZE : dp->fl_bufsz;
+> > +	xdp.frame_sz = true_bufsz;  
+> 
+> Since this matters only with XDP on - we can set to PAGE_SIZE directly?
 
-diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-index 36445dd40fdb..0f0b140b5558 100644
---- a/arch/s390/kernel/setup.c
-+++ b/arch/s390/kernel/setup.c
-@@ -305,12 +305,9 @@ void *restart_stack __section(.data);
- unsigned long stack_alloc(void)
- {
- #ifdef CONFIG_VMAP_STACK
--	return (unsigned long)
--		__vmalloc_node_range(THREAD_SIZE, THREAD_SIZE,
--				     VMALLOC_START, VMALLOC_END,
--				     THREADINFO_GFP,
--				     PAGE_KERNEL, 0, NUMA_NO_NODE,
--				     __builtin_return_address(0));
-+	return (unsigned long)__vmalloc_node(THREAD_SIZE, THREAD_SIZE,
-+			THREADINFO_GFP, NUMA_NO_NODE,
-+			__builtin_return_address(0));
- #else
- 	return __get_free_pages(GFP_KERNEL, THREAD_SIZE_ORDER);
- #endif
+Well the value was already calculate for us in true_bufsz, but I can
+change that.
+
+> But more importantly the correct value is:
+> 
+> 	PAGE_SIZE - NFP_NET_RX_BUF_HEADROOM
+
+Thanks for catching that. I will fix.
+
+> as we set hard_start at an offset. 
+> 
+> 	xdp.data_hard_start = rxbuf->frag + NFP_NET_RX_BUF_HEADROOM;
+> 
+> Cause NFP_NET_RX_BUF_HEADROOM is not DMA mapped.
+> 
+> >  	xdp.rxq = &rx_ring->xdp_rxq;
+> >  	tx_ring = r_vec->xdp_ring;  
+> 
+
 -- 
-2.25.1
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
