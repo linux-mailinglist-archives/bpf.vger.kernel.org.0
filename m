@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0321A7F18
-	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 16:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E3B1A7F5F
+	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 16:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388801AbgDNOCo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Apr 2020 10:02:44 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:56570 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2388766AbgDNOCl (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 14 Apr 2020 10:02:41 -0400
+        id S2389283AbgDNOQt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Apr 2020 10:16:49 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:30943 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2389220AbgDNOQq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Apr 2020 10:16:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586872960;
+        s=mimecast20190719; t=1586873803;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=FE3q1BI1gQoIqjmh4SbHpCJasYqDCUKlT257lwdOsbE=;
-        b=crWTjZx2d3ISTP+RM3MmmIEHVMXvNm58SzY/yykQ1O5S3lgg9j2AF3pJ2Wbj9gUdQbIgxV
-        vJjv94aJ1pI+D1yyd0Gh9i4hDN9Qe9YApjqcJRz7eO0qfJ2iDd5h9rPp8J7Gty44OjQ/BK
-        F0t+mXdwuvnV9Zdgjy4J2DiuE1H9Rw0=
+        bh=XplrO7V42Fns8TALi+Ph0HTduIH/xoZXlThwYZRV910=;
+        b=Tp40R3xoJJkA9ze3xko9GmE4TILKe6aA7v+4brbiUS6G9JMNL0eAjVyjphKBAgY6RCZoRR
+        qdP5lLdvNEIlna2ey1yLUbaSS/NteZv5hi9piZVUaN4b+MpmgJE15w2saoTZlj+CjlEm99
+        DbbjAaB7Fwbt8a0/ZcwwFQ8pS16dSW8=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-263-zLPZV4J7M6qON3a4Qvf55A-1; Tue, 14 Apr 2020 10:02:35 -0400
-X-MC-Unique: zLPZV4J7M6qON3a4Qvf55A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+ us-mta-209-AKOWGE30PyWO_qCcbJ-g1Q-1; Tue, 14 Apr 2020 10:16:41 -0400
+X-MC-Unique: AKOWGE30PyWO_qCcbJ-g1Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7C054800D5C;
-        Tue, 14 Apr 2020 14:02:33 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A526C1B18BC5;
+        Tue, 14 Apr 2020 14:16:38 +0000 (UTC)
 Received: from carbon (unknown [10.40.208.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5EE29385;
-        Tue, 14 Apr 2020 14:02:22 +0000 (UTC)
-Date:   Tue, 14 Apr 2020 16:02:20 +0200
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CA4815C1B0;
+        Tue, 14 Apr 2020 14:16:27 +0000 (UTC)
+Date:   Tue, 14 Apr 2020 16:16:26 +0200
 From:   Jesper Dangaard Brouer <brouer@redhat.com>
 To:     Jakub Kicinski <kuba@kernel.org>
 Cc:     sameehj@amazon.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
@@ -49,66 +49,43 @@ Cc:     sameehj@amazon.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
         Ilias Apalodimas <ilias.apalodimas@linaro.org>,
         Lorenzo Bianconi <lorenzo@kernel.org>,
         Saeed Mahameed <saeedm@mellanox.com>, brouer@redhat.com
-Subject: Re: [PATCH RFC v2 19/33] nfp: add XDP frame size to netronome
- driver
-Message-ID: <20200414160220.7d0f94c8@carbon>
-In-Reply-To: <20200408105344.11d1a33f@kicinski-fedora-PC1C0HJN>
+Subject: Re: [PATCH RFC v2 01/33] xdp: add frame size to xdp_buff
+Message-ID: <20200414161626.51e28b4b@carbon>
+In-Reply-To: <20200408105339.7d8d4e59@kicinski-fedora-PC1C0HJN>
 References: <158634658714.707275.7903484085370879864.stgit@firesoul>
-        <158634673086.707275.8905781490793267908.stgit@firesoul>
-        <20200408105344.11d1a33f@kicinski-fedora-PC1C0HJN>
+        <158634663936.707275.3156718045905620430.stgit@firesoul>
+        <20200408105339.7d8d4e59@kicinski-fedora-PC1C0HJN>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 8 Apr 2020 10:53:44 -0700
+On Wed, 8 Apr 2020 10:53:39 -0700
 Jakub Kicinski <kuba@kernel.org> wrote:
 
-> On Wed, 08 Apr 2020 13:52:10 +0200 Jesper Dangaard Brouer wrote:
-> > The netronome nfp driver already had a true_bufsz variable
-> > that contains what was needed for xdp.frame_sz.
-> > 
-> > Cc: Jakub Kicinski <kuba@kernel.org>
-> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > ---
-> >  .../net/ethernet/netronome/nfp/nfp_net_common.c    |    1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-> > index 9bfb3b077bc1..b9b8c30eab33 100644
-> > --- a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-> > +++ b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-> > @@ -1817,6 +1817,7 @@ static int nfp_net_rx(struct nfp_net_rx_ring *rx_ring, int budget)
-> >  	rcu_read_lock();
-> >  	xdp_prog = READ_ONCE(dp->xdp_prog);
-> >  	true_bufsz = xdp_prog ? PAGE_SIZE : dp->fl_bufsz;
-> > +	xdp.frame_sz = true_bufsz;  
+> > + * This macro reserves tailroom in the XDP buffer by limiting the
+> > + * XDP/BPF data access to data_hard_end.  Notice same area (and size)
+> > + * is used for XDP_PASS, when constructing the SKB via build_skb().
+> > + */
+> > +#define xdp_data_hard_end(xdp)				\
+> > +	((xdp)->data_hard_start + (xdp)->frame_sz -	\
+> > +	 SKB_DATA_ALIGN(sizeof(struct skb_shared_info)))  
 > 
-> Since this matters only with XDP on - we can set to PAGE_SIZE directly?
+> I think it should be said somewhere that the drivers are expected to
+> DMA map memory up to xdp_data_hard_end(xdp).
 
-Well the value was already calculate for us in true_bufsz, but I can
-change that.
+No, I don't want driver to DMA map memory up to xdp_data_hard_end(xdp).
 
-> But more importantly the correct value is:
-> 
-> 	PAGE_SIZE - NFP_NET_RX_BUF_HEADROOM
-
-Thanks for catching that. I will fix.
-
-> as we set hard_start at an offset. 
-> 
-> 	xdp.data_hard_start = rxbuf->frag + NFP_NET_RX_BUF_HEADROOM;
-> 
-> Cause NFP_NET_RX_BUF_HEADROOM is not DMA mapped.
-> 
-> >  	xdp.rxq = &rx_ring->xdp_rxq;
-> >  	tx_ring = r_vec->xdp_ring;  
-> 
-
+The driver will/should map up-to the configured MTU.  Reading ahead, I
+can see that you worry about XDP_TX, that doesn't do the MTU check in
+xdp_ok_fwd_dev() like we do for XDP_REDIRECT.  Guess, we need to check
+that before doing XDP_TX, such that we don't DMA sync for_device, for
+an area that does not included the original DMA-map area.  I wonder if
+that is a violation, if so, it is also problematic for adjust *head*.
 -- 
 Best regards,
   Jesper Dangaard Brouer
