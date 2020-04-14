@@ -2,487 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 641F81A72C5
-	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 06:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2FC91A72FB
+	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 07:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405383AbgDNE4V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Apr 2020 00:56:21 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48008 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729038AbgDNE4U (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 14 Apr 2020 00:56:20 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03E4nkjq023030
-        for <bpf@vger.kernel.org>; Mon, 13 Apr 2020 21:56:18 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=IneuMzkNUTKzowSmLoZ66PckCt8lYVUSvY8AKSzbEVM=;
- b=Bfsh9OmDp+ijh7jzFglZmeYFKwTTcbmKLstEI9ZB4GRDVohQtjhwlon1BhDoroDbqZCA
- +MOmkBACx8ryNPDktXNblYiIQZNi+KGnbNwefHMch2m7yDhGTbbIo+seaN3StFyH9zeX
- huTE5zgGknreUMFJJPZjxC6+q6rsLBvGN2w= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 30bxnk0d7h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 13 Apr 2020 21:56:18 -0700
-Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Mon, 13 Apr 2020 21:56:17 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 843932EC308F; Mon, 13 Apr 2020 21:56:14 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>, <rdna@fb.com>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v2 bpf-next] libbpf: always specify expected_attach_type on program load if supported
-Date:   Mon, 13 Apr 2020 21:56:13 -0700
-Message-ID: <20200414045613.2104756-1-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S2405494AbgDNF2O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Apr 2020 01:28:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729112AbgDNF2N (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Apr 2020 01:28:13 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945A0C0A3BDC;
+        Mon, 13 Apr 2020 22:28:13 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id o19so4748064qkk.5;
+        Mon, 13 Apr 2020 22:28:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2ECPnL4O1esYaha2phRo52qP3NWwRwpdDhvP+yrOVz0=;
+        b=eRaI2qWClNb1MJ+osv2y3a6+iV+30lVEwT4vmJkuWy1GS3X+crP4/WCoeBrebWrLin
+         AmLETTMdji1IK0WwBowZHq8ih2UDi7QE10yil/26R+uGbe06/M4Iq3At3U68XIKcTVfJ
+         f9Rbsbackb9j85iKzO1XZ2ywTHjBNm3yLxBJjRtTcaICosKnx5mqv16CZntyZ0WGKJ7s
+         0m9CXLcIoB2k2NiSXPDruQG2m9gRdikJVWSGuVT0+hCsvjAASwAi5TP+XBFbtWWgF73e
+         3ifPPCtYlxxAl9QX6gvQJU8RJC93+sD01CoQi2QNzbnFUKCKigFPZ/Y1pRnUBhnbGT7X
+         nJTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2ECPnL4O1esYaha2phRo52qP3NWwRwpdDhvP+yrOVz0=;
+        b=acxays+bsDMedH93ZebIiSvQXaS1L9iiSmu9MAbuiKxErk95/OBUjGc7nGLfqO0pl0
+         y4p4HxMbb2JqVHeep/3HcjsssB8ZgQ4gDV1Ba7+bT/K8Zbe+NAYgOZHC4MtVMRSqffH+
+         UhdcGRVfINTzw7+oTi2d/crwseB6DfuoXUxHfEV0lweGyyPreeMdvLXzcWLuxu/Jn18+
+         WwAxsG0VI8ei8yJEJ6MAMuIT3qp1aNZjd9CGbkZ4IxDmB4m+LoKVhkFKtDWfDgWk8PS/
+         IYAjCZ6kjLb/WbrfhbZoQpUdkBiefUgA41Yo3S+kI2rtaEx/AFXbysLO1A+0blJnF3PN
+         tu6w==
+X-Gm-Message-State: AGi0PuYZYHNPVjllRT7o0ys+tW43dvwxFSpoPjU7y8pLem/i+vLrX4HV
+        3PBO7i0we0bn3v1CtslrXau6i5XOFSyMRJthjUg=
+X-Google-Smtp-Source: APiQypIHMXkUdwTT/Ut6IKNMNfAaySG9eyUwhzJX1tx3/FUGFCNky1PX5WCfea9goIZknFY93zVRj3LXooMogKZv63g=
+X-Received: by 2002:ae9:e854:: with SMTP id a81mr19633421qkg.36.1586842092674;
+ Mon, 13 Apr 2020 22:28:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-14_01:2020-04-13,2020-04-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- mlxlogscore=999 bulkscore=0 adultscore=0 lowpriorityscore=0
- priorityscore=1501 phishscore=0 clxscore=1015 malwarescore=0
- suspectscore=0 mlxscore=0 impostorscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004140039
-X-FB-Internal: deliver
+References: <20200408232520.2675265-1-yhs@fb.com> <20200408232531.2676134-1-yhs@fb.com>
+In-Reply-To: <20200408232531.2676134-1-yhs@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 13 Apr 2020 22:28:01 -0700
+Message-ID: <CAEf4Bzb_q5XsZKu9gDJO__hOHCrGfmw5-vz4qPyNtk13CZ=Zdg@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 09/16] bpf: add bpf_seq_printf and
+ bpf_seq_write helpers
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-For some types of BPF programs that utilize expected_attach_type, libbpf =
-won't
-set load_attr.expected_attach_type, even if expected_attach_type is known=
- from
-section definition. This was done to preserve backwards compatibility wit=
-h old
-kernels that didn't recognize expected_attach_type attribute yet (which w=
-as
-added in 5e43f899b03a ("bpf: Check attach type at prog load time"). But t=
-his
-is problematic for some BPF programs that utilize never features that req=
-uire
-kernel to know specific expected_attach_type (e.g., extended set of retur=
-n
-codes for cgroup_skb/egress programs).
+On Wed, Apr 8, 2020 at 4:26 PM Yonghong Song <yhs@fb.com> wrote:
+>
+> Two helpers bpf_seq_printf and bpf_seq_write, are added for
+> writing data to the seq_file buffer.
+>
+> bpf_seq_printf supports common format string flag/width/type
+> fields so at least I can get identical results for
+> netlink and ipv6_route targets.
+>
+> For bpf_seq_printf, return value 1 specifically indicates
+> a write failure due to overflow in order to differentiate
+> the failure from format strings.
+>
+> For seq_file show, since the same object may be called
+> twice, some bpf_prog might be sensitive to this. With return
+> value indicating overflow happens the bpf program can
+> react differently.
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  include/uapi/linux/bpf.h       |  18 +++-
+>  kernel/trace/bpf_trace.c       | 172 +++++++++++++++++++++++++++++++++
+>  scripts/bpf_helpers_doc.py     |   2 +
+>  tools/include/uapi/linux/bpf.h |  18 +++-
+>  4 files changed, 208 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index b51d56fc77f9..a245f0df53c4 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3030,6 +3030,20 @@ union bpf_attr {
+>   *             * **-EOPNOTSUPP**       Unsupported operation, for example a
+>   *                                     call from outside of TC ingress.
+>   *             * **-ESOCKTNOSUPPORT**  Socket type not supported (reuseport).
+> + *
+> + * int bpf_seq_printf(struct seq_file *m, const char *fmt, u32 fmt_size, ...)
+> + *     Description
+> + *             seq_printf
+> + *     Return
+> + *             0 if successful, or
+> + *             1 if failure due to buffer overflow, or
+> + *             a negative value for format string related failures.
 
-This patch makes libbpf specify expected_attach_type by default, but also
-detect support for this field in kernel and not set it during program loa=
-d.
-This allows to have a good metadata for bpf_program
-(e.g., bpf_program__get_extected_attach_type()), but still work with old
-kernels (for cases where it can work at all).
+This encoding feels a bit arbitrary, why not stick to normal error
+codes and return, for example, EAGAIN on overflow (or EOVERFLOW?..)
 
-Additionally, due to expected_attach_type being always set for recognized
-program types, bpf_program__attach_cgroup doesn't have to do extra checks=
- to
-determine correct attach type, so remove that additional logic.
+> + *
+> + * int bpf_seq_write(struct seq_file *m, const void *data, u32 len)
+> + *     Description
+> + *             seq_write
+> + *     Return
+> + *             0 if successful, non-zero otherwise.
 
-Also adjust section_names selftest to account for this change.
+Especially given that bpf_seq_write will probably return <0 on the same error?
 
-More detailed discussion can be found in [0].
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)          \
+>         FN(unspec),                     \
+> @@ -3156,7 +3170,9 @@ union bpf_attr {
+>         FN(xdp_output),                 \
+>         FN(get_netns_cookie),           \
+>         FN(get_current_ancestor_cgroup_id),     \
+> -       FN(sk_assign),
+> +       FN(sk_assign),                  \
+> +       FN(seq_printf),                 \
+> +       FN(seq_write),
+>
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+>   * function eBPF program intends to call
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index ca1796747a77..e7d6ba7c9c51 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -457,6 +457,174 @@ const struct bpf_func_proto *bpf_get_trace_printk_proto(void)
+>         return &bpf_trace_printk_proto;
+>  }
+>
+> +BPF_CALL_5(bpf_seq_printf, struct seq_file *, m, char *, fmt, u32, fmt_size, u64, arg1,
+> +          u64, arg2)
+> +{
 
-  [0] https://lore.kernel.org/bpf/20200412003604.GA15986@rdna-mbp.dhcp.th=
-efacebook.com/
+I honestly didn't dare to look at implementation below, but this
+limitation of only up to 2 arguments in bpf_seq_printf (arg1 and arg2)
+seem extremely limiting. It might be ok for bpf_printk, but not for
+more general and non-debugging bpf_seq_printf.
 
-Reported-by: Andrey Ignatov <rdna@fb.com>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
-v1->v2:
-- fixed prog_type/expected_attach_type combo (Andrey);
-- added comment explaining what we are doing in probe_exp_attach_type (An=
-drey).
+How about instead of passing arguments as 4th and 5th argument,
+bpf_seq_printf would require passing a pointer to a long array, where
+each item corresponds to printf argument? So on BPF program side, one
+would have to do this, to printf 5 arguments;
 
- tools/lib/bpf/libbpf.c                        | 127 ++++++++++++------
- .../selftests/bpf/prog_tests/section_names.c  |  42 +++---
- 2 files changed, 110 insertions(+), 59 deletions(-)
+long __tmp_arr[] = { 123, pointer_to_str, some_input_int,
+some_input_long, 5 * arg_x };
+return bpf_seq_printf(m, fmt, fmt_size, &__tmp_arr, sizeof(__tmp_arr));
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index ff9174282a8c..c7393182e2ae 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -178,6 +178,8 @@ struct bpf_capabilities {
- 	__u32 array_mmap:1;
- 	/* BTF_FUNC_GLOBAL is supported */
- 	__u32 btf_func_global:1;
-+	/* kernel support for expected_attach_type in BPF_PROG_LOAD */
-+	__u32 exp_attach_type:1;
- };
-=20
- enum reloc_type {
-@@ -194,6 +196,22 @@ struct reloc_desc {
- 	int sym_off;
- };
-=20
-+struct bpf_sec_def;
-+
-+typedef struct bpf_link *(*attach_fn_t)(const struct bpf_sec_def *sec,
-+					struct bpf_program *prog);
-+
-+struct bpf_sec_def {
-+	const char *sec;
-+	size_t len;
-+	enum bpf_prog_type prog_type;
-+	enum bpf_attach_type expected_attach_type;
-+	bool is_exp_attach_type_optional;
-+	bool is_attachable;
-+	bool is_attach_btf;
-+	attach_fn_t attach_fn;
-+};
-+
- /*
-  * bpf_prog should be a better name but it has been used in
-  * linux/filter.h.
-@@ -204,6 +222,7 @@ struct bpf_program {
- 	char *name;
- 	int prog_ifindex;
- 	char *section_name;
-+	const struct bpf_sec_def *sec_def;
- 	/* section_name with / replaced by _; makes recursive pinning
- 	 * in bpf_object__pin_programs easier
- 	 */
-@@ -3315,6 +3334,37 @@ static int bpf_object__probe_array_mmap(struct bpf=
-_object *obj)
- 	return 0;
- }
-=20
-+static int
-+bpf_object__probe_exp_attach_type(struct bpf_object *obj)
-+{
-+	struct bpf_load_program_attr attr;
-+	struct bpf_insn insns[] =3D {
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	};
-+	int fd;
-+
-+	memset(&attr, 0, sizeof(attr));
-+	/* use any valid combination of program type and (optional)
-+	 * non-zero expected attach type (i.e., not a BPF_CGROUP_INET_INGRESS)
-+	 * to see if kernel supports expected_attach_type field for
-+	 * BPF_PROG_LOAD command
-+	 */
-+	attr.prog_type =3D BPF_PROG_TYPE_CGROUP_SOCK;
-+	attr.expected_attach_type =3D BPF_CGROUP_INET_SOCK_CREATE;
-+	attr.insns =3D insns;
-+	attr.insns_cnt =3D ARRAY_SIZE(insns);
-+	attr.license =3D "GPL";
-+
-+	fd =3D bpf_load_program_xattr(&attr, NULL, 0);
-+	if (fd >=3D 0) {
-+		obj->caps.exp_attach_type =3D 1;
-+		close(fd);
-+		return 1;
-+	}
-+	return 0;
-+}
-+
- static int
- bpf_object__probe_caps(struct bpf_object *obj)
- {
-@@ -3325,6 +3375,7 @@ bpf_object__probe_caps(struct bpf_object *obj)
- 		bpf_object__probe_btf_func_global,
- 		bpf_object__probe_btf_datasec,
- 		bpf_object__probe_array_mmap,
-+		bpf_object__probe_exp_attach_type,
- 	};
- 	int i, ret;
-=20
-@@ -4861,7 +4912,12 @@ load_program(struct bpf_program *prog, struct bpf_=
-insn *insns, int insns_cnt,
-=20
- 	memset(&load_attr, 0, sizeof(struct bpf_load_program_attr));
- 	load_attr.prog_type =3D prog->type;
--	load_attr.expected_attach_type =3D prog->expected_attach_type;
-+	/* old kernels might not support specifying expected_attach_type */
-+	if (!prog->caps->exp_attach_type && prog->sec_def &&
-+	    prog->sec_def->is_exp_attach_type_optional)
-+		load_attr.expected_attach_type =3D 0;
-+	else
-+		load_attr.expected_attach_type =3D prog->expected_attach_type;
- 	if (prog->caps->name)
- 		load_attr.name =3D prog->name;
- 	load_attr.insns =3D insns;
-@@ -5062,6 +5118,8 @@ bpf_object__load_progs(struct bpf_object *obj, int =
-log_level)
- 	return 0;
- }
-=20
-+static const struct bpf_sec_def *find_sec_def(const char *sec_name);
-+
- static struct bpf_object *
- __bpf_object__open(const char *path, const void *obj_buf, size_t obj_buf=
-_sz,
- 		   const struct bpf_object_open_opts *opts)
-@@ -5117,24 +5175,17 @@ __bpf_object__open(const char *path, const void *=
-obj_buf, size_t obj_buf_sz,
- 	bpf_object__elf_finish(obj);
-=20
- 	bpf_object__for_each_program(prog, obj) {
--		enum bpf_prog_type prog_type;
--		enum bpf_attach_type attach_type;
--
--		if (prog->type !=3D BPF_PROG_TYPE_UNSPEC)
--			continue;
--
--		err =3D libbpf_prog_type_by_name(prog->section_name, &prog_type,
--					       &attach_type);
--		if (err =3D=3D -ESRCH)
-+		prog->sec_def =3D find_sec_def(prog->section_name);
-+		if (!prog->sec_def)
- 			/* couldn't guess, but user might manually specify */
- 			continue;
--		if (err)
--			goto out;
-=20
--		bpf_program__set_type(prog, prog_type);
--		bpf_program__set_expected_attach_type(prog, attach_type);
--		if (prog_type =3D=3D BPF_PROG_TYPE_TRACING ||
--		    prog_type =3D=3D BPF_PROG_TYPE_EXT)
-+		bpf_program__set_type(prog, prog->sec_def->prog_type);
-+		bpf_program__set_expected_attach_type(prog,
-+				prog->sec_def->expected_attach_type);
-+
-+		if (prog->sec_def->prog_type =3D=3D BPF_PROG_TYPE_TRACING ||
-+		    prog->sec_def->prog_type =3D=3D BPF_PROG_TYPE_EXT)
- 			prog->attach_prog_fd =3D OPTS_GET(opts, attach_prog_fd, 0);
- 	}
-=20
-@@ -6223,23 +6274,33 @@ void bpf_program__set_expected_attach_type(struct=
- bpf_program *prog,
- 	prog->expected_attach_type =3D type;
- }
-=20
--#define BPF_PROG_SEC_IMPL(string, ptype, eatype, is_attachable, btf, aty=
-pe) \
--	{ string, sizeof(string) - 1, ptype, eatype, is_attachable, btf, atype =
-}
-+#define BPF_PROG_SEC_IMPL(string, ptype, eatype, eatype_optional,	    \
-+			  attachable, attach_btf)			    \
-+	{								    \
-+		.sec =3D string,						    \
-+		.len =3D sizeof(string) - 1,				    \
-+		.prog_type =3D ptype,					    \
-+		.sec =3D string,						    \
-+		.expected_attach_type =3D eatype,				    \
-+		.is_exp_attach_type_optional =3D eatype_optional,		    \
-+		.is_attachable =3D attachable,				    \
-+		.is_attach_btf =3D attach_btf,				    \
-+	}
-=20
- /* Programs that can NOT be attached. */
- #define BPF_PROG_SEC(string, ptype) BPF_PROG_SEC_IMPL(string, ptype, 0, =
-0, 0, 0)
-=20
- /* Programs that can be attached. */
- #define BPF_APROG_SEC(string, ptype, atype) \
--	BPF_PROG_SEC_IMPL(string, ptype, 0, 1, 0, atype)
-+	BPF_PROG_SEC_IMPL(string, ptype, atype, true, 1, 0)
-=20
- /* Programs that must specify expected attach type at load time. */
- #define BPF_EAPROG_SEC(string, ptype, eatype) \
--	BPF_PROG_SEC_IMPL(string, ptype, eatype, 1, 0, eatype)
-+	BPF_PROG_SEC_IMPL(string, ptype, eatype, false, 1, 0)
-=20
- /* Programs that use BTF to identify attach point */
- #define BPF_PROG_BTF(string, ptype, eatype) \
--	BPF_PROG_SEC_IMPL(string, ptype, eatype, 0, 1, 0)
-+	BPF_PROG_SEC_IMPL(string, ptype, eatype, false, 0, 1)
-=20
- /* Programs that can be attached but attach type can't be identified by =
-section
-  * name. Kept for backward compatibility.
-@@ -6253,11 +6314,6 @@ void bpf_program__set_expected_attach_type(struct =
-bpf_program *prog,
- 	__VA_ARGS__							    \
- }
-=20
--struct bpf_sec_def;
--
--typedef struct bpf_link *(*attach_fn_t)(const struct bpf_sec_def *sec,
--					struct bpf_program *prog);
--
- static struct bpf_link *attach_kprobe(const struct bpf_sec_def *sec,
- 				      struct bpf_program *prog);
- static struct bpf_link *attach_tp(const struct bpf_sec_def *sec,
-@@ -6269,17 +6325,6 @@ static struct bpf_link *attach_trace(const struct =
-bpf_sec_def *sec,
- static struct bpf_link *attach_lsm(const struct bpf_sec_def *sec,
- 				   struct bpf_program *prog);
-=20
--struct bpf_sec_def {
--	const char *sec;
--	size_t len;
--	enum bpf_prog_type prog_type;
--	enum bpf_attach_type expected_attach_type;
--	bool is_attachable;
--	bool is_attach_btf;
--	enum bpf_attach_type attach_type;
--	attach_fn_t attach_fn;
--};
--
- static const struct bpf_sec_def section_defs[] =3D {
- 	BPF_PROG_SEC("socket",			BPF_PROG_TYPE_SOCKET_FILTER),
- 	BPF_PROG_SEC("sk_reuseport",		BPF_PROG_TYPE_SK_REUSEPORT),
-@@ -6713,7 +6758,7 @@ int libbpf_attach_type_by_name(const char *name,
- 			continue;
- 		if (!section_defs[i].is_attachable)
- 			return -EINVAL;
--		*attach_type =3D section_defs[i].attach_type;
-+		*attach_type =3D section_defs[i].expected_attach_type;
- 		return 0;
- 	}
- 	pr_debug("failed to guess attach type based on ELF section name '%s'\n"=
-, name);
-@@ -7542,7 +7587,6 @@ static struct bpf_link *attach_lsm(const struct bpf=
-_sec_def *sec,
- struct bpf_link *
- bpf_program__attach_cgroup(struct bpf_program *prog, int cgroup_fd)
- {
--	const struct bpf_sec_def *sec_def;
- 	enum bpf_attach_type attach_type;
- 	char errmsg[STRERR_BUFSIZE];
- 	struct bpf_link *link;
-@@ -7561,11 +7605,6 @@ bpf_program__attach_cgroup(struct bpf_program *pro=
-g, int cgroup_fd)
- 	link->detach =3D &bpf_link__detach_fd;
-=20
- 	attach_type =3D bpf_program__get_expected_attach_type(prog);
--	if (!attach_type) {
--		sec_def =3D find_sec_def(bpf_program__title(prog, false));
--		if (sec_def)
--			attach_type =3D sec_def->attach_type;
--	}
- 	link_fd =3D bpf_link_create(prog_fd, cgroup_fd, attach_type, NULL);
- 	if (link_fd < 0) {
- 		link_fd =3D -errno;
-diff --git a/tools/testing/selftests/bpf/prog_tests/section_names.c b/too=
-ls/testing/selftests/bpf/prog_tests/section_names.c
-index 9d9351dc2ded..713167449c98 100644
---- a/tools/testing/selftests/bpf/prog_tests/section_names.c
-+++ b/tools/testing/selftests/bpf/prog_tests/section_names.c
-@@ -43,18 +43,18 @@ static struct sec_name_test tests[] =3D {
- 	{"lwt_seg6local", {0, BPF_PROG_TYPE_LWT_SEG6LOCAL, 0}, {-EINVAL, 0} },
- 	{
- 		"cgroup_skb/ingress",
--		{0, BPF_PROG_TYPE_CGROUP_SKB, 0},
-+		{0, BPF_PROG_TYPE_CGROUP_SKB, BPF_CGROUP_INET_INGRESS},
- 		{0, BPF_CGROUP_INET_INGRESS},
- 	},
- 	{
- 		"cgroup_skb/egress",
--		{0, BPF_PROG_TYPE_CGROUP_SKB, 0},
-+		{0, BPF_PROG_TYPE_CGROUP_SKB, BPF_CGROUP_INET_EGRESS},
- 		{0, BPF_CGROUP_INET_EGRESS},
- 	},
- 	{"cgroup/skb", {0, BPF_PROG_TYPE_CGROUP_SKB, 0}, {-EINVAL, 0} },
- 	{
- 		"cgroup/sock",
--		{0, BPF_PROG_TYPE_CGROUP_SOCK, 0},
-+		{0, BPF_PROG_TYPE_CGROUP_SOCK, BPF_CGROUP_INET_SOCK_CREATE},
- 		{0, BPF_CGROUP_INET_SOCK_CREATE},
- 	},
- 	{
-@@ -69,26 +69,38 @@ static struct sec_name_test tests[] =3D {
- 	},
- 	{
- 		"cgroup/dev",
--		{0, BPF_PROG_TYPE_CGROUP_DEVICE, 0},
-+		{0, BPF_PROG_TYPE_CGROUP_DEVICE, BPF_CGROUP_DEVICE},
- 		{0, BPF_CGROUP_DEVICE},
- 	},
--	{"sockops", {0, BPF_PROG_TYPE_SOCK_OPS, 0}, {0, BPF_CGROUP_SOCK_OPS} },
-+	{
-+		"sockops",
-+		{0, BPF_PROG_TYPE_SOCK_OPS, BPF_CGROUP_SOCK_OPS},
-+		{0, BPF_CGROUP_SOCK_OPS},
-+	},
- 	{
- 		"sk_skb/stream_parser",
--		{0, BPF_PROG_TYPE_SK_SKB, 0},
-+		{0, BPF_PROG_TYPE_SK_SKB, BPF_SK_SKB_STREAM_PARSER},
- 		{0, BPF_SK_SKB_STREAM_PARSER},
- 	},
- 	{
- 		"sk_skb/stream_verdict",
--		{0, BPF_PROG_TYPE_SK_SKB, 0},
-+		{0, BPF_PROG_TYPE_SK_SKB, BPF_SK_SKB_STREAM_VERDICT},
- 		{0, BPF_SK_SKB_STREAM_VERDICT},
- 	},
- 	{"sk_skb", {0, BPF_PROG_TYPE_SK_SKB, 0}, {-EINVAL, 0} },
--	{"sk_msg", {0, BPF_PROG_TYPE_SK_MSG, 0}, {0, BPF_SK_MSG_VERDICT} },
--	{"lirc_mode2", {0, BPF_PROG_TYPE_LIRC_MODE2, 0}, {0, BPF_LIRC_MODE2} },
-+	{
-+		"sk_msg",
-+		{0, BPF_PROG_TYPE_SK_MSG, BPF_SK_MSG_VERDICT},
-+		{0, BPF_SK_MSG_VERDICT},
-+	},
-+	{
-+		"lirc_mode2",
-+		{0, BPF_PROG_TYPE_LIRC_MODE2, BPF_LIRC_MODE2},
-+		{0, BPF_LIRC_MODE2},
-+	},
- 	{
- 		"flow_dissector",
--		{0, BPF_PROG_TYPE_FLOW_DISSECTOR, 0},
-+		{0, BPF_PROG_TYPE_FLOW_DISSECTOR, BPF_FLOW_DISSECTOR},
- 		{0, BPF_FLOW_DISSECTOR},
- 	},
- 	{
-@@ -158,17 +170,17 @@ static void test_prog_type_by_name(const struct sec=
-_name_test *test)
- 				      &expected_attach_type);
-=20
- 	CHECK(rc !=3D test->expected_load.rc, "check_code",
--	      "prog: unexpected rc=3D%d for %s", rc, test->sec_name);
-+	      "prog: unexpected rc=3D%d for %s\n", rc, test->sec_name);
-=20
- 	if (rc)
- 		return;
-=20
- 	CHECK(prog_type !=3D test->expected_load.prog_type, "check_prog_type",
--	      "prog: unexpected prog_type=3D%d for %s",
-+	      "prog: unexpected prog_type=3D%d for %s\n",
- 	      prog_type, test->sec_name);
-=20
- 	CHECK(expected_attach_type !=3D test->expected_load.expected_attach_typ=
-e,
--	      "check_attach_type", "prog: unexpected expected_attach_type=3D%d =
-for %s",
-+	      "check_attach_type", "prog: unexpected expected_attach_type=3D%d =
-for %s\n",
- 	      expected_attach_type, test->sec_name);
- }
-=20
-@@ -180,13 +192,13 @@ static void test_attach_type_by_name(const struct s=
-ec_name_test *test)
- 	rc =3D libbpf_attach_type_by_name(test->sec_name, &attach_type);
-=20
- 	CHECK(rc !=3D test->expected_attach.rc, "check_ret",
--	      "attach: unexpected rc=3D%d for %s", rc, test->sec_name);
-+	      "attach: unexpected rc=3D%d for %s\n", rc, test->sec_name);
-=20
- 	if (rc)
- 		return;
-=20
- 	CHECK(attach_type !=3D test->expected_attach.attach_type,
--	      "check_attach_type", "attach: unexpected attach_type=3D%d for %s"=
-,
-+	      "check_attach_type", "attach: unexpected attach_type=3D%d for %s\=
-n",
- 	      attach_type, test->sec_name);
- }
-=20
---=20
-2.24.1
+And the bpf_seq_printf would know that 4th argument is a pointer to an
+array of size provided in 5th argument and process them accordingly.
+This would theoretically allow to have arbitrary number of arguments.
+This local array construction can be abstracted into macro, of course.
+Would something like this be possible?
 
+[...]
+
+> +/* Horrid workaround for getting va_list handling working with different
+> + * argument type combinations generically for 32 and 64 bit archs.
+> + */
+> +#define __BPF_SP_EMIT()        __BPF_ARG2_SP()
+> +#define __BPF_SP(...)                                                  \
+> +       seq_printf(m, fmt, ##__VA_ARGS__)
+> +
+> +#define __BPF_ARG1_SP(...)                                             \
+> +       ((mod[0] == 2 || (mod[0] == 1 && __BITS_PER_LONG == 64))        \
+> +         ? __BPF_SP(arg1, ##__VA_ARGS__)                               \
+> +         : ((mod[0] == 1 || (mod[0] == 0 && __BITS_PER_LONG == 32))    \
+> +             ? __BPF_SP((long)arg1, ##__VA_ARGS__)                     \
+> +             : __BPF_SP((u32)arg1, ##__VA_ARGS__)))
+> +
+> +#define __BPF_ARG2_SP(...)                                             \
+> +       ((mod[1] == 2 || (mod[1] == 1 && __BITS_PER_LONG == 64))        \
+> +         ? __BPF_ARG1_SP(arg2, ##__VA_ARGS__)                          \
+> +         : ((mod[1] == 1 || (mod[1] == 0 && __BITS_PER_LONG == 32))    \
+> +             ? __BPF_ARG1_SP((long)arg2, ##__VA_ARGS__)                \
+> +             : __BPF_ARG1_SP((u32)arg2, ##__VA_ARGS__)))
+
+hm... wouldn't this make it impossible to print 64-bit numbers on
+32-bit arches? It seems to be truncating to 32-bit unconditionally....
+
+> +
+> +       __BPF_SP_EMIT();
+> +       return seq_has_overflowed(m);
+> +}
+> +
+
+[...]
