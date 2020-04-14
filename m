@@ -2,257 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F451A88E2
-	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 20:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 008331A8951
+	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 20:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503643AbgDNSOT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Apr 2020 14:14:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45526 "EHLO
+        id S2503893AbgDNSYc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Apr 2020 14:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2503621AbgDNSOP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 14 Apr 2020 14:14:15 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4646C061A0E
-        for <bpf@vger.kernel.org>; Tue, 14 Apr 2020 11:14:14 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id 204so7705060ybw.5
-        for <bpf@vger.kernel.org>; Tue, 14 Apr 2020 11:14:14 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S2503891AbgDNSYa (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Apr 2020 14:24:30 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E74C061A0C;
+        Tue, 14 Apr 2020 11:24:30 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id 37so352651qvc.8;
+        Tue, 14 Apr 2020 11:24:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ANLrY4ni7/9H944gaMoVhVUXyiL5aEmRMiwWCB+UJKE=;
-        b=iLnREQsqffwaJy3FePccTuETnEVFwlaFpld2yrIrRXQ7A36BwmrE1GlAwupPa5L47g
-         VmnZWDR9jqg/phbSSPtf8QcENJgUg7GH8O5O2/NbFIEYHag5LVgk3Wge6H63DxzZd6P9
-         MItSwoJezoC7yFPTOHK2U0vX9qFBErGLI9hJ7kPLq6rhbzCAAfwuhsB0p3yilxsr9mpX
-         Qai3Q3wqsMvrXZ3kklG5YlM5Um7gWA8NXiJEy3fSFEHoewS5hPrA3R4nORvxYnHvJC+q
-         yxcAMO8IPG3pGrXtWLD+zjvnoXEXvf2AALtjJ1UdXw9Dj757IeTV9LfNWmidYc8N+1Yz
-         P6pg==
+        bh=vv3ui4zDdvpTcOqmfaq/t1/w4FqNjsPqidFOalTcQUw=;
+        b=RhyYbbbXm85p/qji1+l9Kd1gf/g6nnD0TRyzNSA+UenlIggh3A3btEadV5e7ebp1zs
+         tSFtmJiP2G2AsByVxoyG/E+LruZGjyUn21CLmgGcDuq2o8JcVxi3jOSHOE9/v5kcjTJx
+         PcnELNWYVRBIHky2CqmL8BEcnwoa4H8MvnNEHm22Eu3dwKs5yCdI94K2xn23IOHUsoCN
+         u3HY9nJfsgMTzKMOxccNHypWvELRUyQ3h0V+i7O5Xrwu9D29mTIRIBiZlXW4jpasz66u
+         vRkJLbI4VTb/GwTvxas88r1KGO+bFMOEcER2BXOb+c3dBMZFkeeyMGY1kARmK0Hq56RN
+         gFrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ANLrY4ni7/9H944gaMoVhVUXyiL5aEmRMiwWCB+UJKE=;
-        b=DaoNJnc2hIKl67h/H8lFNGfRsGFwzGW+yQaQdqoeiRx2cHcUDvDEdJ2ueUOvMvZQ7F
-         YF5fo3gckDFcjE9o0xQ2g86ftl09v/3AOyKNEkHFeNNHTTehKqrW87BzZU92OzDIo7tY
-         Y8XJUxv+p6yD18y40kaCIkbKnjxf1FugrcvTGAk59JlAw6zSuzwcV/h9+E7CGIvofCxo
-         bxMOECSCGJu6GtLU+C/YiuDZApmGyQba1NkyOUqYXB/WGkHZoqfv3mnS4I1VP8cb1Dui
-         7dlt4s/ucDkQT6PRCma1Ho5cDsDmc9xzrspraMct3Ke3sjKP7zxEVFn0bKGg66mGF1lX
-         Hjnw==
-X-Gm-Message-State: AGi0PuZ+3/h2n/NqpXdM+eLNmgsZCCIW6C9nEjQtzrryL5xz0a4r5r+S
-        41TezinbOHs0grBojn28PZOu6kk1pKWylVEngT7hBw==
-X-Google-Smtp-Source: APiQypJykLo1er/rJmbEdiyFYjwm7+CD4HzCNR2GAZsEgaOKmBtuRhgU0Ng44D7rAjxhNkfFtPyHmipGv/BFzHbg8Nw=
-X-Received: by 2002:a25:aaa4:: with SMTP id t33mr2030364ybi.324.1586888053511;
- Tue, 14 Apr 2020 11:14:13 -0700 (PDT)
+        bh=vv3ui4zDdvpTcOqmfaq/t1/w4FqNjsPqidFOalTcQUw=;
+        b=m3JY5oh2rzCbijUNXSZfwsm1Psgn6sr8Yrbqj1f0MgZkw0Pj6FnI6N8EvtoRt9ACXl
+         TmtyofIbnQ9UIbs0x9WDrvXOKbyS4ZDL+KP1IlRB29Z13FopyXLDwsYePKurOrFleVuR
+         WypxECiD8X0LGIDb1enCmlwcqVhacDrjFL0K1OqNR6rkZ9+Xpzy6FctTLJMX/LtPuL9M
+         RMuOIythuFf0UpwmMZRfahgWtN1R91G6mqbIAtpa/PWbPpvWhn0ctwWVYWPU2Zl+p8P0
+         OlyETzp4kdIYAmarwEXtOrGZ2H6Z8xpCddpR1dPNr3Ez5yKdSpE7c0dtqWZo15yR2jhb
+         aY4w==
+X-Gm-Message-State: AGi0PuZ70vp1WiRm/FC8X/sYHahD9kslkzUKmkqVduSMad+m+/BUm4BL
+        JfurRQu8FM4BDpTrnmHZSHzc3npJUWVmn9lZvkY=
+X-Google-Smtp-Source: APiQypJaqT+5U05ni29J2R22Xxag9ogoIZrRJf0TXg+w9pO7LqszszEy1W9SGS/On8+TzCjgcuqvv1THiNiw8QpIxdA=
+X-Received: by 2002:a0c:e844:: with SMTP id l4mr1241083qvo.247.1586888669693;
+ Tue, 14 Apr 2020 11:24:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200411074631.9486-1-irogers@google.com> <20200411074631.9486-5-irogers@google.com>
- <20200414152102.GC208694@krava>
-In-Reply-To: <20200414152102.GC208694@krava>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 14 Apr 2020 11:14:01 -0700
-Message-ID: <CAP-5=fW6LgbEodo0StNXBm+hjEEhrQ8JFBU8tYEfeoCURmakaQ@mail.gmail.com>
-Subject: Re: [PATCH v8 4/4] perf tools: add support for libpfm4
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20200414045613.2104756-1-andriin@fb.com> <20200414175608.GB54710@rdna-mbp>
+In-Reply-To: <20200414175608.GB54710@rdna-mbp>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 14 Apr 2020 11:24:18 -0700
+Message-ID: <CAEf4BzbM4-PvOgro-SjHx6h2ndYndSNkbQTA6xq74W=PuPTpjA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] libbpf: always specify expected_attach_type
+ on program load if supported
+To:     Andrey Ignatov <rdna@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jiwei Sun <jiwei.sun@windriver.com>,
-        yuzhoujian <yuzhoujian@didichuxing.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 8:21 AM Jiri Olsa <jolsa@redhat.com> wrote:
+On Tue, Apr 14, 2020 at 10:56 AM Andrey Ignatov <rdna@fb.com> wrote:
 >
-> On Sat, Apr 11, 2020 at 12:46:31AM -0700, Ian Rogers wrote:
->
-> SNIP
->
-> >  TAG_FOLDERS= . ../lib ../include
-> >  TAG_FILES= ../../include/uapi/linux/perf_event.h
-> > diff --git a/tools/perf/builtin-list.c b/tools/perf/builtin-list.c
-> > index 965ef017496f..7b64cd34266e 100644
-> > --- a/tools/perf/builtin-list.c
-> > +++ b/tools/perf/builtin-list.c
-> > @@ -18,6 +18,10 @@
-> >  #include <subcmd/parse-options.h>
-> >  #include <stdio.h>
+> Andrii Nakryiko <andriin@fb.com> [Mon, 2020-04-13 21:56 -0700]:
+> > For some types of BPF programs that utilize expected_attach_type, libbpf won't
+> > set load_attr.expected_attach_type, even if expected_attach_type is known from
+> > section definition. This was done to preserve backwards compatibility with old
+> > kernels that didn't recognize expected_attach_type attribute yet (which was
+> > added in 5e43f899b03a ("bpf: Check attach type at prog load time"). But this
+> > is problematic for some BPF programs that utilize never features that require
+> > kernel to know specific expected_attach_type (e.g., extended set of return
+> > codes for cgroup_skb/egress programs).
 > >
-> > +#ifdef HAVE_LIBPFM
-> > +#include "util/pfm.h"
-> > +#endif
->
-> so we have the HAVE_LIBPFM you could do the:
->
-> #ifdef HAVE_LIBPFM
-> #else
-> #endif
->
-> in util/pfm.h and add stubs for libpfm_initialize and others
-> in case HAVE_LIBPFM is not defined.. that clear out all the
-> #ifdefs in the change
->
->
-> SNIP
->
-> > diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-> > index b6322eb0f423..8b323151f22c 100644
-> > --- a/tools/perf/tests/builtin-test.c
-> > +++ b/tools/perf/tests/builtin-test.c
-> > @@ -313,6 +313,15 @@ static struct test generic_tests[] = {
-> >               .desc = "maps__merge_in",
-> >               .func = test__maps__merge_in,
-> >       },
-> > +     {
-> > +             .desc = "Test libpfm4 support",
-> > +             .func = test__pfm,
-> > +             .subtest = {
-> > +                     .skip_if_fail   = true,
-> > +                     .get_nr         = test__pfm_subtest_get_nr,
-> > +                     .get_desc       = test__pfm_subtest_get_desc,
-> > +             }
->
-> awesome :)
->
-> SNIP
->
-> > diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> > index d23db6755f51..83ad76d3d2be 100644
-> > --- a/tools/perf/util/evsel.c
-> > +++ b/tools/perf/util/evsel.c
-> > @@ -2447,9 +2447,15 @@ bool perf_evsel__fallback(struct evsel *evsel, int err,
-> >               const char *sep = ":";
+> > This patch makes libbpf specify expected_attach_type by default, but also
+> > detect support for this field in kernel and not set it during program load.
+> > This allows to have a good metadata for bpf_program
+> > (e.g., bpf_program__get_extected_attach_type()), but still work with old
+> > kernels (for cases where it can work at all).
 > >
-> >               /* Is there already the separator in the name. */
-> > +#ifndef HAVE_LIBPFM
-> >               if (strchr(name, '/') ||
-> >                   strchr(name, ':'))
-> >                       sep = "";
-> > +#else
-> > +             if (strchr(name, '/') ||
-> > +                 (strchr(name, ':') && !evsel->is_libpfm_event))
-> > +                     sep = "";
-> > +#endif
->
->
->   ^^^^^^^^
->
+> > Additionally, due to expected_attach_type being always set for recognized
+> > program types, bpf_program__attach_cgroup doesn't have to do extra checks to
+> > determine correct attach type, so remove that additional logic.
 > >
-> >               if (asprintf(&new_name, "%s%su", name, sep) < 0)
-> >                       return false;
-> > diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> > index 53187c501ee8..397d335d5e24 100644
-> > --- a/tools/perf/util/evsel.h
-> > +++ b/tools/perf/util/evsel.h
-> > @@ -76,6 +76,9 @@ struct evsel {
-> >       bool                    ignore_missing_thread;
-> >       bool                    forced_leader;
-> >       bool                    use_uncore_alias;
-> > +#ifdef HAVE_LIBPFM
-> > +     bool                    is_libpfm_event;
-> > +#endif
->
-> perhaps we could had this one in unconditionaly,
-> because I think we have some members like that
-> for aux tracing.. and that would remove the #ifdef
-> above
->
->
-> SNIP
->
+> > Also adjust section_names selftest to account for this change.
 > >
-> > +#ifdef HAVE_LIBPFM
-> > +struct evsel *parse_events__pfm_add_event(int idx, struct perf_event_attr *attr,
-> > +                                     char *name, struct perf_pmu *pmu)
-> > +{
-> > +     return __add_event(NULL, &idx, attr, false, name, pmu, NULL, false,
-> > +                        NULL);
-> > +}
-> > +#endif
+> > More detailed discussion can be found in [0].
+> >
+> >   [0] https://lore.kernel.org/bpf/20200412003604.GA15986@rdna-mbp.dhcp.thefacebook.com/
+> >
+> > Reported-by: Andrey Ignatov <rdna@fb.com>
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> > v1->v2:
+> > - fixed prog_type/expected_attach_type combo (Andrey);
+> > - added comment explaining what we are doing in probe_exp_attach_type (Andrey).
 >
-> could you instead add parse_events__add_event and call it from pfm code?
+> Thanks for changes.
+>
+> I built the patch (removing the double .sec Song mentioned since it
+> breaks compilation) and tested it: it fixes the problem with NET_XMIT_CN
 
-I wasn't clear whether this was just a name change given the different
-arguments on existing functions. Hopefully everything is addressed in
-the v9 set:
-https://lore.kernel.org/lkml/20200414181054.22435-2-irogers@google.com/T/#m32fc3e3605e49b01e12418f59ef3977cab0561ed
+Wait, what? How does it break compilation? I compiled and tested
+before submitting and just cleaned and built again, no compilation
+errors or even warnings. Can you share compilation error you got,
+please?
 
-Thanks,
-Ian
+> on old kernels and works for me with cgroup skb on old kernels.
+>
+> Thank you!
+>
+> Acked-by: Andrey Ignatov <rdna@fb.com>
 
-> SNIP
+Thanks!
+
 >
-> > +             pmu = perf_pmu__find_by_type((unsigned int)attr.type);
-> > +             evsel = parse_events__pfm_add_event(evlist->core.nr_entries,
-> > +                                             &attr, q, pmu);
-> > +             if (evsel == NULL)
-> > +                     goto error;
-> > +
-> > +             evsel->is_libpfm_event = true;
-> > +
-> > +             evlist__add(evlist, evsel);
-> > +
-> > +             if (grp_evt == 0)
-> > +                     grp_leader = evsel;
-> > +
-> > +             if (grp_evt > -1) {
-> > +                     evsel->leader = grp_leader;
-> > +                     grp_leader->core.nr_members++;
-> > +                     grp_evt++;
-> > +             }
-> > +
-> > +             if (*sep == '}') {
-> > +                     if (grp_evt < 0) {
-> > +                             ui__error("cannot close a non-existing event group\n");
-> > +                             goto error;
-> > +                     }
-> > +                     evlist->nr_groups++;
-> > +                     grp_leader = NULL;
-> > +                     grp_evt = -1;
-> > +             }
-> > +             evsel->is_libpfm_event = true;
+> I guess we can deal with selftest separately in the original thread.
+
+Sure, if this is going to be applied to bpf as a fix, I'd rather
+follow-up with selftests separately.
+
 >
-> seems to be set twice in here
+> Also a question about bpf vs bpf-next: since this fixes real problem
+> with loading cgroup skb programs, should it go to bpf tree instead?
+
+It will be up to maintainers, it's not so clear whether it's a new
+feature or a bug fix.. I don't mind either way.
+
 >
 >
-> > +     }
-> > +     return 0;
-> > +error:
-> > +     free(p_orig);
-> > +     return -1;
-> > +}
-> > +
-> > +static const char *srcs[PFM_ATTR_CTRL_MAX] = {
-> > +     [PFM_ATTR_CTRL_UNKNOWN] = "???",
-> > +     [PFM_ATTR_CTRL_PMU] = "PMU",
-> > +     [PFM_ATTR_CTRL_PERF_EVENT] = "perf_event",
-> > +};
->
-> SNIP
->
-> thanks,
-> jirka
->
+> >  tools/lib/bpf/libbpf.c                        | 127 ++++++++++++------
+> >  .../selftests/bpf/prog_tests/section_names.c  |  42 +++---
+> >  2 files changed, 110 insertions(+), 59 deletions(-)
+> >
+
+[...]
+
+trimming :)
