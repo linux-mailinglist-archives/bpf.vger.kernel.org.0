@@ -2,55 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19E11A730F
-	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 07:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8AC1A7335
+	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 07:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405549AbgDNFjt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Apr 2020 01:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2405521AbgDNFjs (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 14 Apr 2020 01:39:48 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E8AC0A3BDC;
-        Mon, 13 Apr 2020 22:39:48 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id y3so12039542qky.8;
-        Mon, 13 Apr 2020 22:39:48 -0700 (PDT)
+        id S2405661AbgDNF4R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Apr 2020 01:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405672AbgDNF4Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Apr 2020 01:56:16 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532B8C0A3BDC;
+        Mon, 13 Apr 2020 22:56:16 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id z90so9201189qtd.10;
+        Mon, 13 Apr 2020 22:56:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Lu4CaH/5kxyPUiJrDZteHqpYnCXI6U7exPvL+MBMnh0=;
-        b=NdSodnhOT8oUAf/+bdmgRvZAlsZrMV9Z++oKsYeG4spAsFjdjiLwgNvjuVrKJXz0D3
-         oG0K9jw2/8dnIl/qmV0aD1We86PMXG6tTgzgHvIeJWWoCtnmmIA2yDPSwq/R50yiSkE9
-         unLloPL/acFDUN9pljeb0Fh3do1Sh1oBSzIN6yJrIBQNMFgJ8P5h40VNsRpU1KxcmD/4
-         kmjDjiKcAJB7BH2DnIp5GTefPEK3H5e5uM800HOSCFvx4nKl3wkOGiDNQ+z2FV0q+1Q1
-         69r98fo+a8NAuHQnFCHSdZ3MsqSJuedX7f4AQ6wzy1vUJfVToLdDKtPPMWkQXKuTjfkg
-         wGoQ==
+        bh=PZlrHZ01xsbg88HIp1L/IORP/s8wpbtZlVJLqqY+T3M=;
+        b=Was4lc2VTxJkY5TnZOftJWu+Yl0EfWtcntcFS5HRgFBERCcjOsK/8X2oQXwVT9qCjM
+         P196oRde0WzvXoUcF7qKpTSZk1ux9rIATmtorGyXeeRNOyuV+kLEYiHrArbF6AuouuTf
+         a87AAD6ON2CtgT5WYbLtq9Bg09DwF6nrD2XRvU5ztkx8Tm9gNTkcgRxFibc6X1S1vKlA
+         mChiBeq4Qt1RIMyqgUs7X9ZNIC2xF3NebnQwKPcUJxZCggKfbx+qbjpIlEzgQVdGaZju
+         m3RONsvpuSpfMv0O/kIqFwG4q+0ltyCcAfKW0PoG1k2kcEBswJhmpnDumcVDhe9s/Pto
+         9K/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Lu4CaH/5kxyPUiJrDZteHqpYnCXI6U7exPvL+MBMnh0=;
-        b=Ah2bcxDRwJClyFUArGzBI+PbwsLeJhPVoZNp+wTd7ykb9VORUHtj9wTB0mcYBtyvVq
-         kOaKg5idnmkCotApTzqAMnmEa6VHmVLsD4TQLARfdZpuB0b5QLZdUmu51i0wSsJ5D236
-         sBGu3Q30Wd9zM5m4flx1vUdfVYIaZxWkH3lfOzhcYyag7weXRQhzhv/0qEba+bH32EiB
-         371qq9M538Z80ucZ6YxTFA2pVYPYh4Bl/oI6b+dfnec2IhE6x3YrgIcuqJWXDRN91CaN
-         sX8HeBJ066yYcGGSdJzQvK7Ogwg3GXnBB+fowpXD0+7yEtz0Qr8N3M4cdql4Au22LGru
-         zq8Q==
-X-Gm-Message-State: AGi0PuYxoaJ5dMp8xOCLR7c2KS31bjt2A7cJU2sElIMAqhFpnW5zF55P
-        lrMLzwEN1Ipcly9JtGPoAlbB+3U0OxRqqCwtI0Ce4GYt
-X-Google-Smtp-Source: APiQypJ1LdLvSjZuzEW+Z0IQ4VlBtYL7ZDwZIxRS7wtus6f6rvqzEqmymLa+fpqZ1y79i6j1UQDt0OmeY5Nq318M7z8=
-X-Received: by 2002:ae9:e854:: with SMTP id a81mr19659205qkg.36.1586842787751;
- Mon, 13 Apr 2020 22:39:47 -0700 (PDT)
+        bh=PZlrHZ01xsbg88HIp1L/IORP/s8wpbtZlVJLqqY+T3M=;
+        b=QDVSDFZ5SCGkUa7yce3Eh0qDkL09rv40avPT3UZFixEtEVjr9mLy2ZFxrpwmy1/r0y
+         Ty0IQpnPtIhJXMcqIOWIdrQ1ZwMXTOWzibokN4QpeIOC2FKuv821GNBNGgg42tSPxKFI
+         iF+snJRZIfeOwt0i/tbivapp2AGJtF0SZCqO7CmhwAjFPL5XZNj27lBBX6asZq9ZpZiw
+         G9n2q+ACFvk72BaUuC+yFq156r2rwSpMio0045DfiTtf3A1jeBm7xjIZNhYOcIl9zGKp
+         x113eB9xrXWz1snalLq7cvixrpS7cmbAKn94YxwNcgMPM1owSMwkMeh5aZW55b3yogis
+         leKw==
+X-Gm-Message-State: AGi0PubkP+9WB1eox7JIA5O+QrbuUGkdC0O2MvMXAbmm8SpsgEDMMCMs
+        4ksdHbXtxoW8FeOvqoaXsJaogns1Hu7MrDmGeMo=
+X-Google-Smtp-Source: APiQypJYk8DAj/d+T10MWHq7pzwFA8RGM7eQM2ITVMlP3uoj9cK5EdtLhcMfMAlZubJyQ52RBr9joMXH9JBVz182iqI=
+X-Received: by 2002:ac8:468d:: with SMTP id g13mr14335066qto.59.1586843775346;
+ Mon, 13 Apr 2020 22:56:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200408232520.2675265-1-yhs@fb.com> <20200408232537.2676518-1-yhs@fb.com>
-In-Reply-To: <20200408232537.2676518-1-yhs@fb.com>
+References: <20200408232520.2675265-1-yhs@fb.com> <20200408232526.2675664-1-yhs@fb.com>
+In-Reply-To: <20200408232526.2675664-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 13 Apr 2020 22:39:36 -0700
-Message-ID: <CAEf4BzbLAsPAvk45SOgywJH-8x6--ONsSW2yNhE_6EsH9nMtVA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 14/16] tools/bpf: selftests: add dumper
- programs for ipv6_route and netlink
+Date:   Mon, 13 Apr 2020 22:56:04 -0700
+Message-ID: <CAEf4Bzawu2dFXL7nvYhq1tKv9P7Bb9=6ksDpui5nBjxRrx=3_w@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 05/16] bpf: create file or anonymous dumpers
 To:     Yonghong Song <yhs@fb.com>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -66,216 +65,91 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Wed, Apr 8, 2020 at 4:26 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> Two bpf programs are added in this patch for netlink and ipv6_route
-> target. On my VM, I am able to achieve identical
-> results compared to /proc/net/netlink and /proc/net/ipv6_route.
+> Given a loaded dumper bpf program, which already
+> knows which target it should bind to, there
+> two ways to create a dumper:
+>   - a file based dumper under hierarchy of
+>     /sys/kernel/bpfdump/ which uses can
+>     "cat" to print out the output.
+>   - an anonymous dumper which user application
+>     can "read" the dumping output.
 >
->   $ cat /proc/net/netlink
->   sk               Eth Pid        Groups   Rmem     Wmem     Dump  Locks    Drops    Inode
->   000000002c42d58b 0   0          00000000 0        0        0     2        0        7
->   00000000a4e8b5e1 0   1          00000551 0        0        0     2        0        18719
->   00000000e1b1c195 4   0          00000000 0        0        0     2        0        16422
->   000000007e6b29f9 6   0          00000000 0        0        0     2        0        16424
->   ....
->   00000000159a170d 15  1862       00000002 0        0        0     2        0        1886
->   000000009aca4bc9 15  3918224839 00000002 0        0        0     2        0        19076
->   00000000d0ab31d2 15  1          00000002 0        0        0     2        0        18683
->   000000008398fb08 16  0          00000000 0        0        0     2        0        27
->   $ cat /sys/kernel/bpfdump/netlink/my1
->   sk               Eth Pid        Groups   Rmem     Wmem     Dump  Locks    Drops    Inode
->   000000002c42d58b 0   0          00000000 0        0        0     2        0        7
->   00000000a4e8b5e1 0   1          00000551 0        0        0     2        0        18719
->   00000000e1b1c195 4   0          00000000 0        0        0     2        0        16422
->   000000007e6b29f9 6   0          00000000 0        0        0     2        0        16424
->   ....
->   00000000159a170d 15  1862       00000002 0        0        0     2        0        1886
->   000000009aca4bc9 15  3918224839 00000002 0        0        0     2        0        19076
->   00000000d0ab31d2 15  1          00000002 0        0        0     2        0        18683
->   000000008398fb08 16  0          00000000 0        0        0     2        0        27
+> For file based dumper, BPF_OBJ_PIN syscall interface
+> is used. For anonymous dumper, BPF_PROG_ATTACH
+> syscall interface is used.
+
+We discussed this offline with Yonghong a bit, but I thought I'd put
+my thoughts about this in writing for completeness. To me, it seems
+like the most consistent way to do both anonymous and named dumpers is
+through the following steps:
+
+1. BPF_PROG_LOAD to load/verify program, that created program FD.
+2. LINK_CREATE using that program FD and direntry FD. This creates
+dumper bpf_link (bpf_dumper_link), returns anonymous link FD. If link
+FD is closed, dumper program is detached and dumper is destroyed
+(unless pinned in bpffs, just like with any other bpf_link.
+3. At this point bpf_dumper_link can be treated like a factory of
+seq_files. We can add a new BPF_DUMPER_OPEN_FILE (all names are for
+illustration purposes) command, that accepts dumper link FD and
+returns a new seq_file FD, which can be read() normally (or, e.g.,
+cat'ed from shell).
+4. Additionally, this anonymous bpf_link can be pinned/mounted in
+bpfdumpfs. We can do it as BPF_OBJ_PIN or as a separate command. Once
+pinned at, e.g., /sys/fs/bpfdump/task/my_dumper, just opening that
+file is equivalent to BPF_DUMPER_OPEN_FILE and will create a new
+seq_file that can be read() independently from other seq_files opened
+against the same dumper. Pinning bpfdumpfs entry also bumps refcnt of
+bpf_link itself, so even if process that created link dies, bpf dumper
+stays attached until its bpfdumpfs entry is deleted.
+
+Apart from BPF_DUMPER_OPEN_FILE and open()'ing bpfdumpfs file duality,
+it seems pretty consistent and follows safe-by-default auto-cleanup of
+anonymous link, unless pinned in bpfdumpfs (or one can still pin
+bpf_link in bpffs, but it can't be open()'ed the same way, it just
+preserves BPF program from being cleaned up).
+
+Out of all schemes I could come up with, this one seems most unified
+and nicely fits into bpf_link infra. Thoughts?
+
 >
->   $ cat /proc/net/ipv6_route
->   fe800000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000001 00000000 00000001     eth0
->   00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
->   00000000000000000000000000000001 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000003 00000000 80200001       lo
->   fe80000000000000c04b03fffe7827ce 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
->   ff000000000000000000000000000000 08 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000003 00000000 00000001     eth0
->   00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
->   $ cat /sys/kernel/bpfdump/ipv6_route/my1
->   fe800000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000001 00000000 00000001     eth0
->   00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
->   00000000000000000000000000000001 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000003 00000000 80200001       lo
->   fe80000000000000c04b03fffe7827ce 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
->   ff000000000000000000000000000000 08 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000003 00000000 00000001     eth0
->   00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+> To facilitate target seq_ops->show() to get the
+> bpf program easily, dumper creation increased
+> the target-provided seq_file private data size
+> so bpf program pointer is also stored in seq_file
+> private data.
+>
+> Further, a seq_num which represents how many
+> bpf_dump_get_prog() has been called is also
+> available to the target seq_ops->show().
+> Such information can be used to e.g., print
+> banner before printing out actual data.
+>
+> Note the seq_num does not represent the num
+> of unique kernel objects the bpf program has
+> seen. But it should be a good approximate.
+>
+> A target feature BPF_DUMP_SEQ_NET_PRIVATE
+> is implemented specifically useful for
+> net based dumpers. It sets net namespace
+> as the current process net namespace.
+> This avoids changing existing net seq_ops
+> in order to retrieve net namespace from
+> the seq_file pointer.
+>
+> For open dumper files, anonymous or not, the
+> fdinfo will show the target and prog_id associated
+> with that file descriptor. For dumper file itself,
+> a kernel interface will be provided to retrieve the
+> prog_id in one of the later patches.
 >
 > Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
->  .../selftests/bpf/progs/bpfdump_ipv6_route.c  | 63 ++++++++++++++++
->  .../selftests/bpf/progs/bpfdump_netlink.c     | 74 +++++++++++++++++++
->  2 files changed, 137 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/progs/bpfdump_ipv6_route.c
->  create mode 100644 tools/testing/selftests/bpf/progs/bpfdump_netlink.c
+>  include/linux/bpf.h            |   5 +
+>  include/uapi/linux/bpf.h       |   6 +-
+>  kernel/bpf/dump.c              | 338 ++++++++++++++++++++++++++++++++-
+>  kernel/bpf/syscall.c           |  11 +-
+>  tools/include/uapi/linux/bpf.h |   6 +-
+>  5 files changed, 362 insertions(+), 4 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/progs/bpfdump_ipv6_route.c b/tools/testing/selftests/bpf/progs/bpfdump_ipv6_route.c
-> new file mode 100644
-> index 000000000000..590e56791052
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/bpfdump_ipv6_route.c
-> @@ -0,0 +1,63 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2020 Facebook */
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include <bpf/bpf_endian.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +extern bool CONFIG_IPV6_SUBTREES __kconfig __weak;
-> +
-> +#define        RTF_GATEWAY             0x0002
-> +#define IFNAMSIZ               16
-> +#define fib_nh_gw_family        nh_common.nhc_gw_family
-> +#define fib_nh_gw6              nh_common.nhc_gw.ipv6
-> +#define fib_nh_dev              nh_common.nhc_dev
-> +
-> +SEC("dump//sys/kernel/bpfdump/ipv6_route")
-> +int BPF_PROG(dump_ipv6_route, struct fib6_info *rt, struct seq_file *seq, u64 seq_num)
-> +{
-> +       struct fib6_nh *fib6_nh = &rt->fib6_nh[0];
-> +       unsigned int flags = rt->fib6_flags;
-> +       const struct net_device *dev;
-> +       struct nexthop *nh;
-> +       static const char fmt1[] = "%pi6 %02x ";
-> +       static const char fmt2[] = "%pi6 ";
-> +       static const char fmt3[] = "00000000000000000000000000000000 ";
-> +       static const char fmt4[] = "%08x %08x ";
-> +       static const char fmt5[] = "%8s\n";
-> +       static const char fmt6[] = "\n";
-> +       static const char fmt7[] = "00000000000000000000000000000000 00 ";
-> +
-> +       /* FIXME: nexthop_is_multipath is not handled here. */
-> +       nh = rt->nh;
-> +       if (rt->nh)
-> +               fib6_nh = &nh->nh_info->fib6_nh;
-> +
-> +       bpf_seq_printf(seq, fmt1, sizeof(fmt1), &rt->fib6_dst.addr,
-> +                      rt->fib6_dst.plen);
-> +
-> +       if (CONFIG_IPV6_SUBTREES)
-> +               bpf_seq_printf(seq, fmt1, sizeof(fmt1), &rt->fib6_src.addr,
-> +                              rt->fib6_src.plen);
-> +       else
-> +               bpf_seq_printf(seq, fmt7, sizeof(fmt7));
-> +
-> +       if (fib6_nh->fib_nh_gw_family) {
-> +               flags |= RTF_GATEWAY;
-> +               bpf_seq_printf(seq, fmt2, sizeof(fmt2), &fib6_nh->fib_nh_gw6);
-> +       } else {
-> +               bpf_seq_printf(seq, fmt3, sizeof(fmt3));
-> +       }
-> +
-> +       dev = fib6_nh->fib_nh_dev;
-> +       bpf_seq_printf(seq, fmt4, sizeof(fmt4), rt->fib6_metric, rt->fib6_ref.refs.counter);
-> +       bpf_seq_printf(seq, fmt4, sizeof(fmt4), 0, flags);
-> +       if (dev)
-> +               bpf_seq_printf(seq, fmt5, sizeof(fmt5), dev->name);
-> +       else
-> +               bpf_seq_printf(seq, fmt6, sizeof(fmt6));
-> +
-> +       return 0;
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/bpfdump_netlink.c b/tools/testing/selftests/bpf/progs/bpfdump_netlink.c
-> new file mode 100644
-> index 000000000000..37c9be546b99
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/bpfdump_netlink.c
-> @@ -0,0 +1,74 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2020 Facebook */
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include <bpf/bpf_endian.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +#define sk_rmem_alloc  sk_backlog.rmem_alloc
-> +#define sk_refcnt      __sk_common.skc_refcnt
-> +
-> +#define offsetof(TYPE, MEMBER)  ((size_t)&((TYPE *)0)->MEMBER)
-> +#define container_of(ptr, type, member) ({                              \
-> +        void *__mptr = (void *)(ptr);                                   \
-> +        ((type *)(__mptr - offsetof(type, member))); })
-> +
-> +static inline struct inode *SOCK_INODE(struct socket *socket)
-> +{
-> +       return &container_of(socket, struct socket_alloc, socket)->vfs_inode;
-> +}
-> +
-> +SEC("dump//sys/kernel/bpfdump/netlink")
 
-We discussed already on previous patch, but just to put it visually
-into comparison:
-
-SEC("dump/netlink")
-
-looks so much nicer :)
-
-> +int BPF_PROG(dump_netlink, struct netlink_sock *nlk, struct seq_file *seq, u64 seq_num)
-> +{
-> +       static const char banner[] =
-> +               "sk               Eth Pid        Groups   "
-> +               "Rmem     Wmem     Dump  Locks    Drops    Inode\n";
-> +       static const char fmt1[] = "%pK %-3d ";
-> +       static const char fmt2[] = "%-10u %08x ";
-> +       static const char fmt3[] = "%-8d %-8d ";
-> +       static const char fmt4[] = "%-5d %-8d ";
-> +       static const char fmt5[] = "%-8u %-8lu\n";
-> +       struct sock *s = &nlk->sk;
-> +       unsigned long group, ino;
-> +       struct inode *inode;
-> +       struct socket *sk;
-> +
-> +       if (seq_num == 0)
-> +               bpf_seq_printf(seq, banner, sizeof(banner));
-> +
-> +       bpf_seq_printf(seq, fmt1, sizeof(fmt1), s, s->sk_protocol);
-> +
-> +       if (!nlk->groups)  {
-> +               group = 0;
-> +       } else {
-> +               /* FIXME: temporary use bpf_probe_read here, needs
-> +                * verifier support to do direct access.
-> +                */
-> +               bpf_probe_read(&group, sizeof(group), &nlk->groups[0]);
-
-Is this what's being fixed by patch #10?
-
-> +       }
-> +       bpf_seq_printf(seq, fmt2, sizeof(fmt2), nlk->portid, (u32)group);
-> +
-> +
-> +       bpf_seq_printf(seq, fmt3, sizeof(fmt3), s->sk_rmem_alloc.counter,
-> +                      s->sk_wmem_alloc.refs.counter - 1);
-> +       bpf_seq_printf(seq, fmt4, sizeof(fmt4), nlk->cb_running,
-> +                      s->sk_refcnt.refs.counter);
-> +
-> +       sk = s->sk_socket;
-> +       if (!sk) {
-> +               ino = 0;
-> +       } else {
-> +               /* FIXME: container_of inside SOCK_INODE has a forced
-> +                * type conversion, and direct access cannot be used
-> +                * with current verifier.
-> +                */
-> +               inode = SOCK_INODE(sk);
-> +               bpf_probe_read(&ino, sizeof(ino), &inode->i_ino);
-> +       }
-> +       bpf_seq_printf(seq, fmt5, sizeof(fmt5), s->sk_drops.counter, ino);
-> +
-> +       return 0;
-> +}
-> --
-> 2.24.1
->
+[...]
