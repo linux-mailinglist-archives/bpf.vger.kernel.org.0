@@ -2,40 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1845B1A8B55
-	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 21:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D03EF1A8C43
+	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 22:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505154AbgDNTok (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Apr 2020 15:44:40 -0400
-Received: from www62.your-server.de ([213.133.104.62]:51256 "EHLO
+        id S2632760AbgDNURF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Apr 2020 16:17:05 -0400
+Received: from www62.your-server.de ([213.133.104.62]:54510 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505152AbgDNToh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Apr 2020 15:44:37 -0400
+        with ESMTP id S2632798AbgDNUQU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Apr 2020 16:16:20 -0400
 Received: from sslproxy01.your-server.de ([78.46.139.224])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jORU0-0002RT-JV; Tue, 14 Apr 2020 21:44:32 +0200
+        id 1jORVK-0002Ww-MB; Tue, 14 Apr 2020 21:45:54 +0200
 Received: from [178.195.186.98] (helo=pc-9.home)
         by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jORU0-0006yB-Bh; Tue, 14 Apr 2020 21:44:32 +0200
-Subject: Re: [PATCH] tools: bpftool: fix struct_ops command invalid pointer
- free
-To:     Martin KaFai Lau <kafai@fb.com>,
-        "Daniel T. Lee" <danieltimlee@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20200410020612.2930667-1-danieltimlee@gmail.com>
- <20200410050333.qshidymodw3oyn6k@kafai-mbp>
+        id 1jORVK-000AlG-9Q; Tue, 14 Apr 2020 21:45:54 +0200
+Subject: Re: [PATCH-next] bpf: Verifier, remove unneeded conversion to bool
+To:     Zou Wei <zou_wei@huawei.com>, ast@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1586779076-101346-1-git-send-email-zou_wei@huawei.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <f0f902f7-d3ff-bca8-a17b-d5f8f6ab6310@iogearbox.net>
-Date:   Tue, 14 Apr 2020 21:44:31 +0200
+Message-ID: <ab62b97e-844f-3493-e30d-9e57c625fa35@iogearbox.net>
+Date:   Tue, 14 Apr 2020 21:45:53 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20200410050333.qshidymodw3oyn6k@kafai-mbp>
+In-Reply-To: <1586779076-101346-1-git-send-email-zou_wei@huawei.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -46,23 +45,14 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/10/20 7:03 AM, Martin KaFai Lau wrote:
-> On Fri, Apr 10, 2020 at 11:06:12AM +0900, Daniel T. Lee wrote:
->>  From commit 65c93628599d ("bpftool: Add struct_ops support"),
->> a new type of command struct_ops has been added.
->>
->> This command requires kernel CONFIG_DEBUG_INFO_BTF=y, and for retrieving
->> btf info, get_btf_vmlinux() is used.
->>
->> When running this command on kernel without BTF debug info, this will
->> lead to 'btf_vmlinux' variable contains invalid(error) pointer. And by
->> this, btf_free() causes a segfault when executing 'bpftool struct_ops'.
->>
->> This commit adds pointer validation with IS_ERR not to free invalid
->> pointer, and this will fix the segfault issue.
->>
->> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
-> Fixes: 65c93628599d ("bpftool: Add struct_ops support")
-> Acked-by: Martin KaFai Lau
+On 4/13/20 1:57 PM, Zou Wei wrote:
+> This issue was detected by using the Coccinelle software:
+> 
+> kernel/bpf/verifier.c:1259:16-21: WARNING: conversion to bool not needed here
+> 
+> The conversion to bool is unneeded, remove it
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
 
-Applied & fixed up email, thanks!
+Applied, thanks!
