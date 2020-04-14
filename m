@@ -2,60 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928A51A8A1B
-	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 20:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAF731A8B36
+	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 21:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504359AbgDNSrz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Apr 2020 14:47:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50770 "EHLO
+        id S2504939AbgDNTiy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Apr 2020 15:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2504355AbgDNSrv (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 14 Apr 2020 14:47:51 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA6AC061A0C;
-        Tue, 14 Apr 2020 11:47:50 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id t3so10666905qkg.1;
-        Tue, 14 Apr 2020 11:47:50 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S2504960AbgDNTi0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Apr 2020 15:38:26 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E76C061A10;
+        Tue, 14 Apr 2020 12:38:25 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id i19so8371712qtp.13;
+        Tue, 14 Apr 2020 12:38:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=tCuiB+gxxLKMAeEwRtqlDEJRt4BXHAF5hJLpYf4AJtA=;
-        b=r0kopZ9c3nuyFV9DshoKGWDwPFtGoVTmBNVorsSHW9UMQrbcu+Pi445YYYSmKu6DGA
-         fj1dJH/nP5wZir21R4rRyP489R2mBEcP6YME//dEbuyV44OdYnYsnHHuLTYSstgo7pAw
-         /+zIoUCyl5qUBTIKyIi5pikSlyN5I07W02sJIZeymeqjJ5GLtBnoWYFoKHRIsmapdASy
-         76gOTLxlgKY0+ps8nerQJVYCgq+YzOJ3EogroXzcDCx2pK4Fpy5CDJj9J+3sNgSHqyQi
-         xO70mJPS0TKWCeUolL3tGBDTG90irddTgtq9l6DuyBNLLKZ7XAACmIoIv0dKWTYghAQY
-         /K7g==
+        bh=S8Sruc3Mb8WtMEXL39Vf+5pyS5l53hxUElAAf0KjhFs=;
+        b=cjAXviUWk8tTEtFWCG//p3nWhyXBUMR2Lfn7u/D0H1PpsC/r9TMupxX+K8ZXXOoyMI
+         /qcQmJupyBOlMtEjj20jVuzInR84e+gXyEeHYhke/liFopXWkKKuxKZZVheUa63xDwBP
+         p7N4AGNepD2IHBoq8sLzGoKqRADvEyyiahRhd2R/7HzQBsc+rgJ8Jdfai79v3UqGelkj
+         yk94rLizD8DRktMoxO+ocMMHpALDqLIPKyhd8WPNpuQEBTdbJQr8dXuoTGLz7Tqo7URf
+         f9R39K+TmecKy8QcB9JEnyhIr9xXgo7tqaqd1jmnMMGYgn1KaYIfVnLRIdU/bhfNSSWR
+         v4gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tCuiB+gxxLKMAeEwRtqlDEJRt4BXHAF5hJLpYf4AJtA=;
-        b=HHQyRwIK1CJX2r57RE/MrWXr/Si/XeibI+m6CtUIDRro46QkH11JRshmkJVjyTy5KR
-         /ZRNFk9nP0MYuL2erWCZsDnr44zsXtj9ux5mzdxrp0fmKxMPPZOgvw3nPtW+I/8HDeN3
-         aT5e9OWFo93+zXh16M8evWgCqvhc0SrXpcpve0GA1zLI+KhUZDI8ySl/9J4m/bovtCCM
-         ZISIvUbDfy4g+LWcGXWpijX+mtccvulJqHMUWgZtGoSoJk8DxYednHYPbAA9gcDMyD0Q
-         xFP/nJt+t4EyOMQMwbNbKh2Xh7s6Uw5aVmggLVdJxfsAfWIo1kXFOQ2lRwfLxMZdN5F3
-         u41g==
-X-Gm-Message-State: AGi0PubcAyaTPMso+v5Mu964W58o686PvpJD1l5Y3mU3bk0KG08B6Qq3
-        Qe4yx+mke4TXA5SvWsrT1m0l3Non3qIrT8QDTZI=
-X-Google-Smtp-Source: APiQypL9aTkmA8mTEsFBOtyNEDICzLuM4NGuJ9oLKZTYL68bn5lRj6zekK5F97BM7gz6A8w05X1k+fT5D7HjmOCb/ww=
-X-Received: by 2002:ae9:eb8c:: with SMTP id b134mr7744373qkg.39.1586890068495;
- Tue, 14 Apr 2020 11:47:48 -0700 (PDT)
+        bh=S8Sruc3Mb8WtMEXL39Vf+5pyS5l53hxUElAAf0KjhFs=;
+        b=O1ix0Fa5+nf93xcAKcFJgwjQEco/r7ZpuisYCrwepHXvDkMDaL5+x+HplM16LT6pOE
+         tsMf0Wto7vL88883bKAnqYk6YjiMQIPUotWbh0K8x50wo5oZSUeUsj92pueyKCfv9F1H
+         o4EkTWHvWlT+W/gBMZh0ZzqWvw3RCrMs2Vt3SK6f+ik41Y6AcE9PR0tnQtMPanw2oq8L
+         pSRDB+OvdhASVgEa1+OCzofb6jogbC9tADXDbIBQSDILkL33ADln+HIv5Nvly/utE+t/
+         Y/wHE/5GmMnxB4Gl/+EwkSnhoY+bj+TLqqrt+OJSN9W1oxYJN5EYs1DiaFraKmhStpuo
+         AedA==
+X-Gm-Message-State: AGi0Pubtx2u3kF8cBbWafRXui++3OK6uj1uEqV73CZgyhgrMsVkg7z4y
+        DHwf9Mw9i70D7m1RZdMl5buVZxcMh8HlI2n1L29Wpjg4
+X-Google-Smtp-Source: APiQypIRm9IdbZt1nt7wsI3UOpvfQ1Bhvbptzy7Zb+eRZ9boFqJzudRUIjc6LaWofbsHrStP+vXxE9uMdrmXvjMHuf0=
+X-Received: by 2002:ac8:1744:: with SMTP id u4mr11044718qtk.141.1586893104295;
+ Tue, 14 Apr 2020 12:38:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200404000948.3980903-1-andriin@fb.com> <20200404000948.3980903-5-andriin@fb.com>
- <87pnckc0fr.fsf@toke.dk> <CAEf4BzYrW43EW_Uneqo4B6TLY4V9fKXJxWj+-gbq-7X0j7y86g@mail.gmail.com>
- <877dyq80x8.fsf@toke.dk> <CAEf4BzaiRYMc4QMjz8bEn1bgiSXZvW_e2N48-kTR4Fqgog2fBg@mail.gmail.com>
- <87tv1t65cr.fsf@toke.dk> <CAEf4BzbXCsHCJ6Tet0i5g=pKB_uYqvgiaBNuY-NMdZm8rdZN5g@mail.gmail.com>
- <87mu7enysb.fsf@toke.dk>
-In-Reply-To: <87mu7enysb.fsf@toke.dk>
+References: <20200414045613.2104756-1-andriin@fb.com> <20200414175608.GB54710@rdna-mbp>
+ <CAEf4BzbM4-PvOgro-SjHx6h2ndYndSNkbQTA6xq74W=PuPTpjA@mail.gmail.com> <20200414184326.GA59623@rdna-mbp>
+In-Reply-To: <20200414184326.GA59623@rdna-mbp>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 14 Apr 2020 11:47:37 -0700
-Message-ID: <CAEf4BzZtJo5dKMX_ys_2rN+bx6QqDGz9DAEVFod6Ys9Rs93VgA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 4/8] bpf: support GET_FD_BY_ID and
- GET_NEXT_ID for bpf_link
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Date:   Tue, 14 Apr 2020 12:38:13 -0700
+Message-ID: <CAEf4BzYA6UvME-MLQVrYFPEuqzPtfB8aHbgps+VYqM7_nBn7jA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] libbpf: always specify expected_attach_type
+ on program load if supported
+To:     Andrey Ignatov <rdna@fb.com>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
@@ -68,67 +65,81 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 3:32 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
+On Tue, Apr 14, 2020 at 11:44 AM Andrey Ignatov <rdna@fb.com> wrote:
 >
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> [Tue, 2020-04-14 11:25 -0700]=
+:
+> > On Tue, Apr 14, 2020 at 10:56 AM Andrey Ignatov <rdna@fb.com> wrote:
+> > >
+> > > Andrii Nakryiko <andriin@fb.com> [Mon, 2020-04-13 21:56 -0700]:
 >
-> >> > After that, one can pin bpf_link temporarily and re-open it as
-> >> > writable one, provided CAP_DAC_OVERRIDE capability is present. All
-> >> > that works already, because pinned bpf_link is just a file, so one c=
-an
-> >> > do fchmod on it and all that will go through normal file access
-> >> > permission check code path.
-> >>
-> >> Ah, I did not know that was possible - I was assuming that bpffs was
-> >> doing something special to prevent that. But if not, great!
-> >>
-> >> > Unfortunately, just re-opening same FD as writable (which would
-> >> > be possible if fcntl(fd, F_SETFL, S_IRUSR
-> >> >  S_IWUSR) was supported on Linux) without pinning is not possible.
-> >> > Opening link from /proc/<pid>/fd/<link-fd> doesn't seem to work
-> >> > either, because backing inode is not BPF FS inode. I'm not sure, but
-> >> > maybe we can support the latter eventually. But either way, I think
-> >> > given this is to be used for manual troubleshooting, going through f=
-ew
-> >> > extra hoops to force-detach bpf_link is actually a good thing.
-> >>
-> >> Hmm, I disagree that deliberately making users jump through hoops is a
-> >> good thing. Smells an awful lot like security through obscurity to me;
-> >> and we all know how well that works anyway...
+> ...
+>
+> > > > v1->v2:
+> > > > - fixed prog_type/expected_attach_type combo (Andrey);
+> > > > - added comment explaining what we are doing in probe_exp_attach_ty=
+pe (Andrey).
+> > >
+> > > Thanks for changes.
+> > >
+> > > I built the patch (removing the double .sec Song mentioned since it
+> > > breaks compilation) and tested it: it fixes the problem with NET_XMIT=
+_CN
 > >
-> > Depends on who users are? bpftool can implement this as one of
-> > `bpftool link` sub-commands and allow human operators to force-detach
-> > bpf_link, if necessary.
+> > Wait, what? How does it break compilation? I compiled and tested
+> > before submitting and just cleaned and built again, no compilation
+> > errors or even warnings. Can you share compilation error you got,
+> > please?
 >
-> Yeah, I would expect this to be the common way this would be used: built
-> into tools.
+> Sure:
 >
-> > I think applications shouldn't do this (programmatically) at all,
-> > which is why I think it's actually good that it's harder and not
-> > obvious, this will make developer think again before implementing
-> > this, hopefully. For me it's about discouraging bad practice.
->
-> I guess I just don't share your optimism that making people jump through
-> hoops will actually discourage them :)
+>         11:37:28 1 rdna@dev082.prn2:~/bpf-next$>/home/rdna/bin/clang --ve=
+rsion
+>         clang version 9.0.20190721
+>         Target: x86_64-unknown-linux-gnu
+>         Thread model: posix
+>         InstalledDir: /home/rdna/bin
+>         11:37:32 0 rdna@dev082.prn2:~/bpf-next$>env GCC=3D~/bin/gcc CLANG=
+=3D~/bin/clang CC=3D~/bin/clang LLC=3D~/bin/llc LLVM_STRIP=3D~/bin/llvm-str=
+ip  make V=3D1 -C tools/bpf/bpftool/
 
-I understand. I just don't see why would anyone have to implement this
-at all and especially would think it's a good idea to begin with?
-
->
-> If people know what they are doing it should be enough to document it as
-> discouraged. And if they don't, they are perfectly capable of finding
-> and copy-pasting the sequence of hoop-jumps required to achieve what
-> they want, probably with more bugs added along the way.
->
-> So in the end I think that all you're really achieving is annoying
-> people who do have a legitimate reason to override the behaviour (which
-> includes yourself as a bpftool developer :)). That's what I meant by the
-> 'security through obscurity' comment.
-
-Can I please get a list of real examples of legitimate reasons to
-override this behavior?
+[...]
 
 >
-> -Toke
+>         fatal error: too many errors emitted, stopping now [-ferror-limit=
+=3D]
+>         20 errors generated.
+>            ld -r -o staticobjs/libbpf-in.o  staticobjs/libbpf.o staticobj=
+s/bpf.o staticobjs/nlattr.o staticobjs/btf.o staticobjs/libbpf_errno.o stat=
+icobjs/str_error.o staticobjs/netlink.o staticobjs/bpf_prog_linfo.o statico=
+bjs/libbpf_probes.o staticobjs/xsk.o staticobjs/hashmap.o staticobjs/btf_du=
+mp.o
+>         ld: cannot find staticobjs/libbpf.o: No such file or directory
+>         make[2]: *** [staticobjs/libbpf-in.o] Error 1
+>         make[1]: *** [staticobjs/libbpf-in.o] Error 2
+>         make[1]: Leaving directory `/home/rdna/bpf-next/tools/lib/bpf'
+>         make: *** [/home/rdna/bpf-next/tools/lib/bpf/libbpf.a] Error 2
+>         make: Leaving directory `/home/rdna/bpf-next/tools/bpf/bpftool'
+>         11:37:43 2 rdna@dev082.prn2:~/bpf-next$>
+
+Weird, I can't repro it locally neither with GCC, nor with clang-9 or
+latest clang...
+
 >
+> > > I guess we can deal with selftest separately in the original thread.
+> >
+> > Sure, if this is going to be applied to bpf as a fix, I'd rather
+> > follow-up with selftests separately.
+>
+> Sounds good.
+>
+> > > Also a question about bpf vs bpf-next: since this fixes real problem
+> > > with loading cgroup skb programs, should it go to bpf tree instead?
+> >
+> > It will be up to maintainers, it's not so clear whether it's a new
+> > feature or a bug fix.. I don't mind either way.
+>
+> Sounds good. Thanks.
+>
+> --
+> Andrey Ignatov
