@@ -2,93 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E3B1A7F5F
-	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 16:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E71F1A8062
+	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 16:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389283AbgDNOQt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Apr 2020 10:16:49 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:30943 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2389220AbgDNOQq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Apr 2020 10:16:46 -0400
+        id S2405187AbgDNOvB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Apr 2020 10:51:01 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:36989 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2405186AbgDNOu5 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Apr 2020 10:50:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586873803;
+        s=mimecast20190719; t=1586875856;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XplrO7V42Fns8TALi+Ph0HTduIH/xoZXlThwYZRV910=;
-        b=Tp40R3xoJJkA9ze3xko9GmE4TILKe6aA7v+4brbiUS6G9JMNL0eAjVyjphKBAgY6RCZoRR
-        qdP5lLdvNEIlna2ey1yLUbaSS/NteZv5hi9piZVUaN4b+MpmgJE15w2saoTZlj+CjlEm99
-        DbbjAaB7Fwbt8a0/ZcwwFQ8pS16dSW8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-209-AKOWGE30PyWO_qCcbJ-g1Q-1; Tue, 14 Apr 2020 10:16:41 -0400
-X-MC-Unique: AKOWGE30PyWO_qCcbJ-g1Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A526C1B18BC5;
-        Tue, 14 Apr 2020 14:16:38 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CA4815C1B0;
-        Tue, 14 Apr 2020 14:16:27 +0000 (UTC)
-Date:   Tue, 14 Apr 2020 16:16:26 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     sameehj@amazon.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        zorik@amazon.com, akiyano@amazon.com, gtzalik@amazon.com,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        David Ahern <dsahern@gmail.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>, brouer@redhat.com
-Subject: Re: [PATCH RFC v2 01/33] xdp: add frame size to xdp_buff
-Message-ID: <20200414161626.51e28b4b@carbon>
-In-Reply-To: <20200408105339.7d8d4e59@kicinski-fedora-PC1C0HJN>
-References: <158634658714.707275.7903484085370879864.stgit@firesoul>
-        <158634663936.707275.3156718045905620430.stgit@firesoul>
-        <20200408105339.7d8d4e59@kicinski-fedora-PC1C0HJN>
+         content-transfer-encoding:content-transfer-encoding;
+        bh=++cgNxaTJnTUqeFXINrVDsIffIgp4AONxrQaa1iE9nI=;
+        b=EhMrugWFsoXcAHtn4J5oU7Ugok6qrbt9PX5IrjsSLKMfHd0HwZ/O2mK8wpLFKf6lRhIABU
+        oc+I7REf5pZGpi5DVlE7lr1LvnPhnqrXJQ7QgNjOMBjrf67m71Rk6YZK/kM/DGBZjmb/f5
+        aAM0AdTuVZDAizYjv4za0YWSrWc6h6c=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-476-x4RCzUvjNaiI-bNmWzkoew-1; Tue, 14 Apr 2020 10:50:55 -0400
+X-MC-Unique: x4RCzUvjNaiI-bNmWzkoew-1
+Received: by mail-lj1-f197.google.com with SMTP id e6so2127546ljj.5
+        for <bpf@vger.kernel.org>; Tue, 14 Apr 2020 07:50:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=++cgNxaTJnTUqeFXINrVDsIffIgp4AONxrQaa1iE9nI=;
+        b=istJ+DLNdTtpEOCJn5eooiWPtG8OKhIQuhq8J0pi4I3rPmVz3LEkbG2MrvMpifqTzM
+         AR+oI7GjNGJixATkvNtIbdCzlFVDxT7DtwzwCau3vWTdBWPjBrfjQD/tqhh1tCS3kE1c
+         HGejZQ8qYE3ixsfLQswNzdgNWvkGxRvCTZO4bMU3sUspV7rChJ/T6WJ6h3su9fjQLzk/
+         xPZP1AwQgt+x3uWadbJLGhx8kViNdg6bReymrf6JAYS1phKoIDvAissfo1zhMbfMipSg
+         QtY5//5+mc4T4NQTfo3VY8tJZ+JgQbtTBZi5OYVLDWxXH7gkABxq75w5SCQZii3+Igax
+         stnQ==
+X-Gm-Message-State: AGi0PuZOKDbPBI9nSORhOtNPyncV6WeB2fs2jlf6ZYJbn7hmfI2e3Y+M
+        7sGlWBhLJOGxizGFnBmvQZIYTAIuMsv5cOOcng9Hi3rUGkXFuWxBQY1hHBAQCkS6U7NE9SKuWdN
+        cS2VInoSOxnzt
+X-Received: by 2002:a2e:b4cc:: with SMTP id r12mr372053ljm.50.1586875850029;
+        Tue, 14 Apr 2020 07:50:50 -0700 (PDT)
+X-Google-Smtp-Source: APiQypI2Vtj0Iz7zJt3AEzJUtMYLFT0/Jahb4lbT/3ZQxqMmzznsEtgJJyut8/eJ9PFGJEucJrjWew==
+X-Received: by 2002:a2e:b4cc:: with SMTP id r12mr372030ljm.50.1586875849671;
+        Tue, 14 Apr 2020 07:50:49 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id v30sm5781233ljd.98.2020.04.14.07.50.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 07:50:48 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id E64A1181586; Tue, 14 Apr 2020 16:50:46 +0200 (CEST)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     daniel@iogearbox.net, ast@fb.com
+Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        David Ahern <dsahern@gmail.com>
+Subject: [PATCH bpf 1/2] libbpf: Fix type of old_fd in bpf_xdp_set_link_opts
+Date:   Tue, 14 Apr 2020 16:50:24 +0200
+Message-Id: <20200414145025.182163-1-toke@redhat.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 8 Apr 2020 10:53:39 -0700
-Jakub Kicinski <kuba@kernel.org> wrote:
+The 'old_fd' parameter used for atomic replacement of XDP programs is
+supposed to be an FD, but was left as a u32 from an earlier iteration of
+the patch that added it. It was converted to an int when read, so things
+worked correctly even with negative values, but better change the
+definition to correctly reflect the intention.
 
-> > + * This macro reserves tailroom in the XDP buffer by limiting the
-> > + * XDP/BPF data access to data_hard_end.  Notice same area (and size)
-> > + * is used for XDP_PASS, when constructing the SKB via build_skb().
-> > + */
-> > +#define xdp_data_hard_end(xdp)				\
-> > +	((xdp)->data_hard_start + (xdp)->frame_sz -	\
-> > +	 SKB_DATA_ALIGN(sizeof(struct skb_shared_info)))  
-> 
-> I think it should be said somewhere that the drivers are expected to
-> DMA map memory up to xdp_data_hard_end(xdp).
+Fixes: bd5ca3ef93cd ("libbpf: Add function to set link XDP fd while specifying old program")
+Reported-by: David Ahern <dsahern@gmail.com>
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
+ tools/lib/bpf/libbpf.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-No, I don't want driver to DMA map memory up to xdp_data_hard_end(xdp).
-
-The driver will/should map up-to the configured MTU.  Reading ahead, I
-can see that you worry about XDP_TX, that doesn't do the MTU check in
-xdp_ok_fwd_dev() like we do for XDP_REDIRECT.  Guess, we need to check
-that before doing XDP_TX, such that we don't DMA sync for_device, for
-an area that does not included the original DMA-map area.  I wonder if
-that is a violation, if so, it is also problematic for adjust *head*.
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 44df1d3e7287..f1dacecb1619 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -458,7 +458,7 @@ struct xdp_link_info {
+ 
+ struct bpf_xdp_set_link_opts {
+ 	size_t sz;
+-	__u32 old_fd;
++	int old_fd;
+ };
+ #define bpf_xdp_set_link_opts__last_field old_fd
+ 
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+2.26.0
 
