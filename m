@@ -2,167 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52EE11A7006
-	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 02:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 072221A716F
+	for <lists+bpf@lfdr.de>; Tue, 14 Apr 2020 05:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390431AbgDNA0e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Apr 2020 20:26:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47262 "EHLO
+        id S2404393AbgDNDEb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Apr 2020 23:04:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727878AbgDNA0d (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 13 Apr 2020 20:26:33 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF63C0A3BDC;
-        Mon, 13 Apr 2020 17:26:32 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id h205so6250692ybg.6;
-        Mon, 13 Apr 2020 17:26:32 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S2404366AbgDNDE2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 13 Apr 2020 23:04:28 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C80C0A3BDC;
+        Mon, 13 Apr 2020 20:04:28 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d24so4142674pll.8;
+        Mon, 13 Apr 2020 20:04:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=O+y4L2R5i+2Cj/w1MoSPDF15kI4P0C4wXhYRfC0S+a0=;
-        b=RXV5ZIiOsQWh1Fej0gg2cEZQeEIboBrqTlWubPw/OOd0c4Sk+c9ODtFtyqocX4vs8/
-         ni2vCShDQpt3Es0dl9Mr5tnCf4aD9iIKAB93QmnOaB6hih2ThvupWKUBFALyxo/+MLDi
-         EhOSPAH7QWuc+QDXMtXqSir8odhrm22itaSv44+cwa8wRLzJ6lUvy7LsRUaARP1eYStQ
-         to87+SLw+2lwSBf7wOsYa2QwyXJlESpPxoOz+fwudX0SfngcNFfiGaZqOgbf5OcA1MQV
-         gyqc1U/hNMTT001NVAJGULodZRpBErBsC0Fi/P/5hej4ayzTc9e0XmHo7ZWvPpKnCOv0
-         4B1Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MbvabF+u187/8EV2YdBjNnt4DxiMyQXxB4Yc+xwJZGU=;
+        b=FxBn4PQ0DFtrMoHimfSFsDx/X9SjvRXmnk2cbxPMT73e9GF9QEW0EWppbNhbnfYp0N
+         st8Yr8lxYXHunzr9IpY17Zo5wN9h8U3z5MVuuEOT34bu4LdInJ8yddgQFZuW3K7h9tXG
+         yddGBxyAaF2/NdwZQqdeKw2PughfqRDFxxw/gu7mEMHQL2noCNgbx4UINPm/wbKKe/uL
+         y5qEW8yCEnv+QHH36hPyEGIs7joavBct4HA2jy+KQaKOUeGW32GuG76Vx7IeygCZvX4A
+         x0i28w746D+CqyvSXTcDea+dkZcZZVOd+YCNmX221DeGzrgM7KVO6LqL+3uvOJb41oUU
+         e6NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=O+y4L2R5i+2Cj/w1MoSPDF15kI4P0C4wXhYRfC0S+a0=;
-        b=jyXl0HeGyl0GJoBJ4a4TA87xoEXKM+vTDgK+53111SnN7m1fHPDf5aie29Lu6eWFcd
-         wIHKXKRAoGdpsV5vNrRbWQBk1Wc98hoQF7ge7UrQDF2eNk/pUXRCAICENt3+5lm0Nr7x
-         yblabDLsdSr7ieIBuOMSwXN7db6u69z1qGz+nZH9CPJJuitCNKMv/2LQHVC+QtpWGbX1
-         6rldCrYxysUo0d/EtvZN2uUOeVMHIEWnFQBTMj6Hky7QUxdkAfJ9x4za+f+yYnRL18x7
-         oIBhSBVm4wZMwnNimLjBPvDBdrnT0wuxsZzP0fWjIgnj+D3rMPzjB69FuRLaEw+Dyu6h
-         GohA==
-X-Gm-Message-State: AGi0PuY/6uHLurP7trUlgYthtPzx8hWIIOojH2zWJDX/qK+qz8vFn+M3
-        co9SeFQHO8vBYmqDe2tDPGmfkm/NJQLzD3sFgHCUinFDIg==
-X-Google-Smtp-Source: APiQypKp7ptTA/UqEHj7E2VMr1cGfjqOpvk5NXLb2DirK77mDlNKNaT/eQDr9deOvWbkwb6V1fWxDzbHoFthSVbGNjc=
-X-Received: by 2002:a25:1485:: with SMTP id 127mr28989993ybu.464.1586823991299;
- Mon, 13 Apr 2020 17:26:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAEKGpzh3drL1ywEfnJWhAqULcjaqGi+8GZSwG9XV-iYK4DnCpA@mail.gmail.com>
-In-Reply-To: <CAEKGpzh3drL1ywEfnJWhAqULcjaqGi+8GZSwG9XV-iYK4DnCpA@mail.gmail.com>
-From:   "Daniel T. Lee" <danieltimlee@gmail.com>
-Date:   Tue, 14 Apr 2020 09:26:15 +0900
-Message-ID: <CAEKGpzhSm1hmK0WuK=s-2ROE3yb2HpaQbMaDx4==TM1hwM+smA@mail.gmail.com>
-Subject: Re: BPF program attached on BPF map function (read,write) is not working?
-To:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MbvabF+u187/8EV2YdBjNnt4DxiMyQXxB4Yc+xwJZGU=;
+        b=OVNbYd/NhQXSKu2mPU5783842nr/aJ6//X6gWKRPPH8zQB7Y6K2S+9JMfZj+troIgV
+         tyhiO74xR5RNmh80jMeWxJWkGm1Ym1XOQ/M7NLXPjUuiAHF7g99QaPr6nU7aqzvKPUXc
+         O9eWbVlSR14prX3rPLUJFms+LAm8wQ5yAsrlsH3DM0IHvAYjqBmx2cR2hZQ8DGxKQyaQ
+         Ct6V+8OMgTNyrJTrDGobdwAKj3nMmFYVOaHu5KBTvCBPellnKM39TSzzs2MZOdKxPI6D
+         R4AHKiI+PlLNv0A/cfR2kEod6vPCLroysRc9DGnbXLRghHBHVcTsBJUQ/TMojEonrC8a
+         BfhA==
+X-Gm-Message-State: AGi0PubWgZJhUGUjdEofCKTbDR8P4EmOYxSxFRvwvyrNTmSIaFexlqB8
+        jOv3AfCXfWn+pdM47MOC/o8=
+X-Google-Smtp-Source: APiQypJPkQmnxtG1lEbeRXgMFRrsBEkOfHSOsk75roTbEUJ3/Fo8ymHpbat9TXt2hsLyjGmgOV3JHQ==
+X-Received: by 2002:a17:90b:4d04:: with SMTP id mw4mr25316154pjb.180.1586833468329;
+        Mon, 13 Apr 2020 20:04:28 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:23b9])
+        by smtp.gmail.com with ESMTPSA id g11sm150735pgi.63.2020.04.13.20.04.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 20:04:27 -0700 (PDT)
+Date:   Mon, 13 Apr 2020 20:04:24 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     "Daniel T. Lee" <danieltimlee@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Martin KaFai Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: BPF program attached on BPF map function (read,write) is not
+ working?
+Message-ID: <20200414030424.csky65wqjzxpklzx@ast-mbp.dhcp.thefacebook.com>
+References: <CAEKGpzh3drL1ywEfnJWhAqULcjaqGi+8GZSwG9XV-iYK4DnCpA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEKGpzh3drL1ywEfnJWhAqULcjaqGi+8GZSwG9XV-iYK4DnCpA@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Ping?
-
-On Thu, Apr 9, 2020 at 12:26 PM Daniel T. Lee <danieltimlee@gmail.com> wrote:
->
-> Currently, BPF program attached on BPF map function (read,write) is not called.
-> To be specific, the bpf kprobe program on 'htab_map_get_next_key'
-> doesn't called at all. To test this behavior, you can try ./tracex6
-> from the 'samples/bpf'. (It does not work properly at all)
->
-> By using 'git bisect', found the problem is derived from below commit.(v5.0-rc3)
-> commit 7c4cd051add3 ("bpf: Fix syscall's stackmap lookup potential deadlock")
-> The code below is an excerpt of only the problematic code from the entire code.
->
->    diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->    index b155cd17c1bd..8577bb7f8be6 100644
->    --- a/kernel/bpf/syscall.c
->    +++ b/kernel/bpf/syscall.c
->    @@ -713,8 +713,13 @@ static int map_lookup_elem(union bpf_attr *attr)
->
->            if (bpf_map_is_dev_bound(map)) {
->                    err = bpf_map_offload_lookup_elem(map, key, value);
->                    goto done;
->            }
->
->            preempt_disable();
->    +      this_cpu_inc(bpf_prog_active);
->            if (map->map_type == BPF_MAP_TYPE_PERCPU_HASH ||
->                map->map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH) {
->                    err = bpf_percpu_hash_copy(map, key, value);
->            } else if (map->map_type == BPF_MAP_TYPE_PERCPU_ARRAY) {
->                    err = bpf_percpu_array_copy(map, key, value);
->    @@ -744,7 +749,10 @@ static int map_lookup_elem(union bpf_attr *attr)
->                    }
->                    rcu_read_unlock();
->            }
->    +      this_cpu_dec(bpf_prog_active);
->            preempt_enable();
->
->    done:
->            if (err)
->                    goto free_value;
->
-> As you can see from this snippet, bpf_prog_active value (flag I guess?)
-> increases and decreases within the code snippet. And this action create a
-> problem where bpf program on map is not called.
->
->    # kernel/trace/bpf_trace.c:74
->    unsigned int trace_call_bpf(struct trace_event_call *call, void *ctx)
->    {
->        ...
->         preempt_disable();
->
->         if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
->                 /*
->                  * since some bpf program is already running on this cpu,
->                  * don't call into another bpf program (same or different)
->                  * and don't send kprobe event into ring-buffer,
->                  * so return zero here
->                  */
->                 ret = 0;
->                 goto out;
->         }
->        ...
->        ret = BPF_PROG_RUN_ARRAY_CHECK(call->prog_array, ctx, BPF_PROG_RUN);
->
->    out:
->        __this_cpu_dec(bpf_prog_active);
->        preempt_enable();
->
->
-> So from trace_call_bpf() at kernel/trace/bpf_trace.c check whether
-> bpf_prog_active is 1, and if it is, it skips the execution of bpf program.
->
-> Back to latest Kernel 5.6, this this_cpu_{inc|dec}() has been wrapped with
-> bpf_{enable|disable}_instrumentation().
->
->    # include/linux/bpf.h
->    static inline void bpf_enable_instrumentation(void)
->    {
->            if (IS_ENABLED(CONFIG_PREEMPT_RT))
->                    this_cpu_dec(bpf_prog_active);
->            else
->                    __this_cpu_dec(bpf_prog_active);
->            migrate_enable();
->    }
->
-> And the functions which uses this wrapper are described below.
->
->    bpf_map_update_value
->    bpf_map_copy_value
->    map_delete_elem
->    generic_map_delete_batch
->
-> Which is basically most of the map operation.
->
+On Thu, Apr 09, 2020 at 12:26:37PM +0900, Daniel T. Lee wrote:
+> 
 > So, I think this 'unable to attach bpf program on BPF map function (read,write)'
 > is a bug. Or is it desired action?
->
+
+desired action.
+
 > If it is a bug, bpf_{enable|disable}_instrumentation() should only
 > cover stackmap
 > as the upper commit intended. Not sure but adding another flag for
 > lock might work?
->
+> 
 > Or if this is an desired action, this should be covered at
 > documentation with a limitation
 > and tracex6 sample has to be removed.
+
+Right. That test has to be fixed.
+These two old commits:
+commit 020a32d9581a ("bpf: add a test case for helper bpf_perf_event_read_value")
+commit 41e9a8046c92 ("samples/bpf: add tests for more perf event types")
+attached kprobe bpf to inner map accessors get_next and lookup.
+That's safe only for a subset of map types and not allowed in general.
+It works for hash and array because they don't take locks in these operations.
