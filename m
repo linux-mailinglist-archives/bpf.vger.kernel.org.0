@@ -2,257 +2,211 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51401A9209
-	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 06:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F5A1A9223
+	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 06:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393105AbgDOEpX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Apr 2020 00:45:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60982 "EHLO
+        id S2393182AbgDOE7V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Apr 2020 00:59:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389526AbgDOEpV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Apr 2020 00:45:21 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3D4C061A0C;
-        Tue, 14 Apr 2020 21:45:21 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id v38so1089233qvf.6;
-        Tue, 14 Apr 2020 21:45:20 -0700 (PDT)
+        with ESMTP id S2393136AbgDOE7R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Apr 2020 00:59:17 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF54C061A0C
+        for <bpf@vger.kernel.org>; Tue, 14 Apr 2020 21:59:17 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id j4so15916753qkc.11
+        for <bpf@vger.kernel.org>; Tue, 14 Apr 2020 21:59:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nfNa93KrrCTo3pp8oA599wmeGGVr6mWMuKzzexYFyEM=;
-        b=SGg6N7rDY4XCQe4s1RPeIRwSMJ7bryn+xjjB7jszUtjQd9l0nEyxio8z6wbsUvhrzW
-         5JIwj2pxPmyKp6FsoXiwV1lca+xIVScpq2k9Z7FC8Omo5x0NZf2vQh9GwYFAdmYj0jlt
-         bzh4JNJ3d69k6+ulNZvkVe3RRqDoABrVK/AE5VZX9RgNcPoEJfDnX/En/1jOOpFlO8Ky
-         g0KLaLnPS/Bo0h+yDQJwGBsB9XdAhCTP3UVuweuPFM9rBxrK5oOXMfg0FlB6w5z1MnPP
-         dPTGrbwBDKlEjZRQqIttWKQEGfRQ2ertGHYx92daqs5zA2gq2Cg19jEMAIiC/85QeG5N
-         yRbA==
+        bh=CNuXmYYBWHM0qJxc1Tgf3dRJKLy06lMQYZT/VsCanWw=;
+        b=NJmm4k6ZJYgbqvTVxypoRtij9rIV7pNKdxR2oGHU0gM7Uo1EQCppxcO4x90C/dQfy4
+         EW0M2WgeRh8pS1UtfuXxQZ6dWhMasII/3WywCpzE16IItE4qPtjlddrfoMlAEt28lilt
+         6pXpABMYGWkid+OK9Yh55eXnD5arVfOYxRgAKMm2GaT8+qhagNkehw8erJrlS1+yck28
+         Gec3E8C4HwijJJWQD5DTEY6J+LNB0s6bbWCGxpdcxVrZTbbCOq+tqWrKqfJbrf3vu1GA
+         HZgRVSEp3Q+HrPax60SOYdEbUm+sVYNW2czRFJrt0vT+nUeGdyI1egFB64EUJKRYc0FN
+         dU6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nfNa93KrrCTo3pp8oA599wmeGGVr6mWMuKzzexYFyEM=;
-        b=RTPQdA772aiI1/qUvvDgEwoyIeDT3ZfEESPqVYrXZsjpeDNABvqRkOkwf5fXXKZjqZ
-         h8mhaeHkEZgIJ10bFjuZ76xzPKikM6nNaUkNksx9He9zTU7M1JTN6v6iS/7DXX+Upukt
-         I8kvMX41r7g5gMPqB+LVETvelrO1gEnvZv/Vn4iazuxnx/JoeDzCQU7uYo5VbLVTeb/m
-         gcyUq9qz8gQPUSKzBO1yIXMFoH6aXAB4H68J3mHhZd5JXVL8fb6BD9I0Lm1WpBj+S33V
-         rbHFIaqsZzeD2JVMz7yp1mA4VsB/TmOrwOJS29xwnfiUXHZl/Yj1uqUX8LYnPjrgmLhe
-         bGyw==
-X-Gm-Message-State: AGi0PuZ9xI3yCP6jgBRgjc7AeWbbcc7jjihqzWlR9vo49nChry+Pv0hw
-        ZJ7Q/bbhzb8K0ITgQ487IpqeUcNeZ2l0NLeKO68=
-X-Google-Smtp-Source: APiQypIsXTy/0i7aZDhTzCWirf5n8dO6zfAFro145WN3Jy4OfDjS97AMNo/0mq06Ok671EJDcIn7PS8JLWe1K86n7og=
-X-Received: by 2002:a0c:f74b:: with SMTP id e11mr3325545qvo.196.1586925919957;
- Tue, 14 Apr 2020 21:45:19 -0700 (PDT)
+        bh=CNuXmYYBWHM0qJxc1Tgf3dRJKLy06lMQYZT/VsCanWw=;
+        b=Hf6/4cNLBHIu3p04q2ntcBeYqjyadO2ruTrlaDMYQM//ss3B+Ty3Hw9KB1a2nOe5Uz
+         W3sGd6ykDg0te5eOBAYZhnwQhANOnlp1NRMDM6xSG1xflAjBsy/XbZmgO9pkTBbXOPVE
+         G4fcX354zq9h4ripb/6/eFbZNx+SccBkMXWQx17tmtxiUa0m7ojiKR0wl6dLxBh1WeAY
+         cOEU9emEIHiEQPgOVRGbX9lOlHuhifR5HvPN5yzi+L4Wmk5NWlRZqOcIvbQ2Qong1yW6
+         IlXDBAAL5fKuJW8LDskPwVOzLi2MzoAo32AT38Ny2qbJeky7sEPi2zAUHZvB3sAktS2+
+         i5OA==
+X-Gm-Message-State: AGi0PuYbZzJ/MZLqeu8U/cLZsyw8BhM75eK2bIOkWYE5g9Sd3yhFRoqh
+        8x/xPP7ylmSEMLJxgQr0ty9SXWJS/8zel/XOtMQ=
+X-Google-Smtp-Source: APiQypJRCuahceBiruUkQw/2i4ZIkT82SAyxOYDGxMbT7M3tyJaTAhA6L7A3afweUQtQRcic5tF3ATOcfAZkJz9+5PM=
+X-Received: by 2002:ae9:e854:: with SMTP id a81mr24550025qkg.36.1586926756320;
+ Tue, 14 Apr 2020 21:59:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200408232520.2675265-1-yhs@fb.com> <20200408232526.2675664-1-yhs@fb.com>
- <CAEf4Bzawu2dFXL7nvYhq1tKv9P7Bb9=6ksDpui5nBjxRrx=3_w@mail.gmail.com> <4bf72b3c-5fee-269f-1d71-7f808f436db9@fb.com>
-In-Reply-To: <4bf72b3c-5fee-269f-1d71-7f808f436db9@fb.com>
+References: <CAG48ez2R5nZA91j7cf2Z5o3dOEz0QNZK7cxecjmw0B-ZQ7AjmA@mail.gmail.com>
+ <CAEf4Bzb2zcfJt6ujAN8zY_=x7-dFO92mPzkbCE+UMHVDGL7J+Q@mail.gmail.com>
+ <CAG48ez20KjiYjcYzWnnVCyNTMjNFf+YgnwbbF9BUovZxDzsuEw@mail.gmail.com>
+ <CAEf4BzbEcbgAmXSzKx70rEhzmWcZ_8ECuX98_wsfvRkprKQgbQ@mail.gmail.com>
+ <CAG48ez15gsNtjiwFtLR_eBGAZnfXAt4O+ykuaopVf+jW5KTeRQ@mail.gmail.com>
+ <CAEf4Bzak3FnhD3kUZ4Dn9ZRz=yWSfZ+nkYa1Gz1WeZO7PC7Wkw@mail.gmail.com> <CAG48ez0mmVtBVTjy-KmpUnvJ52O=EYKwJWoCxcXH8O6zCG1QHA@mail.gmail.com>
+In-Reply-To: <CAG48ez0mmVtBVTjy-KmpUnvJ52O=EYKwJWoCxcXH8O6zCG1QHA@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 14 Apr 2020 21:45:08 -0700
-Message-ID: <CAEf4BzZnq958Guuusb9y65UCtB-DARxdk7_q7ZPBZ3WOwjSKaw@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 05/16] bpf: create file or anonymous dumpers
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+Date:   Tue, 14 Apr 2020 21:59:05 -0700
+Message-ID: <CAEf4BzZ2vmdmn111KXXrp3qp1qLb4iMjUJ11Cj06SOGeOB6_Qg@mail.gmail.com>
+Subject: Re: BPF map freezing is unreliable; can we instead just inline constants?
+To:     Jann Horn <jannh@google.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Matthew Garrett <mjg59@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 4:59 PM Yonghong Song <yhs@fb.com> wrote:
+On Tue, Apr 14, 2020 at 3:50 PM Jann Horn <jannh@google.com> wrote:
 >
->
->
-> On 4/13/20 10:56 PM, Andrii Nakryiko wrote:
-> > On Wed, Apr 8, 2020 at 4:26 PM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >> Given a loaded dumper bpf program, which already
-> >> knows which target it should bind to, there
-> >> two ways to create a dumper:
-> >>    - a file based dumper under hierarchy of
-> >>      /sys/kernel/bpfdump/ which uses can
-> >>      "cat" to print out the output.
-> >>    - an anonymous dumper which user application
-> >>      can "read" the dumping output.
-> >>
-> >> For file based dumper, BPF_OBJ_PIN syscall interface
-> >> is used. For anonymous dumper, BPF_PROG_ATTACH
-> >> syscall interface is used.
+> On Tue, Apr 14, 2020 at 9:46 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> > On Tue, Apr 14, 2020 at 9:07 AM Jann Horn <jannh@google.com> wrote:
+> > > On Fri, Apr 10, 2020 at 10:48 PM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > > On Fri, Apr 10, 2020 at 1:47 AM Jann Horn <jannh@google.com> wrote:
+> > > > > On Fri, Apr 10, 2020 at 1:33 AM Andrii Nakryiko
+> > > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > > > On Wed, Apr 8, 2020 at 12:42 PM Jann Horn <jannh@google.com> wrote:
+> > > > > > >
+> > > > > > > Hi!
+> > > > > > >
+> > > > > > > I saw that BPF allows root to create frozen maps, for which the
+> > > > > > > verifier then assumes that they contain constant values. However, map
+> > > > > > > freezing is pretty wobbly:
+> [...]
+> > > > > > > 3. It is assumed that a memory mapping can't be used to write to a
+> > > > > > > page anymore after the mapping has been removed; but actually,
+> > > > > > > userspace can grab references to pages in a VMA and use those
+> > > > > > > references to write to the VMA's pages after the VMA has already been
+> > > > > > > closed. (crasher attached as bpf-constant-data-uffd.c, compile with
+> > > > > > > "gcc -pthread ...")
+> > > > > >
+> > > > > > Please help me understand how that works (assuming we drop
+> > > > > > VM_MAYWRITE, of course). You mmap() as R/W, then munmap(), then
+> > > > > > freeze(). After munmap() refcount of writable pages should drop to
+> > > > > > zero. And mmap'ed address should be invalid and unmapped. I'm missing
+> > > > > > how after munmap() parallel thread still can write to that memory
+> > > > > > page?
+> > > > >
+> > > > > The mmap()/munmap() syscalls place references to the pages the kernel
+> > > > > is using in the page tables of the process. Some other syscalls (such
+> > > > > as process_vm_writev()) can read these page table entries, take their
+> > > > > own references on those backing pages, and then continue to access
+> > > > > those pages even after they've been removed from the task's page
+> > > > > tables by munmap(). This works as long as the page table entries don't
+> > > > > have magic marker bits on them that prohibit this, which you get if
+> > > > > you use something like remap_pfn_range() in a loop instead of
+> > > > > remap_vmalloc_range() - but the memory mappings created by that
+> > > > > syscall are weird, and e.g. some syscalls like read() and write()
+> > > > > might sometimes fail if the buffer argument points into such a memory
+> > > > > region.
+> > > >
+> > > > So mmap() subsystem won't event know about those extra references and
+> > > > thus we can't really account that in our code, right? That's sad, but
+> > > > hopefully those APIs are root-only?
+> > >
+> > > Nope, those APIs are reachable by normal users. These extra references
+> > > are counted on the page refcount - since they have to be tracked
+> > > somehow - but as far as I know, that refcount can also be elevated
+> > > spuriously, so triggering hard errors based on it is probably not a
+> > > good idea.
+> > >
 > >
-> > We discussed this offline with Yonghong a bit, but I thought I'd put
-> > my thoughts about this in writing for completeness. To me, it seems
-> > like the most consistent way to do both anonymous and named dumpers is
-> > through the following steps:
+> > Just trying to educate myself and you seem to know a lot about this.
+> > If we think about regular file memory-mapping with mmap(). According
+> > to this, it seems like it would be possible to mmap() file as writable
+> > first, do some changes and then munmap. At this point some application
+> > would assume that file can't be modified anymore and can be treated as
+> > read-only, yet, it's possible that some other process/thread can just
+> > go and still modify file contents. Do I understand correctly?
 >
-> The main motivation for me to use bpf_link is to enumerate
-> anonymous bpf dumpers by using idr based link_query mechanism in one
-> of previous Andrii's RFC patch so I do not need to re-invent the wheel.
+> Yep, exactly.
 >
-> But looks like there are some difficulties:
+> There are some longstanding issues around this stuff - e.g. in some
+> contrived scenarios, this can mean that when you call read() and
+> fork() at the same time in a multithreaded process, the data you read
+> becomes visible in the child instead of in the parent
+> (https://lore.kernel.org/lkml/CAG48ez17Of=dnymzm8GAN_CNG1okMg1KTeMtBQhXGP2dyB5uJw@mail.gmail.com/).
+> At least a while ago, it could also cause crashes in filesystem code
+> (see e.g. https://lwn.net/Articles/774411/), and cause issues for code
+> that wants to compute stable checksums of pages
+> (https://lwn.net/Articles/787636/); I'm not sure what the state of
+> that stuff is.
+
+Oh, ok, thanks for details. This is... illuminating for sure...
+
 >
+> > > > > > > Is there a reason why the verifier doesn't replace loads from frozen
+> > > > > > > maps with the values stored in those maps? That seems like it would be
+> > > > > > > not only easier to secure, but additionally more performant.
+> > > > > >
+> > > > > > Verifier doesn't always know exact offset at which program is going to
+> > > > > > read read-only map contents. So something like this works:
+> > > > > >
+> > > > > > const volatile long arr[256];
+> > > > > >
+> > > > > > int x = rand() % 256;
+> > > > > > int y = arr[x];
+> > > > > >
+> > > > > > In this case verifier doesn't really know the value of y, so it can't
+> > > > > > be inlined. Then you can have code in which in one branch register is
+> > > > > > loaded with known value, but in another branch same register gets some
+> > > > > > value at random offset. Constant tracking is code path-sensitive,
+> > > > > > while instructions are shared between different code paths. Unless I'm
+> > > > > > missing what you are proposing :)
+> > > > >
+> > > > > Ah, I missed that possibility. But is that actually something that
+> > > > > people do in practice? Or would it be okay for the verifier to just
+> > > > > assume an unknown value in these cases?
+> > > >
+> > > > Verifier will assume unknown value for the branch that has variable
+> > > > offset. It can't do the same for another branch (with constant offset)
+> > > > because it might not yet have encountered branch with variable offset.
+> > > > But either way, you were proposing to rewrite instruction and inline
+> > > > read constant, and I don't think it's possible because of this.
+> > >
+> > > Ah, I see what you mean. That sucks. I guess that means that to fix
+> > > this up properly in such edgecases, we'd have to, for each memory
+> > > read, keep track of all the values that we want to hardcode for it,
+> > > and then generate branches in the unlikely case that the instruction
+> > > was reached on paths that expect different values?
 > >
-> > 1. BPF_PROG_LOAD to load/verify program, that created program FD.
-> > 2. LINK_CREATE using that program FD and direntry FD. This creates
-> > dumper bpf_link (bpf_dumper_link), returns anonymous link FD. If link
+> > I guess, though that sounds extreme and extremely unlikely.
 >
-> bpf dump program already have the target information as part of
-> verification propose, so it does not need directory FD.
-> LINK_CREATE probably not a good fit here.
+> It just seems kinda silly to me to have extra memory loads if we know
+> that those loads will in most cases load the same fixed value on every
+> execution... but oh well.
 >
-> bpf dump program is kind similar to fentry/fexit program,
-> where after successful program loading, the program will know
-> where to attach trampoline.
+> > I'd say
+> > the better way would be to implement immutable BPF maps from the time
+> > they are created. E.g., at the time of creating map, you specify extra
+> > flag BPF_F_IMMUTABLE and specify pointer to a blob of memory with
+> > key/value pairs in it.
 >
-> Looking at kernel code, for fentry/fexit program, at raw_tracepoint_open
-> syscall, the trampoline will be installed and actually bpf program will
-> be called.
->
+> It seems a bit hacky to me to add a new special interface for
+> populating an immutable map. Wouldn't it make more sense to add a flag
+> for "you can't use mmap on this map", or "I plan to freeze this map",
+> or something like that, and keep the freezing API?
 
-direntry FD doesn't have to be specified at attach time, I forgot that
-it is already provided during load. That wasn't a requirement or
-critical part. I think if we already had LINK_CREATE command, we'd
-never have to create RAW_TRACEPOINT_OPEN one, all of them could be the
-same command.
+"you can't use mmap on this map" is default behavior, unless you
+specify BPF_F_MMAPABLE. "I plan to freeze this map" could be added,
+but how that would help existing users that freeze and mmap()?
+Disallowing those now would be a breaking change.
 
-> So, ideally, if we want to use kernel bpf_link, we want to
-> return a cat-able bpf_link because ultimately we want to query
-> file descriptors which actually 'read' bpf program outputs.
->
-> Current bpf_link is not cat-able.
-
-Let's be precise here. By cat-able you mean that you'd like to just
-start issuing read() calls and get output of bpfdump program, is that
-right? Wouldn't that mean that you can read output just once? So it
-won't be possible to create anonymous dumper and periodically get
-up-to-date output. User would need to call RAW_TRACEPOINT_OPEN every
-single time it would need to do a dump. I guess that would work, but
-I'm not seeing why it has to be that way.
-
-What I proposed above was that once you create a bpf_link, you can use
-that same bpf_link to open many seq_files, each with its own FD, which
-can be read() independently of each other. This behavior would be
-consistent with named bpfdumper, which can produce many independent
-seq_files with each new open() syscall, but all from exactly the same
-attached bpfdumper.
-
-> I try to hack by manipulating fops and other stuff, it may work,
-> but looks ugly. Or we create a bpf_catable_link and build an
-> infrastructure around that? Not sure whether it is worthwhile for this
-> one-off thing (bpfdump)?
->
-> Or to query anonymous bpf dumpers, I can just write a bpf dump program
-> to go through all fd's to find out.
->
-> BTW, my current approach (in my private branch),
-> anonymous dumper:
->     bpf_raw_tracepoint_open(NULL, prog) -> cat-able fd
-
-So just to re-iterate. If my understanding is correct, this cat-able
-fd is a single seq_file. If you want to dump it again, you would call
-bpf_raw_tracepoint_open() again?
-
-> file dumper:
->     bpf_obj_pin(prog, path)  -> a cat-able file
-
-While in this case, you'd open() as many times as you need and get new
-cat-able fd for each of those calls.
-
->
-> If you consider program itself is a link, this is like what
-> described below in 3 and 4.
-
-Program is not a link. Same as cgroup BPF program attached somewhere
-to a cgroup is not a link. Because that BPF program can be attached to
-multiple cgroups or even under multiple attach types to the same
-cgroup. Same here, same dumper can be "attached" in bpfdumpfs multiple
-times, and each instance of attachment is link, but it's still the
-same program.
-
->
->
-> > FD is closed, dumper program is detached and dumper is destroyed
-> > (unless pinned in bpffs, just like with any other bpf_link.
-> > 3. At this point bpf_dumper_link can be treated like a factory of
-> > seq_files. We can add a new BPF_DUMPER_OPEN_FILE (all names are for
-> > illustration purposes) command, that accepts dumper link FD and
-> > returns a new seq_file FD, which can be read() normally (or, e.g.,
-> > cat'ed from shell).
->
-> In this case, link_query may not be accurate if a bpf_dumper_link
-> is created but no corresponding bpf_dumper_open_file. What we really
-> need to iterate through all dumper seq_file FDs.
-
-If the goal is to iterate all the open seq_files (i.e., bpfdump active
-sessions), then bpf_link is clearly not the right approach. But I
-thought we are talking about iterating all the bpfdump programs
-attachments, not **sessions**, in which case bpf_link is exactly the
-right approach.
-
-
->
-> > 4. Additionally, this anonymous bpf_link can be pinned/mounted in
-> > bpfdumpfs. We can do it as BPF_OBJ_PIN or as a separate command. Once
-> > pinned at, e.g., /sys/fs/bpfdump/task/my_dumper, just opening that
-> > file is equivalent to BPF_DUMPER_OPEN_FILE and will create a new
-> > seq_file that can be read() independently from other seq_files opened
-> > against the same dumper. Pinning bpfdumpfs entry also bumps refcnt of
-> > bpf_link itself, so even if process that created link dies, bpf dumper
-> > stays attached until its bpfdumpfs entry is deleted.
-> >
-> > Apart from BPF_DUMPER_OPEN_FILE and open()'ing bpfdumpfs file duality,
-> > it seems pretty consistent and follows safe-by-default auto-cleanup of
-> > anonymous link, unless pinned in bpfdumpfs (or one can still pin
-> > bpf_link in bpffs, but it can't be open()'ed the same way, it just
-> > preserves BPF program from being cleaned up).
-> >
-> > Out of all schemes I could come up with, this one seems most unified
-> > and nicely fits into bpf_link infra. Thoughts?
-> >
-> >>
-> >> To facilitate target seq_ops->show() to get the
-> >> bpf program easily, dumper creation increased
-> >> the target-provided seq_file private data size
-> >> so bpf program pointer is also stored in seq_file
-> >> private data.
-> >>
-> >> Further, a seq_num which represents how many
-> >> bpf_dump_get_prog() has been called is also
-> >> available to the target seq_ops->show().
-> >> Such information can be used to e.g., print
-> >> banner before printing out actual data.
-> >>
-> >> Note the seq_num does not represent the num
-> >> of unique kernel objects the bpf program has
-> >> seen. But it should be a good approximate.
-> >>
-> >> A target feature BPF_DUMP_SEQ_NET_PRIVATE
-> >> is implemented specifically useful for
-> >> net based dumpers. It sets net namespace
-> >> as the current process net namespace.
-> >> This avoids changing existing net seq_ops
-> >> in order to retrieve net namespace from
-> >> the seq_file pointer.
-> >>
-> >> For open dumper files, anonymous or not, the
-> >> fdinfo will show the target and prog_id associated
-> >> with that file descriptor. For dumper file itself,
-> >> a kernel interface will be provided to retrieve the
-> >> prog_id in one of the later patches.
-> >>
-> >> Signed-off-by: Yonghong Song <yhs@fb.com>
-> >> ---
-> >>   include/linux/bpf.h            |   5 +
-> >>   include/uapi/linux/bpf.h       |   6 +-
-> >>   kernel/bpf/dump.c              | 338 ++++++++++++++++++++++++++++++++-
-> >>   kernel/bpf/syscall.c           |  11 +-
-> >>   tools/include/uapi/linux/bpf.h |   6 +-
-> >>   5 files changed, 362 insertions(+), 4 deletions(-)
-> >>
-> >
-> > [...]
-> >
+Currently, libbpf is using freezing for .rodata variables, but it
+doesn't mmap() before freezing. What we are talking about is malicious
+user trying to cause a crash, which given everything is under root is
+a bit of a moot point. So I don't know if we actually want to fix
+anything here, given that lots of filesystems are already broken for a
+while for similar reasons... But it's certainly good to know about
+issues like this.
