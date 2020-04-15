@@ -2,122 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3EF41AB242
-	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 22:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 180341AB2E2
+	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 23:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634808AbgDOUEW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Apr 2020 16:04:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34544 "EHLO
+        id S2438176AbgDOUsO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Apr 2020 16:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2634793AbgDOUEU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 15 Apr 2020 16:04:20 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4962C061A0C
-        for <bpf@vger.kernel.org>; Wed, 15 Apr 2020 13:04:19 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id r7so5089343ljg.13
-        for <bpf@vger.kernel.org>; Wed, 15 Apr 2020 13:04:19 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S2438015AbgDOUsN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Apr 2020 16:48:13 -0400
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2150C061A0C
+        for <bpf@vger.kernel.org>; Wed, 15 Apr 2020 13:48:12 -0700 (PDT)
+Received: by mail-wr1-x44a.google.com with SMTP id j12so567028wrr.18
+        for <bpf@vger.kernel.org>; Wed, 15 Apr 2020 13:48:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+5ngEtqk4+rEsaduachf7G1tbT/D3VTQmFzbcpoKpNM=;
-        b=ueCsf6g41MIOfwfJdaP/MsSMVnE+hRNy9Eh4qETPtRzgKO80VvYYrf3aAkVUdZLmKH
-         P8hsFieQLNGZFeB/pX1c2ZfEFqmsc8O6XIw4omdxP0zH/OGrHSKv6grVkDAfUR/ynSK/
-         ZvhlMOCC6RJBxhzdcgGHi7lpMtN+UUGYTg4/ItwF1/oU5hI4904mNZ5D1SSGAx9hIygl
-         VY5uIBf9YNj/D9ai0kCSYtMbNvmFOfISGW6YjI1rh1oRyOtSz7dgtQxBdBc3gQt9tKWx
-         pjpCfNewdmQOD4fQMKIUdijDGsFWcOcuRH37Z/56ymFApR4OmMmOAeAoxDnm5STYP/80
-         kkuA==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=rjzcjb/bQPDNviyt2sPsZPltCFMp8BiGQ60Gy3cwjMA=;
+        b=ELPwg0wQpckplvDqgq/mtwUdENH/PVzfd8E6bELnegHBuHnLrtjiXKnZDrXtDBq/kG
+         wSRvwaYLD7fbcdIKOrNefWMQCkBW7QEWH7SMNM2jrf698FRNRJPR/E0bDGkXaZPDR0bE
+         pQuRQ/y1PThCzEkL1UOC4FSej/M+mzhKZth1JSQ2DISfsjUHCbrRM1kbL5ZvoGAjIOR6
+         mIpuzvCBn43L1gzAqd+De+ZuOMJElEbjYKAKhv5sjMPmDw+5grzZSNhvUoSiIMqzb8bg
+         XOs4H9+a+cxcJYUyAgN0czDkbdhPM2UJWZAxaXEm1wTbA4dEnzble/dOwdoRXZ7kUFMQ
+         deEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+5ngEtqk4+rEsaduachf7G1tbT/D3VTQmFzbcpoKpNM=;
-        b=JmUs+RMFsUEq9U6hiH/E1Cyl0DkTLJpM9bbZhoSkkkXpejWgTa4BbFcxJu8F0YglXv
-         45vXW/uWjmo8PG07xlCldhkQDSUpuBmd++K/fmBcfHnqalli5psGcLs0L5coSLbw5uyC
-         F0x5dq8bSsm5PniPdiGxvLrdNZ6+tzHlam9YExRf7zMo+lggN/Qg8j/1x82gvXLp06JI
-         MzD2hEpnmT1vwC/G+NajCfuzRU9iCFLa4GswmBBMclLOTmxqyLNAizb2Ob0ym1hpsJZ0
-         T31ddH0ZdWu3Tma5vYpfD3tuovOfkL3hpw5KQ2q3K6Wk88oByLI60INmmdpc4sNtXBQc
-         U/5Q==
-X-Gm-Message-State: AGi0PuYPzWlq5fj0Apgzfcz3vg6XG7FLYhty1XGlnLtiVJyAtQAfWxE8
-        1WzUJo+VyXwZjsxFlU0jKT1KvCIK/pUX+4nCkrJvbQ==
-X-Google-Smtp-Source: APiQypIxOmpT2c/hzpP6t7MdmsMSbjBG6iNGr58nF8lSprP9AT2bcCFQrZDis78cCgx0Z064iE3GhmN9feXWjwH6UWA=
-X-Received: by 2002:a2e:a419:: with SMTP id p25mr3394342ljn.215.1586981057855;
- Wed, 15 Apr 2020 13:04:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAG48ez2R5nZA91j7cf2Z5o3dOEz0QNZK7cxecjmw0B-ZQ7AjmA@mail.gmail.com>
- <CAEf4Bzb2zcfJt6ujAN8zY_=x7-dFO92mPzkbCE+UMHVDGL7J+Q@mail.gmail.com>
- <CAG48ez20KjiYjcYzWnnVCyNTMjNFf+YgnwbbF9BUovZxDzsuEw@mail.gmail.com>
- <CAEf4BzbEcbgAmXSzKx70rEhzmWcZ_8ECuX98_wsfvRkprKQgbQ@mail.gmail.com>
- <CAG48ez15gsNtjiwFtLR_eBGAZnfXAt4O+ykuaopVf+jW5KTeRQ@mail.gmail.com>
- <CAEf4Bzak3FnhD3kUZ4Dn9ZRz=yWSfZ+nkYa1Gz1WeZO7PC7Wkw@mail.gmail.com>
- <CAG48ez0mmVtBVTjy-KmpUnvJ52O=EYKwJWoCxcXH8O6zCG1QHA@mail.gmail.com>
- <CAEf4BzZ2vmdmn111KXXrp3qp1qLb4iMjUJ11Cj06SOGeOB6_Qg@mail.gmail.com> <CAG48ez0G5q8CouLsTDHjkOcJ7WKJE09OB9FHFPQJUzQrCmZG1w@mail.gmail.com>
-In-Reply-To: <CAG48ez0G5q8CouLsTDHjkOcJ7WKJE09OB9FHFPQJUzQrCmZG1w@mail.gmail.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=rjzcjb/bQPDNviyt2sPsZPltCFMp8BiGQ60Gy3cwjMA=;
+        b=L5ZrrsQb0OHR/q98lC/m5N03E66C8z/bET1aiOZ9TMcKDRPY8RImecZ8cQqPAadMJt
+         geO5IzV1ekG/NwpVZUln22YPYaRz5bjeTLx8HZWUb1AU0+EtqyXSdyShWMKXjt6TZ5WE
+         5TzrAKwZTOQpwrSokuQ78x59OdV5cRhFsaNoP785m52I8ePieCjZ6uhNQrfKXstGIL68
+         YYqeiMNr951RIN15MbbJBh3WFxlaqL4x0GEer8toAmNSfAZUo5v/2j9aEsA1V3X4x2Hg
+         fPua4gZaFkYK9LH5kDUT5iJNilnaWmF24Nl9w0jVlxhPQRHxopuuIABWHw3fpZXeiSsm
+         tW3Q==
+X-Gm-Message-State: AGi0Pub2myfcF2bC95tuNLKfHlZxPWXVV30ei97ZHhcahbcXwQvGxTGh
+        5E0IS1yOGaYRrWT2OD8Ow1M7P18k/tqu+8VcPJU01CkMYiBfE8IjdDapeavVqUVBwTi3sBt45b1
+        H/lKhXIRYU1SH5NzOSBda57zmjmXwwG1+0tOOSlBIJgM8xE9MTy1GJAU=
+X-Google-Smtp-Source: APiQypKDe2g3J0jWNrqKmJ0h7aRpbt+PYxVirHwm7VJdlOH9O8Ia7a9ApmtarGVGFXMi+fsVUpRVLrWI7w==
+X-Received: by 2002:a5d:53c4:: with SMTP id a4mr29673340wrw.47.1586983690071;
+ Wed, 15 Apr 2020 13:48:10 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 22:47:43 +0200
+Message-Id: <20200415204743.206086-1-jannh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
+Subject: [PATCH bpf] bpf: Use pointer type whitelist for XADD
 From:   Jann Horn <jannh@google.com>
-Date:   Wed, 15 Apr 2020 22:03:51 +0200
-Message-ID: <CAG48ez1Bs8_3_+uUB69Qe3RN7tDgD8PcBrzv1H0fqbvd0f4jPw@mail.gmail.com>
-Subject: Re: BPF map freezing is unreliable; can we instead just inline constants?
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Matthew Garrett <mjg59@google.com>,
-        KP Singh <kpsingh@google.com>
+To:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 9:07 PM Jann Horn <jannh@google.com> wrote:
-> On Wed, Apr 15, 2020 at 6:59 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> > On Tue, Apr 14, 2020 at 3:50 PM Jann Horn <jannh@google.com> wrote:
-> > > On Tue, Apr 14, 2020 at 9:46 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > > On Tue, Apr 14, 2020 at 9:07 AM Jann Horn <jannh@google.com> wrote:
-> > > > > On Fri, Apr 10, 2020 at 10:48 PM Andrii Nakryiko
-> > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > > On Fri, Apr 10, 2020 at 1:47 AM Jann Horn <jannh@google.com> wrote:
-> > > > > > > On Fri, Apr 10, 2020 at 1:33 AM Andrii Nakryiko
-> > > > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > > > > On Wed, Apr 8, 2020 at 12:42 PM Jann Horn <jannh@google.com> wrote:
-> > > > > > > > >
-> > > > > > > > > Hi!
-> > > > > > > > >
-> > > > > > > > > I saw that BPF allows root to create frozen maps, for which the
-> > > > > > > > > verifier then assumes that they contain constant values. However, map
-> > > > > > > > > freezing is pretty wobbly:
-[...]
-> > > > I'd say
-> > > > the better way would be to implement immutable BPF maps from the time
-> > > > they are created. E.g., at the time of creating map, you specify extra
-> > > > flag BPF_F_IMMUTABLE and specify pointer to a blob of memory with
-> > > > key/value pairs in it.
-> > >
-> > > It seems a bit hacky to me to add a new special interface for
-> > > populating an immutable map. Wouldn't it make more sense to add a flag
-> > > for "you can't use mmap on this map", or "I plan to freeze this map",
-> > > or something like that, and keep the freezing API?
-> >
-> > "you can't use mmap on this map" is default behavior, unless you
-> > specify BPF_F_MMAPABLE.
->
-> Ah, right.
->
-> > "I plan to freeze this map" could be added,
-> > but how that would help existing users that freeze and mmap()?
-> > Disallowing those now would be a breaking change.
-> > Currently, libbpf is using freezing for .rodata variables, but it
-> > doesn't mmap() before freezing.
->
-> Okay, so it sounds like there are probably no actual users that use
-> both BPF_F_MMAPABLE and freezing, and so we can just forbid that
-> combination? That sounds great.
+At the moment, check_xadd() uses a blacklist to decide whether a given
+pointer type should be usable with the XADD instruction. Out of all the
+pointer types that check_mem_access() accepts, only four are currently let
+through by check_xadd():
 
-kpsingh pointed out to me that bpf_object__load_skeleton() has code
-specifically for mmap()ing BPF_F_RDONLY_PROG maps, so this might not
-work... but perhaps we could make `BPF_F_RDONLY_PROG|BPF_F_MMAPABLE`
-imply "you can only map with PROT_READ, not with PROT_WRITE"?
-bpf_object__load_skeleton() only maps BPF_F_RDONLY_PROG maps with
-PROT_READ.
+PTR_TO_MAP_VALUE
+PTR_TO_CTX           rejected
+PTR_TO_STACK
+PTR_TO_PACKET        rejected
+PTR_TO_PACKET_META   rejected
+PTR_TO_FLOW_KEYS     rejected
+PTR_TO_SOCKET        rejected
+PTR_TO_SOCK_COMMON   rejected
+PTR_TO_TCP_SOCK      rejected
+PTR_TO_XDP_SOCK      rejected
+PTR_TO_TP_BUFFER
+PTR_TO_BTF_ID
+
+Looking at the currently permitted ones:
+
+ - PTR_TO_MAP_VALUE: This makes sense and is the primary usecase for XADD.
+ - PTR_TO_STACK: This doesn't make much sense, there is no concurrency on
+   the BPF stack. It also causes confusion further down, because the first
+   check_mem_access() won't check whether the stack slot being read from is
+   STACK_SPILL and the second check_mem_access() assumes in
+   check_stack_write() that the value being written is a normal scalar.
+   This means that unprivileged users can leak kernel pointers.
+ - PTR_TO_TP_BUFFER: This is a local output buffer without concurrency.
+ - PTR_TO_BTF_ID: This is read-only, XADD can't work. When the verifier
+   tries to verify XADD on such memory, the first check_ptr_to_btf_access()
+   invocation gets confused by value_regno not being a valid array index
+   and writes to out-of-bounds memory.
+
+Limit XADD to PTR_TO_MAP_VALUE, since everything else at least doesn't make
+sense, and is sometimes broken on top of that.
+
+Fixes: 17a5267067f3 ("bpf: verifier (add verifier core)")
+Signed-off-by: Jann Horn <jannh@google.com>
+---
+I'm just sending this on the public list, since the worst-case impact for
+non-root users is leaking kernel pointers to userspace. In a context where
+you can reach BPF (no sandboxing), I don't think that kernel ASLR is very
+effective at the moment anyway.
+
+This breaks ten unit tests that assume that XADD is possible on the stack,
+and I'm not sure how all of them should be fixed up; I'd appreciate it if
+someone else could figure out how to fix them. I think some of them might
+be using XADD to cast pointers to numbers, or something like that? But I'm
+not sure.
+
+Or is XADD on the stack actually something you want to support for some
+reason, meaning that that part would have to be fixed differently?
+
+ kernel/bpf/verifier.c | 27 +--------------------------
+ 1 file changed, 1 insertion(+), 26 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 38cfcf701eeb7..397c17a2e970f 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2699,28 +2699,6 @@ static bool is_ctx_reg(struct bpf_verifier_env *env, int regno)
+ 	return reg->type == PTR_TO_CTX;
+ }
+ 
+-static bool is_sk_reg(struct bpf_verifier_env *env, int regno)
+-{
+-	const struct bpf_reg_state *reg = reg_state(env, regno);
+-
+-	return type_is_sk_pointer(reg->type);
+-}
+-
+-static bool is_pkt_reg(struct bpf_verifier_env *env, int regno)
+-{
+-	const struct bpf_reg_state *reg = reg_state(env, regno);
+-
+-	return type_is_pkt_pointer(reg->type);
+-}
+-
+-static bool is_flow_key_reg(struct bpf_verifier_env *env, int regno)
+-{
+-	const struct bpf_reg_state *reg = reg_state(env, regno);
+-
+-	/* Separate to is_ctx_reg() since we still want to allow BPF_ST here. */
+-	return reg->type == PTR_TO_FLOW_KEYS;
+-}
+-
+ static int check_pkt_ptr_alignment(struct bpf_verifier_env *env,
+ 				   const struct bpf_reg_state *reg,
+ 				   int off, int size, bool strict)
+@@ -3298,10 +3276,7 @@ static int check_xadd(struct bpf_verifier_env *env, int insn_idx, struct bpf_ins
+ 		return -EACCES;
+ 	}
+ 
+-	if (is_ctx_reg(env, insn->dst_reg) ||
+-	    is_pkt_reg(env, insn->dst_reg) ||
+-	    is_flow_key_reg(env, insn->dst_reg) ||
+-	    is_sk_reg(env, insn->dst_reg)) {
++	if (reg_state(env, insn->dst_reg)->type != PTR_TO_MAP_VALUE) {
+ 		verbose(env, "BPF_XADD stores into R%d %s is not allowed\n",
+ 			insn->dst_reg,
+ 			reg_type_str[reg_state(env, insn->dst_reg)->type]);
+
+base-commit: 87b0f983f66f23762921129fd35966eddc3f2dae
+-- 
+2.26.0.110.g2183baf09c-goog
+
