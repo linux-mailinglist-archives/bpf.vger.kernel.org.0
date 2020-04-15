@@ -2,117 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 953861A93B6
-	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 08:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036271A942C
+	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 09:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393653AbgDOGzT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Apr 2020 02:55:19 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:44970 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393651AbgDOGzP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Apr 2020 02:55:15 -0400
-Received: by mail-io1-f72.google.com with SMTP id o20so17922160ioa.11
-        for <bpf@vger.kernel.org>; Tue, 14 Apr 2020 23:55:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ffkbImYYrsgJDwBLGUxZeSax9u6Dimg6eHOtdawCFEA=;
-        b=K7QCGjh+C4WUk2yRzQ8acw/pkgRrMM86uSvwTqVstE6Fql8+EFsgEYtSEyuitLiWM4
-         WOrp2mkHr9ol+uwOIYWSUe2NujWi7iC49GbvkU0OTyAoI1PEtCG1LyRmhsYV8BVKK78D
-         uzmmgzHzmI0sbpw4UqsIB56FS3NprO8SP/QsU3rrTUpXWMhxH6Pojyqw44ieXm+okC1r
-         zNWMlKoSseciW5kdA3KaP2OJWQh0yzMRw6ZubkU4AGt7nJ8K6jPRT2SSzIUoTYZUc8FN
-         f5IGBeVREGDjTJbi7mYY9kjMCShPJW7FY7/HFtpRAVw7sPzOPMFIGhk3GAv/Qd3F4fKE
-         9V6w==
-X-Gm-Message-State: AGi0Pubctc7DwNmihOYNLr1vyfxH9HS8Zp13t2fIgdU57TWtU+PWEv5/
-        4TKugBPRVg+y1U0TPreAq1oOVYJfig0sKNMPxq8+R/Yo7fh5
-X-Google-Smtp-Source: APiQypL5O5Qrqc6gTDaxaEZXS7NaWGBqYkgJ/KH9Tnj9bcjR4061KB5xUQ54Rj9vQGod2JR4LK8zk4DcgF1jYYOI0XwkHbwWGA/n
+        id S2393668AbgDOHYZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Apr 2020 03:24:25 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:50862 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2393666AbgDOHYL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Apr 2020 03:24:11 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 03F7JcSM032030;
+        Wed, 15 Apr 2020 00:23:04 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=J7TaB5vagR4jLlR65xt6qo1UL50Z0IdhpExPg7JYQBM=;
+ b=KT6hcGvwqv2uihIRuB8SQZDGXXXyIDL7oFKiTduVXlMuLaMw2TlV1y+16K5IxWbkd5Rp
+ UxCPfaQ2bu0YsqyCGXskDr0dBsU7ZWnHriuPObMkchBlptrEauocGyXamITaLOsD6bPg
+ IAl1qHZr/ZRFWESUv5BjpCNTA0ZFxh03i00= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 30dn85k4cw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 15 Apr 2020 00:23:03 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Wed, 15 Apr 2020 00:23:03 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Yx/oGt68jaNIqPnyipClaRx7ORNOhWxwdjtZUP3B2GWExjHxmweHr/6bGTz+QgUoKOvSllt/O96GyJKRu8VuOHSXrYMuePFI153kcH/axG11ETz9xjj1r2LamEeUxN6bSz3wIwS4VKaKApfBbtlMTvRNdExmDkc3Fv97SkiwmkOkjO6GJqC6lR/qbNK46/0s6ws+oHCKLj/pczMYxrmG3/Dl34s//B/RUJfMZMCQZ4RdtWt7Z33Qqh05/coVwdr1zgKAIqPeWFBLAl7pd2axS1GZgCGwZGs5geBwVMJJTLu1X+/Lr87vJ+e5XRrUayqzndcQi89bG+aMFbC162IPUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J7TaB5vagR4jLlR65xt6qo1UL50Z0IdhpExPg7JYQBM=;
+ b=F3Bubt/vePvf7+Eqdqaz7dL9FIkewiMs9Ng7B5DUtvo09N0BlllH+HheLZUQMb8Kyldh/nz9UfhfJ0EVPnKatc+yL9btUX8Jingk8tyJxxZ9IPy9l1wdMyHC/SLpM1DuCenJF14tJaf4VbdHfWUJaVWammbxIYhvO7NEB9Z0uabBWDPe9TI0gtMwGnd2QFPZa6Wao6py2Xi2YkRFTHGlj6HMRFpUk+SclMCI0QhXLR4//ZRNoj0lve9nQlJorbiyAWJHo17LEPyFzK+y7m06gfrUsZ6T2td1hydedMVBOj9UcmBOvV3cw+GyzXTNVRDVsUYRBT9yizwIutQejTVBLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J7TaB5vagR4jLlR65xt6qo1UL50Z0IdhpExPg7JYQBM=;
+ b=GNfrtgy3nnawCoxq0JNlPYve8i6G3PC08TIsDGpy6B7tdmdl5hWEFMyM7/L6MU+evJVrpCogtNcpHkzPpzZrJwxu1eAQxd13GNyJ+51nd99tRb03SGmjG1udOFazWfstsQqeDnzQXejRHQrSp4ZNunO4CMoPpdxpLLqZhaFdqr4=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB3207.namprd15.prod.outlook.com (2603:10b6:a03:101::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.26; Wed, 15 Apr
+ 2020 07:23:02 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::bdf1:da56:867d:f8a2]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::bdf1:da56:867d:f8a2%7]) with mapi id 15.20.2900.028; Wed, 15 Apr 2020
+ 07:23:02 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     maowenan <maowenan@huawei.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@chromium.org" <kpsingh@chromium.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: Re: [PATCH -next] bpf: remove set but not used variable 'dst_known'
+Thread-Topic: [PATCH -next] bpf: remove set but not used variable 'dst_known'
+Thread-Index: AQHWEYedD4qyQaRcJ0KQTxqzapbMNqh5LnoAgAA7NwCAAGCjgA==
+Date:   Wed, 15 Apr 2020 07:23:02 +0000
+Message-ID: <F68FB33A-1B98-45C1-8056-457EFA52F84F@fb.com>
+References: <20200413113703.194287-1-maowenan@huawei.com>
+ <C75FACD4-8549-4AD1-BDE6-1F5B47095E4C@fb.com>
+ <2b2e0060-ef9b-5541-1108-e28464b47f0a@huawei.com>
+In-Reply-To: <2b2e0060-ef9b-5541-1108-e28464b47f0a@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.60.0.2.5)
+x-originating-ip: [2620:10d:c090:400::5:9d3e]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ce916dea-7c7a-4936-c4df-08d7e10dd53e
+x-ms-traffictypediagnostic: BYAPR15MB3207:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB3207CF7CCC4CFF3DC9AEB5F6B3DB0@BYAPR15MB3207.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:1079;
+x-forefront-prvs: 0374433C81
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(39860400002)(396003)(376002)(346002)(366004)(136003)(6506007)(2616005)(8936002)(71200400001)(8676002)(81156014)(6486002)(53546011)(186003)(86362001)(478600001)(4744005)(64756008)(6512007)(6916009)(66556008)(66476007)(91956017)(54906003)(316002)(5660300002)(36756003)(4326008)(33656002)(66446008)(66946007)(76116006)(2906002);DIR:OUT;SFP:1102;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: YWByupRWF4kGojZXlQhX6ivhMK+M8f2WwjBKqXdH5bSbmxUVd3R3A6SPhRL72oxp69vEO8ZiPU8aZk/k3pVMLEbesYjmR4yoOJ3gZYBBJAJaLxeK/yTQAL9b9UB8spbKKXT26V4RmLFQFh82JUJX18uWbn2/WGGErIF5DFFJ09YNcOM6r2lE73qJBhYkhQXxkTZ1+s8UKSGsJYTDOO1ofczwtHdNJ3mjcmCEJmv0fCKGWqYCS/lBkR64apWQNt96hPLYvY+AMb39Ci5BBzLUUKI8w7P74ppoSvHlxytDCaZPrF/WtgAxGK9ALdZMln3nqnvBbBMC08BhAOgV+irWG9GR8rnbDa/LUTggRXjZNhBUZ5LQV78fPxD1gmdCXcb/FyFc1OTGISy4AASoz/++yJH4GqolEH3Pp6eVbcDjErTQW+ipSbPLopF0HzHvFEQO
+x-ms-exchange-antispam-messagedata: pA9OQXPB5JQxenlF2JA/OQ5VX1yz+oIcEJEZi/5r3g8wIVlHyzCAd5Dv13LNHELzCCnjFH0AuyqqoruoGbNmD3q8I2xET8r0KrigrFQYr4DBqJB4uSpibkQWvR4kMc2TfOBiHj9UdJMurTMe9TT0zKf2rAqhadivxvzpEnVX4VdE5eOI7T88WWUEAV5KHT+W
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2A092136805AC6468CE9721CECDD0999@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Received: by 2002:a92:8b12:: with SMTP id i18mr3892649ild.182.1586933714126;
- Tue, 14 Apr 2020 23:55:14 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 23:55:14 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000500e6f05a34ecc01@google.com>
-Subject: WARNING in bpf_cgroup_link_release
-From:   syzbot <syzbot+8a5dadc5c0b1d7055945@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce916dea-7c7a-4936-c4df-08d7e10dd53e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2020 07:23:02.2750
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nN2MF/Te28mxpmTmIaGYIV/CB5DcR1ciwfGQ6gqtJ7czYFz4I+5cQa6BU+bk18oc9IxmtcRfkqm4H7IblX5Rtw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3207
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-15_01:2020-04-14,2020-04-15 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 phishscore=0
+ lowpriorityscore=0 mlxlogscore=999 mlxscore=0 malwarescore=0
+ suspectscore=0 spamscore=0 impostorscore=0 adultscore=0 clxscore=1011
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004150056
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
-
-syzbot found the following crash on:
-
-HEAD commit:    1a323ea5 x86: get rid of 'errret' argument to __get_user_x..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=148ccb57e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8c1e98458335a7d1
-dashboard link: https://syzkaller.appspot.com/bug?extid=8a5dadc5c0b1d7055945
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+8a5dadc5c0b1d7055945@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 25081 at kernel/bpf/cgroup.c:796 bpf_cgroup_link_release+0x260/0x3a0 kernel/bpf/cgroup.c:796
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 25081 Comm: syz-executor.1 Not tainted 5.6.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- panic+0x2e3/0x75c kernel/panic.c:221
- __warn.cold+0x2f/0x35 kernel/panic.c:582
- report_bug+0x27b/0x2f0 lib/bug.c:195
- fixup_bug arch/x86/kernel/traps.c:175 [inline]
- fixup_bug arch/x86/kernel/traps.c:170 [inline]
- do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:267
- do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
- invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-RIP: 0010:bpf_cgroup_link_release+0x260/0x3a0 kernel/bpf/cgroup.c:796
-Code: cf ff 5b 5d 41 5c e9 df 2a e9 ff e8 da 2a e9 ff 48 c7 c7 20 f4 9d 89 e8 de a0 3a 06 5b 5d 41 5c e9 c5 2a e9 ff e8 c0 2a e9 ff <0f> 0b e9 57 fe ff ff e8 a4 3d 26 00 e9 2a fe ff ff e8 9a 3d 26 00
-RSP: 0018:ffffc900019a7dc0 EFLAGS: 00010246
-RAX: 0000000000040000 RBX: ffff88808c3eac00 RCX: ffffc9000415a000
-RDX: 0000000000040000 RSI: ffffffff8189bea0 RDI: 0000000000000005
-RBP: 00000000fffffff4 R08: ffff88809055e000 R09: ffffed1015cc70f4
-R10: ffffed1015cc70f3 R11: ffff8880ae63879b R12: ffff88808c3eac60
-R13: ffff88808c3eac10 R14: ffffc90000f32000 R15: ffffffff817f8e60
- bpf_link_free+0x80/0x140 kernel/bpf/syscall.c:2217
- bpf_link_put+0x15e/0x1b0 kernel/bpf/syscall.c:2243
- bpf_link_release+0x33/0x40 kernel/bpf/syscall.c:2251
- __fput+0x2e9/0x860 fs/file_table.c:280
- task_work_run+0xf4/0x1b0 kernel/task_work.c:123
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_usermode_loop+0x2fa/0x360 arch/x86/entry/common.c:165
- prepare_exit_to_usermode arch/x86/entry/common.c:196 [inline]
- syscall_return_slowpath arch/x86/entry/common.c:279 [inline]
- do_syscall_64+0x6b1/0x7d0 arch/x86/entry/common.c:305
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x45c889
-Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fddaf43fc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 00007fddaf4406d4 RCX: 000000000045c889
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000005
-RBP: 000000000076bf00 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000006
-R13: 0000000000000078 R14: 00000000005043d2 R15: 0000000000000000
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+DQoNCj4gT24gQXByIDE0LCAyMDIwLCBhdCA2OjM3IFBNLCBtYW93ZW5hbiA8bWFvd2VuYW5AaHVh
+d2VpLmNvbT4gd3JvdGU6DQo+IA0KPiBPbiAyMDIwLzQvMTUgNjowNSwgU29uZyBMaXUgd3JvdGU6
+DQo+PiANCj4+IA0KPj4+IE9uIEFwciAxMywgMjAyMCwgYXQgNDozNyBBTSwgTWFvIFdlbmFuIDxt
+YW93ZW5hbkBodWF3ZWkuY29tPiB3cm90ZToNCj4+PiANCj4+PiBGaXhlcyBnY2MgJy1XdW51c2Vk
+LWJ1dC1zZXQtdmFyaWFibGUnIHdhcm5pbmc6DQo+Pj4gDQo+Pj4ga2VybmVsL2JwZi92ZXJpZmll
+ci5jOjU2MDM6MTg6IHdhcm5pbmc6IHZhcmlhYmxlIOKAmGRzdF9rbm93buKAmQ0KPj4+IHNldCBi
+dXQgbm90IHVzZWQgWy1XdW51c2VkLWJ1dC1zZXQtdmFyaWFibGVdDQo+Pj4gDQo+Pj4gSXQgaXMg
+bm90IHVzZWQgc2luY2UgY29tbWl0IGYxMTc0Zjc3YjUwYyAoImJwZi92ZXJpZmllcjoNCj4+PiBy
+ZXdvcmsgdmFsdWUgdHJhY2tpbmciKQ0KPj4gDQo+PiBUaGUgZml4IG1ha2VzIHNlbnNlLiBCdXQg
+SSB0aGluayBmMTE3NGY3N2I1MGMgaW50cm9kdWNlZCBkc3Rfa25vd24sIA0KPj4gc28gdGhpcyBz
+dGF0ZW1lbnQgaXMgbm90IGFjY3VyYXRlLiANCj4+IA0KPiB0aGFua3MgZm9yIHJldmlldywgeWVz
+LCBmMTE3NGY3N2I1MGMgaW50cm9kdWNlZCBkc3Rfa25vd24sIGFuZCBiZWxvdyBjb21taXQNCj4g
+ZG9lc24ndCBkZWZlcmVuY2UgdmFyaWFibGUgZHN0X2tub3duLiBTbyBJIHNlbmQgdjIgbGF0ZXI/
+DQo+IDNmNTBmMTMyZDg0MCAoImJwZjogVmVyaWZpZXIsIGRvIGV4cGxpY2l0IEFMVTMyIGJvdW5k
+cyB0cmFja2luZyIpDQoNCkkgZG9uJ3QgdGhpbmsgd2UgbmVlZCB0byBiYWNrIHBvcnQgdGhpcyB0
+byBzdGFibGUuIFNvIGl0IGlzIE9LIG5vdCB0byANCmluY2x1ZGUgRml4ZXMgdGFnLiBXZSBjYW4g
+anVzdCByZW1vdmUgdGhpcyBzdGF0ZW1lbnQgaW4gdGhlIGNvbW1pdCBsb2cuDQoNCmJwZi1uZXh0
+IGlzIG5vdCBvcGVuIHlldC4gUGxlYXNlIHNlbmQgdjIgd2hlbiBicGYtbmV4dCBpcyBvcGVuLiAN
+Cg0KVGhhbmtzLA0KU29uZw0KDQo=
