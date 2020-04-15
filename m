@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 574861AA188
-	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 14:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EFBD1A9D90
+	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 13:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897535AbgDOMmk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Apr 2020 08:42:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35840 "EHLO mail.kernel.org"
+        id S2409196AbgDOLpk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Apr 2020 07:45:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897532AbgDOLnm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Apr 2020 07:43:42 -0400
+        id S2409182AbgDOLpf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Apr 2020 07:45:35 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 381CD2173E;
-        Wed, 15 Apr 2020 11:43:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 04029206A2;
+        Wed, 15 Apr 2020 11:45:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586951022;
-        bh=gAifPt66qkW3tv2T57UG0FcJWamVbpl1k2rRwDdvNXs=;
+        s=default; t=1586951135;
+        bh=2+/dJ4gHYaq3bNj/O1pI8tN/f6TAMbkW0u8kUJjb+oU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HwyJ4Bw5+sH8N9/lkbE8ZOx6pBJPFIyV18cQq3+J0PxiaXJLHJoVPDq+8ie7kAf1M
-         yXW+RWzb1rZSS7dO50wu9Kd7nv8OIQY9b5DOgFKFNMbAIaYCdFkZvi0GhOGieK+g+L
-         OWRzIXeMSuQYrsmkBGk72zMRM9/uA+5txQaJ1EJA=
+        b=Lj9zKv1jrbUc/gnc5qaMpWhtaJ/Z/0ZkB9ik0NEnlG1C1oEoyyUepppQ1JzV6Ov8K
+         kcN9P/fsc2zwWaGRJRZTAS8QtBnwqnnsNlaISPcHb8wANC6DiQKTjY8AihltLHP0Lx
+         oekTrjMUgQi72QdGofvlOrCthr6DBS/arRSX/fUo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Will Deacon <will@kernel.org>,
@@ -33,12 +33,12 @@ Cc:     Will Deacon <will@kernel.org>,
         Jason Wang <jasowang@redhat.com>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 062/106] tun: Don't put_page() for all negative return values from XDP program
-Date:   Wed, 15 Apr 2020 07:41:42 -0400
-Message-Id: <20200415114226.13103-62-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 45/84] tun: Don't put_page() for all negative return values from XDP program
+Date:   Wed, 15 Apr 2020 07:44:02 -0400
+Message-Id: <20200415114442.14166-45-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200415114226.13103-1-sashal@kernel.org>
-References: <20200415114226.13103-1-sashal@kernel.org>
+In-Reply-To: <20200415114442.14166-1-sashal@kernel.org>
+References: <20200415114442.14166-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -81,7 +81,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index 35e884a8242d9..6d3317d868d23 100644
+index 69f553a028eee..16f5cb249ed59 100644
 --- a/drivers/net/tun.c
 +++ b/drivers/net/tun.c
 @@ -1715,8 +1715,12 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
