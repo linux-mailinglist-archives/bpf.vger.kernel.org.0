@@ -2,211 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F5A1A9223
-	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 06:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 953861A93B6
+	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 08:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393182AbgDOE7V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Apr 2020 00:59:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393136AbgDOE7R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Apr 2020 00:59:17 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF54C061A0C
-        for <bpf@vger.kernel.org>; Tue, 14 Apr 2020 21:59:17 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id j4so15916753qkc.11
-        for <bpf@vger.kernel.org>; Tue, 14 Apr 2020 21:59:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CNuXmYYBWHM0qJxc1Tgf3dRJKLy06lMQYZT/VsCanWw=;
-        b=NJmm4k6ZJYgbqvTVxypoRtij9rIV7pNKdxR2oGHU0gM7Uo1EQCppxcO4x90C/dQfy4
-         EW0M2WgeRh8pS1UtfuXxQZ6dWhMasII/3WywCpzE16IItE4qPtjlddrfoMlAEt28lilt
-         6pXpABMYGWkid+OK9Yh55eXnD5arVfOYxRgAKMm2GaT8+qhagNkehw8erJrlS1+yck28
-         Gec3E8C4HwijJJWQD5DTEY6J+LNB0s6bbWCGxpdcxVrZTbbCOq+tqWrKqfJbrf3vu1GA
-         HZgRVSEp3Q+HrPax60SOYdEbUm+sVYNW2czRFJrt0vT+nUeGdyI1egFB64EUJKRYc0FN
-         dU6g==
+        id S2393653AbgDOGzT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Apr 2020 02:55:19 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:44970 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393651AbgDOGzP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Apr 2020 02:55:15 -0400
+Received: by mail-io1-f72.google.com with SMTP id o20so17922160ioa.11
+        for <bpf@vger.kernel.org>; Tue, 14 Apr 2020 23:55:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CNuXmYYBWHM0qJxc1Tgf3dRJKLy06lMQYZT/VsCanWw=;
-        b=Hf6/4cNLBHIu3p04q2ntcBeYqjyadO2ruTrlaDMYQM//ss3B+Ty3Hw9KB1a2nOe5Uz
-         W3sGd6ykDg0te5eOBAYZhnwQhANOnlp1NRMDM6xSG1xflAjBsy/XbZmgO9pkTBbXOPVE
-         G4fcX354zq9h4ripb/6/eFbZNx+SccBkMXWQx17tmtxiUa0m7ojiKR0wl6dLxBh1WeAY
-         cOEU9emEIHiEQPgOVRGbX9lOlHuhifR5HvPN5yzi+L4Wmk5NWlRZqOcIvbQ2Qong1yW6
-         IlXDBAAL5fKuJW8LDskPwVOzLi2MzoAo32AT38Ny2qbJeky7sEPi2zAUHZvB3sAktS2+
-         i5OA==
-X-Gm-Message-State: AGi0PuYbZzJ/MZLqeu8U/cLZsyw8BhM75eK2bIOkWYE5g9Sd3yhFRoqh
-        8x/xPP7ylmSEMLJxgQr0ty9SXWJS/8zel/XOtMQ=
-X-Google-Smtp-Source: APiQypJRCuahceBiruUkQw/2i4ZIkT82SAyxOYDGxMbT7M3tyJaTAhA6L7A3afweUQtQRcic5tF3ATOcfAZkJz9+5PM=
-X-Received: by 2002:ae9:e854:: with SMTP id a81mr24550025qkg.36.1586926756320;
- Tue, 14 Apr 2020 21:59:16 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ffkbImYYrsgJDwBLGUxZeSax9u6Dimg6eHOtdawCFEA=;
+        b=K7QCGjh+C4WUk2yRzQ8acw/pkgRrMM86uSvwTqVstE6Fql8+EFsgEYtSEyuitLiWM4
+         WOrp2mkHr9ol+uwOIYWSUe2NujWi7iC49GbvkU0OTyAoI1PEtCG1LyRmhsYV8BVKK78D
+         uzmmgzHzmI0sbpw4UqsIB56FS3NprO8SP/QsU3rrTUpXWMhxH6Pojyqw44ieXm+okC1r
+         zNWMlKoSseciW5kdA3KaP2OJWQh0yzMRw6ZubkU4AGt7nJ8K6jPRT2SSzIUoTYZUc8FN
+         f5IGBeVREGDjTJbi7mYY9kjMCShPJW7FY7/HFtpRAVw7sPzOPMFIGhk3GAv/Qd3F4fKE
+         9V6w==
+X-Gm-Message-State: AGi0Pubctc7DwNmihOYNLr1vyfxH9HS8Zp13t2fIgdU57TWtU+PWEv5/
+        4TKugBPRVg+y1U0TPreAq1oOVYJfig0sKNMPxq8+R/Yo7fh5
+X-Google-Smtp-Source: APiQypL5O5Qrqc6gTDaxaEZXS7NaWGBqYkgJ/KH9Tnj9bcjR4061KB5xUQ54Rj9vQGod2JR4LK8zk4DcgF1jYYOI0XwkHbwWGA/n
 MIME-Version: 1.0
-References: <CAG48ez2R5nZA91j7cf2Z5o3dOEz0QNZK7cxecjmw0B-ZQ7AjmA@mail.gmail.com>
- <CAEf4Bzb2zcfJt6ujAN8zY_=x7-dFO92mPzkbCE+UMHVDGL7J+Q@mail.gmail.com>
- <CAG48ez20KjiYjcYzWnnVCyNTMjNFf+YgnwbbF9BUovZxDzsuEw@mail.gmail.com>
- <CAEf4BzbEcbgAmXSzKx70rEhzmWcZ_8ECuX98_wsfvRkprKQgbQ@mail.gmail.com>
- <CAG48ez15gsNtjiwFtLR_eBGAZnfXAt4O+ykuaopVf+jW5KTeRQ@mail.gmail.com>
- <CAEf4Bzak3FnhD3kUZ4Dn9ZRz=yWSfZ+nkYa1Gz1WeZO7PC7Wkw@mail.gmail.com> <CAG48ez0mmVtBVTjy-KmpUnvJ52O=EYKwJWoCxcXH8O6zCG1QHA@mail.gmail.com>
-In-Reply-To: <CAG48ez0mmVtBVTjy-KmpUnvJ52O=EYKwJWoCxcXH8O6zCG1QHA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 14 Apr 2020 21:59:05 -0700
-Message-ID: <CAEf4BzZ2vmdmn111KXXrp3qp1qLb4iMjUJ11Cj06SOGeOB6_Qg@mail.gmail.com>
-Subject: Re: BPF map freezing is unreliable; can we instead just inline constants?
-To:     Jann Horn <jannh@google.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Matthew Garrett <mjg59@google.com>
+X-Received: by 2002:a92:8b12:: with SMTP id i18mr3892649ild.182.1586933714126;
+ Tue, 14 Apr 2020 23:55:14 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 23:55:14 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000500e6f05a34ecc01@google.com>
+Subject: WARNING in bpf_cgroup_link_release
+From:   syzbot <syzbot+8a5dadc5c0b1d7055945@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 3:50 PM Jann Horn <jannh@google.com> wrote:
->
-> On Tue, Apr 14, 2020 at 9:46 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> > On Tue, Apr 14, 2020 at 9:07 AM Jann Horn <jannh@google.com> wrote:
-> > > On Fri, Apr 10, 2020 at 10:48 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > > On Fri, Apr 10, 2020 at 1:47 AM Jann Horn <jannh@google.com> wrote:
-> > > > > On Fri, Apr 10, 2020 at 1:33 AM Andrii Nakryiko
-> > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > > On Wed, Apr 8, 2020 at 12:42 PM Jann Horn <jannh@google.com> wrote:
-> > > > > > >
-> > > > > > > Hi!
-> > > > > > >
-> > > > > > > I saw that BPF allows root to create frozen maps, for which the
-> > > > > > > verifier then assumes that they contain constant values. However, map
-> > > > > > > freezing is pretty wobbly:
-> [...]
-> > > > > > > 3. It is assumed that a memory mapping can't be used to write to a
-> > > > > > > page anymore after the mapping has been removed; but actually,
-> > > > > > > userspace can grab references to pages in a VMA and use those
-> > > > > > > references to write to the VMA's pages after the VMA has already been
-> > > > > > > closed. (crasher attached as bpf-constant-data-uffd.c, compile with
-> > > > > > > "gcc -pthread ...")
-> > > > > >
-> > > > > > Please help me understand how that works (assuming we drop
-> > > > > > VM_MAYWRITE, of course). You mmap() as R/W, then munmap(), then
-> > > > > > freeze(). After munmap() refcount of writable pages should drop to
-> > > > > > zero. And mmap'ed address should be invalid and unmapped. I'm missing
-> > > > > > how after munmap() parallel thread still can write to that memory
-> > > > > > page?
-> > > > >
-> > > > > The mmap()/munmap() syscalls place references to the pages the kernel
-> > > > > is using in the page tables of the process. Some other syscalls (such
-> > > > > as process_vm_writev()) can read these page table entries, take their
-> > > > > own references on those backing pages, and then continue to access
-> > > > > those pages even after they've been removed from the task's page
-> > > > > tables by munmap(). This works as long as the page table entries don't
-> > > > > have magic marker bits on them that prohibit this, which you get if
-> > > > > you use something like remap_pfn_range() in a loop instead of
-> > > > > remap_vmalloc_range() - but the memory mappings created by that
-> > > > > syscall are weird, and e.g. some syscalls like read() and write()
-> > > > > might sometimes fail if the buffer argument points into such a memory
-> > > > > region.
-> > > >
-> > > > So mmap() subsystem won't event know about those extra references and
-> > > > thus we can't really account that in our code, right? That's sad, but
-> > > > hopefully those APIs are root-only?
-> > >
-> > > Nope, those APIs are reachable by normal users. These extra references
-> > > are counted on the page refcount - since they have to be tracked
-> > > somehow - but as far as I know, that refcount can also be elevated
-> > > spuriously, so triggering hard errors based on it is probably not a
-> > > good idea.
-> > >
-> >
-> > Just trying to educate myself and you seem to know a lot about this.
-> > If we think about regular file memory-mapping with mmap(). According
-> > to this, it seems like it would be possible to mmap() file as writable
-> > first, do some changes and then munmap. At this point some application
-> > would assume that file can't be modified anymore and can be treated as
-> > read-only, yet, it's possible that some other process/thread can just
-> > go and still modify file contents. Do I understand correctly?
->
-> Yep, exactly.
->
-> There are some longstanding issues around this stuff - e.g. in some
-> contrived scenarios, this can mean that when you call read() and
-> fork() at the same time in a multithreaded process, the data you read
-> becomes visible in the child instead of in the parent
-> (https://lore.kernel.org/lkml/CAG48ez17Of=dnymzm8GAN_CNG1okMg1KTeMtBQhXGP2dyB5uJw@mail.gmail.com/).
-> At least a while ago, it could also cause crashes in filesystem code
-> (see e.g. https://lwn.net/Articles/774411/), and cause issues for code
-> that wants to compute stable checksums of pages
-> (https://lwn.net/Articles/787636/); I'm not sure what the state of
-> that stuff is.
+Hello,
 
-Oh, ok, thanks for details. This is... illuminating for sure...
+syzbot found the following crash on:
 
->
-> > > > > > > Is there a reason why the verifier doesn't replace loads from frozen
-> > > > > > > maps with the values stored in those maps? That seems like it would be
-> > > > > > > not only easier to secure, but additionally more performant.
-> > > > > >
-> > > > > > Verifier doesn't always know exact offset at which program is going to
-> > > > > > read read-only map contents. So something like this works:
-> > > > > >
-> > > > > > const volatile long arr[256];
-> > > > > >
-> > > > > > int x = rand() % 256;
-> > > > > > int y = arr[x];
-> > > > > >
-> > > > > > In this case verifier doesn't really know the value of y, so it can't
-> > > > > > be inlined. Then you can have code in which in one branch register is
-> > > > > > loaded with known value, but in another branch same register gets some
-> > > > > > value at random offset. Constant tracking is code path-sensitive,
-> > > > > > while instructions are shared between different code paths. Unless I'm
-> > > > > > missing what you are proposing :)
-> > > > >
-> > > > > Ah, I missed that possibility. But is that actually something that
-> > > > > people do in practice? Or would it be okay for the verifier to just
-> > > > > assume an unknown value in these cases?
-> > > >
-> > > > Verifier will assume unknown value for the branch that has variable
-> > > > offset. It can't do the same for another branch (with constant offset)
-> > > > because it might not yet have encountered branch with variable offset.
-> > > > But either way, you were proposing to rewrite instruction and inline
-> > > > read constant, and I don't think it's possible because of this.
-> > >
-> > > Ah, I see what you mean. That sucks. I guess that means that to fix
-> > > this up properly in such edgecases, we'd have to, for each memory
-> > > read, keep track of all the values that we want to hardcode for it,
-> > > and then generate branches in the unlikely case that the instruction
-> > > was reached on paths that expect different values?
-> >
-> > I guess, though that sounds extreme and extremely unlikely.
->
-> It just seems kinda silly to me to have extra memory loads if we know
-> that those loads will in most cases load the same fixed value on every
-> execution... but oh well.
->
-> > I'd say
-> > the better way would be to implement immutable BPF maps from the time
-> > they are created. E.g., at the time of creating map, you specify extra
-> > flag BPF_F_IMMUTABLE and specify pointer to a blob of memory with
-> > key/value pairs in it.
->
-> It seems a bit hacky to me to add a new special interface for
-> populating an immutable map. Wouldn't it make more sense to add a flag
-> for "you can't use mmap on this map", or "I plan to freeze this map",
-> or something like that, and keep the freezing API?
+HEAD commit:    1a323ea5 x86: get rid of 'errret' argument to __get_user_x..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=148ccb57e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8c1e98458335a7d1
+dashboard link: https://syzkaller.appspot.com/bug?extid=8a5dadc5c0b1d7055945
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
 
-"you can't use mmap on this map" is default behavior, unless you
-specify BPF_F_MMAPABLE. "I plan to freeze this map" could be added,
-but how that would help existing users that freeze and mmap()?
-Disallowing those now would be a breaking change.
+Unfortunately, I don't have any reproducer for this crash yet.
 
-Currently, libbpf is using freezing for .rodata variables, but it
-doesn't mmap() before freezing. What we are talking about is malicious
-user trying to cause a crash, which given everything is under root is
-a bit of a moot point. So I don't know if we actually want to fix
-anything here, given that lots of filesystems are already broken for a
-while for similar reasons... But it's certainly good to know about
-issues like this.
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+8a5dadc5c0b1d7055945@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 25081 at kernel/bpf/cgroup.c:796 bpf_cgroup_link_release+0x260/0x3a0 kernel/bpf/cgroup.c:796
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 25081 Comm: syz-executor.1 Not tainted 5.6.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x188/0x20d lib/dump_stack.c:118
+ panic+0x2e3/0x75c kernel/panic.c:221
+ __warn.cold+0x2f/0x35 kernel/panic.c:582
+ report_bug+0x27b/0x2f0 lib/bug.c:195
+ fixup_bug arch/x86/kernel/traps.c:175 [inline]
+ fixup_bug arch/x86/kernel/traps.c:170 [inline]
+ do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:267
+ do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
+ invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+RIP: 0010:bpf_cgroup_link_release+0x260/0x3a0 kernel/bpf/cgroup.c:796
+Code: cf ff 5b 5d 41 5c e9 df 2a e9 ff e8 da 2a e9 ff 48 c7 c7 20 f4 9d 89 e8 de a0 3a 06 5b 5d 41 5c e9 c5 2a e9 ff e8 c0 2a e9 ff <0f> 0b e9 57 fe ff ff e8 a4 3d 26 00 e9 2a fe ff ff e8 9a 3d 26 00
+RSP: 0018:ffffc900019a7dc0 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: ffff88808c3eac00 RCX: ffffc9000415a000
+RDX: 0000000000040000 RSI: ffffffff8189bea0 RDI: 0000000000000005
+RBP: 00000000fffffff4 R08: ffff88809055e000 R09: ffffed1015cc70f4
+R10: ffffed1015cc70f3 R11: ffff8880ae63879b R12: ffff88808c3eac60
+R13: ffff88808c3eac10 R14: ffffc90000f32000 R15: ffffffff817f8e60
+ bpf_link_free+0x80/0x140 kernel/bpf/syscall.c:2217
+ bpf_link_put+0x15e/0x1b0 kernel/bpf/syscall.c:2243
+ bpf_link_release+0x33/0x40 kernel/bpf/syscall.c:2251
+ __fput+0x2e9/0x860 fs/file_table.c:280
+ task_work_run+0xf4/0x1b0 kernel/task_work.c:123
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_usermode_loop+0x2fa/0x360 arch/x86/entry/common.c:165
+ prepare_exit_to_usermode arch/x86/entry/common.c:196 [inline]
+ syscall_return_slowpath arch/x86/entry/common.c:279 [inline]
+ do_syscall_64+0x6b1/0x7d0 arch/x86/entry/common.c:305
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+RIP: 0033:0x45c889
+Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fddaf43fc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 00007fddaf4406d4 RCX: 000000000045c889
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000005
+RBP: 000000000076bf00 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000006
+R13: 0000000000000078 R14: 00000000005043d2 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
