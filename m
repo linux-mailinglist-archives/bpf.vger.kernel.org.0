@@ -2,112 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFBD1A9D90
-	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 13:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529571A9E97
+	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 14:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409196AbgDOLpk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Apr 2020 07:45:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39298 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409182AbgDOLpf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Apr 2020 07:45:35 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04029206A2;
-        Wed, 15 Apr 2020 11:45:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586951135;
-        bh=2+/dJ4gHYaq3bNj/O1pI8tN/f6TAMbkW0u8kUJjb+oU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lj9zKv1jrbUc/gnc5qaMpWhtaJ/Z/0ZkB9ik0NEnlG1C1oEoyyUepppQ1JzV6Ov8K
-         kcN9P/fsc2zwWaGRJRZTAS8QtBnwqnnsNlaISPcHb8wANC6DiQKTjY8AihltLHP0Lx
-         oekTrjMUgQi72QdGofvlOrCthr6DBS/arRSX/fUo=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Will Deacon <will@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 45/84] tun: Don't put_page() for all negative return values from XDP program
-Date:   Wed, 15 Apr 2020 07:44:02 -0400
-Message-Id: <20200415114442.14166-45-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200415114442.14166-1-sashal@kernel.org>
-References: <20200415114442.14166-1-sashal@kernel.org>
+        id S2897989AbgDOL6E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Apr 2020 07:58:04 -0400
+Received: from www62.your-server.de ([213.133.104.62]:38598 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2897977AbgDOL56 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Apr 2020 07:57:58 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jOgfw-0005x1-GK; Wed, 15 Apr 2020 13:57:52 +0200
+Received: from [178.195.186.98] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jOgfw-000WfK-2j; Wed, 15 Apr 2020 13:57:52 +0200
+Subject: Re: WARNING in bpf_cgroup_link_release
+To:     syzbot <syzbot+8a5dadc5c0b1d7055945@syzkaller.appspotmail.com>,
+        andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <000000000000500e6f05a34ecc01@google.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <4ba5ee0c-ec81-8ce3-6681-465e34b98a93@iogearbox.net>
+Date:   Wed, 15 Apr 2020 13:57:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <000000000000500e6f05a34ecc01@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25782/Tue Apr 14 13:57:42 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Will Deacon <will@kernel.org>
+On 4/15/20 8:55 AM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following crash on:
 
-[ Upstream commit bee348907d19d654e8524d3a946dcd25b693aa7e ]
+Andrii, ptal.
 
-When an XDP program is installed, tun_build_skb() grabs a reference to
-the current page fragment page if the program returns XDP_REDIRECT or
-XDP_TX. However, since tun_xdp_act() passes through negative return
-values from the XDP program, it is possible to trigger the error path by
-mistake and accidentally drop a reference to the fragments page without
-taking one, leading to a spurious free. This is believed to be the cause
-of some KASAN use-after-free reports from syzbot [1], although without a
-reproducer it is not possible to confirm whether this patch fixes the
-problem.
-
-Ensure that we only drop a reference to the fragments page if the XDP
-transmit or redirect operations actually fail.
-
-[1] https://syzkaller.appspot.com/bug?id=e76a6af1be4acd727ff6bbca669833f98cbf5d95
-
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-CC: Eric Dumazet <edumazet@google.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Fixes: 8ae1aff0b331 ("tuntap: split out XDP logic")
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/tun.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index 69f553a028eee..16f5cb249ed59 100644
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -1715,8 +1715,12 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
- 			alloc_frag->offset += buflen;
- 		}
- 		err = tun_xdp_act(tun, xdp_prog, &xdp, act);
--		if (err < 0)
--			goto err_xdp;
-+		if (err < 0) {
-+			if (act == XDP_REDIRECT || act == XDP_TX)
-+				put_page(alloc_frag->page);
-+			goto out;
-+		}
-+
- 		if (err == XDP_REDIRECT)
- 			xdp_do_flush_map();
- 		if (err != XDP_PASS)
-@@ -1730,8 +1734,6 @@ static struct sk_buff *tun_build_skb(struct tun_struct *tun,
- 
- 	return __tun_build_skb(tfile, alloc_frag, buf, buflen, len, pad);
- 
--err_xdp:
--	put_page(alloc_frag->page);
- out:
- 	rcu_read_unlock();
- 	local_bh_enable();
--- 
-2.20.1
+> HEAD commit:    1a323ea5 x86: get rid of 'errret' argument to __get_user_x..
+> git tree:       bpf-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=148ccb57e00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=8c1e98458335a7d1
+> dashboard link: https://syzkaller.appspot.com/bug?extid=8a5dadc5c0b1d7055945
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> 
+> Unfortunately, I don't have any reproducer for this crash yet.
+> 
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+8a5dadc5c0b1d7055945@syzkaller.appspotmail.com
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 25081 at kernel/bpf/cgroup.c:796 bpf_cgroup_link_release+0x260/0x3a0 kernel/bpf/cgroup.c:796
+> Kernel panic - not syncing: panic_on_warn set ...
+> CPU: 0 PID: 25081 Comm: syz-executor.1 Not tainted 5.6.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>   __dump_stack lib/dump_stack.c:77 [inline]
+>   dump_stack+0x188/0x20d lib/dump_stack.c:118
+>   panic+0x2e3/0x75c kernel/panic.c:221
+>   __warn.cold+0x2f/0x35 kernel/panic.c:582
+>   report_bug+0x27b/0x2f0 lib/bug.c:195
+>   fixup_bug arch/x86/kernel/traps.c:175 [inline]
+>   fixup_bug arch/x86/kernel/traps.c:170 [inline]
+>   do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:267
+>   do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
+>   invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+> RIP: 0010:bpf_cgroup_link_release+0x260/0x3a0 kernel/bpf/cgroup.c:796
+> Code: cf ff 5b 5d 41 5c e9 df 2a e9 ff e8 da 2a e9 ff 48 c7 c7 20 f4 9d 89 e8 de a0 3a 06 5b 5d 41 5c e9 c5 2a e9 ff e8 c0 2a e9 ff <0f> 0b e9 57 fe ff ff e8 a4 3d 26 00 e9 2a fe ff ff e8 9a 3d 26 00
+> RSP: 0018:ffffc900019a7dc0 EFLAGS: 00010246
+> RAX: 0000000000040000 RBX: ffff88808c3eac00 RCX: ffffc9000415a000
+> RDX: 0000000000040000 RSI: ffffffff8189bea0 RDI: 0000000000000005
+> RBP: 00000000fffffff4 R08: ffff88809055e000 R09: ffffed1015cc70f4
+> R10: ffffed1015cc70f3 R11: ffff8880ae63879b R12: ffff88808c3eac60
+> R13: ffff88808c3eac10 R14: ffffc90000f32000 R15: ffffffff817f8e60
+>   bpf_link_free+0x80/0x140 kernel/bpf/syscall.c:2217
+>   bpf_link_put+0x15e/0x1b0 kernel/bpf/syscall.c:2243
+>   bpf_link_release+0x33/0x40 kernel/bpf/syscall.c:2251
+>   __fput+0x2e9/0x860 fs/file_table.c:280
+>   task_work_run+0xf4/0x1b0 kernel/task_work.c:123
+>   tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+>   exit_to_usermode_loop+0x2fa/0x360 arch/x86/entry/common.c:165
+>   prepare_exit_to_usermode arch/x86/entry/common.c:196 [inline]
+>   syscall_return_slowpath arch/x86/entry/common.c:279 [inline]
+>   do_syscall_64+0x6b1/0x7d0 arch/x86/entry/common.c:305
+>   entry_SYSCALL_64_after_hwframe+0x49/0xb3
+> RIP: 0033:0x45c889
+> Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+> RSP: 002b:00007fddaf43fc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+> RAX: 0000000000000000 RBX: 00007fddaf4406d4 RCX: 000000000045c889
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000005
+> RBP: 000000000076bf00 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000006
+> R13: 0000000000000078 R14: 00000000005043d2 R15: 0000000000000000
+> Kernel Offset: disabled
+> Rebooting in 86400 seconds..
+> 
+> 
+> ---
+> This bug is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this bug report. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
 
