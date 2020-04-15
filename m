@@ -2,123 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3561AA2AB
-	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 15:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BDC41AA951
+	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 16:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505678AbgDOM7u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Apr 2020 08:59:50 -0400
-Received: from www62.your-server.de ([213.133.104.62]:47350 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505660AbgDOM7W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Apr 2020 08:59:22 -0400
-Received: from 98.186.195.178.dynamic.wline.res.cust.swisscom.ch ([178.195.186.98] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jOhdB-00037I-7N; Wed, 15 Apr 2020 14:59:05 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf 2020-04-15
-Date:   Wed, 15 Apr 2020 14:59:04 +0200
-Message-Id: <20200415125904.22480-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S2633818AbgDOOCK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Apr 2020 10:02:10 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:21307 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729062AbgDOOCH (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Apr 2020 10:02:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586959323;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=DIieFSIFXcNK3bF2pki6xVm8oWsV0b5ZkJCX9uZyw50=;
+        b=htvGLJbGuKfXs67/ulj0QKKO+d27Kcoo4/lrsvlT8xE+Op/HVYlD0EE/T10RS6TkaJvaRU
+        4l/3pc20Jy3FIyHGfT24usQh5NezJUnSt+OBKzqewn6Z3vja8sdHhFBwgnZFE57921NJCS
+        f4yjt2rGpLQts7W/8wAX/hNRZCbz9Bg=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-347-Rl2o2wU-OBOwb1-WaO0z4A-1; Wed, 15 Apr 2020 10:02:02 -0400
+X-MC-Unique: Rl2o2wU-OBOwb1-WaO0z4A-1
+Received: by mail-lj1-f197.google.com with SMTP id e6so631491ljj.5
+        for <bpf@vger.kernel.org>; Wed, 15 Apr 2020 07:02:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DIieFSIFXcNK3bF2pki6xVm8oWsV0b5ZkJCX9uZyw50=;
+        b=VDDvLVhvLdsJmH5YCsNYMPw7dFvaSOpbW2Ak4R0OeMUHhwGiv4HarVB1yR/H3A1qBy
+         HZuuKYcem8zxSOEAAFs5e5Rw768jZFvMZK79Asa3LtWuXk2jk7fNH3KcXxvKdzsw6tbB
+         x3CXF5z0o1VvH4c2VVU7sP2wTKSobuUoETj0x6IylyYijQsBlj2mqMau6KrJuOtCEjTw
+         fwT6FJywXx6mpOm0Wj50t6gj7k1Lhtq/UmrN2cqT76q+W9JspAumfn73yz0t5ZIuP3xy
+         Imjc7Y234yjsoiUuGRL+uX7KD56niYnD/5vtH/K5o+MToFNW755BR3M8eIjXqnfk5Dw2
+         ZaCQ==
+X-Gm-Message-State: AGi0PuZo5dD1rGRZH7HZYv8zCMWNWDlVPkuLfnJZYunIzShYlVmLcUP/
+        ySLqXh0qvp8RFwvTMQsFoz1gLzvU0ljdCPUZBXJbaghwk6Bgy1/Lo4mA22biFZCzJxlbOmzCpXo
+        bV7btXj/OmgAv
+X-Received: by 2002:ac2:43c6:: with SMTP id u6mr3294392lfl.170.1586959320659;
+        Wed, 15 Apr 2020 07:02:00 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKQVrVF1keziwDymILwDFZQB1YR2QERfd2wejuW+1DEDbm2plwNgF7XGhJrMenNXH6bM9yzZQ==
+X-Received: by 2002:ac2:43c6:: with SMTP id u6mr3294372lfl.170.1586959320382;
+        Wed, 15 Apr 2020 07:02:00 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id u3sm13345180lff.26.2020.04.15.07.01.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 07:01:59 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 9171B181586; Wed, 15 Apr 2020 16:01:58 +0200 (CEST)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     daniel@iogearbox.net, ast@fb.com
+Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Xiumei Mu <xmu@redhat.com>
+Subject: [PATCH bpf] cpumap: Avoid warning when CONFIG_DEBUG_PER_CPU_MAPS is enabled
+Date:   Wed, 15 Apr 2020 16:01:51 +0200
+Message-Id: <20200415140151.439943-1-toke@redhat.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25783/Wed Apr 15 14:03:13 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David,
+When the kernel is built with CONFIG_DEBUG_PER_CPU_MAPS, the cpumap code
+can trigger a spurious warning if CONFIG_CPUMASK_OFFSTACK is also set. This
+happens because in this configuration, NR_CPUS can be larger than
+nr_cpumask_bits, so the initial check in cpu_map_alloc() is not sufficient
+to guard against hitting the warning in cpumask_check().
 
-The following pull-request contains BPF updates for your *net* tree.
+Fix this by using the nr_cpumask_bits variable in the map creation code
+instead of the NR_CPUS constant.
 
-We've added 10 non-merge commits during the last 3 day(s) which contain
-a total of 11 files changed, 238 insertions(+), 95 deletions(-).
+Fixes: 6710e1126934 ("bpf: introduce new bpf cpu map type BPF_MAP_TYPE_CPUMAP")
+Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+Reported-by: Xiumei Mu <xmu@redhat.com>
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
+ kernel/bpf/cpumap.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The main changes are:
+diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+index 70f71b154fa5..23902afb3bba 100644
+--- a/kernel/bpf/cpumap.c
++++ b/kernel/bpf/cpumap.c
+@@ -99,8 +99,8 @@ static struct bpf_map *cpu_map_alloc(union bpf_attr *attr)
+ 
+ 	bpf_map_init_from_attr(&cmap->map, attr);
+ 
+-	/* Pre-limit array size based on NR_CPUS, not final CPU check */
+-	if (cmap->map.max_entries > NR_CPUS) {
++	/* Pre-limit array size based on nr_cpumask_bits, not final CPU check */
++	if (cmap->map.max_entries > nr_cpumask_bits) {
+ 		err = -E2BIG;
+ 		goto free_cmap;
+ 	}
+-- 
+2.26.0
 
-1) Fix offset overflow for BPF_MEM BPF_DW insn mapping on arm32 JIT,
-   from Luke Nelson and Xi Wang.
-
-2) Prevent mprotect() to make frozen & mmap()'ed BPF map writeable
-   again, from Andrii Nakryiko and Jann Horn.
-
-3) Fix type of old_fd in bpf_xdp_set_link_opts to int in libbpf and add
-   selftests, from Toke Høiland-Jørgensen.
-
-4) Fix AF_XDP to check that headroom cannot be larger than the available
-   space in the chunk, from Magnus Karlsson.
-
-5) Fix reset of XDP prog when expected_fd is set, from David Ahern.
-
-6) Fix a segfault in bpftool's struct_ops command when BTF is not
-   available, from Daniel T. Lee.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Andrey Ignatov, Bui Quang Minh, David Ahern, Hulk Robot, Jakub Kicinski, 
-Jann Horn, Martin KaFai Lau, Song Liu, Toke Høiland-Jørgensen
-
-----------------------------------------------------------------
-
-The following changes since commit e154659ba39a1c2be576aaa0a5bda8088d707950:
-
-  mptcp: fix double-unlock in mptcp_poll (2020-04-12 21:04:08 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to c6c111523d9e697bfb463870759825be5d6caff6:
-
-  selftests/bpf: Check for correct program attach/detach in xdp_attach test (2020-04-15 13:26:08 +0200)
-
-----------------------------------------------------------------
-Andrii Nakryiko (3):
-      bpf: Prevent re-mmap()'ing BPF map as writable for initially r/o mapping
-      selftests/bpf: Validate frozen map contents stays frozen
-      libbpf: Always specify expected_attach_type on program load if supported
-
-Daniel T. Lee (1):
-      tools, bpftool: Fix struct_ops command invalid pointer free
-
-David Ahern (1):
-      xdp: Reset prog in dev_change_xdp_fd when fd is negative
-
-Luke Nelson (1):
-      arm, bpf: Fix offset overflow for BPF_MEM BPF_DW
-
-Magnus Karlsson (1):
-      xsk: Add missing check on user supplied headroom size
-
-Toke Høiland-Jørgensen (2):
-      libbpf: Fix type of old_fd in bpf_xdp_set_link_opts
-      selftests/bpf: Check for correct program attach/detach in xdp_attach test
-
-Zou Wei (1):
-      bpf: remove unneeded conversion to bool in __mark_reg_unknown
-
- arch/arm/net/bpf_jit_32.c                          |  40 ++++---
- kernel/bpf/syscall.c                               |  16 ++-
- kernel/bpf/verifier.c                              |   3 +-
- net/core/dev.c                                     |   3 +-
- net/xdp/xdp_umem.c                                 |   5 +-
- tools/bpf/bpftool/struct_ops.c                     |   4 +-
- tools/lib/bpf/libbpf.c                             | 126 ++++++++++++++-------
- tools/lib/bpf/libbpf.h                             |   2 +-
- tools/testing/selftests/bpf/prog_tests/mmap.c      |  62 +++++++++-
- .../selftests/bpf/prog_tests/section_names.c       |  42 ++++---
- .../testing/selftests/bpf/prog_tests/xdp_attach.c  |  30 ++++-
- 11 files changed, 238 insertions(+), 95 deletions(-)
