@@ -2,101 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180341AB2E2
-	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 23:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64EF01AB3C2
+	for <lists+bpf@lfdr.de>; Thu, 16 Apr 2020 00:23:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438176AbgDOUsO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Apr 2020 16:48:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41330 "EHLO
+        id S1731874AbgDOWXY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Apr 2020 18:23:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2438015AbgDOUsN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 15 Apr 2020 16:48:13 -0400
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2150C061A0C
-        for <bpf@vger.kernel.org>; Wed, 15 Apr 2020 13:48:12 -0700 (PDT)
-Received: by mail-wr1-x44a.google.com with SMTP id j12so567028wrr.18
-        for <bpf@vger.kernel.org>; Wed, 15 Apr 2020 13:48:12 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726201AbgDOWXV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Apr 2020 18:23:21 -0400
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D7BC061A0F
+        for <bpf@vger.kernel.org>; Wed, 15 Apr 2020 15:23:19 -0700 (PDT)
+Received: by mail-wm1-x349.google.com with SMTP id h6so570455wmi.7
+        for <bpf@vger.kernel.org>; Wed, 15 Apr 2020 15:23:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:message-id:mime-version:subject:from:to:cc;
-        bh=rjzcjb/bQPDNviyt2sPsZPltCFMp8BiGQ60Gy3cwjMA=;
-        b=ELPwg0wQpckplvDqgq/mtwUdENH/PVzfd8E6bELnegHBuHnLrtjiXKnZDrXtDBq/kG
-         wSRvwaYLD7fbcdIKOrNefWMQCkBW7QEWH7SMNM2jrf698FRNRJPR/E0bDGkXaZPDR0bE
-         pQuRQ/y1PThCzEkL1UOC4FSej/M+mzhKZth1JSQ2DISfsjUHCbrRM1kbL5ZvoGAjIOR6
-         mIpuzvCBn43L1gzAqd+De+ZuOMJElEbjYKAKhv5sjMPmDw+5grzZSNhvUoSiIMqzb8bg
-         XOs4H9+a+cxcJYUyAgN0czDkbdhPM2UJWZAxaXEm1wTbA4dEnzble/dOwdoRXZ7kUFMQ
-         deEg==
+        bh=1mIzf0uNJ1HQHSrhnAJYE+OaaNLEalR5nV8OrmGRp7Q=;
+        b=poMVaLmZKcdcG4Bcnx75nTnUfAeTVUBbSMRILdWrxvxVpUbfv9HFq6Pemby1CsT/fT
+         k+/QnoQB850GaS3TsSdLhVxdbwa9CfwxhS6O7eBACVCAPW0yD95HpJAYn2dq6LR2Obc6
+         ddDNnZa+R8Ko+HWsj7W5NbHrr8oPUcpODFOGeDKojz8RghWgVgLMoL5rkotLQ8zdEX5G
+         kT98bNuIZPtygPXOe+idOGBcWhGsWm/hOYLhMMtGummX0ehzhvxXeIQqfO2wzs35lxWX
+         GruxOJh+SGsWu0zIRfue5b+IlZHotMFkSNM6OewW/ijGMwt64yxNVJ7y0aGfUfCZcxdn
+         pS1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=rjzcjb/bQPDNviyt2sPsZPltCFMp8BiGQ60Gy3cwjMA=;
-        b=L5ZrrsQb0OHR/q98lC/m5N03E66C8z/bET1aiOZ9TMcKDRPY8RImecZ8cQqPAadMJt
-         geO5IzV1ekG/NwpVZUln22YPYaRz5bjeTLx8HZWUb1AU0+EtqyXSdyShWMKXjt6TZ5WE
-         5TzrAKwZTOQpwrSokuQ78x59OdV5cRhFsaNoP785m52I8ePieCjZ6uhNQrfKXstGIL68
-         YYqeiMNr951RIN15MbbJBh3WFxlaqL4x0GEer8toAmNSfAZUo5v/2j9aEsA1V3X4x2Hg
-         fPua4gZaFkYK9LH5kDUT5iJNilnaWmF24Nl9w0jVlxhPQRHxopuuIABWHw3fpZXeiSsm
-         tW3Q==
-X-Gm-Message-State: AGi0Pub2myfcF2bC95tuNLKfHlZxPWXVV30ei97ZHhcahbcXwQvGxTGh
-        5E0IS1yOGaYRrWT2OD8Ow1M7P18k/tqu+8VcPJU01CkMYiBfE8IjdDapeavVqUVBwTi3sBt45b1
-        H/lKhXIRYU1SH5NzOSBda57zmjmXwwG1+0tOOSlBIJgM8xE9MTy1GJAU=
-X-Google-Smtp-Source: APiQypKDe2g3J0jWNrqKmJ0h7aRpbt+PYxVirHwm7VJdlOH9O8Ia7a9ApmtarGVGFXMi+fsVUpRVLrWI7w==
-X-Received: by 2002:a5d:53c4:: with SMTP id a4mr29673340wrw.47.1586983690071;
- Wed, 15 Apr 2020 13:48:10 -0700 (PDT)
-Date:   Wed, 15 Apr 2020 22:47:43 +0200
-Message-Id: <20200415204743.206086-1-jannh@google.com>
+        bh=1mIzf0uNJ1HQHSrhnAJYE+OaaNLEalR5nV8OrmGRp7Q=;
+        b=VdkdbSQHthrXixw1tq50acCsgKfWJVfFrCO8iOJpWRy8aSsV/PW/LcPhaK8LWIZjKF
+         ZlM3JW/vgAnj+vBKXv+zJzxO6gbo9RM/ZLvX80SITLYjCiBcmRBLhIHmLT6R6Nvbm2Te
+         xzzWj0oVGPFHt1hUqaLVGhwM0w9WTcvxoGj1V+gTkfbVsY3S2wdWJ/qbkEEnkY/qe3bN
+         +4rMQt+5pEiSCOAgEmnRM7DARhir1nrwhWj54tkHaCh8xbjIZ+qRoFdMH+trXPlaeNml
+         s72hwQ76mjt0V0iBFMBFtXa8UZr/MLFMlKPfNDdmL6nwfVDDbCnwNNKF5g8VXEPyRfbU
+         yEaw==
+X-Gm-Message-State: AGi0PubcPpv9smrUbD9bjc1oC1bcVEi9aKAq+RCKPf90hAE6he6G/Sdo
+        DmKP15KxMGfu0xtqIKRu8vp0vQPWRQ==
+X-Google-Smtp-Source: APiQypJPKdrDSHFKJN23DtNTfbMmvVvnzTvIvil6PSbMBOaJJFx9sscPfhIkTKVVc6rydsLOzcHl9F2HyQ==
+X-Received: by 2002:adf:ed86:: with SMTP id c6mr29887988wro.286.1586989398145;
+ Wed, 15 Apr 2020 15:23:18 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 00:23:12 +0200
+Message-Id: <20200415222312.236431-1-jannh@google.com>
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
-Subject: [PATCH bpf] bpf: Use pointer type whitelist for XADD
+Subject: [PATCH] vmalloc: Fix remap_vmalloc_range() bounds checks
 From:   Jann Horn <jannh@google.com>
-To:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org
+        KP Singh <kpsingh@chromium.org>, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-At the moment, check_xadd() uses a blacklist to decide whether a given
-pointer type should be usable with the XADD instruction. Out of all the
-pointer types that check_mem_access() accepts, only four are currently let
-through by check_xadd():
+remap_vmalloc_range() has had various issues with the bounds checks it
+promises to perform ("This function checks that addr is a valid vmalloc'ed
+area, and that it is big enough to cover the vma") over time, e.g.:
 
-PTR_TO_MAP_VALUE
-PTR_TO_CTX           rejected
-PTR_TO_STACK
-PTR_TO_PACKET        rejected
-PTR_TO_PACKET_META   rejected
-PTR_TO_FLOW_KEYS     rejected
-PTR_TO_SOCKET        rejected
-PTR_TO_SOCK_COMMON   rejected
-PTR_TO_TCP_SOCK      rejected
-PTR_TO_XDP_SOCK      rejected
-PTR_TO_TP_BUFFER
-PTR_TO_BTF_ID
+ - not detecting pgoff<<PAGE_SHIFT overflow
+ - not detecting (pgoff<<PAGE_SHIFT)+usize overflow
+ - not checking whether addr and addr+(pgoff<<PAGE_SHIFT) are the same
+   vmalloc allocation
+ - comparing a potentially wildly out-of-bounds pointer with the end of the
+   vmalloc region
 
-Looking at the currently permitted ones:
+In particular, since commit fc9702273e2e ("bpf: Add mmap() support for
+BPF_MAP_TYPE_ARRAY"), unprivileged users can cause kernel null pointer
+dereferences by calling mmap() on a BPF map with a size that is bigger than
+the distance from the start of the BPF map to the end of the address space.
+This could theoretically be used as a kernel ASLR bypass, by using whether
+mmap() with a given offset oopses or returns an error code to perform a
+binary search over the possible address range.
 
- - PTR_TO_MAP_VALUE: This makes sense and is the primary usecase for XADD.
- - PTR_TO_STACK: This doesn't make much sense, there is no concurrency on
-   the BPF stack. It also causes confusion further down, because the first
-   check_mem_access() won't check whether the stack slot being read from is
-   STACK_SPILL and the second check_mem_access() assumes in
-   check_stack_write() that the value being written is a normal scalar.
-   This means that unprivileged users can leak kernel pointers.
- - PTR_TO_TP_BUFFER: This is a local output buffer without concurrency.
- - PTR_TO_BTF_ID: This is read-only, XADD can't work. When the verifier
-   tries to verify XADD on such memory, the first check_ptr_to_btf_access()
-   invocation gets confused by value_regno not being a valid array index
-   and writes to out-of-bounds memory.
+To allow remap_vmalloc_range_partial() to verify that addr and
+addr+(pgoff<<PAGE_SHIFT) are in the same vmalloc region, pass the offset
+to remap_vmalloc_range_partial() instead of adding it to the pointer in
+remap_vmalloc_range().
 
-Limit XADD to PTR_TO_MAP_VALUE, since everything else at least doesn't make
-sense, and is sometimes broken on top of that.
+In remap_vmalloc_range_partial(), fix the check against get_vm_area_size()
+by using size comparisons instead of pointer comparisons, and add checks
+for pgoff.
 
-Fixes: 17a5267067f3 ("bpf: verifier (add verifier core)")
+Cc: stable@vger.kernel.org
+Fixes: 833423143c3a ("[PATCH] mm: introduce remap_vmalloc_range()")
 Signed-off-by: Jann Horn <jannh@google.com>
 ---
 I'm just sending this on the public list, since the worst-case impact for
@@ -104,65 +98,121 @@ non-root users is leaking kernel pointers to userspace. In a context where
 you can reach BPF (no sandboxing), I don't think that kernel ASLR is very
 effective at the moment anyway.
 
-This breaks ten unit tests that assume that XADD is possible on the stack,
-and I'm not sure how all of them should be fixed up; I'd appreciate it if
-someone else could figure out how to fix them. I think some of them might
-be using XADD to cast pointers to numbers, or something like that? But I'm
-not sure.
+ fs/proc/vmcore.c         |  5 +++--
+ include/linux/vmalloc.h  |  2 +-
+ mm/vmalloc.c             | 16 +++++++++++++---
+ samples/vfio-mdev/mdpy.c |  2 +-
+ 4 files changed, 18 insertions(+), 7 deletions(-)
 
-Or is XADD on the stack actually something you want to support for some
-reason, meaning that that part would have to be fixed differently?
-
- kernel/bpf/verifier.c | 27 +--------------------------
- 1 file changed, 1 insertion(+), 26 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 38cfcf701eeb7..397c17a2e970f 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2699,28 +2699,6 @@ static bool is_ctx_reg(struct bpf_verifier_env *env, int regno)
- 	return reg->type == PTR_TO_CTX;
+diff --git a/fs/proc/vmcore.c b/fs/proc/vmcore.c
+index 7dc800cce3543..c663202da8de7 100644
+--- a/fs/proc/vmcore.c
++++ b/fs/proc/vmcore.c
+@@ -266,7 +266,8 @@ static int vmcoredd_mmap_dumps(struct vm_area_struct *vma, unsigned long dst,
+ 		if (start < offset + dump->size) {
+ 			tsz = min(offset + (u64)dump->size - start, (u64)size);
+ 			buf = dump->buf + start - offset;
+-			if (remap_vmalloc_range_partial(vma, dst, buf, tsz)) {
++			if (remap_vmalloc_range_partial(vma, dst, buf, 0,
++							tsz)) {
+ 				ret = -EFAULT;
+ 				goto out_unlock;
+ 			}
+@@ -624,7 +625,7 @@ static int mmap_vmcore(struct file *file, struct vm_area_struct *vma)
+ 		tsz = min(elfcorebuf_sz + elfnotes_sz - (size_t)start, size);
+ 		kaddr = elfnotes_buf + start - elfcorebuf_sz - vmcoredd_orig_sz;
+ 		if (remap_vmalloc_range_partial(vma, vma->vm_start + len,
+-						kaddr, tsz))
++						kaddr, 0, tsz))
+ 			goto fail;
+ 
+ 		size -= tsz;
+diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+index 0507a162ccd0e..a95d3cc74d79b 100644
+--- a/include/linux/vmalloc.h
++++ b/include/linux/vmalloc.h
+@@ -137,7 +137,7 @@ extern void vunmap(const void *addr);
+ 
+ extern int remap_vmalloc_range_partial(struct vm_area_struct *vma,
+ 				       unsigned long uaddr, void *kaddr,
+-				       unsigned long size);
++				       unsigned long pgoff, unsigned long size);
+ 
+ extern int remap_vmalloc_range(struct vm_area_struct *vma, void *addr,
+ 							unsigned long pgoff);
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 399f219544f74..9a8227afa0738 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -34,6 +34,7 @@
+ #include <linux/llist.h>
+ #include <linux/bitops.h>
+ #include <linux/rbtree_augmented.h>
++#include <linux/overflow.h>
+ 
+ #include <linux/uaccess.h>
+ #include <asm/tlbflush.h>
+@@ -3054,6 +3055,7 @@ long vwrite(char *buf, char *addr, unsigned long count)
+  * @vma:		vma to cover
+  * @uaddr:		target user address to start at
+  * @kaddr:		virtual address of vmalloc kernel memory
++ * @pgoff:		offset from @kaddr to start at
+  * @size:		size of map area
+  *
+  * Returns:	0 for success, -Exxx on failure
+@@ -3066,9 +3068,15 @@ long vwrite(char *buf, char *addr, unsigned long count)
+  * Similar to remap_pfn_range() (see mm/memory.c)
+  */
+ int remap_vmalloc_range_partial(struct vm_area_struct *vma, unsigned long uaddr,
+-				void *kaddr, unsigned long size)
++				void *kaddr, unsigned long pgoff,
++				unsigned long size)
+ {
+ 	struct vm_struct *area;
++	unsigned long off;
++	unsigned long end_index;
++
++	if (check_shl_overflow(pgoff, PAGE_SHIFT, &off))
++		return -EINVAL;
+ 
+ 	size = PAGE_ALIGN(size);
+ 
+@@ -3082,8 +3090,10 @@ int remap_vmalloc_range_partial(struct vm_area_struct *vma, unsigned long uaddr,
+ 	if (!(area->flags & (VM_USERMAP | VM_DMA_COHERENT)))
+ 		return -EINVAL;
+ 
+-	if (kaddr + size > area->addr + get_vm_area_size(area))
++	if (check_add_overflow(size, off, &end_index) ||
++	    end_index > get_vm_area_size(area))
+ 		return -EINVAL;
++	kaddr += off;
+ 
+ 	do {
+ 		struct page *page = vmalloc_to_page(kaddr);
+@@ -3122,7 +3132,7 @@ int remap_vmalloc_range(struct vm_area_struct *vma, void *addr,
+ 						unsigned long pgoff)
+ {
+ 	return remap_vmalloc_range_partial(vma, vma->vm_start,
+-					   addr + (pgoff << PAGE_SHIFT),
++					   addr, pgoff,
+ 					   vma->vm_end - vma->vm_start);
+ }
+ EXPORT_SYMBOL(remap_vmalloc_range);
+diff --git a/samples/vfio-mdev/mdpy.c b/samples/vfio-mdev/mdpy.c
+index cc86bf6566e42..9894693f3be17 100644
+--- a/samples/vfio-mdev/mdpy.c
++++ b/samples/vfio-mdev/mdpy.c
+@@ -418,7 +418,7 @@ static int mdpy_mmap(struct mdev_device *mdev, struct vm_area_struct *vma)
+ 		return -EINVAL;
+ 
+ 	return remap_vmalloc_range_partial(vma, vma->vm_start,
+-					   mdev_state->memblk,
++					   mdev_state->memblk, 0,
+ 					   vma->vm_end - vma->vm_start);
  }
  
--static bool is_sk_reg(struct bpf_verifier_env *env, int regno)
--{
--	const struct bpf_reg_state *reg = reg_state(env, regno);
--
--	return type_is_sk_pointer(reg->type);
--}
--
--static bool is_pkt_reg(struct bpf_verifier_env *env, int regno)
--{
--	const struct bpf_reg_state *reg = reg_state(env, regno);
--
--	return type_is_pkt_pointer(reg->type);
--}
--
--static bool is_flow_key_reg(struct bpf_verifier_env *env, int regno)
--{
--	const struct bpf_reg_state *reg = reg_state(env, regno);
--
--	/* Separate to is_ctx_reg() since we still want to allow BPF_ST here. */
--	return reg->type == PTR_TO_FLOW_KEYS;
--}
--
- static int check_pkt_ptr_alignment(struct bpf_verifier_env *env,
- 				   const struct bpf_reg_state *reg,
- 				   int off, int size, bool strict)
-@@ -3298,10 +3276,7 @@ static int check_xadd(struct bpf_verifier_env *env, int insn_idx, struct bpf_ins
- 		return -EACCES;
- 	}
- 
--	if (is_ctx_reg(env, insn->dst_reg) ||
--	    is_pkt_reg(env, insn->dst_reg) ||
--	    is_flow_key_reg(env, insn->dst_reg) ||
--	    is_sk_reg(env, insn->dst_reg)) {
-+	if (reg_state(env, insn->dst_reg)->type != PTR_TO_MAP_VALUE) {
- 		verbose(env, "BPF_XADD stores into R%d %s is not allowed\n",
- 			insn->dst_reg,
- 			reg_type_str[reg_state(env, insn->dst_reg)->type]);
 
-base-commit: 87b0f983f66f23762921129fd35966eddc3f2dae
+base-commit: 8632e9b5645bbc2331d21d892b0d6961c1a08429
 -- 
 2.26.0.110.g2183baf09c-goog
 
