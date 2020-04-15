@@ -2,171 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F3B1AB1C5
-	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 21:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3EF41AB242
+	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 22:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506469AbgDOTcJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Apr 2020 15:32:09 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:31310 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2406313AbgDOT2U (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 15 Apr 2020 15:28:20 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 03FJSCop007606
-        for <bpf@vger.kernel.org>; Wed, 15 Apr 2020 12:28:19 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=ZuHVPcaW1pLeyf56TL2TTP6NLj4DSjqUkw74KGNT07k=;
- b=OAXCYRAev2h5ETgqEu6ADvV0J0gQRgR4Ko837wfE1GMGnUWHMhcDZ90AEbMN/z/kiYFW
- 5hXqRnTTB/6YdBy8l+OREi0DLTXaPupZVYN20ouAnFOTSHAL86KTADS0ZQaXZHRQ+jtU
- g0smYh9rPxZnmSrT0uMr1wbIJ6L/UdhzS6Q= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 30dn7fymmk-14
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 15 Apr 2020 12:28:19 -0700
-Received: from intmgw002.08.frc2.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Wed, 15 Apr 2020 12:28:02 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 8D13A3700AF5; Wed, 15 Apr 2020 12:28:00 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Yonghong Song <yhs@fb.com>
-Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
-To:     Andrii Nakryiko <andriin@fb.com>, <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, <netdev@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [RFC PATCH bpf-next v2 17/17] tools/bpf: selftests: add a selftest for anonymous dumper
-Date:   Wed, 15 Apr 2020 12:28:00 -0700
-Message-ID: <20200415192800.4084266-1-yhs@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200415192740.4082659-1-yhs@fb.com>
-References: <20200415192740.4082659-1-yhs@fb.com>
+        id S2634808AbgDOUEW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Apr 2020 16:04:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2634793AbgDOUEU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Apr 2020 16:04:20 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4962C061A0C
+        for <bpf@vger.kernel.org>; Wed, 15 Apr 2020 13:04:19 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id r7so5089343ljg.13
+        for <bpf@vger.kernel.org>; Wed, 15 Apr 2020 13:04:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+5ngEtqk4+rEsaduachf7G1tbT/D3VTQmFzbcpoKpNM=;
+        b=ueCsf6g41MIOfwfJdaP/MsSMVnE+hRNy9Eh4qETPtRzgKO80VvYYrf3aAkVUdZLmKH
+         P8hsFieQLNGZFeB/pX1c2ZfEFqmsc8O6XIw4omdxP0zH/OGrHSKv6grVkDAfUR/ynSK/
+         ZvhlMOCC6RJBxhzdcgGHi7lpMtN+UUGYTg4/ItwF1/oU5hI4904mNZ5D1SSGAx9hIygl
+         VY5uIBf9YNj/D9ai0kCSYtMbNvmFOfISGW6YjI1rh1oRyOtSz7dgtQxBdBc3gQt9tKWx
+         pjpCfNewdmQOD4fQMKIUdijDGsFWcOcuRH37Z/56ymFApR4OmMmOAeAoxDnm5STYP/80
+         kkuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+5ngEtqk4+rEsaduachf7G1tbT/D3VTQmFzbcpoKpNM=;
+        b=JmUs+RMFsUEq9U6hiH/E1Cyl0DkTLJpM9bbZhoSkkkXpejWgTa4BbFcxJu8F0YglXv
+         45vXW/uWjmo8PG07xlCldhkQDSUpuBmd++K/fmBcfHnqalli5psGcLs0L5coSLbw5uyC
+         F0x5dq8bSsm5PniPdiGxvLrdNZ6+tzHlam9YExRf7zMo+lggN/Qg8j/1x82gvXLp06JI
+         MzD2hEpnmT1vwC/G+NajCfuzRU9iCFLa4GswmBBMclLOTmxqyLNAizb2Ob0ym1hpsJZ0
+         T31ddH0ZdWu3Tma5vYpfD3tuovOfkL3hpw5KQ2q3K6Wk88oByLI60INmmdpc4sNtXBQc
+         U/5Q==
+X-Gm-Message-State: AGi0PuYPzWlq5fj0Apgzfcz3vg6XG7FLYhty1XGlnLtiVJyAtQAfWxE8
+        1WzUJo+VyXwZjsxFlU0jKT1KvCIK/pUX+4nCkrJvbQ==
+X-Google-Smtp-Source: APiQypIxOmpT2c/hzpP6t7MdmsMSbjBG6iNGr58nF8lSprP9AT2bcCFQrZDis78cCgx0Z064iE3GhmN9feXWjwH6UWA=
+X-Received: by 2002:a2e:a419:: with SMTP id p25mr3394342ljn.215.1586981057855;
+ Wed, 15 Apr 2020 13:04:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-15_07:2020-04-14,2020-04-15 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- suspectscore=0 phishscore=0 mlxscore=0 spamscore=0 adultscore=0
- impostorscore=0 mlxlogscore=999 priorityscore=1501 bulkscore=0
- malwarescore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2004150144
-X-FB-Internal: deliver
+References: <CAG48ez2R5nZA91j7cf2Z5o3dOEz0QNZK7cxecjmw0B-ZQ7AjmA@mail.gmail.com>
+ <CAEf4Bzb2zcfJt6ujAN8zY_=x7-dFO92mPzkbCE+UMHVDGL7J+Q@mail.gmail.com>
+ <CAG48ez20KjiYjcYzWnnVCyNTMjNFf+YgnwbbF9BUovZxDzsuEw@mail.gmail.com>
+ <CAEf4BzbEcbgAmXSzKx70rEhzmWcZ_8ECuX98_wsfvRkprKQgbQ@mail.gmail.com>
+ <CAG48ez15gsNtjiwFtLR_eBGAZnfXAt4O+ykuaopVf+jW5KTeRQ@mail.gmail.com>
+ <CAEf4Bzak3FnhD3kUZ4Dn9ZRz=yWSfZ+nkYa1Gz1WeZO7PC7Wkw@mail.gmail.com>
+ <CAG48ez0mmVtBVTjy-KmpUnvJ52O=EYKwJWoCxcXH8O6zCG1QHA@mail.gmail.com>
+ <CAEf4BzZ2vmdmn111KXXrp3qp1qLb4iMjUJ11Cj06SOGeOB6_Qg@mail.gmail.com> <CAG48ez0G5q8CouLsTDHjkOcJ7WKJE09OB9FHFPQJUzQrCmZG1w@mail.gmail.com>
+In-Reply-To: <CAG48ez0G5q8CouLsTDHjkOcJ7WKJE09OB9FHFPQJUzQrCmZG1w@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 15 Apr 2020 22:03:51 +0200
+Message-ID: <CAG48ez1Bs8_3_+uUB69Qe3RN7tDgD8PcBrzv1H0fqbvd0f4jPw@mail.gmail.com>
+Subject: Re: BPF map freezing is unreliable; can we instead just inline constants?
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Matthew Garrett <mjg59@google.com>,
+        KP Singh <kpsingh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The selftest creates a anonymous dumper for the
-/sys/kernel/bpfdump/task/ target and ensure the
-user space got the expected contents. Both
-bpf_seq_printf() and bpf_seq_write() helpers
-are tested in this selftest.
+On Wed, Apr 15, 2020 at 9:07 PM Jann Horn <jannh@google.com> wrote:
+> On Wed, Apr 15, 2020 at 6:59 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> > On Tue, Apr 14, 2020 at 3:50 PM Jann Horn <jannh@google.com> wrote:
+> > > On Tue, Apr 14, 2020 at 9:46 PM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > > On Tue, Apr 14, 2020 at 9:07 AM Jann Horn <jannh@google.com> wrote:
+> > > > > On Fri, Apr 10, 2020 at 10:48 PM Andrii Nakryiko
+> > > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > > > On Fri, Apr 10, 2020 at 1:47 AM Jann Horn <jannh@google.com> wrote:
+> > > > > > > On Fri, Apr 10, 2020 at 1:33 AM Andrii Nakryiko
+> > > > > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > > > > > On Wed, Apr 8, 2020 at 12:42 PM Jann Horn <jannh@google.com> wrote:
+> > > > > > > > >
+> > > > > > > > > Hi!
+> > > > > > > > >
+> > > > > > > > > I saw that BPF allows root to create frozen maps, for which the
+> > > > > > > > > verifier then assumes that they contain constant values. However, map
+> > > > > > > > > freezing is pretty wobbly:
+[...]
+> > > > I'd say
+> > > > the better way would be to implement immutable BPF maps from the time
+> > > > they are created. E.g., at the time of creating map, you specify extra
+> > > > flag BPF_F_IMMUTABLE and specify pointer to a blob of memory with
+> > > > key/value pairs in it.
+> > >
+> > > It seems a bit hacky to me to add a new special interface for
+> > > populating an immutable map. Wouldn't it make more sense to add a flag
+> > > for "you can't use mmap on this map", or "I plan to freeze this map",
+> > > or something like that, and keep the freezing API?
+> >
+> > "you can't use mmap on this map" is default behavior, unless you
+> > specify BPF_F_MMAPABLE.
+>
+> Ah, right.
+>
+> > "I plan to freeze this map" could be added,
+> > but how that would help existing users that freeze and mmap()?
+> > Disallowing those now would be a breaking change.
+> > Currently, libbpf is using freezing for .rodata variables, but it
+> > doesn't mmap() before freezing.
+>
+> Okay, so it sounds like there are probably no actual users that use
+> both BPF_F_MMAPABLE and freezing, and so we can just forbid that
+> combination? That sounds great.
 
-  $ test_progs -n 2
-  #2 bpfdump_test:OK
-  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- .../selftests/bpf/prog_tests/bpfdump_test.c   | 42 +++++++++++++++++++
- .../selftests/bpf/progs/bpfdump_test_kern.c   | 31 ++++++++++++++
- 2 files changed, 73 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpfdump_test.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpfdump_test_kern.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpfdump_test.c b/tool=
-s/testing/selftests/bpf/prog_tests/bpfdump_test.c
-new file mode 100644
-index 000000000000..8978e04c3ca9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bpfdump_test.c
-@@ -0,0 +1,42 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include "bpfdump_test_kern.skel.h"
-+
-+void test_bpfdump_test(void)
-+{
-+	int err, prog_fd, dumper_fd, duration =3D 0;
-+	struct bpfdump_test_kern *skel;
-+	char buf[16] =3D {};
-+	const char *expected =3D "0A1B2C3D";
-+
-+	skel =3D bpfdump_test_kern__open_and_load();
-+	if (CHECK(!skel, "skel_open_and_load",
-+		  "skeleton open_and_load failed\n"))
-+		return;
-+
-+	prog_fd =3D bpf_program__fd(skel->progs.dump_tasks);
-+	dumper_fd =3D bpf_raw_tracepoint_open(NULL, prog_fd);
-+	if (CHECK(dumper_fd < 0, "bpf_raw_tracepoint_open",
-+		  "anonymous dumper creation failed\n"))
-+		goto destroy_skel;
-+
-+	err =3D -EINVAL;
-+	while (read(dumper_fd, buf, sizeof(buf)) > 0) {
-+		if (CHECK(!err, "read", "unexpected extra read\n"))
-+			goto close_fd;
-+
-+		err =3D strcmp(buf, expected) !=3D 0;
-+		if (CHECK(err, "read",
-+			  "read failed: buf %s, expected %s\n", buf,
-+			  expected))
-+			goto close_fd;
-+	}
-+
-+	CHECK(err, "read", "real failed: no read, expected %s\n",
-+	      expected);
-+
-+close_fd:
-+	close(dumper_fd);
-+destroy_skel:
-+	bpfdump_test_kern__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpfdump_test_kern.c b/tool=
-s/testing/selftests/bpf/progs/bpfdump_test_kern.c
-new file mode 100644
-index 000000000000..f6bd61a75a22
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpfdump_test_kern.c
-@@ -0,0 +1,31 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Facebook */
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_endian.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+int count =3D 0;
-+
-+SEC("dump//sys/kernel/bpfdump/task")
-+int dump_tasks(struct bpfdump__task *ctx)
-+{
-+	struct seq_file *seq =3D ctx->meta->seq;
-+	struct task_struct *task =3D ctx->task;
-+	static char fmt[] =3D "%d";
-+	char c;
-+
-+	if (task =3D=3D (void *)0)
-+		return 0;
-+
-+	if (count < 4) {
-+		bpf_seq_printf(seq, fmt, sizeof(fmt), count);
-+		c =3D 'A' + count;
-+		bpf_seq_write(seq, &c, sizeof(c));
-+		count++;
-+	}
-+
-+	return 0;
-+}
---=20
-2.24.1
-
+kpsingh pointed out to me that bpf_object__load_skeleton() has code
+specifically for mmap()ing BPF_F_RDONLY_PROG maps, so this might not
+work... but perhaps we could make `BPF_F_RDONLY_PROG|BPF_F_MMAPABLE`
+imply "you can only map with PROT_READ, not with PROT_WRITE"?
+bpf_object__load_skeleton() only maps BPF_F_RDONLY_PROG maps with
+PROT_READ.
