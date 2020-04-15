@@ -2,74 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7921A9083
-	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 03:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854121A91C1
+	for <lists+bpf@lfdr.de>; Wed, 15 Apr 2020 06:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733287AbgDOBhU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Apr 2020 21:37:20 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:41814 "EHLO huawei.com"
+        id S1726439AbgDOEIz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Apr 2020 00:08:55 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:49494 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1733236AbgDOBhQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Apr 2020 21:37:16 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 80AE34BA1B1AFC66BAA2;
-        Wed, 15 Apr 2020 09:37:13 +0800 (CST)
-Received: from [127.0.0.1] (10.173.223.60) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Wed, 15 Apr 2020
- 09:37:09 +0800
-Subject: Re: [PATCH -next] bpf: remove set but not used variable 'dst_known'
-To:     Song Liu <songliubraving@fb.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@chromium.org" <kpsingh@chromium.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-References: <20200413113703.194287-1-maowenan@huawei.com>
- <C75FACD4-8549-4AD1-BDE6-1F5B47095E4C@fb.com>
-From:   maowenan <maowenan@huawei.com>
-Message-ID: <2b2e0060-ef9b-5541-1108-e28464b47f0a@huawei.com>
-Date:   Wed, 15 Apr 2020 09:37:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1726438AbgDOEIy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Apr 2020 00:08:54 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 006F68FE7EA597A0F157;
+        Wed, 15 Apr 2020 12:08:49 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 15 Apr 2020 12:08:41 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <keescook@chromium.org>, <luto@amacapital.net>, <wad@chromium.org>,
+        <shuah@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <andriin@fb.com>, <john.fastabend@gmail.com>,
+        <kpsingh@chromium.org>, <linux-kselftest@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] selftests/seccomp: Use bitwise instead of arithmetic operator for flags
+Date:   Wed, 15 Apr 2020 12:15:01 +0800
+Message-ID: <1586924101-65940-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-In-Reply-To: <C75FACD4-8549-4AD1-BDE6-1F5B47095E4C@fb.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.173.223.60]
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
 X-CFilter-Loop: Reflected
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020/4/15 6:05, Song Liu wrote:
-> 
-> 
->> On Apr 13, 2020, at 4:37 AM, Mao Wenan <maowenan@huawei.com> wrote:
->>
->> Fixes gcc '-Wunused-but-set-variable' warning:
->>
->> kernel/bpf/verifier.c:5603:18: warning: variable ‘dst_known’
->> set but not used [-Wunused-but-set-variable]
->>
->> It is not used since commit f1174f77b50c ("bpf/verifier:
->> rework value tracking")
-> 
-> The fix makes sense. But I think f1174f77b50c introduced dst_known, 
-> so this statement is not accurate. 
-> 
-thanks for review, yes, f1174f77b50c introduced dst_known, and below commit
-doesn't deference variable dst_known. So I send v2 later?
-3f50f132d840 ("bpf: Verifier, do explicit ALU32 bounds tracking")
+This silences the following coccinelle warning:
 
->>
->> Signed-off-by: Mao Wenan <maowenan@huawei.com>
-> 
+"WARNING: sum of probable bitmasks, consider |"
 
+tools/testing/selftests/seccomp/seccomp_bpf.c:3131:17-18: WARNING: sum of probable bitmasks, consider |
+tools/testing/selftests/seccomp/seccomp_bpf.c:3133:18-19: WARNING: sum of probable bitmasks, consider |
+tools/testing/selftests/seccomp/seccomp_bpf.c:3134:18-19: WARNING: sum of probable bitmasks, consider |
+tools/testing/selftests/seccomp/seccomp_bpf.c:3135:18-19: WARNING: sum of probable bitmasks, consider |
+
+Fixes: 6a21cc50f0c7 ("seccomp: add a return code to trap to userspace")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+index 89fb3e0..1b4cdf3 100644
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -3128,11 +3128,11 @@ TEST(get_metadata)
+ static int user_trap_syscall(int nr, unsigned int flags)
+ {
+ 	struct sock_filter filter[] = {
+-		BPF_STMT(BPF_LD+BPF_W+BPF_ABS,
++		BPF_STMT(BPF_LD|BPF_W|BPF_ABS,
+ 			offsetof(struct seccomp_data, nr)),
+-		BPF_JUMP(BPF_JMP+BPF_JEQ+BPF_K, nr, 0, 1),
+-		BPF_STMT(BPF_RET+BPF_K, SECCOMP_RET_USER_NOTIF),
+-		BPF_STMT(BPF_RET+BPF_K, SECCOMP_RET_ALLOW),
++		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, nr, 0, 1),
++		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_USER_NOTIF),
++		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_ALLOW),
+ 	};
+ 
+ 	struct sock_fprog prog = {
+-- 
+2.6.2
 
