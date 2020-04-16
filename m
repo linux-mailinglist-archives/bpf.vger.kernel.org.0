@@ -2,132 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C6F1AD095
-	for <lists+bpf@lfdr.de>; Thu, 16 Apr 2020 21:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD0A1AD0DD
+	for <lists+bpf@lfdr.de>; Thu, 16 Apr 2020 22:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730499AbgDPTri (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Apr 2020 15:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729391AbgDPTri (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 16 Apr 2020 15:47:38 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05CCC061A0C;
-        Thu, 16 Apr 2020 12:47:37 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id di6so2672492qvb.10;
-        Thu, 16 Apr 2020 12:47:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=IiQaPOayJr5kvs71qL3IciXFap6VIqNgrywtbyP8RsQ=;
-        b=IAp51LnnxGVluTzeHRtGz8VARjSfnCAjuCl69no0XTQV0d3qD7kTImLBnxzNHa3Qaz
-         na2O5C4U+jjVurGny/iDOZP7DQA94WJJIE15Rb4/gs4fk7T88hJvy/x7XP5FuI/qxtzS
-         fE+IsXIsd3+fpuBTk0KaVYfSTWlzJqd1ZdHdT0mxwxvIxqN/GBau5aX7oJJ1XqDgxtRt
-         8RH8En9BP7eHgxTcJIgI0ZOb3jIcFVwWqRMzeJmrCZgP+dxyJui8/IIyDIioL1xmjqyQ
-         YGRKCtfvpQUq5RQanOCJ/F8fcbGYrPtufqKpQbSrvgYq3Ic4DNb5iglB6lPSkPGX2utc
-         ux8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=IiQaPOayJr5kvs71qL3IciXFap6VIqNgrywtbyP8RsQ=;
-        b=Vu6+v4XlBJzyxgDlLz+aXI54l2MyO+7PUQncHbC6P2/wn69pDsmCSBBrP7uACakRcu
-         YGq++2hlCsZpUWDAWq5CMMgZ3IjpH13BRX5FdoDrvKIp4kTjuT9/8YFfh04oMyLWH3Y1
-         UZ5vgBw/R6btyT5M1xVhJXLD58IxV1/Wijvi3drDSaGLOjMAPpfwCWYMz13ptcwCWlHe
-         ypUyhM8WlPKNtMsJsoJ0UliBbe085XA+oajbwmmoktkKqFfl+iR8xDyyHEAkjKTCcGKK
-         H1jvQjN16VfBfhr0vNnqYG/OfmgmviOjpCCCGqrdbclSpiMZzVM4PGHxjRSwLBJUiyDe
-         PL8g==
-X-Gm-Message-State: AGi0Pua8s3WcNGp1RMcC07Kiua+HrWKwgkCiq17wCM1ffvIwTrp9cSpH
-        xBSUINojG4Wm7zOaSdyk47+wSvlYPmOiOdV4/TQ=
-X-Google-Smtp-Source: APiQypKtquRwWQQXFqOBPvTZeBbMC3tNNdEXbLRDwIg2ysD7zcUg4ZsrG/9Ggfv0t+EXh+ucnxtI3C2lYt6SlX8rXiA=
-X-Received: by 2002:a0c:fd8c:: with SMTP id p12mr12042055qvr.163.1587066457100;
- Thu, 16 Apr 2020 12:47:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <000000000000500e6f05a34ecc01@google.com> <4ba5ee0c-ec81-8ce3-6681-465e34b98a93@iogearbox.net>
- <a9219326-c07c-1069-270c-4bef17ee7b88@fb.com> <20200416102612.GO1163@kadam>
-In-Reply-To: <20200416102612.GO1163@kadam>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 16 Apr 2020 12:47:25 -0700
-Message-ID: <CAEf4BzY2XwQw0ZMN6PaJtN=DfAMQyMtGuo7dnmVH1embBXmhuw@mail.gmail.com>
-Subject: Re: WARNING in bpf_cgroup_link_release
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
+        id S1727994AbgDPUKk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Apr 2020 16:10:40 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:55588 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727876AbgDPUKk (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 16 Apr 2020 16:10:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587067838;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+qvuVM962jw7kYq4Y9qfz/NOtli8L6Q3Rt5E3jbPz28=;
+        b=e8fKabtcpPVL8Y3EPrtrSDMOFazOrgIkwg4koFpnRs23fgrNB/FtwYAwh8+0IFoHgRv2vo
+        ednvrpUQGdB3NUYndcfuTTQUuaIiuDmeODYBVc7AScDFdlzLn0etbtIBfoLGZq5j2gdW7b
+        gEgv1cONgWpeChvfB+cW6vEFL1COM/U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-197-xmXwcOAlMReTy_QwXm77Gg-1; Thu, 16 Apr 2020 16:10:31 -0400
+X-MC-Unique: xmXwcOAlMReTy_QwXm77Gg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 16FC718CA243;
+        Thu, 16 Apr 2020 20:10:27 +0000 (UTC)
+Received: from krava (unknown [10.40.195.119])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8414E99DEE;
+        Thu, 16 Apr 2020 20:10:15 +0000 (UTC)
+Date:   Thu, 16 Apr 2020 22:10:11 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        syzbot <syzbot+8a5dadc5c0b1d7055945@syzkaller.appspotmail.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        Martin Lau <kafai@fb.com>, KP Singh <kpsingh@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs@googlegroups.com, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jiwei Sun <jiwei.sun@windriver.com>,
+        yuzhoujian <yuzhoujian@didichuxing.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.garry@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v9 4/4] perf tools: add support for libpfm4
+Message-ID: <20200416201011.GB414900@krava>
+References: <20200416063551.47637-1-irogers@google.com>
+ <20200416063551.47637-5-irogers@google.com>
+ <20200416095501.GC369437@krava>
+ <CAP-5=fVOb1nV2gdGGWLQvTApoMR=qzaSQHSwxsAKAXQ=wqQV+g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fVOb1nV2gdGGWLQvTApoMR=qzaSQHSwxsAKAXQ=wqQV+g@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 3:29 AM Dan Carpenter <dan.carpenter@oracle.com> wr=
-ote:
->
-> On Wed, Apr 15, 2020 at 09:51:40AM -0700, 'Andrii Nakryiko' via syzkaller=
--bugs wrote:
-> > On 4/15/20 4:57 AM, Daniel Borkmann wrote:
-> > > On 4/15/20 8:55 AM, syzbot wrote:
-> > > > Hello,
-> > > >
-> > > > syzbot found the following crash on:
-> > >
-> > > Andrii, ptal.
-> > >
-> > > > HEAD commit:    1a323ea5 x86: get rid of 'errret' argument to
-> > > > __get_user_x..
-> > > > git tree:       bpf-next
-> > > > console output: https://urldefense.proofpoint.com/v2/url?u=3Dhttps-=
-3A__syzkaller.appspot.com_x_log.txt-3Fx-3D148ccb57e00000&d=3DDwICaQ&c=3D5VD=
-0RTtNlTh3ycd41b3MUw&r=3Dvxqvl81C2rT6GOGdPyz8iQ&m=3DT2Ez0XmyIpHmEa_MPTTUOh61=
-jMDXqwETtTaTbSe-2M4&s=3D-6XBbsNV1O4X5flrx4Yssfjc56d0qeSHgwHhd92UPJc&e=3D
-> > > > kernel config:  https://urldefense.proofpoint.com/v2/url?u=3Dhttps-=
-3A__syzkaller.appspot.com_x_.config-3Fx-3D8c1e98458335a7d1&d=3DDwICaQ&c=3D5=
-VD0RTtNlTh3ycd41b3MUw&r=3Dvxqvl81C2rT6GOGdPyz8iQ&m=3DT2Ez0XmyIpHmEa_MPTTUOh=
-61jMDXqwETtTaTbSe-2M4&s=3Ds5-1AlWtSiBvo66WN4_UXoXMGIGIqsoUCrmAnxNnfX0&e=3D
-> > > > dashboard link: https://urldefense.proofpoint.com/v2/url?u=3Dhttps-=
-3A__syzkaller.appspot.com_bug-3Fextid-3D8a5dadc5c0b1d7055945&d=3DDwICaQ&c=
-=3D5VD0RTtNlTh3ycd41b3MUw&r=3Dvxqvl81C2rT6GOGdPyz8iQ&m=3DT2Ez0XmyIpHmEa_MPT=
-TUOh61jMDXqwETtTaTbSe-2M4&s=3DhAA0702qJH5EwRwvG0RKmj8FwIRm1O8hvmoS7ne5Dls&e=
-=3D
-> > > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > > >
-> > > > Unfortunately, I don't have any reproducer for this crash yet.
-> > > >
-> > > > IMPORTANT: if you fix the bug, please add the following tag to the
-> > > > commit:
-> > > > Reported-by: syzbot+8a5dadc5c0b1d7055945@syzkaller.appspotmail.com
-> > > >
-> > > > ------------[ cut here ]------------
-> > > > WARNING: CPU: 0 PID: 25081 at kernel/bpf/cgroup.c:796
-> > > > bpf_cgroup_link_release+0x260/0x3a0 kernel/bpf/cgroup.c:796
+On Thu, Apr 16, 2020 at 09:02:54AM -0700, Ian Rogers wrote:
+> On Thu, Apr 16, 2020 at 2:55 AM Jiri Olsa <jolsa@redhat.com> wrote:
 > >
-> > This warning is triggered due to __cgroup_bpf_detach returning an error=
-. It
-> > can do it only in two cases: either attached item is not found, which f=
-rom
-> > starting at code some moreI don't see how that can happen. The other re=
-ason
-> > - kmalloc() failing to allocate memory for new effective prog array.
->
-> If you look at the log file then this was allocation fault injection in
-> bpf_prog_array_alloc().
+> > On Wed, Apr 15, 2020 at 11:35:51PM -0700, Ian Rogers wrote:
+> > > From: Stephane Eranian <eranian@google.com>
+> > >
+> > > This patch links perf with the libpfm4 library if it is available
+> > > and NO_LIBPFM4 isn't passed to the build. The libpfm4 library
+> > > contains hardware event tables for all processors supported by
+> > > perf_events. It is a helper library that helps convert from a
+> > > symbolic event name to the event encoding required by the
+> > > underlying kernel interface. This library is open-source and
+> > > available from: http://perfmon2.sf.net.
+> > >
+> > > With this patch, it is possible to specify full hardware events
+> > > by name. Hardware filters are also supported. Events must be
+> > > specified via the --pfm-events and not -e option. Both options
+> > > are active at the same time and it is possible to mix and match:
+> > >
+> > > $ perf stat --pfm-events inst_retired:any_p:c=1:i -e cycles ....
+> > >
+> > > Signed-off-by: Stephane Eranian <eranian@google.com>
+> > > Reviewed-by: Ian Rogers <irogers@google.com>
+> >
+> >         # perf list
+> >         ...
+> >         perf_raw pfm-events
+> >           r0000
+> >             [perf_events raw event syntax: r[0-9a-fA-F]+]
+> >
+> >         skl pfm-events
+> >           UNHALTED_CORE_CYCLES
+> >             [Count core clock cycles whenever the clock signal on the specific core is running (not halted)]
+> >           UNHALTED_REFERENCE_CYCLES
+> >
+> > please add ':' behind the '* pfm-events' label
+> 
+> Thanks! Not sure I follow here. skl here is the pmu. pfm-events is
+> here just to make it clearer these are --pfm-events. The event is
+> selected with '--pfm-events UNHALTED_CORE_CYCLES'. Will putting
+> skl:pfm-events here make it look like that is part of the event
+> encoding?
 
-Ah, I see, thanks for pointing this out! So that confirms that it's
-not a bug, but just unfortunate result of potentially failing cgroup
-BPF program detach code path.
+aah I might have misunderstood the output here then, we have preceeding
+output like:
 
->
-> https://syzkaller.appspot.com/x/log.txt?x=3D148ccb57e00000
->
-> regards,
-> dan carpenter
->
+cache:
+  l1d.replacement                                   
+       [L1D data line replacements]
+
+so I thought the 'skl pfm-events' is just a label
+
+
+how about we use the first current label in the middle like:
+
+	# perf list
+	List of pre-defined events (to be used in -e):
+
+	  current events stuff
+
+	List of pfm events (to be used in --pfm-xxx):
+
+	  pfm events stuff
+
+or maybe put it under 'perf list --pfm', thoughts?
+
+jirka
+
