@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 719E21ABD4A
-	for <lists+bpf@lfdr.de>; Thu, 16 Apr 2020 11:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0481ABD62
+	for <lists+bpf@lfdr.de>; Thu, 16 Apr 2020 11:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504038AbgDPJvN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Apr 2020 05:51:13 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:48478 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2504227AbgDPJvL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Apr 2020 05:51:11 -0400
+        id S2504275AbgDPJzU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Apr 2020 05:55:20 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:35063 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2504171AbgDPJzT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 16 Apr 2020 05:55:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587030670;
+        s=mimecast20190719; t=1587030918;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=qJZaml1bqYlNYy3uVGFrdxuVDCwUh58QATaaa/ks2z4=;
-        b=OfTQJdWyaWgG1dMrUelIdv4fwjsouJKAyG6C7QETE7FNqnzuZ0MxYyWrK8veP2JINtG664
-        YSCmBwkF3j3n5IvrUixsvNLZi8mEvWuvy21FtI3lMfrL4IXs3z6riloyXrV32QHpu1i7bW
-        mhPhxLPhzoxCbdmh6OPydP7jcX+roJY=
+        bh=uzkUV3nQdx/hoYoZQDt470t93oI86X5pG7zK+r/DONM=;
+        b=ZNck3riqJ74S2YXFcz6g2MRgHiXBoLAChjgWzNxV1ryUutUxHmACkIeMQHOI2uRA5E07Bz
+        5md455D1e6+/Vy1ojlHROIuUqqJvrfqMA47ELsyiSWtK1IfffptG4zAgmapKH8lo7ZH7zL
+        QyO51XTwTItHaO70QHehAZdPBUSgP44=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-253-gRKUCZnoOIOKd_NVLHZeQw-1; Thu, 16 Apr 2020 05:51:04 -0400
-X-MC-Unique: gRKUCZnoOIOKd_NVLHZeQw-1
+ us-mta-176-zDLWURH8Neyn4RNTbgME8g-1; Thu, 16 Apr 2020 05:55:14 -0400
+X-MC-Unique: zDLWURH8Neyn4RNTbgME8g-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1758DB60;
-        Thu, 16 Apr 2020 09:51:00 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 09C6013FE;
+        Thu, 16 Apr 2020 09:55:11 +0000 (UTC)
 Received: from krava (unknown [10.40.195.119])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B91946EF91;
-        Thu, 16 Apr 2020 09:50:53 +0000 (UTC)
-Date:   Thu, 16 Apr 2020 11:50:50 +0200
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B4FC9118DF1;
+        Thu, 16 Apr 2020 09:55:04 +0000 (UTC)
+Date:   Thu, 16 Apr 2020 11:55:01 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Ian Rogers <irogers@google.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -62,7 +62,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
         Stephane Eranian <eranian@google.com>
 Subject: Re: [PATCH v9 4/4] perf tools: add support for libpfm4
-Message-ID: <20200416095050.GB369437@krava>
+Message-ID: <20200416095501.GC369437@krava>
 References: <20200416063551.47637-1-irogers@google.com>
  <20200416063551.47637-5-irogers@google.com>
 MIME-Version: 1.0
@@ -76,48 +76,38 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On Wed, Apr 15, 2020 at 11:35:51PM -0700, Ian Rogers wrote:
+> From: Stephane Eranian <eranian@google.com>
+> 
+> This patch links perf with the libpfm4 library if it is available
+> and NO_LIBPFM4 isn't passed to the build. The libpfm4 library
+> contains hardware event tables for all processors supported by
+> perf_events. It is a helper library that helps convert from a
+> symbolic event name to the event encoding required by the
+> underlying kernel interface. This library is open-source and
+> available from: http://perfmon2.sf.net.
+> 
+> With this patch, it is possible to specify full hardware events
+> by name. Hardware filters are also supported. Events must be
+> specified via the --pfm-events and not -e option. Both options
+> are active at the same time and it is possible to mix and match:
+> 
+> $ perf stat --pfm-events inst_retired:any_p:c=1:i -e cycles ....
+> 
+> Signed-off-by: Stephane Eranian <eranian@google.com>
+> Reviewed-by: Ian Rogers <irogers@google.com>
 
-SNIP
+	# perf list
+	...
+	perf_raw pfm-events
+	  r0000
+	    [perf_events raw event syntax: r[0-9a-fA-F]+]
 
-> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> index 12a8204d63c6..26167ad38a47 100644
-> --- a/tools/perf/Makefile.config
-> +++ b/tools/perf/Makefile.config
-> @@ -1012,6 +1012,18 @@ ifdef LIBCLANGLLVM
->    endif
->  endif
->  
-> +ifndef NO_LIBPFM4
-> +  ifeq ($(feature-libpfm4), 1)
-> +    CFLAGS += -DHAVE_LIBPFM
-> +    EXTLIBS += -lpfm
-> +    ASCIIDOC_EXTRA = -aHAVE_LIBPFM=1
-> +    $(call detected,CONFIG_LIBPFM4)
-> +  else
-> +    msg := $(warning libpfm4 not found, disables libpfm4 support. Please install libpfm4-dev);
-> +    NO_LIBPFM4 := 1
-> +  endif
-> +endif
+	skl pfm-events
+	  UNHALTED_CORE_CYCLES
+	    [Count core clock cycles whenever the clock signal on the specific core is running (not halted)]
+	  UNHALTED_REFERENCE_CYCLES
 
-now when it's in FEATURE_TESTS_EXTRA it will not get detected,
-unless you add the change below.. I wonder how come it was
-still being detected for you.. might be bug in feature detection
-stuff
+please add ':' behind the '* pfm-events' label
 
 jirka
-
-
----
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index 26167ad38a47..b45c5d370b42 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -1013,6 +1013,7 @@ ifdef LIBCLANGLLVM
- endif
- 
- ifndef NO_LIBPFM4
-+  $(call feature_check,libpfm4)
-   ifeq ($(feature-libpfm4), 1)
-     CFLAGS += -DHAVE_LIBPFM
-     EXTLIBS += -lpfm
 
