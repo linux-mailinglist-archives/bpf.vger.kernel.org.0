@@ -2,154 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C1C1AC1AA
-	for <lists+bpf@lfdr.de>; Thu, 16 Apr 2020 14:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AAA91AC204
+	for <lists+bpf@lfdr.de>; Thu, 16 Apr 2020 15:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2636255AbgDPMpm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Apr 2020 08:45:42 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:28544 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2636193AbgDPMpi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Apr 2020 08:45:38 -0400
+        id S2894780AbgDPNC7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Apr 2020 09:02:59 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:42630 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2894779AbgDPNC6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 16 Apr 2020 09:02:58 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587041136;
+        s=mimecast20190719; t=1587042176;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=MV2bEo574pzJ3B0W4ffirdlVAA/eslNG/6SGnwVO9zw=;
-        b=hMKnmzlsWn13mVlQ8r0A9oto625FUfA4ZwNEmybkJAl9PpyZmtBXCiSOfEFyWzS26R5act
-        E9rto8TN0Eu/UfAIw6RphRP+DgUvnQuCWio7gI4s92VWkHsw2EhJde0qhsR4N9wIe2fOPB
-        aMt8gdLtNdxHW0IIEGlN0vBEIKuXvQY=
+        bh=l1CooQoBe2EOCTRwIhu5U2ak5zsiCPcmsvYRJMbBWGI=;
+        b=DhwKs9/b4jyY0Z0EReIQRvRC2AhjJxBcyZh4b6rj+9awTJAedmUOC52vb69mk4A13iGdm+
+        MMEDzrMEHnHQHNc3XdiZWBeWz1GYG4TlQLvqxdkw+8haggyhgQhzUICRZlIWMPnQ4bTTNA
+        j69wkDVdi8sr+paGwFFSFn/KK6x/G7w=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-398-XO0Fg2ieO7qsSmJ1EX2xSw-1; Thu, 16 Apr 2020 08:45:32 -0400
-X-MC-Unique: XO0Fg2ieO7qsSmJ1EX2xSw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+ us-mta-503-k3coq_pMPbO30blari8scg-1; Thu, 16 Apr 2020 09:02:53 -0400
+X-MC-Unique: k3coq_pMPbO30blari8scg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB68B8024CD;
-        Thu, 16 Apr 2020 12:45:30 +0000 (UTC)
-Received: from [10.36.113.44] (ovpn-113-44.ams2.redhat.com [10.36.113.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 038925DA7D;
-        Thu, 16 Apr 2020 12:45:28 +0000 (UTC)
-From:   "Eelco Chaudron" <echaudro@redhat.com>
-To:     "Yonghong Song" <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, andriin@fb.com
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: add tracing for XDP programs using
- the BPF_PROG_TEST_RUN API
-Date:   Thu, 16 Apr 2020 14:45:26 +0200
-Message-ID: <D0164AC9-7AF7-4434-B6D1-0A761DC626FB@redhat.com>
-In-Reply-To: <819b1b3a-c801-754b-e805-7ec8266e5dfa@fb.com>
-References: <158453675319.3043.5779623595270458781.stgit@xdp-tutorial>
- <819b1b3a-c801-754b-e805-7ec8266e5dfa@fb.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 752961005527;
+        Thu, 16 Apr 2020 13:02:51 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2AD4260C05;
+        Thu, 16 Apr 2020 13:02:39 +0000 (UTC)
+Date:   Thu, 16 Apr 2020 15:02:38 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Saeed Mahameed <saeedm@mellanox.com>
+Cc:     "sameehj@amazon.com" <sameehj@amazon.com>,
+        "toke@redhat.com" <toke@redhat.com>,
+        "gtzalik@amazon.com" <gtzalik@amazon.com>,
+        "ilias.apalodimas@linaro.org" <ilias.apalodimas@linaro.org>,
+        "borkmann@iogearbox.net" <borkmann@iogearbox.net>,
+        "alexander.duyck@gmail.com" <alexander.duyck@gmail.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "akiyano@amazon.com" <akiyano@amazon.com>,
+        "zorik@amazon.com" <zorik@amazon.com>,
+        "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "jeffrey.t.kirsher@intel.com" <jeffrey.t.kirsher@intel.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "dsahern@gmail.com" <dsahern@gmail.com>,
+        "lorenzo@kernel.org" <lorenzo@kernel.org>,
+        "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
+        brouer@redhat.com
+Subject: Re: [PATCH RFC v2 01/33] xdp: add frame size to xdp_buff
+Message-ID: <20200416150238.40560372@carbon>
+In-Reply-To: <7fb99df47a9eae1fd0fc8dc85336f7df2c120744.camel@mellanox.com>
+References: <158634658714.707275.7903484085370879864.stgit@firesoul>
+        <158634663936.707275.3156718045905620430.stgit@firesoul>
+        <7fb99df47a9eae1fd0fc8dc85336f7df2c120744.camel@mellanox.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; markup=markdown
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, 9 Apr 2020 00:50:02 +0000
+Saeed Mahameed <saeedm@mellanox.com> wrote:
+
+> On Wed, 2020-04-08 at 13:50 +0200, Jesper Dangaard Brouer wrote:
+> > XDP have evolved to support several frame sizes, but xdp_buff was not
+> > updated with this information. The frame size (frame_sz) member of
+> > xdp_buff is introduced to know the real size of the memory the frame
+> > is
+> > delivered in.
+> > 
+> > When introducing this also make it clear that some tailroom is
+> > reserved/required when creating SKBs using build_skb().
+> > 
+> > It would also have been an option to introduce a pointer to
+> > data_hard_end (with reserved offset). The advantage with frame_sz is
+> > that (like rxq) drivers only need to setup/assign this value once per
+> > NAPI cycle. Due to XDP-generic (and some drivers) it's not possible
+> > to
+> > store frame_sz inside xdp_rxq_info, because it's varies per packet as
+> > it
+> > can be based/depend on packet length.
+> > 
+> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > ---
+> >  include/net/xdp.h |   17 +++++++++++++++++
+> >  1 file changed, 17 insertions(+)
+> > 
+> > diff --git a/include/net/xdp.h b/include/net/xdp.h
+> > index 40c6d3398458..99f4374f6214 100644
+> > --- a/include/net/xdp.h
+> > +++ b/include/net/xdp.h
+> > @@ -6,6 +6,8 @@
+> >  #ifndef __LINUX_NET_XDP_H__
+> >  #define __LINUX_NET_XDP_H__
+> >  
+> > +#include <linux/skbuff.h> /* skb_shared_info */
+> > +  
+> 
+> I think it is wrong to make xdp.h depend on skbuff.h
+> we must keep xdp.h minimal and independent,
+
+I agree, that it seems strange to have xdp.h include skbuff.h, and I'm
+not happy with that approach myself, but the alternatives all looked
+kind of ugly.
+
+> the new macros should be defined in skbuff.h 
+
+Moving #define xdp_data_hard_end(xdp) into skbuff.h also seems strange.
 
 
-On 23 Mar 2020, at 23:47, Yonghong Song wrote:
+> >  /**
+> >   * DOC: XDP RX-queue information
+> >   *
+> > @@ -70,8 +72,23 @@ struct xdp_buff {
+> >  	void *data_hard_start;
+> >  	unsigned long handle;
+> >  	struct xdp_rxq_info *rxq;
+> > +	u32 frame_sz; /* frame size to deduct data_hard_end/reserved
+> > tailroom*/  
+> 
+> why u32 ? u16 should be more than enough.. 
 
-> On 3/18/20 6:06 AM, Eelco Chaudron wrote:
->> I sent out this RFC to get an idea if the approach suggested here
->> would be something other people would also like to see. In addition,
->> this cover letter mentions some concerns and questions that need
->> answers before we can move to an acceptable implementation.
->>
->> This patch adds support for tracing eBPF XDP programs that get
->> executed using the __BPF_PROG_RUN syscall. This is done by switching
->> from JIT (if enabled) to executing the program using the interpreter
->> and record each executed instruction.
->
-> Thanks for working on this! I think this is a useful feature
-> to do semi single step in a safe environment. The initial input,
-> e.g., packet or some other kernel context, may be captured
-> in production error path. People can use this to easily
-> do some post analysis. This feature can also be used for
-> initial single-step debugging with better bpftool support.
->
->>
->> For now, the execution history is printed to the kernel ring buffer
->> using pr_info(), the final version should have enough data stored in=20
->> a
->> user-supplied buffer to reconstruct this output. This should probably
->> be part of bpftool, i.e. dump a similar output, and the ability to
->> store all this in an elf-like format for dumping/analyzing/replaying
->> at a later stage.
->>
->> This patch does not dump the XDP packet content before and after
->> execution, however, this data is available to the caller of the API.
->
-> I would like to see the feature is implemented in a way to apply
-> to all existing test_run program types and extensible to future
-> program types.
+Nope.  It need to be able to store PAGE_SIZE == 65536.
 
-Yes, this makes sense, but as I=E2=80=99m only familiar with the XDP part=
-, I=20
-focused on that.
+$ echo $((1<<12))
+4096
+$ echo $((1<<16))
+65536
 
-> There are different ways to send data back to user. User buffer
-> is one way, ring buffer is another way, seq_file can also be used.
-> Performance is not a concern here, so we can choose the one with best
-> usability.
-
-As we need a buffer the easiest way would be to supply a user buffer. I=20
-guess a raw perf buffer might also work, but the API might get=20
-complex=E2=80=A6 I=E2=80=99ll dig into this a bit for the next RFC.
-
->>
->> The __bpf_prog_run_trace() interpreter is a copy of __bpf_prog_run()
->> and we probably need a smarter way to re-use the code rather than a
->> blind copy with some changes.
->
-> Yes, reusing the code is a must. Using existing interpreter framework
-> is the easiest for semi single step support.
-
-Any idea how to do it cleanly? I guess I could move the interpreter code=20
-out of the core file and include it twice.
-
->> Enabling the interpreter opens up the kernel for spectre variant 2,
->> guess that's why the BPF_JIT_ALWAYS_ON option was introduced (commit
->> 290af86629b2). Enabling it for debugging in the field does not sound
->> like an option (talking to people doing kernel distributions).
->> Any idea how to work around this (lfence before any call this will
->> slow down, but I guess for debugging this does not matter)? I need to
->> research this more as I'm no expert in this area. But I think this
->> needs to be solved as I see this as a show stopper. So any input is
->> welcome.
->
-> lfence for indirect call is okay here for test_run. Just need to be
-> careful to no introduce any performance penalty for non-test-run
-> prog run.
-
-My idea here was to do it at compile time and only if the interpreter=20
-was disabled.
-
->>
->> To allow bpf_call support for tracing currently the general
->> interpreter is enabled. See the fixup_call_args() function for why
->> this is needed. We might need to find a way to fix this (see the=20
->> above
->> section on spectre).
->>
->> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
->>
-
-One final question did you (or anyone else) looked at the actual code=20
-and have some tips, thinks look at?
+$ printf "0x%X\n" 65536
+0x10000
 
 
-I=E2=80=99ll try to do another RFC, cleaning up the duplicate interpreter=
-=20
-code, sent the actual trace data to userspace. Will hack some userspace=20
-decoder together, or maybe even start integrating it in bpftool (if not=20
-it will be part of the follow on RFC).
+> >  };
+> >  
+> > +/* Reserve memory area at end-of data area.
+> > + *
+> > + * This macro reserves tailroom in the XDP buffer by limiting the
+> > + * XDP/BPF data access to data_hard_end.  Notice same area (and size)
+> > + * is used for XDP_PASS, when constructing the SKB via build_skb().
+> > + */
+> > +#define xdp_data_hard_end(xdp)				\
+> > +	((xdp)->data_hard_start + (xdp)->frame_sz -	\
+> > +	 SKB_DATA_ALIGN(sizeof(struct skb_shared_info)))
+> > +  
+> 
+> this macro is not safe when unary operators are being used
+
+The parentheses round (xdp) does make xdp_data_hard_end(&xdp) work
+correctly. What other cases are you worried about?
+
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
