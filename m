@@ -2,147 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD0A1AD0DD
-	for <lists+bpf@lfdr.de>; Thu, 16 Apr 2020 22:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 814F61AD138
+	for <lists+bpf@lfdr.de>; Thu, 16 Apr 2020 22:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727994AbgDPUKk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Apr 2020 16:10:40 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:55588 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727876AbgDPUKk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 16 Apr 2020 16:10:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587067838;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+qvuVM962jw7kYq4Y9qfz/NOtli8L6Q3Rt5E3jbPz28=;
-        b=e8fKabtcpPVL8Y3EPrtrSDMOFazOrgIkwg4koFpnRs23fgrNB/FtwYAwh8+0IFoHgRv2vo
-        ednvrpUQGdB3NUYndcfuTTQUuaIiuDmeODYBVc7AScDFdlzLn0etbtIBfoLGZq5j2gdW7b
-        gEgv1cONgWpeChvfB+cW6vEFL1COM/U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-197-xmXwcOAlMReTy_QwXm77Gg-1; Thu, 16 Apr 2020 16:10:31 -0400
-X-MC-Unique: xmXwcOAlMReTy_QwXm77Gg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 16FC718CA243;
-        Thu, 16 Apr 2020 20:10:27 +0000 (UTC)
-Received: from krava (unknown [10.40.195.119])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8414E99DEE;
-        Thu, 16 Apr 2020 20:10:15 +0000 (UTC)
-Date:   Thu, 16 Apr 2020 22:10:11 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jiwei Sun <jiwei.sun@windriver.com>,
-        yuzhoujian <yuzhoujian@didichuxing.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v9 4/4] perf tools: add support for libpfm4
-Message-ID: <20200416201011.GB414900@krava>
-References: <20200416063551.47637-1-irogers@google.com>
- <20200416063551.47637-5-irogers@google.com>
- <20200416095501.GC369437@krava>
- <CAP-5=fVOb1nV2gdGGWLQvTApoMR=qzaSQHSwxsAKAXQ=wqQV+g@mail.gmail.com>
+        id S1730593AbgDPUhm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Apr 2020 16:37:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726114AbgDPUhl (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 16 Apr 2020 16:37:41 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E0DC061A0C;
+        Thu, 16 Apr 2020 13:37:41 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id w65so2186142pfc.12;
+        Thu, 16 Apr 2020 13:37:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XptGLsb8LK835cBV0jSCf0HRG/zsBSED6dv7tPgulp4=;
+        b=gnCYkWmGETLB8PFSLV04Wdrz2FK+gEIIVYi1koqv0Kj68T1sE9a0zKATXAPY7gyzfJ
+         suAROh/dNMoI6pHy/mCCmAEukmmvuLcuT+oRiOR7pSsJ7zs8in52Gebp1M1SYorAU4tK
+         gOw3D6aDwjxZUg6c2JW6Y26Oj3CTSIyaIex5HlRUwrN0Akr9mc2rJN/ETJ63AkMWNaPZ
+         lBqmfTlQr2tQLv3hxk3korpwrPMIzUOkCHKM9MiAc5EcYNrnyoXofMkm1N6eYHhs/DeF
+         913mMDnNGshbbDlgR/ygTf2Uto9ROB2t1oEKoFobtuWYnROIBcT0nnQEOaLeZGRWafc8
+         pefQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=XptGLsb8LK835cBV0jSCf0HRG/zsBSED6dv7tPgulp4=;
+        b=MxW0PSGrt0SfuwDyrVTKA3/ccX+uoQSfUwzzRijA+xbrXZ8N3RR3XATDn3qwVTRRDL
+         iGCVR32pLV8H7j0LFp1Ni7HdIGpXH+H/a6Uqp2jgP1Dnpqyzii0KvvFOSU+aQXyXqkXj
+         iqeZGbSSs0NOyTyMZum/tpG5eyng8DJCb2B31lEyTDbeDgqMs5VJKwXCrBOReaclTLq/
+         15bQb8DPi27+330AWKImJ0vyuplQT4mnL0i2r8BOwHDwWz706yYzJpiKu0BlaCy6BjS1
+         OY9Aapp+wyBRXbc8SyIQtg/lRcLipRQ51tiVcnzjp1zY0JxfvqyBQq4noNlB1NQQrtd5
+         oqyQ==
+X-Gm-Message-State: AGi0PuYZnxIMTeu51BcxARMuli6w1G9tnZ/nM0H3b1cchJLd6EZ5IBF4
+        om3sGt3jb63zUcpvsdtrREY=
+X-Google-Smtp-Source: APiQypLz/G622vMAZI/1t7tx6iXdrAiprqdhsptFvPk2bcCnaQJR//IYq0Xxli2CBTatOLYd6eCB1g==
+X-Received: by 2002:a63:2e03:: with SMTP id u3mr15186804pgu.121.1587069460712;
+        Thu, 16 Apr 2020 13:37:40 -0700 (PDT)
+Received: from google.com ([2601:647:4001:3000::50e3])
+        by smtp.gmail.com with ESMTPSA id u13sm3654978pjb.45.2020.04.16.13.37.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Apr 2020 13:37:38 -0700 (PDT)
+Date:   Thu, 16 Apr 2020 13:37:36 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, x86@kernel.org,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Laura Abbott <labbott@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/28] mm: only allow page table mappings for built-in
+ zsmalloc
+Message-ID: <20200416203736.GB50092@google.com>
+References: <20200408115926.1467567-1-hch@lst.de>
+ <20200408115926.1467567-11-hch@lst.de>
+ <20200409160826.GC247701@google.com>
+ <20200409165030.GG20713@hirez.programming.kicks-ass.net>
+ <20200409170813.GD247701@google.com>
+ <20200410023845.GA2354@jagdpanzerIV.localdomain>
+ <20200410231136.GA101325@google.com>
+ <20200411072052.GA31242@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAP-5=fVOb1nV2gdGGWLQvTApoMR=qzaSQHSwxsAKAXQ=wqQV+g@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20200411072052.GA31242@lst.de>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 09:02:54AM -0700, Ian Rogers wrote:
-> On Thu, Apr 16, 2020 at 2:55 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Wed, Apr 15, 2020 at 11:35:51PM -0700, Ian Rogers wrote:
-> > > From: Stephane Eranian <eranian@google.com>
-> > >
-> > > This patch links perf with the libpfm4 library if it is available
-> > > and NO_LIBPFM4 isn't passed to the build. The libpfm4 library
-> > > contains hardware event tables for all processors supported by
-> > > perf_events. It is a helper library that helps convert from a
-> > > symbolic event name to the event encoding required by the
-> > > underlying kernel interface. This library is open-source and
-> > > available from: http://perfmon2.sf.net.
-> > >
-> > > With this patch, it is possible to specify full hardware events
-> > > by name. Hardware filters are also supported. Events must be
-> > > specified via the --pfm-events and not -e option. Both options
-> > > are active at the same time and it is possible to mix and match:
-> > >
-> > > $ perf stat --pfm-events inst_retired:any_p:c=1:i -e cycles ....
-> > >
-> > > Signed-off-by: Stephane Eranian <eranian@google.com>
-> > > Reviewed-by: Ian Rogers <irogers@google.com>
-> >
-> >         # perf list
-> >         ...
-> >         perf_raw pfm-events
-> >           r0000
-> >             [perf_events raw event syntax: r[0-9a-fA-F]+]
-> >
-> >         skl pfm-events
-> >           UNHALTED_CORE_CYCLES
-> >             [Count core clock cycles whenever the clock signal on the specific core is running (not halted)]
-> >           UNHALTED_REFERENCE_CYCLES
-> >
-> > please add ':' behind the '* pfm-events' label
+Hi Christoph,
+
+
+Sorry for the late.
+
+On Sat, Apr 11, 2020 at 09:20:52AM +0200, Christoph Hellwig wrote:
+> Hi Minchan,
 > 
-> Thanks! Not sure I follow here. skl here is the pmu. pfm-events is
-> here just to make it clearer these are --pfm-events. The event is
-> selected with '--pfm-events UNHALTED_CORE_CYCLES'. Will putting
-> skl:pfm-events here make it look like that is part of the event
-> encoding?
+> On Fri, Apr 10, 2020 at 04:11:36PM -0700, Minchan Kim wrote:
+> > It doesn't mean we couldn't use zsmalloc as module any longer. It means
+> > we couldn't use zsmalloc as module with pgtable mapping whcih was little
+> > bit faster on microbenchmark in some architecutre(However, I usually temped
+> > to remove it since it had several problems). However, we could still use
+> > zsmalloc as module as copy way instead of pgtable mapping. Thus, if someone
+> > really want to rollback the feature, they should provide reasonable reason
+> > why it doesn't work for them. "A little fast" wouldn't be enough to exports
+> > deep internal to the module.
+> 
+> do you have any data how much faster it is on arm (and does that include
+> arm64 as well)?  Besides the exports which were my prime concern,
 
-aah I might have misunderstood the output here then, we have preceeding
-output like:
+https://github.com/sjenning/zsmapbench
 
-cache:
-  l1d.replacement                                   
-       [L1D data line replacements]
+I need to recall the memory. IIRC, it was almost 30% faster at that time
+in ARM so was not trivial at that time. However, it was story from
+several years ago.
 
-so I thought the 'skl pfm-events' is just a label
+> zsmalloc with pgtable mappings also is the only user of map_kernel_range
+> outside of vmalloc.c, if it really is another code base for tiny
+> improvements we could mark map_kernel_range or in fact remove it entirely
+> and open code it in the remaining callers.
 
+I alsh have temped to remove it. Let me have time to revist it in this
+chance.
 
-how about we use the first current label in the middle like:
-
-	# perf list
-	List of pre-defined events (to be used in -e):
-
-	  current events stuff
-
-	List of pfm events (to be used in --pfm-xxx):
-
-	  pfm events stuff
-
-or maybe put it under 'perf list --pfm', thoughts?
-
-jirka
-
+Thanks.
