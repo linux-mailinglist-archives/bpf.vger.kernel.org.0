@@ -2,246 +2,237 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E541AB3FB
-	for <lists+bpf@lfdr.de>; Thu, 16 Apr 2020 00:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77DF1AB5A3
+	for <lists+bpf@lfdr.de>; Thu, 16 Apr 2020 03:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387673AbgDOW52 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Apr 2020 18:57:28 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:26974 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732701AbgDOW5Y (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 15 Apr 2020 18:57:24 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03FMp16r007543;
-        Wed, 15 Apr 2020 15:57:09 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=xpYPldKHdsk61SkaqR3N8cRlfWw42Hi3W+lqdl6uUsc=;
- b=kY+hiEGgX2o0HnmtzVSeHzj9b2VKZ6EMcpDBVXWoYTC2a5znHA7PxL+RkeKkxTtdTO5z
- pfLOuuqyUYli0tfQG5lHNyUvrEiFbPQIj0tlE6nXQTb8OHjtnF/zVFNPxTNqS0AvBG1b
- WYnMHeF6vfechy5LEjMSOdh/Q1EA8k4HHK4= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 30dn7t8gws-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 15 Apr 2020 15:57:09 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Wed, 15 Apr 2020 15:57:07 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fnNdO0qFbSCyhL675xxrSyXgoySFDB1O6msMA9M6SHGeIDcwhqg/Xw7fXPZfbMQ3tzqunRE8wRhu0mTFaAipkonVQqFAorS/suU92HkYEnJa5IuS8UDE9J+vDm+S5cTTelbe7VynLU8UzE5vQzg6PSeDVo0KS48I9BIQYpf10w8Qe6v03ZOV81qEuMGfv3l0gTX8eLtU3RyY4qwuzNgOIgpTzonUDKnqTRzKEjvFm3vpYCfJshw3wJWxu7Ny8G2NWifY0L5fDkukYMTUyem4ngEERrzPPReJQD6H3lq8dhZWU1rLCMX3C9pR/toJKlRHq0NbQXD395fyxZdXImM19g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xpYPldKHdsk61SkaqR3N8cRlfWw42Hi3W+lqdl6uUsc=;
- b=b1w+CrM3pHIS17T102KFrIwnWrLrKuo13KXikW8W0+M997LTcaTRHNzgPmCgYopzDxD6gtFZKMNzKkAq9aT0QiJoJMD/U40QlDnNVp6r1JAtMFu0pi1/47DUD+FDIzSxvTA+n2hBh0BZmrF1CaB4EtlZ8m8U37ZnYlC4D9qXSnq+U82Fiuzf0SarUOsIGVsl3hHTazd+9RCLRHbacPdhbii9NKn0YG0KIKZp9dYHLY+cYg+ipLL8lkvCX7BXGqepJYAQ5ABEye+CDdVWRNymEfd1nzByV9hnFCHqHsp5hOgC8vDb79KpeTFV3WRA+L77WKxHGQcY1R705HyzXyxsrA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xpYPldKHdsk61SkaqR3N8cRlfWw42Hi3W+lqdl6uUsc=;
- b=LAoLmZ5gbMsyUhitxLhNG4X0jZeFBn7ikBr+byAhV3sadoVT4R/X4YXWa5LCZGKWLCrA5AVNraIlOmGXAcM6cne3bgtlLDe0NW5QrfhPbBWbbFA6oNmSkw77zHLq6YHvC/l96DfzNUrDf5MFNSgXJnzydButUpzgEz4daNGjswc=
-Received: from MW3PR15MB3883.namprd15.prod.outlook.com (2603:10b6:303:51::22)
- by MW3PR15MB3994.namprd15.prod.outlook.com (2603:10b6:303:45::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.25; Wed, 15 Apr
- 2020 22:57:06 +0000
-Received: from MW3PR15MB3883.namprd15.prod.outlook.com
- ([fe80::7d15:e3c5:d815:a075]) by MW3PR15MB3883.namprd15.prod.outlook.com
- ([fe80::7d15:e3c5:d815:a075%7]) with mapi id 15.20.2900.028; Wed, 15 Apr 2020
- 22:57:06 +0000
-Subject: Re: [RFC PATCH bpf-next 03/16] bpf: provide a way for targets to
- register themselves
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
+        id S1730833AbgDPBsd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Apr 2020 21:48:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729491AbgDPBsZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Apr 2020 21:48:25 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA549C061A0C;
+        Wed, 15 Apr 2020 18:48:25 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id l60so6804655qtd.8;
+        Wed, 15 Apr 2020 18:48:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XuNKYISD+t+PSFfwH7kSQ2EhRMhyMs5XQnzd/oOhuqc=;
+        b=gWAKb53gdSoPumI7uht2yPeY9c9OlNXOstqEnZYfyKjILVaSMjRbn/o2Lp/f73mybA
+         t2JTXIj40pU8KuM5yqoDM04ytRlXBwFeRbz+Fshmvhg1E15/hb/8IVbC/LX9yp8AMjzC
+         OaLcuaPJ9gRbIW8UVteF4FP2X4CtP1wLNfJOMkvzdsEbZIHKlZxv8hmA6IgRzh8l+vgE
+         yVgLcD9EmMyaKDFIrIYNG7o/BDdFOTgdqY69wn9N4tgjCBHxOQ60HUt02bz/mrN2YvNZ
+         n4jSlNrKQMzzsCjXVc7DFaenPOQ5LULtIKkCn3AP4+OUgLEvKpfApt7RSeTDaTiI1cOh
+         aM+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XuNKYISD+t+PSFfwH7kSQ2EhRMhyMs5XQnzd/oOhuqc=;
+        b=nkFSzZHE85uxyHYesOixdwx6gQ8N9iC94SUXcERT0rYMeH8HZDpAyo7n7Sdw6soJgN
+         P189YGM7bbtwF+CBLR3RRjP8954ohzDl/RozYjTS4AkKlt2omciujajKUaRZBkFdqS8E
+         sQwUwZ46L0MdQ1DqmsMezVomFuSk/4T8brLb//HB4bZh05SSx8gPux1fi6gkRKjag4eO
+         P/Qi8iPQp4ND0MZBIPb/yuCBcisp0RQAFnu2m3Le1LCikUyjSQ7uKYD/38IOx1eDIUz1
+         XkP1wE9kTUr+EGQi/5K+co1BP2D2+nXUCPFmq4ckiBf0IWT7pQGvjfgI1PyYmXmkl3/t
+         dpIw==
+X-Gm-Message-State: AGi0PuZQVaoj8gBZtpOPy//hsN+Rack1Nkvvb8BiCFpoupSIAwosoghi
+        F8aNS7Pmfvp59vWgPs08awlBAqJ7ebI0jhrVNrk=
+X-Google-Smtp-Source: APiQypKd2aOmvbKg8wW4hVF+k0trxmkcbJHJqSaM6unNTXwLyGhzpNCgpFMOK5Our6AX/tuLtGQVF++ZMjD03kQqT7o=
+X-Received: by 2002:aed:2e24:: with SMTP id j33mr23808435qtd.117.1587001704711;
+ Wed, 15 Apr 2020 18:48:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200408232520.2675265-1-yhs@fb.com> <20200408232526.2675664-1-yhs@fb.com>
+ <CAEf4Bzawu2dFXL7nvYhq1tKv9P7Bb9=6ksDpui5nBjxRrx=3_w@mail.gmail.com>
+ <4bf72b3c-5fee-269f-1d71-7f808f436db9@fb.com> <CAEf4BzZnq958Guuusb9y65UCtB-DARxdk7_q7ZPBZ3WOwjSKaw@mail.gmail.com>
+ <20200415164640.evaujoootr4n55sc@ast-mbp>
+In-Reply-To: <20200415164640.evaujoootr4n55sc@ast-mbp>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 15 Apr 2020 18:48:13 -0700
+Message-ID: <CAEf4Bza2YkmFMZ_d6d6keLqeWNDr8dbBQj=42xSrONaULK1PXg@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 05/16] bpf: create file or anonymous dumpers
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
         Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
-References: <20200408232520.2675265-1-yhs@fb.com>
- <20200408232523.2675550-1-yhs@fb.com>
- <CAEf4Bzb5K6h+Cca63JU35XG+NFoFDCVrC=DhDNVz6KTmoyzpFw@mail.gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <ce741052-6da2-8eb7-0612-5f68150b44f9@fb.com>
-Date:   Wed, 15 Apr 2020 15:57:03 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
-In-Reply-To: <CAEf4Bzb5K6h+Cca63JU35XG+NFoFDCVrC=DhDNVz6KTmoyzpFw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWHPR04CA0030.namprd04.prod.outlook.com
- (2603:10b6:300:ee::16) To MW3PR15MB3883.namprd15.prod.outlook.com
- (2603:10b6:303:51::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lhton-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:6fee) by MWHPR04CA0030.namprd04.prod.outlook.com (2603:10b6:300:ee::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.25 via Frontend Transport; Wed, 15 Apr 2020 22:57:05 +0000
-X-Originating-IP: [2620:10d:c090:400::5:6fee]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7276e291-b58b-4831-92c0-08d7e19051e0
-X-MS-TrafficTypeDiagnostic: MW3PR15MB3994:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW3PR15MB399475F17EE8688B3A9A8BCBD3DB0@MW3PR15MB3994.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-Forefront-PRVS: 0374433C81
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR15MB3883.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(136003)(346002)(396003)(366004)(39860400002)(376002)(478600001)(31686004)(8676002)(31696002)(66476007)(8936002)(66556008)(66946007)(36756003)(186003)(16526019)(86362001)(316002)(81156014)(6916009)(2616005)(6486002)(4326008)(2906002)(6512007)(6506007)(54906003)(5660300002)(52116002)(53546011);DIR:OUT;SFP:1102;
-Received-SPF: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tGS6dt+2Lo5EtyOBe0VaEykgRBcVCE9HIVAhtLyid/EOhk39Q1CoYnAqhpbzXfv7XUk+fCsU4EPOQoYyZIAm4irggg9YSJ8LAQV1KI03ZfdXd4OnAK59kDSwfGLJzkZFbJzMKN1ZG1XDvHr71DflzyD8gtLLO/ZNUf0QnOdsS+TL/ruBlvG1wA8AXA7cCOUd4MH0Kowj+libkb29lF5b/fWIq8V9jYLHm02kHqxdFRr6/cDOERXi8allAGwJ4XvFg6RhObIKWnwGq9B6TjYgJV1HM6LcVhYZzMlKnvhZup9XtOQKtjDQtT/21uuztaronTribuQIjUhtnHpu9Kmi5aK5F53NrOm9yyGtsRN3B4pdFFO5qM73cMjAkIIu9+BUAnSNguHgkWdNgc+Oww3Fn5ig8Ba+xti8sCz4P1lKLfivxtpUyGEyhSXVfC/yvYZe
-X-MS-Exchange-AntiSpam-MessageData: d4sfqysFEyn6O5ytfVQA71kAj+7KD61I8UBW228g3qbr8YavEzAPBp1GlrB9U5eQw5u3drDmk7rWcw2mXAtLk4+vz5kCfwIJuv2AO+1G3utWz+KSAa8Ofvg6vR0vb9RJ1lJna3YCR8thAye2Zg85Nw2Ngx1PrlVDl6cblL7S0E+WxXjegqVvl+4Jx+f1XQ3z
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7276e291-b58b-4831-92c0-08d7e19051e0
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2020 22:57:06.4642
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BbACqKmy2cHkqsM/x/NX0qLXqcVVVHwMhgazSVpfejAMRKLDMI5r9BQkDqeKhEwr
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3994
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-15_08:2020-04-14,2020-04-15 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- adultscore=0 phishscore=0 malwarescore=0 impostorscore=0 mlxlogscore=999
- bulkscore=0 spamscore=0 priorityscore=1501 suspectscore=0
- lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2004150173
-X-FB-Internal: deliver
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Apr 15, 2020 at 9:46 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Apr 14, 2020 at 09:45:08PM -0700, Andrii Nakryiko wrote:
+> > >
+> > > > FD is closed, dumper program is detached and dumper is destroyed
+> > > > (unless pinned in bpffs, just like with any other bpf_link.
+> > > > 3. At this point bpf_dumper_link can be treated like a factory of
+> > > > seq_files. We can add a new BPF_DUMPER_OPEN_FILE (all names are for
+> > > > illustration purposes) command, that accepts dumper link FD and
+> > > > returns a new seq_file FD, which can be read() normally (or, e.g.,
+> > > > cat'ed from shell).
+> > >
+> > > In this case, link_query may not be accurate if a bpf_dumper_link
+> > > is created but no corresponding bpf_dumper_open_file. What we really
+> > > need to iterate through all dumper seq_file FDs.
+> >
+> > If the goal is to iterate all the open seq_files (i.e., bpfdump active
+> > sessions), then bpf_link is clearly not the right approach. But I
+> > thought we are talking about iterating all the bpfdump programs
+> > attachments, not **sessions**, in which case bpf_link is exactly the
+> > right approach.
+>
+> That's an important point. What is the pinned /sys/kernel/bpfdump/tasks/foo ?
+
+Assuming it's not a rhetorical question, foo is a pinned bpf_dumper
+link (in my interpretation of all this).
+
+> Every time 'cat' opens it a new seq_file is created with new FD, right ?
+
+yes
+
+> Reading of that file can take infinite amount of time, since 'cat' can be
+> paused in the middle.
+
+yep, correct (though most use case probably going to be very short-lived)
+
+> I think we're dealing with several different kinds of objects here.
+> 1. "template" of seq_file that is seen with 'ls' in /sys/kernel/bpfdump/
+
+Let's clarify here again, because this can be interpreted differently.
+
+Are you talking about, e.g., /sys/fs/bpfdump/task directory that
+defines what class of items should be iterated? Or you are talking
+about named dumper: /sys/fs/bpfdump/task/my_dumper?
+
+If the former, I agree that it's not a link. If the latter, then
+that's what we've been so far calling "a named bpfdumper". Which is
+what I argue is a link, pinned in bpfdumpfs (*not bpffs*).
+
+UPD: reading further, seems like it's some third interpretation, so
+please clarify.
+
+> 2. given instance of seq_file after "template" was open
+
+Right, corresponding to "bpfdump session" (has its own unique session_id).
+
+> 3. bpfdumper program
+
+Yep, BPF_PROG_LOAD returns FD to verified bpfdumper program.
+
+> 4. and now links. One bpf_link from seq_file template to bpf prog and
+
+So I guess "seq_file template" is /sys/kernel/bpfdump/tasks direntry
+itself, which has to be specified as FD during BPF_PROG_LOAD, is that
+right? If yes, I agree, "seq_file template" + attached bpf_prog is a
+link.
+
+>   many other bpf_links from actual seq_file kernel object to bpf prog.
+
+I think this one is not a link at all. It's a bpfdumper session. For
+me this is equivalent of a single BPF program invocation on cgroup due
+to a single packet. I understand that in this case it's multiple BPF
+program invocations, so it's not exactly 1:1, but if we had an easy
+way to do iteration from inside BPF program over all, say, tasks, that
+would be one BPF program invocation with a loop inside. So to me one
+seq_file session is analogous to a single BPF program execution (or,
+say one hardware event triggering one execution of perf_event BPF
+program).
+
+>   I think both kinds of links need to be iteratable via get_next_id.
+>
+> At the same time I don't think 1 and 2 are links.
+> read-ing link FD should not trigger program execution. link is the connecting
+> abstraction. It shouldn't be used to trigger anything. It's static.
+> Otherwise read-ing cgroup-bpf link would need to trigger cgroup bpf prog too.
+> FD that points to actual seq_file is the one that should be triggering
+> iteration of kernel objects and corresponding execution of linked prog.
+
+Yep, I agree totally, reading bpf_link FD directly as if it was
+seq_file seems weird and would support only a single time to read.
+
+> That FD can be anon_inode returned from raw_tp_open (or something else)
+
+raw_tp_open currently always returns bpf_link FDs, so if this suddenly
+returns readable seq_file instead, that would be weird, IMO.
 
 
-On 4/10/20 3:18 PM, Andrii Nakryiko wrote:
-> On Wed, Apr 8, 2020 at 4:26 PM Yonghong Song <yhs@fb.com> wrote:
->>
->> Here, the target refers to a particular data structure
->> inside the kernel we want to dump. For example, it
->> can be all task_structs in the current pid namespace,
->> or it could be all open files for all task_structs
->> in the current pid namespace.
->>
->> Each target is identified with the following information:
->>     target_rel_path   <=== relative path to /sys/kernel/bpfdump
->>     target_proto      <=== kernel func proto which represents
->>                            bpf program signature for this target
->>     seq_ops           <=== seq_ops for seq_file operations
->>     seq_priv_size     <=== seq_file private data size
->>     target_feature    <=== target specific feature which needs
->>                            handling outside seq_ops.
-> 
-> It's not clear what "feature" stands for here... Is this just a sort
-> of private_data passed through to dumper?
-> 
->>
->> The target relative path is a relative directory to /sys/kernel/bpfdump/.
->> For example, it could be:
->>     task                  <=== all tasks
->>     task/file             <=== all open files under all tasks
->>     ipv6_route            <=== all ipv6_routes
->>     tcp6/sk_local_storage <=== all tcp6 socket local storages
->>     foo/bar/tar           <=== all tar's in bar in foo
-> 
-> ^^ this seems useful, but I don't think code as is supports more than 2 levels?
-> 
->>
->> The "target_feature" is mostly used for reusing existing seq_ops.
->> For example, for /proc/net/<> stats, the "net" namespace is often
->> stored in file private data. The target_feature enables bpf based
->> dumper to set "net" properly for itself before calling shared
->> seq_ops.
->>
->> bpf_dump_reg_target() is implemented so targets
->> can register themselves. Currently, module is not
->> supported, so there is no bpf_dump_unreg_target().
->> The main reason is that BTF is not available for modules
->> yet.
->>
->> Since target might call bpf_dump_reg_target() before
->> bpfdump mount point is created, __bpfdump_init()
->> may be called in bpf_dump_reg_target() as well.
->>
->> The file-based dumpers will be regular files under
->> the specific target directory. For example,
->>     task/my1      <=== dumper "my1" iterates through all tasks
->>     task/file/my2 <=== dumper "my2" iterates through all open files
->>                        under all tasks
->>
->> Signed-off-by: Yonghong Song <yhs@fb.com>
->> ---
->>   include/linux/bpf.h |   4 +
->>   kernel/bpf/dump.c   | 190 +++++++++++++++++++++++++++++++++++++++++++-
->>   2 files changed, 193 insertions(+), 1 deletion(-)
->>
+> or FD from open("/sys/kernel/bpfdump/foo").
 
->> +
-> 
-> [...]
-> 
->> +       if (S_ISDIR(mode)) {
->> +               inode->i_op = i_ops;
->> +               inode->i_fop = f_ops;
->> +               inc_nlink(inode);
->> +               inc_nlink(dir);
->> +       } else {
->> +               inode->i_fop = f_ops;
->> +       }
->> +
->> +       d_instantiate(dentry, inode);
->> +       dget(dentry);
-> 
-> lookup_one_len already bumped refcount, why the second time here?
+Agreed.
 
-This is due to artifact in security/inode.c:
+>
+> The more I think about all the objects involved the more it feels that the
+> whole process should consist of three steps (instead of two).
+> 1. load bpfdump prog
+> 2. create seq_file-template in /sys/kernel/bpfdump/
+>    (not sure which api should do that)
 
-void securityfs_remove(struct dentry *dentry)
-{
-         struct inode *dir;
+Hm... ok, I think seq_file-template means something else entirely.
+It's not an attached BPF program, but also not a /sys/fs/bpfdump/task
+"provider". What is it and what is its purpose? Also, how is it
+cleaned up if application crashes between creating "seq_file-template"
+and attaching BPF program to it?
 
-         if (!dentry || IS_ERR(dentry))
-                 return;
+> 3. use bpf_link_create api to attach bpfdumper prog to that seq_file-template
+>
+> Then when the file is opened a new bpf_link is created for that reading session.
+> At the same time both kinds of links (to teamplte and to seq_file) should be
+> iteratable for observability reasons, but get_fd_from_id on them should probably
+> be disallowed, since holding such FD to these special links by other process
+> has odd semantics.
 
-         dir = d_inode(dentry->d_parent);
-         inode_lock(dir);
-         if (simple_positive(dentry)) {
-                 if (d_is_dir(dentry))
-                         simple_rmdir(dir, dentry);
-                 else
-                         simple_unlink(dir, dentry);
-                 dput(dentry);
-         }
-         inode_unlock(dir);
-         simple_release_fs(&mount, &mount_count);
-}
-EXPORT_SYMBOL_GPL(securityfs_remove);
+This special get_fd_from_id handling for bpfdumper links (in your
+interpretation) looks like a sign that using bpf_link to represent a
+specific bpfdumper session is not the right design.
 
-I did not implement bpfdumpfs_remove like the above.
-I just use simple_unlink so I indeed do not need the above dget().
-I have removed it in RFC v2. Tested it and it works fine.
+As for obserabilitiy of bpfdumper sessions, I think using bpfdump
+program + task/file provider will give a good way to do this,
+actually, with no need to maintain a separate IDR just for bpfdumper
+sessions.
 
-I think we may not need that additional reference either in
-security/inode.c.
+>
+> Similarly for anon seq_file it should be three step process as well:
+> 1. load bpfdump prog
+> 2. create anon seq_file (api is tbd) that returns FD
+> 3. use bpf_link_create to attach prog to seq_file FD
+>
+> May be it's all overkill. These are just my thoughts so far.
 
-> 
->> +       inode_unlock(dir);
->> +       return dentry;
->> +
->> +dentry_put:
->> +       dput(dentry);
->> +       dentry = ERR_PTR(err);
->> +unlock:
->> +       inode_unlock(dir);
->> +       return dentry;
->> +}
->> +
-> 
-> [...]
-> 
+Just to contrast, in a condensed form, what I was proposing:
+
+For named dumper:
+1. load bpfdump prog
+2. attach prog to bpfdump "provider" (/sys/fs/bpfdump/task), get
+bpf_link anon FD back
+3. pin link in bpfdumpfs (e.g., /sys/fs/bpfdump/task/my_dumper)
+4. each open() of /sys/fs/bpfdump/task/my_dumper produces new
+bpfdumper session/seq_file
+
+For anon dumper:
+1. load bpfdump prog
+2. attach prog to bpfdump "provider" (/sys/fs/bpfdump/task), get
+bpf_link anon FD back
+3. give bpf_link FD to some new API (say, BPF_DUMP_NEW_SESSION or
+whatever name) to create seq_file/bpfdumper session, which will create
+FD that can be read(). One can do that many times, each time getting
+its own bpfdumper session.
+
+First two steps are exactly the same, as it should be, because
+named/anon dumper is still the same dumper. Note also that we can use
+bpf_link FD of named dumper and BPF_DUMP_NEW_SESSION command to also
+create sessions, which further underlines that the only difference
+between named and anon dumper is this bpfdumpfs direntry that allows
+to create new seq_file/session by doing normal open(), instead of
+BPF's BPF_DUMP_NEW_SESSION.
+
+Named vs anon dumper is like "named" vs "anon" bpf_link -- we don't
+even talk in those terms about bpf_link, because the only difference
+is pinned direntry in a special FS, really.
