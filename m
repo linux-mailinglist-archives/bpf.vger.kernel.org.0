@@ -2,117 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355341ABDDF
-	for <lists+bpf@lfdr.de>; Thu, 16 Apr 2020 12:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D3A1AC0AE
+	for <lists+bpf@lfdr.de>; Thu, 16 Apr 2020 14:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504896AbgDPK27 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Apr 2020 06:28:59 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:50822 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504943AbgDPK2s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Apr 2020 06:28:48 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03GASCrM163539;
-        Thu, 16 Apr 2020 10:28:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=9GnHtY/DK7oYqI+ruPXthvzHvwuzbjixOeDMP1A3xwA=;
- b=ryIu0QaKo4LeO4bycJw+XOJ8VTN2Bit2GAL9x4zh0mW+wgPUUKYohMOjoeEJ7nFV8F+X
- UmHMEnkWRp5hi1SuX1ImTiIc6vODNq/tbZQ02lPH3y+tBHdzHL1LXdO5OF+lAAbYkApZ
- 3VcOub2stRuofE2WSJkHG2UQRaG5sZFxINw5Mis5Yh1ZHdTCeZNjpTQdN65ogH1B2hpT
- ZnWmHK+zs0k82NcoNmZCuJm/g5G3r6cAXwv5Dsxiq9LLykNhgE2etZlCwPgVUOEy6kZy
- nwss6PZbtEDxw0mRCZ7o6AUYYjTGr38iuuCCW/i1l4ijk0R417piCZ++wNatgXaIriIc vA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 30dn95rjtp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Apr 2020 10:28:27 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03GAHsZJ099521;
-        Thu, 16 Apr 2020 10:26:26 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 30dynya2y6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Apr 2020 10:26:26 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03GAQOEY025630;
-        Thu, 16 Apr 2020 10:26:24 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 16 Apr 2020 03:26:24 -0700
-Date:   Thu, 16 Apr 2020 13:26:12 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        syzbot <syzbot+8a5dadc5c0b1d7055945@syzkaller.appspotmail.com>,
-        ast@kernel.org, bpf@vger.kernel.org, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@chromium.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Subject: Re: WARNING in bpf_cgroup_link_release
-Message-ID: <20200416102612.GO1163@kadam>
-References: <000000000000500e6f05a34ecc01@google.com>
- <4ba5ee0c-ec81-8ce3-6681-465e34b98a93@iogearbox.net>
- <a9219326-c07c-1069-270c-4bef17ee7b88@fb.com>
+        id S2634884AbgDPMFE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Apr 2020 08:05:04 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:31908 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2634688AbgDPMFC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 16 Apr 2020 08:05:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587038696;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eR0hKiHNidi2mVRnJ4wzzO8rdiEPgf4d515xNqsCpKI=;
+        b=S9HPj43+U6ywMjUzYvNktUKbK5ln/y2s73Ig1MtLJ1b1rCPQvaRaQh6hQ51qcsdhOmw8Rh
+        S1CljfOF255p5eKXEnFkqcAL7e+heh7Ne0Jz3saU82eVB/dVbSksGuJMa31fZRVRaAfQLc
+        ELjCzthhMdjO73sqJtWmzYtiwPhAMhg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-32-8sMKc3OZMmmq92YHE30nMg-1; Thu, 16 Apr 2020 08:04:40 -0400
+X-MC-Unique: 8sMKc3OZMmmq92YHE30nMg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9DAF9805735;
+        Thu, 16 Apr 2020 12:04:37 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 21FA71036D03;
+        Thu, 16 Apr 2020 12:04:31 +0000 (UTC)
+Date:   Thu, 16 Apr 2020 14:04:30 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Tariq Toukan <ttoukan.linux@gmail.com>
+Cc:     sameehj@amazon.com, Saeed Mahameed <saeedm@mellanox.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, zorik@amazon.com,
+        akiyano@amazon.com, gtzalik@amazon.com,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4?= =?UTF-8?B?cmdlbnNlbg==?= 
+        <toke@redhat.com>, Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>, brouer@redhat.com
+Subject: Re: [PATCH RFC v2 17/33] mlx5: rx queue setup time determine
+ frame_sz for XDP
+Message-ID: <20200416140430.375e8bad@carbon>
+In-Reply-To: <44441c56-c096-0dd3-9dc0-57f98065e44d@gmail.com>
+References: <158634658714.707275.7903484085370879864.stgit@firesoul>
+        <158634672069.707275.13343795980982759611.stgit@firesoul>
+        <44441c56-c096-0dd3-9dc0-57f98065e44d@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a9219326-c07c-1069-270c-4bef17ee7b88@fb.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=896 suspectscore=0
- malwarescore=0 phishscore=0 spamscore=0 adultscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004160071
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9592 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1011
- malwarescore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
- mlxscore=0 phishscore=0 spamscore=0 impostorscore=0 suspectscore=0
- mlxlogscore=965 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004160072
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 09:51:40AM -0700, 'Andrii Nakryiko' via syzkaller-bugs wrote:
-> On 4/15/20 4:57 AM, Daniel Borkmann wrote:
-> > On 4/15/20 8:55 AM, syzbot wrote:
-> > > Hello,
-> > > 
-> > > syzbot found the following crash on:
-> > 
-> > Andrii, ptal.
-> > 
-> > > HEAD commit:    1a323ea5 x86: get rid of 'errret' argument to
-> > > __get_user_x..
-> > > git tree:       bpf-next
-> > > console output: https://urldefense.proofpoint.com/v2/url?u=https-3A__syzkaller.appspot.com_x_log.txt-3Fx-3D148ccb57e00000&d=DwICaQ&c=5VD0RTtNlTh3ycd41b3MUw&r=vxqvl81C2rT6GOGdPyz8iQ&m=T2Ez0XmyIpHmEa_MPTTUOh61jMDXqwETtTaTbSe-2M4&s=-6XBbsNV1O4X5flrx4Yssfjc56d0qeSHgwHhd92UPJc&e=
-> > > kernel config:  https://urldefense.proofpoint.com/v2/url?u=https-3A__syzkaller.appspot.com_x_.config-3Fx-3D8c1e98458335a7d1&d=DwICaQ&c=5VD0RTtNlTh3ycd41b3MUw&r=vxqvl81C2rT6GOGdPyz8iQ&m=T2Ez0XmyIpHmEa_MPTTUOh61jMDXqwETtTaTbSe-2M4&s=s5-1AlWtSiBvo66WN4_UXoXMGIGIqsoUCrmAnxNnfX0&e=
-> > > dashboard link: https://urldefense.proofpoint.com/v2/url?u=https-3A__syzkaller.appspot.com_bug-3Fextid-3D8a5dadc5c0b1d7055945&d=DwICaQ&c=5VD0RTtNlTh3ycd41b3MUw&r=vxqvl81C2rT6GOGdPyz8iQ&m=T2Ez0XmyIpHmEa_MPTTUOh61jMDXqwETtTaTbSe-2M4&s=hAA0702qJH5EwRwvG0RKmj8FwIRm1O8hvmoS7ne5Dls&e=
-> > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > > 
-> > > Unfortunately, I don't have any reproducer for this crash yet.
-> > > 
-> > > IMPORTANT: if you fix the bug, please add the following tag to the
-> > > commit:
-> > > Reported-by: syzbot+8a5dadc5c0b1d7055945@syzkaller.appspotmail.com
-> > > 
-> > > ------------[ cut here ]------------
-> > > WARNING: CPU: 0 PID: 25081 at kernel/bpf/cgroup.c:796
-> > > bpf_cgroup_link_release+0x260/0x3a0 kernel/bpf/cgroup.c:796
+On Wed, 8 Apr 2020 15:52:26 +0300
+Tariq Toukan <ttoukan.linux@gmail.com> wrote:
+
+> Hi Jesper,
 > 
-> This warning is triggered due to __cgroup_bpf_detach returning an error. It
-> can do it only in two cases: either attached item is not found, which from
-> starting at code some moreI don't see how that can happen. The other reason
-> - kmalloc() failing to allocate memory for new effective prog array.
+> Thanks for your patch.
+> Please see feedback below.
+> 
+> On 4/8/2020 2:52 PM, Jesper Dangaard Brouer wrote:
+> > The mlx5 driver have multiple memory models, which are also changed
+> > according to whether a XDP bpf_prog is attached.
+> > 
+> > The 'rx_striding_rq' setting is adjusted via ethtool priv-flags e.g.:
+> >   # ethtool --set-priv-flags mlx5p2 rx_striding_rq off
+> > 
+> > On the general case with 4K page_size and regular MTU packet, then
+> > the frame_sz is 2048 and 4096 when XDP is enabled, in both modes.
+> > 
+> > The info on the given frame size is stored differently depending on the
+> > RQ-mode and encoded in a union in struct mlx5e_rq union wqe/mpwqe.
+> > In rx striding mode rq->mpwqe.log_stride_sz is either 11 or 12, which
+> > corresponds to 2048 or 4096 (MLX5_WQ_TYPE_LINKED_LIST_STRIDING_RQ).
+> > In non-striding mode (MLX5_WQ_TYPE_CYCLIC) the frag_stride is stored
+> > in rq->wqe.info.arr[0].frag_stride.  
+> 
+> Just to clarify, the above description is true as long as we're in the 
+> Linear SKB memory scheme, this holds when:
+> 1) MTU + headroom + tailroom < PAGE_SIZE, and
+> 2) HW LRO is OFF.
+> 
+> Otherwise, mpwqe.log_stride_sz can be smaller, and frag_stride of 
+> wqe_info can vary from one index to another.
+> 
+> > 
+> > To reduce effect on fast-path, this patch determine the frame_sz at
+> > setup time, to avoid determining the memory model runtime.
+> > 
+> > Cc: Tariq Toukan <tariqt@mellanox.com>
+> > Cc: Saeed Mahameed <saeedm@mellanox.com>
+> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > ---
+> >   drivers/net/ethernet/mellanox/mlx5/core/en.h      |    1 +
+> >   drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c  |    1 +
+> >   drivers/net/ethernet/mellanox/mlx5/core/en_main.c |    4 ++++
+> >   3 files changed, 6 insertions(+)
+> > 
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> > index 12a61bf82c14..1f280fc142ca 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> > @@ -651,6 +651,7 @@ struct mlx5e_rq {
+> >   	struct {
+> >   		u16            umem_headroom;
+> >   		u16            headroom;
+> > +		u32            frame_sz;
+> >   		u8             map_dir;   /* dma map direction */
+> >   	} buff;
+> >   
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> > index f049e0ac308a..de4ad2c9f49a 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> > @@ -137,6 +137,7 @@ bool mlx5e_xdp_handle(struct mlx5e_rq *rq, struct mlx5e_dma_info *di,
+> >   	if (xsk)
+> >   		xdp.handle = di->xsk.handle;
+> >   	xdp.rxq = &rq->xdp_rxq;
+> > +	xdp.frame_sz = rq->buff.frame_sz;
+> >   
+> >   	act = bpf_prog_run_xdp(prog, &xdp);
+> >   	if (xsk) {
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> > index dd7f338425eb..b9595315c45b 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> > @@ -462,6 +462,8 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
+> >   		rq->mpwqe.num_strides =
+> >   			BIT(mlx5e_mpwqe_get_log_num_strides(mdev, params, xsk));
+> >   
+> > +		rq->buff.frame_sz = (1 << rq->mpwqe.log_stride_sz);
+> > +  
+> 
+> This is always correct.
+> 
+> >   		err = mlx5e_create_rq_umr_mkey(mdev, rq);
+> >   		if (err)
+> >   			goto err_rq_wq_destroy;
+> > @@ -485,6 +487,8 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
+> >   			num_xsk_frames = wq_sz << rq->wqe.info.log_num_frags;
+> >   
+> >   		rq->wqe.info = rqp->frags_info;
+> > +		rq->buff.frame_sz = rq->wqe.info.arr[0].frag_stride;
+> > +  
+> 
+> This is not always correct.
+> Size of the last frag for a large MTU might be a full page.
+> See:
+> https://elixir.bootlin.com/linux/latest/source/drivers/net/ethernet/mellanox/mlx5/core/en_main.c#L2097
+> 
+> However, you won't try to use this value at all in the non-linear SKB 
+> flow, as it's not compatible with XDP.
 
-If you look at the log file then this was allocation fault injection in
-bpf_prog_array_alloc().
+Yes, exactly.
 
-https://syzkaller.appspot.com/x/log.txt?x=148ccb57e00000
+> Anyway, I prefer this value to be always true. No matter if it's really 
+> used or not.
+> Probably rename the field name to indicate this?
+> Something like: single_frame_sz / first_frame_sz ?
 
-regards,
-dan carpenter
+Okay, I've renamed the field name to "first_frame_sz".  As this field
+only describe the size of the first fragment.  This is fits with what
+we are currently planning, to only give XDP/eBPF access to the first
+fragment in case of multi-buffer XDP. (And then use Daniels idea of a
+BPF-helper to pull in more data if explicitly requested).
+
+Still trying to figure out if this is correct for AF_XDP.
+
+And trying if I can get it more correct for non-linear case,
+even-though it is not really used in that case.
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
