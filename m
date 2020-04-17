@@ -2,57 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7D31AE3E8
-	for <lists+bpf@lfdr.de>; Fri, 17 Apr 2020 19:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E521AE429
+	for <lists+bpf@lfdr.de>; Fri, 17 Apr 2020 20:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730099AbgDQRmd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Apr 2020 13:42:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730080AbgDQRmd (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 17 Apr 2020 13:42:33 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC55DC061A0C;
-        Fri, 17 Apr 2020 10:42:32 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id w145so2481279lff.3;
-        Fri, 17 Apr 2020 10:42:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=iIqCmbjo3btLLRsEBTP/I+sNGmj3KMb/QmTagxMLfsQ=;
-        b=W/h8drLpD8CmGE0QatLNOawF5SGz4ixHzerscYS8BFmOIAAzF6TfWYW55Dnin11zyW
-         ZAi6WHYd1ZO3bJWOLnqYJiJqXqcstfJ1JJU0c5h3+b8rFpj+ooVCGiy2JaT2uhDBCgyz
-         ubGViAWHUGmrymAGwN/d1tDnEOI5IXmUc3qn9jc8tu2/W6t80ZqnQj3ikzcVKeBXOeuy
-         4EdLbKD6AhuybXBb47Etk8EJvHYlx5j0Db99xhJNNpBL0i+Ouh8XFWCGwJTuM8An6QL1
-         bNhWgY9XD9skcWcXI3dqJuJzSAf+ObteWkDX7bivC09COYjRrfAb+5KyuwsgL2ysbdGB
-         H6fQ==
+        id S1730278AbgDQSAE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Apr 2020 14:00:04 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:36019 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730033AbgDQSAE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Apr 2020 14:00:04 -0400
+Received: by mail-pg1-f193.google.com with SMTP id o185so934540pgo.3;
+        Fri, 17 Apr 2020 11:00:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=iIqCmbjo3btLLRsEBTP/I+sNGmj3KMb/QmTagxMLfsQ=;
-        b=EoWuO7Lq5IE+3WRJDUCFcpmUhEVkfqVEw+0p5hanhKz69ysU4kwjvkFmq3oldGeo/R
-         woczdhPovoc8OHZYZenLXYk81CLMKn1PCNYGB8o/Cj8xX2twtNna7C5T4/EQu+CTmJY9
-         CUMPOLQdeYs739ai/LjZEhf5vaNDGo6VRrYb7wK9h4CugfboRcDs9QfNEJDsyj9oUB9y
-         uvbJeazbjd4Gwh6jddd93b6TdhCOu4U1q+0tyR6VZwDRd1ZCh3k5f4f7IRQoC4oPGZy2
-         yvLJHwF8rKI/cQy3J07EaKe4mn4XAmtNi5TAiYSwp7dQb9ScG8ble576IB7m9Rt7ziKL
-         3Qug==
-X-Gm-Message-State: AGi0PuaqUAWqLjFtIv3F25+jiawOwYwZjSrbAMr3cdUNPU1WfBEXFFaD
-        kJZSNfMMPAMEEO+nD+AcrAjMCqDEFb+vqkybUaxclA==
-X-Google-Smtp-Source: APiQypKBdJQtfT3oJtXCPzzqHC6jlzZssogXBYfUpDO48NEEXMjlhEvvNFXeB6zST/r1dQszVAgjUonnYGZgTmBhwOk=
-X-Received: by 2002:ac2:569b:: with SMTP id 27mr2852542lfr.134.1587145350816;
- Fri, 17 Apr 2020 10:42:30 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=IjZCkEIb+6WDJxMusK/HPrzk4lilNygCHu7ICADzBDI=;
+        b=IGH6++I9jAMejicRypWgjx4pPu3K5W7q4CxqscWb9f4ondGixa4MKwA+aAnJySEkXl
+         TOi7QIcRD/3wi3M8IQHp4koL0fOo2xAkJ9S/V9FHA5zEr050kumUuERoL0LBrBH6LSFd
+         itNCbKuRzhGOSbrOWjoFI+Ign1CPpTcSDJxno1yWSsCikHKiNLmNIuoUdPV4p91TqO9x
+         qBL5Emf1OwLoJOCrICj0VCGHcCgEk1eXYMvELwD4c3HFK9RFCCoJ74sW3FLNHB+f2SO0
+         GdZ99UsBXz3xqOv300006/JpqtIXS3LLzS5qBMZE+ZLso6x4ssvI3kNHgk08Try99nSI
+         FIPw==
+X-Gm-Message-State: AGi0PuabiS7KAiRL5tTXTQTkGgemExhKpCtYT2lyLnI6HXnPaoK9bBQW
+        98R3UqaH+DN0FYUwFjKhtyw=
+X-Google-Smtp-Source: APiQypLFQjbQ+Jct1/RepT1qj19XCtjzpBzkT5ETgeSBpzgVKxqlNXHZmUGIMT21Q9DTRRm+/Bkcrg==
+X-Received: by 2002:a62:1415:: with SMTP id 21mr4395722pfu.134.1587146403237;
+        Fri, 17 Apr 2020 11:00:03 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id c3sm6178665pjc.43.2020.04.17.11.00.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Apr 2020 11:00:01 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 256B94028E; Fri, 17 Apr 2020 18:00:01 +0000 (UTC)
+Date:   Fri, 17 Apr 2020 18:00:01 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: pass kernel pointers to the sysctl ->proc_handler method
+Message-ID: <20200417180001.GW11244@42.do-not-panic.com>
+References: <20200417064146.1086644-1-hch@lst.de>
 MIME-Version: 1.0
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 17 Apr 2020 10:42:18 -0700
-Message-ID: <CAADnVQKaRPsSp6CptpLVyv=QoXnkvnU6NxYWZ=faA9pxYJ5YQA@mail.gmail.com>
-Subject: bpf-next is OPEN
-To:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200417064146.1086644-1-hch@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Looking at RFCs for bpf-next this release cycle is going to be exciting! :)
+On Fri, Apr 17, 2020 at 08:41:40AM +0200, Christoph Hellwig wrote:
+> Hi all,
+> 
+> this series changes the sysctl ->proc_handler methods to take kernel
+> pointers.  This simplifies some of the pointer handling in the methods
+> (which could probably be further simplified now), and gets rid of the
+> set_fs address space overrides used by bpf.
+
+Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+
+  Luis
