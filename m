@@ -2,166 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D82C91AD31B
-	for <lists+bpf@lfdr.de>; Fri, 17 Apr 2020 01:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8856B1AD381
+	for <lists+bpf@lfdr.de>; Fri, 17 Apr 2020 02:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726596AbgDPXSg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Apr 2020 19:18:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbgDPXSf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Apr 2020 19:18:35 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E30EC061A0F;
-        Thu, 16 Apr 2020 16:18:34 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id a32so236242pje.5;
-        Thu, 16 Apr 2020 16:18:34 -0700 (PDT)
+        id S1727906AbgDQAAO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Apr 2020 20:00:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726578AbgDQAAN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 16 Apr 2020 20:00:13 -0400
+Received: from mail-vk1-xa49.google.com (mail-vk1-xa49.google.com [IPv6:2607:f8b0:4864:20::a49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E860C061A0F
+        for <bpf@vger.kernel.org>; Thu, 16 Apr 2020 17:00:13 -0700 (PDT)
+Received: by mail-vk1-xa49.google.com with SMTP id j68so156935vkj.12
+        for <bpf@vger.kernel.org>; Thu, 16 Apr 2020 17:00:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XG57rR3E8DeijyO8lkg2NM/irBg+FSpnfdZfo3yuSgo=;
-        b=hb4TNWwsv8izF8rvJgU0XnPkPwX7f5golszhr2oxJn1ykhZu5ZqR56lwyLCzvvUvTg
-         glqlMNO54tUZnfT39hDZyoALcQyNnLS8E/L1gXwApA6qWXJbR3KEbxtSe9p+jP0OWi5K
-         CoCoeL02DcWjYZZocDU1fvJZVN32eOY7gI6qXtwtGXyC/vIXS59VZnC6I/619U5oWtf7
-         B/gX/YqQ4rblYvrzSk06yCmKUsY5oPBEzx7FbnoprW/ry9VxjEYJRTl6/iUAa2G5sDIz
-         Aa+fN+3ACc0y6AIXCaJ9b+vULZtcjuMMnppue23yZ3O3FoWEURfiWT4R314WvznwmCum
-         BUZQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=o1ixzjSmDRXRxbpBdm6/pKUbvi6GyqGWdNx6NzDK7xY=;
+        b=PXCdAK3d3tBaw6kqsPb8vcGis/R2zpp+aDNtUJZYEVbxC6NrSt5rJWpNcyGVQkh/KD
+         jP9lLHVBljzVSbiwZ1EWcc+E8XIlV+8gi/K0PVMJ9CDcRvC2SAsHH6vbDYHOrTmvmbZk
+         wayBiSv4AxqUCm/c982HxZmDRbeHjqN8TtlV21Bk5+MIPjXZfeSxbUGmfGU8JhjqZiq0
+         4JJojRnm3SCXVCF8Msgbxc2Zrz+a2rV0aebyHg+oWZw/1rqjUg0V/iwdWWiHEScWCFXK
+         9IoEyZOc0VnNherFWKHNpI864ABD2DEBI3vbPYqXEdtwKm97Xnh436XbPY7Ulsz1tqZt
+         NwWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XG57rR3E8DeijyO8lkg2NM/irBg+FSpnfdZfo3yuSgo=;
-        b=M13F4wTCrYIin1HJ1UMqM/c+b8sS9NH5X1ncNbPTzcIJ7i2K4XdLb+END7tUq/GpyS
-         9OzlEySjo04kSBjdGi6qpf6ZSz+YAgFs/RMKyoY7X5+BiJOLGYPbFM/YSsase4+FEWZQ
-         EFtDOIUDfL16res1A+cM+daB6dkbH5sKrUq9TUrKGw3BqPiowDLV6rYuTD/a6/606xlC
-         IA+3QBwpF9yV4xgbZGPFJfeSDWkMuqzTTcIpOFwq8a4E7LSuuYIcVmFHqJZ6+GgHrGM1
-         yOGKCHW4qHrGWkTvQ1lFYvP3NhZ0VN6+1SDLxZdr40cqxjWQxqXRRY4mMKpBE9KfxW2G
-         5+Uw==
-X-Gm-Message-State: AGi0PuYvsxAAYQ037JndKRgYwLmQXs5d4KcvoYPRxurQdjCdsmq+BLbm
-        5c3SjA6SYnIpDzY0aW2aDcJr9E3+
-X-Google-Smtp-Source: APiQypLMrTaQKMREtD2kOvlx+/AhbMZm78+PylYZLCutxEXh6qNMdYjhrPe9plhp6PqBvLJBI0Dd2w==
-X-Received: by 2002:a17:90a:276a:: with SMTP id o97mr879785pje.194.1587079113469;
-        Thu, 16 Apr 2020 16:18:33 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:fff8])
-        by smtp.gmail.com with ESMTPSA id l71sm11994846pge.3.2020.04.16.16.18.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 16:18:32 -0700 (PDT)
-Date:   Thu, 16 Apr 2020 16:18:29 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [RFC PATCH bpf-next 05/16] bpf: create file or anonymous dumpers
-Message-ID: <20200416231829.o4yngurm5nzrakoj@ast-mbp.dhcp.thefacebook.com>
-References: <20200408232520.2675265-1-yhs@fb.com>
- <20200408232526.2675664-1-yhs@fb.com>
- <CAEf4Bzawu2dFXL7nvYhq1tKv9P7Bb9=6ksDpui5nBjxRrx=3_w@mail.gmail.com>
- <4bf72b3c-5fee-269f-1d71-7f808f436db9@fb.com>
- <CAEf4BzZnq958Guuusb9y65UCtB-DARxdk7_q7ZPBZ3WOwjSKaw@mail.gmail.com>
- <20200415164640.evaujoootr4n55sc@ast-mbp>
- <CAEf4Bza2YkmFMZ_d6d6keLqeWNDr8dbBQj=42xSrONaULK1PXg@mail.gmail.com>
- <20200416170414.ds3hcb3bgfetjt4v@ast-mbp>
- <CAEf4BzY0a_Rzt8vtLLSz3+xAhx0CWhetxcUNdyK7ZygMms7srA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzY0a_Rzt8vtLLSz3+xAhx0CWhetxcUNdyK7ZygMms7srA@mail.gmail.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=o1ixzjSmDRXRxbpBdm6/pKUbvi6GyqGWdNx6NzDK7xY=;
+        b=ZJmhtK8ddQhYIce2Mq22PR4gy54Z49wLUT0bU1B4EUh4LdsWndUBfg7j/etOHhZMll
+         EEKt4BTauTBTsmUwEgcbmaCrKmo0dbNt60tY1QfbVosGy3EQb9t9/PqE6MIi4j5TDbB8
+         XX8f/KH4Mv0A9Oneq4ZwfmAcLu0bPShyP6ag2jYqgE9D1rI6VuYxFWeH+t9+SZhgsAIm
+         2WCRvwKW3iqZnZdtlvvZCj4qydYcYfd9bwVcdf645E27DgVqOYGrMJXai2M4mB0ToAVA
+         J8imM7pd9hM1gPJ+10IwDArmo6BdE25NZvGGxBkRlxZ3XlyjzEEQdBNlQwHSj/FibZlQ
+         CFng==
+X-Gm-Message-State: AGi0PuYWSCMkpkCk21YMTN1MVnoUFrEpsmIcTRWKOGoXxlb4xWZ3uGUk
+        2nFmIH/Zm9GL6edeHqfu+5Yih7VNo6lfHHNREQLxlxd4eqgupC9erSiL7mTTo84ez1h4SN36lxl
+        aPPzLJ2cqP1Ucar79l3+i2OM/MR6A0aXfdnrNcxIlwHrbzuO4t7QCVw8=
+X-Google-Smtp-Source: APiQypLGhwVpsiFWV0kz+aHZGYo2KNhREwT7oZoT3nuKhl0+e/KZ16M79NTvjR0IzM62ub0eXcugeeg7Ww==
+X-Received: by 2002:a1f:9cc8:: with SMTP id f191mr449820vke.68.1587081612594;
+ Thu, 16 Apr 2020 17:00:12 -0700 (PDT)
+Date:   Fri, 17 Apr 2020 02:00:06 +0200
+Message-Id: <20200417000007.10734-1-jannh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
+Subject: [PATCH v2 1/2] bpf: Forbid XADD on spilled pointers for unprivileged users
+From:   Jann Horn <jannh@google.com>
+To:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 16, 2020 at 12:35:07PM -0700, Andrii Nakryiko wrote:
-> >
-> > I slept on it and still fundamentally disagree that seq_file + bpf_prog
-> > is a derivative of link. Or in OoO terms it's not a child class of bpf_link.
-> > seq_file is its own class that should contain bpf_link as one of its
-> > members, but it shouldn't be derived from 'class bpf_link'.
-> 
-> Referring to inheritance here doesn't seem necessary or helpful, I'd
-> rather not confuse and complicate all this further.
-> 
-> bpfdump provider/target + bpf_prog = bpf_link. bpf_link is "a factory"
-> of seq_files. That's it, no inheritance.
+When check_xadd() verifies an XADD operation on a pointer to a stack slot
+containing a spilled pointer, check_stack_read() verifies that the read,
+which is part of XADD, is valid. However, since the placeholder value -1 is
+passed as `value_regno`, check_stack_read() can only return a binary
+decision and can't return the type of the value that was read. The intent
+here is to verify whether the value read from the stack slot may be used as
+a SCALAR_VALUE; but since check_stack_read() doesn't check the type, and
+the type information is lost when check_stack_read() returns, this is not
+enforced, and a malicious user can abuse XADD to leak spilled kernel
+pointers.
 
-named seq_file in bpfdumpfs does indeed look like "factory" pattern.
-And yes, there is no inheritance between named seq_file and given seq_file after open().
+Fix it by letting check_stack_read() verify that the value is usable as a
+SCALAR_VALUE if no type information is passed to the caller.
 
-> > In that sense Yonghong proposed api (raw_tp_open to create anon seq_file+prog
-> > and obj_pin to create a template of named seq_file+prog) are the best fit.
-> > Implementation wise his 'struct extra_priv_data' needs to include
-> > 'struct bpf_link' instead of 'struct bpf_prog *prog;' directly.
-> >
-> > So evertime 'cat' opens named seq_file there is bpf_link registered in IDR.
-> > Anon seq_file should have another bpf_link as well.
-> 
-> So that's where I disagree and don't see the point of having all those
-> short-lived bpf_links. cat opening seq_file doesn't create a bpf_link,
-> it creates a seq_file. If we want to associate some ID with it, it's
-> fine, but it's not a bpf_link ID (in my opinion, of course).
+To be able to use __is_pointer_value() in check_stack_read(), move it up.
 
-I thought we're on the same page with the definition of bpf_link ;)
-Let's recap. To make it easier I'll keep using object oriented analogy
-since I think it's the most appropriate to internalize all the concepts.
-- first what is file descriptor? It's nothing but std::shared_ptr<> to some kernel object.
-- then there is a key class == struct bpf_link
-- for raw tracepoints raw_tp_open() returns an FD to child class of bpf_link
-  which is 'struct bpf_raw_tp_link'.
-  In other words it returns std::shared_ptr<struct bpf_raw_tp_link>.
-- for fentry/fexit/freplace/lsm raw_tp_open() returns an FD to a different child
-  class of bpf_link which is "struct bpf_tracing_link".
-  This is std::share_ptr<struct bpf_trace_link>.
-- for cgroup-bpf progs bpf_link_create() returns an FD to child class of bpf_link
-  which is 'struct bpf_cgroup_link'.
-  This is std::share_ptr<struct bpf_cgroup_link>.
+Fix up the expected unprivileged error message for a BPF selftest that,
+until now, assumed that unprivileged users can use XADD on stack-spilled
+pointers. This also gives us a test for the behavior introduced in this
+patch for free.
 
-In all those cases three different shared pointers are seen as file descriptors
-from the process pov but they point to different children of bpf_link base class.
-link_update() is a method of base class bpf_link and it has to work for
-all children classes.
-Similarly your future get_obj_info_by_fd() from any of these three shared pointers
-will return information specific to that child class.
-In all those cases one link attaches one program to one kernel object.
+In theory, this could also be fixed by forbidding XADD on stack spills
+entirely, since XADD is a locked operation (for operations on memory with
+concurrency) and there can't be any concurrency on the BPF stack; but
+Alexei has said that he wants to keep XADD on stack slots working to avoid
+changes to the test suite [1].
 
-Now back to bpfdumpfs.
-In the latest Yonghong's patches raw_tp_open() returns an FD that is a pointer
-to seq_file. This is existing kernel base class. It has its own seq_operations
-virtual methods that are defined for bpfdumpfs_seq_file which is a child class
-of seq_file that keeps start/stop/next methods as-is and overrides show()
-method to be able to call bpf prog for every iteratable kernel object.
+The following BPF program demonstrates how to leak a BPF map pointer as an
+unprivileged user using this bug:
 
-What you're proposing is to make bpfdump_seq_file class to be a child of two
-base classes (seq_file and bpf_link) whereas I'm saying that it should be
-a child of seq_file only, since bpf_link methods do not apply to it.
-Like there is no sensible behavior for link_update() on such dual parent object.
+    // r7 = map_pointer
+    BPF_LD_MAP_FD(BPF_REG_7, small_map),
+    // r8 = launder(map_pointer)
+    BPF_STX_MEM(BPF_DW, BPF_REG_FP, BPF_REG_7, -8),
+    BPF_MOV64_IMM(BPF_REG_1, 0),
+    ((struct bpf_insn) {
+      .code  = BPF_STX | BPF_DW | BPF_XADD,
+      .dst_reg = BPF_REG_FP,
+      .src_reg = BPF_REG_1,
+      .off = -8
+    }),
+    BPF_LDX_MEM(BPF_DW, BPF_REG_8, BPF_REG_FP, -8),
 
-In my proposal bpfdump_seq_file class keeps cat-ability and all methods of seq_file
-and no extra methods from bpf_link that don't belong in seq_file.
-But I'm arguing that bpfdump_seq_file class should have a member bpf_link
-instead of simply holding bpf_prog via refcnt.
-Let's call this child class of bpf_link the bpf_seq_file_link class. Having
-bpf_seq_file_link as member would mean that such link is discoverable via IDR,
-the user process can get an FD to it and can do get_obj_info_by_fd().
-The information returned for such link will be a pair (bpfdump_prog, bpfdump_seq_file).
-Meaning that at any given time 'bpftool link show' will show where every bpf
-prog in the system is attached to.
-Say named bpfdump_seq_file exists in /sys/kernel/bpfdump/tasks/foo.
-No one is doing a 'cat' on it yet.
-"bpftool link show" will show one link which is a pair (bpfdump_prog, "tasks/foo").
-Now two humans are doing 'cat' of that file.
-The bpfdump_prog refcnt is now 3 and there are two additional seq_files created
-by the kernel when user said open("/sys/kernel/bpfdump/tasks/foo").
-If these two humans are slow somebody could have done "rm /sys/kernel/bpfdump/tasks/foo"
-and that bpfdump_seq_file and it's member bpf_seq_file_link would be gone,
-but two other bpdump_seq_file-s are still active and they are different.
-"bpftool link show" should be showing two pairs (bpfdump_prog, seq_file_A) and
-(bpfdump_prog, seq_file_B).
-The users could have been in different pid namespaces. What seq_file_A is
-iterating could be completely different from seq_file_B, but I think it's
-useful for admin to know where all bpf progs in the system are attached and
-what kind of things are triggering them.
+    // store r8 into map
+    BPF_MOV64_REG(BPF_REG_ARG1, BPF_REG_7),
+    BPF_MOV64_REG(BPF_REG_ARG2, BPF_REG_FP),
+    BPF_ALU64_IMM(BPF_ADD, BPF_REG_ARG2, -4),
+    BPF_ST_MEM(BPF_W, BPF_REG_ARG2, 0, 0),
+    BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
+    BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
+    BPF_EXIT_INSN(),
+    BPF_STX_MEM(BPF_DW, BPF_REG_0, BPF_REG_8, 0),
+
+    BPF_MOV64_IMM(BPF_REG_0, 0),
+    BPF_EXIT_INSN()
+
+[1] https://lore.kernel.org/bpf/20200416211116.qxqcza5vo2ddnkdq@ast-mbp.dhcp.thefacebook.com/
+
+Fixes: 17a5267067f3 ("bpf: verifier (add verifier core)")
+Signed-off-by: Jann Horn <jannh@google.com>
+---
+ kernel/bpf/verifier.c                         | 28 +++++++++++++------
+ .../bpf/verifier/value_illegal_alu.c          |  1 +
+ 2 files changed, 20 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 38cfcf701eeb7..9e92d3d5ffd17 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2118,6 +2118,15 @@ static bool register_is_const(struct bpf_reg_state *reg)
+ 	return reg->type == SCALAR_VALUE && tnum_is_const(reg->var_off);
+ }
+ 
++static bool __is_pointer_value(bool allow_ptr_leaks,
++			       const struct bpf_reg_state *reg)
++{
++	if (allow_ptr_leaks)
++		return false;
++
++	return reg->type != SCALAR_VALUE;
++}
++
+ static void save_register_state(struct bpf_func_state *state,
+ 				int spi, struct bpf_reg_state *reg)
+ {
+@@ -2308,6 +2317,16 @@ static int check_stack_read(struct bpf_verifier_env *env,
+ 			 * which resets stack/reg liveness for state transitions
+ 			 */
+ 			state->regs[value_regno].live |= REG_LIVE_WRITTEN;
++		} else if (__is_pointer_value(env->allow_ptr_leaks, reg)) {
++			/* If value_regno==-1, the caller is asking us whether
++			 * it is acceptable to use this value as a SCALAR_VALUE
++			 * (e.g. for XADD).
++			 * We must not allow unprivileged callers to do that
++			 * with spilled pointers.
++			 */
++			verbose(env, "leaking pointer from stack off %d\n",
++				off);
++			return -EACCES;
+ 		}
+ 		mark_reg_read(env, reg, reg->parent, REG_LIVE_READ64);
+ 	} else {
+@@ -2673,15 +2692,6 @@ static int check_sock_access(struct bpf_verifier_env *env, int insn_idx,
+ 	return -EACCES;
+ }
+ 
+-static bool __is_pointer_value(bool allow_ptr_leaks,
+-			       const struct bpf_reg_state *reg)
+-{
+-	if (allow_ptr_leaks)
+-		return false;
+-
+-	return reg->type != SCALAR_VALUE;
+-}
+-
+ static struct bpf_reg_state *reg_state(struct bpf_verifier_env *env, int regno)
+ {
+ 	return cur_regs(env) + regno;
+diff --git a/tools/testing/selftests/bpf/verifier/value_illegal_alu.c b/tools/testing/selftests/bpf/verifier/value_illegal_alu.c
+index 7f6c232cd8423..ed1c2cea1dea6 100644
+--- a/tools/testing/selftests/bpf/verifier/value_illegal_alu.c
++++ b/tools/testing/selftests/bpf/verifier/value_illegal_alu.c
+@@ -88,6 +88,7 @@
+ 	BPF_EXIT_INSN(),
+ 	},
+ 	.fixup_map_hash_48b = { 3 },
++	.errstr_unpriv = "leaking pointer from stack off -8",
+ 	.errstr = "R0 invalid mem access 'inv'",
+ 	.result = REJECT,
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+
+base-commit: edadedf1c5b4e4404192a0a4c3c0c05e3b7672ab
+-- 
+2.26.1.301.g55bc3eb7cb9-goog
+
