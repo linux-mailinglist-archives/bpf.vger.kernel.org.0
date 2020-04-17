@@ -2,54 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D281AD7EF
-	for <lists+bpf@lfdr.de>; Fri, 17 Apr 2020 09:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02CA41AD982
+	for <lists+bpf@lfdr.de>; Fri, 17 Apr 2020 11:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729501AbgDQHsM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Apr 2020 03:48:12 -0400
-Received: from verein.lst.de ([213.95.11.211]:56236 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729049AbgDQHsM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Apr 2020 03:48:12 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id E8D2E68BEB; Fri, 17 Apr 2020 09:48:07 +0200 (CEST)
-Date:   Fri, 17 Apr 2020 09:48:07 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
+        id S1730178AbgDQJJR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Apr 2020 05:09:17 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:32183 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730168AbgDQJJQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 17 Apr 2020 05:09:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587114556;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2cCOf6XJLp8oVY3ARJuZvdamGJsDNMFwpwD+jmxrCyc=;
+        b=i+qpCyA1wuhio4PheKZiow/KpwSdGwSzeRdUSknjf+g6shwm4c1MChNNAFwvPJwnhaeFpU
+        Vb4VdvftfH8vypCjN0ycfzD/+VyD6gCtFjiKhKMsEZXxgPnqoUSwpYbJ9CpW0TOfdvwmQ+
+        YtfqdRjTcB2WoUitqMi0ARDhs8eBVa0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-271-H6wdLbRDNBil-5rkjGT0_Q-1; Fri, 17 Apr 2020 05:09:11 -0400
+X-MC-Unique: H6wdLbRDNBil-5rkjGT0_Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E6B5A107ACC4;
+        Fri, 17 Apr 2020 09:09:07 +0000 (UTC)
+Received: from krava (unknown [10.40.195.134])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C7C8E100EBA4;
+        Fri, 17 Apr 2020 09:08:12 +0000 (UTC)
+Date:   Fri, 17 Apr 2020 11:08:10 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 2/6] firmware_loader: remove unused exports
-Message-ID: <20200417074807.GA19954@lst.de>
-References: <20200417064146.1086644-1-hch@lst.de> <20200417064146.1086644-3-hch@lst.de> <20200417074330.GB23015@kroah.com>
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jiwei Sun <jiwei.sun@windriver.com>,
+        yuzhoujian <yuzhoujian@didichuxing.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.garry@huawei.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v11 0/4] perf tools: add support for libpfm4
+Message-ID: <20200417090810.GA468827@krava>
+References: <20200416221457.46710-1-irogers@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200417074330.GB23015@kroah.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200416221457.46710-1-irogers@google.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 09:43:30AM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Apr 17, 2020 at 08:41:42AM +0200, Christoph Hellwig wrote:
-> > Neither fw_fallback_config nor firmware_config_table are used by modules.
-> > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > ---
-> >  drivers/base/firmware_loader/fallback_table.c | 2 --
-> >  1 file changed, 2 deletions(-)
+On Thu, Apr 16, 2020 at 03:14:53PM -0700, Ian Rogers wrote:
+> This patch links perf with the libpfm4 library if it is available
+> and NO_LIBPFM4 isn't passed to the build. The libpfm4 library
+> contains hardware event tables for all processors supported by
+> perf_events. It is a helper library that helps convert from a
+> symbolic event name to the event encoding required by the
+> underlying kernel interface. This library is open-source and
+> available from: http://perfmon2.sf.net.
+>     
+> With this patch, it is possible to specify full hardware events
+> by name. Hardware filters are also supported. Events must be
+> specified via the --pfm-events and not -e option. Both options
+> are active at the same time and it is possible to mix and match:
+>     
+> $ perf stat --pfm-events inst_retired:any_p:c=1:i -e cycles ....
 > 
-> I have no objection to this patch, and can take it in my tree, but I
-> don't see how it fits in with your larger patch series...
+> v11 reformats the perf list output to be:
+> List of pre-defined events (to be used in -e):
+> 
+>   branch-instructions OR branches                    [Hardware event]
+>   branch-misses                                      [Hardware event]
+> ...
+> 
+> List of pre-defined events (to be used in --pfm-events):
+> 
+> ix86arch:
+>   UNHALTED_CORE_CYCLES
+>     [count core clock cycles whenever the clock signal on the specific core is running (not halted)]
+>   INSTRUCTION_RETIRED
+>     [count the number of instructions at retirement. For instructions that consists of multiple mic>
+> ...
+> skx:
+>   UNHALTED_CORE_CYCLES
+>     [Count core clock cycles whenever the clock signal on the specific core is running (not halted)]
+> ...
+>   BACLEARS
+>     [Branch re-steered]
+>       BACLEARS:ANY
+>         [Number of front-end re-steers due to BPU misprediction]
+> ...
 
-firmware_config_table is a sysctl table, and I looked for users but
-didn't find them.  But yes, it isn't really related and you can take
-it separately.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+thanks,
+jirka
+
