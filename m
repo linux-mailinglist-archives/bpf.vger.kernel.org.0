@@ -2,34 +2,34 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B241AE49C
-	for <lists+bpf@lfdr.de>; Fri, 17 Apr 2020 20:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4DE1AE63B
+	for <lists+bpf@lfdr.de>; Fri, 17 Apr 2020 21:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730562AbgDQSRY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Apr 2020 14:17:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730256AbgDQSRY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 17 Apr 2020 14:17:24 -0400
+        id S1730714AbgDQTu0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Apr 2020 15:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730449AbgDQTu0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Apr 2020 15:50:26 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA94C061A0C;
-        Fri, 17 Apr 2020 11:17:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209CFC061A0C;
+        Fri, 17 Apr 2020 12:50:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
         :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vy45WYyAvnWC++4r2BeTmRg1PjZyiSd0b2OnG2cNJU4=; b=sWz2kV2wssYwweQnlTwBuJKzyR
-        7VUKhrbWXqHxSQj/1A0zpmh1Kqo3QLCka1o4544prwiy6c/4iHqUMzyGylYnt+McLHPs8lFc0/KpL
-        hyIbBsAFXl6M0QCeXVxGYe5bPGGM8dg+ksbZyoZ+ydLz33z62TIdQqic2u3XvtzhXEJtO1cTsorjz
-        sQPe/tkkyZEsFP757b455kygIg+AjxJSRfa+NbGYtL4e455Hu9kPaKsR4R9u5WmpmRav7TadG5cTF
-        R1FweRHYUnu2ref+DlWyLZMyRGCveeIPeoUwv6K/TXltQHb6w67+NoaQ+dysV3SPmKrH2sx96sJgt
-        tZbzUuXQ==;
+        bh=oZFKaAEx7x9RM0yplSN83xASDmB3ff/b3yogXeNlHSg=; b=MHwDf9SXtGhOxDOC9x1npNeXsu
+        dLvd8csRf6Q/wv1NcXob0gmK6bvBDyGUpM8ox6iV59gyXMbwRY6oI/dse4DNj7svbiPiGjz8KxWp3
+        CmSDdKo+QA+LAOHozOfSCUOoQ3cEHroZsR1k4tAtpc3ZAciJSxF6NSGzvl9hENveamfdch5oSSdT4
+        q4IniJbR9Cdze+AE4xNE2Td8S6Ug7viKtRySWJKbtp9IdTXYOPQ2uwVAZymcePdNcTbGv7UqPCOPB
+        Q6I5e8bI6GEtYRzpLT5qa6uBCrCu2I7OuTTlWhi2+rbXJdAx+sGsWGweKO0WeZSbxuhumFeWWwtTw
+        5f9T8OtQ==;
 Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jPVYE-0007Jp-SN; Fri, 17 Apr 2020 18:17:18 +0000
-Date:   Fri, 17 Apr 2020 11:17:18 -0700
+        id 1jPX0B-0007D5-JD; Fri, 17 Apr 2020 19:50:15 +0000
+Date:   Fri, 17 Apr 2020 12:50:15 -0700
 From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Kees Cook <keescook@chromium.org>,
+To:     Andrey Ignatov <rdna@fb.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Kees Cook <keescook@chromium.org>,
         Iurii Zaikin <yzaikin@google.com>,
         Luis Chamberlain <mcgrof@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -40,88 +40,134 @@ Cc:     Kees Cook <keescook@chromium.org>,
         linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org
 Subject: Re: [PATCH 6/6] sysctl: pass kernel pointers to ->proc_handler
-Message-ID: <20200417181718.GN5820@bombadil.infradead.org>
+Message-ID: <20200417195015.GO5820@bombadil.infradead.org>
 References: <20200417064146.1086644-1-hch@lst.de>
  <20200417064146.1086644-7-hch@lst.de>
+ <20200417193910.GA7011@rdna-mbp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200417064146.1086644-7-hch@lst.de>
+In-Reply-To: <20200417193910.GA7011@rdna-mbp>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 08:41:46AM +0200, Christoph Hellwig wrote:
-> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-> index b6f5d459b087..d5c9a9bf4e90 100644
-> --- a/fs/proc/proc_sysctl.c
-> +++ b/fs/proc/proc_sysctl.c
-> @@ -539,13 +539,13 @@ static struct dentry *proc_sys_lookup(struct inode *dir, struct dentry *dentry,
->  	return err;
->  }
->  
-> -static ssize_t proc_sys_call_handler(struct file *filp, void __user *buf,
-> +static ssize_t proc_sys_call_handler(struct file *filp, void __user *ubuf,
->  		size_t count, loff_t *ppos, int write)
->  {
->  	struct inode *inode = file_inode(filp);
->  	struct ctl_table_header *head = grab_header(inode);
->  	struct ctl_table *table = PROC_I(inode)->sysctl_entry;
-> -	void *new_buf = NULL;
-> +	void *kbuf;
->  	ssize_t error;
->  
->  	if (IS_ERR(head))
-> @@ -564,27 +564,36 @@ static ssize_t proc_sys_call_handler(struct file *filp, void __user *buf,
->  	if (!table->proc_handler)
->  		goto out;
->  
-> -	error = BPF_CGROUP_RUN_PROG_SYSCTL(head, table, write, buf, &count,
-> -					   ppos, &new_buf);
-> +	if (write) {
-> +		kbuf = memdup_user_nul(ubuf, count);
-> +		if (IS_ERR(kbuf)) {
-> +			error = PTR_ERR(kbuf);
-> +			goto out;
-> +		}
-> +	} else {
-> +		error = -ENOMEM;
-> +		kbuf = kzalloc(count, GFP_KERNEL);
-> +		if (!kbuf)
-> +			goto out;
-> +	}
-> +
-> +	error = BPF_CGROUP_RUN_PROG_SYSCTL(head, table, write, &kbuf, &count,
-> +					   ppos);
->  	if (error)
-> -		goto out;
-> +		goto out_free_buf;
->  
->  	/* careful: calling conventions are nasty here */
+On Fri, Apr 17, 2020 at 12:39:10PM -0700, Andrey Ignatov wrote:
+> Though it breaks tools/testing/selftests/bpf/test_sysctl.c. I spent some
+> time debugging and found a couple of problems -- see below. But there is
+> something else .. Still I figured it's a good idea to give an early
+> heads-up.
 
-I think this comment can go now ;-)
+"see below"?  Really?  You're going to say that and then make people
+scroll through thousands of lines of quoted material to find your new
+contributions?  Please, learn to trim appropriately.
 
-> -	if (new_buf) {
-> -		mm_segment_t old_fs;
-> -
-> -		old_fs = get_fs();
-> -		set_fs(KERNEL_DS);
-> -		error = table->proc_handler(table, write, (void __user *)new_buf,
-> -					    &count, ppos);
-> -		set_fs(old_fs);
-> -		kfree(new_buf);
-> -	} else {
-> -		error = table->proc_handler(table, write, buf, &count, ppos);
-> -	}
-> +	error = table->proc_handler(table, write, kbuf, &count, ppos);
-> +	if (error)
-> +		goto out_free_buf;
-> +
-> +	error = -EFAULT;
-> +	if (copy_to_user(ubuf, kbuf, count))
-> +		goto out_free_buf;
+Here's about what you should have sent:
 
-Can we skip this if !write?  Indeed, don't we have to in case the user has
-passed a pointer to a read-only memory page?
-
+> > @@ -1156,52 +1153,41 @@ const struct bpf_verifier_ops cg_dev_verifier_ops = {
+> >   */
+> >  int __cgroup_bpf_run_filter_sysctl(struct ctl_table_header *head,
+> >  				   struct ctl_table *table, int write,
+> > -				   void __user *buf, size_t *pcount,
+> > -				   loff_t *ppos, void **new_buf,
+> > -				   enum bpf_attach_type type)
+> > +				   void **buf, size_t *pcount,
+> > +				   loff_t *ppos, enum bpf_attach_type type)
+> >  {
+> >  	struct bpf_sysctl_kern ctx = {
+> >  		.head = head,
+> >  		.table = table,
+> >  		.write = write,
+> >  		.ppos = ppos,
+> > -		.cur_val = NULL,
+> > +		.cur_val = *buf,
+> 
+> 
+> cur_val is allocated separately below to read current value of sysctl
+> and not interfere with user-passed buffer. 
+> 
+> >  		.cur_len = PAGE_SIZE,
+> >  		.new_val = NULL,
+> >  		.new_len = 0,
+> >  		.new_updated = 0,
+> >  	};
+> >  	struct cgroup *cgrp;
+> > +	loff_t pos = 0;
+> >  	int ret;
+> >  
+> > -	ctx.cur_val = kmalloc_track_caller(ctx.cur_len, GFP_KERNEL);
+> > -	if (ctx.cur_val) {
+> > -		mm_segment_t old_fs;
+> > -		loff_t pos = 0;
+> > -
+> > -		old_fs = get_fs();
+> > -		set_fs(KERNEL_DS);
+> > -		if (table->proc_handler(table, 0, (void __user *)ctx.cur_val,
+> > -					&ctx.cur_len, &pos)) {
+> > -			/* Let BPF program decide how to proceed. */
+> > -			ctx.cur_len = 0;
+> > -		}
+> > -		set_fs(old_fs);
+> > -	} else {
+> > +	if (table->proc_handler(table, 0, ctx.cur_val, &ctx.cur_len, &pos)) {
+> 
+> This call reads current value of sysclt into cur_val buffer.
+> 
+> Since you made cur_val point to kernel copy of user-passed buffer, this
+> call will always override whatever is there in that kernel copy.
+> 
+> For example, if user is writing to sysclt, then *buf is a pointer to new
+> value, but this call will override this new value and, corresondingly
+> new value will be lost.
+> 
+> I think cur_val should still be allocated separately.
+> 
+> 
+> >  		/* Let BPF program decide how to proceed. */
+> >  		ctx.cur_len = 0;
+> >  	}
+> >  
+> > -	if (write && buf && *pcount) {
+> > +	if (write && *pcount) {
+> >  		/* BPF program should be able to override new value with a
+> >  		 * buffer bigger than provided by user.
+> >  		 */
+> >  		ctx.new_val = kmalloc_track_caller(PAGE_SIZE, GFP_KERNEL);
+> > -		ctx.new_len = min_t(size_t, PAGE_SIZE, *pcount);
+> > -		if (!ctx.new_val ||
+> > -		    copy_from_user(ctx.new_val, buf, ctx.new_len))
+> > +		if (ctx.new_val) {
+> > +			ctx.new_len = min_t(size_t, PAGE_SIZE, *pcount);
+> > +			memcpy(ctx.new_val, buf, ctx.new_len);
+> 
+> This should be *buf, not buf. A typo I guess?
+> 
+> 
+> I applied the whole patchset to bpf-next tree and run selftests. This
+> patch breaks 4 of them:
+> 
+> 	% cd tools/testing/selftests/bpf/
+> 	% ./test_sysctl
+> 	...
+> 	Test case: sysctl_get_new_value sysctl:write ok .. [FAIL]
+> 	Test case: sysctl_get_new_value sysctl:write ok long .. [FAIL]
+> 	Test case: sysctl_get_new_value sysctl:write E2BIG .. [FAIL]
+> 	Test case: sysctl_set_new_value sysctl:read EINVAL .. [PASS]
+> 	Test case: sysctl_set_new_value sysctl:write ok .. [FAIL]
+> 	...
+> 	Summary: 36 PASSED, 4 FAILED
+> 
+> I applied both changes I suggested above and it reduces number of broken
+> selftests to one:
+> 
+> Test case: sysctl_set_new_value sysctl:write ok .. [FAIL]
+> 
+> I haven't debugged this last one though yet ..
+> 
+> All these tests are available in
+> tools/testing/selftests/bpf/test_sysctl.c.
+> 
+> I think it's a good idea to run these tests locally before sending the
+> next version of the patch set.
+> 
