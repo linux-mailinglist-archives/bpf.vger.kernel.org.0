@@ -2,193 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3951AF4F3
-	for <lists+bpf@lfdr.de>; Sat, 18 Apr 2020 22:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1271AF5E1
+	for <lists+bpf@lfdr.de>; Sun, 19 Apr 2020 01:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgDRUbv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 18 Apr 2020 16:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726014AbgDRUbu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 18 Apr 2020 16:31:50 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EFBAC061A0C;
-        Sat, 18 Apr 2020 13:31:50 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id t3so6466834qkg.1;
-        Sat, 18 Apr 2020 13:31:50 -0700 (PDT)
+        id S1725877AbgDRX1M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 Apr 2020 19:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725827AbgDRX1C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 Apr 2020 19:27:02 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA5BC061A41
+        for <bpf@vger.kernel.org>; Sat, 18 Apr 2020 16:27:02 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id t40so2792466pjb.3
+        for <bpf@vger.kernel.org>; Sat, 18 Apr 2020 16:27:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:user-agent:in-reply-to:references:mime-version
-         :content-transfer-encoding:subject:to:cc:from:message-id;
-        bh=OTuUPzfRxANqtVwZOWyquS2L31/1qsaERPb/xgNgxL4=;
-        b=MxtpfIa4SQHzMunTmjNSh0oH6zgMIlKO2Dw7ekeMFUzP8HCzRi0cdgkymLKt+Joc8F
-         H4xGEVzEIzA40YOwoIP7BRscg5P0LKBu6rk+XZUXnJjblddKMujZGciSt/ym1cI7rOAb
-         sGLPbvHPVvje5A9WKufJ2ouuWIIn7bIdX2Oxfy8CNAtZTk7H11Qaj0l2J17DV9MTexeP
-         Mo7HtkQEtLeo4FzmQuG09hUZMUM/ZX6dDyQ6dtD4vbltw1+5vrlKwD8GT0TOcJrf1RUQ
-         5eEBaqm2vD584hB2kogzFow0lxu1hQoPZqfvptJdGkn/0I2xSwuL8g9OSefGFpdZrVIa
-         yDkQ==
+        d=cs.washington.edu; s=goo201206;
+        h=from:to:cc:subject:date:message-id;
+        bh=V1iSNi3FjSbFymrjsWR16L5sHfocV0iKd0ObfqLdCDE=;
+        b=E94FC9JeOPlEtesZY7pnic5oqXC1UEm6VlEGtC1YgAScMnSkB2LJY+O5H4diMpuWHL
+         d/no2M6eNI/dQY9j/v6SSyhcGs+aK1ScSuDvksCyuVmfHcNTBZoPi8j55p0j3j3YBUoZ
+         Dp5qeYnqs74jXMUqZHwc0BsGZWmWM+mqnvNTg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:user-agent:in-reply-to:references
-         :mime-version:content-transfer-encoding:subject:to:cc:from
-         :message-id;
-        bh=OTuUPzfRxANqtVwZOWyquS2L31/1qsaERPb/xgNgxL4=;
-        b=LcBkXGQ0zEs9LBtRY0Oivb7lMbrBFreP8PO/N1m+eCvI7WFiC+ZCbHsHDe2aOq/4Y2
-         wcVOTxfBBdPd+JU2wYJc/sN5aV9LG0AzkDzSxZu/DV0FSXf1Ku2rbCKnj3rInvxI2TTj
-         FQWVNrbNtNImvkviksMvJfpoPL4JXiFSS1mYLZTN9xRd7WjJHVNLe8gLqceFvi3/i8xc
-         x2pMIzrgiSXXrhkH2jB2XieJs1Kj5w8FfZoD/lcM1wLcAnKDFRHpbIuONP3IeRBIcX5Q
-         1u/MBITtDm6u5D+2nCy/nPzHd/S8e/TGk9gd8pfqBpi0Li1fe7uriQU1cfMoQBDNQaqL
-         YEnw==
-X-Gm-Message-State: AGi0PubadxANbpYd47krqp2fuEyn0Z62l0VvLcIVhtQNYvfSgIIXtkFL
-        k040OmajB9oicmCPKxBO25k=
-X-Google-Smtp-Source: APiQypJXTlgGriW9burkWTwuYBMHnxZDsm+/kkrfoMk7IcZX4wVAbzkMW62LwNZntT5b/4Z5dBYrUg==
-X-Received: by 2002:ae9:ef92:: with SMTP id d140mr8588033qkg.363.1587241909528;
-        Sat, 18 Apr 2020 13:31:49 -0700 (PDT)
-Received: from [10.103.140.49] (179-240-131-49.3g.claro.net.br. [179.240.131.49])
-        by smtp.gmail.com with ESMTPSA id r128sm19605251qke.95.2020.04.18.13.31.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 18 Apr 2020 13:31:48 -0700 (PDT)
-Date:   Sat, 18 Apr 2020 17:31:38 -0300
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20200418160536.4mrvqh2lasqbyk77@ast-mbp>
-References: <1587120160-3030-1-git-send-email-alan.maguire@oracle.com> <20200418160536.4mrvqh2lasqbyk77@ast-mbp>
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [RFC PATCH bpf-next 0/6] bpf, printk: add BTF-based type printing
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alan Maguire <alan.maguire@oracle.com>
-CC:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com, kafai@fb.com,
-        songliubraving@fb.com, andriin@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-From:   Arnaldo Melo <arnaldo.melo@gmail.com>
-Message-ID: <B7DDCAA4-4431-414F-B494-77FF742F68E5@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=V1iSNi3FjSbFymrjsWR16L5sHfocV0iKd0ObfqLdCDE=;
+        b=a3jSYQVm6svxpwcLBy4j5inQ3nKT0+o/6mMOpMbMeX+wgobvBo44u9ZIj7kkR2sJYS
+         SpYZUjbap0/aXEASCuXVpCbyClB+K3WF2plPo5Vj/s+6/VoxLlPdTLztkMQ0jJ2n43mb
+         BUKheK1/eGORNWTd+I1jyOF0BJECpGCHV3Xvkr54U17LWKamVgH5Bb5Tv840zCqa+mcU
+         KxP5y6LdIJr6d91e73doMJvUOeJ0JxbPZMaiuWXc5pJQsYX0OaZQdAniF531BQ3VE8Rv
+         rS4Rym2z5+jFDt637PnXlcJFbH1xCG0KlADwyvskKBMuekFWTCfgHM6LhEAXzMgkyY6P
+         U95A==
+X-Gm-Message-State: AGi0PuakjnMDAWDyDq50T1D2o2QD/dBvc9ib8qL2uX2kfAWpTKRedxZv
+        TrYA6flFzIzy5/B1WSNvs5sFsM9eAJLk0Q==
+X-Google-Smtp-Source: APiQypJUg540AgQ0gfERSdqKG3/UO/88BFVywKnBq0ADggzskh4vKGlmvKwDR8ejYqwi3brMfHgq9Q==
+X-Received: by 2002:a17:902:a511:: with SMTP id s17mr10176108plq.33.1587252420747;
+        Sat, 18 Apr 2020 16:27:00 -0700 (PDT)
+Received: from localhost.localdomain (c-73-53-94-119.hsd1.wa.comcast.net. [73.53.94.119])
+        by smtp.gmail.com with ESMTPSA id u7sm21429323pfu.90.2020.04.18.16.26.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Apr 2020 16:27:00 -0700 (PDT)
+From:   Luke Nelson <lukenels@cs.washington.edu>
+X-Google-Original-From: Luke Nelson <luke.r.nels@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf 1/2] bpf, x86: Fix encoding for lower 8-bit registers in BPF_STX BPF_B
+Date:   Sat, 18 Apr 2020 16:26:53 -0700
+Message-Id: <20200418232655.23870-1-luke.r.nels@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This patch fixes an encoding bug in emit_stx for BPF_B when the source
+register is BPF_REG_FP.
 
+The current implementation for BPF_STX BPF_B in emit_stx saves one REX
+byte when the operands can be encoded using Mod-R/M alone. The lower 8
+bits of registers %rax, %rbx, %rcx, and %rdx can be accessed without using
+a REX prefix via %al, %bl, %cl, and %dl, respectively. Other registers,
+(e.g., %rsi, %rdi, %rbp, %rsp) require a REX prefix to use their 8-bit
+equivalents (%sil, %dil, %bpl, %spl).
 
-On April 18, 2020 1:05:36 PM GMT-03:00, Alexei Starovoitov <alexei=2Estaro=
-voitov@gmail=2Ecom> wrote:
->On Fri, Apr 17, 2020 at 11:42:34AM +0100, Alan Maguire wrote:
->> The printk family of functions support printing specific pointer
->types
->> using %p format specifiers (MAC addresses, IP addresses, etc)=2E  For
->> full details see Documentation/core-api/printk-formats=2Erst=2E
->>=20
->> This RFC patchset proposes introducing a "print typed pointer" format
->> specifier "%pT<type>"; the type specified is then looked up in the
->BPF
->> Type Format (BTF) information provided for vmlinux to support
->display=2E
->
->This is great idea! Love it=2E
+The current code checks if the source for BPF_STX BPF_B is BPF_REG_1
+or BPF_REG_2 (which map to %rdi and %rsi), in which case it emits the
+required REX prefix. However, it misses the case when the source is
+BPF_REG_FP (mapped to %rbp).
 
-21st century finally! 8-)
+The result is that BPF_STX BPF_B with BPF_REG_FP as the source operand
+will read from register %ch instead of the correct %bpl. This patch fixes
+the problem by fixing and refactoring the check on which registers need
+the extra REX byte. Since no BPF registers map to %rsp, there is no need
+to handle %spl.
 
->> The above potential use cases hint at a potential reply to
->> a reasonable objection that such typed display should be
->> solved by tracing programs, where the in kernel tracing records
->> data and the userspace program prints it out=2E  While this
->> is certainly the recommended approach for most cases, I
->> believe having an in-kernel mechanism would be valuable
->> also=2E
->
->yep=2E This is useful for general purpose printk=2E
->The only piece that must be highlighted in the printk documentation
->that unlike the rest of BPF there are zero safety guarantees here=2E
->The programmer can pass wrong pointer to printk() and the kernel _will_
->crash=2E
->
->>   struct sk_buff *skb =3D alloc_skb(64, GFP_KERNEL);
->>=20
->>   pr_info("%pTN<struct sk_buff>", skb);
->
->why follow "TN" convention?
->I think "%p<struct sk_buff>" is much more obvious, unambiguous, and
->equally easy to parse=2E
->
->> =2E=2E=2Egives us:
->>=20
->>
->{{{=2Enext=3D00000000c7916e9c,=2Eprev=3D00000000c7916e9c,{=2Edev=3D000000=
-00c7916e9c|=2Edev_scratch=3D0}}|=2Erbnode=3D{=2E__rb_parent_color=3D0,
->
->This is unreadable=2E
->I like the choice of C style output, but please format it similar to
->drgn=2E Like:
->*(struct task_struct *)0xffff889ff8a08000 =3D {
->	=2Ethread_info =3D (struct thread_info){
->		=2Eflags =3D (unsigned long)0,
->		=2Estatus =3D (u32)0,
->	},
->	=2Estate =3D (volatile long)1,
->	=2Estack =3D (void *)0xffffc9000c4dc000,
->	=2Eusage =3D (refcount_t){
->		=2Erefs =3D (atomic_t){
->			=2Ecounter =3D (int)2,
->		},
->	},
->	=2Eflags =3D (unsigned int)4194560,
->	=2Eptrace =3D (unsigned int)0,
->
->I like Arnaldo's idea as well, but I prefer zeros to be dropped by
->default=2E
+Fixes: 622582786c9e0 ("net: filter: x86: internal BPF JIT")
+Signed-off-by: Xi Wang <xi.wang@gmail.com>
+Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+---
+ arch/x86/net/bpf_jit_comp.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-That's my preference as well, it's just I feel ashamed of not participatin=
-g in this party as much as I feel I should, so I was just being overly caut=
-ious in my suggestions=2E
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 5ea7c2cf7ab4..42b6709e6dc7 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -158,6 +158,19 @@ static bool is_ereg(u32 reg)
+ 			     BIT(BPF_REG_AX));
+ }
+ 
++/*
++ * is_ereg_8l() == true if BPF register 'reg' is mapped to access x86-64
++ * lower 8-bit registers dil,sil,bpl,spl,r8b..r15b, which need extra byte
++ * of encoding. al,cl,dl,bl have simpler encoding.
++ */
++static bool is_ereg_8l(u32 reg)
++{
++	return is_ereg(reg) ||
++	    (1 << reg) & (BIT(BPF_REG_1) |
++			  BIT(BPF_REG_2) |
++			  BIT(BPF_REG_FP));
++}
++
+ static bool is_axreg(u32 reg)
+ {
+ 	return reg == BPF_REG_0;
+@@ -598,9 +611,8 @@ static void emit_stx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
+ 	switch (size) {
+ 	case BPF_B:
+ 		/* Emit 'mov byte ptr [rax + off], al' */
+-		if (is_ereg(dst_reg) || is_ereg(src_reg) ||
+-		    /* We have to add extra byte for x86 SIL, DIL regs */
+-		    src_reg == BPF_REG_1 || src_reg == BPF_REG_2)
++		if (is_ereg(dst_reg) || is_ereg_8l(src_reg))
++			/* Add extra byte for eregs or SIL,DIL,BPL in src_reg */
+ 			EMIT2(add_2mod(0x40, dst_reg, src_reg), 0x88);
+ 		else
+ 			EMIT1(0x88);
+-- 
+2.17.1
 
-'perf trace'  zaps any zero syscall arg out of the way by default, so that=
-'s my preference, sure=2E
-
- - Arnaldo
-
->Just like %d doesn't print leading zeros by default=2E
->"%p0<struct sk_buff>" would print them=2E
->
->> The patches are marked RFC for several reasons
->>=20
->> - There's already an RFC patchset in flight dealing with BTF dumping;
->>=20
->> https://www=2Espinics=2Enet/lists/netdev/msg644412=2Ehtml
->>=20
->>   The reason I'm posting this is the approach is a bit different=20
->>   and there may be ways of synthesizing the approaches=2E
->
->I see no overlap between patch sets whatsoever=2E
->Why do you think there is?
->
->> - The mechanism of vmlinux BTF initialization is not fit for purpose
->>   in a printk() setting as I understand it (it uses mutex locking
->>   to prevent multiple initializations of the BTF info)=2E  A simple
->>   approach to support printk might be to simply initialize the
->>   BTF vmlinux case early in boot; it only needs to happen once=2E
->>   Any suggestions here would be great=2E
->> - BTF-based rendering is more complex than other printk() format
->>   specifier-driven methods; that said, because of its generality it
->>   does provide significant value I think
->> - More tests are needed=2E
->
->yep=2E Please make sure to add one to selftest/bpf as well=2E
->bpf maintainers don't run printk tests as part of workflow, so
->future BTF changes will surely break it if there are no selftests/bpf=2E
->
->Patch 2 isn't quite correct=2E Early parse of vmlinux BTF does not
->compute
->resolved_ids to save kernel memory=2E The trade off is execution time vs
->kernel
->memory=2E I believe that saving memory is more important here, since
->execution is
->not in critical path=2E There is __get_type_size()=2E It should be used i=
-n
->later
->patches instead of btf_type_id_size() that relies on pre-computed
->resolved_sizes and resolved_ids=2E
-
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
