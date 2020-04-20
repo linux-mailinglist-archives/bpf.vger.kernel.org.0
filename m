@@ -2,33 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B151B08CE
-	for <lists+bpf@lfdr.de>; Mon, 20 Apr 2020 14:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C091B08EA
+	for <lists+bpf@lfdr.de>; Mon, 20 Apr 2020 14:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbgDTMIR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Apr 2020 08:08:17 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:55926 "EHLO huawei.com"
+        id S1726307AbgDTMLA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Apr 2020 08:11:00 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:37360 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726581AbgDTMIR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:08:17 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 9F657B648C2AFE2537E3;
-        Mon, 20 Apr 2020 20:08:14 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Mon, 20 Apr 2020
- 20:08:07 +0800
+        id S1726262AbgDTMLA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Apr 2020 08:11:00 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id A93B0B3CD1E906072D21;
+        Mon, 20 Apr 2020 20:10:51 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Mon, 20 Apr 2020
+ 20:10:45 +0800
 From:   Jason Yan <yanaijie@huawei.com>
-To:     <jeffrey.t.kirsher@intel.com>, <davem@davemloft.net>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <kuba@kernel.org>,
-        <hawk@kernel.org>, <john.fastabend@gmail.com>, <kafai@fb.com>,
-        <songliubraving@fb.com>, <yhs@fb.com>, <andriin@fb.com>,
-        <kpsingh@chromium.org>, <intel-wired-lan@lists.osuosl.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>
+To:     <udknight@gmail.com>, <davem@davemloft.net>,
+        <kuznet@ms2.inr.ac.ru>, <yoshfuji@linux-ipv6.org>,
+        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <x86@kernel.org>, <hpa@zytor.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <andriin@fb.com>, <john.fastabend@gmail.com>,
+        <kpsingh@chromium.org>, <lukenels@cs.washington.edu>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
 CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH] i40e: Remove unneeded conversion to bool
-Date:   Mon, 20 Apr 2020 20:34:48 +0800
-Message-ID: <20200420123448.7382-1-yanaijie@huawei.com>
+Subject: [PATCH] bpf, x32: remove unneeded conversion to bool
+Date:   Mon, 20 Apr 2020 20:37:27 +0800
+Message-ID: <20200420123727.3616-1-yanaijie@huawei.com>
 X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -43,38 +45,31 @@ X-Mailing-List: bpf@vger.kernel.org
 The '==' expression itself is bool, no need to convert it to bool again.
 This fixes the following coccicheck warning:
 
-drivers/net/ethernet/intel/i40e/i40e_main.c:1614:52-57: WARNING:
-conversion to bool not needed here
-drivers/net/ethernet/intel/i40e/i40e_main.c:11439:52-57: WARNING:
-conversion to bool not needed here
+arch/x86/net/bpf_jit_comp32.c:1478:50-55: WARNING: conversion to bool
+not needed here
+arch/x86/net/bpf_jit_comp32.c:1479:50-55: WARNING: conversion to bool
+not needed here
 
 Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- drivers/net/ethernet/intel/i40e/i40e_main.c | 4 ++--
+ arch/x86/net/bpf_jit_comp32.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 8c3e753bfb9d..2a037ec244b9 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -1611,7 +1611,7 @@ static int i40e_config_rss_aq(struct i40e_vsi *vsi, const u8 *seed,
- 		}
- 	}
- 	if (lut) {
--		bool pf_lut = vsi->type == I40E_VSI_MAIN ? true : false;
-+		bool pf_lut = vsi->type == I40E_VSI_MAIN;
- 
- 		ret = i40e_aq_set_rss_lut(hw, vsi->id, pf_lut, lut, lut_size);
- 		if (ret) {
-@@ -11436,7 +11436,7 @@ static int i40e_get_rss_aq(struct i40e_vsi *vsi, const u8 *seed,
- 	}
- 
- 	if (lut) {
--		bool pf_lut = vsi->type == I40E_VSI_MAIN ? true : false;
-+		bool pf_lut = vsi->type == I40E_VSI_MAIN;
- 
- 		ret = i40e_aq_get_rss_lut(hw, vsi->id, pf_lut, lut, lut_size);
- 		if (ret) {
+diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
+index 4d2a7a764602..b41ba3517819 100644
+--- a/arch/x86/net/bpf_jit_comp32.c
++++ b/arch/x86/net/bpf_jit_comp32.c
+@@ -1475,8 +1475,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+ 	for (i = 0; i < insn_cnt; i++, insn++) {
+ 		const s32 imm32 = insn->imm;
+ 		const bool is64 = BPF_CLASS(insn->code) == BPF_ALU64;
+-		const bool dstk = insn->dst_reg == BPF_REG_AX ? false : true;
+-		const bool sstk = insn->src_reg == BPF_REG_AX ? false : true;
++		const bool dstk = insn->dst_reg != BPF_REG_AX;
++		const bool sstk = insn->src_reg != BPF_REG_AX;
+ 		const u8 code = insn->code;
+ 		const u8 *dst = bpf2ia32[insn->dst_reg];
+ 		const u8 *src = bpf2ia32[insn->src_reg];
 -- 
 2.21.1
 
