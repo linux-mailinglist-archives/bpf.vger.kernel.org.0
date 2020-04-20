@@ -2,80 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A5E1B11C5
-	for <lists+bpf@lfdr.de>; Mon, 20 Apr 2020 18:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D571B136E
+	for <lists+bpf@lfdr.de>; Mon, 20 Apr 2020 19:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbgDTQje (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Apr 2020 12:39:34 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:53741 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725773AbgDTQje (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 20 Apr 2020 12:39:34 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id D53D43FC;
-        Mon, 20 Apr 2020 12:39:32 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 20 Apr 2020 12:39:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        content-transfer-encoding:content-type:in-reply-to:date:cc
-        :subject:from:to:message-id; s=fm3; bh=tGKhGxcuXz62vF/Dg9q0OABBh
-        DVINldw8jc1jRGeLhc=; b=qkOlMFp/X9vY4inHxrr+E4XYt42YrXgAI81JZw9R1
-        h+XWc9BA3oNMV3zEIDRGsbPKO7rI+EURrl9kpHk4fs+TJu/xXcoTENeHIwjj32ry
-        PTottywSu8CRAYsvTAR4Kf1Y8Y4P4wxxLQhCTA+7BC+SXuPRTk4QrJlatXeJcCw9
-        +XjJw1knDsjiSmyeDmZ4SQ8c83OQAJEmYojYZVDJ/E4nFLqr4Wje54BNJDwwDIyl
-        0h+Dec+u+ymCYeHbDuxnCCMfnJtFpyOx7UXFD6wWu3kNgsFI1hpKOZsovzeRILs6
-        LJYiKi6mZSf0uJjZFgtQ2YRL0qXHsO9rHeX4e60ubl9aQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=tGKhGx
-        cuXz62vF/Dg9q0OABBhDVINldw8jc1jRGeLhc=; b=jF6OArxtd/Tba2z2ojqF/Z
-        hOtQWDNurydWxwOQhJj5Tg7/Cql9WCs8+3d/dCMomshSceJt4UmfeURPCcpojPkU
-        /SLItdC9QWITcrUGuipqx9WjMwvuyBsz9Ki3LhxmS/m+vb1ApvkNbzMkAgjXjwkD
-        LsFeWak+5spj9lUfzEheJHyxDjtq+fmpwTW7idWcpGQd9z6jwpPKV4D35L167vuE
-        gVfDTUjN7+rg6EDc14ijDaPxtjHKXNv1LSvHQR9OefcNoKz3MRzA2L82Atr0Rrjc
-        PiZDB0D8XCy9JF36XwBOxyh066fZNTJeTexKrhe6d6bXcDe9fYETmvPZKHUNStWg
-        ==
-X-ME-Sender: <xms:Q9CdXlxtXN0t1UqHLszcP4AZIN2xohsgMsz_WPv44POS8Y3fToMhoQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrgeefgdeljecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
-    hrlhcuvffnffculdejtddmnecujfgurhepgfgtjgffuffhvffksehtqhertddttdejnecu
-    hfhrohhmpedfffgrnhhivghlucgiuhdfuceougiguhesugiguhhuuhdrgiihiieqnecukf
-    hppeejfedrleefrddvgeejrddufeegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
-    rghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:Q9CdXsZpilasjnTPfr-qtnR8Zk8hBDQzFQFiksBgYiAPulKeMq7Jvg>
-    <xmx:Q9CdXhtqWVpxi3Yc7ju8c5d1J3gaCupHelbVvASUzyq4rERs5QpYqw>
-    <xmx:Q9CdXhNaqsUim6fToeDgXCQ6KPIPR2WVhm3orQN3XUZkqbgrjae2DA>
-    <xmx:RNCdXpFMfsBKnQsVnkPHvfP4Htz2jMhky4nXsnqlHeq-mT6PGqyJ2A>
-Received: from localhost (c-73-93-247-134.hsd1.ca.comcast.net [73.93.247.134])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 1F2D63065C30;
-        Mon, 20 Apr 2020 12:39:29 -0400 (EDT)
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-In-Reply-To: <20200420083046.GB28749@infradead.org>
-Date:   Mon, 20 Apr 2020 09:37:42 -0700
-Cc:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <kernel-team@fb.com>, <jolsa@kernel.org>,
-        <brendan.d.gregg@gmail.com>, <andrii.nakryiko@gmail.com>,
-        <ast@kernel.org>
-Subject: Re: [RFC] uapi: Convert stat.h #define flags to enums
-From:   "Daniel Xu" <dxu@dxuuu.xyz>
-To:     "Christoph Hellwig" <hch@infradead.org>
-Message-Id: <C266KL0CLET8.Z2G09QJ83ZWK@maharaja>
+        id S1726067AbgDTRqP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Apr 2020 13:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726013AbgDTRqP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 20 Apr 2020 13:46:15 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6907C061A0C
+        for <bpf@vger.kernel.org>; Mon, 20 Apr 2020 10:46:13 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id j16so10409903pgg.3
+        for <bpf@vger.kernel.org>; Mon, 20 Apr 2020 10:46:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=3iXQxKcuXaH8vzSpbGGcKpQZHWkV+5aV8X0i1N4Bpxk=;
+        b=B6W1ZkQ9tWFz7CTJtZRpZ1kDQ+Ot2Nwvx39cPSbTt4Q6iafsvUXna2HfYYp2DFLaVM
+         87sz6sjlUTMACC0ojyCtRsLjqNm1yZKQs7nH78xehNSZPhihvfN0PD7B85scIkEYU+Tg
+         2pXoyDNzuzEFOTu83wNgBoC70N8Gqj8l5YF1qNEiN1H2l7BnZamTLBgKiq9uzPGCmQGB
+         2mfLxL1PxLor7ufpXBgdHcIxXiVijW/kVHQHPKkh3MV0A1i9vNooWyw7y49uAvVbfje6
+         t7SXbRH0CRinxRDcvmUTQzbnEkB78FyMVNn6fu+pCIe0Af9COJVSvBQknPkjrcZAtOlW
+         ytzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=3iXQxKcuXaH8vzSpbGGcKpQZHWkV+5aV8X0i1N4Bpxk=;
+        b=WHtq8seVNBNocCbpDUisMWsTnRA7K/IXgpW2DTQNzOE1uZXu+eZfOS/wtQJS9kGeFU
+         K5TZ6ZORBzkKpcK1UqdTSI7gPdehHgstk4mi/Xqwn2zpJstNz6vvWjvf5hVTmjXIPJhU
+         NGSv8/tBEg8R0bgYqik08Gca72RgcXM2oWbj2xWd5Y5XimUCxQ2upxUl/ORXDA/tNNcc
+         VHRvXLFbF9G+/uXeW/RhzFPkSlcrC6HQHPat3NiVthu92Ovs2CcYSrlFNhMUwORzrNrj
+         4fQSFW0rINTQzx7otpDKz6JTVy0XAKxXKbSklLxCw5efKywUPYI1tyyeXHhfpxhMWOIp
+         9xzA==
+X-Gm-Message-State: AGi0PubGB3vZPXX98IrNwX5TZTFYGyWnWjBkmHQBT19eSQYlvhnUUrYs
+        1lsazBHrmTu3mh2xqLmjt0Vgi7I=
+X-Google-Smtp-Source: APiQypJZPGdilOYNFpUob02zkWIVVcrQoPOcD71XeBNOpymxoDCLA+wFgJWr7K1tYMXQZzq8J3zO6Dw=
+X-Received: by 2002:a63:4f0a:: with SMTP id d10mr12344458pgb.146.1587404773093;
+ Mon, 20 Apr 2020 10:46:13 -0700 (PDT)
+Date:   Mon, 20 Apr 2020 10:46:10 -0700
+Message-Id: <20200420174610.77494-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
+Subject: [PATCH bpf-next] bpf: enable more helpers for BPF_PROG_TYPE_CGROUP_{DEVICE,SYSCTL,SOCKOPT}
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Christoph,
+Currently the following prog types don't fall back to bpf_base_func_proto()
+(instead they have cgroup_base_func_proto which has a limited set of
+helpers from bpf_base_func_proto):
+* BPF_PROG_TYPE_CGROUP_DEVICE
+* BPF_PROG_TYPE_CGROUP_SYSCTL
+* BPF_PROG_TYPE_CGROUP_SOCKOPT
 
-On Sun Apr 19, 2020 at 6:30 PM PST, Christoph Hellwig wrote:
-> And that breaks every userspace program using ifdef to check if a
-> symbolic name has been defined.
+I don't see any specific reason why we shouldn't use bpf_base_func_proto(),
+every other type of program (except bpf-lirc and, understandably, tracing)
+use it, so let's fall back to bpf_base_func_proto for those prog types
+as well.
 
-How about shadowing #define's? Like for `enum nfnetlink_groups` in
-include/uapi/linux/netfilter/nfnetlink.h .
+This basically boils down to adding access to the following helpers:
+* BPF_FUNC_get_prandom_u32
+* BPF_FUNC_get_smp_processor_id
+* BPF_FUNC_get_numa_node_id
+* BPF_FUNC_tail_call
+* BPF_FUNC_ktime_get_ns
+* BPF_FUNC_spin_lock (CAP_SYS_ADMIN)
+* BPF_FUNC_spin_unlock (CAP_SYS_ADMIN)
+* BPF_FUNC_jiffies64 (CAP_SYS_ADMIN)
 
-Thanks,
-Daniel
+I've also added bpf_perf_event_output() because it's really handy for
+logging and debugging.
+
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ include/linux/bpf.h                           |  1 +
+ kernel/bpf/cgroup.c                           | 20 +++-------------
+ net/core/filter.c                             |  2 +-
+ .../selftests/bpf/verifier/event_output.c     | 24 +++++++++++++++++++
+ 4 files changed, 29 insertions(+), 18 deletions(-)
+
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index fd2b2322412d..25da6ff2a880 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1523,6 +1523,7 @@ extern const struct bpf_func_proto bpf_strtoul_proto;
+ extern const struct bpf_func_proto bpf_tcp_sock_proto;
+ extern const struct bpf_func_proto bpf_jiffies64_proto;
+ extern const struct bpf_func_proto bpf_get_ns_current_pid_tgid_proto;
++extern const struct bpf_func_proto bpf_event_output_data_proto;
+ 
+ const struct bpf_func_proto *bpf_tracing_func_proto(
+ 	enum bpf_func_id func_id, const struct bpf_prog *prog);
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index cb305e71e7de..4d748c5785bc 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -1060,30 +1060,16 @@ static const struct bpf_func_proto *
+ cgroup_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ {
+ 	switch (func_id) {
+-	case BPF_FUNC_map_lookup_elem:
+-		return &bpf_map_lookup_elem_proto;
+-	case BPF_FUNC_map_update_elem:
+-		return &bpf_map_update_elem_proto;
+-	case BPF_FUNC_map_delete_elem:
+-		return &bpf_map_delete_elem_proto;
+-	case BPF_FUNC_map_push_elem:
+-		return &bpf_map_push_elem_proto;
+-	case BPF_FUNC_map_pop_elem:
+-		return &bpf_map_pop_elem_proto;
+-	case BPF_FUNC_map_peek_elem:
+-		return &bpf_map_peek_elem_proto;
+ 	case BPF_FUNC_get_current_uid_gid:
+ 		return &bpf_get_current_uid_gid_proto;
+ 	case BPF_FUNC_get_local_storage:
+ 		return &bpf_get_local_storage_proto;
+ 	case BPF_FUNC_get_current_cgroup_id:
+ 		return &bpf_get_current_cgroup_id_proto;
+-	case BPF_FUNC_trace_printk:
+-		if (capable(CAP_SYS_ADMIN))
+-			return bpf_get_trace_printk_proto();
+-		/* fall through */
++	case BPF_FUNC_perf_event_output:
++		return &bpf_event_output_data_proto;
+ 	default:
+-		return NULL;
++		return bpf_base_func_proto(func_id);
+ 	}
+ }
+ 
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 7d6ceaa54d21..a943df3ad8b0 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4214,7 +4214,7 @@ BPF_CALL_5(bpf_event_output_data, void *, ctx, struct bpf_map *, map, u64, flags
+ 	return bpf_event_output(map, flags, data, size, NULL, 0, NULL);
+ }
+ 
+-static const struct bpf_func_proto bpf_event_output_data_proto =  {
++const struct bpf_func_proto bpf_event_output_data_proto =  {
+ 	.func		= bpf_event_output_data,
+ 	.gpl_only       = true,
+ 	.ret_type       = RET_INTEGER,
+diff --git a/tools/testing/selftests/bpf/verifier/event_output.c b/tools/testing/selftests/bpf/verifier/event_output.c
+index 130553e19eca..99f8f582c02b 100644
+--- a/tools/testing/selftests/bpf/verifier/event_output.c
++++ b/tools/testing/selftests/bpf/verifier/event_output.c
+@@ -92,3 +92,27 @@
+ 	.result = ACCEPT,
+ 	.retval = 1,
+ },
++{
++	"perfevent for cgroup dev",
++	.insns =  { __PERF_EVENT_INSNS__ },
++	.prog_type = BPF_PROG_TYPE_CGROUP_DEVICE,
++	.fixup_map_event_output = { 4 },
++	.result = ACCEPT,
++	.retval = 1,
++},
++{
++	"perfevent for cgroup sysctl",
++	.insns =  { __PERF_EVENT_INSNS__ },
++	.prog_type = BPF_PROG_TYPE_CGROUP_SYSCTL,
++	.fixup_map_event_output = { 4 },
++	.result = ACCEPT,
++	.retval = 1,
++},
++{
++	"perfevent for cgroup sockopt",
++	.insns =  { __PERF_EVENT_INSNS__ },
++	.prog_type = BPF_PROG_TYPE_CGROUP_SOCKOPT,
++	.fixup_map_event_output = { 4 },
++	.result = ACCEPT,
++	.retval = 1,
++},
+-- 
+2.26.1.301.g55bc3eb7cb9-goog
+
