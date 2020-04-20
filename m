@@ -2,74 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C091B08EA
-	for <lists+bpf@lfdr.de>; Mon, 20 Apr 2020 14:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1DE71B0EFA
+	for <lists+bpf@lfdr.de>; Mon, 20 Apr 2020 16:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbgDTMLA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Apr 2020 08:11:00 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:37360 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726262AbgDTMLA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Apr 2020 08:11:00 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id A93B0B3CD1E906072D21;
-        Mon, 20 Apr 2020 20:10:51 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Mon, 20 Apr 2020
- 20:10:45 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <udknight@gmail.com>, <davem@davemloft.net>,
-        <kuznet@ms2.inr.ac.ru>, <yoshfuji@linux-ipv6.org>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <x86@kernel.org>, <hpa@zytor.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <andriin@fb.com>, <john.fastabend@gmail.com>,
-        <kpsingh@chromium.org>, <lukenels@cs.washington.edu>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH] bpf, x32: remove unneeded conversion to bool
-Date:   Mon, 20 Apr 2020 20:37:27 +0800
-Message-ID: <20200420123727.3616-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        id S1726917AbgDTO4c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Apr 2020 10:56:32 -0400
+Received: from smtpout1.mo529.mail-out.ovh.net ([178.32.125.2]:50257 "EHLO
+        smtpout1.mo529.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725944AbgDTO4b (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 20 Apr 2020 10:56:31 -0400
+X-Greylist: delayed 512 seconds by postgrey-1.27 at vger.kernel.org; Mon, 20 Apr 2020 10:56:30 EDT
+Received: from mxplan6.mail.ovh.net (unknown [10.109.138.17])
+        by mo529.mail-out.ovh.net (Postfix) with ESMTPS id 69DF3308485A;
+        Mon, 20 Apr 2020 16:47:57 +0200 (CEST)
+Received: from jwilk.net (37.59.142.96) by DAG4EX2.mxp6.local (172.16.2.32)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Mon, 20 Apr
+ 2020 16:47:56 +0200
+From:   Jakub Wilk <jwilk@jwilk.net>
+To:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+CC:     <linux-man@vger.kernel.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: [PATCH] bpf: Fix reStructuredText markup
+Date:   Mon, 20 Apr 2020 16:47:53 +0200
+Message-ID: <20200420144753.3718-1-jwilk@jwilk.net>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+X-Originating-IP: [37.59.142.96]
+X-ClientProxiedBy: DAG8EX1.mxp6.local (172.16.2.71) To DAG4EX2.mxp6.local
+ (172.16.2.32)
+X-Ovh-Tracer-GUID: e9a003d9-0f12-4db7-aa11-c3e0773969a1
+X-Ovh-Tracer-Id: 13122644893197588262
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrgeefgdektdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfgtihesthekredtredttdenucfhrhhomheplfgrkhhusgcuhghilhhkuceojhifihhlkhesjhifihhlkhdrnhgvtheqnecukfhppedtrddtrddtrddtpdefjedrheelrddugedvrdelieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehmgihplhgrnheirdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepjhifihhlkhesjhifihhlkhdrnhgvthdprhgtphhtthhopehmthhkrdhmrghnphgrghgvshesghhmrghilhdrtghomh
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The '==' expression itself is bool, no need to convert it to bool again.
-This fixes the following coccicheck warning:
+Fixes:
 
-arch/x86/net/bpf_jit_comp32.c:1478:50-55: WARNING: conversion to bool
-not needed here
-arch/x86/net/bpf_jit_comp32.c:1479:50-55: WARNING: conversion to bool
-not needed here
+    $ scripts/bpf_helpers_doc.py > bpf-helpers.rst
+    $ rst2man bpf-helpers.rst > bpf-helpers.7
+    bpf-helpers.rst:1105: (WARNING/2) Inline strong start-string without end-string.
 
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
+Signed-off-by: Jakub Wilk <jwilk@jwilk.net>
 ---
- arch/x86/net/bpf_jit_comp32.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/uapi/linux/bpf.h       | 2 +-
+ tools/include/uapi/linux/bpf.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
-index 4d2a7a764602..b41ba3517819 100644
---- a/arch/x86/net/bpf_jit_comp32.c
-+++ b/arch/x86/net/bpf_jit_comp32.c
-@@ -1475,8 +1475,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
- 	for (i = 0; i < insn_cnt; i++, insn++) {
- 		const s32 imm32 = insn->imm;
- 		const bool is64 = BPF_CLASS(insn->code) == BPF_ALU64;
--		const bool dstk = insn->dst_reg == BPF_REG_AX ? false : true;
--		const bool sstk = insn->src_reg == BPF_REG_AX ? false : true;
-+		const bool dstk = insn->dst_reg != BPF_REG_AX;
-+		const bool sstk = insn->src_reg != BPF_REG_AX;
- 		const u8 code = insn->code;
- 		const u8 *dst = bpf2ia32[insn->dst_reg];
- 		const u8 *src = bpf2ia32[insn->src_reg];
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 2e29a671d67e..c879c155bf3b 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1642,7 +1642,7 @@ union bpf_attr {
+  * 		ifindex, but doesn't require a map to do so.
+  * 	Return
+  * 		**XDP_REDIRECT** on success, or the value of the two lower bits
+- * 		of the **flags* argument on error.
++ * 		of the **flags** argument on error.
+  *
+  * int bpf_sk_redirect_map(struct sk_buff *skb, struct bpf_map *map, u32 key, u64 flags)
+  * 	Description
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 2e29a671d67e..c879c155bf3b 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1642,7 +1642,7 @@ union bpf_attr {
+  * 		ifindex, but doesn't require a map to do so.
+  * 	Return
+  * 		**XDP_REDIRECT** on success, or the value of the two lower bits
+- * 		of the **flags* argument on error.
++ * 		of the **flags** argument on error.
+  *
+  * int bpf_sk_redirect_map(struct sk_buff *skb, struct bpf_map *map, u32 key, u64 flags)
+  * 	Description
 -- 
-2.21.1
+2.26.1
 
