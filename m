@@ -2,92 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63AAE1B304E
-	for <lists+bpf@lfdr.de>; Tue, 21 Apr 2020 21:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C66841B3063
+	for <lists+bpf@lfdr.de>; Tue, 21 Apr 2020 21:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725994AbgDUT0u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Apr 2020 15:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
+        id S1725987AbgDUTb7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Apr 2020 15:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725902AbgDUT0u (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 21 Apr 2020 15:26:50 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EACB0C0610D5;
-        Tue, 21 Apr 2020 12:26:49 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id k8so3525772ejv.3;
-        Tue, 21 Apr 2020 12:26:49 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726362AbgDUTb6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 21 Apr 2020 15:31:58 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52647C0610D6
+        for <bpf@vger.kernel.org>; Tue, 21 Apr 2020 12:31:57 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id nu11so1841949pjb.1
+        for <bpf@vger.kernel.org>; Tue, 21 Apr 2020 12:31:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=idTKxWpEYXSpWMVyn2696fqjJ0Ry7jBlA9LPzj52ir0=;
-        b=FSrGDRnziT2sbgdhl+Ig8+exvCHWQV4xq20QWOQWHknyMnYuhzK19fDo+s3GWbBlvH
-         ePPjKY3vfs21mKR1ShEnjLfwyPd4PQlI7tqynuAXnRNhGABVpS9in2rWv3B4u4nCS/d7
-         CDQncWQC/B5aGHPHmNf7DrwVSC2dg4QuJydV6uUf45pwNzjizDffAJaXlpUnWyq4AUnG
-         p2TxW/7s55su2urUvTwWo4j9oCcxUHFCYPquKp0kPkuUkAvGqG6qbC8LbJsvZVnbdB4m
-         lU300xJheMMkNe1lTxfALNCmbgAQkeJ48llYhi+FY0at/8RRfmNJRarkni3JL4kHlAd7
-         iUAw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=NZNBzPPg39ZyrA+9K1+5SfyJG/p/D3ab1EaiN8kOOpQ=;
+        b=D5E4GkQI8kMxBOpuDMOjkCGLYjzhv9SzQx5s04xfcN97rcZAXp10VOjQbSAr2Va2Ep
+         xOLMpcHjY6zHeW3ZNP3LQzJ0SI8bn5J7t4sslKU5XoQ8Hh7f/hmV2OTnxPoAF8Ci6nyN
+         khM6ZLtn45Nblr0G9fbnMUFmCSjbE687sAfFlBF1OaQI60mi6gjnomTCbesFpqhm3BVV
+         RD+IOKedrI/zH7nugKGj5JxvNaJpwHc7iAPT/cZDE2h8z/lyWZ5haQUSHayyaaVJjnis
+         3vFRPZc89wAtD42w3NPuMAAgRbODqu8Ixx1ApaoC8jSjx15fAdrO1g+HM4T+YSNo5KeE
+         imow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=idTKxWpEYXSpWMVyn2696fqjJ0Ry7jBlA9LPzj52ir0=;
-        b=X/c0R/R4uP2EMroOYXNvDw+zzEckGd/ErG0V+PoWfWsRJI2eBK88x4Z9STnD15z0CV
-         wuU/nlJSsHpJvhl0qJEsP3Nd5E6/ytpRfHVXShjY0hRFyY9cMQr2l+U40GsKNsmzjEBW
-         9Mf6IDnRthG0FSZUSIYNMoXY1JSWSOzmC2MnL3DOWVRczsYJJ42yF6/9VCMnNb15AMvF
-         40knkWKQ59laNdEjDXBzc606QWi9SDhVLy3Fuh8mkOTnRBA3sF4BVPiw75Aj4b0AzAQ8
-         9HHJ1yWzYX+YCSs0GuzXxsfBdViZAjPrr07N+cLQ9w9km4XogqSl7bj20hXlcB+Oc+d9
-         pjIQ==
-X-Gm-Message-State: AGi0PubruIhgEQTNqV8qcdj7RcEZXihnWgu9NxtPZ5PucRLn93qlUw8t
-        OPg/B/WluLbu4dgzAI4VI/qfwynt5YHTYyqHdy0=
-X-Google-Smtp-Source: APiQypKbVFuc0+4pupCD+KUCBYs2OqlbXKOSdEObVGiR4iem9xbPhga7MoJS0F3OqoOUgWjD05yzDfNKHMWuH9SuZ48=
-X-Received: by 2002:a17:906:54cd:: with SMTP id c13mr21911261ejp.307.1587497208543;
- Tue, 21 Apr 2020 12:26:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200421171552.28393-1-luke.r.nels@gmail.com> <6f1130b3-eaea-cc5e-716f-5d6be77101b9@zytor.com>
-In-Reply-To: <6f1130b3-eaea-cc5e-716f-5d6be77101b9@zytor.com>
-From:   Xi Wang <xi.wang@gmail.com>
-Date:   Tue, 21 Apr 2020 12:26:12 -0700
-Message-ID: <CAKU6vyb38-XcFeAiP7OW0j++0jS-J4gZP6S2E21dpQwvcEFpKQ@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] bpf, x32: Fix invalid instruction in BPF_LDX zero-extension
-To:     "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Luke Nelson <lukenels@cs.washington.edu>, bpf@vger.kernel.org,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Wang YanQing <udknight@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=NZNBzPPg39ZyrA+9K1+5SfyJG/p/D3ab1EaiN8kOOpQ=;
+        b=EHGPse+15xyNvN1cEIdox/qCdcTCu+xMhzhF1LHLjYUAj5JOOwrKaDNx0DJyUlHBLf
+         f510GEMgAFsImZwPcvXwPSFroJUpRNXO9QOezpmgu4ug/z6+PERCXPX88tVoV88DasSW
+         Tiur+/wBCiOAZQ+zgwsAfNHO4uYL+c04lgq6c9OB5Gw1j96GNllt8asnvRviF6gXz6nP
+         RvvkkcsXawaB9JMdShsm/BAQEV+/XTnVr9kGGwUDu0fo/aemtX8Yv4bJ+sIC0xD0QERi
+         5LlwLW7J5KpNiv3s6n7E9afJkaBvqTd/RMc8uFTFJSAiuzmR+saO4yDx4aQ/oTqHwmgS
+         bs0Q==
+X-Gm-Message-State: AGi0PubSsh/1tphF4DCtgPvHdAsuDs8bCMHBqoCXfE0WcyLqnUvt6BdR
+        QMwfQ4DwM8wVMtg1PqJICjs6Cg==
+X-Google-Smtp-Source: APiQypJFBgqr1TsKQVWWIkIK19DIg+mC/W2jjmH2JPSKGjxUsdqPajleKdFLi5uyE7M2nN3ydVuYqg==
+X-Received: by 2002:a17:902:c193:: with SMTP id d19mr21224614pld.184.1587497516540;
+        Tue, 21 Apr 2020 12:31:56 -0700 (PDT)
+Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
+        by smtp.gmail.com with ESMTPSA id y25sm2998977pgc.36.2020.04.21.12.31.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Apr 2020 12:31:55 -0700 (PDT)
+Date:   Tue, 21 Apr 2020 12:31:54 -0700 (PDT)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     Christoph Hellwig <hch@lst.de>
+cc:     Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 2/5] mm: remove watermark_boost_factor_sysctl_handler
+In-Reply-To: <20200421171539.288622-3-hch@lst.de>
+Message-ID: <alpine.DEB.2.22.394.2004211231410.54578@chino.kir.corp.google.com>
+References: <20200421171539.288622-1-hch@lst.de> <20200421171539.288622-3-hch@lst.de>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 10:39 AM H. Peter Anvin <hpa@zytor.com> wrote:
-> x32 is not x86-32.  In Linux we generally call the latter "i386".
+On Tue, 21 Apr 2020, Christoph Hellwig wrote:
 
-Agreed.  Most of the previous patches to this file use "x32" and this
-one just wanted to be consistent.
+> watermark_boost_factor_sysctl_handler is just a pointless wrapper for
+> proc_dointvec_minmax, so remove it and use proc_dointvec_minmax
+> directly.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-> C7 /0 imm32 is a valid instruction on i386. However, it is also
-> inefficient when the destination is a register, because B8+r imm32 is
-> equivalent, and when the value is zero, XOR is indeed more efficient.
->
-> The real error is using EMIT3() instead of EMIT2_off32(), but XOR is
-> more efficient. However, let's make the bug statement *correct*, or it
-> is going to confuse the Hades out of people in the future.
-
-I don't see how the bug statement is incorrect, which merely points
-out that "C7 C0 0" is an invalid instruction, regardless of whether
-the JIT intended to emit C7 /0 imm32, B8+r imm32, 31 /r, 33 /r, or any
-other equivalent form.
+Acked-by: David Rientjes <rientjes@google.com>
