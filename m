@@ -2,74 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70751B2EED
-	for <lists+bpf@lfdr.de>; Tue, 21 Apr 2020 20:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A77741B2F01
+	for <lists+bpf@lfdr.de>; Tue, 21 Apr 2020 20:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726303AbgDUSUs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Apr 2020 14:20:48 -0400
-Received: from www62.your-server.de ([213.133.104.62]:43680 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726012AbgDUSUr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Apr 2020 14:20:47 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jQxVk-0001Ee-B1; Tue, 21 Apr 2020 20:20:44 +0200
-Received: from [178.195.186.98] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jQxVj-000Bte-VX; Tue, 21 Apr 2020 20:20:44 +0200
-Subject: Re: [PATCH stable 4.19] bpf: fix buggy r0 retval refinement for
- tracing helpers
-To:     Lorenzo Fontana <fontanalorenz@gmail.com>
-Cc:     gregkh@linuxfoundation.org, alexei.starovoitov@gmail.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org, jannh@google.com,
-        leodidonato@gmail.com, yhs@fb.com, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>
-References: <20200421125822.14073-1-daniel@iogearbox.net>
- <20200421163100.GA2792583@gallifrey>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <06a1ce83-ccf2-b3fe-9d05-ee76377578af@iogearbox.net>
-Date:   Tue, 21 Apr 2020 20:20:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1725990AbgDUSYM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Apr 2020 14:24:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725987AbgDUSYM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Apr 2020 14:24:12 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D4AC0610D5;
+        Tue, 21 Apr 2020 11:24:12 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id h6so3520340qvz.8;
+        Tue, 21 Apr 2020 11:24:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1MpibdzZKUcWDPxbG1corhK5+ajDsK8Y+8yjQ5ScihQ=;
+        b=B5ZLuleRvVuEnP3GDHokJgx7lo+qLJYkVM0wzkxOrBWtY0WKsdpbmFVbxW819LaToB
+         VRj00+31R6wouGqtzN3SnitnTZ1cEN6GlaVGdEo3+0u8rdwCv0U8HJeZJ6ZASV4roWpg
+         ueA9YujFUn1j5pr/C+XW2RjJ5CTYf2J++wt4z3cQAC8WBRyyWDOv9QiX536GXeTxdOOj
+         lANT7y6quUtL2IfixkMG3WbXMolwfa5LWu4Mcz/h59ptEU6NnnZ60E+sbk79JcUnlx38
+         LHiUnnuSWMsoJBCkfeTFGUrtHrJyfgS/KZ7VmSxdmhOLfJtmVjcVCWC0VYcKGPOhH0s/
+         BD4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1MpibdzZKUcWDPxbG1corhK5+ajDsK8Y+8yjQ5ScihQ=;
+        b=Qzfw7aCe6fpNYEB/5eirCY7k6Dv83VO5cpsEaKjNoTehg0JR3jaEDLine3sQypX3OZ
+         DJ6ijREubJx+Udu3rKt2ARGvHso8IvXnGSbUxtVvAYWZ7MKj/DYePC/RsTlSfvxkxPsu
+         83WFgdxpIgMtLyl8Cqyl0k5aI2qYO6pyR2I2U//rc8PPm5yK4yi78SQXqXtud0TE6v5n
+         q0Ui0KAzNYaO9Nxfv8OCV1+16rZMZPvUYfQpqCSsnaxgH0AcsY/ZAnwBEI1Aj7TH0NIz
+         bxqqCR/Vegf5yPtFyNo5m6Iy3Id7gMKVrInEMs/PpWc8fXrXF71iDo50kPNgDWNRkqFv
+         FP1A==
+X-Gm-Message-State: AGi0Pub6KZrCARDIYHhf3pXxHZSXMtBGIrUHI7ct1zYMfuHPUwq1RvJq
+        HHRKLxtcVpjTsc8mxjnXpeI+N3x44I/2+gkQIfg=
+X-Google-Smtp-Source: APiQypLGodTlsU/FAWNnj/SkZhv8GRJUUU4rOCqNo0xwHflyuX+RI+UJFU5cv3dzgb+x29ge1yIlVVY3hzaQxFf4PG8=
+X-Received: by 2002:ad4:4c03:: with SMTP id bz3mr8359756qvb.224.1587493451343;
+ Tue, 21 Apr 2020 11:24:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200421163100.GA2792583@gallifrey>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25789/Tue Apr 21 13:55:14 2020)
+References: <20200420083046.GB28749@infradead.org> <C266KL0CLET8.Z2G09QJ83ZWK@maharaja>
+In-Reply-To: <C266KL0CLET8.Z2G09QJ83ZWK@maharaja>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 21 Apr 2020 11:24:00 -0700
+Message-ID: <CAEf4BzYfEuiMsn_MWAFHRHYSMB0dFP10dgdKixXATD=65F6SqA@mail.gmail.com>
+Subject: Re: [RFC] uapi: Convert stat.h #define flags to enums
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/21/20 6:31 PM, Lorenzo Fontana wrote:
-[...]
-> Hi Daniel,
-> Leonardo and I applied this on top of 8e2406c85187 and our old probe works as
-> expected, as well as the new one.
-> We produced a dot graph [0] of the in memory xlated representation [1], it clearly
-> shows that this patch solves the bug. A rendered [2] version is
-> available for the lazy.
+On Mon, Apr 20, 2020 at 9:39 AM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> Hi Christoph,
+>
+> On Sun Apr 19, 2020 at 6:30 PM PST, Christoph Hellwig wrote:
+> > And that breaks every userspace program using ifdef to check if a
+> > symbolic name has been defined.
+>
+> How about shadowing #define's? Like for `enum nfnetlink_groups` in
+> include/uapi/linux/netfilter/nfnetlink.h .
+>
 
-Perfect, thanks for double-checking!
+FWIW, we did #define to enum conversion for big chunks of BPF UAPI
+headers ([0]) and that greatly improved BPF user experience. A bunch
+of other kernel headers are already using enums for constants. I think
+converting more Linux headers to use enums for constants and capture
+them as part of type information is a good step forward that should
+further simplify writing all kinds of introspection and monitoring
+tools.
 
-> So, Daniel please add a Tested-by for each one of us.
+  [0] https://patchwork.ozlabs.org/project/netdev/patch/20200303003233.3496043-2-andriin@fb.com/
 
-Here we go:
-
-Tested-by: Lorenzo Fontana <fontanalorenz@gmail.com>
-Tested-by: Leonardo Di Donato <leodidonato@gmail.com>
-
-> Thanks Daniel!
-> Lorenzo and Leonardo
-> 
-> [0] https://fs.fntlnz.wtf/kernel/bpf-retval-refinement-4-19/prog.dot
-> [1] https://fs.fntlnz.wtf/kernel/bpf-retval-refinement-4-19/xlated.txt
-> [2] https://fs.fntlnz.wtf/kernel/bpf-retval-refinement-4-19/render.png
-> 
-
+> Thanks,
+> Daniel
