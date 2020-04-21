@@ -2,88 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A77741B2F01
-	for <lists+bpf@lfdr.de>; Tue, 21 Apr 2020 20:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB1B1B2F97
+	for <lists+bpf@lfdr.de>; Tue, 21 Apr 2020 20:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725990AbgDUSYM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Apr 2020 14:24:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbgDUSYM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Apr 2020 14:24:12 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D4AC0610D5;
-        Tue, 21 Apr 2020 11:24:12 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id h6so3520340qvz.8;
-        Tue, 21 Apr 2020 11:24:12 -0700 (PDT)
+        id S1725902AbgDUSyh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Apr 2020 14:54:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725870AbgDUSyh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 21 Apr 2020 14:54:37 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FE7C0610D5
+        for <bpf@vger.kernel.org>; Tue, 21 Apr 2020 11:54:35 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id u5so14442123ilb.5
+        for <bpf@vger.kernel.org>; Tue, 21 Apr 2020 11:54:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1MpibdzZKUcWDPxbG1corhK5+ajDsK8Y+8yjQ5ScihQ=;
-        b=B5ZLuleRvVuEnP3GDHokJgx7lo+qLJYkVM0wzkxOrBWtY0WKsdpbmFVbxW819LaToB
-         VRj00+31R6wouGqtzN3SnitnTZ1cEN6GlaVGdEo3+0u8rdwCv0U8HJeZJ6ZASV4roWpg
-         ueA9YujFUn1j5pr/C+XW2RjJ5CTYf2J++wt4z3cQAC8WBRyyWDOv9QiX536GXeTxdOOj
-         lANT7y6quUtL2IfixkMG3WbXMolwfa5LWu4Mcz/h59ptEU6NnnZ60E+sbk79JcUnlx38
-         LHiUnnuSWMsoJBCkfeTFGUrtHrJyfgS/KZ7VmSxdmhOLfJtmVjcVCWC0VYcKGPOhH0s/
-         BD4Q==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=N4tFyC4/8EGMbXolZNQ8jkjVWob5gaEliR9rHnKxF3Q=;
+        b=fjRk1R9DZllfo7oUrdZY7SY0VSwueEG4ZlCrWv27C00sI9b+3NiKyCT0H/9EGMCpDD
+         fjanlkk8/vOcrxTB+d+qGM+jwi+8fibLiyZcR4qRuh/FTkydSibQVcEcIcHFCetUABUs
+         wbqL1pY3PIkOmZt7Qcri5pdSIGrxPnUDJ2egxezBPvP/fLObFdVTyNQp+hYuro0amYYo
+         Cwce/dpRffTbxwoXpuOc4+UjSWR4+CRldfilZOmkuaZjN9OYkqCI47jFylaiSyRy8pkm
+         F6Stqx8VZAJgRmtpmvMdkRTdyM9wDJEYPm2Klumi1/mn2X3U4MrZOH0D6y/ES3cczhlA
+         q9fA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1MpibdzZKUcWDPxbG1corhK5+ajDsK8Y+8yjQ5ScihQ=;
-        b=Qzfw7aCe6fpNYEB/5eirCY7k6Dv83VO5cpsEaKjNoTehg0JR3jaEDLine3sQypX3OZ
-         DJ6ijREubJx+Udu3rKt2ARGvHso8IvXnGSbUxtVvAYWZ7MKj/DYePC/RsTlSfvxkxPsu
-         83WFgdxpIgMtLyl8Cqyl0k5aI2qYO6pyR2I2U//rc8PPm5yK4yi78SQXqXtud0TE6v5n
-         q0Ui0KAzNYaO9Nxfv8OCV1+16rZMZPvUYfQpqCSsnaxgH0AcsY/ZAnwBEI1Aj7TH0NIz
-         bxqqCR/Vegf5yPtFyNo5m6Iy3Id7gMKVrInEMs/PpWc8fXrXF71iDo50kPNgDWNRkqFv
-         FP1A==
-X-Gm-Message-State: AGi0Pub6KZrCARDIYHhf3pXxHZSXMtBGIrUHI7ct1zYMfuHPUwq1RvJq
-        HHRKLxtcVpjTsc8mxjnXpeI+N3x44I/2+gkQIfg=
-X-Google-Smtp-Source: APiQypLGodTlsU/FAWNnj/SkZhv8GRJUUU4rOCqNo0xwHflyuX+RI+UJFU5cv3dzgb+x29ge1yIlVVY3hzaQxFf4PG8=
-X-Received: by 2002:ad4:4c03:: with SMTP id bz3mr8359756qvb.224.1587493451343;
- Tue, 21 Apr 2020 11:24:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200420083046.GB28749@infradead.org> <C266KL0CLET8.Z2G09QJ83ZWK@maharaja>
-In-Reply-To: <C266KL0CLET8.Z2G09QJ83ZWK@maharaja>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 21 Apr 2020 11:24:00 -0700
-Message-ID: <CAEf4BzYfEuiMsn_MWAFHRHYSMB0dFP10dgdKixXATD=65F6SqA@mail.gmail.com>
-Subject: Re: [RFC] uapi: Convert stat.h #define flags to enums
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=N4tFyC4/8EGMbXolZNQ8jkjVWob5gaEliR9rHnKxF3Q=;
+        b=bHnP/UnMOJZIcOiJ0bMPLvbHm2oWNnGQ6C47KnPYZpaZWFafeksPDcG7uFW8izYfKj
+         BZUVJ8GVmfsO4SdA6SvBTstAHV/T6vzJSDaLyzo41crU15U4Np1acASQBa9EEOw10Kx3
+         deVfLIYjorIvkorF/nZf/y1K8+vXB4wSKy9Un3gcFdwu1DBYLrN5s580tV3wCEiuqcP8
+         zr1ofctr3aRf2FNXuVpFMrIQxjoZJGbL7uv6rsNIBGuxDc7Y3g8jJWensBzv0Lm9jy+W
+         4+toXWCJoqWFWMmr6vclygs1ou95aO1O0alDOAEbs7k+kbidk6MYEvOx8jyWp1cfBrxk
+         cm2w==
+X-Gm-Message-State: AGi0PuZPel/NYGIXSIuHJTxEp9wCjgSf9zOxgquWRV43XLRG0C2IGBXD
+        Rp5nBJJXk399+R2lFMt8r9GR/Ny+YI0=
+X-Google-Smtp-Source: APiQypJLI8DPNlHplMYyw3Q+dTL3uCqltOYxzyiJbMhzxgtf454V90l/LeB3vJk5AYBPgW1wi93UBA==
+X-Received: by 2002:a92:cf02:: with SMTP id c2mr15380643ilo.259.1587495275261;
+        Tue, 21 Apr 2020 11:54:35 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id g22sm259029ioc.41.2020.04.21.11.54.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Apr 2020 11:54:34 -0700 (PDT)
+Date:   Tue, 21 Apr 2020 11:54:25 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Gilad Reti <gilad.reti@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Message-ID: <5e9f416193390_5d0f2af88f64e5bc58@john-XPS-13-9370.notmuch>
+In-Reply-To: <CANaYP3EMYbeg67O5O1sjcHBF3MFhB+dyKYywr8i-VQwoFHWcaA@mail.gmail.com>
+References: <CANaYP3GNm-siPt49Z5SSvgcF9YT4oN_enznMkaEFgbBBC9qrDQ@mail.gmail.com>
+ <20200401232849.wms6vfuozvis5t2s@ast-mbp>
+ <CANaYP3GgpWKpiW-ATQ6UYLwNWJ3EqBKf-6d8Ki4xWXHVBOGvQw@mail.gmail.com>
+ <CAADnVQLfZv=1H_CuJwOyJK+=9iv=bdA7yCbMta0G2bqh6EmXRw@mail.gmail.com>
+ <CANaYP3EMYbeg67O5O1sjcHBF3MFhB+dyKYywr8i-VQwoFHWcaA@mail.gmail.com>
+Subject: Re: probe_write_common_error
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 9:39 AM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> Hi Christoph,
->
-> On Sun Apr 19, 2020 at 6:30 PM PST, Christoph Hellwig wrote:
-> > And that breaks every userspace program using ifdef to check if a
-> > symbolic name has been defined.
->
-> How about shadowing #define's? Like for `enum nfnetlink_groups` in
-> include/uapi/linux/netfilter/nfnetlink.h .
->
+Gilad Reti wrote:
+> On Thu, Apr 2, 2020 at 6:38 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > re-added mailing list back. pls don't remove it from cc.
+> Sorry, this wasn't on purpose.
+> >
+> > On Thu, Apr 2, 2020 at 1:05 AM Gilad Reti <gilad.reti@gmail.com> wrote:
+> > >
+> > > On Thu, Apr 2, 2020 at 2:28 AM Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Tue, Mar 31, 2020 at 07:16:28PM +0300, Gilad Reti wrote:
+> > > > > When I try to probe_write_common into a writable location (e.g a
+> > > > > memory address on a usermode stack) which is not yet mapped or mapped
+> > > > > as read only to the memory, the function sometimes return a EFAULT
+> > > > > (bad address) error. This is happening since the pagefault handler was
+> > > > > disabled and thus this memory location won't be mapped when the
+> > > > > function tries to write into it, an error will be returned and no data
+> > > > > will be written.
+> > > > > Is that behavior intended? Did you want those functions to have as
+> > > > > less side-effects are possible?
+> > > >
+> > > > You mean bpf_probe_write_user() helper?
+> > > Well yes, but it calls probe_write_common which disables the pagefault
+> > > handler so I asked about it.
+> > > > Yes it's a non-faulting helper that will fail if prog is trying to
+> > > > write into a valid memory that could have been served with minor fault.
+> > > > The main reason for this is that bpf progs are not allowed to sleep.
+> > > > We're working on sleepable bpf progs that will be able to do copy_from/to_user
+> > > > from the context where it is safe to sleep. Like syscall entry.
+> > > Thanks!
+> > > > Could you please share more about your use case, so we can make sure
+> > > > that it will be covered by upcoming work?
+> > > Sure. I was playing with modifying kprobed syscall parameters (for
+> > > example, changing the path of an openat syscall etc).
+> >
+> > yes, but what is the use case?
+> > Why do you want to modify path of openat syscall?
+> I had no specific use case. I have seen that eBPF can modify usermode
+> memory and wanted to experiment with that...
 
-FWIW, we did #define to enum conversion for big chunks of BPF UAPI
-headers ([0]) and that greatly improved BPF user experience. A bunch
-of other kernel headers are already using enums for constants. I think
-converting more Linux headers to use enums for constants and capture
-them as part of type information is a good step forward that should
-further simplify writing all kinds of introspection and monitoring
-tools.
+Late reply but figured its worth adding a concrete example.
 
-  [0] https://patchwork.ozlabs.org/project/netdev/patch/20200303003233.3496043-2-andriin@fb.com/
+We have a use case to read user memory from syscall (args when they are
+pointers to memory for example) where we can cause a page fault. Sleepable
+bpf progs with copy helpers would solve this for us.
 
-> Thanks,
-> Daniel
+Thanks,
+John
