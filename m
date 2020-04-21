@@ -2,20 +2,20 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D47051B26EC
-	for <lists+bpf@lfdr.de>; Tue, 21 Apr 2020 14:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1FC1B26FF
+	for <lists+bpf@lfdr.de>; Tue, 21 Apr 2020 15:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728772AbgDUM6h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Apr 2020 08:58:37 -0400
-Received: from www62.your-server.de ([213.133.104.62]:52360 "EHLO
+        id S1728818AbgDUNCC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Apr 2020 09:02:02 -0400
+Received: from www62.your-server.de ([213.133.104.62]:53164 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728337AbgDUM6g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Apr 2020 08:58:36 -0400
+        with ESMTP id S1726780AbgDUNCB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Apr 2020 09:02:01 -0400
 Received: from 98.186.195.178.dynamic.wline.res.cust.swisscom.ch ([178.195.186.98] helo=localhost)
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jQsTy-0003P7-1q; Tue, 21 Apr 2020 14:58:34 +0200
+        id 1jQsXH-0003hS-Cy; Tue, 21 Apr 2020 15:01:59 +0200
 From:   Daniel Borkmann <daniel@iogearbox.net>
 To:     gregkh@linuxfoundation.org
 Cc:     alexei.starovoitov@gmail.com, john.fastabend@gmail.com,
@@ -23,9 +23,9 @@ Cc:     alexei.starovoitov@gmail.com, john.fastabend@gmail.com,
         leodidonato@gmail.com, yhs@fb.com, bpf@vger.kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH stable 4.19] bpf: fix buggy r0 retval refinement for tracing helpers
-Date:   Tue, 21 Apr 2020 14:58:22 +0200
-Message-Id: <20200421125822.14073-1-daniel@iogearbox.net>
+Subject: [PATCH stable 5.4,5.5,5.6 1/4] bpf: fix buggy r0 retval refinement for tracing helpers
+Date:   Tue, 21 Apr 2020 15:01:49 +0200
+Message-Id: <20200421130152.14348-1-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -92,20 +92,20 @@ Tested-by: John Fastabend <john.fastabend@gmail.com>
  1 file changed, 34 insertions(+), 11 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index e85636fb81b9..daf0a9637d73 100644
+index 5080469094af..f6c27494c0f3 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -188,8 +188,7 @@ struct bpf_call_arg_meta {
+@@ -227,8 +227,7 @@ struct bpf_call_arg_meta {
  	bool pkt_access;
  	int regno;
  	int access_size;
 -	s64 msize_smax_value;
 -	u64 msize_umax_value;
 +	u64 msize_max_value;
- };
- 
- static DEFINE_MUTEX(bpf_verifier_lock);
-@@ -2076,8 +2075,7 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 regno,
+ 	int ref_obj_id;
+ 	int func_id;
+ 	u32 btf_id;
+@@ -3568,8 +3567,7 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 regno,
  		/* remember the mem_size which may be used later
  		 * to refine return values.
  		 */
@@ -115,7 +115,7 @@ index e85636fb81b9..daf0a9637d73 100644
  
  		/* The register is SCALAR_VALUE; the access check
  		 * happens using its boundaries.
-@@ -2448,21 +2446,44 @@ static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
+@@ -4095,21 +4093,44 @@ static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
  	return 0;
  }
  
@@ -139,9 +139,11 @@ index e85636fb81b9..daf0a9637d73 100644
 +	/* Error case where ret is in interval [S32MIN, -1]. */
 +	ret_reg->smin_value = S32_MIN;
 +	ret_reg->smax_value = -1;
-+
-+	__reg_deduce_bounds(ret_reg);
-+	__reg_bound_offset(ret_reg);
+ 
+-	ret_reg->smax_value = meta->msize_smax_value;
+-	ret_reg->umax_value = meta->msize_umax_value;
+ 	__reg_deduce_bounds(ret_reg);
+ 	__reg_bound_offset(ret_reg);
 +	__update_reg_bounds(ret_reg);
 +
 +	ret = push_stack(env, env->insn_idx + 1, env->insn_idx, false);
@@ -155,19 +157,17 @@ index e85636fb81b9..daf0a9637d73 100644
 +	ret_reg->smax_value = meta->msize_max_value;
 +	ret_reg->umin_value = ret_reg->smin_value;
 +	ret_reg->umax_value = ret_reg->smax_value;
- 
--	ret_reg->smax_value = meta->msize_smax_value;
--	ret_reg->umax_value = meta->msize_umax_value;
- 	__reg_deduce_bounds(ret_reg);
- 	__reg_bound_offset(ret_reg);
++
++	__reg_deduce_bounds(ret_reg);
++	__reg_bound_offset(ret_reg);
 +	__update_reg_bounds(ret_reg);
 +
 +	return 0;
  }
  
  static int
-@@ -2617,7 +2638,9 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
- 		return -EINVAL;
+@@ -4377,7 +4398,9 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
+ 		regs[BPF_REG_0].ref_obj_id = id;
  	}
  
 -	do_refine_retval_range(regs, fn->ret_type, func_id, &meta);
