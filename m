@@ -2,106 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481771B50B9
-	for <lists+bpf@lfdr.de>; Thu, 23 Apr 2020 01:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A976B1B50DD
+	for <lists+bpf@lfdr.de>; Thu, 23 Apr 2020 01:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726303AbgDVXO2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Apr 2020 19:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726460AbgDVXO0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 22 Apr 2020 19:14:26 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19E6C03C1AE
-        for <bpf@vger.kernel.org>; Wed, 22 Apr 2020 16:14:25 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id l78so4424573qke.7
-        for <bpf@vger.kernel.org>; Wed, 22 Apr 2020 16:14:25 -0700 (PDT)
+        id S1726006AbgDVX1R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Apr 2020 19:27:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725789AbgDVX1R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Apr 2020 19:27:17 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D38C03C1AA;
+        Wed, 22 Apr 2020 16:27:17 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id v10so1938863qvr.2;
+        Wed, 22 Apr 2020 16:27:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=yutIE/3Yrasa++aWOCa3PZNUoPlrlPERr3vYpXHco/M=;
-        b=roi6w8e5qBgfrEAFnX0ITcdhSDL8WSk9M0K+Pi5JsvodaNNOas+t0Q1f3de9phX1r3
-         zH9nNHarNQ5F0bPzz7BOwaRNKmtglTqtN0NM6aiRDb1o0ARGr4RLUKq2Ljipggfzmq4f
-         4lue9ey15OIgipQe2SFDgP3Zg483GPNPRk1b8P8tkH8JOTSig5IAtEHFk48/ttXK/xW3
-         HXoY6IUYmJ/pTBF9GpTUhyyw7weiMGNPNlwjMBnBqpgI6X0Q/tR6jaPPDUnk4ojUthH4
-         sJ/35wr3LbgYPfPQAvyDm9c7nFllFe/TQ0modirFmWgoD/qWXe5K3H06giTotm5Z7P3Z
-         jarQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JVbRCcnlDvVHgrFtItAJpGmOMWHhJ3M/HbbsklJ+CCM=;
+        b=qAGHPe2QqVwXV/xlmS6dMgtjzsGDb/3gmTOpNTsG+YTobq6CV0ixT2kvpNnB1hlojo
+         1wtWQAF2bCgweWURrYN8LLaDN5UPfJq+924RTIfsrbJXnHi0xtD7gWdkqAolWlR+ZOWT
+         PsbvSUVWGIYdU960Rk8H6vRHiXJETY+qdlDHxX7GH2EBZ4JYyknTzJP+Zh5Ig6qxxHU8
+         DnjDDWXuynB4/nGHPeeaUjU4qVt5s8JFRaeFfKF/OpXqX/hEiYdtCjyubbts1hPfESBI
+         tvMoTufHyTq+5gSw7r0Z1lCbnOZ6xnBxPeIM1sjAGtg1bdv1nRLIVKIE6zpXXLeg47Uc
+         Cyeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=yutIE/3Yrasa++aWOCa3PZNUoPlrlPERr3vYpXHco/M=;
-        b=TkXNf7TaF1HCpThxRRLs/UaBeINt92iNXIqZyXQUMvdb+hqJPoPyVjNe0MT/MKfd+O
-         Q4lhChjF9vFAvNWjTx5jUw+K05woeAZJetcHLKXue1HCqYNdAm9JasecGmcSik03VkmB
-         5u5KJCBWnx0JHV8N/vRzz6YLFBe+PC1qohTH3A71qH6oovuwkMwAt2FgKLcJuiw1R3pe
-         vCIeShOVRggAzjbovns719m3alcTLiqPMeieRd6jvscJgs6yTcY5QdhKL+LA9SVJATzY
-         rQpsgHdi+Uwz44HDzLbXNba8jCtQSC38CnjY6NTaxtj7VE0/Fsow7ZIO0NNuImpgeSNJ
-         s/2g==
-X-Gm-Message-State: AGi0Pub9VXnNcMksdfVHUsAhNT4Kr3NmEDnK0RSeWk0+qgIKHSv+YXv0
-        txL83oa/VaA1Ady2ei8lYySxtw==
-X-Google-Smtp-Source: APiQypKpwv318za6PvBDHu/CmZW2XLyq7lRBmFefrk1Y5QT6hBrl33XFhRuafmp5OdsdRdB+WGIptg==
-X-Received: by 2002:a37:6415:: with SMTP id y21mr792941qkb.258.1587597263810;
-        Wed, 22 Apr 2020 16:14:23 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::1:af35])
-        by smtp.gmail.com with ESMTPSA id q6sm534297qtd.61.2020.04.22.16.14.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Apr 2020 16:14:23 -0700 (PDT)
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-nvme@vger.kernel.org" <linux-nvme@vger.kernel.org>
-Cc:     lsf-pc <lsf-pc@lists.linuxfoundation.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Subject: LSFMMBPF 2020 Cancellation announcement
-Message-ID: <0b6d3d6f-99de-3603-4b42-c3db5113633d@toxicpanda.com>
-Date:   Wed, 22 Apr 2020 19:14:21 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JVbRCcnlDvVHgrFtItAJpGmOMWHhJ3M/HbbsklJ+CCM=;
+        b=fGQAgUoRSkp2VZFkr/ykk2DjN856XORoZmcTzUoSTP1shW8lxSiYolp5lZz4cRNhXt
+         ItD4Z6FenCpQzS1BOetj9eCdOIHXhN76/M8rRYpVrobtsu01XVIseKvR+5FKqf2klc1Y
+         YYFVsUyBkuZcruQXo+XZS4qT0bcqYpH+uC8dXPnMDSR+Ckg5dEYi7tclH0GPLc9kx3so
+         CCOjdiYvorxvPHEKKt1WX1yCh/FUWRWbfzT7Gti2ZXIfwUqkgIKYV+gx0NR4swkRyJQq
+         eCd9/C2OytpGZbjzXOJTgvCyNMY2pa15o+IHFTpf6lgTGfOo6FBg3tcbDpFlvtH8HFsY
+         uJsA==
+X-Gm-Message-State: AGi0PuaYnJgWULHmZoZ1FxZDHN2PJomGKCFZZ2P5QjSBepSScUUbnCKR
+        Twk+HQr2ExUeOlBXGrUZvcM9umj9JZZvaIRHQTc=
+X-Google-Smtp-Source: APiQypIfTsL5qIMF9TRjxPp3Fr19tLsAL9y2w/qpS8ptYLmKNCvTIj7MiEM+Z4p+tsI782nffDPMmcyOEx3UkzOyBLY=
+X-Received: by 2002:a0c:eb09:: with SMTP id j9mr1537405qvp.196.1587598036356;
+ Wed, 22 Apr 2020 16:27:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200422083010.28000-1-maowenan@huawei.com> <20200422083010.28000-3-maowenan@huawei.com>
+In-Reply-To: <20200422083010.28000-3-maowenan@huawei.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 22 Apr 2020 16:27:05 -0700
+Message-ID: <CAEf4BzaNZe63WxPrv0kAq-VjdoC8gOfrsmNLYBuK6nBu1Wh8kA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] libbpf: Return err if bpf_object__load failed
+To:     Mao Wenan <maowenan@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Each year, we look forward to gathering at Linux Storage, Filesystem, Memory
-Management, and BPF Summit to share information, collaborate, and learn
-together. Due to continual assessments and growing concerns around COVID-19, we
-have made the decision to cancel Linux Storage, Filesystem, Memory Management,
-and BPF Summit this year. Next year the summit will be held in Palm Springs, on
-May 12-14, 2021 at the Riviera Palm Springs.  A new CFP and registration will be
-held again, along with a new round of invites.  The program committee will
-remain the same, and next year we will choose new members.
+On Wed, Apr 22, 2020 at 1:30 AM Mao Wenan <maowenan@huawei.com> wrote:
+>
+> bpf_object__load() has various return code, when
+> it failed to load object, it must return err instead
+> of return -EINVAL.
+>
+> Signed-off-by: Mao Wenan <maowenan@huawei.com>
+> ---
 
-Event Registration
+This patch looks good. The other one in this series - not so sure..
 
-The Linux Foundation will take care of canceling all event registrations - you
-do not need to do anything.
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-We thank you for your patience and understanding while we work through this very
-fluid situation. A great deal of work and preparation has gone into the
-information and content planned to be delivered at LSFMMBPF and we look forward
-to sharing it all with our community next year.
-
-Thank you again for your support. Our sincere sympathies are with all those
-being affected and we wish for good health and safety for all.
-
-Thank you on behalf of the program committee:
-
-         Josef Bacik (Filesystems)
-         Amir Goldstein (Filesystems)
-         Martin K. Petersen (Storage)
-         Omar Sandoval (Storage)
-         Michal Hocko (MM)
-         Dan Williams (MM)
-         Alexei Starovoitov (BPF)
-         Daniel Borkmann (BPF)
+>  tools/lib/bpf/libbpf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 8f480e29a6b0..8e1dc6980fac 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -7006,7 +7006,7 @@ int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
+>         err = bpf_object__load(obj);
+>         if (err) {
+>                 bpf_object__close(obj);
+> -               return -EINVAL;
+> +               return err;
+>         }
+>
+>         *pobj = obj;
+> --
+> 2.20.1
+>
