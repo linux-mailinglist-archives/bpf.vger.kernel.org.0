@@ -2,222 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 334691B3EB4
-	for <lists+bpf@lfdr.de>; Wed, 22 Apr 2020 12:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1AF1B4303
+	for <lists+bpf@lfdr.de>; Wed, 22 Apr 2020 13:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727071AbgDVKan (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Apr 2020 06:30:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33356 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731058AbgDVKa0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:30:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 96307AB5F;
-        Wed, 22 Apr 2020 10:30:22 +0000 (UTC)
-Subject: Re: [PATCH 3/5] sysctl: remove all extern declaration from sysctl.c
-To:     Christoph Hellwig <hch@lst.de>, Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>
-References: <20200421171539.288622-1-hch@lst.de>
- <20200421171539.288622-4-hch@lst.de>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <13b10b87-6753-7e7c-fa56-20d7793250d6@suse.cz>
-Date:   Wed, 22 Apr 2020 12:30:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726721AbgDVLT1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Apr 2020 07:19:27 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:55006 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726729AbgDVLT0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 22 Apr 2020 07:19:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587554365;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3adrceupXKyLIJE05IQbOejDBq5MFoIz0/34EbiMoJY=;
+        b=S7MJh8MiSilKRzW5n9GnC3twQbn/ItmHoN7GhyqQn4mAd5kiewdlOVscN4mhhJkUN8TL4T
+        UFja2D//Wn/NYwFg7nLA/QWomxkBk3MhQYU3jp/FS5wAv0En7HfM+sASJxN2A3F8kHVGkx
+        BTcNYH6Onl8RtlMnfgjeEQf82sX95l0=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-75-urgiY4O8OTWJQj_tJgeKeQ-1; Wed, 22 Apr 2020 07:19:24 -0400
+X-MC-Unique: urgiY4O8OTWJQj_tJgeKeQ-1
+Received: by mail-lj1-f198.google.com with SMTP id z1so293932ljk.9
+        for <bpf@vger.kernel.org>; Wed, 22 Apr 2020 04:19:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=3adrceupXKyLIJE05IQbOejDBq5MFoIz0/34EbiMoJY=;
+        b=GR4LfuBkbM7HhLPhYJWoyDf7QtxyuExuVEgJBKN6Tj4qmSjn3WqEdQPgJu3IVUyhYL
+         CsvluE327oXZj1AmIkuAyZnFhsbqAFXW0RNZ0IQKUO2V/dMSAPqQSdEEuknPYl52lrL0
+         fVSJI6rDh9u35d6pStbSFhvDm9a/1WqpwcmvgONMzeMIV1bbnEgAKjg7W7INWGlyGzoj
+         EnVmyAE11Wpeev3xxYk6e+ASmL7934KVBljJtWJMtSnfVML/MIC25L1wm6IbRP2ELg7C
+         r5vpkicc5nyFf4aLWroIczFW6o9fNaWAK1GTEroGLR4rBW0d3FCYg5NWb7ShViAJIULY
+         EAcA==
+X-Gm-Message-State: AGi0Puafw4WKpKfb9Nc8UDvpkUovEGc+KvVs2NDgNVgiHTu6AZGU8R6y
+        US90OJiopPaDTacwwLw4vepvDVL61xcmq8w78UGTOOXA9cNitst0qyVbjU8aKfkNtyX99hlv9NM
+        WH15AvNyWttIk
+X-Received: by 2002:a2e:3a0a:: with SMTP id h10mr14858581lja.54.1587554362476;
+        Wed, 22 Apr 2020 04:19:22 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKgTKXtFT05R5dgb80W+Fuy9drBsDeICtlv+U2YLMTUHhv1QoWmXiMqwE8E5fRKbb5CBf3WbA==
+X-Received: by 2002:a2e:3a0a:: with SMTP id h10mr14858565lja.54.1587554362199;
+        Wed, 22 Apr 2020 04:19:22 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id u16sm4194094ljk.9.2020.04.22.04.19.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Apr 2020 04:19:21 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id B7315181586; Wed, 22 Apr 2020 13:19:18 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH bpf-next] libbpf: add BTF-defined map-in-map support
+In-Reply-To: <20200422051006.1152644-1-andriin@fb.com>
+References: <20200422051006.1152644-1-andriin@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 22 Apr 2020 13:19:18 +0200
+Message-ID: <87mu737op5.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <20200421171539.288622-4-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/21/20 7:15 PM, Christoph Hellwig wrote:
-> Extern declarations in .c files are a bad style and can lead to
-> mismatches.  Use existing definitions in headers where they exist,
-> and otherwise move the external declarations to suitable header
-> files.
+Andrii Nakryiko <andriin@fb.com> writes:
 
-Your cleanup reminds me of this Andrew's sigh from last week [1].
-I'm not saying your series should do that too, just wondering if some of the
-moves you are doing now would be better suited for the hypothetical new header
-to avoid moving them again later (but I admit I haven't looked closer).
+> As discussed at LPC 2019 ([0]), this patch brings (a quite belated) support
+> for declarative BTF-defined map-in-map support in libbpf. It allows to define
+> ARRAY_OF_MAPS and HASH_OF_MAPS BPF maps without any user-space initialization
+> code involved.
+>
+> Additionally, it allows to initialize outer map's slots with references to
+> respective inner maps at load time, also completely declaratively.
+>
+> Despite a weak type system of C, the way BTF-defined map-in-map definition
+> works, it's actually quite hard to accidentally initialize outer map with
+> incompatible inner maps. This being C, of course, it's still possible, but
+> even that would be caught at load time and error returned with helpful debug
+> log pointing exactly to the slot that failed to be initialized.
+>
+> Here's the relevant part of libbpf debug log showing pretty clearly of what's
+> going on with map-in-map initialization:
+>
+> libbpf: .maps relo #0: for 6 value 0 rel.r_offset 96 name 260 ('inner_map1')
+> libbpf: .maps relo #0: map 'outer_arr' slot [0] points to map 'inner_map1'
+> libbpf: .maps relo #1: for 7 value 32 rel.r_offset 112 name 249 ('inner_map2')
+> libbpf: .maps relo #1: map 'outer_arr' slot [2] points to map 'inner_map2'
+> libbpf: .maps relo #2: for 7 value 32 rel.r_offset 144 name 249 ('inner_map2')
+> libbpf: .maps relo #2: map 'outer_hash' slot [0] points to map 'inner_map2'
+> libbpf: .maps relo #3: for 6 value 0 rel.r_offset 176 name 260 ('inner_map1')
+> libbpf: .maps relo #3: map 'outer_hash' slot [4] points to map 'inner_map1'
+> libbpf: map 'inner_map1': created successfully, fd=4
+> libbpf: map 'inner_map2': created successfully, fd=5
+> libbpf: map 'outer_arr': created successfully, fd=7
+> libbpf: map 'outer_arr': slot [0] set to map 'inner_map1' fd=4
+> libbpf: map 'outer_arr': slot [2] set to map 'inner_map2' fd=5
+> libbpf: map 'outer_hash': created successfully, fd=8
+> libbpf: map 'outer_hash': slot [0] set to map 'inner_map2' fd=5
+> libbpf: map 'outer_hash': slot [4] set to map 'inner_map1' fd=4
+>
+> See also included selftest with some extra comments explaining extra details
+> of usage.
 
-[1]
-https://lore.kernel.org/linux-api/20200417174654.9af0c51afb5d9e35e5519113@linux-foundation.org/
+Could you please put an example of usage in the commit message as well?
+Easier to find that way, especially if the selftests are not handy (such
+as in the libbpf github repo).
 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  include/linux/coredump.h |  6 ++++++
->  include/linux/file.h     |  2 ++
->  include/linux/mm.h       |  2 ++
->  include/linux/mmzone.h   |  2 ++
->  include/linux/sysctl.h   |  8 +++++++
->  kernel/sysctl.c          | 45 +++-------------------------------------
->  6 files changed, 23 insertions(+), 42 deletions(-)
-> 
-> diff --git a/include/linux/coredump.h b/include/linux/coredump.h
-> index abf4b4e65dbb..0fe8f3131e97 100644
-> --- a/include/linux/coredump.h
-> +++ b/include/linux/coredump.h
-> @@ -22,4 +22,10 @@ extern void do_coredump(const kernel_siginfo_t *siginfo);
->  static inline void do_coredump(const kernel_siginfo_t *siginfo) {}
->  #endif
->  
-> +extern int core_uses_pid;
-> +extern char core_pattern[];
-> +extern unsigned int core_pipe_limit;
-> +extern int pid_max;
-> +extern int pid_max_min, pid_max_max;
-> +
->  #endif /* _LINUX_COREDUMP_H */
-> diff --git a/include/linux/file.h b/include/linux/file.h
-> index 142d102f285e..122f80084a3e 100644
-> --- a/include/linux/file.h
-> +++ b/include/linux/file.h
-> @@ -94,4 +94,6 @@ extern void fd_install(unsigned int fd, struct file *file);
->  extern void flush_delayed_fput(void);
->  extern void __fput_sync(struct file *);
->  
-> +extern unsigned int sysctl_nr_open_min, sysctl_nr_open_max;
-> +
->  #endif /* __LINUX_FILE_H */
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 5a323422d783..9c4e7e76dedd 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -3140,5 +3140,7 @@ unsigned long wp_shared_mapping_range(struct address_space *mapping,
->  				      pgoff_t first_index, pgoff_t nr);
->  #endif
->  
-> +extern int sysctl_nr_trim_pages;
-> +
->  #endif /* __KERNEL__ */
->  #endif /* _LINUX_MM_H */
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index f37bb8f187fc..b2af594ef0f7 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -909,6 +909,7 @@ static inline int is_highmem(struct zone *zone)
->  
->  /* These two functions are used to setup the per zone pages min values */
->  struct ctl_table;
-> +
->  int min_free_kbytes_sysctl_handler(struct ctl_table *, int,
->  					void __user *, size_t *, loff_t *);
->  int watermark_scale_factor_sysctl_handler(struct ctl_table *, int,
-> @@ -925,6 +926,7 @@ int sysctl_min_slab_ratio_sysctl_handler(struct ctl_table *, int,
->  
->  extern int numa_zonelist_order_handler(struct ctl_table *, int,
->  			void __user *, size_t *, loff_t *);
-> +extern int percpu_pagelist_fraction;
->  extern char numa_zonelist_order[];
->  #define NUMA_ZONELIST_ORDER_LEN	16
->  
-> diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
-> index 02fa84493f23..36143ca40b56 100644
-> --- a/include/linux/sysctl.h
-> +++ b/include/linux/sysctl.h
-> @@ -207,7 +207,15 @@ void unregister_sysctl_table(struct ctl_table_header * table);
->  
->  extern int sysctl_init(void);
->  
-> +extern int pwrsw_enabled;
-> +extern int unaligned_enabled;
-> +extern int unaligned_dump_stack;
-> +extern int no_unaligned_warning;
-> +
->  extern struct ctl_table sysctl_mount_point[];
-> +extern struct ctl_table random_table[];
-> +extern struct ctl_table firmware_config_table[];
-> +extern struct ctl_table epoll_table[];
->  
->  #else /* CONFIG_SYSCTL */
->  static inline struct ctl_table_header *register_sysctl_table(struct ctl_table * table)
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index 99d27acf4646..31b934865ebc 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -68,6 +68,9 @@
->  #include <linux/bpf.h>
->  #include <linux/mount.h>
->  #include <linux/userfaultfd_k.h>
-> +#include <linux/coredump.h>
-> +#include <linux/latencytop.h>
-> +#include <linux/pid.h>
->  
->  #include "../lib/kstrtox.h"
->  
-> @@ -103,22 +106,6 @@
->  
->  #if defined(CONFIG_SYSCTL)
->  
-> -/* External variables not in a header file. */
-> -extern int suid_dumpable;
-> -#ifdef CONFIG_COREDUMP
-> -extern int core_uses_pid;
-> -extern char core_pattern[];
-> -extern unsigned int core_pipe_limit;
-> -#endif
-> -extern int pid_max;
-> -extern int pid_max_min, pid_max_max;
-> -extern int percpu_pagelist_fraction;
-> -extern int latencytop_enabled;
-> -extern unsigned int sysctl_nr_open_min, sysctl_nr_open_max;
-> -#ifndef CONFIG_MMU
-> -extern int sysctl_nr_trim_pages;
-> -#endif
-> -
->  /* Constants used for minimum and  maximum */
->  #ifdef CONFIG_LOCKUP_DETECTOR
->  static int sixty = 60;
-> @@ -160,24 +147,6 @@ static unsigned long hung_task_timeout_max = (LONG_MAX/HZ);
->  #ifdef CONFIG_INOTIFY_USER
->  #include <linux/inotify.h>
->  #endif
-> -#ifdef CONFIG_SPARC
-> -#endif
-> -
-> -#ifdef CONFIG_PARISC
-> -extern int pwrsw_enabled;
-> -#endif
-> -
-> -#ifdef CONFIG_SYSCTL_ARCH_UNALIGN_ALLOW
-> -extern int unaligned_enabled;
-> -#endif
-> -
-> -#ifdef CONFIG_IA64
-> -extern int unaligned_dump_stack;
-> -#endif
-> -
-> -#ifdef CONFIG_SYSCTL_ARCH_UNALIGN_NO_WARN
-> -extern int no_unaligned_warning;
-> -#endif
->  
->  #ifdef CONFIG_PROC_SYSCTL
->  
-> @@ -243,14 +212,6 @@ static struct ctl_table vm_table[];
->  static struct ctl_table fs_table[];
->  static struct ctl_table debug_table[];
->  static struct ctl_table dev_table[];
-> -extern struct ctl_table random_table[];
-> -#ifdef CONFIG_EPOLL
-> -extern struct ctl_table epoll_table[];
-> -#endif
-> -
-> -#ifdef CONFIG_FW_LOADER_USER_HELPER
-> -extern struct ctl_table firmware_config_table[];
-> -#endif
->  
->  #if defined(HAVE_ARCH_PICK_MMAP_LAYOUT) || \
->      defined(CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT)
-> 
+-Toke
 
