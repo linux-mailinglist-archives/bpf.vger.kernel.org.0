@@ -2,140 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9FF1B4499
-	for <lists+bpf@lfdr.de>; Wed, 22 Apr 2020 14:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDC01B4542
+	for <lists+bpf@lfdr.de>; Wed, 22 Apr 2020 14:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726468AbgDVMUM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Apr 2020 08:20:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728825AbgDVMRu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 22 Apr 2020 08:17:50 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F9DC03C1A8;
-        Wed, 22 Apr 2020 05:17:50 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jREJe-0007gJ-VM; Wed, 22 Apr 2020 14:17:23 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 8B9951C0483;
-        Wed, 22 Apr 2020 14:17:17 +0200 (CEST)
-Date:   Wed, 22 Apr 2020 12:17:17 -0000
-From:   "tip-bot2 for Ian Rogers" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf doc: allow ASCIIDOC_EXTRA to be an argument
-Cc:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        id S1726160AbgDVMgV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Apr 2020 08:36:21 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:44814 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725839AbgDVMgV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Apr 2020 08:36:21 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jREbz-0000ox-TI; Wed, 22 Apr 2020 06:36:19 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jREbz-0006MT-03; Wed, 22 Apr 2020 06:36:19 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andrii Nakryiko <andriin@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Jiwei Sun <jiwei.sun@windriver.com>,
-        John Garry <john.garry@huawei.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, yuzhoujian <yuzhoujian@didichuxing.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200416162058.201954-2-irogers@google.com>
-References: <20200416162058.201954-2-irogers@google.com>
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20200417064146.1086644-1-hch@lst.de>
+        <20200417064146.1086644-5-hch@lst.de>
+Date:   Wed, 22 Apr 2020 07:33:11 -0500
+In-Reply-To: <20200417064146.1086644-5-hch@lst.de> (Christoph Hellwig's
+        message of "Fri, 17 Apr 2020 08:41:44 +0200")
+Message-ID: <87d07z4s54.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Message-ID: <158755783715.28353.14013762798615075637.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain
+X-XM-SPF: eid=1jREbz-0006MT-03;;;mid=<87d07z4s54.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/34tuHHASgF60MVP0xOvnRF+fIQ45pLt8=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
+        XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Christoph Hellwig <hch@lst.de>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 476 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 11 (2.3%), b_tie_ro: 9 (2.0%), parse: 0.79 (0.2%),
+         extract_message_metadata: 17 (3.5%), get_uri_detail_list: 0.98 (0.2%),
+         tests_pri_-1000: 16 (3.4%), tests_pri_-950: 1.59 (0.3%),
+        tests_pri_-900: 1.17 (0.2%), tests_pri_-90: 110 (23.2%), check_bayes:
+        108 (22.7%), b_tokenize: 8 (1.6%), b_tok_get_all: 6 (1.3%),
+        b_comp_prob: 2.2 (0.5%), b_tok_touch_all: 88 (18.4%), b_finish: 1.20
+        (0.3%), tests_pri_0: 300 (63.0%), check_dkim_signature: 0.72 (0.2%),
+        check_dkim_adsp: 2.5 (0.5%), poll_dns_idle: 0.41 (0.1%), tests_pri_10:
+        2.2 (0.5%), tests_pri_500: 12 (2.5%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 4/6] sysctl: remove all extern declaration from sysctl.c
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+Christoph Hellwig <hch@lst.de> writes:
 
-Commit-ID:     e9cfa47e687d77d256610b7124d736776f137ea0
-Gitweb:        https://git.kernel.org/tip/e9cfa47e687d77d256610b7124d736776f137ea0
-Author:        Ian Rogers <irogers@google.com>
-AuthorDate:    Thu, 16 Apr 2020 09:20:55 -07:00
-Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
-CommitterDate: Sat, 18 Apr 2020 09:05:00 -03:00
+> Extern declarations in .c files are a bad style and can lead to
+> mismatches.  Use existing definitions in headers where they exist,
+> and otherwise move the external declarations to suitable header
+> files.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  include/linux/coredump.h |  6 ++++++
+>  include/linux/file.h     |  2 ++
+>  include/linux/mm.h       |  2 ++
+>  include/linux/mmzone.h   |  2 ++
+>  include/linux/sysctl.h   |  8 +++++++
+>  kernel/sysctl.c          | 45 +++-------------------------------------
+>  6 files changed, 23 insertions(+), 42 deletions(-)
+>
+> diff --git a/include/linux/coredump.h b/include/linux/coredump.h
+> index abf4b4e65dbb..0fe8f3131e97 100644
+> --- a/include/linux/coredump.h
+> +++ b/include/linux/coredump.h
+> @@ -22,4 +22,10 @@ extern void do_coredump(const kernel_siginfo_t *siginfo);
+>  static inline void do_coredump(const kernel_siginfo_t *siginfo) {}
+>  #endif
+>  
+> +extern int core_uses_pid;
+> +extern char core_pattern[];
+> +extern unsigned int core_pipe_limit;
+> +extern int pid_max;
+> +extern int pid_max_min, pid_max_max;
 
-perf doc: allow ASCIIDOC_EXTRA to be an argument
+These last two pid_max, pid_max_mind and pid_max_max would make more
+sense in pid.h as they have nothing to do with coredumps.
 
-This will allow parent makefiles to pass values to asciidoc.
-
-Signed-off-by: Ian Rogers <irogers@google.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Andrii Nakryiko <andriin@fb.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Igor Lubashev <ilubashe@akamai.com>
-Cc: Jin Yao <yao.jin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Jiwei Sun <jiwei.sun@windriver.com>
-Cc: John Garry <john.garry@huawei.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: yuzhoujian <yuzhoujian@didichuxing.com>
-Link: http://lore.kernel.org/lkml/20200416162058.201954-2-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/Documentation/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/perf/Documentation/Makefile b/tools/perf/Documentation/Makefile
-index 31824d5..6e54979 100644
---- a/tools/perf/Documentation/Makefile
-+++ b/tools/perf/Documentation/Makefile
-@@ -48,7 +48,7 @@ man5dir=$(mandir)/man5
- man7dir=$(mandir)/man7
- 
- ASCIIDOC=asciidoc
--ASCIIDOC_EXTRA = --unsafe -f asciidoc.conf
-+ASCIIDOC_EXTRA += --unsafe -f asciidoc.conf
- ASCIIDOC_HTML = xhtml11
- MANPAGE_XSL = manpage-normal.xsl
- XMLTO_EXTRA =
-@@ -59,7 +59,7 @@ HTML_REF = origin/html
- 
- ifdef USE_ASCIIDOCTOR
- ASCIIDOC = asciidoctor
--ASCIIDOC_EXTRA = -a compat-mode
-+ASCIIDOC_EXTRA += -a compat-mode
- ASCIIDOC_EXTRA += -I. -rasciidoctor-extensions
- ASCIIDOC_EXTRA += -a mansource="perf" -a manmanual="perf Manual"
- ASCIIDOC_HTML = xhtml5
+> +
+>  #endif /* _LINUX_COREDUMP_H */
