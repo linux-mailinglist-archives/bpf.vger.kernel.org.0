@@ -2,115 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1AF1B4303
-	for <lists+bpf@lfdr.de>; Wed, 22 Apr 2020 13:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9FF1B4499
+	for <lists+bpf@lfdr.de>; Wed, 22 Apr 2020 14:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgDVLT1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Apr 2020 07:19:27 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:55006 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726729AbgDVLT0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 22 Apr 2020 07:19:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587554365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3adrceupXKyLIJE05IQbOejDBq5MFoIz0/34EbiMoJY=;
-        b=S7MJh8MiSilKRzW5n9GnC3twQbn/ItmHoN7GhyqQn4mAd5kiewdlOVscN4mhhJkUN8TL4T
-        UFja2D//Wn/NYwFg7nLA/QWomxkBk3MhQYU3jp/FS5wAv0En7HfM+sASJxN2A3F8kHVGkx
-        BTcNYH6Onl8RtlMnfgjeEQf82sX95l0=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-75-urgiY4O8OTWJQj_tJgeKeQ-1; Wed, 22 Apr 2020 07:19:24 -0400
-X-MC-Unique: urgiY4O8OTWJQj_tJgeKeQ-1
-Received: by mail-lj1-f198.google.com with SMTP id z1so293932ljk.9
-        for <bpf@vger.kernel.org>; Wed, 22 Apr 2020 04:19:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=3adrceupXKyLIJE05IQbOejDBq5MFoIz0/34EbiMoJY=;
-        b=GR4LfuBkbM7HhLPhYJWoyDf7QtxyuExuVEgJBKN6Tj4qmSjn3WqEdQPgJu3IVUyhYL
-         CsvluE327oXZj1AmIkuAyZnFhsbqAFXW0RNZ0IQKUO2V/dMSAPqQSdEEuknPYl52lrL0
-         fVSJI6rDh9u35d6pStbSFhvDm9a/1WqpwcmvgONMzeMIV1bbnEgAKjg7W7INWGlyGzoj
-         EnVmyAE11Wpeev3xxYk6e+ASmL7934KVBljJtWJMtSnfVML/MIC25L1wm6IbRP2ELg7C
-         r5vpkicc5nyFf4aLWroIczFW6o9fNaWAK1GTEroGLR4rBW0d3FCYg5NWb7ShViAJIULY
-         EAcA==
-X-Gm-Message-State: AGi0Puafw4WKpKfb9Nc8UDvpkUovEGc+KvVs2NDgNVgiHTu6AZGU8R6y
-        US90OJiopPaDTacwwLw4vepvDVL61xcmq8w78UGTOOXA9cNitst0qyVbjU8aKfkNtyX99hlv9NM
-        WH15AvNyWttIk
-X-Received: by 2002:a2e:3a0a:: with SMTP id h10mr14858581lja.54.1587554362476;
-        Wed, 22 Apr 2020 04:19:22 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKgTKXtFT05R5dgb80W+Fuy9drBsDeICtlv+U2YLMTUHhv1QoWmXiMqwE8E5fRKbb5CBf3WbA==
-X-Received: by 2002:a2e:3a0a:: with SMTP id h10mr14858565lja.54.1587554362199;
-        Wed, 22 Apr 2020 04:19:22 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id u16sm4194094ljk.9.2020.04.22.04.19.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Apr 2020 04:19:21 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id B7315181586; Wed, 22 Apr 2020 13:19:18 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
-Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH bpf-next] libbpf: add BTF-defined map-in-map support
-In-Reply-To: <20200422051006.1152644-1-andriin@fb.com>
-References: <20200422051006.1152644-1-andriin@fb.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 22 Apr 2020 13:19:18 +0200
-Message-ID: <87mu737op5.fsf@toke.dk>
+        id S1726468AbgDVMUM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Apr 2020 08:20:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728825AbgDVMRu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 22 Apr 2020 08:17:50 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F9DC03C1A8;
+        Wed, 22 Apr 2020 05:17:50 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jREJe-0007gJ-VM; Wed, 22 Apr 2020 14:17:23 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 8B9951C0483;
+        Wed, 22 Apr 2020 14:17:17 +0200 (CEST)
+Date:   Wed, 22 Apr 2020 12:17:17 -0000
+From:   "tip-bot2 for Ian Rogers" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf doc: allow ASCIIDOC_EXTRA to be an argument
+Cc:     Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Jiwei Sun <jiwei.sun@windriver.com>,
+        John Garry <john.garry@huawei.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, yuzhoujian <yuzhoujian@didichuxing.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200416162058.201954-2-irogers@google.com>
+References: <20200416162058.201954-2-irogers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Message-ID: <158755783715.28353.14013762798615075637.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andriin@fb.com> writes:
+The following commit has been merged into the perf/core branch of tip:
 
-> As discussed at LPC 2019 ([0]), this patch brings (a quite belated) support
-> for declarative BTF-defined map-in-map support in libbpf. It allows to define
-> ARRAY_OF_MAPS and HASH_OF_MAPS BPF maps without any user-space initialization
-> code involved.
->
-> Additionally, it allows to initialize outer map's slots with references to
-> respective inner maps at load time, also completely declaratively.
->
-> Despite a weak type system of C, the way BTF-defined map-in-map definition
-> works, it's actually quite hard to accidentally initialize outer map with
-> incompatible inner maps. This being C, of course, it's still possible, but
-> even that would be caught at load time and error returned with helpful debug
-> log pointing exactly to the slot that failed to be initialized.
->
-> Here's the relevant part of libbpf debug log showing pretty clearly of what's
-> going on with map-in-map initialization:
->
-> libbpf: .maps relo #0: for 6 value 0 rel.r_offset 96 name 260 ('inner_map1')
-> libbpf: .maps relo #0: map 'outer_arr' slot [0] points to map 'inner_map1'
-> libbpf: .maps relo #1: for 7 value 32 rel.r_offset 112 name 249 ('inner_map2')
-> libbpf: .maps relo #1: map 'outer_arr' slot [2] points to map 'inner_map2'
-> libbpf: .maps relo #2: for 7 value 32 rel.r_offset 144 name 249 ('inner_map2')
-> libbpf: .maps relo #2: map 'outer_hash' slot [0] points to map 'inner_map2'
-> libbpf: .maps relo #3: for 6 value 0 rel.r_offset 176 name 260 ('inner_map1')
-> libbpf: .maps relo #3: map 'outer_hash' slot [4] points to map 'inner_map1'
-> libbpf: map 'inner_map1': created successfully, fd=4
-> libbpf: map 'inner_map2': created successfully, fd=5
-> libbpf: map 'outer_arr': created successfully, fd=7
-> libbpf: map 'outer_arr': slot [0] set to map 'inner_map1' fd=4
-> libbpf: map 'outer_arr': slot [2] set to map 'inner_map2' fd=5
-> libbpf: map 'outer_hash': created successfully, fd=8
-> libbpf: map 'outer_hash': slot [0] set to map 'inner_map2' fd=5
-> libbpf: map 'outer_hash': slot [4] set to map 'inner_map1' fd=4
->
-> See also included selftest with some extra comments explaining extra details
-> of usage.
+Commit-ID:     e9cfa47e687d77d256610b7124d736776f137ea0
+Gitweb:        https://git.kernel.org/tip/e9cfa47e687d77d256610b7124d736776f137ea0
+Author:        Ian Rogers <irogers@google.com>
+AuthorDate:    Thu, 16 Apr 2020 09:20:55 -07:00
+Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
+CommitterDate: Sat, 18 Apr 2020 09:05:00 -03:00
 
-Could you please put an example of usage in the commit message as well?
-Easier to find that way, especially if the selftests are not handy (such
-as in the libbpf github repo).
+perf doc: allow ASCIIDOC_EXTRA to be an argument
 
--Toke
+This will allow parent makefiles to pass values to asciidoc.
 
+Signed-off-by: Ian Rogers <irogers@google.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Andrii Nakryiko <andriin@fb.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Igor Lubashev <ilubashe@akamai.com>
+Cc: Jin Yao <yao.jin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Jiwei Sun <jiwei.sun@windriver.com>
+Cc: John Garry <john.garry@huawei.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Stephane Eranian <eranian@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: yuzhoujian <yuzhoujian@didichuxing.com>
+Link: http://lore.kernel.org/lkml/20200416162058.201954-2-irogers@google.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/Documentation/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/perf/Documentation/Makefile b/tools/perf/Documentation/Makefile
+index 31824d5..6e54979 100644
+--- a/tools/perf/Documentation/Makefile
++++ b/tools/perf/Documentation/Makefile
+@@ -48,7 +48,7 @@ man5dir=$(mandir)/man5
+ man7dir=$(mandir)/man7
+ 
+ ASCIIDOC=asciidoc
+-ASCIIDOC_EXTRA = --unsafe -f asciidoc.conf
++ASCIIDOC_EXTRA += --unsafe -f asciidoc.conf
+ ASCIIDOC_HTML = xhtml11
+ MANPAGE_XSL = manpage-normal.xsl
+ XMLTO_EXTRA =
+@@ -59,7 +59,7 @@ HTML_REF = origin/html
+ 
+ ifdef USE_ASCIIDOCTOR
+ ASCIIDOC = asciidoctor
+-ASCIIDOC_EXTRA = -a compat-mode
++ASCIIDOC_EXTRA += -a compat-mode
+ ASCIIDOC_EXTRA += -I. -rasciidoctor-extensions
+ ASCIIDOC_EXTRA += -a mansource="perf" -a manmanual="perf Manual"
+ ASCIIDOC_HTML = xhtml5
