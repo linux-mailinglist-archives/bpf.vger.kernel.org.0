@@ -2,117 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C47321B4E53
-	for <lists+bpf@lfdr.de>; Wed, 22 Apr 2020 22:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 481771B50B9
+	for <lists+bpf@lfdr.de>; Thu, 23 Apr 2020 01:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726090AbgDVU31 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Apr 2020 16:29:27 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:47890 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725779AbgDVU30 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Apr 2020 16:29:26 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03MKSvE6071650;
-        Wed, 22 Apr 2020 15:28:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1587587337;
-        bh=Skbg8jv1KA4M4C98Xxf18DJCDL61t6UbC2De6JZE8JQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Y0z+nBYr4LTXgGjXUsfx03Jcna7kYd3jZvS4tuoLAIvAaiLqKW/eXKG/Xg0pDiqXm
-         5Z8Ph6LPJud1WgORrFO28Tv3KtCw+cJG/WkTJno+rJ1Qk2J0esdkwSxs1avRgBFH//
-         A7EkUoIUaNj4yP1+thJ3jA/+uC3tVhKa2dmrxy+I=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03MKSvO9107214;
-        Wed, 22 Apr 2020 15:28:57 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Wed, 22
- Apr 2020 15:28:56 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 22 Apr 2020 15:28:56 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03MKSl2P087383;
-        Wed, 22 Apr 2020 15:28:48 -0500
-Subject: Re: [PATCH net-next 14/33] net: ethernet: ti: add XDP frame size to
- driver cpsw
-To:     Jesper Dangaard Brouer <brouer@redhat.com>, <sameehj@amazon.com>
-CC:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <zorik@amazon.com>, <akiyano@amazon.com>, <gtzalik@amazon.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        David Ahern <dsahern@gmail.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        <steffen.klassert@secunet.com>
-References: <158757160439.1370371.13213378122947426220.stgit@firesoul>
- <158757171217.1370371.5128677508831971161.stgit@firesoul>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <340e0da5-8c0a-5719-45a5-94ce4a26a1fa@ti.com>
-Date:   Wed, 22 Apr 2020 23:28:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726303AbgDVXO2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Apr 2020 19:14:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726460AbgDVXO0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 22 Apr 2020 19:14:26 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19E6C03C1AE
+        for <bpf@vger.kernel.org>; Wed, 22 Apr 2020 16:14:25 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id l78so4424573qke.7
+        for <bpf@vger.kernel.org>; Wed, 22 Apr 2020 16:14:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=yutIE/3Yrasa++aWOCa3PZNUoPlrlPERr3vYpXHco/M=;
+        b=roi6w8e5qBgfrEAFnX0ITcdhSDL8WSk9M0K+Pi5JsvodaNNOas+t0Q1f3de9phX1r3
+         zH9nNHarNQ5F0bPzz7BOwaRNKmtglTqtN0NM6aiRDb1o0ARGr4RLUKq2Ljipggfzmq4f
+         4lue9ey15OIgipQe2SFDgP3Zg483GPNPRk1b8P8tkH8JOTSig5IAtEHFk48/ttXK/xW3
+         HXoY6IUYmJ/pTBF9GpTUhyyw7weiMGNPNlwjMBnBqpgI6X0Q/tR6jaPPDUnk4ojUthH4
+         sJ/35wr3LbgYPfPQAvyDm9c7nFllFe/TQ0modirFmWgoD/qWXe5K3H06giTotm5Z7P3Z
+         jarQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=yutIE/3Yrasa++aWOCa3PZNUoPlrlPERr3vYpXHco/M=;
+        b=TkXNf7TaF1HCpThxRRLs/UaBeINt92iNXIqZyXQUMvdb+hqJPoPyVjNe0MT/MKfd+O
+         Q4lhChjF9vFAvNWjTx5jUw+K05woeAZJetcHLKXue1HCqYNdAm9JasecGmcSik03VkmB
+         5u5KJCBWnx0JHV8N/vRzz6YLFBe+PC1qohTH3A71qH6oovuwkMwAt2FgKLcJuiw1R3pe
+         vCIeShOVRggAzjbovns719m3alcTLiqPMeieRd6jvscJgs6yTcY5QdhKL+LA9SVJATzY
+         rQpsgHdi+Uwz44HDzLbXNba8jCtQSC38CnjY6NTaxtj7VE0/Fsow7ZIO0NNuImpgeSNJ
+         s/2g==
+X-Gm-Message-State: AGi0Pub9VXnNcMksdfVHUsAhNT4Kr3NmEDnK0RSeWk0+qgIKHSv+YXv0
+        txL83oa/VaA1Ady2ei8lYySxtw==
+X-Google-Smtp-Source: APiQypKpwv318za6PvBDHu/CmZW2XLyq7lRBmFefrk1Y5QT6hBrl33XFhRuafmp5OdsdRdB+WGIptg==
+X-Received: by 2002:a37:6415:: with SMTP id y21mr792941qkb.258.1587597263810;
+        Wed, 22 Apr 2020 16:14:23 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::1:af35])
+        by smtp.gmail.com with ESMTPSA id q6sm534297qtd.61.2020.04.22.16.14.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Apr 2020 16:14:23 -0700 (PDT)
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-nvme@vger.kernel.org" <linux-nvme@vger.kernel.org>
+Cc:     lsf-pc <lsf-pc@lists.linuxfoundation.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Subject: LSFMMBPF 2020 Cancellation announcement
+Message-ID: <0b6d3d6f-99de-3603-4b42-c3db5113633d@toxicpanda.com>
+Date:   Wed, 22 Apr 2020 19:14:21 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <158757171217.1370371.5128677508831971161.stgit@firesoul>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Each year, we look forward to gathering at Linux Storage, Filesystem, Memory
+Management, and BPF Summit to share information, collaborate, and learn
+together. Due to continual assessments and growing concerns around COVID-19, we
+have made the decision to cancel Linux Storage, Filesystem, Memory Management,
+and BPF Summit this year. Next year the summit will be held in Palm Springs, on
+May 12-14, 2021 at the Riviera Palm Springs.  A new CFP and registration will be
+held again, along with a new round of invites.  The program committee will
+remain the same, and next year we will choose new members.
 
+Event Registration
 
-On 22/04/2020 19:08, Jesper Dangaard Brouer wrote:
-> The driver code cpsw.c and cpsw_new.c both use page_pool
-> with default order-0 pages or their RX-pages.
-> 
-> Cc: Grygorii Strashko <grygorii.strashko@ti.com>
-> Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
->   drivers/net/ethernet/ti/cpsw.c     |    1 +
->   drivers/net/ethernet/ti/cpsw_new.c |    1 +
->   2 files changed, 2 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/ti/cpsw.c b/drivers/net/ethernet/ti/cpsw.c
-> index c2c5bf87da01..58e346ea9898 100644
-> --- a/drivers/net/ethernet/ti/cpsw.c
-> +++ b/drivers/net/ethernet/ti/cpsw.c
-> @@ -406,6 +406,7 @@ static void cpsw_rx_handler(void *token, int len, int status)
->   
->   		xdp.data_hard_start = pa;
->   		xdp.rxq = &priv->xdp_rxq[ch];
-> +		xdp.frame_sz = PAGE_SIZE;
->   
->   		port = priv->emac_port + cpsw->data.dual_emac;
->   		ret = cpsw_run_xdp(priv, ch, &xdp, page, port);
-> diff --git a/drivers/net/ethernet/ti/cpsw_new.c b/drivers/net/ethernet/ti/cpsw_new.c
-> index 9209e613257d..08e1c5b8f00e 100644
-> --- a/drivers/net/ethernet/ti/cpsw_new.c
-> +++ b/drivers/net/ethernet/ti/cpsw_new.c
-> @@ -348,6 +348,7 @@ static void cpsw_rx_handler(void *token, int len, int status)
->   
->   		xdp.data_hard_start = pa;
->   		xdp.rxq = &priv->xdp_rxq[ch];
-> +		xdp.frame_sz = PAGE_SIZE;
->   
->   		ret = cpsw_run_xdp(priv, ch, &xdp, page, priv->emac_port);
->   		if (ret != CPSW_XDP_PASS)
-> 
-> 
+The Linux Foundation will take care of canceling all event registrations - you
+do not need to do anything.
 
-Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
+We thank you for your patience and understanding while we work through this very
+fluid situation. A great deal of work and preparation has gone into the
+information and content planned to be delivered at LSFMMBPF and we look forward
+to sharing it all with our community next year.
 
--- 
-Best regards,
-grygorii
+Thank you again for your support. Our sincere sympathies are with all those
+being affected and we wish for good health and safety for all.
+
+Thank you on behalf of the program committee:
+
+         Josef Bacik (Filesystems)
+         Amir Goldstein (Filesystems)
+         Martin K. Petersen (Storage)
+         Omar Sandoval (Storage)
+         Michal Hocko (MM)
+         Dan Williams (MM)
+         Alexei Starovoitov (BPF)
+         Daniel Borkmann (BPF)
