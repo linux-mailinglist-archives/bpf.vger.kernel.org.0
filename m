@@ -2,91 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB8A1B485C
-	for <lists+bpf@lfdr.de>; Wed, 22 Apr 2020 17:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11CA41B4997
+	for <lists+bpf@lfdr.de>; Wed, 22 Apr 2020 18:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725980AbgDVPSX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Apr 2020 11:18:23 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:41749 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725924AbgDVPSX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 22 Apr 2020 11:18:23 -0400
+        id S1726381AbgDVQHm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Apr 2020 12:07:42 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:45498 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726154AbgDVQHl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Apr 2020 12:07:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587568702;
+        s=mimecast20190719; t=1587571659;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6U0ygyZCylOphk+l41MqJ32sU6o7YOz1pFlkn9W0s1Y=;
-        b=D3PzfED3Rvq/KauPRuzrx/zy7J1eNHZHj34WYlzUlPfF7Yh9WOzZwJ22dYK6+++u2CF2eO
-        FsvYtnv8relBI2NXuddd6Pv7gVH7P4w1WfK0wP6iENjPRbodfKHiOZjq2fez1gb0oyzEfU
-        Co5HtXObVh7Xf3eW5W6isFlzFE017ws=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-65-HfPLtRvmN7GezuaXlBfgpw-1; Wed, 22 Apr 2020 11:18:17 -0400
-X-MC-Unique: HfPLtRvmN7GezuaXlBfgpw-1
-Received: by mail-lf1-f69.google.com with SMTP id l5so1042951lfg.3
-        for <bpf@vger.kernel.org>; Wed, 22 Apr 2020 08:18:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=6U0ygyZCylOphk+l41MqJ32sU6o7YOz1pFlkn9W0s1Y=;
-        b=dPqUbx31hw5esTRLTybBQepFFi0t1dIrHDfNcpqcjJwa5TzQa2qQZWZqztr7vn9H5D
-         5ZYERMRPOWHwWaVDntPQp/Nupynxr2Omw4Hj7hdMKLYrWWxaB95AmXWtBa8zcVwShDbF
-         7iuHJNXQkIJcGBvQpQWKJ+4R6+z/l+qrPZFZ3d2ft+2Hx5/400yxmcxqR0Jgzk3Li+YI
-         z/P7MqWqLTY3wJXKI1yFcUDwB0atjHGUlqUgwa4Z2lwYGiSsOv+c6DjCTJVKh91+Kl5w
-         Twv4aiJFxiiUZmi8lN8XOV2voTxhP5+fYMJl+rs5fUtFDJt09sEyMzFTrqMLQjHrIoGb
-         KRdg==
-X-Gm-Message-State: AGi0PuYSyT/pEvTgb07RIh5XtEU5OIcbZZpqDyI4aeHXTqgBT+fG9Xqx
-        AHw2kTEwp2B8TDQclqGTEnOSrDEOC8xUImlfekpvX+eb0KaEF1yyWJBkURKjDLhfmBqUfxT0XKu
-        Kf8ZJ5So16MgE
-X-Received: by 2002:a19:ee11:: with SMTP id g17mr17209742lfb.42.1587568695694;
-        Wed, 22 Apr 2020 08:18:15 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKRbXAybKZjkvQOI5aPGzVdgAfFvM2w6ipXmRyeXI+sY7t4e2XoU5XebYXxzzSK581tc84Bpg==
-X-Received: by 2002:a19:ee11:: with SMTP id g17mr17209731lfb.42.1587568695470;
-        Wed, 22 Apr 2020 08:18:15 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id x21sm4355883ljm.74.2020.04.22.08.18.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Apr 2020 08:18:14 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id BAD331814FF; Wed, 22 Apr 2020 17:18:12 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Christian Deacon <gamemann@gflclan.com>,
-        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: Bpfilter Development
-In-Reply-To: <abc35979-c44e-da12-e891-5409f587cee9@gflclan.com>
-References: <ac739c9c-f377-129f-1d4b-6c4c7e15f83d@gflclan.com> <871roh9jsu.fsf@toke.dk> <abc35979-c44e-da12-e891-5409f587cee9@gflclan.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 22 Apr 2020 17:18:12 +0200
-Message-ID: <877dy78s7f.fsf@toke.dk>
+        bh=qVN5D4k6CPXm/CsTfZRedU5FchFYXq2H0A5tWQjBfY8=;
+        b=CAUUzF+2NiBUwm+GxEOgTnzInJLud6v0msD1649xk0u23eT+PYsZuex7KKqTFaPhi3bsZA
+        Khtk+XpMHb5wUDziPOFgcMhOJd7eR1JjLtQ392wCTxNqLS0FK0PSKLecfmVq4kJCkjyW49
+        gajOnE/zMlE7gf/oStuR55bZK61smew=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-206-YV49HgVKNa-_S5jl1L2EyQ-1; Wed, 22 Apr 2020 12:07:35 -0400
+X-MC-Unique: YV49HgVKNa-_S5jl1L2EyQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7F09D107ACC7;
+        Wed, 22 Apr 2020 16:07:33 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.40.208.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0EBBF5C541;
+        Wed, 22 Apr 2020 16:07:27 +0000 (UTC)
+Received: from [192.168.42.3] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id 2FE9930000E43;
+        Wed, 22 Apr 2020 18:07:26 +0200 (CEST)
+Subject: [PATCH net-next 01/33] xdp: add frame size to xdp_buff
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     sameehj@amazon.com
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, zorik@amazon.com, akiyano@amazon.com,
+        gtzalik@amazon.com,
+        =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        steffen.klassert@secunet.com
+Date:   Wed, 22 Apr 2020 18:07:26 +0200
+Message-ID: <158757164613.1370371.2655437650342381672.stgit@firesoul>
+In-Reply-To: <158757160439.1370371.13213378122947426220.stgit@firesoul>
+References: <158757160439.1370371.13213378122947426220.stgit@firesoul>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Christian Deacon <gamemann@gflclan.com> writes:
+XDP have evolved to support several frame sizes, but xdp_buff was not
+updated with this information. The frame size (frame_sz) member of
+xdp_buff is introduced to know the real size of the memory the frame is
+delivered in.
 
-> Hey Toke,
->
->
-> Thank you for your response!
->
->
-> Regarding the ETA rule, I will keep that noted in the future.
->
->
-> Thank you for the information regarding Bpfilter as well. It appears the 
-> development towards this has stopped at least temporarily. We will be 
-> looking into using XDP-native in this case! I will also take a look at 
-> the XDP-filter project you linked to see how everything is done, etc.
->
->
-> Thanks again!
+When introducing this also make it clear that some tailroom is
+reserved/required when creating SKBs using build_skb().
 
-Cool. You're welcome :)
+It would also have been an option to introduce a pointer to
+data_hard_end (with reserved offset). The advantage with frame_sz is
+that (like rxq) drivers only need to setup/assign this value once per
+NAPI cycle. Due to XDP-generic (and some drivers) it's not possible to
+store frame_sz inside xdp_rxq_info, because it's varies per packet as it
+can be based/depend on packet length.
 
--Toke
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+---
+ include/net/xdp.h |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index 40c6d3398458..1ccf7df98bee 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -6,6 +6,8 @@
+ #ifndef __LINUX_NET_XDP_H__
+ #define __LINUX_NET_XDP_H__
+ 
++#include <linux/skbuff.h> /* skb_shared_info */
++
+ /**
+  * DOC: XDP RX-queue information
+  *
+@@ -70,8 +72,19 @@ struct xdp_buff {
+ 	void *data_hard_start;
+ 	unsigned long handle;
+ 	struct xdp_rxq_info *rxq;
++	u32 frame_sz; /* frame size to deduct data_hard_end/reserved tailroom*/
+ };
+ 
++/* Reserve memory area at end-of data area.
++ *
++ * This macro reserves tailroom in the XDP buffer by limiting the
++ * XDP/BPF data access to data_hard_end.  Notice same area (and size)
++ * is used for XDP_PASS, when constructing the SKB via build_skb().
++ */
++#define xdp_data_hard_end(xdp)				\
++	((xdp)->data_hard_start + (xdp)->frame_sz -	\
++	 SKB_DATA_ALIGN(sizeof(struct skb_shared_info)))
++
+ struct xdp_frame {
+ 	void *data;
+ 	u16 len;
+
 
