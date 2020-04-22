@@ -2,72 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613591B4CD5
-	for <lists+bpf@lfdr.de>; Wed, 22 Apr 2020 20:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C47321B4E53
+	for <lists+bpf@lfdr.de>; Wed, 22 Apr 2020 22:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726454AbgDVSp0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Apr 2020 14:45:26 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:42279 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725810AbgDVSp0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Apr 2020 14:45:26 -0400
-Received: from hanvin-mobl2.amr.corp.intel.com ([134.134.139.76])
-        (authenticated bits=0)
-        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 03MIi1bp1756663
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Wed, 22 Apr 2020 11:44:02 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 03MIi1bp1756663
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2020032201; t=1587581047;
-        bh=dIQ0s7CSMK1UKyQ0AWlyM0gbBVakPmljyV3eEPda8bM=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=hYv6h7G1OIqP2oGYDKFgihUJ7y1uBmklu81bwutsUBYb5uLTqvrf9EdHSior/oD0i
-         DVy/dJw6Pf1/mu6noDD+0raFOhCGDpUZLNx3DiB2urI3khadAf120qbLu9iGwHpT6w
-         bRXeNpyQOuyk5F3yT41bDsH9/KBdYPSSlF9dP1iSx/u/iS/awSQ0tT5fTIev1SR1KB
-         pRtgLXoBB5nMFyjr1OyFzZl/Ay2YRjjSdZ5Z99HM86hAwGAtFMTp8iGn0TXCqyeX6L
-         DMHF+8t7dtHCgdHwKlcb9/YXGAxG3Z1xL0OqFbrP4jz0R7A7OAPsFLBmJF1M+84i9M
-         5qbMVq9zVwufQ==
-Subject: Re: [PATCH] bpf, x32: remove unneeded conversion to bool
-To:     Jason Yan <yanaijie@huawei.com>, udknight@gmail.com,
-        davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        lukenels@cs.washington.edu, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200420123727.3616-1-yanaijie@huawei.com>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <dff9a49b-0d00-54b0-0375-cc908289e65a@zytor.com>
-Date:   Wed, 22 Apr 2020 11:43:58 -0700
+        id S1726090AbgDVU31 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Apr 2020 16:29:27 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:47890 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgDVU30 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Apr 2020 16:29:26 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03MKSvE6071650;
+        Wed, 22 Apr 2020 15:28:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1587587337;
+        bh=Skbg8jv1KA4M4C98Xxf18DJCDL61t6UbC2De6JZE8JQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Y0z+nBYr4LTXgGjXUsfx03Jcna7kYd3jZvS4tuoLAIvAaiLqKW/eXKG/Xg0pDiqXm
+         5Z8Ph6LPJud1WgORrFO28Tv3KtCw+cJG/WkTJno+rJ1Qk2J0esdkwSxs1avRgBFH//
+         A7EkUoIUaNj4yP1+thJ3jA/+uC3tVhKa2dmrxy+I=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03MKSvO9107214;
+        Wed, 22 Apr 2020 15:28:57 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Wed, 22
+ Apr 2020 15:28:56 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 22 Apr 2020 15:28:56 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03MKSl2P087383;
+        Wed, 22 Apr 2020 15:28:48 -0500
+Subject: Re: [PATCH net-next 14/33] net: ethernet: ti: add XDP frame size to
+ driver cpsw
+To:     Jesper Dangaard Brouer <brouer@redhat.com>, <sameehj@amazon.com>
+CC:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <zorik@amazon.com>, <akiyano@amazon.com>, <gtzalik@amazon.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        <steffen.klassert@secunet.com>
+References: <158757160439.1370371.13213378122947426220.stgit@firesoul>
+ <158757171217.1370371.5128677508831971161.stgit@firesoul>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <340e0da5-8c0a-5719-45a5-94ce4a26a1fa@ti.com>
+Date:   Wed, 22 Apr 2020 23:28:48 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200420123727.3616-1-yanaijie@huawei.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <158757171217.1370371.5128677508831971161.stgit@firesoul>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-04-20 05:37, Jason Yan wrote:
-> The '==' expression itself is bool, no need to convert it to bool again.
-> This fixes the following coccicheck warning:
+
+
+On 22/04/2020 19:08, Jesper Dangaard Brouer wrote:
+> The driver code cpsw.c and cpsw_new.c both use page_pool
+> with default order-0 pages or their RX-pages.
 > 
-> arch/x86/net/bpf_jit_comp32.c:1478:50-55: WARNING: conversion to bool
-> not needed here
-> arch/x86/net/bpf_jit_comp32.c:1479:50-55: WARNING: conversion to bool
-> not needed here
-> 
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> Cc: Grygorii Strashko <grygorii.strashko@ti.com>
+> Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
 > ---
->  arch/x86/net/bpf_jit_comp32.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>   drivers/net/ethernet/ti/cpsw.c     |    1 +
+>   drivers/net/ethernet/ti/cpsw_new.c |    1 +
+>   2 files changed, 2 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/ti/cpsw.c b/drivers/net/ethernet/ti/cpsw.c
+> index c2c5bf87da01..58e346ea9898 100644
+> --- a/drivers/net/ethernet/ti/cpsw.c
+> +++ b/drivers/net/ethernet/ti/cpsw.c
+> @@ -406,6 +406,7 @@ static void cpsw_rx_handler(void *token, int len, int status)
+>   
+>   		xdp.data_hard_start = pa;
+>   		xdp.rxq = &priv->xdp_rxq[ch];
+> +		xdp.frame_sz = PAGE_SIZE;
+>   
+>   		port = priv->emac_port + cpsw->data.dual_emac;
+>   		ret = cpsw_run_xdp(priv, ch, &xdp, page, port);
+> diff --git a/drivers/net/ethernet/ti/cpsw_new.c b/drivers/net/ethernet/ti/cpsw_new.c
+> index 9209e613257d..08e1c5b8f00e 100644
+> --- a/drivers/net/ethernet/ti/cpsw_new.c
+> +++ b/drivers/net/ethernet/ti/cpsw_new.c
+> @@ -348,6 +348,7 @@ static void cpsw_rx_handler(void *token, int len, int status)
+>   
+>   		xdp.data_hard_start = pa;
+>   		xdp.rxq = &priv->xdp_rxq[ch];
+> +		xdp.frame_sz = PAGE_SIZE;
+>   
+>   		ret = cpsw_run_xdp(priv, ch, &xdp, page, priv->emac_port);
+>   		if (ret != CPSW_XDP_PASS)
+> 
 > 
 
-x32 is not i386.
+Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
 
-	-hpa
-
+-- 
+Best regards,
+grygorii
