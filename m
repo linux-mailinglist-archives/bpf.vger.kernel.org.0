@@ -2,79 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F20E1B38D5
-	for <lists+bpf@lfdr.de>; Wed, 22 Apr 2020 09:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D80B41B3A13
+	for <lists+bpf@lfdr.de>; Wed, 22 Apr 2020 10:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726078AbgDVHWy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Apr 2020 03:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725786AbgDVHWx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 22 Apr 2020 03:22:53 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 724A3C03C1A6;
-        Wed, 22 Apr 2020 00:22:53 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id r16so752614edw.5;
-        Wed, 22 Apr 2020 00:22:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uG6Og2QY3Jrt6pTu1AnmMqNruS91FdRXUooE0XdBD+8=;
-        b=Gpj2Gyc8l3uOMNmeMD9MdFBn6dKr8nXeTcwutYx8Lg0zJSPXXDAlQE7RI3lcNmNwfy
-         mVgYkC3JV0D67+7dirmdeUFZAismXWLuYMX/Qy4mxdaPDvhzdtF2kP3LHs5fRE4LwRZj
-         o66vVRkHQJFTwQ/adikAVhOxj1HvtXb9fNVGR58sK46Cztvmtd+GwcaWzcnnx518Wqrl
-         oonmE0VTv8Hh0LSW01IATsV7PPePqp3tuxaFkzH2WP2MOMVBaDzLZblL8lmgfJOfflIp
-         CWZNqBk4Dal8iV6YCDVxVJcAaw3GReHPLDWEOHvqU1bJVlAbUXHXsNhqRIRaLWu9CTo9
-         fYrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uG6Og2QY3Jrt6pTu1AnmMqNruS91FdRXUooE0XdBD+8=;
-        b=VKpjofRJKBrKnptdHbd+RFC6rH4JnsMtWE01qmc1p/D7Z8YEzoFBEJcj82EQmNeaGf
-         q46Cm1yn0VtjidSssMD/VjaidsJb3Qnd7Rk6OpoAvFXVKg23JiHgvFWMia9XNBvBO6ri
-         SUFAy2hNsALetf8USXkh71ad1Z09oXK5DF6XjbdJP0ufILqsLpv/Fqzi1ZkcU4+V7gQs
-         Z1i+Y8W+ul8VQmI7L5XK/EqAiM1CPHIbEpjBjqZ0bX7LYYzBOsMlUcpjyGjMuXN4Z9Fs
-         u3oURGBWoT4f/1r8S/BmlA0PrUzsqH3b9KDFlDmkoMs97iKfkOpwF3cIi5Y9F8yT8M+R
-         qZ5w==
-X-Gm-Message-State: AGi0PuYBBL1XGhQpMFNXLlIzmS7RL+OilrPt8nhU9/Xk5LWOamDJmF9Q
-        32aJrFLjQyHLu2dPYECpM3dGcWyc/EmLWF9Gv3E=
-X-Google-Smtp-Source: APiQypK8VJELWnfcfK/wcqgx6OHAbsYMxvX/T8/hTJry7NGjmJ9koGnCvPtLY9fvIBWkpNTHkjNwsDgaMhqXDCaHw+U=
-X-Received: by 2002:aa7:da8b:: with SMTP id q11mr22791260eds.359.1587540172116;
- Wed, 22 Apr 2020 00:22:52 -0700 (PDT)
+        id S1726090AbgDVI3W (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Apr 2020 04:29:22 -0400
+Received: from smtpout1.mo804.mail-out.ovh.net ([79.137.123.220]:33031 "EHLO
+        smtpout1.mo804.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725899AbgDVI3W (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 22 Apr 2020 04:29:22 -0400
+X-Greylist: delayed 351 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Apr 2020 04:29:21 EDT
+Received: from mxplan6.mail.ovh.net (unknown [10.109.156.244])
+        by mo804.mail-out.ovh.net (Postfix) with ESMTPS id C994E3765BFA;
+        Wed, 22 Apr 2020 10:23:28 +0200 (CEST)
+Received: from jwilk.net (37.59.142.97) by DAG4EX2.mxp6.local (172.16.2.32)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Wed, 22 Apr
+ 2020 10:23:27 +0200
+From:   Jakub Wilk <jwilk@jwilk.net>
+To:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+CC:     <linux-man@vger.kernel.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: [PATCH v2] bpf: Fix reStructuredText markup
+Date:   Wed, 22 Apr 2020 10:23:24 +0200
+Message-ID: <20200422082324.2030-1-jwilk@jwilk.net>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200420144753.3718-1-jwilk@jwilk.net>
+References: <20200420144753.3718-1-jwilk@jwilk.net>
 MIME-Version: 1.0
-References: <20200421171552.28393-1-luke.r.nels@gmail.com> <6f1130b3-eaea-cc5e-716f-5d6be77101b9@zytor.com>
- <CAKU6vyb38-XcFeAiP7OW0j++0jS-J4gZP6S2E21dpQwvcEFpKQ@mail.gmail.com> <05CE7897-C58E-40C0-8E08-C8E948B70286@zytor.com>
-In-Reply-To: <05CE7897-C58E-40C0-8E08-C8E948B70286@zytor.com>
-From:   Xi Wang <xi.wang@gmail.com>
-Date:   Wed, 22 Apr 2020 00:22:16 -0700
-Message-ID: <CAKU6vyaHcGmgznkDav1wpkB3MiSYM9G2pqmc6DELXwUyNpHwyQ@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] bpf, x32: Fix invalid instruction in BPF_LDX zero-extension
-To:     hpa@zytor.com
-Cc:     Luke Nelson <lukenels@cs.washington.edu>, bpf@vger.kernel.org,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Wang YanQing <udknight@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [37.59.142.97]
+X-ClientProxiedBy: DAG7EX2.mxp6.local (172.16.2.62) To DAG4EX2.mxp6.local
+ (172.16.2.32)
+X-Ovh-Tracer-GUID: 22f6e39c-ead6-478b-ba0e-78f47e12fb86
+X-Ovh-Tracer-Id: 18374686482964535078
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrgeejgddtudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgjfhgggfgtihesthekredtredttdenucfhrhhomheplfgrkhhusgcuhghilhhkuceojhifihhlkhesjhifihhlkhdrnhgvtheqnecukfhppedtrddtrddtrddtpdefjedrheelrddugedvrdeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehmgihplhgrnheirdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepjhifihhlkhesjhifihhlkhdrnhgvthdprhgtphhtthhopehmthhkrdhmrghnphgrghgvshesghhmrghilhdrtghomh
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 12:13 AM <hpa@zytor.com> wrote:
-> C7 C0 0 is *not* an invalid instruction, although it is incomplete. It is a different, but arguably even more serious, problem.
+Fixes:
 
-Yep, it would "eat" three bytes coming after that. :)
+    $ scripts/bpf_helpers_doc.py > bpf-helpers.rst
+    $ rst2man bpf-helpers.rst > bpf-helpers.7
+    bpf-helpers.rst:1105: (WARNING/2) Inline strong start-string without end-string.
+
+Signed-off-by: Jakub Wilk <jwilk@jwilk.net>
+---
+v2: "flags" should be italic, not bold
+
+ include/uapi/linux/bpf.h       | 2 +-
+ tools/include/uapi/linux/bpf.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 2e29a671d67e..7bbf1b65be10 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1642,7 +1642,7 @@ union bpf_attr {
+  * 		ifindex, but doesn't require a map to do so.
+  * 	Return
+  * 		**XDP_REDIRECT** on success, or the value of the two lower bits
+- * 		of the **flags* argument on error.
++ * 		of the *flags* argument on error.
+  *
+  * int bpf_sk_redirect_map(struct sk_buff *skb, struct bpf_map *map, u32 key, u64 flags)
+  * 	Description
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 2e29a671d67e..7bbf1b65be10 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1642,7 +1642,7 @@ union bpf_attr {
+  * 		ifindex, but doesn't require a map to do so.
+  * 	Return
+  * 		**XDP_REDIRECT** on success, or the value of the two lower bits
+- * 		of the **flags* argument on error.
++ * 		of the *flags* argument on error.
+  *
+  * int bpf_sk_redirect_map(struct sk_buff *skb, struct bpf_map *map, u32 key, u64 flags)
+  * 	Description
+-- 
+2.26.2
+
