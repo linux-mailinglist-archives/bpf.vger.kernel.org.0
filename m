@@ -2,98 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1981B3475
-	for <lists+bpf@lfdr.de>; Wed, 22 Apr 2020 03:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D6D1B351E
+	for <lists+bpf@lfdr.de>; Wed, 22 Apr 2020 04:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726039AbgDVBYT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Apr 2020 21:24:19 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:52472 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726024AbgDVBYT (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 21 Apr 2020 21:24:19 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03M1J9Tw016675
-        for <bpf@vger.kernel.org>; Tue, 21 Apr 2020 18:24:15 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=wbw+03kqAr4+0VBwg+Xhrq4PpfYJHMGxVN4suU9Mbc0=;
- b=nCIiv++nvKFhKh+R2Lb09S+eBmy9bMPW/17RPFbudNahdCM6Yjo9zwro5ayk/nl/+PRy
- hMh+ZdkEY9pSksaQd3gGBwWHzE9v3t/qM8psdc5kM6+4ZmnEpU1QGAinyMngmADry2Zg
- BMIu6dP5Uvf6KlL/U8V4ptlJLPmIeDPRQyI= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 30fycfu68e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 21 Apr 2020 18:24:15 -0700
-Received: from intmgw002.08.frc2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Tue, 21 Apr 2020 18:24:14 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 237F02EC2E30; Tue, 21 Apr 2020 18:24:13 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] tools/runqslower: ensure own vmlinux.h is picked up first
-Date:   Tue, 21 Apr 2020 18:24:07 -0700
-Message-ID: <20200422012407.176303-1-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S1726389AbgDVCqi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Apr 2020 22:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725912AbgDVCqi (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 21 Apr 2020 22:46:38 -0400
+X-Greylist: delayed 27013 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 21 Apr 2020 19:46:37 PDT
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF37C0610D6;
+        Tue, 21 Apr 2020 19:46:37 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jR5P8-0081T1-82; Wed, 22 Apr 2020 02:46:26 +0000
+Date:   Wed, 22 Apr 2020 03:46:26 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 5/5] sysctl: pass kernel pointers to ->proc_handler
+Message-ID: <20200422024626.GI23230@ZenIV.linux.org.uk>
+References: <20200421171539.288622-1-hch@lst.de>
+ <20200421171539.288622-6-hch@lst.de>
+ <20200421191615.GE23230@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-21_10:2020-04-21,2020-04-21 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- suspectscore=0 spamscore=0 priorityscore=1501 mlxscore=0
- lowpriorityscore=0 bulkscore=0 clxscore=1015 adultscore=0 phishscore=0
- mlxlogscore=273 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2004220008
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200421191615.GE23230@ZenIV.linux.org.uk>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Reorder include paths to ensure that runqslower sources are picking up
-vmlinux.h, generated by runqslower's own Makefile. When runqslower is bui=
-lt
-from selftests/bpf, due to current -I$(BPF_INCLUDE) -I$(OUTPUT) ordering,=
- it
-might pick up not-yet-complete vmlinux.h, generated by selftests Makefile=
-,
-which could lead to compilation errors like [0]. So ensure that -I$(OUTPU=
-T)
-goes first and rely on runqslower's Makefile own dependency chain to ensu=
-re
-vmlinux.h is properly completed before source code relying on it is compi=
-led.
+On Tue, Apr 21, 2020 at 08:16:15PM +0100, Al Viro wrote:
+> On Tue, Apr 21, 2020 at 07:15:39PM +0200, Christoph Hellwig wrote:
+> > Instead of having all the sysctl handlers deal with user pointers, which
+> > is rather hairy in terms of the BPF interaction, copy the input to and
+> > from  userspace in common code.  This also means that the strings are
+> > always NUL-terminated by the common code, making the API a little bit
+> > safer.
+> > 
+> > As most handler just pass through the data to one of the common handlers
+> > a lot of the changes are mechnical.
+> 
+> > @@ -564,27 +564,38 @@ static ssize_t proc_sys_call_handler(struct file *filp, void __user *buf,
+> >  	if (!table->proc_handler)
+> >  		goto out;
+> >  
+> > -	error = BPF_CGROUP_RUN_PROG_SYSCTL(head, table, write, buf, &count,
+> > -					   ppos, &new_buf);
+> > +	if (write) {
+> > +		kbuf = memdup_user_nul(ubuf, count);
+> > +		if (IS_ERR(kbuf)) {
+> > +			error = PTR_ERR(kbuf);
+> > +			goto out;
+> > +		}
+> > +	} else {
+> > +		error = -ENOMEM;
+> > +		kbuf = kzalloc(count, GFP_KERNEL);
+> 
+> Better allocate count + 1 bytes here, that way a lot of insanity in the
+> instances can be simply converted to snprintf().  Yes, I know it'll bring
+> the Church Of Avoiding The Abomination Of Sprintf out of the woodwork,
+> but...
 
-  [0] https://travis-ci.org/github/libbpf/libbpf/jobs/677905925
+FWIW, consider e.g. net/sunrpc/sysctl.c:
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/bpf/runqslower/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefil=
-e
-index 39edd68afa8e..8a6f82e56a24 100644
---- a/tools/bpf/runqslower/Makefile
-+++ b/tools/bpf/runqslower/Makefile
-@@ -8,7 +8,7 @@ BPFTOOL ?=3D $(DEFAULT_BPFTOOL)
- LIBBPF_SRC :=3D $(abspath ../../lib/bpf)
- BPFOBJ :=3D $(OUTPUT)/libbpf.a
- BPF_INCLUDE :=3D $(OUTPUT)
--INCLUDES :=3D -I$(BPF_INCLUDE) -I$(OUTPUT) -I$(abspath ../../lib)
-+INCLUDES :=3D -I$(OUTPUT) -I$(BPF_INCLUDE) -I$(abspath ../../lib)
- CFLAGS :=3D -g -Wall
-=20
- # Try to detect best kernel BTF source
---=20
-2.24.1
-
+Nevermind that the read side should be simply
+		int err = proc_douintvec(table, write, buffer, lenp, ppos);
+		/* Display the RPC tasks on writing to rpc_debug */
+		if (!err && strcmp(table->procname, "rpc_debug") == 0)
+			rpc_show_tasks(&init_net);
+		return err;
+the write side would become
+		len = snprintf(buffer, *lenp + 1, "0x%04x\n",
+				*(unsigned int *)table->data);
+		if (len > *lenp)
+			len = *lenp;
+		*lenp -= len;
+		*ppos += len;
+		return 0;
+and I really wonder if lifting the trailing boilerplate into the caller would've
+been better.  Note that e.g. gems like
+                        if (!first)
+                                err = proc_put_char(&buffer, &left, '\t');
+                        if (err)
+                                break;
+                        err = proc_put_long(&buffer, &left, lval, neg);
+                        if (err)
+                                break;
+are due to lack of snprintf-to-user; now, lose the "to user" part and we suddenly
+can be rid of that stuff...
