@@ -2,171 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296751B6044
-	for <lists+bpf@lfdr.de>; Thu, 23 Apr 2020 18:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1294B1B6057
+	for <lists+bpf@lfdr.de>; Thu, 23 Apr 2020 18:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729487AbgDWQFE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Apr 2020 12:05:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58770 "EHLO
+        id S1729386AbgDWQHU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Apr 2020 12:07:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729308AbgDWQFE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 23 Apr 2020 12:05:04 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233B5C09B040
-        for <bpf@vger.kernel.org>; Thu, 23 Apr 2020 09:05:03 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id x4so7011244wmj.1
-        for <bpf@vger.kernel.org>; Thu, 23 Apr 2020 09:05:03 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1729445AbgDWQHT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 23 Apr 2020 12:07:19 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEEDC09B040;
+        Thu, 23 Apr 2020 09:07:19 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id n6so6753774ljg.12;
+        Thu, 23 Apr 2020 09:07:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bV275IP5Jw11a9pF8qMDVB9WoaXSE2YATQ9Er+FF2MY=;
-        b=jsUTH8mn57tPjBpXgvDqV6OV3UXX6u9YNlV/5dOnkhD6/dG5/dn5CgXTLNuiiQ3Ze2
-         dFRcDfa5VjKJmNjwk7RTQWsQJQkCFLevfEwuLphuhwLWzCVD6xHdLqzMNYKDhEGkPfQr
-         SL32TkpPcxPSOQDJ27pNAxfmwuZdaBa51dKxr4QAoNzQLbj9XOBVVn2yTjHYexp0gtmn
-         ggAjVJvt7ldIZ4eflqt39Xa8IHVAsC5tBMsc7qR/bD9DHBfwS2qodf0N04xc2fIomaGI
-         syn6QZmUDExLkvTwLs7oMaNLKvP4HhSClJpJL07QZ6zH6Jgwp+RQ9u/iqzqIuf4f0/L5
-         n01A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RDSCrwCJp6yV1aNxYeUky66qtSq/MJskkt7kK1B6xKQ=;
+        b=Uf1KruvlAoJs+fAgo3ksUW3OW8MVaTPDBQgvnx+nc1mv+WI9yFalis4DezbVd32Zhn
+         xJ9+TwEfaUDfP+ikXz/LTQoMq0hERb6o2o4YDQh2/KO25NYvYHwb2SJDscjO5B6Iytob
+         Wy2Q+K6KdrNZPIVStFcZDuKLPDv2sGgxkNNft6y0ZnK+DXOYUsHuDwQs2JXP8Wnavavz
+         Zop46z8it+bmF6F1h5JXYdhFI1mMlY+mgNW2pna1NjWBm5oyv91Y8RHf1U+NxGRqASq4
+         vWlrcwtl4nE2pfJUYkwzgH3S4RUdpbn16xpMPV9/569nAX/xSUt+cRCIPMMuAk+9RrXt
+         8kDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bV275IP5Jw11a9pF8qMDVB9WoaXSE2YATQ9Er+FF2MY=;
-        b=snqSEV95NXSpScaWZZMo2ESKa855kEF3JuHRTkiVz3hAvdYbWP8WhEnGXpei42+0D4
-         0HSKH+VgrmUNg/fDucK3n01ddBAD2zwliVCB74fp2jO2ejZY+3g2Zo8/w6qcSyHY1Chy
-         zam4PcI01bn8OD4FGNXwgB10sXazFL4V/mwI7b/e76UGrX7lhCwc0cyAB+qudA1uGoE2
-         z8MwmGqyzApiupMpTmf06i6xj7rlIrudYJQYn/B/saENXP/Oeb5Js2uuwO95fb95dVXo
-         e46mbt61CHh64BIW6+8HJytSo0KYwQmDpxXtiZJfEzSpyXWIfmsNCjW+rB0kdWxxj3Qo
-         u2eg==
-X-Gm-Message-State: AGi0PuZU+KdeMh7Fq4CV3A+byBGTpsBnmFkY2/dei6E7YQeu+imodFh/
-        N6inQYhVECGmA654h7vOY1Cueg==
-X-Google-Smtp-Source: APiQypKK/OFyVOwNcRBsOqWFkAQcX1ArugtVuAR3/fkNREdoc6HTu4JiB7sqV90IHXrhoCjicvr70g==
-X-Received: by 2002:a1c:1d84:: with SMTP id d126mr4829451wmd.119.1587657901855;
-        Thu, 23 Apr 2020 09:05:01 -0700 (PDT)
-Received: from localhost.localdomain ([194.53.185.104])
-        by smtp.gmail.com with ESMTPSA id x13sm4544259wmc.5.2020.04.23.09.05.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Apr 2020 09:05:01 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Quentin Monnet <quentin@isovalent.com>,
-        Richard Palethorpe <rpalethorpe@suse.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Subject: [PATCH bpf-next] tools: bpftool: allow unprivileged users to probe features
-Date:   Thu, 23 Apr 2020 17:04:55 +0100
-Message-Id: <20200423160455.28509-1-quentin@isovalent.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RDSCrwCJp6yV1aNxYeUky66qtSq/MJskkt7kK1B6xKQ=;
+        b=b718X2qBGmm6CGz3N9Y8BOZGdxVr0vckxU0RLO+l+fWi35vxkcxWSkWYr5vaeY3Pjg
+         lKrOdp9v/5q0hO+8zk4Ha1q303SuT6N9ngplF7bT1Q1gRbc8WI9OQRlCtudptVex78o3
+         7cdXxhMvC0X1ngLrLP51pzEZLH3zSoZeprNdLROoPWz9MDfl0eN174Sz8+QZzvMMrcoP
+         Ls1gxTSPqGmwB91WzQQCfFLS74+joN8gkRruOvgrzu6wIVAS1O9HiuUh7oBxf6zJmsu/
+         BnV8DSe37j2b0YHbjfAhLaNcxwBQgSerfkYfuHTAEWMZj5AWdbgXY3whd9DmKwv3L0aT
+         dWwA==
+X-Gm-Message-State: AGi0Pua/A2RtuRjSlQt3AF3mejX7HQRRaxb3h0Q5CW7UnVFbI8EHbuev
+        sPKM/HfFLNaDD71cxsNxCRwAXn/L/k02H2FatjQ=
+X-Google-Smtp-Source: APiQypJAc7TZGWxpJrsl1LC1eNpmKa7WdnRVXX4YOULM8uo6TgMb9wma3PwDbfEnX7LIESTrts/E/0tuT1lK+Z4oSXs=
+X-Received: by 2002:a2e:b80b:: with SMTP id u11mr2854291ljo.212.1587658037752;
+ Thu, 23 Apr 2020 09:07:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200422093329.GI2659@kadam> <20200423033314.49205-1-maowenan@huawei.com>
+ <20200423033314.49205-2-maowenan@huawei.com> <CAADnVQLfqLBzsjK0KddZM7WTL3unzWw+v18L0pw8HQnWsEVUzA@mail.gmail.com>
+ <bd36c161-8831-1f61-1531-063723a8d8c2@huawei.com>
+In-Reply-To: <bd36c161-8831-1f61-1531-063723a8d8c2@huawei.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 23 Apr 2020 09:07:05 -0700
+Message-ID: <CAADnVQK_wWkLFyzZ5eXGvTQmBj=wOXNFL6vRZkNNBHLUYn5w6Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Change error code when ops is NULL
+To:     maowenan <maowenan@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, kernel-janitors@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There is demand for a way to identify what BPF helper functions are
-available to unprivileged users. To do so, allow unprivileged users to
-run "bpftool feature probe" to list BPF-related features. This will only
-show features accessible to those users, and may not reflect the full
-list of features available (to administrators) on the system. For
-non-JSON output, print an informational message stating so at the top of
-the list.
+On Wed, Apr 22, 2020 at 11:25 PM maowenan <maowenan@huawei.com> wrote:
+>
+> On 2020/4/23 13:43, Alexei Starovoitov wrote:
+> > On Wed, Apr 22, 2020 at 8:31 PM Mao Wenan <maowenan@huawei.com> wrote:
+> >>
+> >> There is one error printed when use BPF_MAP_TYPE_SOCKMAP to create map:
+> >> libbpf: failed to create map (name: 'sock_map'): Invalid argument(-22)
+> >>
+> >> This is because CONFIG_BPF_STREAM_PARSER is not set, and
+> >> bpf_map_types[type] return invalid ops. It is not clear to show the
+> >> cause of config missing with return code -EINVAL, so add pr_warn() and
+> >> change error code to describe the reason.
+> >>
+> >> Signed-off-by: Mao Wenan <maowenan@huawei.com>
+> >> ---
+> >>  kernel/bpf/syscall.c | 7 ++++---
+> >>  1 file changed, 4 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> >> index d85f37239540..7686778457c7 100644
+> >> --- a/kernel/bpf/syscall.c
+> >> +++ b/kernel/bpf/syscall.c
+> >> @@ -112,9 +112,10 @@ static struct bpf_map *find_and_alloc_map(union bpf_attr *attr)
+> >>                 return ERR_PTR(-EINVAL);
+> >>         type = array_index_nospec(type, ARRAY_SIZE(bpf_map_types));
+> >>         ops = bpf_map_types[type];
+> >> -       if (!ops)
+> >> -               return ERR_PTR(-EINVAL);
+> >> -
+> >> +       if (!ops) {
+> >> +               pr_warn("map type %d not supported or kernel config not opened\n", type);
+> >> +               return ERR_PTR(-EOPNOTSUPP);
+> >> +       }
+> >
+> > I don't think users will like it when kernel spams dmesg.
+> > If you need this level of verbosity please teach consumer of libbpf to
+> > print them.
+> > It's not a job of libbpf either.
+> thanks for reviw, so is it better to delete redundant pr_warn()?
 
-Note that there is no particular reason why the probes were restricted
-to root, other than the fact I did not need them for unprivileged and
-did not bother with the additional checks at the time probes were added.
-
-Cc: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Michael Kerrisk <mtk.manpages@gmail.com>
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
----
- .../bpftool/Documentation/bpftool-feature.rst |  4 +++
- tools/bpf/bpftool/feature.c                   | 32 +++++++++++++------
- 2 files changed, 26 insertions(+), 10 deletions(-)
-
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-feature.rst b/tools/bpf/bpftool/Documentation/bpftool-feature.rst
-index b04156cfd7a3..313888e87249 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-feature.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-feature.rst
-@@ -49,6 +49,10 @@ DESCRIPTION
- 		  Keyword **kernel** can be omitted. If no probe target is
- 		  specified, probing the kernel is the default behaviour.
- 
-+		  Running this command as an unprivileged user will dump only
-+		  the features available to the user, which usually represent a
-+		  small subset of the parameters supported by the system.
-+
- 	**bpftool feature probe dev** *NAME* [**full**] [**macros** [**prefix** *PREFIX*]]
- 		  Probe network device for supported eBPF features and dump
- 		  results to the console.
-diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-index 88718ee6a438..f455bc5fcc64 100644
---- a/tools/bpf/bpftool/feature.c
-+++ b/tools/bpf/bpftool/feature.c
-@@ -471,6 +471,11 @@ probe_prog_type(enum bpf_prog_type prog_type, bool *supported_types,
- 		}
- 
- 	res = bpf_probe_prog_type(prog_type, ifindex);
-+	/* Probe may succeed even if program load fails, for unprivileged users
-+	 * check that we did not fail because of insufficient permissions
-+	 */
-+	if (geteuid() && errno == EPERM)
-+		res = false;
- 
- 	supported_types[prog_type] |= res;
- 
-@@ -499,6 +504,10 @@ probe_map_type(enum bpf_map_type map_type, const char *define_prefix,
- 
- 	res = bpf_probe_map_type(map_type, ifindex);
- 
-+	/* Probe result depends on the success of map creation, no additional
-+	 * check required for unprivileged users
-+	 */
-+
- 	maxlen = sizeof(plain_desc) - strlen(plain_comment) - 1;
- 	if (strlen(map_type_name[map_type]) > maxlen) {
- 		p_info("map type name too long");
-@@ -518,12 +527,17 @@ probe_helper_for_progtype(enum bpf_prog_type prog_type, bool supported_type,
- 			  const char *define_prefix, unsigned int id,
- 			  const char *ptype_name, __u32 ifindex)
- {
--	bool res;
-+	bool res = false;
- 
--	if (!supported_type)
--		res = false;
--	else
-+	if (supported_type) {
- 		res = bpf_probe_helper(id, prog_type, ifindex);
-+		/* Probe may succeed even if program load fails, for
-+		 * unprivileged users check that we did not fail because of
-+		 * insufficient permissions
-+		 */
-+		if (geteuid() && errno == EPERM)
-+			res = false;
-+	}
- 
- 	if (json_output) {
- 		if (res)
-@@ -729,13 +743,11 @@ static int do_probe(int argc, char **argv)
- 	__u32 ifindex = 0;
- 	char *ifname;
- 
--	/* Detection assumes user has sufficient privileges (CAP_SYS_ADMIN).
--	 * Let's approximate, and restrict usage to root user only.
-+	/* Full feature detection requires CAP_SYS_ADMIN privilege.
-+	 * Let's approximate, and warn if user is not root.
- 	 */
--	if (geteuid()) {
--		p_err("please run this command as root user");
--		return -1;
--	}
-+	if (geteuid())
-+		p_info("probing as unprivileged user, run as root to see all system features");
- 
- 	set_max_rlimit();
- 
--- 
-2.20.1
-
+which one?
