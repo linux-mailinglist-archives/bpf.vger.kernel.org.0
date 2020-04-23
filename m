@@ -2,34 +2,34 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2891B649F
-	for <lists+bpf@lfdr.de>; Thu, 23 Apr 2020 21:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C420B1B64E2
+	for <lists+bpf@lfdr.de>; Thu, 23 Apr 2020 21:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726068AbgDWTl2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Apr 2020 15:41:28 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34028 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726720AbgDWTl1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 23 Apr 2020 15:41:27 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03NJJOqi016864
-        for <bpf@vger.kernel.org>; Thu, 23 Apr 2020 12:41:26 -0700
+        id S1726082AbgDWT7K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Apr 2020 15:59:10 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34050 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726079AbgDWT7K (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 23 Apr 2020 15:59:10 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 03NJvMqC013710
+        for <bpf@vger.kernel.org>; Thu, 23 Apr 2020 12:59:08 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=XRnYDE83CEDSDFuZsB6brngj3iiRkgwfY9aa3kegCbQ=;
- b=oQSE69bHvI9H5LrvTDPd5u+vm1e1T+eDJV8dHHVGanO1M6t+D225G+voAhlcA3FF6LoO
- mzkPfaAwCU4Q7NGeI2YGXrjWOxYGiU0Gazhk6SWz5oJWK2mHwznrlvd5seRCrww6q3oB
- psMpmBRflriPKKjQimIAtlkruqfWY+4HMRU= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 30jq4jgwxe-4
+ content-type; s=facebook; bh=c5pOwkMkVkcScTKEr6nJS0FMGz4XfwztBaBIT+L9cgc=;
+ b=k7VDtqeiAPJxHo101OLE/WYp/LacYs827BbN9jGKA4CjbuHV/I7B+o2903gvdPVOEvcY
+ aKULZHB30l2JZwKSnieDACefponcQ0CouERcX/3Ujrue5WysUqh5aw4qRhOm3e/SdP1A
+ wK5S5RHhggcPevx55pUyh1AbijAjWxAXzLY= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 30k6gcm33x-5
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 23 Apr 2020 12:41:26 -0700
-Received: from intmgw002.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 23 Apr 2020 12:59:08 -0700
+Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 23 Apr 2020 12:41:24 -0700
+ 15.1.1847.3; Thu, 23 Apr 2020 12:59:05 -0700
 Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id DD4012EC2E92; Thu, 23 Apr 2020 12:41:21 -0700 (PDT)
+        id 710812EC2D30; Thu, 23 Apr 2020 12:58:59 -0700 (PDT)
 Smtp-Origin-Hostprefix: devbig
 From:   Andrii Nakryiko <andriin@fb.com>
 Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
@@ -38,21 +38,21 @@ To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
 CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
         Andrii Nakryiko <andriin@fb.com>
 Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v2 bpf-next] bpf: make verifier log more relevant by default
-Date:   Thu, 23 Apr 2020 12:41:17 -0700
-Message-ID: <20200423194117.1179668-1-andriin@fb.com>
+Subject: [PATCH v3 bpf-next] bpf: make verifier log more relevant by default
+Date:   Thu, 23 Apr 2020 12:58:50 -0700
+Message-ID: <20200423195850.1259827-1-andriin@fb.com>
 X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-23_14:2020-04-23,2020-04-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- malwarescore=0 priorityscore=1501 bulkscore=0 phishscore=0 mlxscore=0
- lowpriorityscore=0 adultscore=0 suspectscore=29 spamscore=0 clxscore=1015
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004230146
+ definitions=2020-04-23_15:2020-04-23,2020-04-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ spamscore=0 phishscore=0 clxscore=1015 suspectscore=29 impostorscore=0
+ mlxscore=0 bulkscore=0 adultscore=0 malwarescore=0 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004230148
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -218,7 +218,7 @@ Signed-off-by: Andrii Nakryiko <andriin@fb.com>
  2 files changed, 31 insertions(+), 5 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 38cfcf701eeb..671738f03449 100644
+index 38cfcf701eeb..2a98d9fb2eef 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
 @@ -168,6 +168,8 @@ struct bpf_verifier_stack_elem {
@@ -324,7 +324,7 @@ v *env, int subprog)
  	}
 -	while (!pop_stack(env, NULL, NULL));
 +	while (!pop_stack(env, NULL, NULL, false));
-+	if (pop_log)
++	if (!ret && pop_log)
 +		bpf_vlog_reset(&env->log, 0);
  	free_states(env);
  	if (ret)
