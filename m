@@ -2,113 +2,237 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17B461B5DEA
-	for <lists+bpf@lfdr.de>; Thu, 23 Apr 2020 16:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3790F1B5EE6
+	for <lists+bpf@lfdr.de>; Thu, 23 Apr 2020 17:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728190AbgDWOfr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Apr 2020 10:35:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726458AbgDWOfr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 23 Apr 2020 10:35:47 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF2CC08ED7D;
-        Thu, 23 Apr 2020 07:35:46 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id x17so6379125wrt.5;
-        Thu, 23 Apr 2020 07:35:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=x6IGIVHimLN6wXXRyErAIS+MRNtXI4hH2CwyG6Xff30=;
-        b=vf8Ep7drlVFpFPiDnXCutY0TNWGrNo8Xncv2udOcbey1cXFppOGy4CONEDFgH3iI/j
-         cPG+bOr+DeXb9D5cEFTkQ/ApdoEGgKqnH0Mfdj3rMaYdt3PTzrGkZrqpN9M0jfx2jxK7
-         +JtJBwVUMmkszV9SZkHhv/V3keBtmCQt6INjSdmLaGrUaF71Dfw3ph0q02qvZDqa7xjG
-         sDXh9fdNg/3xYeeQ04KaI9+jlD5B2UVwz9eDT4sQKg4gQrQe+CDLnuHIi6e0iploviqL
-         CWzqSckSWzdDxZ7qCmtwoLGia8OJL2fNk/KGo7+B6nJnlch+YdQNE9a0nlwCv7DfSFvO
-         hMaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=x6IGIVHimLN6wXXRyErAIS+MRNtXI4hH2CwyG6Xff30=;
-        b=VJKUBldEpK7IztpBN9wQt9kMjggaRpf8ru5RlxCEUfm9z3hGzp7vTyAvfxiS+ya0tD
-         4TjqcagQiWsBopD0tuv+4117VOz6bNqIfrvgKL5y3B/lA6Ah+zgNueb35YOtgjZ0pGLq
-         gaBNf5Ewo5d8blwGkS5xNt+oT2niUQd8TzfB50fUfiKnT76BDAAiJTrNBr6E3aSMbGOj
-         7F9arKNjQQpjKz86QJ/EmpAlK3vnrWoZfJstComeZJKGBcYQP+EhWro/Slnout22bdgE
-         0CCTsYqtqcoR3niUelLzmUAsPz5xpXsRPyTXECL2Xyct2+YkFAX/1lHWt77JNISOsiMp
-         nqEA==
-X-Gm-Message-State: AGi0PuarU7ABaCOFnfIPPd6AhoQ4PYiO0U5kQxq6jDHlPjGHr27HMCl+
-        WSHV3gyUq6xWP9ifiEJZvxxOoUCufgOGbQ==
-X-Google-Smtp-Source: APiQypLIUH9cLSTf94KBbNXeLc8HmzzTpjl+Y2L4JZrTFpsXOzsPlyUs45ikzIJWhNEC7Yfw6+4rqg==
-X-Received: by 2002:adf:eecc:: with SMTP id a12mr5225266wrp.112.1587652544894;
-        Thu, 23 Apr 2020 07:35:44 -0700 (PDT)
-Received: from net.saheed (563BD1A4.dsl.pool.telekom.hu. [86.59.209.164])
-        by smtp.gmail.com with ESMTPSA id c20sm4420321wmd.36.2020.04.23.07.35.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Apr 2020 07:35:44 -0700 (PDT)
-Subject: Re: [PATCH] docs: Fix WARNING - Title underline too short
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Stephen Kitt <steve@sk2.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
-        Masanari Iida <standby24x7@gmail.com>,
-        Eric Biggers <ebiggers@google.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20200423114517.18074-1-refactormyself@users.noreply.github.com>
- <20200423070230.3fd863ba@lwn.net>
-From:   Saheed Bolarinwa <refactormyself@gmail.com>
-Message-ID: <41072c85-7157-a3b8-17b5-9b4ab38f14ca@gmail.com>
-Date:   Thu, 23 Apr 2020 15:35:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1729055AbgDWPQa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Apr 2020 11:16:30 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:55307 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729016AbgDWPQa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Apr 2020 11:16:30 -0400
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 03NFFnuG003464;
+        Fri, 24 Apr 2020 00:15:50 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 03NFFnuG003464
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1587654950;
+        bh=JIgpTCwvImM/7c3SgxFwgMS59DmVqHtEAWWh3ROG+Gc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SRdn3NqYbRcLP87XmAw1+nOFq5nscaSfasoENACzdwLaQq9MzultJjcJIaGPkbD56
+         uGy/Wgm5AVB+gqGFBICMrjG563VkkgEsYBEncaKu+jCYgyS6zT4ILuqIkNoEHljCUs
+         79854k3qpssyOREzW/RiXGSR1CsMQ8BtlAnoglJ98AkYZqQAjvx2nbjoXofeM5YgUJ
+         xRJAo01SP3QPTRqn3msGnk7roz3bhlqmaIw/9Nb7Cp0z+rmEAI1VTMWr87Rp5ot7O9
+         TWTbtw6TOyMJ8Su9F048rWjIV+5gmCUWJNDYpQ4LKTo+y1DOSpRLE5o8l0CBxuE5VC
+         Sx8rQndUGjktA==
+X-Nifty-SrcIP: [209.85.222.51]
+Received: by mail-ua1-f51.google.com with SMTP id g10so6027207uae.5;
+        Thu, 23 Apr 2020 08:15:50 -0700 (PDT)
+X-Gm-Message-State: AGi0Pua02bu2589bUueMaZFCQm+5SwtsAgtXApm3mVIt8pkFQLi1sbhI
+        wGPBwSmxhTbQJgBkvuxKCxwjEAwmtSlw8FIqtZE=
+X-Google-Smtp-Source: APiQypJx5+++PBEd7BfwDp7BnFNQeoY/8MBP53JiljBGqJhpXq2fFSOAaSuejQ4XUBcBnTcF+eFJYIMaOVaiQeS9BH0=
+X-Received: by 2002:ab0:2e84:: with SMTP id f4mr3597611uaa.121.1587654949095;
+ Thu, 23 Apr 2020 08:15:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200423070230.3fd863ba@lwn.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20200423073929.127521-1-masahiroy@kernel.org> <20200423073929.127521-4-masahiroy@kernel.org>
+In-Reply-To: <20200423073929.127521-4-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 24 Apr 2020 00:15:12 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASpLsw5SUasmpwQ++yyXJi714HDOfEo4=O5SywwYQxtQA@mail.gmail.com>
+Message-ID: <CAK7LNASpLsw5SUasmpwQ++yyXJi714HDOfEo4=O5SywwYQxtQA@mail.gmail.com>
+Subject: Re: [PATCH 03/16] kbuild: add infrastructure to build userspace programs
+To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-On 4/23/20 3:02 PM, Jonathan Corbet wrote:
-> On Thu, 23 Apr 2020 13:45:17 +0200
-> Bolarinwa Olayemi Saheed <refactormyself@gmail.com> wrote:
+On Thu, Apr 23, 2020 at 4:40 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
->> From: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
->>
->> There were two instances of "Title underline too short" and they were
->> increased to match the title text.
->>
->> Signed-off-by: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
->> ---
->>   Documentation/admin-guide/sysctl/kernel.rst | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
-> These warnings are caused by a patch entering linux-next via the -mm tree;
-> Randy has already sent a patch to fix them.
+> Kbuild supports the infrastructure to build host programs, but there
+> was no support to build userspace programs for the target architecture
+> (i.e. the same architecture as the kernel).
 >
-> [Next time you might want to examine the recipient list a bit; this patch
-> was broadcast a bit more widely than was really necessary.]
+> Sam Ravnborg worked on this a long time ago.
 >
+>   https://lkml.org/lkml/2014/7/13/154
+>
+> But, it was not merged. One problem at that time was, there was no
+> good way to know whether $(CC) can link standalone programs. In fact,
+> pre-built kernel.org toolchains [1] do not provide libc.
+>
+> Now, we can handle this cleanly because the compiler capability is
+> evaluated at the Kconfig time. If $(CC) cannot link standalone programs,
+> the relevant options are hidden by 'depends on CC_CAN_LINK'.
+>
+> The implementation just mimics scripts/Makefile.host
+>
+> The userspace programs are compiled with the same flags as the host
+> programs. In addition, it uses -m32 or -m64 if it is found in
+> $(KBUILD_CFLAGS).
+>
+> This new syntax has at least two usecases.
+>
+> - Sample programs
+>
+>   Several userspace programs under samples/ include UAPI headers
+>   installed in usr/include. Most of them were previously built for
+>   the host architecture just to use 'hostprogs' syntax.
+>
+>   However, 'make headers' always works for the target architecture.
+>   This caused the arch mismatch in cross-compiling. To fix this
+>   distortion, sample code should be built for the target architecture.
+>
+> - Bpfilter
+>
+>   net/bpfilter/Makefile compiles bpfilter_umh as the user mode helper,
+>   and embeds it into the kernel code. Currently, it overrides HOSTCC
+>   with CC to use the 'hostprogs' syntax. This hack should go away.
+>
+> [1]: https://mirrors.edge.kernel.org/pub/tools/crosstool/
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>
+>  Makefile                   | 11 +++++++---
+>  scripts/Makefile.build     |  5 +++++
+>  scripts/Makefile.clean     |  2 +-
+>  scripts/Makefile.userprogs | 44 ++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 58 insertions(+), 4 deletions(-)
+>  create mode 100644 scripts/Makefile.userprogs
+>
+> diff --git a/Makefile b/Makefile
+> index 49b2709ff44e..f20597820131 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -406,9 +406,11 @@ else
+>  HOSTCC = gcc
+>  HOSTCXX        = g++
+>  endif
+> -KBUILD_HOSTCFLAGS   := -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 \
+> -               -fomit-frame-pointer -std=gnu89 $(HOST_LFS_CFLAGS) \
+> -               $(HOSTCFLAGS)
+> +
+> +export KBUILD_USERCFLAGS := -Wall -Wmissing-prototypes -Wstrict-prototypes \
+> +                             -O2 -fomit-frame-pointer -std=gnu89
+> +
+> +KBUILD_HOSTCFLAGS   := $(KBUILD_USERCFLAGS) $(HOST_LFS_CFLAGS) $(HOSTCFLAGS)
+>  KBUILD_HOSTCXXFLAGS := -Wall -O2 $(HOST_LFS_CFLAGS) $(HOSTCXXFLAGS)
+>  KBUILD_HOSTLDFLAGS  := $(HOST_LFS_LDFLAGS) $(HOSTLDFLAGS)
+>  KBUILD_HOSTLDLIBS   := $(HOST_LFS_LIBS) $(HOSTLDLIBS)
+> @@ -937,6 +939,9 @@ ifeq ($(CONFIG_RELR),y)
+>  LDFLAGS_vmlinux        += --pack-dyn-relocs=relr
+>  endif
+>
+> +# Align the bit size of userspace programs with the kernel
+> +KBUILD_USERCFLAGS += $(filter -m32 -m64, $(KBUILD_CFLAGS))
+> +
+>  # make the checker run with the right architecture
+>  CHECKFLAGS += --arch=$(ARCH)
+>
+> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> index 9fcbfac15d1d..94f2f7016172 100644
+> --- a/scripts/Makefile.build
+> +++ b/scripts/Makefile.build
+> @@ -50,6 +50,11 @@ ifneq ($(hostprogs)$(hostcxxlibs-y)$(hostcxxlibs-m),)
+>  include scripts/Makefile.host
+>  endif
+>
+> +# Do not include userprogs rules unless needed
+> +ifneq ($(userprogs),)
+> +include scripts/Makefile.userprogs
+> +endif
+> +
+>  ifndef obj
+>  $(warning kbuild: Makefile.build is included improperly)
+>  endif
+> diff --git a/scripts/Makefile.clean b/scripts/Makefile.clean
+> index 075f0cc2d8d7..e2c76122319d 100644
+> --- a/scripts/Makefile.clean
+> +++ b/scripts/Makefile.clean
+> @@ -29,7 +29,7 @@ subdir-ymn    := $(addprefix $(obj)/,$(subdir-ymn))
+>
+>  __clean-files  := $(extra-y) $(extra-m) $(extra-)       \
+>                    $(always) $(always-y) $(always-m) $(always-) $(targets) $(clean-files)   \
+> -                  $(hostprogs) $(hostprogs-y) $(hostprogs-m) $(hostprogs-) \
+> +                  $(hostprogs) $(hostprogs-y) $(hostprogs-m) $(hostprogs-) $(userprogs) \
+>                    $(hostcxxlibs-y) $(hostcxxlibs-m)
+>
+>  __clean-files   := $(filter-out $(no-clean-files), $(__clean-files))
+> diff --git a/scripts/Makefile.userprogs b/scripts/Makefile.userprogs
+> new file mode 100644
+> index 000000000000..0d987085819b
+> --- /dev/null
+> +++ b/scripts/Makefile.userprogs
+> @@ -0,0 +1,44 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +#
+> +# Build userspace programs for the target system
+> +#
+> +
+> +userprogs      := $(sort $(userprogs))
+> +
+> +# Executables compiled from a single .c file
+> +user-csingle   := $(foreach m, $(userprogs), $(if $($(m)-objs),,$(m)))
+> +
+> +# C executables linked based on several .o files
+> +user-cmulti    := $(foreach m, $(userprogs), $(if $($(m)-objs),$(m)))
+> +
+> +# Object (.o) files compiled from .c files
+> +user-cobjs     := $(foreach m, $(userprogs), $($(m)-objs))
+> +
+> +user-csingle   := $(addprefix $(obj)/, $(user-csingle))
+> +user-cmulti    := $(addprefix $(obj)/, $(user-cmulti))
+> +user-cobjs     := $(addprefix $(obj)/, $(user-cobjs))
+> +
+> +user_c_flags   = -Wp,-MMD,$(depfile) $(KBUILD_USERCFLAGS) $(user-ccflags) \
+> +                       $($(target-stem)-ccflags)
+> +
+> +# Create an executable from a single .c file
+> +quiet_cmd_user_cc_c = CC [U]  $@
+> +      cmd_user_cc_c = $(CC) $(user_c_flags) -o $@ $<
+
+
+                  $($(target-stem)-ldlibs)
+
+is needed here too.
+
+
+
+> +$(user-csingle): $(obj)/%: $(src)/%.c FORCE
+> +       $(call if_changed_dep,user_cc_c)
+> +
+> +# Link an executable based on list of .o files
+> +quiet_cmd_user_ld = LD [U]  $@
+> +      cmd_user_ld = $(CC) -o $@ $(addprefix $(obj)/, $($(target-stem)-objs)) \
+> +                      $($(target-stem)-ldlibs)
+> +$(user-cmulti): FORCE
+> +       $(call if_changed,user_ld)
+> +$(call multi_depend, $(user-cmulti), , -objs)
+> +
+> +# Create .o file from a .c file
+> +quiet_cmd_user_cc_o_c = CC [U]  $@
+> +      cmd_user_cc_o_c = $(CC) $(user_c_flags) -c -o $@ $<
+> +$(user-cobjs): $(obj)/%.o: $(src)/%.c FORCE
+> +       $(call if_changed_dep,user_cc_o_c)
+> +
+> +targets += $(user-csingle) $(user-cmulti) $(user-cobjs)
+> --
+> 2.25.1
 >
 
-Noted, sorry about that.
 
-Thank you.
-
-Saheed
-
+-- 
+Best Regards
+Masahiro Yamada
