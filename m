@@ -2,107 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15C31B5665
-	for <lists+bpf@lfdr.de>; Thu, 23 Apr 2020 09:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 639DF1B57C0
+	for <lists+bpf@lfdr.de>; Thu, 23 Apr 2020 11:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726639AbgDWHsx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Apr 2020 03:48:53 -0400
-Received: from condef-07.nifty.com ([202.248.20.72]:24076 "EHLO
-        condef-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726829AbgDWHsx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Apr 2020 03:48:53 -0400
-Received: from conuserg-10.nifty.com ([10.126.8.73])by condef-07.nifty.com with ESMTP id 03N7eWvD004489
-        for <bpf@vger.kernel.org>; Thu, 23 Apr 2020 16:40:32 +0900
-Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id 03N7dV9b000368;
-        Thu, 23 Apr 2020 16:39:48 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 03N7dV9b000368
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1587627589;
-        bh=juTCQEGw4591P2lhPWalVsIydPeVDA5qp/agKloK7wE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A43dIexGcFvYP9YfNPNCCHF4w+RKeD+dIP2P21GFHkODTqk/oaIFyMUiktfLrYO4z
-         1IpKMFNqHRps7/YzQ26CeKNPn7tL4wiUqTNyDwVlVQzx2MayLGaP4QbSaxhI+W8GyA
-         0a5zRJ4jeGJ2HakH+TzBvdkc0vdgTdkqH1W34RWSg7i2ehjX6G4yFq4XgTQZBSEOmH
-         RxL1K5eSpGzB1PW6/IAmSfD11OVuTTsuyGRtX2R84dZ9ns7QauXlu3A1iZV4QnTAem
-         NTazxTFumXcWZGqdxKbWImEXd7vnlDuA1WXNApi521AM5A/It8K+JhNLRQaccX76uk
-         xrP0tlIprm2aw==
-X-Nifty-SrcIP: [126.90.202.47]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 16/16] samples: watchdog: use 'userprogs' syntax
-Date:   Thu, 23 Apr 2020 16:39:29 +0900
-Message-Id: <20200423073929.127521-17-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200423073929.127521-1-masahiroy@kernel.org>
-References: <20200423073929.127521-1-masahiroy@kernel.org>
+        id S1726335AbgDWJHc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Apr 2020 05:07:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725854AbgDWJHc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Apr 2020 05:07:32 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F72CC03C1AF
+        for <bpf@vger.kernel.org>; Thu, 23 Apr 2020 02:07:32 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id t14so5883676wrw.12
+        for <bpf@vger.kernel.org>; Thu, 23 Apr 2020 02:07:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yJFyvUqV//1xm7gc+Oo0yQUwUCS1vMSAhlqJ8flup+E=;
+        b=Sc1EG5VSpA3/VvEPU0wrzGbDct5oJI+UjF+WKDxGGO2+ydrTzVr697TKjVtY8nF/0F
+         7hA0k0nDkZU6iHXC6UGJW3EtzA78bR7vEDS2vbnvtMzSgtp5QjsBBibYKZ/rzttf7j1A
+         0P8w30ZSlgyekvpe10f4GAd4iA55XtmdIpplY5mmISKwLducAsl7q2Gs8b398SroUCK6
+         4vdC6s9mu1Aeknbzz1fpi03Kbf+HTq5UrHAuOmnXa+Fxts8FnePL9hzCn4eJhVuT5/kM
+         gi8RYY0AFlhPiSQYvElzS0XByXKjZexI1J1vMJxLrqAc7yiFvuE/43Wue2Srhd9NKYOf
+         NSZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yJFyvUqV//1xm7gc+Oo0yQUwUCS1vMSAhlqJ8flup+E=;
+        b=GVBckvb2rDwI+F35oCNQtKWYtmCpEqSCTDJ1SexxxyuFsiw8jnL3KiReBju1hvncrn
+         CjKmbkXKmMKic67BfSepXydtSvf2UC2sACEKDtQJ5bfjz0TKGa+WrSwyZKRcZvYOy9Xo
+         R7JN3PP3QKnXmNCRyeOd4NkgSr2vXm1Gsyd2sk1K2ysijypQCPeAldQ7ZT2kOZbDRnKB
+         Eho4OPOPHT9Kz/GamrmkHBIy+zT6P9jFAxfcP7BnLrlfj0tWpnCzGJ4AxO9tgZGdD5gS
+         YN8qgLRSXL6ufQbjlaYS1Z/nJFgvOB3PBWcH6ZkcaLp26/YTbtSCw6s9gtmgdLIv+UCr
+         n7hw==
+X-Gm-Message-State: AGi0PubW2sCJoyPmp+xdIdnxEu73xN2PIbnIxrMN8rRfTbHKAUbpz+u+
+        jBtMhgysKev4z7O/F/xOTW5Mvg==
+X-Google-Smtp-Source: APiQypLDMCpS3TkzKNX0PIwmWczrI3J3DW6vOEaXewH/YIyrK5cO1hNDZumGhGICn4qndDTiUPZKXQ==
+X-Received: by 2002:a5d:5646:: with SMTP id j6mr3951349wrw.207.1587632851020;
+        Thu, 23 Apr 2020 02:07:31 -0700 (PDT)
+Received: from [192.168.1.10] ([194.53.185.104])
+        by smtp.gmail.com with ESMTPSA id z18sm2710502wrw.41.2020.04.23.02.07.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Apr 2020 02:07:30 -0700 (PDT)
+Subject: Re: [PATCH v2] bpf: Fix reStructuredText markup
+To:     Jakub Wilk <jwilk@jwilk.net>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     linux-man@vger.kernel.org, Michael Kerrisk <mtk.manpages@gmail.com>
+References: <20200420144753.3718-1-jwilk@jwilk.net>
+ <20200422082324.2030-1-jwilk@jwilk.net>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <34f41c96-86c0-2ca9-3be9-75c59f803bc3@isovalent.com>
+Date:   Thu, 23 Apr 2020 10:07:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200422082324.2030-1-jwilk@jwilk.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Kbuild now supports the 'userprogs' syntax to describe the build rules
-of userspace programs for the target architecture (i.e. the same
-architecture as the kernel).
+2020-04-22 10:23 UTC+0200 ~ Jakub Wilk <jwilk@jwilk.net>
+> Fixes:
+> 
+>     $ scripts/bpf_helpers_doc.py > bpf-helpers.rst
+>     $ rst2man bpf-helpers.rst > bpf-helpers.7
+>     bpf-helpers.rst:1105: (WARNING/2) Inline strong start-string without end-string.
+> 
+> Signed-off-by: Jakub Wilk <jwilk@jwilk.net>
+> ---
+> v2: "flags" should be italic, not bold
+> 
+>  include/uapi/linux/bpf.h       | 2 +-
+>  tools/include/uapi/linux/bpf.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 2e29a671d67e..7bbf1b65be10 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1642,7 +1642,7 @@ union bpf_attr {
+>   * 		ifindex, but doesn't require a map to do so.
+>   * 	Return
+>   * 		**XDP_REDIRECT** on success, or the value of the two lower bits
+> - * 		of the **flags* argument on error.
+> + * 		of the *flags* argument on error.
+>   *
+>   * int bpf_sk_redirect_map(struct sk_buff *skb, struct bpf_map *map, u32 key, u64 flags)
+>   * 	Description
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index 2e29a671d67e..7bbf1b65be10 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -1642,7 +1642,7 @@ union bpf_attr {
+>   * 		ifindex, but doesn't require a map to do so.
+>   * 	Return
+>   * 		**XDP_REDIRECT** on success, or the value of the two lower bits
+> - * 		of the **flags* argument on error.
+> + * 		of the *flags* argument on error.
+>   *
+>   * int bpf_sk_redirect_map(struct sk_buff *skb, struct bpf_map *map, u32 key, u64 flags)
+>   * 	Description
+> 
 
-Add the entry to samples/Makefile to put this into the build bot
-coverage.
+I was about to send the same :). Thanks!
 
-I also added the CONFIG option guarded by 'depends on CC_CAN_LINK'
-because $(CC) may not necessarily provide libc.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- samples/Kconfig           |  3 +++
- samples/Makefile          |  1 +
- samples/watchdog/Makefile | 10 ++--------
- 3 files changed, 6 insertions(+), 8 deletions(-)
-
-diff --git a/samples/Kconfig b/samples/Kconfig
-index 55548a487d3c..4aa89d24a19e 100644
---- a/samples/Kconfig
-+++ b/samples/Kconfig
-@@ -205,5 +205,8 @@ config SAMPLE_INTEL_MEI
- 	help
- 	  Build a sample program to work with mei device.
- 
-+config SAMPLE_WATCHDOG
-+	bool "watchdog sample"
-+	depends on CC_CAN_LINK
- 
- endif # SAMPLES
-diff --git a/samples/Makefile b/samples/Makefile
-index 042208326689..29c66aadd954 100644
---- a/samples/Makefile
-+++ b/samples/Makefile
-@@ -26,3 +26,4 @@ obj-$(CONFIG_VIDEO_PCI_SKELETON)	+= v4l/
- obj-y					+= vfio-mdev/
- subdir-$(CONFIG_SAMPLE_VFS)		+= vfs
- obj-$(CONFIG_SAMPLE_INTEL_MEI)		+= mei/
-+subdir-$(CONFIG_SAMPLE_WATCHDOG)	+= watchdog
-diff --git a/samples/watchdog/Makefile b/samples/watchdog/Makefile
-index a9430fa60253..17384cfb387e 100644
---- a/samples/watchdog/Makefile
-+++ b/samples/watchdog/Makefile
-@@ -1,9 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
--CC := $(CROSS_COMPILE)gcc
--PROGS := watchdog-simple
--
--all: $(PROGS)
--
--clean:
--	rm -fr $(PROGS)
--
-+userprogs := watchdog-simple
-+always-y := $(userprogs)
--- 
-2.25.1
-
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
