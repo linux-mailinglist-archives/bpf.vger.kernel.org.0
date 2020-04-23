@@ -2,40 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19ED1B56A8
-	for <lists+bpf@lfdr.de>; Thu, 23 Apr 2020 09:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 268B11B5666
+	for <lists+bpf@lfdr.de>; Thu, 23 Apr 2020 09:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726271AbgDWHvR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Apr 2020 03:51:17 -0400
-Received: from condef-02.nifty.com ([202.248.20.67]:37758 "EHLO
-        condef-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727822AbgDWHvQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Apr 2020 03:51:16 -0400
-Received: from conuserg-10.nifty.com ([10.126.8.73])by condef-02.nifty.com with ESMTP id 03N7eXsq004974
-        for <bpf@vger.kernel.org>; Thu, 23 Apr 2020 16:40:33 +0900
+        id S1726904AbgDWHs5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Apr 2020 03:48:57 -0400
+Received: from condef-07.nifty.com ([202.248.20.72]:24113 "EHLO
+        condef-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726829AbgDWHs4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Apr 2020 03:48:56 -0400
+Received: from conuserg-10.nifty.com ([10.126.8.73])by condef-07.nifty.com with ESMTP id 03N7eYTW004490
+        for <bpf@vger.kernel.org>; Thu, 23 Apr 2020 16:40:34 +0900
 Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id 03N7dV9Z000368;
-        Thu, 23 Apr 2020 16:39:45 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 03N7dV9Z000368
+        by conuserg-10.nifty.com with ESMTP id 03N7dV9a000368;
+        Thu, 23 Apr 2020 16:39:48 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 03N7dV9a000368
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1587627587;
-        bh=hA9zKaYolCBXen9YqFKBxUtOtwyQMnhMjhiUYnYYBtg=;
+        s=dec2015msa; t=1587627588;
+        bh=E2jjP8KPNwvqL0zZwwd3YhfAuKyupQ9yeab/h3FTNEI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j3N5a4M/3pkD919qlPicRMxcgkvR8hut/hs/t+tK7ZIAr2tqSGDEr9LQDf087UNUR
-         kj/A0Oini8KGUWlzLarA0l0peNzA3qLMP8a6KoY3Tr5+0pqBre3p3kajWxLZ23JlHR
-         xEskoeVk0jMj+mBH/pQtpOJ42ck9CFmMP1cRZCUQCnUcAq1yiQum1gcsi7OfQzJJ1r
-         eW+kNQ0WSYt6/1tJa1U3k+uWZiU5cjP5EsmNvhTiwm6aKYnZh7OQSek5cs5Es8BJIo
-         hyG27PQOQ5vcdZHgctN1vhTRTA3naqLyRw6tU1O1kz+8/iVH7Th3hS8OL5jX0HRE28
-         Pqwc7TTw11xEQ==
+        b=U6cu9Enpq+CiCsgRzuKUsbYJAE/NkdzIiiG3eC8D1AK+4ekKSWgVQxk8yPSZ6DCs7
+         5lY97SjxsY77w3uqmDERaSGyw79uBewjPYTd1VtsM12VYgy9fWPHekRWgnaozoQOA9
+         /txHor2s8dxdaCPFXweNbWrK+8FKOSH0rcKMw/dW06CmjpulUejvgF8ylM4LSdfJi9
+         1D/EV78kSCKwg7o1z9fZg98l63n7ySX0Yub4IsdZWOGkI5TnqO11yTV+LwdakdNRYi
+         b1YoNDMqri0o2izM+areu2uEOioxz6ubEoCSBKjeuupYUASWEJSvjsPN1t9LQBcV+S
+         dVFkoMt1ta1rg==
 X-Nifty-SrcIP: [126.90.202.47]
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-kbuild@vger.kernel.org
 Cc:     bpf@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
         Masahiro Yamada <masahiroy@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 14/16] samples: auxdisplay: use 'userprogs' syntax
-Date:   Thu, 23 Apr 2020 16:39:27 +0900
-Message-Id: <20200423073929.127521-15-masahiroy@kernel.org>
+Subject: [PATCH 15/16] samples: timers: use 'userprogs' syntax
+Date:   Thu, 23 Apr 2020 16:39:28 +0900
+Message-Id: <20200423073929.127521-16-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200423073929.127521-1-masahiroy@kernel.org>
 References: <20200423073929.127521-1-masahiroy@kernel.org>
@@ -59,55 +59,62 @@ because $(CC) may not necessarily provide libc.
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- samples/Kconfig             |  4 ++++
- samples/Makefile            |  1 +
- samples/auxdisplay/Makefile | 11 ++---------
- 3 files changed, 7 insertions(+), 9 deletions(-)
+ samples/Kconfig         |  4 ++++
+ samples/Makefile        |  1 +
+ samples/timers/Makefile | 17 +++--------------
+ 3 files changed, 8 insertions(+), 14 deletions(-)
 
 diff --git a/samples/Kconfig b/samples/Kconfig
-index b9dafee5d3af..cdb0091e4734 100644
+index cdb0091e4734..55548a487d3c 100644
 --- a/samples/Kconfig
 +++ b/samples/Kconfig
-@@ -6,6 +6,10 @@ menuconfig SAMPLES
+@@ -135,6 +135,10 @@ config SAMPLE_SECCOMP
+ 	  Build samples of seccomp filters using various methods of
+ 	  BPF filter construction.
  
- if SAMPLES
- 
-+config SAMPLE_AUXDISPLAY
-+	bool "auxdisplay sample"
-+	depends on CC_CAN_LINK
++config SAMPLE_TIMER
++	bool "Build timer sample code"
++	depends on CC_CAN_LINK && HEADERS_INSTALL
 +
- config SAMPLE_TRACE_EVENTS
- 	tristate "Build trace_events examples -- loadable modules only"
- 	depends on EVENT_TRACING && m
+ config SAMPLE_UHID
+ 	bool "Build UHID sample code"
+ 	depends on CC_CAN_LINK && HEADERS_INSTALL
 diff --git a/samples/Makefile b/samples/Makefile
-index bdc168405452..0c43b5d34b15 100644
+index 0c43b5d34b15..042208326689 100644
 --- a/samples/Makefile
 +++ b/samples/Makefile
-@@ -1,6 +1,7 @@
+@@ -16,6 +16,7 @@ subdir-$(CONFIG_SAMPLE_PIDFD)		+= pidfd
+ obj-$(CONFIG_SAMPLE_QMI_CLIENT)		+= qmi/
+ obj-$(CONFIG_SAMPLE_RPMSG_CLIENT)	+= rpmsg/
+ subdir-$(CONFIG_SAMPLE_SECCOMP)		+= seccomp
++subdir-$(CONFIG_SAMPLE_TIMER)		+= timers
+ obj-$(CONFIG_SAMPLE_TRACE_EVENTS)	+= trace_events/
+ obj-$(CONFIG_SAMPLE_TRACE_PRINTK)	+= trace_printk/
+ obj-$(CONFIG_SAMPLE_FTRACE_DIRECT)	+= ftrace/
+diff --git a/samples/timers/Makefile b/samples/timers/Makefile
+index f9fa07460802..c5f46e8caa80 100644
+--- a/samples/timers/Makefile
++++ b/samples/timers/Makefile
+@@ -1,16 +1,5 @@
  # SPDX-License-Identifier: GPL-2.0
- # Makefile for Linux samples code
+-ifndef CROSS_COMPILE
+-uname_M := $(shell uname -m 2>/dev/null || echo not)
+-ARCH ?= $(shell echo $(uname_M) | sed -e s/i.86/x86/ -e s/x86_64/x86/)
++userprogs := hpet_example
++always-y := $(userprogs)
  
-+subdir-$(CONFIG_SAMPLE_AUXDISPLAY)	+= auxdisplay
- obj-$(CONFIG_SAMPLE_ANDROID_BINDERFS)	+= binderfs/
- obj-$(CONFIG_SAMPLE_CONFIGFS)		+= configfs/
- obj-$(CONFIG_SAMPLE_CONNECTOR)		+= connector/
-diff --git a/samples/auxdisplay/Makefile b/samples/auxdisplay/Makefile
-index 0273bab27233..dbdf939af94a 100644
---- a/samples/auxdisplay/Makefile
-+++ b/samples/auxdisplay/Makefile
-@@ -1,10 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
+-ifeq ($(ARCH),x86)
 -CC := $(CROSS_COMPILE)gcc
--CFLAGS := -I../../usr/include
--
--PROGS := cfag12864b-example
+-PROGS := hpet_example
 -
 -all: $(PROGS)
 -
 -clean:
 -	rm -fr $(PROGS)
-+userprogs := cfag12864b-example
-+always-y := $(userprogs)
+-
+-endif
+-endif
++user-ccflags += -I usr/include
 -- 
 2.25.1
 
