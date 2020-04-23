@@ -2,354 +2,309 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C420B1B64E2
-	for <lists+bpf@lfdr.de>; Thu, 23 Apr 2020 21:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 599F71B662A
+	for <lists+bpf@lfdr.de>; Thu, 23 Apr 2020 23:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726082AbgDWT7K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Apr 2020 15:59:10 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34050 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726079AbgDWT7K (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 23 Apr 2020 15:59:10 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 03NJvMqC013710
-        for <bpf@vger.kernel.org>; Thu, 23 Apr 2020 12:59:08 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=c5pOwkMkVkcScTKEr6nJS0FMGz4XfwztBaBIT+L9cgc=;
- b=k7VDtqeiAPJxHo101OLE/WYp/LacYs827BbN9jGKA4CjbuHV/I7B+o2903gvdPVOEvcY
- aKULZHB30l2JZwKSnieDACefponcQ0CouERcX/3Ujrue5WysUqh5aw4qRhOm3e/SdP1A
- wK5S5RHhggcPevx55pUyh1AbijAjWxAXzLY= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 30k6gcm33x-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 23 Apr 2020 12:59:08 -0700
-Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+        id S1726287AbgDWVcV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Apr 2020 17:32:21 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23858 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725817AbgDWVcU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 23 Apr 2020 17:32:20 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03NLUFcW013800;
+        Thu, 23 Apr 2020 14:32:04 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=facebook;
+ bh=14+AeppZfzF74Dkyextu+P05LH7j/DH9aOiVAZ4egn4=;
+ b=ohui63MM97I5ocZgfVzY7h2tkyGN3s8nxD/ZB04i7vmQm2OGyG+W1KeJarlUnkzk30WS
+ NcuUD9aZphdMxJz+ab+jCBCddjKbykDaXJqGBMyYbzdIz4BmPl06iI7R9TJ4cbboaUwb
+ fnlc39sGJupPmZ6ZIh/a/ZmmV8ypX1qHiOQ= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 30jtc5r8xg-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 23 Apr 2020 14:32:04 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 23 Apr 2020 12:59:05 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 710812EC2D30; Thu, 23 Apr 2020 12:58:59 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+ 15.1.1847.3; Thu, 23 Apr 2020 14:32:02 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b4Kawqbe3ZEoziSvk3Xjb7olOurMCsgp1Mq0syhdioKs35qFqYBpAcUyMLBOgJJs3oNfJOuKkVbTCIiplbg2sPfAYaO5zziUS0S5hmejv+Qq3T8KRTauslJ4vrydvmY4U9lbU7bcbW2NlDf7VDCPQ2FWQLEK6yvfbqdAldFSXSkn4TETSyeOVSj/mywCVEV3a94cBhQZEZ6pq3dLQw+r6NX5ka3+N3Tl1YS3N9hLjLj+5E+/aQhRUhMwSqcN/iptlhh0whvED1y/ANzb2ozl5hdqzPX4Z+uk1UVzGXp26RHoKbGAsfKf3gYVx4xy78aE/E2ePgiEI/BEGr4MUavOyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=14+AeppZfzF74Dkyextu+P05LH7j/DH9aOiVAZ4egn4=;
+ b=PwK5iTvXw8yjHG4W3wB6UjAImIqURe1Fs5b7RXef8nxk6sPTivfCJxgEZRAswu3DwEt86xGE8bHZHyq5EHP7CVHkSnDdGf1D8qb8QLwWJxopZ7DCq9744SgwEXIG154FZ0799R8fmY+9wtxvwjIzhovoBvyHM2YydfeWX0YGVkv+YqqEM5HSMK6VWzkSnTdTAXzfR3r69BQpjc7g9RBcuh2ZWoQUM7gv+YyrWaFv+rywWrH7oQCkd4wcHaTUmdxeP+AqO7hhcfvqKtEchAHR2ocm9P+GpSyimkmmEa3V6Cs+EqhQ70Aqko75NdV9QQUGuKkP/V08eKFwFBT72dtaUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=14+AeppZfzF74Dkyextu+P05LH7j/DH9aOiVAZ4egn4=;
+ b=YS8eV4aWsHxWVBD5Rq7ULai3iPi4+Mv//foNykFyMVJj110zp7oiZLQ0cqQywlX23SgSArVG4VNm3YNNAmz/87wvsOseF17EjPn4RbiLBJ7AWasaXSC9CWtTGkayunCgpXULFmjvrSZxxZyJAbsCKjW79IbzorcAPB5joxidspU=
+Received: from BYAPR15MB4119.namprd15.prod.outlook.com (2603:10b6:a02:cd::20)
+ by BYAPR15MB2693.namprd15.prod.outlook.com (2603:10b6:a03:155::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.27; Thu, 23 Apr
+ 2020 21:32:01 +0000
+Received: from BYAPR15MB4119.namprd15.prod.outlook.com
+ ([fe80::90d6:ec75:fde:e992]) by BYAPR15MB4119.namprd15.prod.outlook.com
+ ([fe80::90d6:ec75:fde:e992%7]) with mapi id 15.20.2921.030; Thu, 23 Apr 2020
+ 21:32:01 +0000
+Date:   Thu, 23 Apr 2020 14:31:58 -0700
+From:   Andrey Ignatov <rdna@fb.com>
+To:     Ma Xinjian <max.xinjian@intel.com>
+CC:     "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Philip Li <philip.li@intel.com>, <ast@kernel.org>,
         <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v3 bpf-next] bpf: make verifier log more relevant by default
-Date:   Thu, 23 Apr 2020 12:58:50 -0700
-Message-ID: <20200423195850.1259827-1-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
+Subject: Re: bpf: test_sysctl run failed on Debian9
+Message-ID: <20200423213158.GA37107@rdna-mbp>
+References: <cc5c7dcb-02ab-3ea5-2330-7678abeb43b4@intel.com>
+ <079fd1a6-fd66-e997-9c03-6529489aad54@intel.com>
+Content-Type: multipart/mixed; boundary="RnlQjJ0d97Da+TV1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <079fd1a6-fd66-e997-9c03-6529489aad54@intel.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-ClientProxiedBy: MWHPR2001CA0004.namprd20.prod.outlook.com
+ (2603:10b6:301:15::14) To BYAPR15MB4119.namprd15.prod.outlook.com
+ (2603:10b6:a02:cd::20)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2620:10d:c090:400::5:9635) by MWHPR2001CA0004.namprd20.prod.outlook.com (2603:10b6:301:15::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Thu, 23 Apr 2020 21:32:00 +0000
+X-Originating-IP: [2620:10d:c090:400::5:9635]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 449cf6de-2c1f-49bf-9247-08d7e7cdc259
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2693:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB26933D346173BE1963B89A4EA8D30@BYAPR15MB2693.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-Forefront-PRVS: 03827AF76E
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4119.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(7916004)(366004)(44144004)(33716001)(66616009)(54906003)(2906002)(1076003)(5660300002)(6916009)(66946007)(6486002)(235185007)(52116002)(6496006)(66476007)(4326008)(16526019)(33656002)(33964004)(8676002)(9686003)(81156014)(186003)(498600001)(66556008)(8936002)(86362001)(2700100001);DIR:OUT;SFP:1102;
+Received-SPF: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RHmVxwca7JzCKAQ2flqlnhQZG9GBxweMYnpgJQdmcVKX+Jc8K1uHM9nYOfDDVcmAOh9//h8jVUJBe9lqjaQxp1gfLL13GJYpWP5N+1lqH8L5m/pik7OeN1xCyUiw7d2sOVhMlE6iH6Krg7wzqh2++4vWWW+rdfn4GxaIQT674QTuvnVFDbG4CMcOB0mmcYJBOCqDka6pWti/VuLcLm04lN1WPLyL/GdXmwgDj+C7xVk0nvzIeg1WCHdqzSaYTzQrudMZZbVnnrs7xRbOiM78vWSWpNWsWYw+wUOrpt38/TrgcKq2BLxYvshRj5y/PafuzqOvbSE8xFzOXfXii30mo9UidsosdnOPhh8A2+YMtGP9nseBEdW82BoUSo823OYF6Sl4GX8dEfyRlPjkMG9fTw1NUHEbqhFcdnVbOvDniaTqg5Z6qeqMHmkpOZTzRVAEDJh4CH9vLGsMyaY35mP5kRQ+GWDSopibpYTQj2FVkE+Cy3EuPdUe/33JdF7UDI69
+X-MS-Exchange-AntiSpam-MessageData: zSNCkDUxGsA0dnhsV+ias5l/by224+fb5awZw8iboiWVF1xYh5l+kKB+rGKN5dUZzb+avkPse0cMuuHZmnYyva9bFmvKuBMg+4N1s2oVwMDdhc9XSZZQg9nOEqijfhNvlKYFxdY/FIIhDS+Hxm0qqvSGIqNKpvARvqKy5WXbf1UzUgquxsV39+NxvYeSLwWG
+X-MS-Exchange-CrossTenant-Network-Message-Id: 449cf6de-2c1f-49bf-9247-08d7e7cdc259
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2020 21:32:01.4924
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 795/wqG4/nIDqvrPgFwlTaGakNBzQjN9iNAUlb5VZ06+oICuaAFa9NuSmHWfsMOd
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2693
+X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-23_15:2020-04-23,2020-04-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- spamscore=0 phishscore=0 clxscore=1015 suspectscore=29 impostorscore=0
- mlxscore=0 bulkscore=0 adultscore=0 malwarescore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004230148
+ definitions=2020-04-23_16:2020-04-23,2020-04-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ clxscore=1011 spamscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ bulkscore=0 mlxscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004230153
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-To make BPF verifier verbose log more releavant and easier to use to debu=
-g
-verification failures, "pop" parts of log that were successfully verified=
-.
-This has effect of leaving only verifier logs that correspond to code bra=
-nches
-that lead to verification failure, which in practice should result in muc=
-h
-shorter and more relevant verifier log dumps. This behavior is made the
-default behavior and can be overriden to do exhaustive logging by specify=
-ing
-BPF_LOG_LEVEL2 log level.
+--RnlQjJ0d97Da+TV1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Using BPF_LOG_LEVEL2 to disable this behavior is not ideal, because in so=
-me
-cases it's good to have BPF_LOG_LEVEL2 per-instruction register dump
-verbosity, but still have only relevant verifier branches logged. But for=
- this
-patch, I didn't want to add any new flags. It might be worth-while to jus=
-t
-rethink how BPF verifier logging is performed and requested and streamlin=
-e it
-a bit. But this trimming of successfully verified branches seems to be us=
-eful
-and a good default behavior.
+Ma Xinjian <max.xinjian@intel.com> [Thu, 2020-04-23 02:12 -0700]:
+> Hi,  Andrey.
+> 
+> I noticed you add test_sysctl to tools/bpf, so drop this problem to you.
+> 
+> When I run selftests: bpf: test_sysctl, failed with "(test_sysctl.c:1490:
+> errno: Permission denied) >>> Loading program (./test_sysctl_prog.o) error."
+> 
+> 
+> Testing env: "Debian GNU/Linux 9 (stretch)"
+> 
+> kernel: 5.7.0-rc2    5.7.0-rc1  5.6  both failed
+> 
+> 
+> Whole run log and kconfig please see the attatchment.
+> 
+> Error info
+> 
+> ```
+> 
+> root@vm-snb-42 /usr/src/perf_selftests-x86_64-rhel-7.6-kselftests-ae83d0b416db002fe95601e7f97f64b59514d936/tools/testing/selftests/bpf#
+> ./test_sysctl
+> 
+> Test case: sysctl wrong attach_type .. [PASS]
+> Test case: sysctl:read allow all .. [PASS]
+> Test case: sysctl:read deny all .. [PASS]
+> 
+> [snip]
+> 
+> libbpf: -- END LOG --
+> libbpf: failed to load program 'cgroup/sysctl'
+> libbpf: failed to load object './test_sysctl_prog.o'
+> (test_sysctl.c:1490: errno: Permission denied) >>> Loading program
+> (./test_sysctl_prog.o) error.
+> 
+> Test case: C prog: read tcp_mem .. [FAIL]
+> Summary: 37 PASSED, 3 FAILED
 
-To test this, I modified runqslower slightly to introduce read of
-uninitialized stack variable. Log (**truncated in the middle** to save ma=
-ny
-lines out of this commit message) BEFORE this change:
+Hi Ma,
 
-; int handle__sched_switch(u64 *ctx)
-0: (bf) r6 =3D r1
-; struct task_struct *prev =3D (struct task_struct *)ctx[1];
-1: (79) r1 =3D *(u64 *)(r6 +8)
-func 'sched_switch' arg1 has btf_id 151 type STRUCT 'task_struct'
-2: (b7) r2 =3D 0
-; struct event event =3D {};
-3: (7b) *(u64 *)(r10 -24) =3D r2
-last_idx 3 first_idx 0
-regs=3D4 stack=3D0 before 2: (b7) r2 =3D 0
-4: (7b) *(u64 *)(r10 -32) =3D r2
-5: (7b) *(u64 *)(r10 -40) =3D r2
-6: (7b) *(u64 *)(r10 -48) =3D r2
-; if (prev->state =3D=3D TASK_RUNNING)
+I can not reproduce it. I built 5.7.0-rc2 with your config (with minor
+changes to just make it work with my qemu-setup, specifically
+CONFIG_EXT4_FS=y), built tests and run it, no failures:
 
-[ ... instruction dump from insn #7 through #50 are cut out ... ]
+	root@arch-fb-vm1:/home/rdna/bpf-next/tools/testing/selftests/bpf uname -srm
+	Linux 5.7.0-rc2 x86_64
+	root@arch-fb-vm1:/home/rdna/bpf-next/tools/testing/selftests/bpf ./test_sysctl
+	...
+	Test case: C prog: deny all writes .. [PASS]
+	Test case: C prog: deny access by name .. [PASS]
+	Test case: C prog: read tcp_mem .. [PASS]
+	Summary: 40 PASSED, 0 FAILED
 
-51: (b7) r2 =3D 16
-52: (85) call bpf_get_current_comm#16
-last_idx 52 first_idx 42
-regs=3D4 stack=3D0 before 51: (b7) r2 =3D 16
-; bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU,
-53: (bf) r1 =3D r6
-54: (18) r2 =3D 0xffff8881f3868800
-56: (18) r3 =3D 0xffffffff
-58: (bf) r4 =3D r7
-59: (b7) r5 =3D 32
-60: (85) call bpf_perf_event_output#25
-last_idx 60 first_idx 53
-regs=3D20 stack=3D0 before 59: (b7) r5 =3D 32
-61: (bf) r2 =3D r10
-; event.pid =3D pid;
-62: (07) r2 +=3D -16
-; bpf_map_delete_elem(&start, &pid);
-63: (18) r1 =3D 0xffff8881f3868000
-65: (85) call bpf_map_delete_elem#3
-; }
-66: (b7) r0 =3D 0
-67: (95) exit
+Thouhg I see that test_sysctl_prog.o program I have differs from what
+you have. I attach test_sysctl_prog_xlated.gz with my program.
 
-from 44 to 66: safe
+Specifically the difference starts after the first call to bpf_strtoul.
 
-from 34 to 66: safe
+The code from my prog looks like this (from the first call to
+bpf_strtoul to the second call to bpf_strtoul):
 
-from 11 to 28: R1_w=3Dinv0 R2_w=3Dinv0 R6_w=3Dctx(id=3D0,off=3D0,imm=3D0)=
- R10=3Dfp0 fp-8=3Dmmmm???? fp-24_w=3D00000000 fp-32_w=3D00000000 fp-40_w=3D=
-00000000 fp-48_w=3D00000000
-; bpf_map_update_elem(&start, &pid, &ts, 0);
-28: (bf) r2 =3D r10
-;
-29: (07) r2 +=3D -16
-; tsp =3D bpf_map_lookup_elem(&start, &pid);
-30: (18) r1 =3D 0xffff8881f3868000
-32: (85) call bpf_map_lookup_elem#1
-invalid indirect read from stack off -16+0 size 4
-processed 65 insns (limit 1000000) max_states_per_insn 1 total_states 5 p=
-eak_states 5 mark_read 4
+	  71: (85) call bpf_strtoul#110448
+	  72: (bc) w7 = w0
+	; if (ret <= 0 || ret > MAX_ULONG_STR_LEN)
+	  73: (bc) w1 = w7
+	  74: (04) w1 += -1
+	  75: (26) if w1 > 0xe goto pc-21
+	; off += ret & MAX_ULONG_STR_LEN;
+	  76: (54) w7 &= 15
+	  77: (bf) r1 = r10
+	  78: (07) r1 += -64
+	; ret = bpf_strtoul(value + off, MAX_ULONG_STR_LEN, 0,
+	  79: (0f) r1 += r7
+	; tcp_mem + i);
+	  80: (bf) r4 = r10
+	  81: (07) r4 += -80
+	; ret = bpf_strtoul(value + off, MAX_ULONG_STR_LEN, 0,
+	  82: (b7) r2 = 15
+	  83: (b7) r3 = 0
+	  84: (85) call bpf_strtoul#110448
 
-Notice how there is a successful code path from instruction 0 through 67,=
- few
-successfully verified jumps (44->66, 34->66), and only after that 11->28 =
-jump
-plus error on instruction #32.
+It can be seen that r1 points to stack-64 + r7 that is known to be <15.
 
-AFTER this change (full verifier log, **no truncation**):
+This is basically `value + (ret & MAX_ULONG_STR_LEN)` from the C code.
 
-; int handle__sched_switch(u64 *ctx)
-0: (bf) r6 =3D r1
-; struct task_struct *prev =3D (struct task_struct *)ctx[1];
-1: (79) r1 =3D *(u64 *)(r6 +8)
-func 'sched_switch' arg1 has btf_id 151 type STRUCT 'task_struct'
-2: (b7) r2 =3D 0
-; struct event event =3D {};
-3: (7b) *(u64 *)(r10 -24) =3D r2
-last_idx 3 first_idx 0
-regs=3D4 stack=3D0 before 2: (b7) r2 =3D 0
-4: (7b) *(u64 *)(r10 -32) =3D r2
-5: (7b) *(u64 *)(r10 -40) =3D r2
-6: (7b) *(u64 *)(r10 -48) =3D r2
-; if (prev->state =3D=3D TASK_RUNNING)
-7: (79) r2 =3D *(u64 *)(r1 +16)
-; if (prev->state =3D=3D TASK_RUNNING)
-8: (55) if r2 !=3D 0x0 goto pc+19
- R1_w=3Dptr_task_struct(id=3D0,off=3D0,imm=3D0) R2_w=3Dinv0 R6_w=3Dctx(id=
-=3D0,off=3D0,imm=3D0) R10=3Dfp0 fp-24_w=3D00000000 fp-32_w=3D00000000 fp-=
-40_w=3D00000000 fp-48_w=3D00000000
-; trace_enqueue(prev->tgid, prev->pid);
-9: (61) r1 =3D *(u32 *)(r1 +1184)
-10: (63) *(u32 *)(r10 -4) =3D r1
-; if (!pid || (targ_pid && targ_pid !=3D pid))
-11: (15) if r1 =3D=3D 0x0 goto pc+16
+The code from your version of program looks like this:
 
-from 11 to 28: R1_w=3Dinv0 R2_w=3Dinv0 R6_w=3Dctx(id=3D0,off=3D0,imm=3D0)=
- R10=3Dfp0 fp-8=3Dmmmm???? fp-24_w=3D00000000 fp-32_w=3D00000000 fp-40_w=3D=
-00000000 fp-48_w=3D00000000
-; bpf_map_update_elem(&start, &pid, &ts, 0);
-28: (bf) r2 =3D r10
-;
-29: (07) r2 +=3D -16
-; tsp =3D bpf_map_lookup_elem(&start, &pid);
-30: (18) r1 =3D 0xffff8881db3ce800
-32: (85) call bpf_map_lookup_elem#1
-invalid indirect read from stack off -16+0 size 4
-processed 65 insns (limit 1000000) max_states_per_insn 1 total_states 5 p=
-eak_states 5 mark_read 4
+	  70: (85) call bpf_strtoul#106
+	last_idx 70 first_idx 63
+	regs=4 stack=0 before 69: (b7) r3 = 0
+	regs=4 stack=0 before 68: (b7) r2 = 15
+	  71: (bc) w7 = w0
+	; if (ret <= 0 || ret > MAX_ULONG_STR_LEN)
+	  72: (bc) w1 = w7
+	  73: (04) w1 += -1
+	  74: (26) if w1 > 0xe goto pc+14
+	 R0=inv(id=0) R1_w=inv(id=0,umax_value=14,var_off=(0x0; 0xf)) R6=inv0 R7_w=inv(id=0,smax_value=2147483647,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R10=fp0 fp-8=mmmmmmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=00000000 fp-80=00000000 fp-88=mmmmmmmm
+	; ret = bpf_strtoul(value + off, MAX_ULONG_STR_LEN, 0,
+	  75: (bc) w2 = w7
+	  76: (67) r2 <<= 32
+	  77: (77) r2 >>= 32
+	  78: (bf) r1 = r10
+	;
+	  79: (07) r1 += -64
+	; ret = bpf_strtoul(value + off, MAX_ULONG_STR_LEN, 0,
+	  80: (0f) r1 += r2
+	last_idx 80 first_idx 71
+	regs=4 stack=0 before 79: (07) r1 += -64
+	regs=4 stack=0 before 78: (bf) r1 = r10
+	regs=4 stack=0 before 77: (77) r2 >>= 32
+	regs=4 stack=0 before 76: (67) r2 <<= 32
+	regs=4 stack=0 before 75: (bc) w2 = w7
+	regs=80 stack=0 before 74: (26) if w1 > 0xe goto pc+14
+	regs=80 stack=0 before 73: (04) w1 += -1
+	regs=80 stack=0 before 72: (bc) w1 = w7
+	regs=80 stack=0 before 71: (bc) w7 = w0
+	 R0_rw=invP(id=0) R6=inv0 R7=ctx(id=0,off=0,imm=0) R10=fp0 fp-8=mmmmmmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=00000000 fp-80=00000000 fp-88=mmmmmmmm
+	parent didn't have regs=1 stack=0 marks
+	last_idx 70 first_idx 63
+	regs=1 stack=0 before 70: (85) call bpf_strtoul#106
+	; tcp_mem + i);
+	  81: (bf) r4 = r10
+	  82: (07) r4 += -80
+	; ret = bpf_strtoul(value + off, MAX_ULONG_STR_LEN, 0,
+	  83: (b7) r2 = 15
+	  84: (b7) r3 = 0
+	  85: (85) call bpf_strtoul#106
+	R1 unbounded indirect variable offset stack access
+	processed 88 insns (limit 1000000) max_states_per_insn 0 total_states 7 peak_states 7 mark_read 6
 
-Notice how in this case, there are 0-11 instructions + jump from 11 to
-28 is recorded + 28-32 instructions with error on insn #32.
+In this case r1 points to stack-64 + r2 and it seems to me that the
+state of r2 is the problem, but I don't undesrtand why.
 
-test_verifier test runner was updated to specify BPF_LOG_LEVEL2 for
-VERBOSE_ACCEPT expected result due to potentially "incomplete" success ve=
-rbose
-log at BPF_LOG_LEVEL1.
+32LSB of r2 seems to be known because:
+	  71: (bc) w7 = w0
+	  72: (bc) w1 = w7
+	  73: (04) w1 += -1
+	  74: (26) if w1 > 0xe goto pc+14
+	  75: (bc) w2 = w7
 
-On success, verbose log will only have a summary of number of processed
-instructions, etc, but no branch tracing log. Having just a last succesfu=
-l
-branch tracing seemed weird and confusing. Having small and clean summary=
- log
-in success case seems quite logical and nice, though.
+and 32MSB of r2 are cleared because:
+	  76: (67) r2 <<= 32
+	  77: (77) r2 >>= 32
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- kernel/bpf/verifier.c                       | 29 ++++++++++++++++++---
- tools/testing/selftests/bpf/test_verifier.c |  7 ++++-
- 2 files changed, 31 insertions(+), 5 deletions(-)
+So it seems to me that r2 has to be known and in (0x0; 0xf) range.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 38cfcf701eeb..2a98d9fb2eef 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -168,6 +168,8 @@ struct bpf_verifier_stack_elem {
- 	int insn_idx;
- 	int prev_insn_idx;
- 	struct bpf_verifier_stack_elem *next;
-+	/* length of verifier log at the time this state was pushed on stack */
-+	u32 log_pos;
- };
-=20
- #define BPF_COMPLEXITY_LIMIT_JMP_SEQ	8192
-@@ -283,6 +285,18 @@ void bpf_verifier_vlog(struct bpf_verifier_log *log,=
- const char *fmt,
- 		log->ubuf =3D NULL;
- }
-=20
-+static void bpf_vlog_reset(struct bpf_verifier_log *log, u32 new_pos)
-+{
-+	char zero =3D 0;
-+
-+	if (!bpf_verifier_log_needed(log))
-+		return;
-+
-+	log->len_used =3D new_pos;
-+	if (put_user(zero, log->ubuf + new_pos))
-+		log->ubuf =3D NULL;
-+}
-+
- /* log_level controls verbosity level of eBPF verifier.
-  * bpf_verifier_log_write() is used to dump the verification trace to th=
-e log,
-  * so the user can figure out what's wrong with the program
-@@ -846,7 +860,7 @@ static void update_branch_counts(struct bpf_verifier_=
-env *env, struct bpf_verifi
- }
-=20
- static int pop_stack(struct bpf_verifier_env *env, int *prev_insn_idx,
--		     int *insn_idx)
-+		     int *insn_idx, bool pop_log)
- {
- 	struct bpf_verifier_state *cur =3D env->cur_state;
- 	struct bpf_verifier_stack_elem *elem, *head =3D env->head;
-@@ -860,6 +874,8 @@ static int pop_stack(struct bpf_verifier_env *env, in=
-t *prev_insn_idx,
- 		if (err)
- 			return err;
- 	}
-+	if (pop_log)
-+		bpf_vlog_reset(&env->log, head->log_pos);
- 	if (insn_idx)
- 		*insn_idx =3D head->insn_idx;
- 	if (prev_insn_idx)
-@@ -887,6 +903,7 @@ static struct bpf_verifier_state *push_stack(struct b=
-pf_verifier_env *env,
- 	elem->insn_idx =3D insn_idx;
- 	elem->prev_insn_idx =3D prev_insn_idx;
- 	elem->next =3D env->head;
-+	elem->log_pos =3D env->log.len_used;
- 	env->head =3D elem;
- 	env->stack_size++;
- 	err =3D copy_verifier_state(&elem->st, cur);
-@@ -915,7 +932,7 @@ static struct bpf_verifier_state *push_stack(struct b=
-pf_verifier_env *env,
- 	free_verifier_state(env->cur_state, true);
- 	env->cur_state =3D NULL;
- 	/* pop all elements and return */
--	while (!pop_stack(env, NULL, NULL));
-+	while (!pop_stack(env, NULL, NULL, false));
- 	return NULL;
- }
-=20
-@@ -8399,6 +8416,7 @@ static bool reg_type_mismatch(enum bpf_reg_type src=
-, enum bpf_reg_type prev)
-=20
- static int do_check(struct bpf_verifier_env *env)
- {
-+	bool pop_log =3D !(env->log.level & BPF_LOG_LEVEL2);
- 	struct bpf_verifier_state *state =3D env->cur_state;
- 	struct bpf_insn *insns =3D env->prog->insnsi;
- 	struct bpf_reg_state *regs;
-@@ -8675,7 +8693,7 @@ static int do_check(struct bpf_verifier_env *env)
- process_bpf_exit:
- 				update_branch_counts(env, env->cur_state);
- 				err =3D pop_stack(env, &prev_insn_idx,
--						&env->insn_idx);
-+						&env->insn_idx, pop_log);
- 				if (err < 0) {
- 					if (err !=3D -ENOENT)
- 						return err;
-@@ -10198,6 +10216,7 @@ static void sanitize_insn_aux_data(struct bpf_ver=
-ifier_env *env)
-=20
- static int do_check_common(struct bpf_verifier_env *env, int subprog)
- {
-+	bool pop_log =3D !(env->log.level & BPF_LOG_LEVEL2);
- 	struct bpf_verifier_state *state;
- 	struct bpf_reg_state *regs;
- 	int ret, i;
-@@ -10260,7 +10279,9 @@ static int do_check_common(struct bpf_verifier_en=
-v *env, int subprog)
- 		free_verifier_state(env->cur_state, true);
- 		env->cur_state =3D NULL;
- 	}
--	while (!pop_stack(env, NULL, NULL));
-+	while (!pop_stack(env, NULL, NULL, false));
-+	if (!ret && pop_log)
-+		bpf_vlog_reset(&env->log, 0);
- 	free_states(env);
- 	if (ret)
- 		/* clean aux data in case subprog was rejected */
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/=
-selftests/bpf/test_verifier.c
-index 87eaa49609a0..ad6939c67c5e 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -943,7 +943,12 @@ static void do_test_single(struct bpf_test *test, bo=
-ol unpriv,
- 	attr.insns =3D prog;
- 	attr.insns_cnt =3D prog_len;
- 	attr.license =3D "GPL";
--	attr.log_level =3D verbose || expected_ret =3D=3D VERBOSE_ACCEPT ? 1 : =
-4;
-+	if (verbose)
-+		attr.log_level =3D 1;
-+	else if (expected_ret =3D=3D VERBOSE_ACCEPT)
-+		attr.log_level =3D 2;
-+	else
-+		attr.log_level =3D 4;
- 	attr.prog_flags =3D pflags;
-=20
- 	fd_prog =3D bpf_load_program_xattr(&attr, bpf_vlog, sizeof(bpf_vlog));
---=20
-2.24.1
+To summarize:
 
+* I see that your program differs what may mean you have different
+  environemnt where you build BPF proga (e.g. different clang/llvm
+  version), FWIW I have clang version 9.0.20190721 (though it's heavily
+  patched facebook version).
+
+* I'm not quite sure why verifier rejects your version of the program --
+  here we would need more eyes. I'm cc'ing Alexei and Daniel.
+
+
+-- 
+Andrey Ignatov
+
+--RnlQjJ0d97Da+TV1
+Content-Type: application/x-gunzip
+Content-Disposition: attachment; filename="test_sysctl_prog_xlated.gz"
+Content-Transfer-Encoding: base64
+
+H4sICBn8oV4AA3Rlc3Rfc3lzY3RsX3Byb2dfeGxhdGVkAK2YbW/bNhDH3+dTsCgQWElckxSflNbB
++qLom6wDtnUYUASGY8upAMcKJLnJtva7746WRNmiPK4pkCDx6Xj8391P9ElFnlc/zYvF5/Hqdvzl
+nl1OPuf36aRYbuaT24fVeJM+VZMqz9flpErLKtvcTcp0vcL/S3Qgr15Ndj/wAX/Rt/lLHsiSPK3n
+Vbok2ZIwQU+yTUXKv8pFtZ5Vi4fZfXo/Kqtiu6gIrJntrpAzsqieosuT1yTMHb1PCCH0koxuVxEp
+NJmSgqGJoUmDiYGJQsTtpszuNiBonW/uSB30U3wDl/+hFwR/vr3GlRxW6tuInI22SpCzaFQwSsaa
+R23s2OthqPMQfg/jPCTqExF5VLW+bEVGkM/46rHIqtSmpcBHMciBgw+EirkNpcm55JF/iYYlUkV4
+6ZGTFxD6iZK7vMrJw+JcaFgEWZdpNdrM71ObdZn9neYr+zmKbAGMX7zTnngdmGo9GPV6cOE8mNcj
+dlVm/j4IV2Xm74NwSpm/D7KjVHo9VEepauDi1gS9QisWmmprPZ/iAihtkVbg4gCd3aXVDAuLXbog
+u5J36w0NsCVnptkDaS00mpIG4BhMEB7ApI1JWGbAglU0MiKL+Xrt2/glS6SiDV6o7w2h5OtXKxXo
+qMXUd4NdEpExYcgS5x2W6I4l5mCKOfrYFrBaONTQdEuIDqIThO2CqNQFaaThzp+yG3ToigGTjSKH
+t4mjsBDKI0S2QrgJi6KHhfBAIaYvRAsnRIVFSYaFsDAhMe0L4SsnRIRFYcNCaKAQ7mlN4oTwsCjD
+KMokUIgHVu2I52GwxsOwShMoxAOrVq0QFgZrPAyr1IFCPLDGDlYWBms8DCvEDgohjsPKwmAVw7BK
+GSjEA2vn9mVhsIojsIpAIb6TNXZCwmAVR2ANPFmFD1Z314SxKo6wGniwCg+r0iEShqo4gmrguSo9
+qKqlG8LCghwhNfBYlb5jtfONFxZkGFQReKpKBJW1OqYH9UAd39DNTsSLCGeNKYzFaEKyEhhv0qes
+CttrGCPRnr0vsrJ9qMAnCLvQA0/L8BinL5n05kD/wLfYFkW6qWZf5uttPfnZfy/Iz2//nP3x9vrj
+u9lvv/86u373wQ5/ivZGSTCy3kSoeG8iVPGR+W9PBwyCQtHmXjwYBK+mHmkYHjvH2wnwCg//9oYa
+M5xAldzTWU/HSjUpsU5KunEVtSvYTOMorKMx+1Wtiirfrkc2BXJO8tVqV8WP1798eN9IxccYjNVO
+zNggJsGkabdkuKHuT8y7PV4yRoUw6MIbEPFp8nFveJ52itYXgjXTcbMaC/KIjdNYRiqsCZPEpwot
+O6VltrTtVDzmDPaEXNEbtzrtb4VV1vbgFVboaZOxPuwH2EyvG99dZI1FpqsmVoFPlPW9BEszC7Sh
+/UYbdtBo+v0aDO812sSHjTbiPxr9v7pq5F5X7Qaq31Wjj3Q1joO6akzTVVp3NWiV7cvu9DyvuUto
+794MiJSwH0dLwvdpoR5akrhPSyL2adH8GRpkj5ZEHdKS6B9JS2IaNGiLRpL0zlKHhpC7/LbFpn0z
+RW/giG4+sBtyetr95C7xG6gio/aNS+K++PZfTD07PGvC83548/zwyMl8aYsDO7zBLNpBFq8jIxTa
+0xYsQavovkNjzxYhh3PU/Pk5qk6ODHPkbTqSo4PefyUIFnOQthQn/wI7P/iHuBUAAA==
+
+--RnlQjJ0d97Da+TV1--
