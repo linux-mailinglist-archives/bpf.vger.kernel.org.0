@@ -2,92 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3051B6BA9
-	for <lists+bpf@lfdr.de>; Fri, 24 Apr 2020 05:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E2FC1B6C19
+	for <lists+bpf@lfdr.de>; Fri, 24 Apr 2020 05:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725888AbgDXDAK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Apr 2020 23:00:10 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:44927 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725884AbgDXDAK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Apr 2020 23:00:10 -0400
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 03O2xoAh028692;
-        Fri, 24 Apr 2020 11:59:51 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 03O2xoAh028692
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1587697191;
-        bh=sMhAyQXgx3aGgeT2cBKikLWxHkHjlRUwrBTCsV1+3Gw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pnu0hGRUoE/m3c5iNOXeZVq/zyyFbsQqCoxufZov1J8pArY22bCjRMZqzG/L3m5+n
-         1TGlCwr5ISXTw+671s8m/Z/m5pAMgJwxRH3EVJGBXzTKsOAUN9wqwbss3CVkEAvV6k
-         TRIuXE+CR0M+7GUrLfZZxVChoqZApt5XMnu03Kn5LEbu63plgi0Xb/c58bmydut5wk
-         ubf65em2YZFOa3Qr6YgDq4cquF49M9yRvYo9oLYU7XwS8nx46BohhaZA0TS2j4U4Mg
-         HUeE4Mn2IySUCOFVuOb2xUOPxiwPIzQj1nRYpgqcPxO/A84tApwP7x1aS3P2vB1am/
-         hUrlcaFMHbMBg==
-X-Nifty-SrcIP: [209.85.222.45]
-Received: by mail-ua1-f45.google.com with SMTP id a10so8040902uad.7;
-        Thu, 23 Apr 2020 19:59:51 -0700 (PDT)
-X-Gm-Message-State: AGi0Pua1YSRFCR1v4PLQ63nig+DIo038pykOo5o3uN4c2TW0u5aUWuM+
-        lT0D0BB3hrt+8A8Pn4tyRwy8I5WsdAYsBNMUDb4=
-X-Google-Smtp-Source: APiQypJwidJWbxYPm/8c0bwT8boM9jxvggOQZWWhl+mIk5bgeb7K2rLmsZC1B59FOXGSWq0gtKzTuQcI9OVc/f+WiGc=
-X-Received: by 2002:ab0:cd:: with SMTP id 71mr5422237uaj.109.1587697190149;
- Thu, 23 Apr 2020 19:59:50 -0700 (PDT)
+        id S1726078AbgDXDuu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Apr 2020 23:50:50 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:37472 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726027AbgDXDut (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 23 Apr 2020 23:50:49 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03O3jA4h001586
+        for <bpf@vger.kernel.org>; Thu, 23 Apr 2020 20:50:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=H7J4YB8zRiIn+6Qwl8+W/lRxPsR21nnhgkmf7I6X4V0=;
+ b=LMS8YAB/98OzqC75Dg0IwJW6Oo1L8W+6VeQyBkCGmU3xgc2UOlIhsSC2n+UfcftivCe9
+ EeQQ9AmPc5HoyhwVz2hCZWszGpFT0WElb8l9gCugJ4146lkIXSemvJ7IA69Qm4/bzkPi
+ OpWdiLUuHPoOaJO4AfhQP6TJeoxq0kuvCNs= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 30kkpe1p76-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 23 Apr 2020 20:50:49 -0700
+Received: from intmgw005.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Thu, 23 Apr 2020 20:50:48 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 2520D2EC2B09; Thu, 23 Apr 2020 20:50:45 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf] bpf: fix leak in LINK_UPDATE and enforce empty old_prog_fd
+Date:   Thu, 23 Apr 2020 20:50:39 -0700
+Message-ID: <20200424035039.3534080-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200423073929.127521-1-masahiroy@kernel.org> <20200423073929.127521-15-masahiroy@kernel.org>
- <CANiq72nUa8uoXtSThqq7t9oAmZnGSE9a1_d+ZoRAagpKDo4DRg@mail.gmail.com>
-In-Reply-To: <CANiq72nUa8uoXtSThqq7t9oAmZnGSE9a1_d+ZoRAagpKDo4DRg@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 24 Apr 2020 11:59:14 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASo=R2uoNPzof_FppFUp=sMAZG62C3PLAMm9jZix9z3Rw@mail.gmail.com>
-Message-ID: <CAK7LNASo=R2uoNPzof_FppFUp=sMAZG62C3PLAMm9jZix9z3Rw@mail.gmail.com>
-Subject: Re: [PATCH 14/16] samples: auxdisplay: use 'userprogs' syntax
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-23_19:2020-04-23,2020-04-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ priorityscore=1501 suspectscore=8 mlxscore=0 lowpriorityscore=0
+ phishscore=0 adultscore=0 malwarescore=0 clxscore=1015 mlxlogscore=895
+ impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2003020000 definitions=main-2004240025
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Miguel,
+Fix bug of not putting bpf_link in LINK_UPDATE command.
+Also enforce zeroed old_prog_fd if no BPF_F_REPLACE flag is specified.
 
-On Thu, Apr 23, 2020 at 8:50 PM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
->
-> Hi Masahiro,
->
-> On Thu, Apr 23, 2020 at 9:41 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > Kbuild now supports the 'userprogs' syntax to describe the build rules
-> > of userspace programs for the target architecture (i.e. the same
-> > architecture as the kernel).
-> >
-> > Add the entry to samples/Makefile to put this into the build bot
-> > coverage.
-> >
-> > I also added the CONFIG option guarded by 'depends on CC_CAN_LINK'
-> > because $(CC) may not necessarily provide libc.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->
-> Thanks for this! Looks nice. I guess you take all patches for the
-> samples/ changes through your tree?
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ kernel/bpf/syscall.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-Yes, I will take all to my tree
-since this series is mostly Makefile changes.
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index d85f37239540..087cf27218c9 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3608,7 +3608,7 @@ static int link_create(union bpf_attr *attr)
+=20
+ static int link_update(union bpf_attr *attr)
+ {
+-	struct bpf_prog *old_prog =3D NULL, *new_prog;
++	struct bpf_prog *old_prog =3D NULL, *new_prog =3D NULL;
+ 	struct bpf_link *link;
+ 	u32 flags;
+ 	int ret;
+@@ -3628,31 +3628,38 @@ static int link_update(union bpf_attr *attr)
+ 		return PTR_ERR(link);
+=20
+ 	new_prog =3D bpf_prog_get(attr->link_update.new_prog_fd);
+-	if (IS_ERR(new_prog))
+-		return PTR_ERR(new_prog);
++	if (IS_ERR(new_prog)) {
++		ret =3D PTR_ERR(new_prog);
++		new_prog =3D NULL;
++		goto out_put;
++	}
+=20
+ 	if (flags & BPF_F_REPLACE) {
+ 		old_prog =3D bpf_prog_get(attr->link_update.old_prog_fd);
+ 		if (IS_ERR(old_prog)) {
+ 			ret =3D PTR_ERR(old_prog);
+ 			old_prog =3D NULL;
+-			goto out_put_progs;
++			goto out_put;
+ 		}
++	} else if (attr->link_update.old_prog_fd) {
++		ret =3D -EINVAL;
++		goto out_put;
+ 	}
+=20
+ #ifdef CONFIG_CGROUP_BPF
+ 	if (link->ops =3D=3D &bpf_cgroup_link_lops) {
+ 		ret =3D cgroup_bpf_replace(link, old_prog, new_prog);
+-		goto out_put_progs;
++		goto out_put;
+ 	}
+ #endif
+ 	ret =3D -EINVAL;
+=20
+-out_put_progs:
++out_put:
+ 	if (old_prog)
+ 		bpf_prog_put(old_prog);
+-	if (ret)
++	if (ret && new_prog)
+ 		bpf_prog_put(new_prog);
++	bpf_link_put(link);
+ 	return ret;
+ }
+=20
+--=20
+2.24.1
 
-
-
-> Acked-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
->
-> Cheers,
-> Miguel
-
-
-
--- 
-Best Regards
-Masahiro Yamada
