@@ -2,61 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 683A31B77F1
-	for <lists+bpf@lfdr.de>; Fri, 24 Apr 2020 16:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6FCB1B77F8
+	for <lists+bpf@lfdr.de>; Fri, 24 Apr 2020 16:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726987AbgDXOEw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Apr 2020 10:04:52 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:55620 "EHLO
+        id S1727977AbgDXOGV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Apr 2020 10:06:21 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44486 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727064AbgDXOEv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Apr 2020 10:04:51 -0400
+        with ESMTP id S1726968AbgDXOGT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Apr 2020 10:06:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587737090;
+        s=mimecast20190719; t=1587737177;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0VuZCm8HvCNkNO0M8vLGp4C0YFmiV3243zClgfZKZD0=;
-        b=GiobOISlOtNjP9oa3FO62kNZSPcsb5f8arHiJXTpfAEoQ1Un62Y3uZtCsTXvPjmunQeTOy
-        hyhZR64eZ+JWhhIlKmsqe+Xvacg/+B2G52XzHNX4aW7EcCpcso4nKLDIPKqLuMh4vTy3o4
-        x9JKIuJls/0XGoKFDyj/FIC8kW+T988=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-345-5iqNImgZPgWdDjl7tKYGkw-1; Fri, 24 Apr 2020 10:04:47 -0400
-X-MC-Unique: 5iqNImgZPgWdDjl7tKYGkw-1
-Received: by mail-lj1-f197.google.com with SMTP id p7so1820843ljg.15
-        for <bpf@vger.kernel.org>; Fri, 24 Apr 2020 07:04:47 -0700 (PDT)
+        bh=XD/8fSrDljhSMhAXxrRpIOeU+6aO8IuBMFYijn23O/I=;
+        b=CtTYXHI+fXZRmptpFKOqQBn57L7HjrzwXehQZIDVL7swp3M4cHU50nJd7AJNahdDLNyv+E
+        l156rpOLvJdMAZW+sU4z6188F8SYcW91BgVn6aJdfaxyn4YPb/OfX0d7oGRXTYSSUMu1Pc
+        KiKSFIvwroYZeGYOQ9l3ZwqAzFuC5DM=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-81-nxfl8DVeOEGZcORz905pdQ-1; Fri, 24 Apr 2020 10:06:15 -0400
+X-MC-Unique: nxfl8DVeOEGZcORz905pdQ-1
+Received: by mail-lf1-f71.google.com with SMTP id l28so3934328lfp.8
+        for <bpf@vger.kernel.org>; Fri, 24 Apr 2020 07:06:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version:content-transfer-encoding;
-        bh=0VuZCm8HvCNkNO0M8vLGp4C0YFmiV3243zClgfZKZD0=;
-        b=pdPJXh4Q3Sv1MDzR3qTeXFnDkyQBTG7lgpDksGAo1VmhD3+oPEg9RAj4f7N6ETsxhW
-         Mxz293uuU2nQcZ3MnPty0SWg33zXWSiEjcH3r5l7ppxDG4/B/pxzEW0rOZOG1M2FvKbz
-         ZiYMFsOCORsC6nwAOd62ZYeG65Zyi424YmxarLZcj4Vr6Urce125+9JsFriwYyveJ/UW
-         TRNIq+R9GzzewCvBtEqWMFoaf9wKfWXDyEzTFvXhUtwuWFzD4EpUzHIH4Gd/kaKLCMfJ
-         b54q32SX/cHY67+vksUIciA60KAnU3XGZxmi3s0mV1BUPHM4LXAzuRtvwUk6Xx1r1hRg
-         AsCg==
-X-Gm-Message-State: AGi0PuZUxvY+zC98QGXPkkZOLISdlx9e4zKP92ZUAQHb2RtZhIFe6hIV
-        ePiyxnHPdj0Y8/0Ll/b7F14jD2PyWXEKc50BNDIGJcgrMIt3AnVzBJqaA84AvLucKg47Ys1iBAF
-        FFknnAtEfCIQp
-X-Received: by 2002:a2e:9990:: with SMTP id w16mr6015968lji.194.1587737086238;
-        Fri, 24 Apr 2020 07:04:46 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIcYuzHqe2Le/bdEmwoFanwD5jjtMRUpUe/Z7es4/wA8F/fojolHJVuYI3fbdh5xL/dy9YHFg==
-X-Received: by 2002:a2e:9990:: with SMTP id w16mr6015940lji.194.1587737085934;
-        Fri, 24 Apr 2020 07:04:45 -0700 (PDT)
+        bh=XD/8fSrDljhSMhAXxrRpIOeU+6aO8IuBMFYijn23O/I=;
+        b=qBlLQ3bEtO9nMO9SgG0rUWDmpT4H3JBftYWsfDuWz1EHW66qcLO5LU3O1NtWYMALzP
+         XcXQld3oeAkwuwkw0BxuP3rKllDXATruGeNtgrxVs+FnFgVfx2fDJb7LQi/tEZXoxoIy
+         OWA4IUoDGb4ZBe3Yj8Na69G0B0oi7oMoVi3dBkqrBMADr92cVrUlvpGqpT79Aa31ycUj
+         cg15B6aXnMFtQKiGS1uNIAtWhoKOjQ+2FYdRXOnWrHq8rFBWYjlX71l4zvh6Lrv9cCGC
+         2DSTTS5Rlh+kAkfQCe0y1Xn7qfTEc2dehQGyUsvtC+yaAkyZctobzDtfPzL6AqA/NI2/
+         9gHQ==
+X-Gm-Message-State: AGi0PuakhPnN3vWZ8AjDRsz0XSZiml1iA+1OGHSEmOPEBWnhWoXT5YEL
+        zHB8i663jWi5Wu0di/fyVz7G/nqlr1/NPpqyRjbghTuu5xAiu9JGxsXo0qWvOSsdAS8Vt2+DNhB
+        odz6US3ds+NV1
+X-Received: by 2002:a2e:9207:: with SMTP id k7mr6051083ljg.124.1587737174203;
+        Fri, 24 Apr 2020 07:06:14 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJ6h7uERsLmhAPBnRhqObB3yqw69uY5U6lX8MEZMcAIqMwJ8z5fUipamaGIU7vHgPaanI6Fow==
+X-Received: by 2002:a2e:9207:: with SMTP id k7mr6051063ljg.124.1587737173930;
+        Fri, 24 Apr 2020 07:06:13 -0700 (PDT)
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id z13sm4316533ljn.77.2020.04.24.07.04.20
+        by smtp.gmail.com with ESMTPSA id t13sm4204213ljd.38.2020.04.24.07.05.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Apr 2020 07:04:32 -0700 (PDT)
+        Fri, 24 Apr 2020 07:06:02 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 889121814FF; Fri, 24 Apr 2020 16:04:19 +0200 (CEST)
+        id 0F5001814FF; Fri, 24 Apr 2020 16:05:54 +0200 (CEST)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Jesper Dangaard Brouer <brouer@redhat.com>, sameehj@amazon.com
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, zorik@amazon.com, akiyano@amazon.com,
-        gtzalik@amazon.com, Daniel Borkmann <borkmann@iogearbox.net>,
+Cc:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        Mao Wenan <maowenan@huawei.com>,
+        Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, zorik@amazon.com,
+        akiyano@amazon.com, gtzalik@amazon.com,
+        Daniel Borkmann <borkmann@iogearbox.net>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>,
         Alexander Duyck <alexander.duyck@gmail.com>,
@@ -67,12 +71,12 @@ Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
         Lorenzo Bianconi <lorenzo@kernel.org>,
         Saeed Mahameed <saeedm@mellanox.com>,
         steffen.klassert@secunet.com
-Subject: Re: [PATCH net-next 08/33] xdp: cpumap redirect use frame_sz and increase skb_tailroom
-In-Reply-To: <158757168168.1370371.11510167625755235041.stgit@firesoul>
-References: <158757160439.1370371.13213378122947426220.stgit@firesoul> <158757168168.1370371.11510167625755235041.stgit@firesoul>
+Subject: Re: [PATCH net-next 09/33] veth: adjust hard_start offset on redirect XDP frames
+In-Reply-To: <158757168676.1370371.9335548837047528670.stgit@firesoul>
+References: <158757160439.1370371.13213378122947426220.stgit@firesoul> <158757168676.1370371.9335548837047528670.stgit@firesoul>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 24 Apr 2020 16:04:19 +0200
-Message-ID: <875zdp3rq4.fsf@toke.dk>
+Date:   Fri, 24 Apr 2020 16:05:54 +0200
+Message-ID: <87368t3rnh.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -83,17 +87,27 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Jesper Dangaard Brouer <brouer@redhat.com> writes:
 
-> Knowing the memory size backing the packet/xdp_frame data area, and
-> knowing it already have reserved room for skb_shared_info, simplifies
-> using build_skb significantly.
+> When native XDP redirect into a veth device, the frame arrives in the
+> xdp_frame structure. It is then processed in veth_xdp_rcv_one(),
+> which can run a new XDP bpf_prog on the packet. Doing so requires
+> converting xdp_frame to xdp_buff, but the tricky part is that
+> xdp_frame memory area is located in the top (data_hard_start) memory
+> area that xdp_buff will point into.
 >
-> With this change we no-longer lie about the SKB truesize, but more
-> importantly a significant larger skb_tailroom is now provided, e.g. when
-> drivers uses a full PAGE_SIZE. This extra tailroom (in linear area) can be
-> used by the network stack when coalescing SKBs (e.g. in skb_try_coalesce,
-> see TCP cases where tcp_queue_rcv() can 'eat' skb).
+> The current code tried to protect the xdp_frame area, by assigning
+> xdp_buff.data_hard_start past this memory. This results in 32 bytes
+> less headroom to expand into via BPF-helper bpf_xdp_adjust_head().
 >
+> This protect step is actually not needed, because BPF-helper
+> bpf_xdp_adjust_head() already reserve this area, and don't allow
+> BPF-prog to expand into it. Thus, it is safe to point data_hard_start
+> directly at xdp_frame memory area.
+>
+> Cc: Toshiaki Makita <toshiaki.makita1@gmail.com>
+> Fixes: 9fc8d518d9d5 ("veth: Handle xdp_frames in xdp napi ring")
+> Reported-by: Mao Wenan <maowenan@huawei.com>
 > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Acked-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
 
 Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
