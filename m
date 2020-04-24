@@ -2,99 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 258631B7DE0
-	for <lists+bpf@lfdr.de>; Fri, 24 Apr 2020 20:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 438201B7E64
+	for <lists+bpf@lfdr.de>; Fri, 24 Apr 2020 20:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728985AbgDXS3q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Apr 2020 14:29:46 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:54676 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728982AbgDXS3q (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 24 Apr 2020 14:29:46 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03OIBEpn015401
-        for <bpf@vger.kernel.org>; Fri, 24 Apr 2020 11:29:45 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=0D9XB2cxNQjJgg0xp0kt9fyv3Vd91/eGjXDHde3VadE=;
- b=Wr/pGzd4p3WvwtDz5ZoYfDSiDFH7DGyeOs9XNax00O8A3PFmOrpgavmxRN+JcUfoMTFb
- QbJeodGjAQi8slU58vMSpfHywrfhJ75WTl7VhUzGnvlykqzQff1lmJ9zLSxQzroUEY5L
- WdTBCMOKe3cTkF3HdZWiYJPjMFmm/MR6nyA= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 30kkpe6888-10
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 24 Apr 2020 11:29:45 -0700
-Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Fri, 24 Apr 2020 11:29:15 -0700
-Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
-        id F17AE29417B0; Fri, 24 Apr 2020 11:29:11 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Martin KaFai Lau <kafai@fb.com>
-Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <netdev@vger.kernel.org>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf] bpftool: Respect the -d option in struct_ops cmd
-Date:   Fri, 24 Apr 2020 11:29:11 -0700
-Message-ID: <20200424182911.1259355-1-kafai@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S1728708AbgDXS4G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Apr 2020 14:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728497AbgDXS4F (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 24 Apr 2020 14:56:05 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E059C09B049
+        for <bpf@vger.kernel.org>; Fri, 24 Apr 2020 11:56:05 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id z6so12157209wml.2
+        for <bpf@vger.kernel.org>; Fri, 24 Apr 2020 11:56:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZwcPKnb5cZ7VoIyj6nK3gkxMikTmBHrFG55t3Mv9UCg=;
+        b=c35SoLrq7rs1ZEEBb+3C2NhgTyW7AtBP0qrt/QOvKQIWhvbhfS9j9493wOcWXkZ5XG
+         1nodOtITd6jPRwq5tNeWfdd+w/zL8wwPQ6QdxkYQegFG+JspmvORqzwZEbsz3Vv3hmHy
+         7C/UrOX7GFXCAYW7cLVlpx+9sQE+WvrjvU3I4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZwcPKnb5cZ7VoIyj6nK3gkxMikTmBHrFG55t3Mv9UCg=;
+        b=Yk8lGOWkwB3WyXgvhmvCoVp6GOquGBw/X1ENThmrXnA/W+sgfEukv3NnFLwH6c+3XW
+         LcvknEnox3YH/JkG1Ncmextkyke96FiMirMv99p+8py+X6Gup1wyGc/FUqwYeJLAAl1R
+         2EDuHf+wp072RI9Y8aGAqVVrWNG9UfjmrKaObs7MZYrAdaelOhtUSKHU2oXBfKfGttcm
+         HxIVuccZDhrgLemSvsQ2B+JEE4hsSmJu97z0FOe31wiDKrIzHcXDdt8+1iS6saszyU36
+         XlZEQsPwgcar8tMpYmCA1zAwJT0jarI0o99jlDRm1BfQsPyn9JnFLyNaQH6Rrho40Meh
+         wQlQ==
+X-Gm-Message-State: AGi0PubY1MzlVrByejx7SJDzLNMc5ugQIvX+cwtFf0eMmIyL0bK/36an
+        +qerNC9WFdMUMhbwCMM2FtI6nA==
+X-Google-Smtp-Source: APiQypLnj6/3x5hACLSblJPJSEZ7foGXLvucMXCs24gNeadD4IBCITpw/IEu9UQ6wVZXm2IvmJQOdw==
+X-Received: by 2002:a05:600c:4102:: with SMTP id j2mr12341821wmi.159.1587754564116;
+        Fri, 24 Apr 2020 11:56:04 -0700 (PDT)
+Received: from antares.lan (111.253.187.81.in-addr.arpa. [81.187.253.111])
+        by smtp.gmail.com with ESMTPSA id r17sm9263875wrn.43.2020.04.24.11.56.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Apr 2020 11:56:02 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     theojulienne@github.com, Lorenz Bauer <lmb@cloudflare.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH 0/1] Open source our TC classifier
+Date:   Fri, 24 Apr 2020 19:55:54 +0100
+Message-Id: <20200424185556.7358-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-24_09:2020-04-24,2020-04-24 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- priorityscore=1501 suspectscore=1 mlxscore=0 lowpriorityscore=0
- phishscore=0 adultscore=0 malwarescore=0 clxscore=1015 mlxlogscore=999
- impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2004240140
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In the prog cmd, the "-d" option turns on the verifier log.
-This is missed in the "struct_ops" cmd and this patch fixes it.
+We've been developing an in-house L4 load balancer based on XDP
+and TC for a while. Following Alexei's call for more up-to-date examples of
+production BPF in the kernel tree [1], Cloudflare is making this available
+under dual GPL-2.0 or BSD 3-clause terms.
 
-Fixes: 65c93628599d ("bpftool: Add struct_ops support")
-Signed-off-by: Martin KaFai Lau <kafai@fb.com>
----
- tools/bpf/bpftool/struct_ops.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+The code requires at least v5.3 to function correctly.
 
-diff --git a/tools/bpf/bpftool/struct_ops.c b/tools/bpf/bpftool/struct_op=
-s.c
-index 0fe0d584c57e..e17738479edc 100644
---- a/tools/bpf/bpftool/struct_ops.c
-+++ b/tools/bpf/bpftool/struct_ops.c
-@@ -479,6 +479,7 @@ static int do_unregister(int argc, char **argv)
-=20
- static int do_register(int argc, char **argv)
- {
-+	struct bpf_object_load_attr load_attr =3D {};
- 	const struct bpf_map_def *def;
- 	struct bpf_map_info info =3D {};
- 	__u32 info_len =3D sizeof(info);
-@@ -499,7 +500,12 @@ static int do_register(int argc, char **argv)
-=20
- 	set_max_rlimit();
-=20
--	if (bpf_object__load(obj)) {
-+	load_attr.obj =3D obj;
-+	if (verifier_logs)
-+		/* log_level1 + log_level2 + stats, but not stable UAPI */
-+		load_attr.log_level =3D 1 + 2 + 4;
-+
-+	if (bpf_object__load_xattr(&load_attr)) {
- 		bpf_object__close(obj);
- 		return -1;
- 	}
---=20
-2.24.1
+1: https://lore.kernel.org/bpf/20200326210719.den5isqxntnoqhmv@ast-mbp/
+
+Lorenz Bauer (1):
+  selftests/bpf: add cls_redirect classifier
+
+ .../selftests/bpf/prog_tests/cls_redirect.c   |  456 +++++++
+ .../selftests/bpf/progs/test_cls_redirect.c   | 1058 +++++++++++++++++
+ .../selftests/bpf/progs/test_cls_redirect.h   |   54 +
+ tools/testing/selftests/bpf/test_progs.h      |    7 +
+ 4 files changed, 1575 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cls_redirect.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_cls_redirect.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_cls_redirect.h
+
+-- 
+2.20.1
 
