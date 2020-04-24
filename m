@@ -2,66 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9571B7207
-	for <lists+bpf@lfdr.de>; Fri, 24 Apr 2020 12:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 409871B720B
+	for <lists+bpf@lfdr.de>; Fri, 24 Apr 2020 12:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726808AbgDXKcL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Apr 2020 06:32:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33576 "EHLO
+        id S1726866AbgDXKch (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Apr 2020 06:32:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726813AbgDXKcK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Apr 2020 06:32:10 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41819C09B045
-        for <bpf@vger.kernel.org>; Fri, 24 Apr 2020 03:32:10 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id i10so10143470wrv.10
-        for <bpf@vger.kernel.org>; Fri, 24 Apr 2020 03:32:10 -0700 (PDT)
+        with ESMTP id S1726707AbgDXKch (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Apr 2020 06:32:37 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1745EC09B046
+        for <bpf@vger.kernel.org>; Fri, 24 Apr 2020 03:32:37 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id x17so9417421wrt.5
+        for <bpf@vger.kernel.org>; Fri, 24 Apr 2020 03:32:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DuL/FnB2qQTF/BcV+/SmiUjtSwdbN0dYeuA3t4WT6Co=;
-        b=yVxvPQx9pXdyT/LBWCxfIVNFBTViFRKoy5zR8STitTUxEAIiM8wtnHH0vjXS4te3Hx
-         E3zi0seWrr1/fK4mukK0yKTIkCsY3rHuub6kTlQb6yNtrRXl2kPJvBlGa1NllzsL8xI+
-         PtHUa4+QVFROfEqtwTHrwYMNj3f1B7uPbnEIb8bxGnNLQCirKMBL0ACXpRIqKyH+9EHH
-         HIU/DL6e+vG0ehCMOqB/7DxkGlNa7jgVzyCdGkRi/pRgcV7kv30wjBz5JT1IX0SD1Hu2
-         b8UdK3B8A4tQCzSZ+JbICZzJbjHKw+ZSjEpkhd1+qsoYbaAFOUkOGIdLZ+YSqbfq9QCc
-         7dFw==
+        bh=FlSRg4R034VGkFyyrPRIqqiT+aUgDWYSvfqbtdlqGKk=;
+        b=bgNTcnjAiirIp60isoSXfn3EdJKntRuuhnZgt8UCHZGKoKPqtSfcIMDwrHV/WtOgNx
+         IBOmpKJh9XfADTrCtRc5/VfH57d03FeJgZhAR5k2chiBOoq4MzozERiebg8ZP+Ev02Xj
+         NdosiSQVKbWe8Qeir+ADrv70PCEsF7xwvmlBtm/14aPjlVGvPOpt0vT6fJrds7GLhxmk
+         olLh6r1a+8DzuW+rJD2QHbQCAHltKVXWqaCFyL0BDvbWdjAz6pgdgTklePSWzGWnBmcX
+         Wb6hyIp2Oin1ituFAqQTR8vJz3iDUZ+cD1ktjwQhQ1oghG0H/bVu/yuruydP2+SCq/+w
+         +85g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=DuL/FnB2qQTF/BcV+/SmiUjtSwdbN0dYeuA3t4WT6Co=;
-        b=Dqt2Ir9gzm0h0/gJc0CIlgqhcWBx7Cn6H4VYu6FucG3p0KPXhLxn1G/tw1vnojYSCK
-         MW1p+VKYSNGnYlOMpQMmdK7+fLY4A7gHbw/W4hJujVCzs6MLY2AXH1dnDMQGY77/jjpn
-         d5+X9uifY3OpU6ZoFU5rsZN65Eh18OHxazlviFaCYHdOou21ltltSakSZYVURTA0+uBJ
-         WNXVIjzSgiudwCHQVtOF5bU/B88j/pvETXBv/hwusMYcAFsE4Qe5JGvinpaNq7aI/sx5
-         em+E+iNXP1I50iG8cCKxXqH3htfrSwradu8wDRQswAlE6ezVR2UurWolnhCbiJMub1sr
-         ghhA==
-X-Gm-Message-State: AGi0PuahLBobQI3f9XnCzSQ6lpv4J89K+A5xFd5u1ZI/u9sql3otz2op
-        MOXJ0Z+CTRtbqjDY0+T23bwVaA==
-X-Google-Smtp-Source: APiQypLOZcmRrkKClt02n+pliNll9PVQ+Giu+6P0fQjVPw+L/z7ivJ5XUAjija28I30NHQvRg+Vj8w==
-X-Received: by 2002:a5d:6850:: with SMTP id o16mr9978981wrw.309.1587724328981;
-        Fri, 24 Apr 2020 03:32:08 -0700 (PDT)
+        bh=FlSRg4R034VGkFyyrPRIqqiT+aUgDWYSvfqbtdlqGKk=;
+        b=AWU5VGcXZH19JPzKmmb0hJNiJpymmrWBdu3HeIsbTxL9zg49PGrsgmjBgEbExdtii9
+         1Q2nZjSGoDePohiagf8E/yLyBLwgkqTsMjkVJrcGwatFD3TfxRsAINRfc7HEPHivxgQo
+         kY1m9O7E1M5VbeC8NXxDQbPLm2GyCiqbDni26rNHSHUWh4wpjaiD0HntSxMS2/Iu7WaV
+         0DO7rTgq4/zLYgFgqawflJQNnAAaaGsridNpvb74hHc6hW0IkPqrlK7inJz5oJlWMZPR
+         fgLNJqTE3JVzrZbkJt9avtf7m2MMpm7jXBW/ClM0lZa5JJM/vyScRRbwx5BHEAIUdsFY
+         wnjg==
+X-Gm-Message-State: AGi0PuYBguEMkRRXZGk1r1DgyMzQbCPZqLgks5xVLf0P+LnriVOt6E/L
+        dw6PBqjcvgeqtJaZlzgyN7v5MA==
+X-Google-Smtp-Source: APiQypJCxOwtkrCHrgHvVr5RUZzMxfZZXWWm92azNEv8l+V1C92xLEpikUxDtKXGuz/Zh1LPXEazzA==
+X-Received: by 2002:adf:a345:: with SMTP id d5mr9788826wrb.23.1587724355782;
+        Fri, 24 Apr 2020 03:32:35 -0700 (PDT)
 Received: from [192.168.1.10] ([194.53.185.129])
-        by smtp.gmail.com with ESMTPSA id i17sm7675624wru.39.2020.04.24.03.32.07
+        by smtp.gmail.com with ESMTPSA id g74sm2284245wme.44.2020.04.24.03.32.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Apr 2020 03:32:08 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 07/10] bpftool: expose attach_type-to-string
- array to non-cgroup code
+        Fri, 24 Apr 2020 03:32:35 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 08/10] bpftool: add bpf_link show and pin support
 To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
         netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
 Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com
 References: <20200424053505.4111226-1-andriin@fb.com>
- <20200424053505.4111226-8-andriin@fb.com>
+ <20200424053505.4111226-9-andriin@fb.com>
 From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <34110254-6384-153f-af39-d5f9f3a50acb@isovalent.com>
-Date:   Fri, 24 Apr 2020 11:32:07 +0100
+Message-ID: <3a5f1d73-f9f5-a640-6f15-d5202549d467@isovalent.com>
+Date:   Fri, 24 Apr 2020 11:32:34 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200424053505.4111226-8-andriin@fb.com>
+In-Reply-To: <20200424053505.4111226-9-andriin@fb.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
@@ -71,68 +70,191 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 2020-04-23 22:35 UTC-0700 ~ Andrii Nakryiko <andriin@fb.com>
-> Move attach_type_strings into main.h for access in non-cgroup code.
-> bpf_attach_type is used for non-cgroup attach types quite widely now. So also
-> complete missing string translations for non-cgroup attach types.
+> Add `bpftool link show` and `bpftool link pin` commands.
+> 
+> Example plain output for `link show` (with showing pinned paths):
+> 
+> [vmuser@archvm bpf]$ sudo ~/local/linux/tools/bpf/bpftool/bpftool -f link
+> 1: tracing  prog 12
+>         prog_type tracing  attach_type fentry
+>         pinned /sys/fs/bpf/my_test_link
+>         pinned /sys/fs/bpf/my_test_link2
+> 2: tracing  prog 13
+>         prog_type tracing  attach_type fentry
+> 3: tracing  prog 14
+>         prog_type tracing  attach_type fentry
+> 4: tracing  prog 15
+>         prog_type tracing  attach_type fentry
+> 5: tracing  prog 16
+>         prog_type tracing  attach_type fentry
+> 6: tracing  prog 17
+>         prog_type tracing  attach_type fentry
+> 7: raw_tracepoint  prog 21
+>         tp 'sys_enter'
+> 8: cgroup  prog 25
+>         cgroup_id 584  attach_type egress
+> 9: cgroup  prog 25
+>         cgroup_id 599  attach_type egress
+> 10: cgroup  prog 25
+>         cgroup_id 614  attach_type egress
+> 11: cgroup  prog 25
+>         cgroup_id 629  attach_type egress
 > 
 > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 > ---
->  tools/bpf/bpftool/cgroup.c | 28 +++-------------------------
->  tools/bpf/bpftool/main.h   | 32 ++++++++++++++++++++++++++++++++
->  2 files changed, 35 insertions(+), 25 deletions(-)
+>  tools/bpf/bpftool/common.c |   2 +
+>  tools/bpf/bpftool/link.c   | 402 +++++++++++++++++++++++++++++++++++++
+>  tools/bpf/bpftool/main.c   |   6 +-
+>  tools/bpf/bpftool/main.h   |   5 +
+>  4 files changed, 414 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/bpf/bpftool/link.c
 > 
-> diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
-> index 62c6a1d7cd18..d1fd9c9f2690 100644
-> --- a/tools/bpf/bpftool/cgroup.c
-> +++ b/tools/bpf/bpftool/cgroup.c
-> @@ -31,35 +31,13 @@
+> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+> index f2223dbdfb0a..c47bdc65de8e 100644
+> --- a/tools/bpf/bpftool/common.c
+> +++ b/tools/bpf/bpftool/common.c
+> @@ -262,6 +262,8 @@ int get_fd_type(int fd)
+>  		return BPF_OBJ_MAP;
+>  	else if (strstr(buf, "bpf-prog"))
+>  		return BPF_OBJ_PROG;
+> +	else if (strstr(buf, "bpf-link"))
+> +		return BPF_OBJ_LINK;
 >  
->  static unsigned int query_flags;
->  
-> -static const char * const attach_type_strings[] = {
-> -	[BPF_CGROUP_INET_INGRESS] = "ingress",
-> -	[BPF_CGROUP_INET_EGRESS] = "egress",
-> -	[BPF_CGROUP_INET_SOCK_CREATE] = "sock_create",
-> -	[BPF_CGROUP_SOCK_OPS] = "sock_ops",
-> -	[BPF_CGROUP_DEVICE] = "device",
-> -	[BPF_CGROUP_INET4_BIND] = "bind4",
-> -	[BPF_CGROUP_INET6_BIND] = "bind6",
-> -	[BPF_CGROUP_INET4_CONNECT] = "connect4",
-> -	[BPF_CGROUP_INET6_CONNECT] = "connect6",
-> -	[BPF_CGROUP_INET4_POST_BIND] = "post_bind4",
-> -	[BPF_CGROUP_INET6_POST_BIND] = "post_bind6",
-> -	[BPF_CGROUP_UDP4_SENDMSG] = "sendmsg4",
-> -	[BPF_CGROUP_UDP6_SENDMSG] = "sendmsg6",
-> -	[BPF_CGROUP_SYSCTL] = "sysctl",
-> -	[BPF_CGROUP_UDP4_RECVMSG] = "recvmsg4",
-> -	[BPF_CGROUP_UDP6_RECVMSG] = "recvmsg6",
-> -	[BPF_CGROUP_GETSOCKOPT] = "getsockopt",
-> -	[BPF_CGROUP_SETSOCKOPT] = "setsockopt",
-> -	[__MAX_BPF_ATTACH_TYPE] = NULL,
+>  	return BPF_OBJ_UNKNOWN;
+>  }
+> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
+> new file mode 100644
+> index 000000000000..d5dcf9e46536
+> --- /dev/null
+> +++ b/tools/bpf/bpftool/link.c
 
-So you removed the "[__MAX_BPF_ATTACH_TYPE] = NULL" from the new array,
-if I understand correctly this is because all attach type enum members
-are now in the new attach_type_name[] so we're safe by looping until we
-reach __MAX_BPF_ATTACH_TYPE. Sounds good in theory but...
+[...]
 
-> -};
-> -
->  static enum bpf_attach_type parse_attach_type(const char *str)
->  {
->  	enum bpf_attach_type type;
->  
->  	for (type = 0; type < __MAX_BPF_ATTACH_TYPE; type++) {
-> -		if (attach_type_strings[type] &&
-> -		    is_prefix(str, attach_type_strings[type]))
-> +		if (attach_type_name[type] &&
-> +		    is_prefix(str, attach_type_name[type]))
->  			return type;
->  	}
+> +
+> +static int link_parse_fd(int *argc, char ***argv)
+> +{
+> +	int *fds = NULL;
+> +	int nb_fds, fd;
+> +
+> +	fds = malloc(sizeof(int));
+> +	if (!fds) {
+> +		p_err("mem alloc failed");
+> +		return -1;
+> +	}
+> +	nb_fds = link_parse_fds(argc, argv, &fds);
+> +	if (nb_fds != 1) {
+> +		if (nb_fds > 1) {
+> +			p_err("several links match this handle");
 
-... I'm concerned the "attach_type_name[type]" here could segfault if we
-add a new attach type to the kernel, but don't report it immediately to
-bpftool's array.
+Can this ever happen? "bpftool prog show" has this because "name" or
+"tag" can match multiple programs. But "id" and "pinned" for link should
+not, as far as I understand.
 
-Is there any drawback with keeping the "[__MAX_BPF_ATTACH_TYPE] = NULL"?
-Or change here to loop on ARRAY_SIZE(), as you do in your own patch for
-link?
+> +			while (nb_fds--)
+> +				close(fds[nb_fds]);
+> +		}
+> +		fd = -1;
+> +		goto exit_free;
+> +	}
+> +
+> +	fd = fds[0];
+> +exit_free:
+> +	free(fds);
+> +	return fd;
+> +}
+> +
+> +static void
+> +show_link_header_json(struct bpf_link_info *info, json_writer_t *wtr)
+> +{
+> +	jsonw_uint_field(wtr, "id", info->id);
+> +	if (info->type < ARRAY_SIZE(link_type_name))
+> +		jsonw_string_field(wtr, "type", link_type_name[info->type]);
+> +	else
+> +		jsonw_uint_field(wtr, "type", info->type);
+> +
+> +	jsonw_uint_field(json_wtr, "prog_id", info->prog_id);
+> +}
+> +
+> +static int get_prog_info(int prog_id, struct bpf_prog_info *info)
+> +{
+> +	__u32 len = sizeof(*info);
+> +	int err, prog_fd;
+> +
+> +	prog_fd = bpf_prog_get_fd_by_id(prog_id);
+> +	if (prog_fd < 0)
+> +		return prog_fd;
+> +
+> +	memset(info, 0, sizeof(*info));
+> +	err = bpf_obj_get_info_by_fd(prog_fd, info, &len);
+> +	if (err) {
+> +		p_err("can't get prog info: %s", strerror(errno));
+> +		close(prog_fd);
+> +		return err;
+
+Nit: you could "return err;" at the end of the function, and remove the
+"close()" and "return" from this if block.
+
+> +	}
+> +
+> +	close(prog_fd);
+> +	return 0;
+> +}
+> +
+
+[...]
+
+> +
+> +static int do_show_subset(int argc, char **argv)
+> +{
+> +	int *fds = NULL;
+> +	int nb_fds, i;
+> +	int err = -1;
+> +
+> +	fds = malloc(sizeof(int));
+> +	if (!fds) {
+> +		p_err("mem alloc failed");
+> +		return -1;
+> +	}
+> +	nb_fds = link_parse_fds(&argc, &argv, &fds);
+> +	if (nb_fds < 1)
+> +		goto exit_free;
+> +
+> +	if (json_output && nb_fds > 1)
+> +		jsonw_start_array(json_wtr);	/* root array */
+> +	for (i = 0; i < nb_fds; i++) {
+> +		err = do_show_link(fds[i]);
+> +		if (err) {
+> +			for (; i + 1 < nb_fds; i++)
+> +				close(fds[i]);
+> +			break;
+> +		}
+> +	}
+> +	if (json_output && nb_fds > 1)
+> +		jsonw_end_array(json_wtr);	/* root array */
+> +
+> +exit_free:
+> +	free(fds);
+> +	return err;
+> +}
+> +
+> +static int do_show(int argc, char **argv)
+> +{
+> +	__u32 id = 0;
+> +	int err;
+> +	int fd;
+> +
+> +	if (show_pinned)
+> +		build_pinned_obj_table(&link_table, BPF_OBJ_LINK);
+> +
+> +	if (argc == 2)
+> +		return do_show_subset(argc, argv);
+
+I understand the "_subset" aspect was taken from prog.c. But it was
+added there (ec2025095cf6) because "bpftool prog show <name|tag>" can
+match several programs, and the array with fds would be reallocated as
+required while parsing names/tags.
+
+I do not think that by restricting the selection on "id" or "pinned",
+you can get more than one link at a time. So we can probably avoid
+juggling with fd arrays for link_parse_fd() / link_parse_fds() and show
+just the single relevant link.
