@@ -2,103 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E511B6AB7
-	for <lists+bpf@lfdr.de>; Fri, 24 Apr 2020 03:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3051B6BA9
+	for <lists+bpf@lfdr.de>; Fri, 24 Apr 2020 05:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgDXBNJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Apr 2020 21:13:09 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2849 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725888AbgDXBNJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Apr 2020 21:13:09 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id C512D7B1357A3939AF7B;
-        Fri, 24 Apr 2020 09:13:05 +0800 (CST)
-Received: from [127.0.0.1] (10.166.215.92) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Fri, 24 Apr 2020
- 09:13:04 +0800
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Change error code when ops is NULL
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-References: <20200422093329.GI2659@kadam>
- <20200423033314.49205-1-maowenan@huawei.com>
- <20200423033314.49205-2-maowenan@huawei.com>
- <CAADnVQLfqLBzsjK0KddZM7WTL3unzWw+v18L0pw8HQnWsEVUzA@mail.gmail.com>
- <bd36c161-8831-1f61-1531-063723a8d8c2@huawei.com>
- <CAADnVQK_wWkLFyzZ5eXGvTQmBj=wOXNFL6vRZkNNBHLUYn5w6Q@mail.gmail.com>
-From:   maowenan <maowenan@huawei.com>
-Message-ID: <2e90d89c-7a1a-d31b-cfa5-63f4e14e0877@huawei.com>
-Date:   Fri, 24 Apr 2020 09:13:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1725888AbgDXDAK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Apr 2020 23:00:10 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:44927 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725884AbgDXDAK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Apr 2020 23:00:10 -0400
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 03O2xoAh028692;
+        Fri, 24 Apr 2020 11:59:51 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 03O2xoAh028692
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1587697191;
+        bh=sMhAyQXgx3aGgeT2cBKikLWxHkHjlRUwrBTCsV1+3Gw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pnu0hGRUoE/m3c5iNOXeZVq/zyyFbsQqCoxufZov1J8pArY22bCjRMZqzG/L3m5+n
+         1TGlCwr5ISXTw+671s8m/Z/m5pAMgJwxRH3EVJGBXzTKsOAUN9wqwbss3CVkEAvV6k
+         TRIuXE+CR0M+7GUrLfZZxVChoqZApt5XMnu03Kn5LEbu63plgi0Xb/c58bmydut5wk
+         ubf65em2YZFOa3Qr6YgDq4cquF49M9yRvYo9oLYU7XwS8nx46BohhaZA0TS2j4U4Mg
+         HUeE4Mn2IySUCOFVuOb2xUOPxiwPIzQj1nRYpgqcPxO/A84tApwP7x1aS3P2vB1am/
+         hUrlcaFMHbMBg==
+X-Nifty-SrcIP: [209.85.222.45]
+Received: by mail-ua1-f45.google.com with SMTP id a10so8040902uad.7;
+        Thu, 23 Apr 2020 19:59:51 -0700 (PDT)
+X-Gm-Message-State: AGi0Pua1YSRFCR1v4PLQ63nig+DIo038pykOo5o3uN4c2TW0u5aUWuM+
+        lT0D0BB3hrt+8A8Pn4tyRwy8I5WsdAYsBNMUDb4=
+X-Google-Smtp-Source: APiQypJwidJWbxYPm/8c0bwT8boM9jxvggOQZWWhl+mIk5bgeb7K2rLmsZC1B59FOXGSWq0gtKzTuQcI9OVc/f+WiGc=
+X-Received: by 2002:ab0:cd:: with SMTP id 71mr5422237uaj.109.1587697190149;
+ Thu, 23 Apr 2020 19:59:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQK_wWkLFyzZ5eXGvTQmBj=wOXNFL6vRZkNNBHLUYn5w6Q@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.166.215.92]
-X-CFilter-Loop: Reflected
+References: <20200423073929.127521-1-masahiroy@kernel.org> <20200423073929.127521-15-masahiroy@kernel.org>
+ <CANiq72nUa8uoXtSThqq7t9oAmZnGSE9a1_d+ZoRAagpKDo4DRg@mail.gmail.com>
+In-Reply-To: <CANiq72nUa8uoXtSThqq7t9oAmZnGSE9a1_d+ZoRAagpKDo4DRg@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 24 Apr 2020 11:59:14 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASo=R2uoNPzof_FppFUp=sMAZG62C3PLAMm9jZix9z3Rw@mail.gmail.com>
+Message-ID: <CAK7LNASo=R2uoNPzof_FppFUp=sMAZG62C3PLAMm9jZix9z3Rw@mail.gmail.com>
+Subject: Re: [PATCH 14/16] samples: auxdisplay: use 'userprogs' syntax
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020/4/24 0:07, Alexei Starovoitov wrote:
-> On Wed, Apr 22, 2020 at 11:25 PM maowenan <maowenan@huawei.com> wrote:
->>
->> On 2020/4/23 13:43, Alexei Starovoitov wrote:
->>> On Wed, Apr 22, 2020 at 8:31 PM Mao Wenan <maowenan@huawei.com> wrote:
->>>>
->>>> There is one error printed when use BPF_MAP_TYPE_SOCKMAP to create map:
->>>> libbpf: failed to create map (name: 'sock_map'): Invalid argument(-22)
->>>>
->>>> This is because CONFIG_BPF_STREAM_PARSER is not set, and
->>>> bpf_map_types[type] return invalid ops. It is not clear to show the
->>>> cause of config missing with return code -EINVAL, so add pr_warn() and
->>>> change error code to describe the reason.
->>>>
->>>> Signed-off-by: Mao Wenan <maowenan@huawei.com>
->>>> ---
->>>>  kernel/bpf/syscall.c | 7 ++++---
->>>>  1 file changed, 4 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->>>> index d85f37239540..7686778457c7 100644
->>>> --- a/kernel/bpf/syscall.c
->>>> +++ b/kernel/bpf/syscall.c
->>>> @@ -112,9 +112,10 @@ static struct bpf_map *find_and_alloc_map(union bpf_attr *attr)
->>>>                 return ERR_PTR(-EINVAL);
->>>>         type = array_index_nospec(type, ARRAY_SIZE(bpf_map_types));
->>>>         ops = bpf_map_types[type];
->>>> -       if (!ops)
->>>> -               return ERR_PTR(-EINVAL);
->>>> -
->>>> +       if (!ops) {
->>>> +               pr_warn("map type %d not supported or kernel config not opened\n", type);
->>>> +               return ERR_PTR(-EOPNOTSUPP);
->>>> +       }
->>>
->>> I don't think users will like it when kernel spams dmesg.
->>> If you need this level of verbosity please teach consumer of libbpf to
->>> print them.
->>> It's not a job of libbpf either.
->> thanks for reviw, so is it better to delete redundant pr_warn()?
-> 
-> which one?
-I mean pr_warn is no need, this patch just change the return code ERR_PTR(-EOPNOTSUPP);
-+               pr_warn("map type %d not supported or kernel config not opened\n", type);
-> 
-> .
-> 
+Hi Miguel,
+
+On Thu, Apr 23, 2020 at 8:50 PM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> Hi Masahiro,
+>
+> On Thu, Apr 23, 2020 at 9:41 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > Kbuild now supports the 'userprogs' syntax to describe the build rules
+> > of userspace programs for the target architecture (i.e. the same
+> > architecture as the kernel).
+> >
+> > Add the entry to samples/Makefile to put this into the build bot
+> > coverage.
+> >
+> > I also added the CONFIG option guarded by 'depends on CC_CAN_LINK'
+> > because $(CC) may not necessarily provide libc.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>
+> Thanks for this! Looks nice. I guess you take all patches for the
+> samples/ changes through your tree?
+
+Yes, I will take all to my tree
+since this series is mostly Makefile changes.
 
 
+
+> Acked-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+>
+> Cheers,
+> Miguel
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
