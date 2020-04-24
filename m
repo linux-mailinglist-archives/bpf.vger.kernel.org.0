@@ -2,93 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B3A1B750F
-	for <lists+bpf@lfdr.de>; Fri, 24 Apr 2020 14:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA161B74F9
+	for <lists+bpf@lfdr.de>; Fri, 24 Apr 2020 14:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727979AbgDXMX0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Apr 2020 08:23:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727972AbgDXMX0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Apr 2020 08:23:26 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728138AbgDXMaL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Apr 2020 08:30:11 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:38856 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728233AbgDXMaI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Apr 2020 08:30:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587731406;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yvhdDT+AYnF1Zzo9qujwddDO+80lca7H6++h6WXn2Ho=;
+        b=I1z9kxZ9cHqNVIA/8Iyki30m6pWCFaaMm6bdHx6DqmSXYLg4NdPrk3OnHmiSe58LfoNeSB
+        +EsLI3dwi0wus6PBd2wZtpqfB2/BKAvk2fdiN9s+OrcyPb819cYLjWdf+wfDdCbjx7+rUi
+        yopplYWIumNWAVmmCRdhN9OvSm88+CM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-456-U3fRY_5fOLKe_JK8QBDtpw-1; Fri, 24 Apr 2020 08:30:02 -0400
+X-MC-Unique: U3fRY_5fOLKe_JK8QBDtpw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E508A20776;
-        Fri, 24 Apr 2020 12:23:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587731005;
-        bh=JEfPVeCIXS2ihp4wiKoaxqcfVeN9Aopia2uXZyuMbzs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=1qHOqCMSq1ywoYVvbwMuKBB/Bc/buIYS9oC344cyI8+ZzwH8qFxgEeHq13GZijqw2
-         VD2zfZjIChMjsMghVFiRAfh3B3LTPy1sxKSkRD5vlt++uOiHNN8hN2jywa47CkKCA5
-         TMnzJLAtN6Zu8JBtyXNqNr/YMeQKYk3ynfO4KIfo=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jeremy Cline <jcline@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 01/26] libbpf: Initialize *nl_pid so gcc 10 is happy
-Date:   Fri, 24 Apr 2020 08:22:58 -0400
-Message-Id: <20200424122323.10194-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1BCD107ACCD;
+        Fri, 24 Apr 2020 12:30:00 +0000 (UTC)
+Received: from [10.36.114.94] (ovpn-114-94.ams2.redhat.com [10.36.114.94])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AB478397;
+        Fri, 24 Apr 2020 12:29:58 +0000 (UTC)
+From:   "Eelco Chaudron" <echaudro@redhat.com>
+To:     "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
+Cc:     "Yonghong Song" <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Network Development" <netdev@vger.kernel.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        "Martin KaFai Lau" <kafai@fb.com>,
+        "Song Liu" <songliubraving@fb.com>,
+        "Andrii Nakryiko" <andriin@fb.com>
+Subject: Re: [RFC PATCH bpf-next 0/3] bpf: add tracing for XDP programs using
+ the BPF_PROG_TEST_RUN API
+Date:   Fri, 24 Apr 2020 14:29:56 +0200
+Message-ID: <F97A3E80-9C99-49CF-84C5-F09C940F7029@redhat.com>
+In-Reply-To: <CAADnVQ+SCu97cF5Li6nBBCkshjF45U-nPEO5jO8DQrY5PqPqyg@mail.gmail.com>
+References: <158453675319.3043.5779623595270458781.stgit@xdp-tutorial>
+ <819b1b3a-c801-754b-e805-7ec8266e5dfa@fb.com>
+ <D0164AC9-7AF7-4434-B6D1-0A761DC626FB@redhat.com>
+ <fefda00a-1a08-3a53-efbc-93c36292b77d@fb.com>
+ <CAADnVQ+SCu97cF5Li6nBBCkshjF45U-nPEO5jO8DQrY5PqPqyg@mail.gmail.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; format=flowed
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jeremy Cline <jcline@redhat.com>
 
-[ Upstream commit 4734b0fefbbf98f8c119eb8344efa19dac82cd2c ]
 
-Builds of Fedora's kernel-tools package started to fail with "may be
-used uninitialized" warnings for nl_pid in bpf_set_link_xdp_fd() and
-bpf_get_link_xdp_info() on the s390 architecture.
+On 20 Apr 2020, at 0:54, Alexei Starovoitov wrote:
 
-Although libbpf_netlink_open() always returns a negative number when it
-does not set *nl_pid, the compiler does not determine this and thus
-believes the variable might be used uninitialized. Assuage gcc's fears
-by explicitly initializing nl_pid.
+> On Sun, Apr 19, 2020 at 12:02 AM Yonghong Song <yhs@fb.com> wrote:
+>>
+>>
+>>
+>> On 4/16/20 5:45 AM, Eelco Chaudron wrote:
+>>>
+>>>
+>>> On 23 Mar 2020, at 23:47, Yonghong Song wrote:
+>>>
+>>>> On 3/18/20 6:06 AM, Eelco Chaudron wrote:
+>>>>> I sent out this RFC to get an idea if the approach suggested here
+>>>>> would be something other people would also like to see. In 
+>>>>> addition,
+>>>>> this cover letter mentions some concerns and questions that need
+>>>>> answers before we can move to an acceptable implementation.
+>>>>>
+>>>>> This patch adds support for tracing eBPF XDP programs that get
+>>>>> executed using the __BPF_PROG_RUN syscall. This is done by 
+>>>>> switching
+>>>>> from JIT (if enabled) to executing the program using the 
+>>>>> interpreter
+>>>>> and record each executed instruction.
+>
+> sorry for delay. I only noticed these patches after Yonghong replied.
 
-Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=1807781
+Hi Alexei, I have to disagree with most of your comments below :) 
+However, I think it's due to not clearly stating the main use case I 
+have in mind for this. This is not for a developer to be used to 
+interactively debug an issue, but for an end-user/support person to get 
+some initial data in a live environment without affecting any live 
+traffic (assuming the XDP use case), as this tracing is only available 
+using the BPF_PROG_RUN API. From my previous experience as an 
+ASIC/Microcode network datapath engineer I have found that this kind of 
+a debug output (how low level as it looks, but with the right tooling 
+this should not be an issue) solves +/-80% of the cases I've worked on. 
+The remaining 20% were almost always related to "user space" 
+applications not populating tables, and other resources correctly.
 
-Signed-off-by: Jeremy Cline <jcline@redhat.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/20200404051430.698058-1-jcline@redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/lib/bpf/netlink.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> I think hacking interpreter to pr_info after every instruction is too
+> much of a hack.
 
-diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
-index ce3ec81b71c01..88416be2bf994 100644
---- a/tools/lib/bpf/netlink.c
-+++ b/tools/lib/bpf/netlink.c
-@@ -137,7 +137,7 @@ int bpf_set_link_xdp_fd(int ifindex, int fd, __u32 flags)
- 		struct ifinfomsg ifinfo;
- 		char             attrbuf[64];
- 	} req;
--	__u32 nl_pid;
-+	__u32 nl_pid = 0;
- 
- 	sock = libbpf_netlink_open(&nl_pid);
- 	if (sock < 0)
-@@ -254,7 +254,7 @@ int bpf_get_link_xdp_id(int ifindex, __u32 *prog_id, __u32 flags)
- {
- 	struct xdp_id_md xdp_id = {};
- 	int sock, ret;
--	__u32 nl_pid;
-+	__u32 nl_pid = 0;
- 	__u32 mask;
- 
- 	if (flags & ~XDP_FLAGS_MASK)
--- 
-2.20.1
+I agree if this would be for the normal interpreter path also, but this 
+is a separate interpreter only used for the debug path.
+
+> Not working with JIT-ed code is imo red flag for the approach as well.
+
+How would this be an issue, this is for the debug path only, and if the 
+jitted code behaves differently than the interpreter there is a bigger 
+issue.
+
+> When every insn is spamming the logs the only use case I can see
+> is to feed the test program with one packet and read thousand lines 
+> dump.
+> Even that is quite user unfriendly.
+
+The log was for the POC only, the idea is to dump this in a user buffer, 
+and with the right tooling (bpftool prog run ... {trace}?) it can be 
+stored in an ELF file together with the program, and input/output. Then 
+it would be easy to dump the C and eBPF program interleaved as bpftool 
+does. If GDB would support eBPF, the format I envision would be good 
+enough to support the GDB record/replay functionality.
+
+
+> How about enabling kprobe in JITed code instead?
+> Then if you really need to trap and print regs for every instruction 
+> you can
+> still do so by placing kprobe on every JITed insn.
+
+This would even be harder as you need to understand the ASM(PPC/ARM/x86) 
+to eBPF mapping (registers/code), where all you are interested in is 
+eBPF (to C).
+This kprobe would also affect all the instances of the program running 
+in the system, i.e. for XDP, it could be assigned to all interfaces in 
+the system.
+And for this purpose, you are only interested in the results of a run 
+for a specific packet (in the XDP use case) using the BPF_RUN_API so you 
+are not affecting any live traffic.
+
+> But in reality I think few kprobes in the prog will be enough
+> to debug the program and XDP prog may still process millions of 
+> packets
+> because your kprobe could be in error path and the user may want to
+> capture only specific things when it triggers.
+> kprobe bpf prog will execute in such case and it can capture necessary
+> state from xdp prog, from packet or from maps that xdp prog is using.
+> Some sort of bpf-gdb would be needed in user space.
+> Obviously people shouldn't be writing such kprob-bpf progs that debug
+> other bpf progs by hand. bpf-gdb should be able to generate them 
+> automatically.
+
+See my opening comment. What you're describing here is more when the 
+right developer has access to the specific system. But this might not 
+even be possible in some environments.
+
+
+Let me know if your opinion on this idea changes after reading this, or 
+what else is needed to convince you of the need ;)
+
 
