@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B62731B73C8
-	for <lists+bpf@lfdr.de>; Fri, 24 Apr 2020 14:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B3A1B750F
+	for <lists+bpf@lfdr.de>; Fri, 24 Apr 2020 14:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgDXMWj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Apr 2020 08:22:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51764 "EHLO mail.kernel.org"
+        id S1727979AbgDXMX0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Apr 2020 08:23:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726289AbgDXMWj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Apr 2020 08:22:39 -0400
+        id S1727972AbgDXMX0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Apr 2020 08:23:26 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4400520700;
-        Fri, 24 Apr 2020 12:22:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E508A20776;
+        Fri, 24 Apr 2020 12:23:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587730959;
-        bh=5b/Hr7JmNEoV7AggX58A4+LBvaJWtT4/EzL/fqNixHM=;
+        s=default; t=1587731005;
+        bh=JEfPVeCIXS2ihp4wiKoaxqcfVeN9Aopia2uXZyuMbzs=;
         h=From:To:Cc:Subject:Date:From;
-        b=p5q/b3s/dVIRwYkPrDZR3o/6f/+m+Fd5c/yDmMbWgd5ebHddcJiWq9cnDDhdPkFgR
-         Do/J/oeQ8HCRuEosxqJivDE8SjKeAgLHi/ZYBOHuhd5HuuqHCDaAbC1WN9GDs0+sEz
-         ZXggslJnwxDZiOINGA9ZSai0aZvkHMtE2GOF3yao=
+        b=1qHOqCMSq1ywoYVvbwMuKBB/Bc/buIYS9oC344cyI8+ZzwH8qFxgEeHq13GZijqw2
+         VD2zfZjIChMjsMghVFiRAfh3B3LTPy1sxKSkRD5vlt++uOiHNN8hN2jywa47CkKCA5
+         TMnzJLAtN6Zu8JBtyXNqNr/YMeQKYk3ynfO4KIfo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Jeremy Cline <jcline@redhat.com>,
@@ -30,9 +30,9 @@ Cc:     Jeremy Cline <jcline@redhat.com>,
         Andrii Nakryiko <andriin@fb.com>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 01/38] libbpf: Initialize *nl_pid so gcc 10 is happy
-Date:   Fri, 24 Apr 2020 08:21:59 -0400
-Message-Id: <20200424122237.9831-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 01/26] libbpf: Initialize *nl_pid so gcc 10 is happy
+Date:   Fri, 24 Apr 2020 08:22:58 -0400
+Message-Id: <20200424122323.10194-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 X-stable: review
@@ -68,10 +68,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
-index 6d47345a310bd..b294e2aeb3283 100644
+index ce3ec81b71c01..88416be2bf994 100644
 --- a/tools/lib/bpf/netlink.c
 +++ b/tools/lib/bpf/netlink.c
-@@ -141,7 +141,7 @@ int bpf_set_link_xdp_fd(int ifindex, int fd, __u32 flags)
+@@ -137,7 +137,7 @@ int bpf_set_link_xdp_fd(int ifindex, int fd, __u32 flags)
  		struct ifinfomsg ifinfo;
  		char             attrbuf[64];
  	} req;
@@ -80,7 +80,7 @@ index 6d47345a310bd..b294e2aeb3283 100644
  
  	sock = libbpf_netlink_open(&nl_pid);
  	if (sock < 0)
-@@ -256,7 +256,7 @@ int bpf_get_link_xdp_info(int ifindex, struct xdp_link_info *info,
+@@ -254,7 +254,7 @@ int bpf_get_link_xdp_id(int ifindex, __u32 *prog_id, __u32 flags)
  {
  	struct xdp_id_md xdp_id = {};
  	int sock, ret;
@@ -88,7 +88,7 @@ index 6d47345a310bd..b294e2aeb3283 100644
 +	__u32 nl_pid = 0;
  	__u32 mask;
  
- 	if (flags & ~XDP_FLAGS_MASK || !info_size)
+ 	if (flags & ~XDP_FLAGS_MASK)
 -- 
 2.20.1
 
