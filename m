@@ -2,85 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 460591B8592
-	for <lists+bpf@lfdr.de>; Sat, 25 Apr 2020 12:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 475851B8657
+	for <lists+bpf@lfdr.de>; Sat, 25 Apr 2020 13:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726053AbgDYKTg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 25 Apr 2020 06:19:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726088AbgDYKTc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 25 Apr 2020 06:19:32 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C744C09B04B
-        for <bpf@vger.kernel.org>; Sat, 25 Apr 2020 03:19:30 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id s30so10141303qth.2
-        for <bpf@vger.kernel.org>; Sat, 25 Apr 2020 03:19:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yhgkDblJ6kuS2NzyTpV0otXE+gL6DJiipid5BbTEBrM=;
-        b=NVqodb/xL3rXX892FRNxzgXwtT0FCUR1c5K2pylnT0Qt6fplduqWr4PHf32pT7NNFU
-         OlwOjR5Zf7Cs6mBNdiha7a+oYCLDn8W0cRA8N/spPvk+beknj6l/VsHLTzrwr9iNd3cz
-         7iRf+TQ76EnWFS+CxVhhVNI0by09ZJJxqCNEaZ5cKy7kFh+JqevUsJ0kU44hY1VCJbgR
-         2IfXVCRAxtbuXft6N0741GJ5Hj3K3fmMjPCcLREi4YYzputdskpM4rQ97DXfu7HEoGOf
-         F3fn2Fhp5eiIZ075AKrrPEl/0auuORf5Ud9raEMMp6LsxDZFwb6YMdhaDqjE75N0cwE3
-         5Gtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yhgkDblJ6kuS2NzyTpV0otXE+gL6DJiipid5BbTEBrM=;
-        b=ZhAmTgMm5JtCD+goQRK/BL9+eBRWpsPtrRukSsOUhqAM1M2VZ93ePIC8lvmWjSqIth
-         LUhJQ8ekpc9yQbtFn6Jwegogq7rMoCH0mH3Gh+ZBud8TrQ19DYMYBn2VUehPyAKzpIRI
-         kxGZXIkD73XfuNv4oV64toUDeKAXJN+77lvCf7fQWsmSxOP7BjbrL+LoV6KQSLe0Rk1/
-         ATxFJI/pSEVbwVQP0jGQaicfdBg13umBtA+KaqyplhIrHYQP7n+g2xrm1KpVlL2vVFap
-         pDhOJ703Q9TJvPI3T2CWwx+VCpaRInZ91u58T78WLctlmleLy7GcdYmkbUE+qYnRHPZP
-         83SQ==
-X-Gm-Message-State: AGi0PuaF/e3J8dYw2n9KiKewZYOYQZN43nKuWmeP0nL6/qq06RWx3fsC
-        I6uWmftPB1dpbE/DIRV1zy8Consrt0jFWC9kL59bNQ==
-X-Google-Smtp-Source: APiQypJg2EH+UxMCJiIlw7/oyCETvUIny+wa/DNI7c+EGj7nX4finA4EmWHhD/msYJh6Q9hUx7dfDsiwnQYsa9RcXzQ=
-X-Received: by 2002:aed:3e22:: with SMTP id l31mr13842848qtf.290.1587809969734;
- Sat, 25 Apr 2020 03:19:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200424053505.4111226-1-andriin@fb.com> <20200424053505.4111226-8-andriin@fb.com>
- <34110254-6384-153f-af39-d5f9f3a50acb@isovalent.com> <CAEf4BzY9tjQm1f8eTyjYjthTF9n6tZ59r1mpUsYWL4+bFuch2Q@mail.gmail.com>
- <5404b784-2173-210d-6319-fa5f0156701e@isovalent.com> <CAEf4BzYZD2=XV+86DFfGvtfBEGkdHAEhxe7WebU2bm=okGJEcA@mail.gmail.com>
-In-Reply-To: <CAEf4BzYZD2=XV+86DFfGvtfBEGkdHAEhxe7WebU2bm=okGJEcA@mail.gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Date:   Sat, 25 Apr 2020 11:19:18 +0100
-Message-ID: <CACdoK4+h6SjPe9XGbC5WWLcAhZoq9C3zcPEOe4PQ0TVzrDxiCA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 07/10] bpftool: expose attach_type-to-string
- array to non-cgroup code
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        id S1726070AbgDYLxL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 Apr 2020 07:53:11 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:55286 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726050AbgDYLxL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 25 Apr 2020 07:53:11 -0400
+Received: from ravnborg.org (unknown [158.248.194.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 23BB420028;
+        Sat, 25 Apr 2020 13:53:05 +0200 (CEST)
+Date:   Sat, 25 Apr 2020 13:53:03 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Christian Brauner <christian@brauner.io>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Song Liu <songliubraving@fb.com>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Yonghong Song <yhs@fb.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 00/16] kbuild: support 'userprogs' syntax
+Message-ID: <20200425115303.GA10048@ravnborg.org>
+References: <20200423073929.127521-1-masahiroy@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200423073929.127521-1-masahiroy@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=ULXz4hXy c=1 sm=1 tr=0
+        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
+        a=kj9zAlcOel0A:10 a=D19gQVrFAAAA:8 a=7gkXJVJtAAAA:8
+        a=-Cqz4C0WQvTMSLUl_DAA:9 a=CjuIK1q_8ugA:10 a=W4TVW4IDbPiebHqcZpNg:22
+        a=E9Po1WZjFZOl8hwRPBS3:22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 25 Apr 2020 at 01:12, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+Hi Masahiro
 
->
-> Ah, I see what you are saying... I can just declare array as
->
-> const char *attach_type_strings[__MAX_BPF_ATTACH_TYPE] = { ... }
->
+On Thu, Apr 23, 2020 at 04:39:13PM +0900, Masahiro Yamada wrote:
+> 
+> Several Makefiles use 'hostprogs' for building the code for
+> the host architecture is not appropriate.
+> 
+> This is just because Kbuild does not provide the syntax to do it.
+> 
+> This series introduce 'userprogs' syntax and use it from
+> sample and bpf Makefiles.
+> 
+> Sam worked on this in 2014.
+> https://lkml.org/lkml/2014/7/13/154
 
-That would address my concern, thanks!
+I wonder how you managed to dig that up, but thanks for the reference.
 
-> to prevent this. There is still this issue of potentially getting back
-> NULL pointer. But that warrants separate "audit" of the code usage and
-> fixing appropriately, I don't think it belongs in this patch set.
+Back then we would fail buiulding without any libc - you have solved
+this nicely in this patch-set.
 
-Agreed, we can keep that for later. My main concern for this review
-was the other point above anyway.
+> 
+> He used 'uapiprogs-y' but I just thought the meaning of
+> "UAPI programs" is unclear.
+> 
+> Naming is one the most difficult parts of this.
+> 
+> I chose 'userprogs'.
+> Anothor choice I had in my mind was 'targetprogs'.
+> 
+> If you can test this series quickly by
+> 'make allmodconfig samples/'
+> 
+> When building objects for userspace, [U] is displayed.
+> 
+> masahiro@oscar:~/workspace/linux$ make allmodconfig samples/
+>   [snip]
+>   AR      samples/vfio-mdev/built-in.a
+>   CC [M]  samples/vfio-mdev/mtty.o
+...
 
-Thank you,
-Quentin
+> 
+> 
+> Masahiro Yamada (15):
+>   Documentation: kbuild: fix the section title format
+>   Revert "objtool: Skip samples subdirectory"
+>   kbuild: add infrastructure to build userspace programs
+>   net: bpfilter: use 'userprogs' syntax to build bpfilter_umh
+>   samples: seccomp: build sample programs for target architecture
+>   kbuild: doc: document the new syntax 'userprogs'
+>   samples: uhid: build sample program for target architecture
+>   samples: hidraw: build sample program for target architecture
+>   samples: connector: build sample program for target architecture
+>   samples: vfs: build sample programs for target architecture
+>   samples: pidfd: build sample program for target architecture
+>   samples: mei: build sample program for target architecture
+>   samples: auxdisplay: use 'userprogs' syntax
+>   samples: timers: use 'userprogs' syntax
+>   samples: watchdog: use 'userprogs' syntax
+Nice work!
+All patches are:
+Acked-by: Sam Ravnborg <sam@ravnborg.org>
+
+> 
+> Sam Ravnborg (1):
+>   samples: uhid: fix warnings in uhid-example
+> 
+>  Documentation/kbuild/makefiles.rst | 185 +++++++++++++++++++++--------
+>  Makefile                           |  11 +-
+>  net/bpfilter/Makefile              |  11 +-
+>  samples/Kconfig                    |  26 +++-
+>  samples/Makefile                   |   5 +-
+>  samples/auxdisplay/Makefile        |  11 +-
+>  samples/connector/Makefile         |  12 +-
+>  samples/hidraw/Makefile            |   9 +-
+>  samples/mei/Makefile               |   9 +-
+>  samples/pidfd/Makefile             |   8 +-
+>  samples/seccomp/Makefile           |  42 +------
+>  samples/timers/Makefile            |  17 +--
+>  samples/uhid/.gitignore            |   2 +
+>  samples/uhid/Makefile              |   9 +-
+>  samples/uhid/uhid-example.c        |   4 +-
+>  samples/vfs/Makefile               |  11 +-
+>  samples/watchdog/Makefile          |  10 +-
+>  scripts/Makefile.build             |   5 +
+>  scripts/Makefile.clean             |   2 +-
+>  scripts/Makefile.userprogs         |  44 +++++++
+>  20 files changed, 258 insertions(+), 175 deletions(-)
+>  create mode 100644 samples/uhid/.gitignore
+>  create mode 100644 scripts/Makefile.userprogs
+> 
+> -- 
+> 2.25.1
