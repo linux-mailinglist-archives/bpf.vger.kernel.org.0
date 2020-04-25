@@ -2,135 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6750E1B82E1
-	for <lists+bpf@lfdr.de>; Sat, 25 Apr 2020 02:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B749F1B82E6
+	for <lists+bpf@lfdr.de>; Sat, 25 Apr 2020 02:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726076AbgDYAsh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Apr 2020 20:48:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726031AbgDYAsh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Apr 2020 20:48:37 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1FF2C09B049;
-        Fri, 24 Apr 2020 17:48:36 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id u6so11806828ljl.6;
-        Fri, 24 Apr 2020 17:48:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NsQavboMviC46TTE6iijTekGRHyX4NjoGpEvCT6wOYQ=;
-        b=WMEkaXKkeMJ9u8VhnOJz/pr9wnJAgvaAgASHFXizR8jsWZS+X3SlhZkotj2DaGj39H
-         RiX5YQO/nvtsTq6TqNycZITnLRPo306Y5HAURBthMeNE0gDaRDJs8DVZmEW6kW5N1Ius
-         HTWggeo4vLHAJr2fIPyoaWkDCwUv2myV0jRo4AIBnlmtVlxdU4shwgM+mCDb6vY+liTP
-         CDRBCkReipvRPMSjEE33VimM2TrdHna9dSr6anm/zkoW7qVys6yvljI3SRsyhMmIlJxk
-         cqd3yNsWZs60nRKE5n2rMw4cXD1nE/xueJ71HU8mIVe/SBw/zPAoN2Inmj7O/4pGqwR/
-         lnDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NsQavboMviC46TTE6iijTekGRHyX4NjoGpEvCT6wOYQ=;
-        b=KjEyCnr9FVVUay1p9mT2//iBRXf3RWeqOueyrxQtehZfWc87EgzNg2xX9wALVA11w7
-         0FNPNWwXEDOhOfYY6aWkUomRqShkYK4CBGz3ldFmN8FLlvypbmAMqFGsG6c2ATZw+cIX
-         051jIu9+S+cRt1k6UsYioHJd1gYhUw86qWIfhMi6nNsxMMRJfxMf2ycnLdEnz/N2TUh1
-         VjaVHhSydnLK/KI9skIa5PMwNEBS68lmpJlgtAPHaEaUJr8E3k7UmPIf3z4LHTNXd/DB
-         27Jkp20cOCSO0dC+JC5GS/OUeJuhMMxm3E4xRiY98HQhwOOiRMDedmfesYTe9JsvlYl8
-         VTYQ==
-X-Gm-Message-State: AGi0Puauru4GVY3LqAyf7nUoMR1vn4y05uGIkUHyvvN3AunoWi5Kspxl
-        K04ATu+pTw4CWGH9KH1dfF8bIe+uBrk8e7eLcPRv0A==
-X-Google-Smtp-Source: APiQypLKx6g8Cdu6GHQ62qS4lIV/x/wfq8XXNAmItmf59Kc8eKy2kDvIE8xZDfHa9jxtGvVPsSz4jyJ6gRsUNKu4MRo=
-X-Received: by 2002:a2e:a169:: with SMTP id u9mr7768079ljl.144.1587775714973;
- Fri, 24 Apr 2020 17:48:34 -0700 (PDT)
+        id S1726027AbgDYAxl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 24 Apr 2020 20:53:41 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:57706 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726031AbgDYAxl (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 24 Apr 2020 20:53:41 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03P0pHL8020431
+        for <bpf@vger.kernel.org>; Fri, 24 Apr 2020 17:53:40 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 30kkpe8668-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 24 Apr 2020 17:53:40 -0700
+Received: from intmgw005.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 24 Apr 2020 17:53:38 -0700
+Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
+        id 22B57760F17; Fri, 24 Apr 2020 17:53:33 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Alexei Starovoitov <ast@kernel.org>
+Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
+To:     <davem@davemloft.net>
+CC:     <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: pull-request: bpf 2020-04-24
+Date:   Fri, 24 Apr 2020 17:53:33 -0700
+Message-ID: <20200425005333.3305925-1-ast@kernel.org>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-References: <20200422003753.124921-1-sdf@google.com>
-In-Reply-To: <20200422003753.124921-1-sdf@google.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 24 Apr 2020 17:48:23 -0700
-Message-ID: <CAADnVQL+p1XmSsUe1UZ99PbBy7x-w8rqND-5HzZ5MENZtNAEvA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix a couple of broken test_btf cases
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-24_13:2020-04-24,2020-04-24 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ priorityscore=1501 suspectscore=1 mlxscore=0 lowpriorityscore=0
+ phishscore=0 adultscore=0 malwarescore=0 clxscore=1034 mlxlogscore=719
+ impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2003020000 definitions=main-2004250004
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 5:37 PM Stanislav Fomichev <sdf@google.com> wrote:
->
-> Commit 51c39bb1d5d1 ("bpf: Introduce function-by-function verification")
-> introduced function linkage flag and changed the error message from
-> "vlen != 0" to "Invalid func linkage" and broke some fake BPF programs.
->
-> Adjust the test accordingly.
->
-> AFACT, the programs don't really need any arguments and only look
-> at BTF for maps, so let's drop the args altogether.
->
-> Before:
-> BTF raw test[103] (func (Non zero vlen)): do_test_raw:3703:FAIL expected
-> err_str:vlen != 0
-> magic: 0xeb9f
-> version: 1
-> flags: 0x0
-> hdr_len: 24
-> type_off: 0
-> type_len: 72
-> str_off: 72
-> str_len: 10
-> btf_total_size: 106
-> [1] INT (anon) size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-> [2] INT (anon) size=4 bits_offset=0 nr_bits=32 encoding=(none)
-> [3] FUNC_PROTO (anon) return=0 args=(1 a, 2 b)
-> [4] FUNC func type_id=3 Invalid func linkage
->
-> BTF libbpf test[1] (test_btf_haskv.o): libbpf: load bpf program failed:
-> Invalid argument
-> libbpf: -- BEGIN DUMP LOG ---
-> libbpf:
-> Validating test_long_fname_2() func#1...
-> Arg#0 type PTR in test_long_fname_2() is not supported yet.
-> processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0
-> peak_states 0 mark_read 0
->
-> libbpf: -- END LOG --
-> libbpf: failed to load program 'dummy_tracepoint'
-> libbpf: failed to load object 'test_btf_haskv.o'
-> do_test_file:4201:FAIL bpf_object__load: -4007
-> BTF libbpf test[2] (test_btf_newkv.o): libbpf: load bpf program failed:
-> Invalid argument
-> libbpf: -- BEGIN DUMP LOG ---
-> libbpf:
-> Validating test_long_fname_2() func#1...
-> Arg#0 type PTR in test_long_fname_2() is not supported yet.
-> processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0
-> peak_states 0 mark_read 0
->
-> libbpf: -- END LOG --
-> libbpf: failed to load program 'dummy_tracepoint'
-> libbpf: failed to load object 'test_btf_newkv.o'
-> do_test_file:4201:FAIL bpf_object__load: -4007
-> BTF libbpf test[3] (test_btf_nokv.o): libbpf: load bpf program failed:
-> Invalid argument
-> libbpf: -- BEGIN DUMP LOG ---
-> libbpf:
-> Validating test_long_fname_2() func#1...
-> Arg#0 type PTR in test_long_fname_2() is not supported yet.
-> processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0
-> peak_states 0 mark_read 0
->
-> libbpf: -- END LOG --
-> libbpf: failed to load program 'dummy_tracepoint'
-> libbpf: failed to load object 'test_btf_nokv.o'
-> do_test_file:4201:FAIL bpf_object__load: -4007
->
-> Fixes: 51c39bb1d5d1 ("bpf: Introduce function-by-function verification")
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+Hi David,
 
-Applied to bpf tree. Thanks
+The following pull-request contains BPF updates for your *net* tree.
+
+We've added 17 non-merge commits during the last 5 day(s) which contain
+a total of 19 files changed, 203 insertions(+), 85 deletions(-).
+
+The main changes are:
+
+1) link_update fix, from Andrii.
+
+2) libbpf get_xdp_id fix, from David.
+
+3) xadd verifier fix, from Jann.
+
+4) x86-32 JIT fixes, from Luke and Wang.
+
+5) test_btf fix, from Stanislav.
+
+6) freplace verifier fix, from Toke.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Andrey Ignatov, Andrii Nakryiko, H. Peter Anvin (Intel), Hulk Robot, 
+Jesper Dangaard Brouer, Quentin Monnet, Song Liu, Wang YanQing, Xiumei Mu
+
+----------------------------------------------------------------
+
+The following changes since commit a460fc5d4c170806a31e590df37ead3ab951315c:
+
+  Merge tag 'mlx5-fixes-2020-04-20' of git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux (2020-04-20 16:17:48 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to e1cebd841b0aa1ceda771706d54a0501986a3c88:
+
+  selftests/bpf: Fix a couple of broken test_btf cases (2020-04-24 17:47:40 -0700)
+
+----------------------------------------------------------------
+Andrii Nakryiko (2):
+      bpf: Fix leak in LINK_UPDATE and enforce empty old_prog_fd
+      tools/runqslower: Ensure own vmlinux.h is picked up first
+
+David Ahern (1):
+      libbpf: Only check mode flags in get_xdp_id
+
+Jakub Wilk (1):
+      bpf: Fix reStructuredText markup
+
+Jann Horn (2):
+      bpf: Forbid XADD on spilled pointers for unprivileged users
+      bpf: Fix handling of XADD on BTF memory
+
+Luke Nelson (4):
+      bpf, x86: Fix encoding for lower 8-bit registers in BPF_STX BPF_B
+      bpf, selftests: Add test for BPF_STX BPF_B storing R10
+      bpf, x86_32: Fix incorrect encoding in BPF_LDX zero-extension
+      bpf, x86_32: Fix clobbering of dst for BPF_JSET
+
+Martin KaFai Lau (1):
+      bpftool: Respect the -d option in struct_ops cmd
+
+Stanislav Fomichev (1):
+      selftests/bpf: Fix a couple of broken test_btf cases
+
+Toke Høiland-Jørgensen (3):
+      cpumap: Avoid warning when CONFIG_DEBUG_PER_CPU_MAPS is enabled
+      bpf: Propagate expected_attach_type when verifying freplace programs
+      selftests/bpf: Add test for freplace program with expected_attach_type
+
+Wang YanQing (1):
+      bpf, x86_32: Fix logic error in BPF_LDX zero-extension
+
+Zou Wei (1):
+      bpf: Make bpf_link_fops static
+
+ arch/x86/net/bpf_jit_comp.c                        | 18 ++++++++--
+ arch/x86/net/bpf_jit_comp32.c                      | 28 +++++++++++----
+ include/uapi/linux/bpf.h                           |  2 +-
+ kernel/bpf/cpumap.c                                |  2 +-
+ kernel/bpf/syscall.c                               | 13 +++++--
+ kernel/bpf/verifier.c                              | 38 ++++++++++++++------
+ tools/bpf/bpftool/struct_ops.c                     |  8 ++++-
+ tools/bpf/runqslower/Makefile                      |  2 +-
+ tools/include/uapi/linux/bpf.h                     |  2 +-
+ tools/lib/bpf/netlink.c                            |  2 ++
+ .../selftests/bpf/prog_tests/fexit_bpf2bpf.c       | 30 ++++++++++++----
+ tools/testing/selftests/bpf/progs/connect4_prog.c  | 28 ++++++++-------
+ .../selftests/bpf/progs/freplace_connect4.c        | 18 ++++++++++
+ tools/testing/selftests/bpf/progs/test_btf_haskv.c | 18 +++-------
+ tools/testing/selftests/bpf/progs/test_btf_newkv.c | 18 +++-------
+ tools/testing/selftests/bpf/progs/test_btf_nokv.c  | 18 +++-------
+ tools/testing/selftests/bpf/test_btf.c             |  2 +-
+ tools/testing/selftests/bpf/verifier/stack_ptr.c   | 40 ++++++++++++++++++++++
+ .../selftests/bpf/verifier/value_illegal_alu.c     |  1 +
+ 19 files changed, 203 insertions(+), 85 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/freplace_connect4.c
