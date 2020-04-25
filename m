@@ -2,77 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21711B82DA
-	for <lists+bpf@lfdr.de>; Sat, 25 Apr 2020 02:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3591B82DE
+	for <lists+bpf@lfdr.de>; Sat, 25 Apr 2020 02:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgDYAoq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Apr 2020 20:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54804 "EHLO
+        id S1726116AbgDYAqp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Apr 2020 20:46:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726031AbgDYAop (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Apr 2020 20:44:45 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28927C09B049;
-        Fri, 24 Apr 2020 17:44:44 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id j3so11786434ljg.8;
-        Fri, 24 Apr 2020 17:44:44 -0700 (PDT)
+        with ESMTP id S1726031AbgDYAqp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Apr 2020 20:46:45 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B84C09B049;
+        Fri, 24 Apr 2020 17:46:44 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id l19so11804036lje.10;
+        Fri, 24 Apr 2020 17:46:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kzKKvPvTRv5jedvft3HGf7MSKwccH8TvsPU4jnF7S/g=;
-        b=Q8dw0+7Mj+PiebMpguuY3GEbnEhu3A3RcnUKO9ZGAgYu6Z3FdhQveI54PP/Ji+l9Zy
-         5D4Ep+XdxUNFDQx1xcJM4nsrwEIvSdJuRIXHVOtjNG8tXQVAK9cBnuHTp2Y0lKldpa5l
-         QK0HzTicOF253e4gc1DLafYdcN/DSvjxuYuyMvygj8PFaPsyDk4FWGpdQyJMOaXgj/i0
-         uyorSZIniih/X7+vox1VQtqnMPkRfLiMbLDn+IXXYPJdo2zGprxIiyD88RY+xanFHtOB
-         SQ+FqnrntbK3WU+i69KSnpL3KmA1c4P7LA9QkfMfkLytsZJ8iq7eWH9f/6RHGcM6P+sq
-         Qgrw==
+        bh=hgq9stGHw/T+hAa8NJqjsEzs0n8WGs/uzkfFQrLPzgA=;
+        b=diFn3eGhG1FBbS2GswYINrnafaWh+34OkCCYahMI7b+kUX9/EVoAQSX02UXMsizHOS
+         mk9V4Z62spMaDNtSpNTvRy2SfAnSnmQ946oVXKgpKWwb+HkPp6OSFUBSDwdQbtH8qlM1
+         670S9pO0IxClTaE6R8RwYMjrRCeR9Zu+awTSy6pk03PdwkSsc66q+GQH0ETnYx3UNPj3
+         OOPOCB5DNiNftcr/5jSn5hCuZl8GZi/nsOAk5HiXJAtgaEOjOphFAGBLF+8W/A273g3i
+         lVB59uwaiFsg+tApM0AV5gyfp0SuzZJ9V6TZuUt6DRXN1xQ3mCRRfqc2ckGwWuun+DFj
+         hy/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kzKKvPvTRv5jedvft3HGf7MSKwccH8TvsPU4jnF7S/g=;
-        b=iCHKjKDIHpLAnc0NG2ERgOsvq5SL9M7WWMPP/nSP9DBP1YGFvnPbzm/kfustslbcr5
-         hQBsgpG0s4oEcsdd5JOFu5RlMNCQGi8jSeb8TUbLB2oDY7jtLT81Tj/yXRzB1EUTmwcL
-         kMDPUwgmkPrmbk+OyOCJDmZc5SkJrHwDlwOZWV4MI4HBT2En5sEbdO/TfnpJi39MsB7o
-         PC/TEUUp2hHHMpdSPfuLJKoNnCSXl9nHkDsWV8xCQTuYm3MI4rqouUuzUBmfO05QU0P6
-         xIKSdAxbm1Ln7d21lY+HMjpINJ81TMsworL7M745E96cYenw+N8JPZQv8QxiacPqw1DC
-         LevA==
-X-Gm-Message-State: AGi0PuaRITJUM1dhahXw/1jy2wvrbIyBnqRXuib59fSwgX1qEqF90Jyc
-        ZseDvmsdh+w1Z72HfosO0hR+TnhJXdX+dXVGPN8=
-X-Google-Smtp-Source: APiQypJYVNzIHY7mZErfuL8JKO7UQTjprH2H9+55b4W0WwaynLxE57Of8Tmpz9gOZALE5GqURZRGgmtyPcLNQBRqBE8=
-X-Received: by 2002:a2e:7508:: with SMTP id q8mr7378532ljc.234.1587775481719;
- Fri, 24 Apr 2020 17:44:41 -0700 (PDT)
+        bh=hgq9stGHw/T+hAa8NJqjsEzs0n8WGs/uzkfFQrLPzgA=;
+        b=afmRnvJD7EKkgFpevEUcDhfvYiKmoPsvzMnucQ1eoMXwT2cRYhlxHDlcxfkuiAmpBS
+         aSwFVDtCfrnVMZezAKngnn0QP8f0p+7TEpC/cGrvrCDMm/9HAxyI3y+EaUJGnTl9h9F6
+         hNbYVcXoobdxLC0yQ2feHlDkjSALAF7tep+FE9L30ghMeaqnfQY1ZwNUszSyMm2271jK
+         Q6uVWBPgA4BCdH+CFJCG+MGqFBL4AU9k251XTAn8WMJGrJblCP/MkGELK69NlSSUhgwt
+         cYwVtX3W8KdWA85ltKDNbRAz6Qlkpf+RSytkQSGV798EVkj0+FZezuXixCP0ZVNjyUJa
+         5QEw==
+X-Gm-Message-State: AGi0PuY0ZfzLeCFZ+l3weDpTXWv9DrqF8NbtsKwrBvbU8OxR5C8QyedC
+        x21fcycGFMAMnUoGCU1L5F4+hktccc9aq6XfDx0=
+X-Google-Smtp-Source: APiQypLeloX0bj0jAnhjstM+vxjEgs5d7GVgUsJPftqhW95hLbgFcOEJVkd8pySnZ+abeCchUjwWISWNHnBCP6vs0ho=
+X-Received: by 2002:a2e:9011:: with SMTP id h17mr7696891ljg.138.1587775603308;
+ Fri, 24 Apr 2020 17:46:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <1587609160-117806-1-git-send-email-zou_wei@huawei.com>
-In-Reply-To: <1587609160-117806-1-git-send-email-zou_wei@huawei.com>
+References: <20200422012407.176303-1-andriin@fb.com>
+In-Reply-To: <20200422012407.176303-1-andriin@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 24 Apr 2020 17:44:30 -0700
-Message-ID: <CAADnVQLzuHpW1_dsqNHsgahEWqeQYPyCeuAW3V4NTaxjamwByQ@mail.gmail.com>
-Subject: Re: [PATCH -next] bpf: Make bpf_link_fops static
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
+Date:   Fri, 24 Apr 2020 17:46:31 -0700
+Message-ID: <CAADnVQL6Q5KCiUed2ckP=9kmW8ogoCoSyUU4G96Z7SCku_ngug@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] tools/runqslower: ensure own vmlinux.h is picked
+ up first
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
         Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 7:26 PM Zou Wei <zou_wei@huawei.com> wrote:
+On Tue, Apr 21, 2020 at 6:24 PM Andrii Nakryiko <andriin@fb.com> wrote:
 >
-> Fix the following sparse warning:
+> Reorder include paths to ensure that runqslower sources are picking up
+> vmlinux.h, generated by runqslower's own Makefile. When runqslower is built
+> from selftests/bpf, due to current -I$(BPF_INCLUDE) -I$(OUTPUT) ordering, it
+> might pick up not-yet-complete vmlinux.h, generated by selftests Makefile,
+> which could lead to compilation errors like [0]. So ensure that -I$(OUTPUT)
+> goes first and rely on runqslower's Makefile own dependency chain to ensure
+> vmlinux.h is properly completed before source code relying on it is compiled.
 >
-> kernel/bpf/syscall.c:2289:30: warning: symbol 'bpf_link_fops' was not declared. Should it be static?
+>   [0] https://travis-ci.org/github/libbpf/libbpf/jobs/677905925
 >
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
 Applied to bpf tree. Thanks
