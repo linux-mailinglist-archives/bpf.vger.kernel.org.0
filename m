@@ -2,228 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1641B8DC3
-	for <lists+bpf@lfdr.de>; Sun, 26 Apr 2020 10:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB811B8F16
+	for <lists+bpf@lfdr.de>; Sun, 26 Apr 2020 12:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726122AbgDZIEi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 26 Apr 2020 04:04:38 -0400
-Received: from mga11.intel.com ([192.55.52.93]:37112 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgDZIEi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 26 Apr 2020 04:04:38 -0400
-IronPort-SDR: Fo3FTXABWhGe2lrmIzl3FP18/tcA9WfMCfGl9VGWG0oFZ2JlO8A5EYqEfDoKb24vaIHSqO4IS9
- DLdLxVpX3m3w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2020 01:04:37 -0700
-IronPort-SDR: H3n2EkWkPA5gtJvj5niFn+Ok+eMk2mgvnsl6ZbbsyQxeRho7Cd0H4wsYYuAHW0xKvmgNEAXEdV
- WPzMyTQzJE6A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,319,1583222400"; 
-   d="scan'208";a="431357712"
-Received: from ypeng2-mobl1.ccr.corp.intel.com (HELO [10.255.30.75]) ([10.255.30.75])
-  by orsmga005.jf.intel.com with ESMTP; 26 Apr 2020 01:04:35 -0700
-Subject: Re: bpf: test_sysctl run failed on Debian9
-To:     Andrey Ignatov <rdna@fb.com>
-Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Philip Li <philip.li@intel.com>, ast@kernel.org,
-        daniel@iogearbox.net
-References: <cc5c7dcb-02ab-3ea5-2330-7678abeb43b4@intel.com>
- <079fd1a6-fd66-e997-9c03-6529489aad54@intel.com>
- <20200423213158.GA37107@rdna-mbp>
-From:   Ma Xinjian <max.xinjian@intel.com>
-Message-ID: <677201be-41f4-445b-0198-56e03758bf18@intel.com>
-Date:   Sun, 26 Apr 2020 16:04:08 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.3.0
+        id S1726233AbgDZKsQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 26 Apr 2020 06:48:16 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:32827 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726139AbgDZKsP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 26 Apr 2020 06:48:15 -0400
+Received: by mail-il1-f197.google.com with SMTP id l18so16401036ilg.0
+        for <bpf@vger.kernel.org>; Sun, 26 Apr 2020 03:48:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=cja73Q9x3T0qZ2w6wqeSwJDFi7S8FlBRPPFD5tjghlM=;
+        b=cNXcQKxUQwSHWDXq7WcATeMq5V411DfUh+cpzuU5EuHg/OD5BQyo76ZbxamsvmbrzQ
+         MP+OUMpo8g8r2TlyGccA3LG14Qc8ozaKRYocQZ98qZB4z3IL+mBwl2sJudWYuB8iKNI+
+         0uzJVeVL+gJ/kAZ8Vn5PJdVMuYMqfeBEsAzaeR7arqj7kXnPm5EPEEz4LABgLBPhyBWw
+         V7tOpayslIUW1ngqm5G+eHloLF0SFtUW+toTMiSliMr72JKAIRfFm/Oz1a91zssyHvNi
+         f1BfOPGV6DuCQWlMBTGMcg0pBjNqAPRvEvKDvHGcyULWZcwe6CIQ/XP5L3FxyvxwOUa2
+         jOwA==
+X-Gm-Message-State: AGi0PuYXyvvAf3Ce4Loa15CoJ2WSMZprHTVOx3yfwPCZZn4HvLIHlplX
+        9VzLmQxXlFzHgNawGwuf4hK93rE9cMxp++FhO+/+ZNVsUlqX
+X-Google-Smtp-Source: APiQypJQccB0tZIECXflUdtADEHvbAS1csm6I84mtEBHpi5aAsjJ45LgeZSr3mlxFeMtSKvZNnkwreUYr0Icmv0awkqyobVrWiu4
 MIME-Version: 1.0
-In-Reply-To: <20200423213158.GA37107@rdna-mbp>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-Received: by 2002:a92:d186:: with SMTP id z6mr16032847ilz.119.1587898094759;
+ Sun, 26 Apr 2020 03:48:14 -0700 (PDT)
+Date:   Sun, 26 Apr 2020 03:48:14 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e0b6be05a42f555e@google.com>
+Subject: KMSAN: uninit-value in bpf_skb_load_helper_32
+From:   syzbot <syzbot+ae94def68efda6a4be52@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, glider@google.com,
+        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hello,
 
-On 4/24/20 5:31 AM, Andrey Ignatov wrote:
-> Ma Xinjian <max.xinjian@intel.com> [Thu, 2020-04-23 02:12 -0700]:
->> Hi,  Andrey.
->>
->> I noticed you add test_sysctl to tools/bpf, so drop this problem to you.
->>
->> When I run selftests: bpf: test_sysctl, failed with "(test_sysctl.c:1490:
->> errno: Permission denied) >>> Loading program (./test_sysctl_prog.o) error."
->>
->>
->> Testing env: "Debian GNU/Linux 9 (stretch)"
->>
->> kernel: 5.7.0-rc2    5.7.0-rc1  5.6  both failed
->>
->>
->> Whole run log and kconfig please see the attatchment.
->>
->> Error info
->>
->> ```
->>
->> root@vm-snb-42 /usr/src/perf_selftests-x86_64-rhel-7.6-kselftests-ae83d0b416db002fe95601e7f97f64b59514d936/tools/testing/selftests/bpf#
->> ./test_sysctl
->>
->> Test case: sysctl wrong attach_type .. [PASS]
->> Test case: sysctl:read allow all .. [PASS]
->> Test case: sysctl:read deny all .. [PASS]
->>
->> [snip]
->>
->> libbpf: -- END LOG --
->> libbpf: failed to load program 'cgroup/sysctl'
->> libbpf: failed to load object './test_sysctl_prog.o'
->> (test_sysctl.c:1490: errno: Permission denied) >>> Loading program
->> (./test_sysctl_prog.o) error.
->>
->> Test case: C prog: read tcp_mem .. [FAIL]
->> Summary: 37 PASSED, 3 FAILED
-> Hi Ma,
->
-> I can not reproduce it. I built 5.7.0-rc2 with your config (with minor
-> changes to just make it work with my qemu-setup, specifically
-> CONFIG_EXT4_FS=y), built tests and run it, no failures:
->
-> 	root@arch-fb-vm1:/home/rdna/bpf-next/tools/testing/selftests/bpf uname -srm
-> 	Linux 5.7.0-rc2 x86_64
-> 	root@arch-fb-vm1:/home/rdna/bpf-next/tools/testing/selftests/bpf ./test_sysctl
-> 	...
-> 	Test case: C prog: deny all writes .. [PASS]
-> 	Test case: C prog: deny access by name .. [PASS]
-> 	Test case: C prog: read tcp_mem .. [PASS]
-> 	Summary: 40 PASSED, 0 FAILED
->
-> Thouhg I see that test_sysctl_prog.o program I have differs from what
-> you have. I attach test_sysctl_prog_xlated.gz with my program.
->
-> Specifically the difference starts after the first call to bpf_strtoul.
->
-> The code from my prog looks like this (from the first call to
-> bpf_strtoul to the second call to bpf_strtoul):
->
-> 	  71: (85) call bpf_strtoul#110448
-> 	  72: (bc) w7 = w0
-> 	; if (ret <= 0 || ret > MAX_ULONG_STR_LEN)
-> 	  73: (bc) w1 = w7
-> 	  74: (04) w1 += -1
-> 	  75: (26) if w1 > 0xe goto pc-21
-> 	; off += ret & MAX_ULONG_STR_LEN;
-> 	  76: (54) w7 &= 15
-> 	  77: (bf) r1 = r10
-> 	  78: (07) r1 += -64
-> 	; ret = bpf_strtoul(value + off, MAX_ULONG_STR_LEN, 0,
-> 	  79: (0f) r1 += r7
-> 	; tcp_mem + i);
-> 	  80: (bf) r4 = r10
-> 	  81: (07) r4 += -80
-> 	; ret = bpf_strtoul(value + off, MAX_ULONG_STR_LEN, 0,
-> 	  82: (b7) r2 = 15
-> 	  83: (b7) r3 = 0
-> 	  84: (85) call bpf_strtoul#110448
->
-> It can be seen that r1 points to stack-64 + r7 that is known to be <15.
->
-> This is basically `value + (ret & MAX_ULONG_STR_LEN)` from the C code.
->
-> The code from your version of program looks like this:
->
-> 	  70: (85) call bpf_strtoul#106
-> 	last_idx 70 first_idx 63
-> 	regs=4 stack=0 before 69: (b7) r3 = 0
-> 	regs=4 stack=0 before 68: (b7) r2 = 15
-> 	  71: (bc) w7 = w0
-> 	; if (ret <= 0 || ret > MAX_ULONG_STR_LEN)
-> 	  72: (bc) w1 = w7
-> 	  73: (04) w1 += -1
-> 	  74: (26) if w1 > 0xe goto pc+14
-> 	 R0=inv(id=0) R1_w=inv(id=0,umax_value=14,var_off=(0x0; 0xf)) R6=inv0 R7_w=inv(id=0,smax_value=2147483647,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R10=fp0 fp-8=mmmmmmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=00000000 fp-80=00000000 fp-88=mmmmmmmm
-> 	; ret = bpf_strtoul(value + off, MAX_ULONG_STR_LEN, 0,
-> 	  75: (bc) w2 = w7
-> 	  76: (67) r2 <<= 32
-> 	  77: (77) r2 >>= 32
-> 	  78: (bf) r1 = r10
-> 	;
-> 	  79: (07) r1 += -64
-> 	; ret = bpf_strtoul(value + off, MAX_ULONG_STR_LEN, 0,
-> 	  80: (0f) r1 += r2
-> 	last_idx 80 first_idx 71
-> 	regs=4 stack=0 before 79: (07) r1 += -64
-> 	regs=4 stack=0 before 78: (bf) r1 = r10
-> 	regs=4 stack=0 before 77: (77) r2 >>= 32
-> 	regs=4 stack=0 before 76: (67) r2 <<= 32
-> 	regs=4 stack=0 before 75: (bc) w2 = w7
-> 	regs=80 stack=0 before 74: (26) if w1 > 0xe goto pc+14
-> 	regs=80 stack=0 before 73: (04) w1 += -1
-> 	regs=80 stack=0 before 72: (bc) w1 = w7
-> 	regs=80 stack=0 before 71: (bc) w7 = w0
-> 	 R0_rw=invP(id=0) R6=inv0 R7=ctx(id=0,off=0,imm=0) R10=fp0 fp-8=mmmmmmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=mmmmmmmm fp-64=mmmmmmmm fp-72=00000000 fp-80=00000000 fp-88=mmmmmmmm
-> 	parent didn't have regs=1 stack=0 marks
-> 	last_idx 70 first_idx 63
-> 	regs=1 stack=0 before 70: (85) call bpf_strtoul#106
-> 	; tcp_mem + i);
-> 	  81: (bf) r4 = r10
-> 	  82: (07) r4 += -80
-> 	; ret = bpf_strtoul(value + off, MAX_ULONG_STR_LEN, 0,
-> 	  83: (b7) r2 = 15
-> 	  84: (b7) r3 = 0
-> 	  85: (85) call bpf_strtoul#106
-> 	R1 unbounded indirect variable offset stack access
-> 	processed 88 insns (limit 1000000) max_states_per_insn 0 total_states 7 peak_states 7 mark_read 6
->
-> In this case r1 points to stack-64 + r2 and it seems to me that the
-> state of r2 is the problem, but I don't undesrtand why.
->
-> 32LSB of r2 seems to be known because:
-> 	  71: (bc) w7 = w0
-> 	  72: (bc) w1 = w7
-> 	  73: (04) w1 += -1
-> 	  74: (26) if w1 > 0xe goto pc+14
-> 	  75: (bc) w2 = w7
->
-> and 32MSB of r2 are cleared because:
-> 	  76: (67) r2 <<= 32
-> 	  77: (77) r2 >>= 32
->
-> So it seems to me that r2 has to be known and in (0x0; 0xf) range.
->
-> To summarize:
->
-> * I see that your program differs what may mean you have different
->    environemnt where you build BPF proga (e.g. different clang/llvm
->    version), FWIW I have clang version 9.0.20190721 (though it's heavily
->    patched facebook version).
+syzbot found the following crash on:
 
-Hi, Andrey.
+HEAD commit:    9535d09e page_alloc: drop a call to kmsan_split_page()
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=105fa39be00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a5915107b3106aaa
+dashboard link: https://syzkaller.appspot.com/bug?extid=ae94def68efda6a4be52
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17314f58100000
 
-Thank you very much for your quick reply.
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+ae94def68efda6a4be52@syzkaller.appspotmail.com
 
-I have tried build with 9.0.* clang, but failed with
+=====================================================
+BUG: KMSAN: uninit-value in __arch_swab32 arch/x86/include/uapi/asm/swab.h:10 [inline]
+BUG: KMSAN: uninit-value in __fswab32 include/uapi/linux/swab.h:60 [inline]
+BUG: KMSAN: uninit-value in __swab32p include/uapi/linux/swab.h:189 [inline]
+BUG: KMSAN: uninit-value in __be32_to_cpup include/uapi/linux/byteorder/little_endian.h:82 [inline]
+BUG: KMSAN: uninit-value in get_unaligned_be32 include/linux/unaligned/access_ok.h:30 [inline]
+BUG: KMSAN: uninit-value in ____bpf_skb_load_helper_32 net/core/filter.c:246 [inline]
+BUG: KMSAN: uninit-value in bpf_skb_load_helper_32+0x18b/0x2d0 net/core/filter.c:232
+CPU: 0 PID: 10091 Comm: syz-executor.0 Not tainted 5.6.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1c9/0x220 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
+ __arch_swab32 arch/x86/include/uapi/asm/swab.h:10 [inline]
+ __fswab32 include/uapi/linux/swab.h:60 [inline]
+ __swab32p include/uapi/linux/swab.h:189 [inline]
+ __be32_to_cpup include/uapi/linux/byteorder/little_endian.h:82 [inline]
+ get_unaligned_be32 include/linux/unaligned/access_ok.h:30 [inline]
+ ____bpf_skb_load_helper_32 net/core/filter.c:246 [inline]
+ bpf_skb_load_helper_32+0x18b/0x2d0 net/core/filter.c:232
 
-```
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
+ kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:127
+ kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:82
+ slab_alloc_node mm/slub.c:2801 [inline]
+ __kmalloc_node_track_caller+0xb40/0x1200 mm/slub.c:4420
+ __kmalloc_reserve net/core/skbuff.c:142 [inline]
+ __alloc_skb+0x2fd/0xac0 net/core/skbuff.c:210
+ alloc_skb include/linux/skbuff.h:1081 [inline]
+ netlink_dump+0x26b/0x1ab0 net/netlink/af_netlink.c:2219
+ netlink_recvmsg+0xe88/0x1910 net/netlink/af_netlink.c:2001
+ ____sys_recvmsg+0x1173/0x1240 net/socket.c:886
+ ___sys_recvmsg net/socket.c:2610 [inline]
+ do_recvmmsg+0x6f3/0x1eb0 net/socket.c:2708
+ __sys_recvmmsg net/socket.c:2789 [inline]
+ __do_sys_recvmmsg net/socket.c:2810 [inline]
+ __se_sys_recvmmsg+0x25d/0x350 net/socket.c:2803
+ __x64_sys_recvmmsg+0x62/0x80 net/socket.c:2803
+ do_syscall_64+0xb8/0x160 arch/x86/entry/common.c:296
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+=====================================================
 
-libbpf: failed to find BTF for extern 'CONFIG_BPF_SYSCALL': -2
-Error: failed to open BPF object file: 0
-Makefile:361: recipe for target 
-'/usr/src/perf_selftests-x86_64-rhel-7.6-kselftests-8f3d9f354286745c751374f5f1fcafee6b3f3136/tools/testing/selftests/bpf/test_skeleton.skel.h' 
-failed
-```
-This error was tracked in:
-https://www.spinics.net/lists/netdev/msg646956.html
 
-So I have rebuild with clang 10.0.0. Still the same error.
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
->
-> * I'm not quite sure why verifier rejects your version of the program --
->    here we would need more eyes. I'm cc'ing Alexei and Daniel.
->
->
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
