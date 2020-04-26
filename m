@@ -2,57 +2,28 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0623F1B898A
-	for <lists+bpf@lfdr.de>; Sat, 25 Apr 2020 23:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4EF1B8BAB
+	for <lists+bpf@lfdr.de>; Sun, 26 Apr 2020 05:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726271AbgDYVRh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 25 Apr 2020 17:17:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726232AbgDYVRg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 25 Apr 2020 17:17:36 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9D3C09B04D;
-        Sat, 25 Apr 2020 14:17:36 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id w6so12962577ilg.1;
-        Sat, 25 Apr 2020 14:17:36 -0700 (PDT)
+        id S1726135AbgDZDg5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 Apr 2020 23:36:57 -0400
+Received: from mail.fudan.edu.cn ([202.120.224.73]:42553 "EHLO fudan.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726100AbgDZDg4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 25 Apr 2020 23:36:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=DMTOydMpRriyk5poOOa/mWXO2SbWr0zgXFb+fmKpOOk=;
-        b=aTc2WkqEkWRoJQ9XHZfrTRixADF+C0aie+v+pbxuGDyfDSKn/3Z+tpLJpXPD9Mk7UZ
-         ZXAZSZ0SFkQ28v24pEz3HBEzHe+m1TnK9T10tOmFpLLBHx0BVG4G+13x4Ew8b56wrw0I
-         W6hq6VkgyopKknJCtko/zs9ontu4d1gOghpuL/syCnhwLGOwRe0+B8ZL9v0BO20Z0YgX
-         auJYSPlHUs0Cq8PrzF3MD1TsT67coPyFJUTCAVRfB3FgoAavQDDBh9W+kIqCaGbXwoam
-         +2oBT83FjcMM54vRFL8CTW428ET2ZXpq5grTNeC7eAv/ER1dGRXEjbDm7rp7N9azOaU7
-         av7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=DMTOydMpRriyk5poOOa/mWXO2SbWr0zgXFb+fmKpOOk=;
-        b=Hs2WQ6JIXYLucuJOzCPREEnhB/2aGv4KkhdPM1VYm4DjoolMfCASp/G0kF6maJGdf5
-         P7bZ8an66BSswr2+Iz9hN0aL8laprcwPbDnxMgO/UrMJN7QfVmySIL0JbHppjfZxdMME
-         S0EK3yw1ZeXgof9mO8n+AalMlkilGTx7hiyNUi2lWyuRNZ+6KvsDqkB8cTE5cdQxu+QN
-         dcgZVjlXc2meTD/ooN8Ta/5dzkSc99n6h2rwVzdsoUKgV8MMhZvNmyVEoK+Wr/DkxJc7
-         mKzj77pFVOKHWmeIzUasQMq1qgvY4tAChganT2U+D22auQklpNVoi9Ci/oMYUXyWVETd
-         pXnw==
-X-Gm-Message-State: AGi0PuaxQaMuMQBKXd7Hpv4GnV6YQXnrLW3ATEpyAIo4SIet0awgRdyQ
-        5JQqsQFgm7VO4vl6B5Sixsk=
-X-Google-Smtp-Source: APiQypIGaKeQReVRW/j+PBEZREDTmR+YStA/ggA2K3eUkrKf0p/XvBt+0FYftodip/86Le1RgKBRaQ==
-X-Received: by 2002:a92:5c57:: with SMTP id q84mr15092593ilb.203.1587849455802;
-        Sat, 25 Apr 2020 14:17:35 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id m22sm1141877iow.35.2020.04.25.14.17.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Apr 2020 14:17:34 -0700 (PDT)
-Date:   Sat, 25 Apr 2020 14:17:26 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id; bh=cj5cv4jNx8jyM4cS8bEE5q0CelqTOx1baSzDTYeEatY=; b=G
+        voIkko8LVAyfrekmjpFAf9/7U3wIYCb4Ad/k9oNWJvyLPiXU5/9eKa/TG67V9bCy
+        nOLPDL2k/+MS6b2/kK/AyOJaobXc9ctePo8Kv5XEVSMqeBpSNixuIYWh7dWWS8nG
+        ycli1sOLVs9hLk117hOe7nfpMf2SyTsWqUACRQaZ6k=
+Received: from localhost.localdomain (unknown [120.229.255.83])
+        by app2 (Coremail) with SMTP id XQUFCgCXagiUAaVe6j+3AA--.21353S3;
+        Sun, 26 Apr 2020 11:35:51 +0800 (CST)
+From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
+To:     John Fastabend <john.fastabend@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
         Lorenz Bauer <lmb@cloudflare.com>,
         Eric Dumazet <edumazet@google.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -63,115 +34,89 @@ Cc:     John Fastabend <john.fastabend@gmail.com>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yuanxzhang@fudan.edu.cn, kjlu@umn.edu,
+        KP Singh <kpsingh@chromium.org>,
+        Lingpeng Chen <forrest0579@gmail.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn, kjlu@umn.edu,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
         Xin Tan <tanxin.ctf@gmail.com>
-Message-ID: <5ea4a8e6c0482_144b2b0bbf3245c4b@john-XPS-13-9370.notmuch>
-In-Reply-To: <87lfmjve1f.fsf@cloudflare.com>
-References: <1587819040-38793-1-git-send-email-xiyuyang19@fudan.edu.cn>
- <87lfmjve1f.fsf@cloudflare.com>
-Subject: Re: [PATCH] bpf: Fix sk_psock refcnt leak when receiving message
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH v2] bpf: Fix sk_psock refcnt leak when receiving message
+Date:   Sun, 26 Apr 2020 11:35:15 +0800
+Message-Id: <1587872115-42805-1-git-send-email-xiyuyang19@fudan.edu.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: XQUFCgCXagiUAaVe6j+3AA--.21353S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7uFyktF4rAF1fCw4xXF48Xrb_yoW8ZrW5pa
+        y7C3sYvF1jyFWUZws3JFW8Jr1fu3yDG348uryrAa1fX3W5uw13JF1Fgr1Y9F40yr40kr45
+        Xr4UKF4FkFnxu37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+        rcIFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+        sGvfC2KfnxnUUI43ZEXa7VUby8BUUUUUU==
+X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Sitnicki wrote:
-> On Sat, Apr 25, 2020 at 02:50 PM CEST, Xiyu Yang wrote:
-> > tcp_bpf_recvmsg() invokes sk_psock_get(), which returns a reference of
-> > the specified sk_psock object to "psock" with increased refcnt.
-> >
-> > When tcp_bpf_recvmsg() returns, local variable "psock" becomes invalid,
-> > so the refcount should be decreased to keep refcount balanced.
-> >
-> > The reference counting issue happens in several exception handling paths
-> > of tcp_bpf_recvmsg(). When those error scenarios occur such as "flags"
-> > includes MSG_ERRQUEUE, the function forgets to decrease the refcnt
-> > increased by sk_psock_get(), causing a refcnt leak.
-> >
-> > Fix this issue by calling sk_psock_put() when those error scenarios
-> > occur.
-> >
-> > Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> > Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-> > ---
+tcp_bpf_recvmsg() invokes sk_psock_get(), which returns a reference of
+the specified sk_psock object to "psock" with increased refcnt.
 
-Thanks Xiyu and Xin. Please add a Fixes tag,
+When tcp_bpf_recvmsg() returns, local variable "psock" becomes invalid,
+so the refcount should be decreased to keep refcount balanced.
+
+The reference counting issue happens in several exception handling paths
+of tcp_bpf_recvmsg(). When those error scenarios occur such as "flags"
+includes MSG_ERRQUEUE, the function forgets to decrease the refcnt
+increased by sk_psock_get(), causing a refcnt leak.
+
+Fix this issue by calling sk_psock_put() or pulling up the error queue
+read handling when those error scenarios occur.
 
 Fixes: e7a5f1f1cd000 ("bpf/sockmap: Read psock ingress_msg before sk_receive_queue")
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+---
+Changes in v2:
+- Add Fixes tag
+- Pull up the error queue read handling
+---
+ net/ipv4/tcp_bpf.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-> >  net/ipv4/tcp_bpf.c | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-> > index 5a05327f97c1..feb6b90672c1 100644
-> > --- a/net/ipv4/tcp_bpf.c
-> > +++ b/net/ipv4/tcp_bpf.c
-> > @@ -265,11 +265,15 @@ static int tcp_bpf_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
-> >  	psock = sk_psock_get(sk);
-> >  	if (unlikely(!psock))
-> >  		return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
-> > -	if (unlikely(flags & MSG_ERRQUEUE))
-> > +	if (unlikely(flags & MSG_ERRQUEUE)) {
-> > +		sk_psock_put(sk, psock);
-> >  		return inet_recv_error(sk, msg, len, addr_len);
-> > +	}
-> >  	if (!skb_queue_empty(&sk->sk_receive_queue) &&
-> > -	    sk_psock_queue_empty(psock))
-> > +	    sk_psock_queue_empty(psock)) {
-> > +		sk_psock_put(sk, psock);
-> >  		return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
-> > +	}
-> >  	lock_sock(sk);
-> >  msg_bytes_ready:
-> >  	copied = __tcp_bpf_recvmsg(sk, psock, msg, len, flags);
-> 
-> Thanks for the fix.
-> 
-> We can pull up the error queue read handling, that is the `flags &
-> MSG_ERRQUEUE` branch, so that it happens before we grab a psock ref.
-> 
-> The effect is the same because now, if we hit the !psock branch,
-> tcp_recvmsg will first check if user wants to read the error queue
-> anyway.
-> 
-> That would translate to something like below, in addition to your
-> changes.
-> 
-> WDYT?
-
-Sure that seems slightly nicer to me. Xiyu do you mind sending a
-v2 with that change.
-
-Thanks again,
-John
-
-> 
-> ---8<---
-> 
-> diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-> index 5a05327f97c1..99aa57bd1901 100644
-> --- a/net/ipv4/tcp_bpf.c
-> +++ b/net/ipv4/tcp_bpf.c
-> @@ -262,14 +262,17 @@ static int tcp_bpf_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
->  	struct sk_psock *psock;
->  	int copied, ret;
-> 
-> +	if (unlikely(flags & MSG_ERRQUEUE))
-> +		return inet_recv_error(sk, msg, len, addr_len);
-> +
->  	psock = sk_psock_get(sk);
->  	if (unlikely(!psock))
->  		return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
-> -	if (unlikely(flags & MSG_ERRQUEUE))
-> -		return inet_recv_error(sk, msg, len, addr_len);
->  	if (!skb_queue_empty(&sk->sk_receive_queue) &&
->  	    sk_psock_queue_empty(psock))
-> 		return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
-
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index 5a05327f97c1..ff96466ea6da 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -262,14 +262,17 @@ static int tcp_bpf_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
+ 	struct sk_psock *psock;
+ 	int copied, ret;
+ 
++	if (unlikely(flags & MSG_ERRQUEUE))
++		return inet_recv_error(sk, msg, len, addr_len);
++
+ 	psock = sk_psock_get(sk);
+ 	if (unlikely(!psock))
+ 		return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
+-	if (unlikely(flags & MSG_ERRQUEUE))
+-		return inet_recv_error(sk, msg, len, addr_len);
+ 	if (!skb_queue_empty(&sk->sk_receive_queue) &&
+-	    sk_psock_queue_empty(psock))
++	    sk_psock_queue_empty(psock)) {
++		sk_psock_put(sk, psock);
+ 		return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
++	}
+ 	lock_sock(sk);
+ msg_bytes_ready:
+ 	copied = __tcp_bpf_recvmsg(sk, psock, msg, len, flags);
+-- 
+2.7.4
 
