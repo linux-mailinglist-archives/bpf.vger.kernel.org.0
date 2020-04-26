@@ -2,62 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA02C1B9161
-	for <lists+bpf@lfdr.de>; Sun, 26 Apr 2020 18:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4431B91BA
+	for <lists+bpf@lfdr.de>; Sun, 26 Apr 2020 18:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgDZQAL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 26 Apr 2020 12:00:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50920 "EHLO
+        id S1726150AbgDZQbb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 26 Apr 2020 12:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725778AbgDZQAL (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 26 Apr 2020 12:00:11 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D66BC061A0F;
-        Sun, 26 Apr 2020 09:00:11 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jSjhG-00C1Jz-QW; Sun, 26 Apr 2020 15:59:58 +0000
-Date:   Sun, 26 Apr 2020 16:59:58 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
+        by vger.kernel.org with ESMTP id S1726144AbgDZQba (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 26 Apr 2020 12:31:30 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B317AC061A0F;
+        Sun, 26 Apr 2020 09:31:30 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id e6so6265507pjt.4;
+        Sun, 26 Apr 2020 09:31:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=JftPLIptlGdZQu6glQqL9kYGbquEnJgxe+P0oVuYl+k=;
+        b=R5AkkzWhmKtVHFAab9dLU+POlmMCVkok7ZkJ5yko8Grt5RGlW8ECa88J+LGU2HLF/n
+         yk7Qcu/xSrEuq/NJWrDYuURPtOj0/Vh1wagNVv3JHnqFal4AL0jEHldYZbXcrPnP5GDE
+         NgbEcoWgOpOcAFOAVws7uYyl2WmMceqwSZOObU2w9+PnUtyqNZfE0c8j3GS9majzYcLM
+         nPS2JCKJ8gi7oByY8nLXYjUUSvj/uC3fAomE4iVSGnIviQtopEKFVomaXPC2w4TfO4Iv
+         S+KwsvNi+BKJjcJGqjIPzArNNu87lyBT0k+5iewF2OxQKmFuur21VkKa23FsoXsbDn7p
+         lq1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=JftPLIptlGdZQu6glQqL9kYGbquEnJgxe+P0oVuYl+k=;
+        b=bgQT+LGK/4LX2R4LtfJ+GyGiZZQ0FYerJrBE/9PX3Bpo4ayQEQWJeSU64Fz0nhUeX1
+         s263WeCQU5YUrl08wtMoFjit8elqip9BYJd8rXJJfG3BKzMZWvqkRnOnnR89ZyA+Maro
+         PE0qTsCAUsNOwAiD2WirN3KGrCm25iiRLmZZRPmKycVlqLmSMeh0m+cZKAj2jbOdxyVW
+         wJ0YpENHQPA1zYJ+Ah9UgoCGhkixsPY3yzBL8gFvsrl4IaSMjQFiNGqyECwZlLsq2JMc
+         6xQCSMqXn1TBGVo1QoFcfC1YA2jT4sV/im6qhOHIWdsBeN4SvT7CdzsVh5q4ntTD5F00
+         AngQ==
+X-Gm-Message-State: AGi0PuagXAFcIigDTYbLReWLFeVfiSx9UUZ/yV5qmlUKUo75GvwKctiI
+        /2NmyV5e70Mm2EGPENWdvxs=
+X-Google-Smtp-Source: APiQypIi/usw1t/zGxkUpQ4mu2qvt0uw/9W9UaSvCjZagIQB1lwnXigFitQliB/x2kZ1aMOJppffiA==
+X-Received: by 2002:a17:902:a40e:: with SMTP id p14mr18334010plq.297.1587918689044;
+        Sun, 26 Apr 2020 09:31:29 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:9db4])
+        by smtp.gmail.com with ESMTPSA id u12sm10307839pfc.15.2020.04.26.09.31.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Apr 2020 09:31:28 -0700 (PDT)
+Date:   Sun, 26 Apr 2020 09:31:25 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Maciej =?utf-8?Q?=C5=BBenczykowski?= <zenczykowski@gmail.com>
+Cc:     Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: pass kernel pointers to the sysctl ->proc_handler method v3
-Message-ID: <20200426155958.GS23230@ZenIV.linux.org.uk>
-References: <20200424064338.538313-1-hch@lst.de>
+        Linux Network Development Mailing List 
+        <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>, bpf@vger.kernel.org
+Subject: Re: [PATCH] net: bpf: add bpf_ktime_get_boot_ns()
+Message-ID: <20200426163125.rnxwntthcrx5qejf@ast-mbp>
+References: <20200420202643.87198-1-zenczykowski@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200424064338.538313-1-hch@lst.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200420202643.87198-1-zenczykowski@gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 08:43:33AM +0200, Christoph Hellwig wrote:
-> Hi all,
+On Mon, Apr 20, 2020 at 01:26:43PM -0700, Maciej Żenczykowski wrote:
+> From: Maciej Żenczykowski <maze@google.com>
 > 
-> this series changes the sysctl ->proc_handler methods to take kernel
-> pointers.  This simplifies some of the pointer handling in the methods
-> (which could probably be further simplified now), and gets rid of the
-> set_fs address space overrides used by bpf.
+> On a device like a cellphone which is constantly suspending
+> and resuming CLOCK_MONOTONIC is not particularly useful for
+> keeping track of or reacting to external network events.
+> Instead you want to use CLOCK_BOOTTIME.
 > 
-> Changes since v2:
->  - free the buffer modified by BPF
->  - move pid_max and friends to pid.h
+> Hence add bpf_ktime_get_boot_ns() as a mirror of bpf_ktime_get_ns()
+> based around CLOCK_BOOTTIME instead of CLOCK_MONOTONIC.
 > 
-> Changes since v1:
->  - drop a patch merged by Greg
->  - don't copy data out on a write
->  - fix buffer allocation in bpf
+> Signed-off-by: Maciej Żenczykowski <maze@google.com>
+...
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 755867867e57..ec567d1e6fb9 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -6009,6 +6009,8 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+>  		return &bpf_tail_call_proto;
+>  	case BPF_FUNC_ktime_get_ns:
+>  		return &bpf_ktime_get_ns_proto;
+> +	case BPF_FUNC_ktime_get_boot_ns:
+> +		return &bpf_ktime_get_boot_ns_proto;
+>  	default:
+>  		break;
+>  	}
 
-OK, I can live with that; further work can live on top of that, anyway.
-How are we going to handle that?  I can put it into never-rebased branch
-in vfs.git (#work.sysctl), so that people could pull that.
+That part got moved into kernel/bpf/helpers.c in the mean time.
+I fixed it up and applied. Thanks
 
-FWIW, I'm putting together more uaccess stuff (will probably hit -next
-tonight or tomorrow); this would fit well there...
+In the future please cc bpf@vger for all bpf related patches.
