@@ -2,149 +2,313 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D881B9F5F
-	for <lists+bpf@lfdr.de>; Mon, 27 Apr 2020 11:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC5261BA03E
+	for <lists+bpf@lfdr.de>; Mon, 27 Apr 2020 11:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726507AbgD0JIT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Apr 2020 05:08:19 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:51687 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726504AbgD0JIO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Apr 2020 05:08:14 -0400
-Received: by mail-io1-f71.google.com with SMTP id k1so19536744iov.18
-        for <bpf@vger.kernel.org>; Mon, 27 Apr 2020 02:08:13 -0700 (PDT)
+        id S1726930AbgD0Jpi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Apr 2020 05:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726821AbgD0Jpi (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 27 Apr 2020 05:45:38 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D61C0610D6
+        for <bpf@vger.kernel.org>; Mon, 27 Apr 2020 02:45:37 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id c3so25073823otp.8
+        for <bpf@vger.kernel.org>; Mon, 27 Apr 2020 02:45:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p/dkv8siYLu4BZqbzo9AEk9hetqwaOBV9gfUD96SYV4=;
+        b=wkvZ/2OEzPmpzA1KGxW4Nr+32KgW8NQ3ymID5WWYJRWgS2Iqd28pDmJ1ydEcabxmEJ
+         aMjxgUqk6DmpOe8Nq6FL9BwtAvgu4as/EpD+xJokAl+rmfPCznstgiVZjQOqTo9nga3x
+         TZIwHcyjSEDL25xgeyK+DxhXbwkG8t1iJaNIM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ZVmhnIuphgg49v7nKDffjwnQJQxBAzs6KUl/FwnAIgY=;
-        b=MT522wNYVtfDDUN8xVJtq4VF3qP8qNvVJI4ASktFkcwU0LktHaRvDXVIjV5p0hNzA2
-         A0z5EYQSbteXjuKDLKr7NBC2KuBTrP/Pq1yvO3d8DQQUFShJCIs/MUYZUDQCHYqMr6sl
-         OecABb6dKIdQOPVIozLGcPlmWW+5CM+lXIiUVbnrZpfEnDny2dSyoVTpsQj8wOz3BVAk
-         u4QsXPHGJFKChzw3NG7qsdJn8IClEFVxhtiqiiEiIQiIl2XeZ1m/Q5DvFHd/eTbB0uab
-         dRYHVN4/je2mCBgbuVO2qa62KGIpvlSTKCnpsVPKWCWFo4mnLOg8T4EkucXp3s3PPCNT
-         wJ+Q==
-X-Gm-Message-State: AGi0PuZMgOszKi9sgnXmwkJtRcsKs9zfnvLvltEIthZT/1tlMZmoVovz
-        hztejc+pH+P4EKIBHphuz4Ptw3tFTUMOKQ222sxzSvGun5uc
-X-Google-Smtp-Source: APiQypLzT1R83Qckum7M7Skre96oCEUz/ygCc/mtwqK/j45LlZHLvubwB2mOuXXf4kCyb6t2ED1dfqcyZkA5OEZbd/fG7uTuO6YT
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p/dkv8siYLu4BZqbzo9AEk9hetqwaOBV9gfUD96SYV4=;
+        b=nKNW6zEokQYegAJj1yDfmBqJisO7L2L//jxfC0w0D5l+XcY1emEHdcJurPD7VxEOO6
+         yC+JPNDe7NTE/RS5GeogrfDc+ZUWTWM/EY5USNSMTJjJ6qp1t1EUrfLnsHUVRXdaYkUx
+         zG1HMPoQdAYzqFDf9pItIde6uear2E6MOjNWXV6qOsF82vlSVzIuKmPzYlx4GdC3KhEg
+         F4Mp63iCRNxx4kcq+UCUsFRLFlFMmE25uLFjR8KbNcHL3edbcCdG9TLWx1+LzCRVWjKe
+         Ic0pkGPoufunT368SCzh+8vHPnxHlc6m9shPUbLuDFMSaZEJ4kMsYXIqFM69BEIPACj9
+         zLlg==
+X-Gm-Message-State: AGi0PuYJQxOENXD84AAmL8k4F9RxB/MkxEO98/+asfZyqwjTF5j5gG4E
+        xM9M0Cs2/vfjB9Mbe7760Jute45OGwR3UYNSrqi33A==
+X-Google-Smtp-Source: APiQypJb/0wG6doOweC6/06XgmGhy6G6Ty+M8bIB3K5ZRqyxCXC7fCfVf3fNxWjDKvYlAslCazWdOEbT8BFYiIP3+mg=
+X-Received: by 2002:aca:5492:: with SMTP id i140mr13417819oib.13.1587980736077;
+ Mon, 27 Apr 2020 02:45:36 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a02:6ccf:: with SMTP id w198mr3972270jab.8.1587978493150;
- Mon, 27 Apr 2020 02:08:13 -0700 (PDT)
-Date:   Mon, 27 Apr 2020 02:08:13 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fed01105a4420d11@google.com>
-Subject: WARNING: locking bug in inet_dgram_connect (2)
-From:   syzbot <syzbot+02446910ced9f8b60c06@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
+References: <20200424185556.7358-1-lmb@cloudflare.com> <20200424185556.7358-2-lmb@cloudflare.com>
+ <20200426173324.5zg7isugereb5ert@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200426173324.5zg7isugereb5ert@ast-mbp.dhcp.thefacebook.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Mon, 27 Apr 2020 10:45:24 +0100
+Message-ID: <CACAyw98nK_Vkstp-vEqNwKXtoCRnTOPr7Eh+ziH56tJGbnPsig@mail.gmail.com>
+Subject: Re: [PATCH 1/1] selftests/bpf: add cls_redirect classifier
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Theo Julienne <theojulienne@github.com>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Sun, 26 Apr 2020 at 18:33, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, Apr 24, 2020 at 07:55:55PM +0100, Lorenz Bauer wrote:
+> > cls_redirect is a TC clsact based replacement for the glb-redirect iptables
+> > module available at [1]. It enables what GitHub calls "second chance"
+> > flows [2], similarly proposed by the Beamer paper [3]. In contrast to
+> > glb-redirect, it also supports migrating UDP flows as long as connected
+> > sockets are used. cls_redirect is in production at Cloudflare, as part of
+> > our own L4 load balancer.
+>
+> This is awesome. Thank you for contributing!
+> Applied.
+>
+> > There are two major distinctions from glb-redirect: first, cls_redirect
+> > relies on receiving encapsulated packets directly from a router. This is
+> > because we don't have access to the neighbour tables from BPF, yet. See
+>
+> Let's make it available then :)
 
-syzbot found the following crash on:
+Yes, I've been dragging my feet on this. It seems like the fib_lookup does
+almost what we want, but I need to experiment with it. In the best case,
+we'd have a helper that does the following:
 
-HEAD commit:    c578ddb3 Merge tag 'linux-kselftest-5.7-rc3' of git://git...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17f1d330100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=78a7d8adda44b4b
-dashboard link: https://syzkaller.appspot.com/bug?extid=02446910ced9f8b60c06
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14083ecfe00000
+* Try and find a neighbour
+* Return it if one exists
+* Otherwise, asynchronously trigger neighbour discovery (if it makes sense)
+* And return the default gateway
 
-Bisection is inconclusive: the first bad commit could be any of:
+I should probably start a new thread about this on the list.
 
-9211bfbf netfilter: add missing IS_ENABLED(CONFIG_BRIDGE_NETFILTER) checks to header-file.
-47e640af netfilter: add missing IS_ENABLED(CONFIG_NF_TABLES) check to header-file.
-a1b2f04e netfilter: add missing includes to a number of header-files.
-0abc8bf4 netfilter: add missing IS_ENABLED(CONFIG_NF_CONNTRACK) checks to some header-files.
-bd96b4c7 netfilter: inline four headers files into another one.
-43dd16ef netfilter: nf_tables: store data in offload context registers
-78458e3e netfilter: add missing IS_ENABLED(CONFIG_NETFILTER) checks to some header-files.
-20a9379d netfilter: remove "#ifdef __KERNEL__" guards from some headers.
-bd8699e9 netfilter: nft_bitwise: add offload support
-2a475c40 kbuild: remove all netfilter headers from header-test blacklist.
-7e59b3fe netfilter: remove unnecessary spaces
-1b90af29 ipvs: Improve robustness to the ipvs sysctl
-5785cf15 netfilter: nf_tables: add missing prototypes.
-0a30ba50 netfilter: nf_nat_proto: make tables static
-e84fb4b3 netfilter: conntrack: use shared sysctl constants
-10533343 netfilter: connlabels: prefer static lock initialiser
-8c0bb787 netfilter: synproxy: rename mss synproxy_options field
-c162610c Merge git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf-next
+>
+> > The code base started it's life on v4.19, so there are most likely still
+> > hold overs from old workarounds. In no particular order:
+> >
+> > - The function buf_off is required to defeat a clang optimization
+> >   that leads to the verifier rejecting the program due to pointer
+> >   arithmetic in the wrong order.
+> >
+> > - The function pkt_parse_ipv6 is force inlined, because it would
+> >   otherwise be rejected due to returning a pointer to stack memory.
+> >
+> > - The functions fill_tuple and classify_tcp contain kludges, because
+> >   we've run out of function arguments.
+> >
+> > - The logic in general is rather nested, due to verifier restrictions.
+> >   I think this is either because the verifier loses track of constants
+> >   on the stack, or because it can't track enum like variables.
+>
+> Have you tried undoing these workarounds to check the latest verifier?
+> If they're still needed we certainly have to improve the verifier.
+>
+> > +#include "test_cls_redirect.skel.h"
+>
+> Do you use skeleton internally as well or was it just for selftests? ;)
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15410074100000
+Only for selftests :) Our internal tooling is all Go based. skeleton
+is really nice
+though, so I'll make sure to steal some ideas!
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+02446910ced9f8b60c06@syzkaller.appspotmail.com
+>
+> > +_Static_assert(
+> > +     sizeof(flow_ports_t) !=
+> > +             offsetofend(struct bpf_sock_tuple, ipv4.dport) -
+> > +                     offsetof(struct bpf_sock_tuple, ipv4.sport) - 1,
+> > +     "flow_ports_t must match sport and dport in struct bpf_sock_tuple");
+>
+> Nice. I didn't realize clang supports it. Of course it should.
+>
+> > +/* Linux packet pointers are either aligned to NET_IP_ALIGN (aka 2 bytes),
+> > + * or not aligned if the arch supports efficient unaligned access.
+> > + *
+> > + * Since the verifier ensures that eBPF packet accesses follow these rules,
+> > + * we can tell LLVM to emit code as if we always had a larger alignment.
+> > + * It will yell at us if we end up on a platform where this is not valid.
+> > + */
+> > +typedef uint8_t *net_ptr __attribute__((align_value(8)));
+>
+> Wow. I didn't know about this attribute.
+> I wonder whether it can help Daniel's memcpy hack.
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 7534 at kernel/locking/lockdep.c:873 look_up_lock_class+0x207/0x280 kernel/locking/lockdep.c:863
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 7534 Comm: syz-executor.0 Not tainted 5.7.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1e9/0x30e lib/dump_stack.c:118
- panic+0x264/0x7a0 kernel/panic.c:221
- __warn+0x209/0x210 kernel/panic.c:582
- report_bug+0x1ac/0x2d0 lib/bug.c:195
- fixup_bug arch/x86/kernel/traps.c:175 [inline]
- do_error_trap+0xca/0x1c0 arch/x86/kernel/traps.c:267
- do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
- invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-RIP: 0010:look_up_lock_class+0x207/0x280 kernel/locking/lockdep.c:863
-Code: 3d 91 8b 12 08 00 0f 85 35 ff ff ff 31 db 48 c7 c7 19 59 e5 88 48 c7 c6 c3 e9 e6 88 31 c0 e8 c0 17 ec ff 0f 0b e9 7b ff ff ff <0f> 0b e9 74 ff ff ff 48 c7 c1 30 6d 55 8b 80 e1 07 80 c1 03 38 c1
-RSP: 0018:ffffc9000268fa98 EFLAGS: 00010002
-RAX: ffffffff8ab07460 RBX: ffffffff8ad69a68 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff8880a83b40a0
-RBP: ffff8880a83b40b8 R08: 0000000000000001 R09: 0000000000000000
-R10: fffffbfff12d772d R11: 0000000000000000 R12: 1ffff11015076814
-R13: ffffffff89063e89 R14: ffff8880a83b40a0 R15: dffffc0000000000
- register_lock_class+0x97/0x10d0 kernel/locking/lockdep.c:1220
- __lock_acquire+0x102/0x2c30 kernel/locking/lockdep.c:4234
- lock_acquire+0x169/0x480 kernel/locking/lockdep.c:4934
- __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
- _raw_spin_lock_bh+0x31/0x40 kernel/locking/spinlock.c:175
- spin_lock_bh include/linux/spinlock.h:358 [inline]
- lock_sock_nested+0x43/0x110 net/core/sock.c:2959
- lock_sock include/net/sock.h:1574 [inline]
- inet_autobind net/ipv4/af_inet.c:179 [inline]
- inet_dgram_connect+0x1a7/0x360 net/ipv4/af_inet.c:569
- __sys_connect_file net/socket.c:1859 [inline]
- __sys_connect+0x2da/0x360 net/socket.c:1876
- __do_sys_connect net/socket.c:1887 [inline]
- __se_sys_connect net/socket.c:1884 [inline]
- __x64_sys_connect+0x76/0x80 net/socket.c:1884
- do_syscall_64+0xf3/0x1b0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x45c829
-Code: 0d b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f47444d9c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
-RAX: ffffffffffffffda RBX: 00000000004dabc0 RCX: 000000000045c829
-RDX: 000000000000001c RSI: 0000000020000040 RDI: 0000000000000003
-RBP: 000000000078bfa0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 0000000000000084 R14: 00000000004c31c2 R15: 00007f47444da6d4
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+Yes, I think so.
 
+> > +
+> > +typedef struct buf {
+> > +     struct __sk_buff *skb;
+> > +     net_ptr head;
+> > +     /* NB: tail musn't have alignment other than 1, otherwise
+> > +     * LLVM will go and eliminate code, e.g. when checking packet lengths.
+> > +     */
+> > +     uint8_t *const tail;
+> > +} buf_t;
+> > +
+> > +static size_t buf_off(const buf_t *buf)
+> > +{
+> > +     /* Clang seems to optimize constructs like
+> > +      *    a - b + c
+> > +      * if c is known:
+> > +      *    r? = c
+> > +      *    r? -= b
+> > +      *    r? += a
+> > +      *
+> > +      * This is a problem if a and b are packet pointers,
+> > +      * since the verifier allows subtracting two pointers to
+> > +      * get a scalar, but not a scalar and a pointer.
+> > +      *
+> > +      * Use inline asm to break this optimization.
+> > +      */
+> > +     size_t off = (size_t)buf->head;
+> > +     asm("%0 -= %1" : "+r"(off) : "r"(buf->skb->data));
+> > +     return off;
+> > +}
+>
+> We need to look into this one.
+> This part is not gated by allow_ptr_leaks.
+> if (dst_reg == off_reg) {
+>         /* scalar -= pointer.  Creates an unknown scalar */
+>         verbose(env, "R%d tried to subtract pointer from scalar\n",
+>                 dst);
+>         return -EACCES;
+> }
+> Hopefully not too hard to fix.
+>
+> > +
+> > +static bool pkt_skip_ipv6_extension_headers(buf_t *pkt,
+> > +                                         const struct ipv6hdr *ipv6,
+> > +                                         uint8_t *upper_proto,
+> > +                                         bool *is_fragment)
+> > +{
+> > +     /* We understand five extension headers.
+> > +      * https://tools.ietf.org/html/rfc8200#section-4.1 states that all
+> > +      * headers should occur once, except Destination Options, which may
+> > +      * occur twice. Hence we give up after 6 headers.
+> > +      */
+> > +     struct {
+> > +             uint8_t next;
+> > +             uint8_t len;
+> > +     } exthdr = {
+> > +             .next = ipv6->nexthdr,
+> > +     };
+> > +     *is_fragment = false;
+> > +
+> > +#pragma clang loop unroll(full)
+> > +     for (int i = 0; i < 6; i++) {
+>
+> unroll is still needed even with bounded loop support in the verifier?
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+I've just tried removing this on bpf-next. pkt_ipv4_checksum works
+without the pragma,
+pkt_skip_ipv6_extension_headers fails with the following message:
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+libbpf: load bpf program failed: Invalid argument
+libbpf: -- BEGIN DUMP LOG ---
+libbpf:
+476: for (int i = 0; i < 6; i++) {
+477: switch (exthdr.next) {
+back-edge from insn 476 to 477
+processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0
+peak_states 0 mark_read 0
+
+libbpf: -- END LOG --
+libbpf: failed to load program 'classifier/cls_redirect'
+libbpf: failed to load object 'test_cls_redirect'
+libbpf: failed to load BPF skeleton 'test_cls_redirect': -4007
+test_cls_redirect:FAIL:385
+#10 cls_redirect:FAIL
+Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+
+>
+>
+> > +/* This function has to be inlined, because the verifier otherwise rejects it
+> > + * due to returning a pointer to the stack. This is technically correct, since
+> > + * scratch is allocated on the stack. However, this usage should be safe since
+> > + * it's the callers stack after all.
+> > + */
+>
+> Interesting. The verifier can recognize that ptr to stack can be safe in some cases.
+> When I added that check I didn't think that the code can be as tricky as this :)
+>
+> > +static verdict_t process_ipv4(buf_t *pkt, metrics_t *metrics)
+> > +{
+> > +     switch (ipv4->protocol) {
+> > +     case IPPROTO_ICMP:
+> > +             return process_icmpv4(pkt, metrics);
+> > +
+> > +     case IPPROTO_TCP:
+> > +             return process_tcp(pkt, ipv4, sizeof(*ipv4), metrics);
+> > +
+> > +     case IPPROTO_UDP:
+> > +             return process_udp(pkt, ipv4, sizeof(*ipv4), metrics);
+> > +
+> > +     default:
+> > +             metrics->errors_total_unknown_l4_proto++;
+> > +             return INVALID;
+> > +     }
+> > +}
+> > +
+> > +static verdict_t process_ipv6(buf_t *pkt, metrics_t *metrics)
+> > +     if (is_fragment) {
+> > +             metrics->errors_total_fragmented_ip++;
+> > +             return INVALID;
+> > +     }
+> > +
+> > +     switch (l4_proto) {
+> > +     case IPPROTO_ICMPV6:
+> > +             return process_icmpv6(pkt, metrics);
+> > +
+> > +     case IPPROTO_TCP:
+> > +             return process_tcp(pkt, ipv6, sizeof(*ipv6), metrics);
+> > +
+> > +     case IPPROTO_UDP:
+> > +             return process_udp(pkt, ipv6, sizeof(*ipv6), metrics);
+> > +
+> > +     default:
+> > +             metrics->errors_total_unknown_l4_proto++;
+> > +             return INVALID;
+> > +     }
+> > +}
+> > +
+> > +SEC("classifier/cls_redirect")
+> > +int cls_redirect(struct __sk_buff *skb)
+> > +{
+> ...
+> > +     verdict_t verdict;
+> > +     switch (encap->gue.proto_ctype) {
+> > +     case IPPROTO_IPIP:
+> > +             verdict = process_ipv4(&pkt, metrics);
+> > +             break;
+> > +
+> > +     case IPPROTO_IPV6:
+> > +             verdict = process_ipv6(&pkt, metrics);
+> > +             break;
+>
+> The code flow looks pretty clean.
+> I didn't find the copy-paste of ipv[46] -> tcp/udp
+> you were mentioning.
+> So that old issue is now gone?
+
+The biggest offenders are fill_tuple (which is purely a hack) as well
+as classify_tcp.
+I'd really like to call classify_tcp from cls_redirect(), using saved
+packet pointers and lengths.
+Right now the function is called starting from process_ipv4 and
+process_ipv6, which
+means all of those arguments have to be passed down somehow.
+
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
