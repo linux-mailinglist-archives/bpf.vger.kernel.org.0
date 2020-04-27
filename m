@@ -2,107 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C61E31BA420
-	for <lists+bpf@lfdr.de>; Mon, 27 Apr 2020 14:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A74AA1BA555
+	for <lists+bpf@lfdr.de>; Mon, 27 Apr 2020 15:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbgD0M6h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Apr 2020 08:58:37 -0400
-Received: from www62.your-server.de ([213.133.104.62]:42782 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726539AbgD0M6h (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Apr 2020 08:58:37 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jT3LG-0007xP-CK; Mon, 27 Apr 2020 14:58:34 +0200
-Received: from [178.195.186.98] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jT3LG-000LPn-3h; Mon, 27 Apr 2020 14:58:34 +0200
-Subject: Re: [PATCH bpf-next] tools: bpftool: allow unprivileged users to
- probe features
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Richard Palethorpe <rpalethorpe@suse.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-References: <20200423160455.28509-1-quentin@isovalent.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <bbde573f-edd8-0d39-556e-98842e0328f7@iogearbox.net>
-Date:   Mon, 27 Apr 2020 14:58:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1727902AbgD0NsS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Apr 2020 09:48:18 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:32845 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727012AbgD0NsS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Apr 2020 09:48:18 -0400
+Received: by mail-io1-f69.google.com with SMTP id w4so20393589iol.0
+        for <bpf@vger.kernel.org>; Mon, 27 Apr 2020 06:48:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=IKLvnmX2O6G5JUPiVLiWpSP3a5qdDUhizIddlOL+gt0=;
+        b=XVkm3U32MS06zbO5r4QiAkcPvYyb9+abV30OljxRK96/+BJ9B2XRkhl9vVtHFcQJb3
+         T9xeV3GYq16Xtauoiq3BuOKJ7G8JsR+tkIq+gfwwZk+hHTmZF+d9CVxjhdR3F+Q6aFtl
+         kzDy4wC9SY9qZ0Q9u8PopCDx7kOztmLvNR07ub9f+3UNTNpEL0FnwsBurpmGmU0uMqQ3
+         Vh4FlbuOScfNR3kJN6W9cM03N8zopi2Jia5nb2xvu4/SMA6NlZh0nry7TNN36rIknWew
+         D62iGg4qkKSMH/N2DuMvBiQMGKtN/RIMrRPyXhKUyrgSUdvfSxku0b29Df2DUeiibbiW
+         TyfQ==
+X-Gm-Message-State: AGi0PuYdmNekmYL9YinxDrA2uX+nieA0LF0ORa3ZxhI9m8CeoI5wy8Ng
+        cUpXSrZWlbM928iN8GXRgblg5qi541nXp2jCKhZTi1Om/ODb
+X-Google-Smtp-Source: APiQypJMIAfRCG58K421qGBsaWHhvtaekdn2fEP6m3wE4vbwtCLcO2tCumRPcC8TM6DhEFnx4rznkFHTrAySJgtc01uMdr9hjAn5
 MIME-Version: 1.0
-In-Reply-To: <20200423160455.28509-1-quentin@isovalent.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25795/Mon Apr 27 14:00:10 2020)
+X-Received: by 2002:a02:5184:: with SMTP id s126mr9960216jaa.81.1587995295346;
+ Mon, 27 Apr 2020 06:48:15 -0700 (PDT)
+Date:   Mon, 27 Apr 2020 06:48:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007bf88805a445f729@google.com>
+Subject: memory leak in inet_create (2)
+From:   syzbot <syzbot+bb7ba8dd62c3cb6e3c78@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/23/20 6:04 PM, Quentin Monnet wrote:
-> There is demand for a way to identify what BPF helper functions are
-> available to unprivileged users. To do so, allow unprivileged users to
-> run "bpftool feature probe" to list BPF-related features. This will only
-> show features accessible to those users, and may not reflect the full
-> list of features available (to administrators) on the system. For
-> non-JSON output, print an informational message stating so at the top of
-> the list.
-> 
-> Note that there is no particular reason why the probes were restricted
-> to root, other than the fact I did not need them for unprivileged and
-> did not bother with the additional checks at the time probes were added.
-> 
-> Cc: Richard Palethorpe <rpalethorpe@suse.com>
-> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> ---
->   .../bpftool/Documentation/bpftool-feature.rst |  4 +++
->   tools/bpf/bpftool/feature.c                   | 32 +++++++++++++------
->   2 files changed, 26 insertions(+), 10 deletions(-)
-> 
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool-feature.rst b/tools/bpf/bpftool/Documentation/bpftool-feature.rst
-> index b04156cfd7a3..313888e87249 100644
-> --- a/tools/bpf/bpftool/Documentation/bpftool-feature.rst
-> +++ b/tools/bpf/bpftool/Documentation/bpftool-feature.rst
-> @@ -49,6 +49,10 @@ DESCRIPTION
->   		  Keyword **kernel** can be omitted. If no probe target is
->   		  specified, probing the kernel is the default behaviour.
->   
-> +		  Running this command as an unprivileged user will dump only
-> +		  the features available to the user, which usually represent a
-> +		  small subset of the parameters supported by the system.
-> +
+Hello,
 
-Looks good. I wonder whether the unprivileged should be gated behind an explicit
-subcommand e.g. `--unprivileged`. My main worry is that if there's a misconfiguration
-the emitted macro/ header file will suddenly contain a lot less defines and it might
-go unnoticed if some optimizations in the BPF code are then compiled out by accident.
-Maybe it would make sense to have a feature test for libcap and then also allow for
-root to check on features for unpriv this way?
+syzbot found the following crash on:
 
->   	**bpftool feature probe dev** *NAME* [**full**] [**macros** [**prefix** *PREFIX*]]
->   		  Probe network device for supported eBPF features and dump
->   		  results to the console.
-> diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-> index 88718ee6a438..f455bc5fcc64 100644
-> --- a/tools/bpf/bpftool/feature.c
-> +++ b/tools/bpf/bpftool/feature.c
-> @@ -471,6 +471,11 @@ probe_prog_type(enum bpf_prog_type prog_type, bool *supported_types,
->   		}
->   
->   	res = bpf_probe_prog_type(prog_type, ifindex);
-> +	/* Probe may succeed even if program load fails, for unprivileged users
-> +	 * check that we did not fail because of insufficient permissions
-> +	 */
-> +	if (geteuid() && errno == EPERM)
-> +		res = false;
->   
->   	supported_types[prog_type] |= res;
->   
+HEAD commit:    5ef58e29 Merge tag 'scsi-fixes' of git://git.kernel.org/pu..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10f0f144100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bb30a3887988ffff
+dashboard link: https://syzkaller.appspot.com/bug?extid=bb7ba8dd62c3cb6e3c78
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=110e8fcfe00000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+bb7ba8dd62c3cb6e3c78@syzkaller.appspotmail.com
+
+2020/04/25 22:35:25 executed programs: 3
+2020/04/25 22:35:30 executed programs: 5
+2020/04/25 22:35:36 executed programs: 7
+BUG: memory leak
+unreferenced object 0xffff88811094b300 (size 2200):
+  comm "syz-executor.0", pid 6864, jiffies 4294947266 (age 13.790s)
+  hex dump (first 32 bytes):
+    ac 14 14 bb ac 14 14 0a 89 26 f2 70 40 01 00 00  .........&.p@...
+    02 00 07 40 00 00 00 00 00 00 00 00 00 00 00 00  ...@............
+  backtrace:
+    [<000000002efa2559>] sk_prot_alloc+0x3c/0x170 net/core/sock.c:1598
+    [<00000000a5b6b437>] sk_alloc+0x30/0x330 net/core/sock.c:1658
+    [<00000000494c18b6>] inet_create net/ipv4/af_inet.c:321 [inline]
+    [<00000000494c18b6>] inet_create+0x119/0x450 net/ipv4/af_inet.c:247
+    [<000000001239bbdb>] __sock_create+0x14a/0x220 net/socket.c:1433
+    [<00000000c1f7caa8>] sock_create net/socket.c:1484 [inline]
+    [<00000000c1f7caa8>] __sys_socket+0x60/0x110 net/socket.c:1526
+    [<00000000d35154cc>] __do_sys_socket net/socket.c:1535 [inline]
+    [<00000000d35154cc>] __se_sys_socket net/socket.c:1533 [inline]
+    [<00000000d35154cc>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
+    [<00000000283ef9ec>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
+    [<000000004290d57b>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88811b253f60 (size 32):
+  comm "syz-executor.0", pid 6864, jiffies 4294947266 (age 13.790s)
+  hex dump (first 32 bytes):
+    02 00 00 00 00 00 00 00 c0 3d 3f 15 81 88 ff ff  .........=?.....
+    01 00 00 00 00 00 00 00 10 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<000000007d627037>] kmalloc include/linux/slab.h:555 [inline]
+    [<000000007d627037>] kzalloc include/linux/slab.h:669 [inline]
+    [<000000007d627037>] selinux_sk_alloc_security+0x43/0xa0 security/selinux/hooks.c:5126
+    [<0000000076a22383>] security_sk_alloc+0x42/0x70 security/security.c:2120
+    [<0000000066acd291>] sk_prot_alloc+0x9c/0x170 net/core/sock.c:1607
+    [<00000000a5b6b437>] sk_alloc+0x30/0x330 net/core/sock.c:1658
+    [<00000000494c18b6>] inet_create net/ipv4/af_inet.c:321 [inline]
+    [<00000000494c18b6>] inet_create+0x119/0x450 net/ipv4/af_inet.c:247
+    [<000000001239bbdb>] __sock_create+0x14a/0x220 net/socket.c:1433
+    [<00000000c1f7caa8>] sock_create net/socket.c:1484 [inline]
+    [<00000000c1f7caa8>] __sys_socket+0x60/0x110 net/socket.c:1526
+    [<00000000d35154cc>] __do_sys_socket net/socket.c:1535 [inline]
+    [<00000000d35154cc>] __se_sys_socket net/socket.c:1533 [inline]
+    [<00000000d35154cc>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
+    [<00000000283ef9ec>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
+    [<000000004290d57b>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff8881153f3dc0 (size 64):
+  comm "syz-executor.0", pid 6864, jiffies 4294947266 (age 13.790s)
+  hex dump (first 32 bytes):
+    15 00 00 01 00 00 00 00 20 68 e9 1c 81 88 ff ff  ........ h......
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000dde82831>] kmalloc include/linux/slab.h:555 [inline]
+    [<00000000dde82831>] kzalloc include/linux/slab.h:669 [inline]
+    [<00000000dde82831>] netlbl_secattr_alloc include/net/netlabel.h:382 [inline]
+    [<00000000dde82831>] selinux_netlbl_sock_genattr+0x48/0x180 security/selinux/netlabel.c:76
+    [<00000000438c6346>] selinux_netlbl_socket_post_create+0x41/0xb0 security/selinux/netlabel.c:398
+    [<00000000b422abf2>] selinux_socket_post_create+0x182/0x390 security/selinux/hooks.c:4541
+    [<000000005be0d1ac>] security_socket_post_create+0x54/0x80 security/security.c:2032
+    [<00000000a0ec3d71>] __sock_create+0x1cc/0x220 net/socket.c:1449
+    [<00000000c1f7caa8>] sock_create net/socket.c:1484 [inline]
+    [<00000000c1f7caa8>] __sys_socket+0x60/0x110 net/socket.c:1526
+    [<00000000d35154cc>] __do_sys_socket net/socket.c:1535 [inline]
+    [<00000000d35154cc>] __se_sys_socket net/socket.c:1533 [inline]
+    [<00000000d35154cc>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
+    [<00000000283ef9ec>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
+    [<000000004290d57b>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88811ce96820 (size 32):
+  comm "syz-executor.0", pid 6864, jiffies 4294947266 (age 13.790s)
+  hex dump (first 32 bytes):
+    6b 65 72 6e 65 6c 5f 74 00 73 79 73 74 65 6d 5f  kernel_t.system_
+    72 3a 6b 65 72 6e 65 6c 5f 74 3a 73 30 00 00 00  r:kernel_t:s0...
+  backtrace:
+    [<000000007edbec14>] kstrdup+0x36/0x70 mm/util.c:60
+    [<00000000b343d2c4>] security_netlbl_sid_to_secattr+0x97/0x100 security/selinux/ss/services.c:3739
+    [<00000000ddb8495a>] selinux_netlbl_sock_genattr+0x67/0x180 security/selinux/netlabel.c:79
+    [<00000000438c6346>] selinux_netlbl_socket_post_create+0x41/0xb0 security/selinux/netlabel.c:398
+    [<00000000b422abf2>] selinux_socket_post_create+0x182/0x390 security/selinux/hooks.c:4541
+    [<000000005be0d1ac>] security_socket_post_create+0x54/0x80 security/security.c:2032
+    [<00000000a0ec3d71>] __sock_create+0x1cc/0x220 net/socket.c:1449
+    [<00000000c1f7caa8>] sock_create net/socket.c:1484 [inline]
+    [<00000000c1f7caa8>] __sys_socket+0x60/0x110 net/socket.c:1526
+    [<00000000d35154cc>] __do_sys_socket net/socket.c:1535 [inline]
+    [<00000000d35154cc>] __se_sys_socket net/socket.c:1533 [inline]
+    [<00000000d35154cc>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
+    [<00000000283ef9ec>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
+    [<000000004290d57b>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff8881113aa400 (size 512):
+  comm "syz-executor.0", pid 6864, jiffies 4294947266 (age 13.790s)
+  hex dump (first 32 bytes):
+    00 b3 94 10 81 88 ff ff 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 03 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<0000000031227790>] kmalloc_node include/linux/slab.h:573 [inline]
+    [<0000000031227790>] kzalloc_node include/linux/slab.h:680 [inline]
+    [<0000000031227790>] sk_psock_init+0x2a/0x180 net/core/skmsg.c:496
+    [<00000000a405c065>] sock_map_link.isra.0+0x469/0x4f0 net/core/sock_map.c:236
+    [<000000003b7d5922>] sock_map_update_common+0xa1/0x3c0 net/core/sock_map.c:451
+    [<00000000f12c515e>] sock_map_update_elem+0x1e9/0x220 net/core/sock_map.c:552
+    [<000000000fedde3d>] bpf_map_update_value.isra.0+0x141/0x2f0 kernel/bpf/syscall.c:169
+    [<000000004deb6133>] map_update_elem kernel/bpf/syscall.c:1098 [inline]
+    [<000000004deb6133>] __do_sys_bpf+0x16bf/0x1f00 kernel/bpf/syscall.c:3689
+    [<00000000283ef9ec>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
+    [<000000004290d57b>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
