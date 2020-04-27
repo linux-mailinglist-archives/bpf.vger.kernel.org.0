@@ -2,184 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0EA1B9841
-	for <lists+bpf@lfdr.de>; Mon, 27 Apr 2020 09:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D881B9F5F
+	for <lists+bpf@lfdr.de>; Mon, 27 Apr 2020 11:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726349AbgD0HVZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Apr 2020 03:21:25 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44500 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726566AbgD0HVZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Apr 2020 03:21:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587972083;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gmrqhUr63ylUIBJ0HetA0W/F7e91Q2QoSF5xiRnj80k=;
-        b=QDe4n2l4jFP5WfoLGMdrK6kRBoz1GvAIz/rk576H6kYtLcUWtT5l6kw49vQHT8/ZHDM1mi
-        VXSy9tews6Pnc6tSDlbI1tjgXxqrso8pb6Nwf/GyD/5qCSqzw2zYoO9FgXC1LyuXZLUDzq
-        OwNEClsIc+ZdRgG/y11GIQ01A7sJjAs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-55-MYQl7MChPPyI20unIZ4TkQ-1; Mon, 27 Apr 2020 03:21:18 -0400
-X-MC-Unique: MYQl7MChPPyI20unIZ4TkQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2532C107ACF9;
-        Mon, 27 Apr 2020 07:21:16 +0000 (UTC)
-Received: from [10.72.12.205] (ovpn-12-205.pek2.redhat.com [10.72.12.205])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 82AF760CD3;
-        Mon, 27 Apr 2020 07:21:04 +0000 (UTC)
-Subject: Re: [PATCH net-next 21/33] virtio_net: add XDP frame size in two code
- paths
-To:     Jesper Dangaard Brouer <brouer@redhat.com>, sameehj@amazon.com
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, zorik@amazon.com,
-        akiyano@amazon.com, gtzalik@amazon.com,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        David Ahern <dsahern@gmail.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        steffen.klassert@secunet.com
-References: <158757160439.1370371.13213378122947426220.stgit@firesoul>
- <158757174774.1370371.14395462229209766397.stgit@firesoul>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <3958d9c6-a7d1-6a3d-941d-0a2915cc6b09@redhat.com>
-Date:   Mon, 27 Apr 2020 15:21:02 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726507AbgD0JIT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Apr 2020 05:08:19 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:51687 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726504AbgD0JIO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Apr 2020 05:08:14 -0400
+Received: by mail-io1-f71.google.com with SMTP id k1so19536744iov.18
+        for <bpf@vger.kernel.org>; Mon, 27 Apr 2020 02:08:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ZVmhnIuphgg49v7nKDffjwnQJQxBAzs6KUl/FwnAIgY=;
+        b=MT522wNYVtfDDUN8xVJtq4VF3qP8qNvVJI4ASktFkcwU0LktHaRvDXVIjV5p0hNzA2
+         A0z5EYQSbteXjuKDLKr7NBC2KuBTrP/Pq1yvO3d8DQQUFShJCIs/MUYZUDQCHYqMr6sl
+         OecABb6dKIdQOPVIozLGcPlmWW+5CM+lXIiUVbnrZpfEnDny2dSyoVTpsQj8wOz3BVAk
+         u4QsXPHGJFKChzw3NG7qsdJn8IClEFVxhtiqiiEiIQiIl2XeZ1m/Q5DvFHd/eTbB0uab
+         dRYHVN4/je2mCBgbuVO2qa62KGIpvlSTKCnpsVPKWCWFo4mnLOg8T4EkucXp3s3PPCNT
+         wJ+Q==
+X-Gm-Message-State: AGi0PuZMgOszKi9sgnXmwkJtRcsKs9zfnvLvltEIthZT/1tlMZmoVovz
+        hztejc+pH+P4EKIBHphuz4Ptw3tFTUMOKQ222sxzSvGun5uc
+X-Google-Smtp-Source: APiQypLzT1R83Qckum7M7Skre96oCEUz/ygCc/mtwqK/j45LlZHLvubwB2mOuXXf4kCyb6t2ED1dfqcyZkA5OEZbd/fG7uTuO6YT
 MIME-Version: 1.0
-In-Reply-To: <158757174774.1370371.14395462229209766397.stgit@firesoul>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a02:6ccf:: with SMTP id w198mr3972270jab.8.1587978493150;
+ Mon, 27 Apr 2020 02:08:13 -0700 (PDT)
+Date:   Mon, 27 Apr 2020 02:08:13 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fed01105a4420d11@google.com>
+Subject: WARNING: locking bug in inet_dgram_connect (2)
+From:   syzbot <syzbot+02446910ced9f8b60c06@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hello,
 
-On 2020/4/23 =E4=B8=8A=E5=8D=8812:09, Jesper Dangaard Brouer wrote:
-> The virtio_net driver is running inside the guest-OS. There are two
-> XDP receive code-paths in virtio_net, namely receive_small() and
-> receive_mergeable(). The receive_big() function does not support XDP.
->
-> In receive_small() the frame size is available in buflen. The buffer
-> backing these frames are allocated in add_recvbuf_small() with same
-> size, except for the headroom, but tailroom have reserved room for
-> skb_shared_info. The headroom is encoded in ctx pointer as a value.
->
-> In receive_mergeable() the frame size is more dynamic. There are two
-> basic cases: (1) buffer size is based on a exponentially weighted
-> moving average (see DECLARE_EWMA) of packet length. Or (2) in case
-> virtnet_get_headroom() have any headroom then buffer size is
-> PAGE_SIZE. The ctx pointer is this time used for encoding two values;
-> the buffer len "truesize" and headroom. In case (1) if the rx buffer
-> size is underestimated, the packet will have been split over more
-> buffers (num_buf info in virtio_net_hdr_mrg_rxbuf placed in top of
-> buffer area). If that happens the XDP path does a xdp_linearize_page
-> operation.
->
-> Cc: Jason Wang <jasowang@redhat.com>
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
->   drivers/net/virtio_net.c |   15 ++++++++++++---
->   1 file changed, 12 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 11f722460513..1df3676da185 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -689,6 +689,7 @@ static struct sk_buff *receive_small(struct net_dev=
-ice *dev,
->   		xdp.data_end =3D xdp.data + len;
->   		xdp.data_meta =3D xdp.data;
->   		xdp.rxq =3D &rq->xdp_rxq;
-> +		xdp.frame_sz =3D buflen;
->   		orig_data =3D xdp.data;
->   		act =3D bpf_prog_run_xdp(xdp_prog, &xdp);
->   		stats->xdp_packets++;
-> @@ -797,10 +798,11 @@ static struct sk_buff *receive_mergeable(struct n=
-et_device *dev,
->   	int offset =3D buf - page_address(page);
->   	struct sk_buff *head_skb, *curr_skb;
->   	struct bpf_prog *xdp_prog;
-> -	unsigned int truesize;
-> +	unsigned int truesize =3D mergeable_ctx_to_truesize(ctx);
->   	unsigned int headroom =3D mergeable_ctx_to_headroom(ctx);
-> -	int err;
->   	unsigned int metasize =3D 0;
-> +	unsigned int frame_sz;
-> +	int err;
->  =20
->   	head_skb =3D NULL;
->   	stats->bytes +=3D len - vi->hdr_len;
-> @@ -821,6 +823,11 @@ static struct sk_buff *receive_mergeable(struct ne=
-t_device *dev,
->   		if (unlikely(hdr->hdr.gso_type))
->   			goto err_xdp;
->  =20
-> +		/* Buffers with headroom use PAGE_SIZE as alloc size,
-> +		 * see add_recvbuf_mergeable() + get_mergeable_buf_len()
-> +		 */
-> +		frame_sz =3D headroom ? PAGE_SIZE : truesize;
-> +
->   		/* This happens when rx buffer size is underestimated
->   		 * or headroom is not enough because of the buffer
->   		 * was refilled before XDP is set. This should only
-> @@ -834,6 +841,8 @@ static struct sk_buff *receive_mergeable(struct net=
-_device *dev,
->   						      page, offset,
->   						      VIRTIO_XDP_HEADROOM,
->   						      &len);
-> +			frame_sz =3D PAGE_SIZE;
+syzbot found the following crash on:
 
+HEAD commit:    c578ddb3 Merge tag 'linux-kselftest-5.7-rc3' of git://git...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17f1d330100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=78a7d8adda44b4b
+dashboard link: https://syzkaller.appspot.com/bug?extid=02446910ced9f8b60c06
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14083ecfe00000
 
-Should this be PAGE_SIZE -=C2=A0 SKB_DATA_ALIGN(sizeof(struct skb_shared_=
-info))?
+Bisection is inconclusive: the first bad commit could be any of:
 
+9211bfbf netfilter: add missing IS_ENABLED(CONFIG_BRIDGE_NETFILTER) checks to header-file.
+47e640af netfilter: add missing IS_ENABLED(CONFIG_NF_TABLES) check to header-file.
+a1b2f04e netfilter: add missing includes to a number of header-files.
+0abc8bf4 netfilter: add missing IS_ENABLED(CONFIG_NF_CONNTRACK) checks to some header-files.
+bd96b4c7 netfilter: inline four headers files into another one.
+43dd16ef netfilter: nf_tables: store data in offload context registers
+78458e3e netfilter: add missing IS_ENABLED(CONFIG_NETFILTER) checks to some header-files.
+20a9379d netfilter: remove "#ifdef __KERNEL__" guards from some headers.
+bd8699e9 netfilter: nft_bitwise: add offload support
+2a475c40 kbuild: remove all netfilter headers from header-test blacklist.
+7e59b3fe netfilter: remove unnecessary spaces
+1b90af29 ipvs: Improve robustness to the ipvs sysctl
+5785cf15 netfilter: nf_tables: add missing prototypes.
+0a30ba50 netfilter: nf_nat_proto: make tables static
+e84fb4b3 netfilter: conntrack: use shared sysctl constants
+10533343 netfilter: connlabels: prefer static lock initialiser
+8c0bb787 netfilter: synproxy: rename mss synproxy_options field
+c162610c Merge git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf-next
 
-> +
->   			if (!xdp_page)
->   				goto err_xdp;
->   			offset =3D VIRTIO_XDP_HEADROOM;
-> @@ -850,6 +859,7 @@ static struct sk_buff *receive_mergeable(struct net=
-_device *dev,
->   		xdp.data_end =3D xdp.data + (len - vi->hdr_len);
->   		xdp.data_meta =3D xdp.data;
->   		xdp.rxq =3D &rq->xdp_rxq;
-> +		xdp.frame_sz =3D frame_sz;
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15410074100000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+02446910ced9f8b60c06@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 7534 at kernel/locking/lockdep.c:873 look_up_lock_class+0x207/0x280 kernel/locking/lockdep.c:863
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 7534 Comm: syz-executor.0 Not tainted 5.7.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1e9/0x30e lib/dump_stack.c:118
+ panic+0x264/0x7a0 kernel/panic.c:221
+ __warn+0x209/0x210 kernel/panic.c:582
+ report_bug+0x1ac/0x2d0 lib/bug.c:195
+ fixup_bug arch/x86/kernel/traps.c:175 [inline]
+ do_error_trap+0xca/0x1c0 arch/x86/kernel/traps.c:267
+ do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
+ invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+RIP: 0010:look_up_lock_class+0x207/0x280 kernel/locking/lockdep.c:863
+Code: 3d 91 8b 12 08 00 0f 85 35 ff ff ff 31 db 48 c7 c7 19 59 e5 88 48 c7 c6 c3 e9 e6 88 31 c0 e8 c0 17 ec ff 0f 0b e9 7b ff ff ff <0f> 0b e9 74 ff ff ff 48 c7 c1 30 6d 55 8b 80 e1 07 80 c1 03 38 c1
+RSP: 0018:ffffc9000268fa98 EFLAGS: 00010002
+RAX: ffffffff8ab07460 RBX: ffffffff8ad69a68 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff8880a83b40a0
+RBP: ffff8880a83b40b8 R08: 0000000000000001 R09: 0000000000000000
+R10: fffffbfff12d772d R11: 0000000000000000 R12: 1ffff11015076814
+R13: ffffffff89063e89 R14: ffff8880a83b40a0 R15: dffffc0000000000
+ register_lock_class+0x97/0x10d0 kernel/locking/lockdep.c:1220
+ __lock_acquire+0x102/0x2c30 kernel/locking/lockdep.c:4234
+ lock_acquire+0x169/0x480 kernel/locking/lockdep.c:4934
+ __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+ _raw_spin_lock_bh+0x31/0x40 kernel/locking/spinlock.c:175
+ spin_lock_bh include/linux/spinlock.h:358 [inline]
+ lock_sock_nested+0x43/0x110 net/core/sock.c:2959
+ lock_sock include/net/sock.h:1574 [inline]
+ inet_autobind net/ipv4/af_inet.c:179 [inline]
+ inet_dgram_connect+0x1a7/0x360 net/ipv4/af_inet.c:569
+ __sys_connect_file net/socket.c:1859 [inline]
+ __sys_connect+0x2da/0x360 net/socket.c:1876
+ __do_sys_connect net/socket.c:1887 [inline]
+ __se_sys_connect net/socket.c:1884 [inline]
+ __x64_sys_connect+0x76/0x80 net/socket.c:1884
+ do_syscall_64+0xf3/0x1b0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+RIP: 0033:0x45c829
+Code: 0d b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f47444d9c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
+RAX: ffffffffffffffda RBX: 00000000004dabc0 RCX: 000000000045c829
+RDX: 000000000000001c RSI: 0000000020000040 RDI: 0000000000000003
+RBP: 000000000078bfa0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
+R13: 0000000000000084 R14: 00000000004c31c2 R15: 00007f47444da6d4
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
 
-Maybe we can easily check by
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-xdp.frame_sz =3D (xdp_page =3D=3D page) ? truesize : ...
-
-Thanks
-
-
->  =20
->   		act =3D bpf_prog_run_xdp(xdp_prog, &xdp);
->   		stats->xdp_packets++;
-> @@ -924,7 +934,6 @@ static struct sk_buff *receive_mergeable(struct net=
-_device *dev,
->   	}
->   	rcu_read_unlock();
->  =20
-> -	truesize =3D mergeable_ctx_to_truesize(ctx);
->   	if (unlikely(len > truesize)) {
->   		pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
->   			 dev->name, len, (unsigned long)ctx);
->
->
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
