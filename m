@@ -2,124 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA781BA610
-	for <lists+bpf@lfdr.de>; Mon, 27 Apr 2020 16:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6301BA679
+	for <lists+bpf@lfdr.de>; Mon, 27 Apr 2020 16:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbgD0OQv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Apr 2020 10:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727089AbgD0OQv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Apr 2020 10:16:51 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9059C0610D5
-        for <bpf@vger.kernel.org>; Mon, 27 Apr 2020 07:16:50 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id x25so19748035wmc.0
-        for <bpf@vger.kernel.org>; Mon, 27 Apr 2020 07:16:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3ZvrZIOl6DpxgRjHoCSpRnkuuUuXbmW7Utk3CE+1xbA=;
-        b=gPquhElP3DirkNlNsuQRDRuhOdkKxXc8i/RGyOEzlnTqYm4FRqXLaEnz1bIzZ/ZIp/
-         fP02m6qohqO99AewLv5Mym1ziN7coejpiT810OGEsVev/dudEg6umlNoktapZy3X/2dc
-         EfsBzmCrrNP2guNxQXmS8A3ZRIqQGA9ZydmZWewIoBiuv9ubJSo0NMRxpibdbRTeAjjm
-         Az3K7b1KLojvZ4lEQis+kHzbuIBYEf/LIDXSjOMdZqwKkH6i+rJUokRYFxzJMhJCtC0T
-         IrxzVpsM20FnKyZJmPracxAgaH0GPnZ57y1pZWOyOrTPD2makslA3MFvS010on8L8bLq
-         fihA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3ZvrZIOl6DpxgRjHoCSpRnkuuUuXbmW7Utk3CE+1xbA=;
-        b=NKVtvQvGt+XUZ+2vZ1QuebOzatgtFt5J9/mRPGk7VU+OnBa6VBKxzCwHVbE9xmwGlY
-         jr3B75iSH6vex99DOu873P99P6gCaTX0CKgA632JhUQo0xj0vBd/eHwQkcZQKbCefhKD
-         CL+lNUAhDdLrFR8m2tH25YHRXydiRFUZ658uiBcuO5Q8inOFIi4ybS+Rj+s0TmiJOVnj
-         1GX4m0eOiv+PCyLw7zrWieAAtWvZZSxKmzSmeEJpan6r83roBoxxbxS6O4/ELYP+J6hJ
-         +/o97wwhi0n9pQ7FNMk42l44RvU8U0AEqgMnEpr0WrsW3TMMlMncDRk0Fu4a5OaLO1v3
-         /uXA==
-X-Gm-Message-State: AGi0Pua9uUFcZpCHntt4MASyUBoTYOBgTjXdR6QTkNwyzmTFDaBHjdnn
-        XpA7zATu6peY196kuVGUbNuw5Q==
-X-Google-Smtp-Source: APiQypLCrxgcx6PkNTJ9jVBZFuctDAQD0MQdBrr/HvWukDsFzzVDU3cpmeZQH5v0tMjKnOxzGtUKzQ==
-X-Received: by 2002:a1c:ded4:: with SMTP id v203mr26560548wmg.106.1587997009525;
-        Mon, 27 Apr 2020 07:16:49 -0700 (PDT)
-Received: from [192.168.1.10] ([194.53.185.120])
-        by smtp.gmail.com with ESMTPSA id i6sm23015331wrc.82.2020.04.27.07.16.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Apr 2020 07:16:48 -0700 (PDT)
-Subject: Re: [PATCH bpf-next] tools: bpftool: allow unprivileged users to
- probe features
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Richard Palethorpe <rpalethorpe@suse.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-References: <20200423160455.28509-1-quentin@isovalent.com>
- <bbde573f-edd8-0d39-556e-98842e0328f7@iogearbox.net>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <b84df406-608d-f597-59ba-a27764eb1fcb@isovalent.com>
-Date:   Mon, 27 Apr 2020 15:16:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1727947AbgD0Ocs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Apr 2020 10:32:48 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:27890 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728087AbgD0Ocr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 27 Apr 2020 10:32:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587997966;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0u80QIqRuFtq393pEWCqHrz3SEQAL/TzXNi1FumiEQg=;
+        b=a9LDCR39YemSIsdzVS/X8XypeLeOZdmMe1b5rDqADAA929aq8kBNKSgU91c5p5pd1EggrE
+        HBaW6QeLvQG/QCe9d4NH/1mDbriXH1i41VRVG6g7dTowZ0wekopYTUSaPbgZZTG9S4r2pS
+        36XAU5R3d0eCCsqZ6J76fOrbLyhz7Ns=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-508-uaarzkrsMMm9rifY-_Afew-1; Mon, 27 Apr 2020 10:32:41 -0400
+X-MC-Unique: uaarzkrsMMm9rifY-_Afew-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 20E9C872FE0;
+        Mon, 27 Apr 2020 14:32:38 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.55])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 338DD1A924;
+        Mon, 27 Apr 2020 14:32:25 +0000 (UTC)
+Date:   Mon, 27 Apr 2020 16:32:24 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     sameehj@amazon.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        zorik@amazon.com, akiyano@amazon.com, gtzalik@amazon.com,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        steffen.klassert@secunet.com, brouer@redhat.com
+Subject: Re: [PATCH net-next 21/33] virtio_net: add XDP frame size in two
+ code paths
+Message-ID: <20200427163224.6445d4bb@carbon>
+In-Reply-To: <3958d9c6-a7d1-6a3d-941d-0a2915cc6b09@redhat.com>
+References: <158757160439.1370371.13213378122947426220.stgit@firesoul>
+        <158757174774.1370371.14395462229209766397.stgit@firesoul>
+        <3958d9c6-a7d1-6a3d-941d-0a2915cc6b09@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <bbde573f-edd8-0d39-556e-98842e0328f7@iogearbox.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-04-27 14:58 UTC+0200 ~ Daniel Borkmann <daniel@iogearbox.net>
-> On 4/23/20 6:04 PM, Quentin Monnet wrote:
->> There is demand for a way to identify what BPF helper functions are
->> available to unprivileged users. To do so, allow unprivileged users to
->> run "bpftool feature probe" to list BPF-related features. This will only
->> show features accessible to those users, and may not reflect the full
->> list of features available (to administrators) on the system. For
->> non-JSON output, print an informational message stating so at the top of
->> the list.
->>
->> Note that there is no particular reason why the probes were restricted
->> to root, other than the fact I did not need them for unprivileged and
->> did not bother with the additional checks at the time probes were added.
->>
->> Cc: Richard Palethorpe <rpalethorpe@suse.com>
->> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
->> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
->> ---
->>   .../bpftool/Documentation/bpftool-feature.rst |  4 +++
->>   tools/bpf/bpftool/feature.c                   | 32 +++++++++++++------
->>   2 files changed, 26 insertions(+), 10 deletions(-)
->>
->> diff --git a/tools/bpf/bpftool/Documentation/bpftool-feature.rst
->> b/tools/bpf/bpftool/Documentation/bpftool-feature.rst
->> index b04156cfd7a3..313888e87249 100644
->> --- a/tools/bpf/bpftool/Documentation/bpftool-feature.rst
->> +++ b/tools/bpf/bpftool/Documentation/bpftool-feature.rst
->> @@ -49,6 +49,10 @@ DESCRIPTION
->>             Keyword **kernel** can be omitted. If no probe target is
->>             specified, probing the kernel is the default behaviour.
->>   +          Running this command as an unprivileged user will dump only
->> +          the features available to the user, which usually represent a
->> +          small subset of the parameters supported by the system.
->> +
-> 
-> Looks good. I wonder whether the unprivileged should be gated behind an
-> explicit
-> subcommand e.g. `--unprivileged`. My main worry is that if there's a
-> misconfiguration
-> the emitted macro/ header file will suddenly contain a lot less defines
-> and it might
-> go unnoticed if some optimizations in the BPF code are then compiled out
-> by accident.
-> Maybe it would make sense to have a feature test for libcap and then
-> also allow for
-> root to check on features for unpriv this way?
+On Mon, 27 Apr 2020 15:21:02 +0800
+Jason Wang <jasowang@redhat.com> wrote:
 
-That's a valid concern, I'll rework the patch to add support for the
-explicit option on the command line as you suggest. Thanks for the review!
+> On 2020/4/23 =E4=B8=8A=E5=8D=8812:09, Jesper Dangaard Brouer wrote:
+> > The virtio_net driver is running inside the guest-OS. There are two
+> > XDP receive code-paths in virtio_net, namely receive_small() and
+> > receive_mergeable(). The receive_big() function does not support XDP.
+> >
+> > In receive_small() the frame size is available in buflen. The buffer
+> > backing these frames are allocated in add_recvbuf_small() with same
+> > size, except for the headroom, but tailroom have reserved room for
+> > skb_shared_info. The headroom is encoded in ctx pointer as a value.
+> >
+> > In receive_mergeable() the frame size is more dynamic. There are two
+> > basic cases: (1) buffer size is based on a exponentially weighted
+> > moving average (see DECLARE_EWMA) of packet length. Or (2) in case
+> > virtnet_get_headroom() have any headroom then buffer size is
+> > PAGE_SIZE. The ctx pointer is this time used for encoding two values;
+> > the buffer len "truesize" and headroom. In case (1) if the rx buffer
+> > size is underestimated, the packet will have been split over more
+> > buffers (num_buf info in virtio_net_hdr_mrg_rxbuf placed in top of
+> > buffer area). If that happens the XDP path does a xdp_linearize_page
+> > operation.
+> >
+> > Cc: Jason Wang <jasowang@redhat.com>
+> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > ---
+> >   drivers/net/virtio_net.c |   15 ++++++++++++---
+> >   1 file changed, 12 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > index 11f722460513..1df3676da185 100644
+> > --- a/drivers/net/virtio_net.c
+> > +++ b/drivers/net/virtio_net.c
+> > @@ -689,6 +689,7 @@ static struct sk_buff *receive_small(struct net_dev=
+ice *dev,
+> >   		xdp.data_end =3D xdp.data + len;
+> >   		xdp.data_meta =3D xdp.data;
+> >   		xdp.rxq =3D &rq->xdp_rxq;
+> > +		xdp.frame_sz =3D buflen;
+> >   		orig_data =3D xdp.data;
+> >   		act =3D bpf_prog_run_xdp(xdp_prog, &xdp);
+> >   		stats->xdp_packets++;
+> > @@ -797,10 +798,11 @@ static struct sk_buff *receive_mergeable(struct n=
+et_device *dev,
+> >   	int offset =3D buf - page_address(page);
+> >   	struct sk_buff *head_skb, *curr_skb;
+> >   	struct bpf_prog *xdp_prog;
+> > -	unsigned int truesize;
+> > +	unsigned int truesize =3D mergeable_ctx_to_truesize(ctx);
+> >   	unsigned int headroom =3D mergeable_ctx_to_headroom(ctx);
+> > -	int err;
+> >   	unsigned int metasize =3D 0;
+> > +	unsigned int frame_sz;
+> > +	int err;
+> >  =20
+> >   	head_skb =3D NULL;
+> >   	stats->bytes +=3D len - vi->hdr_len;
+> > @@ -821,6 +823,11 @@ static struct sk_buff *receive_mergeable(struct ne=
+t_device *dev,
+> >   		if (unlikely(hdr->hdr.gso_type))
+> >   			goto err_xdp;
+> >  =20
+> > +		/* Buffers with headroom use PAGE_SIZE as alloc size,
+> > +		 * see add_recvbuf_mergeable() + get_mergeable_buf_len()
+> > +		 */
+> > +		frame_sz =3D headroom ? PAGE_SIZE : truesize;
+> > +
+> >   		/* This happens when rx buffer size is underestimated
+> >   		 * or headroom is not enough because of the buffer
+> >   		 * was refilled before XDP is set. This should only
+> > @@ -834,6 +841,8 @@ static struct sk_buff *receive_mergeable(struct net=
+_device *dev,
+> >   						      page, offset,
+> >   						      VIRTIO_XDP_HEADROOM,
+> >   						      &len);
+> > +			frame_sz =3D PAGE_SIZE; =20
+>=20
+>=20
+> Should this be PAGE_SIZE -=C2=A0 SKB_DATA_ALIGN(sizeof(struct skb_shared_=
+info))?
 
-Quentin
+No, frame_sz include the SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) len=
+gth.
+
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
