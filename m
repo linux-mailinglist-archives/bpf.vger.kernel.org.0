@@ -2,396 +2,201 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1D71BB9CE
-	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 11:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4551BBA3A
+	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 11:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727077AbgD1J12 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Apr 2020 05:27:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726477AbgD1J11 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 05:27:27 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE09DC03C1A9
-        for <bpf@vger.kernel.org>; Tue, 28 Apr 2020 02:27:25 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id d17so23799378wrg.11
-        for <bpf@vger.kernel.org>; Tue, 28 Apr 2020 02:27:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=C9mY2tni0CusEWLBqmZ5bZpXGg0uRl8b2IcoSzKi05w=;
-        b=XzYaKezKGgpCANw96d4cDLJVdQnl9aJlFLRiKNY8guiLz5fxKawTp/8LH7tpNNBmpY
-         Ze13zIsCf6D7BBI5kk1fRpRStYmvufVBk0J+/9eSZrNUyL91kxbertwI5XA5jtJcT8yU
-         XQEK452U4LLW9yBIpoSMXbqp+2CyaunBMoIB05/eHwMGNG/etUrqlEkbbMKHZe7TSVQG
-         YDQb2y44vpB1BHArA19Du+XfhEkBD8UNJF4aeoK6exupcCcP87fDKgQYmWRRzSyH5dFI
-         oQP08WoFA7JaTh7qw4LPCW1N5z+RwCQwjqitcRS0r9omZ+TXkxlalxoyiJyGi7Ow0g85
-         JMIw==
+        id S1726486AbgD1Jqm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Apr 2020 05:46:42 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:21623 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727096AbgD1Jqm (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 05:46:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588067200;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=64n1j3rWsF4WkqK6IXqvlsGi78U1IQ4tBELo+vHTvKI=;
+        b=IwmNNFxY/gYnuqvj5jMZP1gsIu+AW+uviNj3GCXblqLAzIL0VVTKCh7uJRQAgaHQDm0w5K
+        CblQjoeVi/wfsUe/DSqVPXbzkjyWnBWgfKSUJstzyKwH3E7rsoKprO/cCZrlElMfkx5izM
+        jAzJGSl1F9Ld8g+8DzzWZF+Uwfc64cE=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-500-miIeuCLeMh6Sa-fSr3DTFg-1; Tue, 28 Apr 2020 05:46:38 -0400
+X-MC-Unique: miIeuCLeMh6Sa-fSr3DTFg-1
+Received: by mail-lf1-f71.google.com with SMTP id l28so8698786lfp.8
+        for <bpf@vger.kernel.org>; Tue, 28 Apr 2020 02:46:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=C9mY2tni0CusEWLBqmZ5bZpXGg0uRl8b2IcoSzKi05w=;
-        b=Rx76fRapykXcgBOZ+K3436aQS7UlCc/M9HmfBiDROVl+HxD3YXx7qQebCdAz2FHgEk
-         qqw9HdWLopEO/7KHY5lhIBKkkP2lu0r/Ywprt+qSr4txZYKY9m7+Q1DKCsYlep4HOuco
-         VLzwO9ldIjSyXJGAivcNBeLdMh/3dlUtCwEYvw6IJ9NS6EoRVhCQmLq7dSQBvXH4tl6T
-         Bx33sJhkhzkIKnXlrhlcoUQ8inpNAIeiw7yC3/E9OCB1wJH8LYlSL/VKeFj9tXfrf5WR
-         FXz2qWsOuPaDZaoPR4xsBvx2nfv0RkpGI8isHP4TuojuZhGrGEssJe2guhKf67afJnrl
-         knYg==
-X-Gm-Message-State: AGi0PuZtjR9kWOsvWiCt4yuF8X9iVfM0Pv6czzwO8chYQMKvIajtNoU1
-        CR2RROddT2THiIZ4KCiWhf0KiQ==
-X-Google-Smtp-Source: APiQypJccWmeHkE+NiGeb4DrWtW1qmsDZUt66NORsyJY0trTPEuaE8g4yiuYZXAnLwkT0zlBpiDHNQ==
-X-Received: by 2002:adf:9441:: with SMTP id 59mr31608896wrq.211.1588066044471;
-        Tue, 28 Apr 2020 02:27:24 -0700 (PDT)
-Received: from [192.168.1.10] ([194.53.185.137])
-        by smtp.gmail.com with ESMTPSA id l4sm25179641wrv.60.2020.04.28.02.27.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Apr 2020 02:27:23 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v1 16/19] tools/bpftool: add bpf_iter support for
- bptool
-To:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        netdev@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-References: <20200427201235.2994549-1-yhs@fb.com>
- <20200427201253.2996156-1-yhs@fb.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <05d9c82d-8cba-db77-02af-265e4d200946@isovalent.com>
-Date:   Tue, 28 Apr 2020 10:27:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=64n1j3rWsF4WkqK6IXqvlsGi78U1IQ4tBELo+vHTvKI=;
+        b=Sjli/5AWgHRUW4/83fSkwlVjny5yEztoVq7MFbaRWzbk9ziOYsos37R6AVnyGgU1y6
+         Cjp2iSDF6uZXakCKnQIvHo9umorauXTQAdS3jfqG/HABhvjdQb8wfkM3cT6RCR6kfY+a
+         WzXtUDxSLQtVaO+ZbyvEJ3v3TfOIzgQ247p4u4KQwGT0/FeGaB3qAuz+9JIlTJZhnyqb
+         tYs1jx8GxgtacMrYcBfF7Kqdl8PPluYJzTwfPp/aIGpG1r1cQui+CY3TjdRzkUu+mAJC
+         h2irf2bUlqlNnYvIXs8Xok6EA6wQ+s+XI6H4fAym6G9sRulQCOMTUyIsTDW04KZ8eb2/
+         aPxw==
+X-Gm-Message-State: AGi0PuY3DSmgkUJpF3IHoZ7JBRA/geIK6fZYFX0ut3rIVeDyPXlIJTqk
+        LTFGqHJ5g16pDbQGA5ctseyLNvu7o5IZCOnUAZE4ZfLbrToFQbxHaJVoQBSZvtxnIZBXysSiL+Q
+        v9uZgPrjz/lI2
+X-Received: by 2002:a19:700b:: with SMTP id h11mr18664588lfc.89.1588067196780;
+        Tue, 28 Apr 2020 02:46:36 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKpJRn7z2yXpp90YVQ5naRTBxefp0E2vM9LtOoBkf9A7Ba7/dqf6TqMTU8uhX/BAmXhXObuAQ==
+X-Received: by 2002:a19:700b:: with SMTP id h11mr18664571lfc.89.1588067196480;
+        Tue, 28 Apr 2020 02:46:36 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id x24sm13614858lfc.6.2020.04.28.02.46.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Apr 2020 02:46:35 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 02D551814FF; Tue, 28 Apr 2020 11:46:34 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH v2 bpf-next 04/10] bpf: add support for BPF_OBJ_GET_INFO_BY_FD for bpf_link
+In-Reply-To: <20200428054944.4015462-5-andriin@fb.com>
+References: <20200428054944.4015462-1-andriin@fb.com> <20200428054944.4015462-5-andriin@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 28 Apr 2020 11:46:34 +0200
+Message-ID: <87mu6wvt6t.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <20200427201253.2996156-1-yhs@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-04-27 13:12 UTC-0700 ~ Yonghong Song <yhs@fb.com>
-> Currently, only one command is supported
->   bpftool iter pin <bpf_prog.o> <path>
-> 
-> It will pin the trace/iter bpf program in
-> the object file <bpf_prog.o> to the <path>
-> where <path> should be on a bpffs mount.
-> 
-> For example,
->   $ bpftool iter pin ./bpf_iter_ipv6_route.o \
->     /sys/fs/bpf/my_route
-> User can then do a `cat` to print out the results:
->   $ cat /sys/fs/bpf/my_route
->     fe800000000000000000000000000000 40 00000000000000000000000000000000 ...
->     00000000000000000000000000000000 00 00000000000000000000000000000000 ...
->     00000000000000000000000000000001 80 00000000000000000000000000000000 ...
->     fe800000000000008c0162fffebdfd57 80 00000000000000000000000000000000 ...
->     ff000000000000000000000000000000 08 00000000000000000000000000000000 ...
->     00000000000000000000000000000000 00 00000000000000000000000000000000 ...
-> 
-> The implementation for ipv6_route iterator is in one of subsequent
-> patches.
-> 
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+Andrii Nakryiko <andriin@fb.com> writes:
+
+> Add ability to fetch bpf_link details through BPF_OBJ_GET_INFO_BY_FD command.
+> Also enhance show_fdinfo to potentially include bpf_link type-specific
+> information (similarly to obj_info).
+>
+> Also introduce enum bpf_link_type stored in bpf_link itself and expose it in
+> UAPI. bpf_link_tracing also now will store and return bpf_attach_type.
+>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 > ---
->  .../bpftool/Documentation/bpftool-iter.rst    | 71 ++++++++++++++++
->  tools/bpf/bpftool/bash-completion/bpftool     | 13 +++
->  tools/bpf/bpftool/iter.c                      | 84 +++++++++++++++++++
->  tools/bpf/bpftool/main.c                      |  3 +-
->  tools/bpf/bpftool/main.h                      |  1 +
->  5 files changed, 171 insertions(+), 1 deletion(-)
->  create mode 100644 tools/bpf/bpftool/Documentation/bpftool-iter.rst
->  create mode 100644 tools/bpf/bpftool/iter.c
-> 
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool-iter.rst b/tools/bpf/bpftool/Documentation/bpftool-iter.rst
-> new file mode 100644
-> index 000000000000..1997a6bac4a0
-> --- /dev/null
-> +++ b/tools/bpf/bpftool/Documentation/bpftool-iter.rst
-> @@ -0,0 +1,71 @@
-> +============
-> +bpftool-iter
-> +============
-> +-------------------------------------------------------------------------------
-> +tool to create BPF iterators
-> +-------------------------------------------------------------------------------
+>  include/linux/bpf-cgroup.h     |   2 -
+>  include/linux/bpf.h            |  10 +-
+>  include/linux/bpf_types.h      |   6 ++
+>  include/uapi/linux/bpf.h       |  28 ++++++
+>  kernel/bpf/btf.c               |   2 +
+>  kernel/bpf/cgroup.c            |  45 ++++++++-
+>  kernel/bpf/syscall.c           | 164 +++++++++++++++++++++++++++++----
+>  kernel/bpf/verifier.c          |   2 +
+>  tools/include/uapi/linux/bpf.h |  31 +++++++
+>  9 files changed, 266 insertions(+), 24 deletions(-)
+>
+> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+> index d2d969669564..ab95824a1d99 100644
+> --- a/include/linux/bpf-cgroup.h
+> +++ b/include/linux/bpf-cgroup.h
+> @@ -57,8 +57,6 @@ struct bpf_cgroup_link {
+>  	enum bpf_attach_type type;
+>  };
+>  
+> -extern const struct bpf_link_ops bpf_cgroup_link_lops;
+> -
+>  struct bpf_prog_list {
+>  	struct list_head node;
+>  	struct bpf_prog *prog;
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 875d1f0af803..701c4387c711 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1026,9 +1026,11 @@ extern const struct file_operations bpf_prog_fops;
+>  	extern const struct bpf_verifier_ops _name ## _verifier_ops;
+>  #define BPF_MAP_TYPE(_id, _ops) \
+>  	extern const struct bpf_map_ops _ops;
+> +#define BPF_LINK_TYPE(_id, _name)
+>  #include <linux/bpf_types.h>
+>  #undef BPF_PROG_TYPE
+>  #undef BPF_MAP_TYPE
+> +#undef BPF_LINK_TYPE
+>  
+>  extern const struct bpf_prog_ops bpf_offload_prog_ops;
+>  extern const struct bpf_verifier_ops tc_cls_act_analyzer_ops;
+> @@ -1086,6 +1088,7 @@ int bpf_prog_new_fd(struct bpf_prog *prog);
+>  struct bpf_link {
+>  	atomic64_t refcnt;
+>  	u32 id;
+> +	enum bpf_link_type type;
+>  	const struct bpf_link_ops *ops;
+>  	struct bpf_prog *prog;
+>  	struct work_struct work;
+> @@ -1103,9 +1106,14 @@ struct bpf_link_ops {
+>  	void (*dealloc)(struct bpf_link *link);
+>  	int (*update_prog)(struct bpf_link *link, struct bpf_prog *new_prog,
+>  			   struct bpf_prog *old_prog);
+> +	void (*show_fdinfo)(const struct bpf_link *link, struct seq_file *seq);
+> +	int (*fill_link_info)(const struct bpf_link *link,
+> +			      struct bpf_link_info *info,
+> +			      const struct bpf_link_info *uinfo,
+> +			      u32 info_len);
+>  };
+>  
+> -void bpf_link_init(struct bpf_link *link,
+> +void bpf_link_init(struct bpf_link *link, enum bpf_link_type type,
+>  		   const struct bpf_link_ops *ops, struct bpf_prog *prog);
+>  int bpf_link_prime(struct bpf_link *link, struct bpf_link_primer *primer);
+>  int bpf_link_settle(struct bpf_link_primer *primer);
+> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+> index ba0c2d56f8a3..8345cdf553b8 100644
+> --- a/include/linux/bpf_types.h
+> +++ b/include/linux/bpf_types.h
+> @@ -118,3 +118,9 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_STACK, stack_map_ops)
+>  #if defined(CONFIG_BPF_JIT)
+>  BPF_MAP_TYPE(BPF_MAP_TYPE_STRUCT_OPS, bpf_struct_ops_map_ops)
+>  #endif
 > +
-> +:Manual section: 8
+> +BPF_LINK_TYPE(BPF_LINK_TYPE_RAW_TRACEPOINT, raw_tracepoint)
+> +BPF_LINK_TYPE(BPF_LINK_TYPE_TRACING, tracing)
+> +#ifdef CONFIG_CGROUP_BPF
+> +BPF_LINK_TYPE(BPF_LINK_TYPE_CGROUP, cgroup)
+> +#endif
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 7e6541fceade..0eccafae55bb 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -222,6 +222,15 @@ enum bpf_attach_type {
+>  
+>  #define MAX_BPF_ATTACH_TYPE __MAX_BPF_ATTACH_TYPE
+>  
+> +enum bpf_link_type {
+> +	BPF_LINK_TYPE_UNSPEC = 0,
+> +	BPF_LINK_TYPE_RAW_TRACEPOINT = 1,
+> +	BPF_LINK_TYPE_TRACING = 2,
+> +	BPF_LINK_TYPE_CGROUP = 3,
 > +
-> +SYNOPSIS
-> +========
-> +
-> +	**bpftool** [*OPTIONS*] **iter** *COMMAND*
-> +
-> +	*COMMANDS* := { **pin** | **help** }
-> +
-> +STRUCT_OPS COMMANDS
-
-s/STRUCT_OPS/ITER/
-
-> +===================
-> +
-> +|	**bpftool** **iter pin** *OBJ* *PATH*
-> +|	**bpftool** **struct_ops help**
-
-s/struct_ops/iter/
-
-> +|
-> +|	*OBJ* := /a/file/of/bpf_iter_target.o
-> +
-> +
-> +DESCRIPTION
-> +===========
-> +	**bpftool iter pin** *OBJ* *PATH*
-
-Would be great to have a small blurb on what BPF iterators are and what
-they can do. I'm afraid users reading this man page will have no idea
-whatsoever.
-
-> +		  Create a bpf iterator from *OBJ*, and pin it to
-> +		  *PATH*. The *PATH* should be located in *bpffs* mount.
-
-Can you keep the note that other pages have about the dot character
-being forbidden in *PATH* basename, please?
-
-> +
-> +	**bpftool struct_ops help**
-
-s/struct_ops/iter/
-
-> +		  Print short help message.
-> +
-> +OPTIONS
-> +=======
-> +	-h, --help
-> +		  Print short generic help message (similar to **bpftool help**).
-> +
-> +	-V, --version
-> +		  Print version number (similar to **bpftool version**).
-> +
-> +	-d, --debug
-> +		  Print all logs available, even debug-level information. This
-> +		  includes logs from libbpf as well as from the verifier, when
-> +		  attempting to load programs.> +
-> +EXAMPLES
-> +========
-> +**# bpftool iter pin bpf_iter_netlink.o /sys/fs/bpf/my_netlink**
-> +
-> +::
-> +
-> +   Create a file-based bpf iterator from bpf_iter_netlink.o and pin it
-> +   to /sys/fs/bpf/my_netlink
-> +
-> +
-> +SEE ALSO
-> +========
-> +	**bpf**\ (2),
-> +	**bpf-helpers**\ (7),
-> +	**bpftool**\ (8),
-> +	**bpftool-prog**\ (8),
-> +	**bpftool-map**\ (8),
-> +	**bpftool-cgroup**\ (8),
-> +	**bpftool-feature**\ (8),
-> +	**bpftool-net**\ (8),
-> +	**bpftool-perf**\ (8),
-> +	**bpftool-btf**\ (8)
-> +	**bpftool-gen**\ (8)
-> +	**bpftool-struct_ops**\ (8)
-> diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-> index 45ee99b159e2..17a81695da0f 100644
-> --- a/tools/bpf/bpftool/bash-completion/bpftool
-> +++ b/tools/bpf/bpftool/bash-completion/bpftool
-> @@ -604,6 +604,19 @@ _bpftool()
->                      ;;
->              esac
->              ;;
-> +        iter)
-> +            case $command in
-> +                pin)
-> +                    _filedir
-> +                    return 0
-> +                    ;;
-> +                *)
-> +                    [[ $prev == $object ]] && \
-> +                        COMPREPLY=( $( compgen -W 'help' \
-> +                            -- "$cur" ) )
-
-You should probably offer "pin" here in addition to "help".
-
-> +                    ;;
-> +            esac
-> +            ;;
->          map)
->              local MAP_TYPE='id pinned name'
->              case $command in
-> diff --git a/tools/bpf/bpftool/iter.c b/tools/bpf/bpftool/iter.c
-> new file mode 100644
-> index 000000000000..db9fae6be716
-> --- /dev/null
-> +++ b/tools/bpf/bpftool/iter.c
-> @@ -0,0 +1,84 @@
-> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +// Copyright (C) 2020 Facebook
-> +
-> +#define _GNU_SOURCE
-> +#include <linux/err.h>
-> +#include <bpf/libbpf.h>
-> +
-> +#include "main.h"
-> +
-> +static int do_pin(int argc, char **argv)
-> +{
-> +	const char *objfile, *path;
-> +	struct bpf_program *prog;
-> +	struct bpf_object *obj;
-> +	struct bpf_link *link;
-> +	int err;
-
-Nit: initialise err t0 -1 do you don't have to set it three times below?
-
-> +
-> +	if (!REQ_ARGS(2))
-> +		usage();
-> +
-> +	objfile = GET_ARG();
-> +	path = GET_ARG();
-> +
-> +	obj = bpf_object__open(objfile);
-> +	if (IS_ERR_OR_NULL(obj)) {
-> +		p_err("can't open objfile %s", objfile);
-> +		return -1;
-> +	}
-> +
-> +	err = bpf_object__load(obj);
-> +	if (err < 0) {
-> +		err = -1;
-> +		p_err("can't load objfile %s", objfile);
-> +		goto close_obj;
-> +	}
-> +
-> +	prog = bpf_program__next(NULL, obj);
-> +	link = bpf_program__attach_iter(prog, NULL);
-> +	if (IS_ERR(link)) {
-> +		err = -1;
-> +		p_err("attach_iter failed for program %s",
-> +		      bpf_program__name(prog));
-> +		goto close_obj;
-> +	}
-> +
-> +	err = bpf_link__pin(link, path);
-
-Try to mount bpffs before that if "-n" is not passed? You could even
-call do_pin_any() from common.c by passing bpf_link__fd().
-
-> +	if (err) {
-> +		err = -1;
-> +		p_err("pin_iter failed for program %s to path %s",
-> +		      bpf_program__name(prog), path);
-> +		goto close_link;
-> +	}
-> +
-> +	err = 0;
-> +
-> +close_link:
-> +	bpf_link__disconnect(link);
-> +	bpf_link__destroy(link);
-> +close_obj:
-> +	bpf_object__close(obj);
-> +	return err;
-> +}
-> +
-> +static int do_help(int argc, char **argv)
-> +{
-> +	fprintf(stderr,
-> +		"Usage: %s %s pin OBJ PATH\n"
-> +		"       %s %s help\n"
-> +		"\n",
-> +		bin_name, argv[-2], bin_name, argv[-2]);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct cmd cmds[] = {
-> +	{ "help",	do_help },
-> +	{ "pin",	do_pin },
-> +	{ 0 }
+> +	MAX_BPF_LINK_TYPE,
 > +};
 > +
-> +int do_iter(int argc, char **argv)
-> +{
-> +	return cmd_select(cmds, argc, argv, do_help);
-> +}
-> dif	"",
->  		bin_name, bin_name, bin_name);
-> @@ -222,6 +222,7 @@ static const struct cmd cmds[] = {
->  	{ "btf",	do_btf },
->  	{ "gen",	do_gen },
->  	{ "struct_ops",	do_struct_ops },
-> +	{ "iter",	do_iter },
->  	{ "version",	do_version },
->  	{ 0 }
->  };
-> diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-> index 86f14ce26fd7..2b5d4a616b48 100644
-> --- a/tools/bpf/bpftool/main.h
-> +++ b/tools/bpf/bpftool/main.h
-> @@ -162,6 +162,7 @@ int do_feature(int argc, char **argv);
->  int do_btf(int argc, char **argv);
->  int do_gen(int argc, char **argv);
->  int do_struct_ops(int argc, char **argv);
-> +int do_iter(int argc, char **argv);
+>  /* cgroup-bpf attach flags used in BPF_PROG_ATTACH command
+>   *
+>   * NONE(default): No further bpf programs allowed in the subtree.
+> @@ -3612,6 +3621,25 @@ struct bpf_btf_info {
+>  	__u32 id;
+>  } __attribute__((aligned(8)));
 >  
->  int parse_u32_arg(int *argc, char ***argv, __u32 *val, const char *what);
->  int prog_parse_fd(int *argc, char ***argv);
-> f --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-> index 466c269eabdd..6805b77789cb 100644
-> --- a/tools/bpf/bpftool/main.c
-> +++ b/tools/bpf/bpftool/main.c
-> @@ -58,7 +58,7 @@ static int do_help(int argc, char **argv)
->  		"       %s batch file FILE\n"
->  		"       %s version\n"
->  		"\n"
-> -		"       OBJECT := { prog | map | cgroup | perf | net | feature | btf | gen | struct_ops }\n"
-> +		"       OBJECT := { prog | map | cgroup | perf | net | feature | btf | gen | struct_ops | iter }\n"
->  		"       " HELP_SPEC_OPTIONS "\n"
->  		"",
->  		bin_name, bin_name, bin_name);
-> @@ -222,6 +222,7 @@ static const struct cmd cmds[] = {
->  	{ "btf",	do_btf },
->  	{ "gen",	do_gen },
->  	{ "struct_ops",	do_struct_ops },
-> +	{ "iter",	do_iter },
->  	{ "version",	do_version },
->  	{ 0 }
->  };
-> diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-> index 86f14ce26fd7..2b5d4a616b48 100644
-> --- a/tools/bpf/bpftool/main.h
-> +++ b/tools/bpf/bpftool/main.h
-> @@ -162,6 +162,7 @@ int do_feature(int argc, char **argv);
->  int do_btf(int argc, char **argv);
->  int do_gen(int argc, char **argv);
->  int do_struct_ops(int argc, char **argv);
-> +int do_iter(int argc, char **argv);
->  
->  int parse_u32_arg(int *argc, char ***argv, __u32 *val, const char *what);
->  int prog_parse_fd(int *argc, char ***argv);
-> 
+> +struct bpf_link_info {
+> +	__u32 type;
+> +	__u32 id;
+> +	__u32 prog_id;
+> +	union {
+> +		struct {
+> +			__aligned_u64 tp_name; /* in/out: tp_name buffer ptr */
+> +			__u32 tp_name_len;     /* in/out: tp_name buffer len */
+> +		} raw_tracepoint;
+> +		struct {
+> +			__u32 attach_type;
+> +		} tracing;
 
-Have you considered simply adapting the more traditional workflow
-"bpftool prog load && bpftool prog attach" so that it supports iterators
-instead of adding a new command? It would:
+On the RFC I asked whether we could get the attach target here as well.
+You said you'd look into it; what happened to that? :)
 
-- Avoid adding yet another bpftool command with a single subcommand
+-Toke
 
-- Enable to reuse the code from prog load, in particular for map reuse
-(I'm not sure how relevant maps are for iterators, but I wouldn't be
-surprised if someone finds a use case at some point?)
-
-- Avoid users naively trying to run "bpftool prog load && bpftool prog
-attach <prog> iter" and not understanding why it fails
-
-Quentin
