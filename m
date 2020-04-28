@@ -2,108 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7D51BB629
-	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 08:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 650601BB650
+	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 08:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725917AbgD1GEr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Apr 2020 02:04:47 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:29882 "EHLO
+        id S1726256AbgD1GNx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Apr 2020 02:13:53 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:19814 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725792AbgD1GEr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 02:04:47 -0400
+        by vger.kernel.org with ESMTP id S1726210AbgD1GNx (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 02:13:53 -0400
 Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 03S62E0q032499;
-        Mon, 27 Apr 2020 23:04:32 -0700
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 03S681WT008267;
+        Mon, 27 Apr 2020 23:13:19 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=Yq5Y38SiL8lcxgXBu9aIuiHFphUi3+tLONUWLdLMxrw=;
- b=TwUkWD48IZAY8yUSPRfz8AWLn/EQfymgIKfHexzdv/PazQAFsMgvIPnDYJJrvfw7Z+78
- e40h9zFM9r17nD3prdcwwP68M9PTYYk375W2sVK2zyW7J5OxJrBl+JvYTJxEk2U2uHA3
- gJXUfyqyunPR94wJfyN0inqWSLqcSEubgbU= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 30mgvnh4ae-1
+ bh=6FlGPnsmU2z4WDq0f1++d12iZsjFc9dU6Gh0ENBgeLQ=;
+ b=HDkYC1Z8z4MNiJaeSD+rbXIMM1oOpAZ2IQ2ZJ4OAYKnPGfrL9UGr54CGCEr0f038M73H
+ ngSHMaDbHfINAXlS3qDGrlRMDhr+HjyOfIe9ku2aEq+4m22mo/GlG2q8fqiggXlQUvXK
+ f+khU3U0lyw2P7067sTBouib6tkZZ9YL7+U= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 30mgvnh5d0-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 27 Apr 2020 23:04:32 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
+        Mon, 27 Apr 2020 23:13:19 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Mon, 27 Apr 2020 23:04:31 -0700
+ 15.1.1847.3; Mon, 27 Apr 2020 23:13:17 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c6iADcHAca0VcUKtocMQqPUn9R7o/OlBibeh1ZK5pVF1IRAx8Bi1IJ3YIyPseRwmO0/0lvgsF3NprFKWqwhHRIf5OgTqxi9nYG5bMrOpzoeSHngUDHNTQr72OvEq/yyyrDHKiX6ryoRGOw1oZr9Je0TkTz79bch6zwrTHYh0c7TRka3o8ZBy2M02iIZCRMt0K+9OFNIZoJ9YHUo/YC6BDdO6teLgKFML6D4FDloi4yJrg+P5/Ddc0l9gB/FzzPay+FBDLXhrmrp9hOi7h8WdwZRdibGUv6AGwZgszbxAOQ2bEQqZnen5K14cSRvd1iN5ce0GnylBkOSJy0Xzl7lAJw==
+ b=AFgHrFxhxLLa82sJ+5wxWZx4L+UC/kulSNesW1P1Tj7lSJBtHO+0Xh5MfXmA/5Aj8Ud2fIc+RHS0PXikJ93Ov0HRZ5qzDYUNLWaWWzXh8nXOXSG1yoUJGpUXPVPTdbDsYlSMML0u9sZN5Hi4rD90dlOXujM9Cbc6FdkvPJkEUE6HCGI9yKjDd5H0i8OlZJUwZMcXtjBztEm3uD2n+XJX2VWQ7tBKuByt9iklNanLoPxFYc4aSh33w1VhT47TEvVo1M1yx+iP84UvqVHv77i1Qf6pHuefyxxMa7/2FMQgYlS7yEPhNG6SFJkhsg/F1VyC4KuhmugFKAmhaa2K0kRKGg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Yq5Y38SiL8lcxgXBu9aIuiHFphUi3+tLONUWLdLMxrw=;
- b=TGEOmZ8N4LrZ/26w/++nUzV0Y4dRrcLcDTPiaAqAHJ6+u/wXgzUIrG9LAFCtvZ4yquixLMp/eswQaGShZkGQCKCXSy7HtHCWzx0ZlayRyQ9DTKvVAg0b3SYZESGnlR+fDEmYUlMEZx1TXtubPy7r1UmBPhyL9QTtmBQtlBC2XUZooaQFizD8AnKwsALZxpm84XYswC5pQGdDShYl/Pd36fpA8FvPIcPh9I+OOJ/vJ03KsBaaqLLOeXuCJZJ+8INuDDmY2vPNhy9Vt5zrJbZsq/g0NCwwN77ag8wmx5+uNsfxsBXwr/meNz24IagHKVnoJgewrnKldjOPL8K/62snZA==
+ bh=6FlGPnsmU2z4WDq0f1++d12iZsjFc9dU6Gh0ENBgeLQ=;
+ b=YTH/ikWxtGgzCec4gWNfqvJoiZMh0+rHdLFQa1XwVz/V4xNzK8lxeOgdOSYckfk6mB61H9ZO46hMw/88LGePjBFgRjKSZCwN2jAvzuGC9H1bTm7fK+C8VDex3TbBurZ6bySqbVN+uXWsVTjkV8t+RR7a81TPB1XvzUsnSU1ZU1hw1oDFwl4UbogsPpQllq6Nd46rWZxrYf6Lgdd+btbCmsBlH0h17pFvUoANRYNjWPR0rEDS88381Y07UQVAQJQ+bhPZsoETmg9fa+64J9ux5ngbcfafleOKFVoCGL2fJck8ASzuuWd7JJZYBY7apmLmX15DyzwOkwBWIGV3nj8kyA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Yq5Y38SiL8lcxgXBu9aIuiHFphUi3+tLONUWLdLMxrw=;
- b=ebJdXvUNbjHN21Zn4osNFcKKIv6WUm9/guzzoUIluZrHrBJuZ7QocnFVx06xtBNukdKiYFqVN9zgeqfL0Pht7jnddRK43Fnk5kbHRKC0kfLemEDW0HPCRW1nRG0RxZae7SnM+EU+jmfD5xPLx5gS4WMCeBGETlS8qf/eXOGkQfs=
+ bh=6FlGPnsmU2z4WDq0f1++d12iZsjFc9dU6Gh0ENBgeLQ=;
+ b=cUGLaDgiyyIGrBHQNME9tHaYDz9k/LrNVE4RTkMTPgRs8TS0Cg66Sw3Pt4PyOQJfP4+c+6MJuRoD5yn5SIcBlgg0lPJniIKI7Gqjjps7E8l7xnrK/luqNs/j79BUr3tOilUJEqyiIOn0A2HaClGwDYesQoAj50QbF/eF+34Cizg=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=fb.com;
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3477.namprd15.prod.outlook.com (2603:10b6:a03:10e::25) with
+ by BYAPR15MB3208.namprd15.prod.outlook.com (2603:10b6:a03:10c::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Tue, 28 Apr
- 2020 06:04:30 +0000
+ 2020 06:13:14 +0000
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::8988:aa27:5d70:6923]) by BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::8988:aa27:5d70:6923%5]) with mapi id 15.20.2937.023; Tue, 28 Apr 2020
- 06:04:30 +0000
-Subject: Re: [PATCH v5 bpf-next 3/3] bpf: add selftest for BPF_ENABLE_STATS
-To:     Song Liu <songliubraving@fb.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>
-References: <20200427234423.998085-1-songliubraving@fb.com>
- <20200427234423.998085-4-songliubraving@fb.com>
+ 06:13:14 +0000
+Subject: Re: [PATCH bpf-next v2] [tools/bpf] workaround a verifier failure for
+ test_progs
+To:     Ma Xinjian <max.xinjian@intel.com>, <ast@fb.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>
+CC:     "Li, Philip" <philip.li@intel.com>
+References: <4c14c01e-be39-817b-ca8c-200690ac4caf@intel.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <09720b42-9858-0e2f-babf-f3cd27f648e6@fb.com>
-Date:   Mon, 27 Apr 2020 23:04:27 -0700
+Message-ID: <1b8051db-20af-73ab-179e-8818bee7c7ee@fb.com>
+Date:   Mon, 27 Apr 2020 23:13:10 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.7.0
-In-Reply-To: <20200427234423.998085-4-songliubraving@fb.com>
+In-Reply-To: <4c14c01e-be39-817b-ca8c-200690ac4caf@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWHPR1201CA0024.namprd12.prod.outlook.com
- (2603:10b6:301:4a::34) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW2PR16CA0024.namprd16.prod.outlook.com (2603:10b6:907::37)
+ To BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from MacBook-Pro-52.local (2620:10d:c090:400::5:f088) by MWHPR1201CA0024.namprd12.prod.outlook.com (2603:10b6:301:4a::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Tue, 28 Apr 2020 06:04:29 +0000
+Received: from MacBook-Pro-52.local (2620:10d:c090:400::5:f088) by MW2PR16CA0024.namprd16.prod.outlook.com (2603:10b6:907::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Tue, 28 Apr 2020 06:13:13 +0000
 X-Originating-IP: [2620:10d:c090:400::5:f088]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 303e8a8a-fb3b-4065-d8ce-08d7eb3a03d3
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3477:
+X-MS-Office365-Filtering-Correlation-Id: 3d85a38f-1e31-426b-88be-08d7eb3b3c06
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3208:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3477DDDA5BD6F18E403F06BBD3AC0@BYAPR15MB3477.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3208C7014C401274A77935A1D3AC0@BYAPR15MB3208.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:935;
+X-MS-Oob-TLC-OOBClassifiers: OLM:546;
 X-Forefront-PRVS: 0387D64A71
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(366004)(346002)(39860400002)(136003)(376002)(478600001)(2616005)(8936002)(66556008)(52116002)(6506007)(53546011)(4326008)(6486002)(8676002)(81156014)(16526019)(6512007)(186003)(66476007)(66946007)(2906002)(316002)(5660300002)(31686004)(36756003)(86362001)(31696002);DIR:OUT;SFP:1102;
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(39860400002)(376002)(136003)(366004)(396003)(66476007)(66556008)(8936002)(6486002)(6506007)(52116002)(53546011)(31686004)(6636002)(186003)(66946007)(16526019)(31696002)(8676002)(2616005)(2906002)(4326008)(316002)(478600001)(966005)(86362001)(5660300002)(36756003)(81156014)(6512007);DIR:OUT;SFP:1102;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hyMAdJ6MWzv3GB8hWGf2pzv27PxaGPC5sW06g+Y2JSFsQ6F116Stmny77AxOX2OjAMj05Va9QA0a0n0lVgqBXqT4FEtWIPk90sfaLcnbecUk02+IcDNsURyN/1g/yrqpWwOyanMM9Jm4l3s2wL0OVzP+NliGRFOHIo/l+cCVPlOKSZnDXvX8a23rlNjlYc2W3002229Ls42H7WSTf5gDn2SeWH8i6vDbu2HGwGBBrP8KpUnrCzVsZC1MnH+J3oo7vUT8Grq63Q2RckVbSYiSYipzzOW40A5fK8Kmeek4Byt7koeVNstmBs1F6lV8OtjhXCzuWT58VpjwWoW3MtIFkrGca6bfOYLqKsNb7MBYYvsAqAZFq7ah0N6NosEeJJ+Ao4jbbRCVt9q0t1tVLoeiMDxE+eghLHde6FbIoP7tNxemYGFloDIiRPF3rNY4JU7D
-X-MS-Exchange-AntiSpam-MessageData: TulULqH1H/3f+TW0kNffsA4MyAOfmFgvdtVT8PA3NpNxYg0L3mclJv5ZO8k9ra4CFfJbSXb1EdmiBZKUF57Lr0tuvW5gPJCvSmB+IO29JuQ775Lf5+q1gYPcekTxsr4TDE3MXZ+36Ne0OlV92+wMsyjvzkY5W1oL4pi2TwG0mbW9UINj9J8oEBCVyTVVqIp3oGvOahm4k7Ff08NkgVlrjbe9XwVgRtux3FXJN7OCz9R5V54Ml32d9FJBf1NVK3zb7q58plP98Qv+BfE3Oitw7FGexHpyVQID3Ik2LZKBuchqmUXgrPIYSqc2kNyWtzN2xbQXUQDIGUdgjrlvUtJ5Yx7gX//vzW7ywyeEcOHfIVX0nu4xF33IyWgPLUrTMzWg2f4tylBuW8QJ67nGGN+LGr0NbfKAkFSA3mRCAkW6G2Wehdd2xUUueIfYCzfDnsgydOlFbXwc7WXYYS5AMU18ERKbmyzobCYjIc7gyelQLsE9vpCI3t+OWquVZgCkGW0XfMDiYfRuthYStH3XvI3LTH/wL0WinZvry9Df/VPE2oB6f1YBOgNhbb5d5+P1zznsnBhdNC7eLLPa7DvHxcYrQCdc+zms10xMWAV2wRaJ74AVRi5dqqoOYLztpTB0IVLh9zHRvLxm/z62bsKYCoWnYSSUsEmKos6hIageVjdFKW7zIR5RSSjGB2ZW9R7hvMt+pWKGyNo/w67JewtrlKuy3Xq2BBcqA0PtLL9Ku9bQVR/RP8mjzxTcPCVaJRFhJNq8iJKoiRoIFco1aX0K806UoRpFt5Rz++E+8kiuPu9ffIPyA7HJ6sAdWFPJ6/cO7Cg6TtviJ2ajy4SrP/Pg63ttgg==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 303e8a8a-fb3b-4065-d8ce-08d7eb3a03d3
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2020 06:04:30.3988
+X-Microsoft-Antispam-Message-Info: OMI7n6aHEdejZvhE9KyG1Wk92wo5t0glFwtz36w7sC2s9uiO6rQqbchuXe6biBbbk2yfgLFn2HXoH39H6Mq6PeWIqZlG3geFAZcc+sZMyzuVao5+mgsLmurUBk9I0KPpCMaqUrmpSj5GfJDFo3Fz8p7w6qSWGfh/nf5Psw8cK/R2XghxR2qAis3wlOps81wJ6uWPc9+87XCUT/0F6EtP/6cnV2rGdrd5G9CGbCAbs9VFJ3oTetTQA+C7AUSbv6G3zL9zRVJaZ9Gl/EI5N9b/j8BmftbPFibkflcKaBdxYY5UTt1gy32dR12PuCUHXP56aAtsqhycthv4CxrXS3HC6sZMVDGxMtE5FJnhZVgLAyn2zieWUep4r8Jys2cY9WmBc9eGB3FODm2eXnY1G2N926JpMKdkxYZRmrITs5xLnKnOh8YM55CoMIGTIxwVKqvyOR8FJSCFm/G2Yoi3UdZz+AnlFYhnCNLOSSBMqm0c5ffuNuap7zAbwkTEjtR6f3UvD056aoubAcIE+JuJzTQcfg==
+X-MS-Exchange-AntiSpam-MessageData: Ia99wWMzweoeYltw97MPGlCKJtYlwJcqbYH6ZifaBOkB41vq49BcKblwJB7nOCDotdeIFc8QFsqibm1zpsJxmlrwXNiUaGRYvy/y7w1VOiqd6qkPeP0Bd/zXD/ust2KTohFu0ZjvDpz2UfMvIDzP/FQ8yn6b28ccDdXmHDJiCw8cOlCanpWqZ5VLc2ZsI/1FHDEj6BX234ycHx0q8pBKAiA37Vt7WcbP/HyEcZoDCK8cCe2hsyqjWMcXip/dQ77GRUnZPGPsV21QRW7LDwhSjNKx55r1ksUY83UWFT83W1OUPX304xJVdiQUJsX65bwadIs6sD3fwIQAcZjyyt5jmVmmRXQKI0aBNxSJr1zlXP7/raVzp/WnHlNpSq4xALPmQ6c8zj30EVLdY4NpaqL1ZdwTWRyKYGGaN5yqeLkghqgWjQ9qgE8mIjZr5TNMv3JpI5BkVStAeR9SiCTKLKYKZSIzAYus8bMTrPuWzpSj1PFpx/qHfFca0Th5odrJTrblT9Z/084Mi8xI3mGolxZHIrHQM793l+YqRzMDHc78p61w9tPpL2FFl1z/hvwiQg7KkA0cY9fuJvEGa1I6C4Qo8gCUCMfrMtesEuPbc7TwXFpTEKG7vHjlCvrscLwitRZnaLN6+/Z9ZyPiiN9eFvcUsvyFKATZca//TH5ya47V4V1G3ZGNj4Lowfegj71QFkC7H/Ndv6tdnD32VzEAJwurtp5HVhug41Y8TQJTtH2EsBGdQvL7sD6CBbZj2nGzcsGta9PoIQZ/+fjSeSaZEkVrGVq2w+b1iNrdWXoCe6bdrVvWzWgyAQAARGhnrFHueieIaq4dNcN/dvSEcbcW+jbaNA==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d85a38f-1e31-426b-88be-08d7eb3b3c06
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2020 06:13:14.0652
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2qSzazgUkOOkqPDYNWuZCo3FNXpgswx/IFm6+DuH6ra4ue55I+J5stOGIkU4U3N3
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3477
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2PsZETIqs6VJzcC7cJ78PQSs09cw4gNacDTs08LSMZfn8dG17R08qbo+c9Vq1+Y/
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3208
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
  definitions=2020-04-28_02:2020-04-27,2020-04-28 signatures=0
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 bulkscore=0
  malwarescore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
- priorityscore=1501 impostorscore=0 mlxlogscore=999 clxscore=1015
+ priorityscore=1501 impostorscore=0 mlxlogscore=999 clxscore=1011
  suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2004280051
+ scancount=1 engine=8.12.0-2003020000 definitions=main-2004280052
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -112,111 +113,81 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 4/27/20 4:44 PM, Song Liu wrote:
-> Add test for  BPF_ENABLE_STATS, which should enable run_time_ns stats.
+On 4/27/20 7:56 PM, Ma Xinjian wrote:
+> Hi Yonghong.
 > 
-> ~/selftests/bpf# ./test_progs -t enable_stats  -v
-> test_enable_stats:PASS:skel_open_and_load 0 nsec
-> test_enable_stats:PASS:get_stats_fd 0 nsec
-> test_enable_stats:PASS:attach_raw_tp 0 nsec
-> test_enable_stats:PASS:get_prog_info 0 nsec
-> test_enable_stats:PASS:check_stats_enabled 0 nsec
-> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+> During our team's test, we find a similar issue. when run test_sysctl of 
+> bpf, we met error:
 > 
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-> ---
->   .../selftests/bpf/prog_tests/enable_stats.c   | 45 +++++++++++++++++++
->   .../selftests/bpf/progs/test_enable_stats.c   | 28 ++++++++++++
->   2 files changed, 73 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/enable_stats.c
->   create mode 100644 tools/testing/selftests/bpf/progs/test_enable_stats.c
+> ```
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/enable_stats.c b/tools/testing/selftests/bpf/prog_tests/enable_stats.c
-> new file mode 100644
-> index 000000000000..987fc743ab75
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/enable_stats.c
-> @@ -0,0 +1,45 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <test_progs.h>
-> +#include <sys/mman.h>
-> +#include "test_enable_stats.skel.h"
-> +
-> +void test_enable_stats(void)
-> +{
-> +	struct test_enable_stats *skel;
-> +	struct bpf_prog_info info = {};
-> +	__u32 info_len = sizeof(info);
-> +	int stats_fd, err, prog_fd;
-> +	int duration = 0;
-> +
-> +	skel = test_enable_stats__open_and_load();
-> +
-> +	if (CHECK(!skel, "skel_open_and_load", "skeleton open/load failed\n"))
-> +		return;
-> +
-> +	stats_fd = bpf_enable_stats(BPF_STATS_RUNTIME_CNT);
-> +
-> +	if (CHECK(stats_fd < 0, "get_stats_fd", "failed %d\n", errno))
-> +		goto cleanup;
-> +
-> +	err = test_enable_stats__attach(skel);
-> +
-> +	if (CHECK(err, "attach_raw_tp", "err %d\n", err))
-> +		goto cleanup;
-> +
-> +	usleep(1000);
-> +
-> +	prog_fd = bpf_program__fd(skel->progs.test_enable_stats);
-> +	err = bpf_obj_get_info_by_fd(prog_fd, &info, &info_len);
-> +
-> +	if (CHECK(err, "get_prog_info",
-> +		  "failed to get bpf_prog_info for fd %d\n", prog_fd))
-> +		goto cleanup;
-> +
-> +	CHECK(info.run_time_ns == 0, "check_stats_enabled",
-> +	      "failed to enable run_time_ns stats\n");
-> +
-> +cleanup:
-> +	test_enable_stats__destroy(skel);
-> +	if (stats_fd >= 0)
-> +		close(stats_fd);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_enable_stats.c b/tools/testing/selftests/bpf/progs/test_enable_stats.c
-> new file mode 100644
-> index 000000000000..f95ac0c94639
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_enable_stats.c
-> @@ -0,0 +1,28 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2020 Facebook
-> +
-> +#include <linux/bpf.h>
-> +#include <stdint.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_ARRAY);
-> +	__uint(max_entries, 1);
-> +	__type(key, __u32);
-> +	__type(value, __u64);
-> +} count SEC(".maps");
+> libbpf: -- END LOG --
+> libbpf: failed to load program 'cgroup/sysctl'
+> libbpf: failed to load object './test_sysctl_prog.o'
+> (test_sysctl.c:1490: errno: Permission denied) >>> Loading program 
+> (./test_sysctl_prog.o) error.
+> 
+> ```
+> 
+> Testing env: "Debian GNU/Linux 9 (stretch)"
+> 
+> kernel: 5.6 5.7-rc1 5.7-rc2 5.7-rc3
+> 
+> clang/llvm version: v11.0.0.
+> 
+> we have tested a log of commits, following commits are part of them
+> 
+> drwxrwxr-x 2 root root  1 Apr 28 07:01 
+> f30416fdde922eaa655934e050026930fefbd260
+> drwxrwxr-x 2 root root  2 Apr 26 11:38 
+> 10bc12588dac532fad044b2851dde8e7b9121e88
+> drwxrwxr-x 2 root root  1 Apr 26 07:01 
+> 969e7edd88ceb4791eb1cac22828290f0ae30b3d
+> drwxrwxr-x 2 root root  1 Apr 23 13:51 
+> bbf386f02b05db017fda66875cc5edef70779244
+> drwxrwxr-x 2 root root  1 Apr 22 10:01 
+> 2de52422acf04662b45599f77c14ce1b2cec2b81
+> drwxrwxr-x 2 root root  1 Apr 21 07:07 
+> a9b137f9ffba8cb25dfd7dd1fb613e8aac121b37
+> drwxrwxr-x 2 root root  1 Apr 17 07:01 
+> 40d139c620f83509fe18acbff5ec358298e99def
+> 
+> drwxrwxr-x 2 root root  1 Apr 16 07:02 
+> bee6c234ed28ae7349cb83afa322dfd8394590ee
+> 
+> 
+> And I have tested, If I add following patch like you did, test_sysctl pass:
+> 
+> diff --git a/tools/testing/selftests/bpf/progs/test_sysctl_prog.c 
+> b/tools/testing/selftests/bpf/progs/test_sysctl_prog.c
+> index 2d0b0b82a78a..8e3da8d2e7c9 100644
+> --- a/tools/testing/selftests/bpf/progs/test_sysctl_prog.c
+> +++ b/tools/testing/selftests/bpf/progs/test_sysctl_prog.c
+> @@ -45,7 +45,10 @@ int sysctl_tcp_mem(struct bpf_sysctl *ctx)
+>          unsigned long tcp_mem[3] = {0, 0, 0};
+>          char value[MAX_VALUE_STR_LEN];
+>          unsigned char i, off = 0;
+> -       int ret;
+> +      /* a workaround to prevent compiler from generating
+> +      * codes verifier cannot handle yet.
+> +      */
+> +      volatile int ret;
+> 
+>          if (ctx->write)
+>                  return 0;
 
-Looks like a global variable can be used here?
+Right. This is related to alu32 mode. The detailed description
+https://lore.kernel.org/bpf/20191107170045.2503480-1-yhs@fb.com/
 
-> +
-> +SEC("raw_tracepoint/sys_enter")
-> +int test_enable_stats(void *ctx)
-> +{
-> +	__u32 key = 0;
-> +	__u64 *val;
-> +
-> +	val = bpf_map_lookup_elem(&count, &key);
-> +	if (val)
-> +		*val += 1;
-> +
-> +	return 0;
-> +}
+We are still working on this, either a verifier solution or a compiler 
+workaround.
+
+> 
+> root@vm-snb-15 
+> /usr/src/perf_selftests-x86_64-rhel-7.6-kselftests-6a8b55ed4056ea5559ebe4f6a4b247f627870d4c/tools/testing/selftests/bpf# 
+> ./test_sysctl
+> 
+> ...
+> 
+>   Summary: 40 PASSED, 0 FAILED
 > 
