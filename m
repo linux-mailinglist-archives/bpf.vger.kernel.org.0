@@ -2,166 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCD61BB4E5
-	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 06:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6073D1BB578
+	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 06:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725792AbgD1EEb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Apr 2020 00:04:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgD1EEb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Apr 2020 00:04:31 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD74C03C1A9;
-        Mon, 27 Apr 2020 21:04:30 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id f8so7835105plt.2;
-        Mon, 27 Apr 2020 21:04:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xeZ6XRGhdVLJBf2MOUWLboAnGDFLTVXr9LuKT86MR08=;
-        b=dF6j6HqUX6s0P1mzYxSLznzkVNNucQtjnGOPgQj/XMREs67TG8S+H0Dg+IZN7ivB0Z
-         NVXFfm7mX30UU0rdWf+uZPfJk/4DOf82O7ASJLC5Xtt+CGYu64jfLn32FLMYdR1gnKIX
-         h0aL1COrMySSK89LnDh3usoytdXv+8lOkr4fiwMtJH8mSAVXawsdcBD6UBktHYMSGgVq
-         3WRkTa76yMtSNQDFBJWi36ozQ2J5OWcR8+CxeXF5PUpmez0mRUyLqLCFRZGLCaiu1MAB
-         6M/26XMmNnywJhoFM74W5tQgp6MqrzL0JrCzPskNQ6rNnZ/jjsx1GDEVxD3yjnECYM30
-         pRSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xeZ6XRGhdVLJBf2MOUWLboAnGDFLTVXr9LuKT86MR08=;
-        b=rTReyWTBwMmJfQt+NeQ3a3Fu47z3BG9NlEAYTy8+WoDW8L7bf0mMUwgve7hR7tWFyb
-         hk43kD2qonv+SMXFwFgyVDLvRGZ/9iorrQSkFjqVv5nlsQKoIm5Zcm/W31AnmJJx9/Oq
-         wgSVS8YwQIecKjCao7BIdqSbZm0hxjewErrvJa5C61olP9OK3x7OU3CfSLmO4V7/cUD+
-         AeYz/yzdmQuMfBHimLipjqHGT4HfXyuY9g71e99BzRG8Bs5+Ie1dUxIa8I6gPU4N48Ay
-         M600RpDS77OYw9Pbrl3yv5Pxqipy/R4bQXhrTuMZZX3yX4V/xQ4QwII2fwou94foJuxl
-         Nfzw==
-X-Gm-Message-State: AGi0Pub6tq/4ZcG6Q1h0f2A8qSk9s28runVztW0No1si8ki2zBXy4bnF
-        5+4Z5PZ10eaZMTBhAf4ldxw=
-X-Google-Smtp-Source: APiQypJI5vdqtrd41a9SrSaLxYLYj5lmZ4EQGgG6AJ+pUhN82V4F8ssA3x4tSS7E3/Xe4cw7bfCr2A==
-X-Received: by 2002:a17:90a:fb4e:: with SMTP id iq14mr2572901pjb.146.1588046668333;
-        Mon, 27 Apr 2020 21:04:28 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:9f56])
-        by smtp.gmail.com with ESMTPSA id a200sm13497163pfa.201.2020.04.27.21.04.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2020 21:04:27 -0700 (PDT)
-Date:   Mon, 27 Apr 2020 21:04:24 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Eelco Chaudron <echaudro@redhat.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
+        id S1725917AbgD1EvC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Apr 2020 00:51:02 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:44348 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726344AbgD1EvC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 00:51:02 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03S4omTA031966
+        for <bpf@vger.kernel.org>; Mon, 27 Apr 2020 21:51:01 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=apk1r4+o98yqHo4Z9m71swrQ3sAG2imwjA53eGC72uw=;
+ b=RlsJBStgxHkPNsO2qC4W7yLU/MSCnUrVK3PvjKV8aN8lDjpC07r50HSA+OEqQvqOAH06
+ OiQTM8n3YDbdMsNoPT6XaZW79S8YGmYc376VSl/d0HwGtnO+3hERyfHl2I0VMNsAcWNc
+ IVzD5ZUG0SuLvAKUxJNVHCEzmImOzc0bl5M= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 30n57q4krb-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 27 Apr 2020 21:51:01 -0700
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Mon, 27 Apr 2020 21:50:59 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 584962EC30DC; Mon, 27 Apr 2020 21:50:56 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
         Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: add tracing for XDP programs using
- the BPF_PROG_TEST_RUN API
-Message-ID: <20200428040424.wvozrsy6uviz33ha@ast-mbp.dhcp.thefacebook.com>
-References: <158453675319.3043.5779623595270458781.stgit@xdp-tutorial>
- <819b1b3a-c801-754b-e805-7ec8266e5dfa@fb.com>
- <D0164AC9-7AF7-4434-B6D1-0A761DC626FB@redhat.com>
- <fefda00a-1a08-3a53-efbc-93c36292b77d@fb.com>
- <CAADnVQ+SCu97cF5Li6nBBCkshjF45U-nPEO5jO8DQrY5PqPqyg@mail.gmail.com>
- <F97A3E80-9C99-49CF-84C5-F09C940F7029@redhat.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 0/6] Add ASAN to selftest and fix found problems
+Date:   Mon, 27 Apr 2020 21:46:22 -0700
+Message-ID: <20200428044628.3772114-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <F97A3E80-9C99-49CF-84C5-F09C940F7029@redhat.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-28_02:2020-04-27,2020-04-28 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=25
+ lowpriorityscore=0 mlxscore=0 spamscore=0 phishscore=0 adultscore=0
+ clxscore=1015 impostorscore=0 malwarescore=0 mlxlogscore=974
+ priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2003020000 definitions=main-2004280040
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 02:29:56PM +0200, Eelco Chaudron wrote:
-> 
-> > Not working with JIT-ed code is imo red flag for the approach as well.
-> 
-> How would this be an issue, this is for the debug path only, and if the
-> jitted code behaves differently than the interpreter there is a bigger
-> issue.
+Add ASAN flavor for test_progs and fix all found memory leaks and other m=
+emory
+use problems.
 
-They are different already. Like tail_calls cannot mix and match interpreter
-and JITed. Similar with bpf2bpf calls.
-And that difference will be growing further.
-At that time of doing bpf trampoline I considering dropping support for
-interpreter, but then figured out a relatively cheap way of keeping it alive.
-I expect next feature to not support interpreter.
+Andrii Nakryiko (6):
+  selftests/bpf: ensure test flavors use correct skeletons
+  selftests/bpf: add test_progs-asan flavor with AddressSantizer
+  selftests/bpf: convert test_hashmap into test_progs test
+  libbpf: fix memory leak and possible double-free in hashmap__clear
+  selftests/bpf: fix memory leak in test selector
+  selftests/bpf: fix memory leak in extract_build_id()
 
-> > When every insn is spamming the logs the only use case I can see
-> > is to feed the test program with one packet and read thousand lines
-> > dump.
-> > Even that is quite user unfriendly.
-> 
-> The log was for the POC only, the idea is to dump this in a user buffer, and
-> with the right tooling (bpftool prog run ... {trace}?) it can be stored in
-> an ELF file together with the program, and input/output. Then it would be
-> easy to dump the C and eBPF program interleaved as bpftool does. If GDB
-> would support eBPF, the format I envision would be good enough to support
-> the GDB record/replay functionality.
+ tools/lib/bpf/hashmap.c                       |   7 +
+ tools/testing/selftests/bpf/.gitignore        |   3 +-
+ tools/testing/selftests/bpf/Makefile          |  20 +-
+ .../{test_hashmap.c =3D> prog_tests/hashmap.c}  | 280 +++++++++---------
+ tools/testing/selftests/bpf/test_progs.c      |  21 +-
+ 5 files changed, 179 insertions(+), 152 deletions(-)
+ rename tools/testing/selftests/bpf/{test_hashmap.c =3D> prog_tests/hashm=
+ap.c} (53%)
 
-For the case you have in mind no kernel changes are necessary.
-Just run the interpreter in user space.
-It can be embedded in gdb binary, for example.
+--=20
+2.24.1
 
-Especially if you don't want to affect production server you definitely
-don't want to run anything on that machine.
-As support person just grab the prog, capture the traffic and debug
-on their own server.
-
-> 
-> > How about enabling kprobe in JITed code instead?
-> > Then if you really need to trap and print regs for every instruction you
-> > can
-> > still do so by placing kprobe on every JITed insn.
-> 
-> This would even be harder as you need to understand the ASM(PPC/ARM/x86) to
-> eBPF mapping (registers/code), where all you are interested in is eBPF (to
-> C).
-
-Not really. gdb-like tool will hide all that from users.
-
-> This kprobe would also affect all the instances of the program running in
-> the system, i.e. for XDP, it could be assigned to all interfaces in the
-> system.
-
-There are plenty of ways to solve that.
-Such kprobe in a prog can be gated by test_run cmd only.
-Or the prog .text can be cloned into new one and kprobed there.
-
-> And for this purpose, you are only interested in the results of a run for a
-> specific packet (in the XDP use case) using the BPF_RUN_API so you are not
-> affecting any live traffic.
-
-The only way to not affect live traffic is to provide support on
-a different machine.
-
-> > But in reality I think few kprobes in the prog will be enough
-> > to debug the program and XDP prog may still process millions of packets
-> > because your kprobe could be in error path and the user may want to
-> > capture only specific things when it triggers.
-> > kprobe bpf prog will execute in such case and it can capture necessary
-> > state from xdp prog, from packet or from maps that xdp prog is using.
-> > Some sort of bpf-gdb would be needed in user space.
-> > Obviously people shouldn't be writing such kprob-bpf progs that debug
-> > other bpf progs by hand. bpf-gdb should be able to generate them
-> > automatically.
-> 
-> See my opening comment. What you're describing here is more when the right
-> developer has access to the specific system. But this might not even be
-> possible in some environments.
-
-All I'm saying that kprobe is a way to trace kernel.
-The same facility should be used to trace bpf progs.
-
-> 
-> Let me know if your opinion on this idea changes after reading this, or what
-> else is needed to convince you of the need ;)
-
-I'm very much against hacking in-kernel interpreter into register
-dumping facility.
-Either use kprobe+bpf for programmatic tracing or intel's pt for pure
-instruction trace.
