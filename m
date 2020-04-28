@@ -2,433 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B80501BCB72
-	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 20:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CAFC1BCB92
+	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 20:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728957AbgD1S5X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Apr 2020 14:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47928 "EHLO
+        id S1729923AbgD1S6C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Apr 2020 14:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728824AbgD1S5W (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 14:57:22 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE78C03C1AB
-        for <bpf@vger.kernel.org>; Tue, 28 Apr 2020 11:57:22 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id et5so23700506qvb.5
-        for <bpf@vger.kernel.org>; Tue, 28 Apr 2020 11:57:22 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1729770AbgD1S6B (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 14:58:01 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124AAC03C1AB
+        for <bpf@vger.kernel.org>; Tue, 28 Apr 2020 11:58:01 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id v38so10927276qvf.6
+        for <bpf@vger.kernel.org>; Tue, 28 Apr 2020 11:58:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=zMKkSwpMdc5eN75VU8dehoXEddyPyKolTrdTmyHNEsY=;
-        b=o8zWbrFFnF136YOCsqiSSiktOM5myj+NVMiyP3t0Oiy5fQdCuoPpHOLpBwS3J6uaU6
-         b+HmqrmP9i5W/11LxtaT6Z8QG3orLF4TraRT5bOmdRZ/G+IjrHBWU1fPdHxNIPzD32Fi
-         aZwkp7hjU8G/v9NqssDPUJJIHqO/XhAaxKRlr+gIOXteGgcyq1dr3DJKpZ+DYMB/CVDe
-         tZKhQUPeVapZDpJcoVRIpBm7yws5xb0Gevvh0d3TQnPMawtTiLg4K7b+X4c8waY+j/oT
-         NKXCXf7HhgeXqyei3rTtcc7st7/vlCq6jS81vLJzWiDkIbmoDHcuYPR2NKFyZddx3g+B
-         4eGg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b0L1ktGzrK0LQZO0rEs01n6+sdiXlGW1/AnA9H8zYJ8=;
+        b=EK+XhIuq319T0HbtQOuX5rKgbseo+ukv14s9HGVjgesdzfwobu5iTH3ciZIqJQlMeb
+         gLSNDQQiV6vffU8us5O1B841SAEjlDk50wU2Coyqp/PPkVjW9OgP1+gbNpDWVSp/l5cr
+         cPvMb5VONdkNOfUEGnQFeRoHHPBPknD/dtM7Q75XVbxnoiifDlZxnZCUnYvWu1oGOyqD
+         pIcQTubcX5F3CK2uL1gty9l04nZJ/4D8vBXNhVD78APaQb3uJ2Vu/IShaPL9RJLyqwBm
+         Bg/MDGfsJAPlT+FPqGWAtJonx8DbwugH5s6x2BteR/CquCXZM4n2J+yy9sirLFK/GpLy
+         t+Tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=zMKkSwpMdc5eN75VU8dehoXEddyPyKolTrdTmyHNEsY=;
-        b=RID+j5KdtUqwkZjI7LwJqE9gdXkjH3yf6TIfgd9n4G3Z/4HqquEh3BDs+28XDYD8vA
-         FDW0e8N1gAMLGJlGBvtD7bUtF+6HVN0i2uf08Vh1hQaAXgeajGJ5k2PxmBsM5gxHTq/G
-         CmsiFYdE9YQrrHeIfe/EaTJnxo/GdyWMDrMkguMVgoYlpBMBjk133zXcyAutnfIV9Z6g
-         Vq0guKtQt9DwWyoFiJEPThoerPbK5IhDpnEHDgoDAocbIzMmIJNSZFLerpB8GxqzqHj2
-         tCkpEP5NOfeDT6T4Fh6hTeVJ5P2yjo6PqAUva1Ax1l2sJMSNA5coQ1YAR+a0I3DUiMcq
-         5aWw==
-X-Gm-Message-State: AGi0PuZBGfIt9QUDd7EN4a4Fpbzta1DVKkEVuGE+R8kvjkBfDpYxVmpS
-        sXYlhiR2aytupBUG3sAWqGGsBks=
-X-Google-Smtp-Source: APiQypIHsP7+ccaJAFdZbTEndj8E7ARb5DKlzsNKw3cq/lk4fBtiYaCv84WyjxJAK7iHu+yE2QfB44s=
-X-Received: by 2002:a0c:8045:: with SMTP id 63mr29839477qva.68.1588100241585;
- Tue, 28 Apr 2020 11:57:21 -0700 (PDT)
-Date:   Tue, 28 Apr 2020 11:57:19 -0700
-Message-Id: <20200428185719.46815-1-sdf@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
-Subject: [PATCH bpf-next] bpf: bpf_{g,s}etsockopt for struct bpf_sock
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b0L1ktGzrK0LQZO0rEs01n6+sdiXlGW1/AnA9H8zYJ8=;
+        b=VAKYhz+X/TzaoWtFCB/EZIx8gePhmtT54mHEFw4lirhP0w9wIsu0JwSWQG1K6KsN+f
+         GGmZ/qs2p1KVB50v89HHB6J47L8xNZQfe9wTAIXSjiSUgILNxfl8RXocsI9R3w88Lzjp
+         9WipIUagjfhm3V3a5tQhhP6Trw1J3kIBsastZr5NZYUYpcAqR8SscEL0MK9aoHp8dHY6
+         jqDoSQCMDhF9s5qucliBw0SC35jmIAx1p97uOB4OiJiq8IZZqdv9OlxlM70j6xQn4oW3
+         HI/S5fZpMTBxFLYuu++RfFlgGL92Gb9Urc7+A/rh8bp0gNn7hbnaSk9o5tQ3vvgfC946
+         XU0A==
+X-Gm-Message-State: AGi0Pua222g1H48UrZuEFG+JMxNmQ1yEHEqe8Q6BTtRUtQ3DndmtDA7p
+        +CR6E8EVB+Or9eZ6VKFO6P57WYS/sa/m0LH6hdW3aMvS
+X-Google-Smtp-Source: APiQypKqbvvrHt3rVmPASYetPS/GrupbCiwnGjgHVMktjI4iOKzabZXZJa0yYnYlhTGMXtU/W7DQCQrQWE5LGJZT828=
+X-Received: by 2002:a0c:eb09:: with SMTP id j9mr29701104qvp.196.1588100280228;
+ Tue, 28 Apr 2020 11:58:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200428173742.2988395-1-vkabatov@redhat.com>
+In-Reply-To: <20200428173742.2988395-1-vkabatov@redhat.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 28 Apr 2020 11:57:49 -0700
+Message-ID: <CAEf4Bzbp44pnj-yNP61enxh8-ZvFn56fSF4uDHLz0ZcY-H2yAA@mail.gmail.com>
+Subject: Re: [PATCH v2] selftests/bpf: Copy runqslower to OUTPUT directory
+To:     Veronika Kabatova <vkabatov@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, bpf_getsocktop and bpf_setsockopt helpers operate on the
-'struct bpf_sock_ops' context in BPF_PROG_TYPE_CGROUP_SOCKOPT program.
-Let's generalize them and make the first argument be 'struct bpf_sock'.
-That way, in the future, we can allow those helpers in more places.
+On Tue, Apr 28, 2020 at 10:38 AM Veronika Kabatova <vkabatov@redhat.com> wrote:
+>
+> $(OUTPUT)/runqslower makefile target doesn't actually create runqslower
+> binary in the $(OUTPUT) directory. As lib.mk expects all
+> TEST_GEN_PROGS_EXTENDED (which runqslower is a part of) to be present in
+> the OUTPUT directory, this results in an error when running e.g. `make
+> install`:
+>
+> rsync: link_stat "tools/testing/selftests/bpf/runqslower" failed: No
+>        such file or directory (2)
+>
+> Copy the binary into the OUTPUT directory after building it to fix the
+> error.
+>
+> Fixes: 3a0d3092a4ed ("selftests/bpf: Build runqslower from selftests")
+> Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
+> ---
 
-BPF_PROG_TYPE_CGROUP_SOCKOPT still has the existing helpers that operate
-on 'struct bpf_sock_ops', but we add new bpf_{g,s}etsockopt that work
-on 'struct bpf_sock'. [Alternatively, for BPF_PROG_TYPE_CGROUP_SOCKOPT,
-we can enable them both and teach verifier to pick the right one
-based on the context (bpf_sock_ops vs bpf_sock).]
+Looks good, thanks.
 
-As an example, let's allow those 'struct bpf_sock' based helpers to
-be called from the BPF_CGROUP_INET{4,6}_CONNECT hooks. That way
-we can override CC before the connection is made.
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- include/uapi/linux/bpf.h                      |  12 +-
- net/core/filter.c                             | 113 ++++++++++++++----
- tools/include/uapi/linux/bpf.h                |  12 +-
- tools/testing/selftests/bpf/config            |   1 +
- .../selftests/bpf/progs/connect4_prog.c       |  46 +++++++
- 5 files changed, 159 insertions(+), 25 deletions(-)
-
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 4a6c47f3febe..68900c32d05f 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1564,7 +1564,7 @@ union bpf_attr {
-  * 	Return
-  * 		0
-  *
-- * int bpf_setsockopt(struct bpf_sock_ops *bpf_socket, int level, int optname, void *optval, int optlen)
-+ * int bpf_setsockopt(void *bpf_socket, int level, int optname, void *optval, int optlen)
-  * 	Description
-  * 		Emulate a call to **setsockopt()** on the socket associated to
-  * 		*bpf_socket*, which must be a full socket. The *level* at
-@@ -1572,6 +1572,10 @@ union bpf_attr {
-  * 		must be specified, see **setsockopt(2)** for more information.
-  * 		The option value of length *optlen* is pointed by *optval*.
-  *
-+ * 		*bpf_socket* should be one of the following:
-+ * 		* **struct bpf_sock_ops** for **BPF_PROG_TYPE_CGROUP_SOCKOPT**.
-+ * 		* **struct bpf_sock** for the other types.
-+ *
-  * 		This helper actually implements a subset of **setsockopt()**.
-  * 		It supports the following *level*\ s:
-  *
-@@ -1766,7 +1770,7 @@ union bpf_attr {
-  * 	Return
-  * 		0 on success, or a negative error in case of failure.
-  *
-- * int bpf_getsockopt(struct bpf_sock_ops *bpf_socket, int level, int optname, void *optval, int optlen)
-+ * int bpf_getsockopt(void *bpf_socket, int level, int optname, void *optval, int optlen)
-  * 	Description
-  * 		Emulate a call to **getsockopt()** on the socket associated to
-  * 		*bpf_socket*, which must be a full socket. The *level* at
-@@ -1775,6 +1779,10 @@ union bpf_attr {
-  * 		The retrieved value is stored in the structure pointed by
-  * 		*opval* and of length *optlen*.
-  *
-+ * 		*bpf_socket* should be one of the following:
-+ * 		* **struct bpf_sock_ops** for **BPF_PROG_TYPE_CGROUP_SOCKOPT**.
-+ * 		* **struct bpf_sock** for the other types.
-+ *
-  * 		This helper actually implements a subset of **getsockopt()**.
-  * 		It supports the following *level*\ s:
-  *
-diff --git a/net/core/filter.c b/net/core/filter.c
-index da3b7a72c37c..0e8f2c9cfe27 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4194,16 +4194,19 @@ static const struct bpf_func_proto bpf_get_socket_uid_proto = {
- 	.arg1_type      = ARG_PTR_TO_CTX,
- };
- 
--BPF_CALL_5(bpf_setsockopt, struct bpf_sock_ops_kern *, bpf_sock,
--	   int, level, int, optname, char *, optval, int, optlen)
-+#define SOCKOPT_CC_REINIT (1 << 0)
-+
-+static int _bpf_setsockopt(struct sock *sk, int level, int optname,
-+			   char *optval, int optlen, u32 flags)
- {
--	struct sock *sk = bpf_sock->sk;
- 	int ret = 0;
- 	int val;
- 
- 	if (!sk_fullsock(sk))
- 		return -EINVAL;
- 
-+	sock_owned_by_me(sk);
-+
- 	if (level == SOL_SOCKET) {
- 		if (optlen != sizeof(int))
- 			return -EINVAL;
-@@ -4298,7 +4301,7 @@ BPF_CALL_5(bpf_setsockopt, struct bpf_sock_ops_kern *, bpf_sock,
- 		   sk->sk_prot->setsockopt == tcp_setsockopt) {
- 		if (optname == TCP_CONGESTION) {
- 			char name[TCP_CA_NAME_MAX];
--			bool reinit = bpf_sock->op > BPF_SOCK_OPS_NEEDS_ECN;
-+			bool reinit = flags & SOCKOPT_CC_REINIT;
- 
- 			strncpy(name, optval, min_t(long, optlen,
- 						    TCP_CA_NAME_MAX-1));
-@@ -4345,24 +4348,14 @@ BPF_CALL_5(bpf_setsockopt, struct bpf_sock_ops_kern *, bpf_sock,
- 	return ret;
- }
- 
--static const struct bpf_func_proto bpf_setsockopt_proto = {
--	.func		= bpf_setsockopt,
--	.gpl_only	= false,
--	.ret_type	= RET_INTEGER,
--	.arg1_type	= ARG_PTR_TO_CTX,
--	.arg2_type	= ARG_ANYTHING,
--	.arg3_type	= ARG_ANYTHING,
--	.arg4_type	= ARG_PTR_TO_MEM,
--	.arg5_type	= ARG_CONST_SIZE,
--};
--
--BPF_CALL_5(bpf_getsockopt, struct bpf_sock_ops_kern *, bpf_sock,
--	   int, level, int, optname, char *, optval, int, optlen)
-+static int _bpf_getsockopt(struct sock *sk, int level, int optname,
-+			   char *optval, int optlen)
- {
--	struct sock *sk = bpf_sock->sk;
--
- 	if (!sk_fullsock(sk))
- 		goto err_clear;
-+
-+	sock_owned_by_me(sk);
-+
- #ifdef CONFIG_INET
- 	if (level == SOL_TCP && sk->sk_prot->getsockopt == tcp_getsockopt) {
- 		struct inet_connection_sock *icsk;
-@@ -4428,10 +4421,72 @@ BPF_CALL_5(bpf_getsockopt, struct bpf_sock_ops_kern *, bpf_sock,
- 	return -EINVAL;
- }
- 
-+BPF_CALL_5(bpf_setsockopt, struct sock *, sk,
-+	   int, level, int, optname, char *, optval, int, optlen)
-+{
-+	u32 flags = 0;
-+	return _bpf_setsockopt(sk, level, optname, optval, optlen, flags);
-+}
-+
-+static const struct bpf_func_proto bpf_setsockopt_proto = {
-+	.func		= bpf_setsockopt,
-+	.gpl_only	= false,
-+	.ret_type	= RET_INTEGER,
-+	.arg1_type	= ARG_PTR_TO_SOCKET,
-+	.arg2_type	= ARG_ANYTHING,
-+	.arg3_type	= ARG_ANYTHING,
-+	.arg4_type	= ARG_PTR_TO_MEM,
-+	.arg5_type	= ARG_CONST_SIZE,
-+};
-+
-+BPF_CALL_5(bpf_getsockopt, struct sock *, sk,
-+	   int, level, int, optname, char *, optval, int, optlen)
-+{
-+	return _bpf_getsockopt(sk, level, optname, optval, optlen);
-+}
-+
- static const struct bpf_func_proto bpf_getsockopt_proto = {
- 	.func		= bpf_getsockopt,
- 	.gpl_only	= false,
- 	.ret_type	= RET_INTEGER,
-+	.arg1_type	= ARG_PTR_TO_SOCKET,
-+	.arg2_type	= ARG_ANYTHING,
-+	.arg3_type	= ARG_ANYTHING,
-+	.arg4_type	= ARG_PTR_TO_UNINIT_MEM,
-+	.arg5_type	= ARG_CONST_SIZE,
-+};
-+
-+BPF_CALL_5(bpf_sock_ops_setsockopt, struct bpf_sock_ops_kern *, bpf_sock,
-+	   int, level, int, optname, char *, optval, int, optlen)
-+{
-+	u32 flags = 0;
-+	if (bpf_sock->op > BPF_SOCK_OPS_NEEDS_ECN)
-+		flags |= SOCKOPT_CC_REINIT;
-+	return _bpf_setsockopt(bpf_sock->sk, level, optname, optval, optlen,
-+			       flags);
-+}
-+
-+static const struct bpf_func_proto bpf_sock_ops_setsockopt_proto = {
-+	.func		= bpf_sock_ops_setsockopt,
-+	.gpl_only	= false,
-+	.ret_type	= RET_INTEGER,
-+	.arg1_type	= ARG_PTR_TO_CTX,
-+	.arg2_type	= ARG_ANYTHING,
-+	.arg3_type	= ARG_ANYTHING,
-+	.arg4_type	= ARG_PTR_TO_MEM,
-+	.arg5_type	= ARG_CONST_SIZE,
-+};
-+
-+BPF_CALL_5(bpf_sock_ops_getsockopt, struct bpf_sock_ops_kern *, bpf_sock,
-+	   int, level, int, optname, char *, optval, int, optlen)
-+{
-+	return _bpf_getsockopt(bpf_sock->sk, level, optname, optval, optlen);
-+}
-+
-+static const struct bpf_func_proto bpf_sock_ops_getsockopt_proto = {
-+	.func		= bpf_sock_ops_getsockopt,
-+	.gpl_only	= false,
-+	.ret_type	= RET_INTEGER,
- 	.arg1_type	= ARG_PTR_TO_CTX,
- 	.arg2_type	= ARG_ANYTHING,
- 	.arg3_type	= ARG_ANYTHING,
-@@ -6043,6 +6098,22 @@ sock_addr_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_sk_storage_get_proto;
- 	case BPF_FUNC_sk_storage_delete:
- 		return &bpf_sk_storage_delete_proto;
-+	case BPF_FUNC_setsockopt:
-+		switch (prog->expected_attach_type) {
-+		case BPF_CGROUP_INET4_CONNECT:
-+		case BPF_CGROUP_INET6_CONNECT:
-+			return &bpf_setsockopt_proto;
-+		default:
-+			return NULL;
-+		}
-+	case BPF_FUNC_getsockopt:
-+		switch (prog->expected_attach_type) {
-+		case BPF_CGROUP_INET4_CONNECT:
-+		case BPF_CGROUP_INET6_CONNECT:
-+			return &bpf_getsockopt_proto;
-+		default:
-+			return NULL;
-+		}
- 	default:
- 		return bpf_base_func_proto(func_id);
- 	}
-@@ -6261,9 +6332,9 @@ sock_ops_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- {
- 	switch (func_id) {
- 	case BPF_FUNC_setsockopt:
--		return &bpf_setsockopt_proto;
-+		return &bpf_sock_ops_setsockopt_proto;
- 	case BPF_FUNC_getsockopt:
--		return &bpf_getsockopt_proto;
-+		return &bpf_sock_ops_getsockopt_proto;
- 	case BPF_FUNC_sock_ops_cb_flags_set:
- 		return &bpf_sock_ops_cb_flags_set_proto;
- 	case BPF_FUNC_sock_map_update:
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 4a6c47f3febe..68900c32d05f 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1564,7 +1564,7 @@ union bpf_attr {
-  * 	Return
-  * 		0
-  *
-- * int bpf_setsockopt(struct bpf_sock_ops *bpf_socket, int level, int optname, void *optval, int optlen)
-+ * int bpf_setsockopt(void *bpf_socket, int level, int optname, void *optval, int optlen)
-  * 	Description
-  * 		Emulate a call to **setsockopt()** on the socket associated to
-  * 		*bpf_socket*, which must be a full socket. The *level* at
-@@ -1572,6 +1572,10 @@ union bpf_attr {
-  * 		must be specified, see **setsockopt(2)** for more information.
-  * 		The option value of length *optlen* is pointed by *optval*.
-  *
-+ * 		*bpf_socket* should be one of the following:
-+ * 		* **struct bpf_sock_ops** for **BPF_PROG_TYPE_CGROUP_SOCKOPT**.
-+ * 		* **struct bpf_sock** for the other types.
-+ *
-  * 		This helper actually implements a subset of **setsockopt()**.
-  * 		It supports the following *level*\ s:
-  *
-@@ -1766,7 +1770,7 @@ union bpf_attr {
-  * 	Return
-  * 		0 on success, or a negative error in case of failure.
-  *
-- * int bpf_getsockopt(struct bpf_sock_ops *bpf_socket, int level, int optname, void *optval, int optlen)
-+ * int bpf_getsockopt(void *bpf_socket, int level, int optname, void *optval, int optlen)
-  * 	Description
-  * 		Emulate a call to **getsockopt()** on the socket associated to
-  * 		*bpf_socket*, which must be a full socket. The *level* at
-@@ -1775,6 +1779,10 @@ union bpf_attr {
-  * 		The retrieved value is stored in the structure pointed by
-  * 		*opval* and of length *optlen*.
-  *
-+ * 		*bpf_socket* should be one of the following:
-+ * 		* **struct bpf_sock_ops** for **BPF_PROG_TYPE_CGROUP_SOCKOPT**.
-+ * 		* **struct bpf_sock** for the other types.
-+ *
-  * 		This helper actually implements a subset of **getsockopt()**.
-  * 		It supports the following *level*\ s:
-  *
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index 60e3ae5d4e48..6e5b94c036ca 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -37,3 +37,4 @@ CONFIG_IPV6_SIT=m
- CONFIG_BPF_JIT=y
- CONFIG_BPF_LSM=y
- CONFIG_SECURITY=y
-+CONFIG_TCP_CONG_DCTCP=y
-diff --git a/tools/testing/selftests/bpf/progs/connect4_prog.c b/tools/testing/selftests/bpf/progs/connect4_prog.c
-index ad3c498a8150..656eb8c1ffc8 100644
---- a/tools/testing/selftests/bpf/progs/connect4_prog.c
-+++ b/tools/testing/selftests/bpf/progs/connect4_prog.c
-@@ -8,6 +8,7 @@
- #include <linux/in.h>
- #include <linux/in6.h>
- #include <sys/socket.h>
-+#include <netinet/tcp.h>
- 
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
-@@ -16,6 +17,10 @@
- #define DST_REWRITE_IP4		0x7f000001U
- #define DST_REWRITE_PORT4	4444
- 
-+#ifndef TCP_CA_NAME_MAX
-+#define TCP_CA_NAME_MAX 16
-+#endif
-+
- int _version SEC("version") = 1;
- 
- __attribute__ ((noinline))
-@@ -33,6 +38,43 @@ int do_bind(struct bpf_sock_addr *ctx)
- 	return 1;
- }
- 
-+static __inline int verify_cc(struct bpf_sock *sk,
-+			      char expected[TCP_CA_NAME_MAX])
-+{
-+	char buf[TCP_CA_NAME_MAX];
-+	int i;
-+
-+	if (bpf_getsockopt(sk, SOL_TCP, TCP_CONGESTION, &buf, sizeof(buf)))
-+		return 1;
-+
-+	for (i = 0; i < TCP_CA_NAME_MAX; i++) {
-+		if (buf[i] != expected[i])
-+			return 1;
-+		if (buf[i] == 0)
-+			break;
-+	}
-+
-+	return 0;
-+}
-+
-+static __inline int set_cc(struct bpf_sock *sk)
-+{
-+	char dctcp[TCP_CA_NAME_MAX] = "dctcp";
-+	char cubic[TCP_CA_NAME_MAX] = "cubic";
-+
-+	if (bpf_setsockopt(sk, SOL_TCP, TCP_CONGESTION, &dctcp, sizeof(dctcp)))
-+		return 1;
-+	if (verify_cc(sk, dctcp))
-+		return 1;
-+
-+	if (bpf_setsockopt(sk, SOL_TCP, TCP_CONGESTION, &cubic, sizeof(cubic)))
-+		return 1;
-+	if (verify_cc(sk, cubic))
-+		return 1;
-+
-+	return 0;
-+}
-+
- SEC("cgroup/connect4")
- int connect_v4_prog(struct bpf_sock_addr *ctx)
- {
-@@ -66,6 +108,10 @@ int connect_v4_prog(struct bpf_sock_addr *ctx)
- 
- 	bpf_sk_release(sk);
- 
-+	/* Rewrite congestion control. */
-+	if (ctx->type == SOCK_STREAM && set_cc(ctx->sk))
-+		return 0;
-+
- 	/* Rewrite destination. */
- 	ctx->user_ip4 = bpf_htonl(DST_REWRITE_IP4);
- 	ctx->user_port = bpf_htons(DST_REWRITE_PORT4);
--- 
-2.26.2.303.gf8c07b1a785-goog
-
+>  tools/testing/selftests/bpf/Makefile | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 7729892e0b04..4e654d41c7af 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -141,7 +141,8 @@ VMLINUX_BTF := $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
+>  $(OUTPUT)/runqslower: $(BPFOBJ)
+>         $(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower     \
+>                     OUTPUT=$(SCRATCH_DIR)/ VMLINUX_BTF=$(VMLINUX_BTF)   \
+> -                   BPFOBJ=$(BPFOBJ) BPF_INCLUDE=$(INCLUDE_DIR)
+> +                   BPFOBJ=$(BPFOBJ) BPF_INCLUDE=$(INCLUDE_DIR) &&      \
+> +                   cp $(SCRATCH_DIR)/runqslower $@
+>
+>  $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): $(OUTPUT)/test_stub.o $(BPFOBJ)
+>
+> --
+> 2.25.1
+>
