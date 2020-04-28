@@ -2,81 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A881BCF8D
-	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 00:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 994B71BD00E
+	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 00:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726279AbgD1WOG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Apr 2020 18:14:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50582 "EHLO
+        id S1726852AbgD1WdV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Apr 2020 18:33:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726256AbgD1WOF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 18:14:05 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB47C03C1AC;
-        Tue, 28 Apr 2020 15:14:05 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id l11so18136239lfc.5;
-        Tue, 28 Apr 2020 15:14:05 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1725934AbgD1WdT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 18:33:19 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7DDC03C1AC;
+        Tue, 28 Apr 2020 15:33:19 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id i68so291488qtb.5;
+        Tue, 28 Apr 2020 15:33:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bJF14BaLVM/ADkYU+eDwCN+bZs5L8nnJTZQjJY+RWHE=;
-        b=pZiZUrKu6oxh5JWQBuxE7rMCpNeubHNL4SfQ2OSbMvyeepwpMLSJmlLms72zRzG9xK
-         1THbrJaYQEWJQVQU+J799OffNlnza0lbLB+sB8o887Pg7wNPeA/k95nVnxWqA0KVFpuO
-         WWAj+jrGaCEr4MxbeScAyEGbNpChndnSI5ibvRArWgBkf0RSxQ1za5bpWlhAkRr/KgOk
-         AH7TrAHbA1lg9TBgf5uuHPSO3JPYbWuCQ5IhV846hO4ol+wgMDISLXzRLbFXfawSmILR
-         JlnrCXyeHZ+66OxzfmoUTJq+9MCsBrOxz3gj+7GxvSQ7sjaMrW5tFO0o3izgZoDg1s55
-         pvfQ==
+        bh=VP2rT8ROh7S0MnyS1t6JGVG5H1MCG74Qx9Ajtfaf+AE=;
+        b=ucjcYe7JBqxRxJQ7GEZCO6l7FBxFw5Ys7u4ysrcJj+Kmvkj6w97jb0QSwk4Ey3tJmk
+         xQnL2+4WUhF0ZhvQYlqNUD5J9/UcwYswSJLn+R0IpuwiaoQwCSzaGLmEFc+B0+lWbau8
+         /RnD0HAhdoXQ5cfT1sAk9lb+SHxBMyNY0orOSQ0njKgLJdNGGZYK16O7OsddPmB34aYs
+         o0Aj+IRrPs2V7cDcCeYcj/AtKjwYaGP8PGVb/mMamljwUZBdpIwqrZ10KjofDQQUh+4j
+         3cSTX0g//led+aEIHZJzvZBn+lWO97QK7s2yeCKm7bNB/+YpC4RbglElzTdpDIgw42YR
+         +KdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bJF14BaLVM/ADkYU+eDwCN+bZs5L8nnJTZQjJY+RWHE=;
-        b=dA1De0/Xki0yBe0gLiF6OvuxW76/l0Rvvpp0calYzPnIV8Acdw23+rYWwx3FRopCP3
-         Je7FdyUrTqPpW5u0b2XIpL1SjY1NpxcWjqx1Ni8kDhDukx4wLTzgfdbTXBGLME8yR6nV
-         cZte/EatNrdXCD8iC1wh9XCelGhWtffecRgzf4ZhvzuWegCDOqHT/OvdShPNtk+Xf7i6
-         6Gy852mY7C58O5HjjxK6KRXEz+VZCM5r7arRYVe5V1Xg6r44/1/Vf8NvyrgySiCj95+b
-         EIR75d0y5Q1IdkmwjzKI3TGAD3nA2v8zfVLeEu73/d8z8Cr2b0gWduBQCiDPqg2AV7wo
-         RGRg==
-X-Gm-Message-State: AGi0Pub/bNyM2JscImFCJIrbjZ8XtT7rKBBmjiBdRytrjOqOPYgtFFEL
-        +dip3VCXi1PF6UWE5SI0i01VF6G3PMWwEobdQu9A3A==
-X-Google-Smtp-Source: APiQypIt/ioRgNi4WchTJEOShSA387xTAtP0jjsE7zs7FJ7Dlp5rj/LE+zKmfmfzfjXmk+aHBkDo4A0SZphkiBauvYo=
-X-Received: by 2002:a19:505c:: with SMTP id z28mr2657157lfj.174.1588112043710;
- Tue, 28 Apr 2020 15:14:03 -0700 (PDT)
+        bh=VP2rT8ROh7S0MnyS1t6JGVG5H1MCG74Qx9Ajtfaf+AE=;
+        b=E3dFP2VrMRwlbG9dSYvwrsMVpvh9XfmSpuz/RxduXugYpAj/0mx9+BUa5C4RJHxKar
+         hU4JLqzg8M4fYzGG9UhfnQX0wqKnG7Emigx1pvlM+SJWAxQZ59KhNmN0yiqFTRw4/2yr
+         ydKM1HUWZgofHupUD8hVgXCc75vn529MLm6phUCPDEm2i8CiJ7tkP0bjmYpa1hvHF4vc
+         5vn3HMM8zvs6h3zCtxk6RVzD4twMhiKtv6X/e0Ri83/kBXrbNT0bC9+yPMDW9+Wwkr9A
+         GESfam70YqSLb7T+SiJPJKDJVkhBGvKKzU6ol/n+eJIJRJHhJYd4B+boOgVF66eKsamC
+         8DIA==
+X-Gm-Message-State: AGi0PuZelajLMvYTgaZbibXTIxxbot0HYyTwsV7YrYc0XSMsoFfThDXk
+        FFMlbDlBvSM18GwW+Q5SimoSkRVNw28rBnbzK58=
+X-Google-Smtp-Source: APiQypKyfSCkwhJz9ssDaKVO4zAYa8yPSUF0mVEk9NTbjf7U890PzQ+7ci6wcTCYTRKUn/sNJgQ7i1Mr0CINjCWAbL8=
+X-Received: by 2002:ac8:193d:: with SMTP id t58mr2487519qtj.93.1588113198540;
+ Tue, 28 Apr 2020 15:33:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200427234423.998085-1-songliubraving@fb.com>
- <20200427234423.998085-4-songliubraving@fb.com> <09720b42-9858-0e2f-babf-f3cd27f648e6@fb.com>
- <76D70217-F09E-46EA-AA1B-33B883C96EB0@fb.com>
-In-Reply-To: <76D70217-F09E-46EA-AA1B-33B883C96EB0@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 28 Apr 2020 15:13:52 -0700
-Message-ID: <CAADnVQ+WWa0aGNYN7yrhH38EQv=RxNKp-4fOw5XL+NjUce1oGQ@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 3/3] bpf: add selftest for BPF_ENABLE_STATS
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
+References: <20200428054944.4015462-1-andriin@fb.com> <20200428054944.4015462-3-andriin@fb.com>
+ <20200428173120.lof25gzz75bx5ot7@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4Bza-gqQHz3_9RyX7pKo_2kYeh7cCmNRAxExx48JQdOpfDQ@mail.gmail.com> <20200428203843.pe7d4zbki2ihnq2m@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200428203843.pe7d4zbki2ihnq2m@ast-mbp.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 28 Apr 2020 15:33:07 -0700
+Message-ID: <CAEf4BzZ4q5ngbF9YQSrCSyXv3UkQL5YWRnuOAuKs4b7nBkYZpg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 02/10] bpf: allocate ID for bpf_link
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 3:09 PM Song Liu <songliubraving@fb.com> wrote:
-> >> +
-> >> +struct {
-> >> +    __uint(type, BPF_MAP_TYPE_ARRAY);
-> >> +    __uint(max_entries, 1);
-> >> +    __type(key, __u32);
-> >> +    __type(value, __u64);
-> >> +} count SEC(".maps");
-> >
-> > Looks like a global variable can be used here?
+On Tue, Apr 28, 2020 at 1:38 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> We can use global variable. But it doesn't really matter for this test.
-> Any BPF program will work here. Do we really need a v6 for this change?
+> On Tue, Apr 28, 2020 at 11:56:52AM -0700, Andrii Nakryiko wrote:
+> > On Tue, Apr 28, 2020 at 10:31 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Mon, Apr 27, 2020 at 10:49:36PM -0700, Andrii Nakryiko wrote:
+> > > > +int bpf_link_settle(struct bpf_link_primer *primer)
+> > > > +{
+> > > > +     /* make bpf_link fetchable by ID */
+> > > > +     WRITE_ONCE(primer->link->id, primer->id);
+> > >
+> > > what does WRITE_ONCE serve here?
+> >
+> > To prevent compiler reordering this write with fd_install. So that by
+> > the time FD is exposed to user-space, link has properly set ID.
+>
+> if you wanted memory barrier then it should have been barrier(),
+> but that wouldn't be enough, since patch 2 and 3 race to read and write
+> that 32-bit int.
+>
+> > > bpf_link_settle can only be called at the end of attach.
+> > > If attach is slow than parallel get_fd_by_id can get an new FD
+> > > instance for link with zero id.
+> > > In such case deref of link->id will race with above assignment?
+> >
+> > Yes, it does race, but it can either see zero and assume bpf_link is
+> > not ready (which is fine to do) or will see correct link ID and will
+> > proceed to create new FD for it. By the time we do context switch back
+> > to user-space and return link FD, ID will definitely be visible due to
+> > context switch and associated memory barriers. If anyone is guessing
+> > FD and trying to create FD_BY_ID before LINK_CREATE syscall returns --
+> > then returning failure due to link ID not yet set is totally fine,
+> > IMO.
+> >
+> > > But I don't see READ_ONCE in patch 3.
+> > > It's under link_idr_lock there.
+> >
+> > It doesn't need READ_ONCE because it does read under spinlock, so
+> > compiler can't re-order it with code outside of spinlock.
+>
+> spin_lock in patch 3 doesn't guarantee that link->id deref in that patch
+> will be atomic.
 
-yes. please.
-Otherwise folks will copy paste this inefficiency into future tests.
+What do you mean by "atomic" here? Are you saying that we can get torn
+read on u32 on some architectures? If that was the case, neither
+WRITE_ONCE/READ_ONCE nor smp_write_release/smp_load_acquire would
+help. But I don't think that's the case, we have code in verifier that
+does similar racy u32 write/read (it uses READ_ONCE/WRITE_ONCE) and
+seems to be working fine.
+
+> So WRITE_ONCE in patch 2 into link->id is still racy with plain
+> read in patch 3.
+> Just wait and see kmsan complaining about it.
+>
+> > > How about grabbing link_idr_lock here as well ?
+> > > otherwise it's still racy since WRITE_ONCE is not paired.
+> >
+> > As indicated above, seems unnecessary? But I also don't object
+> > strongly, I don't expect this lock for links to be a major bottleneck
+> > or anything like that.
+>
+> Either READ_ONCE has to be paired with WRITE_ONCE
+> (or even better smp_load_acquire with smp_store_release)
+> or use spin_lock.
+
+Sure, let me use smp_load_acquite/smp_store_release.
+
+>
+> > >
+> > > The mix of spin_lock_irqsave(&link_idr_lock)
+> > > and spin_lock_bh(&link_idr_lock) looks weird.
+> > > We do the same for map_idr because maps have complicated freeing logic,
+> > > but prog_idr is consistent.
+> > > If you see the need for irqsave variant then please use it in all cases.
+> >
+> > No, my bad, I don't see any need to intermix them. I'll stick to
+> > spin_lock_bh, thanks for catching!
+>
+> I think that should be fine.
+> Please double check that situation described in
+> commit 930651a75bf1 ("bpf: do not disable/enable BH in bpf_map_free_id()")
+> doesn't apply to link_idr.
+
+If I understand what was the problem for BPF maps, we were taking lock
+and trying to disable softirqs while softirqs were already disabled by
+caller. This doesn't seem to be the case for links, as far as I can
+tell. So I'll just go with spin_lock_bh() everywhere for consistency.
