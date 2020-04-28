@@ -2,170 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4891BB219
-	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 01:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 175901BB384
+	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 03:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726366AbgD0Xoo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Apr 2020 19:44:44 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:4142 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726335AbgD0Xoo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 27 Apr 2020 19:44:44 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03RNeL6e003047
-        for <bpf@vger.kernel.org>; Mon, 27 Apr 2020 16:44:43 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=bjveWCdDXoEAAMheK+U9dz/xeUB0LejzHFo0PpTJyPI=;
- b=NXwzolRwofHLhxdejzv6IcYC9fU0NYMfDv6A+7UlEW6izkOYjZatYIuf8oTNm3Bf8f8v
- mqf2m1cgHVsrw1Sq3IZ4PV6ztpjLqcdgqcTIcpuyiPlSd5CTQmfO3+URKL0RvxkmIG5+
- R4e3tr7vWQ8ZAjiRHMCelU8nnsbygvGFocM= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 30mjqn77tv-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 27 Apr 2020 16:44:43 -0700
-Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Mon, 27 Apr 2020 16:44:42 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 7EAE162E3380; Mon, 27 Apr 2020 16:44:36 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Song Liu <songliubraving@fb.com>
-Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Song Liu <songliubraving@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v5 bpf-next 3/3] bpf: add selftest for BPF_ENABLE_STATS
-Date:   Mon, 27 Apr 2020 16:44:23 -0700
-Message-ID: <20200427234423.998085-4-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200427234423.998085-1-songliubraving@fb.com>
-References: <20200427234423.998085-1-songliubraving@fb.com>
+        id S1726261AbgD1BkQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Apr 2020 21:40:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726251AbgD1BkQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 27 Apr 2020 21:40:16 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B21AC03C1A8;
+        Mon, 27 Apr 2020 18:40:16 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id s30so16118055qth.2;
+        Mon, 27 Apr 2020 18:40:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oQ1PRq8YJ6rFSjaWjcwv39nmTX0ZhCPh6qqqxXUPIzw=;
+        b=OuxLdLyVX+0Qd/oYDB3qe4xREmNNbbHI6nepjMKIalwe3gT4SmR4e+Aqfq9UVhiuEp
+         D5Iyzj2CyQPBugBKuZJGtuk6sGXTwZ1QS6BBnajLGMPjluTJDLr7ylOun3mWi7+iHrn+
+         U14k3RvRZBUiaZap+hHE/qqs8jlFdpDQw1A1Z618yNqiv/aDdZXB+az/5Zi2n3Oyhgd3
+         90j5xW46w+aSSrfCP4La3FJ/GwwQdCVio9QkfmyExoWuxDaHSRRuXQDofnpne3bTS789
+         JkbZP0not8ovBH/Nr3yB70AzSpm60+yOj08fmERoo48oaVwZtcO+U8YzsJRlO4jL/+R5
+         R5Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oQ1PRq8YJ6rFSjaWjcwv39nmTX0ZhCPh6qqqxXUPIzw=;
+        b=XLvaAXJ+3cL2WOhX2p8K4mkuHYa+304fP8oLZ9PAuWuMpl2XDGIl897GvNYVmKpBfU
+         036aQ021OtVBFcQ/t8NSzb1P/vRdGUxrmreqnWrfnhLB3tZAu9zmZ6GO4CkXqa9dm720
+         joCwGAIBjzqTL4TgTILo6IbNT72PP/WZWaPzs2AgPyHc8YFAHfLy84T/vZwbgvGIevUR
+         f6F45mU1euwqwFZdF6kWXSj/uv3N8yfaNG34FZ64rUUoLZfIe+OpGyIUxRuscRV9C9ga
+         p6j0ExtZrEX4LEdhe3sax8CY0QJCrX735J7eKiIe/al/qhNXPa5Qi4wc++T38DAxRqYn
+         CRkg==
+X-Gm-Message-State: AGi0Pub+7Nr9MxNxRQ/7j4cheEVFfg8TlDZC9cjNK5knuRPsgNQyytQS
+        Z4nx+rtTRmc4BMI1pUBXrEF6US4xTfBSWYqvhuw=
+X-Google-Smtp-Source: APiQypIOyf7y10cok83a/w9m2tXPvicgVwQo01KfjmFle3WZRK1dv6qRmH4KWuPpXYPjIMsBn/akJZrYpFgxj1sPuXo=
+X-Received: by 2002:ac8:3f6d:: with SMTP id w42mr25564296qtk.171.1588038015385;
+ Mon, 27 Apr 2020 18:40:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-27_17:2020-04-27,2020-04-27 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- mlxscore=0 malwarescore=0 bulkscore=0 phishscore=0 clxscore=1015
- mlxlogscore=999 spamscore=0 lowpriorityscore=0 impostorscore=0
- suspectscore=8 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2004270193
-X-FB-Internal: deliver
+References: <20200304204157.58695-1-cneirabustos@gmail.com>
+ <CAADnVQL4GR2kOoiLE0aTorvYzTPWrOCV4yKMh1BasYTVHkKxcg@mail.gmail.com> <20200313124642.GA1309@bpf-dev>
+In-Reply-To: <20200313124642.GA1309@bpf-dev>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 27 Apr 2020 18:40:04 -0700
+Message-ID: <CAEf4BzbzOqBew+kySpqNTgzXpa009KjoXOLpjZ8FvNr5Jo7gXg@mail.gmail.com>
+Subject: Re: [PATCH v17 0/3] BPF: New helper to obtain namespace data from
+ current task
+To:     Carlos Antonio Neira Bustos <cneirabustos@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add test for  BPF_ENABLE_STATS, which should enable run_time_ns stats.
+On Fri, Mar 13, 2020 at 5:48 AM Carlos Antonio Neira Bustos
+<cneirabustos@gmail.com> wrote:
+>
+> On Thu, Mar 12, 2020 at 05:45:09PM -0700, Alexei Starovoitov wrote:
+> > On Wed, Mar 4, 2020 at 12:42 PM Carlos Neira <cneirabustos@gmail.com> wrote:
+> > >
+> > > Currently bpf_get_current_pid_tgid(), is used to do pid filtering in bcc's
+> > > scripts but this helper returns the pid as seen by the root namespace which is
+> > > fine when a bcc script is not executed inside a container.
+> > > When the process of interest is inside a container, pid filtering will not work
+> > > if bpf_get_current_pid_tgid() is used.
+> > > This helper addresses this limitation returning the pid as it's seen by the current
+> > > namespace where the script is executing.
+> > >
+> > > In the future different pid_ns files may belong to different devices, according to the
+> > > discussion between Eric Biederman and Yonghong in 2017 Linux plumbers conference.
+> > > To address that situation the helper requires inum and dev_t from /proc/self/ns/pid.
+> > > This helper has the same use cases as bpf_get_current_pid_tgid() as it can be
+> > > used to do pid filtering even inside a container.
+> >
+> > Applied. Thanks.
+> > There was one spurious trailing whitespace that I fixed in patch 3
+> > and missing .gitignore update for test_current_pid_tgid_new_ns.
+> > Could you please follow up with another patch to fold
+> > test_current_pid_tgid_new_ns into test_progs.
+> > I'd really like to consolidate all tests into single binary.
+>
+> Thank you very much Alexei,
+> I'll start working on the follow up patch to add test_current_pid_tgid_new_ns into test_progs.
+>
 
-~/selftests/bpf# ./test_progs -t enable_stats  -v
-test_enable_stats:PASS:skel_open_and_load 0 nsec
-test_enable_stats:PASS:get_stats_fd 0 nsec
-test_enable_stats:PASS:attach_raw_tp 0 nsec
-test_enable_stats:PASS:get_prog_info 0 nsec
-test_enable_stats:PASS:check_stats_enabled 0 nsec
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+Hey Carlos,
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- .../selftests/bpf/prog_tests/enable_stats.c   | 45 +++++++++++++++++++
- .../selftests/bpf/progs/test_enable_stats.c   | 28 ++++++++++++
- 2 files changed, 73 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/enable_stats.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_enable_stats.c
+Do you still plan to fold test_current_pid_tgid_new_ns into test_progs?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/enable_stats.c b/tool=
-s/testing/selftests/bpf/prog_tests/enable_stats.c
-new file mode 100644
-index 000000000000..987fc743ab75
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/enable_stats.c
-@@ -0,0 +1,45 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <sys/mman.h>
-+#include "test_enable_stats.skel.h"
-+
-+void test_enable_stats(void)
-+{
-+	struct test_enable_stats *skel;
-+	struct bpf_prog_info info =3D {};
-+	__u32 info_len =3D sizeof(info);
-+	int stats_fd, err, prog_fd;
-+	int duration =3D 0;
-+
-+	skel =3D test_enable_stats__open_and_load();
-+
-+	if (CHECK(!skel, "skel_open_and_load", "skeleton open/load failed\n"))
-+		return;
-+
-+	stats_fd =3D bpf_enable_stats(BPF_STATS_RUNTIME_CNT);
-+
-+	if (CHECK(stats_fd < 0, "get_stats_fd", "failed %d\n", errno))
-+		goto cleanup;
-+
-+	err =3D test_enable_stats__attach(skel);
-+
-+	if (CHECK(err, "attach_raw_tp", "err %d\n", err))
-+		goto cleanup;
-+
-+	usleep(1000);
-+
-+	prog_fd =3D bpf_program__fd(skel->progs.test_enable_stats);
-+	err =3D bpf_obj_get_info_by_fd(prog_fd, &info, &info_len);
-+
-+	if (CHECK(err, "get_prog_info",
-+		  "failed to get bpf_prog_info for fd %d\n", prog_fd))
-+		goto cleanup;
-+
-+	CHECK(info.run_time_ns =3D=3D 0, "check_stats_enabled",
-+	      "failed to enable run_time_ns stats\n");
-+
-+cleanup:
-+	test_enable_stats__destroy(skel);
-+	if (stats_fd >=3D 0)
-+		close(stats_fd);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_enable_stats.c b/tool=
-s/testing/selftests/bpf/progs/test_enable_stats.c
-new file mode 100644
-index 000000000000..f95ac0c94639
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_enable_stats.c
-@@ -0,0 +1,28 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+
-+#include <linux/bpf.h>
-+#include <stdint.h>
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} count SEC(".maps");
-+
-+SEC("raw_tracepoint/sys_enter")
-+int test_enable_stats(void *ctx)
-+{
-+	__u32 key =3D 0;
-+	__u64 *val;
-+
-+	val =3D bpf_map_lookup_elem(&count, &key);
-+	if (val)
-+		*val +=3D 1;
-+
-+	return 0;
-+}
---=20
-2.24.1
-
+> Bests
