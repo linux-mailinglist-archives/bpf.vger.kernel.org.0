@@ -2,140 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 275021BC187
-	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 16:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E774D1BC1D9
+	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 16:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727775AbgD1OkR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Apr 2020 10:40:17 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:35961 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726868AbgD1OkR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Apr 2020 10:40:17 -0400
+        id S1727917AbgD1Oux (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Apr 2020 10:50:53 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:28767 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727875AbgD1Oux (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 10:50:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588084815;
+        s=mimecast20190719; t=1588085452;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=88WT6jFz/l1fCI+TfJK9Dp/9BTx/uaCpqzP31W/LwAs=;
-        b=i7c+SS5w83beABpQ+8omYw3eo7nJ5aqn3tzLXuSnHv5O2bTS/3d88mZ3ZWCmsVfK85WNXt
-        /V8MEXF0aDfcBllOpZimYczV66HOPgFO0E0Zd8hI7Ko4xuql6dv+Qn5KE0L1f0BQhC2SUa
-        9yCFgmVJUun/CCxivoCAmgYpVCLwjqI=
+        bh=rxigzlaMgu0obeYswWvhUEN5ZcN1QetQUZ5JIO9TfMk=;
+        b=CUXFK3W80YpgIC2T3+s8aw8ZYN4c5QY/kG2+3Pb9Xc85fwcrjgr03eP6CZ0FtX2Hq0YgsT
+        lHPinm2Nf0APsVX6w2NO8Z9i2O8uHgethBfWFJEzF+8tIKiL13WYA+IOFc1leJpy4ggG2h
+        zePyZgRIAq118qKTGajiQVGNVAS6nmg=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-398-_JzlJ-oqMZqK_RPhn_krZQ-1; Tue, 28 Apr 2020 10:40:12 -0400
-X-MC-Unique: _JzlJ-oqMZqK_RPhn_krZQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-133-LiCURlxsOT-5l1DM3p1Izg-1; Tue, 28 Apr 2020 10:50:48 -0400
+X-MC-Unique: LiCURlxsOT-5l1DM3p1Izg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1CB68100CCC0;
-        Tue, 28 Apr 2020 14:40:11 +0000 (UTC)
-Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1282360C87;
-        Tue, 28 Apr 2020 14:40:11 +0000 (UTC)
-Received: from zmail19.collab.prod.int.phx2.redhat.com (zmail19.collab.prod.int.phx2.redhat.com [10.5.83.22])
-        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 01DFF4CA95;
-        Tue, 28 Apr 2020 14:40:11 +0000 (UTC)
-Date:   Tue, 28 Apr 2020 10:40:10 -0400 (EDT)
-From:   Veronika Kabatova <vkabatov@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        bpf <bpf@vger.kernel.org>
-Message-ID: <478368089.20968928.1588084810801.JavaMail.zimbra@redhat.com>
-In-Reply-To: <CAEf4BzbZPHyR5cqqM73QbppHMDuaRXCf9z08VZFcohdsQE2DGw@mail.gmail.com>
-References: <20200427132940.2857289-1-vkabatov@redhat.com> <20200427160240.5e66a954@carbon> <CAEf4BzbZPHyR5cqqM73QbppHMDuaRXCf9z08VZFcohdsQE2DGw@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: Copy runqslower to OUTPUT directory
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C5D01005510;
+        Tue, 28 Apr 2020 14:50:45 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.55])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1869310013BD;
+        Tue, 28 Apr 2020 14:50:33 +0000 (UTC)
+Date:   Tue, 28 Apr 2020 16:50:32 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     sameehj@amazon.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        zorik@amazon.com, akiyano@amazon.com, gtzalik@amazon.com,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        steffen.klassert@secunet.com, brouer@redhat.com
+Subject: Re: [PATCH net-next 30/33] xdp: clear grow memory in
+ bpf_xdp_adjust_tail()
+Message-ID: <20200428165032.2c2dca47@carbon>
+In-Reply-To: <5ea66d1ec37bc_59462aeb755845b848@john-XPS-13-9370.notmuch>
+References: <158757160439.1370371.13213378122947426220.stgit@firesoul>
+        <158757179349.1370371.14581472372520364962.stgit@firesoul>
+        <5ea66d1ec37bc_59462aeb755845b848@john-XPS-13-9370.notmuch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.195.57, 10.4.195.25]
-Thread-Topic: selftests/bpf: Copy runqslower to OUTPUT directory
-Thread-Index: +KelcYQW98mjf/NnImv6T0gGKm6B8Q==
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Sun, 26 Apr 2020 22:26:54 -0700
+John Fastabend <john.fastabend@gmail.com> wrote:
+
+> Jesper Dangaard Brouer wrote:
+> > Clearing memory of tail when grow happens, because it is too easy
+> > to write a XDP_PASS program that extend the tail, which expose
+> > this memory to users that can run tcpdump.
+> > 
+> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > ---  
+> 
+> Hi Jesper, Thanks for the series any idea what the cost of doing
+> this is? If you have some data I would be curious to know a
+> baseline measurment, a grow with memset, then a grow with memset.
+> I'm guess this can be relatively expensive?
+
+I have a "time_bench" memset kernel module[1] that I use to understand
+that is the best-case/minimum overhead with a hot-cache.  But in this
+case, the memory will be in L3-cache (at least on Intel with DDIO).
+
+For legitimate use-cases, the BPF-programmer will write her tail data
+into this memory area anyhow.  Thus, I'm not convinced this will be a
+performance issue for real use-cases.  When we have a real use-case that
+need this tail extend and does XDP_TX, I say we can revisit this.
 
 
------ Original Message -----
-> From: "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
-> To: "Jesper Dangaard Brouer" <brouer@redhat.com>
-> Cc: "Veronika Kabatova" <vkabatov@redhat.com>, "bpf" <bpf@vger.kernel.org>, "Andrii Nakryiko" <andriin@fb.com>
-> Sent: Monday, April 27, 2020 10:18:37 PM
-> Subject: Re: [PATCH] selftests/bpf: Copy runqslower to OUTPUT directory
-> 
-> On Mon, Apr 27, 2020 at 7:03 AM Jesper Dangaard Brouer
-> <brouer@redhat.com> wrote:
-> >
-> > On Mon, 27 Apr 2020 15:29:40 +0200
-> > Veronika Kabatova <vkabatov@redhat.com> wrote:
-> >
-> > > $(OUTPUT)/runqslower makefile target doesn't actually create runqslower
-> > > binary in the $(OUTPUT) directory. As lib.mk expects all
-> > > TEST_GEN_PROGS_EXTENDED (which runqslower is a part of) to be present in
-> > > the OUTPUT directory, this results in an error when running e.g. `make
-> > > install`:
-> > >
-> > > rsync: link_stat "tools/testing/selftests/bpf/runqslower" failed: No
-> > >        such file or directory (2)
-> > >
-> > > Copy the binary into the OUTPUT directory after building it to fix the
-> > > error.
-> > >
-> > > Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
-> > > ---
-> >
-> 
-> Did I miss original patch somewhere on bpf@vger mailing list?..
-> 
-
-Sorry about that, it looks like the smtp setup selectively drops external
-addresses. I'll send the v2 from my private email account to avoid this
-problem until I figure out what's wrong.
-
-> > Looks good to me
-> >
-> > Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> >
-> > >  tools/testing/selftests/bpf/Makefile | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/Makefile
-> > > b/tools/testing/selftests/bpf/Makefile
-> > > index 7729892e0b04..cb8e7e5b2307 100644
-> > > --- a/tools/testing/selftests/bpf/Makefile
-> > > +++ b/tools/testing/selftests/bpf/Makefile
-> > > @@ -142,6 +142,7 @@ $(OUTPUT)/runqslower: $(BPFOBJ)
-> > >       $(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower     \
-> > >                   OUTPUT=$(SCRATCH_DIR)/ VMLINUX_BTF=$(VMLINUX_BTF)   \
-> > >                   BPFOBJ=$(BPFOBJ) BPF_INCLUDE=$(INCLUDE_DIR)
-> > > +     @cp $(SCRATCH_DIR)/runqslower $(OUTPUT)/runqslower
-> 
-> This should be AND'ed (&&) with $(MAKE) to not attempt copy on failed
-> make run. Also in general @cp should be $(Q)cp, but if you use $$ you
-> shouldn't need $(Q).
-> 
-> Also, just use $@ instead of $(OUTPUT)/runqslower:
-> 
-> cp $(SCRATCH_DIR)/runqslower $@
-> 
-
-Sounds reasonable, thanks.
-
-Veronika
-
-> > >
-> > >  $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): $(OUTPUT)/test_stub.o
-> > >  $(BPFOBJ)
-> >
-> > --
-> > Best regards,
-> >   Jesper Dangaard Brouer
-> >   MSc.CS, Principal Kernel Engineer at Red Hat
-> >   LinkedIn: http://www.linkedin.com/in/brouer
-> >
-> 
-> 
+[1] https://github.com/netoptimizer/prototype-kernel/blob/master/kernel/lib/time_bench_memset.c
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
