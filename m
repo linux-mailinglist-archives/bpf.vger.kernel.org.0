@@ -2,237 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B65661BC859
-	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 20:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF7D1BC8C4
+	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 20:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729734AbgD1Sbs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Apr 2020 14:31:48 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:36969 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729719AbgD1Sbr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 14:31:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588098705;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k2r2nHjLmGfNXD/LczZ0iHarWiphaosQioLS/Vz6VWs=;
-        b=BdvuPgICO+oqqqDmoNC11uBgbYjtFLgUO/HEKizj3X2mY4Xgxp7Ue0UtMAt0uuIw2Hjq+Y
-        lX4qDF1h4UEcvrAW8ZZD0Szl0Z6UDuhAjuCGEMhSnVK9onnVDFaDXl5ot1OJdLD0W6Ps89
-        mvtAkkEVbwgsijitN8WHJlSnewE9yoA=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-339-c_QnVC8IN_eb5wTmDd3JIw-1; Tue, 28 Apr 2020 14:31:41 -0400
-X-MC-Unique: c_QnVC8IN_eb5wTmDd3JIw-1
-Received: by mail-lj1-f198.google.com with SMTP id z1so3782116ljk.9
-        for <bpf@vger.kernel.org>; Tue, 28 Apr 2020 11:31:39 -0700 (PDT)
+        id S1730260AbgD1Sf2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Apr 2020 14:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730254AbgD1Sf1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 14:35:27 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62047C03C1AB;
+        Tue, 28 Apr 2020 11:35:27 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id b188so21263830qkd.9;
+        Tue, 28 Apr 2020 11:35:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P/Yy7fhBlAsiT5vsaC3F1jeDsjx2gQwP5nwUdg7CMcQ=;
+        b=N/+/aw1WUYNw87C4Wh9Rnu6hcmrI2PKDe+khHwWlk4H0nFbvM1bIZ84EQa9ysh3ZaA
+         /uudFwLJUYJe9TeC9LEbOcNy7HSJfKTFiFRhrTNR1BJWur/98X8zXZSKFbTJxYAOj18m
+         dzwxJ/GY5P2Jd9oQfMEfPJz2UAALHxtzPhCkeg7UJhXyjOl7i1KnpVrvgKRUeNdfaJD4
+         kh9vkb/zhYTbtTFSDQecoK0UXlPZeqtDWwH/dLB98rC9uq7Ixmv0wlXMKNGVWmZVVe5s
+         yfMzK1OPZZKZkaYgbTAIM8lUhor++FhQ2wb+vUjMcedfBbZEm0OOFCwjElnMFGEy5trv
+         S6Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=k2r2nHjLmGfNXD/LczZ0iHarWiphaosQioLS/Vz6VWs=;
-        b=se/PIjkbBJ7hailx1TlI9n77yhgRh05OSQAXdnVTyXc2Lv7i0ar/jDS46b8IP0DQ0R
-         CK3DxCwqzU6bkPbFoNPK9eLppP5+XgapH9zojCHGKeSY1NgJc4JTQhaQrSoH0yUKmCVq
-         e4SWGP2Vd/kC/2DLUrglfcUmIstChhJGOzKNWpvgkv4A3tkrdis/PmFsc2no0Ut4IoQb
-         HwpJ0TpLM/FJ+86qxTwi1V5TKNqEHgmELvWrB/Yt58pLuWZ5qC4db5fSf05zEXZPasj9
-         mtdVk3tRLb7SGMs7M2QeuElyrSZFSlbyXcqsgi7Nzgh8qIiuragRDoQgm65GvR2hv6OC
-         Z9Tw==
-X-Gm-Message-State: AGi0PuY/dDQgmE4M5+3uPzKWN4mAeAdyqOD0YpY+lm0lH/lKJh9MpQQh
-        swZE3R5fkbErSR+8Bzeh+R/at+9FNpGHvio/okgx1i9gPifAlWup3l0pQsHGg1iNSFrHWwadx5e
-        oWuvf4mpDRos+
-X-Received: by 2002:a2e:98c4:: with SMTP id s4mr18337208ljj.97.1588098698006;
-        Tue, 28 Apr 2020 11:31:38 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJEZmPIZYdVxiXiIV1g1z8hyevnlrHXRrjhb35wCkqJmNR5q97rgUzomwebpQY40acDcQ0K9Q==
-X-Received: by 2002:a2e:98c4:: with SMTP id s4mr18337187ljj.97.1588098697647;
-        Tue, 28 Apr 2020 11:31:37 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id d23sm14692884ljg.90.2020.04.28.11.31.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 11:31:36 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 87A941814FF; Tue, 28 Apr 2020 20:31:35 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P/Yy7fhBlAsiT5vsaC3F1jeDsjx2gQwP5nwUdg7CMcQ=;
+        b=LjuRKjcaSVDYcYI5bwj/HC8BSCiUspoTpA++GWBaLSmtZYDdScm8Zd2LbsVpqNPPGq
+         yILt6Y8U2gGUVIezSlAGOREo8v4OptF8C6+pT48+UIG2qk+yyRx0bqjVUMGWjOjPlSbM
+         SDDHtRRepXKhfpGcw1MiJ68dYiJSnYWr9+tqf8ypqm41CwQBl6LEBcGcloYdI9Nq1B6L
+         RGmT86h+nWq1QGuy1jKmW2atiYQ0MGAV7dd+CfonA0e/+sQ7xDEdc3O3nUsQwvlrq/4H
+         DHwY0s5gXY3c7bq7N3GJXpA2JGVLzpSH6MsJHQg60Gd0txrSkHS8bPMieAmn3eSofyfS
+         tBEA==
+X-Gm-Message-State: AGi0PuZcds4Nkkes4DWrwv+D7GPMUyBPppCnN0KNe3ctVXP9exoOdP1B
+        uVuqsYBiEVsaN4Tpo65AKLetggZZSLAU7HTXEDk=
+X-Google-Smtp-Source: APiQypIWKfhSHsLtlSDf6HmeEUIDwoYtZ7zWivNIl+fpyyVK+ghOs5YyhqIE3rnmhO8dCuQ5twv+doY/5wFBtXwZYGs=
+X-Received: by 2002:ae9:eb8c:: with SMTP id b134mr29431920qkg.39.1588098926398;
+ Tue, 28 Apr 2020 11:35:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200428044628.3772114-1-andriin@fb.com> <20200428044628.3772114-3-andriin@fb.com>
+ <20200428164426.xkznwzd3blub2rol@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200428164426.xkznwzd3blub2rol@ast-mbp.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 28 Apr 2020 11:35:15 -0700
+Message-ID: <CAEf4Bza7mK8FH0S9S6Jqi37JQFdLjdbeU6u6QiAosoOiVdEMTA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/6] selftests/bpf: add test_progs-asan flavor
+ with AddressSantizer
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 04/10] bpf: add support for BPF_OBJ_GET_INFO_BY_FD for bpf_link
-In-Reply-To: <CAEf4BzabqYMRDzn0ztHQithWJ56o_CWZCWotnkyhJ6D7nuNG1Q@mail.gmail.com>
-References: <20200428054944.4015462-1-andriin@fb.com> <20200428054944.4015462-5-andriin@fb.com> <87mu6wvt6t.fsf@toke.dk> <CAEf4BzabqYMRDzn0ztHQithWJ56o_CWZCWotnkyhJ6D7nuNG1Q@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 28 Apr 2020 20:31:35 +0200
-Message-ID: <87v9ljv4vs.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Kernel Team <kernel-team@fb.com>, Julia Kartseva <hex@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-
-> On Tue, Apr 28, 2020 at 2:46 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Andrii Nakryiko <andriin@fb.com> writes:
->>
->> > Add ability to fetch bpf_link details through BPF_OBJ_GET_INFO_BY_FD c=
-ommand.
->> > Also enhance show_fdinfo to potentially include bpf_link type-specific
->> > information (similarly to obj_info).
->> >
->> > Also introduce enum bpf_link_type stored in bpf_link itself and expose=
- it in
->> > UAPI. bpf_link_tracing also now will store and return bpf_attach_type.
->> >
->> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->> > ---
->> >  include/linux/bpf-cgroup.h     |   2 -
->> >  include/linux/bpf.h            |  10 +-
->> >  include/linux/bpf_types.h      |   6 ++
->> >  include/uapi/linux/bpf.h       |  28 ++++++
->> >  kernel/bpf/btf.c               |   2 +
->> >  kernel/bpf/cgroup.c            |  45 ++++++++-
->> >  kernel/bpf/syscall.c           | 164 +++++++++++++++++++++++++++++----
->> >  kernel/bpf/verifier.c          |   2 +
->> >  tools/include/uapi/linux/bpf.h |  31 +++++++
->> >  9 files changed, 266 insertions(+), 24 deletions(-)
->> >
->> > diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
->> > index d2d969669564..ab95824a1d99 100644
->> > --- a/include/linux/bpf-cgroup.h
->> > +++ b/include/linux/bpf-cgroup.h
->> > @@ -57,8 +57,6 @@ struct bpf_cgroup_link {
->> >       enum bpf_attach_type type;
->> >  };
->> >
->> > -extern const struct bpf_link_ops bpf_cgroup_link_lops;
->> > -
->> >  struct bpf_prog_list {
->> >       struct list_head node;
->> >       struct bpf_prog *prog;
->> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> > index 875d1f0af803..701c4387c711 100644
->> > --- a/include/linux/bpf.h
->> > +++ b/include/linux/bpf.h
->> > @@ -1026,9 +1026,11 @@ extern const struct file_operations bpf_prog_fo=
-ps;
->> >       extern const struct bpf_verifier_ops _name ## _verifier_ops;
->> >  #define BPF_MAP_TYPE(_id, _ops) \
->> >       extern const struct bpf_map_ops _ops;
->> > +#define BPF_LINK_TYPE(_id, _name)
->> >  #include <linux/bpf_types.h>
->> >  #undef BPF_PROG_TYPE
->> >  #undef BPF_MAP_TYPE
->> > +#undef BPF_LINK_TYPE
->> >
->> >  extern const struct bpf_prog_ops bpf_offload_prog_ops;
->> >  extern const struct bpf_verifier_ops tc_cls_act_analyzer_ops;
->> > @@ -1086,6 +1088,7 @@ int bpf_prog_new_fd(struct bpf_prog *prog);
->> >  struct bpf_link {
->> >       atomic64_t refcnt;
->> >       u32 id;
->> > +     enum bpf_link_type type;
->> >       const struct bpf_link_ops *ops;
->> >       struct bpf_prog *prog;
->> >       struct work_struct work;
->> > @@ -1103,9 +1106,14 @@ struct bpf_link_ops {
->> >       void (*dealloc)(struct bpf_link *link);
->> >       int (*update_prog)(struct bpf_link *link, struct bpf_prog *new_p=
-rog,
->> >                          struct bpf_prog *old_prog);
->> > +     void (*show_fdinfo)(const struct bpf_link *link, struct seq_file=
- *seq);
->> > +     int (*fill_link_info)(const struct bpf_link *link,
->> > +                           struct bpf_link_info *info,
->> > +                           const struct bpf_link_info *uinfo,
->> > +                           u32 info_len);
->> >  };
->> >
->> > -void bpf_link_init(struct bpf_link *link,
->> > +void bpf_link_init(struct bpf_link *link, enum bpf_link_type type,
->> >                  const struct bpf_link_ops *ops, struct bpf_prog *prog=
-);
->> >  int bpf_link_prime(struct bpf_link *link, struct bpf_link_primer *pri=
-mer);
->> >  int bpf_link_settle(struct bpf_link_primer *primer);
->> > diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
->> > index ba0c2d56f8a3..8345cdf553b8 100644
->> > --- a/include/linux/bpf_types.h
->> > +++ b/include/linux/bpf_types.h
->> > @@ -118,3 +118,9 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_STACK, stack_map_ops)
->> >  #if defined(CONFIG_BPF_JIT)
->> >  BPF_MAP_TYPE(BPF_MAP_TYPE_STRUCT_OPS, bpf_struct_ops_map_ops)
->> >  #endif
->> > +
->> > +BPF_LINK_TYPE(BPF_LINK_TYPE_RAW_TRACEPOINT, raw_tracepoint)
->> > +BPF_LINK_TYPE(BPF_LINK_TYPE_TRACING, tracing)
->> > +#ifdef CONFIG_CGROUP_BPF
->> > +BPF_LINK_TYPE(BPF_LINK_TYPE_CGROUP, cgroup)
->> > +#endif
->> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> > index 7e6541fceade..0eccafae55bb 100644
->> > --- a/include/uapi/linux/bpf.h
->> > +++ b/include/uapi/linux/bpf.h
->> > @@ -222,6 +222,15 @@ enum bpf_attach_type {
->> >
->> >  #define MAX_BPF_ATTACH_TYPE __MAX_BPF_ATTACH_TYPE
->> >
->> > +enum bpf_link_type {
->> > +     BPF_LINK_TYPE_UNSPEC =3D 0,
->> > +     BPF_LINK_TYPE_RAW_TRACEPOINT =3D 1,
->> > +     BPF_LINK_TYPE_TRACING =3D 2,
->> > +     BPF_LINK_TYPE_CGROUP =3D 3,
->> > +
->> > +     MAX_BPF_LINK_TYPE,
->> > +};
->> > +
->> >  /* cgroup-bpf attach flags used in BPF_PROG_ATTACH command
->> >   *
->> >   * NONE(default): No further bpf programs allowed in the subtree.
->> > @@ -3612,6 +3621,25 @@ struct bpf_btf_info {
->> >       __u32 id;
->> >  } __attribute__((aligned(8)));
->> >
->> > +struct bpf_link_info {
->> > +     __u32 type;
->> > +     __u32 id;
->> > +     __u32 prog_id;
->> > +     union {
->> > +             struct {
->> > +                     __aligned_u64 tp_name; /* in/out: tp_name buffer=
- ptr */
->> > +                     __u32 tp_name_len;     /* in/out: tp_name buffer=
- len */
->> > +             } raw_tracepoint;
->> > +             struct {
->> > +                     __u32 attach_type;
->> > +             } tracing;
->>
->> On the RFC I asked whether we could get the attach target here as well.
->> You said you'd look into it; what happened to that? :)
->>
+On Tue, Apr 28, 2020 at 9:44 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Right, sorry, forgot to mention this. I did take a look, but tracing
-> links are quite diverse, so I didn't see one clear way to structure
-> such "target" information, so I'd say we should push it into a
-> separate patch/discussion. E.g., fentry/fexit/fmod_exit are attached
-> to kernel functions (how do we represent that), freplace are attached
-> to another BPF program (this is a bit clearer how to represent, but
-> how do we combine that with fentry/fexit info?). LSM is also attached
-> to kernel function, but who knows, maybe we want slightly more
-> extended semantics for it. Either way, I don't see one best way to
-> structure this information and would want to avoid blocking on this
-> for this series. Also bpf_link_info is extensible, so it's not a
-> problem to extend it in follow up patches.
+> On Mon, Apr 27, 2020 at 09:46:24PM -0700, Andrii Nakryiko wrote:
+> > Add another flavor of test_progs that is compiled and run with
+> > AddressSanitizer and LeakSanitizer. This allows to find potential memory
+> > correction bugs and memory leaks. Due to sometimes not trivial requirements on
+> > the environment, this is (for now) done as a separate flavor, not by default.
+> > Eventually I hope to enable it by default.
+> >
+> > To run ./test_progs-asan successfully, you need to have libasan installed in
+> > the system, where version of the package depends on GCC version you have.
+> > E.g., GCC8 needs libasan5, while GCC7 uses libasan4.
+> >
+> > For CentOS 7, to build everything successfully one would need to:
+> >   $ sudo yum install devtoolset-8-gcc devtoolset-libasan-devel
+> >
+> > For Arch Linux to run selftests, one would need to install gcc-libs package to
+> > get libasan.so.5:
+> >   $ sudo pacman -S gcc-libs
+> >
+> > Cc: Julia Kartseva <hex@fb.com>
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 >
-> Does it make sense?
+> It needs a feature check.
+> selftest shouldn't be forcing asan on everyone.
+> Even after I did:
+> sudo yum install devtoolset-8-libasan-devel
+> it still failed to build:
+>   BINARY   test_progs-asan
+> /opt/rh/devtoolset-9/root/usr/libexec/gcc/x86_64-redhat-linux/9/ld: cannot find libasan_preinit.o: No such file or directory
+> /opt/rh/devtoolset-9/root/usr/libexec/gcc/x86_64-redhat-linux/9/ld: cannot find -lasan
+>
 
-Yup, fair enough, I can live with deferring this to a later series :)
+Yeah, it worked for me initially because it still used GCC7 locally
+and older version of libasan.
 
--Toke
+On CentOS you have to run the following command to set up environment
+(for current session only, though):
 
+$ scl enable devtoolset-8 bash
+
+What it does:
+- adds /opt/rh/devtoolset-8/root/usr/bin to $PATH
+- sets $LD_LIBRARY_PATH to
+/opt/rh/devtoolset-8/root/usr/lib64:/opt/rh/devtoolset-8/root/usr/lib:/opt/rh/devtoolset-8/root/usr/lib64/dyninst:/opt/rh/devtoolset-8/root/usr/lib/dyninst:/opt/rh/devtoolset-8/root/usr/lib64:/opt/rh/devtoolset-8/root/usr/lib
+
+I'm going to add this to patch to ease some pain later. But yeah, I
+think I have a better plan for ASAN builds. I'll add EXTRA_CFLAGS to
+selftests Makefile, defaulted to nothing. Then for Travis CI (or
+locally) one would do:
+
+$ make EXTRA_CFLAGS='-fsanitize-address'
+
+to build ASAN versions of all the same test runners (including
+test_verifier, test_maps, etc).
+
+I think this will be better overall.
+
+> Also I really don't like that skeletons are now built three times for now good reason
+>   GEN-SKEL [test_progs-asan] test_stack_map.skel.h
+>   GEN-SKEL [test_progs-asan] test_core_reloc_nesting.skel.h
+> default vs no_alu32 makes sense. They are different bpf.o files and different skeletons,
+> but for asan there is no such need.
+
+I agree, luckily I don't really have to change anything with the above approach.
+
+>
+> Please resubmit the rest of the patches, since asan isn't a prerequisite.
+
+I'll update this patch to just add EXTRA_CFLAGS, if you are ok with
+this (and will leave instructions on installing libasan).
