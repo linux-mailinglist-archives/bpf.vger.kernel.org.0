@@ -2,88 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B371BBB93
-	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 12:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDC71BBBA5
+	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 12:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726360AbgD1Ks0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Apr 2020 06:48:26 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:36960 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726359AbgD1Ks0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Apr 2020 06:48:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588070905;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=P5Zy6MY1lit5ibuHW3UQvtHO3CqtEhEXXGm3gncifMQ=;
-        b=YfuR1FvPPf5fbov4PRkG/WCg5LD4x7t5YP3arr6q3784xXaxA8mODiLOA3hPdrDidUIJ7H
-        rv8g1KfyxtXy/7iiKlz7p2RBrgVlSmyH3D9E2s9QiuHl97l24NEt+mWhmdUI0NCy+cjmJY
-        d2KKqIEjdpI8o/Ns6gvNV8Y09gWBmBM=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-5-pqy7EoEQPRaBHVzKs5zTdA-1; Tue, 28 Apr 2020 06:48:23 -0400
-X-MC-Unique: pqy7EoEQPRaBHVzKs5zTdA-1
-Received: by mail-lf1-f71.google.com with SMTP id b22so8748497lfa.18
-        for <bpf@vger.kernel.org>; Tue, 28 Apr 2020 03:48:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=P5Zy6MY1lit5ibuHW3UQvtHO3CqtEhEXXGm3gncifMQ=;
-        b=N/cYTvLfb4urIord7TZlLyi8xi1iZLw0uG0Ar0gouibkZvlSDFm0SUWp977uFwrsJm
-         /PdM6zCZcIDQ2u9wZboHbvh7/Z039By/0msWDA/6nmaavlGVkUIv2h7+x20VU5gA04qL
-         dzyCCXFPNO4orif/pHROwy7eWBUne1cQJOgVJ8jfK1Jnbg6S1TTtGtfBwFqKno2F7k66
-         oVGcFLb3nTaJhxStqg7D+PCvtQyQYurmViJjST529Ne51GSLYFggLu2Po0g/54eLBrrE
-         /gz0AJhOW5B7cmhxFgdS7t6hk7IkT9GQobuiul4a6FDtV7Wls5B2sISEBY3aGw7QEl5c
-         6esA==
-X-Gm-Message-State: AGi0Pubz1ImU4LdOvFZOPYZmL+pXNNr+t8tlHhNNkrX1uJiNOoBOlVNV
-        Pv9P6sQAiEUnVi7kfl4+rRS0a1wL2iYEMr0EP5nAgA5e4HqHO5KtzcZH0b5m7uW4Acr29le6W+k
-        3fRnWEefCd5xt
-X-Received: by 2002:a19:c385:: with SMTP id t127mr18633986lff.117.1588070901853;
-        Tue, 28 Apr 2020 03:48:21 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIW3bJR+0Ocu75lOY0jfrtgbDFx4U8HPiSf2InAtZjQyAv3duSStl2T7mTfbKCYlL1c+vgCEQ==
-X-Received: by 2002:a19:c385:: with SMTP id t127mr18633978lff.117.1588070901688;
-        Tue, 28 Apr 2020 03:48:21 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id g22sm11329734ljl.17.2020.04.28.03.48.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 03:48:21 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 6E6971814FF; Tue, 28 Apr 2020 12:48:19 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
-Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH v2 bpf-next 2/3] libbpf: refactor map creation logic and fix cleanup leak
-In-Reply-To: <20200428064140.122796-3-andriin@fb.com>
-References: <20200428064140.122796-1-andriin@fb.com> <20200428064140.122796-3-andriin@fb.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 28 Apr 2020 12:48:19 +0200
-Message-ID: <87blnbx4wc.fsf@toke.dk>
+        id S1726359AbgD1Ky6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Apr 2020 06:54:58 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:58652 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726345AbgD1Ky5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Apr 2020 06:54:57 -0400
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 03SAsVHb003792;
+        Tue, 28 Apr 2020 19:54:32 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 03SAsVHb003792
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1588071272;
+        bh=DvrztLqXLwkbKNNvyyk2abuZyw9KD3WysD/ymL0dSlo=;
+        h=From:Date:Subject:To:Cc:From;
+        b=0+eg9Pz4cSPuuuYL5OaMKEHPLF3ndT585dZIguWqvUVUgg0s8Y08uKoc1hdoxLiQt
+         xnDnQg4V4pJ1HY8c5NcAANuGYNFIzYoxa9otb+ya3VIoK6SkJJkXKb4/UiAlDtibJT
+         b4V4VoQzvJ3A/kDfGf28XS/+ci8c6M98KS4IZQ1R3yrRXeNLjF3MHT2nwE9NIocn+H
+         7dTo1ai5S4lQ1vpeg8HrugJ9kNo3nx/IPbtkDQYzCobX+QmmtsYg+9FqUqJmoYl1E4
+         e6XdOxt6LAAVHG65EaTdIWYpWTcqqw6azujYzp5R/Dc4fWV3Q8EOqz4JS5W+/tzErs
+         wpWVD2WyGSDAg==
+X-Nifty-SrcIP: [209.85.222.47]
+Received: by mail-ua1-f47.google.com with SMTP id y10so20859322uao.8;
+        Tue, 28 Apr 2020 03:54:32 -0700 (PDT)
+X-Gm-Message-State: AGi0PuaZdmCJ/f56iHEqFOee4eQf28ta8iNhuTbzq+mIEE9ztCJIK+YP
+        OKs/TkAK6GJ531ZEjCwoGVv3YDL7TMkX7wAT8JI=
+X-Google-Smtp-Source: APiQypJxccn14dWrLYyUjBNE7+Sl1to9kyCFhKc2cnk+3tpYrY7twjdkGUBmpY5DTHLfyUqOVbeB4mLIwmxvUKTv2hI=
+X-Received: by 2002:a05:6102:240f:: with SMTP id j15mr21176730vsi.155.1588071270835;
+ Tue, 28 Apr 2020 03:54:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 28 Apr 2020 19:53:55 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARHd0DXRLONf6vH_ghsYZjzoduzkixqNDpVqqPx0yHbHg@mail.gmail.com>
+Message-ID: <CAK7LNARHd0DXRLONf6vH_ghsYZjzoduzkixqNDpVqqPx0yHbHg@mail.gmail.com>
+Subject: BPFilter: bit size mismatch between bpfiter_umh and vmliux
+To:     Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>
+Cc:     Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andriin@fb.com> writes:
+Hi.
 
-> Factor out map creation and destruction logic to simplify code and especi=
-ally
-> error handling. Also fix map FD leak in case of partially successful map
-> creation during bpf_object load operation.
->
-> Cc: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Fixes: 57a00f41644f ("libbpf: Add auto-pinning of maps when loading BPF o=
-bjects")
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+I have a question about potential bit size
+mismatch between vmlinux and bpfilter_umh.
 
-Good catch on the fd leak!
 
-Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+net/bpfilter/bpfilter_umh is compiled for the
+default machine bit of the compiler.
+This may not match to the kernel bit size.
 
+
+This happens in the following scenario.
+
+GCC can be compiled as bi-arch.
+If you use GCC that defaults to 64-bit,
+you can give -m32 flag to produce the 32 bit code.
+
+When you build the kernel for 32-bit, -m32 is
+properly passed for building the kernel space objects.
+However, it is missing while building the userspace
+objects for bpfilter_umh.
+
+
+For example, my build host is x86_64 Ubuntu.
+
+If I build the kernel for i386
+with CONFIG_BPFILTER_UMH=y,
+the embedded bpfilter_umh is 64bit ELF.
+
+You can reproduce it by the following command on the
+mainline kernel.
+
+masahiro@oscar:~/ref/linux$ make ARCH=i386 defconfig
+masahiro@oscar:~/ref/linux$ scripts/config -e BPFILTER
+masahiro@oscar:~/ref/linux$ scripts/config -e BPFILTER_UMH
+masahiro@oscar:~/ref/linux$ make $(nproc) ARCH=i386
+   ...
+masahiro@oscar:~/ref/linux$ file vmlinux
+vmlinux: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV),
+statically linked,
+BuildID[sha1]=7ac691c67b4fe9b0cd46b45a2dc2d728d7d87686, not stripped
+masahiro@oscar:~/ref/linux$ file net/bpfilter/bpfilter_umh
+net/bpfilter/bpfilter_umh: ELF 64-bit LSB executable, x86-64, version
+1 (GNU/Linux), statically linked,
+BuildID[sha1]=baf1ffe26f4c030a99a945fc22924c8c559e60ac, for GNU/Linux
+3.2.0, not stripped
+
+
+
+
+At least, the build was successful,
+but does this work at runtime?
+
+If this is a bug, I can fix it cleanly.
+
+I think the bit size of the user mode helper
+should match to the kernel bit size. Is this correct?
+
+
+I noticed this while I was working on userspace
+build cleanups.
+https://patchwork.kernel.org/patch/11505207/
+
+
+-- 
+Best Regards
+Masahiro Yamada
