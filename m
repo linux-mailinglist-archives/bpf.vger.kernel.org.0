@@ -2,192 +2,211 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 001141BBB3D
-	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 12:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D491BBB91
+	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 12:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbgD1Kc1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Apr 2020 06:32:27 -0400
-Received: from mga02.intel.com ([134.134.136.20]:36872 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726336AbgD1Kc1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Apr 2020 06:32:27 -0400
-IronPort-SDR: oowLotwnvZO/Y8TM7AUK/g4JhTnMAJO+niuJi1uV0pRbISTxIhOTPNikJWjTagDfcCTQnIst4W
- nJjpZcHPwmdw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 03:32:26 -0700
-IronPort-SDR: NQwlzcDjyUdR0pVNzrOJiYWp2cJssqZ8FKRIZfP/7aTGoTpg+cq+OxzPh26gPC5Ef1cUuGxKLq
- 6pTLhnUgqKDw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,327,1583222400"; 
-   d="scan'208";a="367464035"
-Received: from fbackhou-mobl.ger.corp.intel.com (HELO [10.252.53.234]) ([10.252.53.234])
-  by fmsmga001.fm.intel.com with ESMTP; 28 Apr 2020 03:32:24 -0700
-To:     bpf@vger.kernel.org
-From:   Mikko Ylinen <mikko.ylinen@linux.intel.com>
-Subject: -EBUSY with some selftests on 5.7-rcX
-Message-ID: <e5ec787d-2fca-4701-ca2e-2b590a59fb6f@linux.intel.com>
-Date:   Tue, 28 Apr 2020 13:32:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726381AbgD1KsG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Apr 2020 06:48:06 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:39336 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726360AbgD1KsG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 06:48:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588070884;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OvyIdT/nyn4SeqBAXEe8lj0zZMxz+9eIzwFpjLeY35o=;
+        b=gboljsGkUQN1TfIeb0Caj5uFJReWPS30IYyiVTGXQFo2o6042uSJJ5ulhqHwQh+KgeX8xz
+        ldvev8jA5j7rW2gRh9uS/iifFDpEl9bn+dK12cMcXNZiFO3FBJuvUDeFR0tynf3eqbjWpw
+        3db/eetkHYgT2tU39IZMDvE1FB+xVl8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-431-MyxBkWVIMKuUT5zcHul9fQ-1; Tue, 28 Apr 2020 06:48:00 -0400
+X-MC-Unique: MyxBkWVIMKuUT5zcHul9fQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 35424468;
+        Tue, 28 Apr 2020 10:47:58 +0000 (UTC)
+Received: from [10.36.113.197] (ovpn-113-197.ams2.redhat.com [10.36.113.197])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2CB97611AF;
+        Tue, 28 Apr 2020 10:47:56 +0000 (UTC)
+From:   "Eelco Chaudron" <echaudro@redhat.com>
+To:     "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
+Cc:     "Yonghong Song" <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Network Development" <netdev@vger.kernel.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        "Martin KaFai Lau" <kafai@fb.com>,
+        "Song Liu" <songliubraving@fb.com>,
+        "Andrii Nakryiko" <andriin@fb.com>
+Subject: Re: [RFC PATCH bpf-next 0/3] bpf: add tracing for XDP programs using
+ the BPF_PROG_TEST_RUN API
+Date:   Tue, 28 Apr 2020 12:47:53 +0200
+Message-ID: <78EFC9DD-48A2-49BB-8C76-1E6FDE808067@redhat.com>
+In-Reply-To: <20200428040424.wvozrsy6uviz33ha@ast-mbp.dhcp.thefacebook.com>
+References: <158453675319.3043.5779623595270458781.stgit@xdp-tutorial>
+ <819b1b3a-c801-754b-e805-7ec8266e5dfa@fb.com>
+ <D0164AC9-7AF7-4434-B6D1-0A761DC626FB@redhat.com>
+ <fefda00a-1a08-3a53-efbc-93c36292b77d@fb.com>
+ <CAADnVQ+SCu97cF5Li6nBBCkshjF45U-nPEO5jO8DQrY5PqPqyg@mail.gmail.com>
+ <F97A3E80-9C99-49CF-84C5-F09C940F7029@redhat.com>
+ <20200428040424.wvozrsy6uviz33ha@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"; format=flowed; markup=markdown
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
 
-I'm testing BPF LSM and wanted to verify my setup by running the
-test_lsm selftests (./test_progs -vv -t test_lsm) but it fails:
 
-libbpf: loading object 'lsm' from buffer
-libbpf: section(1) .strtab, size 306, link 0, flags 0, type=3
-libbpf: skip section(1) .strtab
-libbpf: section(2) .text, size 0, link 0, flags 6, type=1
-libbpf: skip section(2) .text
-libbpf: section(3) lsm/file_mprotect, size 192, link 0, flags 6, type=1
-libbpf: found program lsm/file_mprotect
-libbpf: section(4) .rellsm/file_mprotect, size 32, link 25, flags 0, type=9
-libbpf: section(5) lsm/bprm_committed_creds, size 104, link 0, flags 6, 
-type=1
-libbpf: found program lsm/bprm_committed_creds
-libbpf: section(6) .rellsm/bprm_committed_creds, size 32, link 25, flags 
-0, type=9
-libbpf: section(7) license, size 4, link 0, flags 3, type=1
-libbpf: license of lsm is GPL
-libbpf: section(8) .bss, size 12, link 0, flags 3, type=8
-libbpf: section(9) .debug_str, size 133448, link 0, flags 30, type=1
-libbpf: skip section(9) .debug_str
-libbpf: section(10) .debug_loc, size 428, link 0, flags 0, type=1
-libbpf: skip section(10) .debug_loc
-libbpf: section(11) .rel.debug_loc, size 112, link 25, flags 0, type=9
-libbpf: skip relo .rel.debug_loc(11) for section(10)
-libbpf: section(12) .debug_abbrev, size 901, link 0, flags 0, type=1
-libbpf: skip section(12) .debug_abbrev
-libbpf: section(13) .debug_info, size 223699, link 0, flags 0, type=1
-libbpf: skip section(13) .debug_info
-libbpf: section(14) .rel.debug_info, size 112, link 25, flags 0, type=9
-libbpf: skip relo .rel.debug_info(14) for section(13)
-libbpf: section(15) .debug_ranges, size 96, link 0, flags 0, type=1
-libbpf: skip section(15) .debug_ranges
-libbpf: section(16) .rel.debug_ranges, size 128, link 25, flags 0, type=9
-libbpf: skip relo .rel.debug_ranges(16) for section(15)
-libbpf: section(17) .BTF, size 5421, link 0, flags 0, type=1
-libbpf: section(18) .rel.BTF, size 64, link 25, flags 0, type=9
-libbpf: skip relo .rel.BTF(18) for section(17)
-libbpf: section(19) .BTF.ext, size 484, link 0, flags 0, type=1
-libbpf: section(20) .rel.BTF.ext, size 416, link 25, flags 0, type=9
-libbpf: skip relo .rel.BTF.ext(20) for section(19)
-libbpf: section(21) .debug_frame, size 64, link 0, flags 0, type=1
-libbpf: skip section(21) .debug_frame
-libbpf: section(22) .rel.debug_frame, size 32, link 25, flags 0, type=9
-libbpf: skip relo .rel.debug_frame(22) for section(21)
-libbpf: section(23) .debug_line, size 227, link 0, flags 0, type=1
-libbpf: skip section(23) .debug_line
-libbpf: section(24) .rel.debug_line, size 32, link 25, flags 0, type=9
-libbpf: skip relo .rel.debug_line(24) for section(23)
-libbpf: section(25) .symtab, size 288, link 1, flags 0, type=2
-libbpf: looking for externs among 12 symbols...
-libbpf: collected 0 externs total
-libbpf: map 'lsm.bss' (global data): at sec_idx 8, offset 0, flags 400.
-libbpf: map 0 is "lsm.bss"
-libbpf: collecting relocating info for: 'lsm/file_mprotect'
-libbpf: relo for shdr 8, symb 8, value 0, type 1, bind 1, name 232 
-('monitored_pid'), insn 12
-libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 12
-libbpf: relo for shdr 8, symb 9, value 4, type 1, bind 1, name 34 
-('mprotect_count'), insn 17
-libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 17
-libbpf: collecting relocating info for: 'lsm/bprm_committed_creds'
-libbpf: relo for shdr 8, symb 8, value 0, type 1, bind 1, name 232 
-('monitored_pid'), insn 1
-libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 1
-libbpf: relo for shdr 8, symb 7, value 8, type 1, bind 1, name 49 
-('bprm_count'), insn 6
-libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 6
-libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
-libbpf: created map lsm.bss: fd=4
-libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
-libbpf: prog 'lsm/file_mprotect': performing 4 CO-RE offset relocs
-libbpf: prog 'lsm/file_mprotect': relo #0: kind 0, spec is [6] 
-vm_area_struct + 0:6 => 64.0 @ &x[0].vm_mm
-libbpf: [6] vm_area_struct: found candidate [465] vm_area_struct
-libbpf: prog 'lsm/file_mprotect': relo #0: matching candidate #0 
-vm_area_struct against spec [465] vm_area_struct + 0:6 => 64.0 @ 
-&x[0].vm_mm: 1
-libbpf: prog 'lsm/file_mprotect': relo #0: patched insn #5 (LDX/ST/STX) 
-off 64 -> 64
-libbpf: prog 'lsm/file_mprotect': relo #1: kind 0, spec is [31] 
-mm_struct + 0:0:35 => 304.0 @ &x[0].start_stack
-libbpf: [31] mm_struct: found candidate [260] mm_struct
-libbpf: prog 'lsm/file_mprotect': relo #1: matching candidate #0 
-mm_struct against spec [260] mm_struct + 0:0:35 => 304.0 @ 
-&x[0].start_stack: 1
-libbpf: prog 'lsm/file_mprotect': relo #1: patched insn #7 (LDX/ST/STX) 
-off 304 -> 304
-libbpf: prog 'lsm/file_mprotect': relo #2: kind 0, spec is [6] 
-vm_area_struct + 0:0 => 0.0 @ &x[0].vm_start
-libbpf: prog 'lsm/file_mprotect': relo #2: matching candidate #0 
-vm_area_struct against spec [465] vm_area_struct + 0:0 => 0.0 @ 
-&x[0].vm_start: 1
-libbpf: prog 'lsm/file_mprotect': relo #2: patched insn #8 (LDX/ST/STX) 
-off 0 -> 0
-libbpf: prog 'lsm/file_mprotect': relo #3: kind 0, spec is [6] 
-vm_area_struct + 0:1 => 8.0 @ &x[0].vm_end
-libbpf: prog 'lsm/file_mprotect': relo #3: matching candidate #0 
-vm_area_struct against spec [465] vm_area_struct + 0:1 => 8.0 @ 
-&x[0].vm_end: 1
-libbpf: prog 'lsm/file_mprotect': relo #3: patched insn #10 (LDX/ST/STX) 
-off 8 -> 8
-test_test_lsm:PASS:skel_load 0 nsec
-libbpf: program 'lsm/file_mprotect': failed to attach: Device or 
-resource busy
-libbpf: failed to auto-attach program 'test_int_hook': -16
-test_test_lsm:FAIL:attach lsm attach failed: -16
-#70 test_lsm:FAIL
-Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+On 28 Apr 2020, at 6:04, Alexei Starovoitov wrote:
 
-I get -EBUSY with fentry_fexit test too:
+> On Fri, Apr 24, 2020 at 02:29:56PM +0200, Eelco Chaudron wrote:
+>>
+>>> Not working with JIT-ed code is imo red flag for the approach as=20
+>>> well.
+>>
+>> How would this be an issue, this is for the debug path only, and if=20
+>> the
+>> jitted code behaves differently than the interpreter there is a=20
+>> bigger
+>> issue.
+>
+> They are different already. Like tail_calls cannot mix and match=20
+> interpreter
+> and JITed. Similar with bpf2bpf calls.
+> And that difference will be growing further.
+> At that time of doing bpf trampoline I considering dropping support=20
+> for
+> interpreter, but then figured out a relatively cheap way of keeping it=20
+> alive.
+> I expect next feature to not support interpreter.
 
-# ./test_progs -t fentry_fexit
-test_fentry_fexit:PASS:fentry_skel_load 0 nsec
-test_fentry_fexit:PASS:fexit_skel_load 0 nsec
-libbpf: program 'fentry/bpf_fentry_test1': failed to attach: Device or 
-resource busy
-libbpf: failed to auto-attach program 'test1': -16
-test_fentry_fexit:FAIL:fentry_attach fentry attach failed: -16
-#13 fentry_fexit:FAIL
-Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+If the goal is to face out the interpreter then I have to agree it does=20
+not make sense to add this facility based on it=E2=80=A6
 
-However, btf_dump is OK:
+>>> When every insn is spamming the logs the only use case I can see
+>>> is to feed the test program with one packet and read thousand lines
+>>> dump.
+>>> Even that is quite user unfriendly.
+>>
+>> The log was for the POC only, the idea is to dump this in a user=20
+>> buffer, and
+>> with the right tooling (bpftool prog run ... {trace}?) it can be=20
+>> stored in
+>> an ELF file together with the program, and input/output. Then it=20
+>> would be
+>> easy to dump the C and eBPF program interleaved as bpftool does. If=20
+>> GDB
+>> would support eBPF, the format I envision would be good enough to=20
+>> support
+>> the GDB record/replay functionality.
+>
+> For the case you have in mind no kernel changes are necessary.
+> Just run the interpreter in user space.
+> It can be embedded in gdb binary, for example.
 
-# ./test_progs -t btf_dump
-#5/1 btf_dump: syntax:OK
-#5/2 btf_dump: ordering:OK
-#5/3 btf_dump: padding:OK
-#5/4 btf_dump: packing:OK
-#5/5 btf_dump: bitfields:OK
-#5/6 btf_dump: multidim:OK
-#5/7 btf_dump: namespacing:OK
-#5 btf_dump:OK
-Summary: 1/7 PASSED, 0 SKIPPED, 0 FAILED
+I do not believe a user-space approach would work, as you need support=20
+for all helpers (and make sure they behave specifically to the kernel=20
+version), as well you need all maps/memory available.
 
-Any feedback what to check? I don't have any other tests
-running in parallel.
+> Especially if you don't want to affect production server you=20
+> definitely
+> don't want to run anything on that machine.
 
-# clang --version
-clang version 10.0.0
-Target: x86_64-generic-linux
-Thread model: posix
-InstalledDir: /usr/bin
-# pahole --version
-v1.16
+With affecting production server I was not hinting towards some=20
+performance degradation/CPU/memory usage, but not affecting any of the=20
+traffic streams by inserting another packet into the network.
 
-5.7-rc3
+> As support person just grab the prog, capture the traffic and debug
+> on their own server.
+>
+>>
+>>> How about enabling kprobe in JITed code instead?
+>>> Then if you really need to trap and print regs for every instruction=20
+>>> you
+>>> can
+>>> still do so by placing kprobe on every JITed insn.
+>>
+>> This would even be harder as you need to understand the=20
+>> ASM(PPC/ARM/x86) to
+>> eBPF mapping (registers/code), where all you are interested in is=20
+>> eBPF (to
+>> C).
+>
+> Not really. gdb-like tool will hide all that from users.
 
--- Regards, Mikko
+Potentially yes if we get support for this in any gdb-like tool.
+
+>> This kprobe would also affect all the instances of the program=20
+>> running in
+>> the system, i.e. for XDP, it could be assigned to all interfaces in=20
+>> the
+>> system.
+>
+> There are plenty of ways to solve that.
+> Such kprobe in a prog can be gated by test_run cmd only.
+> Or the prog .text can be cloned into new one and kprobed there.
+
+Ack
+
+>> And for this purpose, you are only interested in the results of a run=20
+>> for a
+>> specific packet (in the XDP use case) using the BPF_RUN_API so you=20
+>> are not
+>> affecting any live traffic.
+>
+> The only way to not affect live traffic is to provide support on
+> a different machine.
+
+See above
+
+>>> But in reality I think few kprobes in the prog will be enough
+>>> to debug the program and XDP prog may still process millions of=20
+>>> packets
+>>> because your kprobe could be in error path and the user may want to
+>>> capture only specific things when it triggers.
+>>> kprobe bpf prog will execute in such case and it can capture=20
+>>> necessary
+>>> state from xdp prog, from packet or from maps that xdp prog is=20
+>>> using.
+>>> Some sort of bpf-gdb would be needed in user space.
+>>> Obviously people shouldn't be writing such kprob-bpf progs that=20
+>>> debug
+>>> other bpf progs by hand. bpf-gdb should be able to generate them
+>>> automatically.
+>>
+>> See my opening comment. What you're describing here is more when the=20
+>> right
+>> developer has access to the specific system. But this might not even=20
+>> be
+>> possible in some environments.
+>
+> All I'm saying that kprobe is a way to trace kernel.
+> The same facility should be used to trace bpf progs.
+
+perf doesn=E2=80=99t support tracing bpf programs, do you know of any too=
+ls=20
+that can, or you have any examples that would do this?
+
+>>
+>> Let me know if your opinion on this idea changes after reading this,=20
+>> or what
+>> else is needed to convince you of the need ;)
+>
+> I'm very much against hacking in-kernel interpreter into register
+> dumping facility.
+
+If the goal is to eventually remove the interpreter and not even adding=20
+new features to it I agree it does not make sense to continue this way.
+
+> Either use kprobe+bpf for programmatic tracing or intel's pt for pure
+> instruction trace.
+
