@@ -2,121 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A211BC483
-	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 18:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062321BC4C2
+	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 18:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728130AbgD1QG3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Apr 2020 12:06:29 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:33187 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728083AbgD1QG2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Apr 2020 12:06:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588089987;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=44TaYzj1mXVkpvAsz6mI1B0uXcADj590Ox/GtOY9fQo=;
-        b=UZ6h/4L//ZkyYjhSn0kj5eZTcdEnf2Wm5sUlLDcXvjfcfgXq1k/eeNQWc375ngzBHkrEbp
-        GX0F7rs7IcWpOsPkjNrBaM74EWBYztQKORUnB4oAIIn6I9UyDFsGZKPd/p+KSjg7zYtUzV
-        gI+tjhGfVC5vQheGUeMxtes7VVLfPMc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470-NjJboJZQOcKT0w8eDYDqBQ-1; Tue, 28 Apr 2020 12:06:23 -0400
-X-MC-Unique: NjJboJZQOcKT0w8eDYDqBQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7A6701899525;
-        Tue, 28 Apr 2020 16:06:21 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.55])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7A7175C240;
-        Tue, 28 Apr 2020 16:06:15 +0000 (UTC)
-Date:   Tue, 28 Apr 2020 18:06:13 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc:     sameehj@amazon.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        David Ahern <dsahern@gmail.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Subject: Re: [PATCH net-next 01/33] xdp: add frame size to xdp_buff
-Message-ID: <20200428180613.7980ea7a@carbon>
-In-Reply-To: <87eesd3rvu.fsf@toke.dk>
-References: <158757160439.1370371.13213378122947426220.stgit@firesoul>
-        <158757164613.1370371.2655437650342381672.stgit@firesoul>
-        <87eesd3rvu.fsf@toke.dk>
+        id S1728085AbgD1QO2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Apr 2020 12:14:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728037AbgD1QO2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 12:14:28 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF7AC03C1AB;
+        Tue, 28 Apr 2020 09:14:28 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id f18so22091514lja.13;
+        Tue, 28 Apr 2020 09:14:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZnXnmnUGnJoiqmak1qzJ2uo0ETz1Y/4EWDM5M5+McW4=;
+        b=fGS2oo0V4315baKko4RVx1wvx1RkPf6mVsOhdOrIDDYWBQzPnkKlTSp8QHvAj1CDy9
+         nzIxC+HzhXpaIa7msXlP2DMi5d8gpXeO92dOxA7FQ2waSsG3js+AV+/HHAjo/ZlDoJQw
+         hcb9MPNRB8gjqdA06X2g4kJnT47UJptPJsJzQRnzBRzkOgQ4K9xgW14vozetfeDfkS4z
+         PiYhDAK0FEGJjn0A7uVFpN+BKbglLueXcL1gS5csd30zCtQk4+zZhwNbBojouyxNvpah
+         MVMeHsvKv2teVMfuSxNxQDDi643nUKW1KifpFcZbs5cRdQpyLgvy55+a1NCbpap4kJ/N
+         NLIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZnXnmnUGnJoiqmak1qzJ2uo0ETz1Y/4EWDM5M5+McW4=;
+        b=n2BdI3BSFrziwKdD/OFP31BCCzFVnVnt/apNQ3xI3YaOKEOc9qkLIY56in2ZyzKLJc
+         38Vf0zPjX9IB3FGGyYPhw7e57gts+xUrrZ5r6lDSxsxWZtVIe/DvgxlKPh+T1R6FPTet
+         JMLKpskX1maO4Na7COB2hFPe5FEXONtNpTS4fsHRNW2bwjKNndIkIDZL02uMtJ1pirMN
+         DYHz2GNby5gJ0QQJOuAPWWEmwVluS+U7qt6kkLnV1m5qIbf19/sOJgKhH3k6TZjDdl+n
+         sgLAFRYGHs5qt02y4hZ2yRjmJrf7KxLZKaHxr/TvZf3RzPFu+QQ+eTTxjfSSzwVmYwWc
+         ruoA==
+X-Gm-Message-State: AGi0PuYoJdIFxq7m85dX9dhLuWiPZayaWLZ1ZL5wsSq4q/XeQsunQDVa
+        t+gSatM/JFGTmyi5uh6TBX2vkAoKPFriWS9Jsj0=
+X-Google-Smtp-Source: APiQypIXDLASfkazcJ+MQrYti2Ag3mLrjAObISlzH9I+j+TwEOwLu6ohEsL7aLot1tJOG7n4pooQE3SwWHE1K4b6jjM=
+X-Received: by 2002:a2e:9011:: with SMTP id h17mr18597862ljg.138.1588090466535;
+ Tue, 28 Apr 2020 09:14:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <CAK7LNARHd0DXRLONf6vH_ghsYZjzoduzkixqNDpVqqPx0yHbHg@mail.gmail.com>
+In-Reply-To: <CAK7LNARHd0DXRLONf6vH_ghsYZjzoduzkixqNDpVqqPx0yHbHg@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 28 Apr 2020 09:14:15 -0700
+Message-ID: <CAADnVQ+RvDq9qvNgSkwaMO8QcDG1gCm-SkGgNHyy1gVC3_0w=A@mail.gmail.com>
+Subject: Re: BPFilter: bit size mismatch between bpfiter_umh and vmliux
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 24 Apr 2020 16:00:53 +0200
-Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
+On Tue, Apr 28, 2020 at 3:54 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Hi.
+>
+> I have a question about potential bit size
+> mismatch between vmlinux and bpfilter_umh.
+>
+>
+> net/bpfilter/bpfilter_umh is compiled for the
+> default machine bit of the compiler.
+> This may not match to the kernel bit size.
+>
+>
+> This happens in the following scenario.
+>
+> GCC can be compiled as bi-arch.
+> If you use GCC that defaults to 64-bit,
+> you can give -m32 flag to produce the 32 bit code.
+>
+> When you build the kernel for 32-bit, -m32 is
+> properly passed for building the kernel space objects.
+> However, it is missing while building the userspace
+> objects for bpfilter_umh.
+>
+>
+> For example, my build host is x86_64 Ubuntu.
+>
+> If I build the kernel for i386
+> with CONFIG_BPFILTER_UMH=y,
+> the embedded bpfilter_umh is 64bit ELF.
+>
+> You can reproduce it by the following command on the
+> mainline kernel.
+>
+> masahiro@oscar:~/ref/linux$ make ARCH=i386 defconfig
+> masahiro@oscar:~/ref/linux$ scripts/config -e BPFILTER
+> masahiro@oscar:~/ref/linux$ scripts/config -e BPFILTER_UMH
+> masahiro@oscar:~/ref/linux$ make $(nproc) ARCH=i386
+>    ...
+> masahiro@oscar:~/ref/linux$ file vmlinux
+> vmlinux: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV),
+> statically linked,
+> BuildID[sha1]=7ac691c67b4fe9b0cd46b45a2dc2d728d7d87686, not stripped
+> masahiro@oscar:~/ref/linux$ file net/bpfilter/bpfilter_umh
+> net/bpfilter/bpfilter_umh: ELF 64-bit LSB executable, x86-64, version
+> 1 (GNU/Linux), statically linked,
+> BuildID[sha1]=baf1ffe26f4c030a99a945fc22924c8c559e60ac, for GNU/Linux
+> 3.2.0, not stripped
+>
+>
+>
+>
+> At least, the build was successful,
+> but does this work at runtime?
+>
+> If this is a bug, I can fix it cleanly.
+>
+> I think the bit size of the user mode helper
+> should match to the kernel bit size. Is this correct?
 
-> Jesper Dangaard Brouer <brouer@redhat.com> writes:
->=20
-> > XDP have evolved to support several frame sizes, but xdp_buff was not
-> > updated with this information. The frame size (frame_sz) member of
-> > xdp_buff is introduced to know the real size of the memory the frame is
-> > delivered in.
-> >
-> > When introducing this also make it clear that some tailroom is
-> > reserved/required when creating SKBs using build_skb().
-> >
-> > It would also have been an option to introduce a pointer to
-> > data_hard_end (with reserved offset). The advantage with frame_sz is
-> > that (like rxq) drivers only need to setup/assign this value once per
-> > NAPI cycle. Due to XDP-generic (and some drivers) it's not possible to
-> > store frame_sz inside xdp_rxq_info, because it's varies per packet as it
-> > can be based/depend on packet length.
-> >
-> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com> =20
->=20
-> With one possible nit below:
->=20
-> Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-
-thx
-
-> > ---
-> >  include/net/xdp.h |   13 +++++++++++++
-> >  1 file changed, 13 insertions(+)
-> >
-> > diff --git a/include/net/xdp.h b/include/net/xdp.h
-> > index 40c6d3398458..1ccf7df98bee 100644
-> > --- a/include/net/xdp.h
-> > +++ b/include/net/xdp.h
-> > @@ -6,6 +6,8 @@
-> >  #ifndef __LINUX_NET_XDP_H__
-> >  #define __LINUX_NET_XDP_H__
-> > =20
-> > +#include <linux/skbuff.h> /* skb_shared_info */
-> > +
-> >  /**
-> >   * DOC: XDP RX-queue information
-> >   *
-> > @@ -70,8 +72,19 @@ struct xdp_buff {
-> >  	void *data_hard_start;
-> >  	unsigned long handle;
-> >  	struct xdp_rxq_info *rxq;
-> > +	u32 frame_sz; /* frame size to deduct data_hard_end/reserved tailroom=
-*/ =20
->=20
-> I think maybe you want to s/deduct/deduce/ here?
-
-Okay, queued for V2.
-
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+yes. they should match.
+In theory we can have -m32 umh running on 64-bit kernel,
+but I wouldn't bother adding support for such thing
+until there is a use case.
+Running 64-bit umh on 32-bit kernel is no go.
