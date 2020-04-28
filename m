@@ -2,98 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93C81BB5C3
-	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 07:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BC61BB5FE
+	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 07:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726256AbgD1FSs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Apr 2020 01:18:48 -0400
-Received: from condef-03.nifty.com ([202.248.20.68]:41025 "EHLO
-        condef-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726042AbgD1FSr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Apr 2020 01:18:47 -0400
-Received: from conssluserg-05.nifty.com ([10.126.8.84])by condef-03.nifty.com with ESMTP id 03S5F1jC024503
-        for <bpf@vger.kernel.org>; Tue, 28 Apr 2020 14:15:01 +0900
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 03S5EZx7018686;
-        Tue, 28 Apr 2020 14:14:36 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 03S5EZx7018686
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1588050876;
-        bh=xRUJalPmxSa3IwO0mbX8+bZsqXvmh5sIzpQvN19Y1Qg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pP/mxVbR2xduse1JEi6QZ8GoH8YhEQNP39wIopOeWdW8x1RJRwMKtLL1oTZOxstvF
-         3g0O5f0N/ZRWqiflrw7Cz442nxTHCaOYg/PoVarAlMmF2TQ61W5Dwq1pnkg1z/dvzh
-         WvD/+Bm2UmmkFcCMvPjfJmfZWLkwFg7C1mMUyKF0tmspN9aw+IeVcfcmHgAwgxpvDM
-         Is92Qdv+TT69EdxUs1NHZa/erHGXAOvmFRQG9iBnYhm23xk/s4bdTTNsZKszuLQb6P
-         gRV9Z0nWI7FALHF7BYFgn5ISKO1r2TkcjwnoJvraLYCrtvUDVlfb+YaEPetoNXRoHj
-         PGnc9hJGlo6UQ==
-X-Nifty-SrcIP: [209.85.222.45]
-Received: by mail-ua1-f45.google.com with SMTP id y10so20081373uao.8;
-        Mon, 27 Apr 2020 22:14:35 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYvY3TLII9thcLEDJL1E7mCg1VkdZ9Pfofzt+HTpZLyKuEPG5xN
-        sabFwgHS4UnhP0X4ueM+NRk7nmwMorDW7jkbr5I=
-X-Google-Smtp-Source: APiQypJOEZwJRbZeM9LhBugkGuqlPL46+tnrLO/5mGkeAE074X4HzqUJOtQaMAK6LbvOX/mEJbhvhz/21GD3G/WiS5Q=
-X-Received: by 2002:ab0:1166:: with SMTP id g38mr20152241uac.40.1588050874872;
- Mon, 27 Apr 2020 22:14:34 -0700 (PDT)
+        id S1726303AbgD1FuG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Apr 2020 01:50:06 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:6332 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726279AbgD1FuG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 01:50:06 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03S5nuQM016944
+        for <bpf@vger.kernel.org>; Mon, 27 Apr 2020 22:50:05 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=SC/Z+FDbrYy/rHtsmiAIoXe4UdehF4nsaJNdgyfOiis=;
+ b=LJxij4hO7s62o6xQePDNLIlxpio+sgaoGHbtzNqP0ilLHSFJa8aGni8IDfTApA0TzD63
+ 9na8w1kQYsNgtvr2eBUnXfKX/7U7g/X1z9UrC2wrCKI61+E6+KeQRC25HOrZDpH1nKeo
+ 7wNm88VpjryRVLg6HezxdXaL7XpW2OHf+sA= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 30n57pcufe-11
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 27 Apr 2020 22:50:05 -0700
+Received: from intmgw004.08.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Mon, 27 Apr 2020 22:49:49 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 5AEE22EC3228; Mon, 27 Apr 2020 22:49:48 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf-next 00/10] bpf_link observability APIs
+Date:   Mon, 27 Apr 2020 22:49:34 -0700
+Message-ID: <20200428054944.4015462-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200423073929.127521-5-masahiroy@kernel.org> <202004280948.0higRDEI%lkp@intel.com>
-In-Reply-To: <202004280948.0higRDEI%lkp@intel.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 28 Apr 2020 14:13:58 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATNC9ndOMjOUdFbSCpM=P5Tv-M=ZJ-QDN+zRGMU4TQMbA@mail.gmail.com>
-Message-ID: <CAK7LNATNC9ndOMjOUdFbSCpM=P5Tv-M=ZJ-QDN+zRGMU4TQMbA@mail.gmail.com>
-Subject: Re: [PATCH 04/16] net: bpfilter: use 'userprogs' syntax to build bpfilter_umh
-To:     kbuild test robot <lkp@intel.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        kbuild-all@lists.01.org, bpf <bpf@vger.kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-28_02:2020-04-27,2020-04-28 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=1 priorityscore=1501
+ impostorscore=0 mlxscore=1 malwarescore=0 suspectscore=8 mlxlogscore=226
+ lowpriorityscore=0 adultscore=0 bulkscore=0 spamscore=1 phishscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004280049
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 10:46 AM kbuild test robot <lkp@intel.com> wrote:
->
-> Hi Masahiro,
->
-> I love your patch! Yet something to improve:
->
-> [auto build test ERROR on kbuild/for-next]
-> [cannot apply to linus/master v5.7-rc3 next-20200424]
-> [if your patch is applied to the wrong git tree, please drop us a note to help
-> improve the system. BTW, we also suggest to use '--base' option to specify the
-> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
->
-> url:    https://github.com/0day-ci/linux/commits/Masahiro-Yamada/kbuild-support-userprogs-syntax/20200426-114001
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git for-next
-> config: i386-allyesconfig (attached as .config)
-> compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-> reproduce:
->         # save the attached .config to linux build tree
->         make ARCH=i386
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kbuild test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    /usr/bin/ld: i386 architecture of input file `net/bpfilter/main.o' is incompatible with i386:x86-64 output
-> >> collect2: error: ld returned 1 exit status
->
+This patch series adds various observability APIs to bpf_link:
+  - each bpf_link now gets ID, similar to bpf_map and bpf_prog, by which
+    user-space can iterate over all existing bpf_links and create limited=
+ FD
+    from ID;
+  - allows to get extra object information with bpf_link general and
+    type-specific information;
+  - implements `bpf link show` command which lists all active bpf_links i=
+n the
+    system;
+  - implements `bpf link pin` allowing to pin bpf_link by ID or from othe=
+r
+    pinned path.
 
-Thanks.
--m32/-m64 is missing in the link time of the bpfilter_umh.
-I will fix it soon.
+v1->v2:
+  - simplified `bpftool link show` implementation (Quentin);
+  - fixed formatting of bpftool-link.rst (Quentin);
+  - fixed attach type printing logic (Quentin);
+rfc->v1:
+  - dropped read-only bpf_links (Alexei);
+  - fixed bug in bpf_link_cleanup() not removing ID;
+  - fixed bpftool link pinning search logic;
+  - added bash-completion and man page.
 
+Andrii Nakryiko (10):
+  bpf: refactor bpf_link update handling
+  bpf: allocate ID for bpf_link
+  bpf: support GET_FD_BY_ID and GET_NEXT_ID for bpf_link
+  bpf: add support for BPF_OBJ_GET_INFO_BY_FD for bpf_link
+  libbpf: add low-level APIs for new bpf_link commands
+  selftests/bpf: test bpf_link's get_next_id, get_fd_by_id, and
+    get_obj_info
+  bpftool: expose attach_type-to-string array to non-cgroup code
+  bpftool: add bpf_link show and pin support
+  bpftool: add bpftool-link manpage
+  bpftool: add link bash completions
 
+ include/linux/bpf-cgroup.h                    |  14 -
+ include/linux/bpf.h                           |  28 +-
+ include/linux/bpf_types.h                     |   6 +
+ include/uapi/linux/bpf.h                      |  31 ++
+ kernel/bpf/btf.c                              |   2 +
+ kernel/bpf/cgroup.c                           |  89 ++++-
+ kernel/bpf/syscall.c                          | 363 ++++++++++++++----
+ kernel/bpf/verifier.c                         |   2 +
+ kernel/cgroup/cgroup.c                        |  27 --
+ .../bpftool/Documentation/bpftool-link.rst    | 118 ++++++
+ tools/bpf/bpftool/bash-completion/bpftool     |  39 ++
+ tools/bpf/bpftool/cgroup.c                    |  48 +--
+ tools/bpf/bpftool/common.c                    |   2 +
+ tools/bpf/bpftool/link.c                      | 333 ++++++++++++++++
+ tools/bpf/bpftool/main.c                      |   6 +-
+ tools/bpf/bpftool/main.h                      |  37 ++
+ tools/include/uapi/linux/bpf.h                |  31 ++
+ tools/lib/bpf/bpf.c                           |  19 +-
+ tools/lib/bpf/bpf.h                           |   4 +-
+ tools/lib/bpf/libbpf.map                      |   6 +
+ .../selftests/bpf/prog_tests/bpf_obj_id.c     | 110 +++++-
+ .../testing/selftests/bpf/progs/test_obj_id.c |  14 +-
+ 22 files changed, 1145 insertions(+), 184 deletions(-)
+ create mode 100644 tools/bpf/bpftool/Documentation/bpftool-link.rst
+ create mode 100644 tools/bpf/bpftool/link.c
 
--- 
-Best Regards
-Masahiro Yamada
+--=20
+2.24.1
+
