@@ -2,68 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 600AB1BCCBC
-	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 21:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 288B41BCD23
+	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 22:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729135AbgD1Tun (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Apr 2020 15:50:43 -0400
-Received: from mga02.intel.com ([134.134.136.20]:5856 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728859AbgD1Tum (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Apr 2020 15:50:42 -0400
-IronPort-SDR: i1szSE+xJC5zwZLLViAuq4AO7meBXLqieJHFapg1WsT7mJKoq0aMTV2PeqOK4a8PxfycMwWRVO
- u5f/Hl6jz7pg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 12:50:41 -0700
-IronPort-SDR: TP6+i8pgfaouteFA2i7sAkzn/WKiOtL8dDrt/2I1ZKxt4ksCR8W1IVKhFcI+iXG1a1SDUR6AhC
- Rk0o3PxRY7rw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,328,1583222400"; 
-   d="scan'208";a="458928763"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 28 Apr 2020 12:50:38 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jTWFa-000AjK-Oe; Wed, 29 Apr 2020 03:50:38 +0800
-Date:   Wed, 29 Apr 2020 03:50:00 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        netdev@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-Subject: [RFC PATCH] bpf: __bpf_iter__netlink() can be static
-Message-ID: <20200428194957.GA51515@dcd913b51aa6>
-References: <20200427201246.2995471-1-yhs@fb.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200427201246.2995471-1-yhs@fb.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726440AbgD1ULs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Apr 2020 16:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726180AbgD1ULs (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 16:11:48 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D9F9C03C1AB;
+        Tue, 28 Apr 2020 13:11:46 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 1A5C3120ED563;
+        Tue, 28 Apr 2020 13:11:45 -0700 (PDT)
+Date:   Tue, 28 Apr 2020 13:11:43 -0700 (PDT)
+Message-Id: <20200428.131143.378850463944291442.davem@davemloft.net>
+To:     mchehab+huawei@kernel.org
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        corbet@lwn.net, netdev@vger.kernel.org, linux-hams@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org,
+        linux-decnet-user@lists.sourceforge.net,
+        ceph-devel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net, lvs-devel@vger.kernel.org
+Subject: Re: [PATCH 00/38] net: manually convert files to ReST format -
+ part 1
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <cover.1588024424.git.mchehab+huawei@kernel.org>
+References: <cover.1588024424.git.mchehab+huawei@kernel.org>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 28 Apr 2020 13:11:45 -0700 (PDT)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Date: Tue, 28 Apr 2020 00:01:15 +0200
 
-Signed-off-by: kbuild test robot <lkp@intel.com>
----
- af_netlink.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> There are very few documents upstream that aren't converted upstream.
+> 
+> This series convert part of the networking text files into ReST.
+> It is part of a bigger set of patches, which were split on parts,
+> in order to make reviewing task easier.
+> 
+> The full series (including those ones) are at:
+> 
+> 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=net-docs
+> 
+> And the documents, converted to HTML via the building system
+> are at:
+> 
+> 	https://www.infradead.org/~mchehab/kernel_docs/networking/
 
-diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
-index b6192cd668013..b8c9a87bd3960 100644
---- a/net/netlink/af_netlink.c
-+++ b/net/netlink/af_netlink.c
-@@ -2640,7 +2640,7 @@ struct bpf_iter__netlink {
- 	__bpf_md_ptr(struct netlink_sock *, sk);
- };
- 
--int __init __bpf_iter__netlink(struct bpf_iter_meta *meta, struct netlink_sock *sk)
-+static int __init __bpf_iter__netlink(struct bpf_iter_meta *meta, struct netlink_sock *sk)
- {
- 	return 0;
- }
+These look good as far as I can tell.
+
+Jon, do you mind if I merge this via the networking tree?
+
+Thanks.
