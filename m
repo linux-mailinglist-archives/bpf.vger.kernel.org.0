@@ -2,102 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CAFC1BCB92
-	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 20:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 214C41BCC77
+	for <lists+bpf@lfdr.de>; Tue, 28 Apr 2020 21:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729923AbgD1S6C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Apr 2020 14:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729770AbgD1S6B (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 14:58:01 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124AAC03C1AB
-        for <bpf@vger.kernel.org>; Tue, 28 Apr 2020 11:58:01 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id v38so10927276qvf.6
-        for <bpf@vger.kernel.org>; Tue, 28 Apr 2020 11:58:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b0L1ktGzrK0LQZO0rEs01n6+sdiXlGW1/AnA9H8zYJ8=;
-        b=EK+XhIuq319T0HbtQOuX5rKgbseo+ukv14s9HGVjgesdzfwobu5iTH3ciZIqJQlMeb
-         gLSNDQQiV6vffU8us5O1B841SAEjlDk50wU2Coyqp/PPkVjW9OgP1+gbNpDWVSp/l5cr
-         cPvMb5VONdkNOfUEGnQFeRoHHPBPknD/dtM7Q75XVbxnoiifDlZxnZCUnYvWu1oGOyqD
-         pIcQTubcX5F3CK2uL1gty9l04nZJ/4D8vBXNhVD78APaQb3uJ2Vu/IShaPL9RJLyqwBm
-         Bg/MDGfsJAPlT+FPqGWAtJonx8DbwugH5s6x2BteR/CquCXZM4n2J+yy9sirLFK/GpLy
-         t+Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b0L1ktGzrK0LQZO0rEs01n6+sdiXlGW1/AnA9H8zYJ8=;
-        b=VAKYhz+X/TzaoWtFCB/EZIx8gePhmtT54mHEFw4lirhP0w9wIsu0JwSWQG1K6KsN+f
-         GGmZ/qs2p1KVB50v89HHB6J47L8xNZQfe9wTAIXSjiSUgILNxfl8RXocsI9R3w88Lzjp
-         9WipIUagjfhm3V3a5tQhhP6Trw1J3kIBsastZr5NZYUYpcAqR8SscEL0MK9aoHp8dHY6
-         jqDoSQCMDhF9s5qucliBw0SC35jmIAx1p97uOB4OiJiq8IZZqdv9OlxlM70j6xQn4oW3
-         HI/S5fZpMTBxFLYuu++RfFlgGL92Gb9Urc7+A/rh8bp0gNn7hbnaSk9o5tQ3vvgfC946
-         XU0A==
-X-Gm-Message-State: AGi0Pua222g1H48UrZuEFG+JMxNmQ1yEHEqe8Q6BTtRUtQ3DndmtDA7p
-        +CR6E8EVB+Or9eZ6VKFO6P57WYS/sa/m0LH6hdW3aMvS
-X-Google-Smtp-Source: APiQypKqbvvrHt3rVmPASYetPS/GrupbCiwnGjgHVMktjI4iOKzabZXZJa0yYnYlhTGMXtU/W7DQCQrQWE5LGJZT828=
-X-Received: by 2002:a0c:eb09:: with SMTP id j9mr29701104qvp.196.1588100280228;
- Tue, 28 Apr 2020 11:58:00 -0700 (PDT)
+        id S1728812AbgD1Tgn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Apr 2020 15:36:43 -0400
+Received: from www62.your-server.de ([213.133.104.62]:37982 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728474AbgD1Tgn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Apr 2020 15:36:43 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jTW21-0002pP-77; Tue, 28 Apr 2020 21:36:37 +0200
+Received: from [178.195.186.98] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jTW20-000Xle-Jv; Tue, 28 Apr 2020 21:36:36 +0200
+Subject: Re: [PATCH net-next 29/33] xdp: allow bpf_xdp_adjust_tail() to grow
+ packet size
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     sameehj@amazon.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        zorik@amazon.com, akiyano@amazon.com, gtzalik@amazon.com,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        steffen.klassert@secunet.com
+References: <158757160439.1370371.13213378122947426220.stgit@firesoul>
+ <158757178840.1370371.13037637865133257416.stgit@firesoul>
+ <940b8c06-b71f-f6b1-4832-4abc58027589@iogearbox.net>
+ <20200428183743.19dee96e@carbon>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <7f6cd231-36f2-721c-4137-27b9da138ff2@iogearbox.net>
+Date:   Tue, 28 Apr 2020 21:36:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20200428173742.2988395-1-vkabatov@redhat.com>
-In-Reply-To: <20200428173742.2988395-1-vkabatov@redhat.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 28 Apr 2020 11:57:49 -0700
-Message-ID: <CAEf4Bzbp44pnj-yNP61enxh8-ZvFn56fSF4uDHLz0ZcY-H2yAA@mail.gmail.com>
-Subject: Re: [PATCH v2] selftests/bpf: Copy runqslower to OUTPUT directory
-To:     Veronika Kabatova <vkabatov@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200428183743.19dee96e@carbon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25796/Tue Apr 28 14:00:48 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 10:38 AM Veronika Kabatova <vkabatov@redhat.com> wrote:
->
-> $(OUTPUT)/runqslower makefile target doesn't actually create runqslower
-> binary in the $(OUTPUT) directory. As lib.mk expects all
-> TEST_GEN_PROGS_EXTENDED (which runqslower is a part of) to be present in
-> the OUTPUT directory, this results in an error when running e.g. `make
-> install`:
->
-> rsync: link_stat "tools/testing/selftests/bpf/runqslower" failed: No
->        such file or directory (2)
->
-> Copy the binary into the OUTPUT directory after building it to fix the
-> error.
->
-> Fixes: 3a0d3092a4ed ("selftests/bpf: Build runqslower from selftests")
-> Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
-> ---
+On 4/28/20 6:37 PM, Jesper Dangaard Brouer wrote:
+> On Mon, 27 Apr 2020 21:01:14 +0200
+> Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 4/22/20 6:09 PM, Jesper Dangaard Brouer wrote:
+>>> Finally, after all drivers have a frame size, allow BPF-helper
+>>> bpf_xdp_adjust_tail() to grow or extend packet size at frame tail.
+>>>
+>>> Remember that helper/macro xdp_data_hard_end have reserved some
+>>> tailroom.  Thus, this helper makes sure that the BPF-prog don't have
+>>> access to this tailroom area.
+>>>
+>>> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+>>> ---
+>>>    include/uapi/linux/bpf.h |    4 ++--
+>>>    net/core/filter.c        |   15 +++++++++++++--
+>>>    2 files changed, 15 insertions(+), 4 deletions(-)
+>>>
+> [...]
+>>> diff --git a/net/core/filter.c b/net/core/filter.c
+>>> index 7d6ceaa54d21..5e9c387f74eb 100644
+>>> --- a/net/core/filter.c
+>>> +++ b/net/core/filter.c
+>>> @@ -3422,12 +3422,23 @@ static const struct bpf_func_proto bpf_xdp_adjust_head_proto = {
+>>>    
+>>>    BPF_CALL_2(bpf_xdp_adjust_tail, struct xdp_buff *, xdp, int, offset)
+>>>    {
+>>> +	void *data_hard_end = xdp_data_hard_end(xdp);
+>>>    	void *data_end = xdp->data_end + offset;
+>>>    
+>>> -	/* only shrinking is allowed for now. */
+>>> -	if (unlikely(offset >= 0))
+>>> +	/* Notice that xdp_data_hard_end have reserved some tailroom */
+>>> +	if (unlikely(data_end > data_hard_end))
+>>>    		return -EINVAL;
+>>>    
+>>> +	/* ALL drivers MUST init xdp->frame_sz, some chicken checks below */
+>>> +	if (unlikely(xdp->frame_sz < (xdp->data_end - xdp->data_hard_start))) {
+>>> +		WARN(1, "Too small xdp->frame_sz = %d\n", xdp->frame_sz);
+>>> +		return -EINVAL;
+>>> +	}
+> 
+> I will remove this "too small" check, as it is useless, given it will
+> already get caught by above check.
+> 
+>>> +	if (unlikely(xdp->frame_sz > PAGE_SIZE)) {
+>>> +		WARN(1, "Too BIG xdp->frame_sz = %d\n", xdp->frame_sz);
+>>> +		return -EINVAL;
+>>> +	}
+>>
+>> I don't think we can add the WARN()s here. If there is a bug in the
+>> driver in this area and someone deploys an XDP-based application
+>> (otherwise known to work well elsewhere) on top of this, then an
+>> attacker can basically remote DoS the machine with malicious packets
+>> that end up triggering these WARN()s over and over.
+> 
+> Good point.  I've changed this to WARN_ONCE(), but I'm still
+> considering to remove it completely...
+> 
+>> If you are worried that not all your driver changes are correct,
+>> maybe only add those that you were able to actually test yourself or
+>> that have been acked, and otherwise pre-init the frame_sz to a known
+>> invalid value so this helper would only allow shrinking for them in
+>> here (as today)?
+> 
+> Hmm... no, I really want to require ALL drivers to set a valid value,
+> because else we will have the "data_meta" feature situation, where a lot
+> of drivers still doesn't support this.
 
-Looks good, thanks.
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  tools/testing/selftests/bpf/Makefile | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 7729892e0b04..4e654d41c7af 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -141,7 +141,8 @@ VMLINUX_BTF := $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
->  $(OUTPUT)/runqslower: $(BPFOBJ)
->         $(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower     \
->                     OUTPUT=$(SCRATCH_DIR)/ VMLINUX_BTF=$(VMLINUX_BTF)   \
-> -                   BPFOBJ=$(BPFOBJ) BPF_INCLUDE=$(INCLUDE_DIR)
-> +                   BPFOBJ=$(BPFOBJ) BPF_INCLUDE=$(INCLUDE_DIR) &&      \
-> +                   cp $(SCRATCH_DIR)/runqslower $@
->
->  $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): $(OUTPUT)/test_stub.o $(BPFOBJ)
->
-> --
-> 2.25.1
->
+Ok, makes sense, it's probably better that way. I do have a data_meta
+series for a few more drivers to push out soon to make sure there's more
+coverage as we're using it in Cilium.
