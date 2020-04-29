@@ -2,39 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 922C31BD336
-	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 05:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8E11BD315
+	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 05:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgD2Dqa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1726691AbgD2Dqa (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Tue, 28 Apr 2020 23:46:30 -0400
-Received: from conuserg-12.nifty.com ([210.131.2.79]:30768 "EHLO
+Received: from conuserg-12.nifty.com ([210.131.2.79]:30765 "EHLO
         conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726621AbgD2Dq3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S1726599AbgD2Dq3 (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 28 Apr 2020 23:46:29 -0400
 Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 03T3jXlb020748;
-        Wed, 29 Apr 2020 12:45:34 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 03T3jXlb020748
+        by conuserg-12.nifty.com with ESMTP id 03T3jXlc020748;
+        Wed, 29 Apr 2020 12:45:35 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 03T3jXlc020748
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1588131934;
-        bh=J6Zz8rPIoOP2RxWt1vp9BH2krOQ6QyL5foLOOnRDXGA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=pbkwY9WIC8+qobyGRxbFLVTBQ7BdgZozw2VehlZt7+zw8M8UXRU5aKB1CbWy/m3K+
-         MueYuxb7MeDn8sfuFahj87Q1AMOOVEYvEyID7nMy9LSeX8vUUR5hOzdEAzzKnr1uhr
-         Va0ZMDmxia4Vkz+1qgdJezKuKUvi//YRkyOq9+law7mDS06wBUwZq8wlORrwaQK7jw
-         gwhn2EKot/y7cufNgyJWnrpsqWacaw1GtPiuoKbbIbnaHoQWKRfxiMNt4YO2ruJoZo
-         Url7EVqPdTiP/ineyFRQlkmQknf6ldkBl2oQUEiYYY5z31WNziwF2KUBScHxEgsfBC
-         du447ALrsma5w==
+        s=dec2015msa; t=1588131935;
+        bh=a/8yLvdu6xS3Gj2bx6HeWvVtgMKV8ZR+HSeVW/CO80E=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=BHXkufn8HbfXGioq28uVr88OWCXL5Rx7FVk0ASGpkAQE0zd9aZwVSjkgojnGDG5cp
+         nPZhkMa9l9cy+RfgkE+Bx6MXNiSMCg5K9b77C7LgZyNNYV9ksEowrBzAJ25oCWRVMu
+         e8QuXw573q+aw6j15TCxTkGULcogeT5smoP35iqyBsRN3ZvUSTuYQTe8HE+2mv2kZZ
+         jTD4IqsTa0Xjkj6DuLjOGyUrmV0u2xQRfhEN2Y3rKOe7svt/GA9EinxUdns8fodC2f
+         zFycDImm+xZyKhDwa8qNjYyRRN8WRJW3vhK5gESXaK8azIfLO2+uY7JgYb/lZCQn9E
+         Z2xUkuYoEEmuQ==
 X-Nifty-SrcIP: [126.90.202.47]
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-kbuild@vger.kernel.org
 Cc:     bpf <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
         Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
         Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH v2 00/15] kbuild: support 'userprogs' syntax
-Date:   Wed, 29 Apr 2020 12:45:12 +0900
-Message-Id: <20200429034527.590520-1-masahiroy@kernel.org>
+Subject: [PATCH v2 01/15] bpfilter: match bit size of bpfilter_umh to that of the kernel
+Date:   Wed, 29 Apr 2020 12:45:13 +0900
+Message-Id: <20200429034527.590520-2-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200429034527.590520-1-masahiroy@kernel.org>
+References: <20200429034527.590520-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,136 +45,90 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+bpfilter_umh is built for the default machine bit of the compiler,
+which may not match to the bit size of the kernel.
 
-Several Makefiles use 'hostprogs' to build programs for the host
-architecture where it is not appropriate to do so.
-This is just because Kbuild lacks the support for building programs
-for the target architecture.
+This happens in the scenario below:
 
-This series introduce 'userprogs' syntax and use it from
-sample and bpf Makefiles.
+You can use biarch GCC that defaults to 64-bit for building the 32-bit
+kernel. In this case, Kbuild passes -m32 to teach the compiler to
+produce 32-bit kernel space objects. However, it is missing when
+building bpfilter_umh. It is built as a 64-bit ELF, and then embedded
+into the 32-bit kernel.
 
-Sam worked on this in 2014.
-https://lkml.org/lkml/2014/7/13/154
+The 32-bit kernel and 64-bit umh is a bad combination.
 
-He used 'uapiprogs-y' but I just thought the meaning of
-"UAPI programs" is unclear.
+In theory, we can have 32-bit umh running on 64-bit kernel, but we do
+not have a good reason to support such a usecase.
 
-Naming the syntax is one of the most difficult parts.
+The best is to match the bit size between them.
 
-I chose 'userprogs'. Anothor choice I had in my mind was 'targetprogs'.
+Pass -m32 or -m64 to the umh build command if it is found in
+$(KBUILD_CFLAGS). Evaluate CC_CAN_LINK against the kernel bit-size.
 
-You can test this series quickly by 'make allmodconfig samples/'
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-When building objects for userspace, [U] is displayed.
+Changes in v2:
+  - New patch
 
-masahiro@oscar:~/workspace/linux$ make allmodconfig samples/
-  [snip]
-  AR      samples/vfio-mdev/built-in.a
-  CC [M]  samples/vfio-mdev/mtty.o
-  CC [M]  samples/vfio-mdev/mdpy.o
-  CC [M]  samples/vfio-mdev/mdpy-fb.o
-  CC [M]  samples/vfio-mdev/mbochs.o
-  AR      samples/mei/built-in.a
-  CC [U]  samples/mei/mei-amt-version
-  CC [U]  samples/auxdisplay/cfag12864b-example
-  CC [M]  samples/configfs/configfs_sample.o
-  CC [M]  samples/connector/cn_test.o
-  CC [U]  samples/connector/ucon
-  CC [M]  samples/ftrace/ftrace-direct.o
-  CC [M]  samples/ftrace/ftrace-direct-too.o
-  CC [M]  samples/ftrace/ftrace-direct-modify.o
-  CC [M]  samples/ftrace/sample-trace-array.o
-  CC [U]  samples/hidraw/hid-example
-  CC [M]  samples/hw_breakpoint/data_breakpoint.o
-  CC [M]  samples/kdb/kdb_hello.o
-  CC [M]  samples/kfifo/bytestream-example.o
-  CC [M]  samples/kfifo/dma-example.o
-  CC [M]  samples/kfifo/inttype-example.o
-  CC [M]  samples/kfifo/record-example.o
-  CC [M]  samples/kobject/kobject-example.o
-  CC [M]  samples/kobject/kset-example.o
-  CC [M]  samples/kprobes/kprobe_example.o
-  CC [M]  samples/kprobes/kretprobe_example.o
-  CC [M]  samples/livepatch/livepatch-sample.o
-  CC [M]  samples/livepatch/livepatch-shadow-mod.o
-  CC [M]  samples/livepatch/livepatch-shadow-fix1.o
-  CC [M]  samples/livepatch/livepatch-shadow-fix2.o
-  CC [M]  samples/livepatch/livepatch-callbacks-demo.o
-  CC [M]  samples/livepatch/livepatch-callbacks-mod.o
-  CC [M]  samples/livepatch/livepatch-callbacks-busymod.o
-  CC [M]  samples/rpmsg/rpmsg_client_sample.o
-  CC [U]  samples/seccomp/bpf-fancy.o
-  CC [U]  samples/seccomp/bpf-helper.o
-  LD [U]  samples/seccomp/bpf-fancy
-  CC [U]  samples/seccomp/dropper
-  CC [U]  samples/seccomp/bpf-direct
-  CC [U]  samples/seccomp/user-trap
-  CC [U]  samples/timers/hpet_example
-  CC [M]  samples/trace_events/trace-events-sample.o
-  CC [M]  samples/trace_printk/trace-printk.o
-  CC [U]  samples/uhid/uhid-example
-  CC [M]  samples/v4l/v4l2-pci-skeleton.o
-  CC [U]  samples/vfs/test-fsmount
-  CC [U]  samples/vfs/test-statx
-samples/vfs/test-statx.c:24:15: warning: ‘struct foo’ declared inside parameter list will not be visible outside of this definition or declaration
-   24 | #define statx foo
-      |               ^~~
-  CC [U]  samples/watchdog/watchdog-simple
-  AR      samples/built-in.a
+ init/Kconfig          | 4 +++-
+ net/bpfilter/Makefile | 5 +++--
+ usr/include/Makefile  | 4 ++++
+ 3 files changed, 10 insertions(+), 3 deletions(-)
 
-Changes for v2:
-  - Fix ARCH=i386 build error for bpfilter_umh
-  - Rename 'user-ccflags' to 'userccflags'
-    because 'user-ccflags' would conflict if an object
-    called 'user.o' exists in the directory.
-  - Support 'userldflags'
-
-Masahiro Yamada (14):
-  bpfilter: match bit size of bpfilter_umh to that of the kernel
-  kbuild: add infrastructure to build userspace programs
-  bpfilter: use 'userprogs' syntax to build bpfilter_umh
-  samples: seccomp: build sample programs for target architecture
-  kbuild: doc: document the new syntax 'userprogs'
-  samples: uhid: build sample program for target architecture
-  samples: hidraw: build sample program for target architecture
-  samples: connector: build sample program for target architecture
-  samples: vfs: build sample programs for target architecture
-  samples: pidfd: build sample program for target architecture
-  samples: mei: build sample program for target architecture
-  samples: auxdisplay: use 'userprogs' syntax
-  samples: timers: use 'userprogs' syntax
-  samples: watchdog: use 'userprogs' syntax
-
-Sam Ravnborg (1):
-  samples: uhid: fix warnings in uhid-example
-
- Documentation/kbuild/makefiles.rst | 183 +++++++++++++++++++++--------
- Makefile                           |  13 +-
- init/Kconfig                       |   4 +-
- net/bpfilter/Makefile              |  11 +-
- samples/Kconfig                    |  26 +++-
- samples/Makefile                   |   4 +
- samples/auxdisplay/Makefile        |  11 +-
- samples/connector/Makefile         |  12 +-
- samples/hidraw/Makefile            |   9 +-
- samples/mei/Makefile               |   9 +-
- samples/pidfd/Makefile             |   8 +-
- samples/seccomp/Makefile           |  42 +------
- samples/timers/Makefile            |  17 +--
- samples/uhid/.gitignore            |   2 +
- samples/uhid/Makefile              |   9 +-
- samples/uhid/uhid-example.c        |   4 +-
- samples/vfs/Makefile               |  11 +-
- samples/watchdog/Makefile          |  10 +-
- scripts/Makefile.build             |   6 +
- scripts/Makefile.clean             |   2 +-
- scripts/Makefile.userprogs         |  45 +++++++
- usr/include/Makefile               |   4 +
- 22 files changed, 267 insertions(+), 175 deletions(-)
- create mode 100644 samples/uhid/.gitignore
- create mode 100644 scripts/Makefile.userprogs
-
+diff --git a/init/Kconfig b/init/Kconfig
+index a494212a3a79..57562a8e2761 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -45,7 +45,9 @@ config CLANG_VERSION
+ 	default $(shell,$(srctree)/scripts/clang-version.sh $(CC))
+ 
+ config CC_CAN_LINK
+-	def_bool $(success,$(srctree)/scripts/cc-can-link.sh $(CC))
++	bool
++	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(m64-flag)) if 64BIT
++	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(m32-flag))
+ 
+ config CC_HAS_ASM_GOTO
+ 	def_bool $(success,$(srctree)/scripts/gcc-goto.sh $(CC))
+diff --git a/net/bpfilter/Makefile b/net/bpfilter/Makefile
+index 36580301da70..f6209e4827b9 100644
+--- a/net/bpfilter/Makefile
++++ b/net/bpfilter/Makefile
+@@ -5,14 +5,15 @@
+ 
+ hostprogs := bpfilter_umh
+ bpfilter_umh-objs := main.o
+-KBUILD_HOSTCFLAGS += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi
++KBUILD_HOSTCFLAGS += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi \
++			$(filter -m32 -m64, $(KBUILD_CFLAGS))
+ HOSTCC := $(CC)
+ 
+ ifeq ($(CONFIG_BPFILTER_UMH), y)
+ # builtin bpfilter_umh should be compiled with -static
+ # since rootfs isn't mounted at the time of __init
+ # function is called and do_execv won't find elf interpreter
+-KBUILD_HOSTLDFLAGS += -static
++KBUILD_HOSTLDFLAGS += -static $(filter -m32 -m64, $(KBUILD_CFLAGS))
+ endif
+ 
+ $(obj)/bpfilter_umh_blob.o: $(obj)/bpfilter_umh
+diff --git a/usr/include/Makefile b/usr/include/Makefile
+index 5a7ee3e5ed86..55362f3ab393 100644
+--- a/usr/include/Makefile
++++ b/usr/include/Makefile
+@@ -8,6 +8,10 @@
+ # We cannot go as far as adding -Wpedantic since it emits too many warnings.
+ UAPI_CFLAGS := -std=c90 -Wall -Werror=implicit-function-declaration
+ 
++# In theory, we do not care -m32 or -m64 for header compile tests.
++# It is here just because CONFIG_CC_CAN_LINK is tested with -m32 or -m64.
++UAPI_CFLAGS += $(filter -m32 -m64, $(KBUILD_CFLAGS))
++
+ override c_flags = $(UAPI_CFLAGS) -Wp,-MMD,$(depfile) -I$(objtree)/usr/include
+ 
+ # The following are excluded for now because they fail to build.
 -- 
 2.25.1
 
