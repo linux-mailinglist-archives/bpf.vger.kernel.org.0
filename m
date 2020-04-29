@@ -2,191 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A69951BD1BE
-	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 03:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 822691BD20F
+	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 04:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726399AbgD2Bc5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Apr 2020 21:32:57 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:50694 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726181AbgD2Bc4 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 21:32:56 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03T1Ousk004542;
-        Tue, 28 Apr 2020 18:32:43 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=krNNozXBOQwCzGOu0ANkTpnCQ1a7Pm80Ien8ddpUhrg=;
- b=Rbg8n16Uk6GnFaPPtVx5wZMybu7go7A+0iKR27zUhdAbspU3QB9Lf8nco3SfuZ+U8RXn
- 5Wl2dAboWp6TrdLBRjlS1NtMkMOuqFT2y0nuJkD13MRi+cGyywDb52B8bX5Gog8d9fvd
- Kq4YfNVHDuZfHyTlnsJ3VPT+4n1x04qWOeg= 
+        id S1726560AbgD2CGf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Apr 2020 22:06:35 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:52238 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726158AbgD2CGe (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 22:06:34 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03T24tbg012935;
+        Tue, 28 Apr 2020 19:06:20 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=n6vyZ9X8GmglwGqww4tPImMKFEHpCn3UBwtf6IzrK6w=;
+ b=fqoxHRpP3SYOFtx+wrRu4IkNrL6s7U4KIdyxGsEM2rdd1CJfZVQvsg+0/ubUeDlgZE4/
+ RMSSqRnMM104PTO8eZT/sXjOlILxqmJ8ujmrx+ngrltWNba/yn8xnjxbCL7IPa3frI1r
+ c5Fd7rL0L16zLDRlPR2KTZHqeYX0LMqczCI= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 30nq53x9vc-1
+        by mx0a-00082601.pphosted.com with ESMTP id 30pq0dc822-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 28 Apr 2020 18:32:43 -0700
+        Tue, 28 Apr 2020 19:06:17 -0700
 Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Tue, 28 Apr 2020 18:32:42 -0700
+ 15.1.1847.3; Tue, 28 Apr 2020 19:06:16 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F14A4OGfU3tTGBQJ4tk7quDHaMjsCxiKapMMG6xlq/qmmVCO8oMtZt+kS6dv+5dDN8On+/dSGZ/rbPsS5yOa3Rx/Niw2W+p8w3dLiwXSikBwqw6KZUhqAH1lbEwXfSeo5h7pjkCGBXvx+4UlfGQhJ3BTp/2NAd0vXdLVhpGtC8vIbucTfZLolCS4y45vIfLRjpCOljP/zQeFWUPZA+bS8u3f8o6TM8bf7svRyOa+M0kDVFh5A6IapK75+/Tjso7tMnwlpCCBggFw64yvP19uVBi0nk07p5SOHddjrRzEckW13t3IwyM2rMLNDYrWOmTX95iXZ8ey4TdEs0H3ho5FFg==
+ b=Hqyej9j9X8vwhhOd8iXvbLjPL/azwkM8gwjQJVzZueoehXPVl8PHEK+d0/aHQbMbO9jh8mvaMN0UsAmPb+hrY3WVoTrDEU45cqiTnBpi22aJ5n5G1wPZb2+b9WFd3tNIyLa2fs0lCI6CAXFnTN+Xhh8cVxS+vSHf02xNSl218I3urW/nyi76K0OOS7mAwjRxji8zGlnSmxTS7ZSggXmfUusiT670l34Z+44aXpCFTx932O5not1frt47OOWQluUYj8Z6oE8YVp9e8oCVsck1QFj2rdSO9gczlqJCwH9JZKVCyPWtvrkyiNEayiiOoZywnIuOUbWCI+krgPtoRmJ8nA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=krNNozXBOQwCzGOu0ANkTpnCQ1a7Pm80Ien8ddpUhrg=;
- b=ZYFxX1L3/LekN57wFjA7cA0cv3U9Q81ax/ByzrYA1FXb6/IaueKOM8yj5uYVuvq9QR9lqL3UMOlQ8TxDx/L2ccA36lGQ2HitOWlRWiwzj0NcgLG/ZP+f4xrdQhafEAD+obo/nXQmU2EEgR5vJuMDaXobw8InGaC2P1T5kHNEjmP6+Hj5UNoqr/jJPZfW16/SAOdhdRdYsINrL4FI0kLM+/nveU/ctKBxVdEgYH1Q/WnU4L0BaHqshMnLJ4JjrYn/x7Czhffmrv4TLR+10yFaNyESxy6zysGH3LMyGQ7XfRU1mLxae4rb9tWFCiiNYce+WYSYLx1xCk307bO7NbeIQg==
+ bh=n6vyZ9X8GmglwGqww4tPImMKFEHpCn3UBwtf6IzrK6w=;
+ b=ZL4ZfDYNioVr6sFseRELDFuvHkJtU387aeqGFyHPua3Hr1VbEqUIpQm/NsBxv0DqHJsOInGCLZsrjhUePJzBxeBx9Q4bo0VZjlC01zflrBAWfjP2ugQYVNbzC3VHc7/lpDUa4I5k0A14NJQZUJVzRrjSeoUWmGTOHo8Nrv1oRSSxyGRoAcje/N4NnY18VAY8lkgLiZmDcQN7d9LQWPINWpTNZ4PjCC3olC4VmZPtWCsqQNt2d/W+9cj1Ngv/lvUFAj25Yej8hkQTjQ5Jt5P6DAkxNuWWGOFA2HTnfV0QOtsJ70aabBLd+iljpeo6d+RMNFy8R9yJyIj38kKe0Tbgxw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=krNNozXBOQwCzGOu0ANkTpnCQ1a7Pm80Ien8ddpUhrg=;
- b=KEAaIRWwWXO/ZkAo1sBYfvz9Pp4bX2RFUVNQ7c6BCU6DKGXQ47Ftq+1vCRblKIqXL1JUD5hVawxi9lctWW2gmoQi2U6tN6x6ZuXAGOp6rHbacSmgiSX+jG5bb54R4iORu9LMG84zCu44yDvK/vAzVg+2YH7pJ7v12Ls8W4ZEfSQ=
-Received: from MW3PR15MB4044.namprd15.prod.outlook.com (2603:10b6:303:4b::24)
- by MW3PR15MB3756.namprd15.prod.outlook.com (2603:10b6:303:47::12) with
+ bh=n6vyZ9X8GmglwGqww4tPImMKFEHpCn3UBwtf6IzrK6w=;
+ b=JM97H2dZV4z6neFbOJ/4vjK7qft8c15OQcpjftSWtV6GFxDzDzHDpwv7IqZR855dcK9q34M7tWu8VxTWWhb+/n5A0CWIp1BD1ZKKd9pznPzcfzk5/ViJbZrWWQTx4+sEVm6e1WmKE8mCTE65lVo6Lzp8ZjZpulWsAmDyrC/ob3I=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB3397.namprd15.prod.outlook.com (2603:10b6:a03:10b::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.22; Wed, 29 Apr
- 2020 01:32:41 +0000
-Received: from MW3PR15MB4044.namprd15.prod.outlook.com
- ([fe80::e5c5:aeff:ca99:aae0]) by MW3PR15MB4044.namprd15.prod.outlook.com
- ([fe80::e5c5:aeff:ca99:aae0%5]) with mapi id 15.20.2937.026; Wed, 29 Apr 2020
- 01:32:41 +0000
-Date:   Tue, 28 Apr 2020 18:32:39 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Yonghong Song <yhs@fb.com>
-CC:     Andrii Nakryiko <andriin@fb.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next v1 06/19] bpf: support bpf tracing/iter programs
- for BPF_LINK_UPDATE
-Message-ID: <20200429013239.apxevcpdc3kpqlrq@kafai-mbp>
-References: <20200427201235.2994549-1-yhs@fb.com>
- <20200427201241.2995075-1-yhs@fb.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200427201241.2995075-1-yhs@fb.com>
-User-Agent: NeoMutt/20180716
-X-ClientProxiedBy: MWHPR14CA0027.namprd14.prod.outlook.com
- (2603:10b6:300:12b::13) To MW3PR15MB4044.namprd15.prod.outlook.com
- (2603:10b6:303:4b::24)
+ 2020 02:06:15 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::bdf1:da56:867d:f8a2]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::bdf1:da56:867d:f8a2%7]) with mapi id 15.20.2937.026; Wed, 29 Apr 2020
+ 02:06:15 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v6 bpf-next 3/3] bpf: add selftest for BPF_ENABLE_STATS
+Thread-Topic: [PATCH v6 bpf-next 3/3] bpf: add selftest for BPF_ENABLE_STATS
+Thread-Index: AQHWHb1NltGNzgSfaEStSSTqu/dK9aiPQD4AgAACuwCAABcRAA==
+Date:   Wed, 29 Apr 2020 02:06:15 +0000
+Message-ID: <78ED2E6A-BA51-4A1A-80C9-865215A25760@fb.com>
+References: <20200429002922.3064669-1-songliubraving@fb.com>
+ <20200429002922.3064669-4-songliubraving@fb.com>
+ <290a94fb-f3ee-227c-ffa0-66629ce8327a@fb.com>
+ <20200429004340.5y2c3rkr64u43sfg@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200429004340.5y2c3rkr64u43sfg@ast-mbp.dhcp.thefacebook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.60.0.2.5)
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:c58d]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a8790a44-ba80-4136-5bd7-08d7ebe1e601
+x-ms-traffictypediagnostic: BYAPR15MB3397:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB33978089DCAC2F6555C6F461B3AD0@BYAPR15MB3397.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 03883BD916
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(366004)(136003)(396003)(346002)(376002)(66556008)(53546011)(66476007)(76116006)(66946007)(6506007)(91956017)(64756008)(2616005)(66446008)(4326008)(6486002)(478600001)(54906003)(186003)(86362001)(2906002)(5660300002)(8936002)(8676002)(6512007)(36756003)(316002)(6916009)(71200400001)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: T/ykHsHpHRgUDXaA6E9x2nr0jOpEKkDQZcNU9VT9qHE61y+StX6yRMhPotAZzXYPGJCH0MXm57A9czmAkoGbSbX6GT5QVUYZM2FZGbJvvtOeqqQ7rr60kqfSs9jdSx2sgXhkInCxM/apwwEn7pm0tV8rPzlA4y4SDf2rbFOElj8zGzTBG1Q2UkxD0RDDrr1I2pRmhc+BCvSGy5MJfpq2cQia+173FOEbvXsMo3gps+WNRoIoNFE3zf4xHGkUkR+JABdwCdM2ppFaMbq45ZULnxyc86/oyn5OSLFclb/abYqg3Iyr1iCt5beEkRgzd684cHYsajWD04yBO0JANOLsRjPF1+tWDncYhUXHto3g1gbTpf2Yj9nr9kXs3b5gpjW0pGyFcOXC2rL7+bRqGllCH1tQ3Fiam/VkU7DkJhiEs4qXYRT+wvlzJ1bYOnipqqXA
+x-ms-exchange-antispam-messagedata: 7PZLjZXjsyMl3MyDUF/8s5Ly/FX4Qakx0mR92tYT6Yq1yX+uPKidUqq0gJ10AFodb5/gcIFoU5R6Jy/RCpW6d2Oe7xRTmtyrve9eUGKdJROA5Zst3azmzEZrWVxqT1fCRzhwshKVOC/Wi95BiUgRLWOTQi7+U2CzEClm0d0ta1GycxIV3N83mwAqb03zQGSzGp3e2WbkIXvXANjXFHFZxxwBDHmgGh7QYxcqxr5MiYO1qrXJDjPRvOoH0w4IhEZMf1Sankufmo1qsHpUB6Fp9z6hL68AX37ol7uzglhG9Q5rXO2xgXwO36f+1KlEVTO/uFA2Qt+8vMNQbrXkAbMyNuGs9jvIRh4vYOej75kY8CemNlgpvCsHkRNMlgJyT1IXPXoZRfaivGZ3FppzMoTvUiHmVRWfKs8nuvPQ/CQSN3P7wDPPrqcSNwhruYKKIHV2RVfNkkJ6puq+XMSNx21VNdq0w7e8NVMWP+ANHlvC1t0+XhtCJ/bQrZVQGw4sTSjIRO6jLGA+QtkylK5RtXNpvLwDuXvZi7OvfRbB3XFxFsCKevS1HdrdxIV0Sk5oQnT5+/6HJ4b0yGDAMgxeI3ZF3cVfIkYVC7Ow6UtShlBulvpMrDA1W+jyjaaR2LXTcOXrdzS4v8KGTXgjV95jDOmmsXiJK05+3dRMx60xW0RS8WS4Jlq3zmFhd9vFmp8GTMqPp7N5D9pFN2nfdOzYk6sqQjCIFrgkIEVj6nmwVgmetAOY+ObzqQWqWJjXtjW0d79C92OZWn7hTjUCwXK+9sC4JFPqJXYIzpUbEFWCJPmC8ON5edPGhf02KOkwIeQ+AnrSnUy63xTKffGOoYda2KI1Ng==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <496A8AB254760241B37F7049287A1CA9@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp (2620:10d:c090:400::5:950c) by MWHPR14CA0027.namprd14.prod.outlook.com (2603:10b6:300:12b::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.19 via Frontend Transport; Wed, 29 Apr 2020 01:32:40 +0000
-X-Originating-IP: [2620:10d:c090:400::5:950c]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 38cad773-7b98-4eeb-7c75-08d7ebdd3522
-X-MS-TrafficTypeDiagnostic: MW3PR15MB3756:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW3PR15MB3756D68D0914C9F82239AE14D5AD0@MW3PR15MB3756.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-Forefront-PRVS: 03883BD916
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR15MB4044.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(136003)(376002)(346002)(396003)(39860400002)(16526019)(8936002)(186003)(55016002)(5660300002)(8676002)(9686003)(6496006)(6636002)(1076003)(52116002)(2906002)(66556008)(66946007)(66476007)(316002)(33716001)(86362001)(54906003)(478600001)(4326008)(6862004);DIR:OUT;SFP:1102;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: E4YxSzZVc/FhmEOjRninidJ+edXuKV6gBfomzUHysp81/hCVo6DFmj8qWl5Hktlx291QLVY9Wjx5bavbJ0AD7oK7hZGQFYH5+C5bb7XxhrWkWqzeRcFyqdvlvmzZm/h2gFrlbwUn3AtbUm22fEyD1Rn4Ga4xAKeJMMZu2ICxTW0rbF4EXPIFQAUnIlLwbmtx16TD9ONCXWl5CpYDxflQW1qPT5iAgxnhgAAPpSsX+XU9tQsQuz57wOuNDpn/sLI0mgdc5bl0Y2OsCN7CDpx1w2VmPtPoDKEMkERHH4ShynD2dKZidSWOyveuzhOa+k/MST5/cZjwkN4Aij/KQKOaSX3W/tirl3EeDmMlSIRcEBhslv/qLS+JzJrFI2y1/K1oeoca3afHorBKIdfooAERkMlGKXu0zau7pNK299l/AxHP/SUZn4jFie82M3VlhNQu
-X-MS-Exchange-AntiSpam-MessageData: SAWjXmIJuGNi8dB1CnpKAfYqJz+6vrjRd9w74ZtsJGegBcV5/l6m0ou4KF/+uRPqHP2v1H8jZsu1fs4tMKMlZqAtIGXiR16HzdEtr902mV/ErXCHa2t8TsEqUjsR2Jcao704A0XNjZV2Vr+TbrS6wKQuLFcxoR37byRWafEA/K6bRtuVUqvls8PzN675vy5bU6zEL+sH0U7Cx5xJMQ8t+DoFvCM2Xj+ne59wA+WMHSG3L1HuQMf7Xrx0zpt6w4crWr1f7Z7ACRaGOF2n/w2uqghmgK+qP0B+QFt3OHWv/bIzppV0oIpLhZLWAy9nyk6gdqQ5sSyTi5jkEH4x8KwwolEi+tb7uS8ar6Xq4HP13EbOzrx2eb7fqsK+asZiMKCM3LZ9ZgO0+PGRJb2qpEjTbtivTbWaxd7BEpPzOlIKSC6ta8JQxQu/wZ1kFc94ZEZc+1KCyIubzkYZADCanldJHD5uTNZ1HHrj8wd5cYHblWnmY76Hgy8Jk9J8NffAxqaWdXe9urJDv9B17qkk3xg/LnjOIfhL2UtGO3656EO9N/EAyit1WWcbAzEUaAtFTT2hyB6b4IHDHNWuTVUFgka05K8UNbxy0GhztfCWZQI3oFw0VMigsbXd0Q/ewnEx4xRTEK2TE0EHx8zW2qBVvBUCx3K4bmFCh/ApUsS+PjCsaEthK1wUP4J2Lb9Xt85R5XrE4jXiw/q0eYLIcYEtgXEGmi9/A0WMfoDctx4lfaAGtJ+r5WYgBNp5qkIdyOEq+m1lwQ5D2YXPu6DYPBref71+lkUPekQMRUqsTcqNvND6mm/CBv8CcUZvr9AvYbc3ND1HIi+b0OrkUVkOTw48GrMTwg==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 38cad773-7b98-4eeb-7c75-08d7ebdd3522
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2020 01:32:41.0605
+X-MS-Exchange-CrossTenant-Network-Message-Id: a8790a44-ba80-4136-5bd7-08d7ebe1e601
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Apr 2020 02:06:15.4602
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ApDxAFavWxLZ/oA9xdRJ1AW9dhDxXZYEH1N6dws+s0JL+KIXbxt3unF2ZIOVVPI6
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3756
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 5Us7OCXHnBlKOYAGauDzEKs3ahU66uRjjD7gtwK9/zsj0f/fdwCU+c7+rYDUPfV7REPBiOF51b+p7v370Qz+UA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3397
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
  definitions=2020-04-28_15:2020-04-28,2020-04-28 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- spamscore=0 lowpriorityscore=0 suspectscore=0 impostorscore=0
- priorityscore=1501 phishscore=0 bulkscore=0 malwarescore=0 adultscore=0
- mlxscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004290009
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ priorityscore=1501 clxscore=1015 adultscore=0 lowpriorityscore=0
+ impostorscore=0 malwarescore=0 bulkscore=0 spamscore=0 mlxscore=0
+ mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2003020000 definitions=main-2004290015
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 01:12:41PM -0700, Yonghong Song wrote:
-> Added BPF_LINK_UPDATE support for tracing/iter programs.
-> This way, a file based bpf iterator, which holds a reference
-> to the link, can have its bpf program updated without
-> creating new files.
-> 
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  include/linux/bpf.h   |  2 ++
->  kernel/bpf/bpf_iter.c | 29 +++++++++++++++++++++++++++++
->  kernel/bpf/syscall.c  |  5 +++++
->  3 files changed, 36 insertions(+)
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 60ecb73d8f6d..4fc39d9b5cd0 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1131,6 +1131,8 @@ struct bpf_prog *bpf_iter_get_prog(struct seq_file *seq, u32 priv_data_size,
->  				   u64 *session_id, u64 *seq_num, bool is_last);
->  int bpf_iter_run_prog(struct bpf_prog *prog, void *ctx);
->  int bpf_iter_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
-> +int bpf_iter_link_replace(struct bpf_link *link, struct bpf_prog *old_prog,
-> +			  struct bpf_prog *new_prog);
->  
->  int bpf_percpu_hash_copy(struct bpf_map *map, void *key, void *value);
->  int bpf_percpu_array_copy(struct bpf_map *map, void *key, void *value);
-> diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
-> index 9532e7bcb8e1..fc1ce5ee5c3f 100644
-> --- a/kernel/bpf/bpf_iter.c
-> +++ b/kernel/bpf/bpf_iter.c
-> @@ -23,6 +23,9 @@ static struct list_head targets;
->  static struct mutex targets_mutex;
->  static bool bpf_iter_inited = false;
->  
-> +/* protect bpf_iter_link.link->prog upddate */
-> +static struct mutex bpf_iter_mutex;
-> +
->  int bpf_iter_reg_target(struct bpf_iter_reg *reg_info)
->  {
->  	struct bpf_iter_target_info *tinfo;
-> @@ -33,6 +36,7 @@ int bpf_iter_reg_target(struct bpf_iter_reg *reg_info)
->  	if (!bpf_iter_inited) {
->  		INIT_LIST_HEAD(&targets);
->  		mutex_init(&targets_mutex);
-> +		mutex_init(&bpf_iter_mutex);
->  		bpf_iter_inited = true;
->  	}
->  
-> @@ -121,3 +125,28 @@ int bpf_iter_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
->  		kfree(link);
->  	return err;
->  }
-> +
-> +int bpf_iter_link_replace(struct bpf_link *link, struct bpf_prog *old_prog,
-> +			  struct bpf_prog *new_prog)
-> +{
-> +	int ret = 0;
-> +
-> +	mutex_lock(&bpf_iter_mutex);
-> +	if (old_prog && link->prog != old_prog) {
-> +		ret = -EPERM;
-> +		goto out_unlock;
-> +	}
-> +
-> +	if (link->prog->type != new_prog->type ||
-> +	    link->prog->expected_attach_type != new_prog->expected_attach_type ||
-> +	    strcmp(link->prog->aux->attach_func_name, new_prog->aux->attach_func_name)) {
-Can attach_btf_id be compared instead of strcmp()?
 
-> +		ret = -EINVAL;
-> +		goto out_unlock;
-> +	}
-> +
-> +	link->prog = new_prog;
-Does the old link->prog need a bpf_prog_put()?
 
-> +
-> +out_unlock:
-> +	mutex_unlock(&bpf_iter_mutex);
-> +	return ret;
-> +}
+> On Apr 28, 2020, at 5:43 PM, Alexei Starovoitov <alexei.starovoitov@gmail=
+.com> wrote:
+>=20
+> On Tue, Apr 28, 2020 at 05:33:54PM -0700, Yonghong Song wrote:
+>>=20
+>>=20
+>> On 4/28/20 5:29 PM, Song Liu wrote:
+>>> Add test for  BPF_ENABLE_STATS, which should enable run_time_ns stats.
+>>>=20
+>>> ~/selftests/bpf# ./test_progs -t enable_stats  -v
+>>> test_enable_stats:PASS:skel_open_and_load 0 nsec
+>>> test_enable_stats:PASS:get_stats_fd 0 nsec
+>>> test_enable_stats:PASS:attach_raw_tp 0 nsec
+>>> test_enable_stats:PASS:get_prog_info 0 nsec
+>>> test_enable_stats:PASS:check_stats_enabled 0 nsec
+>>> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+> ...
+>>> +static int val =3D 1;
+>>> +
+>>> +SEC("raw_tracepoint/sys_enter")
+>>> +int test_enable_stats(void *ctx)
+>>> +{
+>>> +	__u32 key =3D 0;
+>>> +	__u64 *val;
+>>=20
+>> The above two declarations (key/val) are not needed,
+>> esp. "val" is shadowing.
+>> Maybe the maintainer can fix it up before merging
+>> if there is no other changes for this patch set.
+>>=20
+>>> +
+>>> +	val +=3D 1;
+>=20
+> I think 'PASSED' above is quite misleading.
+> How it can pass when it wasn't incremented?
+> The user space test_enable_stats() doesn't check this val.
+> Please fix.
+>=20
+> usleep(1000); needs an explanation as well.
+> Why 1000 ? It should work with any syscall. like getpid ?
+> and with value 1 ?
+> Since there is bpf_obj_get_info_by_fd() that usleep()
+> is unnecessary. What am I missing?
+
+This test currently doesn't test the value. It simply checks
+run_time_ns is none zero. I guess it is good to actually=20
+test the value. Let me add that.
+
+Thanks,
+Son
+
