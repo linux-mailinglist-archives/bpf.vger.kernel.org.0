@@ -2,231 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D051BDD23
-	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 15:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09DCF1BDD69
+	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 15:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727809AbgD2NFy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Apr 2020 09:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727092AbgD2NFw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:05:52 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20206C03C1AD
-        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 06:05:52 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id x18so2452395wrq.2
-        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 06:05:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PTf2nTlKoz+C9MBIBh9J9OOYB9vLQLEDWbpjGCvh6UY=;
-        b=bgUOlTwrgWa7aU5UvwjCtkKcIU4rv8f956Szxj0HzsrtHO9skAg/+uWiqu2IwRjLyS
-         zJ8tf1adA1jw35kd+R5SBPNss5H2omYxGRTVp4A4cL3JBr20eADvz4AhwU6AYDQoC2mk
-         U2t9BqrGNDRGGff9HT+qbtHX6tvUN2sJ7TTAO8E2Wbo4nZSmuSQA51M07T9tOwz6jueO
-         uUiGvaQWzXHNcFInvYJFqFhao2tAfjw+BeBbwhCxqEXRjUmr2BX1+0ZaVbfrcbY62WRK
-         kBAE4TUvhE/6xKEzt+FkNTMb3CJpQA5ApsOJCDRhMLASWTiPC/kzA9sFMByjZjX98k0F
-         8GOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PTf2nTlKoz+C9MBIBh9J9OOYB9vLQLEDWbpjGCvh6UY=;
-        b=oKIV4625Y8fddiqOtuiG9tP4xLileMA6wPq+2EuAQIkOM3WygkmfxBsgZ5TQQdIsAf
-         BOGXLPfLfnlFfFLRb/woe/0v41b4XxYitz6LglBelc9Ol5tDRri6gKK7eP7xWq+fal4+
-         6pcVJTdc4DYBBKX7R2OfLbdoNnZOXi0WJreXI6hXQhQyMQZ2qN+PFf0oJczqMXSlHbUt
-         ylh/RDcSjaRfNFBa08qU37Xv37Isu1mH/ysnK+qqT3574eFwO1ZMQ02vVEMyo4UBxRxB
-         glQaQztBf7Gu7iIQ9MepqnPvOvUajhF+0yPH1/Qwj7q9zuc6aHfxVw/y7TyRNY/gNx9Z
-         FjFA==
-X-Gm-Message-State: AGi0PuaAims+fEIPOS/gQNcbWRadPa50nty/lYs98DCiufZeTCWQyA1D
-        o3PNKmNKsVm+kcrNQ+GNXfGVVA==
-X-Google-Smtp-Source: APiQypI3pCKErjhfk87LcJ5BwVD6j7dCHrjk22dtOma4l2D4EMuF9M6LZS6WXpJXMepOLsUEKhIdoA==
-X-Received: by 2002:a5d:4e02:: with SMTP id p2mr41987775wrt.302.1588165550819;
-        Wed, 29 Apr 2020 06:05:50 -0700 (PDT)
-Received: from localhost.localdomain ([194.53.185.38])
-        by smtp.gmail.com with ESMTPSA id 74sm31568199wrk.30.2020.04.29.06.05.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 06:05:50 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
+        id S1726691AbgD2NWj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Apr 2020 09:22:39 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:41219 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726654AbgD2NWi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Apr 2020 09:22:38 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue107 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MX0TX-1jeNXf3ezh-00XOTF; Wed, 29 Apr 2020 15:22:19 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
 To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Quentin Monnet <quentin@isovalent.com>,
-        Richard Palethorpe <rpalethorpe@suse.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Subject: [PATCH bpf-next v2 3/3] tools: bpftool: make libcap dependency optional
-Date:   Wed, 29 Apr 2020 14:05:34 +0100
-Message-Id: <20200429130534.11823-4-quentin@isovalent.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200429130534.11823-1-quentin@isovalent.com>
-References: <20200429130534.11823-1-quentin@isovalent.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] bpf: fix unused variable warning
+Date:   Wed, 29 Apr 2020 15:21:58 +0200
+Message-Id: <20200429132217.1294289-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:k6j41FIj2faIYb1V2o45AU4BeXYULe0A6NNw/gEHZfrMqS+6wWa
+ zeMYE2q6u8v9mvAMcQe09B7794JwIqn+rJBYoheUrpzqwUsJkAXtm+OPzixA/ExODVC3sFW
+ 2nHyVTgydxLXD+7+cpTZScrRhtZLF//M0BqxygT6TaSgRfVQFzD3TU84O/iwQl6G44bHyUa
+ BoR2Vb76MqzHLzraxxHjg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UpKmluTH6t8=:r/mpxD8wj06UmrUf/UsYwm
+ S3EivIH3Evud01Pby5PJ9M/XAu8DVN/QXs9NXaYt4U03c/wgEw8vuJwkX6mwsGpVtfDd4X4Il
+ Dg+jXEd2XWPfxbRuiEARnqmrIeoFmg8jH5D2Vd9Fp53UsHGcftx7XjJ4wBHPqHbqtjEe+Uv6Y
+ 1rlur/VwjMrJpvubxUN29jFXGckWPxr6QLZA5pFgrFPlUjSJQN/o2UoUm3eGEqkxt3kVtzRKk
+ mU76LYF7J9RKlqLvXRcpyF45PV9+UiUYwYzJ/ugSLG10UP2GnZ9uvFtIubKemLqoditKRO1yS
+ lkG046QQOLwovt5sjiWETIWWNOBUTG/NoxleVVXIrNwS63kTopSATy3PQbgLxey4Vrejo8cDo
+ Zf0bfYeIseFAHluPFA91oEn4yDEL6KW2QlA2N2EcNgjGL0F6lcxcyaZhf5h1cvin5web2KCUi
+ b2yZVaCmJ2Q0072ACgu4vVmiVOs7iGt6XjTXNp3N+31gcxXs9QzDoBRr0hVeIsMndlhIDTHwZ
+ 3RIY5aCRVInGwGIKsbpT7iAwkU2OQWBw1U2bhA5DvZ4aQAWirDtz5aXEG7hkil9RUJs/lKZ11
+ fq9EdJJy8cy3x/gP/vgdbuYRferhBQI9gCPnEQS1Mk+5sMorxn7+jpIIR99Sdfh3J2An1tUGc
+ RMeoF+4/Fba3Goxl6E3esJF3bdnFkrYjmN5IfXv9PfIUHEdchGP8Ki5Pm1E1XPEAm25BsjVYx
+ ggecvHHtUSsgL+hbzot0lB3/cVv8N0INpd6uyH6qZP85ytAvfJDjovxrZvhMrdDdN+TOiXkwj
+ k/GxYYEgVJ4y34xRUbjiyEjmccV2pGIuCcxCGa31FV5jJE/5hA=
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The new libcap dependency is not used for an essential feature of
-bpftool, and we could imagine building the tool without checks on
-CAP_SYS_ADMIN by disabling probing features as an unprivileged users.
+Hiding the only using of bpf_link_type_strs[] in an #ifdef causes
+an unused-variable warning:
 
-Make it so, in order to avoid a hard dependency on libcap, and to ease
-packaging/embedding of bpftool.
+kernel/bpf/syscall.c:2280:20: error: 'bpf_link_type_strs' defined but not used [-Werror=unused-variable]
+ 2280 | static const char *bpf_link_type_strs[] = {
 
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+Move the definition into the same #ifdef.
+
+Fixes: f2e10bff16a0 ("bpf: Add support for BPF_OBJ_GET_INFO_BY_FD for bpf_link")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- .../bpftool/Documentation/bpftool-feature.rst |  4 ++-
- tools/bpf/bpftool/Makefile                    | 13 +++++++---
- tools/bpf/bpftool/feature.c                   | 26 +++++++++++++++++++
- 3 files changed, 38 insertions(+), 5 deletions(-)
+ kernel/bpf/syscall.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-feature.rst b/tools/bpf/bpftool/Documentation/bpftool-feature.rst
-index ca085944e4cf..1fa755f55e0c 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-feature.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-feature.rst
-@@ -55,7 +55,9 @@ DESCRIPTION
- 		  that case usually represent a small subset of the parameters
- 		  supported by the system. Unprivileged users MUST use the
- 		  **unprivileged** keyword: This is to avoid misdetection if
--		  bpftool is inadvertently run as non-root, for example.
-+		  bpftool is inadvertently run as non-root, for example. This
-+		  keyword is unavailable if bpftool was compiled without
-+		  libcap.
- 
- 	**bpftool feature probe dev** *NAME* [**full**] [**macros** [**prefix** *PREFIX*]]
- 		  Probe network device for supported eBPF features and dump
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index 89d7962a4a44..2759f9cc3289 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -55,16 +55,15 @@ ifneq ($(EXTRA_LDFLAGS),)
- LDFLAGS += $(EXTRA_LDFLAGS)
- endif
- 
--LIBS = $(LIBBPF) -lelf -lz -lcap
--
- INSTALL ?= install
- RM ?= rm -f
- CLANG ?= clang
- 
- FEATURE_USER = .bpftool
--FEATURE_TESTS = libbfd disassembler-four-args reallocarray zlib \
-+FEATURE_TESTS = libbfd disassembler-four-args reallocarray zlib libcap \
-+	clang-bpf-global-var
-+FEATURE_DISPLAY = libbfd disassembler-four-args zlib libcap \
- 	clang-bpf-global-var
--FEATURE_DISPLAY = libbfd disassembler-four-args zlib clang-bpf-global-var
- 
- check_feat := 1
- NON_CHECK_FEAT_TARGETS := clean uninstall doc doc-clean doc-install doc-uninstall
-@@ -90,6 +89,12 @@ ifeq ($(feature-reallocarray), 0)
- CFLAGS += -DCOMPAT_NEED_REALLOCARRAY
- endif
- 
-+LIBS = $(LIBBPF) -lelf -lz
-+ifeq ($(feature-libcap), 1)
-+CFLAGS += -DUSE_LIBCAP
-+LIBS += -lcap
-+endif
-+
- include $(wildcard $(OUTPUT)*.d)
- 
- all: $(OUTPUT)bpftool
-diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-index 78cf21b27d3d..2f01f9a60792 100644
---- a/tools/bpf/bpftool/feature.c
-+++ b/tools/bpf/bpftool/feature.c
-@@ -6,7 +6,9 @@
- #include <string.h>
- #include <unistd.h>
- #include <net/if.h>
-+#ifdef USE_LIBCAP
- #include <sys/capability.h>
-+#endif
- #include <sys/utsname.h>
- #include <sys/vfs.h>
- 
-@@ -37,7 +39,9 @@ static const char * const helper_name[] = {
- #undef BPF_HELPER_MAKE_ENTRY
- 
- static bool full_mode;
-+#ifdef USE_LIBCAP
- static bool run_as_unprivileged;
-+#endif
- 
- /* Miscellaneous utility functions */
- 
-@@ -475,11 +479,13 @@ probe_prog_type(enum bpf_prog_type prog_type, bool *supported_types,
- 		}
- 
- 	res = bpf_probe_prog_type(prog_type, ifindex);
-+#ifdef USE_LIBCAP
- 	/* Probe may succeed even if program load fails, for unprivileged users
- 	 * check that we did not fail because of insufficient permissions
- 	 */
- 	if (run_as_unprivileged && errno == EPERM)
- 		res = false;
-+#endif
- 
- 	supported_types[prog_type] |= res;
- 
-@@ -535,12 +541,14 @@ probe_helper_for_progtype(enum bpf_prog_type prog_type, bool supported_type,
- 
- 	if (supported_type) {
- 		res = bpf_probe_helper(id, prog_type, ifindex);
-+#ifdef USE_LIBCAP
- 		/* Probe may succeed even if program load fails, for
- 		 * unprivileged users check that we did not fail because of
- 		 * insufficient permissions
- 		 */
- 		if (run_as_unprivileged && errno == EPERM)
- 			res = false;
-+#endif
- 	}
- 
- 	if (json_output) {
-@@ -738,6 +746,7 @@ static void section_misc(const char *define_prefix, __u32 ifindex)
- 
- static int handle_perms(void)
- {
-+#ifdef USE_LIBCAP
- 	cap_value_t cap_list[1] = { CAP_SYS_ADMIN };
- 	bool has_sys_admin_cap = false;
- 	cap_flag_value_t val;
-@@ -793,6 +802,18 @@ static int handle_perms(void)
- 	}
- 
- 	return res;
-+#else
-+	/* Detection assumes user has sufficient privileges (CAP_SYS_ADMIN).
-+	 * We do not use libpcap so let's approximate, and restrict usage to
-+	 * root user only.
-+	 */
-+	if (geteuid()) {
-+		p_err("full feature probing requires root privileges");
-+		return -1;
-+	}
-+
-+	return 0;
-+#endif /* USE_LIBCAP */
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 3cea7602de78..5e86d8749e6e 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2274,6 +2274,7 @@ static int bpf_link_release(struct inode *inode, struct file *filp)
+ 	return 0;
  }
  
- static int do_probe(int argc, char **argv)
-@@ -852,8 +873,13 @@ static int do_probe(int argc, char **argv)
- 				return -1;
- 			define_prefix = GET_ARG();
- 		} else if (is_prefix(*argv, "unprivileged")) {
-+#ifdef USE_LIBCAP
- 			run_as_unprivileged = true;
- 			NEXT_ARG();
-+#else
-+			p_err("unprivileged run not supported, recompile bpftool with libcap");
-+			return -1;
-+#endif
- 		} else {
- 			p_err("expected no more arguments, 'kernel', 'dev', 'macros' or 'prefix', got: '%s'?",
- 			      *argv);
++#ifdef CONFIG_PROC_FS
+ #define BPF_PROG_TYPE(_id, _name, prog_ctx_type, kern_ctx_type)
+ #define BPF_MAP_TYPE(_id, _ops)
+ #define BPF_LINK_TYPE(_id, _name) [_id] = #_name,
+@@ -2285,7 +2286,6 @@ static const char *bpf_link_type_strs[] = {
+ #undef BPF_MAP_TYPE
+ #undef BPF_LINK_TYPE
+ 
+-#ifdef CONFIG_PROC_FS
+ static void bpf_link_show_fdinfo(struct seq_file *m, struct file *filp)
+ {
+ 	const struct bpf_link *link = filp->private_data;
 -- 
-2.20.1
+2.26.0
 
