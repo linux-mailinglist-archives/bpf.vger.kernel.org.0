@@ -2,173 +2,391 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D211BD764
-	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 10:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 142181BDB73
+	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 14:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726484AbgD2IhG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Apr 2020 04:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34380 "EHLO
+        id S1726884AbgD2MKA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Apr 2020 08:10:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726456AbgD2IhG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 29 Apr 2020 04:37:06 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5271CC03C1AE
-        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 01:37:06 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id h4so1034394wmb.4
-        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 01:37:06 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726847AbgD2MJ7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 29 Apr 2020 08:09:59 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F511C035493
+        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 05:09:59 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id b2so2347560ljp.4
+        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 05:09:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        d=rasmusvillemoes.dk; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=p18rSOYa9QyJHcxF1hQQmt4mlrncQfWvskudtN2fyp8=;
-        b=YNcreLIWbfHVA3Seq08Xeb65o5abdZn9Au+P0SHW6A9c/EzfI5PG41iDNfwUDH3Nyk
-         5BndTOfV6UW0hx4lgEvucAXH06TlfVnoTKQ9sfqksyGF3ISYJuJkt9tRTs9lfYj8wieo
-         PWDHlV8/XNtgxbPc0MVYKPbT1o5kqUh+wN1XPhfEMwzaxGUfy1SU+UykYkXsNEQvB0I2
-         O3R8p4o8qEe76/deDyQEl7g1ZZ5S2h3E7RS/mr9oyxeZhh9dGlZSC5cegM2jAq8pfi7D
-         doZUvdZjGyXzBMsK9DKgeN89fK+lE9RzHKHNuV3c0zhA48oFbi1xo5EJgiaoF/LpYX1A
-         /+7Q==
+        bh=vf+C8h6StAA506JOpXUrNr3zk91+ARS0zJo+xzqGFSM=;
+        b=AfE53vwzbOZQG9Uwlxriq6fPJaGEMUtPe0Hwksu620raSx6aG9jXXeEvLaYxc7DXsQ
+         tSjnin8aj8N/Tsz6yiadsD8zfH2gh7D9gJA+c7sxStIGh+qd1wpXqKJhUu6VhMGtPB0L
+         JF4RJgu7DYUIuRaEnb2nlLIEmoLYiB1HsM9vM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=p18rSOYa9QyJHcxF1hQQmt4mlrncQfWvskudtN2fyp8=;
-        b=q+Vj3gULXLM/UrAYfsf291M6lqiLc6/6Vo744I2qr6GLQYfqXGdwM89pMVe2bjmweu
-         Ju+qu+jq5SlfiwQAkutAgtZypRQlPmz7AXN/0+Q647xvIGgaaAAvNGrbjit9Bs3kJFsl
-         21M8NeUlTeWuFii9xMiSPW3Cum3eyKA8ndj7fBb07aEG/uUNl2oI46pY/T2hH0FHKZTt
-         ZS7OiMgn4IDbUCahm/BtzH5vE8o3G9Ca3pypyie8FyEjY3JjfIMne4X2yKip70o9R2gM
-         RJT32bgfd15wdqaPM7sYI6PuIWC/7AlxAdNnlvkxxK1gNnHmop1PpKUfJ1qfjArm7LA0
-         hCgQ==
-X-Gm-Message-State: AGi0Puaodh7eGthlLO8swOOAT6CIbZG10Zu7yXJx8v0Ire1MSvcuexlC
-        2XsMhKuoobuWdFH1vo+UMH3PoA==
-X-Google-Smtp-Source: APiQypIFDmwxfdJn9ENU5B9x6Ich6QUJrdwx5gR3EIeK2B5dZTYxKvj3KNjfz/4UBedO1r8/YYYAXA==
-X-Received: by 2002:a05:600c:2214:: with SMTP id z20mr2098557wml.189.1588149424905;
-        Wed, 29 Apr 2020 01:37:04 -0700 (PDT)
-Received: from [192.168.1.10] ([194.53.185.38])
-        by smtp.gmail.com with ESMTPSA id i6sm31372580wrc.82.2020.04.29.01.37.03
+        bh=vf+C8h6StAA506JOpXUrNr3zk91+ARS0zJo+xzqGFSM=;
+        b=q/iKMv42XMV8GCxybv18kRwStcdDhMCwGv6py1YP6rkvzV3TQx/MbCgObmBQOAfO5i
+         8750QW/2zel2/oT+Z6x8vuvhyEm0vbLMaHgykgYvraGibSDNScZxGXJQQp0P0rkhZkHU
+         3u6D9mw2P85rrly+SezBRV05yjUD0leMZ1/IGwkZwQGmvi48chUWPafApIEKPKFX4tCx
+         Gv+bBIRhQhmyw37W/DMKFdJ9pYZRyNuvFAmJKr59+So7m2ViSfRTYqeMlJuTVXIrlOwT
+         Mnw3tYpkJtg0gLEjSGGl9UZziberu4A516OvgZfvquv6iLmyae01ZBE4EvW+pkVPYxdf
+         iDCA==
+X-Gm-Message-State: AGi0Puawx0PzEIjfF3XOASrmAkCglq3aoKIRwR4C323lHdiM2I6gv/2g
+        xMWB2ULZbwT/8XJOQuTiwXxmQcKSHB4=
+X-Google-Smtp-Source: APiQypJzptSBBRh75X9vhV9blZrxc5Txx3w9RoZ1NtiVRpqoc/aGP66FI+vqRmti+8gZltEmWBav3Q==
+X-Received: by 2002:a2e:8e22:: with SMTP id r2mr20423968ljk.286.1588162196782;
+        Wed, 29 Apr 2020 05:09:56 -0700 (PDT)
+Received: from [192.168.1.149] (ip-5-186-116-45.cgn.fibianet.dk. [5.186.116.45])
+        by smtp.gmail.com with ESMTPSA id w9sm2200503ljj.88.2020.04.29.05.09.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Apr 2020 01:37:04 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v1 16/19] tools/bpftool: add bpf_iter support for
- bptool
-To:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        netdev@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-References: <20200427201235.2994549-1-yhs@fb.com>
- <20200427201253.2996156-1-yhs@fb.com>
- <05d9c82d-8cba-db77-02af-265e4d200946@isovalent.com>
- <82034392-5f65-fd84-8cbd-d2aa85f01ee3@fb.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <4ffc7653-311c-a2a1-2ba6-eda765f665e7@isovalent.com>
-Date:   Wed, 29 Apr 2020 09:37:03 +0100
+        Wed, 29 Apr 2020 05:09:56 -0700 (PDT)
+Subject: Re: [RFC PATCH bpf-next 5/6] printk: add type-printing %pT<type>
+ format specifier which uses BTF
+To:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
+        daniel@iogearbox.net, yhs@fb.com
+Cc:     kafai@fb.com, songliubraving@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <1587120160-3030-1-git-send-email-alan.maguire@oracle.com>
+ <1587120160-3030-6-git-send-email-alan.maguire@oracle.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <88794f69-0761-2261-6c1a-8dbf7188ab5b@rasmusvillemoes.dk>
+Date:   Wed, 29 Apr 2020 14:09:53 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <82034392-5f65-fd84-8cbd-d2aa85f01ee3@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1587120160-3030-6-git-send-email-alan.maguire@oracle.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2020-04-28 10:35 UTC-0700 ~ Yonghong Song <yhs@fb.com>
+On 17/04/2020 12.42, Alan Maguire wrote:
+> printk supports multiple pointer object type specifiers (printing
+> netdev features etc).  Extend this support using BTF to cover
+> arbitrary types.  "%pT" specifies the typed format, and a suffix
+> enclosed <like this> specifies the type, for example, specifying
 > 
+> 	printk("%pT<struct sk_buff>", skb)
 > 
-> On 4/28/20 2:27 AM, Quentin Monnet wrote:
+> ...will utilize BTF information to traverse the struct sk_buff *
+> and display it.  Support is present for structs, unions, enums,
+> typedefs and core types (though in the latter case there's not
+> much value in using this feature of course).
+> 
+> Default output is compact, specifying values only, but the
+> 'N' modifier can be used to show field names to more easily
+> track values.  Pointer values are obfuscated as usual.  As
+> an example:
+> 
+>   struct sk_buff *skb = alloc_skb(64, GFP_KERNEL);
+>   pr_info("%pTN<struct sk_buff>", skb);
+> 
+> ...gives us:
+> 
+> {{{.next=00000000c7916e9c,.prev=00000000c7916e9c,{.dev=00000000c7916e9c|.dev_scratch=0}}|.rbnode={.__rb_parent_color=0,.rb_right=00000000c7916e9c,.rb_left=00000000c7916e9c}|.list={.next=00000000c7916e9c,.prev=00000000c7916e9c}},{.sk=00000000c7916e9c|.ip_defrag_offset=0},{.tstamp=0|.skb_mstamp_ns=0},.cb=['\0'],{{._skb_refdst=0,.destructor=00000000c7916e9c}|.tcp_tsorted_anchor={.next=00000000c7916e9c,.prev=00000000c7916e9c}},._nfct=0,.len=0,.data_len=0,.mac_len=0,.hdr_len=0,.queue_mapping=0,.__cloned_offset=[],.cloned=0x0,.nohdr=0x0,.fclone=0x0,.peeked=0x0,.head_frag=0x0,.pfmemalloc=0x0,.active_extensions=0,.headers_start=[],.__pkt_type_offset=[],.pkt_type=0x0,.ignore_df=0x0,.nf_trace=0x0,.ip_summed=0x0,.ooo_okay=0x0,.l4_hash=0x0,.sw_hash=0x0,.wifi_acked_valid=0x0,.wifi_acked=0x0,.no_fcs=0x0,.encapsulation=0x0,.encap_hdr_csum=0x0,.csum_valid=0x0,.__pkt_vlan_present_offset=[],.vlan_present=0x0,.csum_complete_sw=0x0,.csum_level=0x0,.csum_not_inet=0x0,.dst_pending_co
+> 
+> printk output is truncated at 1024 bytes.  For such cases, the compact
+> display mode (minus the field info) may be used. "|" differentiates
+> between different union members.
+> 
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>  Documentation/core-api/printk-formats.rst |   8 ++
+>  include/linux/btf.h                       |   3 +-
+>  lib/Kconfig                               |  16 ++++
+>  lib/vsprintf.c                            | 145 +++++++++++++++++++++++++++++-
+>  4 files changed, 169 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/core-api/printk-formats.rst b/Documentation/core-api/printk-formats.rst
+> index 8ebe46b1..b786577 100644
+> --- a/Documentation/core-api/printk-formats.rst
+> +++ b/Documentation/core-api/printk-formats.rst
+> @@ -545,6 +545,14 @@ For printing netdev_features_t.
+>  
+>  Passed by reference.
+>  
+> +BTF-based printing of pointer data
+> +----------------------------------
+> +If '%pT[N]<type_name>' is specified, use the BPF Type Format (BTF) to
+> +show the typed data.  For example, specifying '%pT<struct sk_buff>' will utilize
+> +BTF information to traverse the struct sk_buff * and display it.
+> +
+> +Supported modifer is 'N' (show type field names).
+> +
+>  Thanks
+>  ======
+>  
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index 2f78dc8..456bd8f 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -158,10 +158,11 @@ static inline const struct btf_member *btf_type_member(const struct btf_type *t)
+>  	return (const struct btf_member *)(t + 1);
+>  }
+>  
+> +struct btf *btf_parse_vmlinux(void);
+> +
+>  #ifdef CONFIG_BPF_SYSCALL
+>  const struct btf_type *btf_type_by_id(const struct btf *btf, u32 type_id);
+>  const char *btf_name_by_offset(const struct btf *btf, u32 offset);
+> -struct btf *btf_parse_vmlinux(void);
+>  struct btf *bpf_prog_get_target_btf(const struct bpf_prog *prog);
+>  #else
+>  static inline const struct btf_type *btf_type_by_id(const struct btf *btf,
+> diff --git a/lib/Kconfig b/lib/Kconfig
+> index bc7e563..e92109e 100644
+> --- a/lib/Kconfig
+> +++ b/lib/Kconfig
+> @@ -6,6 +6,22 @@
+>  config BINARY_PRINTF
+>  	def_bool n
+>  
+> +config BTF_PRINTF
 
-[...]
+I don't see any IS_ENABLED(BTF_PRINTF) anywhere in this patch? Shouldn't
+the vsprintf.c handler be guarded by that?
 
->>> +    err = bpf_link__pin(link, path);
->>
->> Try to mount bpffs before that if "-n" is not passed? You could even
->> call do_pin_any() from common.c by passing bpf_link__fd().
-> 
-> You probably means do_pin_fd()? That is a good suggestion, will use it
-> in the next revision.
+> +#define is_btf_fmt_start(c)	(c == 'T')
+> +#define is_btf_type_start(c)	(c == '<')
+> +#define is_btf_type_end(c)	(c == '>')
+> +
+> +#define btf_modifier_flag(c)	(c == 'N' ? BTF_SHOW_NAME : 0)
+> +
+> +static noinline_for_stack
+> +const char *skip_btf_type(const char *fmt, bool *found_btf_type)
+> +{
+> +	*found_btf_type = false;
+> +
+> +	if (!is_btf_fmt_start(*fmt))
+> +		return fmt;
+> +	fmt++;
+> +
+> +	while (btf_modifier_flag(*fmt))
+> +		fmt++;
+> +
+> +	if (!is_btf_type_start(*fmt))
+> +		return fmt;
+> +
+> +	while (!is_btf_type_end(*fmt) && *fmt != '\0')
+> +		fmt++;
+> +
+> +	if (is_btf_type_end(*fmt)) {
+> +		fmt++;
+> +		*found_btf_type = true;
+> +	}
+> +
+> +	return fmt;
+> +}
+> +
+> +static noinline_for_stack
+> +char *btf_string(char *buf, char *end, void *ptr, struct printf_spec spec,
+> +		 const char *fmt)
+> +{
+> +	const struct btf_type *btf_type;
+> +	char btf_name[KSYM_SYMBOL_LEN];
 
-Right, passing bpf_link__fd() to do_pin_any() wouldn't work, it does not
-take the arguments expected by the "get_fd()" callback. My bad. So yeah,
-just do_pin_fd() in that case :)
+That seems to be a rather arbitrary size.
 
-[...]
+> +	u8 btf_kind = BTF_KIND_TYPEDEF;
+> +	const struct btf *btf;
+> +	char *buf_start = buf;
+> +	u64 flags = 0, mod;
+> +	s32 btf_id;
+> +	int i;
+> +
+> +	/*
+> +	 * Accepted format is [format_modifiers]*<type> ;
+> +	 * for example "%pTN<struct sk_buff>" will show a representation
+> +	 * of the sk_buff pointed to by the associated argument including
+> +	 * member names.
+> +	 */
+> +	if (check_pointer(&buf, end, ptr, spec))
+> +		return buf;
+> +
+> +	while (isalpha(*fmt)) {
+> +		mod = btf_modifier_flag(*fmt);
+> +		if (!mod)
+> +			break;
+> +		flags |= mod;
+> +		fmt++;
+> +	}
+> +
+> +	if (!is_btf_type_start(*fmt))
+> +		return error_string(buf, end, "(%pT?)", spec);
+> +	fmt++;
+> +
+> +	if (isspace(*fmt))
+> +		fmt = skip_spaces(++fmt);
 
->>
->> Have you considered simply adapting the more traditional workflow
->> "bpftool prog load && bpftool prog attach" so that it supports iterators
->> instead of adding a new command? It would:
-> 
-> This is a good question, I should have clarified better in the commit
-> message.
->   - prog load && prog attach won't work.
->     the create_iter is a three stage process:
->       1. prog load
->       2. create and attach to a link
->       3. pin link
->     In the current implementation, the link merely just has the program.
->     But in the future, the link will have other parameters like map_id,
->     tgid/gid, or cgroup_id, or others.
-> 
->     We could say to do:
->       1. bpftool prog load <pin_path>
->       2. bpftool iter pin prog file
->          <maybe more parameters in the future>
-> 
->     But this requires to pin the program itself in the bpffs, which
->     mostly unneeded for file iterator creator.
-> 
->     So this command `bpftool iter pin ...` is created for ease of use.
-> 
->>
->> - Avoid adding yet another bpftool command with a single subcommand
-> 
-> So far, yes, in the future we may have more. In my RFC patcch, I have
-> `bpftool iter show ...` for introspection, this is to show all
-> registered targets and all file iterators prog_id's.
-> 
-> This patch does not have it and I left it for the future work.
-> I am considering to use bpf iterator to do introspection here...
+Why not just "fmt = skip_spaces(fmt);"? But actually, why would you want
+to support arbitrary whitespace at all? Surely "%pT< struct  abc  >" is
+a programmer error.
 
-Ok, so with the useless bpffs pinning step and the perspectives for
-other subcommands in the future, I agree it makes sense to have "iter"
-as a new command. And as you say, handling of the link may grow so it's
-probably not a bad thing to have it aside from the "prog" command.
-Thanks for the clarification (maybe add some of it to the commit log
-indeed?).
+> +	if (strncmp(fmt, "struct ", strlen("struct ")) == 0) {
+> +		btf_kind = BTF_KIND_STRUCT;
+> +		fmt += strlen("struct ");
+> +	} else if (strncmp(fmt, "union ", strlen("union ")) == 0) {
+> +		btf_kind = BTF_KIND_UNION;
+> +		fmt += strlen("union ");
+> +	} else if (strncmp(fmt, "enum ", strlen("enum ")) == 0) {
+> +		btf_kind = BTF_KIND_ENUM;
+> +		fmt += strlen("enum ");
+> +	}
+> +
+> +	if (isspace(*fmt))
+> +		fmt = skip_spaces(++fmt);
+> +
+> +	for (i = 0; isalnum(*fmt) || *fmt == '_'; fmt++, i++)
+> +		btf_name[i] = *fmt;
 
-> 
->>
->> - Enable to reuse the code from prog load, in particular for map reuse
->> (I'm not sure how relevant maps are for iterators, but I wouldn't be
->> surprised if someone finds a use case at some point?)
-> 
-> Yes, we do plan to have map element iterators. We can also have
-> bpf_prog or other iterators. Yes, map element iterator use
-> implementation should be `bpftool map` code base since it is
-> a use of bpf_iter infrastructure.
+So what ensures btf_name is big enough? It's more robust to just store
+the starting value of fmt, fast-forward fmt over alnums, compute the
+length since the start, bail if too big, otherwise memcpy to btf_name.
 
-My point was more about loading programs that reuse pre-existing, as in
-"bpftool prog load foo /sys/fs/bpf/foo map name foomap id 1337". It
-seems likely that similar syntax will be needed for loading/pinning
-iterators as well eventually, but I suppose we can try to refactor the
-code from prog.c to reuse it when the time comes.
+> +	btf_name[i] = '\0';
+> +
+> +	if (isspace(*fmt))
+> +		fmt = skip_spaces(++fmt);
 
-> 
->>
->> - Avoid users naively trying to run "bpftool prog load && bpftool prog
->> attach <prog> iter" and not understanding why it fails
-> 
-> `bpftool prog attach <prog> [map_id]` mostly used to attach a program to
-> a map, right? In this case, it won't apply, right?
+Please don't.
 
-Right, I'm just not convinced that all users are aware of that :) But
-fair enough.
+> +	if (strlen(btf_name) == 0 || !is_btf_type_end(*fmt))
+> +		return error_string(buf, end, "(%pT?)", spec);
+> +
+> +	btf = bpf_get_btf_vmlinux();
+> +	if (IS_ERR_OR_NULL(btf))
+> +		return ptr_to_id(buf, end, ptr, spec);
+> +
+> +	/*
+> +	 * Assume type specified is a typedef as there's not much
+> +	 * benefit in specifying %p<int> other than wasting time
+> +	 * on BTF lookups; we optimize for the most useful path.
+> +	 *
+> +	 * Fall back to BTF_KIND_INT if this fails.
+> +	 */
+> +	btf_id = btf_find_by_name_kind(btf, btf_name, btf_kind);
+> +	if (btf_id < 0)
+> +		btf_id = btf_find_by_name_kind(btf, btf_name,
+> +					       BTF_KIND_INT);
+> +
+> +	if (btf_id >= 0)
+> +		btf_type = btf_type_by_id(btf, btf_id);
+> +	if (btf_id < 0 || !btf_type)
+> +		return ptr_to_id(buf, end, ptr, spec);
 
-> 
-> BTW, Thanks for reviewing and catching my mistakes!
-> 
+That seems like a lot of work to have to do. I'm wondering if the
+compiler can't help us in some way (but I know nothing about BTF, so
+pardon my ignorance), given that the type printed is known by the
+caller. What I'm thinking of is having some kind of
 
-Thanks for your reply and clarification, that's appreciated too!
-Quentin
+struct pT_arg { int cookie; void *p; }
+
+#define pT_arg(p) &(struct pT_arg) { .cookie =
+magic_compiler_thing(typeof(p)), .p = p}
+
+printk("%pT", pT_arg(p));
+
+Even if that can't be done, you could consider using that scheme for
+passing the "struct foo_bar" string instead of doing the <> parsing,
+i.e. the "cookie" above would just be a "const char *", and the pT_arg()
+macro would be called as
+
+pT_arg("struct sk_buff", skb).
+
+Or, better yet, make that pT_arg(struct sk_buff, skb), use
+stringification to create the const char* argument, but also add some
+BUILD_BUG_ON(!(same_type(t *, typeof(p)) || same_type(const t *,
+typeof(p))).
+
+> +	buf += btf_type_snprintf_show(btf, btf_id, ptr, buf,
+> +				      end - buf_start, flags);
+
+Does that btf_type_snprintf_show() helper do the right thing when given
+a negative or too-small buffer size? From a quick look at patch 3, I see
+two problems in btf_snprintf_show():
+
++	if (ssnprintf->len < 0)
++		return;
+
+That early returns seems to imply that we never produce the "what would
+be printed" in case we're already past the end of the buffer.
+
++	if (len < 0) {
++		ssnprintf->len_left = 0;
++		ssnprintf->len = len;
+
+Testing the return value from snprintf() for being negative is always wrong.
+
+
+> +	return widen_string(buf, buf - buf_start, end, spec);
+
+Well, ok, but I highly doubt anyone is going to pass a field_width to %pT.
+
+> +}
+> +
+>  /*
+>   * Show a '%p' thing.  A kernel extension is that the '%p' is followed
+>   * by an extra set of alphanumeric characters that are extended format
+> @@ -2169,6 +2291,15 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
+>   *		P node name, including a possible unit address
+>   * - 'x' For printing the address. Equivalent to "%lx".
+>   *
+> + * - 'T[N<type_name>]' For printing pointer data using BPF Type Format (BTF).
+> + *
+> + *			Optional arguments are
+> + *			N		print type and member names
+> + *
+> + *			Required options are
+> + *			<type_name>	associated pointer is interpreted
+> + *					to point at type_name.
+> + *
+>   * ** When making changes please also update:
+>   *	Documentation/core-api/printk-formats.rst
+>   *
+> @@ -2251,6 +2382,8 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
+>  		if (!IS_ERR(ptr))
+>  			break;
+>  		return err_ptr(buf, end, ptr, spec);
+> +	case 'T':
+> +		return btf_string(buf, end, ptr, spec, fmt + 1);
+>  	}
+>  
+>  	/* default is to _not_ leak addresses, hash before printing */
+> @@ -2506,6 +2639,7 @@ int vsnprintf(char *buf, size_t size, const char *fmt, va_list args)
+>  	unsigned long long num;
+>  	char *str, *end;
+>  	struct printf_spec spec = {0};
+> +	bool found_btf_type;
+>  
+>  	/* Reject out-of-range values early.  Large positive sizes are
+>  	   used for unknown buffer sizes. */
+> @@ -2577,8 +2711,15 @@ int vsnprintf(char *buf, size_t size, const char *fmt, va_list args)
+>  		case FORMAT_TYPE_PTR:
+>  			str = pointer(fmt, str, end, va_arg(args, void *),
+>  				      spec);
+> -			while (isalnum(*fmt))
+> -				fmt++;
+> +			/*
+> +			 * BTF type info is enclosed <like this>, so can
+> +			 * contain whitespace.
+> +			 */
+> +			fmt = skip_btf_type(fmt, &found_btf_type);
+> +			if (!found_btf_type) {
+> +				while (isalnum(*fmt))
+> +					fmt++;
+> +			}
+
+As indicated above, this (or the helpers) wants some dependency on
+CONFIG_BTF_PRINTF.
+
+Rasmus
