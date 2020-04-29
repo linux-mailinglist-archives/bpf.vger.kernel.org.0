@@ -2,92 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3ED11BD0DC
-	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 02:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D371BD0DD
+	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 02:16:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbgD2AQH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Apr 2020 20:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726355AbgD2AQG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 20:16:06 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02210C03C1AC
-        for <bpf@vger.kernel.org>; Tue, 28 Apr 2020 17:16:06 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id p13so294118qvt.12
-        for <bpf@vger.kernel.org>; Tue, 28 Apr 2020 17:16:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QjcMVd62cBcBYuo19RjjPoO7o0XbAonG5SKrDKCtA1M=;
-        b=QO5OIfa4ZqCrAt1z0eIBZqkXIf65B/SmL5u0Ks679Hu6BLtXKArYM8cz6y+EbF+SV9
-         pOlcpwjltm+Vbep5MjEUxeaPpIVgAzq5JmiSGpieUbLQoinAbPBO7i1fmuUSf5zuBngS
-         n9BKrn/4vMLeYx3S9BbQwW3GePiNcVCy8XFgRL94wziLWzMtK6Y93HUH+xlRivRFeiJc
-         3VoXrJ3/QxI0XaYKZ50/xoNLrRprRCHP67jXMH2V7DkZ9pXipyqzkvpZDmWEF0RjtkV7
-         8stlFGTpUXDmUUM/N6zpXMji9eBacq7EXDrJlviBNlk2wKAJ2RPh4j+ShdesL4jMDpOa
-         0TjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QjcMVd62cBcBYuo19RjjPoO7o0XbAonG5SKrDKCtA1M=;
-        b=FBWeQoeqQWZxIoP+MEeCpD2MVZHvHeAyHn0nq+D9+g24BXru81uugfSr5LQZyngeMT
-         xwryId2qbboHIxcKOG0Cpl7JBBXK3tSeaeTnFpS5zSyaQLg2IdOUmO5hn6UZKKcZf3HO
-         slHPTSQqN/TizlTwzgB3S8keoP7ueu2mWairosPbT6Y2usrBfABzrogQ6bmXIPdFaNxc
-         3HCJJbkKE0WfX6Ax60RlU6ieTTeeSPMkXj+chmE+i7y2B970QxmxYxSNN2ZHcRXnWITv
-         XDM3SYDh0xB7cVjLSOr1o9DlsSSYpZrYvae75H2+Tx3qr9/uccgs3Jro81R9xJVNiKCw
-         X/cg==
-X-Gm-Message-State: AGi0PuZ2Iz1sejFkv5L1hfq6GLtCJJ+XUAwzcAdiq+0hobbu8onUtCVi
-        16wp2UwgVNpNkoeI8YD//WtdFOOxay+9H86l0yE=
-X-Google-Smtp-Source: APiQypI4jreJ//CEGRbBF5uReLc79x4Ttxl4o8nH+uYWpJYA3GonowLXKWmk3pdKX9xuLjlTg7yqS1oqtf8r87F7FjI=
-X-Received: by 2002:a0c:fd8c:: with SMTP id p12mr31094520qvr.163.1588119364118;
- Tue, 28 Apr 2020 17:16:04 -0700 (PDT)
+        id S1726377AbgD2AQZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Apr 2020 20:16:25 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:42212 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726355AbgD2AQZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 28 Apr 2020 20:16:25 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03T0EpmW018884
+        for <bpf@vger.kernel.org>; Tue, 28 Apr 2020 17:16:24 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=G1RWv4KWcpGYqbUynxFTMnu0QYs9FOLTC6GONx5brFE=;
+ b=HJr4CQHwh0O1I+Npya/LteRpR16BAaNOQubGkyPvm9nMH+BlP/dSefIbzzXuBkmHQTb4
+ trOwHC9geS0iLRHU6ITCxvbmdgcuIDB0DbPTdM+qgjnk48t9pMLYq4KRm1fVusfV2ezK
+ g9gEx1sWfdpSpdFO4U6wuIzvBz6/YiCdmWc= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 30mk1gpurn-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 28 Apr 2020 17:16:23 -0700
+Received: from intmgw004.03.ash8.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Tue, 28 Apr 2020 17:16:22 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 2387D2EC309B; Tue, 28 Apr 2020 17:16:18 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v3 bpf-next 00/10] bpf_link observability APIs
+Date:   Tue, 28 Apr 2020 17:16:04 -0700
+Message-ID: <20200429001614.1544-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200428173742.2988395-1-vkabatov@redhat.com> <CAEf4Bzbp44pnj-yNP61enxh8-ZvFn56fSF4uDHLz0ZcY-H2yAA@mail.gmail.com>
- <8e07a2db-a258-f1b3-d1f4-74f131cbcb6d@iogearbox.net>
-In-Reply-To: <8e07a2db-a258-f1b3-d1f4-74f131cbcb6d@iogearbox.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 28 Apr 2020 17:15:53 -0700
-Message-ID: <CAEf4BzactULF+w-0yWt83T1thv3G+KoQ9ciqZF+PrnGBATc2Sw@mail.gmail.com>
-Subject: Re: [PATCH v2] selftests/bpf: Copy runqslower to OUTPUT directory
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Veronika Kabatova <vkabatov@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-28_15:2020-04-28,2020-04-28 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=11 impostorscore=0
+ suspectscore=8 mlxlogscore=93 priorityscore=1501 lowpriorityscore=0
+ mlxscore=11 malwarescore=0 bulkscore=0 spamscore=11 adultscore=0
+ clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004290000
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 12:40 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 4/28/20 8:57 PM, Andrii Nakryiko wrote:
-> > On Tue, Apr 28, 2020 at 10:38 AM Veronika Kabatova <vkabatov@redhat.com> wrote:
-> >>
-> >> $(OUTPUT)/runqslower makefile target doesn't actually create runqslower
-> >> binary in the $(OUTPUT) directory. As lib.mk expects all
-> >> TEST_GEN_PROGS_EXTENDED (which runqslower is a part of) to be present in
-> >> the OUTPUT directory, this results in an error when running e.g. `make
-> >> install`:
-> >>
-> >> rsync: link_stat "tools/testing/selftests/bpf/runqslower" failed: No
-> >>         such file or directory (2)
-> >>
-> >> Copy the binary into the OUTPUT directory after building it to fix the
-> >> error.
-> >>
-> >> Fixes: 3a0d3092a4ed ("selftests/bpf: Build runqslower from selftests")
-> >> Signed-off-by: Veronika Kabatova <vkabatov@redhat.com>
-> >> ---
-> >
-> > Acked-by: Andrii Nakryiko <andriin@fb.com>
->
-> Applied, thanks!
+This patch series adds various observability APIs to bpf_link:
+  - each bpf_link now gets ID, similar to bpf_map and bpf_prog, by which
+    user-space can iterate over all existing bpf_links and create limited=
+ FD
+    from ID;
+  - allows to get extra object information with bpf_link general and
+    type-specific information;
+  - implements `bpf link show` command which lists all active bpf_links i=
+n the
+    system;
+  - implements `bpf link pin` allowing to pin bpf_link by ID or from othe=
+r
+    pinned path.
 
-Veronika,
+v2->v3:
+  - improve spin locking around bpf_link ID (Alexei);
+  - simplify bpf_link_info handling and fix compilation error on sh arch;
+v1->v2:
+  - simplified `bpftool link show` implementation (Quentin);
+  - fixed formatting of bpftool-link.rst (Quentin);
+  - fixed attach type printing logic (Quentin);
+rfc->v1:
+  - dropped read-only bpf_links (Alexei);
+  - fixed bug in bpf_link_cleanup() not removing ID;
+  - fixed bpftool link pinning search logic;
+  - added bash-completion and man page.
 
-This change leaves runqslower laying around in selftests/bpf directory
-and available to be committed into git. Can you please follow up with
-adding runqslower to .gitignore? Thanks!
+Andrii Nakryiko (10):
+  bpf: refactor bpf_link update handling
+  bpf: allocate ID for bpf_link
+  bpf: support GET_FD_BY_ID and GET_NEXT_ID for bpf_link
+  bpf: add support for BPF_OBJ_GET_INFO_BY_FD for bpf_link
+  libbpf: add low-level APIs for new bpf_link commands
+  selftests/bpf: test bpf_link's get_next_id, get_fd_by_id, and
+    get_obj_info
+  bpftool: expose attach_type-to-string array to non-cgroup code
+  bpftool: add bpf_link show and pin support
+  bpftool: add bpftool-link manpage
+  bpftool: add link bash completions
+
+ include/linux/bpf-cgroup.h                    |  14 -
+ include/linux/bpf.h                           |  26 +-
+ include/linux/bpf_types.h                     |   6 +
+ include/uapi/linux/bpf.h                      |  31 ++
+ kernel/bpf/btf.c                              |   2 +
+ kernel/bpf/cgroup.c                           |  87 ++++-
+ kernel/bpf/syscall.c                          | 354 ++++++++++++++----
+ kernel/bpf/verifier.c                         |   2 +
+ kernel/cgroup/cgroup.c                        |  27 --
+ .../bpftool/Documentation/bpftool-link.rst    | 118 ++++++
+ tools/bpf/bpftool/bash-completion/bpftool     |  39 ++
+ tools/bpf/bpftool/cgroup.c                    |  48 +--
+ tools/bpf/bpftool/common.c                    |   2 +
+ tools/bpf/bpftool/link.c                      | 333 ++++++++++++++++
+ tools/bpf/bpftool/main.c                      |   6 +-
+ tools/bpf/bpftool/main.h                      |  37 ++
+ tools/include/uapi/linux/bpf.h                |  31 ++
+ tools/lib/bpf/bpf.c                           |  19 +-
+ tools/lib/bpf/bpf.h                           |   4 +-
+ tools/lib/bpf/libbpf.map                      |   6 +
+ .../selftests/bpf/prog_tests/bpf_obj_id.c     | 110 +++++-
+ .../testing/selftests/bpf/progs/test_obj_id.c |  14 +-
+ 22 files changed, 1132 insertions(+), 184 deletions(-)
+ create mode 100644 tools/bpf/bpftool/Documentation/bpftool-link.rst
+ create mode 100644 tools/bpf/bpftool/link.c
+
+--=20
+2.24.1
+
