@@ -2,48 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6D61BE5F8
-	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 20:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C74C1BE5F3
+	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 20:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727105AbgD2SMB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Apr 2020 14:12:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39934 "EHLO
+        id S1727772AbgD2SMK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Apr 2020 14:12:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727101AbgD2SMB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 29 Apr 2020 14:12:01 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FDCEC035495
-        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 11:12:00 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id d17so3655521wrg.11
-        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 11:12:00 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1727115AbgD2SMC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 29 Apr 2020 14:12:02 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDA8C035493
+        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 11:12:02 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id j2so3677792wrs.9
+        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 11:12:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=LGiyKCk3S1pOE2otlkfXW7gIjb6zeQWI8M+A1IZy5qI=;
-        b=UQN/uYfHIqX8VZ1VyMvs2Iqk8SD/y4jc68eEaCNlOubl4gDi5E84T05GlRCC/mTzFY
-         w/SqGI6qq0vagZEPDMPYpLEi7PPXRCinOFNbzvIT7N4MEMLDF/IS6kSwdh+VdCqZY1i4
-         72YWZIwzAIWX3ha3fN9e3K5yDm6MM9EJ/QDaA=
+        bh=A6yReQfWel8N8XspB7c+LKaQbzotdMEmsjvC572L9/M=;
+        b=JKptpkcDv9Y9+p+UoZSqU/g192VvaBLlx+chnXxGIauOeBEMIJYf7WKonPRyaVnDOg
+         ghexBtJHRJOzBw5MUe9HIMKYF5NeOhnruI8OUJPWp7oIPBbYU6CK9SgXdF7oPYqwOUvC
+         Cq1CTQMikenJXRRvsnnut9bkB+tZntdW6XI6c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LGiyKCk3S1pOE2otlkfXW7gIjb6zeQWI8M+A1IZy5qI=;
-        b=C4A+Y3Ui1FA/J/V7+PSumXBQV2Fw0aKuBzQhuQWEMhbKslMpT4hAHvNG4B0hPb2ai4
-         juaFhuinPr0aIygeNJNazDwKcO+e7hlN6kNTzXF0Y71FwBtVzY33cV2/Jml1rG1dYsjC
-         rNhURN5qDRlzSN3fVLAnH//VuRkABzSBsqZ1sJiJ9aaa+ihENpCMYD14EsAYjtL9Hhb0
-         okf5KSrS1iCS7TckNyD9eoO5THsh6YcLO2QvJyItMdaHuCm82gaHgFLvM0f7PqxdaucB
-         1kZ+Y9fIPmsCO0xPLxv2qvjGEVED5ow5yHIm0cS86JrCCL50fuRsiIJfXwI2KHQPdZnl
-         jXhA==
-X-Gm-Message-State: AGi0Pua1ROXnqflaq+Fbdw7+bgtyZawh+OzZzsEHmy4BBXLRdfTQ7lox
-        bGXJyJPWYlTb9MNd0fta9SjpWMhkZ0U=
-X-Google-Smtp-Source: APiQypKf/W5FIv2szBzM8IsRoz4/4pc3sNi11NkaQdAbEJhzm0Z3zyplDR3p9IGRceTE/nBHlXIjwQ==
-X-Received: by 2002:adf:aa8e:: with SMTP id h14mr44050653wrc.371.1588183918773;
-        Wed, 29 Apr 2020 11:11:58 -0700 (PDT)
+        bh=A6yReQfWel8N8XspB7c+LKaQbzotdMEmsjvC572L9/M=;
+        b=DWCR3aleGW3Ng2UxXjao/S7nc1zB07S6nrM3SMfQiAAN6DnJmcOJT81NqSjv7NBlGz
+         6tsWGtS+aGYkbK+CPoasVtG52zbwYDbz/JR2V6ndMYPR6mo/9tt26MDWu/Wh9R1tScRs
+         DGPtAmI9dIUriwnI2n9x3c3Xp1x5rXSDNBzWBze/xeNtVeDMeY4d2yUYlcTDp+iNQl/5
+         R4sv4UD445ummuljOOle8gt45ezoy+OGpwPSTZXzEtbjokEKKO30PK65OjdN3XmX0pJ1
+         zvCVB9yhgEyxHhKoEtl+4NOwm3OWHKSBStizPH5fP098EkDgsA1/vs9BXC7xDrZPJbP/
+         sHkA==
+X-Gm-Message-State: AGi0Pua+vI4xZKv66W4UDB0wyBRClLhwMatmFcyLtpSj9F/cIyoLPeBY
+        BhU62UVrmPG+cmJC9sHPLxLKFlPD5aU=
+X-Google-Smtp-Source: APiQypJM3arCrzF2jEPy5RqPkMrmTKi3KWxanNiAvhrbjCYwI6RRz0UOgLE9N18ggvZTFqcVonTU/Q==
+X-Received: by 2002:a5d:5652:: with SMTP id j18mr43447402wrw.40.1588183920262;
+        Wed, 29 Apr 2020 11:12:00 -0700 (PDT)
 Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id w4sm56272wro.28.2020.04.29.11.11.58
+        by smtp.gmail.com with ESMTPSA id o129sm9222703wme.16.2020.04.29.11.11.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 11:11:58 -0700 (PDT)
+        Wed, 29 Apr 2020 11:11:59 -0700 (PDT)
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     bpf@vger.kernel.org
 Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
@@ -53,9 +53,9 @@ Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
         John Fastabend <john.fastabend@gmail.com>,
         Lorenz Bauer <lmb@cloudflare.com>,
         Martin KaFai Lau <kafai@fb.com>
-Subject: [PATCH bpf-next 2/3] selftests/bpf: Test that lookup on SOCKMAP/SOCKHASH is allowed
-Date:   Wed, 29 Apr 2020 20:11:53 +0200
-Message-Id: <20200429181154.479310-3-jakub@cloudflare.com>
+Subject: [PATCH bpf-next 3/3] selftests/bpf: Use SOCKMAP for server sockets in bpf_sk_assign test
+Date:   Wed, 29 Apr 2020 20:11:54 +0200
+Message-Id: <20200429181154.479310-4-jakub@cloudflare.com>
 X-Mailer: git-send-email 2.25.3
 In-Reply-To: <20200429181154.479310-1-jakub@cloudflare.com>
 References: <20200429181154.479310-1-jakub@cloudflare.com>
@@ -66,133 +66,219 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Now that bpf_map_lookup_elem() is white-listed for SOCKMAP/SOCKHASH,
-replace the tests which check that verifier prevents lookup on these map
-types with ones that ensure that lookup operation is permitted, but only
-with a release of acquired socket reference.
+Update bpf_sk_assign test to fetch the server socket from SOCKMAP, now that
+map lookup from BPF in SOCKMAP is enabled. This way the test TC BPF program
+doesn't need to know what address server socket is bound to.
 
 Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 ---
- .../bpf/verifier/prevent_map_lookup.c         | 30 --------
- tools/testing/selftests/bpf/verifier/sock.c   | 70 +++++++++++++++++++
- 2 files changed, 70 insertions(+), 30 deletions(-)
+ tools/testing/selftests/bpf/Makefile          |  2 +-
+ .../selftests/bpf/prog_tests/sk_assign.c      | 21 ++++-
+ .../selftests/bpf/progs/test_sk_assign.c      | 82 ++++++++-----------
+ 3 files changed, 53 insertions(+), 52 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/verifier/prevent_map_lookup.c b/tools/testing/selftests/bpf/verifier/prevent_map_lookup.c
-index da7a4b37cb98..fc4e301260f6 100644
---- a/tools/testing/selftests/bpf/verifier/prevent_map_lookup.c
-+++ b/tools/testing/selftests/bpf/verifier/prevent_map_lookup.c
-@@ -1,33 +1,3 @@
--{
--	"prevent map lookup in sockmap",
--	.insns = {
--	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
--	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
--	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
--	BPF_LD_MAP_FD(BPF_REG_1, 0),
--	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
--	BPF_EXIT_INSN(),
--	},
--	.fixup_map_sockmap = { 3 },
--	.result = REJECT,
--	.errstr = "cannot pass map_type 15 into func bpf_map_lookup_elem",
--	.prog_type = BPF_PROG_TYPE_SOCK_OPS,
--},
--{
--	"prevent map lookup in sockhash",
--	.insns = {
--	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
--	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
--	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
--	BPF_LD_MAP_FD(BPF_REG_1, 0),
--	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
--	BPF_EXIT_INSN(),
--	},
--	.fixup_map_sockhash = { 3 },
--	.result = REJECT,
--	.errstr = "cannot pass map_type 18 into func bpf_map_lookup_elem",
--	.prog_type = BPF_PROG_TYPE_SOCK_OPS,
--},
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 10f12a5aac20..3d942be23d09 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -243,7 +243,7 @@ define GCC_BPF_BUILD_RULE
+ 	$(BPF_GCC) $3 $4 -O2 -c $1 -o $2
+ endef
+ 
+-SKEL_BLACKLIST := btf__% test_pinning_invalid.c
++SKEL_BLACKLIST := btf__% test_pinning_invalid.c test_sk_assign.c
+ 
+ # Set up extra TRUNNER_XXX "temporary" variables in the environment (relies on
+ # $eval()) and pass control to DEFINE_TEST_RUNNER_RULES.
+diff --git a/tools/testing/selftests/bpf/prog_tests/sk_assign.c b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
+index d572e1a2c297..47fa04adc147 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sk_assign.c
++++ b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
+@@ -20,6 +20,7 @@
+ #define CONNECT_PORT 4321
+ #define TEST_DADDR (0xC0A80203)
+ #define NS_SELF "/proc/self/ns/net"
++#define SERVER_MAP_PATH "/sys/fs/bpf/tc/globals/server_map"
+ 
+ static const struct timeval timeo_sec = { .tv_sec = 3 };
+ static const size_t timeo_optlen = sizeof(timeo_sec);
+@@ -265,6 +266,7 @@ void test_sk_assign(void)
+ 		TEST("ipv6 udp addr redir", AF_INET6, SOCK_DGRAM, true),
+ 	};
+ 	int server = -1;
++	int server_map;
+ 	int self_net;
+ 
+ 	self_net = open(NS_SELF, O_RDONLY);
+@@ -278,9 +280,17 @@ void test_sk_assign(void)
+ 		goto cleanup;
+ 	}
+ 
++	server_map = bpf_obj_get(SERVER_MAP_PATH);
++	if (CHECK_FAIL(server_map < 0)) {
++		perror("Unable to open " SERVER_MAP_PATH);
++		goto cleanup;
++	}
++
+ 	for (int i = 0; i < ARRAY_SIZE(tests) && !READ_ONCE(stop); i++) {
+ 		struct test_sk_cfg *test = &tests[i];
+ 		const struct sockaddr *addr;
++		const int zero = 0;
++		int err;
+ 
+ 		if (!test__start_subtest(test->name))
+ 			continue;
+@@ -288,7 +298,13 @@ void test_sk_assign(void)
+ 		addr = (const struct sockaddr *)test->addr;
+ 		server = start_server(addr, test->len, test->type);
+ 		if (server == -1)
+-			goto cleanup;
++			goto close;
++
++		err = bpf_map_update_elem(server_map, &zero, &server, BPF_ANY);
++		if (CHECK_FAIL(err)) {
++			perror("Unable to update server_map");
++			goto close;
++		}
+ 
+ 		/* connect to unbound ports */
+ 		prepare_addr(test->addr, test->family, CONNECT_PORT,
+@@ -302,7 +318,10 @@ void test_sk_assign(void)
+ 
+ close:
+ 	close(server);
++	close(server_map);
+ cleanup:
++	if (CHECK_FAIL(unlink(SERVER_MAP_PATH)))
++		perror("Unable to unlink " SERVER_MAP_PATH);
+ 	if (CHECK_FAIL(setns(self_net, CLONE_NEWNET)))
+ 		perror("Failed to setns("NS_SELF")");
+ 	close(self_net);
+diff --git a/tools/testing/selftests/bpf/progs/test_sk_assign.c b/tools/testing/selftests/bpf/progs/test_sk_assign.c
+index 8f530843b4da..1ecd987005d2 100644
+--- a/tools/testing/selftests/bpf/progs/test_sk_assign.c
++++ b/tools/testing/selftests/bpf/progs/test_sk_assign.c
+@@ -16,6 +16,26 @@
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_endian.h>
+ 
++/* Pin map under /sys/fs/bpf/tc/globals/<map name> */
++#define PIN_GLOBAL_NS 2
++
++/* Must match struct bpf_elf_map layout from iproute2 */
++struct {
++	__u32 type;
++	__u32 size_key;
++	__u32 size_value;
++	__u32 max_elem;
++	__u32 flags;
++	__u32 id;
++	__u32 pinning;
++} server_map SEC("maps") = {
++	.type = BPF_MAP_TYPE_SOCKMAP,
++	.size_key = sizeof(int),
++	.size_value  = sizeof(__u64),
++	.max_elem = 1,
++	.pinning = PIN_GLOBAL_NS,
++};
++
+ int _version SEC("version") = 1;
+ char _license[] SEC("license") = "GPL";
+ 
+@@ -72,7 +92,9 @@ handle_udp(struct __sk_buff *skb, struct bpf_sock_tuple *tuple, bool ipv4)
  {
- 	"prevent map lookup in stack trace",
- 	.insns = {
-diff --git a/tools/testing/selftests/bpf/verifier/sock.c b/tools/testing/selftests/bpf/verifier/sock.c
-index 9ed192e14f5f..f87ad69dbc62 100644
---- a/tools/testing/selftests/bpf/verifier/sock.c
-+++ b/tools/testing/selftests/bpf/verifier/sock.c
-@@ -516,3 +516,73 @@
- 	.prog_type = BPF_PROG_TYPE_XDP,
- 	.result = ACCEPT,
- },
-+{
-+	"bpf_map_lookup_elem(sockmap, &key)",
-+	.insns = {
-+	BPF_ST_MEM(BPF_W, BPF_REG_10, -4, 0),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -4),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_sockmap = { 3 },
-+	.prog_type = BPF_PROG_TYPE_SK_SKB,
-+	.result = REJECT,
-+	.errstr = "Unreleased reference id=2 alloc_insn=5",
-+},
-+{
-+	"bpf_map_lookup_elem(sockhash, &key)",
-+	.insns = {
-+	BPF_ST_MEM(BPF_W, BPF_REG_10, -4, 0),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -4),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_sockhash = { 3 },
-+	.prog_type = BPF_PROG_TYPE_SK_SKB,
-+	.result = REJECT,
-+	.errstr = "Unreleased reference id=2 alloc_insn=5",
-+},
-+{
-+	"bpf_map_lookup_elem(sockmap, &key); sk->type [fullsock field]; bpf_sk_release(sk)",
-+	.insns = {
-+	BPF_ST_MEM(BPF_W, BPF_REG_10, -4, 0),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -4),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-+	BPF_EXIT_INSN(),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_0, offsetof(struct bpf_sock, type)),
-+	BPF_EMIT_CALL(BPF_FUNC_sk_release),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_sockmap = { 3 },
-+	.prog_type = BPF_PROG_TYPE_SK_SKB,
-+	.result = ACCEPT,
-+},
-+{
-+	"bpf_map_lookup_elem(sockhash, &key); sk->type [fullsock field]; bpf_sk_release(sk)",
-+	.insns = {
-+	BPF_ST_MEM(BPF_W, BPF_REG_10, -4, 0),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -4),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-+	BPF_EXIT_INSN(),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_0, offsetof(struct bpf_sock, type)),
-+	BPF_EMIT_CALL(BPF_FUNC_sk_release),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_sockhash = { 3 },
-+	.prog_type = BPF_PROG_TYPE_SK_SKB,
-+	.result = ACCEPT,
-+},
+ 	struct bpf_sock_tuple ln = {0};
+ 	struct bpf_sock *sk;
++	const int zero = 0;
+ 	size_t tuple_len;
++	__be16 dport;
+ 	int ret;
+ 
+ 	tuple_len = ipv4 ? sizeof(tuple->ipv4) : sizeof(tuple->ipv6);
+@@ -83,32 +105,11 @@ handle_udp(struct __sk_buff *skb, struct bpf_sock_tuple *tuple, bool ipv4)
+ 	if (sk)
+ 		goto assign;
+ 
+-	if (ipv4) {
+-		if (tuple->ipv4.dport != bpf_htons(4321))
+-			return TC_ACT_OK;
+-
+-		ln.ipv4.daddr = bpf_htonl(0x7f000001);
+-		ln.ipv4.dport = bpf_htons(1234);
+-
+-		sk = bpf_sk_lookup_udp(skb, &ln, sizeof(ln.ipv4),
+-					BPF_F_CURRENT_NETNS, 0);
+-	} else {
+-		if (tuple->ipv6.dport != bpf_htons(4321))
+-			return TC_ACT_OK;
+-
+-		/* Upper parts of daddr are already zero. */
+-		ln.ipv6.daddr[3] = bpf_htonl(0x1);
+-		ln.ipv6.dport = bpf_htons(1234);
+-
+-		sk = bpf_sk_lookup_udp(skb, &ln, sizeof(ln.ipv6),
+-					BPF_F_CURRENT_NETNS, 0);
+-	}
++	dport = ipv4 ? tuple->ipv4.dport : tuple->ipv6.dport;
++	if (dport != bpf_htons(4321))
++		return TC_ACT_OK;
+ 
+-	/* workaround: We can't do a single socket lookup here, because then
+-	 * the compiler will likely spill tuple_len to the stack. This makes it
+-	 * lose all bounds information in the verifier, which then rejects the
+-	 * call as unsafe.
+-	 */
++	sk = bpf_map_lookup_elem(&server_map, &zero);
+ 	if (!sk)
+ 		return TC_ACT_SHOT;
+ 
+@@ -123,7 +124,9 @@ handle_tcp(struct __sk_buff *skb, struct bpf_sock_tuple *tuple, bool ipv4)
+ {
+ 	struct bpf_sock_tuple ln = {0};
+ 	struct bpf_sock *sk;
++	const int zero = 0;
+ 	size_t tuple_len;
++	__be16 dport;
+ 	int ret;
+ 
+ 	tuple_len = ipv4 ? sizeof(tuple->ipv4) : sizeof(tuple->ipv6);
+@@ -137,32 +140,11 @@ handle_tcp(struct __sk_buff *skb, struct bpf_sock_tuple *tuple, bool ipv4)
+ 		bpf_sk_release(sk);
+ 	}
+ 
+-	if (ipv4) {
+-		if (tuple->ipv4.dport != bpf_htons(4321))
+-			return TC_ACT_OK;
++	dport = ipv4 ? tuple->ipv4.dport : tuple->ipv6.dport;
++	if (dport != bpf_htons(4321))
++		return TC_ACT_OK;
+ 
+-		ln.ipv4.daddr = bpf_htonl(0x7f000001);
+-		ln.ipv4.dport = bpf_htons(1234);
+-
+-		sk = bpf_skc_lookup_tcp(skb, &ln, sizeof(ln.ipv4),
+-					BPF_F_CURRENT_NETNS, 0);
+-	} else {
+-		if (tuple->ipv6.dport != bpf_htons(4321))
+-			return TC_ACT_OK;
+-
+-		/* Upper parts of daddr are already zero. */
+-		ln.ipv6.daddr[3] = bpf_htonl(0x1);
+-		ln.ipv6.dport = bpf_htons(1234);
+-
+-		sk = bpf_skc_lookup_tcp(skb, &ln, sizeof(ln.ipv6),
+-					BPF_F_CURRENT_NETNS, 0);
+-	}
+-
+-	/* workaround: We can't do a single socket lookup here, because then
+-	 * the compiler will likely spill tuple_len to the stack. This makes it
+-	 * lose all bounds information in the verifier, which then rejects the
+-	 * call as unsafe.
+-	 */
++	sk = bpf_map_lookup_elem(&server_map, &zero);
+ 	if (!sk)
+ 		return TC_ACT_SHOT;
+ 
 -- 
 2.25.3
 
