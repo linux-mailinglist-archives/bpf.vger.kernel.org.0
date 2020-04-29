@@ -2,99 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB731BD253
-	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 04:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 596461BD265
+	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 04:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726451AbgD2Cj0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Apr 2020 22:39:26 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:38533 "EHLO
+        id S1726621AbgD2Co5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Apr 2020 22:44:57 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:48211 "EHLO
         conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726345AbgD2Cj0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Apr 2020 22:39:26 -0400
-Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com [209.85.217.42]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 03T2cw95003502;
-        Wed, 29 Apr 2020 11:38:59 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 03T2cw95003502
+        with ESMTP id S1726598AbgD2Co4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Apr 2020 22:44:56 -0400
+Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com [209.85.222.53]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 03T2iGBG006076;
+        Wed, 29 Apr 2020 11:44:16 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 03T2iGBG006076
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1588127939;
-        bh=kIACvKnbNQjmmvD9XNnXXeDcJn3YI4tRb66fZvzH6o0=;
+        s=dec2015msa; t=1588128256;
+        bh=JDmR7sOxWAOl0xZYRbW4YRt3haUZ3+lv4J0EA18vymI=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=1cVlTgtdT4Ze4na5pj7IAc2NYgNk2ylZxPHOfpt61kpTZIbSilpO7JhIq30479+FY
-         nlw6qbetxb6UzLkfMk0q39EBaAFGpppH1WTvlZJNZ/R7R8U/IqkB82fno6HNhEQjeA
-         DVGKsjqI9rBAU75zCuBhh1Ys0FhcNJeWx/PRIH4lrlEgG+M8Sdaf9ZMSClBXtommLX
-         8kkCtxlK3KB7/1CEpnheJblngxDGCUckcUhCapePv+/kAz8/ihRy85BB15osC2Fp3Y
-         HWz6lQAfDrhWJsQXaFyfheRKbUp8t8WJCiHZc+o83HKnNRR5ujg+zI8mRPlVFPkdqk
-         rgF5kTwNhPASw==
-X-Nifty-SrcIP: [209.85.217.42]
-Received: by mail-vs1-f42.google.com with SMTP id s11so357926vsm.3;
-        Tue, 28 Apr 2020 19:38:59 -0700 (PDT)
-X-Gm-Message-State: AGi0Pua2LuB2zvD8DI0EYTyDVh3qUAIx/Cs4x3I0+0BAZjoJIOJmJEDA
-        mrji9wueqgWUrUgmk/k9pGfUjRyrSal38HhULFo=
-X-Google-Smtp-Source: APiQypL9CzoFbaf4j03sWX7eNvmAC6tL/Lcuadex+fAZ5CS6CzTX3uUDunisReRWfuw07vnycbUbrt1H7bvxqgJy6Zg=
-X-Received: by 2002:a67:e94d:: with SMTP id p13mr23892835vso.215.1588127938122;
- Tue, 28 Apr 2020 19:38:58 -0700 (PDT)
+        b=Q/yYGad2P24vpHqjYYWp7m2gP2fI2M7oBkWhGlZcKA0Zctu3ZBEqxdMArVF7fWpSe
+         njBjqzsnHgQORhBhZJEDFoy8fqA3tJoBszJYr3xotRpYmCUC30JhZi0uZcIZUy1zHR
+         iUCdhLLCW91f4y3ntcdz/RLeMcjLthMrswRQCJj82IK93PMGj14iCN/R7t11UaJ22W
+         HRikYDzFODh3dKfCx/KZfXilzM6zXgq4Oj2Z1lke92DKB5CNFZ/Ha/4AESK4pHfQ9m
+         F+7S8yI13gwCZij88lUV+oPf70Kx2WK9rUyt9dv57e0o6JycxnqloY7peyaMw8LlCJ
+         PR8acZl5In0TQ==
+X-Nifty-SrcIP: [209.85.222.53]
+Received: by mail-ua1-f53.google.com with SMTP id c24so329347uap.13;
+        Tue, 28 Apr 2020 19:44:16 -0700 (PDT)
+X-Gm-Message-State: AGi0Pubo1vWYI0UF8hYB0p9vlNA69NhQkRAXxG4+/5elJutGgetkanXx
+        noVOHZic7sGkBKgrbMD/zPlgNdKz+6VfrWSXaYM=
+X-Google-Smtp-Source: APiQypIic2qLjnYXcUQFI9eAhK3sbWyA8cGUJR3QdnhGvAahYp29unTLMtwRxxKMfhqQS3AFgxecNxBdWnBpeP30lS4=
+X-Received: by 2002:ab0:1166:: with SMTP id g38mr24264521uac.40.1588128255296;
+ Tue, 28 Apr 2020 19:44:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200423073929.127521-1-masahiroy@kernel.org> <20200425115303.GA10048@ravnborg.org>
-In-Reply-To: <20200425115303.GA10048@ravnborg.org>
+References: <20200423073929.127521-1-masahiroy@kernel.org> <20200423073929.127521-3-masahiroy@kernel.org>
+ <20200424203231.b4lonbdgzkoxf7ug@treble>
+In-Reply-To: <20200424203231.b4lonbdgzkoxf7ug@treble>
 From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 29 Apr 2020 11:38:22 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARRxS6nnbBAa495Bh4nCdDAixinpMG1Tn6SV_w38uOzdg@mail.gmail.com>
-Message-ID: <CAK7LNARRxS6nnbBAa495Bh4nCdDAixinpMG1Tn6SV_w38uOzdg@mail.gmail.com>
-Subject: Re: [PATCH 00/16] kbuild: support 'userprogs' syntax
-To:     Sam Ravnborg <sam@ravnborg.org>
+Date:   Wed, 29 Apr 2020 11:43:39 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATrGDegfn2j5gmHTSj8V=Wd53SpLqG4-T1gfn3j19mEtg@mail.gmail.com>
+Message-ID: <CAK7LNATrGDegfn2j5gmHTSj8V=Wd53SpLqG4-T1gfn3j19mEtg@mail.gmail.com>
+Subject: Re: [PATCH 02/16] Revert "objtool: Skip samples subdirectory"
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
 Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Christian Brauner <christian@brauner.io>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Song Liu <songliubraving@fb.com>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Yonghong Song <yhs@fb.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
+        bpf <bpf@vger.kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Sam,
-
-On Sat, Apr 25, 2020 at 8:53 PM Sam Ravnborg <sam@ravnborg.org> wrote:
+On Sat, Apr 25, 2020 at 5:32 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 >
-> Hi Masahiro
+> On Thu, Apr 23, 2020 at 04:39:15PM +0900, Masahiro Yamada wrote:
+> > This reverts commit 8728497895794d1f207a836e02dae762ad175d56.
+> >
+> > This directory contains no object.
+> >
+> > Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> >  samples/Makefile | 1 -
+> >  1 file changed, 1 deletion(-)
+> >
+> > diff --git a/samples/Makefile b/samples/Makefile
+> > index f8f847b4f61f..5ce50ef0f2b2 100644
+> > --- a/samples/Makefile
+> > +++ b/samples/Makefile
+> > @@ -1,6 +1,5 @@
+> >  # SPDX-License-Identifier: GPL-2.0
+> >  # Makefile for Linux samples code
+> > -OBJECT_FILES_NON_STANDARD := y
+> >
+> >  obj-$(CONFIG_SAMPLE_ANDROID_BINDERFS)        += binderfs/
+> >  obj-$(CONFIG_SAMPLE_CONFIGFS)                += configfs/
+> > --
+> > 2.25.1
 >
-> On Thu, Apr 23, 2020 at 04:39:13PM +0900, Masahiro Yamada wrote:
-> >
-> > Several Makefiles use 'hostprogs' for building the code for
-> > the host architecture is not appropriate.
-> >
-> > This is just because Kbuild does not provide the syntax to do it.
-> >
-> > This series introduce 'userprogs' syntax and use it from
-> > sample and bpf Makefiles.
-> >
-> > Sam worked on this in 2014.
-> > https://lkml.org/lkml/2014/7/13/154
+> Hm, somehow I was thinking this would work recursively for
+> subdirectories.  Anyway, you're right:
 >
-> I wonder how you managed to dig that up, but thanks for the reference.
+> Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+>
+> --
+> Josh
+>
 
-
-I just remembered your work back in 2014.
-
-I did not remember the patch title exactly,
-but I searched for 'From: Sam Ravnborg' and
-'To: linux-kbuild@vger.kernel.org' in my mail box.
-
-
+Applied to linux-kbuild.
 
 
 -- 
