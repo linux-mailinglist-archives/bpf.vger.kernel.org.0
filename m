@@ -2,179 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6731BECA9
-	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 01:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D51D91BECB1
+	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 01:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726950AbgD2Xdu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Apr 2020 19:33:50 -0400
-Received: from www62.your-server.de ([213.133.104.62]:33030 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726935AbgD2Xdt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Apr 2020 19:33:49 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jTwD4-0000YI-UR; Thu, 30 Apr 2020 01:33:47 +0200
-Received: from [178.195.186.98] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jTwD4-0003Te-LV; Thu, 30 Apr 2020 01:33:46 +0200
-Subject: Re: [PATCH v8 bpf-next 1/3] bpf: sharing bpf runtime stats with
- BPF_ENABLE_STATS
-To:     Song Liu <songliubraving@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     ast@kernel.org, kernel-team@fb.com
-References: <20200429064543.634465-1-songliubraving@fb.com>
- <20200429064543.634465-2-songliubraving@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <77523dab-bfd0-45d4-0d03-26a07bb6483e@iogearbox.net>
-Date:   Thu, 30 Apr 2020 01:33:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726481AbgD2XmE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Apr 2020 19:42:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726164AbgD2XmD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Apr 2020 19:42:03 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B635C03C1AE;
+        Wed, 29 Apr 2020 16:42:03 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 145so1902629pfw.13;
+        Wed, 29 Apr 2020 16:42:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=do9+MWbG28UjyHAK/kcWf4pA+OINYdqriwEnk8jdTKY=;
+        b=dmwaP+IIHgrZTFicMlJo0kRd02lRso6m3dcRss+7ThqI0dTejM7ZefD+XY9faiukTk
+         +KvvM/uNd/3S5ivSMMscmqUrYcDQqIO/N/0ST66hp0d0LyO8t1PvZyLk4Ov1g3Nbf82a
+         Pot8aPwSqX26OJpde3f5NLWa+WTr6EuYo5Ijeb2AeQrLv0OqNkkj1FtSJSU2d4+NiWOi
+         O9xX6FAFffFvw3AOFdJHzVTgFO3YKYatUtBw7a2DvLixCLjRi2Y/ITp6RKrFx2QHfXWQ
+         7pi3/GUfSscN15rZKA4wxEforf9ihW39y9rXN3xUAt82heDUepP5QDPyBpcuweFpes73
+         ApVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=do9+MWbG28UjyHAK/kcWf4pA+OINYdqriwEnk8jdTKY=;
+        b=SmT9FnpdQEN+NG8pJ4qnin9qPl+aGcE0R5D1V3hUWEpOovYBHIG5PXIVQZfX45dN3j
+         +GVTGONN1hJERGrdZLBDthdIyz1Gzw39tV2HE5h/IXm3DX/PaRgkI7JfxPS9A2FpsVNd
+         XRbKtsWCzWD9feRpqcrtakliH95j5j0x4vAciCfmjIUMRSoPtJlpp641N+JWJoI3zszZ
+         YJ136Ndr+EbX3z0TQgsYAhzsuAI6BZFGSD2Blx5bbMDJkcMWX9PGPn71KWMeP7G6pOJh
+         oXLu2aPL2Qi2QEtViIoTDVDGxvg01h/Hprpkf2sToBUtKHMM9NpUOW3tR+KpHDvMh1Py
+         RJuA==
+X-Gm-Message-State: AGi0PuahwjS4PFdOw512ywVawz1X+XVessTJVUvplKhUI5BHPfeV84PT
+        IKukq3bbjLjz21/d6idvyks=
+X-Google-Smtp-Source: APiQypJeohdGTCVWCopJJiXo57mEM0nmQUaOMs4gr7Ys4VA1hWzgysB86xeVCMuvfCWetIYtc+luHw==
+X-Received: by 2002:a63:5a50:: with SMTP id k16mr610640pgm.171.1588203722891;
+        Wed, 29 Apr 2020 16:42:02 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:e95f])
+        by smtp.gmail.com with ESMTPSA id t80sm2003237pfc.23.2020.04.29.16.42.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Apr 2020 16:42:01 -0700 (PDT)
+Date:   Wed, 29 Apr 2020 16:41:59 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, hpa@zytor.com, ast@kernel.org,
+        peterz@infradead.org, rdunlap@infradead.org,
+        Arnd Bergmann <arnd@arndb.de>, bpf@vger.kernel.org,
+        daniel@iogearbox.net
+Subject: Re: BPF vs objtool again
+Message-ID: <20200429234159.gid6ht74qqmlpuz7@ast-mbp.dhcp.thefacebook.com>
+References: <30c3ca29ba037afcbd860a8672eef0021addf9fe.1563413318.git.jpoimboe@redhat.com>
+ <tip-3193c0836f203a91bef96d88c64cccf0be090d9c@git.kernel.org>
+ <20200429215159.eah6ksnxq6g5adpx@treble>
 MIME-Version: 1.0
-In-Reply-To: <20200429064543.634465-2-songliubraving@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25797/Wed Apr 29 14:06:14 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200429215159.eah6ksnxq6g5adpx@treble>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/29/20 8:45 AM, Song Liu wrote:
-> Currently, sysctl kernel.bpf_stats_enabled controls BPF runtime stats.
-> Typical userspace tools use kernel.bpf_stats_enabled as follows:
+On Wed, Apr 29, 2020 at 04:51:59PM -0500, Josh Poimboeuf wrote:
+> On Thu, Jul 18, 2019 at 12:14:08PM -0700, tip-bot for Josh Poimboeuf wrote:
+> > Commit-ID:  3193c0836f203a91bef96d88c64cccf0be090d9c
+> > Gitweb:     https://git.kernel.org/tip/3193c0836f203a91bef96d88c64cccf0be090d9c
+> > Author:     Josh Poimboeuf <jpoimboe@redhat.com>
+> > AuthorDate: Wed, 17 Jul 2019 20:36:45 -0500
+> > Committer:  Thomas Gleixner <tglx@linutronix.de>
+> > CommitDate: Thu, 18 Jul 2019 21:01:06 +0200
+> > 
+> > bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()
 > 
->    1. Enable kernel.bpf_stats_enabled;
->    2. Check program run_time_ns;
->    3. Sleep for the monitoring period;
->    4. Check program run_time_ns again, calculate the difference;
->    5. Disable kernel.bpf_stats_enabled.
+> For some reason, this
 > 
-> The problem with this approach is that only one userspace tool can toggle
-> this sysctl. If multiple tools toggle the sysctl at the same time, the
-> measurement may be inaccurate.
+>   __attribute__((optimize("-fno-gcse")))
 > 
-> To fix this problem while keep backward compatibility, introduce a new
-> bpf command BPF_ENABLE_STATS. On success, this command enables stats and
-> returns a valid fd. BPF_ENABLE_STATS takes argument "type". Currently,
-> only one type, BPF_STATS_RUN_TIME, is supported. We can extend the
-> command to support other types of stats in the future.
+> is disabling frame pointers in ___bpf_prog_run().  If you compile with
+> CONFIG_FRAME_POINTER it'll show something like:
 > 
-> With BPF_ENABLE_STATS, user space tool would have the following flow:
-> 
->    1. Get a fd with BPF_ENABLE_STATS, and make sure it is valid;
->    2. Check program run_time_ns;
->    3. Sleep for the monitoring period;
->    4. Check program run_time_ns again, calculate the difference;
->    5. Close the fd.
-> 
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-[...]
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index d23c04cbe14f..8691b2cc550d 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -3872,6 +3872,60 @@ static int bpf_link_get_fd_by_id(const union bpf_attr *attr)
->   	return fd;
->   }
->   
-> +DEFINE_MUTEX(bpf_stats_enabled_mutex);
-> +
-> +static int bpf_stats_release(struct inode *inode, struct file *file)
-> +{
-> +	mutex_lock(&bpf_stats_enabled_mutex);
-> +	static_key_slow_dec(&bpf_stats_enabled_key.key);
-> +	mutex_unlock(&bpf_stats_enabled_mutex);
-> +	return 0;
-> +}
-> +
-> +static const struct file_operations bpf_stats_fops = {
-> +	.release = bpf_stats_release,
-> +};
-> +
-> +static int bpf_enable_runtime_stats(void)
-> +{
-> +	int fd;
-> +
-> +	mutex_lock(&bpf_stats_enabled_mutex);
-> +
-> +	/* Set a very high limit to avoid overflow */
-> +	if (static_key_count(&bpf_stats_enabled_key.key) > INT_MAX / 2) {
-> +		mutex_unlock(&bpf_stats_enabled_mutex);
-> +		return -EBUSY;
-> +	}
-> +
-> +	fd = anon_inode_getfd("bpf-stats", &bpf_stats_fops, NULL, 0);
+>   kernel/bpf/core.o: warning: objtool: ___bpf_prog_run.cold()+0x7: call without frame pointer save/setup
 
-Missing O_CLOEXEC or intentional (if latter, I'd have expected a comment
-here though)?
+you mean it started to disable frame pointers from some version of gcc?
+It wasn't doing this before, since objtool wasn't complaining, right?
+Sounds like gcc bug?
 
-> +	if (fd >= 0)
-> +		static_key_slow_inc(&bpf_stats_enabled_key.key);
-> +
-> +	mutex_unlock(&bpf_stats_enabled_mutex);
-> +	return fd;
-> +}
-> +
-> +#define BPF_ENABLE_STATS_LAST_FIELD enable_stats.type
-> +
-[...]
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index e961286d0e14..af08ef0690cb 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -201,6 +201,40 @@ static int max_extfrag_threshold = 1000;
->   
->   #endif /* CONFIG_SYSCTL */
->   
-> +#ifdef CONFIG_BPF_SYSCALL
-> +static int bpf_stats_handler(struct ctl_table *table, int write,
-> +			     void __user *buffer, size_t *lenp,
-> +			     loff_t *ppos)
-> +{
-> +	struct static_key *key = (struct static_key *)table->data;
-> +	static int saved_val;
-> +	int val, ret;
-> +	struct ctl_table tmp = {
-> +		.data   = &val,
-> +		.maxlen = sizeof(val),
-> +		.mode   = table->mode,
-> +		.extra1 = SYSCTL_ZERO,
-> +		.extra2 = SYSCTL_ONE,
-> +	};
-> +
-> +	if (write && !capable(CAP_SYS_ADMIN))
-> +		return -EPERM;
-> +
-> +	mutex_lock(&bpf_stats_enabled_mutex);
-> +	val = saved_val;
-> +	ret = proc_dointvec_minmax(&tmp, write, buffer, lenp, ppos);
-> +	if (write && !ret && val != saved_val) {
-> +		if (val)
-> +			static_key_slow_inc(key);
-> +		else
-> +			static_key_slow_dec(key);
-> +		saved_val = val;
-> +	}
-> +	mutex_unlock(&bpf_stats_enabled_mutex);
-> +	return ret;
-> +}
+> Also, since GCC 9.1, the GCC docs say "The optimize attribute should be
+> used for debugging purposes only. It is not suitable in production
+> code."  That doesn't sound too promising.
+> 
+> So it seems like this commit should be reverted. But then we're back to
+> objtool being broken again in the RETPOLINE=n case, which means no ORC
+> coverage in this function.  (See above commit for the details)
+> 
+> Some ideas:
+> 
+> - Skip objtool checking of that func/file (at least for RETPOLINE=n) --
+>   but then it won't have ORC coverage.
+> 
+> - Get rid of the "double goto" in ___bpf_prog_run(), which simplifies it
+>   enough for objtool to understand -- but then the text explodes for
+>   RETPOLINE=y.
 
-nit: I wonder if most of the logic could have been shared with
-proc_do_static_key() here and only the mutex passed as an arg to
-the common helper?
+How that will look like?
+That could be the best option.
 
-> +#endif
-> +
->   /*
->    * /proc/sys support
->    */
-> @@ -2549,7 +2583,7 @@ static struct ctl_table kern_table[] = {
->   		.data		= &bpf_stats_enabled_key.key,
->   		.maxlen		= sizeof(bpf_stats_enabled_key),
->   		.mode		= 0644,
+> - Add -fno-gfcse to the Makefile for kernel/bpf/core.c -- but then that
+>   affects the optimization of other functions in the file.  However I
+>   don't think the impact is significant.
+> 
+> - Move ___bpf_prog_run() to its own file with the -fno-gfcse flag.  I'm
+>   thinking this could be the least bad option.  Alexei?
+
+I think it would be easier to move some of the hot path
+functions out of core.c instead.
+Like *ksym*, BPF_CALL*, bpf_jit*, bpf_prog*.
+I think resulting churn will be less.
+imo it's more important to keep git blame history for interpreter
+than for the other funcs.
+Sounds like it's a fix that needs to be sent for the next RC ?
+Please send a patch for bpf tree then.
+
+Daniel, thoughts?
