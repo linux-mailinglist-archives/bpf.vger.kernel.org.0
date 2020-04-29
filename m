@@ -2,256 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9431BD418
-	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 07:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C204B1BD447
+	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 07:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726345AbgD2FkS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Apr 2020 01:40:18 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:52996 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725861AbgD2FkS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 29 Apr 2020 01:40:18 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 03T5cBKh028655;
-        Tue, 28 Apr 2020 22:40:06 -0700
+        id S1726447AbgD2F6y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Apr 2020 01:58:54 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:39422 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725798AbgD2F6y (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 29 Apr 2020 01:58:54 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03T5uw1M004440;
+        Tue, 28 Apr 2020 22:58:42 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
  subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=1FZ3fbgcr52S/G2y1xwh8ycn/F4+pDdkTF6jyvk2Mm4=;
- b=dTbOq4vwXEpC/N/7B1Y51lPTqs5UP+GdImgnZXpylM3VA0xM/3MhIGKwKAd8Nbv0yzET
- EgAz4Q/2nswtLvdb7jWMla3CYPl6QmCnuQ5ZE60fkaDb/d2JiRLVHCW+QxNj2H2gIY4t
- KzHerRuQih9JojpqgPWclrguAm0QgltFkLA= 
+ mime-version; s=facebook; bh=wQx2YGibBA3YyHPFNBldeef1cSSNRREFKng+9FwQ6ds=;
+ b=JhvbFg53+g9EA9KjIRoIohGgD/QkTZIjc7w6l9yRy14urxgybk47zj6XRTIGKwfJl6on
+ xdok4VNfE1DNTBTaOrk3nfyzNr5+KCVdziCrdHy30s/0kj8+DzV+7Byp68OAF772UAGO
+ GKHuv9+qwYjw5JTc2cZ1UTopyyvOqaiArTQ= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 30mgvnsj0k-1
+        by mx0a-00082601.pphosted.com with ESMTP id 30pq0ddgtj-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 28 Apr 2020 22:40:06 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+        Tue, 28 Apr 2020 22:58:42 -0700
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Tue, 28 Apr 2020 22:40:05 -0700
+ 15.1.1847.3; Tue, 28 Apr 2020 22:58:41 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ijs+xJV2QtPqq36Sh6sBPVC62oEaUDwDANPqyt6IkKlUxO82TI/MKQwLQ4ghw5WzU9tCD0B24A8i0wZN0Lyj93ja00hm2abPFamYqq/pQU4MwhA0coDnYEDKh57QmQ9MyhUJyXvQ0wuqR8L87mij/0xeSO8bw2AslKZQV3Q0GZJaOMsfwyJA8ETbhocBxMmGxil5x0J1/F7tymJUaRPEHZZFQHg4fOjjA6cI16GYt/xtaYaB9O3BSD3miN4rpyGQoCs52/OnHnAiUVr+vecYrEdn5p/MpwKTcVmwMiPGH+XxSar00M9k2O0aySzWioYqwjq8z3DKzGc44OpOIIFNjw==
+ b=fo6yyM9Jtch1/xZWIryvpNwlDv1RHe8q/o3hlPUNmJv+uagxttuY87thGJJfjV7gOFDnigypJETFdEcpszb3KUwwyC7q8kKAcBquzKULgohMH0oYg49jHsPl4XVPXflckNforrWK/8Qcl60h+qkH2luY+xDuNC/bBE4U2ExS3mxOLct5Ij3IURKgk7BPE0aCyv7qWPPHP9l1Z7R49QQtv76KJa5Gzf29WMYNkpFE0HFqFNP9iutq2DmR3/9mVcl+CZrt5uCo+sU8Sx7SM6/3OuPgFFKV/xiizxZogRGJ44p1VYwjON1fjWfxpd4dTawU33tKDmRftLLdjms8VnAzuw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1FZ3fbgcr52S/G2y1xwh8ycn/F4+pDdkTF6jyvk2Mm4=;
- b=T7Z2Hc+LPIIRFj/Gnz71zN3518eJr8u75HYBWKver3B4/LdcDwNBdlJo8z4gJbelexT/xAo6Hhu1JEa3R0W+bnCHzbTES1qqfDfCX2Ce9cxNszPBWVRJHaC9Q5FgIFBMDWdSZckTHBaVtCNGwVg4yvBs732sfYpspr9Ve+sYfEYYghcU6rl3kdt8t83mqPG/k/eAiZvOn9tRHRStxEHHgtqRyHdo3HufgF78uGWJDs+Mcpa4p6fZuIIwZvBwomz7rkD4b3IYtaK+mXYCgxpQL+mCg4+hvkptPHxXYGd6S9n+fjGjPhNgE4ogo+Kc81ZlCE6ilqKFXCXO2opSeqVDPA==
+ bh=wQx2YGibBA3YyHPFNBldeef1cSSNRREFKng+9FwQ6ds=;
+ b=mbShsh0UInrKBOjB81hwccMcgzVg6URk9g9w++1F95Xo9o3awTWCWaz/unxOQ5C2+n86ZNrmoCTtBrrWgc/4CrC2POEuoh2axMOQT93nGs5DoPJh/LseqHeIyAWk8P67wkMCYytGsJrifWdEmoMnF+mbxHtBJfXCBnkXoXcvh6A3KNCCkdMZGy8EXLQETjtBStTFkqUWjYy4OG8iyIQTfsfXHtY3F9Hqqjsgo3ysz1cOtAT93XXECQ+hijMa27wkYtfWL9DRziuYB8a7vxrcrpX1W2bxmNb49c2nL6Rru/6NcTDt8OSbHxIuC0ITbXAZ6/EHtmvBUfmQB1Zb+POeHQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1FZ3fbgcr52S/G2y1xwh8ycn/F4+pDdkTF6jyvk2Mm4=;
- b=eo1bkDwDcPRXyjFDWH1nBjVshVIGfgYsUDoO+27dedB1+cEIBWP5zb4EfSrXLtBo2rzonixOluCuVTawnmGqvdGrouD8OobRFn5lU0VSNHH+7cXe7h7DN425koPauATEsNlRi9PXxYDxtPaRD/X+qAEu2iw2fhNM2R+gqFi5rq8=
+ bh=wQx2YGibBA3YyHPFNBldeef1cSSNRREFKng+9FwQ6ds=;
+ b=CioTs3mXuU+qFT3Cn5E9CZPzv0JPjqktApplMBgeVZAHVTlc1oV89FbDv/m280J6I+3rMcu0ZzTphOIngB3Qwb4yRxp4o3QntRNZpW2zBSRdxVKN3fxyua9gVedUOOHGEtsWfYVrHxzZXO/PLBfIsiVv1YiOpquLP3hl30x1Y+U=
 Received: from MW3PR15MB4044.namprd15.prod.outlook.com (2603:10b6:303:4b::24)
- by MW3PR15MB3818.namprd15.prod.outlook.com (2603:10b6:303:47::24) with
+ by MW3PR15MB4009.namprd15.prod.outlook.com (2603:10b6:303:51::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.22; Wed, 29 Apr
- 2020 05:39:50 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Wed, 29 Apr
+ 2020 05:58:40 +0000
 Received: from MW3PR15MB4044.namprd15.prod.outlook.com
  ([fe80::e5c5:aeff:ca99:aae0]) by MW3PR15MB4044.namprd15.prod.outlook.com
  ([fe80::e5c5:aeff:ca99:aae0%5]) with mapi id 15.20.2937.026; Wed, 29 Apr 2020
- 05:39:50 +0000
-Date:   Tue, 28 Apr 2020 22:39:48 -0700
+ 05:58:40 +0000
+Date:   Tue, 28 Apr 2020 22:58:38 -0700
 From:   Martin KaFai Lau <kafai@fb.com>
 To:     Yonghong Song <yhs@fb.com>
 CC:     Andrii Nakryiko <andriin@fb.com>, <bpf@vger.kernel.org>,
         <netdev@vger.kernel.org>, Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next v1 07/19] bpf: create anonymous bpf iterator
-Message-ID: <20200429053948.gmyxmh57t7v6nayg@kafai-mbp>
+Subject: Re: [PATCH bpf-next v1 06/19] bpf: support bpf tracing/iter programs
+ for BPF_LINK_UPDATE
+Message-ID: <20200429055838.feupa5leawbduciy@kafai-mbp>
 References: <20200427201235.2994549-1-yhs@fb.com>
- <20200427201242.2995160-1-yhs@fb.com>
+ <20200427201241.2995075-1-yhs@fb.com>
+ <20200429013239.apxevcpdc3kpqlrq@kafai-mbp>
+ <f63cd9f5-a39e-1fc8-bba3-53ebffef9cc5@fb.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200427201242.2995160-1-yhs@fb.com>
+In-Reply-To: <f63cd9f5-a39e-1fc8-bba3-53ebffef9cc5@fb.com>
 User-Agent: NeoMutt/20180716
-X-ClientProxiedBy: MWHPR15CA0064.namprd15.prod.outlook.com
- (2603:10b6:301:4c::26) To MW3PR15MB4044.namprd15.prod.outlook.com
+X-ClientProxiedBy: MWHPR08CA0056.namprd08.prod.outlook.com
+ (2603:10b6:300:c0::30) To MW3PR15MB4044.namprd15.prod.outlook.com
  (2603:10b6:303:4b::24)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp (2620:10d:c090:400::5:1f77) by MWHPR15CA0064.namprd15.prod.outlook.com (2603:10b6:301:4c::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20 via Frontend Transport; Wed, 29 Apr 2020 05:39:49 +0000
+Received: from kafai-mbp (2620:10d:c090:400::5:1f77) by MWHPR08CA0056.namprd08.prod.outlook.com (2603:10b6:300:c0::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Wed, 29 Apr 2020 05:58:39 +0000
 X-Originating-IP: [2620:10d:c090:400::5:1f77]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4ea05681-a2ed-4d88-09af-08d7ebffbbf2
-X-MS-TrafficTypeDiagnostic: MW3PR15MB3818:
+X-MS-Office365-Filtering-Correlation-Id: 5c825aa5-4280-4d91-9a42-08d7ec025dbe
+X-MS-TrafficTypeDiagnostic: MW3PR15MB4009:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW3PR15MB38187F875C0DCC9034EF4688D5AD0@MW3PR15MB3818.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <MW3PR15MB40098D57FB95ABEBE439E823D5AD0@MW3PR15MB4009.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-Forefront-PRVS: 03883BD916
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR15MB4044.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39850400004)(396003)(366004)(136003)(346002)(376002)(186003)(16526019)(52116002)(66556008)(66946007)(66476007)(6496006)(54906003)(316002)(8676002)(8936002)(9686003)(4326008)(55016002)(6862004)(478600001)(86362001)(33716001)(6636002)(2906002)(5660300002)(1076003);DIR:OUT;SFP:1102;
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR15MB4044.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(396003)(136003)(346002)(376002)(39860400002)(66556008)(66476007)(66946007)(55016002)(4326008)(1076003)(5660300002)(9686003)(6862004)(6636002)(33716001)(8676002)(52116002)(86362001)(16526019)(8936002)(186003)(478600001)(54906003)(2906002)(316002)(53546011)(6496006);DIR:OUT;SFP:1102;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: v5VttMsg0yjOSP8t6asMFzWjv4wXM4gnsBEPUru8JARPJ3u9uOAUJ8s7npxeIZCh7nMdvFRwj1IMe85yuLKIAXMucOaxdYSAq710BN+l7SkpFMQ7hbXaZlggxzzQqWJAFYzItzj7SYX0XiyTPFyCMxGKAGEHTiBBo4aGLG3rVpEGZN2Y7sT132kciW3nCmavNuHn9JlzwPVXYwMnvD+cRL2rFUrEjKm7Vm+11eYLGCZELZfPPexowo7FaWR/HoY2ZFIggtqP9BfSOq3OqhyCB9QPB0LyDSJRqaW2bDgLgmvUjBKsCp3LnLW3d1z5LNH4PuiKPENkCTAJ98WvW8Ui7GE8eSgxBHY0EHvYfNEg3iS2dGr/1mkJ0kIJEIXTn7niQGNFgWBYVh6/+OXBTrS7KnYbGn6lNyNIibJtn8mQhMgfYKXZOCdsenP8qYlt90gL
-X-MS-Exchange-AntiSpam-MessageData: Ir617xH2Cy1WO+JOVjUNm9nH5RDDdL8PSKxTG+Jj00DKbkjNOeya3+SREmdBcyLCYOa5sGdmymfFxW6pV/1lSlfINP3+/ZNHBooxApq0708PhszhJ5LpDiO9jVP+6bXObfkcge+qIknzUwDgMfrtcN0H2Vep7VbjasJRebR9Ljx9SV595TbUJpk7GlVP57IFbbvQqaaKrBjDqaemM8SskhM7z0qtvSid3r/iApdJHegEjOpYMIzD76KhyIqBfFjX2PU5N7j47CpC+Sh+x3sQViwwkF5hiM7u8gZM5ZDUdHS+UeNT7OA7ufCRS+Q58dEyF2c0SzBe2+e+lnITPJGFGOA689iMZ/tKFB1mL583PbMEDnMpPZIuYxuioyKLFch/2ltz0SSQ4iKEM0jnG4s0x6DgUx4GSpZeCBF104i7c0O6pzI5o0fvekcRpvyurzoRxk+88Wf03HuD0el1fuV+Anxh6tcn0fJdibTnNzWpa239k96Be79KhwmBZew7N1Rd6bMTu2W3GPIVv5ykFk5RY6nq6kniKMkaP/gELzw4s7wmP1rk8dpXF7XYcpAmQUlL7qO5es36UtklGLOHMMdnbDzLjIDBUuS2UZCHjNmpV55EolJosxcWkU8u5EkrdTHgLkqQMwsVldrY2TKDaVMjAik2j5n10I2uCGGcvPRdYqy0f/CWu2yEvGmf/+MeTBYVW0yjS634qhlHa0MEJtdxw5dU0TldRFc0Gaej/0k6ddsTMTd9k8BnJALDWAYM2mcUvkd4Ak0L7ag+bDa680lLju0+BuuCarLpWXOrshzudVKdARJbpNKmZLFiqP69asdJ0JHgtQI5ikTS6D1Bgx/SIg==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ea05681-a2ed-4d88-09af-08d7ebffbbf2
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2020 05:39:50.3104
+X-Microsoft-Antispam-Message-Info: qxmEAKy7uRJb2tJEQP8dBPbebmLQXycl7qjE34rWCvC1djiOHOo+cJpGyDJG0HIdUmo2p/Qq4aJV4jLE7CwZDDlO8CoyR+GMzIo5dc18r94DpG9z8R5n+5nGsh9WNup40aZ1vTZPwIwY2ONX7cB9HfwJDRfX8PGFEHVGs8d8pu20pxkNYsMFiXf8bsWP/UYmJTRbSlS0bAoYAAOZAbhFBudLrDshzO+nWbMCWuqKlwkpG3+//VmBBCGGbQCBYXLkJcB+xMXdws5FO3UVuOy+31ebW8n3RNrt87dHxvVxeEDF/kdIeKPwxDSahEHD2TW7WFvLxowXfXfzBlWgH5RLX/nhnzZJSUusTAllLBmTULQj30MPbGuhGYos6QudjGcT65T7DLZ/zx/MBl9fzZFjKpbEJKklY/MqtbiU+CZ0FF4oDI8Iv0bmDqAQczNlMBse
+X-MS-Exchange-AntiSpam-MessageData: MN3sMmBko/vuSevdwghViMvXxRHxukQZ9ES0wQfqrhTGzOkvSQExnjgEFzbh8A6RuXv20dd1rAVygiXG4DzcyXI2gH+43rq6xoJGeGkqnDOgzGijlf9BW06KMb5bGTjNu+zEOyY6vFiNUAC7N4/0DRL+7W3RfgUG8MGtRV7LIGu6m22KHZv7SdY0zvtuP1VXA7AmDKKePTCp0tH9IysVAu/n3LuZn5t9I2jBGO4njRpq3asJTGNhbesdGmZrVwekkWzqwOhhXEliWKCiVqz9C7gOzZjTsBOmxhbVGr5mYelu2bU/B8VULsm8GiyYea1GG+CSvv60hJn/2Wxv1M5oDu1jUAPXtea1Kj66vmsvJDqHX7Ferrp+3R9dxO8hkEbjCX4q6Zc+VHMlsfHaqKXVXEYNrEzHDrH43E7bdStlOrCkRuoYwNqj26BPnUbFiWqqO6aUH08b9LCZzzkRBIMk2WwXeW0QuxewKmrEvAFg/XQj8ylj3owwmlOb+ZXPlNXWM62Rwlztreo0q2Bi9NSsDeglhqnhrXAmz9mCH5YtxJZBkXwssxZTr5E3GNZfsivSUj8YB6ELj1ZHhmlBaWdxrMH1yA+pVzRoVG8Ool8VSmDxf2Xas7y+cQLZpWXnvX+6NlVzE/6xAzXCiADX3mOm36EIhkXOkP7RsNtBx0EmKw8fL3cRmpc9cyYSrY1ADdkCoWkAa40tyQqsm6zUSG8g8Pc7UT1CTYmPljH3AH2KrosCko1a0lapXwtSrGdQZvSsTKd77jmUcYYs2Q5N9KS8/PjBMy2tAGLmhGdkVZ47RoLoql05dc0kdCJVWs53fancNNUSi9nh8vYrKLwEzjdQTw==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5c825aa5-4280-4d91-9a42-08d7ec025dbe
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2020 05:58:40.4848
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6nLW1nMCvdIBEMprEn5VN11UkWG/EUeUHyFg5sfM6TmKxWFfKBUC9yjS7LzjcJPQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3818
+X-MS-Exchange-CrossTenant-UserPrincipalName: jaJ+UNFp8P6t7JilcjZBAfbPCoXg0mTPodnAgHMhUSCXM66BS/5d0sXVMtPMehzU
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB4009
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
  definitions=2020-04-29_01:2020-04-28,2020-04-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 bulkscore=0
- malwarescore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
- priorityscore=1501 impostorscore=0 mlxlogscore=999 clxscore=1015
- suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2004290044
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ priorityscore=1501 clxscore=1015 adultscore=0 lowpriorityscore=0
+ impostorscore=0 malwarescore=0 bulkscore=0 spamscore=0 mlxscore=0
+ mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2003020000 definitions=main-2004290047
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 01:12:42PM -0700, Yonghong Song wrote:
-> A new bpf command BPF_ITER_CREATE is added.
+On Tue, Apr 28, 2020 at 10:04:54PM -0700, Yonghong Song wrote:
 > 
-> The anonymous bpf iterator is seq_file based.
-> The seq_file private data are referenced by targets.
-> The bpf_iter infrastructure allocated additional space
-> at seq_file->private after the space used by targets
-> to store some meta data, e.g.,
->   prog:       prog to run
->   session_id: an unique id for each opened seq_file
->   seq_num:    how many times bpf programs are queried in this session
->   has_last:   indicate whether or not bpf_prog has been called after
->               all valid objects have been processed
 > 
-> A map between file and prog/link is established to help
-> fops->release(). When fops->release() is called, just based on
-> inode and file, bpf program cannot be located since target
-> seq_priv_size not available. This map helps retrieve the prog
-> whose reference count needs to be decremented.
-How about putting "struct extra_priv_data" at the beginning of
-the seq_file's private store instead since its size is known.
-seq->private can point to an aligned byte after
-+sizeof(struct extra_priv_data).
+> On 4/28/20 6:32 PM, Martin KaFai Lau wrote:
+> > On Mon, Apr 27, 2020 at 01:12:41PM -0700, Yonghong Song wrote:
+> > > Added BPF_LINK_UPDATE support for tracing/iter programs.
+> > > This way, a file based bpf iterator, which holds a reference
+> > > to the link, can have its bpf program updated without
+> > > creating new files.
+> > > 
 
 [ ... ]
 
-> diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
-> index fc1ce5ee5c3f..1f4e778d1814 100644
-> --- a/kernel/bpf/bpf_iter.c
-> +++ b/kernel/bpf/bpf_iter.c
+> > > --- a/kernel/bpf/bpf_iter.c
+> > > +++ b/kernel/bpf/bpf_iter.c
 
 [ ... ]
 
-> @@ -26,6 +40,50 @@ static bool bpf_iter_inited = false;
->  /* protect bpf_iter_link.link->prog upddate */
->  static struct mutex bpf_iter_mutex;
->  
-> +/* Since at anon seq_file release function, the prog cannot
-> + * be retrieved since target seq_priv_size is not available.
-> + * Keep a list of <anon_file, prog> mapping, so that
-> + * at file release stage, the prog can be released properly.
-> + */
-> +static struct list_head anon_iter_info;
-> +static struct mutex anon_iter_info_mutex;
-> +
-> +/* incremented on every opened seq_file */
-> +static atomic64_t session_id;
-> +
-> +static u32 get_total_priv_dsize(u32 old_size)
-> +{
-> +	return roundup(old_size, 8) + sizeof(struct extra_priv_data);
-> +}
-> +
-> +static void *get_extra_priv_dptr(void *old_ptr, u32 old_size)
-> +{
-> +	return old_ptr + roundup(old_size, 8);
-> +}
-> +
-> +static int anon_iter_release(struct inode *inode, struct file *file)
-> +{
-> +	struct anon_file_prog_assoc *finfo;
-> +
-> +	mutex_lock(&anon_iter_info_mutex);
-> +	list_for_each_entry(finfo, &anon_iter_info, list) {
-> +		if (finfo->file == file) {
-> +			bpf_prog_put(finfo->prog);
-> +			list_del(&finfo->list);
-> +			kfree(finfo);
-> +			break;
-> +		}
-> +	}
-> +	mutex_unlock(&anon_iter_info_mutex);
-> +
-> +	return seq_release_private(inode, file);
-> +}
-> +
-> +static const struct file_operations anon_bpf_iter_fops = {
-> +	.read		= seq_read,
-> +	.release	= anon_iter_release,
-> +};
-> +
->  int bpf_iter_reg_target(struct bpf_iter_reg *reg_info)
->  {
->  	struct bpf_iter_target_info *tinfo;
+> > > @@ -121,3 +125,28 @@ int bpf_iter_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+> > >   		kfree(link);
+> > >   	return err;
+> > >   }
+> > > +
+> > > +int bpf_iter_link_replace(struct bpf_link *link, struct bpf_prog *old_prog,
+> > > +			  struct bpf_prog *new_prog)
+> > > +{
+> > > +	int ret = 0;
+> > > +
+> > > +	mutex_lock(&bpf_iter_mutex);
+> > > +	if (old_prog && link->prog != old_prog) {
+hmm....
 
-[ ... ]
+If I read this function correctly,
+old_prog could be NULL here and it is only needed during BPF_F_REPLACE
+to ensure it is replacing a particular old_prog, no?
 
-> @@ -150,3 +223,90 @@ int bpf_iter_link_replace(struct bpf_link *link, struct bpf_prog *old_prog,
->  	mutex_unlock(&bpf_iter_mutex);
->  	return ret;
->  }
-> +
-> +static void init_seq_file(void *priv_data, struct bpf_iter_target_info *tinfo,
-> +			  struct bpf_prog *prog)
-> +{
-> +	struct extra_priv_data *extra_data;
-> +
-> +	if (tinfo->target_feature & BPF_DUMP_SEQ_NET_PRIVATE)
-> +		set_seq_net_private((struct seq_net_private *)priv_data,
-> +				    current->nsproxy->net_ns);
-> +
-> +	extra_data = get_extra_priv_dptr(priv_data, tinfo->seq_priv_size);
-> +	extra_data->session_id = atomic64_add_return(1, &session_id);
-> +	extra_data->prog = prog;
-> +	extra_data->seq_num = 0;
-> +	extra_data->has_last = false;
-> +}
-> +
-> +static int prepare_seq_file(struct file *file, struct bpf_iter_link *link)
-> +{
-> +	struct anon_file_prog_assoc *finfo;
-> +	struct bpf_iter_target_info *tinfo;
-> +	struct bpf_prog *prog;
-> +	u32 total_priv_dsize;
-> +	void *priv_data;
-> +
-> +	finfo = kmalloc(sizeof(*finfo), GFP_USER | __GFP_NOWARN);
-> +	if (!finfo)
-> +		return -ENOMEM;
-> +
-> +	mutex_lock(&bpf_iter_mutex);
-> +	prog = link->link.prog;
-> +	bpf_prog_inc(prog);
-> +	mutex_unlock(&bpf_iter_mutex);
-> +
-> +	tinfo = link->tinfo;
-> +	total_priv_dsize = get_total_priv_dsize(tinfo->seq_priv_size);
-> +	priv_data = __seq_open_private(file, tinfo->seq_ops, total_priv_dsize);
-> +	if (!priv_data) {
-> +		bpf_prog_sub(prog, 1);
-Could prog's refcnt go 0 here?  If yes, bpf_prog_put() should be used.
 
-> +		kfree(finfo);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	init_seq_file(priv_data, tinfo, prog);
-> +
-> +	finfo->file = file;
-> +	finfo->prog = prog;
-> +
-> +	mutex_lock(&anon_iter_info_mutex);
-> +	list_add(&finfo->list, &anon_iter_info);
-> +	mutex_unlock(&anon_iter_info_mutex);
-> +	return 0;
-> +}
-> +
+> > > +		ret = -EPERM;
+> > > +		goto out_unlock;
+> > > +	}
+> > > +
+> > > +	if (link->prog->type != new_prog->type ||
+> > > +	    link->prog->expected_attach_type != new_prog->expected_attach_type ||
+> > > +	    strcmp(link->prog->aux->attach_func_name, new_prog->aux->attach_func_name)) {
+> > Can attach_btf_id be compared instead of strcmp()?
+> 
+> Yes, we can do it.
+> 
+> > 
+> > > +		ret = -EINVAL;
+> > > +		goto out_unlock;
+> > > +	}
+> > > +
+> > > +	link->prog = new_prog;
+> > Does the old link->prog need a bpf_prog_put()?
+> 
+> The old_prog is replaced in caller link_update (syscall.c):
+
+> static int link_update(union bpf_attr *attr)
+> {
+>         struct bpf_prog *old_prog = NULL, *new_prog;
+>         struct bpf_link *link;
+>         u32 flags;
+>         int ret;
+> ...
+>         if (link->ops == &bpf_iter_link_lops) {
+>                 ret = bpf_iter_link_replace(link, old_prog, new_prog);
+>                 goto out_put_progs;
+>         }
+>         ret = -EINVAL;
+> 
+> out_put_progs:
+>         if (old_prog)
+>                 bpf_prog_put(old_prog);
+The old_prog in link_update() took a separate refcnt from bpf_prog_get().
+I don't see how it is related to the existing refcnt held in the link->prog.
+
+or I am missing something in BPF_F_REPLACE?  
