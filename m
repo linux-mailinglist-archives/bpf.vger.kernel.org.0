@@ -2,218 +2,227 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3881BD513
-	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 08:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD151BD530
+	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 08:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbgD2Gvy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Apr 2020 02:51:54 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:31206 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726274AbgD2Gvy (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 29 Apr 2020 02:51:54 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03T6otmQ019563;
-        Tue, 28 Apr 2020 23:51:41 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=JoS6OjNhFzXbM4tPWhCIplYB56yYZwvUQ/pK7Y9+s30=;
- b=RJEvJbBC8HGEXlCgLyYm8DYpwQ11rWHTlvmvHO/ZqwKcgwcMISLw6TDhDaVayneqSOkn
- 4AOIiPlKQiJYF9rWwUisi5JnUyZOlXhWa5FNWYFIFyY27b9xOh2PYemAtrcngGD65nQE
- 27w+dQVf8XzAoe0D467oXne2n8VpjCgIibg= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 30q4f88286-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 28 Apr 2020 23:51:41 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Tue, 28 Apr 2020 23:51:40 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HX3Awl3Ss0vgn+TphzrvlV0BYe5GcBUYNUdB0nw5pQx5YpZ6dZ7rewHTE+e56RkkyC++aMU3j1UkakBeA+XUjwkJLS0MkVSY9ZAiBYGK5rzVSIHdilaIMSTDcyrsqoX+LYijHS130C6JUmAnKRALSeFLgWIZJEc6b1+XJtufC01Jk2sNedOTfgRtzNPGZyUEp8Ufx9BzYKqe+NCRjc7i3DYh0KWm5QeT6D6WSPYTfAubLFdE4tx/OlUeC43O3J6wMaT2S+SClCGDmZ9/P8pZRxw+pfsuIJvEGO7Pm1TQlKI9mFbPlKY37Fw51huQvyOoNvNur+Yjg4AotS6PZw4Eag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JoS6OjNhFzXbM4tPWhCIplYB56yYZwvUQ/pK7Y9+s30=;
- b=MtqD60qPJfEq7BE70ojd0ojM89bu2R5BN5TeWeh6K74N+LZ2RUHhfFC+EEBK0Q+lqEzUjUMxqcRhsFQ2ENfSgFIJNbjRmsx33Axp4KUiOrg4FpiLPMdMejuHu5Vg7+A2hE+bSYg56RQaGS7kIIYeHUccsXy9FjIi6Z1k0oE401DEIvmZ8i7L6g1hu1ZdmeMSCSa/G8ysejnGMJX2LCZHt5kBRekxVJdG5fUy7OOBvRyJyfgD2xC/pHtGFatgI5PH/K0ybPa8FzHAcHuN67inMV1VsRu5ogIoAZ1zuHaWO9sEr71ZrPk00joIwV6R7/DJK55GbA97f3SLQp0Q05Ma1w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JoS6OjNhFzXbM4tPWhCIplYB56yYZwvUQ/pK7Y9+s30=;
- b=NzPQJ21/b31vqtoNOQ5ueaNtIQSIfCa7fJVVbwG69cPoBfISq9vKSOy8yv5CvNMR4up5SlsgT9kiJh8OLFJkc9D1B3fQ+/iRtRCQkc+w0bSp36xV6RtU4PSQYxdu9Iq1mx7mqLEN8KYvMK97GeTUCpazr9NMK/S5m2Kp+NpvfwY=
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2373.namprd15.prod.outlook.com (2603:10b6:a02:92::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Wed, 29 Apr
- 2020 06:51:36 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8988:aa27:5d70:6923]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8988:aa27:5d70:6923%5]) with mapi id 15.20.2937.023; Wed, 29 Apr 2020
- 06:51:36 +0000
-Subject: Re: [PATCH bpf-next v1 03/19] bpf: add bpf_map iterator
-To:     Martin KaFai Lau <kafai@fb.com>
-CC:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        id S1726355AbgD2G40 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Apr 2020 02:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726345AbgD2G4Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Apr 2020 02:56:25 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E39C03C1AD;
+        Tue, 28 Apr 2020 23:56:25 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id n143so970978qkn.8;
+        Tue, 28 Apr 2020 23:56:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Lse1PmF8wwV6C/VCGw2oagFOZa7yvyxlL+x7mvbMGMA=;
+        b=dk8XNT3KVAgKroUsD74emmO97xjS7kLxJI8dlj+nDKJ6k7vRbQGiqkiqJnLfWFtw7d
+         vSTMBkdySgjJhYGUs7neYVW8kOjod/YADnhnfqHZ3NIh9EotbSUAnnaG6N85GA4An+VO
+         mHTOcwJz5Ar8xnvU5tbop7lELvjchCiHCoa9rt5mJ0ltireRMiyNN6T9ai+afDHgbuml
+         8ne8/vCKrO5UvnQYuRAXrR4BCyYkfwlkkuXtBd/+ryKVpulB8RjOUx8gVwME5fGdatHV
+         PqSkVRLK5d7rWSXw4WzY8FjdkKpB4nRLClbG8mIjDVceD8HIxpd+k5ze4ACQi4VX6p/X
+         AtJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Lse1PmF8wwV6C/VCGw2oagFOZa7yvyxlL+x7mvbMGMA=;
+        b=T85OI12uQEzOrsQbDAJqUjcSBg1YEjcAdMG34Kk9lL4vC/wFXrGHZrhS7XvGBoxJp9
+         cpFSuMQfbePySzFE6N+hS+HrCzgnAglZvVmokidP1JU801KjQ46+8aRJkCK44+i6PMTs
+         LZg08DeT7gzRSadqZBhhrNjkAkdhhuyO8lqvtUYMzo2bBb2Js3f/c/2jRSpguBTW4eOp
+         5GMswC3aIJlogDqyB2kJ2qqoGKl43ph6rR0UduK8IuIAJamtsjKohaa8db/4nmJpEExd
+         370M9yRqa3lSb8X1ItNEgQOQLqw+Lwo6xN27Ea4iTSHSZJxrGg/V5jR7ienuqrNj1FzW
+         RpBQ==
+X-Gm-Message-State: AGi0PubBMey93C1TenM0l+AONiv6/2Ng+uzF+cLTCTUrXo8sGkDBvzMo
+        RS/Dtoci8iyRTxGppGUGHqoDyc4BAPs4or6OiCugwMCGcns=
+X-Google-Smtp-Source: APiQypK/ZmN+wD+HI3WFQ/bYBd/YF14F/gHlf9WO0viFodQ3xZ1sSfxNXGthoe3cL6eV2R0H2Xz3fGoDMMniD0dGxfA=
+X-Received: by 2002:a37:787:: with SMTP id 129mr30960891qkh.92.1588143384406;
+ Tue, 28 Apr 2020 23:56:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200427201235.2994549-1-yhs@fb.com> <20200427201242.2995160-1-yhs@fb.com>
+In-Reply-To: <20200427201242.2995160-1-yhs@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 28 Apr 2020 23:56:13 -0700
+Message-ID: <CAEf4BzYtxOrzSW6Yy+0ABbm0Q71dkZTGDOcGCgHCVT=4ty5k1g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 07/19] bpf: create anonymous bpf iterator
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
-References: <20200427201235.2994549-1-yhs@fb.com>
- <20200427201237.2994794-1-yhs@fb.com>
- <20200429003738.pv4flhdaxpg66wiv@kafai-mbp>
- <3df31c9a-2df7-d76a-5e54-b2cd48692883@fb.com>
- <a5255338-94e8-3f4b-518e-e7f7146f69f2@fb.com>
- <65a83b48-3965-5ae9-fafd-3e8836b03d2c@fb.com>
- <7f15274d-46dd-f43f-575e-26a40032f900@fb.com>
- <CAEf4BzaCVZem4O9eR9gBTO5c+PHy5zE8BdLD2Aa-PCLHC4ywRg@mail.gmail.com>
- <401b5bd2-dc43-4465-1232-34428a1b3e4e@fb.com>
- <20200429063448.fwqubjdz72uikpga@kafai-mbp>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <a0e60713-edfa-9363-c75a-0e8977612858@fb.com>
-Date:   Tue, 28 Apr 2020 23:51:33 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
-In-Reply-To: <20200429063448.fwqubjdz72uikpga@kafai-mbp>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWHPR15CA0070.namprd15.prod.outlook.com
- (2603:10b6:301:4c::32) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from macbook-pro-52.local.dhcp.thefacebook.com (2620:10d:c090:400::5:e9ab) by MWHPR15CA0070.namprd15.prod.outlook.com (2603:10b6:301:4c::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.19 via Frontend Transport; Wed, 29 Apr 2020 06:51:35 +0000
-X-Originating-IP: [2620:10d:c090:400::5:e9ab]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a990611c-c9ec-4967-d9ea-08d7ec09c2b2
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2373:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2373F016780D2E9763754D72D3AD0@BYAPR15MB2373.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-Forefront-PRVS: 03883BD916
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(136003)(39860400002)(366004)(376002)(396003)(186003)(16526019)(31686004)(6862004)(478600001)(66476007)(66556008)(8936002)(36756003)(5660300002)(52116002)(66946007)(8676002)(6486002)(53546011)(86362001)(6512007)(6506007)(6636002)(2616005)(2906002)(31696002)(54906003)(316002)(37006003)(4326008);DIR:OUT;SFP:1102;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KclXZ8FlsA015CP769yNmgoerRl3y7TD4NTo0VxNGA85piek3RJIy6M+IdSuUs+8u0LZce5w1BeOb6Q5HPG2m75vGJlreJUzbUUcTqA1QVxW1IjDyl6OrwGsOLTebXp0DbDHMonjogGHHfhJ8Gz8rC6uxci7jR1G60T3JRDsVKe0K/FRBxdmiHTmWTwW72MvcQWm1yTG83GPtKP33x5ShSA4LLSBtIxsKSe/G+Aj39q73BPu9u3oh9NvYoX4nlY0YNAV+siVhrpolG949VB9p7u7nDsLCyfE6XI1jGnp3fQolxxFKvJdzwyESnj/jHzqXTwlOfc+VN60cRWDgP8+snmH7ppmqYRQa82oNoYUW5hasagMeHuP+helIEpCgH1Be/uuTj4q86mWE3Y66H0th3LfGoJUbQw5AU0C8BdWBLdTjXjXwvUjhPJ3FVH201nl
-X-MS-Exchange-AntiSpam-MessageData: 534ERJdo0nmkpLBe85+UDaT0FdBjChAigvOLPcNCs02JvBdKnn68hXxVUItBL5c8CuLxExkDJtkUCWJp2LIfYEoM7nXl/wqvt1LrbkLocad0Y0XIQo+qltaib9HtlDDo7lDL7aZOBYJg9TKfU1XJbQTp+I5S/jEDEKHMUWNFKN7S40SEPYSfyIUxT7+aGT3V0YhfElaEAQfG2HEJ91aYHfYHaV1BE5cn0kkVqD1CejS8TnppJ6kjjr+0NduVNwzfXI8dZjWfTQQtfqp8uqmtbk5AYkS8qDCBDRHc40KJcY9eCV2wB2LAdUuRiBPpt989V8lqWHzkwg4ECZirD3qxbPK/he3feImUkOk5w8VJ6wdfsEmRXYzXB1OPovQM9Hio4UOpfW7HfajY4pJTbaptePLyaqI9G4agEmO3wDOiEFBG43t1FQftkha8QR2qdnbBf/AKMFrgTTFO1adNh550aocKILge+aNKiS/MIOVIhLc02+lYyt+BD39HPtMThorqbkclE8/nacZ8BdBYX9+jOG2ovooT4j+XxnxeTw7H5gRPDAHV3gwXG/NTm+pJh4j5YS51X2FdO559Ai84kkDltTUVpr4F8/fAqq6OFbdeWgiVFHi93ez9BrIQrqgr6R9wDnBWEJREc2GbxwqcIPBQWa1NhWMwD4aCvtqr3Z3KkWdTCSheDgacUKXpPtnaw0UXLpIKO2ARYj4+M0KPf38ovcmMO5vjaenGxtqnd8xSC34b8I5U+nyNTiIzXw0cY8s49CFzU9GVBnoUh2nKva93pfyFWULHsU2DvuC+GZcZJVPwpwFyMGzt4qdaYK5TswXt49DjYgAXYq4o+yxOBz3tFQ==
-X-MS-Exchange-CrossTenant-Network-Message-Id: a990611c-c9ec-4967-d9ea-08d7ec09c2b2
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2020 06:51:36.2515
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zfV+ETDoeHQKcJ+u0y0fo7ySOlL3rl9hVd6ti6UDzIjizRq2iPNY9/RfDmB1yylp
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2373
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-29_02:2020-04-28,2020-04-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- mlxscore=0 lowpriorityscore=0 adultscore=0 bulkscore=0 clxscore=1015
- priorityscore=1501 suspectscore=0 phishscore=0 spamscore=0 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004290055
-X-FB-Internal: deliver
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, Apr 27, 2020 at 1:19 PM Yonghong Song <yhs@fb.com> wrote:
+>
+> A new bpf command BPF_ITER_CREATE is added.
+>
+> The anonymous bpf iterator is seq_file based.
+> The seq_file private data are referenced by targets.
+> The bpf_iter infrastructure allocated additional space
+> at seq_file->private after the space used by targets
+> to store some meta data, e.g.,
+>   prog:       prog to run
+>   session_id: an unique id for each opened seq_file
+>   seq_num:    how many times bpf programs are queried in this session
+>   has_last:   indicate whether or not bpf_prog has been called after
+>               all valid objects have been processed
+>
+> A map between file and prog/link is established to help
+> fops->release(). When fops->release() is called, just based on
+> inode and file, bpf program cannot be located since target
+> seq_priv_size not available. This map helps retrieve the prog
+> whose reference count needs to be decremented.
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  include/linux/bpf.h            |   3 +
+>  include/uapi/linux/bpf.h       |   6 ++
+>  kernel/bpf/bpf_iter.c          | 162 ++++++++++++++++++++++++++++++++-
+>  kernel/bpf/syscall.c           |  27 ++++++
+>  tools/include/uapi/linux/bpf.h |   6 ++
+>  5 files changed, 203 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 4fc39d9b5cd0..0f0cafc65a04 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1112,6 +1112,8 @@ struct bpf_link *bpf_link_get_from_fd(u32 ufd);
+>  int bpf_obj_pin_user(u32 ufd, const char __user *pathname);
+>  int bpf_obj_get_user(const char __user *pathname, int flags);
+>
+> +#define BPF_DUMP_SEQ_NET_PRIVATE       BIT(0)
+> +
+>  struct bpf_iter_reg {
+>         const char *target;
+>         const char *target_func_name;
+> @@ -1133,6 +1135,7 @@ int bpf_iter_run_prog(struct bpf_prog *prog, void *ctx);
+>  int bpf_iter_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
+>  int bpf_iter_link_replace(struct bpf_link *link, struct bpf_prog *old_prog,
+>                           struct bpf_prog *new_prog);
+> +int bpf_iter_new_fd(struct bpf_link *link);
+>
+>  int bpf_percpu_hash_copy(struct bpf_map *map, void *key, void *value);
+>  int bpf_percpu_array_copy(struct bpf_map *map, void *key, void *value);
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index f39b9fec37ab..576651110d16 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -113,6 +113,7 @@ enum bpf_cmd {
+>         BPF_MAP_DELETE_BATCH,
+>         BPF_LINK_CREATE,
+>         BPF_LINK_UPDATE,
+> +       BPF_ITER_CREATE,
+>  };
+>
+>  enum bpf_map_type {
+> @@ -590,6 +591,11 @@ union bpf_attr {
+>                 __u32           old_prog_fd;
+>         } link_update;
+>
+> +       struct { /* struct used by BPF_ITER_CREATE command */
+> +               __u32           link_fd;
+> +               __u32           flags;
+> +       } iter_create;
+> +
+>  } __attribute__((aligned(8)));
+>
+>  /* The description below is an attempt at providing documentation to eBPF
+> diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
+> index fc1ce5ee5c3f..1f4e778d1814 100644
+> --- a/kernel/bpf/bpf_iter.c
+> +++ b/kernel/bpf/bpf_iter.c
+> @@ -2,6 +2,7 @@
+>  /* Copyright (c) 2020 Facebook */
+>
+>  #include <linux/fs.h>
+> +#include <linux/anon_inodes.h>
+>  #include <linux/filter.h>
+>  #include <linux/bpf.h>
+>
+> @@ -19,6 +20,19 @@ struct bpf_iter_link {
+>         struct bpf_iter_target_info *tinfo;
+>  };
+>
+> +struct extra_priv_data {
+> +       struct bpf_prog *prog;
+> +       u64 session_id;
+> +       u64 seq_num;
+> +       bool has_last;
+> +};
+> +
+> +struct anon_file_prog_assoc {
+> +       struct list_head list;
+> +       struct file *file;
+> +       struct bpf_prog *prog;
+> +};
+> +
+>  static struct list_head targets;
+>  static struct mutex targets_mutex;
+>  static bool bpf_iter_inited = false;
+> @@ -26,6 +40,50 @@ static bool bpf_iter_inited = false;
+>  /* protect bpf_iter_link.link->prog upddate */
+>  static struct mutex bpf_iter_mutex;
+>
+> +/* Since at anon seq_file release function, the prog cannot
+> + * be retrieved since target seq_priv_size is not available.
+> + * Keep a list of <anon_file, prog> mapping, so that
+> + * at file release stage, the prog can be released properly.
+> + */
+> +static struct list_head anon_iter_info;
+> +static struct mutex anon_iter_info_mutex;
+> +
+> +/* incremented on every opened seq_file */
+> +static atomic64_t session_id;
+> +
+> +static u32 get_total_priv_dsize(u32 old_size)
+> +{
+> +       return roundup(old_size, 8) + sizeof(struct extra_priv_data);
+> +}
+> +
+> +static void *get_extra_priv_dptr(void *old_ptr, u32 old_size)
+> +{
+> +       return old_ptr + roundup(old_size, 8);
+> +}
+> +
+> +static int anon_iter_release(struct inode *inode, struct file *file)
+> +{
+> +       struct anon_file_prog_assoc *finfo;
+> +
+> +       mutex_lock(&anon_iter_info_mutex);
+> +       list_for_each_entry(finfo, &anon_iter_info, list) {
+> +               if (finfo->file == file) {
 
+I'll look at this and other patches more thoroughly tomorrow with
+clear head, but this iteration to find anon_file_prog_assoc is really
+unfortunate.
 
-On 4/28/20 11:34 PM, Martin KaFai Lau wrote:
-> On Tue, Apr 28, 2020 at 11:20:30PM -0700, Yonghong Song wrote:
->>
->>
->> On 4/28/20 11:08 PM, Andrii Nakryiko wrote:
->>> On Tue, Apr 28, 2020 at 10:10 PM Yonghong Song <yhs@fb.com> wrote:
->>>>
->>>>
->>>>
->>>> On 4/28/20 7:44 PM, Alexei Starovoitov wrote:
->>>>> On 4/28/20 6:15 PM, Yonghong Song wrote:
->>>>>>
->>>>>>
->>>>>> On 4/28/20 5:48 PM, Alexei Starovoitov wrote:
->>>>>>> On 4/28/20 5:37 PM, Martin KaFai Lau wrote:
->>>>>>>>> +    prog = bpf_iter_get_prog(seq, sizeof(struct
->>>>>>>>> bpf_iter_seq_map_info),
->>>>>>>>> +                 &meta.session_id, &meta.seq_num,
->>>>>>>>> +                 v == (void *)0);
->>>>>>>>    From looking at seq_file.c, when will show() be called with "v ==
->>>>>>>> NULL"?
->>>>>>>>
->>>>>>>
->>>>>>> that v == NULL here and the whole verifier change just to allow NULL...
->>>>>>> may be use seq_num as an indicator of the last elem instead?
->>>>>>> Like seq_num with upper bit set to indicate that it's last?
->>>>>>
->>>>>> We could. But then verifier won't have an easy way to verify that.
->>>>>> For example, the above is expected:
->>>>>>
->>>>>>         int prog(struct bpf_map *map, u64 seq_num) {
->>>>>>            if (seq_num >> 63)
->>>>>>              return 0;
->>>>>>            ... map->id ...
->>>>>>            ... map->user_cnt ...
->>>>>>         }
->>>>>>
->>>>>> But if user writes
->>>>>>
->>>>>>         int prog(struct bpf_map *map, u64 seq_num) {
->>>>>>             ... map->id ...
->>>>>>             ... map->user_cnt ...
->>>>>>         }
->>>>>>
->>>>>> verifier won't be easy to conclude inproper map pointer tracing
->>>>>> here and in the above map->id, map->user_cnt will cause
->>>>>> exceptions and they will silently get value 0.
->>>>>
->>>>> I mean always pass valid object pointer into the prog.
->>>>> In above case 'map' will always be valid.
->>>>> Consider prog that iterating all map elements.
->>>>> It's weird that the prog would always need to do
->>>>> if (map == 0)
->>>>>      goto out;
->>>>> even if it doesn't care about finding last.
->>>>> All progs would have to have such extra 'if'.
->>>>> If we always pass valid object than there is no need
->>>>> for such extra checks inside the prog.
->>>>> First and last element can be indicated via seq_num
->>>>> or via another flag or via helper call like is_this_last_elem()
->>>>> or something.
->>>>
->>>> Okay, I see what you mean now. Basically this means
->>>> seq_ops->next() should try to get/maintain next two elements,
->>>
->>> What about the case when there are no elements to iterate to begin
->>> with? In that case, we still need to call bpf_prog for (empty)
->>> post-aggregation, but we have no valid element... For bpf_map
->>> iteration we could have fake empty bpf_map that would be passed, but
->>> I'm not sure it's applicable for any time of object (e.g., having a
->>> fake task_struct is probably quite a bit more problematic?)...
->>
->> Oh, yes, thanks for reminding me of this. I put a call to
->> bpf_prog in seq_ops->stop() especially to handle no object
->> case. In that case, seq_ops->start() will return NULL,
->> seq_ops->next() won't be called, and then seq_ops->stop()
->> is called. My earlier attempt tries to hook with next()
->> and then find it not working in all cases.
->>
->>>
->>>> otherwise, we won't know whether the one in seq_ops->show()
->>>> is the last or not.
-> I think "show()" is convoluted with "stop()/eof()".  Could "stop()/eof()"
-> be its own separate (and optional) bpf_prog which only does "stop()/eof()"?
+I think the problem is that you are allowing seq_file infrastructure
+to call directly into target implementation of seq_operations without
+intercepting them. If you change that and put whatever extra info is
+necessary into seq_file->private in front of target's private state,
+then you shouldn't need this, right?
 
-I thought this before. But user need to write a program instead of
-a simple "if" condition in the main program...
+This would also make each target's logic a bit simpler because you can:
+- centralize creation and initialization of bpf_iter_meta (session_id,
+seq, seq_num will be set up once in this generic code);
+- loff_t pos increments;
+- you can extract and centralize bpf_iter_get_prog() call in show()
+implementation as well.
 
-> 
->>>> We could do it in newly implemented
->>>> iterator bpf_map/task/task_file. Let me check how I could
->>>> make existing seq_ops (ipv6_route/netlink) works with
->>>> minimum changes.
+I think with that each target's logic will be simpler and you won't
+need to maintain anon_file_prog_assocs.
+
+Are there complications I'm missing?
+
+[...]
