@@ -2,878 +2,440 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131ED1BE481
-	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 19:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 267C31BE4B7
+	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 19:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726800AbgD2RAB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Apr 2020 13:00:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56770 "EHLO
+        id S1726519AbgD2RF1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Apr 2020 13:05:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726743AbgD2RAA (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 29 Apr 2020 13:00:00 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68028C035495
-        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 10:00:00 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id t18so1646853ybp.2
-        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 10:00:00 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726423AbgD2RF1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 29 Apr 2020 13:05:27 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C161C03C1AE
+        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 10:05:27 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id f11so3333946qkk.16
+        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 10:05:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8nvKfWdd8YWPNmRiqxCRvzWQ72sEO+aeisGAHFlkaUk=;
-        b=ZtaelN+3L/8INewUzYH6hsAir3UsOmoRkdKV4INkVaDj0twrRUI/Q+sqNEJrut1VBg
-         OqgiwwFqGA82fOLiX3W3A/DzzTEk1mB4k7hyLPlKB0yogW1UlyVj/IsrjZg9IoZXIIYc
-         nz6A63P+IV4E1hiVmcmkvpKwlCeUg02nefiQIHl/v1WhZ+IDSi9nsrNeQh0DoMEIFLjU
-         xEP7um0qmSQH4RxOamzrykB6kELYsjmYuqoOY8lDH3/BLjKF4IGpZtmrClu7yirdQZnG
-         qoeVo7LvmYaiQWIdd5NDLN/9DiHGdfOsGei/Fcmytop0B5qgTlQlu3ojGv1mJ5zcs87S
-         RtVA==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=kU0ntdgitq8TD6sFlQwPmnvfvPcmqGtXuzuLOCmXBpo=;
+        b=v6gwWsFAVHT1MYBrE+usu3IK2KjeDT4AffFAE9IlDCmSSCLZa0dhBrc5g8ZaE4AKvM
+         Y3DpHeOEEChRMTphkqyYDCBRU1D2gzM6OlFhlNPTMxXaeH70jL9vpFOj8QFqzHL0gMF3
+         cPjPGNb+MvXH2R6up2g91beYbrUe9RJcBCdhZ1NMM7wEtuEYuzLjsXjZM9iW4MSJNxfZ
+         yFO/sdHpmGjrXj4V6mJzPN+t2oE7hg46f4SxXKhtXLkWzTSF2S/KdmvqpF3u2VUCIWF8
+         WEU0J/F4xkYQPsbXF1+h11iq0mXqlfhxEET/9uaUna7/jj9GMjT04ch+8gr00ekvkdGN
+         91DA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8nvKfWdd8YWPNmRiqxCRvzWQ72sEO+aeisGAHFlkaUk=;
-        b=EUikZ8mIxbIfy1OmZ9naB/q5wOe8u7C6UcMs96CZnFYaPfto72gWfJjmMls2A1cAFK
-         KjLX0Qpy6EQHI+7eSXDUoJ7TMv9thYg0n4qGkXyNmJPOMg6y7j0z6/1JJtuNPVVZQ/rl
-         EVLYFyWV/IjApAM2NlLy0+JLUzM3/MStaNTOzvvZi2fLC06JzUtPGzn5nAkyKRns7Xii
-         FyCSBh2EmnL03bekTRbO3q8heE9usbUtfsSFDgcz1vDOAMtNqZ4u5rz0/SQMbXKaHCOz
-         wFJ2XhvR6L9dWH1BOFK+66g1TnyKZY2U9IOcc3TQoxkkPApM247mqzwmt/Tyf3FRWF1E
-         GhkA==
-X-Gm-Message-State: AGi0PuY3pKqIrDz9QCpaqWgEUFLb5A6k+ZzdPcS73OqaXrjLva9yz+t8
-        f2Cm7rk6qRc7oDefQy+TlZwyZ6kZl3vzJwOIVMGdvQ==
-X-Google-Smtp-Source: APiQypJR9a5Mq8eQFB+AwifQ9SltmfrH11zsKqbBdUff7nqIEofG6kOJki3KucNlkErA6djbVD3HnThCZjYSPTAVROU=
-X-Received: by 2002:a05:6902:505:: with SMTP id x5mr55149827ybs.286.1588179598826;
- Wed, 29 Apr 2020 09:59:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200401184913.63446-1-irogers@google.com> <20200429144912.GB30487@kernel.org>
-In-Reply-To: <20200429144912.GB30487@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 29 Apr 2020 09:59:47 -0700
-Message-ID: <CAP-5=fWsDALy2345=tCNVTFKYNOyGbuXDhm_KKHWWuemBjXAfQ@mail.gmail.com>
-Subject: Re: [PATCH v6] perf tools: add support for libpfm4
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jiwei Sun <jiwei.sun@windriver.com>,
-        yuzhoujian <yuzhoujian@didichuxing.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=kU0ntdgitq8TD6sFlQwPmnvfvPcmqGtXuzuLOCmXBpo=;
+        b=Dz6fwX6GEq0wfqgJCylCNWkvpgQfd3TX+8PghVJF+6oNlCw9CzzEZm3+JxDJALptIk
+         sgt8bMEQ7RtECTmUTOTODXAscoTprnIWznjml/irmJ9OBfljSDAqG/jH5UwK6HDCG8Yp
+         v5mtF9f1Mn9pqC+YnGU7UL5aAvt8/smASZCJn4KsUU7Z4/HTicy7KeCczPHMLf9VAVay
+         trrVWRCAQJlg14h6RNDyPU9fClX5AGtWtep5BwXrRGMCQZ9YTmIv4id3u8dnJ1KlrcmA
+         VRTspb9Yn0XNAo/pAt+Bgpqhhv5/sFS8zrI0ePxSK+PlVfPKMDhodgnggvSW1surABdn
+         bA+Q==
+X-Gm-Message-State: AGi0PuaC5Ll7yIbzgTyYFWaUBd5aSA7JCCyX3dFjDVpZ0gzFiRtdQp8A
+        TOerZ00Kmrs3J2dRWdc6Oy/5HAE=
+X-Google-Smtp-Source: APiQypLxeBEhrUSi/4gigrIdjmZA8Iht2dxpQRJ9cfHpghgUr+6uJpU/BeCSOVXrvGmggOZOWjoYoCQ=
+X-Received: by 2002:a05:6214:158b:: with SMTP id m11mr28704863qvw.168.1588179926270;
+ Wed, 29 Apr 2020 10:05:26 -0700 (PDT)
+Date:   Wed, 29 Apr 2020 10:05:24 -0700
+Message-Id: <20200429170524.217865-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
+Subject: [PATCH bpf-next v2] bpf: bpf_{g,s}etsockopt for struct bpf_sock
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 7:49 AM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
->
-> Em Wed, Apr 01, 2020 at 11:49:13AM -0700, Ian Rogers escreveu:
-> > From: Stephane Eranian <eranian@google.com>
-> >
-> > This patch links perf with the libpfm4 library if it is available and
-> > NO_LIBPFM4 isn't passed to the build. The libpfm4 library contains hardware
->
-> Can we make this a explicit decision instead, i.e. for it to be linked
-> we would need to have its development files installed and -DLIBPFM4,
-> like we have for CORESIGHT?
->
->   $ grep CORESIGHT tools/perf/Makefile.perf
->   # Define CORESIGHT if you DO WANT support for CoreSight trace decoding.
->   $
+Currently, bpf_getsocktop and bpf_setsockopt helpers operate on the
+'struct bpf_sock_ops' context in BPF_PROG_TYPE_SOCK_OPS program.
+Let's generalize them and make the first argument be 'struct bpf_sock'.
+That way, in the future, we can allow those helpers in more places.
 
+BPF_PROG_TYPE_SOCK_OPS still has the existing helpers that operate
+on 'struct bpf_sock_ops', but we add new bpf_{g,s}etsockopt that work
+on 'struct bpf_sock'. [Alternatively, for BPF_PROG_TYPE_SOCK_OPS,
+we can enable them both and teach verifier to pick the right one
+based on the context (bpf_sock_ops vs bpf_sock).]
 
-Thanks Arnaldo, I'll do that.
-Ian
+As an example, let's allow those 'struct bpf_sock' based helpers to
+be called from the BPF_CGROUP_INET{4,6}_CONNECT hooks. That way
+we can override CC before the connection is made.
 
-> - Arnaldo
->
-> > event tables for all processors supported by perf_events. It is a helper
-> > library that helps convert from a symbolic event name to the event
-> > encoding required by the underlying kernel interface. This
-> > library is open-source and available from: http://perfmon2.sf.net.
-> >
-> > With this patch, it is possible to specify full hardware events
-> > by name. Hardware filters are also supported. Events must be
-> > specified via the --pfm-events and not -e option. Both options
-> > are active at the same time and it is possible to mix and match:
-> >
-> > $ perf stat --pfm-events inst_retired:any_p:c=1:i -e cycles ....
-> >
-> > v6 is a rebase.
-> > v5 is a rebase.
-> > v4 is a rebase on git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git
-> >    branch perf/core and re-adds the tools/build/feature/test-libpfm4.c
-> >    missed in v3.
-> > v3 is against acme/perf/core and removes a diagnostic warning.
-> > v2 of this patch makes the --pfm-events man page documentation
-> > conditional on libpfm4 behing configured. It tidies some of the
-> > documentation and adds the feature test missed in the v1 patch.
-> >
-> > Reviewed-By:Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/build/Makefile.feature             |   6 +-
-> >  tools/build/feature/Makefile             |   7 +-
-> >  tools/build/feature/test-libpfm4.c       |   8 +
-> >  tools/perf/Documentation/Makefile        |   4 +-
-> >  tools/perf/Documentation/perf-record.txt |  11 +
-> >  tools/perf/Documentation/perf-stat.txt   |  10 +
-> >  tools/perf/Documentation/perf-top.txt    |  11 +
-> >  tools/perf/Makefile.config               |  12 ++
-> >  tools/perf/Makefile.perf                 |   6 +-
-> >  tools/perf/builtin-list.c                |  16 ++
-> >  tools/perf/builtin-record.c              |  20 ++
-> >  tools/perf/builtin-stat.c                |  21 ++
-> >  tools/perf/builtin-top.c                 |  20 ++
-> >  tools/perf/util/evsel.c                  |   2 +-
-> >  tools/perf/util/evsel.h                  |   1 +
-> >  tools/perf/util/parse-events.c           | 246 +++++++++++++++++++++++
-> >  tools/perf/util/parse-events.h           |   5 +
-> >  tools/perf/util/pmu.c                    |  11 +
-> >  tools/perf/util/pmu.h                    |   1 +
-> >  19 files changed, 410 insertions(+), 8 deletions(-)
-> >  create mode 100644 tools/build/feature/test-libpfm4.c
-> >
-> > diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-> > index 574c2e0b9d20..08c6fe5aee2d 100644
-> > --- a/tools/build/Makefile.feature
-> > +++ b/tools/build/Makefile.feature
-> > @@ -72,7 +72,8 @@ FEATURE_TESTS_BASIC :=                  \
-> >          setns                                \
-> >          libaio                               \
-> >          libzstd                              \
-> > -        disassembler-four-args
-> > +        disassembler-four-args               \
-> > +        libpfm4
-> >
-> >  # FEATURE_TESTS_BASIC + FEATURE_TESTS_EXTRA is the complete list
-> >  # of all feature tests
-> > @@ -127,7 +128,8 @@ FEATURE_DISPLAY ?=              \
-> >           bpf                 \
-> >           libaio                      \
-> >           libzstd             \
-> > -         disassembler-four-args
-> > +         disassembler-four-args      \
-> > +         libpfm4
-> >
-> >  # Set FEATURE_CHECK_(C|LD)FLAGS-all for all FEATURE_TESTS features.
-> >  # If in the future we need per-feature checks/flags for features not
-> > diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-> > index 7ac0d8088565..573072d32545 100644
-> > --- a/tools/build/feature/Makefile
-> > +++ b/tools/build/feature/Makefile
-> > @@ -67,7 +67,9 @@ FILES=                                          \
-> >           test-llvm.bin                               \
-> >           test-llvm-version.bin                       \
-> >           test-libaio.bin                     \
-> > -         test-libzstd.bin
-> > +         test-libzstd.bin                    \
-> > +         test-libpfm4.bin
-> > +
-> >
-> >  FILES := $(addprefix $(OUTPUT),$(FILES))
-> >
-> > @@ -321,6 +323,9 @@ $(OUTPUT)test-libaio.bin:
-> >  $(OUTPUT)test-libzstd.bin:
-> >       $(BUILD) -lzstd
-> >
-> > +$(OUTPUT)test-libpfm4.bin:
-> > +     $(BUILD) -lpfm
-> > +
-> >  ###############################
-> >
-> >  clean:
-> > diff --git a/tools/build/feature/test-libpfm4.c b/tools/build/feature/test-libpfm4.c
-> > new file mode 100644
-> > index 000000000000..7f24df86cf09
-> > --- /dev/null
-> > +++ b/tools/build/feature/test-libpfm4.c
-> > @@ -0,0 +1,8 @@
-> > +#include <sys/types.h>
-> > +#include <perfmon/pfmlib.h>
-> > +
-> > +int main(void)
-> > +{
-> > +        pfm_initialize();
-> > +        return 0;
-> > +}
-> > diff --git a/tools/perf/Documentation/Makefile b/tools/perf/Documentation/Makefile
-> > index 31824d5269cc..6e54979c2124 100644
-> > --- a/tools/perf/Documentation/Makefile
-> > +++ b/tools/perf/Documentation/Makefile
-> > @@ -48,7 +48,7 @@ man5dir=$(mandir)/man5
-> >  man7dir=$(mandir)/man7
-> >
-> >  ASCIIDOC=asciidoc
-> > -ASCIIDOC_EXTRA = --unsafe -f asciidoc.conf
-> > +ASCIIDOC_EXTRA += --unsafe -f asciidoc.conf
-> >  ASCIIDOC_HTML = xhtml11
-> >  MANPAGE_XSL = manpage-normal.xsl
-> >  XMLTO_EXTRA =
-> > @@ -59,7 +59,7 @@ HTML_REF = origin/html
-> >
-> >  ifdef USE_ASCIIDOCTOR
-> >  ASCIIDOC = asciidoctor
-> > -ASCIIDOC_EXTRA = -a compat-mode
-> > +ASCIIDOC_EXTRA += -a compat-mode
-> >  ASCIIDOC_EXTRA += -I. -rasciidoctor-extensions
-> >  ASCIIDOC_EXTRA += -a mansource="perf" -a manmanual="perf Manual"
-> >  ASCIIDOC_HTML = xhtml5
-> > diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-> > index b3f3b3f1c161..ad2c41f595c2 100644
-> > --- a/tools/perf/Documentation/perf-record.txt
-> > +++ b/tools/perf/Documentation/perf-record.txt
-> > @@ -596,6 +596,17 @@ Make a copy of /proc/kcore and place it into a directory with the perf data file
-> >  Limit the sample data max size, <size> is expected to be a number with
-> >  appended unit character - B/K/M/G
-> >
-> > +ifdef::HAVE_LIBPFM[]
-> > +--pfm-events events::
-> > +Select a PMU event using libpfm4 syntax (see http://perfmon2.sf.net)
-> > +including support for event filters. For example '--pfm-events
-> > +inst_retired:any_p:u:c=1:i'. More than one event can be passed to the
-> > +option using the comma separator. Hardware events and generic hardware
-> > +events cannot be mixed together. The latter must be used with the -e
-> > +option. The -e option and this one can be mixed and matched.  Events
-> > +can be grouped using the {} notation.
-> > +endif::HAVE_LIBPFM[]
-> > +
-> >  SEE ALSO
-> >  --------
-> >  linkperf:perf-stat[1], linkperf:perf-list[1], linkperf:perf-intel-pt[1]
-> > diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
-> > index 4d56586b2fb9..536952ad592c 100644
-> > --- a/tools/perf/Documentation/perf-stat.txt
-> > +++ b/tools/perf/Documentation/perf-stat.txt
-> > @@ -71,6 +71,16 @@ report::
-> >  --tid=<tid>::
-> >          stat events on existing thread id (comma separated list)
-> >
-> > +ifdef::HAVE_LIBPFM[]
-> > +--pfm-events events::
-> > +Select a PMU event using libpfm4 syntax (see http://perfmon2.sf.net)
-> > +including support for event filters. For example '--pfm-events
-> > +inst_retired:any_p:u:c=1:i'. More than one event can be passed to the
-> > +option using the comma separator. Hardware events and generic hardware
-> > +events cannot be mixed together. The latter must be used with the -e
-> > +option. The -e option and this one can be mixed and matched.  Events
-> > +can be grouped using the {} notation.
-> > +endif::HAVE_LIBPFM[]
-> >
-> >  -a::
-> >  --all-cpus::
-> > diff --git a/tools/perf/Documentation/perf-top.txt b/tools/perf/Documentation/perf-top.txt
-> > index 487737a725e9..9858e3640b0c 100644
-> > --- a/tools/perf/Documentation/perf-top.txt
-> > +++ b/tools/perf/Documentation/perf-top.txt
-> > @@ -319,6 +319,17 @@ Default is to monitor all CPUS.
-> >       go straight to the histogram browser, just like 'perf top' with no events
-> >       explicitely specified does.
-> >
-> > +ifdef::HAVE_LIBPFM[]
-> > +--pfm-events events::
-> > +Select a PMU event using libpfm4 syntax (see http://perfmon2.sf.net)
-> > +including support for event filters. For example '--pfm-events
-> > +inst_retired:any_p:u:c=1:i'. More than one event can be passed to the
-> > +option using the comma separator. Hardware events and generic hardware
-> > +events cannot be mixed together. The latter must be used with the -e
-> > +option. The -e option and this one can be mixed and matched.  Events
-> > +can be grouped using the {} notation.
-> > +endif::HAVE_LIBPFM[]
-> > +
-> >
-> >  INTERACTIVE PROMPTING KEYS
-> >  --------------------------
-> > diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> > index 80e55e796be9..571aa6b1af40 100644
-> > --- a/tools/perf/Makefile.config
-> > +++ b/tools/perf/Makefile.config
-> > @@ -999,6 +999,18 @@ ifdef LIBCLANGLLVM
-> >    endif
-> >  endif
-> >
-> > +ifndef NO_LIBPFM4
-> > +  ifeq ($(feature-libpfm4), 1)
-> > +    CFLAGS += -DHAVE_LIBPFM
-> > +    EXTLIBS += -lpfm
-> > +    ASCIIDOC_EXTRA = -aHAVE_LIBPFM=1
-> > +    $(call detected,CONFIG_LIBPFM4)
-> > +  else
-> > +    msg := $(warning libpfm4 not found, disables libpfm4 support. Please install libpfm4-dev);
-> > +    NO_LIBPFM4 := 1
-> > +  endif
-> > +endif
-> > +
-> >  # Among the variables below, these:
-> >  #   perfexecdir
-> >  #   perf_include_dir
-> > diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> > index d15a311408f1..9787eb3ca0a9 100644
-> > --- a/tools/perf/Makefile.perf
-> > +++ b/tools/perf/Makefile.perf
-> > @@ -118,6 +118,8 @@ include ../scripts/utilities.mak
-> >  #
-> >  # Define LIBBPF_DYNAMIC to enable libbpf dynamic linking.
-> >  #
-> > +# Define NO_LIBPFM4 to disable libpfm4 extension.
-> > +#
-> >
-> >  # As per kernel Makefile, avoid funny character set dependencies
-> >  unexport LC_ALL
-> > @@ -188,7 +190,7 @@ AWK     = awk
-> >  # non-config cases
-> >  config := 1
-> >
-> > -NON_CONFIG_TARGETS := clean python-clean TAGS tags cscope help install-doc install-man install-html install-info install-pdf doc man html info pdf
-> > +NON_CONFIG_TARGETS := clean python-clean TAGS tags cscope help
-> >
-> >  ifdef MAKECMDGOALS
-> >  ifeq ($(filter-out $(NON_CONFIG_TARGETS),$(MAKECMDGOALS)),)
-> > @@ -832,7 +834,7 @@ INSTALL_DOC_TARGETS += quick-install-doc quick-install-man quick-install-html
-> >
-> >  # 'make doc' should call 'make -C Documentation all'
-> >  $(DOC_TARGETS):
-> > -     $(Q)$(MAKE) -C $(DOC_DIR) O=$(OUTPUT) $(@:doc=all)
-> > +     $(Q)$(MAKE) -C $(DOC_DIR) O=$(OUTPUT) $(@:doc=all) ASCIIDOC_EXTRA=$(ASCIIDOC_EXTRA)
-> >
-> >  TAG_FOLDERS= . ../lib ../include
-> >  TAG_FILES= ../../include/uapi/linux/perf_event.h
-> > diff --git a/tools/perf/builtin-list.c b/tools/perf/builtin-list.c
-> > index 965ef017496f..5edeb428168a 100644
-> > --- a/tools/perf/builtin-list.c
-> > +++ b/tools/perf/builtin-list.c
-> > @@ -18,6 +18,10 @@
-> >  #include <subcmd/parse-options.h>
-> >  #include <stdio.h>
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +#include <perfmon/pfmlib.h>
-> > +#endif
-> > +
-> >  static bool desc_flag = true;
-> >  static bool details_flag;
-> >
-> > @@ -56,6 +60,18 @@ int cmd_list(int argc, const char **argv)
-> >       if (!raw_dump && pager_in_use())
-> >               printf("\nList of pre-defined events (to be used in -e):\n\n");
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +     {
-> > +             int ret;
-> > +             ret = pfm_initialize();
-> > +             if (ret != PFM_SUCCESS) {
-> > +                     fprintf(stderr,
-> > +                             "warning libpfm failed to initialize: %s\n",
-> > +                             pfm_strerror(ret));
-> > +             }
-> > +     }
-> > +#endif
-> > +
-> >       if (argc == 0) {
-> >               print_events(NULL, raw_dump, !desc_flag, long_desc_flag,
-> >                               details_flag, deprecated);
-> > diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> > index 7d7912e121d6..7d2737f33c2e 100644
-> > --- a/tools/perf/builtin-record.c
-> > +++ b/tools/perf/builtin-record.c
-> > @@ -64,6 +64,10 @@
-> >  #include <linux/zalloc.h>
-> >  #include <linux/bitmap.h>
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +#include <perfmon/pfmlib.h>
-> > +#endif
-> > +
-> >  struct switch_output {
-> >       bool             enabled;
-> >       bool             signal;
-> > @@ -2415,6 +2419,11 @@ static struct option __record_options[] = {
-> >  #endif
-> >       OPT_CALLBACK(0, "max-size", &record.output_max_size,
-> >                    "size", "Limit the maximum size of the output file", parse_output_max_size),
-> > +#ifdef HAVE_LIBPFM
-> > +     OPT_CALLBACK(0, "pfm-events", &record.evlist, "event",
-> > +             "libpfm4 event selector. use 'perf list' to list available events",
-> > +             parse_libpfm_events_option),
-> > +#endif
-> >       OPT_END()
-> >  };
-> >
-> > @@ -2455,6 +2464,17 @@ int cmd_record(int argc, const char **argv)
-> >       if (rec->evlist == NULL)
-> >               return -ENOMEM;
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +     {
-> > +             int ret;
-> > +             ret = pfm_initialize();
-> > +             if (ret != PFM_SUCCESS) {
-> > +                     ui__warning("warning libpfm failed to initialize: %s\n",
-> > +                             pfm_strerror(ret));
-> > +             }
-> > +     }
-> > +#endif
-> > +
-> >       err = perf_config(perf_record_config, rec);
-> >       if (err)
-> >               return err;
-> > diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> > index ec053dc1e35c..c47eaf238f0c 100644
-> > --- a/tools/perf/builtin-stat.c
-> > +++ b/tools/perf/builtin-stat.c
-> > @@ -89,6 +89,10 @@
-> >  #include <linux/ctype.h>
-> >  #include <perf/evlist.h>
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +#include <perfmon/pfmlib.h>
-> > +#endif
-> > +
-> >  #define DEFAULT_SEPARATOR    " "
-> >  #define FREEZE_ON_SMI_PATH   "devices/cpu/freeze_on_smi"
-> >
-> > @@ -933,6 +937,11 @@ static struct option stat_options[] = {
-> >                   "Use with 'percore' event qualifier to show the event "
-> >                   "counts of one hardware thread by sum up total hardware "
-> >                   "threads of same physical core"),
-> > +#ifdef HAVE_LIBPFM
-> > +     OPT_CALLBACK(0, "pfm-events", &evsel_list, "event",
-> > +             "libpfm4 event selector. use 'perf list' to list available events",
-> > +             parse_libpfm_events_option),
-> > +#endif
-> >       OPT_END()
-> >  };
-> >
-> > @@ -1871,6 +1880,18 @@ int cmd_stat(int argc, const char **argv)
-> >       unsigned int interval, timeout;
-> >       const char * const stat_subcommands[] = { "record", "report" };
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +     {
-> > +             int ret;
-> > +             ret = pfm_initialize();
-> > +             if (ret != PFM_SUCCESS) {
-> > +                     fprintf(stderr,
-> > +                             "warning libpfm failed to initialize: %s\n",
-> > +                             pfm_strerror(ret));
-> > +             }
-> > +     }
-> > +#endif
-> > +
-> >       setlocale(LC_ALL, "");
-> >
-> >       evsel_list = evlist__new();
-> > diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
-> > index 6684d94b1398..afec285f9877 100644
-> > --- a/tools/perf/builtin-top.c
-> > +++ b/tools/perf/builtin-top.c
-> > @@ -84,6 +84,10 @@
-> >  #include <linux/ctype.h>
-> >  #include <perf/mmap.h>
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +#include <perfmon/pfmlib.h>
-> > +#endif
-> > +
-> >  static volatile int done;
-> >  static volatile int resize;
-> >
-> > @@ -1565,6 +1569,11 @@ int cmd_top(int argc, const char **argv)
-> >                   "Sort the output by the event at the index n in group. "
-> >                   "If n is invalid, sort by the first event. "
-> >                   "WARNING: should be used on grouped events."),
-> > +#ifdef HAVE_LIBPFM
-> > +     OPT_CALLBACK(0, "pfm-events", &top.evlist, "event",
-> > +             "libpfm4 event selector. use 'perf list' to list available events",
-> > +             parse_libpfm_events_option),
-> > +#endif
-> >       OPTS_EVSWITCH(&top.evswitch),
-> >       OPT_END()
-> >       };
-> > @@ -1578,6 +1587,17 @@ int cmd_top(int argc, const char **argv)
-> >       if (status < 0)
-> >               return status;
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +     {
-> > +             int ret;
-> > +             ret = pfm_initialize();
-> > +             if (ret != PFM_SUCCESS) {
-> > +                     ui__warning("warning libpfm failed to initialize: %s\n",
-> > +                             pfm_strerror(ret));
-> > +             }
-> > +     }
-> > +#endif
-> > +
-> >       top.annotation_opts.min_pcnt = 5;
-> >       top.annotation_opts.context  = 4;
-> >
-> > diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> > index eb880efbce16..ca1b9cbf3355 100644
-> > --- a/tools/perf/util/evsel.c
-> > +++ b/tools/perf/util/evsel.c
-> > @@ -2448,7 +2448,7 @@ bool perf_evsel__fallback(struct evsel *evsel, int err,
-> >
-> >               /* Is there already the separator in the name. */
-> >               if (strchr(name, '/') ||
-> > -                 strchr(name, ':'))
-> > +                 (strchr(name, ':') && !evsel->is_libpfm_event))
-> >                       sep = "";
-> >
-> >               if (asprintf(&new_name, "%s%su", name, sep) < 0)
-> > diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> > index 53187c501ee8..0b6eec714e6f 100644
-> > --- a/tools/perf/util/evsel.h
-> > +++ b/tools/perf/util/evsel.h
-> > @@ -76,6 +76,7 @@ struct evsel {
-> >       bool                    ignore_missing_thread;
-> >       bool                    forced_leader;
-> >       bool                    use_uncore_alias;
-> > +     bool                    is_libpfm_event;
-> >       /* parse modifier helper */
-> >       int                     exclude_GH;
-> >       int                     sample_read;
-> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> > index 10107747b361..31ed184566c8 100644
-> > --- a/tools/perf/util/parse-events.c
-> > +++ b/tools/perf/util/parse-events.c
-> > @@ -37,6 +37,11 @@
-> >  #include "util/evsel_config.h"
-> >  #include "util/event.h"
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +#include <perfmon/pfmlib_perf_event.h>
-> > +static void print_libpfm_events(bool name_only);
-> > +#endif
-> > +
-> >  #define MAX_NAME_LEN 100
-> >
-> >  #ifdef PARSER_DEBUG
-> > @@ -2794,6 +2799,10 @@ void print_events(const char *event_glob, bool name_only, bool quiet_flag,
-> >       print_sdt_events(NULL, NULL, name_only);
-> >
-> >       metricgroup__print(true, true, NULL, name_only, details_flag);
-> > +
-> > +#ifdef HAVE_LIBPFM
-> > +     print_libpfm_events(name_only);
-> > +#endif
-> >  }
-> >
-> >  int parse_events__is_hardcoded_term(struct parse_events_term *term)
-> > @@ -3042,3 +3051,240 @@ char *parse_events_formats_error_string(char *additional_terms)
-> >  fail:
-> >       return NULL;
-> >  }
-> > +
-> > +#ifdef HAVE_LIBPFM
-> > +static int
-> > +parse_libpfm_event(char *strp, struct perf_event_attr *attr)
-> > +{
-> > +     int ret;
-> > +
-> > +     ret = pfm_get_perf_event_encoding(strp, PFM_PLM0|PFM_PLM3,
-> > +                                     attr, NULL, NULL);
-> > +     return ret;
-> > +}
-> > +
-> > +int parse_libpfm_events_option(const struct option *opt, const char *str,
-> > +                     int unset __maybe_unused)
-> > +{
-> > +     struct evlist *evlist = *(struct evlist **)opt->value;
-> > +     struct perf_event_attr attr;
-> > +     struct perf_pmu *pmu;
-> > +     struct evsel *evsel, *grp_leader = NULL;
-> > +     char *p, *q, *p_orig;
-> > +     const char *sep;
-> > +     int grp_evt = -1;
-> > +     int ret;
-> > +
-> > +     p_orig = p = strdup(str);
-> > +     if (!p)
-> > +             return -1;
-> > +     /*
-> > +      * force loading of the PMU list
-> > +      */
-> > +     perf_pmu__scan(NULL);
-> > +
-> > +     for (q = p; strsep(&p, ",{}"); q = p) {
-> > +             sep = p ? str + (p - p_orig - 1) : "";
-> > +             if (*sep == '{') {
-> > +                     if (grp_evt > -1) {
-> > +                             fprintf(stderr, "nested event groups not supported\n");
-> > +                             goto error;
-> > +                     }
-> > +                     grp_evt++;
-> > +             }
-> > +
-> > +             /* no event */
-> > +             if (*q == '\0')
-> > +                     continue;
-> > +
-> > +             memset(&attr, 0, sizeof(attr));
-> > +             event_attr_init(&attr);
-> > +
-> > +             ret = parse_libpfm_event(q, &attr);
-> > +             if (ret != PFM_SUCCESS) {
-> > +                     fprintf(stderr, "failed to parse event %s : %s\n", str, pfm_strerror(ret));
-> > +                     goto error;
-> > +             }
-> > +
-> > +             evsel = perf_evsel__new_idx(&attr, evlist->core.nr_entries);
-> > +             if (evsel == NULL)
-> > +                     goto error;
-> > +
-> > +             evsel->name = strdup(q);
-> > +             if (!evsel->name) {
-> > +                     evsel__delete(evsel);
-> > +                     goto error;
-> > +             }
-> > +             evsel->is_libpfm_event = true;
-> > +
-> > +             pmu = perf_pmu__find_by_type((unsigned)attr.type);
-> > +             if (pmu)
-> > +                     evsel->core.own_cpus = perf_cpu_map__get(pmu->cpus);
-> > +
-> > +             evlist__add(evlist, evsel);
-> > +
-> > +             if (grp_evt == 0)
-> > +                     grp_leader = evsel;
-> > +
-> > +             if (grp_evt > -1) {
-> > +                     evsel->leader = grp_leader;
-> > +                     grp_leader->core.nr_members++;
-> > +                     grp_evt++;
-> > +             }
-> > +
-> > +             if (*sep == '}') {
-> > +                     if (grp_evt < 0) {
-> > +                             fprintf(stderr, "cannot close a non-existing event group\n");
-> > +                             goto error;
-> > +                     }
-> > +                     evlist->nr_groups++;
-> > +                     grp_leader = NULL;
-> > +                     grp_evt = -1;
-> > +             }
-> > +     }
-> > +     return 0;
-> > +error:
-> > +     free(p_orig);
-> > +     return -1;
-> > +}
-> > +
-> > +static const char *srcs[PFM_ATTR_CTRL_MAX]={
-> > +     [PFM_ATTR_CTRL_UNKNOWN] = "???",
-> > +     [PFM_ATTR_CTRL_PMU] = "PMU",
-> > +     [PFM_ATTR_CTRL_PERF_EVENT] = "perf_event",
-> > +};
-> > +
-> > +static void
-> > +print_attr_flags(pfm_event_attr_info_t *info)
-> > +{
-> > +     int n = 0;
-> > +
-> > +     if (info->is_dfl) {
-> > +             printf("[default] ");
-> > +             n++;
-> > +     }
-> > +
-> > +     if (info->is_precise) {
-> > +             printf("[precise] ");
-> > +             n++;
-> > +     }
-> > +
-> > +     if (!n)
-> > +             printf("- ");
-> > +}
-> > +
-> > +static void
-> > +print_libpfm_detailed_events(pfm_pmu_info_t *pinfo, pfm_event_info_t *info)
-> > +{
-> > +     pfm_event_attr_info_t ainfo;
-> > +     const char *src;
-> > +     int j, ret;
-> > +
-> > +     ainfo.size = sizeof(ainfo);
-> > +
-> > +     printf("\nName  : %s\n", info->name);
-> > +     printf("PMU   : %s\n", pinfo->name);
-> > +     printf("Desc  : %s\n", info->desc);
-> > +     printf("Equiv : %s\n", info->equiv ? info->equiv : "None");
-> > +     printf("Code  : 0x%"PRIx64"\n", info->code);
-> > +
-> > +     pfm_for_each_event_attr(j, info) {
-> > +             ret = pfm_get_event_attr_info(info->idx, j, PFM_OS_PERF_EVENT_EXT, &ainfo);
-> > +             if (ret != PFM_SUCCESS)
-> > +                     continue;
-> > +
-> > +             if (ainfo.ctrl >= PFM_ATTR_CTRL_MAX)
-> > +                     ainfo.ctrl = PFM_ATTR_CTRL_UNKNOWN;
-> > +
-> > +             src = srcs[ainfo.ctrl];
-> > +             switch(ainfo.type) {
-> > +             case PFM_ATTR_UMASK:
-> > +                     printf("Umask : 0x%02"PRIx64" : %s: [%s] : ", ainfo.code, src, ainfo.name);
-> > +                     print_attr_flags(&ainfo);
-> > +                     printf(": %s\n", ainfo.desc);
-> > +                     break;
-> > +             case PFM_ATTR_MOD_BOOL:
-> > +                     printf("Modif : %s: [%s] : %s (boolean)\n", src, ainfo.name, ainfo.desc);
-> > +                     break;
-> > +             case PFM_ATTR_MOD_INTEGER:
-> > +                     printf("Modif : %s: [%s] : %s (integer)\n", src, ainfo.name, ainfo.desc);
-> > +                     break;
-> > +             case PFM_ATTR_NONE:
-> > +             case PFM_ATTR_RAW_UMASK:
-> > +             case PFM_ATTR_MAX:
-> > +             default:
-> > +                     printf("Attr  : %s: [%s] : %s\n", src, ainfo.name, ainfo.desc);
-> > +             }
-> > +     }
-> > +}
-> > +
-> > +/*
-> > + * list all pmu::event:umask, pmu::event
-> > + * printed events may not be all valid combinations of umask for an event
-> > + */
-> > +static void
-> > +print_libpfm_simplified_events(pfm_pmu_info_t *pinfo, pfm_event_info_t *info)
-> > +{
-> > +     pfm_event_attr_info_t ainfo;
-> > +     int j, ret;
-> > +     int um = 0;
-> > +
-> > +     ainfo.size = sizeof(ainfo);
-> > +
-> > +     pfm_for_each_event_attr(j, info) {
-> > +             ret = pfm_get_event_attr_info(info->idx, j, PFM_OS_PERF_EVENT_EXT, &ainfo);
-> > +             if (ret != PFM_SUCCESS)
-> > +                     continue;
-> > +
-> > +             if (ainfo.type != PFM_ATTR_UMASK)
-> > +                     continue;
-> > +
-> > +             printf("%s::%s:%s\n", pinfo->name, info->name, ainfo.name);
-> > +             um++;
-> > +     }
-> > +     if (um == 0)
-> > +             printf("%s::%s\n", pinfo->name, info->name);
-> > +}
-> > +
-> > +static void
-> > +print_libpfm_events(bool name_only)
-> > +{
-> > +     pfm_event_info_t info;
-> > +     pfm_pmu_info_t pinfo;
-> > +     pfm_event_attr_info_t ainfo;
-> > +     int i, p, ret;
-> > +
-> > +     /* initialize to zero to indicate ABI version */
-> > +     info.size  = sizeof(info);
-> > +     pinfo.size = sizeof(pinfo);
-> > +     ainfo.size = sizeof(ainfo);
-> > +
-> > +     putchar('\n');
-> > +
-> > +     pfm_for_all_pmus(p) {
-> > +             ret = pfm_get_pmu_info(p, &pinfo);
-> > +             if (ret != PFM_SUCCESS)
-> > +                     continue;
-> > +
-> > +             /* ony print events that are supported by host HW */
-> > +             if (!pinfo.is_present)
-> > +                     continue;
-> > +
-> > +             /* handled by perf directly */
-> > +             if (pinfo.pmu == PFM_PMU_PERF_EVENT)
-> > +                     continue;
-> > +
-> > +             for (i = pinfo.first_event; i != -1; i = pfm_get_event_next(i)) {
-> > +
-> > +                     ret = pfm_get_event_info(i, PFM_OS_PERF_EVENT_EXT, &info);
-> > +                     if (ret != PFM_SUCCESS)
-> > +                             continue;
-> > +
-> > +                     if (!name_only)
-> > +                             print_libpfm_detailed_events(&pinfo, &info);
-> > +                     else
-> > +                             print_libpfm_simplified_events(&pinfo, &info);
-> > +             }
-> > +     }
-> > +}
-> > +#endif
-> > diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
-> > index 27596cbd0ba0..84d4799c9a31 100644
-> > --- a/tools/perf/util/parse-events.h
-> > +++ b/tools/perf/util/parse-events.h
-> > @@ -37,6 +37,11 @@ int parse_events_terms(struct list_head *terms, const char *str);
-> >  int parse_filter(const struct option *opt, const char *str, int unset);
-> >  int exclude_perf(const struct option *opt, const char *arg, int unset);
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +extern int parse_libpfm_events_option(const struct option *opt, const char *str,
-> > +                             int unset);
-> > +#endif
-> > +
-> >  #define EVENTS_HELP_MAX (128*1024)
-> >
-> >  enum perf_pmu_event_symbol_type {
-> > diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> > index ef6a63f3d386..5e918ca740c6 100644
-> > --- a/tools/perf/util/pmu.c
-> > +++ b/tools/perf/util/pmu.c
-> > @@ -869,6 +869,17 @@ static struct perf_pmu *pmu_find(const char *name)
-> >       return NULL;
-> >  }
-> >
-> > +struct perf_pmu *perf_pmu__find_by_type(unsigned int type)
-> > +{
-> > +     struct perf_pmu *pmu;
-> > +
-> > +     list_for_each_entry(pmu, &pmus, list)
-> > +             if (pmu->type == type)
-> > +                     return pmu;
-> > +
-> > +     return NULL;
-> > +}
-> > +
-> >  struct perf_pmu *perf_pmu__scan(struct perf_pmu *pmu)
-> >  {
-> >       /*
-> > diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-> > index 5fb3f16828df..de3b868d912c 100644
-> > --- a/tools/perf/util/pmu.h
-> > +++ b/tools/perf/util/pmu.h
-> > @@ -65,6 +65,7 @@ struct perf_pmu_alias {
-> >  };
-> >
-> >  struct perf_pmu *perf_pmu__find(const char *name);
-> > +struct perf_pmu *perf_pmu__find_by_type(unsigned int type);
-> >  int perf_pmu__config(struct perf_pmu *pmu, struct perf_event_attr *attr,
-> >                    struct list_head *head_terms,
-> >                    struct parse_events_error *error);
-> > --
-> > 2.26.0.rc2.310.g2932bb562d-goog
-> >
->
-> --
->
-> - Arnaldo
+v2:
+* s/BPF_PROG_TYPE_CGROUP_SOCKOPT/BPF_PROG_TYPE_SOCK_OPS/
+
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ include/uapi/linux/bpf.h                      |  12 +-
+ net/core/filter.c                             | 113 ++++++++++++++----
+ tools/include/uapi/linux/bpf.h                |  12 +-
+ tools/testing/selftests/bpf/config            |   1 +
+ .../selftests/bpf/progs/connect4_prog.c       |  46 +++++++
+ 5 files changed, 159 insertions(+), 25 deletions(-)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 4a6c47f3febe..b50a316c6289 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1564,7 +1564,7 @@ union bpf_attr {
+  * 	Return
+  * 		0
+  *
+- * int bpf_setsockopt(struct bpf_sock_ops *bpf_socket, int level, int optname, void *optval, int optlen)
++ * int bpf_setsockopt(void *bpf_socket, int level, int optname, void *optval, int optlen)
+  * 	Description
+  * 		Emulate a call to **setsockopt()** on the socket associated to
+  * 		*bpf_socket*, which must be a full socket. The *level* at
+@@ -1572,6 +1572,10 @@ union bpf_attr {
+  * 		must be specified, see **setsockopt(2)** for more information.
+  * 		The option value of length *optlen* is pointed by *optval*.
+  *
++ * 		*bpf_socket* should be one of the following:
++ * 		* **struct bpf_sock_ops** for **BPF_PROG_TYPE_SOCK_OPS**.
++ * 		* **struct bpf_sock** for the other types.
++ *
+  * 		This helper actually implements a subset of **setsockopt()**.
+  * 		It supports the following *level*\ s:
+  *
+@@ -1766,7 +1770,7 @@ union bpf_attr {
+  * 	Return
+  * 		0 on success, or a negative error in case of failure.
+  *
+- * int bpf_getsockopt(struct bpf_sock_ops *bpf_socket, int level, int optname, void *optval, int optlen)
++ * int bpf_getsockopt(void *bpf_socket, int level, int optname, void *optval, int optlen)
+  * 	Description
+  * 		Emulate a call to **getsockopt()** on the socket associated to
+  * 		*bpf_socket*, which must be a full socket. The *level* at
+@@ -1775,6 +1779,10 @@ union bpf_attr {
+  * 		The retrieved value is stored in the structure pointed by
+  * 		*opval* and of length *optlen*.
+  *
++ * 		*bpf_socket* should be one of the following:
++ * 		* **struct bpf_sock_ops** for **BPF_PROG_TYPE_SOCK_OPS**.
++ * 		* **struct bpf_sock** for the other types.
++ *
+  * 		This helper actually implements a subset of **getsockopt()**.
+  * 		It supports the following *level*\ s:
+  *
+diff --git a/net/core/filter.c b/net/core/filter.c
+index da3b7a72c37c..0e8f2c9cfe27 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4194,16 +4194,19 @@ static const struct bpf_func_proto bpf_get_socket_uid_proto = {
+ 	.arg1_type      = ARG_PTR_TO_CTX,
+ };
+ 
+-BPF_CALL_5(bpf_setsockopt, struct bpf_sock_ops_kern *, bpf_sock,
+-	   int, level, int, optname, char *, optval, int, optlen)
++#define SOCKOPT_CC_REINIT (1 << 0)
++
++static int _bpf_setsockopt(struct sock *sk, int level, int optname,
++			   char *optval, int optlen, u32 flags)
+ {
+-	struct sock *sk = bpf_sock->sk;
+ 	int ret = 0;
+ 	int val;
+ 
+ 	if (!sk_fullsock(sk))
+ 		return -EINVAL;
+ 
++	sock_owned_by_me(sk);
++
+ 	if (level == SOL_SOCKET) {
+ 		if (optlen != sizeof(int))
+ 			return -EINVAL;
+@@ -4298,7 +4301,7 @@ BPF_CALL_5(bpf_setsockopt, struct bpf_sock_ops_kern *, bpf_sock,
+ 		   sk->sk_prot->setsockopt == tcp_setsockopt) {
+ 		if (optname == TCP_CONGESTION) {
+ 			char name[TCP_CA_NAME_MAX];
+-			bool reinit = bpf_sock->op > BPF_SOCK_OPS_NEEDS_ECN;
++			bool reinit = flags & SOCKOPT_CC_REINIT;
+ 
+ 			strncpy(name, optval, min_t(long, optlen,
+ 						    TCP_CA_NAME_MAX-1));
+@@ -4345,24 +4348,14 @@ BPF_CALL_5(bpf_setsockopt, struct bpf_sock_ops_kern *, bpf_sock,
+ 	return ret;
+ }
+ 
+-static const struct bpf_func_proto bpf_setsockopt_proto = {
+-	.func		= bpf_setsockopt,
+-	.gpl_only	= false,
+-	.ret_type	= RET_INTEGER,
+-	.arg1_type	= ARG_PTR_TO_CTX,
+-	.arg2_type	= ARG_ANYTHING,
+-	.arg3_type	= ARG_ANYTHING,
+-	.arg4_type	= ARG_PTR_TO_MEM,
+-	.arg5_type	= ARG_CONST_SIZE,
+-};
+-
+-BPF_CALL_5(bpf_getsockopt, struct bpf_sock_ops_kern *, bpf_sock,
+-	   int, level, int, optname, char *, optval, int, optlen)
++static int _bpf_getsockopt(struct sock *sk, int level, int optname,
++			   char *optval, int optlen)
+ {
+-	struct sock *sk = bpf_sock->sk;
+-
+ 	if (!sk_fullsock(sk))
+ 		goto err_clear;
++
++	sock_owned_by_me(sk);
++
+ #ifdef CONFIG_INET
+ 	if (level == SOL_TCP && sk->sk_prot->getsockopt == tcp_getsockopt) {
+ 		struct inet_connection_sock *icsk;
+@@ -4428,10 +4421,72 @@ BPF_CALL_5(bpf_getsockopt, struct bpf_sock_ops_kern *, bpf_sock,
+ 	return -EINVAL;
+ }
+ 
++BPF_CALL_5(bpf_setsockopt, struct sock *, sk,
++	   int, level, int, optname, char *, optval, int, optlen)
++{
++	u32 flags = 0;
++	return _bpf_setsockopt(sk, level, optname, optval, optlen, flags);
++}
++
++static const struct bpf_func_proto bpf_setsockopt_proto = {
++	.func		= bpf_setsockopt,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_SOCKET,
++	.arg2_type	= ARG_ANYTHING,
++	.arg3_type	= ARG_ANYTHING,
++	.arg4_type	= ARG_PTR_TO_MEM,
++	.arg5_type	= ARG_CONST_SIZE,
++};
++
++BPF_CALL_5(bpf_getsockopt, struct sock *, sk,
++	   int, level, int, optname, char *, optval, int, optlen)
++{
++	return _bpf_getsockopt(sk, level, optname, optval, optlen);
++}
++
+ static const struct bpf_func_proto bpf_getsockopt_proto = {
+ 	.func		= bpf_getsockopt,
+ 	.gpl_only	= false,
+ 	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_SOCKET,
++	.arg2_type	= ARG_ANYTHING,
++	.arg3_type	= ARG_ANYTHING,
++	.arg4_type	= ARG_PTR_TO_UNINIT_MEM,
++	.arg5_type	= ARG_CONST_SIZE,
++};
++
++BPF_CALL_5(bpf_sock_ops_setsockopt, struct bpf_sock_ops_kern *, bpf_sock,
++	   int, level, int, optname, char *, optval, int, optlen)
++{
++	u32 flags = 0;
++	if (bpf_sock->op > BPF_SOCK_OPS_NEEDS_ECN)
++		flags |= SOCKOPT_CC_REINIT;
++	return _bpf_setsockopt(bpf_sock->sk, level, optname, optval, optlen,
++			       flags);
++}
++
++static const struct bpf_func_proto bpf_sock_ops_setsockopt_proto = {
++	.func		= bpf_sock_ops_setsockopt,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_CTX,
++	.arg2_type	= ARG_ANYTHING,
++	.arg3_type	= ARG_ANYTHING,
++	.arg4_type	= ARG_PTR_TO_MEM,
++	.arg5_type	= ARG_CONST_SIZE,
++};
++
++BPF_CALL_5(bpf_sock_ops_getsockopt, struct bpf_sock_ops_kern *, bpf_sock,
++	   int, level, int, optname, char *, optval, int, optlen)
++{
++	return _bpf_getsockopt(bpf_sock->sk, level, optname, optval, optlen);
++}
++
++static const struct bpf_func_proto bpf_sock_ops_getsockopt_proto = {
++	.func		= bpf_sock_ops_getsockopt,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
+ 	.arg1_type	= ARG_PTR_TO_CTX,
+ 	.arg2_type	= ARG_ANYTHING,
+ 	.arg3_type	= ARG_ANYTHING,
+@@ -6043,6 +6098,22 @@ sock_addr_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_sk_storage_get_proto;
+ 	case BPF_FUNC_sk_storage_delete:
+ 		return &bpf_sk_storage_delete_proto;
++	case BPF_FUNC_setsockopt:
++		switch (prog->expected_attach_type) {
++		case BPF_CGROUP_INET4_CONNECT:
++		case BPF_CGROUP_INET6_CONNECT:
++			return &bpf_setsockopt_proto;
++		default:
++			return NULL;
++		}
++	case BPF_FUNC_getsockopt:
++		switch (prog->expected_attach_type) {
++		case BPF_CGROUP_INET4_CONNECT:
++		case BPF_CGROUP_INET6_CONNECT:
++			return &bpf_getsockopt_proto;
++		default:
++			return NULL;
++		}
+ 	default:
+ 		return bpf_base_func_proto(func_id);
+ 	}
+@@ -6261,9 +6332,9 @@ sock_ops_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ {
+ 	switch (func_id) {
+ 	case BPF_FUNC_setsockopt:
+-		return &bpf_setsockopt_proto;
++		return &bpf_sock_ops_setsockopt_proto;
+ 	case BPF_FUNC_getsockopt:
+-		return &bpf_getsockopt_proto;
++		return &bpf_sock_ops_getsockopt_proto;
+ 	case BPF_FUNC_sock_ops_cb_flags_set:
+ 		return &bpf_sock_ops_cb_flags_set_proto;
+ 	case BPF_FUNC_sock_map_update:
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 4a6c47f3febe..b50a316c6289 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1564,7 +1564,7 @@ union bpf_attr {
+  * 	Return
+  * 		0
+  *
+- * int bpf_setsockopt(struct bpf_sock_ops *bpf_socket, int level, int optname, void *optval, int optlen)
++ * int bpf_setsockopt(void *bpf_socket, int level, int optname, void *optval, int optlen)
+  * 	Description
+  * 		Emulate a call to **setsockopt()** on the socket associated to
+  * 		*bpf_socket*, which must be a full socket. The *level* at
+@@ -1572,6 +1572,10 @@ union bpf_attr {
+  * 		must be specified, see **setsockopt(2)** for more information.
+  * 		The option value of length *optlen* is pointed by *optval*.
+  *
++ * 		*bpf_socket* should be one of the following:
++ * 		* **struct bpf_sock_ops** for **BPF_PROG_TYPE_SOCK_OPS**.
++ * 		* **struct bpf_sock** for the other types.
++ *
+  * 		This helper actually implements a subset of **setsockopt()**.
+  * 		It supports the following *level*\ s:
+  *
+@@ -1766,7 +1770,7 @@ union bpf_attr {
+  * 	Return
+  * 		0 on success, or a negative error in case of failure.
+  *
+- * int bpf_getsockopt(struct bpf_sock_ops *bpf_socket, int level, int optname, void *optval, int optlen)
++ * int bpf_getsockopt(void *bpf_socket, int level, int optname, void *optval, int optlen)
+  * 	Description
+  * 		Emulate a call to **getsockopt()** on the socket associated to
+  * 		*bpf_socket*, which must be a full socket. The *level* at
+@@ -1775,6 +1779,10 @@ union bpf_attr {
+  * 		The retrieved value is stored in the structure pointed by
+  * 		*opval* and of length *optlen*.
+  *
++ * 		*bpf_socket* should be one of the following:
++ * 		* **struct bpf_sock_ops** for **BPF_PROG_TYPE_SOCK_OPS**.
++ * 		* **struct bpf_sock** for the other types.
++ *
+  * 		This helper actually implements a subset of **getsockopt()**.
+  * 		It supports the following *level*\ s:
+  *
+diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+index 60e3ae5d4e48..6e5b94c036ca 100644
+--- a/tools/testing/selftests/bpf/config
++++ b/tools/testing/selftests/bpf/config
+@@ -37,3 +37,4 @@ CONFIG_IPV6_SIT=m
+ CONFIG_BPF_JIT=y
+ CONFIG_BPF_LSM=y
+ CONFIG_SECURITY=y
++CONFIG_TCP_CONG_DCTCP=y
+diff --git a/tools/testing/selftests/bpf/progs/connect4_prog.c b/tools/testing/selftests/bpf/progs/connect4_prog.c
+index ad3c498a8150..656eb8c1ffc8 100644
+--- a/tools/testing/selftests/bpf/progs/connect4_prog.c
++++ b/tools/testing/selftests/bpf/progs/connect4_prog.c
+@@ -8,6 +8,7 @@
+ #include <linux/in.h>
+ #include <linux/in6.h>
+ #include <sys/socket.h>
++#include <netinet/tcp.h>
+ 
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_endian.h>
+@@ -16,6 +17,10 @@
+ #define DST_REWRITE_IP4		0x7f000001U
+ #define DST_REWRITE_PORT4	4444
+ 
++#ifndef TCP_CA_NAME_MAX
++#define TCP_CA_NAME_MAX 16
++#endif
++
+ int _version SEC("version") = 1;
+ 
+ __attribute__ ((noinline))
+@@ -33,6 +38,43 @@ int do_bind(struct bpf_sock_addr *ctx)
+ 	return 1;
+ }
+ 
++static __inline int verify_cc(struct bpf_sock *sk,
++			      char expected[TCP_CA_NAME_MAX])
++{
++	char buf[TCP_CA_NAME_MAX];
++	int i;
++
++	if (bpf_getsockopt(sk, SOL_TCP, TCP_CONGESTION, &buf, sizeof(buf)))
++		return 1;
++
++	for (i = 0; i < TCP_CA_NAME_MAX; i++) {
++		if (buf[i] != expected[i])
++			return 1;
++		if (buf[i] == 0)
++			break;
++	}
++
++	return 0;
++}
++
++static __inline int set_cc(struct bpf_sock *sk)
++{
++	char dctcp[TCP_CA_NAME_MAX] = "dctcp";
++	char cubic[TCP_CA_NAME_MAX] = "cubic";
++
++	if (bpf_setsockopt(sk, SOL_TCP, TCP_CONGESTION, &dctcp, sizeof(dctcp)))
++		return 1;
++	if (verify_cc(sk, dctcp))
++		return 1;
++
++	if (bpf_setsockopt(sk, SOL_TCP, TCP_CONGESTION, &cubic, sizeof(cubic)))
++		return 1;
++	if (verify_cc(sk, cubic))
++		return 1;
++
++	return 0;
++}
++
+ SEC("cgroup/connect4")
+ int connect_v4_prog(struct bpf_sock_addr *ctx)
+ {
+@@ -66,6 +108,10 @@ int connect_v4_prog(struct bpf_sock_addr *ctx)
+ 
+ 	bpf_sk_release(sk);
+ 
++	/* Rewrite congestion control. */
++	if (ctx->type == SOCK_STREAM && set_cc(ctx->sk))
++		return 0;
++
+ 	/* Rewrite destination. */
+ 	ctx->user_ip4 = bpf_htonl(DST_REWRITE_IP4);
+ 	ctx->user_port = bpf_htons(DST_REWRITE_PORT4);
+-- 
+2.26.2.303.gf8c07b1a785-goog
+
