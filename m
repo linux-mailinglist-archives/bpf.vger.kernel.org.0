@@ -2,69 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B1F1BDBAD
-	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 14:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6871BDC33
+	for <lists+bpf@lfdr.de>; Wed, 29 Apr 2020 14:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgD2MPR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Apr 2020 08:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726556AbgD2MPR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 29 Apr 2020 08:15:17 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D93C035493
-        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 05:15:17 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id g10so1422626lfj.13
-        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 05:15:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fR8uUeszZzFt2LU2tuKirZn9/ZjcfUzUQ8MAaG7aJLU=;
-        b=GivbK70Yv83IrbrW7RhyIJdlS0bHppB43QCI+a4XVmY1/4udQeKLqvMPBq7OxM/056
-         uwcfBGuL4DltRCWPQVj8cVbNuvYMki5OEe7YtVUPHH9StzW0f3XVWAzDdm6KFjyvo2ZA
-         ONal6lpruxUL2QKx/PxeBOHbdefVIbbwQ9vk8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fR8uUeszZzFt2LU2tuKirZn9/ZjcfUzUQ8MAaG7aJLU=;
-        b=h64UWkyD7+8oFUfxAdHizNPxtm/9sjPPzl3lF5aOK+jjdg28d4EjD1AvaYKRv0mgG2
-         xHm5+BM/vIFGoh9EqH4vkcYkbGBNaWEFikcHvYQuSHTUuvbaRDCHAHzSSSpSptnc+uUG
-         P+LuNiu72Bl455PnnTOigyBPRGyElJj+3ajPevCMlCt7eHMdvvVKnFosq31QlOM6mdGw
-         2Pi0cb9PlvfBf0nMEJYnCYLKIEr0VWeZiTpoVDBlagPlsU2w8OmjyYVVru8ZAcHoozJH
-         lAWjS8/rBGIvvfzojpnpfSV341XFwCOkoHyTZe/ZI7PTqml9dAyfIs8KqIHHqTIdlElX
-         m/xg==
-X-Gm-Message-State: AGi0Pub9KBmToA0/XPlY3PwUIC+BN1vPxk7QBQfy1cSYlfoD23pGTEMH
-        7Ek1rk8vbU/gwl1M0gNzLIWa8H/NNIg=
-X-Google-Smtp-Source: APiQypLeMlSBJaJY8gtk/W5nI4lvaeHsjiQ1yDq0jG4P+mgzUjcApTyZVTBPIGrd1YKYMhPE7tlb1g==
-X-Received: by 2002:ac2:5e26:: with SMTP id o6mr21918859lfg.49.1588162515349;
-        Wed, 29 Apr 2020 05:15:15 -0700 (PDT)
-Received: from [192.168.1.149] (ip-5-186-116-45.cgn.fibianet.dk. [5.186.116.45])
-        by smtp.gmail.com with ESMTPSA id l18sm2183374ljg.98.2020.04.29.05.15.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Apr 2020 05:15:14 -0700 (PDT)
-Subject: Re: [RFC PATCH bpf-next 0/6] bpf, printk: add BTF-based type printing
-To:     Joe Perches <joe@perches.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com, kafai@fb.com,
-        songliubraving@fb.com, andriin@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <1587120160-3030-1-git-send-email-alan.maguire@oracle.com>
- <20200418160536.4mrvqh2lasqbyk77@ast-mbp>
- <alpine.LRH.2.21.2004201623390.12711@localhost>
- <7d6019da19d52c851d884731b1f16328fdbe2e3d.camel@perches.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <9c14a68e-c374-bca4-d0f8-c25b51c8dfe4@rasmusvillemoes.dk>
-Date:   Wed, 29 Apr 2020 14:15:12 +0200
+        id S1726822AbgD2Mb4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Apr 2020 08:31:56 -0400
+Received: from mga11.intel.com ([192.55.52.93]:18882 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726554AbgD2Mb4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Apr 2020 08:31:56 -0400
+IronPort-SDR: Kz2jzlWPxz2lbMCaGF0nA28a24ZVaMVnNLbMduRYuLkA9//9Encjz7l8uvuL7wGpqZ3at8gTbA
+ /o6o7cb/TFFg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 05:31:55 -0700
+IronPort-SDR: wgubizt0x69lH+ZvDFBUTwZpoXVYu6G8bufARnTlZJNrgBmYDO2uhPNPh0A12xREoB/ZT1aOlr
+ qqKGELXf9eCQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,332,1583222400"; 
+   d="scan'208";a="405026231"
+Received: from amasrati-mobl1.ger.corp.intel.com (HELO [10.214.197.183]) ([10.214.197.183])
+  by orsmga004.jf.intel.com with ESMTP; 29 Apr 2020 05:31:48 -0700
+Subject: Re: [PATCH bpf-next v9 0/8] MAC and Audit policy using eBPF (KRSI)
+To:     KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20200329004356.27286-1-kpsingh@chromium.org>
+From:   Mikko Ylinen <mikko.ylinen@linux.intel.com>
+Message-ID: <0165887d-e9d0-c03e-18b9-72e74a0cbd59@linux.intel.com>
+Date:   Wed, 29 Apr 2020 15:31:47 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <7d6019da19d52c851d884731b1f16328fdbe2e3d.camel@perches.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <20200329004356.27286-1-kpsingh@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
@@ -72,30 +51,67 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 20/04/2020 18.32, Joe Perches wrote:
-> On Mon, 2020-04-20 at 16:29 +0100, Alan Maguire wrote:
+Hi,
 
->>>>   struct sk_buff *skb = alloc_skb(64, GFP_KERNEL);
->>>>
->>>>   pr_info("%pTN<struct sk_buff>", skb);
->>>
->>> why follow "TN" convention?
->>> I think "%p<struct sk_buff>" is much more obvious, unambiguous, and
->>> equally easy to parse.
->>>
->>
->> That was my first choice, but the first character
->> after the 'p' in the '%p' specifier signifies the
->> pointer format specifier. If we use '<', and have
->> '%p<', where do we put the modifiers? '%p<xYz struct foo>'
->> seems clunky to me.
+On 29/03/2020 02:43, KP Singh wrote:
+> # How does it work?
+> 
+> The patchset introduces a new eBPF (https://docs.cilium.io/en/v1.6/bpf/)
+> program type BPF_PROG_TYPE_LSM which can only be attached to LSM hooks.
+> Loading and attachment of BPF programs requires CAP_SYS_ADMIN.
+> 
+> The new LSM registers nop functions (bpf_lsm_<hook_name>) as LSM hook
+> callbacks. Their purpose is to provide a definite point where BPF
+> programs can be attached as BPF_TRAMP_MODIFY_RETURN trampoline programs
+> for hooks that return an int, and BPF_TRAMP_FEXIT trampoline programs
+> for void LSM hooks.
 
-There's also the issue that %p followed by alnum has been understood to
-be reserved/specially handled by the kernel's printf implementation for
-a decade, while other characters have so far been treated as "OK, this
-was just a normal %p". A quick grep for %p< only gives a hit in
-drivers/scsi/dc395x.c, but there could be others (with field width
-modifier between % and p), and in any case I think it's a bad idea to
-extend the set of characters that cannot follow %p.
+I have two systems (a NUC and a qemu VM) that fail to boot if I enable
+the BPF LSM without enabling SELinux first. Anything I might be missing
+or are you able to trigger it too?
 
-Rasmus
+For instance, the following additional cmdline args: "lsm.debug=1
+lsm="capability,apparmor,bpf" results in:
+
+[    1.251889] Call Trace:
+[    1.252344]  dump_stack+0x57/0x7a
+[    1.252951]  panic+0xe6/0x2a4
+[    1.253497]  ? printk+0x43/0x45
+[    1.254075]  mount_block_root+0x30c/0x31b
+[    1.254798]  mount_root+0x78/0x7b
+[    1.255417]  prepare_namespace+0x13a/0x16b
+[    1.256168]  kernel_init_freeable+0x210/0x222
+[    1.257021]  ? rest_init+0xa5/0xa5
+[    1.257639]  kernel_init+0x9/0xfb
+[    1.258074]  ret_from_fork+0x35/0x40
+[    1.258885] Kernel Offset: 0x11000000 from 0xffffffff81000000 
+(relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+[    1.264046] ---[ end Kernel panic - not syncing: VFS: Unable to mount 
+root fs on unknown-block(253,3)
+
+Taking out "bpf" or adding "selinux" before it boots OK. I've tried
+with both 5.7-rc2 and -rc3.
+
+LSM logs:
+
+[    0.267219] LSM: Security Framework initializing
+[    0.267844] LSM: first ordering: capability (enabled)
+[    0.267870] LSM: cmdline ignored: capability
+[    0.268869] LSM: cmdline ordering: apparmor (enabled)
+[    0.269508] LSM: cmdline ordering: bpf (enabled)
+[    0.269869] LSM: cmdline disabled: selinux
+[    0.270377] LSM: cmdline disabled: integrity
+[    0.270869] LSM: exclusive chosen: apparmor
+[    0.271869] LSM: cred blob size     = 8
+[    0.272354] LSM: file blob size     = 24
+[    0.272869] LSM: inode blob size    = 0
+[    0.273362] LSM: ipc blob size      = 0
+[    0.273869] LSM: msg_msg blob size  = 0
+[    0.274352] LSM: task blob size     = 32
+[    0.274873] LSM: initializing capability
+[    0.275381] LSM: initializing apparmor
+[    0.275880] AppArmor: AppArmor initialized
+[    0.276437] LSM: initializing bpf
+[    0.276871] LSM support for eBPF active
+
+-- Regards, Mikko
