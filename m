@@ -2,349 +2,240 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2371C00EB
-	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 17:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3931C039A
+	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 19:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbgD3PxO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Apr 2020 11:53:14 -0400
-Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:60056 "EHLO
-        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726787AbgD3PxN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 30 Apr 2020 11:53:13 -0400
-Received: from mxbackcorp1g.mail.yandex.net (mxbackcorp1g.mail.yandex.net [IPv6:2a02:6b8:0:1402::301])
-        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id BC2F52E15AB;
-        Thu, 30 Apr 2020 18:53:04 +0300 (MSK)
-Received: from iva8-88b7aa9dc799.qloud-c.yandex.net (iva8-88b7aa9dc799.qloud-c.yandex.net [2a02:6b8:c0c:77a0:0:640:88b7:aa9d])
-        by mxbackcorp1g.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id YIZSWfcKVt-r3AKo8I7;
-        Thu, 30 Apr 2020 18:53:04 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1588261984; bh=gdzeTGVZ6a92XTHXTR/IU8ctQrdTLBYx/L72zKJnp20=;
-        h=In-Reply-To:Message-Id:References:Date:Subject:To:From:Cc;
-        b=QJdX/rliUG2R5fAshlAedZorZ1Y2BtBRShAOZhP/6f3PzFhPIuZcYHmB8mvhckODc
-         dcFnWbfUv3FOJ3ykmg50d8fbhyqhys3TuHTJa6UWN7Y3jm7YdyfwO3c1pTexaUe0i4
-         c1BUTJXBODXvvTZImr4I2WEXIxEeAnvXpNYkz9f0=
-Authentication-Results: mxbackcorp1g.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from unknown (unknown [178.154.215.84])
-        by iva8-88b7aa9dc799.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id ItUiLwion6-r2WGTIAJ;
-        Thu, 30 Apr 2020 18:53:03 +0300
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client certificate not present)
-From:   Dmitry Yakunin <zeil@yandex-team.ru>
-To:     netdev@vger.kernel.org
-Cc:     khlebnikov@yandex-team.ru, cgroups@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH iproute2-next 2/2] ss: add support for cgroup v2 information and filtering
-Date:   Thu, 30 Apr 2020 18:52:45 +0300
-Message-Id: <20200430155245.83364-3-zeil@yandex-team.ru>
-In-Reply-To: <20200430155245.83364-1-zeil@yandex-team.ru>
-References: <20200430155245.83364-1-zeil@yandex-team.ru>
+        id S1726530AbgD3RH4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Apr 2020 13:07:56 -0400
+Received: from mail-eopbgr60066.outbound.protection.outlook.com ([40.107.6.66]:41539
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726272AbgD3RH4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Apr 2020 13:07:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TkDbxgkkjLf9V92aLWy/+u8SunJP7qKd8DqrwSEBdjo/qmOOBcjyvXcKSEnaqMJ2XSwa2+0gUDovQU/pkbSonuHW1idi9oh5A3sFDoT31GOpz4VLAjiDBzwbM827G4On0VnmelgKMTO/F8EKjVoAIkiWt3IvmUAOb0yK8T5fJVyeNj5Co7dAML6qokQSZQgGkxaxH2Q9BJ8JvvcyQ4PLaE+08Iw9kJleA/8v7xwEqEvczAh4DvY9AWf1MlWn6poTK04vtnieuIxJMJ2tqvURXijj/NrbHesAzCC5X31jE2mu7TDpK5iTm00XnriBqHuX0zzrT/HbYVmUjVNzwdTxJQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gRN31g/1fXGehewBlu59N6tBu9nPC10evAzWvue5U1E=;
+ b=C1Onxq/opmCr6E/+UAFM3Ho5XfEbzwCiytjzl6uL8ctP4bvxMigRNm3tTNLjt+8cSN5ITt9MrwNG5lVAGYkul5lbB56uAR2RG4b11Jl7SJQZPbZlOeL+W1CwSe1DHKpInD9pCSb9WBqWsEAqsTA4w4hJ/Gsy2iEUzEH8GUD6xR9yLH3utnYjwpSpkS3RdGLrhYFWrEcJ1mxT8IGH8t9gizWYbwLFAhZVB9YwpqMWg+BAKEFhEQxt0MyPuxdYfpZczBFU+7zM7H0Mn5vVx0a63qNIHh3Y/eAhnIecSUWotkjBPLuuSxcX311h3z88WhqDEHNNblKOHHI9PFjZo8vEAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gRN31g/1fXGehewBlu59N6tBu9nPC10evAzWvue5U1E=;
+ b=s3Bc4DESQPV3ak8BT/twgiW9St3cD3bsdExhojqQPVRY7Fm7yyGZFRLTjkT6mJSIhtCjRYZFryGy0ww4rYTEhwObdfMGujiBUB4YX9UjzRBmCFEHNq5J/wNWtL+QCFPwFnJDSpr0mSpv3+MX7MmqhdS/MC7SNASdhEo5P/duIbw=
+Authentication-Results: secunet.com; dkim=none (message not signed)
+ header.d=none;secunet.com; dmarc=none action=none header.from=mellanox.com;
+Received: from VI1PR0501MB2205.eurprd05.prod.outlook.com
+ (2603:10a6:800:2a::20) by VI1PR0501MB2605.eurprd05.prod.outlook.com
+ (2603:10a6:800:6b::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.19; Thu, 30 Apr
+ 2020 17:07:50 +0000
+Received: from VI1PR0501MB2205.eurprd05.prod.outlook.com
+ ([fe80::71d3:d6cf:eb7e:6a0e]) by VI1PR0501MB2205.eurprd05.prod.outlook.com
+ ([fe80::71d3:d6cf:eb7e:6a0e%3]) with mapi id 15.20.2958.020; Thu, 30 Apr 2020
+ 17:07:50 +0000
+Subject: Re: [PATCH net-next v2 28/33] mlx5: rx queue setup time determine
+ frame_sz for XDP
+To:     Jesper Dangaard Brouer <brouer@redhat.com>, sameehj@amazon.com
+Cc:     Tariq Toukan <tariqt@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, zorik@amazon.com, akiyano@amazon.com,
+        gtzalik@amazon.com,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        steffen.klassert@secunet.com
+References: <158824557985.2172139.4173570969543904434.stgit@firesoul>
+ <158824576377.2172139.12065840702900641458.stgit@firesoul>
+From:   Tariq Toukan <tariqt@mellanox.com>
+Message-ID: <a5be329e-39e3-fdfc-500d-383953546d40@mellanox.com>
+Date:   Thu, 30 Apr 2020 20:07:43 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+In-Reply-To: <158824576377.2172139.12065840702900641458.stgit@firesoul>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0PR02CA0026.eurprd02.prod.outlook.com
+ (2603:10a6:208:3e::39) To VI1PR0501MB2205.eurprd05.prod.outlook.com
+ (2603:10a6:800:2a::20)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.110] (77.125.37.56) by AM0PR02CA0026.eurprd02.prod.outlook.com (2603:10a6:208:3e::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Thu, 30 Apr 2020 17:07:47 +0000
+X-Originating-IP: [77.125.37.56]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 386ffc05-968c-4d49-7c53-08d7ed290322
+X-MS-TrafficTypeDiagnostic: VI1PR0501MB2605:|VI1PR0501MB2605:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0501MB2605E1E2943BF7B503D2E99EAEAA0@VI1PR0501MB2605.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Forefront-PRVS: 0389EDA07F
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: d/e6TENH2RUT7tI7ssGm+OoricXP0Rrc6u4VkFd8wuCVlOdxVLQS8mEhHUuwClKiiQ7sxwyG+6g1d6qrpAst8hkbM+WXrtXIpnzbGRwNqvj2l9ERlbR67gVW1bB4h6fI3Xw2bJ+mW/5bNSQAk64FKBNEIwjVoq6cFIfaJS9mJMxRfX64coPRqcJCtffA5mqPIQgkn0nUCMvLkws5fdL1Mu16RI9uBIfgIQhnpPLP6D93nf0q3k45z8KHxFQtloe1AElmg9+iSe34FAEEJEwvORIxr8QYx1emSDlrGsR6UIf5WzVdXPi5R7cuq9rYMOt2cNhC+vUoCt6SQBCr/bYUUFMVvXgnNf6xxG83FLz4dHWWQsuW+/oGxu6LgmyEk/7DPWWrkHXWOdsifVtV8erom0S6armmzhbsbZjxSqkA+XcDdI1BXmWzcbmRldOkRB3oq9H6BZsmK7PeUOznqJwEScC7e56qUb80Mf+4BdYOxMF1c/TlBxrZ7EVEjd61svzs
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0501MB2205.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(66476007)(8676002)(2616005)(52116002)(186003)(16526019)(5660300002)(86362001)(66556008)(7416002)(66946007)(26005)(53546011)(31696002)(956004)(31686004)(16576012)(36756003)(2906002)(54906003)(8936002)(6486002)(4326008)(498600001)(6666004)(6606295002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: tyN5kbTiylvFL1sHpevdwvbX4lDyQQ/sql5MhJ507gWb6za/IDCsg5BVP0mYHWdmKKFOYNV8tTTBSF+wUGEgigPnrYHBy5pRhzTdGjZ7j22RNd5J0BqY89SERNMblwQIPRNczq6X9Y6WpJXk414mOYRQCyhW/Im6IMNu7AkHUtEqjKjBiiuEIxSszL36s2Wou6W62KCelnHcic+MEoQsD82q079Rqq7z94nPfC5LuHBToU8ZT51NRnVJhOz+CI6iuhn0k162xaQEe/OfMuABTW+zj31Biam8CjJprX7YR8aqOlGBgDCeksHvIAKWGaKUuB//FVN9kTc64Ae9TqqVrQUNiwRkA+oUa1iP4f2hiG6OH1j+udJqqWpnabNtK8szf5HFvPdcNaPZg/7/sti+t2lRDATTHShCfQJiUhRWK7EYHCnA4JYs0Q8fKBiCdFnfTN0YGav9yUoHGG7qlcEvQR4Q6cYyemYKXU/Ti3AcG7cgAyt5K9wYsJ+pBP0PneeSR9M8j8BPhH3V2LhGKJM8AWE443+Oj7K9fyxAFmJuUzJvQ1B5GwxkN8FiMQS9K1edEfMKV5dytrBurYfhyIY4p4O66Kw/8GHkn5s0np8BZo0ZOTOwdd7P6QpjTBHhWxuL7b7k2UBAvhteNA5/moLRdalv49MgaVHh6xcwX1qZrLvk/NvqEef2jgiT0FCuPDFWMMl8QypC8cYEyqp+a+T0xwnUe3R0PGdB75wYXtRKonP7ZojjNyFCcSlXlDeEEch0++iW5zVzN/mAVp4/C3EZXmPhB/07JNmwfSRJFC/jMfM=
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 386ffc05-968c-4d49-7c53-08d7ed290322
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2020 17:07:50.1556
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8jxAFxCXeip0KZvXjYr9GUZChSslceEN3rxenZQNKEVZVq3aEK68Hm3aa359gDIiYnmoba6O1f8SrlKJMOcLhA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0501MB2605
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch introduces two new features: obtaining cgroup information and
-filtering sockets by cgroups. These features work based on cgroup v2 ID
-field in the socket (kernel should be compiled with CONFIG_SOCK_CGROUP_DATA).
 
-Cgroup information can be obtained by specifying --cgroup flag and now contains
-only pathname. For faster pathname lookups cgroup cache is implemented. This
-cache is filled on ss startup and missed entries are resolved and saved
-on the fly.
 
-Cgroup filter extends EXPRESSION and allows to specify cgroup pathname
-(relative or absolute) to obtain sockets attached only to this cgroup.
-Filter syntax: ss [ cgroup PATHNAME ]
-Examples:
-    ss -a cgroup /sys/fs/cgroup/unified (or ss -a cgroup .)
-    ss -a cgroup /sys/fs/cgroup/unified/cgroup1 (or ss -a cgroup cgroup1)
+On 4/30/2020 2:22 PM, Jesper Dangaard Brouer wrote:
+> The mlx5 driver have multiple memory models, which are also changed
+> according to whether a XDP bpf_prog is attached.
+> 
+> The 'rx_striding_rq' setting is adjusted via ethtool priv-flags e.g.:
+>   # ethtool --set-priv-flags mlx5p2 rx_striding_rq off
+> 
+> On the general case with 4K page_size and regular MTU packet, then
+> the frame_sz is 2048 and 4096 when XDP is enabled, in both modes.
+> 
+> The info on the given frame size is stored differently depending on the
+> RQ-mode and encoded in a union in struct mlx5e_rq union wqe/mpwqe.
+> In rx striding mode rq->mpwqe.log_stride_sz is either 11 or 12, which
+> corresponds to 2048 or 4096 (MLX5_WQ_TYPE_LINKED_LIST_STRIDING_RQ).
+> In non-striding mode (MLX5_WQ_TYPE_CYCLIC) the frag_stride is stored
+> in rq->wqe.info.arr[0].frag_stride, for the first fragment, which is
+> what the XDP case cares about.
+> 
+> To reduce effect on fast-path, this patch determine the frame_sz at
+> setup time, to avoid determining the memory model runtime. Variable
+> is named first_frame_sz to make it clear that this is only the frame
+> size of the first fragment.
+> 
+> This mlx5 driver does a DMA-sync on XDP_TX action, but grow is safe
+> as it have done a DMA-map on the entire PAGE_SIZE. The driver also
+> already does a XDP length check against sq->hw_mtu on the possible
+> XDP xmit paths mlx5e_xmit_xdp_frame() + mlx5e_xmit_xdp_frame_mpwqe().
+> 
+> V2: Fix that frag_size need to be recalc before creating SKB.
+> 
+> Cc: Tariq Toukan <tariqt@mellanox.com>
+> Cc: Saeed Mahameed <saeedm@mellanox.com>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
+>   drivers/net/ethernet/mellanox/mlx5/core/en.h      |    1 +
+>   drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c  |    1 +
+>   drivers/net/ethernet/mellanox/mlx5/core/en_main.c |    6 ++++++
+>   drivers/net/ethernet/mellanox/mlx5/core/en_rx.c   |    2 ++
+>   4 files changed, 10 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> index 23701c0e36ec..ba6a0ee297c6 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> @@ -652,6 +652,7 @@ struct mlx5e_rq {
+>   	struct {
+>   		u16            umem_headroom;
+>   		u16            headroom;
+> +		u32            first_frame_sz;
+>   		u8             map_dir;   /* dma map direction */
+>   	} buff;
+>   
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> index f049e0ac308a..b63abaf51253 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> @@ -137,6 +137,7 @@ bool mlx5e_xdp_handle(struct mlx5e_rq *rq, struct mlx5e_dma_info *di,
+>   	if (xsk)
+>   		xdp.handle = di->xsk.handle;
+>   	xdp.rxq = &rq->xdp_rxq;
+> +	xdp.frame_sz = rq->buff.first_frame_sz;
+>   
+>   	act = bpf_prog_run_xdp(prog, &xdp);
+>   	if (xsk) {
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> index 47396f1b02f4..1d04ed3feead 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> @@ -462,6 +462,8 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
+>   		rq->mpwqe.num_strides =
+>   			BIT(mlx5e_mpwqe_get_log_num_strides(mdev, params, xsk));
+>   
+> +		rq->buff.first_frame_sz = (1 << rq->mpwqe.log_stride_sz);
+> +
+>   		err = mlx5e_create_rq_umr_mkey(mdev, rq);
+>   		if (err)
+>   			goto err_rq_wq_destroy;
+> @@ -485,6 +487,8 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
+>   			num_xsk_frames = wq_sz << rq->wqe.info.log_num_frags;
+>   
+>   		rq->wqe.info = rqp->frags_info;
+> +		rq->buff.first_frame_sz = rq->wqe.info.arr[0].frag_stride;
+> +
+>   		rq->wqe.frags =
+>   			kvzalloc_node(array_size(sizeof(*rq->wqe.frags),
+>   					(wq_sz << rq->wqe.info.log_num_frags)),
+> @@ -522,6 +526,8 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
+>   	}
+>   
+>   	if (xsk) {
+> +		rq->buff.first_frame_sz = xsk_umem_xdp_frame_sz(umem);
+> +
+>   		err = mlx5e_xsk_resize_reuseq(umem, num_xsk_frames);
+>   		if (unlikely(err)) {
+>   			mlx5_core_err(mdev, "Unable to allocate the Reuse Ring for %u frames\n",
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+> index e2beb89c1832..04671ed977a5 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+> @@ -1084,6 +1084,7 @@ mlx5e_skb_from_cqe_linear(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe,
+>   	if (consumed)
+>   		return NULL; /* page/packet was consumed by XDP */
+>   
+> +	frag_size = MLX5_SKB_FRAG_SZ(rx_headroom + cqe_bcnt);
 
-Signed-off-by: Dmitry Yakunin <zeil@yandex-team.ru>
-Reviewed-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
----
- include/uapi/linux/inet_diag.h |  2 ++
- man/man8/ss.8                  |  9 +++++++
- misc/ss.c                      | 61 ++++++++++++++++++++++++++++++++++++++++++
- misc/ssfilter.h                |  2 ++
- misc/ssfilter.y                | 22 ++++++++++++++-
- 5 files changed, 95 insertions(+), 1 deletion(-)
+This is a re-calculation of frag_size, using the exact same command used 
+earlier in this function, but with a newer value of rx_headroom.
+This wasn't part of the previous patchset. I understand the need.
 
-diff --git a/include/uapi/linux/inet_diag.h b/include/uapi/linux/inet_diag.h
-index 0c1c781..f009abf 100644
---- a/include/uapi/linux/inet_diag.h
-+++ b/include/uapi/linux/inet_diag.h
-@@ -96,6 +96,7 @@ enum {
- 	INET_DIAG_BC_MARK_COND,
- 	INET_DIAG_BC_S_EQ,
- 	INET_DIAG_BC_D_EQ,
-+	INET_DIAG_BC_CGROUP_COND,   /* u64 cgroup v2 ID */
- };
- 
- struct inet_diag_hostcond {
-@@ -157,6 +158,7 @@ enum {
- 	INET_DIAG_MD5SIG,
- 	INET_DIAG_ULP_INFO,
- 	INET_DIAG_SK_BPF_STORAGES,
-+	INET_DIAG_CGROUP_ID,
- 	__INET_DIAG_MAX,
- };
- 
-diff --git a/man/man8/ss.8 b/man/man8/ss.8
-index 023d771..894cb20 100644
---- a/man/man8/ss.8
-+++ b/man/man8/ss.8
-@@ -281,6 +281,15 @@ Class id set by net_cls cgroup. If class is zero this shows priority
- set by SO_PRIORITY.
- .RE
- .TP
-+.B \-\-cgroup
-+Show cgroup information. Below fields may appear:
-+.RS
-+.P
-+.TP
-+.B cgroup
-+Cgroup v2 pathname. This pathname is relative to the mount point of the hierarchy.
-+.RE
-+.TP
- .B \-K, \-\-kill
- Attempts to forcibly close sockets. This option displays sockets that are
- successfully closed and silently skips sockets that the kernel does not support
-diff --git a/misc/ss.c b/misc/ss.c
-index 3ef151f..7b1c94b 100644
---- a/misc/ss.c
-+++ b/misc/ss.c
-@@ -36,6 +36,7 @@
- #include "namespace.h"
- #include "SNAPSHOT.h"
- #include "rt_names.h"
-+#include "cg_map.h"
- 
- #include <linux/tcp.h>
- #include <linux/sock_diag.h>
-@@ -122,6 +123,7 @@ static int follow_events;
- static int sctp_ino;
- static int show_tipcinfo;
- static int show_tos;
-+static int show_cgroup;
- int oneline;
- 
- enum col_id {
-@@ -797,6 +799,7 @@ struct sockstat {
- 	char *name;
- 	char *peer_name;
- 	__u32		    mark;
-+	__u64		    cgroup_id;
- };
- 
- struct dctcpstat {
-@@ -1417,6 +1420,9 @@ static void sock_details_print(struct sockstat *s)
- 
- 	if (s->mark)
- 		out(" fwmark:0x%x", s->mark);
-+
-+	if (s->cgroup_id)
-+		out(" cgroup:%s", cg_id_to_path(s->cgroup_id));
- }
- 
- static void sock_addr_print(const char *addr, char *delim, const char *port,
-@@ -1643,6 +1649,7 @@ struct aafilter {
- 	unsigned int	iface;
- 	__u32		mark;
- 	__u32		mask;
-+	__u64		cgroup_id;
- 	struct aafilter *next;
- };
- 
-@@ -1771,6 +1778,12 @@ static int run_ssfilter(struct ssfilter *f, struct sockstat *s)
- 
- 		return (s->mark & a->mask) == a->mark;
- 	}
-+		case SSF_CGROUPCOND:
-+	{
-+		struct aafilter *a = (void *)f->pred;
-+
-+		return s->cgroup_id == a->cgroup_id;
-+	}
- 		/* Yup. It is recursion. Sorry. */
- 		case SSF_AND:
- 		return run_ssfilter(f->pred, s) && run_ssfilter(f->post, s);
-@@ -1963,6 +1976,23 @@ static int ssfilter_bytecompile(struct ssfilter *f, char **bytecode)
- 
- 		return inslen;
- 	}
-+		case SSF_CGROUPCOND:
-+	{
-+		struct aafilter *a = (void *)f->pred;
-+		struct instr {
-+			struct inet_diag_bc_op op;
-+			__u64 cgroup_id;
-+		} __attribute__((packed));
-+		int inslen = sizeof(struct instr);
-+
-+		if (!(*bytecode = malloc(inslen))) abort();
-+		((struct instr *)*bytecode)[0] = (struct instr) {
-+			{ INET_DIAG_BC_CGROUP_COND, inslen, inslen + 4 },
-+			a->cgroup_id,
-+		};
-+
-+		return inslen;
-+	}
- 		default:
- 		abort();
- 	}
-@@ -2300,6 +2330,22 @@ void *parse_markmask(const char *markmask)
- 	return res;
- }
- 
-+void *parse_cgroupcond(const char *path)
-+{
-+	struct aafilter *res;
-+	__u64 id;
-+
-+	id = get_cgroup2_id(path);
-+	if (!id)
-+		return NULL;
-+
-+	res = malloc(sizeof(*res));
-+	if (res)
-+		res->cgroup_id = id;
-+
-+	return res;
-+}
-+
- static void proc_ctx_print(struct sockstat *s)
- {
- 	char *buf;
-@@ -3095,6 +3141,9 @@ static void parse_diag_msg(struct nlmsghdr *nlh, struct sockstat *s)
- 	s->mark = 0;
- 	if (tb[INET_DIAG_MARK])
- 		s->mark = rta_getattr_u32(tb[INET_DIAG_MARK]);
-+	s->cgroup_id = 0;
-+	if (tb[INET_DIAG_CGROUP_ID])
-+		s->cgroup_id = rta_getattr_u64(tb[INET_DIAG_CGROUP_ID]);
- 	if (tb[INET_DIAG_PROTOCOL])
- 		s->raw_prot = rta_getattr_u8(tb[INET_DIAG_PROTOCOL]);
- 	else
-@@ -3162,6 +3211,11 @@ static int inet_show_sock(struct nlmsghdr *nlh,
- 			out(" class_id:%#x", rta_getattr_u32(tb[INET_DIAG_CLASS_ID]));
- 	}
- 
-+	if (show_cgroup) {
-+		if (tb[INET_DIAG_CGROUP_ID])
-+			out(" cgroup:%s", cg_id_to_path(rta_getattr_u64(tb[INET_DIAG_CGROUP_ID])));
-+	}
-+
- 	if (show_mem || (show_tcpinfo && s->type != IPPROTO_UDP)) {
- 		if (!oneline)
- 			out("\n\t");
-@@ -4987,6 +5041,7 @@ static void _usage(FILE *dest)
- "       --tipcinfo      show internal tipc socket information\n"
- "   -s, --summary       show socket usage summary\n"
- "       --tos           show tos and priority information\n"
-+"       --cgroup        show cgroup information\n"
- "   -b, --bpf           show bpf filter socket information\n"
- "   -E, --events        continually display sockets as they are destroyed\n"
- "   -Z, --context       display process SELinux security contexts\n"
-@@ -5097,6 +5152,8 @@ static int scan_state(const char *state)
- /* Values of 'x' are already used so a non-character is used */
- #define OPT_XDPSOCK 260
- 
-+#define OPT_CGROUP 261
-+
- static const struct option long_opts[] = {
- 	{ "numeric", 0, 0, 'n' },
- 	{ "resolve", 0, 0, 'r' },
-@@ -5133,6 +5190,7 @@ static const struct option long_opts[] = {
- 	{ "net", 1, 0, 'N' },
- 	{ "tipcinfo", 0, 0, OPT_TIPCINFO},
- 	{ "tos", 0, 0, OPT_TOS },
-+	{ "cgroup", 0, 0, OPT_CGROUP },
- 	{ "kill", 0, 0, 'K' },
- 	{ "no-header", 0, 0, 'H' },
- 	{ "xdp", 0, 0, OPT_XDPSOCK},
-@@ -5320,6 +5378,9 @@ int main(int argc, char *argv[])
- 		case OPT_TOS:
- 			show_tos = 1;
- 			break;
-+		case OPT_CGROUP:
-+			show_cgroup = 1;
-+			break;
- 		case 'K':
- 			current_filter.kill = 1;
- 			break;
-diff --git a/misc/ssfilter.h b/misc/ssfilter.h
-index f5b0bc8..d85c084 100644
---- a/misc/ssfilter.h
-+++ b/misc/ssfilter.h
-@@ -11,6 +11,7 @@
- #define SSF_S_AUTO  9
- #define SSF_DEVCOND 10
- #define SSF_MARKMASK 11
-+#define SSF_CGROUPCOND 12
- 
- #include <stdbool.h>
- 
-@@ -25,3 +26,4 @@ int ssfilter_parse(struct ssfilter **f, int argc, char **argv, FILE *fp);
- void *parse_hostcond(char *addr, bool is_port);
- void *parse_devcond(char *name);
- void *parse_markmask(const char *markmask);
-+void *parse_cgroupcond(const char *path);
-diff --git a/misc/ssfilter.y b/misc/ssfilter.y
-index a901ae7..b417579 100644
---- a/misc/ssfilter.y
-+++ b/misc/ssfilter.y
-@@ -36,7 +36,7 @@ static void yyerror(char *s)
- 
- %}
- 
--%token HOSTCOND DCOND SCOND DPORT SPORT LEQ GEQ NEQ AUTOBOUND DEVCOND DEVNAME MARKMASK FWMARK
-+%token HOSTCOND DCOND SCOND DPORT SPORT LEQ GEQ NEQ AUTOBOUND DEVCOND DEVNAME MARKMASK FWMARK CGROUPCOND CGROUPPATH
- %left '|'
- %left '&'
- %nonassoc '!'
-@@ -156,6 +156,14 @@ expr:	'(' exprlist ')'
-         {
-                 $$ = alloc_node(SSF_NOT, alloc_node(SSF_MARKMASK, $3));
-         }
-+        | CGROUPPATH eq CGROUPCOND
-+        {
-+                $$ = alloc_node(SSF_CGROUPCOND, $3);
-+        }
-+        | CGROUPPATH NEQ CGROUPCOND
-+        {
-+                $$ = alloc_node(SSF_NOT, alloc_node(SSF_CGROUPCOND, $3));
-+        }
-         | AUTOBOUND
-         {
-                 $$ = alloc_node(SSF_S_AUTO, NULL);
-@@ -276,6 +284,10 @@ int yylex(void)
- 		tok_type = FWMARK;
- 		return FWMARK;
- 	}
-+	if (strcmp(curtok, "cgroup") == 0) {
-+		tok_type = CGROUPPATH;
-+		return CGROUPPATH;
-+	}
- 	if (strcmp(curtok, ">=") == 0 ||
- 	    strcmp(curtok, "ge") == 0 ||
- 	    strcmp(curtok, "geq") == 0)
-@@ -318,6 +330,14 @@ int yylex(void)
- 		}
- 		return MARKMASK;
- 	}
-+	if (tok_type == CGROUPPATH) {
-+		yylval = (void*)parse_cgroupcond(curtok);
-+		if (yylval == NULL) {
-+			fprintf(stderr, "Cannot parse cgroup %s.\n", curtok);
-+			exit(1);
-+		}
-+		return CGROUPCOND;
-+	}
- 	yylval = (void*)parse_hostcond(curtok, tok_type == SPORT || tok_type == DPORT);
- 	if (yylval == NULL) {
- 		fprintf(stderr, "Cannot parse dst/src address.\n");
--- 
-2.7.4
+However, this code repetition looks weird and non-optimal to me. I think 
+we can come up with something better.
 
+>   	skb = mlx5e_build_linear_skb(rq, va, frag_size, rx_headroom, cqe_bcnt);
+>   	if (unlikely(!skb))
+>   		return NULL;
+> @@ -1385,6 +1386,7 @@ mlx5e_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *wi,
+>   		return NULL; /* page/packet was consumed by XDP */
+>   	}
+>   
+> +	frag_size = MLX5_SKB_FRAG_SZ(rx_headroom + cqe_bcnt32);
+
+Same here.
+
+>   	skb = mlx5e_build_linear_skb(rq, va, frag_size, rx_headroom, cqe_bcnt32);
+>   	if (unlikely(!skb))
+>   		return NULL;
+> 
+> 
+
+My suggetion is:
+Pass &frag_size to mlx5e_xdp_handle(), and update it within it, just 
+next to the update of rx_headroom.
+All the needed information is there: the new rx_headroom, and cqe_bcnt.
+
+Thanks,
+Tariq
