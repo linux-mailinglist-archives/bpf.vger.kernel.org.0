@@ -2,159 +2,210 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E6C41BEE14
-	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 04:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2B91BEE20
+	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 04:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbgD3CK5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Apr 2020 22:10:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58412 "EHLO
+        id S1726282AbgD3CMm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Apr 2020 22:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726282AbgD3CK5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 29 Apr 2020 22:10:57 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8740C035494;
-        Wed, 29 Apr 2020 19:10:56 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id t7so1668342plr.0;
-        Wed, 29 Apr 2020 19:10:56 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726180AbgD3CMl (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 29 Apr 2020 22:12:41 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69628C035494;
+        Wed, 29 Apr 2020 19:12:40 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id k12so3803374qtm.4;
+        Wed, 29 Apr 2020 19:12:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GkpqqWBkAF18ABKRbJQ+dSLIBUQRR8C6F1O4ytn6QLA=;
-        b=nALKZQd5JdEZzhMZY1azIBYXEqMWEN+Z8n8gcIKHQu+t5irzmsh9jc+mLjismNnCco
-         wbrFjN0Yo/7Bo59kXNkrXYHt6s/jdCnVtQiffa+rPADelcBxKP7GHG6OuQXvzACcezpV
-         /RocMOj8GZDxF4clBk25kZgTJAyG7I0dIIySooFKQbis+hImdxbUT5bdKrffdo5u+jN5
-         xuij5E+Z+iBrIeVsELM8EbILev+Y0AyBvcZnjviSozuJ93yfZpU53uLnbdzffUjkhvxZ
-         olq6vTdh87UwB0ZIYC8lILuDVc5CPxb/GKcfFndY5FmQ/OTKikSgnJEBCt6xaRKzYU79
-         Zy6A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sDMd0/hqud/PMdgZAwD4h3pUtKi9lGJdDj8hIUCvV6o=;
+        b=aHLOkWU63+GkcpMx0zLnhGljIMIohXYX2POcodUO6hvTaQ+pD9kmh+9Sx59VpSIbK/
+         XmOC7bUu2wcNMhNC446Tyvx7jVisebk4zVSIL6xXn8B+TijqS0au0UWjmM8QBNcKj/wH
+         Shj7nwYleovBHPUt66mmDmK4mpKLmz+bcFzwHyQeoTLBa4RgNpNbsX1nkC9KhUOT+4sn
+         ooVGcF88SzTdtm/NkpMF/pnTZsycYFJ/Uy6zzY3uVGj3VhiaNXeoYIBsCQ4SOYpu+2lf
+         qEiW3A5TdbmSPCQqcNAZ5Ufk5+ZCp5OdLNPHMuHqmlPTJVNigAvZhAfmtaZxCEvZOlmX
+         fF1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GkpqqWBkAF18ABKRbJQ+dSLIBUQRR8C6F1O4ytn6QLA=;
-        b=S1U1nF/qP2Fg9QrXFHG6ylH7uPG6txYV/RKphCAb8yrwN0HhHJ+ZfziAjs2aOD3+4+
-         OiE7/GlM5Pnxvf11jdK93NJWI/6pr1oc8E7rsTn68rvrz/63eLulDpPItQ/BMD9L2Wzu
-         5TkjNN5mvKmR9opZ/wE90cunYYSdSYkXeEgojLaeP9RfqJLo5U5dfsaja9oSmk9aFjb3
-         uCJDEgiObO01hz4+nEG9qp1qBY2wmFJWjOfQk+7/Di4cndbIUKq8XaIF2eydW7pZ68Py
-         QWmP+GIbs8Lw6TMDzkFhxJGkyy3u6+p0to9CLVhw1W9tfXkhHMK/XSBD7CbyZNFiIyIp
-         WdGQ==
-X-Gm-Message-State: AGi0PubiwPocUQZwlwlIRP0XF60Lx8zo4yNr1a5FgKvWLacq8izZmvW2
-        msl3FU5JAE04lsXuGtdsQgRESJP4
-X-Google-Smtp-Source: APiQypINusOnq9GsK6RxyiPgDguA0uFN2Q/0uuGGrULiXDbrq8XuLL3KmA+/TY7rk+BWWj3OKSlBag==
-X-Received: by 2002:a17:90a:d14d:: with SMTP id t13mr285087pjw.175.1588212656117;
-        Wed, 29 Apr 2020 19:10:56 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:39f2])
-        by smtp.gmail.com with ESMTPSA id m6sm1984371pgm.67.2020.04.29.19.10.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 19:10:55 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 19:10:52 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, hpa@zytor.com, ast@kernel.org,
-        peterz@infradead.org, rdunlap@infradead.org,
-        Arnd Bergmann <arnd@arndb.de>, bpf@vger.kernel.org,
-        daniel@iogearbox.net
-Subject: Re: BPF vs objtool again
-Message-ID: <20200430021052.k47qzm63kpcn32pg@ast-mbp.dhcp.thefacebook.com>
-References: <30c3ca29ba037afcbd860a8672eef0021addf9fe.1563413318.git.jpoimboe@redhat.com>
- <tip-3193c0836f203a91bef96d88c64cccf0be090d9c@git.kernel.org>
- <20200429215159.eah6ksnxq6g5adpx@treble>
- <20200429234159.gid6ht74qqmlpuz7@ast-mbp.dhcp.thefacebook.com>
- <20200430001300.k3pgq2minrowstbs@treble>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sDMd0/hqud/PMdgZAwD4h3pUtKi9lGJdDj8hIUCvV6o=;
+        b=H/4e2xfmu5bSnOFHoPfWLzGxuyk5j2dAGL1EqJYBQu2OKSWwTgdS179vtV/D3u4P1+
+         rLnRELD4mAnPjZ86rtG8MAZgMvThg3I+Q07r3UZ+0y1h9rNmP4ncaLZWkApklDHkQWbe
+         X1wPZ04T9b/qlS2GFgDU1aFPoW8vx1uiuHfNczqOCiV/Pqd4k5yYBFUC+dT25OlfEFFD
+         GAdZ9qPZ+xUGD715LI2HNsaQvoZ7zSzaEIaPGiWtGKZy0zrO6eGC90o684Izfs83WbGt
+         meiTKpgd5F9EhYSwM4a7zPQdnI2QGuxAaihStYmB1gRyDcewyzxps+YWB1pE4SE89Qom
+         H/dA==
+X-Gm-Message-State: AGi0PuZAm+A7yUQtLGOrR+vwrSR7PIC5p9z8lHrwRXRJKX/RX75t1K9y
+        6SZ2hPENwQZoVwrfaaR4WFdWIOAozodd7E9p71I=
+X-Google-Smtp-Source: APiQypIp5/I5WDjbckqyIu7EMbS7+rob3pzMu7ANmsM69l0Yg2+MwSDRUrHb/FX9IUpKqvVF5wL6BnCumUraNRTnGlM=
+X-Received: by 2002:ac8:3f6d:: with SMTP id w42mr1338943qtk.171.1588212759492;
+ Wed, 29 Apr 2020 19:12:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200430001300.k3pgq2minrowstbs@treble>
+References: <20200427201235.2994549-1-yhs@fb.com> <20200427201255.2996209-1-yhs@fb.com>
+In-Reply-To: <20200427201255.2996209-1-yhs@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 29 Apr 2020 19:12:28 -0700
+Message-ID: <CAEf4BzYv5eA-sgoUZdM7DP=TUHZB++qpcPNJ1egCr0d7peEXNg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 17/19] tools/bpf: selftests: add iterator
+ programs for ipv6_route and netlink
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 07:13:00PM -0500, Josh Poimboeuf wrote:
-> On Wed, Apr 29, 2020 at 04:41:59PM -0700, Alexei Starovoitov wrote:
-> > On Wed, Apr 29, 2020 at 04:51:59PM -0500, Josh Poimboeuf wrote:
-> > > On Thu, Jul 18, 2019 at 12:14:08PM -0700, tip-bot for Josh Poimboeuf wrote:
-> > > > Commit-ID:  3193c0836f203a91bef96d88c64cccf0be090d9c
-> > > > Gitweb:     https://git.kernel.org/tip/3193c0836f203a91bef96d88c64cccf0be090d9c
-> > > > Author:     Josh Poimboeuf <jpoimboe@redhat.com>
-> > > > AuthorDate: Wed, 17 Jul 2019 20:36:45 -0500
-> > > > Committer:  Thomas Gleixner <tglx@linutronix.de>
-> > > > CommitDate: Thu, 18 Jul 2019 21:01:06 +0200
-> > > > 
-> > > > bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()
-> > > 
-> > > For some reason, this
-> > > 
-> > >   __attribute__((optimize("-fno-gcse")))
-> > > 
-> > > is disabling frame pointers in ___bpf_prog_run().  If you compile with
-> > > CONFIG_FRAME_POINTER it'll show something like:
-> > > 
-> > >   kernel/bpf/core.o: warning: objtool: ___bpf_prog_run.cold()+0x7: call without frame pointer save/setup
-> > 
-> > you mean it started to disable frame pointers from some version of gcc?
-> > It wasn't doing this before, since objtool wasn't complaining, right?
-> > Sounds like gcc bug?
-> 
-> I actually think this warning has been around for a while.  I just only
-> recently looked at it.  I don't think anything changed in GCC, it's just
-> that almost nobody uses CONFIG_FRAME_POINTER, so it wasn't really
-> noticed.
-> 
-> > > Also, since GCC 9.1, the GCC docs say "The optimize attribute should be
-> > > used for debugging purposes only. It is not suitable in production
-> > > code."  That doesn't sound too promising.
-> > > 
-> > > So it seems like this commit should be reverted. But then we're back to
-> > > objtool being broken again in the RETPOLINE=n case, which means no ORC
-> > > coverage in this function.  (See above commit for the details)
-> > > 
-> > > Some ideas:
-> > > 
-> > > - Skip objtool checking of that func/file (at least for RETPOLINE=n) --
-> > >   but then it won't have ORC coverage.
-> > > 
-> > > - Get rid of the "double goto" in ___bpf_prog_run(), which simplifies it
-> > >   enough for objtool to understand -- but then the text explodes for
-> > >   RETPOLINE=y.
-> > 
-> > How that will look like?
-> > That could be the best option.
-> 
-> For example:
-> 
-> #define GOTO    ({ goto *jumptable[insn->code]; })
-> 
-> and then replace all 'goto select_insn' with 'GOTO;'
-> 
-> The problem is that with RETPOLINE=y, the function text size grows from
-> 5k to 7k, because for each of the 160+ retpoline JMPs, GCC (stupidly)
-> reloads the jump table register into a scratch register.
+On Mon, Apr 27, 2020 at 1:18 PM Yonghong Song <yhs@fb.com> wrote:
+>
+> Two bpf programs are added in this patch for netlink and ipv6_route
+> target. On my VM, I am able to achieve identical
+> results compared to /proc/net/netlink and /proc/net/ipv6_route.
+>
+>   $ cat /proc/net/netlink
+>   sk               Eth Pid        Groups   Rmem     Wmem     Dump  Locks    Drops    Inode
+>   000000002c42d58b 0   0          00000000 0        0        0     2        0        7
+>   00000000a4e8b5e1 0   1          00000551 0        0        0     2        0        18719
+>   00000000e1b1c195 4   0          00000000 0        0        0     2        0        16422
+>   000000007e6b29f9 6   0          00000000 0        0        0     2        0        16424
+>   ....
+>   00000000159a170d 15  1862       00000002 0        0        0     2        0        1886
+>   000000009aca4bc9 15  3918224839 00000002 0        0        0     2        0        19076
+>   00000000d0ab31d2 15  1          00000002 0        0        0     2        0        18683
+>   000000008398fb08 16  0          00000000 0        0        0     2        0        27
+>   $ cat /sys/fs/bpf/my_netlink
+>   sk               Eth Pid        Groups   Rmem     Wmem     Dump  Locks    Drops    Inode
+>   000000002c42d58b 0   0          00000000 0        0        0     2        0        7
+>   00000000a4e8b5e1 0   1          00000551 0        0        0     2        0        18719
+>   00000000e1b1c195 4   0          00000000 0        0        0     2        0        16422
+>   000000007e6b29f9 6   0          00000000 0        0        0     2        0        16424
+>   ....
+>   00000000159a170d 15  1862       00000002 0        0        0     2        0        1886
+>   000000009aca4bc9 15  3918224839 00000002 0        0        0     2        0        19076
+>   00000000d0ab31d2 15  1          00000002 0        0        0     2        0        18683
+>   000000008398fb08 16  0          00000000 0        0        0     2        0        27
+>
+>   $ cat /proc/net/ipv6_route
+>   fe800000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000001 00000000 00000001     eth0
+>   00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+>   00000000000000000000000000000001 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000003 00000000 80200001       lo
+>   fe80000000000000c04b03fffe7827ce 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
+>   ff000000000000000000000000000000 08 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000003 00000000 00000001     eth0
+>   00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+>   $ cat /sys/fs/bpf/my_ipv6_route
+>   fe800000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000001 00000000 00000001     eth0
+>   00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+>   00000000000000000000000000000001 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000003 00000000 80200001       lo
+>   fe80000000000000c04b03fffe7827ce 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
+>   ff000000000000000000000000000000 08 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000003 00000000 00000001     eth0
+>   00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  .../selftests/bpf/progs/bpf_iter_ipv6_route.c | 69 +++++++++++++++++
+>  .../selftests/bpf/progs/bpf_iter_netlink.c    | 77 +++++++++++++++++++
+>  2 files changed, 146 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
+>
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c b/tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c
+> new file mode 100644
+> index 000000000000..bed34521f997
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c
+> @@ -0,0 +1,69 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2020 Facebook */
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +#include <bpf/bpf_endian.h>
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +extern bool CONFIG_IPV6_SUBTREES __kconfig __weak;
+> +
+> +#define        RTF_GATEWAY             0x0002
+> +#define IFNAMSIZ               16
+> +#define fib_nh_gw_family        nh_common.nhc_gw_family
+> +#define fib_nh_gw6              nh_common.nhc_gw.ipv6
+> +#define fib_nh_dev              nh_common.nhc_dev
+> +
+> +SEC("iter/ipv6_route")
+> +int dump_ipv6_route(struct bpf_iter__ipv6_route *ctx)
+> +{
+> +       static const char fmt1[] = "%pi6 %02x ";
+> +       static const char fmt2[] = "%pi6 ";
+> +       static const char fmt3[] = "00000000000000000000000000000000 ";
+> +       static const char fmt4[] = "%08x %08x %08x %08x %8s\n";
+> +       static const char fmt5[] = "%08x %08x %08x %08x\n";
+> +       static const char fmt7[] = "00000000000000000000000000000000 00 ";
+> +       struct seq_file *seq = ctx->meta->seq;
+> +       struct fib6_info *rt = ctx->rt;
+> +       const struct net_device *dev;
+> +       struct fib6_nh *fib6_nh;
+> +       unsigned int flags;
+> +       struct nexthop *nh;
+> +
+> +       if (rt == (void *)0)
+> +               return 0;
+> +
+> +       fib6_nh = &rt->fib6_nh[0];
+> +       flags = rt->fib6_flags;
+> +
+> +       /* FIXME: nexthop_is_multipath is not handled here. */
+> +       nh = rt->nh;
+> +       if (rt->nh)
+> +               fib6_nh = &nh->nh_info->fib6_nh;
+> +
+> +       BPF_SEQ_PRINTF(seq, fmt1, &rt->fib6_dst.addr, rt->fib6_dst.plen);
+> +
+> +       if (CONFIG_IPV6_SUBTREES)
+> +               BPF_SEQ_PRINTF(seq, fmt1, &rt->fib6_src.addr,
+> +                              rt->fib6_src.plen);
+> +       else
+> +               BPF_SEQ_PRINTF0(seq, fmt7);
 
-that would be a tiny change, right?
-I'd rather go with that and gate it with 'ifdef CONFIG_FRAME_POINTER'
-Like:
-#ifndef CONFIG_FRAME_POINTER
-#define CONT     ({ insn++; goto select_insn; })
-#define CONT_JMP ({ insn++; goto select_insn; })
-#else
-#define CONT     ({ insn++; goto *jumptable[insn->code]; })
-#define CONT_JMP ({ insn++; goto *jumptable[insn->code]; })
-#endif
+Looking at these examples, I think BPF_SEQ_PRINTF should just assume
+that fmt argument is string literal and do:
 
-The reason this CONT and CONT_JMP macros are there because a combination
-of different gcc versions together with different cpus make branch predictor
-behave 'unpredictably'.
+static const char ___tmp_fmt[] = fmt;
 
-I've played with CONT and CONT_JMP either both doing direct goto or
-indirect goto and observed quite different performance characteristics
-from the interpreter.
-What you see right now was the best tune I could get from a set of cpus
-I had to play with and compilers. If I did the same tuning today the outcome
-could have been different.
-So I think it's totally fine to use above code. I think some cpus may actually
-see performance gains with certain versions of gcc.
-The retpoline text increase is unfortunate but when retpoline is on
-other security knobs should be on too. In particular CONFIG_BPF_JIT_ALWAYS_ON
-should be on as well. Which will remove interpreter from .text completely.
+inside that macro. So one can just do:
+
+BPF_SEQ_PRINTF(seq, "Hello, world!\n");
+
+or
+
+BPF_SEQ_PRINTF(seq, "My awesome template %d ==> %s\n", id, some_string);
+
+WDYT?
+
+> +
+> +       if (fib6_nh->fib_nh_gw_family) {
+> +               flags |= RTF_GATEWAY;
+> +               BPF_SEQ_PRINTF(seq, fmt2, &fib6_nh->fib_nh_gw6);
+> +       } else {
+> +               BPF_SEQ_PRINTF0(seq, fmt3);
+> +       }
+> +
+> +       dev = fib6_nh->fib_nh_dev;
+> +       if (dev)
+> +               BPF_SEQ_PRINTF(seq, fmt4, rt->fib6_metric,
+> +                              rt->fib6_ref.refs.counter, 0, flags, dev->name);
+> +       else
+> +               BPF_SEQ_PRINTF(seq, fmt4, rt->fib6_metric,
+> +                              rt->fib6_ref.refs.counter, 0, flags);
+> +
+> +       return 0;
+> +}
+
+[...]
