@@ -2,126 +2,240 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5B41BF494
-	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 11:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A7A1BF4D5
+	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 12:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726549AbgD3Jyl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Apr 2020 05:54:41 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:43248 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726453AbgD3Jyl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Apr 2020 05:54:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588240480;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fCJ01yiDVJ+4nhB2iJa3qAXZnjlPnyq/CK4SQ/2FBPQ=;
-        b=KjHsNVbMA0p3V3o3MSbmHoOclGIcmMTbJQvrZg8QI72gLRcLXF+7DxVB0Cayk5bO+U1UE8
-        62RnV+i3iOE33ju4hgAp/0k8/X2rJ05y7eZRAK0dfZ2p/DEA8itX3voLF/ioqzLuZVIVMV
-        hs0lqDnGmnGVBuDC+P0H7bEvEqII9Yw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-14-RpNZrXO-Or2_6MJUlyXBJQ-1; Thu, 30 Apr 2020 05:54:37 -0400
-X-MC-Unique: RpNZrXO-Or2_6MJUlyXBJQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1816245F;
-        Thu, 30 Apr 2020 09:54:35 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.55])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E991A5D787;
-        Thu, 30 Apr 2020 09:54:16 +0000 (UTC)
-Date:   Thu, 30 Apr 2020 11:54:15 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     sameehj@amazon.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        zorik@amazon.com, akiyano@amazon.com, gtzalik@amazon.com,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        David Ahern <dsahern@gmail.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        steffen.klassert@secunet.com, brouer@redhat.com
-Subject: Re: [PATCH net-next 20/33] vhost_net: also populate XDP frame size
-Message-ID: <20200430115415.5e4c815e@carbon>
-In-Reply-To: <8ebbd5d8-e256-3d6b-7cc1-dd3d29be3504@redhat.com>
-References: <158757160439.1370371.13213378122947426220.stgit@firesoul>
-        <158757174266.1370371.14475202001364271065.stgit@firesoul>
-        <8ebbd5d8-e256-3d6b-7cc1-dd3d29be3504@redhat.com>
+        id S1726404AbgD3KEV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Apr 2020 06:04:21 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:39042 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726378AbgD3KEV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Apr 2020 06:04:21 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03U9wt5a044012;
+        Thu, 30 Apr 2020 10:04:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
+ message-id : date : from : to : cc : subject : references : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=DSSzKp3mUVTKXxhiuVUGdx3G2Yd34m/wqtsKlf9cY6c=;
+ b=lZ6kuWQpNxDDH63AFqEDLZZujA6OxaKmoRiIDaU9YVCAuZNMZAGZ7DByCmMPwmo6MTgP
+ AhFhANnzBfT6OLpFMb4Ej2tjK+KffgujNANhW7AGJM+Db4GMBc9c1+JtThSBBD4r3kXS
+ y5Q5JYJQ1MDzqcp8TeNpcnMH9n8dYv8Z3MAm0D1NwabuNNIVxUL54sCvr2ty0BFYagBs
+ kAS1u59mdRIo8gX1wKpF7OYep6Kexl6PYMe/3UJS9Ldej/lw3iydr5vfFkx4lDcqmao8
+ 4pbAD8FdUgdr7OKLj0FkgUKKO0tb/fo/mN18POuzGZdjerj2ZEda4m+uXvd2n+dAYKaV Lw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 30nucgahn0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Apr 2020 10:04:01 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03U9wE5u176717;
+        Thu, 30 Apr 2020 10:04:00 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 30qtg0gu6j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Apr 2020 10:04:00 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03UA3wEa019145;
+        Thu, 30 Apr 2020 10:03:58 GMT
+Received: from dhcp-10-175-187-247.vpn.oracle.com (/10.175.187.247) by default
+ (Oracle Beehive Gateway v4.0) with ESMTP ; Thu, 30 Apr 2020 03:03:45 -0700
+X-X-SENDER: alan@localhost
+USER-AGENT: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Message-ID: <alpine.LRH.2.21.2004301010520.23084@localhost>
+Date:   Thu, 30 Apr 2020 03:03:36 -0700 (PDT)
+From:   Alan Maguire <alan.maguire@oracle.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Alan Maguire <alan.maguire@oracle.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        ast@kernel.org, daniel@iogearbox.net, yhs@fb.com, kafai@fb.com,
+        songliubraving@fb.com, andriin@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 0/6] bpf, printk: add BTF-based type printing
+References: <1587120160-3030-1-git-send-email-alan.maguire@oracle.com>
+ <20200418160536.4mrvqh2lasqbyk77@ast-mbp>
+ <alpine.LRH.2.21.2004201623390.12711@localhost>
+ <7d6019da19d52c851d884731b1f16328fdbe2e3d.camel@perches.com>
+In-Reply-To: <7d6019da19d52c851d884731b1f16328fdbe2e3d.camel@perches.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9606 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 adultscore=0
+ mlxlogscore=999 phishscore=0 malwarescore=0 spamscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004300081
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9606 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 priorityscore=1501
+ mlxlogscore=999 impostorscore=0 suspectscore=3 malwarescore=0
+ lowpriorityscore=0 mlxscore=0 spamscore=0 adultscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004300081
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 27 Apr 2020 13:50:15 +0800
-Jason Wang <jasowang@redhat.com> wrote:
+On Mon, 20 Apr 2020, Joe Perches wrote:
 
-> On 2020/4/23 =E4=B8=8A=E5=8D=8812:09, Jesper Dangaard Brouer wrote:
-> > In vhost_net_build_xdp() the 'buf' that gets queued via an xdp_buff
-> > have embedded a struct tun_xdp_hdr (located at xdp->data_hard_start)
-> > which contains the buffer length 'buflen' (with tailroom for
-> > skb_shared_info). Also storing this buflen in xdp->frame_sz, does not
-> > obsolete struct tun_xdp_hdr, as it also contains a struct
-> > virtio_net_hdr with other information.
-> >
-> > Cc: Jason Wang <jasowang@redhat.com>
-> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > ---
-> >   drivers/vhost/net.c |    1 +
-> >   1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-> > index 87469d67ede8..69af007e22f4 100644
-> > --- a/drivers/vhost/net.c
-> > +++ b/drivers/vhost/net.c
-> > @@ -745,6 +745,7 @@ static int vhost_net_build_xdp(struct vhost_net_vir=
-tqueue *nvq,
-> >   	xdp->data =3D buf + pad;
-> >   	xdp->data_end =3D xdp->data + len;
-> >   	hdr->buflen =3D buflen;
-> > +	xdp->frame_sz =3D buflen;
-> >  =20
-> >   	--net->refcnt_bias;
-> >   	alloc_frag->offset +=3D buflen; =20
->=20
->=20
-> Tun_xdp_one() will use hdr->buflen as the frame_sz (patch 19), so it=20
-> looks to me there's no need to do this?
+> On Mon, 2020-04-20 at 16:29 +0100, Alan Maguire wrote:
+> > On Sat, 18 Apr 2020, Alexei Starovoitov wrote:
+> > 
+> > > On Fri, Apr 17, 2020 at 11:42:34AM +0100, Alan Maguire wrote:
+> > > > The printk family of functions support printing specific pointer types
+> > > > using %p format specifiers (MAC addresses, IP addresses, etc).  For
+> > > > full details see Documentation/core-api/printk-formats.rst.
+> > > > 
+> > > > This RFC patchset proposes introducing a "print typed pointer" format
+> > > > specifier "%pT<type>"; the type specified is then looked up in the BPF
+> > > > Type Format (BTF) information provided for vmlinux to support display.
+> > > 
+> > > This is great idea! Love it.
+> > > 
+> > 
+> > Thanks for taking a look!
+> >  
+> > > > The above potential use cases hint at a potential reply to
+> > > > a reasonable objection that such typed display should be
+> > > > solved by tracing programs, where the in kernel tracing records
+> > > > data and the userspace program prints it out.  While this
+> > > > is certainly the recommended approach for most cases, I
+> > > > believe having an in-kernel mechanism would be valuable
+> > > > also.
+> > > 
+> > > yep. This is useful for general purpose printk.
+> > > The only piece that must be highlighted in the printk documentation
+> > > that unlike the rest of BPF there are zero safety guarantees here.
+> > > The programmer can pass wrong pointer to printk() and the kernel _will_ crash.
+> > > 
+> > 
+> > Good point; I'll highlight the fact that we aren't
+> > executing in BPF context, no verifier etc.
+> > 
+> > > >   struct sk_buff *skb = alloc_skb(64, GFP_KERNEL);
+> > > > 
+> > > >   pr_info("%pTN<struct sk_buff>", skb);
+> > > 
+> > > why follow "TN" convention?
+> > > I think "%p<struct sk_buff>" is much more obvious, unambiguous, and
+> > > equally easy to parse.
+> > > 
+> > 
+> > That was my first choice, but the first character
+> > after the 'p' in the '%p' specifier signifies the
+> > pointer format specifier. If we use '<', and have
+> > '%p<', where do we put the modifiers? '%p<xYz struct foo>'
+> > seems clunky to me.
+> 
+> While I don't really like the %p<struct type> block,
+> it's at least obvious what's being attempted.
+> 
+> Modifiers could easily go after the <struct type> block.
+>
 
-I was thinking to go the "other way", meaning let tun_xdp_one() use
-xdp->frame_sz, which gets set here.  This would allow us to refactor
-the code, and drop struct tun_xdp_hdr, as (see pahole below) it only
-carries 'buflen' and the remaining part comes from struct
-virtio_net_hdr, which could be used directly instead.
+Good idea; I'll go with that approach for v2.
+ 
+> It appears a %p<struct type> output might be a lot of
+> total characters so another potential issue might be
+> the maximum length of each individual printk.
+>
 
-As this will be a code refactor, I would prefer we do it after this
-patchseries is agreed upon.
+Right, that's a concern. On the other side, it turns out
+that with the "omit zeroed values" behaviour by default,
+the output trims down nicely.  The omit zero functionality
+works for nested types too, so a freshly-allocated skb
+fits easily inside the printk limit now.  The in-progress
+output looks like this now (v2 coming shortly I hope):
 
-$ pahole -C tun_xdp_hdr drivers/net/tap.o
-struct tun_xdp_hdr {
-	int                        buflen;               /*     0     4 */
-	struct virtio_net_hdr gso;                       /*     4    10 */
+printk(KERN_INFO "%p<struct sk_buff>", skb);
 
-	/* size: 16, cachelines: 1, members: 2 */
-	/* padding: 2 */
-	/* last cacheline: 16 bytes */
-};
+(struct sk_buff){
+ .transport_header = (__u16)65535,
+ .mac_header = (__u16)65535,
+ .end = (sk_buff_data_t)192,
+ .head = (unsigned char *)000000007524fd8b,
+ .data = (unsigned char *)000000007524fd8b,
+ .truesize = (unsigned int)768,
+ .users = (refcount_t){
+  .refs = (atomic_t){
+   .counter = (int)1,
+  },
+ },
+}
 
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Of course as structures get used and values get set
+(precisely when we need to see them!) more fields will
+be displayed and we will bump against printk limits.
 
+The modifiers I'm working on for v2 are
+
+'c' - compact mode (no pretty-printing), i.e.
+
+(struct sk_buff){.transport_header = (__u16)65535,.mac_header = (__u16)65535,.end = (sk_buff_data_t)192,.head = (unsigned char *)000000007524fd8b,.data = (unsigned char *)000000007524fd8b,.truesize = (unsigned int)768,.users = (refcount_t){.refs = (atomic_t){.counter = (int)1,},},}
+
+      This saves a fair few characters, especially for highly-indented
+      data structures.
+
+'T' - omit type/member names.
+'x' - avoid pointer obfuscation
+'0' - show zeroed values, as suggested by Arnaldo and Alexei
+
+...so the default output of "%p<struct sk_buff>"
+will be like the above example.
+
+I was hoping to punt on pointer obfuscation and just
+use %p[K] since obfuscation can be sysctl-controlled;
+however that control assumes a controlling process context
+as I understand it.  Since BTF printk can be invoked
+anywhere (especially via trace_printk() in BPF programs),
+those settings aren't hugely relevant, so I _think_ we need
+a way to directly control obfuscation for this use case.
+
+> > > I like the choice of C style output, but please format it similar to drgn. Like:
+> > > *(struct task_struct *)0xffff889ff8a08000 = {
+> > > 	.thread_info = (struct thread_info){
+> > > 		.flags = (unsigned long)0,
+> > > 		.status = (u32)0,
+> > > 	},
+> > > 	.state = (volatile long)1,
+> > > 	.stack = (void *)0xffffc9000c4dc000,
+> > > 	.usage = (refcount_t){
+> > > 		.refs = (atomic_t){
+> > > 			.counter = (int)2,
+> > > 		},
+> > > 	},
+> > > 	.flags = (unsigned int)4194560,
+> > > 	.ptrace = (unsigned int)0,
+> 
+> And here, the issue might be duplicating the log level
+> for each line of output and/or prefixing each line with
+> whatever struct type is being dumped as interleaving
+> with other concurrent logging is possible.
+> 
+
+That's a good idea but sadly it makes the problem of longer
+display worse.  Compact/type-omitted options help for
+the particularly bad cases at least I suppose.
+
+> Here as well the individual field types don't contain
+> enough information to determine if a field should be
+> output as %x or %u.
+> 
+>
+
+Right, we could add some more format modifiers for cases
+like that I guess.  Currently the display formats used are
+
+- numbers are represented as decimal
+- bitfields are represented in hex
+- pointers are obfuscated unless the 'x' option is used
+- char arrays are printed as chars if printable,
+  [ 'l', 'i', 'k', 'e', ' ', 't', 'h', 'i', 's' ]
+
+I'd be happy to add more format specifiers to control
+these options, or tweak the defaults if needed. A
+"print numbers in hex" option seems worthwhile perhaps?
+
+Thanks for the feedback!
+
+Alan
