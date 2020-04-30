@@ -2,176 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2DF1C05E8
-	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 21:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4712D1C06B4
+	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 21:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbgD3TK2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Apr 2020 15:10:28 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:24862 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726691AbgD3TK0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Apr 2020 15:10:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588273825;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=/G31CExp0D/v67boay0bigWI6ERnvygVLl/0mJmroU0=;
-        b=A0JDNPeHytxWVaZCdfbC0UwSWGnKTghVPu1nkkRjblAaCyzLbiMwDvetvKMqd500FJMBRf
-        0SQB8E46ptWYNdDyE2vfLHjWo0V/1Wmv7x6jEzf7ifTIamVUV6zV0ITfmD/prsbi28Rqwb
-        VorxANcMpJZTv55zPQ9yQnbLf0f09l4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-172-4FOHzYZaOv-IP7n1za9RVQ-1; Thu, 30 Apr 2020 15:10:21 -0400
-X-MC-Unique: 4FOHzYZaOv-IP7n1za9RVQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9115A835B43;
-        Thu, 30 Apr 2020 19:10:19 +0000 (UTC)
-Received: from treble.redhat.com (ovpn-113-19.rdu2.redhat.com [10.10.113.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 477231A922;
-        Thu, 30 Apr 2020 19:10:18 +0000 (UTC)
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] bpf: Tweak BPF jump table optimizations for objtool compatibility
-Date:   Thu, 30 Apr 2020 14:07:43 -0500
-Message-Id: <b581438a16e78559b4cea28cf8bc74158791a9b3.1588273491.git.jpoimboe@redhat.com>
+        id S1726574AbgD3TqS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Apr 2020 15:46:18 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:8248 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726272AbgD3TqS (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 30 Apr 2020 15:46:18 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03UJSCF7021030
+        for <bpf@vger.kernel.org>; Thu, 30 Apr 2020 12:46:17 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=sE55d1pAoLMzj91gtB1sdCjP8AgbIwGaTfF3rQ76s64=;
+ b=UBGd/sN31Nu+nEk7Z28W6F7LyNM67NtaZQ84KFmiWr+ZdSZhwazl+MuiCeH541wFkNha
+ EJi0Go5SkdQISohp2CVWCXlYmTtzJMY0E+IYN0Ym7GlI41GU6dOl3sQLbNuOabq/h1aO
+ XOjXHjKmSf1qcyrbc08ClJT0OMfOiTZufDA= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 30qd20r3fy-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 30 Apr 2020 12:46:16 -0700
+Received: from intmgw003.03.ash8.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Thu, 30 Apr 2020 12:46:15 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id CD9812EC2F29; Thu, 30 Apr 2020 12:46:09 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        <syzbot+39b64425f91b5aab714d@syzkaller.appspotmail.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] bpf: fix use-after-free of bpf_link when priming half-fails
+Date:   Thu, 30 Apr 2020 12:46:08 -0700
+Message-ID: <20200430194609.1216836-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-30_12:2020-04-30,2020-04-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ impostorscore=0 lowpriorityscore=0 suspectscore=25 priorityscore=1501
+ mlxlogscore=465 malwarescore=0 phishscore=0 mlxscore=0 adultscore=0
+ spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004300147
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Objtool decodes instructions and follows all potential code branches
-within a function.  But it's not an emulator, so it doesn't track
-register values.  For that reason, it usually can't follow
-intra-function indirect branches, unless they're using a jump table
-which follows a certain format (e.g., GCC switch statement jump tables).
+If bpf_link_prime() succeeds to allocate new anon file, but then fails to
+allocate ID for it, link priming is considered to be failed and user is
+supposed ot be able to directly kfree() bpf_link, because it was never ex=
+posed
+to user-space.
 
-In most cases, the generated code for the BPF jump table looks a lot
-like a GCC jump table, so objtool can follow it.  However, with
-RETPOLINE=3Dn, GCC keeps the jump table address in a register, and then
-does 160+ indirect jumps with it.  When objtool encounters the indirect
-jumps, it can't tell which jump table is being used (or even whether
-they might be sibling calls instead).
+But at that point file already keeps a pointer to bpf_link and will event=
+ually
+call bpf_link_release(), so if bpf_link was kfree()'d by caller, that wou=
+ld
+lead to use-after-free.
 
-This was fixed before by disabling an optimization in ___bpf_prog_run(),
-using the "optimize" function attribute.  However, that attribute is bad
-news.  It doesn't append options to the command-line arguments.  Instead
-it starts from a blank slate.  And according to recent GCC documentation
-it's not recommended for production use.  So revert the previous fix:
+Fix this by creating file with NULL private_data until ID allocation succ=
+eeds.
+Only then set private_data to bpf_link. Teach bpf_link_release() to recog=
+nize
+such situation and do nothing.
 
-  3193c0836f20 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run=
-()")
-
-With that reverted, solve the original problem in a different way by
-getting rid of the "goto select_insn" indirection, and instead just goto
-the jump table directly.  This simplifies the code a bit and helps GCC
-generate saner code for the jump table branches, at least in the
-RETPOLINE=3Dn case.
-
-But, in the RETPOLINE=3Dy case, this simpler code actually causes GCC to
-generate far worse code, ballooning the function text size by +40%.  So
-leave that code the way it was.  In fact Alexei prefers to leave *all*
-the code the way it was, except where needed by objtool.  So even
-non-x86 RETPOLINE=3Dn code will continue to have "goto select_insn".
-
-This stuff is crazy voodoo, and far from ideal.  But it works for now.
-Eventually, there's a plan to create a compiler plugin for annotating
-jump tables.  That will make this a lot less fragile.
-
-Fixes: 3193c0836f20 ("bpf: Disable GCC -fgcse optimization for ___bpf_pro=
-g_run()")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Fixes: a3b80e107894 ("bpf: Allocate ID for bpf_link")
+Reported-by: syzbot+39b64425f91b5aab714d@syzkaller.appspotmail.com
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 ---
- include/linux/compiler-gcc.h   |  2 --
- include/linux/compiler_types.h |  4 ----
- kernel/bpf/core.c              | 10 +++++++---
- 3 files changed, 7 insertions(+), 9 deletions(-)
+ kernel/bpf/syscall.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-index cf294faec2f8..2c8583eb5de8 100644
---- a/include/linux/compiler-gcc.h
-+++ b/include/linux/compiler-gcc.h
-@@ -176,5 +176,3 @@
- #else
- #define __diag_GCC_8(s)
- #endif
--
--#define __no_fgcse __attribute__((optimize("-fno-gcse")))
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_type=
-s.h
-index e970f97a7fcb..58105f1deb79 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -203,10 +203,6 @@ struct ftrace_likely_data {
- #define asm_inline asm
- #endif
-=20
--#ifndef __no_fgcse
--# define __no_fgcse
--#endif
--
- /* Are two types/vars the same type (ignoring qualifiers)? */
- #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof=
-(b))
-=20
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 916f5132a984..eec470c598ad 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1364,7 +1364,7 @@ u64 __weak bpf_probe_read_kernel(void *dst, u32 siz=
-e, const void *unsafe_ptr)
-  *
-  * Decode and execute eBPF instructions.
-  */
--static u64 __no_fgcse ___bpf_prog_run(u64 *regs, const struct bpf_insn *=
-insn, u64 *stack)
-+static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *=
-stack)
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index c75b2dd2459c..ce00df64a4d4 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2267,7 +2267,12 @@ static int bpf_link_release(struct inode *inode, s=
+truct file *filp)
  {
- #define BPF_INSN_2_LBL(x, y)    [BPF_##x | BPF_##y] =3D &&x##_##y
- #define BPF_INSN_3_LBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] =3D &&x##_=
-##y##_##z
-@@ -1384,11 +1384,15 @@ static u64 __no_fgcse ___bpf_prog_run(u64 *regs, =
-const struct bpf_insn *insn, u6
- #undef BPF_INSN_2_LBL
- 	u32 tail_call_cnt =3D 0;
+ 	struct bpf_link *link =3D filp->private_data;
 =20
-+#if defined(CONFIG_X86_64) && !defined(CONFIG_RETPOLINE)
-+#define CONT	 ({ insn++; goto *jumptable[insn->code]; })
-+#define CONT_JMP ({ insn++; goto *jumptable[insn->code]; })
-+#else
- #define CONT	 ({ insn++; goto select_insn; })
- #define CONT_JMP ({ insn++; goto select_insn; })
--
- select_insn:
- 	goto *jumptable[insn->code];
-+#endif
+-	bpf_link_put(link);
++	/* if bpf_link_prime() allocated file, but failed to allocate ID,
++	 * file->private_data will be null and by now link itself is kfree()'d
++	 * directly, so just do nothing in such case.
++	 */
++	if (link)
++		bpf_link_put(link);
+ 	return 0;
+ }
 =20
- 	/* ALU */
- #define ALU(OPCODE, OP)			\
-@@ -1547,7 +1551,7 @@ static u64 __no_fgcse ___bpf_prog_run(u64 *regs, co=
-nst struct bpf_insn *insn, u6
- 		 * where arg1_type is ARG_PTR_TO_CTX.
- 		 */
- 		insn =3D prog->insnsi;
--		goto select_insn;
-+		CONT;
- out:
- 		CONT;
+@@ -2348,7 +2353,7 @@ int bpf_link_prime(struct bpf_link *link, struct bp=
+f_link_primer *primer)
+ 	if (fd < 0)
+ 		return fd;
+=20
+-	file =3D anon_inode_getfile("bpf_link", &bpf_link_fops, link, O_CLOEXEC=
+);
++	file =3D anon_inode_getfile("bpf_link", &bpf_link_fops, NULL, O_CLOEXEC=
+);
+ 	if (IS_ERR(file)) {
+ 		put_unused_fd(fd);
+ 		return PTR_ERR(file);
+@@ -2357,10 +2362,15 @@ int bpf_link_prime(struct bpf_link *link, struct =
+bpf_link_primer *primer)
+ 	id =3D bpf_link_alloc_id(link);
+ 	if (id < 0) {
+ 		put_unused_fd(fd);
+-		fput(file);
++		fput(file); /* won't put link, so user can kfree() it */
+ 		return id;
  	}
+=20
++	/* Link priming succeeded, point file's private data to link now.
++	 * After this caller has to call bpf_link_cleanup() to free link.
++	 */
++	file->private_data =3D link;
++
+ 	primer->link =3D link;
+ 	primer->file =3D file;
+ 	primer->fd =3D fd;
 --=20
-2.21.1
+2.24.1
 
