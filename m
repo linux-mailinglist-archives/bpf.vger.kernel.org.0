@@ -2,85 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3141BF5E9
-	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 12:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7081BF672
+	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 13:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbgD3Kyp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Apr 2020 06:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726500AbgD3Kyo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 30 Apr 2020 06:54:44 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88824C035495
-        for <bpf@vger.kernel.org>; Thu, 30 Apr 2020 03:54:42 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id x4so1327040wmj.1
-        for <bpf@vger.kernel.org>; Thu, 30 Apr 2020 03:54:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=1kUu8NYflskoYjSwjqb8k5MDH107iHjRDdmZ+H/9EHs=;
-        b=azvjiaX6Vd7a6YgrRJpDxA6ssFji1FUb/S13NZ5bXZlL2/yckme4ZApWCLTSsK+OvK
-         a6PrLf9qlBdxcuEFbJ7ir3eanBzJORBELyK90K7NubKYZt5we7TtIkJpedsP+d6U+lZd
-         KryiwV8osOzPm16sTdeNi6mxnpxqrkZ9WecwU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=1kUu8NYflskoYjSwjqb8k5MDH107iHjRDdmZ+H/9EHs=;
-        b=Yi1YWDP9LgbfdlTp0xtzJutKJTjoQoT/oHzXEJIahaJuovBbzwgK5t3WcjIT14c2uy
-         suygEi4q+/LSqvBtyESmeRz0QjmonyI06tMwi+eEnU6893FFzYZqW82erbSIFhWJq0KD
-         KH7teLnOjzgBjUJhKxf0lj1p506lgPS0j4bHFcyk6LuizHBITsYXXyxe2AnB+3txuxvo
-         FkiFASCyswSM/uy9XT2uiCjwNt9muTLSRypcBJ87Hl4pkPtnvtS3ZyfJT4lAwDcpUo0N
-         aDjFOnKzvTN8qMbrKROleHaXzKZVcg1wgGDX6Sv26wF/q5YvF/yUifgVlMaVBxadH8Sd
-         4rxg==
-X-Gm-Message-State: AGi0PuZZALHyRHxbmeIosz7xTcb+ZmwpfXe0IrBeXw9SQFP6WxAOX0l4
-        xPcqfOkCuTM1Lt0duR6f0BMSWg==
-X-Google-Smtp-Source: APiQypK9Jjc3pOB6SPB2xdP0+46wLu1COBnOCge8LYEUtcAoztKZz9vEZVspJ5FD+db0DptMhuArog==
-X-Received: by 2002:a1c:1d92:: with SMTP id d140mr2309689wmd.67.1588244081111;
-        Thu, 30 Apr 2020 03:54:41 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id b2sm3946555wrn.6.2020.04.30.03.54.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 03:54:40 -0700 (PDT)
-References: <20200429181154.479310-1-jakub@cloudflare.com> <20200429181154.479310-3-jakub@cloudflare.com> <5ea9d43aa9298_220d2ac81567a5b8fa@john-XPS-13-9370.notmuch>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-team@cloudflare.com, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Joe Stringer <joe@wand.net.nz>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Subject: Re: [PATCH bpf-next 2/3] selftests/bpf: Test that lookup on SOCKMAP/SOCKHASH is allowed
-In-reply-to: <5ea9d43aa9298_220d2ac81567a5b8fa@john-XPS-13-9370.notmuch>
-Date:   Thu, 30 Apr 2020 12:54:39 +0200
-Message-ID: <87h7x1utu8.fsf@cloudflare.com>
+        id S1726929AbgD3LUj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Apr 2020 07:20:39 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:25614 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726900AbgD3LUj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 30 Apr 2020 07:20:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588245637;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=O9fQrK3QGrJL4UsVTT1BjsaZ4mQubvGNYU2PTJvcHmE=;
+        b=NodTBZlfZ6U/6a2EjalMEyZrU2yx0BzqwK9OlyD1I71uu5aqR1TlBOBiUAr8xGBdYcsMLh
+        rvf4u1petJ1sMZkvN7vwi6DMXaXxmR5ymiSfa522bCqelgAzaXLoFFrQ3I3o2hoe2XO86r
+        Pj99UEHR6qCC9sey7nR7iiLF/Horr/g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-353-Lg0IBU8OPOyS0vg36vyxXQ-1; Thu, 30 Apr 2020 07:20:35 -0400
+X-MC-Unique: Lg0IBU8OPOyS0vg36vyxXQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4BC2745F;
+        Thu, 30 Apr 2020 11:20:33 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.40.208.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 852C7165F6;
+        Thu, 30 Apr 2020 11:20:27 +0000 (UTC)
+Received: from [192.168.42.3] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id 7D882324DB2C1;
+        Thu, 30 Apr 2020 13:20:26 +0200 (CEST)
+Subject: [PATCH net-next v2 01/33] xdp: add frame size to xdp_buff
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     sameehj@amazon.com
+Cc:     =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, zorik@amazon.com,
+        akiyano@amazon.com, gtzalik@amazon.com,
+        =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        steffen.klassert@secunet.com
+Date:   Thu, 30 Apr 2020 13:20:26 +0200
+Message-ID: <158824562644.2172139.9670830558460527639.stgit@firesoul>
+In-Reply-To: <158824557985.2172139.4173570969543904434.stgit@firesoul>
+References: <158824557985.2172139.4173570969543904434.stgit@firesoul>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 09:23 PM CEST, John Fastabend wrote:
-> Jakub Sitnicki wrote:
->> Now that bpf_map_lookup_elem() is white-listed for SOCKMAP/SOCKHASH,
->> replace the tests which check that verifier prevents lookup on these map
->> types with ones that ensure that lookup operation is permitted, but only
->> with a release of acquired socket reference.
->> 
->> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
->> ---
->
-> For completeness would be nice to add a test passing this into
-> sk_select_reuseport to cover that case as well. Could come as
-> a follow up patch imo.
+XDP have evolved to support several frame sizes, but xdp_buff was not
+updated with this information. The frame size (frame_sz) member of
+xdp_buff is introduced to know the real size of the memory the frame is
+delivered in.
 
-Is this what you had in mind?
+When introducing this also make it clear that some tailroom is
+reserved/required when creating SKBs using build_skb().
 
-https://lore.kernel.org/bpf/20200430104738.494180-1-jakub@cloudflare.com/
+It would also have been an option to introduce a pointer to
+data_hard_end (with reserved offset). The advantage with frame_sz is
+that (like rxq) drivers only need to setup/assign this value once per
+NAPI cycle. Due to XDP-generic (and some drivers) it's not possible to
+store frame_sz inside xdp_rxq_info, because it's varies per packet as it
+can be based/depend on packet length.
 
-Thanks for reviewing the series.
+V2: nitpick: deduct -> deduce
+
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+---
+ include/net/xdp.h |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index 3cc6d5d84aa4..a764af4ae0ea 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -6,6 +6,8 @@
+ #ifndef __LINUX_NET_XDP_H__
+ #define __LINUX_NET_XDP_H__
+=20
++#include <linux/skbuff.h> /* skb_shared_info */
++
+ /**
+  * DOC: XDP RX-queue information
+  *
+@@ -70,8 +72,19 @@ struct xdp_buff {
+ 	void *data_hard_start;
+ 	unsigned long handle;
+ 	struct xdp_rxq_info *rxq;
++	u32 frame_sz; /* frame size to deduce data_hard_end/reserved tailroom*/
+ };
+=20
++/* Reserve memory area at end-of data area.
++ *
++ * This macro reserves tailroom in the XDP buffer by limiting the
++ * XDP/BPF data access to data_hard_end.  Notice same area (and size)
++ * is used for XDP_PASS, when constructing the SKB via build_skb().
++ */
++#define xdp_data_hard_end(xdp)				\
++	((xdp)->data_hard_start + (xdp)->frame_sz -	\
++	 SKB_DATA_ALIGN(sizeof(struct skb_shared_info)))
++
+ struct xdp_frame {
+ 	void *data;
+ 	u16 len;
+
+
