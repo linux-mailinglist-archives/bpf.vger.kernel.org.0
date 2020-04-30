@@ -2,266 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF761BED35
-	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 02:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 699721BED86
+	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 03:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbgD3Avx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Apr 2020 20:51:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726378AbgD3Avw (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 29 Apr 2020 20:51:52 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8998C08E859
-        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 17:51:52 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id n16so1915142pgb.7
-        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 17:51:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cs.washington.edu; s=goo201206;
-        h=from:to:cc:subject:date:message-id;
-        bh=2VzTJMG6uHW6Q2DV451ZYKmYi8OhZd8DBxFpPNX7pIs=;
-        b=dWCH6n/XQPm3+gB7yUXpLsA59ZzW6xb8HTHCoz+hnD5AWL/NrTe2YwF/Rx+k4yZJav
-         4rmmLQE1zVAvF7NhwMXcaxhnVPjF7So0Mrc52lz2O6edht1hrmT634+Wz2YOQSkE2QDj
-         ih94XlipYqiwDaPL74SgN3ebI+mIKL3nAhY6s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=2VzTJMG6uHW6Q2DV451ZYKmYi8OhZd8DBxFpPNX7pIs=;
-        b=mdol04jPFqTKU91cyWP8+fqCKkOePYAE8+Etz0qkyErLWILrJbYK6KaOXYopN0M07e
-         +RzmmfAsUL7v6RgxbUuxqcEu+iXrdUTl7Qt/oizI5AiCWLrMEaghFRIcuxVtMfnVng8+
-         pOZTQ9mvF50YPC5EdTDbCoSvxcEzrVeFtSmVwb4CGpPoiGuFpjHUqtRm3xdGmCg3/La+
-         CuJGw/kBPduEagkhGZmzU4cBeDvok+jHk1Aa1ayVbi4A3s0Rx9QWYzPQHkjaEC9ThR0q
-         75eHX4m/xnLCQ1HoDuV9EiRCmx+9kQAKFPRgCoPVFFKggRzrcO7szBUnDdgeR1YMfRDp
-         RIgA==
-X-Gm-Message-State: AGi0PubCUdv5o8/zp8v3FmOwEpMuXLQEXhsvvymmO8gEA/kyB2DEz3dJ
-        kbrRp4ozsBhCla6rEWjM1k0Er7tWR2tC2g==
-X-Google-Smtp-Source: APiQypJwtanBe4WcqMHj8ktlO0+j3fBIRNqQTX5RTUV32kcelcAl8mCCTgG4qkVceJ9oypk3VSLUyA==
-X-Received: by 2002:aa7:948f:: with SMTP id z15mr935807pfk.6.1588207911661;
-        Wed, 29 Apr 2020 17:51:51 -0700 (PDT)
-Received: from localhost.localdomain (c-73-53-94-119.hsd1.wa.comcast.net. [73.53.94.119])
-        by smtp.gmail.com with ESMTPSA id o9sm347905pjp.4.2020.04.29.17.51.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 17:51:51 -0700 (PDT)
-From:   Luke Nelson <lukenels@cs.washington.edu>
-X-Google-Original-From: Luke Nelson <luke.r.nels@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, netdev@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next] bpf, riscv: Fix stack layout of JITed code on RV32
-Date:   Wed, 29 Apr 2020 17:51:27 -0700
-Message-Id: <20200430005127.2205-1-luke.r.nels@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726286AbgD3BZ4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Apr 2020 21:25:56 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:17864 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726329AbgD3BZz (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 29 Apr 2020 21:25:55 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03U1EjCP008179
+        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 18:25:54 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=3+o7l02/rlglt5SdbycnrNsOMQZhnw7LzfBDqT6Y0rA=;
+ b=Sf/SHdtzoJCD5puxSO5diXsluU7EFs7VP0fG6a9ogg9vDD+FV2FUJ36KWHQcNGFEUuNZ
+ Tzi9RWIRZCtzhCvwUQIM+DIrmERsMhaZ/kMItxwvABXopZSX2H5qQNNWuhMedw90k11y
+ fVeYTt/X0zlYizPEV4zHQKGfKal2e3qPJo4= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 30qd6htthd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 29 Apr 2020 18:25:54 -0700
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Wed, 29 Apr 2020 18:25:52 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 79F5C2EC306A; Wed, 29 Apr 2020 18:25:45 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] libbpf: fix false unused variable warning
+Date:   Wed, 29 Apr 2020 18:25:44 -0700
+Message-ID: <20200430012544.1347275-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-29_11:2020-04-29,2020-04-29 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ priorityscore=1501 mlxlogscore=999 impostorscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 clxscore=1015 adultscore=0 phishscore=0 suspectscore=8
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004300006
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch fixes issues with stackframe unwinding and alignment in the
-current stack layout for BPF programs on RV32.
+Some versions of GCC falsely detect that vi might not be initialized. Tha=
+t's
+not true, but let's silence it with NULL initialization.
 
-In the current layout, RV32 fp points to the JIT scratch registers, rather
-than to the callee-saved registers. This breaks stackframe unwinding,
-which expects fp to point just above the saved ra and fp registers.
-
-This patch fixes the issue by moving the callee-saved registers to be
-stored on the top of the stack, pointed to by fp. This satisfies the
-assumptions of stackframe unwinding.
-
-This patch also fixes an issue with the old layout that the stack was
-not aligned to 16 bytes.
-
-Stacktrace from JITed code using the old stack layout:
-
-  [   12.196249 ] [<c0402200>] walk_stackframe+0x0/0x96
-
-Stacktrace using the new stack layout:
-
-  [   13.062888 ] [<c0402200>] walk_stackframe+0x0/0x96
-  [   13.063028 ] [<c04023c6>] show_stack+0x28/0x32
-  [   13.063253 ] [<a403e778>] bpf_prog_82b916b2dfa00464+0x80/0x908
-  [   13.063417 ] [<c09270b2>] bpf_test_run+0x124/0x39a
-  [   13.063553 ] [<c09276c0>] bpf_prog_test_run_skb+0x234/0x448
-  [   13.063704 ] [<c048510e>] __do_sys_bpf+0x766/0x13b4
-  [   13.063840 ] [<c0485d82>] sys_bpf+0xc/0x14
-  [   13.063961 ] [<c04010f0>] ret_from_syscall+0x0/0x2
-
-The new code is also simpler to understand and includes an ASCII diagram
-of the stack layout.
-
-Tested on riscv32 QEMU virt machine.
-
-Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 ---
- arch/riscv/net/bpf_jit_comp32.c | 98 ++++++++++++++++++++++-----------
- 1 file changed, 65 insertions(+), 33 deletions(-)
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/net/bpf_jit_comp32.c b/arch/riscv/net/bpf_jit_comp32.c
-index 11083d4d5f2d..b198eaa74456 100644
---- a/arch/riscv/net/bpf_jit_comp32.c
-+++ b/arch/riscv/net/bpf_jit_comp32.c
-@@ -13,8 +13,35 @@
- #include <linux/filter.h>
- #include "bpf_jit.h"
- 
-+/*
-+ * Stack layout during BPF program execution:
-+ *
-+ *                     high
-+ *     RV32 fp =>  +----------+
-+ *                 | saved ra |
-+ *                 | saved fp | RV32 callee-saved registers
-+ *                 |   ...    |
-+ *                 +----------+ <= (fp - 4 * NR_SAVED_REGISTERS)
-+ *                 |  hi(R6)  |
-+ *                 |  lo(R6)  |
-+ *                 |  hi(R7)  | JIT scratch space for BPF registers
-+ *                 |  lo(R7)  |
-+ *                 |   ...    |
-+ *  BPF_REG_FP =>  +----------+ <= (fp - 4 * NR_SAVED_REGISTERS
-+ *                 |          |        - 4 * BPF_JIT_SCRATCH_REGS)
-+ *                 |          |
-+ *                 |   ...    | BPF program stack
-+ *                 |          |
-+ *     RV32 sp =>  +----------+
-+ *                 |          |
-+ *                 |   ...    | Function call stack
-+ *                 |          |
-+ *                 +----------+
-+ *                     low
-+ */
-+
- enum {
--	/* Stack layout - these are offsets from (top of stack - 4). */
-+	/* Stack layout - these are offsets from top of JIT scratch space. */
- 	BPF_R6_HI,
- 	BPF_R6_LO,
- 	BPF_R7_HI,
-@@ -29,7 +56,11 @@ enum {
- 	BPF_JIT_SCRATCH_REGS,
- };
- 
--#define STACK_OFFSET(k) (-4 - ((k) * 4))
-+/* Number of callee-saved registers stored to stack: ra, fp, s1--s7. */
-+#define NR_SAVED_REGISTERS	9
-+
-+/* Offset from fp for BPF registers stored on stack. */
-+#define STACK_OFFSET(k)	(-4 - (4 * NR_SAVED_REGISTERS) - (4 * (k)))
- 
- #define TMP_REG_1	(MAX_BPF_JIT_REG + 0)
- #define TMP_REG_2	(MAX_BPF_JIT_REG + 1)
-@@ -111,11 +142,9 @@ static void emit_imm64(const s8 *rd, s32 imm_hi, s32 imm_lo,
- 
- static void __build_epilogue(bool is_tail_call, struct rv_jit_context *ctx)
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index d86ff8214b96..977add1b73e2 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -5003,8 +5003,8 @@ static int bpf_object__collect_map_relos(struct bpf=
+_object *obj,
+ 					 GElf_Shdr *shdr, Elf_Data *data)
  {
--	int stack_adjust = ctx->stack_size, store_offset = stack_adjust - 4;
-+	int stack_adjust = ctx->stack_size;
- 	const s8 *r0 = bpf2rv32[BPF_REG_0];
- 
--	store_offset -= 4 * BPF_JIT_SCRATCH_REGS;
--
- 	/* Set return value if not tail call. */
- 	if (!is_tail_call) {
- 		emit(rv_addi(RV_REG_A0, lo(r0), 0), ctx);
-@@ -123,15 +152,15 @@ static void __build_epilogue(bool is_tail_call, struct rv_jit_context *ctx)
- 	}
- 
- 	/* Restore callee-saved registers. */
--	emit(rv_lw(RV_REG_RA, store_offset - 0, RV_REG_SP), ctx);
--	emit(rv_lw(RV_REG_FP, store_offset - 4, RV_REG_SP), ctx);
--	emit(rv_lw(RV_REG_S1, store_offset - 8, RV_REG_SP), ctx);
--	emit(rv_lw(RV_REG_S2, store_offset - 12, RV_REG_SP), ctx);
--	emit(rv_lw(RV_REG_S3, store_offset - 16, RV_REG_SP), ctx);
--	emit(rv_lw(RV_REG_S4, store_offset - 20, RV_REG_SP), ctx);
--	emit(rv_lw(RV_REG_S5, store_offset - 24, RV_REG_SP), ctx);
--	emit(rv_lw(RV_REG_S6, store_offset - 28, RV_REG_SP), ctx);
--	emit(rv_lw(RV_REG_S7, store_offset - 32, RV_REG_SP), ctx);
-+	emit(rv_lw(RV_REG_RA, stack_adjust - 4, RV_REG_SP), ctx);
-+	emit(rv_lw(RV_REG_FP, stack_adjust - 8, RV_REG_SP), ctx);
-+	emit(rv_lw(RV_REG_S1, stack_adjust - 12, RV_REG_SP), ctx);
-+	emit(rv_lw(RV_REG_S2, stack_adjust - 16, RV_REG_SP), ctx);
-+	emit(rv_lw(RV_REG_S3, stack_adjust - 20, RV_REG_SP), ctx);
-+	emit(rv_lw(RV_REG_S4, stack_adjust - 24, RV_REG_SP), ctx);
-+	emit(rv_lw(RV_REG_S5, stack_adjust - 28, RV_REG_SP), ctx);
-+	emit(rv_lw(RV_REG_S6, stack_adjust - 32, RV_REG_SP), ctx);
-+	emit(rv_lw(RV_REG_S7, stack_adjust - 36, RV_REG_SP), ctx);
- 
- 	emit(rv_addi(RV_REG_SP, RV_REG_SP, stack_adjust), ctx);
- 
-@@ -1260,17 +1289,20 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 
- void bpf_jit_build_prologue(struct rv_jit_context *ctx)
- {
--	/* Make space to save 9 registers: ra, fp, s1--s7. */
--	int stack_adjust = 9 * sizeof(u32), store_offset, bpf_stack_adjust;
- 	const s8 *fp = bpf2rv32[BPF_REG_FP];
- 	const s8 *r1 = bpf2rv32[BPF_REG_1];
--
--	bpf_stack_adjust = round_up(ctx->prog->aux->stack_depth, 16);
-+	int stack_adjust = 0;
-+	int bpf_stack_adjust =
-+		round_up(ctx->prog->aux->stack_depth, STACK_ALIGN);
-+
-+	/* Make space for callee-saved registers. */
-+	stack_adjust += NR_SAVED_REGISTERS * sizeof(u32);
-+	/* Make space for BPF registers on stack. */
-+	stack_adjust += BPF_JIT_SCRATCH_REGS * sizeof(u32);
-+	/* Make space for BPF stack. */
- 	stack_adjust += bpf_stack_adjust;
--
--	store_offset = stack_adjust - 4;
--
--	stack_adjust += 4 * BPF_JIT_SCRATCH_REGS;
-+	/* Round up for stack alignment. */
-+	stack_adjust = round_up(stack_adjust, STACK_ALIGN);
- 
- 	/*
- 	 * The first instruction sets the tail-call-counter (TCC) register.
-@@ -1281,24 +1313,24 @@ void bpf_jit_build_prologue(struct rv_jit_context *ctx)
- 	emit(rv_addi(RV_REG_SP, RV_REG_SP, -stack_adjust), ctx);
- 
- 	/* Save callee-save registers. */
--	emit(rv_sw(RV_REG_SP, store_offset - 0, RV_REG_RA), ctx);
--	emit(rv_sw(RV_REG_SP, store_offset - 4, RV_REG_FP), ctx);
--	emit(rv_sw(RV_REG_SP, store_offset - 8, RV_REG_S1), ctx);
--	emit(rv_sw(RV_REG_SP, store_offset - 12, RV_REG_S2), ctx);
--	emit(rv_sw(RV_REG_SP, store_offset - 16, RV_REG_S3), ctx);
--	emit(rv_sw(RV_REG_SP, store_offset - 20, RV_REG_S4), ctx);
--	emit(rv_sw(RV_REG_SP, store_offset - 24, RV_REG_S5), ctx);
--	emit(rv_sw(RV_REG_SP, store_offset - 28, RV_REG_S6), ctx);
--	emit(rv_sw(RV_REG_SP, store_offset - 32, RV_REG_S7), ctx);
-+	emit(rv_sw(RV_REG_SP, stack_adjust - 4, RV_REG_RA), ctx);
-+	emit(rv_sw(RV_REG_SP, stack_adjust - 8, RV_REG_FP), ctx);
-+	emit(rv_sw(RV_REG_SP, stack_adjust - 12, RV_REG_S1), ctx);
-+	emit(rv_sw(RV_REG_SP, stack_adjust - 16, RV_REG_S2), ctx);
-+	emit(rv_sw(RV_REG_SP, stack_adjust - 20, RV_REG_S3), ctx);
-+	emit(rv_sw(RV_REG_SP, stack_adjust - 24, RV_REG_S4), ctx);
-+	emit(rv_sw(RV_REG_SP, stack_adjust - 28, RV_REG_S5), ctx);
-+	emit(rv_sw(RV_REG_SP, stack_adjust - 32, RV_REG_S6), ctx);
-+	emit(rv_sw(RV_REG_SP, stack_adjust - 36, RV_REG_S7), ctx);
- 
- 	/* Set fp: used as the base address for stacked BPF registers. */
- 	emit(rv_addi(RV_REG_FP, RV_REG_SP, stack_adjust), ctx);
- 
--	/* Set up BPF stack pointer. */
-+	/* Set up BPF frame pointer. */
- 	emit(rv_addi(lo(fp), RV_REG_SP, bpf_stack_adjust), ctx);
- 	emit(rv_addi(hi(fp), RV_REG_ZERO, 0), ctx);
- 
--	/* Set up context pointer. */
-+	/* Set up BPF context pointer. */
- 	emit(rv_addi(lo(r1), RV_REG_A0, 0), ctx);
- 	emit(rv_addi(hi(r1), RV_REG_ZERO, 0), ctx);
- 
--- 
-2.17.1
+ 	int i, j, nrels, new_sz, ptr_sz =3D sizeof(void *);
++	const struct btf_var_secinfo *vi =3D NULL;
+ 	const struct btf_type *sec, *var, *def;
+-	const struct btf_var_secinfo *vi;
+ 	const struct btf_member *member;
+ 	struct bpf_map *map, *targ_map;
+ 	const char *name, *mname;
+--=20
+2.24.1
 
