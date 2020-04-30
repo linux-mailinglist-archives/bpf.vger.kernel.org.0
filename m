@@ -2,91 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9D01BF5DB
-	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 12:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3141BF5E9
+	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 12:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726626AbgD3Kth (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Apr 2020 06:49:37 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:50240 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726413AbgD3Ktg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Apr 2020 06:49:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588243775;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=21QIlUua/fXzniNbCnhFoUnCFPduQJbhBIgPzwL2ZYc=;
-        b=baCnFjHwiJ+faWPFOe4rqZ3HcmoZ0cYd839xZd6ZAunn4xxq3SQYZ+Y9PBgKbanpwZj3KC
-        1GPNhICGWBNRsjUIZCmCks2vEBhuOQutLMcnL2S9EG4pdRlR4+xfe1eG8Kt8Q4OfxXHzRj
-        KmMLKG+46sUkMfQhz3szdRl82rehrsk=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-256-NosxtTxUO0mL8kg_pKn0Iw-1; Thu, 30 Apr 2020 06:49:31 -0400
-X-MC-Unique: NosxtTxUO0mL8kg_pKn0Iw-1
-Received: by mail-lf1-f72.google.com with SMTP id t194so394288lff.20
-        for <bpf@vger.kernel.org>; Thu, 30 Apr 2020 03:49:31 -0700 (PDT)
+        id S1726819AbgD3Kyp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Apr 2020 06:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726500AbgD3Kyo (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 30 Apr 2020 06:54:44 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88824C035495
+        for <bpf@vger.kernel.org>; Thu, 30 Apr 2020 03:54:42 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id x4so1327040wmj.1
+        for <bpf@vger.kernel.org>; Thu, 30 Apr 2020 03:54:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=1kUu8NYflskoYjSwjqb8k5MDH107iHjRDdmZ+H/9EHs=;
+        b=azvjiaX6Vd7a6YgrRJpDxA6ssFji1FUb/S13NZ5bXZlL2/yckme4ZApWCLTSsK+OvK
+         a6PrLf9qlBdxcuEFbJ7ir3eanBzJORBELyK90K7NubKYZt5we7TtIkJpedsP+d6U+lZd
+         KryiwV8osOzPm16sTdeNi6mxnpxqrkZ9WecwU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=21QIlUua/fXzniNbCnhFoUnCFPduQJbhBIgPzwL2ZYc=;
-        b=jCcwxQil/sxjdpf15hejL0jU4g+1TYDofHXgYgnJt75JxXBF4iEmjA2sam3OWIS30d
-         VA7iehxwwxf+0zqRC6OH3pzIBvZNVK8e9qwmBpNfEuIH8KVN7ewKeLwLw3XluEJjQXJo
-         N3WG2C95hSj+dZvVi5f0O4Ub1IJcs0FY0tVTN+lNrihDU+rryqhJbQRbuscAs00zUKTB
-         sfjzlGKbWTD2CNkJDU2l817Md4HnMzdN8/fX2k3Elqc+vhFhP7U5sx3d3RsqtBQ2a064
-         jfPnW9lBmO/RaaWLG9W66WbC94QTjEUSRlqNtEVVwfxqqRs+UlmA7KaCPrJeJHZyMJ3N
-         M9Dg==
-X-Gm-Message-State: AGi0PuZtE/FtXfWj5ScVwnPRVEpRflGiCdIfhh+dKnJ18MQb218vm0Bl
-        OnyOWIFogNT/GaE0HlZ3axRAN0/akZpiWJBKjXMcZUJUoPqa1PyMR7YE8dN6+paC7uJfd2IxI7S
-        7aET9O7p3Snq9
-X-Received: by 2002:ac2:4832:: with SMTP id 18mr1761378lft.162.1588243770242;
-        Thu, 30 Apr 2020 03:49:30 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIvQG4IPT8lLe2q6gQ3ZmSHAy6L43CwGDIqeoqvy5+uYU5Y+fGQmjRGUAjEIFbxV6BIlmzCbA==
-X-Received: by 2002:ac2:4832:: with SMTP id 18mr1761359lft.162.1588243769993;
-        Thu, 30 Apr 2020 03:49:29 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id a19sm4605494lff.11.2020.04.30.03.49.29
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=1kUu8NYflskoYjSwjqb8k5MDH107iHjRDdmZ+H/9EHs=;
+        b=Yi1YWDP9LgbfdlTp0xtzJutKJTjoQoT/oHzXEJIahaJuovBbzwgK5t3WcjIT14c2uy
+         suygEi4q+/LSqvBtyESmeRz0QjmonyI06tMwi+eEnU6893FFzYZqW82erbSIFhWJq0KD
+         KH7teLnOjzgBjUJhKxf0lj1p506lgPS0j4bHFcyk6LuizHBITsYXXyxe2AnB+3txuxvo
+         FkiFASCyswSM/uy9XT2uiCjwNt9muTLSRypcBJ87Hl4pkPtnvtS3ZyfJT4lAwDcpUo0N
+         aDjFOnKzvTN8qMbrKROleHaXzKZVcg1wgGDX6Sv26wF/q5YvF/yUifgVlMaVBxadH8Sd
+         4rxg==
+X-Gm-Message-State: AGi0PuZZALHyRHxbmeIosz7xTcb+ZmwpfXe0IrBeXw9SQFP6WxAOX0l4
+        xPcqfOkCuTM1Lt0duR6f0BMSWg==
+X-Google-Smtp-Source: APiQypK9Jjc3pOB6SPB2xdP0+46wLu1COBnOCge8LYEUtcAoztKZz9vEZVspJ5FD+db0DptMhuArog==
+X-Received: by 2002:a1c:1d92:: with SMTP id d140mr2309689wmd.67.1588244081111;
+        Thu, 30 Apr 2020 03:54:41 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id b2sm3946555wrn.6.2020.04.30.03.54.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 03:49:29 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 83CD91814FF; Thu, 30 Apr 2020 12:49:26 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Eelco Chaudron <echaudro@redhat.com>, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, andriin@fb.com
-Subject: Re: [PATCH bpf-next] libbpf: fix probe code to return EPERM if encountered
-In-Reply-To: <158824221003.2338.9700507405752328930.stgit@ebuild>
-References: <158824221003.2338.9700507405752328930.stgit@ebuild>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 30 Apr 2020 12:49:26 +0200
-Message-ID: <87tv11s0y1.fsf@toke.dk>
+        Thu, 30 Apr 2020 03:54:40 -0700 (PDT)
+References: <20200429181154.479310-1-jakub@cloudflare.com> <20200429181154.479310-3-jakub@cloudflare.com> <5ea9d43aa9298_220d2ac81567a5b8fa@john-XPS-13-9370.notmuch>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Joe Stringer <joe@wand.net.nz>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: Re: [PATCH bpf-next 2/3] selftests/bpf: Test that lookup on SOCKMAP/SOCKHASH is allowed
+In-reply-to: <5ea9d43aa9298_220d2ac81567a5b8fa@john-XPS-13-9370.notmuch>
+Date:   Thu, 30 Apr 2020 12:54:39 +0200
+Message-ID: <87h7x1utu8.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Eelco Chaudron <echaudro@redhat.com> writes:
-
-> When the probe code was failing for any reason ENOTSUP was returned, even
-> if this was due to no having enough lock space. This patch fixes this by
-> returning EPERM to the user application, so it can respond and increase
-> the RLIMIT_MEMLOCK size.
+On Wed, Apr 29, 2020 at 09:23 PM CEST, John Fastabend wrote:
+> Jakub Sitnicki wrote:
+>> Now that bpf_map_lookup_elem() is white-listed for SOCKMAP/SOCKHASH,
+>> replace the tests which check that verifier prevents lookup on these map
+>> types with ones that ensure that lookup operation is permitted, but only
+>> with a release of acquired socket reference.
+>> 
+>> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+>> ---
 >
-> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+> For completeness would be nice to add a test passing this into
+> sk_select_reuseport to cover that case as well. Could come as
+> a follow up patch imo.
 
-Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+Is this what you had in mind?
 
-For context - we ran into this in xdp-tools where we've implemented
-"fiddle rlimit and retry" logic in response to EPERM errors, and
-suddenly we were seeing ENOTSUP errors instead. See discussion here:
+https://lore.kernel.org/bpf/20200430104738.494180-1-jakub@cloudflare.com/
 
-https://github.com/xdp-project/xdp-tools/pull/16
-
--Toke
-
+Thanks for reviewing the series.
