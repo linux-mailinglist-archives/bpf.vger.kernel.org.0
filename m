@@ -2,116 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D6D1BF51D
-	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 12:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC2E1BF548
+	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 12:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgD3KPZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Apr 2020 06:15:25 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:36579 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726405AbgD3KPY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Apr 2020 06:15:24 -0400
+        id S1726781AbgD3KXv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Apr 2020 06:23:51 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:55210 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725280AbgD3KXu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 30 Apr 2020 06:23:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588241723;
+        s=mimecast20190719; t=1588242229;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XFp47qmUIQNvYi/Y/57QAuRfezAWad6iVDDbiawYq80=;
-        b=b+KPsKvDlaUwNuimBMQshbnuX/iq+NVsY1exLwwfhH8IhEGo0aGVwhS4amt2loDc/aOb7m
-        m62RHdQgyxfXFjS0gs9olDNuQzaq8f+KPl5+PQlaPHuosWXxW3NTjFONM46DohkoPBarCZ
-        ItjRO37wfytj6pgWSEp882TCISLdGtI=
+         content-transfer-encoding:content-transfer-encoding;
+        bh=pGZ8YKX84O2C9ELQ3AtnmbGWiX9FZ6dQm7WK/H4lnHY=;
+        b=fclid7y+5RR9TZLZdkIjxUXgTringarO/k8V0D6MgLr3MCs2RZNuq0dSJ6cqtArNvzyfL6
+        P3cTtgJU/rUh/PKv4ctpdi2TqfHV7Qi3MUZrGF5ch0Nx/GnNWmMZDq4lc65bqUVUiGw2M+
+        /dM9jwynXIdgT8hTRYTkALp9amc42/E=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-16-f054Qw8oOpaks-D2zOHAVw-1; Thu, 30 Apr 2020 06:15:18 -0400
-X-MC-Unique: f054Qw8oOpaks-D2zOHAVw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+ us-mta-398-EW4dUmudMGWkKIgRfCbbvA-1; Thu, 30 Apr 2020 06:23:47 -0400
+X-MC-Unique: EW4dUmudMGWkKIgRfCbbvA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 238DD107ACCA;
-        Thu, 30 Apr 2020 10:15:16 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.55])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 42989605DD;
-        Thu, 30 Apr 2020 10:15:00 +0000 (UTC)
-Date:   Thu, 30 Apr 2020 12:14:58 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     sameehj@amazon.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        zorik@amazon.com, akiyano@amazon.com, gtzalik@amazon.com,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        David Ahern <dsahern@gmail.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        steffen.klassert@secunet.com, brouer@redhat.com
-Subject: Re: [PATCH net-next 21/33] virtio_net: add XDP frame size in two
- code paths
-Message-ID: <20200430121458.4659bb53@carbon>
-In-Reply-To: <d939445b-9713-2b2f-9830-38c2867bb963@redhat.com>
-References: <158757160439.1370371.13213378122947426220.stgit@firesoul>
-        <158757174774.1370371.14395462229209766397.stgit@firesoul>
-        <3958d9c6-a7d1-6a3d-941d-0a2915cc6b09@redhat.com>
-        <20200427163224.6445d4bb@carbon>
-        <d939445b-9713-2b2f-9830-38c2867bb963@redhat.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 060B4468;
+        Thu, 30 Apr 2020 10:23:46 +0000 (UTC)
+Received: from ebuild.redhat.com (ovpn-112-153.ams2.redhat.com [10.36.112.153])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B363728554;
+        Thu, 30 Apr 2020 10:23:40 +0000 (UTC)
+From:   Eelco Chaudron <echaudro@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, andriin@fb.com, toke@redhat.com
+Subject: [PATCH bpf-next] libbpf: fix probe code to return EPERM if encountered
+Date:   Thu, 30 Apr 2020 12:23:34 +0200
+Message-Id: <158824221003.2338.9700507405752328930.stgit@ebuild>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset="utf-8"
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 28 Apr 2020 17:50:11 +0800
-Jason Wang <jasowang@redhat.com> wrote:
+When the probe code was failing for any reason ENOTSUP was returned, even
+if this was due to no having enough lock space. This patch fixes this by
+returning EPERM to the user application, so it can respond and increase
+the RLIMIT_MEMLOCK size.
 
-> We tried to reserve space for vnet header before
-> xdp.data_hard_start. But this is useless since the packet could be
-> modified by XDP which may invalidate the information stored in the
-> header and there's no way for XDP to know the existence of the vnet
-> header currently.
+Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+---
+ tools/lib/bpf/libbpf.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-I think this is wrong.  We can reserve space for vnet header before
-xdp.data_hard_start, and it will be safe and cannot be modified by XDP
-as BPF program cannot access data before xdp.data_hard_start.
- 
-> So let's just not reserve space for vnet header in this case.
-> 
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
-> ---
->  drivers/net/virtio_net.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 2fe7a3188282..9bdaf2425e6e 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -681,8 +681,8 @@ static struct sk_buff *receive_small(struct net_device *dev,
->  			page = xdp_page;
->  		}
->  
-> -		xdp.data_hard_start = buf + VIRTNET_RX_PAD + vi->hdr_len;
-> -		xdp.data = xdp.data_hard_start + xdp_headroom;
-> +		xdp.data_hard_start = buf + VIRTNET_RX_PAD;
-> +		xdp.data = xdp.data_hard_start + xdp_headroom + vi->hdr_len;;
-
-I think this is wrong.  You are exposing the vi header info, which will
-be overwritten when code creates an xdp_frame.  I find it very fragile,
-as later in the code the vi header info is copied, but only if xdp_prog
-is not loaded, so in principle it's okay, but when someone later
-figures out that we want to look at this area, we will be in trouble
-(and I expect this will be needed when we work towards multi-buffer
-XDP).
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 8f480e29a6b0..a62388a151d4 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -3381,8 +3381,13 @@ bpf_object__probe_caps(struct bpf_object *obj)
+=20
+ 	for (i =3D 0; i < ARRAY_SIZE(probe_fn); i++) {
+ 		ret =3D probe_fn[i](obj);
+-		if (ret < 0)
++		if (ret < 0) {
+ 			pr_debug("Probe #%d failed with %d.\n", i, ret);
++			if (ret =3D=3D -EPERM) {
++				pr_perm_msg(ret);
++				return ret;
++			}
++		}
+ 	}
+=20
+ 	return 0;
 
