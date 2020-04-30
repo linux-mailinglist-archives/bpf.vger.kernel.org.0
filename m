@@ -2,145 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5E21BF129
-	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 09:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42AE1BF25B
+	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 10:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726489AbgD3HTJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Apr 2020 03:19:09 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:29355 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726337AbgD3HTI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Apr 2020 03:19:08 -0400
+        id S1726474AbgD3INc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Apr 2020 04:13:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726127AbgD3INc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Apr 2020 04:13:32 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4295C035495
+        for <bpf@vger.kernel.org>; Thu, 30 Apr 2020 01:13:31 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id d15so5720111wrx.3
+        for <bpf@vger.kernel.org>; Thu, 30 Apr 2020 01:13:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1588231148; x=1619767148;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-transfer-encoding:mime-version:subject;
-  bh=49aIoMJfZD48Zv0jPVQLv85WcEcgrU7KH5esWay/qvU=;
-  b=k9p0pKH4TREqaVe8zrqwDzlFUwLiLxKchOuetK7CF0J//NCXcamDuCm8
-   ZR2BGIg8ehrmuh0zk0zLpyTGyGZjJtxBgmr5xE9Ms1xSNbM0WgbLerhDb
-   0HvCbGwk0WzvsX485Q+AkQf9zMhx56uR12aoKT7GkDyhcYZP4qB5UTb/t
-   0=;
-IronPort-SDR: IlHjtA3eOb1l09Nb+e8NXZtuMd9Wiq/R1iYFI7f9hxls5nYp7ejSi19bXNpDrn8BE53sgkv4uZ
- 5KZImaeRH56Q==
-X-IronPort-AV: E=Sophos;i="5.73,334,1583193600"; 
-   d="scan'208";a="28239627"
-Subject: RE: [PATCH] net: ena: fix gcc-4.8 missing-braces warning
-Thread-Topic: [PATCH] net: ena: fix gcc-4.8 missing-braces warning
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-9ec21598.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 30 Apr 2020 07:18:55 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1d-9ec21598.us-east-1.amazon.com (Postfix) with ESMTPS id 86C5FA1D38;
-        Thu, 30 Apr 2020 07:18:52 +0000 (UTC)
-Received: from EX13D08EUC003.ant.amazon.com (10.43.164.232) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 30 Apr 2020 07:18:51 +0000
-Received: from EX13D11EUC003.ant.amazon.com (10.43.164.153) by
- EX13D08EUC003.ant.amazon.com (10.43.164.232) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 30 Apr 2020 07:18:50 +0000
-Received: from EX13D11EUC003.ant.amazon.com ([10.43.164.153]) by
- EX13D11EUC003.ant.amazon.com ([10.43.164.153]) with mapi id 15.00.1497.006;
- Thu, 30 Apr 2020 07:18:50 +0000
-From:   "Jubran, Samih" <sameehj@amazon.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        "Belgazal, Netanel" <netanel@amazon.com>,
-        "Kiyanovski, Arthur" <akiyano@amazon.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Jesper Dangaard Brouer" <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-CC:     "Tzalik, Guy" <gtzalik@amazon.com>,
-        "Bshara, Saeed" <saeedb@amazon.com>,
-        "Machulsky, Zorik" <zorik@amazon.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Thread-Index: AQHWHadH74VL29pWn0eLulmochhjwKiRPQvg
-Date:   Thu, 30 Apr 2020 07:18:47 +0000
-Deferred-Delivery: Thu, 30 Apr 2020 07:17:49 +0000
-Message-ID: <03f3568ec8c646cdb7c767b16d19525a@EX13D11EUC003.ant.amazon.com>
-References: <20200428215131.3948527-1-arnd@arndb.de>
-In-Reply-To: <20200428215131.3948527-1-arnd@arndb.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.164.46]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=S26iDR5wiFrSlBw+/Sqtg08lFgjLtyBozvtbShjn61Y=;
+        b=pTvelUQ+zdPy9VKa02LtKHv3qmi3+WZYYOUBtJB+GxiRulqGC7PbCYETbq1Y6bLGyO
+         IVHO2Bar5whefojm2f+DZ5OymKBa2qS3gDxuNKlX820aNuTJai9zLENWVTXVaKskUiCc
+         zH/JduLJfFZU74TVWC72WISGslKVUDt5Fq5kY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=S26iDR5wiFrSlBw+/Sqtg08lFgjLtyBozvtbShjn61Y=;
+        b=qA3+TqhpM9q6bBv+xXSz5Nb4W80khghT7DP4M1l75knJyeBcCDJXcony6JeV4DfOwN
+         fQJdxXG3cBM3PFUx6wPketAcqsCnq3pYB2t/yj8yCIUPWhf7gZhc1JD8tPJ2/Bug3zxu
+         h0hH0FlQxvpQ9j9dNJxLxmzbdkB1Cw7WJHkUC35f5nBCR2ByGJNedVWZT52/xCs7X/AP
+         2sA7Ll4inf9jTqhlovR+h80wlE44QQvx2ZCP18GKWE9FUROLUi/JUCdrgR46J6E2/s8E
+         mXLOJXL0+l5H3wwjrhuyhBQpl3fJvJHLx5ttIQZvjCP/T0HZbA95wKoMpB99JgufUjRs
+         k+rw==
+X-Gm-Message-State: AGi0PuYwL2qKixuUzBVnANkrdA6iu8wfR1/587sVjuKzKMlV8rzkDZDe
+        dKdh/pWlme6jIX9v7M4sK9P1Pe/r0g0=
+X-Google-Smtp-Source: APiQypLvst+AtmPsyQgU2WZy0y3Y0J8quxpfpb0fOzCKml+3rJRIiOzy/41XYMewpzXoV1FZ57ZFYA==
+X-Received: by 2002:a5d:6b8a:: with SMTP id n10mr2607952wrx.36.1588234410414;
+        Thu, 30 Apr 2020 01:13:30 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id v1sm2992098wrv.19.2020.04.30.01.13.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Apr 2020 01:13:29 -0700 (PDT)
+References: <20200430021436.1522502-1-andriin@fb.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
+Subject: Re: [PATCH v2 bpf-next] libbpf: fix false uninitialized variable warning
+In-reply-to: <20200430021436.1522502-1-andriin@fb.com>
+Date:   Thu, 30 Apr 2020 10:13:28 +0200
+Message-ID: <87imhhv1av.fsf@cloudflare.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-> -----Original Message-----
-> From: Arnd Bergmann <arnd@arndb.de>
-> Sent: Wednesday, April 29, 2020 12:51 AM
-> To: Belgazal, Netanel <netanel@amazon.com>; Kiyanovski, Arthur
-> <akiyano@amazon.com>; David S. Miller <davem@davemloft.net>; Alexei
-> Starovoitov <ast@kernel.org>; Daniel Borkmann <daniel@iogearbox.net>;
-> Jakub Kicinski <kuba@kernel.org>; Jesper Dangaard Brouer
-> <hawk@kernel.org>; John Fastabend <john.fastabend@gmail.com>; Jubran,
-> Samih <sameehj@amazon.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>; Tzalik, Guy <gtzalik@amazon.com>;
-> Bshara, Saeed <saeedb@amazon.com>; Machulsky, Zorik
-> <zorik@amazon.com>; netdev@vger.kernel.org; linux-
-> kernel@vger.kernel.org; bpf@vger.kernel.org
-> Subject: [EXTERNAL] [PATCH] net: ena: fix gcc-4.8 missing-braces warning
->=20
-> CAUTION: This email originated from outside of the organization. Do not c=
-lick
-> links or open attachments unless you can confirm the sender and know the
-> content is safe.
->=20
->=20
->=20
-> Older compilers warn about initializers with incorrect curly
-> braces:
->=20
-> drivers/net/ethernet/amazon/ena/ena_netdev.c: In function
-> 'ena_xdp_xmit_buff':
-> drivers/net/ethernet/amazon/ena/ena_netdev.c:311:2: error: expected ','
-> or ';' before 'struct'
->   struct ena_tx_buffer *tx_info;
->   ^~~~~~
-> drivers/net/ethernet/amazon/ena/ena_netdev.c:321:2: error: 'tx_info'
-> undeclared (first use in this function)
->   tx_info =3D &xdp_ring->tx_buffer_info[req_id];
->   ^~~~~~~
-> drivers/net/ethernet/amazon/ena/ena_netdev.c:321:2: note: each
-> undeclared identifier is reported only once for each function it appears =
-in
->=20
-> Use the GNU empty initializer extension to avoid this.
->=20
-> Fixes: 31aa9857f173 ("net: ena: enable negotiating larger Rx ring size")
-Please use the correct fixes, it should be XDP TX commit.
-Otherwise looks good,
-Thanks!
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Thu, Apr 30, 2020 at 04:14 AM CEST, Andrii Nakryiko wrote:
+> Some versions of GCC falsely detect that vi might not be initialized. That's
+> not true, but let's silence it with NULL initialization.
+>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 > ---
->  drivers/net/ethernet/amazon/ena/ena_netdev.c | 2 +-
+>  tools/lib/bpf/libbpf.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c
-> b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-> index 2cc765df8da3..ad385652ca24 100644
-> --- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
-> +++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-> @@ -307,7 +307,7 @@ static int ena_xdp_xmit_buff(struct net_device *dev,
->                              struct ena_rx_buffer *rx_info)  {
->         struct ena_adapter *adapter =3D netdev_priv(dev);
-> -       struct ena_com_tx_ctx ena_tx_ctx =3D {0};
-> +       struct ena_com_tx_ctx ena_tx_ctx =3D { };
->         struct ena_tx_buffer *tx_info;
->         struct ena_ring *xdp_ring;
->         u16 next_to_use, req_id;
-> --
-> 2.26.0
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index d86ff8214b96..977add1b73e2 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -5003,8 +5003,8 @@ static int bpf_object__collect_map_relos(struct bpf_object *obj,
+>  					 GElf_Shdr *shdr, Elf_Data *data)
+>  {
+>  	int i, j, nrels, new_sz, ptr_sz = sizeof(void *);
+> +	const struct btf_var_secinfo *vi = NULL;
+>  	const struct btf_type *sec, *var, *def;
+> -	const struct btf_var_secinfo *vi;
+>  	const struct btf_member *member;
+>  	struct bpf_map *map, *targ_map;
+>  	const char *name, *mname;
 
+Alternatively we could borrow the kernel uninitialized_var macro:
+
+include/linux/compiler-clang.h:#define uninitialized_var(x) x = *(&(x))
+include/linux/compiler-gcc.h:#define uninitialized_var(x) x = x
