@@ -2,142 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C80A81BFDCC
-	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 16:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F27F1BFDE8
+	for <lists+bpf@lfdr.de>; Thu, 30 Apr 2020 16:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgD3OUZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Apr 2020 10:20:25 -0400
-Received: from mail-bn8nam11on2138.outbound.protection.outlook.com ([40.107.236.138]:27233
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726309AbgD3OUY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Apr 2020 10:20:24 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mgkOZ13QIXb6AWSyuMas2gnt7PIdYIaLTwt1w32+9TGfR2EEA0MAJa2LdiIuG9KBshL4ie12nxlb5y4/m0ffIwMtKtbB6y7aev3utvx8q55/LQ36JlwJJqKUMObh/+3byyCZ5jMB3nBUt+qEvIvzx0wm4FCmQD/10RGU3/fE2qV/gmu/3oyxXtuQAcspYxX5Lvh5JiDXIiRHpq+f7rG7Y1cT7i9hW20zqhSMYl319L9VhrQqm6xDqY6CSwUgxpBIfCVwVIfjJEvD1H13g1xs4t67RuO5dHJXamc2IVJDZsCpqBnLb6LmhWDN8NooK+oisedKbyfIoKB7Z9DCMOeHew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Tw2r3gEkjnc4eFINwZyPtQboIssUp/2BhYJKA8opJXk=;
- b=TslimKCFng8NKmQc/mOY7XqEuqJMbiK8UMxNj/U7/Areij0E0A4CLbtVqNfxc2ykj6gW+o3pZjEUN+M9CzxAvqi/4Pe4hAPD6eDMarnFszEMeu033CjpgTdrdPCO5ss3ECCVvylLW/oHy8rX2NJh0TuZTo9ncCGrpX50gOJT9qVMWCsN9jydG/YSia61X4HJp8mduIrCTrdh+GJYsSwARj5JY5fkh+XdMCYH5VmK30n/StzhrieIJnbd+J3XIBtoHuGyyO7qN8Tz2YVXBLchK7h+Mtm63scqqzKGRZ+QCQLJzguCTfC57bXw6wsHP8TqcfgCJfCsXfODupptjabCAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Tw2r3gEkjnc4eFINwZyPtQboIssUp/2BhYJKA8opJXk=;
- b=fieZEMKv/Hvh1Ut80lh47lftOjGntUuGcAzeUnjcapNlDbpx5/hIKb0JRTQLcPqXjrYasGB3X1G8AP5l+b4g9p0uzzBl06Z4xKWeaaMe5E4VkfTndmFTGt2QlIJKkRxG0HWxrOLjZNv6SdIuXA1pBDLuWpKnW/X+W8LNPT/1eDE=
-Received: from MN2PR21MB1437.namprd21.prod.outlook.com (2603:10b6:208:208::10)
- by MN2PR21MB1440.namprd21.prod.outlook.com (2603:10b6:208:205::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.3; Thu, 30 Apr
- 2020 14:20:21 +0000
-Received: from MN2PR21MB1437.namprd21.prod.outlook.com
- ([fe80::453:5eca:93bd:5afa]) by MN2PR21MB1437.namprd21.prod.outlook.com
- ([fe80::453:5eca:93bd:5afa%6]) with mapi id 15.20.2979.005; Thu, 30 Apr 2020
- 14:20:21 +0000
-From:   Haiyang Zhang <haiyangz@microsoft.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        "sameehj@amazon.com" <sameehj@amazon.com>
-CC:     Wei Liu <wei.liu@kernel.org>, KY Srinivasan <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "zorik@amazon.com" <zorik@amazon.com>,
-        "akiyano@amazon.com" <akiyano@amazon.com>,
-        "gtzalik@amazon.com" <gtzalik@amazon.com>,
-        =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        id S1726766AbgD3OXs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Apr 2020 10:23:48 -0400
+Received: from www62.your-server.de ([213.133.104.62]:45380 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726520AbgD3OXs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Apr 2020 10:23:48 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jUA6I-00086y-K3; Thu, 30 Apr 2020 16:23:42 +0200
+Received: from [178.195.186.98] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jUA6I-000JJ2-3f; Thu, 30 Apr 2020 16:23:42 +0200
+Subject: Re: [PATCH bpf-next] bpf, riscv: Fix stack layout of JITed code on
+ RV32
+To:     Xi Wang <xi.wang@gmail.com>,
+        Luke Nelson <lukenels@cs.washington.edu>
+Cc:     bpf@vger.kernel.org, Luke Nelson <luke.r.nels@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        David Ahern <dsahern@gmail.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        "steffen.klassert@secunet.com" <steffen.klassert@secunet.com>
-Subject: RE: [PATCH net-next v2 12/33] hv_netvsc: add XDP frame size to driver
-Thread-Topic: [PATCH net-next v2 12/33] hv_netvsc: add XDP frame size to
- driver
-Thread-Index: AQHWHuGGxXK6SlAFTkOuB//iHWVjW6iRtcfg
-Date:   Thu, 30 Apr 2020 14:20:20 +0000
-Message-ID: <MN2PR21MB1437A4F44AC313E5DF962B35CAAA0@MN2PR21MB1437.namprd21.prod.outlook.com>
-References: <158824557985.2172139.4173570969543904434.stgit@firesoul>
- <158824568241.2172139.9308631605958332864.stgit@firesoul>
-In-Reply-To: <158824568241.2172139.9308631605958332864.stgit@firesoul>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Owner=haiyangz@microsoft.com;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-04-30T14:20:18.3172932Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=7cfc276d-1320-467e-b44b-94b6b3de1475;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Extended_MSFT_Method=Automatic
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [96.61.83.132]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: eda5568e-4a7b-436d-b50f-08d7ed119da3
-x-ms-traffictypediagnostic: MN2PR21MB1440:|MN2PR21MB1440:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR21MB1440F093B1B1D7A61EF67567CAAA0@MN2PR21MB1440.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-forefront-prvs: 0389EDA07F
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: I3unNTxtRJhnqKNGDM+nKr0cKEYJqXPe4h5a/qSJE4N1D8FbpLWNJ3huZyD/5wWQOCSqLAYcqNrWCO4q7ezByd9DhI8azee86xU8Rw7oX08Jk/pqSOXX/nYQ27Qxfnozh0YkLgEk2fMMMH7Pbz8jri6M4djToZAFiM9lmqfrriG5PXo6MM3LrNlyRZBQDFjT/UOkKDYGvvdChQXhg1SRlqgmJ7n4mYEju4TDq9OP0pheB71/YKYnHkYFqsBbf8EnfD30IOje8mrOXB1vePiRNVTTuQkFN2bPYNb3VKz84Fp09s2UkV70q2QNosS+MPvwF9p18ZtJRcxlP/GznB0vcUXrQJPUhdsGOoJ6XDW5gzOeYq/89+nkfxH1u3CttoCMp3FXaNVEcAvkJ/NVL9dWlXDPeqWgf/uxHnWbGdpLjk448vmvPETTBD7np6b9C6ya
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR21MB1437.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(366004)(346002)(396003)(39860400002)(136003)(82950400001)(66446008)(10290500003)(66476007)(64756008)(8676002)(66946007)(33656002)(26005)(82960400001)(316002)(54906003)(86362001)(8936002)(110136005)(52536014)(66556008)(9686003)(8990500004)(55016002)(4326008)(7416002)(478600001)(5660300002)(2906002)(7696005)(186003)(76116006)(53546011)(71200400001)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: R0hpG+4WWIFNvUEM+xar2F2RPvKdxsrxOXWZ5HEDLApazQ5ZZu3b8TOrVnV86Q9m5hvU+zhZl6cc72ONK5tUC8Bg2OhppYYJNmtLGoenWIQ7zMgqOdP6g9KtOekyrPNFuci55SSCuhkULNYInLrN8JG/9HlF+3eNwTLoHCKKCdaaqrPM8rJwpkz1XE04hanGkosNYyG7nOQY2ocodmipi5/kAUXKKfcjwJ+UIFBT7aDR8D6oFljtLYgamE+nVUswJe7ziZd802bgXSG+ZyzOIu/T1mWdRAK6p4WNQaPsm/mpYBZrzXDG+UHnkspFvUu0wzyQGnCh+0OPHZj7dT7EeH63ZN5c87o+Xp0bUtKt1N1EiiBCxf5eH4xhPnmrRBhtFYRHVf6bPwZxlkiiUFCkOkoG7ABG9vNDMYm7+BqrO6fS2y7JNXajB22M7NmbKWO7Xb857qV3C8pkiQJrkrl2dB5cv3lj5elirMTJLxNy7mlyuTTH+tuU+MeDiur8RRlPOC9Bt8g+X6EABn2ddojNe0So6R3Wm4nYFfDm4nHrF1T4myh1Nj0lE6lZ6CbEn8JSV9ogk1C6ftDYMNx3XvKjMyeXu20/n391DkcFMHi5sAJypa8o/y568KyKVb+VHxuKt0n9r7r6tH2SIYjrFC+PxQIC1wcLRPB9HUrX41tnwU4oUBiX3TSPYTq0adTmU1YiDCMDVYcjfnJiqKrGjLWVuuXJJWSga9M+XnLyNctNHfENjqtjy51ziGKkR3yub0TX5mx0/CRpW2wYyKpHboauVHShLfIKBAMWiO5RDWrnCWg=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        KP Singh <kpsingh@chromium.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, netdev@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200430005127.2205-1-luke.r.nels@gmail.com>
+ <CAKU6vybAuF-oziH8oOu1oCv+j8SLOMWq2UdM6_kVCbeggLvxSA@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <61bfa5f6-eb21-3767-11c6-d8be46871c0e@iogearbox.net>
+Date:   Thu, 30 Apr 2020 16:23:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eda5568e-4a7b-436d-b50f-08d7ed119da3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Apr 2020 14:20:20.7997
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: B07p7jbiOZ1bqDXhlrxvt1qt6TZFSAWLzXuSuBhAjhuDM/DJqyBgnC5Edf9tZg9qyblf0uIzKM8U79/IsIuTiA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR21MB1440
+In-Reply-To: <CAKU6vybAuF-oziH8oOu1oCv+j8SLOMWq2UdM6_kVCbeggLvxSA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25798/Thu Apr 30 14:03:33 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSmVzcGVyIERhbmdhYXJk
-IEJyb3VlciA8YnJvdWVyQHJlZGhhdC5jb20+DQo+IFNlbnQ6IFRodXJzZGF5LCBBcHJpbCAzMCwg
-MjAyMCA3OjIxIEFNDQo+IFRvOiBzYW1lZWhqQGFtYXpvbi5jb20NCj4gQ2M6IFdlaSBMaXUgPHdl
-aS5saXVAa2VybmVsLm9yZz47IEtZIFNyaW5pdmFzYW4gPGt5c0BtaWNyb3NvZnQuY29tPjsNCj4g
-SGFpeWFuZyBaaGFuZyA8aGFpeWFuZ3pAbWljcm9zb2Z0LmNvbT47IFN0ZXBoZW4gSGVtbWluZ2Vy
-DQo+IDxzdGhlbW1pbkBtaWNyb3NvZnQuY29tPjsgSmVzcGVyIERhbmdhYXJkIEJyb3Vlcg0KPiA8
-YnJvdWVyQHJlZGhhdC5jb20+OyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBicGZAdmdlci5rZXJu
-ZWwub3JnOw0KPiB6b3Jpa0BhbWF6b24uY29tOyBha2l5YW5vQGFtYXpvbi5jb207IGd0emFsaWtA
-YW1hem9uLmNvbTsgVG9rZQ0KPiBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+
-OyBEYW5pZWwgQm9ya21hbm4NCj4gPGJvcmttYW5uQGlvZ2VhcmJveC5uZXQ+OyBBbGV4ZWkgU3Rh
-cm92b2l0b3YNCj4gPGFsZXhlaS5zdGFyb3ZvaXRvdkBnbWFpbC5jb20+OyBKb2huIEZhc3RhYmVu
-ZA0KPiA8am9obi5mYXN0YWJlbmRAZ21haWwuY29tPjsgQWxleGFuZGVyIER1eWNrDQo+IDxhbGV4
-YW5kZXIuZHV5Y2tAZ21haWwuY29tPjsgSmVmZiBLaXJzaGVyIDxqZWZmcmV5LnQua2lyc2hlckBp
-bnRlbC5jb20+Ow0KPiBEYXZpZCBBaGVybiA8ZHNhaGVybkBnbWFpbC5jb20+OyBXaWxsZW0gZGUg
-QnJ1aWpuDQo+IDx3aWxsZW1kZWJydWlqbi5rZXJuZWxAZ21haWwuY29tPjsgSWxpYXMgQXBhbG9k
-aW1hcw0KPiA8aWxpYXMuYXBhbG9kaW1hc0BsaW5hcm8ub3JnPjsgTG9yZW56byBCaWFuY29uaSA8
-bG9yZW56b0BrZXJuZWwub3JnPjsNCj4gU2FlZWQgTWFoYW1lZWQgPHNhZWVkbUBtZWxsYW5veC5j
-b20+Ow0KPiBzdGVmZmVuLmtsYXNzZXJ0QHNlY3VuZXQuY29tDQo+IFN1YmplY3Q6IFtQQVRDSCBu
-ZXQtbmV4dCB2MiAxMi8zM10gaHZfbmV0dnNjOiBhZGQgWERQIGZyYW1lIHNpemUgdG8gZHJpdmVy
-DQo+IA0KPiBUaGUgaHlwZXJ2IE5JQyBkcml2ZXJzIFhEUCBpbXBsZW1lbnRhdGlvbiBpcyByYXRo
-ZXIgZGlzYXBwb2ludGluZyBhcyBpdCB3aWxsDQo+IGJlIGEgc2xvd2Rvd24gdG8gZW5hYmxlIFhE
-UCBvbiB0aGlzIGRyaXZlciwgZ2l2ZW4gaXQgd2lsbCBhbGxvY2F0ZSBhIG5ldyBwYWdlDQo+IGZv
-ciBlYWNoIHBhY2tldCBhbmQgY29weSBvdmVyIHRoZSBwYXlsb2FkLCBiZWZvcmUgaW52b2tpbmcg
-dGhlIFhEUCBCUEYtDQo+IHByb2cuDQpUaGlzIG5lZWRzIGNvcnJlY3Rpb24uIEFzIEkgc2FpZCBw
-cmV2aW91c2x5IC0tIA0KVGhpcyBzdGF0ZW1lbnQgaXMgbm90IGFjY3VyYXRlIC0tIFRoZSBkYXRh
-IHBhdGggb2YgbmV0dnNjIGRyaXZlciBkb2VzIG1lbW9yeSANCmFsbG9jYXRpb24gYW5kIGNvcHkg
-ZXZlbiB3aXRob3V0IFhEUCwgc28gaXQncyBub3QgImEgc2xvd2Rvd24gdG8gZW5hYmxlIFhEUCIu
-DQoNClRoYW5rcywNCi0gSGFpeWFuZw0K
+On 4/30/20 4:14 AM, Xi Wang wrote:
+> On Wed, Apr 29, 2020 at 5:51 PM Luke Nelson <lukenels@cs.washington.edu> wrote:
+>>
+>> This patch fixes issues with stackframe unwinding and alignment in the
+>> current stack layout for BPF programs on RV32.
+>>
+>> In the current layout, RV32 fp points to the JIT scratch registers, rather
+>> than to the callee-saved registers. This breaks stackframe unwinding,
+>> which expects fp to point just above the saved ra and fp registers.
+>>
+>> This patch fixes the issue by moving the callee-saved registers to be
+>> stored on the top of the stack, pointed to by fp. This satisfies the
+>> assumptions of stackframe unwinding.
+>>
+>> This patch also fixes an issue with the old layout that the stack was
+>> not aligned to 16 bytes.
+>>
+>> Stacktrace from JITed code using the old stack layout:
+>>
+>>    [   12.196249 ] [<c0402200>] walk_stackframe+0x0/0x96
+>>
+>> Stacktrace using the new stack layout:
+>>
+>>    [   13.062888 ] [<c0402200>] walk_stackframe+0x0/0x96
+>>    [   13.063028 ] [<c04023c6>] show_stack+0x28/0x32
+>>    [   13.063253 ] [<a403e778>] bpf_prog_82b916b2dfa00464+0x80/0x908
+>>    [   13.063417 ] [<c09270b2>] bpf_test_run+0x124/0x39a
+>>    [   13.063553 ] [<c09276c0>] bpf_prog_test_run_skb+0x234/0x448
+>>    [   13.063704 ] [<c048510e>] __do_sys_bpf+0x766/0x13b4
+>>    [   13.063840 ] [<c0485d82>] sys_bpf+0xc/0x14
+>>    [   13.063961 ] [<c04010f0>] ret_from_syscall+0x0/0x2
+>>
+>> The new code is also simpler to understand and includes an ASCII diagram
+>> of the stack layout.
+>>
+>> Tested on riscv32 QEMU virt machine.
+>>
+>> Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+> 
+> Thanks for the fix!
+> 
+> Acked-by: Xi Wang <xi.wang@gmail.com> 
+
+Applied, thanks everyone!
