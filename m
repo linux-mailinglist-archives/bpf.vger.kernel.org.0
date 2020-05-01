@@ -2,198 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B8C1C1DA5
-	for <lists+bpf@lfdr.de>; Fri,  1 May 2020 21:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2331C1DB2
+	for <lists+bpf@lfdr.de>; Fri,  1 May 2020 21:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730442AbgEATJe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 May 2020 15:09:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
+        id S1725844AbgEATRD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 May 2020 15:17:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729766AbgEATJe (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 1 May 2020 15:09:34 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D5F8C061A0C;
-        Fri,  1 May 2020 12:09:34 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id v63so1950000pfb.10;
-        Fri, 01 May 2020 12:09:34 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1725791AbgEATRC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 1 May 2020 15:17:02 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E926C061A0C;
+        Fri,  1 May 2020 12:17:02 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id s9so7535651qkm.6;
+        Fri, 01 May 2020 12:17:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3jiAPaFiQIwup5Rl6bkdApLMWC+g3p/Kt1dCChwBGvU=;
-        b=HYqlOnF6xR6P3tL0oO/ZOqArCr8YiLqKR4ycbsI5PMe3b5gDjQkRgVRsbYe3Kv3H3+
-         dXtnOI8X8c2MGLulvZM72mVH6ibte2GRWWFNyciyYoXoXh+rXm6wqWvV5rNCJCPUopdm
-         ISIf/vnLr2f7BzTpAy+c+79V1cciunTnlLDKhmrvAu/OwhpyrS5UPfBvaO/czF8EPEWq
-         DdfSq4C4qjpR9VjB/lk0qizsNTNH9H8Wq9OFsc3UPtg08wDYJHCXqikvNZ5wr05PJApm
-         FiT9QFCi8o7XGYx/LTjCTltXKCM/KFbNS2nPDp4Cd1vES1hnsfUtx/mf79t5c7ckVfnT
-         ItvQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3PQGbfgBxc4rjycLr7GBqZlmcKBP+RTCaMRw6hnAMaA=;
+        b=XJPU40yEbq+5QfLApvCWjon5IwfabIYH/AWrsOg+h8i6FmH/7LDU8bZIkJoIU2E6Oq
+         0SXiC9LLcKDa9D6vj8xfvcppq7g3Kz+lBe0P1XnXbauk0IdAh5Sft6OkWp+jOap2P3VS
+         pc8ikYhgwqxAU3prNaxR5kBwWT+SPS/JN0uEG+XizlbUq3YlFPyC70+p32AQWaLZP8YR
+         Y2V72XFu4nSeWdEGHMyh1JSfrj5LABnzEPwIb2a78S00m7ea7EDEMM6NnDLeVSl+zSC1
+         g96n1Fl2X/FJ3Mg7sRMwvu/hnPYAN2HK8gUhjy0o26giK7bNWoT2xtFvKL1obkws1QbU
+         wcpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3jiAPaFiQIwup5Rl6bkdApLMWC+g3p/Kt1dCChwBGvU=;
-        b=ix4Q/15qdRUxKFiCNYvT2bTADGj5pvYSXddROrbkvS5Q+aWTVFla8w2pRjqshPR9kJ
-         FNcK624y/iyu9xkIvcrVneWGLTjqkaJnqFw+ju23P8xcuDRycYpCSP4Js+x8ifAOB5gz
-         7FGCKf+1IFyXdExqc43pOIsUyPDXvEvmcp5VuHIKpXUPV+9XDO0kp/o5ahR644NT+ELX
-         cKwbw/4zp0mU7OOmDSJC9wvL1SOvCVm89yZ44LgwjVQqYiHkVJ53uEBBzN8/Vm+BETEh
-         L1Mp3BYGSVm+GbRECPQKSaynRs+Uku5x9L6JNlXAQzFMpuCCQ1gJbLDlhCI7xMuriCYH
-         eGFQ==
-X-Gm-Message-State: AGi0PubceWZrYORAp0cXltrI1yrLV7n5PzorYlryL/bhphQyv9qLLC5d
-        1qbnRmtYWFZvKjwbGP9v4EM=
-X-Google-Smtp-Source: APiQypIBl1/RFUI1dVmI7MYjTIw4oUr1NcTWvPch+Z2udtILKSBl834zc6fvAKWhOD4ilquX0Pj6eg==
-X-Received: by 2002:a62:e803:: with SMTP id c3mr5338940pfi.228.1588360173626;
-        Fri, 01 May 2020 12:09:33 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8cd4])
-        by smtp.gmail.com with ESMTPSA id r4sm2609313pgi.6.2020.05.01.12.09.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 May 2020 12:09:32 -0700 (PDT)
-Date:   Fri, 1 May 2020 12:09:30 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] bpf: Tweak BPF jump table optimizations for objtool
- compatibility
-Message-ID: <20200501190930.ptxyml5o4rviyo26@ast-mbp.dhcp.thefacebook.com>
-References: <b581438a16e78559b4cea28cf8bc74158791a9b3.1588273491.git.jpoimboe@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3PQGbfgBxc4rjycLr7GBqZlmcKBP+RTCaMRw6hnAMaA=;
+        b=Dp2Kg2tQShlUHBeWn9uhhAv39PmdePV1ZXw4FFmqiUO2NIM9GZxbql9kOLPqv5tfCd
+         UEY6hMK1JIw04Lg/wNlCVRX/KzGTdzRxsGQeR/EnA0DjR5aj/XPnR+7gUG57yjPZJvaa
+         YEHw8z4BXmjcLDkX1XZgHyGt6KNM6edxQA1Okz9+KTTen8i+fVxd86g1ESMKfOTP71aA
+         Jytbp3jFUAXVEBuu3X6awfS6s4ylkm3tKNKhogu7ekevIM3JEgJ0RXCt5Hyqcfu4iZ4V
+         criWU3V1zsywENXAhejFOgGRB5G8QgkLVle1uiXXZx40bVOvGBnIbUrmCk83odlSP6fK
+         4T1w==
+X-Gm-Message-State: AGi0Pua3Eu7QX1A98QgZUu13URLa1C7je9Lq6qm4TwspWCDMrh5+TeR9
+        p2JnbH4pWog9sDSTR1e3+Og/clWze8kCgLJVRcthkQ==
+X-Google-Smtp-Source: APiQypJuAXY5cJsrnA9BBWGKCbi6MLwAWdn0cUJX071K4Zqc5lJ5KMHz0bb2s6M2psqUUy++TV+TDU6T5x7VbNxfQrg=
+X-Received: by 2002:ae9:e10b:: with SMTP id g11mr5491935qkm.449.1588360621552;
+ Fri, 01 May 2020 12:17:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b581438a16e78559b4cea28cf8bc74158791a9b3.1588273491.git.jpoimboe@redhat.com>
+References: <158824221003.2338.9700507405752328930.stgit@ebuild>
+ <CAEf4BzYeJxGuPC8rbsY5yvED8KNaq=7NULFPnwPdeEs==Srd1w@mail.gmail.com> <5E1C3675-7D77-4A58-B2FD-CE92806DA363@redhat.com>
+In-Reply-To: <5E1C3675-7D77-4A58-B2FD-CE92806DA363@redhat.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 1 May 2020 12:16:50 -0700
+Message-ID: <CAEf4BzZScS-vRtiy2H6KgOHiq_xbhrNYVMtsD2Tn7Q4y1ssg4w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: fix probe code to return EPERM if encountered
+To:     Eelco Chaudron <echaudro@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 02:07:43PM -0500, Josh Poimboeuf wrote:
-> Objtool decodes instructions and follows all potential code branches
-> within a function.  But it's not an emulator, so it doesn't track
-> register values.  For that reason, it usually can't follow
-> intra-function indirect branches, unless they're using a jump table
-> which follows a certain format (e.g., GCC switch statement jump tables).
-> 
-> In most cases, the generated code for the BPF jump table looks a lot
-> like a GCC jump table, so objtool can follow it.  However, with
-> RETPOLINE=n, GCC keeps the jump table address in a register, and then
-> does 160+ indirect jumps with it.  When objtool encounters the indirect
-> jumps, it can't tell which jump table is being used (or even whether
-> they might be sibling calls instead).
-> 
-> This was fixed before by disabling an optimization in ___bpf_prog_run(),
-> using the "optimize" function attribute.  However, that attribute is bad
-> news.  It doesn't append options to the command-line arguments.  Instead
-> it starts from a blank slate.  And according to recent GCC documentation
-> it's not recommended for production use.  So revert the previous fix:
-> 
->   3193c0836f20 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
-> 
-> With that reverted, solve the original problem in a different way by
-> getting rid of the "goto select_insn" indirection, and instead just goto
-> the jump table directly.  This simplifies the code a bit and helps GCC
-> generate saner code for the jump table branches, at least in the
-> RETPOLINE=n case.
-> 
-> But, in the RETPOLINE=y case, this simpler code actually causes GCC to
-> generate far worse code, ballooning the function text size by +40%.  So
-> leave that code the way it was.  In fact Alexei prefers to leave *all*
-> the code the way it was, except where needed by objtool.  So even
-> non-x86 RETPOLINE=n code will continue to have "goto select_insn".
-> 
-> This stuff is crazy voodoo, and far from ideal.  But it works for now.
-> Eventually, there's a plan to create a compiler plugin for annotating
-> jump tables.  That will make this a lot less fragile.
+On Fri, May 1, 2020 at 2:56 AM Eelco Chaudron <echaudro@redhat.com> wrote:
+>
+>
+>
+> On 30 Apr 2020, at 20:12, Andrii Nakryiko wrote:
+>
+> > On Thu, Apr 30, 2020 at 3:24 AM Eelco Chaudron <echaudro@redhat.com>
+> > wrote:
+> >>
+> >> When the probe code was failing for any reason ENOTSUP was returned,
+> >> even
+> >> if this was due to no having enough lock space. This patch fixes this
+> >> by
+> >> returning EPERM to the user application, so it can respond and
+> >> increase
+> >> the RLIMIT_MEMLOCK size.
+> >>
+> >> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+> >> ---
+> >>  tools/lib/bpf/libbpf.c |    7 ++++++-
+> >>  1 file changed, 6 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> >> index 8f480e29a6b0..a62388a151d4 100644
+> >> --- a/tools/lib/bpf/libbpf.c
+> >> +++ b/tools/lib/bpf/libbpf.c
+> >> @@ -3381,8 +3381,13 @@ bpf_object__probe_caps(struct bpf_object *obj)
+> >>
+> >>         for (i = 0; i < ARRAY_SIZE(probe_fn); i++) {
+> >>                 ret = probe_fn[i](obj);
+> >> -               if (ret < 0)
+> >> +               if (ret < 0) {
+> >>                         pr_debug("Probe #%d failed with %d.\n", i,
+> >> ret);
+> >> +                       if (ret == -EPERM) {
+> >> +                               pr_perm_msg(ret);
+> >> +                               return ret;
+> >
+> > I think this is dangerous to do. This detection loop is not supposed
+> > to return error to user if any of the features are missing. I'd feel
+> > more comfortable if we split bpf_object__probe_name() into two tests:
+> > one testing trivial program and another testing same program with
+> > name. If the first one fails with EPERM -- then we can return error to
+> > user. If anything else fails -- that's ok. Thoughts?
+>
+> Before sending the patch I briefly checked the existing probes and did
+> not see any other code path that could lead to EPERM. But you are right
+> that this might not be the case for previous kernels. So you suggest
+> something like this?
 
-I don't like this commit log.
-Here you're saying that the code recognized by objtool is sane and good
-whereas well optimized gcc code is somehow voodoo and bad.
-That is just wrong.
-goto select_insn; vs goto *jumptable[insn->code]; is not a contract that
-compiler has to follow. The compiler is free to convert direct goto
-into indirect and the other way around.
-For all practical purposes this patch is a band aid for objtool that will fall
-apart in the future. Just like the previous patch that survived less than a year.
-It's not clear whether old one worked for clang.
-It's not clear whether new one will work for clang.
-retpoline=y causing code bloat is a different issue that can be investigated
-separately. gcc/clang have different modes of generating retpoline thunks.
-May be one of those flags can help.
+It both previous as well as future kernel version. We can never be
+100% sure. While the idea of probe_caps() is to detect optional
+features.
 
-In other words I'm ok with the patch, but commit log needs to be reworded.
+>
+> diff --git a/src/libbpf.c b/src/libbpf.c
+> index ff91742..fd5fdee 100644
+> --- a/src/libbpf.c
+> +++ b/src/libbpf.c
+> @@ -3130,7 +3130,7 @@ int bpf_map__resize(struct bpf_map *map, __u32
+> max_entries)
+>   }
+>
+>   static int
+> -bpf_object__probe_name(struct bpf_object *obj)
+> +bpf_object__probe_loading(struct bpf_object *obj)
+>   {
+>          struct bpf_load_program_attr attr;
+>          char *cp, errmsg[STRERR_BUFSIZE];
+> @@ -3157,8 +3157,26 @@ bpf_object__probe_name(struct bpf_object *obj)
+>          }
+>          close(ret);
+>
+> -       /* now try the same program, but with the name */
+> +       return 0;
+> +}
+>
+> +static int
+> +bpf_object__probe_name(struct bpf_object *obj)
+> +{
+> +       struct bpf_load_program_attr attr;
+> +       struct bpf_insn insns[] = {
+> +               BPF_MOV64_IMM(BPF_REG_0, 0),
+> +               BPF_EXIT_INSN(),
+> +       };
+> +       int ret;
+> +
+> +       /* make sure loading with name works */
+> +
+> +       memset(&attr, 0, sizeof(attr));
+> +       attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
+> +       attr.insns = insns;
+> +       attr.insns_cnt = ARRAY_SIZE(insns);
+> +       attr.license = "GPL";
+>          attr.name = "test";
+>          ret = bpf_load_program_xattr(&attr, NULL, 0);
+>          if (ret >= 0) {
+> @@ -3328,6 +3346,11 @@ bpf_object__probe_caps(struct bpf_object *obj)
+>          };
+>          int i, ret;
+>
+> +       if (bpf_object__probe_loading(obj) == -EPERM) {
+> +               pr_perm_msg(-EPERM);
+> +               return -EPERM;
+> +       }
+> +
+>          for (i = 0; i < ARRAY_SIZE(probe_fn); i++) {
+>                  ret = probe_fn[i](obj);
+>                  if (ret < 0)
+>
+> Let me know, and I sent out a v2.
 
-> Fixes: 3193c0836f20 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> ---
->  include/linux/compiler-gcc.h   |  2 --
->  include/linux/compiler_types.h |  4 ----
->  kernel/bpf/core.c              | 10 +++++++---
->  3 files changed, 7 insertions(+), 9 deletions(-)
-> 
-> diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-> index cf294faec2f8..2c8583eb5de8 100644
-> --- a/include/linux/compiler-gcc.h
-> +++ b/include/linux/compiler-gcc.h
-> @@ -176,5 +176,3 @@
->  #else
->  #define __diag_GCC_8(s)
->  #endif
-> -
-> -#define __no_fgcse __attribute__((optimize("-fno-gcse")))
-> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> index e970f97a7fcb..58105f1deb79 100644
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@ -203,10 +203,6 @@ struct ftrace_likely_data {
->  #define asm_inline asm
->  #endif
->  
-> -#ifndef __no_fgcse
-> -# define __no_fgcse
-> -#endif
-> -
->  /* Are two types/vars the same type (ignoring qualifiers)? */
->  #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
->  
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 916f5132a984..eec470c598ad 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -1364,7 +1364,7 @@ u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
->   *
->   * Decode and execute eBPF instructions.
->   */
-> -static u64 __no_fgcse ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
-> +static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
->  {
->  #define BPF_INSN_2_LBL(x, y)    [BPF_##x | BPF_##y] = &&x##_##y
->  #define BPF_INSN_3_LBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] = &&x##_##y##_##z
-> @@ -1384,11 +1384,15 @@ static u64 __no_fgcse ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u6
->  #undef BPF_INSN_2_LBL
->  	u32 tail_call_cnt = 0;
->  
-> +#if defined(CONFIG_X86_64) && !defined(CONFIG_RETPOLINE)
-> +#define CONT	 ({ insn++; goto *jumptable[insn->code]; })
-> +#define CONT_JMP ({ insn++; goto *jumptable[insn->code]; })
-> +#else
->  #define CONT	 ({ insn++; goto select_insn; })
->  #define CONT_JMP ({ insn++; goto select_insn; })
-> -
->  select_insn:
->  	goto *jumptable[insn->code];
-> +#endif
->  
->  	/* ALU */
->  #define ALU(OPCODE, OP)			\
-> @@ -1547,7 +1551,7 @@ static u64 __no_fgcse ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u6
->  		 * where arg1_type is ARG_PTR_TO_CTX.
->  		 */
->  		insn = prog->insnsi;
-> -		goto select_insn;
-> +		CONT;
+Yes, that's the split I had in mind, but I'd move
+bpf_object__probe_loading() call directly into bpf_object__load() to
+be the first thing to check. probe_caps() should still be non-failing
+if any feature is missing. Does it make sense?
 
-This is broken. I don't think you've run basic tests with this patch.
+>
+> Cheers,
+>
+> Eelco
+>
