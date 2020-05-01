@@ -2,112 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F082C1C0C40
-	for <lists+bpf@lfdr.de>; Fri,  1 May 2020 04:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B60AB1C0C84
+	for <lists+bpf@lfdr.de>; Fri,  1 May 2020 05:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728065AbgEACoZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Apr 2020 22:44:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728052AbgEACoY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Apr 2020 22:44:24 -0400
-Received: from devnote (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2BBDD20643;
-        Fri,  1 May 2020 02:44:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588301063;
-        bh=iUnjlDLTGOXwYqqz3GwsT7ALizxOxRjV1XEoPzjQVvY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NIwDJkeEmqTO0Udn0//UVgJIxFwaDYaobJ6OWdJ0T4kw5hJ/1irm7bWBspeUuSDV+
-         gm24CnwRWKoKBEOzV1DBHsLQ89a/Uj/+IK4UpM4ruB3oY1epKXE/yjm3FCKYHzvCQ7
-         pUO5tPZO4kiFqdOeu6lwhr8h/SNSqkLxDqoh0ujQ=
-Date:   Fri, 1 May 2020 11:44:20 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Eelco Chaudron <echaudro@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: add tracing for XDP programs
- using the BPF_PROG_TEST_RUN API
-Message-Id: <20200501114420.5a33d7483f43aaeff95d31dc@kernel.org>
-In-Reply-To: <20200428121947.GC2245@kernel.org>
-References: <158453675319.3043.5779623595270458781.stgit@xdp-tutorial>
-        <819b1b3a-c801-754b-e805-7ec8266e5dfa@fb.com>
-        <D0164AC9-7AF7-4434-B6D1-0A761DC626FB@redhat.com>
-        <fefda00a-1a08-3a53-efbc-93c36292b77d@fb.com>
-        <CAADnVQ+SCu97cF5Li6nBBCkshjF45U-nPEO5jO8DQrY5PqPqyg@mail.gmail.com>
-        <F97A3E80-9C99-49CF-84C5-F09C940F7029@redhat.com>
-        <20200428040424.wvozrsy6uviz33ha@ast-mbp.dhcp.thefacebook.com>
-        <78EFC9DD-48A2-49BB-8C76-1E6FDE808067@redhat.com>
-        <20200428121947.GC2245@kernel.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-2022-JP
-Content-Transfer-Encoding: 7bit
+        id S1728083AbgEADVD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Apr 2020 23:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727889AbgEADVC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Apr 2020 23:21:02 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891E5C035494;
+        Thu, 30 Apr 2020 20:21:02 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id w65so1027791pfc.12;
+        Thu, 30 Apr 2020 20:21:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=7HcFBMjFrcWXcaxPCvfiay+8yWpZ9NZg39Yk9Jl8op0=;
+        b=TF5Vs1fwPQOCnlfaNvn4W0v54ALE0gsIf2jWbByFcOhcRjcv+8g9PdxdnaQiJD3cGn
+         L9/EaHQ3l0ZDngMKA1wKsT6r7oY9BL9D5Kejf1gAOEmLTIUEU/SVD2aVAtwXomEARLLU
+         jVEiKYe0ZF573PUViQST43ljHjC6z0OUIX7g4rDgvJMgERV2L+UAkOeZLO3FJNqFXdAs
+         CMJiuJNBUzNym93HNWg4GKoiQKBvKKOAUVO1dTSl5FpNd+RfeISYQjRUVkLV3iIg5C9X
+         hZ9Yq3e56k4IAEd6TLcvTlaNsOruaWrcDkC6xoSYcbTB745Gso5XQCLlJI1LONT6fOLZ
+         HTUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=7HcFBMjFrcWXcaxPCvfiay+8yWpZ9NZg39Yk9Jl8op0=;
+        b=svq9U+ERQJOUzgzyTz/NOR5A+mYbDtQcrW7W8ETGX0OGkGBPb4xZv+0cMG3jzqG8Mw
+         kKbMscJD0lrYfrj8KaBcZjgIqGB+6ubMDf/nfqfdfvJ22zVWUhWo2Vt77Rszc8j6Qxr/
+         XxwyeyDy57hsz7uTyCO3OHNlxSek+U6DRJc/Q65O8fcHMs6oK3yekodwV6X86XPsSCxz
+         stjfVOuoKfRxovI8Q/K97mMXLgjJomrcwgc3OLyXPb+h+17zTMy//8Qi5EapoBZ0Ww2A
+         TPaDRzew6qMMklnaiBTgMO3qaOXVz5o6jBHvOCICvCQZLzPRvJwEw2J6SG72M6sGl0Jo
+         emIw==
+X-Gm-Message-State: AGi0PuZnMKD6UpgVhvQ8MRkXS//s7eTgpo/0zxweygYJFuErCgYSWvNw
+        pH42LmXZj3qEZFm/Yw3NSg2LA9qM
+X-Google-Smtp-Source: APiQypLfb1YXmzbFRiuEgKV/Fek4g9O8acitGrv3m5ooOwF6yHNTgnBCT+REDBRFFZew8D4hpKxPYA==
+X-Received: by 2002:a63:e503:: with SMTP id r3mr2339270pgh.106.1588303261729;
+        Thu, 30 Apr 2020 20:21:01 -0700 (PDT)
+Received: from udknight.localhost ([59.57.158.27])
+        by smtp.gmail.com with ESMTPSA id s199sm994550pfs.124.2020.04.30.20.21.00
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 30 Apr 2020 20:21:00 -0700 (PDT)
+Received: from udknight.localhost (localhost [127.0.0.1])
+        by udknight.localhost (8.14.9/8.14.4) with ESMTP id 0413Jq3P004819;
+        Fri, 1 May 2020 11:19:52 +0800
+Received: (from root@localhost)
+        by udknight.localhost (8.14.9/8.14.9/Submit) id 0413JorC004818;
+        Fri, 1 May 2020 11:19:50 +0800
+Date:   Fri, 1 May 2020 11:19:50 +0800
+From:   Wang YanQing <udknight@gmail.com>
+To:     stable@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, lukenels@cs.washington.edu,
+        ast@kernel.org, luke.r.nels@gmail.com, udknight@gmail.com,
+        xi.wang@gmail.com, daniel@iogearbox.net, bpf@vger.kernel.org
+Subject: [PATCH] bpf, x86_32: Fix clobbering of dst for BPF_JSET
+Message-ID: <20200501031950.GA4782@udknight>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.7.1 (2016-10-04)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 28 Apr 2020 09:19:47 -0300
-Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+commit 50fe7ebb6475711c15b3397467e6424e20026d94 upstream.
 
-> Em Tue, Apr 28, 2020 at 12:47:53PM +0200, Eelco Chaudron escreveu:
-> > On 28 Apr 2020, at 6:04, Alexei Starovoitov wrote:
-> > > On Fri, Apr 24, 2020 at 02:29:56PM +0200, Eelco Chaudron wrote:
-> 
-> > > > > But in reality I think few kprobes in the prog will be enough to
-> > > > > debug the program and XDP prog may still process millions of
-> > > > > packets because your kprobe could be in error path and the user
-> > > > > may want to capture only specific things when it triggers.
-> 
-> > > > > kprobe bpf prog will execute in such case and it can capture
-> > > > > necessary state from xdp prog, from packet or from maps that xdp
-> > > > > prog is using.
-> 
-> > > > > Some sort of bpf-gdb would be needed in user space.  Obviously
-> > > > > people shouldn't be writing such kprob-bpf progs that debug
-> > > > > other bpf progs by hand. bpf-gdb should be able to generate them
-> > > > > automatically.
-> 
-> > > > See my opening comment. What you're describing here is more when
-> > > > the right developer has access to the specific system. But this
-> > > > might not even be possible in some environments.
-> 
-> > > All I'm saying that kprobe is a way to trace kernel.
-> > > The same facility should be used to trace bpf progs.
->  
-> > perf doesn’t support tracing bpf programs, do you know of any tools that
-> > can, or you have any examples that would do this?
-> 
-> I'm discussing with Yonghong and Masami what would be needed for 'perf
-> probe' to be able to add kprobes to BPF jitted areas in addition to
-> vmlinux and modules.
+The current JIT clobbers the destination register for BPF_JSET BPF_X
+and BPF_K by using "and" and "or" instructions. This is fine when the
+destination register is a temporary loaded from a register stored on
+the stack but not otherwise.
 
-At a grance, at first we need a debuginfo which maps the source code and
-BPF binaries. We also need to get a map from the kernel indicating
-which instructions the bpf code was jited to.
-Are there any such information?
+This patch fixes the problem (for both BPF_K and BPF_X) by always loading
+the destination register into temporaries since BPF_JSET should not
+modify the destination register.
 
-Also, I would like to know the target BPF (XDP) is running in kprobes
-context or not. BPF tracer sometimes use the kprobes to hook the event
-and run in the kprobe (INT3) context. That will be need more work to
-probe it.
-For the BPF code which just runs in tracepoint context, it will be easy
-to probe it. (we may need to break a limitation of notrace, which we
-already has a kconfig)
+This bug may not be currently triggerable as BPF_REG_AX is the only
+register not stored on the stack and the verifier uses it in a limited
+way.
 
-Thank you,
+Fixes: 03f5781be2c7b ("bpf, x86_32: add eBPF JIT compiler for ia32")
+Signed-off-by: Xi Wang <xi.wang@gmail.com>
+Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Wang YanQing <udknight@gmail.com>
+Link: https://lore.kernel.org/bpf/20200422173630.8351-2-luke.r.nels@gmail.com
+Signed-off-by: Wang YanQing <udknight@gmail.com>
+---
+ arch/x86/net/bpf_jit_comp32.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
+diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
+index 24d573b..7e7ca5d 100644
+--- a/arch/x86/net/bpf_jit_comp32.c
++++ b/arch/x86/net/bpf_jit_comp32.c
+@@ -1968,8 +1968,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+ 			goto emit_cond_jmp_signed;
+ 		}
+ 		case BPF_JMP | BPF_JSET | BPF_X: {
+-			u8 dreg_lo = dstk ? IA32_EAX : dst_lo;
+-			u8 dreg_hi = dstk ? IA32_EDX : dst_hi;
++			u8 dreg_lo = IA32_EAX;
++			u8 dreg_hi = IA32_EDX;
+ 			u8 sreg_lo = sstk ? IA32_ECX : src_lo;
+ 			u8 sreg_hi = sstk ? IA32_EBX : src_hi;
+ 
+@@ -1978,6 +1978,12 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+ 				      STACK_VAR(dst_lo));
+ 				EMIT3(0x8B, add_2reg(0x40, IA32_EBP, IA32_EDX),
+ 				      STACK_VAR(dst_hi));
++			} else {
++				/* mov dreg_lo,dst_lo */
++				EMIT2(0x89, add_2reg(0xC0, dreg_lo, dst_lo));
++				/* mov dreg_hi,dst_hi */
++				EMIT2(0x89,
++				      add_2reg(0xC0, dreg_hi, dst_hi));
+ 			}
+ 
+ 			if (sstk) {
+@@ -1996,8 +2002,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+ 		}
+ 		case BPF_JMP | BPF_JSET | BPF_K: {
+ 			u32 hi;
+-			u8 dreg_lo = dstk ? IA32_EAX : dst_lo;
+-			u8 dreg_hi = dstk ? IA32_EDX : dst_hi;
++			u8 dreg_lo = IA32_EAX;
++			u8 dreg_hi = IA32_EDX;
+ 			u8 sreg_lo = IA32_ECX;
+ 			u8 sreg_hi = IA32_EBX;
+ 
+@@ -2006,6 +2012,12 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+ 				      STACK_VAR(dst_lo));
+ 				EMIT3(0x8B, add_2reg(0x40, IA32_EBP, IA32_EDX),
+ 				      STACK_VAR(dst_hi));
++			} else {
++				/* mov dreg_lo,dst_lo */
++				EMIT2(0x89, add_2reg(0xC0, dreg_lo, dst_lo));
++				/* mov dreg_hi,dst_hi */
++				EMIT2(0x89,
++				      add_2reg(0xC0, dreg_hi, dst_hi));
+ 			}
+ 			hi = imm32 & (1<<31) ? (u32)~0 : 0;
+ 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+1.8.5.6.2.g3d8a54e.dirty
