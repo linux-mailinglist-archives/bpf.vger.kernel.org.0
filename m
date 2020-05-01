@@ -2,124 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A03431C1E28
-	for <lists+bpf@lfdr.de>; Fri,  1 May 2020 22:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F092C1C1E52
+	for <lists+bpf@lfdr.de>; Fri,  1 May 2020 22:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgEAT7s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 May 2020 15:59:48 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:64530 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726377AbgEAT7r (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 1 May 2020 15:59:47 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 041Jk88R014956;
-        Fri, 1 May 2020 12:59:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=rXc+gdP6Y36hX8Tfh8A7yuFAcAGCzlAzP6Gv4d+1pqs=;
- b=jnACh+rsW66V8+eud5PBKX/5Jn8A2wL/H1SKzrIxtpW84q8XboDwYTPl7Lg540gjHiq5
- GNM/3IEGkhayfOzzHJlpVIfGroY1zNSkAGBTY/8t2W9OIMg3KkWNtt20Atn38nYjwwd+
- 4pKwLng2kdC6qFq6VoxFigyzZT+ubzj9JYs= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 30r7ee5evm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 01 May 2020 12:59:33 -0700
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Fri, 1 May 2020 12:59:32 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sb8fjndoEjtJrVWz2Q2m3st3d5a6XN0NO+ZklNiTdnXP5yps7JrJ2CzjNTkLIScyGDX7vFcROLG6nl0oVeL8yatRBqIrlQrl3UuEOKiGRLe2+Hh+ODYafcijP/d5gPLegX43sc/nFTRLw1wWcnnN25CrWOWPlt4JnWAZQHfJ71VgKfzw6FfNlsm9KIs9wqy4yZ5vM72NJ27tuJ0lsFdTjoKDzL7lSD3txU6wqWi6yL7qlPO9PYUKFOpfbz7Jupw3OsbLRXYkXtY8EgudYD9uu/thsI6xWR+ls8tLdYJgjWJsaqR6FZ6PXo5NSdDIPFnc3T83JPQ9udDEe9MxEK+kRg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rXc+gdP6Y36hX8Tfh8A7yuFAcAGCzlAzP6Gv4d+1pqs=;
- b=hw4mbYI12MgdN2qt520jh0mfd4c7Biqhv44LagPr2LrkN0fp9akDyLmqVBXIeRFAi20ycCkUnBm2ckUipNo+GxZ3oSKdsPl0LMm8NyGP7zI9HWO7eECzmXJXEr8BBAYso+G32Db+PrCMG/Ef6g3h1Lk2yZ5EtYlP68vGUWHh5DY0NbgJfQ+PGfTsHHsV25UANac1CwZt/Ldo7f376wUxrQ/zxn5jZy3aBAwzrubAxdYaXGJviQzrtjE82P32+u5rc1yT+Mj3Z2jeGWDhocF9f8PpzXBW4d85Wl05ENipNQyU8HJQ02P6uew2O4ZUMRYp5ewKBuIf2Y1XpHoi7B6MHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rXc+gdP6Y36hX8Tfh8A7yuFAcAGCzlAzP6Gv4d+1pqs=;
- b=TzO9j8GHhDYFMbhV52CSyCVI8z/ltKZfZRnp5ekAsF2RtNSHpc0aDFZafZoAj575Yg7fGPPQLl6Q6ENql9ZPvdJ1b15s0n77tohOrBH3p7skee4DuDTQpdjJ+a7G05y2zVkmB+1IsxG5kpEyzmN1AgI19i4TBAzGFPOSFSlTBLs=
-Received: from MW3PR15MB4044.namprd15.prod.outlook.com (2603:10b6:303:4b::24)
- by MW3PR15MB3994.namprd15.prod.outlook.com (2603:10b6:303:45::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20; Fri, 1 May
- 2020 19:59:32 +0000
-Received: from MW3PR15MB4044.namprd15.prod.outlook.com
- ([fe80::e5c5:aeff:ca99:aae0]) by MW3PR15MB4044.namprd15.prod.outlook.com
- ([fe80::e5c5:aeff:ca99:aae0%4]) with mapi id 15.20.2958.027; Fri, 1 May 2020
- 19:59:32 +0000
-Date:   Fri, 1 May 2020 12:59:29 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>, <andrii.nakryiko@gmail.com>,
-        <kernel-team@fb.com>,
-        <syzbot+39b64425f91b5aab714d@syzkaller.appspotmail.com>
-Subject: Re: [PATCH v2 bpf-next] bpf: fix use-after-free of bpf_link when
- priming half-fails
-Message-ID: <20200501195929.4s6y7wee3u5usk4n@kafai-mbp>
-References: <20200501185622.3088964-1-andriin@fb.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200501185622.3088964-1-andriin@fb.com>
-User-Agent: NeoMutt/20180716
-X-ClientProxiedBy: BY3PR05CA0010.namprd05.prod.outlook.com
- (2603:10b6:a03:254::15) To MW3PR15MB4044.namprd15.prod.outlook.com
- (2603:10b6:303:4b::24)
+        id S1726495AbgEAUSt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 May 2020 16:18:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726045AbgEAUSs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 May 2020 16:18:48 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A45C061A0E
+        for <bpf@vger.kernel.org>; Fri,  1 May 2020 13:18:48 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id o10so8886653qtr.6
+        for <bpf@vger.kernel.org>; Fri, 01 May 2020 13:18:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/LoJqqSaXjHMYOHOf1RKwgGD31LU0mLTKUgwWh5VYD8=;
+        b=ZgAP11wYUcUeqBt3dRRG6NgZ//tCe4fuZL3ww9TDdWcyf5aR1SAzx3P7mnC7kZf6F3
+         Q+rmy5b5oiHsuX+AeS0tB+tSCCJW7tA4za+F8tMiPDfsI3S1oOk1o/FwOWLV/7KuOncs
+         MAk0XBQoMG5MvKriOVQ+SI+6GdTYCIDcAAeh7NHQvcsMAfAhTiUY/kFIHJmEAZuhv10N
+         DqQr3Qoyx6BQfj+vIlgVEk13vai55a/bbPIlca9DE915dbCxub0Ya9JLq+XBppwpWfcq
+         OrMRn3ZuMr5ZaGNesKyYBi93oSnMdoVcR4mCzI71hhTZcv0bdWSbGD7/hMS0JzAowUKB
+         cHgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/LoJqqSaXjHMYOHOf1RKwgGD31LU0mLTKUgwWh5VYD8=;
+        b=Cv9QCiNU/E2nl+MR5yhSxp/5xDm2qJjaH+QX4T2BIF9q7zjc7xBli6X6DMAzhS/diM
+         kIkeGtVf/BicADl31jbE3zAYtF1VqjnIZZ20o1l4qMiOka0cdIiOLmdCHpviaPuGB0F3
+         Ywm4CNNobFGS9JF06AZ6K5kzz3qrWznIKiQHlW757QBVia2UzU8CH1hbW1jF0q70/LDv
+         NEyCj9SezH6vxznoqMMtmBFiI67c4z/Rbuae7UR0q6aPeiftwAkP8f5VDkKFeheFmVFu
+         ec2s0gg2lCXc60+cwlTeEZTLtlg6wR+8qL63gXDKYsRyiIJtAIHk848f2fTm2tJEunu7
+         bB4w==
+X-Gm-Message-State: AGi0PuZpn8TWiWjnnClL1aZW484GzsLyE/M9vlPq36ReGx/yZS778AEk
+        KyvgIzwq5WhNHgPRgbYEH86oeC4Nhp+X6HZUeFCwL/79
+X-Google-Smtp-Source: APiQypKbqVDHVki0Ok0fhHYTyJMkNQ4/c7PVrDlsazkfjgYeEiPt9cOAsWGiN3wJbf8vtflsXj34t1dgOMmOhA2VELg=
+X-Received: by 2002:aed:2e24:: with SMTP id j33mr5627110qtd.117.1588364327502;
+ Fri, 01 May 2020 13:18:47 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp (2620:10d:c090:400::5:da44) by BY3PR05CA0010.namprd05.prod.outlook.com (2603:10b6:a03:254::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.18 via Frontend Transport; Fri, 1 May 2020 19:59:31 +0000
-X-Originating-IP: [2620:10d:c090:400::5:da44]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: eae9e542-261f-4726-312e-08d7ee0a2a06
-X-MS-TrafficTypeDiagnostic: MW3PR15MB3994:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW3PR15MB3994316AC8D1DD68DD73C48AD5AB0@MW3PR15MB3994.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
-X-Forefront-PRVS: 0390DB4BDA
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0mzhjaRyHFx836B8ZY1jYWnL6bpYo4OoNBOkYU23yZ7tBlGKl5EMwImRVr8Qk0v98Vt9S5UhOSYM+w9fJpkB/sOhfFt2YUM9rwHg2FyJT6v/3muwTClFubuR59JtjPyWWEiHIBmoaiFljosBFc4jta5JYFHLrc2cLl/D8gAzhfoqVvfAPHBI4KDlCV2jzU/KXJmBK4m+GSlc3IjK1hkFbZPfI1l4ZL3W3ImoGGwUW7KOT7a6Oqsy9McVXfQE/5eEI/Q6OvXWjyA4750QZjp9Tima8GWIDfgzfRPQW7QvIBlop7aq+eLvA/12RwaQ+bgudv8jBv+d8MvkIbZWuhx5EjevebBJKFB8EvUV4qK+1kRJbI2U/Esdm50KUr0v1Xuazd7kxaGoHsmVgxP/ROxIPWKdw6gDLCJfcVMq5sjSD/y8pAE2DnFtCqBkzWzka2NP
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR15MB4044.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(396003)(346002)(39860400002)(376002)(366004)(1076003)(478600001)(6862004)(2906002)(33716001)(6636002)(4744005)(9686003)(55016002)(66476007)(66946007)(316002)(66556008)(5660300002)(186003)(8676002)(6496006)(4326008)(52116002)(8936002)(16526019)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: GZ2OIiL4zqCzgumTFHJzZPUt/5Or68QpYboPw0JargDAvFrMlmDkA+clJFqWG6id5LFy03lz8zCHk3bSTkM/PK1Vo9Rhx0IFy+fHKOKvQ91RkwAqDoLW3oGpnxuUb1NcXfClwytpMRqz29MsAGO93Pjz24z0CShM9HOIqbXosLLlh3S2f/JpxGQcL8OmXLeXh2/BIRJYtHVB2Uoy9EQHvFotmEl80KfhUiudkVNSD0WCjx/NRLiUQmAmNAypBDi6d+/I9c9EKNqJ42fwsAC9Zs6RX8ETh1AEIVNuLp2/MYlaqYpFIYt0vNUK05Pqp8bq/JZC0uJhyt+48AwQgSwqLKj5lMkcDn9KoaI4fAvUU0eCi6gF8oQcI5zrLT7KmJqVpllCcROSfcUS168LdmPXdoGtM3oqAGfKWv1Q3XXBo6ANtgdaTYxwhjr05HhzGmM+HwrPUFawq0677ORTUkQNhnWdBaNmZn6IVouFuilw8opPC2rD081RQQ6e7vR+qEUqSAYGRDQ3M5l0BOugj79ojMksRsOhlGqYb4E+RA23vAUDZWVBaVeTBMW2bVQ05VyR8vsSciavHMFlmoL3KQCznBHIBX+Wr3Y/67+LtfedfHS0AL8TD8EF2xvfDSdFQVEOLcR2Rp/vsHAlwgzVPOxYIzyF2zDrBF6ISAYl6Yq0nysOJSCTL8u4D/xIN2oqd4HTGVCk1h7jhItwKonqdX8ETRtbPu4W/3jtSNnWVYKcDq6C4eFb074dJ4apCVtnhouDfAaNpQwX+g7r6+MdKdMCFAimsL0JS6xiHPKDNmQFz7+/gdomWBzaZlaPMk5gB45R1Cr/2lEtUxWIu7aTbEhnng==
-X-MS-Exchange-CrossTenant-Network-Message-Id: eae9e542-261f-4726-312e-08d7ee0a2a06
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2020 19:59:32.0497
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FX523xZocF/sKTvMGw5kKZZg5mn80Ls93JO0cD1yemPWJ+lL2s6q95xD9Xqu+2ec
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3994
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-05-01_14:2020-05-01,2020-05-01 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=2
- spamscore=0 mlxscore=0 impostorscore=0 adultscore=0 bulkscore=0
- priorityscore=1501 clxscore=1015 malwarescore=0 mlxlogscore=561
- phishscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2005010145
-X-FB-Internal: deliver
+References: <e5ec787d-2fca-4701-ca2e-2b590a59fb6f@linux.intel.com>
+In-Reply-To: <e5ec787d-2fca-4701-ca2e-2b590a59fb6f@linux.intel.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 1 May 2020 13:18:36 -0700
+Message-ID: <CAEf4BzYHuJi5BE6=jYXuKynK8ViRfNjxSgkTiixp+ZQX9TyjAA@mail.gmail.com>
+Subject: Re: -EBUSY with some selftests on 5.7-rcX
+To:     Mikko Ylinen <mikko.ylinen@linux.intel.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 01, 2020 at 11:56:22AM -0700, Andrii Nakryiko wrote:
-> If bpf_link_prime() succeeds to allocate new anon file, but then fails to
-> allocate ID for it, link priming is considered to be failed and user is
-> supposed ot be able to directly kfree() bpf_link, because it was never exposed
-> to user-space.
-> 
-> But at that point file already keeps a pointer to bpf_link and will eventually
-> call bpf_link_release(), so if bpf_link was kfree()'d by caller, that would
-> lead to use-after-free.
-> 
-> Fix this by first allocating ID and only then allocating file. Adding ID to
-> link_idr is ok, because link at that point still doesn't have its ID set, so
-> no user-space process can create a new FD for it.
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+On Tue, Apr 28, 2020 at 3:33 AM Mikko Ylinen
+<mikko.ylinen@linux.intel.com> wrote:
+>
+> Hi,
+>
+> I'm testing BPF LSM and wanted to verify my setup by running the
+> test_lsm selftests (./test_progs -vv -t test_lsm) but it fails:
+>
+> libbpf: loading object 'lsm' from buffer
+> libbpf: section(1) .strtab, size 306, link 0, flags 0, type=3
+> libbpf: skip section(1) .strtab
+> libbpf: section(2) .text, size 0, link 0, flags 6, type=1
+> libbpf: skip section(2) .text
+> libbpf: section(3) lsm/file_mprotect, size 192, link 0, flags 6, type=1
+> libbpf: found program lsm/file_mprotect
+> libbpf: section(4) .rellsm/file_mprotect, size 32, link 25, flags 0, type=9
+> libbpf: section(5) lsm/bprm_committed_creds, size 104, link 0, flags 6,
+> type=1
+> libbpf: found program lsm/bprm_committed_creds
+> libbpf: section(6) .rellsm/bprm_committed_creds, size 32, link 25, flags
+> 0, type=9
+> libbpf: section(7) license, size 4, link 0, flags 3, type=1
+> libbpf: license of lsm is GPL
+> libbpf: section(8) .bss, size 12, link 0, flags 3, type=8
+> libbpf: section(9) .debug_str, size 133448, link 0, flags 30, type=1
+> libbpf: skip section(9) .debug_str
+> libbpf: section(10) .debug_loc, size 428, link 0, flags 0, type=1
+> libbpf: skip section(10) .debug_loc
+> libbpf: section(11) .rel.debug_loc, size 112, link 25, flags 0, type=9
+> libbpf: skip relo .rel.debug_loc(11) for section(10)
+> libbpf: section(12) .debug_abbrev, size 901, link 0, flags 0, type=1
+> libbpf: skip section(12) .debug_abbrev
+> libbpf: section(13) .debug_info, size 223699, link 0, flags 0, type=1
+> libbpf: skip section(13) .debug_info
+> libbpf: section(14) .rel.debug_info, size 112, link 25, flags 0, type=9
+> libbpf: skip relo .rel.debug_info(14) for section(13)
+> libbpf: section(15) .debug_ranges, size 96, link 0, flags 0, type=1
+> libbpf: skip section(15) .debug_ranges
+> libbpf: section(16) .rel.debug_ranges, size 128, link 25, flags 0, type=9
+> libbpf: skip relo .rel.debug_ranges(16) for section(15)
+> libbpf: section(17) .BTF, size 5421, link 0, flags 0, type=1
+> libbpf: section(18) .rel.BTF, size 64, link 25, flags 0, type=9
+> libbpf: skip relo .rel.BTF(18) for section(17)
+> libbpf: section(19) .BTF.ext, size 484, link 0, flags 0, type=1
+> libbpf: section(20) .rel.BTF.ext, size 416, link 25, flags 0, type=9
+> libbpf: skip relo .rel.BTF.ext(20) for section(19)
+> libbpf: section(21) .debug_frame, size 64, link 0, flags 0, type=1
+> libbpf: skip section(21) .debug_frame
+> libbpf: section(22) .rel.debug_frame, size 32, link 25, flags 0, type=9
+> libbpf: skip relo .rel.debug_frame(22) for section(21)
+> libbpf: section(23) .debug_line, size 227, link 0, flags 0, type=1
+> libbpf: skip section(23) .debug_line
+> libbpf: section(24) .rel.debug_line, size 32, link 25, flags 0, type=9
+> libbpf: skip relo .rel.debug_line(24) for section(23)
+> libbpf: section(25) .symtab, size 288, link 1, flags 0, type=2
+> libbpf: looking for externs among 12 symbols...
+> libbpf: collected 0 externs total
+> libbpf: map 'lsm.bss' (global data): at sec_idx 8, offset 0, flags 400.
+> libbpf: map 0 is "lsm.bss"
+> libbpf: collecting relocating info for: 'lsm/file_mprotect'
+> libbpf: relo for shdr 8, symb 8, value 0, type 1, bind 1, name 232
+> ('monitored_pid'), insn 12
+> libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 12
+> libbpf: relo for shdr 8, symb 9, value 4, type 1, bind 1, name 34
+> ('mprotect_count'), insn 17
+> libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 17
+> libbpf: collecting relocating info for: 'lsm/bprm_committed_creds'
+> libbpf: relo for shdr 8, symb 8, value 0, type 1, bind 1, name 232
+> ('monitored_pid'), insn 1
+> libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 1
+> libbpf: relo for shdr 8, symb 7, value 8, type 1, bind 1, name 49
+> ('bprm_count'), insn 6
+> libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 6
+> libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
+> libbpf: created map lsm.bss: fd=4
+> libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
+> libbpf: prog 'lsm/file_mprotect': performing 4 CO-RE offset relocs
+> libbpf: prog 'lsm/file_mprotect': relo #0: kind 0, spec is [6]
+> vm_area_struct + 0:6 => 64.0 @ &x[0].vm_mm
+> libbpf: [6] vm_area_struct: found candidate [465] vm_area_struct
+> libbpf: prog 'lsm/file_mprotect': relo #0: matching candidate #0
+> vm_area_struct against spec [465] vm_area_struct + 0:6 => 64.0 @
+> &x[0].vm_mm: 1
+> libbpf: prog 'lsm/file_mprotect': relo #0: patched insn #5 (LDX/ST/STX)
+> off 64 -> 64
+> libbpf: prog 'lsm/file_mprotect': relo #1: kind 0, spec is [31]
+> mm_struct + 0:0:35 => 304.0 @ &x[0].start_stack
+> libbpf: [31] mm_struct: found candidate [260] mm_struct
+> libbpf: prog 'lsm/file_mprotect': relo #1: matching candidate #0
+> mm_struct against spec [260] mm_struct + 0:0:35 => 304.0 @
+> &x[0].start_stack: 1
+> libbpf: prog 'lsm/file_mprotect': relo #1: patched insn #7 (LDX/ST/STX)
+> off 304 -> 304
+> libbpf: prog 'lsm/file_mprotect': relo #2: kind 0, spec is [6]
+> vm_area_struct + 0:0 => 0.0 @ &x[0].vm_start
+> libbpf: prog 'lsm/file_mprotect': relo #2: matching candidate #0
+> vm_area_struct against spec [465] vm_area_struct + 0:0 => 0.0 @
+> &x[0].vm_start: 1
+> libbpf: prog 'lsm/file_mprotect': relo #2: patched insn #8 (LDX/ST/STX)
+> off 0 -> 0
+> libbpf: prog 'lsm/file_mprotect': relo #3: kind 0, spec is [6]
+> vm_area_struct + 0:1 => 8.0 @ &x[0].vm_end
+> libbpf: prog 'lsm/file_mprotect': relo #3: matching candidate #0
+> vm_area_struct against spec [465] vm_area_struct + 0:1 => 8.0 @
+> &x[0].vm_end: 1
+> libbpf: prog 'lsm/file_mprotect': relo #3: patched insn #10 (LDX/ST/STX)
+> off 8 -> 8
+> test_test_lsm:PASS:skel_load 0 nsec
+> libbpf: program 'lsm/file_mprotect': failed to attach: Device or
+> resource busy
+> libbpf: failed to auto-attach program 'test_int_hook': -16
+> test_test_lsm:FAIL:attach lsm attach failed: -16
+> #70 test_lsm:FAIL
+> Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+>
+> I get -EBUSY with fentry_fexit test too:
+
+-EBUSY in fentry/fexit kernel code most probably means that there is
+either extension program (freplace) installed for that target program
+or that same program is already attached through previous fentry/fexit
+attachment. See code in bpf_trampoline_link_prog(). If you can, can
+you please add a bunch of printk() statements in corresponding error
+handling code paths to figure out which one it is?
+
+Also, I wonder if this happens right after you restart your kernel/OS?
+Is it happening deterministically or just from time to time?
+
+>
+> # ./test_progs -t fentry_fexit
+> test_fentry_fexit:PASS:fentry_skel_load 0 nsec
+> test_fentry_fexit:PASS:fexit_skel_load 0 nsec
+> libbpf: program 'fentry/bpf_fentry_test1': failed to attach: Device or
+> resource busy
+> libbpf: failed to auto-attach program 'test1': -16
+> test_fentry_fexit:FAIL:fentry_attach fentry attach failed: -16
+> #13 fentry_fexit:FAIL
+> Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+>
+> However, btf_dump is OK:
+>
+> # ./test_progs -t btf_dump
+> #5/1 btf_dump: syntax:OK
+> #5/2 btf_dump: ordering:OK
+> #5/3 btf_dump: padding:OK
+> #5/4 btf_dump: packing:OK
+> #5/5 btf_dump: bitfields:OK
+> #5/6 btf_dump: multidim:OK
+> #5/7 btf_dump: namespacing:OK
+> #5 btf_dump:OK
+> Summary: 1/7 PASSED, 0 SKIPPED, 0 FAILED
+>
+
+btf_dump is completely irrelevant test here, it tests libbpf's BTF
+dumping capabilities and doesn't touch anything in kernel, so this
+doesn't give any extra hint, unfortunately.
+
+> Any feedback what to check? I don't have any other tests
+> running in parallel.
+
+After this test fails, run `sudo bpftool prog show` and `sudo bpftool
+link show`, see if there is anything suspicious. bpftool link show is
+available with latest master in bpf-next tree, so you'd have to
+rebuild your kernel. If nothing catches your eye and helps resolve
+this, please post output here as well.
+
+>
+> # clang --version
+> clang version 10.0.0
+> Target: x86_64-generic-linux
+> Thread model: posix
+> InstalledDir: /usr/bin
+> # pahole --version
+> v1.16
+>
+> 5.7-rc3
+>
+> -- Regards, Mikko
