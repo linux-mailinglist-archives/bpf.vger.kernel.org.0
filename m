@@ -2,101 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7BAE1C1872
-	for <lists+bpf@lfdr.de>; Fri,  1 May 2020 16:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42471C18B4
+	for <lists+bpf@lfdr.de>; Fri,  1 May 2020 16:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729042AbgEAOr2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 May 2020 10:47:28 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42175 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729034AbgEAOrY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 May 2020 10:47:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588344443;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TAjswuo/nfZVxK4WmcUPw+t1lhJhZPT7S8oViDh5c/M=;
-        b=FPeg4sj5m3tov7N/hABFo0L3cCrHFLG1VK7fSpQjNXEbXYK6a2XEOvbHy8mGb5OQdoc0rx
-        lLfzqLzNiaUYxDIDBjJN4RB1ZhFAsRL4wlXWV7WPVGutriw0bGb5nvscuR3VAJH2gp/vwy
-        fBazr/xcHmlAl6yJDur1mPtbday/eBI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-323-XycBYBrvMfGAR2SyAfIh3Q-1; Fri, 01 May 2020 10:47:19 -0400
-X-MC-Unique: XycBYBrvMfGAR2SyAfIh3Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9E4DD1800D4A;
-        Fri,  1 May 2020 14:47:16 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.55])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2A2A56A94C;
-        Fri,  1 May 2020 14:47:04 +0000 (UTC)
-Date:   Fri, 1 May 2020 16:47:03 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     "sameehj@amazon.com" <sameehj@amazon.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "zorik@amazon.com" <zorik@amazon.com>,
-        "akiyano@amazon.com" <akiyano@amazon.com>,
-        "gtzalik@amazon.com" <gtzalik@amazon.com>,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        David Ahern <dsahern@gmail.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        "steffen.klassert@secunet.com" <steffen.klassert@secunet.com>,
-        brouer@redhat.com
-Subject: Re: [PATCH net-next v2 12/33] hv_netvsc: add XDP frame size to
- driver
-Message-ID: <20200501164703.75eb5737@carbon>
-In-Reply-To: <MN2PR21MB1437A4F44AC313E5DF962B35CAAA0@MN2PR21MB1437.namprd21.prod.outlook.com>
-References: <158824557985.2172139.4173570969543904434.stgit@firesoul>
-        <158824568241.2172139.9308631605958332864.stgit@firesoul>
-        <MN2PR21MB1437A4F44AC313E5DF962B35CAAA0@MN2PR21MB1437.namprd21.prod.outlook.com>
+        id S1730246AbgEAOtG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 May 2020 10:49:06 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:44345 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729360AbgEAOtE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 May 2020 10:49:04 -0400
+Received: by mail-il1-f198.google.com with SMTP id c4so5004640ilf.11
+        for <bpf@vger.kernel.org>; Fri, 01 May 2020 07:49:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=Jh5jVpDHfQplZhcaNyu6KjtSKvR1Mtv8UVWG8cYmvgs=;
+        b=lSbqEjszQPR/smPnbINBp7lzS9JTFw97G2BMMpQEPHEo0x0SHZBoNvXmMREqj1ovjA
+         KvDhzpRvjXGSS/Xyoap5xMe3yF5msIykw8IJ+/R74reEWfAqi48w8GJizYXpGeIugFqf
+         N2NciUJi4y+wsqkP1uQtCpnXPUYRV7g9w06UlqfR/0UYhGKLV/kWQNkxynREGi4cn30Z
+         N5KZnCeYGjDKfkNcm15vn93C8tTChDg1pvEYrFeWKy5h3KCFwziEUX4pSvG+7oPb1Ypt
+         Ml6s+C3OpnyBvUmvnzgKwZ0Ygt1GGp6bIJ2kzkwvfrkxFOKi07o13YQKzwsWWK6cyBcv
+         iU1g==
+X-Gm-Message-State: AGi0Pua8PU5Vfi9VAheCdjmr0GQvzIE9nXLE+XsOl6c3JZ1zl/4ocmYS
+        5lQAbx/PqpXgdUwQMKuQnysEaqJIahnOb8aOIzkDI+5Z0Al7
+X-Google-Smtp-Source: APiQypLK1R32YygzKw6o+zrjKt0GIokFgX8oowRX0+5I/s/40LhWT/hwtwkehxiJ47ijw4bdIgcKya/AdAIK2f7+ZiLlGEbjeIlX
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Received: by 2002:a05:6e02:dc3:: with SMTP id l3mr3777413ilj.149.1588344543764;
+ Fri, 01 May 2020 07:49:03 -0700 (PDT)
+Date:   Fri, 01 May 2020 07:49:03 -0700
+In-Reply-To: <00000000000052913105a4943655@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004fe61505a49748ee@google.com>
+Subject: Re: KASAN: use-after-free Read in inet_diag_bc_sk
+From:   syzbot <syzbot+13bef047dbfffa5cd1af@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net,
+        john.fastabend@gmail.com, kafai@fb.com, khlebnikov@yandex-team.ru,
+        kpsingh@chromium.org, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org, zeil@yandex-team.ru
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 30 Apr 2020 14:20:20 +0000
-Haiyang Zhang <haiyangz@microsoft.com> wrote:
-> > -----Original Message-----
-> > From: Jesper Dangaard Brouer <brouer@redhat.com>
-> > 
-> > The hyperv NIC drivers XDP implementation is rather disappointing as it will
-> > be a slowdown to enable XDP on this driver, given it will allocate a new page
-> > for each packet and copy over the payload, before invoking the XDP BPF-
-> > prog.  
->
-> This needs correction. As I said previously -- 
-> This statement is not accurate -- The data path of netvsc driver does memory 
-> allocation and copy even without XDP, so it's not "a slowdown to enable XDP".
+syzbot has bisected this bug to:
 
-Okay, I have changed the paragraph text to:
+commit b1f3e43dbfacfcd95296b0f80f84b186add9ef54
+Author: Dmitry Yakunin <zeil@yandex-team.ru>
+Date:   Thu Apr 30 15:51:15 2020 +0000
 
- The hyperv NIC driver does memory allocation and copy even without XDP.
- In XDP mode it will allocate a new page for each packet and copy over
- the payload, before invoking the XDP BPF-prog.
+    inet_diag: add support for cgroup filter
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=106b15f8100000
+start commit:   37ecb5b8 hinic: Use kmemdup instead of kzalloc and memcpy
+git tree:       net-next
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=126b15f8100000
+console output: https://syzkaller.appspot.com/x/log.txt?x=146b15f8100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b1494ce3fbc02154
+dashboard link: https://syzkaller.appspot.com/bug?extid=13bef047dbfffa5cd1af
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12296e60100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=150c6f02100000
 
+Reported-by: syzbot+13bef047dbfffa5cd1af@syzkaller.appspotmail.com
+Fixes: b1f3e43dbfac ("inet_diag: add support for cgroup filter")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
