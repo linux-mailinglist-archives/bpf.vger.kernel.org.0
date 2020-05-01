@@ -2,136 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06481C2056
-	for <lists+bpf@lfdr.de>; Sat,  2 May 2020 00:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3471C205B
+	for <lists+bpf@lfdr.de>; Sat,  2 May 2020 00:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726394AbgEAWHl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 May 2020 18:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726045AbgEAWHk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 May 2020 18:07:40 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61FDCC061A0C
-        for <bpf@vger.kernel.org>; Fri,  1 May 2020 15:07:40 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id ck5so5407150qvb.11
-        for <bpf@vger.kernel.org>; Fri, 01 May 2020 15:07:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P7mhOLJrV7pmiMZ+I/NSj0jCIM2BIqm9ntgzvbLdFfQ=;
-        b=dl3v71Up7pVb7WbZKlBu/QzhfRMR5t5Nin4rslS57n+QLajuNIfE0I1lB4Ty+LfjqB
-         cuojQBtADVsAuqSXB8aqGa5q18d5jQBtEawoaTnxyjQdm5DJik+81OranapognncD2ui
-         gy40cB6S2J6mlCGR2ZoiZ4jq27bMtvyOh7MuivEuTk8jJuHN+dcHnaJB0Sh4GtcEtxSv
-         092ZUXq4ATycrfRzuSC3Ch2cEAB7L+eUVZOgm2KtTPOQyPpA9+3X6ozySO8Fk5ZE2E9h
-         aaogQ/1FO+M7Mhog81EYaAeOdFLEoSluS3CxZFnRdR5evgfmUqteKYsL2lYtiLyY+ORb
-         uADw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P7mhOLJrV7pmiMZ+I/NSj0jCIM2BIqm9ntgzvbLdFfQ=;
-        b=tZMiZjcCecGhk3PrZyn/g16UOSG5le+mcAImAcI0QqpgwOB2VB+Jgwc7VTFKNPm+qU
-         N0oC+HYu9FQdoVtRi00R2Qsl0Hql+1gjen5mzI4uvum3GQCvW27uoxqSTGrXBXDXYdV0
-         34beHwSZc3NSlX18c3/xaK/+1wW7/OJ5ZqiTOmi8UQwhwqyFEJpB8I3r/d21moAENOp9
-         9yypZTEj2Pn5Hg8LFTSACmGTxp/6qEJsxQAAojaWUvamdxqaFZltevdtMOfQfZJLX2y0
-         Zh8HF4/taOC5R0yndEYnHpfIVdcR1pim6ia9A+j5RlR09KA43a4+mws2LCIP/WoUfqbC
-         rZ1w==
-X-Gm-Message-State: AGi0PuY6Ovvi/GXfdQ9nvFdWjI0arUiw2ndmhwGY5i4ycOwPAI4/5pup
-        CqqNhvr5Ef3/rgGRGSLejmyuYFjYKFiUW/TAvgVltw==
-X-Google-Smtp-Source: APiQypKEOoHK8iFM8Z7xzUwIZ2+pHpidA0Bw62wq3uuTjy2e4YBeUm0WLfqMlyMsCJ/G3WbgtCX5xD091sLrXY2viqA=
-X-Received: by 2002:a05:6214:1705:: with SMTP id db5mr5879923qvb.225.1588370859234;
- Fri, 01 May 2020 15:07:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200430233152.199403-1-sdf@google.com> <20200501215202.GA72448@rdna-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200501215202.GA72448@rdna-mbp.dhcp.thefacebook.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 1 May 2020 15:07:28 -0700
-Message-ID: <CAKH8qBtcC7PhWOYLZKP7WeGjP4fY0u_DRQcDi51JkY2otcRYiw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] bpf: bpf_{g,s}etsockopt for struct bpf_sock_addr
-To:     Andrey Ignatov <rdna@fb.com>
-Cc:     Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726430AbgEAWJt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 May 2020 18:09:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58062 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726272AbgEAWJt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 May 2020 18:09:49 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B927520857;
+        Fri,  1 May 2020 22:09:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588370988;
+        bh=hyTUi8k9QleCFVpcgAZ6YYDaMkXEa5xJb5HTy4SEi9Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GPQWCRRHLJg2Zl8cgmkGWbp7Tgn+ivU4M8hBbWb4IQI1sGAnX/mV/i1Lyh/amTZdC
+         vgn21bnvxHvu7jVeG6N3ie5ON7pYY//OPHYOAyysUdpLdyFLZhzTvii7N+TQnFlEUw
+         l0PKqTkdq3Hg476WHDApPzwvFSmjMv60SV2VPHc0=
+Date:   Fri, 1 May 2020 15:09:47 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     John Dorminy <jdorminy@redhat.com>
+Cc:     Wei Liu <wei.liu@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>, x86@kernel.org,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Laura Abbott <labbott@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        bpf@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Gao Xiang <xiang@kernel.org>
+Subject: Re: [PATCH 21/29] mm: remove the pgprot argument to __vmalloc
+Message-Id: <20200501150947.367ca6b38a394f1ff678ed4b@linux-foundation.org>
+In-Reply-To: <CAMeeMh_9N0ORhPM8EmkGeeuiDoQY3+QoAPX5QBuK7=gsC5ONng@mail.gmail.com>
+References: <20200414131348.444715-1-hch@lst.de>
+        <20200414131348.444715-22-hch@lst.de>
+        <20200414151344.zgt2pnq7cjq2bgv6@debian>
+        <CAMeeMh8Q3Od76WaTasw+BpYVF58P-HQMaiFKHxXbZ_Q3tQPZ=A@mail.gmail.com>
+        <CAMeeMh_9N0ORhPM8EmkGeeuiDoQY3+QoAPX5QBuK7=gsC5ONng@mail.gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 1, 2020 at 2:52 PM Andrey Ignatov <rdna@fb.com> wrote:
->
-> Stanislav Fomichev <sdf@google.com> [Thu, 2020-04-30 16:32 -0700]:
-> > Currently, bpf_getsockopt and bpf_setsockopt helpers operate on the
-> > 'struct bpf_sock_ops' context in BPF_PROG_TYPE_SOCK_OPS program.
-> > Let's generalize them and make them available for 'struct bpf_sock_addr'.
-> > That way, in the future, we can allow those helpers in more places.
-> >
-> > As an example, let's expose those 'struct bpf_sock_addr' based helpers to
-> > BPF_CGROUP_INET{4,6}_CONNECT hooks. That way we can override CC before the
-> > connection is made.
-> >
-> > v3:
-> > * Expose custom helpers for bpf_sock_addr context instead of doing
-> >   generic bpf_sock argument (as suggested by Daniel). Even with
-> >   try_socket_lock that doesn't sleep we have a problem where context sk
-> >   is already locked and socket lock is non-nestable.
-> >
-> > v2:
-> > * s/BPF_PROG_TYPE_CGROUP_SOCKOPT/BPF_PROG_TYPE_SOCK_OPS/
-> >
-> > Cc: John Fastabend <john.fastabend@gmail.com>
-> > Cc: Martin KaFai Lau <kafai@fb.com>
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
->
-> ...
->
-> >  SEC("cgroup/connect4")
-> >  int connect_v4_prog(struct bpf_sock_addr *ctx)
-> >  {
-> > @@ -66,6 +108,10 @@ int connect_v4_prog(struct bpf_sock_addr *ctx)
-> >
-> >       bpf_sk_release(sk);
-> >
-> > +     /* Rewrite congestion control. */
-> > +     if (ctx->type == SOCK_STREAM && set_cc(ctx))
-> > +             return 0;
->
-> Hi Stas,
->
-> This new check breaks one of tests in test_sock_addr:
->
->         root@arch-fb-vm1:/home/rdna/bpf-next/tools/testing/selftests/bpf ./test_sock_addr.sh
->         ...
->         (test_sock_addr.c:1199: errno: Operation not permitted) Fail to connect to server
->         Test case: connect4: rewrite IP & TCP port .. [FAIL]
->         ...
->         Summary: 34 PASSED, 1 FAILED
->
-> What the test does is it sets up TCPv4 server:
->
->         [pid   386] socket(PF_INET, SOCK_STREAM, IPPROTO_IP) = 6
->         [pid   386] bind(6, {sa_family=AF_INET, sin_port=htons(4444), sin_addr=inet_addr("127.0.0.1")}, 128) = 0
->         [pid   386] listen(6, 128)              = 0
->
-> Then tries to connect to a fake IPv4:port and this connect4 program
-> should redirect it to that TCP server, but only if every field in
-> context has expected value.
->
-> But after that commit program started denying the connect:
->
->         [pid   386] socket(PF_INET, SOCK_STREAM, IPPROTO_IP) = 7
->         [pid   386] connect(7, {sa_family=AF_INET, sin_port=htons(4040), sin_addr=inet_addr("192.168.1.254")}, 128) = -1 EPERM (Operation not permitted)
->         (test_sock_addr.c:1201: errno: Operation not permitted) Fail to connect to server
->         Test case: connect4: rewrite IP & TCP port .. [FAIL]
->
-> I verified that commenting out this new `if` fixes the problem, but
-> haven't spent time root-causing it. Could you please look at it?
-Could you please confirm that you have CONFIG_TCP_CONG_DCTCP=y in your kernel
-config? (I've added it to tools/testing/selftests/bpf/config)
-The test is now flipping CC to dctcp and back to default cubic. It can
-fail if dctcp is not compiled in.
+On Thu, 30 Apr 2020 22:38:10 -0400 John Dorminy <jdorminy@redhat.com> wrote:
+
+> the change
+> description refers to PROT_KERNEL, which is a symbol which does not
+> appear to exist; perhaps PAGE_KERNEL was meant?
+
+Yes, thanks, fixed.
