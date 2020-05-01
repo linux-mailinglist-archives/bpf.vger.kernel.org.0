@@ -2,238 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A461C1D7C
-	for <lists+bpf@lfdr.de>; Fri,  1 May 2020 21:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B8C1C1DA5
+	for <lists+bpf@lfdr.de>; Fri,  1 May 2020 21:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730070AbgEATBV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 May 2020 15:01:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46512 "EHLO
+        id S1730442AbgEATJe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 May 2020 15:09:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729766AbgEATBU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 1 May 2020 15:01:20 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8CA7C061A0C;
-        Fri,  1 May 2020 12:01:20 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id b188so10156514qkd.9;
-        Fri, 01 May 2020 12:01:20 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1729766AbgEATJe (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 1 May 2020 15:09:34 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D5F8C061A0C;
+        Fri,  1 May 2020 12:09:34 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id v63so1950000pfb.10;
+        Fri, 01 May 2020 12:09:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=POQ5NKa4769BoncsZBdGJ5a0YBr+BMUrQYDGRmZ417U=;
-        b=lN9hoQN1AAp9IsoVmGdhomDPRXA+QillGn1eqg2Gyu3FbmOMn6O2rujAmsQ+9GX6Za
-         yJQzTsfLtJhOHoLLo7a0cu9h/Qv5uoNZz8FJNqFSLZrYvkFGcChY8yvBevIuYG0CmY5/
-         kWqKFn4314B5KoEJOlwnS874Mn5QDJFYNK0p6yO7rblPhpuScWuLastXjt3FNLXwtRlT
-         tmb0ltML3CbrWQd9/WKpJvXJ6PYL3aNea5c8S66/ioIR+LuwY+yBqc5mlXgzUt4jqAPk
-         REDIoUVps+hLEWcUZu27Jsm1G065RWA2LkLAGRM85dNBDOd8C+lshN3QLjKpIgG/ca9c
-         VeIw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3jiAPaFiQIwup5Rl6bkdApLMWC+g3p/Kt1dCChwBGvU=;
+        b=HYqlOnF6xR6P3tL0oO/ZOqArCr8YiLqKR4ycbsI5PMe3b5gDjQkRgVRsbYe3Kv3H3+
+         dXtnOI8X8c2MGLulvZM72mVH6ibte2GRWWFNyciyYoXoXh+rXm6wqWvV5rNCJCPUopdm
+         ISIf/vnLr2f7BzTpAy+c+79V1cciunTnlLDKhmrvAu/OwhpyrS5UPfBvaO/czF8EPEWq
+         DdfSq4C4qjpR9VjB/lk0qizsNTNH9H8Wq9OFsc3UPtg08wDYJHCXqikvNZ5wr05PJApm
+         FiT9QFCi8o7XGYx/LTjCTltXKCM/KFbNS2nPDp4Cd1vES1hnsfUtx/mf79t5c7ckVfnT
+         ItvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=POQ5NKa4769BoncsZBdGJ5a0YBr+BMUrQYDGRmZ417U=;
-        b=Rw1POnUGFCacu8VNCb4ybA7Xm2kCj1vudzZVoosBq+IeDIhgsBOH7Nd6bBSvbJ/InF
-         aKH3hVxAQ+xDv52X/VnSmGrpkqVF9DHOzr+04b6zUx+d/V3p2xuwRWvWSlDkC1qrjgM0
-         DQjijJrupFZz3n6CvdSlVbJHcLU++O4MkE2F16aTlCnB00fuggaHSfpxZUij/H0i+cVV
-         ooE8WPlbjSuDogLyRdSXxoCHwKRGRe1Si5Epv5OnMYp1gOg/hRz20hXHmHGR+QH0v7SY
-         d64rKfOepTMXVL7QqU8vLuhYYcH7P3h6dXv5Jk+oFBtfhCq8gRZL+VDNwOD6gyayhhzS
-         xTtA==
-X-Gm-Message-State: AGi0PuYpXVlkIIovgThxtrddvPIN9GlvD+JNuzUmJ9WfjFS3W+0mj9Dw
-        U8FFwGsmW20t9M2OpFizcQRZdxdEe9hARHO8UHE=
-X-Google-Smtp-Source: APiQypLzPaCgu8lwSdmV9SfYyeyTDgzE55zdxWpN1RCkpl2uAsQaWOoDZEdMJ2G9pQsIcnT4uuwlQhkr9vBoAuiomwE=
-X-Received: by 2002:ae9:e10b:: with SMTP id g11mr5415473qkm.449.1588359679709;
- Fri, 01 May 2020 12:01:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3jiAPaFiQIwup5Rl6bkdApLMWC+g3p/Kt1dCChwBGvU=;
+        b=ix4Q/15qdRUxKFiCNYvT2bTADGj5pvYSXddROrbkvS5Q+aWTVFla8w2pRjqshPR9kJ
+         FNcK624y/iyu9xkIvcrVneWGLTjqkaJnqFw+ju23P8xcuDRycYpCSP4Js+x8ifAOB5gz
+         7FGCKf+1IFyXdExqc43pOIsUyPDXvEvmcp5VuHIKpXUPV+9XDO0kp/o5ahR644NT+ELX
+         cKwbw/4zp0mU7OOmDSJC9wvL1SOvCVm89yZ44LgwjVQqYiHkVJ53uEBBzN8/Vm+BETEh
+         L1Mp3BYGSVm+GbRECPQKSaynRs+Uku5x9L6JNlXAQzFMpuCCQ1gJbLDlhCI7xMuriCYH
+         eGFQ==
+X-Gm-Message-State: AGi0PubceWZrYORAp0cXltrI1yrLV7n5PzorYlryL/bhphQyv9qLLC5d
+        1qbnRmtYWFZvKjwbGP9v4EM=
+X-Google-Smtp-Source: APiQypIBl1/RFUI1dVmI7MYjTIw4oUr1NcTWvPch+Z2udtILKSBl834zc6fvAKWhOD4ilquX0Pj6eg==
+X-Received: by 2002:a62:e803:: with SMTP id c3mr5338940pfi.228.1588360173626;
+        Fri, 01 May 2020 12:09:33 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8cd4])
+        by smtp.gmail.com with ESMTPSA id r4sm2609313pgi.6.2020.05.01.12.09.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 May 2020 12:09:32 -0700 (PDT)
+Date:   Fri, 1 May 2020 12:09:30 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] bpf: Tweak BPF jump table optimizations for objtool
+ compatibility
+Message-ID: <20200501190930.ptxyml5o4rviyo26@ast-mbp.dhcp.thefacebook.com>
+References: <b581438a16e78559b4cea28cf8bc74158791a9b3.1588273491.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-References: <20200427201235.2994549-1-yhs@fb.com> <20200427201247.2995622-1-yhs@fb.com>
- <CAEf4BzaWkKbtDQf=0gOBj7Q6icswh61ky3FFS8bAmhkefDV0tg@mail.gmail.com> <dc46e006-468d-22d6-91bc-2c8e75590205@fb.com>
-In-Reply-To: <dc46e006-468d-22d6-91bc-2c8e75590205@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 1 May 2020 12:01:08 -0700
-Message-ID: <CAEf4BzZij0uXAvvkNJQNOF=fu44Bg+SsxX7x3WWg2+5wsOATrQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 11/19] bpf: add task and task/file targets
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b581438a16e78559b4cea28cf8bc74158791a9b3.1588273491.git.jpoimboe@redhat.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 1, 2020 at 10:23 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 4/29/20 7:08 PM, Andrii Nakryiko wrote:
-> > On Mon, Apr 27, 2020 at 1:17 PM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >> Only the tasks belonging to "current" pid namespace
-> >> are enumerated.
-> >>
-> >> For task/file target, the bpf program will have access to
-> >>    struct task_struct *task
-> >>    u32 fd
-> >>    struct file *file
-> >> where fd/file is an open file for the task.
-> >>
-> >> Signed-off-by: Yonghong Song <yhs@fb.com>
-> >> ---
-> >>   kernel/bpf/Makefile    |   2 +-
-> >>   kernel/bpf/task_iter.c | 319 +++++++++++++++++++++++++++++++++++++++++
-> >>   2 files changed, 320 insertions(+), 1 deletion(-)
-> >>   create mode 100644 kernel/bpf/task_iter.c
-> >>
-> >
-> > [...]
-> >
-> >> +static void *task_seq_start(struct seq_file *seq, loff_t *pos)
-> >> +{
-> >> +       struct bpf_iter_seq_task_info *info = seq->private;
-> >> +       struct task_struct *task;
-> >> +       u32 id = info->id;
-> >> +
-> >> +       if (*pos == 0)
-> >> +               info->ns = task_active_pid_ns(current);
-> >
-> > I wonder why pid namespace is set in start() callback each time, while
-> > net_ns was set once when seq_file is created. I think it should be
-> > consistent, no? Either pid_ns is another feature and is set
-> > consistently just once using the context of the process that creates
-> > seq_file, or net_ns could be set using the same method without
-> > bpf_iter infra knowing about this feature? Or there are some
-> > non-obvious aspects which make pid_ns easier to work with?
-> >
-> > Either way, process read()'ing seq_file might be different than
-> > process open()'ing seq_file, so they might have different namespaces.
-> > We need to decide explicitly which context should be used and do it
-> > consistently.
->
-> Good point. for networking case, the `net` namespace is locked
-> at seq_file open stage and later on it is used for seq_read().
->
-> I think I should do the same thing, locking down pid namespace
-> at open.
+On Thu, Apr 30, 2020 at 02:07:43PM -0500, Josh Poimboeuf wrote:
+> Objtool decodes instructions and follows all potential code branches
+> within a function.  But it's not an emulator, so it doesn't track
+> register values.  For that reason, it usually can't follow
+> intra-function indirect branches, unless they're using a jump table
+> which follows a certain format (e.g., GCC switch statement jump tables).
+> 
+> In most cases, the generated code for the BPF jump table looks a lot
+> like a GCC jump table, so objtool can follow it.  However, with
+> RETPOLINE=n, GCC keeps the jump table address in a register, and then
+> does 160+ indirect jumps with it.  When objtool encounters the indirect
+> jumps, it can't tell which jump table is being used (or even whether
+> they might be sibling calls instead).
+> 
+> This was fixed before by disabling an optimization in ___bpf_prog_run(),
+> using the "optimize" function attribute.  However, that attribute is bad
+> news.  It doesn't append options to the command-line arguments.  Instead
+> it starts from a blank slate.  And according to recent GCC documentation
+> it's not recommended for production use.  So revert the previous fix:
+> 
+>   3193c0836f20 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
+> 
+> With that reverted, solve the original problem in a different way by
+> getting rid of the "goto select_insn" indirection, and instead just goto
+> the jump table directly.  This simplifies the code a bit and helps GCC
+> generate saner code for the jump table branches, at least in the
+> RETPOLINE=n case.
+> 
+> But, in the RETPOLINE=y case, this simpler code actually causes GCC to
+> generate far worse code, ballooning the function text size by +40%.  So
+> leave that code the way it was.  In fact Alexei prefers to leave *all*
+> the code the way it was, except where needed by objtool.  So even
+> non-x86 RETPOLINE=n code will continue to have "goto select_insn".
+> 
+> This stuff is crazy voodoo, and far from ideal.  But it works for now.
+> Eventually, there's a plan to create a compiler plugin for annotating
+> jump tables.  That will make this a lot less fragile.
 
-Yeah, I think it's a good idea.
+I don't like this commit log.
+Here you're saying that the code recognized by objtool is sane and good
+whereas well optimized gcc code is somehow voodoo and bad.
+That is just wrong.
+goto select_insn; vs goto *jumptable[insn->code]; is not a contract that
+compiler has to follow. The compiler is free to convert direct goto
+into indirect and the other way around.
+For all practical purposes this patch is a band aid for objtool that will fall
+apart in the future. Just like the previous patch that survived less than a year.
+It's not clear whether old one worked for clang.
+It's not clear whether new one will work for clang.
+retpoline=y causing code bloat is a different issue that can be investigated
+separately. gcc/clang have different modes of generating retpoline thunks.
+May be one of those flags can help.
 
->
-> >
-> >> +
-> >> +       task = task_seq_get_next(info->ns, &id);
-> >> +       if (!task)
-> >> +               return NULL;
-> >> +
-> >> +       ++*pos;
-> >> +       info->task = task;
-> >> +       info->id = id;
-> >> +
-> >> +       return task;
-> >> +}
-> >> +
-> >> +static void *task_seq_next(struct seq_file *seq, void *v, loff_t *pos)
-> >> +{
-> >> +       struct bpf_iter_seq_task_info *info = seq->private;
-> >> +       struct task_struct *task;
-> >> +
-> >> +       ++*pos;
-> >> +       ++info->id;
-> >
-> > this would make iterator skip pid 0? Is that by design?
->
-> The start will try to find pid 0. That means start will never
-> return SEQ_START_TOKEN since the bpf program won't be called any way.
+In other words I'm ok with the patch, but commit log needs to be reworded.
 
-Never mind, I confused task_seq_next() and task_seq_get_next() :)
+> Fixes: 3193c0836f20 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> ---
+>  include/linux/compiler-gcc.h   |  2 --
+>  include/linux/compiler_types.h |  4 ----
+>  kernel/bpf/core.c              | 10 +++++++---
+>  3 files changed, 7 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+> index cf294faec2f8..2c8583eb5de8 100644
+> --- a/include/linux/compiler-gcc.h
+> +++ b/include/linux/compiler-gcc.h
+> @@ -176,5 +176,3 @@
+>  #else
+>  #define __diag_GCC_8(s)
+>  #endif
+> -
+> -#define __no_fgcse __attribute__((optimize("-fno-gcse")))
+> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> index e970f97a7fcb..58105f1deb79 100644
+> --- a/include/linux/compiler_types.h
+> +++ b/include/linux/compiler_types.h
+> @@ -203,10 +203,6 @@ struct ftrace_likely_data {
+>  #define asm_inline asm
+>  #endif
+>  
+> -#ifndef __no_fgcse
+> -# define __no_fgcse
+> -#endif
+> -
+>  /* Are two types/vars the same type (ignoring qualifiers)? */
+>  #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
+>  
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 916f5132a984..eec470c598ad 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -1364,7 +1364,7 @@ u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
+>   *
+>   * Decode and execute eBPF instructions.
+>   */
+> -static u64 __no_fgcse ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+> +static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+>  {
+>  #define BPF_INSN_2_LBL(x, y)    [BPF_##x | BPF_##y] = &&x##_##y
+>  #define BPF_INSN_3_LBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] = &&x##_##y##_##z
+> @@ -1384,11 +1384,15 @@ static u64 __no_fgcse ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u6
+>  #undef BPF_INSN_2_LBL
+>  	u32 tail_call_cnt = 0;
+>  
+> +#if defined(CONFIG_X86_64) && !defined(CONFIG_RETPOLINE)
+> +#define CONT	 ({ insn++; goto *jumptable[insn->code]; })
+> +#define CONT_JMP ({ insn++; goto *jumptable[insn->code]; })
+> +#else
+>  #define CONT	 ({ insn++; goto select_insn; })
+>  #define CONT_JMP ({ insn++; goto select_insn; })
+> -
+>  select_insn:
+>  	goto *jumptable[insn->code];
+> +#endif
+>  
+>  	/* ALU */
+>  #define ALU(OPCODE, OP)			\
+> @@ -1547,7 +1551,7 @@ static u64 __no_fgcse ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u6
+>  		 * where arg1_type is ARG_PTR_TO_CTX.
+>  		 */
+>  		insn = prog->insnsi;
+> -		goto select_insn;
+> +		CONT;
 
->
-> >
-> >> +       task = task_seq_get_next(info->ns, &info->id);
-> >> +       if (!task)
-> >> +               return NULL;
-> >> +
-> >> +       put_task_struct(info->task);
-> >
-> > on very first iteration info->task might be NULL, right?
->
-> Even the first iteration info->task is not NULL. The start()
-> will forcefully try to find the first real task from idr number 0.
->
-
-Right, goes to same confusion as above, sorry.
-
-> >
-> >> +       info->task = task;
-> >> +       return task;
-> >> +}
-> >> +
-> >> +struct bpf_iter__task {
-> >> +       __bpf_md_ptr(struct bpf_iter_meta *, meta);
-> >> +       __bpf_md_ptr(struct task_struct *, task);
-> >> +};
-> >> +
-> >> +int __init __bpf_iter__task(struct bpf_iter_meta *meta, struct task_struct *task)
-> >> +{
-> >> +       return 0;
-> >> +}
-> >> +
-> >> +static int task_seq_show(struct seq_file *seq, void *v)
-> >> +{
-> >> +       struct bpf_iter_meta meta;
-> >> +       struct bpf_iter__task ctx;
-> >> +       struct bpf_prog *prog;
-> >> +       int ret = 0;
-> >> +
-> >> +       prog = bpf_iter_get_prog(seq, sizeof(struct bpf_iter_seq_task_info),
-> >> +                                &meta.session_id, &meta.seq_num,
-> >> +                                v == (void *)0);
-> >> +       if (prog) {
-> >
-> > can it happen that prog is NULL?
->
-> Yes, this function is shared between show() and stop().
-> The stop() function might be called multiple times since
-> user can repeatedly try read() although there is nothing
-> there, in which case, the seq_ops will be just
-> start() and stop().
-
-Ah, right, NULL case after end of iteration, got it.
-
->
-> >
-> >
-> >> +               meta.seq = seq;
-> >> +               ctx.meta = &meta;
-> >> +               ctx.task = v;
-> >> +               ret = bpf_iter_run_prog(prog, &ctx);
-> >> +       }
-> >> +
-> >> +       return ret == 0 ? 0 : -EINVAL;
-> >> +}
-> >> +
-> >> +static void task_seq_stop(struct seq_file *seq, void *v)
-> >> +{
-> >> +       struct bpf_iter_seq_task_info *info = seq->private;
-> >> +
-> >> +       if (!v)
-> >> +               task_seq_show(seq, v);
-> >
-> > hmm... show() called from stop()? what's the case where this is necessary?
->
-> I will refactor it better. This is to invoke bpf program
-> in stop() with NULL object to signal the end of
-> iteration.
->
-> >> +
-> >> +       if (info->task) {
-> >> +               put_task_struct(info->task);
-> >> +               info->task = NULL;
-> >> +       }
-> >> +}
-> >> +
-> >
-> > [...]
-> >
+This is broken. I don't think you've run basic tests with this patch.
