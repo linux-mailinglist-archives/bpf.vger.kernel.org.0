@@ -2,97 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCDFF1C1D3E
-	for <lists+bpf@lfdr.de>; Fri,  1 May 2020 20:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7BA1C1D70
+	for <lists+bpf@lfdr.de>; Fri,  1 May 2020 20:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729963AbgEASdR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 May 2020 14:33:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729721AbgEASdR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 1 May 2020 14:33:17 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D43C061A0C;
-        Fri,  1 May 2020 11:33:15 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id x2so5232866ilp.13;
-        Fri, 01 May 2020 11:33:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=P+eY4pIsN0XU4I/R8qcJHEKy6dUT/7CH7jPQNb6aQ6U=;
-        b=oltjcl7EmCyoseXDpiG+jduR63O2CdyMC/umZvfAczDoLfQossyGdejBQ3ojNyISmd
-         PCI7je6u1CLviqn7a9ObGxUZdSFWZGwyZ9fY9aTB5w3pLU8j0S//Tw0Y0GPAecPx2/7U
-         vEnmse3I9hEngR071ZaMWKdn5NLz3xNKacHsDkBvEcLwxSWRS9DRpNKvgigOk7cSY7KY
-         A8w4LFkoYOCMLla/VGohVyFE6f12XS9B/fBaeq80/PGZ5DnvK2AMYYluqbWLvLJjJU37
-         cgQ9+VNSaLrHjvFxc6w2JaOFRpqOTPf06TAU7hh1cCK/szdLlfavSRgF7ECe6ZOJImdg
-         LbZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=P+eY4pIsN0XU4I/R8qcJHEKy6dUT/7CH7jPQNb6aQ6U=;
-        b=N7fCYqYz3jQcCrknm6eoqLkf/PoaIf1lb3saZQ71y2vszIVsu70Gu5yMt5tilSWbku
-         x3S7bn4ciDduMr5Tg4iYhTUDPLKwq6bpRN0NTQSEETt3QRTLYs2Ry7pYOaI+i/+IFm2N
-         p54sEcsiJDYMY9ltUb048B6YDtJ4XpU4VqxhiTui5L0MSzN9bFYWDcWPSYb1mmQSGSbR
-         s3s0CWXRFWA/gGc2jlr6JS4Bk6cnmk/dVzsJAOPDeLTO3chsyCrXeN1TM5Ej99ez6KtW
-         Kqk0vqZ4HX6BeV8ase+leNt/mw/ZMNP1jwHFv5eml3fgjY7bPxRLXjSBrQoyzj2wrezL
-         JsnA==
-X-Gm-Message-State: AGi0PubkTQI+PL9Wc5xeVxNkPS36HtzDkyxCEqAPqPwjWgXqXBzp8nJJ
-        IrAEkGwMPsjoct+ef6fqQBGtfstiwLA=
-X-Google-Smtp-Source: APiQypLr68FOy7qy73XZctc5vtf8owOGWRFDy/liaLGNdnUJdQ7sziBa0seTO/Cw3Jan6NfqTEFWiQ==
-X-Received: by 2002:a92:405:: with SMTP id 5mr1756353ile.279.1588357995400;
-        Fri, 01 May 2020 11:33:15 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id n26sm1155134ioa.44.2020.05.01.11.33.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 May 2020 11:33:14 -0700 (PDT)
-Date:   Fri, 01 May 2020 11:33:06 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Message-ID: <5eac6b6252755_2dd52ac42ee805b8c9@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200430233152.199403-1-sdf@google.com>
-References: <20200430233152.199403-1-sdf@google.com>
-Subject: RE: [PATCH bpf-next v3] bpf: bpf_{g,s}etsockopt for struct
- bpf_sock_addr
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1730074AbgEAS43 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 May 2020 14:56:29 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:26676 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730120AbgEAS43 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 1 May 2020 14:56:29 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 041IeUwq011940
+        for <bpf@vger.kernel.org>; Fri, 1 May 2020 11:56:28 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=1UibhM8/Ws+BT/moLSKnrq0pQFjfgiKjje2D7orwhR8=;
+ b=ZjyIHWLWKXO2DqwGEEyyR9SKWnNXipQOSx20DHe45aJgILwMs9C7QglCS4hLYMyw0gvi
+ KXPaJuRN9eDzIg6jxng2VZLeGOReWjJ6hxv0Li75PZKrvfq+ntLJ8U3ebMV8UcAYIxJt
+ alanCgjClXOJNFCJAQB+2d3ekUH1dOFYTd4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 30r7dyw5fe-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 01 May 2020 11:56:28 -0700
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 1 May 2020 11:56:26 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 9BC592EC2F4C; Fri,  1 May 2020 11:56:23 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        <syzbot+39b64425f91b5aab714d@syzkaller.appspotmail.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf-next] bpf: fix use-after-free of bpf_link when priming half-fails
+Date:   Fri, 1 May 2020 11:56:22 -0700
+Message-ID: <20200501185622.3088964-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-05-01_11:2020-05-01,2020-05-01 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ suspectscore=25 clxscore=1015 phishscore=0 lowpriorityscore=0
+ malwarescore=0 spamscore=0 priorityscore=1501 impostorscore=0 adultscore=0
+ bulkscore=0 mlxlogscore=632 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2003020000 definitions=main-2005010141
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Stanislav Fomichev wrote:
-> Currently, bpf_getsockopt and bpf_setsockopt helpers operate on the
-> 'struct bpf_sock_ops' context in BPF_PROG_TYPE_SOCK_OPS program.
-> Let's generalize them and make them available for 'struct bpf_sock_addr'.
-> That way, in the future, we can allow those helpers in more places.
-> 
-> As an example, let's expose those 'struct bpf_sock_addr' based helpers to
-> BPF_CGROUP_INET{4,6}_CONNECT hooks. That way we can override CC before the
-> connection is made.
-> 
-> v3:
-> * Expose custom helpers for bpf_sock_addr context instead of doing
->   generic bpf_sock argument (as suggested by Daniel). Even with
->   try_socket_lock that doesn't sleep we have a problem where context sk
->   is already locked and socket lock is non-nestable.
-> 
-> v2:
-> * s/BPF_PROG_TYPE_CGROUP_SOCKOPT/BPF_PROG_TYPE_SOCK_OPS/
-> 
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
+If bpf_link_prime() succeeds to allocate new anon file, but then fails to
+allocate ID for it, link priming is considered to be failed and user is
+supposed ot be able to directly kfree() bpf_link, because it was never ex=
+posed
+to user-space.
 
-To bad we had to fall back to ctx here.
+But at that point file already keeps a pointer to bpf_link and will event=
+ually
+call bpf_link_release(), so if bpf_link was kfree()'d by caller, that wou=
+ld
+lead to use-after-free.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+Fix this by first allocating ID and only then allocating file. Adding ID =
+to
+link_idr is ok, because link at that point still doesn't have its ID set,=
+ so
+no user-space process can create a new FD for it.
+
+Suggested-by: Martin KaFai Lau <kafai@fb.com>
+Fixes: a3b80e107894 ("bpf: Allocate ID for bpf_link")
+Reported-by: syzbot+39b64425f91b5aab714d@syzkaller.appspotmail.com
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ kernel/bpf/syscall.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index c75b2dd2459c..108c8051dff2 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2348,19 +2348,20 @@ int bpf_link_prime(struct bpf_link *link, struct =
+bpf_link_primer *primer)
+ 	if (fd < 0)
+ 		return fd;
+=20
+-	file =3D anon_inode_getfile("bpf_link", &bpf_link_fops, link, O_CLOEXEC=
+);
+-	if (IS_ERR(file)) {
+-		put_unused_fd(fd);
+-		return PTR_ERR(file);
+-	}
+=20
+ 	id =3D bpf_link_alloc_id(link);
+ 	if (id < 0) {
+ 		put_unused_fd(fd);
+-		fput(file);
+ 		return id;
+ 	}
+=20
++	file =3D anon_inode_getfile("bpf_link", &bpf_link_fops, link, O_CLOEXEC=
+);
++	if (IS_ERR(file)) {
++		bpf_link_free_id(id);
++		put_unused_fd(fd);
++		return PTR_ERR(file);
++	}
++
+ 	primer->link =3D link;
+ 	primer->file =3D file;
+ 	primer->fd =3D fd;
+--=20
+2.24.1
+
