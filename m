@@ -2,154 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF38F1C2096
-	for <lists+bpf@lfdr.de>; Sat,  2 May 2020 00:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4205C1C20DB
+	for <lists+bpf@lfdr.de>; Sat,  2 May 2020 00:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726333AbgEAW3z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 May 2020 18:29:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726045AbgEAW3y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 May 2020 18:29:54 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C5D0C061A0E
-        for <bpf@vger.kernel.org>; Fri,  1 May 2020 15:29:54 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id o10so9154613qtr.6
-        for <bpf@vger.kernel.org>; Fri, 01 May 2020 15:29:54 -0700 (PDT)
+        id S1726455AbgEAWnX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 May 2020 18:43:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726344AbgEAWnW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 1 May 2020 18:43:22 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C92C061A0C
+        for <bpf@vger.kernel.org>; Fri,  1 May 2020 15:43:22 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id h186so11683220qkc.22
+        for <bpf@vger.kernel.org>; Fri, 01 May 2020 15:43:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+DabZJOp6Cexn/f41XQR3htli+9HCS0l3bnKTJKvdHI=;
-        b=tTyFKPN4+fZvg1Gxat7aaj0OCLqm/z99jcN5Y6U175jUvnrJJdfX7JnMJq90NJQAv2
-         lEMS06FlESuU7DAQ0ena9XwlAcy4uKg3+w69iJd7wxL5PGBOR6T8a5+RuFdxfjlDm1aL
-         KwC+BoFbLK3sVokYyX7m9UHtHHuCIfXMJIchknDLSaAfr7YVLGsCEzJrWwGpghzcLQkE
-         2nbS6MH0tR/5xakjsOabiUtG72UWPBVOZnDjMrGrxiJ8azh8JqkhoNYY5uJGYuaaOPlv
-         SBP9CL3N8PQFOjsCIMXUPgVyjv15Uxc+avtZpmM1tyCT0I5jWcnuj/bHqdl5hj/dvi1K
-         6K3w==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=hPopuAbrlmDsANSXoPS/PnMAqzIuG9U4bFV/yQD4WPs=;
+        b=osNjIOxDjuzqW8qj8TELt/+bUWdiy5cmqDEc1FO9Vn4B37Mv6y1qrrgvJgr2aP4ATF
+         +FsPWJ3c0RbiWpkCFLCucJLJchpN83IK2kBvcIRqVG7fwwjluABt2vyFrIjgIt1HLZhG
+         M0kFfAzxIe4l1FPf57Y4YAZpmkvKis/LLS63trRUGGIfGsux8fcp5ZynPfU+eZRifqX0
+         iHFaQQQ7LOIuisqcuoCqShPmCHzK0uTJ+Rg9SmIWHvjR1BSD+F/8zLz8XPDRamI4c4zx
+         he7CV/UFxDoUeFbvamO7PeRCyIURtLQvJVbF/I7bjlefvjEv6k1WZPa2C+gV4w8Ov+3j
+         tfXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+DabZJOp6Cexn/f41XQR3htli+9HCS0l3bnKTJKvdHI=;
-        b=CWYFpgGkBFIZSDQ3uFDvK5YGM2vbwnWidYWtEV80GjJUX/Lzu2ET7YekJC2K1i7IwJ
-         BbXb0pPKL1JCaNbC6C1v7cP6EKayJxy7yjoHg+zNc1w8niTEEdc3BVTEKpsO2T08ZT1x
-         IABnwlb1ylMGa5sGNtQkIz+5ctWY3zbyG8JR7EohpEQhzWOsXQPcEFOb7+Qx5J8HmB7p
-         l+ws011/5A3M7eV6keQH10OPujVqRftSV5G09+eC7r3+/cR4E2POB2gqNRTUoS20levI
-         GxleUAf5sCY/bxXJo/vv/Kz3c5vdPSxe9Zku6UmAVEoohBcYRgcKYgzvwA5x6pS72b6d
-         gTjw==
-X-Gm-Message-State: AGi0PubQtcgjCj4FswcukO3zHZdCR2v3udpesdtzgvMd77a958IXjf11
-        9t0XJ3JqBHc6y6rzGiw0qfW7QaHhEfOpT2CXBmUlYA==
-X-Google-Smtp-Source: APiQypIbmNOaH56AXqMNgiPNPimx01Gd3fwZc+/CfUcw5afQm1EFcFAx6tejRmhvo9GaXfu4MAyqz7oWA2T0tdcWOMI=
-X-Received: by 2002:ac8:3102:: with SMTP id g2mr6072496qtb.349.1588372193216;
- Fri, 01 May 2020 15:29:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200430233152.199403-1-sdf@google.com> <20200501215202.GA72448@rdna-mbp.dhcp.thefacebook.com>
- <CAKH8qBtcC7PhWOYLZKP7WeGjP4fY0u_DRQcDi51JkY2otcRYiw@mail.gmail.com> <20200501221615.GA27307@rdna-mbp>
-In-Reply-To: <20200501221615.GA27307@rdna-mbp>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=hPopuAbrlmDsANSXoPS/PnMAqzIuG9U4bFV/yQD4WPs=;
+        b=AErRTpTHMfSxLwxB/3MSJUh8WmglvnJMT3OePCerNGIgB07+pJZpYI+2VgJbpi8l19
+         S5GiQnWTVXf2W5OCKTUzy0AffSKcRsK84haipoov9ARDrlq0AO/EDLzVon1Zng6n54zV
+         a5KjgiKqmxfNMzaYtu6Ul8iKxECiL1mgi4HSppRRp8ENUCtxUzVIxyPpNlA1jbDBCdhh
+         VSazQPbPYjPfByMlGvsra5t7c7ccFkpVEI6cXFncWSR6otxBPc9H6r4CtLLko/nPAlbz
+         K1WEGvEmvNRofk67lYTo5bL4pmoTkL31n6KoKOaXe7Zh3QWx3HfLrqsInQ9LxIGB5E1T
+         4VmQ==
+X-Gm-Message-State: AGi0PuZxrczXz9XhUAJ5azLWBstxnmN3syYsGR2aEqt5/m9mZSjI4Z86
+        MPU4ZJxyHlN21moU0XfqyfASpNI=
+X-Google-Smtp-Source: APiQypKoYKEOuZ8b1jDi8uTsR6ZTp/BZEofSFZyymt+b6pnE4/6ia65lDN/XDXJS7h/+OO2vpqaLtd0=
+X-Received: by 2002:a05:6214:1262:: with SMTP id r2mr6284830qvv.126.1588373001796;
+ Fri, 01 May 2020 15:43:21 -0700 (PDT)
+Date:   Fri,  1 May 2020 15:43:20 -0700
+Message-Id: <20200501224320.28441-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
+Subject: [PATCH bpf-next] selftests/bpf: use reno instead of dctcp
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 1 May 2020 15:29:42 -0700
-Message-ID: <CAKH8qBtcrPFQ-SimQ2fANc517fMGBuEiQpoRkn03d35z40i2LA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] bpf: bpf_{g,s}etsockopt for struct bpf_sock_addr
-To:     Andrey Ignatov <rdna@fb.com>
-Cc:     Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        Andrey Ignatov <rdna@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 1, 2020 at 3:16 PM Andrey Ignatov <rdna@fb.com> wrote:
->
-> Stanislav Fomichev <sdf@google.com> [Fri, 2020-05-01 15:07 -0700]:
-> > On Fri, May 1, 2020 at 2:52 PM Andrey Ignatov <rdna@fb.com> wrote:
-> > >
-> > > Stanislav Fomichev <sdf@google.com> [Thu, 2020-04-30 16:32 -0700]:
-> > > > Currently, bpf_getsockopt and bpf_setsockopt helpers operate on the
-> > > > 'struct bpf_sock_ops' context in BPF_PROG_TYPE_SOCK_OPS program.
-> > > > Let's generalize them and make them available for 'struct bpf_sock_addr'.
-> > > > That way, in the future, we can allow those helpers in more places.
-> > > >
-> > > > As an example, let's expose those 'struct bpf_sock_addr' based helpers to
-> > > > BPF_CGROUP_INET{4,6}_CONNECT hooks. That way we can override CC before the
-> > > > connection is made.
-> > > >
-> > > > v3:
-> > > > * Expose custom helpers for bpf_sock_addr context instead of doing
-> > > >   generic bpf_sock argument (as suggested by Daniel). Even with
-> > > >   try_socket_lock that doesn't sleep we have a problem where context sk
-> > > >   is already locked and socket lock is non-nestable.
-> > > >
-> > > > v2:
-> > > > * s/BPF_PROG_TYPE_CGROUP_SOCKOPT/BPF_PROG_TYPE_SOCK_OPS/
-> > > >
-> > > > Cc: John Fastabend <john.fastabend@gmail.com>
-> > > > Cc: Martin KaFai Lau <kafai@fb.com>
-> > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > >
-> > > ...
-> > >
-> > > >  SEC("cgroup/connect4")
-> > > >  int connect_v4_prog(struct bpf_sock_addr *ctx)
-> > > >  {
-> > > > @@ -66,6 +108,10 @@ int connect_v4_prog(struct bpf_sock_addr *ctx)
-> > > >
-> > > >       bpf_sk_release(sk);
-> > > >
-> > > > +     /* Rewrite congestion control. */
-> > > > +     if (ctx->type == SOCK_STREAM && set_cc(ctx))
-> > > > +             return 0;
-> > >
-> > > Hi Stas,
-> > >
-> > > This new check breaks one of tests in test_sock_addr:
-> > >
-> > >         root@arch-fb-vm1:/home/rdna/bpf-next/tools/testing/selftests/bpf ./test_sock_addr.sh
-> > >         ...
-> > >         (test_sock_addr.c:1199: errno: Operation not permitted) Fail to connect to server
-> > >         Test case: connect4: rewrite IP & TCP port .. [FAIL]
-> > >         ...
-> > >         Summary: 34 PASSED, 1 FAILED
-> > >
-> > > What the test does is it sets up TCPv4 server:
-> > >
-> > >         [pid   386] socket(PF_INET, SOCK_STREAM, IPPROTO_IP) = 6
-> > >         [pid   386] bind(6, {sa_family=AF_INET, sin_port=htons(4444), sin_addr=inet_addr("127.0.0.1")}, 128) = 0
-> > >         [pid   386] listen(6, 128)              = 0
-> > >
-> > > Then tries to connect to a fake IPv4:port and this connect4 program
-> > > should redirect it to that TCP server, but only if every field in
-> > > context has expected value.
-> > >
-> > > But after that commit program started denying the connect:
-> > >
-> > >         [pid   386] socket(PF_INET, SOCK_STREAM, IPPROTO_IP) = 7
-> > >         [pid   386] connect(7, {sa_family=AF_INET, sin_port=htons(4040), sin_addr=inet_addr("192.168.1.254")}, 128) = -1 EPERM (Operation not permitted)
-> > >         (test_sock_addr.c:1201: errno: Operation not permitted) Fail to connect to server
-> > >         Test case: connect4: rewrite IP & TCP port .. [FAIL]
-> > >
-> > > I verified that commenting out this new `if` fixes the problem, but
-> > > haven't spent time root-causing it. Could you please look at it?
-> > Could you please confirm that you have CONFIG_TCP_CONG_DCTCP=y in your kernel
-> > config? (I've added it to tools/testing/selftests/bpf/config)
-> > The test is now flipping CC to dctcp and back to default cubic. It can
-> > fail if dctcp is not compiled in.
->
-> Right. Martin asked same question and indeed my testing VM didn't have
-> dctcp enabled. With dctcp enabled it works fine.
->
-> I'm totally fine to keep dctcp enabled in my config or start using
-> tools/testing/selftests/bpf/config (I've always used my own config).
->
-> Another options can be to switch from dctcp to more widely-used reno in
-> the program (I tested, this works as well), or even check
-> net/ipv4/tcp_available_congestion_control and use a pair of whatever cc
-> available there, but up to you / BPF mainteiners really, as I said I'm
-> personally fine to just enable dctcp.
-Hm, good point, reno is always compiled in, I didn't think about it.
-Let me prepare a patch to do s/dctcp/reno/ in that test, thanks!
+Andrey pointed out that we can use reno instead of dctcp for CC
+tests and drop CONFIG_TCP_CONG_DCTCP=y requirement.
+
+Fixes: beecf11bc218 ("bpf: Bpf_{g,s}etsockopt for struct bpf_sock_addr")
+Suggested-by: Andrey Ignatov <rdna@fb.com>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ tools/testing/selftests/bpf/config                | 1 -
+ tools/testing/selftests/bpf/progs/connect4_prog.c | 6 +++---
+ 2 files changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+index 6e5b94c036ca..60e3ae5d4e48 100644
+--- a/tools/testing/selftests/bpf/config
++++ b/tools/testing/selftests/bpf/config
+@@ -37,4 +37,3 @@ CONFIG_IPV6_SIT=m
+ CONFIG_BPF_JIT=y
+ CONFIG_BPF_LSM=y
+ CONFIG_SECURITY=y
+-CONFIG_TCP_CONG_DCTCP=y
+diff --git a/tools/testing/selftests/bpf/progs/connect4_prog.c b/tools/testing/selftests/bpf/progs/connect4_prog.c
+index 972918cd2d7f..c2c85c31cffd 100644
+--- a/tools/testing/selftests/bpf/progs/connect4_prog.c
++++ b/tools/testing/selftests/bpf/progs/connect4_prog.c
+@@ -59,12 +59,12 @@ static __inline int verify_cc(struct bpf_sock_addr *ctx,
+ 
+ static __inline int set_cc(struct bpf_sock_addr *ctx)
+ {
+-	char dctcp[TCP_CA_NAME_MAX] = "dctcp";
++	char reno[TCP_CA_NAME_MAX] = "reno";
+ 	char cubic[TCP_CA_NAME_MAX] = "cubic";
+ 
+-	if (bpf_setsockopt(ctx, SOL_TCP, TCP_CONGESTION, &dctcp, sizeof(dctcp)))
++	if (bpf_setsockopt(ctx, SOL_TCP, TCP_CONGESTION, &reno, sizeof(reno)))
+ 		return 1;
+-	if (verify_cc(ctx, dctcp))
++	if (verify_cc(ctx, reno))
+ 		return 1;
+ 
+ 	if (bpf_setsockopt(ctx, SOL_TCP, TCP_CONGESTION, &cubic, sizeof(cubic)))
+-- 
+2.26.2.526.g744177e7f7-goog
+
