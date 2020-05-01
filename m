@@ -2,102 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645A91C0DAF
-	for <lists+bpf@lfdr.de>; Fri,  1 May 2020 07:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 522471C0DE8
+	for <lists+bpf@lfdr.de>; Fri,  1 May 2020 07:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728126AbgEAFQG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 May 2020 01:16:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728099AbgEAFQG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 May 2020 01:16:06 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D13C035494;
-        Thu, 30 Apr 2020 22:16:04 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id f18so1655149lja.13;
-        Thu, 30 Apr 2020 22:16:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D00DqwLp1pIkCBQPFGQl7gIJVCS8/hRa1H7R7PcZvC0=;
-        b=KCHL0GWQjV+/Vcy6mMKmvihoMXLEC1KLzWhotLuUqEhNq1BCETeBtFuU0xquauOwQW
-         PKf2wIk5/m/wKKS2YKd5PyMgR8f9uTHNg+Q7tulGlUwO6BmuX5VTJBE0Q4MLc2Yk++az
-         6BzbmTU9isVBiJIucl3uFdzOpzJxf40dD8TJG0aWPRjseCZjsjS5hgbCKZDwFgqlWu5w
-         swDucdz3ti+cUoNMouMDmbVFAryxKuCEae9Iy4V7+my9YaGKCiTEte3VS9ga2vrUw+Rl
-         CEWwnJWQpu63K/8AfUwl5En80amp+kVWvTH7BpXkTSVzFspPG/vRzwfiSJCJoCc69S9W
-         TJ5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D00DqwLp1pIkCBQPFGQl7gIJVCS8/hRa1H7R7PcZvC0=;
-        b=W8kYA62Ytp8M8RkmGUEu8UzkEBQbsb9uWn+mlQUAY/I4oz0ShVnCWnLUisGqdLnpdA
-         XkZR4iLjggBU0io0qGEcVXSXG04fwwCZE+8kbrYhraySRR1yFtb5B7a69bvFKQsYWo/i
-         zPJRtowI8KOsuT5oxnmHLEDqyRkMvtmi0YUG+OGyzhoIBg1RH/sA7BC4GhWH0m3uLM66
-         OpNRcZ0Id97aKggWQOWiSMryjAbYcNa5j2BT/TcdutPhwcLTGcxbOad7pb2lCpA00WY0
-         s3LvUXdxU+GvVqXSWTFm3Ns5PU4Y6H/78lW8x5V2EROhT2hMfSPJD2Xs1cOOgJxuXT6R
-         7Brg==
-X-Gm-Message-State: AGi0PuYah0f8pZjgJUECVr6bg9bV9I+lmhttj8d4XGVKO8LmonhWujtz
-        XitcGwtNWVHH4jr37jY0FQrcdwUdSraBXYVhTvX88w==
-X-Google-Smtp-Source: APiQypKi4WrKP2xDoGnVXIC/UwV7doDPgLzDNy1snvMiqG21XF1URHfcuQljZvH54wwj5brVMztQOnS98yRF5Go25XA=
-X-Received: by 2002:a2e:b80b:: with SMTP id u11mr1431017ljo.212.1588310163069;
- Thu, 30 Apr 2020 22:16:03 -0700 (PDT)
+        id S1728189AbgEAFyS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 May 2020 01:54:18 -0400
+Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:46660 "EHLO
+        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726452AbgEAFyS (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 1 May 2020 01:54:18 -0400
+Received: from mxbackcorp1g.mail.yandex.net (mxbackcorp1g.mail.yandex.net [IPv6:2a02:6b8:0:1402::301])
+        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 06D422E0997;
+        Fri,  1 May 2020 08:54:11 +0300 (MSK)
+Received: from sas2-32987e004045.qloud-c.yandex.net (sas2-32987e004045.qloud-c.yandex.net [2a02:6b8:c08:b889:0:640:3298:7e00])
+        by mxbackcorp1g.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id sQZ2gNUITo-s9A8R1rw;
+        Fri, 01 May 2020 08:54:10 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1588312450; bh=XMwVjRdapCx1ZzgjFo7tQjSSW8ZXx9fgUKdnncFJSfs=;
+        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
+        b=Vi83saj26yYQO+yf6DyXfGp7sI/ffpMvCROf3BSrOUrxbVNQ1Q1ENJaXbNZ1gMwPL
+         c5elxGEp+fN8M4A8xyZowUlD83s1Rg1e4ZebJ2O8tKW92ZoUlxJMeb8zpo9lJNTBd6
+         u2eFuoChOoDXZdcUKnxJ5njGWVqbONHMtz2ru5q0=
+Authentication-Results: mxbackcorp1g.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b081:1422::1:2])
+        by sas2-32987e004045.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id tn6P5JhdNK-s9WudR5I;
+        Fri, 01 May 2020 08:54:09 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH net-next 0/2] inet_diag: add cgroup attribute and filter
+To:     David Miller <davem@davemloft.net>, zeil@yandex-team.ru
+Cc:     netdev@vger.kernel.org, tj@kernel.org, cgroups@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20200430155115.83306-1-zeil@yandex-team.ru>
+ <20200430.125506.1341002176317746009.davem@davemloft.net>
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Message-ID: <7fb067b2-6c35-6573-82fe-edce194a7e46@yandex-team.ru>
+Date:   Fri, 1 May 2020 08:54:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <CAK7LNARHd0DXRLONf6vH_ghsYZjzoduzkixqNDpVqqPx0yHbHg@mail.gmail.com>
- <CAADnVQ+RvDq9qvNgSkwaMO8QcDG1gCm-SkGgNHyy1gVC3_0w=A@mail.gmail.com> <CAK7LNAQ5NMZWrQ_1yk+_-06zrmYMOcKvNnuX=u1sReuy6wg9Gw@mail.gmail.com>
-In-Reply-To: <CAK7LNAQ5NMZWrQ_1yk+_-06zrmYMOcKvNnuX=u1sReuy6wg9Gw@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 30 Apr 2020 22:15:51 -0700
-Message-ID: <CAADnVQKymMnEs0jFg8-qZLXS5n0DxMrqhmwQ17Do=TKd+niqhw@mail.gmail.com>
-Subject: Re: BPFilter: bit size mismatch between bpfiter_umh and vmliux
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200430.125506.1341002176317746009.davem@davemloft.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 9:06 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Hi Alexei,
->
-> On Wed, Apr 29, 2020 at 1:14 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > At least, the build was successful,
-> > > but does this work at runtime?
-> > >
-> > > If this is a bug, I can fix it cleanly.
-> > >
-> > > I think the bit size of the user mode helper
-> > > should match to the kernel bit size. Is this correct?
-> >
-> > yes. they should match.
-> > In theory we can have -m32 umh running on 64-bit kernel,
-> > but I wouldn't bother adding support for such thing
-> > until there is a use case.
-> > Running 64-bit umh on 32-bit kernel is no go.
->
->
-> Thanks for the comments.
->
->
-> This issue will be fixed by this:
-> https://patchwork.kernel.org/patch/11515997/
->
-> and the Makefile will be cleaned up by this:
-> https://patchwork.kernel.org/patch/11515995/
->
->
-> They are parts of the big series of Makefile cleanups.
-> So, I will apply the whole to kbuild tree.
+On 30/04/2020 22.55, David Miller wrote:
+> From: Dmitry Yakunin <zeil@yandex-team.ru>
+> Date: Thu, 30 Apr 2020 18:51:13 +0300
+> 
+>> This patch series extends inet diag with cgroup v2 ID attribute and
+>> filter. Which allows investigate sockets on per cgroup basis. Patch for
+>> ss is already sent to iproute2-next mailing list.
+> 
+> Ok, this looks fine, series applied.
+> 
+> Although I wish you could have done something like only emit the cgroup
+> attribute if it is a non-default value (zero, or whatever it is).
+> 
+> Every time a new socket attribute is added, it makes long dumps more
+> and more expensive.
+> 
 
-thank you.
-I saw the patches, but didn't have time to test or comment on them.
-To be fair umh logic was bit rotting a bit, but that will change soon.
+Maybe then put it under condition
+
+	if (ext & (1 << (INET_DIAG_CLASS_ID - 1)) ||
+	    ext & (1 << (INET_DIAG_TCLASS - 1))) {
+
+like legacy cgroup id INET_DIAG_CLASS_ID above.
+
+(userspace requests it by INET_DIAG_TCLASS because INET_DIAG_CLASS_ID does not fit into field)
