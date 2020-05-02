@@ -2,192 +2,318 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A88C61C226D
-	for <lists+bpf@lfdr.de>; Sat,  2 May 2020 05:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89EBD1C23CF
+	for <lists+bpf@lfdr.de>; Sat,  2 May 2020 09:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbgEBDG1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 May 2020 23:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726439AbgEBDG1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 May 2020 23:06:27 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F8AC061A0C;
-        Fri,  1 May 2020 20:06:27 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id b6so1066257plz.13;
-        Fri, 01 May 2020 20:06:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rcS4SXJymg0omkgwuj5pE9mFl3v8Rk4xC5SV4SXTbU0=;
-        b=FMAsEtV5IC6Ybl5Ntwwx86lb1DzFrAMQ2gtpD8nyX8PCtc3I/FUR85pC2zXHLb66J3
-         J20hi2yunHAsctwl/0p/iKytjxq5++8rUzzWVCFXS424OVFqLsz7l/nU/WUfzbSbkLhE
-         mxz4nj7FgxIhPratVYkRp3v1siGSmjIa/fft136HCC6qOKsy5jQtGOVezmftwwCioAL4
-         vCBPzDGrlBDcRkJcxWAzpvXyWNlE9tKNyDu76bH2TMTN3HD62QTmpbf2x2N3hWtvZ3jr
-         jr4dNLGZNDUU56dmOj4Iqz70xQ3z0U+wYKe0JgPxSzJ/SnE44C2uS8gid9XKSDi9W6x3
-         1ntg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rcS4SXJymg0omkgwuj5pE9mFl3v8Rk4xC5SV4SXTbU0=;
-        b=txaYyKwcEROKp6gJTYkLPSBt5YJnd1e3m3vjDM5z/dzBrEb8p5vwtEpozqQs7vPGC7
-         fO/2bHwG0yQbYSPCr2ZxY74+uNGL2PwgXIsE/fVbEA3ysophlajhDrvud23lskymuQII
-         7l0BngFaj9+90EGb3BLa0NyU658SdFx3OBdLY78A5BoQ4nLqJ/VxUUA8sXujnMQJYp53
-         PibcZ40txYJ/5ymwUQqsRez0d/WEVU+Dj/lXCudHXo0uIpBUZjTAZVR7qwv6zE6uC+BU
-         SNJpjYzJgdSE4cFHpLiSUcKUi/TurkTsEXgR56FPL/FDASdqlNJQD4hTAJvQV0320sPp
-         a20g==
-X-Gm-Message-State: AGi0PuZ0Tmo0uL9VFHIy3HMGINrH8huXFEjU+SWN4b9wNEekNl7UVJL2
-        XQiHK8bgTRs2/LOxF7QVTgAs9n67
-X-Google-Smtp-Source: APiQypJwSi7uyKe7pfSh23iLnlJVy8UfrL8U1ha0uzoV2a2qUI6uw4LeDDm1wK3FfaHtSscbIsKJAg==
-X-Received: by 2002:a17:90a:3509:: with SMTP id q9mr3152343pjb.121.1588388786336;
-        Fri, 01 May 2020 20:06:26 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:e9ae])
-        by smtp.gmail.com with ESMTPSA id a26sm3041659pgd.68.2020.05.01.20.06.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 May 2020 20:06:25 -0700 (PDT)
-Date:   Fri, 1 May 2020 20:06:22 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] bpf: Tweak BPF jump table optimizations for objtool
- compatibility
-Message-ID: <20200502030622.yrszsm54r6s6k6gq@ast-mbp.dhcp.thefacebook.com>
-References: <b581438a16e78559b4cea28cf8bc74158791a9b3.1588273491.git.jpoimboe@redhat.com>
- <20200501190930.ptxyml5o4rviyo26@ast-mbp.dhcp.thefacebook.com>
- <20200501192204.cepwymj3fln2ngpi@treble>
- <20200501194053.xyahhknjjdu3gqix@ast-mbp.dhcp.thefacebook.com>
- <20200501195617.czrnfqqcxfnliz3k@treble>
+        id S1726548AbgEBHRz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 2 May 2020 03:17:55 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:12782 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726468AbgEBHRz (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 2 May 2020 03:17:55 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0427H5AJ014799;
+        Sat, 2 May 2020 00:17:41 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=c9xCL/lfOcEoAWT8nbTKNjUVyc3QQkqgKeg7Qymx2j4=;
+ b=GBiCrypTiysJ0osw4EZ3HlPyPrUgPJW90z8012qlszIgfFgSKyJoHLnefpdneACIBVTJ
+ I20zBvyy9wU8j++C4McWig6kjXmVFD3UjyE7gPF/ztwCRx2mAc03v8011frc3UuVR3eO
+ 1u7wTwrH/Rx9CtqHF6cj6Z0suHbUoREBmw0= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 30s46b80vp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sat, 02 May 2020 00:17:41 -0700
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Sat, 2 May 2020 00:17:40 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jFHy88WFygGELbIhptKxPeKIKyNN9J4Bjh1Yq6JFRPNlLbbYahZyye3bImeQKqT0JMdnpb/yAn7B0Uw8Mpuwd6dxDRQ7TYD9uJjaVNLz1iFANffWFe8eH52lMdRICRbdY7pTSQPe4d1ffbAY2pPHqOs01QyqAUysWqE6dIdwOqXWHD8LtIciiorEAhyfGQ5ZkO0eVPZuc3iNyeFJhCRCwYPBUaUa+Re9mt3XYvB3n5NrnyHroRg+KbY6ixN4+55y+o9j+EscqEdaW4SV8tV7amMbGiPhkIyUPz0V8X4QEaNNsV6J+n41pZssflLBycAPveXmxGKavlp4fAX6tL9YkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c9xCL/lfOcEoAWT8nbTKNjUVyc3QQkqgKeg7Qymx2j4=;
+ b=XLtkLQL0d1AbJCcpStotb5Y+CesWTJK/1bIxyVzM9J+qtrveRcpiG6n1hTPpeUltzeMw0KfwSBwyc/bg0nhjwmwyhH3nC+7NFKA2qAMsb5/uTrKF2aHswuBoowTGAimcq8b1ceYR1UU+e0WiETi4JlZLlwYbvUaAvzKDiv1hPwBysDhBXvg4t3Mai2CpewH+KXK9hRUid8k6qBwDU4OqJfI69A8eb4W7oPqciFgJNGkEndzHxpHlz/OYTZxWbLaRmNzs7Yo0RdRr+BQ2VgOu3mMoFe94jyUXpqA45ZAf00j83wFE9Bmfm7/jC6Re7bhpmPR/qSp1G2Ys+g5eBPEVHQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c9xCL/lfOcEoAWT8nbTKNjUVyc3QQkqgKeg7Qymx2j4=;
+ b=Z5ZkTtObClL/Au5WawhiChcAc8K1I0IJdsRp4tvGYZ011Vib/DuR6Fu45xwtzz2dEHjERmdr+7nRdKPM3oqh4zyF/quw3XlluPlqFugoEUQq5lhAyb3xevlvC3bIBIWaTNYVoQ1u5gmgIewrENSLrngxYYrDRcgXtbN+MRSOTCc=
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB2261.namprd15.prod.outlook.com (2603:10b6:a02:8e::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.22; Sat, 2 May
+ 2020 07:17:26 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::8988:aa27:5d70:6923]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::8988:aa27:5d70:6923%5]) with mapi id 15.20.2958.027; Sat, 2 May 2020
+ 07:17:26 +0000
+Subject: Re: [PATCH bpf-next v1 15/19] tools/libbpf: add bpf_iter support
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+References: <20200427201235.2994549-1-yhs@fb.com>
+ <20200427201252.2996037-1-yhs@fb.com>
+ <CAEf4BzZKaBpQfohsWcF5qJpMU96vxDVniaPie=54Gx6kK66KQw@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <d27a42f2-47a6-e12b-56c0-13c447ce15d1@fb.com>
+Date:   Sat, 2 May 2020 00:17:24 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
+In-Reply-To: <CAEf4BzZKaBpQfohsWcF5qJpMU96vxDVniaPie=54Gx6kK66KQw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR02CA0032.namprd02.prod.outlook.com
+ (2603:10b6:a02:ee::45) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200501195617.czrnfqqcxfnliz3k@treble>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from macbook-pro-52.local.dhcp.thefacebook.com (2620:10d:c090:400::5:29a8) by BYAPR02CA0032.namprd02.prod.outlook.com (2603:10b6:a02:ee::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20 via Frontend Transport; Sat, 2 May 2020 07:17:25 +0000
+X-Originating-IP: [2620:10d:c090:400::5:29a8]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cc39031e-e3ab-46e8-297e-08d7ee68ddac
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2261:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB226112F9D0A8450518BB824BD3A80@BYAPR15MB2261.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Forefront-PRVS: 039178EF4A
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(136003)(346002)(376002)(366004)(396003)(52116002)(2616005)(16526019)(6916009)(8936002)(5660300002)(6512007)(8676002)(31686004)(54906003)(6486002)(31696002)(4326008)(316002)(66476007)(66556008)(478600001)(36756003)(6506007)(53546011)(2906002)(186003)(66946007)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: meunBZkiuv+QEj2BKCreXRTawgLtSKbex/rwanGV/Bp+4IUsUAiF/g3UvabIClNwIpHI+YmwpukxjkJtbO0hCR0TAZlQrsZCo99QvLv01SM8t0DTyd6PnFsm66KxaPsL0xBdiyn+5bcu6+Hs09ZfTJxUKl5vZV2Kyv0iSaa5IBdu0+zFKx/YKzSI36AfSdH4Lu3G6uhGrwD9H1OyALl37Z+zy+yLbOLZe341CxxOBfC76iPaTghYLglWM1xd5GGfWD3fKR/p+wF4k233igmmGxP7lovVMMpmW6tDwCMEYFnxPwdIyfL+yB4KzDkL+9YrN+Z7jk9lPmCqyjXDyVTzyBl/J0bFMAAOuf3Wi376NPikFvAWCBs3xYpAda3RniMFIdQCe46zbxUl27zyY3SrRJr9qdm70Kf2F/U96gES1X+LOnc029fu/icS0vvVjqr6
+X-MS-Exchange-AntiSpam-MessageData: 2AOqWKZq0qfv7nGC3cwTHkf3zwQ0S4/NvVB0gH+tU/GEr3V6hJbrCUwRSw//j8cshylcAaEcwRcN6GawJ3rVhr7e8QfiNIFYtMBtKhmArgq9BH7KHSnu/WBriq/gLy75Yr/rTZgCjCd8hsEq/W9zeUHEm1zddMMCb5lQ+9WQgaClOfcpL2Q366HNNOlYHm+60Xoh81eAE3NLcHd23zEtN2Y9WAbIq4opHToB6fFpDVuRP86hswMFJn7fGAGQgH0w4d5+gHXJEoHLqCveDg7mOw6SzTDEf5+9zwT9mhue/3YPdCv44Lz6FegsAhyvb5ztkxvE2Ba3gCKz8sAMeStkwSk08bU+S9VFgDvK7SmoJfrLKq3S3vmh+jhiYxASmIQv5kgmRHvfKuXhiii0I8x/QLTqmtkYOQ8RT+yQJyMwIQl/Dkt7uufqJVuiNjyqjxvoh+jrsb1woXI+OqDiO5rHko6Nxfy0T0FQsacghtspOGYJEeQG3avHDD9g9kaixowsK/qWszTAS13GLT8JPiN4FdvJ5jRmkdCBz7vV9FrBNtY+6MI5Et2X/DbF0XXfR8QHOQD0wvfksQ4mAW4C/JCPnLZcKEuOlb8xTJbSRzonWuOstNn3KBrIk5TTkJ3+2qJnqtropuM1/Ej1NZZd8ZfnbUDUFdOvfkj4XZUBW5tpan3+EfKDuCig8yu5u1PwO7OT0+M0HBLOvLv20bn3yMS+HIjsh5dzHGy18xXRRSwgxxrl0nM7DfvPsv/dGtBO7FtI6le31dx78DDHqTZLfLXsEt2deHpmSJxSRv02o6dojyzGvDF+OIMLcwEA7rQ1MGRuQRgUD+CvdQbnFRb8tBpdAA==
+X-MS-Exchange-CrossTenant-Network-Message-Id: cc39031e-e3ab-46e8-297e-08d7ee68ddac
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 May 2020 07:17:26.2229
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KWaZonlTw0xtDFFOlwu1zXrdm8Uvq3ASZUztDjLOVS5GnlLl2U1xGHZhvsqnREBb
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2261
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-05-02_03:2020-05-01,2020-05-02 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ lowpriorityscore=0 adultscore=0 mlxscore=0 malwarescore=0 clxscore=1015
+ spamscore=0 priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
+ suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005020063
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 01, 2020 at 02:56:17PM -0500, Josh Poimboeuf wrote:
-> On Fri, May 01, 2020 at 12:40:53PM -0700, Alexei Starovoitov wrote:
-> > On Fri, May 01, 2020 at 02:22:04PM -0500, Josh Poimboeuf wrote:
-> > > On Fri, May 01, 2020 at 12:09:30PM -0700, Alexei Starovoitov wrote:
-> > > > On Thu, Apr 30, 2020 at 02:07:43PM -0500, Josh Poimboeuf wrote:
-> > > > > Objtool decodes instructions and follows all potential code branches
-> > > > > within a function.  But it's not an emulator, so it doesn't track
-> > > > > register values.  For that reason, it usually can't follow
-> > > > > intra-function indirect branches, unless they're using a jump table
-> > > > > which follows a certain format (e.g., GCC switch statement jump tables).
-> > > > > 
-> > > > > In most cases, the generated code for the BPF jump table looks a lot
-> > > > > like a GCC jump table, so objtool can follow it.  However, with
-> > > > > RETPOLINE=n, GCC keeps the jump table address in a register, and then
-> > > > > does 160+ indirect jumps with it.  When objtool encounters the indirect
-> > > > > jumps, it can't tell which jump table is being used (or even whether
-> > > > > they might be sibling calls instead).
-> > > > > 
-> > > > > This was fixed before by disabling an optimization in ___bpf_prog_run(),
-> > > > > using the "optimize" function attribute.  However, that attribute is bad
-> > > > > news.  It doesn't append options to the command-line arguments.  Instead
-> > > > > it starts from a blank slate.  And according to recent GCC documentation
-> > > > > it's not recommended for production use.  So revert the previous fix:
-> > > > > 
-> > > > >   3193c0836f20 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
-> > > > > 
-> > > > > With that reverted, solve the original problem in a different way by
-> > > > > getting rid of the "goto select_insn" indirection, and instead just goto
-> > > > > the jump table directly.  This simplifies the code a bit and helps GCC
-> > > > > generate saner code for the jump table branches, at least in the
-> > > > > RETPOLINE=n case.
-> > > > > 
-> > > > > But, in the RETPOLINE=y case, this simpler code actually causes GCC to
-> > > > > generate far worse code, ballooning the function text size by +40%.  So
-> > > > > leave that code the way it was.  In fact Alexei prefers to leave *all*
-> > > > > the code the way it was, except where needed by objtool.  So even
-> > > > > non-x86 RETPOLINE=n code will continue to have "goto select_insn".
-> > > > > 
-> > > > > This stuff is crazy voodoo, and far from ideal.  But it works for now.
-> > > > > Eventually, there's a plan to create a compiler plugin for annotating
-> > > > > jump tables.  That will make this a lot less fragile.
-> > > > 
-> > > > I don't like this commit log.
-> > > > Here you're saying that the code recognized by objtool is sane and good
-> > > > whereas well optimized gcc code is somehow voodoo and bad.
-> > > > That is just wrong.
-> > > 
-> > > I have no idea what you're talking about.
-> > > 
-> > > Are you saying that ballooning the function text size by 40% is well
-> > > optimized GCC code?  It seems like a bug to me.  That's the only place I
-> > > said anything bad about GCC code.
-> > 
-> > It could be a bug, but did you benchmark the speed of interpreter ?
-> > Is it faster or slower with 40% more code ?
-> > Did you benchmark it on other archs ?
+
+
+On 4/29/20 6:41 PM, Andrii Nakryiko wrote:
+> On Mon, Apr 27, 2020 at 1:17 PM Yonghong Song <yhs@fb.com> wrote:
+>>
+>> Three new libbpf APIs are added to support bpf_iter:
+>>    - bpf_program__attach_iter
+>>      Given a bpf program and additional parameters, which is
+>>      none now, returns a bpf_link.
+>>    - bpf_link__create_iter
+>>      Given a bpf_link, create a bpf_iter and return a fd
+>>      so user can then do read() to get seq_file output data.
+>>    - bpf_iter_create
+>>      syscall level API to create a bpf iterator.
+>>
+>> Two macros, BPF_SEQ_PRINTF0 and BPF_SEQ_PRINTF, are also introduced.
+>> These two macros can help bpf program writers with
+>> nicer bpf_seq_printf syntax similar to the kernel one.
+>>
+>> Signed-off-by: Yonghong Song <yhs@fb.com>
+>> ---
+>>   tools/lib/bpf/bpf.c         | 11 +++++++
+>>   tools/lib/bpf/bpf.h         |  2 ++
+>>   tools/lib/bpf/bpf_tracing.h | 23 ++++++++++++++
+>>   tools/lib/bpf/libbpf.c      | 60 +++++++++++++++++++++++++++++++++++++
+>>   tools/lib/bpf/libbpf.h      | 11 +++++++
+>>   tools/lib/bpf/libbpf.map    |  7 +++++
+>>   6 files changed, 114 insertions(+)
+>>
+>> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+>> index 5cc1b0785d18..7ffd6c0ad95f 100644
+>> --- a/tools/lib/bpf/bpf.c
+>> +++ b/tools/lib/bpf/bpf.c
+>> @@ -619,6 +619,17 @@ int bpf_link_update(int link_fd, int new_prog_fd,
+>>          return sys_bpf(BPF_LINK_UPDATE, &attr, sizeof(attr));
+>>   }
+>>
+>> +int bpf_iter_create(int link_fd, unsigned int flags)
 > 
-> I thought we were in agreement that 40% text growth is bad.  Isn't that
-> why you wanted to keep 'goto select_insn' for the retpoline case?
+> Do you envision anything more than just flags being passed for
+> bpf_iter_create? I wonder if we should just go ahead with options
+> struct here?
 
-Let me see whether I got this right.
-In first the sentence above you're claiming that I've agreed that 
-'goto select_insn' is bad for retpoline case and in the second sentence
-you're saying that I wanted to keep it because it's bad?
-In other words you're saying I wanted bad code for retpoline case for
-some mischievous purpose?
-Do you really think so or just trolling?
+I think most, if not all, parameters should go to link create.
+This way, we can have the identical anon_iter through:
+    link -> anon_iter
+    link -> pinned file -> anon_iter
 
-Let's look at the facts.
-I've applied your patch and the kernel crashed on the very first test in
-selftests/bpf which makes me believe that you only compile tested it.
-Taking the question "is 40% text growth is bad?" out of context... Ohh yes.
-but if 40% extra code gives 10% speedup to interpreter it's suddenly good, right?
-Since you didn't run basic tests I don't think you've tested performance either.
-So this direct->indirect patch might cause performance degradation to
-architectures that don't have JIT.
-On x86-64 JIT=y is the default, so I'm fine taking that performance risk
-only for the case where that risk has to be taken. In other words to help
-objtool understand the code and only for the case where objtool cannot do
-it with existing code.
-The 40% potential text decrease after direct->indirect transiton is
-irrelevant here. It must be a separate patch after corresponding
-performance benchmarking is done.
-Just claiming in commit log that current code is obviously bad
-is misleading to folks who will be reading it later.
+I do not really expect any more fields for bpf_iter_create.
+The flags here is for potential future extension, which I
+have no idea how it looks like.
 
-Also as I explained earlier direct->indirect in C is not a contract
-for the compiler. Currently there is single C line:
-goto *jumptable[insn->code];
-but gcc/clang may generate arbitrary number of indirect jumps
-for this function.
-Changing the macro from "goto select_insn" to "goto *jumptable"
-messes with compiler optimizations and there is no guarantee
-that the code is going to be better or worse.
-Why do you think there are two identical macros there?
-#define CONT     ({ insn++; goto select_insn; })
-#define CONT_JMP ({ insn++; goto select_insn; })
-Why not one?
-The answer is in old patch from 2014:
-https://patchwork.ozlabs.org/project/netdev/patch/1393910304-4004-2-git-send-email-ast@plumgrid.com/
-+#define CONT ({insn++; LOAD_IMM; goto select_insn; })
-+#define CONT_JMP ({insn++; LOAD_IMM; goto select_insn; })
-+/* some compilers may need help:
-+ * #define CONT_JMP ({insn++; LOAD_IMM; goto *jumptable[insn->code]; })
-+ */
+> 
+>> +{
+>> +       union bpf_attr attr;
+>> +
+>> +       memset(&attr, 0, sizeof(attr));
+>> +       attr.iter_create.link_fd = link_fd;
+>> +       attr.iter_create.flags = flags;
+>> +
+>> +       return sys_bpf(BPF_ITER_CREATE, &attr, sizeof(attr));
+>> +}
+>> +
+> 
+> [...]
+> 
+>> +/*
+>> + * BPF_SEQ_PRINTF to wrap bpf_seq_printf to-be-printed values
+>> + * in a structure. BPF_SEQ_PRINTF0 is a simple wrapper for
+>> + * bpf_seq_printf().
+>> + */
+>> +#define BPF_SEQ_PRINTF0(seq, fmt)                                      \
+>> +       ({                                                              \
+>> +               int ret = bpf_seq_printf(seq, fmt, sizeof(fmt),         \
+>> +                                        (void *)0, 0);                 \
+>> +               ret;                                                    \
+>> +       })
+>> +
+>> +#define BPF_SEQ_PRINTF(seq, fmt, args...)                              \
+> 
+> You can unify BPF_SEQ_PRINTF and BPF_SEQ_PRINTF0 by using
+> ___bpf_empty() macro. See bpf_core_read.h for similar use case.
+> Specifically, look at ___empty (equivalent of ___bpf_empty) and
+> ___core_read, ___core_read0, ___core_readN macro.
 
-That was the patch after dozens of performance experiments
-with different gcc versions on different cpus.
-Six years ago the interpreter performance could be improved
-if _one_ of these macros replaced direct with indirect
-for certain versions of gcc. But not both macros.
+Thanks for the tip. Will try.
 
-To be honest I don't think you're interested in doing performance
-analysis here. You just want to shut up that objtool warning and
-move on, right? So please do so without making misleading statements
-about goodness or badness of generated code.
+> 
+>> +       ({                                                              \
+>> +               _Pragma("GCC diagnostic push")                          \
+>> +               _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
+>> +               __u64 param[___bpf_narg(args)] = { args };              \
+> 
+> Do you need to provide the size of array here? If you omit
+> __bpf_narg(args), wouldn't compiler automatically calculate the right
+> size?
+> 
 
-Thanks
+Yes, compiler should calculate correct size.
+
+> Also, can you please use "unsigned long long" to not have any implicit
+> dependency on __u64 being defined?
+
+Will do.
+
+> 
+>> +               _Pragma("GCC diagnostic pop")                           \
+>> +               int ret = bpf_seq_printf(seq, fmt, sizeof(fmt),         \
+>> +                                        param, sizeof(param));         \
+>> +               ret;                                                    \
+>> +       })
+>> +
+>>   #endif
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 8e1dc6980fac..ffdc4d8e0cc0 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -6366,6 +6366,9 @@ static const struct bpf_sec_def section_defs[] = {
+>>                  .is_attach_btf = true,
+>>                  .expected_attach_type = BPF_LSM_MAC,
+>>                  .attach_fn = attach_lsm),
+>> +       SEC_DEF("iter/", TRACING,
+>> +               .expected_attach_type = BPF_TRACE_ITER,
+>> +               .is_attach_btf = true),
+> 
+> It would be nice to implement auto-attach capabilities (similar to
+> fentry/fexit, lsm and raw_tracepoint). Section name should have enough
+> information for this, no?
+
+In the current form, yes, auto attach is possible.
+But I am thinking we may soon have additional information
+like map_id (appear in link_create) etc.
+to make auto attach not possible. That is why
+I implemented an explicit attach. is this assessment correct?
+
+> 
+>>          BPF_PROG_SEC("xdp",                     BPF_PROG_TYPE_XDP),
+>>          BPF_PROG_SEC("perf_event",              BPF_PROG_TYPE_PERF_EVENT),
+>>          BPF_PROG_SEC("lwt_in",                  BPF_PROG_TYPE_LWT_IN),
+>> @@ -6629,6 +6632,7 @@ static int bpf_object__collect_struct_ops_map_reloc(struct bpf_object *obj,
+>>
+> 
+> [...]
+> 
+>> +
+>> +       link = calloc(1, sizeof(*link));
+>> +       if (!link)
+>> +               return ERR_PTR(-ENOMEM);
+>> +       link->detach = &bpf_link__detach_fd;
+>> +
+>> +       attach_type = bpf_program__get_expected_attach_type(prog);
+> 
+> Given you know it has to be BPF_TRACE_ITER, it's better to explicitly
+> specify that. If provided program wasn't loaded with correct
+> expected_attach_type, kernel will reject it. But if you don't do it,
+> then you can accidentally create some other type of bpf_link.
+
+Yes, will do.
+
+> 
+>> +       link_fd = bpf_link_create(prog_fd, 0, attach_type, NULL);
+>> +       if (link_fd < 0) {
+>> +               link_fd = -errno;
+>> +               free(link);
+>> +               pr_warn("program '%s': failed to attach to iterator: %s\n",
+>> +                       bpf_program__title(prog, false),
+>> +                       libbpf_strerror_r(link_fd, errmsg, sizeof(errmsg)));
+>> +               return ERR_PTR(link_fd);
+>> +       }
+>> +       link->fd = link_fd;
+>> +       return link;
+>> +}
+>> +
+>> +int bpf_link__create_iter(struct bpf_link *link, unsigned int flags)
+>> +{
+> 
+> Same question as for low-level bpf_link_create(). If we expect the
+> need to extend optional things in the future, I'd add opts right now.
+> 
+> But I wonder if bpf_link__create_iter() provides any additional value
+> beyond bpf_iter_create(). Maybe let's not add it (yet)?
+
+The only additional thing is better warning messsage.
+Agree that is so marginal. Will drop it.
+
+> 
+>> +       char errmsg[STRERR_BUFSIZE];
+>> +       int iter_fd;
+>> +
+>> +       iter_fd = bpf_iter_create(bpf_link__fd(link), flags);
+>> +       if (iter_fd < 0) {
+>> +               iter_fd = -errno;
+>> +               pr_warn("failed to create an iterator: %s\n",
+>> +                       libbpf_strerror_r(iter_fd, errmsg, sizeof(errmsg)));
+>> +       }
+>> +
+>> +       return iter_fd;
+>> +}
+>> +
+> 
+> [...]
+> 
