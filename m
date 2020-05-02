@@ -2,72 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C12371C21E6
-	for <lists+bpf@lfdr.de>; Sat,  2 May 2020 02:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A88C61C226D
+	for <lists+bpf@lfdr.de>; Sat,  2 May 2020 05:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726654AbgEBAZS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 May 2020 20:25:18 -0400
-Received: from smtprelay0219.hostedemail.com ([216.40.44.219]:37310 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726352AbgEBAZS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 1 May 2020 20:25:18 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 27FA8181D341E;
-        Sat,  2 May 2020 00:25:17 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 30,2,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:491:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:2892:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3871:3874:4321:5007:6119:6120:6742:7875:10004:10400:10848:11232:11658:11914:12109:12297:12740:12760:12895:13069:13138:13231:13311:13357:13439:14659:21080:21627:30034:30054:30062:30075:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: unit54_10c38181e770c
-X-Filterd-Recvd-Size: 2162
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf13.hostedemail.com (Postfix) with ESMTPA;
-        Sat,  2 May 2020 00:25:15 +0000 (UTC)
-Message-ID: <7c15d0d43e0661d4b68d80c26fe73bfb6df38184.camel@perches.com>
-Subject: Re: [RFC PATCH bpf-next 0/6] bpf, printk: add BTF-based type
- printing
-From:   Joe Perches <joe@perches.com>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>, ast@kernel.org,
-        daniel@iogearbox.net, yhs@fb.com, kafai@fb.com,
-        songliubraving@fb.com, andriin@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Date:   Fri, 01 May 2020 17:25:13 -0700
-In-Reply-To: <alpine.LRH.2.21.2004301010520.23084@localhost>
-References: <1587120160-3030-1-git-send-email-alan.maguire@oracle.com>
-         <20200418160536.4mrvqh2lasqbyk77@ast-mbp>
-         <alpine.LRH.2.21.2004201623390.12711@localhost>
-         <7d6019da19d52c851d884731b1f16328fdbe2e3d.camel@perches.com>
-         <alpine.LRH.2.21.2004301010520.23084@localhost>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        id S1726463AbgEBDG1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 May 2020 23:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726439AbgEBDG1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 May 2020 23:06:27 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F8AC061A0C;
+        Fri,  1 May 2020 20:06:27 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id b6so1066257plz.13;
+        Fri, 01 May 2020 20:06:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rcS4SXJymg0omkgwuj5pE9mFl3v8Rk4xC5SV4SXTbU0=;
+        b=FMAsEtV5IC6Ybl5Ntwwx86lb1DzFrAMQ2gtpD8nyX8PCtc3I/FUR85pC2zXHLb66J3
+         J20hi2yunHAsctwl/0p/iKytjxq5++8rUzzWVCFXS424OVFqLsz7l/nU/WUfzbSbkLhE
+         mxz4nj7FgxIhPratVYkRp3v1siGSmjIa/fft136HCC6qOKsy5jQtGOVezmftwwCioAL4
+         vCBPzDGrlBDcRkJcxWAzpvXyWNlE9tKNyDu76bH2TMTN3HD62QTmpbf2x2N3hWtvZ3jr
+         jr4dNLGZNDUU56dmOj4Iqz70xQ3z0U+wYKe0JgPxSzJ/SnE44C2uS8gid9XKSDi9W6x3
+         1ntg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rcS4SXJymg0omkgwuj5pE9mFl3v8Rk4xC5SV4SXTbU0=;
+        b=txaYyKwcEROKp6gJTYkLPSBt5YJnd1e3m3vjDM5z/dzBrEb8p5vwtEpozqQs7vPGC7
+         fO/2bHwG0yQbYSPCr2ZxY74+uNGL2PwgXIsE/fVbEA3ysophlajhDrvud23lskymuQII
+         7l0BngFaj9+90EGb3BLa0NyU658SdFx3OBdLY78A5BoQ4nLqJ/VxUUA8sXujnMQJYp53
+         PibcZ40txYJ/5ymwUQqsRez0d/WEVU+Dj/lXCudHXo0uIpBUZjTAZVR7qwv6zE6uC+BU
+         SNJpjYzJgdSE4cFHpLiSUcKUi/TurkTsEXgR56FPL/FDASdqlNJQD4hTAJvQV0320sPp
+         a20g==
+X-Gm-Message-State: AGi0PuZ0Tmo0uL9VFHIy3HMGINrH8huXFEjU+SWN4b9wNEekNl7UVJL2
+        XQiHK8bgTRs2/LOxF7QVTgAs9n67
+X-Google-Smtp-Source: APiQypJwSi7uyKe7pfSh23iLnlJVy8UfrL8U1ha0uzoV2a2qUI6uw4LeDDm1wK3FfaHtSscbIsKJAg==
+X-Received: by 2002:a17:90a:3509:: with SMTP id q9mr3152343pjb.121.1588388786336;
+        Fri, 01 May 2020 20:06:26 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:e9ae])
+        by smtp.gmail.com with ESMTPSA id a26sm3041659pgd.68.2020.05.01.20.06.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 May 2020 20:06:25 -0700 (PDT)
+Date:   Fri, 1 May 2020 20:06:22 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] bpf: Tweak BPF jump table optimizations for objtool
+ compatibility
+Message-ID: <20200502030622.yrszsm54r6s6k6gq@ast-mbp.dhcp.thefacebook.com>
+References: <b581438a16e78559b4cea28cf8bc74158791a9b3.1588273491.git.jpoimboe@redhat.com>
+ <20200501190930.ptxyml5o4rviyo26@ast-mbp.dhcp.thefacebook.com>
+ <20200501192204.cepwymj3fln2ngpi@treble>
+ <20200501194053.xyahhknjjdu3gqix@ast-mbp.dhcp.thefacebook.com>
+ <20200501195617.czrnfqqcxfnliz3k@treble>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200501195617.czrnfqqcxfnliz3k@treble>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2020-04-30 at 03:03 -0700, Alan Maguire wrote:
-> On Mon, 20 Apr 2020, Joe Perches wrote:
-
-> > Here as well the individual field types don't contain
-> > enough information to determine if a field should be
-> > output as %x or %u.
-> Right, we could add some more format modifiers for cases
-> like that I guess.  Currently the display formats used are
-> - numbers are represented as decimal
-> - bitfields are represented in hex
-> - pointers are obfuscated unless the 'x' option is used
-> - char arrays are printed as chars if printable,
->   [ 'l', 'i', 'k', 'e', ' ', 't', 'h', 'i', 's' ]
+On Fri, May 01, 2020 at 02:56:17PM -0500, Josh Poimboeuf wrote:
+> On Fri, May 01, 2020 at 12:40:53PM -0700, Alexei Starovoitov wrote:
+> > On Fri, May 01, 2020 at 02:22:04PM -0500, Josh Poimboeuf wrote:
+> > > On Fri, May 01, 2020 at 12:09:30PM -0700, Alexei Starovoitov wrote:
+> > > > On Thu, Apr 30, 2020 at 02:07:43PM -0500, Josh Poimboeuf wrote:
+> > > > > Objtool decodes instructions and follows all potential code branches
+> > > > > within a function.  But it's not an emulator, so it doesn't track
+> > > > > register values.  For that reason, it usually can't follow
+> > > > > intra-function indirect branches, unless they're using a jump table
+> > > > > which follows a certain format (e.g., GCC switch statement jump tables).
+> > > > > 
+> > > > > In most cases, the generated code for the BPF jump table looks a lot
+> > > > > like a GCC jump table, so objtool can follow it.  However, with
+> > > > > RETPOLINE=n, GCC keeps the jump table address in a register, and then
+> > > > > does 160+ indirect jumps with it.  When objtool encounters the indirect
+> > > > > jumps, it can't tell which jump table is being used (or even whether
+> > > > > they might be sibling calls instead).
+> > > > > 
+> > > > > This was fixed before by disabling an optimization in ___bpf_prog_run(),
+> > > > > using the "optimize" function attribute.  However, that attribute is bad
+> > > > > news.  It doesn't append options to the command-line arguments.  Instead
+> > > > > it starts from a blank slate.  And according to recent GCC documentation
+> > > > > it's not recommended for production use.  So revert the previous fix:
+> > > > > 
+> > > > >   3193c0836f20 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
+> > > > > 
+> > > > > With that reverted, solve the original problem in a different way by
+> > > > > getting rid of the "goto select_insn" indirection, and instead just goto
+> > > > > the jump table directly.  This simplifies the code a bit and helps GCC
+> > > > > generate saner code for the jump table branches, at least in the
+> > > > > RETPOLINE=n case.
+> > > > > 
+> > > > > But, in the RETPOLINE=y case, this simpler code actually causes GCC to
+> > > > > generate far worse code, ballooning the function text size by +40%.  So
+> > > > > leave that code the way it was.  In fact Alexei prefers to leave *all*
+> > > > > the code the way it was, except where needed by objtool.  So even
+> > > > > non-x86 RETPOLINE=n code will continue to have "goto select_insn".
+> > > > > 
+> > > > > This stuff is crazy voodoo, and far from ideal.  But it works for now.
+> > > > > Eventually, there's a plan to create a compiler plugin for annotating
+> > > > > jump tables.  That will make this a lot less fragile.
+> > > > 
+> > > > I don't like this commit log.
+> > > > Here you're saying that the code recognized by objtool is sane and good
+> > > > whereas well optimized gcc code is somehow voodoo and bad.
+> > > > That is just wrong.
+> > > 
+> > > I have no idea what you're talking about.
+> > > 
+> > > Are you saying that ballooning the function text size by 40% is well
+> > > optimized GCC code?  It seems like a bug to me.  That's the only place I
+> > > said anything bad about GCC code.
+> > 
+> > It could be a bug, but did you benchmark the speed of interpreter ?
+> > Is it faster or slower with 40% more code ?
+> > Did you benchmark it on other archs ?
 > 
-> I'd be happy to add more format specifiers to control
-> these options, or tweak the defaults if needed. A
-> "print numbers in hex" option seems worthwhile perhaps?
+> I thought we were in agreement that 40% text growth is bad.  Isn't that
+> why you wanted to keep 'goto select_insn' for the retpoline case?
 
-Or maybe add and use new typedefs like x8,x16,x32,x64 to the
-bpf struct definitions where u8,u16,u32,u64 are %u and
-x8,x16,x32,x64 are %x
+Let me see whether I got this right.
+In first the sentence above you're claiming that I've agreed that 
+'goto select_insn' is bad for retpoline case and in the second sentence
+you're saying that I wanted to keep it because it's bad?
+In other words you're saying I wanted bad code for retpoline case for
+some mischievous purpose?
+Do you really think so or just trolling?
 
+Let's look at the facts.
+I've applied your patch and the kernel crashed on the very first test in
+selftests/bpf which makes me believe that you only compile tested it.
+Taking the question "is 40% text growth is bad?" out of context... Ohh yes.
+but if 40% extra code gives 10% speedup to interpreter it's suddenly good, right?
+Since you didn't run basic tests I don't think you've tested performance either.
+So this direct->indirect patch might cause performance degradation to
+architectures that don't have JIT.
+On x86-64 JIT=y is the default, so I'm fine taking that performance risk
+only for the case where that risk has to be taken. In other words to help
+objtool understand the code and only for the case where objtool cannot do
+it with existing code.
+The 40% potential text decrease after direct->indirect transiton is
+irrelevant here. It must be a separate patch after corresponding
+performance benchmarking is done.
+Just claiming in commit log that current code is obviously bad
+is misleading to folks who will be reading it later.
 
+Also as I explained earlier direct->indirect in C is not a contract
+for the compiler. Currently there is single C line:
+goto *jumptable[insn->code];
+but gcc/clang may generate arbitrary number of indirect jumps
+for this function.
+Changing the macro from "goto select_insn" to "goto *jumptable"
+messes with compiler optimizations and there is no guarantee
+that the code is going to be better or worse.
+Why do you think there are two identical macros there?
+#define CONT     ({ insn++; goto select_insn; })
+#define CONT_JMP ({ insn++; goto select_insn; })
+Why not one?
+The answer is in old patch from 2014:
+https://patchwork.ozlabs.org/project/netdev/patch/1393910304-4004-2-git-send-email-ast@plumgrid.com/
++#define CONT ({insn++; LOAD_IMM; goto select_insn; })
++#define CONT_JMP ({insn++; LOAD_IMM; goto select_insn; })
++/* some compilers may need help:
++ * #define CONT_JMP ({insn++; LOAD_IMM; goto *jumptable[insn->code]; })
++ */
+
+That was the patch after dozens of performance experiments
+with different gcc versions on different cpus.
+Six years ago the interpreter performance could be improved
+if _one_ of these macros replaced direct with indirect
+for certain versions of gcc. But not both macros.
+
+To be honest I don't think you're interested in doing performance
+analysis here. You just want to shut up that objtool warning and
+move on, right? So please do so without making misleading statements
+about goodness or badness of generated code.
+
+Thanks
