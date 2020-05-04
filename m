@@ -2,362 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A2D1C42F3
-	for <lists+bpf@lfdr.de>; Mon,  4 May 2020 19:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3EA51C432D
+	for <lists+bpf@lfdr.de>; Mon,  4 May 2020 19:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730427AbgEDReo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 May 2020 13:34:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730425AbgEDRel (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 4 May 2020 13:34:41 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBA8C061A0F
-        for <bpf@vger.kernel.org>; Mon,  4 May 2020 10:34:40 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id y7so256096ybj.15
-        for <bpf@vger.kernel.org>; Mon, 04 May 2020 10:34:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=3k3YQgaCXUzr8efzBK8XPW2UxNas7ylH3H0b7KZtn7o=;
-        b=ccpCKJDCQgzBnCk0PxMZk40Z8LEQu1umcFwFh46I+die/9RbrKYNnoGCrqRTedNyDy
-         IPcARYjvdvfZVfGtxIaHPOcRKBSZg9en6Rzy/6JN3OPEo7x51PSFETN4I+6wppZTXUSI
-         gqlKSk67Pf6jFb8KJVNmNjLNZU+xFCZGSndrgCrP53xLjwxJ7Fb35iXj3pEOrvhOnnT9
-         9se6Iu/TrBsf7ZJgyB+ikEISNGH4oh1xwNT9CFNDY8WKK2xg2fVtfOdrka1g2GZgvex4
-         uFTRt4dmbfRM9i3okybtOBboQbUEcyD688QSS5o8UKbAvWi6APvob2UC0TASMDF/7RFh
-         RaCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=3k3YQgaCXUzr8efzBK8XPW2UxNas7ylH3H0b7KZtn7o=;
-        b=rh8R/uxdIESPBrqRs+2VDhQf2B6rUPMmjoYxts+feewA8gDEKC/gyfHS59aZodgl4L
-         Lsy04wJKWxFI+lT04yzakWxQbQ0QuhlJVQZrCU1SwHtBRPzD6kBgJVg4dHLeuVjeB4Ia
-         S32+BeSbLQx2CvSWVOvM8vgw+XkzgyUPs1gMsUmqD3ILRsa9/qGmO5wIXsXUyFiQwcCD
-         q4YnOAcXAqAN+XjcPxRMEB4Poez9pAzsxItMsc30Xdi5uyOK00N0kfet8c2EIPCHugI4
-         2QiZ+T4XSUFGr91/SERv2K3mNsDj+LoTiBRvrSuGnEZaCEomH4AdE1RqwlJgW3NAmIuv
-         Yu7w==
-X-Gm-Message-State: AGi0PuZ7ZlF1b/fCfg5Xz7Ri2J5gTqmjEelGem0xoUCc+Cis5SJ98erC
-        ZuVdGfJFtkaPjdvrYttBz/dfR7A=
-X-Google-Smtp-Source: APiQypKMqVoIrLhLtY6tcymyJ7/Tgz42lgtux+7311IG2AxgxvaD8bi8g8vfSy/VX4Yx+09QK/genGM=
-X-Received: by 2002:a25:2:: with SMTP id 2mr537540yba.466.1588613679505; Mon,
- 04 May 2020 10:34:39 -0700 (PDT)
-Date:   Mon,  4 May 2020 10:34:30 -0700
-In-Reply-To: <20200504173430.6629-1-sdf@google.com>
-Message-Id: <20200504173430.6629-5-sdf@google.com>
-Mime-Version: 1.0
-References: <20200504173430.6629-1-sdf@google.com>
-X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
-Subject: [PATCH bpf-next 4/4] bpf: allow any port in bpf_bind helper
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>,
-        Andrey Ignatov <rdna@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1730329AbgEDRpu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 May 2020 13:45:50 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:31872 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730328AbgEDRpt (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 4 May 2020 13:45:49 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 044HXBho029127;
+        Mon, 4 May 2020 10:45:34 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=DTxB3HrY7S3knEkdkDEdBT1xhDEqRDvlUHZa/2GAMUU=;
+ b=HWHCFDgwpZeyW6OkaJROE8f8rLEHdGg9I1kzvZp4iv7ZHl6oETvoEuhKNvZmFKDxilKV
+ PQWCBiK/ahA5AE2a9TEWIc8GWia6uUYGa5lzJLG0PGPLu+Yhn1t9U/7osCdphQ3orLLF
+ Wf+P7pnz1T4HC8RaPgiAL6d+R3fMqZgAUTk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 30tfp5adnx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 04 May 2020 10:45:34 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Mon, 4 May 2020 10:45:33 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZtbCawZ2IAetsPpgsIxWW0bsjCh4fDLXriiABpTbG8L6xsUVvfzefOAnu7yiIZ4bkQ98FFEBjKTHAgithzaYL5Vfcx1W40bPuhDAWanxW/aGesIcpJB+9vHBRzPb1mk3nW9ZJ3/UhO38alGPIEMa6yXpOi8dFERAhvRgE6L7tzTC3/13GFA2euQKRgpG9FojpfSAyww+8WxX6RAkUQzDhGFsKeVT6D3uw0+IDBfh6JCqmJMzx9WiUGns2879rdBeBCgNnEMP8m3I1IjCgVq+rQNU+CnxDGAAao3ECBbh1lft2nWb7uiDcXzUtWovT1VeRGElFC8+5GRAoaeJpZ3+mw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DTxB3HrY7S3knEkdkDEdBT1xhDEqRDvlUHZa/2GAMUU=;
+ b=FdeqoJ+H7UUJjyPbcqiFipJ0BzLXZ1DEs1O5cp2Nl1MBf5xdXyF7GnrMXu1iCQ+EMb2EIh6ER8/4I+IGWKGrVB9MtDaVRRuP4COwXrRGKz0KTyJba5lD79WVxQMueN+nb1efhJCkwx+s+MRDqN1TKLmerENiDDYUwH6b5xgVvCb++tgE76hCzQetEr0+oIUNL/wcmLU+5tsKaDLf7UCQb2ldQzmNIqyEpFRMCYWhItOdTBwU9OK1FNQR3l6rApIUSD19Ss6k4aV/nSHijwJzp6Xjnw+oVbv7kAnL9Ha+KSVsW9LR7OCwPeFrPa2Q3XP+YlZF5w2KbUOVjX7PE/hjdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DTxB3HrY7S3knEkdkDEdBT1xhDEqRDvlUHZa/2GAMUU=;
+ b=cB9woWlz4MWBx+SCCXVbCT4zcJmi8jLFa76+DVMoT0IVCf1zNAWQI6mi4hIgmTd+1D/kKQk115P56tcZtLgzCJuTswI20cYQGzAM8y1y6QfZBgKOpf/riMTTSylDE1itp1v7T39w5ZPfgtDouoZiCN16nfTtEUHSyRXToDBvo0A=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYASPR01MB0067.namprd15.prod.outlook.com (2603:10b6:a03:4c::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.19; Mon, 4 May
+ 2020 17:45:32 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::bdf1:da56:867d:f8a2]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::bdf1:da56:867d:f8a2%7]) with mapi id 15.20.2958.030; Mon, 4 May 2020
+ 17:45:32 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        "Network Development" <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v9 bpf-next 2/3] libbpf: add support for command
+ BPF_ENABLE_STATS
+Thread-Topic: [PATCH v9 bpf-next 2/3] libbpf: add support for command
+ BPF_ENABLE_STATS
+Thread-Index: AQHWHr8f5zklsZg9ZUaDxkLTs7EJcaiVOw2AgAL/EIA=
+Date:   Mon, 4 May 2020 17:45:32 +0000
+Message-ID: <19614603-D8E5-49E9-AB70-A022A409EF03@fb.com>
+References: <20200430071506.1408910-1-songliubraving@fb.com>
+ <20200430071506.1408910-3-songliubraving@fb.com>
+ <CAADnVQK-Zo19Z1Gdaq9MYE_9GmyrCuOFbz873D4uCvvVSp0j0w@mail.gmail.com>
+In-Reply-To: <CAADnVQK-Zo19Z1Gdaq9MYE_9GmyrCuOFbz873D4uCvvVSp0j0w@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.80.23.2.2)
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:117f]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a621f4b2-603d-4569-03e3-08d7f052f164
+x-ms-traffictypediagnostic: BYASPR01MB0067:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYASPR01MB00679A7F94FB66E81F377A35B3A60@BYASPR01MB0067.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 03932714EB
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: TiUMbnTOVYeePc6f7zdkzyz2V3YGzsUQLr4pfdFECShcNigLCPBaU6cLK0c74wrwSxWKh5/na7ex5FQEnZCJO9KkWsJVzDIV0CNi6Vv5IZgyfhzxWjFMpFoBnqLevxnF8QGWzUDlihEEjeL2LX3Ag1qRBQBkrho8XMrqzLnXVGxX36yO29DN3ZFfweiE/Zu5cnI2jVN5Cu75i8l6m98PUJmeeXfxPRpYZb1DHXpXSpigg1VJs+ABN03nPbekTewI8Ge1AP9UAZfxDqNqHUtNqFs81h0AdYLN4j94qekMHmzyGNzxB/Vo+RRTyj/SA/54VqQ1ToIN8dZzlFc64cCtIQfAKtN5KCeuYSgFVoQRwMha3HBlWpFoZe1UkjclnrgMgt0LFBRuSV4Xb7A9gAAziODbn0Ax11EdBkT1FKaMbJCrmFRQtvsFeTii05ERCWIK
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(376002)(39860400002)(396003)(346002)(366004)(6486002)(2906002)(5660300002)(4326008)(186003)(478600001)(8676002)(316002)(8936002)(2616005)(53546011)(36756003)(71200400001)(6506007)(54906003)(76116006)(86362001)(66946007)(64756008)(66446008)(6916009)(33656002)(66556008)(66476007)(6512007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: OcGgFwTmM3tJxXdehZUtNg+BGT4JpicS0+NfnEwUWJErhGEvbAbcjkHGGaHIAf5ptOSmSWPpePbCOnAELHz4b2gXCyOrNueqmTlErXbhFymvs+Y/9rdK70+zpnWVOlPEF7jOuW5EtoSOihJo+bv/snHILA6b6zVaScQpH2Exs0v8pK1vCy8AV3qsUkekJvi9CuisEy4sfYhwvEWo1aHjMK9x2GvRm+ydDttQjXkO/U+fmZeq2EcvT3ZEfiSQbHM0KDczz1PPBRfwJhZZeKZvNksQDKrqQ4CLXXeIhGmvtOxcU560KkRi9cTDF61VQiJYYOUzDTzyFolp54Eid9kdc/9hbVBF+PxOV/cFmUv8Wd5EBPW4QXp8IYCZcmnAFQj/IFLBdTl9XSSCgc8dik6AYmuXvOxLNg5njIXj77I+eFGXIrkox/evx40nRdQyiJxhspfVRyvLY6PlMbAChISiY3hcEOaAx9KDRI2GaTVyQVOcU91qvNjj7SIOWhj6DNAV/NrZxJVUpW+jVgm3BMs5n66oRU+lRhaGY8sdUfLdRF8VWt4BhdlVpB/hoOUmpVR3Df76KAWT4ljRaz3zPdpCEn3Lorusc7nNJ0d8d/aH/dvAO3sEQ+zMLhs1h7mwYGVk4RreRglEgf9hx1cuw0xUgq5IlnYIXMkteDOYkdLoTcSTvf3BQ5bbERJLzjFaL16XUEZF7vZB4JGM0+Z+FKAgDBBGmz1iHwpnT3ExTSDOLkrpM0GjL73B+cYRk0Q6poM+Q6uPx2xHkjwajXKok9U8uXZWHBEp8WwVoeXa4Kcs1MPXvwmjopE+Vb8KHrImd6T9a/YgqFaoftUgBJ5epxmLag==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9BCB0DD750795045AB8B14DD5EA24612@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: a621f4b2-603d-4569-03e3-08d7f052f164
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 May 2020 17:45:32.2253
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: x3wlXsb8Q7ne1Xvpq+O5tlPe8hlAZLPw4scz5Ia0czEpkG1kXJzGZ3Q4PcY5/D/Q8iDEwy/0NR/RyNJMn4EEZA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYASPR01MB0067
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-05-04_11:2020-05-04,2020-05-04 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ priorityscore=1501 suspectscore=0 clxscore=1015 lowpriorityscore=0
+ phishscore=0 adultscore=0 impostorscore=0 malwarescore=0 bulkscore=0
+ mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005040140
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We want to have a tighter control on what ports we bind to in
-the BPF_CGROUP_INET{4,6}_CONNECT hooks even if it means
-connect() becomes slightly more expensive. The expensive part
-comes from the fact that we now need to call inet_csk_get_port()
-that verifies that the port is not used and allocates an entry
-in the hash table for it.
-
-Since we can't rely on "snum || !bind_address_no_port" to prevent
-us from calling POST_BIND hook anymore, let's add another bind flag
-to indicate that the call site is BPF program.
-
-Cc: Andrey Ignatov <rdna@fb.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- include/net/inet_common.h                     |   2 +
- net/core/filter.c                             |   9 +-
- net/ipv4/af_inet.c                            |  10 +-
- net/ipv6/af_inet6.c                           |  12 +-
- .../bpf/prog_tests/connect_force_port.c       | 104 ++++++++++++++++++
- .../selftests/bpf/progs/connect_force_port4.c |  28 +++++
- .../selftests/bpf/progs/connect_force_port6.c |  28 +++++
- 7 files changed, 177 insertions(+), 16 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/connect_force_port.c
- create mode 100644 tools/testing/selftests/bpf/progs/connect_force_port4.c
- create mode 100644 tools/testing/selftests/bpf/progs/connect_force_port6.c
-
-diff --git a/include/net/inet_common.h b/include/net/inet_common.h
-index a0fb68f5bf59..4288fd052266 100644
---- a/include/net/inet_common.h
-+++ b/include/net/inet_common.h
-@@ -39,6 +39,8 @@ int inet_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len);
- #define BIND_FORCE_ADDRESS_NO_PORT	(1 << 0)
- // Grab and release socket lock.
- #define BIND_WITH_LOCK			(1 << 1)
-+// Called from BPF program.
-+#define BIND_FROM_BPF			(1 << 2)
- int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
- 		u32 flags);
- int inet_getname(struct socket *sock, struct sockaddr *uaddr,
-diff --git a/net/core/filter.c b/net/core/filter.c
-index fa9ddab5dd1f..fc5161b9ff6a 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4527,29 +4527,24 @@ BPF_CALL_3(bpf_bind, struct bpf_sock_addr_kern *, ctx, struct sockaddr *, addr,
- 	struct sock *sk = ctx->sk;
- 	int err;
- 
--	/* Binding to port can be expensive so it's prohibited in the helper.
--	 * Only binding to IP is supported.
--	 */
- 	err = -EINVAL;
- 	if (addr_len < offsetofend(struct sockaddr, sa_family))
- 		return err;
- 	if (addr->sa_family == AF_INET) {
- 		if (addr_len < sizeof(struct sockaddr_in))
- 			return err;
--		if (((struct sockaddr_in *)addr)->sin_port != htons(0))
--			return err;
- 		return __inet_bind(sk, addr, addr_len,
-+				   BIND_FROM_BPF |
- 				   BIND_FORCE_ADDRESS_NO_PORT);
- #if IS_ENABLED(CONFIG_IPV6)
- 	} else if (addr->sa_family == AF_INET6) {
- 		if (addr_len < SIN6_LEN_RFC2133)
- 			return err;
--		if (((struct sockaddr_in6 *)addr)->sin6_port != htons(0))
--			return err;
- 		/* ipv6_bpf_stub cannot be NULL, since it's called from
- 		 * bpf_cgroup_inet6_connect hook and ipv6 is already loaded
- 		 */
- 		return ipv6_bpf_stub->inet6_bind(sk, addr, addr_len,
-+						 BIND_FROM_BPF |
- 						 BIND_FORCE_ADDRESS_NO_PORT);
- #endif /* CONFIG_IPV6 */
- 	}
-diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-index 68e74b1b0f26..fcf0d12a407a 100644
---- a/net/ipv4/af_inet.c
-+++ b/net/ipv4/af_inet.c
-@@ -526,10 +526,12 @@ int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
- 			err = -EADDRINUSE;
- 			goto out_release_sock;
- 		}
--		err = BPF_CGROUP_RUN_PROG_INET4_POST_BIND(sk);
--		if (err) {
--			inet->inet_saddr = inet->inet_rcv_saddr = 0;
--			goto out_release_sock;
-+		if (!(flags & BIND_FROM_BPF)) {
-+			err = BPF_CGROUP_RUN_PROG_INET4_POST_BIND(sk);
-+			if (err) {
-+				inet->inet_saddr = inet->inet_rcv_saddr = 0;
-+				goto out_release_sock;
-+			}
- 		}
- 	}
- 
-diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
-index 552c2592b81c..771a462a8322 100644
---- a/net/ipv6/af_inet6.c
-+++ b/net/ipv6/af_inet6.c
-@@ -407,11 +407,13 @@ static int __inet6_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
- 			err = -EADDRINUSE;
- 			goto out;
- 		}
--		err = BPF_CGROUP_RUN_PROG_INET6_POST_BIND(sk);
--		if (err) {
--			sk->sk_ipv6only = saved_ipv6only;
--			inet_reset_saddr(sk);
--			goto out;
-+		if (!(flags & BIND_FROM_BPF)) {
-+			err = BPF_CGROUP_RUN_PROG_INET6_POST_BIND(sk);
-+			if (err) {
-+				sk->sk_ipv6only = saved_ipv6only;
-+				inet_reset_saddr(sk);
-+				goto out;
-+			}
- 		}
- 	}
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/connect_force_port.c b/tools/testing/selftests/bpf/prog_tests/connect_force_port.c
-new file mode 100644
-index 000000000000..ef2e5d02f4ad
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/connect_force_port.c
-@@ -0,0 +1,104 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+
-+#include "cgroup_helpers.h"
-+
-+static int verify_port(int family, int fd, int expected)
-+{
-+	struct sockaddr_storage addr;
-+	socklen_t len = sizeof(addr);
-+	__u16 port;
-+
-+
-+	if (getsockname(fd, (struct sockaddr *)&addr, &len)) {
-+		log_err("Failed to get server addr");
-+		return -1;
-+	}
-+
-+	if (family == AF_INET)
-+		port = ((struct sockaddr_in *)&addr)->sin_port;
-+	else
-+		port = ((struct sockaddr_in6 *)&addr)->sin6_port;
-+
-+	if (ntohs(port) != expected) {
-+		log_err("Unexpected port %d, expected %d", ntohs(port),
-+			expected);
-+		return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int run_test(int cgroup_fd, int server_fd, int family)
-+{
-+	struct bpf_prog_load_attr attr = {
-+		.prog_type = BPF_PROG_TYPE_CGROUP_SOCK_ADDR,
-+	};
-+	struct bpf_object *obj;
-+	int expected_port;
-+	int prog_fd;
-+	int err;
-+	int fd;
-+
-+	if (family == AF_INET) {
-+		attr.file = "./connect_force_port4.o";
-+		attr.expected_attach_type = BPF_CGROUP_INET4_CONNECT;
-+		expected_port = 22222;
-+	} else {
-+		attr.file = "./connect_force_port6.o";
-+		attr.expected_attach_type = BPF_CGROUP_INET6_CONNECT;
-+		expected_port = 22223;
-+	}
-+
-+	err = bpf_prog_load_xattr(&attr, &obj, &prog_fd);
-+	if (err) {
-+		log_err("Failed to load BPF object");
-+		return -1;
-+	}
-+
-+	err = bpf_prog_attach(prog_fd, cgroup_fd, attr.expected_attach_type,
-+			      0);
-+	if (err) {
-+		log_err("Failed to attach BPF program");
-+		goto close_bpf_object;
-+	}
-+
-+	fd = connect_to_fd(family, server_fd);
-+	if (fd < 0) {
-+		err = -1;
-+		goto close_bpf_object;
-+	}
-+
-+	err = verify_port(family, fd, expected_port);
-+
-+	close(fd);
-+
-+close_bpf_object:
-+	bpf_object__close(obj);
-+	return err;
-+}
-+
-+void test_connect_force_port(void)
-+{
-+	int server_fd, cgroup_fd;
-+
-+	cgroup_fd = test__join_cgroup("/connect_force_port");
-+	if (CHECK_FAIL(cgroup_fd < 0))
-+		return;
-+
-+	server_fd = start_server_thread(AF_INET);
-+	if (CHECK_FAIL(server_fd < 0))
-+		goto close_cgroup_fd;
-+	CHECK_FAIL(run_test(cgroup_fd, server_fd, AF_INET));
-+	stop_server_thread(server_fd);
-+
-+	server_fd = start_server_thread(AF_INET6);
-+	if (CHECK_FAIL(server_fd < 0))
-+		goto close_cgroup_fd;
-+	CHECK_FAIL(run_test(cgroup_fd, server_fd, AF_INET6));
-+	stop_server_thread(server_fd);
-+
-+close_cgroup_fd:
-+	close(cgroup_fd);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/connect_force_port4.c b/tools/testing/selftests/bpf/progs/connect_force_port4.c
-new file mode 100644
-index 000000000000..1b8eb34b2db0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/connect_force_port4.c
-@@ -0,0 +1,28 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <string.h>
-+
-+#include <linux/bpf.h>
-+#include <linux/in.h>
-+#include <linux/in6.h>
-+#include <sys/socket.h>
-+
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+
-+char _license[] SEC("license") = "GPL";
-+int _version SEC("version") = 1;
-+
-+SEC("cgroup/connect4")
-+int _connect4(struct bpf_sock_addr *ctx)
-+{
-+	struct sockaddr_in sa = {};
-+
-+	sa.sin_family = AF_INET;
-+	sa.sin_port = bpf_htons(22222);
-+	sa.sin_addr.s_addr = bpf_htonl(0x7f000001); /* 127.0.0.1 */
-+
-+	if (bpf_bind(ctx, (struct sockaddr *)&sa, sizeof(sa)) != 0)
-+		return 0;
-+
-+	return 1;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/connect_force_port6.c b/tools/testing/selftests/bpf/progs/connect_force_port6.c
-new file mode 100644
-index 000000000000..8cd1a9e81f64
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/connect_force_port6.c
-@@ -0,0 +1,28 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <string.h>
-+
-+#include <linux/bpf.h>
-+#include <linux/in.h>
-+#include <linux/in6.h>
-+#include <sys/socket.h>
-+
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+
-+char _license[] SEC("license") = "GPL";
-+int _version SEC("version") = 1;
-+
-+SEC("cgroup/connect6")
-+int _connect6(struct bpf_sock_addr *ctx)
-+{
-+	struct sockaddr_in6 sa = {};
-+
-+	sa.sin6_family = AF_INET;
-+	sa.sin6_port = bpf_htons(22223);
-+	sa.sin6_addr.s6_addr32[3] = bpf_htonl(1); /* ::1 */
-+
-+	if (bpf_bind(ctx, (struct sockaddr *)&sa, sizeof(sa)) != 0)
-+		return 0;
-+
-+	return 1;
-+}
--- 
-2.26.2.526.g744177e7f7-goog
-
+DQoNCj4gT24gTWF5IDIsIDIwMjAsIGF0IDE6MDAgUE0sIEFsZXhlaSBTdGFyb3ZvaXRvdiA8YWxl
+eGVpLnN0YXJvdm9pdG92QGdtYWlsLmNvbT4gd3JvdGU6DQo+IA0KPiBPbiBUaHUsIEFwciAzMCwg
+MjAyMCBhdCAxMjoxNSBBTSBTb25nIExpdSA8c29uZ2xpdWJyYXZpbmdAZmIuY29tPiB3cm90ZToN
+Cj4+IA0KPj4gYnBmX2VuYWJsZV9zdGF0cygpIGlzIGFkZGVkIHRvIGVuYWJsZSBnaXZlbiBzdGF0
+cy4NCj4+IA0KPj4gU2lnbmVkLW9mZi1ieTogU29uZyBMaXUgPHNvbmdsaXVicmF2aW5nQGZiLmNv
+bT4NCj4gLi4uDQo+PiBkaWZmIC0tZ2l0IGEvdG9vbHMvbGliL2JwZi9icGYuaCBiL3Rvb2xzL2xp
+Yi9icGYvYnBmLmgNCj4+IGluZGV4IDMzNWI0NTdiM2EyNS4uMTkwMWIyNzc3ODU0IDEwMDY0NA0K
+Pj4gLS0tIGEvdG9vbHMvbGliL2JwZi9icGYuaA0KPj4gKysrIGIvdG9vbHMvbGliL2JwZi9icGYu
+aA0KPj4gQEAgLTIzMSw2ICsyMzEsNyBAQCBMSUJCUEZfQVBJIGludCBicGZfbG9hZF9idGYodm9p
+ZCAqYnRmLCBfX3UzMiBidGZfc2l6ZSwgY2hhciAqbG9nX2J1ZiwNCj4+IExJQkJQRl9BUEkgaW50
+IGJwZl90YXNrX2ZkX3F1ZXJ5KGludCBwaWQsIGludCBmZCwgX191MzIgZmxhZ3MsIGNoYXIgKmJ1
+ZiwNCj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgX191MzIgKmJ1Zl9sZW4sIF9f
+dTMyICpwcm9nX2lkLCBfX3UzMiAqZmRfdHlwZSwNCj4+ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgX191NjQgKnByb2JlX29mZnNldCwgX191NjQgKnByb2JlX2FkZHIpOw0KPj4gK0xJ
+QkJQRl9BUEkgaW50IGJwZl9lbmFibGVfc3RhdHMoZW51bSBicGZfc3RhdHNfdHlwZSB0eXBlKTsN
+Cj4gDQo+IEkgc2VlIG9kZCB3YXJuaW5nIGhlcmUgd2hpbGUgYnVpbGRpbmcgc2VsZnRlc3RzDQo+
+IA0KPiBJbiBmaWxlIGluY2x1ZGVkIGZyb20gcnVucXNsb3dlci5jOjEwOg0KPiAuLi4vdG9vbHMv
+dGVzdGluZy9zZWxmdGVzdHMvYnBmL3Rvb2xzL2luY2x1ZGUvYnBmL2JwZi5oOjIzNDozODoNCj4g
+d2FybmluZzog4oCYZW51bSBicGZfc3RhdHNfdHlwZeKAmSBkZWNsYXJlZCBpbnNpZGUgcGFyYW1l
+dGVyIGxpc3Qgd2lsbCBub3QNCj4gYmUgdmlzaWJsZSBvdXRzaWRlIG9mIHRoaXMgZGVmaW5pdGlv
+biBvciBkZWNsYXJhdGlvbg0KPiAgMjM0IHwgTElCQlBGX0FQSSBpbnQgYnBmX2VuYWJsZV9zdGF0
+cyhlbnVtIGJwZl9zdGF0c190eXBlIHR5cGUpOw0KPiANCj4gU2luY2UgdGhpcyB3YXJuaW5nIGlz
+IHByaW50ZWQgb25seSB3aGVuIGJ1aWxkaW5nIHJ1bnFzbG93ZXINCj4gYW5kIHRoZSByZXN0IG9m
+IHNlbGZ0ZXN0cyBhcmUgZmluZSwgSSdtIGd1ZXNzaW5nDQo+IGl0J3MgYSBtYWtlZmlsZSBpc3N1
+ZSB3aXRoIG9yZGVyIG9mIGluY2x1ZGVzPw0KPiANCj4gQW5kcmlpLCBjb3VsZCB5b3UgcGxlYXNl
+IHRha2UgYSBsb29rID8NCj4gTm90IHVyZ2VudC4gSnVzdCBmbGFnZ2luZyBmb3IgdmlzaWJpbGl0
+eS4NCg0KVGhlIGZvbGxvd2luZyBzaG91bGQgZml4IGl0LiANCg0KVGhhbmtzLA0KU29uZw0KDQo9
+PT09PT09PT09PT09PT09PT09PT09PT09PT0gODwgPT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09DQoNCkZyb20gNDg1YzI4YzhlMmNiY2MyMmFhOGZjZGE4MmY4ZjU5OTQxMWZhYTc1NSBNb24g
+U2VwIDE3IDAwOjAwOjAwIDIwMDENCkZyb206IFNvbmcgTGl1IDxzb25nbGl1YnJhdmluZ0BmYi5j
+b20+DQpEYXRlOiBNb24sIDQgTWF5IDIwMjAgMTA6MzY6MjYgLTA3MDANClN1YmplY3Q6IFtQQVRD
+SCBicGYtbmV4dF0gcnVucXNsb3dlcjogaW5jbHVkZSBwcm9wZXIgdWFwaS9icGYuaA0KDQpydW5x
+c2xvd2VyIGRvZXNuJ3Qgc3BlY2lmeSBpbmNsdWRlIHBhdGggZm9yIHVhcGkvYnBmLmguIFRoaXMg
+Y2F1c2VzIHRoZQ0KZm9sbG93aW5nIHdhcm5pbmc6DQoNCkluIGZpbGUgaW5jbHVkZWQgZnJvbSBy
+dW5xc2xvd2VyLmM6MTA6DQouLi4vdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Rvb2xzL2lu
+Y2x1ZGUvYnBmL2JwZi5oOjIzNDozODoNCndhcm5pbmc6ICdlbnVtIGJwZl9zdGF0c190eXBlJyBk
+ZWNsYXJlZCBpbnNpZGUgcGFyYW1ldGVyIGxpc3Qgd2lsbCBub3QNCmJlIHZpc2libGUgb3V0c2lk
+ZSBvZiB0aGlzIGRlZmluaXRpb24gb3IgZGVjbGFyYXRpb24NCiAgMjM0IHwgTElCQlBGX0FQSSBp
+bnQgYnBmX2VuYWJsZV9zdGF0cyhlbnVtIGJwZl9zdGF0c190eXBlIHR5cGUpOw0KDQpGaXggdGhp
+cyBieSBhZGRpbmcgLUkgdG9vbHMvaW5jbHVkL3VhcGkgdG8gdGhlIE1ha2VmaWxlLg0KDQpSZXBv
+cnRlZC1ieTogQWxleGVpIFN0YXJvdm9pdG92IDxhc3RAa2VybmVsLm9yZz4NClNpZ25lZC1vZmYt
+Ynk6IFNvbmcgTGl1IDxzb25nbGl1YnJhdmluZ0BmYi5jb20+DQotLS0NCiB0b29scy9icGYvcnVu
+cXNsb3dlci9NYWtlZmlsZSB8IDMgKystDQogMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygr
+KSwgMSBkZWxldGlvbigtKQ0KDQpkaWZmIC0tZ2l0IGEvdG9vbHMvYnBmL3J1bnFzbG93ZXIvTWFr
+ZWZpbGUgYi90b29scy9icGYvcnVucXNsb3dlci9NYWtlZmlsZQ0KaW5kZXggOGE2ZjgyZTU2YTI0
+Li43MjJhMjlhOTg4Y2QgMTAwNjQ0DQotLS0gYS90b29scy9icGYvcnVucXNsb3dlci9NYWtlZmls
+ZQ0KKysrIGIvdG9vbHMvYnBmL3J1bnFzbG93ZXIvTWFrZWZpbGUNCkBAIC04LDcgKzgsOCBAQCBC
+UEZUT09MID89ICQoREVGQVVMVF9CUEZUT09MKQ0KIExJQkJQRl9TUkMgOj0gJChhYnNwYXRoIC4u
+Ly4uL2xpYi9icGYpDQogQlBGT0JKIDo9ICQoT1VUUFVUKS9saWJicGYuYQ0KIEJQRl9JTkNMVURF
+IDo9ICQoT1VUUFVUKQ0KLUlOQ0xVREVTIDo9IC1JJChPVVRQVVQpIC1JJChCUEZfSU5DTFVERSkg
+LUkkKGFic3BhdGggLi4vLi4vbGliKQ0KK0lOQ0xVREVTIDo9IC1JJChPVVRQVVQpIC1JJChCUEZf
+SU5DTFVERSkgLUkkKGFic3BhdGggLi4vLi4vbGliKSAgICAgICAgXA0KKyAgICAgICAtSSQoYWJz
+cGF0aCAuLi8uLi9pbmNsdWRlL3VhcGkpDQogQ0ZMQUdTIDo9IC1nIC1XYWxsDQoNCiAjIFRyeSB0
+byBkZXRlY3QgYmVzdCBrZXJuZWwgQlRGIHNvdXJjZQ0KLS0NCjIuMjQuMQ0KDQo=
