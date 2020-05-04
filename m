@@ -2,131 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF191C4260
-	for <lists+bpf@lfdr.de>; Mon,  4 May 2020 19:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF781C42EA
+	for <lists+bpf@lfdr.de>; Mon,  4 May 2020 19:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730088AbgEDRV7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 May 2020 13:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50914 "EHLO
+        id S1730115AbgEDRed (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 May 2020 13:34:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729667AbgEDRV6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 4 May 2020 13:21:58 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E22C061A0E;
-        Mon,  4 May 2020 10:21:58 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id f3so13168348ioj.1;
-        Mon, 04 May 2020 10:21:58 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1729386AbgEDRec (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 4 May 2020 13:34:32 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE22C061A0E
+        for <bpf@vger.kernel.org>; Mon,  4 May 2020 10:34:32 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id h185so280838ybg.6
+        for <bpf@vger.kernel.org>; Mon, 04 May 2020 10:34:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=s/H9+2DJZoBNBbRFmfHv1JX5iVHZU3xc8Givz1NWCPU=;
-        b=E5kN3Aouuzz6ulHi3FVwopK+DauXrise2ohFdQ0u2lAZrS2V0jjNG5YMww57si50th
-         B5Oe8/joWpPj0IMG6DyCWCYkVIwM56+unzIGTkG0cZEKehyGcyGdYBfPygSeoS4Sq+ZY
-         icazg9J+y9GeXtVDtHRHmarxlHMQg5OsfYR1XvhB7NKog4ngVBys/JZ6hU1i6/wBVcPD
-         rb6DQm5uimRVjL9z4sGniBqnv1if0J7p/PfwGBJNkLJNd9hc0qGecxf98gp19T4jSMd8
-         2UjwDB7mpFCg6D7wI9JD8y5Jg4ubFonnOspiiEO0ZjMkG5xCGDgeAg1oq7caM2dTgHbW
-         ryyw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=QB9t+sbZGHzJpv3tHbtJBJi6NaCwuRD6QoQ/50SYO+I=;
+        b=mQAxxswoDxCw20mFH0wR0ejJhENcKxqhrqjjTnAYnJ4up+anjt4yH0hwr8uLqh09BW
+         Vw1fKKCFFKs+TqQWpcKcxeJKL93KjBU/0H4WB6jMoh9pEbyDv6OLph51hJiA9u9oqL48
+         oFcJJhRbHtybzEQQpWEDi8z0HzACfCOX1U9FIEwK/SPopJ9bgTB5SR3i2lXcT+t+4G98
+         L4Feb1xVJZ15L0jH5pODZDPiaMDFxFIVIL/Soi7XfyK+BLXl1Ds98yD7jKRHk47p8r0Y
+         cWUEHtQxWlpyx2+IYzt9samVxpQH39WlQ0xBUqChKRpfFBNWrohT2mP5piGTFiXhci/T
+         mlrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=s/H9+2DJZoBNBbRFmfHv1JX5iVHZU3xc8Givz1NWCPU=;
-        b=gVYqfj3PcnHaOc++KeS37ykZ4XcBV4Mt9ZQdQaLanj4tK6VroivG3+6wT+kmNmibht
-         6e8Fls8WSPkDfg86pwyGJSx1o9iZ/LkZ4zKfqq+CXR+iuyUGBc9/mXL+y/DazYziYBXJ
-         oNYbCsKkdNVsKlwATbL28hfuWqghAhPs7GNCK4WzPcZFtFCz0l8N2oXkV5630HWoVLtS
-         N/bJ8o0VdboQFASkB6mRcdm3s6AEY4kdY4G1+YionHtM80CvnTaSOm4ZSQ5xukXGE+Ye
-         nkO0nrTYBwn2IzYoiF0r+TWI1HoMaZupHksq1qDHaKDJPMJOiTYFh+Ua/RCcMc1LfEv4
-         Qk5A==
-X-Gm-Message-State: AGi0PuZfPtlzT6nUszR7CmqeSCN0hrgaLkAVYV242uXu2EBlquXxzLf9
-        y30Gr5B13kV37UhOusg7XrE=
-X-Google-Smtp-Source: APiQypJii9n8J23C89FtzeKbngzeIo8Z029y5Ew0NBgQnqG+cIsZq1Pfk9HD37KoyWi6SS+Cyh1DYQ==
-X-Received: by 2002:a02:cd01:: with SMTP id g1mr16640069jaq.131.1588612917731;
-        Mon, 04 May 2020 10:21:57 -0700 (PDT)
-Received: from [127.0.1.1] ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id v17sm5450699ill.5.2020.05.04.10.21.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 04 May 2020 10:21:56 -0700 (PDT)
-Subject: [PATCH 2/2] bpf: sockmap,
- bpf_tcp_ingress needs to subtract bytes from sg.size
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     jakub@cloudflare.com, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        john.fastabend@gmail.com, ast@kernel.org
-Date:   Mon, 04 May 2020 10:21:44 -0700
-Message-ID: <158861290407.14306.5327773422227552482.stgit@john-Precision-5820-Tower>
-In-Reply-To: <158861271707.14306.15853815339036099229.stgit@john-Precision-5820-Tower>
-References: <158861271707.14306.15853815339036099229.stgit@john-Precision-5820-Tower>
-User-Agent: StGit/0.17.1-dirty
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=QB9t+sbZGHzJpv3tHbtJBJi6NaCwuRD6QoQ/50SYO+I=;
+        b=ZsuKoBKIqMJG94CbAuM7zJJcLKxLW7iwwdXXvUvHLsvWviT5PIWnlR790AQsDF1dB9
+         Io6vttuly8cipyuNM70XzwcFNbQ5jpQI7HhOaS4Ua3TP6hQBFkkW+mvSM5CBw+Iwp0JD
+         fXUDBICSalPZLxssCKDquxzAMu1aZwAwGreGlfCGY7AgiR4TgypAVC0BtpKvnyO9wL1U
+         /ofqAT5y8BUMFVrCQAa4KbZkVi+xfTEQTnILbYKNr4wh5CwCg4N3iBZNd0SyUpPrWrs1
+         rkfqldVzRwJ/KMJ7rtWYUSeTL4rOaU5FtN34LTduiXtUby0QlFKYf25SrDcTldc2Xn9E
+         HFzA==
+X-Gm-Message-State: AGi0PuYr3xq1t9hv5xWOfen3Q6Gv0KTqtU2DZXBE6QlQeg4RU0HZ4jW6
+        kKpeSOKYwnIoHjZU7F7ygQlzWhY=
+X-Google-Smtp-Source: APiQypJrPqEuNCfO7K2PJONthu5nSiOEmR5jy3vAk6e5G9y74P+xXRzrFl8girUlxrHwp+Evk6+PEHE=
+X-Received: by 2002:a25:f206:: with SMTP id i6mr460384ybe.415.1588613671955;
+ Mon, 04 May 2020 10:34:31 -0700 (PDT)
+Date:   Mon,  4 May 2020 10:34:26 -0700
+Message-Id: <20200504173430.6629-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
+Subject: [PATCH bpf-next 0/4] bpf: allow any port in bpf_bind helper
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        Andrey Ignatov <rdna@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In bpf_tcp_ingress we used apply_bytes to subtract bytes from sg.size
-which is used to track total bytes in a message. But this is not
-correct because apply_bytes is itself modified in the main loop doing
-the mem_charge.
+We want to have a tighter control on what ports we bind to in
+the BPF_CGROUP_INET{4,6}_CONNECT hooks even if it means
+connect() becomes slightly more expensive.
 
-Then at the end of this we have sg.size incorrectly set and out of
-sync with actual sk values. Then we can get a splat if we try to
-cork the data later and again try to redirect the msg to ingress. To
-fix instead of trying to track msg.size do the easy thing and include
-it as part of the sk_msg_xfer logic so that when the msg is moved the
-sg.size is always correct.
+The series goes like this:
+1. selftests: move existing helpers that make it easy to create
+   listener threads into common test_progs part
+2. selftests: make sure the helpers above don't get stuck forever
+   in case the tests fails
+3. do small refactoring of __inet{,6}_bind() flags to make it easy
+   to extend them with the additional flags
+4. remove the restriction on port being zero in bpf_bind() helper;
+   add new bind flag to prevent POST_BIND hook from being called
 
-To reproduce the below users will need ingress + cork and hit an
-error path that will then try to 'free' the skmsg.
+Cc: Andrey Ignatov <rdna@fb.com>
 
-[  173.699981] BUG: KASAN: null-ptr-deref in sk_msg_free_elem+0xdd/0x120
-[  173.699987] Read of size 8 at addr 0000000000000008 by task test_sockmap/5317
+Stanislav Fomichev (4):
+  selftests/bpf: generalize helpers to control backround listener
+  selftests/bpf: adopt accept_timeout from sockmap_listen
+  net: refactor arguments of inet{,6}_bind
+  bpf: allow any port in bpf_bind helper
 
-[  173.700000] CPU: 2 PID: 5317 Comm: test_sockmap Tainted: G          I       5.7.0-rc1+ #43
-[  173.700005] Hardware name: Dell Inc. Precision 5820 Tower/002KVM, BIOS 1.9.2 01/24/2019
-[  173.700009] Call Trace:
-[  173.700021]  dump_stack+0x8e/0xcb
-[  173.700029]  ? sk_msg_free_elem+0xdd/0x120
-[  173.700034]  ? sk_msg_free_elem+0xdd/0x120
-[  173.700042]  __kasan_report+0x102/0x15f
-[  173.700052]  ? sk_msg_free_elem+0xdd/0x120
-[  173.700060]  kasan_report+0x32/0x50
-[  173.700070]  sk_msg_free_elem+0xdd/0x120
-[  173.700080]  __sk_msg_free+0x87/0x150
-[  173.700094]  tcp_bpf_send_verdict+0x179/0x4f0
-[  173.700109]  tcp_bpf_sendpage+0x3ce/0x5d0
+ include/net/inet_common.h                     |   8 +-
+ include/net/ipv6_stubs.h                      |   2 +-
+ net/core/filter.c                             |  15 +-
+ net/ipv4/af_inet.c                            |  20 ++-
+ net/ipv6/af_inet6.c                           |  22 +--
+ .../bpf/prog_tests/connect_force_port.c       | 104 +++++++++++
+ .../selftests/bpf/prog_tests/sockmap_listen.c |  34 ----
+ .../selftests/bpf/prog_tests/tcp_rtt.c        | 115 +-----------
+ .../selftests/bpf/progs/connect_force_port4.c |  28 +++
+ .../selftests/bpf/progs/connect_force_port6.c |  28 +++
+ tools/testing/selftests/bpf/test_progs.c      | 165 ++++++++++++++++++
+ tools/testing/selftests/bpf/test_progs.h      |   7 +
+ 12 files changed, 372 insertions(+), 176 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/connect_force_port.c
+ create mode 100644 tools/testing/selftests/bpf/progs/connect_force_port4.c
+ create mode 100644 tools/testing/selftests/bpf/progs/connect_force_port6.c
 
-Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- include/linux/skmsg.h |    1 +
- net/ipv4/tcp_bpf.c    |    1 -
- 2 files changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index 8a709f6..ad31c9f 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -187,6 +187,7 @@ static inline void sk_msg_xfer(struct sk_msg *dst, struct sk_msg *src,
- 	dst->sg.data[which] = src->sg.data[which];
- 	dst->sg.data[which].length  = size;
- 	dst->sg.size		   += size;
-+	src->sg.size		   -= size;
- 	src->sg.data[which].length -= size;
- 	src->sg.data[which].offset += size;
- }
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index ff96466..629aaa9a 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -125,7 +125,6 @@ static int bpf_tcp_ingress(struct sock *sk, struct sk_psock *psock,
- 
- 	if (!ret) {
- 		msg->sg.start = i;
--		msg->sg.size -= apply_bytes;
- 		sk_psock_queue_msg(psock, tmp);
- 		sk_psock_data_ready(sk, psock);
- 	} else {
-
+-- 
+2.26.2.526.g744177e7f7-goog
