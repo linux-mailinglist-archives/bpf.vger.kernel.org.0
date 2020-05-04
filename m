@@ -2,82 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4A81C4892
-	for <lists+bpf@lfdr.de>; Mon,  4 May 2020 22:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94BCE1C48C8
+	for <lists+bpf@lfdr.de>; Mon,  4 May 2020 23:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726410AbgEDUwb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 May 2020 16:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726334AbgEDUwa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 May 2020 16:52:30 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46069C061A0E;
-        Mon,  4 May 2020 13:52:30 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id j3so11129851ljg.8;
-        Mon, 04 May 2020 13:52:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=FcJwBBQxQbyWZcPJFBqnN/UJHchybkhPoVMzas6ZLTM=;
-        b=cyEBapTbOmBY/knMZm6OxVUK3zO5ygsk7cNkIWjMePjlA1HdUUd4gFLsjYnDs3ElFW
-         +szCbOCQjMWBY8REqdOgmLFBM153c+jvDtURPb6PZmEHuvkYX1NwNHwnESfgSvY8wifr
-         BmBcHhnJTTsKEBzRaiE2oXy7HgHlgsjvjeD0V78+GHwuxnu0WQcN2hlezy1MzVBWJidI
-         TNgkU4mtVXDt4YjTBNh4bKqugUTv7ZZGphcRVHishpbYBFZ+fZzjUa+jer09K+zoM4T2
-         vuNYDsJDDcQEz/hdkRQQRlQUJcYlY/J+f3ziVSMN7jtJSInWr8zfTf7Ar8eUNmZCYw4F
-         tjIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=FcJwBBQxQbyWZcPJFBqnN/UJHchybkhPoVMzas6ZLTM=;
-        b=KzQjrktlta3K+iiLcky+i/IFkcbFGpSFW5A6Xl/8py0Vgwl4ooBc7au80NpgY8oa2w
-         y6K4vq74fTVC3cSIwsGWR/AN+MHss0m+OQ74eZPda/jgsYkPjM1TnZ4KVZ+VhzmWLs7+
-         uEHvPxQGMpHLCu8slSBUzzrcp14psHoWHg2nek5qx90/w8+2WcwgnTmBVtbqeCteafsn
-         v2eaLHC7So6EAGOTzuTBHMB9vtHJq8Q1esNb80hke5Q3atHVh/XNXrHHkziN84ZTXo40
-         FKosExiXyFYZMguMrGbJJCLB0gjD+fbj3jl3OIN4GLM2i6obNRhg7FjLGtRgnTIw6ZKP
-         J6YA==
-X-Gm-Message-State: AGi0PuYeZdDLl2NIpBNbFPEF1ZS+u2c/z6DVLflVOF0hLQfuAU7ose0g
-        O46fcku4xMUun26GuZcOdH+rWR06ehMUv5rRhRI=
-X-Google-Smtp-Source: APiQypK9VmvK6DN61Q45Dy8d9NaojuA1xvHIqJvnU+maaVKIstQUyvPb8m6eoCgyHe8GW1+O7VMuvp2t7PzAnMUoopA=
-X-Received: by 2002:a2e:a169:: with SMTP id u9mr11690330ljl.144.1588625548623;
- Mon, 04 May 2020 13:52:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAADnVQJfD1dLVsfg4=c4f6ftRNF_4z0wELjFq8z=7voi-Ak=7w@mail.gmail.com>
-In-Reply-To: <CAADnVQJfD1dLVsfg4=c4f6ftRNF_4z0wELjFq8z=7voi-Ak=7w@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 4 May 2020 13:52:17 -0700
-Message-ID: <CAADnVQ+GOn4ZRGMZ+RScdSvM8gpXD9xbe3EYHCcUHdSs=i_NGA@mail.gmail.com>
-Subject: Re: pulling cap_perfmon
-To:     Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        id S1726338AbgEDVHP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 May 2020 17:07:15 -0400
+Received: from www62.your-server.de ([213.133.104.62]:32810 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726334AbgEDVHP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 May 2020 17:07:15 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jViIn-0001Gq-FV; Mon, 04 May 2020 23:07:01 +0200
+Received: from [178.195.186.98] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jViIm-000G0e-PC; Mon, 04 May 2020 23:07:00 +0200
+Subject: Re: [PATCH 05/15] bpf: avoid gcc-10 stringop-overflow warning
+To:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Hannes Frederic Sowa <hannes@stressinduktion.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Brad Spengler <spender@grsecurity.net>,
+        Daniel Borkmann <dborkman@redhat.com>,
+        Alexei Starovoitov <ast@plumgrid.com>,
+        Kees Cook <keescook@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jiri Olsa <jolsa@kernel.org>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20200430213101.135134-1-arnd@arndb.de>
+ <20200430213101.135134-6-arnd@arndb.de>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f1ffd814-538b-1913-5b67-266060abfa7a@iogearbox.net>
+Date:   Mon, 4 May 2020 23:06:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20200430213101.135134-6-arnd@arndb.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25802/Mon May  4 14:12:31 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 11:03 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> Hi Ingo,
->
-> I'd like to pull
-> commit 980737282232 ("capabilities: Introduce CAP_PERFMON to kernel
-> and user space")
-> into bpf-next to base my CAP_BPF work on top of it.
-> could you please prepare a stable tag for me to pull ?
-> Last release cycle Thomas did a tag for bpf+rt prerequisite patches and
-> it all worked well during the merge window.
-> I think that one commit will suffice.
->
-> Thanks!
+On 4/30/20 11:30 PM, Arnd Bergmann wrote:
+> gcc-10 warns about accesses to zero-length arrays:
+> 
+> kernel/bpf/core.c: In function 'bpf_patch_insn_single':
+> cc1: warning: writing 8 bytes into a region of size 0 [-Wstringop-overflow=]
+> In file included from kernel/bpf/core.c:21:
+> include/linux/filter.h:550:20: note: at offset 0 to object 'insnsi' with size 0 declared here
+>    550 |   struct bpf_insn  insnsi[0];
+>        |                    ^~~~~~
+> 
+> In this case, we really want to have two flexible-array members,
+> but that is not possible. Removing the union to make insnsi a
+> flexible-array member while leaving insns as a zero-length array
+> fixes the warning, as nothing writes to the other one in that way.
+> 
+> This trick only works on linux-3.18 or higher, as older versions
+> had additional members in the union.
+> 
+> Fixes: 60a3b2253c41 ("net: bpf: make eBPF interpreter images read-only")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Looks like Ingo is offline.
-Thomas,
-could you please create a branch for me to pull?
+Not pretty but looks okay to me, both have the same offset afterwards
+in the pahole dump as well.
 
-Thanks!
+struct bpf_prog {
+[...]
+         unsigned int               (*bpf_func)(const void  *, const struct bpf_insn  *); /*    48     8 */
+         struct sock_filter         insns[0];             /*    56     0 */
+         struct bpf_insn            insnsi[];             /*    56     0 */
+
+         /* size: 56, cachelines: 1, members: 21 */
+         /* sum members: 50, holes: 1, sum holes: 4 */
+         /* sum bitfield members: 10 bits, bit holes: 1, sum bit holes: 6 bits */
+         /* last cacheline: 56 bytes */
+};
+
+Applied to bpf-next, thanks!
