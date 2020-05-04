@@ -2,100 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39131C3870
-	for <lists+bpf@lfdr.de>; Mon,  4 May 2020 13:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D89C1C387E
+	for <lists+bpf@lfdr.de>; Mon,  4 May 2020 13:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728807AbgEDLiz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 May 2020 07:38:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
+        id S1728401AbgEDLna (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 May 2020 07:43:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728398AbgEDLiz (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 4 May 2020 07:38:55 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A6AC061A0E;
-        Mon,  4 May 2020 04:38:55 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id hi11so3646113pjb.3;
-        Mon, 04 May 2020 04:38:54 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726782AbgEDLna (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 4 May 2020 07:43:30 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1CF8C061A0E;
+        Mon,  4 May 2020 04:43:29 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id g12so8612202wmh.3;
+        Mon, 04 May 2020 04:43:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bHq/Ud0G1CXt66/tn0cXJV9yUD2uWwBv/9RpvgD41Cs=;
-        b=SunD0SarsEh9bJ1eBVMXEA59Ouaxue1qlzo4hZckHNspiJjRfm1f0nYY/9j4vLLwUV
-         OB+Kv3lthS9KbWBMAYiBb3gjqwg9dUn5VknO44MnrceyDYjfwN9OfaFdKotGUpb36uup
-         Iya35cVftdGIGPaxjrXzaOal3z2bvY3eCZLa2EX0cpNJkRnmsyKtx1mQ4BN3p+XC/48A
-         IgzzddhPZ+YbX6jr2RRatPd80ct5sDsOnZK/m6ak56IJkJgqvpa4ilWvrYnE9kCaKccr
-         1GpAHwdIr/3JxbCHMwlOkYN7w9Zw+GqzKDU8jgc95n3J0ARbulxqHeH5pS1ovsFUSVQp
-         eprA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7zq/Vd/myQ/CLDbfPWku2LL/tP/F7KSMA7+XLhhYj9g=;
+        b=u8hJ3JzAwBJnpqX4QTl/fM1A96s9krcR44lRLgfz/ZDH7DHDBIf075O5Jh3s1Tcbyg
+         lWZEKQyiAjNtUmAKezHOybJehnehqgtuk+LVwdpuNE2GLEQc54QtmWPY0u5715MJP+vk
+         sp07LfgKQPnttBrKF9O+F4RqBupuM1bzYj6o+Yqsi21fv95mZy8m0igZjA0Qvd1KjyQP
+         yH6s5g6BMhnqMXHtKLGOYbDMHPRYEnJhwO3IcbpPAmnBUyZX2esycZfRLrGkJegP41KS
+         tf3crszhytYeYYiRC7Z/b91gAUzjrJowQPKrHTti9EPumDXdhEAKUGj9xA96yDTn20qH
+         sMqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bHq/Ud0G1CXt66/tn0cXJV9yUD2uWwBv/9RpvgD41Cs=;
-        b=frv8Uq6W+krZYo3p9AcenFjhaAq3Q3zyBUiXM/jHMtlz5pFMbED76XC+g9gsVaos1A
-         NvlXUaYiXqZ0JHYrMvNDVV2pxd8XSFa5FhSARkIesmKesU1sSuO/O0Bk5xmRQRWKrt99
-         YXKdG/LT8Gtf+AcEkCSdXCAasp8+8mpkZJx+i+aPop5IJcqI5wFhKf59eGrOypYtbv9D
-         yBmIH+6oJieOF95yXJ8JEZqL3Z+86EIyz1G7yWIyF2NsTf1ycsoqhkGyhndAw2f7PxFQ
-         jGsq2SVbf/ZURvinhJVBacmKH3Ckc24U48/P275sIDNPOTpvZ6jWulMR8mHrsuRCkeqL
-         5v/Q==
-X-Gm-Message-State: AGi0PuaE1UJ9jQx7YyXLJbCo/Qne0iV8xYZKSJjYBktd5ZIpit9dyTsA
-        LwDOrFN06iUVNMiwxzLNiB4=
-X-Google-Smtp-Source: APiQypIGDIR+ZNYWkOVWsIwkC9xGUW6Nbhpc1F+3Nt4rAbZHpQI1F3uanys7C9R4qCWxxgXGydr+CA==
-X-Received: by 2002:a17:90b:3887:: with SMTP id mu7mr17397672pjb.168.1588592334274;
-        Mon, 04 May 2020 04:38:54 -0700 (PDT)
-Received: from btopel-mobl.ger.intel.com ([192.55.55.41])
-        by smtp.gmail.com with ESMTPSA id x185sm8650789pfx.155.2020.05.04.04.38.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 04:38:53 -0700 (PDT)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        maximmi@mellanox.com, maciej.fijalkowski@intel.com
-Subject: [RFC PATCH bpf-next 13/13] MAINTAINERS, xsk: update AF_XDP section after moves/adds
-Date:   Mon,  4 May 2020 13:37:15 +0200
-Message-Id: <20200504113716.7930-14-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200504113716.7930-1-bjorn.topel@gmail.com>
-References: <20200504113716.7930-1-bjorn.topel@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7zq/Vd/myQ/CLDbfPWku2LL/tP/F7KSMA7+XLhhYj9g=;
+        b=rkKvrS5C9Z0OCzdQgRUblkxkYo33X6sgaxUDu8SauFZ0kMQL/X+TdIs3QwZCNvcF1h
+         plfNo673gh9af4q5b1pwbaCGxBFxntNWJmnkEGBeqOkkc8slQmfLzDvzsgOeQyYMJ/Wk
+         v74NQAjOOlUgz2DVeLDOCvAVcsvTTpU+vQSHXK8x5m0XFSzTk2Knl2V2S3xqjZVxWu7j
+         m8HO+SNaafdxy9gZBzQoq9zjvX+HMgCAFJQ3hLAsquTTCqF81IYUj5N30xeSk5bZm6zt
+         nnwCP7aF3hBT82dMU6ay2nyix9D0wpI0tghEuzIFSCNKvpFWgs/3xU03+uWAUDxPDdcN
+         ME+A==
+X-Gm-Message-State: AGi0PuZEs6U3OqixokyJrV/J3gcNkImn0UwvF3+nL6eyr6CreswzAl9w
+        ZTdWBE7fC2BwtXGXDcM2uPt+ObObq+IxJbCpjUY=
+X-Google-Smtp-Source: APiQypJ3iuedsbNxfFhX7K/2DjPz9/nHMo3wBXC/NZX8pDB9XJHUyvx+ORF9u68W5iUeL+N9hnq4RCb0MisGH0Fckdg=
+X-Received: by 2002:a1c:5502:: with SMTP id j2mr15187871wmb.56.1588592608652;
+ Mon, 04 May 2020 04:43:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200504113716.7930-1-bjorn.topel@gmail.com> <20200504113716.7930-12-bjorn.topel@gmail.com>
+In-Reply-To: <20200504113716.7930-12-bjorn.topel@gmail.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Mon, 4 May 2020 13:43:17 +0200
+Message-ID: <CAJ+HfNhV0+3moPNr8dtSKbTzs8W=z3CdPDk4Brg88hKH=og=Kw@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 11/13] xsk: remove MEM_TYPE_ZERO_COPY and
+ corresponding code
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+On Mon, 4 May 2020 at 13:38, Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> =
+wrote:
+>
+> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+>
+> There are no users of MEM_TYPE_ZERO_COPY. Remove all corresponding
+> code, including the "handle" member of struct xdp_sock.
+>
 
-Update MAINTAINERS to correctly mirror the current AF_XDP socket file
-layout. Also, add the AF_XDP files of libbpf.
-
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- MAINTAINERS | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index db7a6d462dff..4b992c684562 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18451,8 +18451,12 @@ R:	Jonathan Lemon <jonathan.lemon@gmail.com>
- L:	netdev@vger.kernel.org
- L:	bpf@vger.kernel.org
- S:	Maintained
--F:	kernel/bpf/xskmap.c
- F:	net/xdp/
-+F:	include/net/xdp_sock*
-+F:	include/net/xsk_buffer_pool.h
-+F:	include/uapi/linux/if_xdp.h
-+F:	tools/lib/bpf/xsk*
-+F:	samples/bpf/xdpsock*
- 
- XEN BLOCK SUBSYSTEM
- M:	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
--- 
-2.25.1
-
+"struct xdp_buff"
