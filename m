@@ -2,81 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D89C1C387E
-	for <lists+bpf@lfdr.de>; Mon,  4 May 2020 13:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 399951C3F51
+	for <lists+bpf@lfdr.de>; Mon,  4 May 2020 18:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728401AbgEDLna (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 May 2020 07:43:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726782AbgEDLna (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 4 May 2020 07:43:30 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1CF8C061A0E;
-        Mon,  4 May 2020 04:43:29 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id g12so8612202wmh.3;
-        Mon, 04 May 2020 04:43:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7zq/Vd/myQ/CLDbfPWku2LL/tP/F7KSMA7+XLhhYj9g=;
-        b=u8hJ3JzAwBJnpqX4QTl/fM1A96s9krcR44lRLgfz/ZDH7DHDBIf075O5Jh3s1Tcbyg
-         lWZEKQyiAjNtUmAKezHOybJehnehqgtuk+LVwdpuNE2GLEQc54QtmWPY0u5715MJP+vk
-         sp07LfgKQPnttBrKF9O+F4RqBupuM1bzYj6o+Yqsi21fv95mZy8m0igZjA0Qvd1KjyQP
-         yH6s5g6BMhnqMXHtKLGOYbDMHPRYEnJhwO3IcbpPAmnBUyZX2esycZfRLrGkJegP41KS
-         tf3crszhytYeYYiRC7Z/b91gAUzjrJowQPKrHTti9EPumDXdhEAKUGj9xA96yDTn20qH
-         sMqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7zq/Vd/myQ/CLDbfPWku2LL/tP/F7KSMA7+XLhhYj9g=;
-        b=rkKvrS5C9Z0OCzdQgRUblkxkYo33X6sgaxUDu8SauFZ0kMQL/X+TdIs3QwZCNvcF1h
-         plfNo673gh9af4q5b1pwbaCGxBFxntNWJmnkEGBeqOkkc8slQmfLzDvzsgOeQyYMJ/Wk
-         v74NQAjOOlUgz2DVeLDOCvAVcsvTTpU+vQSHXK8x5m0XFSzTk2Knl2V2S3xqjZVxWu7j
-         m8HO+SNaafdxy9gZBzQoq9zjvX+HMgCAFJQ3hLAsquTTCqF81IYUj5N30xeSk5bZm6zt
-         nnwCP7aF3hBT82dMU6ay2nyix9D0wpI0tghEuzIFSCNKvpFWgs/3xU03+uWAUDxPDdcN
-         ME+A==
-X-Gm-Message-State: AGi0PuZEs6U3OqixokyJrV/J3gcNkImn0UwvF3+nL6eyr6CreswzAl9w
-        ZTdWBE7fC2BwtXGXDcM2uPt+ObObq+IxJbCpjUY=
-X-Google-Smtp-Source: APiQypJ3iuedsbNxfFhX7K/2DjPz9/nHMo3wBXC/NZX8pDB9XJHUyvx+ORF9u68W5iUeL+N9hnq4RCb0MisGH0Fckdg=
-X-Received: by 2002:a1c:5502:: with SMTP id j2mr15187871wmb.56.1588592608652;
- Mon, 04 May 2020 04:43:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200504113716.7930-1-bjorn.topel@gmail.com> <20200504113716.7930-12-bjorn.topel@gmail.com>
-In-Reply-To: <20200504113716.7930-12-bjorn.topel@gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Mon, 4 May 2020 13:43:17 +0200
-Message-ID: <CAJ+HfNhV0+3moPNr8dtSKbTzs8W=z3CdPDk4Brg88hKH=og=Kw@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 11/13] xsk: remove MEM_TYPE_ZERO_COPY and
- corresponding code
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        id S1729360AbgEDQFJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 May 2020 12:05:09 -0400
+Received: from www62.your-server.de ([213.133.104.62]:45066 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726551AbgEDQFJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 May 2020 12:05:09 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jVdaZ-0004zi-1W; Mon, 04 May 2020 18:05:03 +0200
+Received: from [178.195.186.98] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jVdaY-000HF6-Hv; Mon, 04 May 2020 18:05:02 +0200
+Subject: Re: [PATCH bpf 0/2] bpf, arm: Small JIT optimizations
+To:     Luke Nelson <lukenels@cs.washington.edu>, bpf@vger.kernel.org
+Cc:     Luke Nelson <luke.r.nels@gmail.com>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20200501020210.32294-1-luke.r.nels@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c59f4067-6334-2dc4-a37b-b1e953663897@iogearbox.net>
+Date:   Mon, 4 May 2020 18:05:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20200501020210.32294-1-luke.r.nels@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25802/Mon May  4 14:12:31 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 4 May 2020 at 13:38, Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> =
-wrote:
->
-> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
->
-> There are no users of MEM_TYPE_ZERO_COPY. Remove all corresponding
-> code, including the "handle" member of struct xdp_sock.
->
+On 5/1/20 4:02 AM, Luke Nelson wrote:
+> As Daniel suggested to us, we ran our formal verification tool, Serval,
+> over the arm JIT. The bugs we found have been patched and applied to the
+> bpf tree [1, 2]. This patch series introduces two small optimizations
+> that simplify the JIT and use fewer instructions.
+> 
+> [1] https://lore.kernel.org/bpf/20200408181229.10909-1-luke.r.nels@gmail.com/
+> [2] https://lore.kernel.org/bpf/20200409221752.28448-1-luke.r.nels@gmail.com/
+> 
+> Luke Nelson (2):
+>    bpf, arm: Optimize emit_a32_arsh_r64 using conditional instruction
+>    bpf, arm: Optimize ALU ARSH K using asr immediate instruction
+> 
+>   arch/arm/net/bpf_jit_32.c | 14 +++++++++-----
+>   arch/arm/net/bpf_jit_32.h |  2 ++
+>   2 files changed, 11 insertions(+), 5 deletions(-)
+> 
 
-"struct xdp_buff"
+Applied, thanks!
