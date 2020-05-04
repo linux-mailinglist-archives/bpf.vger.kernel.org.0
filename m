@@ -2,98 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544431C2820
-	for <lists+bpf@lfdr.de>; Sat,  2 May 2020 22:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D611C3107
+	for <lists+bpf@lfdr.de>; Mon,  4 May 2020 03:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728472AbgEBUAT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 2 May 2020 16:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728107AbgEBUAS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 2 May 2020 16:00:18 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563B6C061A0C;
-        Sat,  2 May 2020 13:00:18 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id 188so6414489lfa.10;
-        Sat, 02 May 2020 13:00:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1fuetHlZxL3y2tZ9qEmdGxI1Km5DfxBd1g0XjlCyH5Q=;
-        b=olCYBWju3MTiafCvFHWSzQMP7PHQOLrFmKH4W8alekcVg+INxvFfdY1ryjnDRpIzgi
-         gVv1PGzc8MAa3CoyAKNo2XHBzhoCEmh3YwV0kxwAHwemjPf9L7VmkI1+FZ+WFTnERUn8
-         hWk5S+OBwFTe0hqXGQMvQ9mDzCbDuyGdGJs+7+hYqfjUV0f/cOBzECmb1AYVMPGSmhR2
-         ZWEdeqTU0p4ThSXMqOz3I+/VfNcaO8tbB/L8IuEmZi4UhG6MjaywB2q90oI24KXBj3x6
-         kJ+x4CDOcAJ8MMTjJMOxd67vDQVsPVTjlW8ikVbIpR+eydBTauIiWlhIZUj7a7TtlwqJ
-         I8qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1fuetHlZxL3y2tZ9qEmdGxI1Km5DfxBd1g0XjlCyH5Q=;
-        b=YAAyzGEvPRhU83l1ZMPOehSUEZGnHPg1VcAo9r1QaNzULlFcpFn1xWMxFac7IL8/Ud
-         F15sN44g4FjMVyER1KLN6YNm2jHYIvEkS6T0O3jmhZt9/6AWyctrSB3fa3rMIVh96DSh
-         o24PhoQmUGKgSiJDl3OACU3cUXFoybGEdkUAkAMRHAhFmDIB9wVXmkcyxpZISGBNS20M
-         zLNJl8PGOMfsKOIQLaUeV1zxhn6yRozcb1arO810NI9JAgI5pacM1NXDpmyxUeSVTBTp
-         LAr6pIolQfM0vj/viWeSZd6fal39LJZPAxS/UVw2JtpDy2n8I2wt/MbISeJlytpWcdaU
-         mUDw==
-X-Gm-Message-State: AGi0Pub3MBC9kgf0NdCB7CCozshdAyrOSoqVc68FqxG+rCqbUXOLr8q3
-        Wj+YR7g8mesU8iW6lgdYpL4zfniH1mVD1bnX1c0=
-X-Google-Smtp-Source: APiQypJ5A648tqnQDNQFGNgG0fRH1tO9p7S3Qf5u07Hd61HxSsdvL/DeRc4H4Zq5qApPffCls3U9hb3BlGGEThGHjJ4=
-X-Received: by 2002:ac2:569b:: with SMTP id 27mr6497034lfr.134.1588449616656;
- Sat, 02 May 2020 13:00:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200430071506.1408910-1-songliubraving@fb.com> <20200430071506.1408910-3-songliubraving@fb.com>
-In-Reply-To: <20200430071506.1408910-3-songliubraving@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 2 May 2020 13:00:05 -0700
-Message-ID: <CAADnVQK-Zo19Z1Gdaq9MYE_9GmyrCuOFbz873D4uCvvVSp0j0w@mail.gmail.com>
-Subject: Re: [PATCH v9 bpf-next 2/3] libbpf: add support for command BPF_ENABLE_STATS
-To:     Song Liu <songliubraving@fb.com>, Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
+        id S1726441AbgEDBZ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 3 May 2020 21:25:59 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:60847 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726421AbgEDBZ6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 3 May 2020 21:25:58 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49FlYH0HjSz9sSr;
+        Mon,  4 May 2020 11:25:55 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1588555556;
+        bh=vc2ocq2LVzS7oNXSMpHcVG3xe33e0fBbGhPZyRYagfM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=P+yJzoL4bKmQgxZi1HZa5TPP9rwqF/h2NThx+pjTcMdtdBDNff/3h228jqwzsXE2b
+         NQJQhDYncXGB0zYQeDkYjscr4OF+6Rqxpr31OS5Obez0CGvi8oBiJ3Y2azikMftqQt
+         U+jzCD47pLK/nuTaLkh3aiYDzUWWzf1IbXyuYsgSqVM3RNmpilPBYaN/E+R7RNNqo1
+         WT9ab3XNgwxWwK5N/cas1cph5490Z5afc6RVZtTmbZpHUnnVlwPo1486wsKlO+zmPg
+         yu1OUHXML1YrIkeJQ8m9spCLWXR6FJr3ec9jOEGd6cjZcxZe1mrlNfBUbSa4Vnfgr4
+         ZNwuqxT3rnTxQ==
+Date:   Mon, 4 May 2020 11:25:52 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 3/5] sysctl: remove all extern declaration from sysctl.c
+Message-ID: <20200504112552.4dbdd2a9@canb.auug.org.au>
+In-Reply-To: <20200424064338.538313-4-hch@lst.de>
+References: <20200424064338.538313-1-hch@lst.de>
+        <20200424064338.538313-4-hch@lst.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/Ze/S33mgpR/AlQdumg8GhV7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 12:15 AM Song Liu <songliubraving@fb.com> wrote:
+--Sig_/Ze/S33mgpR/AlQdumg8GhV7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Christoph,
+
+On Fri, 24 Apr 2020 08:43:36 +0200 Christoph Hellwig <hch@lst.de> wrote:
 >
-> bpf_enable_stats() is added to enable given stats.
->
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-...
-> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> index 335b457b3a25..1901b2777854 100644
-> --- a/tools/lib/bpf/bpf.h
-> +++ b/tools/lib/bpf/bpf.h
-> @@ -231,6 +231,7 @@ LIBBPF_API int bpf_load_btf(void *btf, __u32 btf_size=
-, char *log_buf,
->  LIBBPF_API int bpf_task_fd_query(int pid, int fd, __u32 flags, char *buf=
-,
->                                  __u32 *buf_len, __u32 *prog_id, __u32 *f=
-d_type,
->                                  __u64 *probe_offset, __u64 *probe_addr);
-> +LIBBPF_API int bpf_enable_stats(enum bpf_stats_type type);
+> Extern declarations in .c files are a bad style and can lead to
+> mismatches.  Use existing definitions in headers where they exist,
+> and otherwise move the external declarations to suitable header
+> files.
+>=20
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  include/linux/coredump.h |  4 ++++
+>  include/linux/file.h     |  2 ++
+>  include/linux/mm.h       |  2 ++
+>  include/linux/mmzone.h   |  2 ++
+>  include/linux/pid.h      |  3 +++
+>  include/linux/sysctl.h   |  8 +++++++
+>  kernel/sysctl.c          | 45 +++-------------------------------------
+>  7 files changed, 24 insertions(+), 42 deletions(-)
 
-I see odd warning here while building selftests
+A couple of suggestions for another patch (since this one is in a
+shared branch in Al's tree now):
 
-In file included from runqslower.c:10:
-.../tools/testing/selftests/bpf/tools/include/bpf/bpf.h:234:38:
-warning: =E2=80=98enum bpf_stats_type=E2=80=99 declared inside parameter li=
-st will not
-be visible outside of this definition or declaration
-  234 | LIBBPF_API int bpf_enable_stats(enum bpf_stats_type type);
+There is an "extern struct ctl_table random_table[];" in
+drivers/char/random.c which is redundant now (in fact always was).
 
-Since this warning is printed only when building runqslower
-and the rest of selftests are fine, I'm guessing
-it's a makefile issue with order of includes?
+There is already an "extern struct ctl_table epoll_table[];" in
+include/linux/poll.h, so could have included that in kernel/sysctl.c
+instead of adding the new one in include/linux/sysctl.h
 
-Andrii, could you please take a look ?
-Not urgent. Just flagging for visibility.
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Ze/S33mgpR/AlQdumg8GhV7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6vbyAACgkQAVBC80lX
+0GxFGwf/WH/cv5RMadV9dmdAfJGI/cu7ozy5lgpWNwTKsdi4ITqe5NGRhPUzU4yW
+G2MRxjhFk0AMvRQWk9cdWriceLeojws2iI4W6ht10nYedCXG70ee+MJ/TEx7VJ5f
++Cff6GVaFu+4/qF04l/XTgi75XrzhNxQx3EptjGJg89jeJoKB219icmdSfwb8lBE
+RzU/qAufZ62wf5ClRmbyMJ0rj0RqdpKI/Jg+gD/rYE9HnveOnyLkFRDY7Zn5s7H8
+k+TPkw9I4xlWwDYr6cp43CX4rfGlZNoByoYat5ExYbvsjtPk9ygEYm9liKVKgIqh
+riEp/3lZakla9sctllvU4m6A6mIQJQ==
+=LZ1e
+-----END PGP SIGNATURE-----
+
+--Sig_/Ze/S33mgpR/AlQdumg8GhV7--
