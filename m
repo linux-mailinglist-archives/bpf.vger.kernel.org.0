@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D7F1C42EE
-	for <lists+bpf@lfdr.de>; Mon,  4 May 2020 19:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F6F1C42F1
+	for <lists+bpf@lfdr.de>; Mon,  4 May 2020 19:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730407AbgEDReh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 May 2020 13:34:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52900 "EHLO
+        id S1730426AbgEDRek (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 May 2020 13:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729549AbgEDReg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 4 May 2020 13:34:36 -0400
+        by vger.kernel.org with ESMTP id S1730425AbgEDRek (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 4 May 2020 13:34:40 -0400
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9299CC061A0E
-        for <bpf@vger.kernel.org>; Mon,  4 May 2020 10:34:36 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 186so304102ybq.1
-        for <bpf@vger.kernel.org>; Mon, 04 May 2020 10:34:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB10C061A0E
+        for <bpf@vger.kernel.org>; Mon,  4 May 2020 10:34:38 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id s62so308216ybs.0
+        for <bpf@vger.kernel.org>; Mon, 04 May 2020 10:34:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=2g+oJRYLOrsKuFpc0J3Xz3fus20nXPDKH8t2GbFobk8=;
-        b=roHoMtDszcN/CD2Rh5Zmr2bJhoexhrTpL1LSMEHsEl8SYjCVTjFxAPUQ9W/Q2jlMHb
-         fGLLpiShA5fdYM8cWN4UXLguCsmS9aS14JG954F4KF9eb51EyJAemCBEAuNRf4DWl2Ba
-         qp9l7gI5tQfpuqduGGBnRZKM/5i59UQzq7IWDBIpmePWnFJ1PCyKXua4srz+ShkxuJjh
-         s48JFbLIpMIZuB4AR+Zhj03/pAuqVAjd6a4Vqlje+1hm86V95SLu3KBnPWAK5Ww+7DMa
-         XoJYpJ042uTT0IwOZEHYb9kI+nw3ypEvgYcmuqhNMqEbh6WBHxzJ07GZOnDHzNqkNbUF
-         4s7w==
+        bh=wBE7hm6quI+iooNO3qC1XtqSbOT/H5iFWRQbKwBhMTE=;
+        b=WJKKaDHk/vf/c0Nn0BqzzyJw35wjWGq8OjecyKB9q3mUeYtX/Fo6qSG3eMwhYXjRq/
+         09RVKI/+GqGvJgLO+H1q3CKt89P6O0MvASqs25MxVSajaydCv1khR3+Hjyuo41Pxfgzw
+         Pjhm5AWV78S79bCPo8JBpkRKyohJOGEPk0kQv3w5AXA52c2+mV5Xk5OweaB1ueRonkjp
+         aOwsWoJ2U0pRF+AbLCoaO+8/2U/83oDti3foeEaF7OyWCbMlt+PnihKDJ5rRZVMIP9dS
+         wj9hMKsIR1PFEqVmS1XfYi64laC6vBdWqJFYwbNgVxXUDTbW1+e6LTk1d0IhtNJBhz8q
+         F6Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=2g+oJRYLOrsKuFpc0J3Xz3fus20nXPDKH8t2GbFobk8=;
-        b=o/4WzoqP33GY9oVwhaDm3AM5RSc0iHcTZXnwFFukQ/+hsZ4GDyDJyIKWVa589Fhech
-         R5wF1GiZGTP1CvdIfNd531OZ6QwfQz2FovaoniitAtrCeMj+2QinAs8UlQGXeyYmFfwc
-         lUzhDSEsAofXXLeynecFdTLW11X1rr1JDClISgGmDAdxpO3R4EZ8KSEtWJk2W38RjHAl
-         /BszwEn3TBwn9d3RcCJ4ThCBTEpa5UWeJbwikB7ZQqOOazAjyB6tEgTg3u0DV7GT0WMb
-         1qJWnd6hTEf738OiGYg4THP2KU1IKI4xzRTfdM9awFRJTBAZFIC3y3jZ4W7xXBj85FKg
-         1NvQ==
-X-Gm-Message-State: AGi0PubRvP32jqkwNi9UnvIR8RvIA0srI0n1uKMDXfwKuQoj6Qr1M59Z
-        vI84XPX4tZvmirwymypTHDqEtQc=
-X-Google-Smtp-Source: APiQypLl2kREBLwI6IEEjPx7r4WPenyVSShCTrUfFujoE2snG5hgA2hrmd8uSHP8+C6cNulfjtnGYYI=
-X-Received: by 2002:a25:c648:: with SMTP id k69mr480372ybf.340.1588613675655;
- Mon, 04 May 2020 10:34:35 -0700 (PDT)
-Date:   Mon,  4 May 2020 10:34:28 -0700
+        bh=wBE7hm6quI+iooNO3qC1XtqSbOT/H5iFWRQbKwBhMTE=;
+        b=H7Z0qeckZIMavtoakcJXQL7SlFEyGbKv9JgZiQzc95+XP1UF5ptQOhTzKO3a52wF+M
+         NP+fXcuSXM4XmXqUey5HfLnQClo2FYoXDb95HIqzTID2Mc40FM24n1Zyv38npoFPVZnG
+         PXL2PvM3ApuFu+ZyzmfN2wwxOFYfP86xRqRiQMs6kpq3OBMMR7xixlydi8f1o6YA5mcZ
+         6wOEI25C+JNknNBaSTb/LelwQklaSGb2GKyiv54yySDr5EOOswfRVnS6n1OaeAp7m3Ku
+         QcXBp2+bGeg0EYO0z7MlS6MoyGFdnFrzOzJ2Bt2/rdy8IxbEuXZr5xYSwr9yI+yV1CtC
+         oMIA==
+X-Gm-Message-State: AGi0PuYKR1qqnwJYU6qoh3onI7Dt5r4xtjJnH2eL11urzrKMt7QbZWyd
+        FJVxRYfgZwHR2yDRrk3fFSEfp7o=
+X-Google-Smtp-Source: APiQypJBba7RWDeEUwV7G604qNN68azWZFCTnB8mAjPgXRWt6PeWtghxoIOZvkxlNI33L4j9WRjSlRs=
+X-Received: by 2002:a25:3295:: with SMTP id y143mr513997yby.390.1588613677791;
+ Mon, 04 May 2020 10:34:37 -0700 (PDT)
+Date:   Mon,  4 May 2020 10:34:29 -0700
 In-Reply-To: <20200504173430.6629-1-sdf@google.com>
-Message-Id: <20200504173430.6629-3-sdf@google.com>
+Message-Id: <20200504173430.6629-4-sdf@google.com>
 Mime-Version: 1.0
 References: <20200504173430.6629-1-sdf@google.com>
 X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
-Subject: [PATCH bpf-next 2/4] selftests/bpf: adopt accept_timeout from sockmap_listen
+Subject: [PATCH bpf-next 3/4] net: refactor arguments of inet{,6}_bind
 From:   Stanislav Fomichev <sdf@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
@@ -61,142 +61,172 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Move accept_timeout and recv_timeout to the common place so they
-can be reused by the other tests. Switch to accept_timeout() in
-test_progs instead of doing while loop around accept().
+The intent is to add an additional bind parameter in the next commit.
+Instead of adding another argument, let's convert all existing
+flag arguments into an extendable bit field.
 
-This prevents the tests that use start_server_thread/stop_server_thread
-from being stuck when the error occurs.
+No functional changes.
 
 Cc: Andrey Ignatov <rdna@fb.com>
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- .../selftests/bpf/prog_tests/sockmap_listen.c | 34 ---------------
- tools/testing/selftests/bpf/test_progs.c      | 43 +++++++++++++++----
- tools/testing/selftests/bpf/test_progs.h      |  4 ++
- 3 files changed, 39 insertions(+), 42 deletions(-)
+ include/net/inet_common.h |  6 +++++-
+ include/net/ipv6_stubs.h  |  2 +-
+ net/core/filter.c         |  6 ++++--
+ net/ipv4/af_inet.c        | 10 +++++-----
+ net/ipv6/af_inet6.c       | 10 +++++-----
+ 5 files changed, 20 insertions(+), 14 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-index d7d65a700799..a91c31e64274 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-@@ -195,40 +195,6 @@
- 		__ret;                                                         \
- 	})
- 
--static int poll_read(int fd, unsigned int timeout_sec)
--{
--	struct timeval timeout = { .tv_sec = timeout_sec };
--	fd_set rfds;
--	int r;
--
--	FD_ZERO(&rfds);
--	FD_SET(fd, &rfds);
--
--	r = select(fd + 1, &rfds, NULL, NULL, &timeout);
--	if (r == 0)
--		errno = ETIME;
--
--	return r == 1 ? 0 : -1;
--}
--
--static int accept_timeout(int fd, struct sockaddr *addr, socklen_t *len,
--			  unsigned int timeout_sec)
--{
--	if (poll_read(fd, timeout_sec))
--		return -1;
--
--	return accept(fd, addr, len);
--}
--
--static int recv_timeout(int fd, void *buf, size_t len, int flags,
--			unsigned int timeout_sec)
--{
--	if (poll_read(fd, timeout_sec))
--		return -1;
--
--	return recv(fd, buf, len, flags);
--}
--
- static void init_addr_loopback4(struct sockaddr_storage *ss, socklen_t *len)
- {
- 	struct sockaddr_in *addr4 = memset(ss, 0, sizeof(*ss));
-diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-index ebf1b3272848..306056bc63ae 100644
---- a/tools/testing/selftests/bpf/test_progs.c
-+++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -428,14 +428,7 @@ static void *server_thread(void *arg)
- 		return ERR_PTR(err);
+diff --git a/include/net/inet_common.h b/include/net/inet_common.h
+index ae2ba897675c..a0fb68f5bf59 100644
+--- a/include/net/inet_common.h
++++ b/include/net/inet_common.h
+@@ -35,8 +35,12 @@ int inet_shutdown(struct socket *sock, int how);
+ int inet_listen(struct socket *sock, int backlog);
+ void inet_sock_destruct(struct sock *sk);
+ int inet_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len);
++// Don't allocate port at this moment, defer to connect.
++#define BIND_FORCE_ADDRESS_NO_PORT	(1 << 0)
++// Grab and release socket lock.
++#define BIND_WITH_LOCK			(1 << 1)
+ int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+-		bool force_bind_address_no_port, bool with_lock);
++		u32 flags);
+ int inet_getname(struct socket *sock, struct sockaddr *uaddr,
+ 		 int peer);
+ int inet_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg);
+diff --git a/include/net/ipv6_stubs.h b/include/net/ipv6_stubs.h
+index a5f7c12c326a..6e622dd3122e 100644
+--- a/include/net/ipv6_stubs.h
++++ b/include/net/ipv6_stubs.h
+@@ -63,7 +63,7 @@ extern const struct ipv6_stub *ipv6_stub __read_mostly;
+ /* A stub used by bpf helpers. Similarly ugly as ipv6_stub */
+ struct ipv6_bpf_stub {
+ 	int (*inet6_bind)(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+-			  bool force_bind_address_no_port, bool with_lock);
++			  u32 flags);
+ 	struct sock *(*udp6_lib_lookup)(struct net *net,
+ 				     const struct in6_addr *saddr, __be16 sport,
+ 				     const struct in6_addr *daddr, __be16 dport,
+diff --git a/net/core/filter.c b/net/core/filter.c
+index dfaf5df13722..fa9ddab5dd1f 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4538,7 +4538,8 @@ BPF_CALL_3(bpf_bind, struct bpf_sock_addr_kern *, ctx, struct sockaddr *, addr,
+ 			return err;
+ 		if (((struct sockaddr_in *)addr)->sin_port != htons(0))
+ 			return err;
+-		return __inet_bind(sk, addr, addr_len, true, false);
++		return __inet_bind(sk, addr, addr_len,
++				   BIND_FORCE_ADDRESS_NO_PORT);
+ #if IS_ENABLED(CONFIG_IPV6)
+ 	} else if (addr->sa_family == AF_INET6) {
+ 		if (addr_len < SIN6_LEN_RFC2133)
+@@ -4548,7 +4549,8 @@ BPF_CALL_3(bpf_bind, struct bpf_sock_addr_kern *, ctx, struct sockaddr *, addr,
+ 		/* ipv6_bpf_stub cannot be NULL, since it's called from
+ 		 * bpf_cgroup_inet6_connect hook and ipv6 is already loaded
+ 		 */
+-		return ipv6_bpf_stub->inet6_bind(sk, addr, addr_len, true, false);
++		return ipv6_bpf_stub->inet6_bind(sk, addr, addr_len,
++						 BIND_FORCE_ADDRESS_NO_PORT);
+ #endif /* CONFIG_IPV6 */
  	}
+ #endif /* CONFIG_INET */
+diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+index 6177c4ba0037..68e74b1b0f26 100644
+--- a/net/ipv4/af_inet.c
++++ b/net/ipv4/af_inet.c
+@@ -450,12 +450,12 @@ int inet_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
+ 	if (err)
+ 		return err;
  
--	while (true) {
--		client_fd = accept(fd, (struct sockaddr *)&addr, &len);
--		if (client_fd == -1 && errno == EAGAIN) {
--			usleep(50);
--			continue;
--		}
--		break;
--	}
-+	client_fd = accept_timeout(fd, (struct sockaddr *)&addr, &len, 3);
- 	if (CHECK_FAIL(client_fd < 0)) {
- 		perror("Failed to accept client");
- 		return ERR_PTR(err);
-@@ -509,6 +502,40 @@ int connect_to_fd(int family, int server_fd)
- 	return -1;
+-	return __inet_bind(sk, uaddr, addr_len, false, true);
++	return __inet_bind(sk, uaddr, addr_len, BIND_WITH_LOCK);
+ }
+ EXPORT_SYMBOL(inet_bind);
+ 
+ int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+-		bool force_bind_address_no_port, bool with_lock)
++		u32 flags)
+ {
+ 	struct sockaddr_in *addr = (struct sockaddr_in *)uaddr;
+ 	struct inet_sock *inet = inet_sk(sk);
+@@ -506,7 +506,7 @@ int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+ 	 *      would be illegal to use them (multicast/broadcast) in
+ 	 *      which case the sending device address is used.
+ 	 */
+-	if (with_lock)
++	if (flags & BIND_WITH_LOCK)
+ 		lock_sock(sk);
+ 
+ 	/* Check these errors (active socket, double bind). */
+@@ -520,7 +520,7 @@ int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+ 
+ 	/* Make sure we are allowed to bind here. */
+ 	if (snum || !(inet->bind_address_no_port ||
+-		      force_bind_address_no_port)) {
++		      (flags & BIND_FORCE_ADDRESS_NO_PORT))) {
+ 		if (sk->sk_prot->get_port(sk, snum)) {
+ 			inet->inet_saddr = inet->inet_rcv_saddr = 0;
+ 			err = -EADDRINUSE;
+@@ -543,7 +543,7 @@ int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+ 	sk_dst_reset(sk);
+ 	err = 0;
+ out_release_sock:
+-	if (with_lock)
++	if (flags & BIND_WITH_LOCK)
+ 		release_sock(sk);
+ out:
+ 	return err;
+diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
+index 345baa0a754f..552c2592b81c 100644
+--- a/net/ipv6/af_inet6.c
++++ b/net/ipv6/af_inet6.c
+@@ -273,7 +273,7 @@ static int inet6_create(struct net *net, struct socket *sock, int protocol,
  }
  
-+static int poll_read(int fd, unsigned int timeout_sec)
-+{
-+	struct timeval timeout = { .tv_sec = timeout_sec };
-+	fd_set rfds;
-+	int r;
-+
-+	FD_ZERO(&rfds);
-+	FD_SET(fd, &rfds);
-+
-+	r = select(fd + 1, &rfds, NULL, NULL, &timeout);
-+	if (r == 0)
-+		errno = ETIME;
-+
-+	return r == 1 ? 0 : -1;
-+}
-+
-+int accept_timeout(int fd, struct sockaddr *addr, socklen_t *len,
-+		   unsigned int timeout_sec)
-+{
-+	if (poll_read(fd, timeout_sec))
-+		return -1;
-+
-+	return accept(fd, addr, len);
-+}
-+
-+int recv_timeout(int fd, void *buf, size_t len, int flags,
-+		 unsigned int timeout_sec)
-+{
-+	if (poll_read(fd, timeout_sec))
-+		return -1;
-+
-+	return recv(fd, buf, len, flags);
-+}
-+
- /* extern declarations for test funcs */
- #define DEFINE_TEST(name) extern void test_##name(void);
- #include <prog_tests/tests.h>
-diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
-index 363a3f2273a4..4a48654a4f08 100644
---- a/tools/testing/selftests/bpf/test_progs.h
-+++ b/tools/testing/selftests/bpf/test_progs.h
-@@ -160,6 +160,10 @@ void *spin_lock_thread(void *arg);
- int start_server_thread(int family);
- void stop_server_thread(int fd);
- int connect_to_fd(int family, int server_fd);
-+int accept_timeout(int fd, struct sockaddr *addr, socklen_t *len,
-+		   unsigned int timeout_sec);
-+int recv_timeout(int fd, void *buf, size_t len, int flags,
-+		 unsigned int timeout_sec);
+ static int __inet6_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+-			bool force_bind_address_no_port, bool with_lock)
++			u32 flags)
+ {
+ 	struct sockaddr_in6 *addr = (struct sockaddr_in6 *)uaddr;
+ 	struct inet_sock *inet = inet_sk(sk);
+@@ -297,7 +297,7 @@ static int __inet6_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+ 	    !ns_capable(net->user_ns, CAP_NET_BIND_SERVICE))
+ 		return -EACCES;
  
- #ifdef __x86_64__
- #define SYS_NANOSLEEP_KPROBE_NAME "__x64_sys_nanosleep"
+-	if (with_lock)
++	if (flags & BIND_WITH_LOCK)
+ 		lock_sock(sk);
+ 
+ 	/* Check these errors (active socket, double bind). */
+@@ -400,7 +400,7 @@ static int __inet6_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+ 
+ 	/* Make sure we are allowed to bind here. */
+ 	if (snum || !(inet->bind_address_no_port ||
+-		      force_bind_address_no_port)) {
++		      (flags & BIND_FORCE_ADDRESS_NO_PORT))) {
+ 		if (sk->sk_prot->get_port(sk, snum)) {
+ 			sk->sk_ipv6only = saved_ipv6only;
+ 			inet_reset_saddr(sk);
+@@ -423,7 +423,7 @@ static int __inet6_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+ 	inet->inet_dport = 0;
+ 	inet->inet_daddr = 0;
+ out:
+-	if (with_lock)
++	if (flags & BIND_WITH_LOCK)
+ 		release_sock(sk);
+ 	return err;
+ out_unlock:
+@@ -451,7 +451,7 @@ int inet6_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
+ 	if (err)
+ 		return err;
+ 
+-	return __inet6_bind(sk, uaddr, addr_len, false, true);
++	return __inet6_bind(sk, uaddr, addr_len, BIND_WITH_LOCK);
+ }
+ EXPORT_SYMBOL(inet6_bind);
+ 
 -- 
 2.26.2.526.g744177e7f7-goog
 
