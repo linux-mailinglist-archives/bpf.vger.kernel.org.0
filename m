@@ -2,118 +2,224 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 832D11C353C
-	for <lists+bpf@lfdr.de>; Mon,  4 May 2020 11:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45F21C384E
+	for <lists+bpf@lfdr.de>; Mon,  4 May 2020 13:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725928AbgEDJFd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 May 2020 05:05:33 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28482 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726467AbgEDJFc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 May 2020 05:05:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588583131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=BUMYAgYVEbMnE9HCazZFtfj40ubk94x+JHLvAPGLttU=;
-        b=Z3YjD89GkQ2lEgLgZfFsVBXcPyXUQUFzKOsU4rV73Ra/BChAmwfypCMsGJ1MgEe/o8+y3i
-        fWMm5CPCzyD1qL4QKNFx3HcEAsJKJPSnVg3BWjCxJ7LuXOgFxPAc/4v+lokUzeVfhNYumY
-        RMFwrwq/eDCgjlBJ60HrSZ7y2uuoTCw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-441-AJYe1ogYNwyt4figYBKPVw-1; Mon, 04 May 2020 05:05:26 -0400
-X-MC-Unique: AJYe1ogYNwyt4figYBKPVw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 950697BAC;
-        Mon,  4 May 2020 09:05:24 +0000 (UTC)
-Received: from ebuild.redhat.com (ovpn-115-25.ams2.redhat.com [10.36.115.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E74F55D9D5;
-        Mon,  4 May 2020 09:05:19 +0000 (UTC)
-From:   Eelco Chaudron <echaudro@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, andriin@fb.com, toke@redhat.com
-Subject: [PATCH bpf-next v2] libbpf: fix probe code to return EPERM if encountered
-Date:   Mon,  4 May 2020 11:05:14 +0200
-Message-Id: <158858309381.5053.12391080967642755711.stgit@ebuild>
-User-Agent: StGit/0.19
+        id S1728278AbgEDLht (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 May 2020 07:37:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728270AbgEDLht (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 4 May 2020 07:37:49 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347D2C061A0E;
+        Mon,  4 May 2020 04:37:49 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id x2so5352693pfx.7;
+        Mon, 04 May 2020 04:37:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dMyCMH5wgveswbK/u4bcaVKFhOCbQHqmAoefFSH1wC8=;
+        b=tw8OOnEGwviga6qTwN5YM9C+5sBdMO1ejOe04w9g6I4cQ7FfrfkUnpIPpOgnmtMovF
+         DSxS+FZ60rQn4d57otO5LJA4Het+3V24ZAGlfGV2vxzCruiakPey200Bb0WJiloICsnq
+         33EICZVEQCeRUkZZCdW58tgGflkuIuh1scYVP33RHuqDhaL3lfU3CsM0PS5ae+QVD1F4
+         6AnAOoUmVoTiTF8mZZKSTUP23RA5qDIBGfOtwwPmcvv1w6tmGO35qpADJ6eAh8Y2jv5X
+         G7vbJA7jnvJGCvyQ9NCeiQiAsLQBbI3MNiaJ6UfqJEILYLIJyN5GP5A903HuvH7X89EC
+         9Bkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dMyCMH5wgveswbK/u4bcaVKFhOCbQHqmAoefFSH1wC8=;
+        b=pBXdbDPI1Ir+RYJThhA5wXzEAqCcX5ngM9glEqURA9nHZWC4QF+CnuYJf1Ml8zaQf3
+         B0xiMWol9hQHuCXTz2wjKcK5yiMIMY3QDN4FeWomnD7u5MpBtX2cFH/NtIa1rwvr7d/w
+         pIcvXuBtC1c8UlrveySLd+5cAxaPu0EX/XhdyP+mZ6RTrcdUSq8J+f+DlnIibzU3/7pb
+         dN7yajUlo4wfx/oQMOtUa6iMLXH6OLa8VWqNmvyijrTNRRQNmw5c5c8t/FkKeZ+GZ9Ji
+         Vaq8ws64tFlK0odUTG5qJhaReGpY/P6Rhh5BkjWHK4NPaenXJrpzan5czgMrJ+bj3Zgo
+         MycQ==
+X-Gm-Message-State: AGi0PuahPrgXHGS7uSZZW9oZwUNLFRTZw7uDSKcdqq5dv9L4BZ8RwUUO
+        LJj4wCyLbjnuKBrJlvad4QG/0jd+lVgwvw==
+X-Google-Smtp-Source: APiQypL3p8WhaN1cuJqSfcRpZ/04FdhLwbhum9qniM/SU3nqzkzzYoYuwMaXIB8j/+PxaPMAYz+Fkw==
+X-Received: by 2002:aa7:8b15:: with SMTP id f21mr17133835pfd.72.1588592268657;
+        Mon, 04 May 2020 04:37:48 -0700 (PDT)
+Received: from btopel-mobl.ger.intel.com ([192.55.55.41])
+        by smtp.gmail.com with ESMTPSA id x185sm8650789pfx.155.2020.05.04.04.37.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 May 2020 04:37:47 -0700 (PDT)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        magnus.karlsson@intel.com, jonathan.lemon@gmail.com
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        maximmi@mellanox.com, maciej.fijalkowski@intel.com,
+        bjorn.topel@intel.com
+Subject: [RFC PATCH bpf-next 00/13] Introduce AF_XDP buffer allocation API
+Date:   Mon,  4 May 2020 13:37:02 +0200
+Message-Id: <20200504113716.7930-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When the probe code was failing for any reason ENOTSUP was returned, even
-if this was due to no having enough lock space. This patch fixes this by
-returning EPERM to the user application, so it can respond and increase
-the RLIMIT_MEMLOCK size.
+Driver adoption for AF_XDP has been slow. The amount of code required
+to proper support AF_XDP is substantial and the driver/core APIs are
+vague or even non-existing. Drivers have to manually adjust data
+offsets, updating AF_XDP handles differently for different modes
+(aligned/unaligned).
 
-Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
----
-v2: Split bpf_object__probe_name() in two functions as suggested by Andri=
-i
+This series attempts to improve the situation by introducing an AF_XDP
+buffer allocation API. The implementation is based on a single core
+(single producer/consumer) buffer pool for the AF_XDP UMEM.
+    
+A buffer is allocated using the xsk_buff_alloc() function, and
+returned using xsk_buff_free(). If a buffer is disassociated with the
+pool, e.g. when a buffer is passed to an AF_XDP socket, a buffer is
+said to be released. Currently, the release function is only used by
+the AF_XDP internals and not visible to the driver.
+    
+Drivers using this API should register the XDP memory model with the
+new MEM_TYPE_XSK_BUFF_POOL type, which will supersede the
+MEM_TYPE_ZERO_COPY type.
 
- tools/lib/bpf/libbpf.c |   25 ++++++++++++++++++++++---
- 1 file changed, 22 insertions(+), 3 deletions(-)
+The buffer type is struct xdp_buff, and follows the lifetime of
+regular xdp_buffs, i.e.  the lifetime of an xdp_buff is restricted to
+a NAPI context. In other words, the API is not replacing xdp_frames.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 8f480e29a6b0..6838e6d431ce 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -3149,7 +3149,7 @@ int bpf_map__resize(struct bpf_map *map, __u32 max_=
-entries)
- }
-=20
- static int
--bpf_object__probe_name(struct bpf_object *obj)
-+bpf_object__probe_loading(struct bpf_object *obj)
- {
- 	struct bpf_load_program_attr attr;
- 	char *cp, errmsg[STRERR_BUFSIZE];
-@@ -3176,8 +3176,26 @@ bpf_object__probe_name(struct bpf_object *obj)
- 	}
- 	close(ret);
-=20
--	/* now try the same program, but with the name */
-+	return 0;
-+}
-=20
-+static int
-+bpf_object__probe_name(struct bpf_object *obj)
-+{
-+	struct bpf_load_program_attr attr;
-+	struct bpf_insn insns[] =3D {
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	};
-+	int ret;
-+
-+	/* make sure loading with name works */
-+
-+	memset(&attr, 0, sizeof(attr));
-+	attr.prog_type =3D BPF_PROG_TYPE_SOCKET_FILTER;
-+	attr.insns =3D insns;
-+	attr.insns_cnt =3D ARRAY_SIZE(insns);
-+	attr.license =3D "GPL";
- 	attr.name =3D "test";
- 	ret =3D bpf_load_program_xattr(&attr, NULL, 0);
- 	if (ret >=3D 0) {
-@@ -5386,7 +5404,8 @@ int bpf_object__load_xattr(struct bpf_object_load_a=
-ttr *attr)
-=20
- 	obj->loaded =3D true;
-=20
--	err =3D bpf_object__probe_caps(obj);
-+	err =3D bpf_object__probe_loading(obj);
-+	err =3D err ? : bpf_object__probe_caps(obj);
- 	err =3D err ? : bpf_object__resolve_externs(obj, obj->kconfig);
- 	err =3D err ? : bpf_object__sanitize_and_load_btf(obj);
- 	err =3D err ? : bpf_object__sanitize_maps(obj);
+The reasons for sending the series as an RFC, and not as a proper one,
+are:
+
+* Mellanox and Intel need to finish the validation tests, prior merging.
+
+* An additional API is (maybe) needed to let a NIC driver change the
+  headroom/data alignment. Some hardware have specific DMA alignment
+  requirements. Further; Should the headroom be adjusted for
+  NET_IP_ALIGN?
+
+The outline of the series is as following:
+
+Patch 1 to 3 are restructures/clean ups. The XSKMAP implementation is
+moved to net/xdp/. Functions/defines/enums that are only used by the
+AF_XDP internals are moved from the global include/net/xdp_sock.h to
+net/xdp/xsk.h. We are also introducing a new "driver include file",
+include/net/xdp_sock_drv.h, which is the only file NIC driver
+developers adding AF_XDP zero-copy support should care about.
+
+Patch 4 adds the new API, and migrates the "copy-mode"/skb-mode AF_XDP
+path to the new API.
+
+Patch 5 to 10 migrates the existing zero-copy drivers to the new API.
+
+Patch 11 removes the MEM_TYPE_ZERO_COPY memory type, and the "handle"
+member of struct xdp_buff.
+
+Patch 12 is a performance patch, where some functions are inlined.
+
+Finally, patch 13 updates the MAINTAINERS file to correctly mirror the
+new file layout.
+
+Note that this series removes the "handle" member from struct
+xdp_buff.
+
+After this series, the amount of code in drivers/net/ is reduced by:
+  27 files changed, 371 insertions(+), 1265 deletions(-)
+
+As a nice side effect, performance is up a bit as well (40 GbE, 64B
+packets, i40e):
+
+rxdrop, zero-copy, aligned:
+baseline: 20.4 Mpps
+new API : 21.3 Mpps
+
+rxdrop, zero-copy, unaligned:
+baseline: 19.5 Mpps
+new API : 21.2 Mpps
+
+All input are welcome -- especially ideas/thoughts on buffer alignment
+(bullet #2 above).
+
+Big thanks to Max, Magnus and Maciej for all (offlist) input, and
+help!
+
+
+Cheers,
+Björn
+
+Björn Töpel (12):
+  xsk: move xskmap.c to net/xdp/
+  xsk: move defines only used by AF_XDP internals to xsk.h
+  xsk: introduce AF_XDP buffer allocation API
+  i40e: refactor rx_bi accesses
+  i40e: separate kernel allocated rx_bi rings from AF_XDP rings
+  i40e, xsk: migrate to new MEM_TYPE_XSK_BUFF_POOL
+  ice, xsk: migrate to new MEM_TYPE_XSK_BUFF_POOL
+  ixgbe, xsk: migrate to new MEM_TYPE_XSK_BUFF_POOL
+  mlx5, xsk: migrate to new MEM_TYPE_XSK_BUFF_POOL
+  xsk: remove MEM_TYPE_ZERO_COPY and corresponding code
+  xsk: explicitly inline functions and move definitions
+  MAINTAINERS, xsk: update AF_XDP section after moves/adds
+
+Magnus Karlsson (1):
+  xsk: move driver interface to xdp_sock_drv.h
+
+ MAINTAINERS                                   |   6 +-
+ drivers/net/ethernet/intel/i40e/i40e_main.c   |  28 +-
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 134 +++---
+ drivers/net/ethernet/intel/i40e/i40e_txrx.h   |  17 +-
+ .../ethernet/intel/i40e/i40e_txrx_common.h    |  40 +-
+ drivers/net/ethernet/intel/i40e/i40e_type.h   |   5 +-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c    | 376 +++-------------
+ drivers/net/ethernet/intel/i40e/i40e_xsk.h    |   3 +-
+ drivers/net/ethernet/intel/ice/ice_base.c     |  16 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.h     |   8 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c      | 374 ++--------------
+ drivers/net/ethernet/intel/ice/ice_xsk.h      |  13 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe.h      |   9 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |  15 +-
+ .../ethernet/intel/ixgbe/ixgbe_txrx_common.h  |   2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  | 307 +++----------
+ drivers/net/ethernet/mellanox/mlx5/core/en.h  |  11 +-
+ .../ethernet/mellanox/mlx5/core/en/params.c   |   4 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  32 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.h  |   2 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/rx.c   | 111 +----
+ .../ethernet/mellanox/mlx5/core/en/xsk/rx.h   |   8 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/tx.c   |   6 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/tx.h   |   2 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/umem.c |  54 +--
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |  15 +-
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  43 +-
+ drivers/net/hyperv/netvsc_bpf.c               |   1 -
+ include/net/xdp.h                             |   9 +-
+ include/net/xdp_sock.h                        | 276 +-----------
+ include/net/xdp_sock_drv.h                    | 200 +++++++++
+ include/net/xsk_buff_pool.h                   |  94 ++++
+ include/trace/events/xdp.h                    |   2 +-
+ kernel/bpf/Makefile                           |   3 -
+ net/core/xdp.c                                |  44 +-
+ net/ethtool/channels.c                        |   2 +-
+ net/ethtool/ioctl.c                           |   2 +-
+ net/xdp/Makefile                              |   3 +-
+ net/xdp/xdp_umem.c                            |  55 +--
+ net/xdp/xdp_umem.h                            |   2 +-
+ net/xdp/xsk.c                                 | 204 +++------
+ net/xdp/xsk.h                                 |  30 ++
+ net/xdp/xsk_buff_pool.c                       | 410 ++++++++++++++++++
+ net/xdp/xsk_diag.c                            |   2 +-
+ net/xdp/xsk_queue.c                           |  62 ---
+ net/xdp/xsk_queue.h                           |  94 +---
+ {kernel/bpf => net/xdp}/xskmap.c              |   2 +
+ 47 files changed, 1219 insertions(+), 1919 deletions(-)
+ create mode 100644 include/net/xdp_sock_drv.h
+ create mode 100644 include/net/xsk_buff_pool.h
+ create mode 100644 net/xdp/xsk_buff_pool.c
+ rename {kernel/bpf => net/xdp}/xskmap.c (99%)
+
+-- 
+2.25.1
 
