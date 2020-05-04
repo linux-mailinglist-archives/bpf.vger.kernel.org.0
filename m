@@ -2,166 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726F71C45FF
-	for <lists+bpf@lfdr.de>; Mon,  4 May 2020 20:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CAA31C4626
+	for <lists+bpf@lfdr.de>; Mon,  4 May 2020 20:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729839AbgEDScW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 May 2020 14:32:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33798 "EHLO
+        id S1727121AbgEDSmE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 May 2020 14:42:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729762AbgEDScW (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 4 May 2020 14:32:22 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0449C061A0E;
-        Mon,  4 May 2020 11:32:20 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id s10so12213010iln.11;
-        Mon, 04 May 2020 11:32:20 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726756AbgEDSmB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 4 May 2020 14:42:01 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA30BC061A41
+        for <bpf@vger.kernel.org>; Mon,  4 May 2020 11:41:59 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id p25so5949557pfn.11
+        for <bpf@vger.kernel.org>; Mon, 04 May 2020 11:41:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=fXXtRyYva1+Yap2sD+XkgWxfM99Zk9A+tbgnZl+uYVs=;
-        b=SqDpVLrBzxV1r67aZX8RA7P1/Q2tnpVkR+mjTtj/YOveeWkmWjzR3ywxsH99cxXY3a
-         wKAEDVoENPtuKAEHqmr347MMGFTqKrvWj6XdVeR5FvfdQwacxFAa97surP3OLXAqr1vk
-         F6StOrd7PZPE1jFsTaS6nBIU6prZh1L++TJVmZbVDnHGDQDwhO3pRNXqa9MXJVDEVJv7
-         ZVb6ep2nk49H7i0ppC5mQH2d1sx1Mr1fg2CiIV957HQmNJh94KkX56AbH8G+HgxytY24
-         QjKBoO37+FEhSXRxdcPF22TTd1CDdYheZNJmBdSazmOqltD+wPkGeEEMDIyeubrFrdSf
-         fONA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=W2tJ5b2t7hczpaAxFKlCfGf3HMAY03e+dltiT1wWRtw=;
+        b=ZeNPUEFJK3Vzqz+6/aS6puuqVk/a8cosOmqzD7wITSt0oXSXn2EHXgOrzGqV7NeV1U
+         tpNtoJ8OFz+o7A+cLKtE7CTdGQP15Cv/jR2PAAT/RkIvE7i4pWJs/yQJ9GoGzWr77iYi
+         GoWITCOXJw3bA0fVyTcdTrgnW0VyEa9wuf8no=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fXXtRyYva1+Yap2sD+XkgWxfM99Zk9A+tbgnZl+uYVs=;
-        b=K1KTmeCKA1gH9YzEvu+4CBBRHvZpLcGIiKXe6ipvccFhJAdx+MKB73xb5qLwLG0esi
-         nA8Dry7Zs60bwRlA33tlHDj/YLJF1+p15irQEdBAuWggvCaeVVkk3BR28SwKdMI0Vt8d
-         ZLcUISiqEeFXYKeU49qk7KkAbgKHpsRWYjQSHAc09HUMdjZJnboX5EIcgZPkDBY07GPh
-         /r7XvyNXA1SwOBcNUlRUl2MulWP6Xt4rcbUrxmZJXvOZhmUqgQ8Z6/T+zHRVbYkhPU+J
-         XnuMd3aSWQ6EBhlSNImdE+HNrgaa29IV8ZfeuBD+Urc1F/Q0Em1JL8zPi6RYGto8sdUS
-         Qw9Q==
-X-Gm-Message-State: AGi0PuauM9RCfSrmOY5ax7DZNFyme6fV0D/EoHyuMSL663JwYfO7VBfx
-        xSkDTpiUTkoxrw+l/aDKQOv6N4IrG6IjiqMDZm63+Q==
-X-Google-Smtp-Source: APiQypIelHi5H2gOOeV6AG0p+DHhbAQdWM8rSXrfNS+YheSy9O8I6CDCBlbJIoDENRReAgdL4iw++6cAfwm27FCISDY=
-X-Received: by 2002:a92:d786:: with SMTP id d6mr17358321iln.74.1588617140339;
- Mon, 04 May 2020 11:32:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200430071506.1408910-1-songliubraving@fb.com>
- <20200430071506.1408910-3-songliubraving@fb.com> <CAADnVQK-Zo19Z1Gdaq9MYE_9GmyrCuOFbz873D4uCvvVSp0j0w@mail.gmail.com>
- <19614603-D8E5-49E9-AB70-A022A409EF03@fb.com>
-In-Reply-To: <19614603-D8E5-49E9-AB70-A022A409EF03@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 4 May 2020 11:32:09 -0700
-Message-ID: <CAEf4BzacguQXgT9GUj2yfdw3M8dM85gBt55Di+CGLCZcYcuK6Q@mail.gmail.com>
-Subject: Re: [PATCH v9 bpf-next 2/3] libbpf: add support for command BPF_ENABLE_STATS
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=W2tJ5b2t7hczpaAxFKlCfGf3HMAY03e+dltiT1wWRtw=;
+        b=qe5Dah8I2cCL9DF04g659zYoA51VKB5jew4TW61L/6TUXdPMu8g7OG8O2GIbumrSN0
+         65IH7HBToeERA+m3Bk+TfGRel5s++5/b+OeVSAUEdEKxRuGHrc3SAip02shdg+U5KsbV
+         oF6sysXp/4crisJguGeMhsbElwwg7NpHKKOV9lnlhIPGUCN+mh+ANdAlBM5mN3Y8Erbd
+         IAuizKAEuJZeyNwWZ6HmoXIDglx0aopH1H5qtAzzzntL7OFKyZGnarTuxdGZE/giJb5+
+         KqVRuJPrF1bVRmE6vgJKrrFSF1byLGRZwVAeMs8cZUPlb31CfPDj+fu1cgC+MwemDjf9
+         qPcQ==
+X-Gm-Message-State: AGi0PuYg7zicFi0+igVBY/JLqTHd0bwM7z+p6iO7a/64Yc74qpBgrEci
+        G+EndnSAprepOWY4ZXq8TMO+3g==
+X-Google-Smtp-Source: APiQypIZef/BfkRBu20SORWfQDfii5L/7CKWSh4JL4l2QaSNhCzuiGlsdosd5WC0raG1OkKCcKBJ1A==
+X-Received: by 2002:a62:4ec6:: with SMTP id c189mr19147132pfb.299.1588617719212;
+        Mon, 04 May 2020 11:41:59 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q6sm9253995pfh.193.2020.05.04.11.41.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 May 2020 11:41:58 -0700 (PDT)
+Date:   Mon, 4 May 2020 11:41:57 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Iurii Zaikin <yzaikin@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, David Rientjes <rientjes@google.com>
+Subject: Re: [PATCH 2/5] mm: remove watermark_boost_factor_sysctl_handler
+Message-ID: <202005041141.DA134ED931@keescook>
+References: <20200424064338.538313-1-hch@lst.de>
+ <20200424064338.538313-3-hch@lst.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200424064338.538313-3-hch@lst.de>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 4, 2020 at 10:47 AM Song Liu <songliubraving@fb.com> wrote:
->
->
->
-> > On May 2, 2020, at 1:00 PM, Alexei Starovoitov <alexei.starovoitov@gmai=
-l.com> wrote:
-> >
-> > On Thu, Apr 30, 2020 at 12:15 AM Song Liu <songliubraving@fb.com> wrote=
-:
-> >>
-> >> bpf_enable_stats() is added to enable given stats.
-> >>
-> >> Signed-off-by: Song Liu <songliubraving@fb.com>
-> > ...
-> >> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> >> index 335b457b3a25..1901b2777854 100644
-> >> --- a/tools/lib/bpf/bpf.h
-> >> +++ b/tools/lib/bpf/bpf.h
-> >> @@ -231,6 +231,7 @@ LIBBPF_API int bpf_load_btf(void *btf, __u32 btf_s=
-ize, char *log_buf,
-> >> LIBBPF_API int bpf_task_fd_query(int pid, int fd, __u32 flags, char *b=
-uf,
-> >>                                 __u32 *buf_len, __u32 *prog_id, __u32 =
-*fd_type,
-> >>                                 __u64 *probe_offset, __u64 *probe_addr=
-);
-> >> +LIBBPF_API int bpf_enable_stats(enum bpf_stats_type type);
-> >
-> > I see odd warning here while building selftests
-> >
-> > In file included from runqslower.c:10:
-> > .../tools/testing/selftests/bpf/tools/include/bpf/bpf.h:234:38:
-> > warning: =E2=80=98enum bpf_stats_type=E2=80=99 declared inside paramete=
-r list will not
-> > be visible outside of this definition or declaration
-> >  234 | LIBBPF_API int bpf_enable_stats(enum bpf_stats_type type);
-> >
-> > Since this warning is printed only when building runqslower
-> > and the rest of selftests are fine, I'm guessing
-> > it's a makefile issue with order of includes?
-> >
-> > Andrii, could you please take a look ?
-> > Not urgent. Just flagging for visibility.
->
-> The following should fix it.
->
-> Thanks,
-> Song
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D 8< =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> From 485c28c8e2cbcc22aa8fcda82f8f599411faa755 Mon Sep 17 00:00:00 2001
-> From: Song Liu <songliubraving@fb.com>
-> Date: Mon, 4 May 2020 10:36:26 -0700
-> Subject: [PATCH bpf-next] runqslower: include proper uapi/bpf.h
->
-> runqslower doesn't specify include path for uapi/bpf.h. This causes the
-> following warning:
->
-> In file included from runqslower.c:10:
-> .../tools/testing/selftests/bpf/tools/include/bpf/bpf.h:234:38:
-> warning: 'enum bpf_stats_type' declared inside parameter list will not
-> be visible outside of this definition or declaration
->   234 | LIBBPF_API int bpf_enable_stats(enum bpf_stats_type type);
->
-> Fix this by adding -I tools/includ/uapi to the Makefile.
->
-> Reported-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Song Liu <songliubraving@fb.com>
+On Fri, Apr 24, 2020 at 08:43:35AM +0200, Christoph Hellwig wrote:
+> watermark_boost_factor_sysctl_handler is just a pointless wrapper for
+> proc_dointvec_minmax, so remove it and use proc_dointvec_minmax
+> directly.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-Kees
+
+> Acked-by: David Rientjes <rientjes@google.com>
 > ---
+>  include/linux/mmzone.h |  2 --
+>  kernel/sysctl.c        |  2 +-
+>  mm/page_alloc.c        | 12 ------------
+>  3 files changed, 1 insertion(+), 15 deletions(-)
+> 
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 1b9de7d220fb7..f37bb8f187fc7 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -911,8 +911,6 @@ static inline int is_highmem(struct zone *zone)
+>  struct ctl_table;
+>  int min_free_kbytes_sysctl_handler(struct ctl_table *, int,
+>  					void __user *, size_t *, loff_t *);
+> -int watermark_boost_factor_sysctl_handler(struct ctl_table *, int,
+> -					void __user *, size_t *, loff_t *);
+>  int watermark_scale_factor_sysctl_handler(struct ctl_table *, int,
+>  					void __user *, size_t *, loff_t *);
+>  extern int sysctl_lowmem_reserve_ratio[MAX_NR_ZONES];
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index 8a176d8727a3a..99d27acf46465 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -1491,7 +1491,7 @@ static struct ctl_table vm_table[] = {
+>  		.data		= &watermark_boost_factor,
+>  		.maxlen		= sizeof(watermark_boost_factor),
+>  		.mode		= 0644,
+> -		.proc_handler	= watermark_boost_factor_sysctl_handler,
+> +		.proc_handler	= proc_dointvec_minmax,
+>  		.extra1		= SYSCTL_ZERO,
+>  	},
+>  	{
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 69827d4fa0527..62c1550cd43ec 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -7978,18 +7978,6 @@ int min_free_kbytes_sysctl_handler(struct ctl_table *table, int write,
+>  	return 0;
+>  }
+>  
+> -int watermark_boost_factor_sysctl_handler(struct ctl_table *table, int write,
+> -	void __user *buffer, size_t *length, loff_t *ppos)
+> -{
+> -	int rc;
+> -
+> -	rc = proc_dointvec_minmax(table, write, buffer, length, ppos);
+> -	if (rc)
+> -		return rc;
+> -
+> -	return 0;
+> -}
+> -
+>  int watermark_scale_factor_sysctl_handler(struct ctl_table *table, int write,
+>  	void __user *buffer, size_t *length, loff_t *ppos)
+>  {
+> -- 
+> 2.26.1
+> 
 
-LGTM. Thanks!
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  tools/bpf/runqslower/Makefile | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefil=
-e
-> index 8a6f82e56a24..722a29a988cd 100644
-> --- a/tools/bpf/runqslower/Makefile
-> +++ b/tools/bpf/runqslower/Makefile
-> @@ -8,7 +8,8 @@ BPFTOOL ?=3D $(DEFAULT_BPFTOOL)
->  LIBBPF_SRC :=3D $(abspath ../../lib/bpf)
->  BPFOBJ :=3D $(OUTPUT)/libbpf.a
->  BPF_INCLUDE :=3D $(OUTPUT)
-> -INCLUDES :=3D -I$(OUTPUT) -I$(BPF_INCLUDE) -I$(abspath ../../lib)
-> +INCLUDES :=3D -I$(OUTPUT) -I$(BPF_INCLUDE) -I$(abspath ../../lib)       =
- \
-> +       -I$(abspath ../../include/uapi)
->  CFLAGS :=3D -g -Wall
->
->  # Try to detect best kernel BTF source
-> --
-> 2.24.1
->
+-- 
+Kees Cook
