@@ -2,97 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241D71C5D06
-	for <lists+bpf@lfdr.de>; Tue,  5 May 2020 18:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 948AD1C5E65
+	for <lists+bpf@lfdr.de>; Tue,  5 May 2020 19:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729310AbgEEQI5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 May 2020 12:08:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728804AbgEEQI4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 May 2020 12:08:56 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AA3C061A10
-        for <bpf@vger.kernel.org>; Tue,  5 May 2020 09:08:56 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id e2so2806436ybm.19
-        for <bpf@vger.kernel.org>; Tue, 05 May 2020 09:08:56 -0700 (PDT)
+        id S1729697AbgEERJQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 May 2020 13:09:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728804AbgEERJQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 5 May 2020 13:09:16 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1857FC061A10
+        for <bpf@vger.kernel.org>; Tue,  5 May 2020 10:09:15 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id f56so2345710qte.18
+        for <bpf@vger.kernel.org>; Tue, 05 May 2020 10:09:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=C14y1R1nSZ3vM1HIHFaSZXYpMS+wZVtIFoe+sKl7Sx4=;
-        b=moKdVIimuT/3z6FS0xOOvWFCcpGd3YI3sPCw3Ct3yO7tvyq+25VIUjS4z7R1fdaWiF
-         qnGY5m5ePpGjEDDpJ/rTgEEeS3dPgAHZj2dfcUbPETIPQrO1Etpydsd+xvqkJY+C8ziJ
-         D7SC+UZqK6wSx5mMf2oSrOZyxp8o6872gCv8IjB8qsSdXcgVe1TWR90bO2O2alX1RsCc
-         jBeNVELFIgCWnA54e/BK4VZNkXeb2dIpCYj7uixv7YwZSYBvygxwJhe7SVkLIytAcSXJ
-         L9V3O11m1f3Z91L9dxAWfrMVo2M89C9xZeX4V7uKtbaN2pPtSe3siHU+hK6QlvAY1S1l
-         ocKg==
+        bh=RpzQzYgI2u6oOp5fx3UYE0fD9aQpv7j3X9pieNSKWFI=;
+        b=Svcmwtd9wRUMiAlUmc5gRNjGl4ymJ1yV2eXzXmu62loS9/6cWcblB3RMQ54Jj+4wvZ
+         iA3PO4A6FF1MpAk1iVM64jSDu6iEP9tfBqMS8EhwuyjkK25xQnsrUGFq14T/M+0INivI
+         nbEoxVu4+DjaBvO++0s02SafcsbZfTQsA7gjDqN6PpaZWwWw9XQrmzWJIADAAKyIRHCn
+         R0jwdbnI+hP41hcOIxVEoAudTpyhQAzKqZgVaR9FlHXW5boyvObl2rfsN3Scu8o5Ksri
+         vs1zRaGRdyfmiQtFPOSpze2NPoHiQWMPPNgeT6c2oJvVcB1TFK6IcBwuLJTOGHUZbdvx
+         rFyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=C14y1R1nSZ3vM1HIHFaSZXYpMS+wZVtIFoe+sKl7Sx4=;
-        b=iqJNUUM5TpX4RXxNjzWQVXPh8ekfp64Y8PEAEzVPaNGO0v/vh6HpS6yXI42tlBlyHj
-         oWN0QCmOlWGXIftGI6lvjapzeXlsk8SdsEy+o2YeEMIjD4T5qKlwTyReq6jMa9UpZEEy
-         NawThU6qh8Rblo2vEReWXe6aO0xb0L8rPDPBjXaG/uG2y1jdDeBqVRh3bThpicDEPiHE
-         t4RayjqqqVjYJiZ+dAdpfnwQIxdesNLpa33uXXGWQh3I1lAVqN08HBZwYtBgJvyhepQh
-         n7W09viZ9JvdD5zgrjH1eY8sNrE/pev1XMe2Iwm9Bq9V4ED4d6sJdfuJfSe10Pykw/YK
-         9ACQ==
-X-Gm-Message-State: AGi0Pua+85/lEa1S8YyLFpezlQG/8DscnqvO1zY6LP+UtwbYjdaVd2Mv
-        FDibgrLO95nY+d1KcLAnjkJ1h4M=
-X-Google-Smtp-Source: APiQypKsObMbPI2xbKqjumTZrS8h46fsdt3lKgkxwV64V1h9jGB0PcoxGcvJTJkAvpiWAk2qOSjxVWw=
-X-Received: by 2002:a5b:b10:: with SMTP id z16mr5984577ybp.206.1588694935696;
- Tue, 05 May 2020 09:08:55 -0700 (PDT)
-Date:   Tue, 5 May 2020 09:08:54 -0700
-In-Reply-To: <CAEf4BzahmBZmffPq2xL8ca0TpQPNHZtdOnduhHoA=Ua7oy99Ew@mail.gmail.com>
-Message-Id: <20200505160854.GD241848@google.com>
+        bh=RpzQzYgI2u6oOp5fx3UYE0fD9aQpv7j3X9pieNSKWFI=;
+        b=Tedvw59iZCQi3VI6VQ/kPe5osqLuLui2SgOaa5sY4MMPJxkVJsl1piweAiDAeFJlYf
+         aa63Krtj8Vmpd/IXddntsVkTbLPW7OngrDNps3c9rAZKFjFWzUy7bOaSPjQ7+1W7kl4V
+         zGBUqGi4wiy92c13EhFFXrowZzX/KTnFcjkYxScJfCduzFLCXk1XpO/g4NaJK3GBk6Qq
+         VeaZiIEzLLBsc22pvyGsuCcu00jwyvzxwySeSgCn+Rj7H5vyDxQSNoE/I5MTdEEVDNkM
+         XrubQtAF+9iYNfJ4bI3eVcbmmuWU8kRy4CQPpOeAqR0BvTbifiqLW3wV+fV5tbKvsb2w
+         /FCg==
+X-Gm-Message-State: AGi0PubjDmb3a9wNntZrapOVFleQoVLh250ekJV7U7rxNPSP9Yo3AKyP
+        3pYH7TZozeRNOnEQI5KuDq8Dscw=
+X-Google-Smtp-Source: APiQypLBGY2wjAeuMji6hqatbH/6vNqL12Z16p2EW+6NUtH9yaeEjN0j95/RCh7ig6TcYm0GIwiauP0=
+X-Received: by 2002:a0c:f910:: with SMTP id v16mr3710849qvn.37.1588698554239;
+ Tue, 05 May 2020 10:09:14 -0700 (PDT)
+Date:   Tue, 5 May 2020 10:09:12 -0700
+In-Reply-To: <20200505160205.GC241848@google.com>
+Message-Id: <20200505170912.GE241848@google.com>
 Mime-Version: 1.0
-References: <20200504173430.6629-1-sdf@google.com> <20200504173430.6629-2-sdf@google.com>
- <CAEf4BzahmBZmffPq2xL8ca0TpQPNHZtdOnduhHoA=Ua7oy99Ew@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/4] selftests/bpf: generalize helpers to control
- backround listener
+References: <20200504173430.6629-1-sdf@google.com> <20200504173430.6629-5-sdf@google.com>
+ <20200504232247.GA20087@rdna-mbp> <20200505160205.GC241848@google.com>
+Subject: Re: [PATCH bpf-next 4/4] bpf: allow any port in bpf_bind helper
 From:   sdf@google.com
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrey Ignatov <rdna@fb.com>
+To:     Andrey Ignatov <rdna@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net
 Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/04, Andrii Nakryiko wrote:
-> On Mon, May 4, 2020 at 10:37 AM Stanislav Fomichev <sdf@google.com> wrote:
+On 05/05, Stanislav Fomichev wrote:
+> On 05/04, Andrey Ignatov wrote:
+> > Stanislav Fomichev <sdf@google.com> [Mon, 2020-05-04 10:34 -0700]:
+> > > [...]
+> > > diff --git a/net/core/filter.c b/net/core/filter.c
+> > > index fa9ddab5dd1f..fc5161b9ff6a 100644
+> > > --- a/net/core/filter.c
+> > > +++ b/net/core/filter.c
+> > > @@ -4527,29 +4527,24 @@ BPF_CALL_3(bpf_bind, struct  
+> bpf_sock_addr_kern *, ctx, struct sockaddr *, addr,
+> > >  	struct sock *sk = ctx->sk;
+> > >  	int err;
+> > >
+> > > -	/* Binding to port can be expensive so it's prohibited in the  
+> helper.
+> > > -	 * Only binding to IP is supported.
+> > > -	 */
+> > >  	err = -EINVAL;
+> > >  	if (addr_len < offsetofend(struct sockaddr, sa_family))
+> > >  		return err;
+> > >  	if (addr->sa_family == AF_INET) {
+> > >  		if (addr_len < sizeof(struct sockaddr_in))
+> > >  			return err;
+> > > -		if (((struct sockaddr_in *)addr)->sin_port != htons(0))
+> > > -			return err;
+> > >  		return __inet_bind(sk, addr, addr_len,
+> > > +				   BIND_FROM_BPF |
+> > >  				   BIND_FORCE_ADDRESS_NO_PORT);
 > >
-> > Move the following routines that let us start a background listener
-> > thread and connect to a server by fd to the test_prog:
-> > * start_server_thread - start background INADDR_ANY thread
-> > * stop_server_thread - stop the thread
-> > * connect_to_fd - connect to the server identified by fd
-> >
-> > These will be used in the next commit.
-> >
-> > Also, extend these helpers to support AF_INET6 and accept the family
-> > as an argument.
-> >
-> > Cc: Andrey Ignatov <rdna@fb.com>
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  .../selftests/bpf/prog_tests/tcp_rtt.c        | 115 +--------------
-> >  tools/testing/selftests/bpf/test_progs.c      | 138 ++++++++++++++++++
-> >  tools/testing/selftests/bpf/test_progs.h      |   3 +
-> >  3 files changed, 144 insertions(+), 112 deletions(-)
+> > Should BIND_FORCE_ADDRESS_NO_PORT be passed only if port is zero?
+> > Passing non zero port and BIND_FORCE_ADDRESS_NO_PORT at the same time
+> > looks confusing (even though it works).
+> Makes sense, will remove it here, thx.
+Looking at it some more, I think we need to always have that
+BIND_FORCE_ADDRESS_NO_PORT. Otherwise, it might regress your
+usecase with zero port:
 
-> Can this functionality be moved into a separate file, similar to
-> cgroup_helpers.{c.h}? This doesn't seem like helper routines needed
-> for most tests, so it doesn't make sense to me to keep piling
-> everything into test_progs.{c,h}.
-test_progs_helpers.{c,h}? And maybe move existing helpers like
-bpf_find_map, spin_lock_thread, etc in there?
+   if (snum || !(inet->bind_address_no_port ||
+                (flags & BIND_FORCE_ADDRESS_NO_PORT)))
 
-Or do you think that these networking helpers should be completely  
-independent
-from test_progs?
+If snum == 0 we want to have either the flag on or
+IP_BIND_ADDRESS_NO_PORT being set on the socket to prevent the port
+allocation a bind time.
+
+If snum != 0, BIND_FORCE_ADDRESS_NO_PORT doesn't matter and the port
+is passed as an argument. We don't need to search for a free one, just
+to confirm it's not used.
+
+Am I missing something?
