@@ -2,106 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C291C5C7E
-	for <lists+bpf@lfdr.de>; Tue,  5 May 2020 17:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F07E1C5CD3
+	for <lists+bpf@lfdr.de>; Tue,  5 May 2020 18:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730112AbgEEPuJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 May 2020 11:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35804 "EHLO
+        id S1728807AbgEEQCI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 May 2020 12:02:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729150AbgEEPuH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 May 2020 11:50:07 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917D9C061A0F;
-        Tue,  5 May 2020 08:50:07 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id k81so2772876qke.5;
-        Tue, 05 May 2020 08:50:07 -0700 (PDT)
+        with ESMTP id S1728687AbgEEQCI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 May 2020 12:02:08 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCDA2C061A0F
+        for <bpf@vger.kernel.org>; Tue,  5 May 2020 09:02:07 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id j21so2161622qtq.8
+        for <bpf@vger.kernel.org>; Tue, 05 May 2020 09:02:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yJr8RqITkDOSGCYSWIKgpqgvoSgqR2F95IvJn3b0ji4=;
-        b=jc0CkDP2R64dQQyGSslB9qk/kYm/zxhSNRdlUNAK+ACzkAtWZbgvmHATjia5aFel8o
-         ElMXA5x7gAZLp3+uLkYOhyRcrFWJzBB/UbPMP13/+JUlYldi3ceOhNrLPAIajFuWghfe
-         4abpBFl5979n9mX1uHFxWoL3nV6mUZe8yOGN+Bl8VdaKGIiqUGLfZujSE7nvS5iT3xK+
-         V0jzCJNs2wlkSo9P7QPvg/3iAR3omJKATAltVkVslcBb+lVAdSBiXwGwpJFPfRMQb+c8
-         alpJv9gVvRJeXd7dOw9ON+bWn+LD7wulFhfsvjoZHRydZtGMgT+f6giTXOtbUq8aipyo
-         EjYg==
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=4TpoaWOfIMzmYuVNUIcM8L6z3F6N2eWr0N5QkQaPvjQ=;
+        b=G7tdmrsu+zxRxidc70dCpsGkxiilgCmO48j6ceb5nrDTv3ar2ISjTE7RObtySznkV7
+         ooe2q9aBupInIcOAaUwGF8tP8x0MOQKDkMikK7GDLd46EgxfSMXpza+/sHLGiinJUpL+
+         ik4/qzPh8ywmG7BxoyqGypf4ykWhBJ5OcIesAcV7lemPIewW6qr3aVQbW9UvxnRGPOLD
+         L0ahpH35GQMiMeWdTzwu6L73GbPgu/wSpDKVI71AzVAZpN20aXZ4x+2r2dvJNDOFMl+R
+         6bmYqjlwdSJYy3XY1n8FlH6w38U+IMNhr9uLxYVoMUPkUnc9HBp9PPuqjZ3JTZBneIlL
+         AlPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yJr8RqITkDOSGCYSWIKgpqgvoSgqR2F95IvJn3b0ji4=;
-        b=FKE5K/jP9Os0M2xLZoHVTcicVYTS2f7r4kNV/mIL8eTiJwOGdOAtaVrLt4/JJauTr0
-         uW2iBeaQ5IO0kUpPuYSXsSgmL332TZPTe/rGJEhkMcDgvN60c9EeykTr0sAR0ScwNC0f
-         Kz9bZbUXrhGf2t3OH7cF1o/EKz5e1rFgTzKQMru0T6SAaDUr2kZjcXuzCTn8I8HrlPUa
-         rAEdILAV6u+G8Q4itEJ78rJU5Z/XupPQ0mXdwn4uPX7lprdSeGsB+bb81uWkaeBuphsH
-         Xxyu5nFXkhXjYTtUo8SJhvlD+0YKpDA6UhFoh7jh3H15UgezSO+knOLjQ3lmDmz+fbb/
-         Eyrw==
-X-Gm-Message-State: AGi0PuZZBYftyGxdrda3YkMIrRIn+TXPMI34HQSK62uRrt32M0rid9Zw
-        7JOQDkifAER6vJVTcnabb4w4aYbK
-X-Google-Smtp-Source: APiQypLCqoomdHCwWQgejNHDdpI6LwLVKABF7LU6TEhgRnJJpXSiw5kVu5AcqucNL0BygHBTCKCInA==
-X-Received: by 2002:a37:5846:: with SMTP id m67mr3829421qkb.78.1588693806656;
-        Tue, 05 May 2020 08:50:06 -0700 (PDT)
-Received: from ?IPv6:2601:282:803:7700:c19:a884:3b89:d8b6? ([2601:282:803:7700:c19:a884:3b89:d8b6])
-        by smtp.googlemail.com with ESMTPSA id f68sm2192226qke.74.2020.05.05.08.50.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 May 2020 08:50:06 -0700 (PDT)
-Subject: Re: [PATCH iproute2-next 2/2] ss: add support for cgroup v2
- information and filtering
-To:     Dmitry Yakunin <zeil@yandex-team.ru>, netdev@vger.kernel.org
-Cc:     khlebnikov@yandex-team.ru, cgroups@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20200430155245.83364-1-zeil@yandex-team.ru>
- <20200430155245.83364-3-zeil@yandex-team.ru>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <72f12b35-0dd2-81b2-aeb1-52822c7fe03a@gmail.com>
-Date:   Tue, 5 May 2020 09:50:04 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200430155245.83364-3-zeil@yandex-team.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=4TpoaWOfIMzmYuVNUIcM8L6z3F6N2eWr0N5QkQaPvjQ=;
+        b=Nb5+TuuneVHe55J5KHop5T0xLIFgWblUOCvEprfk7QFqTZf/5p3FqO0r2fw03u+Hy4
+         /0cEU7apxGd1qWYp2StmI029Ffgbga0AkyjewxhrnDs1f60Dlv7bb4GW1rvvV8mY0nj3
+         nA++zgHEmVrWomIXhMWwUzJdH+Xj8o/ijhv1tk7zpjs8/YQz7lu/RdzAKFjGjF2w3TXK
+         HlrfnLZED8TG6GLBs/nwL2kIpG1gA0N6roVWyMa/jorsq9H2RfJ23lFmdLQ89Fr3MHht
+         OS+PMCvNWjsiCFVbP9vcaYflhMaPMfgCoigsFkwu4Asd1EXUn8BtsLnYD66MUgwat4rF
+         n7Lw==
+X-Gm-Message-State: AGi0PubdRtRZX7xHvyH+ssPkmZirB0YHTsUvge8Alo/pWREYHkwbK9af
+        e3L6q1MFIesDfxwPG08VnhdVb9k=
+X-Google-Smtp-Source: APiQypIF0ddYHy8xsgRXU78QVTDeS4HKsMC8JKxV12udHEG/wHma1l60yxM2yg+6mjSEPRGivfB1oKw=
+X-Received: by 2002:a0c:b601:: with SMTP id f1mr3237273qve.99.1588694526978;
+ Tue, 05 May 2020 09:02:06 -0700 (PDT)
+Date:   Tue, 5 May 2020 09:02:05 -0700
+In-Reply-To: <20200504232247.GA20087@rdna-mbp>
+Message-Id: <20200505160205.GC241848@google.com>
+Mime-Version: 1.0
+References: <20200504173430.6629-1-sdf@google.com> <20200504173430.6629-5-sdf@google.com>
+ <20200504232247.GA20087@rdna-mbp>
+Subject: Re: [PATCH bpf-next 4/4] bpf: allow any port in bpf_bind helper
+From:   sdf@google.com
+To:     Andrey Ignatov <rdna@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/30/20 9:52 AM, Dmitry Yakunin wrote:
-> This patch introduces two new features: obtaining cgroup information and
-> filtering sockets by cgroups. These features work based on cgroup v2 ID
-> field in the socket (kernel should be compiled with CONFIG_SOCK_CGROUP_DATA).
-> 
-> Cgroup information can be obtained by specifying --cgroup flag and now contains
-> only pathname. For faster pathname lookups cgroup cache is implemented. This
-> cache is filled on ss startup and missed entries are resolved and saved
-> on the fly.
-> 
-> Cgroup filter extends EXPRESSION and allows to specify cgroup pathname
-> (relative or absolute) to obtain sockets attached only to this cgroup.
-> Filter syntax: ss [ cgroup PATHNAME ]
-> Examples:
->     ss -a cgroup /sys/fs/cgroup/unified (or ss -a cgroup .)
->     ss -a cgroup /sys/fs/cgroup/unified/cgroup1 (or ss -a cgroup cgroup1)
-> 
+On 05/04, Andrey Ignatov wrote:
+> Stanislav Fomichev <sdf@google.com> [Mon, 2020-05-04 10:34 -0700]:
+> > We want to have a tighter control on what ports we bind to in
+> > the BPF_CGROUP_INET{4,6}_CONNECT hooks even if it means
+> > connect() becomes slightly more expensive. The expensive part
+> > comes from the fact that we now need to call inet_csk_get_port()
+> > that verifies that the port is not used and allocates an entry
+> > in the hash table for it.
 
-on a kernel without support for this feature:
+> FWIW: Initially that IP_BIND_ADDRESS_NO_PORT limitation came from the
+> fact that on my specific use-case (mysql client making 200-500 connects
+> per sec to mysql server) disabling the option was making application
+> pretty much unusable (inet_csk_get_port was taking more time than mysql
+> client connect timeout == 3sec).
 
-$ misc/ss -a cgroup /sys/fs/cgroup/unified
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-Netid    State    Recv-Q    Send-Q       Local Address:Port         Peer
-Address:Port    Process
+> But I guess for some use-cases that call sys_connect not too often it
+> makes sense.
+Yeah, I don't think we plan to reach those QPS numbers.
+But, for the record, did you try to bind to a random port in that
+case? And did you bail out on error or did a couple of retries?
 
-New iproute2 can be run on older kernels, so errors should be cleanly
-handled.
+> > Since we can't rely on "snum || !bind_address_no_port" to prevent
+> > us from calling POST_BIND hook anymore, let's add another bind flag
+> > to indicate that the call site is BPF program.
+> >
+> > Cc: Andrey Ignatov <rdna@fb.com>
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  include/net/inet_common.h                     |   2 +
+> >  net/core/filter.c                             |   9 +-
+> >  net/ipv4/af_inet.c                            |  10 +-
+> >  net/ipv6/af_inet6.c                           |  12 +-
+> >  .../bpf/prog_tests/connect_force_port.c       | 104 ++++++++++++++++++
+> >  .../selftests/bpf/progs/connect_force_port4.c |  28 +++++
+> >  .../selftests/bpf/progs/connect_force_port6.c |  28 +++++
+> >  7 files changed, 177 insertions(+), 16 deletions(-)
+> >  create mode 100644  
+> tools/testing/selftests/bpf/prog_tests/connect_force_port.c
+> >  create mode 100644  
+> tools/testing/selftests/bpf/progs/connect_force_port4.c
+> >  create mode 100644  
+> tools/testing/selftests/bpf/progs/connect_force_port6.c
+
+> Documentation in include/uapi/linux/bpf.h should be updated as well
+> since now it states this:
+
+
+>   *              **AF_INET6**). Looking for a free port to bind to can be
+>   *              expensive, therefore binding to port is not permitted by  
+> the
+>   *              helper: *addr*\ **->sin_port** (or **sin6_port**,  
+> respectively)
+>   *              must be set to zero.
+
+> IMO it's also worth to keep a note on performance implications of
+> setting port to non zero.
+Ah, thank you, will do!
+
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index fa9ddab5dd1f..fc5161b9ff6a 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -4527,29 +4527,24 @@ BPF_CALL_3(bpf_bind, struct bpf_sock_addr_kern  
+> *, ctx, struct sockaddr *, addr,
+> >  	struct sock *sk = ctx->sk;
+> >  	int err;
+> >
+> > -	/* Binding to port can be expensive so it's prohibited in the helper.
+> > -	 * Only binding to IP is supported.
+> > -	 */
+> >  	err = -EINVAL;
+> >  	if (addr_len < offsetofend(struct sockaddr, sa_family))
+> >  		return err;
+> >  	if (addr->sa_family == AF_INET) {
+> >  		if (addr_len < sizeof(struct sockaddr_in))
+> >  			return err;
+> > -		if (((struct sockaddr_in *)addr)->sin_port != htons(0))
+> > -			return err;
+> >  		return __inet_bind(sk, addr, addr_len,
+> > +				   BIND_FROM_BPF |
+> >  				   BIND_FORCE_ADDRESS_NO_PORT);
+
+> Should BIND_FORCE_ADDRESS_NO_PORT be passed only if port is zero?
+> Passing non zero port and BIND_FORCE_ADDRESS_NO_PORT at the same time
+> looks confusing (even though it works).
+Makes sense, will remove it here, thx.
