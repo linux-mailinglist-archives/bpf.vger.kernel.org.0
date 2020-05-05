@@ -2,157 +2,272 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C3D1C6163
-	for <lists+bpf@lfdr.de>; Tue,  5 May 2020 21:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DADAC1C6167
+	for <lists+bpf@lfdr.de>; Tue,  5 May 2020 21:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728850AbgEETxZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 May 2020 15:53:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45572 "EHLO
+        id S1728135AbgEET4O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 May 2020 15:56:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726350AbgEETxZ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 5 May 2020 15:53:25 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157AAC061A0F;
-        Tue,  5 May 2020 12:53:25 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t16so1276028plo.7;
-        Tue, 05 May 2020 12:53:25 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726350AbgEET4O (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 5 May 2020 15:56:14 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F7E9C061A0F;
+        Tue,  5 May 2020 12:56:14 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id s2so195365qtq.13;
+        Tue, 05 May 2020 12:56:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IypnnQBGuIXnhQzcC4uwCcgachLRDQLArvlBeVJnyNA=;
-        b=lD4ywxWa6zeKoZ3Kj3uc3z2UQk+S6vsm7JQF/xZOwv2TnuARyEDKQ5B77dAe5UR0bg
-         33JP6kBaZosM5y+dJZc2vyGRgAdqeSeBSM2ISrxyzc8zHnXBFdW01J0snzqKHyG5TeUN
-         MpbKS4DlG3Y4z0fzpXO2e8LHs0vFn8CyUddZGdeVMOmMqt7uyZWJQ1R3ljB+4ZMiZI9l
-         gydM9BFe1t0NiDnXwLsKFfSSB3ZQUtwVa46EQLviRJ9dxHi3D0mRu0zWKTsJo42v36Ds
-         7xQrvWPechXfigIXLyYtFgrT6oG4MQwxUTS4P1Kqs5yk28edp3DQwCSe/B5l6TDbU9vX
-         tw9A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cf/0i1AzurWniqV3J618DdxsQ8szFCFmkFE6Zuk0aZ4=;
+        b=FIvmwxYMolp0anYF4K54TsNvQ6xq5+CuicohiNP9VaKRZViiWOf1Qao5R9+beEURrw
+         zl3f8Pt65Dt9MNhHx4/Mf2lyjSkjIM1pUCj01wQWCXr846/7ysh0cUFe/8MUcGwHxGE7
+         068iVYmbpLRFzqNfLEXNXK84FN/s6fKtfTDue+//uihtcC+0zkJM6yfW1EOC2Cvh0BiB
+         TnSx9HeBeyDWc6hLUY1HI9FqoCmLKdUDVozVuhb80IrIhQQET8FWtS8v2LbvgsEP7fue
+         BwRC5Z+PhCpYThXH1eO5x4m+p4J9iCHc0X7Sk0MuLUfexco7al21JTEWwK6uY4FGcXst
+         at0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IypnnQBGuIXnhQzcC4uwCcgachLRDQLArvlBeVJnyNA=;
-        b=WSyjqYtN0zAgXgVdE2p4IaZ+mqvLK3iKu9b+PM5yjDThLkY9qYGn+k1fDAC3wg83su
-         S5n+3cVYconYFza8u3J9ZsJz296ONaW9qYROIybMTFxkjfzoJplTHkdSrwSb0IOJ07ly
-         ZsZqPWUC5UpoSdQx/e93ETQwPNXnFfq/W/LGgGpYi2bCxZ76byxM1zy7K3NSNZ1denvf
-         i0CmKm9NmKrwf4JzfQgsL6IJwC6/7VrsZOnLvLw0HPtgRwJnaWmeh/zjvMO2nYv6jOa1
-         PAz/w2WXecvPQcyup0XcbPffvK20CYWh0U0y42UV95nI5w2nKYOYS9R8awIY3lfAJuZC
-         fzgQ==
-X-Gm-Message-State: AGi0PubiftBjjXeo8MS6MLvpxGKNjUoK7C98xorNlXA7L4JEat2eBwBe
-        EXzYz/G6BuXumvTtsR9eaaM=
-X-Google-Smtp-Source: APiQypL8q8LwGyybfhE8UQPvvleTYO6XllaxSllnF9wLyCJ8TbP17xuNLJeUlD1A8GdvaK8M0VoP3w==
-X-Received: by 2002:a17:902:7c12:: with SMTP id x18mr4371447pll.230.1588708404444;
-        Tue, 05 May 2020 12:53:24 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:e28e])
-        by smtp.gmail.com with ESMTPSA id x63sm2764601pfc.56.2020.05.05.12.53.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 12:53:23 -0700 (PDT)
-Date:   Tue, 5 May 2020 12:53:20 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] bpf: Tweak BPF jump table optimizations for objtool
- compatibility
-Message-ID: <20200505195320.lyphpnprn3sjijf6@ast-mbp.dhcp.thefacebook.com>
-References: <b581438a16e78559b4cea28cf8bc74158791a9b3.1588273491.git.jpoimboe@redhat.com>
- <20200501190930.ptxyml5o4rviyo26@ast-mbp.dhcp.thefacebook.com>
- <20200501192204.cepwymj3fln2ngpi@treble>
- <20200501194053.xyahhknjjdu3gqix@ast-mbp.dhcp.thefacebook.com>
- <20200501195617.czrnfqqcxfnliz3k@treble>
- <20200502030622.yrszsm54r6s6k6gq@ast-mbp.dhcp.thefacebook.com>
- <20200502192105.xp2osi5z354rh4sm@treble>
- <20200505174300.gech3wr5v6kkho35@ast-mbp.dhcp.thefacebook.com>
- <20200505181108.hwcqanvw3qf5qyxk@treble>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cf/0i1AzurWniqV3J618DdxsQ8szFCFmkFE6Zuk0aZ4=;
+        b=kLYhHNh5cGVNKvfJzfDdQaFLjel8jYsKOrbrChHEIFcWOktxSh2hx/Y+MaPpxvL37R
+         UIOISiPg8I4QOmnKYOB2uWDqwyBhi0ovPPZVEImRQAN9YftFJd9P6h08n6BbUciJSWP+
+         /dYp1qILETLIabHvHRqVKaY/y4iqsAW3oSVwuYhgyBpslRPdxvvmk+jjYgyxfMnZtu4C
+         qB7KPbBNMoroVzXxBq+ruuviMxsYjP1KoNKNxJIksiTxF1gGXeFf3QZAARnLEPWKtVjV
+         PuGKtXnEKdIQoUOOE1ihB8kqoUiZeTl7YHwOLXbAxfKz7rBpsCVTeZEgTsIfv4PRIEGh
+         J8yg==
+X-Gm-Message-State: AGi0PuZE4O6qhKm9ZPd9v8Q3Sy0OJUBIlMRUHF7eb5bBscSu3FpAol1h
+        29AhkIh18OnCYQarvj9ydLiTR74RQqAusSPI52Y=
+X-Google-Smtp-Source: APiQypLaA1zdOkVrBf7dyyBfdi5uKanqW75P1/XiKIPwzxsRCapFZFBZ1d86YGLLBFH0hOuYPQD+gVNwbOxkQUN7i/4=
+X-Received: by 2002:ac8:3f6d:: with SMTP id w42mr4512593qtk.171.1588708573252;
+ Tue, 05 May 2020 12:56:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200505181108.hwcqanvw3qf5qyxk@treble>
+References: <20200504062547.2047304-1-yhs@fb.com> <20200504062552.2047789-1-yhs@fb.com>
+In-Reply-To: <20200504062552.2047789-1-yhs@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 5 May 2020 12:56:02 -0700
+Message-ID: <CAEf4BzYKACiOB+cAC+g-LdJNJbnz9yrGyw7VsBoW1b2pHjUghw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 05/20] bpf: implement bpf_seq_read() for bpf iterator
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 05, 2020 at 01:11:08PM -0500, Josh Poimboeuf wrote:
-> On Tue, May 05, 2020 at 10:43:00AM -0700, Alexei Starovoitov wrote:
-> > > Or, if you want to minimize the patch's impact on other arches, and keep
-> > > the current patch the way it is (with bug fixed and changed patch
-> > > description), that's fine too.  I can change the patch description
-> > > accordingly.
-> > > 
-> > > Or if you want me to measure the performance impact of the +40% code
-> > > growth, and *then* decide what to do, that's also fine.  But you'd need
-> > > to tell me what tests to run.
-> > 
-> > I'd like to minimize the risk and avoid code churn,
-> > so how about we step back and debug it first?
-> > Which version of gcc are you using and what .config?
-> > I've tried:
-> > Linux version 5.7.0-rc2 (gcc version 10.0.1 20200505 (prerelease) (GCC)
-> > CONFIG_UNWINDER_ORC=y
-> > # CONFIG_RETPOLINE is not set
-> > 
-> > and objtool didn't complain.
-> > I would like to reproduce it first before making any changes.
-> 
-> Revert
-> 
->   3193c0836f20 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
-> 
-> and compile with retpolines off (and either ORC or FP, doesn't matter).
-> 
-> I'm using GCC 9.3.1:
-> 
->   kernel/bpf/core.o: warning: objtool: ___bpf_prog_run()+0x8dc: sibling call from callable instruction with modified stack frame
-> 
-> That's the original issue described in that commit.
+On Sun, May 3, 2020 at 11:26 PM Yonghong Song <yhs@fb.com> wrote:
+>
+> bpf iterator uses seq_file to provide a lossless
+> way to transfer data to user space. But we want to call
+> bpf program after all objects have been traversed, and
+> bpf program may write additional data to the
+> seq_file buffer. The current seq_read() does not work
+> for this use case.
+>
+> Besides allowing stop() function to write to the buffer,
+> the bpf_seq_read() also fixed the buffer size to one page.
+> If any single call of show() or stop() will emit data
+> more than one page to cause overflow, -E2BIG error code
+> will be returned to user space.
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  kernel/bpf/bpf_iter.c | 128 ++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 128 insertions(+)
+>
+> diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
+> index 05ae04ac1eca..2674c9cbc3dc 100644
+> --- a/kernel/bpf/bpf_iter.c
+> +++ b/kernel/bpf/bpf_iter.c
+> @@ -26,6 +26,134 @@ static DEFINE_MUTEX(targets_mutex);
+>  /* protect bpf_iter_link changes */
+>  static DEFINE_MUTEX(link_mutex);
+>
+> +/* bpf_seq_read, a customized and simpler version for bpf iterator.
+> + * no_llseek is assumed for this file.
+> + * The following are differences from seq_read():
+> + *  . fixed buffer size (PAGE_SIZE)
+> + *  . assuming no_llseek
+> + *  . stop() may call bpf program, handling potential overflow there
+> + */
+> +static ssize_t bpf_seq_read(struct file *file, char __user *buf, size_t size,
+> +                           loff_t *ppos)
+> +{
+> +       struct seq_file *seq = file->private_data;
+> +       size_t n, offs, copied = 0;
+> +       int err = 0;
+> +       void *p;
+> +
+> +       mutex_lock(&seq->lock);
+> +
+> +       if (!seq->buf) {
+> +               seq->size = PAGE_SIZE;
+> +               seq->buf = kmalloc(seq->size, GFP_KERNEL);
+> +               if (!seq->buf)
+> +                       goto Enomem;
 
-I see something different.
-With gcc 8, 9, and 10 and CCONFIG_UNWINDER_FRAME_POINTER=y
-I see:
-kernel/bpf/core.o: warning: objtool: ___bpf_prog_run()+0x4837: call without frame pointer save/setup
-and sure enough assembly code for ___bpf_prog_run does not countain frame setup
-though -fno-omit-frame-pointer flag was passed at command line.
-Then I did:
-static u64 /*__no_fgcse*/ ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
-and the assembly had proper frame, but objtool wasn't happy:
-kernel/bpf/core.o: warning: objtool: ___bpf_prog_run()+0x480a: sibling call from callable instruction with modified stack frame
+Why not just mutex_unlock and exit with -ENOMEM? Less goto'ing, more
+straightforward.
 
-gcc 6.3 doesn't have objtool warning with and without -fno-gcse.
+> +       }
+> +
+> +       if (seq->count) {
+> +               n = min(seq->count, size);
+> +               err = copy_to_user(buf, seq->buf + seq->from, n);
+> +               if (err)
+> +                       goto Efault;
+> +               seq->count -= n;
+> +               seq->from += n;
+> +               copied = n;
+> +               goto Done;
+> +       }
+> +
+> +       seq->from = 0;
+> +       p = seq->op->start(seq, &seq->index);
+> +       if (!p || IS_ERR(p))
 
-Looks like we have two issues here.
-First gcc 8, 9 and 10 have a severe bug with __attribute__((optimize("")))
-In this particular case passing -fno-gcse somehow overruled -fno-omit-frame-pointer
-which is serious issue. powerpc is using __nostackprotector. I don't understand
-how it can keep working with newer gcc-s. May be got lucky.
-Plenty of other projects use various __attribute__((optimize("")))
-they all have to double check that their vesion of GCC produces correct code.
-Can somebody reach out to gcc folks for explanation?
+IS_ERR_OR_NULL?
 
-The second objtool issue is imo minor one. It can be worked around for now
-and fixed for real later.
+> +               goto Stop;
+> +
+> +       err = seq->op->show(seq, p);
+> +       if (seq_has_overflowed(seq)) {
+> +               err = -E2BIG;
+> +               goto Error_show;
+> +       } else if (err) {
+> +               /* < 0: go out, > 0: skip */
+> +               if (likely(err < 0))
+> +                       goto Error_show;
+> +               seq->count = 0;
+> +       }
 
-> > Also since objtool cannot follow the optimizations compiler is doing
-> > how about admit the design failure and teach objtool to build ORC
-> > (and whatever else it needs to build) based on dwarf for the functions where
-> > it cannot understand the assembly code ?
-> > Otherwise objtool will forever be playing whackamole with compilers.
-> 
-> I agree it's not a good long term approach.  But DWARF has its own
-> issues and we can't rely on it for live patching.
+This seems a bit more straightforward:
 
-Curious what is the issue with dwarf and live patching ?
-I'm sure dwarf is enough to build ORC tables.
+if (seq_has_overflowed(seq))
+    err = -E2BIG;
+if (err < 0)
+    goto Error_show;
+else if (err > 0)
+    seq->count = 0;
 
-> As I mentioned we have a plan to use a compiler plugin to annotate jump
-> tables (including GCC switch tables).  But the approach taken by this
-> patch should be good enough for now.
+Also, I wonder if err > 0 (so skip was requested), should we ignore
+overflow? So something like:
 
-I don't have gcc 7 around. Could you please test the workaround with gcc 7,8,9,10
-and several clang versions? With ORC and with FP ? and retpoline on/off ?
-I don't see any issues with ORC=y. objtool complains with FP=y only for my configs.
-I want to make sure the workaround is actually effective.
+if (err > 0) {
+    seq->count = 0;
+} else {
+    if (seq_has_overflowed(seq))
+        err = -E2BIG;
+    if (err)
+        goto Error_show;
+}
+
+> +
+> +       while (1) {
+> +               loff_t pos = seq->index;
+> +
+> +               offs = seq->count;
+> +               p = seq->op->next(seq, p, &seq->index);
+> +               if (pos == seq->index) {
+> +                       pr_info_ratelimited("buggy seq_file .next function %ps "
+> +                               "did not updated position index\n",
+> +                               seq->op->next);
+> +                       seq->index++;
+> +               }
+> +
+> +               if (!p || IS_ERR(p)) {
+
+Same, IS_ERR_OR_NULL.
+
+> +                       err = PTR_ERR(p);
+> +                       break;
+> +               }
+> +               if (seq->count >= size)
+> +                       break;
+> +
+> +               err = seq->op->show(seq, p);
+> +               if (seq_has_overflowed(seq)) {
+> +                       if (offs == 0) {
+> +                               err = -E2BIG;
+> +                               goto Error_show;
+> +                       }
+> +                       seq->count = offs;
+> +                       break;
+> +               } else if (err) {
+> +                       /* < 0: go out, > 0: skip */
+> +                       seq->count = offs;
+> +                       if (likely(err < 0)) {
+> +                               if (offs == 0)
+> +                                       goto Error_show;
+> +                               break;
+> +                       }
+> +               }
+
+Same question here about ignoring overflow if skip was requested.
+
+> +       }
+> +Stop:
+> +       offs = seq->count;
+> +       /* may call bpf program */
+> +       seq->op->stop(seq, p);
+> +       if (seq_has_overflowed(seq)) {
+> +               if (offs == 0)
+> +                       goto Error_stop;
+> +               seq->count = offs;
+
+just want to double-check, because it's not clear from the code. If
+all the start()/show()/next() succeeded, but stop() overflown. Would
+stop() be called again on subsequent read? Would start/show/next
+handle this correctly as well?
+
+> +       }
+> +
+> +       n = min(seq->count, size);
+> +       err = copy_to_user(buf, seq->buf, n);
+> +       if (err)
+> +               goto Efault;
+> +       copied = n;
+> +       seq->count -= n;
+> +       seq->from = n;
+> +Done:
+> +       if (!copied)
+> +               copied = err;
+> +       else
+> +               *ppos += copied;
+> +       mutex_unlock(&seq->lock);
+> +       return copied;
+> +
+> +Error_show:
+> +       seq->op->stop(seq, p);
+> +Error_stop:
+> +       seq->count = 0;
+> +       goto Done;
+> +
+> +Enomem:
+> +       err = -ENOMEM;
+> +       goto Done;
+> +
+> +Efault:
+> +       err = -EFAULT;
+> +       goto Done;
+
+Enomem and Efault seem completely redundant and just add goto
+complexity to this algorithm. Let's just inline `err =
+-E(NOMEM|FAULT); goto Done;` instead?
+
+> +}
+> +
+>  int bpf_iter_reg_target(struct bpf_iter_reg *reg_info)
+>  {
+>         struct bpf_iter_target_info *tinfo;
+> --
+> 2.24.1
+>
