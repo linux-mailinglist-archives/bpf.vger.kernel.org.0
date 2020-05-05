@@ -2,33 +2,33 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89CBC1C4F79
-	for <lists+bpf@lfdr.de>; Tue,  5 May 2020 09:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B101C4F82
+	for <lists+bpf@lfdr.de>; Tue,  5 May 2020 09:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726575AbgEEHq0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 May 2020 03:46:26 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:56748 "EHLO huawei.com"
+        id S1726568AbgEEHq5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 May 2020 03:46:57 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3409 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725320AbgEEHq0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 May 2020 03:46:26 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 229104EBF276A91F6063;
-        Tue,  5 May 2020 15:46:24 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Tue, 5 May 2020
- 15:46:16 +0800
+        id S1725833AbgEEHq5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 May 2020 03:46:57 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 0C4A467DFD34D00D0C71;
+        Tue,  5 May 2020 15:46:54 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Tue, 5 May 2020
+ 15:46:46 +0800
 From:   Jason Yan <yanaijie@huawei.com>
-To:     <aelior@marvell.com>, <GR-everest-linux-l2@marvell.com>,
-        <davem@davemloft.net>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <kuba@kernel.org>, <hawk@kernel.org>, <john.fastabend@gmail.com>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <andriin@fb.com>, <kpsingh@chromium.org>, <skalluru@marvell.com>,
-        <pablo@netfilter.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+To:     <michael.chan@broadcom.com>, <davem@davemloft.net>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <kuba@kernel.org>,
+        <hawk@kernel.org>, <john.fastabend@gmail.com>,
+        <sumit.semwal@linaro.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linaro-mm-sig@lists.linaro.org>
 CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH net-next] net: qede: Use true for bool variable in qede_init_fp()
-Date:   Tue, 5 May 2020 15:45:39 +0800
-Message-ID: <20200505074539.22161-1-yanaijie@huawei.com>
+Subject: [PATCH net-next] net: bnxt: Remove Comparison to bool in bnxt_ethtool.c
+Date:   Tue, 5 May 2020 15:46:08 +0800
+Message-ID: <20200505074608.22432-1-yanaijie@huawei.com>
 X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -42,27 +42,43 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Fix the following coccicheck warning:
 
-drivers/net/ethernet/qlogic/qede/qede_main.c:1717:5-19: WARNING:
-Assignment of 0/1 to bool variable
+drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c:1991:5-46: WARNING:
+Comparison to bool
+drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c:1993:10-54: WARNING:
+Comparison to bool
+drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c:2380:5-38: WARNING:
+Comparison to bool
 
 Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- drivers/net/ethernet/qlogic/qede/qede_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/qlogic/qede/qede_main.c b/drivers/net/ethernet/qlogic/qede/qede_main.c
-index 9b456198cb50..256506024b88 100644
---- a/drivers/net/ethernet/qlogic/qede/qede_main.c
-+++ b/drivers/net/ethernet/qlogic/qede/qede_main.c
-@@ -1714,7 +1714,7 @@ static void qede_init_fp(struct qede_dev *edev)
- 				txq->ndev_txq_id = ndev_tx_id;
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
+index 34046a6286e8..75f60aea8dec 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
+@@ -1988,9 +1988,9 @@ static int bnxt_flash_firmware_from_file(struct net_device *dev,
+ 			   rc, filename);
+ 		return rc;
+ 	}
+-	if (bnxt_dir_type_is_ape_bin_format(dir_type) == true)
++	if (bnxt_dir_type_is_ape_bin_format(dir_type))
+ 		rc = bnxt_flash_firmware(dev, dir_type, fw->data, fw->size);
+-	else if (bnxt_dir_type_is_other_exec_format(dir_type) == true)
++	else if (bnxt_dir_type_is_other_exec_format(dir_type))
+ 		rc = bnxt_flash_microcode(dev, dir_type, fw->data, fw->size);
+ 	else
+ 		rc = bnxt_flash_nvram(dev, dir_type, BNX_DIR_ORDINAL_FIRST,
+@@ -2377,7 +2377,7 @@ static int bnxt_set_eeprom(struct net_device *dev,
+ 	}
  
- 				if (edev->dev_info.is_legacy)
--					txq->is_legacy = 1;
-+					txq->is_legacy = true;
- 				txq->dev = &edev->pdev->dev;
- 			}
- 
+ 	/* Create or re-write an NVM item: */
+-	if (bnxt_dir_type_is_executable(type) == true)
++	if (bnxt_dir_type_is_executable(type))
+ 		return -EOPNOTSUPP;
+ 	ext = eeprom->magic & 0xffff;
+ 	ordinal = eeprom->offset >> 16;
 -- 
 2.21.1
 
