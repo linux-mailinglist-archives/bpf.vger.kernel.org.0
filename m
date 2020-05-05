@@ -2,112 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6EBD1C5FBE
-	for <lists+bpf@lfdr.de>; Tue,  5 May 2020 20:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9F11C5FCE
+	for <lists+bpf@lfdr.de>; Tue,  5 May 2020 20:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730763AbgEESLS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 May 2020 14:11:18 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:20315 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730715AbgEESLR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 5 May 2020 14:11:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588702276;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FUXa2CXmLuQRCLi3xJlNiY+EjIDk0Fg9RVQ/zxz/azE=;
-        b=Ew+OdeAIVYU6nOSsvswepMvT/TlKYPq2wCU3jM7XJR4nYiTzXU8a+2/nJXsQFEISd+JxdV
-        uD/hXPb/EE9EkkGJH6EPgfqZCKLWSsNLh1bMYMy3pCtYY8F8pclqBhq8tlxVsI8bgyRIKL
-        cpvVYZ8N9LguhGrbanwuVOemWb0iPP8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-426-KnVlNyLUPpCFfSK0Az0--w-1; Tue, 05 May 2020 14:11:14 -0400
-X-MC-Unique: KnVlNyLUPpCFfSK0Az0--w-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 78AEE8014D5;
-        Tue,  5 May 2020 18:11:12 +0000 (UTC)
-Received: from treble (ovpn-119-47.rdu2.redhat.com [10.10.119.47])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E79635C1B2;
-        Tue,  5 May 2020 18:11:10 +0000 (UTC)
-Date:   Tue, 5 May 2020 13:11:08 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] bpf: Tweak BPF jump table optimizations for objtool
- compatibility
-Message-ID: <20200505181108.hwcqanvw3qf5qyxk@treble>
-References: <b581438a16e78559b4cea28cf8bc74158791a9b3.1588273491.git.jpoimboe@redhat.com>
- <20200501190930.ptxyml5o4rviyo26@ast-mbp.dhcp.thefacebook.com>
- <20200501192204.cepwymj3fln2ngpi@treble>
- <20200501194053.xyahhknjjdu3gqix@ast-mbp.dhcp.thefacebook.com>
- <20200501195617.czrnfqqcxfnliz3k@treble>
- <20200502030622.yrszsm54r6s6k6gq@ast-mbp.dhcp.thefacebook.com>
- <20200502192105.xp2osi5z354rh4sm@treble>
- <20200505174300.gech3wr5v6kkho35@ast-mbp.dhcp.thefacebook.com>
+        id S1730843AbgEESN5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 May 2020 14:13:57 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:34964 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730184AbgEESN5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 May 2020 14:13:57 -0400
+Received: by mail-pj1-f65.google.com with SMTP id ms17so1504886pjb.0;
+        Tue, 05 May 2020 11:13:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Rx9dL5oa5s/IWarikU/6m95Ws4R/Z6DJqOhAk9cf0GY=;
+        b=kQIpA2YBaMOtB6ta6bLZvjkXBLGM0M7dmqilAUDqjqr8PvKbHi4n+Qzqs5si5Q9tTr
+         uuEk/zEo/J+/CerIeOMbWxQiqSpZgtNPjnbmDR7uYlSnCmpGRGrRV3WcHoIVAY87RvWL
+         2EMd9FWoz2HB+5pFaKU2M+0DcCXj13tdY83n+a7tTIh3r8WqliCfW26v1MDQPpZ0vVV9
+         sd0pHNIIJkeXQICVflNUv4xRAzK+wEDhVwUhqNJOkfgSwlstDKFwFN8ISpfNwawbb2qI
+         ZnZ3Xth6QKCUgkKY4CJ2c/Ggvm4lgg8PEWbuYOcsMdRpKhJj1t1ru1QbBPXx4v+SZcw1
+         K1Yw==
+X-Gm-Message-State: AGi0PubOLNlyYduzyJ2tSJNcTldQHyC6OUpW09CzVOBn+JYcdq98MWmt
+        Iz1J4/uR4OcrbR03XgdFlAk=
+X-Google-Smtp-Source: APiQypImOVLkOUOTDok7p5dA4mGR36U7jY91wjj8nHDq58TvLlNEmXj6aAgniC7vxDKm0EoG2OVrTw==
+X-Received: by 2002:a17:902:bc86:: with SMTP id bb6mr3908263plb.243.1588702436564;
+        Tue, 05 May 2020 11:13:56 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id g74sm2543148pfb.69.2020.05.05.11.13.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 11:13:55 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 547C4403EA; Tue,  5 May 2020 18:13:54 +0000 (UTC)
+Date:   Tue, 5 May 2020 18:13:54 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] sysctl: fix unused function warning
+Message-ID: <20200505181354.GU11244@42.do-not-panic.com>
+References: <20200505140734.503701-1-arnd@arndb.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200505174300.gech3wr5v6kkho35@ast-mbp.dhcp.thefacebook.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20200505140734.503701-1-arnd@arndb.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 05, 2020 at 10:43:00AM -0700, Alexei Starovoitov wrote:
-> > Or, if you want to minimize the patch's impact on other arches, and keep
-> > the current patch the way it is (with bug fixed and changed patch
-> > description), that's fine too.  I can change the patch description
-> > accordingly.
-> > 
-> > Or if you want me to measure the performance impact of the +40% code
-> > growth, and *then* decide what to do, that's also fine.  But you'd need
-> > to tell me what tests to run.
+On Tue, May 05, 2020 at 04:07:12PM +0200, Arnd Bergmann wrote:
+> The newly added bpf_stats_handler function has the wrong #ifdef
+> check around it, leading to an unused-function warning when
+> CONFIG_SYSCTL is disabled:
 > 
-> I'd like to minimize the risk and avoid code churn,
-> so how about we step back and debug it first?
-> Which version of gcc are you using and what .config?
-> I've tried:
-> Linux version 5.7.0-rc2 (gcc version 10.0.1 20200505 (prerelease) (GCC)
-> CONFIG_UNWINDER_ORC=y
-> # CONFIG_RETPOLINE is not set
+> kernel/sysctl.c:205:12: error: unused function 'bpf_stats_handler' [-Werror,-Wunused-function]
+> static int bpf_stats_handler(struct ctl_table *table, int write,
 > 
-> and objtool didn't complain.
-> I would like to reproduce it first before making any changes.
+> Fix the check to match the reference.
+> 
+> Fixes: d46edd671a14 ("bpf: Sharing bpf runtime stats with BPF_ENABLE_STATS")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Revert
+Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
 
-  3193c0836f20 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
-
-and compile with retpolines off (and either ORC or FP, doesn't matter).
-
-I'm using GCC 9.3.1:
-
-  kernel/bpf/core.o: warning: objtool: ___bpf_prog_run()+0x8dc: sibling call from callable instruction with modified stack frame
-
-That's the original issue described in that commit.
-
-> Also since objtool cannot follow the optimizations compiler is doing
-> how about admit the design failure and teach objtool to build ORC
-> (and whatever else it needs to build) based on dwarf for the functions where
-> it cannot understand the assembly code ?
-> Otherwise objtool will forever be playing whackamole with compilers.
-
-I agree it's not a good long term approach.  But DWARF has its own
-issues and we can't rely on it for live patching.
-
-As I mentioned we have a plan to use a compiler plugin to annotate jump
-tables (including GCC switch tables).  But the approach taken by this
-patch should be good enough for now.
-
--- 
-Josh
-
+  Luis
