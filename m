@@ -2,191 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680E41C5EEE
-	for <lists+bpf@lfdr.de>; Tue,  5 May 2020 19:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3801C5F18
+	for <lists+bpf@lfdr.de>; Tue,  5 May 2020 19:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729877AbgEEReA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 May 2020 13:34:00 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:63298 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729663AbgEEReA (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 5 May 2020 13:34:00 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 045HNNxV027213;
-        Tue, 5 May 2020 10:33:42 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=pLkrZn56eQ1xqGhe1AIIAtezeOb5EIXPOmoqfR0bFs8=;
- b=gs9SczlrE8gTVFsyl8481hSxL9CGHFN4Evw7rRO3SJTv78KXBQvVt+X4soO+VwNEZRTA
- 3SMa6GSRXgWiXhOyybSof9GK+h7qOULoStP+drTD3dPw2tJO1cTCw9Sh3wZeKWKWObsA
- h+VMtfJUBRdm7DgGOkQY8NI0VSBxPKrTm1w= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 30tfp5gmna-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 05 May 2020 10:33:41 -0700
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Tue, 5 May 2020 10:33:40 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KuPA0d28/KmhepXUx6s6xkfKTIIfudYVpO8p/TKBVivTWeeQpG9wXtKkSLRZdqts+VNRiJfBX3mYMKGHy1N2zgl1uDr3m2oLIL9/XdLH6xJEpjSy6YIuNKu989ZDdhqw7p177j/ZZqIijRDpuk0mim1nQbiFkSTod5YczN9B7Xi3Wk1Vd/8mnDzGYt93G9bVS23Tzg5rEEtdehUI66NYcTXT4rPGut5NWVCW4+R5GiRYFfuB/cSEALczGUw82wTgLIf10iKG249sT2PeqNFzoWBA525wG+asVuK6HHLC5LwmfABc4A6xoLcumC5ymAXR6HroY04qzRcDCUlB9kAt/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pLkrZn56eQ1xqGhe1AIIAtezeOb5EIXPOmoqfR0bFs8=;
- b=MqoeoSY113ZLJJ+HaUsRMlN151UJwQcUjypZFKlXddspCca67sk8FR/XKssY6kM1/KKOB0Q6B6Pov0dZ7go5DaGQtruMP3VR9FjvXQtW0+mVflUaRhd0ElObT8vlz+FdRldoHymtyLfew+CePXY0+3DKpdew2OnBFBinqM8S+TkuzZm1hvXULDBKBF+K3OyZF9O7qJ2D/ub+5ghnjRNQlzxBqXrsp1hX1fECz4jRKI/EbbzffFXfC9i1zWBT6EbzTMYZkUjBhacqA/soFwdAdVuxD14nFww31X/BAnDKl6+WTWy3HKD4jKNdSZP/IIgdjY11ME6GDRusokWPhYjNbA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pLkrZn56eQ1xqGhe1AIIAtezeOb5EIXPOmoqfR0bFs8=;
- b=GHgfIeDVHlTVqNKwLdKw5CKPd4un5oZAOASF0BZpVSF7VWL0uZ56NEo/dTR9+ThNqGtTvaolMhcgpJMY1wfk773SCbwxoOx0h3wGNCsKsB0N9P+jEd18v0/RSvPUoKD3lXQNuPZVmOUwnAnL0YG6YqJPrMtd2aNmjrPe2UxXp48=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4119.namprd15.prod.outlook.com (2603:10b6:a02:cd::20)
- by BYAPR15MB2566.namprd15.prod.outlook.com (2603:10b6:a03:150::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.27; Tue, 5 May
- 2020 17:33:40 +0000
-Received: from BYAPR15MB4119.namprd15.prod.outlook.com
- ([fe80::90d6:ec75:fde:e992]) by BYAPR15MB4119.namprd15.prod.outlook.com
- ([fe80::90d6:ec75:fde:e992%7]) with mapi id 15.20.2958.030; Tue, 5 May 2020
- 17:33:40 +0000
-Date:   Tue, 5 May 2020 10:33:38 -0700
-From:   Andrey Ignatov <rdna@fb.com>
-To:     <sdf@google.com>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <davem@davemloft.net>, <ast@kernel.org>, <daniel@iogearbox.net>
-Subject: Re: [PATCH bpf-next 4/4] bpf: allow any port in bpf_bind helper
-Message-ID: <20200505173338.GA55644@rdna-mbp>
-References: <20200504173430.6629-1-sdf@google.com>
- <20200504173430.6629-5-sdf@google.com>
- <20200504232247.GA20087@rdna-mbp>
- <20200505160205.GC241848@google.com>
- <20200505170912.GE241848@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200505170912.GE241848@google.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-ClientProxiedBy: BYAPR07CA0060.namprd07.prod.outlook.com
- (2603:10b6:a03:60::37) To BYAPR15MB4119.namprd15.prod.outlook.com
- (2603:10b6:a02:cd::20)
+        id S1729392AbgEERnF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 May 2020 13:43:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728804AbgEERnE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 5 May 2020 13:43:04 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C05EC061A0F;
+        Tue,  5 May 2020 10:43:04 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id x15so1226469pfa.1;
+        Tue, 05 May 2020 10:43:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kvERfMRg9N5gTCAlwuPKs93EBGmnYI4iJipCtIeq2gs=;
+        b=Qph4APLFoI2+hzETZ4MmK6/ia7rSIkOf+Q0tNR6/Yo671rXycMeMqjEDN4wuCsWKoi
+         eP5p3DBCR7byLb7+zZxVURtTEsaF6lQs4JpX5tNHKBLL5HbqdqaW2hu8nCH6uiXeO1Mt
+         TG357redEoBK4eVC5aKYVa1hUpHM6dTk7QwMRxdYeF3Wc5je3F24D9KNDZF1sNBA+EOX
+         kPkwmufXTAne9zliUtdZQGQA+pjzumbZDQsrPuyv80c3uivMX+42kn6gQgDwli//Ofc0
+         eD3MCUbBaHAq4nvhYYiFgk1cPvqNBDrTEL8+bkx+TofdZxjcP/M+9GgwDVJZ6WlaQLIG
+         33UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kvERfMRg9N5gTCAlwuPKs93EBGmnYI4iJipCtIeq2gs=;
+        b=gsKJUGZRMUcq2txq1EsN4HH6uk3gwPxhDT/v8GsLyqzyiseANGQ0uNFktfYvdE36T4
+         kDbJ8SAK8oUF/QZJLoKogbCFQlkVKJW7R6xBoVB7M/7liER10utGJBktOE4h7OXqkpb3
+         u3UvluSdFA1uYcyOxc6iiwwJWDAljSUE9x1FocW5TU3xW2axnaeECG75BddoTUe7ptMQ
+         8qD06IHrmskZSVdiOxIYgMzoNqAFgiiMYu2xkGWgEhGWTDcSroI25Zg11FTzI3UqKMGD
+         mDzpVp/cPMOk7uP/707/BhgsZvsonAs3YFnUKOBgZR74CaipAQyiX+AwLohagrJcERLm
+         r5sQ==
+X-Gm-Message-State: AGi0Puars1VP+Q7ypvLsFblrkO7g8Hfn+1oZUeEHn0/QQ7DksPe9HY7A
+        uR8fS1VPniL4mZ/uXyfLE2o=
+X-Google-Smtp-Source: APiQypJsKH+LeTVhCiBz3tctOiyz1jq7J90tXBhNupoM92x5fxgvFC/LDvDfddsbxltiQK36joF2hA==
+X-Received: by 2002:aa7:951c:: with SMTP id b28mr3849168pfp.242.1588700583810;
+        Tue, 05 May 2020 10:43:03 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:6a9])
+        by smtp.gmail.com with ESMTPSA id a16sm1881501pgg.23.2020.05.05.10.43.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 10:43:02 -0700 (PDT)
+Date:   Tue, 5 May 2020 10:43:00 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] bpf: Tweak BPF jump table optimizations for objtool
+ compatibility
+Message-ID: <20200505174300.gech3wr5v6kkho35@ast-mbp.dhcp.thefacebook.com>
+References: <b581438a16e78559b4cea28cf8bc74158791a9b3.1588273491.git.jpoimboe@redhat.com>
+ <20200501190930.ptxyml5o4rviyo26@ast-mbp.dhcp.thefacebook.com>
+ <20200501192204.cepwymj3fln2ngpi@treble>
+ <20200501194053.xyahhknjjdu3gqix@ast-mbp.dhcp.thefacebook.com>
+ <20200501195617.czrnfqqcxfnliz3k@treble>
+ <20200502030622.yrszsm54r6s6k6gq@ast-mbp.dhcp.thefacebook.com>
+ <20200502192105.xp2osi5z354rh4sm@treble>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (2620:10d:c090:400::5:d580) by BYAPR07CA0060.namprd07.prod.outlook.com (2603:10b6:a03:60::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.30 via Frontend Transport; Tue, 5 May 2020 17:33:40 +0000
-X-Originating-IP: [2620:10d:c090:400::5:d580]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1e892da5-fb5b-48df-0d38-08d7f11a733b
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2566:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB25661BD273CA9E879DB97123A8A70@BYAPR15MB2566.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-Forefront-PRVS: 0394259C80
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CfiGtqrWG3/K0NBKzRMisSvIp1GLigWA2bYYQNL4nvycbCnGgVdgMawPIV640xkQrZCYHwIW3N4OcKafKQhqAu6QDXZUOnHVjkoL7vwDxPVsemFPO9w6I7DXiqTQgJl2Lnc2f/zEhdoWLXKxf0S87ilV2Xt8yj99nRHwgkWW7aO259hghy4hGaZa0uu91omKAWvergR3+YdDC/yPNPCF2m8Ds3d2Nvw1Sxx7TeVT/oft1Tcfc3oFCYj+WAPCIVfaaAe6sCeCsXY8Xltp+8NDbgynBKuOhTwKLHBAXtRtSkPJ0GOSRbVQk3dIfS72Dv6tbbhhFJjkfhgOablT03BgbEbnMx4yXk0dZDeyFi+ubC1xXRxfTUGjF6Ngwl6HAHzVDlRirLay3HLfWUKZ2XAjKyN8QYct11guEv9bWn69Xa6WmYK02GL0d0h+EQauvoHYvRr8d+w5TPREKkRSzQREurJXpAyJCB2x5eEt7KTDZ++54zNdXZ+JBL6MPeg8dHuRIoEq2MKzqsLKosaNPa3hSw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4119.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(7916004)(366004)(33430700001)(9686003)(66556008)(6496006)(1076003)(66476007)(52116002)(33656002)(6916009)(33716001)(186003)(6486002)(66946007)(4326008)(16526019)(2906002)(86362001)(498600001)(5660300002)(33440700001)(8936002)(8676002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 4zfbPTOtWAi9NgjYdQlMmJsc7jnpqBBO3pOT1oDPJL4i4g5AJ+TIoGkQ5V6LqJcQDEyNkUlWWCqf7H5hRO58FUMm4ZDEjBz+q+yHkfBz9lH8vC/1pSzGRjDtoi/V6gQTZels4LdLdppTKjO1VP53WfilD/ftkE9tLXyJpeNbE1cXXTjpzbAlVHfKeateiiyAR0YcGIn9jM1GoCKSvvJoyUfhHmdxlePSs6+T3uTeFN91rGAVBe+iFWNymsmgUOR51Yws7C+q02ZSnYsyPwh67JSHzbl2klaZrtikxC7y2zmF0PxM2WzyfEB+otN6Z8WYg1Ul/hQZf+5Yah1SREREK9vgmo2UEsF1LcxkNq07FytEUUW8seRLw9eAdFc5FChukSlsocF2ZbF8LhS0TG/ZqhFq+bYHQ7tM5LSoSsTDocaPwKrnMbW1o9OutOxo73YwOYooAUQ4bujjzvboIET755x19mOOsSMb76E617EYnc7VqaivkpFC469Rm5OEL8VVGZNiXxr5LLzsGcBo7Y2Sy35LuabvtHk9D19rxSnehlvVAbcb8vOEH6wgRAbsQo5yaRx8vBdb3AHj/1zuqBSPDUctsh78qoC1L9oG/DKNz5K4X4Q0Q0tQGvg/mbEV0E+igAC1z6Yl7JYb31MS01jKH/FMCymJUnJqlAU+jzbF8rTVKS2OtA4d2k1wHTqz8iCmvBUZHi6y6SPVoBEpyVyFeVPWOQGkPMnPL+dII3XXZEVWNZIOdvJfHgPKkq1snkKltDeUKzOadMBAXpPRCQfqowCK9SIt6moVXq9m4fNFheTu9nXJwVVZeQVdWjCU1AaBQyAGTLlrqvf1CHuHbM47ng==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e892da5-fb5b-48df-0d38-08d7f11a733b
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2020 17:33:40.2557
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: w6nMFvLhc2EtxzCYrFWLe4UIQnvWQuwH8taQzWynHwD9ZfKdLbAPaZTJxpID7Qak
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2566
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-05-05_09:2020-05-04,2020-05-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- priorityscore=1501 suspectscore=3 clxscore=1011 lowpriorityscore=0
- phishscore=0 adultscore=0 impostorscore=0 malwarescore=0 bulkscore=0
- mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005050132
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200502192105.xp2osi5z354rh4sm@treble>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-sdf@google.com <sdf@google.com> [Tue, 2020-05-05 10:09 -0700]:
-> On 05/05, Stanislav Fomichev wrote:
-> > On 05/04, Andrey Ignatov wrote:
-> > > Stanislav Fomichev <sdf@google.com> [Mon, 2020-05-04 10:34 -0700]:
-> > > > [...]
-> > > > diff --git a/net/core/filter.c b/net/core/filter.c
-> > > > index fa9ddab5dd1f..fc5161b9ff6a 100644
-> > > > --- a/net/core/filter.c
-> > > > +++ b/net/core/filter.c
-> > > > @@ -4527,29 +4527,24 @@ BPF_CALL_3(bpf_bind, struct
-> > bpf_sock_addr_kern *, ctx, struct sockaddr *, addr,
-> > > >  	struct sock *sk = ctx->sk;
-> > > >  	int err;
-> > > >
-> > > > -	/* Binding to port can be expensive so it's prohibited in the
-> > helper.
-> > > > -	 * Only binding to IP is supported.
-> > > > -	 */
-> > > >  	err = -EINVAL;
-> > > >  	if (addr_len < offsetofend(struct sockaddr, sa_family))
-> > > >  		return err;
-> > > >  	if (addr->sa_family == AF_INET) {
-> > > >  		if (addr_len < sizeof(struct sockaddr_in))
-> > > >  			return err;
-> > > > -		if (((struct sockaddr_in *)addr)->sin_port != htons(0))
-> > > > -			return err;
-> > > >  		return __inet_bind(sk, addr, addr_len,
-> > > > +				   BIND_FROM_BPF |
-> > > >  				   BIND_FORCE_ADDRESS_NO_PORT);
-> > >
-> > > Should BIND_FORCE_ADDRESS_NO_PORT be passed only if port is zero?
-> > > Passing non zero port and BIND_FORCE_ADDRESS_NO_PORT at the same time
-> > > looks confusing (even though it works).
-> > Makes sense, will remove it here, thx.
-> Looking at it some more, I think we need to always have that
-> BIND_FORCE_ADDRESS_NO_PORT. Otherwise, it might regress your
-> usecase with zero port:
+On Sat, May 02, 2020 at 02:21:05PM -0500, Josh Poimboeuf wrote:
 > 
->   if (snum || !(inet->bind_address_no_port ||
->                (flags & BIND_FORCE_ADDRESS_NO_PORT)))
+> Ideally we would get rid of that label and just change all the 'goto
+> select_insn' to 'goto *jumptable[insn->code]'.  That allows objtool to
+> follow the code in both retpoline and non-retpoline cases.  It also
+> simplifies the code flow and (IMO) makes it easier for GCC to find
+> optimizations.
+
+No. It's the opposite. It's not simplifying the code. It pessimizes
+compilers.
+
 > 
-> If snum == 0 we want to have either the flag on or
-> IP_BIND_ADDRESS_NO_PORT being set on the socket to prevent the port
-> allocation a bind time.
+> However, for the RETPOLINE=y case, that simplification actually would
+> cause GCC to grow the function text size by 40%.  
 
-Yes, if snum == 0 then flag is needed, that's why my previous comment
-has "only if port is zero" part.
+It pessimizes and causes text increase, since the version of gcc
+you're testing with cannot combine indirect gotos back into direct.
 
-> If snum != 0, BIND_FORCE_ADDRESS_NO_PORT doesn't matter and the port
-> is passed as an argument. We don't need to search for a free one, just
-> to confirm it's not used.
+> I thought we were in
+> agreement that significant text growth would be universally bad,
+> presumably because of i-cache locality/pressure issues.  
 
-Yes, if snum != 0 then flag doesn't matter. So both cases are covered by
-your current code and that's what I meant by "(even though it works)".
+No. As I explained before the extra code could give performance
+increase depending on how branch predictor is designed in HW.
 
-My point is in the "snum != 0" case it would look better not to pass the
-flag since:
+> Or, if you want to minimize the patch's impact on other arches, and keep
+> the current patch the way it is (with bug fixed and changed patch
+> description), that's fine too.  I can change the patch description
+> accordingly.
+> 
+> Or if you want me to measure the performance impact of the +40% code
+> growth, and *then* decide what to do, that's also fine.  But you'd need
+> to tell me what tests to run.
 
-1) as we see the flag doesn't matter on one hand;
+I'd like to minimize the risk and avoid code churn,
+so how about we step back and debug it first?
+Which version of gcc are you using and what .config?
+I've tried:
+Linux version 5.7.0-rc2 (gcc version 10.0.1 20200505 (prerelease) (GCC)
+CONFIG_UNWINDER_ORC=y
+# CONFIG_RETPOLINE is not set
 
-2) but passing both port number and flag that says "bind only to address,
-   but not to port" can look confusing and raises a question "which
-   options wins? the one that sets the port or the one that asks to
-   ignore the port" and that question can be answered only by looking at
-   __inet_bind implementation.
+and objtool didn't complain.
+I would like to reproduce it first before making any changes.
 
-so basically what I mean is:
-
-		flags = BIND_FROM_BPF;
-		if (((struct sockaddr_in *)addr)->sin_port == htons(0))
-			flags &= BIND_FORCE_ADDRESS_NO_PORT;
-
-That won't change anything for "snum == 0" case, but it would make the
-"snum != 0" case more readable IMO.
-
-Does it clarify?
-
--- 
-Andrey Ignatov
+Also since objtool cannot follow the optimizations compiler is doing
+how about admit the design failure and teach objtool to build ORC
+(and whatever else it needs to build) based on dwarf for the functions where
+it cannot understand the assembly code ?
+Otherwise objtool will forever be playing whackamole with compilers.
