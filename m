@@ -2,84 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8B51C631D
-	for <lists+bpf@lfdr.de>; Tue,  5 May 2020 23:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5C61C63E2
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 00:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728584AbgEEVc2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 May 2020 17:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727785AbgEEVc1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 5 May 2020 17:32:27 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339E9C061A0F;
-        Tue,  5 May 2020 14:32:27 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id 23so432896qkf.0;
-        Tue, 05 May 2020 14:32:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Hx7riLHvimhfoEd59ZX9g0Tk8VJ0s4FfLnwubf9kYmo=;
-        b=s7NdoSCWnvMJVMs6Jqa0+nBABmCD2hGkp6zn1qaW9f5joY7SkfpVZM/lIC1qb9Xa4k
-         QxYntQIwQW2Dfy6wUXS15QLZzhVqX1gE5VBcltluv1HFn4NNRshhIbo06cpnOKGomWil
-         BPqBd6xCuv+/6HVfe7g/W1QPg9nHrUw1L7UJ+thb9VFvyS+lmsiEqqM/MAGbitfi2v36
-         a2Ctn3SKPUBjDmgv6pjWFWwXyH9zvJtCkGbb+u+PNsvjzcuboztRj8ksqWbm7L82hVrQ
-         E4ixTMQpUi1vgi4ninuoYX/o6yj7AirWSzwr9uko9N26kXdTKk5i2T2SUsdDxjHCZwb8
-         htww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Hx7riLHvimhfoEd59ZX9g0Tk8VJ0s4FfLnwubf9kYmo=;
-        b=Ac4gF1pDURTLE2C4+qNtjQDFXe/boODS/yW1EXv/LWqYBEaJRbHJOIhUxtMQ3VHZGA
-         HZdx8vXAhAthWybixTvGVmmFPanMo611JG23epGRq56GV+X1ewy/fIeGyOxmIDn/KNNe
-         GdjwLU9fwROwD444+F5uZYG7su91LtwCHC00i/Hb7hoO+UhtdC3pInRXoR6VEs+O1Anf
-         NZb2Lry2Z/6mKz1+LRaCo4u2hemqUZSka/C3bGObWhJhhT5cEFQltGQX94GdVeT2BdUz
-         90j3lqfaTi2NsVnGRM6A3BamjgE+rbDuMqAA9ZxIuVSMrrLpnp4O+iotCU6xpJSaswTy
-         0WbQ==
-X-Gm-Message-State: AGi0PuYM9sFK5imZziFDCLOMaHgxIOwHyFktRIUZNCFnl/bkPtC1M96Z
-        n9SE1JzAxNbJIm+ASoK9hQqZVJ+jw+gwbRMgcYp/uA==
-X-Google-Smtp-Source: APiQypL/xXFaaC4AQMVpvfEJc98q9jZIdEl75ZH5NkCoiZrTnUld9ybqhu3TkoP+daZ48nUpJLBqBSPhi1Q81BQbOyI=
-X-Received: by 2002:ae9:efc1:: with SMTP id d184mr5976840qkg.437.1588714346447;
- Tue, 05 May 2020 14:32:26 -0700 (PDT)
+        id S1729275AbgEEW2M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 May 2020 18:28:12 -0400
+Received: from www62.your-server.de ([213.133.104.62]:52696 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728875AbgEEW2M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 May 2020 18:28:12 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jW62s-0000io-2Z; Wed, 06 May 2020 00:28:10 +0200
+Received: from [178.195.186.98] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jW62r-0003Ww-RJ; Wed, 06 May 2020 00:28:09 +0200
+Subject: Re: [PATCH 0/2] sockmap, fix for some error paths with helpers
+To:     John Fastabend <john.fastabend@gmail.com>, jakub@cloudflare.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org
+References: <158861271707.14306.15853815339036099229.stgit@john-Precision-5820-Tower>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <56c4d993-d237-c822-f7a7-bdb408f1b5dc@iogearbox.net>
+Date:   Wed, 6 May 2020 00:28:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20200504062547.2047304-1-yhs@fb.com> <20200504062551.2047712-1-yhs@fb.com>
-In-Reply-To: <20200504062551.2047712-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 5 May 2020 14:32:15 -0700
-Message-ID: <CAEf4BzbXr5Y_Zbg8hYcS90njDzdCbg70QQb+edER0L88QHkqXQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 04/20] bpf: support bpf tracing/iter programs
- for BPF_LINK_UPDATE
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <158861271707.14306.15853815339036099229.stgit@john-Precision-5820-Tower>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25803/Tue May  5 14:19:25 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, May 3, 2020 at 11:26 PM Yonghong Song <yhs@fb.com> wrote:
->
-> Added BPF_LINK_UPDATE support for tracing/iter programs.
-> This way, a file based bpf iterator, which holds a reference
-> to the link, can have its bpf program updated without
-> creating new files.
->
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+On 5/4/20 7:21 PM, John Fastabend wrote:
+> In these two cases sk_msg layout was getting confused with some helper
+> sequences.
+> 
+> I found these while cleaning up test_sockmap to do a better job covering
+> the different scenarios. Those patches will go to bpf-next and include
+> tests that cover these two cases.
+> 
 > ---
+> 
+> John Fastabend (2):
+>        bpf: sockmap, msg_pop_data can incorrecty set an sge length
+>        bpf: sockmap, bpf_tcp_ingress needs to subtract bytes from sg.size
+> 
+> 
+>   include/linux/skmsg.h |    1 +
+>   net/core/filter.c     |    2 +-
+>   net/ipv4/tcp_bpf.c    |    1 -
+>   3 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> --
+> Signature
+> 
 
-Nice and simple!
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  kernel/bpf/bpf_iter.c | 31 +++++++++++++++++++++++++++++++
->  1 file changed, 31 insertions(+)
->
-
-[...]
+Applied to bpf, thanks!
