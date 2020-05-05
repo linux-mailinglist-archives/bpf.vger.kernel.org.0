@@ -2,78 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074471C4F89
-	for <lists+bpf@lfdr.de>; Tue,  5 May 2020 09:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 086F31C51F0
+	for <lists+bpf@lfdr.de>; Tue,  5 May 2020 11:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728353AbgEEHrO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 May 2020 03:47:14 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:58710 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725833AbgEEHrO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 May 2020 03:47:14 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id F2146D734242C58E3C61;
-        Tue,  5 May 2020 15:47:10 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Tue, 5 May 2020
- 15:47:01 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <grygorii.strashko@ti.com>, <davem@davemloft.net>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <kuba@kernel.org>,
-        <hawk@kernel.org>, <john.fastabend@gmail.com>, <kafai@fb.com>,
-        <songliubraving@fb.com>, <yhs@fb.com>, <andriin@fb.com>,
-        <kpsingh@chromium.org>, <linux-omap@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH net-next] net: ethernet: ti: use true,false for bool variables in cpsw_new.c
-Date:   Tue, 5 May 2020 15:46:23 +0800
-Message-ID: <20200505074623.22541-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        id S1728580AbgEEJaT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 May 2020 05:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725766AbgEEJaS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 May 2020 05:30:18 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5368C061A0F
+        for <bpf@vger.kernel.org>; Tue,  5 May 2020 02:30:17 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id k1so1828994wro.12
+        for <bpf@vger.kernel.org>; Tue, 05 May 2020 02:30:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=Bya+NTSIs6K7NSmY4ktKq4dWPLC0X3o+d74CxBau3qU=;
+        b=thMnOyiVBWdp2xjMXqfsZbnh0jFuAZJinEN4NrNHiYASVJZvvO8k7wz0+vZyOW7fNk
+         aOoTIvrUfw3hoaI70+iXYGJ2LzuEWZsgk4fJ94SMuUVy9V1FK513V6KpmSa9bVTtULcy
+         PtMQZq9EHz93PuHgnO3TnWhVURj8EoOSQMSiY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=Bya+NTSIs6K7NSmY4ktKq4dWPLC0X3o+d74CxBau3qU=;
+        b=gITMKzeDKPU3f01sfcdhSq1k2IywigZMK5G7nmbiXf9twIdQPw5nN6Q9CDQURrAnz6
+         ljszxWvOekUU3pSpyeIeBJvKxulm+wYHmYGDUwREs78zkj9JN5fMWo1z5rABAuzi6A36
+         EqydnVzCUURu5uPKUDtSOpmSCRsAxR4cspVszU2HMb2S+xX6sGXvIgw+hVR8E2nL0w+T
+         hOBvS4YvP+LtuYMUY+E5TuOf13YFDl0wVzai2CulUWxVvfP50kCQ2f53mlEfXkrskxTj
+         /SP97TkDbW+u+SBgGUkUWgE5XO1XX0kRVRK3OTnOH6MTh1L7NccUkbpJBp/sinj6gfXW
+         yoUw==
+X-Gm-Message-State: AGi0PubJ9B7UWutX2rS656wrf8/bWcg9NGh/8U8jxn1Xh/xwlWaViKYa
+        +zMKk12T5jSvimDFP0ZBt4cwkw==
+X-Google-Smtp-Source: APiQypJHzrGi6UPSlT5gFHZbBbg9tNHDDWBz80cjzTa/xce3Ok+BffT47xJw+8iY2hmwoWcGdvkmEg==
+X-Received: by 2002:adf:f684:: with SMTP id v4mr2599388wrp.218.1588671016351;
+        Tue, 05 May 2020 02:30:16 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id u7sm3090065wmg.41.2020.05.05.02.30.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 02:30:15 -0700 (PDT)
+References: <158861271707.14306.15853815339036099229.stgit@john-Precision-5820-Tower>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        ast@kernel.org
+Subject: Re: [PATCH 0/2] sockmap, fix for some error paths with helpers
+In-reply-to: <158861271707.14306.15853815339036099229.stgit@john-Precision-5820-Tower>
+Date:   Tue, 05 May 2020 11:30:14 +0200
+Message-ID: <87ftcevie1.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix the following coccicheck warning:
+On Mon, May 04, 2020 at 07:21 PM CEST, John Fastabend wrote:
+> In these two cases sk_msg layout was getting confused with some helper
+> sequences.
+>
+> I found these while cleaning up test_sockmap to do a better job covering
+> the different scenarios. Those patches will go to bpf-next and include
+> tests that cover these two cases.
+>
+> ---
+>
+> John Fastabend (2):
+>       bpf: sockmap, msg_pop_data can incorrecty set an sge length
+>       bpf: sockmap, bpf_tcp_ingress needs to subtract bytes from sg.size
 
-drivers/net/ethernet/ti/cpsw_new.c:1924:2-17: WARNING: Assignment of
-0/1 to bool variable
-drivers/net/ethernet/ti/cpsw_new.c:1231:1-16: WARNING: Assignment of
-0/1 to bool variable
+Both of these LGTM. Looking forward to revamped test_sockmap.
 
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- drivers/net/ethernet/ti/cpsw_new.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+For the series:
 
-diff --git a/drivers/net/ethernet/ti/cpsw_new.c b/drivers/net/ethernet/ti/cpsw_new.c
-index 33c8dd686206..dce49311d3d3 100644
---- a/drivers/net/ethernet/ti/cpsw_new.c
-+++ b/drivers/net/ethernet/ti/cpsw_new.c
-@@ -1228,7 +1228,7 @@ static int cpsw_probe_dt(struct cpsw_common *cpsw)
- 	data->active_slave = 0;
- 	data->channels = CPSW_MAX_QUEUES;
- 	data->ale_entries = CPSW_ALE_NUM_ENTRIES;
--	data->dual_emac = 1;
-+	data->dual_emac = true;
- 	data->bd_ram_size = CPSW_BD_RAM_SIZE;
- 	data->mac_control = 0;
- 
-@@ -1921,7 +1921,7 @@ static int cpsw_probe(struct platform_device *pdev)
- 
- 	soc = soc_device_match(cpsw_soc_devices);
- 	if (soc)
--		cpsw->quirk_irq = 1;
-+		cpsw->quirk_irq = true;
- 
- 	cpsw->rx_packet_max = rx_packet_max;
- 	cpsw->descs_pool_size = descs_pool_size;
--- 
-2.21.1
-
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
