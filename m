@@ -2,272 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DADAC1C6167
-	for <lists+bpf@lfdr.de>; Tue,  5 May 2020 21:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2561C6171
+	for <lists+bpf@lfdr.de>; Tue,  5 May 2020 21:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728135AbgEET4O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 May 2020 15:56:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726350AbgEET4O (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 5 May 2020 15:56:14 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F7E9C061A0F;
-        Tue,  5 May 2020 12:56:14 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id s2so195365qtq.13;
-        Tue, 05 May 2020 12:56:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cf/0i1AzurWniqV3J618DdxsQ8szFCFmkFE6Zuk0aZ4=;
-        b=FIvmwxYMolp0anYF4K54TsNvQ6xq5+CuicohiNP9VaKRZViiWOf1Qao5R9+beEURrw
-         zl3f8Pt65Dt9MNhHx4/Mf2lyjSkjIM1pUCj01wQWCXr846/7ysh0cUFe/8MUcGwHxGE7
-         068iVYmbpLRFzqNfLEXNXK84FN/s6fKtfTDue+//uihtcC+0zkJM6yfW1EOC2Cvh0BiB
-         TnSx9HeBeyDWc6hLUY1HI9FqoCmLKdUDVozVuhb80IrIhQQET8FWtS8v2LbvgsEP7fue
-         BwRC5Z+PhCpYThXH1eO5x4m+p4J9iCHc0X7Sk0MuLUfexco7al21JTEWwK6uY4FGcXst
-         at0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cf/0i1AzurWniqV3J618DdxsQ8szFCFmkFE6Zuk0aZ4=;
-        b=kLYhHNh5cGVNKvfJzfDdQaFLjel8jYsKOrbrChHEIFcWOktxSh2hx/Y+MaPpxvL37R
-         UIOISiPg8I4QOmnKYOB2uWDqwyBhi0ovPPZVEImRQAN9YftFJd9P6h08n6BbUciJSWP+
-         /dYp1qILETLIabHvHRqVKaY/y4iqsAW3oSVwuYhgyBpslRPdxvvmk+jjYgyxfMnZtu4C
-         qB7KPbBNMoroVzXxBq+ruuviMxsYjP1KoNKNxJIksiTxF1gGXeFf3QZAARnLEPWKtVjV
-         PuGKtXnEKdIQoUOOE1ihB8kqoUiZeTl7YHwOLXbAxfKz7rBpsCVTeZEgTsIfv4PRIEGh
-         J8yg==
-X-Gm-Message-State: AGi0PuZE4O6qhKm9ZPd9v8Q3Sy0OJUBIlMRUHF7eb5bBscSu3FpAol1h
-        29AhkIh18OnCYQarvj9ydLiTR74RQqAusSPI52Y=
-X-Google-Smtp-Source: APiQypLaA1zdOkVrBf7dyyBfdi5uKanqW75P1/XiKIPwzxsRCapFZFBZ1d86YGLLBFH0hOuYPQD+gVNwbOxkQUN7i/4=
-X-Received: by 2002:ac8:3f6d:: with SMTP id w42mr4512593qtk.171.1588708573252;
- Tue, 05 May 2020 12:56:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200504062547.2047304-1-yhs@fb.com> <20200504062552.2047789-1-yhs@fb.com>
-In-Reply-To: <20200504062552.2047789-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 5 May 2020 12:56:02 -0700
-Message-ID: <CAEf4BzYKACiOB+cAC+g-LdJNJbnz9yrGyw7VsBoW1b2pHjUghw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 05/20] bpf: implement bpf_seq_read() for bpf iterator
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        id S1729084AbgEET6G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 May 2020 15:58:06 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48234 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729089AbgEET6F (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 5 May 2020 15:58:05 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 045JtNuI016023;
+        Tue, 5 May 2020 12:57:53 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=/ROq7QMax7QuyYfPxx0C7JawUfmKnFrYN7X6vreV6XU=;
+ b=miRfAIbdQjb6g6jDK+42Qlcw4WfJove2/nKbuyTC4/sms+eNhui/iIjlrR/lls3P0nzJ
+ HrnBRPrAk/Un2YdOhhT6DlJK2SjflzY2xNrfuZGnQV2DdqIvNWzQzPVydpT9TGO0A6YA
+ DXBjcrdWzCV4hmj74gRlMtzagqQluUitQ/c= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 30srvq53nr-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 05 May 2020 12:57:53 -0700
+Received: from NAM04-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Tue, 5 May 2020 12:57:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MWBAj+UFNKZfS2dQWRoN+vq2HG1CazspGsgSWhK742TUKhNL+UE8/rm9a/7irnhahfKsaLTOMuly/9NeidUp0N7PLkrmCqVaFN0g+4GG6cUrO1i77fn77QmkasYx/fpB+he6SJ9xIgj6x7wIoKHrQaoP4vGNPaq4yZBWRyY8/UMCcYAyuCMXjSLOZAOigG0SqFnirILYnyzN1mCODcZmOcoaRpnHkPelR5p8UQrhN9oHPLLjGfc2TxHoqyeH5CILL0hLQiH2TKJEfr0NZfivmWCVL9feu9musO7/+xQ9ZcdNeAnUJYu9ZpuXX2kKx2eoT7Q8MDoGy4eSnQU814nVug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/ROq7QMax7QuyYfPxx0C7JawUfmKnFrYN7X6vreV6XU=;
+ b=Qf4HCs8bcGmeoZ7SyZMs7qQDJAQT9+ChyB+KxYGx1TYkgfdPlyMukQQIerB40FGKiRVEy5Z06Z/bNpjnaWPX0HF2VMxS9Pp27pUAjZtWLCefNoXunVXeMF0ePBYzgm4vBVNqciwF4Sfj62+OqB9hBzU4r9h40dy2IwtQ5gal5bsj3L4D5yibUshYn9jQE9pcQuNWWmuUVDhP7+TP0fUU83tP/SZBCFPyTxQrHW2q8x313dnfBFAFD1C7Az3lGkbPT38i9VmQx4cmtIS4mG+sDtyLXsMZboDN6LuMoHDkv1cmeNcetPYtT1KDNC+tSwrcgHyyNpAty3X3CXfRd0YmIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/ROq7QMax7QuyYfPxx0C7JawUfmKnFrYN7X6vreV6XU=;
+ b=K3OaRTHaVhtSq/onlFGwFgseU8dzxiNydnPmmKb1jbcvzCZ0c511JQUMxzbEOj1Bt9RzJRrC7lltp59Gmnd3Jxl8Fiz0WBMUxIseiDLF1rujP3xRlrX23TARGT+2hwbdPHucDdjFZwUD4MH7Qgr7rfeyKxSTPzqNJAN6fDq8FtE=
+Received: from MW3PR15MB3772.namprd15.prod.outlook.com (2603:10b6:303:4c::14)
+ by MW3PR15MB3898.namprd15.prod.outlook.com (2603:10b6:303:43::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20; Tue, 5 May
+ 2020 19:57:49 +0000
+Received: from MW3PR15MB3772.namprd15.prod.outlook.com
+ ([fe80::3032:6927:d600:772a]) by MW3PR15MB3772.namprd15.prod.outlook.com
+ ([fe80::3032:6927:d600:772a%8]) with mapi id 15.20.2958.030; Tue, 5 May 2020
+ 19:57:49 +0000
+Subject: Re: [PATCH bpf-next v2 05/20] bpf: implement bpf_seq_read() for bpf
+ iterator
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Yonghong Song <yhs@fb.com>
+CC:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+References: <20200504062547.2047304-1-yhs@fb.com>
+ <20200504062552.2047789-1-yhs@fb.com>
+ <CAEf4BzYKACiOB+cAC+g-LdJNJbnz9yrGyw7VsBoW1b2pHjUghw@mail.gmail.com>
+From:   Alexei Starovoitov <ast@fb.com>
+Message-ID: <8900204f-c2db-10aa-7890-099db3b006b1@fb.com>
+Date:   Tue, 5 May 2020 12:57:46 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
+In-Reply-To: <CAEf4BzYKACiOB+cAC+g-LdJNJbnz9yrGyw7VsBoW1b2pHjUghw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR07CA0006.namprd07.prod.outlook.com
+ (2603:10b6:a02:bc::19) To MW3PR15MB3772.namprd15.prod.outlook.com
+ (2603:10b6:303:4c::14)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21e1::130e] (2620:10d:c090:400::5:e28e) by BYAPR07CA0006.namprd07.prod.outlook.com (2603:10b6:a02:bc::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.27 via Frontend Transport; Tue, 5 May 2020 19:57:48 +0000
+X-Originating-IP: [2620:10d:c090:400::5:e28e]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: de03ea16-51ed-4fb8-8295-08d7f12e9628
+X-MS-TrafficTypeDiagnostic: MW3PR15MB3898:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MW3PR15MB3898E057F2CEC9CB40E8AEAFD7A70@MW3PR15MB3898.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-Forefront-PRVS: 0394259C80
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: c6w6j6VAyHxZDDgbUiVPWiuSFDzOc0VmaRi6f542W9hhpi8/dERWCRFKoeYz36ioUbTTRIV2zouDHOmLulfHOBnknW7B7S21n7+0D+4/rH+2FI1IPn8I7GZQRxyftrF2heHKSZZQK57B7B818x+eRzbs6LkA/bUA2wWz7j/dShHNnKoJMx0vbxdJRbXiC7qImjpJFGrHzA25xtYFpLI4Rt6w5zsKShHmkAd1Kd5sz0U2pC+JA7bdcuE0Z7x2OpeTYT8mTO771+dbNR1JfwcpGaTwiq2NoJSt7baEsG4UX6EHH15lpyKiZH8aC3a508TOwfjUzPmG2T9IW41qZCGPqA7rqQwnqQTAoFY6yHfVTFMIy+bZFL4H143Y5XwafYv5sp3qAgX/vNO2mkwEAtQYKAhSYqgTNAxgVMMysBZ15lLIEFL+U5rDAN5j12x29Qks0qNXyQi0aqz4H0ba+B2SioSN5X+d6lLIpsmXDjAz3WdeFlD1d9hiA1Y6BSsy1EgpEo4INxG1UKUFVy2+6kOX/wtEnjAMlkfOUVfip1zJSt3iT7b0MbleaE1X2KAFO2p/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR15MB3772.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(33430700001)(4326008)(8676002)(36756003)(16526019)(5660300002)(498600001)(2906002)(8936002)(186003)(6486002)(66476007)(66946007)(110136005)(66556008)(558084003)(31686004)(52116002)(2616005)(53546011)(54906003)(31696002)(86362001)(6636002)(33440700001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: QApFaKyKdkhifmRODm2/p4XWJsbdn5oFKV9lif0Qk48Ufp+LmMcMz3cM/LlJf+Hv3YIOZ6gNTUbUPNQiXEdmyxKtYEtnKa+seXmK1GPwtNbd2+ubBKNOG6VhBQ+IM3ps5IrFXJTAU68Nu8bJYvFqyBJh41QV4w5jJyqyDmHjvVYZX7mATjaqw6pyfLtCOVRfi2GwVfcu6H653/vONgt8Xg6yCRv7wPmvCeVskUhc1okOOZ76ROML1ZSvABD/4oBQ2LnYFcqLJQNfjWw1CzL0o9PcTPQj6JDMXe7mUo60rFnG5HhuIV+YZc6ZmaHlJx4J9posLwpKlMHc1+h+f/bb9qpblXf0aDjt6vIgJove8Tz46Hvwa6wmyv2i8VC6zIXAlpRgqPukyZhhXQTKNxiZKhYR3Bgr/3UggCZI/0XzUl04xPtPSFWHBmJVl4QpYxMIttQR4KCnRvo2TrunSeyGqWKNX7j3iL4/2gHl1yNo2PS2/Nhkhz7BThEXK6I1Pa6EErcWJw2QPJnnEh+61hn+qMxFzFkKvCUZsekz0K+R9rXKE50ImmnXDyLhsNThHf2NHvNLY6vXQkXaDFvWvfqcjZ4FUnsoiK6Xv2YzpGGSK0mjSv1lyFwMEcjN5v1i5jWEhSr0cy2ZwewtMj2cVDzlxEaU9IHXPiYVl5kzC+FcltxO4y9iH1ETS0Ff9tzcbOSE1Jxj5bnpRAsXHrRLPv71qxeXgKnhpqwnKs9laG8x8pSpzAizQBvTUmUiFk6z7Q9UU0PvPHJllPNgTIDgYL+1NkjAQzTfOfPZ/a9WiQH8GN8bCfFNBZyZWhddy8FeYLQHxnhg8hLvw0HRQZvh07eIRA==
+X-MS-Exchange-CrossTenant-Network-Message-Id: de03ea16-51ed-4fb8-8295-08d7f12e9628
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2020 19:57:48.8581
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Vb6dWdHvVjMDkYOay8BTje/KeToYSM8s/ghlOZ3xa1FQnA9XS/ZY/ehntgeYFZqL
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3898
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-05-05_10:2020-05-04,2020-05-05 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 adultscore=0
+ spamscore=0 phishscore=0 mlxlogscore=700 bulkscore=0 clxscore=1015
+ malwarescore=0 lowpriorityscore=0 priorityscore=1501 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005050153
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, May 3, 2020 at 11:26 PM Yonghong Song <yhs@fb.com> wrote:
->
-> bpf iterator uses seq_file to provide a lossless
-> way to transfer data to user space. But we want to call
-> bpf program after all objects have been traversed, and
-> bpf program may write additional data to the
-> seq_file buffer. The current seq_read() does not work
-> for this use case.
->
-> Besides allowing stop() function to write to the buffer,
-> the bpf_seq_read() also fixed the buffer size to one page.
-> If any single call of show() or stop() will emit data
-> more than one page to cause overflow, -E2BIG error code
-> will be returned to user space.
->
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  kernel/bpf/bpf_iter.c | 128 ++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 128 insertions(+)
->
-> diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
-> index 05ae04ac1eca..2674c9cbc3dc 100644
-> --- a/kernel/bpf/bpf_iter.c
-> +++ b/kernel/bpf/bpf_iter.c
-> @@ -26,6 +26,134 @@ static DEFINE_MUTEX(targets_mutex);
->  /* protect bpf_iter_link changes */
->  static DEFINE_MUTEX(link_mutex);
->
-> +/* bpf_seq_read, a customized and simpler version for bpf iterator.
-> + * no_llseek is assumed for this file.
-> + * The following are differences from seq_read():
-> + *  . fixed buffer size (PAGE_SIZE)
-> + *  . assuming no_llseek
-> + *  . stop() may call bpf program, handling potential overflow there
-> + */
-> +static ssize_t bpf_seq_read(struct file *file, char __user *buf, size_t size,
-> +                           loff_t *ppos)
-> +{
-> +       struct seq_file *seq = file->private_data;
-> +       size_t n, offs, copied = 0;
-> +       int err = 0;
-> +       void *p;
-> +
-> +       mutex_lock(&seq->lock);
-> +
-> +       if (!seq->buf) {
-> +               seq->size = PAGE_SIZE;
-> +               seq->buf = kmalloc(seq->size, GFP_KERNEL);
-> +               if (!seq->buf)
-> +                       goto Enomem;
+On 5/5/20 12:56 PM, Andrii Nakryiko wrote:
+>> +               seq->buf = kmalloc(seq->size, GFP_KERNEL);
+>> +               if (!seq->buf)
+>> +                       goto Enomem;
+> Why not just mutex_unlock and exit with -ENOMEM? Less goto'ing, more
+> straightforward.
+> 
 
-Why not just mutex_unlock and exit with -ENOMEM? Less goto'ing, more
-straightforward.
+no. please keep kernel coding style. goto is appropriate here.
 
-> +       }
-> +
-> +       if (seq->count) {
-> +               n = min(seq->count, size);
-> +               err = copy_to_user(buf, seq->buf + seq->from, n);
-> +               if (err)
-> +                       goto Efault;
-> +               seq->count -= n;
-> +               seq->from += n;
-> +               copied = n;
-> +               goto Done;
-> +       }
-> +
-> +       seq->from = 0;
-> +       p = seq->op->start(seq, &seq->index);
-> +       if (!p || IS_ERR(p))
-
-IS_ERR_OR_NULL?
-
-> +               goto Stop;
-> +
-> +       err = seq->op->show(seq, p);
-> +       if (seq_has_overflowed(seq)) {
-> +               err = -E2BIG;
-> +               goto Error_show;
-> +       } else if (err) {
-> +               /* < 0: go out, > 0: skip */
-> +               if (likely(err < 0))
-> +                       goto Error_show;
-> +               seq->count = 0;
-> +       }
-
-This seems a bit more straightforward:
-
-if (seq_has_overflowed(seq))
-    err = -E2BIG;
-if (err < 0)
-    goto Error_show;
-else if (err > 0)
-    seq->count = 0;
-
-Also, I wonder if err > 0 (so skip was requested), should we ignore
-overflow? So something like:
-
-if (err > 0) {
-    seq->count = 0;
-} else {
-    if (seq_has_overflowed(seq))
-        err = -E2BIG;
-    if (err)
-        goto Error_show;
-}
-
-> +
-> +       while (1) {
-> +               loff_t pos = seq->index;
-> +
-> +               offs = seq->count;
-> +               p = seq->op->next(seq, p, &seq->index);
-> +               if (pos == seq->index) {
-> +                       pr_info_ratelimited("buggy seq_file .next function %ps "
-> +                               "did not updated position index\n",
-> +                               seq->op->next);
-> +                       seq->index++;
-> +               }
-> +
-> +               if (!p || IS_ERR(p)) {
-
-Same, IS_ERR_OR_NULL.
-
-> +                       err = PTR_ERR(p);
-> +                       break;
-> +               }
-> +               if (seq->count >= size)
-> +                       break;
-> +
-> +               err = seq->op->show(seq, p);
-> +               if (seq_has_overflowed(seq)) {
-> +                       if (offs == 0) {
-> +                               err = -E2BIG;
-> +                               goto Error_show;
-> +                       }
-> +                       seq->count = offs;
-> +                       break;
-> +               } else if (err) {
-> +                       /* < 0: go out, > 0: skip */
-> +                       seq->count = offs;
-> +                       if (likely(err < 0)) {
-> +                               if (offs == 0)
-> +                                       goto Error_show;
-> +                               break;
-> +                       }
-> +               }
-
-Same question here about ignoring overflow if skip was requested.
-
-> +       }
-> +Stop:
-> +       offs = seq->count;
-> +       /* may call bpf program */
-> +       seq->op->stop(seq, p);
-> +       if (seq_has_overflowed(seq)) {
-> +               if (offs == 0)
-> +                       goto Error_stop;
-> +               seq->count = offs;
-
-just want to double-check, because it's not clear from the code. If
-all the start()/show()/next() succeeded, but stop() overflown. Would
-stop() be called again on subsequent read? Would start/show/next
-handle this correctly as well?
-
-> +       }
-> +
-> +       n = min(seq->count, size);
-> +       err = copy_to_user(buf, seq->buf, n);
-> +       if (err)
-> +               goto Efault;
-> +       copied = n;
-> +       seq->count -= n;
-> +       seq->from = n;
-> +Done:
-> +       if (!copied)
-> +               copied = err;
-> +       else
-> +               *ppos += copied;
-> +       mutex_unlock(&seq->lock);
-> +       return copied;
-> +
-> +Error_show:
-> +       seq->op->stop(seq, p);
-> +Error_stop:
-> +       seq->count = 0;
-> +       goto Done;
-> +
-> +Enomem:
-> +       err = -ENOMEM;
-> +       goto Done;
-> +
-> +Efault:
-> +       err = -EFAULT;
-> +       goto Done;
-
-Enomem and Efault seem completely redundant and just add goto
-complexity to this algorithm. Let's just inline `err =
--E(NOMEM|FAULT); goto Done;` instead?
-
-> +}
-> +
->  int bpf_iter_reg_target(struct bpf_iter_reg *reg_info)
->  {
->         struct bpf_iter_target_info *tinfo;
-> --
-> 2.24.1
->
