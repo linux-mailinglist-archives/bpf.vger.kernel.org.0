@@ -2,184 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C5E1C7DBC
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 01:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE89B1C7DF2
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 01:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726129AbgEFXID (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 19:08:03 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:4324 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725869AbgEFXIC (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 19:08:02 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 046N3InP006630;
-        Wed, 6 May 2020 16:07:49 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=kv8m2m7cHm4C32TwXGW4b3dy8Q0nJh9rBKEuUx7BviM=;
- b=CWDUjUxEXOHwzpmyBC/JmJUDSbTuLTXhZy9g9sr1sbjbfFNSNWjt03UqF/PUGRxmOid2
- z/+BVdwalSuwPjdyBYQWdzzCdU6jrjjjsHNY6jx19ut2k/xB8l0vyhKVRaoWcI60DlFC
- c56jNCO3gQ8ZMLMJc/+A79YLaIn6c8HT3As= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 30srw049je-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 06 May 2020 16:07:49 -0700
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Wed, 6 May 2020 16:07:48 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IDIaE0uMFBUwvUodvgfCgaornEHGbdFJc/boqW95aY3BvcCjsNMJ/Ffqkkc4rJHbdjXMV7ftoc3pNVxVUkr57lltRwII4ksKQkfCq1xGFutdXrLhSr5H1KD7ueXOTujN+QxmXa1qCHHde3GfqXhLk97xjvvDXXbcXTZkRJVwBZpSnHhSmlmKSq7oQQq9js20ZRJznPymQ4yTc9ADEQNuzFjR4yuNqrlI4WsIRfHA7scoVr6RoBZ4M54Jbh2pv842o/l5uSCfgXCTS6Hj56O5dXbSmvufojp9F8lJTU1HjrCL/AJTwnvTECgfMnkTLiy5r8v2G6es4SmxhTHMRGUTxg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kv8m2m7cHm4C32TwXGW4b3dy8Q0nJh9rBKEuUx7BviM=;
- b=C1JxjZdE1ExX7e2hZHPXCadgqsJwVqZUB8H+lu/hRxl+1iIRTQ8OlxCeRJ/PZVMhcYrv8oZLy+sjP5Vzf1G8iK/5kxUnuJMuEXHFhLkyK0XAQAjJp8D+c3J3XFvLhjpBaT0lwZJtS/b/UV9esdhz+Fsjy5A0iW0KWHnc54QLA2rPc+c22+sbiGpENRwe/mqMLh0kH8M+nlu9Ix5WP1jpFYOprwxDKejV9Kx8/Q40wZRZlXJkmHHs1voabSuPJtk586pIFTEAyvtYTR0dAV2xLbcQOmB/F3HDhfr6UMwq4ChcxdDmE3DU3eemOGKEwxnb+RmgtA8RzKtp1fjea2uILA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kv8m2m7cHm4C32TwXGW4b3dy8Q0nJh9rBKEuUx7BviM=;
- b=DtDVQfgBrMbcO9L+gDQXxW/ZXhMBpYj079Q4QcHJdr0Lrd2xp+gVZgpnk4PNuT6Du35YalciFwso1J4u91p4omTQCt3FdXHCwmoGsbmWDxoRYycx6bn7tKZFchurBFyGQ50AxPBkEdp9/WWAoVijnwbXrsj6dK2YHzyE3ZMKP4s=
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2581.namprd15.prod.outlook.com (2603:10b6:a03:15a::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20; Wed, 6 May
- 2020 23:07:33 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8988:aa27:5d70:6923]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8988:aa27:5d70:6923%5]) with mapi id 15.20.2958.030; Wed, 6 May 2020
- 23:07:33 +0000
-Subject: Re: [PATCH bpf-next v2 18/20] tools/bpf: selftests: add iterator
- programs for ipv6_route and netlink
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-References: <20200504062547.2047304-1-yhs@fb.com>
- <20200504062608.2049044-1-yhs@fb.com>
- <CAEf4BzaGsk2hgLHvU=9b2gv7V0y788MNw0hwkSQxE4kg4zSe=w@mail.gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <5bddef07-6cc0-e4d5-9394-f8691860015a@fb.com>
-Date:   Wed, 6 May 2020 16:07:30 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
-In-Reply-To: <CAEf4BzaGsk2hgLHvU=9b2gv7V0y788MNw0hwkSQxE4kg4zSe=w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR01CA0016.prod.exchangelabs.com (2603:10b6:a02:80::29)
- To BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+        id S1727991AbgEFXdK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 19:33:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726645AbgEFXdK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 May 2020 19:33:10 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66179C061A0F;
+        Wed,  6 May 2020 16:33:10 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id z1so1986941pfn.3;
+        Wed, 06 May 2020 16:33:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=JjMAyO4tLtAmhwV/k9L9sSW04zGeh8HxdZQAYEG4VoQ=;
+        b=QdjVM5UlTNqjrwlvQ986J0UXLLGo+1dLtobwrQZQ4upd5rLRtGAP6EPxakQ6azs23H
+         YdPS15KLLvDutw5Oodla6OPPC4dyprA7KXsA6BckMxD22jBVmOnjuuFdTOrhF4mjm5sR
+         F2ePfcsd0b3pjfbACz5giT7H1GJEVF79DEoMkYcV5T9jYM+A+eXD9ewLVLxcElHAfbHl
+         sju3zPBHP5G7lpByn7kETGsf7RjIsH8VQBhKTjwTHgkV020wIqiPdB8DwT08SuHPSRCJ
+         MpQ5neNt1OIqKjKn7iLOdzF9uTVCzl80vih6B6WkesaZCdG3pRJ+HKUyrhcs6vu+Tct2
+         d4Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=JjMAyO4tLtAmhwV/k9L9sSW04zGeh8HxdZQAYEG4VoQ=;
+        b=gQd59t/FrxFjk/0ehf2ie/l+deCKg6OmJp5YWxvMDRPL7WfzJeQxlsONf75VOOSWCL
+         56IkK8VC9YWV1UpGsfzs8mdhn2NBj7J1TBSMMkNIJSIJ4XTnPjHK9CiSxMFaBzgHskwh
+         xEvO2UbJC3k+b2PyLWaDlD4bVBSLVufFAGeT5chPagLtRjbKK6QLLtLz2g0S+1w+Bpsg
+         2eircCwULsQAIoNBqLUI2wFgBRmheAY+iI4bIXbgfzi13QrsVVDbYxvoxfPWAQIF+x2t
+         2SIGTWt6AgTWUXDeiqVY7yyEoNG7WWITc9U41VA8jUuT+zJb8xChKnc9rutmlkK9NdNN
+         2n9g==
+X-Gm-Message-State: AGi0PuYO0L92pJhQ9jUw8juU91FrBexivjgWqxPIoN8nN4n3AimMJjf/
+        swrRc5/Lw3YL6ZlRfmJmWkc=
+X-Google-Smtp-Source: APiQypJD92evuW6PsqCb4b+CNaSBoXZV67yCaBLIOsXAwbF5B3yXxXX1rC/eMZ8rZ+3deuQNTWyIog==
+X-Received: by 2002:a63:3006:: with SMTP id w6mr8752880pgw.18.1588807989768;
+        Wed, 06 May 2020 16:33:09 -0700 (PDT)
+Received: from athina.mtv.corp.google.com ([2620:15c:211:0:c786:d9fd:ab91:6283])
+        by smtp.gmail.com with ESMTPSA id u188sm2957158pfu.33.2020.05.06.16.33.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 16:33:08 -0700 (PDT)
+From:   =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
+To:     =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH v2] net: bpf: permit redirect from L3 to L2 devices at near max mtu
+Date:   Wed,  6 May 2020 16:32:59 -0700
+Message-Id: <20200506233259.112545-1-zenczykowski@gmail.com>
+X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
+In-Reply-To: <20200420231427.63894-1-zenczykowski@gmail.com>
+References: <20200420231427.63894-1-zenczykowski@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from MacBook-Pro-52.local (2620:10d:c090:400::5:66a9) by BYAPR01CA0016.prod.exchangelabs.com (2603:10b6:a02:80::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.29 via Frontend Transport; Wed, 6 May 2020 23:07:32 +0000
-X-Originating-IP: [2620:10d:c090:400::5:66a9]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f4aed524-2003-4389-8983-08d7f212424b
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2581:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2581DF7372376BF52E4BDA99D3A40@BYAPR15MB2581.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-Forefront-PRVS: 03950F25EC
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wZF/c3ReTeNgLkj7nk4GwOx7Rkh3oJaD/aTS/WrF0UzJtB5Yb1LtCeom1YR+zT4WRVNjERK/4fGM4wLKZpjlaKSk9BtG2tfMDCJy/rNGrAffDHwP2os7mRdV29KamFtzutOnLMDqs3PkcoxC3HodbWhYkAMj5IGymQh3+67UdSV9HQpLW+KNEeMZsv+auVTWDRQyeCr9J52phYwOz7kjbjPtBtkBG0e3hUgnAqjqawpIdF5NoTSS4ZTt8gRsE/D1gFXUv3IYnLZzspy50LtAU7uKm9FBaLLsugJhrIj2aMPGlpCuFBwZrhKjPE48Re9KDsPymcHrfqfLcAYTgX1QaB9s9NF/YejUZyeJrb146NU31V1npC+VQLkh8WAvGotzUmrpjnbvdktPe2I2pQue+lHuj2Nodv32hLlRINNdh3QW3GS7zHM4MNfJ8m/tKsnPbGQrLWuoYZanhhcBBrZYbKECx1qmpu5XzPPr7Td0S3loNoTvUZIf6VCi1M+2JOY78S/eF2b8wdkzW8kuvg9whgXiMaOsGMUlGj9pEQ55uUZnIpdXEkNWNwfO3nH7UYUx
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(39860400002)(366004)(396003)(376002)(136003)(33430700001)(52116002)(2906002)(5660300002)(6512007)(16526019)(186003)(31686004)(36756003)(316002)(31696002)(86362001)(2616005)(66476007)(66556008)(66946007)(33440700001)(478600001)(54906003)(6916009)(8936002)(53546011)(6486002)(6506007)(4326008)(8676002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: cSUnHwtQdiVKT7pFc95uAobS2sBQW8VH8HNePajFJPOY/ev15IGtM95fTP27B72C355TggmKlqRtIQ3qqA1592zXnFk1bDe5QBLcszK/kMUsOYuSO3DGuJYG1SRTnI809HhBMepm3iffo0YERUwDVP6ljxYDlB43iGd3DTK4FJpuaCwrb7yAs9yP0rrb8s92txyOuzmvWa/kHQXB5V2v0UlZi8IQMLyCa1sIFrZGDpOzcpu0UjK7SEREw2qUTZfpdkYPQ0atdxEYawt55irpuAswylrS7y7lEWTYgIGILUebdMd5N+VGrY5nXfTjygRvA6WW4bHaUgcAJQ8BSlOEgmB8Ix60ROvSs1Tpp+gwLMdufrpw04pTLnLE7Peu4pfShkVGnMTiJbZUrvVyoQS9DXkyvD0oeDQP2lVTt3e0lpUG+S3XD+4R5rHGAdYptUmaPVTlZ5vzELuDlts1R5mXs0NCxIPIkqEDGfTFIepoyWVwb7JwkTpqxluIqd+H30QXAbTslDJSM42X4GNAUxKXWw7B7RGhdj0S/sfajGhZ6r5U3BdDXkDjXDZoZFsJovw2B/hiUXbbCy+T40C4NIoH/x5AKSccmVXeC+Sas+IUOyjvHiLhmC0TtrSI8vYcyyRPMwOrZUBtMiJXSFvC2iflGmMY6OwwY9UNyVAtWLP8YFI7//RMxJ3Xg0OiYg5k9DrDJPjitC3mrdZuCvtuJWe4yCEWOa2Y/KBZCWAMk5g3u1MROt/by3L0/KuGAtnJUTQrJEicWqMO/GbWFxELK40ll9NNs7j9Hdj2JUqOK5L8VfH39cOnXlAXGcEO7HXcz/ohcS4DI1bet8P4h3qqbFlAyA==
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4aed524-2003-4389-8983-08d7f212424b
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2020 23:07:33.4462
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CLHcIjjCswRGD9DHwg4x0OcUIO403zZmIhbPh6fBrVTVLZVwtzc4vmjzvoAs1TWq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2581
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-06_09:2020-05-05,2020-05-06 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 adultscore=0
- malwarescore=0 bulkscore=0 phishscore=0 clxscore=1015 impostorscore=0
- lowpriorityscore=0 priorityscore=1501 spamscore=0 suspectscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005060185
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Maciej Żenczykowski <maze@google.com>
 
+__bpf_skb_max_len(skb) is used from:
+  bpf_skb_adjust_room
+  __bpf_skb_change_tail
+  __bpf_skb_change_head
 
-On 5/5/20 11:04 PM, Andrii Nakryiko wrote:
-> On Sun, May 3, 2020 at 11:30 PM Yonghong Song <yhs@fb.com> wrote:
->>
->> Two bpf programs are added in this patch for netlink and ipv6_route
->> target. On my VM, I am able to achieve identical
->> results compared to /proc/net/netlink and /proc/net/ipv6_route.
->>
->>    $ cat /proc/net/netlink
->>    sk               Eth Pid        Groups   Rmem     Wmem     Dump  Locks    Drops    Inode
->>    000000002c42d58b 0   0          00000000 0        0        0     2        0        7
->>    00000000a4e8b5e1 0   1          00000551 0        0        0     2        0        18719
->>    00000000e1b1c195 4   0          00000000 0        0        0     2        0        16422
->>    000000007e6b29f9 6   0          00000000 0        0        0     2        0        16424
->>    ....
->>    00000000159a170d 15  1862       00000002 0        0        0     2        0        1886
->>    000000009aca4bc9 15  3918224839 00000002 0        0        0     2        0        19076
->>    00000000d0ab31d2 15  1          00000002 0        0        0     2        0        18683
->>    000000008398fb08 16  0          00000000 0        0        0     2        0        27
->>    $ cat /sys/fs/bpf/my_netlink
->>    sk               Eth Pid        Groups   Rmem     Wmem     Dump  Locks    Drops    Inode
->>    000000002c42d58b 0   0          00000000 0        0        0     2        0        7
->>    00000000a4e8b5e1 0   1          00000551 0        0        0     2        0        18719
->>    00000000e1b1c195 4   0          00000000 0        0        0     2        0        16422
->>    000000007e6b29f9 6   0          00000000 0        0        0     2        0        16424
->>    ....
->>    00000000159a170d 15  1862       00000002 0        0        0     2        0        1886
->>    000000009aca4bc9 15  3918224839 00000002 0        0        0     2        0        19076
->>    00000000d0ab31d2 15  1          00000002 0        0        0     2        0        18683
->>    000000008398fb08 16  0          00000000 0        0        0     2        0        27
->>
->>    $ cat /proc/net/ipv6_route
->>    fe800000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000001 00000000 00000001     eth0
->>    00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
->>    00000000000000000000000000000001 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000003 00000000 80200001       lo
->>    fe80000000000000c04b03fffe7827ce 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
->>    ff000000000000000000000000000000 08 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000003 00000000 00000001     eth0
->>    00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
->>    $ cat /sys/fs/bpf/my_ipv6_route
->>    fe800000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000001 00000000 00000001     eth0
->>    00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
->>    00000000000000000000000000000001 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000003 00000000 80200001       lo
->>    fe80000000000000c04b03fffe7827ce 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
->>    ff000000000000000000000000000000 08 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000003 00000000 00000001     eth0
->>    00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
->>
->> Signed-off-by: Yonghong Song <yhs@fb.com>
->> ---
-> 
-> Just realized, this is only BPF programs, right? It would be good to
-> have at least minimal user-space program that would verify and load
-> it. Otherwise we'll be just testing compilation and it might "bit rot"
-> a bit...
+but in the case of forwarding we're likely calling these functions
+during receive processing on ingress and bpf_redirect()'ing at
+a later point in time to egress on another interface, thus these
+mtu checks are for the wrong device (input instead of output).
 
-Totally agree. My latest selftest in test_progs actually tested loading, 
-anon iter creating and reading(). It did not verify contents though.
+This is particularly problematic if we're receiving on an L3 1500 mtu
+cellular interface, trying to add an L2 header and forwarding to
+an L3 mtu 1500 mtu wifi/ethernet device (which is thus L2 1514).
 
-> 
->>   .../selftests/bpf/progs/bpf_iter_ipv6_route.c | 63 ++++++++++++++++
->>   .../selftests/bpf/progs/bpf_iter_netlink.c    | 74 +++++++++++++++++++
->>   2 files changed, 137 insertions(+)
->>   create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c
->>   create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
->>
-> 
-> [...]
-> 
+The mtu check prevents us from adding the 14 byte ethernet header prior
+to forwarding the packet.
+
+After the packet has already been redirected, we'd need to add
+an additional 2nd ebpf program on the target device's egress tc hook,
+but then we'd also see non-redirected traffic and have no easy
+way to tell apart normal egress with ethernet header packets
+from forwarded ethernet headerless packets.
+
+Credits to Alexei Starovoitov for the suggestion on how to 'fix' this.
+
+This probably should be further fixed up *somehow*, just
+not at all clear how.  This does at least make things work.
+
+Cc: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+---
+ net/core/filter.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 7d6ceaa54d21..811aba77e24b 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3159,8 +3159,20 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
+ 
+ static u32 __bpf_skb_max_len(const struct sk_buff *skb)
+ {
+-	return skb->dev ? skb->dev->mtu + skb->dev->hard_header_len :
+-			  SKB_MAX_ALLOC;
++	if (skb->dev) {
++		unsigned short header_len = skb->dev->hard_header_len;
++
++		/* HACK: Treat 0 as ETH_HLEN to allow redirect while
++		 * adding ethernet header from an L3 (tun, rawip, cellular)
++		 * to an L2 device (tap, ethernet, wifi)
++		 */
++		if (!header_len)
++			header_len = ETH_HLEN;
++
++		return skb->dev->mtu + header_len;
++	} else {
++		return SKB_MAX_ALLOC;
++	}
+ }
+ 
+ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
+-- 
+2.26.2.526.g744177e7f7-goog
+
