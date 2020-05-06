@@ -2,114 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DBB81C7631
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 18:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E11C1C763C
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 18:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729447AbgEFQY5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 12:24:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39976 "EHLO
+        id S1729447AbgEFQ2H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 12:28:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729341AbgEFQY5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 12:24:57 -0400
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5E3C061A0F
-        for <bpf@vger.kernel.org>; Wed,  6 May 2020 09:24:56 -0700 (PDT)
-Received: by mail-oo1-xc36.google.com with SMTP id t12so621176oot.2
-        for <bpf@vger.kernel.org>; Wed, 06 May 2020 09:24:56 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1729907AbgEFQ2G (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 12:28:06 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB96C061A10
+        for <bpf@vger.kernel.org>; Wed,  6 May 2020 09:28:05 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id f56so2974763qte.18
+        for <bpf@vger.kernel.org>; Wed, 06 May 2020 09:28:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=1PP9L83s6CfD0+en6vgV3WIo4aL6f+bLAH17qAcnYdw=;
-        b=g9ZOH7vNz3pq7qaff5jL+FbNrPfjqqMdS9SdtQYowaJ2jKphzdTtaR5qDMaMbpQlZW
-         6FlIg0HteMijfIxq0RP4GGzz8OTTblvvC9EEMwp5fWLjV9SbuxGfR6HtDCUFFIVnskov
-         ckb3qD7ASJgr/MOz4FkGVP6DGNWuehvTTUT8Q=
+        bh=coxNnLbWPC326Mrpkn1JFdCLcBMx+ouIrI1YVFoqF0c=;
+        b=a0GWbpNkcFlthlZUKxsEQ1fcB/kr//t8djblSVGO9rJW87DWdb2tmaYucPNPbUyRe+
+         XgGJiJ+1fYY6UyN1VO7lI0lLKJoWyejwTkvEgpU7XlZ5vJCrqrz5WZfgOxirEBCsm2ff
+         GvBKTir9SG380Tu+EG0SSdEjtQgsaI+loKANCwUwM7LmMD+v94XuJqwQZbTxrrEPCwMk
+         T57f+thr5vlDoo4o95OVTXVsL0EXFSTGmL3KfgnBiiMA2Pm0nK2dWLD4Gf5UAt0qOeO5
+         BqGWqdXqL3emJNYpkhOwuRGnKqGuOoIVxVKXE9D1shd7vgolmQiU0eW3zhblpeV+Ef22
+         YlkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1PP9L83s6CfD0+en6vgV3WIo4aL6f+bLAH17qAcnYdw=;
-        b=EN7RR1MRYiagZUlM3hupYJ+1Qosb7x9PCLDCYRVgJt4JMZnb21nsFIo9sYRuJzYuJp
-         37OlKSYa3+vmuoQksVdgCqtp83yb8tgk2ItQmMovrwqkST52EJSM+32K9sXQLaZzv7SM
-         K0tJTJPIwGZEfaW08BS3ERSKDIi4S7b61QRml7PeL5Okt/hdJJX0+f+ZOgk3c3BALu3B
-         l8/kiABGvvEPr+Uga8K0rXl75w9jNCvhlUlzt0lbV0jOnAZCOPtDLT7JlN0M8+Nqc7kx
-         /iB2iKjuzDO+AHK80hHuFeuv9Lz14R4AaM8ngQNQu5Y4NIc/pv61Hww9ATcHFK1OhTbu
-         ipvA==
-X-Gm-Message-State: AGi0PuYL18tjcfgym3DeuQEGbYGgG0tU8+oTi5TK8QPTjQv0ZPKxV0EN
-        D/54xECaU+aPpc8+q2uLarvbtjbSKSAllySwe51obA==
-X-Google-Smtp-Source: APiQypIfm8F2vC1A10Q+HEpp4v6afxOZB7/wXUUhJcZbkumVfUecWZ21jFiR66fC1ls8UZfHZKa0zn4AYiRDrDockZM=
-X-Received: by 2002:a4a:e60d:: with SMTP id f13mr7832719oot.6.1588782295352;
- Wed, 06 May 2020 09:24:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <CACAyw9-uU_52esMd1JjuA80fRPHJv5vsSg8GnfW3t_qDU4aVKQ@mail.gmail.com>
- <CAADnVQKZ63d5A+Jv8bbXzo2RKNCXFH78zos0AjpbJ3ii9OHW0g@mail.gmail.com>
-In-Reply-To: <CAADnVQKZ63d5A+Jv8bbXzo2RKNCXFH78zos0AjpbJ3ii9OHW0g@mail.gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 6 May 2020 17:24:43 +0100
-Message-ID: <CACAyw9_ygNV1J+PkBJ-i7ysU_Y=rN3Z5adKYExNXCic0gumaow@mail.gmail.com>
-Subject: Re: Checksum behaviour of bpf_redirected packets
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=coxNnLbWPC326Mrpkn1JFdCLcBMx+ouIrI1YVFoqF0c=;
+        b=egYMj317Vtl1XbGw8dNWiGm/TqOH+bEAe3q6F0EjamXWktts4w3vDZrXUkN7k9nbvL
+         uaHXpOfh4uqgbxGhL6siml5EHPpB7hPxFvufw44PSnXaHy9M1I+cIwyzZRD2Gk2s9wtZ
+         v2PMh2OS2g4MmqVq0k+S3IE987YhvmJcBLKn7KA0JeSU2EgRNoerDoCulgsFfXY77dD6
+         VaHIrWeLCtmdWIBBJ8g68hhBdcnR7o40RCmkPYC9NQ5ap4eU7m6/L40KYtE4TTselt/B
+         bc5z6aASEVvqUXqXK2KEQv2a4TBF7wZyVzZPs2Mhu8MgGwHSGbn1Y7Ir0VCLw/oXXaVO
+         /jLg==
+X-Gm-Message-State: AGi0PuaWF5U6+IfKgm1eIUoKgO/u4keDq8+sMqgKdf8Wr7+Z0LvsENhZ
+        mcBuC2caPZIK2s2qq3D554+C9JA=
+X-Google-Smtp-Source: APiQypJT2E7PiYaQxXqTvwXVfsxw+IiDVCw46UHt19BGqYT09z03mctdfjmXPlYQwV31hiMGSV+TH3U=
+X-Received: by 2002:a0c:b604:: with SMTP id f4mr8783396qve.40.1588782484152;
+ Wed, 06 May 2020 09:28:04 -0700 (PDT)
+Date:   Wed, 6 May 2020 09:28:02 -0700
+In-Reply-To: <20200506070025.kidlrs7ngtaue2nu@kafai-mbp>
+Message-Id: <20200506162802.GH241848@google.com>
+Mime-Version: 1.0
+References: <20200505202730.70489-1-sdf@google.com> <20200505202730.70489-2-sdf@google.com>
+ <20200506070025.kidlrs7ngtaue2nu@kafai-mbp>
+Subject: Re: [PATCH bpf-next v2 1/5] selftests/bpf: generalize helpers to
+ control background listener
+From:   sdf@google.com
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net, Andrey Ignatov <rdna@fb.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 6 May 2020 at 02:28, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, May 4, 2020 at 9:12 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+On 05/06, Martin KaFai Lau wrote:
+> On Tue, May 05, 2020 at 01:27:26PM -0700, Stanislav Fomichev wrote:
+> > Move the following routines that let us start a background listener
+> > thread and connect to a server by fd to the test_prog:
+> > * start_server_thread - start background INADDR_ANY thread
+> > * stop_server_thread - stop the thread
+> > * connect_to_fd - connect to the server identified by fd
 > >
-> > In our TC classifier cls_redirect [1], we use the following sequence
-> > of helper calls to
-> > decapsulate a GUE (basically IP + UDP + custom header) encapsulated packet:
-> >
-> >   skb_adjust_room(skb, -encap_len,
-> > BPF_ADJ_ROOM_MAC, BPF_F_ADJ_ROOM_FIXED_GSO)
-> >   bpf_redirect(skb->ifindex, BPF_F_INGRESS)
-> >
-> > It seems like some checksums of the inner headers are not validated in
-> > this case.
-> > For example, a TCP SYN packet with invalid TCP checksum is still accepted by the
-> > network stack and elicits a SYN ACK.
-> >
-> > Is this known but undocumented behaviour or a bug? In either case, is
-> > there a work
-> > around I'm not aware of?
->
-> I thought inner and outer csums are covered by different flags and driver
-> suppose to set the right one depending on level of in-hw checking it did.
+> > These will be used in the next commit.
+> The refactoring itself looks fine.
 
-I've figured out what the problem is. We receive the following packet from
-the driver:
+> If I read it correctly, it is a simple connect() test.
+> I am not sure a thread is even needed.  accept() is also unnecessary.
+> Can all be done in one thread?
+I'm looking at the socket address after connection is established (to
+verify that the port is the one we were supposed to be using), so
+I fail to understand how accept() is unnecessary. Care to clarify?
 
-    | ETH | IP | UDP | GUE | IP | TCP |
-    skb->ip_summed == CHECKSUM_UNNECESSARY
-
-ip_summed is CHECKSUM_UNNECESSARY because our NICs do rx
-checksum offloading. On this packet we run skb_adjust_room_mac(-encap),
-and get the following:
-
-    | ETH | IP | TCP |
-    skb->ip_summed == CHECKSUM_UNNECESSARY
-
-Note that ip_summed is still CHECKSUM_UNNECESSARY. After
-bpf_redirect()ing into the ingress, we end up in tcp_v4_rcv. There
-skb_checksum_init is turned into a no-op due to
-CHECKSUM_UNNECESSARY.
-
-I think this boils down to bpf_skb_generic_pop not adjusting ip_summed
-accordingly. Unfortunately I don't understand how checksums work
-sufficiently. Daniel, it seems like you wrote the helper, could you
-take a look?
-
-Thanks!
-Lorenz
-
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+I thought about doing a "listen() > non-blocking connect() > accept()"
+in a single thread instead of background thread, but then decided that
+it's better to reuse existing helpers and do proper connection instead
+of writing all this new code.
