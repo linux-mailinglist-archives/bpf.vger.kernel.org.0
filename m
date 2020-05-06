@@ -2,143 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C541C71C3
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 15:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C7D1C722E
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 15:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728667AbgEFNah convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 6 May 2020 09:30:37 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:54136 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728726AbgEFNag (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 May 2020 09:30:36 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-w3BmCtTrPTq4FU6pS-g0LA-1; Wed, 06 May 2020 09:30:31 -0400
-X-MC-Unique: w3BmCtTrPTq4FU6pS-g0LA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A9851902EA1;
-        Wed,  6 May 2020 13:30:29 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.192.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 344A4605DD;
-        Wed,  6 May 2020 13:30:26 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>, bgregg@netflix.com,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 9/9] selftests/bpf: Add verifier test for d_path helper
-Date:   Wed,  6 May 2020 15:29:46 +0200
-Message-Id: <20200506132946.2164578-10-jolsa@kernel.org>
-In-Reply-To: <20200506132946.2164578-1-jolsa@kernel.org>
-References: <20200506132946.2164578-1-jolsa@kernel.org>
+        id S1728712AbgEFNxk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 09:53:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728878AbgEFNxj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 09:53:39 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838E5C061A41
+        for <bpf@vger.kernel.org>; Wed,  6 May 2020 06:53:38 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id k12so2682503wmj.3
+        for <bpf@vger.kernel.org>; Wed, 06 May 2020 06:53:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=GjvudzLMbL+TOgF/JDI7RJUqMk0E0cm0LNLU/JCk0xU=;
+        b=SDljmdh7QFJ0KmZse6HyzKivVZ/KaukZvxWzW96n1cu8RfNquElkqy8RHleT0wKRGt
+         emNxPjx/RrFJSajMX/Gd2W6n+rmeZRnf83MfTvrufPsxBkB5F1EhJ5o4gQR6Tw0nMSgO
+         dTtl5It8lJA7vg8FHCPU9oP37Kt0mJ3gJ9jhA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=GjvudzLMbL+TOgF/JDI7RJUqMk0E0cm0LNLU/JCk0xU=;
+        b=XOfWI/vG4xnhIAzasI2Xxq6BlWJRziRHyB8vKFOa3ulANQy6013uyPXcufrvdaTrGb
+         DQWK6Iuo5vnH+rHFO0xzB0WGoHBau5oiXF7z5axXes0eAd6ZuAhCiODzItCI1s/dbMW6
+         9XjCYCjOeZ2q03QctyCvOp6IN90bteZzTEX2vxABh6x3kk4PtEpru0D7KyOLs+BVzM/2
+         ozktutLb34wZyuo1kECs/81hyluTWRvafFPG0lhEcNYaDpreEnMjSHSc3MMAX9qJVObk
+         oBykq4kg2B9r0qe2MIWv7CRI+SmAm5Y3goEnZGZL+TEejBqw+bHJOUjMXtCsK/CG/QW+
+         dQig==
+X-Gm-Message-State: AGi0PuavjrW/JLfAi7A5n0FZywVsDmzY4sOOdObTEzB+U1kEJKIk1a2B
+        r6PMY1QJ1ZJnxO+onelpk+S9bw==
+X-Google-Smtp-Source: APiQypID4OpGLH0lhbJH5XyyLd82LCR2zCZPq2lmrYrF/s+vdE2bbsnydQvU3CDb8RYnnGyEl0rj7g==
+X-Received: by 2002:a1c:3b09:: with SMTP id i9mr4500261wma.19.1588773217172;
+        Wed, 06 May 2020 06:53:37 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id s12sm3033822wmc.7.2020.05.06.06.53.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 06:53:36 -0700 (PDT)
+References: <20200506125514.1020829-1-jakub@cloudflare.com> <20200506125514.1020829-3-jakub@cloudflare.com> <CACAyw9-ro_Dit=3M46=JSrkuc8y+UcsvJgVQuG98KdtmM9mCCA@mail.gmail.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        dccp@vger.kernel.org, kernel-team <kernel-team@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Gerrit Renker <gerrit@erg.abdn.ac.uk>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marek Majkowski <marek@cloudflare.com>
+Subject: Re: [PATCH bpf-next 02/17] bpf: Introduce SK_LOOKUP program type with a dedicated attach point
+In-reply-to: <CACAyw9-ro_Dit=3M46=JSrkuc8y+UcsvJgVQuG98KdtmM9mCCA@mail.gmail.com>
+Date:   Wed, 06 May 2020 15:53:35 +0200
+Message-ID: <87eerxuq3k.fsf@cloudflare.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding verifier test for attaching tracing program and
-calling d_path helper from within and testing that it's
-allowed for dentry_open function and denied for 'd_path'
-function with appropriate error.
+On Wed, May 06, 2020 at 03:16 PM CEST, Lorenz Bauer wrote:
+> On Wed, 6 May 2020 at 13:55, Jakub Sitnicki <jakub@cloudflare.com> wrote:
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/testing/selftests/bpf/test_verifier.c   | 13 ++++++-
- tools/testing/selftests/bpf/verifier/d_path.c | 37 +++++++++++++++++++
- 2 files changed, 49 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/verifier/d_path.c
+[...]
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 21a1ce219c1c..1e38179f0dbf 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -114,6 +114,7 @@ struct bpf_test {
- 		bpf_testdata_struct_t retvals[MAX_TEST_RUNS];
- 	};
- 	enum bpf_attach_type expected_attach_type;
-+	const char *kfunc;
- };
- 
- /* Note we want this to be 64 bit aligned so that the end of our array is
-@@ -961,8 +962,18 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
- 		attr.log_level = 4;
- 	attr.prog_flags = pflags;
- 
-+	if (prog_type == BPF_PROG_TYPE_TRACING && test->kfunc) {
-+		attr.attach_btf_id = libbpf_find_vmlinux_btf_id(test->kfunc,
-+						attr.expected_attach_type);
-+	}
-+
- 	fd_prog = bpf_load_program_xattr(&attr, bpf_vlog, sizeof(bpf_vlog));
--	if (fd_prog < 0 && !bpf_probe_prog_type(prog_type, 0)) {
-+
-+	/* BPF_PROG_TYPE_TRACING requires more setup and
-+	 * bpf_probe_prog_type won't give correct answer
-+	 */
-+	if (fd_prog < 0 && (prog_type != BPF_PROG_TYPE_TRACING) &&
-+	    !bpf_probe_prog_type(prog_type, 0)) {
- 		printf("SKIP (unsupported program type %d)\n", prog_type);
- 		skips++;
- 		goto close_fds;
-diff --git a/tools/testing/selftests/bpf/verifier/d_path.c b/tools/testing/selftests/bpf/verifier/d_path.c
-new file mode 100644
-index 000000000000..b988396379a7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/verifier/d_path.c
-@@ -0,0 +1,37 @@
-+{
-+	"d_path accept",
-+	.insns = {
-+	BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_1, 0),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-+	BPF_MOV64_IMM(BPF_REG_6, 0),
-+	BPF_STX_MEM(BPF_DW, BPF_REG_2, BPF_REG_6, 0),
-+	BPF_LD_IMM64(BPF_REG_3, 8),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_d_path),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+	.prog_type = BPF_PROG_TYPE_TRACING,
-+	.expected_attach_type = BPF_TRACE_FENTRY,
-+	.kfunc = "dentry_open",
-+},
-+{
-+	"d_path reject",
-+	.insns = {
-+	BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_1, 0),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-+	BPF_MOV64_IMM(BPF_REG_6, 0),
-+	BPF_STX_MEM(BPF_DW, BPF_REG_2, BPF_REG_6, 0),
-+	BPF_LD_IMM64(BPF_REG_3, 8),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_d_path),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.errstr = "helper call is not allowed in probe",
-+	.result = REJECT,
-+	.prog_type = BPF_PROG_TYPE_TRACING,
-+	.expected_attach_type = BPF_TRACE_FENTRY,
-+	.kfunc = "d_path",
-+},
--- 
-2.25.4
+>> @@ -4012,4 +4051,18 @@ struct bpf_pidns_info {
+>>         __u32 pid;
+>>         __u32 tgid;
+>>  };
+>> +
+>> +/* User accessible data for SK_LOOKUP programs. Add new fields at the end. */
+>> +struct bpf_sk_lookup {
+>> +       __u32 family;           /* AF_INET, AF_INET6 */
+>> +       __u32 protocol;         /* IPPROTO_TCP, IPPROTO_UDP */
+>> +       /* IP addresses allows 1, 2, and 4 bytes access */
+>> +       __u32 src_ip4;
+>> +       __u32 src_ip6[4];
+>> +       __u32 src_port;         /* network byte order */
+>> +       __u32 dst_ip4;
+>> +       __u32 dst_ip6[4];
+>> +       __u32 dst_port;         /* host byte order */
+>
+> Jakub and I have discussed this off-list, but we couldn't come to an
+> agreement and decided to invite
+> your opinion.
+>
+> I think that dst_port should be in network byte order, since it's one
+> less exception to the
+> rule to think about when writing BPF programs.
+>
+> Jakub's argument is that this follows __sk_buff->local_port precedent,
+> which is also in host
+> byte order.
 
+Yes, would be great to hear if there is a preference here.
+
+Small correction, proposed sk_lookup program doesn't have access to
+__sk_buff, so perhaps that case matters less.
+
+bpf_sk_lookup->dst_port, the packet destination port, is in host byte
+order so that it can be compared against bpf_sock->src_port, socket
+local port, without conversion.
+
+But I also see how it can be a surprise for a BPF user that one field has
+a different byte order.
