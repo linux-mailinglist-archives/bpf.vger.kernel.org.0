@@ -2,139 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447821C6DB2
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 11:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3161C6DDC
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 12:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729188AbgEFJyy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 05:54:54 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44811 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729040AbgEFJyy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 May 2020 05:54:54 -0400
+        id S1728314AbgEFKAQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 06:00:16 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:31465 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728193AbgEFKAQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 06:00:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588758892;
+        s=mimecast20190719; t=1588759214;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IQgpC6M6Fr0QXYCApTnYcfdrhwDOylYbkH9y+/KvXfc=;
-        b=hmbXPHaj7wcMFWHWhLB+KyzYOJ3kYIra2QN6R7vzel9ao4Jb9DjGLwKBctklHGViF46tRu
-        ogsW7rM0r9JtpjXQbu4xikgRiPr3vbWMvVgiL3dtEluRbYwuqjrsP2Wv8+hBTMsju3fF+r
-        uGjV5GiG7YYSlxezm4JItFopsjPenmM=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-477-Y0iZR4qDOwalqDOnrJcF7A-1; Wed, 06 May 2020 05:54:50 -0400
-X-MC-Unique: Y0iZR4qDOwalqDOnrJcF7A-1
-Received: by mail-wm1-f69.google.com with SMTP id 71so516812wmb.8
-        for <bpf@vger.kernel.org>; Wed, 06 May 2020 02:54:50 -0700 (PDT)
+        bh=/yse9wAFbwsOqetKh7+VqeIgo2g7MYDJ2PL6VXMxg4M=;
+        b=KjuVd09WMQymiv3yMZ5wiHi+kFZd6EHiV3D+OrpAFizYf4uHLkTESliVPf/75kBsUF6Sq3
+        c6WTIOV9nAGWi9EO//X8D2GHlQ/AWDYTBBgpSNUby9X2FfhlhEs8FIhlaiidOiZiDpP36P
+        C7uxdo5BRJa/qN8ym95hQyu+7U3a5p4=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-320-MEgGVJ4NOIGWa-N9bFuzPA-1; Wed, 06 May 2020 06:00:12 -0400
+X-MC-Unique: MEgGVJ4NOIGWa-N9bFuzPA-1
+Received: by mail-lf1-f72.google.com with SMTP id c6so648408lfg.0
+        for <bpf@vger.kernel.org>; Wed, 06 May 2020 03:00:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=IQgpC6M6Fr0QXYCApTnYcfdrhwDOylYbkH9y+/KvXfc=;
-        b=T0E9vkxsgPc+QqRQcqUN0TZ1kXDDawAHpMP426BVYYbVuF4Mh7PNU+DK/iAtLqbUBB
-         FdpvzIe4zQB0VoV6niR2RuNVOK/2LwChRkgUUi6Q0VIDzHkluJeMp8J/935wlwuqvDfr
-         +9TfKdNfhBH4MbHQ4IZ6iwqEoSY4EWJIECo2ZxiU6zYtxv54d6vIHJ/tfi1Q00+DOO+R
-         568D9GsoU7SfFGlHCtwX1dhnzxesOqn9aZr+VkJsJFLABqR4krhDCzSD6LgFaB0IXBXF
-         XRBtnSE1U1Vd5FeCueSN5zFvutVEIB3GBz62niXo55bPc58eybCwiYVvg29qjqDx+sV1
-         qjCg==
-X-Gm-Message-State: AGi0Pua9UsRnlLIso+gJ8r5kePTgNRUfd5QB57q4cewu6PfIeKVyxwj5
-        BDPngqnwOwG3qvpWdGGvqEMkGc1EMagqalV2jyVAW4RC+7+pB6FOibpECMANkd5dGG60RCV3y/n
-        nCp258KDJHXtY
-X-Received: by 2002:a1c:2383:: with SMTP id j125mr3560323wmj.6.1588758889754;
-        Wed, 06 May 2020 02:54:49 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKtmLaaSMrbt2AgLvxUJBNSQPFDRBWOY4wRUCKhGIWK+KiuCn92js4GGRYIiEgbL9ZdbdY9GA==
-X-Received: by 2002:a1c:2383:: with SMTP id j125mr3560305wmj.6.1588758889563;
-        Wed, 06 May 2020 02:54:49 -0700 (PDT)
-Received: from redhat.com (bzq-109-66-7-121.red.bezeqint.net. [109.66.7.121])
-        by smtp.gmail.com with ESMTPSA id r3sm1922605wrx.72.2020.05.06.02.54.48
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=/yse9wAFbwsOqetKh7+VqeIgo2g7MYDJ2PL6VXMxg4M=;
+        b=fAgOMvVNUG98dwAHl4RPnLyfkALhh3McnPx/uj7C8vtkpClmWFOyq3yH0Y4YJISpPr
+         tVv5LvkNofMuqWHP/tfOV56UXTRZCKFsVdfFvxgr4Qc5H3OoMNBvaXxYevDi1c/yqeMn
+         P7F5x22MvvGnb+ii3eFbTepc4N9Qby8oSoDIiq2oy7S5WqsPbVXrcRRRxicsD1mDNLjs
+         wsN2QkGqE45YIazDUCr9S+zl30Js3pQXAtO+r3yeoDdgLpZMY6+cgWtmpS9RwZe/dR9x
+         B1FAM4kq8nyidTWMrjtSTp9GxoIGIzssc4nlDdBWcKRatU5dpiRLNMz0TROtxA1voSTa
+         O5bg==
+X-Gm-Message-State: AGi0PuasACXNEvW3t3L7+wcGjBeNL0p7tVvEyxGVO6u1dOL4d/r4jC9T
+        cEPZ7vbGfjR870usxt+ImrZ0wefYnwatNZvwSFiWGJDISrQA35pT9Yg5HbZVQmMjxxt8nc4MVqr
+        sp6TPH+5RLeoT
+X-Received: by 2002:a2e:b44c:: with SMTP id o12mr4155064ljm.240.1588759210714;
+        Wed, 06 May 2020 03:00:10 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJjrdVlse6+XhdtFOp7b+xVLAVkd268Hj8ENL2WCItSnQ1F9AdFYzvYU5bD1DpxIluXSr+Ymg==
+X-Received: by 2002:a2e:b44c:: with SMTP id o12mr4155036ljm.240.1588759210322;
+        Wed, 06 May 2020 03:00:10 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id b4sm1229877lfo.33.2020.05.06.03.00.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 02:54:49 -0700 (PDT)
-Date:   Wed, 6 May 2020 05:54:46 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH net-next 1/2] virtio-net: don't reserve space for vnet
- header for XDP
-Message-ID: <20200506055436-mutt-send-email-mst@kernel.org>
-References: <20200506061633.16327-1-jasowang@redhat.com>
- <20200506033834-mutt-send-email-mst@kernel.org>
- <7a169b06-b6b9-eac1-f03a-39dd1cfcce57@redhat.com>
+        Wed, 06 May 2020 03:00:09 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 789851804E9; Wed,  6 May 2020 12:00:08 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Subject: Re: [RFC PATCHv2 bpf-next 1/2] xdp: add a new helper for dev map multicast support
+In-Reply-To: <20200506091442.GA102436@dhcp-12-153.nay.redhat.com>
+References: <20200415085437.23028-1-liuhangbin@gmail.com> <20200424085610.10047-1-liuhangbin@gmail.com> <20200424085610.10047-2-liuhangbin@gmail.com> <87r1wd2bqu.fsf@toke.dk> <20200506091442.GA102436@dhcp-12-153.nay.redhat.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 06 May 2020 12:00:08 +0200
+Message-ID: <874kstmlhz.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7a169b06-b6b9-eac1-f03a-39dd1cfcce57@redhat.com>
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 06, 2020 at 04:19:40PM +0800, Jason Wang wrote:
-> 
-> On 2020/5/6 下午3:53, Michael S. Tsirkin wrote:
-> > On Wed, May 06, 2020 at 02:16:32PM +0800, Jason Wang wrote:
-> > > We tried to reserve space for vnet header before
-> > > xdp.data_hard_start. But this is useless since the packet could be
-> > > modified by XDP which may invalidate the information stored in the
-> > > header and there's no way for XDP to know the existence of the vnet
-> > > header currently.
-> > What do you mean? Doesn't XDP_PASS use the header in the buffer?
-> 
-> 
-> We don't, see 436c9453a1ac0 ("virtio-net: keep vnet header zeroed after
-> processing XDP")
-> 
-> If there's other place, it should be a bug.
-> 
-> 
-> > 
-> > > So let's just not reserve space for vnet header in this case.
-> > In any case, we can find out XDP does head adjustments
-> > if we need to.
-> 
-> 
-> But XDP program can modify the packets without adjusting headers.
-> 
-> Thanks
+Hangbin Liu <liuhangbin@gmail.com> writes:
 
-Then what's the problem?
+> Hi Toke,
+>
+> Thanks for your review, please see replies below.
+>
+> On Fri, Apr 24, 2020 at 04:34:49PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> >
+>> > The general data path is kept in net/core/filter.c. The native data
+>> > path is in kernel/bpf/devmap.c so we can use direct calls to
+>> > get better performace.
+>>=20
+>> Got any performance numbers? :)
+>
+> No, I haven't test the performance. Do you have any suggestions about how
+> to test it? I'd like to try forwarding pkts to 10+ ports. But I don't know
+> how to test the throughput. I don't think netperf or iperf supports
+> this.
 
-> 
-> > 
-> > 
-> > > Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-> > > Signed-off-by: Jason Wang <jasowang@redhat.com>
-> > > ---
-> > >   drivers/net/virtio_net.c | 6 +++---
-> > >   1 file changed, 3 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > > index 11f722460513..98dd75b665a5 100644
-> > > --- a/drivers/net/virtio_net.c
-> > > +++ b/drivers/net/virtio_net.c
-> > > @@ -684,8 +684,8 @@ static struct sk_buff *receive_small(struct net_device *dev,
-> > >   			page = xdp_page;
-> > >   		}
-> > > -		xdp.data_hard_start = buf + VIRTNET_RX_PAD + vi->hdr_len;
-> > > -		xdp.data = xdp.data_hard_start + xdp_headroom;
-> > > +		xdp.data_hard_start = buf + VIRTNET_RX_PAD;
-> > > +		xdp.data = xdp.data_hard_start + xdp_headroom + vi->hdr_len;
-> > >   		xdp.data_end = xdp.data + len;
-> > >   		xdp.data_meta = xdp.data;
-> > >   		xdp.rxq = &rq->xdp_rxq;
-> > > @@ -845,7 +845,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
-> > >   		 * the descriptor on if we get an XDP_TX return code.
-> > >   		 */
-> > >   		data = page_address(xdp_page) + offset;
-> > > -		xdp.data_hard_start = data - VIRTIO_XDP_HEADROOM + vi->hdr_len;
-> > > +		xdp.data_hard_start = data - VIRTIO_XDP_HEADROOM;
-> > >   		xdp.data = data + vi->hdr_len;
-> > >   		xdp.data_end = xdp.data + (len - vi->hdr_len);
-> > >   		xdp.data_meta = xdp.data;
-> > > -- 
-> > > 2.20.1
+What I usually do when benchmarking XDP_REDIRECT is to just use pktgen
+(samples/pktgen in the kernel source tree) on another machine,
+specifically, like this:
+
+./pktgen_sample03_burst_single_flow.sh  -i enp1s0f1 -d 10.70.2.2 -m ec:0d:9=
+a:db:11:35 -t 4  -s 64
+
+(adjust iface, IP and MAC address to your system, of course). That'll
+flood the target machine with small UDP packets. On that machine, I then
+run the 'xdp_redirect_map' program from samples/bpf. The bpf program
+used by that sample will update an internal counter for every packet,
+and the userspace prints it out, which gives you the performance (in
+PPS). So just modifying that sample to using your new multicast helper
+(and comparing it to regular REDIRECT to a single device) would be a
+first approximation of a performance test.
+
+[...]
+
+>> > +	devmap_get_next_key(map, NULL, &key);
+>> > +
+>> > +	for (;;) {
+>>=20
+>> I wonder if we should require DEVMAP_HASH maps to be indexed by ifindex
+>> to avoid the loop?
+>
+> I guess it's not easy to force user to index the map by ifindex.
+
+Well, the way to 'force the user' is just to assume that this is the
+case, and if the map is filled in wrong, things just won't work ;)
+
+>> > +	xdpf =3D convert_to_xdp_frame(xdp);
+>> > +	if (unlikely(!xdpf))
+>> > +		return -EOVERFLOW;
+>>=20
+>> You do a clone for each map entry below, so I think you end up leaking
+>> this initial xdpf? Also, you'll end up with one clone more than
+>> necessary - redirecting to two interfaces should only require 1 clone,
+>> you're doing 2.
+>
+> We don't know which is the latest one. So we need to keep the initial
+> for clone. Is it enough to call xdp_release_frame() after the for
+> loop?
+
+You could do something like:
+
+bool first =3D true;
+for (;;) {
+
+[...]
+
+           if (!first) {
+   		nxdpf =3D xdpf_clone(xdpf);
+   		if (unlikely(!nxdpf))
+   			return -ENOMEM;
+   		bq_enqueue(dev, nxdpf, dev_rx);
+           } else {
+   		bq_enqueue(dev, xdpf, dev_rx);
+   		first =3D false;
+           }
+}
+
+/* didn't find anywhere to forward to, free buf */
+if (first)
+   xdp_return_frame_rx_napi(xdpf);
+
+
+
+[...]
+
+>> This duplication bugs me; maybe we should try to consolidate the generic
+>> and native XDP code paths?
+>
+> Yes, I have tried to combine these two functions together. But one is gen=
+eric
+> code path and another is XDP code patch. One use skb_clone and another
+> use xdpf_clone(). There are also some extra checks for XDP code. So maybe
+> we'd better just keep it as it is.
+
+Yeah, guess it may not be as simple as I'd like it to be ;)
+Let's keep it this way for now at least; we can always consolidate in a
+separate patch series.
+
+-Toke
 
