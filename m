@@ -2,103 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1A51C65B8
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 04:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0D61C6631
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 05:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729495AbgEFCAH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 May 2020 22:00:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46348 "EHLO
+        id S1726218AbgEFDKF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 May 2020 23:10:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728069AbgEFCAH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 May 2020 22:00:07 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D717AC061A0F
-        for <bpf@vger.kernel.org>; Tue,  5 May 2020 19:00:06 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id g4so664089ljl.2
-        for <bpf@vger.kernel.org>; Tue, 05 May 2020 19:00:06 -0700 (PDT)
+        with ESMTP id S1725900AbgEFDKF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 May 2020 23:10:05 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECBBEC061A0F;
+        Tue,  5 May 2020 20:10:03 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id g185so562475qke.7;
+        Tue, 05 May 2020 20:10:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=EPCwr4iUyoDdxListJ7zClgrcCYnR661n6wmFVvbHLY=;
-        b=S2goQR4YweK9FgDGQu9Pe3g+q4Hkk15RM/dlxmLrYtqxhDBbr8D4pVqRG/Hl2OJ0d2
-         NS2UGsNd3OqJO82RqbEsKmzHYIgjqhto73u6jAhkUP8dCJqscSyfFX2ao5FqNMqrxarN
-         82EDvANgZgPw2GoRK8oRIV9Th5auKMojwDbE1obgAmrkUETEw+arJyTqlEH5sXUQMNvV
-         iQJn1cta+AWd/kQ9+OHzpBmBO/iiTyOO0nPU85TPkMSHWpTI6ApIw88SDKoU28kB+Q/W
-         HWVB603IGvrUaRxiZev3z8jsFH7VtvIA4WiCMYewlNeLOc6/xbMv9lJQv5L5+3uFTaYy
-         /q3Q==
+        bh=pV/ZL32hviuPWhiulKnGp8Sn0pIBnn99XtNkeTnvSho=;
+        b=QTfPyZjxILfBXSZhZ1M+0PIh5X84MlHr5/yfp+46e4oboaqYhqThQW1YxyEqDWZO9n
+         c7eW//0vF27XtWDaisnozQbDHqGVAOD+nc1BVzkYn7GLDgBvt58amKPVXqB0Z/ObTLZS
+         mBE0Pa5qfEsmo49BaZYxW1LdGek37MgoDZk/56fUff+2GG0G+YU3RehijzIeZPY5FRw+
+         xyqVZ74omfli1Ul9JehzojOmwpbt9ktJ3LZAAgDNH+BCKpMNmS6NgGzaibnm6Wkq+vNd
+         Aw4qnuEMI3LBaByC5bRqp1gIGoxNVIbKrB5juo3l5u4zn3ub/zU+EUTPwRtWiViwpX2+
+         aSUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=EPCwr4iUyoDdxListJ7zClgrcCYnR661n6wmFVvbHLY=;
-        b=JsxVEuLlh2SRekKH6qeug/ycwfUhB9RYCrHQbtw4PKXjux+TCZMq6arHKaLnelZjFq
-         mKQiPdBG+ojAjKAPpfP9qM1BU57hy9rorH5fMfW9cTChVRybb9RCW3jxAJYiS/1srOoV
-         fEtfxsBivQzwnAWOTcy1pbKPPzvGnWJWyf/BPjE0xr1dUQRHoYtO4nl1oUVH6EhJCNli
-         a4/IQtExE/ZLVY906B99udHFaQZl5zdNMnGMXoxL3OMfXUEuJT2FrLxu5pEvSvLqnPJz
-         z/4O0rKuBkPrXUutgjxFYsEIkT0iK8khKDGPvpBQldk6aNABn4qGusCs8IbKIS04buvT
-         ICxQ==
-X-Gm-Message-State: AGi0PuYWl1wmaqMLLpeMzojgVoM7Y5JPmtkIHw5X1V1a6p2MHiOkzH4J
-        i5WvDRYKP9PTvUXK+1L6kJuQTobztX/U3TF3zUFnzg==
-X-Google-Smtp-Source: APiQypL1b7v3kgsfIIz7nKbHmItmafBhqW3lHLfPIrxKs7Td0ZXxJrdsMJA6qGaTFjdBDBw//PKqr906opZHHBS/YOw=
-X-Received: by 2002:a2e:b4c2:: with SMTP id r2mr3565165ljm.143.1588730405148;
- Tue, 05 May 2020 19:00:05 -0700 (PDT)
+        bh=pV/ZL32hviuPWhiulKnGp8Sn0pIBnn99XtNkeTnvSho=;
+        b=bpdW8tI2rEc8iJMeK7sYIzMwNfHTMSjhpB/IRsB+2i7uQov7lNF465LpvDQqLiU49s
+         R77YBsypWr9wEtwhgX7dREq/GomcfLiKIsUymYm/0pkUI7B899XlCOQoULf2+f/5/eOx
+         S5ei8TVW9lj+sTpu6oegQ8FqizQJ1iMxSoTNPpScrjc8+cLgHsboeKkgQoziPJSTeKyB
+         6W8Wp4pRRIRbf7/a/MPGw7Ii7XCykymbNU0+fVVchRjNcpuIre0gh1ECxZiryw3W0lQp
+         Tuwz0KOe3MPMYLA2BOliY8GzgVSIGi10x2BQsnLZDzeehRJrtXO5Unkw+Smg8qdxd16C
+         MPwg==
+X-Gm-Message-State: AGi0PuZUXL/lsr6JHRBTsKS48T6U2bjqJwBZmDTkwLUzgZajMPsKD9jQ
+        GKKVPrrbVDl2+AxaKpmT5tWamSPZXS54qHeog+34Qqzn
+X-Google-Smtp-Source: APiQypJ7vAIoTlH71ReWYo0xTrHB2gpuL1AmR1jbSEIXZNnsno7GCoOZoHblW0FHPqUTgUgsHex2kfR4cgzQPno4+vg=
+X-Received: by 2002:ae9:e10b:: with SMTP id g11mr7232988qkm.449.1588734602827;
+ Tue, 05 May 2020 20:10:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAFcc1YgBxQUKa=ySQ+XTOk1EkMwLKHc1yECLxuWnVTHoLoYMFg@mail.gmail.com>
-In-Reply-To: <CAFcc1YgBxQUKa=ySQ+XTOk1EkMwLKHc1yECLxuWnVTHoLoYMFg@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 5 May 2020 18:59:53 -0700
-Message-ID: <CAADnVQJrtojjdyX-5JvNH02+4Pfa81FuVSDsNY2npSJ4Tm3p-A@mail.gmail.com>
-Subject: Re: bpf_override_return out of order execution?
-To:     Giulia <giulia.frascaria@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
+References: <20200504062547.2047304-1-yhs@fb.com> <20200504062549.2047531-1-yhs@fb.com>
+ <CAEf4BzYxTwmxEVk6DG9GzkqHDF--VqvZWik0YJigzdrn3whcXA@mail.gmail.com>
+ <e71a26e7-1a78-7e4d-23d6-20070541524d@fb.com> <fe5d8d02-b263-c373-9ab8-c709f4c5841f@fb.com>
+In-Reply-To: <fe5d8d02-b263-c373-9ab8-c709f4c5841f@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 5 May 2020 20:09:51 -0700
+Message-ID: <CAEf4BzZFqPkq=E0c1eMFoKzUQF7h+aMufE3XEpcXXEQkTvYEPA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 03/20] bpf: support bpf tracing/iter programs
+ for BPF_LINK_CREATE
+To:     Alexei Starovoitov <ast@fb.com>
+Cc:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 7:50 AM Giulia <giulia.frascaria@gmail.com> wrote:
+On Tue, May 5, 2020 at 5:54 PM Alexei Starovoitov <ast@fb.com> wrote:
 >
-> Hi all,
+> On 5/5/20 5:14 PM, Yonghong Song wrote:
+> >
+> >
+> > On 5/5/20 2:30 PM, Andrii Nakryiko wrote:
+> >> On Sun, May 3, 2020 at 11:26 PM Yonghong Song <yhs@fb.com> wrote:
+> >>>
+> >>> Given a bpf program, the step to create an anonymous bpf iterator is:
+> >>>    - create a bpf_iter_link, which combines bpf program and the target.
+> >>>      In the future, there could be more information recorded in the
+> >>> link.
+> >>>      A link_fd will be returned to the user space.
+> >>>    - create an anonymous bpf iterator with the given link_fd.
+> >>>
+> >>> The bpf_iter_link can be pinned to bpffs mount file system to
+> >>> create a file based bpf iterator as well.
+> >>>
+> >>> The benefit to use of bpf_iter_link:
+> >>>    - using bpf link simplifies design and implementation as bpf link
+> >>>      is used for other tracing bpf programs.
+> >>>    - for file based bpf iterator, bpf_iter_link provides a standard
+> >>>      way to replace underlying bpf programs.
+> >>>    - for both anonymous and free based iterators, bpf link query
+> >>>      capability can be leveraged.
+> >>>
+> >>> The patch added support of tracing/iter programs for BPF_LINK_CREATE.
+> >>> A new link type BPF_LINK_TYPE_ITER is added to facilitate link
+> >>> querying. Currently, only prog_id is needed, so there is no
+> >>> additional in-kernel show_fdinfo() and fill_link_info() hook
+> >>> is needed for BPF_LINK_TYPE_ITER link.
+> >>>
+> >>> Signed-off-by: Yonghong Song <yhs@fb.com>
+> >>> ---
+> >>
+> >> LGTM. See small nit about __GFP_NOWARN.
+> >>
+> >> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> >>
+> >>
+> >>>   include/linux/bpf.h            |  1 +
+> >>>   include/linux/bpf_types.h      |  1 +
+> >>>   include/uapi/linux/bpf.h       |  1 +
+> >>>   kernel/bpf/bpf_iter.c          | 62 ++++++++++++++++++++++++++++++++++
+> >>>   kernel/bpf/syscall.c           | 14 ++++++++
+> >>>   tools/include/uapi/linux/bpf.h |  1 +
+> >>>   6 files changed, 80 insertions(+)
+> >>>
+> >>
+> >> [...]
+> >>
+> >>> +int bpf_iter_link_attach(const union bpf_attr *attr, struct bpf_prog
+> >>> *prog)
+> >>> +{
+> >>> +       struct bpf_link_primer link_primer;
+> >>> +       struct bpf_iter_target_info *tinfo;
+> >>> +       struct bpf_iter_link *link;
+> >>> +       bool existed = false;
+> >>> +       u32 prog_btf_id;
+> >>> +       int err;
+> >>> +
+> >>> +       if (attr->link_create.target_fd || attr->link_create.flags)
+> >>> +               return -EINVAL;
+> >>> +
+> >>> +       prog_btf_id = prog->aux->attach_btf_id;
+> >>> +       mutex_lock(&targets_mutex);
+> >>> +       list_for_each_entry(tinfo, &targets, list) {
+> >>> +               if (tinfo->btf_id == prog_btf_id) {
+> >>> +                       existed = true;
+> >>> +                       break;
+> >>> +               }
+> >>> +       }
+> >>> +       mutex_unlock(&targets_mutex);
+> >>> +       if (!existed)
+> >>> +               return -ENOENT;
+> >>> +
+> >>> +       link = kzalloc(sizeof(*link), GFP_USER | __GFP_NOWARN);
+> >>
+> >> nit: all existing link implementation don't specify __GFP_NOWARN,
+> >> wonder if bpf_iter_link should be special?
+> >
+> > Nothing special. Just feel __GFP_NOWARN is the right thing to do to
+> > avoid pollute dmesg since -ENOMEM is returned to user space. But in
+> > reality, unlike some key/value allocation where the size could be huge
+> > and __GFP_NOWARN might be more useful, here, sizeof(*link) is fixed
+> > and small, __GFP_NOWARN probably not that useful.
+> >
+> > Will drop it.
 >
-> I'm experimenting with the bpf_override_return() helper for the
-> copyout function (using kernel 5.4) to the whitelist. (
-> https://elixir.bootlin.com/linux/v5.4/source/lib/iov_iter.c#L138 )
-> My goal is to avoid the buffer copy from kernel to user that happens
-> in copyout, so I'm calling  bpf_override_return with return value 0 in
-> a kprobe.
->
-> It works most of the times, but when I test the function with
-> relatively many iterations of a read from file I find that sometimes
-> the copyout is actually executed with the buffer being copied.
->
-> Below is an execution output with sample parameters and with the kinds
-> of numbers I usually find
->
-> The numbers match with debug printks in the copyout function that I
-> find in dmesg, so I'm quite positive that the function actually gets
-> called.
->
-> The counter in the bpf kprobe arrives to 10000 executions which is
-> what I am expecting, so the only explanation I have for now is that
-> the kprobe execution is reordered and executed while the copyout is
-> already triggered, and the instruction pointer does not get
-> effectively diverted on time in the bpf_override_return. Could this be
-> the case? Is there any potential security implication also for cases
-> outside of mine?
+> actually all existing user space driven allocation have nowarn.
 
-kprobe+bpf won't get reordered but there are few limitations in kprobes.
-First is kprobe maxactive.
-"The maximum number of instances of the probed function that
- * can be active concurrently"
-And another is per-cpu bpf_prog_active counter that
-allows only one bpf prog attached to kprobe execute on a cpu.
+Can you define "user space driven"? I understand why for map, map key,
+map value, program we want to do that, because it's way too easy for
+user-space to specify huge sizes and allocation is proportional to
+that size. But in this case links are fixed-sized objects, same as
+struct file and struct inode. From BPF world, for instance, there is
+struct bpf_prog_list, which is created when user is attaching BPF
+program to cgroup, so it is user-space driven in similar sense. Yet we
+allocate it without __GFP_NOWARN.
 
-Do you have more than one kprobe ?
-In such cases other active kprobe+bpf may suppress the one
-attached to copyout.
+> If we missed it in other link allocs we should probably add it.
 
-If you can upgrade to the latest kernel bpf_modify_return program
-type is faster and doesn't have these limitations.
-See example in selftests/bpf/progs/modify_return.c
+Before bpf_link was formalized, raw_tracepoint_open was creating
+struct bpf_raw_tracepoint, without NOWARN.
