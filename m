@@ -2,135 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF001C6917
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 08:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 653A51C6923
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 08:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbgEFGj5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 02:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726843AbgEFGj5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 02:39:57 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD3B0C061A0F;
-        Tue,  5 May 2020 23:39:56 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id p13so193246qvt.12;
-        Tue, 05 May 2020 23:39:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y/Sv+P+9llwkKL5rRoqkcSud7Yg3ZcZ2k+WEatZrTTw=;
-        b=CwVtsZzE0QC5J8DCTwC5TG0u93u4uB9TGg9srs4xZW0eovhU471fNAaqkRbOVmO8Fp
-         YaqZUiVgsDy/6LAVPXIFSYjUNUfW8TPDoM1Lf5YYvzcy7AHcb3gEYaMr3rmVo9BsLtPG
-         i0TBWSUEZS9rGGcFyH49t8ppXmAdmctZ6N/i3PsfMnnd/0zI6o5C4jHc70SzWHP8u06z
-         v2EMgYmSmSR4aljBpiiX6fO2+nPe/wJ+kX7RcnfXBycQH58vYsRZgjPjP4I5uLqu/HiQ
-         tvg6TVePV0AMzQNNkTSkQjLxHg2AQtJZ9lvJMjDT0XNZcXfXFwSwnrceBEJpu1gX4gyE
-         ziJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y/Sv+P+9llwkKL5rRoqkcSud7Yg3ZcZ2k+WEatZrTTw=;
-        b=goSxhgxFySWTPzAbm0JlsldoSyShRioqBpWoJIyCrfWzZ1ZkrMHyjmJEbBsHlVB+Ch
-         4eG+e3SJdD+zlNPMkyINYxScmhEgVn1tkjs17ndbxFnm35yY74QyFibDEqLJ+KGk5bRr
-         bDE0O/fyjagqEPCen3CmdhTkZ4jG8bOiO4XBqCH0sg1gOpV6nFlxDl8Dseo5VomDALTL
-         8SIwImfq4Gw3Us/ePYXyLBy81bk10lR0VYg5y3x5YTrT3mDGMBivuKArw0Zq+HTvuIIj
-         ZmPdFW3YmGhg42v6mrzQYPjF1WVShkALxdlLMefWN3C+w39z1Pt0HtS8k8EOz4N3rrat
-         ZCpQ==
-X-Gm-Message-State: AGi0PuY6GeVOmVXBVC0m+fF7AI6rul0TY0L03oTaocCgv25tj7UK97rp
-        7DgGBztignhEpixVRhMcV1MjCQB38ddyFmnbVs4=
-X-Google-Smtp-Source: APiQypLxCced2MRd2SxGb2UL9AaXz5iFoKjtI/uM+9glYvIdeZLEhNZVpiASZTnCMLYTAfItGcHf1V+LvV+NAOar01k=
-X-Received: by 2002:ad4:4c03:: with SMTP id bz3mr6426901qvb.224.1588747195968;
- Tue, 05 May 2020 23:39:55 -0700 (PDT)
+        id S1727940AbgEFGlR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 02:41:17 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:30173 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725882AbgEFGlQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 02:41:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588747276;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0d+csVvMqYzG+ZaCpxRg5ikMUnSpEUdjcysHHLVaDqo=;
+        b=SZWOiiFf+pyx7Dan145tQ44mRrFy827BmCndns/K08p+oGf/DJhntKvvVcnB3lbHvq68rU
+        dJ+E5+XwpRK6ao6/x4cCRj5R9p0Ru0V2HdbD3qF5pJXLdEkJlWKlachHfDUUCn5gCy2/Vn
+        ujO+vIuOYVrRiSdhHZuArIyBU386AzU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-103-G45MKYr0OJCQCBmFEVUHeA-1; Wed, 06 May 2020 02:41:14 -0400
+X-MC-Unique: G45MKYr0OJCQCBmFEVUHeA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B7E780058A;
+        Wed,  6 May 2020 06:41:12 +0000 (UTC)
+Received: from [10.72.13.165] (ovpn-13-165.pek2.redhat.com [10.72.13.165])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 72E1460BEC;
+        Wed,  6 May 2020 06:41:06 +0000 (UTC)
+Subject: Re: [PATCH net-next v2 20/33] vhost_net: also populate XDP frame size
+To:     Jesper Dangaard Brouer <brouer@redhat.com>, sameehj@amazon.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, zorik@amazon.com,
+        akiyano@amazon.com, gtzalik@amazon.com,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        steffen.klassert@secunet.com
+References: <158824557985.2172139.4173570969543904434.stgit@firesoul>
+ <158824572308.2172139.1144470511173466125.stgit@firesoul>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <0a875a6e-8b8d-b55f-2b50-1c8dc0017a92@redhat.com>
+Date:   Wed, 6 May 2020 14:41:04 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200504062547.2047304-1-yhs@fb.com> <20200504062610.2049229-1-yhs@fb.com>
-In-Reply-To: <20200504062610.2049229-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 5 May 2020 23:39:44 -0700
-Message-ID: <CAEf4BzZ7Jx9ZkHbRpj4Nzy1nJLhLaUoX6MTiTKvrLO2zPKFrBg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 20/20] tools/bpf: selftests: add bpf_iter selftests
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <158824572308.2172139.1144470511173466125.stgit@firesoul>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, May 3, 2020 at 11:26 PM Yonghong Song <yhs@fb.com> wrote:
+
+On 2020/4/30 =E4=B8=8B=E5=8D=887:22, Jesper Dangaard Brouer wrote:
+> In vhost_net_build_xdp() the 'buf' that gets queued via an xdp_buff
+> have embedded a struct tun_xdp_hdr (located at xdp->data_hard_start)
+> which contains the buffer length 'buflen' (with tailroom for
+> skb_shared_info). Also storing this buflen in xdp->frame_sz, does not
+> obsolete struct tun_xdp_hdr, as it also contains a struct
+> virtio_net_hdr with other information.
 >
-> The added test includes the following subtests:
->   - test verifier change for btf_id_or_null
->   - test load/create_iter/read for
->     ipv6_route/netlink/bpf_map/task/task_file
->   - test anon bpf iterator
->   - test anon bpf iterator reading one char at a time
->   - test file bpf iterator
->   - test overflow (single bpf program output not overflow)
->   - test overflow (single bpf program output overflows)
->
-> Th ipv6_route tests the following verifier change
->   - access fields in the variable length array of the structure.
->
-> The netlink load tests th following verifier change
->   - put a btf_id ptr value in a stack and accessible to
->     tracing/iter programs.
->
->   $ test_progs -n 2
->   #2/1 btf_id_or_null:OK
->   #2/2 ipv6_route:OK
->   #2/3 netlink:OK
->   #2/4 bpf_map:OK
->   #2/5 task:OK
->   #2/6 task_file:OK
->   #2/7 anon:OK
->   #2/8 anon-read-one-char:OK
->   #2/9 file:OK
->   #2/10 overflow:OK
->   #2/11 overflow-e2big:OK
->   #2 bpf_iter:OK
->   Summary: 1/11 PASSED, 0 SKIPPED, 0 FAILED
->
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
 > ---
+>   drivers/vhost/net.c |    1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+> index 2927f02cc7e1..516519dcc8ff 100644
+> --- a/drivers/vhost/net.c
+> +++ b/drivers/vhost/net.c
+> @@ -747,6 +747,7 @@ static int vhost_net_build_xdp(struct vhost_net_vir=
+tqueue *nvq,
+>   	xdp->data =3D buf + pad;
+>   	xdp->data_end =3D xdp->data + len;
+>   	hdr->buflen =3D buflen;
+> +	xdp->frame_sz =3D buflen;
+>  =20
+>   	--net->refcnt_bias;
+>   	alloc_frag->offset +=3D buflen;
 
-Looks good overall. bpf_link__disconnect() is wrong, though, please
-remove it. With that:
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+Hi Jesper:
 
->  .../selftests/bpf/prog_tests/bpf_iter.c       | 390 ++++++++++++++++++
->  .../selftests/bpf/progs/bpf_iter_test_kern1.c |   4 +
->  .../selftests/bpf/progs/bpf_iter_test_kern2.c |   4 +
->  .../selftests/bpf/progs/bpf_iter_test_kern3.c |  18 +
->  .../selftests/bpf/progs/bpf_iter_test_kern4.c |  48 +++
->  .../bpf/progs/bpf_iter_test_kern_common.h     |  22 +
->  6 files changed, 486 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_iter.c
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_test_kern1.c
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_test_kern2.c
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_test_kern3.c
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_test_kern4.c
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_test_kern_common.h
+As I said in v1, tun will do this for us (patch 19) via hdr->buflen. So=20
+it looks to me this is not necessary?
+
+Thanks
+
+>
 >
 
-[...]
-
-> +
-> +free_link:
-> +       bpf_link__disconnect(link);
-
-bpf_link__disconnect() actually will make destroy() below not close
-link. So no need for it. Same below in few places.
-
-> +       bpf_link__destroy(link);
-> +}
-> +
-
-[...]
