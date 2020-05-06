@@ -2,50 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B08F1C7B8B
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 22:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9298B1C7B8E
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 22:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729057AbgEFUxC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 16:53:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53832 "EHLO
+        id S1729263AbgEFUxH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 16:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728492AbgEFUxB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 16:53:01 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82714C061A41
-        for <bpf@vger.kernel.org>; Wed,  6 May 2020 13:53:01 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id a18so3217814qkl.0
-        for <bpf@vger.kernel.org>; Wed, 06 May 2020 13:53:01 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1729148AbgEFUxD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 16:53:03 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37895C061A41
+        for <bpf@vger.kernel.org>; Wed,  6 May 2020 13:53:03 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id y7so4114240ybj.15
+        for <bpf@vger.kernel.org>; Wed, 06 May 2020 13:53:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=CQcbxKSUYsAHBe7Ebehk8JAKNTVPAr/UiGZDOPwaAGc=;
-        b=Qc2qN9c83pfJHD8uho1tepgh5pW6tBfZF37n4CM3MD32Y0xOob1XZT1Xv+y3pZ+qx7
-         dBB3TftZel2t+tBVFBd8Gmpd8I5YkwQYtydO5Ubo9P4sTrTHbdqfX4CpaxnQmWfWWvgM
-         GB0IZxjFVxH21WEMvJry1tpuESxde2u8nQYSHCdadbK+JU0TiFO0kVdGrVkPTvGBJVbo
-         hK0NlJTJiZMfi1lUhirdBpVEgN4skITYyCBi0AVgxXzHXTLJ47/oWq3xpYZd9ylfxUj9
-         u5EyHrWqrjBvrtX8v6pNmKv7i9YRjxMyZS2xaYfpjkuEcvzXdsdCBIu7GTDszAEDs3cX
-         ApSQ==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=dJgmTX+e/XhBfHBE3JA0uHT0QwjnDN/7PIiY44zE/Pk=;
+        b=gGVy3gtntk0Uc7UCwP+FmllS0TJ0vTX+9b59y1mwtzGaZ5J6BH4aFo62Nffy6GZiem
+         kHmIq/nTHs7zbLxFgy9Vx+DJMIYoErhptmmadYveT83LL5Lf/A/2Awy/UjMTMM7sQZ/1
+         M/35LWinZoz7iI8wHnRADpxYlDoCVRXD5FXpOjF5isTLqy/XmLhv/EUAhLve+SD7G4M+
+         4dhykzxKlX4xmMGMj2lWZ/Rh08rY4eAfsd31rbAwWcx3xRIj4D+hVSGUh0TuYC4Q4Qli
+         nZgdeAn8IcaMkrb0SMirMY/RnxpE2y45cDdNEbXGiwEPh0GCotYQAfeaYQzvbJFVPI2q
+         htcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=CQcbxKSUYsAHBe7Ebehk8JAKNTVPAr/UiGZDOPwaAGc=;
-        b=aSwjXjyzhEiYAWfjLbg0HgygCsi9T07ltUY6Oyy5yGv/yQCq/cjHR9AE5vkLmetXJI
-         CdOciGFqTFr4p3z8bsroQLxs6I/ownS/XAa2vu27MgQ9S6UawkJUtSxmoiBhZYUx71yT
-         OnUG6J06hrK6u7DBr9R9lF0tofxCd/ZaeD8Xy44yUAYSNDWlKiuWRpB4Rmj7CsW6/wdQ
-         1YtT+IH1bai5l4lz3+O/fXTmVvzCapwWMBAnDLyg3KONTakztBBCZsVeuU4/OqgdZynW
-         98L4TpMnc1qST6PpBU5puI1wbp4TvT4S4LbtoOFC4udIfg2gbAHFJ9r585puROxp+qPP
-         k32A==
-X-Gm-Message-State: AGi0PubqmudWHGwA2BEKZvnnSdrT2PqhaDwzyUB4FASRb+T1pj72dCMN
-        iMzPC+ldh2moJQY1b/mN2mwW99RlDZPz
-X-Google-Smtp-Source: APiQypIdNrd+yYhBZP4TBZUTUJU1co/gZ+3o6Cxir236qhPBm0psRF02DA8GRECv92XUv8iiH2WZiB7LkvTh
-X-Received: by 2002:a0c:fc42:: with SMTP id w2mr9758882qvp.77.1588798380452;
- Wed, 06 May 2020 13:53:00 -0700 (PDT)
-Date:   Wed,  6 May 2020 13:52:55 -0700
-Message-Id: <20200506205257.8964-1-irogers@google.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=dJgmTX+e/XhBfHBE3JA0uHT0QwjnDN/7PIiY44zE/Pk=;
+        b=taYMqESgHsuJDF/7DGGDJrCbyJ9c08lvUAWy60pyduIhZqtB3iVRsAo46Y52l85nbG
+         pI880Y06LjzkP0KeDBzmx4tj+1sHa+NAvn/7LN7LLRNx8VXgP7poz6HdkrnHXAFs7Pwn
+         zZ9kiz5b3IDtRSUlXVy7PIE0ZVW1U5vZ4C3CRbYL9MelHqvv3a5rJYsldK6G/wjPvP8E
+         e7DuTt/fEc3wMAibD4mGqz1sdQ7wW752ErNGCq8YH0emqM7qFFw342W+08PuTaYzflj8
+         hdC9VFpajSoGYvvrwMjUefpCAfSDUR/yYKFaZox0AqdXhCp4NKyaZiKFz/gaEElgckyO
+         fNfQ==
+X-Gm-Message-State: AGi0PubJuOQXAtzIDKkh7WoKzFKG+vOr3iRdbEnxCGquHdJ5BPT1M9WG
+        uVSCAnqyKcyPdH8eNi3lf/JB4stSudtu
+X-Google-Smtp-Source: APiQypL+xl7cKR+jywmrDx0uv/1rQsbpSkPAK2E6PJ105uDYGQnhvEVqq0Hg8bS+5A725HwfyFHlpE/UUIeV
+X-Received: by 2002:a25:60d6:: with SMTP id u205mr17106071ybb.440.1588798382336;
+ Wed, 06 May 2020 13:53:02 -0700 (PDT)
+Date:   Wed,  6 May 2020 13:52:56 -0700
+In-Reply-To: <20200506205257.8964-1-irogers@google.com>
+Message-Id: <20200506205257.8964-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20200506205257.8964-1-irogers@google.com>
 X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
-Subject: [PATCH 0/2] lib/bpf hashmap portability and fix
+Subject: [PATCH 1/2] lib/bpf hashmap: increase portability
 From:   Ian Rogers <irogers@google.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -62,19 +66,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I'm experimenting with hashmap in perf for perf events within a metric
-expression. In doing this I encountered some issues with lib/bpf
-hashmap. Ignoring the perf change, I think these fixes are likely
-still worthwhile. Thanks!
+Don't include libbpf_internal.h as it is unused and has conflicting
+definitions, for example, with tools/perf/util/debug.h.
+Fix a non-glibc include path.
 
-Ian Rogers (2):
-  lib/bpf hashmap: increase portability
-  lib/bpf hashmap: fixes to hashmap__clear
-
- tools/lib/bpf/hashmap.c | 6 ++++++
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
  tools/lib/bpf/hashmap.h | 3 +--
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
+diff --git a/tools/lib/bpf/hashmap.h b/tools/lib/bpf/hashmap.h
+index bae8879cdf58..d5ef212a55ba 100644
+--- a/tools/lib/bpf/hashmap.h
++++ b/tools/lib/bpf/hashmap.h
+@@ -13,9 +13,8 @@
+ #ifdef __GLIBC__
+ #include <bits/wordsize.h>
+ #else
+-#include <bits/reg.h>
++#include <linux/bitops.h>
+ #endif
+-#include "libbpf_internal.h"
+ 
+ static inline size_t hash_bits(size_t h, int bits)
+ {
 -- 
 2.26.2.526.g744177e7f7-goog
 
