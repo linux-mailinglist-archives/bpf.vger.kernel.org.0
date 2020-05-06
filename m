@@ -2,186 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 908911C64AF
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 01:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B540C1C64D3
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 02:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729336AbgEEX7o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 May 2020 19:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55888 "EHLO
+        id S1729275AbgEFAD6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 May 2020 20:03:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728875AbgEEX7n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 May 2020 19:59:43 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 923D6C061A0F;
-        Tue,  5 May 2020 16:59:43 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id o18so1776820pgg.8;
-        Tue, 05 May 2020 16:59:43 -0700 (PDT)
+        with ESMTP id S1729539AbgEFADb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 May 2020 20:03:31 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A3D1C061A41
+        for <bpf@vger.kernel.org>; Tue,  5 May 2020 17:03:31 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id a7so7648pju.2
+        for <bpf@vger.kernel.org>; Tue, 05 May 2020 17:03:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=szYwvsdRj79cRVT2Gpz1TxpVJP8+RjL1MmVEYqGKUlE=;
-        b=Ey0SjiuGIH690bTUnJEKx76RYYLMSN5gUCW45Ao9FuptWCljoMUo1ENHwK48dzx8SO
-         tL2NafaLrLA0zQqKx2bT8fq2WcOtgfJUie9BxogGClxQcAZHFplLBF6nBCEnQkcjx1ju
-         TMX9YaCqc25GbwZ06zryFnHP9+6s/38Ps7+SHCQsgyrvdr/y3YI8mHZ62JryC+Wv8t+k
-         V38+8PNMjlcVkpajGGET3xHU1M1NIN2RjotDGj7VJ2DA2o4HIyYepPNaI6FXOJpKPPp5
-         g50FYlb752kscX0JYBSrfq1KHzZkj1DuqFDJwtMuoYpith1EENigueWQ3bmXit33sEmb
-         UBJw==
+        d=cs.washington.edu; s=goo201206;
+        h=from:to:cc:subject:date:message-id;
+        bh=JxRTwli/svDqnOaBY0adT76Z0FFG8KkHdubVGApAA6g=;
+        b=hBEgU4DYNOg3qWU84rnU6AnFuKR981yS5BSoO3R/amg38P+jgdPsMbTP70YKHF3J76
+         ISfsmEBfrEtrkGLH2pkRg7Fe4lYwDNiRfjMrZkkcqUv2DWOZbq2+54F9b9bHiIE2Av7l
+         8JnrloZFVv4BenXnGU9ff7pMXJwzMJFAUgcIs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=szYwvsdRj79cRVT2Gpz1TxpVJP8+RjL1MmVEYqGKUlE=;
-        b=Anyc/EMlh9gsOtXXsnIlIKJUQ7OTyyntoDIvxf+5xrdQhQf17h58piV48iNy/aVjcP
-         ogWW6au0NrrJLd7uPRXuEkju7JhOabipW2qktNDlyXXxzrvpBhA+0gq/3stTmbY2RAEn
-         NzRjaLlZ4/l+tuYMMj5ETSBhudm6lTSMrurdGAWK6/ZHxQl3ltl6rKWyyAdIsrjdS2it
-         D2OBcOP5pGyy8W+Tn8xayX6lXP/4Qehr3lGCZniSkoEjmwsWJ5DHIipwHgaAqrdAHSDD
-         Ym56o5locHFjyiYOrczx90aXUZsXhw9nGl7UFJQPgbwqMlOk4HAoV5/2nt/s3DlNfQfV
-         Jzhg==
-X-Gm-Message-State: AGi0PuYRN501QLb+qKqjKknAuSqXPuHD2eF2ZRdeRrdN+7cmzWCLtBKl
-        aRhANAeI2cHABA0cyOaHzcJFyabN
-X-Google-Smtp-Source: APiQypJ+cPtvi0KmYvnPzMJohCS6FYIqzTsTupo9R0dBKgjN+LZRimGxRIFLz7nSaEmc0u0UsqnQcQ==
-X-Received: by 2002:aa7:8619:: with SMTP id p25mr5406755pfn.105.1588723183002;
-        Tue, 05 May 2020 16:59:43 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:62d5])
-        by smtp.gmail.com with ESMTPSA id c2sm119863pfp.118.2020.05.05.16.59.40
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=JxRTwli/svDqnOaBY0adT76Z0FFG8KkHdubVGApAA6g=;
+        b=pQlmh4sEPJxTLXqLxzuJ3Q1q41umzY/EVi4mzlxXUVy1TpvzUtnpvXzQgVKwfkN6G+
+         hXVq+nHQ95VRK0W6AfbBhzDkMHQHh3O2yR7+9AzxYXA9IitS2/u8PvRqXNHzdneLUipq
+         76VVaQL2StQAbngEzBqt9i4f9Qc24gjh+lt+BW7Yi2jC6exrszpQL1xoCjaCIKqOcuX6
+         sjDP/G19xWvfxJaxIsPAy0kZV6w92vcx5U9dqK7t4zkqe+cTUylgYxlzTtFBN16ap3GT
+         ES15WqvP6HgVccuZuuraYDNBmLtm73Ad7GDptI5IYG4UMusLtrdl0DKbSj0ul1APOyrb
+         9eIQ==
+X-Gm-Message-State: AGi0Pub6glQLQIrKAcfW1f4WKjQNGdgQugptH1k1CSDpCblijekouuU/
+        +UjYp1d1K3dZfj3xeRxwiNz6PlqqnpwPhw==
+X-Google-Smtp-Source: APiQypL3GD15VTzPevJlQEL2Gpk1YRyV1HsaesDcgEeoRusw+eAllZFZbBCvSxvf7cmk2/iAjHnNkQ==
+X-Received: by 2002:a17:902:a40b:: with SMTP id p11mr5668144plq.304.1588723410355;
+        Tue, 05 May 2020 17:03:30 -0700 (PDT)
+Received: from localhost.localdomain (c-73-53-94-119.hsd1.wa.comcast.net. [73.53.94.119])
+        by smtp.gmail.com with ESMTPSA id u3sm133912pfn.217.2020.05.05.17.03.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 16:59:42 -0700 (PDT)
-Date:   Tue, 5 May 2020 16:59:39 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] bpf: Tweak BPF jump table optimizations for objtool
- compatibility
-Message-ID: <20200505235939.utnmzqsn22cec643@ast-mbp.dhcp.thefacebook.com>
-References: <20200501190930.ptxyml5o4rviyo26@ast-mbp.dhcp.thefacebook.com>
- <20200501192204.cepwymj3fln2ngpi@treble>
- <20200501194053.xyahhknjjdu3gqix@ast-mbp.dhcp.thefacebook.com>
- <20200501195617.czrnfqqcxfnliz3k@treble>
- <20200502030622.yrszsm54r6s6k6gq@ast-mbp.dhcp.thefacebook.com>
- <20200502192105.xp2osi5z354rh4sm@treble>
- <20200505174300.gech3wr5v6kkho35@ast-mbp.dhcp.thefacebook.com>
- <20200505181108.hwcqanvw3qf5qyxk@treble>
- <20200505195320.lyphpnprn3sjijf6@ast-mbp.dhcp.thefacebook.com>
- <20200505202823.zkmq6t55fxspqazk@treble>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200505202823.zkmq6t55fxspqazk@treble>
+        Tue, 05 May 2020 17:03:29 -0700 (PDT)
+From:   Luke Nelson <lukenels@cs.washington.edu>
+X-Google-Original-From: Luke Nelson <luke.r.nels@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next 0/4] RV64 BPF JIT Optimizations
+Date:   Tue,  5 May 2020 17:03:16 -0700
+Message-Id: <20200506000320.28965-1-luke.r.nels@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 05, 2020 at 03:28:23PM -0500, Josh Poimboeuf wrote:
-> On Tue, May 05, 2020 at 12:53:20PM -0700, Alexei Starovoitov wrote:
-> > On Tue, May 05, 2020 at 01:11:08PM -0500, Josh Poimboeuf wrote:
-> > > On Tue, May 05, 2020 at 10:43:00AM -0700, Alexei Starovoitov wrote:
-> > > > > Or, if you want to minimize the patch's impact on other arches, and keep
-> > > > > the current patch the way it is (with bug fixed and changed patch
-> > > > > description), that's fine too.  I can change the patch description
-> > > > > accordingly.
-> > > > > 
-> > > > > Or if you want me to measure the performance impact of the +40% code
-> > > > > growth, and *then* decide what to do, that's also fine.  But you'd need
-> > > > > to tell me what tests to run.
-> > > > 
-> > > > I'd like to minimize the risk and avoid code churn,
-> > > > so how about we step back and debug it first?
-> > > > Which version of gcc are you using and what .config?
-> > > > I've tried:
-> > > > Linux version 5.7.0-rc2 (gcc version 10.0.1 20200505 (prerelease) (GCC)
-> > > > CONFIG_UNWINDER_ORC=y
-> > > > # CONFIG_RETPOLINE is not set
-> > > > 
-> > > > and objtool didn't complain.
-> > > > I would like to reproduce it first before making any changes.
-> > > 
-> > > Revert
-> > > 
-> > >   3193c0836f20 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
-> > > 
-> > > and compile with retpolines off (and either ORC or FP, doesn't matter).
-> > > 
-> > > I'm using GCC 9.3.1:
-> > > 
-> > >   kernel/bpf/core.o: warning: objtool: ___bpf_prog_run()+0x8dc: sibling call from callable instruction with modified stack frame
-> > > 
-> > > That's the original issue described in that commit.
-> > 
-> > I see something different.
-> > With gcc 8, 9, and 10 and CCONFIG_UNWINDER_FRAME_POINTER=y
-> > I see:
-> > kernel/bpf/core.o: warning: objtool: ___bpf_prog_run()+0x4837: call without frame pointer save/setup
-> > and sure enough assembly code for ___bpf_prog_run does not countain frame setup
-> > though -fno-omit-frame-pointer flag was passed at command line.
-> > Then I did:
-> > static u64 /*__no_fgcse*/ ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
-> > and the assembly had proper frame, but objtool wasn't happy:
-> > kernel/bpf/core.o: warning: objtool: ___bpf_prog_run()+0x480a: sibling call from callable instruction with modified stack frame
-> > 
-> > gcc 6.3 doesn't have objtool warning with and without -fno-gcse.
-> > 
-> > Looks like we have two issues here.
-> > First gcc 8, 9 and 10 have a severe bug with __attribute__((optimize("")))
-> > In this particular case passing -fno-gcse somehow overruled -fno-omit-frame-pointer
-> > which is serious issue. powerpc is using __nostackprotector. I don't understand
-> > how it can keep working with newer gcc-s. May be got lucky.
-> > Plenty of other projects use various __attribute__((optimize("")))
-> > they all have to double check that their vesion of GCC produces correct code.
-> > Can somebody reach out to gcc folks for explanation?
-> 
-> Right.  I've mentioned this several times now.  That's why my patch
-> reverts 3193c0836f20.  I don't see any other way around it.  The GCC
-> manual even says this attribute should not be used in production code.
+This patch series introduces a set of optimizations to the BPF JIT
+on RV64. The optimizations are related to the verifier zero-extension
+optimization and BPF_JMP BPF_K.
 
-What you mentioned in commit log is:
-"It doesn't append options to the command-line arguments.  Instead
-it starts from a blank slate.  And according to recent GCC documentation
-it's not recommended for production use."
+We tested the optimizations on a QEMU riscv64 virt machine, using
+lib/test_bpf and test_verifier, and formally verified their correctness
+using Serval.
 
-I don't think anyone could have guessed from such description that it kills
--fno-omit-frame-pointer but it doesn't reduce optimization level to -O0
-and it doesn't kill -D, -m, -I, -std= and other flags.
+Luke Nelson (4):
+  bpf, riscv: Enable missing verifier_zext optimizations on RV64
+  bpf, riscv: Optimize FROM_LE using verifier_zext on RV64
+  bpf, riscv: Optimize BPF_JMP BPF_K when imm == 0 on RV64
+  bpf, riscv: Optimize BPF_JSET BPF_K using andi on RV64
 
-As far as workaround I prefer the following:
-From 94bbc27c5a70d78846a5cb675df4cf8732883564 Mon Sep 17 00:00:00 2001
-From: Alexei Starovoitov <ast@kernel.org>
-Date: Tue, 5 May 2020 16:52:41 -0700
-Subject: [PATCH] bpf,objtool: tweak interpreter compilation flags to help objtool
+ arch/riscv/net/bpf_jit_comp64.c | 64 ++++++++++++++++++++++-----------
+ 1 file changed, 44 insertions(+), 20 deletions(-)
 
-tbd
+Cc: Xi Wang <xi.wang@gmail.com>
 
-Fixes: 3193c0836f20 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- include/linux/compiler-gcc.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+-- 
+2.17.1
 
-diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-index d7ee4c6bad48..05104c3cc033 100644
---- a/include/linux/compiler-gcc.h
-+++ b/include/linux/compiler-gcc.h
-@@ -171,4 +171,4 @@
- #define __diag_GCC_8(s)
- #endif
-
--#define __no_fgcse __attribute__((optimize("-fno-gcse")))
-+#define __no_fgcse __attribute__((optimize("-fno-gcse,-fno-omit-frame-pointer")))
---
-2.23.0
-
-I've tested it with gcc 8,9,10 and clang 11 with FP=y and with ORC=y.
-All works.
-I think it's safer to go with frame pointers even for ORC=y considering
-all the pain this issue had caused. Even if objtool gets confused again
-in the future __bpf_prog_run() will have frame pointers and kernel stack
-unwinding can fall back from ORC to FP for that frame.
-wdyt?
