@@ -2,282 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B30BE1C6A14
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 09:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80BA31C6A27
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 09:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727872AbgEFHaQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 03:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727067AbgEFHaP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 03:30:15 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3CC3C061A0F;
-        Wed,  6 May 2020 00:30:15 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id b6so943872qkh.11;
-        Wed, 06 May 2020 00:30:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y8H3v1in/yldZzKXzjwYAl5OsrPTXL+w2BtzihawKeg=;
-        b=Vi9utcwOydH0OKy07Z1Z3JGyCRJEU7byku6e0Y8xyONuU7rrgK8K/EB9NOGWq8eO4A
-         nUsgIX1z6YuroHxtxBle+Htx+z9anXIcyAPEQ39gQaotzhsCIkA034SW+9qT52+O3zWQ
-         ZEorzimKEm85q4XZDSlnH860aonXPFD8oBQZzxqfIfPydUbDBdTKNHmHVkvgCQ4U9E59
-         pHXm3SHjtwedPe1W+3n2vac5uiGzivHdk7p2Dmx1XnNVN+tN5xriE3ohXcSixV5oIb06
-         KEXeEWLdwXrM8XXafP8AYbPu927aWGOeiM6yE6QLZwZ5nfFOicuYj0rvQDOX8/nMSwrC
-         tICA==
+        id S1727956AbgEFHhu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 03:37:50 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:32984 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727872AbgEFHhu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 03:37:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588750668;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1DqHn9dPlmj80heFjYayVPfLacQlouJrbO3+dn30g+Y=;
+        b=IGosKOOhtur924OsjKmcDnLD1Co+WRdGMjZjU8XKvleAKVOpDZBRqnAZs4cYKveWm5PGRL
+        wYoC6n/164dbOuenEzD+SF6nSPP+y+AgjRygzhX8ZYBRAKxW8dI8/N6Y5JSEleZch8dNJS
+        6oz35GaK5vnBLxwzgSADBIpUq99+fu0=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-170-ouOM_977PHe1w2PMaDHPCA-1; Wed, 06 May 2020 03:37:47 -0400
+X-MC-Unique: ouOM_977PHe1w2PMaDHPCA-1
+Received: by mail-wr1-f70.google.com with SMTP id u4so868169wrm.13
+        for <bpf@vger.kernel.org>; Wed, 06 May 2020 00:37:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y8H3v1in/yldZzKXzjwYAl5OsrPTXL+w2BtzihawKeg=;
-        b=mlPeya5UyHBhPPIPmW4VlsqkE10brLZJsCvuPyDnKHHW2XO7TmP4NW3WWW99NNS42M
-         PAYyIiHN8w7H2ncCwkFrIRTtyoaX42BZ/pYDcZkBDXDcObhX5Z4H9WdfvaWKcGEncfiF
-         VtYb4SFAeWrbhD7VNE4Z5+xRnbi+aDeL3o43hb7cZW/XUAD9+ttSUBl2fvNvqJPAezmO
-         YGcDpdAgwg+3acSdsB6Eyo2DbukQlzGJvQYzb5+xbVwCFHyRRUvmNcCvkwpMgI2iyG8E
-         zkWIYZIQOerzcEQv0tRmcdICbeMPASHzmbTR1GPpZEEwheffojWWuLJS5TP6I1ik6x4R
-         Nn0A==
-X-Gm-Message-State: AGi0PuaqG/tVVYUXcYx0YF0FjDyVLy7sgQqQwc/cmSD+nSv+lDZv+OoL
-        adKltWmGbNY7pq0qbdlYvS21LmIUUaySatBNdB4ESsgZ
-X-Google-Smtp-Source: APiQypJwB2DWGkRMoHR7cAVgt0s6h62qKpnSUVRRU8+EsMyfqbD3dnty637FmpR+YGBXXb5cinyldmnLu/EC2s3BCrs=
-X-Received: by 2002:ae9:e713:: with SMTP id m19mr7422561qka.39.1588750214663;
- Wed, 06 May 2020 00:30:14 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1DqHn9dPlmj80heFjYayVPfLacQlouJrbO3+dn30g+Y=;
+        b=HOaMCacP4Q6PPxciQBbWRxYlwJVgdCPpPFi4GVakIlFHY1IgwTHUxIzAtPWn0qtJd+
+         rtIkwzbonpBH1d5sPGyIcF2MGTfVwwdfFi0+f7jptqfyLi6jl3UQWunbJ0p5cgg5rAwY
+         JLqmsOVkhNkXw/XBkywyGKy+wL2wAajKJSEOut2u/sR/+jsLnNoQ1vsKTNEELl7PHzNI
+         sTozpk8j0sDj2Cl/9LJLgzlNv3nShjgsJ1TevqfJ3TM9IH3ADFy6pGStaCxEBilSExI1
+         Cfg04lsVlCO2F0GYfG0L56LF5CvfuHDg3sAmraYzH2SXii2jRbuEhjfHOzycCjn3lV/R
+         Hndg==
+X-Gm-Message-State: AGi0PubbdS9yIPcEHJlW8mb94gs+I1hicKDhL5YETVvvcyvPYk+yG0n/
+        FHtYBexOA9OPuNr52iH915ojk8aFGL1pIRq85Bx2aNGIwU2MNnbxM2dQEeXCxRJ7ijskKsZvqU5
+        lXYQ2XCsKIE1Q
+X-Received: by 2002:adf:ce10:: with SMTP id p16mr7691544wrn.144.1588750665672;
+        Wed, 06 May 2020 00:37:45 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLylGfrIQvy8pwm2otNVLPO1o3cMHW4JbPm3GLxsqO+x+n/Q0pR35QnHj4F0DC4IEX6mTgYDA==
+X-Received: by 2002:adf:ce10:: with SMTP id p16mr7691526wrn.144.1588750665498;
+        Wed, 06 May 2020 00:37:45 -0700 (PDT)
+Received: from redhat.com (bzq-109-66-7-121.red.bezeqint.net. [109.66.7.121])
+        by smtp.gmail.com with ESMTPSA id 19sm1655337wmo.3.2020.05.06.00.37.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 00:37:45 -0700 (PDT)
+Date:   Wed, 6 May 2020 03:37:42 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: Re: [PATCH net-next 2/2] virtio-net: fix the XDP truesize
+ calculation for mergeable buffers
+Message-ID: <20200506033259-mutt-send-email-mst@kernel.org>
+References: <20200506061633.16327-1-jasowang@redhat.com>
+ <20200506061633.16327-2-jasowang@redhat.com>
 MIME-Version: 1.0
-References: <20200504062547.2047304-1-yhs@fb.com> <20200504062559.2048228-1-yhs@fb.com>
-In-Reply-To: <20200504062559.2048228-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 6 May 2020 00:30:03 -0700
-Message-ID: <CAEf4BzbySjaBQSMTET=HGD_K748GOXZZQ7zMhgtEqE-JgJGbdQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 11/20] bpf: add task and task/file iterator targets
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200506061633.16327-2-jasowang@redhat.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, May 3, 2020 at 11:28 PM Yonghong Song <yhs@fb.com> wrote:
->
-> Only the tasks belonging to "current" pid namespace
-> are enumerated.
->
-> For task/file target, the bpf program will have access to
->   struct task_struct *task
->   u32 fd
->   struct file *file
-> where fd/file is an open file for the task.
->
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+On Wed, May 06, 2020 at 02:16:33PM +0800, Jason Wang wrote:
+> We should not exclude headroom and tailroom when XDP is set. So this
+> patch fixes this by initializing the truesize from PAGE_SIZE when XDP
+> is set.
+> 
+> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+> Signed-off-by: Jason Wang <jasowang@redhat.com>
+
+Seems too aggressive, we do not use up the whole page for the size.
+
+
+
 > ---
+>  drivers/net/virtio_net.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 98dd75b665a5..3f3aa8308918 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -1184,7 +1184,7 @@ static int add_recvbuf_mergeable(struct virtnet_info *vi,
+>  	char *buf;
+>  	void *ctx;
+>  	int err;
+> -	unsigned int len, hole;
+> +	unsigned int len, hole, truesize;
+>  
+>  	/* Extra tailroom is needed to satisfy XDP's assumption. This
+>  	 * means rx frags coalescing won't work, but consider we've
+> @@ -1194,6 +1194,7 @@ static int add_recvbuf_mergeable(struct virtnet_info *vi,
+>  	if (unlikely(!skb_page_frag_refill(len + room, alloc_frag, gfp)))
+>  		return -ENOMEM;
+>  
+> +	truesize = headroom ? PAGE_SIZE : len;
+>  	buf = (char *)page_address(alloc_frag->page) + alloc_frag->offset;
+>  	buf += headroom; /* advance address leaving hole at front of pkt */
+>  	get_page(alloc_frag->page);
 
-I might be missing some subtleties with task refcounting for task_file
-iterator, asked few questions below...
-
->  kernel/bpf/Makefile    |   2 +-
->  kernel/bpf/task_iter.c | 336 +++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 337 insertions(+), 1 deletion(-)
->  create mode 100644 kernel/bpf/task_iter.c
->
-> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> index b2b5eefc5254..37b2d8620153 100644
-> --- a/kernel/bpf/Makefile
-> +++ b/kernel/bpf/Makefile
-> @@ -2,7 +2,7 @@
->  obj-y := core.o
->  CFLAGS_core.o += $(call cc-disable-warning, override-init)
->
-> -obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o
-> +obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o task_iter.o
->  obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o
->  obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o
->  obj-$(CONFIG_BPF_SYSCALL) += disasm.o
-> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> new file mode 100644
-> index 000000000000..1ca258f6e9f4
-> --- /dev/null
-> +++ b/kernel/bpf/task_iter.c
-> @@ -0,0 +1,336 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright (c) 2020 Facebook */
-> +
-> +#include <linux/init.h>
-> +#include <linux/namei.h>
-> +#include <linux/pid_namespace.h>
-> +#include <linux/fs.h>
-> +#include <linux/fdtable.h>
-> +#include <linux/filter.h>
-> +
-> +struct bpf_iter_seq_task_common {
-> +       struct pid_namespace *ns;
-> +};
-> +
-> +struct bpf_iter_seq_task_info {
-> +       struct bpf_iter_seq_task_common common;
-
-you have comment below in init_seq_pidns() that common is supposed to
-be the very first field, but I think it's more important and
-appropriate here, so that whoever adds anything here knows that order
-of field is important.
-
-> +       struct task_struct *task;
-> +       u32 id;
-> +};
-> +
-
-[...]
-
-> +static int __task_seq_show(struct seq_file *seq, void *v, bool in_stop)
-> +{
-> +       struct bpf_iter_meta meta;
-> +       struct bpf_iter__task ctx;
-> +       struct bpf_prog *prog;
-> +       int ret = 0;
-> +
-> +       meta.seq = seq;
-> +       prog = bpf_iter_get_info(&meta, in_stop);
-> +       if (prog) {
+Is this really just on the XDP path? Looks like a confusing way to
+detect that.
 
 
-nit: `if (!prog) return 0;` here would reduce nesting level below
+> @@ -1205,11 +1206,12 @@ static int add_recvbuf_mergeable(struct virtnet_info *vi,
+>  		 * the current buffer.
+>  		 */
+>  		len += hole;
+> +		truesize += hole;
+>  		alloc_frag->offset += hole;
+>  	}
+>  
+>  	sg_init_one(rq->sg, buf, len);
+> -	ctx = mergeable_len_to_ctx(len, headroom);
+> +	ctx = mergeable_len_to_ctx(truesize, headroom);
+>  	err = virtqueue_add_inbuf_ctx(rq->vq, rq->sg, 1, buf, ctx, gfp);
+>  	if (err < 0)
+>  		put_page(virt_to_head_page(buf));
+> -- 
+> 2.20.1
 
-> +               meta.seq = seq;
-> +               ctx.meta = &meta;
-> +               ctx.task = v;
-> +               ret = bpf_iter_run_prog(prog, &ctx);
-> +       }
-> +
-> +       return 0;
-
-return **ret**; ?
-
-> +}
-> +
-
-[...]
-
-> +
-> +static struct file *task_file_seq_get_next(struct pid_namespace *ns, u32 *id,
-> +                                          int *fd, struct task_struct **task,
-> +                                          struct files_struct **fstruct)
-> +{
-> +       struct files_struct *files;
-> +       struct task_struct *tk;
-> +       u32 sid = *id;
-> +       int sfd;
-> +
-> +       /* If this function returns a non-NULL file object,
-> +        * it held a reference to the files_struct and file.
-> +        * Otherwise, it does not hold any reference.
-> +        */
-> +again:
-> +       if (*fstruct) {
-> +               files = *fstruct;
-> +               sfd = *fd;
-> +       } else {
-> +               tk = task_seq_get_next(ns, &sid);
-> +               if (!tk)
-> +                       return NULL;
-> +
-> +               files = get_files_struct(tk);
-> +               put_task_struct(tk);
-
-task is put here, but is still used below.. is there some additional
-hidden refcounting involved?
-
-> +               if (!files) {
-> +                       sid = ++(*id);
-> +                       *fd = 0;
-> +                       goto again;
-> +               }
-> +               *fstruct = files;
-> +               *task = tk;
-> +               if (sid == *id) {
-> +                       sfd = *fd;
-> +               } else {
-> +                       *id = sid;
-> +                       sfd = 0;
-> +               }
-> +       }
-> +
-> +       rcu_read_lock();
-> +       for (; sfd < files_fdtable(files)->max_fds; sfd++) {
-
-files_fdtable does rcu_dereference on each iteration, would it be
-better to just cache files_fdtable(files)->max_fds into local
-variable? It's unlikely that there will be many iterations, but
-still...
-
-> +               struct file *f;
-> +
-> +               f = fcheck_files(files, sfd);
-> +               if (!f)
-> +                       continue;
-> +               *fd = sfd;
-> +               get_file(f);
-> +               rcu_read_unlock();
-> +               return f;
-> +       }
-> +
-> +       /* the current task is done, go to the next task */
-> +       rcu_read_unlock();
-> +       put_files_struct(files);
-> +       *fstruct = NULL;
-
-*task = NULL; for completeness?
-
-> +       sid = ++(*id);
-> +       *fd = 0;
-> +       goto again;
-> +}
-> +
-> +static void *task_file_seq_start(struct seq_file *seq, loff_t *pos)
-> +{
-> +       struct bpf_iter_seq_task_file_info *info = seq->private;
-> +       struct files_struct *files = NULL;
-> +       struct task_struct *task = NULL;
-> +       struct file *file;
-> +       u32 id = info->id;
-> +       int fd = info->fd;
-> +
-> +       file = task_file_seq_get_next(info->common.ns, &id, &fd, &task, &files);
-> +       if (!file) {
-> +               info->files = NULL;
-
-what about info->task here?
-
-> +               return NULL;
-> +       }
-> +
-> +       ++*pos;
-> +       info->id = id;
-> +       info->fd = fd;
-> +       info->task = task;
-> +       info->files = files;
-> +
-> +       return file;
-> +}
-> +
-
-[...]
-
-> +
-> +struct bpf_iter__task_file {
-> +       __bpf_md_ptr(struct bpf_iter_meta *, meta);
-> +       __bpf_md_ptr(struct task_struct *, task);
-> +       u32 fd;
-
-nit: sort of works by accident (due to all other field being 8-byte
-aligned pointers), shall we add __attribute__((aligned(8)))?
-
-> +       __bpf_md_ptr(struct file *, file);
-> +};
-> +
-
-[...]
