@@ -2,172 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 089A51C6F8C
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 13:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E303B1C6FBC
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 13:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbgEFLn6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 07:43:58 -0400
-Received: from mga05.intel.com ([192.55.52.43]:52550 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726843AbgEFLn5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 May 2020 07:43:57 -0400
-IronPort-SDR: VrDEgn8dTzHbXimEbR4MQ3rMstShoB8rbmBSitj1EQgPtb10HY2F/ut9I+KvEBUKf2RD38sxe8
- b6027XEB8sVw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 04:43:56 -0700
-IronPort-SDR: 508UpujkLSzkGQIpVb2To/VnMx5ZCP5BF3weWKWFH7Flg12uE4phbQgeGeiM+DYx+NfPJjlyHO
- qe2WHAoAlcEA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,358,1583222400"; 
-   d="scan'208";a="407215532"
-Received: from slgibson-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.249.33.158])
-  by orsmga004.jf.intel.com with ESMTP; 06 May 2020 04:43:53 -0700
-Subject: Re: [RFC PATCH bpf-next 04/13] xsk: introduce AF_XDP buffer
- allocation API
-To:     Maxim Mikityanskiy <maximmi@mellanox.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        maciej.fijalkowski@intel.com
-References: <20200504113716.7930-1-bjorn.topel@gmail.com>
- <20200504113716.7930-5-bjorn.topel@gmail.com>
- <7270912e-bf1c-56ec-79d9-3893b6ea69ce@mellanox.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <26bafed3-1ebc-234a-5e76-a6b9e1e0f32c@intel.com>
-Date:   Wed, 6 May 2020 13:43:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1725882AbgEFL50 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 07:57:26 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:32078 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726924AbgEFL5W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 May 2020 07:57:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588766241;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7sOis2/3Mg9JApCu6b61p44e2yvITngtwxXPAS7QTXw=;
+        b=N5+/zihvqMQ6NiWzDxaJbfRL4ks/IBOYYWx49kY3qhYTAIhmlSWCk/euoJKeuFk8W9O22S
+        le1DaAZPVO926aVDOwxCVPIaqH5pxeJ5UZnsG5ouqf/0qLg8Ix8VbbVe8uFBdTshXMfz1g
+        jYvBTOaOW9lmzbOrUoBfJjkRtZ404Is=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-247-UNLII3EmPXCpjuXtE800wQ-1; Wed, 06 May 2020 07:57:15 -0400
+X-MC-Unique: UNLII3EmPXCpjuXtE800wQ-1
+Received: by mail-wr1-f72.google.com with SMTP id y4so1198913wrt.4
+        for <bpf@vger.kernel.org>; Wed, 06 May 2020 04:57:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7sOis2/3Mg9JApCu6b61p44e2yvITngtwxXPAS7QTXw=;
+        b=VddGRHnn60OHohL28LuZApVdMz3SG1pYqjg6Nw314cSoeBpHiL6ooolggfZ6x9ITIi
+         AZd6i0LqOKChLwf5llbQBwGd6HEUDwhf/2/VH0mN2E2/1oOECrXHWfqy/qRHsh/Y/GTh
+         YFrqRmtWtlDTlTxvVUXQyny2cLsKQIJkvzdnW1srKMQAAgSzP2S6+7/XCNeKe/tWgMp6
+         S4lYmcBlUO07mVg6d7Pi0U+u4YgD6Bx05fE+1Qv++c2fhj3dxwGs57Bhulc3zEGUlDHO
+         JqOuxARv1O5Wb6xOvEJ9d72kxlk31+lU90h0NXyv9U9iB3EcGmgEXhcX1j3gToy2kwBH
+         pdmA==
+X-Gm-Message-State: AGi0PubhbLBtR9fRs6zigwo97ymyxatydZTnJIrw5Q9ET1TsgIhkDkmx
+        dtarfMXVlrlz28MQXWxJhYlk4ROByWvCDS5X0XfDtnQ04kvy8TtbR75aoT38jFc/q3nVL1FVJw2
+        qp/6JvVM56+b9
+X-Received: by 2002:adf:8162:: with SMTP id 89mr8736334wrm.387.1588766233798;
+        Wed, 06 May 2020 04:57:13 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKH40QoEgrQmuxv8rKi91gxvjeAgTSB72BOZzkNW3MxEIsk2JLG9yyMv1mIo8Hc/alFqaSzSg==
+X-Received: by 2002:adf:8162:: with SMTP id 89mr8736315wrm.387.1588766233499;
+        Wed, 06 May 2020 04:57:13 -0700 (PDT)
+Received: from redhat.com (bzq-109-66-7-121.red.bezeqint.net. [109.66.7.121])
+        by smtp.gmail.com with ESMTPSA id w4sm2398660wro.28.2020.05.06.04.57.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 04:57:12 -0700 (PDT)
+Date:   Wed, 6 May 2020 07:57:10 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Eugenio Perez Martin <eperezma@redhat.com>
+Subject: Re: performance bug in virtio net xdp
+Message-ID: <20200506075226-mutt-send-email-mst@kernel.org>
+References: <20200506035704-mutt-send-email-mst@kernel.org>
+ <20200506103757.4bc78b3a@carbon>
 MIME-Version: 1.0
-In-Reply-To: <7270912e-bf1c-56ec-79d9-3893b6ea69ce@mellanox.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200506103757.4bc78b3a@carbon>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-05-06 11:51, Maxim Mikityanskiy wrote:
-> On 2020-05-04 14:37, Björn Töpel wrote:
-[]
->> @@ -389,6 +390,11 @@ static void __xdp_return(void *data, struct 
->> xdp_mem_info *mem, bool napi_direct,
->>           xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
->>           xa->zc_alloc->free(xa->zc_alloc, handle);
->>           rcu_read_unlock();
->> +        break;
->> +    case MEM_TYPE_XSK_BUFF_POOL:
->> +        /* NB! Only valid from an xdp_buff! */
->> +        xsk_buff_free(xdp);
->> +        break;
+On Wed, May 06, 2020 at 10:37:57AM +0200, Jesper Dangaard Brouer wrote:
+> On Wed, 6 May 2020 04:08:27 -0400
+> "Michael S. Tsirkin" <mst@redhat.com> wrote:
 > 
-> I remember I asked about it, but not sure what we decided here. 
-> xdp_return_buff is the only way to get in this new case, and it's called 
-> only from XSK flows. Maybe it would make sense to kill this case and 
-> xdp_return_buff, and call xsk_buff_free directly? It'll save some time 
-> that we waste in switch-case, a function call and two parameters of 
-> __xdp_return - should make everything faster. Do you think it makes sense?
->
+> > So for mergeable bufs, we use ewma machinery to guess the correct buffer
+> > size. If we don't guess correctly, XDP has to do aggressive copies.
+> > 
+> > Problem is, xdp paths do not update the ewma at all, except
+> > sometimes with XDP_PASS. So whatever we happen to have
+> > before we attach XDP, will mostly stay around.
+> > 
+> > The fix is probably to update ewma unconditionally.
+> 
+> I personally find the code hard to follow, and (I admit) that it took
+> me some time to understand this code path (so I might still be wrong).
+> 
+> In patch[1] I tried to explain (my understanding):
+> 
+>   In receive_mergeable() the frame size is more dynamic. There are two
+>   basic cases: (1) buffer size is based on a exponentially weighted
+>   moving average (see DECLARE_EWMA) of packet length. Or (2) in case
+>   virtnet_get_headroom() have any headroom then buffer size is
+>   PAGE_SIZE. The ctx pointer is this time used for encoding two values;
+>   the buffer len "truesize" and headroom. In case (1) if the rx buffer
+>   size is underestimated, the packet will have been split over more
+>   buffers (num_buf info in virtio_net_hdr_mrg_rxbuf placed in top of
+>   buffer area). If that happens the XDP path does a xdp_linearize_page
+>   operation.
+> 
+> 
+> The EWMA code is not used when headroom is defined, which e.g. gets
+> enabled when running XDP.
+> 
+> 
+> [1] https://lore.kernel.org/netdev/158824572816.2172139.1358700000273697123.stgit@firesoul/
 
-I forgot about this! Thanks for the reminder. Yeah, that makes sense. 
-Wdyt about the patch below:
+You are right.
+So I guess the problem is just inconsistency?
 
-From: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>
-Date: Wed, 6 May 2020 13:39:05 +0200
-Subject: [PATCH] xdp: simplify xdp_return_{frame,frame_rx_napi,buff}
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+When XDP program returns XDP_PASS, and it all fits in one page,
+then we trigger
+	        ewma_pkt_len_add(&rq->mrg_avg_pkt_len, head_skb->len);
 
-The xdp_return_{frame,frame_rx_napi,buff} function are never used,
-except in xdp_convert_zc_to_xdp_frame(), by the MEM_TYPE_XSK_BUFF_POOL
-memory type.
+if it does not trigger XDP_PASS, or does not fit in one page,
+then we don't.
 
-To simplify and reduce code, change so that
-xdp_convert_zc_to_xdp_frame() calls xsk_buff_free() directly since the
-type is know, and remove MEM_TYPE_XSK_BUFF_POOL from the switch
-statement in __xdp_return() function.
+Given XDP does not use ewma for sizing, let's not update the average
+either.
 
-Suggested-by: Maxim Mikityanskiy <maximmi@mellanox.com>
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
-  net/core/xdp.c | 21 +++++++++------------
-  1 file changed, 9 insertions(+), 12 deletions(-)
 
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 11273c976e19..7ab1f9014c5e 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -334,10 +334,11 @@ EXPORT_SYMBOL_GPL(xdp_rxq_info_reg_mem_model);
-   * scenarios (e.g. queue full), it is possible to return the xdp_frame
-   * while still leveraging this protection.  The @napi_direct boolean
-   * is used for those calls sites.  Thus, allowing for faster recycling
-- * of xdp_frames/pages in those cases.
-+ * of xdp_frames/pages in those cases. This path is never used by the
-+ * MEM_TYPE_XSK_BUFF_POOL memory type, so it's explicitly not part of
-+ * the switch-statement.
-   */
--static void __xdp_return(void *data, struct xdp_mem_info *mem, bool 
-napi_direct,
--			 struct xdp_buff *xdp)
-+static void __xdp_return(void *data, struct xdp_mem_info *mem, bool 
-napi_direct)
-  {
-  	struct xdp_mem_allocator *xa;
-  	struct page *page;
-@@ -359,33 +360,29 @@ static void __xdp_return(void *data, struct 
-xdp_mem_info *mem, bool napi_direct,
-  		page = virt_to_page(data); /* Assumes order0 page*/
-  		put_page(page);
-  		break;
--	case MEM_TYPE_XSK_BUFF_POOL:
--		/* NB! Only valid from an xdp_buff! */
--		xsk_buff_free(xdp);
--		break;
-  	default:
-  		/* Not possible, checked in xdp_rxq_info_reg_mem_model() */
-+		WARN(1, "Incorrect XDP memory type (%d) usage", mem->type);
-  		break;
-  	}
-  }
-
-  void xdp_return_frame(struct xdp_frame *xdpf)
-  {
--	__xdp_return(xdpf->data, &xdpf->mem, false, NULL);
-+	__xdp_return(xdpf->data, &xdpf->mem, false);
-  }
-  EXPORT_SYMBOL_GPL(xdp_return_frame);
-
-  void xdp_return_frame_rx_napi(struct xdp_frame *xdpf)
-  {
--	__xdp_return(xdpf->data, &xdpf->mem, true, NULL);
-+	__xdp_return(xdpf->data, &xdpf->mem, true);
-  }
-  EXPORT_SYMBOL_GPL(xdp_return_frame_rx_napi);
-
-  void xdp_return_buff(struct xdp_buff *xdp)
-  {
--	__xdp_return(xdp->data, &xdp->rxq->mem, true, xdp);
-+	__xdp_return(xdp->data, &xdp->rxq->mem, true);
-  }
--EXPORT_SYMBOL_GPL(xdp_return_buff);
-
-  /* Only called for MEM_TYPE_PAGE_POOL see xdp.h */
-  void __xdp_release_frame(void *data, struct xdp_mem_info *mem)
-@@ -466,7 +463,7 @@ struct xdp_frame *xdp_convert_zc_to_xdp_frame(struct 
-xdp_buff *xdp)
-  	xdpf->metasize = metasize;
-  	xdpf->mem.type = MEM_TYPE_PAGE_ORDER0;
-
--	xdp_return_buff(xdp);
-+	xsk_buff_free(xdp);
-  	return xdpf;
-  }
-  EXPORT_SYMBOL_GPL(xdp_convert_zc_to_xdp_frame);
--- 
-2.25.1
+> -- 
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
 
