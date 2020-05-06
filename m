@@ -2,112 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 422211C7CDC
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 23:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7654B1C7CDF
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 23:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729703AbgEFVxz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 17:53:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729675AbgEFVxy (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 17:53:54 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC75C061A41
-        for <bpf@vger.kernel.org>; Wed,  6 May 2020 14:53:54 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id f5so1812987ybo.4
-        for <bpf@vger.kernel.org>; Wed, 06 May 2020 14:53:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v0EebI0wRb/tvCNXlsGxxNrmG0tMY7mj+ffgbYSbdE0=;
-        b=UFXjgemcco3wS+VML2EXMGYsw4wBSNxjKeNKGP2VQLQpBCDRbOWS3ejRsjb8/MLwVB
-         i44cyTIAOyIGEL+wG8PZ0kJ9esTwBGXdx1zh1tGCCnHhNK7xnhqyfssDgOfJsCnc6LBq
-         Y/o2XLAjh5ZzlmDVZ4/xuF759eOvsb+adnnL9vX2PtjVSDSxvuwI/7S3i836Ws1zEaJr
-         HttwrrK4q8cCP7sMvkDPaC9kC2+rXJ9azKf15LY7RvcFueycEHCNZ6g32E2lhLfRpyFn
-         GwI02VwqdYfZze5r4HE4SrZYbdMcWEv54HwOEWeME7Qh0f2TtH+Y7LpKH2iSuGul9/Hw
-         hjrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v0EebI0wRb/tvCNXlsGxxNrmG0tMY7mj+ffgbYSbdE0=;
-        b=NBXdsGXcxCojXHABbIVb/D/Ie7uhM3n0N/hwW9hgxAX4GG4eN6LPWNHuhrvMmjQXnd
-         PkmCRlhuUcApxA5TNNLxDFl0ppM5xTBlxs67seLYI0uxgJlm96T97eOK2HQUhFSjTjRf
-         knN5+cfN1C4MXyJ41kjh5KAbrY5u+VFGzvIzB4imx41f9WhyzHwUDTsOypEPyo1sgxtw
-         e4q4uVpEbpf0JCpS89zhBZVQ2bMAikhbG3WLOsYL/plYFFdIbKg3qJSt7wa3Fz/0VTgx
-         sCE3aj1K0C/1nAWPpmp1GK/g1Qoi7YswymhaaaI2dnLQ3g/QersPXw1elSCj5pcy6nhS
-         t/Yw==
-X-Gm-Message-State: AGi0PuapqKt514IqI5nvQtExnusJWtjfAQGXzatqVFrPMqbTStnkNXYc
-        866oIhnlm7oXUgZ2PblhmQ50/VTVMZ2XdtC3d4H4/g==
-X-Google-Smtp-Source: APiQypIZ2lS5JPETs/hxM32Qe7xXAMoWoXTnHt9xQRKtH2nGeflyJrnujdzb/J6oXE99NJCr1duB3JFM88kNT6eEST0=
-X-Received: by 2002:a25:77d8:: with SMTP id s207mr15709759ybc.47.1588802033385;
- Wed, 06 May 2020 14:53:53 -0700 (PDT)
+        id S1729582AbgEFVzO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 17:55:14 -0400
+Received: from www62.your-server.de ([213.133.104.62]:41388 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729162AbgEFVzO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 May 2020 17:55:14 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jWS0V-0001Ra-FH; Wed, 06 May 2020 23:55:11 +0200
+Received: from [178.195.186.98] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jWS0V-000VJu-7f; Wed, 06 May 2020 23:55:11 +0200
+Subject: Re: Checksum behaviour of bpf_redirected packets
+To:     Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@cloudflare.com>
+References: <CACAyw9-uU_52esMd1JjuA80fRPHJv5vsSg8GnfW3t_qDU4aVKQ@mail.gmail.com>
+ <CAADnVQKZ63d5A+Jv8bbXzo2RKNCXFH78zos0AjpbJ3ii9OHW0g@mail.gmail.com>
+ <CACAyw9_ygNV1J+PkBJ-i7ysU_Y=rN3Z5adKYExNXCic0gumaow@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <39d3bee2-dcfc-8240-4c78-2110d639d386@iogearbox.net>
+Date:   Wed, 6 May 2020 23:55:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20200506205257.8964-1-irogers@google.com> <20200506205257.8964-3-irogers@google.com>
- <CAEf4BzYJanGO+XrTBQoEzGoB_D6xQYYm9tT70+Kie4hyKCxhjQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYJanGO+XrTBQoEzGoB_D6xQYYm9tT70+Kie4hyKCxhjQ@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 6 May 2020 14:53:41 -0700
-Message-ID: <CAP-5=fW97DB0CTLN=5iKPUF_tJW-yZgC+jiikdU0goSD_ADYkQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] lib/bpf hashmap: fixes to hashmap__clear
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CACAyw9_ygNV1J+PkBJ-i7ysU_Y=rN3Z5adKYExNXCic0gumaow@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25804/Wed May  6 14:13:11 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 6, 2020 at 2:36 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, May 6, 2020 at 1:55 PM Ian Rogers <irogers@google.com> wrote:
-> >
-> > hashmap_find_entry assumes that if buckets is NULL then there are no
-> > entries. NULL the buckets in clear to ensure this.
-> > Free hashmap entries and not just the bucket array.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
->
-> This is already fixed in bpf-next ([0]). Seems to be 1-to-1 character
-> by character :)
->
->   [0] https://patchwork.ozlabs.org/project/netdev/patch/20200429012111.277390-5-andriin@fb.com/
+On 5/6/20 6:24 PM, Lorenz Bauer wrote:
+> On Wed, 6 May 2020 at 02:28, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>> On Mon, May 4, 2020 at 9:12 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+>>>
+>>> In our TC classifier cls_redirect [1], we use the following sequence
+>>> of helper calls to
+>>> decapsulate a GUE (basically IP + UDP + custom header) encapsulated packet:
+>>>
+>>>    skb_adjust_room(skb, -encap_len,
+>>> BPF_ADJ_ROOM_MAC, BPF_F_ADJ_ROOM_FIXED_GSO)
+>>>    bpf_redirect(skb->ifindex, BPF_F_INGRESS)
+>>>
+>>> It seems like some checksums of the inner headers are not validated in
+>>> this case.
+>>> For example, a TCP SYN packet with invalid TCP checksum is still accepted by the
+>>> network stack and elicits a SYN ACK.
+>>>
+>>> Is this known but undocumented behaviour or a bug? In either case, is
+>>> there a work
+>>> around I'm not aware of?
+>>
+>> I thought inner and outer csums are covered by different flags and driver
+>> suppose to set the right one depending on level of in-hw checking it did.
+> 
+> I've figured out what the problem is. We receive the following packet from
+> the driver:
+> 
+>      | ETH | IP | UDP | GUE | IP | TCP |
+>      skb->ip_summed == CHECKSUM_UNNECESSARY
+> 
+> ip_summed is CHECKSUM_UNNECESSARY because our NICs do rx
+> checksum offloading. On this packet we run skb_adjust_room_mac(-encap),
+> and get the following:
+> 
+>      | ETH | IP | TCP |
+>      skb->ip_summed == CHECKSUM_UNNECESSARY
+> 
+> Note that ip_summed is still CHECKSUM_UNNECESSARY. After
+> bpf_redirect()ing into the ingress, we end up in tcp_v4_rcv. There
+> skb_checksum_init is turned into a no-op due to
+> CHECKSUM_UNNECESSARY.
+> 
+> I think this boils down to bpf_skb_generic_pop not adjusting ip_summed
+> accordingly. Unfortunately I don't understand how checksums work
+> sufficiently. Daniel, it seems like you wrote the helper, could you
+> take a look?
 
-Thanks!
-Ian
+Right, so in the skb_adjust_room() case we're not aware of protocol
+specifics. We do handle the csum complete case via skb_postpull_rcsum(),
+but not CHECKSUM_UNNECESSARY at the moment. I presume in your case the
+skb->csum_level of the original skb prior to skb_adjust_room() call
+might have been 0 (that is, covering UDP)? So if we'd add the possibility
+to __skb_decr_checksum_unnecessary() via flag, then it would become
+skb->ip_summed = CHECKSUM_NONE? And to be generic, we'd need to do the
+same for the reverse case. Below is a quick hack (compile tested-only);
+would this resolve your case ...
 
-> >  tools/lib/bpf/hashmap.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/tools/lib/bpf/hashmap.c b/tools/lib/bpf/hashmap.c
-> > index 54c30c802070..1a1bca1ff5cd 100644
-> > --- a/tools/lib/bpf/hashmap.c
-> > +++ b/tools/lib/bpf/hashmap.c
-> > @@ -59,7 +59,13 @@ struct hashmap *hashmap__new(hashmap_hash_fn hash_fn,
-> >
-> >  void hashmap__clear(struct hashmap *map)
-> >  {
-> > +       struct hashmap_entry *cur, *tmp;
-> > +       size_t bkt;
-> > +
-> > +       hashmap__for_each_entry_safe(map, cur, tmp, bkt)
-> > +               free(cur);
-> >         free(map->buckets);
-> > +       map->buckets = NULL;
-> >         map->cap = map->cap_bits = map->sz = 0;
-> >  }
-> >
-> > --
-> > 2.26.2.526.g744177e7f7-goog
-> >
+ >>>    skb_adjust_room(skb, -encap_len, BPF_ADJ_ROOM_MAC, BPF_F_ADJ_ROOM_FIXED_GSO|BPF_F_ADJ_ROOM_DEC_CSUM_LEVEL)
+ >>>    bpf_redirect(skb->ifindex, BPF_F_INGRESS)
+
+ From 7439724fcfff7742223198c620349a4fc89d4835 Mon Sep 17 00:00:00 2001
+Message-Id: <7439724fcfff7742223198c620349a4fc89d4835.1588801971.git.daniel@iogearbox.net>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Date: Wed, 6 May 2020 23:50:31 +0200
+Subject: [PATCH bpf-next] bpf: inc/dec csum level for csum_unnecessary in skb_adjust_room
+
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+---
+  include/uapi/linux/bpf.h |  2 ++
+  net/core/filter.c        | 23 ++++++++++++++++++++---
+  2 files changed, 22 insertions(+), 3 deletions(-)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index b3643e27e264..9877807b8f28 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3279,6 +3279,8 @@ enum {
+  	BPF_F_ADJ_ROOM_ENCAP_L3_IPV6	= (1ULL << 2),
+  	BPF_F_ADJ_ROOM_ENCAP_L4_GRE	= (1ULL << 3),
+  	BPF_F_ADJ_ROOM_ENCAP_L4_UDP	= (1ULL << 4),
++	BPF_F_ADJ_ROOM_INC_CSUM_LEVEL	= (1ULL << 5),
++	BPF_F_ADJ_ROOM_DEC_CSUM_LEVEL	= (1ULL << 6),
+  };
+
+  enum {
+diff --git a/net/core/filter.c b/net/core/filter.c
+index dfaf5df13722..10551dabb7b5 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3008,7 +3008,9 @@ static u32 bpf_skb_net_base_len(const struct sk_buff *skb)
+  					 BPF_F_ADJ_ROOM_ENCAP_L4_GRE | \
+  					 BPF_F_ADJ_ROOM_ENCAP_L4_UDP | \
+  					 BPF_F_ADJ_ROOM_ENCAP_L2( \
+-					  BPF_ADJ_ROOM_ENCAP_L2_MASK))
++					  BPF_ADJ_ROOM_ENCAP_L2_MASK) | \
++					 BPF_F_ADJ_ROOM_INC_CSUM_LEVEL | \
++					 BPF_F_ADJ_ROOM_DEC_CSUM_LEVEL)
+
+  static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
+  			    u64 flags)
+@@ -3019,6 +3021,10 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
+  	unsigned int gso_type = SKB_GSO_DODGY;
+  	int ret;
+
++	if (unlikely(flags & ~(BPF_F_ADJ_ROOM_MASK &
++			       ~(BPF_F_ADJ_ROOM_DEC_CSUM_LEVEL))))
++		return -EINVAL;
++
+  	if (skb_is_gso(skb) && !skb_is_gso_tcp(skb)) {
+  		/* udp gso_size delineates datagrams, only allow if fixed */
+  		if (!(skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) ||
+@@ -3105,6 +3111,9 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
+  		shinfo->gso_segs = 0;
+  	}
+
++	if (flags & BPF_F_ADJ_ROOM_INC_CSUM_LEVEL)
++		__skb_incr_checksum_unnecessary(skb);
++
+  	return 0;
+  }
+
+@@ -3113,7 +3122,8 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
+  {
+  	int ret;
+
+-	if (flags & ~BPF_F_ADJ_ROOM_FIXED_GSO)
++	if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO |
++			       BPF_F_ADJ_ROOM_DEC_CSUM_LEVEL)))
+  		return -EINVAL;
+
+  	if (skb_is_gso(skb) && !skb_is_gso_tcp(skb)) {
+@@ -3143,6 +3153,9 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
+  		shinfo->gso_segs = 0;
+  	}
+
++	if (flags & BPF_F_ADJ_ROOM_DEC_CSUM_LEVEL)
++		__skb_decr_checksum_unnecessary(skb);
++
+  	return 0;
+  }
+
+@@ -3163,7 +3176,11 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
+  	u32 off;
+  	int ret;
+
+-	if (unlikely(flags & ~BPF_F_ADJ_ROOM_MASK))
++	if (unlikely((flags & ~BPF_F_ADJ_ROOM_MASK) ||
++		     ((flags & (BPF_F_ADJ_ROOM_INC_CSUM_LEVEL |
++				BPF_F_ADJ_ROOM_DEC_CSUM_LEVEL)) ==
++		      (BPF_F_ADJ_ROOM_INC_CSUM_LEVEL |
++		       BPF_F_ADJ_ROOM_DEC_CSUM_LEVEL))))
+  		return -EINVAL;
+  	if (unlikely(len_diff_abs > 0xfffU))
+  		return -EFAULT;
+-- 
+2.21.0
+
+
