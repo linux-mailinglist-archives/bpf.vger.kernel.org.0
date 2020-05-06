@@ -2,179 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3161C6DDC
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 12:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 089A51C6F8C
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 13:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728314AbgEFKAQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 06:00:16 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:31465 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728193AbgEFKAQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 06:00:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588759214;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/yse9wAFbwsOqetKh7+VqeIgo2g7MYDJ2PL6VXMxg4M=;
-        b=KjuVd09WMQymiv3yMZ5wiHi+kFZd6EHiV3D+OrpAFizYf4uHLkTESliVPf/75kBsUF6Sq3
-        c6WTIOV9nAGWi9EO//X8D2GHlQ/AWDYTBBgpSNUby9X2FfhlhEs8FIhlaiidOiZiDpP36P
-        C7uxdo5BRJa/qN8ym95hQyu+7U3a5p4=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-320-MEgGVJ4NOIGWa-N9bFuzPA-1; Wed, 06 May 2020 06:00:12 -0400
-X-MC-Unique: MEgGVJ4NOIGWa-N9bFuzPA-1
-Received: by mail-lf1-f72.google.com with SMTP id c6so648408lfg.0
-        for <bpf@vger.kernel.org>; Wed, 06 May 2020 03:00:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=/yse9wAFbwsOqetKh7+VqeIgo2g7MYDJ2PL6VXMxg4M=;
-        b=fAgOMvVNUG98dwAHl4RPnLyfkALhh3McnPx/uj7C8vtkpClmWFOyq3yH0Y4YJISpPr
-         tVv5LvkNofMuqWHP/tfOV56UXTRZCKFsVdfFvxgr4Qc5H3OoMNBvaXxYevDi1c/yqeMn
-         P7F5x22MvvGnb+ii3eFbTepc4N9Qby8oSoDIiq2oy7S5WqsPbVXrcRRRxicsD1mDNLjs
-         wsN2QkGqE45YIazDUCr9S+zl30Js3pQXAtO+r3yeoDdgLpZMY6+cgWtmpS9RwZe/dR9x
-         B1FAM4kq8nyidTWMrjtSTp9GxoIGIzssc4nlDdBWcKRatU5dpiRLNMz0TROtxA1voSTa
-         O5bg==
-X-Gm-Message-State: AGi0PuasACXNEvW3t3L7+wcGjBeNL0p7tVvEyxGVO6u1dOL4d/r4jC9T
-        cEPZ7vbGfjR870usxt+ImrZ0wefYnwatNZvwSFiWGJDISrQA35pT9Yg5HbZVQmMjxxt8nc4MVqr
-        sp6TPH+5RLeoT
-X-Received: by 2002:a2e:b44c:: with SMTP id o12mr4155064ljm.240.1588759210714;
-        Wed, 06 May 2020 03:00:10 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJjrdVlse6+XhdtFOp7b+xVLAVkd268Hj8ENL2WCItSnQ1F9AdFYzvYU5bD1DpxIluXSr+Ymg==
-X-Received: by 2002:a2e:b44c:: with SMTP id o12mr4155036ljm.240.1588759210322;
-        Wed, 06 May 2020 03:00:10 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id b4sm1229877lfo.33.2020.05.06.03.00.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 03:00:09 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 789851804E9; Wed,  6 May 2020 12:00:08 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Subject: Re: [RFC PATCHv2 bpf-next 1/2] xdp: add a new helper for dev map multicast support
-In-Reply-To: <20200506091442.GA102436@dhcp-12-153.nay.redhat.com>
-References: <20200415085437.23028-1-liuhangbin@gmail.com> <20200424085610.10047-1-liuhangbin@gmail.com> <20200424085610.10047-2-liuhangbin@gmail.com> <87r1wd2bqu.fsf@toke.dk> <20200506091442.GA102436@dhcp-12-153.nay.redhat.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 06 May 2020 12:00:08 +0200
-Message-ID: <874kstmlhz.fsf@toke.dk>
+        id S1726908AbgEFLn6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 07:43:58 -0400
+Received: from mga05.intel.com ([192.55.52.43]:52550 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726843AbgEFLn5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 May 2020 07:43:57 -0400
+IronPort-SDR: VrDEgn8dTzHbXimEbR4MQ3rMstShoB8rbmBSitj1EQgPtb10HY2F/ut9I+KvEBUKf2RD38sxe8
+ b6027XEB8sVw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 04:43:56 -0700
+IronPort-SDR: 508UpujkLSzkGQIpVb2To/VnMx5ZCP5BF3weWKWFH7Flg12uE4phbQgeGeiM+DYx+NfPJjlyHO
+ qe2WHAoAlcEA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,358,1583222400"; 
+   d="scan'208";a="407215532"
+Received: from slgibson-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.249.33.158])
+  by orsmga004.jf.intel.com with ESMTP; 06 May 2020 04:43:53 -0700
+Subject: Re: [RFC PATCH bpf-next 04/13] xsk: introduce AF_XDP buffer
+ allocation API
+To:     Maxim Mikityanskiy <maximmi@mellanox.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
+        maciej.fijalkowski@intel.com
+References: <20200504113716.7930-1-bjorn.topel@gmail.com>
+ <20200504113716.7930-5-bjorn.topel@gmail.com>
+ <7270912e-bf1c-56ec-79d9-3893b6ea69ce@mellanox.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <26bafed3-1ebc-234a-5e76-a6b9e1e0f32c@intel.com>
+Date:   Wed, 6 May 2020 13:43:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <7270912e-bf1c-56ec-79d9-3893b6ea69ce@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hangbin Liu <liuhangbin@gmail.com> writes:
-
-> Hi Toke,
+On 2020-05-06 11:51, Maxim Mikityanskiy wrote:
+> On 2020-05-04 14:37, Björn Töpel wrote:
+[]
+>> @@ -389,6 +390,11 @@ static void __xdp_return(void *data, struct 
+>> xdp_mem_info *mem, bool napi_direct,
+>>           xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
+>>           xa->zc_alloc->free(xa->zc_alloc, handle);
+>>           rcu_read_unlock();
+>> +        break;
+>> +    case MEM_TYPE_XSK_BUFF_POOL:
+>> +        /* NB! Only valid from an xdp_buff! */
+>> +        xsk_buff_free(xdp);
+>> +        break;
+> 
+> I remember I asked about it, but not sure what we decided here. 
+> xdp_return_buff is the only way to get in this new case, and it's called 
+> only from XSK flows. Maybe it would make sense to kill this case and 
+> xdp_return_buff, and call xsk_buff_free directly? It'll save some time 
+> that we waste in switch-case, a function call and two parameters of 
+> __xdp_return - should make everything faster. Do you think it makes sense?
 >
-> Thanks for your review, please see replies below.
->
-> On Fri, Apr 24, 2020 at 04:34:49PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> >
->> > The general data path is kept in net/core/filter.c. The native data
->> > path is in kernel/bpf/devmap.c so we can use direct calls to
->> > get better performace.
->>=20
->> Got any performance numbers? :)
->
-> No, I haven't test the performance. Do you have any suggestions about how
-> to test it? I'd like to try forwarding pkts to 10+ ports. But I don't know
-> how to test the throughput. I don't think netperf or iperf supports
-> this.
 
-What I usually do when benchmarking XDP_REDIRECT is to just use pktgen
-(samples/pktgen in the kernel source tree) on another machine,
-specifically, like this:
+I forgot about this! Thanks for the reminder. Yeah, that makes sense. 
+Wdyt about the patch below:
 
-./pktgen_sample03_burst_single_flow.sh  -i enp1s0f1 -d 10.70.2.2 -m ec:0d:9=
-a:db:11:35 -t 4  -s 64
+From: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>
+Date: Wed, 6 May 2020 13:39:05 +0200
+Subject: [PATCH] xdp: simplify xdp_return_{frame,frame_rx_napi,buff}
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-(adjust iface, IP and MAC address to your system, of course). That'll
-flood the target machine with small UDP packets. On that machine, I then
-run the 'xdp_redirect_map' program from samples/bpf. The bpf program
-used by that sample will update an internal counter for every packet,
-and the userspace prints it out, which gives you the performance (in
-PPS). So just modifying that sample to using your new multicast helper
-(and comparing it to regular REDIRECT to a single device) would be a
-first approximation of a performance test.
+The xdp_return_{frame,frame_rx_napi,buff} function are never used,
+except in xdp_convert_zc_to_xdp_frame(), by the MEM_TYPE_XSK_BUFF_POOL
+memory type.
 
-[...]
+To simplify and reduce code, change so that
+xdp_convert_zc_to_xdp_frame() calls xsk_buff_free() directly since the
+type is know, and remove MEM_TYPE_XSK_BUFF_POOL from the switch
+statement in __xdp_return() function.
 
->> > +	devmap_get_next_key(map, NULL, &key);
->> > +
->> > +	for (;;) {
->>=20
->> I wonder if we should require DEVMAP_HASH maps to be indexed by ifindex
->> to avoid the loop?
->
-> I guess it's not easy to force user to index the map by ifindex.
+Suggested-by: Maxim Mikityanskiy <maximmi@mellanox.com>
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+---
+  net/core/xdp.c | 21 +++++++++------------
+  1 file changed, 9 insertions(+), 12 deletions(-)
 
-Well, the way to 'force the user' is just to assume that this is the
-case, and if the map is filled in wrong, things just won't work ;)
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index 11273c976e19..7ab1f9014c5e 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -334,10 +334,11 @@ EXPORT_SYMBOL_GPL(xdp_rxq_info_reg_mem_model);
+   * scenarios (e.g. queue full), it is possible to return the xdp_frame
+   * while still leveraging this protection.  The @napi_direct boolean
+   * is used for those calls sites.  Thus, allowing for faster recycling
+- * of xdp_frames/pages in those cases.
++ * of xdp_frames/pages in those cases. This path is never used by the
++ * MEM_TYPE_XSK_BUFF_POOL memory type, so it's explicitly not part of
++ * the switch-statement.
+   */
+-static void __xdp_return(void *data, struct xdp_mem_info *mem, bool 
+napi_direct,
+-			 struct xdp_buff *xdp)
++static void __xdp_return(void *data, struct xdp_mem_info *mem, bool 
+napi_direct)
+  {
+  	struct xdp_mem_allocator *xa;
+  	struct page *page;
+@@ -359,33 +360,29 @@ static void __xdp_return(void *data, struct 
+xdp_mem_info *mem, bool napi_direct,
+  		page = virt_to_page(data); /* Assumes order0 page*/
+  		put_page(page);
+  		break;
+-	case MEM_TYPE_XSK_BUFF_POOL:
+-		/* NB! Only valid from an xdp_buff! */
+-		xsk_buff_free(xdp);
+-		break;
+  	default:
+  		/* Not possible, checked in xdp_rxq_info_reg_mem_model() */
++		WARN(1, "Incorrect XDP memory type (%d) usage", mem->type);
+  		break;
+  	}
+  }
 
->> > +	xdpf =3D convert_to_xdp_frame(xdp);
->> > +	if (unlikely(!xdpf))
->> > +		return -EOVERFLOW;
->>=20
->> You do a clone for each map entry below, so I think you end up leaking
->> this initial xdpf? Also, you'll end up with one clone more than
->> necessary - redirecting to two interfaces should only require 1 clone,
->> you're doing 2.
->
-> We don't know which is the latest one. So we need to keep the initial
-> for clone. Is it enough to call xdp_release_frame() after the for
-> loop?
+  void xdp_return_frame(struct xdp_frame *xdpf)
+  {
+-	__xdp_return(xdpf->data, &xdpf->mem, false, NULL);
++	__xdp_return(xdpf->data, &xdpf->mem, false);
+  }
+  EXPORT_SYMBOL_GPL(xdp_return_frame);
 
-You could do something like:
+  void xdp_return_frame_rx_napi(struct xdp_frame *xdpf)
+  {
+-	__xdp_return(xdpf->data, &xdpf->mem, true, NULL);
++	__xdp_return(xdpf->data, &xdpf->mem, true);
+  }
+  EXPORT_SYMBOL_GPL(xdp_return_frame_rx_napi);
 
-bool first =3D true;
-for (;;) {
+  void xdp_return_buff(struct xdp_buff *xdp)
+  {
+-	__xdp_return(xdp->data, &xdp->rxq->mem, true, xdp);
++	__xdp_return(xdp->data, &xdp->rxq->mem, true);
+  }
+-EXPORT_SYMBOL_GPL(xdp_return_buff);
 
-[...]
+  /* Only called for MEM_TYPE_PAGE_POOL see xdp.h */
+  void __xdp_release_frame(void *data, struct xdp_mem_info *mem)
+@@ -466,7 +463,7 @@ struct xdp_frame *xdp_convert_zc_to_xdp_frame(struct 
+xdp_buff *xdp)
+  	xdpf->metasize = metasize;
+  	xdpf->mem.type = MEM_TYPE_PAGE_ORDER0;
 
-           if (!first) {
-   		nxdpf =3D xdpf_clone(xdpf);
-   		if (unlikely(!nxdpf))
-   			return -ENOMEM;
-   		bq_enqueue(dev, nxdpf, dev_rx);
-           } else {
-   		bq_enqueue(dev, xdpf, dev_rx);
-   		first =3D false;
-           }
-}
-
-/* didn't find anywhere to forward to, free buf */
-if (first)
-   xdp_return_frame_rx_napi(xdpf);
-
-
-
-[...]
-
->> This duplication bugs me; maybe we should try to consolidate the generic
->> and native XDP code paths?
->
-> Yes, I have tried to combine these two functions together. But one is gen=
-eric
-> code path and another is XDP code patch. One use skb_clone and another
-> use xdpf_clone(). There are also some extra checks for XDP code. So maybe
-> we'd better just keep it as it is.
-
-Yeah, guess it may not be as simple as I'd like it to be ;)
-Let's keep it this way for now at least; we can always consolidate in a
-separate patch series.
-
--Toke
+-	xdp_return_buff(xdp);
++	xsk_buff_free(xdp);
+  	return xdpf;
+  }
+  EXPORT_SYMBOL_GPL(xdp_convert_zc_to_xdp_frame);
+-- 
+2.25.1
 
