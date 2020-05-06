@@ -2,144 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8808B1C6585
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 03:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1A51C65B8
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 04:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728356AbgEFBaQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 May 2020 21:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728609AbgEFBaQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 5 May 2020 21:30:16 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6719C061A0F;
-        Tue,  5 May 2020 18:30:15 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id a9so33202lfb.8;
-        Tue, 05 May 2020 18:30:15 -0700 (PDT)
+        id S1729495AbgEFCAH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 May 2020 22:00:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728069AbgEFCAH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 May 2020 22:00:07 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D717AC061A0F
+        for <bpf@vger.kernel.org>; Tue,  5 May 2020 19:00:06 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id g4so664089ljl.2
+        for <bpf@vger.kernel.org>; Tue, 05 May 2020 19:00:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hj8S2KHc69NEk+qWOC+GYPiuiIXNaHZxXAt5jsTgngs=;
-        b=boz+EkaJPI0E+uIIM/cgtwmsZHD2KWQ0FcU/nHrOzVNs8z7crDVVKsV/T54WwnmoUv
-         DGkurWyY15z755Gn9iv1iTKT7zsZVabuZ9yTGj6+CqPVmfaqgwtYjDTsHLJBRLFsaoAR
-         FM11WyBAsYntG6dRmt2nKWtemS+rz3V1IVNe5QXdvYsaB6ytgHqHxSbHIggtAaal6Lp1
-         VoftDaoGrgpnlAmYo9qsPqn6lqD0D6uiVv6BWe4up5h59/aaBZKt0cDUsBFNlJ6rSEHL
-         RID9k4dIP7UeboDWYBEKJxUf6z0cZ/fDf8Ak2Omprer9vAf7I7G0x1iTxH0/3f0eXAdy
-         x52A==
+        bh=EPCwr4iUyoDdxListJ7zClgrcCYnR661n6wmFVvbHLY=;
+        b=S2goQR4YweK9FgDGQu9Pe3g+q4Hkk15RM/dlxmLrYtqxhDBbr8D4pVqRG/Hl2OJ0d2
+         NS2UGsNd3OqJO82RqbEsKmzHYIgjqhto73u6jAhkUP8dCJqscSyfFX2ao5FqNMqrxarN
+         82EDvANgZgPw2GoRK8oRIV9Th5auKMojwDbE1obgAmrkUETEw+arJyTqlEH5sXUQMNvV
+         iQJn1cta+AWd/kQ9+OHzpBmBO/iiTyOO0nPU85TPkMSHWpTI6ApIw88SDKoU28kB+Q/W
+         HWVB603IGvrUaRxiZev3z8jsFH7VtvIA4WiCMYewlNeLOc6/xbMv9lJQv5L5+3uFTaYy
+         /q3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hj8S2KHc69NEk+qWOC+GYPiuiIXNaHZxXAt5jsTgngs=;
-        b=OUEs0w/qo0+17cAnVeCMl4eeixjSBLfrtKsbGun+SJfPSOMyP8/xo71jWwiCSvCFAI
-         Sv6nP5vJFUCDlcyF/KNsSCUpWKJ5vrBlzyp/lnDJ3GNI9d8bjLr2dBJgMb/MD+8Dsd27
-         UIueA+Q5sXSCazu5sGriztJPG0sq7RCz4rrZ549BrEmAv/lrNDE8PLBDIWsB2eOJEozC
-         nVfsI92x96TIK2YLcBolyZ/XDn9DF8037LbUkKUBpo2OdybjlLcbN+09D7+lktGccJCo
-         KStnv5mI6A+IQnkhNs2IXCOgkr4+8TZOVRWjDuGKQquSpSNQ9JaqJTgvSy1Xl9lCnL/6
-         YGIQ==
-X-Gm-Message-State: AGi0Pua228Vs03kDEXQDKikZ0bHG3sWL5igLTKeq9jTXMVBmXNByuvGn
-        I0P8CDxSwlR8bZMcuCmh2R9hwYHQbECGmAkmA8k=
-X-Google-Smtp-Source: APiQypJDW7fXK4fE5RX+0kcweXn4NyPOCByK1LFeriowpCSlBLQpvpsOm3HQ1J8trVBg35MqlD5CeDZ3YrCVmRLnc2I=
-X-Received: by 2002:ac2:442f:: with SMTP id w15mr3241305lfl.73.1588728614209;
- Tue, 05 May 2020 18:30:14 -0700 (PDT)
+        bh=EPCwr4iUyoDdxListJ7zClgrcCYnR661n6wmFVvbHLY=;
+        b=JsxVEuLlh2SRekKH6qeug/ycwfUhB9RYCrHQbtw4PKXjux+TCZMq6arHKaLnelZjFq
+         mKQiPdBG+ojAjKAPpfP9qM1BU57hy9rorH5fMfW9cTChVRybb9RCW3jxAJYiS/1srOoV
+         fEtfxsBivQzwnAWOTcy1pbKPPzvGnWJWyf/BPjE0xr1dUQRHoYtO4nl1oUVH6EhJCNli
+         a4/IQtExE/ZLVY906B99udHFaQZl5zdNMnGMXoxL3OMfXUEuJT2FrLxu5pEvSvLqnPJz
+         z/4O0rKuBkPrXUutgjxFYsEIkT0iK8khKDGPvpBQldk6aNABn4qGusCs8IbKIS04buvT
+         ICxQ==
+X-Gm-Message-State: AGi0PuYWl1wmaqMLLpeMzojgVoM7Y5JPmtkIHw5X1V1a6p2MHiOkzH4J
+        i5WvDRYKP9PTvUXK+1L6kJuQTobztX/U3TF3zUFnzg==
+X-Google-Smtp-Source: APiQypL1b7v3kgsfIIz7nKbHmItmafBhqW3lHLfPIrxKs7Td0ZXxJrdsMJA6qGaTFjdBDBw//PKqr906opZHHBS/YOw=
+X-Received: by 2002:a2e:b4c2:: with SMTP id r2mr3565165ljm.143.1588730405148;
+ Tue, 05 May 2020 19:00:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200424185556.7358-1-lmb@cloudflare.com> <20200424185556.7358-2-lmb@cloudflare.com>
- <20200426173324.5zg7isugereb5ert@ast-mbp.dhcp.thefacebook.com>
- <CACAyw98nK_Vkstp-vEqNwKXtoCRnTOPr7Eh+ziH56tJGbnPsig@mail.gmail.com>
- <185417b8-0d50-f8a3-7a09-949066579732@iogearbox.net> <20200504234827.6mrogryxk73jc6x2@ast-mbp.dhcp.thefacebook.com>
- <a5829cb4-3759-6cd8-c9de-62e9813f00d6@iogearbox.net>
-In-Reply-To: <a5829cb4-3759-6cd8-c9de-62e9813f00d6@iogearbox.net>
+References: <CAFcc1YgBxQUKa=ySQ+XTOk1EkMwLKHc1yECLxuWnVTHoLoYMFg@mail.gmail.com>
+In-Reply-To: <CAFcc1YgBxQUKa=ySQ+XTOk1EkMwLKHc1yECLxuWnVTHoLoYMFg@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 5 May 2020 18:30:02 -0700
-Message-ID: <CAADnVQKjZoaPgWWTKrADLv73VuYaC+WsdgNdo-h_mW1FW7VmFw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] selftests/bpf: add cls_redirect classifier
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Theo Julienne <theojulienne@github.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Date:   Tue, 5 May 2020 18:59:53 -0700
+Message-ID: <CAADnVQJrtojjdyX-5JvNH02+4Pfa81FuVSDsNY2npSJ4Tm3p-A@mail.gmail.com>
+Subject: Re: bpf_override_return out of order execution?
+To:     Giulia <giulia.frascaria@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 5, 2020 at 6:37 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Wed, Apr 29, 2020 at 7:50 AM Giulia <giulia.frascaria@gmail.com> wrote:
 >
-> On 5/5/20 1:48 AM, Alexei Starovoitov wrote:
-> > On Sat, May 02, 2020 at 01:48:51AM +0200, Daniel Borkmann wrote:
-> >> On 4/27/20 11:45 AM, Lorenz Bauer wrote:
-> >>> On Sun, 26 Apr 2020 at 18:33, Alexei Starovoitov
-> >>> <alexei.starovoitov@gmail.com> wrote:
-> >> [...]
-> >>>>> +/* Linux packet pointers are either aligned to NET_IP_ALIGN (aka 2 bytes),
-> >>>>> + * or not aligned if the arch supports efficient unaligned access.
-> >>>>> + *
-> >>>>> + * Since the verifier ensures that eBPF packet accesses follow these rules,
-> >>>>> + * we can tell LLVM to emit code as if we always had a larger alignment.
-> >>>>> + * It will yell at us if we end up on a platform where this is not valid.
-> >>>>> + */
-> >>>>> +typedef uint8_t *net_ptr __attribute__((align_value(8)));
-> >>>>
-> >>>> Wow. I didn't know about this attribute.
-> >>>> I wonder whether it can help Daniel's memcpy hack.
-> >>>
-> >>> Yes, I think so.
-> >>
-> >> Just for some more context [0]. I think the problem is a bit more complex in
-> >> general. Generally, _any_ kind of pointer to some data (except for the stack)
-> >> is currently treated as byte-by-byte copy from __builtin_memcpy() and other
-> >> similarly available __builtin_*() helpers on BPF backend since the backend
-> >> cannot make any assumptions about the data's alignment and whether unaligned
-> >> access from the underlying arch is ok & efficient (the latter the verifier
-> >> does judge for us however). So it's definitely not just limited to xdp->data.
-> >> There is also the issue that while access to any non-stack data can be
-> >> unaligned, access to the stack however cannot. I've discussed a while back
-> >> with Yonghong about potential solutions. One would be to add a small patch
-> >> to the BPF backend to enable __builtin_*() helpers to allow for unaligned
-> >> access which could then be opt-ed in e.g. via -mattr from llc for the case
-> >> when we know that the compiled program only runs on archs with efficient
-> >> unaligned access anyway. However, this still potentially breaks with the BPF
-> >> stack for the case when objects are, for example, larger than size 8 but with
-> >> a natural alignment smaller than 8 where __builtin_memcpy() would then decide
-> >> to emit dw-typed load/stores. But for these cases could then be annotated via
-> >> __aligned(8) on stack. So this is basically what we do right now as a generic
-> >> workaround in Cilium [0], meaning, our own memcpy/memset with optimal number
-> >> of instructions and __aligned(8) where needed; most of the time this __aligned(8)
-> >> is not needed, so it's really just a few places, and we also have a cocci
-> >> scripts to catch these during development if needed. Anyway, real thing would
-> >> be to allow the BPF stack for unaligned access as well and then BPF backend
-> >> could nicely solve this in a native way w/o any workarounds, but that is tbd.
-> >>
-> >> Thanks,
-> >> Daniel
-> >>
-> >>    [0] https://github.com/cilium/cilium/blob/master/bpf/include/bpf/builtins.h
-> >
-> > Daniel,
-> > do you mind adding such memcpy to libbpf ?
+> Hi all,
 >
-> We could do that, yeah. Is there a way from BPF C code when compiling with clang to
-> get to the actual underlying architecture (x86-64, arm64, ppc, etc) when compiling
-> with `-target bpf` so that we can always fall back to __builtin_*() for those where
-> verifier would bail out on unaligned access? Keep in mind the __bpf_memcpy() and
-> __bpf_memzero() from [0] are fully compile time resolved and I did the implementation
-> for sizes of 1,2,4,..., 96 where the latter is in two' increments, so no odd buffer
-> sizes as we don't need them in our code. If someone does hit such an odd case, then
-> I'm currently throwing a compilation error via __throw_build_bug(). Latter is a nice
-> way to be able to guarantee that a switch/case or if condition is never hit during
-> compilation time. It resolves to __builtin_trap() which is not implemented in the
-> BPF backend and therefore yells to the developer when built into the code (this has
-> a nice property which wouldn't work with BUILD_BUG_ON() for example). Anyway, what
-> I'm saying is that either we'd need the full thing with all sizes or document that
-> unsupported size would be hit when __builtin_trap() assertion is seen.
+> I'm experimenting with the bpf_override_return() helper for the
+> copyout function (using kernel 5.4) to the whitelist. (
+> https://elixir.bootlin.com/linux/v5.4/source/lib/iov_iter.c#L138 )
+> My goal is to avoid the buffer copy from kernel to user that happens
+> in copyout, so I'm calling  bpf_override_return with return value 0 in
+> a kprobe.
+>
+> It works most of the times, but when I test the function with
+> relatively many iterations of a read from file I find that sometimes
+> the copyout is actually executed with the buffer being copied.
+>
+> Below is an execution output with sample parameters and with the kinds
+> of numbers I usually find
+>
+> The numbers match with debug printks in the copyout function that I
+> find in dmesg, so I'm quite positive that the function actually gets
+> called.
+>
+> The counter in the bpf kprobe arrives to 10000 executions which is
+> what I am expecting, so the only explanation I have for now is that
+> the kprobe execution is reordered and executed while the copyout is
+> already triggered, and the instruction pointer does not get
+> effectively diverted on time in the bpf_override_return. Could this be
+> the case? Is there any potential security implication also for cases
+> outside of mine?
 
-I think it would be fine to simply document it.
-Most structures have at least one 'int' and don't have 'packed',
-so they are multiple of 4 typically. Multiple of 2 limitation should be
-acceptable for most cases.
+kprobe+bpf won't get reordered but there are few limitations in kprobes.
+First is kprobe maxactive.
+"The maximum number of instances of the probed function that
+ * can be active concurrently"
+And another is per-cpu bpf_prog_active counter that
+allows only one bpf prog attached to kprobe execute on a cpu.
+
+Do you have more than one kprobe ?
+In such cases other active kprobe+bpf may suppress the one
+attached to copyout.
+
+If you can upgrade to the latest kernel bpf_modify_return program
+type is faster and doesn't have these limitations.
+See example in selftests/bpf/progs/modify_return.c
