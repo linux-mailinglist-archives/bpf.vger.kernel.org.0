@@ -2,205 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7654B1C7CDF
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 23:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5077A1C7CE0
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 23:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729582AbgEFVzO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 17:55:14 -0400
-Received: from www62.your-server.de ([213.133.104.62]:41388 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729162AbgEFVzO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 May 2020 17:55:14 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jWS0V-0001Ra-FH; Wed, 06 May 2020 23:55:11 +0200
-Received: from [178.195.186.98] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jWS0V-000VJu-7f; Wed, 06 May 2020 23:55:11 +0200
-Subject: Re: Checksum behaviour of bpf_redirected packets
-To:     Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@cloudflare.com>
-References: <CACAyw9-uU_52esMd1JjuA80fRPHJv5vsSg8GnfW3t_qDU4aVKQ@mail.gmail.com>
- <CAADnVQKZ63d5A+Jv8bbXzo2RKNCXFH78zos0AjpbJ3ii9OHW0g@mail.gmail.com>
- <CACAyw9_ygNV1J+PkBJ-i7ysU_Y=rN3Z5adKYExNXCic0gumaow@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <39d3bee2-dcfc-8240-4c78-2110d639d386@iogearbox.net>
-Date:   Wed, 6 May 2020 23:55:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1729785AbgEFVza (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 17:55:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729162AbgEFVza (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 17:55:30 -0400
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6712EC061A0F;
+        Wed,  6 May 2020 14:55:30 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id u190so846457ooa.10;
+        Wed, 06 May 2020 14:55:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OpzmAFpw5GayXZ5m8C2iXQrxfFP2xoFq/e+4IQDtrV4=;
+        b=iLvFVWu1VBveyI3AlRiRTOQGLKPvPZi58bCg0SwK1noyhIy9rTZajw3wj3DGj7Nhh4
+         uxGqyK8oyAVx95rwrQuYVHQuoGQl/LJFi/c5n52WtDSXAc6cU+E33C5lbjOEN6UWnv/h
+         MbFn1ei8hOTkdoxoo31O4VIL9SIG0i9v+5+SnYmB74ZkcrhV7l44Pensn+R4JQ+N+sSF
+         kyHCC5/NHz1pqDZZZrokzgekI2jEDwOoSFVjqRBO1chYDJxxtqm+c6fj9f+U1xbmckVc
+         JnAx4b1hYWapX/F2BUAe8ZzWSiqLhFYKRmuYro5enhOYoBWOqFnfNSHIq8TgVd8q7BpC
+         D4nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OpzmAFpw5GayXZ5m8C2iXQrxfFP2xoFq/e+4IQDtrV4=;
+        b=IGkefnvK9uRSpD62sfRf9rXj4dwc6zefseEdvsk+3dBQ1OidXnoy7KLkXn++mROAzL
+         1l9kAa5LcmP6BvxoaOPuQpo0HnT+BjDFuN2ABWoBHAcMwuJYLz3QlBQNFcabrB+REJzN
+         IO2tTIT76uXgN1elpN65qgpwSYnuvtgWBUKC9KTDXF/vn6zxszF7L7UnwbwSiFaohjwb
+         f0EasIU8nq3pEvcoPyZ26GtYrmZNsuEMXJ0H5P+rI9lyWeJmJbvBscMVLWNpZiG8Va2C
+         SJDN8f457tq9dgkyCBtlMVyuaCBTxdE+wD4IMmZAKY4riEyyF2StPCLX2v9d9KPmxZKO
+         D2wg==
+X-Gm-Message-State: AGi0PuYmFOz2P9XYgg+gHyrKhhtdD+Ng1ZGbt7Pt7ehi/9yxgmMPhUlA
+        kn7r3LWnozEZ4TamX5fqjXbx7NmhxTpnjm2KS7M=
+X-Google-Smtp-Source: APiQypKRwbJ9C53emtKQZNaB9PMNhWbwk1sp920rT6YxEiuULMzy8KyH1Xg27JujeSld+vpx9M0M0PWOxZdAxgZi1oY=
+X-Received: by 2002:a4a:e54c:: with SMTP id s12mr8955384oot.48.1588802129808;
+ Wed, 06 May 2020 14:55:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACAyw9_ygNV1J+PkBJ-i7ysU_Y=rN3Z5adKYExNXCic0gumaow@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25804/Wed May  6 14:13:11 2020)
+References: <20200506065021.2881-1-dknightjun@gmail.com>
+In-Reply-To: <20200506065021.2881-1-dknightjun@gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Wed, 6 May 2020 14:55:19 -0700
+Message-ID: <CAM_iQpVyWmmOiz+x4fvQbeqQJ_u-bbCsY3o=aO4Yp0PmK8bYTg@mail.gmail.com>
+Subject: Re: [PATCH] netfilter: fix make target xt_TCPMSS.o error.
+To:     Huang Qijun <dknightjun@gmail.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, yhs@fb.com,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        kpsingh@chromium.org, NetFilter <netfilter-devel@vger.kernel.org>,
+        coreteam@netfilter.org,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/6/20 6:24 PM, Lorenz Bauer wrote:
-> On Wed, 6 May 2020 at 02:28, Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
->> On Mon, May 4, 2020 at 9:12 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
->>>
->>> In our TC classifier cls_redirect [1], we use the following sequence
->>> of helper calls to
->>> decapsulate a GUE (basically IP + UDP + custom header) encapsulated packet:
->>>
->>>    skb_adjust_room(skb, -encap_len,
->>> BPF_ADJ_ROOM_MAC, BPF_F_ADJ_ROOM_FIXED_GSO)
->>>    bpf_redirect(skb->ifindex, BPF_F_INGRESS)
->>>
->>> It seems like some checksums of the inner headers are not validated in
->>> this case.
->>> For example, a TCP SYN packet with invalid TCP checksum is still accepted by the
->>> network stack and elicits a SYN ACK.
->>>
->>> Is this known but undocumented behaviour or a bug? In either case, is
->>> there a work
->>> around I'm not aware of?
->>
->> I thought inner and outer csums are covered by different flags and driver
->> suppose to set the right one depending on level of in-hw checking it did.
-> 
-> I've figured out what the problem is. We receive the following packet from
-> the driver:
-> 
->      | ETH | IP | UDP | GUE | IP | TCP |
->      skb->ip_summed == CHECKSUM_UNNECESSARY
-> 
-> ip_summed is CHECKSUM_UNNECESSARY because our NICs do rx
-> checksum offloading. On this packet we run skb_adjust_room_mac(-encap),
-> and get the following:
-> 
->      | ETH | IP | TCP |
->      skb->ip_summed == CHECKSUM_UNNECESSARY
-> 
-> Note that ip_summed is still CHECKSUM_UNNECESSARY. After
-> bpf_redirect()ing into the ingress, we end up in tcp_v4_rcv. There
-> skb_checksum_init is turned into a no-op due to
-> CHECKSUM_UNNECESSARY.
-> 
-> I think this boils down to bpf_skb_generic_pop not adjusting ip_summed
-> accordingly. Unfortunately I don't understand how checksums work
-> sufficiently. Daniel, it seems like you wrote the helper, could you
-> take a look?
+On Tue, May 5, 2020 at 11:52 PM Huang Qijun <dknightjun@gmail.com> wrote:
+>
+> When compiling netfilter, there will be an error
+> "No rule to make target 'net/netfilter/xt_TCPMSS.o'",
+> because the xt_TCPMSS.c in the makefile is uppercase,
+> and the file name of the source file (xt_tcpmss.c) is lowercase.
+> Therefore, change the xt_TCPMSS.c name in the makefile to all lowercase.
 
-Right, so in the skb_adjust_room() case we're not aware of protocol
-specifics. We do handle the csum complete case via skb_postpull_rcsum(),
-but not CHECKSUM_UNNECESSARY at the moment. I presume in your case the
-skb->csum_level of the original skb prior to skb_adjust_room() call
-might have been 0 (that is, covering UDP)? So if we'd add the possibility
-to __skb_decr_checksum_unnecessary() via flag, then it would become
-skb->ip_summed = CHECKSUM_NONE? And to be generic, we'd need to do the
-same for the reverse case. Below is a quick hack (compile tested-only);
-would this resolve your case ...
+This is what you will get when you compile Linux kernel
+on a case-insensitive filesystem like MacOS.
 
- >>>    skb_adjust_room(skb, -encap_len, BPF_ADJ_ROOM_MAC, BPF_F_ADJ_ROOM_FIXED_GSO|BPF_F_ADJ_ROOM_DEC_CSUM_LEVEL)
- >>>    bpf_redirect(skb->ifindex, BPF_F_INGRESS)
-
- From 7439724fcfff7742223198c620349a4fc89d4835 Mon Sep 17 00:00:00 2001
-Message-Id: <7439724fcfff7742223198c620349a4fc89d4835.1588801971.git.daniel@iogearbox.net>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Date: Wed, 6 May 2020 23:50:31 +0200
-Subject: [PATCH bpf-next] bpf: inc/dec csum level for csum_unnecessary in skb_adjust_room
-
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
-  include/uapi/linux/bpf.h |  2 ++
-  net/core/filter.c        | 23 ++++++++++++++++++++---
-  2 files changed, 22 insertions(+), 3 deletions(-)
-
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index b3643e27e264..9877807b8f28 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -3279,6 +3279,8 @@ enum {
-  	BPF_F_ADJ_ROOM_ENCAP_L3_IPV6	= (1ULL << 2),
-  	BPF_F_ADJ_ROOM_ENCAP_L4_GRE	= (1ULL << 3),
-  	BPF_F_ADJ_ROOM_ENCAP_L4_UDP	= (1ULL << 4),
-+	BPF_F_ADJ_ROOM_INC_CSUM_LEVEL	= (1ULL << 5),
-+	BPF_F_ADJ_ROOM_DEC_CSUM_LEVEL	= (1ULL << 6),
-  };
-
-  enum {
-diff --git a/net/core/filter.c b/net/core/filter.c
-index dfaf5df13722..10551dabb7b5 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3008,7 +3008,9 @@ static u32 bpf_skb_net_base_len(const struct sk_buff *skb)
-  					 BPF_F_ADJ_ROOM_ENCAP_L4_GRE | \
-  					 BPF_F_ADJ_ROOM_ENCAP_L4_UDP | \
-  					 BPF_F_ADJ_ROOM_ENCAP_L2( \
--					  BPF_ADJ_ROOM_ENCAP_L2_MASK))
-+					  BPF_ADJ_ROOM_ENCAP_L2_MASK) | \
-+					 BPF_F_ADJ_ROOM_INC_CSUM_LEVEL | \
-+					 BPF_F_ADJ_ROOM_DEC_CSUM_LEVEL)
-
-  static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
-  			    u64 flags)
-@@ -3019,6 +3021,10 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
-  	unsigned int gso_type = SKB_GSO_DODGY;
-  	int ret;
-
-+	if (unlikely(flags & ~(BPF_F_ADJ_ROOM_MASK &
-+			       ~(BPF_F_ADJ_ROOM_DEC_CSUM_LEVEL))))
-+		return -EINVAL;
-+
-  	if (skb_is_gso(skb) && !skb_is_gso_tcp(skb)) {
-  		/* udp gso_size delineates datagrams, only allow if fixed */
-  		if (!(skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) ||
-@@ -3105,6 +3111,9 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
-  		shinfo->gso_segs = 0;
-  	}
-
-+	if (flags & BPF_F_ADJ_ROOM_INC_CSUM_LEVEL)
-+		__skb_incr_checksum_unnecessary(skb);
-+
-  	return 0;
-  }
-
-@@ -3113,7 +3122,8 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
-  {
-  	int ret;
-
--	if (flags & ~BPF_F_ADJ_ROOM_FIXED_GSO)
-+	if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO |
-+			       BPF_F_ADJ_ROOM_DEC_CSUM_LEVEL)))
-  		return -EINVAL;
-
-  	if (skb_is_gso(skb) && !skb_is_gso_tcp(skb)) {
-@@ -3143,6 +3153,9 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
-  		shinfo->gso_segs = 0;
-  	}
-
-+	if (flags & BPF_F_ADJ_ROOM_DEC_CSUM_LEVEL)
-+		__skb_decr_checksum_unnecessary(skb);
-+
-  	return 0;
-  }
-
-@@ -3163,7 +3176,11 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
-  	u32 off;
-  	int ret;
-
--	if (unlikely(flags & ~BPF_F_ADJ_ROOM_MASK))
-+	if (unlikely((flags & ~BPF_F_ADJ_ROOM_MASK) ||
-+		     ((flags & (BPF_F_ADJ_ROOM_INC_CSUM_LEVEL |
-+				BPF_F_ADJ_ROOM_DEC_CSUM_LEVEL)) ==
-+		      (BPF_F_ADJ_ROOM_INC_CSUM_LEVEL |
-+		       BPF_F_ADJ_ROOM_DEC_CSUM_LEVEL))))
-  		return -EINVAL;
-  	if (unlikely(len_diff_abs > 0xfffU))
-  		return -EFAULT;
--- 
-2.21.0
-
-
+Please use a case-sensitive one.
