@@ -2,372 +2,258 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC001C7952
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 20:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 522A21C79D1
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 21:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729313AbgEFSZD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 14:25:03 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:30946 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727872AbgEFSZC (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 14:25:02 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 046IG6Hf001070;
-        Wed, 6 May 2020 11:24:49 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=ogtnHT1r5HF9iSLr0eBD55cvJrmAFLXYaTVczo+f22Y=;
- b=LzZb41uqXCY76a64vQFqLOXuEn9gFP2LR4Ek6VBq/t0k7s+3amSSPnK4fAJClHZBtxwZ
- IqxkzEnquNb4u7bh8HzIIXFHE9vIaru5q31ZDxPy4/klzwINRyBPcP58XhJjdRdinbof
- Cuj/qEvP4GLNbXqrrVmPF4OAFbsoc4DD1Go= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 30uxuxh9xt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 06 May 2020 11:24:49 -0700
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Wed, 6 May 2020 11:24:48 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PLFzTmtwWIHkedHLWp1D4aqEcGdJB4IWYcqmz7USSMlqud8XCxBNhnGYEcSK0njHvAHXNDkU8gLLPGhBDO5z3VcBqByvWM6kLm9kO9wRAlDJoe37xdd+UJTEajtRNjWibNXjS1KPygUUCdvHE0221nkk4rg8TX6t+Fa52QApJhybttcXbJib+hgFXRJG+5zY0wSL7X0TGQfaCsfn+UXJYEbNH43MKgHDxvWzOHpHZ5TX/GobCFAB67x4KuYlQgfy7JvceFADc/BBJQcFML4YylddLZaegMqhj8dRfRzwFsTYLT3fvhivXaClL0pNwx7Lh9NtDY+0M4uoQCxiP8b6Lg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ogtnHT1r5HF9iSLr0eBD55cvJrmAFLXYaTVczo+f22Y=;
- b=OY9E2mB51RCr/VlXmVAxKS0iM7tKnQku9v4jPAZCFUwPOohjvr1FE18QwWOMSLW3uc7EiglGmJKe+MTxBltMHvM7F+rtx+yy47UFUk/c64L9WSYXtzmVdE9hHeiQ1h4W/V2bUKC6VPb7rcEMSn507Q82AbubtthAFlmM79iks+eZLkeZLytowZdfvu/UkYoPMBAot0/STAtvPPDfGldHBT+ScU5yF03AxK2gcEMJqBLhnNMGSJQixOgrwGo+iZzxMLSIV70BExZYCPB3KySH7VjrWkMenuuzRFmWNH5QzgqjWG+TtFgTplCeYAw4iMcy08FlJQM4NSIsB+u6EMPcAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ogtnHT1r5HF9iSLr0eBD55cvJrmAFLXYaTVczo+f22Y=;
- b=HtqCak0UR2KC9d0eSd1OM3q2OQcOWzQN8n6D3ok0UURlwUuh6qX1sFdvJ/uNxpINq6XAcdG1As6AnG6O+VW6Wl/JjFRtPZFZ9E3GXnOgwOYuWu08c5Db6v/h81zFrcUsuL6eh2vx3FzuTrKiulUYYAdLOC3WOESenO8AN/Ao5Os=
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2789.namprd15.prod.outlook.com (2603:10b6:a03:15d::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.29; Wed, 6 May
- 2020 18:24:47 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8988:aa27:5d70:6923]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8988:aa27:5d70:6923%5]) with mapi id 15.20.2958.030; Wed, 6 May 2020
- 18:24:47 +0000
-Subject: Re: [PATCH bpf-next v2 11/20] bpf: add task and task/file iterator
- targets
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-References: <20200504062547.2047304-1-yhs@fb.com>
- <20200504062559.2048228-1-yhs@fb.com>
- <CAEf4BzbySjaBQSMTET=HGD_K748GOXZZQ7zMhgtEqE-JgJGbdQ@mail.gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <8758f1c9-f4ea-af99-9af8-afe9fb210928@fb.com>
-Date:   Wed, 6 May 2020 11:24:45 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
-In-Reply-To: <CAEf4BzbySjaBQSMTET=HGD_K748GOXZZQ7zMhgtEqE-JgJGbdQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY5PR17CA0019.namprd17.prod.outlook.com
- (2603:10b6:a03:1b8::32) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        id S1726906AbgEFTBy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 15:01:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726356AbgEFTBy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 May 2020 15:01:54 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A75C061A10
+        for <bpf@vger.kernel.org>; Wed,  6 May 2020 12:01:53 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id y4so3568395ljn.7
+        for <bpf@vger.kernel.org>; Wed, 06 May 2020 12:01:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1YW5neYx+I7djIl9P+IGxfzCb/g7o5/jSWaOCUs8+Og=;
+        b=GCmZceTe0bAxpUQhR6yPzoxL+CFuUYpbyX43pLbYRvXDmV1oNfPybKIyh9x2MgPLEa
+         qpKspNJpMJPZ3YcRNr6quQhzNhYzGUbB3tJTkbf0hxTa9KzLjc8tj8vd7LdCWbyOwQlm
+         2bdLxh+719yGT6LrvBVPW8JkltxIPBuRV4avc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1YW5neYx+I7djIl9P+IGxfzCb/g7o5/jSWaOCUs8+Og=;
+        b=kGIDCoyjK6eFYLXzsMQxYgv5bfmbKj9pdfHBHgY6zI/vJAa/D7YEWb8ZHmKMmp5hk+
+         Uswx683OZgMn/5D0nlyv1+Ibx++Z2m+b2nH8jHODf5YkMuxwzVdmENj6qe0KZGmlepTh
+         gaO2+OFqb3xk9gZVZHdwka5SJL5sqe/Pq/hBRsEmSC9uYvpmiVTDrjKF5NrStqu8TUnP
+         vkSmEur8QIWVfFXjmtdHfTljW2Ync14GPVdNwpQ7eG+Jhm+5aw8tGT46sBex+pcAmxBi
+         hz0L0MRr8Aa9S9igX5jA6PknKX6+EDtC2LWiSQR+uDYmlQsvVxON+mwm3c9zCn7DiLHp
+         XFhg==
+X-Gm-Message-State: AGi0PuYFr5zj83it+lW2VInyOAXreMOz0Dl16hfYQ1puKovhzpOYrS3K
+        +SOtCWYxePRLZOBOIyp4MDbnetsGMmY=
+X-Google-Smtp-Source: APiQypJJusLez99UsH9TQBy93EkVZSlrbIsuxTmnQ8I3WCclTSqTXolTG40vk/vGHSQBOOaXYNb0QQ==
+X-Received: by 2002:a2e:a58e:: with SMTP id m14mr5915910ljp.95.1588791711495;
+        Wed, 06 May 2020 12:01:51 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id l2sm1833232ljg.89.2020.05.06.12.01.49
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 May 2020 12:01:49 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id z22so2304129lfd.0
+        for <bpf@vger.kernel.org>; Wed, 06 May 2020 12:01:49 -0700 (PDT)
+X-Received: by 2002:a19:6e4e:: with SMTP id q14mr6033958lfk.192.1588791708783;
+ Wed, 06 May 2020 12:01:48 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from MacBook-Pro-52.local (2620:10d:c090:400::5:f689) by BY5PR17CA0019.namprd17.prod.outlook.com (2603:10b6:a03:1b8::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.27 via Frontend Transport; Wed, 6 May 2020 18:24:46 +0000
-X-Originating-IP: [2620:10d:c090:400::5:f689]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: efb60b91-e995-41c0-29ec-08d7f1eac1f6
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2789:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB278940343466FF27CD3BA4E1D3A40@BYAPR15MB2789.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-Forefront-PRVS: 03950F25EC
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aWIzv4v2HwShPin3hz4SBOW/ZOs04AcN4+sr9D85Txz5AaHA/3pNxwSDIaAczuF2iLrVp56Ot+kLLFaibB1rW3miXkED9gWFUhMjH15xzi/ozZOA44GHThA7OFgjKjpjvcH0LMXGN1bRUu+OR1H2RmFRiFrF/7dET8FYeS1UZ000BOsHRtwHbUTygscnkAe+p/AuwdWDICSgzPdcEfBlpLaBKN2UfXLNj7cZtVcOkviJshC8IuWOH+DIu96pVp0T3PV9JcFPEFEnV/EdjwsOkjUUjxaYqLe1BU4njAQWZHB4+knMq6K1xLycBfuZmTsyt2XPUGR/CIbTGjvUdy7F6GNjBUYCcR01WfIH3HWhLC/2JYtXh9JMFXzhG7eFzDpVketW8YWgQn0PYeDEbOFLnql7tUjXb7M6LhjmYMJNYozQdAEDAgvyajg9mklDQnwJG0AtGjcI8JVKS2Z/S6p1Tkd18SzpKmEr9v/7B657i/LM2ae/O7Tuztt10cQzkejTS2ox1fEcVlhVoH+4A6uxSRqxtaFK4H8dmLHz1XH5Dy2TXdTEMp0x9x5I+sBIawuL
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(346002)(376002)(136003)(396003)(39860400002)(33430700001)(316002)(86362001)(8676002)(6916009)(36756003)(6512007)(31696002)(6486002)(33440700001)(52116002)(54906003)(186003)(66946007)(66556008)(31686004)(66476007)(16526019)(478600001)(2906002)(8936002)(53546011)(6506007)(5660300002)(4326008)(2616005)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: D+avqlO9xt30uIjiCtDsR1ZWHJLvLOEw1uf8tQlGJBqZZTrfd4A3LdwNUQMNvUKrzRFUYzW4dr3DDDvlxybxCGNiLRlxRzij1HFcpCXwpDjj+XUrgxSqBAChOglQ8IRuKK/GnG03KP1ISOa3kTVgKkzz+s1znEuktPdAtIoV9ZnYBZMnQ/OPoduh0qamwtlvQtFVmPksGthEqcd8JAbnknsxY37yRjXWRaq8HyJkwsYqvwN+7OXgty+KFxQ/b0TO69y0J5fezXhURJDCPOBfVkkejKIQ51n470Zn5K1Vnq7F01NsCjp350QTZeDWgq9+r5C3CH8jELDvMwYbVZOYLZBRi0J2dXYAMNbdM6JqtORaQUYi+Aan6Jlp1G4y9YoOP2bQ5vlCoVceDRTJnlivcoxbN+Sq/Lps32cOQmdeMwPBJR0JXrFXd/XxZV5VTGt0GK40DFbKROatmR6FscNDyiAXwPoKxfW117E3LGUNyvRCEkhFkZLFnoAdLMWjWQngQEqRAtRxRCKphl8vNLdynXG8StCOt4mlmGF8jDV2eum8YGyrA/CsxnxvuDK0rk4iKJiOp9rZl9h99WR6eYwr/eK3EEdRPRy2gjJHZ+EXZmCUEbz9Op8EsIJ5SbdxLTcwpSfy9B/Sl/TGy/cFCrDDQaMxKN9zwbl3TEdPRmmI20BZFjbJN0sNmMIhytHjsMXGdQLdyX74BB7qFNF7iOwxw7PXkvRcWPn0R3C+vlE+byZlwejOU0HVHZazn84XRoMf1Bptk1G64GVIIhsJRSV5QAO3cxaGDAEbJjcbg/cdCOS+Kivbwmi+dqIkLzY0TW+8RbJG2nKC3el6lMvrJwIAfw==
-X-MS-Exchange-CrossTenant-Network-Message-Id: efb60b91-e995-41c0-29ec-08d7f1eac1f6
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2020 18:24:47.7309
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nfnqZlXVmhncw0VnlfU87s6aIIrk41swBOUUA+EHcdwhNcWdTnGYjqXpFLmVdw61
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2789
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-06_09:2020-05-05,2020-05-06 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- adultscore=0 malwarescore=0 bulkscore=0 spamscore=0 clxscore=1015
- impostorscore=0 priorityscore=1501 mlxlogscore=999 mlxscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005060149
-X-FB-Internal: deliver
+References: <20200506062223.30032-1-hch@lst.de> <20200506062223.30032-16-hch@lst.de>
+ <CAHk-=wi6E5z_aKr9NX+QcEJqJvSyrDbO3ypPugxstcPV5EPSMQ@mail.gmail.com> <20200506181543.GA7873@lst.de>
+In-Reply-To: <20200506181543.GA7873@lst.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 6 May 2020 12:01:32 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wghKpGdTmD4EDfwX2uyppwxksU+nFyS1B--kbopcQAgwg@mail.gmail.com>
+Message-ID: <CAHk-=wghKpGdTmD4EDfwX2uyppwxksU+nFyS1B--kbopcQAgwg@mail.gmail.com>
+Subject: Re: [PATCH 15/15] x86: use non-set_fs based maccess routines
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-parisc@vger.kernel.org,
+        linux-um <linux-um@lists.infradead.org>,
+        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="0000000000006d706205a4ff6575"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+--0000000000006d706205a4ff6575
+Content-Type: text/plain; charset="UTF-8"
 
+On Wed, May 6, 2020 at 11:15 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> That was the first prototype, and or x86 it works great, just the
+> __user cases in maccess.c are a little ugly.  And they point to
+> the real problem - for architectures like sparc and s390 that use
+> an entirely separate address space for the kernel vs userspace
+> I dont think just use unsafe_{get,put}_user will work, as they need
+> different instructions.
 
-On 5/6/20 12:30 AM, Andrii Nakryiko wrote:
-> On Sun, May 3, 2020 at 11:28 PM Yonghong Song <yhs@fb.com> wrote:
->>
->> Only the tasks belonging to "current" pid namespace
->> are enumerated.
->>
->> For task/file target, the bpf program will have access to
->>    struct task_struct *task
->>    u32 fd
->>    struct file *file
->> where fd/file is an open file for the task.
->>
->> Signed-off-by: Yonghong Song <yhs@fb.com>
->> ---
-> 
-> I might be missing some subtleties with task refcounting for task_file
-> iterator, asked few questions below...
-> 
->>   kernel/bpf/Makefile    |   2 +-
->>   kernel/bpf/task_iter.c | 336 +++++++++++++++++++++++++++++++++++++++++
->>   2 files changed, 337 insertions(+), 1 deletion(-)
->>   create mode 100644 kernel/bpf/task_iter.c
->>
->> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
->> index b2b5eefc5254..37b2d8620153 100644
->> --- a/kernel/bpf/Makefile
->> +++ b/kernel/bpf/Makefile
->> @@ -2,7 +2,7 @@
->>   obj-y := core.o
->>   CFLAGS_core.o += $(call cc-disable-warning, override-init)
->>
->> -obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o
->> +obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o task_iter.o
->>   obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o
->>   obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o
->>   obj-$(CONFIG_BPF_SYSCALL) += disasm.o
->> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
->> new file mode 100644
->> index 000000000000..1ca258f6e9f4
->> --- /dev/null
->> +++ b/kernel/bpf/task_iter.c
->> @@ -0,0 +1,336 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/* Copyright (c) 2020 Facebook */
->> +
->> +#include <linux/init.h>
->> +#include <linux/namei.h>
->> +#include <linux/pid_namespace.h>
->> +#include <linux/fs.h>
->> +#include <linux/fdtable.h>
->> +#include <linux/filter.h>
->> +
->> +struct bpf_iter_seq_task_common {
->> +       struct pid_namespace *ns;
->> +};
->> +
->> +struct bpf_iter_seq_task_info {
->> +       struct bpf_iter_seq_task_common common;
-> 
-> you have comment below in init_seq_pidns() that common is supposed to
-> be the very first field, but I think it's more important and
-> appropriate here, so that whoever adds anything here knows that order
-> of field is important.
+Oh, absolutely. I did *NOT* mean that you'd use "unsafe_get_user()" as
+the actual interface. I just meant that as an implementation detail on
+x86, using "unsafe_get_user()" instead of "__get_user_size()"
+internally both simplifies the implementation, and means that it
+doesn't clash horribly with my local changes.
 
-I can move the comments here.
+Btw, that brings up another issue: so that people can't mis-use those
+kernel accessors and use them for user addresses, they probably should
+actually do something like
 
-> 
->> +       struct task_struct *task;
->> +       u32 id;
->> +};
->> +
-> 
-> [...]
-> 
->> +static int __task_seq_show(struct seq_file *seq, void *v, bool in_stop)
->> +{
->> +       struct bpf_iter_meta meta;
->> +       struct bpf_iter__task ctx;
->> +       struct bpf_prog *prog;
->> +       int ret = 0;
->> +
->> +       meta.seq = seq;
->> +       prog = bpf_iter_get_info(&meta, in_stop);
->> +       if (prog) {
-> 
-> 
-> nit: `if (!prog) return 0;` here would reduce nesting level below
-> 
->> +               meta.seq = seq;
->> +               ctx.meta = &meta;
->> +               ctx.task = v;
->> +               ret = bpf_iter_run_prog(prog, &ctx);
->> +       }
->> +
->> +       return 0;
-> 
-> return **ret**; ?
+        if ((long)addr >= 0)
+                goto error_label;
 
-It should return "ret". In task_file show() code is similar but correct.
-I can do early return with !prog too although we do not have
-deep nesting level yet.
+on x86. IOW, have the "strict" kernel pointer behavior.
 
-> 
->> +}
->> +
-> 
-> [...]
-> 
->> +
->> +static struct file *task_file_seq_get_next(struct pid_namespace *ns, u32 *id,
->> +                                          int *fd, struct task_struct **task,
->> +                                          struct files_struct **fstruct)
->> +{
->> +       struct files_struct *files;
->> +       struct task_struct *tk;
->> +       u32 sid = *id;
->> +       int sfd;
->> +
->> +       /* If this function returns a non-NULL file object,
->> +        * it held a reference to the files_struct and file.
->> +        * Otherwise, it does not hold any reference.
->> +        */
->> +again:
->> +       if (*fstruct) {
->> +               files = *fstruct;
->> +               sfd = *fd;
->> +       } else {
->> +               tk = task_seq_get_next(ns, &sid);
->> +               if (!tk)
->> +                       return NULL;
->> +
->> +               files = get_files_struct(tk);
->> +               put_task_struct(tk);
-> 
-> task is put here, but is still used below.. is there some additional
-> hidden refcounting involved?
+Otherwise somebody will start using them for user pointers, and it
+will happen to work on old x86 without CLAC/STAC support.
 
-Good question. I had an impression that we take a reference count
-for task->files so task should not go away. But reading linux
-code again, I do not have sufficient evidence to back my claim.
-So I will reference count task as well, e.g., do not put_task_struct()
-until all files are done here.
+Of course, maybe CLAC/STAC is so common these days (at least with
+developers) that we don't have to worry about it.
 
-> 
->> +               if (!files) {
->> +                       sid = ++(*id);
->> +                       *fd = 0;
->> +                       goto again;
->> +               }
->> +               *fstruct = files;
->> +               *task = tk;
->> +               if (sid == *id) {
->> +                       sfd = *fd;
->> +               } else {
->> +                       *id = sid;
->> +                       sfd = 0;
->> +               }
->> +       }
->> +
->> +       rcu_read_lock();
->> +       for (; sfd < files_fdtable(files)->max_fds; sfd++) {
-> 
-> files_fdtable does rcu_dereference on each iteration, would it be
-> better to just cache files_fdtable(files)->max_fds into local
-> variable? It's unlikely that there will be many iterations, but
-> still...
+> Btw, where is you magic private tree and what is the plan for it?
 
-I borrowed code from fs/proc/fd.c. But I can certainly to avoid
-repeated reading max_fds as suggested.
+I don't want to make it a public branch, but here's a private bundle.
 
-> 
->> +               struct file *f;
->> +
->> +               f = fcheck_files(files, sfd);
->> +               if (!f)
->> +                       continue;
->> +               *fd = sfd;
->> +               get_file(f);
->> +               rcu_read_unlock();
->> +               return f;
->> +       }
->> +
->> +       /* the current task is done, go to the next task */
->> +       rcu_read_unlock();
->> +       put_files_struct(files);
->> +       *fstruct = NULL;
-> 
-> *task = NULL; for completeness?
+It's based on top of my current -git tree - I just maintain a separate
+tree that I keep up-to-date locally for testing. My "normal" tree I do
+build tests on (allmodconfig etc), this separate tree I keep around to
+actually do boot tests on, and I end up using "current Linus' tree
+plus this" as the code I actually run om my main desktop.
 
-if *fstruct == NULL, will try to get next task, so *task = NULL
-is unnecessary, but I can add it, won't hurt and possibly make
-it easy to understand.
+But this *ONLY* works with clang, and only with current HEAD of the
+clang development tree. So it's almosty entirely useless to anybody
+else right now. You literally have to clone the llvm tree, build your
+own clang, and install it to even _build_ this.
 
-> 
->> +       sid = ++(*id);
->> +       *fd = 0;
->> +       goto again;
->> +}
->> +
->> +static void *task_file_seq_start(struct seq_file *seq, loff_t *pos)
->> +{
->> +       struct bpf_iter_seq_task_file_info *info = seq->private;
->> +       struct files_struct *files = NULL;
->> +       struct task_struct *task = NULL;
->> +       struct file *file;
->> +       u32 id = info->id;
->> +       int fd = info->fd;
->> +
->> +       file = task_file_seq_get_next(info->common.ns, &id, &fd, &task, &files);
->> +       if (!file) {
->> +               info->files = NULL;
-> 
-> what about info->task here?
+I'm not planning on going any further than my local testing until the
+whole thing calms down. The llvm tree still has some known bugs in the
+asm goto with output area, and I want there to be an actual release of
+it before I actually merge anything like this (and I need to do the
+small extra work to then have that conditional "does the compiler
+support asm goto with outputs" so that it works with gcc too).
 
-info->files == NULL indicates the end of iteration, info->task will not 
-be checked any more. But I guess, I can assign NULL to task as well to
-avoid confusion.
+But here you see what it is, if you want to. __get_user_size()
+technically still exists, but it has the "target branch" semantics in
+here, so your patch clashes badly with it. (Well, those are the
+semantics you want, so "badly" may not be the right word, but
+basically it means that if you _had_ used unsafe_get_user(), there
+wouldn't have been those kinds of semantic conflicts).
 
-> 
->> +               return NULL;
->> +       }
->> +
->> +       ++*pos;
->> +       info->id = id;
->> +       info->fd = fd;
->> +       info->task = task;
->> +       info->files = files;
->> +
->> +       return file;
->> +}
->> +
-> 
-> [...]
-> 
->> +
->> +struct bpf_iter__task_file {
->> +       __bpf_md_ptr(struct bpf_iter_meta *, meta);
->> +       __bpf_md_ptr(struct task_struct *, task);
->> +       u32 fd;
-> 
-> nit: sort of works by accident (due to all other field being 8-byte
-> aligned pointers), shall we add __attribute__((aligned(8)))?
+                Linus
 
-This is what I thought as well. It should work. But I think
-add aligned(8) wont' hurt to expresss the intention.. Will add it.
+--0000000000006d706205a4ff6575
+Content-Type: application/octet-stream; name="asm-goto-outputs.bundle"
+Content-Disposition: attachment; filename="asm-goto-outputs.bundle"
+Content-Transfer-Encoding: base64
+Content-ID: <f_k9vpfa000>
+X-Attachment-Id: f_k9vpfa000
 
-> 
->> +       __bpf_md_ptr(struct file *, file);
->> +};
->> +
-> 
-> [...]
-> 
+IyB2MiBnaXQgYnVuZGxlCi0zYzQwY2RiMGU5M2VjMTY2ZjFmYTRmZWUxZWI2MmQ0NWI1NDUxNTE1
+IE1lcmdlIGJyYW5jaCAnbGludXMnIG9mIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGlu
+dXgva2VybmVsL2dpdC9oZXJiZXJ0L2NyeXB0by0yLjYKY2QyZDZmYjI3NmY1YjMyMWE1ZDJhYjZi
+NGVlOWZiMGQ0ZGMwZDE0MCBIRUFECgpQQUNLAAAAAgAAACCeEXicnc5BasMwEIXhvU4xZJ8yciRr
+DKH0AF22BxhbI8dgS0EatT1+vegJunvww8fTKgJo3RwE2VEchkROIqZpEnTJSZg8s4ujBHHmyVWy
+wnKzc7QogTjyHMLIN4zeL078yDKK9VPCwc+Guz5Khfct9wYfpX7xHhvc9W+97Wf4uabSc2TdSn4p
+dX0F68mSdcESXJEQzVKOY1OV/0gUKCC5UwqnZD6bwIXbAWvRcoHvTR9Quj67Nkjn1WXnvIJK0y2v
+5heJmVxtkhF4nJ2QQU4EIRBF95yiLjAGummgEjPxAC71ACVVNUPSA4amjd5eFp7A3cv7yVv80UWA
+kbNVq26jyEsW8ux5SgrOY8asfgtOrZhP6lIHhIXVRtTMuApacRl1QY9+zUtYJpLillZr6Bz31uG1
+1POAt9a/aOcDnscfvexz+L5oOyvTKK0+tX67gtuSwxBjQrjYZK3J7fEoY8h/SimmaJOfpThL5v0Q
+yDvVG3z8AIvSuQ8oFca9HDDmGeYXoQRYGJwjeJyVkNtu2zAMQN/1FfyBdHaT6BIMQ4sM64ZtTYG4
+zwYtUbZQxzQkOdn+fko7YMDe+sbbOSCZIxFIY5St1rLupCNj0bvaKFPfmrVx0jrpNG60RyVmjDRl
+6JBQKW2NQltv117aW1S6Mg5RKtPZLUkt3cYJXPLAER6DfYHPlHAZp0AxwcfJ/cvueuZ+pBvLp09Q
+b3Wtai1NDatKV5Uo1VPImSL8CNOSoOF4xtEVR/4b3Y2l8WvleZkc5sDTDcf+1aSVVpXeFJMqJvHd
+8uRDvwN0Dt5i4PlKgC9bYjpBz5nh8gF4yfOSkxDNEBLgOPIlwb5AjqBMnPCFYEkE7EvtNIfxetUl
+5AHSMs8c86vxzSLOGAN2I11FPPWQBwJfnHmIvPQDzFi4c0CYI82RLaVUYEc+TLQTAmB/ePzy7aHd
+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
+--0000000000006d706205a4ff6575--
