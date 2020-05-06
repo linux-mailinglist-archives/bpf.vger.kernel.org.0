@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB4E1C67D5
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 08:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D5C1C683E
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 08:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725796AbgEFGEf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 02:04:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55912 "EHLO
+        id S1727790AbgEFGPK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 02:15:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725771AbgEFGEf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 02:04:35 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0039BC061A0F;
-        Tue,  5 May 2020 23:04:34 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id q13so477649qtp.7;
-        Tue, 05 May 2020 23:04:34 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726495AbgEFGPJ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 02:15:09 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB101C061A0F;
+        Tue,  5 May 2020 23:15:07 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id n14so830109qke.8;
+        Tue, 05 May 2020 23:15:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ChezaoH4CBgiAK6q2eFr5RaJbWQCYEoCXpcIjPeuga0=;
-        b=O97Q0TAsHxn5Ou3PCxlC743R3Jvz7GgyzXYBwVwmHT2kLgIp3uxIpWXhdtASaBsYKB
-         HHwsJtecyinvArseEPboRMKw9xZgsytjp3YT89PScSkgvJGfnGxJbSzNRcSmQeLnkJEy
-         DW4UZKsv+ArLvcRNlk1z5tETASuhD6/rlblRxv/MUcDCxr+cOKKSnMhqk1puXr2On+bi
-         NEsxqOy3QhF1eAGnh+FNsSnlaNWnidFGDiW/Hi4SFFN6vUcEeQhOwok/RdNZLmjq5vlD
-         Gt+FhDXM0Lsx4ElC2sHvvcYhbhfqjAsiFyp1SoMYn8ezrRxCzJX1WCBsKv6WHXBgrQ1M
-         WXDw==
+        bh=IbAkNjcaFmar4aPjN7+DvzPMwhKo6sHjCis4p0bqYOY=;
+        b=T/HlFfPUdAjwdFgOBelJYC1zALFgT0/GuvvG8mePq5sVOdbsuSlNhFCX7HHZLecf9Y
+         ujxRoySYk5Hyq5Ve38uUJmEM05fAeiLrvibsnasD0jydl/oGK69FopkMhqwtaNPL8Jdm
+         RITkSYjrpNfJazsS/m56knCnm3lLp2TtfIJ1wxd591ANX9uoGYfVbPyl7azzZUqCXZD5
+         j6na4d9uUNDlPPVnLiyVmUwxSjnuj+aXK1yV0H5zgAriZ616DLw8TP8oo7gAub+gj7p7
+         saQSb64rll3gIH3fTAo9oZCNgZAJwfF8dwYepnkBvn7KKcTaqS5b87LJKQfu1ly9WuZg
+         080Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ChezaoH4CBgiAK6q2eFr5RaJbWQCYEoCXpcIjPeuga0=;
-        b=trQH6Sk4Z3T83wx01gm8EIg5TmVVf87heyi58xGe/YzqEhwKJSVgOKzD+UFnipS5He
-         VoWfZFl6AJtkyC7HFegc/7EdplJKKrKjU8s6Wr2dP2VCCzmszgfzf1Ntir0LHdgXduHI
-         XGFcoibC/4xw6Ykvq1I1j78QRZvJXUNvrzViDcF6Vep/7tNLtygLjlCToVkkzns4Fhpf
-         5rI2kU1wvlOfQ3mQyU0rvPzYp6kFGIge1jivKDY7qjeTMCarofgMj8wSwo+7M8ia6spC
-         s860kM0FYjhzohJJGnq48CEhUWX6MPghMVOKuDEmb3kVngPQS8dh61LGZGiQIDWroH44
-         Orfw==
-X-Gm-Message-State: AGi0PuaLR62Fa+U0tiGX6Te+zJXopjH+khNYneAa1vj6DIxh8WTwh5Ri
-        u+Ps0dbEgJ8pJjKzgaj1o6r5hoGIoM3tV/FcL5w=
-X-Google-Smtp-Source: APiQypK0c0RlP045t4Z+aO4PZO6BAF78PBVGPNf5+s6eqALIrVyd3c6h2O0wN5FKfAzRTf8iV3VYQS+7oE4lowiTTvg=
-X-Received: by 2002:ac8:468d:: with SMTP id g13mr6316293qto.59.1588745074062;
- Tue, 05 May 2020 23:04:34 -0700 (PDT)
+        bh=IbAkNjcaFmar4aPjN7+DvzPMwhKo6sHjCis4p0bqYOY=;
+        b=ieesnKv6C0+F7VvHA5VGA2blBt/c6ARb+J8T9Qk9ZQaQHAQKtF9DtZ98dSvsh8DiQW
+         4IhsyTLIBPacs0uRt2W21y2R75Gz1847rvaIL7ENux/Astb2uVCExPbjLN6dIlqozUh9
+         JMceQCrJ+q8NRPYCgfWbJX9OHLxBVdeasJGvocbWWgtyqxvFOv6IiitZCLW79OuAsHg/
+         nO5angRMyc6vz50t8zA+qcRtoZc5gYt1glzfRNo0qQ4Bn2arKmGiYtaDYxrLb1VqIm3p
+         LVy0ZVNIgGSK5Dr2iG6ZYCpd+MbhNfSq+6it8BWlxq9sg1EkrsgSmEG4Q8Mom9KfiF7j
+         wuGw==
+X-Gm-Message-State: AGi0Pub2QkQi4+Vq9vXcOHJoSuyITElr3bfMChfv92Ubt4CwTMMmCkMT
+        VhEYVHUHl9lJsRpH9boS0v7/fLYb2/lIoYlS+dujDg==
+X-Google-Smtp-Source: APiQypIeXDRf934Bxr5hKdZWWGztldMWyL8G2QSZ7bpigJ1mXcBoSOG1f2yLCP106B7E8HRoAqgYPvVDn9WNWQq0Thg=
+X-Received: by 2002:a05:620a:14a1:: with SMTP id x1mr7094835qkj.92.1588745707169;
+ Tue, 05 May 2020 23:15:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200504062547.2047304-1-yhs@fb.com> <20200504062608.2049044-1-yhs@fb.com>
-In-Reply-To: <20200504062608.2049044-1-yhs@fb.com>
+References: <20200504062547.2047304-1-yhs@fb.com> <20200504062609.2049143-1-yhs@fb.com>
+In-Reply-To: <20200504062609.2049143-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 5 May 2020 23:04:22 -0700
-Message-ID: <CAEf4BzaGsk2hgLHvU=9b2gv7V0y788MNw0hwkSQxE4kg4zSe=w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 18/20] tools/bpf: selftests: add iterator
- programs for ipv6_route and netlink
+Date:   Tue, 5 May 2020 23:14:56 -0700
+Message-ID: <CAEf4BzazZ4esM0z5ZTM9PGfODfTtQB1AskPc1g139t5emUWb1Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 19/20] tools/bpf: selftests: add iter progs
+ for bpf_map/task/task_file
 To:     Yonghong Song <yhs@fb.com>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -64,63 +64,89 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, May 3, 2020 at 11:30 PM Yonghong Song <yhs@fb.com> wrote:
+On Sun, May 3, 2020 at 11:27 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> Two bpf programs are added in this patch for netlink and ipv6_route
-> target. On my VM, I am able to achieve identical
-> results compared to /proc/net/netlink and /proc/net/ipv6_route.
+> The implementation is arbitrary, just to show how the bpf programs
+> can be written for bpf_map/task/task_file. They can be costomized
+> for specific needs.
 >
->   $ cat /proc/net/netlink
->   sk               Eth Pid        Groups   Rmem     Wmem     Dump  Locks    Drops    Inode
->   000000002c42d58b 0   0          00000000 0        0        0     2        0        7
->   00000000a4e8b5e1 0   1          00000551 0        0        0     2        0        18719
->   00000000e1b1c195 4   0          00000000 0        0        0     2        0        16422
->   000000007e6b29f9 6   0          00000000 0        0        0     2        0        16424
->   ....
->   00000000159a170d 15  1862       00000002 0        0        0     2        0        1886
->   000000009aca4bc9 15  3918224839 00000002 0        0        0     2        0        19076
->   00000000d0ab31d2 15  1          00000002 0        0        0     2        0        18683
->   000000008398fb08 16  0          00000000 0        0        0     2        0        27
->   $ cat /sys/fs/bpf/my_netlink
->   sk               Eth Pid        Groups   Rmem     Wmem     Dump  Locks    Drops    Inode
->   000000002c42d58b 0   0          00000000 0        0        0     2        0        7
->   00000000a4e8b5e1 0   1          00000551 0        0        0     2        0        18719
->   00000000e1b1c195 4   0          00000000 0        0        0     2        0        16422
->   000000007e6b29f9 6   0          00000000 0        0        0     2        0        16424
->   ....
->   00000000159a170d 15  1862       00000002 0        0        0     2        0        1886
->   000000009aca4bc9 15  3918224839 00000002 0        0        0     2        0        19076
->   00000000d0ab31d2 15  1          00000002 0        0        0     2        0        18683
->   000000008398fb08 16  0          00000000 0        0        0     2        0        27
+> For example, for bpf_map, the iterator prints out:
+>   $ cat /sys/fs/bpf/my_bpf_map
+>       id   refcnt  usercnt  locked_vm
+>        3        2        0         20
+>        6        2        0         20
+>        9        2        0         20
+>       12        2        0         20
+>       13        2        0         20
+>       16        2        0         20
+>       19        2        0         20
+>       === END ===
 >
->   $ cat /proc/net/ipv6_route
->   fe800000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000001 00000000 00000001     eth0
->   00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
->   00000000000000000000000000000001 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000003 00000000 80200001       lo
->   fe80000000000000c04b03fffe7827ce 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
->   ff000000000000000000000000000000 08 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000003 00000000 00000001     eth0
->   00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
->   $ cat /sys/fs/bpf/my_ipv6_route
->   fe800000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000001 00000000 00000001     eth0
->   00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
->   00000000000000000000000000000001 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000003 00000000 80200001       lo
->   fe80000000000000c04b03fffe7827ce 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
->   ff000000000000000000000000000000 08 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000003 00000000 00000001     eth0
->   00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+> For task, the iterator prints out:
+>   $ cat /sys/fs/bpf/my_task
+>     tgid      gid
+>        1        1
+>        2        2
+>     ....
+>     1944     1944
+>     1948     1948
+>     1949     1949
+>     1953     1953
+>     === END ===
+>
+> For task/file, the iterator prints out:
+>   $ cat /sys/fs/bpf/my_task_file
+>     tgid      gid       fd      file
+>        1        1        0 ffffffff95c97600
+>        1        1        1 ffffffff95c97600
+>        1        1        2 ffffffff95c97600
+>     ....
+>     1895     1895      255 ffffffff95c8fe00
+>     1932     1932        0 ffffffff95c8fe00
+>     1932     1932        1 ffffffff95c8fe00
+>     1932     1932        2 ffffffff95c8fe00
+>     1932     1932        3 ffffffff95c185c0
+>
+> This is able to print out all open files (fd and file->f_op), so user can compare
+> f_op against a particular kernel file operations to find what it is.
+> For example, from /proc/kallsyms, we can find
+>   ffffffff95c185c0 r eventfd_fops
+> so we will know tgid 1932 fd 3 is an eventfd file descriptor.
 >
 > Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
 
-Just realized, this is only BPF programs, right? It would be good to
-have at least minimal user-space program that would verify and load
-it. Otherwise we'll be just testing compilation and it might "bit rot"
-a bit...
+LGTM.
 
->  .../selftests/bpf/progs/bpf_iter_ipv6_route.c | 63 ++++++++++++++++
->  .../selftests/bpf/progs/bpf_iter_netlink.c    | 74 +++++++++++++++++++
->  2 files changed, 137 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  .../selftests/bpf/progs/bpf_iter_bpf_map.c    | 29 +++++++++++++++++++
+>  .../selftests/bpf/progs/bpf_iter_task.c       | 26 +++++++++++++++++
+>  .../selftests/bpf/progs/bpf_iter_task_file.c  | 27 +++++++++++++++++
+>  3 files changed, 82 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_bpf_map.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task_file.c
 >
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_map.c b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_map.c
+> new file mode 100644
+> index 000000000000..d0af0e82b74c
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_map.c
+> @@ -0,0 +1,29 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2020 Facebook */
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +#include <bpf/bpf_endian.h>
+
+bpf_endian.h doesn't seem to be really used and it's actually
+incompatible with vmlinux.h, so maybe let's drop it?
+Same for previous patch, I believe.
+
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
 
 [...]
