@@ -2,91 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEDAE1C695F
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 08:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F221C699D
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 09:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727788AbgEFGuj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 02:50:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726843AbgEFGui (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 02:50:38 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB927C061A0F;
-        Tue,  5 May 2020 23:50:38 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id p25so513196pfn.11;
-        Tue, 05 May 2020 23:50:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=ydko4XrYs4w1KKatK31nfPnq11ga6bQcsiSda7KjcmE=;
-        b=W406yqoHA1efuiQF2WOnQJueVHN5DzZWZ4QTMRuQjpvHq4Xi79poFnuyn3Y74eEGCW
-         eGWp35uZJiTsXrMyr4b+0BFLLj/peWJQHTqDNuDkPKU5L9ZV4qewPBtAg/LENRRrMd3P
-         0gbUcBsUSp99sQgcZBwGTJ23Kn+xzKwDx91964cfsgqZZvjxWL1ScXVCAsCtKTjcAjlh
-         ICSd04dynZRjp9bFtLcOxRYLZ32Aa9hQGxk2eEpw9lKBZtwiAMQFpzT6WW4OIitUdKH1
-         +psAdhMsuwohMl1Qz3UnM15qvVAP5lbj/F2TLiOPd/9HdqBcHOOAyjn5+3w0VLxFYSDE
-         QLpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ydko4XrYs4w1KKatK31nfPnq11ga6bQcsiSda7KjcmE=;
-        b=EtMbfOknYPG6Rx8IBPNJ6pfXoVrRL1lpSgdwIlSiCk5W2cUBXDM6tXYi7gnB+1lOF5
-         KgT7lxFvBYKdySf1rHUYRYWmyV4xSGNcN4LD+axxo1Q4zS3emqkvwGHbP0B4rL+IIz90
-         OXoAjSMzT5hbrLqGXUQODuayhuIXGvZQffuh9boeJjYRPXw5nOU0i7I+BNkxQvD9VfoD
-         my0gaCf2uPCj2vr4BD5Mckq0nvRGuVkQuehbhCQjihrbnKKUv7VXRymiZzhsXZVXETci
-         ZySEKuaUxvZ/8vo5b5/qYNTE8eBEoaL0L8C6akRCUcz9xdAYlhLF71EvaoU84fBgU4Ja
-         W4qA==
-X-Gm-Message-State: AGi0PuZYelNNsYgmZ6DQ84Gd/yXYCKRxjj2MzQEvmCfxZgK84jzfChrL
-        xDo4026/75LtQd17EJC96jk=
-X-Google-Smtp-Source: APiQypL0to3E2l1EVPw1+VbbevsDmw05pqwYr4q2mGN9v3c81J+Uv7fWCGTb66X7c+eVOhevTUSHtQ==
-X-Received: by 2002:a63:d501:: with SMTP id c1mr5677377pgg.186.1588747838073;
-        Tue, 05 May 2020 23:50:38 -0700 (PDT)
-Received: from DESKTOP-9405E5V.localdomain ([185.173.93.36])
-        by smtp.gmail.com with ESMTPSA id v94sm3970608pjb.39.2020.05.05.23.50.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 23:50:37 -0700 (PDT)
-From:   Huang Qijun <dknightjun@gmail.com>
-To:     pablo@netfilter.org
-Cc:     kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Huang Qijun <dknightjun@gmail.com>
-Subject: [PATCH] netfilter: fix make target xt_TCPMSS.o error.
-Date:   Wed,  6 May 2020 14:50:21 +0800
-Message-Id: <20200506065021.2881-1-dknightjun@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728286AbgEFHAr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 03:00:47 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:62960 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728244AbgEFHAq (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 03:00:46 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0466tPLd015817;
+        Wed, 6 May 2020 00:00:30 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=LT0rTJD2S4X/isDir1xCmDnQSYlfWmK4+4zQPkJIeBQ=;
+ b=pJ3C07w2n5B/3iCovl2qZazhEl5s4zjsHK0KGK5tso5J5WT8Tz5rv0fHjcUrYqeZlLtq
+ ZnCJ4aZJFiRhIgSNZIf+5I3pnYXN+HPr+fMFwOCUfq8v8Gn8PKeqvi2XRS3/CBQc4s7o
+ h5x9hedOqn/X1dH4dQ2MZDyO3a10yYN0qto= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 30srvq7kty-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 06 May 2020 00:00:30 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Wed, 6 May 2020 00:00:29 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VHoagIeOZ2MhR4Jovp5xSTD5yolYPZ9Jh9hTdJYmm9qU8o6ClmpBWIKW9eZbORLNxHGgq0w5YEfU/ei5i5qLIZyThS8/ttk0EVZaaNp/ryUnm9+Zu0mn8BQGIxyBqEDjaCVq0iY8TMu0f+LUWCMPnPQq7i+2eYSK2pKnq8GkJ3egbq2fi8OTLuJkEtc6kcTd0K/QTRjecmBJWOETS7tEbKRxhscitiL84dXSYGU0BOW1LDonpv52nZtD9uzYiTLhrp/RFVR0S7IpdWrqEQtsFUiK2l7nDD1nKn6NaiYD0kkFRTKRbEMIC3zM5FRnDCnFaourSpHw/T8obaVjWpAWsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LT0rTJD2S4X/isDir1xCmDnQSYlfWmK4+4zQPkJIeBQ=;
+ b=Kd5s3uvmC4PM205p/brqohdvu1nZAjcmVFI24bNtkU6ycKajuwUkSlIDVR33PHRx8mjIYMt2GU+5Gy/Kj6CbYOy5alGVh9kTxMHAvnMzxWzt3cBNgKLsUuZhwaTh6nb79wWhjLPmBSp0qgTsXDDQLgjDZBpq3hZCqBiUbKvLOsrINgksljt4UF/EQnBatf5OMMasL/OeTeweS+9ZnXggfc49XDZhP1Dx/y+4fJKco0lob1Inh2MtmeGj+zlAS/JeDEONVLCGjAxNsWxQZQw3A93or3Zwv8IJK3m87T/clHN1BE0dypZ2WplwSGsZvFy4rrLABN19X340TKC+6Sn0kw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LT0rTJD2S4X/isDir1xCmDnQSYlfWmK4+4zQPkJIeBQ=;
+ b=DT4OdtCxnt76X6a2w6MOqisyFTzXntw2/MQlyHKrlAdVbwxiDXn9jJyU77f8Nte6vhFdGwF/++JRAjLc2xZUAFotM1frjEbrVtjReRYwaU2VSEsi4c5+YH++PzTd5e+5PblqPUvl6eVmlsjsrWdT95MKXdwOLsXdrEWZH06R9RM=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from MW3PR15MB4044.namprd15.prod.outlook.com (2603:10b6:303:4b::24)
+ by MW3PR15MB3900.namprd15.prod.outlook.com (2603:10b6:303:4f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.27; Wed, 6 May
+ 2020 07:00:28 +0000
+Received: from MW3PR15MB4044.namprd15.prod.outlook.com
+ ([fe80::e5c5:aeff:ca99:aae0]) by MW3PR15MB4044.namprd15.prod.outlook.com
+ ([fe80::e5c5:aeff:ca99:aae0%4]) with mapi id 15.20.2958.030; Wed, 6 May 2020
+ 07:00:28 +0000
+Date:   Wed, 6 May 2020 00:00:25 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Stanislav Fomichev <sdf@google.com>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <davem@davemloft.net>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        Andrey Ignatov <rdna@fb.com>
+Subject: Re: [PATCH bpf-next v2 1/5] selftests/bpf: generalize helpers to
+ control background listener
+Message-ID: <20200506070025.kidlrs7ngtaue2nu@kafai-mbp>
+References: <20200505202730.70489-1-sdf@google.com>
+ <20200505202730.70489-2-sdf@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505202730.70489-2-sdf@google.com>
+User-Agent: NeoMutt/20180716
+X-ClientProxiedBy: BYAPR06CA0018.namprd06.prod.outlook.com
+ (2603:10b6:a03:d4::31) To MW3PR15MB4044.namprd15.prod.outlook.com
+ (2603:10b6:303:4b::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp (2620:10d:c090:400::5:2b23) by BYAPR06CA0018.namprd06.prod.outlook.com (2603:10b6:a03:d4::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.28 via Frontend Transport; Wed, 6 May 2020 07:00:27 +0000
+X-Originating-IP: [2620:10d:c090:400::5:2b23]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5e6c913e-9eeb-44d2-e86e-08d7f18b2878
+X-MS-TrafficTypeDiagnostic: MW3PR15MB3900:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MW3PR15MB390033B010D75DEBC0A67B3DD5A40@MW3PR15MB3900.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:972;
+X-Forefront-PRVS: 03950F25EC
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZAun1x8gR92BHdhU0i8jJ9iR4aGdTAg7grgKbcJN+mUFuT1SyscXyjZDANkxXF6tnng+Tw0BNGgPpZco5K9dAkvmS+HayPRauCuouiBnwKWT7V2D2/ILSgi4ZfHM6pdAxLwzNAu4A9+6AhLvgEmTlgcFJrQ8WX9TLB+3KL3APbpqz3phATKX3VV26lSLCI1PNrKSKJqtoLLi/rhFPH6Ag8IP15RdDxtxKjKO+ZjguNL1aXzWZ+9G1o5wT3SASsmfj6LGokvPnGnBsKz807zSxjfDDS0G7utjVMED6/XLPeTNf0rkby8BBBKcAj2JyOYKzdf+lJbDra+v7qcXS+jqzOUzZkxsEwroc1gt+D1JdxbbsLxZCgQFgM31QOo/3RG0Z2TOt2/xPk69D87G+egvthAzLmDEa0zGLBHC+821y3eq8PRKrSS5AIK0j9HRRpF0ljogcJgCJTx0t2xEzq4wvyjpO5v9VAoKoBKUhdGoY/3TBKKrswhZOxS+EJU05Qd5ggllAkpFEVQbQ4n+UGujlg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR15MB4044.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(39860400002)(136003)(346002)(366004)(396003)(33430700001)(6916009)(86362001)(1076003)(4326008)(33440700001)(316002)(6496006)(2906002)(9686003)(52116002)(4744005)(33716001)(5660300002)(186003)(66476007)(55016002)(66946007)(16526019)(66556008)(8676002)(478600001)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: kOiaMaWqqB2xCjhkfs3YnIey4EJf++VOTmFLdPJLp7C6vbSsL72JC9V7lqnTRnepPxOwKhLyw5hCZyvQJ+jYjHJxKxIl7R7331trhHS/ibG1HK7zYh+iUoOF/Lmf37jMIbuBhk3DtymkA+w2rPdHHZRW60xctHZUcfsAgpJ3maHP44Fj5XWZipA2AXgvSIUcCzoOzx+kfA7JA/Fa/pTxP7ji8TCv9m8VAQrcXuEPnWXIBzFOugGHQ9p/KPNh5fVRWPtUmwT94weZ+leg1SUXbHT4Ke74gG/QW1fWkk8eoQBynG/jB+16OUSthoON7pLApL4+GY70G1Esd6sdWs4vlm0abZKWBUz0N5WpnXYWjgvHfy9lF2TxMr8mZH3C3f9zlNzkdtnS2BawVCSbGrWhH6rbcGtRVfydPjgQyeQ+cI2bI0WlSwSuV6OHueC3ssfhD0Z0DnPXpvprqFeY0iLrBiB1i40SnYE1LtTmMtOh5Uq7PRvAhy3I5RruSmvtgDtQf/FArFPxp+Z84DhhIH7oaYHdZJkh9qzD1x9olHe4gabz2IxAm4ik7eefQQRDbdeqS04ptqNNwhdAoKaZ4vlwaTyP9ue9HQkMZ9m0sywuEZpUOsiAEEk13+6OCbZERNcQBTRDM6mEj4rpeV4BhrdOz7aO+4Lh++loiUMDTsr9D4YQbsUhHflqxsFo4KF0o/qpWLfr6u92vy7XGY2Hp8gM11AbyshZ8WNAYWZavnW1ceOa68H/BNneBwHCu+UBZ/KZ83BTPa3ZKM1ptM9WDEj1vLibj/c9UvGWu/XAeWUFFyfRiYkYD5BUWxoZByaqRARqEM4Ytj96PDYFyOr/KP/YyQ==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5e6c913e-9eeb-44d2-e86e-08d7f18b2878
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2020 07:00:28.2286
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vh5Je24GUZ0O45/EvcLKBl5e3/xDEmGtN/6Se7gv2DA51i/PZMKfgD1cdYomULiJ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3900
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-05-06_02:2020-05-04,2020-05-06 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 adultscore=0
+ spamscore=0 phishscore=0 mlxlogscore=669 bulkscore=0 clxscore=1015
+ malwarescore=0 lowpriorityscore=0 priorityscore=1501 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005060052
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When compiling netfilter, there will be an error
-"No rule to make target 'net/netfilter/xt_TCPMSS.o'",
-because the xt_TCPMSS.c in the makefile is uppercase,
-and the file name of the source file (xt_tcpmss.c) is lowercase.
-Therefore, change the xt_TCPMSS.c name in the makefile to all lowercase.
+On Tue, May 05, 2020 at 01:27:26PM -0700, Stanislav Fomichev wrote:
+> Move the following routines that let us start a background listener
+> thread and connect to a server by fd to the test_prog:
+> * start_server_thread - start background INADDR_ANY thread
+> * stop_server_thread - stop the thread
+> * connect_to_fd - connect to the server identified by fd
+> 
+> These will be used in the next commit.
+The refactoring itself looks fine.
 
-Signed-off-by: Huang Qijun <dknightjun@gmail.com>
----
- net/netfilter/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/netfilter/Makefile b/net/netfilter/Makefile
-index 0e0ded87e27b..b974ade24556 100644
---- a/net/netfilter/Makefile
-+++ b/net/netfilter/Makefile
-@@ -157,7 +157,7 @@ obj-$(CONFIG_NETFILTER_XT_TARGET_REDIRECT) += xt_REDIRECT.o
- obj-$(CONFIG_NETFILTER_XT_TARGET_MASQUERADE) += xt_MASQUERADE.o
- obj-$(CONFIG_NETFILTER_XT_TARGET_SECMARK) += xt_SECMARK.o
- obj-$(CONFIG_NETFILTER_XT_TARGET_TPROXY) += xt_TPROXY.o
--obj-$(CONFIG_NETFILTER_XT_TARGET_TCPMSS) += xt_TCPMSS.o
-+obj-$(CONFIG_NETFILTER_XT_TARGET_TCPMSS) += xt_tcpmss.o
- obj-$(CONFIG_NETFILTER_XT_TARGET_TCPOPTSTRIP) += xt_TCPOPTSTRIP.o
- obj-$(CONFIG_NETFILTER_XT_TARGET_TEE) += xt_TEE.o
- obj-$(CONFIG_NETFILTER_XT_TARGET_TRACE) += xt_TRACE.o
--- 
-2.17.1
-
+If I read it correctly, it is a simple connect() test.
+I am not sure a thread is even needed.  accept() is also unnecessary.
+Can all be done in one thread?
