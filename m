@@ -2,433 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667E11C7D6C
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 00:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C5E1C7DBC
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 01:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730086AbgEFWc0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 18:32:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730248AbgEFWcX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 May 2020 18:32:23 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B77C7C061A0F
-        for <bpf@vger.kernel.org>; Wed,  6 May 2020 15:32:21 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id m138so4453689ybf.12
-        for <bpf@vger.kernel.org>; Wed, 06 May 2020 15:32:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=5RD3nmqtmGGcRCOLEPBuZsiM4xP4zdNHEi9o6uJppYM=;
-        b=u28yOWbhgpcLEh8KyHy5N2AocBeL8VX9tbdNliL+iUrGUdv4MBR9u0H4700Vtbvb3S
-         oFknahUxI06LJPsvf/+PvwW8cxBF7PwrqOweNztbJtBbqtOOLlS4dp1+G37WcC+MD4v6
-         p0ns9Nb/3aVxWrp3vxGV6eE8FzKvX+fuYAltVKIHzQfp++OSI6wbx/XndTh8xTdoOzl0
-         b1OOcqEHJYlvWImuD6szrLZPCq3vck2kP3W57z6JcfvXN5uBEDj1NioqOWu/S2yOKtBQ
-         z78bqTlkw3zSdfjTctZCJUlNzieYZbiRgElNlXFL+VxOX1HtcAIq8drlSlysdqN+bHe2
-         EOaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=5RD3nmqtmGGcRCOLEPBuZsiM4xP4zdNHEi9o6uJppYM=;
-        b=XnM6UjnjGk1uqAjYcW9qg84VA8vNt5UvdmkOlnkaqVf8yCJW8a6E7i/on7SIIvWzYk
-         qUPzI1/Tf4Cis5T78/hojlQcSynZT/258cCFqshDUbxXAz82zd+PiD56dQ84bRs9qarh
-         8w3XikbfpaT/cO2WvH9xMnGpqteD36QBdK8PNzPYGCtPlEfXdOrrqYbJrnBlfuKdCKRY
-         6yoRxE8uJ09b5WMXiobEXVT7IEyz+ensXXHfrMqbhh3WjCnxErlpAu72cmQTLF8xSXI2
-         DYt5vu19LHcjTd/7d7ulLn5zmhpbvTZn5SdNM7l8KG9+/r1AhOmgME/ecXgS1/ViVieT
-         WGXg==
-X-Gm-Message-State: AGi0PuYoTe/PlMqlOf0poFJC0lxxD/5nR0GrZ/BhHVRZvC0/RGoel9Fn
-        +C4hLogXI3SLHXzT+47jgdf7/EU=
-X-Google-Smtp-Source: APiQypIyLDfLYLtTNVrxe6DFZhJWcOuLsJKN/AZRWrULzDRrohlRf6TlPj0yG78b42RQbiMF0fyMVd4=
-X-Received: by 2002:a25:db87:: with SMTP id g129mr17864515ybf.491.1588804340886;
- Wed, 06 May 2020 15:32:20 -0700 (PDT)
-Date:   Wed,  6 May 2020 15:32:10 -0700
-In-Reply-To: <20200506223210.93595-1-sdf@google.com>
-Message-Id: <20200506223210.93595-6-sdf@google.com>
-Mime-Version: 1.0
-References: <20200506223210.93595-1-sdf@google.com>
-X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
-Subject: [PATCH bpf-next v3 5/5] bpf: allow any port in bpf_bind helper
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>,
-        Andrey Ignatov <rdna@fb.com>, Martin KaFai Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726129AbgEFXID (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 19:08:03 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:4324 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725869AbgEFXIC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 19:08:02 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 046N3InP006630;
+        Wed, 6 May 2020 16:07:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=kv8m2m7cHm4C32TwXGW4b3dy8Q0nJh9rBKEuUx7BviM=;
+ b=CWDUjUxEXOHwzpmyBC/JmJUDSbTuLTXhZy9g9sr1sbjbfFNSNWjt03UqF/PUGRxmOid2
+ z/+BVdwalSuwPjdyBYQWdzzCdU6jrjjjsHNY6jx19ut2k/xB8l0vyhKVRaoWcI60DlFC
+ c56jNCO3gQ8ZMLMJc/+A79YLaIn6c8HT3As= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 30srw049je-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 06 May 2020 16:07:49 -0700
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Wed, 6 May 2020 16:07:48 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IDIaE0uMFBUwvUodvgfCgaornEHGbdFJc/boqW95aY3BvcCjsNMJ/Ffqkkc4rJHbdjXMV7ftoc3pNVxVUkr57lltRwII4ksKQkfCq1xGFutdXrLhSr5H1KD7ueXOTujN+QxmXa1qCHHde3GfqXhLk97xjvvDXXbcXTZkRJVwBZpSnHhSmlmKSq7oQQq9js20ZRJznPymQ4yTc9ADEQNuzFjR4yuNqrlI4WsIRfHA7scoVr6RoBZ4M54Jbh2pv842o/l5uSCfgXCTS6Hj56O5dXbSmvufojp9F8lJTU1HjrCL/AJTwnvTECgfMnkTLiy5r8v2G6es4SmxhTHMRGUTxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kv8m2m7cHm4C32TwXGW4b3dy8Q0nJh9rBKEuUx7BviM=;
+ b=C1JxjZdE1ExX7e2hZHPXCadgqsJwVqZUB8H+lu/hRxl+1iIRTQ8OlxCeRJ/PZVMhcYrv8oZLy+sjP5Vzf1G8iK/5kxUnuJMuEXHFhLkyK0XAQAjJp8D+c3J3XFvLhjpBaT0lwZJtS/b/UV9esdhz+Fsjy5A0iW0KWHnc54QLA2rPc+c22+sbiGpENRwe/mqMLh0kH8M+nlu9Ix5WP1jpFYOprwxDKejV9Kx8/Q40wZRZlXJkmHHs1voabSuPJtk586pIFTEAyvtYTR0dAV2xLbcQOmB/F3HDhfr6UMwq4ChcxdDmE3DU3eemOGKEwxnb+RmgtA8RzKtp1fjea2uILA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kv8m2m7cHm4C32TwXGW4b3dy8Q0nJh9rBKEuUx7BviM=;
+ b=DtDVQfgBrMbcO9L+gDQXxW/ZXhMBpYj079Q4QcHJdr0Lrd2xp+gVZgpnk4PNuT6Du35YalciFwso1J4u91p4omTQCt3FdXHCwmoGsbmWDxoRYycx6bn7tKZFchurBFyGQ50AxPBkEdp9/WWAoVijnwbXrsj6dK2YHzyE3ZMKP4s=
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB2581.namprd15.prod.outlook.com (2603:10b6:a03:15a::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20; Wed, 6 May
+ 2020 23:07:33 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::8988:aa27:5d70:6923]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::8988:aa27:5d70:6923%5]) with mapi id 15.20.2958.030; Wed, 6 May 2020
+ 23:07:33 +0000
+Subject: Re: [PATCH bpf-next v2 18/20] tools/bpf: selftests: add iterator
+ programs for ipv6_route and netlink
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+References: <20200504062547.2047304-1-yhs@fb.com>
+ <20200504062608.2049044-1-yhs@fb.com>
+ <CAEf4BzaGsk2hgLHvU=9b2gv7V0y788MNw0hwkSQxE4kg4zSe=w@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <5bddef07-6cc0-e4d5-9394-f8691860015a@fb.com>
+Date:   Wed, 6 May 2020 16:07:30 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
+In-Reply-To: <CAEf4BzaGsk2hgLHvU=9b2gv7V0y788MNw0hwkSQxE4kg4zSe=w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR01CA0016.prod.exchangelabs.com (2603:10b6:a02:80::29)
+ To BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from MacBook-Pro-52.local (2620:10d:c090:400::5:66a9) by BYAPR01CA0016.prod.exchangelabs.com (2603:10b6:a02:80::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.29 via Frontend Transport; Wed, 6 May 2020 23:07:32 +0000
+X-Originating-IP: [2620:10d:c090:400::5:66a9]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f4aed524-2003-4389-8983-08d7f212424b
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2581:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2581DF7372376BF52E4BDA99D3A40@BYAPR15MB2581.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-Forefront-PRVS: 03950F25EC
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wZF/c3ReTeNgLkj7nk4GwOx7Rkh3oJaD/aTS/WrF0UzJtB5Yb1LtCeom1YR+zT4WRVNjERK/4fGM4wLKZpjlaKSk9BtG2tfMDCJy/rNGrAffDHwP2os7mRdV29KamFtzutOnLMDqs3PkcoxC3HodbWhYkAMj5IGymQh3+67UdSV9HQpLW+KNEeMZsv+auVTWDRQyeCr9J52phYwOz7kjbjPtBtkBG0e3hUgnAqjqawpIdF5NoTSS4ZTt8gRsE/D1gFXUv3IYnLZzspy50LtAU7uKm9FBaLLsugJhrIj2aMPGlpCuFBwZrhKjPE48Re9KDsPymcHrfqfLcAYTgX1QaB9s9NF/YejUZyeJrb146NU31V1npC+VQLkh8WAvGotzUmrpjnbvdktPe2I2pQue+lHuj2Nodv32hLlRINNdh3QW3GS7zHM4MNfJ8m/tKsnPbGQrLWuoYZanhhcBBrZYbKECx1qmpu5XzPPr7Td0S3loNoTvUZIf6VCi1M+2JOY78S/eF2b8wdkzW8kuvg9whgXiMaOsGMUlGj9pEQ55uUZnIpdXEkNWNwfO3nH7UYUx
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(39860400002)(366004)(396003)(376002)(136003)(33430700001)(52116002)(2906002)(5660300002)(6512007)(16526019)(186003)(31686004)(36756003)(316002)(31696002)(86362001)(2616005)(66476007)(66556008)(66946007)(33440700001)(478600001)(54906003)(6916009)(8936002)(53546011)(6486002)(6506007)(4326008)(8676002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: cSUnHwtQdiVKT7pFc95uAobS2sBQW8VH8HNePajFJPOY/ev15IGtM95fTP27B72C355TggmKlqRtIQ3qqA1592zXnFk1bDe5QBLcszK/kMUsOYuSO3DGuJYG1SRTnI809HhBMepm3iffo0YERUwDVP6ljxYDlB43iGd3DTK4FJpuaCwrb7yAs9yP0rrb8s92txyOuzmvWa/kHQXB5V2v0UlZi8IQMLyCa1sIFrZGDpOzcpu0UjK7SEREw2qUTZfpdkYPQ0atdxEYawt55irpuAswylrS7y7lEWTYgIGILUebdMd5N+VGrY5nXfTjygRvA6WW4bHaUgcAJQ8BSlOEgmB8Ix60ROvSs1Tpp+gwLMdufrpw04pTLnLE7Peu4pfShkVGnMTiJbZUrvVyoQS9DXkyvD0oeDQP2lVTt3e0lpUG+S3XD+4R5rHGAdYptUmaPVTlZ5vzELuDlts1R5mXs0NCxIPIkqEDGfTFIepoyWVwb7JwkTpqxluIqd+H30QXAbTslDJSM42X4GNAUxKXWw7B7RGhdj0S/sfajGhZ6r5U3BdDXkDjXDZoZFsJovw2B/hiUXbbCy+T40C4NIoH/x5AKSccmVXeC+Sas+IUOyjvHiLhmC0TtrSI8vYcyyRPMwOrZUBtMiJXSFvC2iflGmMY6OwwY9UNyVAtWLP8YFI7//RMxJ3Xg0OiYg5k9DrDJPjitC3mrdZuCvtuJWe4yCEWOa2Y/KBZCWAMk5g3u1MROt/by3L0/KuGAtnJUTQrJEicWqMO/GbWFxELK40ll9NNs7j9Hdj2JUqOK5L8VfH39cOnXlAXGcEO7HXcz/ohcS4DI1bet8P4h3qqbFlAyA==
+X-MS-Exchange-CrossTenant-Network-Message-Id: f4aed524-2003-4389-8983-08d7f212424b
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2020 23:07:33.4462
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CLHcIjjCswRGD9DHwg4x0OcUIO403zZmIhbPh6fBrVTVLZVwtzc4vmjzvoAs1TWq
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2581
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-06_09:2020-05-05,2020-05-06 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 adultscore=0
+ malwarescore=0 bulkscore=0 phishscore=0 clxscore=1015 impostorscore=0
+ lowpriorityscore=0 priorityscore=1501 spamscore=0 suspectscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005060185
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We want to have a tighter control on what ports we bind to in
-the BPF_CGROUP_INET{4,6}_CONNECT hooks even if it means
-connect() becomes slightly more expensive. The expensive part
-comes from the fact that we now need to call inet_csk_get_port()
-that verifies that the port is not used and allocates an entry
-in the hash table for it.
 
-Since we can't rely on "snum || !bind_address_no_port" to prevent
-us from calling POST_BIND hook anymore, let's add another bind flag
-to indicate that the call site is BPF program.
 
-v3:
-* More bpf_bind documentation refinements (Martin KaFai Lau)
-* Add UDP tests as well (Martin KaFai Lau)
-* Don't start the thread, just do socket+bind+listen (Martin KaFai Lau)
+On 5/5/20 11:04 PM, Andrii Nakryiko wrote:
+> On Sun, May 3, 2020 at 11:30 PM Yonghong Song <yhs@fb.com> wrote:
+>>
+>> Two bpf programs are added in this patch for netlink and ipv6_route
+>> target. On my VM, I am able to achieve identical
+>> results compared to /proc/net/netlink and /proc/net/ipv6_route.
+>>
+>>    $ cat /proc/net/netlink
+>>    sk               Eth Pid        Groups   Rmem     Wmem     Dump  Locks    Drops    Inode
+>>    000000002c42d58b 0   0          00000000 0        0        0     2        0        7
+>>    00000000a4e8b5e1 0   1          00000551 0        0        0     2        0        18719
+>>    00000000e1b1c195 4   0          00000000 0        0        0     2        0        16422
+>>    000000007e6b29f9 6   0          00000000 0        0        0     2        0        16424
+>>    ....
+>>    00000000159a170d 15  1862       00000002 0        0        0     2        0        1886
+>>    000000009aca4bc9 15  3918224839 00000002 0        0        0     2        0        19076
+>>    00000000d0ab31d2 15  1          00000002 0        0        0     2        0        18683
+>>    000000008398fb08 16  0          00000000 0        0        0     2        0        27
+>>    $ cat /sys/fs/bpf/my_netlink
+>>    sk               Eth Pid        Groups   Rmem     Wmem     Dump  Locks    Drops    Inode
+>>    000000002c42d58b 0   0          00000000 0        0        0     2        0        7
+>>    00000000a4e8b5e1 0   1          00000551 0        0        0     2        0        18719
+>>    00000000e1b1c195 4   0          00000000 0        0        0     2        0        16422
+>>    000000007e6b29f9 6   0          00000000 0        0        0     2        0        16424
+>>    ....
+>>    00000000159a170d 15  1862       00000002 0        0        0     2        0        1886
+>>    000000009aca4bc9 15  3918224839 00000002 0        0        0     2        0        19076
+>>    00000000d0ab31d2 15  1          00000002 0        0        0     2        0        18683
+>>    000000008398fb08 16  0          00000000 0        0        0     2        0        27
+>>
+>>    $ cat /proc/net/ipv6_route
+>>    fe800000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000001 00000000 00000001     eth0
+>>    00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+>>    00000000000000000000000000000001 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000003 00000000 80200001       lo
+>>    fe80000000000000c04b03fffe7827ce 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
+>>    ff000000000000000000000000000000 08 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000003 00000000 00000001     eth0
+>>    00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+>>    $ cat /sys/fs/bpf/my_ipv6_route
+>>    fe800000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000001 00000000 00000001     eth0
+>>    00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+>>    00000000000000000000000000000001 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000003 00000000 80200001       lo
+>>    fe80000000000000c04b03fffe7827ce 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
+>>    ff000000000000000000000000000000 08 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000003 00000000 00000001     eth0
+>>    00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+>>
+>> Signed-off-by: Yonghong Song <yhs@fb.com>
+>> ---
+> 
+> Just realized, this is only BPF programs, right? It would be good to
+> have at least minimal user-space program that would verify and load
+> it. Otherwise we'll be just testing compilation and it might "bit rot"
+> a bit...
 
-v2:
-* Update documentation (Andrey Ignatov)
-* Pass BIND_FORCE_ADDRESS_NO_PORT conditionally (Andrey Ignatov)
+Totally agree. My latest selftest in test_progs actually tested loading, 
+anon iter creating and reading(). It did not verify contents though.
 
-Cc: Andrey Ignatov <rdna@fb.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- include/net/inet_common.h                     |   2 +
- include/uapi/linux/bpf.h                      |   9 +-
- net/core/filter.c                             |  18 ++-
- net/ipv4/af_inet.c                            |  10 +-
- net/ipv6/af_inet6.c                           |  12 +-
- tools/include/uapi/linux/bpf.h                |   9 +-
- .../bpf/prog_tests/connect_force_port.c       | 115 ++++++++++++++++++
- .../selftests/bpf/progs/connect_force_port4.c |  28 +++++
- .../selftests/bpf/progs/connect_force_port6.c |  28 +++++
- 9 files changed, 203 insertions(+), 28 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/connect_force_port.c
- create mode 100644 tools/testing/selftests/bpf/progs/connect_force_port4.c
- create mode 100644 tools/testing/selftests/bpf/progs/connect_force_port6.c
-
-diff --git a/include/net/inet_common.h b/include/net/inet_common.h
-index c38f4f7d660a..cb2818862919 100644
---- a/include/net/inet_common.h
-+++ b/include/net/inet_common.h
-@@ -39,6 +39,8 @@ int inet_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len);
- #define BIND_FORCE_ADDRESS_NO_PORT	(1 << 0)
- /* Grab and release socket lock. */
- #define BIND_WITH_LOCK			(1 << 1)
-+/* Called from BPF program. */
-+#define BIND_FROM_BPF			(1 << 2)
- int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
- 		u32 flags);
- int inet_getname(struct socket *sock, struct sockaddr *uaddr,
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index b3643e27e264..6e5e7caa3739 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1994,10 +1994,11 @@ union bpf_attr {
-  *
-  * 		This helper works for IPv4 and IPv6, TCP and UDP sockets. The
-  * 		domain (*addr*\ **->sa_family**) must be **AF_INET** (or
-- * 		**AF_INET6**). Looking for a free port to bind to can be
-- * 		expensive, therefore binding to port is not permitted by the
-- * 		helper: *addr*\ **->sin_port** (or **sin6_port**, respectively)
-- * 		must be set to zero.
-+ * 		**AF_INET6**). It's advised to pass zero port (**sin_port**
-+ * 		or **sin6_port**) which triggers IP_BIND_ADDRESS_NO_PORT-like
-+ * 		behavior and lets the kernel efficiently pick up an unused
-+ * 		port as long as 4-tuple is unique. Passing non-zero port might
-+ * 		lead to degraded performance.
-  * 	Return
-  * 		0 on success, or a negative error in case of failure.
-  *
-diff --git a/net/core/filter.c b/net/core/filter.c
-index fa9ddab5dd1f..da0634979f53 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4525,32 +4525,28 @@ BPF_CALL_3(bpf_bind, struct bpf_sock_addr_kern *, ctx, struct sockaddr *, addr,
- {
- #ifdef CONFIG_INET
- 	struct sock *sk = ctx->sk;
-+	u32 flags = BIND_FROM_BPF;
- 	int err;
- 
--	/* Binding to port can be expensive so it's prohibited in the helper.
--	 * Only binding to IP is supported.
--	 */
- 	err = -EINVAL;
- 	if (addr_len < offsetofend(struct sockaddr, sa_family))
- 		return err;
- 	if (addr->sa_family == AF_INET) {
- 		if (addr_len < sizeof(struct sockaddr_in))
- 			return err;
--		if (((struct sockaddr_in *)addr)->sin_port != htons(0))
--			return err;
--		return __inet_bind(sk, addr, addr_len,
--				   BIND_FORCE_ADDRESS_NO_PORT);
-+		if (((struct sockaddr_in *)addr)->sin_port == htons(0))
-+			flags |= BIND_FORCE_ADDRESS_NO_PORT;
-+		return __inet_bind(sk, addr, addr_len, flags);
- #if IS_ENABLED(CONFIG_IPV6)
- 	} else if (addr->sa_family == AF_INET6) {
- 		if (addr_len < SIN6_LEN_RFC2133)
- 			return err;
--		if (((struct sockaddr_in6 *)addr)->sin6_port != htons(0))
--			return err;
-+		if (((struct sockaddr_in6 *)addr)->sin6_port == htons(0))
-+			flags |= BIND_FORCE_ADDRESS_NO_PORT;
- 		/* ipv6_bpf_stub cannot be NULL, since it's called from
- 		 * bpf_cgroup_inet6_connect hook and ipv6 is already loaded
- 		 */
--		return ipv6_bpf_stub->inet6_bind(sk, addr, addr_len,
--						 BIND_FORCE_ADDRESS_NO_PORT);
-+		return ipv6_bpf_stub->inet6_bind(sk, addr, addr_len, flags);
- #endif /* CONFIG_IPV6 */
- 	}
- #endif /* CONFIG_INET */
-diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-index 68e74b1b0f26..fcf0d12a407a 100644
---- a/net/ipv4/af_inet.c
-+++ b/net/ipv4/af_inet.c
-@@ -526,10 +526,12 @@ int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
- 			err = -EADDRINUSE;
- 			goto out_release_sock;
- 		}
--		err = BPF_CGROUP_RUN_PROG_INET4_POST_BIND(sk);
--		if (err) {
--			inet->inet_saddr = inet->inet_rcv_saddr = 0;
--			goto out_release_sock;
-+		if (!(flags & BIND_FROM_BPF)) {
-+			err = BPF_CGROUP_RUN_PROG_INET4_POST_BIND(sk);
-+			if (err) {
-+				inet->inet_saddr = inet->inet_rcv_saddr = 0;
-+				goto out_release_sock;
-+			}
- 		}
- 	}
- 
-diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
-index 552c2592b81c..771a462a8322 100644
---- a/net/ipv6/af_inet6.c
-+++ b/net/ipv6/af_inet6.c
-@@ -407,11 +407,13 @@ static int __inet6_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
- 			err = -EADDRINUSE;
- 			goto out;
- 		}
--		err = BPF_CGROUP_RUN_PROG_INET6_POST_BIND(sk);
--		if (err) {
--			sk->sk_ipv6only = saved_ipv6only;
--			inet_reset_saddr(sk);
--			goto out;
-+		if (!(flags & BIND_FROM_BPF)) {
-+			err = BPF_CGROUP_RUN_PROG_INET6_POST_BIND(sk);
-+			if (err) {
-+				sk->sk_ipv6only = saved_ipv6only;
-+				inet_reset_saddr(sk);
-+				goto out;
-+			}
- 		}
- 	}
- 
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index b3643e27e264..6e5e7caa3739 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1994,10 +1994,11 @@ union bpf_attr {
-  *
-  * 		This helper works for IPv4 and IPv6, TCP and UDP sockets. The
-  * 		domain (*addr*\ **->sa_family**) must be **AF_INET** (or
-- * 		**AF_INET6**). Looking for a free port to bind to can be
-- * 		expensive, therefore binding to port is not permitted by the
-- * 		helper: *addr*\ **->sin_port** (or **sin6_port**, respectively)
-- * 		must be set to zero.
-+ * 		**AF_INET6**). It's advised to pass zero port (**sin_port**
-+ * 		or **sin6_port**) which triggers IP_BIND_ADDRESS_NO_PORT-like
-+ * 		behavior and lets the kernel efficiently pick up an unused
-+ * 		port as long as 4-tuple is unique. Passing non-zero port might
-+ * 		lead to degraded performance.
-  * 	Return
-  * 		0 on success, or a negative error in case of failure.
-  *
-diff --git a/tools/testing/selftests/bpf/prog_tests/connect_force_port.c b/tools/testing/selftests/bpf/prog_tests/connect_force_port.c
-new file mode 100644
-index 000000000000..47fbb20cb6a6
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/connect_force_port.c
-@@ -0,0 +1,115 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+#include "cgroup_helpers.h"
-+#include "network_helpers.h"
-+
-+static int verify_port(int family, int fd, int expected)
-+{
-+	struct sockaddr_storage addr;
-+	socklen_t len = sizeof(addr);
-+	__u16 port;
-+
-+	if (getsockname(fd, (struct sockaddr *)&addr, &len)) {
-+		log_err("Failed to get server addr");
-+		return -1;
-+	}
-+
-+	if (family == AF_INET)
-+		port = ((struct sockaddr_in *)&addr)->sin_port;
-+	else
-+		port = ((struct sockaddr_in6 *)&addr)->sin6_port;
-+
-+	if (ntohs(port) != expected) {
-+		log_err("Unexpected port %d, expected %d", ntohs(port),
-+			expected);
-+		return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int run_test(int cgroup_fd, int server_fd, int family, int type)
-+{
-+	struct bpf_prog_load_attr attr = {
-+		.prog_type = BPF_PROG_TYPE_CGROUP_SOCK_ADDR,
-+	};
-+	struct bpf_object *obj;
-+	int expected_port;
-+	int prog_fd;
-+	int err;
-+	int fd;
-+
-+	if (family == AF_INET) {
-+		attr.file = "./connect_force_port4.o";
-+		attr.expected_attach_type = BPF_CGROUP_INET4_CONNECT;
-+		expected_port = 22222;
-+	} else {
-+		attr.file = "./connect_force_port6.o";
-+		attr.expected_attach_type = BPF_CGROUP_INET6_CONNECT;
-+		expected_port = 22223;
-+	}
-+
-+	err = bpf_prog_load_xattr(&attr, &obj, &prog_fd);
-+	if (err) {
-+		log_err("Failed to load BPF object");
-+		return -1;
-+	}
-+
-+	err = bpf_prog_attach(prog_fd, cgroup_fd, attr.expected_attach_type,
-+			      0);
-+	if (err) {
-+		log_err("Failed to attach BPF program");
-+		goto close_bpf_object;
-+	}
-+
-+	fd = connect_to_fd(family, type, server_fd);
-+	if (fd < 0) {
-+		err = -1;
-+		goto close_bpf_object;
-+	}
-+
-+	err = verify_port(family, fd, expected_port);
-+
-+	close(fd);
-+
-+close_bpf_object:
-+	bpf_object__close(obj);
-+	return err;
-+}
-+
-+void test_connect_force_port(void)
-+{
-+	int server_fd, cgroup_fd;
-+
-+	cgroup_fd = test__join_cgroup("/connect_force_port");
-+	if (CHECK_FAIL(cgroup_fd < 0))
-+		return;
-+
-+	server_fd = start_server(AF_INET, SOCK_STREAM);
-+	if (CHECK_FAIL(server_fd < 0))
-+		goto close_cgroup_fd;
-+	CHECK_FAIL(run_test(cgroup_fd, server_fd, AF_INET, SOCK_STREAM));
-+	close(server_fd);
-+
-+	server_fd = start_server(AF_INET6, SOCK_STREAM);
-+	if (CHECK_FAIL(server_fd < 0))
-+		goto close_cgroup_fd;
-+	CHECK_FAIL(run_test(cgroup_fd, server_fd, AF_INET6, SOCK_STREAM));
-+	close(server_fd);
-+
-+	server_fd = start_server(AF_INET, SOCK_DGRAM);
-+	if (CHECK_FAIL(server_fd < 0))
-+		goto close_cgroup_fd;
-+	CHECK_FAIL(run_test(cgroup_fd, server_fd, AF_INET, SOCK_DGRAM));
-+	close(server_fd);
-+
-+	server_fd = start_server(AF_INET6, SOCK_DGRAM);
-+	if (CHECK_FAIL(server_fd < 0))
-+		goto close_cgroup_fd;
-+	CHECK_FAIL(run_test(cgroup_fd, server_fd, AF_INET6, SOCK_DGRAM));
-+	close(server_fd);
-+
-+close_cgroup_fd:
-+	close(cgroup_fd);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/connect_force_port4.c b/tools/testing/selftests/bpf/progs/connect_force_port4.c
-new file mode 100644
-index 000000000000..1b8eb34b2db0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/connect_force_port4.c
-@@ -0,0 +1,28 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <string.h>
-+
-+#include <linux/bpf.h>
-+#include <linux/in.h>
-+#include <linux/in6.h>
-+#include <sys/socket.h>
-+
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+
-+char _license[] SEC("license") = "GPL";
-+int _version SEC("version") = 1;
-+
-+SEC("cgroup/connect4")
-+int _connect4(struct bpf_sock_addr *ctx)
-+{
-+	struct sockaddr_in sa = {};
-+
-+	sa.sin_family = AF_INET;
-+	sa.sin_port = bpf_htons(22222);
-+	sa.sin_addr.s_addr = bpf_htonl(0x7f000001); /* 127.0.0.1 */
-+
-+	if (bpf_bind(ctx, (struct sockaddr *)&sa, sizeof(sa)) != 0)
-+		return 0;
-+
-+	return 1;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/connect_force_port6.c b/tools/testing/selftests/bpf/progs/connect_force_port6.c
-new file mode 100644
-index 000000000000..8cd1a9e81f64
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/connect_force_port6.c
-@@ -0,0 +1,28 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <string.h>
-+
-+#include <linux/bpf.h>
-+#include <linux/in.h>
-+#include <linux/in6.h>
-+#include <sys/socket.h>
-+
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+
-+char _license[] SEC("license") = "GPL";
-+int _version SEC("version") = 1;
-+
-+SEC("cgroup/connect6")
-+int _connect6(struct bpf_sock_addr *ctx)
-+{
-+	struct sockaddr_in6 sa = {};
-+
-+	sa.sin6_family = AF_INET;
-+	sa.sin6_port = bpf_htons(22223);
-+	sa.sin6_addr.s6_addr32[3] = bpf_htonl(1); /* ::1 */
-+
-+	if (bpf_bind(ctx, (struct sockaddr *)&sa, sizeof(sa)) != 0)
-+		return 0;
-+
-+	return 1;
-+}
--- 
-2.26.2.526.g744177e7f7-goog
-
+> 
+>>   .../selftests/bpf/progs/bpf_iter_ipv6_route.c | 63 ++++++++++++++++
+>>   .../selftests/bpf/progs/bpf_iter_netlink.c    | 74 +++++++++++++++++++
+>>   2 files changed, 137 insertions(+)
+>>   create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route.c
+>>   create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
+>>
+> 
+> [...]
+> 
