@@ -2,151 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1CD1C6B7E
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 10:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ADB01C6BDC
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 10:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728939AbgEFIVm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 04:21:42 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:34436 "EHLO
+        id S1728626AbgEFIez (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 04:34:55 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:29028 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728929AbgEFIVk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 04:21:40 -0400
+        by vger.kernel.org with ESMTP id S1726935AbgEFIez (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 04:34:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588753298;
+        s=mimecast20190719; t=1588754093;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rsgh1dLxGFSdxuzsdLh/uv8qhBvMPuP+xGju+ifbTRc=;
-        b=NWEa01dEOuNXKUAtTbC/ml9lYFlRt3WOwRzf76lU094CJchbryohoqsKQc8xAKzeAtdzlW
-        FrrIbxNtDlCw14o06ExRoW7vKP/KLAOqA7mC2Glgvjh15M7maIelN6YjbJOFlD3HK8YYdB
-        xFVvOmEAj7857xDDlZYZAX2htykz4G0=
+        bh=NFF8NeJjiTbv8THqbxX8heqr35COUx8hMKarYhRqfLk=;
+        b=YNpcCB/lKavYcpYhtnHi17wHmr9UQxNDAwTrf9ipgR0/Apkfnube8QVwKeChHPTWQH4prC
+        k3fBTp+FqewdEDuCPtsnARuLAwlmH5OJDXarJvbMTm25r72Z7hTRJyGwfEiIpFWgoQeRmd
+        OeQvNoKSpYGGqPDd9cI36wFFaiKMwMk=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-355-fsNNCIaXOyCRvQJwUVOw2A-1; Wed, 06 May 2020 04:21:34 -0400
-X-MC-Unique: fsNNCIaXOyCRvQJwUVOw2A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+ us-mta-168-QZzC-7xwPoeKQmxnCxlf7w-1; Wed, 06 May 2020 04:34:49 -0400
+X-MC-Unique: QZzC-7xwPoeKQmxnCxlf7w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 962E718FE866;
-        Wed,  6 May 2020 08:21:33 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.15])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D4A7919C4F;
-        Wed,  6 May 2020 08:21:25 +0000 (UTC)
-Date:   Wed, 6 May 2020 10:21:23 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, brouer@redhat.com,
-        "Jubran, Samih" <sameehj@amazon.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2DEF11005510;
+        Wed,  6 May 2020 08:34:48 +0000 (UTC)
+Received: from [10.72.13.165] (ovpn-13-165.pek2.redhat.com [10.72.13.165])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 963A460BEC;
+        Wed,  6 May 2020 08:34:38 +0000 (UTC)
 Subject: Re: [PATCH net-next 1/2] virtio-net: don't reserve space for vnet
  header for XDP
-Message-ID: <20200506102123.739f1233@carbon>
-In-Reply-To: <20200506061633.16327-1-jasowang@redhat.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, "Jubran, Samih" <sameehj@amazon.com>
 References: <20200506061633.16327-1-jasowang@redhat.com>
+ <20200506102123.739f1233@carbon>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <3ecb558b-5281-2497-db3c-6aae7d7f882b@redhat.com>
+Date:   Wed, 6 May 2020 16:34:36 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20200506102123.739f1233@carbon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed,  6 May 2020 14:16:32 +0800
-Jason Wang <jasowang@redhat.com> wrote:
 
-> We tried to reserve space for vnet header before
-> xdp.data_hard_start. But this is useless since the packet could be
-> modified by XDP which may invalidate the information stored in the
-> header and
-
-IMHO above statements are wrong. XDP cannot access memory before
-xdp.data_hard_start. Thus, it is safe to store a vnet headers before
-xdp.data_hard_start. (The sfc driver also use this "before" area).
-
-> there's no way for XDP to know the existence of the vnet header currently.
-
-It is true that XDP is unaware of this area, which is the way it
-should be.  Currently the area will survive after calling BPF/XDP.
-After your change it will be overwritten in xdp_frame cases.
+On 2020/5/6 =E4=B8=8B=E5=8D=884:21, Jesper Dangaard Brouer wrote:
+> On Wed,  6 May 2020 14:16:32 +0800
+> Jason Wang <jasowang@redhat.com> wrote:
+>
+>> We tried to reserve space for vnet header before
+>> xdp.data_hard_start. But this is useless since the packet could be
+>> modified by XDP which may invalidate the information stored in the
+>> header and
+> IMHO above statements are wrong. XDP cannot access memory before
+> xdp.data_hard_start. Thus, it is safe to store a vnet headers before
+> xdp.data_hard_start. (The sfc driver also use this "before" area).
 
 
-> So let's just not reserve space for vnet header in this case.
+The problem is if we place vnet header before data_hard_start,=20
+virtio-net will fail any header adjustment.
 
-I think this is a wrong approach!
-
-We are working on supporting GRO multi-buffer for XDP.  The vnet header
-contains GRO information (see pahole below sign). It is currently not
-used in the XDP case, but we will be working towards using it.  There
-are a lot of unanswered questions on how this will be implemented.
-Thus, I cannot layout how we are going to leverage this info yet, but
-your patch are killing this info, which IHMO is going in the wrong
-direction.
+Or do you mean to copy vnet header before data_hard_start before=20
+processing XDP?
 
 
-> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
-> ---
->  drivers/net/virtio_net.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 11f722460513..98dd75b665a5 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -684,8 +684,8 @@ static struct sk_buff *receive_small(struct net_device *dev,
->  			page = xdp_page;
->  		}
->  
-> -		xdp.data_hard_start = buf + VIRTNET_RX_PAD + vi->hdr_len;
-> -		xdp.data = xdp.data_hard_start + xdp_headroom;
-> +		xdp.data_hard_start = buf + VIRTNET_RX_PAD;
-> +		xdp.data = xdp.data_hard_start + xdp_headroom + vi->hdr_len;
->  		xdp.data_end = xdp.data + len;
->  		xdp.data_meta = xdp.data;
->  		xdp.rxq = &rq->xdp_rxq;
-> @@ -845,7 +845,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->  		 * the descriptor on if we get an XDP_TX return code.
->  		 */
->  		data = page_address(xdp_page) + offset;
-> -		xdp.data_hard_start = data - VIRTIO_XDP_HEADROOM + vi->hdr_len;
-> +		xdp.data_hard_start = data - VIRTIO_XDP_HEADROOM;
->  		xdp.data = data + vi->hdr_len;
->  		xdp.data_end = xdp.data + (len - vi->hdr_len);
->  		xdp.data_meta = xdp.data;
+>
+>> there's no way for XDP to know the existence of the vnet header curren=
+tly.
+> It is true that XDP is unaware of this area, which is the way it
+> should be.  Currently the area will survive after calling BPF/XDP.
+> After your change it will be overwritten in xdp_frame cases.
+>
+>
+>> So let's just not reserve space for vnet header in this case.
+> I think this is a wrong approach!
+>
+> We are working on supporting GRO multi-buffer for XDP.  The vnet header
+> contains GRO information (see pahole below sign).
 
 
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Another note is that since we need reserve room for skb_shared_info, GRO=20
+for XDP may probably lead more frag list.
 
 
-
-$ pahole -C virtio_net_hdr_mrg_rxbuf drivers/net/virtio_net.o
-struct virtio_net_hdr_mrg_rxbuf {
-	struct virtio_net_hdr hdr;                       /*     0    10 */
-	__virtio16                 num_buffers;          /*    10     2 */
-
-	/* size: 12, cachelines: 1, members: 2 */
-	/* last cacheline: 12 bytes */
-};
+>   It is currently not
+> used in the XDP case, but we will be working towards using it.
 
 
-$ pahole -C virtio_net_hdr drivers/net/virtio_net.o
-struct virtio_net_hdr {
-	__u8                       flags;                /*     0     1 */
-	__u8                       gso_type;             /*     1     1 */
-	__virtio16                 hdr_len;              /*     2     2 */
-	__virtio16                 gso_size;             /*     4     2 */
-	__virtio16                 csum_start;           /*     6     2 */
-	__virtio16                 csum_offset;          /*     8     2 */
+Good to know that, but I think it can only work when the packet is not=20
+modified by XDP?
 
-	/* size: 10, cachelines: 1, members: 6 */
-	/* last cacheline: 10 bytes */
-};
+
+> There
+> are a lot of unanswered questions on how this will be implemented.
+> Thus, I cannot layout how we are going to leverage this info yet, but
+> your patch are killing this info, which IHMO is going in the wrong
+> direction.
+
+
+I can copy vnet header ahead of data_hard_start, does it work for you?
+
+Thanks
+
+
+>
+>
+>> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+>> Signed-off-by: Jason Wang <jasowang@redhat.com>
+>> ---
+>>   drivers/net/virtio_net.c | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+>> index 11f722460513..98dd75b665a5 100644
+>> --- a/drivers/net/virtio_net.c
+>> +++ b/drivers/net/virtio_net.c
+>> @@ -684,8 +684,8 @@ static struct sk_buff *receive_small(struct net_de=
+vice *dev,
+>>   			page =3D xdp_page;
+>>   		}
+>>  =20
+>> -		xdp.data_hard_start =3D buf + VIRTNET_RX_PAD + vi->hdr_len;
+>> -		xdp.data =3D xdp.data_hard_start + xdp_headroom;
+>> +		xdp.data_hard_start =3D buf + VIRTNET_RX_PAD;
+>> +		xdp.data =3D xdp.data_hard_start + xdp_headroom + vi->hdr_len;
+>>   		xdp.data_end =3D xdp.data + len;
+>>   		xdp.data_meta =3D xdp.data;
+>>   		xdp.rxq =3D &rq->xdp_rxq;
+>> @@ -845,7 +845,7 @@ static struct sk_buff *receive_mergeable(struct ne=
+t_device *dev,
+>>   		 * the descriptor on if we get an XDP_TX return code.
+>>   		 */
+>>   		data =3D page_address(xdp_page) + offset;
+>> -		xdp.data_hard_start =3D data - VIRTIO_XDP_HEADROOM + vi->hdr_len;
+>> +		xdp.data_hard_start =3D data - VIRTIO_XDP_HEADROOM;
+>>   		xdp.data =3D data + vi->hdr_len;
+>>   		xdp.data_end =3D xdp.data + (len - vi->hdr_len);
+>>   		xdp.data_meta =3D xdp.data;
+>
+>
 
