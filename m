@@ -2,94 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C021C6BEA
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 10:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4DD1C6C4B
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 10:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728826AbgEFIiQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 04:38:16 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:37884 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728349AbgEFIiP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 04:38:15 -0400
+        id S1728474AbgEFI5w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 04:57:52 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:39829 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728814AbgEFI5w (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 May 2020 04:57:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588754294;
+        s=mimecast20190719; t=1588755470;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=c+eJgg/zkz4zS/BPXZUC0rvuRWK7Cs0ZNQXjC8ebbiU=;
-        b=VenDdTj7JmnFjiKovNYnpfZ+73raOCXZkqM9YyVqvhf3CkjdaIn9mfPRi+XwABoImBFPHb
-        tyII58vEsqlv9dOk5WBXF1cf8M3grU0ryDV92SEPZbc/lzsVzcpQtos+eNyslleeeFiW5Q
-        xBO8N1n4C4OY+8e6cimYTyYDgvOY3aA=
+        bh=yl7OAxvGIH897ejH+zHnHJaKaA8XauRnVd7h59WywxE=;
+        b=Vhqt//hqOWVCanQRL77eqNMkG7F0zUzJ+j3cpZH8eMXwutlEL5vVHnCvl8rIbcgo3dhhac
+        fxQOmCKnc/Bk6dibzWa+GcaoDz/5TZ9jLjzKqxFshwrhy3lNSemKej3akLZRUD/aaK0Kkh
+        Jbn2pYDtqipj2gd5LDiHt3Z0qUbi9/U=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-514-HeCLntpdMIC6iS_s-5Rckg-1; Wed, 06 May 2020 04:38:08 -0400
-X-MC-Unique: HeCLntpdMIC6iS_s-5Rckg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-148-kHXNobeLMFW3Bst_oiNhDQ-1; Wed, 06 May 2020 04:57:34 -0400
+X-MC-Unique: kHXNobeLMFW3Bst_oiNhDQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1C1C3468;
-        Wed,  6 May 2020 08:38:07 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.15])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ACBFF1001B07;
-        Wed,  6 May 2020 08:37:58 +0000 (UTC)
-Date:   Wed, 6 May 2020 10:37:57 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Eugenio Perez Martin <eperezma@redhat.com>, brouer@redhat.com
-Subject: Re: performance bug in virtio net xdp
-Message-ID: <20200506103757.4bc78b3a@carbon>
-In-Reply-To: <20200506035704-mutt-send-email-mst@kernel.org>
-References: <20200506035704-mutt-send-email-mst@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 89AC480183C;
+        Wed,  6 May 2020 08:57:32 +0000 (UTC)
+Received: from [10.36.113.103] (ovpn-113-103.ams2.redhat.com [10.36.113.103])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6397A5C1D6;
+        Wed,  6 May 2020 08:57:27 +0000 (UTC)
+From:   "Eelco Chaudron" <echaudro@redhat.com>
+To:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        "Martin Lau" <kafai@fb.com>, "Song Liu" <songliubraving@fb.com>,
+        "Yonghong Song" <yhs@fb.com>, "Andrii Nakryiko" <andriin@fb.com>,
+        "Toke =?utf-8?b?SMO4aWxhbmQtSsO4cmdlbnNlbg==?=" <toke@redhat.com>
+Subject: Re: [PATCH bpf-next v2] libbpf: fix probe code to return EPERM if
+ encountered
+Date:   Wed, 06 May 2020 10:57:24 +0200
+Message-ID: <292BB732-5974-48E4-91EC-9482EF0E4600@redhat.com>
+In-Reply-To: <CAEf4BzYHBisx0dLWn-Udp6saPqAA6ew_6W1BJ=zpcQOqWxPSPQ@mail.gmail.com>
+References: <158858309381.5053.12391080967642755711.stgit@ebuild>
+ <CAEf4BzYHBisx0dLWn-Udp6saPqAA6ew_6W1BJ=zpcQOqWxPSPQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 6 May 2020 04:08:27 -0400
-"Michael S. Tsirkin" <mst@redhat.com> wrote:
-
-> So for mergeable bufs, we use ewma machinery to guess the correct buffer
-> size. If we don't guess correctly, XDP has to do aggressive copies.
-> 
-> Problem is, xdp paths do not update the ewma at all, except
-> sometimes with XDP_PASS. So whatever we happen to have
-> before we attach XDP, will mostly stay around.
-> 
-> The fix is probably to update ewma unconditionally.
-
-I personally find the code hard to follow, and (I admit) that it took
-me some time to understand this code path (so I might still be wrong).
-
-In patch[1] I tried to explain (my understanding):
-
-  In receive_mergeable() the frame size is more dynamic. There are two
-  basic cases: (1) buffer size is based on a exponentially weighted
-  moving average (see DECLARE_EWMA) of packet length. Or (2) in case
-  virtnet_get_headroom() have any headroom then buffer size is
-  PAGE_SIZE. The ctx pointer is this time used for encoding two values;
-  the buffer len "truesize" and headroom. In case (1) if the rx buffer
-  size is underestimated, the packet will have been split over more
-  buffers (num_buf info in virtio_net_hdr_mrg_rxbuf placed in top of
-  buffer area). If that happens the XDP path does a xdp_linearize_page
-  operation.
 
 
-The EWMA code is not used when headroom is defined, which e.g. gets
-enabled when running XDP.
+On 4 May 2020, at 20:43, Andrii Nakryiko wrote:
 
+> On Mon, May 4, 2020 at 2:13 AM Eelco Chaudron <echaudro@redhat.com> =
 
-[1] https://lore.kernel.org/netdev/158824572816.2172139.1358700000273697123.stgit@firesoul/
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+> wrote:
+>>
+>> When the probe code was failing for any reason ENOTSUP was returned, =
+
+>> even
+>> if this was due to no having enough lock space. This patch fixes this =
+
+>> by
+>> returning EPERM to the user application, so it can respond and =
+
+>> increase
+>> the RLIMIT_MEMLOCK size.
+>>
+>> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+>> ---
+>> v2: Split bpf_object__probe_name() in two functions as suggested by =
+
+>> Andrii
+>
+> Yeah, looks good, and this is good enough, so consider you have my
+> ack. But I think we can further improve the experience by:
+>
+> 1. Changing existing "Couldn't load basic 'r0 =3D 0' BPF program."
+> message to be something more meaningful and actionable for user. E.g.,
+>
+> "Couldn't load trivial BPF program. Make sure your kernel supports BPF
+> (CONFIG_BPF_SYSCALL=3Dy) and/or that RLIMIT_MEMLOCK is set to big enoug=
+h
+> value."
+
+I had pr_perm_msg() in the previous patch, but I forgot to put it back =
+
+in :(
+However your message looks way better, so I plan to send a v3 with the =
+
+following:
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 6838e6d431ce..ad3043c5db13 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -3170,8 +3170,10 @@ bpf_object__probe_loading(struct bpf_object *obj)
+         ret =3D bpf_load_program_xattr(&attr, NULL, 0);
+         if (ret < 0) {
+                 cp =3D libbpf_strerror_r(errno, errmsg, sizeof(errmsg));=
+
+-               pr_warn("Error in %s():%s(%d). Couldn't load basic 'r0 =3D=
+ =
+
+0' BPF program.\n",
+-                       __func__, cp, errno);
++               pr_warn("Error in %s():%s(%d). Couldn't load trivial BPF =
+
+"
++                       "program. Make sure your kernel supports BPF "
++                       "(CONFIG_BPF_SYSCALL=3Dy) and/or that =
+
+RLIMIT_MEMLOCK is "
++                       "set to big enough value.\n", __func__, cp, =
+
+errno);
+                 return -errno;
+         }
+         close(ret);
+
+> Then even complete kernel newbies can search for CONFIG_BPF_SYSCALL or
+> RLIMIT_MEMLOCK and hopefully find useful discussions. We can/should
+> add RLIMIT_MEMLOCK examples to some FAQ, probably as well (if it's not
+> there already).
+
+The xdp-tutorial repo has examples on how to set it to unlimited ;)
+Also, the xdp-tool=E2=80=99s repo has some examples on how to dynamically=
+ try =
+
+to increase it, for examples:
+
+http://172.16.1.201:8080/source/xref/xdp-tools/xdp-loader/xdp-loader.c?r=3D=
+1926fc3d#198
+
+> 2. I'd do bpf_object__probe_loading() before obj->loaded is set, so
+> that user can have a loop of bpf_object__load() that bump
+> RLIMIT_MEMLOCK in steps. After setting obj->loaded =3D true, user won't=
+
+> be able to attemp loading again and will get "object should not be
+> loaded twice\n".
+
+Guess this was acked in Toke=E2=80=99s thread.
+
+> [...]
 
