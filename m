@@ -2,78 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B7641C6AE7
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 10:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0EED1C6B60
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 10:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728353AbgEFIIg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 04:08:36 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:20010 "EHLO
+        id S1728884AbgEFIT5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 04:19:57 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:57542 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728602AbgEFIIe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 May 2020 04:08:34 -0400
+        with ESMTP id S1728875AbgEFIT4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 May 2020 04:19:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588752513;
+        s=mimecast20190719; t=1588753195;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=CBWxp/RqrAZHRhIdtBhb3xri0XLzwh+Ch7QU+ftNF34=;
-        b=X5aij9Dcg2c93UiXjCx3F/VgGLUlK7pOUCYpH/bYM3QYiDkBSGh0H+oceIGQiF7O03vaEV
-        tAM8Jk8uRuPne4OoGVMRylpzKyTsqwfgTWG3njDnYngWMNqaZ2x5ZG5UaL+8YXkyqaIw5v
-        GGwZCsCSe+cvN9YtNFcYgdbqxo+4S5M=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-481-_EWqL09gMYqSi0knuo-H_Q-1; Wed, 06 May 2020 04:08:32 -0400
-X-MC-Unique: _EWqL09gMYqSi0knuo-H_Q-1
-Received: by mail-wm1-f70.google.com with SMTP id s12so795621wmj.6
-        for <bpf@vger.kernel.org>; Wed, 06 May 2020 01:08:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=CBWxp/RqrAZHRhIdtBhb3xri0XLzwh+Ch7QU+ftNF34=;
-        b=Ucj5ZmaX1tufTy1zq9btN7jDI1ZI8dMSqNDHHnPHv/ngWvamx5WsJ9abvQAyKhsIJb
-         mN7+rtZkE6rYTsbkAvTQ5AVJZoJXxOpQs5HMafMZEpxgr54D9jmhk8hP/5Dhcxvby0kC
-         mHpkHfE7rHvYwMLRO2aIueTXETO8LlAeusexK+3gcd2HDgNoOHvhIwTXrObay3MupWD9
-         GTlcv7+zDnLxlH80Se7NLrLdbGX7RMWJBquZXt3dGBdUte6v44Z2xwj7afSWicAaJ/0z
-         pedMrh5mVkvTlA13BFY0kzfVdvmgnMLAVzmFkipl3ztV3h/1L80L5z/Hw4xnPfjImcTA
-         fYvg==
-X-Gm-Message-State: AGi0PubVmwuDt/bVRTzTOn0j58VsM/a5LIMcZaDKZTZ94etgV3IqdZU0
-        KikDrUz2rAeKc7jO38zfgNHpMsxZ82XRUovvyTCEzHe6uWoDxTLH5jP/SHAy/IGVB37t1hTw8Ke
-        Xtc3gqWmPNumQ
-X-Received: by 2002:a5d:54c4:: with SMTP id x4mr8713634wrv.73.1588752511065;
-        Wed, 06 May 2020 01:08:31 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKoYFzRFdcs5OUqDOntDuXyJrKD5k/C6ihqMqcjU/DctdS4/KReL94LfbKFGzcZw7Aen1K6xw==
-X-Received: by 2002:a5d:54c4:: with SMTP id x4mr8713617wrv.73.1588752510881;
-        Wed, 06 May 2020 01:08:30 -0700 (PDT)
-Received: from redhat.com (bzq-109-66-7-121.red.bezeqint.net. [109.66.7.121])
-        by smtp.gmail.com with ESMTPSA id g25sm1724902wmh.24.2020.05.06.01.08.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 01:08:30 -0700 (PDT)
-Date:   Wed, 6 May 2020 04:08:27 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RCAnXwZiAEiMj7R4ogMQj0woVBKNACtfrYeqTg9CBXo=;
+        b=WA6smniH//ewHF7w6tGyq/otml4+NZxZm9X05CmC2sR2aOYjV9fhVRiq5VVV1iKQRnI3SQ
+        xpLKcgZPCWbbrzMKnJkHuCeemln3lNppGgeTORYOVddIBW1Ka3k5qUukPxvgg7XHYKCF2w
+        l2n8fjFV0+vM7fNomp/caoaufL2HUV0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-132-9_qVx4ajOxaJgzLRs0P4VQ-1; Wed, 06 May 2020 04:19:51 -0400
+X-MC-Unique: 9_qVx4ajOxaJgzLRs0P4VQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8787818FE860;
+        Wed,  6 May 2020 08:19:50 +0000 (UTC)
+Received: from [10.72.13.165] (ovpn-13-165.pek2.redhat.com [10.72.13.165])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 22F8E1FBCD;
+        Wed,  6 May 2020 08:19:41 +0000 (UTC)
+Subject: Re: [PATCH net-next 1/2] virtio-net: don't reserve space for vnet
+ header for XDP
+To:     "Michael S. Tsirkin" <mst@redhat.com>
 Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eugenio Perez Martin <eperezma@redhat.com>
-Subject: performance bug in virtio net xdp
-Message-ID: <20200506035704-mutt-send-email-mst@kernel.org>
+        Jesper Dangaard Brouer <brouer@redhat.com>
+References: <20200506061633.16327-1-jasowang@redhat.com>
+ <20200506033834-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <7a169b06-b6b9-eac1-f03a-39dd1cfcce57@redhat.com>
+Date:   Wed, 6 May 2020 16:19:40 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20200506033834-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-So for mergeable bufs, we use ewma machinery to guess the correct buffer
-size. If we don't guess correctly, XDP has to do aggressive copies.
 
-Problem is, xdp paths do not update the ewma at all, except
-sometimes with XDP_PASS. So whatever we happen to have
-before we attach XDP, will mostly stay around.
+On 2020/5/6 =E4=B8=8B=E5=8D=883:53, Michael S. Tsirkin wrote:
+> On Wed, May 06, 2020 at 02:16:32PM +0800, Jason Wang wrote:
+>> We tried to reserve space for vnet header before
+>> xdp.data_hard_start. But this is useless since the packet could be
+>> modified by XDP which may invalidate the information stored in the
+>> header and there's no way for XDP to know the existence of the vnet
+>> header currently.
+> What do you mean? Doesn't XDP_PASS use the header in the buffer?
 
-The fix is probably to update ewma unconditionally.
 
--- 
-MST
+We don't, see 436c9453a1ac0 ("virtio-net: keep vnet header zeroed after=20
+processing XDP")
+
+If there's other place, it should be a bug.
+
+
+>
+>> So let's just not reserve space for vnet header in this case.
+> In any case, we can find out XDP does head adjustments
+> if we need to.
+
+
+But XDP program can modify the packets without adjusting headers.
+
+Thanks
+
+
+>
+>
+>> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+>> Signed-off-by: Jason Wang <jasowang@redhat.com>
+>> ---
+>>   drivers/net/virtio_net.c | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+>> index 11f722460513..98dd75b665a5 100644
+>> --- a/drivers/net/virtio_net.c
+>> +++ b/drivers/net/virtio_net.c
+>> @@ -684,8 +684,8 @@ static struct sk_buff *receive_small(struct net_de=
+vice *dev,
+>>   			page =3D xdp_page;
+>>   		}
+>>  =20
+>> -		xdp.data_hard_start =3D buf + VIRTNET_RX_PAD + vi->hdr_len;
+>> -		xdp.data =3D xdp.data_hard_start + xdp_headroom;
+>> +		xdp.data_hard_start =3D buf + VIRTNET_RX_PAD;
+>> +		xdp.data =3D xdp.data_hard_start + xdp_headroom + vi->hdr_len;
+>>   		xdp.data_end =3D xdp.data + len;
+>>   		xdp.data_meta =3D xdp.data;
+>>   		xdp.rxq =3D &rq->xdp_rxq;
+>> @@ -845,7 +845,7 @@ static struct sk_buff *receive_mergeable(struct ne=
+t_device *dev,
+>>   		 * the descriptor on if we get an XDP_TX return code.
+>>   		 */
+>>   		data =3D page_address(xdp_page) + offset;
+>> -		xdp.data_hard_start =3D data - VIRTIO_XDP_HEADROOM + vi->hdr_len;
+>> +		xdp.data_hard_start =3D data - VIRTIO_XDP_HEADROOM;
+>>   		xdp.data =3D data + vi->hdr_len;
+>>   		xdp.data_end =3D xdp.data + (len - vi->hdr_len);
+>>   		xdp.data_meta =3D xdp.data;
+>> --=20
+>> 2.20.1
 
