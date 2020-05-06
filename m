@@ -2,92 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5A21C728F
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 16:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DA61C74C1
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 17:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728894AbgEFORh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 10:17:37 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:57243 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728670AbgEFORh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 May 2020 10:17:37 -0400
-Received: from [IPv6:2601:646:8600:3281:d9e2:e16d:2ce4:a5c3] ([IPv6:2601:646:8600:3281:d9e2:e16d:2ce4:a5c3])
-        (authenticated bits=0)
-        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 046EGISp3022440
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Wed, 6 May 2020 07:16:20 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 046EGISp3022440
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2020042201; t=1588774580;
-        bh=2t81ix48+XEqIovy4/uuaiJNVpVfGfHkdc5n10MqWF4=;
-        h=Date:In-Reply-To:References:Subject:To:From:From;
-        b=ETbnGxm8J7xr65vxrUydccH3oDZPr6ssZbQrpdFDLaJeehBoK3COvrkjxemldJ7Kx
-         Sa52fbj6LykWgbqsauISnLs58GZlGFQSwp79DKsiE1odTeSOahoIzKxZbKYslRZtx0
-         leFQHs/2egU6BRZTlK0L2B6oIkbgaI2b94xuQ4hRk4PQFHIuoTwmGAvAjJP3lp8BMK
-         zUtyWynNJ6BlmrLVpoB2QgQIliA5HiCUHfX7pco+BKXdU7t7orRcmmE0/IvCMP0sE0
-         PY/U2uGwLk/0CeWvIzDjVdiuqMmSLvMaZFW9KlUXKXXlYlfF7y6ZcnDqnTxh9U/8cl
-         nnKRsNJVAHEHA==
-Date:   Wed, 06 May 2020 07:16:11 -0700
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20200506140352.37154-1-yanaijie@huawei.com>
-References: <20200506140352.37154-1-yanaijie@huawei.com>
+        id S1729724AbgEFP0c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 11:26:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730161AbgEFP0W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 May 2020 11:26:22 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8848E20B1F;
+        Wed,  6 May 2020 15:26:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588778781;
+        bh=HQIi62eI5uJmn6coUVV8nyrKXTDFX1QMzIdp0OWglVI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=TN/A357UBRiY1GCk960pbOptCKbp3MwIjngdR+4c6+yb1ozylFQqHuBa66W81AO/X
+         EuVe4joht7jPWliaZ7XhTwJwUUkUtnrL+LELaxuNXmYbhkAr6DK/k1nqENw/aMA4Gv
+         ycvyuBTx19MWMEsrTzI4hvNfnWck5wpfOK7V2Ea4=
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Jiwei Sun <jiwei.sun@windriver.com>,
+        John Garry <john.garry@huawei.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, yuzhoujian <yuzhoujian@didichuxing.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 64/91] perf doc: Pass ASCIIDOC_EXTRA as an argument
+Date:   Wed,  6 May 2020 12:22:07 -0300
+Message-Id: <20200506152234.21977-65-acme@kernel.org>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200506152234.21977-1-acme@kernel.org>
+References: <20200506152234.21977-1-acme@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v2] bpf, i386: remove unneeded conversion to bool
-To:     Jason Yan <yanaijie@huawei.com>, davem@davemloft.net,
-        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, udknight@gmail.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        lukenels@cs.washington.edu, xi.wang@gmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-From:   hpa@zytor.com
-Message-ID: <D11F36F6-BF28-4DEB-8AED-4486477130F8@zytor.com>
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On May 6, 2020 7:03:52 AM PDT, Jason Yan <yanaijie@huawei=2Ecom> wrote:
->The '=3D=3D' expression itself is bool, no need to convert it to bool
->again=2E
->This fixes the following coccicheck warning:
->
->arch/x86/net/bpf_jit_comp32=2Ec:1478:50-55: WARNING: conversion to bool
->not needed here
->arch/x86/net/bpf_jit_comp32=2Ec:1479:50-55: WARNING: conversion to bool
->not needed here
->
->Signed-off-by: Jason Yan <yanaijie@huawei=2Ecom>
->---
-> v2: change the name 'x32' to 'i386'=2E
->
-> arch/x86/net/bpf_jit_comp32=2Ec | 4 ++--
-> 1 file changed, 2 insertions(+), 2 deletions(-)
->
->diff --git a/arch/x86/net/bpf_jit_comp32=2Ec
->b/arch/x86/net/bpf_jit_comp32=2Ec
->index 66cd150b7e54=2E=2E96fde03aa987 100644
->--- a/arch/x86/net/bpf_jit_comp32=2Ec
->+++ b/arch/x86/net/bpf_jit_comp32=2Ec
->@@ -1475,8 +1475,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int
->*addrs, u8 *image,
-> 	for (i =3D 0; i < insn_cnt; i++, insn++) {
-> 		const s32 imm32 =3D insn->imm;
-> 		const bool is64 =3D BPF_CLASS(insn->code) =3D=3D BPF_ALU64;
->-		const bool dstk =3D insn->dst_reg =3D=3D BPF_REG_AX ? false : true;
->-		const bool sstk =3D insn->src_reg =3D=3D BPF_REG_AX ? false : true;
->+		const bool dstk =3D insn->dst_reg !=3D BPF_REG_AX;
->+		const bool sstk =3D insn->src_reg !=3D BPF_REG_AX;
-> 		const u8 code =3D insn->code;
-> 		const u8 *dst =3D bpf2ia32[insn->dst_reg];
-> 		const u8 *src =3D bpf2ia32[insn->src_reg];
+From: Ian Rogers <irogers@google.com>
 
-"foo ? true : false" is also far better written !!foo when it isn't totall=
-y redundant=2E
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+commit e9cfa47e687d ("perf doc: allow ASCIIDOC_EXTRA to be an argument")
+allowed ASCIIDOC_EXTRA to be passed as an option to the Documentation
+Makefile. This change passes ASCIIDOC_EXTRA, set by detected features or
+command line options, prior to doing a Documentation build. This is
+necessary to allow conditional compilation, based on configuration
+variables, in asciidoc code.
+
+Signed-off-by: Ian Rogers <irogers@google.com>
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Andrii Nakryiko <andriin@fb.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Igor Lubashev <ilubashe@akamai.com>
+Cc: Jin Yao <yao.jin@linux.intel.com>
+Cc: Jiwei Sun <jiwei.sun@windriver.com>
+Cc: John Garry <john.garry@huawei.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Stephane Eranian <eranian@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: yuzhoujian <yuzhoujian@didichuxing.com>
+Link: http://lore.kernel.org/lkml/20200429231443.207201-2-irogers@google.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/Makefile.perf | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index d15a311408f1..94a495594e99 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -188,7 +188,7 @@ AWK     = awk
+ # non-config cases
+ config := 1
+ 
+-NON_CONFIG_TARGETS := clean python-clean TAGS tags cscope help install-doc install-man install-html install-info install-pdf doc man html info pdf
++NON_CONFIG_TARGETS := clean python-clean TAGS tags cscope help
+ 
+ ifdef MAKECMDGOALS
+ ifeq ($(filter-out $(NON_CONFIG_TARGETS),$(MAKECMDGOALS)),)
+@@ -832,7 +832,7 @@ INSTALL_DOC_TARGETS += quick-install-doc quick-install-man quick-install-html
+ 
+ # 'make doc' should call 'make -C Documentation all'
+ $(DOC_TARGETS):
+-	$(Q)$(MAKE) -C $(DOC_DIR) O=$(OUTPUT) $(@:doc=all)
++	$(Q)$(MAKE) -C $(DOC_DIR) O=$(OUTPUT) $(@:doc=all) ASCIIDOC_EXTRA=$(ASCIIDOC_EXTRA)
+ 
+ TAG_FOLDERS= . ../lib ../include
+ TAG_FILES= ../../include/uapi/linux/perf_event.h
+@@ -959,7 +959,7 @@ install-python_ext:
+ 
+ # 'make install-doc' should call 'make -C Documentation install'
+ $(INSTALL_DOC_TARGETS):
+-	$(Q)$(MAKE) -C $(DOC_DIR) O=$(OUTPUT) $(@:-doc=)
++	$(Q)$(MAKE) -C $(DOC_DIR) O=$(OUTPUT) $(@:-doc=) ASCIIDOC_EXTRA=$(ASCIIDOC_EXTRA)
+ 
+ ### Cleaning rules
+ 
+-- 
+2.21.1
+
