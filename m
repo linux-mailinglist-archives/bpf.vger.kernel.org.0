@@ -2,41 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D21591C6936
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 08:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854CC1C695B
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 08:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727891AbgEFGoG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 02:44:06 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:35024 "EHLO
+        id S1727934AbgEFGuT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 02:50:19 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:58504 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726843AbgEFGoG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 02:44:06 -0400
+        by vger.kernel.org with ESMTP id S1727893AbgEFGuS (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 02:50:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588747445;
+        s=mimecast20190719; t=1588747817;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fLJ7tzkQRnX/e2EOBzrs4sawlbSbrVa/ew+7YuNUqzc=;
-        b=diQ/YIYagSTum/79qrl2Wck1SO5MworYbuoOkOBU5/CCELZKztgKsFspAqDXt3a2IYWIwv
-        I/F4s7p9GeIk4snEGICAhAEhyprmNY0emch30sB5MMVs/UAi+ZKR0N/quQRQ8M6n1D2+LP
-        5qGNgM/B/eC5ZwJ1xL6tqrCVqScdRfo=
+        bh=Sj0L9bzOMe10y/BYGkxLOxe7uHdN6rzSZBZfMomA/94=;
+        b=gEb3+sLedbYvDTXk0IcwmnR4W1PcLp90p+YhV15Rr5CRKZnqiqgiN/eE+DncRLRL3+YhS2
+        Y8MYjc3iIkbiqfdwGGCeaIVh8czf3pyiF1/udpkRX+rJehVYU7M2p7PbK498DdJlSmn0X7
+        vEN6TaDnn0xqoTnxSOa3JCL6zX+e8vg=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-140-uZIIn0n5NBy_MFYyCmgfYA-1; Wed, 06 May 2020 02:44:01 -0400
-X-MC-Unique: uZIIn0n5NBy_MFYyCmgfYA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+ us-mta-220-vsPC0njcP5-SPjAR2JWACw-1; Wed, 06 May 2020 02:50:13 -0400
+X-MC-Unique: vsPC0njcP5-SPjAR2JWACw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F2C4245F;
-        Wed,  6 May 2020 06:43:58 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 27FE245F;
+        Wed,  6 May 2020 06:50:11 +0000 (UTC)
 Received: from [10.72.13.165] (ovpn-13-165.pek2.redhat.com [10.72.13.165])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A49A8605DF;
-        Wed,  6 May 2020 06:43:47 +0000 (UTC)
-Subject: Re: [PATCH net-next 20/33] vhost_net: also populate XDP frame size
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     sameehj@amazon.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        zorik@amazon.com, akiyano@amazon.com, gtzalik@amazon.com,
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BAB196297D;
+        Wed,  6 May 2020 06:49:58 +0000 (UTC)
+Subject: Re: [PATCH net-next v2 20/33] vhost_net: also populate XDP frame size
+From:   Jason Wang <jasowang@redhat.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>, sameehj@amazon.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, zorik@amazon.com,
+        akiyano@amazon.com, gtzalik@amazon.com,
         =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
         Daniel Borkmann <borkmann@iogearbox.net>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>,
@@ -49,20 +50,18 @@ Cc:     sameehj@amazon.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
         Lorenzo Bianconi <lorenzo@kernel.org>,
         Saeed Mahameed <saeedm@mellanox.com>,
         steffen.klassert@secunet.com
-References: <158757160439.1370371.13213378122947426220.stgit@firesoul>
- <158757174266.1370371.14475202001364271065.stgit@firesoul>
- <8ebbd5d8-e256-3d6b-7cc1-dd3d29be3504@redhat.com>
- <20200430115415.5e4c815e@carbon>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <e7d77cd5-ecad-2ac6-ae62-cace7a66a874@redhat.com>
-Date:   Wed, 6 May 2020 14:43:45 +0800
+References: <158824557985.2172139.4173570969543904434.stgit@firesoul>
+ <158824572308.2172139.1144470511173466125.stgit@firesoul>
+ <0a875a6e-8b8d-b55f-2b50-1c8dc0017a92@redhat.com>
+Message-ID: <482c0099-a8b7-534e-7c91-a57cd50e9b50@redhat.com>
+Date:   Wed, 6 May 2020 14:49:56 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200430115415.5e4c815e@carbon>
+In-Reply-To: <0a875a6e-8b8d-b55f-2b50-1c8dc0017a92@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -70,62 +69,46 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-On 2020/4/30 =E4=B8=8B=E5=8D=885:54, Jesper Dangaard Brouer wrote:
-> On Mon, 27 Apr 2020 13:50:15 +0800
-> Jason Wang <jasowang@redhat.com> wrote:
+On 2020/5/6 =E4=B8=8B=E5=8D=882:41, Jason Wang wrote:
 >
->> On 2020/4/23 =E4=B8=8A=E5=8D=8812:09, Jesper Dangaard Brouer wrote:
->>> In vhost_net_build_xdp() the 'buf' that gets queued via an xdp_buff
->>> have embedded a struct tun_xdp_hdr (located at xdp->data_hard_start)
->>> which contains the buffer length 'buflen' (with tailroom for
->>> skb_shared_info). Also storing this buflen in xdp->frame_sz, does not
->>> obsolete struct tun_xdp_hdr, as it also contains a struct
->>> virtio_net_hdr with other information.
->>>
->>> Cc: Jason Wang <jasowang@redhat.com>
->>> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
->>> ---
->>>    drivers/vhost/net.c |    1 +
->>>    1 file changed, 1 insertion(+)
->>>
->>> diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
->>> index 87469d67ede8..69af007e22f4 100644
->>> --- a/drivers/vhost/net.c
->>> +++ b/drivers/vhost/net.c
->>> @@ -745,6 +745,7 @@ static int vhost_net_build_xdp(struct vhost_net_v=
-irtqueue *nvq,
->>>    	xdp->data =3D buf + pad;
->>>    	xdp->data_end =3D xdp->data + len;
->>>    	hdr->buflen =3D buflen;
->>> +	xdp->frame_sz =3D buflen;
->>>   =20
->>>    	--net->refcnt_bias;
->>>    	alloc_frag->offset +=3D buflen;
+> On 2020/4/30 =E4=B8=8B=E5=8D=887:22, Jesper Dangaard Brouer wrote:
+>> In vhost_net_build_xdp() the 'buf' that gets queued via an xdp_buff
+>> have embedded a struct tun_xdp_hdr (located at xdp->data_hard_start)
+>> which contains the buffer length 'buflen' (with tailroom for
+>> skb_shared_info). Also storing this buflen in xdp->frame_sz, does not
+>> obsolete struct tun_xdp_hdr, as it also contains a struct
+>> virtio_net_hdr with other information.
 >>
->> Tun_xdp_one() will use hdr->buflen as the frame_sz (patch 19), so it
->> looks to me there's no need to do this?
-> I was thinking to go the "other way", meaning let tun_xdp_one() use
-> xdp->frame_sz, which gets set here.  This would allow us to refactor
-> the code, and drop struct tun_xdp_hdr, as (see pahole below) it only
-> carries 'buflen' and the remaining part comes from struct
-> virtio_net_hdr, which could be used directly instead.
+>> Cc: Jason Wang <jasowang@redhat.com>
+>> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+>> ---
+>> =C2=A0 drivers/vhost/net.c |=C2=A0=C2=A0=C2=A0 1 +
+>> =C2=A0 1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+>> index 2927f02cc7e1..516519dcc8ff 100644
+>> --- a/drivers/vhost/net.c
+>> +++ b/drivers/vhost/net.c
+>> @@ -747,6 +747,7 @@ static int vhost_net_build_xdp(struct=20
+>> vhost_net_virtqueue *nvq,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 xdp->data =3D buf + pad;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 xdp->data_end =3D xdp->data + len;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 hdr->buflen =3D buflen;
+>> +=C2=A0=C2=A0=C2=A0 xdp->frame_sz =3D buflen;
+>> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 --net->refcnt_bias;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 alloc_frag->offset +=3D buflen;
 >
-> As this will be a code refactor, I would prefer we do it after this
-> patchseries is agreed upon.
 >
-> $ pahole -C tun_xdp_hdr drivers/net/tap.o
-> struct tun_xdp_hdr {
-> 	int                        buflen;               /*     0     4 */
-> 	struct virtio_net_hdr gso;                       /*     4    10 */
+> Hi Jesper:
 >
-> 	/* size: 16, cachelines: 1, members: 2 */
-> 	/* padding: 2 */
-> 	/* last cacheline: 16 bytes */
-> };
+> As I said in v1, tun will do this for us (patch 19) via hdr->buflen.=20
+> So it looks to me this is not necessary?
+>
+> Thanks=20
 
 
-Ok I get this.
+Miss your reply. So
 
-Thanks
+Acked-by: Jason Wang <jasowang@redhat.com>
 
 
