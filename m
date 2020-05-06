@@ -2,256 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E991C762E
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 18:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBB81C7631
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 18:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730135AbgEFQWu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 12:22:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39652 "EHLO
+        id S1729447AbgEFQY5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 12:24:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729602AbgEFQWt (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 12:22:49 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DFDEC061A0F
-        for <bpf@vger.kernel.org>; Wed,  6 May 2020 09:22:48 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id y31so2958875qta.16
-        for <bpf@vger.kernel.org>; Wed, 06 May 2020 09:22:48 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1729341AbgEFQY5 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 12:24:57 -0400
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5E3C061A0F
+        for <bpf@vger.kernel.org>; Wed,  6 May 2020 09:24:56 -0700 (PDT)
+Received: by mail-oo1-xc36.google.com with SMTP id t12so621176oot.2
+        for <bpf@vger.kernel.org>; Wed, 06 May 2020 09:24:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pBaYS/zRDsmCVekc9n8QZVM5xQS1xxpuk4Dp4Gq4AxE=;
-        b=koVZdzWisFYQQW4jtDFXuWwjdvFUO1kntTaogi7y4w/Aa0zCnSO92NJ4SSklZcCs+/
-         G8E5qZwZ7S2f4HeqFWHhR8fBdudNSE6PKU4PuUOV5z60UGVmgRK46Kt3rfvZkoLpdzMV
-         WDvgaut8PIYtO/Ve585eVVzaEiX+7qZZDQ6hDLWkiWTHg7Za7fz5ZgUlLDIIzkU6K2wz
-         mVVzqaquQfdEE/7VnulsS4PpyvHKaOpBWCYeokh8BRbZT9vbKVkBd+pPkvp5Qzk3gwtk
-         hChcHMuXfV5P7/RnZ14X+rKxHd1g41sn4YYTa7WF7s50/UWN1jvFK45XHLSTE5A7Xh+n
-         bmAg==
+        bh=1PP9L83s6CfD0+en6vgV3WIo4aL6f+bLAH17qAcnYdw=;
+        b=g9ZOH7vNz3pq7qaff5jL+FbNrPfjqqMdS9SdtQYowaJ2jKphzdTtaR5qDMaMbpQlZW
+         6FlIg0HteMijfIxq0RP4GGzz8OTTblvvC9EEMwp5fWLjV9SbuxGfR6HtDCUFFIVnskov
+         ckb3qD7ASJgr/MOz4FkGVP6DGNWuehvTTUT8Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=pBaYS/zRDsmCVekc9n8QZVM5xQS1xxpuk4Dp4Gq4AxE=;
-        b=BMLoFGEHg/Mqrg025oz4jSIvRHf/5bT/+ZtsHQKTQDCHE6kIVw7AhGhWDYUMFk0+h+
-         2ylnBu88j+TZg1zQEsilrkLYq+GgjpCtEJdhe1hoeUIanfbc7+SLef/sNaKScY5H+hOM
-         exrTuCVSdyalAm1S+RyROY1FCZSz7ZoySBx5KzyJRAxB85/AgwcWstaWRpGWYudeYqeQ
-         h3nwEUA9bPT8a3EpHrdrkHN97vX/a28StVZLkV3L/G1fji9BAAaq2FpUxzIcRLAHed4I
-         LXwiz3yTUA6jfU8C4Y8ebuYHygJ+fjJpmRd8fU4vH57Jw8EbsveXSPaqZdBjmPXY3Wih
-         gRpQ==
-X-Gm-Message-State: AGi0PuY6duGPntBti0dh5uHID44cHNpAygwwRkmpnhKnkdnDjE5fSe0P
-        wpq4nYlXWZCXnTc6irnzx6Im1nk=
-X-Google-Smtp-Source: APiQypLSmgKPqW/8zcAgEy32SmMjTd6pt/FHFwYYyD4BlLJ6jmQ800lv7GfFcxZmcYE9V3YwL/mI5YM=
-X-Received: by 2002:ad4:4d06:: with SMTP id l6mr9033599qvl.34.1588782167494;
- Wed, 06 May 2020 09:22:47 -0700 (PDT)
-Date:   Wed, 6 May 2020 09:22:45 -0700
-In-Reply-To: <20200506062342.6tncscx63wz6udby@kafai-mbp>
-Message-Id: <20200506162245.GG241848@google.com>
-Mime-Version: 1.0
-References: <20200505202730.70489-1-sdf@google.com> <20200505202730.70489-5-sdf@google.com>
- <20200506062342.6tncscx63wz6udby@kafai-mbp>
-Subject: Re: [PATCH bpf-next v2 4/5] bpf: allow any port in bpf_bind helper
-From:   sdf@google.com
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        ast@kernel.org, daniel@iogearbox.net, Andrey Ignatov <rdna@fb.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1PP9L83s6CfD0+en6vgV3WIo4aL6f+bLAH17qAcnYdw=;
+        b=EN7RR1MRYiagZUlM3hupYJ+1Qosb7x9PCLDCYRVgJt4JMZnb21nsFIo9sYRuJzYuJp
+         37OlKSYa3+vmuoQksVdgCqtp83yb8tgk2ItQmMovrwqkST52EJSM+32K9sXQLaZzv7SM
+         K0tJTJPIwGZEfaW08BS3ERSKDIi4S7b61QRml7PeL5Okt/hdJJX0+f+ZOgk3c3BALu3B
+         l8/kiABGvvEPr+Uga8K0rXl75w9jNCvhlUlzt0lbV0jOnAZCOPtDLT7JlN0M8+Nqc7kx
+         /iB2iKjuzDO+AHK80hHuFeuv9Lz14R4AaM8ngQNQu5Y4NIc/pv61Hww9ATcHFK1OhTbu
+         ipvA==
+X-Gm-Message-State: AGi0PuYL18tjcfgym3DeuQEGbYGgG0tU8+oTi5TK8QPTjQv0ZPKxV0EN
+        D/54xECaU+aPpc8+q2uLarvbtjbSKSAllySwe51obA==
+X-Google-Smtp-Source: APiQypIfm8F2vC1A10Q+HEpp4v6afxOZB7/wXUUhJcZbkumVfUecWZ21jFiR66fC1ls8UZfHZKa0zn4AYiRDrDockZM=
+X-Received: by 2002:a4a:e60d:: with SMTP id f13mr7832719oot.6.1588782295352;
+ Wed, 06 May 2020 09:24:55 -0700 (PDT)
+MIME-Version: 1.0
+References: <CACAyw9-uU_52esMd1JjuA80fRPHJv5vsSg8GnfW3t_qDU4aVKQ@mail.gmail.com>
+ <CAADnVQKZ63d5A+Jv8bbXzo2RKNCXFH78zos0AjpbJ3ii9OHW0g@mail.gmail.com>
+In-Reply-To: <CAADnVQKZ63d5A+Jv8bbXzo2RKNCXFH78zos0AjpbJ3ii9OHW0g@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Wed, 6 May 2020 17:24:43 +0100
+Message-ID: <CACAyw9_ygNV1J+PkBJ-i7ysU_Y=rN3Z5adKYExNXCic0gumaow@mail.gmail.com>
+Subject: Re: Checksum behaviour of bpf_redirected packets
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/05, Martin KaFai Lau wrote:
-> On Tue, May 05, 2020 at 01:27:29PM -0700, Stanislav Fomichev wrote:
-> > We want to have a tighter control on what ports we bind to in
-> > the BPF_CGROUP_INET{4,6}_CONNECT hooks even if it means
-> > connect() becomes slightly more expensive. The expensive part
-> > comes from the fact that we now need to call inet_csk_get_port()
-> > that verifies that the port is not used and allocates an entry
-> > in the hash table for it.
+On Wed, 6 May 2020 at 02:28, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, May 4, 2020 at 9:12 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
 > >
-> > Since we can't rely on "snum || !bind_address_no_port" to prevent
-> > us from calling POST_BIND hook anymore, let's add another bind flag
-> > to indicate that the call site is BPF program.
+> > In our TC classifier cls_redirect [1], we use the following sequence
+> > of helper calls to
+> > decapsulate a GUE (basically IP + UDP + custom header) encapsulated packet:
 > >
-> > v2:
-> > * Update documentation (Andrey Ignatov)
-> > * Pass BIND_FORCE_ADDRESS_NO_PORT conditionally (Andrey Ignatov)
+> >   skb_adjust_room(skb, -encap_len,
+> > BPF_ADJ_ROOM_MAC, BPF_F_ADJ_ROOM_FIXED_GSO)
+> >   bpf_redirect(skb->ifindex, BPF_F_INGRESS)
 > >
-> > Cc: Andrey Ignatov <rdna@fb.com>
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  include/net/inet_common.h                     |   2 +
-> >  include/uapi/linux/bpf.h                      |   9 +-
-> >  net/core/filter.c                             |  18 ++-
-> >  net/ipv4/af_inet.c                            |  10 +-
-> >  net/ipv6/af_inet6.c                           |  12 +-
-> >  tools/include/uapi/linux/bpf.h                |   9 +-
-> >  .../bpf/prog_tests/connect_force_port.c       | 104 ++++++++++++++++++
-> >  .../selftests/bpf/progs/connect_force_port4.c |  28 +++++
-> >  .../selftests/bpf/progs/connect_force_port6.c |  28 +++++
-> >  9 files changed, 192 insertions(+), 28 deletions(-)
-> >  create mode 100644  
-> tools/testing/selftests/bpf/prog_tests/connect_force_port.c
-> >  create mode 100644  
-> tools/testing/selftests/bpf/progs/connect_force_port4.c
-> >  create mode 100644  
-> tools/testing/selftests/bpf/progs/connect_force_port6.c
+> > It seems like some checksums of the inner headers are not validated in
+> > this case.
+> > For example, a TCP SYN packet with invalid TCP checksum is still accepted by the
+> > network stack and elicits a SYN ACK.
 > >
-> > diff --git a/include/net/inet_common.h b/include/net/inet_common.h
-> > index c38f4f7d660a..cb2818862919 100644
-> > --- a/include/net/inet_common.h
-> > +++ b/include/net/inet_common.h
-> > @@ -39,6 +39,8 @@ int inet_bind(struct socket *sock, struct sockaddr  
-> *uaddr, int addr_len);
-> >  #define BIND_FORCE_ADDRESS_NO_PORT	(1 << 0)
-> >  /* Grab and release socket lock. */
-> >  #define BIND_WITH_LOCK			(1 << 1)
-> > +/* Called from BPF program. */
-> > +#define BIND_FROM_BPF			(1 << 2)
-> >  int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
-> >  		u32 flags);
-> >  int inet_getname(struct socket *sock, struct sockaddr *uaddr,
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index b3643e27e264..14b5518a3d5b 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -1994,10 +1994,11 @@ union bpf_attr {
-> >   *
-> >   * 		This helper works for IPv4 and IPv6, TCP and UDP sockets. The
-> >   * 		domain (*addr*\ **->sa_family**) must be **AF_INET** (or
-> > - * 		**AF_INET6**). Looking for a free port to bind to can be
-> > - * 		expensive, therefore binding to port is not permitted by the
-> > - * 		helper: *addr*\ **->sin_port** (or **sin6_port**, respectively)
-> > - * 		must be set to zero.
-> > + * 		**AF_INET6**). It's advised to pass zero port (**sin_port**
-> > + * 		or **sin6_port**) which triggers IP_BIND_ADDRESS_NO_PORT-like
-> > + * 		behavior and lets the kernel reuse the same source port
-> Reading "zero port" and "the same source port" together is confusing.
-Ack, let me try rephrase it a bit to make it more clear.
+> > Is this known but undocumented behaviour or a bug? In either case, is
+> > there a work
+> > around I'm not aware of?
+>
+> I thought inner and outer csums are covered by different flags and driver
+> suppose to set the right one depending on level of in-hw checking it did.
 
-> > + * 		as long as 4-tuple is unique. Passing non-zero port might
-> > + * 		lead to degraded performance.
-> Is the "degraded performance" also true for UDP?
-I suppose everything that is "allocating" port at bind time can lead
-to a faster port exhaustion, so UDP should be also affected.
-Although, looking at udp_v4_get_port, it looks less involved than
-its TCP counterpart.
+I've figured out what the problem is. We receive the following packet from
+the driver:
 
-> >   * 	Return
-> >   * 		0 on success, or a negative error in case of failure.
-> >   *
+    | ETH | IP | UDP | GUE | IP | TCP |
+    skb->ip_summed == CHECKSUM_UNNECESSARY
 
-> [ ... ]
+ip_summed is CHECKSUM_UNNECESSARY because our NICs do rx
+checksum offloading. On this packet we run skb_adjust_room_mac(-encap),
+and get the following:
 
-> > diff --git  
-> a/tools/testing/selftests/bpf/prog_tests/connect_force_port.c  
-> b/tools/testing/selftests/bpf/prog_tests/connect_force_port.c
-> > new file mode 100644
-> > index 000000000000..97104e6410b6
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/connect_force_port.c
-> > @@ -0,0 +1,104 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +#include <test_progs.h>
-> > +#include "cgroup_helpers.h"
-> > +#include "network_helpers.h"
-> > +
-> > +static int verify_port(int family, int fd, int expected)
-> > +{
-> > +	struct sockaddr_storage addr;
-> > +	socklen_t len = sizeof(addr);
-> > +	__u16 port;
-> > +
-> > +
-> > +	if (getsockname(fd, (struct sockaddr *)&addr, &len)) {
-> > +		log_err("Failed to get server addr");
-> > +		return -1;
-> > +	}
-> > +
-> > +	if (family == AF_INET)
-> > +		port = ((struct sockaddr_in *)&addr)->sin_port;
-> > +	else
-> > +		port = ((struct sockaddr_in6 *)&addr)->sin6_port;
-> > +
-> > +	if (ntohs(port) != expected) {
-> > +		log_err("Unexpected port %d, expected %d", ntohs(port),
-> > +			expected);
-> > +		return -1;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int run_test(int cgroup_fd, int server_fd, int family)
-> > +{
-> > +	struct bpf_prog_load_attr attr = {
-> > +		.prog_type = BPF_PROG_TYPE_CGROUP_SOCK_ADDR,
-> > +	};
-> > +	struct bpf_object *obj;
-> > +	int expected_port;
-> > +	int prog_fd;
-> > +	int err;
-> > +	int fd;
-> > +
-> > +	if (family == AF_INET) {
-> > +		attr.file = "./connect_force_port4.o";
-> > +		attr.expected_attach_type = BPF_CGROUP_INET4_CONNECT;
-> > +		expected_port = 22222;
-> > +	} else {
-> > +		attr.file = "./connect_force_port6.o";
-> > +		attr.expected_attach_type = BPF_CGROUP_INET6_CONNECT;
-> > +		expected_port = 22223;
-> > +	}
-> > +
-> > +	err = bpf_prog_load_xattr(&attr, &obj, &prog_fd);
-> > +	if (err) {
-> > +		log_err("Failed to load BPF object");
-> > +		return -1;
-> > +	}
-> > +
-> > +	err = bpf_prog_attach(prog_fd, cgroup_fd, attr.expected_attach_type,
-> > +			      0);
-> > +	if (err) {
-> > +		log_err("Failed to attach BPF program");
-> > +		goto close_bpf_object;
-> > +	}
-> > +
-> > +	fd = connect_to_fd(family, server_fd);
-> > +	if (fd < 0) {
-> > +		err = -1;
-> > +		goto close_bpf_object;
-> > +	}
-> > +
-> > +	err = verify_port(family, fd, expected_port);
-> > +
-> > +	close(fd);
-> > +
-> > +close_bpf_object:
-> > +	bpf_object__close(obj);
-> > +	return err;
-> > +}
-> > +
-> > +void test_connect_force_port(void)
-> > +{
-> > +	int server_fd, cgroup_fd;
-> > +
-> > +	cgroup_fd = test__join_cgroup("/connect_force_port");
-> > +	if (CHECK_FAIL(cgroup_fd < 0))
-> > +		return;
-> > +
-> > +	server_fd = start_server_thread(AF_INET);
-> > +	if (CHECK_FAIL(server_fd < 0))
-> > +		goto close_cgroup_fd;
-> > +	CHECK_FAIL(run_test(cgroup_fd, server_fd, AF_INET));
-> > +	stop_server_thread(server_fd);
-> > +
-> > +	server_fd = start_server_thread(AF_INET6);
-> > +	if (CHECK_FAIL(server_fd < 0))
-> > +		goto close_cgroup_fd;
-> > +	CHECK_FAIL(run_test(cgroup_fd, server_fd, AF_INET6));
-> > +	stop_server_thread(server_fd);
-> Thanks for testing both v6 and v4.
+    | ETH | IP | TCP |
+    skb->ip_summed == CHECKSUM_UNNECESSARY
 
-> The UDP path should be tested also.
-Good point, will do!
+Note that ip_summed is still CHECKSUM_UNNECESSARY. After
+bpf_redirect()ing into the ingress, we end up in tcp_v4_rcv. There
+skb_checksum_init is turned into a no-op due to
+CHECKSUM_UNNECESSARY.
+
+I think this boils down to bpf_skb_generic_pop not adjusting ip_summed
+accordingly. Unfortunately I don't understand how checksums work
+sufficiently. Daniel, it seems like you wrote the helper, could you
+take a look?
+
+Thanks!
+Lorenz
+
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
