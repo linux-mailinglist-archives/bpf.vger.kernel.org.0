@@ -2,69 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53D161C69C9
-	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 09:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 391B81C69F8
+	for <lists+bpf@lfdr.de>; Wed,  6 May 2020 09:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727842AbgEFHIe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 03:08:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37642 "EHLO
+        id S1728204AbgEFHXK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 03:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727832AbgEFHIe (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 03:08:34 -0400
+        by vger.kernel.org with ESMTP id S1728112AbgEFHXK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 03:23:10 -0400
 Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3770CC061A0F;
-        Wed,  6 May 2020 00:08:34 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id r26so1271508wmh.0;
-        Wed, 06 May 2020 00:08:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4256FC061A0F;
+        Wed,  6 May 2020 00:23:10 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id u127so1315852wmg.1;
+        Wed, 06 May 2020 00:23:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=i1McQv5JxS+S3dpHPfoR+SRFx7AO1GcGwXm3Mh9ZmIw=;
-        b=FLnYnHqJH1U3gU09Sqx/ZBdsyli2VND4iZgspbc9VISSBTT3y17lgp5dXe4LxMa81+
-         md7sot+kcTyCqcu6EeTMAt+0L0RSrhzzaZ4jQgttSiZnI/geHJzSEYoGJCsyx/LFb+7l
-         7eTHJKjUzfChc54f6iBO9xmmVE6VudIAtGAgwdD24JErTkCb8gUWQrfj6rViGZ2T4h9I
-         74bqVkmvA4qIHe9VW30CK3fvIsnh0d3FkTw0PPEuMwxasv3hi0HwiZClysYya7VZ23ym
-         0edoLm+0RDqUPgNpZCzrnY08bARddy+4zf3/0ZYjSQE1lklzrXFIUpfRPOxCipSizBvL
-         WpjQ==
+        bh=Jo47sb10nDmnr4eWrOUxvat9S6v5kjhKKPTH7Ufh/PA=;
+        b=lVXyq7klPwDk8gR6mN9P6xSIIcU7SMpDqRG0fSYjUAtq4NtbPFttxX5gu74gv++dXg
+         CAzWW1vYkJKDjDY6cpzYhxv2UJYzlYmsZUSJma4zzLMQoV95DAoTfDHBujz/dr9lsmWk
+         tA0wl2R/nDUA1WvPO2qXB+uHFv5wWnT+G9mbq1jqOH/gZHFWvZaYsIY5XK78TwmoFuHS
+         EoWjyVTc8ktU5Ui1w8+6C/ZJledB80ggpDN+KHLbkvdo0RuUIrGev1N8A29m8urd61Ox
+         g10UAVSVFGbC1yKM7bL4Viei9ykRbEV5860sD+JqtNYQo6nnvDZHqdKzHj7S5vzoSoVp
+         UwYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=i1McQv5JxS+S3dpHPfoR+SRFx7AO1GcGwXm3Mh9ZmIw=;
-        b=n5+jcICRX4XUjIzlRrl/Cu6nbkd2Nk6Lanhn+WivKZ9qVrXFZlnk8cI5iqxWWovRl1
-         fJvruIcyaL7x6y5bEHqajVG6kypQGfuDJQgCGgA3lszeDBWcREnRR6G0+YIfRpczGFfN
-         jvm6C5LrKGGji+eOR3ztR9H3FvquDcjiRPlMJRkl437S3Hrzy4wdJgQHiCHRRIlYUnb9
-         cUpYIzT9EU/szr4i0FgE3AGMzT1Pyyzj18Eo5o3hBxuqzYb0ieuUfWb+roXgT2PbZwG4
-         ofngDPPRsy0swBqxSsRA+1iqlcbkC3Pq7+QWWtlPzJbFqdK8uHEf/X6EK0kbNVcJ+ION
-         Gksw==
-X-Gm-Message-State: AGi0PuaxW56ne3R9/lx+LOzP0dmXiyA+A0WnNv7qmfRZ06eAtYb9/zAE
-        piWxpBZ91asWWvk61+OGHi2JXkQdaFcIa9E2j+M=
-X-Google-Smtp-Source: APiQypLonxc2SJgZ3t+ABye4ETFW+KuYGgzgoiH27uLerIQZ3u+pO2iInq911uZepzHOpZi9JGpmgKNSZrBBZK/DNrc=
-X-Received: by 2002:a1c:6787:: with SMTP id b129mr2820878wmc.165.1588748912923;
- Wed, 06 May 2020 00:08:32 -0700 (PDT)
+        bh=Jo47sb10nDmnr4eWrOUxvat9S6v5kjhKKPTH7Ufh/PA=;
+        b=C8x1oBJHXc2AL9FjJzAT9dONQjss+TODHymWuZQpCJ/KtB2l3J9wjHVzZcMNod0Nsw
+         kv3JqLTpSktQIiu4QPiA5hLkIAxWB+dq+/CqU8yEiiFEdfIyOah8Bzj0lm7ckVcl5gDA
+         5tM5LlPHV+XFpteaEDJURS/2CPKyQZl8HpHEEkMBmrKfqt3eHSMHmr+u2bqKFCuzSI1G
+         09WGPzfbVi2roYzVTO/xkZZOuBW/vSwAYL/o56cHl+fdYlGf5TmPx/wemV+HWU2/U6VZ
+         oN6Sd5stozqMjm9yAxhQ/Uk5V61DmtT0Q4F5+Z1d+tpMOi/VK4MIH7rL5XjQeChFMVNv
+         pzbg==
+X-Gm-Message-State: AGi0PuZVO8JmJfMMs7mAQNFcfQ/Yq7x7XgvJyBS2o7C0SG5FET60CEIj
+        P5vRJ0qtQehQodi+ziswXqcwh1hiwym1QXICv/0=
+X-Google-Smtp-Source: APiQypJPTjMm5gqnlnZUXhZuNlKM/J10v2j7vv3DJ4BkYGuWRMSoGxBezHj3tKVI1y4jG3iqCAB8tMce7pNE1bybOLU=
+X-Received: by 2002:a7b:c0d5:: with SMTP id s21mr2694611wmh.107.1588749788992;
+ Wed, 06 May 2020 00:23:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200506000320.28965-1-luke.r.nels@gmail.com>
-In-Reply-To: <20200506000320.28965-1-luke.r.nels@gmail.com>
+References: <20200504113716.7930-1-bjorn.topel@gmail.com> <20200504113716.7930-5-bjorn.topel@gmail.com>
+ <3a81f575-f617-4571-4771-84bc735db98e@mellanox.com>
+In-Reply-To: <3a81f575-f617-4571-4771-84bc735db98e@mellanox.com>
 From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Wed, 6 May 2020 09:08:21 +0200
-Message-ID: <CAJ+HfNgbuBoMTrU+TM3JCd1stEM1Zi3hG5k=PazT=CxAWa4wBQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/4] RV64 BPF JIT Optimizations
-To:     Luke Nelson <lukenels@cs.washington.edu>
-Cc:     bpf <bpf@vger.kernel.org>, Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
+Date:   Wed, 6 May 2020 09:22:57 +0200
+Message-ID: <CAJ+HfNiU_jktREYAmeq1rVAokT6XEqUeYiRw+HEPv4tUnZFc8w@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 04/13] xsk: introduce AF_XDP buffer
+ allocation API
+To:     Maxim Mikityanskiy <maximmi@mellanox.com>
+Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Netdev <netdev@vger.kernel.org>, linux-riscv@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
@@ -72,37 +71,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 6 May 2020 at 02:03, Luke Nelson <lukenels@cs.washington.edu> wrote=
-:
+On Tue, 5 May 2020 at 16:28, Maxim Mikityanskiy <maximmi@mellanox.com> wrot=
+e:
 >
-> This patch series introduces a set of optimizations to the BPF JIT
-> on RV64. The optimizations are related to the verifier zero-extension
-> optimization and BPF_JMP BPF_K.
+[...]
+> >
+> > -     if (((d->addr + d->len) & q->chunk_mask) !=3D (d->addr & q->chunk=
+_mask) ||
+> > -         d->options) {
+> > +static inline bool xskq_cons_is_valid_desc(struct xsk_queue *q,
+> > +                                        struct xdp_desc *d,
+> > +                                        struct xdp_umem *umem)
+> > +{
+> > +     if (!xp_validate_desc(umem->pool, d)) {
 >
-> We tested the optimizations on a QEMU riscv64 virt machine, using
-> lib/test_bpf and test_verifier, and formally verified their correctness
-> using Serval.
+> I did some performance debugging and came to conclusion that this
+> function call is the culprit of the TX speed degradation that I
+> experience. I still don't know if it's the only reason or not, but I
+> clearly see a degradation when xskq_cons_is_valid_desc is not fully
+> inlined, but calls a function. E.g., I've put the code that handles the
+> aligned mode into a separate function in a different file, and it caused
+> the similar speed decrease.
 >
 
-Luke and Xi,
+Thanks for looking in to, and finding this!
 
-Thanks a lot for working on this! Very nice series!
+I'll make sure the xp_validate_desc() call is inlined for the next
+revision.
 
-For the series:
-Reviewed-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>
+A note to myself: I need to check the performance for an LLVM build
+with LTO enabled.
 
-> Luke Nelson (4):
->   bpf, riscv: Enable missing verifier_zext optimizations on RV64
->   bpf, riscv: Optimize FROM_LE using verifier_zext on RV64
->   bpf, riscv: Optimize BPF_JMP BPF_K when imm =3D=3D 0 on RV64
->   bpf, riscv: Optimize BPF_JSET BPF_K using andi on RV64
->
->  arch/riscv/net/bpf_jit_comp64.c | 64 ++++++++++++++++++++++-----------
->  1 file changed, 44 insertions(+), 20 deletions(-)
->
-> Cc: Xi Wang <xi.wang@gmail.com>
->
-> --
-> 2.17.1
->
+
+Cheers,
+Bj=C3=B6rn
