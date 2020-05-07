@@ -2,122 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C71C1C800F
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 04:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C03441C8163
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 07:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728079AbgEGCgU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 22:36:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726218AbgEGCgU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 May 2020 22:36:20 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0519CC061A0F;
-        Wed,  6 May 2020 19:36:19 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id q24so1946471pjd.1;
-        Wed, 06 May 2020 19:36:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Asj4Gooor/CKFIxMQNTckF+7GZoXmy3s4w3DaaXlqd4=;
-        b=Ul0LZ38+URJljiZUX/ceNT+o3aSsX2EBZjVpE7QpFEycmvZzs68AgK1f766sCOpRmh
-         Z6nByGJ50T3n9trYcO6e+TqhEcgCadUJ1jUPQUFR1jssVPmf1/uBPe17ll836xCjXABP
-         I1dNNAWM0xmhLPXMDpnwRr9wdvdie1zBqfgi7ZbS+phVrQ7v/gztoIxAgEufpYnC+60c
-         Z0UBfCsMpMiVBFeSc0kqbpyoSdgVvOxNoL7tcbIqWfJ0+YV/LK0/hXpjk8Pp5xH2BeVE
-         +nCUS3pjsw/vZ73IQjh5ATzn/ffZ7fJZom0/3A11uLhnNROsI9xqb5tR82e5wtmvd6pH
-         mqoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Asj4Gooor/CKFIxMQNTckF+7GZoXmy3s4w3DaaXlqd4=;
-        b=HniiyUh07z0w6YrM8CooWfs0ivhiRfYS1S88xs/PM55gk0RCwm25FCCq6MvuG1v4Uh
-         2D+sG8gP/OKZeA9JPlVK44P9ymUWyixA3FXWDKrolw1dSYJOG25boVh9etog9wDgNgjO
-         BBIoco0PclFPzYvNLeVztaFc7crvIaT6ckErVbQXaC6bKtz2uyKkgejl89KI5AT553bH
-         ujpm4rVa85/pAK0ctzgSifrZBA37Ponnbf9zZDArsckkTvTM4Y3xzblH0Ldhf71pIot2
-         rcbj3tg+Cz0nUctzs2oi2ulvADAmeuBOnSn+z526TECGNmQ8aCKdsNdtDGkXkKvLTdSP
-         6Rxg==
-X-Gm-Message-State: AGi0PuansGf6AJAra8/tKCOvy7MaVQ/DYo8NaQgUUX9ehe8jyYzareJx
-        X/W19ztBg8keaPZShqfErmc=
-X-Google-Smtp-Source: APiQypKGB0sTNVtLUk/zocKj0OVAZ+6YQSpG4rSI293EPok9beWnMccBqCHJ/3pMXeJisc/l4Nsucg==
-X-Received: by 2002:a17:902:b286:: with SMTP id u6mr11031868plr.11.1588818978010;
-        Wed, 06 May 2020 19:36:18 -0700 (PDT)
-Received: from athina.mtv.corp.google.com ([2620:15c:211:0:c786:d9fd:ab91:6283])
-        by smtp.gmail.com with ESMTPSA id n16sm3259976pfq.61.2020.05.06.19.36.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 May 2020 19:36:17 -0700 (PDT)
-From:   =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
-To:     =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        id S1725809AbgEGFMR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 01:12:17 -0400
+Received: from verein.lst.de ([213.95.11.211]:44501 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725783AbgEGFMR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 May 2020 01:12:17 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 990EF68B05; Thu,  7 May 2020 07:12:13 +0200 (CEST)
+Date:   Thu, 7 May 2020 07:12:13 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH v3] net: bpf: permit redirect from ingress L3 to egress L2 devices at near max mtu
-Date:   Wed,  6 May 2020 19:36:06 -0700
-Message-Id: <20200507023606.111650-1-zenczykowski@gmail.com>
-X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
-In-Reply-To: <CANP3RGduts2FJ2M5MLcf23GaRa=-fwUC7oPf-S4zp39f63jHMg@mail.gmail.com>
-References: <CANP3RGduts2FJ2M5MLcf23GaRa=-fwUC7oPf-S4zp39f63jHMg@mail.gmail.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-parisc@vger.kernel.org,
+        linux-um <linux-um@lists.infradead.org>,
+        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 15/15] x86: use non-set_fs based maccess routines
+Message-ID: <20200507051213.GB4501@lst.de>
+References: <20200506062223.30032-1-hch@lst.de> <20200506062223.30032-16-hch@lst.de> <CAHk-=wi6E5z_aKr9NX+QcEJqJvSyrDbO3ypPugxstcPV5EPSMQ@mail.gmail.com> <20200506181543.GA7873@lst.de> <CAHk-=wghKpGdTmD4EDfwX2uyppwxksU+nFyS1B--kbopcQAgwg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wghKpGdTmD4EDfwX2uyppwxksU+nFyS1B--kbopcQAgwg@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
+On Wed, May 06, 2020 at 12:01:32PM -0700, Linus Torvalds wrote:
+> Oh, absolutely. I did *NOT* mean that you'd use "unsafe_get_user()" as
+> the actual interface. I just meant that as an implementation detail on
+> x86, using "unsafe_get_user()" instead of "__get_user_size()"
+> internally both simplifies the implementation, and means that it
+> doesn't clash horribly with my local changes.
 
-__bpf_skb_max_len(skb) is used from:
-  bpf_skb_adjust_room
-  __bpf_skb_change_tail
-  __bpf_skb_change_head
+I had a version that just wrapped them, but somehow wasn't able to
+make it work due to all the side effects vs macros issues.  Maybe I
+need to try again, the current version seemed like a nice way out
+as it avoided a lot of the silly casting.
 
-but in the case of forwarding we're likely calling these functions
-during receive processing on ingress and bpf_redirect()'ing at
-a later point in time to egress on another interface, thus these
-mtu checks are for the wrong device (input instead of output).
 
-This is particularly problematic if we're receiving on an L3 1500 mtu
-cellular interface, trying to add an L2 header and forwarding to
-an L3 mtu 1500 mtu wifi/ethernet device (which is thus L2 1514).
+> Btw, that brings up another issue: so that people can't mis-use those
+> kernel accessors and use them for user addresses, they probably should
+> actually do something like
+> 
+>         if ((long)addr >= 0)
+>                 goto error_label;
+> 
+> on x86. IOW, have the "strict" kernel pointer behavior.
+> 
+> Otherwise somebody will start using them for user pointers, and it
+> will happen to work on old x86 without CLAC/STAC support.
+> 
+> Of course, maybe CLAC/STAC is so common these days (at least with
+> developers) that we don't have to worry about it.
 
-The mtu check prevents us from adding the 14 byte ethernet header prior
-to forwarding the packet.
+The actual public routines (probe_kernel_read and co) get these
+checks through probe_kernel_read_allowed, which is implemented by
+the x86 code.  Doing this for every 1-8 byte access might be a little
+slow, though.  Do you really fear drivers starting to use the low-level
+helper?  Maybe we need to move those into a different header than
+<asm/uaccess.h> that makes it more clear that they are internal?
 
-After the packet has already been redirected, we'd need to add
-an additional 2nd ebpf program on the target device's egress tc hook,
-but then we'd also see non-redirected traffic and have no easy
-way to tell apart normal egress with ethernet header packets
-from forwarded ethernet headerless packets.
+> But here you see what it is, if you want to. __get_user_size()
+> technically still exists, but it has the "target branch" semantics in
+> here, so your patch clashes badly with it.
 
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
----
- net/core/filter.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+The target branch semantics actually are what I want, that is how the
+maccess code is structured.  This is the diff I'd need for the calling
+conventions in your bundle:
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 7d6ceaa54d21..5c8243930462 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3159,8 +3159,9 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
+
+diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
+index 765e18417b3ba..d1c8aacedade1 100644
+--- a/arch/x86/include/asm/uaccess.h
++++ b/arch/x86/include/asm/uaccess.h
+@@ -526,14 +526,8 @@ do {									\
+ #define HAVE_ARCH_PROBE_KERNEL
  
- static u32 __bpf_skb_max_len(const struct sk_buff *skb)
- {
--	return skb->dev ? skb->dev->mtu + skb->dev->hard_header_len :
--			  SKB_MAX_ALLOC;
-+	if (skb_at_tc_ingress(skb) || !skb->dev)
-+		return SKB_MAX_ALLOC;
-+	return skb->dev->mtu + skb->dev->hard_header_len;
- }
+ #define arch_kernel_read(dst, src, type, err_label)			\
+-do {									\
+-        int __kr_err;							\
+-									\
+ 	__get_user_size(*((type *)dst), (__force type __user *)src,	\
+-			sizeof(type), __kr_err);			\
+-        if (unlikely(__kr_err))						\
+-		goto err_label;						\
+-} while (0)
++			sizeof(type), err_label);			\
  
- BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
--- 
-2.26.2.526.g744177e7f7-goog
-
+ #define arch_kernel_write(dst, src, type, err_label)			\
+ 	__put_user_size(*((type *)(src)), (__force type __user *)(dst),	\
