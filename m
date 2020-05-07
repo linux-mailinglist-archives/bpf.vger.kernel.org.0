@@ -2,219 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C83A1C9633
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 18:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AD01C963C
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 18:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726538AbgEGQQX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 12:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37838 "EHLO
+        id S1726467AbgEGQSj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 12:18:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726393AbgEGQQW (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 7 May 2020 12:16:22 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B15C05BD43
-        for <bpf@vger.kernel.org>; Thu,  7 May 2020 09:16:22 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id n14so6685852qke.8
-        for <bpf@vger.kernel.org>; Thu, 07 May 2020 09:16:22 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726464AbgEGQSi (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 7 May 2020 12:18:38 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815ADC05BD43;
+        Thu,  7 May 2020 09:18:38 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id r3so542336qvm.1;
+        Thu, 07 May 2020 09:18:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=oiL/zFHNHVy9M0n0ldVGBnGZKEVumBhhEkR8AKYI5uw=;
-        b=Gg0W9fuc9I0A11zjL83gazWndPVMsvjgwQmcUyIV+waOCM8WZ5CaNxVsatkJGwoxKH
-         618jDqzOEeq90OXtdwPI7PYS27AKy2Qp7C6nD7lNat93PiDdGBIvIRhVIR0WOWwlaFn7
-         vBCkzG/QPgXuifMZWwiNtwOla2N8riAVMKrnZrZg9sKfT06Eo+reYqBaeP1t9uyJX1Ld
-         XBsavDsQcnOstWPKQ94+JLA0cbvqrjSX/08OHXoSpoPnAvWM4vVMWRhvAXHsrhYfqSnl
-         roGniJC5KQNsomE1zpgXklULP3ZOAJaIed0mWSutmSsAPEmSNQWiPjTqLqgHRTRJkL2Y
-         fkKA==
+        bh=2j+fJE7HqhsT+UX62VJqAShZm/47l6tqWO1/aaJUrjM=;
+        b=SD4GN+zvB4lNp94vn58oUR9QRl+Z4LqOd8YmAjokITAEiCXWadN+hmggq5ygtrUKFR
+         q0lDIaN2bopk7gWYcJ1bDCX+5bvigvYc0y3BldsXg8goc29XX6QTdO1RxMC7dmlf+Lpg
+         XLaz34sRGKRH0ZTuf/TDdh88zU1tIePrDhZD+vnXR+w1gVIy9AWVAM6HmIDWmWkeALwF
+         qcHONMAoEsXSXMfRbV3ftq8MtNiHPpYUcWSDBiev4PAH8gQln0IJ4sAHSEdOwJoZ63c6
+         WmuS8O4dVCv0hkwxfLN+uDV4Tyfl0j3vi2mIF28cDMEvkwto50yPytBNPgI2djwaqf18
+         RXMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=oiL/zFHNHVy9M0n0ldVGBnGZKEVumBhhEkR8AKYI5uw=;
-        b=bGP+jbMcWv4jJrD26NkKiroGgVwPism+oPnwh8KJN86g610ABj8bUsBbCtbOElz9r8
-         Dyf5v6fbtYIsCzudcp7lQzQWQdkYI5Tt/7KeuJ91jaL2Ou9JdtPYYJrCqqibJ4oHi+va
-         IlYJDUdNF2anpiL7sgukB+eaX7GCt/fsAmaBE/r/ZaYCPEJxrS+UB+1GhnIALTSp0C5+
-         uBATtdRPIbQpE/gOc4/cWj1M9N3O7ooH2XFGC2miC0FYmAbeHMKy5xyh2OzZQWC1U+09
-         VzCCe9WrvjQ64g3AZIJQ6fNnawGsJRDO7D2Qe5XKYgqdFMEcKimA5whEKi6EhLqyKLDZ
-         MAJw==
-X-Gm-Message-State: AGi0PuasyfEOlUbKKa38IiVmfALo7MQiZeGXrHejqaGYMv64+/2GRhH4
-        AiGVkdcp9tIOn3FQhhwyh1JtZrSKseIHLn3o9rg=
-X-Google-Smtp-Source: APiQypJkUJga50ad2iyF0Pz6Dd9KVsSXJPojIPx+6amdU+AyRsrgbJem+yryETtlT5rkCrysXi1R0OM66cw9Xwp40Ts=
-X-Received: by 2002:a05:620a:14a1:: with SMTP id x1mr15056399qkj.92.1588868181584;
- Thu, 07 May 2020 09:16:21 -0700 (PDT)
+        bh=2j+fJE7HqhsT+UX62VJqAShZm/47l6tqWO1/aaJUrjM=;
+        b=gvwxKkR0QaADY/6a1ouQG3QPLgns1bGO2LTmbbrTFSO9c5gLopqklnDGgbQu8W7OUA
+         OHan9IOK4PR+ohrHKLkRyUeO8duWeDAMLUf73zWiNydkUIVEACDjkMzNqsBGqGUlnZgt
+         lB4jE3d7BJeAPHp9wDQ5NoyIiBI0CEBbLsNdGIc6d0td3CZz6M2cxIboT/+/wni4F7+I
+         p0p8LycwCI8l4Af9uuAy3LA/dnLE0o22UtbCmg3/kY7OCFsmjRlcjV1AgzM3Iculvf3+
+         f2eVZ4VLKwhuo6n4QYOclHH2sXET3z7hmyYLOIHVd4QhDVVfBRj1Dvx1BWc1TmQVQqAg
+         tO/w==
+X-Gm-Message-State: AGi0PuYnTa7n/NZjREpUuydrj2bBbTZLs8adCW2SZKTxDmDTsrflbMCX
+        rgF49n4yUy18pK3HsOOWH5v+K/Uvyli8C/Y3Gaw=
+X-Google-Smtp-Source: APiQypIAyTRFR9Z7/QhBJBzM2tHlT6XcHv+FnvID6rPZYOoC4uXDEm6XuMVW+7bpQV+6Vrl5fDhNDtE8NF3KbVpUomI=
+X-Received: by 2002:a0c:a892:: with SMTP id x18mr13887784qva.247.1588868317646;
+ Thu, 07 May 2020 09:18:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <3ab505db-9e04-366b-d602-6b2935739f54@intel.com>
-In-Reply-To: <3ab505db-9e04-366b-d602-6b2935739f54@intel.com>
+References: <20200506223210.93595-1-sdf@google.com> <20200506223210.93595-4-sdf@google.com>
+ <20200507061244.63ztqtmiid64xptv@kafai-mbp> <20200507161407.GJ241848@google.com>
+In-Reply-To: <20200507161407.GJ241848@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 7 May 2020 09:16:10 -0700
-Message-ID: <CAEf4BzZXA3pDwqLGTnrDAn7cH67Ei6tp8PRZwVAmsT-nTMA0gA@mail.gmail.com>
-Subject: Re: bprm_count and stack_mprotect error when testing BPF LSM on v5.7-rc3
-To:     Ma Xinjian <max.xinjian@intel.com>, KP Singh <kpsingh@google.com>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Date:   Thu, 7 May 2020 09:18:26 -0700
+Message-ID: <CAEf4BzY2DW0_SVJgrv0Ei_aQNxgNAAZn=YV7yEufKd9TYiOMjg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/5] selftests/bpf: move existing common
+ networking parts into network_helpers
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 6, 2020 at 10:21 PM Ma Xinjian <max.xinjian@intel.com> wrote:
+On Thu, May 7, 2020 at 9:14 AM <sdf@google.com> wrote:
 >
-> Hi,
+> On 05/06, Martin KaFai Lau wrote:
+> > On Wed, May 06, 2020 at 03:32:08PM -0700, Stanislav Fomichev wrote:
+> > > 1. Move pkt_v4 and pkt_v6 into network_helpers and adjust the users.
+> > > 2. Copy-paste spin_lock_thread into two tests that use it.
+> > Instead of copying it into two tests,
+> > can spin_lock_thread be moved to network-helpers.c?
+> spin_lock_thread doesn't look like something that can be reused
+> by other networking tests and looks very specific to
+> prog_tests/spinlock.c and prog_tests/map_lock.c. It might be
+> better with the copy-paste now because that thread definition
+> is closer to the place that uses it.
 >
-> When I test bpf lsm with (/test_progs -vv  -t test_lsm ), failed with
-> below issue:
->
-> root@lkp-skl-d01
-> /usr/src/perf_selftests-x86_64-rhel-7.6-kselftests-bpf-lsm-2-6a8b55ed4056ea5559ebe4f6a4b247f627870d4c/tools/testing/selftests/bpf#
-> ./test_progs -vv  -t test_lsm
->
-> libbpf: loading object 'lsm' from buffer
-> libbpf: section(1) .strtab, size 306, link 0, flags 0, type=3
-> libbpf: skip section(1) .strtab
-> libbpf: section(2) .text, size 0, link 0, flags 6, type=1
-> libbpf: skip section(2) .text
-> libbpf: section(3) lsm/file_mprotect, size 192, link 0, flags 6, type=1
-> libbpf: found program lsm/file_mprotect
-> libbpf: section(4) .rellsm/file_mprotect, size 32, link 25, flags 0, type=9
-> libbpf: section(5) lsm/bprm_committed_creds, size 104, link 0, flags 6,
-> type=1
-> libbpf: found program lsm/bprm_committed_creds
-> libbpf: section(6) .rellsm/bprm_committed_creds, size 32, link 25, flags
-> 0, type=9
-> libbpf: section(7) license, size 4, link 0, flags 3, type=1
-> libbpf: license of lsm is GPL
-> libbpf: section(8) .bss, size 12, link 0, flags 3, type=8
-> libbpf: section(9) .debug_loc, size 383, link 0, flags 0, type=1
-> libbpf: skip section(9) .debug_loc
-> libbpf: section(10) .rel.debug_loc, size 112, link 25, flags 0, type=9
-> libbpf: skip relo .rel.debug_loc(10) for section(9)
-> libbpf: section(11) .debug_abbrev, size 901, link 0, flags 0, type=1
-> libbpf: skip section(11) .debug_abbrev
-> libbpf: section(12) .debug_info, size 237441, link 0, flags 0, type=1
-> libbpf: skip section(12) .debug_info
-> libbpf: section(13) .rel.debug_info, size 112, link 25, flags 0, type=9
-> libbpf: skip relo .rel.debug_info(13) for section(12)
-> libbpf: section(14) .debug_ranges, size 96, link 0, flags 0, type=1
-> libbpf: skip section(14) .debug_ranges
-> libbpf: section(15) .rel.debug_ranges, size 128, link 25, flags 0, type=9
-> libbpf: skip relo .rel.debug_ranges(15) for section(14)
-> libbpf: section(16) .debug_str, size 142395, link 0, flags 30, type=1
-> libbpf: skip section(16) .debug_str
-> libbpf: section(17) .BTF, size 5634, link 0, flags 0, type=1
-> libbpf: section(18) .rel.BTF, size 64, link 25, flags 0, type=9
-> libbpf: skip relo .rel.BTF(18) for section(17)
-> libbpf: section(19) .BTF.ext, size 484, link 0, flags 0, type=1
-> libbpf: section(20) .rel.BTF.ext, size 416, link 25, flags 0, type=9
-> libbpf: skip relo .rel.BTF.ext(20) for section(19)
-> libbpf: section(21) .debug_frame, size 64, link 0, flags 0, type=1
-> libbpf: skip section(21) .debug_frame
-> libbpf: section(22) .rel.debug_frame, size 32, link 25, flags 0, type=9
-> libbpf: skip relo .rel.debug_frame(22) for section(21)
-> libbpf: section(23) .debug_line, size 227, link 0, flags 0, type=1
-> libbpf: skip section(23) .debug_line
-> libbpf: section(24) .rel.debug_line, size 32, link 25, flags 0, type=9
-> libbpf: skip relo .rel.debug_line(24) for section(23)
-> libbpf: section(25) .symtab, size 288, link 1, flags 0, type=2
-> libbpf: looking for externs among 12 symbols...
-> libbpf: collected 0 externs total
-> libbpf: map 'lsm.bss' (global data): at sec_idx 8, offset 0, flags 400.
-> libbpf: map 0 is "lsm.bss"
-> libbpf: collecting relocating info for: 'lsm/file_mprotect'
-> libbpf: relo for shdr 8, symb 8, value 0, type 1, bind 1, name 232
-> ('monitored_pid'), insn 12
-> libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 12
-> libbpf: relo for shdr 8, symb 9, value 4, type 1, bind 1, name 34
-> ('mprotect_count'), insn 17
-> libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 17
-> libbpf: collecting relocating info for: 'lsm/bprm_committed_creds'
-> libbpf: relo for shdr 8, symb 8, value 0, type 1, bind 1, name 232
-> ('monitored_pid'), insn 1
-> libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 1
-> libbpf: relo for shdr 8, symb 7, value 8, type 1, bind 1, name 49
-> ('bprm_count'), insn 6
-> libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 6
-> libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
-> libbpf: created map lsm.bss: fd=4
-> libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
-> libbpf: prog 'lsm/file_mprotect': performing 4 CO-RE offset relocs
-> libbpf: prog 'lsm/file_mprotect': relo #0: kind 0, spec is [6]
-> vm_area_struct + 0:6 => 64.0 @ &x[0].vm_mm
-> libbpf: [6] vm_area_struct: found candidate [329] vm_area_struct
-> libbpf: prog 'lsm/file_mprotect': relo #0: matching candidate #0
-> vm_area_struct against spec [329] vm_area_struct + 0:6 => 64.0 @
-> &x[0].vm_mm: 1
-> libbpf: prog 'lsm/file_mprotect': relo #0: patched insn #5 (LDX/ST/STX)
-> off 64 -> 64
-> libbpf: prog 'lsm/file_mprotect': relo #1: kind 0, spec is [32]
-> mm_struct + 0:0:35 => 304.0 @ &x[0].start_stack
-> libbpf: [32] mm_struct: found candidate [308] mm_struct
-> libbpf: prog 'lsm/file_mprotect': relo #1: matching candidate #0
-> mm_struct against spec [308] mm_struct + 0:0:35 => 304.0 @
-> &x[0].start_stack: 1
-> libbpf: prog 'lsm/file_mprotect': relo #1: patched insn #7 (LDX/ST/STX)
-> off 304 -> 304
-> libbpf: prog 'lsm/file_mprotect': relo #2: kind 0, spec is [6]
-> vm_area_struct + 0:0 => 0.0 @ &x[0].vm_start
-> libbpf: prog 'lsm/file_mprotect': relo #2: matching candidate #0
-> vm_area_struct against spec [329] vm_area_struct + 0:0 => 0.0 @
-> &x[0].vm_start: 1
-> libbpf: prog 'lsm/file_mprotect': relo #2: patched insn #8 (LDX/ST/STX)
-> off 0 -> 0
-> libbpf: prog 'lsm/file_mprotect': relo #3: kind 0, spec is [6]
-> vm_area_struct + 0:1 => 8.0 @ &x[0].vm_end
-> libbpf: prog 'lsm/file_mprotect': relo #3: matching candidate #0
-> vm_area_struct against spec [329] vm_area_struct + 0:1 => 8.0 @
-> &x[0].vm_end: 1
-> libbpf: prog 'lsm/file_mprotect': relo #3: patched insn #10 (LDX/ST/STX)
-> off 8 -> 8
-> test_test_lsm:PASS:skel_load 0 nsec
-> test_test_lsm:PASS:attach 0 nsec
-> test_test_lsm:PASS:exec_cmd 0 nsec
-> test_test_lsm:FAIL:bprm_count bprm_count = 0
-> test_test_lsm:FAIL:stack_mprotect want err=EPERM, got 0
-> #70 test_lsm:FAIL
-> Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
->
->
-> kconfig:
->
-> CONFIG_BPF_LSM=y
->
-> CONFIG_LSM="lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor"
->
-> besides:
->
-> when I add bpf to CONFIG_LSM, then boot failed.
->
-> boot error:
->
-> ```
->
-> Cannot determine cgroup we are running in: No data available
-> Failed to allocate manager object: No data available
-> [!!!!!!] Failed to allocate manager object, freezing.
-> Freezing execution.
->
-> ```
->
-> seems bpf in CONFIG_LSM and CONFIG_BPF_LSM conflict.
->
->
-> clang version: v11.0.0
->
-> commit: 54b35c066417d4856e9d53313f7e98b354274584
->
-> # pahole --version
-> v1.17
->
+> I don't feel strongly about it and can put it into network_helpers.
+> Let me know if you prefer it that way.
 
-It might be due to bug in default return value of one of the
-functions, which KP recently fixed. But just to be sure, KP, could you
-please take a look?
-
->
-> --
-> Best Regards.
-> Ma Xinjian
->
+I like it like this more. It has nothing to do with network and is
+trivial enough, I don't see a problem having it in two tests that
+actually use it. It actually makes it easier to follow tests.
