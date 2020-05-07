@@ -2,118 +2,201 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B4C1C8532
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 10:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9F71C8567
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 11:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725848AbgEGI4R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 04:56:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725845AbgEGI4Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 May 2020 04:56:16 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 463A3C061A10
-        for <bpf@vger.kernel.org>; Thu,  7 May 2020 01:56:16 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id y24so5867445wma.4
-        for <bpf@vger.kernel.org>; Thu, 07 May 2020 01:56:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hLWaQUTnJ7f7DgBuYKSFC32i9PCp8zzauvLXWUcYmNc=;
-        b=N8WW7vEdih/4X6y8BA9cfZcTgB+tDYkRfBKAbgsvVDJg7ZGE9p3rrq/03IkuDkT6Ev
-         6MyjgkRjsN/k9awGsZMiNiGQ/KKKYg9n+kFg3rIithm+DTExseBN/yUN4j89GmrQDcN4
-         wbFm4iX1j1+3h/M3EQyXzLbTuY5vQr5J+1z00=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hLWaQUTnJ7f7DgBuYKSFC32i9PCp8zzauvLXWUcYmNc=;
-        b=nL5B+ynofKVWou/IM+PQ/8MTg1tSqQT2Pv2+VUEYtDTJkrZshGolQCRQ9IAFLyNDkR
-         gBsbXqDZywSZiVMG2mdv46gVfvTP8rmXUDA66Vm14KsDtaPTT4bBF//bkDNKpJwovIv7
-         wPvQtH+yqbeb3PUhJjLphWZ/wFqI5JlSBQ1BBvNVKlTjPByzUcrL5SyWev9jrq0+eHKS
-         C7ZbRSME6sbPq3rJIvjEX4DlPjGWsYMzmSAw7Xu2YxGec32OoqpHw+ZTyC8jOyrtc9O1
-         kzIjitHiUWNYkMkcuwQWanS0sE3Gsjvxr3OFghy+U9607R3NoeepXhR2VbP8aS5EP4as
-         qxPg==
-X-Gm-Message-State: AGi0PuZvxhDhW46Gwmwj/ZJ3LTTIzmDfCHuqvZbnatclHn7Y3x7nl+Y3
-        pi4UtWbyL/96VvceMnYWrv1+ng==
-X-Google-Smtp-Source: APiQypIarRKCDwwq9BJ7HIOIQBZ5gaFvnSebCKJDXnJg51HpGccvWC6okg6H+MBNXtWjjLEoH7mqFw==
-X-Received: by 2002:a1c:e444:: with SMTP id b65mr9612793wmh.6.1588841774781;
-        Thu, 07 May 2020 01:56:14 -0700 (PDT)
-Received: from toad ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id 17sm6740090wmo.2.2020.05.07.01.56.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 01:56:14 -0700 (PDT)
-Date:   Thu, 7 May 2020 10:55:50 +0200
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     lmb@cloudflare.com, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, ast@kernel.org
-Subject: Re: [bpf-next PATCH 05/10] bpf: selftests, improve test_sockmap
- total bytes counter
-Message-ID: <20200507105550.35adc82f@toad>
-In-Reply-To: <158871187408.7537.17124775242608386871.stgit@john-Precision-5820-Tower>
-References: <158871160668.7537.2576154513696580062.stgit@john-Precision-5820-Tower>
-        <158871187408.7537.17124775242608386871.stgit@john-Precision-5820-Tower>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1725900AbgEGJMa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 05:12:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33498 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725848AbgEGJMa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 May 2020 05:12:30 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3690D2075E;
+        Thu,  7 May 2020 09:12:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588842749;
+        bh=WN/1Sfxv+V0tvhxdgTlgCeCg1I6pk09fr+Q2outjLYM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xEn4xIitw6ljx3iphcAnTBS31J7adH7kGvMPZJBOtI/6et/4t8DGm63fxk7kQrs7q
+         UuGTT3EctUZW7OUyCjY0UECsdWn69vdO5YuMqKC6pIEWJ3dOlSyvWnwFKg2J1Mq3Fm
+         whXDqqPBteH4/ScOh7LlQImwViU5JqS+qqE1CHUM=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jWcZu-00ACrT-U4; Thu, 07 May 2020 10:12:27 +0100
+Date:   Thu, 7 May 2020 10:12:24 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Luke Nelson <lukenels@cs.washington.edu>, bpf@vger.kernel.org,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [RFC PATCH bpf-next 1/3] arm64: insn: Fix two bugs in encoding
+ 32-bit logical immediates
+Message-ID: <20200507101224.33a44d71@why>
+In-Reply-To: <20200507082934.GA28215@willie-the-truck>
+References: <20200507010504.26352-1-luke.r.nels@gmail.com>
+        <20200507010504.26352-2-luke.r.nels@gmail.com>
+        <20200507082934.GA28215@willie-the-truck>
+Organization: Approximate
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: will@kernel.org, lukenels@cs.washington.edu, bpf@vger.kernel.org, luke.r.nels@gmail.com, xi.wang@gmail.com, catalin.marinas@arm.com, daniel@iogearbox.net, ast@kernel.org, zlim.lnx@gmail.com, kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org, mark.rutland@arm.com, gregkh@linuxfoundation.org, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, clang-built-linux@googlegroups.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 05 May 2020 13:51:14 -0700
-John Fastabend <john.fastabend@gmail.com> wrote:
+On Thu, 7 May 2020 09:29:35 +0100
+Will Deacon <will@kernel.org> wrote:
 
-> The recv thread in test_sockmap waits to receive all bytes from sender but
-> in the case we use pop data it may wait for more bytes then actually being
-> sent. This stalls the test harness for multiple seconds. Because this
-> happens in multiple tests it slows time to run the selftest.
+Hi Will,
+
+> Hi Luke,
 > 
-> Fix by doing a better job of accounting for total bytes when pop helpers
-> are used.
+> Thanks for the patches.
 > 
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> ---
->  tools/testing/selftests/bpf/test_sockmap.c |    9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
+> On Wed, May 06, 2020 at 06:05:01PM -0700, Luke Nelson wrote:
+> > This patch fixes two issues present in the current function for encoding
+> > arm64 logical immediates when using the 32-bit variants of instructions.
+> > 
+> > First, the code does not correctly reject an all-ones 32-bit immediate
+> > and returns an undefined instruction encoding, which can crash the kernel.
+> > The fix is to add a check for this case.
+> > 
+> > Second, the code incorrectly rejects some 32-bit immediates that are
+> > actually encodable as logical immediates. The root cause is that the code
+> > uses a default mask of 64-bit all-ones, even for 32-bit immediates. This
+> > causes an issue later on when the mask is used to fill the top bits of
+> > the immediate with ones, shown here:
+> > 
+> >   /*
+> >    * Pattern: 0..01..10..01..1
+> >    *
+> >    * Fill the unused top bits with ones, and check if
+> >    * the result is a valid immediate (all ones with a
+> >    * contiguous ranges of zeroes).
+> >    */
+> >   imm |= ~mask;
+> >   if (!range_of_ones(~imm))
+> >           return AARCH64_BREAK_FAULT;
+> > 
+> > To see the problem, consider an immediate of the form 0..01..10..01..1,
+> > where the upper 32 bits are zero, such as 0x80000001. The code checks
+> > if ~(imm | ~mask) contains a range of ones: the incorrect mask yields
+> > 1..10..01..10..0, which fails the check; the correct mask yields
+> > 0..01..10..0, which succeeds.
+> > 
+> > The fix is to use a 32-bit all-ones default mask for 32-bit immediates.
+> > 
+> > Currently, the only user of this function is in
+> > arch/arm64/kvm/va_layout.c, which uses 64-bit immediates and won't
+> > trigger these bugs.  
 > 
-> diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
-> index a81ed5d..36aca86 100644
-> --- a/tools/testing/selftests/bpf/test_sockmap.c
-> +++ b/tools/testing/selftests/bpf/test_sockmap.c
-> @@ -502,9 +502,10 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
->  		 * paths.
->  		 */
->  		total_bytes = (float)iov_count * (float)iov_length * (float)cnt;
-> -		txmsg_pop_total = txmsg_pop;
->  		if (txmsg_apply)
-> -			txmsg_pop_total *= (total_bytes / txmsg_apply);
-> +			txmsg_pop_total = txmsg_pop * (total_bytes / txmsg_apply);
-> +		else
-> +			txmsg_pop_total = txmsg_pop * cnt;
->  		total_bytes -= txmsg_pop_total;
->  		err = clock_gettime(CLOCK_MONOTONIC, &s->start);
->  		if (err < 0)
-> @@ -638,9 +639,13 @@ static int sendmsg_test(struct sockmap_options *opt)
+> Ah, so this isn't a fix or a bpf patch ;)
+> 
+> I can queue it via arm64 for 5.8, along with the bpf patches since there
+> are some other small changes pending in the arm64 bpf backend for BTI.
+> 
+> > We tested the new code against llvm-mc with all 1,302 encodable 32-bit
+> > logical immediates and all 5,334 encodable 64-bit logical immediates.
+> > 
+> > Fixes: ef3935eeebff ("arm64: insn: Add encoder for bitwise operations using literals")
+> > Co-developed-by: Xi Wang <xi.wang@gmail.com>
+> > Signed-off-by: Xi Wang <xi.wang@gmail.com>
+> > Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+> > ---
+> >  arch/arm64/kernel/insn.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/arm64/kernel/insn.c b/arch/arm64/kernel/insn.c
+> > index 4a9e773a177f..42fad79546bb 100644
+> > --- a/arch/arm64/kernel/insn.c
+> > +++ b/arch/arm64/kernel/insn.c
+> > @@ -1535,7 +1535,7 @@ static u32 aarch64_encode_immediate(u64 imm,
+> >  				    u32 insn)
+> >  {
+> >  	unsigned int immr, imms, n, ones, ror, esz, tmp;
+> > -	u64 mask = ~0UL;
+> > +	u64 mask;
+> >  
+> >  	/* Can't encode full zeroes or full ones */
+> >  	if (!imm || !~imm)  
+> 
+> It's a bit grotty spreading the checks out now. How about we tweak things
+> slightly along the lines of:
+> 
+> 
+> diff --git a/arch/arm64/kernel/insn.c b/arch/arm64/kernel/insn.c
+> index 4a9e773a177f..60ec788eaf33 100644
+> --- a/arch/arm64/kernel/insn.c
+> +++ b/arch/arm64/kernel/insn.c
+> @@ -1535,16 +1535,10 @@ static u32 aarch64_encode_immediate(u64 imm,
+>  				    u32 insn)
+>  {
+>  	unsigned int immr, imms, n, ones, ror, esz, tmp;
+> -	u64 mask = ~0UL;
+> -
+> -	/* Can't encode full zeroes or full ones */
+> -	if (!imm || !~imm)
+> -		return AARCH64_BREAK_FAULT;
+> +	u64 mask;
 >  
->  	rxpid = fork();
->  	if (rxpid == 0) {
-> +		iov_buf -= (txmsg_pop - txmsg_start_pop + 1);
->  		if (opt->drop_expected)
->  			exit(0);
+>  	switch (variant) {
+>  	case AARCH64_INSN_VARIANT_32BIT:
+> -		if (upper_32_bits(imm))
+> -			return AARCH64_BREAK_FAULT;
+>  		esz = 32;
+>  		break;
+>  	case AARCH64_INSN_VARIANT_64BIT:
+> @@ -1556,6 +1550,12 @@ static u32 aarch64_encode_immediate(u64 imm,
+>  		return AARCH64_BREAK_FAULT;
+>  	}
 >  
-> +		if (!iov_buf) /* zero bytes sent case */
-> +			exit(0);
-
-You probably want to call _exit() from the child to prevent flushing
-stdio buffers twice.
-
+> +	mask = GENMASK(esz - 1, 0);
 > +
->  		if (opt->sendpage)
->  			iov_count = 1;
->  		err = msg_loop(rx_fd, iov_count, iov_buf,
-> 
+> +	/* Can't encode full zeroes or full ones */
 
+... nor a value wider than the mask.
+
+> +	if (imm & ~mask || !imm || imm == mask)
+> +		return AARCH64_BREAK_FAULT;
+> +
+>  	/*
+>  	 * Inverse of Replicate(). Try to spot a repeating pattern
+>  	 * with a pow2 stride.
+> 
+> 
+> What do you think?
+
+I'd be pretty happy with that.
+
+Reviewed-by: Marc Zyngier <maz@kernel.org>
+
+Thanks,
+
+	M.
+-- 
+Jazz is not dead. It just smells funny...
