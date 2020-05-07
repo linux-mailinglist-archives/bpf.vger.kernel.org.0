@@ -2,122 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5123B1C9E58
-	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 00:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8BC1C9E6C
+	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 00:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgEGWVV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 18:21:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727029AbgEGWVU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 May 2020 18:21:20 -0400
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on0729.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe02::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC10C05BD43;
-        Thu,  7 May 2020 15:14:50 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Lfrznmgiyx97wQtYztY0lIMLQBRUD/ffxTI7nH+s/T+XBTiB6w0gevpxAkz5oRZy30x1bIedstn3giG5Vd+KelPOfNi8SNxKhwG6sxdrlv/7OmlTOFt2xO8nkWCHxs24sPNjIzssIRIayvxA6kHU/byk2s3pm3GQKQ1ej3iyddgyXBEhPQy9FszQDx1jHTYLVjDb6qbREN1FiZx0wq8DZx+x+LODG615xU/wVEX2rMbFGCEJjASmxVQVZV2E9TwrF2d759BUkBwbEDjP6kSapQTC1c178ByBBg2FAsMKtlKLO2n8lG/nUEPLxuDxMwT1T/IscJN9RjHTY53qH/kkfQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OpX+LulVK4KF2QCHRgf+FaJ8qLCSrjPQZA1aBvpvpsU=;
- b=WPY5dzhuOPyr9dlw0eu70J0XA3VcG0FtzA9tdfNjRekH0qRamaVpjb/GY7PasXpUgsWniME/gXD6txizgt+HipgGQmO61fatoEV24yBO5v1vVspfDZDohvY3wnwR8HxKCoqJA31MFg9mPdDH12EsoTvBILTKxb9mFxHnb42Orc29dVtjlfd9jqTdjcx8M52psrUl0zw4N5dV5Vuu8ikSQ11KEfvkjeD//crshNbl3+WcMo6STaLt1kfGH7J8zZGzD/8aFKnnF75r+FV4Tpf+gfO+1CQMlfpfKjM3xqG7RahFIA4uifwGYQm80ipSpqaIwbmM7WDDHyLVzTi0r4QXCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=criteo.com; dmarc=pass action=none header.from=criteo.com;
- dkim=pass header.d=criteo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=criteo.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OpX+LulVK4KF2QCHRgf+FaJ8qLCSrjPQZA1aBvpvpsU=;
- b=g2bHM1wT5JjcYtIlQEWZb5E9eJz1yAUfybo0oayCvYhRAHAf+HSxmKtiRrkBB3NOssd5akhcs5+Ad7eABpQOg2/Ic1cpA0JxQBGEKb6CBXcRKdfbbgTyIILqOIGW2uf2dcvbrErkSqDS+HGQksUcFl2h1mJXsxlbzGUWBo1KjZg=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=criteo.com;
-Received: from AM6PR04MB4230.eurprd04.prod.outlook.com (2603:10a6:209:41::33)
- by AM6PR04MB6247.eurprd04.prod.outlook.com (2603:10a6:20b:be::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20; Thu, 7 May
- 2020 22:14:46 +0000
-Received: from AM6PR04MB4230.eurprd04.prod.outlook.com
- ([fe80::f151:2536:ba90:6629]) by AM6PR04MB4230.eurprd04.prod.outlook.com
- ([fe80::f151:2536:ba90:6629%5]) with mapi id 15.20.2979.028; Thu, 7 May 2020
- 22:14:45 +0000
-From:   Vincent Minet <v.minet@criteo.com>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Vincent Minet <v.minet@criteo.com>
-Subject: [PATCH] umh: fix memory leak on execve failure
-Date:   Fri,  8 May 2020 00:14:22 +0200
-Message-Id: <20200507221422.19338-1-v.minet@criteo.com>
-X-Mailer: git-send-email 2.26.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: PR3P193CA0037.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:102:51::12) To AM6PR04MB4230.eurprd04.prod.outlook.com
- (2603:10a6:209:41::33)
+        id S1726860AbgEGWZo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 18:25:44 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:58618 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726538AbgEGWZo (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 7 May 2020 18:25:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588890342;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y31RC39EIR5bFhiqWVOWKHXJN5kd0IOfEjfi+f9WskY=;
+        b=bpXTAmzsP9ET8uQ3Fh3465Ecz/llCD0sm6jQsRoWtUr+7x+epdBUBAcm2jVDAMnhpytSe/
+        x5o+jGjRb59jacNQWhMGTVjfr9xsrO/8MQYckmzbhOM5WQg8UEzcW/Ev3KxL16xWgfw4BF
+        pOwXhN/sXRyPiEv7pE2wNcuPoVZOjW4=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-471-F8Q5hbIaNbO9sPjzMZ53eQ-1; Thu, 07 May 2020 18:25:40 -0400
+X-MC-Unique: F8Q5hbIaNbO9sPjzMZ53eQ-1
+Received: by mail-lj1-f200.google.com with SMTP id q2so1383421ljq.16
+        for <bpf@vger.kernel.org>; Thu, 07 May 2020 15:25:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=Y31RC39EIR5bFhiqWVOWKHXJN5kd0IOfEjfi+f9WskY=;
+        b=TbePtzDH+wn0MAZvcHqqBVk/6FBa/y1i48F3fJDtT5vddlFAUknwrH8OgsTacOSKIi
+         qVOzyJI6ipNcxoXUMPJ/b0iHk/8qWnsYBaZcLHxj/omqaLTRrFRJtaT4gNV53qhBmPdp
+         o/HbtQaDOfTUeRsV0egHsi7+iSylWkrJuMbgOXGl+Ypqtiwx0K5XIMLF14jZfA4aLZ6n
+         YZdUt+/cXH55DFkdFmG4NBBtI4Tnwm7v3jFoUSIbEwiPrxhPaIiBae7dxQYElOxBYXhb
+         VBq1tygGqYlAfHDr0yh01UEG8XkVlup/9EZ5UzxsbBlrt7xb/YMgzZRmXuzK6KCsxci7
+         dVVw==
+X-Gm-Message-State: AGi0PuZFBcL8bmmVathefhm4uwgR1OxKAtYCBYX1cIvO3AbZW8BeXG56
+        e0y18TVhY78ySBHwHrWWUgvfdZEwrZEDoZWoqWx5j8vtNUpC+x9lwRK+Aath7PS1uxufhLjgew7
+        ncIT7Y/jgvIH9
+X-Received: by 2002:a2e:7308:: with SMTP id o8mr9759894ljc.16.1588890339426;
+        Thu, 07 May 2020 15:25:39 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIiITs85tCkxagqkrtudU4EnBUgqkBT6CYtHQWvqlA4zwmZLjXT0IamFJcTlbpf00x54mAeaw==
+X-Received: by 2002:a2e:7308:: with SMTP id o8mr9759881ljc.16.1588890339182;
+        Thu, 07 May 2020 15:25:39 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id b4sm4639729lfo.33.2020.05.07.15.25.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2020 15:25:38 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id A4EF91804E9; Fri,  8 May 2020 00:25:36 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     John Fastabend <john.fastabend@gmail.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBl?= =?utf-8?B?bA==?= 
+        <bjorn.topel@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: Re: XDP bpf_tail_call_redirect(): yea or nay?
+In-Reply-To: <5eb44eb03f8e1_22a22b23544285b87a@john-XPS-13-9370.notmuch>
+References: <CAJ+HfNidbgwtLinLQohwocUmoYyRcAG454ggGkCbseQPSA1cpw@mail.gmail.com> <877dxnkggf.fsf@toke.dk> <CAJ+HfNhvzZ4JKLRS5=esxCd7o39-OCuDSmdkxCuxR9Y6g5DC0A@mail.gmail.com> <871rnvkdhw.fsf@toke.dk> <5eb44eb03f8e1_22a22b23544285b87a@john-XPS-13-9370.notmuch>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 08 May 2020 00:25:36 +0200
+Message-ID: <87eervidr3.fsf@toke.dk>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (5.196.75.236) by PR3P193CA0037.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:51::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.27 via Frontend Transport; Thu, 7 May 2020 22:14:44 +0000
-X-Mailer: git-send-email 2.26.2
-X-Originating-IP: [5.196.75.236]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0e37a00b-56a7-4998-1ac5-08d7f2d40c6c
-X-MS-TrafficTypeDiagnostic: AM6PR04MB6247:|AM6PR04MB6247:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM6PR04MB624759DE6B3743C40D20CC2C90A50@AM6PR04MB6247.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-Forefront-PRVS: 03965EFC76
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TcDBE5OwoFD1vdWWhSo/xsOOQxKk8Tk6TfauJGXcJ43doQeyqwTGIdii1WPCaUBNNzINL3j2L1FEF4IUOOGZQ8U+oqdZphKn8FJ8Ye6o6wEfGsg8IEodh4K5uo1n5QbOD6btiqE/jwWHi5mpNGk0aUmhThUhubQ3CcbDVNH11pwI5YRBxrylQ945eqHTEUGrv+xUAD1v9aPyKhYy6xyYvrmVlNDSEauKxCxSjKXnaXFhvqUSn62z8h6xgbQI7wgsGJa3gaMu745gI5dg6HctPdRtuxOMxVvp6NL+64nDPT+ww8x1iGV0LkoECzQf+TyZdEoPYI6V9zQ9SmLWB8H6jYIYQhtFPreXhwSqalv0SwPBsw6KvP9RHC8kpklVpiCcx5kxEFS0Qzkw5e29SCGWc18Q3NkMME66zgQG4iluy95kaOFoE6IjAzaiW7W/ECGbl1X+BcEtVgWYbSyojfb9dl9MULJSA7GLs1CI3uWRuivsjmoGMZCovd/GJ5zjinfF6ih3e6BHGr/rsz6WjcTuljtMUVDQEaOyb6CEIqZu+Lpg3j7YuxX3nX/MWkzo0T2u
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4230.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(366004)(346002)(39860400002)(396003)(136003)(33430700001)(66556008)(83280400001)(83290400001)(6512007)(6916009)(8936002)(36756003)(1076003)(66476007)(8676002)(107886003)(2906002)(6486002)(33440700001)(86362001)(2616005)(478600001)(956004)(4326008)(5660300002)(69590400007)(83320400001)(83310400001)(83300400001)(6666004)(186003)(54906003)(55236004)(316002)(52116002)(6506007)(16526019)(26005)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 86jiMfTlQ2BdiePor19gwjsuMSqjs3myWqImkTf7bQ/4Q4sYHhmk5QW8fz2xKyjIiGQ9nT3AxVuK5JCgfr/ZPJ7dDScgNbjy+NyLLFY/7ZlIlVepkQMhFPfIFCxVGGgvhDP6hWF2Jrz61Age4Inlh19r4e6aauizb8OMHHwiemHTiZOXqINvMAqqLxXmjJni9mqXaA0OCb4SdWrYQ47yhpry118QUbnpI5kKDhZaYfCb4FJ+nPW1KoIXWhZO4llhzfA49yygxBHG5BuQ6fM0YfND/aZ/1XuoW0zMU98cIZu25if0U7CKkQjG53ITIBci5hgm73Om5UCgViPstRt7Q1AlQ3Kiql5dEUMckzRFhGNw3v8JNbD5xzgl6DstJ0Gp0lgZFVRUqBOkdSigd1opx5ED0aD+4v9DrNYxtwAum3sm0od9IImUGH6aAoWx3ibZw6lZw/ysWfIj/Oa+WJwfnQHY6PKsBhQtGL5YxHRdquqJVPuN4aPSR9kkMhOa74STGAuLJ88cahoPLaspP27rl6mNxyjeNb7YA5IpAUP0ZqvpPHiGeUxHlRhdf57q3sFgSiEfAf8B/6s7JQU5FbnqVniyDARJXd1YZzG6dCt+K+TlIAAfV3pDyAX8Eb439rO8e7DuraaYcEC7wLbP0Nz+rF2HhdkGpfnSv7RvQTP/Lx1YsPpFE12HIy2ilZKcwaaYC2wldBdlwKXRdB8Xv48oXPgc3mFOD1i1HqyQYimg3cGHVsc0imUQ3xicUNHNx7VrFIWzY/5KjHI4/95eBs529MF4bJmmefrVDIndRc9gLFE=
-X-OriginatorOrg: criteo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e37a00b-56a7-4998-1ac5-08d7f2d40c6c
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 May 2020 22:14:45.8440
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 2a35d8fd-574d-48e3-927c-8c398e225a01
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: V8jhr+KMxkPbp+D3iovXTk1caY4e6Y0FdHenhGLYZ/cXZBYUlvRpOiNfMw3aHF2EtuPp5dglvIhd49DGBvzpmg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB6247
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If a UMH process created by fork_usermode_blob() fails to execute,
-a pair of struct file allocated by umh_pipe_setup() will leak.
+John Fastabend <john.fastabend@gmail.com> writes:
 
-Under normal conditions, the caller (like bpfilter) needs to manage the
-lifetime of the UMH and its two pipes. But when fork_usermode_blob()
-fails, the caller doesn't really have a way to know what needs to be
-done. It seems better to do the cleanup ourselves in this case.
+> Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
+>>=20
+>> > On Thu, 7 May 2020 at 15:44, Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>> >>
+>> >> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
+>> >>
+>> >> > Before I start hacking on this, I might as well check with the XDP
+>> >> > folks if this considered a crappy idea or not. :-)
+>> >> >
+>> >> > The XDP redirect flow for a packet is typical a dance of
+>> >> > bpf_redirect_map() that updates the bpf_redirect_info structure with
+>> >> > maps type/items, which is then followed by an xdp_do_redirect(). Th=
+at
+>> >> > function takes an action based on the bpf_redirect_info content.
+>> >> >
+>> >> > I'd like to get rid of the xdp_do_redirect() call, and the
+>> >> > bpf_redirect_info (per-cpu) lookup. The idea is to introduce a new
+>> >> > (oh-no!) XDP action, say, XDP_CONSUMED and a built-in helper with
+>> >> > tail-call semantics.
+>> >> >
+>> >> > Something across the lines of:
+>> >> >
+>> >> > --8<--
+>> >> >
+>> >> > struct {
+>> >> >         __uint(type, BPF_MAP_TYPE_XSKMAP);
+>> >> >         __uint(max_entries, MAX_SOCKS);
+>> >> >         __uint(key_size, sizeof(int));
+>> >> >         __uint(value_size, sizeof(int));
+>> >> > } xsks_map SEC(".maps");
+>> >> >
+>> >> > SEC("xdp1")
+>> >> > int xdp_prog1(struct xdp_md *ctx)
+>> >> > {
+>> >> >         bpf_tail_call_redirect(ctx, &xsks_map, 0);
+>> >> >         // Redirect the packet to an AF_XDP socket at entry 0 of the
+>> >> >         // map.
+>> >> >         //
+>> >> >         // After a successful call, ctx is said to be
+>> >> >         // consumed. XDP_CONSUMED will be returned by the program.
+>> >> >         // Note that if the call is not successful, the buffer is
+>> >> >         // still valid.
+>> >> >         //
+>> >> >         // XDP_CONSUMED in the driver means that the driver should =
+not
+>> >> >         // issue an xdp_do_direct() call, but only xdp_flush().
+>> >> >         //
+>> >> >         // The verifier need to be taught that XDP_CONSUMED can only
+>> >> >         // be returned "indirectly", meaning a bpf_tail_call_XXX()
+>> >> >         // call. An explicit "return XDP_CONSUMED" should be
+>> >> >         // rejected. Can that be implemented?
+>> >> >         return XDP_PASS; // or any other valid action.
+>> >> > }
+>
+> I'm wondering if we can teach the verifier to recognize tail calls,
+>
+> int xdp_prog1(struct xdp_md *ctx)
+> {
+> 	return xdp_do_redirect(ctx, &xsks_map, 0);
+> }
+>
+> This would be useful for normal calls as well. I guess the question here
+> is would a tail call be sufficient for above case or do you need the
+> 'return XDP_PASS' at the end? If so maybe we could fold it into the
+> helper somehow.
+>
+> I think it would also address Toke's concerns, no new action so
+> bpf developers can just develope like normal but "smart" developers
+> will try do calls as tail calls.
 
-Fixes: 449325b52b7a ("umh: introduce fork_usermode_blob() helper")
-Signed-off-by: Vincent Minet <v.minet@criteo.com>
----
- kernel/umh.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+This is certainly an interesting idea! Functional languages tend to
+auto-optimise tail calls, so detecting them is certainly possible, at
+least for the compiler. I suppose this could be a follow-on
+optimisation, though, couldn't it? From the PoV of the surrounding code
+(in the kernel), it doesn't really matter if the behaviour was signalled
+by an explicit flag added in the code, or if this flag was automatically
+added by the compiler.
 
-diff --git a/kernel/umh.c b/kernel/umh.c
-index 7f255b5a8845..20d51e0957e0 100644
---- a/kernel/umh.c
-+++ b/kernel/umh.c
-@@ -475,6 +475,12 @@ static void umh_clean_and_save_pid(struct subprocess_info *info)
- {
- 	struct umh_info *umh_info = info->data;
- 
-+	/* cleanup if umh_pipe_setup() was successful but exec failed */
-+	if (info->pid && info->retval) {
-+		fput(umh_info->pipe_to_umh);
-+		fput(umh_info->pipe_from_umh);
-+	}
-+
- 	argv_free(info->argv);
- 	umh_info->pid = info->pid;
- }
--- 
-2.26.2
+> Not sure it can be done without driver changes though.
+
+Well yeah, that's hard to know in the abstract, obviously. My point is
+just that we should look very hard indeed before we decide it can't :)
+
+-Toke
 
