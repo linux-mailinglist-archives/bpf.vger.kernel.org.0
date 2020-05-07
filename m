@@ -2,73 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E82A1C87AB
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 13:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ACAE1C8A79
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 14:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbgEGLJs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 07:09:48 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:51028 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725809AbgEGLJs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 May 2020 07:09:48 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 81558BB68AC7B0BAF879;
-        Thu,  7 May 2020 19:09:46 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 7 May 2020
- 19:09:36 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <tariqt@mellanox.com>, <davem@davemloft.net>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <kuba@kernel.org>, <hawk@kernel.org>,
-        <john.fastabend@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH net-next] net: mlx4: remove unneeded variable "err" in mlx4_en_ethtool_add_mac_rule()
-Date:   Thu, 7 May 2020 19:08:57 +0800
-Message-ID: <20200507110857.38035-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        id S1726825AbgEGMUU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 08:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726792AbgEGMUT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 7 May 2020 08:20:19 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B1CC05BD43;
+        Thu,  7 May 2020 05:20:19 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id z8so6147627wrw.3;
+        Thu, 07 May 2020 05:20:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=hwmbNEyOXecqf1sQXaRulabPe6vBkolg6IuHt5TdHTU=;
+        b=dDEpo5qzjTDuan13RkxLtpTn8Inx853I6PSWjaaD4AX63ZsZSAq40CWM7R6utKw3zq
+         Y8hfOpUoDjAFnLbepyEIOpcJgZ+d1s+5TAf4xaPcAQISdXdNqtoH0R6gXqFffw9px6vH
+         26Ik3TYaDmvQJNxfpd8gxOpwRw5hHdP6m4yM7IFlcFJHlvH0rjyl2xvG1EA22S0fvzNU
+         Mi+A+NC15tnf9QEDp+UbHbcKojAyHc7xEJxg5Sm49TbbX+fSMUR9TUJu4GfGcH2k1XRi
+         HMlRv1sfmZqy7LjMjK3w31EEx3iCAM4/v42Y4+CfdYPqwGNyTV0m/J+Q3FFvNw9EG2CW
+         ur9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=hwmbNEyOXecqf1sQXaRulabPe6vBkolg6IuHt5TdHTU=;
+        b=setl7jqb4iCmXd5RKawCsrWT9D9L08oRT3eGfqODHPYwyaFFV9zZNFymVvg4orsq/6
+         CZCfWCRFkKmDXodom3n2jvjTapQq1Rfk6XRYmbTjHJV9T9b0jynbnBxnwQ4w8e3x9QeS
+         nFLNH2fwyyKmHkyaf4QuTPWcWceuTqqyDKvrlEgdgsjv9c42kiMEZKXW4V4oUk6V+lRT
+         5B1hxntAm1VfFb8y7+BU0/WmID0DABMi0gvxgZD0aI5mimR1cynCKV12NLNITtt15msC
+         1uPnLC1ALMZcaF/MQr3U0uxdpmhkU/sjkpemH7qG1KFof4W6DKjs0g927BLwgiHnJpjO
+         TnWQ==
+X-Gm-Message-State: AGi0PubyB2eQiWbZcgf3zuk22lZ/TdQ0Gs8c1+XfEI5Z3D3/a0YFhuA+
+        5YFXnPoc7J50ZXfqewfMlpQG4VXTeoqgNilIcOLblG1Cu1bfvw==
+X-Google-Smtp-Source: APiQypKS0G3RRdM+DuJDKJ4SmMErUIgMQYL9h1mPTXwYjhZjf3Ow6omNyyqG+hqlwo4cQY+F0vaWCi9mIj3hUH84+8c=
+X-Received: by 2002:adf:decb:: with SMTP id i11mr15230905wrn.172.1588854017421;
+ Thu, 07 May 2020 05:20:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Thu, 7 May 2020 14:20:06 +0200
+Message-ID: <CAJ+HfNidbgwtLinLQohwocUmoYyRcAG454ggGkCbseQPSA1cpw@mail.gmail.com>
+Subject: XDP bpf_tail_call_redirect(): yea or nay?
+To:     bpf <bpf@vger.kernel.org>
+Cc:     Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix the following coccicheck warning:
+Before I start hacking on this, I might as well check with the XDP
+folks if this considered a crappy idea or not. :-)
 
-drivers/net/ethernet/mellanox/mlx4/en_ethtool.c:1396:5-8: Unneeded
-variable: "err". Return "0" on line 1411
+The XDP redirect flow for a packet is typical a dance of
+bpf_redirect_map() that updates the bpf_redirect_info structure with
+maps type/items, which is then followed by an xdp_do_redirect(). That
+function takes an action based on the bpf_redirect_info content.
 
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- drivers/net/ethernet/mellanox/mlx4/en_ethtool.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+I'd like to get rid of the xdp_do_redirect() call, and the
+bpf_redirect_info (per-cpu) lookup. The idea is to introduce a new
+(oh-no!) XDP action, say, XDP_CONSUMED and a built-in helper with
+tail-call semantics.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-index 216e6b2e9eed..b816154bc79a 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-@@ -1392,7 +1392,6 @@ static int mlx4_en_ethtool_add_mac_rule(struct ethtool_rxnfc *cmd,
- 					struct mlx4_spec_list *spec_l2,
- 					unsigned char *mac)
- {
--	int err = 0;
- 	__be64 mac_msk = cpu_to_be64(MLX4_MAC_MASK << 16);
- 
- 	spec_l2->id = MLX4_NET_TRANS_RULE_ID_ETH;
-@@ -1407,7 +1406,7 @@ static int mlx4_en_ethtool_add_mac_rule(struct ethtool_rxnfc *cmd,
- 
- 	list_add_tail(&spec_l2->list, rule_list_h);
- 
--	return err;
-+	return 0;
- }
- 
- static int mlx4_en_ethtool_add_mac_rule_by_ipv4(struct mlx4_en_priv *priv,
--- 
-2.21.1
+Something across the lines of:
 
+--8<--
+
+struct {
+        __uint(type, BPF_MAP_TYPE_XSKMAP);
+        __uint(max_entries, MAX_SOCKS);
+        __uint(key_size, sizeof(int));
+        __uint(value_size, sizeof(int));
+} xsks_map SEC(".maps");
+
+SEC("xdp1")
+int xdp_prog1(struct xdp_md *ctx)
+{
+        bpf_tail_call_redirect(ctx, &xsks_map, 0);
+        // Redirect the packet to an AF_XDP socket at entry 0 of the
+        // map.
+        //
+        // After a successful call, ctx is said to be
+        // consumed. XDP_CONSUMED will be returned by the program.
+        // Note that if the call is not successful, the buffer is
+        // still valid.
+        //
+        // XDP_CONSUMED in the driver means that the driver should not
+        // issue an xdp_do_direct() call, but only xdp_flush().
+        //
+        // The verifier need to be taught that XDP_CONSUMED can only
+        // be returned "indirectly", meaning a bpf_tail_call_XXX()
+        // call. An explicit "return XDP_CONSUMED" should be
+        // rejected. Can that be implemented?
+        return XDP_PASS; // or any other valid action.
+}
+
+-->8--
+
+The bpf_tail_call_redirect() would work with all redirectable maps.
+
+Thoughts? Tomatoes? Pitchforks?
+
+
+Bj=C3=B6rn
