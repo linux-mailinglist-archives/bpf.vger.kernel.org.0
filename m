@@ -2,461 +2,219 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 046311C962B
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 18:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C83A1C9633
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 18:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726521AbgEGQPT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 12:15:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
+        id S1726538AbgEGQQX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 12:16:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726464AbgEGQPS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 7 May 2020 12:15:18 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0539CC05BD43
-        for <bpf@vger.kernel.org>; Thu,  7 May 2020 09:15:18 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id y31so7306448qta.16
-        for <bpf@vger.kernel.org>; Thu, 07 May 2020 09:15:17 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726393AbgEGQQW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 7 May 2020 12:16:22 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B15C05BD43
+        for <bpf@vger.kernel.org>; Thu,  7 May 2020 09:16:22 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id n14so6685852qke.8
+        for <bpf@vger.kernel.org>; Thu, 07 May 2020 09:16:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kGUZQ06GqTpYvEm0RWI9zaW4rc6O3x2GNNbIc7NifNY=;
-        b=SMUA0yD9T1Bx+NWdDtDKWNAnfj+6tpvDMy/b/o8OO6NTEREGCsecLWDI27jCx52oce
-         7xstX3/EgniEu6OGkKczkoiAGxTm00GmYzEEqsO06dRP6W+2HkL5vBoUi/JjHZHNNuw/
-         q3p5NC2oXLETmkCJwETvC/G/3+UBswJymuWqKhOC2azF0VUBmy011Zydsg/AT/8jizkT
-         /+koVNK/Dr0Cd8Bp9u/VXsv9czCxmY8VQkVDKPFhBlELjdWHemvQcAlzpANzwxKnkW9p
-         io2NtkPS3DXEudjqwBH2Za26qcDsyfK5LIq2gKIjcVPkF+wLqfQ5mKqdF355oE1PJYi2
-         kjsQ==
+        bh=oiL/zFHNHVy9M0n0ldVGBnGZKEVumBhhEkR8AKYI5uw=;
+        b=Gg0W9fuc9I0A11zjL83gazWndPVMsvjgwQmcUyIV+waOCM8WZ5CaNxVsatkJGwoxKH
+         618jDqzOEeq90OXtdwPI7PYS27AKy2Qp7C6nD7lNat93PiDdGBIvIRhVIR0WOWwlaFn7
+         vBCkzG/QPgXuifMZWwiNtwOla2N8riAVMKrnZrZg9sKfT06Eo+reYqBaeP1t9uyJX1Ld
+         XBsavDsQcnOstWPKQ94+JLA0cbvqrjSX/08OHXoSpoPnAvWM4vVMWRhvAXHsrhYfqSnl
+         roGniJC5KQNsomE1zpgXklULP3ZOAJaIed0mWSutmSsAPEmSNQWiPjTqLqgHRTRJkL2Y
+         fkKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=kGUZQ06GqTpYvEm0RWI9zaW4rc6O3x2GNNbIc7NifNY=;
-        b=eiygsByfd2JJRCWDEyhGiO6Gb+y35HV1f5+3hJa5Tj6DS5Zj+4LP6cP9002I+zMTC9
-         96o4lO626wArFuO6UnUBVNSQEilWjymX/3jZANce6lbkXJmJ+nUADregL0eW3u54wOTj
-         Zg5JSMn/5DOTQhLlFNSV4IyYlf4f4HA1gkCNOupgcGioEeO5LFTNCrZ3/cYoDiAG53Ks
-         aCUehwFr1fnu2gyVjx4fw5hiQ9hJrs4Hpyb/3REdNqnD0guq14wjaISFfTXBnw1ytOMl
-         m9jG8UZ+shEJYdzuQhb6Lvkz6x2Ox2zjAruc43diepgLZ2jnGOLryAEuCgogCmXw78GC
-         9qMA==
-X-Gm-Message-State: AGi0Pub3sN8VgV8kK2UxhLHPJUi43N1dcDFPdcfQfOVyyUR8xxG1z7Ao
-        xY1YQgfCvjNANxPO8DJ/T1NCslQ=
-X-Google-Smtp-Source: APiQypIUOVPdHvRqXL5I5RBK9FJu6JOnxnDnzJu1EkD4IGpowVSKHdX8yyjo3WgxkA6DV1i8Bu8FO98=
-X-Received: by 2002:a0c:8583:: with SMTP id o3mr6840715qva.233.1588868117154;
- Thu, 07 May 2020 09:15:17 -0700 (PDT)
-Date:   Thu, 7 May 2020 09:15:15 -0700
-In-Reply-To: <20200507060921.bns5nfxuoy5c3tcu@kafai-mbp>
-Message-Id: <20200507161515.GK241848@google.com>
-Mime-Version: 1.0
-References: <20200506223210.93595-1-sdf@google.com> <20200506223210.93595-2-sdf@google.com>
- <20200507060921.bns5nfxuoy5c3tcu@kafai-mbp>
-Subject: Re: [PATCH bpf-next v3 1/5] selftests/bpf: generalize helpers to
- control background listener
-From:   sdf@google.com
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        ast@kernel.org, daniel@iogearbox.net, Andrey Ignatov <rdna@fb.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oiL/zFHNHVy9M0n0ldVGBnGZKEVumBhhEkR8AKYI5uw=;
+        b=bGP+jbMcWv4jJrD26NkKiroGgVwPism+oPnwh8KJN86g610ABj8bUsBbCtbOElz9r8
+         Dyf5v6fbtYIsCzudcp7lQzQWQdkYI5Tt/7KeuJ91jaL2Ou9JdtPYYJrCqqibJ4oHi+va
+         IlYJDUdNF2anpiL7sgukB+eaX7GCt/fsAmaBE/r/ZaYCPEJxrS+UB+1GhnIALTSp0C5+
+         uBATtdRPIbQpE/gOc4/cWj1M9N3O7ooH2XFGC2miC0FYmAbeHMKy5xyh2OzZQWC1U+09
+         VzCCe9WrvjQ64g3AZIJQ6fNnawGsJRDO7D2Qe5XKYgqdFMEcKimA5whEKi6EhLqyKLDZ
+         MAJw==
+X-Gm-Message-State: AGi0PuasyfEOlUbKKa38IiVmfALo7MQiZeGXrHejqaGYMv64+/2GRhH4
+        AiGVkdcp9tIOn3FQhhwyh1JtZrSKseIHLn3o9rg=
+X-Google-Smtp-Source: APiQypJkUJga50ad2iyF0Pz6Dd9KVsSXJPojIPx+6amdU+AyRsrgbJem+yryETtlT5rkCrysXi1R0OM66cw9Xwp40Ts=
+X-Received: by 2002:a05:620a:14a1:: with SMTP id x1mr15056399qkj.92.1588868181584;
+ Thu, 07 May 2020 09:16:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <3ab505db-9e04-366b-d602-6b2935739f54@intel.com>
+In-Reply-To: <3ab505db-9e04-366b-d602-6b2935739f54@intel.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 7 May 2020 09:16:10 -0700
+Message-ID: <CAEf4BzZXA3pDwqLGTnrDAn7cH67Ei6tp8PRZwVAmsT-nTMA0gA@mail.gmail.com>
+Subject: Re: bprm_count and stack_mprotect error when testing BPF LSM on v5.7-rc3
+To:     Ma Xinjian <max.xinjian@intel.com>, KP Singh <kpsingh@google.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/06, Martin KaFai Lau wrote:
-> On Wed, May 06, 2020 at 03:32:06PM -0700, Stanislav Fomichev wrote:
-> > Move the following routines that let us start a background listener
-> > thread and connect to a server by fd to the test_prog:
-> > * start_server_thread - start background INADDR_ANY thread
-> > * stop_server_thread - stop the thread
-> > * connect_to_fd - connect to the server identified by fd
-> >
-> > These will be used in the next commit.
-> >
-> > Also, extend these helpers to support AF_INET6 and accept the family
-> > as an argument.
-> >
-> > v3:
-> > * export extra helper to start server without a thread (Martin KaFai  
-> Lau)
-> >
-> > v2:
-> > * put helpers into network_helpers.c (Andrii Nakryiko)
-> >
-> > Cc: Andrey Ignatov <rdna@fb.com>
-> > Cc: Martin KaFai Lau <kafai@fb.com>
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  tools/testing/selftests/bpf/Makefile          |   2 +-
-> >  tools/testing/selftests/bpf/network_helpers.c | 164 ++++++++++++++++++
-> >  tools/testing/selftests/bpf/network_helpers.h |  12 ++
-> >  .../selftests/bpf/prog_tests/tcp_rtt.c        | 116 +------------
-> >  4 files changed, 181 insertions(+), 113 deletions(-)
-> >  create mode 100644 tools/testing/selftests/bpf/network_helpers.c
-> >  create mode 100644 tools/testing/selftests/bpf/network_helpers.h
-> >
-> > diff --git a/tools/testing/selftests/bpf/Makefile  
-> b/tools/testing/selftests/bpf/Makefile
-> > index 3d942be23d09..8f25966b500b 100644
-> > --- a/tools/testing/selftests/bpf/Makefile
-> > +++ b/tools/testing/selftests/bpf/Makefile
-> > @@ -354,7 +354,7 @@ endef
-> >  TRUNNER_TESTS_DIR := prog_tests
-> >  TRUNNER_BPF_PROGS_DIR := progs
-> >  TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c	 
-> \
-> > -			 flow_dissector_load.h
-> > +			 network_helpers.c flow_dissector_load.h
-> >  TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read				\
-> >  		       $(wildcard progs/btf_dump_test_case_*.c)
-> >  TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
-> > diff --git a/tools/testing/selftests/bpf/network_helpers.c  
-> b/tools/testing/selftests/bpf/network_helpers.c
-> > new file mode 100644
-> > index 000000000000..6ad16dfebfb2
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/network_helpers.c
-> > @@ -0,0 +1,164 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +#include <errno.h>
-> > +#include <pthread.h>
-> > +#include <stdbool.h>
-> > +#include <stdio.h>
-> > +#include <string.h>
-> > +#include <unistd.h>
-> > +#include <linux/err.h>
-> > +#include <linux/in.h>
-> > +#include <linux/in6.h>
-> > +
-> > +#include "network_helpers.h"
-> > +
-> > +#define CHECK_FAIL(condition) ({					\
-> > +	int __ret = !!(condition);					\
-> > +	int __save_errno = errno;					\
-> > +	if (__ret) {							\
-> > +		fprintf(stdout, "%s:FAIL:%d\n", __func__, __LINE__);	\
-> > +	}								\
-> > +	errno = __save_errno;						\
-> > +	__ret;								\
-> > +})
-> > +
-> > +#define clean_errno() (errno == 0 ? "None" : strerror(errno))
-> > +#define log_err(MSG, ...) fprintf(stderr, "(%s:%d: errno: %s) "  
-> MSG "\n", \
-> > +	__FILE__, __LINE__, clean_errno(), ##__VA_ARGS__)
-> > +
-> > +int start_server(int family, int type)
-> > +{
-> > +	struct sockaddr_storage addr = {};
-> > +	socklen_t len;
-> > +	int fd;
-> > +
-> > +	if (family == AF_INET) {
-> > +		struct sockaddr_in *sin = (void *)&addr;
-> > +
-> > +		sin->sin_family = AF_INET;
-> > +		len = sizeof(*sin);
-> > +	} else {
-> > +		struct sockaddr_in6 *sin6 = (void *)&addr;
-> > +
-> > +		sin6->sin6_family = AF_INET6;
-> > +		len = sizeof(*sin6);
-> > +	}
-> > +
-> > +	fd = socket(family, type | SOCK_NONBLOCK, 0);
-> > +	if (fd < 0) {
-> > +		log_err("Failed to create server socket");
-> > +		return -1;
-> > +	}
-> > +
-> > +	if (bind(fd, (const struct sockaddr *)&addr, len) < 0) {
-> > +		log_err("Failed to bind socket");
-> > +		close(fd);
-> > +		return -1;
-> > +	}
-> > +
-> > +	if (type == SOCK_STREAM) {
-> > +		if (listen(fd, 1) < 0) {
-> > +			log_err("Failed to listed on socket");
-> > +			close(fd);
-> > +			return -1;
-> > +		}
-> > +	}
-> > +
-> > +	return fd;
-> > +}
-> > +
-> > +static pthread_mutex_t server_started_mtx = PTHREAD_MUTEX_INITIALIZER;
-> > +static pthread_cond_t server_started = PTHREAD_COND_INITIALIZER;
-> > +static volatile bool server_done;
-> > +pthread_t server_tid;
-> > +
-> > +static void *server_thread(void *arg)
-> > +{
-> > +	struct sockaddr_storage addr;
-> > +	socklen_t len = sizeof(addr);
-> > +	int fd = *(int *)arg;
-> > +	int client_fd;
-> > +
-> > +	pthread_mutex_lock(&server_started_mtx);
-> > +	pthread_cond_signal(&server_started);
-> > +	pthread_mutex_unlock(&server_started_mtx);
-> > +
-> > +	while (true) {
-> > +		client_fd = accept(fd, (struct sockaddr *)&addr, &len);
-> > +		if (client_fd == -1 && errno == EAGAIN) {
-> > +			usleep(50);
-> > +			continue;
-> > +		}
-> > +		break;
-> > +	}
-> > +	if (CHECK_FAIL(client_fd < 0)) {
-> > +		perror("Failed to accept client");
-> > +		return ERR_PTR(-1);
-> > +	}
-> > +
-> > +	while (!server_done)
-> > +		usleep(50);
-> > +
-> > +	close(client_fd);
-> > +
-> > +	return NULL;
-> > +}
-> > +
-> > +int start_server_thread(int family, int type)
-> > +{
-> > +	int fd = start_server(family, type);
-> > +
-> > +	if (fd < 0)
-> > +		return -1;
-> > +
-> > +	if (CHECK_FAIL(pthread_create(&server_tid, NULL, server_thread,
-> > +				      (void *)&fd)))
-> > +		goto err;
-> > +
-> > +	pthread_mutex_lock(&server_started_mtx);
-> > +	pthread_cond_wait(&server_started, &server_started_mtx);
-> > +	pthread_mutex_unlock(&server_started_mtx);
-> > +
-> > +	return fd;
-> > +err:
-> > +	close(fd);
-> > +	return -1;
-> > +}
-> > +
-> > +void stop_server_thread(int fd)
-> > +{
-> > +	void *server_res;
-> > +
-> > +	server_done = true;
-> > +	CHECK_FAIL(pthread_join(server_tid, &server_res));
-> > +	CHECK_FAIL(IS_ERR(server_res));
-> > +	close(fd);
-> > +}
-> > +
-> > +int connect_to_fd(int family, int type, int server_fd)
-> > +{
-> > +	struct sockaddr_storage addr;
-> > +	socklen_t len = sizeof(addr);
-> > +	int fd;
-> > +
-> > +	fd = socket(family, type, 0);
-> > +	if (fd < 0) {
-> > +		log_err("Failed to create client socket");
-> > +		return -1;
-> > +	}
-> > +
-> > +	if (getsockname(server_fd, (struct sockaddr *)&addr, &len)) {
-> > +		log_err("Failed to get server addr");
-> > +		goto out;
-> > +	}
-> > +
-> > +	if (connect(fd, (const struct sockaddr *)&addr, len) < 0) {
-> > +		log_err("Fail to connect to server with family %d", family);
-> > +		goto out;
-> > +	}
-> > +
-> > +	return fd;
-> > +
-> > +out:
-> > +	close(fd);
-> > +	return -1;
-> > +}
-> > diff --git a/tools/testing/selftests/bpf/network_helpers.h  
-> b/tools/testing/selftests/bpf/network_helpers.h
-> > new file mode 100644
-> > index 000000000000..4ed31706b7f4
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/network_helpers.h
-> > @@ -0,0 +1,12 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#ifndef __NETWORK_HELPERS_H
-> > +#define __NETWORK_HELPERS_H
-> > +#include <sys/socket.h>
-> > +#include <sys/types.h>
-> > +
-> > +int start_server(int family, int type);
-> > +int start_server_thread(int family, int type);
-> > +void stop_server_thread(int fd);
-> > +int connect_to_fd(int family, int type, int server_fd);
-> > +
-> > +#endif
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c  
-> b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-> > index e56b52ab41da..4aaa1e6e33ad 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-> > @@ -1,6 +1,7 @@
-> >  // SPDX-License-Identifier: GPL-2.0
-> >  #include <test_progs.h>
-> >  #include "cgroup_helpers.h"
-> > +#include "network_helpers.h"
-> >
-> >  struct tcp_rtt_storage {
-> >  	__u32 invoked;
-> > @@ -87,34 +88,6 @@ static int verify_sk(int map_fd, int client_fd,  
-> const char *msg, __u32 invoked,
-> >  	return err;
-> >  }
-> >
-> > -static int connect_to_server(int server_fd)
-> > -{
-> > -	struct sockaddr_storage addr;
-> > -	socklen_t len = sizeof(addr);
-> > -	int fd;
-> > -
-> > -	fd = socket(AF_INET, SOCK_STREAM, 0);
-> > -	if (fd < 0) {
-> > -		log_err("Failed to create client socket");
-> > -		return -1;
-> > -	}
-> > -
-> > -	if (getsockname(server_fd, (struct sockaddr *)&addr, &len)) {
-> > -		log_err("Failed to get server addr");
-> > -		goto out;
-> > -	}
-> > -
-> > -	if (connect(fd, (const struct sockaddr *)&addr, len) < 0) {
-> > -		log_err("Fail to connect to server");
-> > -		goto out;
-> > -	}
-> > -
-> > -	return fd;
-> > -
-> > -out:
-> > -	close(fd);
-> > -	return -1;
-> > -}
-> >
-> >  static int run_test(int cgroup_fd, int server_fd)
-> >  {
-> > @@ -145,7 +118,7 @@ static int run_test(int cgroup_fd, int server_fd)
-> >  		goto close_bpf_object;
-> >  	}
-> >
-> > -	client_fd = connect_to_server(server_fd);
-> > +	client_fd = connect_to_fd(AF_INET, SOCK_STREAM, server_fd);
-> >  	if (client_fd < 0) {
-> >  		err = -1;
-> >  		goto close_bpf_object;
-> > @@ -180,103 +153,22 @@ static int run_test(int cgroup_fd, int server_fd)
-> >  	return err;
-> >  }
-> >
-> > -static int start_server(void)
-> > -{
-> > -	struct sockaddr_in addr = {
-> > -		.sin_family = AF_INET,
-> > -		.sin_addr.s_addr = htonl(INADDR_LOOPBACK),
-> > -	};
-> > -	int fd;
-> > -
-> > -	fd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
-> > -	if (fd < 0) {
-> > -		log_err("Failed to create server socket");
-> > -		return -1;
-> > -	}
-> > -
-> > -	if (bind(fd, (const struct sockaddr *)&addr, sizeof(addr)) < 0) {
-> > -		log_err("Failed to bind socket");
-> > -		close(fd);
-> > -		return -1;
-> > -	}
-> > -
-> > -	return fd;
-> > -}
-> > -
-> > -static pthread_mutex_t server_started_mtx = PTHREAD_MUTEX_INITIALIZER;
-> > -static pthread_cond_t server_started = PTHREAD_COND_INITIALIZER;
-> > -static volatile bool server_done = false;
-> > -
-> > -static void *server_thread(void *arg)
-> > -{
-> > -	struct sockaddr_storage addr;
-> > -	socklen_t len = sizeof(addr);
-> > -	int fd = *(int *)arg;
-> > -	int client_fd;
-> > -	int err;
-> > -
-> > -	err = listen(fd, 1);
-> > -
-> > -	pthread_mutex_lock(&server_started_mtx);
-> > -	pthread_cond_signal(&server_started);
-> > -	pthread_mutex_unlock(&server_started_mtx);
-> > -
-> > -	if (CHECK_FAIL(err < 0)) {
-> > -		perror("Failed to listed on socket");
-> > -		return ERR_PTR(err);
-> > -	}
-> > -
-> > -	while (true) {
-> > -		client_fd = accept(fd, (struct sockaddr *)&addr, &len);
-> > -		if (client_fd == -1 && errno == EAGAIN) {
-> > -			usleep(50);
-> > -			continue;
-> > -		}
-> > -		break;
-> > -	}
-> > -	if (CHECK_FAIL(client_fd < 0)) {
-> > -		perror("Failed to accept client");
-> > -		return ERR_PTR(err);
-> > -	}
-> > -
-> > -	while (!server_done)
-> > -		usleep(50);
-> > -
-> > -	close(client_fd);
-> > -
-> > -	return NULL;
-> > -}
-> > -
-> >  void test_tcp_rtt(void)
-> >  {
-> >  	int server_fd, cgroup_fd;
-> > -	pthread_t tid;
-> > -	void *server_res;
-> >
-> >  	cgroup_fd = test__join_cgroup("/tcp_rtt");
-> >  	if (CHECK_FAIL(cgroup_fd < 0))
-> >  		return;
-> >
-> > -	server_fd = start_server();
-> > +	server_fd = start_server_thread(AF_INET, SOCK_STREAM);
-> I still don't see a thread is needed in this existing test_tcp_rtt also.
+On Wed, May 6, 2020 at 10:21 PM Ma Xinjian <max.xinjian@intel.com> wrote:
+>
+> Hi,
+>
+> When I test bpf lsm with (/test_progs -vv  -t test_lsm ), failed with
+> below issue:
+>
+> root@lkp-skl-d01
+> /usr/src/perf_selftests-x86_64-rhel-7.6-kselftests-bpf-lsm-2-6a8b55ed4056ea5559ebe4f6a4b247f627870d4c/tools/testing/selftests/bpf#
+> ./test_progs -vv  -t test_lsm
+>
+> libbpf: loading object 'lsm' from buffer
+> libbpf: section(1) .strtab, size 306, link 0, flags 0, type=3
+> libbpf: skip section(1) .strtab
+> libbpf: section(2) .text, size 0, link 0, flags 6, type=1
+> libbpf: skip section(2) .text
+> libbpf: section(3) lsm/file_mprotect, size 192, link 0, flags 6, type=1
+> libbpf: found program lsm/file_mprotect
+> libbpf: section(4) .rellsm/file_mprotect, size 32, link 25, flags 0, type=9
+> libbpf: section(5) lsm/bprm_committed_creds, size 104, link 0, flags 6,
+> type=1
+> libbpf: found program lsm/bprm_committed_creds
+> libbpf: section(6) .rellsm/bprm_committed_creds, size 32, link 25, flags
+> 0, type=9
+> libbpf: section(7) license, size 4, link 0, flags 3, type=1
+> libbpf: license of lsm is GPL
+> libbpf: section(8) .bss, size 12, link 0, flags 3, type=8
+> libbpf: section(9) .debug_loc, size 383, link 0, flags 0, type=1
+> libbpf: skip section(9) .debug_loc
+> libbpf: section(10) .rel.debug_loc, size 112, link 25, flags 0, type=9
+> libbpf: skip relo .rel.debug_loc(10) for section(9)
+> libbpf: section(11) .debug_abbrev, size 901, link 0, flags 0, type=1
+> libbpf: skip section(11) .debug_abbrev
+> libbpf: section(12) .debug_info, size 237441, link 0, flags 0, type=1
+> libbpf: skip section(12) .debug_info
+> libbpf: section(13) .rel.debug_info, size 112, link 25, flags 0, type=9
+> libbpf: skip relo .rel.debug_info(13) for section(12)
+> libbpf: section(14) .debug_ranges, size 96, link 0, flags 0, type=1
+> libbpf: skip section(14) .debug_ranges
+> libbpf: section(15) .rel.debug_ranges, size 128, link 25, flags 0, type=9
+> libbpf: skip relo .rel.debug_ranges(15) for section(14)
+> libbpf: section(16) .debug_str, size 142395, link 0, flags 30, type=1
+> libbpf: skip section(16) .debug_str
+> libbpf: section(17) .BTF, size 5634, link 0, flags 0, type=1
+> libbpf: section(18) .rel.BTF, size 64, link 25, flags 0, type=9
+> libbpf: skip relo .rel.BTF(18) for section(17)
+> libbpf: section(19) .BTF.ext, size 484, link 0, flags 0, type=1
+> libbpf: section(20) .rel.BTF.ext, size 416, link 25, flags 0, type=9
+> libbpf: skip relo .rel.BTF.ext(20) for section(19)
+> libbpf: section(21) .debug_frame, size 64, link 0, flags 0, type=1
+> libbpf: skip section(21) .debug_frame
+> libbpf: section(22) .rel.debug_frame, size 32, link 25, flags 0, type=9
+> libbpf: skip relo .rel.debug_frame(22) for section(21)
+> libbpf: section(23) .debug_line, size 227, link 0, flags 0, type=1
+> libbpf: skip section(23) .debug_line
+> libbpf: section(24) .rel.debug_line, size 32, link 25, flags 0, type=9
+> libbpf: skip relo .rel.debug_line(24) for section(23)
+> libbpf: section(25) .symtab, size 288, link 1, flags 0, type=2
+> libbpf: looking for externs among 12 symbols...
+> libbpf: collected 0 externs total
+> libbpf: map 'lsm.bss' (global data): at sec_idx 8, offset 0, flags 400.
+> libbpf: map 0 is "lsm.bss"
+> libbpf: collecting relocating info for: 'lsm/file_mprotect'
+> libbpf: relo for shdr 8, symb 8, value 0, type 1, bind 1, name 232
+> ('monitored_pid'), insn 12
+> libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 12
+> libbpf: relo for shdr 8, symb 9, value 4, type 1, bind 1, name 34
+> ('mprotect_count'), insn 17
+> libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 17
+> libbpf: collecting relocating info for: 'lsm/bprm_committed_creds'
+> libbpf: relo for shdr 8, symb 8, value 0, type 1, bind 1, name 232
+> ('monitored_pid'), insn 1
+> libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 1
+> libbpf: relo for shdr 8, symb 7, value 8, type 1, bind 1, name 49
+> ('bprm_count'), insn 6
+> libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 6
+> libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
+> libbpf: created map lsm.bss: fd=4
+> libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
+> libbpf: prog 'lsm/file_mprotect': performing 4 CO-RE offset relocs
+> libbpf: prog 'lsm/file_mprotect': relo #0: kind 0, spec is [6]
+> vm_area_struct + 0:6 => 64.0 @ &x[0].vm_mm
+> libbpf: [6] vm_area_struct: found candidate [329] vm_area_struct
+> libbpf: prog 'lsm/file_mprotect': relo #0: matching candidate #0
+> vm_area_struct against spec [329] vm_area_struct + 0:6 => 64.0 @
+> &x[0].vm_mm: 1
+> libbpf: prog 'lsm/file_mprotect': relo #0: patched insn #5 (LDX/ST/STX)
+> off 64 -> 64
+> libbpf: prog 'lsm/file_mprotect': relo #1: kind 0, spec is [32]
+> mm_struct + 0:0:35 => 304.0 @ &x[0].start_stack
+> libbpf: [32] mm_struct: found candidate [308] mm_struct
+> libbpf: prog 'lsm/file_mprotect': relo #1: matching candidate #0
+> mm_struct against spec [308] mm_struct + 0:0:35 => 304.0 @
+> &x[0].start_stack: 1
+> libbpf: prog 'lsm/file_mprotect': relo #1: patched insn #7 (LDX/ST/STX)
+> off 304 -> 304
+> libbpf: prog 'lsm/file_mprotect': relo #2: kind 0, spec is [6]
+> vm_area_struct + 0:0 => 0.0 @ &x[0].vm_start
+> libbpf: prog 'lsm/file_mprotect': relo #2: matching candidate #0
+> vm_area_struct against spec [329] vm_area_struct + 0:0 => 0.0 @
+> &x[0].vm_start: 1
+> libbpf: prog 'lsm/file_mprotect': relo #2: patched insn #8 (LDX/ST/STX)
+> off 0 -> 0
+> libbpf: prog 'lsm/file_mprotect': relo #3: kind 0, spec is [6]
+> vm_area_struct + 0:1 => 8.0 @ &x[0].vm_end
+> libbpf: prog 'lsm/file_mprotect': relo #3: matching candidate #0
+> vm_area_struct against spec [329] vm_area_struct + 0:1 => 8.0 @
+> &x[0].vm_end: 1
+> libbpf: prog 'lsm/file_mprotect': relo #3: patched insn #10 (LDX/ST/STX)
+> off 8 -> 8
+> test_test_lsm:PASS:skel_load 0 nsec
+> test_test_lsm:PASS:attach 0 nsec
+> test_test_lsm:PASS:exec_cmd 0 nsec
+> test_test_lsm:FAIL:bprm_count bprm_count = 0
+> test_test_lsm:FAIL:stack_mprotect want err=EPERM, got 0
+> #70 test_lsm:FAIL
+> Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+>
+>
+> kconfig:
+>
+> CONFIG_BPF_LSM=y
+>
+> CONFIG_LSM="lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor"
+>
+> besides:
+>
+> when I add bpf to CONFIG_LSM, then boot failed.
+>
+> boot error:
+>
+> ```
+>
+> Cannot determine cgroup we are running in: No data available
+> Failed to allocate manager object: No data available
+> [!!!!!!] Failed to allocate manager object, freezing.
+> Freezing execution.
+>
+> ```
+>
+> seems bpf in CONFIG_LSM and CONFIG_BPF_LSM conflict.
+>
+>
+> clang version: v11.0.0
+>
+> commit: 54b35c066417d4856e9d53313f7e98b354274584
+>
+> # pahole --version
+> v1.17
+>
 
-> I was hoping the start/stop_server_thread() helpers can be removed.
-> I am not positive the future tests will find start/stop_server_thread()
-> useful as is because it only does accept() and there is no easy way to
-> get the accept-ed() fd.
+It might be due to bug in default return value of one of the
+functions, which KP recently fixed. But just to be sure, KP, could you
+please take a look?
 
-> If this test needs to keep the thread, may be only keep the
-> start/stop_server_thread() in this test for now until
-> there is another use case that can benefit from them.
-
-> Keep the start_server() and connect_to_fd() in the new
-> network_helpers.c.  I think at least sk_assign.c (and likely
-> a few others) should be able to reuse them later.  They
-> are doing something very close to start_server() and
-> connect_to_fd().
-
-> Thoughts?
-I think you're right and tcp_rtt might not need a thread as well.
-Let me fiddle with it a bit.
+>
+> --
+> Best Regards.
+> Ma Xinjian
+>
