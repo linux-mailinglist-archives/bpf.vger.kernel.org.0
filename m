@@ -2,152 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B5641C852D
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 10:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B4C1C8532
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 10:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725900AbgEGIzR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 04:55:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725893AbgEGIzR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 May 2020 04:55:17 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3802920747;
-        Thu,  7 May 2020 08:55:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588841716;
-        bh=2rRtBeEe+O1amTFJUbeUMeJ0XI46x1e1eUXvVqKp1hE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=plo2REbd4A2bWBKbDHeIg7laLyZSQ4qCyoG5uA746OXoYcDDe9h2eu7Dk76h0KnGl
-         jMsZc6JYFuIZa/l5v7OuQHT9VEyq0H/mdTXKkEiX8GBwV975Vb14OysRe7UTLuTl2Z
-         wdP2UthEHWeoYoqhGorpWjX7UvBh3hPPVI7T2ptU=
-Date:   Thu, 7 May 2020 17:55:12 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: add tracing for XDP programs
- using the BPF_PROG_TEST_RUN API
-Message-Id: <20200507175512.b2a01b872750dbfe94f6642b@kernel.org>
-In-Reply-To: <CAADnVQKyfJPujoef6+sV7hJf9kVBjZKur_yjW8GJtTYS-c_Knw@mail.gmail.com>
-References: <158453675319.3043.5779623595270458781.stgit@xdp-tutorial>
-        <819b1b3a-c801-754b-e805-7ec8266e5dfa@fb.com>
-        <D0164AC9-7AF7-4434-B6D1-0A761DC626FB@redhat.com>
-        <fefda00a-1a08-3a53-efbc-93c36292b77d@fb.com>
-        <CAADnVQ+SCu97cF5Li6nBBCkshjF45U-nPEO5jO8DQrY5PqPqyg@mail.gmail.com>
-        <F97A3E80-9C99-49CF-84C5-F09C940F7029@redhat.com>
-        <20200428040424.wvozrsy6uviz33ha@ast-mbp.dhcp.thefacebook.com>
-        <78EFC9DD-48A2-49BB-8C76-1E6FDE808067@redhat.com>
-        <20200428121947.GC2245@kernel.org>
-        <20200501114420.5a33d7483f43aaeff95d31dc@kernel.org>
-        <CAADnVQKyfJPujoef6+sV7hJf9kVBjZKur_yjW8GJtTYS-c_Knw@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1725848AbgEGI4R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 04:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725845AbgEGI4Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 May 2020 04:56:16 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 463A3C061A10
+        for <bpf@vger.kernel.org>; Thu,  7 May 2020 01:56:16 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id y24so5867445wma.4
+        for <bpf@vger.kernel.org>; Thu, 07 May 2020 01:56:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=hLWaQUTnJ7f7DgBuYKSFC32i9PCp8zzauvLXWUcYmNc=;
+        b=N8WW7vEdih/4X6y8BA9cfZcTgB+tDYkRfBKAbgsvVDJg7ZGE9p3rrq/03IkuDkT6Ev
+         6MyjgkRjsN/k9awGsZMiNiGQ/KKKYg9n+kFg3rIithm+DTExseBN/yUN4j89GmrQDcN4
+         wbFm4iX1j1+3h/M3EQyXzLbTuY5vQr5J+1z00=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=hLWaQUTnJ7f7DgBuYKSFC32i9PCp8zzauvLXWUcYmNc=;
+        b=nL5B+ynofKVWou/IM+PQ/8MTg1tSqQT2Pv2+VUEYtDTJkrZshGolQCRQ9IAFLyNDkR
+         gBsbXqDZywSZiVMG2mdv46gVfvTP8rmXUDA66Vm14KsDtaPTT4bBF//bkDNKpJwovIv7
+         wPvQtH+yqbeb3PUhJjLphWZ/wFqI5JlSBQ1BBvNVKlTjPByzUcrL5SyWev9jrq0+eHKS
+         C7ZbRSME6sbPq3rJIvjEX4DlPjGWsYMzmSAw7Xu2YxGec32OoqpHw+ZTyC8jOyrtc9O1
+         kzIjitHiUWNYkMkcuwQWanS0sE3Gsjvxr3OFghy+U9607R3NoeepXhR2VbP8aS5EP4as
+         qxPg==
+X-Gm-Message-State: AGi0PuZvxhDhW46Gwmwj/ZJ3LTTIzmDfCHuqvZbnatclHn7Y3x7nl+Y3
+        pi4UtWbyL/96VvceMnYWrv1+ng==
+X-Google-Smtp-Source: APiQypIarRKCDwwq9BJ7HIOIQBZ5gaFvnSebCKJDXnJg51HpGccvWC6okg6H+MBNXtWjjLEoH7mqFw==
+X-Received: by 2002:a1c:e444:: with SMTP id b65mr9612793wmh.6.1588841774781;
+        Thu, 07 May 2020 01:56:14 -0700 (PDT)
+Received: from toad ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id 17sm6740090wmo.2.2020.05.07.01.56.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2020 01:56:14 -0700 (PDT)
+Date:   Thu, 7 May 2020 10:55:50 +0200
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     lmb@cloudflare.com, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, ast@kernel.org
+Subject: Re: [bpf-next PATCH 05/10] bpf: selftests, improve test_sockmap
+ total bytes counter
+Message-ID: <20200507105550.35adc82f@toad>
+In-Reply-To: <158871187408.7537.17124775242608386871.stgit@john-Precision-5820-Tower>
+References: <158871160668.7537.2576154513696580062.stgit@john-Precision-5820-Tower>
+        <158871187408.7537.17124775242608386871.stgit@john-Precision-5820-Tower>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 5 May 2020 18:25:38 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+On Tue, 05 May 2020 13:51:14 -0700
+John Fastabend <john.fastabend@gmail.com> wrote:
 
-> On Thu, Apr 30, 2020 at 7:44 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> > On Tue, 28 Apr 2020 09:19:47 -0300
-> > Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> >
-> > > Em Tue, Apr 28, 2020 at 12:47:53PM +0200, Eelco Chaudron escreveu:
-> > > > On 28 Apr 2020, at 6:04, Alexei Starovoitov wrote:
-> > > > > On Fri, Apr 24, 2020 at 02:29:56PM +0200, Eelco Chaudron wrote:
-> > >
-> > > > > > > But in reality I think few kprobes in the prog will be enough to
-> > > > > > > debug the program and XDP prog may still process millions of
-> > > > > > > packets because your kprobe could be in error path and the user
-> > > > > > > may want to capture only specific things when it triggers.
-> > >
-> > > > > > > kprobe bpf prog will execute in such case and it can capture
-> > > > > > > necessary state from xdp prog, from packet or from maps that xdp
-> > > > > > > prog is using.
-> > >
-> > > > > > > Some sort of bpf-gdb would be needed in user space.  Obviously
-> > > > > > > people shouldn't be writing such kprob-bpf progs that debug
-> > > > > > > other bpf progs by hand. bpf-gdb should be able to generate them
-> > > > > > > automatically.
-> > >
-> > > > > > See my opening comment. What you're describing here is more when
-> > > > > > the right developer has access to the specific system. But this
-> > > > > > might not even be possible in some environments.
-> > >
-> > > > > All I'm saying that kprobe is a way to trace kernel.
-> > > > > The same facility should be used to trace bpf progs.
-> > >
-> > > > perf doesn’t support tracing bpf programs, do you know of any tools that
-> > > > can, or you have any examples that would do this?
-> > >
-> > > I'm discussing with Yonghong and Masami what would be needed for 'perf
-> > > probe' to be able to add kprobes to BPF jitted areas in addition to
-> > > vmlinux and modules.
-> >
-> > At a grance, at first we need a debuginfo which maps the source code and
-> > BPF binaries. We also need to get a map from the kernel indicating
-> > which instructions the bpf code was jited to.
-> > Are there any such information?
+> The recv thread in test_sockmap waits to receive all bytes from sender but
+> in the case we use pop data it may wait for more bytes then actually being
+> sent. This stalls the test harness for multiple seconds. Because this
+> happens in multiple tests it slows time to run the selftest.
 > 
-> it's already there. Try 'bpftool prog dump jited id N'
-> It will show something like this:
-> ; data = ({typeof(errors.leaf) *leaf =
-> bpf_map_lookup_elem_(bpf_pseudo_fd(1, -11), &type_key); if (!leaf) {
-> bpf_map_update_elem_(bpf_pseudo_fd(1, -11), &type_key, &zero,
-> BPF_NOEXIST); leaf = bpf_map_lookup_elem_(bpf_pseudo_fd(1, -11), &t;
->  81d:    movabs $0xffff8881a0679000,%rdi
-> ; return bpf_map_lookup_elem((void *)map, key);
->  827:    mov    %rbx,%rsi
->  82a:    callq  0xffffffffe0f7f448
->  82f:    test   %rax,%rax
->  832:    je     0x0000000000000838
->  834:    add    $0x40,%rax
-> ; if (!data)
->  838:    test   %rax,%rax
->  83b:    je     0x0000000000000846
->  83d:    mov    $0x1,%edi
-> ; lock_xadd(data, 1);
->  842:    lock add %edi,0x0(%rax)
-
-Hm, so bpftool or libbpf has some source-address (offset) mapping
-APIs, that will help for me.
-
-BTW, I would like to confirm that if the kernel has jited code,
-it will not fall back to xlated code. Is it correct?
-
-> > Also, I would like to know the target BPF (XDP) is running in kprobes
-> > context or not. BPF tracer sometimes use the kprobes to hook the event
-> > and run in the kprobe (INT3) context. That will be need more work to
-> > probe it.
-> > For the BPF code which just runs in tracepoint context, it will be easy
-> > to probe it. (we may need to break a limitation of notrace, which we
-> > already has a kconfig)
+> Fix by doing a better job of accounting for total bytes when pop helpers
+> are used.
 > 
-> yeah. this mechanism won't be able to debug bpf progs that are
-> attached to kprobes via int3. But that is rare case.
-> Most kprobe+bpf are for function entry and adding int3 to jited bpf code
-> will work just like for normal kernel functions.
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/test_sockmap.c |    9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
+> index a81ed5d..36aca86 100644
+> --- a/tools/testing/selftests/bpf/test_sockmap.c
+> +++ b/tools/testing/selftests/bpf/test_sockmap.c
+> @@ -502,9 +502,10 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
+>  		 * paths.
+>  		 */
+>  		total_bytes = (float)iov_count * (float)iov_length * (float)cnt;
+> -		txmsg_pop_total = txmsg_pop;
+>  		if (txmsg_apply)
+> -			txmsg_pop_total *= (total_bytes / txmsg_apply);
+> +			txmsg_pop_total = txmsg_pop * (total_bytes / txmsg_apply);
+> +		else
+> +			txmsg_pop_total = txmsg_pop * cnt;
+>  		total_bytes -= txmsg_pop_total;
+>  		err = clock_gettime(CLOCK_MONOTONIC, &s->start);
+>  		if (err < 0)
+> @@ -638,9 +639,13 @@ static int sendmsg_test(struct sockmap_options *opt)
+>  
+>  	rxpid = fork();
+>  	if (rxpid == 0) {
+> +		iov_buf -= (txmsg_pop - txmsg_start_pop + 1);
+>  		if (opt->drop_expected)
+>  			exit(0);
+>  
+> +		if (!iov_buf) /* zero bytes sent case */
+> +			exit(0);
 
-OK, anyway, I've done the nested kprobe support on x86/arm/arm64 :)
-That will make it easy.
+You probably want to call _exit() from the child to prevent flushing
+stdio buffers twice.
 
-Thank you,
+> +
+>  		if (opt->sendpage)
+>  			iov_count = 1;
+>  		err = msg_loop(rx_fd, iov_count, iov_buf,
+> 
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
