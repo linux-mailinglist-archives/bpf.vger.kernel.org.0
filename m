@@ -2,235 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 420051C9668
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 18:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C376B1C96BC
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 18:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbgEGQZA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 12:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726467AbgEGQZA (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 7 May 2020 12:25:00 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F92C05BD43
-        for <bpf@vger.kernel.org>; Thu,  7 May 2020 09:24:59 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id h9so7152821wrt.0
-        for <bpf@vger.kernel.org>; Thu, 07 May 2020 09:24:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ei25SAoNmdoor457m3D9/YMJ4sg6YlbpIa8mqF9WPzY=;
-        b=e0qRsdlDbA7/XhZrabJc+LtHgQmLDePs4jn44CwlAQ0eKUMzRjynTwvOPg85/e/83K
-         cKktsX29t6781A7gqdpkwWqH7Pm3REbrPIYueJhieg1/gFpqT9Ep1EwJXAwX2K6wCk+T
-         AiXHx8RhgcKoII7mMfF5Akz0SxlOjRfjs48TU6DujGSpUWQnhjcw7c8CbZgT4DYDcq8+
-         4v3vNQ128co8/ufAT5avMZHj0xmk+brU1+y01Pg+81GAGuXn1soTrrohBChjmLYZSmGx
-         I2/lpUxdP89tdP+uhp+wIG9v7zf+gNJxdnfAYNa7OAicAyc0k4jdsSKqvW7t8GP4xwqV
-         PJ8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ei25SAoNmdoor457m3D9/YMJ4sg6YlbpIa8mqF9WPzY=;
-        b=YBGbnHUwee5rG5wh75e6s3taD+nQ1Dae3TFR/DvbEIGZSHsadL7Vr0KpqiL0b+IiVt
-         IkeHG46o+OtiEGN4bbjxI1AYCvJWIJd+JSrpjKq82ZsErtma6RoCGl8qm2MYgmRO5M9A
-         B/W8BijWlDJybQ1LxTQsBI7cym0CHlL0gOOJMeR2TyaqbSqS9ONvNNgexpi/7lqk7ct4
-         rNh57p2C85mSr8KtuHb4SMFjenEQUVOlxEAHsCvC6iHeOW2Gu8ro8MxqCALWrRkninGa
-         7Pxe0S71RQfgFWYmpty4cwCNjYgc1pJxbT6f7kliGaZZBwQtET2Yovqa0QQPlK5N8S+2
-         NoNA==
-X-Gm-Message-State: AGi0PuZb2zfhcy64LiG7E9Pk4NUdjiH4IiB/FTQFZjm/9d4HwJv5MxJN
-        McfWpo45Wmj4e51y078B/oSoEaTlBM1SiU3lMzU4SgQ=
-X-Google-Smtp-Source: APiQypLBSW6GTLjl5yqeFPrxlh/nqTqTmRzV5Lsd8EP+UR+/93JFn9kmGtaiAGJSoJe1E4PFEORlfdgNsP4YI7tmmZM=
-X-Received: by 2002:a5d:42c1:: with SMTP id t1mr16934181wrr.18.1588868696738;
- Thu, 07 May 2020 09:24:56 -0700 (PDT)
+        id S1726618AbgEGQnv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 12:43:51 -0400
+Received: from www62.your-server.de ([213.133.104.62]:33326 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726531AbgEGQnv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 May 2020 12:43:51 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jWjch-0004aO-PY; Thu, 07 May 2020 18:43:47 +0200
+Received: from [178.195.186.98] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jWjch-0007qi-Ib; Thu, 07 May 2020 18:43:47 +0200
+Subject: Re: Checksum behaviour of bpf_redirected packets
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
+References: <CACAyw9-uU_52esMd1JjuA80fRPHJv5vsSg8GnfW3t_qDU4aVKQ@mail.gmail.com>
+ <CAADnVQKZ63d5A+Jv8bbXzo2RKNCXFH78zos0AjpbJ3ii9OHW0g@mail.gmail.com>
+ <CACAyw9_ygNV1J+PkBJ-i7ysU_Y=rN3Z5adKYExNXCic0gumaow@mail.gmail.com>
+ <39d3bee2-dcfc-8240-4c78-2110d639d386@iogearbox.net>
+ <CACAyw996Q9SdLz0tAn2jL9wg+m5h1FBsXHmUN0ZtP7D5ohY2pg@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <a4830bd4-d998-9e5c-afd5-c5ec5504f1f3@iogearbox.net>
+Date:   Thu, 7 May 2020 18:43:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <3ab505db-9e04-366b-d602-6b2935739f54@intel.com>
- <CAEf4BzZXA3pDwqLGTnrDAn7cH67Ei6tp8PRZwVAmsT-nTMA0gA@mail.gmail.com> <CAFLU3KuU6zFs7+xQ-=vy9WEx-4U=cTSW9VXNMyxRdwY3LHc9HA@mail.gmail.com>
-In-Reply-To: <CAFLU3KuU6zFs7+xQ-=vy9WEx-4U=cTSW9VXNMyxRdwY3LHc9HA@mail.gmail.com>
-From:   KP Singh <kpsingh@google.com>
-Date:   Thu, 7 May 2020 18:24:40 +0200
-Message-ID: <CAFLU3KuUm_1HBjyQdypuWCa4soKwXF7zEic-4=e4pvTBbuwd+A@mail.gmail.com>
-Subject: Re: bprm_count and stack_mprotect error when testing BPF LSM on v5.7-rc3
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Ma Xinjian <max.xinjian@intel.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CACAyw996Q9SdLz0tAn2jL9wg+m5h1FBsXHmUN0ZtP7D5ohY2pg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25805/Thu May  7 14:14:46 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding the list back after an HTML/text mess up.
+On 5/7/20 5:54 PM, Lorenz Bauer wrote:
+> On Wed, 6 May 2020 at 22:55, Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 5/6/20 6:24 PM, Lorenz Bauer wrote:
+>>> On Wed, 6 May 2020 at 02:28, Alexei Starovoitov
+>>> <alexei.starovoitov@gmail.com> wrote:
+>>>> On Mon, May 4, 2020 at 9:12 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+>>>>>
+>>>>> In our TC classifier cls_redirect [1], we use the following sequence
+>>>>> of helper calls to
+>>>>> decapsulate a GUE (basically IP + UDP + custom header) encapsulated packet:
+>>>>>
+>>>>>     skb_adjust_room(skb, -encap_len,
+>>>>> BPF_ADJ_ROOM_MAC, BPF_F_ADJ_ROOM_FIXED_GSO)
+>>>>>     bpf_redirect(skb->ifindex, BPF_F_INGRESS)
+>>>>>
+>>>>> It seems like some checksums of the inner headers are not validated in
+>>>>> this case.
+>>>>> For example, a TCP SYN packet with invalid TCP checksum is still accepted by the
+>>>>> network stack and elicits a SYN ACK.
+>>>>>
+>>>>> Is this known but undocumented behaviour or a bug? In either case, is
+>>>>> there a work
+>>>>> around I'm not aware of?
+>>>>
+>>>> I thought inner and outer csums are covered by different flags and driver
+>>>> suppose to set the right one depending on level of in-hw checking it did.
+>>>
+>>> I've figured out what the problem is. We receive the following packet from
+>>> the driver:
+>>>
+>>>       | ETH | IP | UDP | GUE | IP | TCP |
+>>>       skb->ip_summed == CHECKSUM_UNNECESSARY
+>>>
+>>> ip_summed is CHECKSUM_UNNECESSARY because our NICs do rx
+>>> checksum offloading. On this packet we run skb_adjust_room_mac(-encap),
+>>> and get the following:
+>>>
+>>>       | ETH | IP | TCP |
+>>>       skb->ip_summed == CHECKSUM_UNNECESSARY
+>>>
+>>> Note that ip_summed is still CHECKSUM_UNNECESSARY. After
+>>> bpf_redirect()ing into the ingress, we end up in tcp_v4_rcv. There
+>>> skb_checksum_init is turned into a no-op due to
+>>> CHECKSUM_UNNECESSARY.
+>>>
+>>> I think this boils down to bpf_skb_generic_pop not adjusting ip_summed
+>>> accordingly. Unfortunately I don't understand how checksums work
+>>> sufficiently. Daniel, it seems like you wrote the helper, could you
+>>> take a look?
+>>
+>> Right, so in the skb_adjust_room() case we're not aware of protocol
+>> specifics. We do handle the csum complete case via skb_postpull_rcsum(),
+>> but not CHECKSUM_UNNECESSARY at the moment. I presume in your case the
+>> skb->csum_level of the original skb prior to skb_adjust_room() call
+>> might have been 0 (that is, covering UDP)? So if we'd add the possibility
+>> to __skb_decr_checksum_unnecessary() via flag, then it would become
+>> skb->ip_summed = CHECKSUM_NONE? And to be generic, we'd need to do the
+>> same for the reverse case. Below is a quick hack (compile tested-only);
+>> would this resolve your case ...
+> 
+> Thanks for the patch, it indeed fixes our problem! I spent some more time
+> trying to understand the checksum offload stuff, here is where I am:
+> 
+> On NICs that don't support hardware offload ip_summed is CHECKSUM_NONE,
+> everything works by default since the rest of the stack does checksumming in
+> software.
+> 
+> On NICs that support CHECKSUM_COMPLETE, skb_postpull_rcsum
+> will adjust for the data that is being removed from the skb. The rest of the
+> stack will use the correct value, all is well.
+> 
+> However, we're out of luck on NICs that do CHECKSUM_UNNECESSARY:
+> the API of skb_adjust_room doesn't tell us whether the user intends to
+> remove headers or data, and how that will influence csum_level.
+>  From my POV, skb_adjust_room currently does the wrong thing.
+> I think we need to fix skb_adjust_room to do the right thing by default,
+> rather than extending the API. We spent a lot of time on tracking this down,
+> so hopefully we can spare others the pain.
+> 
+> As Jakub alludes to, we don't know when and how often to call
+> __skb_decr_checksum_unnecessary so we should just
+> unconditionally downgrade a packet to CHECKSUM_NONE if we encounter
+> CHECKSUM_UNNECESSARY in bpf_skb_generic_pop. It sounds simple
+> enough to land as a fix via the bpf tree (which is important for our
+> production kernel). As a follow up we could add the inverse of the flags you
+> propose via bpf-next.
+> 
+> What do you think?
 
-On Thu, May 7, 2020 at 6:23 PM KP Singh <kpsingh@google.com> wrote:
->
-> Can you check if you have the following fix:
->
-> https://lore.kernel.org/bpf/20200430155240.68748-1-kpsingh@chromium.org/
->
-> The test fails because the "bpf" is not in the LSM string which means the file_mprotect hook does not return a -EPERM error.
->
-> - KP
->
-> On Thu, May 7, 2020 at 6:16 PM Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->>
->> On Wed, May 6, 2020 at 10:21 PM Ma Xinjian <max.xinjian@intel.com> wrote:
->> >
->> > Hi,
->> >
->> > When I test bpf lsm with (/test_progs -vv  -t test_lsm ), failed with
->> > below issue:
->> >
->> > root@lkp-skl-d01
->> > /usr/src/perf_selftests-x86_64-rhel-7.6-kselftests-bpf-lsm-2-6a8b55ed4056ea5559ebe4f6a4b247f627870d4c/tools/testing/selftests/bpf#
->> > ./test_progs -vv  -t test_lsm
->> >
->> > libbpf: loading object 'lsm' from buffer
->> > libbpf: section(1) .strtab, size 306, link 0, flags 0, type=3
->> > libbpf: skip section(1) .strtab
->> > libbpf: section(2) .text, size 0, link 0, flags 6, type=1
->> > libbpf: skip section(2) .text
->> > libbpf: section(3) lsm/file_mprotect, size 192, link 0, flags 6, type=1
->> > libbpf: found program lsm/file_mprotect
->> > libbpf: section(4) .rellsm/file_mprotect, size 32, link 25, flags 0, type=9
->> > libbpf: section(5) lsm/bprm_committed_creds, size 104, link 0, flags 6,
->> > type=1
->> > libbpf: found program lsm/bprm_committed_creds
->> > libbpf: section(6) .rellsm/bprm_committed_creds, size 32, link 25, flags
->> > 0, type=9
->> > libbpf: section(7) license, size 4, link 0, flags 3, type=1
->> > libbpf: license of lsm is GPL
->> > libbpf: section(8) .bss, size 12, link 0, flags 3, type=8
->> > libbpf: section(9) .debug_loc, size 383, link 0, flags 0, type=1
->> > libbpf: skip section(9) .debug_loc
->> > libbpf: section(10) .rel.debug_loc, size 112, link 25, flags 0, type=9
->> > libbpf: skip relo .rel.debug_loc(10) for section(9)
->> > libbpf: section(11) .debug_abbrev, size 901, link 0, flags 0, type=1
->> > libbpf: skip section(11) .debug_abbrev
->> > libbpf: section(12) .debug_info, size 237441, link 0, flags 0, type=1
->> > libbpf: skip section(12) .debug_info
->> > libbpf: section(13) .rel.debug_info, size 112, link 25, flags 0, type=9
->> > libbpf: skip relo .rel.debug_info(13) for section(12)
->> > libbpf: section(14) .debug_ranges, size 96, link 0, flags 0, type=1
->> > libbpf: skip section(14) .debug_ranges
->> > libbpf: section(15) .rel.debug_ranges, size 128, link 25, flags 0, type=9
->> > libbpf: skip relo .rel.debug_ranges(15) for section(14)
->> > libbpf: section(16) .debug_str, size 142395, link 0, flags 30, type=1
->> > libbpf: skip section(16) .debug_str
->> > libbpf: section(17) .BTF, size 5634, link 0, flags 0, type=1
->> > libbpf: section(18) .rel.BTF, size 64, link 25, flags 0, type=9
->> > libbpf: skip relo .rel.BTF(18) for section(17)
->> > libbpf: section(19) .BTF.ext, size 484, link 0, flags 0, type=1
->> > libbpf: section(20) .rel.BTF.ext, size 416, link 25, flags 0, type=9
->> > libbpf: skip relo .rel.BTF.ext(20) for section(19)
->> > libbpf: section(21) .debug_frame, size 64, link 0, flags 0, type=1
->> > libbpf: skip section(21) .debug_frame
->> > libbpf: section(22) .rel.debug_frame, size 32, link 25, flags 0, type=9
->> > libbpf: skip relo .rel.debug_frame(22) for section(21)
->> > libbpf: section(23) .debug_line, size 227, link 0, flags 0, type=1
->> > libbpf: skip section(23) .debug_line
->> > libbpf: section(24) .rel.debug_line, size 32, link 25, flags 0, type=9
->> > libbpf: skip relo .rel.debug_line(24) for section(23)
->> > libbpf: section(25) .symtab, size 288, link 1, flags 0, type=2
->> > libbpf: looking for externs among 12 symbols...
->> > libbpf: collected 0 externs total
->> > libbpf: map 'lsm.bss' (global data): at sec_idx 8, offset 0, flags 400.
->> > libbpf: map 0 is "lsm.bss"
->> > libbpf: collecting relocating info for: 'lsm/file_mprotect'
->> > libbpf: relo for shdr 8, symb 8, value 0, type 1, bind 1, name 232
->> > ('monitored_pid'), insn 12
->> > libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 12
->> > libbpf: relo for shdr 8, symb 9, value 4, type 1, bind 1, name 34
->> > ('mprotect_count'), insn 17
->> > libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 17
->> > libbpf: collecting relocating info for: 'lsm/bprm_committed_creds'
->> > libbpf: relo for shdr 8, symb 8, value 0, type 1, bind 1, name 232
->> > ('monitored_pid'), insn 1
->> > libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 1
->> > libbpf: relo for shdr 8, symb 7, value 8, type 1, bind 1, name 49
->> > ('bprm_count'), insn 6
->> > libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 6
->> > libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
->> > libbpf: created map lsm.bss: fd=4
->> > libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
->> > libbpf: prog 'lsm/file_mprotect': performing 4 CO-RE offset relocs
->> > libbpf: prog 'lsm/file_mprotect': relo #0: kind 0, spec is [6]
->> > vm_area_struct + 0:6 => 64.0 @ &x[0].vm_mm
->> > libbpf: [6] vm_area_struct: found candidate [329] vm_area_struct
->> > libbpf: prog 'lsm/file_mprotect': relo #0: matching candidate #0
->> > vm_area_struct against spec [329] vm_area_struct + 0:6 => 64.0 @
->> > &x[0].vm_mm: 1
->> > libbpf: prog 'lsm/file_mprotect': relo #0: patched insn #5 (LDX/ST/STX)
->> > off 64 -> 64
->> > libbpf: prog 'lsm/file_mprotect': relo #1: kind 0, spec is [32]
->> > mm_struct + 0:0:35 => 304.0 @ &x[0].start_stack
->> > libbpf: [32] mm_struct: found candidate [308] mm_struct
->> > libbpf: prog 'lsm/file_mprotect': relo #1: matching candidate #0
->> > mm_struct against spec [308] mm_struct + 0:0:35 => 304.0 @
->> > &x[0].start_stack: 1
->> > libbpf: prog 'lsm/file_mprotect': relo #1: patched insn #7 (LDX/ST/STX)
->> > off 304 -> 304
->> > libbpf: prog 'lsm/file_mprotect': relo #2: kind 0, spec is [6]
->> > vm_area_struct + 0:0 => 0.0 @ &x[0].vm_start
->> > libbpf: prog 'lsm/file_mprotect': relo #2: matching candidate #0
->> > vm_area_struct against spec [329] vm_area_struct + 0:0 => 0.0 @
->> > &x[0].vm_start: 1
->> > libbpf: prog 'lsm/file_mprotect': relo #2: patched insn #8 (LDX/ST/STX)
->> > off 0 -> 0
->> > libbpf: prog 'lsm/file_mprotect': relo #3: kind 0, spec is [6]
->> > vm_area_struct + 0:1 => 8.0 @ &x[0].vm_end
->> > libbpf: prog 'lsm/file_mprotect': relo #3: matching candidate #0
->> > vm_area_struct against spec [329] vm_area_struct + 0:1 => 8.0 @
->> > &x[0].vm_end: 1
->> > libbpf: prog 'lsm/file_mprotect': relo #3: patched insn #10 (LDX/ST/STX)
->> > off 8 -> 8
->> > test_test_lsm:PASS:skel_load 0 nsec
->> > test_test_lsm:PASS:attach 0 nsec
->> > test_test_lsm:PASS:exec_cmd 0 nsec
->> > test_test_lsm:FAIL:bprm_count bprm_count = 0
->> > test_test_lsm:FAIL:stack_mprotect want err=EPERM, got 0
->> > #70 test_lsm:FAIL
->> > Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
->> >
->> >
->> > kconfig:
->> >
->> > CONFIG_BPF_LSM=y
->> >
->> > CONFIG_LSM="lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor"
->> >
->> > besides:
->> >
->> > when I add bpf to CONFIG_LSM, then boot failed.
->> >
->> > boot error:
->> >
->> > ```
->> >
->> > Cannot determine cgroup we are running in: No data available
->> > Failed to allocate manager object: No data available
->> > [!!!!!!] Failed to allocate manager object, freezing.
->> > Freezing execution.
->> >
->> > ```
->> >
->> > seems bpf in CONFIG_LSM and CONFIG_BPF_LSM conflict.
->> >
->> >
->> > clang version: v11.0.0
->> >
->> > commit: 54b35c066417d4856e9d53313f7e98b354274584
->> >
->> > # pahole --version
->> > v1.17
->> >
->>
->> It might be due to bug in default return value of one of the
->> functions, which KP recently fixed. But just to be sure, KP, could you
->> please take a look?
->>
->> >
->> > --
->> > Best Regards.
->> > Ma Xinjian
->> >
+My concern with unconditionally downgrading a packet to CHECKSUM_NONE would
+basically trash performance if we have to fallback to sw in fast-path, these
+helpers are also used in our LB case for DSR, for example. I agree that it
+sucks to expose these implementation details though. So eventually we'd end
+up with 3 csum flags: inc/dec/reset to none. bpf_skb_adjust_room() is already
+a complex to use helper with all its flags where you end up looking into the
+implementation detail to understand what it is really doing. I'm not sure if
+we make anything worse, but I do see your concern. :/ (We do have bpf_csum_update()
+helper as well. I wonder whether we should split such control into a different
+helper.)
+
+Thanks,
+Daniel
