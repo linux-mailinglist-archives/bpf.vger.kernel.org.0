@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEDD1C8497
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 10:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3B31C8491
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 10:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727825AbgEGIP7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 04:15:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46956 "EHLO
+        id S1727797AbgEGIP3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 04:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726937AbgEGIOz (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 7 May 2020 04:14:55 -0400
+        by vger.kernel.org with ESMTP id S1726963AbgEGIO4 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 7 May 2020 04:14:56 -0400
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45EF8C061A41
-        for <bpf@vger.kernel.org>; Thu,  7 May 2020 01:14:54 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id h185so6049329ybg.6
-        for <bpf@vger.kernel.org>; Thu, 07 May 2020 01:14:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBDCC03C1A6
+        for <bpf@vger.kernel.org>; Thu,  7 May 2020 01:14:56 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id z1so2298187ybm.5
+        for <bpf@vger.kernel.org>; Thu, 07 May 2020 01:14:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=laqIw2e8BtvC1AZBZIJa3w6PXohYXYOFdU6fqXlT6Ys=;
-        b=Koz8yhPrUge2qVVcAlXS3xyTi6AXWgzlfI0d/AGJIRthsuF8fw+v2Ec78xvYT1vOlR
-         kEr+40q4sqVBX2wHSELJg/ziCcyodqffvKB8cPN3wNTjlV6wa4O2bY/SrAuIct2lInpT
-         jK7ZTZQwfp8xM4w1f59/gu1d6VSLBWgPWsuWz7YKC+dPriJw4tMIwIc6XhMjtUe7OZXU
-         GtvOIuWm3IX4nSFjVVpokhNFSTVvIpatY3gOP40uSJbWKHDv5/mSbK+j+fDMdFJjpw5W
-         YRoGylIfifN6N++4ritkfMUA/OFQaHaOyelTbptoqRdfKQ9CfYVCOlOYx/e9SqoD7/jn
-         OgAQ==
+        bh=sCS1jCtEUZLDql23q/lHeTg7GUDYj0iuw701FY6e4C0=;
+        b=C0QKxnSqdHFtz+CRo7QjFhWvM+7DIxxGWsQCgCGoSuiM3h1SDPz51ol74GRCagamPW
+         qAchUF2n+Y/Hkowd9VnNJrdCr4lG4ojkGNIwq/Eey7FH7rxTKFP0AYXo5KfGknbp7inX
+         2GGmmJTDE+IgTwAANhMOTeEN50LnMXxDa5hDg5V9DtZ6natb6jRn7PO6iL+gdflLUMvj
+         coH6tmWUtDoXULSlSCANtWXnFkWCYHftdAErvKRFp9/BD65Qzd1AQvyt0W+mnxsWe6Ni
+         d/DRWZ/xg5XvpPK+vI7kpbPa0uKyFXuUt6XNTND4u90+Dpziz50xA2VvjFTHoaeO/syH
+         d8xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=laqIw2e8BtvC1AZBZIJa3w6PXohYXYOFdU6fqXlT6Ys=;
-        b=tfoAy+kfLyLknrPw/5FN72rX8ys27adl/L6Xb8JQ1EslLBR7bLwgXttwgRQGJ6LvQ9
-         P5nkAW+aUcukuJM7NlTRnVBijRhPW8vQml/A/ChLq1dr+GswqrQOJuoZGa7rxtNLh2dN
-         5SbL8+XaX2kBpMN6t4RFu03Pp9lk1nYjnoYCXEVDOgHvYvAoMP8RTBeNbfm6hhhRuNio
-         fpHSYlwImypE6LCNq+i7R1bkeOPhjcSu3seoyDkddnvcWvILrD1069FURSJOR651+eke
-         lYnLowDrN2MrZWtQtblPRooVBsqJOv+7rQoARnOKy9BxqXaK6t9ajOVJt8im8YZi2NkS
-         bM5A==
-X-Gm-Message-State: AGi0PuaaxWP2IJRupde+uV4qEsK2piyFNQ7i1hIampRwbEQUFhOJd7x2
-        F8RPfjj9KF4F/KlO3FvRiC7M/uj0cymC
-X-Google-Smtp-Source: APiQypLaC9JqxCmf6Bc+54GwEgoHzPXMW94TycpXOg7SlZklfTr4XBRhXJ0pzY3K1F7ZAs3iNOA7yPXtwrAv
-X-Received: by 2002:a25:d1c1:: with SMTP id i184mr8537881ybg.165.1588839293414;
- Thu, 07 May 2020 01:14:53 -0700 (PDT)
-Date:   Thu,  7 May 2020 01:14:32 -0700
+        bh=sCS1jCtEUZLDql23q/lHeTg7GUDYj0iuw701FY6e4C0=;
+        b=negZcobTreFy6qw9iYin3cSwSsZx5TfMNx7AeWDbHNib1ct8OZxnBOR/QTh6MCQVjx
+         7kOY7yW9bH7nIwzXOB5jdBZ4It9EuzokG1yD5w8/FRjcXhOHxXujBUwJxEcvQ/FFfJwT
+         D/WynvokRP+zr2y5QTGaq4YF3jL/tLRhFsQxyRo0GaKpko5Wmzp2UFRipRdaraPnwy3u
+         vtIz7J19inFbIR3MYOqY0wXNkwEXWVmmpV39JMpR/9w495W7zQ/2FxWOoNCYqdAtsCzJ
+         zsM0kLzx5CKYi2G3by5VvKK7wneUoA1wLMwz/KlApseb/Vf0O6UG+3KhPAzfL0pc4vtv
+         PD3g==
+X-Gm-Message-State: AGi0PuZ6hDwgoVYaq+x25+flogpHhx4Ytv0lqQObrupykd65yT2a7n1T
+        kBen0/FePk43lQgWzz6KGv9jGhWeVbhk
+X-Google-Smtp-Source: APiQypLicba0n1ZdHNM4nUUa5fD9wGJNUt+gST4Snsmj66XJ33XVpsWiBgB9Bu5FTvpXabk08ynYTGT40AjW
+X-Received: by 2002:a25:2544:: with SMTP id l65mr18343110ybl.155.1588839295435;
+ Thu, 07 May 2020 01:14:55 -0700 (PDT)
+Date:   Thu,  7 May 2020 01:14:33 -0700
 In-Reply-To: <20200507081436.49071-1-irogers@google.com>
-Message-Id: <20200507081436.49071-4-irogers@google.com>
+Message-Id: <20200507081436.49071-5-irogers@google.com>
 Mime-Version: 1.0
 References: <20200507081436.49071-1-irogers@google.com>
 X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
-Subject: [RFC PATCH 3/7] perf metricgroup: free metric_events on error
+Subject: [RFC PATCH 4/7] perf metricgroup: always place duration_time last
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -83,39 +83,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Avoid a simple memory leak.
+If a metric contains the duration_time event then the event is placed
+outside of the metric's group of events. Rather than split the group,
+make it so the duration_time is immediately after the group.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/metricgroup.c | 3 +++
- 1 file changed, 3 insertions(+)
+ tools/perf/util/metricgroup.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index dcd175c05872..2356dda92a07 100644
+index 2356dda92a07..48d0143b4b0c 100644
 --- a/tools/perf/util/metricgroup.c
 +++ b/tools/perf/util/metricgroup.c
-@@ -185,6 +185,7 @@ static int metricgroup__setup_events(struct list_head *groups,
- 		if (!evsel) {
- 			pr_debug("Cannot resolve %s: %s\n",
- 					eg->metric_name, eg->metric_expr);
-+			free(metric_events);
+@@ -421,8 +421,8 @@ static void metricgroup__add_metric_weak_group(struct strbuf *events,
+ 					       struct expr_parse_ctx *ctx)
+ {
+ 	struct hashmap_entry *cur;
+-	size_t bkt, i = 0;
+-	bool no_group = false;
++	size_t bkt;
++	bool no_group = true, has_duration = false;
+ 
+ 	hashmap__for_each_entry((&ctx->ids), cur, bkt) {
+ 		pr_debug("found event %s\n", (const char*)cur->key);
+@@ -432,20 +432,20 @@ static void metricgroup__add_metric_weak_group(struct strbuf *events,
+ 		 * group.
+ 		 */
+ 		if (!strcmp(cur->key, "duration_time")) {
+-			if (i > 0)
+-				strbuf_addf(events, "}:W,");
+-			strbuf_addf(events, "duration_time");
+-			no_group = true;
++			has_duration = true;
  			continue;
  		}
- 		for (i = 0; metric_events[i]; i++)
-@@ -192,11 +193,13 @@ static int metricgroup__setup_events(struct list_head *groups,
- 		me = metricgroup__lookup(metric_events_list, evsel, true);
- 		if (!me) {
- 			ret = -ENOMEM;
-+			free(metric_events);
- 			break;
- 		}
- 		expr = malloc(sizeof(struct metric_expr));
- 		if (!expr) {
- 			ret = -ENOMEM;
-+			free(metric_events);
- 			break;
- 		}
- 		expr->metric_expr = eg->metric_expr;
+ 		strbuf_addf(events, "%s%s",
+-			i == 0 || no_group ? "{" : ",",
++			no_group ? "{" : ",",
+ 			(const char*)cur->key);
+ 		no_group = false;
+-		i++;
+ 	}
+-	if (!no_group)
+-		strbuf_addf(events, "}:W");
++	if (!no_group) {
++                strbuf_addf(events, "}:W");
++		if (has_duration)
++			strbuf_addf(events, ",duration_time");
++	} else if (has_duration)
++		strbuf_addf(events, "duration_time");
+ }
+ 
+ static void metricgroup__add_metric_non_group(struct strbuf *events,
 -- 
 2.26.2.526.g744177e7f7-goog
 
