@@ -2,138 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E441C8D30
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 16:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE181C8D9D
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 16:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726074AbgEGOAe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 10:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbgEGOAe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 May 2020 10:00:34 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1266AC05BD43;
-        Thu,  7 May 2020 07:00:34 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id h9so6550796wrt.0;
-        Thu, 07 May 2020 07:00:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=h1WpxjPdyCBE7KAla9iO5P4bZZoKPEKo563S8bN0HCI=;
-        b=sBk6kKvAGS4In8Q8py/eXSV9EjvovXYsypizSjw5hvFDJpLj2W5MJDyZ2qq95Wbeb1
-         4SDHjPtRiHmzqNGUbcc2Efjf3F2eelcZelnsPLA/wiaUJqwvMX/nYFXQOgGYUVljOcLr
-         bSR5574lbhRAnScqLpRTqeGtRQd0KpJSdzUjJtHsz1llWx51lGgphJVM+VifTrobHSjn
-         3+EDncYp1Ifba+WYMcpBpNqSL23Sfx0zu2mIOmdcFhioO2AAal2NY2VMjTbEDEtUDZja
-         aha/k1rZ/crR/Blxkp/QSstjUzfMj9f7BMYt+oIBYs4HPNN19ZMb3+Fx9y3FvM863nJC
-         TDrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=h1WpxjPdyCBE7KAla9iO5P4bZZoKPEKo563S8bN0HCI=;
-        b=chTWUXx7cQ0GP0YBGAB5r9b7Y+jWnb5IGkSRYSYd4YpSnOd+oihXijI/G1IcBAD1vJ
-         /wm3fCOHylX7DiZYUB/rgb+ErE30cbq/pWfvhGYdWrUU6qsuDpgkyD9Cq8rGieZsdc32
-         deH8S3umKhKGJKReIX/o6VaQmvtz8eLzmaQtgkJR6cysX2WRc1ujGRg4p2q9izkFb4jV
-         KnEl66n25EIr8ciWiUvZPu5pH9qCvwPTsmrr+4p05hBHUBMTSmT/lEce8w/3/9Ekc7Jt
-         /A2VEhKSUphMwcOhTI03SvOCEv77KjoGSknuCqreIgOqzB5gSES0EWu4Kyntn02ocrGb
-         6CXA==
-X-Gm-Message-State: AGi0Pua8h9Qwwz0OcTUGONYtDAHr8hlbpC66hzxEiMVgKS6uefc0eoZp
-        uZjcKqBeEmeFqAo7lnJhIyuyIwCtvyS4wJB66tI=
-X-Google-Smtp-Source: APiQypL1Kp/ABv534LtfGV8dmXs8pCbQlD4SIU85WagRPFd7hgdlZNSjkg4/6551ILrUP3UGRzwNGQlRBBAKhbdnNPE=
-X-Received: by 2002:adf:e910:: with SMTP id f16mr15150333wrm.176.1588860032651;
- Thu, 07 May 2020 07:00:32 -0700 (PDT)
+        id S1727926AbgEGOHn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 10:07:43 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:60559 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727835AbgEGOHm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 May 2020 10:07:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588860460;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1AoI+9FyMu82WK4bZhrAK5V8JQ6RWrNZsFQbYJw2lb8=;
+        b=TIIiHQvktxyEMIRz22d8v0tcW6jjuA25kqf2GcnMPI8t8606TjGnmuBF6PiouifE3vayXA
+        52HFwpC8enQReUEkpeIQmiU8qPShp9m4yUeaVqcNMgrEdkW60kzhhZ/8fclby8Ii7SbNtn
+        K39oQ4MMN4qMX/VEuBtyeN0lHpjSqPw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-61-vKGhe_kQMd-SMc6q1mPVXw-1; Thu, 07 May 2020 10:07:39 -0400
+X-MC-Unique: vKGhe_kQMd-SMc6q1mPVXw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 422AA460;
+        Thu,  7 May 2020 14:07:37 +0000 (UTC)
+Received: from treble (ovpn-115-96.rdu2.redhat.com [10.10.115.96])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 059E670545;
+        Thu,  7 May 2020 14:07:35 +0000 (UTC)
+Date:   Thu, 7 May 2020 09:07:33 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] bpf: Tweak BPF jump table optimizations for objtool
+ compatibility
+Message-ID: <20200507140733.v4xlzjogtnpgu5lc@treble>
+References: <20200502192105.xp2osi5z354rh4sm@treble>
+ <20200505174300.gech3wr5v6kkho35@ast-mbp.dhcp.thefacebook.com>
+ <20200505181108.hwcqanvw3qf5qyxk@treble>
+ <20200505195320.lyphpnprn3sjijf6@ast-mbp.dhcp.thefacebook.com>
+ <20200505202823.zkmq6t55fxspqazk@treble>
+ <20200505235939.utnmzqsn22cec643@ast-mbp.dhcp.thefacebook.com>
+ <20200506155343.7x3slq3uasponb6w@treble>
+ <CAADnVQJZ1rj1DB-Y=85itvfcHxnXVKjhJXpzqs6zZ6ZLpexhCQ@mail.gmail.com>
+ <20200506211945.4qhrxqplzmt4ul66@treble>
+ <20200507000357.grprluieqa324v5c@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <CAJ+HfNidbgwtLinLQohwocUmoYyRcAG454ggGkCbseQPSA1cpw@mail.gmail.com>
- <877dxnkggf.fsf@toke.dk>
-In-Reply-To: <877dxnkggf.fsf@toke.dk>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Thu, 7 May 2020 16:00:21 +0200
-Message-ID: <CAJ+HfNhvzZ4JKLRS5=esxCd7o39-OCuDSmdkxCuxR9Y6g5DC0A@mail.gmail.com>
-Subject: Re: XDP bpf_tail_call_redirect(): yea or nay?
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>, Netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200507000357.grprluieqa324v5c@ast-mbp.dhcp.thefacebook.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 7 May 2020 at 15:44, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.=
-com> wrote:
->
-> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
->
-> > Before I start hacking on this, I might as well check with the XDP
-> > folks if this considered a crappy idea or not. :-)
-> >
-> > The XDP redirect flow for a packet is typical a dance of
-> > bpf_redirect_map() that updates the bpf_redirect_info structure with
-> > maps type/items, which is then followed by an xdp_do_redirect(). That
-> > function takes an action based on the bpf_redirect_info content.
-> >
-> > I'd like to get rid of the xdp_do_redirect() call, and the
-> > bpf_redirect_info (per-cpu) lookup. The idea is to introduce a new
-> > (oh-no!) XDP action, say, XDP_CONSUMED and a built-in helper with
-> > tail-call semantics.
-> >
-> > Something across the lines of:
-> >
-> > --8<--
-> >
-> > struct {
-> >         __uint(type, BPF_MAP_TYPE_XSKMAP);
-> >         __uint(max_entries, MAX_SOCKS);
-> >         __uint(key_size, sizeof(int));
-> >         __uint(value_size, sizeof(int));
-> > } xsks_map SEC(".maps");
-> >
-> > SEC("xdp1")
-> > int xdp_prog1(struct xdp_md *ctx)
-> > {
-> >         bpf_tail_call_redirect(ctx, &xsks_map, 0);
-> >         // Redirect the packet to an AF_XDP socket at entry 0 of the
-> >         // map.
-> >         //
-> >         // After a successful call, ctx is said to be
-> >         // consumed. XDP_CONSUMED will be returned by the program.
-> >         // Note that if the call is not successful, the buffer is
-> >         // still valid.
-> >         //
-> >         // XDP_CONSUMED in the driver means that the driver should not
-> >         // issue an xdp_do_direct() call, but only xdp_flush().
-> >         //
-> >         // The verifier need to be taught that XDP_CONSUMED can only
-> >         // be returned "indirectly", meaning a bpf_tail_call_XXX()
-> >         // call. An explicit "return XDP_CONSUMED" should be
-> >         // rejected. Can that be implemented?
-> >         return XDP_PASS; // or any other valid action.
-> > }
-> >
-> > -->8--
-> >
-> > The bpf_tail_call_redirect() would work with all redirectable maps.
-> >
-> > Thoughts? Tomatoes? Pitchforks?
->
-> The above answers the 'what'. Might be easier to evaluate if you also
-> included the 'why'? :)
->
+On Wed, May 06, 2020 at 05:03:57PM -0700, Alexei Starovoitov wrote:
+> > > > > diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+> > > > > index d7ee4c6bad48..05104c3cc033 100644
+> > > > > --- a/include/linux/compiler-gcc.h
+> > > > > +++ b/include/linux/compiler-gcc.h
+> > > > > @@ -171,4 +171,4 @@
+> > > > >  #define __diag_GCC_8(s)
+> > > > >  #endif
+> > > > >
+> > > > > -#define __no_fgcse __attribute__((optimize("-fno-gcse")))
+> > > > > +#define __no_fgcse __attribute__((optimize("-fno-gcse,-fno-omit-frame-pointer")))
+> > > > > --
+> > > > > 2.23.0
+> > > > >
+> > > > > I've tested it with gcc 8,9,10 and clang 11 with FP=y and with ORC=y.
+> > > > > All works.
+> > > > > I think it's safer to go with frame pointers even for ORC=y considering
+> > > > > all the pain this issue had caused. Even if objtool gets confused again
+> > > > > in the future __bpf_prog_run() will have frame pointers and kernel stack
+> > > > > unwinding can fall back from ORC to FP for that frame.
+> > > > > wdyt?
+> > > >
+> > > > It seems dangerous to me.  The GCC manual recommends against it.
+> > > 
+> > > The manual can says that it's broken. That won't stop the world from using it.
+> > > Just google projects that are using it. For example: qt, lz4, unreal engine, etc
+> > > Telling compiler to disable gcse via flag is a guaranteed way to avoid
+> > > that optimization that breaks objtool whereas messing with C code is nothing
+> > > but guess work. gcc can still do gcse.
+> > 
+> > But the manual's right, it is broken.  How do you know other important
+> > flags won't also be stripped?
+> 
+> What flags are you worried about?
+> I've checked that important things like -mno-red-zone, -fsanitize are preserved.
 
-Ah! Sorry! Performance, performance, performance. Getting rid of a
-bunch of calls/instructions per packet, which helps my (AF_XDP) case.
-This would be faster than the regular REDIRECT path. Today, in
-bpf_redirect_map(), instead of actually performing the action, we
-populate the bpf_redirect_info structure, just to look up the action
-again in xdp_do_redirect().
+It's not any specific flags I'm worried about, it's all of them.  There
+are a lot of possibilities, with all the different configs, and arches.
+Flags are usually added for a good reason, so one randomly missing flag
+could have unforeseen results.
 
-I'm pretty certain this would be a gain for AF_XDP (quite easy to do a
-quick hack, and measure). It would also shave off the same amount of
-instructions for "vanilla" XDP_REDIRECT cases. The bigger issue; Is
-this new semantic something people would be comfortable being added to
-XDP.
+And I don't have any visibility into how GCC decides which flags to
+drop, and when.  But the docs aren't comforting.
 
+Even if things seem to work now, that could (silently) change at any
+point in time.  This time objtool warned about the missing frame
+pointer, but that's not necessarily going to happen for other flags.
 
-Cheers,
-Bj=C3=B6rn
+If we go this route, I would much rather do -fno-gcse on a file-wide
+basis.
+
+-- 
+Josh
+
