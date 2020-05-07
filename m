@@ -2,194 +2,274 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7C81C817D
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 07:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A021C819C
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 07:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725947AbgEGFUY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 01:20:24 -0400
-Received: from mga14.intel.com ([192.55.52.115]:42017 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725879AbgEGFUY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 May 2020 01:20:24 -0400
-IronPort-SDR: gyv1YDhOGHMn8I1r4LqSupOq9Iq+E/x37/PN1HuqXvgJuJs9BZouK+yrvvXA+H4C6cWsm5WdQ7
- EAfZj+sKrX4A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 22:20:23 -0700
-IronPort-SDR: gdDFospjotObt+Bfvr4m9JoONfqPIonuioR93iuCDRUhDNgw0leD5kDFY4Gct5mT/6xZ6dyvHC
- bLVRg82E0rSQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,362,1583222400"; 
-   d="scan'208";a="249994158"
-Received: from yyin5-mobl1.ccr.corp.intel.com (HELO [10.255.30.83]) ([10.255.30.83])
-  by fmsmga007.fm.intel.com with ESMTP; 06 May 2020 22:20:22 -0700
-To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-From:   Ma Xinjian <max.xinjian@intel.com>
-Subject: bprm_count and stack_mprotect error when testing BPF LSM on v5.7-rc3
-Message-ID: <3ab505db-9e04-366b-d602-6b2935739f54@intel.com>
-Date:   Thu, 7 May 2020 13:19:50 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.3.0
+        id S1726467AbgEGFjX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 01:39:23 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:56818 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725783AbgEGFjW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 7 May 2020 01:39:22 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0475Xbgk008862
+        for <bpf@vger.kernel.org>; Wed, 6 May 2020 22:39:21 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=0Y5Ynv82l3t544cJ9r6F2PFLL0cwiO4v0uT2JqQXNtg=;
+ b=YPHhAVwD+ONhiCzbGYfE++spWDTb+BEYWIj5Ro8eA8iuakVGDEFGdqUtLrjEWEthV4Bt
+ RnjB5ba+EqgRNl6Iya/x/HHriNeh3Vv3AbirsP94R1P7J9JxGqi+rgTKeiwTV/pabNEU
+ qJD0HWsfuc08xwBjPE+XrVpfD/xavAlwDUg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 30ufak86e6-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 06 May 2020 22:39:21 -0700
+Received: from intmgw004.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Wed, 6 May 2020 22:39:20 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 6B5EE3701B99; Wed,  6 May 2020 22:39:15 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Yonghong Song <yhs@fb.com>
+Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
+To:     Andrii Nakryiko <andriin@fb.com>, <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next v3 00/21] bpf: implement bpf iterator for kernel data
+Date:   Wed, 6 May 2020 22:39:15 -0700
+Message-ID: <20200507053915.1542140-1-yhs@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-07_02:2020-05-05,2020-05-07 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ mlxlogscore=999 phishscore=0 adultscore=0 impostorscore=0 suspectscore=0
+ priorityscore=1501 mlxscore=0 clxscore=1015 spamscore=0 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005070043
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Motivation:
+  The current way to dump kernel data structures mostly:
+    1. /proc system
+    2. various specific tools like "ss" which requires kernel support.
+    3. drgn
+  The dropback for the first two is that whenever you want to dump more, =
+you
+  need change the kernel. For example, Martin wants to dump socket local
+  storage with "ss". Kernel change is needed for it to work ([1]).
+  This is also the direct motivation for this work.
 
-When I test bpf lsm with (/test_progs -vv  -t test_lsm ), failed with 
-below issue:
+  drgn ([2]) solves this proble nicely and no kernel change is not needed=
+.
+  But since drgn is not able to verify the validity of a particular point=
+er value,
+  it might present the wrong results in rare cases.
 
-root@lkp-skl-d01 
-/usr/src/perf_selftests-x86_64-rhel-7.6-kselftests-bpf-lsm-2-6a8b55ed4056ea5559ebe4f6a4b247f627870d4c/tools/testing/selftests/bpf# 
-./test_progs -vv  -t test_lsm
+  In this patch set, we introduce bpf iterator. Initial kernel changes ar=
+e
+  still needed for interested kernel data, but a later data structure cha=
+nge
+  will not require kernel changes any more. bpf program itself can adapt
+  to new data structure changes. This will give certain flexibility with
+  guaranteed correctness.
 
-libbpf: loading object 'lsm' from buffer
-libbpf: section(1) .strtab, size 306, link 0, flags 0, type=3
-libbpf: skip section(1) .strtab
-libbpf: section(2) .text, size 0, link 0, flags 6, type=1
-libbpf: skip section(2) .text
-libbpf: section(3) lsm/file_mprotect, size 192, link 0, flags 6, type=1
-libbpf: found program lsm/file_mprotect
-libbpf: section(4) .rellsm/file_mprotect, size 32, link 25, flags 0, type=9
-libbpf: section(5) lsm/bprm_committed_creds, size 104, link 0, flags 6, 
-type=1
-libbpf: found program lsm/bprm_committed_creds
-libbpf: section(6) .rellsm/bprm_committed_creds, size 32, link 25, flags 
-0, type=9
-libbpf: section(7) license, size 4, link 0, flags 3, type=1
-libbpf: license of lsm is GPL
-libbpf: section(8) .bss, size 12, link 0, flags 3, type=8
-libbpf: section(9) .debug_loc, size 383, link 0, flags 0, type=1
-libbpf: skip section(9) .debug_loc
-libbpf: section(10) .rel.debug_loc, size 112, link 25, flags 0, type=9
-libbpf: skip relo .rel.debug_loc(10) for section(9)
-libbpf: section(11) .debug_abbrev, size 901, link 0, flags 0, type=1
-libbpf: skip section(11) .debug_abbrev
-libbpf: section(12) .debug_info, size 237441, link 0, flags 0, type=1
-libbpf: skip section(12) .debug_info
-libbpf: section(13) .rel.debug_info, size 112, link 25, flags 0, type=9
-libbpf: skip relo .rel.debug_info(13) for section(12)
-libbpf: section(14) .debug_ranges, size 96, link 0, flags 0, type=1
-libbpf: skip section(14) .debug_ranges
-libbpf: section(15) .rel.debug_ranges, size 128, link 25, flags 0, type=9
-libbpf: skip relo .rel.debug_ranges(15) for section(14)
-libbpf: section(16) .debug_str, size 142395, link 0, flags 30, type=1
-libbpf: skip section(16) .debug_str
-libbpf: section(17) .BTF, size 5634, link 0, flags 0, type=1
-libbpf: section(18) .rel.BTF, size 64, link 25, flags 0, type=9
-libbpf: skip relo .rel.BTF(18) for section(17)
-libbpf: section(19) .BTF.ext, size 484, link 0, flags 0, type=1
-libbpf: section(20) .rel.BTF.ext, size 416, link 25, flags 0, type=9
-libbpf: skip relo .rel.BTF.ext(20) for section(19)
-libbpf: section(21) .debug_frame, size 64, link 0, flags 0, type=1
-libbpf: skip section(21) .debug_frame
-libbpf: section(22) .rel.debug_frame, size 32, link 25, flags 0, type=9
-libbpf: skip relo .rel.debug_frame(22) for section(21)
-libbpf: section(23) .debug_line, size 227, link 0, flags 0, type=1
-libbpf: skip section(23) .debug_line
-libbpf: section(24) .rel.debug_line, size 32, link 25, flags 0, type=9
-libbpf: skip relo .rel.debug_line(24) for section(23)
-libbpf: section(25) .symtab, size 288, link 1, flags 0, type=2
-libbpf: looking for externs among 12 symbols...
-libbpf: collected 0 externs total
-libbpf: map 'lsm.bss' (global data): at sec_idx 8, offset 0, flags 400.
-libbpf: map 0 is "lsm.bss"
-libbpf: collecting relocating info for: 'lsm/file_mprotect'
-libbpf: relo for shdr 8, symb 8, value 0, type 1, bind 1, name 232 
-('monitored_pid'), insn 12
-libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 12
-libbpf: relo for shdr 8, symb 9, value 4, type 1, bind 1, name 34 
-('mprotect_count'), insn 17
-libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 17
-libbpf: collecting relocating info for: 'lsm/bprm_committed_creds'
-libbpf: relo for shdr 8, symb 8, value 0, type 1, bind 1, name 232 
-('monitored_pid'), insn 1
-libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 1
-libbpf: relo for shdr 8, symb 7, value 8, type 1, bind 1, name 49 
-('bprm_count'), insn 6
-libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 6
-libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
-libbpf: created map lsm.bss: fd=4
-libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
-libbpf: prog 'lsm/file_mprotect': performing 4 CO-RE offset relocs
-libbpf: prog 'lsm/file_mprotect': relo #0: kind 0, spec is [6] 
-vm_area_struct + 0:6 => 64.0 @ &x[0].vm_mm
-libbpf: [6] vm_area_struct: found candidate [329] vm_area_struct
-libbpf: prog 'lsm/file_mprotect': relo #0: matching candidate #0 
-vm_area_struct against spec [329] vm_area_struct + 0:6 => 64.0 @ 
-&x[0].vm_mm: 1
-libbpf: prog 'lsm/file_mprotect': relo #0: patched insn #5 (LDX/ST/STX) 
-off 64 -> 64
-libbpf: prog 'lsm/file_mprotect': relo #1: kind 0, spec is [32] 
-mm_struct + 0:0:35 => 304.0 @ &x[0].start_stack
-libbpf: [32] mm_struct: found candidate [308] mm_struct
-libbpf: prog 'lsm/file_mprotect': relo #1: matching candidate #0 
-mm_struct against spec [308] mm_struct + 0:0:35 => 304.0 @ 
-&x[0].start_stack: 1
-libbpf: prog 'lsm/file_mprotect': relo #1: patched insn #7 (LDX/ST/STX) 
-off 304 -> 304
-libbpf: prog 'lsm/file_mprotect': relo #2: kind 0, spec is [6] 
-vm_area_struct + 0:0 => 0.0 @ &x[0].vm_start
-libbpf: prog 'lsm/file_mprotect': relo #2: matching candidate #0 
-vm_area_struct against spec [329] vm_area_struct + 0:0 => 0.0 @ 
-&x[0].vm_start: 1
-libbpf: prog 'lsm/file_mprotect': relo #2: patched insn #8 (LDX/ST/STX) 
-off 0 -> 0
-libbpf: prog 'lsm/file_mprotect': relo #3: kind 0, spec is [6] 
-vm_area_struct + 0:1 => 8.0 @ &x[0].vm_end
-libbpf: prog 'lsm/file_mprotect': relo #3: matching candidate #0 
-vm_area_struct against spec [329] vm_area_struct + 0:1 => 8.0 @ 
-&x[0].vm_end: 1
-libbpf: prog 'lsm/file_mprotect': relo #3: patched insn #10 (LDX/ST/STX) 
-off 8 -> 8
-test_test_lsm:PASS:skel_load 0 nsec
-test_test_lsm:PASS:attach 0 nsec
-test_test_lsm:PASS:exec_cmd 0 nsec
-test_test_lsm:FAIL:bprm_count bprm_count = 0
-test_test_lsm:FAIL:stack_mprotect want err=EPERM, got 0
-#70 test_lsm:FAIL
-Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+  In this patch set, kernel seq_ops is used to facilitate iterating throu=
+gh
+  kernel data, similar to current /proc and many other lossless kernel
+  dumping facilities. In the future, different iterators can be
+  implemented to trade off losslessness for other criteria e.g. no
+  repeated object visits, etc.
 
+User Interface:
+  1. Similar to prog/map/link, the iterator can be pinned into a
+     path within a bpffs mount point.
+  2. The bpftool command can pin an iterator to a file
+         bpftool iter pin <bpf_prog.o> <path>
+  3. Use `cat <path>` to dump the contents.
+     Use `rm -f <path>` to remove the pinned iterator.
+  4. The anonymous iterator can be created as well.
 
-kconfig:
+  Please see patch #19 andd #20 for bpf programs and bpf iterator
+  output examples.
 
-CONFIG_BPF_LSM=y
+  Note that certain iterators are namespace aware. For example,
+  task and task_file targets only iterate through current pid namespace.
+  ipv6_route and netlink will iterate through current net namespace.
 
-CONFIG_LSM="lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor"
+  Please see individual patches for implementation details.
 
-besides:
+Performance:
+  The bpf iterator provides in-kernel aggregation abilities
+  for kernel data. This can greatly improve performance
+  compared to e.g., iterating all process directories under /proc.
+  For example, I did an experiment on my VM with an application forking
+  different number of tasks and each forked process opening various numbe=
+r
+  of files. The following is the result with the latency with unit of mic=
+roseconds:
 
-when I add bpf to CONFIG_LSM, then boot failed.
+    # of forked tasks   # of open files    # of bpf_prog calls  # latency=
+ (us)
+    100                 100                11503                7586
+    1000                1000               1013203              709513
+    10000               100                1130203              764519
+ =20
+  The number of bpf_prog calls may be more than forked tasks multipled by
+  open files since there are other tasks running on the system.
+  The bpf program is a do-nothing program. One millions of bpf calls take=
+s
+  less than one second.=20
+   =20
+Future Work:           =20
+  Although the initial motivation is from Martin's sk_local_storage,
+  this patch didn't implement tcp6 sockets and sk_local_storage.
+  The /proc/net/tcp6 involves three types of sockets, timewait,
+  request and tcp6 sockets. Some kind of type casting or other
+  mechanism is needed to handle all these socket types in one
+  bpf program. This will be addressed in future work.
 
-boot error:
+  Currently, we do not support kernel data generated under module.
+  This requires some BTF work.
 
-```
+  More work for more iterators, e.g., tcp, udp, bpf_map elements, etc.
 
-Cannot determine cgroup we are running in: No data available
-Failed to allocate manager object: No data available
-[!!!!!!] Failed to allocate manager object, freezing.
-Freezing execution.
+Changelog:
+  v2 -> v3:
+    - add bpf_iter_unreg_target() to unregister a target, used in the
+      error path of the __init functions.
+    - handle err !=3D 0 before handling overflow (Andrii)
+    - reference count "task" for task_file target (Andrii)
+    - remove some redundancy for bpf_map/task/task_file targets
+    - add bpf_iter_unreg_target() in ip6_route_cleanup()
+    - Handling "%%" format in bpf_seq_printf() (Andrii)
+    - implement auto-attach for bpf_iter in libbpf (Andrii)
+    - add macros offsetof and container_of in bpf_helpers.h (Andrii)
+    - add tests for auto-attach and program-return-1 cases
+    - some other minor fixes
+  v1 -> v2:
+    - removed target_feature, using callback functions instead
+    - checking target to ensure program specified btf_id supported (Marti=
+n)
+    - link_create change with new changes from Andrii
+    - better handling of btf_iter vs. seq_file private data (Martin, Andr=
+ii)
+    - implemented bpf_seq_read() (Andrii, Alexei)
+    - percpu buffer for bpf_seq_printf() (Andrii)
+    - better syntax for BPF_SEQ_PRINTF macro (Andrii)
+    - bpftool fixes (Quentin)
+    - a lot of other fixes
+  RFC v2 -> v1:
+    - rename bpfdump to bpf_iter
+    - use bpffs instead of a new file system
+    - use bpf_link to streamline and simplify iterator creation.
 
-```
+References:
+  [1]: https://lore.kernel.org/bpf/20200225230427.1976129-1-kafai@fb.com
+  [2]: https://github.com/osandov/drgn
 
-seems bpf in CONFIG_LSM and CONFIG_BPF_LSM conflict.
+Yonghong Song (21):
+  bpf: implement an interface to register bpf_iter targets
+  bpf: allow loading of a bpf_iter program
+  bpf: support bpf tracing/iter programs for BPF_LINK_CREATE
+  bpf: support bpf tracing/iter programs for BPF_LINK_UPDATE
+  bpf: implement bpf_seq_read() for bpf iterator
+  bpf: create anonymous bpf iterator
+  bpf: create file bpf iterator
+  bpf: implement common macros/helpers for target iterators
+  bpf: add bpf_map iterator
+  net: bpf: add netlink and ipv6_route bpf_iter targets
+  bpf: add task and task/file iterator targets
+  bpf: add PTR_TO_BTF_ID_OR_NULL support
+  bpf: add bpf_seq_printf and bpf_seq_write helpers
+  bpf: handle spilled PTR_TO_BTF_ID properly when checking
+    stack_boundary
+  bpf: support variable length array in tracing programs
+  tools/libbpf: add bpf_iter support
+  tools/libpf: add offsetof/container_of macro in bpf_helpers.h
+  tools/bpftool: add bpf_iter support for bptool
+  tools/bpf: selftests: add iterator programs for ipv6_route and netlink
+  tools/bpf: selftests: add iter progs for bpf_map/task/task_file
+  tools/bpf: selftests: add bpf_iter selftests
 
+ fs/proc/proc_net.c                            |  19 +
+ include/linux/bpf.h                           |  36 ++
+ include/linux/bpf_types.h                     |   1 +
+ include/linux/proc_fs.h                       |   3 +
+ include/uapi/linux/bpf.h                      |  40 +-
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/bpf_iter.c                         | 526 ++++++++++++++++++
+ kernel/bpf/btf.c                              |  42 +-
+ kernel/bpf/inode.c                            |   5 +-
+ kernel/bpf/map_iter.c                         |  97 ++++
+ kernel/bpf/syscall.c                          |  59 ++
+ kernel/bpf/task_iter.c                        | 332 +++++++++++
+ kernel/bpf/verifier.c                         |  42 +-
+ kernel/trace/bpf_trace.c                      | 200 +++++++
+ net/ipv6/ip6_fib.c                            |  65 ++-
+ net/ipv6/route.c                              |  37 ++
+ net/netlink/af_netlink.c                      |  87 ++-
+ scripts/bpf_helpers_doc.py                    |   2 +
+ .../bpftool/Documentation/bpftool-iter.rst    |  83 +++
+ tools/bpf/bpftool/bash-completion/bpftool     |  13 +
+ tools/bpf/bpftool/iter.c                      |  84 +++
+ tools/bpf/bpftool/link.c                      |   1 +
+ tools/bpf/bpftool/main.c                      |   3 +-
+ tools/bpf/bpftool/main.h                      |   1 +
+ tools/include/uapi/linux/bpf.h                |  40 +-
+ tools/lib/bpf/bpf.c                           |  10 +
+ tools/lib/bpf/bpf.h                           |   2 +
+ tools/lib/bpf/bpf_helpers.h                   |  14 +
+ tools/lib/bpf/bpf_tracing.h                   |  16 +
+ tools/lib/bpf/libbpf.c                        |  52 ++
+ tools/lib/bpf/libbpf.h                        |   9 +
+ tools/lib/bpf/libbpf.map                      |   2 +
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 408 ++++++++++++++
+ .../selftests/bpf/progs/bpf_iter_bpf_map.c    |  28 +
+ .../selftests/bpf/progs/bpf_iter_ipv6_route.c |  62 +++
+ .../selftests/bpf/progs/bpf_iter_netlink.c    |  66 +++
+ .../selftests/bpf/progs/bpf_iter_task.c       |  25 +
+ .../selftests/bpf/progs/bpf_iter_task_file.c  |  26 +
+ .../selftests/bpf/progs/bpf_iter_test_kern1.c |   4 +
+ .../selftests/bpf/progs/bpf_iter_test_kern2.c |   4 +
+ .../selftests/bpf/progs/bpf_iter_test_kern3.c |  18 +
+ .../selftests/bpf/progs/bpf_iter_test_kern4.c |  52 ++
+ .../bpf/progs/bpf_iter_test_kern_common.h     |  22 +
+ 43 files changed, 2626 insertions(+), 14 deletions(-)
+ create mode 100644 kernel/bpf/bpf_iter.c
+ create mode 100644 kernel/bpf/map_iter.c
+ create mode 100644 kernel/bpf/task_iter.c
+ create mode 100644 tools/bpf/bpftool/Documentation/bpftool-iter.rst
+ create mode 100644 tools/bpf/bpftool/iter.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_bpf_map.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_ipv6_route=
+.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_netlink.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task_file.=
+c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_test_kern1=
+.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_test_kern2=
+.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_test_kern3=
+.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_test_kern4=
+.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_test_kern_=
+common.h
 
-clang version: v11.0.0
-
-commit: 54b35c066417d4856e9d53313f7e98b354274584
-
-# pahole --version
-v1.17
-
-
--- 
-Best Regards.
-Ma Xinjian
+--=20
+2.24.1
 
