@@ -2,201 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9F71C8567
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 11:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 592221C8634
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 11:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725900AbgEGJMa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 05:12:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33498 "EHLO mail.kernel.org"
+        id S1726222AbgEGJ7v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 05:59:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725848AbgEGJMa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 May 2020 05:12:30 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725893AbgEGJ7u (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 May 2020 05:59:50 -0400
+Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3690D2075E;
-        Thu,  7 May 2020 09:12:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9027C20643;
+        Thu,  7 May 2020 09:59:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588842749;
-        bh=WN/1Sfxv+V0tvhxdgTlgCeCg1I6pk09fr+Q2outjLYM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=xEn4xIitw6ljx3iphcAnTBS31J7adH7kGvMPZJBOtI/6et/4t8DGm63fxk7kQrs7q
-         UuGTT3EctUZW7OUyCjY0UECsdWn69vdO5YuMqKC6pIEWJ3dOlSyvWnwFKg2J1Mq3Fm
-         whXDqqPBteH4/ScOh7LlQImwViU5JqS+qqE1CHUM=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jWcZu-00ACrT-U4; Thu, 07 May 2020 10:12:27 +0100
-Date:   Thu, 7 May 2020 10:12:24 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Luke Nelson <lukenels@cs.washington.edu>, bpf@vger.kernel.org,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        s=default; t=1588845589;
+        bh=1dH5G1leAYENAhuCpe5L02sl2FX0JniYY4i2b+iiscs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=1aUldhiQbHoUUq98QeyZox9aJSM7fUex2qh2uKAqXjx1zIHigKYWqndTApyZ8Q6h+
+         kmOaWmRVk1MiImGIY8H0404e2ryIMSTusCdfZi2zrrVtdCKI+4inXLc8iYKXrGtO//
+         UKpQuhTXij4WrjkTmPbAG530abAmO1w29UVHXsHQ=
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [RFC PATCH bpf-next 1/3] arm64: insn: Fix two bugs in encoding
- 32-bit logical immediates
-Message-ID: <20200507101224.33a44d71@why>
-In-Reply-To: <20200507082934.GA28215@willie-the-truck>
-References: <20200507010504.26352-1-luke.r.nels@gmail.com>
-        <20200507010504.26352-2-luke.r.nels@gmail.com>
-        <20200507082934.GA28215@willie-the-truck>
-Organization: Approximate
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Wang Nan <wangnan0@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [RFC PATCH 0/3] kprobes: Support nested kprobes
+Date:   Thu,  7 May 2020 18:59:42 +0900
+Message-Id: <158884558272.12656.7654266361809594662.stgit@devnote2>
+X-Mailer: git-send-email 2.20.1
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: will@kernel.org, lukenels@cs.washington.edu, bpf@vger.kernel.org, luke.r.nels@gmail.com, xi.wang@gmail.com, catalin.marinas@arm.com, daniel@iogearbox.net, ast@kernel.org, zlim.lnx@gmail.com, kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org, mark.rutland@arm.com, gregkh@linuxfoundation.org, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, clang-built-linux@googlegroups.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 7 May 2020 09:29:35 +0100
-Will Deacon <will@kernel.org> wrote:
+Hi,
 
-Hi Will,
+Here is a series to add nested-kprobes support to x86, arm64
+and arm (which I can test).
 
-> Hi Luke,
-> 
-> Thanks for the patches.
-> 
-> On Wed, May 06, 2020 at 06:05:01PM -0700, Luke Nelson wrote:
-> > This patch fixes two issues present in the current function for encoding
-> > arm64 logical immediates when using the 32-bit variants of instructions.
-> > 
-> > First, the code does not correctly reject an all-ones 32-bit immediate
-> > and returns an undefined instruction encoding, which can crash the kernel.
-> > The fix is to add a check for this case.
-> > 
-> > Second, the code incorrectly rejects some 32-bit immediates that are
-> > actually encodable as logical immediates. The root cause is that the code
-> > uses a default mask of 64-bit all-ones, even for 32-bit immediates. This
-> > causes an issue later on when the mask is used to fill the top bits of
-> > the immediate with ones, shown here:
-> > 
-> >   /*
-> >    * Pattern: 0..01..10..01..1
-> >    *
-> >    * Fill the unused top bits with ones, and check if
-> >    * the result is a valid immediate (all ones with a
-> >    * contiguous ranges of zeroes).
-> >    */
-> >   imm |= ~mask;
-> >   if (!range_of_ones(~imm))
-> >           return AARCH64_BREAK_FAULT;
-> > 
-> > To see the problem, consider an immediate of the form 0..01..10..01..1,
-> > where the upper 32 bits are zero, such as 0x80000001. The code checks
-> > if ~(imm | ~mask) contains a range of ones: the incorrect mask yields
-> > 1..10..01..10..0, which fails the check; the correct mask yields
-> > 0..01..10..0, which succeeds.
-> > 
-> > The fix is to use a 32-bit all-ones default mask for 32-bit immediates.
-> > 
-> > Currently, the only user of this function is in
-> > arch/arm64/kvm/va_layout.c, which uses 64-bit immediates and won't
-> > trigger these bugs.  
-> 
-> Ah, so this isn't a fix or a bpf patch ;)
-> 
-> I can queue it via arm64 for 5.8, along with the bpf patches since there
-> are some other small changes pending in the arm64 bpf backend for BTI.
-> 
-> > We tested the new code against llvm-mc with all 1,302 encodable 32-bit
-> > logical immediates and all 5,334 encodable 64-bit logical immediates.
-> > 
-> > Fixes: ef3935eeebff ("arm64: insn: Add encoder for bitwise operations using literals")
-> > Co-developed-by: Xi Wang <xi.wang@gmail.com>
-> > Signed-off-by: Xi Wang <xi.wang@gmail.com>
-> > Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
-> > ---
-> >  arch/arm64/kernel/insn.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/arm64/kernel/insn.c b/arch/arm64/kernel/insn.c
-> > index 4a9e773a177f..42fad79546bb 100644
-> > --- a/arch/arm64/kernel/insn.c
-> > +++ b/arch/arm64/kernel/insn.c
-> > @@ -1535,7 +1535,7 @@ static u32 aarch64_encode_immediate(u64 imm,
-> >  				    u32 insn)
-> >  {
-> >  	unsigned int immr, imms, n, ones, ror, esz, tmp;
-> > -	u64 mask = ~0UL;
-> > +	u64 mask;
-> >  
-> >  	/* Can't encode full zeroes or full ones */
-> >  	if (!imm || !~imm)  
-> 
-> It's a bit grotty spreading the checks out now. How about we tweak things
-> slightly along the lines of:
-> 
-> 
-> diff --git a/arch/arm64/kernel/insn.c b/arch/arm64/kernel/insn.c
-> index 4a9e773a177f..60ec788eaf33 100644
-> --- a/arch/arm64/kernel/insn.c
-> +++ b/arch/arm64/kernel/insn.c
-> @@ -1535,16 +1535,10 @@ static u32 aarch64_encode_immediate(u64 imm,
->  				    u32 insn)
->  {
->  	unsigned int immr, imms, n, ones, ror, esz, tmp;
-> -	u64 mask = ~0UL;
-> -
-> -	/* Can't encode full zeroes or full ones */
-> -	if (!imm || !~imm)
-> -		return AARCH64_BREAK_FAULT;
-> +	u64 mask;
->  
->  	switch (variant) {
->  	case AARCH64_INSN_VARIANT_32BIT:
-> -		if (upper_32_bits(imm))
-> -			return AARCH64_BREAK_FAULT;
->  		esz = 32;
->  		break;
->  	case AARCH64_INSN_VARIANT_64BIT:
-> @@ -1556,6 +1550,12 @@ static u32 aarch64_encode_immediate(u64 imm,
->  		return AARCH64_BREAK_FAULT;
->  	}
->  
-> +	mask = GENMASK(esz - 1, 0);
-> +
-> +	/* Can't encode full zeroes or full ones */
+These make kprobes to accept 1-level nesting instead of incrementing
+missed count.
 
-... nor a value wider than the mask.
+Any kprobes hits in kprobes pre/post handler context can be nested
+at once. If the other kprobes hits in the nested pre/post handler
+context or in the single-stepping context, that will be still
+missed.
 
-> +	if (imm & ~mask || !imm || imm == mask)
-> +		return AARCH64_BREAK_FAULT;
-> +
->  	/*
->  	 * Inverse of Replicate(). Try to spot a repeating pattern
->  	 * with a pow2 stride.
-> 
-> 
-> What do you think?
+The nest level is actually easily extended, but too many nest
+level can lead the overflow of the kernel stack (for each nest,
+the stack will be consumed by saving registers, handling kprobes
+and pre/post handlers.) Thus, at this moment it allows only one
+level nest.
 
-I'd be pretty happy with that.
+This feature allows BPF or ftrace user to put a kprobe on BPF
+jited code or ftrace internal code running in the kprobe context
+for debugging.
 
-Reviewed-by: Marc Zyngier <maz@kernel.org>
+We can test this feature on the kernel with
+CONFIG_KPROBE_EVENTS_ON_NOTRACE=y as below.
 
-Thanks,
+  # cd /sys/kernel/debug/tracing
+  # echo p ring_buffer_lock_reserve > kprobe_events
+  # echo p vfs_read >> kprobe_events
+  # echo stacktrace > events/kprobes/p_ring_buffer_lock_reserve_0/trigger
+  # echo 1 > events/kprobes/enable
+  # cat trace
+  ...
+               cat-151   [000] ...1    48.669190: p_vfs_read_0: (vfs_read+0x0/0x160)
+               cat-151   [000] ...2    48.669276: p_ring_buffer_lock_reserve_0: (ring_buffer_lock_reserve+0x0/0x400)
+               cat-151   [000] ...2    48.669288: <stack trace>
+   => kprobe_dispatcher
+   => opt_pre_handler
+   => optimized_callback
+   => 0xffffffffa0002331
+   => ring_buffer_lock_reserve
+   => kprobe_trace_func
+   => kprobe_dispatcher
+   => opt_pre_handler
+   => optimized_callback
+   => 0xffffffffa00023b0
+   => vfs_read
+   => load_elf_phdrs
+   => load_elf_binary
+   => search_binary_handler.part.0
+   => __do_execve_file.isra.0
+   => __x64_sys_execve
+   => do_syscall_64
+   => entry_SYSCALL_64_after_hwframe
+  
+To check unoptimized code, disable optprobe and dump the log.
 
-	M.
--- 
-Jazz is not dead. It just smells funny...
+  # echo 0 > /proc/sys/debug/kprobes-optimization
+  # echo > trace
+  # cat trace
+               cat-153   [000] d..1   140.581433: p_vfs_read_0: (vfs_read+0x0/0x160)
+               cat-153   [000] d..2   140.581780: p_ring_buffer_lock_reserve_0: (ring_buffer_lock_reserve+0x0/0x400)
+               cat-153   [000] d..2   140.581811: <stack trace>
+   => kprobe_dispatcher
+   => aggr_pre_handler
+   => kprobe_int3_handler
+   => do_int3
+   => int3
+   => ring_buffer_lock_reserve
+   => kprobe_trace_func
+   => kprobe_dispatcher
+   => aggr_pre_handler
+   => kprobe_int3_handler
+   => do_int3
+   => int3
+   => vfs_read
+   => load_elf_phdrs
+   => load_elf_binary
+   => search_binary_handler.part.0
+   => __do_execve_file.isra.0
+   => __x64_sys_execve
+   => do_syscall_64
+   => entry_SYSCALL_64_after_hwframe
+
+So we can see the kprobe can be nested.
+
+Thank you,
+
+---
+
+Masami Hiramatsu (3):
+      x86/kprobes: Support nested kprobes
+      arm64: kprobes: Support nested kprobes
+      arm: kprobes: Support nested kprobes
+
+
+ arch/arm/include/asm/kprobes.h     |    5 ++
+ arch/arm/probes/kprobes/core.c     |   79 ++++++++++++++----------------
+ arch/arm/probes/kprobes/core.h     |   30 +++++++++++
+ arch/arm/probes/kprobes/opt-arm.c  |    6 ++
+ arch/arm64/include/asm/kprobes.h   |    5 ++
+ arch/arm64/kernel/probes/kprobes.c |   75 ++++++++++++++++------------
+ arch/x86/include/asm/kprobes.h     |    5 ++
+ arch/x86/kernel/kprobes/common.h   |   39 ++++++++++++++-
+ arch/x86/kernel/kprobes/core.c     |   96 +++++++++++++++---------------------
+ arch/x86/kernel/kprobes/ftrace.c   |    6 ++
+ arch/x86/kernel/kprobes/opt.c      |   13 +++--
+ 11 files changed, 214 insertions(+), 145 deletions(-)
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
