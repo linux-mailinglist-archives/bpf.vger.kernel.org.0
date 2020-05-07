@@ -2,105 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F42D1C872C
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 12:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E82A1C87AB
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 13:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727820AbgEGKoW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 06:44:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725900AbgEGKoV (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 7 May 2020 06:44:21 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8E2C061A10;
-        Thu,  7 May 2020 03:44:20 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id w65so2813349pfc.12;
-        Thu, 07 May 2020 03:44:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bFQHmMlHHcwUStjNmfU6XXDKqYEB7JfBFL8YRcOFE5Y=;
-        b=AXJGxb8tfuLMPb7qMZwoK7U09+JCMcqKoZfQG6lafeCRW0hnczvQigdk+2cg9F8Whl
-         7TJXMt2abyCUiIy/2M9HWKeKTxVhm6jsrpUHxmplE+MIJj9OpYbPFsbw8sA6ZqW25rZK
-         4HY+uNTPDUfp59HadZJ7w2EicQBsRqN6mKePZuo9cp8vHaMIDber9Xy0K0w/CoMpNg3p
-         4sdGLt3r0FkwSZpaZuke+s0o7NDA/+h13fgr1NuCpdAa3v+YMDNqXjFSoUoYEY2DZJcV
-         Y4S46ItKFNkEhhf3BxHN049J4Ut+13KQiTTSP5A11H0l0U5zLsdiwA+yAurVrrTmqcLO
-         WXyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bFQHmMlHHcwUStjNmfU6XXDKqYEB7JfBFL8YRcOFE5Y=;
-        b=tplvOIBaJ44QZIxSkUnD+SiJwe7QkUrBPCHF5np9GDazuc9TGvG5S3XmcLkYAhCmQ+
-         +rQt8FTG671oPix+KVnUEtOUN0AZn0pEH7iA4SO9ixlNPXQ05giLAO1XI4mrIF6MI0S6
-         PdsBtzXvurxoODyhyJnCUjH3LSlSh3VSrVKAbuTgi7PnkAv4wdPM6VUAUsEgExBsiHf7
-         gV7eaZKcnHP7/SzvSn1q07smT8w3FNIAN2r3a8sAwT0svfPnmvbbebfPB90mbhQOO9JN
-         e2/3DR0EvZv/whJwd8eZCN87uy+rN265EK0LmhxTdxd+xyLl2UG/LvUf85EvWDy9BEAZ
-         97/A==
-X-Gm-Message-State: AGi0PuaRt+O9JrS8B0obSqw03ncm9Ox4U7Y+HbG++bMov4CLbf65gCjS
-        Xy3VV8wbXv4Su24SuXxs9xA=
-X-Google-Smtp-Source: APiQypKu2EY+5rnudVsc+vqfbWZ1IARULo/OOxzvoQgq3KNzLdT5N+HAt7RmFtIzY52wGvjuZmU47Q==
-X-Received: by 2002:aa7:9f5a:: with SMTP id h26mr13489016pfr.281.1588848260373;
-        Thu, 07 May 2020 03:44:20 -0700 (PDT)
-Received: from btopel-mobl.ger.intel.com ([192.55.55.43])
-        by smtp.gmail.com with ESMTPSA id j14sm7450673pjm.27.2020.05.07.03.44.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 03:44:19 -0700 (PDT)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        jeffrey.t.kirsher@intel.com
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        maximmi@mellanox.com, maciej.fijalkowski@intel.com,
-        Joe Perches <joe@perches.com>
-Subject: [PATCH bpf-next 14/14] MAINTAINERS, xsk: update AF_XDP section after moves/adds
-Date:   Thu,  7 May 2020 12:42:52 +0200
-Message-Id: <20200507104252.544114-15-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200507104252.544114-1-bjorn.topel@gmail.com>
-References: <20200507104252.544114-1-bjorn.topel@gmail.com>
+        id S1727029AbgEGLJs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 07:09:48 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:51028 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725809AbgEGLJs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 May 2020 07:09:48 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 81558BB68AC7B0BAF879;
+        Thu,  7 May 2020 19:09:46 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 7 May 2020
+ 19:09:36 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <tariqt@mellanox.com>, <davem@davemloft.net>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <kuba@kernel.org>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>
+Subject: [PATCH net-next] net: mlx4: remove unneeded variable "err" in mlx4_en_ethtool_add_mac_rule()
+Date:   Thu, 7 May 2020 19:08:57 +0800
+Message-ID: <20200507110857.38035-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+Fix the following coccicheck warning:
 
-Update MAINTAINERS to correctly mirror the current AF_XDP socket file
-layout. Also, add the AF_XDP files of libbpf.
+drivers/net/ethernet/mellanox/mlx4/en_ethtool.c:1396:5-8: Unneeded
+variable: "err". Return "0" on line 1411
 
-rfc->v1: Sorted file entries. (Joe)
-
-Cc: Joe Perches <joe@perches.com>
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- MAINTAINERS | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx4/en_ethtool.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index db7a6d462dff..79e2bb1280e6 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18451,8 +18451,12 @@ R:	Jonathan Lemon <jonathan.lemon@gmail.com>
- L:	netdev@vger.kernel.org
- L:	bpf@vger.kernel.org
- S:	Maintained
--F:	kernel/bpf/xskmap.c
-+F:	include/net/xdp_sock*
-+F:	include/net/xsk_buffer_pool.h
-+F:	include/uapi/linux/if_xdp.h
- F:	net/xdp/
-+F:	samples/bpf/xdpsock*
-+F:	tools/lib/bpf/xsk*
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+index 216e6b2e9eed..b816154bc79a 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+@@ -1392,7 +1392,6 @@ static int mlx4_en_ethtool_add_mac_rule(struct ethtool_rxnfc *cmd,
+ 					struct mlx4_spec_list *spec_l2,
+ 					unsigned char *mac)
+ {
+-	int err = 0;
+ 	__be64 mac_msk = cpu_to_be64(MLX4_MAC_MASK << 16);
  
- XEN BLOCK SUBSYSTEM
- M:	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+ 	spec_l2->id = MLX4_NET_TRANS_RULE_ID_ETH;
+@@ -1407,7 +1406,7 @@ static int mlx4_en_ethtool_add_mac_rule(struct ethtool_rxnfc *cmd,
+ 
+ 	list_add_tail(&spec_l2->list, rule_list_h);
+ 
+-	return err;
++	return 0;
+ }
+ 
+ static int mlx4_en_ethtool_add_mac_rule_by_ipv4(struct mlx4_en_priv *priv,
 -- 
-2.25.1
+2.21.1
 
