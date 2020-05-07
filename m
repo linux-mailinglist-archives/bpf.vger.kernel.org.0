@@ -2,134 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B35A1C8CF4
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 15:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E441C8D30
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 16:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726514AbgEGNt5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 09:49:57 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:32720 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726320AbgEGNt5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 May 2020 09:49:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588859396;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mtfeKIrFwLIEu5xU9YDtgCdmdoqxZ0ztvTPMoqop3dw=;
-        b=AGxBZ0fMxXikV1tTe5JLTsiS9m4aU/KMHz0DhgJOPPGdh0EQygERYLkL7YYB/HkZN3TLQr
-        2jGBc3AdyWFxk30suf92l9eFIExR7bZbPhTMwfc4hgpEJfndS/rrA4/8tXECeUT1GQgRFV
-        k5zOe4dVNJ1s5FIO2j16xexDxN4VfYY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-428-pIKrsyx3PpWPxylVzzPlvg-1; Thu, 07 May 2020 09:49:52 -0400
-X-MC-Unique: pIKrsyx3PpWPxylVzzPlvg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0D3E1895A29;
-        Thu,  7 May 2020 13:49:48 +0000 (UTC)
-Received: from krava (unknown [10.40.194.212])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E28AD10016E8;
-        Thu,  7 May 2020 13:49:41 +0000 (UTC)
-Date:   Thu, 7 May 2020 15:49:39 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [RFC PATCH 0/7] Share events between metrics
-Message-ID: <20200507134939.GA2804092@krava>
-References: <20200507081436.49071-1-irogers@google.com>
+        id S1726074AbgEGOAe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 10:00:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725947AbgEGOAe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 May 2020 10:00:34 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1266AC05BD43;
+        Thu,  7 May 2020 07:00:34 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id h9so6550796wrt.0;
+        Thu, 07 May 2020 07:00:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=h1WpxjPdyCBE7KAla9iO5P4bZZoKPEKo563S8bN0HCI=;
+        b=sBk6kKvAGS4In8Q8py/eXSV9EjvovXYsypizSjw5hvFDJpLj2W5MJDyZ2qq95Wbeb1
+         4SDHjPtRiHmzqNGUbcc2Efjf3F2eelcZelnsPLA/wiaUJqwvMX/nYFXQOgGYUVljOcLr
+         bSR5574lbhRAnScqLpRTqeGtRQd0KpJSdzUjJtHsz1llWx51lGgphJVM+VifTrobHSjn
+         3+EDncYp1Ifba+WYMcpBpNqSL23Sfx0zu2mIOmdcFhioO2AAal2NY2VMjTbEDEtUDZja
+         aha/k1rZ/crR/Blxkp/QSstjUzfMj9f7BMYt+oIBYs4HPNN19ZMb3+Fx9y3FvM863nJC
+         TDrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=h1WpxjPdyCBE7KAla9iO5P4bZZoKPEKo563S8bN0HCI=;
+        b=chTWUXx7cQ0GP0YBGAB5r9b7Y+jWnb5IGkSRYSYd4YpSnOd+oihXijI/G1IcBAD1vJ
+         /wm3fCOHylX7DiZYUB/rgb+ErE30cbq/pWfvhGYdWrUU6qsuDpgkyD9Cq8rGieZsdc32
+         deH8S3umKhKGJKReIX/o6VaQmvtz8eLzmaQtgkJR6cysX2WRc1ujGRg4p2q9izkFb4jV
+         KnEl66n25EIr8ciWiUvZPu5pH9qCvwPTsmrr+4p05hBHUBMTSmT/lEce8w/3/9Ekc7Jt
+         /A2VEhKSUphMwcOhTI03SvOCEv77KjoGSknuCqreIgOqzB5gSES0EWu4Kyntn02ocrGb
+         6CXA==
+X-Gm-Message-State: AGi0Pua8h9Qwwz0OcTUGONYtDAHr8hlbpC66hzxEiMVgKS6uefc0eoZp
+        uZjcKqBeEmeFqAo7lnJhIyuyIwCtvyS4wJB66tI=
+X-Google-Smtp-Source: APiQypL1Kp/ABv534LtfGV8dmXs8pCbQlD4SIU85WagRPFd7hgdlZNSjkg4/6551ILrUP3UGRzwNGQlRBBAKhbdnNPE=
+X-Received: by 2002:adf:e910:: with SMTP id f16mr15150333wrm.176.1588860032651;
+ Thu, 07 May 2020 07:00:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200507081436.49071-1-irogers@google.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <CAJ+HfNidbgwtLinLQohwocUmoYyRcAG454ggGkCbseQPSA1cpw@mail.gmail.com>
+ <877dxnkggf.fsf@toke.dk>
+In-Reply-To: <877dxnkggf.fsf@toke.dk>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Thu, 7 May 2020 16:00:21 +0200
+Message-ID: <CAJ+HfNhvzZ4JKLRS5=esxCd7o39-OCuDSmdkxCuxR9Y6g5DC0A@mail.gmail.com>
+Subject: Re: XDP bpf_tail_call_redirect(): yea or nay?
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 07, 2020 at 01:14:29AM -0700, Ian Rogers wrote:
-> Metric groups contain metrics. Metrics create groups of events to
-> ideally be scheduled together. Often metrics refer to the same events,
-> for example, a cache hit and cache miss rate. Using separate event
-> groups means these metrics are multiplexed at different times and the
-> counts don't sum to 100%. More multiplexing also decreases the
-> accuracy of the measurement.
-> 
-> This change orders metrics from groups or the command line, so that
-> the ones with the most events are set up first. Later metrics see if
-> groups already provide their events, and reuse them if
-> possible. Unnecessary events and groups are eliminated.
-> 
-> RFC because:
->  - without this change events within a metric may get scheduled
->    together, after they may appear as part of a larger group and be
->    multiplexed at different times, lowering accuracy - however, less
->    multiplexing may compensate for this.
->  - libbpf's hashmap is used, however, libbpf is an optional
->    requirement for building perf.
->  - other things I'm not thinking of.
+On Thu, 7 May 2020 at 15:44, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.=
+com> wrote:
+>
+> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
+>
+> > Before I start hacking on this, I might as well check with the XDP
+> > folks if this considered a crappy idea or not. :-)
+> >
+> > The XDP redirect flow for a packet is typical a dance of
+> > bpf_redirect_map() that updates the bpf_redirect_info structure with
+> > maps type/items, which is then followed by an xdp_do_redirect(). That
+> > function takes an action based on the bpf_redirect_info content.
+> >
+> > I'd like to get rid of the xdp_do_redirect() call, and the
+> > bpf_redirect_info (per-cpu) lookup. The idea is to introduce a new
+> > (oh-no!) XDP action, say, XDP_CONSUMED and a built-in helper with
+> > tail-call semantics.
+> >
+> > Something across the lines of:
+> >
+> > --8<--
+> >
+> > struct {
+> >         __uint(type, BPF_MAP_TYPE_XSKMAP);
+> >         __uint(max_entries, MAX_SOCKS);
+> >         __uint(key_size, sizeof(int));
+> >         __uint(value_size, sizeof(int));
+> > } xsks_map SEC(".maps");
+> >
+> > SEC("xdp1")
+> > int xdp_prog1(struct xdp_md *ctx)
+> > {
+> >         bpf_tail_call_redirect(ctx, &xsks_map, 0);
+> >         // Redirect the packet to an AF_XDP socket at entry 0 of the
+> >         // map.
+> >         //
+> >         // After a successful call, ctx is said to be
+> >         // consumed. XDP_CONSUMED will be returned by the program.
+> >         // Note that if the call is not successful, the buffer is
+> >         // still valid.
+> >         //
+> >         // XDP_CONSUMED in the driver means that the driver should not
+> >         // issue an xdp_do_direct() call, but only xdp_flush().
+> >         //
+> >         // The verifier need to be taught that XDP_CONSUMED can only
+> >         // be returned "indirectly", meaning a bpf_tail_call_XXX()
+> >         // call. An explicit "return XDP_CONSUMED" should be
+> >         // rejected. Can that be implemented?
+> >         return XDP_PASS; // or any other valid action.
+> > }
+> >
+> > -->8--
+> >
+> > The bpf_tail_call_redirect() would work with all redirectable maps.
+> >
+> > Thoughts? Tomatoes? Pitchforks?
+>
+> The above answers the 'what'. Might be easier to evaluate if you also
+> included the 'why'? :)
+>
 
-hi,
-I can't apply this, what branch/commit is this based on?
+Ah! Sorry! Performance, performance, performance. Getting rid of a
+bunch of calls/instructions per packet, which helps my (AF_XDP) case.
+This would be faster than the regular REDIRECT path. Today, in
+bpf_redirect_map(), instead of actually performing the action, we
+populate the bpf_redirect_info structure, just to look up the action
+again in xdp_do_redirect().
 
-	Applying: perf expr: migrate expr ids table to libbpf's hashmap
-	error: patch failed: tools/perf/tests/pmu-events.c:428
-	error: tools/perf/tests/pmu-events.c: patch does not apply
-	error: patch failed: tools/perf/util/expr.h:2
-	error: tools/perf/util/expr.h: patch does not apply
-	error: patch failed: tools/perf/util/expr.y:73
-	error: tools/perf/util/expr.y: patch does not apply
-	Patch failed at 0001 perf expr: migrate expr ids table to libbpf's hashmap
+I'm pretty certain this would be a gain for AF_XDP (quite easy to do a
+quick hack, and measure). It would also shave off the same amount of
+instructions for "vanilla" XDP_REDIRECT cases. The bigger issue; Is
+this new semantic something people would be comfortable being added to
+XDP.
 
-thanks,
-jirka
 
-> 
-> Thanks!
-> 
-> Ian Rogers (7):
->   perf expr: migrate expr ids table to libbpf's hashmap
->   perf metricgroup: change evlist_used to a bitmap
->   perf metricgroup: free metric_events on error
->   perf metricgroup: always place duration_time last
->   perf metricgroup: delay events string creation
->   perf metricgroup: order event groups by size
->   perf metricgroup: remove duped metric group events
-> 
->  tools/perf/tests/expr.c       |  32 ++---
->  tools/perf/tests/pmu-events.c |  22 ++--
->  tools/perf/util/expr.c        | 125 ++++++++++--------
->  tools/perf/util/expr.h        |  22 ++--
->  tools/perf/util/expr.y        |  22 +---
->  tools/perf/util/metricgroup.c | 242 +++++++++++++++++++++-------------
->  tools/perf/util/stat-shadow.c |  46 ++++---
->  7 files changed, 280 insertions(+), 231 deletions(-)
-> 
-> -- 
-> 2.26.2.526.g744177e7f7-goog
-> 
-
+Cheers,
+Bj=C3=B6rn
