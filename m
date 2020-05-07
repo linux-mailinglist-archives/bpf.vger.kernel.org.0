@@ -2,87 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E851C7E88
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 02:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 677A11C7F54
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 02:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726014AbgEGA0H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 20:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58866 "EHLO
+        id S1728348AbgEGAr3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 20:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgEGA0G (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 May 2020 20:26:06 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40807C061A0F;
-        Wed,  6 May 2020 17:26:06 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id f18so4341803lja.13;
-        Wed, 06 May 2020 17:26:06 -0700 (PDT)
+        with ESMTP id S1728531AbgEGAr0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 May 2020 20:47:26 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88821C061A10
+        for <bpf@vger.kernel.org>; Wed,  6 May 2020 17:47:26 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id e9so925094iok.9
+        for <bpf@vger.kernel.org>; Wed, 06 May 2020 17:47:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pfuNYjdlBZcFqk3cO/TEthEGXzpFSbiEHwj3mFfvMIM=;
-        b=WQOzqaD1bNkPrLiNymUSrOvoYL8v9RZ5DIbqm6e+y35APA13Wu2iysluRtHWg7CXpR
-         5RCmIyGzJ0FCzQRSQvV/Z6r/8TVdQeM1jNcKxYb5yDyj0oCnS18IJi9JoQwoD1y+WcHT
-         9cv1FJfPc26PN12J1QM/oNT1/qbocmZ0oBpYgErVh93I8NS40WPJXi92WDBLuNssnJXn
-         1CVljgoD0z3t8bo/9kGlp+gIbfW58lSsd4fSWeUAaOwlkAFdybndiHyXPt+z+35AVMWv
-         inl+q4VyuD+ZRkEkFTMRg/xl4KmBNBdFb2awQWTIUrrm/1DEuggkcPCnDQM0irYchvZk
-         qWlw==
+        bh=uYSzKMOk3or2uFoTZZzRJZRiS035mjjJocvNWlKm6tM=;
+        b=dSM6qpbUf+qLjqBHYANWC6rRaGEkZVYX7hCaUGcJC4jffs2/nlqOD1bGMOPdjX+0+u
+         a0tj0jTWA0vqVQieHoGIHDnsiNYn7Dw+2q0mr2Gkf68qDvpGO82TQyegMyE/Z4LiOJ3b
+         GRJ84a2QIlYNH31ggzEgMyWSqShuOj+CH5JvSNPUzWdeAQutmWJ3P1ZvJ86vbBd6iuHN
+         n7389hKng19UxWWQQEuY62XlkhD1bR4w7Zd7sbnyOUdPU72sUqC4eCcSP5J7GiTdAQQB
+         9y6MfecM3KC1F5nVtFVqksBFcaWUYIxAFWHlo3HuzbCvAuzZoI38OKi7Mr/JvPGr4KE1
+         /whA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pfuNYjdlBZcFqk3cO/TEthEGXzpFSbiEHwj3mFfvMIM=;
-        b=HrRoaXB0LW4mIubxVeDm9ZcFp21Z6Pkf6dZ+iJFj6l5Rl1HuruwVS8+xH0ROXM1Shq
-         CCGlFJbjyacGkzYHYNVsmIxselgSk4FmvrxpBrsDXoYio3BeX2erF5sCRs8lhpMaw3N7
-         zP64jzwnRVsv5RNuT9jd4A70fN0zvpdPk6TCWVRWHm3DrHtWgKSG76Kw1jZqE+Rt3UkX
-         onyZWsHAntlBAJ+NFj/RuoyYRSYQy5hvsEfzgpJYu4ed26v7cQzwX/+vKvSBnGlVgcaN
-         zSh0m8ry6+Q6J0x5J3miuQz3FWFMkzvkPO6qXBG0sWe6GFMH04ix874cVjJKC3peKrz9
-         DW6w==
-X-Gm-Message-State: AGi0Puae6UFDn5xOPLi0DdkN9caBhCqJ9fqiw0h1Yy91v/FtY+Ed6uaH
-        xu93OH7ACMrZJ/u5gFUTRWaXw0q6zscPOW4L4Ug=
-X-Google-Smtp-Source: APiQypLhjH/vAa1zWJ+FDG9tssyBz0PZl4fs87nSOZF9o9XXhyliTDUlA1+VEvqpOcKef2weN5AYgZ6UmgqCto1PpbI=
-X-Received: by 2002:a2e:9011:: with SMTP id h17mr6889643ljg.138.1588811164575;
- Wed, 06 May 2020 17:26:04 -0700 (PDT)
+        bh=uYSzKMOk3or2uFoTZZzRJZRiS035mjjJocvNWlKm6tM=;
+        b=aI44Jkda0+G45+pOd00UOI1D3vTcSk8BfPiJ3BmehFMX/pMmRn9KS5nEX7BrYOzCks
+         fYQdoo/P4o60zq+xEySOKU0tDNa6vYCCgCS7+URSI8lY3FE87gKKy/z8auKSzdXrl8At
+         q+PSGcuz4A0jtWiPPNI1zOPxqh1bKB3WFhmSrfyeXO0fcAaEJrl47GBmVW20qtcCurFi
+         b6AUFokD/U2G+dJyCX2SI+O8r8h8GOrickBtyWIUNPWWVQMf+nnzZwK1uyD22RjzOj9o
+         OiBZB4ToLEqx6Cz1rHWTUmuouDmrY13I6qkofj3znfuk+3GULlCCWDcV1jWYRSuV9S5M
+         JBzA==
+X-Gm-Message-State: AGi0PubKLVPWkB9f1Ua3V3+6sYegthtbCX7nFemQOEP6hlbUdmfLqoHA
+        KY7DCtMRX6e5hwPL1j5c9gANlz91byaipRFQOs/X2g==
+X-Google-Smtp-Source: APiQypJvM5QMB5Afb5RNgm1KdSj0U7xDMShFulj/eorpksz8gZajXOONziEH5xmbd7Mj52enCkEHqDk9ToBBgmsDRQU=
+X-Received: by 2002:a02:cd03:: with SMTP id g3mr10773598jaq.61.1588812445532;
+ Wed, 06 May 2020 17:47:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAADnVQJfD1dLVsfg4=c4f6ftRNF_4z0wELjFq8z=7voi-Ak=7w@mail.gmail.com>
- <87sggdj8c6.fsf@nanos.tec.linutronix.de> <87h7wsk9z7.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87h7wsk9z7.fsf@nanos.tec.linutronix.de>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 6 May 2020 17:25:52 -0700
-Message-ID: <CAADnVQL873t8h_RDUg7sJh4RS4a7eaV11Kq=PxdguOccb7VzmQ@mail.gmail.com>
-Subject: Re: pulling cap_perfmon
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>
+References: <20200420231427.63894-1-zenczykowski@gmail.com>
+ <20200506233259.112545-1-zenczykowski@gmail.com> <20200506165517.140d39ac@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200506165517.140d39ac@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
+Date:   Wed, 6 May 2020 17:47:12 -0700
+Message-ID: <CANP3RGc4aWPM09SoD3gk1R9f1UL4Ef57LHGiTKMBvYBLotwPGQ@mail.gmail.com>
+Subject: Re: [PATCH v2] net: bpf: permit redirect from L3 to L2 devices at
+ near max mtu
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Linux Network Development Mailing List 
+        <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 6, 2020 at 2:51 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+> I thought we have established that checking device MTU (m*T*u)
+> at ingress makes a very limited amount of sense, no?
 >
-> Alexei,
+> Shooting from the hip here, but won't something like:
 >
-> Thomas Gleixner <tglx@linutronix.de> writes:
-> > Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> >>
-> >> I'd like to pull
-> >> commit 980737282232 ("capabilities: Introduce CAP_PERFMON to kernel
-> >> and user space")
-> >> into bpf-next to base my CAP_BPF work on top of it.
-> >> could you please prepare a stable tag for me to pull ?
-> >> Last release cycle Thomas did a tag for bpf+rt prerequisite patches and
-> >> it all worked well during the merge window.
-> >> I think that one commit will suffice.
-> >
-> > I'll have a look.
+>     if (!skb->dev || skb->tc_at_ingress)
+>         return SKB_MAX_ALLOC;
+>     return skb->dev->mtu + skb->dev->hard_header_len;
 >
-> here you go.
->
->    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf-for-bpf-2020-05-06
+> Solve your problem?
 
-Awesome. Pulled.
-Thanks a lot!
+I believe that probably does indeed solve the ingress case of tc
+ingress hook on cellular redirecting to wifi.
+
+However, there's 2 possible uplinks - cellular (rawip, L3), and wifi
+(ethernet, L2).
+Thus, there's actually 4 things I'm trying to support:
+
+- ipv6 ingress on cellular uplink (L3/rawip), translate to ipv4,
+forward to wifi/ethernet <- need to add ethernet header
+
+- ipv6 ingress on wifi uplink (L2/ether), translate to ipv4, forward
+to wifi/ethernet <- trivial, no packet size change
+
+- ipv4 egressing through tun (L3), translate to ipv6, forward to
+cellular uplink <- trivial, no packet size change
+
+- ipv4 egressing through tun (L3), translate to ipv6, forward to wifi
+uplink <- need to add ethernet header [*]
+
+I think your approach doesn't solve the reverse path (* up above):
+
+ie. ipv4 packets hitting a tun device (owned by a clat daemon doing
+ipv4<->ipv6 translation in userspace), being stolen by a tc egress
+ebpf hook, mutated to ipv6 by ebpf and bpf_redirect'ed to egress
+through a wifi ipv6-only uplink.
+
+Though arguably in this case I could probably simply increase the tun
+device mtu by another 14, while keeping ipv4 route mtus low...
+(tun mtu already has to be 28 bytes lower then wifi mtu to allow
+replacement of ipv4 with ipv6 header (20 bytes extra), with possibly
+an ipv6 frag header (8 more bytes))
+
+Any further thoughts?
