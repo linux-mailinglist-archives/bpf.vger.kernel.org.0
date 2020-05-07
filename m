@@ -2,88 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067DA1C92BB
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 16:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 874F31C9559
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 17:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgEGO5F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 10:57:05 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:56431 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726445AbgEGO5F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 May 2020 10:57:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588863424;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rUH5aeb489Gm6b5nkGw17EeZl9qUx/s3MDaOOYrNNLQ=;
-        b=OrLTCt/FadMmAnRF9S9wV/v38wp/X3xpmdo6j5P9zCSimUd7wFTC+2z/0Fyj2U43tzfo8t
-        Y/LxIEAcVAnrBKu8S/eydAgq5AqcipqzHlHkkPcnpc79VL1a/U6Hi6Zl+4PKXSjk7xYwMU
-        atyjFOxgYyLEl0cY9Nww7YmrRt8n/yw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-342-g2cQqNYHPg-yUOekbLI2NA-1; Thu, 07 May 2020 10:57:01 -0400
-X-MC-Unique: g2cQqNYHPg-yUOekbLI2NA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727092AbgEGPqE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 11:46:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727086AbgEGPqE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 May 2020 11:46:04 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4430B801504;
-        Thu,  7 May 2020 14:57:00 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-112-223.ams2.redhat.com [10.36.112.223])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0995A62952;
-        Thu,  7 May 2020 14:56:58 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        by mail.kernel.org (Postfix) with ESMTPSA id A94A0207DD;
+        Thu,  7 May 2020 15:45:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588866364;
+        bh=MtT1K1QhdR93RnKXEINbJSy9JalbcJDWOmF/snclf4U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ImqSVH0/sYKWxb69Pox8SY+3RRS3M0o9prJxmrXYt8yg5zRTmmeBZywK3+SkqtrL6
+         E/vnxRTB860fUDJ2IjcmXxXHAZtW7XsQ6S5pE/G3KhhSWAPa9YAoxBy66VhyVAX51N
+         bX1AZ3994AOUMkgIZt+6mf9rmrCoRDcawwBU0ZGQ=
+Date:   Fri, 8 May 2020 00:45:56 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: [PATCH 2/2] libbpf: use .so dynamic symbols for abi check
-Date:   Thu,  7 May 2020 17:56:52 +0300
-Message-Id: <20200507145652.190823-3-yauheni.kaliuta@redhat.com>
-In-Reply-To: <20200507145652.190823-1-yauheni.kaliuta@redhat.com>
-References: <20200507145652.190823-1-yauheni.kaliuta@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Wang Nan <wangnan0@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCH 1/3] x86/kprobes: Support nested kprobes
+Message-Id: <20200508004556.d968ee87b91dc7940ac161f2@kernel.org>
+In-Reply-To: <158884559505.12656.1357851132314046716.stgit@devnote2>
+References: <158884558272.12656.7654266361809594662.stgit@devnote2>
+        <158884559505.12656.1357851132314046716.stgit@devnote2>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since dynamic symbols are used for dynamic linking it makes sense to
-use them (readelf --dyn-syms) for abi check.
+On Thu,  7 May 2020 18:59:55 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Found with some configuration on powerpc where linker puts
-local *.plt_call.* symbols into .so.
+> Make kprobes to accept 1-level nesting instead of
+> diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
+> index 681a4b36e9bb..b695c2e118f8 100644
+> --- a/arch/x86/kernel/kprobes/ftrace.c
+> +++ b/arch/x86/kernel/kprobes/ftrace.c
+> @@ -25,13 +25,15 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+>  		return;
+>  
+>  	kcb = get_kprobe_ctlblk();
+> -	if (kprobe_running()) {
+> +	if (!kprobe_can_nest()) {
 
-Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
----
- tools/lib/bpf/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Oops, something wrong. this kprobe_can_nest() requires kcb for
+the parameter. I'll fix this.
 
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index 908dac9eb562..0c7b06de5633 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -151,7 +151,7 @@ GLOBAL_SYM_COUNT = $(shell readelf -s --wide $(BPF_IN_SHARED) | \
- 			   sed 's/\[.*\]//' | \
- 			   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$8}' | \
- 			   sort -u | wc -l)
--VERSIONED_SYM_COUNT = $(shell readelf -s --wide $(OUTPUT)libbpf.so | \
-+VERSIONED_SYM_COUNT = $(shell readelf --dyn-syms --wide $(OUTPUT)libbpf.so | \
- 			      grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 | sort -u | wc -l)
- 
- CMD_TARGETS = $(LIB_TARGET) $(PC_FILE)
-@@ -218,7 +218,7 @@ check_abi: $(OUTPUT)libbpf.so
- 		    sed 's/\[.*\]//' |					 \
- 		    awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$8}'|   \
- 		    sort -u > $(OUTPUT)libbpf_global_syms.tmp;		 \
--		readelf -s --wide $(OUTPUT)libbpf.so |			 \
-+		readelf --dyn-syms --wide $(OUTPUT)libbpf.so |		 \
- 		    grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 |		 \
- 		    sort -u > $(OUTPUT)libbpf_versioned_syms.tmp; 	 \
- 		diff -u $(OUTPUT)libbpf_global_syms.tmp			 \
+Thank you,
+
 -- 
-2.26.2
-
+Masami Hiramatsu <mhiramat@kernel.org>
