@@ -2,93 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7FB1C9D40
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 23:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 247D41C9DBD
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 23:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726542AbgEGVZV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 17:25:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52190 "EHLO mail.kernel.org"
+        id S1726572AbgEGVrB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 17:47:01 -0400
+Received: from mga09.intel.com ([134.134.136.24]:30012 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726445AbgEGVZV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 May 2020 17:25:21 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A54AC20731;
-        Thu,  7 May 2020 21:25:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588886720;
-        bh=n/si8ookLwao2yXd8GnQxdxJx8JIPI7P0aotBojVjv4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zuaWoRGjOHl2KV+uAqgCJoFJzIQ1T29L3OkHMdSG0HD3rfobVCk6JCpPV6cuQCoKo
-         oPcNIo+PqZMpf2R2XPpb6yESi6kg5iPkeDryWDh7rftr6lMUolg4JJhUwzzU2pwZMd
-         j6BwcPRcSNFPr2baQAgFL9eqktdRumddmveriRwI=
-Date:   Thu, 7 May 2020 14:25:18 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>
-Subject: Re: Checksum behaviour of bpf_redirected packets
-Message-ID: <20200507142518.43c22a1b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <a4830bd4-d998-9e5c-afd5-c5ec5504f1f3@iogearbox.net>
-References: <CACAyw9-uU_52esMd1JjuA80fRPHJv5vsSg8GnfW3t_qDU4aVKQ@mail.gmail.com>
-        <CAADnVQKZ63d5A+Jv8bbXzo2RKNCXFH78zos0AjpbJ3ii9OHW0g@mail.gmail.com>
-        <CACAyw9_ygNV1J+PkBJ-i7ysU_Y=rN3Z5adKYExNXCic0gumaow@mail.gmail.com>
-        <39d3bee2-dcfc-8240-4c78-2110d639d386@iogearbox.net>
-        <CACAyw996Q9SdLz0tAn2jL9wg+m5h1FBsXHmUN0ZtP7D5ohY2pg@mail.gmail.com>
-        <a4830bd4-d998-9e5c-afd5-c5ec5504f1f3@iogearbox.net>
+        id S1726437AbgEGVrA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 May 2020 17:47:00 -0400
+IronPort-SDR: lZy1lW9BpjeakLNig3qvWwA18fGMQhtZVfMP07O7UGbbtjgYhWNCdb45cw1jmvINoSVmYsad0d
+ qoq8vHXJ1c0A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 14:46:54 -0700
+IronPort-SDR: XSzS7dTe6Wy7C+q//uzNDJRFqXYcvr54hWsflNNGVA2u2d/Yo2Vb3KSk0fM0DqTCqOyLDGNX46
+ U16slWjhO8sQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,365,1583222400"; 
+   d="scan'208";a="462004281"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
+  by fmsmga005.fm.intel.com with ESMTP; 07 May 2020 14:46:52 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id 5A34B301C1B; Thu,  7 May 2020 14:46:52 -0700 (PDT)
+Date:   Thu, 7 May 2020 14:46:52 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [RFC PATCH 0/7] Share events between metrics
+Message-ID: <20200507214652.GC3538@tassilo.jf.intel.com>
+References: <20200507081436.49071-1-irogers@google.com>
+ <20200507174835.GB3538@tassilo.jf.intel.com>
+ <CAP-5=fUdoGJs+yViq3BOcJa7YyF53AD9RGQm8aRW72nMH0sKDA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fUdoGJs+yViq3BOcJa7YyF53AD9RGQm8aRW72nMH0sKDA@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 7 May 2020 18:43:47 +0200 Daniel Borkmann wrote:
-> > Thanks for the patch, it indeed fixes our problem! I spent some more time
-> > trying to understand the checksum offload stuff, here is where I am:
-> > 
-> > On NICs that don't support hardware offload ip_summed is CHECKSUM_NONE,
-> > everything works by default since the rest of the stack does checksumming in
-> > software.
-> > 
-> > On NICs that support CHECKSUM_COMPLETE, skb_postpull_rcsum
-> > will adjust for the data that is being removed from the skb. The rest of the
-> > stack will use the correct value, all is well.
-> > 
-> > However, we're out of luck on NICs that do CHECKSUM_UNNECESSARY:
-> > the API of skb_adjust_room doesn't tell us whether the user intends to
-> > remove headers or data, and how that will influence csum_level.
-> >  From my POV, skb_adjust_room currently does the wrong thing.
-> > I think we need to fix skb_adjust_room to do the right thing by default,
-> > rather than extending the API. We spent a lot of time on tracking this down,
-> > so hopefully we can spare others the pain.
-> > 
-> > As Jakub alludes to, we don't know when and how often to call
-> > __skb_decr_checksum_unnecessary so we should just
-> > unconditionally downgrade a packet to CHECKSUM_NONE if we encounter
-> > CHECKSUM_UNNECESSARY in bpf_skb_generic_pop. It sounds simple
-> > enough to land as a fix via the bpf tree (which is important for our
-> > production kernel). As a follow up we could add the inverse of the flags you
-> > propose via bpf-next.
-> > 
-> > What do you think?  
+> > - without this change events within a metric may get scheduled
+> >   together, after they may appear as part of a larger group and be
+> >   multiplexed at different times, lowering accuracy - however, less
+> >   multiplexing may compensate for this.
 > 
-> My concern with unconditionally downgrading a packet to CHECKSUM_NONE would
-> basically trash performance if we have to fallback to sw in fast-path, these
-> helpers are also used in our LB case for DSR, for example. I agree that it
-> sucks to expose these implementation details though. So eventually we'd end
-> up with 3 csum flags: inc/dec/reset to none. bpf_skb_adjust_room() is already
-> a complex to use helper with all its flags where you end up looking into the
-> implementation detail to understand what it is really doing. I'm not sure if
-> we make anything worse, but I do see your concern. :/ (We do have bpf_csum_update()
-> helper as well. I wonder whether we should split such control into a different
-> helper.)
+> I agree the heuristic in this patch set is naive and would welcome to
+> improve it from your toplev experience. I think this change is
+> progress on TopDownL1 - would you agree?
 
-Probably stating the obvious but for decap of UDP tunnels which carry
-locally terminated flows - we'd probably also want the upgrade from
-UNNECESSARY to COMPLETE, like we do in the kernel
-(skb_checksum_try_convert()). Tricky.
+TopdownL1 in non SMT mode should always fit. Inside a group
+deduping always makes sense. 
+
+The problem is SMT mode where it doesn't fit. toplev tries
+to group each node and each level together.
+
+> 
+> I'm wondering if what is needed are flags to control behavior. For
+> example, avoiding the use of groups altogether. For TopDownL1 I see.
+
+Yes the current situation isn't great.
+
+For Topdown your patch clearly is an improvement, I'm not sure
+it's for everything though.
+
+Probably the advanced heuristics are only useful for a few
+formulas, most are very simple. So maybe it's ok. I guess
+would need some testing over the existing formulas.
+
+
+-Andi
