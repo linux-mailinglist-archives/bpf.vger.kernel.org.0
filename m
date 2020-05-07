@@ -2,105 +2,194 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C03441C8163
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 07:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7C81C817D
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 07:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725809AbgEGFMR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 01:12:17 -0400
-Received: from verein.lst.de ([213.95.11.211]:44501 "EHLO verein.lst.de"
+        id S1725947AbgEGFUY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 01:20:24 -0400
+Received: from mga14.intel.com ([192.55.52.115]:42017 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725783AbgEGFMR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 May 2020 01:12:17 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 990EF68B05; Thu,  7 May 2020 07:12:13 +0200 (CEST)
-Date:   Thu, 7 May 2020 07:12:13 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-parisc@vger.kernel.org,
-        linux-um <linux-um@lists.infradead.org>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 15/15] x86: use non-set_fs based maccess routines
-Message-ID: <20200507051213.GB4501@lst.de>
-References: <20200506062223.30032-1-hch@lst.de> <20200506062223.30032-16-hch@lst.de> <CAHk-=wi6E5z_aKr9NX+QcEJqJvSyrDbO3ypPugxstcPV5EPSMQ@mail.gmail.com> <20200506181543.GA7873@lst.de> <CAHk-=wghKpGdTmD4EDfwX2uyppwxksU+nFyS1B--kbopcQAgwg@mail.gmail.com>
+        id S1725879AbgEGFUY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 May 2020 01:20:24 -0400
+IronPort-SDR: gyv1YDhOGHMn8I1r4LqSupOq9Iq+E/x37/PN1HuqXvgJuJs9BZouK+yrvvXA+H4C6cWsm5WdQ7
+ EAfZj+sKrX4A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2020 22:20:23 -0700
+IronPort-SDR: gdDFospjotObt+Bfvr4m9JoONfqPIonuioR93iuCDRUhDNgw0leD5kDFY4Gct5mT/6xZ6dyvHC
+ bLVRg82E0rSQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,362,1583222400"; 
+   d="scan'208";a="249994158"
+Received: from yyin5-mobl1.ccr.corp.intel.com (HELO [10.255.30.83]) ([10.255.30.83])
+  by fmsmga007.fm.intel.com with ESMTP; 06 May 2020 22:20:22 -0700
+To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+From:   Ma Xinjian <max.xinjian@intel.com>
+Subject: bprm_count and stack_mprotect error when testing BPF LSM on v5.7-rc3
+Message-ID: <3ab505db-9e04-366b-d602-6b2935739f54@intel.com>
+Date:   Thu, 7 May 2020 13:19:50 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wghKpGdTmD4EDfwX2uyppwxksU+nFyS1B--kbopcQAgwg@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 06, 2020 at 12:01:32PM -0700, Linus Torvalds wrote:
-> Oh, absolutely. I did *NOT* mean that you'd use "unsafe_get_user()" as
-> the actual interface. I just meant that as an implementation detail on
-> x86, using "unsafe_get_user()" instead of "__get_user_size()"
-> internally both simplifies the implementation, and means that it
-> doesn't clash horribly with my local changes.
+Hi,
 
-I had a version that just wrapped them, but somehow wasn't able to
-make it work due to all the side effects vs macros issues.  Maybe I
-need to try again, the current version seemed like a nice way out
-as it avoided a lot of the silly casting.
+When I test bpf lsm with (/test_progs -vv  -t test_lsm ), failed with 
+below issue:
+
+root@lkp-skl-d01 
+/usr/src/perf_selftests-x86_64-rhel-7.6-kselftests-bpf-lsm-2-6a8b55ed4056ea5559ebe4f6a4b247f627870d4c/tools/testing/selftests/bpf# 
+./test_progs -vv  -t test_lsm
+
+libbpf: loading object 'lsm' from buffer
+libbpf: section(1) .strtab, size 306, link 0, flags 0, type=3
+libbpf: skip section(1) .strtab
+libbpf: section(2) .text, size 0, link 0, flags 6, type=1
+libbpf: skip section(2) .text
+libbpf: section(3) lsm/file_mprotect, size 192, link 0, flags 6, type=1
+libbpf: found program lsm/file_mprotect
+libbpf: section(4) .rellsm/file_mprotect, size 32, link 25, flags 0, type=9
+libbpf: section(5) lsm/bprm_committed_creds, size 104, link 0, flags 6, 
+type=1
+libbpf: found program lsm/bprm_committed_creds
+libbpf: section(6) .rellsm/bprm_committed_creds, size 32, link 25, flags 
+0, type=9
+libbpf: section(7) license, size 4, link 0, flags 3, type=1
+libbpf: license of lsm is GPL
+libbpf: section(8) .bss, size 12, link 0, flags 3, type=8
+libbpf: section(9) .debug_loc, size 383, link 0, flags 0, type=1
+libbpf: skip section(9) .debug_loc
+libbpf: section(10) .rel.debug_loc, size 112, link 25, flags 0, type=9
+libbpf: skip relo .rel.debug_loc(10) for section(9)
+libbpf: section(11) .debug_abbrev, size 901, link 0, flags 0, type=1
+libbpf: skip section(11) .debug_abbrev
+libbpf: section(12) .debug_info, size 237441, link 0, flags 0, type=1
+libbpf: skip section(12) .debug_info
+libbpf: section(13) .rel.debug_info, size 112, link 25, flags 0, type=9
+libbpf: skip relo .rel.debug_info(13) for section(12)
+libbpf: section(14) .debug_ranges, size 96, link 0, flags 0, type=1
+libbpf: skip section(14) .debug_ranges
+libbpf: section(15) .rel.debug_ranges, size 128, link 25, flags 0, type=9
+libbpf: skip relo .rel.debug_ranges(15) for section(14)
+libbpf: section(16) .debug_str, size 142395, link 0, flags 30, type=1
+libbpf: skip section(16) .debug_str
+libbpf: section(17) .BTF, size 5634, link 0, flags 0, type=1
+libbpf: section(18) .rel.BTF, size 64, link 25, flags 0, type=9
+libbpf: skip relo .rel.BTF(18) for section(17)
+libbpf: section(19) .BTF.ext, size 484, link 0, flags 0, type=1
+libbpf: section(20) .rel.BTF.ext, size 416, link 25, flags 0, type=9
+libbpf: skip relo .rel.BTF.ext(20) for section(19)
+libbpf: section(21) .debug_frame, size 64, link 0, flags 0, type=1
+libbpf: skip section(21) .debug_frame
+libbpf: section(22) .rel.debug_frame, size 32, link 25, flags 0, type=9
+libbpf: skip relo .rel.debug_frame(22) for section(21)
+libbpf: section(23) .debug_line, size 227, link 0, flags 0, type=1
+libbpf: skip section(23) .debug_line
+libbpf: section(24) .rel.debug_line, size 32, link 25, flags 0, type=9
+libbpf: skip relo .rel.debug_line(24) for section(23)
+libbpf: section(25) .symtab, size 288, link 1, flags 0, type=2
+libbpf: looking for externs among 12 symbols...
+libbpf: collected 0 externs total
+libbpf: map 'lsm.bss' (global data): at sec_idx 8, offset 0, flags 400.
+libbpf: map 0 is "lsm.bss"
+libbpf: collecting relocating info for: 'lsm/file_mprotect'
+libbpf: relo for shdr 8, symb 8, value 0, type 1, bind 1, name 232 
+('monitored_pid'), insn 12
+libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 12
+libbpf: relo for shdr 8, symb 9, value 4, type 1, bind 1, name 34 
+('mprotect_count'), insn 17
+libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 17
+libbpf: collecting relocating info for: 'lsm/bprm_committed_creds'
+libbpf: relo for shdr 8, symb 8, value 0, type 1, bind 1, name 232 
+('monitored_pid'), insn 1
+libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 1
+libbpf: relo for shdr 8, symb 7, value 8, type 1, bind 1, name 49 
+('bprm_count'), insn 6
+libbpf: found data map 0 (lsm.bss, sec 8, off 0) for insn 6
+libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
+libbpf: created map lsm.bss: fd=4
+libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
+libbpf: prog 'lsm/file_mprotect': performing 4 CO-RE offset relocs
+libbpf: prog 'lsm/file_mprotect': relo #0: kind 0, spec is [6] 
+vm_area_struct + 0:6 => 64.0 @ &x[0].vm_mm
+libbpf: [6] vm_area_struct: found candidate [329] vm_area_struct
+libbpf: prog 'lsm/file_mprotect': relo #0: matching candidate #0 
+vm_area_struct against spec [329] vm_area_struct + 0:6 => 64.0 @ 
+&x[0].vm_mm: 1
+libbpf: prog 'lsm/file_mprotect': relo #0: patched insn #5 (LDX/ST/STX) 
+off 64 -> 64
+libbpf: prog 'lsm/file_mprotect': relo #1: kind 0, spec is [32] 
+mm_struct + 0:0:35 => 304.0 @ &x[0].start_stack
+libbpf: [32] mm_struct: found candidate [308] mm_struct
+libbpf: prog 'lsm/file_mprotect': relo #1: matching candidate #0 
+mm_struct against spec [308] mm_struct + 0:0:35 => 304.0 @ 
+&x[0].start_stack: 1
+libbpf: prog 'lsm/file_mprotect': relo #1: patched insn #7 (LDX/ST/STX) 
+off 304 -> 304
+libbpf: prog 'lsm/file_mprotect': relo #2: kind 0, spec is [6] 
+vm_area_struct + 0:0 => 0.0 @ &x[0].vm_start
+libbpf: prog 'lsm/file_mprotect': relo #2: matching candidate #0 
+vm_area_struct against spec [329] vm_area_struct + 0:0 => 0.0 @ 
+&x[0].vm_start: 1
+libbpf: prog 'lsm/file_mprotect': relo #2: patched insn #8 (LDX/ST/STX) 
+off 0 -> 0
+libbpf: prog 'lsm/file_mprotect': relo #3: kind 0, spec is [6] 
+vm_area_struct + 0:1 => 8.0 @ &x[0].vm_end
+libbpf: prog 'lsm/file_mprotect': relo #3: matching candidate #0 
+vm_area_struct against spec [329] vm_area_struct + 0:1 => 8.0 @ 
+&x[0].vm_end: 1
+libbpf: prog 'lsm/file_mprotect': relo #3: patched insn #10 (LDX/ST/STX) 
+off 8 -> 8
+test_test_lsm:PASS:skel_load 0 nsec
+test_test_lsm:PASS:attach 0 nsec
+test_test_lsm:PASS:exec_cmd 0 nsec
+test_test_lsm:FAIL:bprm_count bprm_count = 0
+test_test_lsm:FAIL:stack_mprotect want err=EPERM, got 0
+#70 test_lsm:FAIL
+Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
 
 
-> Btw, that brings up another issue: so that people can't mis-use those
-> kernel accessors and use them for user addresses, they probably should
-> actually do something like
-> 
->         if ((long)addr >= 0)
->                 goto error_label;
-> 
-> on x86. IOW, have the "strict" kernel pointer behavior.
-> 
-> Otherwise somebody will start using them for user pointers, and it
-> will happen to work on old x86 without CLAC/STAC support.
-> 
-> Of course, maybe CLAC/STAC is so common these days (at least with
-> developers) that we don't have to worry about it.
+kconfig:
 
-The actual public routines (probe_kernel_read and co) get these
-checks through probe_kernel_read_allowed, which is implemented by
-the x86 code.  Doing this for every 1-8 byte access might be a little
-slow, though.  Do you really fear drivers starting to use the low-level
-helper?  Maybe we need to move those into a different header than
-<asm/uaccess.h> that makes it more clear that they are internal?
+CONFIG_BPF_LSM=y
 
-> But here you see what it is, if you want to. __get_user_size()
-> technically still exists, but it has the "target branch" semantics in
-> here, so your patch clashes badly with it.
+CONFIG_LSM="lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor"
 
-The target branch semantics actually are what I want, that is how the
-maccess code is structured.  This is the diff I'd need for the calling
-conventions in your bundle:
+besides:
+
+when I add bpf to CONFIG_LSM, then boot failed.
+
+boot error:
+
+```
+
+Cannot determine cgroup we are running in: No data available
+Failed to allocate manager object: No data available
+[!!!!!!] Failed to allocate manager object, freezing.
+Freezing execution.
+
+```
+
+seems bpf in CONFIG_LSM and CONFIG_BPF_LSM conflict.
 
 
-diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
-index 765e18417b3ba..d1c8aacedade1 100644
---- a/arch/x86/include/asm/uaccess.h
-+++ b/arch/x86/include/asm/uaccess.h
-@@ -526,14 +526,8 @@ do {									\
- #define HAVE_ARCH_PROBE_KERNEL
- 
- #define arch_kernel_read(dst, src, type, err_label)			\
--do {									\
--        int __kr_err;							\
--									\
- 	__get_user_size(*((type *)dst), (__force type __user *)src,	\
--			sizeof(type), __kr_err);			\
--        if (unlikely(__kr_err))						\
--		goto err_label;						\
--} while (0)
-+			sizeof(type), err_label);			\
- 
- #define arch_kernel_write(dst, src, type, err_label)			\
- 	__put_user_size(*((type *)(src)), (__force type __user *)(dst),	\
+clang version: v11.0.0
+
+commit: 54b35c066417d4856e9d53313f7e98b354274584
+
+# pahole --version
+v1.17
+
+
+-- 
+Best Regards.
+Ma Xinjian
+
