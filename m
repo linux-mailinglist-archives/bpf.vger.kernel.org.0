@@ -2,125 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCAFD1C7E38
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 01:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DD21C7E4D
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 02:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728471AbgEFXzU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 May 2020 19:55:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39706 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728455AbgEFXzT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 May 2020 19:55:19 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C84242075E;
-        Wed,  6 May 2020 23:55:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588809319;
-        bh=kFA7tmZ9KvvmujeChrMjCoGvU8oILrHLrA/ujaVd4iI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=obNQGgVZdPm76J3vIkg65yFgvEy3uHLVICyXPf82B2WV7jS04f38j1zjbzywnyNLg
-         fBfK/R08T2cL/osANB+SygXmcukKEqdwLgK19iVpReVKWyKF4Z3QUCEUpdMqzY3VUj
-         CeBbgcBU++6YiZKic86CARYgv95TssMYjz8+KuVE=
-Date:   Wed, 6 May 2020 16:55:17 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Maciej =?UTF-8?B?xbtlbmN6eWtvd3NraQ==?= <zenczykowski@gmail.com>
-Cc:     Maciej =?UTF-8?B?xbtlbmN6eWtvd3NraQ==?= <maze@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1726774AbgEGAEC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 May 2020 20:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726712AbgEGAEC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 May 2020 20:04:02 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2E7C061A0F;
+        Wed,  6 May 2020 17:04:01 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id q24so1801341pjd.1;
+        Wed, 06 May 2020 17:04:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=okdKAUysX4Iogtq2tGm2REvSuUq1m7NdPWmOdWCDAs0=;
+        b=Xuv/JAvCTDu6Iy65aZsYW5VreQZWmcn99qdKaBhMNAiewObGh4BBNt8nnk4aCrdXNT
+         AGTf+rnpUCYBia+cqAEV0d+2cbUOoe5/WuyxVbVMrx5f8LVTtqTKq2yccct0ln+Hs+CP
+         dw5qDnHLCi8V1LWC8YTu9pL/Yu5r6vCiEqmBkNuP/2/uB3lzZ4owM5fFAvlR+0DY/nmk
+         xvFZcbDR2Q9fYQ/Nmo/4IwDvi1z/FFSkq3/Wwa8hBjdUbPrm2/pWClMq0fnUaux04PZh
+         nROm2uAxK+NxFyQg3UIcZ1kaJHVnaHM2tC3iRzn9YYbwvsxi3RfNKPBarZUmizw1ZgwP
+         j/bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=okdKAUysX4Iogtq2tGm2REvSuUq1m7NdPWmOdWCDAs0=;
+        b=pVpe8kk7o1ar7DyQe9pDnhKap2PciHt0bXtgAIBTg5Bih+kmOVftpYN04Vzr+wDTUJ
+         W5v5CJdr/sn5AeJiaFFEXRw2456EleIpTcwK4tWphUj4LQ/pqXke0mAeix8IUvneo69j
+         tYl/HJht6i3ir374S3jV/IIUeLr3N1oIUT0ZCIK2Q7uwnsVl2dV7NjBnutw5K16UBgFc
+         THoDCwJQKJpYHgoPqbrPaHhFDhx71ablj6ZEzebePm+WuVQkB4EUHuez9WX6g4VChiZM
+         MYNk5N21lw9UeRJM6PIWNwehR8ZuV+IKfjXjb+CP2J8ahb4S1ThFgkgF36JQjdjoXC/r
+         FKxg==
+X-Gm-Message-State: AGi0PuZY+MhuzN+Pi7LzD3DsHaMoIUpIt7Jg1G4fQVvUYWpaoAWjlzU0
+        EzRCGxIyQnGJdRy9+iEAUqBigskS
+X-Google-Smtp-Source: APiQypKYnifcuPrcGrAR6TRht9Xh/IqAubgwjUtpDTsslMwwnK2ZmtxkSNurHi4nLSRXKwXbjn0F7g==
+X-Received: by 2002:a17:90a:d3ce:: with SMTP id d14mr12678369pjw.46.1588809840491;
+        Wed, 06 May 2020 17:04:00 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:2663])
+        by smtp.gmail.com with ESMTPSA id 131sm2486768pgg.65.2020.05.06.17.03.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2020 17:03:59 -0700 (PDT)
+Date:   Wed, 6 May 2020 17:03:57 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Linux Network Development Mailing List 
-        <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v2] net: bpf: permit redirect from L3 to L2 devices at
- near max mtu
-Message-ID: <20200506165517.140d39ac@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200506233259.112545-1-zenczykowski@gmail.com>
-References: <20200420231427.63894-1-zenczykowski@gmail.com>
-        <20200506233259.112545-1-zenczykowski@gmail.com>
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] bpf: Tweak BPF jump table optimizations for objtool
+ compatibility
+Message-ID: <20200507000357.grprluieqa324v5c@ast-mbp.dhcp.thefacebook.com>
+References: <20200502030622.yrszsm54r6s6k6gq@ast-mbp.dhcp.thefacebook.com>
+ <20200502192105.xp2osi5z354rh4sm@treble>
+ <20200505174300.gech3wr5v6kkho35@ast-mbp.dhcp.thefacebook.com>
+ <20200505181108.hwcqanvw3qf5qyxk@treble>
+ <20200505195320.lyphpnprn3sjijf6@ast-mbp.dhcp.thefacebook.com>
+ <20200505202823.zkmq6t55fxspqazk@treble>
+ <20200505235939.utnmzqsn22cec643@ast-mbp.dhcp.thefacebook.com>
+ <20200506155343.7x3slq3uasponb6w@treble>
+ <CAADnVQJZ1rj1DB-Y=85itvfcHxnXVKjhJXpzqs6zZ6ZLpexhCQ@mail.gmail.com>
+ <20200506211945.4qhrxqplzmt4ul66@treble>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200506211945.4qhrxqplzmt4ul66@treble>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed,  6 May 2020 16:32:59 -0700 Maciej =C5=BBenczykowski wrote:
-> From: Maciej =C5=BBenczykowski <maze@google.com>
->=20
-> __bpf_skb_max_len(skb) is used from:
->   bpf_skb_adjust_room
->   __bpf_skb_change_tail
->   __bpf_skb_change_head
->=20
-> but in the case of forwarding we're likely calling these functions
-> during receive processing on ingress and bpf_redirect()'ing at
-> a later point in time to egress on another interface, thus these
-> mtu checks are for the wrong device (input instead of output).
->=20
-> This is particularly problematic if we're receiving on an L3 1500 mtu
-> cellular interface, trying to add an L2 header and forwarding to
-> an L3 mtu 1500 mtu wifi/ethernet device (which is thus L2 1514).
->=20
-> The mtu check prevents us from adding the 14 byte ethernet header prior
-> to forwarding the packet.
->=20
-> After the packet has already been redirected, we'd need to add
-> an additional 2nd ebpf program on the target device's egress tc hook,
-> but then we'd also see non-redirected traffic and have no easy
-> way to tell apart normal egress with ethernet header packets
-> from forwarded ethernet headerless packets.
->=20
-> Credits to Alexei Starovoitov for the suggestion on how to 'fix' this.
->=20
-> This probably should be further fixed up *somehow*, just
-> not at all clear how.  This does at least make things work.
->=20
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Maciej =C5=BBenczykowski <maze@google.com>
-> ---
->  net/core/filter.c | 16 ++++++++++++++--
->  1 file changed, 14 insertions(+), 2 deletions(-)
->=20
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 7d6ceaa54d21..811aba77e24b 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -3159,8 +3159,20 @@ static int bpf_skb_net_shrink(struct sk_buff *skb,=
- u32 off, u32 len_diff,
-> =20
->  static u32 __bpf_skb_max_len(const struct sk_buff *skb)
->  {
-> -	return skb->dev ? skb->dev->mtu + skb->dev->hard_header_len :
-> -			  SKB_MAX_ALLOC;
-> +	if (skb->dev) {
-> +		unsigned short header_len =3D skb->dev->hard_header_len;
-> +
-> +		/* HACK: Treat 0 as ETH_HLEN to allow redirect while
-> +		 * adding ethernet header from an L3 (tun, rawip, cellular)
-> +		 * to an L2 device (tap, ethernet, wifi)
-> +		 */
-> +		if (!header_len)
-> +			header_len =3D ETH_HLEN;
-> +
-> +		return skb->dev->mtu + header_len;
-> +	} else {
-> +		return SKB_MAX_ALLOC;
-> +	}
->  }
-> =20
->  BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
+On Wed, May 06, 2020 at 04:19:45PM -0500, Josh Poimboeuf wrote:
+> On Wed, May 06, 2020 at 09:45:01AM -0700, Alexei Starovoitov wrote:
+> > On Wed, May 6, 2020 at 8:53 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> > >
+> > > On Tue, May 05, 2020 at 04:59:39PM -0700, Alexei Starovoitov wrote:
+> > > > As far as workaround I prefer the following:
+> > > > From 94bbc27c5a70d78846a5cb675df4cf8732883564 Mon Sep 17 00:00:00 2001
+> > > > From: Alexei Starovoitov <ast@kernel.org>
+> > > > Date: Tue, 5 May 2020 16:52:41 -0700
+> > > > Subject: [PATCH] bpf,objtool: tweak interpreter compilation flags to help objtool
+> > > >
+> > > > tbd
+> > > >
+> > > > Fixes: 3193c0836f20 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
+> > > > Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> > > > Reported-by: Arnd Bergmann <arnd@arndb.de>
+> > > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > > > ---
+> > > >  include/linux/compiler-gcc.h | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+> > > > index d7ee4c6bad48..05104c3cc033 100644
+> > > > --- a/include/linux/compiler-gcc.h
+> > > > +++ b/include/linux/compiler-gcc.h
+> > > > @@ -171,4 +171,4 @@
+> > > >  #define __diag_GCC_8(s)
+> > > >  #endif
+> > > >
+> > > > -#define __no_fgcse __attribute__((optimize("-fno-gcse")))
+> > > > +#define __no_fgcse __attribute__((optimize("-fno-gcse,-fno-omit-frame-pointer")))
+> > > > --
+> > > > 2.23.0
+> > > >
+> > > > I've tested it with gcc 8,9,10 and clang 11 with FP=y and with ORC=y.
+> > > > All works.
+> > > > I think it's safer to go with frame pointers even for ORC=y considering
+> > > > all the pain this issue had caused. Even if objtool gets confused again
+> > > > in the future __bpf_prog_run() will have frame pointers and kernel stack
+> > > > unwinding can fall back from ORC to FP for that frame.
+> > > > wdyt?
+> > >
+> > > It seems dangerous to me.  The GCC manual recommends against it.
+> > 
+> > The manual can says that it's broken. That won't stop the world from using it.
+> > Just google projects that are using it. For example: qt, lz4, unreal engine, etc
+> > Telling compiler to disable gcse via flag is a guaranteed way to avoid
+> > that optimization that breaks objtool whereas messing with C code is nothing
+> > but guess work. gcc can still do gcse.
+> 
+> But the manual's right, it is broken.  How do you know other important
+> flags won't also be stripped?
 
-I thought we have established that checking device MTU (m*T*u)=20
-at ingress makes a very limited amount of sense, no?
-
-Shooting from the hip here, but won't something like:
-
-    if (!skb->dev || skb->tc_at_ingress)
-        return SKB_MAX_ALLOC;
-    return skb->dev->mtu + skb->dev->hard_header_len;
-
-Solve your problem?
+What flags are you worried about?
+I've checked that important things like -mno-red-zone, -fsanitize are preserved.
