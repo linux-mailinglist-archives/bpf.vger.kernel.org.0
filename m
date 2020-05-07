@@ -2,239 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1EF01C9914
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 20:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD851C9922
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 20:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728043AbgEGSPb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 14:15:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56382 "EHLO
+        id S1727799AbgEGSTN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 14:19:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726467AbgEGSPb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 7 May 2020 14:15:31 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00E50C05BD43
-        for <bpf@vger.kernel.org>; Thu,  7 May 2020 11:15:29 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id f5so3412471ybo.4
-        for <bpf@vger.kernel.org>; Thu, 07 May 2020 11:15:29 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726467AbgEGSTN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 7 May 2020 14:19:13 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092A4C05BD43
+        for <bpf@vger.kernel.org>; Thu,  7 May 2020 11:19:13 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id d7so3136751ioq.5
+        for <bpf@vger.kernel.org>; Thu, 07 May 2020 11:19:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oaIQdAQSrUuG0PjDzccQj5s6sYJ/9gT4+ty0xekahqc=;
-        b=po+Wm3ERBFyL1E8b2GPs9tSfxPdKUxCgVV+2I37m1TITrtgdbLrBkClkQ2HyukHN3i
-         7bJSRnJTM7+VgdxygTNFqXHsGtuFhT670WMa2EhTrykmO7GPwCmu2dg1Ala6adbLTe87
-         owohOm5FBq580N9autF9wi/HYw8Yo9eakygpwM8+YbuB4dfYAF0Wg1Ds/ITXbC2G1scu
-         ZjdjmWc32QeTZmMIJHzRSEgBC/OErcF7lSYnAcApwNfQaotUbWROzGfJbZHLr1CMJ4tb
-         YchOEzEkvQnaslnaBrqWg0iNh304HBILZkgJfk6hnT0d0AfsZpifwjxQEV0N+Nfgup3a
-         36ng==
+        d=gmail.com; s=20161025;
+        h=date:from:to:message-id:in-reply-to:references:subject:mime-version
+         :content-transfer-encoding;
+        bh=VE8sz15oL8XUBxSyvp392s296iIS/Xfc6ces5gl0IQI=;
+        b=YI1adO/Yy7zK4bujSnCVu1BXqD8tFvc/TXxY4aTWej1A8kZ2/6TyuBSBs0zhdWBOWL
+         PGWqrJ5xbKBsBDYpAwgLxUlcihU/hbZ3aKTjkLcMyvQLvL17KADGUz7qDaYLSESLSLP/
+         bGA6Yd1gJ819Or03rGjq6vsHkLT4u3ap1mnuPrUku5BTZB7/KKhxRo/+JTfmfNagQIcj
+         5I/dgf4Q902ScvQ2GWJymmJtu8mpBvdjI+JILW/0X7wuE1XUqPNV23dWxt19Mf4rMSfk
+         PVxP0Esbr7AZBu0vwmjO3S5cVyBpaxqWP73z6lcX8AAyKQMS1UpD5/n0rOC6hUXhg+Zu
+         wgZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oaIQdAQSrUuG0PjDzccQj5s6sYJ/9gT4+ty0xekahqc=;
-        b=uBUk2ppUNSoz/P+G8yBBpsPWII9dzaL4afSb7sAZBLK9rucl1oH2aRXkdd1Mcp+Ay5
-         pZhj+lbbhnKGNDg4LSnMDb/SECi831eKRz4GNV1/nBwFEX3HoQ3LW7dC+WXseWhe04iD
-         OndGEa0P7o0ZXvCqVEd/SvQzlz7++aSG7ysWa9rHiJdVCnb6Mej0TRASw88aaGUatfea
-         J7yAC+kURi+VGwJEFV4SlzINcxNcHr+/o94WDgGIy3Cqbf9yBlRk6zGaLiQ7f52u/RKN
-         jFI9Tnf1Cs0EVakRzW88FqYZUB3XL+ua3qoWu4VOBjfPNk9uGNWBFQUjCmP8ovb5YVMC
-         R85Q==
-X-Gm-Message-State: AGi0PuZNGdhwvPnV2NK0QwnNwTxeluG0Hy9E9059vqsSvulsaL2CRnRk
-        fmQuHxT0D0uf2TBS0JKEMLFJlhf8plR8nnWL+kX29A==
-X-Google-Smtp-Source: APiQypIlVNflOSSqEkrgqNlBDssSyZHCmarHs+oFWjMPoMv0IZA0TufNW/3XK7F7I1sweL/KIyA2+L0kORuP6a431wU=
-X-Received: by 2002:a25:4446:: with SMTP id r67mr3385058yba.41.1588875328749;
- Thu, 07 May 2020 11:15:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200507081436.49071-1-irogers@google.com> <20200507174835.GB3538@tassilo.jf.intel.com>
-In-Reply-To: <20200507174835.GB3538@tassilo.jf.intel.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 7 May 2020 11:15:17 -0700
-Message-ID: <CAP-5=fUdoGJs+yViq3BOcJa7YyF53AD9RGQm8aRW72nMH0sKDA@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/7] Share events between metrics
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:message-id:in-reply-to:references
+         :subject:mime-version:content-transfer-encoding;
+        bh=VE8sz15oL8XUBxSyvp392s296iIS/Xfc6ces5gl0IQI=;
+        b=qSngRJEo8NC90pN53G6NmoaP+iEGHoXfTqf0Ja9GrZntU/alR71L0SZEohXNqOyV8x
+         NO/NWL7PXNiLWVv5Ng2iqd7UKSkOfqODCw2q35QgnMF/gZBX/la4da+y6E82sBmlzmzH
+         3TXfKZftfxho/xDc1NBIcdCHm5ZQGlsaOTJSh94DF5j+u2NNzJtbPbhJ4P9waaj79i/u
+         s+lVmDQwsnN1x2bRzGm+XQmTOiPYIlXP6pkvh/9mDu+BVoCBKaudtlm56zUOBuyLtWog
+         cxjoitrJWGg1Dengnmew2YXcxRRYsTbn2tuI6oWxJyj/UvhU8Nk8qcWoWi0MI0VFX4jy
+         GdUA==
+X-Gm-Message-State: AGi0PuY/XMlAEOwDwvz9sqlBCTvcrRusk5RmPji5/63AFJz+2l19y/rM
+        NFisVzfVFJzVjxjA3gUlEqA=
+X-Google-Smtp-Source: APiQypJi6tpqePHeUNgaXgXbKWSM8mm/Ofja9gqxDFSH9ZvjaLHcqHZrRCQDBXFMAEXjZ6fXLs3TQQ==
+X-Received: by 2002:a02:a68e:: with SMTP id j14mr15273148jam.86.1588875552117;
+        Thu, 07 May 2020 11:19:12 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id w16sm3042971ilc.43.2020.05.07.11.19.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2020 11:19:11 -0700 (PDT)
+Date:   Thu, 07 May 2020 11:19:03 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrey Ignatov <rdna@fb.com>, Andrii Nakryiko <andriin@fb.com>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Kernel Team <Kernel-team@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Message-ID: <5eb45117eead3_22a22b23544285b892@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAADnVQJAaiOFDc8-35Jm_+dA-6=z+GAYv=z30oB+vEG=2UmOCg@mail.gmail.com>
+References: <CAADnVQJAaiOFDc8-35Jm_+dA-6=z+GAYv=z30oB+vEG=2UmOCg@mail.gmail.com>
+Subject: RE: sk lookup verifier issue
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 7, 2020 at 10:48 AM Andi Kleen <ak@linux.intel.com> wrote:
->
-> On Thu, May 07, 2020 at 01:14:29AM -0700, Ian Rogers wrote:
-> > Metric groups contain metrics. Metrics create groups of events to
-> > ideally be scheduled together. Often metrics refer to the same events,
-> > for example, a cache hit and cache miss rate. Using separate event
-> > groups means these metrics are multiplexed at different times and the
-> > counts don't sum to 100%. More multiplexing also decreases the
-> > accuracy of the measurement.
-> >
-> > This change orders metrics from groups or the command line, so that
-> > the ones with the most events are set up first. Later metrics see if
-> > groups already provide their events, and reuse them if
-> > possible. Unnecessary events and groups are eliminated.
->
-> Note this actually may make multiplexing errors worse.
->
-> For metrics it is often important that all the input values to
-> the metric run at the same time.
->
-> So e.g. if you have two metrics and they each fit into a group,
-> but not together, even though you have more multiplexing it
-> will give more accurate results for each metric.
->
-> I think you change can make sense for metrics that don't fit
-> into single groups anyways. perf currently doesn't quite know
-> this but some heuristic could be added.
->
-> But I wouldn't do it for simple metrics that fit into groups.
-> The result may well be worse.
->
-> My toplev tool has some heuristics for this, also some more
-> sophisticated ones that tracks subexpressions. That would
-> be far too complicated for perf likely.
->
-> -Andi
+Alexei Starovoitov wrote:
+> Hi All,
+> 
+> Andrey found that the following diff messes up the verifier logic:
+> diff --git a/tools/testing/selftests/bpf/progs/test_sk_lookup_kern.c
+> b/tools/testing/selftests/bpf/progs/test_sk_lookup_kern.c
+> index d2b38fa6a5b0..e83d0b48d80c 100644
+> --- a/tools/testing/selftests/bpf/progs/test_sk_lookup_kern.c
+> +++ b/tools/testing/selftests/bpf/progs/test_sk_lookup_kern.c
+> @@ -73,6 +73,7 @@ int bpf_sk_lookup_test0(struct __sk_buff *skb)
+> 
+>         tuple_len = ipv4 ? sizeof(tuple->ipv4) : sizeof(tuple->ipv6);
+>         sk = bpf_sk_lookup_tcp(skb, tuple, tuple_len, BPF_F_CURRENT_NETNS, 0);
+> +       bpf_printk("sk=%d\n", sk ? 1 : 0);
+>         if (sk)
+>                 bpf_sk_release(sk);
+>         return sk ? TC_ACT_OK : TC_ACT_UNSPEC;
+> 
+> The generated llvm code is correct.
+> What is happening is that first "if(sk)" check converts "sock_or_null"
+> into "sock"
+> and second "if(sk)" no longer doing mark_ptr_or_null_regs() since
+> if (!is_jmp32 && BPF_SRC(insn->code) == BPF_K &&
+>             insn->imm == 0 && (opcode == BPF_JEQ || opcode == BPF_JNE) &&
+>             reg_type_may_be_null(dst_reg->type)) {
+> condition is no longer true.
+> The verifier has to follow both branches of second "if (sk)"
+> because is_branch_taken() doesn't prune paths with one reg being pointer.
+> Hence it reaches the end where the verifier thinks that sk wasn't released
+> and complains with:
+> 43: (85) call bpf_sk_lookup_tcp#84
+> 44: (bf) r6 = r0
+> 45: (b7) r1 = 2660
+> 46: (6b) *(u16 *)(r10 -4) = r1
+> 47: (b7) r1 = 624782195
+> 48: (63) *(u32 *)(r10 -8) = r1
+> 49: (73) *(u8 *)(r10 -2) = r7
+> 50: (b7) r3 = 1
+> 51: (55) if r6 != 0x0 goto pc+1
+> 
+> from 51 to 53: R0=sock(id=0,ref_obj_id=3,off=0,imm=0) R1=inv624782195
+> R3=inv1 R6=sock(id=0,ref_obj_id=3,off=0,imm=0) R7=invP0 R10=fp0
+> fp-8=?0mmmmmm refs=3
+> 53: (bf) r1 = r10
+> 54: (07) r1 += -8
+> 55: (b7) r2 = 7
+> 56: (85) call bpf_trace_printk#6
+> 57: (15) if r6 == 0x0 goto pc+2
+> 
+> from 57 to 60: R0_w=inv(id=0) R6=sock(id=0,ref_obj_id=3,off=0,imm=0)
+> R7=invP0 R10=fp0 fp-8=?mmmmmmm refs=3
+> 60: (b7) r0 = -1
+> 61: (15) if r6 == 0x0 goto pc+1
+>  R0_w=inv-1 R6=sock(id=0,ref_obj_id=3,off=0,imm=0) R7=invP0 R10=fp0
+> fp-8=?mmmmmmm refs=3
+> 62: (b7) r0 = 0
+> 63: (95) exit
+> Unreleased reference id=3 alloc_insn=43
+> 
+> Insn 57 is where the bug is.
+> The verifier needs to see that this is impossible path.
+> "from 57 to 60:" with R6=sock should have never happened.
+> 
+> I think the best way to fix this is to teach is_branch_taken() to recognize
+> == and != comparison of pointer with zero.
+> wdyt?
 
-Thanks Andi!
+Seems reasonable to me. I've also hit this recently fwiw.
 
-I was trying to be mindful of the multiplexing issue in the description:
+> Anyone can craft a fix?
 
-> - without this change events within a metric may get scheduled
->   together, after they may appear as part of a larger group and be
->   multiplexed at different times, lowering accuracy - however, less
->   multiplexing may compensate for this.
-
-I agree the heuristic in this patch set is naive and would welcome to
-improve it from your toplev experience. I think this change is
-progress on TopDownL1 - would you agree?
-
-I'm wondering if what is needed are flags to control behavior. For
-example, avoiding the use of groups altogether. For TopDownL1 I see.
-
-Currently:
-    27,294,614,172      idq_uops_not_delivered.core #      0.3
-Frontend_Bound           (49.96%)
-    24,498,363,923      cycles
-               (49.96%)
-    21,449,143,854      uops_issued.any           #      0.1
-Bad_Speculation          (16.68%)
-    16,450,676,961      uops_retired.retire_slots
-               (16.68%)
-       880,423,103      int_misc.recovery_cycles
-               (16.68%)
-    24,180,775,568      cycles
-               (16.68%)
-    27,662,201,567      idq_uops_not_delivered.core #      0.5
-Backend_Bound            (16.67%)
-    25,354,331,290      cycles
-               (16.67%)
-    22,642,218,398      uops_issued.any
-               (16.67%)
-    17,564,211,383      uops_retired.retire_slots
-               (16.67%)
-       896,938,527      int_misc.recovery_cycles
-               (16.67%)
-    17,872,454,517      uops_retired.retire_slots #      0.2 Retiring
-               (16.68%)
-    25,122,100,836      cycles
-               (16.68%)
-    15,101,167,608      inst_retired.any          #      0.6 IPC
-               (33.34%)
-    24,977,816,793      cpu_clk_unhalted.thread
-               (33.34%)
-    24,868,717,684      cycles
-                                                  # 99474870736.0
-SLOTS               (49.98%)
-
-With proposed (RFC) sharing of events over metrics:
-    22,780,823,620      cycles
-                                                  # 91123294480.0
-SLOTS
-                                                  #      0.2 Retiring
-                                                  #      0.3
-Frontend_Bound
-                                                  #      0.1
-Bad_Speculation
-                                                  #      0.4
-Backend_Bound            (50.01%)
-    26,097,362,439      idq_uops_not_delivered.core
-                 (50.01%)
-       790,521,504      int_misc.recovery_cycles
-               (50.01%)
-    21,025,308,329      uops_issued.any
-               (50.01%)
-    17,041,506,149      uops_retired.retire_slots
-               (50.01%)
-    22,964,891,526      cpu_clk_unhalted.thread   #      0.6 IPC
-               (49.99%)
-    14,531,724,741      inst_retired.any
-               (49.99%)
-
-No groups:
-     1,517,455,258      cycles
-                                                  # 6069821032.0 SLOTS
-                                                  #      0.1 Retiring
-                                                  #      0.3
-Frontend_Bound
-                                                  #      0.1
-Bad_Speculation
-                                                  #      0.5
-Backend_Bound            (85.64%)
-     1,943,047,724      idq_uops_not_delivered.core
-                 (85.61%)
-        54,257,713      int_misc.recovery_cycles
-               (85.63%)
-     1,050,787,137      uops_issued.any
-               (85.63%)
-       881,310,530      uops_retired.retire_slots
-               (85.68%)
-     1,553,561,836      cpu_clk_unhalted.thread   #      0.5 IPC
-               (71.81%)
-       742,087,439      inst_retired.any
-               (85.85%)
-
-So with no groups there is a lot less multiplexing.
-
-So I'm thinking of two flags:
- - disable sharing of events between metrics - defaulted off - this
-keeps the current behavior in case there is a use-case where
-multiplexing is detrimental. I'm not sure how necessary this flag is,
-if we could quantify it based on experience elsewhere it'd be nice.
-Default off as without sharing metrics within a metric group fail to
-add to 100%. Fwiw, I can imagine phony metrics that exist just to
-cause sharing of events within a group.
- - disable grouping of events in metrics - defaulted off - this would
-change the behavior of groups like TopDownL1 as I show above for "no
-groups".
-
-I see in toplev:
-https://github.com/andikleen/pmu-tools/wiki/toplev-manual
---no-group which is similar to the second flag.
-Do you have any pointers in toplev for better grouping heuristics?
-
-Thoughts and better ways to do this very much appreciated! Thanks,
-
-Ian
+If no one beats me to it I can probably craft something tomorrow.
