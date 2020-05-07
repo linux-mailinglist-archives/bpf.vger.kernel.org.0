@@ -2,50 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D3E1C8DB3
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 16:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A317A1C8E13
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 16:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726093AbgEGOI0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 10:08:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45944 "EHLO
+        id S1726074AbgEGOLh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 10:11:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726742AbgEGOIZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 May 2020 10:08:25 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B541FC05BD09
-        for <bpf@vger.kernel.org>; Thu,  7 May 2020 07:08:24 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id r18so7069865ybg.10
-        for <bpf@vger.kernel.org>; Thu, 07 May 2020 07:08:24 -0700 (PDT)
+        with ESMTP id S1728078AbgEGOI2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 May 2020 10:08:28 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7811C05BD0B
+        for <bpf@vger.kernel.org>; Thu,  7 May 2020 07:08:26 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id i2so6727716ybg.17
+        for <bpf@vger.kernel.org>; Thu, 07 May 2020 07:08:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=D7KOOGg6DlWXW7nMSsDPxBVh53JMWXM+HIMGKr6WXds=;
-        b=gddQNX5skQvK8IPzIX3LvuXftFfhK6k/66grQoAObuU49YF41KgKO89AlvU8DKuT8A
-         8dPZp87dqYug80DNzaJrdRRwZ668Qx681zfzDluWLyEoMRcOUqmIo2wCr3H7obEvyUo/
-         yD47n94mD5EBpz0FWjvR8NArnXkC2K70vxa43vBuhLbmAW8+o6M3UwYGa6Q2/KbErEzD
-         KN2U7wGeuD+X7fepQ4EntZYgR1BwqytWHS0hr8rcQSJ4EwgehxkpxLbCge0is+JmgMPq
-         XT9Iwqco1QGH22WuvKvgphDjI83XN/ThTpWF/8Dd4bW32LmSHRgP5PWZr+5N6S2ywVTL
-         QshA==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=agpNpPb9ABPgrcjzE8UbvUM5oHf8Sq5TEvUJcEJ/6IE=;
+        b=HhhT+08K3dom3gSLbiMkAIr7jNEs49Fw2OajOhbnL5wIg5CUFHIYBQ9EtWdbUNEDG6
+         R0zI6+Jrakz3Qpp9wkCrm8q3A5+C+RtcOZaD0fvTcsL03G6O3B58p50n1Gxi4JkhPWZJ
+         mkEyf8DOSTA7lyGsbVcG6T2jv7m1JhdqrwuWygpbowcTaSVvPjeExQK7r0pKMdDmupcM
+         mg0QYgFfTEkih4qS7g/sTAG/KpeOTLKAO+d/doYvjC/7wOIowP9Gw52bDgBdJ0SGNPxK
+         Nx8z7l67LaHUwTNB3IQax3Aom5B6VouckVz50bQUK1b5SbJ1y7UKTgFAA3q6d6z7leO3
+         l8jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=D7KOOGg6DlWXW7nMSsDPxBVh53JMWXM+HIMGKr6WXds=;
-        b=aQxUXSk74XUAUAWFHL8ZFJNgR/53HyZCgvedDMCwhlceIEdvr8jyegLqohrxtustHl
-         b+p0vvXONJ7oOWrSYOcjnQn4e8fdMxGski1Ld2VXbrwetlZZBtjcthnobDW+rM+bCtro
-         wRCZlBvWhHMETV8xuK5iJT0QTPNXHMQuiLLVF+evVcQb93Dr5mrDDCv/N4vrA5hJFHnp
-         6ih/cvv8K/VORS3L13Wi40WICu2vMOZwUo+iMZDwITPfmY+iCdNBpRglOXtT7gj5NdT+
-         WzrPnUojjkA4SwzmoktHKnxk+ELbST9n6Mhwy9HBQJqmeVpSIdeDmQytvBRp2w/f+SV4
-         SnaQ==
-X-Gm-Message-State: AGi0PuYJfkxhoJNUSxakPgcGhZTFjDK+vHyehRNjFN5YKZ+L46gor2Ve
-        C+Gt7S0X8iNjh+OXGQbVzPSpHLs4uSLA
-X-Google-Smtp-Source: APiQypKbl5bdeu8rHSldwn7J0SyoYBJpMwOkD7Rmb+vRKdgmu57Ub9MDLbq3L25C3JvonV9L3bYUH/xPr053
-X-Received: by 2002:a25:d2d5:: with SMTP id j204mr19534444ybg.269.1588860503768;
- Thu, 07 May 2020 07:08:23 -0700 (PDT)
-Date:   Thu,  7 May 2020 07:07:56 -0700
-Message-Id: <20200507140819.126960-1-irogers@google.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=agpNpPb9ABPgrcjzE8UbvUM5oHf8Sq5TEvUJcEJ/6IE=;
+        b=JXlgdBZMirjv+dMRnpQlC7QmGmx9goo2F3+055ltenbIJDhKiPzATD3y1J2WjRWDI1
+         HjEAe+DSlAOE46+mixKgHTPvmeSTOM4U4FwTnOdi6T+fN3VRM23ZacZ4O5m3dHfUauZf
+         3FEsn5Cx+uQaV5xyzT42nDf+6Vkf3t/nhwrqhyZup5j3D5jmHDys8IG5y3jBl5IcI6wA
+         +SKhCE+o/9nCgxN9PjXEfnSUgp6X57mIGyVsBvWvkEl1+Ln8iTTreOvLoRtL5xnj9T8S
+         9OTeVWWxXdxfiZfVhUlbm/v0w54LVZgCUfv5GBCEaH2Huhlj6iVYyiQovngcmhYD33XR
+         m3wA==
+X-Gm-Message-State: AGi0PubYRflLmWhENfUf7WTu1qhYq4EJbZSMHjT84NIM62S7JOVZYy9z
+        jQh8MI3551WPAZphRffY2TB+m8J5IFJy
+X-Google-Smtp-Source: APiQypLjOQdMt93cGSI2VfMH/6fdTqBneltg7x63mwDbaxdlMbnq6lIa4ij95nm/4y6+WbNHSut8TMssroOr
+X-Received: by 2002:a25:be81:: with SMTP id i1mr22413804ybk.184.1588860505757;
+ Thu, 07 May 2020 07:08:25 -0700 (PDT)
+Date:   Thu,  7 May 2020 07:07:57 -0700
+In-Reply-To: <20200507140819.126960-1-irogers@google.com>
+Message-Id: <20200507140819.126960-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20200507140819.126960-1-irogers@google.com>
 X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
-Subject: [RFC PATCH v2 00/23] Share events between metrics
+Subject: [RFC PATCH v2 01/23] perf expr: unlimited escaped characters in a symbol
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -79,86 +83,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Metric groups contain metrics. Metrics create groups of events to
-ideally be scheduled together. Often metrics refer to the same events,
-for example, a cache hit and cache miss rate. Using separate event
-groups means these metrics are multiplexed at different times and the
-counts don't sum to 100%. More multiplexing also decreases the
-accuracy of the measurement.
+Current expression allows 2 escaped '-,=' characters. However, some
+metrics require more, for example Haswell DRAM_BW_Use.
 
-This change orders metrics from groups or the command line, so that
-the ones with the most events are set up first. Later metrics see if
-groups already provide their events, and reuse them if
-possible. Unnecessary events and groups are eliminated.
+Fixes: 26226a97724d (perf expr: Move expr lexer to flex)
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/expr.l | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-RFC because:
- - without this change events within a metric may get scheduled
-   together, after they may appear as part of a larger group and be
-   multiplexed at different times, lowering accuracy - however, less
-   multiplexing may compensate for this.
- - libbpf's hashmap is used, however, libbpf is an optional
-   requirement for building perf.
- - other things I'm not thinking of.
-
-Thanks!
-
-v2. is the entire patch set based on acme's perf/core tree and includes a
-cherry-picks. Patch 13 was sent for review to the bpf maintainers here:
-https://lore.kernel.org/lkml/20200506205257.8964-2-irogers@google.com/
-v1. was based on the perf metrics fixes and test sent here:
-https://lore.kernel.org/lkml/20200501173333.227162-1-irogers@google.com/
-
-Andrii Nakryiko (1):
-  libbpf: Fix memory leak and possible double-free in hashmap__clear
-
-Ian Rogers (22):
-  perf expr: unlimited escaped characters in a symbol
-  perf metrics: fix parse errors in cascade lake metrics
-  perf metrics: fix parse errors in skylake metrics
-  perf expr: allow ',' to be an other token
-  perf expr: increase max other
-  perf expr: parse numbers as doubles
-  perf expr: debug lex if debugging yacc
-  perf metrics: fix parse errors in power8 metrics
-  perf metrics: fix parse errors in power9 metrics
-  perf expr: print a debug message for division by zero
-  perf parse-events: expand add PMU error/verbose messages
-  perf test: improve pmu event metric testing
-  lib/bpf hashmap: increase portability
-  perf expr: fix memory leaks in bison
-  perf evsel: fix 2 memory leaks
-  perf expr: migrate expr ids table to libbpf's hashmap
-  perf metricgroup: change evlist_used to a bitmap
-  perf metricgroup: free metric_events on error
-  perf metricgroup: always place duration_time last
-  perf metricgroup: delay events string creation
-  perf metricgroup: order event groups by size
-  perf metricgroup: remove duped metric group events
-
- tools/lib/bpf/hashmap.c                       |   7 +
- tools/lib/bpf/hashmap.h                       |   3 +-
- tools/perf/arch/x86/util/intel-pt.c           |  32 ++-
- .../arch/powerpc/power8/metrics.json          |   2 +-
- .../arch/powerpc/power9/metrics.json          |   2 +-
- .../arch/x86/cascadelakex/clx-metrics.json    |  10 +-
- .../arch/x86/skylakex/skx-metrics.json        |   4 +-
- tools/perf/tests/builtin-test.c               |   5 +
- tools/perf/tests/expr.c                       |  33 ++-
- tools/perf/tests/pmu-events.c                 | 158 +++++++++++-
- tools/perf/tests/pmu.c                        |   4 +-
- tools/perf/tests/tests.h                      |   2 +
- tools/perf/util/evsel.c                       |   2 +
- tools/perf/util/expr.c                        | 126 ++++-----
- tools/perf/util/expr.h                        |  22 +-
- tools/perf/util/expr.l                        |  16 +-
- tools/perf/util/expr.y                        |  41 ++-
- tools/perf/util/metricgroup.c                 | 242 +++++++++++-------
- tools/perf/util/parse-events.c                |  29 ++-
- tools/perf/util/pmu.c                         |  33 ++-
- tools/perf/util/pmu.h                         |   2 +-
- tools/perf/util/stat-shadow.c                 |  46 ++--
- 22 files changed, 545 insertions(+), 276 deletions(-)
-
+diff --git a/tools/perf/util/expr.l b/tools/perf/util/expr.l
+index 74b9b59b1aa5..73db6a9ef97e 100644
+--- a/tools/perf/util/expr.l
++++ b/tools/perf/util/expr.l
+@@ -86,7 +86,7 @@ number		[0-9]+
+ sch		[-,=]
+ spec		\\{sch}
+ sym		[0-9a-zA-Z_\.:@?]+
+-symbol		{spec}*{sym}*{spec}*{sym}*{spec}*{sym}
++symbol		({spec}|{sym})+
+ 
+ %%
+ 	struct expr_scanner_ctx *sctx = expr_get_extra(yyscanner);
 -- 
 2.26.2.526.g744177e7f7-goog
 
