@@ -2,225 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C25B71C98DA
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 20:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03EF31C98E8
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 20:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727092AbgEGSI6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 14:08:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55320 "EHLO
+        id S1728324AbgEGSKe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 14:10:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726467AbgEGSI6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 7 May 2020 14:08:58 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF72AC05BD43;
-        Thu,  7 May 2020 11:08:57 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id j8so1562056iog.13;
-        Thu, 07 May 2020 11:08:57 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1728261AbgEGSKc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 7 May 2020 14:10:32 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67B9C05BD09;
+        Thu,  7 May 2020 11:10:32 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id y26so2313010ioj.2;
+        Thu, 07 May 2020 11:10:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=xsOZEjIQEncD2S0u2BwDL3mPS8GtyzOt2wkpIZXJQFA=;
-        b=YOM0mv67e7jJfrMyLF2/xuKSNYfGuVHSw3d12DwmS6Z8rT3C2G18bzDlM5A5lJIRSR
-         fdNjMYmwlzqIaj/K4XknQs/XglZd/ZlQEBNn6L+d01RKahixoSZkTQXICkeIX9WAr2jv
-         tmTXW3mDjHyDwQZ0oFeb2jwKP128eQTfkRwBo7p1WIr51k3Y57SltfyteYMf3cQ0ncfk
-         6Uoqju0sBM/aLs/sp++bgftOCOpzQyI//tSFn9xLhOBaar/hOIUUMNXqgwjkaNYAYPqC
-         /AphYT2EjHI11R9/Rz+WcMbjQ9NVziwQWCTvNNmKEno1qYFQhtldSuvme2fUCUN2eI5m
-         mMkg==
+        bh=Gd3RPRk/hJEPhKUzjU78kN4h+seKUcUFVx6IytlV+As=;
+        b=VzoW3DZBILKoElYj2TEiHdQTkxBcm2wFCWzfQxfDcnHcGbLIuFDOP614l2Gr6xn8fB
+         xz/EdTckE9mZZk/jvlAqKZ7D2htG042wmXkXnSROCKrcXo50BRDJ2UHoUkGTYiuGI96k
+         wajd1ruNMW121S1UMTZS4eiGxpNZiGhBUizBufay+l1eb677FH8Z/3w9zAMzSOfga94F
+         UcUiDZ5XTckeD9Ldbk1cEv24yNUKPz1huwYYWk9ghnfrIy/ON1bsy6nIONP/ipE6qTjY
+         K+t2C1DEw/7uhDoTgxbNgs6GxGwEY7pSYUu/BJoXEZQIaAA2rzpD1sbzLpaAR6nnSMaf
+         6Zeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=xsOZEjIQEncD2S0u2BwDL3mPS8GtyzOt2wkpIZXJQFA=;
-        b=oDlFdi4CpkOB/AyYDS8va1pKIVGHkA6JOgACjYTQ2xM8BPv362WYVmtUWbdhkGqsnX
-         eGSA25+BEfSU/8C9hjsHWrAyC/WGw/tism79EP3iTSlJeUtvuYdDLt/0QIA1ALxjEo75
-         XY1R41YKzmF+7rfKCo10D/n8SHJZ+2/CqVkDUQEFL1cLNmSrXhOWFt8yH1bG3xKogFKU
-         cklBarigqhZu6TvKEeMsyzMpsvW0LNGct1f3eNt6cor/fDOljJJ6zn5yRikwybygmlgV
-         kFVQTZeNsmJT/biuFwby2mKN2fwA8Y2OZEIrk0etoKA5NMC0H61moLix1KfA52huw0hg
-         EjHw==
-X-Gm-Message-State: AGi0PuaX1OLFJlEyMDtA6RbFCxC6uTSzBPEYfX8hNQMai1zpkPduYY/O
-        lDRVhFd38huAID633rtMbmI=
-X-Google-Smtp-Source: APiQypJobp+PBLdpwW3dPS2WA5H2nDI8F93yDy7M9URdT4jdvy0xERhRNGj2rzh9XzRRAT9MU3eaiA==
-X-Received: by 2002:a05:6638:62f:: with SMTP id h15mr14607637jar.102.1588874936987;
-        Thu, 07 May 2020 11:08:56 -0700 (PDT)
+        bh=Gd3RPRk/hJEPhKUzjU78kN4h+seKUcUFVx6IytlV+As=;
+        b=CmPeo3m/tU0TrfZDJzj/m5i/gGuZuqWVmlfFvYe/v8nOeHoV5TTyIk1YdWXS6Z9V0o
+         MWT144zT6ypBiCFpnqVfKWJ++7sHqOo9Kui7Aep1HRAQDf/K2i+Q5m/Qyem/HsFOz2Rn
+         QodMRxFuu2mhNg6nd9OyPMOSFvz7dT1fxGD9gu6A8T/Swo0XsWbvKz7553E9ohQIzt24
+         iRwHvJl9h2i/YfG1M6Zpc30ywlD9RNYLcJNzfwogAfpxI+CblJJekPWfuLnJheakUm1L
+         5Slf1No+mRWbKMZfJMt65/ld1A3kfbveFuY5mau09udAdeGeMBHttBqs+BzU0PwqjJOc
+         1Pkg==
+X-Gm-Message-State: AGi0PubxOj8nLj1noazA7Df6NNzyw49fL8kGG3NW8O13k5avPQyOhkwR
+        glB2KhLKlflyAyY4pTFZy4o=
+X-Google-Smtp-Source: APiQypLum2t/r+agPTzUNR0velxp46G4ahGjE1MBLJud7sWGcXmM1SsTWSh8zpljyqdp6297pWrQAg==
+X-Received: by 2002:a02:6ccf:: with SMTP id w198mr14023160jab.8.1588875032098;
+        Thu, 07 May 2020 11:10:32 -0700 (PDT)
 Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id l14sm2773698ioj.12.2020.05.07.11.08.54
+        by smtp.gmail.com with ESMTPSA id s12sm3055951ill.82.2020.05.07.11.10.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 11:08:56 -0700 (PDT)
-Date:   Thu, 07 May 2020 11:08:48 -0700
+        Thu, 07 May 2020 11:10:31 -0700 (PDT)
+Date:   Thu, 07 May 2020 11:10:25 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <5eb44eb03f8e1_22a22b23544285b87a@john-XPS-13-9370.notmuch>
-In-Reply-To: <871rnvkdhw.fsf@toke.dk>
-References: <CAJ+HfNidbgwtLinLQohwocUmoYyRcAG454ggGkCbseQPSA1cpw@mail.gmail.com>
- <877dxnkggf.fsf@toke.dk>
- <CAJ+HfNhvzZ4JKLRS5=esxCd7o39-OCuDSmdkxCuxR9Y6g5DC0A@mail.gmail.com>
- <871rnvkdhw.fsf@toke.dk>
-Subject: Re: XDP bpf_tail_call_redirect(): yea or nay?
+To:     Jakub Sitnicki <jakub@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     lmb@cloudflare.com, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, ast@kernel.org
+Message-ID: <5eb44f11d1697_22a22b23544285b843@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200507102902.6b27705c@toad>
+References: <158871160668.7537.2576154513696580062.stgit@john-Precision-5820-Tower>
+ <158871183500.7537.4803419328947579658.stgit@john-Precision-5820-Tower>
+ <20200507102902.6b27705c@toad>
+Subject: Re: [bpf-next PATCH 03/10] bpf: selftests, sockmap test prog run
+ without setting cgroup
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
-> =
+Jakub Sitnicki wrote:
+> On Tue, 05 May 2020 13:50:35 -0700
+> John Fastabend <john.fastabend@gmail.com> wrote:
+> 
+> > Running test_sockmap with arguments to specify a test pattern requires
+> > including a cgroup argument. Instead of requiring this if the option is
+> > not provided create one
+> > 
+> > This is not used by selftest runs but I use it when I want to test a
+> > specific test. Most useful when developing new code and/or tests.
+> > 
+> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> > ---
 
-> > On Thu, 7 May 2020 at 15:44, Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
-edhat.com> wrote:
-> >>
-> >> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
-> >>
-> >> > Before I start hacking on this, I might as well check with the XDP=
+[...]
 
-> >> > folks if this considered a crappy idea or not. :-)
-> >> >
-> >> > The XDP redirect flow for a packet is typical a dance of
-> >> > bpf_redirect_map() that updates the bpf_redirect_info structure wi=
-th
-> >> > maps type/items, which is then followed by an xdp_do_redirect(). T=
-hat
-> >> > function takes an action based on the bpf_redirect_info content.
-> >> >
-> >> > I'd like to get rid of the xdp_do_redirect() call, and the
-> >> > bpf_redirect_info (per-cpu) lookup. The idea is to introduce a new=
+> >  	if (!cg_fd) {
+> > -		fprintf(stderr, "%s requires cgroup option: --cgroup <path>\n",
+> > -			argv[0]);
+> > -		return -1;
+> > +		if (setup_cgroup_environment()) {
+> > +			fprintf(stderr, "ERROR: cgroup env failed\n");
+> > +			return -EINVAL;
+> > +		}
+> > +
+> > +		cg_fd = create_and_get_cgroup(CG_PATH);
+> > +		if (cg_fd < 0) {
+> > +			fprintf(stderr,
+> > +				"ERROR: (%i) open cg path failed: %s\n",
+> > +				cg_fd, optarg);
+> 
+> Looks like you wanted to log strerror(errno) instead of optarg here.
+> 
+> > +			return cg_fd;
+> > +		}
 
-> >> > (oh-no!) XDP action, say, XDP_CONSUMED and a built-in helper with
-> >> > tail-call semantics.
-> >> >
-> >> > Something across the lines of:
-> >> >
-> >> > --8<--
-> >> >
-> >> > struct {
-> >> >         __uint(type, BPF_MAP_TYPE_XSKMAP);
-> >> >         __uint(max_entries, MAX_SOCKS);
-> >> >         __uint(key_size, sizeof(int));
-> >> >         __uint(value_size, sizeof(int));
-> >> > } xsks_map SEC(".maps");
-> >> >
-> >> > SEC("xdp1")
-> >> > int xdp_prog1(struct xdp_md *ctx)
-> >> > {
-> >> >         bpf_tail_call_redirect(ctx, &xsks_map, 0);
-> >> >         // Redirect the packet to an AF_XDP socket at entry 0 of t=
-he
-> >> >         // map.
-> >> >         //
-> >> >         // After a successful call, ctx is said to be
-> >> >         // consumed. XDP_CONSUMED will be returned by the program.=
-
-> >> >         // Note that if the call is not successful, the buffer is
-> >> >         // still valid.
-> >> >         //
-> >> >         // XDP_CONSUMED in the driver means that the driver should=
- not
-> >> >         // issue an xdp_do_direct() call, but only xdp_flush().
-> >> >         //
-> >> >         // The verifier need to be taught that XDP_CONSUMED can on=
-ly
-> >> >         // be returned "indirectly", meaning a bpf_tail_call_XXX()=
-
-> >> >         // call. An explicit "return XDP_CONSUMED" should be
-> >> >         // rejected. Can that be implemented?
-> >> >         return XDP_PASS; // or any other valid action.
-> >> > }
-
-I'm wondering if we can teach the verifier to recognize tail calls,
-
-int xdp_prog1(struct xdp_md *ctx)
-{
-	return xdp_do_redirect(ctx, &xsks_map, 0);
-}
-
-This would be useful for normal calls as well. I guess the question here
-is would a tail call be sufficient for above case or do you need the
-'return XDP_PASS' at the end? If so maybe we could fold it into the
-helper somehow.
-
-I think it would also address Toke's concerns, no new action so
-bpf developers can just develope like normal but "smart" developers
-will try do calls as tail calls. Not sure it can be done without
-driver changes though.
-
-> >> >
-> >> > -->8--
-> >> >
-> >> > The bpf_tail_call_redirect() would work with all redirectable maps=
-.
-> >> >
-> >> > Thoughts? Tomatoes? Pitchforks?
-> >>
-> >> The above answers the 'what'. Might be easier to evaluate if you als=
-o
-> >> included the 'why'? :)
-> >>
-> >
-> > Ah! Sorry! Performance, performance, performance. Getting rid of a
-> > bunch of calls/instructions per packet, which helps my (AF_XDP) case.=
-
-> > This would be faster than the regular REDIRECT path. Today, in
-> > bpf_redirect_map(), instead of actually performing the action, we
-> > populate the bpf_redirect_info structure, just to look up the action
-> > again in xdp_do_redirect().
-> >
-> > I'm pretty certain this would be a gain for AF_XDP (quite easy to do =
-a
-> > quick hack, and measure). It would also shave off the same amount of
-> > instructions for "vanilla" XDP_REDIRECT cases. The bigger issue; Is
-> > this new semantic something people would be comfortable being added t=
-o
-> > XDP.
-> =
-
-> Well, my immediate thought would be that the added complexity would not=
-
-> be worth it, because:
-> =
-
-> - A new action would mean either you'd need to patch all drivers or
->   (more likely) we'd end up with yet another difference between drivers=
-'
->   XDP support.
-> =
-
-> - BPF developers would suddenly have to choose - do this new faster
->   thing, or be compatible? And manage the choice based on drivers they
->   expect to run on, etc. This was already confusing with
->   bpf_redirect()/bpf_redirect_map(), and this would introduce a third
->   option!
-> =
-
-> So in light of this, I'd say the performance benefit would have to be
-> quite substantial for this to be worth it. Which we won't know until yo=
-u
-> try it, I guess :)
-
-Knowing the number would be useful. But if it can be done in general
-way it may not need to be as high because its not a special xdp thing.
-
-> =
-
-> Thinking of alternatives - couldn't you shoe-horn this into the existin=
-g
-> helper and return code? Say, introduce an IMMEDIATE_RETURN flag to the
-> existing helpers, which would change the behaviour to the tail call
-> semantics. When used, xdp_do_redirect() would then return immediately
-> (or you could even turn xdp_do_redirect() into an inlined wrapper that
-> checks the flag before issuing a CALL to the existing function). Any
-> reason why that wouldn't work?
-
-I think it would work but I it would be even nicer if clang, verifier
-and jit caught the tail call pattern and did it automatically.
-
-> =
-
-> -Toke
-> =
+cut'n'paste error thanks.
