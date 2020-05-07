@@ -2,87 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B927E1C835B
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 09:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CFE1C8475
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 10:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725819AbgEGHYU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 03:24:20 -0400
-Received: from mga18.intel.com ([134.134.136.126]:49708 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725809AbgEGHYU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 May 2020 03:24:20 -0400
-IronPort-SDR: SrHE1OjEBk5Cq6XpPlvGbBPHqAyaycjBVyR1OE7mgzcEoE6E3mnKH1HLNQ2sEAQR6Fh/o1RKbb
- Z7hYL28bz5Rg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2020 00:24:19 -0700
-IronPort-SDR: waf4mIazFQxt3LHU1hcNng7o3oXZj9BZRbPP5nO6+FhDEAuBSPZRNALAIhCb3CpN4YM6TalFjO
- 9vxzbw4OfmKQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,362,1583222400"; 
-   d="scan'208";a="370030154"
-Received: from mstoisox-wtg9.ger.corp.intel.com (HELO [10.252.41.26]) ([10.252.41.26])
-  by fmsmga001.fm.intel.com with ESMTP; 07 May 2020 00:24:18 -0700
-Subject: Re: -EBUSY with some selftests on 5.7-rcX
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-References: <e5ec787d-2fca-4701-ca2e-2b590a59fb6f@linux.intel.com>
- <CAEf4BzYHuJi5BE6=jYXuKynK8ViRfNjxSgkTiixp+ZQX9TyjAA@mail.gmail.com>
- <2408eda9-b001-3c34-d037-f7b5762bf7d7@linux.intel.com>
- <CAEf4Bzasmc4zvAyWJPPaWcu95CZ0DSuZC7vjZnpjNfw6T1TLJg@mail.gmail.com>
-From:   Mikko Ylinen <mikko.ylinen@linux.intel.com>
-Message-ID: <a0ffa0bb-883c-41a6-f86c-8ea320fe798b@linux.intel.com>
-Date:   Thu, 7 May 2020 10:24:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <CAEf4Bzasmc4zvAyWJPPaWcu95CZ0DSuZC7vjZnpjNfw6T1TLJg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726565AbgEGIOt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 04:14:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725857AbgEGIOs (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 7 May 2020 04:14:48 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A59C061A41
+        for <bpf@vger.kernel.org>; Thu,  7 May 2020 01:14:48 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id o134so6049705yba.18
+        for <bpf@vger.kernel.org>; Thu, 07 May 2020 01:14:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=jJ+0WVT0o7QnePYWoDu2DLbS3PF1WBgkVDF9XXQH2a0=;
+        b=ivglXwvDfB4/pd8fDyiSer//832TB2EZ2jFXvGPGLpLtmfFxysFjth6U6ltV45e+nh
+         7cTyxgyoN8J/Vr8cBP0YOGwzl/YjLBCwWYRxSG6UP6VveKOyIvjOXDHYw0jL89LVAoA5
+         0b4nLuEjj8WZXKHMuua05G+Qf04QbzB5HgbeAgqN1gA2nRLqzTU8HLqEtYpXKHSscRS7
+         TUC/edfu14DK8bZ1RqEcE3pQmG+QxeueS7pi1KAQLqNIe4MmLwBfjQ3ViQdwoC7andKg
+         Z9UZjTS//VfS7phn1QXJyIPu2JCmIxtmyvkFhp6kH/v4Q1kXkm/FdmGy5r6cEXDwRvSc
+         jzHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=jJ+0WVT0o7QnePYWoDu2DLbS3PF1WBgkVDF9XXQH2a0=;
+        b=BYlYkRH7YSM0b3zQRj7rFKxqDIpUgbLHjm/nong3whOd0s1N5dh7RtVA8IAjRjoYjf
+         mVxb0lWufLVThcXew//Z3Dz9qe6tFgSfPuam+BTXztNoBTjl6wtPbKooNwO63oVwCuZg
+         0sxqRIx75qH339dDnMOsJoFQ4NVPijs2aQR6rFwbbZhTDQ9TkcM3Bg1WrzoqCbQC+Wur
+         dOYmQ2zC5NeiNQIUhv1DWiyez9sxkWf6RsuunbDh6WaTUruCQhf0xuFazK4waceunOwu
+         Ce1Y9TVx2olWN8ZJjYqf6oNv59U0nu/jJBKolkpkfvF98TZWwasTO97C8GYKRHqqirln
+         fnog==
+X-Gm-Message-State: AGi0PuY1lMLEigxC9Si8rxiTEOLkg0Tlx8tCeMMuwLaR9ph/lyrAi77p
+        cO/sdRX7yFsmNjC4NCeoaFKtvsgZZ3TH
+X-Google-Smtp-Source: APiQypL12F/G/IG1P0vRR+5Jg8zc4/oiuJDwhAuqK50oi9mZH3/+YXbOSRjblC5OcgxtqRVov4Hi57WfIeic
+X-Received: by 2002:a25:c246:: with SMTP id s67mr19644886ybf.317.1588839287376;
+ Thu, 07 May 2020 01:14:47 -0700 (PDT)
+Date:   Thu,  7 May 2020 01:14:29 -0700
+Message-Id: <20200507081436.49071-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
+Subject: [RFC PATCH 0/7] Share events between metrics
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        linux-kernel@vger.kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Metric groups contain metrics. Metrics create groups of events to
+ideally be scheduled together. Often metrics refer to the same events,
+for example, a cache hit and cache miss rate. Using separate event
+groups means these metrics are multiplexed at different times and the
+counts don't sum to 100%. More multiplexing also decreases the
+accuracy of the measurement.
 
+This change orders metrics from groups or the command line, so that
+the ones with the most events are set up first. Later metrics see if
+groups already provide their events, and reuse them if
+possible. Unnecessary events and groups are eliminated.
 
-On 06/05/2020 23:18, Andrii Nakryiko wrote:
-> On Wed, May 6, 2020 at 12:28 PM Mikko Ylinen
-> <mikko.ylinen@linux.intel.com> wrote:
->> The error seems to come from register_fentry() but I don't yet have
->> good logs what goes wrong.
-> 
-> Ok, this is actually useful. It's still few possibilities, but most
-> seem to be related to ftrace subsystem. So here's portion of my
-> Kconfig with FTRACE settings, see if you have some of those disabled
-> and try to enable them, it might help. For instance, if you don't have
-> a 5-byte preample in kernel functions (not sure which setting turns
-> this on), bpf_arch_text_poke would also return EBUSY. Some of
-> ftrace-specific code returns EBUSY in multiple places as well. So I'd
-> start with trying to enable a lot of FTRACE stuff first:
-
-With the following config changes:
-
--# CONFIG_FUNCTION_TRACER is not set
-+CONFIG_FUNCTION_TRACER=y
-+CONFIG_FUNCTION_GRAPH_TRACER=y
-+CONFIG_DYNAMIC_FTRACE=y
-+CONFIG_DYNAMIC_FTRACE_WITH_REGS=y
-+CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS=y
-+# CONFIG_FUNCTION_PROFILER is not set
-
-# ./test_progs -t fentry_fexit
-#13 fentry_fexit:OK
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-# ./test_progs -t test_lsm
-#70 test_lsm:OK
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+RFC because:
+ - without this change events within a metric may get scheduled
+   together, after they may appear as part of a larger group and be
+   multiplexed at different times, lowering accuracy - however, less
+   multiplexing may compensate for this.
+ - libbpf's hashmap is used, however, libbpf is an optional
+   requirement for building perf.
+ - other things I'm not thinking of.
 
 Thanks!
 
-Perhaps there could be a check whether the operation
-is supported and if not,-ENOTSUPP is returned?
+Ian Rogers (7):
+  perf expr: migrate expr ids table to libbpf's hashmap
+  perf metricgroup: change evlist_used to a bitmap
+  perf metricgroup: free metric_events on error
+  perf metricgroup: always place duration_time last
+  perf metricgroup: delay events string creation
+  perf metricgroup: order event groups by size
+  perf metricgroup: remove duped metric group events
 
--- Mikko
+ tools/perf/tests/expr.c       |  32 ++---
+ tools/perf/tests/pmu-events.c |  22 ++--
+ tools/perf/util/expr.c        | 125 ++++++++++--------
+ tools/perf/util/expr.h        |  22 ++--
+ tools/perf/util/expr.y        |  22 +---
+ tools/perf/util/metricgroup.c | 242 +++++++++++++++++++++-------------
+ tools/perf/util/stat-shadow.c |  46 ++++---
+ 7 files changed, 280 insertions(+), 231 deletions(-)
+
+-- 
+2.26.2.526.g744177e7f7-goog
+
