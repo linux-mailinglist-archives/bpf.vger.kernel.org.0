@@ -2,82 +2,254 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3921C81DE
-	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 07:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0390A1C81EB
+	for <lists+bpf@lfdr.de>; Thu,  7 May 2020 07:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725900AbgEGFuy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 01:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725857AbgEGFuy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 May 2020 01:50:54 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B77EDC061A0F;
-        Wed,  6 May 2020 22:50:52 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id l19so4911890lje.10;
-        Wed, 06 May 2020 22:50:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Mq6HIDH5BrDBTzENE5J2lC+OBSXHG1cl8m7LfKfKF6E=;
-        b=iAffVvElIIkM/97CnrTukgk2THSnmjXrSSfqNZZioLnNn0ITW+wSquwB5M9i5fIQAD
-         1WcrpPYaHGfL38aTq6GqE7NP04pVzQRUwe5OaYNO6GYg6eI4A1x9AXWQ0hmRd2RtnOXP
-         l9ki8ATv/d2kf2w9vsalM2DbBUy0RepJzcNE31/TMNuGRKDzvef3HSEWei1pAl7SW59U
-         A8vP3ZmLcqD55jixIJyxMuz9RNERHbPbOqoqVcf8ARHh5wvbWGUuWeajZ1/FbKgGuC1x
-         pirH6PjU/IPWMG06SmkHUfyXlogr7ZJQtLltrEQD+dCef/DAyXESz+CDP9EcDkF6/ZSr
-         60yA==
+        id S1726393AbgEGF4T (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 01:56:19 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:35171 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725857AbgEGF4S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 May 2020 01:56:18 -0400
+Received: by mail-il1-f198.google.com with SMTP id r5so5057508ilq.2
+        for <bpf@vger.kernel.org>; Wed, 06 May 2020 22:56:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Mq6HIDH5BrDBTzENE5J2lC+OBSXHG1cl8m7LfKfKF6E=;
-        b=X11s4cwZeKt4kgx5ypCr42YHSyw5tGw4ZD4kV0AZ7Ynh4VVNnbp3765ZOgU+7G1hRk
-         MGXaoPJq2v5ez1Hu+Ji4BQllaUjaUHs51AR+MgPFGGEc7xmvsA7O1gDCHhbQtVnisgtM
-         dgatsGLe4ucWg3Iqd3aWAGK7qFDwEzgfGUJIuGsCidLJzpSEhOsuVzRl1C+CvDdaqe5O
-         sP/2sE4+59Meian01VULGSqssRwn/IsfZVA862e2NEpxIdJ2ZqB9IYUJiH9vdgHXzg/s
-         PhsBeKeMbWPZsa5jEbxUDoqdK8fMnbNAhRZ3KMKdvDXjgb8hw0Wqi15fmvuoj7toPSS3
-         qB9g==
-X-Gm-Message-State: AGi0PuZWjTR5Y0In7TepiqJzZT5JxIPa1Ftn1TjULw/ZDnSdESn0Funf
-        Q50OOfh9zlss/bbPM2g+blhSxHAwV33ECMXdLxw=
-X-Google-Smtp-Source: APiQypKApDz/cUh129GGJeJkYPhX5zGgi6wuKgYvKSMz/d2JSVOYgHdxKUpMEIF9IhUQV7nR7nDF9wIvBpIOaPUn78Y=
-X-Received: by 2002:a2e:990f:: with SMTP id v15mr7500790lji.7.1588830651087;
- Wed, 06 May 2020 22:50:51 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=wVHnZBdfyelp7ItkqjoOIAyBI5rLEJAUDuhp3+059VA=;
+        b=f7P5EtsI3q8V4K1Fx/1Mc4wSEU9JFx1M/4yDqjD26oec4KoJYPEADImsKHuXeDvw89
+         Ygl1uk8SyPnzjhOyFRPVc/7Jc8+omU9vJNaatjUssTuqFI3IFfBlj11pYmrSyrRsgTwh
+         gbKlhTS8IW8zmO6l7OEHkej/UDOLRl+Jq96ypr85Xt1KsEs+Kay7f2W6ylF3crZfQMkx
+         uQx3Jf/UcNiLWFHJraV0npfVoD9pdyErRmTFtxUqK0DVPTHLbXOhxKgXjv6Sf8G86XYQ
+         4wcDF7zwpSQqr+BgXiKuOb+4IPRcU8LpCtrocsUadavVzKe4ErYKHqzCSjwNcSuqIo/6
+         j6dQ==
+X-Gm-Message-State: AGi0PubhlGmPXZoAAHPYksL+hKCUbjY9LvBD7+hUa8+AfroJxSMq+toi
+        5XWcRxPpTf7U1aOjhKrx9slTJIxx1cunR0xSTIKplYED9uv6
+X-Google-Smtp-Source: APiQypK1PKVWCXB8ym1KWjuZ5ba9lxFRPHatCEW8G1ugYFktrt07MRiR36gTTuHl5v7jOLypKjmqCBWPAGtMV+QXY/0ZdgA+aqpH
 MIME-Version: 1.0
-References: <20200430155240.68748-1-kpsingh@chromium.org> <alpine.LRH.2.21.2005011345380.29679@namei.org>
-In-Reply-To: <alpine.LRH.2.21.2005011345380.29679@namei.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 6 May 2020 22:50:39 -0700
-Message-ID: <CAADnVQLN-OtyzwzNwontLK9q3w3hPET2vDJWHhPs-cKqvmHuVQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] security: Fix the default value of
- fs_context_parse_param hook
-To:     James Morris <jmorris@namei.org>
-Cc:     KP Singh <kpsingh@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Mikko Ylinen <mikko.ylinen@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
+X-Received: by 2002:a92:dd09:: with SMTP id n9mr13471871ilm.132.1588830976495;
+ Wed, 06 May 2020 22:56:16 -0700 (PDT)
+Date:   Wed, 06 May 2020 22:56:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f6592a05a5088904@google.com>
+Subject: memory leak in inet6_create (2)
+From:   syzbot <syzbot+db84db800df5aa102826@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 8:46 PM James Morris <jmorris@namei.org> wrote:
->
-> On Thu, 30 Apr 2020, KP Singh wrote:
->
-> > From: KP Singh <kpsingh@google.com>
-> >
->
-> Applied to:
-> git://git.kernel.org/pub/scm/linux/kernel/git/jmorris/linux-security.git for-v5.7
->
+Hello,
 
-James,
-could you please send PR to Linus this week to make sure
-the fix makes it into the next -rc ?
-Few other people reported issues that are fixed by this patch.
-Thanks!
+syzbot found the following crash on:
+
+HEAD commit:    f66ed1eb Merge tag 'iomap-5.7-fixes-1' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12cf3c4c100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=36dc1e5ad3e26c41
+dashboard link: https://syzkaller.appspot.com/bug?extid=db84db800df5aa102826
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1269d24c100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16d01c4c100000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+db84db800df5aa102826@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff888110ef1800 (size 1840):
+  comm "syz-executor783", pid 8417, jiffies 4294954395 (age 25.940s)
+  hex dump (first 32 bytes):
+    00 00 00 00 7f 00 00 06 15 14 f5 21 4e 20 22 dc  ...........!N ".
+    0a 00 0b 40 00 00 00 00 00 00 00 00 00 00 00 00  ...@............
+  backtrace:
+    [<000000007986323e>] sk_prot_alloc+0x3c/0x170 net/core/sock.c:1598
+    [<000000002fc61b2a>] sk_alloc+0x30/0x330 net/core/sock.c:1658
+    [<000000000d7242e5>] inet6_create net/ipv6/af_inet6.c:181 [inline]
+    [<000000000d7242e5>] inet6_create+0x112/0x4d0 net/ipv6/af_inet6.c:108
+    [<00000000ca79ca9d>] __sock_create+0x14a/0x220 net/socket.c:1433
+    [<000000007253d628>] sock_create net/socket.c:1484 [inline]
+    [<000000007253d628>] __sys_socket+0x60/0x110 net/socket.c:1526
+    [<00000000503be95b>] __do_sys_socket net/socket.c:1535 [inline]
+    [<00000000503be95b>] __se_sys_socket net/socket.c:1533 [inline]
+    [<00000000503be95b>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
+    [<0000000042ce79c0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
+    [<00000000b1aeae16>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff888110eaf620 (size 32):
+  comm "syz-executor783", pid 8417, jiffies 4294954395 (age 25.940s)
+  hex dump (first 32 bytes):
+    02 00 00 00 00 00 00 00 c0 d8 f0 10 81 88 ff ff  ................
+    01 00 00 00 03 00 00 00 33 00 00 00 00 00 00 00  ........3.......
+  backtrace:
+    [<000000000d2c6b3e>] kmalloc include/linux/slab.h:555 [inline]
+    [<000000000d2c6b3e>] kzalloc include/linux/slab.h:669 [inline]
+    [<000000000d2c6b3e>] selinux_sk_alloc_security+0x43/0xa0 security/selinux/hooks.c:5126
+    [<00000000d4591378>] security_sk_alloc+0x42/0x70 security/security.c:2120
+    [<000000009002ddd9>] sk_prot_alloc+0x9c/0x170 net/core/sock.c:1607
+    [<000000002fc61b2a>] sk_alloc+0x30/0x330 net/core/sock.c:1658
+    [<000000000d7242e5>] inet6_create net/ipv6/af_inet6.c:181 [inline]
+    [<000000000d7242e5>] inet6_create+0x112/0x4d0 net/ipv6/af_inet6.c:108
+    [<00000000ca79ca9d>] __sock_create+0x14a/0x220 net/socket.c:1433
+    [<000000007253d628>] sock_create net/socket.c:1484 [inline]
+    [<000000007253d628>] __sys_socket+0x60/0x110 net/socket.c:1526
+    [<00000000503be95b>] __do_sys_socket net/socket.c:1535 [inline]
+    [<00000000503be95b>] __se_sys_socket net/socket.c:1533 [inline]
+    [<00000000503be95b>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
+    [<0000000042ce79c0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
+    [<00000000b1aeae16>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff888110f0d8c0 (size 64):
+  comm "syz-executor783", pid 8417, jiffies 4294954395 (age 25.940s)
+  hex dump (first 32 bytes):
+    15 00 00 01 00 00 00 00 a0 39 dc 10 81 88 ff ff  .........9......
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<000000002bb571e8>] kmalloc include/linux/slab.h:555 [inline]
+    [<000000002bb571e8>] kzalloc include/linux/slab.h:669 [inline]
+    [<000000002bb571e8>] netlbl_secattr_alloc include/net/netlabel.h:382 [inline]
+    [<000000002bb571e8>] selinux_netlbl_sock_genattr+0x48/0x180 security/selinux/netlabel.c:76
+    [<00000000201274d5>] selinux_netlbl_socket_post_create+0x41/0xb0 security/selinux/netlabel.c:398
+    [<00000000189429bf>] selinux_socket_post_create+0x182/0x390 security/selinux/hooks.c:4541
+    [<0000000054916bb2>] security_socket_post_create+0x54/0x80 security/security.c:2032
+    [<0000000085ba4813>] __sock_create+0x1cc/0x220 net/socket.c:1449
+    [<000000007253d628>] sock_create net/socket.c:1484 [inline]
+    [<000000007253d628>] __sys_socket+0x60/0x110 net/socket.c:1526
+    [<00000000503be95b>] __do_sys_socket net/socket.c:1535 [inline]
+    [<00000000503be95b>] __se_sys_socket net/socket.c:1533 [inline]
+    [<00000000503be95b>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
+    [<0000000042ce79c0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
+    [<00000000b1aeae16>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff888110dc39a0 (size 32):
+  comm "syz-executor783", pid 8417, jiffies 4294954395 (age 25.940s)
+  hex dump (first 32 bytes):
+    6b 65 72 6e 65 6c 5f 74 00 73 79 73 74 65 6d 5f  kernel_t.system_
+    72 3a 6b 65 72 6e 65 6c 5f 74 3a 73 30 00 00 00  r:kernel_t:s0...
+  backtrace:
+    [<0000000090b931e1>] kstrdup+0x36/0x70 mm/util.c:60
+    [<0000000079ad8987>] security_netlbl_sid_to_secattr+0x97/0x100 security/selinux/ss/services.c:3739
+    [<000000006911d3c9>] selinux_netlbl_sock_genattr+0x67/0x180 security/selinux/netlabel.c:79
+    [<00000000201274d5>] selinux_netlbl_socket_post_create+0x41/0xb0 security/selinux/netlabel.c:398
+    [<00000000189429bf>] selinux_socket_post_create+0x182/0x390 security/selinux/hooks.c:4541
+    [<0000000054916bb2>] security_socket_post_create+0x54/0x80 security/security.c:2032
+    [<0000000085ba4813>] __sock_create+0x1cc/0x220 net/socket.c:1449
+    [<000000007253d628>] sock_create net/socket.c:1484 [inline]
+    [<000000007253d628>] __sys_socket+0x60/0x110 net/socket.c:1526
+    [<00000000503be95b>] __do_sys_socket net/socket.c:1535 [inline]
+    [<00000000503be95b>] __se_sys_socket net/socket.c:1533 [inline]
+    [<00000000503be95b>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
+    [<0000000042ce79c0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
+    [<00000000b1aeae16>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff888110ef1800 (size 1840):
+  comm "syz-executor783", pid 8417, jiffies 4294954395 (age 30.410s)
+  hex dump (first 32 bytes):
+    00 00 00 00 7f 00 00 06 15 14 f5 21 4e 20 22 dc  ...........!N ".
+    0a 00 0b 40 00 00 00 00 00 00 00 00 00 00 00 00  ...@............
+  backtrace:
+    [<000000007986323e>] sk_prot_alloc+0x3c/0x170 net/core/sock.c:1598
+    [<000000002fc61b2a>] sk_alloc+0x30/0x330 net/core/sock.c:1658
+    [<000000000d7242e5>] inet6_create net/ipv6/af_inet6.c:181 [inline]
+    [<000000000d7242e5>] inet6_create+0x112/0x4d0 net/ipv6/af_inet6.c:108
+    [<00000000ca79ca9d>] __sock_create+0x14a/0x220 net/socket.c:1433
+    [<000000007253d628>] sock_create net/socket.c:1484 [inline]
+    [<000000007253d628>] __sys_socket+0x60/0x110 net/socket.c:1526
+    [<00000000503be95b>] __do_sys_socket net/socket.c:1535 [inline]
+    [<00000000503be95b>] __se_sys_socket net/socket.c:1533 [inline]
+    [<00000000503be95b>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
+    [<0000000042ce79c0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
+    [<00000000b1aeae16>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff888110eaf620 (size 32):
+  comm "syz-executor783", pid 8417, jiffies 4294954395 (age 30.410s)
+  hex dump (first 32 bytes):
+    02 00 00 00 00 00 00 00 c0 d8 f0 10 81 88 ff ff  ................
+    01 00 00 00 03 00 00 00 33 00 00 00 00 00 00 00  ........3.......
+  backtrace:
+    [<000000000d2c6b3e>] kmalloc include/linux/slab.h:555 [inline]
+    [<000000000d2c6b3e>] kzalloc include/linux/slab.h:669 [inline]
+    [<000000000d2c6b3e>] selinux_sk_alloc_security+0x43/0xa0 security/selinux/hooks.c:5126
+    [<00000000d4591378>] security_sk_alloc+0x42/0x70 security/security.c:2120
+    [<000000009002ddd9>] sk_prot_alloc+0x9c/0x170 net/core/sock.c:1607
+    [<000000002fc61b2a>] sk_alloc+0x30/0x330 net/core/sock.c:1658
+    [<000000000d7242e5>] inet6_create net/ipv6/af_inet6.c:181 [inline]
+    [<000000000d7242e5>] inet6_create+0x112/0x4d0 net/ipv6/af_inet6.c:108
+    [<00000000ca79ca9d>] __sock_create+0x14a/0x220 net/socket.c:1433
+    [<000000007253d628>] sock_create net/socket.c:1484 [inline]
+    [<000000007253d628>] __sys_socket+0x60/0x110 net/socket.c:1526
+    [<00000000503be95b>] __do_sys_socket net/socket.c:1535 [inline]
+    [<00000000503be95b>] __se_sys_socket net/socket.c:1533 [inline]
+    [<00000000503be95b>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
+    [<0000000042ce79c0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
+    [<00000000b1aeae16>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff888110f0d8c0 (size 64):
+  comm "syz-executor783", pid 8417, jiffies 4294954395 (age 30.410s)
+  hex dump (first 32 bytes):
+    15 00 00 01 00 00 00 00 a0 39 dc 10 81 88 ff ff  .........9......
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<000000002bb571e8>] kmalloc include/linux/slab.h:555 [inline]
+    [<000000002bb571e8>] kzalloc include/linux/slab.h:669 [inline]
+    [<000000002bb571e8>] netlbl_secattr_alloc include/net/netlabel.h:382 [inline]
+    [<000000002bb571e8>] selinux_netlbl_sock_genattr+0x48/0x180 security/selinux/netlabel.c:76
+    [<00000000201274d5>] selinux_netlbl_socket_post_create+0x41/0xb0 security/selinux/netlabel.c:398
+    [<00000000189429bf>] selinux_socket_post_create+0x182/0x390 security/selinux/hooks.c:4541
+    [<0000000054916bb2>] security_socket_post_create+0x54/0x80 security/security.c:2032
+    [<0000000085ba4813>] __sock_create+0x1cc/0x220 net/socket.c:1449
+    [<000000007253d628>] sock_create net/socket.c:1484 [inline]
+    [<000000007253d628>] __sys_socket+0x60/0x110 net/socket.c:1526
+    [<00000000503be95b>] __do_sys_socket net/socket.c:1535 [inline]
+    [<00000000503be95b>] __se_sys_socket net/socket.c:1533 [inline]
+    [<00000000503be95b>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
+    [<0000000042ce79c0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
+    [<00000000b1aeae16>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff888110dc39a0 (size 32):
+  comm "syz-executor783", pid 8417, jiffies 4294954395 (age 30.410s)
+  hex dump (first 32 bytes):
+    6b 65 72 6e 65 6c 5f 74 00 73 79 73 74 65 6d 5f  kernel_t.system_
+    72 3a 6b 65 72 6e 65 6c 5f 74 3a 73 30 00 00 00  r:kernel_t:s0...
+  backtrace:
+    [<0000000090b931e1>] kstrdup+0x36/0x70 mm/util.c:60
+    [<0000000079ad8987>] security_netlbl_sid_to_secattr+0x97/0x100 security/selinux/ss/services.c:3739
+    [<000000006911d3c9>] selinux_netlbl_sock_genattr+0x67/0x180 security/selinux/netlabel.c:79
+    [<00000000201274d5>] selinux_netlbl_socket_post_create+0x41/0xb0 security/selinux/netlabel.c:398
+    [<00000000189429bf>] selinux_socket_post_create+0x182/0x390 security/selinux/hooks.c:4541
+    [<0000000054916bb2>] security_socket_post_create+0x54/0x80 security/security.c:2032
+    [<0000000085ba4813>] __sock_create+0x1cc/0x220 net/socket.c:1449
+    [<000000007253d628>] sock_create net/socket.c:1484 [inline]
+    [<000000007253d628>] __sys_socket+0x60/0x110 net/socket.c:1526
+    [<00000000503be95b>] __do_sys_socket net/socket.c:1535 [inline]
+    [<00000000503be95b>] __se_sys_socket net/socket.c:1533 [inline]
+    [<00000000503be95b>] __x64_sys_socket+0x1a/0x20 net/socket.c:1533
+    [<0000000042ce79c0>] do_syscall_64+0x6e/0x220 arch/x86/entry/common.c:295
+    [<00000000b1aeae16>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
