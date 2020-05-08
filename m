@@ -2,118 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0AFE1CB69D
-	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 20:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CEF91CB6C2
+	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 20:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726843AbgEHSEl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 May 2020 14:04:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53310 "EHLO
+        id S1726904AbgEHSM0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 May 2020 14:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726756AbgEHSEl (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 8 May 2020 14:04:41 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39321C061A0C;
-        Fri,  8 May 2020 11:04:41 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id z2so2655181iol.11;
-        Fri, 08 May 2020 11:04:41 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726756AbgEHSMZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 8 May 2020 14:12:25 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31749C061A0C;
+        Fri,  8 May 2020 11:12:25 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id k1so2965061wrx.4;
+        Fri, 08 May 2020 11:12:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6n7N9OP5xGlbdCY3wbnFvbe92wVnKtN4kGkgM+TDOk0=;
-        b=V7+iqsCA8GIu6utgH2UMhByKaA2/FCf7MLe6adjxHlKp1CGufE5CkcjrPULjDhUhw7
-         C1SLnkOu88d+kq7GTGEhYnndx2U218EuNKPCi15Iiw9YgiVEqobpg1xfBRNb565+4Dp3
-         Iiv0OGfmbGMgvKl8dp8hg3QClDCHjoK/AFnzaxFngSlMIQlWZm8eFljIrCJRE/7Iq8K0
-         HMUTpORzJaindByoGANqSJKIIRJvXnTjroQPEYkH81WLuEqy43XDfVcdpMmIGcTdpzrq
-         +rtv6Ksf7hvlvzZ3bFK0I66nt123P7WSrgDRR7mDmyqiaVEKZwGriVhn0/jackUrHwl1
-         IXFg==
+        bh=wEg6363KALMCBQBSLOKuoUfGPXNIfqB9uH8JLDVOLn8=;
+        b=jiGw8gA/+KtDlxEler0Ln+sRm7LZ0ILtePjxlryhRiAgy+Hn1zPTOXFwwA455LXmq5
+         thSrJhUKnJQBcAYl3wzWZn+6B8ok+d37y+CZbsV47VN3uzanc+KEwvaz9So+sDWrYyPJ
+         z+FfYIzGvDOOQxGCx0O8u5hV1g/S7u0/kWQy/+m4wiGKcECubtCEdnHyzS947HDf+PYh
+         URXcx5SCg1ypxIfGnKD0wHDvo60V6ks30VsZ1JExOfmMrd+nBzyt7lGTFgDLzUwfzfEm
+         e8nkEJr1NgWM/VFqatr4n4e++zyDatXKOIRvVqIyvHCW5rUjWs9raS+lxg4TQm4b4O0G
+         PqGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6n7N9OP5xGlbdCY3wbnFvbe92wVnKtN4kGkgM+TDOk0=;
-        b=LhrwEZqrpCH8wKGSqb9GllcoaQ/qCDlAe6RlGIJLjOWQG/5ewZdTaWuVk4kHvdwZ50
-         CB3gc9t/Jogikce2+KY4H2WnJzHlOA58CW3hZeriJaKxJt7SZa/seCXSNRU4TH7NXtbj
-         6gs9Z7ATzB6ls07S81LKySdnQJuWTt2tqs26PWqwJmZq1ri+Dw6abf4cEFNC7a+mcH4O
-         qbpoyGztkL6Es7OO0hka5IufZWYbR76Og0gfH4018Fz93bzjaoP1qngqSIawdzQuU1tc
-         gwZfvkgykaR3Z/HSWqTeD+4En2kmMhIaI69rmgC60uLWGYt/12jDI9nV8/dp5Gbp/xv5
-         onyA==
-X-Gm-Message-State: AGi0PubhBT9Ag+8O5xt51tmoWq1nHdhjWic+uW8FwRP2Xyabeff/AP6z
-        dJYtn6Eh6abKkMg8QF6mLqFPl8xHjYEAK4Orwsg=
-X-Google-Smtp-Source: APiQypLb5fZO4mkjqTLGPaD0VhNwGL/3AK5hbJeXdURVDlAJjd5J9F30z8u63HbQu6cSTn9Iu36jeUpzMGuIYDHUQ6I=
-X-Received: by 2002:a5d:970e:: with SMTP id h14mr3769395iol.117.1588961080652;
- Fri, 08 May 2020 11:04:40 -0700 (PDT)
+        bh=wEg6363KALMCBQBSLOKuoUfGPXNIfqB9uH8JLDVOLn8=;
+        b=tY8lEYGaTZKJ9jdUnkmWGKmS2uYzex9OQEfPceh+w7PlkLGuSD2L7GT1xN1LwQhZBH
+         ZVytWxokukBC5VxVNvnc9SGoIeKIcfUx5475GxEBzcE59Fkj2h1ZmMeizkpUyGFSFVPG
+         DcQDbHEbR22BQbCjE86kULIlp+jnMNADn2Hsbf42xmONxKG0D5pLssqZWWwoRnLZGhVU
+         3wcLV/iGVih60e+aNlnuWdFDojd/D2uz+1NLmSgMpBpsrJtNiCI5PtppJjNqFO07GvEh
+         Kzm5aFnfnreyV0jBkj95iX54Pn4lURHtU+E7S8aJK0A2hWlkb5k1j67hloR2u4xSeUCw
+         qmrg==
+X-Gm-Message-State: AGi0PubCZyd37fdGBBSIZZzdS7bgPhbk2jCCr953uiTltG+l0nO4RP8D
+        Ow5CSbuDylUNjXtG9XXPambyVD1BOSv/jsGsAI8=
+X-Google-Smtp-Source: APiQypJ1418d0usqdIDaEoMJ9S+Dht8dlCaR0LS0UZ1UTm9QxdH2D6YM5JrcYaXtjH+tKEvB0V0bS+J5tYCvdGie2SI=
+X-Received: by 2002:adf:8401:: with SMTP id 1mr4356440wrf.241.1588961543855;
+ Fri, 08 May 2020 11:12:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200508063954.256593-1-irogers@google.com> <CAEf4BzYT5FfDt2oqctHC6dXNmwg5gaaNcFu1StObuYk-jKocLQ@mail.gmail.com>
- <CAP-5=fU-QxfdkQoHP=Ksqeb9gPTE4xYcgEcp9Ej6trZpkCDvPA@mail.gmail.com>
-In-Reply-To: <CAP-5=fU-QxfdkQoHP=Ksqeb9gPTE4xYcgEcp9Ej6trZpkCDvPA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 8 May 2020 11:04:29 -0700
-Message-ID: <CAEf4BzZFWsRKz+dUj6MHw2=qOpXpmna6ommRE9OxQZEoHH6UmA@mail.gmail.com>
-Subject: Re: [PATCH] libbpf hashmap: fix undefined behavior in hash_bits
-To:     Ian Rogers <irogers@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+References: <20200507010504.26352-1-luke.r.nels@gmail.com> <20200507010504.26352-2-luke.r.nels@gmail.com>
+ <20200507082934.GA28215@willie-the-truck> <20200507101224.33a44d71@why>
+ <CAB-e3NRCJ_4+vkFPkMN67DwBBtO=sJwR-oL4-AozVw2bBJHOzg@mail.gmail.com> <20200508114709.GB16247@willie-the-truck>
+In-Reply-To: <20200508114709.GB16247@willie-the-truck>
+From:   Luke Nelson <luke.r.nels@gmail.com>
+Date:   Fri, 8 May 2020 11:12:12 -0700
+Message-ID: <CAB-e3NQLuaHLxNB3Zpgy8EqyiZBqEYGzh1TSzXQe++nqPu2oLg@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 1/3] arm64: insn: Fix two bugs in encoding
+ 32-bit logical immediates
+To:     Will Deacon <will@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Luke Nelson <lukenels@cs.washington.edu>,
+        bpf <bpf@vger.kernel.org>, Xi Wang <xi.wang@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 8, 2020 at 12:21 AM Ian Rogers <irogers@google.com> wrote:
->
-> On Fri, May 8, 2020 at 12:12 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Thu, May 7, 2020 at 11:40 PM Ian Rogers <irogers@google.com> wrote:
-> > >
-> > > If bits is 0, the case when the map is empty, then the >> is the size of
-> > > the register which is undefined behavior - on x86 it is the same as a
-> > > shift by 0. Fix by handling the 0 case explicitly.
-> > >
-> > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > ---
-> >
-> > No need. The only case when bits can be 0 is when hashmap is
-> > completely empty (no elements have ever been added yet). In that case,
-> > it doesn't matter what value hash_bits() returns,
-> > hashmap__for_each_key_entry/hashmap__for_each_key_entry_safe will
-> > behave correctly, because map->buckets will be NULL.
->
-> Agreed. Unfortunately the LLVM undefined behavior sanitizer (I've not
-> tested with GCC to the same extent) will cause an exit when it sees >>
-> 64 regardless of whether the value is used or not. It'd be possible to
-> #ifdef this code on whether a sanitizer was present.
+Hi Will,
 
-Yeah, let's do that rather than slowing down hashing function.
+On Fri, May 8, 2020 at 4:47 AM Will Deacon <will@kernel.org> wrote:
+>
+> Yes, please! And please include Daniel's acks on the BPF changes too. It's a
+> public holiday here in the UK today, but I can pick this up next week.
 
+Thanks!
+
+> Nice! Two things:
 >
-> Thanks,
-> Ian
->
-> > >  tools/lib/bpf/hashmap.h | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/tools/lib/bpf/hashmap.h b/tools/lib/bpf/hashmap.h
-> > > index d5ef212a55ba..781db653d16c 100644
-> > > --- a/tools/lib/bpf/hashmap.h
-> > > +++ b/tools/lib/bpf/hashmap.h
-> > > @@ -19,6 +19,8 @@
-> > >  static inline size_t hash_bits(size_t h, int bits)
-> > >  {
-> > >         /* shuffle bits and return requested number of upper bits */
-> > > +       if (bits == 0)
-> > > +               return 0;
-> > >         return (h * 11400714819323198485llu) >> (__WORDSIZE - bits);
-> > >  }
-> > >
-> > > --
-> > > 2.26.2.645.ge9eca65c58-goog
-> > >
+> (1) I really think you should give a talk on this at a Linux conference
+
+That would be great, I'd be happy to give a talk on our verification
+work some time in the future :)
+
+> (2) Did you look at any instruction generation functions other than the
+>     logical immediate encoding function?
+
+Other instruction generation functions are on our todo list, but we
+haven't got a chance to spend more time on them yet.
+
+Thanks again,
+
+- Luke
