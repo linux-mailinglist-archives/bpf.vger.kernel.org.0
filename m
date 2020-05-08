@@ -2,88 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C818A1CA42E
-	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 08:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D141CA4BF
+	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 09:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726926AbgEHGj7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 May 2020 02:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726873AbgEHGj6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 8 May 2020 02:39:58 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78515C05BD0A
-        for <bpf@vger.kernel.org>; Thu,  7 May 2020 23:39:58 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 186so986679ybq.1
-        for <bpf@vger.kernel.org>; Thu, 07 May 2020 23:39:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=JqKocGa5cimql1fp4DS+xPXwrVZ2Z2hJEVO/fiKh20k=;
-        b=LSasER3WBqtfBg/bGE3PeVOf3C1Dim6JBLIEgeU3rioM9+MNBKorVZ4wLEoKOWeVEB
-         WVpX2iRLeOoAaTH5FU79u0hIMkOIFUHESFKAB1oxCjCgjRvmMdaxTMqaBOwQHVR2u8SD
-         YZHIpK0wPVJW+tg5pO++cjzhWrun5K+JyrZzWt5wXl2Y8cto4/QGzWXb3Z/TQ/PXtNRg
-         qgUSdqGjHPbW9fg5ueq6bMEwFbpewcbkDB66XY25g0+h47IYWDzeNld91gofqSW4vQkh
-         JGmHEsw+wh2w1youzj1UIYZYEk5FplV54amOTaCJkWNEEuH/6+HkYRwNtBmntewVUL2F
-         WsrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=JqKocGa5cimql1fp4DS+xPXwrVZ2Z2hJEVO/fiKh20k=;
-        b=EsfQVNfcl0aHjxu4ZqYJ2HWtXUFDt3xZQrFcqO8r5L/cXM8tT4ZR4irpGQ8RQG2kTX
-         lb0Lv1sxoMpiz9XPjZHt3uU+e55Nb26C1m9LRSngyewVjjDCepQzef3mToNUP8UHuC5s
-         lhui+TVoxnbyCwd+nmqgWTOjg3jIXAJuhpdQ/av3Ei982iCRhbhsrQ3aNjyYkD7R0KXJ
-         hJjtSLtvh9pqKvBZaxnVq9XRfPN0L6YRFEE1gXplCn9iOaZ1jKgQLLMecdqEpz7h+DSz
-         lMYClbsRjH3UtwrbvV89JZQu8JL73D/kqTvNvh5TMwe3OG4Q7ueE7xRhEEPULyRxkamr
-         7X2Q==
-X-Gm-Message-State: AGi0PuZAziui2tFcQSEhAc6J2h7BRzZh6/yDx4LJLUmJJJw9dtw/5cVw
-        +Yefa0Hc8Dz+q/Qjg2c2Rp+qM6xlyNaW
-X-Google-Smtp-Source: APiQypIzG335LQcvib+amwZBO3RBTIJWyEl0ag5FnTDtNK3nU2gmInNWeH2R0b+Fk2aSWTZl0MrQJhBzEET6
-X-Received: by 2002:a25:dbd2:: with SMTP id g201mr2328607ybf.17.1588919997600;
- Thu, 07 May 2020 23:39:57 -0700 (PDT)
-Date:   Thu,  7 May 2020 23:39:54 -0700
-Message-Id: <20200508063954.256593-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
-Subject: [PATCH] libbpf hashmap: fix undefined behavior in hash_bits
-From:   Ian Rogers <irogers@google.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ian Rogers <irogers@google.com>
+        id S1726825AbgEHHGF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 May 2020 03:06:05 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:54974 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726009AbgEHHGF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 8 May 2020 03:06:05 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 048762ju020938
+        for <bpf@vger.kernel.org>; Fri, 8 May 2020 00:06:05 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=facebook;
+ bh=baFpFbIDHaKMImJSdN+7dpCGgUiU8qjtIMJ347QphjM=;
+ b=hjzUswQNPhbI4djz9GFbmaNGAWp550U/UPWZ/OOVA8KXVgKdbQeWtqjcZZVVkRyo+uHY
+ JiNYr0WEf5VCMAy/joeFAw6+URdIiiDOok86S8EaWJ9+TY0IJzAFLibT5ilVJoJE7uIc
+ OX/5KXygAJnfhpMlxgS7s7aRX0yzVPOitwU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 30vtdfa52w-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 08 May 2020 00:06:04 -0700
+Received: from intmgw002.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 8 May 2020 00:05:55 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id B34052EC3844; Fri,  8 May 2020 00:05:49 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 0/3] Add benchmark runner and few benchmarks
+Date:   Fri, 8 May 2020 00:05:45 -0700
+Message-ID: <20200508070548.2358701-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-08_08:2020-05-07,2020-05-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ impostorscore=0 suspectscore=8 mlxlogscore=999 clxscore=1015 phishscore=0
+ adultscore=0 malwarescore=0 lowpriorityscore=0 mlxscore=0 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005080061
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If bits is 0, the case when the map is empty, then the >> is the size of
-the register which is undefined behavior - on x86 it is the same as a
-shift by 0. Fix by handling the 0 case explicitly.
+Add generic benchmark runner framework which simplifies writing various
+performance benchmarks in a consistent fashion.  This framework will be u=
+sed
+in follow up patches to test performance of perf buffer and ring buffer a=
+s
+well.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/lib/bpf/hashmap.h | 2 ++
- 1 file changed, 2 insertions(+)
+Patch #1 adds generic runner implementation and atomic counter benchmarks=
+ to
+validate benchmark runner's behavior.
 
-diff --git a/tools/lib/bpf/hashmap.h b/tools/lib/bpf/hashmap.h
-index d5ef212a55ba..781db653d16c 100644
---- a/tools/lib/bpf/hashmap.h
-+++ b/tools/lib/bpf/hashmap.h
-@@ -19,6 +19,8 @@
- static inline size_t hash_bits(size_t h, int bits)
- {
- 	/* shuffle bits and return requested number of upper bits */
-+	if (bits == 0)
-+		return 0;
- 	return (h * 11400714819323198485llu) >> (__WORDSIZE - bits);
- }
- 
--- 
-2.26.2.645.ge9eca65c58-goog
+Patch #2 implements test_overhead benchmark as part of bench runner. It a=
+lso
+add fmod_ret BPF program type to a set of benchmarks.
+
+Patch #3 tests faster alternatives to set_task_comm() approach, tested in
+test_overhead, in search for minimal-overhead way to trigger BPF program
+execution from user-space on demand.
+
+Andrii Nakryiko (3):
+  selftests/bpf: add benchmark runner infrastructure
+  selftest/bpf: fmod_ret prog and implement test_overhead as part of
+    bench
+  selftest/bpf: add BPF triggring benchmark
+
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |  15 +-
+ tools/testing/selftests/bpf/bench.c           | 390 ++++++++++++++++++
+ tools/testing/selftests/bpf/bench.h           |  74 ++++
+ tools/testing/selftests/bpf/bench_count.c     |  91 ++++
+ tools/testing/selftests/bpf/bench_rename.c    | 195 +++++++++
+ tools/testing/selftests/bpf/bench_trigger.c   | 167 ++++++++
+ .../selftests/bpf/prog_tests/test_overhead.c  |  14 +-
+ .../selftests/bpf/progs/test_overhead.c       |   6 +
+ .../selftests/bpf/progs/trigger_bench.c       |  47 +++
+ 10 files changed, 998 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/bench.c
+ create mode 100644 tools/testing/selftests/bpf/bench.h
+ create mode 100644 tools/testing/selftests/bpf/bench_count.c
+ create mode 100644 tools/testing/selftests/bpf/bench_rename.c
+ create mode 100644 tools/testing/selftests/bpf/bench_trigger.c
+ create mode 100644 tools/testing/selftests/bpf/progs/trigger_bench.c
+
+--=20
+2.24.1
 
