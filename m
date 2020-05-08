@@ -2,110 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F7C1CB284
-	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 17:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E11E61CB303
+	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 17:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727083AbgEHPGv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 May 2020 11:06:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53698 "EHLO
+        id S1726771AbgEHPgi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 May 2020 11:36:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726771AbgEHPGu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 May 2020 11:06:50 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D57C061A0C
-        for <bpf@vger.kernel.org>; Fri,  8 May 2020 08:06:49 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id i13so8666900oie.9
-        for <bpf@vger.kernel.org>; Fri, 08 May 2020 08:06:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=lvwnhFDd/cmhJNNKsmXNg+ehQ3GiN0fUJfWc+H/B0zs=;
-        b=cy9hehPMKa+WJUe5ElMYlcn6E7fJ7v/lmPm06jhq7mFWxu1uGzJLIjKzkRwdMUPVOK
-         ndRvtHdUQMNd77RI3X+ghp9kBKdDx7hE+TktwLN3HdtBNn86dSTJqvwMmpzDEga3Vip/
-         w1J7aJbuN4oyxXziInOwMCNEpt4YEpPz/iIsXMJr47XXoQfcSs3vnN1SbMmkKxvrM9DB
-         CvWDHNwhphRaPl0H8xYVuUK+zGjhIKx7cfVct+AdMVRg1Lp4fLK/LHYkKxviLZDf4I/4
-         vVUalPMBoSUje9F64hUF6Px1YEu3XCc/yTWvOme/LGbw5Y6x8qruUA63wL1M02c6Sa0Z
-         ebVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=lvwnhFDd/cmhJNNKsmXNg+ehQ3GiN0fUJfWc+H/B0zs=;
-        b=NCJKo9JMDHfBDCGZAmXJnBYyBhVCLuOOKZyacEyBha54nXhn2EX28nTDe4xpNWSiiV
-         OurSGoeBkZZhOOG6J9FM0X6CzkSCID9O4H2yLv/7OnBRDirituKOdS9EvNS1B4HjqIDc
-         Ryssn3wb/1X0xfc9fSmGv8ZnDliRQm61JaVLyPjlcq3hz5bg5xXu4Urqu3Hd/MbbeVUo
-         HKDFSKER+fhzHHvbbudSF6otHqbSx2jyfet4bYNoCEN5ZSCVlBPW9S3J6t48GCqvucuF
-         z7wR+/jzkZ6iA+JmILltIIrT6B6nnJF5zCKSv4vnId2LEoSTmNZg88PdPkrkpKOf+iuE
-         7CBQ==
-X-Gm-Message-State: AGi0Puaak8+qTYsXDwLpGqmT/y0An2HTkC1Ofq9JulnU43f0k2HMbuA0
-        4bIQgrl0QlPeoPq4HQWMwW9xLIfCtOuBHEE4MQE=
-X-Google-Smtp-Source: APiQypKhVh9OPMuVYZzwlNvPp+Oa57pFyZy9sEBJUHKQfQrZRGGifPdxAxIv0DudukFZ3KcV/HGA38+JZc/hY4U2bqA=
-X-Received: by 2002:aca:fc45:: with SMTP id a66mr10871523oii.5.1588950408637;
- Fri, 08 May 2020 08:06:48 -0700 (PDT)
+        with ESMTP id S1726636AbgEHPgi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 May 2020 11:36:38 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C809C061A0C;
+        Fri,  8 May 2020 08:36:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=JYdyu02dksbSjvmwcDV7qt06YZ68oFogfc0H7mUbdmw=; b=qjaMFrDyUaIDFFR/VB6EcmHWKy
+        i7SNi7MXJSxWZd67zL2J2Gh5qxlCPOfUB/brJjc9qw0qCSj+PTbugVE9jz0KiQ2oqhxOOa8aTHUQ3
+        ThGxZkMVHc76uL6GbcUHqnVe+rTIi7sL59bJ6sJz6aiCsH++7jcarqChqxpRdgsZYeVS8o0yd6Mnz
+        6o3XSSDb1dwZLKBmGh1LxpTwE4WFuM/rtR3AP/6d+yxVs+OqH4P//yiYxaw74Q9XxEu9VqkFPaoA1
+        3p7q9DDeka6ZIKq2wx1h4PJO2yBoVi5v5BL7kWCpFCNkfv+nhQ5AQ+dr/XVDRLLmJjiHT/JqVD5j9
+        UeqibLWg==;
+Received: from [2001:4bb8:180:9d3f:90d7:9df8:7cd:3504] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jX53F-00046s-CU; Fri, 08 May 2020 15:36:37 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, kvm@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Add a __anon_inode_getfd helper
+Date:   Fri,  8 May 2020 17:36:22 +0200
+Message-Id: <20200508153634.249933-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <CACZqfqC038WbB-iO86xsvpSehgRLaua_uObbOSJgxfx5DnV5Ww@mail.gmail.com>
- <CACZqfqDijnE9s-Vw8nao9gJ4ewF5oc+YO5_-XOEhDB_OvDRdWw@mail.gmail.com>
-In-Reply-To: <CACZqfqDijnE9s-Vw8nao9gJ4ewF5oc+YO5_-XOEhDB_OvDRdWw@mail.gmail.com>
-From:   Josh Soref <jsoref@gmail.com>
-Date:   Fri, 8 May 2020 11:06:35 -0400
-Message-ID: <CACZqfqB_1waiutsW5qZPQbPRX4jRcPX380pQ1J7Az1+3YSPMBA@mail.gmail.com>
-Subject: Re: spelling fix for bpf_perf_prog_read_value optval doc
-To:     Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Very sorry for the extra emails. I've finished touching sysdig...
+Hi Al,
 
-From 2804d3c0cfddb8e73f75ba4fae01f59918973658 Mon Sep 17 00:00:00 2001
-From: Josh Soref <jsoref@users.noreply.github.com>
-Date: Fri, 8 May 2020 11:01:01 -0400
-Subject: [PATCH 4/5] spelling: identifier
-
-Signed-off-by: Josh Soref <jsoref@gmail.com>
----
- include/uapi/linux/bpf.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 8ad84678714b4..fc13ccb191c3e 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1085,7 +1085,7 @@ union bpf_attr {
-  * Description
-  * Retrieve the realm or the route, that is to say the
-  * **tclassid** field of the destination for the *skb*. The
-- * indentifier retrieved is a user-provided tag, similar to the
-+ * identifier retrieved is a user-provided tag, similar to the
-  * one used with the net_cls cgroup (see description for
-  * **bpf_get_cgroup_classid**\ () helper), but here this tag is
-  * held by a route (a destination entry), not by a task.
-
-From d863cdab79b1f5a16e2b160bb9d0690be4f6b33e Mon Sep 17 00:00:00 2001
-From: Josh Soref <jsoref@users.noreply.github.com>
-Date: Fri, 8 May 2020 11:01:47 -0400
-Subject: [PATCH 5/5] spelling: separately
-
-Signed-off-by: Josh Soref <jsoref@gmail.com>
----
- include/uapi/linux/bpf.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index fc13ccb191c3e..bf19da37147af 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -3359,7 +3359,7 @@ struct bpf_xfrm_state {
-  * provide backwards compatibility with existing SCHED_CLS and SCHED_ACT
-  * programs.
-  *
-- * XDP is handled seprately, see XDP_*.
-+ * XDP is handled separately, see XDP_*.
-  */
- enum bpf_ret_code {
-  BPF_OK = 0,
-
-In case of whitespace damage, please see:
-https://github.com/torvalds/linux/compare/master...jsoref:spelling-bpf.patch
+this series (against your work.epoll branch), adds a new
+__anon_inode_getfd helper, which exposes the functionality in
+anon_inode_getfd minus installing the file descriptor.  This
+allows to clean up a lot of the places that currently open code
+the functionality.
