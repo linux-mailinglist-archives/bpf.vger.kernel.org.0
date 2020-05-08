@@ -2,97 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B770A1CA062
-	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 03:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876F01CA06D
+	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 03:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726712AbgEHB4x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 May 2020 21:56:53 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:26326 "EHLO
+        id S1726756AbgEHB7o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 May 2020 21:59:44 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:46077 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727100AbgEHB4w (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 7 May 2020 21:56:52 -0400
+        by vger.kernel.org with ESMTP id S1726509AbgEHB7o (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 7 May 2020 21:59:44 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588903011;
+        s=mimecast20190719; t=1588903183;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JT05FM/qFjOhlzVbidfMllXSBmmMs5hu8jLgUO53t7w=;
-        b=RqrskwiL9W3HcJU4nbzHS/RNtVdLBn6BKqAmOe8HyfZnRFyaLi3rf3xBUJYmo8SKXarwC4
-        lLytS0wc1HcgtOAoWYImlx2pt5RwRDcAs7xecUGJD5sTOuitiOg6dTTH5XyXUKazSGPoEo
-        LwKQox0LC1EUxJiDkVuUM/kzKORJh3c=
+        bh=uMn5kXEMwwk6mUv6PTZwumoxAF7POIcplX3ZxztB3/w=;
+        b=E4TVMuBhItj+lmZEpOm8e/h3ystQ7Q0+Qp8oA9sZzKLP13YuyYzCeClnQ2HkzJCwB+Qj7l
+        Yu5PXl4gXrP+67PumGouG39L3aF2hd4hGQkVoVY4Ww73uCmxwYfkhFWw2CaSdZwsZDYRvZ
+        E8keP2HMUvHSmiBvE/CQvBpPctV6mxk=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-99-MdXXWQgiPJ-p7NVrRQ1dJg-1; Thu, 07 May 2020 21:56:47 -0400
-X-MC-Unique: MdXXWQgiPJ-p7NVrRQ1dJg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+ us-mta-26-3y5hWrAsPU-uIiXsi-giRw-1; Thu, 07 May 2020 21:59:41 -0400
+X-MC-Unique: 3y5hWrAsPU-uIiXsi-giRw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8AFB5107ACCA;
-        Fri,  8 May 2020 01:56:46 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2DCBE80B72B;
+        Fri,  8 May 2020 01:59:40 +0000 (UTC)
 Received: from [10.72.13.98] (ovpn-13-98.pek2.redhat.com [10.72.13.98])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D48125C1B0;
-        Fri,  8 May 2020 01:56:39 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4300E579AD;
+        Fri,  8 May 2020 01:59:31 +0000 (UTC)
 Subject: Re: [PATCH net-next 1/2] virtio-net: don't reserve space for vnet
  header for XDP
 To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>
+        "Jubran, Samih" <sameehj@amazon.com>
 References: <20200506061633.16327-1-jasowang@redhat.com>
- <20200506033834-mutt-send-email-mst@kernel.org>
- <7a169b06-b6b9-eac1-f03a-39dd1cfcce57@redhat.com>
- <20200506055436-mutt-send-email-mst@kernel.org>
+ <20200506102123.739f1233@carbon>
+ <3ecb558b-5281-2497-db3c-6aae7d7f882b@redhat.com>
+ <20200506054619-mutt-send-email-mst@kernel.org>
 From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <c1df2cdf-eaff-f146-1804-f0a6cad6bb2d@redhat.com>
-Date:   Fri, 8 May 2020 09:56:37 +0800
+Message-ID: <e1b67a0a-8499-39f9-0132-2ea62205289e@redhat.com>
+Date:   Fri, 8 May 2020 09:59:29 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200506055436-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20200506054619-mutt-send-email-mst@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-On 2020/5/6 下午5:54, Michael S. Tsirkin wrote:
-> On Wed, May 06, 2020 at 04:19:40PM +0800, Jason Wang wrote:
->> On 2020/5/6 下午3:53, Michael S. Tsirkin wrote:
->>> On Wed, May 06, 2020 at 02:16:32PM +0800, Jason Wang wrote:
->>>> We tried to reserve space for vnet header before
->>>> xdp.data_hard_start. But this is useless since the packet could be
->>>> modified by XDP which may invalidate the information stored in the
->>>> header and there's no way for XDP to know the existence of the vnet
->>>> header currently.
->>> What do you mean? Doesn't XDP_PASS use the header in the buffer?
->> We don't, see 436c9453a1ac0 ("virtio-net: keep vnet header zeroed after
->> processing XDP")
->>
->> If there's other place, it should be a bug.
->>
->>
->>>> So let's just not reserve space for vnet header in this case.
->>> In any case, we can find out XDP does head adjustments
->>> if we need to.
->> But XDP program can modify the packets without adjusting headers.
+On 2020/5/6 下午5:46, Michael S. Tsirkin wrote:
+>>> There
+>>> are a lot of unanswered questions on how this will be implemented.
+>>> Thus, I cannot layout how we are going to leverage this info yet, but
+>>> your patch are killing this info, which IHMO is going in the wrong
+>>> direction.
+>> I can copy vnet header ahead of data_hard_start, does it work for you?
 >>
 >> Thanks
-> Then what's the problem?
+> That's likely to be somewhat expensive.
 
 
-Then we can't do anything more than just invalidating vnet header since 
-we don't know whether or not the packet has been modified or not.
-
-Technically, XDP can give the driver some hint about whether or not the 
-packet has been modified, but AFAIK we haven't implemented this yet.
+Any better approach? Note that it's not the issue that is introduced in 
+this patch. Anyhow the header adjustment may just overwrite the vnet 
+header even without this patch.
 
 Thanks
-
-
->
 
