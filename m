@@ -2,264 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62BE1CA947
-	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 13:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4001CA9E9
+	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 13:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726937AbgEHLLs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 May 2020 07:11:48 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:41653 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726897AbgEHLLs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 May 2020 07:11:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588936306;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BaIxF6uhkA2o0cS38cCKXMWycTDocaV5riNLhrf1m8M=;
-        b=ZOzR4t8xyvolF+DJM3VaHejGVoDC9rvQpedotGaPqs7tgIMizDtryz7yZjNH421AyfhZ3T
-        hDwdKu3WI52oyFr2K35QqWWeZBKshSAPvMUMwYn33fLl18qEetB11x0pvXlmudfUhBqO+2
-        kyZBwftEeidvKhNUg49NyfpJMmApwdw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-437-NYJURwTNPTChfRZ4wmZpQg-1; Fri, 08 May 2020 07:11:42 -0400
-X-MC-Unique: NYJURwTNPTChfRZ4wmZpQg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726776AbgEHLrR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 May 2020 07:47:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726618AbgEHLrR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 May 2020 07:47:17 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B3F31800687;
-        Fri,  8 May 2020 11:11:40 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.40.208.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DA5735C1B0;
-        Fri,  8 May 2020 11:11:34 +0000 (UTC)
-Received: from [192.168.42.3] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id D1100300020FB;
-        Fri,  8 May 2020 13:11:33 +0200 (CEST)
-Subject: [PATCH net-next v3 33/33] selftests/bpf: xdp_adjust_tail add grow
- tail tests
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     sameehj@amazon.com
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        by mail.kernel.org (Postfix) with ESMTPSA id 4AF1C208DB;
+        Fri,  8 May 2020 11:47:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588938436;
+        bh=t1Iwu24XFt/a9NpFSyEL3vQir1AT95eNfYgPSI3dRXk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Fbr0ksTlgIL5FTsuoGevS/1Dfx/6oKLeeINEHrjnfmHHcaDmHd5vjhSs6V/18OxQl
+         d87ngXBx/xymM9BE8xEn5y929HYpCE0cwOKixvFuxVhneks1P992dmKU3twX75N40j
+         S/0gFC6NylCeiDyMUntAk0xuU23GFqIAXLPGpZOc=
+Date:   Fri, 8 May 2020 12:47:10 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Luke Nelson <luke.r.nels@gmail.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Luke Nelson <lukenels@cs.washington.edu>,
+        bpf <bpf@vger.kernel.org>, Xi Wang <xi.wang@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        David Ahern <dsahern@gmail.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Tariq Toukan <tariqt@mellanox.com>
-Date:   Fri, 08 May 2020 13:11:33 +0200
-Message-ID: <158893629377.2321140.12975026593125565959.stgit@firesoul>
-In-Reply-To: <158893607924.2321140.16117992313983615627.stgit@firesoul>
-References: <158893607924.2321140.16117992313983615627.stgit@firesoul>
-User-Agent: StGit/0.19
+        KP Singh <kpsingh@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+Subject: Re: [RFC PATCH bpf-next 1/3] arm64: insn: Fix two bugs in encoding
+ 32-bit logical immediates
+Message-ID: <20200508114709.GB16247@willie-the-truck>
+References: <20200507010504.26352-1-luke.r.nels@gmail.com>
+ <20200507010504.26352-2-luke.r.nels@gmail.com>
+ <20200507082934.GA28215@willie-the-truck>
+ <20200507101224.33a44d71@why>
+ <CAB-e3NRCJ_4+vkFPkMN67DwBBtO=sJwR-oL4-AozVw2bBJHOzg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAB-e3NRCJ_4+vkFPkMN67DwBBtO=sJwR-oL4-AozVw2bBJHOzg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Extend BPF selftest xdp_adjust_tail with grow tail tests, which is added
-as subtest's. The first grow test stays in same form as original shrink
-test. The second grow test use the newer bpf_prog_test_run_xattr() calls,
-and does extra checking of data contents.
+On Thu, May 07, 2020 at 02:48:07PM -0700, Luke Nelson wrote:
+> Thanks for the comments! Responses below:
+> 
+> > It's a bit grotty spreading the checks out now. How about we tweak things
+> > slightly along the lines of:
+> >
+> >
+> > diff --git a/arch/arm64/kernel/insn.c b/arch/arm64/kernel/insn.c
+> > index 4a9e773a177f..60ec788eaf33 100644
+> > --- a/arch/arm64/kernel/insn.c
+> > +++ b/arch/arm64/kernel/insn.c
+> > [...]
+> 
+> Agreed; this new version looks much cleaner. I re-ran all the tests /
+> verification and everything seems good. Would you like me to submit a
+> v2 of this series with this new code?
 
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- .../selftests/bpf/prog_tests/xdp_adjust_tail.c     |  116 +++++++++++++++++++-
- .../bpf/progs/test_xdp_adjust_tail_grow.c          |   33 ++++++
- 2 files changed, 144 insertions(+), 5 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.c
+Yes, please! And please include Daniel's acks on the BPF changes too. It's a
+public holiday here in the UK today, but I can pick this up next week.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
-index d258f979d5ef..1498627af6e8 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
-@@ -4,10 +4,10 @@
- void test_xdp_adjust_tail_shrink(void)
- {
- 	const char *file = "./test_xdp_adjust_tail_shrink.o";
-+	__u32 duration, retval, size, expect_sz;
- 	struct bpf_object *obj;
--	char buf[128];
--	__u32 duration, retval, size;
- 	int err, prog_fd;
-+	char buf[128];
- 
- 	err = bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
- 	if (CHECK_FAIL(err))
-@@ -20,15 +20,121 @@ void test_xdp_adjust_tail_shrink(void)
- 	      "ipv4", "err %d errno %d retval %d size %d\n",
- 	      err, errno, retval, size);
- 
-+	expect_sz = sizeof(pkt_v6) - 20;  /* Test shrink with 20 bytes */
- 	err = bpf_prog_test_run(prog_fd, 1, &pkt_v6, sizeof(pkt_v6),
- 				buf, &size, &retval, &duration);
--	CHECK(err || retval != XDP_TX || size != 54,
--	      "ipv6", "err %d errno %d retval %d size %d\n",
-+	CHECK(err || retval != XDP_TX || size != expect_sz,
-+	      "ipv6", "err %d errno %d retval %d size %d expect-size %d\n",
-+	      err, errno, retval, size, expect_sz);
-+	bpf_object__close(obj);
-+}
-+
-+void test_xdp_adjust_tail_grow(void)
-+{
-+	const char *file = "./test_xdp_adjust_tail_grow.o";
-+	struct bpf_object *obj;
-+	char buf[4096]; /* avoid segfault: large buf to hold grow results */
-+	__u32 duration, retval, size, expect_sz;
-+	int err, prog_fd;
-+
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
-+	if (CHECK_FAIL(err))
-+		return;
-+
-+	err = bpf_prog_test_run(prog_fd, 1, &pkt_v4, sizeof(pkt_v4),
-+				buf, &size, &retval, &duration);
-+	CHECK(err || retval != XDP_DROP,
-+	      "ipv4", "err %d errno %d retval %d size %d\n",
- 	      err, errno, retval, size);
-+
-+	expect_sz = sizeof(pkt_v6) + 40; /* Test grow with 40 bytes */
-+	err = bpf_prog_test_run(prog_fd, 1, &pkt_v6, sizeof(pkt_v6) /* 74 */,
-+				buf, &size, &retval, &duration);
-+	CHECK(err || retval != XDP_TX || size != expect_sz,
-+	      "ipv6", "err %d errno %d retval %d size %d expect-size %d\n",
-+	      err, errno, retval, size, expect_sz);
-+
-+	bpf_object__close(obj);
-+}
-+
-+void test_xdp_adjust_tail_grow2(void)
-+{
-+	const char *file = "./test_xdp_adjust_tail_grow.o";
-+	char buf[4096]; /* avoid segfault: large buf to hold grow results */
-+	int tailroom = 320; /* SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) */;
-+	struct bpf_object *obj;
-+	int err, cnt, i;
-+	int max_grow;
-+
-+	struct bpf_prog_test_run_attr tattr = {
-+		.repeat 	= 1,
-+		.data_in	= &buf,
-+		.data_out	= &buf,
-+		.data_size_in	= 0, /* Per test */
-+		.data_size_out	= 0, /* Per test */
-+	};
-+
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &tattr.prog_fd);
-+	if (CHECK_ATTR(err, "load", "err %d errno %d\n", err, errno))
-+		return;
-+
-+	/* Test case-64 */
-+	memset(buf, 1, sizeof(buf));
-+	tattr.data_size_in  =  64; /* Determine test case via pkt size */
-+	tattr.data_size_out = 128; /* Limit copy_size */
-+	/* Kernel side alloc packet memory area that is zero init */
-+	err = bpf_prog_test_run_xattr(&tattr);
-+
-+	CHECK_ATTR(errno != ENOSPC /* Due limit copy_size in bpf_test_finish */
-+		   || tattr.retval != XDP_TX
-+		   || tattr.data_size_out != 192, /* Expected grow size */
-+		   "case-64",
-+		   "err %d errno %d retval %d size %d\n",
-+		   err, errno, tattr.retval, tattr.data_size_out);
-+
-+	/* Extra checks for data contents */
-+	CHECK_ATTR(tattr.data_size_out != 192
-+		   || buf[0]   != 1 ||  buf[63]  != 1  /*  0-63  memset to 1 */
-+		   || buf[64]  != 0 ||  buf[127] != 0  /* 64-127 memset to 0 */
-+		   || buf[128] != 1 ||  buf[191] != 1, /*128-191 memset to 1 */
-+		   "case-64-data",
-+		   "err %d errno %d retval %d size %d\n",
-+		   err, errno, tattr.retval, tattr.data_size_out);
-+
-+	/* Test case-128 */
-+	memset(buf, 2, sizeof(buf));
-+	tattr.data_size_in  = 128; /* Determine test case via pkt size */
-+	tattr.data_size_out = sizeof(buf);   /* Copy everything */
-+	err = bpf_prog_test_run_xattr(&tattr);
-+
-+	max_grow = 4096 - XDP_PACKET_HEADROOM -	tailroom; /* 3520 */
-+	CHECK_ATTR(err
-+		   || tattr.retval != XDP_TX
-+		   || tattr.data_size_out != max_grow, /* Expect max grow size */
-+		   "case-128",
-+		   "err %d errno %d retval %d size %d expect-size %d\n",
-+		   err, errno, tattr.retval, tattr.data_size_out, max_grow);
-+
-+	/* Extra checks for data contents: Count grow size, will contain zeros */
-+	for (i = 0, cnt = 0; i < sizeof(buf); i++) {
-+		if (buf[i] == 0)
-+			cnt++;
-+	}
-+	CHECK_ATTR((cnt != (max_grow - tattr.data_size_in)) /* Grow increase */
-+		   || tattr.data_size_out != max_grow, /* Total grow size */
-+		   "case-128-data",
-+		   "err %d errno %d retval %d size %d grow-size %d\n",
-+		   err, errno, tattr.retval, tattr.data_size_out, cnt);
-+
- 	bpf_object__close(obj);
- }
- 
- void test_xdp_adjust_tail(void)
- {
--	test_xdp_adjust_tail_shrink();
-+	if (test__start_subtest("xdp_adjust_tail_shrink"))
-+		test_xdp_adjust_tail_shrink();
-+	if (test__start_subtest("xdp_adjust_tail_grow"))
-+		test_xdp_adjust_tail_grow();
-+	if (test__start_subtest("xdp_adjust_tail_grow2"))
-+		test_xdp_adjust_tail_grow2();
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.c b/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.c
-new file mode 100644
-index 000000000000..3d66599eee2e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.c
-@@ -0,0 +1,33 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+SEC("xdp_adjust_tail_grow")
-+int _xdp_adjust_tail_grow(struct xdp_md *xdp)
-+{
-+	void *data_end = (void *)(long)xdp->data_end;
-+	void *data = (void *)(long)xdp->data;
-+	unsigned int data_len;
-+	int offset = 0;
-+
-+	/* Data length determine test case */
-+	data_len = data_end - data;
-+
-+	if (data_len == 54) { /* sizeof(pkt_v4) */
-+		offset = 4096; /* test too large offset */
-+	} else if (data_len == 74) { /* sizeof(pkt_v6) */
-+		offset = 40;
-+	} else if (data_len == 64) {
-+		offset = 128;
-+	} else if (data_len == 128) {
-+		offset = 4096 - 256 - 320 - data_len; /* Max tail grow 3520 */
-+	} else {
-+		return XDP_ABORTED; /* No matching test */
-+	}
-+
-+	if (bpf_xdp_adjust_tail(xdp, offset))
-+		return XDP_DROP;
-+	return XDP_TX;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+> >> We tested the new code against llvm-mc with all 1,302 encodable 32-bit
+> >> logical immediates and all 5,334 encodable 64-bit logical immediates.
+> >
+> > That, on its own, is awesome information. Do you have any pointer on
+> > how to set this up?
+> 
+> Sure! The process of running the tests is pretty involved, but I'll
+> describe it below and give some links here.
+> 
+> We found the bugs in insn.c while adding support for logical immediates
+> to the BPF JIT and verifying the changes with our tool, Serval:
+> https://github.com/uw-unsat/serval-bpf. The basic idea for how we tested /
+> verified logical immediates is the following:
+> 
+> First, we have a Python script [1] for generating every encodable
+> logical immediate and the corresponding instruction fields that encode
+> that immediate. The script validates the list by checking that llvm-mc
+> decodes each instruction back to the expected immediate.
+> 
+> Next, we use the list [2] from the first step to check a Racket
+> translation [3] of the logical immediate encoding function in insn.c.
+> We found the second mask bug by noticing that some (encodable) 32-bit
+> immediates were being rejected by the encoding function.
+> 
+> Last, we use the Racket translation of the encoding function to verify
+> the correctness of the BPF JIT implementation [4], i.e., the JIT
+> correctly compiles BPF_{AND,OR,XOR,JSET} BPF_K instructions to arm64
+> instructions with equivalent semantics. We found the first bug as the
+> verifier complained that the function was producing invalid encodings
+> for 32-bit -1 immediates, and we were able to reproduce a kernel crash
+> using the BPF tests.
+> 
+> We manually translated the C code to Racket because our verifier, Serval,
+> currently only works on Racket code.
 
+Nice! Two things:
 
+(1) I really think you should give a talk on this at a Linux conference
+(2) Did you look at any instruction generation functions other than the
+    logical immediate encoding function?
+
+Cheers,
+
+Will
