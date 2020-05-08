@@ -2,318 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A351CB1BA
-	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 16:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9591CB260
+	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 16:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727777AbgEHOZj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 May 2020 10:25:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47104 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726767AbgEHOZj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 May 2020 10:25:39 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E65AC2495B;
-        Fri,  8 May 2020 14:25:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588947938;
-        bh=hvtN8vEfjT44J3aV4P+LxySHHWd0G/VwVAZCtMrO6ow=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TndzmNIboQXHAzygUMEOX6T9dOr3K5ENcl3xkPABlgjx24V2z9re94cKrwnr6+mbp
-         CACT8jcSCRX8b8dzEdMKOZ9KWQpyCOb+r7kdegPtTJ9IDSlzIPN90Hinnw419Vm4UY
-         eluioV817SzVA8k43DlSPJBmZ1JYu27G4lnstq+Q=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1726767AbgEHO6j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 May 2020 10:58:39 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:25011 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726690AbgEHO6i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 May 2020 10:58:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588949915;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5cxHWT1fhpBsjHISLT+nvjAVD2NFN8LTOupRO9tndAE=;
+        b=iZGw6EaepDZZyHs7kF8s+GPzn5baDqsvETPfaUj8EDcDRKObWTrIVDHLOKXz4EBRU7oRQD
+        6Rv8EUH/jhkayvGP7xjKg0mJNkgepMKTQOUMN8kyouLW1XmJDXPGJsRHYPXiHC/JVyctxU
+        j3nmjmVQLilmqazLQoLzfm18PzIMpYQ=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-489-aI3C5g52MKamxTr56ecKhA-1; Fri, 08 May 2020 10:58:33 -0400
+X-MC-Unique: aI3C5g52MKamxTr56ecKhA-1
+Received: by mail-lf1-f70.google.com with SMTP id n13so662524lfb.2
+        for <bpf@vger.kernel.org>; Fri, 08 May 2020 07:58:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=5cxHWT1fhpBsjHISLT+nvjAVD2NFN8LTOupRO9tndAE=;
+        b=B/aKl7ahM/hKz6XgW7ZiccdnTkuWSz2XD1mkdFN4HFvvdmIQH7Nwu3QK8WMFVPpqtG
+         R1CK51o+VTMeq5jMzTIhJ0EWVrI5IBQT1ChVRpcDne7PZYLEwqoOwjz63OH3vaNnLFc6
+         YVV1PC0vxo2U8ismMnAKofdQm6AuAlSxpQEqSfELkhah2/Gn+giHuNrXkLp9iHhx/ho6
+         FIiArgYM4BsU5umCFmYPaTlHHlV7O6C7hSB5jTlGdHjG8RLJWGDi8GCgYVhArk2sUSf9
+         aC0yFdfMUeWm6zK7rSHiMlaGnVk41V/scccJnxcm/DmvNb0HGg/2JDhu5kITnM3RJWls
+         3hBw==
+X-Gm-Message-State: AOAM533glRjksKXA699EnfFYLrhSKrLZe2MiV1Ta/ZWaq6kTpNSKSBP+
+        DQOFKqZF+C/fAZDPrvX8m+wFeEvFc/z8ZCHmN9vk2/bCTw6W8Q4pVYrOjVWU3du4I1WqC0lbg7Z
+        YykCif9nnH55g
+X-Received: by 2002:a2e:9712:: with SMTP id r18mr2018698lji.225.1588949911985;
+        Fri, 08 May 2020 07:58:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzb7IppmyTDwD/D2z40v3OESMOGTKDkNqBfYut8xM2Nt2kauXly420+Q26OFUMj9Nt/bILVVw==
+X-Received: by 2002:a2e:9712:: with SMTP id r18mr2018676lji.225.1588949911669;
+        Fri, 08 May 2020 07:58:31 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id z23sm1342258ljm.46.2020.05.08.07.58.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 May 2020 07:58:30 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id DD1EF18151A; Fri,  8 May 2020 16:58:28 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Wang Nan <wangnan0@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [RFC PATCH v2 3/3] arm: kprobes: Support nested kprobes
-Date:   Fri,  8 May 2020 23:25:31 +0900
-Message-Id: <158894793116.14896.3047536946362361693.stgit@devnote2>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <158894789510.14896.13461271606820304664.stgit@devnote2>
-References: <158894789510.14896.13461271606820304664.stgit@devnote2>
-User-Agent: StGit/0.17.1-dirty
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Subject: Re: [RFC PATCHv2 bpf-next 1/2] xdp: add a new helper for dev map multicast support
+In-Reply-To: <20200508085357.GC102436@dhcp-12-153.nay.redhat.com>
+References: <20200415085437.23028-1-liuhangbin@gmail.com> <20200424085610.10047-1-liuhangbin@gmail.com> <20200424085610.10047-2-liuhangbin@gmail.com> <87r1wd2bqu.fsf@toke.dk> <20200506091442.GA102436@dhcp-12-153.nay.redhat.com> <874kstmlhz.fsf@toke.dk> <20200508085357.GC102436@dhcp-12-153.nay.redhat.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 08 May 2020 16:58:28 +0200
+Message-ID: <878si2h3sb.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Make kprobes to accept 1-level nesting instead of missing it
-on arm.
+Hangbin Liu <liuhangbin@gmail.com> writes:
 
-Any kprobes hits in kprobes pre/post handler context can be
-nested at once. If the other kprobes hits in the nested pre/post
-handler context, that will be missed.
+> On Wed, May 06, 2020 at 12:00:08PM +0200, Toke H=C3=83=C6=92=C3=82=C2=B8i=
+land-J=C3=83=C6=92=C3=82=C2=B8rgensen wrote:
+>> > No, I haven't test the performance. Do you have any suggestions about =
+how
+>> > to test it? I'd like to try forwarding pkts to 10+ ports. But I don't =
+know
+>> > how to test the throughput. I don't think netperf or iperf supports
+>> > this.
+>>=20
+>> What I usually do when benchmarking XDP_REDIRECT is to just use pktgen
+>> (samples/pktgen in the kernel source tree) on another machine,
+>> specifically, like this:
+>>=20
+>> ./pktgen_sample03_burst_single_flow.sh  -i enp1s0f1 -d 10.70.2.2 -m ec:0=
+d:9a:db:11:35 -t 4  -s 64
+>>=20
+>> (adjust iface, IP and MAC address to your system, of course). That'll
+>> flood the target machine with small UDP packets. On that machine, I then
+>> run the 'xdp_redirect_map' program from samples/bpf. The bpf program
+>> used by that sample will update an internal counter for every packet,
+>> and the userspace prints it out, which gives you the performance (in
+>> PPS). So just modifying that sample to using your new multicast helper
+>> (and comparing it to regular REDIRECT to a single device) would be a
+>> first approximation of a performance test.
+>
+> Thanks for this method. I will update the sample and do some more tests.
 
-We can test this feature on the kernel with
-CONFIG_KPROBE_EVENTS_ON_NOTRACE=y as below.
+Great!
 
- # cd /sys/kernel/debug/tracing
- # echo p ring_buffer_lock_reserve > kprobe_events
- # echo p vfs_read >> kprobe_events
- # echo 0 > /proc/sys/debug/kprobes-optimization # to check trap handler
- # echo stacktrace > events/kprobes/p_ring_buffer_lock_reserve_0/trigger
- # echo 1 > events/kprobes/enable
- # cat trace
- ...
-              sh-94    [000] d...   124.945302: p_vfs_read_0: (vfs_read+0x0/0x120)
-              sh-94    [000] d...   125.041822: p_ring_buffer_lock_reserve_0: (ring_buffer_lock_reserve+0x0/0x57c)
-              sh-94    [000] d...   125.042102: <stack trace>
- => kprobe_dispatcher
- => aggr_pre_handler
- => kprobe_handler
- => kprobe_trap_handler
- => do_undefinstr
- => __und_svc_finish
- => ring_buffer_lock_reserve
- => kprobe_trace_func
- => kprobe_dispatcher
- => aggr_pre_handler
- => kprobe_handler
- => kprobe_trap_handler
- => do_undefinstr
- => __und_svc_finish
- => vfs_read
- => sys_read
- => ret_fast_syscall
+>> You could do something like:
+>>=20
+>> bool first =3D true;
+>> for (;;) {
+>>=20
+>> [...]
+>>=20
+>>            if (!first) {
+>>    		nxdpf =3D xdpf_clone(xdpf);
+>>    		if (unlikely(!nxdpf))
+>>    			return -ENOMEM;
+>>    		bq_enqueue(dev, nxdpf, dev_rx);
+>>            } else {
+>>    		bq_enqueue(dev, xdpf, dev_rx);
+>>    		first =3D false;
+>>            }
+>> }
+>>=20
+>> /* didn't find anywhere to forward to, free buf */
+>> if (first)
+>>    xdp_return_frame_rx_napi(xdpf);
+>
+> I think the first xdpf will be consumed by the driver and the later
+> xdpf_clone() will failed, won't it?
 
-The trap handler is nested correctly.
+No, bq_enqueue just sticks the frame on a list, it's not consumed until
+after the NAPI cycle ends (and the driver calls xdp_do_flush()).
 
-Note that this also improve unrecoverable message to show
-nested probes too.
+> How about just do a xdp_return_frame_rx_napi(xdpf) after all nxdpf enqueu=
+e?
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
-  Changes in v2:
-   - Dump nested kprobes when hit a BUG().
----
- arch/arm/include/asm/kprobes.h    |    5 ++
- arch/arm/probes/kprobes/core.c    |   83 +++++++++++++++++++------------------
- arch/arm/probes/kprobes/core.h    |   30 +++++++++++++
- arch/arm/probes/kprobes/opt-arm.c |    6 ++-
- 4 files changed, 80 insertions(+), 44 deletions(-)
+Yeah, that would be the semantically obvious thing to do, but it is
+wasteful in that you end up performing one more clone than you strictly
+have to :)
 
-diff --git a/arch/arm/include/asm/kprobes.h b/arch/arm/include/asm/kprobes.h
-index 213607a1f45c..553f719bbfd5 100644
---- a/arch/arm/include/asm/kprobes.h
-+++ b/arch/arm/include/asm/kprobes.h
-@@ -32,10 +32,13 @@ struct prev_kprobe {
- 	unsigned int status;
- };
- 
-+#define KPROBE_NEST_MAX	2
-+
- /* per-cpu kprobe control block */
- struct kprobe_ctlblk {
- 	unsigned int kprobe_status;
--	struct prev_kprobe prev_kprobe;
-+	struct prev_kprobe prev[KPROBE_NEST_MAX];
-+	int nested;
- };
- 
- void arch_remove_kprobe(struct kprobe *);
-diff --git a/arch/arm/probes/kprobes/core.c b/arch/arm/probes/kprobes/core.c
-index 90b5bc723c83..5bb8d5f2b3b7 100644
---- a/arch/arm/probes/kprobes/core.c
-+++ b/arch/arm/probes/kprobes/core.c
-@@ -187,18 +187,6 @@ void __kprobes arch_remove_kprobe(struct kprobe *p)
- 	}
- }
- 
--static void __kprobes save_previous_kprobe(struct kprobe_ctlblk *kcb)
--{
--	kcb->prev_kprobe.kp = kprobe_running();
--	kcb->prev_kprobe.status = kcb->kprobe_status;
--}
--
--static void __kprobes restore_previous_kprobe(struct kprobe_ctlblk *kcb)
--{
--	__this_cpu_write(current_kprobe, kcb->prev_kprobe.kp);
--	kcb->kprobe_status = kcb->prev_kprobe.status;
--}
--
- static void __kprobes set_current_kprobe(struct kprobe *p)
- {
- 	__this_cpu_write(current_kprobe, p);
-@@ -224,6 +212,44 @@ singlestep(struct kprobe *p, struct pt_regs *regs, struct kprobe_ctlblk *kcb)
- 	p->ainsn.insn_singlestep(p->opcode, &p->ainsn, regs);
- }
- 
-+static nokprobe_inline int reenter_kprobe(struct kprobe *p,
-+					  struct pt_regs *regs,
-+					  struct kprobe_ctlblk *kcb)
-+{
-+	/* Kprobe is pending, so we're recursing. */
-+	switch (kcb->kprobe_status) {
-+	case KPROBE_HIT_ACTIVE:
-+	case KPROBE_HIT_SSDONE:
-+		if (kcb->nested < KPROBE_NEST_MAX - 1) {
-+			save_previous_kprobe(kcb);
-+			return 0;
-+		}
-+		fallthrough;
-+	case KPROBE_HIT_SS:
-+		/* A pre- or post-handler probe got us here. */
-+		kprobes_inc_nmissed_count(p);
-+		save_previous_kprobe(kcb);
-+		set_current_kprobe(p);
-+		kcb->kprobe_status = KPROBE_REENTER;
-+		singlestep(p, regs, kcb);
-+		restore_previous_kprobe(kcb);
-+		break;
-+	case KPROBE_REENTER:
-+		/* A nested probe was hit in FIQ, it is a BUG */
-+		pr_warn("Unrecoverable kprobe detected.\n");
-+		pr_err("Current kprobe:\n");
-+		dump_kprobe(p);
-+		pr_err("Nested kprobes (nested: %d):\n", kcb->nested);
-+		while (kcb->nested)
-+			dump_kprobe(kcb->prev[--kcb->nested].kp);
-+		fallthrough;
-+	default:
-+		/* impossible cases */
-+		BUG();
-+	}
-+	return 1;
-+}
-+
- /*
-  * Called with IRQs disabled. IRQs must remain disabled from that point
-  * all the way until processing this kprobe is complete.  The current
-@@ -262,30 +288,9 @@ void __kprobes kprobe_handler(struct pt_regs *regs)
- 			 * In this case, we can skip recursing check too.
- 			 */
- 			singlestep_skip(p, regs);
--		} else if (cur) {
--			/* Kprobe is pending, so we're recursing. */
--			switch (kcb->kprobe_status) {
--			case KPROBE_HIT_ACTIVE:
--			case KPROBE_HIT_SSDONE:
--			case KPROBE_HIT_SS:
--				/* A pre- or post-handler probe got us here. */
--				kprobes_inc_nmissed_count(p);
--				save_previous_kprobe(kcb);
--				set_current_kprobe(p);
--				kcb->kprobe_status = KPROBE_REENTER;
--				singlestep(p, regs, kcb);
--				restore_previous_kprobe(kcb);
--				break;
--			case KPROBE_REENTER:
--				/* A nested probe was hit in FIQ, it is a BUG */
--				pr_warn("Unrecoverable kprobe detected.\n");
--				dump_kprobe(p);
--				/* fall through */
--			default:
--				/* impossible cases */
--				BUG();
--			}
- 		} else {
-+			if (cur && reenter_kprobe(p, regs, kcb))
-+				return;
- 			/* Probe hit and conditional execution check ok. */
- 			set_current_kprobe(p);
- 			kcb->kprobe_status = KPROBE_HIT_ACTIVE;
-@@ -305,7 +310,7 @@ void __kprobes kprobe_handler(struct pt_regs *regs)
- 					p->post_handler(p, regs, 0);
- 				}
- 			}
--			reset_current_kprobe();
-+			pop_current_kprobe(kcb);
- 		}
- 	} else {
- 		/*
-@@ -342,11 +347,7 @@ int __kprobes kprobe_fault_handler(struct pt_regs *regs, unsigned int fsr)
- 		 * normal page fault.
- 		 */
- 		regs->ARM_pc = (long)cur->addr;
--		if (kcb->kprobe_status == KPROBE_REENTER) {
--			restore_previous_kprobe(kcb);
--		} else {
--			reset_current_kprobe();
--		}
-+		pop_current_kprobe(kcb);
- 		break;
- 
- 	case KPROBE_HIT_ACTIVE:
-diff --git a/arch/arm/probes/kprobes/core.h b/arch/arm/probes/kprobes/core.h
-index c3db468650ce..aaff1e0f2153 100644
---- a/arch/arm/probes/kprobes/core.h
-+++ b/arch/arm/probes/kprobes/core.h
-@@ -34,6 +34,36 @@ typedef enum probes_insn (kprobe_decode_insn_t)(probes_opcode_t,
- 						const union decode_action *,
- 						const struct decode_checker *[]);
- 
-+
-+static nokprobe_inline void save_previous_kprobe(struct kprobe_ctlblk *kcb)
-+{
-+	int i = kcb->nested++;
-+
-+	kcb->prev[i].kp = kprobe_running();
-+	kcb->prev[i].status = kcb->kprobe_status;
-+}
-+
-+static nokprobe_inline void restore_previous_kprobe(struct kprobe_ctlblk *kcb)
-+{
-+	int i = --kcb->nested;
-+
-+	__this_cpu_write(current_kprobe, kcb->prev[i].kp);
-+	kcb->kprobe_status = kcb->prev[i].status;
-+}
-+
-+static nokprobe_inline void pop_current_kprobe(struct kprobe_ctlblk *kcb)
-+{
-+	if (kcb->nested)
-+		restore_previous_kprobe(kcb);
-+	else
-+		reset_current_kprobe();
-+}
-+
-+static nokprobe_inline bool kprobe_can_nest(struct kprobe_ctlblk *kcb)
-+{
-+	return !kprobe_running() || (kcb->nested < KPROBE_NEST_MAX - 1);
-+}
-+
- #ifdef CONFIG_THUMB2_KERNEL
- 
- extern const union decode_action kprobes_t32_actions[];
-diff --git a/arch/arm/probes/kprobes/opt-arm.c b/arch/arm/probes/kprobes/opt-arm.c
-index 7a449df0b359..cb4cb13bff88 100644
---- a/arch/arm/probes/kprobes/opt-arm.c
-+++ b/arch/arm/probes/kprobes/opt-arm.c
-@@ -161,13 +161,15 @@ optimized_callback(struct optimized_kprobe *op, struct pt_regs *regs)
- 	local_irq_save(flags);
- 	kcb = get_kprobe_ctlblk();
- 
--	if (kprobe_running()) {
-+	if (!kprobe_can_nest(kcb)) {
- 		kprobes_inc_nmissed_count(&op->kp);
- 	} else {
-+		if (kprobe_running())
-+			save_previous_kprobe(kcb);
- 		__this_cpu_write(current_kprobe, &op->kp);
- 		kcb->kprobe_status = KPROBE_HIT_ACTIVE;
- 		opt_pre_handler(&op->kp, regs);
--		__this_cpu_write(current_kprobe, NULL);
-+		pop_current_kprobe(kcb);
- 	}
- 
- 	/*
+>> > @@ -3534,6 +3539,8 @@ int xdp_do_redirect(struct net_device *dev, stru=
+ct
+>> > xdp_buff *xdp,
+>> >                   struct bpf_prog *xdp_prog)
+>> >  {
+>> >       struct bpf_redirect_info *ri =3D this_cpu_ptr(&bpf_redirect_info=
+);
+>> > +     bool exclude_ingress =3D !!(ri->flags & BPF_F_EXCLUDE_INGRESS);
+>> > +     struct bpf_map *ex_map =3D READ_ONCE(ri->ex_map);
+>>
+>> I don't think you need the READ_ONCE here since there's already one
+>> below?
+>
+> BTW, I forgot to ask, why we don't need the READ_ONCE for ex_map?
+> I though the map and ex_map are two different pointers.
+
+It isn't, but not for the reason I thought, so I can understand why my
+comment might have been somewhat confusing (I have been confused by this
+myself until just now...).
+
+The READ_ONCE() is not needed because the ex_map field is only ever read
+from or written to by the CPU owning the per-cpu pointer. Whereas the
+'map' field is manipulated by remote CPUs in bpf_clear_redirect_map().
+So you need neither READ_ONCE() nor WRITE_ONCE() on ex_map, just like
+there are none on tgt_index and tgt_value.
+
+-Toke
 
