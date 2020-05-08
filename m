@@ -2,121 +2,270 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6E61CA277
-	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 06:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6D81CA2B6
+	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 07:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725681AbgEHE5m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 May 2020 00:57:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43266 "EHLO
+        id S1725937AbgEHFgf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 May 2020 01:36:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725550AbgEHE5m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 May 2020 00:57:42 -0400
-X-Greylist: delayed 1095 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 May 2020 21:57:42 PDT
-Received: from omr1.cc.vt.edu (omr1.cc.ipv6.vt.edu [IPv6:2607:b400:92:8300:0:c6:2117:b0e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A91C05BD09
-        for <bpf@vger.kernel.org>; Thu,  7 May 2020 21:57:41 -0700 (PDT)
-Received: from mr6.cc.vt.edu (mr6.cc.ipv6.vt.edu [IPv6:2607:b400:92:8500:0:af:2d00:4488])
-        by omr1.cc.vt.edu (8.14.4/8.14.4) with ESMTP id 0484dPcd020845
-        for <bpf@vger.kernel.org>; Fri, 8 May 2020 00:39:25 -0400
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com [209.85.160.200])
-        by mr6.cc.vt.edu (8.14.7/8.14.7) with ESMTP id 0484dJlI027129
-        for <bpf@vger.kernel.org>; Fri, 8 May 2020 00:39:25 -0400
-Received: by mail-qt1-f200.google.com with SMTP id x24so509349qta.4
-        for <bpf@vger.kernel.org>; Thu, 07 May 2020 21:39:25 -0700 (PDT)
+        with ESMTP id S1725812AbgEHFge (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 May 2020 01:36:34 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CDEC05BD09
+        for <bpf@vger.kernel.org>; Thu,  7 May 2020 22:36:34 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id d19so832545qkj.21
+        for <bpf@vger.kernel.org>; Thu, 07 May 2020 22:36:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=NVxIVOTpUFm5R6D1Ik0bw3E1/vQaVLUz9mgqWgfmQ4M=;
+        b=tvp8IsOM9NJeODYcUfrQdDk+mbK5pXcoU54CyXgGc9nlNplTAcXH2kjFPV4ToT5RVu
+         ob/9ZHHnprIfIcW4hvYigRy+mEKhMmY0wH6kMTvsVurPm8bSSw4imsP9w9KWF7SouF/o
+         5ipucGk9a4i/rpvKU5sVwzfLj7CyKWNP3SfNtAFWOaNvg/UwzRNOzLbesmH/idhQZukl
+         m86Qoyo4NxTfBRTO7t8VrBQxR5TUrK5NsJE/iCeCjzTPp+UIE5dgSgIYPtPdp2cJjJRz
+         7xxCRa5LDU/rijB2c3bdYXCva3gcoF9rCn8cfGw/Na17zLgn+oQ/+ntgok1PfkcLzDBX
+         J1sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:mime-version
-         :content-transfer-encoding:date:message-id;
-        bh=Dm06ZAKZYIX7YP7mgGyJ/rXR8epdEB9fSQnJcSEERv0=;
-        b=IX/EUY86UvPV6H4pRJCAkhZrnC/tJCzaL+w7ZbDkRMT4/J0Y62JotGVDXkxqcXpVCJ
-         wr9sxfJTPLtapSeFg32BpXM0hM85n4A5IvF4Cn+I1/idFJIq6zGuyjPAgQCHH1JwiD9l
-         y6kxObA+ir3XQTnApZNz0u0OZsJMr4Tf/jAYKlC+31e/xUw2SoKW71s8RpUjY2LOzNN5
-         y/AjvOzw98fCU95Wcxxuff9dc667Z9+pymMweuqxYgh/LaPowdaKbHp1DI1OtzPb5xmh
-         Z9yKe/XM/YpFnAS5g9GsfNi+DdWY8zOQ15Ut6YF8dvWzf65fL7csWDYKx4vgHAsnsj1b
-         ad8A==
-X-Gm-Message-State: AGi0Pubh3zT9fwN4A6zZwKGCfs2PNA20U862zg/fBhqEwksQi8ie7qx6
-        QH/myLIfE1OUVoLGj0MZk4UXMtQLL5x8ugELjO6wgU4ioWFktmIcx9bTaCaE+4vbna3DgLXPRMy
-        Dy26LDtln1ulY42N6cuOVX1E=
-X-Received: by 2002:ac8:4ccc:: with SMTP id l12mr971153qtv.129.1588912759706;
-        Thu, 07 May 2020 21:39:19 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJZvgYBYOZoJzUErxWw9UD6lNr0XHDTIdHvnfdB1sZ9pIcck8dCVstQ+Px8izYngtQhOv/vLQ==
-X-Received: by 2002:ac8:4ccc:: with SMTP id l12mr971144qtv.129.1588912759384;
-        Thu, 07 May 2020 21:39:19 -0700 (PDT)
-Received: from turing-police ([2601:5c0:c001:c9e1::359])
-        by smtp.gmail.com with ESMTPSA id h2sm358428qkh.91.2020.05.07.21.39.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 21:39:17 -0700 (PDT)
-From:   "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: linux-next 20200506 - build failure with net/bpfilter/bpfilter_umh
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=NVxIVOTpUFm5R6D1Ik0bw3E1/vQaVLUz9mgqWgfmQ4M=;
+        b=uVLp5tl95bVpGTvjx2XBc/rrc3c/aRJty1CpR+HJHWMnmJBRvR6vilEWIBvuVKGBfs
+         IKbiDICjZ8jzhsq7sLaCIiS6eoRzEbjHE2HVNQAq9qopkQgZRwk0O6+FYxMJVSq0y/4c
+         iMKc6QekG/77bxcP5fXb0afz8mCaYY3YIHY3614alnQHDwsK3JYa7Rhmh0oEbV7EUYNO
+         Ep7j0STmHPbkZ8vOcUuU5FliyqCsmoMmIT7i/SghXZVKAB6luFm7GXi10H/sjf1TjYpH
+         60v5a6S5tIKDXSeL8iSGCm/foY7kHiFkDOaTvMgDclQqg19+waOGRmvVoJ2aTV4B3DJn
+         vqZQ==
+X-Gm-Message-State: AGi0PuZBQH5YLgO2kUySV5STQqtiA4TQEhs8W1xVIOM7QHDlio9LyZ8Y
+        wuxbhhc0lL89Xj/tMNb+b0O+SOn7utBi
+X-Google-Smtp-Source: APiQypJ6oQcDstyt4s+HU1dq0c4aqe7RVxAX5TfQEd0U9dQnkRzl3SL1aOuROG0bLAIF56J2nyjgxhgE7Am3
+X-Received: by 2002:a0c:ec07:: with SMTP id y7mr1059063qvo.183.1588916193207;
+ Thu, 07 May 2020 22:36:33 -0700 (PDT)
+Date:   Thu,  7 May 2020 22:36:15 -0700
+Message-Id: <20200508053629.210324-1-irogers@google.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1588912756_228720P";
-         micalg=pgp-sha1; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 08 May 2020 00:39:16 -0400
-Message-ID: <251580.1588912756@turing-police>
+X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
+Subject: [RFC PATCH v3 00/14] Share events between metrics
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        linux-kernel@vger.kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---==_Exmh_1588912756_228720P
-Content-Type: text/plain; charset=us-ascii
+Metric groups contain metrics. Metrics create groups of events to
+ideally be scheduled together. Often metrics refer to the same events,
+for example, a cache hit and cache miss rate. Using separate event
+groups means these metrics are multiplexed at different times and the
+counts don't sum to 100%. More multiplexing also decreases the
+accuracy of the measurement.
 
-My kernel build came to a screeching halt with:
+This change orders metrics from groups or the command line, so that
+the ones with the most events are set up first. Later metrics see if
+groups already provide their events, and reuse them if
+possible. Unnecessary events and groups are eliminated.
 
-  CHECK   net/bpfilter/bpfilter_kern.c
-  CC [M]  net/bpfilter/bpfilter_kern.o
-  CC [U]  net/bpfilter/main.o
-  LD [U]  net/bpfilter/bpfilter_umh
-/usr/bin/ld: cannot find -lc
-collect2: error: ld returned 1 exit status
-make[2]: *** [scripts/Makefile.userprogs:36: net/bpfilter/bpfilter_umh] Error 1
-make[1]: *** [scripts/Makefile.build:494: net/bpfilter] Error 2
-make: *** [Makefile:1726: net] Error 2
+The option --metric-no-group is added so that metrics aren't placed in
+groups. This affects multiplexing and may increase sharing.
 
-The culprit is this commit:
+The option --metric-mo-merge is added and with this option the
+existing grouping behavior is preserved.
 
-commit 0592c3c367c4c823f2a939968e72d39360fce1f4
-Author: Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed Apr 29 12:45:15 2020 +0900
+RFC because:
+ - without this change events within a metric may get scheduled
+   together, after they may appear as part of a larger group and be
+   multiplexed at different times, lowering accuracy - however, less
+   multiplexing may compensate for this.
+ - libbpf's hashmap is used, however, libbpf is an optional
+   requirement for building perf.
+ - other things I'm not thinking of.
 
-    bpfilter: use 'userprogs' syntax to build bpfilter_umh
+Thanks!
 
-and specifically, this line:
+Example on Sandybridge:
 
-+userldflags += -static
+$ perf stat -a --metric-no-merge -M TopDownL1_SMT sleep 1
 
-At least on Fedora, this dies an ugly death unless you have the glibc-static RPM
-installed (which is *not* part of the glibc-devel RPM).  Not sure how to fix this, or
-give a heads-up that there's a new requirement that might break the build.
+ Performance counter stats for 'system wide':
 
+          14931177      cpu_clk_unhalted.one_thread_active #     0.47 Backend_Bound_SMT        (12.45%)
+          32314653      int_misc.recovery_cycles_any                                     (16.23%)
+         555020905      uops_issued.any                                               (18.85%)
+        1038651176      idq_uops_not_delivered.core                                     (24.95%)
+          43003170      cpu_clk_unhalted.ref_xclk                                     (25.20%)
+        1154926272      cpu_clk_unhalted.thread                                       (31.50%)
+         656873544      uops_retired.retire_slots                                     (31.11%)
+          16491988      cpu_clk_unhalted.one_thread_active #     0.06 Bad_Speculation_SMT      (31.10%)
+          32064061      int_misc.recovery_cycles_any                                     (31.04%)
+         648394934      uops_issued.any                                               (31.14%)
+          42107506      cpu_clk_unhalted.ref_xclk                                     (24.94%)
+        1124565282      cpu_clk_unhalted.thread                                       (31.14%)
+         523430886      uops_retired.retire_slots                                     (31.05%)
+          12328380      cpu_clk_unhalted.one_thread_active #     0.35 Frontend_Bound_SMT       (10.08%)
+          42651836      cpu_clk_unhalted.ref_xclk                                     (10.08%)
+        1006287722      idq_uops_not_delivered.core                                     (10.08%)
+        1130593027      cpu_clk_unhalted.thread                                       (10.08%)
+          14209258      cpu_clk_unhalted.one_thread_active #     0.18 Retiring_SMT             (6.39%)
+          41904474      cpu_clk_unhalted.ref_xclk                                     (6.39%)
+         522251584      uops_retired.retire_slots                                     (6.39%)
+        1111257754      cpu_clk_unhalted.thread                                       (6.39%)
+          12930094      cpu_clk_unhalted.one_thread_active # 2865823806.05 SLOTS_SMT           (11.06%)
+          40975376      cpu_clk_unhalted.ref_xclk                                     (11.06%)
+        1089204936      cpu_clk_unhalted.thread                                       (11.06%)
 
---==_Exmh_1588912756_228720P
-Content-Type: application/pgp-signature
+       1.002165509 seconds time elapsed
 
------BEGIN PGP SIGNATURE-----
-Comment: Exmh version 2.9.0 11/07/2018
+$ perf stat -a -M TopDownL1_SMT sleep 1
 
-iQIVAwUBXrTicwdmEQWDXROgAQLCSA//UqzDH6Xrc8pTpaZYj6PQFrnX7JxNxPEw
-7XF4cADkh8YyVLIya15u3roNmb993e8UtqpJK2E4/kjDP5MB81NN/9qA/5r3Cb1g
-OaiYFTXl5wtwIyhc8vegiLqNrzs5ZV8VsHEt4o2QbY1tm/ubErebDSXbrdu1bQx9
-qPIBzhk6FDBik1NnyT4ouUbkL2L5xxK/+SIxkqKF56rWpjFyg1IvOCuJgq0zziN9
-RpDMjUzXqjty9AudhwTK/o/pNoJJ4VBBDpcA73+UWoiU0Rcxa8WTjf0qiLVhsF2j
-y6lT49uCsfG+mfzeGPZMxxziS4Mbaglq+LqZtsD6ni3+IaUckz4FY6nRdQys1Fy6
-wz7e97Yxem3qzWKuOum10cU6sF4WXbyp0mTK9STQZMN6o7lVO95GDhEZDYf6X4x3
-9z6K7CgqHceQNoXAPKm32hz3Zcwnz1XajB9zda+F103mXgldccmYba+uyk8YDCct
-B10n104eo3316gUz5k1/LMQtCjIOFBvj+2UQTaN6x1U514rJu2ddrQVrD+lVShvV
-M3jLq73GWXU07x4xO7CgQMwwbHKf3zD28i7wAOy4FY0LxIIDwtrsx9jGQsHaX4nm
-JuiPSWAGY8u7aikcoWVM5K0vk0Ea8Bjj9LlLzTHK0ZmDunKsAjTIE4/O3aQR3h6W
-6PQ9qiuQN7E=
-=SYBk
------END PGP SIGNATURE-----
+ Performance counter stats for 'system wide':
 
---==_Exmh_1588912756_228720P--
+          11893411      cpu_clk_unhalted.one_thread_active # 2715516883.49 SLOTS_SMT         
+                                                  #     0.19 Retiring_SMT           
+                                                  #     0.33 Frontend_Bound_SMT     
+                                                  #     0.04 Bad_Speculation_SMT    
+                                                  #     0.44 Backend_Bound_SMT        (71.46%)
+          28458253      int_misc.recovery_cycles_any                                     (71.44%)
+         562710994      uops_issued.any                                               (71.42%)
+         907105260      idq_uops_not_delivered.core                                     (57.12%)
+          39797715      cpu_clk_unhalted.ref_xclk                                     (57.12%)
+        1045357060      cpu_clk_unhalted.thread                                       (71.41%)
+         504809283      uops_retired.retire_slots                                     (71.44%)
+
+       1.001939294 seconds time elapsed
+
+Note that without merging the metrics sum to 1.06, but with merging
+the sum is 1.
+
+Example on Cascadelake:
+
+$ perf stat -a --metric-no-merge -M TopDownL1_SMT sleep 1
+
+ Performance counter stats for 'system wide':
+
+          13678949      cpu_clk_unhalted.one_thread_active #     0.59 Backend_Bound_SMT        (13.35%)
+         121286613      int_misc.recovery_cycles_any                                     (18.58%)
+        4041490966      uops_issued.any                                               (18.81%)
+        2665605457      idq_uops_not_delivered.core                                     (24.81%)
+         111757608      cpu_clk_unhalted.ref_xclk                                     (25.03%)
+        7579026491      cpu_clk_unhalted.thread                                       (31.27%)
+        3848429110      uops_retired.retire_slots                                     (31.23%)
+          15554046      cpu_clk_unhalted.one_thread_active #     0.02 Bad_Speculation_SMT      (31.19%)
+         119582342      int_misc.recovery_cycles_any                                     (31.16%)
+        3813943706      uops_issued.any                                               (31.14%)
+         113151605      cpu_clk_unhalted.ref_xclk                                     (24.89%)
+        7621196102      cpu_clk_unhalted.thread                                       (31.12%)
+        3735690253      uops_retired.retire_slots                                     (31.12%)
+          13727352      cpu_clk_unhalted.one_thread_active #     0.16 Frontend_Bound_SMT       (12.50%)
+         115441454      cpu_clk_unhalted.ref_xclk                                     (12.50%)
+        2824946246      idq_uops_not_delivered.core                                     (12.50%)
+        7817227775      cpu_clk_unhalted.thread                                       (12.50%)
+          13267908      cpu_clk_unhalted.one_thread_active #     0.21 Retiring_SMT             (6.31%)
+         114015605      cpu_clk_unhalted.ref_xclk                                     (6.31%)
+        3722498773      uops_retired.retire_slots                                     (6.31%)
+        7771438396      cpu_clk_unhalted.thread                                       (6.31%)
+          14948307      cpu_clk_unhalted.one_thread_active # 18085611559.36 SLOTS_SMT          (6.30%)
+         115632797      cpu_clk_unhalted.ref_xclk                                     (6.30%)
+        8007628156      cpu_clk_unhalted.thread                                       (6.30%)
+
+       1.006256703 seconds time elapsed
+
+$ perf stat -a -M TopDownL1_SMT sleep 1
+
+ Performance counter stats for 'system wide':
+
+          35999534      cpu_clk_unhalted.one_thread_active # 25969550384.66 SLOTS_SMT        
+                                                  #     0.40 Retiring_SMT           
+                                                  #     0.14 Frontend_Bound_SMT     
+                                                  #     0.02 Bad_Speculation_SMT    
+                                                  #     0.44 Backend_Bound_SMT        (71.35%)
+         133499018      int_misc.recovery_cycles_any                                     (71.36%)
+       10736468874      uops_issued.any                                               (71.40%)
+        3518076530      idq_uops_not_delivered.core                                     (57.24%)
+          78296616      cpu_clk_unhalted.ref_xclk                                     (57.25%)
+        8894997400      cpu_clk_unhalted.thread                                       (71.50%)
+       10409738753      uops_retired.retire_slots                                     (71.40%)
+
+       1.011611791 seconds time elapsed
+
+Note that without merging the metrics sum to 0.98, but with merging
+the sum is 1.
+
+v3. is a rebase with following the merging of patches in v2. It also
+adds the metric-no-group and metric-no-merge flags.
+v2. is the entire patch set based on acme's perf/core tree and includes a
+cherry-picks. Patch 13 was sent for review to the bpf maintainers here:
+https://lore.kernel.org/lkml/20200506205257.8964-2-irogers@google.com/
+v1. was based on the perf metrics fixes and test sent here:
+https://lore.kernel.org/lkml/20200501173333.227162-1-irogers@google.com/
+
+Andrii Nakryiko (1):
+  libbpf: Fix memory leak and possible double-free in hashmap__clear
+
+Ian Rogers (13):
+  perf parse-events: expand add PMU error/verbose messages
+  perf test: improve pmu event metric testing
+  lib/bpf hashmap: increase portability
+  perf expr: fix memory leaks in bison
+  perf evsel: fix 2 memory leaks
+  perf expr: migrate expr ids table to libbpf's hashmap
+  perf metricgroup: change evlist_used to a bitmap
+  perf metricgroup: free metric_events on error
+  perf metricgroup: always place duration_time last
+  perf metricgroup: delay events string creation
+  perf metricgroup: order event groups by size
+  perf metricgroup: remove duped metric group events
+  perf metricgroup: add options to not group or merge
+
+ tools/lib/bpf/hashmap.c                |   7 +
+ tools/lib/bpf/hashmap.h                |   3 +-
+ tools/perf/Documentation/perf-stat.txt |  19 ++
+ tools/perf/arch/x86/util/intel-pt.c    |  32 +--
+ tools/perf/builtin-stat.c              |  11 +-
+ tools/perf/tests/builtin-test.c        |   5 +
+ tools/perf/tests/expr.c                |  41 ++--
+ tools/perf/tests/pmu-events.c          | 159 +++++++++++++-
+ tools/perf/tests/pmu.c                 |   4 +-
+ tools/perf/tests/tests.h               |   2 +
+ tools/perf/util/evsel.c                |   2 +
+ tools/perf/util/expr.c                 | 129 +++++++-----
+ tools/perf/util/expr.h                 |  22 +-
+ tools/perf/util/expr.y                 |  25 +--
+ tools/perf/util/metricgroup.c          | 277 ++++++++++++++++---------
+ tools/perf/util/metricgroup.h          |   6 +-
+ tools/perf/util/parse-events.c         |  29 ++-
+ tools/perf/util/pmu.c                  |  33 +--
+ tools/perf/util/pmu.h                  |   2 +-
+ tools/perf/util/stat-shadow.c          |  49 +++--
+ tools/perf/util/stat.h                 |   2 +
+ 21 files changed, 592 insertions(+), 267 deletions(-)
+
+-- 
+2.26.2.645.ge9eca65c58-goog
+
