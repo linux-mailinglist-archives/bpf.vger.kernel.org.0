@@ -2,119 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D571CBA0F
-	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 23:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E921CBA32
+	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 23:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728051AbgEHVrL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 May 2020 17:47:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59954 "EHLO
+        id S1727110AbgEHVxp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 May 2020 17:53:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728083AbgEHVrJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 May 2020 17:47:09 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 658CBC061A0C
-        for <bpf@vger.kernel.org>; Fri,  8 May 2020 14:47:08 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id s9so2451068qkm.6
-        for <bpf@vger.kernel.org>; Fri, 08 May 2020 14:47:08 -0700 (PDT)
+        with ESMTP id S1726811AbgEHVxo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 May 2020 17:53:44 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEEF0C061A0C;
+        Fri,  8 May 2020 14:53:44 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id t16so1315396plo.7;
+        Fri, 08 May 2020 14:53:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2EGUf4F67MUAGK/xlR8yypqJXlC3EPSjxXN+zsxp6yc=;
-        b=dTVyRSdweQs+wOXQOc8dOTffJ9imDo2IJYAxnveRJLOg9LJ/34cYPGsgkfUx9j40UQ
-         TjSZNVZoihWH04AVU8S7DLEQJI3fqSKDmB15wKEOzBvWwTonOYCqytDKcxQpFE3bkY+R
-         14wJCUhivEpgaNil9YEh5twWr/sMByW3yX17ZGOblw4CRuN2V1qCmEauM14G9Peh0DcH
-         nzm2rcBD5Og4Zn+GFmcS1lyJNJEi2iLxYSXmIWswfhcy5DJ7xt9UB0dsNcB5s+kCC0St
-         /tqOdjkhJ3a1UOgPfbkcqtlXEm3bZcDWCHcN4bPIeaY1ZdvvdqrbpuDgtiBTrvH/qlfV
-         6nUg==
+        h=from:to:cc:subject:date:message-id;
+        bh=0IFR0h7OLcP9nzroEDpbOPCzbh/8YeEpc372ErB+Kpc=;
+        b=VilCcbokLSxMEvtENEwNtFe4FAMll9KhKBMn4lFhOMQTO2pg7cXq8XCjX6bRlzOQCu
+         wOFStPo+/6Zj94ch9T19DOdn7bh1v24IVtBzFzUPV6NFxTo5PSw1wtdLdPC7MwryOa0/
+         sZnjE3261bOHq8Cnj6glt4O+uJO1J0X1g7S9S/erfxqzoBFrpWhRVNLsZyb311Uc6dFd
+         YBMcPOF/tzMsLyRIk+7UJ8NUtAFMC4AcOAVOrjfmUYdbkuJgdXy7y2PbzyCaORhFOSi9
+         KcAqLOerIl12FfefDLAPT5lSenWeOB+W1hie1nvdBEGMkNqCBcXs4nwr7nThlJTowRmj
+         WrVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2EGUf4F67MUAGK/xlR8yypqJXlC3EPSjxXN+zsxp6yc=;
-        b=BQXcLH8PS9AzM0Qdh5sGEFwEZKCRz8UqVgUCkfzlNONdhYayCzCmgLHsKZzVVP6yB9
-         IZDsOXCQQPHq7yxflKG3m/PV0TvdMkdYO1+0+pFb1x+LA8O3AOhcai79z6sczp99ybRg
-         J056FZIfNbSOiZs2XFrnNevhwv0tAl+ipK7NXNzhrdKfOtzMud2BT4UFafVpoXkO31yL
-         Y7PwRBYew0wpKKPKIZrI3UyVmh3NMnENRPikqRpVJxI3DGvKJ1ok43ni1BGiv48vPnjr
-         YzO7HevCvl7HMBLxYAqf+YKCxmI1sP7rq5WO4xfvjSFpTiO3ZcZJoCJUrdA5yWfegLO8
-         Z+Sg==
-X-Gm-Message-State: AGi0PuZk1fKvh6v3w/w2ok2wDPBtOE2s0K2KOhJXnyAZCqx8D9zAnbZJ
-        isd8/OLTEFUOuHAtt+AfqKbAxaxEw9Y8TE52rbg=
-X-Google-Smtp-Source: APiQypLL5Cq1t/EYIoNQXAlXiSSZCqaQKYgj2W2M9kALjcq5fxu8r7Y3o2DWTHD/KxguGuvul1yhc9efK/0j2MLVjkk=
-X-Received: by 2002:a37:68f:: with SMTP id 137mr5001917qkg.36.1588974427544;
- Fri, 08 May 2020 14:47:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200507145652.190823-1-yauheni.kaliuta@redhat.com> <20200507145652.190823-2-yauheni.kaliuta@redhat.com>
-In-Reply-To: <20200507145652.190823-2-yauheni.kaliuta@redhat.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 8 May 2020 14:46:56 -0700
-Message-ID: <CAEf4BzYPDKfJLSGVQucgRuDUyzwizQHAWyUWWGsq6ZvgRUO0yg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] Revert "libbpf: Fix readelf output parsing on powerpc
- with recent binutils"
-To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Justin Forbes <jmforbes@linuxtx.org>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Aurelien Jarno <aurelien@aurel32.net>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=0IFR0h7OLcP9nzroEDpbOPCzbh/8YeEpc372ErB+Kpc=;
+        b=UcJSSK3hgS+bs2lbyyuQXnZb8DRYxwvx6txw9BM3heX9U5YD+Rfq73XVi3fUuIhnE/
+         eaLQJRt45lv2Hz2513Nvei87PrZWta59NPWqs1uPaNqbBrdaSCFCPLQ8Ep4pjj2JBhOv
+         B+H+5xi6hBy32BXePHJ1C6pEUoYdCplCjsleLjwgKbZrJVbu1lHYghO/XDGAE000jvL3
+         p7ELbt9lVRbbTIdLEWN7YXMp7g7zmZ0NguxZstpsk4t7N3diub9A7XiKT02gltH3TFM3
+         HkEeKSFoca4TY38NUXfktDpeDzCjdLdwLS5T4EolwxUqP5q2heUnTsPQQvnW5WaMc4vV
+         G8bQ==
+X-Gm-Message-State: AGi0PuYzxVDusiYeUuh+NYBLcyrpLIAB29gPVCCsYoUAPiNGkX8QsUNC
+        8IjrV042U7GChXqR9YYTMws=
+X-Google-Smtp-Source: APiQypKY1sDaqstTjGiDf1cpTFTjJylPmNPEPJ+1VGhfej+i+0LSFTMyQudGVapapEMnnFc4IfDtqg==
+X-Received: by 2002:a17:902:549:: with SMTP id 67mr4336714plf.115.1588974823726;
+        Fri, 08 May 2020 14:53:43 -0700 (PDT)
+Received: from ast-mbp.thefacebook.com ([163.114.132.7])
+        by smtp.gmail.com with ESMTPSA id 20sm2720763pfx.116.2020.05.08.14.53.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 08 May 2020 14:53:42 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com, linux-security-module@vger.kernel.org,
+        acme@redhat.com, jamorris@linux.microsoft.com, jannh@google.com,
+        kpsingh@google.com
+Subject: [PATCH v5 bpf-next 0/3] Introduce CAP_BPF
+Date:   Fri,  8 May 2020 14:53:37 -0700
+Message-Id: <20200508215340.41921-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.13.5
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 7, 2020 at 7:57 AM Yauheni Kaliuta
-<yauheni.kaliuta@redhat.com> wrote:
->
-> The patch makes it fail on the output when the comment is printed
-> after the symbol name (RHEL8 powerpc):
->
-> 400: 000000000000c714   144 FUNC    GLOBAL DEFAULT    1 bpf_object__open_file@LIBBPF_0.0.4         [<localentry>: 8]
->
-> But after commit aa915931ac3e ("libbpf: Fix readelf output parsing
-> for Fedora") it is not needed anymore, the parsing should work in
-> both cases.
->
-> This reverts commit 3464afdf11f9a1e031e7858a05351ceca1792fea.
->
-> Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-> ---
+From: Alexei Starovoitov <ast@kernel.org>
 
-Looks good, though would be nice to have people originally involved in
-those fixes you mentioned to confirm it works fine still. Added them
-to cc.
+v4->v5:
 
-If no one shouts loudly in next few days:
+Split BPF operations that are allowed under CAP_SYS_ADMIN into combination of
+CAP_BPF, CAP_PERFMON, CAP_NET_ADMIN and keep some of them under CAP_SYS_ADMIN.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+The user process has to have
+- CAP_BPF and CAP_PERFMON to load tracing programs.
+- CAP_BPF and CAP_NET_ADMIN to load networking programs.
+(or CAP_SYS_ADMIN for backward compatibility).
 
+CAP_BPF solves three main goals:
+1. provides isolation to user space processes that drop CAP_SYS_ADMIN and switch to CAP_BPF.
+   More on this below. This is the major difference vs v4 set back from Sep 2019.
+2. makes networking BPF progs more secure, since CAP_BPF + CAP_NET_ADMIN
+   prevents pointer leaks and arbitrary kernel memory access.
+3. enables fuzzers to exercise all of the verifier logic. Eventually finding bugs
+   and making BPF infra more secure. Currently fuzzers run in unpriv.
+   They will be able to run with CAP_BPF.
 
->  tools/lib/bpf/Makefile | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-> index aee7f1a83c77..908dac9eb562 100644
-> --- a/tools/lib/bpf/Makefile
-> +++ b/tools/lib/bpf/Makefile
-> @@ -149,7 +149,7 @@ TAGS_PROG := $(if $(shell which etags 2>/dev/null),etags,ctags)
->  GLOBAL_SYM_COUNT = $(shell readelf -s --wide $(BPF_IN_SHARED) | \
->                            cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' | \
->                            sed 's/\[.*\]//' | \
-> -                          awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}' | \
-> +                          awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$8}' | \
->                            sort -u | wc -l)
->  VERSIONED_SYM_COUNT = $(shell readelf -s --wide $(OUTPUT)libbpf.so | \
->                               grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 | sort -u | wc -l)
-> @@ -216,7 +216,7 @@ check_abi: $(OUTPUT)libbpf.so
->                 readelf -s --wide $(BPF_IN_SHARED) |                     \
->                     cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' |   \
->                     sed 's/\[.*\]//' |                                   \
-> -                   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}'|  \
-> +                   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$8}'|   \
->                     sort -u > $(OUTPUT)libbpf_global_syms.tmp;           \
->                 readelf -s --wide $(OUTPUT)libbpf.so |                   \
->                     grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 |             \
-> --
-> 2.26.2
->
+The patchset is long overdue follow-up from the last plumbers conference.
+Comparing to what was discussed at LPC the CAP* checks at attach time are gone.
+For tracing progs the CAP_SYS_ADMIN check was done at load time only. There was
+no check at attach time. For networking and cgroup progs CAP_SYS_ADMIN was
+required at load time and CAP_NET_ADMIN at attach time, but there are several
+ways to bypass CAP_NET_ADMIN:
+- if networking prog is using tail_call writing FD into prog_array will
+  effectively attach it, but bpf_map_update_elem is an unprivileged operation.
+- freplace prog with CAP_SYS_ADMIN can replace networking prog
+
+Consolidating all CAP checks at load time makes security model similar to
+open() syscall. Once the user got an FD it can do everything with it.
+read/write/poll don't check permissions. The same way when bpf_prog_load
+command returns an FD the user can do everything (including attaching,
+detaching, and bpf_test_run).
+
+The important design decision is to allow ID->FD transition for
+CAP_SYS_ADMIN only. What it means that user processes can run
+with CAP_BPF and CAP_NET_ADMIN and they will not be able to affect each
+other unless they pass FDs via scm_rights or via pinning in bpffs.
+ID->FD is a mechanism for human override and introspection.
+An admin can do 'sudo bpftool prog ...'. It's possible to enforce via LSM that
+only bpftool binary does bpf syscall with CAP_SYS_ADMIN and the rest of user
+space processes do bpf syscall with CAP_BPF isolating bpf objects (progs, maps,
+links) that are owned by such processes from each other.
+
+Another significant change from LPC is that the verifier checks are split into
+allow_ptr_leaks and bpf_capable flags. The allow_ptr_leaks disables spectre
+defense and allows pointer manipulations while bpf_capable enables all modern
+verifier features like bpf-to-bpf calls, BTF, bounded loops, indirect stack
+access, dead code elimination, etc. All the goodness.
+These flags are initialized as:
+  env->allow_ptr_leaks = perfmon_capable();
+  env->bpf_capable = bpf_capable();
+That allows networking progs with CAP_BPF + CAP_NET_ADMIN enjoy modern
+verifier features while being more secure.
+
+Some networking progs may need CAP_BPF + CAP_NET_ADMIN + CAP_PERFMON,
+since subtracting pointers (like skb->data_end - skb->data) is a pointer leak,
+but the verifier may get smarter in the future.
+
+Please see patches for more details.
+
+Alexei Starovoitov (3):
+  bpf, capability: Introduce CAP_BPF
+  bpf: implement CAP_BPF
+  selftests/bpf: use CAP_BPF and CAP_PERFMON in tests
+
+ drivers/media/rc/bpf-lirc.c                   |  2 +-
+ include/linux/bpf_verifier.h                  |  1 +
+ include/linux/capability.h                    |  5 ++
+ include/uapi/linux/capability.h               | 34 +++++++-
+ kernel/bpf/arraymap.c                         |  2 +-
+ kernel/bpf/bpf_struct_ops.c                   |  2 +-
+ kernel/bpf/core.c                             |  4 +-
+ kernel/bpf/cpumap.c                           |  2 +-
+ kernel/bpf/hashtab.c                          |  4 +-
+ kernel/bpf/helpers.c                          |  4 +-
+ kernel/bpf/lpm_trie.c                         |  2 +-
+ kernel/bpf/queue_stack_maps.c                 |  2 +-
+ kernel/bpf/reuseport_array.c                  |  2 +-
+ kernel/bpf/stackmap.c                         |  2 +-
+ kernel/bpf/syscall.c                          | 87 ++++++++++++++-----
+ kernel/bpf/verifier.c                         | 24 ++---
+ kernel/trace/bpf_trace.c                      |  3 +
+ net/core/bpf_sk_storage.c                     |  4 +-
+ net/core/filter.c                             |  4 +-
+ security/selinux/include/classmap.h           |  4 +-
+ tools/testing/selftests/bpf/test_verifier.c   | 44 ++++++++--
+ tools/testing/selftests/bpf/verifier/calls.c  | 16 ++--
+ .../selftests/bpf/verifier/dead_code.c        | 10 +--
+ 23 files changed, 191 insertions(+), 73 deletions(-)
+
+-- 
+2.23.0
+
