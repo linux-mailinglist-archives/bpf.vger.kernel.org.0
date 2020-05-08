@@ -2,169 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9591CB260
-	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 16:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F7C1CB284
+	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 17:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbgEHO6j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 May 2020 10:58:39 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:25011 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726690AbgEHO6i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 May 2020 10:58:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588949915;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5cxHWT1fhpBsjHISLT+nvjAVD2NFN8LTOupRO9tndAE=;
-        b=iZGw6EaepDZZyHs7kF8s+GPzn5baDqsvETPfaUj8EDcDRKObWTrIVDHLOKXz4EBRU7oRQD
-        6Rv8EUH/jhkayvGP7xjKg0mJNkgepMKTQOUMN8kyouLW1XmJDXPGJsRHYPXiHC/JVyctxU
-        j3nmjmVQLilmqazLQoLzfm18PzIMpYQ=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-489-aI3C5g52MKamxTr56ecKhA-1; Fri, 08 May 2020 10:58:33 -0400
-X-MC-Unique: aI3C5g52MKamxTr56ecKhA-1
-Received: by mail-lf1-f70.google.com with SMTP id n13so662524lfb.2
-        for <bpf@vger.kernel.org>; Fri, 08 May 2020 07:58:33 -0700 (PDT)
+        id S1727083AbgEHPGv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 May 2020 11:06:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726771AbgEHPGu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 May 2020 11:06:50 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D57C061A0C
+        for <bpf@vger.kernel.org>; Fri,  8 May 2020 08:06:49 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id i13so8666900oie.9
+        for <bpf@vger.kernel.org>; Fri, 08 May 2020 08:06:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=lvwnhFDd/cmhJNNKsmXNg+ehQ3GiN0fUJfWc+H/B0zs=;
+        b=cy9hehPMKa+WJUe5ElMYlcn6E7fJ7v/lmPm06jhq7mFWxu1uGzJLIjKzkRwdMUPVOK
+         ndRvtHdUQMNd77RI3X+ghp9kBKdDx7hE+TktwLN3HdtBNn86dSTJqvwMmpzDEga3Vip/
+         w1J7aJbuN4oyxXziInOwMCNEpt4YEpPz/iIsXMJr47XXoQfcSs3vnN1SbMmkKxvrM9DB
+         CvWDHNwhphRaPl0H8xYVuUK+zGjhIKx7cfVct+AdMVRg1Lp4fLK/LHYkKxviLZDf4I/4
+         vVUalPMBoSUje9F64hUF6Px1YEu3XCc/yTWvOme/LGbw5Y6x8qruUA63wL1M02c6Sa0Z
+         ebVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=5cxHWT1fhpBsjHISLT+nvjAVD2NFN8LTOupRO9tndAE=;
-        b=B/aKl7ahM/hKz6XgW7ZiccdnTkuWSz2XD1mkdFN4HFvvdmIQH7Nwu3QK8WMFVPpqtG
-         R1CK51o+VTMeq5jMzTIhJ0EWVrI5IBQT1ChVRpcDne7PZYLEwqoOwjz63OH3vaNnLFc6
-         YVV1PC0vxo2U8ismMnAKofdQm6AuAlSxpQEqSfELkhah2/Gn+giHuNrXkLp9iHhx/ho6
-         FIiArgYM4BsU5umCFmYPaTlHHlV7O6C7hSB5jTlGdHjG8RLJWGDi8GCgYVhArk2sUSf9
-         aC0yFdfMUeWm6zK7rSHiMlaGnVk41V/scccJnxcm/DmvNb0HGg/2JDhu5kITnM3RJWls
-         3hBw==
-X-Gm-Message-State: AOAM533glRjksKXA699EnfFYLrhSKrLZe2MiV1Ta/ZWaq6kTpNSKSBP+
-        DQOFKqZF+C/fAZDPrvX8m+wFeEvFc/z8ZCHmN9vk2/bCTw6W8Q4pVYrOjVWU3du4I1WqC0lbg7Z
-        YykCif9nnH55g
-X-Received: by 2002:a2e:9712:: with SMTP id r18mr2018698lji.225.1588949911985;
-        Fri, 08 May 2020 07:58:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzb7IppmyTDwD/D2z40v3OESMOGTKDkNqBfYut8xM2Nt2kauXly420+Q26OFUMj9Nt/bILVVw==
-X-Received: by 2002:a2e:9712:: with SMTP id r18mr2018676lji.225.1588949911669;
-        Fri, 08 May 2020 07:58:31 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id z23sm1342258ljm.46.2020.05.08.07.58.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 07:58:30 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id DD1EF18151A; Fri,  8 May 2020 16:58:28 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Subject: Re: [RFC PATCHv2 bpf-next 1/2] xdp: add a new helper for dev map multicast support
-In-Reply-To: <20200508085357.GC102436@dhcp-12-153.nay.redhat.com>
-References: <20200415085437.23028-1-liuhangbin@gmail.com> <20200424085610.10047-1-liuhangbin@gmail.com> <20200424085610.10047-2-liuhangbin@gmail.com> <87r1wd2bqu.fsf@toke.dk> <20200506091442.GA102436@dhcp-12-153.nay.redhat.com> <874kstmlhz.fsf@toke.dk> <20200508085357.GC102436@dhcp-12-153.nay.redhat.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 08 May 2020 16:58:28 +0200
-Message-ID: <878si2h3sb.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=lvwnhFDd/cmhJNNKsmXNg+ehQ3GiN0fUJfWc+H/B0zs=;
+        b=NCJKo9JMDHfBDCGZAmXJnBYyBhVCLuOOKZyacEyBha54nXhn2EX28nTDe4xpNWSiiV
+         OurSGoeBkZZhOOG6J9FM0X6CzkSCID9O4H2yLv/7OnBRDirituKOdS9EvNS1B4HjqIDc
+         Ryssn3wb/1X0xfc9fSmGv8ZnDliRQm61JaVLyPjlcq3hz5bg5xXu4Urqu3Hd/MbbeVUo
+         HKDFSKER+fhzHHvbbudSF6otHqbSx2jyfet4bYNoCEN5ZSCVlBPW9S3J6t48GCqvucuF
+         z7wR+/jzkZ6iA+JmILltIIrT6B6nnJF5zCKSv4vnId2LEoSTmNZg88PdPkrkpKOf+iuE
+         7CBQ==
+X-Gm-Message-State: AGi0Puaak8+qTYsXDwLpGqmT/y0An2HTkC1Ofq9JulnU43f0k2HMbuA0
+        4bIQgrl0QlPeoPq4HQWMwW9xLIfCtOuBHEE4MQE=
+X-Google-Smtp-Source: APiQypKhVh9OPMuVYZzwlNvPp+Oa57pFyZy9sEBJUHKQfQrZRGGifPdxAxIv0DudukFZ3KcV/HGA38+JZc/hY4U2bqA=
+X-Received: by 2002:aca:fc45:: with SMTP id a66mr10871523oii.5.1588950408637;
+ Fri, 08 May 2020 08:06:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <CACZqfqC038WbB-iO86xsvpSehgRLaua_uObbOSJgxfx5DnV5Ww@mail.gmail.com>
+ <CACZqfqDijnE9s-Vw8nao9gJ4ewF5oc+YO5_-XOEhDB_OvDRdWw@mail.gmail.com>
+In-Reply-To: <CACZqfqDijnE9s-Vw8nao9gJ4ewF5oc+YO5_-XOEhDB_OvDRdWw@mail.gmail.com>
+From:   Josh Soref <jsoref@gmail.com>
+Date:   Fri, 8 May 2020 11:06:35 -0400
+Message-ID: <CACZqfqB_1waiutsW5qZPQbPRX4jRcPX380pQ1J7Az1+3YSPMBA@mail.gmail.com>
+Subject: Re: spelling fix for bpf_perf_prog_read_value optval doc
+To:     Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hangbin Liu <liuhangbin@gmail.com> writes:
+Very sorry for the extra emails. I've finished touching sysdig...
 
-> On Wed, May 06, 2020 at 12:00:08PM +0200, Toke H=C3=83=C6=92=C3=82=C2=B8i=
-land-J=C3=83=C6=92=C3=82=C2=B8rgensen wrote:
->> > No, I haven't test the performance. Do you have any suggestions about =
-how
->> > to test it? I'd like to try forwarding pkts to 10+ ports. But I don't =
-know
->> > how to test the throughput. I don't think netperf or iperf supports
->> > this.
->>=20
->> What I usually do when benchmarking XDP_REDIRECT is to just use pktgen
->> (samples/pktgen in the kernel source tree) on another machine,
->> specifically, like this:
->>=20
->> ./pktgen_sample03_burst_single_flow.sh  -i enp1s0f1 -d 10.70.2.2 -m ec:0=
-d:9a:db:11:35 -t 4  -s 64
->>=20
->> (adjust iface, IP and MAC address to your system, of course). That'll
->> flood the target machine with small UDP packets. On that machine, I then
->> run the 'xdp_redirect_map' program from samples/bpf. The bpf program
->> used by that sample will update an internal counter for every packet,
->> and the userspace prints it out, which gives you the performance (in
->> PPS). So just modifying that sample to using your new multicast helper
->> (and comparing it to regular REDIRECT to a single device) would be a
->> first approximation of a performance test.
->
-> Thanks for this method. I will update the sample and do some more tests.
+From 2804d3c0cfddb8e73f75ba4fae01f59918973658 Mon Sep 17 00:00:00 2001
+From: Josh Soref <jsoref@users.noreply.github.com>
+Date: Fri, 8 May 2020 11:01:01 -0400
+Subject: [PATCH 4/5] spelling: identifier
 
-Great!
+Signed-off-by: Josh Soref <jsoref@gmail.com>
+---
+ include/uapi/linux/bpf.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->> You could do something like:
->>=20
->> bool first =3D true;
->> for (;;) {
->>=20
->> [...]
->>=20
->>            if (!first) {
->>    		nxdpf =3D xdpf_clone(xdpf);
->>    		if (unlikely(!nxdpf))
->>    			return -ENOMEM;
->>    		bq_enqueue(dev, nxdpf, dev_rx);
->>            } else {
->>    		bq_enqueue(dev, xdpf, dev_rx);
->>    		first =3D false;
->>            }
->> }
->>=20
->> /* didn't find anywhere to forward to, free buf */
->> if (first)
->>    xdp_return_frame_rx_napi(xdpf);
->
-> I think the first xdpf will be consumed by the driver and the later
-> xdpf_clone() will failed, won't it?
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 8ad84678714b4..fc13ccb191c3e 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1085,7 +1085,7 @@ union bpf_attr {
+  * Description
+  * Retrieve the realm or the route, that is to say the
+  * **tclassid** field of the destination for the *skb*. The
+- * indentifier retrieved is a user-provided tag, similar to the
++ * identifier retrieved is a user-provided tag, similar to the
+  * one used with the net_cls cgroup (see description for
+  * **bpf_get_cgroup_classid**\ () helper), but here this tag is
+  * held by a route (a destination entry), not by a task.
 
-No, bq_enqueue just sticks the frame on a list, it's not consumed until
-after the NAPI cycle ends (and the driver calls xdp_do_flush()).
+From d863cdab79b1f5a16e2b160bb9d0690be4f6b33e Mon Sep 17 00:00:00 2001
+From: Josh Soref <jsoref@users.noreply.github.com>
+Date: Fri, 8 May 2020 11:01:47 -0400
+Subject: [PATCH 5/5] spelling: separately
 
-> How about just do a xdp_return_frame_rx_napi(xdpf) after all nxdpf enqueu=
-e?
+Signed-off-by: Josh Soref <jsoref@gmail.com>
+---
+ include/uapi/linux/bpf.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yeah, that would be the semantically obvious thing to do, but it is
-wasteful in that you end up performing one more clone than you strictly
-have to :)
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index fc13ccb191c3e..bf19da37147af 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3359,7 +3359,7 @@ struct bpf_xfrm_state {
+  * provide backwards compatibility with existing SCHED_CLS and SCHED_ACT
+  * programs.
+  *
+- * XDP is handled seprately, see XDP_*.
++ * XDP is handled separately, see XDP_*.
+  */
+ enum bpf_ret_code {
+  BPF_OK = 0,
 
->> > @@ -3534,6 +3539,8 @@ int xdp_do_redirect(struct net_device *dev, stru=
-ct
->> > xdp_buff *xdp,
->> >                   struct bpf_prog *xdp_prog)
->> >  {
->> >       struct bpf_redirect_info *ri =3D this_cpu_ptr(&bpf_redirect_info=
-);
->> > +     bool exclude_ingress =3D !!(ri->flags & BPF_F_EXCLUDE_INGRESS);
->> > +     struct bpf_map *ex_map =3D READ_ONCE(ri->ex_map);
->>
->> I don't think you need the READ_ONCE here since there's already one
->> below?
->
-> BTW, I forgot to ask, why we don't need the READ_ONCE for ex_map?
-> I though the map and ex_map are two different pointers.
-
-It isn't, but not for the reason I thought, so I can understand why my
-comment might have been somewhat confusing (I have been confused by this
-myself until just now...).
-
-The READ_ONCE() is not needed because the ex_map field is only ever read
-from or written to by the CPU owning the per-cpu pointer. Whereas the
-'map' field is manipulated by remote CPUs in bpf_clear_redirect_map().
-So you need neither READ_ONCE() nor WRITE_ONCE() on ex_map, just like
-there are none on tgt_index and tgt_value.
-
--Toke
-
+In case of whitespace damage, please see:
+https://github.com/torvalds/linux/compare/master...jsoref:spelling-bpf.patch
