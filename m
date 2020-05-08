@@ -2,151 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F21F61CA69D
-	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 10:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE751CA6D1
+	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 11:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725872AbgEHIyK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 May 2020 04:54:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52152 "EHLO
+        id S1726627AbgEHJIz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 May 2020 05:08:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725784AbgEHIyK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 May 2020 04:54:10 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9EA3C05BD43
-        for <bpf@vger.kernel.org>; Fri,  8 May 2020 01:54:09 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id v12so906036wrp.12
-        for <bpf@vger.kernel.org>; Fri, 08 May 2020 01:54:09 -0700 (PDT)
+        with ESMTP id S1725815AbgEHJIz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 May 2020 05:08:55 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 627F1C05BD43;
+        Fri,  8 May 2020 02:08:53 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id z8so983536wrw.3;
+        Fri, 08 May 2020 02:08:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=sAzrRdwhen6mcsuV4DQ0ozpHVnETNzjd3US+qiFlROM=;
-        b=NhDDygFhw7HFB+9OdYLggWRA13mUS1gZpYuDL147LM4MF5hYWEyAz6x3+JdXyV+9XT
-         CWSMxcKc4sEX2FfxOesI4nYCooVtP34M0MVLA4CLzdiACWBb94K0tdoIEqOb0HiWrv8o
-         lo7VmdWYybIC5zs+jc4hsncwcstaZYr0IfLJc=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=79tjuFVpCKsIYx/Y/a85HAqfNcGLWpvA8YjB6eufvyI=;
+        b=m7bJC0euHfJm3bY5wZ3xvMRocJZj2IJhiDjqd5uRPIuETSIjaL8Y/5wjpw9nWjUGn8
+         254hbouXElBIZbmoTDCo5KBmSZgB165v5JcgwfbY5zY6b8OwVPNO020qGb+dmj9QQCAU
+         GB0mFsTI7GTasEotl3gsp3bUkC0VY5CrqpCI5ljfziEONDfx1hJF4uZVRkVCbSJrpC41
+         Juv4HmvMl83s9h6wBdmNqpB7Jqm0+xOqMf5+QSQR+rO/Qr5xY4EAMH15EJfffZWpBw+P
+         aHrdPaUaqRO4BkimtVZyp6qyriiVOSSDrZ51JuJ2PaWbpBxdxspOC0vgSiel1WF7Rin1
+         fJZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=sAzrRdwhen6mcsuV4DQ0ozpHVnETNzjd3US+qiFlROM=;
-        b=fsBUWsnr3qU9sDSxemm4xb+/Nd+yoUCxXjtksPfNc7m3M8QUbRK3jGs/m9NeBQFEMy
-         dv8SYKMufdwDa7nAdmYNFG1JqDuBE6uqY8VwkYbsCXKrtkHJkZTfA3Ze1uGOnSZoWf48
-         FjWXWhTtWysjD3nOq+ofDlbqXlMhq0C30XZ5VUFnhO5Io/NHA+oXC7bvxRIHRjdZGI2x
-         ekBo4yR4etSeo+5L8QzwIhKdADwZrFeIdyR1L1Jmn1CLBQ6OLA1lO6wdsLrRlGwAh7TG
-         rEwzblEzpyW03slmynm/HTdFo/9PosDKctZJafSEHrwapFqwffPcBYOfGGafXUId5bZe
-         RdZg==
-X-Gm-Message-State: AGi0PuaGcCqATHBr0TLaBbZpu+uTOhCnrEgR6jY8WEJZRC47n+1VVqUe
-        lTC8vJM2PzXsvBcS9NJpLCvc+g==
-X-Google-Smtp-Source: APiQypITN6wxpUpGf8yFlRte62yeifNq3OTqk52/CjQnS1e+IK/w1uVj80MCvBPNZm+RuFxo4oHVkA==
-X-Received: by 2002:adf:f5cb:: with SMTP id k11mr1699535wrp.300.1588928048585;
-        Fri, 08 May 2020 01:54:08 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id x23sm11771158wmj.6.2020.05.08.01.54.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 01:54:07 -0700 (PDT)
-References: <20200506125514.1020829-1-jakub@cloudflare.com> <20200506125514.1020829-3-jakub@cloudflare.com> <CACAyw9-ro_Dit=3M46=JSrkuc8y+UcsvJgVQuG98KdtmM9mCCA@mail.gmail.com> <87eerxuq3k.fsf@cloudflare.com> <20200507205524.pv2pnujxdrbktdc4@kafai-mbp>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        dccp@vger.kernel.org, kernel-team <kernel-team@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Gerrit Renker <gerrit@erg.abdn.ac.uk>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marek Majkowski <marek@cloudflare.com>
-Subject: Re: [PATCH bpf-next 02/17] bpf: Introduce SK_LOOKUP program type with a dedicated attach point
-In-reply-to: <20200507205524.pv2pnujxdrbktdc4@kafai-mbp>
-Date:   Fri, 08 May 2020 10:54:06 +0200
-Message-ID: <87blmyvmc1.fsf@cloudflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=79tjuFVpCKsIYx/Y/a85HAqfNcGLWpvA8YjB6eufvyI=;
+        b=BsewSmBsftnw0aFSCpQ0WYE41vCa3dKhtlbkB/0DS/eRVvYf2t3JDYmhu1vOycA6+B
+         aZ0DX7Zo5FfhVWGvZ27duzfjhijw7C8E1sBiLdkzm3pLV5stLRBKuJW53fUm9riI2iXX
+         jUIgucn0YtcsRuWYese3yLNteQdmI+z2y1Sd711+E0rJUAryuCMZ+zhIivtwIX9B05yn
+         WxMeZtJ3jjQe7N+7H/z9zyJj2bZwqCfLRvsgnA8Pyws/hjsWcLy/sndrupthW+36SISW
+         gTGoS4bzknVEkgYe+J7ayutx98UDNyA+By8p5avPtHN4wR8sI3q7/gp6AKT5vI4nzxM9
+         mYOg==
+X-Gm-Message-State: AGi0PuZh7asXBkbcU1KOLarwCqXtsG8yOjLlErkVeKr8QYhdIbmBCA6X
+        0QSuCoQwH2TkfoK7ckFRhqKG3PFJApEVaFXqLrw3574e+Y2EvA==
+X-Google-Smtp-Source: APiQypIxdn2ZxZq5/VQl9MZZjHgNwzaDai5Ru4Qf04svSGccWip/P0BIm0Mw0kLoLoXeV0AoJfOdKTzwuZOG5lwolDo=
+X-Received: by 2002:a5d:4107:: with SMTP id l7mr1782804wrp.160.1588928932151;
+ Fri, 08 May 2020 02:08:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <CAJ+HfNidbgwtLinLQohwocUmoYyRcAG454ggGkCbseQPSA1cpw@mail.gmail.com>
+ <877dxnkggf.fsf@toke.dk> <CAJ+HfNhvzZ4JKLRS5=esxCd7o39-OCuDSmdkxCuxR9Y6g5DC0A@mail.gmail.com>
+ <871rnvkdhw.fsf@toke.dk>
+In-Reply-To: <871rnvkdhw.fsf@toke.dk>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Fri, 8 May 2020 11:08:40 +0200
+Message-ID: <CAJ+HfNim_4pZz4SvV06R5pZ0AffT=v7G6AqRNm=mz+OBgOpm7A@mail.gmail.com>
+Subject: Re: XDP bpf_tail_call_redirect(): yea or nay?
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 07, 2020 at 10:55 PM CEST, Martin KaFai Lau wrote:
-> On Wed, May 06, 2020 at 03:53:35PM +0200, Jakub Sitnicki wrote:
->> On Wed, May 06, 2020 at 03:16 PM CEST, Lorenz Bauer wrote:
->> > On Wed, 6 May 2020 at 13:55, Jakub Sitnicki <jakub@cloudflare.com> wrote:
->>
->> [...]
->>
->> >> @@ -4012,4 +4051,18 @@ struct bpf_pidns_info {
->> >>         __u32 pid;
->> >>         __u32 tgid;
->> >>  };
->> >> +
->> >> +/* User accessible data for SK_LOOKUP programs. Add new fields at the end. */
->> >> +struct bpf_sk_lookup {
->> >> +       __u32 family;           /* AF_INET, AF_INET6 */
->> >> +       __u32 protocol;         /* IPPROTO_TCP, IPPROTO_UDP */
->> >> +       /* IP addresses allows 1, 2, and 4 bytes access */
->> >> +       __u32 src_ip4;
->> >> +       __u32 src_ip6[4];
->> >> +       __u32 src_port;         /* network byte order */
->> >> +       __u32 dst_ip4;
->> >> +       __u32 dst_ip6[4];
->> >> +       __u32 dst_port;         /* host byte order */
->> >
->> > Jakub and I have discussed this off-list, but we couldn't come to an
->> > agreement and decided to invite
->> > your opinion.
->> >
->> > I think that dst_port should be in network byte order, since it's one
->> > less exception to the
->> > rule to think about when writing BPF programs.
->> >
->> > Jakub's argument is that this follows __sk_buff->local_port precedent,
->> > which is also in host
->> > byte order.
->>
->> Yes, would be great to hear if there is a preference here.
->>
->> Small correction, proposed sk_lookup program doesn't have access to
->> __sk_buff, so perhaps that case matters less.
->>
->> bpf_sk_lookup->dst_port, the packet destination port, is in host byte
->> order so that it can be compared against bpf_sock->src_port, socket
->> local port, without conversion.
->>
->> But I also see how it can be a surprise for a BPF user that one field has
->> a different byte order.
-> I would also prefer port and addr were all in the same byte order.
-> However, it is not the cases for the other prog_type ctx.
-> People has stomped on it from time to time.  May be something
-> can be done at the libbpf to hide this difference.
+On Thu, 7 May 2020 at 16:48, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.=
+com> wrote:
 >
-> I think uapi consistency with other existing ctx is more important here.
-> (i.e. keep the "local" port in host order).  Otherwise, the user will
-> be slapped left and right when writting bpf_prog in different prog_type.
+[]
+> Well, my immediate thought would be that the added complexity would not
+> be worth it, because:
 >
-> Armed with the knowledge on skc_num, the "local" port is
-> in host byte order in the current existing prog ctx.  It is
-> unfortunate that the "dst"_port in this patch is the "local" port.
-> The "local" port in "struct bpf_sock" is actually the "src"_port. :/
-> Would "local"/"remote" be clearer than "src"/dst" in this patch?
+> - A new action would mean either you'd need to patch all drivers or
+>   (more likely) we'd end up with yet another difference between drivers'
+>   XDP support.
+>
 
-I went and compared the field naming and byte order in existing structs:
+Right, but it would be trivial to add for drivers that already support
+XDP_REDIRECT, so I'm not worried about that particular problem. That
+aside, let's move on. I agree that adding action should be avoided!
 
-  | struct         | field      | byte order |
-  |----------------+------------+------------|
-  | __sk_buff      | local_port | host       |
-  | sk_msg_md      | local_port | host       |
-  | bpf_sock_ops   | local_port | host       |
-  | bpf_sock       | src_port   | host       |
-  | bpf_fib_lookup | dport      | network    |
-  | bpf_flow_keys  | dport      | network    |
-  | bpf_sock_tuple | dport      | network    |
-  | bpf_sock_addr  | user_port  | network    |
+> - BPF developers would suddenly have to choose - do this new faster
+>   thing, or be compatible? And manage the choice based on drivers they
+>   expect to run on, etc. This was already confusing with
+>   bpf_redirect()/bpf_redirect_map(), and this would introduce a third
+>   option!
+>
 
-It does look like "local"/"remote" prefix is the sensible choice.
+True. For the sake of the argument; Adding flags vs adding a new
+helper, i.e. bpf_redirect_map(flag_with_new_semantic) vs a new helper.
+Today XDP developers that use bpf_redirect_map() need to consider
+whether the kernel support the "pass action via flags" or not, so this
+would be a *fourth* option. :-P
 
-I got carried away trying to match the field names with bpf_sock, which
-actually doesn't follow the naming convention.
+I'm with you here. The best option would be a transparent one.
 
-Will rename fields to local_*, remote_* in v2.
+
+> So in light of this, I'd say the performance benefit would have to be
+> quite substantial for this to be worth it. Which we won't know until you
+> try it, I guess :)
+>
+
+Hear, hear!
+
+> Thinking of alternatives - couldn't you shoe-horn this into the existing
+> helper and return code? Say, introduce an IMMEDIATE_RETURN flag to the
+> existing helpers, which would change the behaviour to the tail call
+> semantics. When used, xdp_do_redirect() would then return immediately
+> (or you could even turn xdp_do_redirect() into an inlined wrapper that
+> checks the flag before issuing a CALL to the existing function). Any
+> reason why that wouldn't work?
+>
+
+Sure, but this wouldn't remove the per-cpu/bpf_redirect_info lookup.
+Then again, maybe it's better to start there. To clarify, just a flag
+isn't sufficient. It would need to be a guarantee that the program
+exists after the call, i.e. tail call support. From clang/BPF
+instruction (Alexei's/John's replies), or something like
+bpf_tail_call(). Unless I'm missing something... Or do you mean that
+the flag IMMEDIATE_RETURN would perform the action in the helper? The
+context would be stale after that call, and the verifier should reject
+a program that pokes the context, but the flag is a runtime thing. It
+sounds like a pretty complex verifier task to determine if
+IMMEDIATE_RETURN is set, and then reject ctx accesses there.
+
+
+Thanks for the input, and good ideas!
+Bj=C3=B6rn
+
+> -Toke
+>
