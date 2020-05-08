@@ -2,145 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD0F1CBA9C
-	for <lists+bpf@lfdr.de>; Sat,  9 May 2020 00:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 734D71CBA9F
+	for <lists+bpf@lfdr.de>; Sat,  9 May 2020 00:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727926AbgEHWSf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 May 2020 18:18:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727082AbgEHWSf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 8 May 2020 18:18:35 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6090DC061A0C;
-        Fri,  8 May 2020 15:18:35 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id v63so1656702pfb.10;
-        Fri, 08 May 2020 15:18:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=slBeDdO+NLXpUllYxpa7W5p3QR99sLP2SUFK9a8TVgY=;
-        b=m1SEovlOEzStu6rpmVOzUq+28OLBDJ0YCj9SwngPILA0/lelPEAybDX2LlFdhQ5uRf
-         8FRNlABALiyFQPMPwhM+qJrczbFshSWQMiMk81+0KC4VpuGKa314QNjwpRE1iJg3OpRl
-         eSKuKnZiddvhDfQr8OwAbmC094r5b6ZnDvM/fuEXDWo/X892TZyf3LXHuCdXNDBl2bW5
-         q5Ma3XlCvXzL9Y7C6H2UAVLLjkGz+h2AdGvLK8jCNiOBy+pOqx1x6+Dx6s82NRQ7h5Zi
-         DbVz9gBu3nQJM9ALm6diYF3PCHKeJWwUlbigzdi65xXrXW16smEBD3sA4ecR6lFpRvKS
-         eRMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=slBeDdO+NLXpUllYxpa7W5p3QR99sLP2SUFK9a8TVgY=;
-        b=BliqN6+ZK7ELAHjBxPHAYjEXilAQt5x36tyDgbwpuac1Z/rUkkdzHGMTM5NF9AV7/e
-         0n1ZM1k4sNs00YLoud5pWxB9aX3Jgep5aVe/YGreGdZFQkfIBaFom67PKAELJgPkkf2p
-         dFNukQK+/kVyj4RRCbxX2QaPNIJNzkUkEL0KoYvmtdqZvdnin4UQmT2MQrZuNz5Q0aeQ
-         4oJ4BDSqeU7btfiA68T5Ub1r+HIB7oUVzTXmE1+p4lV7v3nfPDvJs5vtVDn8zrXQrqur
-         gesJkTFpWawgOR+ZIKxCOJRtIKx8U0OtUVHGKS1j08QyOkZxZBhCWcbVaJFBsjEb9I3j
-         gNUw==
-X-Gm-Message-State: AGi0PuahHqHEP4LRNuLw6FJnYM5s8TZzrzchoD6O/Ya9w50hyj5X5KuZ
-        FTAW4S/UmzRtOnhIfv0a6l4v274P
-X-Google-Smtp-Source: APiQypJGsg/+91OUBPAr4UGfb+rF5Qcfq90zvKPEBXSYZH+bSQIpyscPZ9BAGtYViDhbv216BibTOA==
-X-Received: by 2002:a62:5cc7:: with SMTP id q190mr4907996pfb.98.1588976314732;
-        Fri, 08 May 2020 15:18:34 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:d7c7])
-        by smtp.gmail.com with ESMTPSA id w192sm2831148pff.126.2020.05.08.15.18.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 15:18:33 -0700 (PDT)
-Date:   Fri, 8 May 2020 15:18:31 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1728280AbgEHWSq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 May 2020 18:18:46 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53560 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727082AbgEHWSq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 May 2020 18:18:46 -0400
+Received: from 1.general.cascardo.us.vpn ([10.172.70.58] helo=mussarela)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <cascardo@canonical.com>)
+        id 1jXBKK-00079A-Uq; Fri, 08 May 2020 22:18:41 +0000
+Date:   Fri, 8 May 2020 19:18:35 -0300
+From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Justin Forbes <jmforbes@linuxtx.org>,
+        Aurelien Jarno <aurelien@aurel32.net>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] bpf: Tweak BPF jump table optimizations for objtool
- compatibility
-Message-ID: <20200508221831.g6rdviekaqtcxh5f@ast-mbp.dhcp.thefacebook.com>
-References: <20200505174300.gech3wr5v6kkho35@ast-mbp.dhcp.thefacebook.com>
- <20200505181108.hwcqanvw3qf5qyxk@treble>
- <20200505195320.lyphpnprn3sjijf6@ast-mbp.dhcp.thefacebook.com>
- <20200505202823.zkmq6t55fxspqazk@treble>
- <20200505235939.utnmzqsn22cec643@ast-mbp.dhcp.thefacebook.com>
- <20200506155343.7x3slq3uasponb6w@treble>
- <CAADnVQJZ1rj1DB-Y=85itvfcHxnXVKjhJXpzqs6zZ6ZLpexhCQ@mail.gmail.com>
- <20200506211945.4qhrxqplzmt4ul66@treble>
- <20200507000357.grprluieqa324v5c@ast-mbp.dhcp.thefacebook.com>
- <20200507140733.v4xlzjogtnpgu5lc@treble>
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH 1/2] Revert "libbpf: Fix readelf output parsing on
+ powerpc with recent binutils"
+Message-ID: <20200508221833.GF24356@mussarela>
+References: <20200507145652.190823-1-yauheni.kaliuta@redhat.com>
+ <20200507145652.190823-2-yauheni.kaliuta@redhat.com>
+ <CAEf4BzYPDKfJLSGVQucgRuDUyzwizQHAWyUWWGsq6ZvgRUO0yg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200507140733.v4xlzjogtnpgu5lc@treble>
+In-Reply-To: <CAEf4BzYPDKfJLSGVQucgRuDUyzwizQHAWyUWWGsq6ZvgRUO0yg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 07, 2020 at 09:07:33AM -0500, Josh Poimboeuf wrote:
-> On Wed, May 06, 2020 at 05:03:57PM -0700, Alexei Starovoitov wrote:
-> > > > > > diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-> > > > > > index d7ee4c6bad48..05104c3cc033 100644
-> > > > > > --- a/include/linux/compiler-gcc.h
-> > > > > > +++ b/include/linux/compiler-gcc.h
-> > > > > > @@ -171,4 +171,4 @@
-> > > > > >  #define __diag_GCC_8(s)
-> > > > > >  #endif
-> > > > > >
-> > > > > > -#define __no_fgcse __attribute__((optimize("-fno-gcse")))
-> > > > > > +#define __no_fgcse __attribute__((optimize("-fno-gcse,-fno-omit-frame-pointer")))
-> > > > > > --
-> > > > > > 2.23.0
-> > > > > >
-> > > > > > I've tested it with gcc 8,9,10 and clang 11 with FP=y and with ORC=y.
-> > > > > > All works.
-> > > > > > I think it's safer to go with frame pointers even for ORC=y considering
-> > > > > > all the pain this issue had caused. Even if objtool gets confused again
-> > > > > > in the future __bpf_prog_run() will have frame pointers and kernel stack
-> > > > > > unwinding can fall back from ORC to FP for that frame.
-> > > > > > wdyt?
-> > > > >
-> > > > > It seems dangerous to me.  The GCC manual recommends against it.
-> > > > 
-> > > > The manual can says that it's broken. That won't stop the world from using it.
-> > > > Just google projects that are using it. For example: qt, lz4, unreal engine, etc
-> > > > Telling compiler to disable gcse via flag is a guaranteed way to avoid
-> > > > that optimization that breaks objtool whereas messing with C code is nothing
-> > > > but guess work. gcc can still do gcse.
-> > > 
-> > > But the manual's right, it is broken.  How do you know other important
-> > > flags won't also be stripped?
-> > 
-> > What flags are you worried about?
-> > I've checked that important things like -mno-red-zone, -fsanitize are preserved.
-> 
-> It's not any specific flags I'm worried about, it's all of them.  There
-> are a lot of possibilities, with all the different configs, and arches.
-> Flags are usually added for a good reason, so one randomly missing flag
-> could have unforeseen results.
-> 
-> And I don't have any visibility into how GCC decides which flags to
-> drop, and when.  But the docs aren't comforting.
+On Fri, May 08, 2020 at 02:46:56PM -0700, Andrii Nakryiko wrote:
+> On Thu, May 7, 2020 at 7:57 AM Yauheni Kaliuta
+> <yauheni.kaliuta@redhat.com> wrote:
+> >
+> > The patch makes it fail on the output when the comment is printed
+> > after the symbol name (RHEL8 powerpc):
+> >
+> > 400: 000000000000c714   144 FUNC    GLOBAL DEFAULT    1 bpf_object__open_file@LIBBPF_0.0.4         [<localentry>: 8]
+> >
+> > But after commit aa915931ac3e ("libbpf: Fix readelf output parsing
+> > for Fedora") it is not needed anymore, the parsing should work in
+> > both cases.
+> >
 
-That doc change landed 5 years ago:
-https://patchwork.ozlabs.org/project/gcc/patch/20151213081911.GA320@x4/
-Sure it's 'broken' by whatever definition of broken.
-Yet gcc has
-$ git grep '__attribute__((optimize' gcc/testsuite/|wc -l
-34 tests to make sure it stays working.
-And gcc is using it to bootstrap itself. See LIBGCC2_UNWIND_ATTRIBUTE.
-The doc is expressing desire and trying to discourage its use,
-but that attribute is not going anywhere.
+If it's working either way after aa915931ac3e, is there any specific reason
+for the revert?
 
-> Even if things seem to work now, that could (silently) change at any
-> point in time.  This time objtool warned about the missing frame
-> pointer, but that's not necessarily going to happen for other flags.
+Cascardo.
+
+> > This reverts commit 3464afdf11f9a1e031e7858a05351ceca1792fea.
+> >
+> > Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+> > ---
 > 
-> If we go this route, I would much rather do -fno-gcse on a file-wide
-> basis.
-
-The fix for broken commit 3193c0836f20 has to be backported all the way
-to 5.3 release. I'd like to minimize conflicts.
-For that very reason I'm not even renaming #define __no_fgcse.
+> Looks good, though would be nice to have people originally involved in
+> those fixes you mentioned to confirm it works fine still. Added them
+> to cc.
+> 
+> If no one shouts loudly in next few days:
+> 
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> 
+> 
+> >  tools/lib/bpf/Makefile | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+> > index aee7f1a83c77..908dac9eb562 100644
+> > --- a/tools/lib/bpf/Makefile
+> > +++ b/tools/lib/bpf/Makefile
+> > @@ -149,7 +149,7 @@ TAGS_PROG := $(if $(shell which etags 2>/dev/null),etags,ctags)
+> >  GLOBAL_SYM_COUNT = $(shell readelf -s --wide $(BPF_IN_SHARED) | \
+> >                            cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' | \
+> >                            sed 's/\[.*\]//' | \
+> > -                          awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}' | \
+> > +                          awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$8}' | \
+> >                            sort -u | wc -l)
+> >  VERSIONED_SYM_COUNT = $(shell readelf -s --wide $(OUTPUT)libbpf.so | \
+> >                               grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 | sort -u | wc -l)
+> > @@ -216,7 +216,7 @@ check_abi: $(OUTPUT)libbpf.so
+> >                 readelf -s --wide $(BPF_IN_SHARED) |                     \
+> >                     cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' |   \
+> >                     sed 's/\[.*\]//' |                                   \
+> > -                   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}'|  \
+> > +                   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$8}'|   \
+> >                     sort -u > $(OUTPUT)libbpf_global_syms.tmp;           \
+> >                 readelf -s --wide $(OUTPUT)libbpf.so |                   \
+> >                     grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 |             \
+> > --
+> > 2.26.2
+> >
