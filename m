@@ -2,112 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828B71CA51A
-	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 09:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7092C1CA69F
+	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 10:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727851AbgEHHVk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 May 2020 03:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727863AbgEHHV3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 8 May 2020 03:21:29 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D85C05BD43
-        for <bpf@vger.kernel.org>; Fri,  8 May 2020 00:21:28 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id x18so442353ybq.8
-        for <bpf@vger.kernel.org>; Fri, 08 May 2020 00:21:28 -0700 (PDT)
+        id S1725784AbgEHIyL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 May 2020 04:54:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726025AbgEHIyL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 May 2020 04:54:11 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27971C05BD0B;
+        Fri,  8 May 2020 01:54:10 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id l12so570849pgr.10;
+        Fri, 08 May 2020 01:54:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ghSLWmPTjJa1N7MEynHoO3xq1duNAQVUBZp+ZfGFuUE=;
-        b=PvpvLe2fjNxojvQSID9SqgyPUOOpkTHnRBJ4bKWtgUvCTb1sqFaHRGvTkaAOfucQjA
-         ybn2zA/+aGvjSF4YEBRK4zlBdZgfmQkmyM4ZU3TyWAaRapPBD0eDc56ti633wmr/mj9K
-         MuJ8LzN2rwCYRWSQKAMPomnzvvD7JgBZXstlRUzd8Vzszd7okoFqLSk8KypFJqtizd88
-         dG9jgLNAVqgfGbfG+eUDUgSJWFovkUxrMBRo9lw9N7zehkqs0JGQ6XZzqlwx5oEVT1VG
-         YxfnyfGAt/Rv+yVKMWjChUJJrrJtJzv9ZNfbjBdMrTI0JuN5jnfKCG7M4Hx84OXWOG60
-         m1qg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Xw7bneDncMYCvfrqJQk2sk2OzlKsXn2ZHAE5/n/nUqU=;
+        b=Yv1fksitw+AWzD0vX5DRmG7H3DzQ0ngiJoN/Ra8IcObAxgHNdO2oxChm5owTD6VbRJ
+         2Yc/Jaltsgh6TuQl1+dSM9QjYZJ3nZNHZsJ7LC7zKZqDHQenuWtDe9vHJbEeMp4uygtx
+         4ULbpY6M4vCCjaTstUru05lQHpg2weWFReX3gmLfhZmg2dPMs9mQHWb48lhRRKra7X0o
+         RY3ByUXt4c6qPT9HY5OFZsaTINeq9KR3BQP/FdDgEP/utN3Js9F55JWR7AbRzPU7yauR
+         pfuOF6ViVf419PaVTedq4jnFeqh+OTxH7mEOExAEakiVQyYlen9foGnqmLn+qkFP53vQ
+         sKYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ghSLWmPTjJa1N7MEynHoO3xq1duNAQVUBZp+ZfGFuUE=;
-        b=OGS5r2wkHjmCZXDgw374tdhE16k5pzMbBpHZWvzDQF8XchtXjHdKFEdjsAKuJdO9B6
-         PwhGMbrEuewn5lEpWIfzOcqN6D8trtpFO/fPDW5GHO/C1vZ6Mbri5hJX88R1bYAsXgWX
-         8iFjSuPP1yquJfj4sq4UlVNY5psvhVZlWC/6wvW3An7d2pw3Z4bpfFyo+bYNMJ7nP9qN
-         xblv2eMI2/NzZg9wkeVxpuwQNPN3a0sXhz/hVrPpZCeL5cCvXSmO2Mz6XRJkng6sVwZH
-         5zOJ742MWHlvB4UdrjpJSaow1nZXKFEfVtm7X+ggkClmLt9GlpYiGdaKl6e9wbJVnTG/
-         yvQg==
-X-Gm-Message-State: AGi0PuZ6xx995xQJ5PiGs6RXtO44aRH1qd3u397o5i0V2xyOQ7xAsMYU
-        kNNLf5SsMJ26vA4WonFMmN4JXaREv7pFE+vzXlLXrw==
-X-Google-Smtp-Source: APiQypJ4LfbqVmL56J7m3SlKiNGelvh5pQdV/+Uielt+V3/tJezOCmC5ry3w7km1U2msTfPMA+0Jm8HumNdz8jGZrS4=
-X-Received: by 2002:a05:6902:4ee:: with SMTP id w14mr1110079ybs.383.1588922487266;
- Fri, 08 May 2020 00:21:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200508063954.256593-1-irogers@google.com> <CAEf4BzYT5FfDt2oqctHC6dXNmwg5gaaNcFu1StObuYk-jKocLQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYT5FfDt2oqctHC6dXNmwg5gaaNcFu1StObuYk-jKocLQ@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 8 May 2020 00:21:16 -0700
-Message-ID: <CAP-5=fU-QxfdkQoHP=Ksqeb9gPTE4xYcgEcp9Ej6trZpkCDvPA@mail.gmail.com>
-Subject: Re: [PATCH] libbpf hashmap: fix undefined behavior in hash_bits
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Xw7bneDncMYCvfrqJQk2sk2OzlKsXn2ZHAE5/n/nUqU=;
+        b=RrhN+UhbUt567VW086h+plTD8CXvYNyiNNJiLQzpyN+1dZ0mxd7//v6xoY1SPPa3k1
+         QjyupYN/kc+4LOkj81I2M0244mVnsrvFFhi5QyCuUHSEy+/5rHQG7T6d3cMwVyRJhV0u
+         LR06abRbMKscgVvMEMXLREaoi5oUf3vWF1OtxDVb7zx0dCR1X+spfYDH8lXDtECJsyKu
+         A8q2YjpDt4TW55c/+8BvefLj2wlEhtvcSg5wfDo0IA3g/cFT3l2e+uIZ4WUi/I1XDlrY
+         HmxkxFhxYMKq4yIUjSVRV03Nvh44lmjyslaa0NU7DrWpbm5H4TYPFg1AHNEYB+7Q2Dey
+         j6kQ==
+X-Gm-Message-State: AGi0PuZWHxPrh1RWmkjlNpeplDghqNdVERUzG44Bm3fQIwuBG+K/1tCL
+        X7/92uFPH6Yq6sc2Sg2N6jo=
+X-Google-Smtp-Source: APiQypJO/dtADwtpU8CPBwaXVW3np6XIDRWXsduTzJj8Rrr2pk98xyGATFoIgJlw5pCb+VkfSWnPjA==
+X-Received: by 2002:a62:e211:: with SMTP id a17mr1791003pfi.250.1588928049517;
+        Fri, 08 May 2020 01:54:09 -0700 (PDT)
+Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id c1sm1124222pfo.152.2020.05.08.01.54.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 May 2020 01:54:08 -0700 (PDT)
+Date:   Fri, 8 May 2020 16:53:57 +0800
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Subject: Re: [RFC PATCHv2 bpf-next 1/2] xdp: add a new helper for dev map
+ multicast support
+Message-ID: <20200508085357.GC102436@dhcp-12-153.nay.redhat.com>
+References: <20200415085437.23028-1-liuhangbin@gmail.com>
+ <20200424085610.10047-1-liuhangbin@gmail.com>
+ <20200424085610.10047-2-liuhangbin@gmail.com>
+ <87r1wd2bqu.fsf@toke.dk>
+ <20200506091442.GA102436@dhcp-12-153.nay.redhat.com>
+ <874kstmlhz.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <874kstmlhz.fsf@toke.dk>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 8, 2020 at 12:12 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, May 7, 2020 at 11:40 PM Ian Rogers <irogers@google.com> wrote:
-> >
-> > If bits is 0, the case when the map is empty, then the >> is the size of
-> > the register which is undefined behavior - on x86 it is the same as a
-> > shift by 0. Fix by handling the 0 case explicitly.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
->
-> No need. The only case when bits can be 0 is when hashmap is
-> completely empty (no elements have ever been added yet). In that case,
-> it doesn't matter what value hash_bits() returns,
-> hashmap__for_each_key_entry/hashmap__for_each_key_entry_safe will
-> behave correctly, because map->buckets will be NULL.
+On Wed, May 06, 2020 at 12:00:08PM +0200, Toke Høiland-Jørgensen wrote:
+> > No, I haven't test the performance. Do you have any suggestions about how
+> > to test it? I'd like to try forwarding pkts to 10+ ports. But I don't know
+> > how to test the throughput. I don't think netperf or iperf supports
+> > this.
+> 
+> What I usually do when benchmarking XDP_REDIRECT is to just use pktgen
+> (samples/pktgen in the kernel source tree) on another machine,
+> specifically, like this:
+> 
+> ./pktgen_sample03_burst_single_flow.sh  -i enp1s0f1 -d 10.70.2.2 -m ec:0d:9a:db:11:35 -t 4  -s 64
+> 
+> (adjust iface, IP and MAC address to your system, of course). That'll
+> flood the target machine with small UDP packets. On that machine, I then
+> run the 'xdp_redirect_map' program from samples/bpf. The bpf program
+> used by that sample will update an internal counter for every packet,
+> and the userspace prints it out, which gives you the performance (in
+> PPS). So just modifying that sample to using your new multicast helper
+> (and comparing it to regular REDIRECT to a single device) would be a
+> first approximation of a performance test.
 
-Agreed. Unfortunately the LLVM undefined behavior sanitizer (I've not
-tested with GCC to the same extent) will cause an exit when it sees >>
-64 regardless of whether the value is used or not. It'd be possible to
-#ifdef this code on whether a sanitizer was present.
+Thanks for this method. I will update the sample and do some more tests.
+> 
+> You could do something like:
+> 
+> bool first = true;
+> for (;;) {
+> 
+> [...]
+> 
+>            if (!first) {
+>    		nxdpf = xdpf_clone(xdpf);
+>    		if (unlikely(!nxdpf))
+>    			return -ENOMEM;
+>    		bq_enqueue(dev, nxdpf, dev_rx);
+>            } else {
+>    		bq_enqueue(dev, xdpf, dev_rx);
+>    		first = false;
+>            }
+> }
+> 
+> /* didn't find anywhere to forward to, free buf */
+> if (first)
+>    xdp_return_frame_rx_napi(xdpf);
 
-Thanks,
-Ian
+I think the first xdpf will be consumed by the driver and the later
+xdpf_clone() will failed, won't it?
 
-> >  tools/lib/bpf/hashmap.h | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/tools/lib/bpf/hashmap.h b/tools/lib/bpf/hashmap.h
-> > index d5ef212a55ba..781db653d16c 100644
-> > --- a/tools/lib/bpf/hashmap.h
-> > +++ b/tools/lib/bpf/hashmap.h
-> > @@ -19,6 +19,8 @@
-> >  static inline size_t hash_bits(size_t h, int bits)
+How about just do a xdp_return_frame_rx_napi(xdpf) after all nxdpf enqueue?
+
+> > @@ -3534,6 +3539,8 @@ int xdp_do_redirect(struct net_device *dev, struct
+> > xdp_buff *xdp,
+> >                   struct bpf_prog *xdp_prog)
 > >  {
-> >         /* shuffle bits and return requested number of upper bits */
-> > +       if (bits == 0)
-> > +               return 0;
-> >         return (h * 11400714819323198485llu) >> (__WORDSIZE - bits);
-> >  }
-> >
-> > --
-> > 2.26.2.645.ge9eca65c58-goog
-> >
+> >       struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
+> > +     bool exclude_ingress = !!(ri->flags & BPF_F_EXCLUDE_INGRESS);
+> > +     struct bpf_map *ex_map = READ_ONCE(ri->ex_map);
+>
+> I don't think you need the READ_ONCE here since there's already one
+> below?
+
+BTW, I forgot to ask, why we don't need the READ_ONCE for ex_map?
+I though the map and ex_map are two different pointers.
+
+> >       struct bpf_map *map = READ_ONCE(ri->map);
+
+Thanks
+Hangbin
