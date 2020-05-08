@@ -2,90 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F84C1CAF2A
-	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 15:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3CA1CB17B
+	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 16:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728557AbgEHNPT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 May 2020 09:15:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36300 "EHLO
+        id S1726908AbgEHONL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 May 2020 10:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730353AbgEHNPO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 8 May 2020 09:15:14 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45050C05BD43;
-        Fri,  8 May 2020 06:15:12 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id u16so10499365wmc.5;
-        Fri, 08 May 2020 06:15:12 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726767AbgEHONK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 8 May 2020 10:13:10 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235E8C05BD43
+        for <bpf@vger.kernel.org>; Fri,  8 May 2020 07:13:09 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id k110so1559707otc.2
+        for <bpf@vger.kernel.org>; Fri, 08 May 2020 07:13:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8Im34sz2MzZUy2vtWd199LfDoA0OQ99AwGOktacYlCQ=;
-        b=G+zQHhHp/Lch52oBnmNwRqF+r77FYljxyGT4Bz3cj5f4cD9bC/cbCls2J5pTnInPim
-         LMw6xxY1TMY6AulvkLLIL3sXK0gRXhgLGQ+EPvqx33/+I9Ctq0DXL3yrXW0c3/sQwkR7
-         pBJxhmjoeYN6AshrcGaEqiOObIiBPMBIwWMQsh8PPvYUmfMNNc4MysEzx41kknPnge7b
-         tfjblZZ3RAg2QfmCiib3AojaNfmnsbVKZ/SIp7wak0/orcLcQlggI+2eXkguFGMd1Fnk
-         9JhirZK1LDwLXKt9BD6Ym+1NR7IPFK1hN9oTkLRdmkvjX6PTi3CPMAaf7l/1HnWO3rBg
-         eewQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=XTff14NCqmKGIkdxKiYVS4d8328EwQmZuz4Tb3TFbL4=;
+        b=Pq54pojI0QKwhpUqm4Xc8wTRSZqd7feNLZOD0L9/mFOrX2g4QJdjzcU0OkGm5tc8VU
+         VdX71L/TRc4HUXvU1Lzxppaxs2ERu7Bkck1s+gxojPYBPk/heCLzBZ5zp/1gipoF91nn
+         ZCPzasvR+91z5BKkn0v5ii+WviyUlcvxTHjIXuX3QgCfJ++FJd4Vz1F4MIiyrXuNbabC
+         VFNy2jhJQrMmxTQz7uq3dcSVI0EJ6t8XIU6XGn411E+UVC7x8STFhewu4fXxMGcCECh0
+         EWxk/heovJanxTgREK5kW4GCd41xvRaufDzsQqNjAYgtqP3dSMJquzx4oY8jaCsOxoc7
+         s4Ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8Im34sz2MzZUy2vtWd199LfDoA0OQ99AwGOktacYlCQ=;
-        b=A4lakkTTUdADUlSDyG3cZhhrSU5hFI7Nk97kZsuQNCpyD17OW0jCB4/ZVZSI5mNSLM
-         xpgtd7Md83z0Gjwdq62R8MgEK3PDYVYc6JtmMHtegXIRgg/fxy5xpjUsMkD5Jaf+J5wl
-         UyQJWtO2TqPnkLXV56tgL3rgtjwpMMaNZPGF4IvpIC2HYL3ICo1NuyeQfv0iFaZ1ciW9
-         29Xd/T2kAjalCM6rcOp2IHnJKZxbbinMl8/Pq6J6sgjwZbSK+vClc4kyb5iEOzVfKpu4
-         1gyvkTQHl0OJ70jk5MVrje5p52CpXz0ZTXgzIMTnrdMRQrKahRACQ53B/zdgAuy134iu
-         MW/A==
-X-Gm-Message-State: AGi0Puanwp6vUjlAP9gWm1e1drCN0dIHpxaRsDzwXSZyKsJptFhazO5w
-        67GjKQwO31RfyHLwDB+8PROA8zFbNAc1DGrc+ec2S1HrG4qWaoAC
-X-Google-Smtp-Source: APiQypKeqJU36Xt3HJIinO7n4tAowbPJwUpy+Xk+6KKid2/fFhckl1br871A0DkpN9EE8Yb4V73VXshPgJ7foYp8rvc=
-X-Received: by 2002:a1c:3281:: with SMTP id y123mr16145026wmy.30.1588943711064;
- Fri, 08 May 2020 06:15:11 -0700 (PDT)
+         :message-id:subject:to;
+        bh=XTff14NCqmKGIkdxKiYVS4d8328EwQmZuz4Tb3TFbL4=;
+        b=thMOCN6ykKRIbk2TIdPxa0AffR2IfxMY99Tm5fq9kyS1vTRYYUlq6watVqmGLGF/gV
+         dQ7AVfEcH/ngQi3R9sPxy2F7YckSBCF/BiD0eKNgRSvy6R2W/RRxYMNzlwQb1hDiXfl5
+         5h9UXv4hwz6XUSra5fSu5oVkK0I8plmts0uK8Z8EAOGXbUKXQ8YMDCzytEu/gIZtUwIo
+         RdOzHgOnlSNhvmN9gj5OJnrtmxzLecZI30ZTnqRtml1boHrevYpFWE2qNZLUmmX/q2QX
+         4O7AnMtKtPug9SBpzlzGe50X10U1rYL3Pr7XJrd8rHd2DMNIh+OE/VvCXR0BGaGFRMOs
+         N7wQ==
+X-Gm-Message-State: AGi0PuZVZa5KejFhcGUlg8SOliWxJX5SdXs/f4v0KgFc3ng69GArGK/h
+        B7c3hWeoKjdsZS2xBt98NrXtDu3R2MekMoo9rgs=
+X-Google-Smtp-Source: APiQypKg8fEwlqsR4fZ06Abl1laeuJSZxRkeBdBih7a5G9xWuSB/wnr9a33bjqquYRTLgAf0+bTjDLqTrj8nu0ogMhA=
+X-Received: by 2002:a05:6830:22f8:: with SMTP id t24mr2287248otc.148.1588947188392;
+ Fri, 08 May 2020 07:13:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200507104252.544114-1-bjorn.topel@gmail.com>
- <20200507104252.544114-11-bjorn.topel@gmail.com> <40eb57c7-9c47-87dc-bda9-5a1729352c43@mellanox.com>
- <3c42954a-8bb3-85b1-8740-a096b0a76a98@intel.com> <cf65cc80-f16a-5b76-5577-57c55e952a52@mellanox.com>
- <CAJ+HfNiU8jyNMC1VMCgqGqz76Q8G1Pui09==TO8Qi73Y_2xViQ@mail.gmail.com>
-In-Reply-To: <CAJ+HfNiU8jyNMC1VMCgqGqz76Q8G1Pui09==TO8Qi73Y_2xViQ@mail.gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Fri, 8 May 2020 15:14:59 +0200
-Message-ID: <CAJ+HfNiBuDWX77PbR4ZPR_vuUyOTLA5MOGfyQrGO3EtQC1WwJQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 10/14] mlx5, xsk: migrate to new MEM_TYPE_XSK_BUFF_POOL
-To:     Maxim Mikityanskiy <maximmi@mellanox.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>
+References: <CACZqfqC038WbB-iO86xsvpSehgRLaua_uObbOSJgxfx5DnV5Ww@mail.gmail.com>
+In-Reply-To: <CACZqfqC038WbB-iO86xsvpSehgRLaua_uObbOSJgxfx5DnV5Ww@mail.gmail.com>
+From:   Josh Soref <jsoref@gmail.com>
+Date:   Fri, 8 May 2020 10:12:56 -0400
+Message-ID: <CACZqfqDijnE9s-Vw8nao9gJ4ewF5oc+YO5_-XOEhDB_OvDRdWw@mail.gmail.com>
+Subject: Re: spelling fix for bpf_perf_prog_read_value optval doc
+To:     Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 8 May 2020 at 15:08, Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> =
-wrote:
->
-> On Fri, 8 May 2020 at 15:01, Maxim Mikityanskiy <maximmi@mellanox.com> wr=
-ote:
-> >
-[]
->
-> All zeros hints that you're probably putting in the wrong DMA address som=
-ewhere.
->
+Oops, there are in fact two other less important typos in that file.
 
-Hmm, I can't see that you're using xsk_buff_xdp_get_dma() anywhere in
-the code. Probably it?
+These were found while cleaning up sysdig.
 
-Bj=C3=B6rn
+I tend to maintain individual commits for individual changes.
+I expect that the eventual changes would be squashed and the commit
+message reworded, I'm not attached to any of the particulars.
+Individual commits makes it easier for me to drop things when people
+disagree (especially when I make changes to entire modules as opposed
+to individual files).
+e.g. If someone wants to defend the use of the archaic British English
+advertize (Gmail objected so strenuously to that word that it replaced
+it here!...).
+
+At some point, I'll send something for a module, but I'm trying to
+avoid that for the time being (and hoping someone will volunteer to
+help me make contribute such changes).
+
+From 6c7cbf37a36ef7e4cf1c8a74983840541b23c238 Mon Sep 17 00:00:00 2001
+From: Josh Soref <jsoref@users.noreply.github.com>
+Date: Thu, 7 May 2020 18:09:12 -0400
+Subject: [PATCH 1/3] spelling: optval
+
+Signed-off-by: Josh Soref <jsoref@gmail.com>
+---
+ include/uapi/linux/bpf.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index f9b7fdd951e48..f705495cbe0e3 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1771,7 +1771,7 @@ union bpf_attr {
+  * which the option resides and the name *optname* of the option
+  * must be specified, see **getsockopt(2)** for more information.
+  * The retrieved value is stored in the structure pointed by
+- * *opval* and of length *optlen*.
++ * *optval* and of length *optlen*.
+  *
+  * This helper actually implements a subset of **getsockopt()**.
+  * It supports the following *level*\ s:
+
+From e1f6f30c9038b4d1313f3b286c5e60d523afff1b Mon Sep 17 00:00:00 2001
+From: Josh Soref <jsoref@users.noreply.github.com>
+Date: Fri, 8 May 2020 10:03:53 -0400
+Subject: [PATCH 2/3] spelling: advertised
+
+Signed-off-by: Josh Soref <jsoref@gmail.com>
+---
+ include/uapi/linux/bpf.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index f705495cbe0e3..df5a0cf2ee4aa 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3695,7 +3695,7 @@ enum {
+  BPF_SOCK_OPS_TIMEOUT_INIT, /* Should return SYN-RTO value to use or
+  * -1 if default value should be used
+  */
+- BPF_SOCK_OPS_RWND_INIT, /* Should return initial advertized
++ BPF_SOCK_OPS_RWND_INIT, /* Should return initial advertised
+  * window (in packets) or -1 if default
+  * value should be used
+  */
+
+From 775ce59fb3a8e14817adb7764ffce02987a3c25a Mon Sep 17 00:00:00 2001
+From: Josh Soref <jsoref@users.noreply.github.com>
+Date: Fri, 8 May 2020 10:04:51 -0400
+Subject: [PATCH 3/3] spelling: verdict
+
+Signed-off-by: Josh Soref <jsoref@gmail.com>
+---
+ include/uapi/linux/bpf.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index df5a0cf2ee4aa..8ad84678714b4 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -2119,7 +2119,7 @@ union bpf_attr {
+  * Description
+  * This helper is used in programs implementing policies at the
+  * skb socket level. If the sk_buff *skb* is allowed to pass (i.e.
+- * if the verdeict eBPF program returns **SK_PASS**), redirect it
++ * if the verdict eBPF program returns **SK_PASS**), redirect it
+  * to the socket referenced by *map* (of type
+  * **BPF_MAP_TYPE_SOCKHASH**) using hash *key*. Both ingress and
+  * egress interfaces can be used for redirection. The
+
+In case of whitespace damage, please see:
+https://github.com/torvalds/linux/compare/master...jsoref:spelling-bpf.patch
