@@ -2,127 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA691CB89D
-	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 21:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAEF61CB8B1
+	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 21:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727833AbgEHTw7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 May 2020 15:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42106 "EHLO
+        id S1726797AbgEHT6F (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 May 2020 15:58:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726904AbgEHTw6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 8 May 2020 15:52:58 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C9DC05BD09
-        for <bpf@vger.kernel.org>; Fri,  8 May 2020 12:52:58 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id 23so1972449qkf.0
-        for <bpf@vger.kernel.org>; Fri, 08 May 2020 12:52:58 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726767AbgEHT6E (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 8 May 2020 15:58:04 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 630D6C061A0C;
+        Fri,  8 May 2020 12:58:04 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id g16so1662632qtp.11;
+        Fri, 08 May 2020 12:58:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=+PiQ6ckxUTnSDo+AGLRh/Fg+o3k0O3ko3wY06x3JoKE=;
-        b=Ts3CIrENqZECosUV9ufuB6NplQ4bZIANry4cTq9ctiFl2W3eKhj5UpDDQOEaY6A2Yd
-         mNvqS8MpDNbFmXG47isv0LHHuWhU9DrWeNeUqpMHP3rRP+c5b6gcvtAg+8ZLRMd/gdoD
-         1i8v4D54gKF1JaotzplFLT3nMfQ5VKcTVTMjFomlH2d9ykBhs9YeoAV4r0fEyjl3TlPr
-         v2KDioACvLG1JOHWROC3jtqtFiE8v+6chVfwhJVwQ6LpHrO+DnmO5kWS3VjbGmk9WNEY
-         aeK1VQ7Ix6UqBc9nyw9EdxtaWdyBCOYz2f1ZZWBmiN42UGRN2WCkIjnAj9hWJy7yjUPW
-         HsMQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S7AMlxAnIK8qYxwBNYZC5I95MD3pbRM5AHaqha3x5DY=;
+        b=gi4z4brafd4CNkAiZNwjr5E96RfekteLpddfJyV0X0IOl3yuKBMP3TozlDtYgYEGQY
+         6qHSo9vNOaabdEyYmM+atN8sMsbHXceLSnse9Hsm/4GaWlAE6BJia8YZ3pu4vH7m28hv
+         yvAd98YRIuL1/K1j7lApfEWQixJf/+lEu5Ll7Pa/xaPw62KTDM03aFl+IBrFF63EOCrL
+         9DlMCSPb0Yz6v2j2lFwtyw9/abR0Nk/DpxrQb2gP/0zrjDNZCTkCfDAMeS00GyWGgT0P
+         ugPsf2ua8S6oyNYTTlbmHpGISbKL6amOI8EmSlp907Kh7lIMkaU5XbBLgO7eHQUsWsEO
+         bzgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+PiQ6ckxUTnSDo+AGLRh/Fg+o3k0O3ko3wY06x3JoKE=;
-        b=C4e9nrGmskfGOnXxHx5aVrH8Rm7OTQkwjd//UZXfzJFWY6ofgEhsNlg4ByLAwpQLZo
-         Jw4TIeHuznPMCowyOsW4k+UBLO4G5ztmfweYz99PhVRNdYnXMQbqfNc7OKxpnpFj9Jjw
-         +pUqDIOLl5NSZ9mcIAbSSXt9kuVQyUQzlLMs21iRS5MLFgU3SpgLsKhPUEiuEgonG5Rp
-         181nrXHlGd3LsjBCkFvpaxrmFn8BWxBYClVOcqnklph3JXy/4tHXP6EyyLjEVZjFAqeR
-         R0zmzhoubDPJkEjwoYwxGJxXqCjmLgFI7RLQJ/nMEWO2ShEJHy+ISr+TKDLpV+Qa6WBE
-         i6PQ==
-X-Gm-Message-State: AGi0PubvUkdp8o5zs9/WeKVsQ0OJV425s3482DHz7pFz84KHXSHBXHTX
-        Q+3aK3fEaixeJMhAtAdijaxlsg==
-X-Google-Smtp-Source: APiQypJ92/0qZ5iunL9hikarn4eDK0RllMv8mjTvIrEJ1zjbLNqAjWeKqDY9cc4vVlZEbqAojJlNqA==
-X-Received: by 2002:a37:a4d8:: with SMTP id n207mr4488919qke.354.1588967577470;
-        Fri, 08 May 2020 12:52:57 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id c4sm1945896qkf.120.2020.05.08.12.52.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 May 2020 12:52:56 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jX93I-0002SQ-9Q; Fri, 08 May 2020 16:52:56 -0300
-Date:   Fri, 8 May 2020 16:52:56 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, kvm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 09/12] rdma: use __anon_inode_getfd
-Message-ID: <20200508195256.GA8912@ziepe.ca>
-References: <20200508153634.249933-1-hch@lst.de>
- <20200508153634.249933-10-hch@lst.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S7AMlxAnIK8qYxwBNYZC5I95MD3pbRM5AHaqha3x5DY=;
+        b=ILJ6NMOj9UUvENP/yDjIRbHSElj5b4r7yZKX0VNCRG7W9dY+GK+ub0wcEVRQVdy3Xs
+         m/e6MjxQGs6yrR6qJtNwOCK6CWS3wMKUDjHB9/dq+mTps83eA5bz1Ym9sZoAZFlWfBr0
+         uRsLUrdbBFql/UXU9wTi0gVk7qVdnGr//Qn/dDg0UqrOueYCT46RDuxPTKZwUJwTdHOn
+         CsuuzF9103DK+dQnbJrZl6b+IbxGPLx2RystTAZkYd+yiqUF5mQA+IhiNLT8kqeU1OaQ
+         D8TyKWRU+vdRdnWlFfW217sY9K1TkM5wnpMbcmM2/IJBmPUUhRc2eUMX8aYj70OrgI3H
+         6O6A==
+X-Gm-Message-State: AGi0PuaNA3CBkAh5TgW8aWasQC+WX9C3lH6XxDdHaPKNUPxlPaxHly2T
+        H+rIFOsIQvMOMla8AkRrj/D0Ld0FWVrxAGJG2AI=
+X-Google-Smtp-Source: APiQypKe77gdoI1QE5qUEnsOmoEIuDgl712DkoBK1kXzE57lMio77ialctJvn3mW4ltO7pFyrGnr8VOCYusaAF5BTyg=
+X-Received: by 2002:ac8:51d3:: with SMTP id d19mr4642663qtn.141.1588967882430;
+ Fri, 08 May 2020 12:58:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200508153634.249933-10-hch@lst.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200507053915.1542140-1-yhs@fb.com> <20200507053940.1545530-1-yhs@fb.com>
+In-Reply-To: <20200507053940.1545530-1-yhs@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 8 May 2020 12:57:51 -0700
+Message-ID: <CAEf4BzbLqD-mgdgUxOmc=TmEok+FFUm5ZKLUSS2sL7iXq72H-A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 21/21] tools/bpf: selftests: add bpf_iter selftests
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 08, 2020 at 05:36:31PM +0200, Christoph Hellwig wrote:
-> Use __anon_inode_getfd instead of opencoding the logic using
-> get_unused_fd_flags + anon_inode_getfile.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+On Wed, May 6, 2020 at 10:41 PM Yonghong Song <yhs@fb.com> wrote:
+>
+> The added test includes the following subtests:
+>   - test verifier change for btf_id_or_null
+>   - test load/create_iter/read for
+>     ipv6_route/netlink/bpf_map/task/task_file
+>   - test anon bpf iterator
+>   - test anon bpf iterator reading one char at a time
+>   - test file bpf iterator
+>   - test overflow (single bpf program output not overflow)
+>   - test overflow (single bpf program output overflows)
+>   - test bpf prog returning 1
+>
+> The ipv6_route tests the following verifier change
+>   - access fields in the variable length array of the structure.
+>
+> The netlink load tests the following verifier change
+>   - put a btf_id ptr value in a stack and accessible to
+>     tracing/iter programs.
+>
+> The anon bpf iterator also tests link auto attach through skeleton.
+>
+>   $ test_progs -n 2
+>   #2/1 btf_id_or_null:OK
+>   #2/2 ipv6_route:OK
+>   #2/3 netlink:OK
+>   #2/4 bpf_map:OK
+>   #2/5 task:OK
+>   #2/6 task_file:OK
+>   #2/7 anon:OK
+>   #2/8 anon-read-one-char:OK
+>   #2/9 file:OK
+>   #2/10 overflow:OK
+>   #2/11 overflow-e2big:OK
+>   #2/12 prog-ret-1:OK
+>   #2 bpf_iter:OK
+>   Summary: 1/12 PASSED, 0 SKIPPED, 0 FAILED
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
->  drivers/infiniband/core/rdma_core.c | 17 ++++-------------
->  1 file changed, 4 insertions(+), 13 deletions(-)
 
- 
-> diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
-> index 5128cb16bb485..541e5e06347f6 100644
-> --- a/drivers/infiniband/core/rdma_core.c
-> +++ b/drivers/infiniband/core/rdma_core.c
-> @@ -462,30 +462,21 @@ alloc_begin_fd_uobject(const struct uverbs_api_object *obj,
->  	if (WARN_ON(fd_type->fops->release != &uverbs_uobject_fd_release))
->  		return ERR_PTR(-EINVAL);
->  
-> -	new_fd = get_unused_fd_flags(O_CLOEXEC);
-> -	if (new_fd < 0)
-> -		return ERR_PTR(new_fd);
-> -
->  	uobj = alloc_uobj(attrs, obj);
->  	if (IS_ERR(uobj))
-> -		goto err_fd;
-> +		return uobj;
->  
->  	/* Note that uverbs_uobject_fd_release() is called during abort */
-> -	filp = anon_inode_getfile(fd_type->name, fd_type->fops, NULL,
-> -				  fd_type->flags);
-> -	if (IS_ERR(filp)) {
-> -		uobj = ERR_CAST(filp);
-> +	new_fd = __anon_inode_getfd(fd_type->name, fd_type->fops, NULL,
-> +			fd_type->flags | O_CLOEXEC, &filp);
-> +	if (new_fd < 0)
->  		goto err_uobj;
+I'm personally not a big fan of bpf_iter_test_kern_common.h approach
+(including it and parameterizing with #define), I'd rather just
+copy/paste BPF program code (it's just a few lines) and maybe even put
+them in the same file/skeleton, less files to jump between. But that's
+just personal preferences, so:
 
-This will conflict with a fix (83a267021221 'RDMA/core: Fix
-overwriting of uobj in case of error') that is going to go to -rc
-soon.
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-Also the above misses returning an ERR_PTR if __anon_inode_getfd fails, it
-returns a uobj that had been freed.. I suppose it should be something
-like
+>  .../selftests/bpf/prog_tests/bpf_iter.c       | 408 ++++++++++++++++++
+>  .../selftests/bpf/progs/bpf_iter_test_kern1.c |   4 +
+>  .../selftests/bpf/progs/bpf_iter_test_kern2.c |   4 +
+>  .../selftests/bpf/progs/bpf_iter_test_kern3.c |  18 +
+>  .../selftests/bpf/progs/bpf_iter_test_kern4.c |  52 +++
+>  .../bpf/progs/bpf_iter_test_kern_common.h     |  22 +
+>  6 files changed, 508 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_test_kern1.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_test_kern2.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_test_kern3.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_test_kern4.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_test_kern_common.h
+>
 
-if (new_fd < 0) {
-   uverbs_uobject_put(uobj);
-   return ERR_PTR(new_fd)
-}
-
-?
-
-Jason
+[...]
