@@ -2,55 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E82A1CAE53
-	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 15:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F84C1CAF2A
+	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 15:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728908AbgEHNIx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 May 2020 09:08:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35320 "EHLO
+        id S1728557AbgEHNPT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 May 2020 09:15:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728556AbgEHNIv (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 8 May 2020 09:08:51 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45362C05BD43;
-        Fri,  8 May 2020 06:08:51 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id x17so1772640wrt.5;
-        Fri, 08 May 2020 06:08:51 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1730353AbgEHNPO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 8 May 2020 09:15:14 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45050C05BD43;
+        Fri,  8 May 2020 06:15:12 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id u16so10499365wmc.5;
+        Fri, 08 May 2020 06:15:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=fzVBitGbGs6c9vSFlRa8yyVPwH/mTWCu5Nt0AL3hOL8=;
-        b=Qa61DywqFbLV0WLEZ8qPfW6fmbNb5o8K76MIqacgRZbUYASTn/yfK6gvzHhf6ZFgA2
-         yVfH/u/GW6+JVKo08ceC+7gzZsxJtwzcJTE1kNZtP2xOh9UcQDnjvsypJJuuJ8cYWlJ/
-         bF6UFZOM67NG/fOsIBU2u6tAgYc9VNAG1p58u7YA0KNsU/c626PSPE4D9RjZzt171OTZ
-         LiNqs2JTLPX07p+s5/padAsUvkG+AYZJ7K1n+0wW6D+1n2m47ni1rlN+K3gTMPIq+cEV
-         +PH9aXciDFdTazV99Y8fqp8Gs8IGYD0mXT3ngKt+tbc2oYM2+u5xNbLx3lTuRaw8dIsJ
-         xGKg==
+        bh=8Im34sz2MzZUy2vtWd199LfDoA0OQ99AwGOktacYlCQ=;
+        b=G+zQHhHp/Lch52oBnmNwRqF+r77FYljxyGT4Bz3cj5f4cD9bC/cbCls2J5pTnInPim
+         LMw6xxY1TMY6AulvkLLIL3sXK0gRXhgLGQ+EPvqx33/+I9Ctq0DXL3yrXW0c3/sQwkR7
+         pBJxhmjoeYN6AshrcGaEqiOObIiBPMBIwWMQsh8PPvYUmfMNNc4MysEzx41kknPnge7b
+         tfjblZZ3RAg2QfmCiib3AojaNfmnsbVKZ/SIp7wak0/orcLcQlggI+2eXkguFGMd1Fnk
+         9JhirZK1LDwLXKt9BD6Ym+1NR7IPFK1hN9oTkLRdmkvjX6PTi3CPMAaf7l/1HnWO3rBg
+         eewQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fzVBitGbGs6c9vSFlRa8yyVPwH/mTWCu5Nt0AL3hOL8=;
-        b=HnPkoSg0IVDr9yUplHReUVPk+cMKfr+GtsdM24dwf0JhvoEoFB2EYoVBq3pxcA4Rq1
-         dqPIWGsyNFYo2KhRVAQIq7HXOHQgymE300l2hTJu6xDqcU6s1G1lVjKMZi99pciddQlO
-         H7pC2FbZiavec4KpMjAXoIrWOZElA2GCFM0aYRUsY7CFIev00cKrgM67xnn8BG7gK7ta
-         Y60bCoeP+VCsKnUJ7QORLB3Qn+Y79DuwB+W6pj5BoBoNHtfOFtxNoEAZYksJLztQ2hJ3
-         ZRc4AnL0ztAJ28kCbtJ7zNWfBpEPI3ID+7PKvMSgfbeqHAFDlnB5UmX/vqTWZd1OdgiC
-         bUpg==
-X-Gm-Message-State: AGi0Pub5a6t71m9YQrRFNiCKRZcDDfy+7K8Ggi34eydb4qK7F4M8xw3R
-        x9aWGHvV46hH2V3WPLokvE+JXm+g9f6anLRXRoI=
-X-Google-Smtp-Source: APiQypK5JWV/0lunuRXSm9bmWF8GTMrH8ZZtDEZCWSihlQms/jeatRDrLMdpIpchZGyScCDmrXjd8Js6R/z8ZjqMjjM=
-X-Received: by 2002:adf:e910:: with SMTP id f16mr2812017wrm.176.1588943329981;
- Fri, 08 May 2020 06:08:49 -0700 (PDT)
+        bh=8Im34sz2MzZUy2vtWd199LfDoA0OQ99AwGOktacYlCQ=;
+        b=A4lakkTTUdADUlSDyG3cZhhrSU5hFI7Nk97kZsuQNCpyD17OW0jCB4/ZVZSI5mNSLM
+         xpgtd7Md83z0Gjwdq62R8MgEK3PDYVYc6JtmMHtegXIRgg/fxy5xpjUsMkD5Jaf+J5wl
+         UyQJWtO2TqPnkLXV56tgL3rgtjwpMMaNZPGF4IvpIC2HYL3ICo1NuyeQfv0iFaZ1ciW9
+         29Xd/T2kAjalCM6rcOp2IHnJKZxbbinMl8/Pq6J6sgjwZbSK+vClc4kyb5iEOzVfKpu4
+         1gyvkTQHl0OJ70jk5MVrje5p52CpXz0ZTXgzIMTnrdMRQrKahRACQ53B/zdgAuy134iu
+         MW/A==
+X-Gm-Message-State: AGi0Puanwp6vUjlAP9gWm1e1drCN0dIHpxaRsDzwXSZyKsJptFhazO5w
+        67GjKQwO31RfyHLwDB+8PROA8zFbNAc1DGrc+ec2S1HrG4qWaoAC
+X-Google-Smtp-Source: APiQypKeqJU36Xt3HJIinO7n4tAowbPJwUpy+Xk+6KKid2/fFhckl1br871A0DkpN9EE8Yb4V73VXshPgJ7foYp8rvc=
+X-Received: by 2002:a1c:3281:: with SMTP id y123mr16145026wmy.30.1588943711064;
+ Fri, 08 May 2020 06:15:11 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200507104252.544114-1-bjorn.topel@gmail.com>
  <20200507104252.544114-11-bjorn.topel@gmail.com> <40eb57c7-9c47-87dc-bda9-5a1729352c43@mellanox.com>
  <3c42954a-8bb3-85b1-8740-a096b0a76a98@intel.com> <cf65cc80-f16a-5b76-5577-57c55e952a52@mellanox.com>
-In-Reply-To: <cf65cc80-f16a-5b76-5577-57c55e952a52@mellanox.com>
+ <CAJ+HfNiU8jyNMC1VMCgqGqz76Q8G1Pui09==TO8Qi73Y_2xViQ@mail.gmail.com>
+In-Reply-To: <CAJ+HfNiU8jyNMC1VMCgqGqz76Q8G1Pui09==TO8Qi73Y_2xViQ@mail.gmail.com>
 From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Fri, 8 May 2020 15:08:38 +0200
-Message-ID: <CAJ+HfNiU8jyNMC1VMCgqGqz76Q8G1Pui09==TO8Qi73Y_2xViQ@mail.gmail.com>
+Date:   Fri, 8 May 2020 15:14:59 +0200
+Message-ID: <CAJ+HfNiBuDWX77PbR4ZPR_vuUyOTLA5MOGfyQrGO3EtQC1WwJQ@mail.gmail.com>
 Subject: Re: [PATCH bpf-next 10/14] mlx5, xsk: migrate to new MEM_TYPE_XSK_BUFF_POOL
 To:     Maxim Mikityanskiy <maximmi@mellanox.com>
 Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
@@ -72,69 +73,19 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 8 May 2020 at 15:01, Maxim Mikityanskiy <maximmi@mellanox.com> wrot=
-e:
+On Fri, 8 May 2020 at 15:08, Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> =
+wrote:
 >
-> On 2020-05-08 15:27, Bj=C3=B6rn T=C3=B6pel wrote:
-> > On 2020-05-08 13:55, Maxim Mikityanskiy wrote:
-> >> On 2020-05-07 13:42, Bj=C3=B6rn T=C3=B6pel wrote:
-> >>> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> >>>
-> >>> Use the new MEM_TYPE_XSK_BUFF_POOL API in lieu of MEM_TYPE_ZERO_COPY =
-in
-> >>> mlx5e. It allows to drop a lot of code from the driver (which is now
-> >>> common in AF_XDP core and was related to XSK RX frame allocation, DMA
-> >>> mapping, etc.) and slightly improve performance.
-> >>>
-> >>> rfc->v1: Put back the sanity check for XSK params, use XSK API to get
-> >>>           the total headroom size. (Maxim)
-> >>>
-> >>> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> >>> Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
-> >>
-> >> I did some functional and performance tests.
-> >>
-> >> Unfortunately, something is wrong with the traffic: I get zeros in
-> >> XDP_TX, XDP_PASS and XSK instead of packet data. I set DEBUG_HEXDUMP
-> >> in xdpsock, and it shows the packets of the correct length, but all
-> >> bytes are 0 after these patches. It might be wrong xdp_buff pointers,
-> >> however, I still have to investigate it. Bj=C3=B6rn, does it also affe=
-ct
-> >> Intel drivers, or is it Mellanox-specific?
-> >>
+> On Fri, 8 May 2020 at 15:01, Maxim Mikityanskiy <maximmi@mellanox.com> wr=
+ote:
 > >
-> > Are you getting zeros for TX, PASS *and* in xdpsock (REDIRECT:ed
-> > packets), or just TX and PASS?
+[]
 >
-> Yes, in all modes: XDP_TX, XDP_PASS and XDP_REDIRECT to XSK (xdpsock).
->
-> > No, I get correct packet data for AF_XDP zero-copy XDP_REDIRECT,
-> > XDP_PASS, and XDP_TX for Intel.
->
-> Hmm, weird - with the new API I expected the same behavior on all
-> drivers. Thanks for the information, I'll know that I need to look in
-> mlx5 code to find the issue.
+> All zeros hints that you're probably putting in the wrong DMA address som=
+ewhere.
 >
 
-All zeros hints that you're probably putting in the wrong DMA address somew=
-here.
-
-> >> For performance, I got +1.0..+1.2 Mpps on RX. TX performance got
-> >> better after Bj=C3=B6rn inlined the relevant UMEM functions, however, =
-there
-> >> is still a slight decrease compared to the old code. I'll try to find
-> >> the possible reason, but the good thing is that it's not significant
-> >> anymore.
-> >>
-> >
-> > Ok, so for Rx mlx5 it's the same as for i40e. Good! :-)
-> >
-> > How much decrease on Tx?
->
-> ~0.8 Mpps (was 3.1 before you inlined the functions).
->
-
-Thanks. Still a bit much. What does perf say?
-
+Hmm, I can't see that you're using xsk_buff_xdp_get_dma() anywhere in
+the code. Probably it?
 
 Bj=C3=B6rn
