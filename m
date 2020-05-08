@@ -2,148 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 502141CAD5B
-	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 15:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 902BE1CAE5F
+	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 15:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgEHNBJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 May 2020 09:01:09 -0400
-Received: from mail-eopbgr40079.outbound.protection.outlook.com ([40.107.4.79]:20366
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730140AbgEHNBE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 May 2020 09:01:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m4GbWXOysemfzSt3asIfq2pp2f/j9Uppw6aqSu0yzpzeWH/RC1JKqdk95D+3MDdDEUA0kCO9VahkeFEibU9kCcysgh37znyD4n1YCZWPU9FARa2e7GtgUibsuQahyd45WaYzzfmrWEJnHxFuYJloeMOtwN8+AnotMbKMQ7ghllMnwUkqeEzuZYKcV/eTPde+io7OrROdzd/nCPZIeq0zpZ/mWiNybPIL7FV/0MTCdLQOWa2LPnMXdHJo8g7J2OXGzHAOGC2m/F4MmajQgzEGVkcn0jXA8LSNrYu+R88pkeGzwiy4uiInRCRf1c3cq2sXAlwQ/U1akWnjBtvI6G43yg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IJz+cE+tegfyRGjvbagmbvmB7km8HeQK8umYOKJRa0c=;
- b=LEUNmBYxg7uC01HoHVnahl9mLnEnUd6BuU4GBrcLo+cuBxeRNpQuylrjKpy8W+A3/DwCBdyvNc3Ndh9c6xRMVGQp8qG9xulWtWWpjvG1fMpGCLJt2JR4Vw7n+pDEz5JfRLRTJIRYNMl+C14xOtYrgA/3hcfP5zJ4PdUVqa6tjy2IrdOYSbL2iAtghlCQDi/xMCbqIk2I8vAIiDAm5NSpv3Tqn0PauQa+Qjm0Mx7i4+dxznXLVJ0V5/B4yUbOXsBPRxC10JUk4/SQ18rRMJdEu3dV1tny400BBoAdIuGxxkrv2td2eOB8V7bMQGSuHjZQXuW5qLQcIQtwug+oExAe0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IJz+cE+tegfyRGjvbagmbvmB7km8HeQK8umYOKJRa0c=;
- b=VX8t7gO6KW+XmZ88d/zsJ4qDLMhC+0DBApoa5nhNJUh0sWWuuO+PN7aTQT7U+KKKQaicAAxrxc+gUStRDSk+t2vRz6AqRvOGKqe/DiQRA0/2Bmolizq4OBnnJbflLT5vmAwesPs9OvRFfJq9KxKi/ZaX/cqbfiU2N0Ub5BXilJ4=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=mellanox.com;
-Received: from AM7PR05MB6632.eurprd05.prod.outlook.com (2603:10a6:20b:136::12)
- by AM7PR05MB6775.eurprd05.prod.outlook.com (2603:10a6:20b:142::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.30; Fri, 8 May
- 2020 13:00:59 +0000
-Received: from AM7PR05MB6632.eurprd05.prod.outlook.com
- ([fe80::94da:ac7a:611:781f]) by AM7PR05MB6632.eurprd05.prod.outlook.com
- ([fe80::94da:ac7a:611:781f%9]) with mapi id 15.20.2958.030; Fri, 8 May 2020
- 13:00:59 +0000
-Subject: Re: [PATCH bpf-next 10/14] mlx5, xsk: migrate to new
- MEM_TYPE_XSK_BUFF_POOL
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        jeffrey.t.kirsher@intel.com, maciej.fijalkowski@intel.com
-References: <20200507104252.544114-1-bjorn.topel@gmail.com>
- <20200507104252.544114-11-bjorn.topel@gmail.com>
- <40eb57c7-9c47-87dc-bda9-5a1729352c43@mellanox.com>
- <3c42954a-8bb3-85b1-8740-a096b0a76a98@intel.com>
-From:   Maxim Mikityanskiy <maximmi@mellanox.com>
-Message-ID: <cf65cc80-f16a-5b76-5577-57c55e952a52@mellanox.com>
-Date:   Fri, 8 May 2020 16:00:55 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-In-Reply-To: <3c42954a-8bb3-85b1-8740-a096b0a76a98@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM6P194CA0030.EURP194.PROD.OUTLOOK.COM
- (2603:10a6:209:90::43) To AM7PR05MB6632.eurprd05.prod.outlook.com
- (2603:10a6:20b:136::12)
+        id S1728542AbgEHNJR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 May 2020 09:09:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730504AbgEHNFZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 8 May 2020 09:05:25 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D598C05BD0A;
+        Fri,  8 May 2020 06:05:25 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jX2gP-0007Hb-Iv; Fri, 08 May 2020 15:04:53 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id BA4BC1C03AB;
+        Fri,  8 May 2020 15:04:48 +0200 (CEST)
+Date:   Fri, 08 May 2020 13:04:48 -0000
+From:   "tip-bot2 for Stephane Eranian" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf pmu: Add perf_pmu__find_by_type helper
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Jiwei Sun <jiwei.sun@windriver.com>,
+        John Garry <john.garry@huawei.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, yuzhoujian <yuzhoujian@didichuxing.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200429231443.207201-4-irogers@google.com>
+References: <20200429231443.207201-4-irogers@google.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.57.1.235] (159.224.90.213) by AM6P194CA0030.EURP194.PROD.OUTLOOK.COM (2603:10a6:209:90::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.28 via Frontend Transport; Fri, 8 May 2020 13:00:58 +0000
-X-Originating-IP: [159.224.90.213]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 9864655b-a7c6-4726-34b0-08d7f34fda93
-X-MS-TrafficTypeDiagnostic: AM7PR05MB6775:
-X-Microsoft-Antispam-PRVS: <AM7PR05MB6775A3C37F028FC1F492CEBDD1A20@AM7PR05MB6775.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-Forefront-PRVS: 039735BC4E
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qnyAJy6jGYVpX/YyokH9PFPMoZBk9Et2VfPeZQBlKhaa/rPxQQyIWarVL1A8mLVidZimh9JjYHX43A8Jh938hRndHk9PnqIPsm0UW3vYszlYC+/gWBJYrAmt4N+TZVjgGHrUx3bJ84x+7Ovmvk4c8pK3vz/c6LOBN9YZgP9ihMrQirR8XqmdZ2MW+6V19rg7A3gLNlmC7ioFqsW9Fbb4EnuGrliMmDMBxwyaJrF8iVh9N5acGh34X06fIKGNud436nzZKjaL6twMDV2xPpNmlkjJSLVBCGNeqM/np0KM5A0IEvTchQofHLi7+lQSF9aFmQc7z4xpVYydvMEgZP9dri25937a5K9mpPxxYREJKidMzmDRUZhFT4Fjd1dggzsTgVLeciBY3bFt8Az+IiSEy4saXeNN0eH+QNObtGYbdcyQJRHyPtuz/hHYz9pTFpI7SZFxPy8vzKjbafPtsJyoWFLx4CRAp9x4YwvQ6oyKWPySvJfp7m/z+FzXI6L8IyV0vUX9nB0Iyxc7PCI00s2U040YIIplTfuzYEFEg2fVTL1y8rwsCxetWj6N8ERsgJsm
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR05MB6632.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(376002)(39860400002)(346002)(396003)(136003)(33430700001)(66946007)(66556008)(36756003)(66476007)(110136005)(31696002)(52116002)(7416002)(6666004)(956004)(2616005)(16526019)(316002)(26005)(16576012)(83300400001)(6486002)(83310400001)(4326008)(83280400001)(83320400001)(83290400001)(31686004)(53546011)(8676002)(8936002)(2906002)(86362001)(5660300002)(55236004)(186003)(478600001)(33440700001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: HPsNEFLPQOAUYkDvJahEF3lrVBvCrRVyfxdJAAjpHHhKHJpK+dH/X82m6sVSajlo9hGApShc3RQz9ewd7eyEksufV+ylaiX2/J/PpwDiAnqXGc1DFMi0ODe3zWYIkE+xWvuFH6vRKLUp+ihwZSFQ1dhtp91NPBa8LzUFqWuR3ZGEi3/Bz8rDJoXaM2jxEc9dfwF2n8wNwm6hd7L3/fTFOqUcLwu2vfeyZdAWAqty3Hh9qOkoNWNIFy1WLvij7s+9fh5PXaObGlD463Tm/FV9Rrzu0uaxfIDxNkyxAjEvLPAl/Mbtn6Ngr9udNu0VUKCmlJpta/eDfsiTe//NfomLEmzUMImZDzbjg8Pc1Y1z9IlZ4Z1SRH4JX8o3oy5gBMV9zBZ9sE1zC9vslE3BCM5q7tGyIRBTYeXkQc17GOb+VujzofznDrEQBMyJxNvCpSGEBHFuMUUV+KFbRSMZ5v+bnHOCuIQyyAh2aIUzaC9H77LqeLZEJlVlsLKjfyhUoPM9
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9864655b-a7c6-4726-34b0-08d7f34fda93
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2020 13:00:59.2455
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: meVOw9Vzp8kk1H5RKlA0q2j1sQQjguLry+nQcQzA3n6VT0TOTCi+2lz2pLbP9wXgm2wEkbZwduwZu7vKHHjswg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR05MB6775
+Message-ID: <158894308863.8414.5208704375127898287.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-05-08 15:27, Björn Töpel wrote:
-> On 2020-05-08 13:55, Maxim Mikityanskiy wrote:
->> On 2020-05-07 13:42, Björn Töpel wrote:
->>> From: Björn Töpel <bjorn.topel@intel.com>
->>>
->>> Use the new MEM_TYPE_XSK_BUFF_POOL API in lieu of MEM_TYPE_ZERO_COPY in
->>> mlx5e. It allows to drop a lot of code from the driver (which is now
->>> common in AF_XDP core and was related to XSK RX frame allocation, DMA
->>> mapping, etc.) and slightly improve performance.
->>>
->>> rfc->v1: Put back the sanity check for XSK params, use XSK API to get
->>>           the total headroom size. (Maxim)
->>>
->>> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
->>> Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
->>
->> I did some functional and performance tests.
->>
->> Unfortunately, something is wrong with the traffic: I get zeros in 
->> XDP_TX, XDP_PASS and XSK instead of packet data. I set DEBUG_HEXDUMP 
->> in xdpsock, and it shows the packets of the correct length, but all 
->> bytes are 0 after these patches. It might be wrong xdp_buff pointers, 
->> however, I still have to investigate it. Björn, does it also affect 
->> Intel drivers, or is it Mellanox-specific?
->>
-> 
-> Are you getting zeros for TX, PASS *and* in xdpsock (REDIRECT:ed 
-> packets), or just TX and PASS?
+The following commit has been merged into the perf/core branch of tip:
 
-Yes, in all modes: XDP_TX, XDP_PASS and XDP_REDIRECT to XSK (xdpsock).
+Commit-ID:     3a50dc76058d7cd8315f9c712b793d81a7ff4541
+Gitweb:        https://git.kernel.org/tip/3a50dc76058d7cd8315f9c712b793d81a7ff4541
+Author:        Stephane Eranian <eranian@google.com>
+AuthorDate:    Wed, 29 Apr 2020 16:14:42 -07:00
+Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
+CommitterDate: Tue, 05 May 2020 16:35:31 -03:00
 
-> No, I get correct packet data for AF_XDP zero-copy XDP_REDIRECT,
-> XDP_PASS, and XDP_TX for Intel.
+perf pmu: Add perf_pmu__find_by_type helper
 
-Hmm, weird - with the new API I expected the same behavior on all 
-drivers. Thanks for the information, I'll know that I need to look in 
-mlx5 code to find the issue.
+This is used by libpfm4 during event parsing to locate the pmu for an
+event.
 
->> For performance, I got +1.0..+1.2 Mpps on RX. TX performance got 
->> better after Björn inlined the relevant UMEM functions, however, there 
->> is still a slight decrease compared to the old code. I'll try to find 
->> the possible reason, but the good thing is that it's not significant 
->> anymore.
->>
-> 
-> Ok, so for Rx mlx5 it's the same as for i40e. Good! :-)
-> 
-> How much decrease on Tx?
+Signed-off-by: Stephane Eranian <eranian@google.com>
+Reviewed-by: Ian Rogers <irogers@google.com>
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Andrii Nakryiko <andriin@fb.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Igor Lubashev <ilubashe@akamai.com>
+Cc: Jin Yao <yao.jin@linux.intel.com>
+Cc: Jiwei Sun <jiwei.sun@windriver.com>
+Cc: John Garry <john.garry@huawei.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: yuzhoujian <yuzhoujian@didichuxing.com>
+Link: http://lore.kernel.org/lkml/20200429231443.207201-4-irogers@google.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/util/pmu.c | 11 +++++++++++
+ tools/perf/util/pmu.h |  1 +
+ 2 files changed, 12 insertions(+)
 
-~0.8 Mpps (was 3.1 before you inlined the functions).
-
-> 
-> Björn
-
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index 5642de7..92bd7fa 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -871,6 +871,17 @@ static struct perf_pmu *pmu_find(const char *name)
+ 	return NULL;
+ }
+ 
++struct perf_pmu *perf_pmu__find_by_type(unsigned int type)
++{
++	struct perf_pmu *pmu;
++
++	list_for_each_entry(pmu, &pmus, list)
++		if (pmu->type == type)
++			return pmu;
++
++	return NULL;
++}
++
+ struct perf_pmu *perf_pmu__scan(struct perf_pmu *pmu)
+ {
+ 	/*
+diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+index 1edd214..cb6fbec 100644
+--- a/tools/perf/util/pmu.h
++++ b/tools/perf/util/pmu.h
+@@ -72,6 +72,7 @@ struct perf_pmu_alias {
+ };
+ 
+ struct perf_pmu *perf_pmu__find(const char *name);
++struct perf_pmu *perf_pmu__find_by_type(unsigned int type);
+ int perf_pmu__config(struct perf_pmu *pmu, struct perf_event_attr *attr,
+ 		     struct list_head *head_terms,
+ 		     struct parse_events_error *error);
