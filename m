@@ -2,139 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0841CB807
-	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 21:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FCE1CB840
+	for <lists+bpf@lfdr.de>; Fri,  8 May 2020 21:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726797AbgEHTR1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 May 2020 15:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726767AbgEHTR0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 8 May 2020 15:17:26 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE44C061A0C;
-        Fri,  8 May 2020 12:17:26 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id b6so1726912qkh.11;
-        Fri, 08 May 2020 12:17:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8qkd1Vxkbdock9qtJb1K8tFWR6V/0xtrk6Iu1YkChhk=;
-        b=eHNFfeUwolwUVcCoIod6HU1+w7hIOl+k1q3vHap3/nTidpOktOndoQE1lOoQMKs6Ot
-         F+JdA8Uhs6gox9Cf7SHLi49cf15ZpJJCcyM6O/MTXN7kkCsgwT2ODvKGS2OBdpJVGFgf
-         Woo1liK+S3h9S16y/MBCVFBCS5tdccYK66Jm/J6unPR5F9+pFyvLfhvjJyZD4UNQpFIf
-         N8NrqpVwGnW3DHoxeR6Nh9C0i+nu8+Flf8Ge9YpQEQr7pC9CLnutaY+irJpzweGJlUav
-         kbogUZC1n9lelzWH2ufUzK+oG6e0nZeRoewOi1J5Nf3+q3r/ozfiFk5vW/reJyntarOp
-         bBag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8qkd1Vxkbdock9qtJb1K8tFWR6V/0xtrk6Iu1YkChhk=;
-        b=C0MyqvOlTTjhnYzrs2PZe0pCH3tY0d5Xw/OjhjXHaXn/BXIQsM0OAB8ye5VgVKdgFW
-         71EH1MAwwduUvRIwGSyOW8F2kODDfufqsCFCTTiEkxgF91aEKtTBOuOH0Inl3hrMC5ne
-         rUY+2SCw8D80loQM0X4BcQyQXu6D9aKP1V6iOkPlRPnQEm0gSbXtJM+wnBgI7Ohw3Ipv
-         IPlubfsAZAoYIImvv7kJUFUZaT3JEb1puf6XrpR3yqvr+6UijXmpUSEtBgoWsjxq4KIW
-         LJnCarUubZ3m1ATsk4sZfmOa1/DW16Xq7lKpRTp8VNlZ1uEZRRB7mKZYb8e0vj/siIhV
-         c6bg==
-X-Gm-Message-State: AGi0PuaX8puMwkxzUwarvUEMa0yh0oTKmmMc54qfO7AeR505NKG3m0w/
-        mRhXJyyxHvRDwkY/1Dbd96dDthdaqGQ4+DKR2qWvxbX/
-X-Google-Smtp-Source: APiQypInEDI2ZEkQtiPnf0RkqYHZYktNakLE873Mauna+yIMgftIRTGpEF+U+czKJfrtx3rwcFFPjI5V8n/uZvs7+fk=
-X-Received: by 2002:a05:620a:14a1:: with SMTP id x1mr4280505qkj.92.1588965445914;
- Fri, 08 May 2020 12:17:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200507053915.1542140-1-yhs@fb.com> <20200507053926.1543403-1-yhs@fb.com>
-In-Reply-To: <20200507053926.1543403-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 8 May 2020 12:17:15 -0700
-Message-ID: <CAEf4BzYvwCaG9sTFM-mJXRF-BosuRRe+URZpVUvrke-nXABivA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 10/21] net: bpf: add netlink and ipv6_route
- bpf_iter targets
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726891AbgEHT0E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 May 2020 15:26:04 -0400
+Received: from freas.net ([62.173.152.33]:43650 "EHLO host.securessvsmail.xyz"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726797AbgEHT0E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 May 2020 15:26:04 -0400
+X-Greylist: delayed 384 seconds by postgrey-1.27 at vger.kernel.org; Fri, 08 May 2020 15:26:04 EDT
+Received: from securessvsmail.xyz (2rt7.w.time4vps.cloud [89.40.10.200])
+        by host.securessvsmail.xyz (Postfix) with ESMTPA id 8D47B300E5C60
+        for <bpf@vger.kernel.org>; Fri,  8 May 2020 22:19:38 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 host.securessvsmail.xyz 8D47B300E5C60
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=securessvsmail.xyz;
+        s=default; t=1588965578;
+        bh=TOUrQtNA/9Lcm9zkDMeg72zVB746Q4FAPUpPflwTIWQ=;
+        h=Reply-To:From:To:Subject:Date:From;
+        b=3fJnqt0fBPa7tCzETcGfcexh6ZsQoLKZyENneDIQAM9z18xXuu/PZuKbNbV0FL0x9
+         FgE2DcHXKhbsQeCv0p6h5rkmkp02PvQ2XcJIce7RMI7czLlz8oarDguUWxD0Xk1+nO
+         bdJlKN1HrXGkcbl4vSsjGkZfr8JulQcVH7DF/5tc=
+DKIM-Filter: OpenDKIM Filter v2.11.0 host.securessvsmail.xyz 8D47B300E5C60
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=securessvsmail.xyz;
+        s=default; t=1588965578;
+        bh=TOUrQtNA/9Lcm9zkDMeg72zVB746Q4FAPUpPflwTIWQ=;
+        h=Reply-To:From:To:Subject:Date:From;
+        b=3fJnqt0fBPa7tCzETcGfcexh6ZsQoLKZyENneDIQAM9z18xXuu/PZuKbNbV0FL0x9
+         FgE2DcHXKhbsQeCv0p6h5rkmkp02PvQ2XcJIce7RMI7czLlz8oarDguUWxD0Xk1+nO
+         bdJlKN1HrXGkcbl4vSsjGkZfr8JulQcVH7DF/5tc=
+Reply-To: labdellatif@securesvsmail.com
+From:   Laghouili <labdellatif@securessvsmail.xyz>
+To:     bpf@vger.kernel.org
+Subject: Collaboration
+Date:   08 May 2020 20:19:38 +0100
+Message-ID: <20200508201937.024CD768E280961D@securessvsmail.xyz>
+Mime-Version: 1.0
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 6, 2020 at 10:40 PM Yonghong Song <yhs@fb.com> wrote:
->
-> This patch added netlink and ipv6_route targets, using
-> the same seq_ops (except show() and minor changes for stop())
-> for /proc/net/{netlink,ipv6_route}.
->
-> The net namespace for these targets are the current net
-> namespace at file open stage, similar to
-> /proc/net/{netlink,ipv6_route} reference counting
-> the net namespace at seq_file open stage.
->
-> Since module is not supported for now, ipv6_route is
-> supported only if the IPV6 is built-in, i.e., not compiled
-> as a module. The restriction can be lifted once module
-> is properly supported for bpf_iter.
->
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
+Hello there,
 
-Looks correct.
+I am Laghouili Abdellatif. I am contacting you because I have a=20
+proposal that I think may be interested in. I represent the=20
+interest of my brother in-law who was a minister in the Syrian=20
+Government. As you probably know, there is a lot of crisis going=20
+on currently in Syria and my brother in-law has fallen out with=20
+the ruling Junta and the president because of his foreign=20
+policies and the senseless war and killings that has been going=20
+on for a while. Everybody in Syria is fed up and want a change=20
+but the president is too powerfull and he simply kills anyone=20
+that tries to oppose him. My brother in-law belives that he is at=20
+risk and he is now very scared for the safety of his family=20
+especially his kids. In order to ensure that his family is taken=20
+care of and protected incase anything happens to him, he has=20
+asked me to help him find a foreign investor who can help him=20
+accommodate and invest 100 MUSD privately that he has secured in=20
+Europe. He wants these funds safely invested so that the future=20
+and safety of his family can be secured.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+I am contacting you with the hope that you will be interested in=20
+helping us. We need your help to accommodate the funds in the=20
+banking system in your country and also invest it in a lucrative=20
+projects that will yeild good profits. We will handle all the=20
+logistics involved in the movement of the funds to you. The funds=20
+is already in Europe so you have nothing to worry about because=20
+this transaction will be executed in a legal way. My brother in-
+law has also promised to compensate you for your help. He wants=20
+this to be done discretely so I will be acting as his eyes and=20
+ears during the course of this transaction.
 
->  fs/proc/proc_net.c       | 19 +++++++++
->  include/linux/proc_fs.h  |  3 ++
->  net/ipv6/ip6_fib.c       | 65 +++++++++++++++++++++++++++++-
->  net/ipv6/route.c         | 37 +++++++++++++++++
->  net/netlink/af_netlink.c | 87 +++++++++++++++++++++++++++++++++++++++-
->  5 files changed, 207 insertions(+), 4 deletions(-)
->
+If this proposal interests you, please kindly respond so that I=20
+can give you more details.
 
-[...]
+Regards,
 
-> diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-> index 3912aac7854d..25f6d3e619d0 100644
-> --- a/net/ipv6/route.c
-> +++ b/net/ipv6/route.c
-> @@ -6393,6 +6393,30 @@ void __init ip6_route_init_special_entries(void)
->    #endif
->  }
->
-> +#if IS_BUILTIN(CONFIG_IPV6)
-> +#if defined(CONFIG_BPF_SYSCALL) && defined(CONFIG_PROC_FS)
-> +DEFINE_BPF_ITER_FUNC(ipv6_route, struct bpf_iter_meta *meta, struct fib6_info *rt)
-> +
-> +static int __init bpf_iter_register(void)
-> +{
-> +       struct bpf_iter_reg reg_info = {
-> +               .target                 = "ipv6_route",
-> +               .seq_ops                = &ipv6_route_seq_ops,
-> +               .init_seq_private       = bpf_iter_init_seq_net,
-> +               .fini_seq_private       = bpf_iter_fini_seq_net,
-> +               .seq_priv_size          = sizeof(struct ipv6_route_iter),
-> +       };
-> +
-> +       return bpf_iter_reg_target(&reg_info);
-> +}
-> +
-> +static void bpf_iter_unregister(void)
-> +{
-> +       bpf_iter_unreg_target("ipv6_route");
-
-Nit. This string duplication is unfortunate. If bpf_iter_unreg_target
-took same `struct bpf_iter_ret *` as bpf_iter_reg_target(), it would
-be symmetrical and not dependent on magic strings anymore. That
-reg_info struct would just be static const struct global variable
-passed to both register/unregister.
-
-> +}
-> +#endif
-> +#endif
-> +
-
-[...]
+Laghouili.
