@@ -2,132 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1FCD1CBE09
-	for <lists+bpf@lfdr.de>; Sat,  9 May 2020 08:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7A01CBE74
+	for <lists+bpf@lfdr.de>; Sat,  9 May 2020 09:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725822AbgEIGSG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 9 May 2020 02:18:06 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:46233 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728745AbgEIGSG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 9 May 2020 02:18:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589005084;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iALo2kuzYx7pZWC4tqFh8GRvXhdK7vauuiUQRlHegwM=;
-        b=ExfX+GarVh3X56H1wD3itz2ui+ybxXTeA6dq5TMHH8mHpmw6dQ59RzR932gkID5TRyY+Jt
-        xj7T65sRqvjl0UwvB05m3Fpo+HfufiKhY4dYhumSgDZH80jXVZDSJ8j5dzaAnd90YNXE/O
-        bhfSRIS1Mv0a6O5XT2TnsuYFmfjgr80=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-143-XCjHQXwBN0eKDlU-rrn7Gw-1; Sat, 09 May 2020 02:17:59 -0400
-X-MC-Unique: XCjHQXwBN0eKDlU-rrn7Gw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 24BCB460;
-        Sat,  9 May 2020 06:17:58 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-112-13.ams2.redhat.com [10.36.112.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 63C2D100164D;
-        Sat,  9 May 2020 06:17:55 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Justin Forbes <jmforbes@linuxtx.org>,
-        Aurelien Jarno <aurelien@aurel32.net>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S1726807AbgEIHlL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 9 May 2020 03:41:11 -0400
+Received: from conuserg-07.nifty.com ([210.131.2.74]:30644 "EHLO
+        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726120AbgEIHlK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 9 May 2020 03:41:10 -0400
+Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 0497dIWX011106;
+        Sat, 9 May 2020 16:39:18 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 0497dIWX011106
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1589009959;
+        bh=KgePt5Z+JlnBeaKU8E6URMI54TiET/zqI9kIhP/wJPw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=n5wlmDB5eekPDUm9jcMEup7NyOZLHOf8Z5zGAp7F4Xm5KHC1P2aGY7F+A9O29ck9l
+         MyKAGoR+u5fzyPn7TfZrkdxlhkvxvQ39X0JB/J0lmS8dcX65b86abQr//O9q0iTHzG
+         xxupOsYCiUTTVBqb0WfIz7cW+f438s8xHi956MZiAvBM2NI1boRncyI1RSHyqOBWcC
+         w6cOnyOtfq3iRflhvW7k3yII8UC+bDwI1S6qJta4R5zcGt4cqcGRveBoyOGx4wLjYs
+         U6ZVW7sVbjaXzpZ8AvEbIMW/HfZw3558TXQwNA63E9ZE3A2muChc8EKpDI447LMNwh
+         LO5OwGm7NVuLw==
+X-Nifty-SrcIP: [126.90.202.47]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Valdis Kletnieks <valdis.kletnieks@vt.edu>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH 1/2] Revert "libbpf: Fix readelf output parsing on powerpc with recent binutils"
-References: <20200507145652.190823-1-yauheni.kaliuta@redhat.com>
-        <20200507145652.190823-2-yauheni.kaliuta@redhat.com>
-        <CAEf4BzYPDKfJLSGVQucgRuDUyzwizQHAWyUWWGsq6ZvgRUO0yg@mail.gmail.com>
-        <20200508221833.GF24356@mussarela>
-Date:   Sat, 09 May 2020 09:17:39 +0300
-In-Reply-To: <20200508221833.GF24356@mussarela> (Thadeu Lima de Souza
-        Cascardo's message of "Fri, 8 May 2020 19:18:35 -0300")
-Message-ID: <xunyh7wphbss.fsf@redhat.com>
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        netdev@vger.kernel.org
+Subject: [PATCH] bpfilter: check if $(CC) can static link in Kconfig
+Date:   Sat,  9 May 2020 16:39:15 +0900
+Message-Id: <20200509073915.860588-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, Thadeu!
+On Fedora, linking static libraries requires the glibc-static RPM
+package, which is not part of the glibc-devel package.
 
->>>>> On Fri, 8 May 2020 19:18:35 -0300, Thadeu Lima de Souza Cascardo  wrote:
+CONFIG_CC_CAN_LINK does not check the capability of static linking,
+so you can enable CONFIG_BPFILTER_UMH, then fail to build.
 
- > On Fri, May 08, 2020 at 02:46:56PM -0700, Andrii Nakryiko wrote:
- >> On Thu, May 7, 2020 at 7:57 AM Yauheni Kaliuta
- >> <yauheni.kaliuta@redhat.com> wrote:
- >> >
- >> > The patch makes it fail on the output when the comment is printed
- >> > after the symbol name (RHEL8 powerpc):
- >> >
- >> > 400: 000000000000c714 144 FUNC GLOBAL DEFAULT 1
- >> > bpf_object__open_file@LIBBPF_0.0.4 [<localentry>: 8]
- >> >
- >> > But after commit aa915931ac3e ("libbpf: Fix readelf output parsing
- >> > for Fedora") it is not needed anymore, the parsing should work in
- >> > both cases.
- >> >
+  HOSTLD  net/bpfilter/bpfilter_umh
+/usr/bin/ld: cannot find -lc
+collect2: error: ld returned 1 exit status
 
- > If it's working either way after aa915931ac3e, is there any
- > specific reason for the revert?
+Add CONFIG_CC_CAN_LINK_STATIC, and make CONFIG_BPFILTER_UMH depend
+on it.
 
- Well, not really, agree.
+Reported-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
- > Cascardo.
+I will insert this after
+https://patchwork.kernel.org/patch/11515997/
 
- >> > This reverts commit 3464afdf11f9a1e031e7858a05351ceca1792fea.
- >> >
- >> > Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
- >> > ---
- >> 
- >> Looks good, though would be nice to have people originally involved in
- >> those fixes you mentioned to confirm it works fine still. Added them
- >> to cc.
- >> 
- >> If no one shouts loudly in next few days:
- >> 
- >> Acked-by: Andrii Nakryiko <andriin@fb.com>
- >> 
- >> 
- >> >  tools/lib/bpf/Makefile | 4 ++--
- >> >  1 file changed, 2 insertions(+), 2 deletions(-)
- >> >
- >> > diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
- >> > index aee7f1a83c77..908dac9eb562 100644
- >> > --- a/tools/lib/bpf/Makefile
- >> > +++ b/tools/lib/bpf/Makefile
- >> > @@ -149,7 +149,7 @@ TAGS_PROG := $(if $(shell which etags 2>/dev/null),etags,ctags)
- >> >  GLOBAL_SYM_COUNT = $(shell readelf -s --wide $(BPF_IN_SHARED) | \
- >> >                            cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' | \
- >> >                            sed 's/\[.*\]//' | \
- >> > -                          awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}' | \
- >> > +                          awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$8}' | \
- >> >                            sort -u | wc -l)
- >> >  VERSIONED_SYM_COUNT = $(shell readelf -s --wide $(OUTPUT)libbpf.so | \
- >> >                               grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 | sort -u | wc -l)
- >> > @@ -216,7 +216,7 @@ check_abi: $(OUTPUT)libbpf.so
- >> >                 readelf -s --wide $(BPF_IN_SHARED) |                     \
- >> >                     cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' |   \
- >> >                     sed 's/\[.*\]//' |                                   \
- >> > -                   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}'|  \
- >> > +                   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$8}'|   \
- >> >                     sort -u > $(OUTPUT)libbpf_global_syms.tmp;           \
- >> >                 readelf -s --wide $(OUTPUT)libbpf.so |                   \
- >> >                     grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 |             \
- >> > --
- >> > 2.26.2
- >> >
+ init/Kconfig         | 5 +++++
+ net/bpfilter/Kconfig | 2 +-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-
+diff --git a/init/Kconfig b/init/Kconfig
+index 57562a8e2761..d0ff16e93794 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -49,6 +49,11 @@ config CC_CAN_LINK
+ 	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(m64-flag)) if 64BIT
+ 	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(m32-flag))
+ 
++config CC_CAN_LINK_STATIC
++	bool
++	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) -static $(m64-flag)) if 64BIT
++	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) -static $(m32-flag))
++
+ config CC_HAS_ASM_GOTO
+ 	def_bool $(success,$(srctree)/scripts/gcc-goto.sh $(CC))
+ 
+diff --git a/net/bpfilter/Kconfig b/net/bpfilter/Kconfig
+index fed9290e3b41..045144d4a42c 100644
+--- a/net/bpfilter/Kconfig
++++ b/net/bpfilter/Kconfig
+@@ -9,7 +9,7 @@ menuconfig BPFILTER
+ if BPFILTER
+ config BPFILTER_UMH
+ 	tristate "bpfilter kernel module with user mode helper"
+-	depends on CC_CAN_LINK
++	depends on CC_CAN_LINK_STATIC
+ 	default m
+ 	help
+ 	  This builds bpfilter kernel module with embedded user mode helper
 -- 
-WBR,
-Yauheni Kaliuta
+2.25.1
 
