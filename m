@@ -2,71 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 552F31CBB51
-	for <lists+bpf@lfdr.de>; Sat,  9 May 2020 01:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC611CBBA1
+	for <lists+bpf@lfdr.de>; Sat,  9 May 2020 02:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728158AbgEHXlG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 May 2020 19:41:06 -0400
-Received: from www62.your-server.de ([213.133.104.62]:40562 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727778AbgEHXlF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 May 2020 19:41:05 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jXCc3-0001XZ-LG; Sat, 09 May 2020 01:41:03 +0200
-Received: from [178.195.186.98] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jXCc3-000RNt-C4; Sat, 09 May 2020 01:41:03 +0200
-Subject: Re: [PATCH bpf-next v5 0/4] bpf: allow any port in bpf_bind helper
-To:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, Andrey Ignatov <rdna@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>
-References: <20200508174611.228805-1-sdf@google.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <1791ff9a-becb-58a0-1bc4-590b3aec644c@iogearbox.net>
-Date:   Sat, 9 May 2020 01:41:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1727890AbgEIAMk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 May 2020 20:12:40 -0400
+Received: from mga09.intel.com ([134.134.136.24]:58674 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727878AbgEIAMj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 May 2020 20:12:39 -0400
+IronPort-SDR: L0wzQSIcx/nEb+cg0h87kx+WcFYi8tv1CSX9TP5/xKXN3D8WmO4WzQ8RQP+1cIzGTEu6y7kqoU
+ 1uoOlx6TJ2Ew==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2020 17:12:39 -0700
+IronPort-SDR: EsUwmc+TGJxa1Uzunjzr5CH78OgWwX+YLUO62mVT5Ha2qaJaWEUvFeJjWl3RtOtpobAuwv3Mvu
+ ypOKMXHLF9dg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,369,1583222400"; 
+   d="scan'208";a="408277513"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
+  by orsmga004.jf.intel.com with ESMTP; 08 May 2020 17:12:39 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id 08629301C4C; Fri,  8 May 2020 17:12:39 -0700 (PDT)
+Date:   Fri, 8 May 2020 17:12:38 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [RFC PATCH v3 00/14] Share events between metrics
+Message-ID: <20200509001238.GD3538@tassilo.jf.intel.com>
+References: <20200508053629.210324-1-irogers@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20200508174611.228805-1-sdf@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25806/Fri May  8 14:16:19 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200508053629.210324-1-irogers@google.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/8/20 7:46 PM, Stanislav Fomichev wrote:
-> We want to have a tighter control on what ports we bind to in
-> the BPF_CGROUP_INET{4,6}_CONNECT hooks even if it means
-> connect() becomes slightly more expensive.
+On Thu, May 07, 2020 at 10:36:15PM -0700, Ian Rogers wrote:
+> Metric groups contain metrics. Metrics create groups of events to
+> ideally be scheduled together. Often metrics refer to the same events,
+> for example, a cache hit and cache miss rate. Using separate event
+> groups means these metrics are multiplexed at different times and the
+> counts don't sum to 100%. More multiplexing also decreases the
+> accuracy of the measurement.
 > 
-> The series goes like this:
-> 1. selftests: move existing helpers that make it easy to create
->     listener threads into common test_progs part
-> 2. selftests: move some common functionality into network_helpers
-> 3. do small refactoring of __inet{,6}_bind() flags to make it easy
->     to extend them with the additional flags
-> 4. remove the restriction on port being zero in bpf_bind() helper;
->     add new bind flag to prevent POST_BIND hook from being called
-> 
-> Acked-by: Andrey Ignatov <rdna@fb.com>
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
-> 
-> Stanislav Fomichev (4):
->    selftests/bpf: generalize helpers to control background listener
->    selftests/bpf: move existing common networking parts into
->      network_helpers
->    net: refactor arguments of inet{,6}_bind
->    bpf: allow any port in bpf_bind helper
-> 
+> This change orders metrics from groups or the command line, so that
+> the ones with the most events are set up first. Later metrics see if
+> groups already provide their events, and reuse them if
+> possible. Unnecessary events and groups are eliminated.
 
-Applied, thanks!
+Yes some improvements here are great.
+
+> 
+> The option --metric-no-group is added so that metrics aren't placed in
+> groups. This affects multiplexing and may increase sharing.
+> 
+> The option --metric-mo-merge is added and with this option the
+> existing grouping behavior is preserved.
+
+Could we also make this a per metric option, like
+
+-M foo:nomerge,... 
+
+or somesuch? Okay i suppose this could be a followon.
+
+Ultimatively like you said we probably want to configure
+defaults in the event file.
+
+-Andi
