@@ -2,112 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F941CC6FC
-	for <lists+bpf@lfdr.de>; Sun, 10 May 2020 07:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E60611CC751
+	for <lists+bpf@lfdr.de>; Sun, 10 May 2020 08:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725860AbgEJFT0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 10 May 2020 01:19:26 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:37476 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725786AbgEJFT0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 10 May 2020 01:19:26 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 04A5JDPf010424;
-        Sat, 9 May 2020 22:19:13 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=lTp2KP+0nclRlhUUoE7Pxij/ssAg7ss6+DWi/05scf8=;
- b=mrqeKnINkDeN111V89mCSYp+tfcQbmHok1oq4KWQisN42Thh2T6lG6HAyhqCr/9jJ0kZ
- n6SAv13CwH4xQpi5VLu7T1IoMzinvLZWTesSqX8W9i58JwwKQ9hfvDPJtfzTWYVCIauA
- 5v10nwq+nvcZ+5+CmO5bV8dxmD3kTbFgQCw= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 30ws55b9vr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sat, 09 May 2020 22:19:13 -0700
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Sat, 9 May 2020 22:18:54 -0700
+        id S1726104AbgEJGby (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 10 May 2020 02:31:54 -0400
+Received: from mail-eopbgr70048.outbound.protection.outlook.com ([40.107.7.48]:4267
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726080AbgEJGby (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 10 May 2020 02:31:54 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EUFSN0uOEyw95tsPhHANR+VJZHsfpHKlm1EVG9pJcR/Dcl8U/LfB3RiDHuM/J0GRtO1IlpUqoOKcjPY9X4kZvzxuvH0S64ZQhS440VqMG0Uw57aXiiWkoLXxto7M09Frv1wOsIegTFd4f6apTt5mc0k7io2FaNc4VPs+gVryKxiuozq9v6Yk/2zBADq2vGmRYhHeA6EKTkNzG6h31deJG+DxufJuuKi5DWmgyIJHHgarFcfcYdHhukud7sLFUKvMLePzkg95A1LUEDB+fDzXv3HtKZ7IV6PxvSEF6kLyRP1ronJKWcmHeXn6lQXhDVwUYFPgpRvcT8XP468maTMTyw==
+ b=i1BFWs5wTKZ+/3lK/fShTIMOhEpXFXbUcmCwzxgnf/ac+jeYnaRWEB+WygrS1uTV4tsfA6H4xpwAYoYbOy4MJlzBX9jbNqqO5ju4X91E09K8LAXIVa3YHSgblLnriidLgLCyhArsu+gtQAKbEMMdpcI4u44dJYFk4xxnouoL4SwU5dY3fTMmel6UKFKKxhGH/sBDUVSwwN4SrrnbuDQo5Sprfay+NkzEnrl4p4BQQTe6fRqmPHJx6ykDTLuafH8ofP8beNfef3IJwwdY2fiqU4MzgIEPCIE0qOgqc3ILl4JZKvhnXWG5MENijWYhhg6qvhjVSfSGN4Xb2UrTrsA2ag==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lTp2KP+0nclRlhUUoE7Pxij/ssAg7ss6+DWi/05scf8=;
- b=a79qnceL8zw11lTNgQ/cnmR3ixV4jB57qUO8ceVYZxQ6b4/9Y9OR1PVzBT1D6h3p98iiEEgMGeioGUt1EyvwXWpqA2GpcYrSj5vZE2AcgFrwlukpiY0W+29Iod3eK+dWspbCzFfKxUzt6egcBkJuaKrxNZ2J+VdMLHmsb2QKP3m3PC2wPO8lvbFWu6tN4pD+nHoOlLeLkg94g1PmGvBTUrOb32+GKmzfY/YlN+fbNDICiRpONuaCim02oUjVXUSP+8DqRQwYjQUB4zfd9zqL0PR/2GDpm97HVBj+XE4xbzKvmTCEYfch+jvJKjNBuuRiokn6UQxrk+gOcB271uB3Uw==
+ bh=FujBc0qRAIlYZaGuEeOtghYQn7BwXEzAqR3BwCirnJw=;
+ b=gMmaMXRON1D8pOY5Sc7S0t0iXpcZ08MH0SNeQpsstmXFWmmxKtprXAJTIJ4DqnVgiN2+VFl39VvySGIrjdpsaRx7drNM9QQIUDvClqzOh7QS5RbtEhK714tpJkj47Jkca4K4aLIqcwYvka7bim8eNSY0a4GD3+UInB6TDotJ2ovlzkpBtmc5Nb1b5WaNvcMlGMIpU/3RN35WsTWJK8bohzl4fU+3Mg39fmDV7Tvy2z4aoqz/mx8s9sldbH1iABPRDtBb/tRZjY8RteoWF78GobH6TK8HNdw0+EEL6PrwU3h1RtzTwMcwsM9uEznHGo7hb/wt0QZ4v3I/hH+WjPnCyg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lTp2KP+0nclRlhUUoE7Pxij/ssAg7ss6+DWi/05scf8=;
- b=UFhpQKr9hBdAJ5GVgdd7VaoCe3MGxVeYZRMclefWO9WVM1lL3s7nO4L3KwoEixQZrOq0y73JlHu6t0CCWq1xJbJcyLEoncHl75ZTl0iIaE4v2a7cx/LM0pEyCnIeLNQaoVg0l3pkRnKuOdbk4CeH0ZBv03rXvBb1f1fwSp9Bfaw=
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3349.namprd15.prod.outlook.com (2603:10b6:a03:110::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.34; Sun, 10 May
- 2020 05:18:39 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8988:aa27:5d70:6923]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8988:aa27:5d70:6923%5]) with mapi id 15.20.2958.035; Sun, 10 May 2020
- 05:18:39 +0000
-Subject: Re: [PATCH bpf-next v4 12/21] bpf: add PTR_TO_BTF_ID_OR_NULL support
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Andrii Nakryiko <andriin@fb.com>, <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-References: <20200509175859.2474608-1-yhs@fb.com>
- <20200509175912.2476576-1-yhs@fb.com>
- <20200510005059.d3zocagerrnsspez@ast-mbp>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <d5b04ac9-3e3c-3e32-4058-afc29e3d34ce@fb.com>
-Date:   Sat, 9 May 2020 22:18:37 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
-In-Reply-To: <20200510005059.d3zocagerrnsspez@ast-mbp>
+ bh=FujBc0qRAIlYZaGuEeOtghYQn7BwXEzAqR3BwCirnJw=;
+ b=c+X8S8o3byTQ83/fbmTY8MaRc+S1mtuLJRWiLmTlDsNejkwYIFLl61eBJxiAXIqJ6LumwHdWhO4Y/guROF4RaM9UdQJQawsjB1eKTldS+4XpMEgFK5CyToP27L1vgn0f2NyhPdbKq+24tEyhCy2cpgp5dXkhqSCF321/K99vdjc=
+Authentication-Results: mellanox.com; dkim=none (message not signed)
+ header.d=none;mellanox.com; dmarc=none action=none header.from=mellanox.com;
+Received: from VI1PR0501MB2205.eurprd05.prod.outlook.com
+ (2603:10a6:800:2a::20) by VI1PR0501MB2624.eurprd05.prod.outlook.com
+ (2603:10a6:800:9f::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.33; Sun, 10 May
+ 2020 06:31:49 +0000
+Received: from VI1PR0501MB2205.eurprd05.prod.outlook.com
+ ([fe80::71d3:d6cf:eb7e:6a0e]) by VI1PR0501MB2205.eurprd05.prod.outlook.com
+ ([fe80::71d3:d6cf:eb7e:6a0e%3]) with mapi id 15.20.2979.033; Sun, 10 May 2020
+ 06:31:49 +0000
+Subject: Re: [PATCH net-next v3 28/33] mlx5: rx queue setup time determine
+ frame_sz for XDP
+To:     Jesper Dangaard Brouer <brouer@redhat.com>, sameehj@amazon.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>
+References: <158893607924.2321140.16117992313983615627.stgit@firesoul>
+ <158893626831.2321140.8243471055668639661.stgit@firesoul>
+From:   Tariq Toukan <tariqt@mellanox.com>
+Message-ID: <b6d91551-76c9-7fe1-2bd7-a80a519cb4dd@mellanox.com>
+Date:   Sun, 10 May 2020 09:31:41 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+In-Reply-To: <158893626831.2321140.8243471055668639661.stgit@firesoul>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR06CA0014.namprd06.prod.outlook.com
- (2603:10b6:a03:d4::27) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+X-ClientProxiedBy: AM3PR03CA0065.eurprd03.prod.outlook.com
+ (2603:10a6:207:5::23) To VI1PR0501MB2205.eurprd05.prod.outlook.com
+ (2603:10a6:800:2a::20)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from macbook-pro-52.local.dhcp.thefacebook.com (2620:10d:c090:400::5:e956) by BYAPR06CA0014.namprd06.prod.outlook.com (2603:10b6:a03:d4::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.28 via Frontend Transport; Sun, 10 May 2020 05:18:38 +0000
-X-Originating-IP: [2620:10d:c090:400::5:e956]
+Received: from [192.168.1.110] (77.125.37.56) by AM3PR03CA0065.eurprd03.prod.outlook.com (2603:10a6:207:5::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.27 via Frontend Transport; Sun, 10 May 2020 06:31:47 +0000
+X-Originating-IP: [77.125.37.56]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ce826c4b-2008-4e00-b3c1-08d7f4a19924
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3349:
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 9f7fd38f-7d19-4829-3599-08d7f4abd1cb
+X-MS-TrafficTypeDiagnostic: VI1PR0501MB2624:|VI1PR0501MB2624:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB334925A4643426BDC5941BD2D3A00@BYAPR15MB3349.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-Microsoft-Antispam-PRVS: <VI1PR0501MB2624161D3778E9F3BC23B32CAEA00@VI1PR0501MB2624.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-Forefront-PRVS: 039975700A
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9y8+DAluSYfCtt2J3/qQAqz422QT870JBPWuo5VNoWwyT6awgX++quV40GtN7SC9kidspbZGQCMq3yhSgEk3xiR37pvWE1rSLNAXU98VeDtbxjpFrB5GcM+c9Nb6jeiHq03Mh8nYBoHIHpqaUqg9VWo3gAkkULNyyZb+8e0TNf4sAuFCm9cIupAQr0XifKsLlnkEYfTA2jd27IMG7UFJXyuCgJkDPUJyiZJuXK7EAKo2OEGiViPZxA9+U87tFeCoZU4VNCkYWwhZsPt6XA7Ffs9UiL6zt3zAM/evk0EMEi5RD/kCqDn7wAfc5h1qXaBZ1XHKG1/xFwIPzwLtQuKNrABuXqf3+TD2pXmARv2aBHIpbst5xs075TsU66rg+Dcr3Ht//wHqdWK8fmGLyvAV0+JG3CvdLEspLYAQLI4845kz6yLI7m/WJxPl8RCjO2XwmUCzs4K720c1rgREvLvFhhvUz4Lw/ycEG0WC9mNrOEaS9hEWN6k0pDqsFmBqPp7tZBJNjbj9og/ytxPjooGKIMpB0j1vjPQlFLcXZQpw3wV15myrAUV0vZpHbPLrduKn
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(366004)(39860400002)(136003)(346002)(376002)(33430700001)(86362001)(2616005)(31686004)(6486002)(16526019)(33440700001)(186003)(53546011)(66476007)(6506007)(8936002)(66946007)(31696002)(8676002)(52116002)(66556008)(5660300002)(6916009)(54906003)(6512007)(2906002)(316002)(4326008)(478600001)(36756003)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: t8WUouskPf5pq5dCdXgSICSH8g+GAIs04CfySosU2eSb6h/Vj9pDNJz8FRvxLxD5Doad8X5r72mI7HLdhT7wi2BVeHVuU56ZwCb6S4GCmkHJ3Dc/Rq/zXPMe6HuUPQoM3hzgp8ipjBjIdCN6rmxSRlA0NSrD6YDQP2MN7Fgshty11wSk8+bQ21SH7W67c0licn4rdbIxLp/bnybNYcmeKEAD3KolYvsaEgbYm5nlapORzllkGOqyyBDJH27VbI1tr1vmhm7QmXmDMnWGMsiRasDUwupZRDRffg0iOGGmtQquoLpPHO1Iz3X5kFQief15tphfkFSaNzbBF1wvCTCP91YvVPfslT2LyHI7wRtEg43Jzztk1uiqTZppEicdg7LYYsk69iklUpvW4fxKFzo2N2vDrNaKBhBD3iOK4YDB9pD42mfFe9/4YiL1/enXPxJTZzcVBK4hgAn28vqHFMEV4nZ09dSwu3+AWFQqWdx4wJAdBZu4Ht/JwwH+ubomWhvRatGyaSIorM4SDZFzGuOMiQ==
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce826c4b-2008-4e00-b3c1-08d7f4a19924
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 May 2020 05:18:39.4094
+X-Microsoft-Antispam-Message-Info: PdQ0+kBFDSMZZ/kjzhCgwKoVYSUDIjtrmE/WaLtB3a61wKUThRvOikB8qUzBBq9yHCEfoT1UcAaQIIIlE3fI7bBNB3NRxqz2FJ09kgeLlfBnCDRs8W1L/imc1izZw6er8qlHraitdLscLe8ChJvYvyxbQZDFnl760Q4w7QJibXZqtv/my0SRK+5jaUgDL1AJOaa10lNdumWtA9Y6ksOhu2/t+YYpKbGXy/I7GZ72cFeS4i+NL1yFWgSODRYalY7kvKmCa9JkGr9HPhc3Fa3Ebx01UXssiLeDQF1LYfNZu5jgsRLiKj6K7Uir0thaha4wCyhp2CUECCsqBGm1iwuLm1F8jSUtv/k9aR0rWjMH2fJNKeLCYqdxAVSeqYT1Pw+CX9+RTNSA4oVzSRdQp+mjFjm5MbXDJgtZb8k+otHxfl6dxNSJKBsyqLix9P8TmK1Ei3T46bGijowIUiO86qHW9X2EnIDGB64qcHJsYDdktWlw7Wg7DT/+JuF19JFvF6MlwzI42mCDkXu/jmp4sVUTVRtSEtjNtzJhdZOWc1t55cxAW/MwdCnhexIPBpcPW30o
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0501MB2205.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(136003)(346002)(39850400004)(376002)(396003)(33430700001)(66476007)(66556008)(5660300002)(107886003)(6666004)(4326008)(36756003)(54906003)(6486002)(8936002)(8676002)(16576012)(478600001)(66946007)(316002)(2906002)(2616005)(956004)(31696002)(53546011)(186003)(7416002)(16526019)(33440700001)(31686004)(52116002)(86362001)(26005)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: dnHy1AMlzBQxH5YKD9ntO5ZFkQg5rqT1FxnMB1CR4/fKL+7j/b/FU/pQsT+o14fROfm2XTKnDVWfPs3Ff5Makt3CH4j/7b8NHibRSUYYcxnYvCy69Ko//zrPnJeuuFg7Ofri0TQoX9DbX+6kg3444F6YKanxUQyMAVFs6fL8YkYH0AlLrkg4xGnEVQWEKlYd/a+S4WbTbTSE1X2uYVvoBUYpooF4cOqHCmqE37PK+2ah59/hCPVNIpRzxWRMLN9nSSBYaKeHW4jhLuitOM10rejv2MIOBEsvwM11RQubHzsQpO0jGf4TPmQFkTBsSic/yqg7rYJKHB6eLEbiLV96AE0epbkwiZSvP6eOX6wIqfE1r8GiqPpD6hLxCiAmkqB+W5v/fIToDCNdXGtLQgKDGTYEwGyvp5Ath+zjSMMitX8S+P8bUUrAmA2geg9byYjnZiI9f1b0CIc+IFL6kNxwPpcl71ZaFnaBRsWy5lAMXlE=
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f7fd38f-7d19-4829-3599-08d7f4abd1cb
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 May 2020 06:31:49.5453
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: USm0lpKi+cU6ATcBahwp+AtY6d2SVTSMePYzgjf2x2mrUoGZO7MVS7zdP+MiCq6p
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3349
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-10_01:2020-05-08,2020-05-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 adultscore=0
- clxscore=1015 mlxscore=0 spamscore=0 impostorscore=0 phishscore=0
- lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005100048
-X-FB-Internal: deliver
+X-MS-Exchange-CrossTenant-UserPrincipalName: CPYPN9Op1ssXfXYf5kzHEQI1llg71nE6HAFTdgciHJi1qIy4LWXkjUKkG8+1ElUds9wZUhtPy1+oaq3bwy43SQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0501MB2624
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -115,56 +100,40 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 5/9/20 5:50 PM, Alexei Starovoitov wrote:
-> On Sat, May 09, 2020 at 10:59:12AM -0700, Yonghong Song wrote:
->> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
->> index a2cfba89a8e1..c490fbde22d4 100644
->> --- a/kernel/bpf/btf.c
->> +++ b/kernel/bpf/btf.c
->> @@ -3790,7 +3790,10 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
->>   		return true;
->>   
->>   	/* this is a pointer to another type */
->> -	info->reg_type = PTR_TO_BTF_ID;
->> +	if (off != 0 && prog->aux->btf_id_or_null_non0_off)
->> +		info->reg_type = PTR_TO_BTF_ID_OR_NULL;
->> +	else
->> +		info->reg_type = PTR_TO_BTF_ID;
+On 5/8/2020 2:11 PM, Jesper Dangaard Brouer wrote:
+> The mlx5 driver have multiple memory models, which are also changed
+> according to whether a XDP bpf_prog is attached.
 > 
-> I think the verifier should be smarter than this.
-> It's too specific and inflexible. All ctx fields of bpf_iter execpt first
-> will be such ? let's figure out a different way to tell verifier about this.
-> How about using typedef with specific suffix? Like:
-> typedef struct bpf_map *bpf_map_or_null;
->   struct bpf_iter__bpf_map {
->     struct bpf_iter_meta *meta;
->     bpf_map_or_null map;
->   };
-> or use a union with specific second member? Like:
->   struct bpf_iter__bpf_map {
->     struct bpf_iter_meta *meta;
->     union {
->       struct bpf_map *map;
->       long null;
->     };
->   };
+> The 'rx_striding_rq' setting is adjusted via ethtool priv-flags e.g.:
+>   # ethtool --set-priv-flags mlx5p2 rx_striding_rq off
+> 
+> On the general case with 4K page_size and regular MTU packet, then
+> the frame_sz is 2048 and 4096 when XDP is enabled, in both modes.
+> 
+> The info on the given frame size is stored differently depending on the
+> RQ-mode and encoded in a union in struct mlx5e_rq union wqe/mpwqe.
+> In rx striding mode rq->mpwqe.log_stride_sz is either 11 or 12, which
+> corresponds to 2048 or 4096 (MLX5_WQ_TYPE_LINKED_LIST_STRIDING_RQ).
+> In non-striding mode (MLX5_WQ_TYPE_CYCLIC) the frag_stride is stored
+> in rq->wqe.info.arr[0].frag_stride, for the first fragment, which is
+> what the XDP case cares about.
+> 
+> To reduce effect on fast-path, this patch determine the frame_sz at
+> setup time, to avoid determining the memory model runtime. Variable
+> is named first_frame_sz to make it clear that this is only the frame
+> size of the first fragment.
+> 
+> This mlx5 driver does a DMA-sync on XDP_TX action, but grow is safe
+> as it have done a DMA-map on the entire PAGE_SIZE. The driver also
+> already does a XDP length check against sq->hw_mtu on the possible
+> XDP xmit paths mlx5e_xmit_xdp_frame() + mlx5e_xmit_xdp_frame_mpwqe().
+> 
+> V2: Fix that frag_size need to be recalc before creating SKB.
+> 
+> Cc: Tariq Toukan <tariqt@mellanox.com>
+> Cc: Saeed Mahameed <saeedm@mellanox.com>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
 
-I have an alternative approach to refactor this for future
-support for map elements as well.
-
-For example, for bpf_map_elements iterator the prog context type
-can be
-     struct bpf_iter_bpf_map_elem {
-  	struct bpf_iter_meta *meta;
-	strruct bpf_map *map;
-	<key type>  *key;
-	<value type> *val;
-    };
-
-target will pass the following information to bpf_iter registration:
-    arg 1: PTR_TO_BTF_ID
-    arg 2: PTR_TO_BTF_ID_OR_NULL
-    arg 3: PTR_TO_BUFFER
-    arg 4: PTR_TO_BUFFER
-
-verifier will retrieve the reg_type from target.
+Thanks Jesper.
+Acked-by: Tariq Toukan <tariqt@mellanox.com>
