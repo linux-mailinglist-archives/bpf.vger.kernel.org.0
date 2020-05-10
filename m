@@ -2,100 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 878AA1CC5D2
-	for <lists+bpf@lfdr.de>; Sun, 10 May 2020 02:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A26701CC5DE
+	for <lists+bpf@lfdr.de>; Sun, 10 May 2020 03:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726320AbgEJAvD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 9 May 2020 20:51:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57516 "EHLO
+        id S1726320AbgEJBD4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 9 May 2020 21:03:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725927AbgEJAvD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 9 May 2020 20:51:03 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E9AC061A0C;
-        Sat,  9 May 2020 17:51:03 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id x2so2938312pfx.7;
-        Sat, 09 May 2020 17:51:03 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1725927AbgEJBD4 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 9 May 2020 21:03:56 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08797C061A0C;
+        Sat,  9 May 2020 18:03:55 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id 188so4445832lfa.10;
+        Sat, 09 May 2020 18:03:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SJngHyL3xoBUmmywOxoE/zc4Jwe0BGO/NPlqdh97Cxk=;
-        b=G5X80piG+IGgC+PAAYXaBYC7Pa8zS63h64wwCUF/IduNKs0hhRjgY9A4SFS1qa2+AU
-         YINOYG2e00UZV8Mq69qhFH2hfdVREc7+NbL0QuLnQ3WFX7y/w8aNeV6RgIsePBu5bgNi
-         NykVYIboV3R8D2jJvLcG2Rql4toFVhM2Yd7qVCSN/ZFWX2sVzrpblLxllSTmdNIIQ82x
-         Okb5yhKG6t5JYiJ20heZScOgO9DnmnyXtC3cPRDNGo0PFXxirOwAp4HBHkcr7gITAGkZ
-         wOcymcwYFT8MkuewV3Og7ezarvghC6qSDNEEbmG3KyPyS6JQs1zlMMZ+pXeeuAz7MbFi
-         frqA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=oUtCBI0SpjkuBlySGcVr6wv9x0FCxiJz7SVspQbRCUE=;
+        b=tjx4U6vvgWQJ4b+stBXI4gRGBxQfyg0hC4M5h4WWXhDVj7cTBzwjRDEF//yhWAe6gH
+         SAKb3e/hi54Vau4iLS17nLChQkaPkam3c8z2vOdnpW78GRs94hyuvYuHelxcWOULEAA6
+         t8X/3Fv6m3QSpC12j72dFSIO+HNH7Ehf0vi6FLxYcV7OYhVhdxStpmg0WUNqP8JF8xDp
+         HoIl3V2XQoWxgi1f5XikcqhbjDxchLTLSmWqmMEDvzWq0xdELH4nBcep6obPGCbX0pam
+         ekIX9aRW2yXBXJywswDbh1ycjka9AVCG4pH3wbdim90h23Ab6Fjt5+8pTwLwlBDZOCww
+         qkxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SJngHyL3xoBUmmywOxoE/zc4Jwe0BGO/NPlqdh97Cxk=;
-        b=Cca13wCHN23FZFJcMAMOFehGCHV5e2joSUEaTnavAtKqSWaZDUNxZmr+0H494lZ2XM
-         24niuOry6VJhLeHHkteU414fLe2oISLGCPVNk9e46OlyH8bRhhoT5PMTa00Kk+ZUWXgk
-         5/Yw2SvhusBqnHRvFExKTWQqB3rV2MPgb65itQbPhXu79q3GNJIlLo0Aw4QUGK0ZCBv4
-         gtATd+X2o5G9YsyB7zFiy5vMcmmki0n9fQrkipu0jJXxcaiICQuEeg0xIQCbddC3NV5F
-         TQ0MWmo8foqqsDfsOPUPpyeGTrBKLJ/Zuh3FEYkg8N2QysHdKOjP/YdNwRmhDNZ30B6g
-         eWng==
-X-Gm-Message-State: AGi0Pub+BDpfqpMXHE3uERMRAVkDc0Wxm6PMlpZsafK57oeqBkmIkW20
-        f0TBELipN6uUOa0idv5ZqS7DtdXs
-X-Google-Smtp-Source: APiQypIY6Am0CycNqR/u+hT6VWOOLxAb5K88QLKXAXhklxRvfFZGzzF36UxbEoW4vPlUZLWYO9FCMw==
-X-Received: by 2002:a62:e70b:: with SMTP id s11mr9878653pfh.32.1589071861866;
-        Sat, 09 May 2020 17:51:01 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:7bdb])
-        by smtp.gmail.com with ESMTPSA id n30sm508434pgc.87.2020.05.09.17.51.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 May 2020 17:51:00 -0700 (PDT)
-Date:   Sat, 9 May 2020 17:50:59 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next v4 12/21] bpf: add PTR_TO_BTF_ID_OR_NULL support
-Message-ID: <20200510005059.d3zocagerrnsspez@ast-mbp>
-References: <20200509175859.2474608-1-yhs@fb.com>
- <20200509175912.2476576-1-yhs@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=oUtCBI0SpjkuBlySGcVr6wv9x0FCxiJz7SVspQbRCUE=;
+        b=H3BTQfKXtnF7CknzZg5ov50Q5NUqOzFuGN9RvD90sSSBZUBzkn/tYO+wUYtmyc6nU2
+         svfbh9w0sQE1BgVK9saPA1W9XzTGD5O4LxnkAS2sj5vgZvM3i4G58bUnbNa/ydKJzjSm
+         4kDkEW8JYkQdkfgD2syQqywMvCEm6vqv+9xk41uNOVLP9Vws32MgVODggQtzYNYDiHAp
+         RekkqVUFFAOl5nFISW2f7UZMOaNWopnpraeBCFjMs4Cc4oukeoY0gOA/plAhfzsoW6il
+         Z+cBuQnWkl+gwLqpStFcMZ8sVaxwFEE0/RUP4/HbYaCSD9noTUQo1vpKPPGlsK9Pp+Ig
+         4VSg==
+X-Gm-Message-State: AOAM530QhoD/0zw+/uKZxaPmDcP9iALR6Xaj++MkA2OlvMp+/K1upIR0
+        21UO3cCvYg5FLHnAdtUc8lA0ePAA2SAL+2JNVUI=
+X-Google-Smtp-Source: ABdhPJxZQdlg/2Glq4lwN9ni91R83DjlXzgvcws7dKg0k94GpcefKo7F2j9KuI6eiZhOTHDsQSZXNCwna8Wo57s/qcA=
+X-Received: by 2002:a19:505c:: with SMTP id z28mr6352903lfj.174.1589072634419;
+ Sat, 09 May 2020 18:03:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200509175912.2476576-1-yhs@fb.com>
+References: <20200430071506.1408910-1-songliubraving@fb.com>
+ <20200430071506.1408910-3-songliubraving@fb.com> <CAADnVQK-Zo19Z1Gdaq9MYE_9GmyrCuOFbz873D4uCvvVSp0j0w@mail.gmail.com>
+ <19614603-D8E5-49E9-AB70-A022A409EF03@fb.com>
+In-Reply-To: <19614603-D8E5-49E9-AB70-A022A409EF03@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sat, 9 May 2020 18:03:42 -0700
+Message-ID: <CAADnVQJp+KvwivjRkh8_NEgihqXU_9y66N+J8M_9WFaA3vmkgw@mail.gmail.com>
+Subject: Re: [PATCH v9 bpf-next 2/3] libbpf: add support for command BPF_ENABLE_STATS
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, May 09, 2020 at 10:59:12AM -0700, Yonghong Song wrote:
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index a2cfba89a8e1..c490fbde22d4 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -3790,7 +3790,10 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
->  		return true;
->  
->  	/* this is a pointer to another type */
-> -	info->reg_type = PTR_TO_BTF_ID;
-> +	if (off != 0 && prog->aux->btf_id_or_null_non0_off)
-> +		info->reg_type = PTR_TO_BTF_ID_OR_NULL;
-> +	else
-> +		info->reg_type = PTR_TO_BTF_ID;
+On Mon, May 4, 2020 at 10:45 AM Song Liu <songliubraving@fb.com> wrote:
+>
+>
+>
+> > On May 2, 2020, at 1:00 PM, Alexei Starovoitov <alexei.starovoitov@gmai=
+l.com> wrote:
+> >
+> > On Thu, Apr 30, 2020 at 12:15 AM Song Liu <songliubraving@fb.com> wrote=
+:
+> >>
+> >> bpf_enable_stats() is added to enable given stats.
+> >>
+> >> Signed-off-by: Song Liu <songliubraving@fb.com>
+> > ...
+> >> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+> >> index 335b457b3a25..1901b2777854 100644
+> >> --- a/tools/lib/bpf/bpf.h
+> >> +++ b/tools/lib/bpf/bpf.h
+> >> @@ -231,6 +231,7 @@ LIBBPF_API int bpf_load_btf(void *btf, __u32 btf_s=
+ize, char *log_buf,
+> >> LIBBPF_API int bpf_task_fd_query(int pid, int fd, __u32 flags, char *b=
+uf,
+> >>                                 __u32 *buf_len, __u32 *prog_id, __u32 =
+*fd_type,
+> >>                                 __u64 *probe_offset, __u64 *probe_addr=
+);
+> >> +LIBBPF_API int bpf_enable_stats(enum bpf_stats_type type);
+> >
+> > I see odd warning here while building selftests
+> >
+> > In file included from runqslower.c:10:
+> > .../tools/testing/selftests/bpf/tools/include/bpf/bpf.h:234:38:
+> > warning: =E2=80=98enum bpf_stats_type=E2=80=99 declared inside paramete=
+r list will not
+> > be visible outside of this definition or declaration
+> >  234 | LIBBPF_API int bpf_enable_stats(enum bpf_stats_type type);
+> >
+> > Since this warning is printed only when building runqslower
+> > and the rest of selftests are fine, I'm guessing
+> > it's a makefile issue with order of includes?
+> >
+> > Andrii, could you please take a look ?
+> > Not urgent. Just flagging for visibility.
+>
+> The following should fix it.
+>
+> Thanks,
+> Song
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D 8< =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> From 485c28c8e2cbcc22aa8fcda82f8f599411faa755 Mon Sep 17 00:00:00 2001
+> From: Song Liu <songliubraving@fb.com>
+> Date: Mon, 4 May 2020 10:36:26 -0700
+> Subject: [PATCH bpf-next] runqslower: include proper uapi/bpf.h
+>
+> runqslower doesn't specify include path for uapi/bpf.h. This causes the
+> following warning:
+>
+> In file included from runqslower.c:10:
+> .../tools/testing/selftests/bpf/tools/include/bpf/bpf.h:234:38:
+> warning: 'enum bpf_stats_type' declared inside parameter list will not
+> be visible outside of this definition or declaration
+>   234 | LIBBPF_API int bpf_enable_stats(enum bpf_stats_type type);
+>
+> Fix this by adding -I tools/includ/uapi to the Makefile.
+>
+> Reported-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Song Liu <songliubraving@fb.com>
 
-I think the verifier should be smarter than this.
-It's too specific and inflexible. All ctx fields of bpf_iter execpt first
-will be such ? let's figure out a different way to tell verifier about this.
-How about using typedef with specific suffix? Like:
-typedef struct bpf_map *bpf_map_or_null;
- struct bpf_iter__bpf_map {
-   struct bpf_iter_meta *meta;
-   bpf_map_or_null map;
- };
-or use a union with specific second member? Like:
- struct bpf_iter__bpf_map {
-   struct bpf_iter_meta *meta;
-   union {
-     struct bpf_map *map;
-     long null;
-   };
- };
+Applied.
+In the future please always send patches as fresh email
+otherwise they don't register in patchworks.
+I applied this one manually.
