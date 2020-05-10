@@ -2,162 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D8C81CCC29
-	for <lists+bpf@lfdr.de>; Sun, 10 May 2020 18:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944C61CCC83
+	for <lists+bpf@lfdr.de>; Sun, 10 May 2020 19:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728963AbgEJQPN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 10 May 2020 12:15:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728762AbgEJQPN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 10 May 2020 12:15:13 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8FFC061A0C;
-        Sun, 10 May 2020 09:15:12 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id 188so5372476lfa.10;
-        Sun, 10 May 2020 09:15:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cj0uMGGwd/aWJgBMokAal66cvuwiS2g36X+NWguojiY=;
-        b=Jlt5FkVzswaK4nE0BIJUqjEXdPhLaPJUgdGwQETpurC/Hwdg9AHJHmz6srE7pxssOc
-         NbWw4pOYo/js5Te2N0lv4bJ1K1MWgN8EKX8X4jeGXrTuKg2+45/n2Dd3SLnWJxO1nA8g
-         HQo2x3s2s8fpuXU3r6unls8MwQcOruG8XeS+vMfZSMl5H6ePnHhgsgY/K/dqM2hJ+d5I
-         nLCEx6uMdIdZU9jxrH+6jyErJrC5OGogp1ykLm0DIp/MJN+Op/PWUFggC2ry1i+taEyg
-         XYfVfV9phhdJVvYKTZvJL8NvJB8G3mtypdQ2nlRp04zUAxsBV4lS/14Mt8HP9OkPdBk9
-         YJGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cj0uMGGwd/aWJgBMokAal66cvuwiS2g36X+NWguojiY=;
-        b=SpE+bUKYJCbQGpbkoQsaHWVGqiB0WUny9tJUwAMG2Dw5YAekdx/sGXKDJ8Nmx5hJFx
-         ZQidqPXrhmFeLdXB4F8Yse0s4fbthYjQs1gWuMAk+D7jFQVOgnUo++YJ8PelxoQTHGP2
-         SWw9M3AtWeSHsuBHcipE+/IlXibjlWl+jT4MnsMiObco5hBJtWsxepWB4873Ala7ymy7
-         FUV+7hZ5EixeJLFkcrWf4safuViYWTBmimCY7mD6yytK0MeAFpMMmIyaQK80NhPxTpPX
-         nlTtkiyObfeZ42WAntXVL5LKzrEw0fjqDbwJfYsubFUOyrJYNDgyVSdp0Ozt3+9toRdI
-         ScTA==
-X-Gm-Message-State: AOAM532feYuK38FtIoxTZjXk81vIKVpMsAJeHsQ8ozXCWZ9kN4btdsz5
-        kv2E5NPyk5e5A3EDYGkMwhYNsS4J5Y+mgTUT1Ds=
-X-Google-Smtp-Source: ABdhPJxD3btVu2OOBq0kZn2lxFPTk2vwYWgoa5FclsYSd09vt5Xzwx7dl3WUot4Ax6LXHA1zWgD7h0oyg97g+3dIkNk=
-X-Received: by 2002:a19:cbd3:: with SMTP id b202mr8193938lfg.157.1589127311156;
- Sun, 10 May 2020 09:15:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200509175859.2474608-1-yhs@fb.com> <20200509175923.2477637-1-yhs@fb.com>
- <20200510003402.3a4ozoynwm4mryi5@ast-mbp> <3b2b2e40-4e80-2a5d-e479-fc12a95162f2@fb.com>
-In-Reply-To: <3b2b2e40-4e80-2a5d-e479-fc12a95162f2@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 10 May 2020 09:14:59 -0700
-Message-ID: <CAADnVQKtSV=yjV9UjHQ5SRmAx9LB+ma6AOJstyCuAFbU0j40QA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 21/21] tools/bpf: selftests: add bpf_iter selftests
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        id S1728381AbgEJREu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 10 May 2020 13:04:50 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:26588 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728360AbgEJREu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 10 May 2020 13:04:50 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04AH3GJA031304;
+        Sun, 10 May 2020 10:04:36 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=AXaHK+ehpU/YM46i7Q6fMcLZwGH6k1znord7tRQJTy0=;
+ b=AIPfbo2Td+eWiDHtX7NMlFRPfBNG5aFQKmTrottewPUa5kpfpGQxn6ZI/0WrgDxFXsmu
+ sy5i3MuXgtyHwfISLmwDXJCHcpre++SD8RrcdFziXvrzZqZJNwZT8eva8UGVB9ZCQAfA
+ kBupOGK/xLbPw200kN2TVeD2eg8NoyJY/bs= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 30xc7dstar-6
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sun, 10 May 2020 10:04:36 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Sun, 10 May 2020 10:04:26 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=exlkwUhaBiknYESHtt3FQTbv4g5jOl4oy783di6nKvmEUBzJX0+4rWfkjMUd2CX+tUJebKpMVSy2ej4ISLMb6TYqNajtiDxskgniRL10rKf/2ApiCo7oG6UWpwY8Mldqmpv4J6Id87qP4kEa7JiRwvljBxjM5VwrT/Xb54VFSz3MUPSiZVf0IZHE9D1RcyBy7fTDEosLU12nbtup5Ydx2HrNOrJvBQjAiFgJsiJXb3SX13YUlGwu115gYjTKwUwNrN+THFMZtCQxIRS3SHQPHLtDlFfQFM4Mc09ko5m/BFZm5HH5xvDGQdBR9ZdLenC8hVHou43fQlyl8zY+0akVIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AXaHK+ehpU/YM46i7Q6fMcLZwGH6k1znord7tRQJTy0=;
+ b=gSC8EypHEzwNAkOGqRWs7SlXf7wELL+qEThhL8qpY9N+lNwMWxTiRry8UbN3wPzI7wPskaAV65teXOupnu9BHa/9dIlSzz4byDRJOpRgk1m9JQ8FpKn2BP4azRIagrzUGnZ+/C2/bxCplPD6YQolYr1vZRza3nnQECS2eNYOUjR4j63fTvqdszCZUgSugF9RJKjWJqxLYFmO1PKXY/RmMDWEkFaWy3D4tfF1SzE4UBxYS9hx4Rxeyb0fWNNunD7kLmTsVCcyDwPbDQJoVX2V689tAx4zobu2M0GVUoifs50MPP2WELH+RwKD3qF+TJr+4HCTwvOM9PEt9502oRFZdg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AXaHK+ehpU/YM46i7Q6fMcLZwGH6k1znord7tRQJTy0=;
+ b=QnI5bAC1bb2pVhFMIC8PCy9kN4W7NYtv475bc7ldLaiijHoyt1+QsS7yh0LGyEk95ObGLzukGgFpZD4/CXM3L4IAwpWabKa1qEkLf4GYN6TJRlHIoSh4vJ11T3u3zJpWAnC5N+YS3ffiyiMX5d8rutmK4QankgHt3V9YwhSfTAE=
+Received: from DM6PR15MB4090.namprd15.prod.outlook.com (2603:10b6:5:c2::18) by
+ DM6PR15MB2553.namprd15.prod.outlook.com (2603:10b6:5:1a8::18) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2979.26; Sun, 10 May 2020 17:04:25 +0000
+Received: from DM6PR15MB4090.namprd15.prod.outlook.com
+ ([fe80::1def:a038:5c9a:eef5]) by DM6PR15MB4090.namprd15.prod.outlook.com
+ ([fe80::1def:a038:5c9a:eef5%3]) with mapi id 15.20.2979.033; Sun, 10 May 2020
+ 17:04:25 +0000
+Subject: Re: [PATCH bpf-next v4 16/21] tools/libbpf: add bpf_iter support
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Network Development <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+References: <20200509175859.2474608-1-yhs@fb.com>
+ <20200509175917.2476936-1-yhs@fb.com>
+ <20200510003535.rfnwiuunxst6lqe5@ast-mbp>
+ <51a07f55-6117-58c2-e1f4-a1f38130976d@fb.com>
+ <CAADnVQ+90UtuXVj8sCmyQQZCxFFfmcUq05w5DBybWxSN_0AL4A@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <330c779c-0a0d-58ec-2516-14d82169e76d@fb.com>
+Date:   Sun, 10 May 2020 10:04:21 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.0
+In-Reply-To: <CAADnVQ+90UtuXVj8sCmyQQZCxFFfmcUq05w5DBybWxSN_0AL4A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR04CA0032.namprd04.prod.outlook.com
+ (2603:10b6:a03:40::45) To DM6PR15MB4090.namprd15.prod.outlook.com
+ (2603:10b6:5:c2::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from macbook-pro.fios-router.home.dhcp.thefacebook.com (2620:10d:c090:400::5:b70e) by BYAPR04CA0032.namprd04.prod.outlook.com (2603:10b6:a03:40::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.28 via Frontend Transport; Sun, 10 May 2020 17:04:24 +0000
+X-Originating-IP: [2620:10d:c090:400::5:b70e]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 41749b59-29a6-4b63-6bd0-08d7f5043136
+X-MS-TrafficTypeDiagnostic: DM6PR15MB2553:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR15MB25535041D9E66E91F841BC27D3A00@DM6PR15MB2553.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Forefront-PRVS: 039975700A
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EVddnPoFZP6Nc+vVgfMjs5eh/lYAQMdRDrp3q11injkt+f4AFPBsutEZlIMgYKH+Crc8SB083V9qrCsxLIFb9qvcDgluC2sRNGtOwPYelWQaQMI5WGvySgEm8Zo4i98ZNjc8IYCsOppX3mriu7vBCEE2/qL0Iw7fFhajMxkFw249Tx3HLMhwe382yKCsIVpgWHca7E6HIeNwrlpC17zmie0aDfXqLbyhfLDi9v75NTHv9AqDk0lwe4RcGGmX3tFO3T0UmSU52CcIZh3IS1yzy9ey/CGqsgz5nrztoePjcc/oFg2PIXZCKL/k+qhTZeQzaBCtAAql+PAKM3nGh5EydfWUWQoXfQEjMsohURYiiS7Kg/as9JVNmmhdxNnUaVHw9L9o0tangkergDrbpw6hVsHBVm712e82W4uqwwtuJXePMmNpUh4+/BGVQT0gGtOZPRn+QvuT9cWLBDABbUIK7iVw9YsIihJ4QU5v38mcIyc5DloC928zttPj0tj7nszFy69xoc2uDiGryapi/70twZFSlxPqc5ZprEC64pNvjd/gnwIZPJ9E3HpBbIP7hWST
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB4090.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(376002)(136003)(346002)(396003)(39860400002)(33430700001)(8676002)(33440700001)(36756003)(31686004)(2616005)(54906003)(316002)(2906002)(5660300002)(6666004)(8936002)(186003)(16526019)(478600001)(6916009)(86362001)(53546011)(6506007)(6486002)(31696002)(66476007)(4326008)(66946007)(66556008)(6512007)(52116002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: tGi2d7FY7aIggHLkAjwwZxrthJy/wd/oNf4mc3u9sR71nOpApqge2koSwhgMDZSgQB9BvJ2sTiIJ3LmtQ8M2lTKATBBPOEubaF3oHulFH3Dq9YAEqeOSO7CbfKaC+sNkQSsmS7HIj8wk4DQ3lLpLWOCkIrxWEhU9oa4JElcRzkMOipt5MiyTynHudu6o2PymwAxlTr8D8tgZqf4x7Wpyqy7ZAoQ5nn4xOp8Ot1lKFfr5DlVcfHGRnfBhoZ37mQJqlqT1jbo9Qczmpp2ZbhGP9jzUR0+xQx8JO7gx7mq71IRbAG7IdO6wyzskjrvds+oRWuVKvrZXH+o/R6PsVaqTJayvwheL8tN4qZX3TySa2HynDgfQ5Kw/+aC7bGHeIHFbyCueU0RpnE+4Th7z19fHnXu8O1HOEMKCPnj7HJzn9ryUzQ+vHXhKcwB1/yJxXD6yXIbgageOu8bpn/rsrW8PVRFQy546LMIvSUBCb+P7vdZkGFKJD0WZGo8Idv3MifNoXZqBK++GkcfDT83aS7BxJg==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 41749b59-29a6-4b63-6bd0-08d7f5043136
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 May 2020 17:04:25.2837
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: X9skZ3kzVq7ETKc5CRJ3dkf0J3m6aQm0zW4hEi7PVSnkxnr6Jp0MlOc2Rv2T2o90
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2553
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-10_08:2020-05-08,2020-05-10 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 suspectscore=0
+ adultscore=0 impostorscore=0 malwarescore=0 bulkscore=0 spamscore=0
+ mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005100158
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, May 9, 2020 at 10:01 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 5/9/20 5:34 PM, Alexei Starovoitov wrote:
-> > On Sat, May 09, 2020 at 10:59:23AM -0700, Yonghong Song wrote:
-> >> +static volatile const __u32 ret1;
-> >> +
-> >> +SEC("iter/bpf_map")
-> >> +int dump_bpf_map(struct bpf_iter__bpf_map *ctx)
-> >> +{
-> >> +    struct seq_file *seq = ctx->meta->seq;
-> >> +    struct bpf_map *map = ctx->map;
-> >> +    __u64 seq_num;
-> >> +    int i, ret = 0;
-> >> +
-> >> +    if (map == (void *)0)
-> >> +            return 0;
-> >> +
-> >> +    /* only dump map1_id and map2_id */
-> >> +    if (map->id != map1_id && map->id != map2_id)
-> >> +            return 0;
-> >> +
-> >> +    seq_num = ctx->meta->seq_num;
-> >> +    if (map->id == map1_id) {
-> >> +            map1_seqnum = seq_num;
-> >> +            map1_accessed++;
-> >> +    }
-> >> +
-> >> +    if (map->id == map2_id) {
-> >> +            if (map2_accessed == 0) {
-> >> +                    map2_seqnum1 = seq_num;
-> >> +                    if (ret1)
-> >> +                            ret = 1;
-> >> +            } else {
-> >> +                    map2_seqnum2 = seq_num;
-> >> +            }
-> >> +            map2_accessed++;
-> >> +    }
-> >> +
-> >> +    /* fill seq_file buffer */
-> >> +    for (i = 0; i < print_len; i++)
-> >> +            bpf_seq_write(seq, &seq_num, sizeof(seq_num));
-> >> +
-> >> +    return ret;
-> >> +}
-> >
-> > I couldn't find where 'return 1' behavior is documented clearly.
->
-> It is in the commit comments:
->
-> commit 15d83c4d7cef5c067a8b075ce59e97df4f60706e
-> Author: Yonghong Song <yhs@fb.com>
-> Date:   Sat May 9 10:59:00 2020 -0700
->
->      bpf: Allow loading of a bpf_iter program
-> ...
->      The program return value must be 0 or 1 for now.
->        0 : successful, except potential seq_file buffer overflow
->            which is handled by seq_file reader.
->        1 : request to restart the same object
->
-> Internally, bpf program returning 1 will translate
-> show() return -EAGAIN and this error code will
-> return to user space.
->
-> I will add some comments in the code to
-> document this behavior.
->
-> > I think it's a workaround for overflow.
->
-> This can be used for overflow but overflow already been taken
-> care of by bpf_seq_read(). This is mostly used for other use
-> cases:
->     - currently under RT-linux, bpf_seq_printf() may return
->       -EBUSY. In this case, bpf program itself can request
->       retrying the same object.
->     - for other conditions where bpf program itself wants
->       to retry the same object. For example, hash table full,
->       the bpf progam can return 1, in which case, user space
->       read() will receive -EAGAIN and may check and make room
->       for hash table and then read() again.
->
-> > When bpf prog detects overflow it can request replay of the element?
->
-> It can. But it can return 0 too since bpf_seq_read() handles
-> this transparently.
->
-> > What if it keeps returning 1 ? read() will never finish?
->
-> The read() will finish and return -EAGAIN to user space.
-> It is up to user space to decide whether to call read()
-> again or not.
 
-Ahh. Got it. So that EAGAIN returned by bpf_iter_run_prog()
-propagates by bpf_seq_read() all the way to read() syscall.
-Now I see it. Thanks for explaining.
+
+On 5/10/20 9:09 AM, Alexei Starovoitov wrote:
+> On Sat, May 9, 2020 at 10:07 PM Yonghong Song <yhs@fb.com> wrote:
+>>
+>>
+>>
+>> On 5/9/20 5:35 PM, Alexei Starovoitov wrote:
+>>> On Sat, May 09, 2020 at 10:59:17AM -0700, Yonghong Song wrote:
+>>>> @@ -6891,6 +6897,7 @@ static int bpf_object__collect_st_ops_relos(struct bpf_object *obj,
+>>>>
+>>>>    #define BTF_TRACE_PREFIX "btf_trace_"
+>>>>    #define BTF_LSM_PREFIX "bpf_lsm_"
+>>>> +#define BTF_ITER_PREFIX "__bpf_iter__"
+>>>>    #define BTF_MAX_NAME_SIZE 128
+>>>
+>>> In the kernel source the prefix doesn't stand out, but on libbpf side it looks
+>>> inconsistent. May be drop __ prefix and keep one _ in the suffix?
+>>
+>> Currently, I have context type as
+>>      struct bpf_iter__bpf_map
+>> Based on the above proposal, we will have function name as
+>>      bpf_iter_bpf_map
+>> It is quite similar to each other. My current usage to have
+>>       __bpf_iter__bpf_map
+>> intends to make func name and struct type name quite different.
+>> Or maybe
+>>       bpf_iter__bpf_map vs. bpf_iter_bpf_map
+>> just fine as user should not care about func name
+>> bpf_iter_bpf_map at all?
+> 
+> Type names bpf_iter_bpf_map and bpf_iter_foo don't look
+> unique, but I don't see why they should.
+> If code really required type name uniqueness __bpf_iter__ prefix
+> wouldn't provide that property anyway.
+> I think bpf_iter_ falls into the same category of prefixes like
+> those used by lsm, trace, struct_ops. Or I could be missing
+> why iter has to be different.
+
+I will change to bpf_iter_ prefix then. This is hidden from
+user anyway.
