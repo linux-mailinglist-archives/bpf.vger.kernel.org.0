@@ -2,60 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18ED31CE035
+	by mail.lfdr.de (Postfix) with ESMTP id 221441CE036
 	for <lists+bpf@lfdr.de>; Mon, 11 May 2020 18:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730625AbgEKQPn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1730628AbgEKQPn (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Mon, 11 May 2020 12:15:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56088 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730614AbgEKQPm (ORCPT
+        by vger.kernel.org with ESMTP id S1729853AbgEKQPm (ORCPT
         <rfc822;bpf@vger.kernel.org>); Mon, 11 May 2020 12:15:42 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7281C061A0C
-        for <bpf@vger.kernel.org>; Mon, 11 May 2020 09:15:40 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id s8so11710181wrt.9
-        for <bpf@vger.kernel.org>; Mon, 11 May 2020 09:15:40 -0700 (PDT)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056BEC061A0E
+        for <bpf@vger.kernel.org>; Mon, 11 May 2020 09:15:42 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id k1so11727134wrx.4
+        for <bpf@vger.kernel.org>; Mon, 11 May 2020 09:15:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+1je8cjMVakSqZUMNmTAHqiph43cjQQrFs4Ld4TAOnA=;
-        b=mD5wda8xpZFM0F1DkF3zV8uOQ5IbAoH4Ud8ykoLiutN86Q58DDWl3W0zedmiAimg1w
-         kmhO0MdV9CJbkLzOHdSWYwmjkuSfMn2eBSOwvJrOHOvqq92Gx/UT3hb81Z9sSXiwsQpn
-         OQvI9d07VfucEIDPx6DNNn6CaqZ695LSQICFBfa3CcKUEhzeyllgK35z7w6/fYbwqbQo
-         O0rawjHIKZIG2HNo/zd1QF/Sz30FaPo5N7x90wkotuAeJ8o+djA1ban+JPscSzMq1n6l
-         umsUVEXuT7iywhihtlWB67nkomLLLNpZ1M00nPxlId8g/9waWcaiSyuBx2g3RlkK89xZ
-         ix8g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=oMvuLrgtg4fujA+qHaz0E9TK2E50uwJmrNzLZd/PmYA=;
+        b=F+Jey5xy2p11Fq+vcb2fui13u9Vb9JbPAW4c4lNO8uO19A7PsXjxMix7q324RqZqFk
+         ROvwlVGyRd5srh9IISrJmPoX67Dv3GfoQdeYhMRhl0lWUlEHD1RTxZo3FC+dZD3CNXax
+         47Lt6mp0IngzGPIx2HMdDX8e2EHJ9aZMsvKw5NJsh3Na58Cp6FfIi8l3+Zm76M0nHnAt
+         Oaq3FKSGEBrwpUwhoPmo7gM6IXZ9gUQ3rd6A/pRpPy5IppHfNo0CuGH3a2zJtNkKhvKe
+         QzB5waeB/d2lYZYm6uLb9wPSaUuY9/7cOM+KYX9hWoYQubnt6y/a+5HiRF7LyVIwrkK9
+         xa1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+1je8cjMVakSqZUMNmTAHqiph43cjQQrFs4Ld4TAOnA=;
-        b=M+5H2WXh2BOqJfD1V/s6dKFg6hUFPnVhVjHPQsqW/gBP8atz8Hz96kUNV1fKl5GoY6
-         7DKxOZt8bOfR4Fj9I+/7od2xJpnkH/jbxM9rI5f0k5xT0RVtdK80euBJTpczjihhTof6
-         86DoKJWxunM1o9XDfLrqpGSne8wyNgcZj2LI9pcRuojONfBbDZb9DDcAIJHaHVUtpS4F
-         NmbkSWGUHS3dS9DrVA1XGQ1LQni5smxcFV05LlrnrkNpEMjmzEU80bmh0ow6c5yF5OA0
-         ftEYBIgKgy3A1y5hxmidiO3c8uc4hWiMuA6ibCKMsHcA8P75VNopgunLDDw4EN4hwJdp
-         1EFw==
-X-Gm-Message-State: AGi0Puavhr9ZWVSZCdzWFdtLTMyIlAPFK5hiov6jIuyH0kWQ1/sP9GwM
-        8LRrbUJm83h2zoVBkfl4u3Dy4g==
-X-Google-Smtp-Source: APiQypLYj9CqVMj8z8FrtskLHc4FAIsFUSbR8GDIYFbr3K8NQeJ0ziy8i3G19mlhK9ow0s0r2zstYg==
-X-Received: by 2002:a05:6000:1106:: with SMTP id z6mr13121983wrw.336.1589213739642;
-        Mon, 11 May 2020 09:15:39 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=oMvuLrgtg4fujA+qHaz0E9TK2E50uwJmrNzLZd/PmYA=;
+        b=oBK7J42ud+btPjAlxdNdpUbfdlO0Q/k4KwjPeuTxBE7uvdPj8OuMZp+Xt6RJwzITlQ
+         6yxN7fwhPhyIFdx6txIMtaXB1nG8tXQPRcZ6wER3KAa5hic0DgXh6lAxZ3OAuY9v8UcZ
+         Aim03a5gmUkCpb1DPRsQVZomz4zozE6AuXuz5mvWCmF+JPIfhsSkzEAfNVCH9B+qv1F5
+         68viNsTuBppkAzXQbdLtyP8eivF+9rdP3eN0STQRey5cSmk3C5sHiXFYjuDlbWlMKOi6
+         9cTjPVwEoIY/WEe4qGrw7bRzRTpL/fLFVdxbh9Ex5UmlF3nyyhrV4kcMFy9BJZmoW2w/
+         sbvQ==
+X-Gm-Message-State: AGi0PuYUEEkhHJV1ml/V1Q7zC9p49gt3nBlw6Nqj1OGma+VB72qi5deT
+        TjYDxa27RO/WYOGanAx0K6tyAYmEyiJ94A==
+X-Google-Smtp-Source: APiQypLVws68exXc0o5xJvWUiAFtoTKCAfmcmiWjPqUWysMUL/uvdL8BHU5/ZmG/tDh36GL/qy/v5w==
+X-Received: by 2002:a5d:68cb:: with SMTP id p11mr19384003wrw.349.1589213740680;
+        Mon, 11 May 2020 09:15:40 -0700 (PDT)
 Received: from localhost.localdomain ([194.53.185.84])
-        by smtp.gmail.com with ESMTPSA id v131sm54734wmb.27.2020.05.11.09.15.38
+        by smtp.gmail.com with ESMTPSA id v131sm54734wmb.27.2020.05.11.09.15.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 09:15:39 -0700 (PDT)
+        Mon, 11 May 2020 09:15:40 -0700 (PDT)
 From:   Quentin Monnet <quentin@isovalent.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next v2 0/4] bpf: clean up bpftool, bpftool doc, bpf-helpers doc
-Date:   Mon, 11 May 2020 17:15:32 +0100
-Message-Id: <20200511161536.29853-1-quentin@isovalent.com>
+Subject: [PATCH bpf-next v2 1/4] tools: bpftool: poison and replace kernel integer typedefs
+Date:   Mon, 11 May 2020 17:15:33 +0100
+Message-Id: <20200511161536.29853-2-quentin@isovalent.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200511161536.29853-1-quentin@isovalent.com>
+References: <20200511161536.29853-1-quentin@isovalent.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
@@ -63,46 +65,98 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This set focuses on cleaning-up the documentation for bpftool and BPF
-helpers.
+Replace the use of kernel-only integer typedefs (u8, u32, etc.) by their
+user space counterpart (__u8, __u32, etc.).
 
-The first patch is actually a clean-up for bpftool itself: it replaces
-kernel integer types by the ones that should be used in user space, and
-poisons kernel types to avoid reintroducing them by mistake in the future.
+Similarly to what libbpf does, poison the typedefs to avoid introducing
+them again in the future.
 
-Then come the documentation fixes: bpftool, and BPF helpers, with the usual
-sync up for the BPF header under tools/. Please refer to individual commit
-logs for details.
+Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+---
+ tools/bpf/bpftool/btf_dumper.c    | 4 ++--
+ tools/bpf/bpftool/cfg.c           | 4 ++--
+ tools/bpf/bpftool/main.h          | 3 +++
+ tools/bpf/bpftool/map_perf_ring.c | 2 +-
+ tools/bpf/bpftool/prog.c          | 2 +-
+ 5 files changed, 9 insertions(+), 6 deletions(-)
 
-Quentin Monnet (4):
-  tools: bpftool: poison and replace kernel integer typedefs
-  tools: bpftool: minor fixes for documentation
-  bpf: minor fixes to BPF helpers documentation
-  tools: bpf: synchronise BPF UAPI header with tools
-
- include/uapi/linux/bpf.h                      | 109 ++++++++++--------
- scripts/bpf_helpers_doc.py                    |   6 +
- .../bpf/bpftool/Documentation/bpftool-btf.rst |  11 +-
- .../bpftool/Documentation/bpftool-cgroup.rst  |  12 +-
- .../bpftool/Documentation/bpftool-feature.rst |  12 +-
- .../bpf/bpftool/Documentation/bpftool-gen.rst |  21 ++--
- .../bpftool/Documentation/bpftool-iter.rst    |  12 +-
- .../bpftool/Documentation/bpftool-link.rst    |   9 +-
- .../bpf/bpftool/Documentation/bpftool-map.rst |  37 +++---
- .../bpf/bpftool/Documentation/bpftool-net.rst |  12 +-
- .../bpftool/Documentation/bpftool-perf.rst    |  12 +-
- .../bpftool/Documentation/bpftool-prog.rst    |  23 ++--
- .../Documentation/bpftool-struct_ops.rst      |  11 +-
- tools/bpf/bpftool/Documentation/bpftool.rst   |  11 +-
- tools/bpf/bpftool/btf_dumper.c                |   4 +-
- tools/bpf/bpftool/cfg.c                       |   4 +-
- tools/bpf/bpftool/main.h                      |   3 +
- tools/bpf/bpftool/map.c                       |   3 +-
- tools/bpf/bpftool/map_perf_ring.c             |   2 +-
- tools/bpf/bpftool/prog.c                      |   2 +-
- tools/include/uapi/linux/bpf.h                | 109 ++++++++++--------
- 21 files changed, 249 insertions(+), 176 deletions(-)
-
+diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
+index 497807bec675..ede162f83eea 100644
+--- a/tools/bpf/bpftool/btf_dumper.c
++++ b/tools/bpf/bpftool/btf_dumper.c
+@@ -271,8 +271,8 @@ static void btf_int128_print(json_writer_t *jw, const void *data,
+ 	}
+ }
+ 
+-static void btf_int128_shift(__u64 *print_num, u16 left_shift_bits,
+-			     u16 right_shift_bits)
++static void btf_int128_shift(__u64 *print_num, __u16 left_shift_bits,
++			     __u16 right_shift_bits)
+ {
+ 	__u64 upper_num, lower_num;
+ 
+diff --git a/tools/bpf/bpftool/cfg.c b/tools/bpf/bpftool/cfg.c
+index 3e21f994f262..1951219a9af7 100644
+--- a/tools/bpf/bpftool/cfg.c
++++ b/tools/bpf/bpftool/cfg.c
+@@ -157,7 +157,7 @@ static bool cfg_partition_funcs(struct cfg *cfg, struct bpf_insn *cur,
+ 	return false;
+ }
+ 
+-static bool is_jmp_insn(u8 code)
++static bool is_jmp_insn(__u8 code)
+ {
+ 	return BPF_CLASS(code) == BPF_JMP || BPF_CLASS(code) == BPF_JMP32;
+ }
+@@ -176,7 +176,7 @@ static bool func_partition_bb_head(struct func_node *func)
+ 
+ 	for (; cur <= end; cur++) {
+ 		if (is_jmp_insn(cur->code)) {
+-			u8 opcode = BPF_OP(cur->code);
++			__u8 opcode = BPF_OP(cur->code);
+ 
+ 			if (opcode == BPF_EXIT || opcode == BPF_CALL)
+ 				continue;
+diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+index a41cefabccaf..f89ac70ef973 100644
+--- a/tools/bpf/bpftool/main.h
++++ b/tools/bpf/bpftool/main.h
+@@ -18,6 +18,9 @@
+ 
+ #include "json_writer.h"
+ 
++/* Make sure we do not use kernel-only integer typedefs */
++#pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
++
+ #define ptr_to_u64(ptr)	((__u64)(unsigned long)(ptr))
+ 
+ #define NEXT_ARG()	({ argc--; argv++; if (argc < 0) usage(); })
+diff --git a/tools/bpf/bpftool/map_perf_ring.c b/tools/bpf/bpftool/map_perf_ring.c
+index d9b29c17fbb8..825f29f93a57 100644
+--- a/tools/bpf/bpftool/map_perf_ring.c
++++ b/tools/bpf/bpftool/map_perf_ring.c
+@@ -39,7 +39,7 @@ struct event_ring_info {
+ 
+ struct perf_event_sample {
+ 	struct perf_event_header header;
+-	u64 time;
++	__u64 time;
+ 	__u32 size;
+ 	unsigned char data[];
+ };
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index f6a5974a7b0a..b6e5ba568f98 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -238,7 +238,7 @@ int prog_parse_fd(int *argc, char ***argv)
+ 	return fd;
+ }
+ 
+-static void show_prog_maps(int fd, u32 num_maps)
++static void show_prog_maps(int fd, __u32 num_maps)
+ {
+ 	struct bpf_prog_info info = {};
+ 	__u32 len = sizeof(info);
 -- 
 2.20.1
 
