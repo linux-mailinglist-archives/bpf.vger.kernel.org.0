@@ -2,177 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06581CE501
-	for <lists+bpf@lfdr.de>; Mon, 11 May 2020 22:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C101A1CE560
+	for <lists+bpf@lfdr.de>; Mon, 11 May 2020 22:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730974AbgEKUFc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 May 2020 16:05:32 -0400
-Received: from www62.your-server.de ([213.133.104.62]:41090 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727873AbgEKUFb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 May 2020 16:05:31 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jYEg2-0004QR-Gq; Mon, 11 May 2020 22:05:26 +0200
-Received: from [178.195.186.98] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jYEg2-000TWY-6i; Mon, 11 May 2020 22:05:26 +0200
-Subject: Re: [RFC PATCH bpf-next 0/1] bpf, x64: optimize JIT prologue/epilogue
- generation
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>, ast@kernel.org
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, bjorn.topel@intel.com,
-        magnus.karlsson@intel.com, lmb@cloudflare.com,
-        john.fastabend@gmail.com
-References: <20200511143912.34086-1-maciej.fijalkowski@intel.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <2e3c6be0-e482-d856-7cc1-b1d03a26428e@iogearbox.net>
-Date:   Mon, 11 May 2020 22:05:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1731320AbgEKUZA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 May 2020 16:25:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728283AbgEKUZA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 May 2020 16:25:00 -0400
+Received: from localhost.localdomain.com (unknown [151.48.155.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B066206E6;
+        Mon, 11 May 2020 20:24:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589228699;
+        bh=3Fv/LzO0yAUlesVoV9zizj4xjyauXSI+3Mbgil0DTqM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=z9EwmRtZiBiZTeWRJBnVfXZadxJHyiI/fnxaj+OtoBlZug989cJv7Uup8gb5OjA33
+         N8zbeXouwanCS/TRbO757KCfDTdXgGPuXxngSyiFYhrrZXTUO3qsv1kUFl41Wwj3GH
+         p8xqYNAr/kR1ZT7tLzUYbvRB8AG3BfgGRHrApSSU=
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     ast@kernel.org, davem@davemloft.net, brouer@redhat.com,
+        daniel@iogearbox.net, lorenzo.bianconi@redhat.com
+Subject: [PATCH bpf-next] samples/bpf: xdp_redirect_cpu: set MAX_CPUS according to NR_CPUS
+Date:   Mon, 11 May 2020 22:24:21 +0200
+Message-Id: <79b8dd36280e5629a5e64b89528f9d523cb7262b.1589227441.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200511143912.34086-1-maciej.fijalkowski@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25809/Mon May 11 14:16:55 2020)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hey Maciej,
+xdp_redirect_cpu is currently failing in bpf_prog_load_xattr()
+allocating cpu_map map if CONFIG_NR_CPUS is less than 64 since
+cpu_map_alloc() requires max_entries to be less than NR_CPUS.
+Set cpu_map max_entries according to NR_CPUS in xdp_redirect_cpu_kern.c
+and get currently running cpus in xdp_redirect_cpu_user.c
 
-On 5/11/20 4:39 PM, Maciej Fijalkowski wrote:
-> Hi!
-> 
-> Today, BPF x86-64 JIT is preserving all of the callee-saved registers
-> for each BPF program being JITed, even when none of the R6-R9 registers
-> are used by the BPF program. Furthermore the tail call counter is always
-> pushed/popped to/from the stack even when there is no tail call usage in
-> BPF program being JITed. Optimization can be introduced that would
-> detect the usage of R6-R9 and based on that push/pop to/from the stack
-> only what is needed. Same goes for tail call counter.
-> 
-> Results look promising for such instruction reduction. Below are the
-> numbers for xdp1 sample on FVL 40G NIC receiving traffic from pktgen:
-> 
-> * With optimization: 22.3 Mpps
-> * Without:           19.0 mpps
-> 
-> So it's around 15% of performance improvement. Note that xdp1 is not
-> using any of callee saved registers, nor the tail call, hence such
-> speed-up.
-> 
-> There is one detail that needs to be handled though.
-> 
-> Currently, x86-64 JIT tail call implementation is skipping the prologue
-> of target BPF program that has constant size. With the mentioned
-> optimization implemented, each particular BPF program that might be
-> inserted onto the prog array map and therefore be the target of tail
-> call, could have various prologue size.
-> 
-> Let's have some pseudo-code example:
-> 
-> func1:
-> pro
-> code
-> epi
-> 
-> func2:
-> pro
-> code'
-> epi
-> 
-> func3:
-> pro
-> code''
-> epi
-> 
-> Today, pro and epi are always the same (9/7) instructions. So a tail
-> call from func1 to func2 is just a:
-> 
-> jump func2 + sizeof pro in bytes (PROLOGUE_SIZE)
-> 
-> With the optimization:
-> 
-> func1:
-> pro
-> code
-> epi
-> 
-> func2:
-> pro'
-> code'
-> epi'
-> 
-> func3:
-> pro''
-> code''
-> epi''
-> 
-> For making the tail calls up and running with the mentioned optimization
-> in place, x86-64 JIT should emit the pop registers instructions
-> that were pushed on prologue before the actual jump. Jump offset should
-> skip the instructions that are handling rbp/rsp, not the whole prologue.
-> 
-> A tail call within func1 would then need to be:
-> epi -> pop what pro pushed, but no leave/ret instructions
-> jump func2 + 16 // first push insn of pro'; if no push, then this would
->                  // a direct jump to code'
-> 
-> Magic value of 16 comes from count of bytes that represent instructions
-> that are skipped:
-> 0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
-> 55                      push   %rbp
-> 48 89 e5                mov    %rsp,%rbp
-> 48 81 ec 08 00 00 00    sub    $0x8,%rsp
-> 
-> which would in many cases add *more* instructions for tailcalls. If none
-> of callee-saved registers are used, then there would be no overhead with
-> such optimization in place.
-> 
-> I'm not sure how to measure properly the impact on the BPF programs that
-> are utilizing tail calls. Any suggestions?
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+---
+ samples/bpf/xdp_redirect_cpu_kern.c |  2 +-
+ samples/bpf/xdp_redirect_cpu_user.c | 29 ++++++++++++++++-------------
+ 2 files changed, 17 insertions(+), 14 deletions(-)
 
-Right, so far the numbers above (no callee saved registers, no tail calls)
-are really the best case scenario. I think programs not using callee saved
-registers are probably very limited in what they do, and tail calls are often
-used as well (although good enough for AF_XDP, for example). So I wonder how
-far we would regress with callee saved registers and tail calls. For Cilium
-right now you can roughly assume a worst case tail call depth of ~6 with static
-jumps (that we patch to jmp/nop). Only in one case we have a tail call map
-index that is non-static. In terms of registers, assume all of them are used
-one way or another. If you could check the impact in such setting, that would
-be great.
-
-> Daniel, Alexei, what is your view on this?
-
-I think performance wise this would be both pro and con depending how tail
-calls are used. One upside however, and I think you didn't mention it here
-would be that we don't need to clamp used stack space to 512, so we could
-actually track how much stack is used (or if any is used at all) and adapt
-it between tail calls? Depending on the numbers, if we'd go that route, it
-should rather be generalized and tracked via verifier so all JITs can behave
-the same (and these workarounds in verifier lifted). But then 15% performance
-improvement as you state above is a lot, probably we might regress at least
-as much as well in your benchmark. I wonder whether there should be a knob
-for it, though it's mainly implementation detail..
-
-> For implementation details, see commit message of included patch.
-> 
-> Thank you,
-> Maciej
-> 
-> 
-> Maciej Fijalkowski (1):
->    bpf, x64: optimize JIT prologue/epilogue generation
-> 
->   arch/x86/net/bpf_jit_comp.c | 190 ++++++++++++++++++++++++++++--------
->   1 file changed, 148 insertions(+), 42 deletions(-)
-> 
+diff --git a/samples/bpf/xdp_redirect_cpu_kern.c b/samples/bpf/xdp_redirect_cpu_kern.c
+index 313a8fe6d125..2baf8db1f7e7 100644
+--- a/samples/bpf/xdp_redirect_cpu_kern.c
++++ b/samples/bpf/xdp_redirect_cpu_kern.c
+@@ -15,7 +15,7 @@
+ #include <bpf/bpf_helpers.h>
+ #include "hash_func01.h"
+ 
+-#define MAX_CPUS 64 /* WARNING - sync with _user.c */
++#define MAX_CPUS NR_CPUS
+ 
+ /* Special map type that can XDP_REDIRECT frames to another CPU */
+ struct {
+diff --git a/samples/bpf/xdp_redirect_cpu_user.c b/samples/bpf/xdp_redirect_cpu_user.c
+index 15bdf047a222..100e72cb4cf5 100644
+--- a/samples/bpf/xdp_redirect_cpu_user.c
++++ b/samples/bpf/xdp_redirect_cpu_user.c
+@@ -13,6 +13,7 @@ static const char *__doc__ =
+ #include <unistd.h>
+ #include <locale.h>
+ #include <sys/resource.h>
++#include <sys/sysinfo.h>
+ #include <getopt.h>
+ #include <net/if.h>
+ #include <time.h>
+@@ -24,8 +25,6 @@ static const char *__doc__ =
+ #include <arpa/inet.h>
+ #include <linux/if_link.h>
+ 
+-#define MAX_CPUS 64 /* WARNING - sync with _kern.c */
+-
+ /* How many xdp_progs are defined in _kern.c */
+ #define MAX_PROG 6
+ 
+@@ -40,6 +39,7 @@ static char *ifname;
+ static __u32 prog_id;
+ 
+ static __u32 xdp_flags = XDP_FLAGS_UPDATE_IF_NOEXIST;
++static int n_cpus;
+ static int cpu_map_fd;
+ static int rx_cnt_map_fd;
+ static int redirect_err_cnt_map_fd;
+@@ -170,7 +170,7 @@ struct stats_record {
+ 	struct record redir_err;
+ 	struct record kthread;
+ 	struct record exception;
+-	struct record enq[MAX_CPUS];
++	struct record enq[];
+ };
+ 
+ static bool map_collect_percpu(int fd, __u32 key, struct record *rec)
+@@ -225,10 +225,11 @@ static struct datarec *alloc_record_per_cpu(void)
+ static struct stats_record *alloc_stats_record(void)
+ {
+ 	struct stats_record *rec;
+-	int i;
++	int i, size;
+ 
+-	rec = malloc(sizeof(*rec));
+-	memset(rec, 0, sizeof(*rec));
++	size = sizeof(*rec) + n_cpus * sizeof(struct record);
++	rec = malloc(size);
++	memset(rec, 0, size);
+ 	if (!rec) {
+ 		fprintf(stderr, "Mem alloc error\n");
+ 		exit(EXIT_FAIL_MEM);
+@@ -237,7 +238,7 @@ static struct stats_record *alloc_stats_record(void)
+ 	rec->redir_err.cpu = alloc_record_per_cpu();
+ 	rec->kthread.cpu   = alloc_record_per_cpu();
+ 	rec->exception.cpu = alloc_record_per_cpu();
+-	for (i = 0; i < MAX_CPUS; i++)
++	for (i = 0; i < n_cpus; i++)
+ 		rec->enq[i].cpu = alloc_record_per_cpu();
+ 
+ 	return rec;
+@@ -247,7 +248,7 @@ static void free_stats_record(struct stats_record *r)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < MAX_CPUS; i++)
++	for (i = 0; i < n_cpus; i++)
+ 		free(r->enq[i].cpu);
+ 	free(r->exception.cpu);
+ 	free(r->kthread.cpu);
+@@ -350,7 +351,7 @@ static void stats_print(struct stats_record *stats_rec,
+ 	}
+ 
+ 	/* cpumap enqueue stats */
+-	for (to_cpu = 0; to_cpu < MAX_CPUS; to_cpu++) {
++	for (to_cpu = 0; to_cpu < n_cpus; to_cpu++) {
+ 		char *fmt = "%-15s %3d:%-3d %'-14.0f %'-11.0f %'-10.2f %s\n";
+ 		char *fm2 = "%-15s %3s:%-3d %'-14.0f %'-11.0f %'-10.2f %s\n";
+ 		char *errstr = "";
+@@ -475,7 +476,7 @@ static void stats_collect(struct stats_record *rec)
+ 	map_collect_percpu(fd, 1, &rec->redir_err);
+ 
+ 	fd = cpumap_enqueue_cnt_map_fd;
+-	for (i = 0; i < MAX_CPUS; i++)
++	for (i = 0; i < n_cpus; i++)
+ 		map_collect_percpu(fd, i, &rec->enq[i]);
+ 
+ 	fd = cpumap_kthread_cnt_map_fd;
+@@ -549,10 +550,10 @@ static int create_cpu_entry(__u32 cpu, __u32 queue_size,
+  */
+ static void mark_cpus_unavailable(void)
+ {
+-	__u32 invalid_cpu = MAX_CPUS;
++	__u32 invalid_cpu = n_cpus;
+ 	int ret, i;
+ 
+-	for (i = 0; i < MAX_CPUS; i++) {
++	for (i = 0; i < n_cpus; i++) {
+ 		ret = bpf_map_update_elem(cpus_available_map_fd, &i,
+ 					  &invalid_cpu, 0);
+ 		if (ret) {
+@@ -688,6 +689,8 @@ int main(int argc, char **argv)
+ 	int prog_fd;
+ 	__u32 qsize;
+ 
++	n_cpus = get_nprocs();
++
+ 	/* Notice: choosing he queue size is very important with the
+ 	 * ixgbe driver, because it's driver page recycling trick is
+ 	 * dependend on pages being returned quickly.  The number of
+@@ -757,7 +760,7 @@ int main(int argc, char **argv)
+ 		case 'c':
+ 			/* Add multiple CPUs */
+ 			add_cpu = strtoul(optarg, NULL, 0);
+-			if (add_cpu >= MAX_CPUS) {
++			if (add_cpu >= n_cpus) {
+ 				fprintf(stderr,
+ 				"--cpu nr too large for cpumap err(%d):%s\n",
+ 					errno, strerror(errno));
+-- 
+2.26.2
 
