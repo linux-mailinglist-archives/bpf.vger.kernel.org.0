@@ -2,126 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF1F1CDA36
-	for <lists+bpf@lfdr.de>; Mon, 11 May 2020 14:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D32331CDA8C
+	for <lists+bpf@lfdr.de>; Mon, 11 May 2020 14:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729309AbgEKMkg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 May 2020 08:40:36 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:56992 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726934AbgEKMkf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 May 2020 08:40:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589200834;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=hfjikQ9p1CZNbHLDaNQ5BqLvccZnhPT1ZB3ciPyyTvU=;
-        b=MA4pkNDfrv86SI79F3A/pbR4kAfAu/lQphd0LlthEdy2tfd5wXvea/tFBQtwgCuNt6kyp0
-        jeGy9K4Ias0XdEWi6ju3KeJDop3QPgKKvGfgOgbXdvYN5xMW8fvIvn6S6W23oBimky/ZVi
-        BafiA0zehcsJJlZFRXdsZxHUx0vWz6w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-348-Tjp6mZU4NUO83RNPbf5WdQ-1; Mon, 11 May 2020 08:40:30 -0400
-X-MC-Unique: Tjp6mZU4NUO83RNPbf5WdQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1729751AbgEKMzX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 May 2020 08:55:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55616 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726021AbgEKMzX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 May 2020 08:55:23 -0400
+Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E2065107ACCD;
-        Mon, 11 May 2020 12:40:28 +0000 (UTC)
-Received: from ebuild.redhat.com (ovpn-115-161.ams2.redhat.com [10.36.115.161])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ECA8D610FD;
-        Mon, 11 May 2020 12:40:23 +0000 (UTC)
-From:   Eelco Chaudron <echaudro@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, andriin@fb.com, toke@redhat.com
-Subject: [PATCH bpf-next v3] libbpf: fix probe code to return EPERM if encountered
-Date:   Mon, 11 May 2020 14:40:18 +0200
-Message-Id: <158920079637.7533.5703299045869368435.stgit@ebuild>
-User-Agent: StGit/0.19
+        by mail.kernel.org (Postfix) with ESMTPSA id 8853F20722;
+        Mon, 11 May 2020 12:55:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589201722;
+        bh=fI1SN20EX/4GtN+QbDDKwe0uGIQ2raxx/8QClojgIe8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=etOzo4t5b4u6f5ics6j3+lhzkrKUN/2V1AICzngaF8C0uUKuW8Mg5PQfavbLP/Ovc
+         sB1hhGd6UUAkEK/1bnpkLITxHhaSbNAe+g5FLXAxJwbL26/zxpkAUIqj2BqmopS1Ia
+         y9wb2cFrwTuWkWbxBEuqFfsqITcTFm8x4t6TYtAw=
+From:   Will Deacon <will@kernel.org>
+To:     Luke Nelson <lukenels@cs.washington.edu>, bpf@vger.kernel.org
+Cc:     catalin.marinas@arm.com, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Christoffer Dall <christoffer.dall@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Andrii Nakryiko <andriin@fb.com>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xi Wang <xi.wang@gmail.com>,
+        Yonghong Song <yhs@fb.com>, clang-built-linux@googlegroups.com,
+        Alexios Zavras <alexios.zavras@intel.com>
+Subject: Re: [PATCH bpf-next v2 0/3] arm64 BPF JIT Optimizations
+Date:   Mon, 11 May 2020 13:55:08 +0100
+Message-Id: <158919609995.133008.6274359604607907270.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200508181547.24783-1-luke.r.nels@gmail.com>
+References: <20200508181547.24783-1-luke.r.nels@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When the probe code was failing for any reason ENOTSUP was returned, even
-if this was due to no having enough lock space. This patch fixes this by
-returning EPERM to the user application, so it can respond and increase
-the RLIMIT_MEMLOCK size.
+On Fri, 8 May 2020 11:15:43 -0700, Luke Nelson wrote:
+> This patch series introduces several optimizations to the arm64 BPF JIT.
+> The optimizations make use of arm64 immediate instructions to avoid
+> loading BPF immediates to temporary registers, when possible.
+> 
+> In the process, we discovered two bugs in the logical immediate encoding
+> function in arch/arm64/kernel/insn.c using Serval. The series also fixes
+> the two bugs before introducing the optimizations.
+> 
+> [...]
 
-Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
----
-v3: Updated error message to be more specific as suggested by Andrii
-v2: Split bpf_object__probe_name() in two functions as suggested by Andrii
+Applied to arm64 (for-next/bpf), thanks!
 
- tools/lib/bpf/libbpf.c |   31 ++++++++++++++++++++++++++-----
- 1 file changed, 26 insertions(+), 5 deletions(-)
+[1/3] arm64: insn: Fix two bugs in encoding 32-bit logical immediates
+      https://git.kernel.org/arm64/c/579d1b3faa37
+[2/3] bpf, arm64: Optimize AND,OR,XOR,JSET BPF_K using arm64 logical immediates
+      https://git.kernel.org/arm64/c/fd49591cb49b
+[3/3] bpf, arm64: Optimize ADD,SUB,JMP BPF_K using arm64 add/sub immediates
+      https://git.kernel.org/arm64/c/fd868f148189
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 8f480e29a6b0..ad3043c5db13 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -3149,7 +3149,7 @@ int bpf_map__resize(struct bpf_map *map, __u32 max_entries)
- }
- 
- static int
--bpf_object__probe_name(struct bpf_object *obj)
-+bpf_object__probe_loading(struct bpf_object *obj)
- {
- 	struct bpf_load_program_attr attr;
- 	char *cp, errmsg[STRERR_BUFSIZE];
-@@ -3170,14 +3170,34 @@ bpf_object__probe_name(struct bpf_object *obj)
- 	ret = bpf_load_program_xattr(&attr, NULL, 0);
- 	if (ret < 0) {
- 		cp = libbpf_strerror_r(errno, errmsg, sizeof(errmsg));
--		pr_warn("Error in %s():%s(%d). Couldn't load basic 'r0 = 0' BPF program.\n",
--			__func__, cp, errno);
-+		pr_warn("Error in %s():%s(%d). Couldn't load trivial BPF "
-+			"program. Make sure your kernel supports BPF "
-+			"(CONFIG_BPF_SYSCALL=y) and/or that RLIMIT_MEMLOCK is "
-+			"set to big enough value.\n", __func__, cp, errno);
- 		return -errno;
- 	}
- 	close(ret);
- 
--	/* now try the same program, but with the name */
-+	return 0;
-+}
-+
-+static int
-+bpf_object__probe_name(struct bpf_object *obj)
-+{
-+	struct bpf_load_program_attr attr;
-+	struct bpf_insn insns[] = {
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	};
-+	int ret;
-+
-+	/* make sure loading with name works */
- 
-+	memset(&attr, 0, sizeof(attr));
-+	attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
-+	attr.insns = insns;
-+	attr.insns_cnt = ARRAY_SIZE(insns);
-+	attr.license = "GPL";
- 	attr.name = "test";
- 	ret = bpf_load_program_xattr(&attr, NULL, 0);
- 	if (ret >= 0) {
-@@ -5386,7 +5406,8 @@ int bpf_object__load_xattr(struct bpf_object_load_attr *attr)
- 
- 	obj->loaded = true;
- 
--	err = bpf_object__probe_caps(obj);
-+	err = bpf_object__probe_loading(obj);
-+	err = err ? : bpf_object__probe_caps(obj);
- 	err = err ? : bpf_object__resolve_externs(obj, obj->kconfig);
- 	err = err ? : bpf_object__sanitize_and_load_btf(obj);
- 	err = err ? : bpf_object__sanitize_maps(obj);
+Cheers,
+-- 
+Will
 
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
