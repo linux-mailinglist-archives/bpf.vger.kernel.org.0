@@ -2,119 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0511CD4ED
-	for <lists+bpf@lfdr.de>; Mon, 11 May 2020 11:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 674CE1CD886
+	for <lists+bpf@lfdr.de>; Mon, 11 May 2020 13:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727873AbgEKJb5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 May 2020 05:31:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725790AbgEKJb5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 11 May 2020 05:31:57 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43DD6C061A0C
-        for <bpf@vger.kernel.org>; Mon, 11 May 2020 02:31:57 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id j4so6980236otr.11
-        for <bpf@vger.kernel.org>; Mon, 11 May 2020 02:31:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w8A3MYPcEXP7i4I+pMJaBBrNf6dUsE+4VKRcNyHbV0o=;
-        b=ox221MsLllUxdMif0kkl+xzJ3rSNAAPzx1DbvfCFEdkcv7/LDYbEIqh3nfYO71eJN0
-         K6qL8c41oWMbgMu/zNx/iC46exYNGOM9JSyFmuXhrumfSvMAsafiLtu4Z6ledWA5YGO5
-         OGOHuRfwSqIJ74U4XjRBuIH30NcV9OdFjCwrE=
+        id S1729631AbgEKLcm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 May 2020 07:32:42 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:53394 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729618AbgEKLcl (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 11 May 2020 07:32:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589196760;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hQUkEydOpp6BWEZjpv9SKHKYKamnTJBvfR8HfV65p3I=;
+        b=EDO5PDlEgc1bPLhwB19nvgl8ml0KnuapWx2+XqyDYhtZ/6w0Vc+NdWD1gK1cVpm7lTYamY
+        tiXvWy5oTfSJayUs3Gcw4M4wNCZnOHdVa87x4eWfavqoy/aVXTToxogobP+jtxHumOwqYT
+        MOeL5XHkoB/gPYgS8S2W6Cj+57QkJtk=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-142-_vGi6L6kMzekVUSZ7xTomQ-1; Mon, 11 May 2020 07:32:39 -0400
+X-MC-Unique: _vGi6L6kMzekVUSZ7xTomQ-1
+Received: by mail-wm1-f69.google.com with SMTP id h6so8187954wmi.7
+        for <bpf@vger.kernel.org>; Mon, 11 May 2020 04:32:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w8A3MYPcEXP7i4I+pMJaBBrNf6dUsE+4VKRcNyHbV0o=;
-        b=tK6J8NDi9LOPwz2yUQ/4anArptJJb3JcpTJMqFGNDnxUkFWZ9A9Gt9rk66umhi4woM
-         Lj2Qcgho4LSgHMzY7NsBhHim164XKcbCUztW5P7NcHtQfiz1BCDYyQ9yNX9pl4lWKRnz
-         UhCPeu1KFQOb6FZoph9SOZYqT9jdGPTieeDPRzYsOiQyhZDRnoYEkjwaWOcnrIgeknXy
-         bb3jM9T0RsG61j8pqFF5u+gMVyNQ6/04tFa5FzGSPfDy6GVn+LZiwFVlGPgtg/lJ6Txp
-         nBecfEfuB7udtNezPpxRRz3sF7qgNLH1VUimh7/5pALCW1ZI5V/yKANJFG+quxjFoolv
-         2sdQ==
-X-Gm-Message-State: AGi0PubF30kY2TMbag4o0W1gwPuzqpAm9WMWISyfNzjb6BJx5iB1jwZr
-        HgOTUt9MsNDhZBDghbmqlvQeKuc1AeZ06fJT2hud9Q==
-X-Google-Smtp-Source: APiQypKhoBvNr+fvOG3dPPyU/nGTJKu3HSnKwCDfKBiYnqjtas2eexZU5YAtxV+VLtS8k7Ua/1Ad5W+gDZfw34T6Odo=
-X-Received: by 2002:a05:6830:241b:: with SMTP id j27mr11522457ots.132.1589189515850;
- Mon, 11 May 2020 02:31:55 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hQUkEydOpp6BWEZjpv9SKHKYKamnTJBvfR8HfV65p3I=;
+        b=jCO38VkrUDj6RKcUDk9GJ7P2CdCkqnQ96McXguEdcmynAN6GCioy57l6m5K2ELxMH7
+         zr+1CewoWyPQj5DoON6fZqv6Z5Le8Vh9F8QPaRE+ykDJDmGr9Dmj598H2qZ2UAxigEw3
+         TBx595n0kQr1K+UKoPTO6+C0zeHgQZVAcvFENKNeTPXV39yu0TkuVuheqS4ha2vTlKTO
+         rOXVbSAszrC4NdpXYujKs10yA0i+Mh6L+UOwlT1Xr3SBQlvKFYhBrdgcVzPxp/eD4gjq
+         0U3/tgW8S/u1qNC1C5egdbHw71vqDUu75vgHwxxc2vI50rioM8RoSfgw9xARvcWiSOjf
+         q5Yw==
+X-Gm-Message-State: AGi0PuY42qsdFWLDR/le+b9zqwxCeq817HXyrRn2mDlOTNfxWAlH4bpI
+        SkV3lENn4bj6AqE2KvmPv3VIIlyFwez5L6CK5881U/CCyx+ooYLdTrOKCsjqgUGs7cljhGsOVRJ
+        5SdbevSMtdR1C
+X-Received: by 2002:adf:f6c4:: with SMTP id y4mr19901702wrp.81.1589196757832;
+        Mon, 11 May 2020 04:32:37 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJ3X2Ouavx+PztaCv6hUD+xToftSDRS9MEcEfVLu6LTOlsm3dxf6NwZdhPy6/02ob/g675gpA==
+X-Received: by 2002:adf:f6c4:: with SMTP id y4mr19901675wrp.81.1589196757643;
+        Mon, 11 May 2020 04:32:37 -0700 (PDT)
+Received: from raver.teknoraver.net (net-2-44-90-75.cust.vodafonedsl.it. [2.44.90.75])
+        by smtp.gmail.com with ESMTPSA id e22sm1835043wrc.41.2020.05.11.04.32.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 04:32:36 -0700 (PDT)
+From:   Matteo Croce <mcroce@redhat.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Joe Stringer <joe@ovn.org>, Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH bpf] samples: bpf: fix build error
+Date:   Mon, 11 May 2020 13:32:34 +0200
+Message-Id: <20200511113234.80722-1-mcroce@redhat.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <CACAyw9-uU_52esMd1JjuA80fRPHJv5vsSg8GnfW3t_qDU4aVKQ@mail.gmail.com>
- <CAADnVQKZ63d5A+Jv8bbXzo2RKNCXFH78zos0AjpbJ3ii9OHW0g@mail.gmail.com>
- <CACAyw9_ygNV1J+PkBJ-i7ysU_Y=rN3Z5adKYExNXCic0gumaow@mail.gmail.com>
- <39d3bee2-dcfc-8240-4c78-2110d639d386@iogearbox.net> <CACAyw996Q9SdLz0tAn2jL9wg+m5h1FBsXHmUN0ZtP7D5ohY2pg@mail.gmail.com>
- <a4830bd4-d998-9e5c-afd5-c5ec5504f1f3@iogearbox.net> <20200507142518.43c22a1b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200507142518.43c22a1b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Mon, 11 May 2020 10:31:44 +0100
-Message-ID: <CACAyw9-Hf7977K3f6hM3gWawz2Y_KgkJ0URmivkAxX8kKH1iEA@mail.gmail.com>
-Subject: Re: Checksum behaviour of bpf_redirected packets
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 7 May 2020 at 22:25, Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Thu, 7 May 2020 18:43:47 +0200 Daniel Borkmann wrote:
-> > > Thanks for the patch, it indeed fixes our problem! I spent some more time
-> > > trying to understand the checksum offload stuff, here is where I am:
-> > >
-> > > On NICs that don't support hardware offload ip_summed is CHECKSUM_NONE,
-> > > everything works by default since the rest of the stack does checksumming in
-> > > software.
-> > >
-> > > On NICs that support CHECKSUM_COMPLETE, skb_postpull_rcsum
-> > > will adjust for the data that is being removed from the skb. The rest of the
-> > > stack will use the correct value, all is well.
-> > >
-> > > However, we're out of luck on NICs that do CHECKSUM_UNNECESSARY:
-> > > the API of skb_adjust_room doesn't tell us whether the user intends to
-> > > remove headers or data, and how that will influence csum_level.
-> > >  From my POV, skb_adjust_room currently does the wrong thing.
-> > > I think we need to fix skb_adjust_room to do the right thing by default,
-> > > rather than extending the API. We spent a lot of time on tracking this down,
-> > > so hopefully we can spare others the pain.
-> > >
-> > > As Jakub alludes to, we don't know when and how often to call
-> > > __skb_decr_checksum_unnecessary so we should just
-> > > unconditionally downgrade a packet to CHECKSUM_NONE if we encounter
-> > > CHECKSUM_UNNECESSARY in bpf_skb_generic_pop. It sounds simple
-> > > enough to land as a fix via the bpf tree (which is important for our
-> > > production kernel). As a follow up we could add the inverse of the flags you
-> > > propose via bpf-next.
-> > >
-> > > What do you think?
-> >
-> > My concern with unconditionally downgrading a packet to CHECKSUM_NONE would
-> > basically trash performance if we have to fallback to sw in fast-path, these
-> > helpers are also used in our LB case for DSR, for example. I agree that it
-> > sucks to expose these implementation details though. So eventually we'd end
-> > up with 3 csum flags: inc/dec/reset to none. bpf_skb_adjust_room() is already
-> > a complex to use helper with all its flags where you end up looking into the
-> > implementation detail to understand what it is really doing. I'm not sure if
-> > we make anything worse, but I do see your concern. :/ (We do have bpf_csum_update()
-> > helper as well. I wonder whether we should split such control into a different
-> > helper.)
->
-> Probably stating the obvious but for decap of UDP tunnels which carry
-> locally terminated flows - we'd probably also want the upgrade from
-> UNNECESSARY to COMPLETE, like we do in the kernel
-> (skb_checksum_try_convert()). Tricky.
+GCC 10 is very strict about symbol clash, and lwt_len_hist_user contains
+a symbol which clashes with libbpf:
 
-I guess this is an argument in the direction that bpf_adjust_room is too
-low level an API?
+/usr/bin/ld: samples/bpf/lwt_len_hist_user.o:(.bss+0x0): multiple definition of `bpf_log_buf'; samples/bpf/bpf_load.o:(.bss+0x8c0): first defined here
+collect2: error: ld returned 1 exit status
 
+bpf_log_buf here seems to be a leftover, so removing it.
+
+Signed-off-by: Matteo Croce <mcroce@redhat.com>
+---
+ samples/bpf/lwt_len_hist_user.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/samples/bpf/lwt_len_hist_user.c b/samples/bpf/lwt_len_hist_user.c
+index 587b68b1f8dd..430a4b7e353e 100644
+--- a/samples/bpf/lwt_len_hist_user.c
++++ b/samples/bpf/lwt_len_hist_user.c
+@@ -15,8 +15,6 @@
+ #define MAX_INDEX 64
+ #define MAX_STARS 38
+ 
+-char bpf_log_buf[BPF_LOG_BUF_SIZE];
+-
+ static void stars(char *str, long val, long max, int width)
+ {
+ 	int i;
 -- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+2.26.2
 
-www.cloudflare.com
