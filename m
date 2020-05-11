@@ -2,195 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 884AB1CDF0B
-	for <lists+bpf@lfdr.de>; Mon, 11 May 2020 17:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4171CDFEC
+	for <lists+bpf@lfdr.de>; Mon, 11 May 2020 18:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727792AbgEKPaa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 May 2020 11:30:30 -0400
-Received: from www62.your-server.de ([213.133.104.62]:56218 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727093AbgEKPaa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 May 2020 11:30:30 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jYANv-0004eg-Dr; Mon, 11 May 2020 17:30:27 +0200
-Received: from [178.195.186.98] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jYANv-000RLA-5w; Mon, 11 May 2020 17:30:27 +0200
-Subject: Re: bpf_iter build breakage ([bpf-next:master] BUILD REGRESSION
- b4563facdcae55c83039d5efcc3b45a63da14d2f)
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     ast@fb.com, bpf@vger.kernel.org, yhs@fb.com
-References: <5eb7cca0.uAcHv05yEvyTrNMt%lkp@intel.com>
- <35f29d56-c0cb-ca56-646b-d3338a38fd2b@iogearbox.net>
- <CAADnVQ+mrJa=TUL0UmsN3G2mM7=6GDdeUH_FkCtC15NSb8y6iQ@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a6843c5b-1995-87bb-0e65-b64581124cf3@iogearbox.net>
-Date:   Mon, 11 May 2020 17:30:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1730518AbgEKQFx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 May 2020 12:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730594AbgEKQFu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 11 May 2020 12:05:50 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 104CFC061A0C
+        for <bpf@vger.kernel.org>; Mon, 11 May 2020 09:05:49 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id m24so9018151wml.2
+        for <bpf@vger.kernel.org>; Mon, 11 May 2020 09:05:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XSBbYEPUjFSpzCt6ADMl+351ottRgxXUnYo0HFyHqs8=;
+        b=ZWQ/89RHr7imqniXVaiAI1SrBs7ZJyPBxOFfRyS9gzNS16Fs2zefbmpcIIOtBTW38F
+         g6AQx1E4SHw9Kx9tNOJsMPf8e2gBvAViW6qf1zoMdRkgHM+x7Bqw3H2NsVJMd5eofHMa
+         OUR4EuJ6GIJ1ecfdIuRvmiOo2Q3TX0STOiBWKKnyiyDElrenLdlAHRIvd15p/Zz9jCxa
+         JotUuycV5l+kMR6A/yzrMIXgQc3BOFHnmdx5hjPdVtswuoB88MrTr3uQ1JHEifMiNQxZ
+         L3uidtGJnn6R1iyHqK6wyf65Ube5sWPBbgJPy/9A7uGnhZGQQsIku/4lXo9mwuhicPNz
+         o9VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XSBbYEPUjFSpzCt6ADMl+351ottRgxXUnYo0HFyHqs8=;
+        b=qUt/2fHmbr+tN4jxkG0ah1MOitAieVmjjhCwGXY0Cp4x5ZwSMtnRVqxKwbEId65JeD
+         If8s/iCKuNd9O4NrUWDoNJYAVa/hlRL+HtOL+7nwjtq44secEzvh2I/MQqfTEKEXjiVl
+         Ww4jENEovoDcDCNLMeBj1P8yzymu+AaTXeOZ8KIfJMoP+E69cevhkvTci1T939ebvoYY
+         u1GBBdnVuLKzy1zFJKq5m5vMkh4uusWxVIDweqn13H77SVVZrSI1vIgkkM6PiYoIOW7k
+         WkghELyhN6V3EzSkWNFoYwx3GUPYHJTk/ZhV69Fw5Cb9mAf8zA7GLCkFR64ttfgc9H+w
+         8Yqw==
+X-Gm-Message-State: AGi0PuYI/F035DXdybs8n+67CcpDjhaf78DMcyLzak3b0HJQ1dz/mosG
+        gyNTzvgl2odP5AVw72TI/lB4Ng==
+X-Google-Smtp-Source: APiQypLF+9XK9xmOIjpKvJvyhyJdNgGLYDamRjMI8S5rn+mdACJIPXY1q9xNRlVTBzZlD32no3IvMw==
+X-Received: by 2002:a1c:6402:: with SMTP id y2mr32938638wmb.116.1589213147735;
+        Mon, 11 May 2020 09:05:47 -0700 (PDT)
+Received: from [192.168.1.10] ([194.53.185.84])
+        by smtp.gmail.com with ESMTPSA id b14sm15284020wmb.18.2020.05.11.09.05.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 May 2020 09:05:47 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 2/4] tools: bpftool: minor fixes for
+ documentation
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20200511133807.26495-1-quentin@isovalent.com>
+ <20200511133807.26495-3-quentin@isovalent.com>
+ <673bcb25-1949-f0d8-c690-4f0a75819a80@iogearbox.net>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <6671c199-713d-fb5f-b6d1-11187301e6e4@isovalent.com>
+Date:   Mon, 11 May 2020 17:05:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQ+mrJa=TUL0UmsN3G2mM7=6GDdeUH_FkCtC15NSb8y6iQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25809/Mon May 11 14:16:55 2020)
+In-Reply-To: <673bcb25-1949-f0d8-c690-4f0a75819a80@iogearbox.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/11/20 8:55 AM, Alexei Starovoitov wrote:
-> On Sun, May 10, 2020 at 11:28 PM Daniel Borkmann <daniel@iogearbox.net>
-> wrote:
+2020-05-11 17:25 UTC+0200 ~ Daniel Borkmann <daniel@iogearbox.net>
+> On 5/11/20 3:38 PM, Quentin Monnet wrote:
+>> Bring minor improvements to bpftool documentation. Fix or harmonise
+>> formatting, update map types (including in interactive help), improve
+>> description for "map create", fix a build warning due to a missing line
+>> after the double-colon for the "bpftool prog profile" example,
+>> complete/harmonise/sort the list of related bpftool man pages in
+>> footers.
+>>
+>> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> [...]
+>> @@ -116,24 +123,24 @@ DESCRIPTION
+>>             receiving events if it installed its rings earlier.
+>>         **bpftool map peek**  *MAP*
+>> -          Peek next **value** in the queue or stack.
+>> +          Peek next value in the queue or stack.
 > 
->> Yonghong, ptal, thanks.
+> Looks great overall. Was about to push, but noticed above inconsistency.
+> Should this
+> be `*VALUE*` as well?
+
+Hm I don't think so, there is no "VALUE" passed on the command line in
+that case.
+
+But then I should probably have removed mark-up on "value" for "bpftool
+map pop|dequeue", instead of changing it, as those commands do not use
+any value on the command line either. Thanks for the review, I'll send a
+v2 with that change.
+
 > 
-> Not a breakage. Just ignore it.
-
-Lets see whether kbuild-bot will be stuck in `BUILD REGRESSION` on bpf-next
-master then. Otherwise we'd need to check with kbuild-bot folks to manually
-fix it.
-
->> -------- Forwarded Message --------
->> Subject: [bpf-next:master] BUILD REGRESSION
->> b4563facdcae55c83039d5efcc3b45a63da14d2f
->> Date: Sun, 10 May 2020 17:42:56 +0800
->> From: kbuild test robot <lkp@intel.com>
->> To: BPF build status <bpf@iogearbox.net>
->>
->> tree/branch:
->> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git  master
->> branch HEAD: b4563facdcae55c83039d5efcc3b45a63da14d2f  bpf, runqslower:
->> include proper uapi/bpf.h
->>
->> Error/Warning in current branch:
->>
->> kernel/bpf/bpf_iter.c:148:15-20: ERROR: invalid reference to the index
->> variable of the iterator on line 133
->>
->> Error/Warning ids grouped by kconfigs:
->>
->> recent_errors
->> `-- x86_64-allyesconfig
->>       `--
->> kernel-bpf-bpf_iter.c:ERROR:invalid-reference-to-the-index-variable-of-the-iterator-on-line
->>
->> elapsed time: 483m
->>
->> configs tested: 101
->> configs skipped: 1
->>
->> arm                                 defconfig
->> arm                              allyesconfig
->> arm                              allmodconfig
->> arm                               allnoconfig
->> arm64                            allyesconfig
->> arm64                               defconfig
->> arm64                            allmodconfig
->> arm64                             allnoconfig
->> sparc                            allyesconfig
->> m68k                             allyesconfig
->> i386                              allnoconfig
->> i386                             allyesconfig
->> i386                                defconfig
->> i386                              debian-10.3
->> ia64                             allmodconfig
->> ia64                                defconfig
->> ia64                              allnoconfig
->> ia64                             allyesconfig
->> m68k                             allmodconfig
->> m68k                              allnoconfig
->> m68k                           sun3_defconfig
->> m68k                                defconfig
->> nios2                               defconfig
->> nios2                            allyesconfig
->> openrisc                            defconfig
->> c6x                              allyesconfig
->> c6x                               allnoconfig
->> openrisc                         allyesconfig
->> nds32                               defconfig
->> nds32                             allnoconfig
->> csky                             allyesconfig
->> csky                                defconfig
->> alpha                               defconfig
->> alpha                            allyesconfig
->> xtensa                           allyesconfig
->> h8300                            allyesconfig
->> h8300                            allmodconfig
->> xtensa                              defconfig
->> arc                                 defconfig
->> arc                              allyesconfig
->> microblaze                       allyesconfig
->> sh                               allmodconfig
->> sh                                allnoconfig
->> microblaze                        allnoconfig
->> mips                             allyesconfig
->> mips                              allnoconfig
->> mips                             allmodconfig
->> parisc                            allnoconfig
->> parisc                              defconfig
->> parisc                           allyesconfig
->> parisc                           allmodconfig
->> powerpc                             defconfig
->> powerpc                          allyesconfig
->> powerpc                          rhel-kconfig
->> powerpc                          allmodconfig
->> powerpc                           allnoconfig
->> i386                 randconfig-a006-20200510
->> i386                 randconfig-a005-20200510
->> i386                 randconfig-a003-20200510
->> i386                 randconfig-a001-20200510
->> i386                 randconfig-a004-20200510
->> i386                 randconfig-a002-20200510
->> x86_64               randconfig-a016-20200510
->> x86_64               randconfig-a012-20200510
->> x86_64               randconfig-a015-20200510
->> x86_64               randconfig-a013-20200510
->> x86_64               randconfig-a014-20200510
->> x86_64               randconfig-a011-20200510
->> i386                 randconfig-a012-20200510
->> i386                 randconfig-a016-20200510
->> i386                 randconfig-a014-20200510
->> i386                 randconfig-a011-20200510
->> i386                 randconfig-a013-20200510
->> i386                 randconfig-a015-20200510
->> x86_64               randconfig-a005-20200510
->> x86_64               randconfig-a003-20200510
->> x86_64               randconfig-a001-20200510
->> riscv                            allyesconfig
->> riscv                             allnoconfig
->> riscv                               defconfig
->> riscv                            allmodconfig
->> s390                             allyesconfig
->> s390                              allnoconfig
->> s390                             allmodconfig
->> s390                                defconfig
->> sparc                               defconfig
->> sparc64                             defconfig
->> sparc64                           allnoconfig
->> sparc64                          allyesconfig
->> sparc64                          allmodconfig
->> um                               allmodconfig
->> um                                allnoconfig
->> um                               allyesconfig
->> um                                  defconfig
->> x86_64                                   rhel
->> x86_64                               rhel-7.6
->> x86_64                    rhel-7.6-kselftests
->> x86_64                         rhel-7.2-clear
->> x86_64                                    lkp
->> x86_64                              fedora-25
->> x86_64                                  kexec
->>
->> ---
->> 0-DAY CI Kernel Test Service, Intel Corporation
->> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->>
-> 
-
+>>       **bpftool map push**  *MAP* **value** *VALUE*
+>> -          Push **value** onto the stack.
+>> +          Push *VALUE* onto the stack.
+>>         **bpftool map pop**  *MAP*
+>> -          Pop and print **value** from the stack.
+>> +          Pop and print *VALUE* from the stack.
+>>         **bpftool map enqueue**  *MAP* **value** *VALUE*
+>> -          Enqueue **value** into the queue.
+>> +          Enqueue *VALUE* into the queue.
+>>         **bpftool map dequeue**  *MAP*
+>> -          Dequeue and print **value** from the queue.
+>> +          Dequeue and print *VALUE* from the queue.
