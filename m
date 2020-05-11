@@ -2,76 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A141CDA26
-	for <lists+bpf@lfdr.de>; Mon, 11 May 2020 14:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF1F1CDA36
+	for <lists+bpf@lfdr.de>; Mon, 11 May 2020 14:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729674AbgEKMiu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 May 2020 08:38:50 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:20000 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729343AbgEKMiu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 11 May 2020 08:38:50 -0400
+        id S1729309AbgEKMkg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 May 2020 08:40:36 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:56992 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726934AbgEKMkf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 May 2020 08:40:35 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589200729;
+        s=mimecast20190719; t=1589200834;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  in-reply-to:in-reply-to;
-        bh=JgWXktU2LOpwxkLtvpr3LpJKXrfJg+c2CFwjM1G4yBY=;
-        b=OFF3sLETBXtNNidUyKBPHl1brN2JTh1qlZGD+4PiFGabbOSRiLbEPc4WDoZJpNkOSIbGqM
-        Vf6UVF6tD7SB5pJn72EQrWBaNYXyj5J+G0PdpJiecAU44of9b9/MyubHOOIT+saJZuX+vh
-        s8HfefSkU9G703LLK8qSCCnlwUv1r+k=
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hfjikQ9p1CZNbHLDaNQ5BqLvccZnhPT1ZB3ciPyyTvU=;
+        b=MA4pkNDfrv86SI79F3A/pbR4kAfAu/lQphd0LlthEdy2tfd5wXvea/tFBQtwgCuNt6kyp0
+        jeGy9K4Ias0XdEWi6ju3KeJDop3QPgKKvGfgOgbXdvYN5xMW8fvIvn6S6W23oBimky/ZVi
+        BafiA0zehcsJJlZFRXdsZxHUx0vWz6w=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-308-43ZrKMCENkW46GwLcRho9w-1; Mon, 11 May 2020 08:38:47 -0400
-X-MC-Unique: 43ZrKMCENkW46GwLcRho9w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+ us-mta-348-Tjp6mZU4NUO83RNPbf5WdQ-1; Mon, 11 May 2020 08:40:30 -0400
+X-MC-Unique: Tjp6mZU4NUO83RNPbf5WdQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D3AA0835B44;
-        Mon, 11 May 2020 12:38:46 +0000 (UTC)
-Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CAD766C77F;
-        Mon, 11 May 2020 12:38:46 +0000 (UTC)
-Received: from zmail19.collab.prod.int.phx2.redhat.com (zmail19.collab.prod.int.phx2.redhat.com [10.5.83.22])
-        by colo-mx.corp.redhat.com (Postfix) with ESMTP id B6E244E560;
-        Mon, 11 May 2020 12:38:46 +0000 (UTC)
-Date:   Mon, 11 May 2020 08:38:46 -0400 (EDT)
-From:   Veronika Kabatova <vkabatov@redhat.com>
-To:     bpf <bpf@vger.kernel.org>, ast@kernel.org
-Cc:     brouer@redhat.com, Jiri Benc <jbenc@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Stanislav Kozina <skozina@redhat.com>
-Message-ID: <1556585430.22389743.1589200726419.JavaMail.zimbra@redhat.com>
-In-Reply-To: <330319358.22380533.1589199587680.JavaMail.zimbra@redhat.com>
-Subject: Mailing list for CI results
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E2065107ACCD;
+        Mon, 11 May 2020 12:40:28 +0000 (UTC)
+Received: from ebuild.redhat.com (ovpn-115-161.ams2.redhat.com [10.36.115.161])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ECA8D610FD;
+        Mon, 11 May 2020 12:40:23 +0000 (UTC)
+From:   Eelco Chaudron <echaudro@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, andriin@fb.com, toke@redhat.com
+Subject: [PATCH bpf-next v3] libbpf: fix probe code to return EPERM if encountered
+Date:   Mon, 11 May 2020 14:40:18 +0200
+Message-Id: <158920079637.7533.5703299045869368435.stgit@ebuild>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.195.236, 10.4.195.8]
-Thread-Topic: Mailing list for CI results
-Thread-Index: /sDt1vbCBqMGp1T1xlgTkQMtWyXp+w==
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+When the probe code was failing for any reason ENOTSUP was returned, even
+if this was due to no having enough lock space. This patch fixes this by
+returning EPERM to the user application, so it can respond and increase
+the RLIMIT_MEMLOCK size.
 
-Hello,
+Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+---
+v3: Updated error message to be more specific as suggested by Andrii
+v2: Split bpf_object__probe_name() in two functions as suggested by Andrii
 
-we've been discussing CI for bpf-next in previous meetings. One of the
-action items from there was a creation of a separate mailing list
-purely for CI results, to not pollute the regular development list.
+ tools/lib/bpf/libbpf.c |   31 ++++++++++++++++++++++++++-----
+ 1 file changed, 26 insertions(+), 5 deletions(-)
 
-Is there already a list created? If not, can it be done? We'd be
-interested in sending out some examples to get early feedback before
-the testing is enabled.
-
-Please let me know if I should reach out to someone else for this.
-I'll attend this weeks office hours to discuss other CI action items.
-
-
-Thanks,
-Veronika
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 8f480e29a6b0..ad3043c5db13 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -3149,7 +3149,7 @@ int bpf_map__resize(struct bpf_map *map, __u32 max_entries)
+ }
+ 
+ static int
+-bpf_object__probe_name(struct bpf_object *obj)
++bpf_object__probe_loading(struct bpf_object *obj)
+ {
+ 	struct bpf_load_program_attr attr;
+ 	char *cp, errmsg[STRERR_BUFSIZE];
+@@ -3170,14 +3170,34 @@ bpf_object__probe_name(struct bpf_object *obj)
+ 	ret = bpf_load_program_xattr(&attr, NULL, 0);
+ 	if (ret < 0) {
+ 		cp = libbpf_strerror_r(errno, errmsg, sizeof(errmsg));
+-		pr_warn("Error in %s():%s(%d). Couldn't load basic 'r0 = 0' BPF program.\n",
+-			__func__, cp, errno);
++		pr_warn("Error in %s():%s(%d). Couldn't load trivial BPF "
++			"program. Make sure your kernel supports BPF "
++			"(CONFIG_BPF_SYSCALL=y) and/or that RLIMIT_MEMLOCK is "
++			"set to big enough value.\n", __func__, cp, errno);
+ 		return -errno;
+ 	}
+ 	close(ret);
+ 
+-	/* now try the same program, but with the name */
++	return 0;
++}
++
++static int
++bpf_object__probe_name(struct bpf_object *obj)
++{
++	struct bpf_load_program_attr attr;
++	struct bpf_insn insns[] = {
++		BPF_MOV64_IMM(BPF_REG_0, 0),
++		BPF_EXIT_INSN(),
++	};
++	int ret;
++
++	/* make sure loading with name works */
+ 
++	memset(&attr, 0, sizeof(attr));
++	attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
++	attr.insns = insns;
++	attr.insns_cnt = ARRAY_SIZE(insns);
++	attr.license = "GPL";
+ 	attr.name = "test";
+ 	ret = bpf_load_program_xattr(&attr, NULL, 0);
+ 	if (ret >= 0) {
+@@ -5386,7 +5406,8 @@ int bpf_object__load_xattr(struct bpf_object_load_attr *attr)
+ 
+ 	obj->loaded = true;
+ 
+-	err = bpf_object__probe_caps(obj);
++	err = bpf_object__probe_loading(obj);
++	err = err ? : bpf_object__probe_caps(obj);
+ 	err = err ? : bpf_object__resolve_externs(obj, obj->kconfig);
+ 	err = err ? : bpf_object__sanitize_and_load_btf(obj);
+ 	err = err ? : bpf_object__sanitize_maps(obj);
 
