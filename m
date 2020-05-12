@@ -2,108 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7821CFACF
-	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 18:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C051CFB89
+	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 19:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725851AbgELQem (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 May 2020 12:34:42 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:56158 "EHLO
+        id S1725938AbgELRD3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 May 2020 13:03:29 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:36436 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725816AbgELQel (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 12 May 2020 12:34:41 -0400
+        by vger.kernel.org with ESMTP id S1725851AbgELRD2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 12 May 2020 13:03:28 -0400
 Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 04CGYEQH029691;
-        Tue, 12 May 2020 09:34:19 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type :
- content-transfer-encoding : in-reply-to : mime-version; s=facebook;
- bh=EY7+0GglFTsxooAW3ke8JVNYEKP1Jd6N95/gWkA5dVs=;
- b=rBF8vaI3JjZa80W7u2bJATtRcUYEX+8Q03P9zDEO6CoxjWoTHDeC/hZPuB8Y5xLOpSwS
- qR5PRz4PtFV83xQLdhlcPBKUaAfI69tDPYrNlGaazHndxbzLrMzCVXsidP9H3QVng5cp
- 5xjbR1F41kHjXkhe1A63rKXWqim6+F8JMSU= 
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 04CH2Vfs004299;
+        Tue, 12 May 2020 10:03:09 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=94P58RatzIBe85TpLkpJQR3QQIQ+Y4lje8yAJ/qbOEM=;
+ b=rWWy6w50Ll0TV4dyQWr0uZ4KParzND9epHKgBshlbIndEZ+GcxsWi0V4KJoeTVW1B32f
+ EKFyPF0TY1Ynoj+Y4p7lDQyYqzlttP4aE/Yp38hsFBOhWNxIph14oMphxY6NU5sTeuWU
+ JAmhHHHu0dzNSkB3c8UwWp2GuXE6XCfaJFE= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 30ws21h02p-5
+        by m0001303.ppops.net with ESMTP id 30ws21h5jb-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 12 May 2020 09:34:18 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+        Tue, 12 May 2020 10:03:09 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Tue, 12 May 2020 09:34:15 -0700
+ 15.1.1847.3; Tue, 12 May 2020 10:03:08 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aUFzE9y+ougVCxX3J4fdr2bXuuumrQV9nuhVdjCGdxuCgpOqCnMAgsrPlKVtMMs8t6SotFxLq4WYH/MN9D+hGMyO6Gg2eBMTApiYEpMB6jTSnA8DB2JbiR3m8iC+osVGmRT9LTNBihtohkNQqawZP2sNVXJrDB8fuhfLjiZFHp3mYEyaa5GG35WKIhsPvgowArsgH3zwmY5Id2YkkYz8y0b33ekq/zGE4KrLX5DN0qPfTR/V0QLoALAOushWWaBMTXz0adrEOE9wKT/R1HMPSSD3yIF/9mPptSFEA607slBZriKTIAhScMTuho8ti+CMX4I7qusSm2d8+nMn1EBcOw==
+ b=PxqXfMcRsykoetffEDEmxzQ6kVc2MGFVS2vwRrgNjpifycGMsMLIjj2799NtblohwqLbF7YT5u3gn/MXezXm+gNBJtT0Zl+Y5Its3exW0qtQpsav6mzsDXzjKTHKhchHQX4eprNZ5kMdT8H43RkGiji9Ez4RDS6V0OECUQI0hwLTFgHpAYxXwM9WevYV7M1v0RqJGvFXK0XTiFETSV11alDUMuR1HUF82aQ80L3SVxIjzovpzTukZqCWpVcxfUjRkfNKhZOuQRDDNuONJXCYeAMRv0STcggd+Y71OSjX3Pjvt46LuVzlmr5fo5scpHbXB038MLFtUOAL+CIqyDTJLg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EY7+0GglFTsxooAW3ke8JVNYEKP1Jd6N95/gWkA5dVs=;
- b=ToLnp+/8sVzp2ZKlRV6JnKxHAufZZMVY3kqS4+bCVT3PWOwHBPtCusBsy9Wl2NEmaVk2bcCAwIvcxR0AjtLt6zTep8JFs6Vvfy6gWkr5wV408Mdi3bDQrNc0bXK0C4eFqsPhryjYYyWLhKOQzFWlF17zLjvzCmFdMss9RYvdaIabGxyzJzpFIhRkJGgvcjQ+/MFKmtVBgBay/hpKdkeo3MOui7k0cxzqJNt9W5AWizTkle7Rr/8QfD7Q6NO5uBUUKyrfuanOGkT44EeYZ1+RXEV38yuZYgfkTPItZAtpA+JafE1L6rodVpd5jMx/LrLDF+vvs7GqjQZRPEWs/jjg4w==
+ bh=94P58RatzIBe85TpLkpJQR3QQIQ+Y4lje8yAJ/qbOEM=;
+ b=UtM0HerJ4s9f8DabjDzSsiA70c9lgp0uwCDOSpQt7NYqylU+dOU6fdOL8JA5OpNIkjHYCbnHQ7jPZwFKtl2Dtxis9f48rjkLFnNKhHsB7rdHPWvphs3n0iJUBiQxnbV9soTvv2Zbw053dhEYEjwatTITrHTT6VTjLhj0q8wFFt8oa7HKuuaBkg9dg4lCuxtWuh3A5HV4HtMYrjj1XH7oYIOJ7YWborfyt7lwEF9WU/AsWM90ptIBDUzdp9voLyK3etr6bQq9PPppDPRMbb1ld3J7OHsyyzXQPEW1vKLzYgEztl3NBVPKqooi4T7AyRjXQ80OnO3GYWH0rQU8h4Pr5A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EY7+0GglFTsxooAW3ke8JVNYEKP1Jd6N95/gWkA5dVs=;
- b=BIiEN8inA8wfNlPMD3IXGpgA8foHsu9QVMm37Swgtj4WN767FVsjhKQ53zgFpTw9YPnfQH/rAZfMgLTbJT37OhiFqCf4T+YWSpDj4Mdos8379Y6cakYnf8P9gLdRIdNnnGr02rFWcKoShbPVLT99GUSsKiHm0bREokZjXI3FuMQ=
-Authentication-Results: cloudflare.com; dkim=none (message not signed)
- header.d=none;cloudflare.com; dmarc=none action=none header.from=fb.com;
-Received: from MW3PR15MB4044.namprd15.prod.outlook.com (2603:10b6:303:4b::24)
- by MW3PR15MB3834.namprd15.prod.outlook.com (2603:10b6:303:4e::20) with
+ bh=94P58RatzIBe85TpLkpJQR3QQIQ+Y4lje8yAJ/qbOEM=;
+ b=TqbbbJMAjZ5P86sxBWU7hlyorr8+L43ewbijCmmhL23TydXMctIZOc3GfiCnbxpLRC6YeXnXpNi/2sPWd2zPxPNeeMA1deJ1eBQf7ZYQJnMXwRstZd+uL+MXkgTuYOaBFIN3mEUR+3CIMHKS/2thPS5JzrNQdkmg8uccBRYVAQU=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB3109.namprd15.prod.outlook.com (2603:10b6:a03:ff::31) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.34; Tue, 12 May
- 2020 16:34:14 +0000
-Received: from MW3PR15MB4044.namprd15.prod.outlook.com
- ([fe80::e5c5:aeff:ca99:aae0]) by MW3PR15MB4044.namprd15.prod.outlook.com
- ([fe80::e5c5:aeff:ca99:aae0%5]) with mapi id 15.20.2979.033; Tue, 12 May 2020
- 16:34:14 +0000
-Date:   Tue, 12 May 2020 09:34:11 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <dccp@vger.kernel.org>, <kernel-team@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Gerrit Renker <gerrit@erg.abdn.ac.uk>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH bpf-next v2 00/17] Run a BPF program on socket lookup
-Message-ID: <20200512163411.4ae2faoa6hwnrv3k@kafai-mbp.dhcp.thefacebook.com>
-References: <20200511185218.1422406-1-jakub@cloudflare.com>
- <20200511194520.pr5d74ao34jigvof@kafai-mbp.dhcp.thefacebook.com>
- <873685v006.fsf@cloudflare.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <873685v006.fsf@cloudflare.com>
-User-Agent: NeoMutt/20180716
-X-ClientProxiedBy: BYAPR08CA0068.namprd08.prod.outlook.com
- (2603:10b6:a03:117::45) To MW3PR15MB4044.namprd15.prod.outlook.com
- (2603:10b6:303:4b::24)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.26; Tue, 12 May
+ 2020 17:03:08 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.2979.033; Tue, 12 May 2020
+ 17:03:08 +0000
+Subject: Re: [PATCH bpf-next v2] samples/bpf: xdp_redirect_cpu: set MAX_CPUS
+ according to NR_CPUS
+To:     Lorenzo Bianconi <lorenzo@kernel.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+CC:     <ast@kernel.org>, <davem@davemloft.net>, <brouer@redhat.com>,
+        <daniel@iogearbox.net>, <lorenzo.bianconi@redhat.com>
+References: <374472755001c260158c4e4b22f193bdd3c56fb7.1589300442.git.lorenzo@kernel.org>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <ae2f2aab-5099-0113-6ff1-fe759f8456b0@fb.com>
+Date:   Tue, 12 May 2020 10:03:06 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.8.0
+In-Reply-To: <374472755001c260158c4e4b22f193bdd3c56fb7.1589300442.git.lorenzo@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR05CA0107.namprd05.prod.outlook.com
+ (2603:10b6:a03:e0::48) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:717f) by BYAPR08CA0068.namprd08.prod.outlook.com (2603:10b6:a03:117::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.27 via Frontend Transport; Tue, 12 May 2020 16:34:13 +0000
-X-Originating-IP: [2620:10d:c090:400::5:717f]
+Received: from macbook-pro-52.local.dhcp.thefacebook.com (2620:10d:c090:400::5:d0f0) by BYAPR05CA0107.namprd05.prod.outlook.com (2603:10b6:a03:e0::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.12 via Frontend Transport; Tue, 12 May 2020 17:03:07 +0000
+X-Originating-IP: [2620:10d:c090:400::5:d0f0]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b09569cd-4b4c-4aa0-03b9-08d7f6924e8e
-X-MS-TrafficTypeDiagnostic: MW3PR15MB3834:
-X-Microsoft-Antispam-PRVS: <MW3PR15MB38341829DA17D05FF80E937DD5BE0@MW3PR15MB3834.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 201d61d4-58af-4f4c-1d75-08d7f69657f5
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3109:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3109BB1571ECA605D50A01BED3BE0@BYAPR15MB3109.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Oob-TLC-OOBClassifiers: OLM:1060;
 X-Forefront-PRVS: 0401647B7F
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: umM6p80gy0JE/cvohze9EbXrwHfSc/JD3NJlPhOTnsLpcPa/XjwPySf6Q2hTr0VVHNCZnYzP+stOsDXCRh5Hkxaf1i8AISRKm3Mil/ng0176eySVq5avkh0awWUsRRvqyldvUDf9ZOMFmKQa2E2ZDL/gCizxGJc+MxSOTHVMO6hRUyCXhENkFqHpkO9Rehs1pV5Zygu+ge3CotVkF46cxamO1CCfLXrxCyVwXogPa+MxAKZd0bgZn7oG4dqID5msxRrjRqp8WC4DhiC2DmEqou057m4GPiKq15FMrMxPed0i3vTWI7WfSqx3WCgzSuyEBbf1qLpFg65BZRjx+hUTFL36IdzbTmpwgegACYl8Jwc1Y/HwZmHv6oVRsSSTM5fVwTPdb+ZnkeHIV6deaf/lnUUY2ehu6JfGTBD35vN7lI6cVtptBw31wfgyFoZxZJd4Y8M7W+RqDd9MuQIbHJ0nAhHJA8CdrhEc7Mxd+NpwzAbnnIFroExvSEbu+nC4b5qC42Id0kGpjVA8Tx4rONNWD7CQrfHtCMHqLfYROjQXQPaseUHObDc1JikZnBwDNjwzywhbuf5wZjkJrAV1SaInS+wmZClak17gq718BJ4EzTM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR15MB4044.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(366004)(346002)(39860400002)(136003)(396003)(33430700001)(186003)(7696005)(52116002)(8936002)(55016002)(7416002)(53546011)(8676002)(6916009)(6506007)(33440700001)(9686003)(16526019)(54906003)(478600001)(66556008)(966005)(66946007)(66476007)(316002)(5660300002)(86362001)(2906002)(4326008)(1076003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: hT4jXGFFebcD0N7wECLB2D3/GBTzse6VvXxsXCMIy+sYYSPbRbRzqr6GUPwg10Rw0h/x8tDhj3QG07kt+8A0rizFpgYQJEqjaSpx2cyExYbC2lrJwFh3bhH6FDFtFb1I1mUWu3O4OGwotbK+OBsBqPUeMcRDk2wI70sHVeQ/s6vQoG+z7Jms6pDakb7QQkIFE3pknEdN5Rl873Hu4mhYRW9LIQt3PU4FRCKKYGN1aDMk594XsS0rNPdS+UeGAly67di/PaIiNccCryGXuoW5sRqQtKRga1m+XzmfpT14FBaQxrcYdDxEY1LyHOqU/AxoIYyE+gfcv3W0CTJx6iIiQYnCRG3DFTVAd3GRZYqoc/6SVcqAhFYig39KZW9aOe85nO0rgpmPvwbTFKqQl6LXMiQCcEnjJ9kd+QEme7zu1Wvd8StwbQIU7h2aFrCunKBjEs1UbGxLm1S1C0kuPuCD2Va6yGAfaPDeI3T++dvi7++StpoGc73EpAI50RBFiyJieiIEHV1BzuOE1bYsxRrhNg==
-X-MS-Exchange-CrossTenant-Network-Message-Id: b09569cd-4b4c-4aa0-03b9-08d7f6924e8e
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2020 16:34:14.2371
+X-Microsoft-Antispam-Message-Info: jHWmAAhLf87zZgwA4tnVRRsqckmQnw+wrIUKKjnDnHeAm9HfJhI6jd4OBtWn3dd5lTpkUZkYGb4/RDOvVVrVxc4WvqpXnsB0nMPsoE1+hBj6OrA9EPE+cYQffIST5FPAqE4u6xqjkx5jQSfs0cDohyp7sOtAdRpM6kwyFleZx3At0MZRUY5C3Ji4lTYIOsPJUpZnYlb23+E6Vpp/bKc4UvapWql4fNU0NAePZgY/jA+Y0BppSkB6iBU0hxyLQXBPsM1o8QHzVtQujEf4Fwc6sSeDAFY/I9gajoXd+IaLPkVwThZ9PBcLdLB0mS6yZTNmBqXznhP+nS3dGk8luiYp6r2Gjrpxydujnhi8e3YYm7WWEQmi6nk7ZWm2F3SgUdPFqcuwBJS9zfMKNMN3XeHB+xyaCJZEpcFnjrvlTvr/BNDGCQPMxxHcpNWYyTemn5w2bS5vspm7tCPY36ncwaLgXVQ6gcI4oWVkbVCEu7gQ9t83NfMPUjxh1HJh08PuWfIRymg/Tn0q259Vl7+H5RSSdeY1rb1evB+eRcawDm82LCDrNOGdxa7uq/5RcZqV/gbu
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(346002)(136003)(39860400002)(366004)(396003)(33430700001)(36756003)(16526019)(8936002)(4744005)(6512007)(8676002)(316002)(5660300002)(6506007)(186003)(53546011)(4326008)(52116002)(478600001)(2906002)(66946007)(2616005)(33440700001)(31696002)(86362001)(31686004)(66476007)(66556008)(6486002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 2bDW8vpcfNId1tJI/iM6ccBeISRn7FYVJrElvBACCy/9YvVne2ghtwK52Uw/iJnj/DoDMPgUCRJgobRb+9IR7Xwx+gaXvCfSJ+AXqsOp5hYvynNM5dKFdx5QB2Z+Kb7V+HDS6s0wADB0UNCGoAvwvzm1RsUfXKjh6VmlYAxiVty2u64cf6hXHKRl2xhHIqITKMv5d5BUEyDjwPztWHLxqHon6KL3viBGkuRb6vyROYSdSVI3HjNd/0MJ3HLxlArk7SpNyICrJCpBq1gdqCFYueGQEzP7IpG3dkr9aHubPW6VTe4YYSVIm4Bqu8BHpEfOah6AuoPd55gCbXHkL7zeznDzp3ffskM+sqP6bzdj86QUWPFAonIWMUCmvLgN5YMREM6Z6BgHzsGJ5ED5oAUuEPyD3DEz7bdDRfe0kOc4Kbp0rb8ajDqu4ASCprVuRxum9j/OdDummEVOxVgn2t7F/6fAjTNgXDyJ8hVSl354Cd+WW/34MpIjq02+uTDAvvmHv5zk8ZmDDkcAG99wZZUZeg==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 201d61d4-58af-4f4c-1d75-08d7f69657f5
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2020 17:03:07.9592
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Wn+Dr3/KC9UeyL1HfYdhghhY8g3MwB7dhuFyCxiTYE8QD5m5osTfhmrBTj9jfdPC
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3834
+X-MS-Exchange-CrossTenant-UserPrincipalName: GIRMwcu6RAFxvULecSH9wEcUJiVL4Gu4iEPHgNdwu2JdiQp4b1jV1nVP2ByXOKBD
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3109
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
  definitions=2020-05-12_05:2020-05-11,2020-05-12 signatures=0
@@ -111,177 +105,24 @@ X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 sus
  mlxlogscore=999 priorityscore=1501 bulkscore=0 clxscore=1015 phishscore=0
  lowpriorityscore=0 spamscore=0 adultscore=0 malwarescore=0 impostorscore=0
  mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005120126
+ engine=8.12.0-2003020000 definitions=main-2005120131
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 12, 2020 at 01:57:45PM +0200, Jakub Sitnicki wrote:
-> On Mon, May 11, 2020 at 09:45 PM CEST, Martin KaFai Lau wrote:
-> > On Mon, May 11, 2020 at 08:52:01PM +0200, Jakub Sitnicki wrote:
-> >
-> > [ ... ]
-> >
-> >> Performance considerations
-> >> ==========================
-> >>
-> >> Patch set adds new code on receive hot path. This comes with a cost,
-> >> especially in a scenario of a SYN flood or small UDP packet flood.
-> >>
-> >> Measuring the performance penalty turned out to be harder than expected
-> >> because socket lookup is fast. For CPUs to spend >= 1% of time in socket
-> >> lookup we had to modify our setup by unloading iptables and reducing the
-> >> number of routes.
-> >>
-> >> The receiver machine is a Cloudflare Gen 9 server covered in detail at [0].
-> >> In short:
-> >>
-> >>  - 24 core Intel custom off-roadmap 1.9Ghz 150W (Skylake) CPU
-> >>  - dual-port 25G Mellanox ConnectX-4 NIC
-> >>  - 256G DDR4 2666Mhz RAM
-> >>
-> >> Flood traffic pattern:
-> >>
-> >>  - source: 1 IP, 10k ports
-> >>  - destination: 1 IP, 1 port
-> >>  - TCP - SYN packet
-> >>  - UDP - Len=0 packet
-> >>
-> >> Receiver setup:
-> >>
-> >>  - ingress traffic spread over 4 RX queues,
-> >>  - RX/TX pause and autoneg disabled,
-> >>  - Intel Turbo Boost disabled,
-> >>  - TCP SYN cookies always on.
-> >>
-> >> For TCP test there is a receiver process with single listening socket
-> >> open. Receiver is not accept()'ing connections.
-> >>
-> >> For UDP the receiver process has a single UDP socket with a filter
-> >> installed, dropping the packets.
-> >>
-> >> With such setup in place, we record RX pps and cpu-cycles events under
-> >> flood for 60 seconds in 3 configurations:
-> >>
-> >>  1. 5.6.3 kernel w/o this patch series (baseline),
-> >>  2. 5.6.3 kernel with patches applied, but no SK_LOOKUP program attached,
-> >>  3. 5.6.3 kernel with patches applied, and SK_LOOKUP program attached;
-> >>     BPF program [1] is doing a lookup LPM_TRIE map with 200 entries.
-> > Is the link in [1] up-to-date?  I don't see it calling bpf_sk_assign().
-> 
-> Yes, it is, or rather was.
-> 
-> The reason why the inet-tool version you reviewed was not using
-> bpf_sk_assign(), but the "old way" from RFCv2, is that the switch to
-> map_lookup+sk_assign was done late in development, after changes to
-> SOCKMAP landed in bpf-next.
-> 
-> By that time performance tests were already in progress, and since they
-> take a bit of time to set up, and the change affected just the scenario
-> with program attached, I tested without this bit.
-> 
-> Sorry, I should have explained that in the cover letter. The next round
-> of benchmarks will be done against the now updated version of inet-tool
-> that uses bpf_sk_assign:
-> 
-> https://github.com/majek/inet-tool/commit/6a619c3743aaae6d4882cbbf11b616e1e468b436
-> 
-> >
-> >>
-> >> RX pps measured with `ifpps -d <dev> -t 1000 --csv --loop` for 60 seconds.
-> >>
-> >> | tcp4 SYN flood               | rx pps (mean ± sstdev) | Δ rx pps |
-> >> |------------------------------+------------------------+----------|
-> >> | 5.6.3 vanilla (baseline)     | 939,616 ± 0.5%         |        - |
-> >> | no SK_LOOKUP prog attached   | 929,275 ± 1.2%         |    -1.1% |
-> >> | with SK_LOOKUP prog attached | 918,582 ± 0.4%         |    -2.2% |
-> >>
-> >> | tcp6 SYN flood               | rx pps (mean ± sstdev) | Δ rx pps |
-> >> |------------------------------+------------------------+----------|
-> >> | 5.6.3 vanilla (baseline)     | 875,838 ± 0.5%         |        - |
-> >> | no SK_LOOKUP prog attached   | 872,005 ± 0.3%         |    -0.4% |
-> >> | with SK_LOOKUP prog attached | 856,250 ± 0.5%         |    -2.2% |
-> >>
-> >> | udp4 0-len flood             | rx pps (mean ± sstdev) | Δ rx pps |
-> >> |------------------------------+------------------------+----------|
-> >> | 5.6.3 vanilla (baseline)     | 2,738,662 ± 1.5%       |        - |
-> >> | no SK_LOOKUP prog attached   | 2,576,893 ± 1.0%       |    -5.9% |
-> >> | with SK_LOOKUP prog attached | 2,530,698 ± 1.0%       |    -7.6% |
-> >>
-> >> | udp6 0-len flood             | rx pps (mean ± sstdev) | Δ rx pps |
-> >> |------------------------------+------------------------+----------|
-> >> | 5.6.3 vanilla (baseline)     | 2,867,885 ± 1.4%       |        - |
-> >> | no SK_LOOKUP prog attached   | 2,646,875 ± 1.0%       |    -7.7% |
-> > What is causing this regression?
-> >
-> 
-> I need to go back to archived perf.data and see if perf-annotate or
-> perf-diff provide any clues that will help me tell where CPU cycles are
-> going. Will get back to you on that.
-> 
-> Wild guess is that for udp6 we're loading and coping more data to
-> populate v6 addresses in program context. See inet6_lookup_run_bpf
-> (patch 7).
-If that is the case,
-rcu_access_pointer(net->sk_lookup_prog) should be tested first before
-doing ctx initialization.
 
-> 
-> This makes me realize the copy is unnecessary, I could just store the
-> pointer to in6_addr{}. Will make this change in v3.
-> 
-> As to why udp6 is taking a bigger hit than udp4 - comparing top 10 in
-> `perf report --no-children` shows that in our test setup, socket lookup
-> contributes less to CPU cycles on receive for udp4 than for udp6.
-> 
-> * udp4 baseline (no children)
-> 
-> # Overhead       Samples  Symbol
-> # ........  ............  ......................................
-> #
->      8.11%         19429  [k] fib_table_lookup
->      4.31%         10333  [k] udp_queue_rcv_one_skb
->      3.75%          8991  [k] fib4_rule_action
->      3.66%          8763  [k] __netif_receive_skb_core
->      3.42%          8198  [k] fib_rules_lookup
->      3.05%          7314  [k] fib4_rule_match
->      2.71%          6507  [k] mlx5e_skb_from_cqe_linear
->      2.58%          6192  [k] inet_gro_receive
->      2.49%          5981  [k] __x86_indirect_thunk_rax
->      2.36%          5656  [k] udp4_lib_lookup2
-> 
-> * udp6 baseline (no children)
-> 
-> # Overhead       Samples  Symbol
-> # ........  ............  ......................................
-> #
->      4.63%         11100  [k] udpv6_queue_rcv_one_skb
->      3.88%          9308  [k] __netif_receive_skb_core
->      3.54%          8480  [k] udp6_lib_lookup2
->      2.69%          6442  [k] mlx5e_skb_from_cqe_linear
->      2.56%          6137  [k] ipv6_gro_receive
->      2.31%          5540  [k] dev_gro_receive
->      2.20%          5264  [k] do_csum
->      2.02%          4835  [k] ip6_pol_route
->      1.94%          4639  [k] __udp6_lib_lookup
->      1.89%          4540  [k] selinux_socket_sock_rcv_skb
-> 
-> Notice that __udp4_lib_lookup didn't even make the cut. That could
-> explain why adding instructions to __udp6_lib_lookup has more effect on
-> RX PPS.
-> 
-> Frankly, that is something that suprised us, but we didn't have time to
-> investigate further, yet.
-The perf report should be able to annotate bpf prog also.
-e.g. may be part of it is because the bpf_prog itself is also dealing
-with a longer address?  
 
+On 5/12/20 9:30 AM, Lorenzo Bianconi wrote:
+> xdp_redirect_cpu is currently failing in bpf_prog_load_xattr()
+> allocating cpu_map map if CONFIG_NR_CPUS is less than 64 since
+> cpu_map_alloc() requires max_entries to be less than NR_CPUS.
+> Set cpu_map max_entries according to NR_CPUS in xdp_redirect_cpu_kern.c
+> and get currently running cpus in xdp_redirect_cpu_user.c
 > 
-> >> | with SK_LOOKUP prog attached | 2,520,474 ± 0.7%       |   -12.1% |
-> > This also looks very different from udp4.
-> >
-> 
-> Thanks for the questions,
-> Jakub
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+
+Acked-by: Yonghong Song <yhs@fb.com>
+
+
