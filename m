@@ -2,260 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA261CECAB
-	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 07:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 808481CEF36
+	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 10:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725536AbgELF5q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 May 2020 01:57:46 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:38430 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728651AbgELF5q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 May 2020 01:57:46 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04C5v2Al113134;
-        Tue, 12 May 2020 05:57:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=0muaH3bxesQMPeYQ7Ss9Y7YPtsK4pwaftH70/kxoCCU=;
- b=VIucPbF/5u7CL671xDKXQFAQSK53SAP+ZQvBPE0uAj75wHDD2ACX8PC870g6Kw5VHn8R
- mcQXn16oFH/8brXg07LCLv1tJGPn7rwfBU+x/oR4zAdW5G3jhTHbfDEAhKJN1gRZIi6g
- GhywIeHSTrhQewYJWYQHQBJjRSfJkbayxBPHzF+PprLPXkd++lRo3J4TWZ2ZvbYJytgF
- J5du9mQir2fL2kY0xETtw/5L9iZjwV6Q/Mz5D/iSC8qjn+vd9DwcZLeGiE1N3ICK3p5x
- WWc7FlthXJsbqxNWnUYiP75H9Jurppl8yJqxYNKfYIuNFBbTrNnEEeykNHFuptgZd5ur 8g== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 30x3mbrv33-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 12 May 2020 05:57:28 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04C5rkEL060671;
-        Tue, 12 May 2020 05:57:27 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 30x63p3pqn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 May 2020 05:57:27 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04C5vQBJ013789;
-        Tue, 12 May 2020 05:57:26 GMT
-Received: from localhost.uk.oracle.com (/10.175.210.30)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 11 May 2020 22:57:26 -0700
-From:   Alan Maguire <alan.maguire@oracle.com>
-To:     ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org
-Cc:     joe@perches.com, linux@rasmusvillemoes.dk, arnaldo.melo@gmail.com,
-        yhs@fb.com, kafai@fb.com, songliubraving@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v2 bpf-next 7/7] bpf: add tests for %pT format specifier
-Date:   Tue, 12 May 2020 06:56:45 +0100
-Message-Id: <1589263005-7887-8-git-send-email-alan.maguire@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1589263005-7887-1-git-send-email-alan.maguire@oracle.com>
-References: <1589263005-7887-1-git-send-email-alan.maguire@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9618 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=2
- malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005120052
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9618 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 impostorscore=0
- mlxscore=0 suspectscore=2 bulkscore=0 mlxlogscore=999 phishscore=0
- malwarescore=0 lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005120052
+        id S1726187AbgELIfF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 May 2020 04:35:05 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:58324 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725776AbgELIfF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 12 May 2020 04:35:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589272503;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jcu7UayeiRoB+oPtxu5ro8xy76Yt5bLrrV9cfwYT0u4=;
+        b=iJrsU4RpBOeI2JZmrs4gjEXDAw70a2sALlrFj6ODkZcIZf4xJsw1gbMamfgircUFcWQSPa
+        5gBQUVEJHltE4NeJzJLMxXjg8SWozTG3kY5BUHaOZ2Qqy7M8FKzmvqpUT0R9K/fLkcg2RC
+        wH8xk004Ln9Y4Wyqnz/dODXZfNMzOFg=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-161-gg2d5kkjPOqJ0HCcMc0pWw-1; Tue, 12 May 2020 04:35:01 -0400
+X-MC-Unique: gg2d5kkjPOqJ0HCcMc0pWw-1
+Received: by mail-lj1-f197.google.com with SMTP id m15so1677943ljp.3
+        for <bpf@vger.kernel.org>; Tue, 12 May 2020 01:35:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=Jcu7UayeiRoB+oPtxu5ro8xy76Yt5bLrrV9cfwYT0u4=;
+        b=V2U/1sBXLIQzZ/PxhGIw1G+7Jsz31xghBemQ4if5CQ5uaCDqrBTehv+509RRyEj4Xh
+         3+gmcx52VM/HoevVP75DQdiL6uwb+pz1Ky4iJ1fejmiv/bkMLTgZ8CHtMNxzIIlVzNVA
+         5XZ2Xs0ekG5KU7CXNOkOcs4sK9Vz/d6Ru3wdQwlEJtXlkc9fYiArkldOUEHmab2ACCR6
+         8U7g68f5ixKsmc4Fb9eqhkqVL3C7hJXeTc9Aw4jc9vFKv7ayhpKuBcrmH+KBGMj8Btd/
+         MeZNpGdmxE92rmB85Kfjy/AOxzp3deVHNXn8o61EO2rSDVWXjPdfVHaGnhk2K9ZscwLb
+         XBzg==
+X-Gm-Message-State: AOAM531Q9phGcjyKE5AoB/MwMHTCP5X5+HDzPfG7/tnce+Id/HDhnfrY
+        ZEigU3jJJiUv7lCW/ZefiU9s3mBi1g6mIQIw3lRMOrzmzig9Rm+7F7lDjIt5H5ZMCi6TEAkKbPG
+        2WFmTTzpreM6Z
+X-Received: by 2002:a2e:986:: with SMTP id 128mr9515207ljj.202.1589272500502;
+        Tue, 12 May 2020 01:35:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwFmvdz9SAXFfdnegZZctpbgnZj5hHOIAXiFoVO8Ry9W+nleEprJxW5rdu/858LPlqtM/tnwQ==
+X-Received: by 2002:a2e:986:: with SMTP id 128mr9515196ljj.202.1589272500266;
+        Tue, 12 May 2020 01:35:00 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id y9sm12081878ljy.31.2020.05.12.01.34.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 01:34:59 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id BF311181509; Tue, 12 May 2020 10:34:58 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrey Ignatov <rdna@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: bpf: ability to attach freplace to multiple parents
+In-Reply-To: <20200402215452.dkkbbymnhzlcux7m@ast-mbp>
+References: <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com> <87tv2e10ly.fsf@toke.dk> <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com> <87369wrcyv.fsf@toke.dk> <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com> <CACAyw9-FrwgBGjGT1CYrKJuyRJtwn0XUsifF_uR6LpRbcucN+A@mail.gmail.com> <20200326195340.dznktutm6yq763af@ast-mbp> <87o8sim4rw.fsf@toke.dk> <20200402202156.hq7wpz5vdoajpqp5@ast-mbp> <87o8s9eg5b.fsf@toke.dk> <20200402215452.dkkbbymnhzlcux7m@ast-mbp>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 12 May 2020 10:34:58 +0200
+Message-ID: <87h7wlwnyl.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-tests verify we get > 0 return value from bpf_trace_print()
-using %pT format specifier with various modifiers/pointer
-values.
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- .../selftests/bpf/prog_tests/trace_printk_btf.c    | 83 ++++++++++++++++++++++
- .../selftests/bpf/progs/netif_receive_skb.c        | 81 +++++++++++++++++++++
- 2 files changed, 164 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/trace_printk_btf.c
- create mode 100644 tools/testing/selftests/bpf/progs/netif_receive_skb.c
+>> > Currently fentry/fexit/freplace progs have single prog->aux->linked_prog pointer.
+>> > It just needs to become a linked list.
+>> > The api extension could be like this:
+>> > bpf_raw_tp_open(prog_fd, attach_prog_fd, attach_btf_id);
+>> > (currently it's just bpf_raw_tp_open(prog_fd))
+>> > The same pair of (attach_prog_fd, attach_btf_id) is already passed into prog_load
+>> > to hold the linked_prog and its corresponding btf_id.
+>> > I'm proposing to extend raw_tp_open with this pair as well to
+>> > attach existing fentry/fexit/freplace prog to another target.
+>> > Internally the kernel verify that btf of current linked_prog
+>> > exactly matches to btf of another requested linked_prog and
+>> > if they match it will attach the same prog to two target programs (in case of freplace)
+>> > or two kernel functions (in case of fentry/fexit).
+>> 
+>> API-wise this was exactly what I had in mind as well.
+>
+> perfect!
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/trace_printk_btf.c b/tools/testing/selftests/bpf/prog_tests/trace_printk_btf.c
-new file mode 100644
-index 0000000..d7ee158
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/trace_printk_btf.c
-@@ -0,0 +1,83 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+
-+struct result {
-+	int ret;
-+	int subtest;
-+	int num_subtest;
-+};
-+
-+/* return value of bpf_trace_printk()s is stored; if nonzero we failed. */
-+static void on_sample(void *ctx, int cpu, void *data, __u32 size)
-+{
-+	struct result *resp = (struct result *)data;
-+
-+	*(struct result *)ctx = *resp;
-+}
-+
-+void test_trace_printk_btf(void)
-+{
-+	struct result res = { 0 };
-+	struct bpf_prog_load_attr attr = {
-+		.file = "./netif_receive_skb.o",
-+	};
-+	struct perf_buffer_opts pb_opts = {};
-+	struct bpf_program *prog = NULL;
-+	struct perf_buffer *pb = NULL;
-+	struct bpf_object *obj = NULL;
-+	struct bpf_link *link = NULL;
-+	struct bpf_map *perf_buf_map;
-+	__u32 duration = 0;
-+	int err, prog_fd;
-+
-+	err = bpf_prog_load_xattr(&attr, &obj, &prog_fd);
-+	if (CHECK(err, "prog_load raw tp", "err %d errno %d\n", err, errno))
-+		goto close_prog;
-+
-+	prog = bpf_object__find_program_by_title(obj,
-+						 "tp_btf/netif_receive_skb");
-+	if (CHECK(!prog, "find_prog", "prog netif_receive_skb not found\n"))
-+		goto close_prog;
-+
-+	link = bpf_program__attach_raw_tracepoint(prog, NULL);
-+	if (CHECK(IS_ERR(link), "attach_raw_tp", "err %ld\n", PTR_ERR(link)))
-+		goto close_prog;
-+
-+	perf_buf_map = bpf_object__find_map_by_name(obj, "perf_buf_map");
-+	if (CHECK(!perf_buf_map, "find_perf_buf_map", "not found\n"))
-+		goto close_prog;
-+
-+	/* set up perf buffer */
-+	pb_opts.sample_cb = on_sample;
-+	pb_opts.ctx = &res;
-+	pb = perf_buffer__new(bpf_map__fd(perf_buf_map), 1, &pb_opts);
-+	if (CHECK(IS_ERR(pb), "perf_buf__new", "err %ld\n", PTR_ERR(pb)))
-+		goto close_prog;
-+
-+	/* generate receive event */
-+	system("ping -c 1 127.0.0.1 >/dev/null");
-+
-+	/* read perf buffer */
-+	err = perf_buffer__poll(pb, 100);
-+	if (CHECK(err < 0, "perf_buffer__poll", "err %d\n", err))
-+		goto close_prog;
-+
-+	/*
-+	 * Make sure netif_receive_skb program was triggered
-+	 * and it sent expected return values from bpf_trace_printk()s
-+	 * into ring buffer.
-+	 */
-+	if (CHECK(res.ret <= 0,
-+		  "bpf_trace_printk: got return value",
-+		  "ret <= 0 %d test %d\n", res.ret, res.subtest))
-+		goto close_prog;
-+
-+	CHECK(res.subtest != res.num_subtest, "check all subtests ran",
-+	      "only ran %d of %d tests\n", res.subtest, res.num_subtest);
-+
-+close_prog:
-+	perf_buffer__free(pb);
-+	if (!IS_ERR_OR_NULL(link))
-+		bpf_link__destroy(link);
-+	bpf_object__close(obj);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/netif_receive_skb.c b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-new file mode 100644
-index 0000000..b5148df
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-@@ -0,0 +1,81 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020, Oracle and/or its affiliates. */
-+#include <linux/bpf.h>
-+#include <stdbool.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-+	__uint(key_size, sizeof(int));
-+	__uint(value_size, sizeof(int));
-+} perf_buf_map SEC(".maps");
-+
-+struct result {
-+	int ret;
-+	int subtest;
-+	int num_subtest;
-+};
-+
-+typedef struct {
-+	int counter;
-+} atomic_t;
-+typedef struct refcount_struct {
-+	atomic_t refs;
-+} refcount_t;
-+
-+struct sk_buff {
-+	/* field names and sizes should match to those in the kernel */
-+	unsigned int len, data_len;
-+	__u16 mac_len, hdr_len, queue_mapping;
-+	struct net_device *dev;
-+	/* order of the fields doesn't matter */
-+	refcount_t users;
-+	unsigned char *data;
-+	char __pkt_type_offset[0];
-+	char cb[48];
-+};
-+
-+#define CHECK_PRINTK(_fmt, _p, res)					\
-+	do {								\
-+		char fmt[] = _fmt;					\
-+		++(res)->num_subtest;					\
-+		if ((res)->ret >= 0) {					\
-+			++(res)->subtest;				\
-+			(res)->ret = bpf_trace_printk(fmt, sizeof(fmt),	\
-+						      (_p));		\
-+		}							\
-+	} while (0)
-+
-+/* TRACE_EVENT(netif_receive_skb,
-+ *	TP_PROTO(struct sk_buff *skb),
-+ */
-+SEC("tp_btf/netif_receive_skb")
-+int BPF_PROG(trace_netif_receive_skb, struct sk_buff *skb)
-+{
-+	char skb_type[] = "struct sk_buff";
-+	struct __btf_ptr nullp = { .ptr = 0, .type = skb_type };
-+	struct __btf_ptr p = { .ptr = skb, .type = skb_type };
-+	struct result res = { 0, 0 };
-+
-+	CHECK_PRINTK("%pT\n", &p, &res);
-+	CHECK_PRINTK("%pTc\n", &p, &res);
-+	CHECK_PRINTK("%pTN\n", &p, &res);
-+	CHECK_PRINTK("%pTx\n", &p, &res);
-+	CHECK_PRINTK("%pT0\n", &p, &res);
-+	CHECK_PRINTK("%pTcNx0\n", &p, &res);
-+	CHECK_PRINTK("%pT\n", &nullp, &res);
-+	CHECK_PRINTK("%pTc\n", &nullp, &res);
-+	CHECK_PRINTK("%pTN\n", &nullp, &res);
-+	CHECK_PRINTK("%pTx\n", &nullp, &res);
-+	CHECK_PRINTK("%pT0\n", &nullp, &res);
-+	CHECK_PRINTK("%pTcNx0\n", &nullp, &res);
-+
-+	bpf_perf_event_output(ctx, &perf_buf_map, BPF_F_CURRENT_CPU,
-+			      &res, sizeof(res));
-+
-+	return 0;
-+}
--- 
-1.8.3.1
+Hi Alexei
+
+I don't suppose you've had a chance to whip up a patch for this, have
+you? :)
+
+-Toke
 
