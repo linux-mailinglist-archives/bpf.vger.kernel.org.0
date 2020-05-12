@@ -2,208 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A891CFC12
-	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 19:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F851CFC8A
+	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 19:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725938AbgELRXj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 May 2020 13:23:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37104 "EHLO
+        id S1728081AbgELRqW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 May 2020 13:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgELRXi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 May 2020 13:23:38 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F73C061A0C;
-        Tue, 12 May 2020 10:23:38 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id y22so1808962qki.3;
-        Tue, 12 May 2020 10:23:38 -0700 (PDT)
+        with ESMTP id S1725554AbgELRqV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 May 2020 13:46:21 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D23C061A0C
+        for <bpf@vger.kernel.org>; Tue, 12 May 2020 10:46:21 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id f18so14655768lja.13
+        for <bpf@vger.kernel.org>; Tue, 12 May 2020 10:46:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=jYAwQqCKZY/JEO+42Y6cCIX9mgCJiPaIoAUPgyyKQK4=;
-        b=DgpMTRL6lkyuInt+9sKLoC1QipR7zMBQ68YOpWao9aSpzCwiRM75NpCZIL2Y8QyIVk
-         3/mKbYzbH+i+sD076N/GY5l++4YFzSoA5rYizCOD/HGg5AWQDDDhaE1/H+mpOfRg4mEO
-         7isIV0h/gkqfHquIvCuQ2iHoAJDc8DOmpAxSdb9kuFBiCTXc50JxyADLNX9hQXkcbNOq
-         ioLGkvyQjqlpkni0DUa/wNeZU9RVVyGImy5YnhhGlSIHIHeTJijtmV9vjZmfEZnhfE3F
-         4iBhmAFTrXOboVRp+HhXF37x82nq2UF+RyrfBkpLIv/tno1fJHU4BDJJTqBRNcgPche0
-         hANw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eM3d9+X8qc+maq3xHLG+4/ZyWmIqPWOHJVw4bbgd4dI=;
+        b=mPOOtwFsulK5G0i5RhYFqAvNWhC/T6DJA759xEXJmp6KsVEltE0McGlfDhQI1R4YnY
+         Lo5T1uWodooEUROwHaLWm4O/Dtm+LpYRa6mEBrWolZf7mpH/Ad0jmANc73rBrXzqI0Ab
+         s6U6KZ/xMU5wFGlBgJHXOjdbaQs77y+qi/NAAcFhgStVAF8KFxcOdmP3mS0F+hoZKKXq
+         QwY1MD6aiDLWqnvnIRHObpmkIxS17sVypqOAVnc7rtcgX3JehYDY7ecmM8uDvezv3wum
+         YplRhA0GEtbN2+uM3or7sJBpIHH5fNyCcQd0GlIRlwUQhKRc4IrAM5OJ3/zV2Y54XzKP
+         VqCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jYAwQqCKZY/JEO+42Y6cCIX9mgCJiPaIoAUPgyyKQK4=;
-        b=kLqer/TBOcqVmK6ZQcbbASAVM/bB6T2U8g0FuetqzGnUczogjeR6XmFDG2tATmzXMs
-         yl8J0GGbFm7nCSTI0GhRfP1i3xBn/86EIJqFbx/YdK4vcEsdZ/4a/ycpfnzIHq43qzTv
-         q43ZFtDkRaHOJtoDokZaRbgwEUnzeCa5ziqNHaP+PjMMODlwqfM87M0npgxoW+Ri2Hlq
-         kUd6vr1fataTv9dP0TiPlHubyAiIaZpXSzc1diCvOQE6bmWgYPiMbMj9iEJxOWkRD3ZI
-         t64Hk7EU3e005XG5quYF1wGgKwSrYAML6GpEDuoU4AWiSTiiSMdttYUXxI1I86d1v3cJ
-         Zj0g==
-X-Gm-Message-State: AGi0PubG+yPeimsnqGi73ZilYy15ZavWfepE6zphXbMisY5z/N9V4wVQ
-        3wGvRLlnmGaNgqm/70jsCOQdtvCjqor8F/YMGNegAg==
-X-Google-Smtp-Source: APiQypInae0G69eii23/QdXHd4LmnARdMrh7GG9JqjRqm8m8pVe+f/YOFqF48RqHjH7/o3TDPWuQ8XEwkSwKuoACSqc=
-X-Received: by 2002:a05:620a:14a1:: with SMTP id x1mr21475420qkj.92.1589304217693;
- Tue, 12 May 2020 10:23:37 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eM3d9+X8qc+maq3xHLG+4/ZyWmIqPWOHJVw4bbgd4dI=;
+        b=by/h65sgzcKVLl53+G33yOeVOkls3MPzzxZ7vUkJtn1kEUsyg3J6lg4utt4motb9FO
+         cU/FbxBDcacyMJSimwKTChqNEC5NO4CmPdLl4LjCiojz6pxx8F6n9G2XXm+bLvv7PJtH
+         7LLssTz/WfTY9LJaZVBj4lQrR4uuFYckCIffpQ+Cyq0h54tGKIXhXr8OBmQXZAyA+5b4
+         u0h+Wr3UUuHuJHc9ECTdh3EEgFqAd5pJJJGxuBZHZg/scgYMb4cp7WAL2ME/pG9z+QUq
+         iJ+dVJCG8UI6JkQMnn8BG+DujbyZTbVTeJDZfBqahp2L37uwjgC1/mnW4gyQAfQkuOBz
+         IVFQ==
+X-Gm-Message-State: AOAM533xF9ZIXz6yN4m/5C0Zbdtcjpo0Eu9sSImOzqoK9QMHivQDHHpg
+        lFfy+W7PqBNZi2Iu9bHrid3O6MbWU6K09w==
+X-Google-Smtp-Source: ABdhPJxe6zvUEPFFz0dqINaJgmeuMHAEr7mJ+7IgakKU3xZk6kThk3wqIJvV4ddNyR33OAYNHPPERQ==
+X-Received: by 2002:a2e:87d0:: with SMTP id v16mr13791192ljj.137.1589305579480;
+        Tue, 12 May 2020 10:46:19 -0700 (PDT)
+Received: from localhost (c-8c28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.140])
+        by smtp.gmail.com with ESMTPSA id 5sm17972lju.87.2020.05.12.10.46.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 10:46:18 -0700 (PDT)
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     ast@kernel.org, daniel@iogearbox.net
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] security: fix the default value of secid_to_secctx hook
+Date:   Tue, 12 May 2020 19:46:07 +0200
+Message-Id: <20200512174607.9630-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20200508232032.1974027-1-andriin@fb.com> <20200508232032.1974027-3-andriin@fb.com>
- <c2fbefd2-6137-712e-47d4-200ef4d74775@fb.com> <CAEf4BzaXUwgr70WteC=egTgii=si8OvVLCL9KCs-KwkPRPGQjQ@mail.gmail.com>
- <b06ff0a8-2f44-522f-f071-141072d6f62b@fb.com>
-In-Reply-To: <b06ff0a8-2f44-522f-f071-141072d6f62b@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 12 May 2020 10:23:26 -0700
-Message-ID: <CAEf4BzY71QEmq74B8y-AmW1LFhFZ35TwO5vLn4AOiJPOSVqtjw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 2/3] selftest/bpf: fmod_ret prog and implement
- test_overhead as part of bench
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 12, 2020 at 8:11 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 5/11/20 9:22 PM, Andrii Nakryiko wrote:
-> > On Sat, May 9, 2020 at 10:24 AM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >>
-> >>
-> >> On 5/8/20 4:20 PM, Andrii Nakryiko wrote:
-> >>> Add fmod_ret BPF program to existing test_overhead selftest. Also re-=
-implement
-> >>> user-space benchmarking part into benchmark runner to compare results=
-.  Results
-> >>> with ./bench are consistently somewhat lower than test_overhead's, bu=
-t relative
-> >>> performance of various types of BPF programs stay consisten (e.g., kr=
-etprobe is
-> >>> noticeably slower).
-> >>>
-> >>> run_bench_rename.sh script (in benchs/ directory) was used to produce=
- the
-> >>> following numbers:
-> >>>
-> >>>     base      :    3.975 =C2=B1 0.065M/s
-> >>>     kprobe    :    3.268 =C2=B1 0.095M/s
-> >>>     kretprobe :    2.496 =C2=B1 0.040M/s
-> >>>     rawtp     :    3.899 =C2=B1 0.078M/s
-> >>>     fentry    :    3.836 =C2=B1 0.049M/s
-> >>>     fexit     :    3.660 =C2=B1 0.082M/s
-> >>>     fmodret   :    3.776 =C2=B1 0.033M/s
-> >>>
-> >>> While running test_overhead gives:
-> >>>
-> >>>     task_rename base        4457K events per sec
-> >>>     task_rename kprobe      3849K events per sec
-> >>>     task_rename kretprobe   2729K events per sec
-> >>>     task_rename raw_tp      4506K events per sec
-> >>>     task_rename fentry      4381K events per sec
-> >>>     task_rename fexit       4349K events per sec
-> >>>     task_rename fmod_ret    4130K events per sec
-> >>
-> >> Do you where the overhead is and how we could provide options in
-> >> bench to reduce the overhead so we can achieve similar numbers?
-> >> For benchmarking, sometimes you really want to see "true"
-> >> potential of a particular implementation.
-> >
-> > Alright, let's make it an official bench-off... :) And the reason for
-> > this discrepancy, turns out to be... not atomics at all! But rather a
-> > single-threaded vs multi-threaded process (well, at least task_rename
-> > happening from non-main thread, I didn't narrow it down further).
->
-> It would be good to find out why and have a scheme (e.g. some kind
-> of affinity binding) to close the gap.
+security_secid_to_secctx is called by the bpf_lsm hook and a successful
+return value (i.e 0) implies that the parameter will be consumed by the
+LSM framework. The current behaviour return success when the pointer
+isn't initialized when CONFIG_BPF_LSM is enabled, with the default
+return from kernel/bpf/bpf_lsm.c.
 
-I don't think affinity has anything to do with this. test_overhead
-sets affinity for entire process, and that doesn't change results at
-all. Same for bench, both with and without setting affinity, results
-are pretty much the same. Affinity helps a bit to get a bit more
-stable and consistent results, but doesn't hurt or help performance
-for this benchmark.
+This is the internal error:
 
-I don't think we need to spend that much time trying to understand
-behavior of task renaming for such a particular setup. Benchmarking
-has to be multi-threaded in most cases anyways, there is no way around
-that.
+[ 1229.341488][ T2659] usercopy: Kernel memory exposure attempt detected from null address (offset 0, size 280)!
+[ 1229.374977][ T2659] ------------[ cut here ]------------
+[ 1229.376813][ T2659] kernel BUG at mm/usercopy.c:99!
+[ 1229.378398][ T2659] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
+[ 1229.380348][ T2659] Modules linked in:
+[ 1229.381654][ T2659] CPU: 0 PID: 2659 Comm: systemd-journal Tainted: G    B   W         5.7.0-rc5-next-20200511-00019-g864e0c6319b8-dirty #13
+[ 1229.385429][ T2659] Hardware name: linux,dummy-virt (DT)
+[ 1229.387143][ T2659] pstate: 80400005 (Nzcv daif +PAN -UAO BTYPE=--)
+[ 1229.389165][ T2659] pc : usercopy_abort+0xc8/0xcc
+[ 1229.390705][ T2659] lr : usercopy_abort+0xc8/0xcc
+[ 1229.392225][ T2659] sp : ffff000064247450
+[ 1229.393533][ T2659] x29: ffff000064247460 x28: 0000000000000000
+[ 1229.395449][ T2659] x27: 0000000000000118 x26: 0000000000000000
+[ 1229.397384][ T2659] x25: ffffa000127049e0 x24: ffffa000127049e0
+[ 1229.399306][ T2659] x23: ffffa000127048e0 x22: ffffa000127048a0
+[ 1229.401241][ T2659] x21: ffffa00012704b80 x20: ffffa000127049e0
+[ 1229.403163][ T2659] x19: ffffa00012704820 x18: 0000000000000000
+[ 1229.405094][ T2659] x17: 0000000000000000 x16: 0000000000000000
+[ 1229.407008][ T2659] x15: 0000000000000000 x14: 003d090000000000
+[ 1229.408942][ T2659] x13: ffff80000d5b25b2 x12: 1fffe0000d5b25b1
+[ 1229.410859][ T2659] x11: 1fffe0000d5b25b1 x10: ffff80000d5b25b1
+[ 1229.412791][ T2659] x9 : ffffa0001034bee0 x8 : ffff00006ad92d8f
+[ 1229.414707][ T2659] x7 : 0000000000000000 x6 : ffffa00015eacb20
+[ 1229.416642][ T2659] x5 : ffff0000693c8040 x4 : 0000000000000000
+[ 1229.418558][ T2659] x3 : ffffa0001034befc x2 : d57a7483a01c6300
+[ 1229.420610][ T2659] x1 : 0000000000000000 x0 : 0000000000000059
+[ 1229.422526][ T2659] Call trace:
+[ 1229.423631][ T2659]  usercopy_abort+0xc8/0xcc
+[ 1229.425091][ T2659]  __check_object_size+0xdc/0x7d4
+[ 1229.426729][ T2659]  put_cmsg+0xa30/0xa90
+[ 1229.428132][ T2659]  unix_dgram_recvmsg+0x80c/0x930
+[ 1229.429731][ T2659]  sock_recvmsg+0x9c/0xc0
+[ 1229.431123][ T2659]  ____sys_recvmsg+0x1cc/0x5f8
+[ 1229.432663][ T2659]  ___sys_recvmsg+0x100/0x160
+[ 1229.434151][ T2659]  __sys_recvmsg+0x110/0x1a8
+[ 1229.435623][ T2659]  __arm64_sys_recvmsg+0x58/0x70
+[ 1229.437218][ T2659]  el0_svc_common.constprop.1+0x29c/0x340
+[ 1229.438994][ T2659]  do_el0_svc+0xe8/0x108
+[ 1229.440587][ T2659]  el0_svc+0x74/0x88
+[ 1229.441917][ T2659]  el0_sync_handler+0xe4/0x8b4
+[ 1229.443464][ T2659]  el0_sync+0x17c/0x180
+[ 1229.444920][ T2659] Code: aa1703e2 aa1603e1 910a8260 97ecc860 (d4210000)
+[ 1229.447070][ T2659] ---[ end trace 400497d91baeaf51 ]---
+[ 1229.448791][ T2659] Kernel panic - not syncing: Fatal exception
+[ 1229.450692][ T2659] Kernel Offset: disabled
+[ 1229.452061][ T2659] CPU features: 0x240002,20002004
+[ 1229.453647][ T2659] Memory Limit: none
+[ 1229.455015][ T2659] ---[ end Kernel panic - not syncing: Fatal exception ]---
 
->
-> > Atomics actually make very little difference, which gives me a good
-> > peace of mind :)
-> >
-> > So, I've built and ran test_overhead (selftest) and bench both as
-> > multi-threaded and single-threaded apps. Corresponding results match
-> > almost perfectly. And that's while test_overhead doesn't use atomics
-> > at all, while bench still does. Then I also ran test_overhead with
-> > added generics to match bench implementation. There are barely any
-> > differences, see two last sets of results.
-> >
-> > BTW, selftest results seems bit lower from the ones in original
-> > commit, probably because I made it run more iterations (like 40 times
-> > more) to have more stable results.
-> >
-> > So here are the results:
-> >
-> > Single-threaded implementations
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-> >
-> > /* bench: single-threaded, atomics */
-> > base      :    4.622 =C2=B1 0.049M/s
-> > kprobe    :    3.673 =C2=B1 0.052M/s
-> > kretprobe :    2.625 =C2=B1 0.052M/s
-> > rawtp     :    4.369 =C2=B1 0.089M/s
-> > fentry    :    4.201 =C2=B1 0.558M/s
-> > fexit     :    4.309 =C2=B1 0.148M/s
-> > fmodret   :    4.314 =C2=B1 0.203M/s
-> >
-> > /* selftest: single-threaded, no atomics */
-> > task_rename base        4555K events per sec
-> > task_rename kprobe      3643K events per sec
-> > task_rename kretprobe   2506K events per sec
-> > task_rename raw_tp      4303K events per sec
-> > task_rename fentry      4307K events per sec
-> > task_rename fexit       4010K events per sec
-> > task_rename fmod_ret    3984K events per sec
-> >
-> >
-> > Multi-threaded implementations
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-> >
-> > /* bench: multi-threaded w/ atomics */
-> > base      :    3.910 =C2=B1 0.023M/s
-> > kprobe    :    3.048 =C2=B1 0.037M/s
-> > kretprobe :    2.300 =C2=B1 0.015M/s
-> > rawtp     :    3.687 =C2=B1 0.034M/s
-> > fentry    :    3.740 =C2=B1 0.087M/s
-> > fexit     :    3.510 =C2=B1 0.009M/s
-> > fmodret   :    3.485 =C2=B1 0.050M/s
-> >
-> > /* selftest: multi-threaded w/ atomics */
-> > task_rename base        3872K events per sec
-> > task_rename kprobe      3068K events per sec
-> > task_rename kretprobe   2350K events per sec
-> > task_rename raw_tp      3731K events per sec
-> > task_rename fentry      3639K events per sec
-> > task_rename fexit       3558K events per sec
-> > task_rename fmod_ret    3511K events per sec
-> >
-> > /* selftest: multi-threaded, no atomics */
-> > task_rename base        3945K events per sec
-> > task_rename kprobe      3298K events per sec
-> > task_rename kretprobe   2451K events per sec
-> > task_rename raw_tp      3718K events per sec
-> > task_rename fentry      3782K events per sec
-> > task_rename fexit       3543K events per sec
-> > task_rename fmod_ret    3526K events per sec
-> >
-> >
-> [...]
+Rework the so the default return value is -EOPNOTSUPP.
+
+There are likely other callbacks such as security_inode_getsecctx() that
+may have the same problem, and that someone that understand the code
+better needs to audit them.
+
+Thank you Arnd for helping me figure out what went wrong.
+
+CC: Arnd Bergmann <arnd@arndb.de>
+Fixes: 98e828a0650f ("security: Refactor declaration of LSM hooks")
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ include/linux/lsm_hook_defs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index b9e73d736e13..31eb3381e54b 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -243,7 +243,7 @@ LSM_HOOK(int, -EINVAL, getprocattr, struct task_struct *p, char *name,
+ 	 char **value)
+ LSM_HOOK(int, -EINVAL, setprocattr, const char *name, void *value, size_t size)
+ LSM_HOOK(int, 0, ismaclabel, const char *name)
+-LSM_HOOK(int, 0, secid_to_secctx, u32 secid, char **secdata,
++LSM_HOOK(int, -EOPNOTSUPP, secid_to_secctx, u32 secid, char **secdata,
+ 	 u32 *seclen)
+ LSM_HOOK(int, 0, secctx_to_secid, const char *secdata, u32 seclen, u32 *secid)
+ LSM_HOOK(void, LSM_RET_VOID, release_secctx, char *secdata, u32 seclen)
+-- 
+2.20.1
+
