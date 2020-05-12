@@ -2,99 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB28E1CFD44
-	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 20:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72D71CFD6F
+	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 20:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730200AbgELS3t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 May 2020 14:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47388 "EHLO
+        id S1725987AbgELSjR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 May 2020 14:39:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgELS3s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 May 2020 14:29:48 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 681E1C061A0C;
-        Tue, 12 May 2020 11:29:47 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t16so5732409plo.7;
-        Tue, 12 May 2020 11:29:47 -0700 (PDT)
+        with ESMTP id S1725950AbgELSjQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 May 2020 14:39:16 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52CBDC061A0C;
+        Tue, 12 May 2020 11:39:15 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id z1so6775321pfn.3;
+        Tue, 12 May 2020 11:39:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=0R4IiugdXp8iJ7umOfVfh8AnVyRiIFK4KYXJSuwKSos=;
-        b=AenWkeOovINppkTw/K3pXCkiLiXodKNI5ZKlljKh5H/aN2KosAWyqcmDl8XXdvbc+0
-         Aht05AloRQigsgfFrol0DZnJdvHu0cJNBgsQbuUxL4Lc4R46KoMl9ICrpJk4+bppjLR1
-         CM7nX4nZ9Dp1xgB6jMqTQs0Q63LzHLQ1D5mRZHVG5UsW/Q4XX/sBAAz0oCj5I+YPqY68
-         AlY8cNNOOxdcOS4TQKp+1orbE56hfXBAKh9hc4GF/w50CuCj9+53iy+vvDkR08yZQCqL
-         9a/bNyDr1fDhbzmgtT1CGUAE0/LNNYOBu4v7sQgKZBRhSk7b0kySos/BCs6LSkCgXXga
-         QLkw==
+        bh=DjcujlJce+yGdTM56KR+siVfTTDonJGCqjFrtlrB12E=;
+        b=TKIZUpleOm+PkJ9tqBZBzNyIrq3m78JQFWKHIGSEqtcLQ6LODxtCb/m4luvQRtRCZB
+         YF8jVeEnDCHolzy3z4aaw6G+IAUWpl5/o8dIMthPyFEKYdI3YjcX4WtBiwD6nO6vNmVZ
+         DzohTK35FNyHiiwZq0QhghkvgzykP8E6nX6b5zl3s25ntYD2rf8n4PQYZUQb5cUFGq3P
+         CXxL1tW/RcklACqpdbU3eZeWt+QXV2I4/GLn6DBRTu3f17iQMICCpp7kXK19NZcxB7rG
+         LQ2b6Wk7ueK/vM9+kTiltDdga69+ZfqqYAnB7kybfnraNEgq6FRZJ6pf6Zt2ZFBOJI0Y
+         5BAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=0R4IiugdXp8iJ7umOfVfh8AnVyRiIFK4KYXJSuwKSos=;
-        b=CnCcYMUBm4NCjB7NlrXniZMX/4yNE6j1ScH+uGNWHhwD9EhCNk+elBplN/sYUdpI5v
-         iSDnXh5Et0+mzO+MRfLueirRa0GzgjCxeDQDcuYuqHGIH1/YbDmjm9UHzy/iJYE6PcQJ
-         AnAwQVQPNXGxEmXuSUNKIu/KdKOMDzFx94JZkzX//0nroNKj7hMXoWUSgDlfv6L0F9MR
-         Q8GvpiIEjaAHuU9qPn8LweFba9UU8hlUorNPEPCLXebBlwFyTPQIrCRHQzBC8L9IvqvJ
-         20eWvIVpBXh4ewSZbaoU+oIcaRgj5JcWdzWqvxNonfACkm3o1H33rQ36HuoJfqwEa/Lx
-         LhoA==
-X-Gm-Message-State: AGi0PubfsfL1D+hFzauBqLpSDszoN3iyxPSHZP4OaEXl4BgDZ/nORwVm
-        YvLoGMDk7wwKa0blB5GDrAHrfth/
-X-Google-Smtp-Source: APiQypJRV+2Szp2twPUffO+9/g6a/xCYel89YR1a4Y4bbyNkc24pwGr6wwPvfbBCN/fBZ9hbIjsl0A==
-X-Received: by 2002:a17:902:6b01:: with SMTP id o1mr21786210plk.64.1589308186851;
-        Tue, 12 May 2020 11:29:46 -0700 (PDT)
+        bh=DjcujlJce+yGdTM56KR+siVfTTDonJGCqjFrtlrB12E=;
+        b=sVkHTOWCLb5qrTR9/Fag85FkFc29wAJAmnWc3lBzWRjkipfwyfc3K7X6FdHtq81X/u
+         Q4O8lOjU/IqPCEuSYJ6vEt6xVwlScp53CR9iKWcqrmmDq276vl/4YqZnpGJ5SBFoZ7jM
+         S6yRHzBafzc1Js2fuDIUUSua3+5Aew/Pdy/kMI+Iu0n485sA9AXji0QMA0IjUJHI+fNN
+         8HzC/z4T9VRsViP48+OBDkievnnmXe0U9kA3qX70TloX/hMol5eVDqspGRKp4iyVm6Sy
+         7MD3sQ48xyE2FZ/XOym3ySw9VZSNuFK7pcJL7NPYwE5n8yKfzNqM5I6cAt4/yrs7xgOE
+         oFtw==
+X-Gm-Message-State: AGi0PuZ0aPqs/rlZh+jYavluj3ox6gxJs/Otny5xinUvrULhiPHG0ZYB
+        G0M3w23hXNJgWFmhGVPF19xCMKEr
+X-Google-Smtp-Source: APiQypINbdHjYVXKeWBxAYbOqHUnfaB4UJzqJskMbX8OGHkD/+fXFaDcOlnD+ANXQjOFUfCx3HRsUg==
+X-Received: by 2002:a63:e542:: with SMTP id z2mr19775152pgj.165.1589308754589;
+        Tue, 12 May 2020 11:39:14 -0700 (PDT)
 Received: from ast-mbp ([2620:10d:c090:400::5:c3f6])
-        by smtp.gmail.com with ESMTPSA id f136sm12240030pfa.59.2020.05.12.11.29.45
+        by smtp.gmail.com with ESMTPSA id l15sm13732315pjk.56.2020.05.12.11.39.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 11:29:46 -0700 (PDT)
-Date:   Tue, 12 May 2020 11:29:44 -0700
+        Tue, 12 May 2020 11:39:13 -0700 (PDT)
+Date:   Tue, 12 May 2020 11:39:11 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com, linux-security-module@vger.kernel.org,
-        acme@redhat.com, jamorris@linux.microsoft.com, jannh@google.com,
-        kpsingh@google.com
+To:     sdf@google.com
+Cc:     davem@davemloft.net, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com,
+        linux-security-module@vger.kernel.org, acme@redhat.com,
+        jamorris@linux.microsoft.com, jannh@google.com, kpsingh@google.com
 Subject: Re: [PATCH v5 bpf-next 2/3] bpf: implement CAP_BPF
-Message-ID: <20200512182944.wzfs7nzgppqn23l6@ast-mbp>
+Message-ID: <20200512183911.cr365b7etucyxgpz@ast-mbp>
 References: <20200508215340.41921-1-alexei.starovoitov@gmail.com>
  <20200508215340.41921-3-alexei.starovoitov@gmail.com>
- <fcc61b50-16f7-4fc9-5cd4-7def57f37c35@iogearbox.net>
+ <20200512001210.GA235661@google.com>
+ <20200512023641.jupgmhpliblkli4t@ast-mbp.dhcp.thefacebook.com>
+ <20200512155411.GB235661@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fcc61b50-16f7-4fc9-5cd4-7def57f37c35@iogearbox.net>
+In-Reply-To: <20200512155411.GB235661@google.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 12, 2020 at 05:05:12PM +0200, Daniel Borkmann wrote:
-> > -	env->allow_ptr_leaks = is_priv;
-> > +	env->allow_ptr_leaks = perfmon_capable();
-> > +	env->bpf_capable = bpf_capable();
+On Tue, May 12, 2020 at 08:54:11AM -0700, sdf@google.com wrote:
+> On 05/11, Alexei Starovoitov wrote:
+> > On Mon, May 11, 2020 at 05:12:10PM -0700, sdf@google.com wrote:
+> > > On 05/08, Alexei Starovoitov wrote:
+> > > > From: Alexei Starovoitov <ast@kernel.org>
+> > > [..]
+> > > > @@ -3932,7 +3977,7 @@ SYSCALL_DEFINE3(bpf, int, cmd, union bpf_attr
+> > > > __user *, uattr, unsigned int, siz
+> > > >   	union bpf_attr attr;
+> > > >   	int err;
+> > >
+> > > > -	if (sysctl_unprivileged_bpf_disabled && !capable(CAP_SYS_ADMIN))
+> > > > +	if (sysctl_unprivileged_bpf_disabled && !bpf_capable())
+> > > >   		return -EPERM;
+> > > This is awesome, thanks for reviving the effort!
+> > >
+> > > One question I have about this particular snippet:
+> > > Does it make sense to drop bpf_capable checks for the operations
+> > > that work on a provided fd?
 > 
-> Probably more of a detail, but it feels weird to tie perfmon_capable() into the BPF
-> core and use it in various places there. I would rather make this a proper bpf_*
-> prefixed helper and add a more descriptive name (what does it have to do with perf
-> or monitoring directly?). For example, all the main functionality could be under
-> `bpf_base_capable()` and everything with potential to leak pointers or mem to user
-> space as `bpf_leak_capable()`. Then inside include/linux/capability.h this can still
-> resolve under the hood to something like:
+> > Above snippet is for the case when sysctl switches unpriv off.
+> > It was a big hammer and stays big hammer.
+> > I certainly would like to improve the situation, but I suspect
+> > the folks who turn that sysctl knob on are simply paranoid about bpf
+> > and no amount of reasoning would turn them around.
+> Yeah, and we do use it unfortunately :-( I suppose we still would
+> like to keep it that way for a while, but maybe start relaxing
+> some operations a bit.
+
+I suspect that was done couple years ago when spectre was just discovered and
+the verifier wasn't doing speculative analysis.
+If your security folks still insist on that sysctl they either didn't
+follow bpf development or paranoid.
+If former is the case I would love to openly discuss all the advances in
+the verification logic to prevent side channels.
+The verifier is doing amazing job finding bad assembly code.
+There is no other tool that is similarly capable.
+All compilers and static analyzers are no where close to the level
+of sophistication that the verifier has in detection of bad speculation.
+
+> > > The use-case I have in mind is as follows:
+> > > * privileged (CAP_BPF) process loads the programs/maps and pins
+> > >   them at some known location
+> > > * unprivileged process opens up those pins and does the following:
+> > >   * prepares the maps (and will later on read them)
+> > >   * does SO_ATTACH_BPF/SO_ATTACH_REUSEPORT_EBPF which afaik don't
+> > >     require any capabilities
+> > >
+> > > This essentially pushes some of the permission checks into a fs layer.
+> > So
+> > > whoever has a file descriptor (via unix sock or open) can do BPF
+> > operations
+> > > on the object that represents it.
 > 
-> static inline bool bpf_base_capable(void)
-> {
-> 	return capable(CAP_BPF) || capable(CAP_SYS_ADMIN);
-> }
+> > cap_bpf doesn't change things in that regard.
+> > Two cases here:
+> > sysctl_unprivileged_bpf_disabled==0:
+> >    Unpriv can load socket_filter prog type and unpriv can attach it
+> >    via SO_ATTACH_BPF/SO_ATTACH_REUSEPORT_EBPF.
+> > sysctl_unprivileged_bpf_disabled==1:
+> >    cap_sys_admin can load socket_filter and unpriv can attach it.
+> Sorry, I wasn't clear enough, I was talking about unpriv_bpf_disabled=1
+> case.
+> 
+> > With addition of cap_bpf in the second case cap_bpf process can
+> > load socket_filter too.
+> > It doesn't mean that permissions are pushed into fs layer.
+> > I'm not sure that relaxing of sysctl_unprivileged_bpf_disabled
+> > will be well received.
+> > Are you proposing to selectively allow certain bpf syscall commands
+> > even when sysctl_unprivileged_bpf_disabled==1 ?
+> > Like allow unpriv to do BPF_OBJ_GET to get an fd from bpffs ?
+> > And allow unpriv to do map_update ?
+> Yes, that's the gist of what I'm proposing. Allow the operations that
+> work on fd even with unpriv_bpf_disabled=1. The assumption that
+> obtaining fd requires a privileged operation on its own and
+> should give enough protection.
 
-I don't like the 'base' in the name, since 'base' implies common subset,
-but it's not the case. Also 'base' implies that something else is additive,
-but it's not the case either. The real base is unpriv. cap_bpf adds to it.
-So bpf_capable() in capability.h is the most appropriate.
-It also matches perfmon_capable() and other *_capable()
+I agree.
 
-> static inline bool bpf_leak_capable(void)
-> {
-> 	return perfmon_capable();
-> }
+> 
+> > It makes complete sense to me, but I'd like to argue about that
+> > independently from this cap_bpf set.
+> > We can relax that sysctl later.
+> Ack, thanks, let me bring it up again later, when we get to the cap_bpf
+> state.
 
-This is ok, but not in capability.h. I can put it into bpf_verifier.h
+Thanks for the feedback.
+Just to make sure we're on the same page let me clarify one more thing.
+The state of cap_bpf in this patch set is not the final state of bpf
+security in general. We were stuck on cap_bpf proposal since september.
+bpf community lost many months of what could have been gradual
+improvements in bpf safety and security.
+This cap_bpf is a way to get us unstuck. There will be many more
+security related patches that improve safety, security and usability.
