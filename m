@@ -2,125 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3BEA1CF71B
-	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 16:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 093A01CF739
+	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 16:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729756AbgELO1J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 May 2020 10:27:09 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:52972 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725929AbgELO1I (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 12 May 2020 10:27:08 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04CEPJZR021239;
-        Tue, 12 May 2020 07:26:52 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=GJAChrJpQyp0A0H29DBp8q5Z4pmfZBMMvfMG+qdvkK8=;
- b=EwRbJoEaOgJrCuv4HhHew7UI/pkW5Dgay/ESqmMItOhnVSNOYEXg1TLPMq250UdOH3f5
- 2QIKajRb2urnsyHFVUVqTj9zuR2KJwI7IZPwF7uollOT69GVtgQqOenDnDktebd/I1i4
- wycokduzw2m30EhKwovG1Mi9OZUU1bX6yIg= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 30xc7e4kwh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 12 May 2020 07:26:51 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Tue, 12 May 2020 07:26:51 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FEmsixtUoXad4V/W69VCq7Iolr+bCwzBGu8qMHSj0wAQxgsLZmIL37ZqfVakTOXISngIAiUcZP0I/c+KQgezDk5Tr+2zfSMHffPcBMWLkrDd3/LU2u0gpyrcNqNXAITuJIkbIvtD6wVASi3P6707YYdr6X9Xb3RjiuQeqSpQ1MiHy0OYJlJp2UMSJZN0H5TLD+SQp3SIgEoRRbD+MrGPhAtHvHER4FcU4L3loqu4xIabEnepaaffql3M487/oFbau7uuF+71gs8zQMetTtP2dcOQ9GQbXb+sT6/uM333Jo9ztuDcQnXSIs9z8rmZXfpFUfb//QT5SQCCq31zM7SPOA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GJAChrJpQyp0A0H29DBp8q5Z4pmfZBMMvfMG+qdvkK8=;
- b=jy3iQzreLg2KuGwo1NwbwMlRuZhUoyBR3W0G1lwoJuBYk4vcZWOe3e3nqmTuYlS86Twb016NXk7Uoew+1uVdxjWiBkE6BGzsHOthGD3vs2+SAgaLTUwO6GHt1JLNhCpAF0khUy2vHSMbqVrAOPCXB1Vy4ArHBtDNYU6vovxh0QQZ7jhHovKtOvfM8Lc7GYvQ/Y37ei7bV0BQ0WujAMzn3gn6mXXPFamW4pWDxuNoUN4EckDc+JC1nXDuC+nvExuOFyW0EP3l+4sgNmEqFfGdtmouneBinhUUwrXucEHLIWuQxwoNzBkMSXnkHWjZe1AU06SYvJla6y7sTfJS5nds9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GJAChrJpQyp0A0H29DBp8q5Z4pmfZBMMvfMG+qdvkK8=;
- b=j5uRYYHqXsLOwaLUuIGrAu8b5OzNLi4phXW3KcVDytFNO5gBFWJT8tDU0H+d+tB/fDFUuk9u8jv4w+mTOuZrwLXNlHDuqid6wTI2n2yAawm2dW2CMq5J2bxw3sIYBIUJLyWOM4/pC7LJJdNSXz7CJvgp2OhMjjfO0z9Tu6ctJMg=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2360.namprd15.prod.outlook.com (2603:10b6:a02:81::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.20; Tue, 12 May
- 2020 14:26:50 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.2979.033; Tue, 12 May 2020
- 14:26:50 +0000
-Subject: Re: [PATCH bpf-next v4] libbpf: fix probe code to return EPERM if
- encountered
-To:     Eelco Chaudron <echaudro@redhat.com>, <bpf@vger.kernel.org>
-CC:     <davem@davemloft.net>, <netdev@vger.kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <andriin@fb.com>, <toke@redhat.com>
-References: <158927424896.2342.10402475603585742943.stgit@ebuild>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <7e23f4d2-7cc5-9976-dead-ad2e993015ab@fb.com>
-Date:   Tue, 12 May 2020 07:26:47 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
-In-Reply-To: <158927424896.2342.10402475603585742943.stgit@ebuild>
+        id S1726055AbgELOf6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 May 2020 10:35:58 -0400
+Received: from www62.your-server.de ([213.133.104.62]:53908 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726300AbgELOf5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 May 2020 10:35:57 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jYW0V-0007ba-3j; Tue, 12 May 2020 16:35:43 +0200
+Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-5.fritz.box)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jYW0U-0009oj-Ob; Tue, 12 May 2020 16:35:42 +0200
+Subject: Re: [PATCH v5 bpf-next 2/3] bpf: implement CAP_BPF
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        davem@davemloft.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        linux-security-module@vger.kernel.org, acme@redhat.com,
+        jamorris@linux.microsoft.com, jannh@google.com, kpsingh@google.com
+References: <20200508215340.41921-1-alexei.starovoitov@gmail.com>
+ <20200508215340.41921-3-alexei.starovoitov@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2aac2366-151a-5ae1-d65f-9232433f425f@iogearbox.net>
+Date:   Tue, 12 May 2020 16:35:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20200508215340.41921-3-alexei.starovoitov@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR02CA0064.namprd02.prod.outlook.com
- (2603:10b6:a03:54::41) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from MacBook-Pro-52.local (2620:10d:c090:400::5:d0f0) by BYAPR02CA0064.namprd02.prod.outlook.com (2603:10b6:a03:54::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.27 via Frontend Transport; Tue, 12 May 2020 14:26:49 +0000
-X-Originating-IP: [2620:10d:c090:400::5:d0f0]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 57df26ac-a8b4-4662-1c30-08d7f6808252
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2360:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2360A9625AF845BCB0F4FA41D3BE0@BYAPR15MB2360.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
-X-Forefront-PRVS: 0401647B7F
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /Tva67SFREySj61z3P+kxyGlKGxF0orozO6GLL26giFxHrqW+yxCE3cWjWFLRTd95UsVy8Z0tsrM/BW0J/YxvAuKn842PhgJ1qEHq7AqKGhlLB32aQVLWrJ8reBGQDFXkX+whRcJH2U9BLqz2cEg7fAdh1kY6m0HNSYvdb0T4MHB/PmXMBPEbDsk6zpqBAmg0kFPPEJfura0j/ZOG9xK8ENjn3/DClMj2ZNMqdyxL63fg0tyL0a4oUzY9vo8KROITG/6FddHlj8tNPae5/mcF+ZpYDbcZtBt1n/EZ290cCkBgWsMdwLE7Y7PSqUxlPTkiE4Hxj9feZyLZJvXrpDjgbRGUmsjqzihnzCnlLZfX1+y/Te//ywf6gRv2vXgcj674iRI8gRWrKWm8FR/Vp9DMoMYb0VQ8sPYYT+s4PujmM/KRkVG+xwtTrN0NZrCWaYTc818Y40hdC5rK88SSoeDgU/Mz4eTfm2u9aOosCUWiC0dwGzr6z1ojLzkn5iS2lL4eL3Ibfnsp+SlpOthJI72h1eBHc1E285aFOBbsKmfrD+o3qYdaOb/bsLAdNgwOPLM
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(376002)(366004)(136003)(39860400002)(396003)(33430700001)(33440700001)(53546011)(6506007)(6486002)(16526019)(186003)(4744005)(5660300002)(316002)(2616005)(52116002)(36756003)(31686004)(6512007)(478600001)(2906002)(4326008)(86362001)(8676002)(66556008)(8936002)(66476007)(31696002)(66946007)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: muscuObZ/2aNj93BwsLBsnstmV4P9AWkBbzP2Zp1/zsr4reNleLT+Q+U4TdmCU0cRo8U1t5rYwy43s4oJWhYDwwt+7L1XGlPz1LuO5pDLs6Rr1oxmb4uDzDEaBXTOa4+2Se10oP+iKkNn3iD66syJpBPli4c0sCACQN59wKRafa3LKNx1/FFPkQgDEFkny6c/eex7lXoMK+twohyQSomwACR/UQvzU+6HpYCXo14poKxa4fZ7QJNUtSDFDvskAOFc7G4IvTz3QHXw8t4n0IKyfoYzkLrUCj9MQoGAd6sqZssZQAO1/PvOHWQU+qwU+WgTWQtcbDHosksmtzEyoKUB12k4OkAPHQNXQjlMSdXGrowsnj/JqyNZld4uRsdlCOm2mfw19bmZoJjrBa0FhBDxlixfLVEaRAejC69TOUDpMbpU9j5AjGzAYX/qntWsr6eLvX3xYcPVrm7Vshgx7wKIiLaiAaUdY0mGxAa+UZjh74W6sodSgArLIrgVIkG6CSLar2fsscspdvC4u930SBC6w==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 57df26ac-a8b4-4662-1c30-08d7f6808252
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2020 14:26:50.1329
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Vff0NBR9GUTPfcLimzrlzp3zQaZSD01Agd75cMzX22wUsrebicSpDSt/WG+uHtNq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2360
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-12_04:2020-05-11,2020-05-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 suspectscore=0
- adultscore=0 impostorscore=0 malwarescore=0 bulkscore=0 spamscore=0
- mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005120109
-X-FB-Internal: deliver
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25810/Tue May 12 14:14:24 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 5/12/20 2:04 AM, Eelco Chaudron wrote:
-> When the probe code was failing for any reason ENOTSUP was returned, even
-> if this was due to no having enough lock space. This patch fixes this by
-> returning EPERM to the user application, so it can respond and increase
-> the RLIMIT_MEMLOCK size.
+On 5/8/20 11:53 PM, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 > 
-> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+> Implement permissions as stated in uapi/linux/capability.h
+> In order to do that the verifier allow_ptr_leaks flag is split
+> into allow_ptr_leaks and bpf_capable flags and they are set as:
+>    env->allow_ptr_leaks = perfmon_capable();
+>    env->bpf_capable = bpf_capable();
+> 
+> bpf_capable enables bounded loops, variable stack access and other verifier features.
+> allow_ptr_leaks enable ptr leaks, ptr conversions, subtraction of pointers, etc.
+> It also disables side channel mitigations.
+> 
+> That means that the networking BPF program loaded with CAP_BPF + CAP_NET_ADMIN will
+> have speculative checks done by the verifier and other spectre mitigation applied.
+> Such networking BPF program will not be able to leak kernel pointers.
 
-Acked-by: Yonghong Song <yhs@fb.com>
+I don't quite follow this part in the code below yet, see my comments.
+
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+[...]
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index 6abd5a778fcd..c32a7880fa62 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -375,6 +375,7 @@ struct bpf_verifier_env {
+>   	u32 used_map_cnt;		/* number of used maps */
+>   	u32 id_gen;			/* used to generate unique reg IDs */
+>   	bool allow_ptr_leaks;
+> +	bool bpf_capable;
+>   	bool seen_direct_write;
+>   	struct bpf_insn_aux_data *insn_aux_data; /* array of per-insn state */
+>   	const struct bpf_line_info *prev_linfo;
+> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+> index 95d77770353c..264a9254dc39 100644
+> --- a/kernel/bpf/arraymap.c
+> +++ b/kernel/bpf/arraymap.c
+> @@ -77,7 +77,7 @@ static struct bpf_map *array_map_alloc(union bpf_attr *attr)
+>   	bool percpu = attr->map_type == BPF_MAP_TYPE_PERCPU_ARRAY;
+>   	int ret, numa_node = bpf_map_attr_numa_node(attr);
+>   	u32 elem_size, index_mask, max_entries;
+> -	bool unpriv = !capable(CAP_SYS_ADMIN);
+> +	bool unpriv = !bpf_capable();
+
+So here progs loaded with CAP_BPF will have spectre mitigations bypassed which
+is the opposite of above statement, no?
+
+>   	u64 cost, array_size, mask64;
+>   	struct bpf_map_memory mem;
+>   	struct bpf_array *array;
+[...]
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 6aa11de67315..8f421dd0c4cf 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -646,7 +646,7 @@ static bool bpf_prog_kallsyms_verify_off(const struct bpf_prog *fp)
+>   void bpf_prog_kallsyms_add(struct bpf_prog *fp)
+>   {
+>   	if (!bpf_prog_kallsyms_candidate(fp) ||
+> -	    !capable(CAP_SYS_ADMIN))
+> +	    !bpf_capable())
+>   		return;
+>   
+>   	bpf_prog_ksym_set_addr(fp);
+> @@ -824,7 +824,7 @@ static int bpf_jit_charge_modmem(u32 pages)
+>   {
+>   	if (atomic_long_add_return(pages, &bpf_jit_current) >
+>   	    (bpf_jit_limit >> PAGE_SHIFT)) {
+> -		if (!capable(CAP_SYS_ADMIN)) {
+> +		if (!bpf_capable()) {
+
+Should there still be an upper charge on module mem for !CAP_SYS_ADMIN?
+
+>   			atomic_long_sub(pages, &bpf_jit_current);
+>   			return -EPERM;
+>   		}
+[...]
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 70ad009577f8..a6893746cd87 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+[...]
+> @@ -3428,7 +3429,7 @@ static int check_stack_boundary(struct bpf_verifier_env *env, int regno,
+>   		 * Spectre masking for stack ALU.
+>   		 * See also retrieve_ptr_limit().
+>   		 */
+> -		if (!env->allow_ptr_leaks) {
+> +		if (!env->bpf_capable) {
+
+This needs to stay on env->allow_ptr_leaks, the can_skip_alu_sanitation() does
+check on env->allow_ptr_leaks as well, otherwise this breaks spectre mitgation
+when masking alu.
+
+>   			char tn_buf[48];
+>   
+>   			tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off);
+> @@ -7229,7 +7230,7 @@ static int push_insn(int t, int w, int e, struct bpf_verifier_env *env,
+>   		insn_stack[env->cfg.cur_stack++] = w;
+>   		return 1;
+>   	} else if ((insn_state[w] & 0xF0) == DISCOVERED) {
+> -		if (loop_ok && env->allow_ptr_leaks)
+> +		if (loop_ok && env->bpf_capable)
+>   			return 0;
+>   		verbose_linfo(env, t, "%d: ", t);
+>   		verbose_linfo(env, w, "%d: ", w);
+> @@ -8338,7 +8339,7 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+>   	if (env->max_states_per_insn < states_cnt)
+>   		env->max_states_per_insn = states_cnt;
+>   
+> -	if (!env->allow_ptr_leaks && states_cnt > BPF_COMPLEXITY_LIMIT_STATES)
+> +	if (!env->bpf_capable && states_cnt > BPF_COMPLEXITY_LIMIT_STATES)
+>   		return push_jmp_history(env, cur);
+>   
+>   	if (!add_new_state)
+> @@ -9998,7 +9999,7 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
+>   			insn->code = BPF_JMP | BPF_TAIL_CALL;
+>   
+>   			aux = &env->insn_aux_data[i + delta];
+> -			if (env->allow_ptr_leaks && !expect_blinding &&
+> +			if (env->bpf_capable && !expect_blinding &&
+>   			    prog->jit_requested &&
+>   			    !bpf_map_key_poisoned(aux) &&
+>   			    !bpf_map_ptr_poisoned(aux) &&
+> @@ -10725,7 +10726,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
+>   		env->insn_aux_data[i].orig_idx = i;
+>   	env->prog = *prog;
+>   	env->ops = bpf_verifier_ops[env->prog->type];
+> -	is_priv = capable(CAP_SYS_ADMIN);
+> +	is_priv = bpf_capable();
+>   
+>   	if (!btf_vmlinux && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) {
+>   		mutex_lock(&bpf_verifier_lock);
+> @@ -10766,7 +10767,8 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
+>   	if (attr->prog_flags & BPF_F_ANY_ALIGNMENT)
+>   		env->strict_alignment = false;
+>   
+> -	env->allow_ptr_leaks = is_priv;
+> +	env->allow_ptr_leaks = perfmon_capable();
+> +	env->bpf_capable = bpf_capable();
+>   
