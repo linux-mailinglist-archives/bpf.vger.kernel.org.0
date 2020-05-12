@@ -2,139 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E431CF2DF
-	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 12:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 320741CF3E2
+	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 13:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729365AbgELKvQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 May 2020 06:51:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729247AbgELKvP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 May 2020 06:51:15 -0400
-Received: from localhost.localdomain (unknown [151.48.155.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B120205ED;
-        Tue, 12 May 2020 10:51:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589280675;
-        bh=IpkhdYCbj6qfQehlR88vLxW2GWnp5Cb9Bc+yoK6NChY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CA2ddsycpgRQR4CTaG36VX0Xktc3CEu9+QDFOh3Y55nRX+W/QK//g19YI3B8x4Vav
-         jjElkrwa+HmxxXJru1DEK292HC1xxwrJWr+vuD00a12LwbW7mHIx8YZWqK1YhHl0Bq
-         WnNgurQI+/Rj4/llp0jPlECWvnYDfWUtx9zQgZ00=
-Date:   Tue, 12 May 2020 12:51:09 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        davem@davemloft.net, brouer@redhat.com, daniel@iogearbox.net,
-        lorenzo.bianconi@redhat.com
-Subject: Re: [PATCH bpf-next] samples/bpf: xdp_redirect_cpu: set MAX_CPUS
- according to NR_CPUS
-Message-ID: <20200512105109.GA79080@localhost.localdomain>
-References: <79b8dd36280e5629a5e64b89528f9d523cb7262b.1589227441.git.lorenzo@kernel.org>
- <c3fa2001-ef77-46c4-c0de-3335e7934db9@fb.com>
+        id S1729294AbgELL5u (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 May 2020 07:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726187AbgELL5u (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 May 2020 07:57:50 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D01A3C061A0E
+        for <bpf@vger.kernel.org>; Tue, 12 May 2020 04:57:49 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id w7so15006440wre.13
+        for <bpf@vger.kernel.org>; Tue, 12 May 2020 04:57:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=3+1UCndI9AXECNjAszE65h8ymzBGEnwP0Tn3NvmhVbM=;
+        b=hMshJeAipdM0jP2BQh5thdVg0AnuDfmz7Wkybc9ckxXSzdyl62xm5aaWkdbR64zn7a
+         0XPJOVJ5kAmPHTtJnCqfejZgfzLZI5GpyBHADub/n5XvLC64DHT1Oo8rq+NKH/1x+EH7
+         q3fvF0rJ70gcWagx/EP+ISGrGzyLsHZFCGeJA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version:content-transfer-encoding;
+        bh=3+1UCndI9AXECNjAszE65h8ymzBGEnwP0Tn3NvmhVbM=;
+        b=aWeWSngyx59Wq6Kyk8JAlMyTbV4RBMHgx/UuqbSFLWipB7aRTaVCQbkgrJN21VrY7C
+         /TgrH8637GROGlEurr2vu1VwJNqAJpPPj7oU1YQLQDicRidJVY6lYJhgoJwokcsKxS/D
+         XPcRr1Q1O0U1dLneqQ0xOhzirDMHo88lU3vPRUrppUKAjKcTVL1fntqFhKmj61dJsqLj
+         5uTcBgtKYfZ5W/Azji+xBPRAP8C5Az3XvG+EPZzQxUKOSK6hvahpkQd3LQab0nhyvnvu
+         ofxQgsb3yQN8/lmm9XjBJRQ5I/DUPxWQfp7yargD8qDclVXeAeODKt89MZvTKiBPQgcb
+         930w==
+X-Gm-Message-State: AGi0PuYecdfmejWJ1W7rnVsjB7oeuD48iIZSKKTNsROAkySP+nBJ2ax5
+        LmLcTMLUWR21IN0OS0FohxNqdA==
+X-Google-Smtp-Source: APiQypIiieCVQbqmIPE4X2PTSsXEHDaKz6VBIRYLAVcW3jOS3STlVT4jJihvEo7MLcz3fU0TVxip2g==
+X-Received: by 2002:adf:e511:: with SMTP id j17mr26735518wrm.204.1589284667329;
+        Tue, 12 May 2020 04:57:47 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id g184sm16978351wmg.1.2020.05.12.04.57.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 04:57:46 -0700 (PDT)
+References: <20200511185218.1422406-1-jakub@cloudflare.com> <20200511194520.pr5d74ao34jigvof@kafai-mbp.dhcp.thefacebook.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, dccp@vger.kernel.org,
+        kernel-team@cloudflare.com, Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Gerrit Renker <gerrit@erg.abdn.ac.uk>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH bpf-next v2 00/17] Run a BPF program on socket lookup
+In-reply-to: <20200511194520.pr5d74ao34jigvof@kafai-mbp.dhcp.thefacebook.com>
+Date:   Tue, 12 May 2020 13:57:45 +0200
+Message-ID: <873685v006.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="3V7upXqbjpZ4EhLz"
-Content-Disposition: inline
-In-Reply-To: <c3fa2001-ef77-46c4-c0de-3335e7934db9@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, May 11, 2020 at 09:45 PM CEST, Martin KaFai Lau wrote:
+> On Mon, May 11, 2020 at 08:52:01PM +0200, Jakub Sitnicki wrote:
+>
+> [ ... ]
+>
+>> Performance considerations
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+>>
+>> Patch set adds new code on receive hot path. This comes with a cost,
+>> especially in a scenario of a SYN flood or small UDP packet flood.
+>>
+>> Measuring the performance penalty turned out to be harder than expected
+>> because socket lookup is fast. For CPUs to spend >=3D 1% of time in sock=
+et
+>> lookup we had to modify our setup by unloading iptables and reducing the
+>> number of routes.
+>>
+>> The receiver machine is a Cloudflare Gen 9 server covered in detail at [=
+0].
+>> In short:
+>>
+>>  - 24 core Intel custom off-roadmap 1.9Ghz 150W (Skylake) CPU
+>>  - dual-port 25G Mellanox ConnectX-4 NIC
+>>  - 256G DDR4 2666Mhz RAM
+>>
+>> Flood traffic pattern:
+>>
+>>  - source: 1 IP, 10k ports
+>>  - destination: 1 IP, 1 port
+>>  - TCP - SYN packet
+>>  - UDP - Len=3D0 packet
+>>
+>> Receiver setup:
+>>
+>>  - ingress traffic spread over 4 RX queues,
+>>  - RX/TX pause and autoneg disabled,
+>>  - Intel Turbo Boost disabled,
+>>  - TCP SYN cookies always on.
+>>
+>> For TCP test there is a receiver process with single listening socket
+>> open. Receiver is not accept()'ing connections.
+>>
+>> For UDP the receiver process has a single UDP socket with a filter
+>> installed, dropping the packets.
+>>
+>> With such setup in place, we record RX pps and cpu-cycles events under
+>> flood for 60 seconds in 3 configurations:
+>>
+>>  1. 5.6.3 kernel w/o this patch series (baseline),
+>>  2. 5.6.3 kernel with patches applied, but no SK_LOOKUP program attached,
+>>  3. 5.6.3 kernel with patches applied, and SK_LOOKUP program attached;
+>>     BPF program [1] is doing a lookup LPM_TRIE map with 200 entries.
+> Is the link in [1] up-to-date?  I don't see it calling bpf_sk_assign().
 
---3V7upXqbjpZ4EhLz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, it is, or rather was.
 
->=20
->=20
-> On 5/11/20 1:24 PM, Lorenzo Bianconi wrote:
-> > xdp_redirect_cpu is currently failing in bpf_prog_load_xattr()
-> > allocating cpu_map map if CONFIG_NR_CPUS is less than 64 since
-> > cpu_map_alloc() requires max_entries to be less than NR_CPUS.
-> > Set cpu_map max_entries according to NR_CPUS in xdp_redirect_cpu_kern.c
-> > and get currently running cpus in xdp_redirect_cpu_user.c
-> >=20
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >   samples/bpf/xdp_redirect_cpu_kern.c |  2 +-
-> >   samples/bpf/xdp_redirect_cpu_user.c | 29 ++++++++++++++++-------------
-> >   2 files changed, 17 insertions(+), 14 deletions(-)
-> >=20
+The reason why the inet-tool version you reviewed was not using
+bpf_sk_assign(), but the "old way" from RFCv2, is that the switch to
+map_lookup+sk_assign was done late in development, after changes to
+SOCKMAP landed in bpf-next.
 
-[...]
+By that time performance tests were already in progress, and since they
+take a bit of time to set up, and the change affected just the scenario
+with program attached, I tested without this bit.
 
-> >   static void mark_cpus_unavailable(void)
-> >   {
-> > -	__u32 invalid_cpu =3D MAX_CPUS;
-> > +	__u32 invalid_cpu =3D n_cpus;
-> >   	int ret, i;
-> > -	for (i =3D 0; i < MAX_CPUS; i++) {
-> > +	for (i =3D 0; i < n_cpus; i++) {
-> >   		ret =3D bpf_map_update_elem(cpus_available_map_fd, &i,
-> >   					  &invalid_cpu, 0);
-> >   		if (ret) {
-> > @@ -688,6 +689,8 @@ int main(int argc, char **argv)
-> >   	int prog_fd;
-> >   	__u32 qsize;
-> > +	n_cpus =3D get_nprocs();
->=20
-> get_nprocs() gets the number of available cpus, not including offline cpu=
+Sorry, I should have explained that in the cover letter. The next round
+of benchmarks will be done against the now updated version of inet-tool
+that uses bpf_sk_assign:
+
+https://github.com/majek/inet-tool/commit/6a619c3743aaae6d4882cbbf11b616e1e=
+468b436
+
+>
+>>
+>> RX pps measured with `ifpps -d <dev> -t 1000 --csv --loop` for 60 second=
 s.
-> But gaps may exist in cpus, e.g., get_nprocs() returns 4, and cpus are
-> 0-1,4-5. map updates will miss cpus 4-5. And in this situation,
-> map_update will fail on offline cpus.
->=20
-> This sample test does not need to deal with complication of
-> cpu offlining, I think. Maybe we can get
-> 	n_cpus =3D get_nprocs();
-> 	n_cpus_conf =3D get_nprocs_conf();
-> 	if (n_cpus !=3D n_cpus_conf) {
-> 		/* message that some cpus are offline and not supported. */
-> 		return error
-> 	}
->=20
+>>
+>> | tcp4 SYN flood               | rx pps (mean =C2=B1 sstdev) | =CE=94 rx=
+ pps |
+>> |------------------------------+------------------------+----------|
+>> | 5.6.3 vanilla (baseline)     | 939,616 =C2=B1 0.5%         |        - |
+>> | no SK_LOOKUP prog attached   | 929,275 =C2=B1 1.2%         |    -1.1% |
+>> | with SK_LOOKUP prog attached | 918,582 =C2=B1 0.4%         |    -2.2% |
+>>
+>> | tcp6 SYN flood               | rx pps (mean =C2=B1 sstdev) | =CE=94 rx=
+ pps |
+>> |------------------------------+------------------------+----------|
+>> | 5.6.3 vanilla (baseline)     | 875,838 =C2=B1 0.5%         |        - |
+>> | no SK_LOOKUP prog attached   | 872,005 =C2=B1 0.3%         |    -0.4% |
+>> | with SK_LOOKUP prog attached | 856,250 =C2=B1 0.5%         |    -2.2% |
+>>
+>> | udp4 0-len flood             | rx pps (mean =C2=B1 sstdev) | =CE=94 rx=
+ pps |
+>> |------------------------------+------------------------+----------|
+>> | 5.6.3 vanilla (baseline)     | 2,738,662 =C2=B1 1.5%       |        - |
+>> | no SK_LOOKUP prog attached   | 2,576,893 =C2=B1 1.0%       |    -5.9% |
+>> | with SK_LOOKUP prog attached | 2,530,698 =C2=B1 1.0%       |    -7.6% |
+>>
+>> | udp6 0-len flood             | rx pps (mean =C2=B1 sstdev) | =CE=94 rx=
+ pps |
+>> |------------------------------+------------------------+----------|
+>> | 5.6.3 vanilla (baseline)     | 2,867,885 =C2=B1 1.4%       |        - |
+>> | no SK_LOOKUP prog attached   | 2,646,875 =C2=B1 1.0%       |    -7.7% |
+> What is causing this regression?
+>
 
-Hi Yonghong,
+I need to go back to archived perf.data and see if perf-annotate or
+perf-diff provide any clues that will help me tell where CPU cycles are
+going. Will get back to you on that.
 
-thanks for pointing this out. Why not just use:
+Wild guess is that for udp6 we're loading and coping more data to
+populate v6 addresses in program context. See inet6_lookup_run_bpf
+(patch 7).
 
-n_cpus =3D get_nprocs_conf()
+This makes me realize the copy is unnecessary, I could just store the
+pointer to in6_addr{}. Will make this change in v3.
 
-and let the user pick the right cpu id with 'c' option (since it is mandato=
-ry)?
+As to why udp6 is taking a bigger hit than udp4 - comparing top 10 in
+`perf report --no-children` shows that in our test setup, socket lookup
+contributes less to CPU cycles on receive for udp4 than for udp6.
 
-Regards,
-Lorenzo
+* udp4 baseline (no children)
 
-> > +
-> >   	/* Notice: choosing he queue size is very important with the
-> >   	 * ixgbe driver, because it's driver page recycling trick is
-> >   	 * dependend on pages being returned quickly.  The number of
-> > @@ -757,7 +760,7 @@ int main(int argc, char **argv)
-> >   		case 'c':
-> >   			/* Add multiple CPUs */
-> >   			add_cpu =3D strtoul(optarg, NULL, 0);
-> > -			if (add_cpu >=3D MAX_CPUS) {
-> > +			if (add_cpu >=3D n_cpus) {
-> >   				fprintf(stderr,
-> >   				"--cpu nr too large for cpumap err(%d):%s\n",
-> >   					errno, strerror(errno));
-> >=20
+# Overhead       Samples  Symbol
+# ........  ............  ......................................
+#
+     8.11%         19429  [k] fib_table_lookup
+     4.31%         10333  [k] udp_queue_rcv_one_skb
+     3.75%          8991  [k] fib4_rule_action
+     3.66%          8763  [k] __netif_receive_skb_core
+     3.42%          8198  [k] fib_rules_lookup
+     3.05%          7314  [k] fib4_rule_match
+     2.71%          6507  [k] mlx5e_skb_from_cqe_linear
+     2.58%          6192  [k] inet_gro_receive
+     2.49%          5981  [k] __x86_indirect_thunk_rax
+     2.36%          5656  [k] udp4_lib_lookup2
 
---3V7upXqbjpZ4EhLz
-Content-Type: application/pgp-signature; name="signature.asc"
+* udp6 baseline (no children)
 
------BEGIN PGP SIGNATURE-----
+# Overhead       Samples  Symbol
+# ........  ............  ......................................
+#
+     4.63%         11100  [k] udpv6_queue_rcv_one_skb
+     3.88%          9308  [k] __netif_receive_skb_core
+     3.54%          8480  [k] udp6_lib_lookup2
+     2.69%          6442  [k] mlx5e_skb_from_cqe_linear
+     2.56%          6137  [k] ipv6_gro_receive
+     2.31%          5540  [k] dev_gro_receive
+     2.20%          5264  [k] do_csum
+     2.02%          4835  [k] ip6_pol_route
+     1.94%          4639  [k] __udp6_lib_lookup
+     1.89%          4540  [k] selinux_socket_sock_rcv_skb
 
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCXrp/mgAKCRA6cBh0uS2t
-rN/DAP90B2TeM9DB/K3hrdzFOerTyi43JdbjiNm6iIrySR5FMAEAhtDL+VIt4CNd
-3IfRt6ag2dRigA8SVae39IItMa9wsAo=
-=p+oK
------END PGP SIGNATURE-----
+Notice that __udp4_lib_lookup didn't even make the cut. That could
+explain why adding instructions to __udp6_lib_lookup has more effect on
+RX PPS.
 
---3V7upXqbjpZ4EhLz--
+Frankly, that is something that suprised us, but we didn't have time to
+investigate further, yet.
+
+>> | with SK_LOOKUP prog attached | 2,520,474 =C2=B1 0.7%       |   -12.1% |
+> This also looks very different from udp4.
+>
+
+Thanks for the questions,
+Jakub
