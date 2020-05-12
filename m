@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973481CEB40
-	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 05:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3542B1CEB44
+	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 05:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbgELDP1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 May 2020 23:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45898 "EHLO
+        id S1728652AbgELDQh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 May 2020 23:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727942AbgELDP1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 11 May 2020 23:15:27 -0400
+        by vger.kernel.org with ESMTP id S1728564AbgELDQh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 11 May 2020 23:16:37 -0400
 Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B23CC061A0C;
-        Mon, 11 May 2020 20:15:27 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id n14so12235454qke.8;
-        Mon, 11 May 2020 20:15:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E81AFC061A0C;
+        Mon, 11 May 2020 20:16:36 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id z80so6711253qka.0;
+        Mon, 11 May 2020 20:16:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OCjk5lRyNnGdzoT7H/2cpQ+ftIGab0ek4X9QCagt82A=;
-        b=MiGIrO0OjLF30WDYQeiMxr2H4+e6I601oMrswaP/iAMJONiVaQWBQ6dSxIipPlL72o
-         BAL3d5QmMjDTVa/bho2IsL/FEy9gL0g7OvS68ANLgW+94MZssagebSrhLIDsA14ajswz
-         wC2q1asbZEmWP2VLGKONXNGSFYPuQLeaDlYMvgFPkiwaQK4ox837jcvtQJbLBWBmsiMa
-         vfcFc4+M49nPQ+5GnzlbkLifQ1CoTyTmL7yzMp96vORrRNSFBNl7b+zQY6vA925PdRa8
-         dX5tWkpWjdeYQK1mw7JqHp/oV+aKYSyfGGTmr0uAigxpIGVDkk18EEz4mlq6XbYMr3pl
-         fQgA==
+        bh=eIFX7kmG2/Q3MDiSfvpMuV5jMlA8i4sGq+DYN+oNW2A=;
+        b=swVsrBgY/qAerqcHjlkYlCe0b3fXy2KAwithmRb46YSQO5osRsj3f/26Bj6WhrEgkX
+         XWqzZOPxB7baP+rRNZrw0qZcl8/5OoOhOZToN95JV3ZPH//CL4WV/D5weuKe1pLdjn0/
+         gSPIZaItgHv7gLovzA459WWHGugC8EQglLS3qDnRok6tU1Ylpb9z/SPFX8gndHdnuMNc
+         yDyMhLUgUrZvIDzdk1ZrN5ZfBhsgsc3nOzewsOHJfSDydDMMekIK84Lj/r7X8VU3vCir
+         xLQ9OXMWvGfhppwey1x4VYiZMdrA5SnSPLTuc7luIj+1Dtk/LXJofcbBUCIrF4U3jsw9
+         vEAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OCjk5lRyNnGdzoT7H/2cpQ+ftIGab0ek4X9QCagt82A=;
-        b=EqG0jJAdxufsAz3vqnv5NSORANPWsPYFcNdhR4eiWfzLhi4myxSnXRdzri9WqodVIF
-         AIAOeDBfG1aaMYMd6lktuFo26oiB2lc5xgYD4kjIMPK0lK20I8ClftvVI6T1QE1zYl5W
-         wrj/NWNa89F1/VdzmIPvalR9Iu+5FVb39KuvII3JnDkGoJXbS0IJLxzS8mg8mjQeE51Y
-         09h4DJYur9rC7A+luMVZeNgVqCWRs66YKeT8hNnYG7vQy2FgUAOpl5Twyqoh/yB+XM2y
-         b/2KP3fjWR5gfItNQuBZt3/Jet/5sVqgLFisZHRnEvIS9WyEKAhS+NVHEKlIlBiSrdMP
-         n3lA==
-X-Gm-Message-State: AGi0PubrXAlQQt2+3dmTA+A4ukjr/q7HLnHAyekXFiIGXbCZMt4Y1k4P
-        JXeq+4Z6vDkojMe22RZhgyp8FKSncs6zetipI4k=
-X-Google-Smtp-Source: APiQypJYdzzEcFFEKlqS/mxg7pT5lU0SC4lN7u+/MPQA1qSfE8vHPKnd95NrdTm5EbdVykEv14ysH7coZ99595VegFs=
-X-Received: by 2002:ae9:e713:: with SMTP id m19mr18877994qka.39.1589253326381;
- Mon, 11 May 2020 20:15:26 -0700 (PDT)
+        bh=eIFX7kmG2/Q3MDiSfvpMuV5jMlA8i4sGq+DYN+oNW2A=;
+        b=rUlY/wEkaq9THtkic9+uO19/Ncve81RDcysUvzPf/QyOW6ao7gjvnuqsNxav8c860o
+         oLqPmvHAqqRW2ZWjQxBzZRAzsDA7JgNf9fFJTnP+fNqu3NT/lN/21y7to3Xag+TrAwO9
+         hUO3OU5rYe/sBbpemx3kWahioPoTxtrc2dTVkw1qwvh5zoD518+fZB+0fxdbmub/szp/
+         8gbX3wf/I3OuIDUpI3PTbhXydiuq+HLChvwY3tHUPSt3MMoJW28N1YDYHC1S6KhnmXWU
+         oNFeBE7WURYL9geFPZgxK87H5Yg4Xb4zC8Ji6E1WJhLpTEzi6UlfPUMdvuQEj9j2y5bF
+         nBFQ==
+X-Gm-Message-State: AGi0PuZB10uDQoG8kCBGb0Jy7rg7Q2u7KDoJVgSr5/FFyEC+vgr5JnnM
+        xPlsqAJZIxqIZNs9f7pYIXcFyW6uPAyVsfu4QnI=
+X-Google-Smtp-Source: APiQypJZuu8e69wpV+nOcpVW045faO5OuigqlwaSDBzXPQIdNkYmqpvvBQ3HyazRlganXX5U8kwdTR8011XLQSMqa5A=
+X-Received: by 2002:a37:68f:: with SMTP id 137mr19087682qkg.36.1589253396160;
+ Mon, 11 May 2020 20:16:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200507053915.1542140-1-yhs@fb.com> <20200507053918.1542509-1-yhs@fb.com>
- <CAEf4BzaV6u1eTta4h4+mftQCQVOGPf0Q++B8tZxho+Uq3M1=mA@mail.gmail.com> <849a051d-5c42-a61c-91ef-15a2bdb2b509@fb.com>
-In-Reply-To: <849a051d-5c42-a61c-91ef-15a2bdb2b509@fb.com>
+References: <20200507053915.1542140-1-yhs@fb.com> <20200507053924.1543103-1-yhs@fb.com>
+ <CAEf4BzZ1vD_F74gy5mx_s8+cbw4OuZwJxpW36CijE-RWxOf__g@mail.gmail.com> <a847e0ef-2308-ebf1-ca21-f30372fa2678@fb.com>
+In-Reply-To: <a847e0ef-2308-ebf1-ca21-f30372fa2678@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 11 May 2020 20:15:15 -0700
-Message-ID: <CAEf4BzYzwnQuvjR-deQ1OaPMaNSQcnFQOCEaAWvTrdgqOQarJg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 03/21] bpf: support bpf tracing/iter programs
- for BPF_LINK_CREATE
+Date:   Mon, 11 May 2020 20:16:25 -0700
+Message-ID: <CAEf4Bza1yqHfLKWDDksG4owobM8M_0pqhTORgKprMuGZiOSj=w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 08/21] bpf: implement common macros/helpers
+ for target iterators
 To:     Yonghong Song <yhs@fb.com>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -65,83 +65,88 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 8, 2020 at 6:36 PM Yonghong Song <yhs@fb.com> wrote:
+On Fri, May 8, 2020 at 8:18 PM Yonghong Song <yhs@fb.com> wrote:
 >
 >
 >
-> On 5/8/20 11:24 AM, Andrii Nakryiko wrote:
-> > On Wed, May 6, 2020 at 10:41 PM Yonghong Song <yhs@fb.com> wrote:
+> On 5/8/20 12:07 PM, Andrii Nakryiko wrote:
+> > On Wed, May 6, 2020 at 10:40 PM Yonghong Song <yhs@fb.com> wrote:
 > >>
-> >> Given a bpf program, the step to create an anonymous bpf iterator is:
-> >>    - create a bpf_iter_link, which combines bpf program and the target.
-> >>      In the future, there could be more information recorded in the link.
-> >>      A link_fd will be returned to the user space.
-> >>    - create an anonymous bpf iterator with the given link_fd.
+> >> Macro DEFINE_BPF_ITER_FUNC is implemented so target
+> >> can define an init function to capture the BTF type
+> >> which represents the target.
 > >>
-> >> The bpf_iter_link can be pinned to bpffs mount file system to
-> >> create a file based bpf iterator as well.
+> >> The bpf_iter_meta is a structure holding meta data, common
+> >> to all targets in the bpf program.
 > >>
-> >> The benefit to use of bpf_iter_link:
-> >>    - using bpf link simplifies design and implementation as bpf link
-> >>      is used for other tracing bpf programs.
-> >>    - for file based bpf iterator, bpf_iter_link provides a standard
-> >>      way to replace underlying bpf programs.
-> >>    - for both anonymous and free based iterators, bpf link query
-> >>      capability can be leveraged.
+> >> Additional marker functions are called before or after
+> >> bpf_seq_read() show()/next()/stop() callback functions
+> >> to help calculate precise seq_num and whether call bpf_prog
+> >> inside stop().
 > >>
-> >> The patch added support of tracing/iter programs for BPF_LINK_CREATE.
-> >> A new link type BPF_LINK_TYPE_ITER is added to facilitate link
-> >> querying. Currently, only prog_id is needed, so there is no
-> >> additional in-kernel show_fdinfo() and fill_link_info() hook
-> >> is needed for BPF_LINK_TYPE_ITER link.
+> >> Two functions, bpf_iter_get_info() and bpf_iter_run_prog(),
+> >> are implemented so target can get needed information from
+> >> bpf_iter infrastructure and can run the program.
 > >>
-> >> Acked-by: Andrii Nakryiko <andriin@fb.com>
 > >> Signed-off-by: Yonghong Song <yhs@fb.com>
 > >> ---
-> >
-> > still looks good, but I realized show_fdinfo and fill_link_info is
-> > missing, see request for a follow-up below :)
-> >
-> >
-> >>   include/linux/bpf.h            |  1 +
-> >>   include/linux/bpf_types.h      |  1 +
-> >>   include/uapi/linux/bpf.h       |  1 +
-> >>   kernel/bpf/bpf_iter.c          | 62 ++++++++++++++++++++++++++++++++++
-> >>   kernel/bpf/syscall.c           | 14 ++++++++
-> >>   tools/include/uapi/linux/bpf.h |  1 +
-> >>   6 files changed, 80 insertions(+)
+> >>   include/linux/bpf.h   | 11 ++++++
+> >>   kernel/bpf/bpf_iter.c | 86 ++++++++++++++++++++++++++++++++++++++++---
+> >>   2 files changed, 92 insertions(+), 5 deletions(-)
 > >>
+> >
+> > Looks good. I was worried about re-using seq_num when element is
+> > skipped, but this could already happen that same seq_num is associated
+> > with different objects: overflow + retry returns different object
+> > (because iteration is not a snapshot, so the element could be gone on
+> > retry). Both cases will have to be handled in about the same fashion,
+> > so it's fine.
+>
+> This is what I thought as well.
+>
+> >
+> > Hm... Could this be a problem for start() implementation? E.g., if
+> > object is still there, but iterator wants to skip it permanently.
+> > Re-using seq_num will mean that start() will keep trying to fetch same
+> > to-be-skipped element? Not sure, please think about it, but we can fix
+> > it up later, if necessary.
+>
+> The seq_num is for bpf_program context. It does not affect how start()
+> behaves. The start() MAY retry the same element over and over again
+> if show() overflows or returns <0, but in which case, user space
+> should check the return error code to decide to retry or give up.
+
+ah, right seq_num vs internal id, makes sense, never mind :)
+
+>
+> >
+> > Acked-by: Andrii Nakryiko <andriin@fb.com>
 > >
 > > [...]
 > >
-> >> +static const struct bpf_link_ops bpf_iter_link_lops = {
-> >> +       .release = bpf_iter_link_release,
-> >> +       .dealloc = bpf_iter_link_dealloc,
-> >> +};
+> >> @@ -112,11 +143,16 @@ static ssize_t bpf_seq_read(struct file *file, char __user *buf, size_t size,
+> >>                          err = PTR_ERR(p);
+> >>                          break;
+> >>                  }
+> >> +
+> >> +               /* get a valid next object, increase seq_num */
 > >
-> > Link infra supports .show_fdinfo and .fill_link_info methods, there is
-> > no need to block on this, but it would be great to implement them from
-> > BPF_LINK_TYPE_ITER as well in the same release as a follow-up. Thanks!
+> > typo: get -> got
 >
-> The reason I did not implement is due to we do not have additional
-> information beyond prog_id to present. The prog_id itself gives all
-> information about this link. I looked at tracing program
-
-Not all, e.g., bpf_iter target is invisible right now. It's good to
-have this added in a follow up, but certainly not a blocker.
-
-
-> show_fdinfo/fill_link_info, the additional attach_type is printed.
-> But attach_type is obvious for BPF_LINK_TYPE_ITER which does not
-> need print.
->
-> In the future when we add more stuff to parameterize the bpf_iter,
-> will need to implement these two callbacks as well as bpftool.
-
-yep
-
+> Ack.
 >
 > >
+> >> +               bpf_iter_inc_seq_num(seq);
+> >> +
+> >>                  if (seq->count >= size)
+> >>                          break;
+> >>
+> >>                  err = seq->op->show(seq, p);
+> >>                  if (err > 0) {
+> >> +                       bpf_iter_dec_seq_num(seq);
+> >>                          seq->count = offs;
+> >>                  } else if (err < 0 || seq_has_overflowed(seq)) {
+> >>                          seq->count = offs;
 > >
 > > [...]
 > >
