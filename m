@@ -2,125 +2,210 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0FF61CEAEC
-	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 04:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFDA1CEB3D
+	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 05:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728524AbgELCgs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 May 2020 22:36:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727892AbgELCgr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 May 2020 22:36:47 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7472C061A0C;
-        Mon, 11 May 2020 19:36:46 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id l12so5454332pgr.10;
-        Mon, 11 May 2020 19:36:46 -0700 (PDT)
+        id S1728633AbgELDNv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 May 2020 23:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727942AbgELDNu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 11 May 2020 23:13:50 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7478FC061A0C;
+        Mon, 11 May 2020 20:13:50 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id b6so11123029qkh.11;
+        Mon, 11 May 2020 20:13:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DwkcJJkezbH+OWBWg9sYsAUeeDyjJOTxj4zpwJqjZ4E=;
-        b=sdbzlbOrjwmsl7fIXziSB8ouemN32bhCfJlEE6Sb535bIEHiOXnhG0vJ8BglktXAQF
-         DjDnLRrV/hTUFqc/+1SwtkVG+iElBYtklhABoqPNchhrBpY5bG1HeOzNMaxDKtafkGJz
-         SI/96Du+EZJcc5EKDdlibWvR3pEuiNXjBM7uBqoy6jWkDOoNl7jTczW0+ugbwf6iNRCa
-         GWAXIFKWjIRGb3pCug4Doqdd6hB5f6ZgOWWtIgNVO0KOG7VwkYQFy3YrD9lRjBPGcds3
-         mitjPhb1BwwfVacawQtR+gaNv0omphZMC4G/+KD3Cci9ehu4UxkXDlXzlBzSPk95HW5e
-         EIaw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iDSNQu5NM+JSr0tP1LCdotPyYAi2OsIrNzI95rF2jLM=;
+        b=Wk9beM0ZuTM7Vvr1Luqi134+ji9BdS1x3V69EH9tnUFokkToxQDoViFDZI6I0SuQZ3
+         gDJIsHoociP/gdMpHtgtwqCQKaGflpWSbpx6okE1ZC3Bg0SeFgNrjLblV/LziALzLHcl
+         ptMQGr7+kxWRWaSG2B4n+QlU/cgdjx56fnI064zVGqcx9EQq9L8Gs6+fz3V5SgpushiI
+         7qc7LPm/5O8IqB+cbCN3HhTm/P/KSCFjg7gx08rZ9JraT7p6dOrVDO7eitJ9d3EwmnmJ
+         p1JgAoZE1f9uNSioWhSrH2or3FM108+bIhL2x5xHbqEh3shUQ8KvvFvChVTMitQyN9Du
+         XGDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DwkcJJkezbH+OWBWg9sYsAUeeDyjJOTxj4zpwJqjZ4E=;
-        b=LBzFidtk7XcOFvddkWx4qFh73qTpQzE1dymMrI+10lEcfkCJgcpbHRw+i4ddRbQSGt
-         3v7vjyCFudxqlCxpJokiczcxO+Atw1K+PlxGKq0ynQ+WIoj7MpauqSswbMMpjbTV/7kl
-         LShja888QVlcQXbcoPal3V2zV0n/KQqkBtlErmxIRlbdP/gpod+wYaDf3XB9GCXPO/VX
-         i8RGKldtkrnSaJWoMT0FvCUfFDbHzdSFkG9qnqWa4eq8j5dg34VZN3XTPJWy3WO1WVtZ
-         6TqcfsiwiMnSIH3YcLFsVzlldsWMszkXMT3tRfZ9iF6PUZfCw+yBPImFNvxBWF7zTyGg
-         kcuQ==
-X-Gm-Message-State: AGi0PuZliJsu8GD7SXRyxl9bm5AqCWFQPCqcr6yUFhI4y6C0HMfA0zDP
-        Y0nYR7gKHXmT0gevV/5elu4=
-X-Google-Smtp-Source: APiQypKl87mtTb2xr/0j9uvsdmMZKI3mlnm59JiOJrw2mZvT9j/EGTWcVTvVe1f6mfoH6pUosYlzGQ==
-X-Received: by 2002:a63:6d86:: with SMTP id i128mr10798050pgc.432.1589251006272;
-        Mon, 11 May 2020 19:36:46 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:1c7e])
-        by smtp.gmail.com with ESMTPSA id a200sm10217618pfa.201.2020.05.11.19.36.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 19:36:45 -0700 (PDT)
-Date:   Mon, 11 May 2020 19:36:41 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     sdf@google.com
-Cc:     davem@davemloft.net, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com,
-        linux-security-module@vger.kernel.org, acme@redhat.com,
-        jamorris@linux.microsoft.com, jannh@google.com, kpsingh@google.com
-Subject: Re: [PATCH v5 bpf-next 2/3] bpf: implement CAP_BPF
-Message-ID: <20200512023641.jupgmhpliblkli4t@ast-mbp.dhcp.thefacebook.com>
-References: <20200508215340.41921-1-alexei.starovoitov@gmail.com>
- <20200508215340.41921-3-alexei.starovoitov@gmail.com>
- <20200512001210.GA235661@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iDSNQu5NM+JSr0tP1LCdotPyYAi2OsIrNzI95rF2jLM=;
+        b=K3ElJ+8tsePflMWLCXZcDKDr56g2UnzQmZc9YG0UsPxPr4/rMmEHwkuJbpO9jVXeYp
+         fH53DMslTY0XCTPFnUXCbTydOgeFvMo7/RZSu4fGa8ZNgoqOJcL1BGZOgJ4Su4xxtsUc
+         jHSfB7FL3ZAgONqKv9JltvJrvhkRkRLSSxbxSvYOUlz2bm3tfMp1TigRoxxOBZ3Erm94
+         MzInIklkpObRkHBysMPF/tFaKlyd6TCQZCP7QJwU+sCXv3Ngl/IfPCHPbAP45k+O4x0w
+         Ej569TLnc/JoJcP+Sgpq18XtVch04XRFq9LSUM6xrzdqS0ZesBX3ecnpbTx2PYShO/lr
+         b1/Q==
+X-Gm-Message-State: AGi0PubFKrNyMXMV0TI5jgYUkEZ8A0LwRPNeXe7t3RkJY3UXVOrf6NOa
+        i/c/xlBUG+PPIUrJsfg3AImOEqMP3WaymLwoTwg=
+X-Google-Smtp-Source: APiQypJR+NgNb8jXGD5moiJeP4WXbMZ1gSqDYU5of7kWANkHQCtZSsWX0L2Qu7hPWCAgemIdIdsXnpZ6SzXJPTt6t8c=
+X-Received: by 2002:ae9:efc1:: with SMTP id d184mr20214909qkg.437.1589253229629;
+ Mon, 11 May 2020 20:13:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200512001210.GA235661@google.com>
+References: <158871160668.7537.2576154513696580062.stgit@john-Precision-5820-Tower>
+ <CAEf4BzahfsBO0Xy2+65MH7x8MY6vFkHSLSb27g9mHSj6kuDHDg@mail.gmail.com> <5eb6c45fa83a6_10632b06ebe825c0d0@john-XPS-13-9370.notmuch>
+In-Reply-To: <5eb6c45fa83a6_10632b06ebe825c0d0@john-XPS-13-9370.notmuch>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 11 May 2020 20:13:38 -0700
+Message-ID: <CAEf4BzbT4ENMcCC5+ubxVjMggz3OGa1jBT741g8_MxbYzgN0=Q@mail.gmail.com>
+Subject: Re: [bpf-next PATCH 00/10] bpf: selftests, test_sockmap improvements
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Lorenz Bauer <lmb@cloudflare.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 11, 2020 at 05:12:10PM -0700, sdf@google.com wrote:
-> On 05/08, Alexei Starovoitov wrote:
-> > From: Alexei Starovoitov <ast@kernel.org>
-> [..]
-> > @@ -3932,7 +3977,7 @@ SYSCALL_DEFINE3(bpf, int, cmd, union bpf_attr
-> > __user *, uattr, unsigned int, siz
-> >   	union bpf_attr attr;
-> >   	int err;
-> 
-> > -	if (sysctl_unprivileged_bpf_disabled && !capable(CAP_SYS_ADMIN))
-> > +	if (sysctl_unprivileged_bpf_disabled && !bpf_capable())
-> >   		return -EPERM;
-> This is awesome, thanks for reviving the effort!
-> 
-> One question I have about this particular snippet:
-> Does it make sense to drop bpf_capable checks for the operations
-> that work on a provided fd?
+On Sat, May 9, 2020 at 7:55 AM John Fastabend <john.fastabend@gmail.com> wrote:
+>
+> Andrii Nakryiko wrote:
+> > On Tue, May 5, 2020 at 1:50 PM John Fastabend <john.fastabend@gmail.com> wrote:
+> > >
+> > > Update test_sockmap to add ktls tests and in the process make output
+> > > easier to understand and reduce overall runtime significantly. Before
+> > > this series test_sockmap did a poor job of tracking sent bytes causing
+> > > the recv thread to wait for a timeout even though all expected bytes
+> > > had been received. Doing this many times causes significant delays.
+> > > Further, we did many redundant tests because the send/recv test we used
+> > > was not specific to the parameters we were testing. For example testing
+> > > a failure case that always fails many times with different send sizes
+> > > is mostly useless. If the test condition catches 10B in the kernel code
+> > > testing 100B, 1kB, 4kB, and so on is just noise.
+> > >
+> > > The main motivation for this is to add ktls tests, the last patch. Until
+> > > now I have been running these locally but we haven't had them checked in
+> > > to selftests. And finally I'm hoping to get these pushed into the libbpf
+> > > test infrastructure so we can get more testing. For that to work we need
+> > > ability to white and blacklist tests based on kernel features so we add
+> > > that here as well.
+> > >
+> > > The new output looks like this broken into test groups with subtest
+> > > counters,
+> > >
+> > >  $ time sudo ./test_sockmap
+> > >  # 1/ 6  sockmap:txmsg test passthrough:OK
+> > >  # 2/ 6  sockmap:txmsg test redirect:OK
+> > >  ...
+> > >  #22/ 1 sockhash:txmsg test push/pop data:OK
+> > >  Pass: 22 Fail: 0
+> > >
+> > >  real    0m9.790s
+> > >  user    0m0.093s
+> > >  sys     0m7.318s
+> > >
+> > > The old output printed individual subtest and was rather noisy
+> > >
+> > >  $ time sudo ./test_sockmap
+> > >  [TEST 0]: (1, 1, 1, sendmsg, pass,): PASS
+> > >  ...
+> > >  [TEST 823]: (16, 1, 100, sendpage, ... ,pop (1599,1609),): PASS
+> > >  Summary: 824 PASSED 0 FAILED
+> > >
+> > >  real    0m56.761s
+> > >  user    0m0.455s
+> > >  sys     0m31.757s
+> > >
+> > > So we are able to reduce time from ~56s to ~10s. To recover older more
+> > > verbose output simply run with --verbose option. To whitelist and
+> > > blacklist tests use the new --whitelist and --blacklist flags added. For
+> > > example to run cork sockhash tests but only ones that don't have a receive
+> > > hang (used to test negative cases) we could do,
+> > >
+> > >  $ ./test_sockmap --whitelist="cork" --blacklist="sockmap,hang"
+> > >
+> > > ---
+> >
+> > A lot of this seems to be re-implementing good chunks of what we
+> > already have in test_progs. Would it make more sense to either extract
+> > test runner pieces from test_progs into something that can be easily
+> > re-used for creating other test runners or just fold all these test
+> > into test_progs framework? None of this code is fun to write and
+> > maintain, so I'd rather have less copies of it :)
+>
+> I like having its own test runner for test_sockmap. At leat I like
+> having the CLI around to run arbitrary tests while doing devloping
+> of BPF programs and on the kernel side.
 
-Above snippet is for the case when sysctl switches unpriv off.
-It was a big hammer and stays big hammer.
-I certainly would like to improve the situation, but I suspect
-the folks who turn that sysctl knob on are simply paranoid about bpf
-and no amount of reasoning would turn them around.
+Keeping them in separate binary is fine with me, but just wanted to
+make sure you are aware of -t and -n options to test_progs? -t
+test-substring[/subtest-substring] allows to select test(s), and,
+optionally, subtests(s) by substring of their names. -n allows to do
+selection by test/subtest numbers. This allows a very nice way to
+debug/develop singular test or a small subset of tests. Just FYI, in
+case you missed this feature.
 
-> The use-case I have in mind is as follows:
-> * privileged (CAP_BPF) process loads the programs/maps and pins
->   them at some known location
-> * unprivileged process opens up those pins and does the following:
->   * prepares the maps (and will later on read them)
->   * does SO_ATTACH_BPF/SO_ATTACH_REUSEPORT_EBPF which afaik don't
->     require any capabilities
-> 
-> This essentially pushes some of the permission checks into a fs layer. So
-> whoever has a file descriptor (via unix sock or open) can do BPF operations
-> on the object that represents it.
+>
+> We could fold all the test progs into progs framework but because
+> I want to keep test_sockmap CLI around it didn't make much sense.
+> I would still need most the code for the tool.
+>
+> So I think the best thing is to share as much code as possible.
+> I am working on a series behind this to share more code on the
+> socket attach, listend, send/recv side but seeing this series was
+> getting large and adds the ktls support which I want in selftests
+> asap I pushed it. Once test_sockmap starts using the shared socket
+> senders, receivers, etc. I hope lots of code will dissapper.
+>
+> The next easy candidate is the cgroup helpers. test_progs has
+> test__join_cgroup() test_sockmap has equivelent.
+>
+> Its possible we could have used the same prog_test_def{} struct
+> but it seemed a bit overkill to me for this the _test{} struct
+> and helpers is ~50 lines here. Getting the socket handling and
+> cgroup handling into helpers seems like a bigger win.
 
-cap_bpf doesn't change things in that regard.
-Two cases here:
-sysctl_unprivileged_bpf_disabled==0:
-  Unpriv can load socket_filter prog type and unpriv can attach it
-  via SO_ATTACH_BPF/SO_ATTACH_REUSEPORT_EBPF.
-sysctl_unprivileged_bpf_disabled==1:
-  cap_sys_admin can load socket_filter and unpriv can attach it.
+Test_progs is doing a bit more than just that. It's about 600 lines of
+code just in test_progs.c, which does generic test
+running/reporting/logging interception, etc. Plus some more in
+test_progs.h. So I think sharing that "test runner base" could save
+more code and allow more flexible test runner experience.
 
-With addition of cap_bpf in the second case cap_bpf process can
-load socket_filter too.
-It doesn't mean that permissions are pushed into fs layer.
-I'm not sure that relaxing of sysctl_unprivileged_bpf_disabled
-will be well received.
-Are you proposing to selectively allow certain bpf syscall commands
-even when sysctl_unprivileged_bpf_disabled==1 ?
-Like allow unpriv to do BPF_OBJ_GET to get an fd from bpffs ?
-And allow unpriv to do map_update ? 
-It makes complete sense to me, but I'd like to argue about that
-independently from this cap_bpf set.
-We can relax that sysctl later.
+>
+> Maybe the blacklist/whitelist could be reused with some refactoring
+> and avoid one-off codei for that as well.
+>
+> Bottom line for me is this series improves things a lot on
+> the test_sockmap side with a reasonable patch series size. I
+> agree with your sentiment though and would propose doing those
+> things in follow up series likely in this order: socket handlers,
+> cgroup handlers, tester structure.
+
+Yep, makes sense. I just wanted to make sure that this is on the table. Thanks!
+
+>
+> Thanks!
+>
+>
+> >
+> > >
+> > > John Fastabend (10):
+> > >       bpf: selftests, move sockmap bpf prog header into progs
+> > >       bpf: selftests, remove prints from sockmap tests
+> > >       bpf: selftests, sockmap test prog run without setting cgroup
+> > >       bpf: selftests, print error in test_sockmap error cases
+> > >       bpf: selftests, improve test_sockmap total bytes counter
+> > >       bpf: selftests, break down test_sockmap into subtests
+> > >       bpf: selftests, provide verbose option for selftests execution
+> > >       bpf: selftests, add whitelist option to test_sockmap
+> > >       bpf: selftests, add blacklist to test_sockmap
+> > >       bpf: selftests, add ktls tests to test_sockmap
+> > >
+> > >
+> > >  .../selftests/bpf/progs/test_sockmap_kern.h        |  299 +++++++
+> > >  tools/testing/selftests/bpf/test_sockmap.c         |  911 ++++++++++----------
+> > >  tools/testing/selftests/bpf/test_sockmap_kern.h    |  451 ----------
+> > >  3 files changed, 769 insertions(+), 892 deletions(-)
+> > >  create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_kern.h
+> > >  delete mode 100644 tools/testing/selftests/bpf/test_sockmap_kern.h
+> > >
+> > > --
+> > > Signature
+>
+>
