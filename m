@@ -2,415 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F091CFEA2
-	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 21:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE3F91CFEF0
+	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 22:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731118AbgELTrK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 May 2020 15:47:10 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:28324 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731073AbgELTrJ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 12 May 2020 15:47:09 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04CJhaOb019306
-        for <bpf@vger.kernel.org>; Tue, 12 May 2020 12:47:07 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=facebook;
- bh=jrGcGYevxkVpD8cFzVZazMFSjTBHwSqNFA25Sc2s7Fw=;
- b=m11x9ly0+S2jhv2jE646z9mFCujIhm1FDnAy9SWOH9Tdn6/7DwCVDj7cSH4hGZz1kKOK
- sUzWxsK3ArNgH0afcid7hj2yUJwV+Gng87hq+kb3BOTRxfl6uOVg90sBZtef0q5w/LOm
- BQsOBTXwMUgT7/qlb0flo237el1FwtGpnQ0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3100wfrg70-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 12 May 2020 12:47:07 -0700
-Received: from intmgw002.08.frc2.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Tue, 12 May 2020 12:47:06 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id E9A072EC317E; Tue, 12 May 2020 12:47:04 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v3 bpf-next 4/4] selftest/bpf: add BPF triggering benchmark
-Date:   Tue, 12 May 2020 12:24:45 -0700
-Message-ID: <20200512192445.2351848-5-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200512192445.2351848-1-andriin@fb.com>
-References: <20200512192445.2351848-1-andriin@fb.com>
+        id S1731065AbgELUHU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 May 2020 16:07:20 -0400
+Received: from www62.your-server.de ([213.133.104.62]:54528 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730610AbgELUHU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 May 2020 16:07:20 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jYbBF-0007ZL-8n; Tue, 12 May 2020 22:07:09 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jYbBE-000H0y-Sf; Tue, 12 May 2020 22:07:08 +0200
+Subject: Re: [PATCH v5 bpf-next 2/3] bpf: implement CAP_BPF
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com, linux-security-module@vger.kernel.org,
+        acme@redhat.com, jamorris@linux.microsoft.com, jannh@google.com,
+        kpsingh@google.com
+References: <20200508215340.41921-1-alexei.starovoitov@gmail.com>
+ <20200508215340.41921-3-alexei.starovoitov@gmail.com>
+ <2aac2366-151a-5ae1-d65f-9232433f425f@iogearbox.net>
+ <20200512182515.7kvp6lvtnsij4jvj@ast-mbp>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2203fb7d-f1e5-a9a1-8dfc-98c8c9ce3889@iogearbox.net>
+Date:   Tue, 12 May 2020 22:07:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-12_07:2020-05-11,2020-05-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 spamscore=0
- lowpriorityscore=0 impostorscore=0 suspectscore=9 phishscore=0
- priorityscore=1501 clxscore=1015 bulkscore=0 adultscore=0 malwarescore=0
- cotscore=-2147483648 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005120149
-X-FB-Internal: deliver
+In-Reply-To: <20200512182515.7kvp6lvtnsij4jvj@ast-mbp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25810/Tue May 12 14:14:24 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-It is sometimes desirable to be able to trigger BPF program from user-spa=
-ce
-with minimal overhead. sys_enter would seem to be a good candidate, yet i=
-n
-a lot of cases there will be a lot of noise from syscalls triggered by ot=
-her
-processes on the system. So while searching for low-overhead alternative,=
- I've
-stumbled upon getpgid() syscall, which seems to be specific enough to not
-suffer from accidental syscall by other apps.
+On 5/12/20 8:25 PM, Alexei Starovoitov wrote:
+> On Tue, May 12, 2020 at 04:35:41PM +0200, Daniel Borkmann wrote:
+>> On 5/8/20 11:53 PM, Alexei Starovoitov wrote:
+>>> From: Alexei Starovoitov <ast@kernel.org>
+>>>
+>>> Implement permissions as stated in uapi/linux/capability.h
+>>> In order to do that the verifier allow_ptr_leaks flag is split
+>>> into allow_ptr_leaks and bpf_capable flags and they are set as:
+>>>     env->allow_ptr_leaks = perfmon_capable();
+>>>     env->bpf_capable = bpf_capable();
+>>>
+>>> bpf_capable enables bounded loops, variable stack access and other verifier features.
+>>> allow_ptr_leaks enable ptr leaks, ptr conversions, subtraction of pointers, etc.
+>>> It also disables side channel mitigations.
+>>>
+>>> That means that the networking BPF program loaded with CAP_BPF + CAP_NET_ADMIN will
+>>> have speculative checks done by the verifier and other spectre mitigation applied.
+>>> Such networking BPF program will not be able to leak kernel pointers.
+>>
+>> I don't quite follow this part in the code below yet, see my comments.
+>>
+>>> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+>> [...]
+>>> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+>>> index 6abd5a778fcd..c32a7880fa62 100644
+>>> --- a/include/linux/bpf_verifier.h
+>>> +++ b/include/linux/bpf_verifier.h
+>>> @@ -375,6 +375,7 @@ struct bpf_verifier_env {
+>>>    	u32 used_map_cnt;		/* number of used maps */
+>>>    	u32 id_gen;			/* used to generate unique reg IDs */
+>>>    	bool allow_ptr_leaks;
+>>> +	bool bpf_capable;
+>>>    	bool seen_direct_write;
+>>>    	struct bpf_insn_aux_data *insn_aux_data; /* array of per-insn state */
+>>>    	const struct bpf_line_info *prev_linfo;
+>>> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+>>> index 95d77770353c..264a9254dc39 100644
+>>> --- a/kernel/bpf/arraymap.c
+>>> +++ b/kernel/bpf/arraymap.c
+>>> @@ -77,7 +77,7 @@ static struct bpf_map *array_map_alloc(union bpf_attr *attr)
+>>>    	bool percpu = attr->map_type == BPF_MAP_TYPE_PERCPU_ARRAY;
+>>>    	int ret, numa_node = bpf_map_attr_numa_node(attr);
+>>>    	u32 elem_size, index_mask, max_entries;
+>>> -	bool unpriv = !capable(CAP_SYS_ADMIN);
+>>> +	bool unpriv = !bpf_capable();
+>>
+>> So here progs loaded with CAP_BPF will have spectre mitigations bypassed which
+>> is the opposite of above statement, no?
+> 
+> right. good catch, but now I'm not sure it was such a good call to toss
+> spectre into cap_perfmon. It probably should be disabled under cap_bpf.
 
-This set of benchmarks compares tp, raw_tp w/ filtering by syscall ID, kp=
-robe,
-fentry and fmod_ret with returning error (so that syscall would not be
-executed), to determine the lowest-overhead way. Here are results on my
-machine (using benchs/run_bench_trigger.sh script):
+Right. :( Too bad CAP_*s are not more fine-grained today for more descriptive
+policy. I would presume granting both CAP_BPF + CAP_PERFMON combination is not
+always desired either, so probably makes sense to leave it out with a clear
+description in patch 1/3 for CAP_BPF about the implications.
 
-  base      :    9.200 =C2=B1 0.319M/s
-  tp        :    6.690 =C2=B1 0.125M/s
-  rawtp     :    8.571 =C2=B1 0.214M/s
-  kprobe    :    6.431 =C2=B1 0.048M/s
-  fentry    :    8.955 =C2=B1 0.241M/s
-  fmodret   :    8.903 =C2=B1 0.135M/s
+>>>    	u64 cost, array_size, mask64;
+>>>    	struct bpf_map_memory mem;
+>>>    	struct bpf_array *array;
+>> [...]
+>>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>>> index 6aa11de67315..8f421dd0c4cf 100644
+>>> --- a/kernel/bpf/core.c
+>>> +++ b/kernel/bpf/core.c
+>>> @@ -646,7 +646,7 @@ static bool bpf_prog_kallsyms_verify_off(const struct bpf_prog *fp)
+>>>    void bpf_prog_kallsyms_add(struct bpf_prog *fp)
+>>>    {
+>>>    	if (!bpf_prog_kallsyms_candidate(fp) ||
+>>> -	    !capable(CAP_SYS_ADMIN))
+>>> +	    !bpf_capable())
+>>>    		return;
+>>>    	bpf_prog_ksym_set_addr(fp);
+>>> @@ -824,7 +824,7 @@ static int bpf_jit_charge_modmem(u32 pages)
+>>>    {
+>>>    	if (atomic_long_add_return(pages, &bpf_jit_current) >
+>>>    	    (bpf_jit_limit >> PAGE_SHIFT)) {
+>>> -		if (!capable(CAP_SYS_ADMIN)) {
+>>> +		if (!bpf_capable()) {
+>>
+>> Should there still be an upper charge on module mem for !CAP_SYS_ADMIN?
+> 
+> hmm. cap_bpf is a subset of cap_sys_admin. I don't see a reason
+> to keep requiring cap_sys_admin here.
 
-So it seems like fmodret doesn't give much benefit for such lightweight
-syscall. Raw tracepoint is pretty decent despite additional filtering log=
-ic,
-but it will be called for any other syscall in the system, which rules it=
- out.
-Fentry, though, seems to be adding the least amoung of overhead and achie=
-ves
-97.3% of performance of baseline no-BPF-attached syscall.
+It should probably be described in the CAP_BPF comment as well since this
+is different compared to plain unpriv.
 
-Using getpgid() seems to be preferable to set_task_comm() approach from
-test_overhead, as it's about 2.35x faster in a baseline performance.
+>>>    			atomic_long_sub(pages, &bpf_jit_current);
+>>>    			return -EPERM;
+>>>    		}
+>> [...]
+>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>>> index 70ad009577f8..a6893746cd87 100644
+>>> --- a/kernel/bpf/verifier.c
+>>> +++ b/kernel/bpf/verifier.c
+>> [...]
+>>> @@ -3428,7 +3429,7 @@ static int check_stack_boundary(struct bpf_verifier_env *env, int regno,
+>>>    		 * Spectre masking for stack ALU.
+>>>    		 * See also retrieve_ptr_limit().
+>>>    		 */
+>>> -		if (!env->allow_ptr_leaks) {
+>>> +		if (!env->bpf_capable) {
+>>
+>> This needs to stay on env->allow_ptr_leaks, the can_skip_alu_sanitation() does
+>> check on env->allow_ptr_leaks as well, otherwise this breaks spectre mitgation
+>> when masking alu.
+> 
+> The patch kept it in can_skip_alu_sanitation(), but I missed it here.
+> Don't really recall the details of discussion around
+> commit 088ec26d9c2d ("bpf: Reject indirect var_off stack access in unpriv mode")
+> 
+> So thinking all over this bit will effectively disable variable
+> stack access which is one of main usability features.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/testing/selftests/bpf/Makefile          |   4 +-
- tools/testing/selftests/bpf/bench.c           |  12 ++
- .../selftests/bpf/benchs/bench_trigger.c      | 167 ++++++++++++++++++
- .../selftests/bpf/benchs/run_bench_trigger.sh |   9 +
- .../selftests/bpf/progs/trigger_bench.c       |  47 +++++
- 5 files changed, 238 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/benchs/bench_trigger.c
- create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_trigger.=
-sh
- create mode 100644 tools/testing/selftests/bpf/progs/trigger_bench.c
+The reason is that we otherwise cannot derive a fixed limit for the masking
+in order to avoid oob access under speculation.
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-index 3c43d4eceba8..352d17a16bae 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -411,11 +411,13 @@ $(OUTPUT)/bench_%.o: benchs/bench_%.c bench.h
- 	$(call msg,CC,,$@)
- 	$(CC) $(CFLAGS) -c $(filter %.c,$^) $(LDLIBS) -o $@
- $(OUTPUT)/bench_rename.o: $(OUTPUT)/test_overhead.skel.h
-+$(OUTPUT)/bench_trigger.o: $(OUTPUT)/trigger_bench.skel.h
- $(OUTPUT)/bench.o: bench.h testing_helpers.h
- $(OUTPUT)/bench: LDLIBS +=3D -lm
- $(OUTPUT)/bench: $(OUTPUT)/bench.o $(OUTPUT)/testing_helpers.o \
- 		 $(OUTPUT)/bench_count.o \
--		 $(OUTPUT)/bench_rename.o
-+		 $(OUTPUT)/bench_rename.o \
-+		 $(OUTPUT)/bench_trigger.o
- 	$(call msg,BINARY,,$@)
- 	$(CC) $(LDFLAGS) -o $@ $(filter %.a %.o,$^) $(LDLIBS)
-=20
-diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftest=
-s/bpf/bench.c
-index c9e8b7dbaf66..8c0dfbfe6088 100644
---- a/tools/testing/selftests/bpf/bench.c
-+++ b/tools/testing/selftests/bpf/bench.c
-@@ -304,6 +304,12 @@ extern const struct bench bench_rename_rawtp;
- extern const struct bench bench_rename_fentry;
- extern const struct bench bench_rename_fexit;
- extern const struct bench bench_rename_fmodret;
-+extern const struct bench bench_trig_base;
-+extern const struct bench bench_trig_tp;
-+extern const struct bench bench_trig_rawtp;
-+extern const struct bench bench_trig_kprobe;
-+extern const struct bench bench_trig_fentry;
-+extern const struct bench bench_trig_fmodret;
-=20
- static const struct bench *benchs[] =3D {
- 	&bench_count_global,
-@@ -315,6 +321,12 @@ static const struct bench *benchs[] =3D {
- 	&bench_rename_fentry,
- 	&bench_rename_fexit,
- 	&bench_rename_fmodret,
-+	&bench_trig_base,
-+	&bench_trig_tp,
-+	&bench_trig_rawtp,
-+	&bench_trig_kprobe,
-+	&bench_trig_fentry,
-+	&bench_trig_fmodret,
- };
-=20
- static void setup_benchmark()
-diff --git a/tools/testing/selftests/bpf/benchs/bench_trigger.c b/tools/t=
-esting/selftests/bpf/benchs/bench_trigger.c
-new file mode 100644
-index 000000000000..49c22832f216
---- /dev/null
-+++ b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-@@ -0,0 +1,167 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Facebook */
-+#include "bench.h"
-+#include "trigger_bench.skel.h"
-+
-+/* BPF triggering benchmarks */
-+static struct trigger_ctx {
-+	struct trigger_bench *skel;
-+} ctx;
-+
-+static struct counter base_hits;
-+
-+static void trigger_validate()
-+{
-+	if (env.consumer_cnt !=3D 1) {
-+		fprintf(stderr, "benchmark doesn't support multi-consumer!\n");
-+		exit(1);
-+	}
-+}
-+
-+static void *trigger_base_producer(void *input)
-+{
-+	while (true) {
-+		(void)syscall(__NR_getpgid);
-+		atomic_inc(&base_hits.value);
-+	}
-+	return NULL;
-+}
-+
-+static void trigger_base_measure(struct bench_res *res)
-+{
-+	res->hits =3D atomic_swap(&base_hits.value, 0);
-+}
-+
-+static void *trigger_producer(void *input)
-+{
-+	while (true)
-+		(void)syscall(__NR_getpgid);
-+	return NULL;
-+}
-+
-+static void trigger_measure(struct bench_res *res)
-+{
-+	res->hits =3D atomic_swap(&ctx.skel->bss->hits, 0);
-+}
-+
-+static void setup_ctx()
-+{
-+	setup_libbpf();
-+
-+	ctx.skel =3D trigger_bench__open_and_load();
-+	if (!ctx.skel) {
-+		fprintf(stderr, "failed to open skeleton\n");
-+		exit(1);
-+	}
-+}
-+
-+static void attach_bpf(struct bpf_program *prog)
-+{
-+	struct bpf_link *link;
-+
-+	link =3D bpf_program__attach(prog);
-+	if (IS_ERR(link)) {
-+		fprintf(stderr, "failed to attach program!\n");
-+		exit(1);
-+	}
-+}
-+
-+static void trigger_tp_setup()
-+{
-+	setup_ctx();
-+	attach_bpf(ctx.skel->progs.bench_trigger_tp);
-+}
-+
-+static void trigger_rawtp_setup()
-+{
-+	setup_ctx();
-+	attach_bpf(ctx.skel->progs.bench_trigger_raw_tp);
-+}
-+
-+static void trigger_kprobe_setup()
-+{
-+	setup_ctx();
-+	attach_bpf(ctx.skel->progs.bench_trigger_kprobe);
-+}
-+
-+static void trigger_fentry_setup()
-+{
-+	setup_ctx();
-+	attach_bpf(ctx.skel->progs.bench_trigger_fentry);
-+}
-+
-+static void trigger_fmodret_setup()
-+{
-+	setup_ctx();
-+	attach_bpf(ctx.skel->progs.bench_trigger_fmodret);
-+}
-+
-+static void *trigger_consumer(void *input)
-+{
-+	return NULL;
-+}
-+
-+const struct bench bench_trig_base =3D {
-+	.name =3D "trig-base",
-+	.validate =3D trigger_validate,
-+	.producer_thread =3D trigger_base_producer,
-+	.consumer_thread =3D trigger_consumer,
-+	.measure =3D trigger_base_measure,
-+	.report_progress =3D hits_drops_report_progress,
-+	.report_final =3D hits_drops_report_final,
-+};
-+
-+const struct bench bench_trig_tp =3D {
-+	.name =3D "trig-tp",
-+	.validate =3D trigger_validate,
-+	.setup =3D trigger_tp_setup,
-+	.producer_thread =3D trigger_producer,
-+	.consumer_thread =3D trigger_consumer,
-+	.measure =3D trigger_measure,
-+	.report_progress =3D hits_drops_report_progress,
-+	.report_final =3D hits_drops_report_final,
-+};
-+
-+const struct bench bench_trig_rawtp =3D {
-+	.name =3D "trig-rawtp",
-+	.validate =3D trigger_validate,
-+	.setup =3D trigger_rawtp_setup,
-+	.producer_thread =3D trigger_producer,
-+	.consumer_thread =3D trigger_consumer,
-+	.measure =3D trigger_measure,
-+	.report_progress =3D hits_drops_report_progress,
-+	.report_final =3D hits_drops_report_final,
-+};
-+
-+const struct bench bench_trig_kprobe =3D {
-+	.name =3D "trig-kprobe",
-+	.validate =3D trigger_validate,
-+	.setup =3D trigger_kprobe_setup,
-+	.producer_thread =3D trigger_producer,
-+	.consumer_thread =3D trigger_consumer,
-+	.measure =3D trigger_measure,
-+	.report_progress =3D hits_drops_report_progress,
-+	.report_final =3D hits_drops_report_final,
-+};
-+
-+const struct bench bench_trig_fentry =3D {
-+	.name =3D "trig-fentry",
-+	.validate =3D trigger_validate,
-+	.setup =3D trigger_fentry_setup,
-+	.producer_thread =3D trigger_producer,
-+	.consumer_thread =3D trigger_consumer,
-+	.measure =3D trigger_measure,
-+	.report_progress =3D hits_drops_report_progress,
-+	.report_final =3D hits_drops_report_final,
-+};
-+
-+const struct bench bench_trig_fmodret =3D {
-+	.name =3D "trig-fmodret",
-+	.validate =3D trigger_validate,
-+	.setup =3D trigger_fmodret_setup,
-+	.producer_thread =3D trigger_producer,
-+	.consumer_thread =3D trigger_consumer,
-+	.measure =3D trigger_measure,
-+	.report_progress =3D hits_drops_report_progress,
-+	.report_final =3D hits_drops_report_final,
-+};
-diff --git a/tools/testing/selftests/bpf/benchs/run_bench_trigger.sh b/to=
-ols/testing/selftests/bpf/benchs/run_bench_trigger.sh
-new file mode 100755
-index 000000000000..78e83f243294
---- /dev/null
-+++ b/tools/testing/selftests/bpf/benchs/run_bench_trigger.sh
-@@ -0,0 +1,9 @@
-+#!/bin/bash
-+
-+set -eufo pipefail
-+
-+for i in base tp rawtp kprobe fentry fmodret
-+do
-+	summary=3D$(sudo ./bench -w2 -d5 -a trig-$i | tail -n1 | cut -d'(' -f1 =
-| cut -d' ' -f3-)
-+	printf "%-10s: %s\n" $i "$summary"
-+done
-diff --git a/tools/testing/selftests/bpf/progs/trigger_bench.c b/tools/te=
-sting/selftests/bpf/progs/trigger_bench.c
-new file mode 100644
-index 000000000000..8b36b6640e7e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/trigger_bench.c
-@@ -0,0 +1,47 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+
-+#include <linux/bpf.h>
-+#include <asm/unistd.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+long hits =3D 0;
-+
-+SEC("tp/syscalls/sys_enter_getpgid")
-+int bench_trigger_tp(void *ctx)
-+{
-+	__sync_add_and_fetch(&hits, 1);
-+	return 0;
-+}
-+
-+SEC("raw_tp/sys_enter")
-+int BPF_PROG(bench_trigger_raw_tp, struct pt_regs *regs, long id)
-+{
-+	if (id =3D=3D __NR_getpgid)
-+		__sync_add_and_fetch(&hits, 1);
-+	return 0;
-+}
-+
-+SEC("kprobe/__x64_sys_getpgid")
-+int bench_trigger_kprobe(void *ctx)
-+{
-+	__sync_add_and_fetch(&hits, 1);
-+	return 0;
-+}
-+
-+SEC("fentry/__x64_sys_getpgid")
-+int bench_trigger_fentry(void *ctx)
-+{
-+	__sync_add_and_fetch(&hits, 1);
-+	return 0;
-+}
-+
-+SEC("fmod_ret/__x64_sys_getpgid")
-+int bench_trigger_fmodret(void *ctx)
-+{
-+	__sync_add_and_fetch(&hits, 1);
-+	return -22;
-+}
---=20
-2.24.1
+> So for v6 I'm thinking to put spectre bypass into cap_bpf.
+> allow_ptr_leak will mean only what the name says: pointer leaks only.
+> cap_bpf should not be given to user processes that want to become root
+> via spectre side channels.
 
+Yeah, I think it needs to be made crystal clear that from a security level
+CAP_BPF is effectively from a BPF point of view very close to CAP_SYS_ADMIN
+minus the remaining non-BPF stuff in there, so this should not be handed out
+loosely.
+
+> I think it's a usability trade-off for cap_bpf.
+> Without indirect var under cap_bpf too many networking progs will be forced to use
+> cap_bpf+net_net_admin+cap_perfmon only to pass the verifier
+> while they don't really care about reading arbitrary memory via cap_perfmon.
+
+If I recall correctly, at least for Cilium programs the var access restriction
+was not an issue - we don't use/need them in our code today, but it might differ
+on your side, for example. This brings us back that while CAP_BPF would solve
+the issue of not having to hand out the even wider CAP_SYS_ADMIN, it's still not
+the end of the tunnel either and we'll see need for something more fine-grained
+coming next.
+
+Thanks,
+Daniel
