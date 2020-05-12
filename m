@@ -2,91 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E9C1CF4D1
-	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 14:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA6C1CF52C
+	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 15:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727859AbgELMuR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 May 2020 08:50:17 -0400
-Received: from mail-40132.protonmail.ch ([185.70.40.132]:64926 "EHLO
-        mail-40132.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729519AbgELMuQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 May 2020 08:50:16 -0400
-Date:   Tue, 12 May 2020 12:50:05 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.ch;
-        s=protonmail; t=1589287814;
-        bh=Ld4AfSh+DgbNYfTa4km0zAH2heXRaC9744zQhOSEfVA=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=g7X3HR6LjSKU408SSycP5+qZ7bsrExg9BB9V21BFxGsOsmiCHhQjL14by8nlA0Yxh
-         SRIrMUZ5yNPvyd5BEoAqszvBT4UeNdAo8fvPg3nZ425mf4uPriQuuVpFHEOSSg/XHR
-         oTMt5G4BvmC2I8GO4Zj9MpdlWoWQkSbcQJwUlNBQ=
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-From:   Jordan Glover <Golden_Miller83@protonmail.ch>
-Cc:     "sdf@google.com" <sdf@google.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "acme@redhat.com" <acme@redhat.com>,
-        "jamorris@linux.microsoft.com" <jamorris@linux.microsoft.com>,
-        "jannh@google.com" <jannh@google.com>,
-        "kpsingh@google.com" <kpsingh@google.com>
-Reply-To: Jordan Glover <Golden_Miller83@protonmail.ch>
-Subject: Re: [PATCH v5 bpf-next 2/3] bpf: implement CAP_BPF
-Message-ID: <ZHW2pvJicBV52gi3gjsDNXDF6t7BteEoHKvEGeVueRPPDrEKGR0OMJjTlulOoOrDNNwcK2c7HE1lNEQw8F2G6SEGCCIAekGoY0T_cnJ-oSc=@protonmail.ch>
-In-Reply-To: <20200512023641.jupgmhpliblkli4t@ast-mbp.dhcp.thefacebook.com>
-References: <20200508215340.41921-1-alexei.starovoitov@gmail.com>
- <20200508215340.41921-3-alexei.starovoitov@gmail.com>
- <20200512001210.GA235661@google.com>
- <20200512023641.jupgmhpliblkli4t@ast-mbp.dhcp.thefacebook.com>
+        id S1729836AbgELNCy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 May 2020 09:02:54 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:60279 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725923AbgELNCx (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 12 May 2020 09:02:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589288571;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FHy5uGJufwajym7rdjrv9kV8JNPYEhlwWl3JM7PucCY=;
+        b=J/hp0fpS/3peFIOtEVXxg6DZqt2et6LZViqDGrUxW8B8tt164YxtCPI/YD6C4LXMreGO4I
+        ucE73db3mwVvRvYJRKFns3pbF9tGwWiadONyUPenAdKddEU7evbXLdiChHM9jYcOit/Hg3
+        w751mHee67rtxQNxPi+1kXTnuG/2R/U=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-446-YXCoDabvNkSuuFOzF15ECg-1; Tue, 12 May 2020 09:02:50 -0400
+X-MC-Unique: YXCoDabvNkSuuFOzF15ECg-1
+Received: by mail-lj1-f200.google.com with SMTP id k15so1876229ljj.5
+        for <bpf@vger.kernel.org>; Tue, 12 May 2020 06:02:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=FHy5uGJufwajym7rdjrv9kV8JNPYEhlwWl3JM7PucCY=;
+        b=pQ+EB2zE1kcrO2exJ/93pAEJBkDWDQqoNyouR7w67FnAYbxDifNKNMpxXuH61V4SNi
+         uFgueS5S/kgvLJUJDzrZmN2FVYd4qlsXtkLcXPvXxtaMhJd9Re8ixqUswT4BHLB/EGpV
+         rFnJ6606bnlvQEfzvvJCGSelQ399E7SbdfyJlixxAtRGNzWpdU1cS5Ulcj7QKHbBXopb
+         e58k2lIcZRX0ZVjKcwgx3E9OH2tQIz+Vy3X2G35kGfx3DvrnpVegYNHySMvHzKcKzn2t
+         lgv+Qu6m7XTyEt06v59ktEh1tSuwQZwvDSyDaDNFb62XBs7u55f7LMz9js5qG5FBgQWB
+         T9Iw==
+X-Gm-Message-State: AOAM531ylSZPa2ZYnNBix9s6aPgXn9f3mCvz5LxC/urVcyFlwzfGMS0s
+        +X5YUHQRZ/839c2bzBgYs0mavdUuBW9ewGuuUASDegDlKE0PE106XxrK/o3RN5edWZm0sLwb1Wn
+        YHdXTeyP9suX1
+X-Received: by 2002:a2e:7d12:: with SMTP id y18mr14072014ljc.211.1589288565979;
+        Tue, 12 May 2020 06:02:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw//hj7tAEVjb/rIsYU5rJTYqMEdazOE6/ECf5hTxekXy1ChR/FmjGiMg3QXRzt8dMPWQkstg==
+X-Received: by 2002:a2e:7d12:: with SMTP id y18mr14071998ljc.211.1589288565675;
+        Tue, 12 May 2020 06:02:45 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id y9sm12667048ljy.31.2020.05.12.06.02.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 06:02:43 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 0E1D9181509; Tue, 12 May 2020 15:02:43 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrey Ignatov <rdna@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: bpf: ability to attach freplace to multiple parents
+In-Reply-To: <alpine.LRH.2.21.2005121009220.22093@localhost>
+References: <CAEf4BzY+JsmxCfjMVizLWYU05VS6DiwKE=e564Egu1jMba6fXQ@mail.gmail.com> <87tv2e10ly.fsf@toke.dk> <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com> <87369wrcyv.fsf@toke.dk> <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com> <CACAyw9-FrwgBGjGT1CYrKJuyRJtwn0XUsifF_uR6LpRbcucN+A@mail.gmail.com> <20200326195340.dznktutm6yq763af@ast-mbp> <87o8sim4rw.fsf@toke.dk> <20200402202156.hq7wpz5vdoajpqp5@ast-mbp> <87o8s9eg5b.fsf@toke.dk> <20200402215452.dkkbbymnhzlcux7m@ast-mbp> <87h7wlwnyl.fsf@toke.dk> <alpine.LRH.2.21.2005121009220.22093@localhost>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 12 May 2020 15:02:42 +0200
+Message-ID: <87r1vpuwzx.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.7 required=7.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mail.protonmail.ch
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tuesday, May 12, 2020 2:36 AM, Alexei Starovoitov <alexei.starovoitov@gm=
-ail.com> wrote:
+Alan Maguire <alan.maguire@oracle.com> writes:
 
-> On Mon, May 11, 2020 at 05:12:10PM -0700, sdf@google.com wrote:
+> On Tue, 12 May 2020, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
 >
-> > On 05/08, Alexei Starovoitov wrote:
-> >
-> > > From: Alexei Starovoitov ast@kernel.org
-> > > [..]
-> > > @@ -3932,7 +3977,7 @@ SYSCALL_DEFINE3(bpf, int, cmd, union bpf_attr
-> > > __user *, uattr, unsigned int, siz
-> > > union bpf_attr attr;
-> > > int err;
-> >
-> > > -   if (sysctl_unprivileged_bpf_disabled && !capable(CAP_SYS_ADMIN))
-> > >
-> > > -   if (sysctl_unprivileged_bpf_disabled && !bpf_capable())
-> > >     return -EPERM;
-> > >     This is awesome, thanks for reviving the effort!
-> > >
-> >
-> > One question I have about this particular snippet:
-> > Does it make sense to drop bpf_capable checks for the operations
-> > that work on a provided fd?
+>> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>>=20
+>> >> > Currently fentry/fexit/freplace progs have single prog->aux->linked=
+_prog pointer.
+>> >> > It just needs to become a linked list.
+>> >> > The api extension could be like this:
+>> >> > bpf_raw_tp_open(prog_fd, attach_prog_fd, attach_btf_id);
+>> >> > (currently it's just bpf_raw_tp_open(prog_fd))
+>> >> > The same pair of (attach_prog_fd, attach_btf_id) is already passed =
+into prog_load
+>> >> > to hold the linked_prog and its corresponding btf_id.
+>> >> > I'm proposing to extend raw_tp_open with this pair as well to
+>> >> > attach existing fentry/fexit/freplace prog to another target.
+>> >> > Internally the kernel verify that btf of current linked_prog
+>> >> > exactly matches to btf of another requested linked_prog and
+>> >> > if they match it will attach the same prog to two target programs (=
+in case of freplace)
+>> >> > or two kernel functions (in case of fentry/fexit).
+>> >>=20
+>> >> API-wise this was exactly what I had in mind as well.
+>> >
+>> > perfect!
+>>
 >
-> Above snippet is for the case when sysctl switches unpriv off.
-> It was a big hammer and stays big hammer.
-> I certainly would like to improve the situation, but I suspect
-> the folks who turn that sysctl knob on are simply paranoid about bpf
-> and no amount of reasoning would turn them around.
->
+> Apologies in advance if I've missed a way to do this, but
+> for fentry/fexit, if we could attach the same program to
+> multiple kernel functions, it would be great it we could
+> programmatically access the BTF func proto id for the
+> attached function (prog->aux->attach_btf_id I think?).
 
-Without CAP_BPF, sysctl was the only option to keep you safe from flow
-of bpf vulns. You didn't had to be paranoid about that.
+Yes! I pushed for adding this to the GET_LINK_INFO operation, but it
+wasn't included the first time around; I still think it ought to be added.
 
-Jordan
+Actually in general, getting the btf_id of the currently running
+function for any type of BPF program would be good; e.g., for xdpdump we
+want to attach to a running XDP program, but we need the btf_id of the
+main function. And because the name can be truncated to BPF_OBJ_NAME_LEN
+when returned from the kernel, we have to walk the BTF info for the
+program, and basically guess...
+
+-Toke
+
