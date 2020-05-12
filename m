@@ -2,232 +2,223 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6162B1CF62F
-	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 15:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F35F71CF658
+	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 16:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729637AbgELNw4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 May 2020 09:52:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726891AbgELNw4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 May 2020 09:52:56 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E572DC061A0F
-        for <bpf@vger.kernel.org>; Tue, 12 May 2020 06:52:55 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id u16so23385160wmc.5
-        for <bpf@vger.kernel.org>; Tue, 12 May 2020 06:52:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=Zq55omEuEvgB9vlSmywwcqU/9eUwhdaCINvvFlYpd7E=;
-        b=EscL7hFLj3hSJ0yVelftgSOk+dLKEz8ujOtrGZt82du5ydK12x0HLwgQ1seiNhZlQj
-         G4/hllre3xV+iTH2jbQYAzOKgTNhhrGFOL5C0MNfKXXmxcsNXEEbOyi87HI/Juh7wxV9
-         25+paHW711mNGDu/qwlz/0JhtlO0R9XCcjPHk=
+        id S1730003AbgELOCO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 May 2020 10:02:14 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:33710 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728085AbgELOCO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 May 2020 10:02:14 -0400
+Received: by mail-il1-f198.google.com with SMTP id l18so13025403ilg.0
+        for <bpf@vger.kernel.org>; Tue, 12 May 2020 07:02:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=Zq55omEuEvgB9vlSmywwcqU/9eUwhdaCINvvFlYpd7E=;
-        b=Rd7u9lGfeZwMNYjj3MsjPTApfGXIa7m4Wu0ASWRfZ2Iscde5LQ3YPq6a4kkSmgbMRK
-         vwSzYbCzeQJAb8IRgyJ2EmDTDU8FYnA/dwnMTFQvYsagQUX8701n1lteb7kPfBym23jA
-         GgMApQ+lUGqN6Mncik/oP7uIj+9Zm9HuxVsgeip+k03jJD+1DiEMA52Q7Eg/OyekdWj1
-         FiFfVHTtG5Xqr8aFgObd1GYrsz1TC1VKkI/JaWCzZQ1GDvpmkxCg4w/VNjFNAkQ5B0ui
-         0Qne2ckw09zX7LPvwzcmzxgwI3YAJljdqbTZAX9dsLIuTeqRlj611LFMs2dE9BW9HXEz
-         EFEA==
-X-Gm-Message-State: AGi0PuZPXTtJPNJ/t9geGrtaY+ZpYo4q6a1hDtEtejROvEjU9UaS8o2+
-        mdgateRNNwsO7pJojcMh0GVDTw==
-X-Google-Smtp-Source: APiQypIhYlNCB706JpgHSgcF3mhOAfg+a2V0Z+Bq56eJiqRl08HhFazBmDZM8CGGj0okCR8+qdPEUA==
-X-Received: by 2002:a1c:2702:: with SMTP id n2mr12984805wmn.107.1589291574318;
-        Tue, 12 May 2020 06:52:54 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id s2sm326571wme.33.2020.05.12.06.52.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 06:52:53 -0700 (PDT)
-References: <20200511185218.1422406-1-jakub@cloudflare.com> <20200511185218.1422406-6-jakub@cloudflare.com> <20200511204445.i7sessmtszox36xd@ast-mbp>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, dccp@vger.kernel.org,
-        kernel-team@cloudflare.com, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Gerrit Renker <gerrit@erg.abdn.ac.uk>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: Re: [PATCH bpf-next v2 05/17] inet: Run SK_LOOKUP BPF program on socket lookup
-In-reply-to: <20200511204445.i7sessmtszox36xd@ast-mbp>
-Date:   Tue, 12 May 2020 15:52:52 +0200
-Message-ID: <871rnpuuob.fsf@cloudflare.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ApUfbBKXss95NclLx9kM/XjXz1kDhacodR9DJdHbYjU=;
+        b=mDcUGMcM5yrYYhqFMLrd29fT1UwQRCFFGsAYdqOhwPwRuUWOAOGWaXB8GKLpoJImNF
+         9NxQWX+zgN+1yFyLs/v88mxiE4TT0eiSJwlL2JqVCjaGe+i6c9z36NdIRnQyw2xa+H6s
+         liMUbs7zV0Sdl/8zlNpwuKTca5k+dqYSh+SFby4mSkzC8+j5rQyeOYfqURXdNywzZzEQ
+         PqqtLv3E91hfr9+DjVQ9CmMSHGzm6D3qfRlbzlTWCCHNotmwSMRXatoGS0MZmDmLXWlh
+         ncBfXa5tvBvsnPKm/VpBW/1O393BlXwwTT+TjZYsFGnAzDdubd1ZrBsQthgxBn3tJxQG
+         xSSw==
+X-Gm-Message-State: AGi0PuamrOtsoo+i7nTUv6CAeQubVhZzJOY9hDog+/Ex0IfmWPcygPpx
+        EZeTNa5fyURTpMN1K8AE1iuKAmCNmYCtb6WE/r25AaTG2ph3
+X-Google-Smtp-Source: APiQypJEGKAIOu+kFkxGEi88nzDtcQcrj6UeHvcIIMNofdDLC62Z5xNu1dlUmRUFAieqG61dAoLI8KwGpt1Zo0TLQ0ORFj2xPgjR
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a02:cd03:: with SMTP id g3mr20050399jaq.61.1589292132614;
+ Tue, 12 May 2020 07:02:12 -0700 (PDT)
+Date:   Tue, 12 May 2020 07:02:12 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000002499105a573e9a4@google.com>
+Subject: KMSAN: uninit-value in inet_gro_receive (3)
+From:   syzbot <syzbot+a83a64bf2be17a4479cf@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, glider@google.com,
+        kafai@fb.com, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 11, 2020 at 10:44 PM CEST, Alexei Starovoitov wrote:
-> On Mon, May 11, 2020 at 08:52:06PM +0200, Jakub Sitnicki wrote:
->> Run a BPF program before looking up a listening socket on the receive path.
->> Program selects a listening socket to yield as result of socket lookup by
->> calling bpf_sk_assign() helper and returning BPF_REDIRECT code.
->>
->> Alternatively, program can also fail the lookup by returning with BPF_DROP,
->> or let the lookup continue as usual with BPF_OK on return.
->>
->> This lets the user match packets with listening sockets freely at the last
->> possible point on the receive path, where we know that packets are destined
->> for local delivery after undergoing policing, filtering, and routing.
->>
->> With BPF code selecting the socket, directing packets destined to an IP
->> range or to a port range to a single socket becomes possible.
->>
->> Suggested-by: Marek Majkowski <marek@cloudflare.com>
->> Reviewed-by: Lorenz Bauer <lmb@cloudflare.com>
->> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
->> ---
->>  include/net/inet_hashtables.h | 36 +++++++++++++++++++++++++++++++++++
->>  net/ipv4/inet_hashtables.c    | 15 ++++++++++++++-
->>  2 files changed, 50 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
->> index 6072dfbd1078..3fcbc8f66f88 100644
->> --- a/include/net/inet_hashtables.h
->> +++ b/include/net/inet_hashtables.h
->> @@ -422,4 +422,40 @@ int __inet_hash_connect(struct inet_timewait_death_row *death_row,
->>
->>  int inet_hash_connect(struct inet_timewait_death_row *death_row,
->>  		      struct sock *sk);
->> +
->> +static inline struct sock *bpf_sk_lookup_run(struct net *net,
->> +					     struct bpf_sk_lookup_kern *ctx)
->> +{
->> +	struct bpf_prog *prog;
->> +	int ret = BPF_OK;
->> +
->> +	rcu_read_lock();
->> +	prog = rcu_dereference(net->sk_lookup_prog);
->> +	if (prog)
->> +		ret = BPF_PROG_RUN(prog, ctx);
->> +	rcu_read_unlock();
->> +
->> +	if (ret == BPF_DROP)
->> +		return ERR_PTR(-ECONNREFUSED);
->> +	if (ret == BPF_REDIRECT)
->> +		return ctx->selected_sk;
->> +	return NULL;
->> +}
->> +
->> +static inline struct sock *inet_lookup_run_bpf(struct net *net, u8 protocol,
->> +					       __be32 saddr, __be16 sport,
->> +					       __be32 daddr, u16 dport)
->> +{
->> +	struct bpf_sk_lookup_kern ctx = {
->> +		.family		= AF_INET,
->> +		.protocol	= protocol,
->> +		.v4.saddr	= saddr,
->> +		.v4.daddr	= daddr,
->> +		.sport		= sport,
->> +		.dport		= dport,
->> +	};
->> +
->> +	return bpf_sk_lookup_run(net, &ctx);
->> +}
->> +
->>  #endif /* _INET_HASHTABLES_H */
->> diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
->> index ab64834837c8..f4d07285591a 100644
->> --- a/net/ipv4/inet_hashtables.c
->> +++ b/net/ipv4/inet_hashtables.c
->> @@ -307,9 +307,22 @@ struct sock *__inet_lookup_listener(struct net *net,
->>  				    const int dif, const int sdif)
->>  {
->>  	struct inet_listen_hashbucket *ilb2;
->> -	struct sock *result = NULL;
->> +	struct sock *result, *reuse_sk;
->>  	unsigned int hash2;
->>
->> +	/* Lookup redirect from BPF */
->> +	result = inet_lookup_run_bpf(net, hashinfo->protocol,
->> +				     saddr, sport, daddr, hnum);
->> +	if (IS_ERR(result))
->> +		return NULL;
->> +	if (result) {
->> +		reuse_sk = lookup_reuseport(net, result, skb, doff,
->> +					    saddr, sport, daddr, hnum);
->> +		if (reuse_sk)
->> +			result = reuse_sk;
->> +		goto done;
->> +	}
->> +
->
-> The overhead is too high to do this all the time.
-> The feature has to be static_key-ed.
+Hello,
 
-Static keys is something that Lorenz has also suggested internally, but
-we wanted to keep it simple at first.
+syzbot found the following crash on:
 
-Introduction of static keys forces us to decide when non-init_net netns
-are allowed to attach to SK_LOOKUP, as attaching enabling SK_LOOKUP in
-isolated netns will affect the rx path in init_net.
+HEAD commit:    21c44613 kmsan: page_alloc: more assuring comment
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=1533f00c100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a5915107b3106aaa
+dashboard link: https://syzkaller.appspot.com/bug?extid=a83a64bf2be17a4479cf
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
 
-I see two options, which seem sensible:
+Unfortunately, I don't have any reproducer for this crash yet.
 
-1) limit SK_LOOKUP to init_net, which makes testing setup harder, or
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+a83a64bf2be17a4479cf@syzkaller.appspotmail.com
 
-2) allow non-init_net netns to attach to SK_LOOKUP only if static key
-   has been already enabled (via sysctl?).
+=====================================================
+BUG: KMSAN: uninit-value in pskb_may_pull include/linux/skbuff.h:2333 [inline]
+BUG: KMSAN: uninit-value in skb_gro_header_slow include/linux/netdevice.h:2768 [inline]
+BUG: KMSAN: uninit-value in inet_gro_receive+0x451/0x1a10 net/ipv4/af_inet.c:1423
+CPU: 0 PID: 9 Comm: ksoftirqd/0 Not tainted 5.6.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1c9/0x220 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
+ pskb_may_pull include/linux/skbuff.h:2333 [inline]
+ skb_gro_header_slow include/linux/netdevice.h:2768 [inline]
+ inet_gro_receive+0x451/0x1a10 net/ipv4/af_inet.c:1423
+ dev_gro_receive+0x2799/0x3260 net/core/dev.c:5774
+ napi_gro_receive+0x619/0xf90 net/core/dev.c:5908
+ gro_cell_poll+0x24c/0x400 net/core/gro_cells.c:60
+ napi_poll net/core/dev.c:6571 [inline]
+ net_rx_action+0x786/0x1aa0 net/core/dev.c:6639
+ __do_softirq+0x311/0x83d kernel/softirq.c:293
+ run_ksoftirqd+0x25/0x40 kernel/softirq.c:607
+ smpboot_thread_fn+0x493/0x980 kernel/smpboot.c:165
+ kthread+0x4b5/0x4f0 kernel/kthread.c:256
+ ret_from_fork+0x35/0x40 arch/x86/entry/entry_64.S:353
 
->
-> Also please add multi-prog support. Adding it later will cause
-> all sorts of compatibility issues. The semantics of multi-prog
-> needs to be thought through right now.
-> For example BPF_DROP or BPF_REDIRECT could terminate the prog_run_array
-> sequence of progs while BPF_OK could continue.
-> It's not ideal, but better than nothing.
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:310
+ __msan_chain_origin+0x50/0x90 mm/kmsan/kmsan_instr.c:165
+ __skb_pull include/linux/skbuff.h:2305 [inline]
+ skb_pull_inline include/linux/skbuff.h:2312 [inline]
+ eth_type_trans+0x684/0xa90 net/ethernet/eth.c:165
+ ip_tunnel_rcv+0xe8b/0x1ae0 net/ipv4/ip_tunnel.c:416
+ erspan_rcv net/ipv4/ip_gre.c:321 [inline]
+ gre_rcv+0x155e/0x1940 net/ipv4/ip_gre.c:419
+ gre_rcv+0x2dd/0x3c0 net/ipv4/gre_demux.c:163
+ ip_protocol_deliver_rcu+0x700/0xbc0 net/ipv4/ip_input.c:204
+ ip_local_deliver_finish net/ipv4/ip_input.c:231 [inline]
+ NF_HOOK include/linux/netfilter.h:307 [inline]
+ ip_local_deliver+0x62a/0x7c0 net/ipv4/ip_input.c:252
+ dst_input include/net/dst.h:442 [inline]
+ ip_rcv_finish net/ipv4/ip_input.c:428 [inline]
+ NF_HOOK include/linux/netfilter.h:307 [inline]
+ ip_rcv+0x6cf/0x750 net/ipv4/ip_input.c:538
+ __netif_receive_skb_one_core net/core/dev.c:5187 [inline]
+ __netif_receive_skb net/core/dev.c:5301 [inline]
+ process_backlog+0xf0b/0x1410 net/core/dev.c:6133
+ napi_poll net/core/dev.c:6571 [inline]
+ net_rx_action+0x786/0x1aa0 net/core/dev.c:6639
+ __do_softirq+0x311/0x83d kernel/softirq.c:293
 
-I must say this approach is quite appealing because it's simple to
-explain. I would need a custom BPF_PROG_RUN_ARRAY, though.
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:310
+ __msan_chain_origin+0x50/0x90 mm/kmsan/kmsan_instr.c:165
+ __skb_pull include/linux/skbuff.h:2305 [inline]
+ skb_pull_rcsum+0x2ca/0x4f0 net/core/skbuff.c:3621
+ __iptunnel_pull_header+0x14b/0xbd0 net/ipv4/ip_tunnel_core.c:97
+ erspan_rcv net/ipv4/ip_gre.c:279 [inline]
+ gre_rcv+0x6d8/0x1940 net/ipv4/ip_gre.c:419
+ gre_rcv+0x2dd/0x3c0 net/ipv4/gre_demux.c:163
+ ip_protocol_deliver_rcu+0x700/0xbc0 net/ipv4/ip_input.c:204
+ ip_local_deliver_finish net/ipv4/ip_input.c:231 [inline]
+ NF_HOOK include/linux/netfilter.h:307 [inline]
+ ip_local_deliver+0x62a/0x7c0 net/ipv4/ip_input.c:252
+ dst_input include/net/dst.h:442 [inline]
+ ip_rcv_finish net/ipv4/ip_input.c:428 [inline]
+ NF_HOOK include/linux/netfilter.h:307 [inline]
+ ip_rcv+0x6cf/0x750 net/ipv4/ip_input.c:538
+ __netif_receive_skb_one_core net/core/dev.c:5187 [inline]
+ __netif_receive_skb net/core/dev.c:5301 [inline]
+ process_backlog+0xf0b/0x1410 net/core/dev.c:6133
+ napi_poll net/core/dev.c:6571 [inline]
+ net_rx_action+0x786/0x1aa0 net/core/dev.c:6639
+ __do_softirq+0x311/0x83d kernel/softirq.c:293
 
-I'm curious what downside do you see here?
-Is overriding an earlier DROP/REDIRECT verdict useful?
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:310
+ kmsan_memcpy_memmove_metadata+0x272/0x2e0 mm/kmsan/kmsan.c:247
+ kmsan_memcpy_metadata+0xb/0x10 mm/kmsan/kmsan.c:267
+ __msan_memcpy+0x43/0x50 mm/kmsan/kmsan_instr.c:116
+ pskb_expand_head+0x38b/0x1b00 net/core/skbuff.c:1636
+ __skb_cow include/linux/skbuff.h:3169 [inline]
+ skb_cow_head include/linux/skbuff.h:3203 [inline]
+ ip_tunnel_xmit+0x2a10/0x34f0 net/ipv4/ip_tunnel.c:811
+ __gre_xmit net/ipv4/ip_gre.c:448 [inline]
+ erspan_xmit+0x1779/0x2ae0 net/ipv4/ip_gre.c:683
+ __netdev_start_xmit include/linux/netdevice.h:4523 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4537 [inline]
+ xmit_one net/core/dev.c:3477 [inline]
+ dev_hard_start_xmit+0x531/0xab0 net/core/dev.c:3493
+ sch_direct_xmit+0x512/0x18b0 net/sched/sch_generic.c:314
+ qdisc_restart net/sched/sch_generic.c:377 [inline]
+ __qdisc_run+0x15ec/0x3350 net/sched/sch_generic.c:385
+ qdisc_run include/net/pkt_sched.h:126 [inline]
+ __dev_xmit_skb net/core/dev.c:3668 [inline]
+ __dev_queue_xmit+0x23b7/0x3b20 net/core/dev.c:4021
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4085
+ neigh_resolve_output+0xab0/0xb40 net/core/neighbour.c:1487
+ neigh_output include/net/neighbour.h:510 [inline]
+ ip_finish_output2+0x1acc/0x2610 net/ipv4/ip_output.c:228
+ __ip_finish_output+0xaa7/0xd80 net/ipv4/ip_output.c:306
+ ip_finish_output+0x166/0x410 net/ipv4/ip_output.c:316
+ NF_HOOK_COND include/linux/netfilter.h:296 [inline]
+ ip_mc_output+0xfbf/0x1090 net/ipv4/ip_output.c:415
+ dst_output include/net/dst.h:436 [inline]
+ ip_local_out net/ipv4/ip_output.c:125 [inline]
+ ip_send_skb+0x179/0x360 net/ipv4/ip_output.c:1560
+ udp_send_skb+0x1046/0x18b0 net/ipv4/udp.c:891
+ udp_sendmsg+0x3bb5/0x4100 net/ipv4/udp.c:1178
+ inet_sendmsg+0x276/0x2e0 net/ipv4/af_inet.c:807
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ ____sys_sendmsg+0x1056/0x1350 net/socket.c:2345
+ ___sys_sendmsg net/socket.c:2399 [inline]
+ __sys_sendmmsg+0x5b6/0xc90 net/socket.c:2489
+ __do_sys_sendmmsg net/socket.c:2518 [inline]
+ __se_sys_sendmmsg+0xbd/0xe0 net/socket.c:2515
+ __x64_sys_sendmmsg+0x56/0x70 net/socket.c:2515
+ do_syscall_64+0xb8/0x160 arch/x86/entry/common.c:296
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-> Another option could be to execute all attached progs regardless
-> of return code, but don't let second prog override selected_sk blindly.
-> bpf_sk_assign() could get smarter.
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
+ kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:127
+ kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:80
+ slab_alloc_node mm/slub.c:2801 [inline]
+ __kmalloc_node_track_caller+0xb40/0x1200 mm/slub.c:4420
+ __kmalloc_reserve net/core/skbuff.c:142 [inline]
+ __alloc_skb+0x2fd/0xac0 net/core/skbuff.c:210
+ alloc_skb include/linux/skbuff.h:1081 [inline]
+ alloc_skb_with_frags+0x18c/0xa70 net/core/skbuff.c:5764
+ sock_alloc_send_pskb+0xada/0xc60 net/core/sock.c:2245
+ sock_alloc_send_skb+0xca/0xe0 net/core/sock.c:2262
+ __ip_append_data+0x3b41/0x5660 net/ipv4/ip_output.c:1089
+ ip_make_skb+0x394/0x880 net/ipv4/ip_output.c:1626
+ udp_sendmsg+0x36dc/0x4100 net/ipv4/udp.c:1173
+ inet_sendmsg+0x276/0x2e0 net/ipv4/af_inet.c:807
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ ____sys_sendmsg+0x1056/0x1350 net/socket.c:2345
+ ___sys_sendmsg net/socket.c:2399 [inline]
+ __sys_sendmmsg+0x5b6/0xc90 net/socket.c:2489
+ __do_sys_sendmmsg net/socket.c:2518 [inline]
+ __se_sys_sendmmsg+0xbd/0xe0 net/socket.c:2515
+ __x64_sys_sendmmsg+0x56/0x70 net/socket.c:2515
+ do_syscall_64+0xb8/0x160 arch/x86/entry/common.c:296
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+=====================================================
 
-So if IIUC the rough idea here would be like below?
 
-- 1st program calls
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-  bpf_sk_assign(ctx, sk1, 0 /*flags*/) -> 0 (OK)
-
-- 2nd program calls
-
-  bpf_sk_assign(ctx, sk2, 0) -> -EBUSY (already selected)
-  bpf_sk_assign(ctx, sk2, BPF_EXIST) -> 0 (OK, replace existing)
-
-In this case the last program to run has the final say, as opposed to
-the semantics where DROP/REDIRECT terminates.
-
-Also, 2nd and subsequent programs would probably need to know if and
-which socket has been already selected. I think the selection could be
-exposed in context as bpf_sock pointer.
-
-I admit, I can't quite see the benefit of running thru all programs in
-array, so I'm tempted to go with terminate of DROP/REDIRECT in v3.
-
->
-> Also please switch to bpf_link way of attaching. All system wide attachments
-> should be visible and easily debuggable via 'bpftool link show'.
-> Currently we're converting tc and xdp hooks to bpf_link. This new hook
-> should have it from the beginning.
-
-Will do in v3.
-
-Thanks for feedback,
-Jakub
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
