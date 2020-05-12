@@ -2,166 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E72D71CFD6F
-	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 20:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C45631CFE9B
+	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 21:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725987AbgELSjR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 May 2020 14:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725950AbgELSjQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 May 2020 14:39:16 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52CBDC061A0C;
-        Tue, 12 May 2020 11:39:15 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id z1so6775321pfn.3;
-        Tue, 12 May 2020 11:39:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DjcujlJce+yGdTM56KR+siVfTTDonJGCqjFrtlrB12E=;
-        b=TKIZUpleOm+PkJ9tqBZBzNyIrq3m78JQFWKHIGSEqtcLQ6LODxtCb/m4luvQRtRCZB
-         YF8jVeEnDCHolzy3z4aaw6G+IAUWpl5/o8dIMthPyFEKYdI3YjcX4WtBiwD6nO6vNmVZ
-         DzohTK35FNyHiiwZq0QhghkvgzykP8E6nX6b5zl3s25ntYD2rf8n4PQYZUQb5cUFGq3P
-         CXxL1tW/RcklACqpdbU3eZeWt+QXV2I4/GLn6DBRTu3f17iQMICCpp7kXK19NZcxB7rG
-         LQ2b6Wk7ueK/vM9+kTiltDdga69+ZfqqYAnB7kybfnraNEgq6FRZJ6pf6Zt2ZFBOJI0Y
-         5BAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DjcujlJce+yGdTM56KR+siVfTTDonJGCqjFrtlrB12E=;
-        b=sVkHTOWCLb5qrTR9/Fag85FkFc29wAJAmnWc3lBzWRjkipfwyfc3K7X6FdHtq81X/u
-         Q4O8lOjU/IqPCEuSYJ6vEt6xVwlScp53CR9iKWcqrmmDq276vl/4YqZnpGJ5SBFoZ7jM
-         S6yRHzBafzc1Js2fuDIUUSua3+5Aew/Pdy/kMI+Iu0n485sA9AXji0QMA0IjUJHI+fNN
-         8HzC/z4T9VRsViP48+OBDkievnnmXe0U9kA3qX70TloX/hMol5eVDqspGRKp4iyVm6Sy
-         7MD3sQ48xyE2FZ/XOym3ySw9VZSNuFK7pcJL7NPYwE5n8yKfzNqM5I6cAt4/yrs7xgOE
-         oFtw==
-X-Gm-Message-State: AGi0PuZ0aPqs/rlZh+jYavluj3ox6gxJs/Otny5xinUvrULhiPHG0ZYB
-        G0M3w23hXNJgWFmhGVPF19xCMKEr
-X-Google-Smtp-Source: APiQypINbdHjYVXKeWBxAYbOqHUnfaB4UJzqJskMbX8OGHkD/+fXFaDcOlnD+ANXQjOFUfCx3HRsUg==
-X-Received: by 2002:a63:e542:: with SMTP id z2mr19775152pgj.165.1589308754589;
-        Tue, 12 May 2020 11:39:14 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:c3f6])
-        by smtp.gmail.com with ESMTPSA id l15sm13732315pjk.56.2020.05.12.11.39.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 11:39:13 -0700 (PDT)
-Date:   Tue, 12 May 2020 11:39:11 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     sdf@google.com
-Cc:     davem@davemloft.net, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com,
-        linux-security-module@vger.kernel.org, acme@redhat.com,
-        jamorris@linux.microsoft.com, jannh@google.com, kpsingh@google.com
-Subject: Re: [PATCH v5 bpf-next 2/3] bpf: implement CAP_BPF
-Message-ID: <20200512183911.cr365b7etucyxgpz@ast-mbp>
-References: <20200508215340.41921-1-alexei.starovoitov@gmail.com>
- <20200508215340.41921-3-alexei.starovoitov@gmail.com>
- <20200512001210.GA235661@google.com>
- <20200512023641.jupgmhpliblkli4t@ast-mbp.dhcp.thefacebook.com>
- <20200512155411.GB235661@google.com>
+        id S1725987AbgELTrC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 May 2020 15:47:02 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:22216 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725938AbgELTrC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 12 May 2020 15:47:02 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 04CJgEmF007936
+        for <bpf@vger.kernel.org>; Tue, 12 May 2020 12:47:01 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=facebook;
+ bh=UgE04U6IhngmVBWnVNaYINbDp7OgNY58I5uqal3oBxU=;
+ b=aPmwj2DDO646UItxruF+avvPSd5HtXCzNEcj9qVDRrXbJiEuWWLcahLR+7lBcFWxgcGN
+ C7JXf3U7bPH6IvVLKmzmKeq24eYJlaDM7QT0FdGY/I8U/zgv4tGqfWKFXaThOJWd2483
+ m4a7QeRGarHWihtgXES517WNo94VXZnHNY8= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 3100vygg4a-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 12 May 2020 12:47:00 -0700
+Received: from intmgw004.03.ash8.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Tue, 12 May 2020 12:47:00 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id E1BA82EC317E; Tue, 12 May 2020 12:46:55 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v3 bpf-next 0/4] Add benchmark runner and few benchmarks
+Date:   Tue, 12 May 2020 12:24:41 -0700
+Message-ID: <20200512192445.2351848-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200512155411.GB235661@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-12_07:2020-05-11,2020-05-12 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ bulkscore=0 clxscore=1015 mlxscore=0 malwarescore=0 phishscore=0
+ spamscore=0 cotscore=-2147483648 priorityscore=1501 suspectscore=9
+ mlxlogscore=999 lowpriorityscore=0 adultscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005120149
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 12, 2020 at 08:54:11AM -0700, sdf@google.com wrote:
-> On 05/11, Alexei Starovoitov wrote:
-> > On Mon, May 11, 2020 at 05:12:10PM -0700, sdf@google.com wrote:
-> > > On 05/08, Alexei Starovoitov wrote:
-> > > > From: Alexei Starovoitov <ast@kernel.org>
-> > > [..]
-> > > > @@ -3932,7 +3977,7 @@ SYSCALL_DEFINE3(bpf, int, cmd, union bpf_attr
-> > > > __user *, uattr, unsigned int, siz
-> > > >   	union bpf_attr attr;
-> > > >   	int err;
-> > >
-> > > > -	if (sysctl_unprivileged_bpf_disabled && !capable(CAP_SYS_ADMIN))
-> > > > +	if (sysctl_unprivileged_bpf_disabled && !bpf_capable())
-> > > >   		return -EPERM;
-> > > This is awesome, thanks for reviving the effort!
-> > >
-> > > One question I have about this particular snippet:
-> > > Does it make sense to drop bpf_capable checks for the operations
-> > > that work on a provided fd?
-> 
-> > Above snippet is for the case when sysctl switches unpriv off.
-> > It was a big hammer and stays big hammer.
-> > I certainly would like to improve the situation, but I suspect
-> > the folks who turn that sysctl knob on are simply paranoid about bpf
-> > and no amount of reasoning would turn them around.
-> Yeah, and we do use it unfortunately :-( I suppose we still would
-> like to keep it that way for a while, but maybe start relaxing
-> some operations a bit.
+Add generic benchmark runner framework which simplifies writing various
+performance benchmarks in a consistent fashion.  This framework will be u=
+sed
+in follow up patches to test performance of perf buffer and ring buffer a=
+s
+well.
 
-I suspect that was done couple years ago when spectre was just discovered and
-the verifier wasn't doing speculative analysis.
-If your security folks still insist on that sysctl they either didn't
-follow bpf development or paranoid.
-If former is the case I would love to openly discuss all the advances in
-the verification logic to prevent side channels.
-The verifier is doing amazing job finding bad assembly code.
-There is no other tool that is similarly capable.
-All compilers and static analyzers are no where close to the level
-of sophistication that the verifier has in detection of bad speculation.
+Patch #1 extracts parse_num_list to be re-used between test_progs and ben=
+ch.
 
-> > > The use-case I have in mind is as follows:
-> > > * privileged (CAP_BPF) process loads the programs/maps and pins
-> > >   them at some known location
-> > > * unprivileged process opens up those pins and does the following:
-> > >   * prepares the maps (and will later on read them)
-> > >   * does SO_ATTACH_BPF/SO_ATTACH_REUSEPORT_EBPF which afaik don't
-> > >     require any capabilities
-> > >
-> > > This essentially pushes some of the permission checks into a fs layer.
-> > So
-> > > whoever has a file descriptor (via unix sock or open) can do BPF
-> > operations
-> > > on the object that represents it.
-> 
-> > cap_bpf doesn't change things in that regard.
-> > Two cases here:
-> > sysctl_unprivileged_bpf_disabled==0:
-> >    Unpriv can load socket_filter prog type and unpriv can attach it
-> >    via SO_ATTACH_BPF/SO_ATTACH_REUSEPORT_EBPF.
-> > sysctl_unprivileged_bpf_disabled==1:
-> >    cap_sys_admin can load socket_filter and unpriv can attach it.
-> Sorry, I wasn't clear enough, I was talking about unpriv_bpf_disabled=1
-> case.
-> 
-> > With addition of cap_bpf in the second case cap_bpf process can
-> > load socket_filter too.
-> > It doesn't mean that permissions are pushed into fs layer.
-> > I'm not sure that relaxing of sysctl_unprivileged_bpf_disabled
-> > will be well received.
-> > Are you proposing to selectively allow certain bpf syscall commands
-> > even when sysctl_unprivileged_bpf_disabled==1 ?
-> > Like allow unpriv to do BPF_OBJ_GET to get an fd from bpffs ?
-> > And allow unpriv to do map_update ?
-> Yes, that's the gist of what I'm proposing. Allow the operations that
-> work on fd even with unpriv_bpf_disabled=1. The assumption that
-> obtaining fd requires a privileged operation on its own and
-> should give enough protection.
+Patch #2 adds generic runner implementation and atomic counter benchmarks=
+ to
+validate benchmark runner's behavior.
 
-I agree.
+Patch #3 implements test_overhead benchmark as part of bench runner. It a=
+lso
+add fmod_ret BPF program type to a set of benchmarks.
 
-> 
-> > It makes complete sense to me, but I'd like to argue about that
-> > independently from this cap_bpf set.
-> > We can relax that sysctl later.
-> Ack, thanks, let me bring it up again later, when we get to the cap_bpf
-> state.
+Patch #4 tests faster alternatives to set_task_comm() approach, tested in
+test_overhead, in search for minimal-overhead way to trigger BPF program
+execution from user-space on demand.
 
-Thanks for the feedback.
-Just to make sure we're on the same page let me clarify one more thing.
-The state of cap_bpf in this patch set is not the final state of bpf
-security in general. We were stuck on cap_bpf proposal since september.
-bpf community lost many months of what could have been gradual
-improvements in bpf safety and security.
-This cap_bpf is a way to get us unstuck. There will be many more
-security related patches that improve safety, security and usability.
+v2->v3:
+  - added --prod-affinity and --cons-affinity (Yonghong);
+  - removed ringbuf-related options leftovers (Yonghong);
+  - added more benchmarking results for test_overhead performance discrep=
+ancies;
+v1->v2:
+  - moved benchmarks into benchs/ subdir (John);
+  - added benchmark "suite" scripts (John);
+  - few small clean ups, change defaults, etc.
+
+Andrii Nakryiko (4):
+  selftests/bpf: extract parse_num_list into generic testing_helpers.c
+  selftests/bpf: add benchmark runner infrastructure
+  selftest/bpf: fmod_ret prog and implement test_overhead as part of
+    bench
+  selftest/bpf: add BPF triggering benchmark
+
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |  20 +-
+ tools/testing/selftests/bpf/bench.c           | 449 ++++++++++++++++++
+ tools/testing/selftests/bpf/bench.h           |  81 ++++
+ .../selftests/bpf/benchs/bench_count.c        |  91 ++++
+ .../selftests/bpf/benchs/bench_rename.c       | 195 ++++++++
+ .../selftests/bpf/benchs/bench_trigger.c      | 167 +++++++
+ .../selftests/bpf/benchs/run_bench_rename.sh  |   9 +
+ .../selftests/bpf/benchs/run_bench_trigger.sh |   9 +
+ .../selftests/bpf/prog_tests/test_overhead.c  |  14 +-
+ .../selftests/bpf/progs/test_overhead.c       |   6 +
+ .../selftests/bpf/progs/trigger_bench.c       |  47 ++
+ tools/testing/selftests/bpf/test_progs.c      |  67 +--
+ tools/testing/selftests/bpf/test_progs.h      |   1 +
+ tools/testing/selftests/bpf/testing_helpers.c |  66 +++
+ tools/testing/selftests/bpf/testing_helpers.h |   5 +
+ 16 files changed, 1162 insertions(+), 66 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/bench.c
+ create mode 100644 tools/testing/selftests/bpf/bench.h
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_count.c
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_rename.c
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_trigger.c
+ create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_rename.s=
+h
+ create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_trigger.=
+sh
+ create mode 100644 tools/testing/selftests/bpf/progs/trigger_bench.c
+ create mode 100644 tools/testing/selftests/bpf/testing_helpers.c
+ create mode 100644 tools/testing/selftests/bpf/testing_helpers.h
+
+--=20
+2.24.1
+
