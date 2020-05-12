@@ -2,61 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5AE81CEB72
-	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 05:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4531CEBE3
+	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 06:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728611AbgELDaC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 May 2020 23:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48148 "EHLO
+        id S1726582AbgELEWn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 May 2020 00:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728115AbgELDaB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 11 May 2020 23:30:01 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA7A8C061A0C;
-        Mon, 11 May 2020 20:30:01 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id z90so9939393qtd.10;
-        Mon, 11 May 2020 20:30:01 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1725889AbgELEWn (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 12 May 2020 00:22:43 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF4EC061A0C;
+        Mon, 11 May 2020 21:22:41 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id i14so11203159qka.10;
+        Mon, 11 May 2020 21:22:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=m1fW+UHaacfwXC05NUa/o+jf/5wSzDPWaKy5Pf3FN+8=;
-        b=ZovqGhDMpe0z26Rz3CaabqVupHSZWwEsAUqTlRk1fUXaLMqIYwJ7ex/6rOvpoVQTP6
-         PG7CIZV2YG8zp4X1YnbqObFwDnnSLAFUNNNOPrQGEd5qyUZ1N8VD2zvbmxuglhVzJ2Si
-         ewmigLjICzXPVFlCUluQI/UmLEXNLG9v5Kz3f5sYquaO2k6hq2hpN9hKE3GAAgoCfi6z
-         QkOKlYwlQ5nr2Qz2e9JHerEfWpQpmYpc/95PnarbJoQY1oECHrBInvhjpwXQrlyla4P2
-         kMeESAUrUuQIfiGjFej7919VlZHwhSOPpOz5fZpKVGHSg3ziIqQHKP4afwlvoHCLc+yZ
-         up3g==
+        bh=QIdyJGJDkUzmabK7QgojYQqqYanIjX7RhN563aXXAhU=;
+        b=YaZOeclshwGycv46RO8Oi2laGNpi5VjvC1nZadIHha2sOBPy/DnTiMteDFFTvrzWVA
+         qmOehG7CTujjQRsR1f3jTXRVJ8EjBmbXuWe8X8wAaw0txPDffjYM4XCgwPI9gQQjuhoJ
+         sV0+Id0cEMDj162XyBixwtS6vIEhDkHgDJ5PXcvMsVMW+QR0+b0KWdHQ/JN7ZTdtRJs1
+         7vaUzRsScAb5tRXR92xJ0v/Es51DT839ujWeBQrkgq3/mSQ0q5N8j7JPKMPtec49bj9w
+         mBxXZk7U5z7T0G8IGF6KJm1fZZAvFRRJKefsJLekN05QfTo/K0AkKnS7bdklv6+pifAu
+         EpIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=m1fW+UHaacfwXC05NUa/o+jf/5wSzDPWaKy5Pf3FN+8=;
-        b=pKI6MR1fzoTQvGBD12sEGa/rjhb+LIQ731urULLjc+BzygAzPjQVU8uWv58QQEOPOh
-         /eDHB3pwLDvYVBDmLbSTGGyl2w6u9hBCLFbdPIjJDlcQ7gpDuh2d+ZedscLp75uacvOr
-         jT0PvmYTlkc7c7iDqObvcEqhxDWXLNJ1rMzDq+SuXnX49wc8H7/j3phGYJveEAI+grHY
-         i8L5qDasJG+XLMFyPRvJ3Yx9pUkKWCVN45X9FXfzMH3ahxS9J0B0Lkged82nfQzBOOa9
-         qxv9d4TKjcIgA+IueFIFpmu9IR5cyRl1KHhOBXcFzVCMi94/0cPvR3MO00yq2bGpvJDX
-         bIMA==
-X-Gm-Message-State: AGi0PuYSGtnEr7g25gvxptHY5j6RKE2YAiPrfPQZGSKtv9k/RkfETr9M
-        1PWQpE6k/Ze1UfjiuNzFChLEcOnXH7Eud9/+R8A=
-X-Google-Smtp-Source: APiQypL/aBljpzhvrALGs+c0yz4b1znl9jK7TMRAhTyfeXyjU3bnPYmPNxWAhlmUfh4XONGDHUEkj4ESfJOIPnteMQc=
-X-Received: by 2002:aed:24a1:: with SMTP id t30mr6347610qtc.93.1589254200748;
- Mon, 11 May 2020 20:30:00 -0700 (PDT)
+        bh=QIdyJGJDkUzmabK7QgojYQqqYanIjX7RhN563aXXAhU=;
+        b=be0bEMgJ6trrlMkha8lGt104kt7xxQXTNo3DUvXNQk9zrd30aKhGJzAMnriF0wPoI4
+         eDTNEwDARfeCbmhvNAJv6ZnWLBarHtKW00/7j8Nch1k0HlGE6j+8a31gMOVEu6b0welg
+         0oRXgpZLeNuaGVW9j7v8BY8oYi4JsgYw7Tk6I9AuRtB3Tt38BxM04eNT13SWRAHOzgE5
+         xH3ZRfdaQPkk7v6f3KqCPQVGyqowUesd5JmlIUgaBIp7yk2NhxTcRUqQG4qkE7KPposv
+         +f6abLDEvPcSuqdjASxEoEgVk6V6SriJX9W3fq3T8y2whrXCqqb/fD9dpOgd1AtNiRQE
+         iTsw==
+X-Gm-Message-State: AGi0PuZ7oIY1hO8gEkzhmpIKlHeKb4rlkLe2s9THkFldQjgEHuDXexOf
+        efS1exjKUV71NBFTqL70Ls9pO/T5Fm4PfObGkYA=
+X-Google-Smtp-Source: APiQypLJz3pz+ki8vXPvaUA8CredLUuEkoXnhxrqspTUNpdvkqHeDtR1vZDxdK/mVvBEt9OLRfIqVqjZAFuiYvw0f/0=
+X-Received: by 2002:a05:620a:2049:: with SMTP id d9mr20724395qka.449.1589257360759;
+ Mon, 11 May 2020 21:22:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200508232032.1974027-1-andriin@fb.com> <20200508232032.1974027-2-andriin@fb.com>
- <3fc4af5c-739a-35c3-c649-03eef18a3144@fb.com>
-In-Reply-To: <3fc4af5c-739a-35c3-c649-03eef18a3144@fb.com>
+References: <20200508232032.1974027-1-andriin@fb.com> <20200508232032.1974027-3-andriin@fb.com>
+ <c2fbefd2-6137-712e-47d4-200ef4d74775@fb.com>
+In-Reply-To: <c2fbefd2-6137-712e-47d4-200ef4d74775@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 11 May 2020 20:29:49 -0700
-Message-ID: <CAEf4BzYkbsd3EUXoH8M80+udtz-owN6gAb-Hpp==bNU2Pk6x+A@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/3] selftests/bpf: add benchmark runner infrastructure
+Date:   Mon, 11 May 2020 21:22:29 -0700
+Message-ID: <CAEf4BzaXUwgr70WteC=egTgii=si8OvVLCL9KCs-KwkPRPGQjQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/3] selftest/bpf: fmod_ret prog and implement
+ test_overhead as part of bench
 To:     Yonghong Song <yhs@fb.com>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Kernel Team <kernel-team@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
@@ -64,337 +66,158 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, May 9, 2020 at 10:10 AM Yonghong Song <yhs@fb.com> wrote:
+On Sat, May 9, 2020 at 10:24 AM Yonghong Song <yhs@fb.com> wrote:
 >
 >
 >
 > On 5/8/20 4:20 PM, Andrii Nakryiko wrote:
-> > While working on BPF ringbuf implementation, testing, and benchmarking,=
- I've
-> > developed a pretty generic and modular benchmark runner, which seems to=
- be
-> > generically useful, as I've already used it for one more purpose (testi=
-ng
-> > fastest way to trigger BPF program, to minimize overhead of in-kernel c=
-ode).
+> > Add fmod_ret BPF program to existing test_overhead selftest. Also re-im=
+plement
+> > user-space benchmarking part into benchmark runner to compare results. =
+ Results
+> > with ./bench are consistently somewhat lower than test_overhead's, but =
+relative
+> > performance of various types of BPF programs stay consisten (e.g., kret=
+probe is
+> > noticeably slower).
 > >
-> > This patch adds generic part of benchmark runner and sets up Makefile f=
-or
-> > extending it with more sets of benchmarks.
+> > run_bench_rename.sh script (in benchs/ directory) was used to produce t=
+he
+> > following numbers:
 > >
-> > Benchmarker itself operates by spinning up specified number of producer=
- and
-> > consumer threads, setting up interval timer sending SIGALARM signal to
-> > application once a second. Every second, current snapshot with hits/dro=
-ps
-> > counters are collected and stored in an array. Drops are useful for
-> > producer/consumer benchmarks in which producer might overwhelm consumer=
-s.
+> >    base      :    3.975 =C2=B1 0.065M/s
+> >    kprobe    :    3.268 =C2=B1 0.095M/s
+> >    kretprobe :    2.496 =C2=B1 0.040M/s
+> >    rawtp     :    3.899 =C2=B1 0.078M/s
+> >    fentry    :    3.836 =C2=B1 0.049M/s
+> >    fexit     :    3.660 =C2=B1 0.082M/s
+> >    fmodret   :    3.776 =C2=B1 0.033M/s
 > >
-> > Once test finishes after given amount of warm-up and testing seconds, m=
-ean and
-> > stddev are calculated (ignoring warm-up results) and is printed out to =
-stdout.
-> > This setup seems to give consistent and accurate results.
+> > While running test_overhead gives:
 > >
-> > To validate behavior, I added two atomic counting tests: global and loc=
-al.
-> > For global one, all the producer threads are atomically incrementing sa=
-me
-> > counter as fast as possible. This, of course, leads to huge drop of
-> > performance once there is more than one producer thread due to CPUs fig=
-hting
-> > for the same memory location.
+> >    task_rename base        4457K events per sec
+> >    task_rename kprobe      3849K events per sec
+> >    task_rename kretprobe   2729K events per sec
+> >    task_rename raw_tp      4506K events per sec
+> >    task_rename fentry      4381K events per sec
+> >    task_rename fexit       4349K events per sec
+> >    task_rename fmod_ret    4130K events per sec
+>
+> Do you where the overhead is and how we could provide options in
+> bench to reduce the overhead so we can achieve similar numbers?
+> For benchmarking, sometimes you really want to see "true"
+> potential of a particular implementation.
+
+Alright, let's make it an official bench-off... :) And the reason for
+this discrepancy, turns out to be... not atomics at all! But rather a
+single-threaded vs multi-threaded process (well, at least task_rename
+happening from non-main thread, I didn't narrow it down further).
+Atomics actually make very little difference, which gives me a good
+peace of mind :)
+
+So, I've built and ran test_overhead (selftest) and bench both as
+multi-threaded and single-threaded apps. Corresponding results match
+almost perfectly. And that's while test_overhead doesn't use atomics
+at all, while bench still does. Then I also ran test_overhead with
+added generics to match bench implementation. There are barely any
+differences, see two last sets of results.
+
+BTW, selftest results seems bit lower from the ones in original
+commit, probably because I made it run more iterations (like 40 times
+more) to have more stable results.
+
+So here are the results:
+
+Single-threaded implementations
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+
+/* bench: single-threaded, atomics */
+base      :    4.622 =C2=B1 0.049M/s
+kprobe    :    3.673 =C2=B1 0.052M/s
+kretprobe :    2.625 =C2=B1 0.052M/s
+rawtp     :    4.369 =C2=B1 0.089M/s
+fentry    :    4.201 =C2=B1 0.558M/s
+fexit     :    4.309 =C2=B1 0.148M/s
+fmodret   :    4.314 =C2=B1 0.203M/s
+
+/* selftest: single-threaded, no atomics */
+task_rename base        4555K events per sec
+task_rename kprobe      3643K events per sec
+task_rename kretprobe   2506K events per sec
+task_rename raw_tp      4303K events per sec
+task_rename fentry      4307K events per sec
+task_rename fexit       4010K events per sec
+task_rename fmod_ret    3984K events per sec
+
+
+Multi-threaded implementations
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+
+/* bench: multi-threaded w/ atomics */
+base      :    3.910 =C2=B1 0.023M/s
+kprobe    :    3.048 =C2=B1 0.037M/s
+kretprobe :    2.300 =C2=B1 0.015M/s
+rawtp     :    3.687 =C2=B1 0.034M/s
+fentry    :    3.740 =C2=B1 0.087M/s
+fexit     :    3.510 =C2=B1 0.009M/s
+fmodret   :    3.485 =C2=B1 0.050M/s
+
+/* selftest: multi-threaded w/ atomics */
+task_rename base        3872K events per sec
+task_rename kprobe      3068K events per sec
+task_rename kretprobe   2350K events per sec
+task_rename raw_tp      3731K events per sec
+task_rename fentry      3639K events per sec
+task_rename fexit       3558K events per sec
+task_rename fmod_ret    3511K events per sec
+
+/* selftest: multi-threaded, no atomics */
+task_rename base        3945K events per sec
+task_rename kprobe      3298K events per sec
+task_rename kretprobe   2451K events per sec
+task_rename raw_tp      3718K events per sec
+task_rename fentry      3782K events per sec
+task_rename fexit       3543K events per sec
+task_rename fmod_ret    3526K events per sec
+
+
+>
 > >
-> > Local counting, on the other hand, maintains one counter per each produ=
-cer
-> > thread, incremented independently. Once per second, all counters are re=
-ad and
-> > added together to form final "counting throughput" measurement. As expe=
-cted,
-> > such setup demonstrates linear scalability with number of producers (as=
- long
-> > as there are enough physical CPU cores, of course). See example output =
-below.
-> > Also, this setup can nicely demonstrate disastrous effects of false sha=
-ring,
-> > if care is not taken to take those per-producer counters apart into
-> > independent cache lines.
-> >
-> > Demo output shows global counter first with 1 producer, then with 4. Bo=
-th
-> > total and per-producer performance significantly drop. The last run is =
-local
-> > counter with 4 producers, demonstrating near-perfect scalability.
-> >
-> > $ ./bench -a -w1 -d2 -p1 count-global
-> > Setting up benchmark 'count-global'...
-> > Benchmark 'count-global' started.
-> > Iter   0 ( 24.822us): hits  148.179M/s (148.179M/prod), drops    0.000M=
-/s
-> > Iter   1 ( 37.939us): hits  149.308M/s (149.308M/prod), drops    0.000M=
-/s
-> > Iter   2 (-10.774us): hits  150.717M/s (150.717M/prod), drops    0.000M=
-/s
-> > Iter   3 (  3.807us): hits  151.435M/s (151.435M/prod), drops    0.000M=
-/s
-> > Summary: hits  150.488 =C2=B1 1.079M/s (150.488M/prod), drops    0.000 =
-=C2=B1 0.000M/s
-> >
-> > $ ./bench -a -w1 -d2 -p4 count-global
-> > Setting up benchmark 'count-global'...
-> > Benchmark 'count-global' started.
-> > Iter   0 ( 60.659us): hits   53.910M/s ( 13.477M/prod), drops    0.000M=
-/s
-> > Iter   1 (-17.658us): hits   53.722M/s ( 13.431M/prod), drops    0.000M=
-/s
-> > Iter   2 (  5.865us): hits   53.495M/s ( 13.374M/prod), drops    0.000M=
-/s
-> > Iter   3 (  0.104us): hits   53.606M/s ( 13.402M/prod), drops    0.000M=
-/s
-> > Summary: hits   53.608 =C2=B1 0.113M/s ( 13.402M/prod), drops    0.000 =
-=C2=B1 0.000M/s
-> >
-> > $ ./bench -a -w1 -d2 -p4 count-local
-> > Setting up benchmark 'count-local'...
-> > Benchmark 'count-local' started.
-> > Iter   0 ( 23.388us): hits  640.450M/s (160.113M/prod), drops    0.000M=
-/s
-> > Iter   1 (  2.291us): hits  605.661M/s (151.415M/prod), drops    0.000M=
-/s
-> > Iter   2 ( -6.415us): hits  607.092M/s (151.773M/prod), drops    0.000M=
-/s
-> > Iter   3 ( -1.361us): hits  601.796M/s (150.449M/prod), drops    0.000M=
-/s
-> > Summary: hits  604.849 =C2=B1 2.739M/s (151.212M/prod), drops    0.000 =
-=C2=B1 0.000M/s
-> >
+> > Acked-by: John Fastabend <john.fastabend@gmail.com>
 > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 > > ---
-> >   tools/testing/selftests/bpf/.gitignore        |   1 +
-> >   tools/testing/selftests/bpf/Makefile          |  13 +-
-> >   tools/testing/selftests/bpf/bench.c           | 372 +++++++++++++++++=
+> >   tools/testing/selftests/bpf/Makefile          |   4 +-
+> >   tools/testing/selftests/bpf/bench.c           |  14 ++
+> >   .../selftests/bpf/benchs/bench_rename.c       | 195 +++++++++++++++++=
 +
-> >   tools/testing/selftests/bpf/bench.h           |  74 ++++
-> >   .../selftests/bpf/benchs/bench_count.c        |  91 +++++
-> >   5 files changed, 550 insertions(+), 1 deletion(-)
-> >   create mode 100644 tools/testing/selftests/bpf/bench.c
-> >   create mode 100644 tools/testing/selftests/bpf/bench.h
-> >   create mode 100644 tools/testing/selftests/bpf/benchs/bench_count.c
+> >   .../selftests/bpf/benchs/run_bench_rename.sh  |   9 +
+> >   .../selftests/bpf/prog_tests/test_overhead.c  |  14 +-
+> >   .../selftests/bpf/progs/test_overhead.c       |   6 +
+> >   6 files changed, 240 insertions(+), 2 deletions(-)
+> >   create mode 100644 tools/testing/selftests/bpf/benchs/bench_rename.c
+> >   create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_renam=
+e.sh
 > >
-
-[...]
-
-trimming is good :)
-
-> > +
-> > +void hits_drops_report_final(struct bench_res res[], int res_cnt)
-> > +{
-> > +     int i;
-> > +     double hits_mean =3D 0.0, drops_mean =3D 0.0;
-> > +     double hits_stddev =3D 0.0, drops_stddev =3D 0.0;
-> > +
-> > +     for (i =3D 0; i < res_cnt; i++) {
-> > +             hits_mean +=3D res[i].hits / 1000000.0 / (0.0 + res_cnt);
-> > +             drops_mean +=3D res[i].drops / 1000000.0 / (0.0 + res_cnt=
-);
-> > +     }
-> > +
-> > +     if (res_cnt > 1)  {
-> > +             for (i =3D 0; i < res_cnt; i++) {
-> > +                     hits_stddev +=3D (hits_mean - res[i].hits / 10000=
-00.0) *
-> > +                                    (hits_mean - res[i].hits / 1000000=
-.0) /
-> > +                                    (res_cnt - 1.0);
-> > +                     drops_stddev +=3D (drops_mean - res[i].drops / 10=
-00000.0) *
-> > +                                     (drops_mean - res[i].drops / 1000=
-000.0) /
-> > +                                     (res_cnt - 1.0);
-> > +             }
-> > +             hits_stddev =3D sqrt(hits_stddev);
-> > +             drops_stddev =3D sqrt(drops_stddev);
-> > +     }
-> > +     printf("Summary: hits %8.3lf \u00B1 %5.3lfM/s (%7.3lfM/prod), ",
-> > +            hits_mean, hits_stddev, hits_mean / env.producer_cnt);
-> > +     printf("drops %8.3lf \u00B1 %5.3lfM/s\n",
-> > +            drops_mean, drops_stddev);
->
-> The unicode char \u00B1 (for +|-) may cause some old compiler (e.g.,
-> 4.8.5) warnings as it needs C99 mode.
->
-> /data/users/yhs/work/net-next/tools/testing/selftests/bpf/bench.c:91:9:
-> warning: universal character names are only valid in C++ and C99
-> [enabled by default]
->    printf("Summary: hits %8.3lf \u00B1 %5.3lfM/s (%7.3lfM/prod), ",
->
-> "+|-" is alternative, but not as good as \u00B1 indeed. Newer
-> compiler may already have the default C99. Maybe we can just add
-> C99 for build `bench`?
-
-I think I'm fine with ancient compiler emitting harmless warning for
-code under selftests/bpf, honestly...
-
->
-> > +}
-> > +
-> > +const char *argp_program_version =3D "benchmark";
-> > +const char *argp_program_bug_address =3D "<bpf@vger.kernel.org>";
-> > +const char argp_program_doc[] =3D
-> > +"benchmark    Generic benchmarking framework.\n"
-> > +"\n"
-> > +"This tool runs benchmarks.\n"
-> > +"\n"
-> > +"USAGE: benchmark <bench-name>\n"
-> > +"\n"
-> > +"EXAMPLES:\n"
-> > +"    # run 'count-local' benchmark with 1 producer and 1 consumer\n"
-> > +"    benchmark count-local\n"
-> > +"    # run 'count-local' with 16 producer and 8 consumer thread, pinne=
-d to CPUs\n"
-> > +"    benchmark -p16 -c8 -a count-local\n";
->
-> Some of the above global variables probably are statics.
-> But I do not have a strong preference on this.
-
-Oh, it's actually global variables argp library expects, they have to be gl=
-obal.
-
->
-> > +
-> > +static const struct argp_option opts[] =3D {
-> > +     { "list", 'l', NULL, 0, "List available benchmarks"},
-> > +     { "duration", 'd', "SEC", 0, "Duration of benchmark, seconds"},
-> > +     { "warmup", 'w', "SEC", 0, "Warm-up period, seconds"},
-> > +     { "producers", 'p', "NUM", 0, "Number of producer threads"},
-> > +     { "consumers", 'c', "NUM", 0, "Number of consumer threads"},
-> > +     { "verbose", 'v', NULL, 0, "Verbose debug output"},
-> > +     { "affinity", 'a', NULL, 0, "Set consumer/producer thread affinit=
-y"},
-> > +     { "b2b", 'b', NULL, 0, "Back-to-back mode"},
-> > +     { "rb-output", 10001, NULL, 0, "Set consumer/producer thread affi=
-nity"},
->
-> I did not see b2b and rb-output options are processed in this file.
-
-Slipped through the rebasing cracks from the future ringbuf
-benchmarks, will remove it. I also figured out a way to do this more
-modular anyways (child parsers in argp).
-
->
-> > +     {},
-> > +};
-> > +
-
-[...]
-
-> > +     for (i =3D 0; i < env.consumer_cnt; i++) {
-> > +             err =3D pthread_create(&state.consumers[i], NULL,
-> > +                                  bench->consumer_thread, (void *)(lon=
-g)i);
-> > +             if (err) {
-> > +                     fprintf(stderr, "failed to create consumer thread=
- #%d: %d\n",
-> > +                             i, -errno);
-> > +                     exit(1);
-> > +             }
-> > +             if (env.affinity)
-> > +                     set_thread_affinity(state.consumers[i], i);
-> > +     }
-> > +     for (i =3D 0; i < env.producer_cnt; i++) {
-> > +             err =3D pthread_create(&state.producers[i], NULL,
-> > +                                  bench->producer_thread, (void *)(lon=
-g)i);
-> > +             if (err) {
-> > +                     fprintf(stderr, "failed to create producer thread=
- #%d: %d\n",
-> > +                             i, -errno);
-> > +                     exit(1);
-> > +             }
-> > +             if (env.affinity)
-> > +                     set_thread_affinity(state.producers[i],
-> > +                                         env.consumer_cnt + i);
->
-> Here, we bind consumer threads first and then producer threads, I think
-> this is probably just arbitrary choice?
-
-yep, almost arbitrary. Most of my cases have 1 consumer and >=3D1
-producers, so it was convenient to have consumer pinned to same CPU,
-regardless of how many producers I have.
-
->
-> In certain cases, I think people may want to have more advanced binding
-> scenarios, e.g., for hyperthreading, binding consumer and producer on
-> the same core or different cores etc. One possibility is to introduce
-> -c option similar to taskset. If -c not supplied, you can have
-> the current default. Otherwise, using -c list.
->
-
-well, taskset's job is simpler, it takes a list of CPUs for single
-PID, if I understand correctly. Here we have many threads, each might
-have different CPU or even CPUs. But I agree that for some benchmarks
-it's going to be critical to control this precisely. Here's how I'm
-going to allows most flexibility without too much complexity.
-
---prod-affinity 1,2,10-16,100 -- will specify a set of CPUs for
-producers. First producer will use CPU with least index form that
-list. Second will take second, and so on. If there are less CPUs
-provided than necessary - it's an error. If more - it's fine.
-
-Then for consumers will add independent --cons-affinity parameters,
-which will do the same for consumer threads.
-
-Having two independent lists will allow to test scenarios where we
-want producers and consumers to fight for the same CPU.
-
-Does this sound ok?
-
-> > +     }
-> > +
-> > +     printf("Benchmark '%s' started.\n", bench->name);
-> > +}
-> > +
-
-[...]
-
-> > diff --git a/tools/testing/selftests/bpf/bench.h b/tools/testing/selfte=
-sts/bpf/bench.h
-> > new file mode 100644
-> > index 000000000000..08aa0c5b1177
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/bench.h
-> > @@ -0,0 +1,74 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#pragma once
-> > +#include <stdlib.h>
-> > +#include <stdbool.h>
-> > +#include <linux/err.h>
-> > +#include <errno.h>
-> > +#include <unistd.h>
-> > +#include <bpf/bpf.h>
-> > +#include <bpf/libbpf.h>
-> > +#include <math.h>
-> > +#include <time.h>
-> > +#include <sys/syscall.h>
-> > +
-> > +struct env {
-> > +     char *bench_name;
-> > +     int duration_sec;
-> > +     int warmup_sec;
-> > +     bool verbose;
-> > +     bool list;
-> > +     bool back2back;
->
-> seems not used.
-
-yep, cleaning up
-
->
-> > +     bool affinity;
-> > +     int consumer_cnt;
-> > +     int producer_cnt;
-> > +};
-> > +
-
-[...]
+> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selft=
+ests/bpf/Makefile
+> > index 289fffbf975e..29a02abf81a3 100644
+> > --- a/tools/testing/selftests/bpf/Makefile
+> > +++ b/tools/testing/selftests/bpf/Makefile
+> > @@ -409,10 +409,12 @@ $(OUTPUT)/test_cpp: test_cpp.cpp $(OUTPUT)/test_c=
+ore_extern.skel.h $(BPFOBJ)
+> >   $(OUTPUT)/bench_%.o: benchs/bench_%.c bench.h
+> >       $(call msg,CC,,$@)
+> >       $(CC) $(CFLAGS) -c $(filter %.c,$^) $(LDLIBS) -o $@
+> > +$(OUTPUT)/bench_rename.o: $(OUTPUT)/test_overhead.skel.h
+> >   $(OUTPUT)/bench.o: bench.h
+> >   $(OUTPUT)/bench: LDLIBS +=3D -lm
+> >   $(OUTPUT)/bench: $(OUTPUT)/bench.o \
+> > -              $(OUTPUT)/bench_count.o
+> > +              $(OUTPUT)/bench_count.o \
+> > +              $(OUTPUT)/bench_rename.o
+> >       $(call msg,BINARY,,$@)
+> >       $(CC) $(LDFLAGS) -o $@ $(filter %.a %.o,$^) $(LDLIBS)
+> >
+> [...]
