@@ -2,301 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFF71CF7AC
-	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 16:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1591CF875
+	for <lists+bpf@lfdr.de>; Tue, 12 May 2020 17:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727099AbgELOqf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 May 2020 10:46:35 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:58588 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725929AbgELOqf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 May 2020 10:46:35 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04CEh3Ck045852;
-        Tue, 12 May 2020 14:46:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=vL6DNi8gvHCPAU6+yvj8mgnIo6NiiQw7071CCeFVoq4=;
- b=NEmAcht+axOasRHR25dGejixJ7LzucpmbKyBWyNwKKMbvsFle8QTj/Uxu8RdS2Ar7YW1
- zt6Y85fLxmDD1MYhcnjMDJi7HpnPxtxczMi1aWdscDmyKz/6a6OuoN4jzQskQBt43nrp
- +QzdTSmgWW0vCf7Y9EgknIwGWb19ZGXsOCNjuTxSZc4O8Ydx0XBU3Zha63tqkj2Wg/24
- OTirYzUpZRYU3xF+9LSOZ84nYh+MPjack/JcQqZ/dZoKMQQW2mI0RYM+Y7X5i1zUEAsa
- SV9qL+8vD5n2/ltgauSd0VE4lVYGs4x/3mK0HhoMEmS6veteOV4mBGhDd6eYTMCA6YQE DQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 30x3mbue9r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 12 May 2020 14:46:32 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04CEhjJ6034799;
-        Tue, 12 May 2020 14:46:31 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 30x63px5wf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 May 2020 14:46:31 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 04CEkUkD014089;
-        Tue, 12 May 2020 14:46:30 GMT
-Received: from dhcp-10-175-167-216.vpn.oracle.com (/10.175.167.216)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 12 May 2020 07:46:29 -0700
-Date:   Tue, 12 May 2020 15:46:27 +0100 (BST)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@localhost
-To:     bpf@vger.kernel.org
-cc:     netdev@vger.kernel.org
-Subject: bpf selftest execution issues
-Message-ID: <alpine.LRH.2.21.2005121538120.22093@localhost>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+        id S1730291AbgELPF2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 May 2020 11:05:28 -0400
+Received: from www62.your-server.de ([213.133.104.62]:60050 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730763AbgELPFQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 May 2020 11:05:16 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jYWT3-0001eq-DD; Tue, 12 May 2020 17:05:13 +0200
+Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-5.fritz.box)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jYWT3-000X97-1y; Tue, 12 May 2020 17:05:13 +0200
+Subject: Re: [PATCH v5 bpf-next 2/3] bpf: implement CAP_BPF
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        davem@davemloft.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        linux-security-module@vger.kernel.org, acme@redhat.com,
+        jamorris@linux.microsoft.com, jannh@google.com, kpsingh@google.com
+References: <20200508215340.41921-1-alexei.starovoitov@gmail.com>
+ <20200508215340.41921-3-alexei.starovoitov@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <fcc61b50-16f7-4fc9-5cd4-7def57f37c35@iogearbox.net>
+Date:   Tue, 12 May 2020 17:05:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9618 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=57
- malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005120111
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9618 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 impostorscore=0
- mlxscore=0 suspectscore=57 bulkscore=0 mlxlogscore=999 phishscore=0
- malwarescore=0 lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005120111
+In-Reply-To: <20200508215340.41921-3-alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25810/Tue May 12 14:14:24 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When running BPF tests I ran into some issues and couldn't get a clean
-set of results on the bpf-next master branch. Just wanted to check if anyone 
-else is seeing any of these failures.
+On 5/8/20 11:53 PM, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+> 
+> Implement permissions as stated in uapi/linux/capability.h
+> In order to do that the verifier allow_ptr_leaks flag is split
+> into allow_ptr_leaks and bpf_capable flags and they are set as:
+>    env->allow_ptr_leaks = perfmon_capable();
+>    env->bpf_capable = bpf_capable();
 
-1. Timeouts. When running "make run_tests" in tools/testing/selftests/bpf,
-the kselftest runner uses an over-aggressive default timeout of 45 seconds 
-for tests. For some tests which comprise a series of sub-tests, this 
-is a bit too short. For example, I regularly see:
+[...]
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 70ad009577f8..a6893746cd87 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -1293,7 +1293,7 @@ static void __mark_reg_unknown(const struct bpf_verifier_env *env,
+>   	reg->type = SCALAR_VALUE;
+>   	reg->var_off = tnum_unknown;
+>   	reg->frameno = 0;
+> -	reg->precise = env->subprog_cnt > 1 || !env->allow_ptr_leaks;
+> +	reg->precise = env->subprog_cnt > 1 || !env->bpf_capable;
+>   	__mark_reg_unbounded(reg);
+>   }
+>   
+> @@ -1425,8 +1425,9 @@ static int check_subprogs(struct bpf_verifier_env *env)
+>   			continue;
+>   		if (insn[i].src_reg != BPF_PSEUDO_CALL)
+>   			continue;
+> -		if (!env->allow_ptr_leaks) {
+> -			verbose(env, "function calls to other bpf functions are allowed for root only\n");
+> +		if (!env->bpf_capable) {
+> +			verbose(env,
+> +				"function calls to other bpf functions are allowed for CAP_BPF and CAP_SYS_ADMIN\n");
+>   			return -EPERM;
+>   		}
+>   		ret = add_subprog(env, i + insn[i].imm + 1);
+> @@ -1960,7 +1961,7 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int regno,
+>   	bool new_marks = false;
+>   	int i, err;
+>   
+> -	if (!env->allow_ptr_leaks)
+> +	if (!env->bpf_capable)
+>   		/* backtracking is root only for now */
+>   		return 0;
+>   
+> @@ -2208,7 +2209,7 @@ static int check_stack_write(struct bpf_verifier_env *env,
+>   		reg = &cur->regs[value_regno];
+>   
+>   	if (reg && size == BPF_REG_SIZE && register_is_const(reg) &&
+> -	    !register_is_null(reg) && env->allow_ptr_leaks) {
+> +	    !register_is_null(reg) && env->bpf_capable) {
+>   		if (dst_reg != BPF_REG_FP) {
+>   			/* The backtracking logic can only recognize explicit
+>   			 * stack slot address like [fp - 8]. Other spill of
+> @@ -3428,7 +3429,7 @@ static int check_stack_boundary(struct bpf_verifier_env *env, int regno,
+>   		 * Spectre masking for stack ALU.
+>   		 * See also retrieve_ptr_limit().
+>   		 */
+> -		if (!env->allow_ptr_leaks) {
+> +		if (!env->bpf_capable) {
+>   			char tn_buf[48];
+>   
+>   			tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off);
+> @@ -7229,7 +7230,7 @@ static int push_insn(int t, int w, int e, struct bpf_verifier_env *env,
+>   		insn_stack[env->cfg.cur_stack++] = w;
+>   		return 1;
+>   	} else if ((insn_state[w] & 0xF0) == DISCOVERED) {
+> -		if (loop_ok && env->allow_ptr_leaks)
+> +		if (loop_ok && env->bpf_capable)
+>   			return 0;
+>   		verbose_linfo(env, t, "%d: ", t);
+>   		verbose_linfo(env, w, "%d: ", w);
+> @@ -8338,7 +8339,7 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+>   	if (env->max_states_per_insn < states_cnt)
+>   		env->max_states_per_insn = states_cnt;
+>   
+> -	if (!env->allow_ptr_leaks && states_cnt > BPF_COMPLEXITY_LIMIT_STATES)
+> +	if (!env->bpf_capable && states_cnt > BPF_COMPLEXITY_LIMIT_STATES)
+>   		return push_jmp_history(env, cur);
+>   
+>   	if (!add_new_state)
+> @@ -9998,7 +9999,7 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
+>   			insn->code = BPF_JMP | BPF_TAIL_CALL;
+>   
+>   			aux = &env->insn_aux_data[i + delta];
+> -			if (env->allow_ptr_leaks && !expect_blinding &&
+> +			if (env->bpf_capable && !expect_blinding &&
+>   			    prog->jit_requested &&
+>   			    !bpf_map_key_poisoned(aux) &&
+>   			    !bpf_map_ptr_poisoned(aux) &&
+> @@ -10725,7 +10726,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
+>   		env->insn_aux_data[i].orig_idx = i;
+>   	env->prog = *prog;
+>   	env->ops = bpf_verifier_ops[env->prog->type];
+> -	is_priv = capable(CAP_SYS_ADMIN);
+> +	is_priv = bpf_capable();
+>   
+>   	if (!btf_vmlinux && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) {
+>   		mutex_lock(&bpf_verifier_lock);
+> @@ -10766,7 +10767,8 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
+>   	if (attr->prog_flags & BPF_F_ANY_ALIGNMENT)
+>   		env->strict_alignment = false;
+>   
+> -	env->allow_ptr_leaks = is_priv;
+> +	env->allow_ptr_leaks = perfmon_capable();
+> +	env->bpf_capable = bpf_capable();
 
-not ok 30 selftests: bpf: test_tunnel.sh # TIMEOUT
+Probably more of a detail, but it feels weird to tie perfmon_capable() into the BPF
+core and use it in various places there. I would rather make this a proper bpf_*
+prefixed helper and add a more descriptive name (what does it have to do with perf
+or monitoring directly?). For example, all the main functionality could be under
+`bpf_base_capable()` and everything with potential to leak pointers or mem to user
+space as `bpf_leak_capable()`. Then inside include/linux/capability.h this can still
+resolve under the hood to something like:
 
-not ok 37 selftests: bpf: test_lwt_ip_encap.sh # TIMEOUT
+static inline bool bpf_base_capable(void)
+{
+	return capable(CAP_BPF) || capable(CAP_SYS_ADMIN);
+}
 
-not ok 39 selftests: bpf: test_tc_tunnel.sh # TIMEOUT
+static inline bool bpf_leak_capable(void)
+{
+	return perfmon_capable();
+}
 
-not ok 41 selftests: bpf: test_xdping.sh # TIMEOUT
-
-Theses tests all share the characteristic that they consist of a set of
-subtests, and while some sleeps could potentially be trimmed it seems
-like we may want to override the default timeout with a "settings" file 
-to get more stable results. Picking magic numbers that work for everyone 
-is problematic of course. timeout=0 (disable timeouts) is one answer I
-suppose.  Are others hitting this, or are you adding your own settings
-file with a timeout override, or perhaps invoking the tests in a way other 
-than "make run_tests" in tools/testing/selftests/bpf?
-
-2. Missing CONFIG variables in tools/testing/selftests/bpf/config. As I 
-understand it the toplevel config file is supposed to specify config vars 
-needed to run the associated tests.  I noticed a few absences:
-
-Should CONFIG_IPV6_SEG6_BPF be in tools/testing/selftests/bpf/config?
-Without it the helper bpf_lwt_seg6_adjust_srh is not compiled in so 
-loading test_seg6_loop.o fails:
-
-# libbpf: load bpf program failed: Invalid argument
-# libbpf: -- BEGIN DUMP LOG ---
-# libbpf:
-# unknown func bpf_lwt_seg6_adjust_srh#75
-# verification time 48 usec
-# stack depth 88
-# processed 90 insns (limit 1000000) max_states_per_insn 0 total_states 6 
-peak_states 6 mark_read 3
-#
-# libbpf: -- END LOG --
-# libbpf: failed to load program 'lwt_seg6local'
-# libbpf: failed to load object 'test_seg6_loop.o'
-# test_bpf_verif_scale:FAIL:110
-# #5/21 test_seg6_loop.o:FAIL
-# #5 bpf_verif_scale:FAIL
-
-Same question for CONFIG_LIRC for test_lirc* tests; I'm seeing:
-
-# grep: /sys/class/rc/rc0/lirc*/uevent: No such file or directory
-# Usage: ./test_lirc_mode2_user /dev/lircN /dev/input/eventM
-# ^[[0;31mFAIL: lirc_mode2^[[0m
-
-...which I suspect would be fixed by having CONFIG_LIRC.
-
-3. libbpf: XXX is not found in vmlinux BTF
-
-A few different cases here across a bunch of tests:
-
-# libbpf: ipv6_route is not found in vmlinux BTF
-# libbpf: netlink is not found in vmlinux BTF
-# libbpf: bpf_map is not found in vmlinux BTF
-# libbpf: task is not found in vmlinux BTF
-# libbpf: task_file is not found in vmlinux BTF
-# libbpf: task is not found in vmlinux BTF
-# libbpf: task is not found in vmlinux BTF
-# libbpf: task is not found in vmlinux BTF
-# libbpf: bpf_map is not found in vmlinux BTF
-# libbpf: bpf_map is not found in vmlinux BTF
-# libbpf: bpf_map is not found in vmlinux BTF
-# libbpf: bpf_fentry_test1 is not found in vmlinux BTF
-# libbpf: bpf_fentry_test1 is not found in vmlinux BTF
-# libbpf: bpf_fentry_test1 is not found in vmlinux BTF
-# libbpf: bpf_fentry_test1 is not found in vmlinux BTF
-# libbpf: eth_type_trans is not found in vmlinux BTF
-# libbpf: bpf_modify_return_test is not found in vmlinux BTF
-# libbpf: bpf_modify_return_test is not found in vmlinux BTF
-# libbpf: file_mprotect is not found in vmlinux BTF
-# libbpf: __set_task_comm is not found in vmlinux BTF
-# libbpf: __set_task_comm is not found in vmlinux BTF
-# libbpf: hrtimer_nanosleep is not found in vmlinux BTF
-# libbpf: ipv6_route is not found in vmlinux BTF
-# libbpf: netlink is not found in vmlinux BTF
-# libbpf: bpf_map is not found in vmlinux BTF
-# libbpf: task is not found in vmlinux BTF
-# libbpf: task_file is not found in vmlinux BTF
-# libbpf: task is not found in vmlinux BTF
-# libbpf: task is not found in vmlinux BTF
-# libbpf: task is not found in vmlinux BTF
-# libbpf: bpf_map is not found in vmlinux BTF
-# libbpf: bpf_map is not found in vmlinux BTF
-# libbpf: bpf_map is not found in vmlinux BTF
-# libbpf: bpf_fentry_test1 is not found in vmlinux BTF
-# libbpf: bpf_fentry_test1 is not found in vmlinux BTF
-# libbpf: bpf_fentry_test1 is not found in vmlinux BTF
-# libbpf: bpf_fentry_test1 is not found in vmlinux BTF
-# libbpf: eth_type_trans is not found in vmlinux BTF
-# libbpf: bpf_modify_return_test is not found in vmlinux BTF
-# libbpf: bpf_modify_return_test is not found in vmlinux BTF
-# libbpf: file_mprotect is not found in vmlinux BTF
-# libbpf: __set_task_comm is not found in vmlinux BTF
-# libbpf: __set_task_comm is not found in vmlinux BTF
-# libbpf: hrtimer_nanosleep is not found in vmlinux BTF
-
-The strange thing is I'm running with the latest LLVM/clang
-from llvm-project.git, installed libbpf/bpftool from the kernel 
-build, specified CONFIG_DEBUG_INFO_BTF etc and built BTF with pahole 1.16.
-Here's an example failure for fentry_test:
-
-./test_progs -vvv -t fentry_test
-libbpf: loading object 'fentry_test' from buffer
-libbpf: section(1) .strtab, size 489, link 0, flags 0, type=3
-libbpf: skip section(1) .strtab
-libbpf: section(2) .text, size 0, link 0, flags 6, type=1
-libbpf: skip section(2) .text
-libbpf: section(3) fentry/bpf_fentry_test1, size 72, link 0, flags 6, 
-type=1
-libbpf: found program fentry/bpf_fentry_test1
-libbpf: section(4) .relfentry/bpf_fentry_test1, size 16, link 33, flags 0, 
-type=9
-libbpf: section(5) fentry/bpf_fentry_test2, size 112, link 0, flags 6, 
-type=1
-libbpf: found program fentry/bpf_fentry_test2
-libbpf: section(6) .relfentry/bpf_fentry_test2, size 16, link 33, flags 0, 
-type=9
-libbpf: section(7) fentry/bpf_fentry_test3, size 160, link 0, flags 6, 
-type=1
-libbpf: found program fentry/bpf_fentry_test3
-libbpf: section(8) .relfentry/bpf_fentry_test3, size 16, link 33, flags 0, 
-type=9
-libbpf: section(9) fentry/bpf_fentry_test4, size 136, link 0, flags 6, 
-type=1
-libbpf: found program fentry/bpf_fentry_test4
-libbpf: section(10) .relfentry/bpf_fentry_test4, size 16, link 33, flags 
-0, type=9
-libbpf: section(11) fentry/bpf_fentry_test5, size 152, link 0, flags 6, 
-type=1
-libbpf: found program fentry/bpf_fentry_test5
-libbpf: section(12) .relfentry/bpf_fentry_test5, size 16, link 33, flags 
-0, type=9
-libbpf: section(13) fentry/bpf_fentry_test6, size 168, link 0, flags 6, 
-type=1
-libbpf: found program fentry/bpf_fentry_test6
-libbpf: section(14) .relfentry/bpf_fentry_test6, size 16, link 33, flags 
-0, type=9
-libbpf: section(15) license, size 4, link 0, flags 3, type=1
-libbpf: license of fentry_test is GPL
-libbpf: section(16) .bss, size 48, link 0, flags 3, type=8
-libbpf: section(17) .debug_loc, size 1122, link 0, flags 0, type=1
-libbpf: skip section(17) .debug_loc
-libbpf: section(18) .rel.debug_loc, size 352, link 33, flags 0, type=9
-libbpf: skip relo .rel.debug_loc(18) for section(17)
-libbpf: section(19) .debug_abbrev, size 228, link 0, flags 0, type=1
-libbpf: skip section(19) .debug_abbrev
-libbpf: section(20) .debug_info, size 1162, link 0, flags 0, type=1
-libbpf: skip section(20) .debug_info
-libbpf: section(21) .rel.debug_info, size 224, link 33, flags 0, type=9
-libbpf: skip relo .rel.debug_info(21) for section(20)
-libbpf: section(22) .debug_ranges, size 416, link 0, flags 0, type=1
-libbpf: skip section(22) .debug_ranges
-libbpf: section(23) .rel.debug_ranges, size 640, link 33, flags 0, type=9
-libbpf: skip relo .rel.debug_ranges(23) for section(22)
-libbpf: section(24) .debug_str, size 445, link 0, flags 30, type=1
-libbpf: skip section(24) .debug_str
-libbpf: section(25) .BTF, size 1610, link 0, flags 0, type=1
-libbpf: section(26) .rel.BTF, size 112, link 33, flags 0, type=9
-libbpf: skip relo .rel.BTF(26) for section(25)
-libbpf: section(27) .BTF.ext, size 984, link 0, flags 0, type=1
-libbpf: section(28) .rel.BTF.ext, size 896, link 33, flags 0, type=9
-libbpf: skip relo .rel.BTF.ext(28) for section(27)
-libbpf: section(29) .debug_frame, size 160, link 0, flags 0, type=1
-libbpf: skip section(29) .debug_frame
-libbpf: section(30) .rel.debug_frame, size 96, link 33, flags 0, type=9
-libbpf: skip relo .rel.debug_frame(30) for section(29)
-libbpf: section(31) .debug_line, size 435, link 0, flags 0, type=1
-libbpf: skip section(31) .debug_line
-libbpf: section(32) .rel.debug_line, size 96, link 33, flags 0, type=9
-libbpf: skip relo .rel.debug_line(32) for section(31)
-libbpf: section(33) .symtab, size 720, link 1, flags 0, type=2
-libbpf: looking for externs among 30 symbols...
-libbpf: collected 0 externs total
-libbpf: map 'fentry_t.bss' (global data): at sec_idx 16, offset 0, flags 
-400.
-libbpf: map 0 is "fentry_t.bss"
-libbpf: collecting relocating info for: 'fentry/bpf_fentry_test1'
-libbpf: relo for shdr 16, symb 19, value 0, type 1, bind 1, name 99 
-('test1_result'), insn 4
-libbpf: found data map 0 (fentry_t.bss, sec 16, off 0) for insn 4
-libbpf: collecting relocating info for: 'fentry/bpf_fentry_test2'
-libbpf: relo for shdr 16, symb 21, value 8, type 1, bind 1, name 86 
-('test2_result'), insn 9
-libbpf: found data map 0 (fentry_t.bss, sec 16, off 0) for insn 9
-libbpf: collecting relocating info for: 'fentry/bpf_fentry_test3'
-libbpf: relo for shdr 16, symb 23, value 16, type 1, bind 1, name 73 
-('test3_result'), insn 15
-libbpf: found data map 0 (fentry_t.bss, sec 16, off 0) for insn 15
-libbpf: collecting relocating info for: 'fentry/bpf_fentry_test4'
-libbpf: relo for shdr 16, symb 25, value 24, type 1, bind 1, name 60 
-('test4_result'), insn 12
-libbpf: found data map 0 (fentry_t.bss, sec 16, off 0) for insn 12
-libbpf: collecting relocating info for: 'fentry/bpf_fentry_test5'
-libbpf: relo for shdr 16, symb 27, value 32, type 1, bind 1, name 47 
-('test5_result'), insn 14
-libbpf: found data map 0 (fentry_t.bss, sec 16, off 0) for insn 14
-libbpf: collecting relocating info for: 'fentry/bpf_fentry_test6'
-libbpf: relo for shdr 16, symb 29, value 40, type 1, bind 1, name 34 
-('test6_result'), insn 16
-libbpf: found data map 0 (fentry_t.bss, sec 16, off 0) for insn 16
-libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
-libbpf: map 'fentry_t.bss': created successfully, fd=4
-libbpf: bpf_fentry_test1 is not found in vmlinux BTF
-libbpf: failed to load object 'fentry_test'
-libbpf: failed to load BPF skeleton 'fentry_test': -2
-test_fentry_test:FAIL:fentry_skel_load fentry skeleton failed
-#19 fentry_test:FAIL
-Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
-
-What's odd is that symbols are being found when loading via 
-bpf_load_xattr(); the common thread in the above seems to be BPF 
-skeleton-based open+load. Is there anything else I should check
-to further debug this?
-
-4. Some of the tests rely on /dev/tcp - support for it seems to only
-be in  newer bash; tests which spawn nc servers and wait on data 
-transfers via /dev/tcp hang as a result (timeouts don't seem to
-kill things either). Would it be reasonable to have tests fall back to
-using nc where possible if /dev/tcp is not present, or perhaps
-fail early?
-
-Apologies if I've missed any discussion of any of the above. Thanks!
-
-Alan
+Thanks,
+Daniel
