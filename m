@@ -2,101 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6441D0E34
-	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 11:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C98441D0FA8
+	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 12:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388188AbgEMJ6s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 May 2020 05:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388254AbgEMJ6r (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 May 2020 05:58:47 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3655CC061A0E;
-        Wed, 13 May 2020 02:58:47 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id b8so7544193pgi.11;
-        Wed, 13 May 2020 02:58:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=LZQdTItj+phmAsWkKaeFc8g4x0Z4pbN4y0XUWhGVwSA=;
-        b=tDaUkcBMkv9tuhu8S0Ysk4WRXa5pdNBzsgIfZbM0sswrIoemyg4K2pzgOLSa5Lel3f
-         4959Gsut18JVjREjJnT5Ylt/heVgtYR05Eg4VoxSjF7mS/bUxyIxWLMG/lBK/sE5OW1G
-         7AkIaIbE5vSNeVap9XTydgUzNIe/UVZHw0EwuMif4+e9Aw3jepujLNs6VykOpo8uyXz+
-         +eecW+BrYZ2auYUy9hEI3XgobA7cMYCsp2Eu7JqAeyK+CaPhx+wp40VwWr5Cxo7QUjYz
-         KMlsSRZtKsAXX7Ax9uUo15cvzHwODLpUHd9ySWRvoi9fjPeQ3XHDeBrGyfZ/eLoe/ay1
-         bPiw==
+        id S1732382AbgEMKZQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 May 2020 06:25:16 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:52865 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731438AbgEMKZQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 13 May 2020 06:25:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589365515;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zy0H8xB+MNrP+FLSnh6gqUYpUw9pi7TNLyTMD+YbKFs=;
+        b=XHk6JAAbAQSKBSHRBb2fwuSJpZBrnFZk2koGtTyA4Hvaker0vbhM0v91FSWkIaepgfpOya
+        21RX/tXaN4ZdIoZh0F99KlAgsQW3h1uBbLYchRcdO+ZrM8HQGGbkjM8v9uiXKFhPxpD7td
+        CKSkIcEbxPk3Y3DG7c8vrg7QbL09xwg=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-46-6VFGcrdqOUayfCJBBMFaWw-1; Wed, 13 May 2020 06:25:13 -0400
+X-MC-Unique: 6VFGcrdqOUayfCJBBMFaWw-1
+Received: by mail-lf1-f69.google.com with SMTP id a17so5962204lfg.20
+        for <bpf@vger.kernel.org>; Wed, 13 May 2020 03:25:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=LZQdTItj+phmAsWkKaeFc8g4x0Z4pbN4y0XUWhGVwSA=;
-        b=meQjKILW1X7UnPt1MOKnUnuD/LPXUZsv3jjAaxg7/WNCoJWPV2zoAxQvhe2++prbl1
-         R8fjl4NnlpKr+fwgFqJGeLYDMx5g0W0klWBnwAMJGL3gjBvhTwYHfxtARFRC5tr6lvWY
-         TCDKNIokIWWARdW/bg+KqDhLt+HGTtNF7lCkyDj9UwO7yXvxMMdGcEkHT8psiShW6InV
-         8+KRajJ8hCxKs6ZGTQThiyvOu9YUZfr95xpOyywXmBbdEJHuMP4EXRdEYF+CBgE5flGG
-         moz/bFrY72PPxuOUjuE9qfBV7liJ67Nf5uidSTBM50A/+OX/qD0X4H1elbKT0yuw4glL
-         hSMA==
-X-Gm-Message-State: AOAM533IGpaLmmbI2iKcKw8O9ODm0ho6hv+ygmQIBgUmJ28WOMWzlFzG
-        UL7jT6wdWUB9SeESDnx/4YU=
-X-Google-Smtp-Source: ABdhPJwef0ZTrTANKoyN89Q+vPNOeDs4DObiVUNYwODBcHkwoUAO1pvyDn8tVkF6+tDa9yYtSQlN0Q==
-X-Received: by 2002:a62:3487:: with SMTP id b129mr6349648pfa.3.1589363926738;
-        Wed, 13 May 2020 02:58:46 -0700 (PDT)
-Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id k1sm8860351pgh.78.2020.05.13.02.58.43
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=zy0H8xB+MNrP+FLSnh6gqUYpUw9pi7TNLyTMD+YbKFs=;
+        b=BMZmm8kopo66fGub5rzrT0teX3JAuw2tFHLwQUqnOQHr77+N1rke13+7VBsvlD0zRD
+         5e+j04EmV+wt72LDva9wBQT68Vd97K5n8HOPbk2Nub4yWtVUwy9U+DxUId3tQUOa3iJg
+         zE583peFj9NHqlLPy/0mNDU245sV8TFxLsRu/qJMVV0PCpNn5SZVp5za9Eaw0ZxihSTK
+         x87ahZRMBkUzDfCxROo+7WONTMrTXN4uqaMjhYrbFfjE7UFuFSDjeSbIf/0v8TCma6UJ
+         CmydtOByPH+n/ib8LMr2ETpZ6wPjake1HR56xZviJ8PDdNMlNq6jQC1brUHnLJVYx9kH
+         NSeg==
+X-Gm-Message-State: AOAM532zctMJIHCCd0yt7jLkP0k+SmB5Jxu+yd9XV3ksN/zvgBQ4JJ4/
+        QB5A7se7X5FpEAXefNzftNlLVkS0Sa6R9xzyFrEXfz3+Y8fRfGgtuDPivzGR+s+D2nFNK1ycmsU
+        dibo9ht54TXZR
+X-Received: by 2002:a2e:8949:: with SMTP id b9mr17202320ljk.108.1589365511890;
+        Wed, 13 May 2020 03:25:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwxqkQWFl50s+1zu5sW5FzsaxrR4uj6ztjozMReRLcibmdJ8afDSwDEX/liYYJ7IM/2hFSdZg==
+X-Received: by 2002:a2e:8949:: with SMTP id b9mr17202314ljk.108.1589365511677;
+        Wed, 13 May 2020 03:25:11 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id o20sm15469274lfc.39.2020.05.13.03.25.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 02:58:45 -0700 (PDT)
-Date:   Wed, 13 May 2020 17:58:35 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andrii Nakryiko <andriin@fb.com>, stable@vger.kernel.org,
-        lkp@lists.01.org, bpf@vger.kernel.org,
-        kernel test robot <rong.a.chen@intel.com>
-Subject: Re: [selftests/bpf] da43712a72: kernel-selftests.bpf.make_fail
-Message-ID: <20200513095835.GD102436@dhcp-12-153.nay.redhat.com>
-References: <20200513074418.GE17565@shao2-debian>
+        Wed, 13 May 2020 03:25:10 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 91E2D18150C; Wed, 13 May 2020 12:25:09 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrey Ignatov <rdna@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: bpf: ability to attach freplace to multiple parents
+In-Reply-To: <20200512230600.dxuvhy6cvwpkvlc5@ast-mbp>
+References: <CAEf4BzY1bs5WRsvr5UbfqV9UKnwxmCUa9NQ6FWirT2uREaj7_g@mail.gmail.com> <87369wrcyv.fsf@toke.dk> <CAEf4BzZKvuPz8NZODYnn4DOcjPnj5caVeOHTP9_D3=wL0nVFfw@mail.gmail.com> <CACAyw9-FrwgBGjGT1CYrKJuyRJtwn0XUsifF_uR6LpRbcucN+A@mail.gmail.com> <20200326195340.dznktutm6yq763af@ast-mbp> <87o8sim4rw.fsf@toke.dk> <20200402202156.hq7wpz5vdoajpqp5@ast-mbp> <87o8s9eg5b.fsf@toke.dk> <20200402215452.dkkbbymnhzlcux7m@ast-mbp> <87h7wlwnyl.fsf@toke.dk> <20200512230600.dxuvhy6cvwpkvlc5@ast-mbp>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 13 May 2020 12:25:09 +0200
+Message-ID: <87v9l0t9mi.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200513074418.GE17565@shao2-debian>
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-Thanks test bot catch the issue.
-On Wed, May 13, 2020 at 03:44:18PM +0800, kernel test robot wrote:
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with gcc-7):
-> 
-> commit: 77bb53cb094828a31cd3c5b402899810f63073c1 ("selftests/bpf: Fix perf_buffer test on systems w/ offline CPUs")
-> https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> On Tue, May 12, 2020 at 10:34:58AM +0200, Toke H=C3=83=C6=92=C3=82=C2=B8i=
+land-J=C3=83=C6=92=C3=82=C2=B8rgensen wrote:
+>> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>>=20
+>> >> > Currently fentry/fexit/freplace progs have single prog->aux->linked=
+_prog pointer.
+>> >> > It just needs to become a linked list.
+>> >> > The api extension could be like this:
+>> >> > bpf_raw_tp_open(prog_fd, attach_prog_fd, attach_btf_id);
+>> >> > (currently it's just bpf_raw_tp_open(prog_fd))
+>> >> > The same pair of (attach_prog_fd, attach_btf_id) is already passed =
+into prog_load
+>> >> > to hold the linked_prog and its corresponding btf_id.
+>> >> > I'm proposing to extend raw_tp_open with this pair as well to
+>> >> > attach existing fentry/fexit/freplace prog to another target.
+>> >> > Internally the kernel verify that btf of current linked_prog
+>> >> > exactly matches to btf of another requested linked_prog and
+>> >> > if they match it will attach the same prog to two target programs (=
+in case of freplace)
+>> >> > or two kernel functions (in case of fentry/fexit).
+>> >>=20
+>> >> API-wise this was exactly what I had in mind as well.
+>> >
+>> > perfect!
+>>=20
+>> Hi Alexei
+>>=20
+>> I don't suppose you've had a chance to whip up a patch for this, have
+>> you? :)
+>
+> On my priority list it's after cap_bpf and sleepable.
+> If it's urgent for you please start hacking.
 
-The author for this commit is Andrii(cc'd).
+OK, ACK. Not extremely urgent right now, just wanted to check in with
+what your plans were. Thanks for letting me know!
 
-Mine is f1c3656c6d9c ("selftests/bpf: Skip perf hw events test if the setup disabled it")
-> prog_tests/stacktrace_build_id_nmi.c:55:3: error: label ‘cleanup’ used but not defined
->    goto cleanup;
->    ^~~~
+-Toke
 
-Hi Greg, we are missing a depend commit
-dde53c1b763b ("selftests/bpf: Convert few more selftest to skeletons").
-
-So either we need backport this patch, or if you like, we can also fix it by
-changing 'goto cleanup;' to 'goto close_prog;'. So which one do you prefer?
-
-> prog_tests/perf_buffer.c: In function ‘test_perf_buffer’:
-> prog_tests/perf_buffer.c:39:8: warning: implicit declaration of function ‘parse_cpu_mask_file’ [-Wimplicit-function-declaration]
->   err = parse_cpu_mask_file("/sys/devices/system/cpu/online",
->         ^~~~~~~~~~~~~~~~~~~
-
-I guess, this is due to the header file path changed.
-Hi Andrii, what do you think?
-
-Thanks
-Hangbin
