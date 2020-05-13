@@ -2,64 +2,33 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF811D22E0
-	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 01:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E301D22E6
+	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 01:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732466AbgEMXUi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 May 2020 19:20:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732446AbgEMXUh (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 13 May 2020 19:20:37 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0974AC061A0E
-        for <bpf@vger.kernel.org>; Wed, 13 May 2020 16:20:37 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id 8so989309lfp.4
-        for <bpf@vger.kernel.org>; Wed, 13 May 2020 16:20:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=phWq6l4aTvr/C2K/X4+k/YrVnCjrPXRTWTh12+oYaOk=;
-        b=cD3d6Z8Oy8/Dx9WXsRuTcoa6/5Rh9rx4ZXh8joWvH4poHn6SlmiaIW98FjAPsN6Nbh
-         x66jaomRN8ZljFVlOmAhCKb3qMEmAXGGOLhPnCxRlO2Vc19b0KxaWqaBnUOu9g5IgaPv
-         XmTXcJb6msXzq5HV1afcp377hyESwqrNggFac=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=phWq6l4aTvr/C2K/X4+k/YrVnCjrPXRTWTh12+oYaOk=;
-        b=PTeQHhVfHx3bJkDR5iR8X5ARZ2swfvud2wIt+CtYcaUOjnwIBPJM3H4lyyoFgOoR5B
-         yaZUuRMfoBmZNz7cgyn1XABQaZ7D4hflNF5FTBAPcjVfFDLvPoyM7Q8FrfrXTMAH1G00
-         cJXGCZyXY5UkD844gZL/Wmv/t4rATh/eOoLaWo49PP07VnzMZMTQi5sxDo0JTVx1fI29
-         83L7vVZB+RF5aoe5ow2uYVJtU/Gf6YJr3n2bwpdB8Fhkq6eGT9uk875p0GAt8eg4qIR1
-         61FuySVIB2bnHHQejvFIcHGw50zm4vRe4T6nr2sKF8ZA5b5w3MY0z8v542BRQK3HuB17
-         qO0Q==
-X-Gm-Message-State: AOAM533pLCzHhNYyE9+qzeTJnKINBMjRJjzqqKP1OHGmnbwNebHBV4E8
-        cMAav3g5n612G98R/yztc7+pQ15PYtw=
-X-Google-Smtp-Source: ABdhPJxivFOX+RY9VKH7gy2gsdyucbBpisy6R2FdIBHKn5p3bZYD8+eQ1RXUnOUEiX+ixe4HvDpqWg==
-X-Received: by 2002:ac2:48a8:: with SMTP id u8mr1161241lfg.41.1589412035008;
-        Wed, 13 May 2020 16:20:35 -0700 (PDT)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id k1sm579820lfc.40.2020.05.13.16.20.33
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 May 2020 16:20:34 -0700 (PDT)
-Received: by mail-lf1-f54.google.com with SMTP id x73so996042lfa.2
-        for <bpf@vger.kernel.org>; Wed, 13 May 2020 16:20:33 -0700 (PDT)
-X-Received: by 2002:a19:ed07:: with SMTP id y7mr1180765lfy.31.1589412033540;
- Wed, 13 May 2020 16:20:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200513160038.2482415-1-hch@lst.de> <10c58b09-5ece-e49f-a7c8-2aa6dfd22fb4@iogearbox.net>
-In-Reply-To: <10c58b09-5ece-e49f-a7c8-2aa6dfd22fb4@iogearbox.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 13 May 2020 16:20:17 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjJKo0GVixYLmqPn-Q22WFu0xHaBSjKEo7e7Yw72y5SPQ@mail.gmail.com>
-Message-ID: <CAHk-=wjJKo0GVixYLmqPn-Q22WFu0xHaBSjKEo7e7Yw72y5SPQ@mail.gmail.com>
-Subject: Re: clean up and streamline probe_kernel_* and friends v2
+        id S1732555AbgEMXVC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 May 2020 19:21:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732374AbgEMXVB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 May 2020 19:21:01 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E88B0205ED;
+        Wed, 13 May 2020 23:20:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589412060;
+        bh=YDpY+oFCkFIHw2paw3aSACA9Hw6Wo+2HjdFDzhL6e38=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VY6ReKk0+WrAeE5ZcMXyCwAji3tlYNb/nbD2ggy3exjFLZEjT+0+pc5M2WrrXmQH0
+         JQWCoAo25rOLn65XcG+voP2CL/K9HMF/5jLJiguZCbvKj7Ig9RkfxHptSOAPl7eg+4
+         c+G4ppBlY+/44iQvxYyUGGeiJfjGc2UNIDz5ZKPs=
+Date:   Thu, 14 May 2020 08:20:54 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Daniel Borkmann <daniel@iogearbox.net>
 Cc:     Christoph Hellwig <hch@lst.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -68,43 +37,85 @@ Cc:     Christoph Hellwig <hch@lst.de>,
         Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
         Linux-MM <linux-mm@kvack.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH 11/18] maccess: remove strncpy_from_unsafe
+Message-Id: <20200514082054.f817721ce196f134e6820644@kernel.org>
+In-Reply-To: <0c1a7066-b269-9695-b94a-bb5f4f20ebd8@iogearbox.net>
+References: <20200513160038.2482415-1-hch@lst.de>
+        <20200513160038.2482415-12-hch@lst.de>
+        <CAHk-=wj=u+nttmd1huNES2U=9nePtmk7WgR8cMLCYS8wc=rhdA@mail.gmail.com>
+        <20200513192804.GA30751@lst.de>
+        <0c1a7066-b269-9695-b94a-bb5f4f20ebd8@iogearbox.net>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 13, 2020 at 4:04 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> Aside from comments on list, the series looks reasonable to me. For BPF
-> the bpf_probe_read() helper would be slightly penalized for probing user
-> memory given we now test on copy_from_kernel_nofault() first and if that
-> fails only then fall back to copy_from_user_nofault(),
+On Thu, 14 May 2020 00:36:28 +0200
+Daniel Borkmann <daniel@iogearbox.net> wrote:
 
-Again, no.
+> On 5/13/20 9:28 PM, Christoph Hellwig wrote:
+> > On Wed, May 13, 2020 at 12:11:27PM -0700, Linus Torvalds wrote:
+> >> On Wed, May 13, 2020 at 9:01 AM Christoph Hellwig <hch@lst.de> wrote:
+> >>>
+> >>> +static void bpf_strncpy(char *buf, long unsafe_addr)
+> >>> +{
+> >>> +       buf[0] = 0;
+> >>> +       if (strncpy_from_kernel_nofault(buf, (void *)unsafe_addr,
+> >>> +                       BPF_STRNCPY_LEN))
+> >>> +               strncpy_from_user_nofault(buf, (void __user *)unsafe_addr,
+> >>> +                               BPF_STRNCPY_LEN);
+> >>> +}
+> >>
+> >> This seems buggy when I look at it.
+> >>
+> >> It seems to think that strncpy_from_kernel_nofault() returns an error code.
+> >>
+> >> Not so, unless I missed where you changed the rules.
+> > 
+> > I didn't change the rules, so yes, this is wrong.
+> > 
+> >> Also, I do wonder if we shouldn't gate this on TASK_SIZE, and do the
+> >> user trial first. On architectures where this thing is valid in the
+> >> first place (ie kernel and user addresses are separate), the test for
+> >> address size would allow us to avoid a pointless fault due to an
+> >> invalid kernel access to user space.
+> >>
+> >> So I think this function should look something like
+> >>
+> >>    static void bpf_strncpy(char *buf, long unsafe_addr)
+> >>    {
+> >>            /* Try user address */
+> >>            if (unsafe_addr < TASK_SIZE) {
+> >>                    void __user *ptr = (void __user *)unsafe_addr;
+> >>                    if (strncpy_from_user_nofault(buf, ptr, BPF_STRNCPY_LEN) >= 0)
+> >>                            return;
+> >>            }
+> >>
+> >>            /* .. fall back on trying kernel access */
+> >>            buf[0] = 0;
+> >>            strncpy_from_kernel_nofault(buf, (void *)unsafe_addr,
+> >> BPF_STRNCPY_LEN);
+> >>    }
+> >>
+> >> or similar. No?
+> > 
+> > So on say s390 TASK_SIZE_USUALLy is (-PAGE_SIZE), which means we'd alway
+> > try the user copy first, which seems odd.
+> > 
+> > I'd really like to here from the bpf folks what the expected use case
+> > is here, and if the typical argument is kernel or user memory.
+> 
+> It's used for both. Given this is enabled on pretty much all program types, my
+> assumption would be that usage is still more often on kernel memory than user one.
 
-If you can't tell that one or the other is always the right thing,
-then that function is simply buggy and wrong.
+For trace_kprobe.c current order (kernel -> user fallback) is preferred
+because it has another function dedicated for user memory.
 
-On sparc and on s390, address X can be _both_ a kernel address and a
-user address. You need to specify which it is (by using the proper
-function). The whole "try one first, then the other" doesn't work.
-They may both "work", and by virtue of that, unless you can state
-"yes, we always want user space" or "yes, we always want kernel", that
-"try one or the other" isn't valid.
+Thank you,
 
-And it can be a real security issue. If a user program can be made to
-read kernel memory when BPF validated things as a user pointer, it's
-an obvious security issue.
-
-But it can be a security issue the other way around too: if the BPF
-code expects to get a kernel string, but user space can fool it into
-reading a user string instead by mapping something of its own into the
-user space address that aliases the kernel space address, then you can
-presumably fool the BPF program to do bad things too (eg mess up any
-BPF packet switching routines?).
-
-So BPF really really really needs to specify which one it is. Not
-specifying it and saying "whichever" is a bug, and a security issue.
-
-             Linus
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
