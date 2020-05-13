@@ -2,59 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7051D1D51
-	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 20:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7875E1D1D71
+	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 20:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733310AbgEMSTW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 May 2020 14:19:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44022 "EHLO
+        id S2390133AbgEMS2g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 May 2020 14:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732845AbgEMSTV (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 13 May 2020 14:19:21 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6AF3C061A0C;
-        Wed, 13 May 2020 11:19:21 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id i5so179140qkl.12;
-        Wed, 13 May 2020 11:19:21 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1733310AbgEMS2g (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 13 May 2020 14:28:36 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC74C061A0C
+        for <bpf@vger.kernel.org>; Wed, 13 May 2020 11:28:36 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id y22so281204qki.3
+        for <bpf@vger.kernel.org>; Wed, 13 May 2020 11:28:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=enLNMF2hbjwMX7CcoiYwH93Tr3C01x5+cBgNYs19VDQ=;
-        b=gBMhbAcuepVRkxY0oiQJSWv5k9AiRAm5ByDN3waSQDtXivKuc82sFb0ZNHLAK/Er6x
-         s0KfGn4X0XS9nLVoj6Ri8jJRYA9t6tUCdtgmJGE0Q+W/4bRuFCgmOcKgsa7pouXV3FUY
-         ocFZNNAkWwbIExwoI3ykDZc3E31twjVTs67mtLqjOubLkIM1MiYBoDQhlFdb/RP2LV70
-         QcNPmN7coCgNhKYDQwirhSloI00IX9JptqBX2pzY87S6TY8HUBTFRwFQ2wUdHrDmNxq0
-         SWu+ADvGlHum7WhPJUdThS+MOzhwoiafCMy1zPvrT9/IWaAtCta1UwI3/hgcmMTZmfYy
-         d1+w==
+        bh=RdZ1aiYqFKGZxJzpe4bfX7G0RHGCLHEXOCZcVy2rRSE=;
+        b=TDgL/bU9pdD6IeUapG16MhEJhJjSMwEtt/lLQTx47lAdcUrI7/ymoJJNFWDBCu3vbO
+         UNh3yXIaqEaYIDdqOPkFHSDnAFA+7PZC47IqDOeK7bMPAgZePrLkruhF79Ai0NyNKNhy
+         ZXHerQfT0w6SN8IpyAu34/r1tzQTtO0MGcI6uUlVUGI1baNV4pMMG1WbnTgeHS8gO6Qw
+         6zqvrK9r7pPADh6bx4Y1aDDW9EsCGUr67cRWHZxqll8tsw4HlZ/2GDCMWiVAwvyh5Pc2
+         W9sliPhEP4PoR82IJHQDRCe0hO3bcAJAmdowGUNIMxkV+UNLm/o2Rc/SKhS8JQFYnwLH
+         aWgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=enLNMF2hbjwMX7CcoiYwH93Tr3C01x5+cBgNYs19VDQ=;
-        b=oIlRXIyH98J9ggQfoPshXEDo9jKRY6wS3apNboItlWSJTq6ChgxFTcQeGDrvgis6r2
-         HSP2VLxCE1Ua2/mIraJPsVycZ1K0kTS1tVKG098YC2pQvqH1SfRGXv4qDS7ssy1u+5Pp
-         R1d+nyT7iD3e5ogc73+klAaXhRbCfWJwAJrjyrp+UcilJSegkcAmhpMobSW9uGeWkEwt
-         ab7Jtd0x5DccJ3KIxE2+A6bo+2n3VWXDiBiw5McY1Ycq4AGyJjDhdUR325akoH5ypGw2
-         FAB6qXPo/0j9EvrkdJmv7UaJ1ydDYjw3FD6W9Gwtbu4GP9wMKQCfzkt6bGPGt7UbFrpI
-         l4ig==
-X-Gm-Message-State: AOAM533vkj3qL4Z5uJdxfBU9SCWy/4vHMghDyxT9FvZBo1kTOfzpTmEc
-        4KAGDZXdZr8UHMoSSovUHEec0XJEEOC7Vo089jM=
-X-Google-Smtp-Source: ABdhPJw6re7XBsicehrwHFERb97rZya0gylF/TJtKFF3/QlnV0oA7dNkmQzvGL08IoOE0/2SkTAsA7v+7jnMuL5wLRE=
-X-Received: by 2002:a05:620a:2049:: with SMTP id d9mr1023740qka.449.1589393960963;
- Wed, 13 May 2020 11:19:20 -0700 (PDT)
+        bh=RdZ1aiYqFKGZxJzpe4bfX7G0RHGCLHEXOCZcVy2rRSE=;
+        b=DRyHZHgChtIHxFLYiCkXDWMYoUjWFKxQpfPjNfuA+tyC44GLPNZPMt1jjPZbb8v2Qc
+         NgVL1XoOThs6AbXAiOVqRlOW8sq9lB8e0aqm0t4GSitYmgkYxy55x6hzjh99MOiuLl63
+         k1/X7ln8hfzEbry0DjqR1Pop0SH8/xG+L0vTwG/gm0sKhR3YpW1XT7PTXcN5lqfvCO13
+         i/5UmWduHwwWD7KcL9qbeuz1iOBW6kNu5HfpoVm9UEkSeHs9kUzcL4t+oYLeH0j4DDPQ
+         ifaNQo9bo2dCd59j2baIrH3aZmtBauKlaJk1qMnKJoZCJvpZGoXXV5Ac1iTGtxN6+8rg
+         Oy0Q==
+X-Gm-Message-State: AOAM531IZJMsGRmDDZDPFLnBGZd/L9Zz16WUw+A8xq4NnYCs7UlrZoKy
+        bvO2jNDJESNMzd0x1dyTmp39Uz/GqZIy+bDKipWNnA==
+X-Google-Smtp-Source: ABdhPJwda+A3y1iib7NccxTfw6LKSFw51msLrU097BVbQpdtcNFI11GXkeNT0WPoJFDRUCjPS0X2snA0Zh5Qgg248fA=
+X-Received: by 2002:ae9:e713:: with SMTP id m19mr1047505qka.39.1589394514102;
+ Wed, 13 May 2020 11:28:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200513180215.2949164-1-yhs@fb.com>
-In-Reply-To: <20200513180215.2949164-1-yhs@fb.com>
+References: <20200513164525.2500605-1-yhs@fb.com> <20200513164525.2500681-1-yhs@fb.com>
+In-Reply-To: <20200513164525.2500681-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 13 May 2020 11:19:10 -0700
-Message-ID: <CAEf4BzYeaL5QK0vQHyTzD2+Vof9B8-akjpUJsKTkRnUDztxadA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/7] bpf: misc fixes for bpf_iter
+Date:   Wed, 13 May 2020 11:28:23 -0700
+Message-ID: <CAEf4BzaCbPqrC67PmAVkPjW2MxR1H=Md47w5nC1NkdEfWY6q4Q@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] bpf: enforce returning 0 for fentry/fexit progs
 To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
@@ -63,61 +60,62 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 13, 2020 at 11:03 AM Yonghong Song <yhs@fb.com> wrote:
+On Wed, May 13, 2020 at 9:46 AM Yonghong Song <yhs@fb.com> wrote:
 >
-> Commit ae24345da54e ("bpf: Implement an interface to register
-> bpf_iter targets") and its subsequent commits in the same patch set
-> introduced bpf iterator, a way to run bpf program when iterating
-> kernel data structures.
+> Currently, tracing/fentry and tracing/fexit prog
+> return values are not enforced. In trampoline codes,
+> the fentry/fexit prog return values are ignored.
+> Let us enforce it to be 0 to avoid confusion and
+> allows potential future extension.
 >
-> This patch set addressed some followup issues. One big change
-> is to allow target to pass ctx arg register types to verifier
-> for verification purpose. Please see individual patch for details.
+> Fixes: fec56f5890d9 ("bpf: Introduce BPF trampoline")
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  kernel/bpf/verifier.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 >
-> Changelogs:
->   v1 -> v2:
->     . add "const" qualifier to struct bpf_iter_reg for
->       bpf_iter_[un]reg_target, and this results in
->       additional "const" qualifiers in some other places
->     . drop the patch which will issue WARN_ONCE if
->       seq_ops->show() returns a positive value.
->       If this does happen, code review should spot
->       this or author does know what he is doing.
->       In the future, we do want to implement a
->       mechanism to find out all registered targets
->       so we will be aware of new additions.
->
-> Yonghong Song (7):
->   tools/bpf: selftests : explain bpf_iter test failures with llvm 10.0.0
->   bpf: change btf_iter func proto prefix to "bpf_iter_"
->   bpf: add comments to interpret bpf_prog return values
->   bpf: net: refactor bpf_iter target registration
->   bpf: change func bpf_iter_unreg_target() signature
->   bpf: enable bpf_iter targets registering ctx argument types
->   samples/bpf: remove compiler warnings
->
->  include/linux/bpf.h                    | 22 ++++++++----
->  include/net/ip6_fib.h                  |  7 ++++
->  kernel/bpf/bpf_iter.c                  | 49 +++++++++++++++-----------
->  kernel/bpf/btf.c                       | 15 +++++---
->  kernel/bpf/map_iter.c                  | 23 +++++++-----
->  kernel/bpf/task_iter.c                 | 42 ++++++++++++++--------
->  kernel/bpf/verifier.c                  |  1 -
->  net/ipv6/ip6_fib.c                     |  5 ---
->  net/ipv6/route.c                       | 25 +++++++------
->  net/netlink/af_netlink.c               | 23 +++++++-----
->  samples/bpf/offwaketime_kern.c         |  4 +--
->  samples/bpf/sockex2_kern.c             |  4 +--
->  samples/bpf/sockex3_kern.c             |  4 +--
->  tools/lib/bpf/libbpf.c                 |  2 +-
->  tools/testing/selftests/bpf/README.rst | 43 ++++++++++++++++++++++
->  15 files changed, 183 insertions(+), 86 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/README.rst
->
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index fa1d8245b925..17b8448babfe 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -7059,6 +7059,13 @@ static int check_return_code(struct bpf_verifier_env *env)
+>                         return 0;
+>                 range = tnum_const(0);
+>                 break;
+> +       case BPF_PROG_TYPE_TRACING:
+> +               if (env->prog->expected_attach_type == BPF_TRACE_FENTRY ||
+> +                   env->prog->expected_attach_type == BPF_TRACE_FEXIT) {
+> +                       range = tnum_const(0);
+> +                       break;
+> +               }
+> +               return 0;
+
+
+I find such if conditions without explicitly handling "else" case very
+error-prone and easy to miss when adding new functionality. Having an
+explicit switch with all known cases handled and default failing seems
+best. WDYT?
+
+E.g., in this case
+
+case BPF_PROG_TYPE_TRACING:
+    switch (env->prog->expected_attach_type) {
+        case BPF_TRACE_FENTRY:
+        case BPF_TRACE_FEXIT:
+            range = tnum_const(0);
+            break;
+        case BPF_MODIFY_RETURN:
+            break;
+        default:
+            return -ENOTSUPP;
+    }
+
+This way if someone adds new tracing sub-type, they will need to
+explicitly decide what to do with exit codes.
+
+>         default:
+>                 return 0;
+>         }
 > --
 > 2.24.1
 >
-
-For the series:
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
