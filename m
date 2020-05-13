@@ -2,102 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 303BE1D1042
-	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 12:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4721D1144
+	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 13:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730570AbgEMKuz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 May 2020 06:50:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728113AbgEMKuz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 May 2020 06:50:55 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC99C061A0C
-        for <bpf@vger.kernel.org>; Wed, 13 May 2020 03:50:55 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id g185so16780459qke.7
-        for <bpf@vger.kernel.org>; Wed, 13 May 2020 03:50:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o6RF/R6nRQ24p935e51htzLuDvkMpsHnIopBh1qLWjw=;
-        b=NFawZPSY96WEDGV0An6C8cEVv9LnWtImKiszvdFNYCXVeQsIMqj0zPogcRzsak+YA2
-         0l2tn3kPOa+7ZrmY02IwaRMihrn4W1zTvxSR95KNG+ZmaADaQ1DoT96Dd8P9rlHB2j5f
-         eBiG0FyTo7b6QhaBbNw6G163MBBr5aSp6/SQQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o6RF/R6nRQ24p935e51htzLuDvkMpsHnIopBh1qLWjw=;
-        b=IfzI1gnMgqIjTvEra5eGZawliHFgwNV5RPTn70UrQ0z2H2PfJuosSUYv63Xz6aWm12
-         iLcm+3Cueb1AbYkkj9Oo2MIPpN2u819za37fT3NtiUgeasAo0zLjOmz6oxCeEjhS9PoF
-         gU5cqBMqn8BkN4KHzuThpoRJQKN7u4mkYs6Q5LaGc9w1EvqkGRC3e4T+o03TywxOkkrH
-         0ne02VInrpObiU5UE+JZiGhM6fL9bWJx5aJjdha6nuH3xvnLlV49x/TT3J51vhfKxSxI
-         1T0lRPFV0XUzTIMwpz6e78wl064bh7KSxw4gdpIl1pJen2nqvDRiklOE5sAterOOVA3H
-         zyWw==
-X-Gm-Message-State: AGi0Pubsg9hPf/JQp5W497ZKhd6QVyI7UHe0lFgIQvdIT9klh55NBONj
-        xVLKov4bgzpsfaeVP4ZZTfu81+xjyUAY5c2MrEpR6w==
-X-Google-Smtp-Source: APiQypLoXfq1+PMeeoxxa6kAuVOtGxB0PsKlzBMx4xsPyXCS3MOLmm8Q+KsbxzPd2hhJA2wOHbtUTs+v+GidleTZmcs=
-X-Received: by 2002:a37:9d4f:: with SMTP id g76mr16242977qke.235.1589367054213;
- Wed, 13 May 2020 03:50:54 -0700 (PDT)
+        id S1728292AbgEML0O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 May 2020 07:26:14 -0400
+Received: from www62.your-server.de ([213.133.104.62]:39762 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726020AbgEML0O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 May 2020 07:26:14 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jYpWc-0006Ul-TW; Wed, 13 May 2020 13:26:10 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jYpWc-000CrE-Lm; Wed, 13 May 2020 13:26:10 +0200
+Subject: Re: [PATCH bpf-next] bpf, bpftool: Allow probing for CONFIG_HZ from
+ kernel config
+To:     Quentin Monnet <quentin@isovalent.com>,
+        alexei.starovoitov@gmail.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>
+References: <20200513075849.20868-1-daniel@iogearbox.net>
+ <4cc2a445-5d38-8b9c-71b1-bb5c69ac2553@isovalent.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <531f4e9f-8fd5-75a1-675a-488c15c50906@iogearbox.net>
+Date:   Wed, 13 May 2020 13:26:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20200513031930.86895-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20200513031930.86895-1-alexei.starovoitov@gmail.com>
-From:   Marek Majkowski <marek@cloudflare.com>
-Date:   Wed, 13 May 2020 11:50:42 +0100
-Message-ID: <CAJPywT+c8uvi2zgUD_jObmi9T6j50THzjQHg-mudNrEC2HuJvg@mail.gmail.com>
-Subject: Re: [PATCH v6 bpf-next 0/3] Introduce CAP_BPF
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        network dev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        kernel-team@fb.com, linux-security-module@vger.kernel.org,
-        acme@redhat.com, jamorris@linux.microsoft.com,
-        Jann Horn <jannh@google.com>, kpsingh@google.com,
-        kernel-team <kernel-team@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <4cc2a445-5d38-8b9c-71b1-bb5c69ac2553@isovalent.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25810/Tue May 12 14:14:24 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 13, 2020 at 4:19 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> CAP_BPF solves three main goals:
-> 1. provides isolation to user space processes that drop CAP_SYS_ADMIN and switch to CAP_BPF.
->    More on this below. This is the major difference vs v4 set back from Sep 2019.
-> 2. makes networking BPF progs more secure, since CAP_BPF + CAP_NET_ADMIN
->    prevents pointer leaks and arbitrary kernel memory access.
-> 3. enables fuzzers to exercise all of the verifier logic. Eventually finding bugs
->    and making BPF infra more secure. Currently fuzzers run in unpriv.
->    They will be able to run with CAP_BPF.
->
+On 5/13/20 12:42 PM, Quentin Monnet wrote:
+> 2020-05-13 09:58 UTC+0200 ~ Daniel Borkmann <daniel@iogearbox.net>
+>> In Cilium we've recently switched to make use of bpf_jiffies64() for
+>> parts of our tc and XDP datapath since bpf_ktime_get_ns() is more
+>> expensive and high-precision is not needed for our timeouts we have
+>> anyway. Our agent has a probe manager which picks up the json of
+>> bpftool's feature probe and we also use the macro output in our C
+>> programs e.g. to have workarounds when helpers are not available on
+>> older kernels.
+>>
+>> Extend the kernel config info dump to also include the kernel's
+>> CONFIG_HZ, and rework the probe_kernel_image_config() for allowing a
+>> macro dump such that CONFIG_HZ can be propagated to BPF C code as a
+>> simple define if available via config. Latter allows to have _compile-
+>> time_ resolution of jiffies <-> sec conversion in our code since all
+>> are propagated as known constants.
+>>
+>> Given we cannot generally assume availability of kconfig everywhere,
+>> we also have a kernel hz probe [0] as a fallback. Potentially, bpftool
+>> could have an integrated probe fallback as well, although to derive it,
+>> we might need to place it under 'bpftool feature probe full' or similar
+>> given it would slow down the probing process overall. Yet 'full' doesn't
+>> fit either for us since we don't want to pollute the kernel log with
+>> warning messages from bpf_probe_write_user() and bpf_trace_printk() on
+>> agent startup; I've left it out for the time being.
+>>
+>>    [0] https://github.com/cilium/cilium/blob/master/bpf/cilium-probe-kernel-hz.c
+>>
+>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+>> Cc: Martin KaFai Lau <kafai@fb.com>
+> 
+> Looks good to me, thanks!
+> 
+> I think at the time the "bpftool feature probe" was added we didn't
+> settle on a particular format for dumping the CONFIG_* as part as the C
+> macro output, but other than that I can see no specific reason why not
+> to have them, so we could even list them all and avoid the macro_dump
+> bool. But I'm fine either way, other CONFIG_* can still be added to C
+> macro output at a later time if someone needs them anyway.
 
-Alexei, looking at this from a user point of view, this looks fine.
+Right, I initially thought about listing them all, but then my thinking
+was that we should really only dump those CONFIG_* as defines that actually
+have a real-world use case in a BPF prog somewhere. This also helps to
+better understand what is useful and why and avoids unrelated noise e.g.
+in the bpf_features.h dump we have in Cilium as part of the agent bootstrap.
 
-I'm slightly worried about REUSEPORT_EBPF. Currently without your
-patch, as far as I understand it:
+> Regarding a fallback for the jiffies, not sure what would be best. I
+> agree with you for the "full" keyword, so we would need another word I
+> suppose. But adding new keyword for fallbacks for probing features not
+> directly related to BPF might be going a bit beyond bpftool's scope? I
+> don't know. Anyway, for the current patch:
 
-- You can load SOCKET_FILTER and SO_ATTACH_REUSEPORT_EBPF without any
-permissions
+Agree, had the same thought.
 
-- For loading BPF_PROG_TYPE_SK_REUSEPORT program and for SOCKARRAY map
-creation CAP_SYS_ADMIN is needed. But again, no permissions check for
-SO_ATTACH_REUSEPORT_EBPF later.
+> Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 
-If I read the patchset correctly, the former SOCKET_FILTER case
-remains as it is and is not affected in any way by presence or absence
-of CAP_BPF.
-
-The latter case is different. Presence of CAP_BPF is sufficient for
-map creation, but not sufficient for loading SK_REUSEPORT program. It
-still requires CAP_SYS_ADMIN. I think it's a good opportunity to relax
-this CAP_SYS_ADMIN requirement. I think the presence of CAP_BPF should
-be sufficient for loading BPF_PROG_TYPE_SK_REUSEPORT.
-
-Our specific use case is simple - we want an application program -
-like nginx - to control REUSEPORT programs. We will grant it CAP_BPF,
-but we don't want to grant it CAP_SYS_ADMIN.
-
-Marek
+Thanks!
+Daniel
