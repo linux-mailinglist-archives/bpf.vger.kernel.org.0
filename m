@@ -2,123 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9AE1D0576
-	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 05:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9DC1D060A
+	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 06:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728855AbgEMDUR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 May 2020 23:20:17 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:59518 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725898AbgEMDUQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 12 May 2020 23:20:16 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04D3IxJY010290;
-        Tue, 12 May 2020 20:20:04 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=Y0zs+hxwbr/C/PL1qdz1qBNXApRyma5/e29AE4zsHkY=;
- b=m0C2CRnuvYqL7tklLGSA0E/y4k05w2ZnIvu2/ila2K/dVeGC+rSx+CasWoFIVxrGH2LA
- KdFhLTWVu8gJtj0EdIizwplCkS+SvSFNMjrAvvBp4YuxPOJSWzhcbdLZZADDM828eJG8
- uF12oxlWWkbctk61Q6gacDTSbISKlfs+o0Q= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3100x22e46-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 12 May 2020 20:20:03 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Tue, 12 May 2020 20:20:02 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gae5EylJrtBWcMx//krSmo/ueFUp79jjEsoUgdB5Sh2aJ/qSejT1426EMj/MsarVhkcGuFzFOH4SfPCoQnP5HA9Et0htogMJSLWa3ye4AsB/Bkgkbc0twmwsSrfnVZf/XBOHuPqstDSiruGiLMtd1olLMPIxEaVUNhqfQVrdmfGK/+nIHzg5F2OghP/1EqNXrd4LIlQkOak8m/jNeO3Iu9SPoSPSc14kzbRUvBhV70nZ737JDOmSWeGIFthMNRBknGZIh1DjCU/hhlRknHinzqTeVF7E9zKnbCnj+FQhNXU5rzrd58ePlkOThf0rMwdjls9jHo2+zAe7gfIUI1b5Qw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y0zs+hxwbr/C/PL1qdz1qBNXApRyma5/e29AE4zsHkY=;
- b=Qw0AM3Ywsvirq1kDv6bhW2Kk3Op3pe5kbvHxD/+V0qb5Ww1hJensUJL+jPQUJ8Kh/aWTA6awm2s996ZwrPkJyrGIkCR14R+Bo5X54MmpLSRCZJn7Rls0vceQuc/slJi2jhvcBtuY1xRBJCSFvSAq6kSQ+UJPFWM4Oi6q5OG17bc5ulxVV8pYWbOdzoU2ZpDf8aGEZOWwKnN7JKk8KmcQLopFguTAM5CBkt6tIX6w68e13es6ILb5epiYwCzh9dLDDIQCcHj2kkageaHIOwJaoPCfnt9lujfqLRA4AOiIDenOqHn2lVtAGAH7WQpUbFQdAf1FDINwDRB4SDH1U/zgyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y0zs+hxwbr/C/PL1qdz1qBNXApRyma5/e29AE4zsHkY=;
- b=YYCtxMZ0rwU602x9Z9VRvK/o+zqyQt1WTmsEX6yY3iMRuaN8Xgmz5k8kpMbKUL+5Y8yR038mTmXlih4tUbHlQS2GXGGiXeS5uElxm6OFXIwMc7YRL5aUiV544P6TGkWfv78jmw0rF2JIb833SRPgQNHfXIjeR8Bu+DjisNPAavE=
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2742.namprd15.prod.outlook.com (2603:10b6:a03:158::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.34; Wed, 13 May
- 2020 03:19:59 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.2979.033; Wed, 13 May 2020
- 03:19:59 +0000
-Subject: Re: [PATCH bpf] bpf: fix bug in mmap() implementation for BPF array
- map
-To:     Andrii Nakryiko <andriin@fb.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <ast@fb.com>, <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>
-References: <20200512235925.3817805-1-andriin@fb.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <832dc9d7-2a38-9728-a845-2f7f7e34bb74@fb.com>
-Date:   Tue, 12 May 2020 20:19:57 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
-In-Reply-To: <20200512235925.3817805-1-andriin@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR02CA0040.namprd02.prod.outlook.com
- (2603:10b6:a03:54::17) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        id S1725898AbgEMEZU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 May 2020 00:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725837AbgEMEZT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 13 May 2020 00:25:19 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C15C061A0C
+        for <bpf@vger.kernel.org>; Tue, 12 May 2020 21:25:19 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id y42so9716754qth.0
+        for <bpf@vger.kernel.org>; Tue, 12 May 2020 21:25:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ThUe2AoGibvJhkzcTd466pkzmZabzXCm/0lZtp7eIc4=;
+        b=fDTHIXpqg4nwyQ30mtuzavw8+PTtU5QYg+AVTPCxs0241RAUicUzBIT7PszmX6R3L9
+         c02CBgmg2mAuDVH6lYI7s08dYIoNtpSENe9TE2LwoOh2qQdA9WiY3rQwm5PpF/jiem9W
+         WpdN5Fu3xZzaMF7aGXxuUGqquFK4xdPIPZZ2IBvJeZKheHQzx79S9MGOzDlSLboUCLol
+         iA9lX/Pdr1z8KBqGZVEn5zRtJZQtLxpPNmGWt5efIjInKQPS1wpSiguZdqZ08u2aFcR0
+         mPUg/xLBm+3S5r3cs5Nf0PTNBChK2pr4Nw8wNsp/lMBt52pQ8pnGTGgYcsCA4oUspwOz
+         oZIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ThUe2AoGibvJhkzcTd466pkzmZabzXCm/0lZtp7eIc4=;
+        b=UJ4jIcjyHz80yD9Os+UXs3U50cpyTdrooG1esuhtwkDAi6EiV7SWtl3urAzvj0z0id
+         cLp6s0GZkhtLfAGvpa4ai+YGHW05WmUNG7NM1ZZnjENXJiEjmVq6CQ0ebRoG2F+mwZQY
+         Ucv6sw+dpKiOXQp+l5U0Yo7gpyRJkxJFThQX+Z/C+Uu5GJNnyR6mP6RXCL9gwEIYEoEW
+         QNg5FCmk6JOEyUz12ejuRi4MzGd2rhzG5Jvm1mGdjlcs7+lQ6+sbsGC3ltIQ+pmtQGCV
+         90qwob+8ow3DDQJzDVN8q8/w4qu1WJkg1Z0xxbwP5C90Gr15eLOD8Py2GUx30eaRctRJ
+         HWFQ==
+X-Gm-Message-State: AGi0PuZMPr6uiCwTvSOhteZ98ryk2oTIDyh+yivpYaQJwUYFglINFSpt
+        L5Wbjsv07get8bfREqc9jfdNouiBRPAGuQJ8cLY=
+X-Google-Smtp-Source: APiQypL/oQK+Dn081lbszS4eF2vhaD+vuwMBJI1n2DSQGHikntGEIN2q1CTq0NbkpHOrH5WlQ+c7D8AkmNF//RfL7xE=
+X-Received: by 2002:aed:24a1:: with SMTP id t30mr11620766qtc.93.1589343918517;
+ Tue, 12 May 2020 21:25:18 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from macbook-pro-52.local.dhcp.thefacebook.com (2620:10d:c090:400::5:5464) by BYAPR02CA0040.namprd02.prod.outlook.com (2603:10b6:a03:54::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.20 via Frontend Transport; Wed, 13 May 2020 03:19:59 +0000
-X-Originating-IP: [2620:10d:c090:400::5:5464]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3460ea22-8d90-4c4c-b8ed-08d7f6ec84af
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2742:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB274290558140F93B7BC8FB35D3BF0@BYAPR15MB2742.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-Forefront-PRVS: 0402872DA1
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: k0XsJ0bJ1I4i0KFFyjqBlGnx812IyirNdI+IeGf47EjyzsrPzv4a5R/q0FK3MquaEcFAW3YFMII+EV7SzTM1Rk9hzKbYe0yJLIUPczJSziVRauvllUpR7xJjVJPAwa8o2GvYgYPw6dp8ChuaJurFLx5ZhYCwhIylFs3MY/p351mXcDAl/L7sCUCh5l51E4nogCepVzwCTWFG41aLAEhPhTNvK04/J4BUZgLONlive/3xuTwmCy4A+Hs5n+zbN9u2yqkzwPev3WFTQYsW/h6dSTw6E0ps2tHCL7CxX2uN7A0/IQ6TE170KVVt5ehsxS0Hv+d7IRWI264gziipRYiItxgW+SvLlFVanTX/YGlwGWZngywTk7q/HyxqqpQaNJozH5UeLbS8D10iyjTlHTbdLU1PEyTZZMQkXxkmJmPokeTQrKp4jahvD5R6ouQ2OA6Gs1PXc8pdSmV1Vau0sMRq5z6TBZ3lcDssf2X+bKW/tOp9AA6ha7v+g097I8VYxsp5RJbgxQcUIK0w38Cf87MirLKZOhDFCAFpUCEIN+kNieRcBIOJc/qS1xzNC33TNxVA
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(396003)(366004)(376002)(39860400002)(136003)(33430700001)(66476007)(31696002)(8936002)(4326008)(4744005)(478600001)(66946007)(66556008)(5660300002)(31686004)(36756003)(33440700001)(6486002)(52116002)(316002)(2616005)(6512007)(86362001)(186003)(53546011)(6506007)(8676002)(2906002)(16526019)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: vyyoUVtjUmuLgzzepY8IMON27bRchTjJW6lpChf48wf1njj8GelQNF9cy4pgIcYeoqY2vTkF+62pU0HUmVpU24jsSEyg/yWnuHxB7b3+GkgUfK705ZmJSOPsOK716STAHSlACPOhDpdOQ6pT0dq5aIhKm5ULBYXtoLD11G1nvNzd5W4RxhYgXPOVhTzlFMpMvV3db50QEFOeVjbY/2uyDCRo5KJPYI3HzU/RB8oljMtBGPO1/rHIdeHECJVeuN+Cgd9XdmkxTyvbay26gHoC+ZUxz/D0An1RLPJZrnxv1EKOV5CPVA8W6pmUL/5M002LyQxWmFD8b6hn1910WKvpsdlgSRTGB6mQjMCX3pkbdN8kxSjRQNLDdAArO+UMySD2uXwkSurByQlT1p9T2H4iY77VU3fC8ZCB0atpvxfSbtfZOTJIHpauX6+82liOF+fOj04GZclHh8Q1lJLxJsM+To4wMIcmTxB0VXfe3Wk7UdylxGL8uGnW3OGAYIdDGEgFU74cPhDQbYgVfCyanbov1w==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3460ea22-8d90-4c4c-b8ed-08d7f6ec84af
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2020 03:19:59.6117
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WdsWGX+jyMM7HYDdtTOsqOS6WQcb9V68eiqzrKo1OSgZmTNhC3mvhYgBveVrDyjj
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2742
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-12_08:2020-05-11,2020-05-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 spamscore=0
- clxscore=1015 priorityscore=1501 suspectscore=0 phishscore=0
- malwarescore=0 mlxscore=0 bulkscore=0 mlxlogscore=991 cotscore=-2147483648
- lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005130029
-X-FB-Internal: deliver
+References: <20200513021722.7787-1-yauheni.kaliuta@redhat.com>
+In-Reply-To: <20200513021722.7787-1-yauheni.kaliuta@redhat.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 12 May 2020 21:25:07 -0700
+Message-ID: <CAEf4BzZMCF8uxRARc7qBSrStotO73PF2FPajMrna2sSWe7ZDQg@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: install generated test progs
+To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, May 12, 2020 at 7:18 PM Yauheni Kaliuta
+<yauheni.kaliuta@redhat.com> wrote:
+>
+> Before commit 74b5a5968fe8 ("selftests/bpf: Replace test_progs and
+> test_maps w/ general rule") selftests/bpf used generic install
+> target from selftests/lib.mk to install generated bpf test progs by
+> mentioning them in TEST_GEN_FILES variable.
+>
+> Take that functionality back.
+>
+> Fixes: 74b5a5968fe8 ("selftests/bpf: Replace test_progs and
+> test_maps w/ general rule")
+>
+> Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+> ---
 
+Thanks for fixing!
 
-On 5/12/20 4:59 PM, Andrii Nakryiko wrote:
-> mmap() subsystem allows user-space application to memory-map region with
-> initial page offset. This wasn't taken into account in initial implementation
-> of BPF array memory-mapping. This would result in wrong pages, not taking into
-> account requested page shift, being memory-mmaped into user-space. This patch
-> fixes this gap and adds a test for such scenario.
-> 
-> Fixes: fc9702273e2e ("bpf: Add mmap() support for BPF_MAP_TYPE_ARRAY")
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-Acked-by: Yonghong Song <yhs@fb.com>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  tools/testing/selftests/bpf/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 7729892e0b04..c9a07cc7dede 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -263,6 +263,7 @@ TRUNNER_BPF_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.o, $$(TRUNNER_BPF_SRCS)
+>  TRUNNER_BPF_SKELS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.skel.h,      \
+>                                  $$(filter-out $(SKEL_BLACKLIST),       \
+>                                                $$(TRUNNER_BPF_SRCS)))
+> +TEST_GEN_FILES += $$(TRUNNER_BPF_OBJS)
+>
+>  # Evaluate rules now with extra TRUNNER_XXX variables above already defined
+>  $$(eval $$(call DEFINE_TEST_RUNNER_RULES,$1,$2))
+> --
+> 2.26.2
+>
