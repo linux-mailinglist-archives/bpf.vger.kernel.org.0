@@ -2,138 +2,303 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 962FF1D06AF
-	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 07:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA911D0902
+	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 08:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728786AbgEMFz5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 May 2020 01:55:57 -0400
-Received: from mga07.intel.com ([134.134.136.100]:38475 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728784AbgEMFz5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 May 2020 01:55:57 -0400
-IronPort-SDR: AaUH9ttiXQ5udoOayukJM9ebDVdkze0p6HwbKzUZudM/xbhullrQTs3wlRQLAQGcwuAtrXpDV6
- aBffgSGL99aQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2020 22:55:57 -0700
-IronPort-SDR: YB0uMt0MnjvtgMjzed/ejgxny2lVeOlbBPoLN0fM3fSqNgl4X1qyyn4ltqrPyhlacGA3p3o11O
- /wHvzrTzioNQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,386,1583222400"; 
-   d="scan'208";a="463809969"
-Received: from hxu31-mobl2.ccr.corp.intel.com (HELO [10.255.28.224]) ([10.255.28.224])
-  by fmsmga005.fm.intel.com with ESMTP; 12 May 2020 22:55:55 -0700
-Subject: Re: bprm_count and stack_mprotect error when testing BPF LSM on
- v5.7-rc3
-To:     KP Singh <kpsingh@google.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-References: <3ab505db-9e04-366b-d602-6b2935739f54@intel.com>
- <CAEf4BzZXA3pDwqLGTnrDAn7cH67Ei6tp8PRZwVAmsT-nTMA0gA@mail.gmail.com>
- <CAFLU3KuU6zFs7+xQ-=vy9WEx-4U=cTSW9VXNMyxRdwY3LHc9HA@mail.gmail.com>
- <CAFLU3KuUm_1HBjyQdypuWCa4soKwXF7zEic-4=e4pvTBbuwd+A@mail.gmail.com>
- <65526c26-c94b-d5dd-7143-b1af7071dbf9@intel.com>
- <CAFLU3KsDXDXqqhOUTx6jij7p3tgirNtDH-619z9mvgafFYN=jA@mail.gmail.com>
- <b3991caf-9e04-b6f4-aee5-86191a0fc3df@intel.com>
- <CAFLU3Ku=+VQ5KYXfwSqRknuYsz9nMV7-oj1Z1BNL4jiwVXPOOQ@mail.gmail.com>
-From:   Ma Xinjian <max.xinjian@intel.com>
-Message-ID: <1cd50917-17a5-1806-07ce-ee7b91ec61ef@intel.com>
-Date:   Wed, 13 May 2020 13:55:19 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.3.0
+        id S1729547AbgEMGv1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 May 2020 02:51:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729367AbgEMGv1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 May 2020 02:51:27 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00395C061A0C;
+        Tue, 12 May 2020 23:51:26 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id a10so4050251ybc.3;
+        Tue, 12 May 2020 23:51:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0Hq0+NcHUZkPr45/gSvsislYzDjnCtP4+4enTWioQS0=;
+        b=HvSuMsTw+H6ECYAn3bYAHkH80FyGJz5hQVbr8w2zbDIKgzT+mPZUjcz9rgaIIn7hYP
+         5B8HK/ayRmCLTTOfX5vn/5OorG1J9/m6Bz8wjgQjF/ynR0gn552SBN+Jsf9QlwLmxGjv
+         RMVzXdogYOg1P/IMCQORiUu/Qegbe9/5pGvg2EqZc2iXuihIBijTMHx+DIs6IPjwgoCl
+         f3AcPlcW9n0zSoKIQyfncFH6BvOcW8CVW2DtWpvBVPbVqV4Hd+txsAgqnOQsIx9FLVdg
+         niWn6y4wIlGszRPT9jL7i1Ai7AC7NQpuLv/cYZiWteO9DzHEJWtb+R0lA9N3iBDWri/J
+         lg+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0Hq0+NcHUZkPr45/gSvsislYzDjnCtP4+4enTWioQS0=;
+        b=T2FAQ9px+WDwUXtMIqOKpIyidRL+KjXO3wTbNPK9QxQB1mri6+JD1cG/nh1rx5hSwi
+         CYKGilqkFqFrFC+8+qOZUAzrnTK7BFla2XkGe0gNNRgj+nMnnGLiLuIIhzVf0VBLUrrY
+         rkgHPquyFCZMKLDI4d+iepPvR71wjLz2sBIMxb+nSNbIwj1ByRT0Zzq+KbnYFmwVmM5R
+         ctaq2xzF8eWjAPre3e6gvqlnwWNIhZPW0qHVQbS4544XKL2NkJf3FmexhjRtCCGLEApQ
+         jWJbwszjfWrN+5FG7H8sAL54Lh8ahUc6SyFTOlEgoKscIi454b1sT/bNQgaTj640s5jE
+         usDA==
+X-Gm-Message-State: AOAM530IxzhtMTHRfhqRWm52rrlLD5q/ijyD2Tl79R2RL33GcupphfNm
+        r+q10igaTJeKIjgn5QM0lDHbKZ9JxmHyqV7j+zqMrt/GxVHmfhA=
+X-Google-Smtp-Source: ABdhPJy53mfROHub+rZ0huUz9CN07I0rQaNYlC1G/rDqav2f790At8JYNBObnUshQ9zDcKHyHxC+LyQYKnUXay5o4IA=
+X-Received: by 2002:a25:ab89:: with SMTP id v9mr19565502ybi.306.1589352686108;
+ Tue, 12 May 2020 23:51:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAFLU3Ku=+VQ5KYXfwSqRknuYsz9nMV7-oj1Z1BNL4jiwVXPOOQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20200512144339.1617069-1-danieltimlee@gmail.com>
+ <20200512144339.1617069-2-danieltimlee@gmail.com> <f8d524dc-245b-e8c6-3e0b-16969df76b0a@fb.com>
+In-Reply-To: <f8d524dc-245b-e8c6-3e0b-16969df76b0a@fb.com>
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+Date:   Wed, 13 May 2020 15:51:10 +0900
+Message-ID: <CAEKGpziAt7gDzqzvOO4=dMODB_wajFq-HbYNyfz6xNVaGaB9rQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] samples: bpf: refactor kprobe tracing user
+ progs with libbpf
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-On 5/9/20 9:28 PM, KP Singh wrote:
-> On Sat, May 9, 2020 at 11:59 AM Ma Xinjian <max.xinjian@intel.com> wrote:
->>
->> On 5/9/20 5:26 PM, KP Singh wrote:
->>> Do you have bpf in your CONFIG_LSM string?
->> That's the point!
->>
->> I remove bpf from  since I can't boot if bpf in it.
-> That does indicate a problem which needs to be fixed.
+On Wed, May 13, 2020 at 10:40 AM Yonghong Song <yhs@fb.com> wrote:
 >
->> seems bpf in CONFIG_LSM conflict with CONFIG_BPF_LSM
->>
->> Here is boot error:
->>
->> "Cannot determine cgroup we are running in: No data available
->> Failed to allocate manager object: No data available
->> [!!!!!!] Failed to allocate manager object, freezing.
-> I found some references to these error messages and they seem
-> to be coming from systemd but I am not sure.
 >
->     https://github.com/lxc/lxc/issues/1669
->     https://github.com/containers/libpod/issues/1226
 >
->> Freezing execution.
->> [   35.773797] random: fast init done
->> [  130.560629] random: crng init done"
->>
->>> Also, can you share your Kconfig please?
->> refer to attackment.
->>
->> I doubt sth was wrong with my kconfig, maybe me some suggestion
-> I am not saying something is wrong with your Kconfig :)
-> I just want to make sure we eliminate as many
-> variables as possible.
+> On 5/12/20 7:43 AM, Daniel T. Lee wrote:
+> > Currently, the kprobe BPF program attachment method for bpf_load is
+> > quite old. The implementation of bpf_load "directly" controls and
+> > manages(create, delete) the kprobe events of DEBUGFS. On the other hand,
+> > using using the libbpf automatically manages the kprobe event.
+> > (under bpf_link interface)
+> >
+> > By calling bpf_program__attach(_kprobe) in libbpf, the corresponding
+> > kprobe is created and the BPF program will be attached to this kprobe.
+> > To remove this, by simply invoking bpf_link__destroy will clean up the
+> > event.
+> >
+> > This commit refactors kprobe tracing programs (tracex{1~7}_user.c) with
+> > libbpf using bpf_link interface and bpf_program__attach.
+> >
+> > tracex2_kern.c, which tracks system calls (sys_*), has been modified to
+> > append prefix depending on architecture.
+> >
+> > Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> > ---
+> >   samples/bpf/Makefile       | 12 +++----
+> >   samples/bpf/tracex1_user.c | 41 ++++++++++++++++++++----
+> >   samples/bpf/tracex2_kern.c |  8 ++++-
+> >   samples/bpf/tracex2_user.c | 55 ++++++++++++++++++++++++++------
+> >   samples/bpf/tracex3_user.c | 65 ++++++++++++++++++++++++++++----------
+> >   samples/bpf/tracex4_user.c | 55 +++++++++++++++++++++++++-------
+> >   samples/bpf/tracex6_user.c | 53 +++++++++++++++++++++++++++----
+> >   samples/bpf/tracex7_user.c | 43 ++++++++++++++++++++-----
+> >   8 files changed, 268 insertions(+), 64 deletions(-)
+> >
+> > diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> > index 424f6fe7ce38..4c91e5914329 100644
+> > --- a/samples/bpf/Makefile
+> > +++ b/samples/bpf/Makefile
+> > @@ -64,13 +64,13 @@ fds_example-objs := fds_example.o
+> >   sockex1-objs := sockex1_user.o
+> >   sockex2-objs := sockex2_user.o
+> >   sockex3-objs := bpf_load.o sockex3_user.o
+> > -tracex1-objs := bpf_load.o tracex1_user.o $(TRACE_HELPERS)
+> > -tracex2-objs := bpf_load.o tracex2_user.o
+> > -tracex3-objs := bpf_load.o tracex3_user.o
+> > -tracex4-objs := bpf_load.o tracex4_user.o
+> > +tracex1-objs := tracex1_user.o $(TRACE_HELPERS)
+> > +tracex2-objs := tracex2_user.o
+> > +tracex3-objs := tracex3_user.o
+> > +tracex4-objs := tracex4_user.o
+> >   tracex5-objs := bpf_load.o tracex5_user.o $(TRACE_HELPERS)
+> > -tracex6-objs := bpf_load.o tracex6_user.o
+> > -tracex7-objs := bpf_load.o tracex7_user.o
+> > +tracex6-objs := tracex6_user.o
+> > +tracex7-objs := tracex7_user.o
+> >   test_probe_write_user-objs := bpf_load.o test_probe_write_user_user.o
+> >   trace_output-objs := bpf_load.o trace_output_user.o $(TRACE_HELPERS)
+> >   lathist-objs := bpf_load.o lathist_user.o
+> > diff --git a/samples/bpf/tracex1_user.c b/samples/bpf/tracex1_user.c
+> > index 55fddbd08702..1b15ab98f7d3 100644
+> > --- a/samples/bpf/tracex1_user.c
+> > +++ b/samples/bpf/tracex1_user.c
+> > @@ -1,21 +1,45 @@
+> >   // SPDX-License-Identifier: GPL-2.0
+> >   #include <stdio.h>
+> > -#include <linux/bpf.h>
+> >   #include <unistd.h>
+> > -#include <bpf/bpf.h>
+> > -#include "bpf_load.h"
+> > +#include <bpf/libbpf.h>
+> >   #include "trace_helpers.h"
+> >
+> > +#define __must_check
 >
-> I was able to boot this successfully using QEMU
-> (after I enabled SCSI and VIRTIO). So it's likely
-> dependent on some user-space configuration
-> (again, I am not saying your config is wrong). But
-> I will need more information to reproduce and debug this.
+> This is not very user friendly.
+> Maybe not including linux/err.h and
+> use libbpf API libbpf_get_error() instead?
 >
-> Can you try providing a reliable reproduction with a list
-> of steps? e.g.
+
+This approach looks more apparent and can stick with the libbpf API.
+I'll update code using this way.
+
+> > +#include <linux/err.h>
+> > +
+> >   int main(int ac, char **argv)
+> >   {
+> > -     FILE *f;
+> > +     struct bpf_link *link = NULL;
+> > +     struct bpf_program *prog;
+> > +     struct bpf_object *obj;
+> >       char filename[256];
+> > +     FILE *f;
+> >
+> >       snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
+> > +     obj = bpf_object__open_file(filename, NULL);
+> > +     if (IS_ERR(obj)) {
+> > +             fprintf(stderr, "ERROR: opening BPF object file failed\n");
+> > +             obj = NULL;
+> > +             goto cleanup;
 >
-> 1. Download the vanilla image here.
-> 2. Compile the kernel with defonconfig and kvmconfig
->     (or your own config)
-> 3. Boot the kernel in QEMU with the cmdline (...) and the
->    QEMU args (...)
+> You do not need to goto cleanup, directly return 0 is okay here.
+> The same for other files in this patch.
 >
-> Thanks!
-> - KP
 
-Thank you very much for your kind and quick reply.
+As you said, it would be better to return right away than to proceed
+any further. I'll apply the code at next patch.
 
-I tested on LKP cluster of Intel. Everything works automatically.
-
-https://github.com/intel/lkp-tests
-
----------------------
-
-And I have found the cause.
-
-It can't boot due to comfliction between cgroup configuration for 
-CONFIG_BPF_LSM
-
-and systemd.
-
-similar to https://github.com/elogind/elogind/issues/18
-
-we have decided to skip this test.
-
-Thanks again.
-
-- Ma
-
+> > +     }
+> > +
+> > +     prog = bpf_object__find_program_by_name(obj, "bpf_prog1");
+> > +     if (!prog) {
+> > +             fprintf(stderr, "ERROR: finding a prog in obj file failed\n");
+> > +             goto cleanup;
+> > +     }
+> > +
+> > +     /* load BPF program */
+> > +     if (bpf_object__load(obj)) {
+> > +             fprintf(stderr, "ERROR: loading BPF object file failed\n");
+> > +             goto cleanup;
+> > +     }
+> >
+> > -     if (load_bpf_file(filename)) {
+> > -             printf("%s", bpf_log_buf);
+> > -             return 1;
+> > +     link = bpf_program__attach(prog);
+> > +     if (IS_ERR(link)) {
+> > +             fprintf(stderr, "ERROR: bpf_program__attach failed\n");
+> > +             link = NULL;
+> > +             goto cleanup;
+> >       }
+> >
+> >       f = popen("taskset 1 ping -c5 localhost", "r");
+> > @@ -23,5 +47,8 @@ int main(int ac, char **argv)
+> >
+> >       read_trace_pipe();
+> >
+> > +cleanup:
+> > +     bpf_link__destroy(link);
+> > +     bpf_object__close(obj);
 >
->> Besides, I tested on both physical machine and vm
+> Typically in kernel, we do multiple labels for such cases
+> like
+> destroy_link:
+>         bpf_link__destroy(link);
+> close_object:
+>         bpf_object__close(obj);
+>
+> The error path in the main() function jumps to proper label.
+> This is more clean and less confusion.
+>
+> The same for other cases in this file.
+>
+
+I totally agree that multiple labels are much more intuitive.
+But It's not very common to jump to the destroy_link label.
+
+Either when on the routine is completed successfully and jumps to the
+destroy_link branch, or an error occurred while bpf_program__attach
+was called "several" times and jumps to the destroy_link branch.
+
+Single bpf_program__attach like this tracex1 sample doesn't really have
+to destroy link, since the link has been set to NULL on attach error and
+bpf_link__destroy() is designed to do nothing if passed NULL to it.
+
+So I think current approach will keep consistent between samples since
+most of the sample won't need to jump to destroy_link.
+
+> >       return 0;
+> >   }
+> > diff --git a/samples/bpf/tracex2_kern.c b/samples/bpf/tracex2_kern.c
+> > index d865bb309bcb..ff5d00916733 100644
+> > --- a/samples/bpf/tracex2_kern.c
+> > +++ b/samples/bpf/tracex2_kern.c
+> > @@ -11,6 +11,12 @@
+> >   #include <bpf/bpf_helpers.h>
+> >   #include <bpf/bpf_tracing.h>
+> >
+> > +#ifdef __x86_64__
+> > +#define SYSCALL "__x64_"
+> > +#else
+> > +#define SYSCALL
+> > +#endif
+>
+> See test_progs.h, one more case to handle:
+> #ifdef __x86_64__
+> #define SYS_NANOSLEEP_KPROBE_NAME "__x64_sys_nanosleep"
+> #elif defined(__s390x__)
+> #define SYS_NANOSLEEP_KPROBE_NAME "__s390x_sys_nanosleep"
+> #else
+> #define SYS_NANOSLEEP_KPROBE_NAME "sys_nanosleep"
+> #endif
+>
+
+That was also one of the considerations when writing patches.
+I'm planning to refactor most of the programs in the sample using
+libbpf, and found out that there are bunch of samples that tracks
+syscall with kprobe. Replacing all of them will take lots of macros
+and I thought using prefix will be better idea.
+
+Actually, my initial plan was to create macro of SYSCALL()
+
+       #ifdef __x86_64__
+       #define PREFIX "__x64_"
+       #elif defined(__s390x__)
+       #define PREFIX "__s390x_"
+       #else
+       #define PREFIX ""
+       #endif
+
+       #define SYSCALL(SYS) PREFIX ## SYS
+
+And to use this macro universally without creating additional headers,
+I was trying to add this to samples/bpf/syscall_nrs.c which later
+compiles to samples/bpf/syscall_nrs.h. But it was pretty hacky way and
+it won't work properly. So I ended up with just adding prefix to syscall.
+
+Is it necessary to define all of the macro for each architecture?
+
+> > +
+> >   struct bpf_map_def SEC("maps") my_map = {
+> >       .type = BPF_MAP_TYPE_HASH,
+> >       .key_size = sizeof(long),
+> > @@ -77,7 +83,7 @@ struct bpf_map_def SEC("maps") my_hist_map = {
+> >       .max_entries = 1024,
+> >   };
+> >
+> > -SEC("kprobe/sys_write")
+> > +SEC("kprobe/" SYSCALL "sys_write")
+> >   int bpf_prog3(struct pt_regs *ctx)
+> >   {
+> >       long write_size = PT_REGS_PARM3(ctx);
 > [...]
->
--- 
-Best Regards.
-Ma Xinjian
 
+
+Thank you for your time and effort for the review :)
+
+Best,
+Daniel
