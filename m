@@ -2,208 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520FC1D1BA6
-	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 18:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C551F1D1C21
+	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 19:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732624AbgEMQ5i (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 May 2020 12:57:38 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:21064 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727120AbgEMQ5h (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 13 May 2020 12:57:37 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04DGvDVo001693;
-        Wed, 13 May 2020 09:57:24 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=DYVwG5ON5lzCTRBteUy7cD98dW9OXzXg4okorzjS1fA=;
- b=UARzwKFZdHG8D3uD96gohnTXSyd2MngSn+db9YNIQ/QA9iaYA5oa7jK3SnJr+TQ+r/KC
- 0LB/5EHwWfUrra+4vndypq0GRw6ErIvr3YfqsrIyzKoqMajJIv2DExlLPQqH7uYpaOvd
- LleHMsoCV6QUkvJLPunLnHnjKVPJQ5wszs0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3100y1p1u2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 13 May 2020 09:57:23 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Wed, 13 May 2020 09:57:23 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H3k+cNIrvPfAewiFAZMd6dn14uHMdUX6IHQVVe2E5MvC/hlhhwRBTdE47HemK95wNWMhN1bmFaqM51T+FE1eKmr8iAKFtc9f3oRQjD2WQkY1ms2ovmw+Yb7SDg0z3YSK8hIT1DLnxnCjlX62VNjcNO6eYAbONKDtVxknjEDoj+vEvNLltMUYwXXjQDGcir3B6Y5DmId0439uaWgUfoK02GJz4LxrWwRtbMbupj9k08dUL1gzFkyU+7PTyzEvWNlSVjqBY5kmDCjHgbTwMGFFL8uUSkf9YdJoZ/VA9I4Ey/Lv3W1KFG8KVMamq4UJtxQVMjoWI8DpFDjsWE0zBQ2pTA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DYVwG5ON5lzCTRBteUy7cD98dW9OXzXg4okorzjS1fA=;
- b=d2g5fKfQZ9G6bAt9S+fIYK45rKK+Ok2v0r/qb7TP7W1wRUW08+G2SzFrMS1CeDh1XdoEoPrqi6lfXsAU1nFj8YGL9hk8PB8MD9XXIoYjMR3iFjmso/7MjoABpXeZBaqEdlHFQI6K7dAGGaUkE9mvCLVq7uPqNB2EOcUwN3EhESL2oIu7GjiRO4fOxExe5COy6mrrb2LYY56iUXyX3cDdZQQu5FjYf0yqS7AxMwV9wkjsB5qQpGi4rgz83Asq81fTGZlpiRaksuRsS1f9hBDb4i7slHnOvbOssSen4Kfjnsc6DvYAMMCo/NoE6HixS2Be+vMzTpHtNGv7h07cGWidqA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DYVwG5ON5lzCTRBteUy7cD98dW9OXzXg4okorzjS1fA=;
- b=inTpIjLFDoLJ+zkwBeaDCoBL51ZR6lulXZ0QsyXT9FPHKoo0j9FAb8gkEYR7z+K/zNxrz4VKDSFjxnnvcUzXpWeABG/uQ7jtpVBz7thba8CppmV3j7SJZYJM+QKvls5uKspmx0/VLORsMSqHLcd/525MWFuBvH8hOAb3CbOeuxw=
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2536.namprd15.prod.outlook.com (2603:10b6:a03:159::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.34; Wed, 13 May
- 2020 16:57:20 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.2979.033; Wed, 13 May 2020
- 16:57:19 +0000
-Subject: Re: [PATCH bpf-next v3 03/21] bpf: support bpf tracing/iter programs
- for BPF_LINK_CREATE
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-References: <20200507053915.1542140-1-yhs@fb.com>
- <20200507053918.1542509-1-yhs@fb.com>
- <CAEf4BzaV6u1eTta4h4+mftQCQVOGPf0Q++B8tZxho+Uq3M1=mA@mail.gmail.com>
- <849a051d-5c42-a61c-91ef-15a2bdb2b509@fb.com>
- <CAEf4BzYzwnQuvjR-deQ1OaPMaNSQcnFQOCEaAWvTrdgqOQarJg@mail.gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <cde871aa-4539-5fbf-6063-fdb7c80f275f@fb.com>
-Date:   Wed, 13 May 2020 09:57:16 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
-In-Reply-To: <CAEf4BzYzwnQuvjR-deQ1OaPMaNSQcnFQOCEaAWvTrdgqOQarJg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR01CA0017.prod.exchangelabs.com (2603:10b6:a02:80::30)
- To BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+        id S2389856AbgEMRWT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 May 2020 13:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2389804AbgEMRWS (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 13 May 2020 13:22:18 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53ADDC061A0C;
+        Wed, 13 May 2020 10:22:18 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id u15so473704ljd.3;
+        Wed, 13 May 2020 10:22:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EzaX2YwRmuOO6WIdwBEaesOWsw6p2jJsqlvsgNxh+s4=;
+        b=FGTW7cmtA+9E80/Yx6Lf0hJYF9v6ZVmCRXcUh7qz+iIhnaBj2Yns3RmFXkI+v4Cu1A
+         xtrCwUSL5PwxDi+XAfg7WCDq1LF0XTCff2CBMMVpfLlkusC0Ty9lR7Q4tYNCnbJFNsK9
+         aIvWRVlbhml+K2tWC133QYvpdr9gzdmZdYO3V2Gk60o2r34gRsEltuK+HJ2SnnEoGRcp
+         gxygNqiHg1nK5R4hzuN0fyIKZzEqV5mVRFhVzZXm+GXrOskKRCbl1I7fjprF3CQ0N01b
+         0+apzf/C2qf28NlP5RpdRZh17Ou0gO3Ab1cTB5ymSPH27kKjWOO4K/nxAaYsMejscas0
+         /FAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EzaX2YwRmuOO6WIdwBEaesOWsw6p2jJsqlvsgNxh+s4=;
+        b=qvnuvqrCBgmnELdwYBsNhRmf61C6c7Kf2tG5qYFr7H4agPv5a2Qe1DYPXjTffKZ0Ou
+         vc2qO8Iuq6t/2RXuaugBe8t+EOXZ3kHClQVdffN5FRLS52AXpKSnvItHbCFDCusJehmZ
+         DRP5urbSD6dQu1REhd8N+maisOXyXtA2lZEVuhTFc+N3192elYGl8FcGfqfwfIhBk0mS
+         8NzgMfutKRJvWEFgcJ41YzGNNhFKqNJX7rI3xZx+fYhoNvBcyj0yDWnVhg8sJ3s1aSKM
+         Vgq8gUYYYbL0pqmVseMuWaw9QAzpgZOYWs/8AoMk4PYg8iwJGZSa5VpRmdbFt60WCxK4
+         OG3A==
+X-Gm-Message-State: AOAM5321cIC6T3kd6/Gr5y4Fa2wfMBclyM4Tm5LXvh/YJFAJhKZIuYkC
+        9eYLnoDzVtcv3rw2x429WZ9narfZZ7BFs0FH6SGwZg==
+X-Google-Smtp-Source: ABdhPJxm0GPB4LmFmQofm/k7dWWV2Ea3oABrRz+3xmMN/985fAfeZu7VLhjeaieDS053tj6912SawixbB4eOT+XBJWI=
+X-Received: by 2002:a2e:b2d7:: with SMTP id 23mr112527ljz.138.1589390536599;
+ Wed, 13 May 2020 10:22:16 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from macbook-pro-52.local.dhcp.thefacebook.com (2620:10d:c090:400::5:86c3) by BYAPR01CA0017.prod.exchangelabs.com (2603:10b6:a02:80::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.25 via Frontend Transport; Wed, 13 May 2020 16:57:18 +0000
-X-Originating-IP: [2620:10d:c090:400::5:86c3]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5d33f81c-3bd2-4ce6-9988-08d7f75eb2bb
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2536:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB253683A73E3710779C2A0943D3BF0@BYAPR15MB2536.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-Forefront-PRVS: 0402872DA1
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: K+UAvibGNfj4i7Ue5W1+euHj+D5FmX2wAalr6d/pvbCl+5jBqfqrfuyTcBden3EzbPkVlrzLkVlyOhcqWD6H6aILv/buGYGR2oQormMzqDfjVluaGhIiwm5ZpO0iTBph/zGpM2qZIFXtS/Kv5qLwu2pFR+MOXNKP5bSyzVYZsfBL5hQzRsPB/+M/fiSHHJUDZTBv+yFMg5wixWpik8EqJh2rATzYDzF+DbUKzl585+qNAXz23aVpl64XUP4rZyeQvt02Y3wE6sGXwp0vTqbJoufs2f0w6E9Ii7VlW9Oc0E6m3Fn9juu5/xDy1H92hYgeKwas1+iXjPz3XX4IbmBJQfIpEA29PVw3DLOJiGSzxtjOgkG6V7oE3utY34+ThgdNg65j2YmOccN4SpP8tAElNVH1jjuEvCebutovwFg6LNv8oxomBOT6gAYj6c+faCaD/B+qOM2jvk8dobcGOu0uKQeGINcjkhVVKxi/PJ9L0RN+bxnzwOxDxtduIjTnsIEqAcZbnme5q+hTS2KssVogVYQZxz8Q/Tw1dAb8WkVcPem233pjP954fgBfeccjWA9b
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(396003)(346002)(39860400002)(376002)(366004)(33430700001)(31686004)(86362001)(316002)(2616005)(4326008)(52116002)(6916009)(2906002)(33440700001)(16526019)(6512007)(66476007)(54906003)(8676002)(66946007)(186003)(5660300002)(66556008)(36756003)(53546011)(478600001)(8936002)(6486002)(6506007)(31696002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: Ux6EaGaiR7klfU2xiZzM74Ddc4rgIAFZ4mI4zPQsu+OJbstGhfftdlYpREIIgiL/tB9hjEaXmGD4cZHjzz1Ze37Okioz8k25PVoDYHSaIo0+ZdWA+jTnGhX1DNQ6B2ENgpgMPwyL+H998YBRex3vivZaXh0+khYO6aSDMxmVfeYeYtAjBbcZAR8w0bSq3G6FG9FcfeLSsOSSGUQY+dMb3rC9inanusMS4uUskA0fdQO29TW722EwYrNFOPHrOQVxeP3zIOFU23GgC/D5hB4oMiDTu3wPAnZvoZeaznZUXDe263FtpTiC95apggN3xUlVUtbM/Twc3Tr1icioM1IqRJduvEeW/i2qeMSMj1D1op9rdwbHE90ctN43tfb3Cwv9L1KWnTrPVOSby1IL9RRd+KIzCr7JIkD27s7hAFrWBMRjEuvPY208yGsEf5qU+U8uoktQn1Tpws5y8Ge3rcmlQn5L/PHSlNbsqV0vUGQ+3n1G/cndB1nKI9gFTQ+tx2H0lY+mTmLgBEoJT6ItXGKGeQ==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5d33f81c-3bd2-4ce6-9988-08d7f75eb2bb
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2020 16:57:19.7537
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Wsudg7ZF/QU0/J1znpratJkQy5VAA7O45zlcOZzvzoL8zAmiQLAdXxXZWbSwih9H
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2536
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-13_08:2020-05-13,2020-05-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- suspectscore=2 phishscore=0 cotscore=-2147483648 mlxscore=0 spamscore=0
- malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999 clxscore=1015
- impostorscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005130148
-X-FB-Internal: deliver
+References: <20200512174607.9630-1-anders.roxell@linaro.org>
+In-Reply-To: <20200512174607.9630-1-anders.roxell@linaro.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 13 May 2020 10:22:05 -0700
+Message-ID: <CAADnVQK6cka9i_GGz3OcjaNiEQEZYwgCLsn-S_Bkm-OWPJZb_w@mail.gmail.com>
+Subject: Re: [PATCH] security: fix the default value of secid_to_secctx hook
+To:     Anders Roxell <anders.roxell@linaro.org>,
+        jamorris@linux.microsoft.com
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+James,
 
+since you took the previous similar patch are you going to pick this
+one up as well?
+Or we can route it via bpf tree to Linus asap.
 
-On 5/11/20 8:15 PM, Andrii Nakryiko wrote:
-> On Fri, May 8, 2020 at 6:36 PM Yonghong Song <yhs@fb.com> wrote:
->>
->>
->>
->> On 5/8/20 11:24 AM, Andrii Nakryiko wrote:
->>> On Wed, May 6, 2020 at 10:41 PM Yonghong Song <yhs@fb.com> wrote:
->>>>
->>>> Given a bpf program, the step to create an anonymous bpf iterator is:
->>>>     - create a bpf_iter_link, which combines bpf program and the target.
->>>>       In the future, there could be more information recorded in the link.
->>>>       A link_fd will be returned to the user space.
->>>>     - create an anonymous bpf iterator with the given link_fd.
->>>>
->>>> The bpf_iter_link can be pinned to bpffs mount file system to
->>>> create a file based bpf iterator as well.
->>>>
->>>> The benefit to use of bpf_iter_link:
->>>>     - using bpf link simplifies design and implementation as bpf link
->>>>       is used for other tracing bpf programs.
->>>>     - for file based bpf iterator, bpf_iter_link provides a standard
->>>>       way to replace underlying bpf programs.
->>>>     - for both anonymous and free based iterators, bpf link query
->>>>       capability can be leveraged.
->>>>
->>>> The patch added support of tracing/iter programs for BPF_LINK_CREATE.
->>>> A new link type BPF_LINK_TYPE_ITER is added to facilitate link
->>>> querying. Currently, only prog_id is needed, so there is no
->>>> additional in-kernel show_fdinfo() and fill_link_info() hook
->>>> is needed for BPF_LINK_TYPE_ITER link.
->>>>
->>>> Acked-by: Andrii Nakryiko <andriin@fb.com>
->>>> Signed-off-by: Yonghong Song <yhs@fb.com>
->>>> ---
->>>
->>> still looks good, but I realized show_fdinfo and fill_link_info is
->>> missing, see request for a follow-up below :)
->>>
->>>
->>>>    include/linux/bpf.h            |  1 +
->>>>    include/linux/bpf_types.h      |  1 +
->>>>    include/uapi/linux/bpf.h       |  1 +
->>>>    kernel/bpf/bpf_iter.c          | 62 ++++++++++++++++++++++++++++++++++
->>>>    kernel/bpf/syscall.c           | 14 ++++++++
->>>>    tools/include/uapi/linux/bpf.h |  1 +
->>>>    6 files changed, 80 insertions(+)
->>>>
->>>
->>> [...]
->>>
->>>> +static const struct bpf_link_ops bpf_iter_link_lops = {
->>>> +       .release = bpf_iter_link_release,
->>>> +       .dealloc = bpf_iter_link_dealloc,
->>>> +};
->>>
->>> Link infra supports .show_fdinfo and .fill_link_info methods, there is
->>> no need to block on this, but it would be great to implement them from
->>> BPF_LINK_TYPE_ITER as well in the same release as a follow-up. Thanks!
->>
->> The reason I did not implement is due to we do not have additional
->> information beyond prog_id to present. The prog_id itself gives all
->> information about this link. I looked at tracing program
-> 
-> Not all, e.g., bpf_iter target is invisible right now. It's good to
-> have this added in a follow up, but certainly not a blocker.
+Thanks
 
-Indeed, bpf_iter target is not visible now. We can add it to program
-or to link. Adding to link is a reasonable idea as link itself is
-the concept to merge program and target.
-
-Will have a follow up patch for this later.
-
-> 
-> 
->> show_fdinfo/fill_link_info, the additional attach_type is printed.
->> But attach_type is obvious for BPF_LINK_TYPE_ITER which does not
->> need print.
->>
->> In the future when we add more stuff to parameterize the bpf_iter,
->> will need to implement these two callbacks as well as bpftool.
-> 
-> yep
-> 
->>
->>>
->>>
->>> [...]
->>>
+On Tue, May 12, 2020 at 10:46 AM Anders Roxell <anders.roxell@linaro.org> wrote:
+>
+> security_secid_to_secctx is called by the bpf_lsm hook and a successful
+> return value (i.e 0) implies that the parameter will be consumed by the
+> LSM framework. The current behaviour return success when the pointer
+> isn't initialized when CONFIG_BPF_LSM is enabled, with the default
+> return from kernel/bpf/bpf_lsm.c.
+>
+> This is the internal error:
+>
+> [ 1229.341488][ T2659] usercopy: Kernel memory exposure attempt detected from null address (offset 0, size 280)!
+> [ 1229.374977][ T2659] ------------[ cut here ]------------
+> [ 1229.376813][ T2659] kernel BUG at mm/usercopy.c:99!
+> [ 1229.378398][ T2659] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
+> [ 1229.380348][ T2659] Modules linked in:
+> [ 1229.381654][ T2659] CPU: 0 PID: 2659 Comm: systemd-journal Tainted: G    B   W         5.7.0-rc5-next-20200511-00019-g864e0c6319b8-dirty #13
+> [ 1229.385429][ T2659] Hardware name: linux,dummy-virt (DT)
+> [ 1229.387143][ T2659] pstate: 80400005 (Nzcv daif +PAN -UAO BTYPE=--)
+> [ 1229.389165][ T2659] pc : usercopy_abort+0xc8/0xcc
+> [ 1229.390705][ T2659] lr : usercopy_abort+0xc8/0xcc
+> [ 1229.392225][ T2659] sp : ffff000064247450
+> [ 1229.393533][ T2659] x29: ffff000064247460 x28: 0000000000000000
+> [ 1229.395449][ T2659] x27: 0000000000000118 x26: 0000000000000000
+> [ 1229.397384][ T2659] x25: ffffa000127049e0 x24: ffffa000127049e0
+> [ 1229.399306][ T2659] x23: ffffa000127048e0 x22: ffffa000127048a0
+> [ 1229.401241][ T2659] x21: ffffa00012704b80 x20: ffffa000127049e0
+> [ 1229.403163][ T2659] x19: ffffa00012704820 x18: 0000000000000000
+> [ 1229.405094][ T2659] x17: 0000000000000000 x16: 0000000000000000
+> [ 1229.407008][ T2659] x15: 0000000000000000 x14: 003d090000000000
+> [ 1229.408942][ T2659] x13: ffff80000d5b25b2 x12: 1fffe0000d5b25b1
+> [ 1229.410859][ T2659] x11: 1fffe0000d5b25b1 x10: ffff80000d5b25b1
+> [ 1229.412791][ T2659] x9 : ffffa0001034bee0 x8 : ffff00006ad92d8f
+> [ 1229.414707][ T2659] x7 : 0000000000000000 x6 : ffffa00015eacb20
+> [ 1229.416642][ T2659] x5 : ffff0000693c8040 x4 : 0000000000000000
+> [ 1229.418558][ T2659] x3 : ffffa0001034befc x2 : d57a7483a01c6300
+> [ 1229.420610][ T2659] x1 : 0000000000000000 x0 : 0000000000000059
+> [ 1229.422526][ T2659] Call trace:
+> [ 1229.423631][ T2659]  usercopy_abort+0xc8/0xcc
+> [ 1229.425091][ T2659]  __check_object_size+0xdc/0x7d4
+> [ 1229.426729][ T2659]  put_cmsg+0xa30/0xa90
+> [ 1229.428132][ T2659]  unix_dgram_recvmsg+0x80c/0x930
+> [ 1229.429731][ T2659]  sock_recvmsg+0x9c/0xc0
+> [ 1229.431123][ T2659]  ____sys_recvmsg+0x1cc/0x5f8
+> [ 1229.432663][ T2659]  ___sys_recvmsg+0x100/0x160
+> [ 1229.434151][ T2659]  __sys_recvmsg+0x110/0x1a8
+> [ 1229.435623][ T2659]  __arm64_sys_recvmsg+0x58/0x70
+> [ 1229.437218][ T2659]  el0_svc_common.constprop.1+0x29c/0x340
+> [ 1229.438994][ T2659]  do_el0_svc+0xe8/0x108
+> [ 1229.440587][ T2659]  el0_svc+0x74/0x88
+> [ 1229.441917][ T2659]  el0_sync_handler+0xe4/0x8b4
+> [ 1229.443464][ T2659]  el0_sync+0x17c/0x180
+> [ 1229.444920][ T2659] Code: aa1703e2 aa1603e1 910a8260 97ecc860 (d4210000)
+> [ 1229.447070][ T2659] ---[ end trace 400497d91baeaf51 ]---
+> [ 1229.448791][ T2659] Kernel panic - not syncing: Fatal exception
+> [ 1229.450692][ T2659] Kernel Offset: disabled
+> [ 1229.452061][ T2659] CPU features: 0x240002,20002004
+> [ 1229.453647][ T2659] Memory Limit: none
+> [ 1229.455015][ T2659] ---[ end Kernel panic - not syncing: Fatal exception ]---
+>
+> Rework the so the default return value is -EOPNOTSUPP.
+>
+> There are likely other callbacks such as security_inode_getsecctx() that
+> may have the same problem, and that someone that understand the code
+> better needs to audit them.
+>
+> Thank you Arnd for helping me figure out what went wrong.
+>
+> CC: Arnd Bergmann <arnd@arndb.de>
+> Fixes: 98e828a0650f ("security: Refactor declaration of LSM hooks")
+> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> ---
+>  include/linux/lsm_hook_defs.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+> index b9e73d736e13..31eb3381e54b 100644
+> --- a/include/linux/lsm_hook_defs.h
+> +++ b/include/linux/lsm_hook_defs.h
+> @@ -243,7 +243,7 @@ LSM_HOOK(int, -EINVAL, getprocattr, struct task_struct *p, char *name,
+>          char **value)
+>  LSM_HOOK(int, -EINVAL, setprocattr, const char *name, void *value, size_t size)
+>  LSM_HOOK(int, 0, ismaclabel, const char *name)
+> -LSM_HOOK(int, 0, secid_to_secctx, u32 secid, char **secdata,
+> +LSM_HOOK(int, -EOPNOTSUPP, secid_to_secctx, u32 secid, char **secdata,
+>          u32 *seclen)
+>  LSM_HOOK(int, 0, secctx_to_secid, const char *secdata, u32 seclen, u32 *secid)
+>  LSM_HOOK(void, LSM_RET_VOID, release_secctx, char *secdata, u32 seclen)
+> --
+> 2.20.1
+>
