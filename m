@@ -2,87 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EEF51D1F58
-	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 21:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 473DC1D1F64
+	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 21:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390726AbgEMThe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 May 2020 15:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56470 "EHLO
+        id S2390607AbgEMTig (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 May 2020 15:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390623AbgEMThd (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 13 May 2020 15:37:33 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E1DC061A0E
-        for <bpf@vger.kernel.org>; Wed, 13 May 2020 12:37:32 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id 188so511939lfa.10
-        for <bpf@vger.kernel.org>; Wed, 13 May 2020 12:37:32 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S2390593AbgEMTig (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 13 May 2020 15:38:36 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A58C061A0C;
+        Wed, 13 May 2020 12:38:36 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id k7so6548720pjs.5;
+        Wed, 13 May 2020 12:38:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5FRYECFHiQr3Nfb1uzqLNFih4Bcng0OOjZJ5V5m4DAs=;
-        b=ZjLEDdjhfQ+ZsfStprzo3boptGtjEB8xMJMPV9hfgVHHrrYSleH8mLbHC8Rk2rWQqc
-         NnCj3BIzoVOHPTIgSoBKM0vWlfW3SuT0UoYyIfcumKGQE/4wsqoLb39sPYuJ5/AuOelG
-         tGQKJ8l9ywdlX+FMm4CTzGEq2pztEwBhTbMlg=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0u0exKw+YiYAyn84F3w6huQTNlYyARlFIAHEEGZPygc=;
+        b=quBH0RjnqfonJHvJ7a/AnGNdgBzTtg+jEfAo5XYwZSYWX1bZwhtc0wSlGs/ehCxh0T
+         +2DmqNWO00jIjDZEXQoSDolkO0uZNkQmCtKaIWLzUgjqrJKxz8ZT23NSC2pjwGclnKa3
+         zTxMHnnfDdazSlLGZy9EsNN0CL4xfHC6LCfsw3+clyE5d1tEhdoZyc7rRnmwi7iKhUWQ
+         VJ4bBAVUCdzfoPf9hkzr4wADG/LEkHVrw13j7L0u07YihcEENsPhKdeIXWAjfo3WaeO4
+         pnvSD+e3XHyMQZRfnk7IaDGIWMODeOkCP627/FBCSOprAXMbK4wbNggXmNxxjvPU/tpf
+         S3bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5FRYECFHiQr3Nfb1uzqLNFih4Bcng0OOjZJ5V5m4DAs=;
-        b=b69G/Xd/4OgwPK4xotQ+lF7ckPKoebtlsNX/RK1xx+XiWdu6q0Fihl2wrzL3f7yYEi
-         Vy6XS4gULnoIj5UoEQ4wgulJltIUm7u8gYLegrY6BfoqtYl6VxIyiOrpsbpdL86AjcBr
-         /Sp0AzC/zXiEQ7C46a3/Ja6wF9D+1x1mE4bXmGQcOgJ8U9py1lA3eLs+MAmXrsjQdMNi
-         FkkXdPAxErhpmppNaoJedu6StsdF5Lk8efcF3ocgo6Q3ELFoIyzApFrmQ893YCQuEgfr
-         cInbszaRq8jYC6amyxigLhL1lfw5XKaat4Xfsg50CPo8LcdmKXo/t7cTbIZ/nfhYHBQI
-         LJcg==
-X-Gm-Message-State: AOAM533UbD6DCYeXk/9ttzm6tHCE+YYzq7LdAUGzuwq6YAuvYHkcm7KD
-        GpjHqFxpJ5acxvEsXyCqdVhSS8aXzIU=
-X-Google-Smtp-Source: ABdhPJxITX82Gs+F7FLTKT+ypYtZWWOhyisq5m6V4cCLakT+hiKX5Mwg3kGrYXWRKa1cO9H5xXyy5w==
-X-Received: by 2002:ac2:5212:: with SMTP id a18mr680991lfl.83.1589398650086;
-        Wed, 13 May 2020 12:37:30 -0700 (PDT)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id n2sm308418lfl.53.2020.05.13.12.37.28
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 May 2020 12:37:29 -0700 (PDT)
-Received: by mail-lf1-f53.google.com with SMTP id c21so548244lfb.3
-        for <bpf@vger.kernel.org>; Wed, 13 May 2020 12:37:28 -0700 (PDT)
-X-Received: by 2002:ac2:4da1:: with SMTP id h1mr686949lfe.152.1589398648496;
- Wed, 13 May 2020 12:37:28 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0u0exKw+YiYAyn84F3w6huQTNlYyARlFIAHEEGZPygc=;
+        b=daT5O3cYM3JpdVEVugpM/7RuVXvt+Ja+u+AcC41TmibRgs8Qm3sFk7+sIiLzyKMqbv
+         aOZlim47NxUgZ70bbNzkJeN5m6VbAXrmq6H0HeoNCQY0xRWQVnSLzyksK4DexSiKaH68
+         Dl9ZR9d98GkKuWpb4+qMKoRX6iYmFuqM3CW7Ax2e+9N/sjXLpTVx8L4fAKk0InIyRwn+
+         ich3GcfThLYxgB7kgJDlCu9aE6vewjFRBXHFrKW+qru0e2ggobVPuU06n6Z1lF2DVbrn
+         RkEpM6tVggooErz3CLZh2CldGwyoqAsu6mP2nYruWNbsSusIumDgUoF+ZjVfRebDgM9P
+         hJIA==
+X-Gm-Message-State: AGi0PuYOgWVCISroZ+/r4OgoZJncdP2d08I8XjYnfgQPL/LKsRMzdsn1
+        xgDV3zdsVM0mlbG6z6HcXv8=
+X-Google-Smtp-Source: APiQypJ/RWzMMdyDz/uJDEfMcnv+/XB6W0NC7oinxrJqzp6J8ofrJi4I5Y0llt+A0PKxm8q9BEFrcQ==
+X-Received: by 2002:a17:90a:71c3:: with SMTP id m3mr35927363pjs.17.1589398716047;
+        Wed, 13 May 2020 12:38:36 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:ba8f])
+        by smtp.gmail.com with ESMTPSA id j26sm282722pfr.215.2020.05.13.12.38.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 12:38:35 -0700 (PDT)
+Date:   Wed, 13 May 2020 12:38:33 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next v2 0/7] bpf: misc fixes for bpf_iter
+Message-ID: <20200513193833.536oc5neayhiisvi@ast-mbp.dhcp.thefacebook.com>
+References: <20200513180215.2949164-1-yhs@fb.com>
 MIME-Version: 1.0
-References: <20200513160038.2482415-1-hch@lst.de>
-In-Reply-To: <20200513160038.2482415-1-hch@lst.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 13 May 2020 12:37:12 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wghd2efrE_DoJaC7nTkpCC1gPGp+xbNY7KWOE-7sa4h0Q@mail.gmail.com>
-Message-ID: <CAHk-=wghd2efrE_DoJaC7nTkpCC1gPGp+xbNY7KWOE-7sa4h0Q@mail.gmail.com>
-Subject: Re: clean up and streamline probe_kernel_* and friends v2
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-parisc@vger.kernel.org,
-        linux-um <linux-um@lists.infradead.org>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200513180215.2949164-1-yhs@fb.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 13, 2020 at 9:00 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> this series start cleaning up the safe kernel and user memory probing
-> helpers in mm/maccess.c, and then allows architectures to implement
-> the kernel probing without overriding the address space limit and
-> temporarily allowing access to user memory.  It then switches x86
-> over to this new mechanism by reusing the unsafe_* uaccess logic.
+On Wed, May 13, 2020 at 11:02:15AM -0700, Yonghong Song wrote:
+> Commit ae24345da54e ("bpf: Implement an interface to register
+> bpf_iter targets") and its subsequent commits in the same patch set
+> introduced bpf iterator, a way to run bpf program when iterating
+> kernel data structures.
+> 
+> This patch set addressed some followup issues. One big change
+> is to allow target to pass ctx arg register types to verifier
+> for verification purpose. Please see individual patch for details.
+> 
+> Changelogs:
+>   v1 -> v2:
+>     . add "const" qualifier to struct bpf_iter_reg for
+>       bpf_iter_[un]reg_target, and this results in
+>       additional "const" qualifiers in some other places
+>     . drop the patch which will issue WARN_ONCE if
+>       seq_ops->show() returns a positive value.
+>       If this does happen, code review should spot
+>       this or author does know what he is doing.
+>       In the future, we do want to implement a
+>       mechanism to find out all registered targets
+>       so we will be aware of new additions.
 
-Ok, I think I found a bug, and I had one more suggestion, but other
-than the two emails I sent this all looks like an improvement to me.
-
-                 Linus
+Applied, Thanks
