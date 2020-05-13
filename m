@@ -2,228 +2,240 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A88A1D1221
-	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 14:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076F91D168B
+	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 15:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732416AbgEMMB7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 May 2020 08:01:59 -0400
-Received: from mga01.intel.com ([192.55.52.88]:55774 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728165AbgEMMB7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 May 2020 08:01:59 -0400
-IronPort-SDR: 6YUN3gy2kgZG7j295pumrh/FRwi9j5m9+ZU6uZN2QWDWWVegsc4MkCCDQtJdiCULaZC6DKQi6F
- z46uTGoaA8Rg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 05:01:58 -0700
-IronPort-SDR: 5UK9tc+QFHHtZVgAk6v85Us7XhMKRXyQGhTnCn6vXujSNP2yNSySJ9FLgFLvXwW5j1rXQfm6nY
- rdWgj1jIFa/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,387,1583222400"; 
-   d="scan'208";a="409666355"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga004.jf.intel.com with ESMTP; 13 May 2020 05:01:55 -0700
-Date:   Wed, 13 May 2020 13:58:55 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+        id S2388650AbgEMNz2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 May 2020 09:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727792AbgEMNzZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 May 2020 09:55:25 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A02AC061A0E
+        for <bpf@vger.kernel.org>; Wed, 13 May 2020 06:55:24 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id f134so14474613wmf.1
+        for <bpf@vger.kernel.org>; Wed, 13 May 2020 06:55:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=pEF6eTbjMF/Zp5kqlMON2d9WgYdaB5cU0Wyi39YjYtI=;
+        b=hbmlsggGZTqdI3GRYlpSMceoK9GVRcT9K+DNYXSUoijaHEsKRPYTNM0JH4XPFZHf72
+         dzBSKPtoihA8/gdApZ1PuvyRCQLV/tZwMG/AJ0Rn/Mf6YAiBYUr6pRA+Z+aVTsW9OMMj
+         iqXicabjI3ljIYgKeTcO8BBNpeIUq7rhje2h0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=pEF6eTbjMF/Zp5kqlMON2d9WgYdaB5cU0Wyi39YjYtI=;
+        b=Tfn3yyBiUrUqC3e/VIdNtjCX/gDjSsOxnQXnXpRRFCZQOPjg0MunfjmGzrLdqD+mKC
+         sopSFSJnGPRLL9sgNcOS5BnraQc2RgcHAyt+L/ZeUIQYlcHB0pn1USxS6KLr2B58VbVO
+         474Q1cAgVIf9p5pY3QeB7geX9XzCw+8e7VCk3+30lrSELz9o4AK1fvF6wWf1vXX8m421
+         CYeQoZyKkPUTBjkIHYs/eVDw3tWeZr+Lg24ol1HkkwGj7u4pE3vEqd9+WBF+iihS7Fyt
+         tMvqbCDe5pVw/Dn1HtXMsu1JEXZiNYGfvOjm1hx2VPgU5bmTCnbnI0C/YgxLVtD/4ecl
+         fWHw==
+X-Gm-Message-State: AGi0PubLmVLf4IjPzplUIAwECMfjP5Y83ZaM7EL7QOObIRW+2yW3x+KP
+        Mr/cU0osTBnp0HRUQaf7vOTKKg==
+X-Google-Smtp-Source: APiQypJWEBPUYLL7acho2GSRta1Ab9Yd9/st+SXO645SSDx4wE9FmjPNmqUesATEF4X4Otq52IKn6Q==
+X-Received: by 2002:a1c:dc05:: with SMTP id t5mr15429291wmg.112.1589378122987;
+        Wed, 13 May 2020 06:55:22 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id i17sm36371968wml.23.2020.05.13.06.55.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 06:55:22 -0700 (PDT)
+References: <20200511185218.1422406-1-jakub@cloudflare.com> <20200511185218.1422406-6-jakub@cloudflare.com> <20200511204445.i7sessmtszox36xd@ast-mbp> <871rnpuuob.fsf@cloudflare.com> <20200512235840.znwcyu3gpxemucwh@ast-mbp>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org, bjorn.topel@intel.com,
-        magnus.karlsson@intel.com, lmb@cloudflare.com,
-        john.fastabend@gmail.com
-Subject: Re: [RFC PATCH bpf-next 0/1] bpf, x64: optimize JIT
- prologue/epilogue generation
-Message-ID: <20200513115855.GA3574@ranger.igk.intel.com>
-References: <20200511143912.34086-1-maciej.fijalkowski@intel.com>
- <2e3c6be0-e482-d856-7cc1-b1d03a26428e@iogearbox.net>
- <20200512000153.hfdeh653v533qbe6@ast-mbp.dhcp.thefacebook.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, dccp@vger.kernel.org,
+        kernel-team@cloudflare.com, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Gerrit Renker <gerrit@erg.abdn.ac.uk>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: Re: [PATCH bpf-next v2 05/17] inet: Run SK_LOOKUP BPF program on socket lookup
+In-reply-to: <20200512235840.znwcyu3gpxemucwh@ast-mbp>
+Date:   Wed, 13 May 2020 15:55:20 +0200
+Message-ID: <87y2pwszw7.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200512000153.hfdeh653v533qbe6@ast-mbp.dhcp.thefacebook.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 11, 2020 at 05:01:53PM -0700, Alexei Starovoitov wrote:
-> On Mon, May 11, 2020 at 10:05:25PM +0200, Daniel Borkmann wrote:
-> > Hey Maciej,
+On Wed, May 13, 2020 at 01:58 AM CEST, Alexei Starovoitov wrote:
+> On Tue, May 12, 2020 at 03:52:52PM +0200, Jakub Sitnicki wrote:
+>> On Mon, May 11, 2020 at 10:44 PM CEST, Alexei Starovoitov wrote:
+>> > On Mon, May 11, 2020 at 08:52:06PM +0200, Jakub Sitnicki wrote:
+>> >> Run a BPF program before looking up a listening socket on the receive path.
+>> >> Program selects a listening socket to yield as result of socket lookup by
+>> >> calling bpf_sk_assign() helper and returning BPF_REDIRECT code.
+>> >>
+>> >> Alternatively, program can also fail the lookup by returning with BPF_DROP,
+>> >> or let the lookup continue as usual with BPF_OK on return.
+>> >>
+>> >> This lets the user match packets with listening sockets freely at the last
+>> >> possible point on the receive path, where we know that packets are destined
+>> >> for local delivery after undergoing policing, filtering, and routing.
+>> >>
+>> >> With BPF code selecting the socket, directing packets destined to an IP
+>> >> range or to a port range to a single socket becomes possible.
+>> >>
+>> >> Suggested-by: Marek Majkowski <marek@cloudflare.com>
+>> >> Reviewed-by: Lorenz Bauer <lmb@cloudflare.com>
+>> >> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+>> >> ---
+>> >>  include/net/inet_hashtables.h | 36 +++++++++++++++++++++++++++++++++++
+>> >>  net/ipv4/inet_hashtables.c    | 15 ++++++++++++++-
+>> >>  2 files changed, 50 insertions(+), 1 deletion(-)
+>> >>
+>> >> diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
+>> >> index 6072dfbd1078..3fcbc8f66f88 100644
+>> >> --- a/include/net/inet_hashtables.h
+>> >> +++ b/include/net/inet_hashtables.h
+>> >> @@ -422,4 +422,40 @@ int __inet_hash_connect(struct inet_timewait_death_row *death_row,
+>> >>
+>> >>  int inet_hash_connect(struct inet_timewait_death_row *death_row,
+>> >>  		      struct sock *sk);
+>> >> +
+>> >> +static inline struct sock *bpf_sk_lookup_run(struct net *net,
+>> >> +					     struct bpf_sk_lookup_kern *ctx)
+>> >> +{
+>> >> +	struct bpf_prog *prog;
+>> >> +	int ret = BPF_OK;
+>> >> +
+>> >> +	rcu_read_lock();
+>> >> +	prog = rcu_dereference(net->sk_lookup_prog);
+>> >> +	if (prog)
+>> >> +		ret = BPF_PROG_RUN(prog, ctx);
+>> >> +	rcu_read_unlock();
+>> >> +
+>> >> +	if (ret == BPF_DROP)
+>> >> +		return ERR_PTR(-ECONNREFUSED);
+>> >> +	if (ret == BPF_REDIRECT)
+>> >> +		return ctx->selected_sk;
+>> >> +	return NULL;
+>> >> +}
+>> >> +
+>> >> +static inline struct sock *inet_lookup_run_bpf(struct net *net, u8 protocol,
+>> >> +					       __be32 saddr, __be16 sport,
+>> >> +					       __be32 daddr, u16 dport)
+>> >> +{
+>> >> +	struct bpf_sk_lookup_kern ctx = {
+>> >> +		.family		= AF_INET,
+>> >> +		.protocol	= protocol,
+>> >> +		.v4.saddr	= saddr,
+>> >> +		.v4.daddr	= daddr,
+>> >> +		.sport		= sport,
+>> >> +		.dport		= dport,
+>> >> +	};
+>> >> +
+>> >> +	return bpf_sk_lookup_run(net, &ctx);
+>> >> +}
+>> >> +
+>> >>  #endif /* _INET_HASHTABLES_H */
+>> >> diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
+>> >> index ab64834837c8..f4d07285591a 100644
+>> >> --- a/net/ipv4/inet_hashtables.c
+>> >> +++ b/net/ipv4/inet_hashtables.c
+>> >> @@ -307,9 +307,22 @@ struct sock *__inet_lookup_listener(struct net *net,
+>> >>  				    const int dif, const int sdif)
+>> >>  {
+>> >>  	struct inet_listen_hashbucket *ilb2;
+>> >> -	struct sock *result = NULL;
+>> >> +	struct sock *result, *reuse_sk;
+>> >>  	unsigned int hash2;
+>> >>
+>> >> +	/* Lookup redirect from BPF */
+>> >> +	result = inet_lookup_run_bpf(net, hashinfo->protocol,
+>> >> +				     saddr, sport, daddr, hnum);
+>> >> +	if (IS_ERR(result))
+>> >> +		return NULL;
+>> >> +	if (result) {
+>> >> +		reuse_sk = lookup_reuseport(net, result, skb, doff,
+>> >> +					    saddr, sport, daddr, hnum);
+>> >> +		if (reuse_sk)
+>> >> +			result = reuse_sk;
+>> >> +		goto done;
+>> >> +	}
+>> >> +
+>> >
+>> > The overhead is too high to do this all the time.
+>> > The feature has to be static_key-ed.
+>>
+>> Static keys is something that Lorenz has also suggested internally, but
+>> we wanted to keep it simple at first.
+>>
+>> Introduction of static keys forces us to decide when non-init_net netns
+>> are allowed to attach to SK_LOOKUP, as attaching enabling SK_LOOKUP in
+>> isolated netns will affect the rx path in init_net.
+>>
+>> I see two options, which seem sensible:
+>>
+>> 1) limit SK_LOOKUP to init_net, which makes testing setup harder, or
+>>
+>> 2) allow non-init_net netns to attach to SK_LOOKUP only if static key
+>>    has been already enabled (via sysctl?).
+>
+> I think both are overkill.
+> Just enable that static_key if any netns has progs.
+> Loading this prog type will be privileged operation even after cap_bpf.
+>
 
-Sorry for the delay.
-Combining two answers in here (Alexei/Daniel). I appreciate your input.
+OK, right. In the new model caps are checked at load time. And
+CAP_BPF+CAP_NET_ADMIN check on load is done against init_user_ns.
 
-> > 
-> > On 5/11/20 4:39 PM, Maciej Fijalkowski wrote:
-> > > Hi!
-> > > 
-> > > Today, BPF x86-64 JIT is preserving all of the callee-saved registers
-> > > for each BPF program being JITed, even when none of the R6-R9 registers
-> > > are used by the BPF program. Furthermore the tail call counter is always
-> > > pushed/popped to/from the stack even when there is no tail call usage in
-> > > BPF program being JITed. Optimization can be introduced that would
-> > > detect the usage of R6-R9 and based on that push/pop to/from the stack
-> > > only what is needed. Same goes for tail call counter.
-> > > 
-> > > Results look promising for such instruction reduction. Below are the
-> > > numbers for xdp1 sample on FVL 40G NIC receiving traffic from pktgen:
-> > > 
-> > > * With optimization: 22.3 Mpps
-> > > * Without:           19.0 mpps
-> > > 
-> > > So it's around 15% of performance improvement. Note that xdp1 is not
-> > > using any of callee saved registers, nor the tail call, hence such
-> > > speed-up.
-> > > 
-> > > There is one detail that needs to be handled though.
-> > > 
-> > > Currently, x86-64 JIT tail call implementation is skipping the prologue
-> > > of target BPF program that has constant size. With the mentioned
-> > > optimization implemented, each particular BPF program that might be
-> > > inserted onto the prog array map and therefore be the target of tail
-> > > call, could have various prologue size.
-> > > 
-> > > Let's have some pseudo-code example:
-> > > 
-> > > func1:
-> > > pro
-> > > code
-> > > epi
-> > > 
-> > > func2:
-> > > pro
-> > > code'
-> > > epi
-> > > 
-> > > func3:
-> > > pro
-> > > code''
-> > > epi
-> > > 
-> > > Today, pro and epi are always the same (9/7) instructions. So a tail
-> > > call from func1 to func2 is just a:
-> > > 
-> > > jump func2 + sizeof pro in bytes (PROLOGUE_SIZE)
-> > > 
-> > > With the optimization:
-> > > 
-> > > func1:
-> > > pro
-> > > code
-> > > epi
-> > > 
-> > > func2:
-> > > pro'
-> > > code'
-> > > epi'
-> > > 
-> > > func3:
-> > > pro''
-> > > code''
-> > > epi''
-> > > 
-> > > For making the tail calls up and running with the mentioned optimization
-> > > in place, x86-64 JIT should emit the pop registers instructions
-> > > that were pushed on prologue before the actual jump. Jump offset should
-> > > skip the instructions that are handling rbp/rsp, not the whole prologue.
-> > > 
-> > > A tail call within func1 would then need to be:
-> > > epi -> pop what pro pushed, but no leave/ret instructions
-> > > jump func2 + 16 // first push insn of pro'; if no push, then this would
-> > >                  // a direct jump to code'
-> > > 
-> > > Magic value of 16 comes from count of bytes that represent instructions
-> > > that are skipped:
-> > > 0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
-> > > 55                      push   %rbp
-> > > 48 89 e5                mov    %rsp,%rbp
-> > > 48 81 ec 08 00 00 00    sub    $0x8,%rsp
-> > > 
-> > > which would in many cases add *more* instructions for tailcalls. If none
-> > > of callee-saved registers are used, then there would be no overhead with
-> > > such optimization in place.
-> > > 
-> > > I'm not sure how to measure properly the impact on the BPF programs that
-> > > are utilizing tail calls. Any suggestions?
-> > 
-> > Right, so far the numbers above (no callee saved registers, no tail calls)
-> > are really the best case scenario. I think programs not using callee saved
-> > registers are probably very limited in what they do, and tail calls are often
-> > used as well (although good enough for AF_XDP, for example). So I wonder how
-> > far we would regress with callee saved registers and tail calls. For Cilium
-> > right now you can roughly assume a worst case tail call depth of ~6 with static
-> > jumps (that we patch to jmp/nop). Only in one case we have a tail call map
-> > index that is non-static. In terms of registers, assume all of them are used
-> > one way or another. If you could check the impact in such setting, that would
-> > be great.
+[...]
 
-Alexei suggested progs/bpf_flow.c - is that a good start to you? It won't
-reproduce the Cilium environment but I suppose this would give us a taste
-of how much regression we might introduce with this approach for tail
-calls.
+>> I'm curious what downside do you see here?
+>> Is overriding an earlier DROP/REDIRECT verdict useful?
+>>
+>> > Another option could be to execute all attached progs regardless
+>> > of return code, but don't let second prog override selected_sk blindly.
+>> > bpf_sk_assign() could get smarter.
+>>
+>> So if IIUC the rough idea here would be like below?
+>>
+>> - 1st program calls
+>>
+>>   bpf_sk_assign(ctx, sk1, 0 /*flags*/) -> 0 (OK)
+>>
+>> - 2nd program calls
+>>
+>>   bpf_sk_assign(ctx, sk2, 0) -> -EBUSY (already selected)
+>>   bpf_sk_assign(ctx, sk2, BPF_EXIST) -> 0 (OK, replace existing)
+>>
+>> In this case the last program to run has the final say, as opposed to
+>> the semantics where DROP/REDIRECT terminates.
+>>
+>> Also, 2nd and subsequent programs would probably need to know if and
+>> which socket has been already selected. I think the selection could be
+>> exposed in context as bpf_sock pointer.
+>
+> I think running all is better.
+> The main down side of terminating early is predictability.
+> Imagine first prog is doing the sock selection based on some map configuration.
+> Then second prog gets loaded and doing its own selection.
+> These two progs are managed by different user space processes.
+> Now first map got changed and second prog stopped seeing the packets.
+> No warning. Nothing. With "bpf_sk_assign(ctx, sk2, 0) -> -EBUSY"
+> the second prog at least will see errors and will be able to log
+> and alert humans to do something about it.
+> The question of ordering come up, of course. But that ordering concerns
+> we had for some time with cgroup-bpf run array and it wasn't horrible.
+> We're still trying to solve it on cgroup-bpf side in a generic way,
+> but simple first-to-attach -> first-to-run was good enough there
+> and I think will be here as well. The whole dispatcher project
+> and managing policy, priority, ordering in user space better to solve
+> it generically for all cases. But the kernel should do simple basics.
 
-> > 
-> > > Daniel, Alexei, what is your view on this?
-> > 
-> > I think performance wise this would be both pro and con depending how tail
-> > calls are used. One upside however, and I think you didn't mention it here
-> > would be that we don't need to clamp used stack space to 512, so we could
-> > actually track how much stack is used (or if any is used at all) and adapt
-> > it between tail calls? Depending on the numbers, if we'd go that route, it
+That makes sense. Thanks for guidance.
 
-Hm, I didn't mention that because I don't destroy the stack frame from the
-tail call 'caller' program (I mean that if A tailcalls to B, then A is a
-'caller'). So sort of the old x86-64 JIT behavior is kept - if B returns
-then it will go over leave/ret pair so that stack frame (that was created
-by program A) is destroyed and we get back to the address that pushed to
-stack by caller of main BPF program (A).
-
-Whereas program A before actual tail call will only pop callee saved
-registers and B will not manipulate rbp/rsp in prologue.
-
-Such approach is allowing us to refer to the tail call counter in a
-constant way, with a little hack that tail call counter is the first thing
-pushed to stack, followed by callee-saved registers (if any), so
-throughout the tailcalls its placement on stack is left untouched.
-
-So to me, if we would like to get rid of maxing out stack space, then we
-would have to do some dancing for preserving the tail call counter - keep
-it in some unused register? Or epilogue would pop it from stack to some
-register and target program's prologue would push it to stack from that
-register (I am making this up probably). And rbp/rsp would need to be
-created/destroyed during the program-to-program transition that happens
-via tailcall. That would mean also more instructions.
-
-BTW maxing out stack space was because of the way how tail call counter is
-handled on x86-64 JIT?
-
-I might be wrong though! :) or missing something obvious. Did you have a
-chance to look at the actual patch that went among with this cover letter?
-
-> > should rather be generalized and tracked via verifier so all JITs can behave
-> > the same (and these workarounds in verifier lifted). But then 15% performance
-> > improvement as you state above is a lot, probably we might regress at least
-> > as much as well in your benchmark. I wonder whether there should be a knob
-> > for it, though it's mainly implementation detail..
-> 
-> I was thinking about knob too, but users are rarely going to touch it,
-> so if we go for opt-in it will mostly be unused except by few folks.
-> So I think it's better to go with this approach unconditionally,
-> but first I'd like to see the performance numbers in how it regresses
-> the common case. AF_XDP's empty prog that does 'return XDP_PASS' is
-> a rare case and imo not worth optimizing for, but I see a lot of value
-> if this approach allows to lift tail_call vs bpf2bpf restriction.
-> It looks to me that bpf2bpf will be able to work. prog_A will call into prog_B
-> and if that prog does any kind of tail_call that tail_call will
-> eventually finish and the execution will return to prog_A as normal.
-
-If I am not missing anything then this would involve the rbp/rsp handling
-as I stated earlier? If we agree on some way of handling tail call counter
-then I can try this out (no 512 stack clamp and handling stack frame
-throughout tail calls).
-
-> So I'd like to ask for two things:
-> 1. perf numbers for something like progs/bpf_flow.c before and after
-> 2. removal of bpf2bpf vs tail_call restriction and new selftests to prove
-> that it's working. that will include droping 512 stack clamp.
+-Jakub
