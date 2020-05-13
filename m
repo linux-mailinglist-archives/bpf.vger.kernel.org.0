@@ -2,280 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10531D0A56
-	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 09:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6441D0E34
+	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 11:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729487AbgEMH7G (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 May 2020 03:59:06 -0400
-Received: from www62.your-server.de ([213.133.104.62]:54138 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729026AbgEMH7F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 May 2020 03:59:05 -0400
-Received: from 75.57.196.178.dynamic.wline.res.cust.swisscom.ch ([178.196.57.75] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jYmIA-0008Rv-1S; Wed, 13 May 2020 09:59:02 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     alexei.starovoitov@gmail.com
-Cc:     quentin@isovalent.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>
-Subject: [PATCH bpf-next] bpf, bpftool: Allow probing for CONFIG_HZ from kernel config
-Date:   Wed, 13 May 2020 09:58:49 +0200
-Message-Id: <20200513075849.20868-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S2388188AbgEMJ6s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 May 2020 05:58:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388254AbgEMJ6r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 May 2020 05:58:47 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3655CC061A0E;
+        Wed, 13 May 2020 02:58:47 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id b8so7544193pgi.11;
+        Wed, 13 May 2020 02:58:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=LZQdTItj+phmAsWkKaeFc8g4x0Z4pbN4y0XUWhGVwSA=;
+        b=tDaUkcBMkv9tuhu8S0Ysk4WRXa5pdNBzsgIfZbM0sswrIoemyg4K2pzgOLSa5Lel3f
+         4959Gsut18JVjREjJnT5Ylt/heVgtYR05Eg4VoxSjF7mS/bUxyIxWLMG/lBK/sE5OW1G
+         7AkIaIbE5vSNeVap9XTydgUzNIe/UVZHw0EwuMif4+e9Aw3jepujLNs6VykOpo8uyXz+
+         +eecW+BrYZ2auYUy9hEI3XgobA7cMYCsp2Eu7JqAeyK+CaPhx+wp40VwWr5Cxo7QUjYz
+         KMlsSRZtKsAXX7Ax9uUo15cvzHwODLpUHd9ySWRvoi9fjPeQ3XHDeBrGyfZ/eLoe/ay1
+         bPiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=LZQdTItj+phmAsWkKaeFc8g4x0Z4pbN4y0XUWhGVwSA=;
+        b=meQjKILW1X7UnPt1MOKnUnuD/LPXUZsv3jjAaxg7/WNCoJWPV2zoAxQvhe2++prbl1
+         R8fjl4NnlpKr+fwgFqJGeLYDMx5g0W0klWBnwAMJGL3gjBvhTwYHfxtARFRC5tr6lvWY
+         TCDKNIokIWWARdW/bg+KqDhLt+HGTtNF7lCkyDj9UwO7yXvxMMdGcEkHT8psiShW6InV
+         8+KRajJ8hCxKs6ZGTQThiyvOu9YUZfr95xpOyywXmBbdEJHuMP4EXRdEYF+CBgE5flGG
+         moz/bFrY72PPxuOUjuE9qfBV7liJ67Nf5uidSTBM50A/+OX/qD0X4H1elbKT0yuw4glL
+         hSMA==
+X-Gm-Message-State: AOAM533IGpaLmmbI2iKcKw8O9ODm0ho6hv+ygmQIBgUmJ28WOMWzlFzG
+        UL7jT6wdWUB9SeESDnx/4YU=
+X-Google-Smtp-Source: ABdhPJwef0ZTrTANKoyN89Q+vPNOeDs4DObiVUNYwODBcHkwoUAO1pvyDn8tVkF6+tDa9yYtSQlN0Q==
+X-Received: by 2002:a62:3487:: with SMTP id b129mr6349648pfa.3.1589363926738;
+        Wed, 13 May 2020 02:58:46 -0700 (PDT)
+Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id k1sm8860351pgh.78.2020.05.13.02.58.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 May 2020 02:58:45 -0700 (PDT)
+Date:   Wed, 13 May 2020 17:58:35 +0800
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrii Nakryiko <andriin@fb.com>, stable@vger.kernel.org,
+        lkp@lists.01.org, bpf@vger.kernel.org,
+        kernel test robot <rong.a.chen@intel.com>
+Subject: Re: [selftests/bpf] da43712a72: kernel-selftests.bpf.make_fail
+Message-ID: <20200513095835.GD102436@dhcp-12-153.nay.redhat.com>
+References: <20200513074418.GE17565@shao2-debian>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25810/Tue May 12 14:14:24 2020)
+In-Reply-To: <20200513074418.GE17565@shao2-debian>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In Cilium we've recently switched to make use of bpf_jiffies64() for
-parts of our tc and XDP datapath since bpf_ktime_get_ns() is more
-expensive and high-precision is not needed for our timeouts we have
-anyway. Our agent has a probe manager which picks up the json of
-bpftool's feature probe and we also use the macro output in our C
-programs e.g. to have workarounds when helpers are not available on
-older kernels.
 
-Extend the kernel config info dump to also include the kernel's
-CONFIG_HZ, and rework the probe_kernel_image_config() for allowing a
-macro dump such that CONFIG_HZ can be propagated to BPF C code as a
-simple define if available via config. Latter allows to have _compile-
-time_ resolution of jiffies <-> sec conversion in our code since all
-are propagated as known constants.
+Thanks test bot catch the issue.
+On Wed, May 13, 2020 at 03:44:18PM +0800, kernel test robot wrote:
+> Greeting,
+> 
+> FYI, we noticed the following commit (built with gcc-7):
+> 
+> commit: 77bb53cb094828a31cd3c5b402899810f63073c1 ("selftests/bpf: Fix perf_buffer test on systems w/ offline CPUs")
+> https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
 
-Given we cannot generally assume availability of kconfig everywhere,
-we also have a kernel hz probe [0] as a fallback. Potentially, bpftool
-could have an integrated probe fallback as well, although to derive it,
-we might need to place it under 'bpftool feature probe full' or similar
-given it would slow down the probing process overall. Yet 'full' doesn't
-fit either for us since we don't want to pollute the kernel log with
-warning messages from bpf_probe_write_user() and bpf_trace_printk() on
-agent startup; I've left it out for the time being.
+The author for this commit is Andrii(cc'd).
 
-  [0] https://github.com/cilium/cilium/blob/master/bpf/cilium-probe-kernel-hz.c
+Mine is f1c3656c6d9c ("selftests/bpf: Skip perf hw events test if the setup disabled it")
+> prog_tests/stacktrace_build_id_nmi.c:55:3: error: label ‘cleanup’ used but not defined
+>    goto cleanup;
+>    ^~~~
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Martin KaFai Lau <kafai@fb.com>
----
- tools/bpf/bpftool/feature.c | 120 ++++++++++++++++++++----------------
- 1 file changed, 67 insertions(+), 53 deletions(-)
+Hi Greg, we are missing a depend commit
+dde53c1b763b ("selftests/bpf: Convert few more selftest to skeletons").
 
-diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-index f54347f55ee0..1b73e63274b5 100644
---- a/tools/bpf/bpftool/feature.c
-+++ b/tools/bpf/bpftool/feature.c
-@@ -80,13 +80,12 @@ print_bool_feature(const char *feat_name, const char *plain_name,
- 		printf("%s is %savailable\n", plain_name, res ? "" : "NOT ");
- }
- 
--static void print_kernel_option(const char *name, const char *value)
-+static void print_kernel_option(const char *name, const char *value,
-+				const char *define_prefix)
- {
- 	char *endptr;
- 	int res;
- 
--	/* No support for C-style ouptut */
--
- 	if (json_output) {
- 		if (!value) {
- 			jsonw_null_field(json_wtr, name);
-@@ -98,6 +97,12 @@ static void print_kernel_option(const char *name, const char *value)
- 			jsonw_int_field(json_wtr, name, res);
- 		else
- 			jsonw_string_field(json_wtr, name, value);
-+	} else if (define_prefix) {
-+		if (value)
-+			printf("#define %s%s %s\n", define_prefix,
-+			       name, value);
-+		else
-+			printf("/* %s%s is not set */\n", define_prefix, name);
- 	} else {
- 		if (value)
- 			printf("%s is set to %s\n", name, value);
-@@ -315,77 +320,84 @@ static bool read_next_kernel_config_option(gzFile file, char *buf, size_t n,
- 	return false;
- }
- 
--static void probe_kernel_image_config(void)
-+static void probe_kernel_image_config(const char *define_prefix)
- {
--	static const char * const options[] = {
-+	static const struct {
-+		const char * const name;
-+		bool macro_dump;
-+	} options[] = {
- 		/* Enable BPF */
--		"CONFIG_BPF",
-+		{ "CONFIG_BPF", },
- 		/* Enable bpf() syscall */
--		"CONFIG_BPF_SYSCALL",
-+		{ "CONFIG_BPF_SYSCALL", },
- 		/* Does selected architecture support eBPF JIT compiler */
--		"CONFIG_HAVE_EBPF_JIT",
-+		{ "CONFIG_HAVE_EBPF_JIT", },
- 		/* Compile eBPF JIT compiler */
--		"CONFIG_BPF_JIT",
-+		{ "CONFIG_BPF_JIT", },
- 		/* Avoid compiling eBPF interpreter (use JIT only) */
--		"CONFIG_BPF_JIT_ALWAYS_ON",
-+		{ "CONFIG_BPF_JIT_ALWAYS_ON", },
- 
- 		/* cgroups */
--		"CONFIG_CGROUPS",
-+		{ "CONFIG_CGROUPS", },
- 		/* BPF programs attached to cgroups */
--		"CONFIG_CGROUP_BPF",
-+		{ "CONFIG_CGROUP_BPF", },
- 		/* bpf_get_cgroup_classid() helper */
--		"CONFIG_CGROUP_NET_CLASSID",
-+		{ "CONFIG_CGROUP_NET_CLASSID", },
- 		/* bpf_skb_{,ancestor_}cgroup_id() helpers */
--		"CONFIG_SOCK_CGROUP_DATA",
-+		{ "CONFIG_SOCK_CGROUP_DATA", },
- 
- 		/* Tracing: attach BPF to kprobes, tracepoints, etc. */
--		"CONFIG_BPF_EVENTS",
-+		{ "CONFIG_BPF_EVENTS", },
- 		/* Kprobes */
--		"CONFIG_KPROBE_EVENTS",
-+		{ "CONFIG_KPROBE_EVENTS", },
- 		/* Uprobes */
--		"CONFIG_UPROBE_EVENTS",
-+		{ "CONFIG_UPROBE_EVENTS", },
- 		/* Tracepoints */
--		"CONFIG_TRACING",
-+		{ "CONFIG_TRACING", },
- 		/* Syscall tracepoints */
--		"CONFIG_FTRACE_SYSCALLS",
-+		{ "CONFIG_FTRACE_SYSCALLS", },
- 		/* bpf_override_return() helper support for selected arch */
--		"CONFIG_FUNCTION_ERROR_INJECTION",
-+		{ "CONFIG_FUNCTION_ERROR_INJECTION", },
- 		/* bpf_override_return() helper */
--		"CONFIG_BPF_KPROBE_OVERRIDE",
-+		{ "CONFIG_BPF_KPROBE_OVERRIDE", },
- 
- 		/* Network */
--		"CONFIG_NET",
-+		{ "CONFIG_NET", },
- 		/* AF_XDP sockets */
--		"CONFIG_XDP_SOCKETS",
-+		{ "CONFIG_XDP_SOCKETS", },
- 		/* BPF_PROG_TYPE_LWT_* and related helpers */
--		"CONFIG_LWTUNNEL_BPF",
-+		{ "CONFIG_LWTUNNEL_BPF", },
- 		/* BPF_PROG_TYPE_SCHED_ACT, TC (traffic control) actions */
--		"CONFIG_NET_ACT_BPF",
-+		{ "CONFIG_NET_ACT_BPF", },
- 		/* BPF_PROG_TYPE_SCHED_CLS, TC filters */
--		"CONFIG_NET_CLS_BPF",
-+		{ "CONFIG_NET_CLS_BPF", },
- 		/* TC clsact qdisc */
--		"CONFIG_NET_CLS_ACT",
-+		{ "CONFIG_NET_CLS_ACT", },
- 		/* Ingress filtering with TC */
--		"CONFIG_NET_SCH_INGRESS",
-+		{ "CONFIG_NET_SCH_INGRESS", },
- 		/* bpf_skb_get_xfrm_state() helper */
--		"CONFIG_XFRM",
-+		{ "CONFIG_XFRM", },
- 		/* bpf_get_route_realm() helper */
--		"CONFIG_IP_ROUTE_CLASSID",
-+		{ "CONFIG_IP_ROUTE_CLASSID", },
- 		/* BPF_PROG_TYPE_LWT_SEG6_LOCAL and related helpers */
--		"CONFIG_IPV6_SEG6_BPF",
-+		{ "CONFIG_IPV6_SEG6_BPF", },
- 		/* BPF_PROG_TYPE_LIRC_MODE2 and related helpers */
--		"CONFIG_BPF_LIRC_MODE2",
-+		{ "CONFIG_BPF_LIRC_MODE2", },
- 		/* BPF stream parser and BPF socket maps */
--		"CONFIG_BPF_STREAM_PARSER",
-+		{ "CONFIG_BPF_STREAM_PARSER", },
- 		/* xt_bpf module for passing BPF programs to netfilter  */
--		"CONFIG_NETFILTER_XT_MATCH_BPF",
-+		{ "CONFIG_NETFILTER_XT_MATCH_BPF", },
- 		/* bpfilter back-end for iptables */
--		"CONFIG_BPFILTER",
-+		{ "CONFIG_BPFILTER", },
- 		/* bpftilter module with "user mode helper" */
--		"CONFIG_BPFILTER_UMH",
-+		{ "CONFIG_BPFILTER_UMH", },
- 
- 		/* test_bpf module for BPF tests */
--		"CONFIG_TEST_BPF",
-+		{ "CONFIG_TEST_BPF", },
-+
-+		/* Misc configs useful in BPF C programs */
-+		/* jiffies <-> sec conversion for bpf_jiffies64() helper */
-+		{ "CONFIG_HZ", true, }
- 	};
- 	char *values[ARRAY_SIZE(options)] = { };
- 	struct utsname utsn;
-@@ -427,7 +439,8 @@ static void probe_kernel_image_config(void)
- 
- 	while (read_next_kernel_config_option(file, buf, sizeof(buf), &value)) {
- 		for (i = 0; i < ARRAY_SIZE(options); i++) {
--			if (values[i] || strcmp(buf, options[i]))
-+			if ((define_prefix && !options[i].macro_dump) ||
-+			    values[i] || strcmp(buf, options[i].name))
- 				continue;
- 
- 			values[i] = strdup(value);
-@@ -439,7 +452,9 @@ static void probe_kernel_image_config(void)
- 		gzclose(file);
- 
- 	for (i = 0; i < ARRAY_SIZE(options); i++) {
--		print_kernel_option(options[i], values[i]);
-+		if (define_prefix && !options[i].macro_dump)
-+			continue;
-+		print_kernel_option(options[i].name, values[i], define_prefix);
- 		free(values[i]);
- 	}
- }
-@@ -632,23 +647,22 @@ section_system_config(enum probe_component target, const char *define_prefix)
- 	switch (target) {
- 	case COMPONENT_KERNEL:
- 	case COMPONENT_UNSPEC:
--		if (define_prefix)
--			break;
--
- 		print_start_section("system_config",
- 				    "Scanning system configuration...",
--				    NULL, /* define_comment never used here */
--				    NULL); /* define_prefix always NULL here */
--		if (check_procfs()) {
--			probe_unprivileged_disabled();
--			probe_jit_enable();
--			probe_jit_harden();
--			probe_jit_kallsyms();
--			probe_jit_limit();
--		} else {
--			p_info("/* procfs not mounted, skipping related probes */");
-+				    "/*** Misc kernel config items ***/",
-+				    define_prefix);
-+		if (!define_prefix) {
-+			if (check_procfs()) {
-+				probe_unprivileged_disabled();
-+				probe_jit_enable();
-+				probe_jit_harden();
-+				probe_jit_kallsyms();
-+				probe_jit_limit();
-+			} else {
-+				p_info("/* procfs not mounted, skipping related probes */");
-+			}
- 		}
--		probe_kernel_image_config();
-+		probe_kernel_image_config(define_prefix);
- 		print_end_section();
- 		break;
- 	default:
--- 
-2.17.1
+So either we need backport this patch, or if you like, we can also fix it by
+changing 'goto cleanup;' to 'goto close_prog;'. So which one do you prefer?
 
+> prog_tests/perf_buffer.c: In function ‘test_perf_buffer’:
+> prog_tests/perf_buffer.c:39:8: warning: implicit declaration of function ‘parse_cpu_mask_file’ [-Wimplicit-function-declaration]
+>   err = parse_cpu_mask_file("/sys/devices/system/cpu/online",
+>         ^~~~~~~~~~~~~~~~~~~
+
+I guess, this is due to the header file path changed.
+Hi Andrii, what do you think?
+
+Thanks
+Hangbin
