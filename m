@@ -2,109 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33F71D221A
-	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 00:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 424CF1D2235
+	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 00:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729288AbgEMWge (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 May 2020 18:36:34 -0400
-Received: from www62.your-server.de ([213.133.104.62]:60982 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726034AbgEMWgd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 May 2020 18:36:33 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jYzzJ-0003yk-NJ; Thu, 14 May 2020 00:36:29 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jYzzJ-000Svu-Af; Thu, 14 May 2020 00:36:29 +0200
-Subject: Re: [PATCH 11/18] maccess: remove strncpy_from_unsafe
-To:     Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     the arch/x86 maintainers <x86@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-parisc@vger.kernel.org,
-        linux-um <linux-um@lists.infradead.org>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200513160038.2482415-1-hch@lst.de>
- <20200513160038.2482415-12-hch@lst.de>
- <CAHk-=wj=u+nttmd1huNES2U=9nePtmk7WgR8cMLCYS8wc=rhdA@mail.gmail.com>
- <20200513192804.GA30751@lst.de>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <0c1a7066-b269-9695-b94a-bb5f4f20ebd8@iogearbox.net>
-Date:   Thu, 14 May 2020 00:36:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1731273AbgEMWmV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 May 2020 18:42:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726383AbgEMWmT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 13 May 2020 18:42:19 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDC5EC061A0C;
+        Wed, 13 May 2020 15:42:18 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id e25so1378296ljg.5;
+        Wed, 13 May 2020 15:42:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wA6jZuXwICsYr7vyMmHFp883bAiAKNAsoU07JSFSjQA=;
+        b=Cn7ZesKDFyD2sDfKkn/E9p01q3qP3QI2wun4qAgXtVR1WncRnSanohwVJyenAGwECz
+         nX4TIOEpdfp2iQaKs4XaXIYiXzmWaQEC3IlnwU0qxbYryR8fgqptfWbf9IzpUUKfTgfP
+         YpX2ks6zBc/ZUlSUI3rSimDRWXwdptuhrzRALzjoo6Nt+h3InGDnGGZBu/y5PEPSrrh5
+         qPYuauYzW8aZcVyyfafb8hF8ZnJ0wh4kQdJJ+WBe/6vx5Xr7q6JuHY54q0aEZNhczb1M
+         bta6acTKjLTEFAgh0jjA7mATTWn8DalkdMeAPzJ/VHxhQ2Hqs86W6j8n+3TuQhwlsWNc
+         2wJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wA6jZuXwICsYr7vyMmHFp883bAiAKNAsoU07JSFSjQA=;
+        b=klnWMdNUi0au3gqSbhuB6mJKqyGJtUmo4YPd9n7O2p0YaQ6y9CPOYizCt4ZoT/qwEb
+         GL9rSeC/RAWwBNs1SrQ4Gz0bBYkcFXbQTk01EU5hlUJ/KVDNjABRaC6h5GcSjJpLBZ6b
+         bUCfgPIJZ6WOrVwOMY0hXGx3MSlS2l/rT+YH5+tv7vEhTMr8YCGUZ+hvNwikMFP9F/LO
+         vfDJuvlZXtTrs6QGJZj1xkJcHZShTaegF5o8hYEG3KlghorZXCJPDFuhAJ9fS+0chsRd
+         J2u1JUI4dzcjYOoZ8xGCQ0F4ffKNjvADkT3AKNKHP3nvyhxHFMcQBQGNzcplA4BvAL2E
+         LZEg==
+X-Gm-Message-State: AOAM532LwYQcYCLLsiXwbqs/xnTCmZbOyEOQd14i9LWdoF6Nh90CHUR0
+        oi3pE5daDt+UD8ODAEBh0TlUhDsdPqGLA/u1LeQ=
+X-Google-Smtp-Source: ABdhPJybsgxwISFKw2am8eRhMIUvqnM7LOTqXOD0XGTOB7CfjzakjqZZzZG8YAA44vGJZEgEhKs6Cossp1UgQUJZ1so=
+X-Received: by 2002:a2e:7508:: with SMTP id q8mr814203ljc.234.1589409737339;
+ Wed, 13 May 2020 15:42:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200513192804.GA30751@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25811/Wed May 13 14:11:53 2020)
+References: <20200513212057.147133-1-andriin@fb.com>
+In-Reply-To: <20200513212057.147133-1-andriin@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 13 May 2020 15:42:05 -0700
+Message-ID: <CAADnVQJoU__8UrOE8Nm5R4W3qsV=YfCaWwYjNDKGaQrYPw2Wzg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: fix bpf_iter's task iterator logic
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/13/20 9:28 PM, Christoph Hellwig wrote:
-> On Wed, May 13, 2020 at 12:11:27PM -0700, Linus Torvalds wrote:
->> On Wed, May 13, 2020 at 9:01 AM Christoph Hellwig <hch@lst.de> wrote:
->>>
->>> +static void bpf_strncpy(char *buf, long unsafe_addr)
->>> +{
->>> +       buf[0] = 0;
->>> +       if (strncpy_from_kernel_nofault(buf, (void *)unsafe_addr,
->>> +                       BPF_STRNCPY_LEN))
->>> +               strncpy_from_user_nofault(buf, (void __user *)unsafe_addr,
->>> +                               BPF_STRNCPY_LEN);
->>> +}
->>
->> This seems buggy when I look at it.
->>
->> It seems to think that strncpy_from_kernel_nofault() returns an error code.
->>
->> Not so, unless I missed where you changed the rules.
-> 
-> I didn't change the rules, so yes, this is wrong.
-> 
->> Also, I do wonder if we shouldn't gate this on TASK_SIZE, and do the
->> user trial first. On architectures where this thing is valid in the
->> first place (ie kernel and user addresses are separate), the test for
->> address size would allow us to avoid a pointless fault due to an
->> invalid kernel access to user space.
->>
->> So I think this function should look something like
->>
->>    static void bpf_strncpy(char *buf, long unsafe_addr)
->>    {
->>            /* Try user address */
->>            if (unsafe_addr < TASK_SIZE) {
->>                    void __user *ptr = (void __user *)unsafe_addr;
->>                    if (strncpy_from_user_nofault(buf, ptr, BPF_STRNCPY_LEN) >= 0)
->>                            return;
->>            }
->>
->>            /* .. fall back on trying kernel access */
->>            buf[0] = 0;
->>            strncpy_from_kernel_nofault(buf, (void *)unsafe_addr,
->> BPF_STRNCPY_LEN);
->>    }
->>
->> or similar. No?
-> 
-> So on say s390 TASK_SIZE_USUALLy is (-PAGE_SIZE), which means we'd alway
-> try the user copy first, which seems odd.
-> 
-> I'd really like to here from the bpf folks what the expected use case
-> is here, and if the typical argument is kernel or user memory.
+On Wed, May 13, 2020 at 2:23 PM Andrii Nakryiko <andriin@fb.com> wrote:
+>
+> task_seq_get_next might stop prematurely if get_pid_task() fails to get
+> task_struct. Failure to do so doesn't mean that there are no more tasks w=
+ith
+> higher pids. Procfs's iteration algorithm (see next_tgid in fs/proc/base.=
+c)
+> does a retry in such case. After this fix, instead of stopping prematurel=
+y
+> after about 300 tasks on my server, bpf_iter program now returns >4000, w=
+hich
+> sounds much closer to reality.
+>
+> Cc: Yonghong Song <yhs@fb.com>
+> Fixes: eaaacd23910f ("bpf: Add task and task/file iterator targets")
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
+>  kernel/bpf/task_iter.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+> index a9b7264dda08..e1836def6738 100644
+> --- a/kernel/bpf/task_iter.c
+> +++ b/kernel/bpf/task_iter.c
+> @@ -27,9 +27,15 @@ static struct task_struct *task_seq_get_next(struct pi=
+d_namespace *ns,
+>         struct pid *pid;
+>
+>         rcu_read_lock();
+> +retry:
+>         pid =3D idr_get_next(&ns->idr, tid);
+> -       if (pid)
+> +       if (pid) {
+>                 task =3D get_pid_task(pid, PIDTYPE_PID);
+> +               if (!task) {
+> +                       *tid++;
 
-It's used for both. Given this is enabled on pretty much all program types, my
-assumption would be that usage is still more often on kernel memory than user one.
+../kernel/bpf/task_iter.c: In function =E2=80=98task_seq_get_next=E2=80=99:
+../kernel/bpf/task_iter.c:35:4: warning: value computed is not used
+[-Wunused-value]
+   35 |    *tid++;
+      |    ^~~~~~
