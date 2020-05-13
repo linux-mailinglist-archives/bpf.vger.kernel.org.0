@@ -2,99 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C85B61D0490
-	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 03:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5702E1D04B6
+	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 04:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727792AbgEMB6p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 May 2020 21:58:45 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:41196 "EHLO
+        id S1728351AbgEMCRa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 May 2020 22:17:30 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44051 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726287AbgEMB6p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 May 2020 21:58:45 -0400
+        with ESMTP id S1726885AbgEMCRa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 May 2020 22:17:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589335124;
+        s=mimecast20190719; t=1589336249;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=77+XXBt2gs34d+8MeL5SJyFeuKzL200Dyavb3OVXe7M=;
-        b=VxvNFHuca/KEuTiHhAy24Kbd7px7r87KQ2WmLQMLA+f+zv0z59jO2gqX9GGC4Vv9Pk/j93
-        uaH+JmTtBu4tMAoEzsGQ/sQnaKZnL1qFCew+HP6BlJOmZ4IDvfXprupAss79YBpXubF5Fe
-        Mbx7dPJlrZFzvZn53X1NuTt/x2+42Y0=
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=b2ocEgLohmOD0+o4CDszLQUsQLHB/iWWUZ7IvUfu/JY=;
+        b=FGVccGNWL7RUHvz51TKGrsZcck0SRaOoMQKk49FRh8L8GRZY0Yz1POUgusUNm+agaH4quF
+        AgEhF/IsBqFZtfkrgicRnVZUmuazufa3tbdZah68t8Zub3ahOVZ8dKf2//KrKUJenBFMMf
+        2s3KHntovZO5fm5IMY6Nc3PxQwx7smA=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-354-I8rWLPs1Mo2r6DjiTgi2VA-1; Tue, 12 May 2020 21:58:40 -0400
-X-MC-Unique: I8rWLPs1Mo2r6DjiTgi2VA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+ us-mta-235-evzOWWIcMLaE2ll6Rj2jdQ-1; Tue, 12 May 2020 22:17:27 -0400
+X-MC-Unique: evzOWWIcMLaE2ll6Rj2jdQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 19DD11899528;
-        Wed, 13 May 2020 01:58:39 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6AC0F8014D5;
+        Wed, 13 May 2020 02:17:26 +0000 (UTC)
 Received: from astarta.redhat.com (ovpn-112-2.ams2.redhat.com [10.36.112.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D757A99D6;
-        Wed, 13 May 2020 01:58:36 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2C938619AC;
+        Wed, 13 May 2020 02:17:24 +0000 (UTC)
 From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH v4 bpf-next 5/7] selftests/bpf: replace test_progs and test_maps w/ general rule
-References: <20191016060051.2024182-1-andriin@fb.com>
-        <20191016060051.2024182-6-andriin@fb.com>
-        <xunymu6chpt2.fsf@redhat.com>
-        <CAEf4BzbE3UYw_rKAGNW9HQ5AVeebt=PDuRnEiijrwaKxNsdiYg@mail.gmail.com>
-Date:   Wed, 13 May 2020 04:58:34 +0300
-In-Reply-To: <CAEf4BzbE3UYw_rKAGNW9HQ5AVeebt=PDuRnEiijrwaKxNsdiYg@mail.gmail.com>
-        (Andrii Nakryiko's message of "Tue, 12 May 2020 15:13:18 -0700")
-Message-ID: <xunyimh0ppdh.fsf@redhat.com>
+        Andrii Nakryiko <andriin@fb.com>
+Subject: [PATCH] selftests/bpf: install generated test progs
+Date:   Wed, 13 May 2020 05:17:22 +0300
+Message-Id: <20200513021722.7787-1-yauheni.kaliuta@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, Andrii!
+Before commit 74b5a5968fe8 ("selftests/bpf: Replace test_progs and
+test_maps w/ general rule") selftests/bpf used generic install
+target from selftests/lib.mk to install generated bpf test progs by
+mentioning them in TEST_GEN_FILES variable.
 
->>>>> On Tue, 12 May 2020 15:13:18 -0700, Andrii Nakryiko  wrote:
+Take that functionality back.
 
- > On Tue, May 12, 2020 at 1:16 PM Yauheni Kaliuta
- > <yauheni.kaliuta@redhat.com> wrote:
- >> 
- >> Hi, Andrii!
- >> 
- >> The patch blanks TEST_GEN_FILES which was used by install target
- >> (lib.mk) to install test progs. How is it supposed to work?
- >> 
+Fixes: 74b5a5968fe8 ("selftests/bpf: Replace test_progs and
+test_maps w/ general rule")
 
- > I actually never used install for selftests, just make and
- > then run individual test binaries, which explains why this
- > doesn't work :)
+Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+---
+ tools/testing/selftests/bpf/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-Ok :)  Thanks for the clarification.
-
- >> That fixes it for me btw:
- >> 
- >> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
- >> index 8f25966b500b..1f878dcd2bf6 100644
- >> --- a/tools/testing/selftests/bpf/Makefile
- >> +++ b/tools/testing/selftests/bpf/Makefile
- >> @@ -265,6 +265,7 @@ TRUNNER_BPF_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.o, $$(TRUNNER_BPF_SRCS)
- >> TRUNNER_BPF_SKELS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.skel.h,      \
- >> $$(filter-out $(SKEL_BLACKLIST),       \
- >> $$(TRUNNER_BPF_SRCS)))
- >> +TEST_GEN_FILES += $$(TRUNNER_BPF_OBJS)
-
- > Yeah, this makes sense, these files will be copied over along
- > the compiled test_xxx binaries. Do you mind submitting a
- > patch?
-
-No, sure, I'll do.
-
-
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 7729892e0b04..c9a07cc7dede 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -263,6 +263,7 @@ TRUNNER_BPF_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.o, $$(TRUNNER_BPF_SRCS)
+ TRUNNER_BPF_SKELS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.skel.h,	\
+ 				 $$(filter-out $(SKEL_BLACKLIST),	\
+ 					       $$(TRUNNER_BPF_SRCS)))
++TEST_GEN_FILES += $$(TRUNNER_BPF_OBJS)
+ 
+ # Evaluate rules now with extra TRUNNER_XXX variables above already defined
+ $$(eval $$(call DEFINE_TEST_RUNNER_RULES,$1,$2))
 -- 
-WBR,
-Yauheni Kaliuta
+2.26.2
 
