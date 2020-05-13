@@ -2,91 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473DC1D1F64
-	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 21:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE75F1D1F74
+	for <lists+bpf@lfdr.de>; Wed, 13 May 2020 21:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390607AbgEMTig (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 May 2020 15:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390593AbgEMTig (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 13 May 2020 15:38:36 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A58C061A0C;
-        Wed, 13 May 2020 12:38:36 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id k7so6548720pjs.5;
-        Wed, 13 May 2020 12:38:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0u0exKw+YiYAyn84F3w6huQTNlYyARlFIAHEEGZPygc=;
-        b=quBH0RjnqfonJHvJ7a/AnGNdgBzTtg+jEfAo5XYwZSYWX1bZwhtc0wSlGs/ehCxh0T
-         +2DmqNWO00jIjDZEXQoSDolkO0uZNkQmCtKaIWLzUgjqrJKxz8ZT23NSC2pjwGclnKa3
-         zTxMHnnfDdazSlLGZy9EsNN0CL4xfHC6LCfsw3+clyE5d1tEhdoZyc7rRnmwi7iKhUWQ
-         VJ4bBAVUCdzfoPf9hkzr4wADG/LEkHVrw13j7L0u07YihcEENsPhKdeIXWAjfo3WaeO4
-         pnvSD+e3XHyMQZRfnk7IaDGIWMODeOkCP627/FBCSOprAXMbK4wbNggXmNxxjvPU/tpf
-         S3bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0u0exKw+YiYAyn84F3w6huQTNlYyARlFIAHEEGZPygc=;
-        b=daT5O3cYM3JpdVEVugpM/7RuVXvt+Ja+u+AcC41TmibRgs8Qm3sFk7+sIiLzyKMqbv
-         aOZlim47NxUgZ70bbNzkJeN5m6VbAXrmq6H0HeoNCQY0xRWQVnSLzyksK4DexSiKaH68
-         Dl9ZR9d98GkKuWpb4+qMKoRX6iYmFuqM3CW7Ax2e+9N/sjXLpTVx8L4fAKk0InIyRwn+
-         ich3GcfThLYxgB7kgJDlCu9aE6vewjFRBXHFrKW+qru0e2ggobVPuU06n6Z1lF2DVbrn
-         RkEpM6tVggooErz3CLZh2CldGwyoqAsu6mP2nYruWNbsSusIumDgUoF+ZjVfRebDgM9P
-         hJIA==
-X-Gm-Message-State: AGi0PuYOgWVCISroZ+/r4OgoZJncdP2d08I8XjYnfgQPL/LKsRMzdsn1
-        xgDV3zdsVM0mlbG6z6HcXv8=
-X-Google-Smtp-Source: APiQypJ/RWzMMdyDz/uJDEfMcnv+/XB6W0NC7oinxrJqzp6J8ofrJi4I5Y0llt+A0PKxm8q9BEFrcQ==
-X-Received: by 2002:a17:90a:71c3:: with SMTP id m3mr35927363pjs.17.1589398716047;
-        Wed, 13 May 2020 12:38:36 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:ba8f])
-        by smtp.gmail.com with ESMTPSA id j26sm282722pfr.215.2020.05.13.12.38.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 12:38:35 -0700 (PDT)
-Date:   Wed, 13 May 2020 12:38:33 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next v2 0/7] bpf: misc fixes for bpf_iter
-Message-ID: <20200513193833.536oc5neayhiisvi@ast-mbp.dhcp.thefacebook.com>
-References: <20200513180215.2949164-1-yhs@fb.com>
+        id S1732218AbgEMTkH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 May 2020 15:40:07 -0400
+Received: from verein.lst.de ([213.95.11.211]:48364 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387670AbgEMTkG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 May 2020 15:40:06 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id C111968B05; Wed, 13 May 2020 21:40:03 +0200 (CEST)
+Date:   Wed, 13 May 2020 21:40:03 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-parisc@vger.kernel.org,
+        linux-um <linux-um@lists.infradead.org>,
+        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 14/18] maccess: allow architectures to provide kernel
+ probing directly
+Message-ID: <20200513194003.GA31028@lst.de>
+References: <20200513160038.2482415-1-hch@lst.de> <20200513160038.2482415-15-hch@lst.de> <CAHk-=wgzXqgYQQt2NCdZTtxLmV1FV1nbZ_gKw0O_mRkXZj57zg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200513180215.2949164-1-yhs@fb.com>
+In-Reply-To: <CAHk-=wgzXqgYQQt2NCdZTtxLmV1FV1nbZ_gKw0O_mRkXZj57zg@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 13, 2020 at 11:02:15AM -0700, Yonghong Song wrote:
-> Commit ae24345da54e ("bpf: Implement an interface to register
-> bpf_iter targets") and its subsequent commits in the same patch set
-> introduced bpf iterator, a way to run bpf program when iterating
-> kernel data structures.
+On Wed, May 13, 2020 at 12:36:18PM -0700, Linus Torvalds wrote:
+> > +               arch_kernel_read(dst, src, type, err_label);            \
 > 
-> This patch set addressed some followup issues. One big change
-> is to allow target to pass ctx arg register types to verifier
-> for verification purpose. Please see individual patch for details.
+> I'm wondering if
 > 
-> Changelogs:
->   v1 -> v2:
->     . add "const" qualifier to struct bpf_iter_reg for
->       bpf_iter_[un]reg_target, and this results in
->       additional "const" qualifiers in some other places
->     . drop the patch which will issue WARN_ONCE if
->       seq_ops->show() returns a positive value.
->       If this does happen, code review should spot
->       this or author does know what he is doing.
->       In the future, we do want to implement a
->       mechanism to find out all registered targets
->       so we will be aware of new additions.
+>  (a) we shouldn't expose this as an interface in general
 
-Applied, Thanks
+We do export something like it, currently it is called
+probe_kernel_address, and the last patch renames it to
+get_kernel_nofault.  However it is implemented as a wrapper
+around probe_kernel_address / copy_from_kernel_nofault and thus
+not quite as efficient and without the magic goto semantics.
+
+>  (b) it wouldn't be named differently..
+
+It probably should with all the renaming..
