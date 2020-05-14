@@ -2,104 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463521D252B
-	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 04:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E4F1D26AA
+	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 07:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725925AbgENCno (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 May 2020 22:43:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725874AbgENCno (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 13 May 2020 22:43:44 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A228AC061A0C
-        for <bpf@vger.kernel.org>; Wed, 13 May 2020 19:43:43 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id v5so1235092lfp.13
-        for <bpf@vger.kernel.org>; Wed, 13 May 2020 19:43:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L3In83ZNtvhCqrpK0vVjzsKNvprMyvL+zJ9ohua4z10=;
-        b=RJxI7nc5/+qicT+av7MVnCPyCWQNYqEmo+1I8aEDjYrcgsKm1JO+ximEumc2BGCHG6
-         IRKjgEiRjwQuoza3oL4WOrhIpbRc8zh7pT5r3iUQzrEjc7+dcHsaKetaMFqukCgIbr+Y
-         1swtCFlefWtGVUfsLBR/jTXuJr1SgZ0x45QhE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L3In83ZNtvhCqrpK0vVjzsKNvprMyvL+zJ9ohua4z10=;
-        b=rnbkRks9vZYxlX6XmkMCh+oSBdrqarDZZNPmIQyL8dzlK4k9kAXqxHiodoZb8wq+CP
-         w6h6IL0Y6BebT020gtS1kjG1wNDxyhNtOws38q7VrAW+oyGAt6j9bsKgTqNJL39JX1YD
-         /H8rSIT4yJbNtBV9AGjd6GemCeDhVFuP/Xu5s+Qf4hSa9bEZ96IP2isfum74t+m++/FK
-         qxWxMqFB/QPOWetnbdjQgujlRTEab6W051hF/XIrmNpFLU1luam2bkE3zhmNDz6M0+B7
-         LjztDHBdeZz3n8QEJ1JUw8ZLl8CldENMrfAsM1fZX2JB6zmh0DL7A1j8zd8jNgLx1cQa
-         FiaQ==
-X-Gm-Message-State: AOAM531v5WDbtibGTl1RrLG6lCqvOZI/6H0dMjHBvLUJ9r1s41SM0Oo0
-        6XZzPj13EEr6HR4SwF13a5/Vw/Moo+k=
-X-Google-Smtp-Source: ABdhPJw3+jMVKygwWNAEYbbDY2LmlXyV5aUs0L1OIQurtaYHG+jD50XlWG1sMXkAbA/X0rcokNzWYA==
-X-Received: by 2002:ac2:4304:: with SMTP id l4mr1627893lfh.87.1589424221667;
-        Wed, 13 May 2020 19:43:41 -0700 (PDT)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id y16sm800328lfe.17.2020.05.13.19.43.40
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 May 2020 19:43:40 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id z22so1315693lfd.0
-        for <bpf@vger.kernel.org>; Wed, 13 May 2020 19:43:40 -0700 (PDT)
-X-Received: by 2002:a19:6e4e:: with SMTP id q14mr1567307lfk.192.1589424220085;
- Wed, 13 May 2020 19:43:40 -0700 (PDT)
+        id S1725806AbgENFcO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 May 2020 01:32:14 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:20950 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725788AbgENFcO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 14 May 2020 01:32:14 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04E5UtBt012375
+        for <bpf@vger.kernel.org>; Wed, 13 May 2020 22:32:14 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=K/Nc+atuo6mzFtmzPUMQemH8xif4oEJf2QKTpVnKE5g=;
+ b=WLbuqcrDq/OLNoqO4uDoteGqjWQrt4deN4t7OLZiZJMgnqeRPBz2vdLZ32/DBSjhkGGG
+ aYy94aHdH1979Jvl5XpHd9bFx/gW2lZYfhRjnsuJNCB9w3YeYTg34hAEiGVlIilbmdBv
+ Lg0LOY2sLVWyrp43Gh39B9KrkfcC+IJ9pvM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3100y1scy1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 13 May 2020 22:32:13 -0700
+Received: from intmgw003.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Wed, 13 May 2020 22:32:12 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 03BFD37028F2; Wed, 13 May 2020 22:32:06 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Yonghong Song <yhs@fb.com>
+Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf v2 1/2] bpf: enforce returning 0 for fentry/fexit progs
+Date:   Wed, 13 May 2020 22:32:05 -0700
+Message-ID: <20200514053206.1298415-1-yhs@fb.com>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200514053205.1298315-1-yhs@fb.com>
+References: <20200514053205.1298315-1-yhs@fb.com>
 MIME-Version: 1.0
-References: <20200513160038.2482415-1-hch@lst.de> <20200513160038.2482415-12-hch@lst.de>
- <CAHk-=wj=u+nttmd1huNES2U=9nePtmk7WgR8cMLCYS8wc=rhdA@mail.gmail.com>
- <20200513192804.GA30751@lst.de> <0c1a7066-b269-9695-b94a-bb5f4f20ebd8@iogearbox.net>
- <20200514082054.f817721ce196f134e6820644@kernel.org> <CAHk-=wjBKGLyf1d53GwfUTZiK_XPdujwh+u2XSpD2HWRV01Afw@mail.gmail.com>
- <20200514100009.a8e6aa001f0ace5553c7904f@kernel.org>
-In-Reply-To: <20200514100009.a8e6aa001f0ace5553c7904f@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 13 May 2020 19:43:24 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjP8ysEZnNFi_+E1ZEFGpcbAN8kbYHrCnC93TX6XX+jEQ@mail.gmail.com>
-Message-ID: <CAHk-=wjP8ysEZnNFi_+E1ZEFGpcbAN8kbYHrCnC93TX6XX+jEQ@mail.gmail.com>
-Subject: Re: [PATCH 11/18] maccess: remove strncpy_from_unsafe
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Christoph Hellwig <hch@lst.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-parisc@vger.kernel.org,
-        linux-um <linux-um@lists.infradead.org>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-13_09:2020-05-13,2020-05-13 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ suspectscore=13 phishscore=0 cotscore=-2147483648 mlxscore=0 spamscore=0
+ malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=747 clxscore=1015
+ impostorscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005140049
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 13, 2020 at 6:00 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
->
-> > But we should likely at least disallow it entirely on platforms where
-> > we really can't - or pick one hardcoded choice. On sparc, you really
-> > _have_ to specify one or the other.
->
-> OK. BTW, is there any way to detect the kernel/user space overlap on
-> memory layout statically? If there, I can do it. (I don't like
-> "if (CONFIG_X86)" thing....)
-> Or, maybe we need CONFIG_ARCH_OVERLAP_ADDRESS_SPACE?
+Currently, tracing/fentry and tracing/fexit prog
+return values are not enforced. In trampoline codes,
+the fentry/fexit prog return values are ignored.
+Let us enforce it to be 0 to avoid confusion and
+allows potential future extension.
 
-I think it would be better to have a CONFIG variable that
-architectures can just 'select' to show that they are ok with separate
-kernel and user addresses.
+This patch also explicitly added return value
+checking for tracing/raw_tp, tracing/fmod_ret,
+and freplace programs such that these program
+return values can be anything. The purpose are
+two folds:
+ 1. to make it explicit about return value expectations
+    for these programs in verifier.
+ 2. for tracing prog_type, if a future attach type
+    is added, the default is -ENOTSUPP which will
+    enforce to specify return value ranges explicitly.
 
-Because I don't think we have any way to say that right now as-is. You
-can probably come up with hacky ways to approximate it, ie something
-like
+Fixes: fec56f5890d9 ("bpf: Introduce BPF trampoline")
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ kernel/bpf/verifier.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-    if (TASK_SIZE_MAX > PAGE_OFFSET)
-        .... they overlap ..
+ bpf-next Commit 15d83c4d7cef ("bpf: Allow loading of a bpf
+ iter program") contains the following change:
 
-which would almost work, but..
+  --- a/kernel/bpf/verifier.c
+  +++ b/kernel/bpf/verifier.c
+  @@ -7101,6 +7101,10 @@ static int check_return_code(struct bpf_verifier=
+_env *env)
+                        return 0;
+                range =3D tnum_const(0);
+                break;
+  +       case BPF_PROG_TYPE_TRACING:
+  +               if (env->prog->expected_attach_type !=3D BPF_TRACE_ITER=
+)
+  +                       return 0;
+  +               break;
+        default:
+                return 0;
+        }
 
-                 Linus
+  If this patch is accepted, it will have a merge conflict when syncing t=
+he change
+  back to net-next/bpf-next, To resolve it, we can change to something li=
+ke below:
+                case BPF_TRACE_RAW_TP:
+                case BPF_MODIFY_RETURN:
+                        return 0;
+		case BPF_TRACE_ITER:
+			break;
+                default:
+                        return -ENOTSUPP;
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index fa1d8245b925..2d80cce0a28a 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7059,6 +7059,24 @@ static int check_return_code(struct bpf_verifier_e=
+nv *env)
+ 			return 0;
+ 		range =3D tnum_const(0);
+ 		break;
++	case BPF_PROG_TYPE_TRACING:
++		switch ((env->prog->expected_attach_type)) {
++		case BPF_TRACE_FENTRY:
++		case BPF_TRACE_FEXIT:
++			range =3D tnum_const(0);
++			break;
++		case BPF_TRACE_RAW_TP:
++		case BPF_MODIFY_RETURN:
++			return 0;
++		default:
++			return -ENOTSUPP;
++		}
++
++		break;
++	case BPF_PROG_TYPE_EXT:
++		/* freplace program can return anything as its return value
++		 * depends on the to-be-replaced kernel func or bpf program.
++		 */
+ 	default:
+ 		return 0;
+ 	}
+--=20
+2.24.1
+
