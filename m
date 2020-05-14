@@ -2,97 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7CCE1D26AB
-	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 07:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D27A1D26C6
+	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 07:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725818AbgENFcP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 May 2020 01:32:15 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:9748 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725788AbgENFcP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 14 May 2020 01:32:15 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04E5UtBv012375
-        for <bpf@vger.kernel.org>; Wed, 13 May 2020 22:32:14 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=jHiBVRGlYsHFPO13+fZz7H9QrT08kIIXqqAFOGS0ZtM=;
- b=V8ydajJxKFU92LLzIg2QYSrsEsXSQTCTexiJ3OSZtl/uVrfCUbt2zzpjlzm3357zMW7U
- Ip3AC6Vwvh7q3OsZdaogs1+7zb8GZX962KwDV5n8tB/SQihpa4RjBVR8sJnQhgI3yOh4
- gbPWCZeutwIg449Ga+UNmKMPc2sGlbcCdHc= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3100y1scy1-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 13 May 2020 22:32:14 -0700
-Received: from intmgw003.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Wed, 13 May 2020 22:32:12 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 459323702424; Wed, 13 May 2020 22:32:07 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Yonghong Song <yhs@fb.com>
-Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf v2 2/2] selftests/bpf: enforce returning 0 for fentry/fexit programs
-Date:   Wed, 13 May 2020 22:32:07 -0700
-Message-ID: <20200514053207.1298479-1-yhs@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200514053205.1298315-1-yhs@fb.com>
-References: <20200514053205.1298315-1-yhs@fb.com>
+        id S1726005AbgENFpa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 May 2020 01:45:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725788AbgENFpa (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 14 May 2020 01:45:30 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEFC8C061A0C;
+        Wed, 13 May 2020 22:45:29 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id b1so1959940qtt.1;
+        Wed, 13 May 2020 22:45:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CeLcerrPYswIIq5/LOYFPT5DqB/kULYtQV2dtaUcTKI=;
+        b=lopipD4Dbh3zX8t+77tW/y8p6c+Vx9SmjPyVRtSc+M7oRew6wU5gA19D9+tgXD/tnr
+         dnw5wcXRsr19RgqKWTYFwDEz7/SN6JYcKkYIS3tL4XDeSDVXS/Ivt1kJEcuTxSlwH80s
+         CgVEduETsv04QYGIpmg4e//xmMqI1qvwgJSd9pISUl6vs16ETWrwLk+iCFQ5fHEDnJ7/
+         ryY0L5WCxBThMeTw98YA1uWw36iCSyf6EEkvXjScx099xwxMrEZ/GZxiO3Sh8mqtd1QI
+         3W+686oRAFtDKt7ajSQSAapdLgtea2ZnrTxj6339u6aUUF7sWthDw/x4OdkkSu4t1paA
+         U6FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CeLcerrPYswIIq5/LOYFPT5DqB/kULYtQV2dtaUcTKI=;
+        b=mUhmAILiJMpEmAok2n43iZKow52hz8Za2mFPLxUfaTwetoD+Rb0pNLcbpGA98nz+Ec
+         3RZSHNLv8gqLUrOA1/v/X3+epw7NH79B9+DYM0S5+uojygrzoV1Eq0H8V8dqFhOGj9Dr
+         93KRyLwZflVuQtTIZ6UqraM7h87DTrcz2EBBR85jLym5v9p3ib1Ju7ZrLwsTuMtBL2sW
+         e9fGAK13ZZjWERdfEmN+g5eMnjIYCjqZ8FdbtTgeqbSXDejpy4laqURYHU4HSZ/E98J3
+         jP5ULBaR5kCv3X5riskn7ISfiMS1oVOOt4HacRFyhGuD6/lQTTo8+q5uN+kMsioPlYOU
+         xrhQ==
+X-Gm-Message-State: AOAM532cD5FxjolBnTskFns2zhSrZ8kXTjJr7Rs75GGjLWKYNMDMuc5o
+        uaeRFGytYUo/tsvmI2AfhVTPYPRdbB2gE9vCUdrf6g==
+X-Google-Smtp-Source: ABdhPJyaB2OKkqspvUB3KXInSih0EveX84naqUESpAj96BSwXYj5Asmib940+sKnrSU26rRaIhNqJUO3l6vvzUE2qIA=
+X-Received: by 2002:aed:2f02:: with SMTP id l2mr2681055qtd.117.1589435128820;
+ Wed, 13 May 2020 22:45:28 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200513212057.147133-1-andriin@fb.com> <CAADnVQJoU__8UrOE8Nm5R4W3qsV=YfCaWwYjNDKGaQrYPw2Wzg@mail.gmail.com>
+In-Reply-To: <CAADnVQJoU__8UrOE8Nm5R4W3qsV=YfCaWwYjNDKGaQrYPw2Wzg@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 13 May 2020 22:45:17 -0700
+Message-ID: <CAEf4BzYo23gyF=5-N0RzHmk6ajsQ97L=CsntfeUSK4bJKeqVtQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: fix bpf_iter's task iterator logic
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-13_09:2020-05-13,2020-05-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- suspectscore=13 phishscore=0 cotscore=-2147483648 mlxscore=0 spamscore=0
- malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=845 clxscore=1015
- impostorscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005140049
-X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There are a few fentry/fexit programs returning non-0.
-The tests with these programs will break with the previous
-patch which enfoced return-0 rules. Fix them properly.
+On Wed, May 13, 2020 at 3:42 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, May 13, 2020 at 2:23 PM Andrii Nakryiko <andriin@fb.com> wrote:
+> >
+> > task_seq_get_next might stop prematurely if get_pid_task() fails to get
+> > task_struct. Failure to do so doesn't mean that there are no more tasks=
+ with
+> > higher pids. Procfs's iteration algorithm (see next_tgid in fs/proc/bas=
+e.c)
+> > does a retry in such case. After this fix, instead of stopping prematur=
+ely
+> > after about 300 tasks on my server, bpf_iter program now returns >4000,=
+ which
+> > sounds much closer to reality.
+> >
+> > Cc: Yonghong Song <yhs@fb.com>
+> > Fixes: eaaacd23910f ("bpf: Add task and task/file iterator targets")
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> >  kernel/bpf/task_iter.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+> > index a9b7264dda08..e1836def6738 100644
+> > --- a/kernel/bpf/task_iter.c
+> > +++ b/kernel/bpf/task_iter.c
+> > @@ -27,9 +27,15 @@ static struct task_struct *task_seq_get_next(struct =
+pid_namespace *ns,
+> >         struct pid *pid;
+> >
+> >         rcu_read_lock();
+> > +retry:
+> >         pid =3D idr_get_next(&ns->idr, tid);
+> > -       if (pid)
+> > +       if (pid) {
+> >                 task =3D get_pid_task(pid, PIDTYPE_PID);
+> > +               if (!task) {
+> > +                       *tid++;
+>
+> ../kernel/bpf/task_iter.c: In function =E2=80=98task_seq_get_next=E2=80=
+=99:
+> ../kernel/bpf/task_iter.c:35:4: warning: value computed is not used
+> [-Wunused-value]
+>    35 |    *tid++;
+>       |    ^~~~~~
 
-Fixes: ac065870d928 ("selftests/bpf: Add BPF_PROG, BPF_KPROBE, and BPF_KR=
-ETPROBE macros")
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/testing/selftests/bpf/progs/test_overhead.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/test_overhead.c b/tools/te=
-sting/selftests/bpf/progs/test_overhead.c
-index 56a50b25cd33..abb7344b531f 100644
---- a/tools/testing/selftests/bpf/progs/test_overhead.c
-+++ b/tools/testing/selftests/bpf/progs/test_overhead.c
-@@ -30,13 +30,13 @@ int prog3(struct bpf_raw_tracepoint_args *ctx)
- SEC("fentry/__set_task_comm")
- int BPF_PROG(prog4, struct task_struct *tsk, const char *buf, bool exec)
- {
--	return !tsk;
-+	return 0;
- }
-=20
- SEC("fexit/__set_task_comm")
- int BPF_PROG(prog5, struct task_struct *tsk, const char *buf, bool exec)
- {
--	return !tsk;
-+	return 0;
- }
-=20
- char _license[] SEC("license") =3D "GPL";
---=20
-2.24.1
-
+welp... thanks, fixing to prefix form
