@@ -2,117 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AECFF1D2CD4
-	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 12:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0C61D2D32
+	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 12:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726005AbgENKaV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 May 2020 06:30:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725978AbgENKaU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 May 2020 06:30:20 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726010AbgENKtR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 May 2020 06:49:17 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:35187 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725955AbgENKtN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 May 2020 06:49:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589453351;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xl3PtZhUoXNCz9X55oC8eYBVnIgmufJyn0mQs9IfJGI=;
+        b=dcFhgO28vuJSpveGYf2KhdfkRHy90mwzH4Jwp9vkYgYyfXQrK0+CrmOgYWxJwIxYcmXiHX
+        cS+kWGDRv6QzcwhQgSSdgg75IP/bE1NgSbwql0nkw2rX0e/jeqfxiDotVKwQT+oSuGDShU
+        WRrEeVgsXRHOGUQN5+2tlbKBFcpNzzE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-202-poiv3oWqN-KETWHC9gMMiw-1; Thu, 14 May 2020 06:49:04 -0400
+X-MC-Unique: poiv3oWqN-KETWHC9gMMiw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82C4B2073E;
-        Thu, 14 May 2020 10:30:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589452220;
-        bh=A3IjjYicFx2sDdwHaUV1m4nmlpmmCiXI+c8C5UnaoGE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wOzQJkFRV88ZCynkOK8TiPIsiUIoLdn/9TOODYbwvoiLxy1soZt18uHPKbAXPSujK
-         Xc67oZSVvNDmrLfEgg1cUc6custplSvTpN3juUhWPLL2B3uSmt9gEKWxZnMkqZE1wd
-         iP0K5f9PRxU+98vDdmYDX0O9kTf+OKq8ZNXnPOIE=
-Date:   Thu, 14 May 2020 12:30:17 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, stable@vger.kernel.org,
-        lkp@lists.01.org, bpf@vger.kernel.org,
-        kernel test robot <rong.a.chen@intel.com>
-Subject: Re: [selftests/bpf] da43712a72: kernel-selftests.bpf.make_fail
-Message-ID: <20200514103017.GA1829391@kroah.com>
-References: <20200513074418.GE17565@shao2-debian>
- <20200513095835.GD102436@dhcp-12-153.nay.redhat.com>
- <20200513102634.GC871114@kroah.com>
- <20200514031420.GE102436@dhcp-12-153.nay.redhat.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C06FE100CCC5;
+        Thu, 14 May 2020 10:49:02 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.40.208.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DC56276C38;
+        Thu, 14 May 2020 10:48:58 +0000 (UTC)
+Received: from [192.168.42.3] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id 88EEB300020FC;
+        Thu, 14 May 2020 12:48:57 +0200 (CEST)
+Subject: [PATCH net-next v4 00/33] XDP extend with knowledge of frame size
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     sameehj@amazon.com
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org,
+        =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Tariq Toukan <tariqt@mellanox.com>
+Date:   Thu, 14 May 2020 12:48:57 +0200
+Message-ID: <158945314698.97035.5286827951225578467.stgit@firesoul>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200514031420.GE102436@dhcp-12-153.nay.redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 14, 2020 at 11:14:20AM +0800, Hangbin Liu wrote:
-> On Wed, May 13, 2020 at 12:26:34PM +0200, Greg Kroah-Hartman wrote:
-> > On Wed, May 13, 2020 at 05:58:35PM +0800, Hangbin Liu wrote:
-> > > 
-> > > Thanks test bot catch the issue.
-> > > On Wed, May 13, 2020 at 03:44:18PM +0800, kernel test robot wrote:
-> > > > Greeting,
-> > > > 
-> > > > FYI, we noticed the following commit (built with gcc-7):
-> > > > 
-> > > > commit: 77bb53cb094828a31cd3c5b402899810f63073c1 ("selftests/bpf: Fix perf_buffer test on systems w/ offline CPUs")
-> > > > https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> > > 
-> > > The author for this commit is Andrii(cc'd).
-> > > 
-> > > Mine is f1c3656c6d9c ("selftests/bpf: Skip perf hw events test if the setup disabled it")
-> > > > prog_tests/stacktrace_build_id_nmi.c:55:3: error: label ‘cleanup’ used but not defined
-> > > >    goto cleanup;
-> > > >    ^~~~
-> > > 
-> > > Hi Greg, we are missing a depend commit
-> > > dde53c1b763b ("selftests/bpf: Convert few more selftest to skeletons").
-> > > 
-> > > So either we need backport this patch, or if you like, we can also fix it by
-> > > changing 'goto cleanup;' to 'goto close_prog;'. So which one do you prefer?
-> > 
-> > I don't know, I have no context here at all, sorry.
-> > 
-> > What stable kernel tree is failing, what patch needs to be changed, what
-> > patch caused this, and so on...
-> > 
-> > confused,
-> 
-> Oh, sorry, I should reply the full email. I will forward the full message in
-> the bellow. For your questions:
-> 
-> the stable kernel tree is linux-5.4.y,
-> my patch is da43712a7262 ("selftests/bpf: Skip perf hw events test if the
-> setup disabled it")[1].
-> 
-> The reason is we are lacking upstream commit
-> dde53c1b763b ("selftests/bpf: Convert few more selftest to skeletons").
-> 
-> This will call build warning
-> prog_tests/stacktrace_build_id_nmi.c:55:3: error: label ‘cleanup’ used but not defined
->    goto cleanup;
->    ^~~~
-> 
-> To fix it, I think the easiest way is change the "goto cleanup" to "goto
-> close_prog".
+(Patchset based on net-next due to all the driver updates)
 
-Ok, can you send a patch for this, documenting all of the above so I
-know what's going on?
+V4:
+- Fixup checkpatch.pl issues
+- Collected more ACKs
 
-> For the other error:
-> 
-> prog_tests/perf_buffer.c: In function ‘test_perf_buffer’:
-> prog_tests/perf_buffer.c:39:8: warning: implicit declaration of function ‘parse_cpu_mask_file’ [-Wimplicit-function-declaration]
->   err = parse_cpu_mask_file("/sys/devices/system/cpu/online",
->         ^~~~~~~~~~~~~~~~~~~
-> ../lib.mk:138: recipe for target '/usr/src/perf_selftests-x86_64-rhel-7.6-kselftests-da43712a7262891317883d4b3a909fb18dac4b1d/tools/testing/selftests/bpf/test_progs' failed
-> make: *** [/usr/src/perf_selftests-x86_64-rhel-7.6-kselftests-da43712a7262891317883d4b3a909fb18dac4b1d/tools/testing/selftests/bpf/test_progs] Error 1
-> make: Leaving directory '/usr/src/perf_selftests-x86_64-rhel-7.6-kselftests-da43712a7262891317883d4b3a909fb18dac4b1d/tools/testing/selftests/bpf'
-> 
-> I think Andrii may like help.
+V3:
+- Fix issue on virtio_net patch spotted by Jason Wang
+- Adjust name for variable in mlx5 patch
+- Collected more ACKs
 
-That looks like a bug, we should revert the offending patch, right?
+V2:
+- Fix bug in mlx5 for XDP_PASS case
+- Collected nitpicks and ACKs from mailing list
 
-thanks,
+V1:
+- Fix bug in dpaa2
 
-greg k-h
+XDP have evolved to support several frame sizes, but xdp_buff was not
+updated with this information. This have caused the side-effect that
+XDP frame data hard end is unknown. This have limited the BPF-helper
+bpf_xdp_adjust_tail to only shrink the packet. This patchset address
+this and add packet tail extend/grow.
+
+The purpose of the patchset is ALSO to reserve a memory area that can be
+used for storing extra information, specifically for extending XDP with
+multi-buffer support. One proposal is to use same layout as
+skb_shared_info, which is why this area is currently 320 bytes.
+
+When converting xdp_frame to SKB (veth and cpumap), the full tailroom
+area can now be used and SKB truesize is now correct. For most
+drivers this result in a much larger tailroom in SKB "head" data
+area. The network stack can now take advantage of this when doing SKB
+coalescing. Thus, a good driver test is to use xdp_redirect_cpu from
+samples/bpf/ and do some TCP stream testing.
+
+Use-cases for tail grow/extend:
+(1) IPsec / XFRM needs a tail extend[1][2].
+(2) DNS-cache responses in XDP.
+(3) HAProxy ALOHA would need it to convert to XDP.
+(4) Add tail info e.g. timestamp and collect via tcpdump
+
+[1] http://vger.kernel.org/netconf2019_files/xfrm_xdp.pdf
+[2] http://vger.kernel.org/netconf2019.html
+
+Examples on howto access the tail area of an XDP packet is shown in the
+XDP-tutorial example[3].
+
+[3] https://github.com/xdp-project/xdp-tutorial/blob/master/experiment01-tailgrow/
+
+---
+
+Ilias Apalodimas (1):
+      net: netsec: Add support for XDP frame size
+
+Jesper Dangaard Brouer (32):
+      xdp: add frame size to xdp_buff
+      bnxt: add XDP frame size to driver
+      sfc: add XDP frame size
+      mvneta: add XDP frame size to driver
+      net: XDP-generic determining XDP frame size
+      xdp: xdp_frame add member frame_sz and handle in convert_to_xdp_frame
+      xdp: cpumap redirect use frame_sz and increase skb_tailroom
+      veth: adjust hard_start offset on redirect XDP frames
+      veth: xdp using frame_sz in veth driver
+      dpaa2-eth: add XDP frame size
+      hv_netvsc: add XDP frame size to driver
+      qlogic/qede: add XDP frame size to driver
+      net: ethernet: ti: add XDP frame size to driver cpsw
+      ena: add XDP frame size to amazon NIC driver
+      mlx4: add XDP frame size and adjust max XDP MTU
+      net: thunderx: add XDP frame size
+      nfp: add XDP frame size to netronome driver
+      tun: add XDP frame size
+      vhost_net: also populate XDP frame size
+      virtio_net: add XDP frame size in two code paths
+      ixgbe: fix XDP redirect on archs with PAGE_SIZE above 4K
+      ixgbe: add XDP frame size to driver
+      ixgbevf: add XDP frame size to VF driver
+      i40e: add XDP frame size to driver
+      ice: add XDP frame size to driver
+      xdp: for Intel AF_XDP drivers add XDP frame_sz
+      mlx5: rx queue setup time determine frame_sz for XDP
+      xdp: allow bpf_xdp_adjust_tail() to grow packet size
+      xdp: clear grow memory in bpf_xdp_adjust_tail()
+      bpf: add xdp.frame_sz in bpf_prog_test_run_xdp().
+      selftests/bpf: adjust BPF selftest for xdp_adjust_tail
+      selftests/bpf: xdp_adjust_tail add grow tail tests
+
+
+ drivers/net/ethernet/amazon/ena/ena_netdev.c       |    1 
+ drivers/net/ethernet/amazon/ena/ena_netdev.h       |    5 -
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c      |    1 
+ drivers/net/ethernet/cavium/thunder/nicvf_main.c   |    1 
+ drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c   |    7 +
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c        |   30 ++++-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c         |    2 
+ drivers/net/ethernet/intel/ice/ice_txrx.c          |   34 ++++--
+ drivers/net/ethernet/intel/ice/ice_xsk.c           |    2 
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      |   33 ++++-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |    2 
+ drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c  |   34 ++++--
+ drivers/net/ethernet/marvell/mvneta.c              |   25 ++--
+ drivers/net/ethernet/mellanox/mlx4/en_netdev.c     |    3 
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c         |    1 
+ drivers/net/ethernet/mellanox/mlx5/core/en.h       |    1 
+ drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c   |    1 
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |    6 +
+ drivers/net/ethernet/mellanox/mlx5/core/en_rx.c    |    2 
+ .../net/ethernet/netronome/nfp/nfp_net_common.c    |    6 +
+ drivers/net/ethernet/qlogic/qede/qede_fp.c         |    1 
+ drivers/net/ethernet/qlogic/qede/qede_main.c       |    2 
+ drivers/net/ethernet/sfc/rx.c                      |    1 
+ drivers/net/ethernet/socionext/netsec.c            |   30 +++--
+ drivers/net/ethernet/ti/cpsw.c                     |    1 
+ drivers/net/ethernet/ti/cpsw_new.c                 |    1 
+ drivers/net/hyperv/netvsc_bpf.c                    |    1 
+ drivers/net/hyperv/netvsc_drv.c                    |    2 
+ drivers/net/tun.c                                  |    2 
+ drivers/net/veth.c                                 |   28 +++--
+ drivers/net/virtio_net.c                           |   15 ++
+ drivers/vhost/net.c                                |    1 
+ include/net/xdp.h                                  |   27 ++++
+ include/net/xdp_sock.h                             |   11 ++
+ include/uapi/linux/bpf.h                           |    4 -
+ kernel/bpf/cpumap.c                                |   21 ---
+ net/bpf/test_run.c                                 |   16 ++-
+ net/core/dev.c                                     |   14 +-
+ net/core/filter.c                                  |   15 ++
+ net/core/xdp.c                                     |    8 +
+ .../selftests/bpf/prog_tests/xdp_adjust_tail.c     |  123 +++++++++++++++++++-
+ .../testing/selftests/bpf/progs/test_adjust_tail.c |   30 -----
+ .../bpf/progs/test_xdp_adjust_tail_grow.c          |   33 +++++
+ .../bpf/progs/test_xdp_adjust_tail_shrink.c        |   30 +++++
+ 44 files changed, 475 insertions(+), 139 deletions(-)
+ delete mode 100644 tools/testing/selftests/bpf/progs/test_adjust_tail.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_shrink.c
+
+--
+
