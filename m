@@ -2,167 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8761D40BD
-	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 00:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE201D40E8
+	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 00:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728373AbgENWUc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 May 2020 18:20:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728050AbgENWUc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 May 2020 18:20:32 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C31C061A0C;
-        Thu, 14 May 2020 15:20:31 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id f83so534618qke.13;
-        Thu, 14 May 2020 15:20:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Btb+pUXqufPEo0v33O7AZL4ElyjUDGTi6VfzFSIsJsM=;
-        b=U5xpniTN9ydrdfaExtS+SYHelYWAb95MIeKEuok4Bk3Jo09nz0eGgYrnzYBsdN2wnl
-         RofaB7mXp1xbvkOZG6f5PuP92FfXY28SEUM2Vav9qP2TC8rvPsn43CpN9JzU3ZjUqFrq
-         +8qNG8ZJWerUiouCh3MTTGcTwUzchxITkk1kZMFykGZHLUBqoepRrIyJvcZ9QHHZZ6kH
-         7zDpMVOoMUfwVjqa1+kD8BpaFyTQzLb/s5Ramy0bTL1nx+8GIeumjA8f4cHkPy7OY98b
-         lsicxfEDa/+KELPxUeDSvlhx2WyEPGhm8GKlVq4MfA/rDZ3iGYS6uo5hQmyBiKYSmo+o
-         TDRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Btb+pUXqufPEo0v33O7AZL4ElyjUDGTi6VfzFSIsJsM=;
-        b=J/ykWTgWULyd1Hn9AcLgHKXF/nkkX1trNRyTrt7IFTAU3yag5TlKjNweAb1npTk78Y
-         BQzTHF88vApUMlqwAgdbvYigRvyISz5bWZAQAd+k1Jr7uq2ykV+RXvGJdlmKqkPiSfYh
-         QkdfuOau7rNeRIRXbmSdSWdRVnC+OPMUdllExTpk2reYuXh3qT4szOZ2ztD+4FrNxriU
-         OX1RT6/XXqGPpSelEKwZsbKyR/fnDRt1gfUl07rqWgFf31tgfzz0Eq7hT5wysyqpo2ZB
-         qzoM08cNnn9+zqlJJS5HW/jyrlt856Szl1DKJiWMgbaFYR/G5YgDlm9HXnyKzxyqiz7b
-         68Ow==
-X-Gm-Message-State: AOAM531jvZ+woJ/nESqABOB9WkbC5hT4REU2zdpsvihl9Gw3pWlWrpf+
-        YPzHCpkELdDU4s7tfU9RG1Gvq8tnVC4ZoP1J0cHrHg/Z
-X-Google-Smtp-Source: ABdhPJw2mJXYvtNgeUvbCrKnCVvfQVFa8lWVsSosTCHtIMyvlDfI7TlubzTR8LA93sy5NI7if9vnz/JfYf/ejExGvFE=
-X-Received: by 2002:ae9:efc1:: with SMTP id d184mr599491qkg.437.1589494830915;
- Thu, 14 May 2020 15:20:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200506132946.2164578-1-jolsa@kernel.org> <20200506132946.2164578-4-jolsa@kernel.org>
-In-Reply-To: <20200506132946.2164578-4-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 14 May 2020 15:20:19 -0700
-Message-ID: <CAEf4BzY=GgQ0jaTg2BLfguZ+sPjT==qgoMFeB85utGWFj5qtPA@mail.gmail.com>
-Subject: Re: [PATCH 3/9] bpf: Add bpfwl tool to construct bpf whitelists
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1728510AbgENW0G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 May 2020 18:26:06 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:52128 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728504AbgENW0G (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 May 2020 18:26:06 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04EMDqqs189326;
+        Thu, 14 May 2020 22:25:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=FjvFM6ZaMmmWoZUO4ZUKypUYGMnm9Lz4wPP6z6pKBks=;
+ b=IXZ70RR1qu6LUOnFslclk2zI3bsk49kpvW4kiKEz+cu8CrR/b67DCG669SCM03aZLz7K
+ aMXeFWr3MJilaBr03/ZmB3gGAh1QW4r1Brcf3Ax/83MxYfszB1n+xUV9/H8XQQWoKtbz
+ y6U25I8bcA8eZ/yEAw53IvlyR5GNbR+OSQmxp8NMG5VsULfTYtkO85Nsucm2xwZEwizP
+ ciqfOVnpNp0z6JDpdiicmQpsXxDeahPCStfAwwgt4zUKI8LxeiXGK2RLY3JP4ketCJhj
+ XrLwatGG9WOE8Iv9OCeZRnM95wQbDz1ugZzvMOXADALTyo1KPIY/r87+gFUHNPz9UgGV +Q== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 3100xwwf9q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 14 May 2020 22:25:50 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 04EM8hiY067868;
+        Thu, 14 May 2020 22:25:49 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 310vju2m7w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 May 2020 22:25:49 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 04EMPmCW004643;
+        Thu, 14 May 2020 22:25:48 GMT
+Received: from dhcp-10-175-210-26.vpn.oracle.com (/10.175.210.26)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 14 May 2020 15:25:47 -0700
+Date:   Thu, 14 May 2020 23:25:39 +0100 (BST)
+From:   Alan Maguire <alan.maguire@oracle.com>
+X-X-Sender: alan@localhost
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+cc:     Alan Maguire <alan.maguire@oracle.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+        Kernel Team <kernel-team@fb.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>
+Subject: Re: [PATCH bpf-next 1/6] bpf: implement BPF ring buffer and verifier
+ support for it
+In-Reply-To: <CAEf4BzZpa3Xjevy-tV2oD2Yoxhf=Sm1EPNZdWsv0CoUCSmuF9w@mail.gmail.com>
+Message-ID: <alpine.LRH.2.21.2005142243090.24127@localhost>
+References: <20200513192532.4058934-1-andriin@fb.com> <20200513192532.4058934-2-andriin@fb.com> <alpine.LRH.2.21.2005132231450.1535@localhost> <CAEf4BzZpa3Xjevy-tV2oD2Yoxhf=Sm1EPNZdWsv0CoUCSmuF9w@mail.gmail.com>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9621 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 phishscore=0
+ spamscore=0 mlxlogscore=818 malwarescore=0 suspectscore=3 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005140194
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9621 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 cotscore=-2147483648 bulkscore=0
+ phishscore=0 adultscore=0 mlxlogscore=837 lowpriorityscore=0
+ impostorscore=0 spamscore=0 malwarescore=0 priorityscore=1501 mlxscore=0
+ suspectscore=3 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005140194
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 6, 2020 at 6:30 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> This tool takes vmlinux object and whitelist directory on input
-> and produces C source object with BPF whitelist data.
->
-> The vmlinux object needs to have a BTF information compiled in.
->
-> The whitelist directory is expected to contain files with helper
-> names, where each file contains list of functions/probes that
-> helper is allowed to be called from - whitelist.
->
-> The bpfwl tool has following output:
->
->   $ bpfwl vmlinux dir
->   unsigned long d_path[] __attribute__((section(".BTF_whitelist_d_path"))) = \
->   { 24507, 24511, 24537, 24539, 24545, 24588, 24602, 24920 };
+On Wed, 13 May 2020, Andrii Nakryiko wrote:
 
-why long instead of int? btf_id is 4-byte one.
+> On Wed, May 13, 2020 at 2:59 PM Alan Maguire <alan.maguire@oracle.com> wrote:
+> >
+> >
+> > - attach a kprobe program to record the data via bpf_ringbuf_reserve(),
+> >   and store the reserved pointer value in a per-task keyed hashmap.
+> >   Then record the values of interest in the reserved space. This is our
+> >   speculative data as we don't know whether we want to commit it yet.
+> >
+> > - attach a kretprobe program that picks up our reserved pointer and
+> >   commit()s or discard()s the associated data based on the return value.
+> >
+> > - the consumer should (I think) then only read the committed data, so in
+> >   this case just the data of interest associated with the failure case.
+> >
+> > I'm curious if that sort of ringbuf access pattern across multiple
+> > programs would work? Thanks!
+> 
+> 
+> Right now it's not allowed. Similar to spin lock and socket reference,
+> verifier will enforce that reserved record is committed or discarded
+> within the same BPF program invocation. Technically, nothing prevents
+> us from relaxing this and allowing to store this pointer in a map, but
+> that's probably way too dangerous and not necessary for most common
+> cases.
+> 
 
->
-> Each array are sorted BTF ids of the functions provided in the
-> helper file.
->
-> Each array will be compiled into kernel and used during the helper
-> check in verifier.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/bpf/bpfwl/Build    |  11 ++
->  tools/bpf/bpfwl/Makefile |  60 +++++++++
->  tools/bpf/bpfwl/bpfwl.c  | 285 +++++++++++++++++++++++++++++++++++++++
->  3 files changed, 356 insertions(+)
->  create mode 100644 tools/bpf/bpfwl/Build
->  create mode 100644 tools/bpf/bpfwl/Makefile
->  create mode 100644 tools/bpf/bpfwl/bpfwl.c
+Understood.
 
-Sorry, I didn't want to nitpick on naming, honestly, but I think this
-is actually harmful in the long run. bpfwl is incomprehensible name,
-anyone reading link script would be like "what the hell is bpfwl?" Why
-not bpf_build_whitelist or something with "whitelist" spelled out in
-full?
+> But all your troubles with this is due to using a pair of
+> kprobe+kretprobe. What I think should solve your problem is a single
+> fexit program. It can read input arguments *and* return value of
+> traced function. So there won't be any need for additional map and
+> storing speculative data (and no speculation as well, because you'll
+> just know beforehand if you even need to capture data). Does this work
+> for your case?
+> 
 
->
-> diff --git a/tools/bpf/bpfwl/Build b/tools/bpf/bpfwl/Build
-> new file mode 100644
-> index 000000000000..667e30d6ce79
-> --- /dev/null
-> +++ b/tools/bpf/bpfwl/Build
-> @@ -0,0 +1,11 @@
-> +bpfwl-y += bpfwl.o
-> +bpfwl-y += rbtree.o
-> +bpfwl-y += zalloc.o
-> +
+That would work for that case, absolutely! Thanks!
 
-[...]
+Alan
 
-> +
-> +struct func {
-> +       char                    *name;
-> +       unsigned long            id;
 
-as mentioned above, btf_id is 4 byte
 
-> +       struct rb_node           rb_node;
-> +       struct list_head         list[];
-> +};
-> +
-
-[...]
-
-> +       btf = btf__parse_elf(vmlinux, NULL);
-> +       err = libbpf_get_error(btf);
-> +       if (err) {
-> +               fprintf(stderr, "FAILED: load BTF from %s: %s",
-> +                       vmlinux, strerror(err));
-> +               return -1;
-> +       }
-> +
-> +       nr = btf__get_nr_types(btf);
-> +
-> +       /* Iterate all the BTF types and resolve all the function IDs. */
-> +       for (id = 0; id < nr; id++) {
-
-It has to be `for (id = 1; id <= nr; id++)`. 0 is VOID type and not
-included into nr_types. I know it's confusing, but.. life :)
-
-> +               const struct btf_type *type;
-> +               struct func *func;
-> +               const char *str;
-> +
-> +               type = btf__type_by_id(btf, id);
-> +               if (!type)
-> +                       continue;
-> +
-
-[...]
