@@ -2,174 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D61A1D24F1
-	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 03:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 463521D252B
+	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 04:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728378AbgENBu7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 May 2020 21:50:59 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:29246 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725925AbgENBu6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 13 May 2020 21:50:58 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04E1ou2o006254
-        for <bpf@vger.kernel.org>; Wed, 13 May 2020 18:50:58 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=BE9CifM+cwp0/XhwgISs6naNCTfpmH492M6Zg+HknoY=;
- b=W1oZcHW3rTS+Uve5WNBPBVcEcUvjJfr4oPHUqZwt9uo/uQUxws4i2IsdbtImfNU5LEAb
- KOniejJj9os2tibm0Q2LnFwshvluZJ++PXfaZBK3pCYE/6CMoTwGuJTIAnmudipxibOg
- Vn0UNsU6FT/j5E9qePxzLR4uZr+Q67zudXM= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3100y1rmrn-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 13 May 2020 18:50:58 -0700
-Received: from intmgw003.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Wed, 13 May 2020 18:50:54 -0700
-Received: by dev082.prn2.facebook.com (Postfix, from userid 572249)
-        id 9FB053700963; Wed, 13 May 2020 18:50:51 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrey Ignatov <rdna@fb.com>
-Smtp-Origin-Hostname: dev082.prn2.facebook.com
-To:     <bpf@vger.kernel.org>
-CC:     Andrey Ignatov <rdna@fb.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Test narrow loads for bpf_sock_addr.user_port
-Date:   Wed, 13 May 2020 18:50:28 -0700
-Message-ID: <e5c734a58cca4041ab30cb5471e644246f8cdb5a.1589420814.git.rdna@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <cover.1589420814.git.rdna@fb.com>
-References: <cover.1589420814.git.rdna@fb.com>
+        id S1725925AbgENCno (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 May 2020 22:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725874AbgENCno (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 13 May 2020 22:43:44 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A228AC061A0C
+        for <bpf@vger.kernel.org>; Wed, 13 May 2020 19:43:43 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id v5so1235092lfp.13
+        for <bpf@vger.kernel.org>; Wed, 13 May 2020 19:43:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L3In83ZNtvhCqrpK0vVjzsKNvprMyvL+zJ9ohua4z10=;
+        b=RJxI7nc5/+qicT+av7MVnCPyCWQNYqEmo+1I8aEDjYrcgsKm1JO+ximEumc2BGCHG6
+         IRKjgEiRjwQuoza3oL4WOrhIpbRc8zh7pT5r3iUQzrEjc7+dcHsaKetaMFqukCgIbr+Y
+         1swtCFlefWtGVUfsLBR/jTXuJr1SgZ0x45QhE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L3In83ZNtvhCqrpK0vVjzsKNvprMyvL+zJ9ohua4z10=;
+        b=rnbkRks9vZYxlX6XmkMCh+oSBdrqarDZZNPmIQyL8dzlK4k9kAXqxHiodoZb8wq+CP
+         w6h6IL0Y6BebT020gtS1kjG1wNDxyhNtOws38q7VrAW+oyGAt6j9bsKgTqNJL39JX1YD
+         /H8rSIT4yJbNtBV9AGjd6GemCeDhVFuP/Xu5s+Qf4hSa9bEZ96IP2isfum74t+m++/FK
+         qxWxMqFB/QPOWetnbdjQgujlRTEab6W051hF/XIrmNpFLU1luam2bkE3zhmNDz6M0+B7
+         LjztDHBdeZz3n8QEJ1JUw8ZLl8CldENMrfAsM1fZX2JB6zmh0DL7A1j8zd8jNgLx1cQa
+         FiaQ==
+X-Gm-Message-State: AOAM531v5WDbtibGTl1RrLG6lCqvOZI/6H0dMjHBvLUJ9r1s41SM0Oo0
+        6XZzPj13EEr6HR4SwF13a5/Vw/Moo+k=
+X-Google-Smtp-Source: ABdhPJw3+jMVKygwWNAEYbbDY2LmlXyV5aUs0L1OIQurtaYHG+jD50XlWG1sMXkAbA/X0rcokNzWYA==
+X-Received: by 2002:ac2:4304:: with SMTP id l4mr1627893lfh.87.1589424221667;
+        Wed, 13 May 2020 19:43:41 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id y16sm800328lfe.17.2020.05.13.19.43.40
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 May 2020 19:43:40 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id z22so1315693lfd.0
+        for <bpf@vger.kernel.org>; Wed, 13 May 2020 19:43:40 -0700 (PDT)
+X-Received: by 2002:a19:6e4e:: with SMTP id q14mr1567307lfk.192.1589424220085;
+ Wed, 13 May 2020 19:43:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-13_09:2020-05-13,2020-05-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- suspectscore=15 phishscore=0 cotscore=-2147483648 mlxscore=0 spamscore=0
- malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999 clxscore=1015
- impostorscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005140015
-X-FB-Internal: deliver
+References: <20200513160038.2482415-1-hch@lst.de> <20200513160038.2482415-12-hch@lst.de>
+ <CAHk-=wj=u+nttmd1huNES2U=9nePtmk7WgR8cMLCYS8wc=rhdA@mail.gmail.com>
+ <20200513192804.GA30751@lst.de> <0c1a7066-b269-9695-b94a-bb5f4f20ebd8@iogearbox.net>
+ <20200514082054.f817721ce196f134e6820644@kernel.org> <CAHk-=wjBKGLyf1d53GwfUTZiK_XPdujwh+u2XSpD2HWRV01Afw@mail.gmail.com>
+ <20200514100009.a8e6aa001f0ace5553c7904f@kernel.org>
+In-Reply-To: <20200514100009.a8e6aa001f0ace5553c7904f@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 13 May 2020 19:43:24 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjP8ysEZnNFi_+E1ZEFGpcbAN8kbYHrCnC93TX6XX+jEQ@mail.gmail.com>
+Message-ID: <CAHk-=wjP8ysEZnNFi_+E1ZEFGpcbAN8kbYHrCnC93TX6XX+jEQ@mail.gmail.com>
+Subject: Re: [PATCH 11/18] maccess: remove strncpy_from_unsafe
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Christoph Hellwig <hch@lst.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-parisc@vger.kernel.org,
+        linux-um <linux-um@lists.infradead.org>,
+        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Test 1,2,4-byte loads from bpf_sock_addr.user_port in sock_addr
-programs.
+On Wed, May 13, 2020 at 6:00 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> > But we should likely at least disallow it entirely on platforms where
+> > we really can't - or pick one hardcoded choice. On sparc, you really
+> > _have_ to specify one or the other.
+>
+> OK. BTW, is there any way to detect the kernel/user space overlap on
+> memory layout statically? If there, I can do it. (I don't like
+> "if (CONFIG_X86)" thing....)
+> Or, maybe we need CONFIG_ARCH_OVERLAP_ADDRESS_SPACE?
 
-Signed-off-by: Andrey Ignatov <rdna@fb.com>
----
- tools/testing/selftests/bpf/test_sock_addr.c | 38 ++++++++++++++------
- 1 file changed, 28 insertions(+), 10 deletions(-)
+I think it would be better to have a CONFIG variable that
+architectures can just 'select' to show that they are ok with separate
+kernel and user addresses.
 
-diff --git a/tools/testing/selftests/bpf/test_sock_addr.c b/tools/testing=
-/selftests/bpf/test_sock_addr.c
-index 61fd95b89af8..0358814c67dc 100644
---- a/tools/testing/selftests/bpf/test_sock_addr.c
-+++ b/tools/testing/selftests/bpf/test_sock_addr.c
-@@ -677,7 +677,7 @@ static int bind4_prog_load(const struct sock_addr_tes=
-t *test)
- 		uint8_t u4_addr8[4];
- 		uint16_t u4_addr16[2];
- 		uint32_t u4_addr32;
--	} ip4;
-+	} ip4, port;
- 	struct sockaddr_in addr4_rw;
-=20
- 	if (inet_pton(AF_INET, SERV4_IP, (void *)&ip4) !=3D 1) {
-@@ -685,6 +685,8 @@ static int bind4_prog_load(const struct sock_addr_tes=
-t *test)
- 		return -1;
- 	}
-=20
-+	port.u4_addr32 =3D htons(SERV4_PORT);
-+
- 	if (mk_sockaddr(AF_INET, SERV4_REWRITE_IP, SERV4_REWRITE_PORT,
- 			(struct sockaddr *)&addr4_rw, sizeof(addr4_rw)) =3D=3D -1)
- 		return -1;
-@@ -696,49 +698,65 @@ static int bind4_prog_load(const struct sock_addr_t=
-est *test)
- 		/* if (sk.family =3D=3D AF_INET && */
- 		BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
- 			    offsetof(struct bpf_sock_addr, family)),
--		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, AF_INET, 24),
-+		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, AF_INET, 32),
-=20
- 		/*     (sk.type =3D=3D SOCK_DGRAM || sk.type =3D=3D SOCK_STREAM) && */
- 		BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
- 			    offsetof(struct bpf_sock_addr, type)),
- 		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, SOCK_DGRAM, 1),
- 		BPF_JMP_A(1),
--		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, SOCK_STREAM, 20),
-+		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, SOCK_STREAM, 28),
-=20
- 		/*     1st_byte_of_user_ip4 =3D=3D expected && */
- 		BPF_LDX_MEM(BPF_B, BPF_REG_7, BPF_REG_6,
- 			    offsetof(struct bpf_sock_addr, user_ip4)),
--		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr8[0], 18),
-+		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr8[0], 26),
-=20
- 		/*     2nd_byte_of_user_ip4 =3D=3D expected && */
- 		BPF_LDX_MEM(BPF_B, BPF_REG_7, BPF_REG_6,
- 			    offsetof(struct bpf_sock_addr, user_ip4) + 1),
--		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr8[1], 16),
-+		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr8[1], 24),
-=20
- 		/*     3rd_byte_of_user_ip4 =3D=3D expected && */
- 		BPF_LDX_MEM(BPF_B, BPF_REG_7, BPF_REG_6,
- 			    offsetof(struct bpf_sock_addr, user_ip4) + 2),
--		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr8[2], 14),
-+		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr8[2], 22),
-=20
- 		/*     4th_byte_of_user_ip4 =3D=3D expected && */
- 		BPF_LDX_MEM(BPF_B, BPF_REG_7, BPF_REG_6,
- 			    offsetof(struct bpf_sock_addr, user_ip4) + 3),
--		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr8[3], 12),
-+		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr8[3], 20),
-=20
- 		/*     1st_half_of_user_ip4 =3D=3D expected && */
- 		BPF_LDX_MEM(BPF_H, BPF_REG_7, BPF_REG_6,
- 			    offsetof(struct bpf_sock_addr, user_ip4)),
--		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr16[0], 10),
-+		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr16[0], 18),
-=20
- 		/*     2nd_half_of_user_ip4 =3D=3D expected && */
- 		BPF_LDX_MEM(BPF_H, BPF_REG_7, BPF_REG_6,
- 			    offsetof(struct bpf_sock_addr, user_ip4) + 2),
--		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr16[1], 8),
-+		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr16[1], 16),
-=20
--		/*     whole_user_ip4 =3D=3D expected) { */
-+		/*     whole_user_ip4 =3D=3D expected && */
- 		BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
- 			    offsetof(struct bpf_sock_addr, user_ip4)),
- 		BPF_LD_IMM64(BPF_REG_8, ip4.u4_addr32), /* See [2]. */
-+		BPF_JMP_REG(BPF_JNE, BPF_REG_7, BPF_REG_8, 12),
-+
-+		/*     1st_byte_of_user_port =3D=3D expected && */
-+		BPF_LDX_MEM(BPF_B, BPF_REG_7, BPF_REG_6,
-+			    offsetof(struct bpf_sock_addr, user_port)),
-+		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, port.u4_addr8[0], 10),
-+
-+		/*     1st_half_of_user_port =3D=3D expected && */
-+		BPF_LDX_MEM(BPF_H, BPF_REG_7, BPF_REG_6,
-+			    offsetof(struct bpf_sock_addr, user_port)),
-+		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, port.u4_addr16[0], 8),
-+
-+		/*     user_port =3D=3D expected) { */
-+		BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
-+			    offsetof(struct bpf_sock_addr, user_port)),
-+		BPF_LD_IMM64(BPF_REG_8, port.u4_addr32), /* See [2]. */
- 		BPF_JMP_REG(BPF_JNE, BPF_REG_7, BPF_REG_8, 4),
-=20
- 		/*      user_ip4 =3D addr4_rw.sin_addr */
---=20
-2.24.1
+Because I don't think we have any way to say that right now as-is. You
+can probably come up with hacky ways to approximate it, ie something
+like
 
+    if (TASK_SIZE_MAX > PAGE_OFFSET)
+        .... they overlap ..
+
+which would almost work, but..
+
+                 Linus
