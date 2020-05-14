@@ -2,133 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24DFE1D369D
-	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 18:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D111D3724
+	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 18:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726017AbgENQhW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 May 2020 12:37:22 -0400
-Received: from smtp.emailarray.com ([69.28.212.198]:44573 "EHLO
-        smtp2.emailarray.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725999AbgENQhW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 May 2020 12:37:22 -0400
-Received: (qmail 73016 invoked by uid 89); 14 May 2020 16:30:40 -0000
+        id S1726327AbgENQ5a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 May 2020 12:57:30 -0400
+Received: from smtp4.emailarray.com ([65.39.216.22]:24927 "EHLO
+        smtp4.emailarray.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726287AbgENQ53 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 May 2020 12:57:29 -0400
+Received: (qmail 57254 invoked by uid 89); 14 May 2020 16:50:48 -0000
 Received: from unknown (HELO localhost) (amxlbW9uQGZsdWdzdmFtcC5jb21AMTYzLjExNC4xMzIuMw==) (POLARISLOCAL)  
-  by smtp2.emailarray.com with SMTP; 14 May 2020 16:30:40 -0000
-Date:   Thu, 14 May 2020 09:30:37 -0700
+  by smtp4.emailarray.com with SMTP; 14 May 2020 16:50:48 -0000
+Date:   Thu, 14 May 2020 09:50:45 -0700
 From:   Jonathan Lemon <bsd@fb.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH bpf-next 0/6] BPF ring buffer
-Message-ID: <20200514163037.oijxmoemkg47ujft@bsd-mbp>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, andrii.nakryiko@gmail.com,
+        kernel-team@fb.com, "Paul E . McKenney" <paulmck@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>
+Subject: Re: [PATCH bpf-next 1/6] bpf: implement BPF ring buffer and verifier
+ support for it
+Message-ID: <20200514165045.sk6zjlhsfzxbo6mb@bsd-mbp>
 References: <20200513192532.4058934-1-andriin@fb.com>
- <20200513224927.643hszw3q3cgx7e6@bsd-mbp.dhcp.thefacebook.com>
- <CAEf4BzaSEPNyBvXBduH2Bkr64=MbzFiR9hJ9DYwXwk4D2AtcDw@mail.gmail.com>
+ <20200513192532.4058934-2-andriin@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzaSEPNyBvXBduH2Bkr64=MbzFiR9hJ9DYwXwk4D2AtcDw@mail.gmail.com>
+In-Reply-To: <20200513192532.4058934-2-andriin@fb.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 13, 2020 at 11:08:46PM -0700, Andrii Nakryiko wrote:
-> On Wed, May 13, 2020 at 3:49 PM Jonathan Lemon <jonathan.lemon@gmail.com> wrote:
-> >
-> > On Wed, May 13, 2020 at 12:25:26PM -0700, Andrii Nakryiko wrote:
-> > > Implement a new BPF ring buffer, as presented at BPF virtual conference ([0]).
-> > > It presents an alternative to perf buffer, following its semantics closely,
-> > > but allowing sharing same instance of ring buffer across multiple CPUs
-> > > efficiently.
-> > >
-> > > Most patches have extensive commentary explaining various aspects, so I'll
-> > > keep cover letter short. Overall structure of the patch set:
-> > > - patch #1 adds BPF ring buffer implementation to kernel and necessary
-> > >   verifier support;
-> > > - patch #2 adds litmus tests validating all the memory orderings and locking
-> > >   is correct;
-> > > - patch #3 is an optional patch that generalizes verifier's reference tracking
-> > >   machinery to capture type of reference;
-> > > - patch #4 adds libbpf consumer implementation for BPF ringbuf;
-> > > - path #5 adds selftest, both for single BPF ring buf use case, as well as
-> > >   using it with array/hash of maps;
-> > > - patch #6 adds extensive benchmarks and provide some analysis in commit
-> > >   message, it build upon selftests/bpf's bench runner.
-> > >
-> > >   [0] https://docs.google.com/presentation/d/18ITdg77Bj6YDOH2LghxrnFxiPWe0fAqcmJY95t_qr0w
-> > >
-> > > Cc: Paul E. McKenney <paulmck@kernel.org>
-> > > Cc: Jonathan Lemon <jonathan.lemon@gmail.com>
-> >
-> > Looks very nice!  A few random questions:
-> >
-> > 1) Why not use a structure for the header, instead of 2 32bit ints?
-> 
-> hm... no reason, just never occurred to me it's necessary :)
+On Wed, May 13, 2020 at 12:25:27PM -0700, Andrii Nakryiko wrote:
+> +static struct bpf_ringbuf *bpf_ringbuf_restore_from_rec(void *meta_ptr)
+> +{
+> +	unsigned long addr = (unsigned long)meta_ptr;
+> +	unsigned long off = *(u32 *)(meta_ptr + 4) << PAGE_SHIFT;
+> +
+> +	return (void*)((addr & PAGE_MASK) - off);
+> +}
+> +
+> +static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
+> +{
+> +	unsigned long cons_pos, prod_pos, new_prod_pos, flags;
+> +	u32 len, pg_off;
+> +	void *meta_ptr;
+> +
+> +	if (unlikely(size > UINT_MAX))
+> +		return NULL;
 
-It might be clearer to do this.  Something like:
+Size should be 30 bits, not UINT_MAX, since 2 bits are reserved.
 
-struct ringbuf_record {
-    union {
-        struct {
-            u32 size:30;
-            bool busy:1;
-            bool discard:1;
-        };
-        u32 word1;
-    };
-    union {
-        u32 pgoff;
-        u32 word2;
-    };
-};
+> +
+> +	len = round_up(size + RINGBUF_META_SZ, 8);
+> +	cons_pos = READ_ONCE(rb->consumer_pos);
+> +
+> +	if (in_nmi()) {
+> +		if (!spin_trylock_irqsave(&rb->spinlock, flags))
+> +			return NULL;
+> +	} else {
+> +		spin_lock_irqsave(&rb->spinlock, flags);
+> +	}
+> +
+> +	prod_pos = rb->producer_pos;
+> +	new_prod_pos = prod_pos + len;
+> +
+> +	/* check for out of ringbuf space by ensuring producer position
+> +	 * doesn't advance more than (ringbuf_size - 1) ahead
+> +	 */
+> +	if (new_prod_pos - cons_pos > rb->mask) {
+> +		spin_unlock_irqrestore(&rb->spinlock, flags);
+> +		return NULL;
+> +	}
+> +
+> +	meta_ptr = rb->data + (prod_pos & rb->mask);
+> +	pg_off = bpf_ringbuf_rec_pg_off(rb, meta_ptr);
+> +
+> +	WRITE_ONCE(*(u32 *)meta_ptr, RINGBUF_BUSY_BIT | size);
+> +	WRITE_ONCE(*(u32 *)(meta_ptr + 4), pg_off);
 
-While perhaps a bit overkill, makes it clear what is going on.
+Or define a 64bit word in the structure and use:
 
-
-> > 2) Would it make sense to reserve X bytes, but only commit Y?
-> >    the offset field could be used to write the record length.
-> >
-> >    E.g.:
-> >       reserve 512 bytes    [BUSYBIT | 512][PG OFFSET]
-> >       commit  400 bytes    [ 512 ] [ 400 ]
-> 
-> It could be done, though I had tentative plans to use those second 4
-> bytes for something useful eventually.
-> 
-> But what's the use case? From ring buffer's perspective, X bytes were
-> reserved and are gone already and subsequent writers might have
-> already advanced producer counter with the assumption that all X bytes
-> are going to be used. So there are no space savings, even if record is
-> discarded or only portion of it is submitted. I can only see a bit of
-> added convenience for an application, because it doesn't have to track
-> amount of actual data in its record. But this doesn't seem to be a
-> common case either, so not sure how it's worth supporting... Is there
-> a particular case where this is extremely useful and extra 4 bytes in
-> record payload is too much?
-
-Not off the top of my head - it was just the first thing that came to
-mind when reading about the commit/discard paradigm.  I was thinking
-about variable records, where the maximum is reserved, but less data
-is written.  But there's no particular reason for the ringbuffer to
-track this either, it could be part of the application framing.
+        WRITE_ONCE(*(u64 *)meta_ptr, rec.header);
 
 
-> > 3) Why have 2 separate pages for producer/consumer, instead of
-> >    just aligning to a smp cache line (or even 1/2 page?)
-> 
-> Access rights restrictions. Consumer page is readable/writable,
-> producer page is read-only for user-space. If user-space had ability
-> to write producer position, it could wreck a huge havoc for the
-> ringbuf algorithm.
+> +
+> +	/* ensure length prefix is written before updating producer positions */
+> +	smp_wmb();
+> +	WRITE_ONCE(rb->producer_pos, new_prod_pos);
+> +
+> +	spin_unlock_irqrestore(&rb->spinlock, flags);
+> +
+> +	return meta_ptr + RINGBUF_META_SZ;
+> +}
+> +
+> +BPF_CALL_3(bpf_ringbuf_reserve, struct bpf_map *, map, u64, size, u64, flags)
+> +{
+> +	struct bpf_ringbuf_map *rb_map;
+> +
+> +	if (unlikely(flags))
+> +		return -EINVAL;
+> +
+> +	rb_map = container_of(map, struct bpf_ringbuf_map, map);
+> +	return (unsigned long)__bpf_ringbuf_reserve(rb_map->rb, size);
+> +}
+> +
 
-Ah, thanks, that makes sense.  Might want to add a comment to
-that effect, as it's different from other implementations.
--- 
+--
 Jonathan
