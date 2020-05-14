@@ -2,128 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA0681D3703
-	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 18:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ABF91D370F
+	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 18:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726341AbgENQxK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 May 2020 12:53:10 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:10522 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726038AbgENQxJ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 14 May 2020 12:53:09 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04EGnORt032496;
-        Thu, 14 May 2020 09:52:55 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=9DlQWW3gqIXJ1kQCMVx+KxDDKl3ESM1bzkChBTy+uzM=;
- b=gw1aSByufYjxyekZmnur1sDQrakXuQVBRRLgXTaBGX7drZ90w64os1Ohk2gD29pvuONj
- Ss48pBGIvKVwIbDQPBnwLKSd5nGnuKz0UG4bR6UZraOeZA1nPZWrTl8E1+PP/aqPJTKF
- d3XNmr0SELyRmtsbKYq5e4FVUXGQitWQwVw= 
+        id S1726037AbgENQ4J (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 May 2020 12:56:09 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:65004 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725975AbgENQ4J (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 14 May 2020 12:56:09 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04EGrpk8021972;
+        Thu, 14 May 2020 09:55:56 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=220ktKXXD64FdcFxS+/AhHPh854BVwVbXlx2fTiTy5g=;
+ b=UiWctiz+i+jSA7rEwJycgj+Dw0eZTp16ymw2gtFkBzObxzDHp9T2fz5nj4w3Z9jjBfOO
+ JZW/O0GdAvugflkn7/cuErY5i94VpMrNteKsepDdjjpPyUwGJVL+4W3qEXdOEHPy6NG/
+ TTsNvN7Br+gh7Jx9CxDER6Z7u/sT9ROjTG4= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3110kjtyw1-1
+        by mx0a-00082601.pphosted.com with ESMTP id 310wawut8a-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 14 May 2020 09:52:55 -0700
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+        Thu, 14 May 2020 09:55:56 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 14 May 2020 09:52:53 -0700
+ 15.1.1847.3; Thu, 14 May 2020 09:55:55 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OVzuP+r7vm020Vmk/H4utV1ymh4NGikgKbwC5kHZzf1tVP4jGcXKKg8066usj6oMFjLnXeJJfbh3otqqkJH+vq3Pf4xs7IdjG/vPEj78rkKWQmPe8BhuEhzdJn8+T2k5elzviktCliSRuwxUYHiT1FCj8b3Y44L/8gFFogttQqWXXNNEY9hEgmK4EmTktZWfeIk2LRA366hEujxU0NdT6/hINdeO3dPPsaRdCDbPcFGTIKkos7qWAvp31CuTl+Rdhsjc/Ab1JJTkXp7QBjQVvRPNMKUjvNlAHVooPBo9huWxa1Vy2SFDrMSihN1M/NuJptJAdKrL5tbiC8N6ho8W4A==
+ b=EzNf7H0CToxJ1o9opJM/CVUfeVUM4i6RAzwmbnTicEI5XJZ2Uji1nDE+uW/aQ6tBinManJ7hI+onc/f++GUl/y6jMKH01PSJCFq7VjqyzjuvZLeKk5fWolzLLvTMgXUlM6wJJmVWMm8HmoWddNKQ4u7RZHDuRJzFUkF08Rx91dnmOifukTMZaSyHwGmJ/QW1ovTXYrHPH+73bt8+fA6wxNsUSXg9//gfuoazbH5sfF5u+oNa6/Dbn0cz8KMVhHhVqKjzrmn88jJDM/1cMocZTgB3CrnuxmoajSkSGOC5bUjPX2QGq3WP5uEJ29nx59IE6XRJWW938cFx6uWce7jxzg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9DlQWW3gqIXJ1kQCMVx+KxDDKl3ESM1bzkChBTy+uzM=;
- b=LkhzzWzs+r9jzC/jMi64AdXK94Mc3SFGdmVhAHml4XTZOarOwB6WAPvz1YWwjCwjpJbAwYH9Ap/IaflHTfTI2mNnX400271djG0etcgdf2JZQWH6f/oF3Wk7ctu0TNcloP1KqhLfCjEbb/W3jYsX4gUkgzes1v91USCIwVNEGXS2/AZ4jTZeNuuGlRfuC6Dcz8vbNXd3bFDqeUPUEYgFwdnxQQS01CsUzI6IGNxqitNkvKUeZQkbsMlmrm2vxKcb1lB5OH6HWWkpcebnvzm5sqpvf0owLaa6K65RZa/MgtTm+f9MgNFbniT4NahE8ikbefmg7m+sGciIrlvBdGfoFQ==
+ bh=220ktKXXD64FdcFxS+/AhHPh854BVwVbXlx2fTiTy5g=;
+ b=DXW9M4AqFlC4OrotzrT1Yima+IrVszcwwG8phpV/xnct2P5LYu5LDKlsk+BgdCbvlHLKPSd0PHk4tjacKzztbRfyprZ1mAGdu71RYsbTvQYJ8MUS/BPiMJC3sMz0+Yq30xZ+oLwpbHdLq3u19lU7SRkCFeGvbvzlSLxwEhTOuWO0fQTHx940ytktDduN5Bdbd1bFRPQ8D1VCH85pvqcqsOE4wOylCQKm7kXnEJNfD0tlkuQLXeLmmanEMSIilp19CjPo7tTjYzZJiBQyLhbJ5IDn+inwtG7wdZOI+O+5IWOOr/LZmZBKFObdctdgcOBi2n2ggidgkNm8ILSLyNK1eA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9DlQWW3gqIXJ1kQCMVx+KxDDKl3ESM1bzkChBTy+uzM=;
- b=gz2Hnr6xnI/dE01YoB5aOEvwFF4vKvL/sR0tGtmAVcd5DVTms95dtwRBuNr1+cZQ+GRd6MWQLGSfIwpJhQJTZL2MRaNIqvi06fMGVJKt5oe1Ve2bnpNYKJPPw+I6/k+hz9sit2LhH6dsvr3d396kBVB8YFv7IxhaDhCy/XL/9kk=
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2839.namprd15.prod.outlook.com (2603:10b6:a03:fd::19) with
+ bh=220ktKXXD64FdcFxS+/AhHPh854BVwVbXlx2fTiTy5g=;
+ b=dSzhoQ10/fop4ouxPFqdgxWuVOaJ+I9vY5+uqtbe6k36KMpZq5HEtKIiuvUHTHXfIH6RDmlFBcxlf0H0U6gjbGBsb2Zy0OyPGITaz5tkzmgtBkv5e+gOSjAQf3z0xtgIpQ6kls9qb+/vrUCd/U0ch9k0xcZw0A/bmTh33OzmF5o=
+Received: from BYAPR15MB4119.namprd15.prod.outlook.com (2603:10b6:a02:cd::20)
+ by BYAPR15MB2503.namprd15.prod.outlook.com (2603:10b6:a02:89::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.21; Thu, 14 May
- 2020 16:52:52 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3000.022; Thu, 14 May 2020
- 16:52:52 +0000
-Subject: Re: [PATCH bpf-next 1/2] bpf: Support narrow loads from
- bpf_sock_addr.user_port
-To:     Andrey Ignatov <rdna@fb.com>, <bpf@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>
-References: <cover.1589420814.git.rdna@fb.com>
- <c1e983f4c17573032601d0b2b1f9d1274f24bc16.1589420814.git.rdna@fb.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <8cefda24-320f-41c0-b73f-78be006f31f7@fb.com>
-Date:   Thu, 14 May 2020 09:52:50 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
-In-Reply-To: <c1e983f4c17573032601d0b2b1f9d1274f24bc16.1589420814.git.rdna@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR07CA0053.namprd07.prod.outlook.com
- (2603:10b6:a03:60::30) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.25; Thu, 14 May
+ 2020 16:55:51 +0000
+Received: from BYAPR15MB4119.namprd15.prod.outlook.com
+ ([fe80::f9e2:f920:db85:9e34]) by BYAPR15MB4119.namprd15.prod.outlook.com
+ ([fe80::f9e2:f920:db85:9e34%6]) with mapi id 15.20.3000.022; Thu, 14 May 2020
+ 16:55:51 +0000
+Date:   Thu, 14 May 2020 09:55:49 -0700
+From:   Andrey Ignatov <rdna@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+CC:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next 3/5] bpf: Introduce
+ bpf_sk_{,ancestor_}cgroup_id helpers
+Message-ID: <20200514165549.GA22366@rdna-mbp>
+References: <cover.1589405669.git.rdna@fb.com>
+ <c65795a13e69b7e4aa61a8e37aa340f2484f6c8a.1589405669.git.rdna@fb.com>
+ <f885aa42-eb76-415a-7fe3-95ad9c4f38c8@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f885aa42-eb76-415a-7fe3-95ad9c4f38c8@fb.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-ClientProxiedBy: BY3PR05CA0030.namprd05.prod.outlook.com
+ (2603:10b6:a03:254::35) To BYAPR15MB4119.namprd15.prod.outlook.com
+ (2603:10b6:a02:cd::20)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from macbook-pro-52.local.dhcp.thefacebook.com (2620:10d:c090:400::5:3bff) by BYAPR07CA0053.namprd07.prod.outlook.com (2603:10b6:a03:60::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.24 via Frontend Transport; Thu, 14 May 2020 16:52:51 +0000
-X-Originating-IP: [2620:10d:c090:400::5:3bff]
+Received: from localhost (2620:10d:c090:400::5:2555) by BY3PR05CA0030.namprd05.prod.outlook.com (2603:10b6:a03:254::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.11 via Frontend Transport; Thu, 14 May 2020 16:55:50 +0000
+X-Originating-IP: [2620:10d:c090:400::5:2555]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 011f1e4f-8a3f-4860-609f-08d7f8273def
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2839:
+X-MS-Office365-Filtering-Correlation-Id: c8bce1d8-0a0f-4cd8-996c-08d7f827a865
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2503:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2839D6042B70E9899D599113D3BC0@BYAPR15MB2839.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <BYAPR15MB25038C068E570233DF772405A8BC0@BYAPR15MB2503.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:1728;
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-Forefront-PRVS: 040359335D
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IFrVylXU0jWZB+gb4BocnD+YjIBRLckNURrIlBFJBXXw7cZ7VthPCN7G7atmx7casmndmrgur6k78kHRJ4Wl4EmANNLTz6//a32BMrOUL1ySlVFJN/7sxITNDMThWxbxhIJ3eV+3ZtUk3BqufL+rvKtKMGSd8516eCjX85gWrMkdAWteo7PQvhWS6WHcieldT7tBgNtdN1DrIDgjK/FRDiTY9aMqRLJJcr490Yk0zg36HhCHOZpEum1CFUQWclrMdFXfESqEGqNN6CsOEvrrUuKseVJ3iJfgJr8h+VmMejAs19noGaSo1Dd/cXoJQBkcZisC8gTbQzE/d0+lTSOz2AaPS9gL7KWwiqyqnjPNMKNR4wLGgJrx0g1p0ntD2DnNFGZJFfMAgoYD2ydrXT3Jpn2Xp0p/WlGl5RJaybCvYlZos6aPqDJ/gWIQaMEcPAheCbgfWEPbeW33Y4YG8wtgg0rhrT7lhsCwJ1oB6oCQsVBEcRTVQwEL/3uxoVwDkCsw
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(396003)(136003)(376002)(366004)(346002)(316002)(16526019)(66556008)(4326008)(31686004)(31696002)(66946007)(2616005)(4744005)(186003)(8936002)(6486002)(2906002)(66476007)(478600001)(5660300002)(53546011)(8676002)(86362001)(52116002)(6512007)(36756003)(6506007)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: QHS2/27N9LESj8Stpx5IjrSBPHGYWPDBxWRTPiQjpdYDrsWmo78YSrn0AvTmMCj6kGkWndCF4DMHVnRzkFCFa6MLLDnob9PgX9LrQR8TdTHECoJrUfJT5OP4qFfewywCbpXtceVLaykB7rkPB9bconZVacR5nwpaOCx0D1DMRfn2I07rfvzCns5qnKnuPXEQaV6oFGvl5GCA+D0OXYOqBuOEIcSoCYCvd4LFUOcUhiuDBehm5KXnpxv2n7AGxeo9zf9i06GpVR1wLsqKwak8iNJa6h7hy7EOxdtxNeNM61UC+RtCjSIH2MISjczT+HTXAF/E/HUhoZENoRISg0arcqt59oPv9REiSYTt8sDaJQAsff3ahBKyhnB1x9RoKgtFpoTcPw9fPM0qC1WvqXtF/WKTdC8nNSMqXwvzeiCdQHStqxSEw8Sxpu8RwKmHOx8IGsoaj83FCcLNCd1nEhtrYsZXxrzYW/Om8dkauwA5/+DHubX6sGm7qgwlPfKeWWCX/l/Aw8zuwajrVSZoVA3Eaw==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 011f1e4f-8a3f-4860-609f-08d7f8273def
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2020 16:52:52.4304
+X-Microsoft-Antispam-Message-Info: 7oJqIL2KXX9L6M8/eUtns/dq1fN0xmkCzL1mqEOWcDZAwV4hPX1iDkM76+QXbnxbOPB4+QVFlczbxCFprgaHtfZ1dC600o/6X0kUW8VJV6Tf4MLfpwOFLHeeYuPsgooQ859pxcF4/K55L7ZpjfHRtyyS56ro4lmcsO4O2+vhDnGzrqCSS1/IHMERC8OKQhJD1EVVLX8UnXTGM/YDR/l8d8rB9QCSFgKE7G1gac7m2CeWXoRk4qGBrvPRZLbFbnfZYceJqlo4knOKdRqaiuOXwvG2MyyHNJihSX02mJaq432P1WP/Lp3UbEYJgZPDSPm7GcG7/PLBaJX0w9snYXL71MfsDZVY1KdBq9gjkaeN8fQYLssYNF8HSkpgpQxSU05K8VCMDvcWwFP4KdQRmyDVj4PUNCG3xssfcF5XM2EGDsd3LuVYnQhsXFYpOJrgFllWkPCmzFXBO0iN7JSi85Zb57GJ14ncbE+llI12WhYXa2083hopgGktwDeV/NBpicZ/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4119.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(7916004)(366004)(376002)(396003)(346002)(136003)(39860400002)(4326008)(8676002)(66946007)(6862004)(66476007)(66556008)(186003)(52116002)(53546011)(16526019)(6496006)(1076003)(5660300002)(2906002)(9686003)(6486002)(33656002)(8936002)(33716001)(478600001)(316002)(6636002)(86362001)(21314003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: yLLAsyQjhTKwEupiYd0VQALwQthfDoeWcShlegwr8E4h40/lybvArDl7unmfGciKhX9f5K+CP2W6ppNmf02nOEKPh4ru7vQhwSWT9XGqi9BMzHFc7sUnbrgOL1vpj7w7ncat1eikopC/JuMI7ejZ4DQ8UzNwljI3HEjH8FH+iscwI9SmRRFpAS+lY0hZgpo9bycI1lKzC1RTi5940ldsTrOCoPHe1vgzDoMdzZCBgrE+Lqhge6+Ow/o4dtIvmfydI29PHwS/KmbqLnPvd8lcJCmRzt83EPXDFiT4XxifbsQYg392hzdd+qoLo6Irz3AsOpptGrQtQuk+k3BxBWRM19wLYVTwecHqTFoA5mOyXYLnzsYykiGjtk9MhJ6pp+g/F5rrkGan+h/rb+eSIhoCeJjwOVBGAtoRA62Z/rDPBN5kxxPbt40AE8EgpyICHk2HSEEGjpgj4hEjyW1/FkG+1VjV8LLZ+WTWNxCZj0sdEWvZiRIEstPhx2LaPqF94z0oe/ywWXYX3cFtpz0RqrpCiw==
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8bce1d8-0a0f-4cd8-996c-08d7f827a865
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2020 16:55:51.1586
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2DAuSeTB4u9eCkd5H6Viag2GsojmEZTAInMkKc5YhdNZjw5mmFdp53qNNvny+yg2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2839
+X-MS-Exchange-CrossTenant-UserPrincipalName: XGBHSIm2/oLYRCgWnYc5u/xfLSddpd/EkqMcI/FCn/uDNKygtxmLiLYnXUshyrv9
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2503
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
  definitions=2020-05-14_05:2020-05-14,2020-05-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 adultscore=0
- spamscore=0 mlxscore=0 clxscore=1015 phishscore=0 malwarescore=0
- lowpriorityscore=0 suspectscore=0 priorityscore=1501 cotscore=-2147483648
- mlxlogscore=999 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005140149
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ priorityscore=1501 mlxlogscore=881 adultscore=0 lowpriorityscore=0
+ phishscore=0 suspectscore=0 malwarescore=0 bulkscore=0
+ cotscore=-2147483648 spamscore=0 clxscore=1015 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005140150
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Yonghong Song <yhs@fb.com> [Thu, 2020-05-14 08:16 -0700]:
+> On 5/13/20 2:38 PM, Andrey Ignatov wrote:
 
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index bfb31c1be219..e3cbc2790cdf 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -3121,6 +3121,37 @@ union bpf_attr {
+> >    * 		0 on success, or a negative error in case of failure:
+> >    *
+> >    *		**-EOVERFLOW** if an overflow happened: The same object will be tried again.
+> > + *
+> > + * u64 bpf_sk_cgroup_id(struct bpf_sock *sk)
+> > + *	Description
+> > + *		Return the cgroup v2 id of the socket *sk*.
+> > + *
+> > + *		*sk* must be a non-**NULL** pointer that was returned from
+> > + *		**bpf_sk_lookup_xxx**\ (). The format of returned id is same
+> 
+> It should also include bpf_skc_lookup_tcp(), right?
 
-On 5/13/20 6:50 PM, Andrey Ignatov wrote:
-> bpf_sock_addr.user_port supports only 4-byte load and it leads to ugly
-> code in BPF programs, like:
-> 
-> 	volatile __u32 user_port = ctx->user_port;
-> 	__u16 port = bpf_ntohs(user_port);
-> 
-> Since otherwise clang may optimize the load to be 2-byte and it's
-> rejected by verifier.
-> 
-> Add support for 1- and 2-byte loads same way as it's supported for other
-> fields in bpf_sock_addr like user_ip4, msg_src_ip4, etc.
-> 
-> Signed-off-by: Andrey Ignatov <rdna@fb.com>
-Acked-by: Yonghong Song <yhs@fb.com>
+From what I see it should not.
+
+cgroup id is available from sk->sk_cgrp_data that is a field of `struct
+sock', i.e. `struct sock_common' doesn't have this field.
+
+bpf_skc_lookup_tcp() returns RET_PTR_TO_SOCK_COMMON_OR_NULL and it can
+be for example `struct request_sock` that has only `struct sock_common`
+member, i.e. it doesn't have cgroup id.
+
+-- 
+Andrey Ignatov
