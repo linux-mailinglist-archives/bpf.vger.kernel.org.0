@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A5E1D3FC5
-	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 23:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419001D4003
+	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 23:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727835AbgENVNO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 May 2020 17:13:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727827AbgENVNN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 14 May 2020 17:13:13 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0598BC061A0C;
-        Thu, 14 May 2020 14:13:13 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id s1so379899qkf.9;
-        Thu, 14 May 2020 14:13:12 -0700 (PDT)
+        id S1726528AbgENVaX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 May 2020 17:30:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgENVaX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 May 2020 17:30:23 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037A0C061A0C;
+        Thu, 14 May 2020 14:30:23 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id c24so183424qtw.7;
+        Thu, 14 May 2020 14:30:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0093alRvyC8yZFWYKJHaSSNn+cVonBhIWEwGwLPUces=;
-        b=XEhe6gsHQXCQc7jBN++QtHGV8UKGBSW11Vrl+OvypWnRbZitQ1ibof7SFP269Capgs
-         HCU7mE3Z7TKU/4J8gvovzhN0No+Hsx6s/49/Qg9+aS3951ksJQxAdjGzys9yjpUX1459
-         CXG1Xyarkoqs/+iy4duamwb7TYU4SnpkWVlHOXqNUcYUrUneLYAzxjUR1qB/Zkq22hsN
-         z25LpCgp9CVeD1nQXq2lwUNspfVm8Me4XVQsNH+6WcfRVYU1z0+GiY6FlX7QScD5z5Z2
-         v+5EPBc01BxAeQuDVR2qQMw54M7vRLkOnJvnj/xo7W79gpTYgwacfAoypkw9rXeo7L07
-         E56Q==
+        bh=H4UMCL/ZAQEjtLZr/jtJEQIWjvOQQgI/OlCTFL0azkY=;
+        b=q7z8au5xr8hsQX69vRuEXAMDkkNPxlnTr7m4vcn5WYTht5tdWDUYw39pkVuaXiv1r3
+         6zw8O5c86FbPpKfQMEvta2ifR+oTOY1AodXxQegWjmKZg+G1UWV4Gnrls0J5qxgEguKE
+         jutNz8dPBcXt84NS1yn0wUMdyfuisl7WUjm9KuTXgCN5fTB6sqa9X+2rHQK3U4IgCOUM
+         6GffH+jwQqCGOmW8lBGbzDpENZjpHwAP3CWVrYHJowRsuhxp53BBA3vWcCSxEGtNTyiQ
+         UugnAHR1PZNsZ6OHKibrkg/d/sSKVvwQqGm/O+gBSztDiM3tVf2dGtp2YmetTov8l6U3
+         Zu7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0093alRvyC8yZFWYKJHaSSNn+cVonBhIWEwGwLPUces=;
-        b=hHDCmfmrM7eUwMDOWbtQa2k5WbvaV3MlkMDKTit7DE4KCRdf7D6vXXbe+BbpkFsfYy
-         gbswd5PR/HkSTLDfv3wYYzy8ov1mPoM3EgX76DOb8QXOXK9WdGqFVp+YyUrFTD9Vvi6v
-         OB3X3HLo5WBcWGLAXyYq1RzwsHFhx4EJxhNXPjl8gDFEo6PbNRW/F3jOEGgYi75mR9+N
-         4IfEcG+qB8J2ndyDLO767WPzRKkQIJz3EN75Deb+lc/WzEVUIKqRgvD1lA4Rjvj9hVRP
-         Y/m7xkCuxFgog8CQxNB7HvBQM1BfoaWulXxHf2blyjawx3UKcQ4kRh1LKYFsF0GDvZ2U
-         xCNQ==
-X-Gm-Message-State: AOAM530kLrK2lZ1XG36ztAYDpL5gtUK80jbQhBhbw1y0dqfZEARIu0iS
-        by393x9vZHdmX7ybs+yHDw0E9QzXVsgMA/zKkDE=
-X-Google-Smtp-Source: ABdhPJwooosMYjRa13Qqd8sAjpZhpw8pUzQ0b7LrWOXfpqisif7bT8BSICMlLga6A2kzCzq1tLeBntTzGQEX14FN3Bo=
-X-Received: by 2002:a05:620a:2049:: with SMTP id d9mr311635qka.449.1589490791537;
- Thu, 14 May 2020 14:13:11 -0700 (PDT)
+        bh=H4UMCL/ZAQEjtLZr/jtJEQIWjvOQQgI/OlCTFL0azkY=;
+        b=aBtB3VZ5lJHFzWqpfF4YSwJTsQWZQd6IgyTkuJFnBhOByKX4IZOiUpzxOF0XqV7kTU
+         JWoj5nyxPYGGo6q1fX19TCK1GM+63n9QPsiUtFbxtWbpzfX83atgmZLq7LtjMhZ+WlaS
+         mosgxeUZvW790H0DgJTsZDqITtu3cH9HfuTyKS2poNDNiqJ2aII8QUMTrrMr5obRJd8Z
+         zCbr4+Bd8r/ZArXWf+lBKTlIuM4AoUG4YN/gdYnmgTHLgAjcEYR/Bo8jOh4QkpDqCanc
+         SPujg34K7v0WAmGp5nrYAFAX1lDpglCZhyHJC8HEQA6w2OYjUBxyNcsjyrZxuAGhlilR
+         T01Q==
+X-Gm-Message-State: AOAM531d79svjbxLYHEc+scp01b/HKOordRicpzPcC3BIGGcsFMW1tjs
+        OM60cloEferklbGXAskHfm358TT4+FS3LBHvFptu8w==
+X-Google-Smtp-Source: ABdhPJyyJ68qez6ciKxn/OsZ/uuQarVTts7dyLwnaTSqPq1qqKbWfFAN+g5c5dTigaYkwYKYlPLJ8RJNHGDP1hKt75A=
+X-Received: by 2002:ac8:1ae7:: with SMTP id h36mr218068qtk.59.1589491822211;
+ Thu, 14 May 2020 14:30:22 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200513192532.4058934-1-andriin@fb.com> <20200513192532.4058934-2-andriin@fb.com>
- <20200514173338.GA161830@google.com> <CAEf4BzbhqQB61JTmmp5999bbEFeHEMdvnE9vpV3tHCHm12cf-Q@mail.gmail.com>
- <20200514205348.GB161830@google.com>
-In-Reply-To: <20200514205348.GB161830@google.com>
+ <20200514121848.052966b3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <87h7wixndi.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87h7wixndi.fsf@nanos.tec.linutronix.de>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 14 May 2020 14:13:00 -0700
-Message-ID: <CAEf4BzbvjQy+8T43e91OXDaLgWsy5_1RSr278=uAVUGOT0LgZw@mail.gmail.com>
+Date:   Thu, 14 May 2020 14:30:11 -0700
+Message-ID: <CAEf4Bzbj-WvRkoGxkSFtK5_1JfQxthoFid398C97RM0ppBb0dA@mail.gmail.com>
 Subject: Re: [PATCH bpf-next 1/6] bpf: implement BPF ring buffer and verifier
  support for it
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Andrii Nakryiko <andriin@fb.com>,
+        linux-arch@vger.kernel.org, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -67,64 +67,74 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 14, 2020 at 1:53 PM <sdf@google.com> wrote:
+On Thu, May 14, 2020 at 1:39 PM Thomas Gleixner <tglx@linutronix.de> wrote:
 >
-> On 05/14, Andrii Nakryiko wrote:
-> > On Thu, May 14, 2020 at 10:33 AM <sdf@google.com> wrote:
-> > >
-> > > On 05/13, Andrii Nakryiko wrote:
+> Jakub Kicinski <kuba@kernel.org> writes:
 >
-> [...]
+> > On Wed, 13 May 2020 12:25:27 -0700 Andrii Nakryiko wrote:
+> >> One interesting implementation bit, that significantly simplifies (and thus
+> >> speeds up as well) implementation of both producers and consumers is how data
+> >> area is mapped twice contiguously back-to-back in the virtual memory. This
+> >> allows to not take any special measures for samples that have to wrap around
+> >> at the end of the circular buffer data area, because the next page after the
+> >> last data page would be first data page again, and thus the sample will still
+> >> appear completely contiguous in virtual memory. See comment and a simple ASCII
+> >> diagram showing this visually in bpf_ringbuf_area_alloc().
+> >
+> > Out of curiosity - is this 100% okay to do in the kernel and user space
+> > these days? Is this bit part of the uAPI in case we need to back out of
+> > it?
+> >
+> > In the olden days virtually mapped/tagged caches could get confused
+> > seeing the same physical memory have two active virtual mappings, or
+> > at least that's what I've been told in school :)
 >
-> > > > + * void bpf_ringbuf_submit(void *data)
-> > > > + *   Description
-> > > > + *           Submit reserved ring buffer sample, pointed to by
-> > *data*.
-> > > > + *   Return
-> > > > + *           Nothing.
-> > > Even though you mention self-pacing properties, would it still
-> > > make sense to add some argument to bpf_ringbuf_submit/bpf_ringbuf_output
-> > > to indicate whether to wake up userspace or not? Maybe something like
-> > > a threshold of number of outstanding events in the ringbuf after which
-> > > we do the wakeup? The default 0/1 preserve the existing behavior.
-> > >
-> > > The example I can give is a control plane userspace thread that
-> > > once a second aggregates the events, it doesn't care about millisecond
-> > > resolution. With the current scheme, I suppose, if BPF generates events
-> > > every 1ms, the userspace will be woken up 1000 times (if it can keep
-> > > up). Most of the time, we don't really care and some buffering
-> > > properties are desired.
+> Yes, caching the same thing twice causes coherency problems.
 >
-> > perf buffer has setting like this, and believe me, it's so confusing
-> > and dangerous, that I wouldn't want this to be exposed. Even though I
-> > was aware of this behavior, I still had to debug and work-around this
-> > lack on wakeup few times, it's really-really confusing feature.
+> VIVT can be found in ARMv5, MIPS, NDS32 and Unicore32.
 >
-> > In your case, though, why wouldn't user-space poll data just once a
-> > second, if it's not interested in getting data as fast as possible?
-> If I poll once per second I might lose the events if, for some reason,
-> there is a spike. I really want to have something like: "wakeup
-> userspace if the ringbuffer fill is over some threshold or
-> the last wakeup was too long ago". We currently do this via a percpu
-> cache map. IIRC, you've shared on lsfmmbpf that you do something like
-> that as well.
+> > Checking with Paul - he says that could have been the case for Itanium
+> > and PA-RISC CPUs.
+>
+> Itanium: PIPT L1/L2.
+> PA-RISC: VIPT L1 and PIPT L2
+>
+> Thanks,
+>
 
-Hm... don't remember such use case on our side. All applications I
-know of use default perf_buffer settings with no sampling.
+Jakub, thanks for bringing this up.
 
->
-> So I was thinking how I can use new ringbuff to remove the unneeded
-> copies and help with the reordering, but I'm a bit concerned about
-> regressing on the number of wakeups.
->
-> Maybe having a flag like RINGBUF_NO_WAKEUP in bpf_ringbuf_submit()
-> will suffice? And if there is a helper or some way to obtain a
-> number of unconsumed items, I can implement my own flushing policy.
+Thomas, Paul, what kind of problems are we talking about here? What
+are the possible problems in practice?
 
-Ok, I guess giving application control at each discard/commit makes
-for ultimate flexibility. Let me add flags argument to commit/discard
-and allow to specify NO_WAKEUP flag. As for count of unconsumed events
--- that would be a bit expensive to maintain. How about amount of data
-that's not consumed? It's obviously going to be racy, but returning
-(producer_pos - consumer_pos) should be sufficient enough for such
-smart and best-effort heuristics? WDYT?
+So just for the context, all the metadata (record header) that is
+written/read under lock and with smp_store_release/smp_load_acquire is
+written through the one set of page mappings (the first one). Only
+some of sample payload might go into the second set of mapped pages.
+Does this mean that user-space might read some old payloads in such
+case?
+
+I could work-around that in user-space, by mmaping twice the same
+range, one after the other (second mmap would use MAP_FIXED flag, of
+course). So that's not a big deal.
+
+But on the kernel side it's crucial property, because it allows BPF
+programs to work with data with the assumption that all data is
+linearly mapped. If we can't do that, reserve() API is impossible to
+implement. So in that case, I'd rather enable BPF ring buffer only on
+platforms that won't have these problems, instead of removing
+reserve/commit API altogether.
+
+Well, another way is to just "discard" remaining space at the end, if
+it's not sufficient for entire record. That's doable, there will
+always be at least 8 bytes available for record header, so not a
+problem in that regard. But I would appreciate if you can help me
+understand full implications of caching physical memory twice.
+
+Also just for my education, with VIVT caches, if user-space
+application mmap()'s same region of memory twice (without MAP_FIXED),
+wouldn't that cause similar problems? Can't this happen today with
+mmap() API? Why is that not a problem?
+
+
+>         tglx
