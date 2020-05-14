@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8BCB1D3562
-	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 17:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7491D3564
+	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 17:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727790AbgENPlU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 May 2020 11:41:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46730 "EHLO
+        id S1727827AbgENPlt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 May 2020 11:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726492AbgENPlU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 May 2020 11:41:20 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E8EC061A0E
-        for <bpf@vger.kernel.org>; Thu, 14 May 2020 08:41:18 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id r25so24906404oij.4
-        for <bpf@vger.kernel.org>; Thu, 14 May 2020 08:41:18 -0700 (PDT)
+        with ESMTP id S1726190AbgENPls (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 May 2020 11:41:48 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C23AC061A0C
+        for <bpf@vger.kernel.org>; Thu, 14 May 2020 08:41:47 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id o7so24928470oif.2
+        for <bpf@vger.kernel.org>; Thu, 14 May 2020 08:41:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=awnbTGIXklZW5yvjH8VDoOTQPbPwhwX3A7OQXsPfVhg=;
-        b=v1RSwKpggRq/fTuogA9mjrs3n10qTzDDgLPZFV/1/YoT/VPlWividnhNPI+b7RwQvY
-         rOZ9fgs51tj9CdSbPIFtc3oTrDmFvLYzvcZTEzjjEh4DhO/WHjmh6xCDi5a34AwGyX2A
-         IqdDRZmjqk+lSR2cp41Sn8k0JM923C2PwN3vk=
+        bh=krhEvs5AIC6c0blTdWgcO9e/a3Tv7GaFT6TP0m8Yvrg=;
+        b=VB9/gPmHsoRpHSiZ+teQTdbR7k5Yx9LUkOOlUhj6CK9m6appdBeu58cVhfrSPmSix/
+         3v3ZUdasGK8BSHClTekzcGkFePUktwlGQZ1nSVQDKo8aiBQzX6bu17upOZvBsq7RaaEI
+         lNYHL+Pbu+eDytzphVZ0j4ysZcQNNyaubkxv4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=awnbTGIXklZW5yvjH8VDoOTQPbPwhwX3A7OQXsPfVhg=;
-        b=gpyUHUoq5oK7HJpRl0NOMt1M+tLZ85+C4QFvUraaZnrGg78tvJ9rNkYAGJflH/A0sX
-         winaKbfWq9k9seAVWUs4rlYq1Ba7lyuYzwMsj2QAUNI/zjCaZVIwS89lxCMDUiHQp4Bj
-         fBR9YmW3p7bSZqetvzojYx+DKTTdaYCpCbEthMoPrG73II0xZwQNS2nxHzwpxPMTGLfu
-         I6tfj8ksPVDJnYnSzVEQbHX2qxJFZ1HubdEryligfJGARfhDXmYl/bkG+OWtqXiIoSsT
-         S3RN4ATn5Xvf8PlUYPMfzg7wPCM2GI7ADqS0KgeKALYRt5kvbR1T/Yn4cNuu2zt4W0nx
-         CQmw==
-X-Gm-Message-State: AGi0PuZBagaGNFx28VAc8b6a+TsNQBTIZmzJuVi0X8/AQNyGreTSHqkd
-        lH98htlWRJBxbQqI9Cp0Cyk0wFXdMttJfkELw8Rm7g==
-X-Google-Smtp-Source: APiQypJ9C/9yTZ7jmSDKZFJKGmkA7cJwCOpUNjz2n2qFFWqYcaXk6ZO9YLZSPDlM4S1Dam4aFoIbch5Z+41LO3FSoFY=
-X-Received: by 2002:aca:c441:: with SMTP id u62mr32257615oif.110.1589470877832;
- Thu, 14 May 2020 08:41:17 -0700 (PDT)
+        bh=krhEvs5AIC6c0blTdWgcO9e/a3Tv7GaFT6TP0m8Yvrg=;
+        b=a7P5BMMKwdHxKsrn+NhIfV3vYWm11uKC5mgQsxevon3rbItLZIEFqkGrUu8rgMXfWY
+         HW62Qutvl5Z6AvAywx5GN3iAQlK7+jDqe3rW8tFyEUHwyVzAHKzQlOMbcf5mU9HrjRi2
+         3OjOraEx7no3k5dKB5Ncra2OpDgbsxUJX6JKRxYmpdOZ7iyD5q2jQWq2xhpkXTnzy3kk
+         hatbMVhxGR7y3YEott0ibjBXsTWVghQP2oKpxt98Cblcg7DlB2h8yCq38poKlVrvm60j
+         hYbgw9e0CCku+pBdHGIcz8A1eYWZaqQIgYDe/KBWnAce9DYpFsqEQSBXX+wCXBcdnAgY
+         iing==
+X-Gm-Message-State: AGi0PuZGIGFEEKLhyVHk4aawE0zBFssitz7AcHmgLw+y15tN2xHfZ1mo
+        469Xx9jwlE57d7FvL1SeUrILTvIX0B0Sw5f0v2yvuQ==
+X-Google-Smtp-Source: APiQypJ31s2KLZTgcqdErYLq4+L9Mykr2/IzY3TtcqTc0aQO8sNe28o8Z8FhG5lx/JIbxY5/yN/4559ZnylTzXEpAdE=
+X-Received: by 2002:a05:6808:a91:: with SMTP id q17mr29695049oij.102.1589470904531;
+ Thu, 14 May 2020 08:41:44 -0700 (PDT)
 MIME-Version: 1.0
 References: <CACAyw9_4Uzh0GqAR16BfEHQ0ZWHKGUKacOQwwhwsfhdCTMtsNQ@mail.gmail.com>
- <b93b4ad2-0cf0-81e0-b2b0-664248b3630f@gmail.com>
-In-Reply-To: <b93b4ad2-0cf0-81e0-b2b0-664248b3630f@gmail.com>
+ <51358f25-72c2-278d-55aa-f80d01d682f9@gmail.com>
+In-Reply-To: <51358f25-72c2-278d-55aa-f80d01d682f9@gmail.com>
 From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Thu, 14 May 2020 16:41:06 +0100
-Message-ID: <CACAyw9-95He2yq0qoxuWFy3wqQt1kAtAQcRw2UTrqse2hUq1tA@mail.gmail.com>
+Date:   Thu, 14 May 2020 16:41:33 +0100
+Message-ID: <CACAyw9-7Ua1W6t1B8StWjUC4ui4OUpOX7XtKnzTNARVdgMFqsg@mail.gmail.com>
 Subject: Re: "Forwarding" from TC classifier
 To:     David Ahern <dsahern@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
@@ -58,36 +58,9 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 13 May 2020 at 18:48, David Ahern <dsahern@gmail.com> wrote:
+On Wed, 13 May 2020 at 22:23, David Ahern <dsahern@gmail.com> wrote:
 >
 > On 5/13/20 10:40 AM, Lorenz Bauer wrote:
-> > We've recently open sourced a key component of our L4 load balancer:
-> > cls_redirect [1].
-> > In the commit description, I call out the following caveat:
-> >
-> >     cls_redirect relies on receiving encapsulated packets directly
-> > from a router. This is
-> >     because we don't have access to the neighbour tables from BPF, yet.
->
-> Can you explain more about this limitation? Why does access to neighbor
-> tables solve the problem?
-
-We want to forward the packet to another machine, based on an IP address
-stored in our custom encapsulation header.
-If we always receive packets from a router we can plug in the new IP, swap
-the MAC and send the packet back to the router. Inefficient, but it means we
-don't have to deal with MAC addresses ourselves.
-
-I think I use the wrong terminology, sorry. By "access to the neighbour table"
-I mean being able to go from IP to MAC address.
-
->
-> >
-> > The code in question lives in forward_to_next_hop() [2], and does the following:
-> > 1. Swap source and destination MAC of the packet
-> > 2. Update source and destination IP address
-> > 3. Transmit the packet via bpf_redirect(skb->ifindex, 0)
-> >
 > > Really, I'd like to get rid of step 1, and instead rely on the network
 > > stack to switch or route
 > > the packet for me. The bpf_fib_lookup helper is very close to what I need. I've
@@ -98,84 +71,25 @@ I mean being able to go from IP to MAC address.
 > >         /* There is a cached neighbour, bpf_redirect without going
 > > through the stack. */
 > >         return bpf_redirect(...);
-> >
-> >     case BPF_FIB_LKUP_RET_NO_NEIGH:
-> >         /* We have no information about this target. Let the stack handle it. */
-> >         return TC_ACT_OK;
-> >
-> >     case BPF_FIB_LKUP_RET_FWD_DISABLED:
-> >         return TC_ACT_SHOT;
-> >
-> >     default:
-> >         return TC_ACT_SHOT;
-> >     }
-> >
-> > I have a couple of questions:
-> >
-> > First, I think I can get BPF_FIB_LKUP_RET_NO_NEIGH if the packet needs
-> > to be routed,
-> > but there is no neighbour entry for the default gateway. Is that correct?
 >
-> Correct.
+> BTW, as shown in samples/bpf/xdp_fwd_kern.c, you have a bit more work to
+> do for proper L3 forwarding:
 >
-> >
-> > Second, is it possible to originate the packet from the local machine,
-> > instead of keeping
-> > the original source address when passing the packet to the stack on NO_NEIGH?
+>         if (rc == BPF_FIB_LKUP_RET_SUCCESS) {
+>                 ...
+>                 if (h_proto == htons(ETH_P_IP))
+>                         ip_decrease_ttl(iph);
+>                 else if (h_proto == htons(ETH_P_IPV6))
+>                         ip6h->hop_limit--;
 >
-> Network address or MAC address? Swapping the network address is not a
-> usual part of routing a packet so I presume you mean mac but just making
-> sure. Swapping mac addresses should be done for all routed packets.
+>                 memcpy(eth->h_dest, fib_params.dmac, ETH_ALEN);
+>                 memcpy(eth->h_source, fib_params.smac, ETH_ALEN);
+>                 return bpf_redirect_map(&xdp_tx_ports,
+> fib_params.ifindex, 0);
+>
+> The ttl / hoplimit decrements assumed you checked it earlier to be > 1
 
-No, I'd like to do network address swapping. The code already swaps MAC.
-Basically, I'd like to pretend that I'm outputting a new packet.
-
-Just setting the source network address and then doing TC_ACT_OK doesn't
-work due to sysctl accept_local=0.
-
->
-> > This is what I get with my current approach:
-> >
-> >   IP (tos 0x0, ttl 64, id 25769, offset 0, flags [DF], proto UDP (17),
-> > length 124)
-> >       10.42.0.2.37074 > 10.42.0.4.2483: [bad udp cksum 0x14d3 ->
-> > 0x3c0d!] UDP, length 96
-> >   IP (tos 0x0, ttl 63, id 25769, offset 0, flags [DF], proto UDP (17),
-> > length 124)
-> >       10.42.0.2.37074 > 10.42.0.3.2483: [no cksum] UDP, length 96
-> >   IP (tos 0x0, ttl 64, id 51342, offset 0, flags [none], proto ICMP
-> > (1), length 84)
-> >       10.42.0.3 > 10.42.0.2: ICMP echo reply, id 33779, seq 0, length 64
-> >
-> > The first and second packet are using our custom GUE header, they
-> > contain an ICMP echo request. Packet three contains the answer to the
-> > request. As you can see, the second packet keeps the 10.42.0.2 source
-> > address instead of using 10.42.0.4.
-> >
-> > Third, what effect does BPF_FIB_LOOKUP_OUTPUT have? Seems like I should set it,
-> > but I get somewhat sensible results without it as well. Same for LOOKUP_DIRECT.
->
-> BPF_FIB_LOOKUP_OUTPUT affects the flow parameters passed to the FIB lookup:
->         if (flags & BPF_FIB_LOOKUP_OUTPUT) {
->                 fl4.flowi4_iif = 1;
->                 fl4.flowi4_oif = params->ifindex;
->         } else {
->                 fl4.flowi4_iif = params->ifindex;
->                 fl4.flowi4_oif = 0;
->         }
->
-> iif / oif set can have an influence on the FIB lookup result - e.g., FIB
-> rules directing the lookup to a table or requiring the lookup result to
-> use the specified device.
->
-> Usually, 'output' is for locally generated traffic headed out. XDP
-> programs run on ingress are from an Rx perspective and do the lookup
-> from the perspective of 'is this forwarded or locally delivered'.
-
-What if the XDP encapsulates the packet? At this point I know that I
-want to forward it elsewhere. Would that use LOOKUP_OUTPUT?
-
-Thanks!
+Thanks for the pointer :)
 
 
 -- 
