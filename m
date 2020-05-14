@@ -2,146 +2,258 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4391D29A6
-	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 10:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3A11D2A3D
+	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 10:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725935AbgENIF1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 May 2020 04:05:27 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:52840 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725886AbgENIF0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 14 May 2020 04:05:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589443525;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=C0js7bpun7x11RF1034oyvXB+h8XlXB8POsjugDkoeI=;
-        b=Af5dC4EXKxQpwhDY+8LvzZP6zttg622k9TV52M93wGjuCskshY0LorA6nWDCURmwRhfPuB
-        AuOcSikTahgcQWyVONg/kUZmyIYvyP9bWjMldxCpGiPGrUnaC6U02UmuWNOIfnwRSB4P4S
-        cjY3UTAZkKvzolbhZAli3d8mUjpd7mE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-366-sF5EHEgNPmK04lQaLgj8-w-1; Thu, 14 May 2020 04:05:22 -0400
-X-MC-Unique: sF5EHEgNPmK04lQaLgj8-w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F0231BFC1;
-        Thu, 14 May 2020 08:05:19 +0000 (UTC)
-Received: from krava (unknown [10.40.195.109])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 5CF33619AE;
-        Thu, 14 May 2020 08:05:16 +0000 (UTC)
-Date:   Thu, 14 May 2020 10:05:15 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>, bgregg@netflix.com,
-        Florent Revest <revest@chromium.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH 7/9] bpf: Compile the BTF id whitelist data in vmlinux
-Message-ID: <20200514080515.GH3343750@krava>
-References: <20200506132946.2164578-1-jolsa@kernel.org>
- <20200506132946.2164578-8-jolsa@kernel.org>
- <20200513182940.gil7v5vkthhwck3t@ast-mbp.dhcp.thefacebook.com>
+        id S1725925AbgENIhZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 May 2020 04:37:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725878AbgENIhZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 14 May 2020 04:37:25 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0556FC061A0C;
+        Thu, 14 May 2020 01:37:24 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id x13so1003746pfn.11;
+        Thu, 14 May 2020 01:37:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rlyC4zt/69NE1g9MHw3RtEEjw4tn8f0Nd9bVA7MJQv4=;
+        b=nag4zTLwnbW6vRY2y1LcbcJcIGtM49X3A7IyfxKnYIeHikYZxVhuMovqYrfs0Uxd4f
+         zlNHaOmLBA6ieX6a7GyM9Jm0Yd1RTDktvVyPTt40Ab59ireTazl5XjQ3d0U8Ubxobzka
+         0vTfg3rsmCkZ+kyou78d9I514P/PdpDmF8VqewJR3vV3XbNF9bq9Udz9KOhqV77jnzLH
+         vvmI7l9UFqub8y6Qrdk89Y6qrTIf3LOLpRlXn3Iv4y7o33T03jCuJPTWY7V+Mf9IEfLH
+         b4h7r7ripLIifLhK7p03iuPh94lxc2NSgMXBH/zlq2k4KvvyRW+/iIVWZ4YSdkiUO2R+
+         am3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rlyC4zt/69NE1g9MHw3RtEEjw4tn8f0Nd9bVA7MJQv4=;
+        b=c1FN4uSTwTTd17XIEJzZ02tiz/I9NVAlvs7yaWjiN7bc0bluUMax8D3bonfkB/pIUE
+         aintTI6WXV97aQthQjbJ9sEDUYSi+1oL+y+o+tQlVDZAuCShPS6aJFzLRc/IHr2hOwS4
+         Fb7ADXkgvvP6gn8d6FqPyOzEyGQKYOn3K/VkUmPIjI0bRd5pMF4CXqXalfAdL00ZBge2
+         vojS/z5PD7jnFMW2N6aUM1jOY5fvkBSvR0OM3MNCUAxphxgOYjMoq/8VutdI06weak47
+         pHsCYiuZIBE0ZC9an4BBiKtDtZdRHaunrHJeYTd8DD1VwL7qcsnQLrY3fpESw8gnyfL9
+         sQ/A==
+X-Gm-Message-State: AOAM5324xGuy1oKGeFypzs6rue0U7KEuZ7ZNebmVjZCArSHfoeQnUwR/
+        rpuRNmThOi9tSLEmabg55ww=
+X-Google-Smtp-Source: ABdhPJztw0Z2oIOK0RZdPygVz02zvFKdEqnkKgeXKdcD52+Dv0BAYYxjO+XEC2uninL/nWuQUVU9vA==
+X-Received: by 2002:a63:d909:: with SMTP id r9mr2990719pgg.245.1589445444372;
+        Thu, 14 May 2020 01:37:24 -0700 (PDT)
+Received: from btopel-mobl.ger.intel.com ([192.55.54.42])
+        by smtp.gmail.com with ESMTPSA id k4sm1608058pgg.88.2020.05.14.01.37.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2020 01:37:23 -0700 (PDT)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
+        jeffrey.t.kirsher@intel.com
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        maximmi@mellanox.com, maciej.fijalkowski@intel.com,
+        bjorn.topel@intel.com
+Subject: [PATCH bpf-next v2 00/14] Introduce AF_XDP buffer allocation API
+Date:   Thu, 14 May 2020 10:36:56 +0200
+Message-Id: <20200514083710.143394-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200513182940.gil7v5vkthhwck3t@ast-mbp.dhcp.thefacebook.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 13, 2020 at 11:29:40AM -0700, Alexei Starovoitov wrote:
+Overview
+========
 
-SNIP
+Driver adoption for AF_XDP has been slow. The amount of code required
+to proper support AF_XDP is substantial and the driver/core APIs are
+vague or even non-existing. Drivers have to manually adjust data
+offsets, updating AF_XDP handles differently for different modes
+(aligned/unaligned).
 
-> > diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> > index d09ab4afbda4..dee91c6bf450 100755
-> > --- a/scripts/link-vmlinux.sh
-> > +++ b/scripts/link-vmlinux.sh
-> > @@ -130,16 +130,26 @@ gen_btf()
-> >  	info "BTF" ${2}
-> >  	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
-> >  
-> > -	# Create ${2} which contains just .BTF section but no symbols. Add
-> > +	# Create object which contains just .BTF section but no symbols. Add
-> >  	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
-> >  	# deletes all symbols including __start_BTF and __stop_BTF, which will
-> >  	# be redefined in the linker script. Add 2>/dev/null to suppress GNU
-> >  	# objcopy warnings: "empty loadable segment detected at ..."
-> >  	${OBJCOPY} --only-section=.BTF --set-section-flags .BTF=alloc,readonly \
-> > -		--strip-all ${1} ${2} 2>/dev/null
-> > -	# Change e_type to ET_REL so that it can be used to link final vmlinux.
-> > -	# Unlike GNU ld, lld does not allow an ET_EXEC input.
-> > -	printf '\1' | dd of=${2} conv=notrunc bs=1 seek=16 status=none
-> > +		--strip-all ${1} 2>/dev/null
-> > +
-> > +	# Create object that contains just .BTF_whitelist_* sections generated
-> > +	# by bpfwl. Same as BTF section, BTF_whitelist_* data will be part of
-> > +	# the vmlinux image, hence SHF_ALLOC.
-> > +	whitelist=.btf.vmlinux.whitelist
-> > +
-> > +	${BPFWL} ${1} kernel/bpf/helpers-whitelist > ${whitelist}.c
-> > +	${CC} -c -o ${whitelist}.o ${whitelist}.c
-> > +	${OBJCOPY} --only-section=.BTF_whitelist* --set-section-flags .BTF=alloc,readonly \
-> > +                --strip-all ${whitelist}.o 2>/dev/null
-> > +
-> > +	# Link BTF and BTF_whitelist objects together
-> > +	${LD} -r -o ${2} ${1} ${whitelist}.o
-> 
-> Thank you for working on it!
-> Looks great to me overall. In the next rev please drop RFC tag.
-> 
-> My only concern is this extra linking step. How many extra seconds does it add?
+This series attempts to improve the situation by introducing an AF_XDP
+buffer allocation API. The implementation is based on a single core
+(single producer/consumer) buffer pool for the AF_XDP UMEM.
+    
+A buffer is allocated using the xsk_buff_alloc() function, and
+returned using xsk_buff_free(). If a buffer is disassociated with the
+pool, e.g. when a buffer is passed to an AF_XDP socket, a buffer is
+said to be released. Currently, the release function is only used by
+the AF_XDP internals and not visible to the driver.
+    
+Drivers using this API should register the XDP memory model with the
+new MEM_TYPE_XSK_BUFF_POOL type, which will supersede the
+MEM_TYPE_ZERO_COPY type.
 
-I did not meassure, but I haven't noticed any noticable delay,
-I'll add meassurements to the next post
+The buffer type is struct xdp_buff, and follows the lifetime of
+regular xdp_buffs, i.e.  the lifetime of an xdp_buff is restricted to
+a NAPI context. In other words, the API is not replacing xdp_frames.
 
-> 
-> Also in patch 3:
-> +               func = func__find(str);
-> +               if (func)
-> +                       func->id = id;
-> which means that if somebody mistyped the name or that kernel function
-> got renamed there will be no warnings or errors.
-> I think it needs to fail the build instead.
+DMA mapping/synching is folded into the buffer handling as well.
 
-it fails later on, when generating the array:
+@JeffK The Intel drivers changes should go through the bpf-next tree,
+       and not your regular Intel tree, since multiple (non-Intel)
+       drivers are affected.
 
-     if (!func->id) {
-             fprintf(stderr, "FAILED: '%s' function not found in BTF data\n",
-                     func->name);
-             return -1;
-     }
+The outline of the series is as following:
 
-but it can clearly fail before that.. I'll change that
+Patch 1 to 3 are restructures/clean ups. The XSKMAP implementation is
+moved to net/xdp/. Functions/defines/enums that are only used by the
+AF_XDP internals are moved from the global include/net/xdp_sock.h to
+net/xdp/xsk.h. We are also introducing a new "driver include file",
+include/net/xdp_sock_drv.h, which is the only file NIC driver
+developers adding AF_XDP zero-copy support should care about.
 
-> 
-> If additional linking step takes another 20 seconds it could be a reason
-> to move the search to run-time.
-> We already have that with struct bpf_func_proto->btf_id[].
-> Whitelist could be something similar.
-> I think this mechanism will be reused for unstable helpers and other
-> func->btf_id mappings, so 'bpfwl' name would change eventually.
-> It's not white list specific. It generates a mapping of names to btf_ids.
-> Doing it at build time vs run-time is a trade off and it doesn't have
-> an obvious answer.
+Patch 4 adds the new API, and migrates the "copy-mode"/skb-mode AF_XDP
+path to the new API.
 
-I was thinking of putting the names in __init section and generate the BTF
-ids on kernel start, but the build time generation seemed more convenient..
-let's see the linking times with 'real size' whitelist and we can reconsider
+Patch 5 to 10 migrates the existing zero-copy drivers to the new API.
 
-thanks,
-jirka
+Patch 11 removes the MEM_TYPE_ZERO_COPY memory type, and the "handle"
+member of struct xdp_buff.
+
+Patch 12 simplifies the xdp_return_{frame,frame_rx_napi,buff}
+functions.
+
+Patch 13 is a performance patch, where some functions are inlined.
+
+Finally, patch 14 updates the MAINTAINERS file to correctly mirror the
+new file layout.
+
+Note that this series removes the "handle" member from struct
+xdp_buff, which reduces the xdp_buff size.
+
+After this series, the diff stat of drivers/net/ is:
+  27 files changed, 388 insertions(+), 1259 deletions(-)
+ 
+This series is a first step of simplifying the driver side of
+AF_XDP. I think more of the AF_XDP logic can be moved from the drivers
+to the AF_XDP core, e.g. the "need wakeup" set/clear functionality.
+
+Statistics when allocation fails can now be added to the socket
+statistics via the XDP_STATISTICS getsockopt(). This will be added in
+a follow up series.
+
+
+Performance
+===========
+
+As a nice side effect, performance is up a bit as well (40 GbE, 64B
+packets, i40e):
+
+rxdrop, zero-copy, aligned:
+  baseline: 20.4
+  new API : 21.3
+
+rxdrop, zero-copy, unaligned:
+  baseline: 19.5
+  new API : 21.2
+
+
+Changelog
+=========
+
+v1->v2: 
+  * mlx5: Fix DMA address handling, set XDP metadata to invalid. (Maxim)
+  * ixgbe: Fixed xdp_buff data_end update. (Björn)
+  * Swapped SoBs in patch 4. (Maxim)
+
+rfc->v1:
+  * Fixed build errors/warnings for m68k and riscv. (kbuild test
+    robot)
+  * Added headroom/chunk size getter. (Maxim/Björn)
+  * mlx5: Put back the sanity check for XSK params, use XSK API to get
+    the total headroom size. (Maxim)
+  * Fixed spelling in commit message. (Björn)
+  * Make sure xp_validate_desc() is inlined for Tx perf. (Maxim)
+  * Sorted file entries. (Joe)
+  * Added xdp_return_{frame,frame_rx_napi,buff} simplification (Björn)
+
+
+Thanks for all the comments/input/help!
+
+
+Cheers,
+Björn
+
+
+Björn Töpel (13):
+  xsk: move xskmap.c to net/xdp/
+  xsk: move defines only used by AF_XDP internals to xsk.h
+  xsk: introduce AF_XDP buffer allocation API
+  i40e: refactor rx_bi accesses
+  i40e: separate kernel allocated rx_bi rings from AF_XDP rings
+  i40e, xsk: migrate to new MEM_TYPE_XSK_BUFF_POOL
+  ice, xsk: migrate to new MEM_TYPE_XSK_BUFF_POOL
+  ixgbe, xsk: migrate to new MEM_TYPE_XSK_BUFF_POOL
+  mlx5, xsk: migrate to new MEM_TYPE_XSK_BUFF_POOL
+  xsk: remove MEM_TYPE_ZERO_COPY and corresponding code
+  xdp: simplify xdp_return_{frame,frame_rx_napi,buff}
+  xsk: explicitly inline functions and move definitions
+  MAINTAINERS, xsk: update AF_XDP section after moves/adds
+
+Magnus Karlsson (1):
+  xsk: move driver interface to xdp_sock_drv.h
+
+ MAINTAINERS                                   |   6 +-
+ drivers/net/ethernet/intel/i40e/i40e_main.c   |  28 +-
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 134 +++----
+ drivers/net/ethernet/intel/i40e/i40e_txrx.h   |  17 +-
+ .../ethernet/intel/i40e/i40e_txrx_common.h    |  40 +-
+ drivers/net/ethernet/intel/i40e/i40e_type.h   |   5 +-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c    | 376 +++---------------
+ drivers/net/ethernet/intel/i40e/i40e_xsk.h    |   3 +-
+ drivers/net/ethernet/intel/ice/ice_base.c     |  16 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.h     |   8 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c      | 374 ++---------------
+ drivers/net/ethernet/intel/ice/ice_xsk.h      |  13 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe.h      |   9 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |  15 +-
+ .../ethernet/intel/ixgbe/ixgbe_txrx_common.h  |   2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  | 307 +++-----------
+ drivers/net/ethernet/mellanox/mlx5/core/en.h  |   7 +-
+ .../ethernet/mellanox/mlx5/core/en/params.c   |  13 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  32 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.h  |   2 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/rx.c   | 113 +-----
+ .../ethernet/mellanox/mlx5/core/en/xsk/rx.h   |  25 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/tx.c   |   6 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/tx.h   |   2 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/umem.c |  51 +--
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |  15 +-
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  33 +-
+ drivers/net/hyperv/netvsc_bpf.c               |   1 -
+ include/net/xdp.h                             |   9 +-
+ include/net/xdp_sock.h                        | 276 +------------
+ include/net/xdp_sock_drv.h                    | 220 ++++++++++
+ include/net/xsk_buff_pool.h                   | 134 +++++++
+ include/trace/events/xdp.h                    |   2 +-
+ kernel/bpf/Makefile                           |   3 -
+ net/core/xdp.c                                |  51 +--
+ net/ethtool/channels.c                        |   2 +-
+ net/ethtool/ioctl.c                           |   2 +-
+ net/xdp/Makefile                              |   3 +-
+ net/xdp/xdp_umem.c                            |  55 +--
+ net/xdp/xdp_umem.h                            |   2 +-
+ net/xdp/xsk.c                                 | 204 ++++------
+ net/xdp/xsk.h                                 |  30 ++
+ net/xdp/xsk_buff_pool.c                       | 337 ++++++++++++++++
+ net/xdp/xsk_diag.c                            |   2 +-
+ net/xdp/xsk_queue.c                           |  62 ---
+ net/xdp/xsk_queue.h                           | 117 ++----
+ {kernel/bpf => net/xdp}/xskmap.c              |   2 +
+ 47 files changed, 1259 insertions(+), 1907 deletions(-)
+ create mode 100644 include/net/xdp_sock_drv.h
+ create mode 100644 include/net/xsk_buff_pool.h
+ create mode 100644 net/xdp/xsk_buff_pool.c
+ rename {kernel/bpf => net/xdp}/xskmap.c (99%)
+
+-- 
+2.25.1
 
