@@ -2,115 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C821D3A39
-	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 20:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319D01D3AB1
+	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 20:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729243AbgENSyy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 May 2020 14:54:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48760 "EHLO
+        id S1728372AbgENS62 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 May 2020 14:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729237AbgENSyw (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 14 May 2020 14:54:52 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7DEC061A0E;
-        Thu, 14 May 2020 11:54:52 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id f83so4042749qke.13;
-        Thu, 14 May 2020 11:54:52 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1728021AbgENS6O (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 14 May 2020 14:58:14 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EB5C061A0C
+        for <bpf@vger.kernel.org>; Thu, 14 May 2020 11:58:13 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id h188so2815676lfd.7
+        for <bpf@vger.kernel.org>; Thu, 14 May 2020 11:58:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lynNWrHQUN3W407q/Yp3KSzCn2DuA1Pg90UjJME068Q=;
-        b=Vo5qO7tz6jbYDkPK5+vqymTquRRMb8HYm95nt2QeVfrzL96G0YzQseqt4w1J/28nfs
-         gHLXz/H8vSCiNlZsv7pYHtdPtKrUSe/akTNuEyHxuhlrpchdjDQsRSOKgBX9pUp0Lbf8
-         ZJXE9rTF++JnLbJn8VCv7fEx2RzfwOKmdaKw2sjbU3NEC2DHfvltFYooYihrO3BZ3bVC
-         YWgFeF3QRGiU5EOgflO5bEw239p1NUb+AbMVb4pZ0LASwDEjJ8QUvLJyngtIZFJLKSyG
-         YxtQ1ZpKYDRa2AuoqdR2UAUZN81PnZuOZ3f0cEiYSDyah7SdsDNu9/FWJZ2kTY1jK0tG
-         loJA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RNZtOuZNCvXep73RZPyIzpAKoJOWSrLB4f/cVGJYlV4=;
+        b=eBV96bd4k2zM+n+JyucLNP1MbLQqrKwMF5XNAcqJ2+4oKLsrDI25pVUkh5GqO+h92o
+         NxGbZJC2jSf+drQKF30Zgpmjrf9P335BMpN8RHLu0bm/cvcyPa3hE9zwNLWLuNhxKp6f
+         h3i6pJu7RNmRyb2ljEONon/Hni9mlshAkWUDo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lynNWrHQUN3W407q/Yp3KSzCn2DuA1Pg90UjJME068Q=;
-        b=i7KtyFCHlbPEJJ1KYyWGQIXV3Nut7rOIdPAm1amyDWPAdO+EpSrGi/JZ7k579JH5pr
-         ANUVrTzZVU0BvsYMQspKag4DnmfZD5XqJM1pee8c6/nAd6Sw2eNNngVPjoaef7oT+sua
-         Z8RbP1vxGnyly38g1sYh9SzrIIeVRX5CLw+6K/9ptm1/8dMmvblE6OFE8HeT4l9TAiq0
-         CMmAROUewqMMpKrE7QYDpp9pGu4PPXfW1Sw6kDfux5k8WaY5Zl0HSVY17BTjAkBsm8wN
-         ecLikHIrvhFTOzGWmmyl8aMUyyeXYyc5paCiy8Ge87NJGP4241+/O5SB0uOG46sSpkmE
-         eHog==
-X-Gm-Message-State: AOAM530LcHsBIfFIu+uVZz8oN+a6qiFbe0cX9NGOk1QJe2AZeyv0ZlK+
-        sG2MLQ8QRVSyY9AN5gH1X9o=
-X-Google-Smtp-Source: ABdhPJwsx1/0nhTNwJ+lepvv/DMYz6022NXwBlGHkdJLTPcVUnS2jl3PzVO0VPHkUXBqc79cmNEEiw==
-X-Received: by 2002:a05:620a:1524:: with SMTP id n4mr6459565qkk.490.1589482491783;
-        Thu, 14 May 2020 11:54:51 -0700 (PDT)
-Received: from ?IPv6:2601:282:803:7700:3140:7ba:69e7:d3b1? ([2601:282:803:7700:3140:7ba:69e7:d3b1])
-        by smtp.googlemail.com with ESMTPSA id z50sm3499498qta.18.2020.05.14.11.54.50
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RNZtOuZNCvXep73RZPyIzpAKoJOWSrLB4f/cVGJYlV4=;
+        b=QfC+3TITiOSEsuhOzMv5Lt1/Y8lVyPEy3tdsur90qs4AalgZIvveablG2ntEppWnZU
+         ZlYACF4pae3CwMDnTqmPJ2NfJyXiinVPtCAcOjCdZSjDlEnoZPIS0mB7fS7uwwMGGSuy
+         KUShwsAEhleVpgPRz0pg3zcXO4axTnuBhwP95Zht6O5aRLHzu8p7DUTihs3Szoz85Yy/
+         ZCZZ++abMHixoV+7nOCCkDZ6IYmIcDGLfOOMhKxtFkCNniTZogExauyHHQl3ALjnPmCt
+         sMuHjU1Dbm0TMSmBHLe4Vc8NA65oAl5GJ0iUvHYeXgvhHqEVtZoa14TOlrPwABqJ6tEC
+         B22A==
+X-Gm-Message-State: AOAM5303b/aeTJy8TIr/HUlJeKCphpZ1YMF3RSItXpDiwD6GtXwyW8CJ
+        kCyBBZZIlT6IRqsKQqXH3qyUtQcXLY8=
+X-Google-Smtp-Source: ABdhPJwlRhvu87mADkLEHNL5kg8sdqzaNoD7yEAe+dphhtqCGDMslMfuadznJjxC0zUrsy2cjnndPw==
+X-Received: by 2002:ac2:414c:: with SMTP id c12mr4158320lfi.47.1589482691836;
+        Thu, 14 May 2020 11:58:11 -0700 (PDT)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id p8sm1969348ljn.93.2020.05.14.11.58.10
+        for <bpf@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 May 2020 11:54:51 -0700 (PDT)
-Subject: Re: "Forwarding" from TC classifier
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Martynas Pumputis <m@lambda.lt>,
-        kernel-team <kernel-team@cloudflare.com>
-References: <CACAyw9_4Uzh0GqAR16BfEHQ0ZWHKGUKacOQwwhwsfhdCTMtsNQ@mail.gmail.com>
- <b93b4ad2-0cf0-81e0-b2b0-664248b3630f@gmail.com>
- <CACAyw9-95He2yq0qoxuWFy3wqQt1kAtAQcRw2UTrqse2hUq1tA@mail.gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <5cca7bce-0052-d854-5ead-b09d43cb9eb9@gmail.com>
-Date:   Thu, 14 May 2020 12:54:49 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
+        Thu, 14 May 2020 11:58:11 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id d21so4700427ljg.9
+        for <bpf@vger.kernel.org>; Thu, 14 May 2020 11:58:10 -0700 (PDT)
+X-Received: by 2002:a2e:87d9:: with SMTP id v25mr3625999ljj.241.1589482690395;
+ Thu, 14 May 2020 11:58:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACAyw9-95He2yq0qoxuWFy3wqQt1kAtAQcRw2UTrqse2hUq1tA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200514161607.9212-1-daniel@iogearbox.net> <20200514161607.9212-2-daniel@iogearbox.net>
+In-Reply-To: <20200514161607.9212-2-daniel@iogearbox.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 14 May 2020 11:57:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wghQ5dr-56J7CrGR10_bAJsWNZvtHcrYnhVh-RvbPjW3Q@mail.gmail.com>
+Message-ID: <CAHk-=wghQ5dr-56J7CrGR10_bAJsWNZvtHcrYnhVh-RvbPjW3Q@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/3] bpf: restrict bpf_probe_read{,str}() only to
+ archs where they work
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        Netdev <netdev@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        brendan.d.gregg@gmail.com, Christoph Hellwig <hch@lst.de>,
+        john.fastabend@gmail.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/14/20 9:41 AM, Lorenz Bauer wrote:
-> On Wed, 13 May 2020 at 18:48, David Ahern <dsahern@gmail.com> wrote:
->>
->> On 5/13/20 10:40 AM, Lorenz Bauer wrote:
->>> We've recently open sourced a key component of our L4 load balancer:
->>> cls_redirect [1].
->>> In the commit description, I call out the following caveat:
->>>
->>>     cls_redirect relies on receiving encapsulated packets directly
->>> from a router. This is
->>>     because we don't have access to the neighbour tables from BPF, yet.
->>
->> Can you explain more about this limitation? Why does access to neighbor
->> tables solve the problem?
-> 
-> We want to forward the packet to another machine, based on an IP address
-> stored in our custom encapsulation header.
-> If we always receive packets from a router we can plug in the new IP, swap
-> the MAC and send the packet back to the router. Inefficient, but it means we
-> don't have to deal with MAC addresses ourselves.
+On Thu, May 14, 2020 at 9:18 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> However, their use should be restricted to archs with non-overlapping
+> address ranges where they are working in their current form. Therefore,
+> move this behind a CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE and
+> have x86, arm64, arm select it (other archs supporting it can follow-up
+> on it as well).
 
-Ok, so swapping source and destination addresses in the IP header, doing
-a fib lookup and redirecting to an interface based on the lookup. That
-does require a neighbor entry for the dest address. Access to the
-neighbor table does not directly solve that problem - if it is not there
-for the fib lookup, it won't be there for the straight neigh lookup.
+Ack, looks sane to me.
 
-You could let the first packet go up the stack to create and resolve the
-neighbor entry. At that point follow on packets will take the fast path.
-
-Alternatively, you can create static entries in the table for known
-forwarding addresses or have a process on the server initiate neighbor
-resolution for none forwarding addresses.
->>
->> Usually, 'output' is for locally generated traffic headed out. XDP
->> programs run on ingress are from an Rx perspective and do the lookup
->> from the perspective of 'is this forwarded or locally delivered'.
-> 
-> What if the XDP encapsulates the packet? At this point I know that I
-> want to forward it elsewhere. Would that use LOOKUP_OUTPUT?
-
-Yes, if you want the lookup to respond as if it is a locally sent packet
-versus a forwarded packet.
+               Linus
