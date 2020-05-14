@@ -2,306 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1FDF1D3E6D
-	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 22:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8AC41D3E72
+	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 22:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729189AbgENUE6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 May 2020 16:04:58 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43632 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729171AbgENUE6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 14 May 2020 16:04:58 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04EK4t75024837
-        for <bpf@vger.kernel.org>; Thu, 14 May 2020 13:04:57 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=NvcSVUTY213UnDMD7lJHYORAP7ESjlIF2TE/OMfvYXY=;
- b=h1Ygo57DQA7ZF3XKkXuOyOR5eWTAK7O76SEaMt/PXnTJpGVjC0y8Qgvi6F48fiM9mzcl
- GRwhxEO9jc2GngBdDD0/pxRfY8WlKJpmUGdup/QLy0Np6YxsFVanMkKneq2TVafYloIg
- IcHrATlMAhAEAkPXkPws8549Smx+lcQlTqg= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3100wydp1n-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 14 May 2020 13:04:57 -0700
-Received: from intmgw002.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 14 May 2020 13:04:22 -0700
-Received: by dev082.prn2.facebook.com (Postfix, from userid 572249)
-        id DDABB37009C6; Thu, 14 May 2020 13:04:20 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrey Ignatov <rdna@fb.com>
-Smtp-Origin-Hostname: dev082.prn2.facebook.com
-To:     <bpf@vger.kernel.org>
-CC:     Andrey Ignatov <rdna@fb.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <yhs@fb.com>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH v3 bpf-next 5/5] selftests/bpf: Test for sk helpers in cgroup skb
-Date:   Thu, 14 May 2020 13:03:49 -0700
-Message-ID: <171f4c5d75e8ff4fe1c4e8c1c12288b5240a4549.1589486450.git.rdna@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <cover.1589486450.git.rdna@fb.com>
-References: <cover.1589486450.git.rdna@fb.com>
+        id S1726073AbgENUGx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 May 2020 16:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726076AbgENUGw (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 14 May 2020 16:06:52 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 699EEC061A0C;
+        Thu, 14 May 2020 13:06:52 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id t25so10350qtc.0;
+        Thu, 14 May 2020 13:06:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VYKbY03i3w8+WuCiIuniVrgUwRQNDEWvtrpaupQLl9I=;
+        b=gvLyANHqhlhMeKCcovZINL4chr/11CBYhVetU9Cs4XDxsYrNbvHU3pStsbOcjkZYjL
+         j3KzaDVtRBtHN5GmjWRxSBzznacXrWp0ZywV/R7XHREMrSOyESoRprcp7WJgwn9XJbVF
+         32SeBYPRWL7VbOTIXqG0OzEJIIzt+aHlLbSP7pAIkc8MielU6pZECpdoIZYAiaXYbeqD
+         G7n8cIzsIo6bDatxoc/12ctDiHWO9vHfp+K5dIhXQPeXD+CJ9CghI6sSRRO8T/dLPpTO
+         Bx4X9YHc7dvFms7hci4/f40Qp3FyZPKGUYrGvaV7SAF6jvCS7pGN5PViYJJun8WJDDOE
+         LDFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VYKbY03i3w8+WuCiIuniVrgUwRQNDEWvtrpaupQLl9I=;
+        b=IKxIuMQxyzGnJTmbM28jIdY+J5x49LE+80fkEEg1lmLGpXSMgGEXFWEFj9Q7akjkFo
+         RJ4l2FowVf6vs43m6vs2dJv920enSu93U8Wfs46oqnejZmQm/8l+J/NtWK8JZjQZ12fg
+         8xyHabNFLIuzab3WOoOcwRxzDoih2nSYdN80Cc8SedE0sDVSeD/VqnxWM2rhGqYrsj9X
+         PRDqj9Qb9HVVkiFyn8kjqtxu1cVgEhLdGZHqymCUu99NKkT77VNic1G8S3xqAUl20vAp
+         FqU222Tf37ESMEAxNMR78+klYhw/p6McyzEtkd8O3xYsBg2lJGIFu9oRC+fW3R0Z/Le5
+         Lo9Q==
+X-Gm-Message-State: AOAM533a1eWd0yUSJyanuy/+Ug1h8+ltWxFno767zXX2jF7LWsiTUnTu
+        S8tuPI7G0fa2mHvoKxJ28B5z0SL4E+HrIP6saj0=
+X-Google-Smtp-Source: ABdhPJxYI047RMQeLIBFv4tBhpfzU/r+915kwe7BBJT1zGDPWfpCdgU33Bk/vk303+NdRS3JKUAM9fbnUZ9HXk8jweY=
+X-Received: by 2002:ac8:424b:: with SMTP id r11mr6432317qtm.171.1589486811566;
+ Thu, 14 May 2020 13:06:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-14_07:2020-05-14,2020-05-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=13
- priorityscore=1501 mlxscore=0 adultscore=0 mlxlogscore=953
- cotscore=-2147483648 impostorscore=0 spamscore=0 lowpriorityscore=0
- clxscore=1015 bulkscore=0 phishscore=0 malwarescore=0 classifier=spam
- adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005140177
-X-FB-Internal: deliver
+References: <20200513192532.4058934-1-andriin@fb.com> <20200513224927.643hszw3q3cgx7e6@bsd-mbp.dhcp.thefacebook.com>
+ <CAEf4BzaSEPNyBvXBduH2Bkr64=MbzFiR9hJ9DYwXwk4D2AtcDw@mail.gmail.com> <20200514163037.oijxmoemkg47ujft@bsd-mbp>
+In-Reply-To: <20200514163037.oijxmoemkg47ujft@bsd-mbp>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 14 May 2020 13:06:39 -0700
+Message-ID: <CAEf4BzYmA14Ddq+1wwNtoNO9eG5ULxdL65D7Y1FSaO5U9ZuVtQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/6] BPF ring buffer
+To:     Jonathan Lemon <bsd@fb.com>
+Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Test bpf_sk_lookup_tcp, bpf_sk_release, bpf_sk_cgroup_id and
-bpf_sk_ancestor_cgroup_id helpers from cgroup skb program.
+On Thu, May 14, 2020 at 9:30 AM Jonathan Lemon <bsd@fb.com> wrote:
+>
+> On Wed, May 13, 2020 at 11:08:46PM -0700, Andrii Nakryiko wrote:
+> > On Wed, May 13, 2020 at 3:49 PM Jonathan Lemon <jonathan.lemon@gmail.com> wrote:
+> > >
+> > > On Wed, May 13, 2020 at 12:25:26PM -0700, Andrii Nakryiko wrote:
+> > > > Implement a new BPF ring buffer, as presented at BPF virtual conference ([0]).
+> > > > It presents an alternative to perf buffer, following its semantics closely,
+> > > > but allowing sharing same instance of ring buffer across multiple CPUs
+> > > > efficiently.
+> > > >
+> > > > Most patches have extensive commentary explaining various aspects, so I'll
+> > > > keep cover letter short. Overall structure of the patch set:
+> > > > - patch #1 adds BPF ring buffer implementation to kernel and necessary
+> > > >   verifier support;
+> > > > - patch #2 adds litmus tests validating all the memory orderings and locking
+> > > >   is correct;
+> > > > - patch #3 is an optional patch that generalizes verifier's reference tracking
+> > > >   machinery to capture type of reference;
+> > > > - patch #4 adds libbpf consumer implementation for BPF ringbuf;
+> > > > - path #5 adds selftest, both for single BPF ring buf use case, as well as
+> > > >   using it with array/hash of maps;
+> > > > - patch #6 adds extensive benchmarks and provide some analysis in commit
+> > > >   message, it build upon selftests/bpf's bench runner.
+> > > >
+> > > >   [0] https://docs.google.com/presentation/d/18ITdg77Bj6YDOH2LghxrnFxiPWe0fAqcmJY95t_qr0w
+> > > >
+> > > > Cc: Paul E. McKenney <paulmck@kernel.org>
+> > > > Cc: Jonathan Lemon <jonathan.lemon@gmail.com>
+> > >
+> > > Looks very nice!  A few random questions:
+> > >
+> > > 1) Why not use a structure for the header, instead of 2 32bit ints?
+> >
+> > hm... no reason, just never occurred to me it's necessary :)
+>
+> It might be clearer to do this.  Something like:
+>
+> struct ringbuf_record {
+>     union {
+>         struct {
+>             u32 size:30;
+>             bool busy:1;
+>             bool discard:1;
+>         };
+>         u32 word1;
+>     };
+>     union {
+>         u32 pgoff;
+>         u32 word2;
+>     };
+> };
+>
+> While perhaps a bit overkill, makes it clear what is going on.
 
-The test creates a testing cgroup, starts a TCPv6 server inside the
-cgroup and creates two client sockets: one inside testing cgroup and one
-outside.
+I really want to avoid specifying bitfields, because that gets into
+endianness territory, and I don't want to do different order of
+bitfields depending on endianness of the platform. I can do
 
-Then it attaches cgroup skb program to the cgroup that checks all TCP
-segments coming to the server and allows only those coming from the
-cgroup of the server. If a segment comes from a peer outside of the
-cgroup, it'll be dropped.
 
-Finally the test checks that client from inside testing cgroup can
-successfully connect to the server, but client outside the cgroup fails
-to connect by timeout.
+struct ringbuf_record_header {
+    u32 len;
+    u32 pgoff;
+};
 
-The main goal of the test is to check newly introduced
-bpf_sk_{,ancestor_}cgroup_id helpers.
+But that will be useful for kernel only and shouldn't be part of UAPI,
+because pgoff makes sense only inside the kernel. For user-space,
+first 4 bytes is length + busy&discard bits, second 4 bytes are
+reserved and shouldn't be used (at least yet).
 
-It also checks a couple of socket lookup helpers (tcp & release), but
-lookup helpers were introduced much earlier and covered by other tests.
-Here it's mostly checked that they can be called from cgroup skb.
+I guess I should put RINGBUF_META_SZ, RINGBUF_BUSY_BIT,
+RINGBUF_DISCARD_BIT from patch #1 into include/uapi/linux/bpf.h to
+make it a stable API, I suppose?
 
-Signed-off-by: Andrey Ignatov <rdna@fb.com>
----
- .../bpf/prog_tests/cgroup_skb_sk_lookup.c     | 95 ++++++++++++++++++
- .../bpf/progs/cgroup_skb_sk_lookup_kern.c     | 97 +++++++++++++++++++
- 2 files changed, 192 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_skb_sk_=
-lookup.c
- create mode 100644 tools/testing/selftests/bpf/progs/cgroup_skb_sk_looku=
-p_kern.c
+>
+>
+> > > 2) Would it make sense to reserve X bytes, but only commit Y?
+> > >    the offset field could be used to write the record length.
+> > >
+> > >    E.g.:
+> > >       reserve 512 bytes    [BUSYBIT | 512][PG OFFSET]
+> > >       commit  400 bytes    [ 512 ] [ 400 ]
+> >
+> > It could be done, though I had tentative plans to use those second 4
+> > bytes for something useful eventually.
+> >
+> > But what's the use case? From ring buffer's perspective, X bytes were
+> > reserved and are gone already and subsequent writers might have
+> > already advanced producer counter with the assumption that all X bytes
+> > are going to be used. So there are no space savings, even if record is
+> > discarded or only portion of it is submitted. I can only see a bit of
+> > added convenience for an application, because it doesn't have to track
+> > amount of actual data in its record. But this doesn't seem to be a
+> > common case either, so not sure how it's worth supporting... Is there
+> > a particular case where this is extremely useful and extra 4 bytes in
+> > record payload is too much?
+>
+> Not off the top of my head - it was just the first thing that came to
+> mind when reading about the commit/discard paradigm.  I was thinking
+> about variable records, where the maximum is reserved, but less data
+> is written.  But there's no particular reason for the ringbuffer to
+> track this either, it could be part of the application framing.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_skb_sk_lookup.=
-c b/tools/testing/selftests/bpf/prog_tests/cgroup_skb_sk_lookup.c
-new file mode 100644
-index 000000000000..059047af7df3
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_skb_sk_lookup.c
-@@ -0,0 +1,95 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+
-+#include <test_progs.h>
-+
-+#include "network_helpers.h"
-+#include "cgroup_skb_sk_lookup_kern.skel.h"
-+
-+static void run_lookup_test(__u16 *g_serv_port, int out_sk)
-+{
-+	int serv_sk =3D -1, in_sk =3D -1, serv_in_sk =3D -1, err;
-+	struct sockaddr_in6 addr =3D {};
-+	socklen_t addr_len =3D sizeof(addr);
-+	__u32 duration =3D 0;
-+
-+	serv_sk =3D start_server(AF_INET6, SOCK_STREAM);
-+	if (CHECK(serv_sk < 0, "start_server", "failed to start server\n"))
-+		return;
-+
-+	err =3D getsockname(serv_sk, (struct sockaddr *)&addr, &addr_len);
-+	if (CHECK(err, "getsockname", "errno %d\n", errno))
-+		goto cleanup;
-+
-+	*g_serv_port =3D addr.sin6_port;
-+
-+	/* Client outside of test cgroup should fail to connect by timeout. */
-+	err =3D connect_fd_to_fd(out_sk, serv_sk);
-+	if (CHECK(!err || errno !=3D EINPROGRESS, "connect_fd_to_fd",
-+		  "unexpected result err %d errno %d\n", err, errno))
-+		goto cleanup;
-+
-+	err =3D connect_wait(out_sk);
-+	if (CHECK(err, "connect_wait", "unexpected result %d\n", err))
-+		goto cleanup;
-+
-+	/* Client inside test cgroup should connect just fine. */
-+	in_sk =3D connect_to_fd(AF_INET6, SOCK_STREAM, serv_sk);
-+	if (CHECK(in_sk < 0, "connect_to_fd", "errno %d\n", errno))
-+		goto cleanup;
-+
-+	serv_in_sk =3D accept(serv_sk, NULL, NULL);
-+	if (CHECK(serv_in_sk < 0, "accept", "errno %d\n", errno))
-+		goto cleanup;
-+
-+cleanup:
-+	close(serv_in_sk);
-+	close(in_sk);
-+	close(serv_sk);
-+}
-+
-+static void run_cgroup_bpf_test(const char *cg_path, int out_sk)
-+{
-+	struct cgroup_skb_sk_lookup_kern *skel;
-+	struct bpf_link *link;
-+	__u32 duration =3D 0;
-+	int cgfd =3D -1;
-+
-+	skel =3D cgroup_skb_sk_lookup_kern__open_and_load();
-+	if (CHECK(!skel, "skel_open_load", "open_load failed\n"))
-+		return;
-+
-+	cgfd =3D test__join_cgroup(cg_path);
-+	if (CHECK(cgfd < 0, "cgroup_join", "cgroup setup failed\n"))
-+		goto cleanup;
-+
-+	link =3D bpf_program__attach_cgroup(skel->progs.ingress_lookup, cgfd);
-+	if (CHECK(IS_ERR(link), "cgroup_attach", "err: %ld\n", PTR_ERR(link)))
-+		goto cleanup;
-+
-+	run_lookup_test(&skel->bss->g_serv_port, out_sk);
-+
-+	bpf_link__destroy(link);
-+
-+cleanup:
-+	close(cgfd);
-+	cgroup_skb_sk_lookup_kern__destroy(skel);
-+}
-+
-+void test_cgroup_skb_sk_lookup(void)
-+{
-+	const char *cg_path =3D "/foo";
-+	int out_sk;
-+
-+	/* Create a socket before joining testing cgroup so that its cgroup id
-+	 * differs from that of testing cgroup. Moving selftests process to
-+	 * testing cgroup won't change cgroup id of an already created socket.
-+	 */
-+	out_sk =3D socket(AF_INET6, SOCK_STREAM | SOCK_NONBLOCK, 0);
-+	if (CHECK_FAIL(out_sk < 0))
-+		return;
-+
-+	run_cgroup_bpf_test(cg_path, out_sk);
-+
-+	close(out_sk);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/cgroup_skb_sk_lookup_kern.=
-c b/tools/testing/selftests/bpf/progs/cgroup_skb_sk_lookup_kern.c
-new file mode 100644
-index 000000000000..3f757e30d7a0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/cgroup_skb_sk_lookup_kern.c
-@@ -0,0 +1,97 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#include <linux/if_ether.h>
-+#include <linux/in.h>
-+#include <linux/in6.h>
-+#include <linux/ipv6.h>
-+#include <linux/tcp.h>
-+
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+
-+int _version SEC("version") =3D 1;
-+char _license[] SEC("license") =3D "GPL";
-+
-+__u16 g_serv_port =3D 0;
-+
-+static inline void set_ip(__u32 *dst, const struct in6_addr *src)
-+{
-+	dst[0] =3D src->in6_u.u6_addr32[0];
-+	dst[1] =3D src->in6_u.u6_addr32[1];
-+	dst[2] =3D src->in6_u.u6_addr32[2];
-+	dst[3] =3D src->in6_u.u6_addr32[3];
-+}
-+
-+static inline void set_tuple(struct bpf_sock_tuple *tuple,
-+			     const struct ipv6hdr *ip6h,
-+			     const struct tcphdr *tcph)
-+{
-+	set_ip(tuple->ipv6.saddr, &ip6h->daddr);
-+	set_ip(tuple->ipv6.daddr, &ip6h->saddr);
-+	tuple->ipv6.sport =3D tcph->dest;
-+	tuple->ipv6.dport =3D tcph->source;
-+}
-+
-+static inline int is_allowed_peer_cg(struct __sk_buff *skb,
-+				     const struct ipv6hdr *ip6h,
-+				     const struct tcphdr *tcph)
-+{
-+	__u64 cgid, acgid, peer_cgid, peer_acgid;
-+	struct bpf_sock_tuple tuple;
-+	size_t tuple_len =3D sizeof(tuple.ipv6);
-+	struct bpf_sock *peer_sk;
-+
-+	set_tuple(&tuple, ip6h, tcph);
-+
-+	peer_sk =3D bpf_sk_lookup_tcp(skb, &tuple, tuple_len,
-+				    BPF_F_CURRENT_NETNS, 0);
-+	if (!peer_sk)
-+		return 0;
-+
-+	cgid =3D bpf_skb_cgroup_id(skb);
-+	peer_cgid =3D bpf_sk_cgroup_id(peer_sk);
-+
-+	acgid =3D bpf_skb_ancestor_cgroup_id(skb, 2);
-+	peer_acgid =3D bpf_sk_ancestor_cgroup_id(peer_sk, 2);
-+
-+	bpf_sk_release(peer_sk);
-+
-+	return cgid && cgid =3D=3D peer_cgid && acgid && acgid =3D=3D peer_acgi=
-d;
-+}
-+
-+SEC("cgroup_skb/ingress")
-+int ingress_lookup(struct __sk_buff *skb)
-+{
-+	__u32 serv_port_key =3D 0;
-+	struct ipv6hdr ip6h;
-+	struct tcphdr tcph;
-+
-+	if (skb->protocol !=3D bpf_htons(ETH_P_IPV6))
-+		return 1;
-+
-+	/* For SYN packets coming to listening socket skb->remote_port will be
-+	 * zero, so IPv6/TCP headers are loaded to identify remote peer
-+	 * instead.
-+	 */
-+	if (bpf_skb_load_bytes(skb, 0, &ip6h, sizeof(ip6h)))
-+		return 1;
-+
-+	if (ip6h.nexthdr !=3D IPPROTO_TCP)
-+		return 1;
-+
-+	if (bpf_skb_load_bytes(skb, sizeof(ip6h), &tcph, sizeof(tcph)))
-+		return 1;
-+
-+	if (!g_serv_port)
-+		return 0;
-+
-+	if (tcph.dest !=3D g_serv_port)
-+		return 1;
-+
-+	return is_allowed_peer_cg(skb, &ip6h, &tcph);
-+}
---=20
-2.24.1
+Yeah, I'd defer to application doing that. People were asking about
+using reserve with variable-sized records, but I don't think it's
+possible to do. That what bpf_ringbuf_output() helper was added for:
+prepare variable-sized data outside of ringbuf, then reserve exact
+amount and copy over. Less performant, but allows to use ring buffer
+space more efficiently.
 
+>
+>
+> > > 3) Why have 2 separate pages for producer/consumer, instead of
+> > >    just aligning to a smp cache line (or even 1/2 page?)
+> >
+> > Access rights restrictions. Consumer page is readable/writable,
+> > producer page is read-only for user-space. If user-space had ability
+> > to write producer position, it could wreck a huge havoc for the
+> > ringbuf algorithm.
+>
+> Ah, thanks, that makes sense.  Might want to add a comment to
+> that effect, as it's different from other implementations.
+
+Yep, definitely, I knew I forgot to document something :)
+
+> --
+> Jonathan
