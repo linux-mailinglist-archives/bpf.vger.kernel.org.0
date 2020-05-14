@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155B91D24EF
-	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 03:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D61A1D24F1
+	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 03:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728292AbgENBuy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 May 2020 21:50:54 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48192 "EHLO
+        id S1728378AbgENBu7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 May 2020 21:50:59 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:29246 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725925AbgENBuy (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 13 May 2020 21:50:54 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04E1ix6c018810
-        for <bpf@vger.kernel.org>; Wed, 13 May 2020 18:50:53 -0700
+        by vger.kernel.org with ESMTP id S1725925AbgENBu6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 13 May 2020 21:50:58 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04E1ou2o006254
+        for <bpf@vger.kernel.org>; Wed, 13 May 2020 18:50:58 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=QrbLMJEK5d+YH3aJxVI0M4vvJ2h6iagiVRe9tWU77+I=;
- b=Bc9nsHAwAgfZmol1gW4CM6s8xNWdcNq14MVRdsydJtjuKAD8P++XCWcnqnNN1YcW4G+k
- OaP2lp/sQAP5mCK4H6DjN6ywJGMl51mYVO9reJ+skBnuhHR8JUAk3X663DtF6mcwLyYD
- lrKzTlzb8QRdePiCUdnI+lNw1CWv4b1Nd2k= 
+ bh=BE9CifM+cwp0/XhwgISs6naNCTfpmH492M6Zg+HknoY=;
+ b=W1oZcHW3rTS+Uve5WNBPBVcEcUvjJfr4oPHUqZwt9uo/uQUxws4i2IsdbtImfNU5LEAb
+ KOniejJj9os2tibm0Q2LnFwshvluZJ++PXfaZBK3pCYE/6CMoTwGuJTIAnmudipxibOg
+ Vn0UNsU6FT/j5E9qePxzLR4uZr+Q67zudXM= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3100wy8nfw-1
+        by mx0a-00082601.pphosted.com with ESMTP id 3100y1rmrn-6
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 13 May 2020 18:50:53 -0700
-Received: from intmgw001.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 13 May 2020 18:50:58 -0700
+Received: from intmgw003.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Wed, 13 May 2020 18:50:51 -0700
+ 15.1.1847.3; Wed, 13 May 2020 18:50:54 -0700
 Received: by dev082.prn2.facebook.com (Postfix, from userid 572249)
-        id E4F1F3700963; Wed, 13 May 2020 18:50:47 -0700 (PDT)
+        id 9FB053700963; Wed, 13 May 2020 18:50:51 -0700 (PDT)
 Smtp-Origin-Hostprefix: dev
 From:   Andrey Ignatov <rdna@fb.com>
 Smtp-Origin-Hostname: dev082.prn2.facebook.com
@@ -38,9 +38,9 @@ To:     <bpf@vger.kernel.org>
 CC:     Andrey Ignatov <rdna@fb.com>, <ast@kernel.org>,
         <daniel@iogearbox.net>, <kernel-team@fb.com>
 Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH bpf-next 1/2] bpf: Support narrow loads from bpf_sock_addr.user_port
-Date:   Wed, 13 May 2020 18:50:27 -0700
-Message-ID: <c1e983f4c17573032601d0b2b1f9d1274f24bc16.1589420814.git.rdna@fb.com>
+Subject: [PATCH bpf-next 2/2] selftests/bpf: Test narrow loads for bpf_sock_addr.user_port
+Date:   Wed, 13 May 2020 18:50:28 -0700
+Message-ID: <e5c734a58cca4041ab30cb5471e644246f8cdb5a.1589420814.git.rdna@fb.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <cover.1589420814.git.rdna@fb.com>
 References: <cover.1589420814.git.rdna@fb.com>
@@ -50,116 +50,126 @@ X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
  definitions=2020-05-13_09:2020-05-13,2020-05-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=13
- priorityscore=1501 mlxscore=0 adultscore=0 mlxlogscore=999
- cotscore=-2147483648 impostorscore=0 spamscore=0 lowpriorityscore=0
- clxscore=1015 bulkscore=0 phishscore=0 malwarescore=0 classifier=spam
- adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005140014
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ suspectscore=15 phishscore=0 cotscore=-2147483648 mlxscore=0 spamscore=0
+ malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999 clxscore=1015
+ impostorscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2005140015
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_sock_addr.user_port supports only 4-byte load and it leads to ugly
-code in BPF programs, like:
-
-	volatile __u32 user_port =3D ctx->user_port;
-	__u16 port =3D bpf_ntohs(user_port);
-
-Since otherwise clang may optimize the load to be 2-byte and it's
-rejected by verifier.
-
-Add support for 1- and 2-byte loads same way as it's supported for other
-fields in bpf_sock_addr like user_ip4, msg_src_ip4, etc.
+Test 1,2,4-byte loads from bpf_sock_addr.user_port in sock_addr
+programs.
 
 Signed-off-by: Andrey Ignatov <rdna@fb.com>
 ---
- include/uapi/linux/bpf.h       |  2 +-
- net/core/filter.c              | 15 +++++++--------
- tools/include/uapi/linux/bpf.h |  2 +-
- 3 files changed, 9 insertions(+), 10 deletions(-)
+ tools/testing/selftests/bpf/test_sock_addr.c | 38 ++++++++++++++------
+ 1 file changed, 28 insertions(+), 10 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index bfb31c1be219..85cfdffde182 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -3728,7 +3728,7 @@ struct bpf_sock_addr {
- 	__u32 user_ip6[4];	/* Allows 1,2,4,8-byte read and 4,8-byte write.
- 				 * Stored in network byte order.
- 				 */
--	__u32 user_port;	/* Allows 4-byte read and write.
-+	__u32 user_port;	/* Allows 1,2,4-byte read and 4-byte write.
- 				 * Stored in network byte order
- 				 */
- 	__u32 family;		/* Allows 4-byte read, but no write */
-diff --git a/net/core/filter.c b/net/core/filter.c
-index da0634979f53..1fe8c0c2d408 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -7029,6 +7029,7 @@ static bool sock_addr_is_valid_access(int off, int =
-size,
- 	case bpf_ctx_range(struct bpf_sock_addr, msg_src_ip4):
- 	case bpf_ctx_range_till(struct bpf_sock_addr, msg_src_ip6[0],
- 				msg_src_ip6[3]):
-+	case bpf_ctx_range(struct bpf_sock_addr, user_port):
- 		if (type =3D=3D BPF_READ) {
- 			bpf_ctx_record_field_size(info, size_default);
+diff --git a/tools/testing/selftests/bpf/test_sock_addr.c b/tools/testing=
+/selftests/bpf/test_sock_addr.c
+index 61fd95b89af8..0358814c67dc 100644
+--- a/tools/testing/selftests/bpf/test_sock_addr.c
++++ b/tools/testing/selftests/bpf/test_sock_addr.c
+@@ -677,7 +677,7 @@ static int bind4_prog_load(const struct sock_addr_tes=
+t *test)
+ 		uint8_t u4_addr8[4];
+ 		uint16_t u4_addr16[2];
+ 		uint32_t u4_addr32;
+-	} ip4;
++	} ip4, port;
+ 	struct sockaddr_in addr4_rw;
 =20
-@@ -7059,10 +7060,6 @@ static bool sock_addr_is_valid_access(int off, int=
- size,
- 				return false;
- 		}
- 		break;
--	case bpf_ctx_range(struct bpf_sock_addr, user_port):
--		if (size !=3D size_default)
--			return false;
--		break;
- 	case offsetof(struct bpf_sock_addr, sk):
- 		if (type !=3D BPF_READ)
- 			return false;
-@@ -7958,8 +7955,8 @@ static u32 sock_addr_convert_ctx_access(enum bpf_ac=
-cess_type type,
- 					struct bpf_insn *insn_buf,
- 					struct bpf_prog *prog, u32 *target_size)
- {
-+	int off, port_size =3D sizeof_field(struct sockaddr_in6, sin6_port);
- 	struct bpf_insn *insn =3D insn_buf;
--	int off;
+ 	if (inet_pton(AF_INET, SERV4_IP, (void *)&ip4) !=3D 1) {
+@@ -685,6 +685,8 @@ static int bind4_prog_load(const struct sock_addr_tes=
+t *test)
+ 		return -1;
+ 	}
 =20
- 	switch (si->off) {
- 	case offsetof(struct bpf_sock_addr, user_family):
-@@ -7994,9 +7991,11 @@ static u32 sock_addr_convert_ctx_access(enum bpf_a=
-ccess_type type,
- 			     offsetof(struct sockaddr_in6, sin6_port));
- 		BUILD_BUG_ON(sizeof_field(struct sockaddr_in, sin_port) !=3D
- 			     sizeof_field(struct sockaddr_in6, sin6_port));
--		SOCK_ADDR_LOAD_OR_STORE_NESTED_FIELD(struct bpf_sock_addr_kern,
--						     struct sockaddr_in6, uaddr,
--						     sin6_port, tmp_reg);
-+		/* Account for sin6_port being smaller than user_port. */
-+		port_size =3D min(port_size, BPF_LDST_BYTES(si));
-+		SOCK_ADDR_LOAD_OR_STORE_NESTED_FIELD_SIZE_OFF(
-+			struct bpf_sock_addr_kern, struct sockaddr_in6, uaddr,
-+			sin6_port, bytes_to_bpf_size(port_size), 0, tmp_reg);
- 		break;
++	port.u4_addr32 =3D htons(SERV4_PORT);
++
+ 	if (mk_sockaddr(AF_INET, SERV4_REWRITE_IP, SERV4_REWRITE_PORT,
+ 			(struct sockaddr *)&addr4_rw, sizeof(addr4_rw)) =3D=3D -1)
+ 		return -1;
+@@ -696,49 +698,65 @@ static int bind4_prog_load(const struct sock_addr_t=
+est *test)
+ 		/* if (sk.family =3D=3D AF_INET && */
+ 		BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
+ 			    offsetof(struct bpf_sock_addr, family)),
+-		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, AF_INET, 24),
++		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, AF_INET, 32),
 =20
- 	case offsetof(struct bpf_sock_addr, family):
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
-f.h
-index bfb31c1be219..85cfdffde182 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -3728,7 +3728,7 @@ struct bpf_sock_addr {
- 	__u32 user_ip6[4];	/* Allows 1,2,4,8-byte read and 4,8-byte write.
- 				 * Stored in network byte order.
- 				 */
--	__u32 user_port;	/* Allows 4-byte read and write.
-+	__u32 user_port;	/* Allows 1,2,4-byte read and 4-byte write.
- 				 * Stored in network byte order
- 				 */
- 	__u32 family;		/* Allows 4-byte read, but no write */
+ 		/*     (sk.type =3D=3D SOCK_DGRAM || sk.type =3D=3D SOCK_STREAM) && */
+ 		BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
+ 			    offsetof(struct bpf_sock_addr, type)),
+ 		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, SOCK_DGRAM, 1),
+ 		BPF_JMP_A(1),
+-		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, SOCK_STREAM, 20),
++		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, SOCK_STREAM, 28),
+=20
+ 		/*     1st_byte_of_user_ip4 =3D=3D expected && */
+ 		BPF_LDX_MEM(BPF_B, BPF_REG_7, BPF_REG_6,
+ 			    offsetof(struct bpf_sock_addr, user_ip4)),
+-		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr8[0], 18),
++		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr8[0], 26),
+=20
+ 		/*     2nd_byte_of_user_ip4 =3D=3D expected && */
+ 		BPF_LDX_MEM(BPF_B, BPF_REG_7, BPF_REG_6,
+ 			    offsetof(struct bpf_sock_addr, user_ip4) + 1),
+-		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr8[1], 16),
++		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr8[1], 24),
+=20
+ 		/*     3rd_byte_of_user_ip4 =3D=3D expected && */
+ 		BPF_LDX_MEM(BPF_B, BPF_REG_7, BPF_REG_6,
+ 			    offsetof(struct bpf_sock_addr, user_ip4) + 2),
+-		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr8[2], 14),
++		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr8[2], 22),
+=20
+ 		/*     4th_byte_of_user_ip4 =3D=3D expected && */
+ 		BPF_LDX_MEM(BPF_B, BPF_REG_7, BPF_REG_6,
+ 			    offsetof(struct bpf_sock_addr, user_ip4) + 3),
+-		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr8[3], 12),
++		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr8[3], 20),
+=20
+ 		/*     1st_half_of_user_ip4 =3D=3D expected && */
+ 		BPF_LDX_MEM(BPF_H, BPF_REG_7, BPF_REG_6,
+ 			    offsetof(struct bpf_sock_addr, user_ip4)),
+-		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr16[0], 10),
++		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr16[0], 18),
+=20
+ 		/*     2nd_half_of_user_ip4 =3D=3D expected && */
+ 		BPF_LDX_MEM(BPF_H, BPF_REG_7, BPF_REG_6,
+ 			    offsetof(struct bpf_sock_addr, user_ip4) + 2),
+-		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr16[1], 8),
++		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, ip4.u4_addr16[1], 16),
+=20
+-		/*     whole_user_ip4 =3D=3D expected) { */
++		/*     whole_user_ip4 =3D=3D expected && */
+ 		BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
+ 			    offsetof(struct bpf_sock_addr, user_ip4)),
+ 		BPF_LD_IMM64(BPF_REG_8, ip4.u4_addr32), /* See [2]. */
++		BPF_JMP_REG(BPF_JNE, BPF_REG_7, BPF_REG_8, 12),
++
++		/*     1st_byte_of_user_port =3D=3D expected && */
++		BPF_LDX_MEM(BPF_B, BPF_REG_7, BPF_REG_6,
++			    offsetof(struct bpf_sock_addr, user_port)),
++		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, port.u4_addr8[0], 10),
++
++		/*     1st_half_of_user_port =3D=3D expected && */
++		BPF_LDX_MEM(BPF_H, BPF_REG_7, BPF_REG_6,
++			    offsetof(struct bpf_sock_addr, user_port)),
++		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, port.u4_addr16[0], 8),
++
++		/*     user_port =3D=3D expected) { */
++		BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
++			    offsetof(struct bpf_sock_addr, user_port)),
++		BPF_LD_IMM64(BPF_REG_8, port.u4_addr32), /* See [2]. */
+ 		BPF_JMP_REG(BPF_JNE, BPF_REG_7, BPF_REG_8, 4),
+=20
+ 		/*      user_ip4 =3D addr4_rw.sin_addr */
 --=20
 2.24.1
 
