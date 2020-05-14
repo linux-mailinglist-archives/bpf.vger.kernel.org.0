@@ -2,65 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A0E1D3D4E
-	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 21:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CF31D3DB3
+	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 21:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728190AbgENTSw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 May 2020 15:18:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51306 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727896AbgENTSw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 May 2020 15:18:52 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CC13206F1;
-        Thu, 14 May 2020 19:18:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589483931;
-        bh=oVPC6nEvLFlTp15302HS05FQs6BjfouRTDsTW35v6tc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=1gSf6AzBCuDsIoWrUi5ahr5F/7KfMrcjw8bxllxhe/7Ov/WITB4ZMNuBbdRXS79U/
-         BFVlClNq+xaaU9xRkiVoQhoMY9LS3tdDhcCOEtS1okKncX6d1IAhzdLAT7CpqyBfHA
-         ZLjET0AL0AA6JeE32jzTiKLZ4kxTAK9AA1wqOvIo=
-Date:   Thu, 14 May 2020 12:18:48 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Andrii Nakryiko <andriin@fb.com>, linux-arch@vger.kernel.org
-Cc:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>, <andrii.nakryiko@gmail.com>,
-        <kernel-team@fb.com>, "Paul E . McKenney" <paulmck@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>
-Subject: Re: [PATCH bpf-next 1/6] bpf: implement BPF ring buffer and
- verifier support for it
-Message-ID: <20200514121848.052966b3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200513192532.4058934-2-andriin@fb.com>
-References: <20200513192532.4058934-1-andriin@fb.com>
-        <20200513192532.4058934-2-andriin@fb.com>
+        id S1728213AbgENTjy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 May 2020 15:39:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727991AbgENTjy (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 14 May 2020 15:39:54 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D04C061A0C;
+        Thu, 14 May 2020 12:39:53 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id 8so3682285lfp.4;
+        Thu, 14 May 2020 12:39:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6KkrSjsGOVrQqPOlguAfrNoTE7xuQImXbfVmVffSvZc=;
+        b=HRX+JUKoo0S14di2S6+t+MRWDg5yg0FQYE16r6I/+VXy1vwNDGOZzb+y+J4euHoSKQ
+         +WGW7DL8flnFcnI6Pp2x7SwuC/sR1K/9EfCypsrXuEmXnLLfKcEvMCpUKZLby05SOKhv
+         cOUd3rl2Ro9dPYQq05egEst/mZPij1nBa68WFzZg09of5jJtkxNzMKm7OtzhzKdW4vqo
+         mGhWW2rDNaZEWc6YxG4Y0/kqQa++VkvuAwsebMkOtCsrTLkYCaVYtTfKZtyuthGAl+YZ
+         aq4vYOdxkyNtU80uiEH/teAV24yS6Uu97dBfg7loIwHs3kRM5uB10r1zD+ExlSeyZtMA
+         xPMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6KkrSjsGOVrQqPOlguAfrNoTE7xuQImXbfVmVffSvZc=;
+        b=TyJ2WdJi2aB/i0z9Gw1zaLlpXuAeL16RHPDtBinj0aL/7U3VtvaIsIFqoV/fpcqGKh
+         89vwjR5FKbFugHWy0wdgUPcjzqbmpe6SPzlEu8jD8JIFLqaGlQ9tyHNFopYFhn5J7uzB
+         HDXVQP3bgYGyEmsNwO6P4yyY4V9lsq7/n3nbLith87gNIJ9S7rF5VuKYEdkYJPmERQMz
+         eSgwIFxYsxoPDbqMyQE/qNwGSUfBkNnXAmi6cuLBXcMHExjP4dSZeOYy6s1Jtz6/kL89
+         zA9D1TynIZnkMJ1LO4IKC/oLRrwp/9xyP3Yxc8nlAwvPqKuxMLwl6Nvd6LrA/CpKcUOd
+         TWNg==
+X-Gm-Message-State: AOAM532Vx6l4ZLS7yxWdBWgNAd+lsOV0IiAZM0mpeOlqO5813HWjxOgf
+        qYyz6jgQAjtJvoAtFDgOg5Advk0D5S7w/GBEYjU=
+X-Google-Smtp-Source: ABdhPJyYJURPDmXeUqMb+y4SJms2zyjBrcPnrpmatbs47rDJL89qAYT/VgDywx6lpCYwbuDn3/U51WRGY+vvycMmthM=
+X-Received: by 2002:a19:505c:: with SMTP id z28mr4376744lfj.174.1589485192109;
+ Thu, 14 May 2020 12:39:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200511113234.80722-1-mcroce@redhat.com> <0dd7c40b-c80b-9149-f022-d8113b77558a@fb.com>
+In-Reply-To: <0dd7c40b-c80b-9149-f022-d8113b77558a@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 14 May 2020 12:39:38 -0700
+Message-ID: <CAADnVQKtMZoULOtHzxvb=r7K4C8R4vc-zDqZD6eFDCfxgh2xYw@mail.gmail.com>
+Subject: Re: [PATCH bpf] samples: bpf: fix build error
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Matteo Croce <mcroce@redhat.com>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Joe Stringer <joe@ovn.org>, Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 13 May 2020 12:25:27 -0700 Andrii Nakryiko wrote:
-> One interesting implementation bit, that significantly simplifies (and thus
-> speeds up as well) implementation of both producers and consumers is how data
-> area is mapped twice contiguously back-to-back in the virtual memory. This
-> allows to not take any special measures for samples that have to wrap around
-> at the end of the circular buffer data area, because the next page after the
-> last data page would be first data page again, and thus the sample will still
-> appear completely contiguous in virtual memory. See comment and a simple ASCII
-> diagram showing this visually in bpf_ringbuf_area_alloc().
+On Mon, May 11, 2020 at 1:32 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 5/11/20 4:32 AM, Matteo Croce wrote:
+> > GCC 10 is very strict about symbol clash, and lwt_len_hist_user contains
+> > a symbol which clashes with libbpf:
+> >
+> > /usr/bin/ld: samples/bpf/lwt_len_hist_user.o:(.bss+0x0): multiple definition of `bpf_log_buf'; samples/bpf/bpf_load.o:(.bss+0x8c0): first defined here
+> > collect2: error: ld returned 1 exit status
+> >
+> > bpf_log_buf here seems to be a leftover, so removing it.
+> >
+> > Signed-off-by: Matteo Croce <mcroce@redhat.com>
+>
+> Acked-by: Yonghong Song <yhs@fb.com>
 
-Out of curiosity - is this 100% okay to do in the kernel and user space
-these days? Is this bit part of the uAPI in case we need to back out of
-it? 
-
-In the olden days virtually mapped/tagged caches could get confused
-seeing the same physical memory have two active virtual mappings, or 
-at least that's what I've been told in school :)
-
-Checking with Paul - he says that could have been the case for Itanium
-and PA-RISC CPUs.
+Applied to bpf tree. Thanks
