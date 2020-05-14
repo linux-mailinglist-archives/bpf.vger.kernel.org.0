@@ -2,170 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 300F91D408E
-	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 00:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F8761D40BD
+	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 00:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726763AbgENWNM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 May 2020 18:13:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726046AbgENWNM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 May 2020 18:13:12 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C23B82065D;
-        Thu, 14 May 2020 22:13:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589494390;
-        bh=f2WUV5cJBIm5s6ANLfJcEURYQZoNvbj81pbeEiNUwYc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=LcCe/rRSVYWeP6M5BaLxYIau2lrpuL/ara3qptNlh35p9pbiYFiFDNA7/5gmQ/RDn
-         IciPXImeOC1RrO9mUx3WviYr/GjVszrK5/6OwFonyKBQLXjlNuw/7WTenZQ4WAoYtm
-         /78utC1nS3TcMvhxlOPpLGqW+4A8ZnBVpsv1v2bA=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 4EC7C35229C8; Thu, 14 May 2020 15:13:09 -0700 (PDT)
-Date:   Thu, 14 May 2020 15:13:09 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, linux-arch@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>
-Subject: Re: [PATCH bpf-next 1/6] bpf: implement BPF ring buffer and verifier
- support for it
-Message-ID: <20200514221309.GV2869@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200513192532.4058934-1-andriin@fb.com>
- <20200513192532.4058934-2-andriin@fb.com>
- <20200514121848.052966b3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <87h7wixndi.fsf@nanos.tec.linutronix.de>
- <CAEf4Bzbj-WvRkoGxkSFtK5_1JfQxthoFid398C97RM0ppBb0dA@mail.gmail.com>
+        id S1728373AbgENWUc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 May 2020 18:20:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728050AbgENWUc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 May 2020 18:20:32 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C31C061A0C;
+        Thu, 14 May 2020 15:20:31 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id f83so534618qke.13;
+        Thu, 14 May 2020 15:20:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Btb+pUXqufPEo0v33O7AZL4ElyjUDGTi6VfzFSIsJsM=;
+        b=U5xpniTN9ydrdfaExtS+SYHelYWAb95MIeKEuok4Bk3Jo09nz0eGgYrnzYBsdN2wnl
+         RofaB7mXp1xbvkOZG6f5PuP92FfXY28SEUM2Vav9qP2TC8rvPsn43CpN9JzU3ZjUqFrq
+         +8qNG8ZJWerUiouCh3MTTGcTwUzchxITkk1kZMFykGZHLUBqoepRrIyJvcZ9QHHZZ6kH
+         7zDpMVOoMUfwVjqa1+kD8BpaFyTQzLb/s5Ramy0bTL1nx+8GIeumjA8f4cHkPy7OY98b
+         lsicxfEDa/+KELPxUeDSvlhx2WyEPGhm8GKlVq4MfA/rDZ3iGYS6uo5hQmyBiKYSmo+o
+         TDRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Btb+pUXqufPEo0v33O7AZL4ElyjUDGTi6VfzFSIsJsM=;
+        b=J/ykWTgWULyd1Hn9AcLgHKXF/nkkX1trNRyTrt7IFTAU3yag5TlKjNweAb1npTk78Y
+         BQzTHF88vApUMlqwAgdbvYigRvyISz5bWZAQAd+k1Jr7uq2ykV+RXvGJdlmKqkPiSfYh
+         QkdfuOau7rNeRIRXbmSdSWdRVnC+OPMUdllExTpk2reYuXh3qT4szOZ2ztD+4FrNxriU
+         OX1RT6/XXqGPpSelEKwZsbKyR/fnDRt1gfUl07rqWgFf31tgfzz0Eq7hT5wysyqpo2ZB
+         qzoM08cNnn9+zqlJJS5HW/jyrlt856Szl1DKJiWMgbaFYR/G5YgDlm9HXnyKzxyqiz7b
+         68Ow==
+X-Gm-Message-State: AOAM531jvZ+woJ/nESqABOB9WkbC5hT4REU2zdpsvihl9Gw3pWlWrpf+
+        YPzHCpkELdDU4s7tfU9RG1Gvq8tnVC4ZoP1J0cHrHg/Z
+X-Google-Smtp-Source: ABdhPJw2mJXYvtNgeUvbCrKnCVvfQVFa8lWVsSosTCHtIMyvlDfI7TlubzTR8LA93sy5NI7if9vnz/JfYf/ejExGvFE=
+X-Received: by 2002:ae9:efc1:: with SMTP id d184mr599491qkg.437.1589494830915;
+ Thu, 14 May 2020 15:20:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzbj-WvRkoGxkSFtK5_1JfQxthoFid398C97RM0ppBb0dA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200506132946.2164578-1-jolsa@kernel.org> <20200506132946.2164578-4-jolsa@kernel.org>
+In-Reply-To: <20200506132946.2164578-4-jolsa@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 14 May 2020 15:20:19 -0700
+Message-ID: <CAEf4BzY=GgQ0jaTg2BLfguZ+sPjT==qgoMFeB85utGWFj5qtPA@mail.gmail.com>
+Subject: Re: [PATCH 3/9] bpf: Add bpfwl tool to construct bpf whitelists
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Wenbo Zhang <ethercflow@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Brendan Gregg <bgregg@netflix.com>,
+        Florent Revest <revest@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 14, 2020 at 02:30:11PM -0700, Andrii Nakryiko wrote:
-> On Thu, May 14, 2020 at 1:39 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> >
-> > Jakub Kicinski <kuba@kernel.org> writes:
-> >
-> > > On Wed, 13 May 2020 12:25:27 -0700 Andrii Nakryiko wrote:
-> > >> One interesting implementation bit, that significantly simplifies (and thus
-> > >> speeds up as well) implementation of both producers and consumers is how data
-> > >> area is mapped twice contiguously back-to-back in the virtual memory. This
-> > >> allows to not take any special measures for samples that have to wrap around
-> > >> at the end of the circular buffer data area, because the next page after the
-> > >> last data page would be first data page again, and thus the sample will still
-> > >> appear completely contiguous in virtual memory. See comment and a simple ASCII
-> > >> diagram showing this visually in bpf_ringbuf_area_alloc().
-> > >
-> > > Out of curiosity - is this 100% okay to do in the kernel and user space
-> > > these days? Is this bit part of the uAPI in case we need to back out of
-> > > it?
-> > >
-> > > In the olden days virtually mapped/tagged caches could get confused
-> > > seeing the same physical memory have two active virtual mappings, or
-> > > at least that's what I've been told in school :)
-> >
-> > Yes, caching the same thing twice causes coherency problems.
-> >
-> > VIVT can be found in ARMv5, MIPS, NDS32 and Unicore32.
-> >
-> > > Checking with Paul - he says that could have been the case for Itanium
-> > > and PA-RISC CPUs.
-> >
-> > Itanium: PIPT L1/L2.
-> > PA-RISC: VIPT L1 and PIPT L2
+On Wed, May 6, 2020 at 6:30 AM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> This tool takes vmlinux object and whitelist directory on input
+> and produces C source object with BPF whitelist data.
+>
+> The vmlinux object needs to have a BTF information compiled in.
+>
+> The whitelist directory is expected to contain files with helper
+> names, where each file contains list of functions/probes that
+> helper is allowed to be called from - whitelist.
+>
+> The bpfwl tool has following output:
+>
+>   $ bpfwl vmlinux dir
+>   unsigned long d_path[] __attribute__((section(".BTF_whitelist_d_path"))) = \
+>   { 24507, 24511, 24537, 24539, 24545, 24588, 24602, 24920 };
 
-Thank you, Thomas!
+why long instead of int? btf_id is 4-byte one.
 
-> > Thanks,
-> 
-> Jakub, thanks for bringing this up.
+>
+> Each array are sorted BTF ids of the functions provided in the
+> helper file.
+>
+> Each array will be compiled into kernel and used during the helper
+> check in verifier.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/bpf/bpfwl/Build    |  11 ++
+>  tools/bpf/bpfwl/Makefile |  60 +++++++++
+>  tools/bpf/bpfwl/bpfwl.c  | 285 +++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 356 insertions(+)
+>  create mode 100644 tools/bpf/bpfwl/Build
+>  create mode 100644 tools/bpf/bpfwl/Makefile
+>  create mode 100644 tools/bpf/bpfwl/bpfwl.c
 
-Indeed!  I had completely forgotten about it.
+Sorry, I didn't want to nitpick on naming, honestly, but I think this
+is actually harmful in the long run. bpfwl is incomprehensible name,
+anyone reading link script would be like "what the hell is bpfwl?" Why
+not bpf_build_whitelist or something with "whitelist" spelled out in
+full?
 
-> Thomas, Paul, what kind of problems are we talking about here? What
-> are the possible problems in practice?
+>
+> diff --git a/tools/bpf/bpfwl/Build b/tools/bpf/bpfwl/Build
+> new file mode 100644
+> index 000000000000..667e30d6ce79
+> --- /dev/null
+> +++ b/tools/bpf/bpfwl/Build
+> @@ -0,0 +1,11 @@
+> +bpfwl-y += bpfwl.o
+> +bpfwl-y += rbtree.o
+> +bpfwl-y += zalloc.o
+> +
 
-One CPU stores into one of the mappings, and then it (or some other CPU)
-subsequently sees the old value via the other mapping, maybe for a short
-time, or maybe indefinitely, depending.  This sort of thing can happen
-when the same location in the two mappings map to different location in
-the cache.  The store via one virtual address then is placed into one
-location in the cache, but the reads from the other virtual address are
-referring to some other location in the cache.
+[...]
 
-In the past, some systems have documented virtual address offsets that
-are guaranteed to work, presumably because those offsets force the two
-views of the same physical memory to share the same location in the cache.
+> +
+> +struct func {
+> +       char                    *name;
+> +       unsigned long            id;
 
-> So just for the context, all the metadata (record header) that is
-> written/read under lock and with smp_store_release/smp_load_acquire is
-> written through the one set of page mappings (the first one). Only
-> some of sample payload might go into the second set of mapped pages.
-> Does this mean that user-space might read some old payloads in such
-> case?
+as mentioned above, btf_id is 4 byte
 
-That could happen, depending on which CPU accessed what physical
-memory using which virtual address.
+> +       struct rb_node           rb_node;
+> +       struct list_head         list[];
+> +};
+> +
 
-> I could work-around that in user-space, by mmaping twice the same
-> range, one after the other (second mmap would use MAP_FIXED flag, of
-> course). So that's not a big deal.
+[...]
 
-That would work, assuming you mean to map double the size of memory
-and then handle the wraparound case very very carefully.  ;-)
+> +       btf = btf__parse_elf(vmlinux, NULL);
+> +       err = libbpf_get_error(btf);
+> +       if (err) {
+> +               fprintf(stderr, "FAILED: load BTF from %s: %s",
+> +                       vmlinux, strerror(err));
+> +               return -1;
+> +       }
+> +
+> +       nr = btf__get_nr_types(btf);
+> +
+> +       /* Iterate all the BTF types and resolve all the function IDs. */
+> +       for (id = 0; id < nr; id++) {
 
-But you need only do that on VI*T systems, if that helps.
+It has to be `for (id = 1; id <= nr; id++)`. 0 is VOID type and not
+included into nr_types. I know it's confusing, but.. life :)
 
-> But on the kernel side it's crucial property, because it allows BPF
-> programs to work with data with the assumption that all data is
-> linearly mapped. If we can't do that, reserve() API is impossible to
-> implement. So in that case, I'd rather enable BPF ring buffer only on
-> platforms that won't have these problems, instead of removing
-> reserve/commit API altogether.
+> +               const struct btf_type *type;
+> +               struct func *func;
+> +               const char *str;
+> +
+> +               type = btf__type_by_id(btf, id);
+> +               if (!type)
+> +                       continue;
+> +
 
-You could flush the local CPU's cache before reading past the end,
-but only if it is guaranteed that no other CPU is accessing that same
-memory using the other mapping.  (No convinced that this is feasible,
-but who knows?)
-
-I see that linux-arch is copied, so do any of the affected architectures
-object to being left out?
-
-> Well, another way is to just "discard" remaining space at the end, if
-> it's not sufficient for entire record. That's doable, there will
-> always be at least 8 bytes available for record header, so not a
-> problem in that regard. But I would appreciate if you can help me
-> understand full implications of caching physical memory twice.
-> 
-> Also just for my education, with VIVT caches, if user-space
-> application mmap()'s same region of memory twice (without MAP_FIXED),
-> wouldn't that cause similar problems? Can't this happen today with
-> mmap() API? Why is that not a problem?
-
-It does indeed affect userspace applications as well.  And I haven't
-heard about this being a problem for a very long time, which might be
-why I had forgotten about it.
-
-But the underlying problem is that on VIVT and VIPT platforms, mapping
-the same physical memory to two different virtual addresses can cause
-that same memory to appear twice in the cache, and the resulting pair
-of cachelines will not be guaranteed to be in sync with each other.
-So CPUs accessing this memory through the two virtual addresses might
-see different values.  Which can come as a bit of a surprise to many
-algorithms.
-
-							Thanx, Paul
+[...]
