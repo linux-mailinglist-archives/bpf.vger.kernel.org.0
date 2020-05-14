@@ -2,112 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8CA1D38EB
-	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 20:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F111D38FB
+	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 20:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726165AbgENSKz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 May 2020 14:10:55 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:26654 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726075AbgENSKy (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 14 May 2020 14:10:54 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 04EIAHDX004248;
-        Thu, 14 May 2020 11:10:37 -0700
+        id S1726128AbgENSPt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 May 2020 14:15:49 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:37752 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726084AbgENSPs (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 14 May 2020 14:15:48 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04EIFQaM002293;
+        Thu, 14 May 2020 11:15:34 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=sTUU4xhSqx1+sEHn+PWqd2n7CkKCgLN5txs2L4Anmms=;
- b=VcstSkwYZv7m5F7+Qn+etjVIrgLaWkdpG9SQF3xhnofSKyKAMDiGUajjf63/uzKBzf8s
- c+SgP7IGWDugPdn7S/AAOPMdocfpZ+3OZFr6PvnwMavId47+7wNP56jbVFbe+nFtgM4z
- oqdbNT/8WADpAzr+QEbsgKu0l3UW23TX3UU= 
+ bh=H19spleZv5freAFsEBxWu4B8GP2jiRGC+DFzfpknNYM=;
+ b=C1O5KbRrLd8hhgIXw/YJw73tHXiFs97pU3Zg5eI9MsPQmjWY7wYye3DYwYnRdrx9bBaV
+ 3sViuDiAqyCsAOujhZNLJ/sg3mwUiDvtQaQRCubhobjr4WQLdyBzX74Lnac2yEbe058X
+ IGmT1tLSzWaYNiEesiBzGy9v8gAP+xa+54E= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 3100xhd1rt-2
+        by mx0a-00082601.pphosted.com with ESMTP id 3100x74yf7-11
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 14 May 2020 11:10:37 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+        Thu, 14 May 2020 11:15:34 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 14 May 2020 11:10:35 -0700
+ 15.1.1847.3; Thu, 14 May 2020 11:15:28 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QsqtX2v7U+XqY3e6syMUd+Bsz4/57v9+eVz+UvepWBuSZnRgYTRVoSQQ0wlPLYjLSJAf3PrUy9WTdIe0x3UQiMB6T/wizZA4CHPQcC4O8EHW85Flcn5eXE51oQCG/nhwWno0QaQsCWJr7zbqrTkgQ7c16iOM1wIl0vdzEiB8u1BgQ6dDHzXtRDybojio43OYJLpOmi49ZVJ1gPeooCYIjSNi9pCblQrGZEA1lKdjt4J8nb1iV6P3HQSy3x2YJKT82n85tiuLhXFzIoHFE9s4iZ2YCJCOs6fcTZjtRyvNn0JNXjhZWwHl1RKy+gmfBOs7V8Minjv85wrZl5iH0d2aXw==
+ b=iZZFtf8R99cRZmz93mdQlMB9iZDDCVnQYL1AtNwCK1ikV56sjUS88pjSXqVYQUGyb7lBF6Ts+4OLiL8tQLk0bYO/DCtkVXr7xPhg5q/GRt/MSIQj4FD71N9FPtAPlX/JJsRTR1POYyfz196johTprMkFkwmTJGDc0UJS3HVY/d4MbHsZ56kWWVMSDPif0wxIoKleb2qFs7zf+AB8BXo61KZsUo4g87WkL6JAIhBVUB/oT1GwNEHUH128nE0J6WROCFVgrMwB3WAWbKDrVuyX0iRh11rkuAogTbXGHHiEaYB1kg+mygNdxGprHzQVMbGddxGOfBr6ZnEoYXWg2wd3Bw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sTUU4xhSqx1+sEHn+PWqd2n7CkKCgLN5txs2L4Anmms=;
- b=OrF0xAMEjolMbUfLdsccWLcEq3BZuSOsAT+Qxst1J4a6LhyfhpgFBkxbeWvLbzIPOeuWBvZoGbhIl5awKxiCaAawnZLsGYowXnrag9zMcHMd4UDXmIM1hM5oMopROKA78UIqA9CHHR+tghKJ6UhVcvoY1fyqerk25TOahdVrkjAetPaNSiRcnOzmXfHjBdWtKXGXTK/fHtyLRrxjKV2w6EQpFd7qpE/N1QQJS3+z2pqhBcp/O9EyrZqianzDpqMxMwGPT6SDCZbzfAynLlHf6etxHiAkTDzjCO/ZVbDOuNZZFWkvJ+xFGoMx4j2POhrD8SF41qWJBnoc/vxR3TR2zw==
+ bh=H19spleZv5freAFsEBxWu4B8GP2jiRGC+DFzfpknNYM=;
+ b=bcdKvE+IVwmh6W76tK39KQ/Kp0B1GkvmZYnAI1jjNFqrz0/HDNNbnEp8e7/Yd2zSs8j0BWBNrDipfTI6MlP8I+PCUjVfw7Xoy4Sx8RXl0C/1qE8Sdca4ijyhCTkDJKqf+QkhpmtAe7qaBAs2Pg6R2BEW+JhwoJQ+RczQhmY6WVfIXRdolhlgPPWuiGlQqnqWNMwePbF5jkRXZUSGE5MyZ2RgT6hh2xs1DX7Tz0dr5Ek6XZP+FoOyKNsq4WVjw4euMaSYzKEpWX9SRwVH5Uw+5Itc/qTBHO0lwRXamg+36AYD+e1fH6lD5WyS0LjSJiJBUnh7pneNQO9/EvHAH+Sx1g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sTUU4xhSqx1+sEHn+PWqd2n7CkKCgLN5txs2L4Anmms=;
- b=jQwntLOQ+k0M63VrjPQo8DsGDtQtdLrjvw0fuk4DTGAHaMG+/uxDSP/zEnvN0zE4SpW1Jx3jqUYYVRf2l5AkF3gdltq4jTX0gsVxHtjgFUnfnAqkr18z/G9bHGPN4tOiD4F+wvin1dL8ez7qka4Cd9NMs1HG8EKMeGP0YCH5fyk=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+ bh=H19spleZv5freAFsEBxWu4B8GP2jiRGC+DFzfpknNYM=;
+ b=WRdjIhF4bgHftDUiF47So3Ux8a49Lpx2FqRPQGGvehpEDBFC8VXjYgRup9RcNYTkfTOYtn+SUFozWP1vFEMVAapZqb7zlxEyfNZo9mV+nevVVSNj4+N/UvfqQM6T4vNui06VDxkvfAFO2LjrPSg+fUptDQFQduDSN/7kgDX0QzQ=
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3318.namprd15.prod.outlook.com (2603:10b6:a03:106::19) with
+ by BYAPR15MB3222.namprd15.prod.outlook.com (2603:10b6:a03:10d::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.26; Thu, 14 May
- 2020 18:10:34 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.34; Thu, 14 May
+ 2020 18:15:27 +0000
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::4922:9927:5d6c:5301]) by BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::4922:9927:5d6c:5301%7]) with mapi id 15.20.3000.022; Thu, 14 May 2020
- 18:10:34 +0000
-Subject: Re: [PATCH bpf 3/3] bpf: restrict bpf_trace_printk()'s %s usage and
- add %psK, %psU specifier
-To:     Daniel Borkmann <daniel@iogearbox.net>, <ast@kernel.org>
-CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <torvalds@linux-foundation.org>, <mhiramat@kernel.org>,
-        <brendan.d.gregg@gmail.com>, <hch@lst.de>,
-        <john.fastabend@gmail.com>
-References: <20200514161607.9212-1-daniel@iogearbox.net>
- <20200514161607.9212-4-daniel@iogearbox.net>
+ 18:15:27 +0000
+Subject: Re: [PATCH v2 bpf-next 3/5] bpf: Introduce
+ bpf_sk_{,ancestor_}cgroup_id helpers
+To:     Andrey Ignatov <rdna@fb.com>
+CC:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <kernel-team@fb.com>
+References: <cover.1589405669.git.rdna@fb.com>
+ <c65795a13e69b7e4aa61a8e37aa340f2484f6c8a.1589405669.git.rdna@fb.com>
+ <f885aa42-eb76-415a-7fe3-95ad9c4f38c8@fb.com>
+ <20200514165549.GA22366@rdna-mbp>
+ <6cc5f0a5-b6af-e74f-2266-d5c85a0205f7@fb.com>
+ <20200514180110.GD22366@rdna-mbp>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <34e9da6e-1f1e-30c2-5863-55f7d8506eb8@fb.com>
-Date:   Thu, 14 May 2020 11:10:32 -0700
+Message-ID: <de7e9449-2f73-0366-7cff-dd692317cef7@fb.com>
+Date:   Thu, 14 May 2020 11:15:24 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.8.0
-In-Reply-To: <20200514161607.9212-4-daniel@iogearbox.net>
+In-Reply-To: <20200514180110.GD22366@rdna-mbp>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR07CA0064.namprd07.prod.outlook.com
- (2603:10b6:a03:60::41) To BYAPR15MB4088.namprd15.prod.outlook.com
+X-ClientProxiedBy: BYAPR03CA0001.namprd03.prod.outlook.com
+ (2603:10b6:a02:a8::14) To BYAPR15MB4088.namprd15.prod.outlook.com
  (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from macbook-pro-52.local.dhcp.thefacebook.com (2620:10d:c090:400::5:3bff) by BYAPR07CA0064.namprd07.prod.outlook.com (2603:10b6:a03:60::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.24 via Frontend Transport; Thu, 14 May 2020 18:10:33 +0000
+Received: from macbook-pro-52.local.dhcp.thefacebook.com (2620:10d:c090:400::5:3bff) by BYAPR03CA0001.namprd03.prod.outlook.com (2603:10b6:a02:a8::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.20 via Frontend Transport; Thu, 14 May 2020 18:15:26 +0000
 X-Originating-IP: [2620:10d:c090:400::5:3bff]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1968a440-44bc-4237-a923-08d7f8321884
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3318:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3318B008B219ADBA8D66BDD7D3BC0@BYAPR15MB3318.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 95df985c-d726-44b5-a406-08d7f832c747
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3222:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB32225AF888DDAF6E9E773AEED3BC0@BYAPR15MB3222.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:108;
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-Forefront-PRVS: 040359335D
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cGU9w0BD3V4PqmLvEGVazAYSnUdXby5JQcMXPHXfNiuubBjIjOo9a+bJ0sPqBcpB/fPIgoTlSJTuHsNn6nFPAAKlbd6wrVyGtk39wRygGB3VRkE/81nE5IYk46utXA+qvFAuX32owuY5Jg3lrDKNnC4Ij2rCDHxsPKDuq+/UDBOTi0thpmORB7xZ3f/TJUAoTJ4rFb+NqBE7gPvzjoFX7uYp98QexsL2E0FBdtBbRiH0+qORTeDJhddlOiFCoapmxAvaf0MkLnUSc5NuLnnIq4/DINVbBn2rpauYkTPtnz0qJemAdXHgG/CIdhVgzerJqR8C+D3gTnUcnKTj4F0n6+yBSx+9vyPXtoCJbyG48uBeVCxwhZ9Tsy8U5DFckJRhUZ/DehbZRpTtWIyJheWDJ7FOBn8CkJus4vibLiJ1uf8Jrzo3IO27HGz8F6d7JE6sry3B1RQ+mt2++vsHrI3ljfonlIAi0631mcM3tx9afmm4KTHU+lQMQCjeSoA9COLkV+Yn1wmIZlNa+XnaMUG7OzsT7oyyBtMiJJrfM1ZzWa7ySSKe7EgTuP1wdbt9DsEeeD1szsWil1LVUGgTL5PQJw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(396003)(376002)(39860400002)(366004)(136003)(8676002)(6486002)(66476007)(66946007)(2616005)(66556008)(31696002)(2906002)(316002)(31686004)(4326008)(6512007)(478600001)(966005)(8936002)(52116002)(16526019)(5660300002)(36756003)(186003)(86362001)(53546011)(6506007)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 44HQWrHHg+Gb5++CcZRq4l75/V0y0TQWEaMBSGjRak3id3L5NMT5hyMyxteY23OCpC7kmvfgn6WjDwuy7y6rJFN5BDHdqzV4rdSuNUzm1/rH+1garwER5WSCtO0DYD4Z00l8i9NL63wg6FD3NdlQ+24oQpyqZ7XGE1Bt5uVYksPAtmAhBgXdmjqnoqCNfs3vJkoq679bC6/+nwof20LKANzLCoSy90ZVQgBnryBKp681rkg9gQZAcnAr5Xk5aiwE5kuIn+g1jl/1NJYeiT0cLJaRTc+hOWYVnjVqSBfsJ88xxO8WULeJp+afaDBfror8HsWet9zY/OBsY3bSpeLcuVj9dsI9qlyvg6YsosoIUkxzySUih7ll0hLbzpn0KFTzkSAPTCrEyUVB0I+2v4/SD9utWnnvXoyP7W5rfwF/YnPUZJQxduUvnt+rOZVHKXtznvPUXQv/LFl4K4YtunkTIYwerdl/IYeb7pmH2JoM1K/YfCWH1kZg/rJqcnnBxgLbW+nYLOAEvPxPArKmL5PNDg==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1968a440-44bc-4237-a923-08d7f8321884
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2020 18:10:34.1383
+X-Microsoft-Antispam-Message-Info: LI+dPMvS0agz+8d62DxeHfR1SRhEmD/Ui/rrUJSctENGP/nfaasewp0EsvggT0uW76AtfciSNQEjBDjhDSPaRfS1lsZsS9mf63h1cgC2uMDWsZyyNyw5YPMDaa8x8AvaQDZ0M3QXLxrt67pdQ4k+czk1YmevT7p22004Cikg9iN1ydlQT47XmyB16RKxJfeoxWCQ5JwGfCFKbTD9pThfmeq0D/1Gp342NRBFATfc0490RdLDtHdK9iABbPjqWoX9WQxB2EP+HUbdKv6kgbip1Gt5/aMwzhFQETGRo6wUSifr+xzfmExoj5EXD1EocAK25zogxe4+e2r69Qr/LIL/KW0xcZ6UbnjdpM+6sQlDJeU9vgwN7CKawaDFhfyJeRx/JgjAzlTa1M8VXHWBwOj0iXBdX9mNUar052vsMjWhWSZIb3NassjcWhCJAAJYz+w4F+mROVkkKNtmGnAUSsP8nU8b/auV4auc7TxI4fLYcXOQXO0w6i9jFk1ddljqn5folnquhCGETMdMF8Ebh1cYWg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(376002)(396003)(346002)(136003)(39860400002)(4326008)(31686004)(52116002)(8676002)(6486002)(66946007)(53546011)(8936002)(6506007)(2616005)(5660300002)(31696002)(66556008)(86362001)(66476007)(16526019)(36756003)(6862004)(2906002)(6512007)(316002)(37006003)(186003)(478600001)(6636002)(21314003)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: JGl1N97/6mnAAYSXkUejsmV9LM96mIDvMCPxdlQCPMzJbzrcEI71xUndn1JB0zfViWVFDEERTfz1ahqhA3/xNgUlbfmhEGjoWRpejJaZExewuogSUthlCR95DZACgZnNPzortYwqgavv5iTCKESuMEw/ensEcFi2JMF86rHGVOufuI8IoF6qWshQfmqQvtvNU+rbuDegrv8fXYSq93sWexi/wb4tRKlNc5pqrqaCyeqMJGVoszTgk/GuCfliSafSMnRGRJ3b9nvHM3o38AJbdgVPiFs1oLPxDuo/SQiHQK5sgUd5JQzCSH3ksiHrWMyh4QPq/M+1EENsSURzkabSTbTE0n1tgrMXzK7hoHrgLvBR+Aqn4258UcJVjsugNaVys/Arcq9RE6XJ1OIaQwO4Ts6CnJMw6npJD9bdnp6FDZywXXPp+8rnzrx+sRJk5b9f2smSbvmSw6N5ZtIAMfGlirAB34yDQ8mFzrdH2MZOJlsKgs48WIwBfiT5pIjL1XOUKQh7a4uEFF7UGK432GvfYA==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95df985c-d726-44b5-a406-08d7f832c747
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2020 18:15:27.3987
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VX0nkghR9UmsCjPpdbwoH6aTN/92gpraHp/eLEys6UY+qChJXahqyibLzocB+sn5
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3318
+X-MS-Exchange-CrossTenant-UserPrincipalName: RHsAOzZQ+U7ACujazGMNAFs64fAkCbNcsemLGE0I/47dCJzSy3KWsIM+UY2NQUp3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3222
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
  definitions=2020-05-14_06:2020-05-14,2020-05-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 cotscore=-2147483648
- mlxscore=0 priorityscore=1501 adultscore=0 impostorscore=0 malwarescore=0
- spamscore=0 clxscore=1015 suspectscore=0 mlxlogscore=999 phishscore=0
- bulkscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2005140161
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ cotscore=-2147483648 lowpriorityscore=0 spamscore=0 adultscore=0
+ impostorscore=0 mlxlogscore=999 priorityscore=1501 bulkscore=0
+ clxscore=1015 malwarescore=0 mlxscore=0 suspectscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005140162
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -116,79 +118,67 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 5/14/20 9:16 AM, Daniel Borkmann wrote:
-> Usage of plain %s conversion specifier in bpf_trace_printk() suffers from the
-> very same issue as bpf_probe_read{,str}() helpers, that is, it is broken on
-> archs with overlapping address ranges.
+On 5/14/20 11:01 AM, Andrey Ignatov wrote:
+> Yonghong Song <yhs@fb.com> [Thu, 2020-05-14 10:24 -0700]:
+>>
+>>
+>> On 5/14/20 9:55 AM, Andrey Ignatov wrote:
+>>> Yonghong Song <yhs@fb.com> [Thu, 2020-05-14 08:16 -0700]:
+>>>> On 5/13/20 2:38 PM, Andrey Ignatov wrote:
+>>>
+>>>>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>>>>> index bfb31c1be219..e3cbc2790cdf 100644
+>>>>> --- a/include/uapi/linux/bpf.h
+>>>>> +++ b/include/uapi/linux/bpf.h
+>>>>> @@ -3121,6 +3121,37 @@ union bpf_attr {
+>>>>>      * 		0 on success, or a negative error in case of failure:
+>>>>>      *
+>>>>>      *		**-EOVERFLOW** if an overflow happened: The same object will be tried again.
+>>>>> + *
+>>>>> + * u64 bpf_sk_cgroup_id(struct bpf_sock *sk)
+>>>>> + *	Description
+>>>>> + *		Return the cgroup v2 id of the socket *sk*.
+>>>>> + *
+>>>>> + *		*sk* must be a non-**NULL** pointer that was returned from
+>>>>> + *		**bpf_sk_lookup_xxx**\ (). The format of returned id is same
+>>>>
+>>>> It should also include bpf_skc_lookup_tcp(), right?
+>>>
+>>>   From what I see it should not.
+>>>
+>>> cgroup id is available from sk->sk_cgrp_data that is a field of `struct
+>>> sock', i.e. `struct sock_common' doesn't have this field.
+>>>
+>>> bpf_skc_lookup_tcp() returns RET_PTR_TO_SOCK_COMMON_OR_NULL and it can
+>>> be for example `struct request_sock` that has only `struct sock_common`
+>>> member, i.e. it doesn't have cgroup id.
+>>
+>> So you can do bpf_skc_lookup_tcp() and then do tcp_sock() to get a full
+>> socket which will have cgroup_id. I think maybe this is the reason you
+>> added bpf_skc_lookup_tcp() in patch #1, right?
+>>
+>> If this is the case, maybe rewording a little bit for the description
+>> to include bpf_skc_lookup_tcp() + bpf_tcp_sock() as another input
+>> to bpf_sk_cgroup_id()?
 > 
-> While the helpers have been addressed through work in 6ae08ae3dea2 ("bpf: Add
-> probe_read_{user, kernel} and probe_read_{user, kernel}_str helpers"), we need
-> an option for bpf_trace_printk() as well to fix it.
+> Yeah, this bpf_skc_lookup_tcp() + bpf_tcp_sock() combination should also
+> return a full socket that can be used with the helper.
 > 
-> Similarly as with the helpers, force users to make an explicit choice by adding
-> %psK and %psU specifier to bpf_trace_printk() which will then pick the corresponding
-> strncpy_from_unsafe*() variant to perform the access under KERNEL_DS or USER_DS.
-
-In bpf_trace_printk(), we only print strings.
-
-In bpf-next bpf_iter bpf_seq_printf() helper, introduced by
-commit 492e639f0c22 ("bpf: Add bpf_seq_printf and bpf_seq_write 
-helpers"), print strings and ip addresses %p{i,I}{4,6}.
-
-Alan in
-https://lore.kernel.org/bpf/alpine.LRH.2.21.2005141738050.23867@localhost/T
-proposed BTF based type printing with a new format specifier
-%pT, which potentially will be used in bpf_trace_printk() and 
-bpf_seq_printf().
-
-In the future, we may want to support more %p<...> format in these 
-helpers. I am wondering whether we can have generic way so we only need 
-to change lib/vsprintf.c once.
-
-Maybe using %pk<...> to specify the kernel address and %pu<...> to
-specify user address space. In the above example, we will have
-%pks, %pus, %pki4 or %pui4, etc. Does this make sense?
-
+> bpf_sk_fullsock() is one more way to get it.
 > 
-> Existing %s for legacy users is still kept working for archs where it is not
-> broken and therefore gated through CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE.
+> I'm not sure it's worth listing all possible ways to get full socket
+> since it's 1) easy to miss something; 2) easy to forget to update this
+> list if a new way to get full socket is being added.
 > 
-> Fixes: 8d3b7dce8622 ("bpf: add support for %s specifier to bpf_trace_printk()")
-> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Reported-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Brendan Gregg <brendan.d.gregg@gmail.com>
-> Cc: Christoph Hellwig <hch@lst.de>
-> ---
->   Documentation/core-api/printk-formats.rst | 14 ++++
->   kernel/trace/bpf_trace.c                  | 92 +++++++++++++++--------
->   lib/vsprintf.c                            |  7 +-
->   3 files changed, 81 insertions(+), 32 deletions(-)
+> What about rephrasing to highlight that it has to be full socket and
+> **bpf_sk_lookup_xxx**\ () is an example of getting it?
 > 
-> diff --git a/Documentation/core-api/printk-formats.rst b/Documentation/core-api/printk-formats.rst
-> index 8ebe46b1af39..76b5f4f265cb 100644
-> --- a/Documentation/core-api/printk-formats.rst
-> +++ b/Documentation/core-api/printk-formats.rst
-> @@ -112,6 +112,20 @@ used when printing stack backtraces. The specifier takes into
->   consideration the effect of compiler optimisations which may occur
->   when tail-calls are used and marked with the noreturn GCC attribute.
->   
-> +Probed Strings from BPF
-> +-----------------------
-> +
-> +::
-> +
-> +	%psK	kernel_string
-> +	%psU	user_string
-> +
-> +The ``sK`` and ``sU`` specifiers are used for printing a string from probed
-> +memory. From regular vsnprintf(), they are equivalent to ``%s``, however,
-> +when used out of BPF's bpf_trace_printk() it reads a string of up to 64 bytes
-> +in memory without faulting. For ``K`` specifier, the string is probed out of
-> +kernel memory whereas for ``U`` specifier, it is probed out of user memory.
-> +
->   Kernel Pointers
->   ---------------
->   
-[...]
+> For example:
+> 
+> 	*sk* must be a non-**NULL** pointer to full socket, e.g. one
+> 	returned from **bpf_sk_lookup_xxx**\ () or
+> 	**bpf_sk_fullsock**\ ().
+> 
+> Will it be better?
+
+This should be fine. Thanks!
