@@ -2,56 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 803981D2C84
-	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 12:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 831FC1D2CA9
+	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 12:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726037AbgENKWf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 May 2020 06:22:35 -0400
-Received: from www62.your-server.de ([213.133.104.62]:32966 "EHLO
+        id S1725978AbgENK1s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 May 2020 06:27:48 -0400
+Received: from www62.your-server.de ([213.133.104.62]:33820 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726202AbgENKWI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 May 2020 06:22:08 -0400
+        with ESMTP id S1725925AbgENK1r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 May 2020 06:27:47 -0400
 Received: from sslproxy02.your-server.de ([78.47.166.47])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jZAzy-0007F0-Dx; Thu, 14 May 2020 12:21:54 +0200
+        id 1jZB5c-0007ik-1o; Thu, 14 May 2020 12:27:44 +0200
 Received: from [178.196.57.75] (helo=pc-9.home)
         by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1jZAzx-000RXX-Tr; Thu, 14 May 2020 12:21:53 +0200
+        id 1jZB5b-000K33-L4; Thu, 14 May 2020 12:27:43 +0200
 Subject: Re: [PATCH 11/18] maccess: remove strncpy_from_unsafe
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Al Viro <viro@zeniv.linux.org.uk>
+To:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
         the arch/x86 maintainers <x86@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        linux-parisc@vger.kernel.org,
         linux-um <linux-um@lists.infradead.org>,
-        Netdev <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
         Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "bgregg@netflix.com" <bgregg@netflix.com>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 References: <20200513160038.2482415-1-hch@lst.de>
  <20200513160038.2482415-12-hch@lst.de>
  <CAHk-=wj=u+nttmd1huNES2U=9nePtmk7WgR8cMLCYS8wc=rhdA@mail.gmail.com>
  <20200513192804.GA30751@lst.de>
  <0c1a7066-b269-9695-b94a-bb5f4f20ebd8@iogearbox.net>
- <20200513232816.GZ23230@ZenIV.linux.org.uk>
- <866cbe54-a027-04eb-65db-c6423d16b924@iogearbox.net>
- <6ca8d8499bf644aba0b242d194df5a60@AcuMS.aculab.com>
+ <20200514082054.f817721ce196f134e6820644@kernel.org>
+ <CAHk-=wjBKGLyf1d53GwfUTZiK_XPdujwh+u2XSpD2HWRV01Afw@mail.gmail.com>
+ <20200514100009.a8e6aa001f0ace5553c7904f@kernel.org>
+ <CAHk-=wjP8ysEZnNFi_+E1ZEFGpcbAN8kbYHrCnC93TX6XX+jEQ@mail.gmail.com>
+ <20200514184419.0fbf548ccf883c097d94573a@kernel.org>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <2cc83197-3ecc-b8c2-742d-e953c1f7bf8c@iogearbox.net>
-Date:   Thu, 14 May 2020 12:21:52 +0200
+Message-ID: <9c2f90fd-9cac-67c3-4d96-4f873c7649e7@iogearbox.net>
+Date:   Thu, 14 May 2020 12:27:42 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <6ca8d8499bf644aba0b242d194df5a60@AcuMS.aculab.com>
+In-Reply-To: <20200514184419.0fbf548ccf883c097d94573a@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -62,17 +60,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/14/20 12:01 PM, David Laight wrote:
-[...]
-> If it's not a stupid question why is a BPF program allowed to get
-> into a situation where it might have an invalid kernel address.
+On 5/14/20 11:44 AM, Masami Hiramatsu wrote:
+> On Wed, 13 May 2020 19:43:24 -0700
+> Linus Torvalds <torvalds@linux-foundation.org> wrote:
+>> On Wed, May 13, 2020 at 6:00 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>>>
+>>>> But we should likely at least disallow it entirely on platforms where
+>>>> we really can't - or pick one hardcoded choice. On sparc, you really
+>>>> _have_ to specify one or the other.
+>>>
+>>> OK. BTW, is there any way to detect the kernel/user space overlap on
+>>> memory layout statically? If there, I can do it. (I don't like
+>>> "if (CONFIG_X86)" thing....)
+>>> Or, maybe we need CONFIG_ARCH_OVERLAP_ADDRESS_SPACE?
+>>
+>> I think it would be better to have a CONFIG variable that
+>> architectures can just 'select' to show that they are ok with separate
+>> kernel and user addresses.
+>>
+>> Because I don't think we have any way to say that right now as-is. You
+>> can probably come up with hacky ways to approximate it, ie something
+>> like
+>>
+>>      if (TASK_SIZE_MAX > PAGE_OFFSET)
+>>          .... they overlap ..
+>>
+>> which would almost work, but..
 > 
-> It all stinks of a hole that allows all of kernel memory to be read
-> and copied to userspace.
-> 
-> Now you might want to something special so that BPF programs just
-> abort on OOPS instead of possibly paniking the kernel.
-> But that is different from a copy that expects to be passed garbage.
+> It seems TASK_SIZE_MAX is defined only on x86 and s390, what about
+> comparing STACK_TOP_MAX with PAGE_OFFSET ?
+> Anyway, I agree that the best way is introducing a CONFIG.
 
-I suggest you read up on probe_kernel_read() and its uses in tracing in
-general, looks like you haven't done that.
+Agree, CONFIG knob that archs can select feels cleanest. Fwiw, I've cooked
+up fixes for bpf side locally here and finishing up testing, will push out
+later today.
+
+Thanks,
+Daniel
