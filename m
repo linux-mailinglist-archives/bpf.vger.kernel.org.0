@@ -2,85 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDCE1D3DD3
-	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 21:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B631D3DDF
+	for <lists+bpf@lfdr.de>; Thu, 14 May 2020 21:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728194AbgENTpZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 May 2020 15:45:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56742 "EHLO
+        id S1727970AbgENTsG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 May 2020 15:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727124AbgENTpY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 14 May 2020 15:45:24 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE1CC061A0C;
-        Thu, 14 May 2020 12:45:24 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id e25so4872021ljg.5;
-        Thu, 14 May 2020 12:45:24 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1727124AbgENTsG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 14 May 2020 15:48:06 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F12CC061A0C;
+        Thu, 14 May 2020 12:48:06 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id j3so4859987ljg.8;
+        Thu, 14 May 2020 12:48:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=f+ynEXTEXIA/UBzTx0/2/1kODhDccZ63ruLWjclaitM=;
-        b=jdu9SkxM+QwQhE4HfNAhOc9pqBrmIrbxwY0Zj3378mEgtyoHy+RsYapNXmXMCcTnPz
-         7Skb5FkbUwQMyOyenlrHQUUuUUGeqEbkUO1QKDVMwe0XkLOMd/faguQCV6xbAF36DpNo
-         SmYnRvSJ0sCgCJVbx+COB4KNlFoCFuizXrGO3vYwMDQbUmg2oYSKowTIob2+hqUDYd1l
-         AEQHDVWRamhbJGst1/AF3h5RqNLUjZVNmMe0BTIXo1ymnpmctvu1SeddvwlXt7YZhvGS
-         QwbN8PhaTc34u6HOm9DUpLtxrgvEPSaKncqvcAYIfAGIUUTRD3g7AiwA0GAPymjF7E8O
-         U4ow==
+        bh=UM6g2a97Qr15ZVZrS+9k+t3FhiMgu6vYpKrUc29rMtc=;
+        b=gqj8+3vMqSzbhYdeicKrT7ZL9dAspmfumIkEgUa5NVmAhKmTbHbTU0ne7xSspsTtvo
+         QDNS6LhEzK/vTRFCD4R6TKn7jE8LsBUpGdlaJ59G56Q73lNA6howXV7jxH6z7V+UM/3b
+         YK4gqhhcINO6LwRGjtl7MY6Jr75cNU/R6gESwRTs/0VlaNphJCMUWns9uvx1mBlqcHrK
+         dDNHQYcPVqFGTi4w1phcg13+8+Zy+x60XO8mkM67q1/P+uFcPpZqZZMBbW/12lPn2Rxn
+         Jk7RdLot9MKy/VIVDWOcfBZOvYzMHcrq0PgeGuHck6zmk3nzPe9rD4rWCx6ha9SaQBNm
+         +jVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=f+ynEXTEXIA/UBzTx0/2/1kODhDccZ63ruLWjclaitM=;
-        b=mhbf5Jkf5pK4P1JpSS5faL/VFIc1mN99uyrHZXxUj7xejh3pDPGwn30ktXlZNvqs+n
-         1WUkd/Odr7qT/xY6RTihr9BfKAvEj17ZyOw6IPdGTp0bcUr9eFfI+3Pbg/QCyYJHDmyR
-         Q3xcTW8+jxTa8NmTzvb42+7piBFKG+wbN1MTsGLWW27fpWdjs8iV4klxhPXoXWjUjfNF
-         NkiLd6QdlZ00p9veJFb0HuZ34C2pYLXOpD1Vmm13skrRmsigvgfzMO54qn6dNiAir86M
-         rO4RvGemXmI4jsPRa6LRP6+QJ89c+eHsHwQi3JY330Qr7GAsOpWNjCPc6rUiGh3zkASw
-         wwhg==
-X-Gm-Message-State: AOAM5329WMkVJ3QqpmxCzKYaA25s0YFRWAsxukuszYsL+U+hEM+31lzZ
-        e2sKbXNt1BU/4eEHmE70v6Abwmh0LcfX3mGzss24rg==
-X-Google-Smtp-Source: ABdhPJygk0pBhxFpXMKyyUb5nW8GY5jbwbJJSlVxvF+IETfTnIkzD1CG6sKXmT4/8atgz2BflNE2QTUdI3+q10T/4eE=
-X-Received: by 2002:a2e:b4c2:: with SMTP id r2mr3841131ljm.143.1589485523007;
- Thu, 14 May 2020 12:45:23 -0700 (PDT)
+        bh=UM6g2a97Qr15ZVZrS+9k+t3FhiMgu6vYpKrUc29rMtc=;
+        b=Ay3PKxmgPYWxuIM8cjSWVOXPYqYqKkOh6lEaxY9Dr2wDRutWuRUqCWdrf5simIjZe7
+         IG2S6JN5VuQBt5yme3ZJu3RDrSHeu3PYmlg83oq8CjICfKql/IcYnc6WGcMCMCdAAubd
+         wfqWRDDVVxAPaqMNDI8GOm7FM+smQ4QWPSfc6eMcCnCvFvUVxJpFN/hU5EX9bensRaEI
+         a37u78Fplbl3EnroSGBbHAm/PB3uimJoBNjMW5dELUf6AUC7nPP6kUyrCnd+HQM2tySU
+         SgIf9rB6iMgPx5ND9Kv3Pru6wv7IiedRbTW6Zo7P6N/fwXNaoQfGqGUw7OAOEpLMM1EN
+         S7jQ==
+X-Gm-Message-State: AOAM531aOK/BizGhl8mC+d5pz0CqgLcoaiDCx1TgEf7J+WJw6XQKr3eM
+        lFltFSQiwubVlD/q3uhZvevhrhWUlI5fCXwGDtg=
+X-Google-Smtp-Source: ABdhPJyMCv4AqK4iIfdpObzAoqu6HvSqELmU5tnvzFHwHgi+1VOiVItheZA5sLB4ESsu0low1fmDNzxv8sP6aCaJTY4=
+X-Received: by 2002:a2e:9641:: with SMTP id z1mr3534986ljh.215.1589485684571;
+ Thu, 14 May 2020 12:48:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200513154414.29972-1-sumanthk@linux.ibm.com> <CAEf4BzZdAc6D0DRc+63_a=8PP6SbGn6GrHMQ8D9VmopyCT+-6A@mail.gmail.com>
-In-Reply-To: <CAEf4BzZdAc6D0DRc+63_a=8PP6SbGn6GrHMQ8D9VmopyCT+-6A@mail.gmail.com>
+References: <20200512174607.9630-1-anders.roxell@linaro.org>
+ <CAADnVQK6cka9i_GGz3OcjaNiEQEZYwgCLsn-S_Bkm-OWPJZb_w@mail.gmail.com> <alpine.LRH.2.21.2005141243120.53197@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.inter>
+In-Reply-To: <alpine.LRH.2.21.2005141243120.53197@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.inter>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 14 May 2020 12:45:11 -0700
-Message-ID: <CAADnVQL4v6OK5sJZrybspQZKHMTA1EN-Q9r+O34rPkEeHg+3ug@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Fix register naming in PT_REGS s390 macros
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Sumanth Korikkar <sumanthk@linux.ibm.com>,
+Date:   Thu, 14 May 2020 12:47:53 -0700
+Message-ID: <CAADnVQJRsknY7+3zwXR-N4e6oC6E87Z32Msg4EXaM8iyB=R3qQ@mail.gmail.com>
+Subject: Re: [PATCH] security: fix the default value of secid_to_secctx hook
+To:     James Morris <jamorris@linux.microsoft.com>
+Cc:     Anders Roxell <anders.roxell@linaro.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>, jwi@linux.ibm.com,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 13, 2020 at 11:14 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Thu, May 14, 2020 at 12:43 PM James Morris
+<jamorris@linux.microsoft.com> wrote:
 >
-> On Wed, May 13, 2020 at 8:45 AM Sumanth Korikkar <sumanthk@linux.ibm.com> wrote:
+> On Wed, 13 May 2020, Alexei Starovoitov wrote:
+>
+> > James,
 > >
-> > Fix register naming in PT_REGS s390 macros
-> >
-> > Fixes: b8ebce86ffe6 ("libbpf: Provide CO-RE variants of PT_REGS macros")
-> > Reviewed-by: Julian Wiedmann <jwi@linux.ibm.com>
-> > Signed-off-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
-> > ---
+> > since you took the previous similar patch are you going to pick this
+> > one up as well?
+> > Or we can route it via bpf tree to Linus asap.
 >
-> Great, thanks for catching this!
->
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> Routing via your tree is fine.
 
-Applied to bpf tree. Thanks
+Perfect.
+Applied to bpf tree. Thanks everyone.
