@@ -2,50 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A831D5C28
-	for <lists+bpf@lfdr.de>; Sat, 16 May 2020 00:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B73F51D5C2B
+	for <lists+bpf@lfdr.de>; Sat, 16 May 2020 00:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgEOWRj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 May 2020 18:17:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51732 "EHLO
+        id S1727051AbgEOWRm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 May 2020 18:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726725AbgEOWRi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 May 2020 18:17:38 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B036BC05BD09
-        for <bpf@vger.kernel.org>; Fri, 15 May 2020 15:17:38 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id e44so4080326qta.9
-        for <bpf@vger.kernel.org>; Fri, 15 May 2020 15:17:38 -0700 (PDT)
+        with ESMTP id S1727029AbgEOWRk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 May 2020 18:17:40 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C670C05BD09
+        for <bpf@vger.kernel.org>; Fri, 15 May 2020 15:17:40 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id y8so4321597ybn.20
+        for <bpf@vger.kernel.org>; Fri, 15 May 2020 15:17:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=RIG0VC8wWBXE+zeibTDt9JODs/7dvggYtmxngUASdpU=;
-        b=olvZ/Slhy5Yyi8+y+6aXL8Aj+nAjABM7NqTEQPrtoyCmkctb9h1+cXT5Ar9rEFjm28
-         zdaj1Vu1aCl0p/Jsl+lj7Zl2oXs3ufiSM9V0VZ6LBf60zKDQ+fcvT2hG2jaTCM2UYaER
-         GQTwlh9awOG2loH0AjoDEw00F4qcSJltIjKjMJ5wLS2VhU+eKBynXbTgsZulS71I7bom
-         XjXn/NUAX35OrXSOZcdEq6YuX37IWywVz+tlUvJeOHJTUPjFJscDE07jfkQoOijsS2XE
-         7qqQzmTB5NnRdlcZBGiMincFmLP5cA7jneTzhHqG9wzlqIpnzWpRwItQTu4d/MTLrtKC
-         YLTw==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=tvl7gLFsS/dAedcEqfrKtncclZsMityBUyr8g2OugcQ=;
+        b=khy2QACtaVinG3BdhesOMwGEVHZD5fXUFL+zMVH9b6ElIEU80EBdBN84tv5aCDv6Gc
+         AgBq6MO97+V442M3Aau9ckM0dpGxubrAcQpZVaF8eE5GWIAZHMuqcH7H95bZU6H+F5XZ
+         eN9aRT/gOPQeYniiMOoiKMw+1Aq8wtpEDgGQrmKVze/WozLXDNyxENP41dKV3P19yYMA
+         GS84iFzfMp7PQj5wDK8D95IcVRC9k+YQc7SetRDH0rz0MrdbYQ//2ySHkAyV9OVoclPG
+         23Oxq661bQxntYB12xI9/yOI3ytZXjRi4GYPLZMSONZ8eyNn9FnrW6Jbt/xQ7j3jS0fB
+         41GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=RIG0VC8wWBXE+zeibTDt9JODs/7dvggYtmxngUASdpU=;
-        b=WqsVvf09GQkB5k+qzt11X54TSEPQqAddPrV4Wvr13jYaCg83w+utWG9bgF5H66/YEG
-         FPWMuk/UF/7IzpBtJlnmTd2z6mMpPLIlnQUMLwlMa9qgdYKai1A35QnauR4KsyN3wkx4
-         /0zdMK3YGLWJBUTKVYHLt7XVDiSaw0JNgRBIlTaUT0P1JGMozUA8aoFP0gda7Fs9jSyj
-         UiWsMOeLXVnqC0tBtLenyGj94RuEuAzJdshNpe6w01VK0h9d02YBQA6oC3BfS0gx7J7T
-         PzupFj0vqA5MafUecYXI6k7bDVhTIFTLo3WY6jjq07Eh+JPGHMJTqsaWemRfuNVlvsk7
-         vNKQ==
-X-Gm-Message-State: AOAM530t3h6mKIi3IT1xWFiM7Di8dR2/A7revIK3QqEgXM3fgxXh5Bdy
-        /iTS8abOHQYzuAPdw9oP3HVwfV+TPXTZ
-X-Google-Smtp-Source: ABdhPJy14KsIty053SHq60u0QT6HwyCaIc4vtLao7xNAvuG4PcEU120Mqk2e/9NsPVsjpqVtvyI8eplpfjZA
-X-Received: by 2002:ad4:44e3:: with SMTP id p3mr5708036qvt.166.1589581057704;
- Fri, 15 May 2020 15:17:37 -0700 (PDT)
-Date:   Fri, 15 May 2020 15:17:25 -0700
-Message-Id: <20200515221732.44078-1-irogers@google.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=tvl7gLFsS/dAedcEqfrKtncclZsMityBUyr8g2OugcQ=;
+        b=bhzorJZijBpxiktNUWLO3uzMPomHnujgxEZeJ7KKQACnT5QZHPlJcvgG2gHO7eqRz7
+         3tfDhUUuxg2mLLkQfOZSimDm1XWriXX+qwC4Sfykxiw2UKlzmvwFG7Q10lhPw72cw+hI
+         O2ml50pvtZtsNhywkbBety7LrDgfp3s8qs+tmeTfZwSxpSgWhpjJzqOOFV6EV5wy77PB
+         rOdWg11i+o4gbJGYWOgorz2SD5pnYXCB+jE7zLBkB8irVDFmrDwF5XMe7DdzFl6SR2rk
+         7cNVfw5P9jBQ9vGCh6mNo93/eg3stsyM1Ke0ubOxuQ6CjeMCeXkR2pJoDGKIpVNzkbkJ
+         7hIw==
+X-Gm-Message-State: AOAM5306veImSr6dfqTFYQAWkkBX10QT6dl6WqOeLtraeeE6+WqAHfh5
+        KU4AoxnYJprn3m1lYvPTiU6T+qoVfVz0
+X-Google-Smtp-Source: ABdhPJyH6TcQkNDu//jdJAWoFOmMjTiSO5lvLDKJlvfVqXDU6eIwN1SwheXG/VI8XXlaqXykh7TONnMaUXeR
+X-Received: by 2002:a25:bc4b:: with SMTP id d11mr9847249ybk.71.1589581059496;
+ Fri, 15 May 2020 15:17:39 -0700 (PDT)
+Date:   Fri, 15 May 2020 15:17:26 -0700
+In-Reply-To: <20200515221732.44078-1-irogers@google.com>
+Message-Id: <20200515221732.44078-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20200515221732.44078-1-irogers@google.com>
 X-Mailer: git-send-email 2.26.2.761.g0e0b3e54be-goog
-Subject: [PATCH v3 0/7] Copy hashmap to tools/perf/util, use in perf expr
+Subject: [PATCH v3 1/7] libbpf: Fix memory leak and possible double-free in hashmap__clear
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -72,76 +76,49 @@ To:     Peter Zijlstra <peterz@infradead.org>,
         Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
+        Alston Tang <alston64@fb.com>, Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Perf's expr code currently builds an array of strings then removes
-duplicates. The array is larger than necessary and has recently been
-increased in size. When this was done it was commented that a hashmap
-would be preferable.
+From: Andrii Nakryiko <andriin@fb.com>
 
-libbpf has a hashmap but libbpf isn't currently required to build
-perf. To satisfy various concerns this change copies libbpf's hashmap
-into tools/perf/util, it then adds a check in perf that the two are in
-sync.
+Fix memory leak in hashmap_clear() not freeing hashmap_entry structs for each
+of the remaining entries. Also NULL-out bucket list to prevent possible
+double-free between hashmap__clear() and hashmap__free().
 
-Andrii's patch to hashmap from bpf-next is brought into this set to
-fix issues with hashmap__clear.
+Running test_progs-asan flavor clearly showed this problem.
 
-Two minor changes to libbpf's hashmap are made that remove an unused
-dependency and fix a compiler warning.
+Reported-by: Alston Tang <alston64@fb.com>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20200429012111.277390-5-andriin@fb.com
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/lib/bpf/hashmap.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Two perf test changes are also brought in as they need refactoring to
-account for the expr API change and it is expected they will land
-ahead of this.
-https://lore.kernel.org/lkml/20200513062236.854-2-irogers@google.com/
-
-Tested with 'perf test' and 'make -C tools/perf build-test'.
-
-The hashmap change was originally part of an RFC:
-https://lore.kernel.org/lkml/20200508053629.210324-1-irogers@google.com/
-
-v3. addresses review feedback from Andrii Nakryiko <andriin@fb.com>
-and Jiri Olsa <jolsa@redhat.com>.
-v2. moves hashmap into tools/perf/util rather than libapi, to allow
-hashmap's libbpf symbols to be visible when built statically for
-testing.
-
-Andrii Nakryiko (1):
-  libbpf: Fix memory leak and possible double-free in hashmap__clear
-
-Ian Rogers (6):
-  libbpf hashmap: Remove unused #include
-  libbpf hashmap: Fix signedness warnings
-  tools lib/api: Copy libbpf hashmap to tools/perf/util
-  perf test: Provide a subtest callback to ask for the reason for
-    skipping a subtest
-  perf test: Improve pmu event metric testing
-  perf expr: Migrate expr ids table to a hashmap
-
- tools/lib/bpf/hashmap.c         |  10 +-
- tools/lib/bpf/hashmap.h         |   1 -
- tools/perf/check-headers.sh     |   4 +
- tools/perf/tests/builtin-test.c |  18 ++-
- tools/perf/tests/expr.c         |  44 +++---
- tools/perf/tests/pmu-events.c   | 169 ++++++++++++++++++++++-
- tools/perf/tests/tests.h        |   4 +
- tools/perf/util/Build           |   4 +
- tools/perf/util/expr.c          | 129 +++++++++--------
- tools/perf/util/expr.h          |  26 ++--
- tools/perf/util/expr.y          |  22 +--
- tools/perf/util/hashmap.c       | 238 ++++++++++++++++++++++++++++++++
- tools/perf/util/hashmap.h       | 177 ++++++++++++++++++++++++
- tools/perf/util/metricgroup.c   |  92 ++++++------
- tools/perf/util/stat-shadow.c   |  49 ++++---
- 15 files changed, 798 insertions(+), 189 deletions(-)
- create mode 100644 tools/perf/util/hashmap.c
- create mode 100644 tools/perf/util/hashmap.h
-
+diff --git a/tools/lib/bpf/hashmap.c b/tools/lib/bpf/hashmap.c
+index 54c30c802070..cffb96202e0d 100644
+--- a/tools/lib/bpf/hashmap.c
++++ b/tools/lib/bpf/hashmap.c
+@@ -59,7 +59,14 @@ struct hashmap *hashmap__new(hashmap_hash_fn hash_fn,
+ 
+ void hashmap__clear(struct hashmap *map)
+ {
++	struct hashmap_entry *cur, *tmp;
++	int bkt;
++
++	hashmap__for_each_entry_safe(map, cur, tmp, bkt) {
++		free(cur);
++	}
+ 	free(map->buckets);
++	map->buckets = NULL;
+ 	map->cap = map->cap_bits = map->sz = 0;
+ }
+ 
 -- 
 2.26.2.761.g0e0b3e54be-goog
 
