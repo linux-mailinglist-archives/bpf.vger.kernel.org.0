@@ -2,112 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C911D4944
-	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 11:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7BEA1D4A48
+	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 12:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgEOJSX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 May 2020 05:18:23 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:43362 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728005AbgEOJSX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 May 2020 05:18:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589534302;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WwuYVHRaixWyYSkHzvaK/+VuTDQ9PiI/7066NTYvPoM=;
-        b=IyxcGUsepuk6fsdxfss7wJFwHL2tLElrLH0Jz3LBzaTGeyZzWTdafrTyumDNYWEPWfmm7z
-        i5dXnAvQRlFKLqrwyjwNceED3zt8FXQgZzaIa47HltMGfQMH+OYwogenkeWYxZRrKTNJVG
-        HUNEcRKGTjB7O9LpVh0XDgLe+WmNh5Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-440-gA-uHkRkMT-AwjrK7pjdzQ-1; Fri, 15 May 2020 05:18:19 -0400
-X-MC-Unique: gA-uHkRkMT-AwjrK7pjdzQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 589B31005510;
-        Fri, 15 May 2020 09:18:18 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-113-25.ams2.redhat.com [10.36.113.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 17E2C1001B2C;
-        Fri, 15 May 2020 09:18:16 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     Jiri Benc <jbenc@redhat.com>
-Cc:     bpf@vger.kernel.org, Jiri Olsa <jolsa@redhat.com>,
-        Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH RFC] selftests: do not use .ONESHELL
-References: <20200515030051.60148-1-yauheni.kaliuta@redhat.com>
-        <20200515102841.3fa15ff7@redhat.com>
-Date:   Fri, 15 May 2020 12:18:14 +0300
-In-Reply-To: <20200515102841.3fa15ff7@redhat.com> (Jiri Benc's message of
-        "Fri, 15 May 2020 10:28:41 +0200")
-Message-ID: <xuny4kshpne1.fsf@redhat.com>
+        id S1728309AbgEOJ7f (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 May 2020 05:59:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728061AbgEOJ7d (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 May 2020 05:59:33 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61889C05BD09
+        for <bpf@vger.kernel.org>; Fri, 15 May 2020 02:59:33 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 72so1470958otu.1
+        for <bpf@vger.kernel.org>; Fri, 15 May 2020 02:59:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OiGFLUEs0j76JYxhEW+vj0/bEALcqur7PHf4I670Vf4=;
+        b=OiWRyaPi9c1HERkt64fjfgluVRffnLluI4wP2DxRE2oYIA9C7SP2tSjMfzQShYPoVn
+         HFX7i/cbe5bxMh6mgkXLDiKyoM4PhbzaV1uZjIjWFQVFuItHLE061me9UmIPjQ3zGNNt
+         Ho4dvbTW/d3e5WcOQ6FP/EGj8BKrDd/z7A8jw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OiGFLUEs0j76JYxhEW+vj0/bEALcqur7PHf4I670Vf4=;
+        b=eKnhZgmISFDoysaHQyuxXZgujlv7oKalSHKDe4A7lBxla6F8Kfy66vZfvMw8rg5gDI
+         csRSCcDq7TTB0Tnmo0t0AHCA25RQ5yAyIzdEAaETlSfxiidBcB/Ety8WlBaIlXfDIFix
+         0vUKX0FV6aI82fFNXg/Dc0D0JHuxHOLoq9lx81OAReC+jPjmSn3jvfMdfKnj7Ypl94FK
+         OeeTm1Fm91uBxYN/HgavArsTwEHg2VrsK567KPiGgZ6sVdJK3ubSdq65/obOlr763xQt
+         rIdgWNnR9vu946/uvpkZe5OLkKpjzzyDME6ZXX6x7v1SgMDPqEhcAkEakE2bZZrM/9WD
+         2FEg==
+X-Gm-Message-State: AOAM533ZQ9sZFlWdxcIqT9BDYsPYZWGCDR+tXpTpKVhF258a8axsC+2F
+        iJUVK83xsqACf+4b8mAs368jwdyXaCQgyZOzHlrngA==
+X-Google-Smtp-Source: ABdhPJyrGF3iriQsl8vUame18ZgM7/LlOd4OscXORl1hg6Oppjk/YOmDL/6neaw+KOdOz36CR4Zus2+5dOL2JTGA8rI=
+X-Received: by 2002:a9d:a4c:: with SMTP id 70mr1729765otg.334.1589536772643;
+ Fri, 15 May 2020 02:59:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <CACAyw9_4Uzh0GqAR16BfEHQ0ZWHKGUKacOQwwhwsfhdCTMtsNQ@mail.gmail.com>
+ <b93b4ad2-0cf0-81e0-b2b0-664248b3630f@gmail.com> <CACAyw9-95He2yq0qoxuWFy3wqQt1kAtAQcRw2UTrqse2hUq1tA@mail.gmail.com>
+ <5cca7bce-0052-d854-5ead-b09d43cb9eb9@gmail.com>
+In-Reply-To: <5cca7bce-0052-d854-5ead-b09d43cb9eb9@gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Fri, 15 May 2020 10:59:21 +0100
+Message-ID: <CACAyw9-TEDHdcjykuQZ8P0Q6QngEZU0z7PXgqtZRQq4Jh1_ojw@mail.gmail.com>
+Subject: Re: "Forwarding" from TC classifier
+To:     David Ahern <dsahern@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Martynas Pumputis <m@lambda.lt>,
+        kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, Jiri!
+On Thu, 14 May 2020 at 19:54, David Ahern <dsahern@gmail.com> wrote:
+>
+> On 5/14/20 9:41 AM, Lorenz Bauer wrote:
+> > On Wed, 13 May 2020 at 18:48, David Ahern <dsahern@gmail.com> wrote:
+> >>
+> >> On 5/13/20 10:40 AM, Lorenz Bauer wrote:
+> >>> We've recently open sourced a key component of our L4 load balancer:
+> >>> cls_redirect [1].
+> >>> In the commit description, I call out the following caveat:
+> >>>
+> >>>     cls_redirect relies on receiving encapsulated packets directly
+> >>> from a router. This is
+> >>>     because we don't have access to the neighbour tables from BPF, yet.
+> >>
+> >> Can you explain more about this limitation? Why does access to neighbor
+> >> tables solve the problem?
+> >
+> > We want to forward the packet to another machine, based on an IP address
+> > stored in our custom encapsulation header.
+> > If we always receive packets from a router we can plug in the new IP, swap
+> > the MAC and send the packet back to the router. Inefficient, but it means we
+> > don't have to deal with MAC addresses ourselves.
+>
+> Ok, so swapping source and destination addresses in the IP header, doing
+> a fib lookup and redirecting to an interface based on the lookup. That
+> does require a neighbor entry for the dest address. Access to the
+> neighbor table does not directly solve that problem - if it is not there
+> for the fib lookup, it won't be there for the straight neigh lookup.
+>
+> You could let the first packet go up the stack to create and resolve the
+> neighbor entry. At that point follow on packets will take the fast path.
 
->>>>> On Fri, 15 May 2020 10:28:41 +0200, Jiri Benc  wrote:
+Yes, but that doesn't play well with changing the source address to
+the local machine's, since the upper part of the stack will drop the
+packet due to accept_local=0.
 
- > On Fri, 15 May 2020 06:00:51 +0300, Yauheni Kaliuta wrote:
- >> 1) I'm wondering how commit c363eb48ada5 ("selftests: fix too long
- >> argument") worked without the patch.
+For this to work I need to set accept_local=1, which isn't desirable,
+or redirect into the output queue of the device, which currently doesn't
+trigger neighbour lookup, etc.
 
- > I think it was because it reduced the list of files from three
- > replications to two. I did not notice the .ONESHELL; it also
- > explains the oddity that I saw with @ behavior.
+To sum it up: fib_lookup enables the fast path, but I don't have a way
+to trigger the slow path in the way I want to. Maybe I need to dig into
+bpf_redirect some more.
 
- > With the .ONESHELL removed, we can further simplify
- > INSTALL_SINGLE_RULE by removing the @echo rsync and the
- > at-sign before rsync.
+>
+> Alternatively, you can create static entries in the table for known
+> forwarding addresses or have a process on the server initiate neighbor
+> resolution for none forwarding addresses.
+> >>
+> >> Usually, 'output' is for locally generated traffic headed out. XDP
+> >> programs run on ingress are from an Rx perspective and do the lookup
+> >> from the perspective of 'is this forwarded or locally delivered'.
+> >
+> > What if the XDP encapsulates the packet? At this point I know that I
+> > want to forward it elsewhere. Would that use LOOKUP_OUTPUT?
+>
+> Yes, if you want the lookup to respond as if it is a locally sent packet
+> versus a forwarded packet.
 
-Yeah.
 
- >> 2) The code does not look working as expected for me:
- >> 2.1) "X$(TEST_PROGS) $(TEST_PROGS_EXTENDED) $(TEST_FILES)" != "X" is
- >> always true sine the left part will be at least "X  " (spaces);
- >> 2.2) according to manual in .ONESHELL case gmake checks only first
- >> line for @, so @rsync is passed to the shell;
-
-Actully, when I checked it in the `if` branch, @ worked as
-expected, sounds strange for me. But well, without .ONESHELL it
-will go away.
-
- >> 2.3) $(OUTPUT)/(TEST_PROGS) adds $(OUTPUT) only to the first prog;
- >> 
- >> Did I miss something?
-
- > I think you didn't miss anything and that you're right. Could
- > you submit a patch to remove the spaces? I can then submit a
- > patch to further simplify INSTALL_SINGLE_RULE if you don't
- > want to do that, too.
-
-Just allow rsync command echoing, right? I can do it, no problem.
-
-And RUN_TESTS' `@` does not work in the `if` branch, so the patch
-should be fixed.
-
-Also I noticed possible issue related to my previous patch:
-
-lib.mk does TEST_GEN_FILES := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_FILES))
-(Notice := ). But it's included (at least in the bpf/Makefile)
-before TEST_GEN_FILES is constructed during rules generation so
-basically it's skipped. BUT in the generated rules $(OUTPUT) is
-taken into account. Sort of inconsistency. Did I miss something?
-
-If any of the lists grows too much again the next modification in
-my mind is to do $(foreach ...) on the lists and handle them
-file-by-file.
-
-Thanks for the review!
 
 -- 
-WBR,
-Yauheni Kaliuta
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
+www.cloudflare.com
