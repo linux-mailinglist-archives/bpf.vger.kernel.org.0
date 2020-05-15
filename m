@@ -2,61 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C73AD1D5A24
-	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 21:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E43CB1D5A33
+	for <lists+bpf@lfdr.de>; Fri, 15 May 2020 21:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726191AbgEOTko (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 May 2020 15:40:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726168AbgEOTko (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 15 May 2020 15:40:44 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393E2C061A0C;
-        Fri, 15 May 2020 12:40:43 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id d7so2975973qtn.11;
-        Fri, 15 May 2020 12:40:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7ou8JV19REXcnpzqyrzp5r1aAUsTMKh8ZTeIZObEj0s=;
-        b=FNPXlXtplV8T8Z7258sH/+oLdanFfWXAst/oYMZKUgpXJ3FdyB27CjJht3ztm13skK
-         sR6WgVGY5yVrg5e+IhA0oA1uXmozEfkW6PLQ6Hm6t8kMJ14OPXXYW3rZkjAT5f6nXNrP
-         Xpyt28LohTOz0yIn6u/MUdQnfldPWZ4mJ7ti9jkInxt/1YBwX5nZ0q3E4DmSfZEH8ixW
-         MjXaGqXj/tUf1sbpVcgWQcbN2juSdyvCoVt3PqX4LpgbMbw5ojLSVd8pggE2s55xpAmb
-         YYyHAOhpvBqcM6dzH3v3hLIWJKQ1nSaFq+flNT8RN+RmBxibdno9fm3iJqEJ4hoBZQ0o
-         xjeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7ou8JV19REXcnpzqyrzp5r1aAUsTMKh8ZTeIZObEj0s=;
-        b=Qwho5HUXtxA6QRjPmIfkANaji/dXbPXLObRHpNWpg+LmTPY/nIQjgiz6O8DAC7Gjev
-         8w/PBg7jb9AfgFKF20+d+tl5LNUPZLYaMxMQWK1xSjcXcRZInpqLsVWt2kP/VI8JDInt
-         /jiORA0IUbm08QaI+XgwjbEo/bQ3rpq3ccfdSLwXU5XBOYxFSzpkpnSewWpGRg2KkYC+
-         nuDG1Pk3QNmIRq4mPrZZ6PbaEXJxCsHyJRvDShsIJaDCpyv+QsA5HEajbf0cHkt9KU3u
-         lkA0lxvP7YTboR5ymn1l2zJr2WoMTVYZBLMSoGQDuhjmJGTxOvdpzPpzX3MX+jvq8R9V
-         oFuw==
-X-Gm-Message-State: AOAM5323RVWpWgNI3dWSVkPjwWIvx2jNEnJuKUCbhz2Qnh5foGUEGUXx
-        s4JY4aeZYenPJxpZP8W7KdSxFmdOoMjVsGV7VrA=
-X-Google-Smtp-Source: ABdhPJxRxWp+3bmI47j+jDQ2Qkqcfissm4Juxx3AGQUgOCmN6uO7SGAF+3h7z8BWeQjCp/2Ju0fFfvvMdhhTkjVpdSQ=
-X-Received: by 2002:ac8:1ae7:: with SMTP id h36mr5217245qtk.59.1589571642463;
- Fri, 15 May 2020 12:40:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200515165007.217120-1-irogers@google.com> <20200515165007.217120-4-irogers@google.com>
-In-Reply-To: <20200515165007.217120-4-irogers@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 15 May 2020 12:40:31 -0700
-Message-ID: <CAEf4BzbASksH9Ne7GVcdMSZRB_7nVwsr1Y4V66PfiCiK-fzQvg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/7] libbpf hashmap: Fix signedness warnings
+        id S1726227AbgEOTld (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 May 2020 15:41:33 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:59261 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726715AbgEOTlc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 15 May 2020 15:41:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1589571691;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OUOZlTx+NnYcTtCx+Ldkfxstccp83o8CLEeza083+h4=;
+        b=VWRdhHyax0yMPxv0e63mv9I3pIpNQ1D0/zZ09oTPVgHVoCtlIp+fRJ/PoIBMQeMpQtZ2hQ
+        ZbZ8+7EElPZD1JT8gvr8oFDKqsoR5AoqVqK9vrYRmyaF4VHKTA1nEMhHqKPG+L5BFn6pP1
+        wab3oeHbSFMjWckz9ldiAP4XrPgGSWQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-372-5h7CuIQlMNSSU3X4nvjb1Q-1; Fri, 15 May 2020 15:41:27 -0400
+X-MC-Unique: 5h7CuIQlMNSSU3X4nvjb1Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0A2411030986;
+        Fri, 15 May 2020 19:41:23 +0000 (UTC)
+Received: from krava (unknown [10.40.192.69])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4CA7462971;
+        Fri, 15 May 2020 19:41:16 +0000 (UTC)
+Date:   Fri, 15 May 2020 21:41:15 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
 To:     Ian Rogers <irogers@google.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -73,64 +56,86 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Cong Wang <xiyou.wangcong@gmail.com>,
         Kim Phillips <kim.phillips@amd.com>,
         Adrian Hunter <adrian.hunter@intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
         Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2 7/7] perf expr: Migrate expr ids table to a hashmap
+Message-ID: <20200515194115.GA3577540@krava>
+References: <20200515165007.217120-1-irogers@google.com>
+ <20200515165007.217120-8-irogers@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515165007.217120-8-irogers@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 15, 2020 at 9:51 AM Ian Rogers <irogers@google.com> wrote:
->
-> Fixes the following warnings:
->
-> hashmap.c: In function =E2=80=98hashmap__clear=E2=80=99:
-> hashmap.h:150:20: error: comparison of integer expressions of different s=
-ignedness: =E2=80=98int=E2=80=99 and =E2=80=98size_t=E2=80=99 {aka =E2=80=
-=98long unsigned int=E2=80=99} [-Werror=3Dsign-compare]
->   150 |  for (bkt =3D 0; bkt < map->cap; bkt++)        \
->
-> hashmap.c: In function =E2=80=98hashmap_grow=E2=80=99:
-> hashmap.h:150:20: error: comparison of integer expressions of different s=
-ignedness: =E2=80=98int=E2=80=99 and =E2=80=98size_t=E2=80=99 {aka =E2=80=
-=98long unsigned int=E2=80=99} [-Werror=3Dsign-compare]
->   150 |  for (bkt =3D 0; bkt < map->cap; bkt++)        \
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
+On Fri, May 15, 2020 at 09:50:07AM -0700, Ian Rogers wrote:
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+SNIP
 
->  tools/lib/bpf/hashmap.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/lib/bpf/hashmap.c b/tools/lib/bpf/hashmap.c
-> index cffb96202e0d..a405dad068f5 100644
-> --- a/tools/lib/bpf/hashmap.c
-> +++ b/tools/lib/bpf/hashmap.c
-> @@ -60,7 +60,7 @@ struct hashmap *hashmap__new(hashmap_hash_fn hash_fn,
->  void hashmap__clear(struct hashmap *map)
+> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> index b071df373f8b..37be5a368d6e 100644
+> --- a/tools/perf/util/metricgroup.c
+> +++ b/tools/perf/util/metricgroup.c
+> @@ -85,8 +85,7 @@ static void metricgroup__rblist_init(struct rblist *metric_events)
+>  
+>  struct egroup {
+>  	struct list_head nd;
+> -	int idnum;
+> -	const char **ids;
+> +	struct expr_parse_ctx pctx;
+>  	const char *metric_name;
+>  	const char *metric_expr;
+>  	const char *metric_unit;
+> @@ -94,19 +93,21 @@ struct egroup {
+>  };
+>  
+>  static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+> -				      const char **ids,
+> -				      int idnum,
+> +				      struct expr_parse_ctx *pctx,
+>  				      struct evsel **metric_events,
+>  				      bool *evlist_used)
 >  {
->         struct hashmap_entry *cur, *tmp;
-> -       int bkt;
-> +       size_t bkt;
->
->         hashmap__for_each_entry_safe(map, cur, tmp, bkt) {
->                 free(cur);
-> @@ -100,8 +100,7 @@ static int hashmap_grow(struct hashmap *map)
->         struct hashmap_entry **new_buckets;
->         struct hashmap_entry *cur, *tmp;
->         size_t new_cap_bits, new_cap;
-> -       size_t h;
-> -       int bkt;
-> +       size_t h, bkt;
->
->         new_cap_bits =3D map->cap_bits + 1;
->         if (new_cap_bits < HASHMAP_MIN_CAP_BITS)
-> --
-> 2.26.2.761.g0e0b3e54be-goog
->
+>  	struct evsel *ev;
+> -	int i = 0, j = 0;
+>  	bool leader_found;
+> +	const size_t idnum = hashmap__size(&pctx->ids);
+> +	size_t i = 0;
+> +	int j = 0;
+> +	double *val_ptr;
+>  
+>  	evlist__for_each_entry (perf_evlist, ev) {
+>  		if (evlist_used[j++])
+>  			continue;
+> -		if (!strcmp(ev->name, ids[i])) {
+> +		if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr)) {
+
+hum, you sure it's doing the same thing as before?
+
+hashmap__find will succede all the time in here, while the
+previous code was looking for the start of the group ...
+the logic in here is little convoluted, so maybe I'm
+missing some point in here ;-)
+
+jirka
+
+>  			if (!metric_events[i])
+>  				metric_events[i] = ev;
+>  			i++;
+> @@ -118,7 +119,8 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+>  			memset(metric_events, 0,
+>  				sizeof(struct evsel *) * idnum);
+>  
+> -			if (!strcmp(ev->name, ids[i])) {
+> +			if (hashmap__find(&pctx->ids, ev->name,
+> +					  (void **)&val_ptr)) {
+>  				if (!metric_events[i])
+>  					metric_events[i] = ev;
+
+SNIP
+
